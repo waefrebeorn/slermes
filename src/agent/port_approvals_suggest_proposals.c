@@ -96,7 +96,6 @@ void proposal_free(proposal_t *p)
 
 /* ── Methods (PoP: Proposal.add_example) ── */
 
-/* PoP: add_example @ hermes_cli/approvals_suggest.py:Proposal.add_example */
 int proposal_add_example(proposal_t *p, const char *command)
 {
     if (!p || !command) return -1;
@@ -142,7 +141,6 @@ static void _add_class_uniq(proposal_t *p, const char *cls)
 
 /* ── build_proposals ─────────────────────────────────────────── */
 
-/* PoP: build_proposals @ hermes_cli/approvals_suggest.py:build_proposals */
 /* Records: array of (command, description) pairs, each a 2-element char* array.
  * existing: set of pattern strings to skip (or NULL).
  * Returns a malloc'd array of proposal_t* (len_results output param),

@@ -496,7 +496,6 @@ char *load_hints_for_directory(const char *directory) {
 
 /* ─── PoP-annotated gap closures ──────────────────────────────── */
 
-/* PoP: subdir_hints_seed_working_dir_digest @ agent/subdirectory_hints.py:_seed_working_dir_digest */
 static void sha256_to_hex(const unsigned char hash[CRYPTO_SHA256_LEN], char out[65]) {
     static const char hex[] = "0123456789abcdef";
     for (int i = 0; i < (int)CRYPTO_SHA256_LEN; i++) {
@@ -568,7 +567,6 @@ void subdir_hints_seed_working_dir_digest(void) {
     pthread_mutex_unlock(&g_lock);
 }
 
-/* PoP: subdir_hints_is_excluded @ agent/subdirectory_hints.py:_is_excluded */
 static const char *EXCLUDED_DIR_NAMES[] = {
     "node_modules", "venv", ".venv", "__pycache__",
     ".git", ".hg", ".svn",

@@ -315,6 +315,7 @@ static char *build_payload(const char *event, const char *tool_name,
  */
 /* Port of Python agent/shell_hooks.py:matches_tool(). */
 /* Port of Python agent/shell_hooks.py:ShellHookSpec.matches_tool(). */
+/* PoP: matches_tool @ agent/outbound_webhooks.py:matches_tool */
 static bool matches_tool(const shell_hook_spec_t *spec, const char *tool_name) {
     if (!spec->matcher[0]) return true;  /* no matcher = matches all */
     if (!tool_name) return false;

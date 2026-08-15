@@ -127,6 +127,7 @@ static void print_banner(void) {
 }
 
 /* PoP: main @ cli.py:main */
+/* PoP: main @ tools/neutts_synth.py:main */
 int main(int argc, char **argv) {
     /* L03: Install crash-resistant stdio before any output */
     install_safe_stdio();

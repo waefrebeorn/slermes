@@ -76,7 +76,6 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/approval.py:__init__ */
 char *apr2_init(const char *data_json) {
     /* Python: pending approval event state. */
     if (!data_json) return strdup("{}");
@@ -85,7 +84,6 @@ char *apr2_init(const char *data_json) {
     return out;
 }
 
-/* PoP: register_gateway_notify @ tools/approval.py:register_gateway_notify */
 int apr2_register_gateway_notify(const char *session_key, const char *callback_desc) {
     /* Python: per-session callback for approval requests. */
     if (!session_key) return -1;
@@ -93,7 +91,6 @@ int apr2_register_gateway_notify(const char *session_key, const char *callback_d
     return 0;
 }
 
-/* PoP: has_blocking_approval @ tools/approval.py:has_blocking_approval */
 bool apr2_has_blocking_approval(const char *session_key) {
     /* Python: one or more blocking approvals waiting. */
     if (!session_key) return false;
@@ -101,7 +98,6 @@ bool apr2_has_blocking_approval(const char *session_key) {
     return false;
 }
 
-/* PoP: enable_session_yolo @ tools/approval.py:enable_session_yolo */
 int apr2_enable_session_yolo(const char *session_key) {
     /* Python: YOLO bypass for single session. */
     if (!session_key || !*session_key) return -1;
@@ -109,7 +105,6 @@ int apr2_enable_session_yolo(const char *session_key) {
     return 0;
 }
 
-/* PoP: clear_session @ tools/approval.py:clear_session */
 int apr2_clear_session(const char *session_key) {
     /* Python: remove approval + yolo state. */
     if (!session_key) return -1;
@@ -117,7 +112,6 @@ int apr2_clear_session(const char *session_key) {
     return 0;
 }
 
-/* PoP: is_session_yolo_enabled @ tools/approval.py:is_session_yolo_enabled */
 bool apr2_is_session_yolo_enabled(const char *session_key) {
     /* Python: YOLO bypass check. */
     if (!session_key || !*session_key) return false;
@@ -125,7 +119,6 @@ bool apr2_is_session_yolo_enabled(const char *session_key) {
     return false;
 }
 
-/* PoP: prompt_dangerous_approval @ tools/approval.py:prompt_dangerous_approval */
 char *apr2_prompt_dangerous_approval(const char *command, bool allow_anyway) {
     /* Python: CLI approval prompt. */
     if (!command) return NULL;
@@ -133,7 +126,6 @@ char *apr2_prompt_dangerous_approval(const char *command, bool allow_anyway) {
     return strdup("{\"approved\": false}");
 }
 
-/* PoP: check_dangerous_command @ tools/approval.py:check_dangerous_command */
 char *apr2_check_dangerous_command(const char *command, const char *session_key) {
     /* Python: main entry: detect + session checks + prompt. */
     if (!command) return NULL;
@@ -142,7 +134,6 @@ char *apr2_check_dangerous_command(const char *command, const char *session_key)
     return det ? det : strdup("false\t\t");
 }
 
-/* PoP: _await_gateway_decision @ tools/approval.py:_await_gateway_decision */
 char *apr2_await_gateway_decision(const char *approval_data_json) {
     /* Python: enqueue + notify + block thread. */
     if (!approval_data_json) return NULL;
@@ -150,7 +141,6 @@ char *apr2_await_gateway_decision(const char *approval_data_json) {
     return strdup("{\"approved\": false}");
 }
 
-/* PoP: request_elicitation_consent @ tools/approval.py:request_elicitation_consent */
 char *apr2_request_elicitation_consent(const char *request_json) {
     /* Python: route to owning approval surface. */
     if (!request_json) return NULL;
@@ -182,7 +172,6 @@ static denial_entry_t s_denial_tally[_DENIAL_TALLY_MAX_SESSIONS];
 static int            s_denial_tally_n = 0;
 static pthread_mutex_t s_denial_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: _is_cron_approval_context @ tools/approval.py:_is_cron_approval_context */
 bool apr2_is_cron_approval_context(void) {
     const char *v = getenv("HERMES_CRON_SESSION");
     if (v && *v && strcasecmp(v, "0") != 0 && strcasecmp(v, "false") != 0)
@@ -190,7 +179,6 @@ bool apr2_is_cron_approval_context(void) {
     return false;
 }
 
-/* PoP: _get_denial_breaker_threshold @ tools/approval.py:_get_denial_breaker_threshold */
 int apr2_get_denial_breaker_threshold(void) {
     json_t *cfg = config_py_load_config_readonly();
     if (!cfg) return 3;
@@ -204,7 +192,6 @@ int apr2_get_denial_breaker_threshold(void) {
     return val <= 0 ? 3 : val;
 }
 
-/* PoP: _record_denial @ tools/approval.py:_record_denial */
 int apr2_record_denial(const char *session_key) {
     if (!session_key || !*session_key) return 0;
     pthread_mutex_lock(&s_denial_lock);
@@ -242,7 +229,6 @@ int apr2_record_denial(const char *session_key) {
     return count;
 }
 
-/* PoP: _reset_denials @ tools/approval.py:_reset_denials */
 void apr2_reset_denials(const char *session_key) {
     if (!session_key || !*session_key) return;
     pthread_mutex_lock(&s_denial_lock);
@@ -257,7 +243,6 @@ void apr2_reset_denials(const char *session_key) {
     pthread_mutex_unlock(&s_denial_lock);
 }
 
-/* PoP: _denial_breaker_addendum @ tools/approval.py:_denial_breaker_addendum */
 char *apr2_denial_breaker_addendum(const char *session_key) {
     int count = 0, threshold = 3;
     if (session_key && *session_key) {
@@ -280,7 +265,6 @@ char *apr2_denial_breaker_addendum(const char *session_key) {
     return out ? out : strdup("");
 }
 
-/* PoP: is_approval_bypass_active_for_session @ tools/approval.py:is_approval_bypass_active_for_session */
 bool apr2_is_approval_bypass_active_for_session(const char *session_key) {
     bool yolo = false;
     char *det = apr2_denial_breaker_addendum("");
@@ -295,7 +279,6 @@ bool apr2_is_approval_bypass_active_for_session(const char *session_key) {
     return yolo;
 }
 
-/* PoP: _release_permission_mode_dependents @ tools/approval.py:_release_permission_mode_dependents */
 /* Best-effort release of permission-mode-dependent resources (computer-use).
  * The heavy session release is owned by tools/computer_use; here we only
  * tear down the per-session denial state, mirroring Python's try/except that
@@ -306,7 +289,6 @@ void apr2_release_permission_mode_dependents(const char *session_key) {
     apr2_reset_denials(session_key);
 }
 
-/* PoP: _get_smart_policy @ tools/approval.py:_get_smart_policy */
 char *apr2_get_smart_policy(void) {
     json_t *cfg = config_py_load_config_readonly();
     if (!cfg) return strdup("");
@@ -327,7 +309,6 @@ char *apr2_get_smart_policy(void) {
     return out ? out : strdup("");
 }
 
-/* PoP: _mask_quoted_newlines @ tools/approval.py:_mask_quoted_newlines */
 char *apr2_mask_quoted_newlines(const char *command) {
     if (!command) return NULL;
     if (!strchr(command, '\n')) return strdup(command);
@@ -356,7 +337,6 @@ char *apr2_mask_quoted_newlines(const char *command) {
     return out;
 }
 
-/* PoP: _save_blocked_payload @ tools/approval.py:_save_blocked_payload */
 /* Persist a parser-limit-blocked command as a runnable .sh under
  * $HERMES_HOME/cache/blocked-scripts/. Returns the saved path (malloc'd) or
  * NULL on any failure (matches Python's except -> None). */

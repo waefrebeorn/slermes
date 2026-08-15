@@ -65,7 +65,6 @@ static char *strip_dup(const char *s)
 
 /* ── _resolve_cron_disabled_toolsets ────────────────────────────────── */
 
-/* PoP: scheduler_resolve_cron_disabled_toolsets @ cron/scheduler.py:_resolve_cron_disabled_toolsets */
 char **scheduler_resolve_cron_disabled_toolsets(const json_t *cfg,
                                                 size_t *out_n)
 {
@@ -111,7 +110,6 @@ char **scheduler_resolve_cron_disabled_toolsets(const json_t *cfg,
 
 /* ── _merge_mcp_into_per_job_toolsets ───────────────────────────────── */
 
-/* PoP: scheduler_merge_mcp_into_per_job_toolsets @ cron/scheduler.py:_merge_mcp_into_per_job_toolsets */
 char **scheduler_merge_mcp_into_per_job_toolsets(const char *const *per_job,
                                                  size_t n_per_job,
                                                  const json_t *cfg,
@@ -164,7 +162,6 @@ char **scheduler_merge_mcp_into_per_job_toolsets(const char *const *per_job,
 
 /* ── _resolve_cron_enabled_toolsets ─────────────────────────────────── */
 
-/* PoP: scheduler_resolve_cron_enabled_toolsets @ cron/scheduler.py:_resolve_cron_enabled_toolsets */
 char **scheduler_resolve_cron_enabled_toolsets(const json_t *job,
                                                const json_t *cfg,
                                                size_t *out_n)

@@ -97,7 +97,6 @@ static bool dc_env_push(struct delegated_child_env_ctx *ctx, const char *entry)
 /*  Public API                                                         */
 /* ------------------------------------------------------------------ */
 
-/* PoP: delegated_child_context_enter @ agent/delegation_context.py:delegated_child_context */
 bool delegated_child_context_enter(void)
 {
     int *depth = dc_get_depth_ptr();
@@ -106,28 +105,24 @@ bool delegated_child_context_enter(void)
     return true;
 }
 
-/* PoP: delegated_child_context_exit @ agent/delegation_context.py:delegated_child_context */
 void delegated_child_context_exit(void)
 {
     int *depth = dc_get_depth_ptr();
     if (depth && *depth > 0) (*depth)--;
 }
 
-/* PoP: is_delegated_child_context @ agent/delegation_context.py:is_delegated_child_context */
 bool is_delegated_child_context(void)
 {
     int *depth = dc_get_depth_ptr();
     return (depth && *depth > 0) ? true : false;
 }
 
-/* PoP: is_delegated_child_process_context @ agent/delegation_context.py:is_delegated_child_process_context */
 bool is_delegated_child_process_context(void)
 {
     if (is_delegated_child_context()) return true;
     return getenv("HERMES_DELEGATED_CHILD_CONTEXT") != NULL ? true : false;
 }
 
-/* PoP: scrub_kanban_env @ agent/delegation_context.py:scrub_kanban_env */
 char **scrub_kanban_env(char **env)
 {
     if (!env) return NULL;
@@ -180,7 +175,6 @@ char **scrub_kanban_env(char **env)
     return ctx.env;
 }
 
-/* PoP: delegated_child_subprocess_env @ agent/delegation_context.py:delegated_child_subprocess_env */
 char **delegated_child_subprocess_env(char **env)
 {
     if (!is_delegated_child_process_context()) {

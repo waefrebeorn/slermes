@@ -92,7 +92,6 @@ static void diff_ansi_init(void) {
 /* ─── _diff_* accessor wrappers (port of Python display.py _diff_dim et al.) ─── */
 /* Each returns the cached ANSI escape from diff_ansi_init(). */
 
-/* PoP: cli_agent_display__diff_dim @ agent/display.py:_diff_dim */
 /* Port of Python display.py:_diff_dim().
  * Return cached ANSI escape for dim diff lines (context).
  * Resolves from the active skin engine with fallback to defaults. */
@@ -107,7 +106,6 @@ const char *display_diff_dim(void)
     return g_ansi_diff_dim;
 }
 
-/* PoP: cli_agent_display__diff_file @ agent/display.py:_diff_file */
 /* Port of Python display.py:_diff_file().
  * Return cached ANSI escape for file headers (---/+++).
  * Resolves from the active skin engine with fallback to defaults. */
@@ -121,7 +119,6 @@ const char *display_diff_file(void)
     return g_ansi_diff_file;
 }
 
-/* PoP: cli_agent_display__diff_hunk @ agent/display.py:_diff_hunk */
 /* Port of Python display.py:_diff_hunk().
  * Return cached ANSI escape for hunk headers (@@ ... @@).
  * Resolves from the active skin engine with fallback to defaults. */
@@ -135,7 +132,6 @@ const char *display_diff_hunk(void)
     return g_ansi_diff_hunk;
 }
 
-/* PoP: cli_agent_display__diff_minus @ agent/display.py:_diff_minus */
 /* Port of Python display.py:_diff_minus().
  * Return cached ANSI escape for removed lines (-).
  * Resolves from the active skin engine with fallback to defaults. */
@@ -149,7 +145,6 @@ const char *display_diff_minus(void)
     return g_ansi_diff_minus;
 }
 
-/* PoP: cli_agent_display__diff_plus @ agent/display.py:_diff_plus */
 /* Port of Python display.py:_diff_plus().
  * Return cached ANSI escape for added lines (+).
  * Resolves from the active skin engine with fallback to defaults. */
@@ -186,7 +181,6 @@ char *display_split_diff_sections(const char *diff) {
             current_arr = json_array();
             json_append(arr, current_arr);
         }
-/* PoP: doc_section @ hermes_cli/doctor.py:_section */
         /* Add line to current section (without newline) */
         size_t len = (size_t)(nl - p);
         char *line = (char *)malloc(len + 1);

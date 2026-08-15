@@ -150,6 +150,8 @@ time_t parse_iso_time(const char *ts) {
 /* AG26: Port of Python agent/curator.py:_resolve_review_model() */
 
 /* Port of Python: is_enabled */
+/* PoP: is_enabled @ agent/secret_sources/base.py:is_enabled */
+/* PoP: is_enabled @ hermes_cli/mcp_catalog.py:is_enabled */
 bool is_enabled(void) {
     curator_state_t state;
     load_state(&state);

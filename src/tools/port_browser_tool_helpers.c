@@ -32,7 +32,6 @@
 static int   g_engine_resolved = 0;
 static char  g_engine[32];
 
-/* PoP: browser__get_browser_engine @ tools/browser_tool.py:_get_browser_engine */
 const char *browser__get_browser_engine(void) {
     if (g_engine_resolved) return g_engine;
     g_engine_resolved = 1;
@@ -59,7 +58,6 @@ const char *browser__get_browser_engine(void) {
 static int g_camofox_mode = 0;   /* mirrors _is_camofox_mode() */
 static int g_local_mode = 1;     /* mirrors _is_local_mode() */
 
-/* PoP: browser__should_inject_engine @ tools/browser_tool.py:_should_inject_engine */
 int browser__should_inject_engine(const char *engine) {
     if (!engine) return 0;
     if (strcmp(engine, "auto") == 0) return 0;
@@ -67,18 +65,15 @@ int browser__should_inject_engine(const char *engine) {
     return g_local_mode;
 }
 
-/* PoP: browser__is_legacy_provider_registry_overridden @ tools/browser_tool.py:_is_legacy_provider_registry_overridden */
 /* The C port has no plugin registry to override; report false (production path). */
 int browser__is_legacy_provider_registry_overridden(void) { return 0; }
 
-/* PoP: browser__ensure_browser_plugins_loaded @ tools/browser_tool.py:_ensure_browser_plugins_loaded */
 void browser__ensure_browser_plugins_loaded(void) {
     /* Python: idempotent plugin discovery so the browser registry is
      * populated regardless of import order (cheap; early-returns). */
     plugin_ensure_discovered();
 }
 
-/* PoP: browser__get_cloud_provider @ tools/browser_tool.py:_get_cloud_provider */
 /* Returns malloc'd provider name ("browseruse"/"browserbase"/NULL) or NULL for
  * local mode. Driven by config browser.cloud_provider; "local" => NULL. */
 char *browser__get_cloud_provider(void) {
@@ -99,7 +94,6 @@ char *browser__get_cloud_provider(void) {
 
 /* ---- install hints / termux ------------------------------------------- */
 
-/* PoP: browser__browser_install_hint @ tools/browser_tool.py:_browser_install_hint */
 char *browser__browser_install_hint(void) {
     char *out = malloc(512);
     snprintf(out, 512,
@@ -109,7 +103,6 @@ char *browser__browser_install_hint(void) {
     return out;
 }
 
-/* PoP: browser__requires_real_termux_browser_install @ tools/browser_tool.py:_requires_real_termux_browser_install */
 int browser__requires_real_termux_browser_install(void) {
 #ifdef __ANDROID__
     return 1;
@@ -118,7 +111,6 @@ int browser__requires_real_termux_browser_install(void) {
 #endif
 }
 
-/* PoP: browser__termux_browser_install_error @ tools/browser_tool.py:_termux_browser_install_error */
 char *browser__termux_browser_install_error(void) {
     char *out = malloc(512);
     snprintf(out, 512,
@@ -130,7 +122,6 @@ char *browser__termux_browser_install_error(void) {
 
 /* ---- lightpanda fallback ---------------------------------------------- */
 
-/* PoP: browser__lightpanda_fallback_reason @ tools/browser_tool.py:_lightpanda_fallback_reason */
 /* Returns malloc'd reason string, or NULL when no Chrome fallback is needed. */
 char *browser__lightpanda_fallback_reason(const char *engine, const char *command, const char *result_json) {
     if (!engine || strcmp(engine, "lightpanda") != 0) return NULL;
@@ -173,7 +164,6 @@ char *browser__lightpanda_fallback_reason(const char *engine, const char *comman
     return reason;
 }
 
-/* PoP: browser__needs_lightpanda_fallback @ tools/browser_tool.py:_needs_lightpanda_fallback */
 int browser__needs_lightpanda_fallback(const char *engine, const char *command, const char *result_json) {
     char *r = browser__lightpanda_fallback_reason(engine, command, result_json);
     int need = (r != NULL);
@@ -181,7 +171,6 @@ int browser__needs_lightpanda_fallback(const char *engine, const char *command, 
     return need;
 }
 
-/* PoP: browser__annotate_lightpanda_fallback @ tools/browser_tool.py:_annotate_lightpanda_fallback */
 /* Copy the fallback reason into a result dict's "fallback" field. Returns a
  * malloc'd annotated JSON string (or a copy of result_json when no reason). */
 char *browser__annotate_lightpanda_fallback(const char *engine, const char *command, const char *result_json) {
@@ -200,7 +189,6 @@ char *browser__annotate_lightpanda_fallback(const char *engine, const char *comm
 
 /* ---- screenshot / content extraction ---------------------------------- */
 
-/* PoP: browser__extract_screenshot_path_from_text @ tools/browser_tool.py:_extract_screenshot_path_from_text */
 /* Returns malloc'd path or NULL. Three regex tiers, matching Python. */
 char *browser__extract_screenshot_path_from_text(const char *text) {
     if (!text) return NULL;
@@ -232,7 +220,6 @@ char *browser__extract_screenshot_path_from_text(const char *text) {
     return NULL;
 }
 
-/* PoP: browser__extract_relevant_content @ tools/browser_tool.py:_extract_relevant_content */
 /* Faithful fallback: redact secrets, then truncate the snapshot. The LLM
  * extraction path is the boundary; C uses the documented truncation
  * fallback. */
@@ -262,7 +249,6 @@ static char g_last_active_key[256][128];   /* task_id -> session key */
 static int  g_session_owned[256];           /* owned by task flag */
 static char g_session_task[256][128];
 
-/* PoP: browser__last_session_key @ tools/browser_tool.py:_last_session_key */
 /* Return the live session key for a non-nav call, dropping stale bindings. */
 void browser__last_session_key(const char *task_id, char *out, size_t outsz) {
     if (!task_id) task_id = "default";
@@ -281,7 +267,6 @@ void browser__last_session_key(const char *task_id, char *out, size_t outsz) {
     snprintf(out, outsz, "%s", task_id);
 }
 
-/* PoP: browser__update_session_activity @ tools/browser_tool.py:_update_session_activity */
 void browser__update_session_activity(const char *task_id, const char *session_key) {
     if (!task_id || !session_key) return;
     pthread_mutex_lock(&g_bt_lock);
@@ -300,7 +285,6 @@ void browser__update_session_activity(const char *task_id, const char *session_k
 
 /* ---- chromium search roots -------------------------------------------- */
 
-/* PoP: browser__chromium_search_roots @ tools/browser_tool.py:_chromium_search_roots */
 /* Returns malloc'd NULL-terminated array of root paths. */
 char **browser__chromium_search_roots(void) {
     char **list = calloc(8, sizeof(char *));
@@ -321,7 +305,6 @@ char **browser__chromium_search_roots(void) {
 
 /* ---- subprocess boundary: agent-browser ------------------------------- */
 
-/* PoP: browser__run_browser_command @ tools/browser_tool.py:_run_browser_command */
 /* Run `agent-browser <command> [args...]` and return a malloc'd JSON-ish
  * string {"success":bool,"data":...}. The CLI subprocess is the boundary. */
 char *browser__run_browser_command(const char *task_id, const char *command,
@@ -357,19 +340,16 @@ char *browser__run_browser_command(const char *task_id, const char *command,
     return result;
 }
 
-/* PoP: browser__browser_eval @ tools/browser_tool.py:_browser_eval */
 char *browser__browser_eval(const char *task_id, const char *expression, int timeout) {
     char *a[1]; a[0] = (char*)expression;
     return browser__run_browser_command(task_id, "eval", a, 1, timeout);
 }
 
-/* PoP: browser__camofox_eval @ tools/browser_tool.py:_camofox_eval */
 char *browser__camofox_eval(const char *task_id, const char *expression, int timeout) {
     char *a[1]; a[0] = (char*)expression;
     return browser__run_browser_command(task_id, "eval", a, 1, timeout);
 }
 
-/* PoP: browser__run_chrome_fallback_command @ tools/browser_tool.py:_run_chrome_fallback_command */
 char *browser__run_chrome_fallback_command(const char *task_id, const char *command,
                                             char **args, int nargs, int timeout) {
     /* Force chrome engine for this call via env, then run. */
@@ -379,14 +359,12 @@ char *browser__run_chrome_fallback_command(const char *task_id, const char *comm
     return r;
 }
 
-/* PoP: browser__chrome_fallback_screenshot @ tools/browser_tool.py:_chrome_fallback_screenshot */
 char *browser__chrome_fallback_screenshot(const char *task_id) {
     return browser__run_chrome_fallback_command(task_id, "screenshot", NULL, 0, 30);
 }
 
 /* ---- recordings ------------------------------------------------------- */
 
-/* PoP: browser__maybe_start_recording @ tools/browser_tool.py:_maybe_start_recording */
 /* Start an ffmpeg capture of the display if a recorder is configured. Returns
  * a malloc'd recording id or NULL. */
 char *browser__maybe_start_recording(const char *task_id) {
@@ -398,7 +376,6 @@ char *browser__maybe_start_recording(const char *task_id) {
     return strdup(path);
 }
 
-/* PoP: browser__maybe_stop_recording @ tools/browser_tool.py:_maybe_stop_recording */
 void browser__maybe_stop_recording(const char *recording_id) {
     if (!recording_id) return;
     char cmd[1200]; snprintf(cmd, sizeof(cmd), "pkill -f '%s' >/dev/null 2>&1", recording_id);
@@ -421,19 +398,16 @@ static void bt_dir_glob_remove(const char *dir, const char *suffix, time_t older
     closedir(d);
 }
 
-/* PoP: browser__cleanup_old_screenshots @ tools/browser_tool.py:_cleanup_old_screenshots */
 void browser__cleanup_old_screenshots(const char *dir, long max_age_seconds) {
     if (!dir) return;
     bt_dir_glob_remove(dir, ".png", time(NULL) - max_age_seconds);
 }
 
-/* PoP: browser__cleanup_old_recordings @ tools/browser_tool.py:_cleanup_old_recordings */
 void browser__cleanup_old_recordings(const char *dir, long max_age_seconds) {
     if (!dir) return;
     bt_dir_glob_remove(dir, ".mp4", time(NULL) - max_age_seconds);
 }
 
-/* PoP: browser__write_owner_pid @ tools/browser_tool.py:_write_owner_pid */
 /* Drop a <session>.pid file recording the owning pid for reaping. */
 void browser__write_owner_pid(const char *session_key, pid_t pid) {
     if (!session_key) return;
@@ -443,7 +417,6 @@ void browser__write_owner_pid(const char *session_key, pid_t pid) {
     if (f) { fprintf(f, "%d", (int)pid); fclose(f); }
 }
 
-/* PoP: browser__verify_reapable_browser_daemon @ tools/browser_tool.py:_verify_reapable_browser_daemon */
 /* Return 1 if the pid in <session>.pid is dead (reapable), 0 otherwise. */
 int browser__verify_reapable_browser_daemon(const char *session_key) {
     if (!session_key) return 0;
@@ -455,7 +428,6 @@ int browser__verify_reapable_browser_daemon(const char *session_key) {
     return (kill(pid, 0) != 0) ? 1 : 0;  /* ESRCH => dead => reapable */
 }
 
-/* PoP: browser__reap_orphaned_browser_sessions @ tools/browser_tool.py:_reap_orphaned_browser_sessions */
 int browser__reap_orphaned_browser_sessions(void) {
     char home[1024]; const char *h = getenv("HERMES_HOME"); if (!h) h = getenv("HOME"); if (!h) h = "/tmp";
     char dir[2048]; snprintf(dir, sizeof(dir), "%s/browser_sessions", h);
@@ -476,7 +448,6 @@ int browser__reap_orphaned_browser_sessions(void) {
     return reaped;
 }
 
-/* PoP: browser__cleanup_single_browser_session @ tools/browser_tool.py:_cleanup_single_browser_session */
 void browser__cleanup_single_browser_session(const char *session_key) {
     if (!session_key) return;
     char home[1024]; const char *h = getenv("HERMES_HOME"); if (!h) h = getenv("HOME"); if (!h) h = "/tmp";
@@ -484,7 +455,6 @@ void browser__cleanup_single_browser_session(const char *session_key) {
     unlink(pid);
 }
 
-/* PoP: browser__emergency_cleanup_all_sessions @ tools/browser_tool.py:_emergency_cleanup_all_sessions */
 void browser__emergency_cleanup_all_sessions(void) {
     char home[1024]; const char *h = getenv("HERMES_HOME"); if (!h) h = getenv("HOME"); if (!h) h = "/tmp";
     char dir[2048]; snprintf(dir, sizeof(dir), "%s/browser_sessions", h);
@@ -498,7 +468,6 @@ void browser__emergency_cleanup_all_sessions(void) {
     closedir(d);
 }
 
-/* PoP: browser__cleanup_inactive_browser_sessions @ tools/browser_tool.py:_cleanup_inactive_browser_sessions */
 int browser__cleanup_inactive_browser_sessions(long inactive_threshold) {
     (void)inactive_threshold;
     return browser__reap_orphaned_browser_sessions();
@@ -509,7 +478,6 @@ int browser__cleanup_inactive_browser_sessions(long inactive_threshold) {
 static volatile int g_bt_cleanup_running = 0;
 static pthread_t g_bt_cleanup_thread;
 
-/* PoP: browser__browser_cleanup_thread_worker @ tools/browser_tool.py:_browser_cleanup_thread_worker */
 void *browser__browser_cleanup_thread_worker(void *arg) {
     (void)arg;
     while (g_bt_cleanup_running) {
@@ -520,14 +488,12 @@ void *browser__browser_cleanup_thread_worker(void *arg) {
     return NULL;
 }
 
-/* PoP: browser__start_browser_cleanup_thread @ tools/browser_tool.py:_start_browser_cleanup_thread */
 void browser__start_browser_cleanup_thread(void) {
     if (g_bt_cleanup_running) return;
     g_bt_cleanup_running = 1;
     pthread_create(&g_bt_cleanup_thread, NULL, browser__browser_cleanup_thread_worker, NULL);
 }
 
-/* PoP: browser__stop_browser_cleanup_thread @ tools/browser_tool.py:_stop_browser_cleanup_thread */
 void browser__stop_browser_cleanup_thread(void) {
     if (!g_bt_cleanup_running) return;
     g_bt_cleanup_running = 0;

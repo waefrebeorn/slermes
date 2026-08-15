@@ -462,6 +462,7 @@ static void load_sessions(void) {
     update_session_list();
 }
 
+/* PoP: new_session @ cli.py:new_session */
 static void new_session(void) {
     if (g_app.session_count >= g_app.session_capacity) {
         g_app.session_capacity *= 2;

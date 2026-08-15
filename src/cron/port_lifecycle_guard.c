@@ -35,7 +35,6 @@ static const char *LINE_CONTINUATION_PATTERN = "\\\\\\r?\\n[ \\t]*";
 /* ================================================================
  *  _resolve_script_path
  * ================================================================ */
-/* PoP: cron_lifecycle_resolve_script_path @ cron/lifecycle_guard.py:_resolve_script_path */
 /* Resolve a cron `script` value the same way the scheduler does. A bare/
  * relative path lives under <SLERMES_HOME>/scripts/; an absolute path is
  * used as-is. Faithful to the Python (which uses HERMES_HOME).
@@ -66,7 +65,6 @@ char *cron_lifecycle_resolve_script_path(const char *script_path)
 /* ================================================================
  *  _read_script_for_scanning
  * ================================================================ */
-/* PoP: cron_lifecycle_read_script_for_scanning @ cron/lifecycle_guard.py:_read_script_for_scanning */
 /* Read a cron script with the bounded terminal-script scanner. Non-regular or
  * oversized inputs fail closed by returning the lifecycle-shaped sentinel
  * "hermes gateway restart"; missing/unreadable paths return "".
@@ -86,7 +84,6 @@ char *cron_lifecycle_read_script_for_scanning(const char *script_path)
 /* ================================================================
  *  check_gateway_lifecycle
  * ================================================================ */
-/* PoP: cron_lifecycle_check_gateway_lifecycle @ cron/lifecycle_guard.py:check_gateway_lifecycle */
 /* Raise-equivalent: returns a malloc'd error message describing the block
  * when `prompt` or `script` contains a gateway-lifecycle command, else
  * NULL. The caller should surface the returned string as a tool error /
@@ -144,7 +141,6 @@ char *cron_lifecycle_check_gateway_lifecycle(const char *prompt,
 /* ================================================================
  *  contains_gateway_lifecycle_command
  * ================================================================ */
-/* PoP: contains_gateway_lifecycle_command @ cron/lifecycle_guard.py:contains_gateway_lifecycle_command */
 bool cron_lifecycle_contains_gateway_lifecycle_command(const char *text)
 {
     if (!text || text[0] == '\0') return false;
@@ -364,7 +360,6 @@ oom:
     #undef EMIT
 }
 
-/* PoP: _iter_command_segments @ cron/lifecycle_guard.py:_iter_command_segments */
 char ***cron_lifecycle_iter_command_segments(const char *command)
 {
     if (!command) return NULL;
@@ -468,7 +463,6 @@ void cron_lifecycle_free_segments(char ***segments)
     free(segments);
 }
 
-/* PoP: _command_token_index @ cron/lifecycle_guard.py:_command_token_index */
 int cron_lifecycle_command_token_index(char *const *segment)
 {
     if (!segment) return -1;
@@ -491,7 +485,6 @@ int cron_lifecycle_command_token_index(char *const *segment)
     return -1;
 }
 
-/* PoP: contains_launchctl_submit_command @ cron/lifecycle_guard.py:contains_launchctl_submit_command */
 bool cron_lifecycle_contains_launchctl_submit_command(const char *command)
 {
     if (!command) return false;
@@ -522,7 +515,6 @@ bool cron_lifecycle_contains_launchctl_submit_command(const char *command)
     return found;
 }
 
-/* PoP: _resolve_terminal_script_path @ cron/lifecycle_guard.py:_resolve_terminal_script_path */
 char *cron_lifecycle_resolve_terminal_script_path(const char *candidate,
                                                   const char *cwd)
 {
@@ -604,7 +596,6 @@ char *cron_lifecycle_resolve_terminal_script_path(const char *candidate,
     return result;
 }
 
-/* PoP: _iter_referenced_shell_scripts @ cron/lifecycle_guard.py:_iter_referenced_shell_scripts */
 char **cron_lifecycle_iter_referenced_shell_scripts(const char *command,
                                                     const char *cwd)
 {
@@ -699,7 +690,6 @@ oom:
     return NULL;
 }
 
-/* PoP: _iter_shell_command_payloads @ cron/lifecycle_guard.py:_iter_shell_command_payloads */
 char **cron_lifecycle_iter_shell_command_payloads(const char *command)
 {
     size_t cap = 4, n = 0;
@@ -744,7 +734,6 @@ oom:
     return NULL;
 }
 
-/* PoP: _resolve_script_directory @ cron/lifecycle_guard.py:_resolve_script_directory */
 char *cron_lifecycle_resolve_script_directory(const char *script_path)
 {
     if (!script_path) return NULL;
@@ -765,7 +754,6 @@ char *cron_lifecycle_resolve_script_directory(const char *script_path)
     return dir;
 }
 
-/* PoP: _read_referenced_script @ cron/lifecycle_guard.py:_read_referenced_script */
 char *cron_lifecycle_read_referenced_script(const char *path, bool *out_unsafe)
 {
     if (out_unsafe) *out_unsafe = false;
@@ -808,7 +796,6 @@ char *cron_lifecycle_read_referenced_script(const char *path, bool *out_unsafe)
     return out;
 }
 
-/* PoP: _contains_unsafe_gateway_action @ cron/lifecycle_guard.py:_contains_unsafe_gateway_action */
 static bool contains_unsafe_gateway_action(const char *command,
                                            const char *cwd, int depth,
                                            char **visited, size_t *vcount,
@@ -879,7 +866,6 @@ unsafe_out:
     return true;
 }
 
-/* PoP: contains_gateway_lifecycle_command_or_referenced_script @ cron/lifecycle_guard.py:contains_gateway_lifecycle_command_or_referenced_script */
 bool cron_lifecycle_contains_gateway_lifecycle_command_or_referenced_script(
     const char *command, const char *cwd,
     cron_lifecycle_read_remote_fn read_remote_script, void *read_ctx)
@@ -892,7 +878,6 @@ bool cron_lifecycle_contains_gateway_lifecycle_command_or_referenced_script(
     return result;
 }
 
-/* PoP: _sanitize_remote_script_text @ cron/lifecycle_guard.py:_sanitize_remote_script_text */
 /* Returns (text, ok) via out params. ok=0 means binary/oversized. */
 void lifecycle_sanitize_remote_script(const char *text, char **out_text, int *ok) {
     if (!text || !*text) { *out_text = NULL; *ok = 0; return; }
@@ -903,7 +888,6 @@ void lifecycle_sanitize_remote_script(const char *text, char **out_text, int *ok
     *ok = 1;
 }
 
-/* PoP: _expand_candidate_path @ cron/lifecycle_guard.py:_expand_candidate_path */
 /* Returns malloc'd expanded path or NULL. Caller frees. */
 char *lifecycle_expand_candidate_path(const char *candidate) {
     if (!candidate || !*candidate) return NULL;

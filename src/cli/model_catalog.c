@@ -404,7 +404,6 @@ static int is_known_provider_name(const char *s) {
     return strcmp(s, "openrouter") == 0 || strcmp(s, "custom") == 0;
 }
 
-/* PoP: model_parse_model_input @ hermes_cli/models.py:parse_model_input */
 void model_parse_model_input(const char *raw, const char *current_provider,
                              char *provider_out, size_t poutsz,
                              char *model_out, size_t moutsz) {
@@ -465,7 +464,6 @@ void model_parse_model_input(const char *raw, const char *current_provider,
 
 /* Resolve a short alias to (provider, model) using the static catalog.
  * Returns 1 and fills out_* on match, else 0. */
-/* PoP: _resolve_static_model_alias @ hermes_cli/models.py:_resolve_static_model_alias */
 static int resolve_static_model_alias(const char *name_lower,
                                       char *provider_out, size_t poutsz,
                                       char *model_out, size_t moutsz,
@@ -477,7 +475,6 @@ static int resolve_static_model_alias(const char *name_lower,
     return 0;
 }
 
-/* PoP: model_detect_static_provider_for_model @ hermes_cli/models.py:detect_static_provider_for_model */
 int model_detect_static_provider_for_model(const char *model_name,
                                            const char *current_provider,
                                            char *provider_out, size_t poutsz,
@@ -536,7 +533,6 @@ static const char *OPENROUTER_CURATED[] = {
 };
 #define N_OR_CURATED (int)(sizeof(OPENROUTER_CURATED)/sizeof(OPENROUTER_CURATED[0]))
 
-/* PoP: _find_openrouter_slug @ hermes_cli/models.py:_find_openrouter_slug */
 char *model_find_openrouter_slug(const char *model_name) {
     if (!model_name || !*model_name) return NULL;
     char lower[1024];
@@ -686,7 +682,6 @@ char *model_credential_fingerprint(const char *provider) {
     return credential_fingerprint(provider);
 }
 
-/* PoP: _load_provider_models_cache @ hermes_cli/models.py:_load_provider_models_cache */
 char *model_load_provider_models_cache(void) {
     char *path = model_provider_models_cache_path();
     FILE *f = fopen(path, "r");
@@ -702,7 +697,6 @@ char *model_load_provider_models_cache(void) {
     return blob;
 }
 
-/* PoP: model_save_provider_models_cache @ hermes_cli/models.py:_save_provider_models_cache */
 void model_save_provider_models_cache(const char *json) {
     if (!json) return;
     char *path = model_provider_models_cache_path();
@@ -730,7 +724,6 @@ static char *provider_static_json(const char *provider) {
     return out;
 }
 
-/* PoP: provider_model_ids @ hermes_cli/models.py:provider_model_ids */
 char *model_provider_model_ids(const char *provider, int force_refresh) {
     (void)force_refresh;
     /* Offline port: the live /v1/models fetch is a no-op; degrade to the
@@ -739,7 +732,6 @@ char *model_provider_model_ids(const char *provider, int force_refresh) {
     return provider_static_json(provider);
 }
 
-/* PoP: cached_provider_model_ids @ hermes_cli/models.py:cached_provider_model_ids */
 char *model_cached_provider_model_ids(const char *provider, int force_refresh) {
     const char *norm = model_normalize_provider(provider);
     if (!norm || !*norm) return NULL;
@@ -782,7 +774,6 @@ char *model_cached_provider_model_ids(const char *provider, int force_refresh) {
     return result;
 }
 
-/* PoP: model_clear_provider_models_cache @ hermes_cli/models.py:clear_provider_models_cache */
 void model_clear_provider_models_cache(const char *provider) {
     if (!provider) {
         char *path = model_provider_models_cache_path();
@@ -803,7 +794,6 @@ void model_clear_provider_models_cache(const char *provider) {
     free(cache);
 }
 
-/* PoP: model_curated_models_for_provider @ hermes_cli/models.py:curated_models_for_provider */
 /*
  * Faithful port of models.py:curated_models_for_provider's STATIC-CATALOG
  * fallback path. Mirrors the Python:
@@ -839,7 +829,6 @@ int model_curated_models_for_provider(const char *provider,
     return n;
 }
 
-/* PoP: _repair_prefix_from_catalogue @ hermes_cli/model_normalize.py:_repair_prefix_from_catalogue */
 /* Restore a dropped vendor/ prefix using the provider's catalogue.
  * Never guesses from the model name shape — only repairs a bare id that
  * matches exactly one curated entry for this provider modulo the prefix.
@@ -888,7 +877,6 @@ char *model_repair_prefix_from_catalogue(const char *model_name, const char *pro
     return strdup(model_name);
 }
 
-/* PoP: suggest_prefixed_model_id @ hermes_cli/model_normalize.py:suggest_prefixed_model_id */
 /* Return the prefixed catalogue id for a bare model_name, if unambiguous.
  * The diagnostic counterpart to _repair_prefix_from_catalogue: used to
  * explain a provider's content-free 404 when the configured id lost its

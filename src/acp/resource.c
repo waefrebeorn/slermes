@@ -173,6 +173,8 @@ static char *path_from_file_uri(const char *uri) {
  *  ------------------------------------------------------------------------ */
 
 /* Read up to max_bytes from a file. Returns malloc'd buffer (caller free). */
+/* PoP: read_file_bytes @ tools/file_operations.py:read_file_bytes */
+/* PoP: read_file_bytes @ tools/file_operations.py:read_file_bytes */
 static unsigned char *read_file_bytes(const char *path, size_t max_bytes, size_t *out_len) {
     *out_len = 0;
     FILE *fp = fopen(path, "rb");

@@ -14,11 +14,9 @@
 #include <stdio.h>
 #include <ctype.h>
 
-/* PoP: parse_session_listing_args @ hermes_cli/session_listing.py:parse_session_listing_args */
 /* Minimal shlex.split: splits on whitespace, honors ' and " quoting, drops
  * unquoted quotes. Returns malloc'd argv (NULL-terminated) + count. Caller
  * frees with session_listing_free_argv. */
-/* PoP: parse_args @ hermes_cli/codex_runtime_switch.py:parse_args */
 char **session_listing_parse_args(const char *raw, int *out_count)
 {
     *out_count = 0;
@@ -124,7 +122,6 @@ void session_listing_parse_flags(const char *raw_args,
     session_listing_free_argv(argv, n);
 }
 
-/* PoP: format_gateway_session_listing @ hermes_cli/session_listing.py:format_gateway_session_listing */
 /* Renders rows (JSON array of {id,title,preview,source}) to a Markdown-ish
  * string. Returns malloc'd string; caller frees. Empty -> the "no sessions"
  * message. */

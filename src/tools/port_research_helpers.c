@@ -19,7 +19,6 @@
  * reorder_totem_pole_by_research
  * ============================================================ */
 
-/* PoP: research_reorder_totem_pole_by_research @ tools/online_research.py:reorder_totem_pole_by_research */
 char **research_reorder_totem_pole_by_research(const char **current_order,
                                                int order_count,
                                                const char **research_models,
@@ -67,7 +66,6 @@ char **research_reorder_totem_pole_by_research(const char **current_order,
  * ResearchCache._make_key
  * ============================================================ */
 
-/* PoP: research_cache_make_key @ tools/online_research.py:_make_key */
 void research_cache_make_key(const char *query, const char *intent,
                              char out_key[33]) {
     if (!out_key) return;
@@ -92,7 +90,6 @@ void research_cache_make_key(const char *query, const char *intent,
  * OnlineResearcher._score_relevance
  * ============================================================ */
 
-/* PoP: research_score_relevance @ tools/online_research.py:_score_relevance */
 double research_score_relevance(const char *title, const char *snippet,
                                 double base_score) {
     double score = base_score;
@@ -135,7 +132,6 @@ double research_score_relevance(const char *title, const char *snippet,
  * OnlineResearcher._extract_model_scores
  * ============================================================ */
 
-/* PoP: research_extract_model_scores @ tools/online_research.py:_extract_model_scores */
 research_model_score_t *research_extract_model_scores(const char **titles,
                                                       const char **snippets,
                                                       int result_count,

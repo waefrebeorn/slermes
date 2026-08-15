@@ -97,7 +97,6 @@ void approval_set_yolo(bool enabled) {
     g_yolo_approval = enabled;
 }
 
-/* PoP: approval_is_yolo_enabled @ tools/approval.py:is_current_session_yolo_enabled */
 /* Returns whether yolo (skip-all-approvals) mode is active for the session. */
 bool approval_is_yolo_enabled(void) {
     return g_yolo_approval;
@@ -191,7 +190,6 @@ void approval_save_allowlist(void) {
 
 /* List permanent allowlist command strings. Returns a malloc'd NULL-terminated
  * array (caller frees each entry + the array). Sets *out_n. */
-/* PoP: apr_load_permanent_allowlist @ tools/approval.py:load_permanent_allowlist */
 char **approval_permanent_allowlist_list(size_t *out_n) {
     if (out_n) *out_n = 0;
     size_t n = 0, cap = 0;
@@ -212,7 +210,6 @@ char **approval_permanent_allowlist_list(size_t *out_n) {
 }
 
 
-/* PoP: apr_save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
 int approval_save_permanent_allowlist(const char **patterns, size_t n) {
     int write = 0;
     for (int i = 0; i < g_approval_count; i++) {
@@ -254,7 +251,6 @@ void approval_dump_allowlist(void) {
     if (shown == 0) printf("  (empty)\n");
 }
 
-/* PoP: reset_session @ src/tools/approval.c:approval_reset_session */
 /* Port of Python session.py:reset_session(). */
 /* AG26: Port of Python tools/approval.py:clear_session() (session reset). */
 void approval_reset_session(void) {
@@ -301,7 +297,6 @@ static bool matches_any(const char *str, const char **patterns) {
  * Port of Python tools/approval.py:_normalize_command_for_detection().
  * Returns a malloc'd normalized copy, or NULL on failure. */
 /* AG26: Port of Python tools/approval.py:_normalize_command_for_detection(). */
-/* PoP: approval_normalize_command @ hermes_cli/approvals_suggest.py:normalize_command */
 char *approval_normalize_command(const char *command) {
     if (!command) return NULL;
 
@@ -354,7 +349,6 @@ char *approval_normalize_command(const char *command) {
 
 /* ── approvals_suggest.py ports ──────────────────────────────── */
 
-/* PoP: approval_parse_apply_indices @ hermes_cli/approvals_suggest.py:parse_apply_indices */
 /* Parse "1,3" into validated zero-based indices. On error (invalid
  * integer, out of range, or no valid selections), returns -1. */
 int approval_parse_apply_indices(const char *spec, int total, int *out, int max_out) {
@@ -411,7 +405,6 @@ static const char *UNSAFE_CLASS_PATTERNS[] = {
     NULL,
 };
 
-/* PoP: is_unsafe_root_binary @ hermes_cli/approvals_suggest.py:_unsafe_root_binary */
 static bool is_unsafe_root_binary(const char *token) {
     if (!token) return false;
     /* tok = token.lower().rsplit("/", 1)[-1] */
@@ -439,7 +432,6 @@ static bool is_unsafe_root_binary(const char *token) {
     return false;
 }
 
-/* PoP: approval_is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
 bool approval_is_unsafe_class(const char *description) {
     if (!description || !*description) return false;
     for (int i = 0; UNSAFE_CLASS_PATTERNS[i]; i++) {
@@ -449,7 +441,6 @@ bool approval_is_unsafe_class(const char *description) {
     return false;
 }
 
-/* PoP: derive_glob @ hermes_cli/approvals_suggest.py:derive_glob */
 /* Returns a malloc'd command glob string, or NULL for compound/unsafe commands. */
 char *approval_derive_glob(const char *normalized) {
     if (!normalized || !*normalized) return NULL;
@@ -779,7 +770,6 @@ typedef struct {
     const char *args_json;
 } tool_invocation_t;
 
-/* PoP: approval_check_all_command_guards @ tools/approval.py:check_all_command_guards */
 /* Run all command guards (hardline, sudo-stdin, sensitive-path) for a tool
  * invocation. The C implementation folds this into approval_check, so we
  * delegate. Returns 1=approved, 0=denied, -1=not dangerous. */
@@ -790,8 +780,6 @@ int approval_check_all_command_guards(const char *tool_name, const char *args_js
 /* Check if a tool invocation needs approval.
    Returns: 1 = approved, 0 = denied, -1 = not dangerous */
 /* AG26: Port of Python tools/approval.py:check_dangerous_command() + check_all_command_guards(). */
-/* PoP: approval_check @ write_approval:_check */
-/* PoP: approval_check @ tts_tool:_check */
 int approval_check(const char *tool_name, const char *args_json) {
     if (!tool_name || !args_json) return -1;
 

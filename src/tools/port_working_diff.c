@@ -27,7 +27,6 @@
 #define OUT_BUF_LEN         4096
 
 /* ── _run: run git, returning (returncode, stdout). Never raises. ────── */
-/* PoP: _run @ tools/working_diff.py:_run */
 static int wd_run(const char *cwd, const char **args, int arg_count,
                   char *out, size_t out_len) {
     /* Build: git -c core.quotePath=false <args...> */
@@ -75,7 +74,6 @@ static int wd_run(const char *cwd, const char **args, int arg_count,
 }
 
 /* ── _untracked_files: git ls-files --others --exclude-standard ──────── */
-/* PoP: _untracked_files @ tools/working_diff.py:_untracked_files */
 static char **wd_untracked_files(const char *cwd, int *count_out) {
     char out[OUT_BUF_LEN];
     int rc = wd_run(cwd, (const char *[]){ "ls-files", "--others", "--exclude-standard" }, 3,
@@ -110,7 +108,6 @@ static void wd_free_files(char **files, int count) {
 }
 
 /* ── _untracked_diff: render untracked files as new-file diffs ───────── */
-/* PoP: _untracked_diff @ tools/working_diff.py:_untracked_diff */
 static void wd_untracked_diff(const char *cwd, char **files, int count,
                               char *out, size_t out_len) {
     out[0] = '\0';
@@ -144,7 +141,6 @@ static void wd_untracked_diff(const char *cwd, char **files, int count,
 }
 
 /* ── collect_working_diff: main entry ────────────────────────────────── */
-/* PoP: collect_working_diff @ tools/working_diff.py:collect_working_diff */
 wd_diff_result_t wd_collect_working_diff(const char *cwd, const char *mode,
                                          char *const *paths, int path_count) {
     wd_diff_result_t res = { .success = false, .stat = NULL, .diff = NULL,

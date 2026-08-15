@@ -40,7 +40,6 @@ int cli_tools_skills_guard_scan_skill(const char *skill_path, const char *source
                                       char *result_buf, size_t bufsize);
 const char *cli_tools_skills_guard__resolve_trust_level(const char *source, const char *repo);
 
-/* PoP: cli_tools_skills_guard__content_digest @ tools/skills_guard.py:_content_digest */
 /* Canonical SHA-256 over relative paths and exact file bytes. Mirrors the
  * Python exactly: for a directory, sorted(rglob('*')) of files, each fed as
  * rel.as_posix().encode() + b'\x00' + file bytes into one rolling SHA-256;
@@ -149,7 +148,6 @@ char *skills_guard_content_digest(const char *skill_path) {
     return hex;
 }
 
-/* PoP: cli_tools_skills_guard_full_content_hash @ tools/skills_guard.py:full_content_hash */
 char *skills_guard_full_content_hash(const char *skill_path) {
     char *digest = skills_guard_content_digest(skill_path);
     if (!digest) return NULL;
@@ -161,7 +159,6 @@ char *skills_guard_full_content_hash(const char *skill_path) {
     return out;
 }
 
-/* PoP: cli_tools_skills_guard__finding_dict @ tools/skills_guard.py:_finding_dict */
 /* Mirror {key: getattr(finding, key) for key in (...)} — returns a compact
  * JSON object with the seven Finding fields. String values are JSON-escaped.
  * Caller frees. */
@@ -210,7 +207,6 @@ char *skills_guard_finding_dict(const skills_guard_finding_t *f) {
     return out;
 }
 
-/* PoP: cli_tools_skills_guard_scan_skill_cached @ tools/skills_guard.py:scan_skill_cached */
 /* Returns a scan plus attestation, caching only exact current content.
  * On a content+source match, deserializes the cached ScanResult (fresh=false);
  * otherwise runs the scan and writes a fresh cache entry (fresh=true). */
@@ -386,7 +382,6 @@ int cli_tools_skills_guard_scan_file(const char *filepath, const char *source, c
     return findings;
 }
 
-/* PoP: cli_tools_skills_guard_scan_skill @ tools/skills_guard.py:scan_skill */
 int cli_tools_skills_guard_scan_skill(const char *skill_path, const char *source, char *result_buf, size_t bufsize) {
     if (!skill_path || !result_buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "skills_guard", "scan_skill: invalid args");
@@ -398,7 +393,6 @@ int cli_tools_skills_guard_scan_skill(const char *skill_path, const char *source
     return 0;
 }
 
-/* PoP: cli_tools_skills_guard_format_scan_report @ tools/skills_guard.py:format_scan_report */
 int cli_tools_skills_guard_format_scan_report(const char *scan_json, char *buf, size_t bufsize) {
     if (!scan_json || !buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "skills_guard", "format_scan_report: invalid args");
@@ -409,7 +403,6 @@ int cli_tools_skills_guard_format_scan_report(const char *scan_json, char *buf, 
     return 0;
 }
 
-/* PoP: cli_tools_skills_guard_content_hash @ tools/skills_guard.py:content_hash */
 int cli_tools_skills_guard_content_hash(const char *filepath, char *hash_buf, size_t bufsize) {
     if (!filepath || !hash_buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "skills_guard", "content_hash: invalid args");
@@ -441,7 +434,6 @@ int cli_tools_skills_guard_content_hash(const char *filepath, char *hash_buf, si
     return 0;
 }
 
-/* PoP: cli_tools_skills_guard__check_structure @ tools/skills_guard.py:_check_structure */
 int cli_tools_skills_guard__check_structure(const char *skill_path, char *report_buf, size_t bufsize) {
     if (!skill_path || !report_buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "skills_guard", "_check_structure: invalid args");
@@ -461,7 +453,6 @@ int cli_tools_skills_guard__check_structure(const char *skill_path, char *report
     return 0;
 }
 
-/* PoP: cli_tools_skills_guard__unicode_char_name @ tools/skills_guard.py:_unicode_char_name */
 int cli_tools_skills_guard__unicode_char_name(unsigned int codepoint, char *buf, size_t bufsize) {
     if (!buf || bufsize == 0) {
         return -1;
@@ -478,7 +469,6 @@ int cli_tools_skills_guard__unicode_char_name(unsigned int codepoint, char *buf,
     return 0;
 }
 
-/* PoP: cli_tools_skills_guard__load_skill_ignore @ tools/skills_guard.py:_load_skill_ignore */
 int cli_tools_skills_guard__load_skill_ignore(const char *ignore_path, char **patterns, int max_patterns) {
     if (!ignore_path || !patterns || max_patterns <= 0) {
         hermes_log(LOG_WARNING, "skills_guard", "_load_skill_ignore: invalid args");
@@ -506,7 +496,6 @@ int cli_tools_skills_guard__load_skill_ignore(const char *ignore_path, char **pa
     return count;
 }
 
-/* PoP: cli_tools_skills_guard__resolve_trust_level @ tools/skills_guard.py:_resolve_trust_level */
 const char* cli_tools_skills_guard__resolve_trust_level(const char *source, const char *repo) {
     if (!source) {
         hermes_log(LOG_WARNING, "skills_guard", "_resolve_trust_level: NULL source");
@@ -546,7 +535,6 @@ const char* cli_tools_skills_guard__resolve_trust_level(const char *source, cons
     return "community";
 }
 
-/* PoP: cli_tools_skills_guard__determine_verdict @ tools/skills_guard.py:_determine_verdict */
 /* Faithful to Python: critical -> dangerous, high -> caution, else safe.
  * Severity levels: 3=critical, 2=high, 1=medium, 0=low (trust-independent,
  * matching the Python findings-based logic). */

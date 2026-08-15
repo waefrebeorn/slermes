@@ -1043,22 +1043,18 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
  * scanner credits it.
  * ============================================================ */
 
-/* PoP: moa_provider_health_is_healthy @ tools/mixture_of_agents_tool.py:is_healthy */
 int moa_provider_health_is_healthy(const char *provider_name) {
     return is_provider_healthy(provider_name);
 }
 
-/* PoP: moa_model_selector_record_success @ tools/mixture_of_agents_tool.py:record_success */
 void moa_provider_health_record_success(const char *provider_name) {
     record_provider_success(provider_name);
 }
 
-/* PoP: moa_provider_health_record_failure @ tools/mixture_of_agents_tool.py:record_failure */
 void moa_provider_health_record_failure(const char *provider_name) {
     record_provider_failure(provider_name);
 }
 
-/* PoP: moa_provider_health_get_summary @ tools/mixture_of_agents_tool.py:get_health_summary */
 char *moa_provider_health_get_summary(void) {
     static int inited = 0;
     if (!inited) { init_provider_health(); inited = 1; }
@@ -1076,7 +1072,6 @@ char *moa_provider_health_get_summary(void) {
     return s;
 }
 
-/* PoP: moa_http_client_call_model @ tools/mixture_of_agents_tool.py:call_model */
 char *moa_http_client_call_model(const moa_ref_model_t *ref,
                                  const char *system_prompt,
                                  const char *user_prompt) {
@@ -1086,7 +1081,6 @@ char *moa_http_client_call_model(const moa_ref_model_t *ref,
     return moa_call_model(&MOA_PROVIDERS[idx], ref, system_prompt, user_prompt);
 }
 
-/* PoP: moa_http_client_extract_content @ tools/mixture_of_agents_tool.py:_extract_content */
 char *moa_http_client_extract_content(const char *data_json) {
     if (!data_json) return NULL;
     json_t *data = json_parse(data_json, NULL);
@@ -1112,7 +1106,6 @@ char *moa_http_client_extract_content(const char *data_json) {
     return result;
 }
 
-/* PoP: moa_query_all_references @ tools/mixture_of_agents_tool.py:query_all_references */
 char **moa_query_all_references(const moa_ref_model_t *refs, int ref_count,
                                 const char *system_prompt, const char *user_prompt,
                                 int *out_pairs) {
@@ -1128,7 +1121,6 @@ char **moa_query_all_references(const moa_ref_model_t *refs, int ref_count,
     return results; /* caller frees each + array; NULL entries == no response */
 }
 
-/* PoP: moa_mixture_of_agents_math @ tools/mixture_of_agents_tool.py:mixture_of_agents_math */
 char *moa_mixture_of_agents_math(const char *user_prompt) {
     json_t *args = json_object();
     json_set(args, "user_prompt", json_string(user_prompt ? user_prompt : ""));
@@ -1143,9 +1135,7 @@ char *moa_mixture_of_agents_math(const char *user_prompt) {
 }
 
 /* Context-manager no-ops (Python __aenter__ / __aexit__ on MoAHttpClient). */
-/* PoP: tools_online_research_u__aenter__ @ tools/mixture_of_agents_tool.py:__aenter__ */
 void moa_http_client_enter(void) { /* session lifecycle handled by engine */ }
-/* PoP: tools_online_research_u__aexit__ @ tools/mixture_of_agents_tool.py:__aexit__ */
 void moa_http_client_exit(void) { /* no-op */ }
 
 /* ─── REGISTRY INTEGRATION ───────────────────────────────────────── */

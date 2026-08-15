@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_environments_singularity__find_singularity_executable @ tools/environments/singularity.py:_find_singularity_executable */
 const char* cli_tools_environments_singularity__find_singularity_executable(void) {
     const char *path;
     path = getenv("PATH");
@@ -51,7 +50,6 @@ const char* cli_tools_environments_singularity__find_singularity_executable(void
     return NULL;
 }
 
-/* PoP: cli_tools_environments_singularity__ensure_singularity_available @ tools/environments/singularity.py:_ensure_singularity_available */
 const char* cli_tools_environments_singularity__ensure_singularity_available(void) {
     const char *exe = cli_tools_environments_singularity__find_singularity_executable();
     if (!exe) {
@@ -77,8 +75,6 @@ const char* cli_tools_environments_singularity__ensure_singularity_available(voi
     return exe;
 }
 
-/* PoP: cli_tools_environments_singularity__load_snapshots @ tools/environments/modal.py:_load_snapshots */
-/* PoP: cli_tools_environments_singularity__load_snapshots @ tools/environments/singularity.py:_load_snapshots */
 int cli_tools_environments_singularity__load_snapshots(const char *store_path, char *buf, size_t bufsize) {
     if (!store_path || !buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "singularity", "_load_snapshots: invalid args");
@@ -97,8 +93,6 @@ int cli_tools_environments_singularity__load_snapshots(const char *store_path, c
     return 0;
 }
 
-/* PoP: cli_tools_environments_singularity__save_snapshots @ tools/environments/modal.py:_save_snapshots */
-/* PoP: cli_tools_environments_singularity__save_snapshots @ tools/environments/singularity.py:_save_snapshots */
 int cli_tools_environments_singularity__save_snapshots(const char *store_path, const char *data) {
     if (!store_path || !data) {
         hermes_log(LOG_WARNING, "singularity", "_save_snapshots: invalid args");
@@ -120,7 +114,6 @@ int cli_tools_environments_singularity__save_snapshots(const char *store_path, c
     return 0;
 }
 
-/* PoP: cli_tools_environments_singularity__get_scratch_dir @ tools/environments/singularity.py:_get_scratch_dir */
 int cli_tools_environments_singularity__get_scratch_dir(char *buf, size_t bufsize) {
     if (!buf || bufsize == 0) {
         return -1;
@@ -146,7 +139,6 @@ int cli_tools_environments_singularity__get_scratch_dir(char *buf, size_t bufsiz
     return 0;
 }
 
-/* PoP: cli_tools_environments_singularity__get_apptainer_cache_dir @ tools/environments/singularity.py:_get_apptainer_cache_dir */
 int cli_tools_environments_singularity__get_apptainer_cache_dir(char *buf, size_t bufsize) {
     if (!buf || bufsize == 0) {
         return -1;
@@ -169,7 +161,6 @@ int cli_tools_environments_singularity__get_apptainer_cache_dir(char *buf, size_
     return 0;
 }
 
-/* PoP: cli_tools_environments_singularity__get_or_build_sif @ tools/environments/singularity.py:_get_or_build_sif */
 int cli_tools_environments_singularity__get_or_build_sif(const char *image, const char *executable, char *buf, size_t bufsize) {
     if (!image || !buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "singularity", "_get_or_build_sif: invalid args");
@@ -210,7 +201,6 @@ int cli_tools_environments_singularity__get_or_build_sif(const char *image, cons
     return 0;
 }
 
-/* PoP: cli_tools_environments_singularity__start_instance @ tools/environments/singularity.py:_start_instance */
 int cli_tools_environments_singularity__start_instance(const char *executable, const char *image, const char *instance_id, int persistent, const char *overlay_dir, int memory, int cpus) {
     if (!executable || !image || !instance_id) {
         hermes_log(LOG_WARNING, "singularity", "_start_instance: invalid args");
@@ -240,7 +230,6 @@ int cli_tools_environments_singularity__start_instance(const char *executable, c
     return 0;
 }
 
-/* PoP: cli_tools_environments_singularity__run_bash @ tools/environments/singularity.py:_run_bash */
 int cli_tools_environments_singularity__run_bash(const char *executable, const char *instance_id, const char *cmd_string, int login_mode) {
     if (!executable || !instance_id || !cmd_string) {
         hermes_log(LOG_WARNING, "singularity", "_run_bash: invalid args");

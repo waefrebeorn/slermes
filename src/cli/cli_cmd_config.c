@@ -670,6 +670,7 @@ void cmd_reasoning(const char *args, agent_state_t *state) {
 
 /* /setup: Interactive setup wizard — port of Python hermes_cli/setup.py */
 /* Usage: /setup [model|tts|terminal|gateway|tools|agent] [--quick] [--non-interactive] [--reset] [--reconfigure] [--portal] */
+/* PoP: cmd_setup @ hermes_cli/memory_setup.py:cmd_setup */
 void cmd_setup(const char *args, agent_state_t *state) {
     const char *home = state->hermes_home;
     if (!home || !home[0]) {

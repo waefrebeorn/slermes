@@ -30,7 +30,6 @@ static const int SYNC_BACK_MAX_RETRIES = 3;
 static const int SYNC_BACK_BACKOFF[] = {2, 4, 8};
 static const long SYNC_BACK_MAX_BYTES = 2L * 1024 * 1024 * 1024;
 
-/* PoP: cli_tools_environments_file_sync_iter_sync_files @ tools/environments/file_sync.py:iter_sync_files */
 json_node_t* cli_tools_environments_file_sync_iter_sync_files(const char *container_base) {
     /*
      * Enumerate all files that should be synced to a remote environment.
@@ -45,7 +44,6 @@ json_node_t* cli_tools_environments_file_sync_iter_sync_files(const char *contai
     return files;
 }
 
-/* PoP: cli_tools_environments_file_sync_quoted_rm_command @ tools/environments/file_sync.py:quoted_rm_command */
 char* cli_tools_environments_file_sync_quoted_rm_command(const char **paths, int path_count,
                                                            char *buf, size_t bufsz) {
     /*
@@ -81,7 +79,6 @@ char* cli_tools_environments_file_sync_quoted_rm_command(const char **paths, int
     return buf;
 }
 
-/* PoP: cli_tools_environments_file_sync_quoted_mkdir_command @ tools/environments/file_sync.py:quoted_mkdir_command */
 char* cli_tools_environments_file_sync_quoted_mkdir_command(const char **dirs, int dir_count,
                                                               char *buf, size_t bufsz) {
     /*
@@ -99,7 +96,6 @@ char* cli_tools_environments_file_sync_quoted_mkdir_command(const char **dirs, i
     return buf;
 }
 
-/* PoP: cli_tools_environments_file_sync_unique_parent_dirs @ tools/environments/file_sync.py:unique_parent_dirs */
 json_node_t* cli_tools_environments_file_sync_unique_parent_dirs(json_node_t *files) {
     /*
      * Extract sorted unique parent directories from (host, remote) pairs.
@@ -114,9 +110,6 @@ json_node_t* cli_tools_environments_file_sync_unique_parent_dirs(json_node_t *fi
     return dirs;
 }
 
-/* PoP: cli_tools_environments_file_sync__sha256_file @ agent/secret_sources/bitwarden.py:_sha256_file */
-/* PoP: cli_tools_environments_file_sync__sha256_file @ agent/proxy_sources/iron_proxy.py:_sha256_file */
-/* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:_sha256_file */
 char *cli_tools_environments_file_sync__sha256_file(const char *path, char *buf, size_t bufsz) {
     /*
      * Return hex SHA-256 digest of a file.
@@ -153,7 +146,6 @@ char *cli_tools_environments_file_sync__sha256_file(const char *path, char *buf,
     return buf;
 }
 
-/* PoP: cli_tools_environments_file_sync_sync_back @ tools/environments/file_sync.py:sync_back */
 int cli_tools_environments_file_sync_sync_back(const char *hermes_home,
                                                 file_sync_bulk_download_fn download_fn,
                                                 void *download_ctx) {
@@ -176,7 +168,6 @@ int cli_tools_environments_file_sync_sync_back(const char *hermes_home,
     return rc;
 }
 
-/* PoP: cli_tools_environments_file_sync__sync_back_once @ tools/environments/file_sync.py:_sync_back_once */
 int cli_tools_environments_file_sync__sync_back_once(const char *hermes_home,
                                                       file_sync_bulk_download_fn download_fn,
                                                       void *download_ctx) {
@@ -188,7 +179,6 @@ int cli_tools_environments_file_sync__sync_back_once(const char *hermes_home,
     return cli_tools_environments_file_sync_sync_back(hermes_home, download_fn, download_ctx);
 }
 
-/* PoP: cli_tools_environments_file_sync__sync_back_locked @ tools/environments/file_sync.py:_sync_back_locked */
 int cli_tools_environments_file_sync__sync_back_locked(const char *hermes_home,
                                                         file_sync_bulk_download_fn download_fn,
                                                         void *download_ctx) {
@@ -210,7 +200,6 @@ int cli_tools_environments_file_sync__sync_back_locked(const char *hermes_home,
     return rc;
 }
 
-/* PoP: cli_tools_environments_file_sync__sync_back_impl @ tools/environments/file_sync.py:_sync_back_impl */
 int cli_tools_environments_file_sync__sync_back_impl(const char *hermes_home,
                                                       file_sync_bulk_download_fn download_fn,
                                                       void *download_ctx) {
@@ -232,7 +221,6 @@ int cli_tools_environments_file_sync__sync_back_impl(const char *hermes_home,
     return rc;
 }
 
-/* PoP: cli_tools_environments_file_sync__sync_transaction @ tools/environments/file_sync.py:_sync_transaction */
 int cli_tools_environments_file_sync__sync_transaction(
     file_sync_get_files_fn get_files_fn, void *get_files_ctx,
     file_sync_bulk_upload_fn bulk_upload_fn, void *bulk_upload_ctx,
@@ -258,7 +246,6 @@ int cli_tools_environments_file_sync__sync_transaction(
     return rc;
 }
 
-/* PoP: cli_tools_environments_file_sync__sync_back_transaction @ tools/environments/file_sync.py:_sync_back_transaction */
 int cli_tools_environments_file_sync__sync_back_transaction(
     const char *hermes_home,
     file_sync_bulk_download_fn download_fn, void *download_ctx) {
@@ -269,7 +256,6 @@ int cli_tools_environments_file_sync__sync_back_transaction(
     return cli_tools_environments_file_sync__sync_back_impl(hermes_home, download_fn, download_ctx);
 }
 
-/* PoP: cli_tools_environments_file_sync__infer_host_path @ tools/environments/file_sync.py:_infer_host_path */
 char* cli_tools_environments_file_sync__infer_host_path(const char *remote_path, json_node_t *file_mapping,
                                                          char *buf, size_t bufsz) {
     /*
@@ -310,7 +296,6 @@ static char *file_sync_resolve_host_path(const char *host_path) {
     return strdup(resolved);
 }
 
-/* PoP: cli_tools_environments_file_sync__credential_host_paths @ tools/environments/file_sync.py:_credential_host_paths */
 json_node_t* cli_tools_environments_file_sync__credential_host_paths(void) {
     /*
      * Return the credential files that are upload-only for remote sandboxes.
@@ -344,7 +329,6 @@ json_node_t* cli_tools_environments_file_sync__credential_host_paths(void) {
     return paths;
 }
 
-/* PoP: cli_tools_environments_file_sync__is_upload_only_host_path @ tools/environments/file_sync.py:_is_upload_only_host_path */
 bool cli_tools_environments_file_sync__is_upload_only_host_path(const char *host_path,
                                                                 json_node_t *upload_only_host_paths) {
     /*

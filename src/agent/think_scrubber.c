@@ -264,6 +264,7 @@ static int grow_work(think_scrubber_t *sc, int needed) {
 
 /* Port of Python agent/memory_manager.py:feed, agent/think_scrubber.py:feed(). */
 /* Port of Python agent/think_scrubber.py:StreamingThinkScrubber.feed(). */
+/* PoP: feed @ tools/wake_word.py:feed */
 const char *feed(think_scrubber_t *sc, const char *text) {
     if (!sc || !text || !*text) return NULL;
     int tlen = (int)strlen(text);
@@ -363,6 +364,7 @@ const char *feed(think_scrubber_t *sc, const char *text) {
 /* Port of Python agent/memory_manager.py:flush, agent/process_bootstrap.py:flush, agent/think_scrubber.py:flush(). */
 /* Port of Python gateway/platforms/helpers.py:_flush(). */
 /* Port of Python agent/think_scrubber.py:StreamingThinkScrubber.flush(). */
+/* PoP: flush @ hermes_cli/main.py:flush */
 const char *flush(think_scrubber_t *sc) {
     if (!sc) return NULL;
     if (sc->in_block) { sc->buf_len = 0; sc->buf[0] = '\0'; sc->in_block = 0; return NULL; }

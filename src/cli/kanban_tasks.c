@@ -30,7 +30,6 @@
  * require hermes_cli.profiles; we keep a faithful local lowercasing normaliser
  * (the C port's assignee normalisation matches the Python profile-name
  * canonical form which is a lowercased slug). */
-/* PoP: kdb_canon_assignee @ hermes_cli/kanban_db.py:_canonical_assignee */
 void kdb_canon_assignee(const char *in, char *out, size_t sz)
 {
     size_t i = 0, j = 0;
@@ -106,7 +105,6 @@ static int kanban_find_missing_parents(sqlite3 *conn, char **parents, int np, ch
     return 0;
 }
 
-/* PoP: kdb_create_task @ hermes_cli/kanban_db.py:create_task */
 char *kdb_create_task(sqlite3 *conn, const kdb_create_spec_t *spec, char **parents)
 {
     if (!conn || !spec) return NULL;
@@ -216,7 +214,6 @@ char *kdb_create_task(sqlite3 *conn, const kdb_create_spec_t *spec, char **paren
                      spec->branch_name ? "\"true\"" : "null",
                      skills ? skills : "null",
                      spec->goal_mode ? "true" : "null");
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
             kdb_append_event(conn, task_id, -1, "created", payload);
             kdb_write_end(conn, 1);
             break;
@@ -232,7 +229,6 @@ char *kdb_create_task(sqlite3 *conn, const kdb_create_spec_t *spec, char **paren
 
 /* ---- list tasks ---- */
 
-/* PoP: kdb_list_tasks @ hermes_cli/kanban_db.py:list_tasks */
 kanban_task_t **kdb_list_tasks(sqlite3 *conn, const char *status_filter,
                                   const char *assignee_filter, const char *tenant_filter,
                                   const char *session_filter, int include_archived,
@@ -279,7 +275,6 @@ void kdb_task_list_free(kanban_task_t **list)
 
 /* ---- assign ---- */
 
-/* PoP: kdb_assign_task @ hermes_cli/kanban_db.py:assign_task */
 int kdb_assign_task(sqlite3 *conn, const char *task_id, const char *profile)
 {
     if (!conn || !task_id) return 0;
@@ -313,7 +308,6 @@ int kdb_assign_task(sqlite3 *conn, const char *task_id, const char *profile)
                     ok = (sqlite3_step(up) == SQLITE_DONE);
                     sqlite3_finalize(up);
                 }
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
                 kdb_append_event(conn, task_id, -1, "assigned",
                                     assignee[0] ? "{\"assignee\":\"true\"}" : "{\"assignee\":null}");
                 ok = 1;
@@ -354,7 +348,6 @@ static int kanban_would_cycle(sqlite3 *conn, const char *parent_id, const char *
     return found;
 }
 
-/* PoP: kdb_link_tasks @ hermes_cli/kanban_db.py:link_tasks */
 int kdb_link_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
 {
     if (!conn || !parent_id || !child_id) return 0;
@@ -393,13 +386,11 @@ int kdb_link_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
         }
         sqlite3_finalize(ps);
     }
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
     kdb_append_event(conn, child_id, -1, "linked", "{\"parent\":\"x\",\"child\":\"x\"}");
     kdb_write_end(conn, 1);
     return 1;
 }
 
-/* PoP: kdb_unlink_tasks @ hermes_cli/kanban_db.py:unlink_tasks */
 int kdb_unlink_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
 {
     if (!conn || !parent_id || !child_id) return 0;
@@ -420,7 +411,6 @@ int kdb_unlink_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
     return removed;
 }
 
-/* PoP: kdb_parent_ids @ hermes_cli/kanban_db.py:parent_ids */
 char **kdb_parent_ids(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -443,7 +433,6 @@ char **kdb_parent_ids(sqlite3 *conn, const char *task_id, int *out_n)
     return out;
 }
 
-/* PoP: kdb_child_ids @ hermes_cli/kanban_db.py:child_ids */
 char **kdb_child_ids(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -482,7 +471,6 @@ void kdb_child_ids_free(char **list)
 
 /* ---- comments ---- */
 
-/* PoP: kdb_add_comment @ hermes_cli/kanban_db.py:add_comment */
 int kdb_add_comment(sqlite3 *conn, const char *task_id, const char *author, const char *body)
 {
     if (!conn || !task_id || !body) return 0;
@@ -537,7 +525,6 @@ void kdb_comment_list_free(kanban_comment_t **list)
 
 /* ---- attachments ---- */
 
-/* PoP: kdb_add_attachment @ hermes_cli/kanban_db.py:add_attachment */
 int kdb_add_attachment(sqlite3 *conn, const char *task_id, const char *filename,
                           const char *stored_path, const char *content_type, long size,
                           const char *uploaded_by)
@@ -561,7 +548,6 @@ int kdb_add_attachment(sqlite3 *conn, const char *task_id, const char *filename,
     return ok;
 }
 
-/* PoP: kdb_list_attachments @ hermes_cli/kanban_db.py:list_attachments */
 kanban_attach_t **kdb_list_attachments(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -582,7 +568,6 @@ kanban_attach_t **kdb_list_attachments(sqlite3 *conn, const char *task_id, int *
     return out;
 }
 
-/* PoP: kdb_get_attachment @ hermes_cli/kanban_db.py:get_attachment */
 kanban_attach_t *kdb_get_attachment(sqlite3 *conn, long attach_id)
 {
     if (!conn) return NULL;
@@ -597,7 +582,6 @@ kanban_attach_t *kdb_get_attachment(sqlite3 *conn, long attach_id)
     return a;
 }
 
-/* PoP: kdb_delete_attachment @ hermes_cli/kanban_db.py:delete_attachment */
 int kdb_delete_attachment(sqlite3 *conn, long attach_id)
 {
     if (!conn) return 0;
@@ -619,7 +603,6 @@ void kdb_attachment_list_free(kanban_attach_t **list)
 
 /* ---- events ---- */
 
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
 int kdb_append_event(sqlite3 *conn, const char *task_id, long run_id,
                         const char *kind, const char *payload_json)
 {
@@ -639,7 +622,6 @@ int kdb_append_event(sqlite3 *conn, const char *task_id, long run_id,
     return ok;
 }
 
-/* PoP: kdb_list_events @ hermes_cli/kanban_db.py:list_events */
 kanban_event_t **kdb_list_events(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -669,7 +651,6 @@ void kdb_event_list_free(kanban_event_t **list)
 
 /* ---- runs ---- */
 
-/* PoP: kdbport_list_runs @ hermes_cli/kanban_db.py:list_runs */
 kanban_run_t **kdb_list_runs(sqlite3 *conn, const char *task_id,
                                 int include_active, int *out_n)
 {
@@ -700,7 +681,6 @@ void kdb_run_list_free(kanban_run_t **list)
     free(list);
 }
 
-/* PoP: api_server_handle_get_run @ hermes_cli/kanban_db.py:get_run */
 kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id)
 {
     if (!conn) return NULL;
@@ -714,7 +694,6 @@ kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id)
     return r;
 }
 
-/* PoP: kdb_complete_task @ hermes_cli/kanban_db.py:complete_task */
 char *kdb_latest_summary(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return NULL;
@@ -743,7 +722,6 @@ char *kdb_latest_summary(sqlite3 *conn, const char *task_id)
  * monotonic rowid — same-second bursts can't be skipped). Returns a
  * malloc'd NULL-terminated array (caller frees with kdb_comment_list_free);
  * *out_n receives the count. */
-/* PoP: kdb_list_comments_after @ hermes_cli/kanban_db.py:list_comments_after */
 kanban_comment_t **kdb_list_comments_after(sqlite3 *conn, const char *task_id,
                                            long after_id, int *out_n)
 {
@@ -771,7 +749,6 @@ kanban_comment_t **kdb_list_comments_after(sqlite3 *conn, const char *task_id,
  * empty/None -> NULL (inherit profile); anything else -> invalid (the
  * Python raises ValueError). Returns a malloc'd normalized level, or NULL
  * with *invalid_out=1 for a rejected value. Caller frees the result. */
-/* PoP: kdb_normalize_reasoning_effort @ hermes_cli/kanban_db.py:normalize_reasoning_effort */
 char *kdb_normalize_reasoning_effort(const char *effort, int *invalid_out)
 {
     if (invalid_out) *invalid_out = 0;
@@ -805,7 +782,6 @@ char *kdb_normalize_reasoning_effort(const char *effort, int *invalid_out)
  * on success, 0 when the task does not exist, -1 for an archived task
  * (Python raises RuntimeError), -2 for an invalid effort (raises ValueError).
  * Independent of the model override. */
-/* PoP: kdb_set_reasoning_effort @ hermes_cli/kanban_db.py:set_reasoning_effort */
 int kdb_set_reasoning_effort(sqlite3 *conn, const char *task_id,
                              const char *effort)
 {
@@ -863,7 +839,6 @@ int kdb_set_reasoning_effort(sqlite3 *conn, const char *task_id,
  * busy dispatcher from reopening state.db on every spawn. A dispatcher tick
  * must never fail because the session DB was busy or missing. The C port
  * keeps the same in-process dedupe and swallows all failures. */
-/* PoP: kdb_retag_legacy_worker_sessions @ hermes_cli/kanban_db.py:_retag_legacy_worker_sessions */
 extern char *hermes_state_default_db_path(void);
 extern hermes_state_db_t *hermes_state_db_open(const char *path);
 extern void hermes_state_db_close(hermes_state_db_t *db);

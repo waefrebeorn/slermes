@@ -89,7 +89,6 @@ static char *join_lines(char **lines)
 
 /* ── predicates ──────────────────────────────────────────────── */
 
-/* PoP: text_has_unclosed_fence @ gateway/platforms/helpers.py:text_has_unclosed_fence */
 bool helpers_md_text_has_unclosed_fence(const char *text)
 {
     if (!text) return false;
@@ -107,7 +106,6 @@ bool helpers_md_text_has_unclosed_fence(const char *text)
     return in_fence;
 }
 
-/* PoP: text_ends_with_table_row @ gateway/platforms/helpers.py:text_ends_with_table_row */
 bool helpers_md_text_ends_with_table_row(const char *text)
 {
     if (!text || !*text) return false;
@@ -126,7 +124,6 @@ bool helpers_md_text_ends_with_table_row(const char *text)
     return s[0] == '|' && s[sl-1] == '|';
 }
 
-/* PoP: is_fence_atom @ gateway/platforms/helpers.py:is_fence_atom */
 bool helpers_md_is_fence_atom(const char *text)
 {
     if (!text) return false;
@@ -135,7 +132,6 @@ bool helpers_md_is_fence_atom(const char *text)
     return strncmp(p, "```", 3) == 0;
 }
 
-/* PoP: is_table_atom @ gateway/platforms/helpers.py:is_table_atom */
 bool helpers_md_is_table_atom(const char *text)
 {
     if (!text) return false;
@@ -149,7 +145,6 @@ bool helpers_md_is_table_atom(const char *text)
     return s[0] == '|' && s[sl-1] == '|';
 }
 
-/* PoP: split_at_paragraph_boundary @ gateway/platforms/helpers.py:split_at_paragraph_boundary */
 char *helpers_md_split_at_paragraph_boundary(const char *text, size_t max_chars,
                                              char **tail_out)
 {
@@ -249,7 +244,6 @@ char *helpers_md_split_at_paragraph_boundary(const char *text, size_t max_chars,
 
 /* ── atom splitting ──────────────────────────────────────────── */
 
-/* PoP: split_markdown_atoms @ gateway/platforms/helpers.py:split_markdown_atoms */
 char **helpers_md_split_markdown_atoms(const char *text)
 {
     char **atoms = NULL;
@@ -361,7 +355,6 @@ char **helpers_md_split_markdown_atoms(const char *text)
 
 /* ── separator inference ─────────────────────────────────────── */
 
-/* PoP: infer_block_separator @ gateway/platforms/helpers.py:infer_block_separator */
 const char *helpers_md_infer_block_separator(const char *prev_chunk,
                                              const char *next_chunk)
 {
@@ -407,7 +400,6 @@ const char *helpers_md_infer_block_separator(const char *prev_chunk,
 
 /* ── merge_streaming_fences ───────────────────────────────────── */
 
-/* PoP: merge_streaming_fences @ gateway/platforms/helpers.py:merge_streaming_fences */
 char **helpers_md_merge_streaming_fences(char **chunks)
 {
     if (!chunks) return NULL;
@@ -433,7 +425,6 @@ char **helpers_md_merge_streaming_fences(char **chunks)
 
 /* ── balance_fences_across_chunks ─────────────────────────────── */
 
-/* PoP: balance_fences_across_chunks @ gateway/platforms/helpers.py:balance_fences_across_chunks */
 char **helpers_md_balance_fences_across_chunks(char **chunks)
 {
     if (!chunks) return NULL;
@@ -534,7 +525,6 @@ char **helpers_md_balance_fences_across_chunks(char **chunks)
 
 /* ── greedy_pack_blocks ───────────────────────────────────────── */
 
-/* PoP: greedy_pack_blocks @ gateway/platforms/helpers.py:greedy_pack_blocks */
 char **helpers_md_greedy_pack_blocks(char **blocks, size_t max_length,
                                      const char *sep)
 {
@@ -587,7 +577,6 @@ char **helpers_md_greedy_pack_blocks(char **blocks, size_t max_length,
 
 /* ── _chunk_markdown_paragraphs ──────────────────────────────── */
 
-/* PoP: _chunk_markdown_paragraphs @ gateway/platforms/helpers.py:_chunk_markdown_paragraphs */
 char **helpers_md_chunk_markdown_paragraphs(const char *text, size_t max_chars)
 {
     if (!text) return NULL;
@@ -729,7 +718,6 @@ char **helpers_md_chunk_markdown_paragraphs(const char *text, size_t max_chars)
 
 /* ── _chunk_newline_preferred ─────────────────────────────────── */
 
-/* PoP: _chunk_newline_preferred @ gateway/platforms/helpers.py:_chunk_newline_preferred */
 /* len_fn: NULL means strlen (codepoint count). Caller frees the returned list. */
 char **helpers_md_chunk_newline_preferred(const char *text, size_t limit,
                                           size_t (*len_fn)(const char *))
@@ -810,7 +798,6 @@ char **helpers_md_chunk_newline_preferred(const char *text, size_t limit,
 
 /* ── split_text_fence_aware ───────────────────────────────────── */
 
-/* PoP: split_text_fence_aware @ gateway/platforms/helpers.py:split_text_fence_aware */
 char **helpers_md_split_text_fence_aware(const char *text, size_t limit,
                                          int prefer_paragraphs,
                                          int balance_fences)

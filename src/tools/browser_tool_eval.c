@@ -28,8 +28,6 @@ struct browser_tool_eval {
 browser_tool_eval_t *browser_tool_eval_init(void) { return calloc(1, sizeof(browser_tool_eval_t)); }
 void browser_tool_eval_cleanup(browser_tool_eval_t *s) { free(s); }
 
-/* PoP: browser_redact_browser_output @ tools/browser_tool.py:_redact_browser_output */
-/* PoP: browser_redact_browser_output @ tools/browser_tool.py:_redact_browser_output */
 char *browser_redact_browser_output(const char *value_json)
 {
     if (!value_json) {
@@ -71,7 +69,6 @@ char *browser_redact_browser_output(const char *value_json)
     return result;
 }
 
-/* PoP: browser_blocked_private_page_action @ tools/browser_tool.py:_blocked_private_page_action */
 char *browser_blocked_private_page_action(const char *effective_task_id, const char *action)
 {
     if (!browser_eval_ssrf_guard_active(effective_task_id)) {
@@ -93,8 +90,6 @@ char *browser_blocked_private_page_action(const char *effective_task_id, const c
     return result;
 }
 
-/* PoP: browser_eval_ssrf_guard_active @ tools/browser_tool.py:_eval_ssrf_guard_active */
-/* PoP: browser_eval_ssrf_guard_active @ tools/browser_tool.py:_eval_ssrf_guard_active */
 bool browser_eval_ssrf_guard_active(const char *effective_task_id)
 {
     return (!browser_is_local_backend() &&
@@ -102,7 +97,6 @@ bool browser_eval_ssrf_guard_active(const char *effective_task_id)
             !browser_allow_private_urls());
 }
 
-/* PoP: browser_expression_targets_private_url @ tools/browser_tool.py:_expression_targets_private_url */
 char *browser_expression_targets_private_url(const char *expression)
 {
     if (!expression) return NULL;
@@ -145,8 +139,6 @@ char *browser_expression_targets_private_url(const char *expression)
     return NULL;
 }
 
-/* PoP: tools_browser_tool_u_camofox_current_page_private_url @ tools/browser_tool.py:_current_page_private_url */
-/* PoP: browser_current_page_private_url @ tools/browser_tool.py:_current_page_private_url */
 char *browser_current_page_private_url(const char *effective_task_id)
 {
     (void)effective_task_id;
@@ -163,7 +155,6 @@ char *browser_current_page_private_url(const char *effective_task_id)
     return NULL;
 }
 
-/* PoP: browser_allow_unsafe_browser_evaluate @ tools/browser_tool.py:_allow_unsafe_browser_evaluate */
 bool browser_allow_unsafe_browser_evaluate(void)
 {
     /* Check config.yaml for browser.allow_unsafe_evaluate */
@@ -174,7 +165,6 @@ bool browser_allow_unsafe_browser_evaluate(void)
     return false;
 }
 
-/* PoP: browser_decode_js_string_literal @ tools/browser_tool.py:_decode_js_string_literal */
 char *browser_decode_js_string_literal(const char *literal)
 {
     if (!literal || strlen(literal) < 2) {
@@ -255,7 +245,6 @@ char *browser_decode_js_string_literal(const char *literal)
     return result;
 }
 
-/* PoP: browser_decoded_js_string_literals @ tools/browser_tool.py:_decoded_js_string_literals */
 char **browser_decoded_js_string_literals(const char *expression, int *out_count)
 {
     if (out_count) *out_count = 0;
@@ -308,7 +297,6 @@ char **browser_decoded_js_string_literals(const char *expression, int *out_count
     return results;
 }
 
-/* PoP: browser_sensitive_browser_eval_token_reason @ tools/browser_tool.py:_sensitive_browser_eval_token_reason */
 char *browser_sensitive_browser_eval_token_reason(const char *expression)
 {
     if (!expression) return NULL;
@@ -401,7 +389,6 @@ char *browser_sensitive_browser_eval_token_reason(const char *expression)
     return NULL;
 }
 
-/* PoP: browser_risky_browser_eval_reason @ tools/browser_tool.py:_risky_browser_eval_reason */
 char *browser_risky_browser_eval_reason(const char *expression)
 {
     if (!expression) return NULL;
@@ -420,7 +407,6 @@ char *browser_risky_browser_eval_reason(const char *expression)
     return browser_sensitive_browser_eval_token_reason(expression);
 }
 
-/* PoP: browser_enforce_browser_eval_policy @ tools/browser_tool.py:_enforce_browser_eval_policy */
 char *browser_enforce_browser_eval_policy(const char *expression)
 {
     if (browser_allow_unsafe_browser_evaluate()) {

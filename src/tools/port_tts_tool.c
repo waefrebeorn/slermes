@@ -28,7 +28,6 @@ static bool kittentts_available = false;
 static bool piper_available = false;
 
 /* Port of Python: _import_edge_tts */
-/* PoP: tts_tool_import_edge_tts @ tools/tts_tool.py:_import_edge_tts */
 bool tts_tool_import_edge_tts(void)
 {
     /* In C, we check at build time or via dlopen */
@@ -37,7 +36,6 @@ bool tts_tool_import_edge_tts(void)
 }
 
 /* Port of Python: _import_elevenlabs */
-/* PoP: tts_tool_import_elevenlabs @ tools/tts_tool.py:_import_elevenlabs */
 bool tts_tool_import_elevenlabs(void)
 {
     hermes_log(LOG_DEBUG, "port", "_import_elevenlabs");
@@ -45,7 +43,6 @@ bool tts_tool_import_elevenlabs(void)
 }
 
 /* Port of Python: _import_openai_client */
-/* PoP: tts_tool_import_openai_client @ tools/tts_tool.py:_import_openai_client */
 bool tts_tool_import_openai_client(void)
 {
     hermes_log(LOG_DEBUG, "port", "_import_openai_client");
@@ -53,7 +50,6 @@ bool tts_tool_import_openai_client(void)
 }
 
 /* Port of Python: _import_mistral_client */
-/* PoP: tts_tool_import_mistral_client @ tools/tts_tool.py:_import_mistral_client */
 bool tts_tool_import_mistral_client(void)
 {
     hermes_log(LOG_DEBUG, "port", "_import_mistral_client");
@@ -61,7 +57,6 @@ bool tts_tool_import_mistral_client(void)
 }
 
 /* Port of Python: _import_sounddevice */
-/* PoP: tts_tool_import_sounddevice @ tools/tts_tool.py:_import_sounddevice */
 bool tts_tool_import_sounddevice(void)
 {
     hermes_log(LOG_DEBUG, "port", "_import_sounddevice");
@@ -69,7 +64,6 @@ bool tts_tool_import_sounddevice(void)
 }
 
 /* Port of Python: _import_kittentts */
-/* PoP: tts_tool_import_kittentts @ tools/tts_tool.py:_import_kittentts */
 bool tts_tool_import_kittentts(void)
 {
     hermes_log(LOG_DEBUG, "port", "_import_kittentts");
@@ -77,7 +71,6 @@ bool tts_tool_import_kittentts(void)
 }
 
 /* Port of Python: _import_piper */
-/* PoP: tts_tool_import_piper @ tools/tts_tool.py:_import_piper */
 bool tts_tool_import_piper(void)
 {
     hermes_log(LOG_DEBUG, "port", "_import_piper");
@@ -98,7 +91,6 @@ bool tts_tool_import_piper(void)
 
 
 /* Port of Python: _get_provider_section */
-/* PoP: tts_tool_get_provider_section @ tools/tts_tool.py:_get_provider_section */
 char *tts_tool_get_provider_section(const char *provider)
 {
     if (!provider) return strdup("{}");
@@ -109,7 +101,6 @@ char *tts_tool_get_provider_section(const char *provider)
 
 
 /* Port of Python: _is_command_provider_config */
-/* PoP: tts_tool_is_command_provider_config @ tools/tts_tool.py:_is_command_provider_config */
 bool tts_tool_is_command_provider_config(const char *config_json)
 {
     if (!config_json) return false;
@@ -124,7 +115,6 @@ bool tts_tool_is_command_provider_config(const char *config_json)
 }
 
 /* Port of Python: _resolve_command_provider_config */
-/* PoP: tts_tool_resolve_command_provider_config @ tools/tts_tool.py:_resolve_command_provider_config */
 char *tts_tool_resolve_command_provider_config(const char *provider, const char *config_json)
 {
     (void)provider;
@@ -138,7 +128,6 @@ char *tts_tool_resolve_command_provider_config(const char *provider, const char 
 
 
 /* Port of Python: _get_command_tts_timeout */
-/* PoP: tts_tool_get_command_tts_timeout @ tools/tts_tool.py:_get_command_tts_timeout */
 int tts_tool_get_command_tts_timeout(const char *config_json)
 {
     /* Mirror Python: config.get("timeout", config.get("timeout_seconds", 120)),
@@ -188,7 +177,6 @@ int tts_tool_get_command_tts_timeout(const char *config_json)
 
 
 /* Port of Python: _apply_xai_auto_speech_tags */
-/* PoP: tts_tool_apply_xai_auto_speech_tags @ tools/tts_tool.py:_apply_xai_auto_speech_tags */
 char *tts_tool_apply_xai_auto_speech_tags(const char *text)
 {
     if (!text) return strdup("");
@@ -205,7 +193,6 @@ char *tts_tool_apply_xai_auto_speech_tags(const char *text)
 
 
 /* Port of Python: _resolve_gemini_persona_prompt_path */
-/* PoP: tts_tool_resolve_gemini_persona_prompt_path @ tools/tts_tool.py:_resolve_gemini_persona_prompt_path */
 char *tts_tool_resolve_gemini_persona_prompt_path(const char *persona)
 {
     if (!persona) return strdup("");
@@ -217,7 +204,6 @@ char *tts_tool_resolve_gemini_persona_prompt_path(const char *persona)
 }
 
 /* Port of Python: _read_gemini_persona_prompt */
-/* PoP: tts_tool_read_gemini_persona_prompt @ tools/tts_tool.py:_read_gemini_persona_prompt */
 char *tts_tool_read_gemini_persona_prompt(const char *path)
 {
     if (!path) return strdup("");
@@ -269,7 +255,6 @@ char *tts_tool_read_gemini_persona_prompt(const char *path)
 
 
 /* Port of Python: _resolve_piper_voice_path */
-/* PoP: tts_tool_resolve_piper_voice_path @ tools/tts_tool.py:_resolve_piper_voice_path */
 char *tts_tool_resolve_piper_voice_path(const char *voice)
 {
     if (!voice) return strdup("");
@@ -287,7 +272,6 @@ char *tts_tool_resolve_piper_voice_path(const char *voice)
 
 
 /* Port of Python: check_tts_requirements */
-/* PoP: tts_tool_check_tts_requirements @ tools/tts_tool.py:check_tts_requirements */
 char *tts_tool_check_tts_requirements(void)
 {
     json_t *root = json_object();
@@ -301,7 +285,6 @@ char *tts_tool_check_tts_requirements(void)
 }
 
 /* Port of Python: _resolve_openai_audio_client_config */
-/* PoP: tts_tool_resolve_openai_audio_client_config @ tools/tts_tool.py:_resolve_openai_audio_client_config */
 char *tts_tool_resolve_openai_audio_client_config(const char *config_json)
 {
     if (!config_json) return strdup("{}");
@@ -309,14 +292,12 @@ char *tts_tool_resolve_openai_audio_client_config(const char *config_json)
 }
 
 /* Port of Python: _has_openai_audio_backend */
-/* PoP: tts_tool_has_openai_audio_backend @ tools/tts_tool.py:_has_openai_backend.py:_has_openai_audio_backend */
 bool tts_tool_has_openai_audio_backend(void)
 {
     return openai_client_available;
 }
 
 /* Port of Python: _strip_markdown_for_tts */
-/* PoP: tts_tool_strip_markdown_for_tts @ tools/tts_tool.py:_strip_markdown_for_tts */
 char *tts_tool_strip_markdown_for_tts(const char *text)
 {
     if (!text) return strdup("");
@@ -346,7 +327,6 @@ char *tts_tool_strip_markdown_for_tts(const char *text)
 }
 
 /* Port of Python: stream_tts_to_speaker */
-/* PoP: tts_tool_stream_tts_to_speaker @ tools/tts_tool.py:stream_tts_to_speaker */
 bool tts_tool_stream_tts_to_speaker(const char *audio_file)
 {
     if (!audio_file) return false;
@@ -356,7 +336,6 @@ bool tts_tool_stream_tts_to_speaker(const char *audio_file)
 
 /* Existing functions from original file */
 /* Port of Python: _check */
-/* PoP: check @ tools/tts_tool.py:_check */
 char *check(int importer, const char *label)
 {
     if (!label) {
@@ -370,7 +349,6 @@ char *check(int importer, const char *label)
 }
 
 /* Port of Python: _shell_quote_context */
-/* PoP: shell_quote_context @ tools/tts_tool.py:_shell_quote_context_stt */
 char *shell_quote_context(double command_template, int position)
 {
     static char buf[512];
@@ -383,7 +361,6 @@ char *shell_quote_context(double command_template, int position)
  *  Real implementations for the remaining unmatched TTS helpers
  * ================================================================ */
 
-/* PoP: tts_tool_dispatch_to_plugin_provider @ tools/tts_tool.py:_dispatch_to_plugin_provider */
 char *tts_tool_dispatch_to_plugin_provider(const char *text, const char *output_path,
                                            const char *provider, const char *config_json)
 {
@@ -398,7 +375,6 @@ char *tts_tool_dispatch_to_plugin_provider(const char *text, const char *output_
     return NULL;
 }
 
-/* PoP: tts_tool_response_format_from_path @ tools/tts_tool.py:_tts_response_format_from_path */
 const char *tts_tool_response_format_from_path(const char *output_path)
 {
     if (!output_path)
@@ -416,7 +392,6 @@ const char *tts_tool_response_format_from_path(const char *output_path)
     return "mp3";
 }
 
-/* PoP: tts_tool_generate_deepinfra_tts @ tools/tts_tool.py:_generate_deepinfra_tts */
 char *tts_tool_generate_deepinfra_tts(const char *text, const char *output_path,
                                       const char *config_json)
 {
@@ -499,7 +474,6 @@ typedef struct {
     double safety_ratio;
 } tts_delivery_profile_t;
 
-/* PoP: _resolve_audio_delivery_profile @ tools/tts_tool.py:_resolve_audio_delivery_profile */
 /* Resolve upload constraints incl. optional per-platform overrides from the
  * tts_config JSON object (delivery_profiles.<key>). Returns the profile;
  * caller frees platform. */
@@ -568,7 +542,6 @@ tts_delivery_profile_t tts_tool_resolve_audio_delivery_profile(const char *platf
     return out;
 }
 
-/* PoP: _split_oversized_sentence @ tools/tts_tool.py:_split_oversized_sentence */
 /* Split one over-limit sentence on word boundaries, then hard boundaries.
  * Returns a malloc'd array of malloc'd strings; *count gets the length.
  * Caller frees each string and the array. */

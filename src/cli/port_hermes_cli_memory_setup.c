@@ -13,7 +13,6 @@
 
 
 
-/* PoP: cli_hermes_cli_memory_setup__prompt @ hermes_cli/memory_setup.py:_prompt */
 
 /* Port of Python hermes_cli/memory_setup.py:_prompt */
 /* Prompts for a value with optional default and secret masking. */
@@ -84,7 +83,6 @@ static char *find_provider_dir_c(const char *name)
     return NULL;
 }
 
-/* PoP: provider_pip_dependencies_c @ hermes_cli/memory_setup.py:_provider_pip_dependencies */
 /* Port of Python hermes_cli/memory_setup.py:_provider_pip_dependencies.
  * Hindsight's local_embedded mode additionally needs hindsight-all. */
 static size_t provider_pip_dependencies_c(const char *provider_name,
@@ -162,7 +160,6 @@ static int cli_memory_import_available(const char *imp_name)
     return 0;
 }
 
-/* PoP: cli_hermes_cli_memory_setup__install_dependencies @ hermes_cli/memory_setup.py:_install_dependencies */
 
 /* Port of Python hermes_cli/memory_setup.py:_install_dependencies.
  * Finds the provider dir, reads plugin.yaml's pip_dependencies, computes
@@ -284,7 +281,6 @@ int cli_hermes_cli_memory_setup__install_dependencies(
 
 
 
-/* PoP: cli_hermes_cli_memory_setup_cmd_setup_provider @ hermes_cli/memory_setup.py:cmd_setup_provider */
 
 /* Port of Python hermes_cli/memory_setup.py:cmd_setup_provider */
 /* Runs memory setup for a specific provider. */
@@ -300,14 +296,12 @@ void cli_hermes_cli_memory_setup_cmd_setup_provider(const char *provider_name)
 
 
 
-/* PoP: cli_hermes_cli_memory_setup__write_env_vars @ hermes_cli/memory_setup.py:_write_env_vars */
 
 /* Port of Python hermes_cli/memory_setup.py:_provider_pip_dependencies.
  * Return the pip deps a provider actually needs on THIS install. The manifest
  * declares a baseline; some providers install mode-dependent extras at setup
  * time. For hindsight in local_embedded mode, append "hindsight-all".
  * In C we emit the list as a JSON array string for the CLI wrapper layer. */
-/* PoP: cli_hermes_cli_memory_setup__provider_pip_dependencies @ hermes_cli/memory_setup.py:_provider_pip_dependencies */
 char *cli_hermes_cli_memory_setup__provider_pip_dependencies(
     const char *provider_name, const char *declared_deps_json)
 {
@@ -354,7 +348,6 @@ char *cli_hermes_cli_memory_setup__provider_pip_dependencies(
     return out ? out : strdup("[]");
 }
 
-/* PoP: cli_hermes_cli_memory_setup__write_env_vars @ hermes_cli/memory_setup.py:_write_env_vars */
 /* Port of Python hermes_cli/memory_setup.py:_write_env_vars */
 /* Appends or updates env vars in .env file. */
 int cli_hermes_cli_memory_setup__write_env_vars(
@@ -376,7 +369,6 @@ int cli_hermes_cli_memory_setup__write_env_vars(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_memory_setup_cmd_status @ hermes_cli/memory_setup.py:cmd_status */
 
 /* Port of Python hermes_cli/memory_setup.py:cmd_status */
 /* Shows current memory provider config. */
@@ -408,7 +400,6 @@ void cli_hermes_cli_memory_setup_cmd_status(void)
     printf("\n");
 }
 
-/* PoP: cli_hermes_cli_memory_setup_memory_command @ hermes_cli/memory_setup.py:memory_command */
 
 /* Port of Python hermes_cli/memory_setup.py:memory_command */
 /* Routes memory subcommands. */
@@ -426,7 +417,6 @@ void cli_hermes_cli_memory_setup_memory_command(const char *subcommand)
     }
 }
 
-/* PoP: cli_hermes_cli_memory_setup__get_available_providers @ hermes_cli/memory_setup.py:_get_available_providers */
 /*
  * Port of Python hermes_cli/memory_setup.py:_get_available_providers().
  * The Python version dynamically imports providers from plugins/memory/. The
@@ -470,7 +460,6 @@ void cli_hermes_cli_memory_setup_free_providers(cli_memory_provider_info_t *p)
     free(p);
 }
 
-/* PoP: cli_hermes_cli_memory_setup__curses_select @ hermes_cli/memory_setup.py:_curses_select */
 /*
  * Port of Python hermes_cli/memory_setup.py:_curses_select().
  * The Python version renders a curses selection menu; the C port takes the

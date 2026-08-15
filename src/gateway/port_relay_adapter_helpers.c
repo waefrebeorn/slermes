@@ -78,7 +78,6 @@ static relay_chat_state_t *chat_state_locked(const char *chat_id, int create) {
 }
 
 /* ── platform / chat-type registration (from inbound events) ────────── */
-/* PoP: _capture_scope @ gateway/relay/adapter.py:_capture_scope */
 void relay_helper_record_chat(const char *chat_id, const char *platform,
                               const char *chat_type, const char *message_id) {
     if (!chat_id) return;
@@ -105,7 +104,6 @@ static const char *chat_type_locked(const char *chat_id) {
  * supports_status_text
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: supports_status_text @ gateway/relay/adapter.py:supports_status_text */
 bool relay_helper_supports_status_text(const char *descriptor_json) {
     /* Python: self.descriptor.platform == Platform.SLACK.value. The
      * descriptor JSON carries "platform": "<value>"; Slack fronts a text
@@ -126,7 +124,6 @@ bool relay_helper_supports_status_text(const char *descriptor_json) {
 
 /* Resolve the max message length for a specific chat: per-platform descriptor
  * when known, else the scalar descriptor's cap. Mirrors Python. */
-/* PoP: _descriptor_for_chat @ gateway/relay/adapter.py:_descriptor_for_chat */
 static int descriptor_max_len_for_chat(const char *descriptor_json, const char *chat_id) {
     /* Per-platform caps genuinely differ (Discord 2000 / Telegram 4096 /
      * Slack 39000). The C port keys the per-platform cap map by platform
@@ -159,12 +156,10 @@ static int descriptor_max_len_for_chat(const char *descriptor_json, const char *
     return 4096;
 }
 
-/* PoP: max_message_length_for_chat @ gateway/relay/adapter.py:max_message_length_for_chat */
 int relay_helper_max_message_length_for_chat(const char *descriptor_json, const char *chat_id) {
     return descriptor_max_len_for_chat(descriptor_json, chat_id);
 }
 
-/* PoP: message_len_fn_for_chat @ gateway/relay/adapter.py:message_len_fn_for_chat */
 const char *relay_helper_message_len_fn_for_chat(const char *descriptor_json, const char *chat_id) {
     /* Python: _LEN_FNS.get(descriptor.len_unit, len) — returns "utf16" or "len". */
     (void)chat_id;
@@ -186,7 +181,6 @@ const char *relay_helper_message_len_fn_for_chat(const char *descriptor_json, co
  * _dm_top_level_threads_as_sessions
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _relay_slack_extra @ gateway/relay/adapter.py:_relay_slack_extra */
 bool relay_helper_relay_slack_extra_bool(const char *key, bool default_val) {
     /* Python: extra.slack.<key> when the slack sub-dict exists, else
      * extra.<key> (legacy flat fallback). Use the C config surface. */
@@ -198,7 +192,6 @@ bool relay_helper_relay_slack_extra_bool(const char *key, bool default_val) {
     return false;
 }
 
-/* PoP: _coerce_flag @ gateway/relay/adapter.py:_coerce_flag */
 bool relay_helper_coerce_flag(const char *raw, bool default_val) {
     /* Python: None -> default; bool -> as-is; str(raw).strip().lower() in
      * {"1","true","yes","on"} — YAML-quoted "false" must turn the flag OFF,
@@ -217,7 +210,6 @@ bool relay_helper_coerce_flag(const char *raw, bool default_val) {
             strcmp(lower, "yes") == 0 || strcmp(lower, "on") == 0);
 }
 
-/* PoP: _effective_reply_in_thread @ gateway/relay/adapter.py:_effective_reply_in_thread */
 bool relay_helper_effective_reply_in_thread(void) {
     /* Python: _coerce_flag(_relay_slack_extra().get("reply_in_thread"), True),
      * exception -> True. Default True. */
@@ -228,7 +220,6 @@ bool relay_helper_effective_reply_in_thread(void) {
     return true;
 }
 
-/* PoP: _dm_top_level_threads_as_sessions @ gateway/relay/adapter.py:_dm_top_level_threads_as_sessions */
 bool relay_helper_dm_top_level_threads_as_sessions(void) {
     /* Python: _coerce_flag(extra.get("dm_top_level_threads_as_sessions"), True). */
     if (gateway_config_platform_extra_bool("relay", "dm_top_level_threads_as_sessions")) return true;
@@ -243,7 +234,6 @@ bool relay_helper_dm_top_level_threads_as_sessions(void) {
  * message (thread_id null), stamp source.thread_id = message_id so each
  * top-level DM keys its own session (per-message sessions). Returns the
  * stamped thread id (malloc'd) or NULL when no stamp applies. */
-/* PoP: _stamp_slack_session_thread @ gateway/relay/adapter.py:_stamp_slack_session_thread */
 char *relay_helper_stamp_slack_session_thread(const char *platform,
                                               const char *thread_id,
                                               const char *message_id) {
@@ -259,7 +249,6 @@ char *relay_helper_stamp_slack_session_thread(const char *platform,
  * _decode_prompt_token / _render_interaction_options
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _decode_prompt_token @ gateway/relay/adapter.py:_decode_prompt_token */
 int relay_helper_decode_prompt_token(const char *token, char *prompt_id_out,
                                      size_t prompt_id_sz, char *option_id_out,
                                      size_t option_id_sz) {
@@ -293,7 +282,6 @@ int relay_helper_decode_prompt_token(const char *token, char *prompt_id_out,
     return 1;
 }
 
-/* PoP: _render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
 char *relay_helper_render_interaction_options(const char *options_json) {
     /* Discord data.options: [{name,value,type}]. Scalars contribute value;
      * SUB_COMMAND (1)/SUB_COMMAND_GROUP (2) contribute name then recurse
@@ -362,7 +350,6 @@ static void prompt_sweep_locked(double now) {
     }
 }
 
-/* PoP: _mint_prompt @ gateway/relay/adapter.py:_mint_prompt */
 char *relay_helper_mint_prompt(const char *kind, const char *session_key,
                                const char *state_json, double timeout_s) {
     /* Python: secrets.token_hex(4) → 8-hex id; register {**state, kind,
@@ -402,7 +389,6 @@ char *relay_helper_mint_prompt(const char *kind, const char *session_key,
     return strdup(prompt_id);
 }
 
-/* PoP: _pop_prompt @ gateway/relay/adapter.py:_pop_prompt */
 char *relay_helper_pop_prompt(const char *prompt_id) {
     /* Python: pop; expired entries miss (return NULL). Returns the stored
      * state JSON (malloc'd) on success. */
@@ -459,7 +445,6 @@ void relay_helper_drop_prompt(const char *prompt_id) {
  * _prompt_reply_metadata / auto_thread_info_for_chat
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _prompt_reply_metadata @ gateway/relay/adapter.py:_prompt_reply_metadata */
 char *relay_helper_prompt_reply_metadata(const char *thread_id) {
     /* Python: {"thread_id": str} when the source carries one, else {}. */
     if (thread_id && thread_id[0]) {
@@ -470,7 +455,6 @@ char *relay_helper_prompt_reply_metadata(const char *thread_id) {
     return strdup("{}");
 }
 
-/* PoP: auto_thread_info_for_chat @ gateway/relay/adapter.py:auto_thread_info_for_chat */
 char *relay_helper_auto_thread_info_for_chat(const char *chat_id,
                                              char *thread_id_out, size_t tid_sz,
                                              char *name_out, size_t name_sz) {
@@ -507,7 +491,6 @@ void relay_helper_set_auto_thread(const char *chat_id, const char *thread_id,
  * _with_status_thread_anchor
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _resolve_reply_to_for_send @ gateway/relay/adapter.py:_resolve_reply_to_for_send */
 char *relay_helper_resolve_reply_to_for_send(const char *chat_id,
                                              const char *reply_to,
                                              const char *metadata_json) {
@@ -534,7 +517,6 @@ char *relay_helper_resolve_reply_to_for_send(const char *chat_id,
     return NULL;   /* flat mode: drop the synthetic DM self-anchor */
 }
 
-/* PoP: _apply_slack_thread_anchor @ gateway/relay/adapter.py:_apply_slack_thread_anchor */
 char *relay_helper_apply_slack_thread_anchor(const char *chat_id,
                                              const char *reply_to,
                                              const char *metadata_json,
@@ -577,7 +559,6 @@ char *relay_helper_apply_slack_thread_anchor(const char *chat_id,
     return effective;
 }
 
-/* PoP: _with_status_thread_anchor @ gateway/relay/adapter.py:_with_status_thread_anchor */
 char *relay_helper_with_status_thread_anchor(const char *chat_id,
                                              const char *metadata_json) {
     /* Python: copy metadata; for a Slack DM with no thread_id/thread_ts,
@@ -608,7 +589,6 @@ char *relay_helper_with_status_thread_anchor(const char *chat_id,
  * _get_media_client
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _get_media_client @ gateway/relay/adapter.py:_get_media_client */
 int relay_helper_get_media_client(const char *connector_url, const char *gateway_id) {
     /* Python: lazily build the authenticated /relay/media client from the
      * connector base URL + per-gateway (id, secret) — no new configuration.
@@ -627,7 +607,6 @@ int relay_helper_get_media_client(const char *connector_url, const char *gateway
 
 /* Port of _localize_inbound_media's no-client filter: keep public URLs,
  * drop connector re-host references when no authenticated client exists. */
-/* PoP: _localize_inbound_media @ gateway/relay/adapter.py:_localize_inbound_media */
 char **relay_helper_localize_inbound_media(char **urls, int n, int has_client) {
     if (!urls || n <= 0) return NULL;
     char **out = calloc((size_t)n + 1, sizeof(char *));
@@ -647,7 +626,6 @@ void relay_helper_free_urls(char **urls) {
     free(urls);
 }
 
-/* PoP: _minted_here @ gateway/relay/adapter.py:_minted_here */
 int relay_adapter_minted_here(const char *prompt_id, const char *owner_nonce) {
     if (!prompt_id) return 0;
     if (!owner_nonce) return 0;

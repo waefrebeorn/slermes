@@ -60,7 +60,6 @@ struct tool_dispatch_arg {
     int  *duration_ms_out;  /* S14 gap #13: latency tracking */
 };
 
-/* PoP: is_trivial_prompt @ agent/memory_provider.py:is_trivial_prompt */
 static int is_trivial_prompt(const char *text)
 {
     if (!text) return 1;
@@ -226,7 +225,6 @@ char *run_conversation(agent_state_t *state,
             state->prefetch_result = NULL;
         }
         state->prefetch_in_progress = 0;
-/* PoP: agent_memory_provider_queue_prefetch @ agent/memory_provider.py:prefetch */
         /* Do synchronous prefetch (C is single-threaded per agent, so
            background thread adds complexity without benefit for the
            typical case). Search memory with the user query. */
@@ -977,7 +975,6 @@ retry_done:
          * Ensure primary provider/model are restored after fallback. In C the
          * fallback is per-call, so saved values are already restored above, but
          * the label exists for goto targets that skip the restore. */
-/* PoP: uninst_log_success @ hermes_cli/mcp_config.py:_success */
         /* P95: Log upstream diagnostic headers on success (verbose only) */
         if (llm_resp && llm_resp->diag.upstream_headers[0] && getenv("SLERMES_DEBUG")) {
             fprintf(stderr, "[llm] upstream=[%s]\n",
@@ -1657,7 +1654,6 @@ bool agent_snapshot_restore(agent_state_t *state) {
 }
 
 /* Simple chat interface */
-/* PoP: cl2_chat @ cli.py:chat */
 /* Port of Python cli.py:chat(). */
 char *agent_chat(agent_state_t *state, const char *message) {
     return run_conversation(state, message, NULL);
@@ -1696,7 +1692,6 @@ bool agent_inject_history(agent_state_t *state, const char *history_json) {
  * ================================================================ */
 
 /* Port of Python conversation_loop.py:_is_nous_inference_route */
-/* PoP: is_nous_inference_route @ agent/billing_links.py:is_nous_inference_route */
 bool is_nous_inference_route(const char *provider, const char *base_url) {
     if (!provider) return false;
     char prov[128];
@@ -1837,7 +1832,6 @@ char *ollama_context_limit_error(bool has_tools, int ollama_num_ctx,
     return strdup(buf);
 }
 
-/* PoP: run_conversation @ agent/run_agent.py:run_agent */
 /* Header-declared alias for run_conversation() — the API-server/gateway */
 /* path uses the agent_run_ prefix (name parity with the Python-facing */
 /* surface); run_conversation is the canonical implementation. */

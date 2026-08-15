@@ -30,7 +30,6 @@ char *kanban_home(void);
  * Event GC
  * ========================================================================= */
 
-/* PoP: kdb_gc_events @ hermes_cli/kanban_db.py:gc_events */
 int kdb_gc_events(sqlite3 *conn, int older_than_seconds)
 {
     if (!conn) return 0;
@@ -55,7 +54,6 @@ int kdb_gc_events(sqlite3 *conn, int older_than_seconds)
  * On-disk profile discovery
  * ========================================================================= */
 
-/* PoP: kdb_list_profiles_on_disk @ hermes_cli/kanban_db.py:list_profiles_on_disk */
 char **kdb_list_profiles_on_disk(void)
 {
     int n = 0, cap = 8;
@@ -112,7 +110,6 @@ void kdb_strv_free(char **v)
  * Assignee enumeration
  * ========================================================================= */
 
-/* PoP: kdb_known_assignees @ hermes_cli/kanban_db.py:known_assignees */
 char *kdb_known_assignees(sqlite3 *conn)
 {
     if (!conn) return strdup("[]");
@@ -231,7 +228,6 @@ char *kdb_known_assignees(sqlite3 *conn)
  * Run summaries
  * ========================================================================= */
 
-/* PoP: kdb_latest_run @ hermes_cli/kanban_db.py:latest_run */
 kanban_run_t *kdb_latest_run(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return NULL;
@@ -248,10 +244,8 @@ kanban_run_t *kdb_latest_run(sqlite3 *conn, const char *task_id)
     return r;
 }
 
-/* PoP: kdb_latest_summary @ hermes_cli/kanban_db.py:latest_summary */
 /* (definition lives in kanban_tasks.c) */
 
-/* PoP: kdb_latest_summaries_json @ hermes_cli/kanban_db.py:latest_summaries */
 char *kdb_latest_summaries_json(sqlite3 *conn, char **task_ids, int n_ids)
 {
     if (!conn) return strdup("{}");

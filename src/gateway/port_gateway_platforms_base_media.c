@@ -120,7 +120,6 @@ static bool ensure_dir(const char *path)
  *  _platform_name
  *  Faithful to: def _platform_name(platform) -> str
  * ================================================================ */
-/* PoP: base_platform_name @ gateway/platforms/base.py:_platform_name */
 char *base_platform_name(const char *platform)
 {
     /* Python: value = getattr(platform, "value", platform);
@@ -138,7 +137,6 @@ char *base_platform_name(const char *platform)
  *  Faithful to: def _log_safe_path(path) -> str
  *  Replaces control chars + line separators with '?', truncates at 200.
  * ================================================================ */
-/* PoP: base_platform_log_safe_path @ gateway/platforms/base.py:_log_safe_path */
 char *base_platform_log_safe_path(const char *path)
 {
     if (!path) path = "";
@@ -171,7 +169,6 @@ char *base_platform_log_safe_path(const char *path)
  *  C equivalent; we resolve fresh via hermes_dir(), honoring the legacy
  *  cache layout exactly as the non-monkeypatched path does.
  * ================================================================ */
-/* PoP: base_platform_resolve_cache_dir @ gateway/platforms/base.py:_resolve_cache_dir */
 void base_platform_resolve_cache_dir(const char *new_subpath, const char *old_name,
                                      char *out, size_t sz)
 {
@@ -183,7 +180,6 @@ void base_platform_resolve_cache_dir(const char *new_subpath, const char *old_na
  *  get_document_cache_dir
  *  Faithful to: each returns the (created) cache dir as a malloc'd string.
  * ================================================================ */
-/* PoP: base_platform_get_image_cache_dir @ gateway/platforms/base.py:get_image_cache_dir */
 char *base_platform_get_image_cache_dir(void)
 {
     char d[PATH_MAX];
@@ -192,7 +188,6 @@ char *base_platform_get_image_cache_dir(void)
     return strdup(d);
 }
 
-/* PoP: base_platform_get_audio_cache_dir @ gateway/platforms/base.py:get_audio_cache_dir */
 char *base_platform_get_audio_cache_dir(void)
 {
     char d[PATH_MAX];
@@ -201,7 +196,6 @@ char *base_platform_get_audio_cache_dir(void)
     return strdup(d);
 }
 
-/* PoP: base_platform_get_video_cache_dir @ gateway/platforms/base.py:get_video_cache_dir */
 char *base_platform_get_video_cache_dir(void)
 {
     char d[PATH_MAX];
@@ -210,7 +204,6 @@ char *base_platform_get_video_cache_dir(void)
     return strdup(d);
 }
 
-/* PoP: base_platform_get_document_cache_dir @ gateway/platforms/base.py:get_document_cache_dir */
 char *base_platform_get_document_cache_dir(void)
 {
     char d[PATH_MAX];
@@ -245,7 +238,6 @@ static const char * const ROOT_CREDENTIAL_DIRS[] = {
     "pairing", "mcp-tokens", NULL
 };
 
-/* PoP: base_platform_media_delivery_denied_paths @ gateway/platforms/base.py:_media_delivery_denied_paths */
 char **base_platform_media_delivery_denied_paths(int *count_out)
 {
     char home[PATH_MAX], hermes_home[PATH_MAX], hermes_root[PATH_MAX];
@@ -307,7 +299,6 @@ void base_platform_media_delivery_denied_paths_free(char **arr)
  *  Faithful to: Path.relative_to(root) succeeds -> True.
  *  Returns true if `path` is the same as or nested under `root`.
  * ================================================================ */
-/* PoP: base_platform_path_is_within @ gateway/platforms/base.py:_path_is_within */
 bool base_platform_path_is_within(const char *path, const char *root)
 {
     if (!path || !root) return false;
@@ -329,7 +320,6 @@ static const char * const CACHE_SUBDIRS[] = {
     "images", "audio", "videos", "documents", "screenshots", NULL
 };
 
-/* PoP: base_platform_profile_cache_roots @ gateway/platforms/base.py:_profile_cache_roots */
 char **base_platform_profile_cache_roots(int *count_out)
 {
     char root[PATH_MAX];
@@ -396,7 +386,6 @@ void base_platform_profile_cache_roots_free(char **arr)
  *  Caller frees via base_platform_media_delivery_allowed_roots_free.
  * ================================================================ */
 
-/* PoP: base_platform_media_delivery_allowed_roots @ gateway/platforms/base.py:_media_delivery_allowed_roots */
 char **base_platform_media_delivery_allowed_roots(int *count_out)
 {
     char hermes_home[PATH_MAX], hermes_root[PATH_MAX];
@@ -504,7 +493,6 @@ void base_platform_media_delivery_allowed_roots_free(char **arr)
  *  except the running user's own $HOME tree (its credential subdirs
  *  are blocked by their own more-specific entries).
  * ================================================================ */
-/* PoP: base_platform_path_under_denied_prefix @ gateway/platforms/base.py:_path_under_denied_prefix */
 bool base_platform_path_under_denied_prefix(const char *resolved)
 {
     if (!resolved || !*resolved) return false;
@@ -543,7 +531,6 @@ bool base_platform_path_under_denied_prefix(const char *resolved)
  *  _file_is_recently_produced
  *  Faithful to: (time.time() - mtime) <= window_seconds; window<=0 -> False.
  * ================================================================ */
-/* PoP: base_platform_file_is_recently_produced @ gateway/platforms/base.py:_file_is_recently_produced */
 bool base_platform_file_is_recently_produced(const char *resolved, double window_seconds)
 {
     if (!resolved || window_seconds <= 0.0) return false;
@@ -558,7 +545,6 @@ bool base_platform_file_is_recently_produced(const char *resolved, double window
  *  Faithful to: strip matching surrounding quotes/backticks, then
  *  lstrip backticks/quotes, rstrip backticks/quotes/,.	  :)}]
  * ================================================================ */
-/* PoP: base_platform_normalize_media_tag_path @ gateway/platforms/base.py:_normalize_media_tag_path */
 char *base_platform_normalize_media_tag_path(const char *raw)
 {
     if (!raw) return strdup("");
@@ -598,7 +584,6 @@ char *base_platform_normalize_media_tag_path(const char *raw)
  *  A path like "user@example.com" has suffix ".com" which is NOT a deliverable
  *  extension, so it lacks a deliverable extension -> True.
  * ================================================================ */
-/* PoP: base_platform_path_lacks_deliverable_extension @ gateway/platforms/base.py:_path_lacks_deliverable_extension */
 bool base_platform_path_lacks_deliverable_extension(const char *path)
 {
     static const char *const DELIV_EXTS[] = {
@@ -638,7 +623,6 @@ typedef struct {
     int end;
 } base_span_t;
 
-/* PoP: _merge_spans @ gateway/platforms/base.py:_merge_spans */
 void base_platform_merge_spans(base_span_t *spans, int *count)
 {
     if (!spans || !count || *count <= 1) return;
@@ -671,7 +655,6 @@ void base_platform_merge_spans(base_span_t *spans, int *count)
  *  Faithful to: validate a bare extensionless-branch path.
  * ================================================================ */
 
-/* PoP: _resolve_extensionless_candidate @ gateway/platforms/base.py:_resolve_extensionless_candidate */
 char *base_platform_resolve_extensionless_candidate(const char *path)
 {
     if (!path || !*path) return NULL;
@@ -684,7 +667,6 @@ char *base_platform_resolve_extensionless_candidate(const char *path)
  *  Returns page_options slice + meta via out-params.
  * ================================================================ */
 
-/* PoP: _format_choice_page @ gateway/platforms/base.py:_format_choice_page */
 int base_platform_format_choice_page(
     int total, int page, int per_page,
     int *out_start, int *out_end,
@@ -710,7 +692,6 @@ int base_platform_format_choice_page(
  *  Faithful to: truncate text to budget chars, append suffix when cut.
  * ================================================================ */
 
-/* PoP: _truncate_preview @ gateway/platforms/base.py:_truncate_preview */
 char *base_platform_truncate_preview(const char *text, int budget, const char *suffix)
 {
     if (!text) text = "";
@@ -734,7 +715,6 @@ char *base_platform_truncate_preview(const char *text, int budget, const char *s
  *  everything else .mp3. Path: $TMPDIR/hermes_voice/tts_reply_<12hex>.<ext>
  * ================================================================ */
 
-/* PoP: build_auto_tts_output_path @ gateway/platforms/base.py:build_auto_tts_output_path */
 char *base_platform_build_auto_tts_output_path(const char *platform_name)
 {
     static const char *const OPUS_VOICE_PLATFORMS[] = {
@@ -789,7 +769,6 @@ static int count_sub(const char *hay, const char *needle)
     return c;
 }
 
-/* PoP: base_platform_strip_media_tag_directives @ gateway/platforms/base.py:_strip_media_tag_directives */
 char *base_platform_strip_media_tag_directives(const char *text)
 {
     if (!text) return strdup("");
@@ -967,7 +946,6 @@ char *base_platform_strip_media_tag_directives(const char *text)
  *  _error_blob
  *  Faithful to: build lowercased text blob for send-error classifiers.
  * ================================================================ */
-/* PoP: base_platform_error_blob @ gateway/platforms/base.py:_error_blob */
 char *base_platform_error_blob(const char *exc_str, const char *exc_class,
                                const char *error_text)
 {
@@ -1002,7 +980,6 @@ char *base_platform_error_blob(const char *exc_str, const char *exc_class,
  *  Faithful to: returns True only for chat-level not_found, never
  *  when a sub-chat marker is present.
  * ================================================================ */
-/* PoP: base_platform_is_chat_level_not_found @ gateway/platforms/base.py:is_chat_level_not_found */
 bool base_platform_is_chat_level_not_found(const char *exc_str,
                                            const char *exc_class,
                                            const char *error_text)

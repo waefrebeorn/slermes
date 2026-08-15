@@ -51,7 +51,6 @@ static void strip_only(const char *s, char *out, size_t bufsz) {
     out[len] = '\0';
 }
 
-/* PoP: pep503_normalize @ gateway/dead_targets.py:_normalize */
 static void dead_target_normalize(const char *platform, const char *chat_id,
                                   char *out, size_t bufsz) {
     char p[256], c[256];
@@ -60,7 +59,6 @@ static void dead_target_normalize(const char *platform, const char *chat_id,
     snprintf(out, bufsz, "%s:%s", p, c);
 }
 
-/* PoP: cmd_load @ gateway/dead_targets.py:_load */
 static void dead_target_registry_load(dead_target_registry_t *r) {
     FILE *f = fopen(r->path, "rb");
     if (!f) return; /* missing file -> stay empty */
@@ -90,7 +88,6 @@ static void dead_target_registry_load(dead_target_registry_t *r) {
 }
 
 /* Best-effort atomic persist of the dead set to disk. Caller holds the lock. */
-/* PoP: dead_target_flush_locked @ gateway/dead_targets.py:_flush_locked */
 void dead_target_flush_locked(dead_target_registry_t *r) {
     /* mkdir -p parent */
     char dir[PATH_MAX];
@@ -139,7 +136,6 @@ void dead_target_registry_free(dead_target_registry_t *r) {
     free(r);
 }
 
-/* PoP: dead_target_is_dead_error_kind @ gateway/dead_targets.py:is_dead_error_kind */
 bool dead_target_is_dead_error_kind(const char *error_kind) {
     if (!error_kind || !error_kind[0]) return false;
     for (int i = 0; i < N_DEAD_ERROR_KINDS; i++)
@@ -147,7 +143,6 @@ bool dead_target_is_dead_error_kind(const char *error_kind) {
     return false;
 }
 
-/* PoP: dead_target_is_dead @ gateway/dead_targets.py:is_dead */
 bool dead_target_is_dead(dead_target_registry_t *r, const char *platform,
                          const char *chat_id) {
     if (!chat_id || !chat_id[0]) return false;
@@ -159,7 +154,6 @@ bool dead_target_is_dead(dead_target_registry_t *r, const char *platform,
     return found;
 }
 
-/* PoP: dead_target_mark_dead @ gateway/dead_targets.py:mark_dead */
 bool dead_target_mark_dead(dead_target_registry_t *r, const char *platform,
                            const char *chat_id, const char *reason) {
     if (!chat_id || !chat_id[0]) return false;
@@ -188,7 +182,6 @@ bool dead_target_mark_dead(dead_target_registry_t *r, const char *platform,
 /* Key deletion: canonical json_obj_del() lives in libjson. */
 #define json_object_delete(obj, key) ((void)json_obj_del((obj), (key)))
 
-/* PoP: scc_clear @ gateway/dead_targets.py:clear */
 bool dead_target_clear(dead_target_registry_t *r, const char *platform,
                        const char *chat_id) {
     if (!chat_id || !chat_id[0]) return false;
@@ -204,7 +197,6 @@ bool dead_target_clear(dead_target_registry_t *r, const char *platform,
     return was_set;
 }
 
-/* PoP: dead_target_all_dead @ gateway/dead_targets.py:all_dead */
 json_t *dead_target_all_dead(dead_target_registry_t *r) {
     pthread_mutex_lock(&r->lock);
     json_t *snap = json_copy(r->dead);

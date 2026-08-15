@@ -48,7 +48,6 @@ typedef struct cli_command_def_t {
     const char *busy_handler;  /* handler key when busy_policy != "dispatch" */
 } cli_command_def_t;
 
-/* PoP: is_interrupt_then_dispatch @ hermes_cli/commands.py:is_interrupt_then_dispatch */
 /* Return true when command_name must interrupt a running agent first.
  * True for commands whose busy_policy is "interrupt_then_dispatch"
  * (the /stop, /new, /reset class). Accepts aliases. */

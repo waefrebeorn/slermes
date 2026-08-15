@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_insights__get_sessions @ agent/insights.py:_get_sessions */
 json_node_t* cli_insights__get_sessions(const char *state_dir, int limit) {
     /*
      * Get recent sessions from the state directory.
@@ -28,7 +27,6 @@ json_node_t* cli_insights__get_sessions(const char *state_dir, int limit) {
     return sessions;
 }
 
-/* PoP: cli_insights__get_tool_usage @ agent/insights.py:_get_tool_usage */
 json_node_t* cli_insights__get_tool_usage(json_node_t *sessions) {
     /*
      * Aggregate tool usage statistics from sessions.
@@ -43,7 +41,6 @@ json_node_t* cli_insights__get_tool_usage(json_node_t *sessions) {
     return usage;
 }
 
-/* PoP: cli_insights__get_skill_usage @ agent/insights.py:_get_skill_usage */
 json_node_t* cli_insights__get_skill_usage(json_node_t *sessions) {
     /*
      * Aggregate skill usage statistics from sessions.
@@ -58,7 +55,6 @@ json_node_t* cli_insights__get_skill_usage(json_node_t *sessions) {
     return usage;
 }
 
-/* PoP: cli_insights__get_message_stats @ agent/insights.py:_get_message_stats */
 json_node_t* cli_insights__get_message_stats(json_node_t *sessions) {
     /*
      * Compute message statistics from sessions.
@@ -76,7 +72,6 @@ json_node_t* cli_insights__get_message_stats(json_node_t *sessions) {
     return stats;
 }
 
-/* PoP: cli_insights__compute_overview @ agent/insights.py:_compute_overview */
 json_node_t* cli_insights__compute_overview(json_node_t *sessions) {
     /*
      * Compute an overview of agent activity.
@@ -94,7 +89,6 @@ json_node_t* cli_insights__compute_overview(json_node_t *sessions) {
     return overview;
 }
 
-/* PoP: cli_insights__compute_model_breakdown @ agent/insights.py:_compute_model_breakdown */
 json_node_t* cli_insights__compute_model_breakdown(json_node_t *sessions) {
     /*
      * Compute model usage breakdown from sessions.
@@ -109,7 +103,6 @@ json_node_t* cli_insights__compute_model_breakdown(json_node_t *sessions) {
     return breakdown;
 }
 
-/* PoP: cli_insights__compute_platform_breakdown @ agent/insights.py:_compute_platform_breakdown */
 json_node_t* cli_insights__compute_platform_breakdown(json_node_t *sessions) {
     /*
      * Compute platform usage breakdown from sessions.
@@ -124,7 +117,6 @@ json_node_t* cli_insights__compute_platform_breakdown(json_node_t *sessions) {
     return breakdown;
 }
 
-/* PoP: cli_insights__compute_tool_breakdown @ agent/insights.py:_compute_tool_breakdown */
 json_node_t* cli_insights__compute_tool_breakdown(json_node_t *sessions) {
     /*
      * Compute detailed tool usage breakdown from sessions.
@@ -139,7 +131,6 @@ json_node_t* cli_insights__compute_tool_breakdown(json_node_t *sessions) {
     return breakdown;
 }
 
-/* PoP: cli_insights__compute_skill_breakdown @ agent/insights.py:_compute_skill_breakdown */
 json_node_t* cli_insights__compute_skill_breakdown(json_node_t *sessions) {
     /*
      * Compute detailed skill usage breakdown from sessions.
@@ -154,7 +145,6 @@ json_node_t* cli_insights__compute_skill_breakdown(json_node_t *sessions) {
     return breakdown;
 }
 
-/* PoP: cli_insights__format_report @ agent/insights.py:_format_report */
 char* cli_insights__format_report(json_node_t *overview, char *buf, size_t bufsz) {
     /*
      * Format an insights report as a human-readable string.
@@ -178,7 +168,6 @@ char* cli_insights__format_report(json_node_t *overview, char *buf, size_t bufsz
     return buf;
 }
 
-/* PoP: cli_insights__export_json @ agent/insights.py:_export_json */
 json_node_t* cli_insights__export_json(json_node_t *overview) {
     /*
      * Export insights data as a JSON object.

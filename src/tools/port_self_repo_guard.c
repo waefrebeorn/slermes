@@ -93,7 +93,6 @@ static bool srg_is_assignment(const char *word) {
 
 /* ── get_running_source_root ──
  * Return the source checkout backing this process (malloc'd) or NULL. */
-/* PoP: get_running_source_root @ tools/self_repo_guard.py:get_running_source_root */
 char *srg_get_running_source_root(void) {
     /* Equivalent of Path(__file__).resolve().parent.parent: the repo root is
      * two levels up from src/tools/. We hardcode the build-time layout. */
@@ -108,7 +107,6 @@ char *srg_get_running_source_root(void) {
 
 /* ── _resolve(path_str, base) ──
  * expanduser + (base if relative) + resolve. malloc'd path. */
-/* PoP: _resolve @ tools/self_repo_guard.py:_resolve */
 char *srg_resolve(const char *path_str, const char *base) {
     if (!path_str) return NULL;
     /* expanduser ~ */
@@ -150,7 +148,6 @@ char *srg_resolve(const char *path_str, const char *base) {
 }
 
 /* ── _is_within(path, root) ── */
-/* PoP: _is_within @ tools/self_repo_guard.py:_is_within */
 bool srg_is_within(const char *path, const char *root) {
     if (!path || !root) return false;
     if (strcmp(path, root) == 0) return true;
@@ -161,7 +158,6 @@ bool srg_is_within(const char *path, const char *root) {
 
 /* ── _executable_name(value) ──
  * basename, \ -> /, strip .exe, lowercase. malloc'd. */
-/* PoP: _executable_name @ tools/self_repo_guard.py:_executable_name */
 char *srg_executable_name(const char *value) {
     if (!value) return strdup("");
     /* replace backslashes with slashes */
@@ -187,7 +183,6 @@ char *srg_executable_name(const char *value) {
  * NULL-terminated array of malloc'd strings. Faithful to Python
  * _read_shell_word + _shell_words_at (skips whitespace, tracks quotes,
  * $(), ${}, backticks; breaks on whitespace/;&| outside quotes). */
-/* PoP: _shell_words_at @ tools/self_repo_guard.py:_shell_words_at */
 static size_t srg_read_shell_word_pos(const char *command, size_t len, size_t pos,
                                       size_t *out_start, size_t *out_end) {
     /* skip whitespace */
@@ -265,7 +260,6 @@ char **srg_shell_words_at(const char *command, size_t start) {
 }
 
 /* ── _consume_options(words, start, options_with_arg) ── */
-/* PoP: _consume_options @ tools/self_repo_guard.py:_consume_options */
 size_t srg_consume_options(char **words, size_t start, const char *const *options_with_arg) {
     size_t index = start;
     while (words && words[index]) {
@@ -289,7 +283,6 @@ size_t srg_consume_options(char **words, size_t start, const char *const *option
  * Returns env (as a simple list), executable, args. We model env as a
  * malloc'd list "name\0value\0\n" packed for simplicity, plus out_executable
  * (malloc'd) and out_args (malloc'd NULL-terminated array). */
-/* PoP: _command_parts @ tools/self_repo_guard.py:_command_parts */
 void srg_command_parts(char **words, char **out_env_packed, char **out_executable, char ***out_args) {
     char *env_packed = malloc(1); if (env_packed) env_packed[0] = '\0';
     size_t env_len = 0, env_cap = 0;
@@ -367,7 +360,6 @@ void srg_command_parts(char **words, char **out_env_packed, char **out_executabl
 /* ── _scope_keys(command, starts) ──
  * Returns an array scopes[count] of "opener stack" for each start. We model
  * the opener stack as a small fixed array of ints. */
-/* PoP: _scope_keys @ tools/self_repo_guard.py:_scope_keys */
 #define SRG_MAX_CONTEXT 32
 static void srg_scope_keys(const char *command, const size_t *starts, size_t nstarts,
                            size_t (*out_scopes)[SRG_MAX_CONTEXT], size_t *out_counts) {
@@ -432,7 +424,6 @@ static void srg_scope_keys(const char *command, const size_t *starts, size_t nst
 /* ── _operator_before(command, start) ──
  * Returns the operator char before `start`, or "\n"/NULL. out is a caller
  * buffer of at least 4 bytes. */
-/* PoP: _operator_before @ tools/self_repo_guard.py:_operator_before */
 static void srg_operator_before(const char *command, size_t start, char *out) {
     out[0] = '\0';
     if (!command) return;
@@ -464,7 +455,6 @@ static void srg_operator_before(const char *command, size_t start, char *out) {
 
 /* ── _cd_target(executable, args, cwd) ──
  * For cd/pushd, return resolved target dir or NULL. */
-/* PoP: _cd_target @ tools/self_repo_guard.py:_cd_target */
 char *srg_cd_target(const char *executable, char **args, const char *cwd) {
     char *ex = srg_executable_name(executable);
     bool is_cd = ex && (strcmp(ex, "cd") == 0 || strcmp(ex, "pushd") == 0);
@@ -509,7 +499,6 @@ static bool srg_bash_exec_payload(char **args, char **out_payload) {
 
 /* ── _shell_script_arg(args) ──
  * Return script owned by shell -c (malloc'd), or NULL. */
-/* PoP: _shell_script_arg @ tools/self_repo_guard.py:_shell_script_arg */
 char *srg_shell_script_arg(char **args) {
     char *payload = NULL;
     if (srg_bash_exec_payload(args, &payload)) return payload;
@@ -527,7 +516,6 @@ char *srg_shell_script_arg(char **args) {
 
 /* ── _heredoc_specs(line) — parse << delimiters on one line.
  * Returns malloc'd array of srg_heredoc_t, NULL-terminated. */
-/* PoP: _heredoc_specs @ tools/self_repo_guard.py:_heredoc_specs */
 srg_heredoc_t **srg_heredoc_specs(const char *line) {
     srg_heredoc_t **specs = calloc(8, sizeof(srg_heredoc_t *));
     if (!specs) return NULL;
@@ -618,7 +606,6 @@ srg_heredoc_t **srg_heredoc_specs(const char *line) {
 }
 
 /* ── _masked_line(line) — mask all but \r \n. malloc'd. */
-/* PoP: _masked_line @ tools/self_repo_guard.py:_masked_line */
 char *srg_masked_line(const char *line) {
     if (!line) return NULL;
     size_t len = strlen(line);
@@ -631,7 +618,6 @@ char *srg_masked_line(const char *line) {
 
 /* ── _mask_heredocs(command) — mask heredoc bodies; collect shell scripts.
  * out_masked (malloc'd), out_scripts (malloc'd NULL-terminated array). */
-/* PoP: _mask_heredocs @ tools/self_repo_guard.py:_mask_heredocs */
 void srg_mask_heredocs(const char *command, char **out_masked, char ***out_scripts) {
     char *masked_buf = NULL; size_t mlen = 0, mcap = 0;
     char **scripts = calloc(8, sizeof(char *)); int nscripts = 0;
@@ -711,7 +697,6 @@ void srg_mask_heredocs(const char *command, char **out_masked, char ***out_scrip
 /* ── _git_target_and_subcommand(args, current_dir, env) ──
  * Returns target (malloc'd), subcommand (malloc'd or NULL), sub_args
  * (malloc'd NULL-terminated), and a packed inline-aliases list. */
-/* PoP: _git_target_and_subcommand @ tools/self_repo_guard.py:_git_target_and_subcommand */
 void srg_git_target_and_subcommand(char **args, const char *current_dir, const char *env_packed,
                                    char **out_target, char **out_subcommand, char ***out_sub_args,
                                    char **out_inline_aliases) {
@@ -828,7 +813,6 @@ void srg_git_target_and_subcommand(char **args, const char *current_dir, const c
 }
 
 /* ── _mutates_worktree(subcommand, args) ── */
-/* PoP: _mutates_worktree @ tools/self_repo_guard.py:_mutates_worktree */
 bool srg_mutates_worktree(const char *subcommand, char **args) {
     if (!subcommand) return false;
     if (strcmp(subcommand, "reset") == 0) {
@@ -873,7 +857,6 @@ bool srg_mutates_worktree(const char *subcommand, char **args) {
 }
 
 /* ── _next_positional(args, index) ── */
-/* PoP: _next_positional @ tools/self_repo_guard.py:_next_positional */
 size_t srg_next_positional(char **args, size_t index) {
     while (args && args[index]) {
         if (strcmp(args[index], "--") == 0) return index + 1;
@@ -884,7 +867,6 @@ size_t srg_next_positional(char **args, size_t index) {
 }
 
 /* ── _inspect_git_worktree(args, cwd, root) ── */
-/* PoP: _inspect_git_worktree @ tools/self_repo_guard.py:_inspect_git_worktree */
 char *srg_inspect_git_worktree(char **args, const char *cwd, const char *root) {
     size_t action_index = srg_next_positional(args, 0);
     if (!args || !args[action_index]) return NULL;
@@ -906,7 +888,6 @@ char *srg_inspect_git_worktree(char **args, const char *cwd, const char *root) {
 }
 
 /* ── _read_git_alias(executable, target, alias) — subprocess, malloc'd. */
-/* PoP: _read_git_alias @ tools/self_repo_guard.py:_read_git_alias */
 char *srg_read_git_alias(const char *executable, const char *target, const char *alias) {
     /* git -C <target> config --get alias.<alias> */
     char cmd[1024];
@@ -927,7 +908,6 @@ char *srg_read_git_alias(const char *executable, const char *target, const char 
 
 /* ── _inspect_git(executable, args, current_dir, env, root, depth) ──
  * Returns operation string (malloc'd) or NULL. */
-/* PoP: _inspect_git @ tools/self_repo_guard.py:_inspect_git */
 char *srg_inspect_git(const char *executable, char **args, const char *current_dir,
                       const char *env_packed, const char *root, int depth) {
     char *target, *subcommand; char **sub_args; char *inline_aliases;
@@ -1026,7 +1006,6 @@ char *srg_inspect_git(const char *executable, char **args, const char *current_d
 }
 
 /* ── _inspect_github_cli(executable, args, current_dir, root) ── */
-/* PoP: _inspect_github_cli @ tools/self_repo_guard.py:_inspect_github_cli */
 char *srg_inspect_github_cli(const char *executable, char **args, const char *current_dir, const char *root) {
     if (!srg_is_within(current_dir, root)) return NULL;
     char *name = srg_executable_name(executable);
@@ -1046,7 +1025,6 @@ char *srg_inspect_github_cli(const char *executable, char **args, const char *cu
 
 /* ── _find_mutation(command, cwd, root, depth) ──
  * Returns operation string (malloc'd) or NULL. */
-/* PoP: _find_mutation @ tools/self_repo_guard.py:_find_mutation */
 char *srg_find_mutation(const char *command, const char *cwd, const char *root, int depth) {
     if (depth > SRG_MAX_RECURSION) return NULL;
 
@@ -1162,7 +1140,6 @@ char *srg_find_mutation(const char *command, const char *cwd, const char *root, 
 
 /* ── detect_self_repo_git_mutation(command, cwd, source_root) ──
  * Returns true + operation/message out-params when a mutation is found. */
-/* PoP: detect_self_repo_git_mutation @ tools/self_repo_guard.py:detect_self_repo_git_mutation */
 bool srg_detect_self_repo_git_mutation(const char *command, const char *cwd,
                                        const char *source_root,
                                        char **out_operation, char **out_block_message) {
@@ -1185,7 +1162,6 @@ bool srg_detect_self_repo_git_mutation(const char *command, const char *cwd,
 }
 
 /* ── _block_message(operation, root) ── */
-/* PoP: _block_message @ tools/self_repo_guard.py:_block_message */
 char *srg_block_message(const char *operation, const char *root) {
     const char *fmt = "Blocked: `%s` would rewrite Hermes's live source checkout "
                       "(%s) and can mix module versions in this running process. "

@@ -22,7 +22,6 @@
  *  Internal: HTTP helpers via curl popen
  * ================================================================ */
 
-/* PoP: http_post @ tools/browser_camofox.py:_post */
 static char *http_post(const char *url, const char *auth_header, const char *json_body) {
     if (!url) return NULL;
 
@@ -100,7 +99,6 @@ static char *http_post(const char *url, const char *auth_header, const char *jso
     return buf;
 }
 
-/* PoP: http_patch @ gateway/platforms/yuanbao.py:_patch */
 static char *http_patch(const char *url, const char *auth_header, const char *json_body) {
     if (!url) return NULL;
 
@@ -237,7 +235,6 @@ static char *json_get_string(const char *json, const char *key, char *buf, size_
 /* ================================================================
  *  Port of Python: resolve_portal_base_url
  * ================================================================ */
-/* PoP: resolve_portal_base_url @ hermes_cli/dashboard_register.py:_resolve_portal_base_url */
 
 char *resolve_portal_base_url(void *ctx, void *state) {
     if (!ctx) {
@@ -474,7 +471,6 @@ char *absolutize_portal_url(void *ctx, const char *raw_portal_url) {
  *  Port of Python hermes_cli/nous_billing.py: billing auth helpers
  * ================================================================ */
 
-/* PoP: billing_not_logged_in_json @ hermes_cli/nous_billing.py:_billing_not_logged_in */
 /* Build the canonical "not logged in" billing auth error as a malloc'd JSON
  * string, mirroring Python BillingAuthError(status=401, error="invalid_token").
  * Caller frees. */
@@ -483,7 +479,6 @@ char *billing_not_logged_in_json(void) {
                   "\"message\":\"Not logged into Nous Portal \\u2014 run `hermes portal` to log in.\"}");
 }
 
-/* PoP: billing_resolve_token_and_base @ hermes_cli/nous_billing.py:_resolve_token_and_base */
 /* Resolve (access_token, portal_base_url) for billing calls.
  * token_out receives the token (caller frees), base_out receives the base URL
  * (caller frees). Returns 0 on success, -1 if no usable Nous session.
@@ -522,7 +517,6 @@ int billing_resolve_token_and_base(char **token_out, char **base_out, bool use_c
     return 0;
 }
 
-/* PoP: billing_raise_for_error @ hermes_cli/nous_billing.py:_raise_for_error */
 /* Map an HTTP error response to the right typed billing error, returned as a
  * malloc'd JSON string (caller frees). Mirrors Python's status->BillingError
  * dispatch: 401 -> auth, 403+insufficient_scope -> scope, 429/503 -> rate

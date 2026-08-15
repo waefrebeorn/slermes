@@ -271,37 +271,31 @@ static int _cli_is_shell_boundary_echo(const char *segment)
 
 /* ── Public CLI entrypoints (PoP-annotated) ────────────────────────── */
 
-/* PoP: cli_agent_display__split_shell_words @ agent/display.py:_split_shell_words */
 char **cli_agent_display__split_shell_words(const char *segment, int *count)
 {
     return _cli_split_shell_words(segment, count);
 }
 
-/* PoP: cli_agent_display__strip_shell_pipe_tail @ agent/display.py:_strip_shell_pipe_tail */
 char *cli_agent_display__strip_shell_pipe_tail(const char *segment)
 {
     return _cli_strip_shell_pipe_tail(segment);
 }
 
-/* PoP: cli_agent_display__split_shell_compound @ agent/display.py:_split_shell_compound */
 char **cli_agent_display__split_shell_compound(const char *command, int *count)
 {
     return _cli_split_shell_compound(command, count);
 }
 
-/* PoP: cli_agent_display__clean_shell_segment @ agent/display.py:_clean_shell_segment */
 char *cli_agent_display__clean_shell_segment(const char *segment)
 {
     return _cli_clean_shell_segment(segment);
 }
 
-/* PoP: cli_agent_display__is_shell_boundary_echo @ agent/display.py:_is_shell_boundary_echo */
 int cli_agent_display__is_shell_boundary_echo(const char *segment)
 {
     return _cli_is_shell_boundary_echo(segment);
 }
 
-/* PoP: cli_agent_display__oneline @ agent/display.py:_oneline */
 /* Collapse all whitespace (incl. newlines) to single spaces between runs,
  * matching Python " ".join(text.split()). Caller frees. */
 char *cli_agent_display__oneline(const char *text)
@@ -326,7 +320,6 @@ char *cli_agent_display__oneline(const char *text)
     return out;
 }
 
-/* PoP: cli_agent_display__shell_head_word @ agent/display.py:_shell_head_word */
 /* First non-KEY= word, reduced to its basename. Caller frees. */
 static char *_cli_shell_head_word(const char *segment)
 {
@@ -357,7 +350,6 @@ static char *_cli_shell_head_word(const char *segment)
     return bn; /* bn is a fresh strdup, caller frees */
 }
 
-/* PoP: cli_agent_display__summarize_shell_command @ agent/display.py:summarize_shell_command */
 
 /* Silent compound-command heads (see _SHELL_SILENT_HEADS). */
 static const char *CLI_SHELL_SILENT_HEADS[] = {

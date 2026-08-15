@@ -681,7 +681,6 @@ json_t *image_gen_upscale_image(const char *image_url, const char *original_prom
 }
 
 /* ---------------------------------------------------------------------------
- /* PoP: _looks_like_absolute_file_path @ tools/image_generation_tool.py:_looks_like_absolute_file_path */
 /* Delegate to the focused image_gen_path module. */
  bool image_gen_looks_like_absolute_file_path(const char *value)
  {
@@ -1395,7 +1394,6 @@ char *build_fal_edit_payload(const char *model_id, const char *prompt,
     return strdup("{\"error\": \"use image_gen_build_fal_edit_payload\"}");
 }
 
-/* PoP: image_gen_load_fal_client @ tools/image_generation_tool.py:_load_fal_client */
 /* Port of Python tools/image_generation_tool.py:_load_fal_client().
  * Lazily import fal_client module. Returns 1 on success, 0 on failure.
  * In C, the lazy import is realized via fal_common.h (loaded once, guarded by a
@@ -1416,7 +1414,6 @@ int image_gen_load_fal_client(void)
     return 0;
 }
 
-/* PoP: image_gen_get_managed_fal_client @ tools/image_generation_tool.py:_get_managed_fal_client */
 /* Port of Python tools/image_generation_tool.py:_get_managed_fal_client().
  * Returns a managed FAL sync client that reuses the HTTP client.
  * In Python this caches per (gateway_origin, user_token) pair.
@@ -1454,7 +1451,6 @@ json_t *image_gen_get_managed_fal_client(json_t *managed_gateway)
     return result;
 }
 
-/* PoP: image_gen_read_configured_image_model @ tools/image_generation_tool.py:_read_configured_image_model */
 /* Port of Python tools/image_generation_tool.py:_read_configured_image_model().
  * Reads image_gen.model from config or environment. Returns model name or NULL. */
 char *image_gen_read_configured_image_model(void)
@@ -1471,7 +1467,6 @@ char *image_gen_read_configured_image_model(void)
     return strdup("fal-ai/flux-2/klein/9b");
 }
 
-/* PoP: image_gen_read_configured_image_provider @ tools/image_generation_tool.py:_read_configured_image_provider */
 /* Port of Python tools/image_generation_tool.py:_read_configured_image_provider().
  * Reads image_gen.provider from config. Returns provider name or NULL (defaults to "fal"). */
 char *image_gen_read_configured_image_provider(void)

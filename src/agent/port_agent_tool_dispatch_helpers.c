@@ -18,7 +18,6 @@ extern char *tdh_canonical_path(const char *raw_path, const char *execution_cwd)
 /* File-mutating tool names (FILE_MUTATING_TOOL_NAMES in Python). */
 static const char *FILE_MUTATING_TOOLS[] = { "write_file", "patch", NULL };
 
-/* PoP: agent_tool_dispatch__neutralize_delimiters @ agent/tool_dispatch_helpers.py:_neutralize_delimiters */
 char *agent_tool_dispatch_neutralize_delimiters(const char *content)
 {
     if (!content) return NULL;
@@ -147,7 +146,6 @@ static bool json_get_string_field(const char *json, const char *key, char *out, 
     free(buf); regfree(&re); return found;
 }
 
-/* PoP: agent_tool_dispatch__extract_landed_file_mutation_paths @ agent/tool_dispatch_helpers.py:_extract_landed_file_mutation_paths */
 char **agent_tool_dispatch_extract_landed_file_mutation_paths(const char *tool_name,
                                                               const char *args_json,
                                                               const char *result, int *out_n)
@@ -214,7 +212,6 @@ char **agent_tool_dispatch_extract_landed_file_mutation_paths(const char *tool_n
     return targets;
 }
 
-/* PoP: agent_tool_dispatch__extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
 /* Return every canonical path this call reserves for overlap checks. For
  * "patch" in V4A mode, scope comes from patch-body "*** Update/Add/Delete/
  * Move File:" headers (via extract_file_mutation_targets). Otherwise the

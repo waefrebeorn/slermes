@@ -135,7 +135,6 @@ static char *re_xml_text_content(const char *start, const char *end)
 /* ------------------------------------------------------------------ */
 static const char *g_extractable[] = { ".ipynb", ".docx", ".xlsx", NULL };
 
-/* PoP: _extension @ tools/read_extract.py:_extension */
 const char *read_extract_extension(const char *path)
 {
     if (!path) return "";
@@ -151,7 +150,6 @@ const char *read_extract_extension(const char *path)
     return "";
 }
 
-/* PoP: is_extractable_document @ tools/read_extract.py:is_extractable_document */
 bool read_extract_is_extractable_document(const char *path)
 {
     return read_extract_extension(path)[0] != '\0';
@@ -169,7 +167,6 @@ static void read_extract_parse_rels(const char *rels, size_t len,
  * _workbook_sheets() which returns (name, state, rId) tuples. */
 typedef struct { char *name; char *state; char *rid; } re_sheet_t;
 
-/* PoP: _zip_xml @ tools/read_extract.py:_zip_xml */
 /* Python _zip_xml(zf, name) reads+parses a package part into an Element. The
  * C port works on inflated raw XML, so we return the part (NULL if absent —
  * Python would raise ExtractionError on a missing part). */
@@ -178,7 +175,6 @@ static const wubuoxml_part *read_extract_zip_xml(const wubuoxml_package *pkg, co
     return wubuoxml_part_find(pkg, name);
 }
 
-/* PoP: _shared_strings @ tools/read_extract.py:_shared_strings */
 static char **read_extract_shared_strings(const wubuoxml_package *pkg, size_t *out_n)
 {
     char **shared = NULL;
@@ -223,7 +219,6 @@ static char **read_extract_shared_strings(const wubuoxml_package *pkg, size_t *o
     return shared;
 }
 
-/* PoP: _workbook_rels @ tools/read_extract.py:_workbook_rels */
 static void read_extract_workbook_rels(const wubuoxml_package *pkg,
                                        char ***out_ids, char ***out_tgts, size_t *out_n)
 {
@@ -232,7 +227,6 @@ static void read_extract_workbook_rels(const wubuoxml_package *pkg,
     if (wbrels) read_extract_parse_rels((const char *)wbrels->bytes, wbrels->len, out_ids, out_tgts, out_n);
 }
 
-/* PoP: _workbook_sheets @ tools/read_extract.py:_workbook_sheets */
 static re_sheet_t *read_extract_workbook_sheets(const wubuoxml_package *pkg, size_t *out_n)
 {
     re_sheet_t *sheets = NULL;
@@ -267,7 +261,6 @@ static re_sheet_t *read_extract_workbook_sheets(const wubuoxml_package *pkg, siz
     return sheets;
 }
 
-/* PoP: extract_document_text @ tools/read_extract.py:extract_document_text */
 char *read_extract_document_text(const char *path, char *errbuf, size_t errsz)
 {
     if (errbuf && errsz) errbuf[0] = '\0';
@@ -322,7 +315,6 @@ char *read_extract_document_text(const char *path, char *errbuf, size_t errsz)
 /* ------------------------------------------------------------------ */
 /* DOCX — via wubuoxml_docx_text                                       */
 /* ------------------------------------------------------------------ */
-/* PoP: _extract_docx @ tools/read_extract.py:_extract_docx */
 static char *read_extract_docx(const uint8_t *xml, size_t len, char *errbuf, size_t errsz)
 {
     char *body = NULL;
@@ -408,7 +400,6 @@ static char *read_extract_docx(const uint8_t *xml, size_t len, char *errbuf, siz
 /* ------------------------------------------------------------------ */
 /* XLSX — on top of wubuoxml inflated parts + .rels                   */
 /* ------------------------------------------------------------------ */
-/* PoP: _sheet_part @ tools/read_extract.py:_sheet_part */
 static void read_extract_sheet_part(const char *target, char *out, size_t outsz)
 {
     char buf[1024];
@@ -424,7 +415,6 @@ static void read_extract_sheet_part(const char *target, char *out, size_t outsz)
     }
 }
 
-/* PoP: _col_index @ tools/read_extract.py:_col_index */
 static int read_extract_col_index(const char *ref)
 {
     int idx = 0;
@@ -472,7 +462,6 @@ static void read_extract_parse_rels(const char *rels, size_t len,
 }
 
 /* cell value: typ in {"s","inlineStr","b","e",""}. shared is a string array. */
-/* PoP: _cell_value @ tools/read_extract.py:_cell_value */
 static char *read_extract_cell_value(const char *cell_start, const char *cell_end,
                                      char **shared, size_t shared_n)
 {
@@ -530,7 +519,6 @@ static char *read_extract_cell_value(const char *cell_start, const char *cell_en
     return result;
 }
 
-/* PoP: _extract_xlsx @ tools/read_extract.py:_extract_xlsx */
 static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t errsz)
 {
     /* shared strings */
@@ -572,7 +560,6 @@ static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t
             const char *rp = rs;
             int row_count = 0;
             while (rp < re_ && row_count < RE_MAX_XLSX_ROWS_PER_SHEET) {
-                /* PoP: _sheet_rows @ tools/read_extract.py:_sheet_rows */
                 if (*rp == '<' && rp[1] != '/' && re_xml_is_local(rp, "row")) {
                     const char *rte = rp + 1; while (rte < re_ && *rte != '>') rte++;
                     const char *rbody = rte + 1;
@@ -653,7 +640,6 @@ static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t
 /* ------------------------------------------------------------------ */
 /* _extract_notebook (.ipynb via vendored libjson)                     */
 /* ------------------------------------------------------------------ */
-/* PoP: _source_text @ tools/read_extract.py:_source_text */
 static char *read_extract_source_text(const json_node_t *source)
 {
     if (!source) return strdup("");
@@ -676,7 +662,6 @@ static char *read_extract_source_text(const json_node_t *source)
     return strdup("");
 }
 
-/* PoP: _extract_notebook @ tools/read_extract.py:_extract_notebook */
 static char *read_extract_notebook(const char *path, char *errbuf, size_t errsz)
 {
     char *raw = NULL;
@@ -765,7 +750,6 @@ static char *read_extract_notebook(const char *path, char *errbuf, size_t errsz)
 }
 /* ── Pure range/format helpers (tools/read_extract.py) ──────────────── */
 
-/* PoP: _group_ranges @ tools/read_extract.py:_group_ranges */
 /* Python: group sorted 1-based pages into [start, end] runs. */
 int read_extract_group_ranges(const int *pages, int n_pages,
                               int *out_runs, int *out_count) {
@@ -787,7 +771,6 @@ int read_extract_group_ranges(const int *pages, int n_pages,
     return n;
 }
 
-/* PoP: _page_ranges @ tools/read_extract.py:_page_ranges */
 /* Python: "2-29, 33-35, 42"; cap at 12 parts then "…". Caller frees. */
 char *read_extract_page_ranges(const int *pages, int n_pages) {
     if (!pages || n_pages <= 0) return strdup("");
@@ -818,7 +801,6 @@ char *read_extract_page_ranges(const int *pages, int n_pages) {
 #define RE_GAP_MAP_MAX_ENTRIES 20
 #define RE_EMPTY_PAGE_CHARS 20
 
-/* PoP: _gap_map @ tools/read_extract.py:_gap_map */
 char *read_extract_gap_map(const int *counts, int n_counts,
                            const char *const *texts, const int *empty, int n_empty) {
     char *buf = malloc(65536);
@@ -881,7 +863,6 @@ char *read_extract_gap_map(const int *counts, int n_counts,
     return buf;
 }
 
-/* PoP: _human_size @ tools/read_extract.py:_human_size */
 char *read_extract_human_size(long long n_bytes) {
     char *out = NULL;
     if (n_bytes >= 1024) {
@@ -893,7 +874,6 @@ char *read_extract_human_size(long long n_bytes) {
     return out;
 }
 
-/* PoP: _base64_bytes @ tools/read_extract.py:_base64_bytes */
 long long read_extract_base64_bytes(const char *payload) {
     if (!payload) return 0;
     size_t len = 0;
@@ -912,7 +892,6 @@ long long read_extract_base64_bytes(const char *payload) {
     return size > 0 ? size : 0;
 }
 
-/* PoP: _clean_stream_text @ tools/read_extract.py:_clean_stream_text */
 char *read_extract_clean_stream_text(const char *text) {
     if (!text) return strdup("");
     char *stripped = strip_ansi(text);
@@ -977,7 +956,6 @@ char *read_extract_clean_stream_text(const char *text) {
 
 #define RE_MAX_OUTPUT_CHARS 20000
 
-/* PoP: _notebook_output_text @ tools/read_extract.py:_notebook_output_text */
 char *read_extract_notebook_output_text(const char *output_json) {
     if (!output_json || !*output_json) return strdup("");
     json_node_t *out = json_parse(output_json, NULL);
@@ -1127,7 +1105,6 @@ char *read_extract_notebook_output_text(const char *output_json) {
     return result ? result : strdup("");
 }
 
-/* PoP: _notebook_outputs @ tools/read_extract.py:_notebook_outputs */
 char *read_extract_notebook_outputs(const char *cell_json,
                                     const char *jq_pointer,
                                     const char *filename) {

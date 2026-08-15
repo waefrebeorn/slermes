@@ -34,7 +34,6 @@
 /* Path helpers                                                        */
 /* ------------------------------------------------------------------ */
 
-/* PoP: gstat_u_get_process_hermes_home @ gateway/lifecycle_ledger.py:_process_hermes_home */
 char *llg_process_hermes_home(void)
 {
     const char *val = getenv("HERMES_HOME");
@@ -57,7 +56,6 @@ char *llg_process_hermes_home(void)
     return strdup(home && home[0] ? home : "");
 }
 
-/* PoP: get_lifecycle_sentinel_path @ gateway/lifecycle_ledger.py:get_lifecycle_sentinel_path */
 char *llg_get_lifecycle_sentinel_path(const char *home)
 {
     char *base = home ? strdup(home) : llg_process_hermes_home();
@@ -84,7 +82,6 @@ static char *llg_join(const char *home, const char *rel)
 /* Memory sampling (pure /proc reads, never raises)                    */
 /* ------------------------------------------------------------------ */
 
-/* PoP: sample_memory @ gateway/lifecycle_ledger.py:sample_memory */
 json_t *llg_sample_memory(void)
 {
     json_t *sample = json_object();
@@ -143,7 +140,6 @@ json_t *llg_sample_memory(void)
 /* JSON read / atomic write                                            */
 /* ------------------------------------------------------------------ */
 
-/* PoP: mcpo_u_read_json @ gateway/lifecycle_ledger.py:_read_json */
 json_t *llg_read_json(const char *path)
 {
     if (!path) return NULL;
@@ -195,7 +191,6 @@ static void llg_mkdir_p(const char *dir)
     free(tmp);
 }
 
-/* PoP: llg_write_sentinel @ gateway/lifecycle_ledger.py:_write_sentinel */
 void llg_write_sentinel(const json_t *payload, const char *home)
 {
     char *path = llg_get_lifecycle_sentinel_path(home);
@@ -227,7 +222,6 @@ void llg_write_sentinel(const json_t *payload, const char *home)
     free(path);
 }
 
-/* PoP: llg_append_exit_diag @ gateway/lifecycle_ledger.py:_append_exit_diag */
 void llg_append_exit_diag(const json_t *record, const char *home)
 {
     char *path = llg_join(home, LLG_EXIT_DIAG_REL);
@@ -254,7 +248,6 @@ void llg_append_exit_diag(const json_t *record, const char *home)
 /* PID liveness + start-time guard                                     */
 /* ------------------------------------------------------------------ */
 
-/* PoP: llg_pid_alive_with_start_time @ gateway/lifecycle_ledger.py:_pid_alive_with_start_time */
 bool llg_pid_alive_with_start_time(const char *pid, const char *start_time)
 {
     if (!pid) return false;
@@ -285,7 +278,6 @@ bool llg_pid_alive_with_start_time(const char *pid, const char *start_time)
 /* The state machine                                                   */
 /* ------------------------------------------------------------------ */
 
-/* PoP: detect_unclean_exit @ gateway/lifecycle_ledger.py:detect_unclean_exit */
 json_t *llg_detect_unclean_exit(const char *home)
 {
     char *path = llg_get_lifecycle_sentinel_path(home);
@@ -337,7 +329,6 @@ json_t *llg_detect_unclean_exit(const char *home)
     return evidence;
 }
 
-/* PoP: record_startup @ gateway/lifecycle_ledger.py:record_startup */
 json_t *llg_record_startup(const char *home)
 {
     json_t *evidence = llg_detect_unclean_exit(home);
@@ -379,7 +370,6 @@ json_t *llg_record_startup(const char *home)
     return evidence;
 }
 
-/* PoP: llg_mark_exited @ gateway/lifecycle_ledger.py:mark_exited */
 void llg_mark_exited(long exit_code, const char *reason, const char *home)
 {
     char *path = llg_get_lifecycle_sentinel_path(home);
@@ -411,7 +401,6 @@ void llg_mark_exited(long exit_code, const char *reason, const char *home)
     json_free(payload);
 }
 
-/* PoP: hermes_cli_container_boot_u_read_prior_exit_label @ gateway/lifecycle_ledger.py:read_prior_exit_label */
 char *llg_read_prior_exit_label(const char *profile_home)
 {
     char *path = llg_get_lifecycle_sentinel_path(profile_home);

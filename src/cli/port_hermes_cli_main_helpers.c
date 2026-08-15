@@ -159,7 +159,6 @@ char *read_git_revision_fingerprint(const char *repo_root)
 
 /*
  * PoP: _relative_time @ hermes_cli/main.py:_relative_time */
-/* PoP: relative_time @ hermes_cli/sessions_cmd.py:_relative_time */
 char *relative_time(long ts)
 {
     if (!ts) return strdup("?");
@@ -678,10 +677,6 @@ char *main_prompt_api_key(const char *provider_id)
 /*
  * The Python Tee duplicates writes to both stdout and a log file.
  * REAL: write through to the underlying fd and a file when given. */
-/* PoP: __init__ @ hermes_cli/main.py:__init__ */
-/* PoP: flush @ hermes_cli/main.py:flush */
-/* PoP: isatty @ hermes_cli/main.py:isatty */
-/* PoP: fileno @ hermes_cli/main.py:fileno */
 typedef struct { int fd; FILE *log; } tee_ctx;
 static tee_ctx g_tee = { 1, NULL };
 
