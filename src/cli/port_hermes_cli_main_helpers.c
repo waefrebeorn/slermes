@@ -520,6 +520,7 @@ char *update_marker_path(void)
 
 /*
  * config["agent"]["reasoning_effort"] as lowercase string, "" when absent. */
+/* PoP: main_current_reasoning_effort @ hermes_cli/main.py:_current_reasoning_effort */
 char *main_current_reasoning_effort(const char *config_json)
 {
     if (!config_json || !*config_json) return strdup("");
@@ -542,6 +543,7 @@ char *main_current_reasoning_effort(const char *config_json)
 /*
  * Returns malloc'd path: project_root/apps/desktop when that package dir
  * exists, else project_root/node_modules/electron (npm hoisting layout). */
+/* PoP: main_electron_dir @ hermes_cli/main.py:_electron_dir */
 char *main_electron_dir(const char *project_root)
 {
     if (!project_root) project_root = ".";
@@ -556,6 +558,7 @@ char *main_electron_dir(const char *project_root)
 
 /*
  * electron-builder's electronDist main binary; basename differs per OS. */
+/* PoP: main_electron_dist_binary @ hermes_cli/main.py:_electron_dist_binary */
 char *main_electron_dist_binary(const char *project_root)
 {
     char *dir = main_electron_dir(project_root ? project_root : ".");
@@ -638,6 +641,7 @@ char **main_build_provider_choices(int *out_count)
 
 /*
  * Interactive API-key prompt; returns malloc'd key ("" on EOF/cancel). */
+/* PoP: main_prompt_api_key @ hermes_cli/main.py:_prompt_api_key */
 char *main_prompt_api_key(const char *provider_id)
 {
     if (provider_id && *provider_id)

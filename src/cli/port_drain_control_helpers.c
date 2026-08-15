@@ -99,6 +99,7 @@ char *drain_control_request_path(const char *home)
  * Returns 1 iff a definite mismatch (current non-empty, marker epoch present
  * and differs), else 0 (lenient: missing/empty current epoch or marker epoch
  * is treated as NOT stale). */
+/* PoP: drain_control_marker_epoch_is_stale @ gateway/drain_control.py:_marker_epoch_is_stale */
 int drain_control_marker_epoch_is_stale(const char *body_json, const char *current_epoch)
 {
     if (!current_epoch || !current_epoch[0]) return 0; /* can't be sure */

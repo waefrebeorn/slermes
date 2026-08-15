@@ -260,6 +260,7 @@ ws_path_status_t ws_path_text(const char *raw, char *out, size_t cap) {
  * (Python `strict=require_exists`). The Python raises HTTPException on
  * FileNotFoundError when require_exists=True, else raises HTTPException
  * 400 on OSError/RuntimeError. We map to ws_path_status. */
+/* PoP: ws_canonical_path @ hermes_cli/web_server.py:_canonical_path */
 ws_path_status_t ws_canonical_path(const char *raw, bool require_exists,
                                    char *out, size_t cap)
 {
@@ -667,6 +668,7 @@ char *ws_fs_find_git_root(const char *start) {
  *     Returns malloc'd absolute path on success, NULL on error (empty/NUL/invalid).
  */
 /* PoP: ws_fs_path @ hermes_cli.web_server.py:_fs_path */
+/* PoP: ws_fs_path @ hermes_cli/web_server.py:_fs_path */
 char *ws_fs_path(const char *raw_path) {
     if (!raw_path) return NULL;
     /* Strip whitespace */
@@ -786,6 +788,7 @@ char **ws_media_serve_roots(void) {
 /* ── ws_ensure_managed_root ──────────────────────────────────────────────────
  *     Returns 0 on success, -1 on error.
  */
+/* PoP: ws_ensure_managed_root @ hermes_cli/web_server.py:_ensure_managed_root */
 int ws_ensure_managed_root(const char *path) {
     if (!path || !*path) return -1;
     /* Expand user */

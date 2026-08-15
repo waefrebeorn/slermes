@@ -204,6 +204,7 @@ char *blueprint_catalog_deeplink(const char *key, const char *slots_json, const 
  * schedule_template: cron string; slots_json: slot array. Returns malloc'd
  * human schedule string. Caller frees.
  */
+/* PoP: blueprint_catalog_humanize_schedule @ cron/blueprint_catalog.py:_humanize_schedule */
 char *blueprint_catalog_humanize_schedule(const char *schedule_template, const char *slots_json)
 {
     if (!schedule_template) schedule_template = "";
@@ -270,6 +271,7 @@ char *blueprint_catalog_humanize_schedule(const char *schedule_template, const c
  *   slots_json: slot array
  *   values_json: supplied values object
  */
+/* PoP: blueprint_catalog_resolve_schedule @ cron/blueprint_catalog.py:_resolve_schedule */
 char *blueprint_catalog_resolve_schedule(const char *schedule_template, const char *slots_json, const char *values_json)
 {
     if (!schedule_template) return NULL;

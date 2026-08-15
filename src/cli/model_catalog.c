@@ -377,6 +377,7 @@ const char *model_provider_model_at(const char *provider, int idx) {
 
 /* ── String helpers ─────────────────────────────────────────────────── */
 
+/* PoP: model_strip_vendor_prefix @ hermes_cli/models.py:_strip_vendor_prefix */
 void model_strip_vendor_prefix(const char *model_id, char *out, size_t outsz) {
     if (!model_id) { if (outsz) out[0] = '\0'; return; }
     /* lowercase + strip leading "vendor/" */
@@ -681,6 +682,7 @@ char *model_provider_models_cache_path(void) {
     return provider_models_cache_path();
 }
 
+/* PoP: model_credential_fingerprint @ hermes_cli/models.py:_credential_fingerprint */
 char *model_credential_fingerprint(const char *provider) {
     /* Owned by port_models_helpers.c (credential_fingerprint). */
     return credential_fingerprint(provider);

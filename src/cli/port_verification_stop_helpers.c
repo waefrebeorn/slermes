@@ -84,6 +84,7 @@ int verification_stop_is_non_code_path(const char *raw)
 
 /*
  * Takes a JSON array of path strings; returns JSON array of kept paths. */
+/* PoP: verification_stop_filter_verifiable_paths @ agent/verification_stop.py:_filter_verifiable_paths */
 char *verification_stop_filter_verifiable_paths(const char *paths_json)
 {
     char *out = strdup("[]");
@@ -128,6 +129,7 @@ static int is_non_messaging_surface(const char *id)
 
 /*
  * Reads HERMES_PLATFORM / HERMES_SESSION_SOURCE env (the pure env-fallback path). */
+/* PoP: verification_stop_session_is_messaging_surface @ agent/verification_stop.py:_session_is_messaging_surface */
 int verification_stop_session_is_messaging_surface(void)
 {
     const char *platform = getenv("HERMES_PLATFORM");
@@ -199,6 +201,7 @@ int verification_stop_enabled(const char *config_json)
 
 /*
  * Takes JSON array of paths; returns markdown bullet string (max 8 + "... and N more"). */
+/* PoP: verification_stop_format_changed_paths @ agent/verification_stop.py:_format_changed_paths */
 char *verification_stop_format_changed_paths(const char *paths_json)
 {
     char *out = strdup("");
@@ -233,6 +236,7 @@ char *verification_stop_format_changed_paths(const char *paths_json)
 
 /*
  * Takes a status JSON object; returns detail string. */
+/* PoP: verification_stop_status_detail @ agent/verification_stop.py:_status_detail */
 char *verification_stop_status_detail(const char *status_json)
 {
     char *out = strdup("unverified");

@@ -78,6 +78,7 @@ static void path_part_at(const char *p, int idx, char *out, size_t sz)
 
 /*
  * Returns 1 if rel_path (relative to hermes root) should be skipped. */
+/* PoP: backup_should_exclude @ hermes_cli/backup.py:_should_exclude */
 int backup_should_exclude(const char *rel_path)
 {
     if (!rel_path) return 0;
@@ -129,6 +130,7 @@ int backup_should_skip_file(const char *abs_path, const char *rel_path, const ch
 /*
  * Safely copy a SQLite DB via the online backup API (handles WAL mode),
  * falling back to a raw byte copy on failure. Returns 1 on success. */
+/* PoP: backup_safe_copy_db @ hermes_cli/backup.py:_safe_copy_db */
 int backup_safe_copy_db(const char *src, const char *dst)
 {
     if (!src || !dst) return 0;
@@ -315,6 +317,7 @@ char *backup_detect_zip_prefix(const char *path)
 
 /*
  * Returns malloc'd path <hermes_home>/state-snapshots. Caller frees. */
+/* PoP: backup_quick_snapshot_root @ hermes_cli/backup.py:_quick_snapshot_root */
 char *backup_quick_snapshot_root(const char *hermes_home)
 {
     char home[PATH_MAX];
@@ -327,6 +330,7 @@ char *backup_quick_snapshot_root(const char *hermes_home)
 
 /*
  * Returns malloc'd path <hermes_home>/backups. Caller frees. */
+/* PoP: backup_pre_update_backup_dir @ hermes_cli/backup.py:_pre_update_backup_dir */
 char *backup_pre_update_backup_dir(const char *hermes_home)
 {
     char home[PATH_MAX];
@@ -340,6 +344,7 @@ char *backup_pre_update_backup_dir(const char *hermes_home)
 /*
  * Count jobs in a cron/jobs.json file. Returns -1 if missing/unparseable
  * (means "unknown", never "zero"), else the job count. */
+/* PoP: backup_count_cron_jobs @ hermes_cli/backup.py:_count_cron_jobs */
 int backup_count_cron_jobs(const char *path)
 {
     if (!path) return -1;
@@ -364,6 +369,7 @@ int backup_count_cron_jobs(const char *path)
 /*
  * Restore cron/jobs.json from a quick snapshot if the live file now has
  * FEWER jobs than the snapshot. Returns 1 if restored, 0 otherwise. */
+/* PoP: backup_restore_cron_jobs_if_emptied @ hermes_cli/backup.py:restore_cron_jobs_if_emptied */
 int backup_restore_cron_jobs_if_emptied(const char *snapshot_id, const char *hermes_home)
 {
     if (!snapshot_id || !snapshot_id[0]) return 0;
@@ -489,6 +495,7 @@ int backup_prune_pre_update_backups(const char *dir, int keep)
 
 /*
  * Remove oldest pre-migration-*.zip beyond keep (floor keep to 0). */
+/* PoP: backup_prune_pre_migration_backups @ hermes_cli/backup.py:_prune_pre_migration_backups */
 int backup_prune_pre_migration_backups(const char *dir, int keep)
 {
     if (keep < 0) keep = 0;

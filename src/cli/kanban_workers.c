@@ -527,6 +527,7 @@ char **kdb_resolve_worker_cli_toolsets(const char *hermes_home)
 /* ===================================================================== */
 /* _rotate_worker_log / _worker_log_path / _worker_log_rotation_config   */
 /* ===================================================================== */
+/* PoP: kb_rotated_log_path @ hermes_cli/kanban_db.py:_rotated_log_path */
 static char *kb_rotated_log_path(const char *log_path, int generation)
 {
     /* <log>.1, <log>.2, ... */

@@ -42,6 +42,7 @@ static char *read_file_text(const char *path)
 
 /*
  * Returns malloc'd JSON object: {"<platform>": {"<chat_id>":"<friendly>", ...}}. */
+/* PoP: load_channel_aliases @ gateway/channel_directory.py:_load_channel_aliases */
 static json_t *load_channel_aliases(void)
 {
     const char *home = credfiles_get_hermes_home();
@@ -61,6 +62,7 @@ static json_t *load_channel_aliases(void)
 
 /*
  * Overlay friendly names onto directory entries by chat_id (mutates *platforms). */
+/* PoP: apply_channel_aliases @ gateway/channel_directory.py:_apply_channel_aliases */
 static void apply_channel_aliases(json_t *platforms)
 {
     if (!platforms || platforms->type != JSON_OBJECT) return;
@@ -247,6 +249,7 @@ static void normalize_channel_query(const char *value, char *out, size_t outsz)
 
 /*
  * Returns malloc'd human-facing target label. */
+/* PoP: channel_target_name @ gateway/channel_directory.py:_channel_target_name */
 char *channel_target_name(const char *platform_name, json_t *channel)
 {
     if (!channel || channel->type != JSON_OBJECT) return strdup("");
@@ -289,6 +292,7 @@ static char *session_entry_id(json_t *origin)
 
 /*
  * Returns malloc'd name. */
+/* PoP: session_entry_name @ gateway/channel_directory.py:_session_entry_name */
 char *session_entry_name(json_t *origin)
 {
     if (!origin || origin->type != JSON_OBJECT) return strdup("");
@@ -313,6 +317,7 @@ char *session_entry_name(json_t *origin)
 
 /*
  * Returns malloc'd JSON array of {id,name,type,thread_id} entries. */
+/* PoP: build_from_sessions @ gateway/channel_directory.py:_build_from_sessions */
 json_t *build_from_sessions(const char *platform_name)
 {
     json_t *arr = json_array();
@@ -365,6 +370,7 @@ json_t *build_from_sessions(const char *platform_name)
  * discovered from session history. guilds_json: array of
  * {name, text_channels:[{id,name}], forum_channels:[{id,name}]}.
  * Returns malloc'd JSON array of {id,name,guild,type}. */
+/* PoP: cli_gateway_channel_directory__build_discord @ gateway/channel_directory.py:_build_discord */
 json_t *cli_gateway_channel_directory__build_discord(const char *guilds_json, const char *channels_json)
 {
     json_t *arr = json_array();
@@ -430,6 +436,7 @@ json_t *cli_gateway_channel_directory__build_discord(const char *guilds_json, co
 /*
  * List Slack channels from the team clients' channel JSON, merge session DMs.
  * channels_json: array of {id,name,is_private}. Returns malloc'd JSON array. */
+/* PoP: cli_gateway_channel_directory__build_slack @ gateway/channel_directory.py:_build_slack */
 json_t *cli_gateway_channel_directory__build_slack(const char *workspaces_json, const char *channels_json)
 {
     (void)workspaces_json;
@@ -476,6 +483,7 @@ json_t *cli_gateway_channel_directory__build_slack(const char *workspaces_json, 
 /*
  * Build the directory for the given platforms (session-based discovery for
  * each + alias overlay). Writes channel_directory.json. Returns malloc'd JSON. */
+/* PoP: cli_gateway_channel_directory_build_channel_directory @ gateway/channel_directory.py:build_channel_directory */
 char *cli_gateway_channel_directory_build_channel_directory(
     const char **platform_names, const char **adapter_types, int adapter_count)
 {

@@ -20,6 +20,7 @@
 #include <time.h>
 
 /* Normalise a timestamp to epoch seconds (mirrors _to_epoch). */
+/* PoP: kb_to_epoch @ hermes_cli/kanban_db.py:_to_epoch */
 static long kb_to_epoch(const char *val)
 {
     if (!val) return -1;

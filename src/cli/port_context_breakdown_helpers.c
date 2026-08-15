@@ -48,6 +48,7 @@ int context_breakdown_json_tokens(const char *value_json)
 
 /*
  * Extract tool name from a tool JSON object. Returns malloc'd string. */
+/* PoP: context_breakdown_tool_name @ agent/context_breakdown.py:_tool_name */
 char *context_breakdown_tool_name(const char *tool_json)
 {
     char *def = strdup("");
@@ -72,6 +73,7 @@ char *context_breakdown_tool_name(const char *tool_json)
 /*
  * Split a tools JSON array into {builtin, mcp, subagent} buckets.
  * Returns malloc'd JSON object. Caller frees. */
+/* PoP: context_breakdown_split_tools @ agent/context_breakdown.py:_split_tools */
 char *context_breakdown_split_tools(const char *tools_json)
 {
     char *out = strdup("{\"builtin\":[],\"mcp\":[],\"subagent\":[]}");
@@ -107,6 +109,7 @@ char *context_breakdown_split_tools(const char *tools_json)
 
 /*
  * Remove each given block substring from text. Returns malloc'd string. */
+/* PoP: context_breakdown_strip_blocks @ agent/context_breakdown.py:_strip_blocks */
 char *context_breakdown_strip_blocks(const char *text, const char *block)
 {
     if (!text) text = "";
