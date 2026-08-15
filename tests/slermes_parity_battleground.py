@@ -978,7 +978,14 @@ class ParityAnalyzer:
                             if ch=='/' and prev=='*': in_bc=False
                             pos+=1; continue
                         if in_s:
-                            if ch=='"' and prev!='\\': in_s=False
+                            if ch=='"':
+                                # Only end string if quote is not escaped
+                                # Count consecutive backslashes before quote
+                                bs = 0
+                                while pos > bs+1 and content[pos-bs-2] == '\\':
+                                    bs += 1
+                                if bs % 2 == 0:
+                                    in_s = False  # even backslashes = unescaped quote
                             pos+=1; continue
                         if in_c:
                             if ch=="'" and prev!='\\': in_c=False
