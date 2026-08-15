@@ -322,8 +322,7 @@ char *strip_vendor_prefix(const char *model_id)
     return out;
 }
 
-/*
- * PoP: _is_openai_fast_model @ hermes_cli/models.py:_is_openai_fast_model */
+/* PoP: _is_openai_fast_model @ hermes_cli/models.py:_is_openai_fast_model */
 int _is_openai_fast_model(const char *model_id)
 {
     char *raw = strip_vendor_prefix(model_id);
@@ -342,8 +341,7 @@ int _is_openai_fast_model(const char *model_id)
     return r;
 }
 
-/*
- * PoP: _is_anthropic_fast_model @ hermes_cli/models.py:_is_anthropic_fast_model */
+/* PoP: is_anthropic_fast_model @ hermes_cli/models.py:_is_anthropic_fast_model */
 int is_anthropic_fast_model(const char *model_id)
 {
     char *raw = strip_vendor_prefix(model_id);
@@ -359,8 +357,7 @@ int is_anthropic_fast_model(const char *model_id)
     return r;
 }
 
-/*
- * PoP: model_supports_fast_mode @ hermes_cli/models.py:model_supports_fast_mode */
+/* PoP: model_supports_fast_mode @ hermes_cli/models.py:model_supports_fast_mode */
 int model_supports_fast_mode(const char *model_id)
 {
     return is_anthropic_fast_model(model_id) || _is_openai_fast_model(model_id);
@@ -411,8 +408,7 @@ char *_strip_ollama_cloud_suffix(const char *model_id)
     return out;
 }
 
-/*
- * PoP: _is_github_models_base_url @ hermes_cli/models.py:_is_github_models_base_url */
+/* PoP: is_github_models_base_url @ hermes_cli/models.py:_is_github_models_base_url */
 int is_github_models_base_url(const char *base_url)
 {
     if (!base_url) return 0;
@@ -453,8 +449,7 @@ char *lmstudio_server_root(const char *base_url)
     return out;
 }
 
-/*
- * PoP: normalize_opencode_model_id @ hermes_cli/models.py:normalize_opencode_model_id */
+/* PoP: normalize_opencode_model_id @ hermes_cli/models.py:normalize_opencode_model_id */
 char *normalize_opencode_model_id(const char *provider_id, const char *model_id)
 {
     char prov[128];
@@ -520,8 +515,7 @@ char *azure_foundry_model_api_mode(const char *model_name)
     return match ? strdup("codex_responses") : NULL;
 }
 
-/*
- * PoP: _should_use_copilot_responses_api @ hermes_cli/models.py:_should_use_copilot_responses_api */
+/* PoP: should_use_copilot_responses_api @ hermes_cli/models.py:_should_use_copilot_responses_api */
 int should_use_copilot_responses_api(const char *model_id)
 {
     if (!model_id) return 0;

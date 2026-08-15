@@ -2342,13 +2342,13 @@ static const struct { const char *slug; int ctx; } g_codex_oauth_fallback[] = {
 };
 #define CODEX_FALLBACK_COUNT (sizeof(g_codex_oauth_fallback) / sizeof(g_codex_oauth_fallback[0]))
 
-/* ---- provider_fetch_codex_oauth_context_lengths ---- */
+/* ---- _fetch_codex_oauth_context_lengths ---- */
 /* Port of Python model_metadata._fetch_codex_oauth_context_lengths().
  * Probes chatgpt.com/backend-api/codex/models for per-slug context windows.
  * Returns json_t* dict of slug -> context_window, or NULL on failure.
  * Caller must json_free(). */
-/* PoP: provider_fetch_codex_oauth_context_lengths @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths */
-json_t *provider_fetch_codex_oauth_context_lengths(const char *access_token) {
+/* PoP: _fetch_codex_oauth_context_lengths @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths */
+json_t *_fetch_codex_oauth_context_lengths(const char *access_token) {
     if (!access_token || !*access_token) return NULL;
 
     const char *url = "https://chatgpt.com/backend-api/codex/models?client_version=1.0.0";
@@ -2406,7 +2406,7 @@ int resolve_codex_oauth_context_length(const char *model, const char *access_tok
 
     /* Live probe */
     if (access_token && *access_token) {
-        json_t *live = provider_fetch_codex_oauth_context_lengths(access_token);
+        json_t *live = _fetch_codex_oauth_context_lengths(access_token);
         if (live) {
             /* Exact match */
             json_t *entry = json_obj_get(live, model_bare);

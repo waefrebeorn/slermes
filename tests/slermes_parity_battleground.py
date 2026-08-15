@@ -250,7 +250,7 @@ class CIndexer:
             r'^(?:static\s+)?(?:const\s+)?(?:__attribute__\(\s*unused\s*\)\s+)?'
             r'(?:\w+\s+)*(?:\*\s*)?(\w+)\s*\(', re.MULTILINE)
         pop_patterns = [
-            re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
+            re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):(\w+)\s*\*/', re.MULTILINE),
             re.compile(r'/\*[\s\S]*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+\w+_\w+\.py:(_?)\w+\(', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python[^:]*:?\s*([\w.]+)', re.MULTILINE),
@@ -851,7 +851,7 @@ class ParityAnalyzer:
 
     _FUNC_DEF = re.compile(
         r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
-        r'(?:[\w:]+\s+)+?(\**\w+)\s*\(([^;]*?)\)\s*\{', re.S)
+        r'(?:[\w:]+\s+)+?(\**\w+)\s*\(([^;]*?)\)\s*\n?\s*\{', re.S)
 
     @staticmethod
     def _strip_comments(content):
