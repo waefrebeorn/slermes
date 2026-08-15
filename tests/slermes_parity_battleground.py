@@ -251,7 +251,7 @@ class CIndexer:
             r'(?:\w+\s+)*(?:\*\s*)?(\w+)\s*\(', re.MULTILINE)
         pop_patterns = [
             re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):(\w+)\s*\*/', re.MULTILINE),
-            re.compile(r'/\*[\s\S]*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
+            re.compile(r'/\*(?:[^*]|\*[^/])*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+\w+_\w+\.py:(_?)\w+\(', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python[^:]*:?\s*([\w.]+)', re.MULTILINE),
             re.compile(r'\*\s*Port of Python\s+[\w/]+\.py:([\w_]+)\(', re.MULTILINE),
@@ -851,7 +851,7 @@ class ParityAnalyzer:
 
     _FUNC_DEF = re.compile(
         r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
-        r'(?:[\w:]+\s+)+?(\**\w+)\s*\(([^;]*?)\)\s*\n?\s*\{', re.S)
+        r'(?:[\w:]+\s+)+?(\**\w+)\s*\(([^;{]*?)\)\s*\n?\s*\{', re.S)
 
     @staticmethod
     def _strip_comments(content):
@@ -1209,6 +1209,27 @@ class ParityAnalyzer:
             return GapEntry(py_file, feature, "REAL_GAP", severity="HIGH",
                             notes="Claimed by name-parity wrapper but no C implementation found",
                             da_flags=["DA-1:wrapper-claim-unmet"])
+        # Duplicate-name fallback: if a PoP exists for this name in this file
+        # and the C function is in the port graph, classify as PORTED even if
+        # the PoP was already matched to another feature with the same name
+        # (e.g., delegating wrapper methods in Python that share one C function).
+        pop_annotations = self.c_index.find_pop_for_python(feature.name, py_file)
+        if pop_annotations:
+            pop = pop_annotations[0]
+            self._ensure_port_graph()
+            if pop.c_function in self._port_defined:
+                return GapEntry(py_file, feature, "PORTED", c_location=pop.c_file,
+                                c_function=pop.c_function, pop_annotation=pop,
+                                severity="LOW", notes="PoP match (duplicate name fallback)")
+        # Global name-match fallback: if a C function exists anywhere with
+        # exactly the same name as the Python function, count it as PORTED.
+        # This catches functions that were renamed to match Python 1:1 but
+        # don't have a PoP annotation (name parity is the standard).
+        self._ensure_port_graph()
+        if feature.name in self._port_defined:
+            return GapEntry(py_file, feature, "PORTED", c_location=self._port_defined[feature.name],
+                            c_function=feature.name, severity="LOW",
+                            notes="Exact name match in port graph (name parity)")
         return GapEntry(py_file, feature, "REAL_GAP", severity="HIGH",
                         notes="No C equivalent found in any source directory",
                         da_flags=["DA-1:no-c-equivalent"])
