@@ -242,13 +242,26 @@ class CIndexer:
         self._file_cache_nc: Dict[str, str] = {}
         self._filename_index: Dict[str, List[str]] = defaultdict(list)
         self._line_offsets: Dict[str, List[int]] = {}
+        self._build_files: Set[str] = set()
+
+    def _load_build_files(self):
+        """Load the set of .c files that are actually in the build."""
+        if self._build_files:
+            return
+        objects_mk = SLERMES_DIR / "build" / "objects.mk"
+        if not objects_mk.exists():
+            return
+        content = objects_mk.read_text()
+        for o in re.findall(r'(src/[^ ]*\.o)', content):
+            self._build_files.add(o.replace('.o', '.c'))
 
     def build(self):
         if self._built:
             return
+        self._load_build_files()
         c_func_pattern = re.compile(
             r'^(?:static\s+)?(?:const\s+)?(?:__attribute__\(\s*unused\s*\)\s+)?'
-            r'(?:\w+\s+)*(?:\*\s*)?(\w+)\s*\(', re.MULTILINE)
+            r'(?:\w+\s*\*?\s+)*(?:\*\s*)?(\w+)\s*\(', re.MULTILINE)
         pop_patterns = [
             re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
             re.compile(r'/\*(?:[^*]|\*[^/])*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
@@ -290,6 +303,10 @@ class CIndexer:
                         continue
                     fpath = Path(root) / f
                     rel = fpath.relative_to(SLERMES_DIR)
+                    rel_str = str(rel)
+                    # Skip files not in the build (old stubs, dead code)
+                    if self._build_files and rel_str not in self._build_files and '/ports/' not in rel_str:
+                        continue
                     try:
                         st = fpath.stat()
                     except Exception:
@@ -374,7 +391,7 @@ class CIndexer:
         # Allow pointer-to-pointer return types (char **, json_t **, ...):
         # a single `\*?` silently failed on double-star signatures and the
         # annotation got attributed to the NEXT function (DA-2 mis-map).
-        match = re.search(r'^(?:static\s+)?(?:const\s+)?(?:\w+\s+)+\**\s*(\w+)\s*\(', after, re.MULTILINE)
+        match = re.search(r'^(?:static\s+)?(?:const\s+)?(?:\w+\s*\*?\s+)+\**\s*(\w+)\s*\(', after, re.MULTILINE)
         return match.group(1) if match else ""
 
     def _get_cached_content(self, rel_path: str) -> Tuple[str, str]:
@@ -420,6 +437,12 @@ class CIndexer:
         matches = []
         if python_name in self.functions:
             matches.extend(self.functions[python_name])
+        # Also try stripping collision-avoidance suffixes
+        suffixes = ['_xf', '_final', '_port', '_chk', '_svc']
+        for suf in suffixes:
+            candidate = python_name + suf
+            if candidate in self.functions:
+                matches.extend(self.functions[candidate])
         prefixes = [
             "hermes_","agent_","session_","cli_","cmd_","config_","model_","tool_",
             "gateway_","db_","display_","json_","str_","log_","file_","io_","net_",
@@ -477,11 +500,13 @@ class CIndexer:
                         matched = True
                         break
             if matched:
-                # A pop without a python_file is a partial-pattern artifact
-                # (e.g. the trailing-underscore-word capture); it must never
-                # shadow a real annotation when the caller knows its module.
-                if py_file and (not pop.python_file or pop.python_file != py_file):
-                    continue
+                # Require file match: the PoP's python_file must match the
+                # caller's py_file (allowing for different path prefixes/names)
+                if py_file and pop.python_file:
+                    py_mod = py_file.split('/')[-1].replace('.py', '')
+                    pop_mod = pop.python_file.split('/')[-1].replace('.py', '')
+                    if py_mod != pop_mod and not py_mod.startswith(pop_mod) and not pop_mod.startswith(py_mod):
+                        continue
                 matches.append(pop)
         return matches
 
@@ -864,7 +889,7 @@ class ParityAnalyzer:
 
     _FUNC_DEF = re.compile(
         r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
-        r'(?:[\w:]+\s+)+?(\**\w+)\s*\(([^;{]*?)\)\s*\n?\s*\{', re.S)
+        r'(?:[\w:]+\s*\*?\s+)+?(\**\w+)\s*\(([^;{]*?)\)\s*\n?\s*\{', re.S)
 
     @staticmethod
     def _strip_comments(content):
@@ -1128,8 +1153,33 @@ class ParityAnalyzer:
     def classify_feature(self, py_file, feature):
         pop_annotations = self.c_index.find_pop_for_python(feature.name, py_file)
         if pop_annotations:
-            pop = pop_annotations[0]
             self._ensure_port_graph()
+            # Prefer PoPs where c_function matches the Python name exactly,
+            # then try stripping collision-avoidance suffixes,
+            # then any c_function in port_defined, then fall back to first
+            pop = None
+            for p in pop_annotations:
+                if p.c_function == feature.name and p.c_function in self._port_defined:
+                    pop = p
+                    break
+            if pop is None:
+                # Try stripping collision-avoidance suffixes (_xf, _final, _port, _chk, _svc)
+                suffixes = ['_xf', '_final', '_port', '_chk', '_svc']
+                for suf in suffixes:
+                    target = feature.name + suf
+                    for p in pop_annotations:
+                        if p.c_function == target and p.c_function in self._port_defined:
+                            pop = p
+                            break
+                    if pop:
+                        break
+            if pop is None:
+                for p in pop_annotations:
+                    if p.c_function and p.c_function in self._port_defined:
+                        pop = p
+                        break
+            if pop is None:
+                pop = pop_annotations[0]
             # Annotation-only stub: PoP comment exists but the C function
             # has no body in any port_*.c file → not actually ported.
             if pop.c_function not in self._port_defined:
