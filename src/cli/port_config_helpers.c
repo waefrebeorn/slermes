@@ -28,7 +28,6 @@
  * =========================================================================== */
 
 /*
- * PoP: _coerce_ssl_verify @ hermes_cli/config.py:_coerce_ssl_verify
  * Coerce a value to an SSL-verify tri-state. Returns 1 (true), 0 (false),
  * or -1 (unset/None). Mirrors Python: None -> None, bool passthrough,
  * string {"false","0","no","off"} -> false, {"true","1","yes","on"} -> true,
@@ -59,7 +58,6 @@ int coerce_ssl_verify(const char *value, int is_bool, int bool_val)
  * =========================================================================== */
 
 /*
- * PoP: _coerce_config_version @ hermes_cli/config.py:_coerce_config_version
  * Return a safe integer config version; invalid/None -> 0, bool -> 0,
  * negative clamped to 0. */
 int coerce_config_version(const char *value, int is_bool)
@@ -97,7 +95,6 @@ static const char *ENV_DENYLIST[] = {
 };
 
 /*
- * PoP: _reject_denylisted_env_var @ hermes_cli/config.py:_reject_denylisted_env_var
  * Returns 0 if key is allowed; returns -1 (and fills err) if key is on the
  * writer denylist (names that influence subprocess execution or the Hermes
  * runtime location). */
@@ -164,7 +161,6 @@ static int has_template_placeholder(const char *s)
 }
 
 /*
- * PoP: _normalize_custom_provider_entry @ hermes_cli/config.py:_normalize_custom_provider_entry
  * Accepts a JSON object (the raw entry) plus an optional provider_key.
  * Performs the camelCase alias mapping, strips unknown keys (best-effort),
  * validates base_url (allowing unresolved template placeholders), and emits
@@ -304,7 +300,6 @@ char *normalize_custom_provider_entry_json(const char *entry_json, const char *p
  * =========================================================================== */
 
 /*
- * PoP: is_env_config_key @ hermes_cli/config.py:_is_env_config_key
  * True when key starts with "env." or "env/". */
 bool is_env_config_key(const char *key)
 {
@@ -319,7 +314,6 @@ bool is_env_config_key(const char *key)
  * =========================================================================== */
 
 /*
- * PoP: env_line_defines_key @ hermes_cli/config.py:_env_line_defines_key
  * True when line starts with "KEY=". */
 bool env_line_defines_key(const char *line, const char *key)
 {
@@ -335,7 +329,6 @@ bool env_line_defines_key(const char *line, const char *key)
  * =========================================================================== */
 
 /*
- * PoP: check_non_ascii_credential @ hermes_cli/config.py:_check_non_ascii_credential
  * Return error string if value contains non-ASCII characters, NULL if clean. */
 const char *check_non_ascii_credential(const char *key, const char *value)
 {
@@ -354,7 +347,6 @@ const char *check_non_ascii_credential(const char *key, const char *value)
  * =========================================================================== */
 
 /*
- * PoP: terminal_env_value @ hermes_cli/config.py:_terminal_env_value
  * Strip and collapse whitespace to single space. */
 void terminal_env_value(const char *value, char *out, size_t out_size)
 {
@@ -376,7 +368,6 @@ void terminal_env_value(const char *value, char *out, size_t out_size)
 }
 
 /*
- * PoP: terminal_config_env_var_for_key @ hermes_cli/config.py:terminal_config_env_var_for_key
  * Transform "terminal.shell" -> "TERMINAL_SHELL". */
 void terminal_config_env_var_for_key(const char *key, char *out, size_t out_size)
 {
@@ -396,7 +387,6 @@ void terminal_config_env_var_for_key(const char *key, char *out, size_t out_size
  * =========================================================================== */
 
 /*
- * PoP: format_config_get_value @ hermes_cli/config.py:_format_config_get_value
  * Format value for display: plain or JSON-escaped. */
 void format_config_get_value(const char *value, int as_json,
                                char *out, size_t out_size)
@@ -424,7 +414,6 @@ void format_config_get_value(const char *value, int as_json,
  * =========================================================================== */
 
 /*
- * PoP: default_value_for_key @ hermes_cli/config.py:_default_value_for_key
  * Return default value for known config keys, or NULL. */
 const char *default_value_for_key(const char *dotted_key)
 {
@@ -438,7 +427,6 @@ const char *default_value_for_key(const char *dotted_key)
 }
 
 /*
- * PoP: known_top_level_keys @ hermes_cli/config.py:_known_top_level_keys
  * Iterate known top-level config keys. Pass NULL to start, previous key to continue. */
 const char *known_top_level_keys(const char *prev)
 {
@@ -459,7 +447,6 @@ const char *known_top_level_keys(const char *prev)
  * =========================================================================== */
 
 /*
- * PoP: validate_config_key @ hermes_cli/config.py:_validate_config_key
  * Return true if key is a valid dot-separated config path. */
 bool validate_config_key(const char *key, char *suggestion, size_t sug_size)
 {
@@ -479,7 +466,6 @@ bool validate_config_key(const char *key, char *suggestion, size_t sug_size)
  * =========================================================================== */
 
 /*
- * PoP: redact_key @ hermes_cli/config.py:redact_key
  * Redact credential-like keys by replacing value with ***. */
 void redact_key(const char *key, char *out, size_t out_size)
 {

@@ -214,6 +214,7 @@ bool gateway_runner_session_is_active(const GatewayRunner *self,
 
 /* Get the number of active sessions. */
 int  gateway_runner_active_session_count(const GatewayRunner *self);
+int  gateway_runner_active_cron_job_count(const GatewayRunner *self);
 
 /* ─── Message handling ────────────────────────────────────────────── */
 

@@ -71,7 +71,6 @@ char *vertex_adapter_build_base_url(const char *project_id, const char *region)
 }
 
 /*
- * PoP: _resolve_region @ agent/vertex_adapter.py:_resolve_region
  * precedence: explicit > env_region > cfg_region > "global". Caller supplies
  * trimmed env/cfg values. Returns malloc'd region. Caller frees. */
 char *vertex_adapter_resolve_region(const char *explicit, const char *env_region, const char *cfg_region)
@@ -88,7 +87,6 @@ char *vertex_adapter_resolve_region(const char *explicit, const char *env_region
 }
 
 /*
- * PoP: _resolve_project_override @ agent/vertex_adapter.py:_resolve_project_override
  * precedence: env_project > cfg_project > None. Returns malloc'd project or NULL. */
 char *vertex_adapter_resolve_project_override(const char *env_project, const char *cfg_project)
 {
@@ -101,7 +99,6 @@ char *vertex_adapter_resolve_project_override(const char *env_project, const cha
 }
 
 /*
- * PoP: _resolve_credentials_path @ agent/vertex_adapter.py:_resolve_credentials_path
  * precedence: explicit > VERTEX_CREDENTIALS_PATH > GOOGLE_APPLICATION_CREDENTIALS.
  * The Python version also checks os.path.exists; here the caller passes already
  * path-checked candidates (or NULL). Returns malloc'd path or NULL. */
@@ -118,7 +115,6 @@ char *vertex_adapter_resolve_credentials_path(const char *explicit, const char *
 }
 
 /*
- * PoP: has_vertex_credentials @ agent/vertex_adapter.py:has_vertex_credentials
  * True when a resolved creds path OR a project override is present. Caller
  * supplies the already-resolved candidates (matches the python short-circuit). */
 int vertex_adapter_has_vertex_credentials(const char *creds_path, const char *project_override)
@@ -153,7 +149,6 @@ static char *vx_config_path(void)
 }
 
 /*
- * PoP: _vertex_config @ agent/vertex_adapter.py:_vertex_config
  * Returns malloc'd JSON object of the `vertex:` section of config.yaml, or
  * "{}" on any failure. Caller frees. */
 char *vertex_adapter_vertex_config(void)
@@ -173,7 +168,6 @@ char *vertex_adapter_vertex_config(void)
 }
 
 /*
- * PoP: _resolve_credentials_path @ agent/vertex_adapter.py:_resolve_credentials_path
  * (already ported above as vertex_adapter_resolve_credentials_path). */
 
 /* In-process token cache (mirrors Python _creds_cache). */
@@ -271,7 +265,6 @@ static char *vx_mint_from_sa(const char *sa_path, char **out_project)
 }
 
 /*
- * PoP: get_vertex_credentials @ agent/vertex_adapter.py:get_vertex_credentials
  * Returns malloc'd (access_token, project_id). On failure both are NULL.
  * token_out is malloc'd (caller frees) or NULL; *project_out is malloc'd or NULL. */
 void vertex_adapter_get_vertex_credentials(const char *credentials_path,
@@ -348,7 +341,6 @@ void vertex_adapter_get_vertex_credentials(const char *credentials_path,
 }
 
 /*
- * PoP: _refresh_credentials @ agent/vertex_adapter.py:_refresh_credentials
  * Re-mint the access token for the given SA path (SA flow has no refresh
  * token; "refresh" == re-assert). Writes the new token into *token_out
  * (malloc'd, caller frees) or sets it NULL on failure. */
@@ -371,7 +363,6 @@ void vertex_adapter_refresh_credentials(const char *credentials_path, char **tok
 }
 
 /*
- * PoP: get_vertex_config @ agent/vertex_adapter.py:get_vertex_config
  * Returns malloc'd (access_token, base_url). On failure both NULL. */
 void vertex_adapter_get_vertex_config(const char *credentials_path, const char *region,
                                        char **token_out, char **base_url_out)

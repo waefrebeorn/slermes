@@ -621,9 +621,6 @@ const char **coding_runtime_mode_toolset_selection(
  *       and agent/coding_context.py:system_prompt_parts():
  *       system_prompt_parts() returns prefix/workspace/trailing blocks,
  *       both implemented via coding_runtime_mode_system_blocks().
- * PoP: system_prompt_parts @ agent/coding_context.py:system_prompt_parts
- * PoP: system_blocks @ agent/coding_context.py:system_blocks
- * PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts
  */
 /* PoP: system_blocks @ agent/coding_context.py:system_blocks */
 char **coding_runtime_mode_system_blocks(
@@ -725,7 +722,6 @@ coding_runtime_mode_t *coding_context_resolve_runtime_mode(
 
 
 /*
- * PoP: _git @ agent/coding_context.py:_git
  * Runs `git -C <cwd> <args...>` and returns the stripped stdout in out (or ""
  * on failure). Timeout-guarded via SIGALRM (mirrors Python subprocess timeout). */
 int coding_context_run_git(const char *cwd, char *out, size_t out_size,
@@ -763,7 +759,6 @@ int coding_context_run_git(const char *cwd, char *out, size_t out_size,
 }
 
 /*
- * PoP: _parse_status @ agent/coding_context.py:_parse_status
  * Parses `git status --porcelain=2 --branch` into a malloc'd JSON object:
  *   { "branch": {"head":..,"upstream":..,"ahead":..,"behind":..},
  *     "counts": {"staged":n,"modified":n,"untracked":n,"conflicts":n} }
@@ -838,7 +833,6 @@ char *coding_context_parse_git_status(const char *porcelain)
 }
 
 /*
- * PoP: _read_small @ agent/coding_context.py:_read_small
  * Reads a small text file into out (or "" on any failure / oversize). */
 int coding_context_read_small(const char *path, char *out, size_t out_size, size_t max_bytes)
 {
@@ -857,8 +851,6 @@ int coding_context_read_small(const char *path, char *out, size_t out_size, size
 }
 
 /*
- * PoP: detect_project_facts @ agent/coding_context.py:detect_project_facts
- * PoP: _project_facts @ agent/coding_context.py:_project_facts
  * Port of Python agent/coding_context.py:detect_project_facts /
  * agent/coding_context.py:_project_facts
  * Detects manifests, package managers, verify commands, context files for a
@@ -999,7 +991,6 @@ char *coding_context_project_facts(const char *root)
 }
 
 /*
- * PoP: build_coding_workspace_block @ agent/coding_context.py:build_coding_workspace_block
  * Full workspace snapshot (git state + project facts). Returns malloc'd string. */
 char *coding_context_build_workspace_block(const char *cwd)
 {
@@ -1124,7 +1115,6 @@ const char **coding_context_coding_compact_skill_categories(const char *platform
 }
 
 /*
- * PoP: _enabled_mcp_servers @ agent/coding_context.py:_enabled_mcp_servers
  * Returns a NULL-terminated malloc'd array of enabled MCP server names read
  * from config.yaml's `mcp_servers` map (a server is enabled unless it sets
  * enabled:false). Caller frees each string and the array. NULL on none/err.
@@ -1169,7 +1159,6 @@ char **coding_context_enabled_mcp_servers(const hermes_config_t *config)
 }
 
 /*
- * PoP: _has_code_files @ agent/coding_context.py:_has_code_files
  * Cheap, bounded check for source files in a repo's top two levels. Scans root
  * and immediate subdirs only, capped at CODE_SCAN_MAX_ENTRIES stats. */
 #define CODE_SCAN_MAX_ENTRIES 500
@@ -1235,7 +1224,6 @@ bool coding_context_has_code_files(const char *root)
 }
 
 /*
- * PoP: _coding_instructions @ agent/coding_context.py:_coding_instructions
  * Standing operator instructions for the coding posture, read from
  * `agent.coding_instructions` in config.yaml (string or list of strings).
  * Returns malloc'd string (caller frees), empty "" when unset. */

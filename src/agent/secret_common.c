@@ -1,10 +1,6 @@
 /*
  * secret_common.c — port of agent/secret_sources/{base,registry,command}.py.
  *
- * PoP: secret_common @ agent/secret_sources/base.py:SecretSource
- * PoP: secret_common @ agent/secret_sources/registry.py:register_source
- * PoP: secret_common @ agent/secret_sources/registry.py:apply_all
- * PoP: secret_common @ agent/secret_sources/command.py:CommandSource
  *
  * Self-contained: depends only on POSIX process spawn + hermes_json. No
  * providers/* dependency. Directly serves dynamic startup secret resolution.

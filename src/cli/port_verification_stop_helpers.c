@@ -83,7 +83,6 @@ int verification_stop_is_non_code_path(const char *raw)
 }
 
 /*
- * PoP: _filter_verifiable_paths @ agent/verification_stop.py:_filter_verifiable_paths
  * Takes a JSON array of path strings; returns JSON array of kept paths. */
 char *verification_stop_filter_verifiable_paths(const char *paths_json)
 {
@@ -128,7 +127,6 @@ static int is_non_messaging_surface(const char *id)
 }
 
 /*
- * PoP: _session_is_messaging_surface @ agent/verification_stop.py:_session_is_messaging_surface
  * Reads HERMES_PLATFORM / HERMES_SESSION_SOURCE env (the pure env-fallback path). */
 int verification_stop_session_is_messaging_surface(void)
 {
@@ -150,7 +148,6 @@ int verification_stop_session_is_messaging_surface(void)
 }
 
 /*
- * PoP: verify_on_stop_enabled @ agent/verification_stop.py:verify_on_stop_enabled
  * env override HERMES_VERIFY_ON_STOP wins; else agent.verify_on_stop in config_json
  * (bool, or "auto"/str -> surface-aware); missing/unrecognized -> surface-aware. */
 int verification_stop_enabled(const char *config_json)
@@ -201,7 +198,6 @@ int verification_stop_enabled(const char *config_json)
 }
 
 /*
- * PoP: _format_changed_paths @ agent/verification_stop.py:_format_changed_paths
  * Takes JSON array of paths; returns markdown bullet string (max 8 + "... and N more"). */
 char *verification_stop_format_changed_paths(const char *paths_json)
 {
@@ -236,7 +232,6 @@ char *verification_stop_format_changed_paths(const char *paths_json)
 }
 
 /*
- * PoP: _status_detail @ agent/verification_stop.py:_status_detail
  * Takes a status JSON object; returns detail string. */
 char *verification_stop_status_detail(const char *status_json)
 {
@@ -280,7 +275,6 @@ char *verification_stop_status_detail(const char *status_json)
 }
 
 /*
- * PoP: build_verify_on_stop_nudge @ agent/verification_stop.py:build_verify_on_stop_nudge
  * Pure string assembler. Takes JSON arrays/objects (already resolved by caller):
  *   changed_paths_json : JSON array of all changed paths (will be filtered)
  *   attempts, max_attempts : ints

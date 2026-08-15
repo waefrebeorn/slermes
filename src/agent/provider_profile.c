@@ -10,15 +10,6 @@
  * (port of plugins/model-providers/<name>/__init__.py) and register through
  * provider_profiles_register_builtin().
  *
- * PoP: provider_profile @ providers/base.py:ProviderProfile
- * PoP: provider_profile @ providers/base.py:_profile_user_agent
- * PoP: provider_profile @ providers/base.py:ProviderProfile.get_hostname
- * PoP: provider_profile @ providers/base.py:ProviderProfile.fetch_models
- * PoP: provider_profile @ providers/base.py:ProviderProfile.get_max_tokens
- * PoP: provider_profile @ providers/__init__.py:register_provider
- * PoP: provider_profile @ providers/__init__.py:get_provider_profile
- * PoP: provider_profile @ providers/__init__.py:list_providers
- * PoP: provider_profile @ agent/transports/chat_completions.py:_reasoning_config_for_model
  */
 #define _POSIX_C_SOURCE 200809L
 #include "provider_profile.h"

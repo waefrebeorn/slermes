@@ -41,7 +41,6 @@ static char *read_file_text(const char *path)
 }
 
 /*
- * PoP: _load_channel_aliases @ gateway/channel_directory.py:_load_channel_aliases
  * Returns malloc'd JSON object: {"<platform>": {"<chat_id>":"<friendly>", ...}}. */
 static json_t *load_channel_aliases(void)
 {
@@ -61,7 +60,6 @@ static json_t *load_channel_aliases(void)
 }
 
 /*
- * PoP: _apply_channel_aliases @ gateway/channel_directory.py:_apply_channel_aliases
  * Overlay friendly names onto directory entries by chat_id (mutates *platforms). */
 static void apply_channel_aliases(json_t *platforms)
 {
@@ -248,7 +246,6 @@ static void normalize_channel_query(const char *value, char *out, size_t outsz)
 }
 
 /*
- * PoP: _channel_target_name @ gateway/channel_directory.py:_channel_target_name
  * Returns malloc'd human-facing target label. */
 char *channel_target_name(const char *platform_name, json_t *channel)
 {
@@ -291,7 +288,6 @@ static char *session_entry_id(json_t *origin)
 }
 
 /*
- * PoP: _session_entry_name @ gateway/channel_directory.py:_session_entry_name
  * Returns malloc'd name. */
 char *session_entry_name(json_t *origin)
 {
@@ -316,7 +312,6 @@ char *session_entry_name(json_t *origin)
 }
 
 /*
- * PoP: _build_from_sessions @ gateway/channel_directory.py:_build_from_sessions
  * Returns malloc'd JSON array of {id,name,type,thread_id} entries. */
 json_t *build_from_sessions(const char *platform_name)
 {
@@ -366,7 +361,6 @@ json_t *build_from_sessions(const char *platform_name)
 }
 
 /*
- * PoP: _build_discord @ gateway/channel_directory.py:_build_discord
  * Enumerate text + forum channels from the adapter's guilds JSON, merge DMs
  * discovered from session history. guilds_json: array of
  * {name, text_channels:[{id,name}], forum_channels:[{id,name}]}.
@@ -434,7 +428,6 @@ json_t *cli_gateway_channel_directory__build_discord(const char *guilds_json, co
 }
 
 /*
- * PoP: _build_slack @ gateway/channel_directory.py:_build_slack
  * List Slack channels from the team clients' channel JSON, merge session DMs.
  * channels_json: array of {id,name,is_private}. Returns malloc'd JSON array. */
 json_t *cli_gateway_channel_directory__build_slack(const char *workspaces_json, const char *channels_json)
@@ -481,7 +474,6 @@ json_t *cli_gateway_channel_directory__build_slack(const char *workspaces_json, 
 }
 
 /*
- * PoP: build_channel_directory @ gateway/channel_directory.py:build_channel_directory
  * Build the directory for the given platforms (session-based discovery for
  * each + alias overlay). Writes channel_directory.json. Returns malloc'd JSON. */
 char *cli_gateway_channel_directory_build_channel_directory(
@@ -523,7 +515,6 @@ char *cli_gateway_channel_directory_build_channel_directory(
 }
 
 /*
- * PoP: load_directory @ gateway/channel_directory.py:load_directory
  * Load the cached directory from disk (re-applies aliases on read). */
 json_t *load_directory(void)
 {
@@ -559,7 +550,6 @@ json_t *load_directory(void)
 }
 
 /*
- * PoP: lookup_channel_type @ gateway/channel_directory.py:lookup_channel_type
  * Returns malloc'd type string (e.g. "channel"/"forum") or NULL. */
 char *lookup_channel_type(const char *platform_name, const char *chat_id)
 {
@@ -586,7 +576,6 @@ char *lookup_channel_type(const char *platform_name, const char *chat_id)
 }
 
 /*
- * PoP: resolve_channel_name @ gateway/channel_directory.py:resolve_channel_name
  * Resolve a human-friendly channel name to a numeric ID. Returns malloc'd id
  * or NULL. Strategy: exact id → normalized name/target → guild-qualified →
  * unambiguous prefix. */
@@ -683,7 +672,6 @@ char *resolve_channel_name(const char *platform_name, const char *name)
 }
 
 /*
- * PoP: format_directory_for_display @ gateway/channel_directory.py:format_directory_for_display
  * Returns malloc'd human-readable listing. */
 char *format_directory_for_display(void)
 {

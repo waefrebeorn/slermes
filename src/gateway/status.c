@@ -584,7 +584,6 @@ static bool record_matches_live_gateway_pid(json_t *record, pid_t pid,
 }
 
 /* -----------------------------------------------------------------------
- * PoP: profile_name_for_home @ gateway/status.py:_profile_name_for_home
  * A named profile's home is "<root>/profiles/<name>" (immediate parent is
  * "profiles"). The root/default home has no such parent -> NULL (default).
  * Writes the profile name into out[] and returns out, or NULL for default.
@@ -617,7 +616,6 @@ static void str_tolower_buf(const char *src, char *dst, size_t n) {
 }
 
 /* -----------------------------------------------------------------------
- * PoP: command_line_belongs_to_profile @ gateway/status.py:_command_line_belongs_to_profile
  * Mirrors hermes_cli.gateway._matches_current_profile so a cross-profile
  * liveness fallback scopes a recycled PID to the right profile.
  * --------------------------------------------------------------------- */
@@ -657,7 +655,6 @@ static bool command_line_belongs_to_profile(const char *command,
 }
 
 /* -----------------------------------------------------------------------
- * PoP: read_gateway_lock_record @ gateway/status.py:_read_gateway_lock_record
  * The gateway lock file carries the same record shape as the PID file.
  * --------------------------------------------------------------------- */
 static json_t *read_gateway_lock_record(const char *lock_path) {
@@ -668,7 +665,6 @@ static json_t *read_gateway_lock_record(const char *lock_path) {
 }
 
 /* -----------------------------------------------------------------------
- * PoP: write_gateway_lock_record @ gateway/status.py:_write_gateway_lock_record
  * Rewrite an open lock fd from offset 0 with the current PID record + fsync.
  * --------------------------------------------------------------------- */
 static void write_gateway_lock_record(int fd) {
@@ -687,7 +683,6 @@ static void write_gateway_lock_record(int fd) {
 }
 
 /* -----------------------------------------------------------------------
- * PoP: cleanup_invalid_pid_path @ gateway/status.py:_cleanup_invalid_pid_path
  * Force-unlink a stale PID file and its sibling lock metadata (called after
  * the runtime lock is confirmed inactive, so the metadata is known dead).
  * --------------------------------------------------------------------- */
@@ -836,7 +831,6 @@ pid_t gwstatus_get_running_pid(const char *pid_path, bool cleanup_stale) {
 }
 
 /* -----------------------------------------------------------------------
- * PoP: gwstatus_get_runtime_status_running_pid @ gateway/status.py:get_runtime_status_running_pid
  * Conservative fallback: validate the runtime status record against the OS.
  * --------------------------------------------------------------------- */
 pid_t gwstatus_get_runtime_status_running_pid(const char *runtime_json,

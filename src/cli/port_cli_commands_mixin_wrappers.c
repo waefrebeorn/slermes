@@ -579,10 +579,6 @@ int ccm_handle_voice_command(const char *args) {
 }
 
 /* ── /focus + tool-progress machinery ────────────────────────────────── *
- * PoP: _handle_focus_command @ hermes_cli/cli_commands_mixin.py:_handle_focus_command
- * PoP: _set_tool_progress_mode @ hermes_cli/cli_commands_mixin.py:_set_tool_progress_mode
- * PoP: _note_focus_hidden_line @ hermes_cli/cli_commands_mixin.py:_note_focus_hidden_line
- * PoP: _emit_focus_recovery_line @ hermes_cli/cli_commands_mixin.py:_emit_focus_recovery_line
  *
  * The Python methods live on the Commands mixin instance and carry per-session
  * state (_focus_view_enabled, tool_progress_mode, _focus_saved_tool_progress,

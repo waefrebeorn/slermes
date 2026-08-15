@@ -4,10 +4,6 @@
  * Faithful C port of hermes_cli/completion.py (generate_bash/zsh/fish + _clean),
  * operating on a caller-built completion_node tree instead of argparse.
  *
- * PoP: _clean         @ hermes_cli/completion.py:_clean
- * PoP: generate_bash  @ hermes_cli/completion.py:generate_bash
- * PoP: generate_zsh   @ hermes_cli/completion.py:generate_zsh
- * PoP: generate_fish  @ hermes_cli/completion.py:generate_fish
  */
 
 #include "completion.h"

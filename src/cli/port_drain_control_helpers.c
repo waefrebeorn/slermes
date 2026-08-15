@@ -49,7 +49,6 @@ static void trim_right(char *s)
 }
 
 /*
- * PoP: current_instantiation_epoch @ gateway/drain_control.py:current_instantiation_epoch
  * Reads /proc/sys/kernel/random/boot_id and field 22 of /proc/1/stat.
  * Returns malloc'd "boot_id:pid1start" or "" when neither readable. Caller frees. */
 char *drain_control_current_epoch(void)
@@ -85,7 +84,6 @@ char *drain_control_current_epoch(void)
 }
 
 /*
- * PoP: drain_request_path @ gateway/drain_control.py:drain_request_path
  * home: HERMES_HOME string (caller resolves). Returns malloc'd path. Caller frees. */
 char *drain_control_request_path(const char *home)
 {
@@ -97,7 +95,6 @@ char *drain_control_request_path(const char *home)
 }
 
 /*
- * PoP: _marker_epoch_is_stale @ gateway/drain_control.py:_marker_epoch_is_stale
  * body_json: marker body; current_epoch: result of drain_control_current_epoch().
  * Returns 1 iff a definite mismatch (current non-empty, marker epoch present
  * and differs), else 0 (lenient: missing/empty current epoch or marker epoch
@@ -119,7 +116,6 @@ int drain_control_marker_epoch_is_stale(const char *body_json, const char *curre
 }
 
 /*
- * PoP: drain_notification_suppressed @ gateway/drain_control.py:drain_notification_suppressed
  * body_json: marker body. Returns 1 iff body["suppress_notification"] == true. */
 int drain_control_notification_suppressed(const char *body_json)
 {
@@ -133,7 +129,6 @@ int drain_control_notification_suppressed(const char *body_json)
 }
 
 /*
- * PoP: drain_requested @ gateway/drain_control.py:drain_requested
  * body_json: marker body (caller reads the file), or NULL/"" when absent.
  * current_epoch: result of drain_control_current_epoch().
  * Returns 1 iff a begin-drain marker for THIS instantiation is present

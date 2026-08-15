@@ -3,7 +3,6 @@
  * Pure regex-based reaction detection.
  * Faithful C11 port of agent/reactions.py.
  *
- * PoP: reactions_detect @ agent/reactions.py:detect_reaction
  */
 
 #ifndef _POSIX_C_SOURCE

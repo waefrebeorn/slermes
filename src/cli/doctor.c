@@ -2,12 +2,6 @@
  * doctor.c — Diagnostics command for Hermes C CLI.
  * Port of Python hermes_cli/doctor.py.
  *
- * PoP: run_doctor @ hermes_cli/doctor.py:run_doctor
- * PoP: check_ok @ hermes_cli/doctor.py:check_ok
- * PoP: check_warn @ hermes_cli/doctor.py:check_warn
- * PoP: check_fail @ hermes_cli/doctor.py:check_fail
- * PoP: check_info @ hermes_cli/doctor.py:check_info
- * PoP: check_certificates @ hermes_cli/doctor.py:check_certificates
  *
  * v357k: Added provider diagnostics section — probes each configured
  * provider's /v1/models endpoint (or provider-specific URL) to validate

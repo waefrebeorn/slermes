@@ -30,7 +30,6 @@ static void join_path(char *out, size_t sz, const char *a, const char *b)
 }
 
 /*
- * PoP: _read_packed_ref @ hermes_cli/main.py:_read_packed_ref
  * Look up a ref in .git/packed-refs without spawning git.
  * Returns malloc'd sha, or NULL. Caller frees. */
 char *read_packed_ref(const char *common_dir, const char *ref)
@@ -61,7 +60,6 @@ char *read_packed_ref(const char *common_dir, const char *ref)
 }
 
 /*
- * PoP: _read_git_revision_fingerprint @ hermes_cli/main.py:_read_git_revision_fingerprint
  * Cheap checkout fingerprint without spawning git.
  * Returns malloc'd "git:<ref>:<sha>" string, or NULL. Caller frees. */
 char *read_git_revision_fingerprint(const char *repo_root)
@@ -178,7 +176,6 @@ char *relative_time(long ts)
 }
 
 /*
- * PoP: _workspace_root @ hermes_cli/main.py:_workspace_root
  * Returns malloc'd workspace root path. Caller frees. */
 char *workspace_root(const char *dir)
 {
@@ -204,7 +201,6 @@ char *workspace_root(const char *dir)
 }
 
 /*
- * PoP: _read_cgroup_memory_limit @ hermes_cli/main.py:_read_cgroup_memory_limit
  * Returns container memory limit in bytes, or -1 if unconstrained/unavailable. */
 long read_cgroup_memory_limit(void)
 {
@@ -233,7 +229,6 @@ long read_cgroup_memory_limit(void)
 }
 
 /*
- * PoP: _read_tui_active_session_file @ hermes_cli/main.py:_read_tui_active_session_file
  * Reads a JSON file and extracts the "session_id" field. Returns malloc'd
  * session id, or NULL. Caller frees. */
 char *read_tui_active_session_file(const char *path)
@@ -274,7 +269,6 @@ char *read_tui_active_session_file(const char *path)
  * =========================================================================== */
 
 /*
- * PoP: _format_time_ago @ hermes_cli/main.py:_format_time_ago
  * Render an ISO timestamp as "Xh ago" / "Xd ago" / "Xm ago". Best effort.
  * Returns malloc'd string. Caller frees. On parse failure returns "recently". */
 char *format_time_ago(const char *iso_ts)
@@ -319,7 +313,6 @@ const char *infer_stepfun_region(const char *base_url)
 }
 
 /*
- * PoP: _stepfun_base_url_for_region @ hermes_cli/main.py:_stepfun_base_url_for_region
  * Returns the StepFun base URL for a region. Caller must NOT free (static). */
 const char *stepfun_base_url_for_region(const char *region)
 {
@@ -331,7 +324,6 @@ const char *stepfun_base_url_for_region(const char *region)
 }
 
 /*
- * PoP: _is_tui_chat_launch @ hermes_cli/main.py:_is_tui_chat_launch
  * Returns 1 when the invocation is a TUI chat launch (flag or env). */
 int is_tui_chat_launch(int tui_flag, const char *hermes_tui_env)
 {
@@ -340,7 +332,6 @@ int is_tui_chat_launch(int tui_flag, const char *hermes_tui_env)
 }
 
 /*
- * PoP: _is_termux_env @ hermes_cli/main.py:_is_termux_env
  * Thin wrapper; reuses the startup-environment check. */
 int is_termux_env(const char *env_termux)
 {
@@ -350,7 +341,6 @@ int is_termux_env(const char *env_termux)
 }
 
 /*
- * PoP: _is_android_python @ hermes_cli/main.py:_is_android_python
  * Returns 1 on the Android Python platform. */
 int is_android_python(void)
 {
@@ -362,7 +352,6 @@ int is_android_python(void)
 }
 
 /*
- * PoP: _auto_provider_name @ hermes_cli/main.py:_auto_provider_name
  * Generate a display name from a custom endpoint URL.
  * Returns malloc'd name. Caller frees. */
 char *auto_provider_name(const char *base_url)
@@ -399,7 +388,6 @@ char *auto_provider_name(const char *base_url)
 }
 
 /*
- * PoP: _coalesce_session_name_args @ hermes_cli/main.py:_coalesce_session_name_args
  * Join unquoted multi-word session names after -c/--continue and -r/--resume.
  * Returns malloc'd argv array (NULL-terminated) via *out_argc. Caller frees
  * both the array and its strings. */
@@ -448,7 +436,6 @@ char **coalesce_session_name_args(const char *const *argv, int argc, int *out_ar
 }
 
 /*
- * PoP: _first_positional_argv @ hermes_cli/main.py:_first_positional_argv
  * Return the first non-flag, non-flag-value token in argv[1:].
  * Returns malloc'd string, or NULL if none. Caller frees. */
 char *first_positional_argv(const char *const *argv, int argc)
@@ -479,7 +466,6 @@ char *first_positional_argv(const char *const *argv, int argc)
 }
 
 /*
- * PoP: _electron_download_cache_dirs @ hermes_cli/main.py:_electron_download_cache_dirs
  * Return the per-user Electron download cache dirs for this OS.
  * Returns malloc'd array of malloc'd path strings, NULL-terminated, via
  * *out_count. Caller frees each string and the array. */
@@ -521,7 +507,6 @@ char **electron_download_cache_dirs(int *out_count)
 }
 
 /*
- * PoP: _update_marker_path @ hermes_cli/main.py:_update_marker_path
  * Returns malloc'd "<project_root>/.update-incomplete". Caller frees.
  * project_root approximated by HERMES_HOME or cwd ".". */
 char *update_marker_path(void)
@@ -534,7 +519,6 @@ char *update_marker_path(void)
 }
 
 /*
- * PoP: _current_reasoning_effort @ hermes_cli/main.py:_current_reasoning_effort
  * config["agent"]["reasoning_effort"] as lowercase string, "" when absent. */
 char *main_current_reasoning_effort(const char *config_json)
 {
@@ -556,7 +540,6 @@ char *main_current_reasoning_effort(const char *config_json)
 }
 
 /*
- * PoP: _electron_dir @ hermes_cli/main.py:_electron_dir
  * Returns malloc'd path: project_root/apps/desktop when that package dir
  * exists, else project_root/node_modules/electron (npm hoisting layout). */
 char *main_electron_dir(const char *project_root)
@@ -572,7 +555,6 @@ char *main_electron_dir(const char *project_root)
 }
 
 /*
- * PoP: _electron_dist_binary @ hermes_cli/main.py:_electron_dist_binary
  * electron-builder's electronDist main binary; basename differs per OS. */
 char *main_electron_dist_binary(const char *project_root)
 {
@@ -591,7 +573,6 @@ char *main_electron_dist_binary(const char *project_root)
 }
 
 /*
- * PoP: _electron_dist_ok @ hermes_cli/main.py:_electron_dist_ok
  * True when node_modules/electron/dist holds a usable binary. */
 bool main_electron_dist_ok(const char *project_root)
 {
@@ -604,7 +585,6 @@ bool main_electron_dist_ok(const char *project_root)
 }
 
 /*
- * PoP: _electron_pkg_staged_missing_dist @ hermes_cli/main.py:_electron_pkg_staged_missing_dist
  * electron staged (package.json + install.js) but dist missing. */
 bool main_electron_pkg_staged_missing_dist(const char *project_root)
 {
@@ -623,7 +603,6 @@ bool main_electron_pkg_staged_missing_dist(const char *project_root)
 }
 
 /*
- * PoP: _atomic_replace_dir @ hermes_cli/main.py:_atomic_replace_dir
  * Replace dst with src without a half-deleted window: rename src -> dst
  * directly (atomic on same filesystem); fall back to removing dst first
  * only when the rename fails. */
@@ -640,7 +619,6 @@ int main_atomic_replace_dir(const char *src, const char *dst)
 }
 
 /*
- * PoP: _build_provider_choices @ hermes_cli/main.py:_build_provider_choices
  * ["auto"] + canonical provider slugs. */
 char **main_build_provider_choices(int *out_count)
 {
@@ -659,7 +637,6 @@ char **main_build_provider_choices(int *out_count)
 }
 
 /*
- * PoP: _prompt_api_key @ hermes_cli/main.py:_prompt_api_key
  * Interactive API-key prompt; returns malloc'd key ("" on EOF/cancel). */
 char *main_prompt_api_key(const char *provider_id)
 {

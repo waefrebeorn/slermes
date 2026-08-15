@@ -14,8 +14,6 @@
  * Minimal includes. No god header.
  *
  * PoP: exact port. Semantic source of truth = hermes_cli/kanban_db.py.
- * PoP: kdb_task_from_row @ hermes_cli/kanban_db.py:Task
- * PoP: kdb_canon_assignee @ hermes_cli/kanban_db.py:_canonical_assignee
  */
 
 #include "kanban_db.h"

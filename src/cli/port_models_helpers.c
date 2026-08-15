@@ -87,7 +87,6 @@ static void normalize_provider_low(char *out, size_t outsz, const char *provider
  * --------------------------------------------------------------------------- */
 
 /*
- * PoP: _is_model_free @ hermes_cli/models.py:_is_model_free
  * Returns 1 if pricing JSON has prompt==0 AND completion==0 for model_id. */
 int is_model_free(const char *model_id, const char *pricing_json)
 {
@@ -109,7 +108,6 @@ int is_model_free(const char *model_id, const char *pricing_json)
 }
 
 /*
- * PoP: is_nous_free_tier @ hermes_cli/models.py:is_nous_free_tier
  * Returns 1 if account_info JSON indicates a free (unpaid) tier. */
 int nous_free_tier_check(const char *account_info_json)
 {
@@ -143,7 +141,6 @@ int nous_free_tier_check(const char *account_info_json)
 }
 
 /*
- * PoP: partition_nous_models_by_tier @ hermes_cli/models.py:partition_nous_models_by_tier
  * Returns malloc'd JSON {"selectable":[...],"unavailable":[...]}. Caller frees. */
 char *partition_nous_models_by_tier_json(const char *model_ids_json,
                                          const char *pricing_json, int free_tier)
@@ -208,7 +205,6 @@ char *partition_nous_models_by_tier_json(const char *model_ids_json,
 }
 
 /*
- * PoP: _extract_model_name @ hermes_cli/models.py:_extract_model_name
  * Pull modelName from a recommended-model entry JSON; returns malloc'd string
  * or NULL. Caller frees. */
 char *extract_model_name(const char *entry_json)
@@ -228,7 +224,6 @@ char *extract_model_name(const char *entry_json)
 }
 
 /*
- * PoP: _format_price_per_mtok @ hermes_cli/models.py:_format_price_per_mtok
  * Convert per-token price string to $/Mtok (2 dp) or "free"/"?". Returns
  * malloc'd string. Caller frees. */
 char *format_price_per_mtok(const char *per_token_str)
@@ -263,7 +258,6 @@ static int url_has_scheme_host(const char *u)
 }
 
 /*
- * PoP: _base_url_looks_like_anthropic_messages @ hermes_cli/models.py:_base_url_looks_like_anthropic_messages
  * True if normalized path ends with /anthropic or /anthropic/v1. */
 int base_url_looks_like_anthropic_messages(const char *base_url)
 {
@@ -289,7 +283,6 @@ int base_url_looks_like_anthropic_messages(const char *base_url)
 }
 
 /*
- * PoP: _anthropic_models_url @ hermes_cli/models.py:_anthropic_models_url
  * Append /v1/models or /models to a base URL. Returns malloc'd string. */
 char *anthropic_models_url(const char *base_url)
 {
@@ -310,7 +303,6 @@ char *anthropic_models_url(const char *base_url)
  * --------------------------------------------------------------------------- */
 
 /*
- * PoP: _strip_vendor_prefix @ hermes_cli/models.py:_strip_vendor_prefix
  * Strip vendor/ prefix; returns malloc'd lowercased string. Caller frees. */
 char *strip_vendor_prefix(const char *model_id)
 {
@@ -375,7 +367,6 @@ int model_supports_fast_mode(const char *model_id)
 }
 
 /*
- * PoP: resolve_fast_mode_overrides @ hermes_cli/models.py:resolve_fast_mode_overrides
  * Returns malloc'd JSON {"speed":"fast"} or {"service_tier":"priority"} or
  * NULL when unsupported. Caller frees. */
 char *fast_mode_overrides_json(const char *model_id)
@@ -386,7 +377,6 @@ char *fast_mode_overrides_json(const char *model_id)
 }
 
 /*
- * PoP: _openrouter_model_is_free @ hermes_cli/models.py:_openrouter_model_is_free
  * True when pricing JSON for the model has prompt==0 AND completion==0. */
 int openrouter_model_is_free(const char *pricing_json)
 {
@@ -408,7 +398,6 @@ int openrouter_model_is_free(const char *pricing_json)
  * --------------------------------------------------------------------------- */
 
 /*
- * PoP: _strip_ollama_cloud_suffix @ hermes_cli/models.py:_strip_ollama_cloud_suffix
  * Strip :cloud / -cloud suffix. Returns malloc'd string. Caller frees. */
 char *strip_ollama_cloud_suffix(const char *model_id)
 {
@@ -438,7 +427,6 @@ int is_github_models_base_url(const char *base_url)
 }
 
 /*
- * PoP: _lmstudio_server_root @ hermes_cli/models.py:_lmstudio_server_root
  * Strip /api/v1, /api, /v1 suffixes. Returns malloc'd string or NULL. */
 char *lmstudio_server_root(const char *base_url)
 {
@@ -485,7 +473,6 @@ char *normalize_opencode_model_id(const char *provider_id, const char *model_id)
 }
 
 /*
- * PoP: opencode_model_api_mode @ hermes_cli/models.py:opencode_model_api_mode
  * Returns malloc'd api_mode string ("anthropic_messages", "codex_responses",
  * "chat_completions"). Caller frees. */
 char *opencode_model_api_mode(const char *provider_id, const char *model_id)
@@ -514,7 +501,6 @@ char *opencode_model_api_mode(const char *provider_id, const char *model_id)
 }
 
 /*
- * PoP: azure_foundry_model_api_mode @ hermes_cli/models.py:azure_foundry_model_api_mode
  * Returns malloc'd "codex_responses" or NULL. Caller frees (or ignores NULL). */
 char *azure_foundry_model_api_mode(const char *model_name)
 {
@@ -546,7 +532,6 @@ int should_use_copilot_responses_api(const char *model_id)
 }
 
 /*
- * PoP: copilot_default_headers @ hermes_cli/models.py:copilot_default_headers
  * Returns malloc'd JSON object of the fallback header set. Caller frees. */
 char *copilot_default_headers_json(void)
 {
@@ -570,7 +555,6 @@ static const char *hermes_home_for_cache(void)
 }
 
 /*
- * PoP: _credential_fingerprint @ hermes_cli/models.py:_credential_fingerprint
  * Returns malloc'd SHA-256 hex of env-var + credential-file mtimes. Caller frees. */
 char *credential_fingerprint(const char *provider)
 {

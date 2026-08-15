@@ -289,7 +289,6 @@ static const fal_model_t *fal_find_model(const char *model_id)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _resolve_managed_fal_gateway @ tools/image_generation_tool.py:_resolve_managed_fal_gateway
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_resolve_managed_fal_gateway(void)
@@ -326,7 +325,6 @@ json_t *image_gen_resolve_managed_fal_gateway(void)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _submit_fal_request @ tools/image_generation_tool.py:_submit_fal_request
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_submit_fal_request(const char *model, json_t *arguments)
@@ -505,7 +503,6 @@ json_t *image_gen_submit_fal_request(const char *model, json_t *arguments)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _resolve_fal_model @ tools/image_generation_tool.py:_resolve_fal_model
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_resolve_fal_model(void)
@@ -563,7 +560,6 @@ json_t *image_gen_resolve_fal_model(void)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _build_fal_payload @ tools/image_generation_tool.py:_build_fal_payload
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_build_fal_payload(const char *model_id, const char *prompt,
@@ -651,7 +647,6 @@ json_t *image_gen_build_fal_payload(const char *model_id, const char *prompt,
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _upscale_image @ tools/image_generation_tool.py:_upscale_image
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_upscale_image(const char *image_url, const char *original_prompt)
@@ -689,7 +684,6 @@ json_t *image_gen_upscale_image(const char *image_url, const char *original_prom
  }
 
 /* ---------------------------------------------------------------------------
- * PoP: _active_terminal_env @ tools/image_generation_tool.py:_active_terminal_env
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_active_terminal_env(const char *task_id)
@@ -725,7 +719,6 @@ json_t *image_gen_active_terminal_env(const char *task_id)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _agent_cache_base_for_env @ tools/image_generation_tool.py:_agent_cache_base_for_env
  * --------------------------------------------------------------------------- */
 
 char *image_gen_agent_cache_base_for_env(json_t *env)
@@ -786,7 +779,6 @@ char *image_gen_agent_cache_base_for_env(json_t *env)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _agent_visible_cache_path @ tools/image_generation_tool.py:_agent_visible_cache_path
  * --------------------------------------------------------------------------- */
 
 char *image_gen_agent_visible_cache_path(const char *host_path, json_t *env)
@@ -821,7 +813,6 @@ char *image_gen_agent_visible_cache_path(const char *host_path, json_t *env)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _force_artifact_sync @ tools/image_generation_tool.py:_force_artifact_sync
  * --------------------------------------------------------------------------- */
 
 void image_gen_force_artifact_sync(json_t *env)
@@ -841,7 +832,6 @@ void image_gen_force_artifact_sync(json_t *env)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _postprocess_image_generate_result @ tools/image_generation_tool.py:_postprocess_image_generate_result
  * --------------------------------------------------------------------------- */
 
 char *image_gen_postprocess_image_generate_result(const char *raw, const char *task_id)
@@ -897,7 +887,6 @@ char *image_gen_postprocess_image_generate_result(const char *raw, const char *t
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _build_fal_edit_payload @ tools/image_generation_tool.py:_build_fal_edit_payload
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_build_fal_edit_payload(const char *model_id, const char *prompt,
@@ -986,7 +975,6 @@ json_t *image_gen_build_fal_edit_payload(const char *model_id, const char *promp
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _normalize_krea_model @ tools/image_generation_tool.py:_normalize_krea_model
  * --------------------------------------------------------------------------- */
 
 char *image_gen_normalize_krea_model(const char *model_id)
@@ -1006,7 +994,6 @@ char *image_gen_normalize_krea_model(const char *model_id)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: is_krea_model @ tools/image_generation_tool.py:is_krea_model
  * --------------------------------------------------------------------------- */
 
 bool image_gen_is_krea_model(const char *model_id)
@@ -1015,7 +1002,6 @@ bool image_gen_is_krea_model(const char *model_id)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _maybe_route_managed_krea @ tools/image_generation_tool.py:_maybe_route_managed_krea
  * --------------------------------------------------------------------------- */
 
 json_t *image_gen_maybe_route_managed_krea(const char *prompt, const char *aspect_ratio,
@@ -1080,8 +1066,6 @@ json_t *image_gen_maybe_route_managed_krea(const char *prompt, const char *aspec
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _handle_image_generate @ tools/image_generation_tool.py:_handle_image_generate
- * PoP: image_generate_tool @ tools/image_generation_tool.py:image_generate_tool
  * --------------------------------------------------------------------------- */
 
 char *image_gen_handle_image_generate(json_t *args, json_t *kw)
@@ -1257,7 +1241,6 @@ char *image_gen_handle_image_generate(json_t *args, json_t *kw)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: check_fal_api_key @ tools/image_generation_tool.py:check_fal_api_key
  * --------------------------------------------------------------------------- */
 
 bool image_gen_check_fal_api_key(void)
@@ -1275,7 +1258,6 @@ bool image_gen_check_fal_api_key(void)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _build_no_backend_setup_message @ tools/image_generation_tool.py:_build_no_backend_setup_message
  * --------------------------------------------------------------------------- */
 
 char *image_gen_build_no_backend_setup_message(void)
@@ -1347,8 +1329,6 @@ bool image_gen_check_image_generation_requirements_stub(void)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _active_image_capabilities @ tools/image_generation_tool.py:_active_image_capabilities
- * PoP: _build_dynamic_image_schema @ tools/image_generation_tool.py:_build_dynamic_image_schema
  * Existing stub functions (keep for backward compat)
  * --------------------------------------------------------------------------- */
 

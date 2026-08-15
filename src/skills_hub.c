@@ -1289,8 +1289,8 @@ bool hub_is_path_redirect(const char *path) {
 }
 
 /* Port of Python: quarantine_bundle (simplified — write single file to quarantine) */
-/* PoP: hub_quarantine_write @ tools/skills_hub.py:quarantine_bundle */
-/* PoP: hub_quarantine_write @ tools/skills_hub.py:quarantine_bundle */
+/* PoP: tools_skills_hub_quarantine_bundle @ tools/skills_hub.py:quarantine_bundle */
+/* PoP: tools_skills_hub_quarantine_bundle @ tools/skills_hub.py:quarantine_bundle */
 bool hub_quarantine_write(const char *skill_name, const char *filename,
                            const char *content, size_t content_len) {
     if (!skill_name || !skill_name[0] || !filename || !filename[0] || !content)

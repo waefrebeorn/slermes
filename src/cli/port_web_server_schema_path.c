@@ -150,7 +150,6 @@ static char *describe_path(const char *full_key) {
 
 
 /* ─────────────── ws_build_schema_from_pairs ─────────────────────────────
- * PoP: _build_schema_from_config @ hermes_cli/web_server.py:_build_schema_from_config
  * `prefix=""` (top-level call from caller); recursion not yet needed because
  * we receive only flat (k,v) from the JSON config. The Python "skip
  * _config_version" filter is applied. */
@@ -257,7 +256,6 @@ ws_path_status_t ws_path_text(const char *raw, char *out, size_t cap) {
 }
 
 /* ───────────────────── ws_canonical_path ────────────────────────────────
- * PoP: _canonical_path @ hermes_cli/web_server.py:_canonical_path
  * Always expanduser (we accept "~/x" → resolved path), then resolve()
  * (Python `strict=require_exists`). The Python raises HTTPException on
  * FileNotFoundError when require_exists=True, else raises HTTPException
@@ -343,7 +341,6 @@ bool ws_path_is_under(const char *root, const char *target) {
 }
 
 /* ── ws_decode_data_url ────────────────────────────────────────────────────
- * PoP: _decode_data_url @ hermes_cli/web_server.py:_decode_data_url
  *     Python: `text = (data_url or "").strip()`; reject if not startswith
  *     "data:" or "," not in text; split header, encoded = text.split(",", 1);
  *     mime_type = header[5:].split(";", 1)[0] or "application/octet-stream";
@@ -596,7 +593,6 @@ const char *ws_fs_mime_type(const char *path) {
 }
 
 /* ── ws_fs_looks_binary ────────────────────────────────────────────────────
- * PoP: _fs_looks_binary @ hermes_cli/web_server.py:_fs_looks_binary
  *     Python: `if not data: return False`; `if b"\0" in data: return True`;
  *     `suspicious = sum(1 for byte in data if byte < 32 and byte not in {9,10,13})`;
  *     `return suspicious / len(data) > 0.12`. */
@@ -612,7 +608,6 @@ bool ws_fs_looks_binary(const unsigned char *data, size_t len) {
 }
 
 /* ── ws_fs_regular_file ────────────────────────────────────────────────────
- * PoP: _fs_regular_file @ hermes_cli/web_server.py:_fs_regular_file
  *     Python returns (target, stat); raises HTTPException on
  *     FileNotFoundError (404), PermissionError (403), OSError (400), and
  *     if it's not a regular file (400). We translate to ws_path_status. */
@@ -633,7 +628,6 @@ ws_path_status_t ws_fs_regular_file(const char *path,
 }
 
 /* ── ws_fs_find_git_root ────────────────────────────────────────────────────
- * PoP: _fs_find_git_root @ hermes_cli/web_server.py:_fs_find_git_root
  *     Python walks `directory` upwards with up to 50 iterations, looking for
  *     a `.git` directory/file. Returns str(directory) or None. We mirror
  *     the 50-level cap and the `(directory / ".git").exists()` check. */
@@ -669,7 +663,6 @@ char *ws_fs_find_git_root(const char *start) {
 }
 
 /* ── ws_fs_path ─────────────────────────────────────────────────────────────
- * PoP: _fs_path @ hermes_cli/web_server.py:_fs_path
  *     Python: strip; check NUL; expanduser(); resolve().
  *     Returns malloc'd absolute path on success, NULL on error (empty/NUL/invalid).
  */
@@ -740,7 +733,6 @@ char *ws_fs_path(const char *raw_path) {
 }
 
 /* ── ws_git_path ─────────────────────────────────────────────────────────────
- * PoP: ws_git_path @ hermes_cli/web_server.py:_git_path
  *     Python: str(path or "").strip(); if "\0" in path: raise; resolve with realpath.
  *     Returns malloc'd path or NULL on error.
  */
@@ -764,7 +756,6 @@ char *ws_git_path(const char *raw_path) {
 }
 
 /* ── ws_media_serve_roots ────────────────────────────────────────────────────
- * PoP: ws_media_serve_roots @ hermes_cli/web_server.py:_media_serve_roots
  *     Returns NULL-terminated array of malloc'd strings, caller frees each.
  *     Roots: HERMES_HOME/images, HERMES_HOME/screenshots, HERMES_HOME/cache
  */
@@ -793,7 +784,6 @@ char **ws_media_serve_roots(void) {
 }
 
 /* ── ws_ensure_managed_root ──────────────────────────────────────────────────
- * PoP: ws_ensure_managed_root @ hermes_cli/web_server.py:_ensure_managed_root
  *     Returns 0 on success, -1 on error.
  */
 int ws_ensure_managed_root(const char *path) {
@@ -831,7 +821,6 @@ int ws_ensure_managed_root(const char *path) {
 }
 
 /* ── ws_audio_extension_for_mime ───────────────────────────────────────────
- * PoP: _audio_extension_for_mime @ hermes_cli/web_server.py:_audio_extension_for_mime
  *     Python: `normalized = (mime_type or "").split(";", 1)[0].strip().lower()`;
  *     `return _AUDIO_MIME_EXTENSIONS.get(normalized, ".webm")`. */
 typedef struct { const char *mime; const char *ext; } audio_pair_t;

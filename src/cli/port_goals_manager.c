@@ -58,6 +58,7 @@
 
 /* truncate a string to max chars (replacing tail with '… [truncated]' semantics
  * is skipped here — caller only needs the leading max chars). */
+/* PoP: truncate_copy @ hermes_cli/goals.py:is_waiting */
 static void truncate_copy(const char *src, char *dst, size_t max) {
     size_t n = src ? strlen(src) : 0;
     if (n > max) n = max;

@@ -2610,7 +2610,6 @@ const char *hermes_platform_token_env(const char *platform_name) {
  * =========================================================================== */
 
 /*
- * PoP: _parse_env_value @ hermes_cli/config.py:_parse_env_value
  * Parse the small .env value subset Hermes writes itself. Returns malloc'd
  * string. Caller frees. */
 char *parse_env_value(const char *raw_value)
@@ -2649,7 +2648,6 @@ char *parse_env_value(const char *raw_value)
 }
 
 /*
- * PoP: _quote_env_value @ hermes_cli/config.py:_quote_env_value
  * Quote .env values containing characters with special dotenv meaning.
  * Returns malloc'd string. Caller frees. */
 char *quote_env_value(const char *value)

@@ -1076,9 +1076,6 @@ static bool _parse_webp_size(const unsigned char *data, size_t len,
 }
 
 /* ================================================================
- * PoP: url_safety_sensitive_query_param_name @ tools/url_safety.py:sensitive_query_param_name
- * PoP: url_safety_has_sensitive_query_params   @ tools/url_safety.py:has_sensitive_query_params
- * PoP: url_safety_redirect_target_from_response @ tools/url_safety.py:redirect_target_from_response
  *
  * Pure URL helpers. No DNS, no network, no httpx. Faithful to the Python
  * implementations (see tools/url_safety.py). redirect_target_from_response is

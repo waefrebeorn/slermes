@@ -39,7 +39,6 @@ int context_breakdown_chars_to_tokens(const char *text)
 }
 
 /*
- * PoP: _json_tokens @ agent/context_breakdown.py:_json_tokens
  * Tokens of a JSON-serialized value (takes JSON string). */
 int context_breakdown_json_tokens(const char *value_json)
 {
@@ -48,7 +47,6 @@ int context_breakdown_json_tokens(const char *value_json)
 }
 
 /*
- * PoP: _tool_name @ agent/context_breakdown.py:_tool_name
  * Extract tool name from a tool JSON object. Returns malloc'd string. */
 char *context_breakdown_tool_name(const char *tool_json)
 {
@@ -72,7 +70,6 @@ char *context_breakdown_tool_name(const char *tool_json)
 }
 
 /*
- * PoP: _split_tools @ agent/context_breakdown.py:_split_tools
  * Split a tools JSON array into {builtin, mcp, subagent} buckets.
  * Returns malloc'd JSON object. Caller frees. */
 char *context_breakdown_split_tools(const char *tools_json)
@@ -109,7 +106,6 @@ char *context_breakdown_split_tools(const char *tools_json)
 }
 
 /*
- * PoP: _strip_blocks @ agent/context_breakdown.py:_strip_blocks
  * Remove each given block substring from text. Returns malloc'd string. */
 char *context_breakdown_strip_blocks(const char *text, const char *block)
 {
@@ -150,7 +146,6 @@ static char *extract_skills_block(const char *text)
 }
 
 /*
- * PoP: compute_session_context_breakdown @ agent/context_breakdown.py:compute_session_context_breakdown
  * Faithful port. Takes the already-built parts + messages + tools JSON plus
  * the agent scalars (context_max, measured_used, model). Returns malloc'd
  * breakdown JSON. Caller frees.

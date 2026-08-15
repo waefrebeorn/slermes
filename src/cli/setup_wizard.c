@@ -2,26 +2,6 @@
  * setup_wizard.c — Interactive setup wizard for Hermes C.
  * Port of Python hermes_cli/setup.py (53 defs, ~3300 lines).
  *
- * PoP: run_setup_wizard @ hermes_cli/setup.py:run_setup_wizard
- * PoP: setup_model_provider @ hermes_cli/setup.py:setup_model_provider
- * PoP: setup_tts @ hermes_cli/setup.py:setup_tts
- * PoP: setup_terminal_backend @ hermes_cli/setup.py:setup_terminal_backend
- * PoP: setup_agent_settings @ hermes_cli/setup.py:setup_agent_settings
- * PoP: setup_gateway @ hermes_cli/setup.py:setup_gateway
- * PoP: setup_tools @ hermes_cli/setup.py:setup_tools
- * PoP: print_header @ hermes_cli/setup.py:print_header
- * PoP: prompt @ hermes_cli/setup.py:prompt
- * PoP: prompt_choice @ hermes_cli/setup.py:prompt_choice
- * PoP: prompt_yes_no @ hermes_cli/setup.py:prompt_yes_no
- * PoP: prompt_checklist @ hermes_cli/setup.py:prompt_checklist
- * PoP: is_interactive_stdin @ hermes_cli/setup.py:is_interactive_stdin
- * PoP: print_noninteractive_setup_guidance @ hermes_cli/setup.py:print_noninteractive_setup_guidance
- * PoP: _prompt_api_key @ hermes_cli/setup.py:_prompt_api_key
- * PoP: _sanitize_pasted_input @ hermes_cli/setup.py:_sanitize_pasted_input
- * PoP: _check_espeak_ng @ hermes_cli/setup.py:_check_espeak_ng
- * PoP: _apply_default_agent_settings @ hermes_cli/setup.py:_apply_default_agent_settings
- * PoP: _model_section_has_credentials @ hermes_cli/setup.py:_model_section_has_credentials
- * PoP: _gateway_platform_short_label @ hermes_cli/setup.py:_gateway_platform_short_label
  *   1. Provider selection with 8 presets + custom
  *   2. API key entry with optional connectivity test
  *   3. Model selector with 6 presets + custom

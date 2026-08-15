@@ -1,10 +1,6 @@
 /*
  * transport_common.c — port of agent/transports/types.py + base.py.
  *
- * PoP: transport_common @ agent/transports/types.py:ToolCall
- * PoP: transport_common @ agent/transports/types.py:Usage
- * PoP: transport_common @ agent/transports/types.py:NormalizedResponse
- * PoP: transport_common @ agent/transports/base.py:ProviderTransport
  *
  * Dependency ROOT for agent/transports/* ports. Adapters register a vtable
  * here; the agent loop resolves one by api_mode at runtime (no static

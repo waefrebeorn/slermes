@@ -37,7 +37,6 @@ int managed_scope_under_pytest(void)
  * _parse_env: KEY=VALUE lines -> JSON object of strings.
  * --------------------------------------------------------------------------- */
 /*
- * PoP: _parse_env @ hermes_cli/managed_scope.py:_parse_env
  * Parses a .env-style string. Returns malloc'd JSON object. Caller frees. */
 char *managed_scope_parse_env(const char *text)
 {
@@ -122,7 +121,6 @@ static void flatten_keys_rec(json_t *node, const char *prefix, char **buf, size_
 }
 
 /*
- * PoP: _flatten_keys @ hermes_cli/managed_scope.py:_flatten_keys
  * Takes a config JSON string; returns malloc'd newline-separated dotted keys.
  * Caller frees. (C has no set type; newline list is the faithful equivalent.) */
 char *managed_scope_flatten_keys(const char *config_json)
@@ -141,7 +139,6 @@ char *managed_scope_flatten_keys(const char *config_json)
  * managed_config_keys / is_key_managed / is_env_managed
  * --------------------------------------------------------------------------- */
 /*
- * PoP: managed_config_keys @ hermes_cli/managed_scope.py:managed_config_keys
  * Takes config JSON; returns malloc'd JSON array of dotted leaf keys. */
 char *managed_scope_managed_config_keys(const char *config_json)
 {
@@ -170,7 +167,6 @@ char *managed_scope_managed_config_keys(const char *config_json)
 }
 
 /*
- * PoP: is_key_managed @ hermes_cli/managed_scope.py:is_key_managed
  * Returns 1 if dotted_key is a leaf key of config_json. */
 int managed_scope_is_key_managed(const char *config_json, const char *dotted_key)
 {
@@ -187,7 +183,6 @@ int managed_scope_is_key_managed(const char *config_json, const char *dotted_key
 }
 
 /*
- * PoP: is_env_managed @ hermes_cli/managed_scope.py:is_env_managed
  * Returns 1 if name is a key in env_json (a JSON object of strings). */
 int managed_scope_is_env_managed(const char *env_json, const char *name)
 {

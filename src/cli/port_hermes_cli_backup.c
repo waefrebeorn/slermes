@@ -77,7 +77,6 @@ static void path_part_at(const char *p, int idx, char *out, size_t sz)
 }
 
 /*
- * PoP: backup_should_exclude @ hermes_cli/backup.py:_should_exclude
  * Returns 1 if rel_path (relative to hermes root) should be skipped. */
 int backup_should_exclude(const char *rel_path)
 {
@@ -106,7 +105,6 @@ int backup_should_exclude(const char *rel_path)
 }
 
 /*
- * PoP: backup_should_skip_file @ hermes_cli/backup.py:_should_skip_backup_file
  * Returns 1 when a candidate file should not be written to a backup. */
 int backup_should_skip_file(const char *abs_path, const char *rel_path, const char *out_path)
 {
@@ -129,7 +127,6 @@ int backup_should_skip_file(const char *abs_path, const char *rel_path, const ch
  * =========================================================================== */
 
 /*
- * PoP: backup_safe_copy_db @ hermes_cli/backup.py:_safe_copy_db
  * Safely copy a SQLite DB via the online backup API (handles WAL mode),
  * falling back to a raw byte copy on failure. Returns 1 on success. */
 int backup_safe_copy_db(const char *src, const char *dst)
@@ -240,7 +237,6 @@ static void backup_zip_names_free(char **names)
 }
 
 /*
- * PoP: backup_validate_zip @ hermes_cli/backup.py:_validate_backup_zip
  * Returns 1 if the zip looks like a Hermes backup. On failure sets *reason to
  * a malloc'd message (caller frees) and returns 0. */
 int backup_validate_zip(const char *path, char **reason)
@@ -275,7 +271,6 @@ int backup_validate_zip(const char *path, char **reason)
 }
 
 /*
- * PoP: backup_detect_zip_prefix @ hermes_cli/backup.py:_detect_prefix
  * Detect a common wrapping directory prefix (".hermes/" or "hermes/").
  * Returns malloc'd prefix (incl. trailing '/') or empty string. Caller frees. */
 char *backup_detect_zip_prefix(const char *path)
@@ -319,7 +314,6 @@ char *backup_detect_zip_prefix(const char *path)
 }
 
 /*
- * PoP: backup_quick_snapshot_root @ hermes_cli/backup.py:_quick_snapshot_root
  * Returns malloc'd path <hermes_home>/state-snapshots. Caller frees. */
 char *backup_quick_snapshot_root(const char *hermes_home)
 {
@@ -332,7 +326,6 @@ char *backup_quick_snapshot_root(const char *hermes_home)
 }
 
 /*
- * PoP: backup_pre_update_backup_dir @ hermes_cli/backup.py:_pre_update_backup_dir
  * Returns malloc'd path <hermes_home>/backups. Caller frees. */
 char *backup_pre_update_backup_dir(const char *hermes_home)
 {
@@ -345,7 +338,6 @@ char *backup_pre_update_backup_dir(const char *hermes_home)
 }
 
 /*
- * PoP: backup_count_cron_jobs @ hermes_cli/backup.py:_count_cron_jobs
  * Count jobs in a cron/jobs.json file. Returns -1 if missing/unparseable
  * (means "unknown", never "zero"), else the job count. */
 int backup_count_cron_jobs(const char *path)
@@ -370,7 +362,6 @@ int backup_count_cron_jobs(const char *path)
 }
 
 /*
- * PoP: backup_restore_cron_jobs_if_emptied @ hermes_cli/backup.py:restore_cron_jobs_if_emptied
  * Restore cron/jobs.json from a quick snapshot if the live file now has
  * FEWER jobs than the snapshot. Returns 1 if restored, 0 otherwise. */
 int backup_restore_cron_jobs_if_emptied(const char *snapshot_id, const char *hermes_home)
@@ -489,7 +480,6 @@ static int backup_prune_prefixed_zips(const char *dir, const char *prefix, int k
 }
 
 /*
- * PoP: backup_prune_pre_update_backups @ hermes_cli/backup.py:_prune_pre_update_backups
  * Remove oldest pre-update-*.zip beyond keep (floor keep to 1). */
 int backup_prune_pre_update_backups(const char *dir, int keep)
 {
@@ -498,7 +488,6 @@ int backup_prune_pre_update_backups(const char *dir, int keep)
 }
 
 /*
- * PoP: backup_prune_pre_migration_backups @ hermes_cli/backup.py:_prune_pre_migration_backups
  * Remove oldest pre-migration-*.zip beyond keep (floor keep to 0). */
 int backup_prune_pre_migration_backups(const char *dir, int keep)
 {

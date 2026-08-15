@@ -4,10 +4,6 @@
  *
  * No network, no model catalog. Only static tables (below) drive resolution.
  *
- * PoP: normalize_provider         @ hermes_cli/models.py:normalize_provider
- * PoP: provider_label             @ hermes_cli/models.py:provider_label
- * PoP: provider_group_for_slug    @ hermes_cli/models.py:provider_group_for_slug
- * PoP: group_providers            @ hermes_cli/models.py:group_providers
  */
 
 #include "provider_meta.h"

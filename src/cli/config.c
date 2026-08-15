@@ -3,55 +3,6 @@
  * Reads ~/.slermes/config.yaml + ~/.slermes/.env
  * Merges env vars over YAML.
  *
- * PoP: config_command @ hermes_cli/config.py:config_command
- * PoP: get_config_path @ hermes_cli/config.py:get_config_path
- * PoP: get_env_path @ hermes_cli/config.py:get_env_path
- * PoP: get_project_root @ hermes_cli/config.py:get_project_root
- * PoP: ensure_hermes_home @ hermes_cli/config.py:ensure_hermes_home
- * PoP: load_config @ hermes_cli/config.py:load_config
- * PoP: load_config_readonly @ hermes_cli/config.py:load_config_readonly
- * PoP: read_raw_config @ hermes_cli/config.py:read_raw_config
- * PoP: save_config @ hermes_cli/config.py:save_config
- * PoP: load_env @ hermes_cli/config.py:load_env
- * PoP: save_env_value @ hermes_cli/config.py:save_env_value
- * PoP: get_env_value @ hermes_cli/config.py:get_env_value
- * PoP: show_config @ hermes_cli/config.py:show_config
- * PoP: edit_config @ hermes_cli/config.py:edit_config
- * PoP: set_config_value @ hermes_cli/config.py:set_config_value
- * PoP: migrate_config @ hermes_cli/config.py:migrate_config
- * PoP: check_config_version @ hermes_cli/config.py:check_config_version
- * PoP: validate_config_structure @ hermes_cli/config.py:validate_config_structure
- * PoP: get_managed_system @ hermes_cli/config.py:get_managed_system
- * PoP: is_managed @ hermes_cli/config.py:is_managed
- * PoP: detect_install_method @ hermes_cli/config.py:detect_install_method
- * PoP: is_uv_tool_install @ hermes_cli/config.py:is_uv_tool_install
- * PoP: recommended_update_command @ hermes_cli/config.py:recommended_update_command
- * PoP: get_container_exec_info @ hermes_cli/config.py:get_container_exec_info
- * PoP: apply_terminal_config_to_env @ hermes_cli/config.py:apply_terminal_config_to_env
- * PoP: stamp_install_method @ hermes_cli/config.py:stamp_install_method
- * PoP: invalidate_env_cache @ hermes_cli/config.py:invalidate_env_cache
- * PoP: sanitize_env_file @ hermes_cli/config.py:sanitize_env_file
- * PoP: remove_env_value @ hermes_cli/config.py:remove_env_value
- * PoP: reload_env @ hermes_cli/config.py:reload_env
- * PoP: redact_key @ hermes_cli/config.py:redact_key
- * PoP: print_config_warnings @ hermes_cli/config.py:print_config_warnings
- * PoP: warn_deprecated_cwd_env_vars @ hermes_cli/config.py:warn_deprecated_cwd_env_vars
- * PoP: cfg_get @ hermes_cli/config.py:cfg_get
- * PoP: get_missing_env_vars @ hermes_cli/config.py:get_missing_env_vars
- * PoP: get_missing_config_fields @ hermes_cli/config.py:get_missing_config_fields
- * PoP: providers_dict_to_custom_providers @ hermes_cli/config.py:providers_dict_to_custom_providers
- * PoP: get_compatible_custom_providers @ hermes_cli/config.py:get_compatible_custom_providers
- * PoP: get_custom_provider_context_length @ hermes_cli/config.py:get_custom_provider_context_length
- * PoP: terminal_config_env_var_for_key @ hermes_cli/config.py:terminal_config_env_var_for_key
- * PoP: save_env_value_secure @ hermes_cli/config.py:save_env_value_secure
- * PoP: save_anthropic_oauth_token @ hermes_cli/config.py:save_anthropic_oauth_token
- * PoP: use_anthropic_claude_code_credentials @ hermes_cli/config.py:use_anthropic_claude_code_credentials
- * PoP: save_anthropic_api_key @ hermes_cli/config.py:save_anthropic_api_key
- * PoP: format_docker_update_message @ hermes_cli/config.py:format_docker_update_message
- * PoP: format_managed_message @ hermes_cli/config.py:format_managed_message
- * PoP: managed_error @ hermes_cli/config.py:managed_error
- * PoP: get_managed_update_command @ hermes_cli/config.py:get_managed_update_command
- * PoP: get_missing_skill_config_vars @ hermes_cli/config.py:get_missing_skill_config_vars
  */
 
 #include "hermes_core_types.h"

@@ -17,7 +17,6 @@
 #include "port_hermes_cli_kanban_helpers.h"
 
 /*
- * PoP: _fmt_ts @ hermes_cli/kanban.py:_fmt_ts
  */
 char *fmt_kanban_ts(long ts)
 {
@@ -30,7 +29,6 @@ char *fmt_kanban_ts(long ts)
 }
 
 /*
- * PoP: _parse_duration @ hermes_cli/kanban.py:_parse_duration
  * Parse "30s"/"5m"/"2h"/"1d" or a raw integer -> seconds.
  * Returns seconds, or -1 on malformed input (error copied to *err if non-NULL). */
 long parse_kanban_duration(const char *val, char *err, size_t errsz)
@@ -66,7 +64,6 @@ long parse_kanban_duration(const char *val, char *err, size_t errsz)
 }
 
 /*
- * PoP: _parse_workspace_flag @ hermes_cli/kanban.py:_parse_workspace_flag
  * Parse --workspace into (kind, path|NULL).
  * Returns 0 on success (fills *kind_out, *path_out — malloc'd), -1 on error
  * (err filled). Caller frees kind_out/path_out. */
@@ -111,7 +108,6 @@ int parse_kanban_workspace_flag(const char *value, char **kind_out, char **path_
 }
 
 /*
- * PoP: _parse_branch_flag @ hermes_cli/kanban.py:_parse_branch_flag
  * Normalize an optional branch name. Returns malloc'd string, or NULL on
  * error (err filled). */
 char *parse_kanban_branch_flag(const char *value, char *err, size_t errsz)
@@ -151,7 +147,6 @@ static const char *kanban_status_icon(const char *status)
 }
 
 /*
- * PoP: _fmt_task_line @ hermes_cli/kanban.py:_fmt_task_line
  * Render one task as a compact status line. Returns malloc'd string. */
 char *fmt_task_line(const kb_task_t *t)
 {
@@ -180,7 +175,6 @@ char *fmt_task_line(const kb_task_t *t)
 }
 
 /*
- * PoP: _task_to_dict @ hermes_cli/kanban.py:_task_to_dict
  * Serialise a task into a JSON object (caller frees via json_free). */
 json_t *task_to_dict(const kb_task_t *t)
 {
@@ -213,7 +207,6 @@ json_t *task_to_dict(const kb_task_t *t)
 }
 
 /*
- * PoP: _run_state_kwargs @ hermes_cli/kanban.py:_run_state_kwargs
  * Build state kwargs from (state_type, state_name). Returns malloc'd JSON
  * string "{}" / "{\"state_type\":..,\"state_name\":..}" / NULL (mismatch).
  * Caller frees. */
@@ -233,7 +226,6 @@ char *run_state_kwargs(const char *state_type, const char *state_name)
 }
 
 /*
- * PoP: _profile_author @ hermes_cli/kanban.py:_profile_author
  * Best-effort author name for an interactive CLI call. Caller frees. */
 char *profile_author(void)
 {
@@ -244,7 +236,6 @@ char *profile_author(void)
 }
 
 /*
- * PoP: _worker_run_id_for @ hermes_cli/kanban.py:_worker_run_id_for
  * Returns the HERMES_KANBAN_RUN_ID for a task if the env matches, else -1. */
 long worker_run_id_for(const char *task_id)
 {

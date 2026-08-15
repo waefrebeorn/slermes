@@ -300,7 +300,6 @@ int is_rate_limited_auth_error(const auth_error_t *error)
 }
 
 /*
- * PoP: _parse_retry_after_seconds @ hermes_cli/auth.py:_parse_retry_after_seconds
  * headers is a simple key→value map (NULL-terminated array of pairs). */
 int parse_retry_after_seconds(const char *const *headers)
 {
@@ -317,7 +316,6 @@ int parse_retry_after_seconds(const char *const *headers)
 }
 
 /*
- * PoP: _token_fingerprint @ hermes_cli/auth.py:_token_fingerprint
  * Returns malloc'd 12-hex-char fingerprint of the token (sha256[:12]). Caller frees. */
 char *token_fingerprint(const char *token)
 {
@@ -344,7 +342,6 @@ char *token_fingerprint(const char *token)
 }
 
 /*
- * PoP: format_auth_error @ hermes_cli/auth.py:format_auth_error
  * Returns malloc'd user-facing message. Caller frees. For non-AuthError
  * inputs returns a copy of msg. */
 char *format_auth_error(const auth_error_t *error)
@@ -394,7 +391,6 @@ static const char *auth_hermes_home(void)
 }
 
 /*
- * PoP: _auth_file_path @ hermes_cli/auth.py:_auth_file_path
  * Returns malloc'd "<hermes_home>/auth.json". Caller frees. */
 char *auth_file_path(void)
 {
@@ -405,7 +401,6 @@ char *auth_file_path(void)
 }
 
 /*
- * PoP: _global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path
  * Returns malloc'd global-root auth.json when in profile mode (root != home),
  * else NULL (classic mode). Caller frees result (or ignores NULL). */
 char *global_auth_file_path(void)
@@ -463,7 +458,6 @@ char *normalize_lmstudio_runtime_base_url(const char *base_url)
 }
 
 /*
- * PoP: has_usable_secret @ hermes_cli/auth.py:has_usable_secret
  * Returns 1 when value is a non-empty, non-placeholder secret string. */
 int has_usable_secret(const char *value, int min_length)
 {
@@ -486,7 +480,6 @@ int has_usable_secret(const char *value, int min_length)
 }
 
 /*
- * PoP: _is_expiring @ hermes_cli/auth.py:_is_expiring
  * Returns 1 when expires_at_iso is missing or within skew_seconds of now. */
 int is_expiring(const char *expires_at_iso, int skew_seconds)
 {
@@ -508,7 +501,6 @@ int coerce_ttl_seconds(const char *expires_in)
 }
 
 /*
- * PoP: _optional_base_url @ hermes_cli/auth.py:_optional_base_url
  * Returns malloc'd trimmed base URL (trailing slashes stripped) or NULL.
  * Caller frees (or ignores NULL). */
 char *optional_base_url(const char *value)
@@ -525,7 +517,6 @@ char *optional_base_url(const char *value)
 }
 
 /*
- * PoP: _decode_jwt_claims @ hermes_cli/auth.py:_decode_jwt_claims
  * Decode the payload segment of a JWT into a JSON object. Returns NULL on
  * failure; caller frees via json_free. */
 json_t *decode_jwt_claims(const char *token)
@@ -561,7 +552,6 @@ json_t *decode_jwt_claims(const char *token)
 }
 
 /*
- * PoP: _scope_values @ hermes_cli/auth.py:_scope_values
  * Normalise a space/comma separated scope string (or collection) into a
  * malloc'd, NULL-terminated array of malloc'd scope strings. *out_count set.
  * Caller frees each string and the array. */
@@ -594,7 +584,6 @@ char **scope_values(const char *raw_scope, int *out_count)
 }
 
 /*
- * PoP: _spotify_scope_list @ hermes_cli/auth.py:_spotify_scope_list
  * Default Spotify scope used when none provided. */
 static const char *DEFAULT_SPOTIFY_SCOPE = "user-read-playback-state user-modify-playback-state";
 
@@ -646,7 +635,6 @@ char *spotify_scope_string(const char *raw_scope)
 }
 
 /*
- * PoP: _spotify_client_id @ hermes_cli/auth.py:_spotify_client_id
  * Returns malloc'd client_id from explicit/state/env, or NULL if missing. */
 char *spotify_client_id(const char *explicit, const char *state_client_id)
 {
@@ -723,7 +711,6 @@ char *spotify_accounts_base_url(const char *state_accounts_base_url, const char 
 }
 
 /*
- * PoP: _spotify_code_verifier @ hermes_cli/auth.py:_spotify_code_verifier
  * Returns malloc'd PKCE code_verifier (urlsafe base64 of `length` random bytes,
  * stripped of '=' and truncated to 128). Caller frees. */
 char *spotify_code_verifier(int length)
@@ -769,7 +756,6 @@ char *oauth_pkce_code_challenge(const char *code_verifier)
 }
 
 /*
- * PoP: _spotify_build_authorize_url @ hermes_cli/auth.py:_spotify_build_authorize_url
  * Build the Spotify PKCE authorize URL. Returns malloc'd string. Caller frees. */
 char *spotify_build_authorize_url(const char *client_id, const char *redirect_uri,
                                   const char *scope, const char *state,
@@ -794,7 +780,6 @@ char *spotify_build_authorize_url(const char *client_id, const char *redirect_ur
 }
 
 /*
- * PoP: _spotify_validate_redirect_uri @ hermes_cli/auth.py:_spotify_validate_redirect_uri
  * Validate a Spotify loopback redirect URI. Returns 0 on success (filling
  * *host_out, *port_out, *path_out via malloc), -1 on invalid (err filled). */
 int spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
@@ -838,7 +823,6 @@ int spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
 }
 
 /*
- * PoP: _xai_validate_loopback_redirect_uri @ hermes_cli/auth.py:_xai_validate_loopback_redirect_uri
  * Like the Spotify variant but requires http://127.0.0.1. Returns 0 on
  * success, -1 on invalid (err filled). */
 /* PoP: xai_validate_loopback_redirect_uri @ hermes_cli/dashboard_auth/routes.py:_validate_loopback_redirect_uri */
@@ -889,7 +873,6 @@ int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms)
 }
 
 /*
- * PoP: _minimax_resolve_token_expiry_unix @ hermes_cli/auth.py:_minimax_resolve_token_expiry_unix
  * Returns access-token expiry as unix seconds. */
 double minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 {
@@ -900,7 +883,6 @@ double minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 }
 
 /*
- * PoP: _qwen_cli_auth_path @ hermes_cli/auth.py:_qwen_cli_auth_path
  * Returns malloc'd path to the Qwen CLI auth tokens file. Caller frees. */
 char *qwen_cli_auth_path(void)
 {

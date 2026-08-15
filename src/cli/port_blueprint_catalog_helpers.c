@@ -74,7 +74,6 @@ static int slot_optional(json_t *slots, const char *name)
 }
 
 /*
- * PoP: blueprint_slash_command @ cron/blueprint_catalog.py:blueprint_slash_command
  * key: blueprint key string; slots_json: JSON array of slot objects;
  * values_json: JSON object of supplied values (or "").
  * Returns malloc'd "/blueprint <key> slot=val ..." string. Caller frees.
@@ -156,7 +155,6 @@ static void urlencode(const char *in, char *out, size_t outsz)
 }
 
 /*
- * PoP: blueprint_deeplink @ cron/blueprint_catalog.py:blueprint_deeplink
  * Returns malloc'd "hermes://blueprint/<key>?slot=val..." URL. Caller frees.
  */
 char *blueprint_catalog_deeplink(const char *key, const char *slots_json, const char *values_json)
@@ -203,7 +201,6 @@ char *blueprint_catalog_deeplink(const char *key, const char *slots_json, const 
 }
 
 /*
- * PoP: _humanize_schedule @ cron/blueprint_catalog.py:_humanize_schedule
  * schedule_template: cron string; slots_json: slot array. Returns malloc'd
  * human schedule string. Caller frees.
  */
@@ -267,7 +264,6 @@ char *blueprint_catalog_humanize_schedule(const char *schedule_template, const c
 }
 
 /*
- * PoP: _resolve_schedule @ cron/blueprint_catalog.py:_resolve_schedule
  * Fills {placeholder}s in schedule_template from slot values. Returns malloc'd
  * cron string, or NULL on invalid input (caller treats NULL as error).
  *   schedule_template: cron string with {minute}/{hour}/{dow}/{interval_min}/...
@@ -402,7 +398,6 @@ static const char *BLUEPRINT_SLOT_TYPES[] = {
 };
 
 /*
- * PoP: __post_init__ @ cron/blueprint_catalog.py:__post_init__
  * Validates a slot type — Python BlueprintSlot.__post_init__ equivalent. */
 int blueprint_catalog_validate_slot_type(const char *type)
 {
@@ -580,7 +575,6 @@ static const char *BLUEPRINT_CATALOG_JSON =
 "}]";
 
 /*
- * PoP: get_blueprint @ cron/blueprint_catalog.py:get_blueprint
  * Returns a malloc'd copy of the blueprint JSON object (caller json_free's),
  * or NULL if key not found. */
 json_t *blueprint_catalog_get(const char *key)
@@ -617,7 +611,6 @@ const char *blueprint_catalog_raw_json(void)
 
 
 /*
- * PoP: blueprint_form_schema @ cron/blueprint_catalog.py:blueprint_form_schema
  * Emits the JSON a form renderer needs for this blueprint. Returns malloc'd
  * string (caller frees) or NULL on error. */
 char *blueprint_catalog_form_schema(json_t *bp)
@@ -667,7 +660,6 @@ char *blueprint_catalog_form_schema(json_t *bp)
 }
 
 /*
- * PoP: blueprint_catalog_entry @ cron/blueprint_catalog.py:blueprint_catalog_entry
  * Combines form schema + schedule + scheduleHuman + command + appUrl. */
 char *blueprint_catalog_entry(json_t *bp)
 {
@@ -704,7 +696,6 @@ char *blueprint_catalog_entry(json_t *bp)
 }
 
 /*
- * PoP: fill_blueprint @ cron/blueprint_catalog.py:fill_blueprint
  * Validates values and returns a cron.jobs.create_job kwargs JSON string.
  * On error returns NULL and writes a BlueprintFillError-style message to
  * err_out (err_sz bytes). */

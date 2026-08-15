@@ -6,8 +6,6 @@
  * macOS:           pbcopy / pbpaste
  * Windows:         Win32 Clipboard API
  *
- * PoP: clipboard_read  @ electron/main.cjs:readClipboard
- * PoP: clipboard_write @ electron/main.cjs:writeClipboard
  */
 
 #include "clipboard.h"

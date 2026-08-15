@@ -9,8 +9,6 @@
  * Both are pure transforms over a parsed config dict; no external I/O, no
  * globals mutated per-call (the default tables are immutable build-time data).
  *
- * PoP: display_config__normalise @ gateway/display_config.py:_normalise
- * PoP: display_config__resolve @ gateway/display_config.py:resolve_display_setting
  */
 
 #include "hermes_json.h"

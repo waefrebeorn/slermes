@@ -36,7 +36,6 @@
 #define WORKTREE_MERGE_CACHE_MAX 1000
 
 /* ── Worktree merge verdict cache ────────────────────────────────────────
- * PoP: _worktree_merge_cache_path @ cli.py:_worktree_merge_cache_path
  */
 char *cli_worktree_merge_cache_path(void) {
     const char *home = slermes_home();
@@ -208,7 +207,6 @@ char *cli_show_context_breakdown(context_breakdown_agent_t *agent,
 }
 
 /* ── Session YOLO persistence ─────────────────────────────────────────────
- * PoP: _persist_session_yolo @ cli.py:_persist_session_yolo
  *
  * Persistence of the YOLO bypass flag to the session row so --resume restores
  * it. In the C CLI, sessions are backed by the SQLite state DB; the yolo flag
@@ -237,7 +235,6 @@ bool cli_persist_session_yolo(const char *session_id, bool enabled) {
 }
 
 /* ── Stash panel renderer ─────────────────────────────────────────────────
- * PoP: _render_stash_panel @ cli.py:_render_stash_panel
  *
  * Renders a formatted stash-panel box with border glyphs, cursor highlighting,
  * and display-cell-aware truncation (CJK-safe). Returns a malloc'd string

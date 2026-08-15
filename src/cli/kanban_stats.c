@@ -9,8 +9,6 @@
  *
  * PoP: exact port. Semantic source of truth = hermes_cli/kanban_db.py
  *      (board_stats / task_age / _to_epoch).
- * PoP: kdb_board_stats @ hermes_cli/kanban_db.py:board_stats
- * PoP: kdb_task_age @ hermes_cli/kanban_db.py:task_age
  */
 
 #include "kanban_db.h"

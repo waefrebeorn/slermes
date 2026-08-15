@@ -11,12 +11,6 @@
  *
  * PoP: exact port. Semantic source of truth = hermes_cli/kanban_db.py
  *      (connect / init_db / _migrate_add_optional_columns / write_txn).
- * PoP: kdb_connect @ hermes_cli/kanban_db.py:connect
- * PoP: kdb_connect_path @ hermes_cli/kanban_db.py:connect_closing
- * PoP: kdb_init_db @ hermes_cli/kanban_db.py:init_db
- * PoP: kdb_write_begin @ hermes_cli/kanban_db.py:write_txn
- * PoP: kdb_write_end @ hermes_cli/kanban_db.py:write_txn
- * PoP: kdb_now @ hermes_cli/kanban_db.py:_resolve_busy_timeout_ms
  */
 
 #include "kanban_db.h"

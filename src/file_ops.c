@@ -3,12 +3,7 @@
  *
  * Provides file system operations needed by the desktop app.
  *
- * PoP: file_read_text    @ electron/main.cjs:readFileText
  * PoP: file_read_dir     @ electron/main.cjs:fs:readDir
- * PoP: file_write        @ electron/main.cjs:writeFile
- * PoP: file_delete       @ electron/main.cjs:deleteFile
- * PoP: dir_create        @ electron/main.cjs:createDir
- * PoP: file_read_data_url @ electron/main.cjs:readFileDataUrl
  */
 
 #include "file_ops.h"

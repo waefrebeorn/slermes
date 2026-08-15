@@ -24,11 +24,6 @@
  * PoP: settings_page        @ apps/desktop/src/app/settings/index.tsx
  * PoP: theme_switcher       @ apps/desktop/src/app/settings/index.tsx
  * PoP: connection_config    @ apps/desktop/src/app/settings/index.tsx
- * PoP: notifications        @ electron/main.cjs:notify
- * PoP: file_dialog_open     @ electron/main.cjs:selectPaths
- * PoP: file_dialog_save     @ electron/main.cjs:selectPaths
- * PoP: open_external        @ electron/main.cjs:openExternal
- * PoP: safe_storage         @ electron/main.cjs:safeStorage
  * PoP: auth_ticket          @ electron/dashboard-token.cjs
  * PoP: connection_revalidate @ electron/main.cjs:connection:revalidate
  * PoP: update_check         @ electron/main.cjs:updates:check

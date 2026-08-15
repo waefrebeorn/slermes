@@ -382,7 +382,6 @@ int resolve_rate_limit_cooldown_seconds(void)
 }
 
 /*
- * PoP: _relative_age @ hermes_cli/kanban_db.py:_relative_age
  * Returns malloc'd coarse age string. Caller frees. */
 char *relative_age(long ts, long now)
 {
@@ -397,7 +396,6 @@ char *relative_age(long ts, long now)
 }
 
 /*
- * PoP: _normalize_board_slug @ hermes_cli/kanban_db.py:_normalize_board_slug
  * Returns malloc'd normalized slug or NULL (invalid/empty). Caller frees. */
 char *normalize_board_slug(const char *slug)
 {
@@ -420,7 +418,6 @@ char *normalize_board_slug(const char *slug)
 }
 
 /*
- * PoP: kanban_home @ hermes_cli/kanban_db.py:kanban_home
  * Returns malloc'd root dir. Caller frees. */
 char *kanban_home(void)
 {
@@ -465,7 +462,6 @@ static int kanban_board_exists(const char *slug)
 }
 
 /*
- * PoP: get_current_board @ hermes_cli/kanban_db.py:get_current_board
  * Returns malloc'd active board slug (never NULL). Caller frees. */
 char *get_current_board(void)
 {
@@ -502,7 +498,6 @@ char *get_current_board(void)
 }
 
 /*
- * PoP: set_current_board @ hermes_cli/kanban_db.py:set_current_board
  * Writes the slug to <root>/kanban/current. Returns 0 on success. */
 int set_current_board(const char *slug)
 {
@@ -531,7 +526,6 @@ int set_current_board(const char *slug)
  * =========================================================================== */
 
 /*
- * PoP: board_dir @ hermes_cli/kanban_db.py:board_dir
  * Returns malloc'd "<root>/kanban/boards/<slug>" (slug defaulted). Caller frees. */
 char *board_dir(const char *board)
 {
@@ -557,7 +551,6 @@ int board_exists(const char *board)
 }
 
 /*
- * PoP: kanban_db_path @ hermes_cli/kanban_db.py:kanban_db_path
  * Returns malloc'd path to the kanban.db for board. Caller frees. */
 char *kanban_db_path(const char *board)
 {
@@ -596,7 +589,6 @@ int profile_exists(const char *name)
 }
 
 /*
- * PoP: workspaces_root @ hermes_cli/kanban_db.py:workspaces_root
  * Returns malloc'd workspaces dir for board. Caller frees. */
 char *workspaces_root(const char *board)
 {
@@ -619,7 +611,6 @@ char *workspaces_root(const char *board)
 }
 
 /*
- * PoP: attachments_root @ hermes_cli/kanban_db.py:attachments_root
  * Returns malloc'd attachments dir for board. Caller frees. */
 char *attachments_root(const char *board)
 {
@@ -642,7 +633,6 @@ char *attachments_root(const char *board)
 }
 
 /*
- * PoP: task_attachments_dir @ hermes_cli/kanban_db.py:task_attachments_dir
  * Returns malloc'd "<attachments_root>/<task_id>". Caller frees. */
 char *task_attachments_dir(const char *task_id, const char *board)
 {
@@ -654,7 +644,6 @@ char *task_attachments_dir(const char *task_id, const char *board)
 }
 
 /*
- * PoP: worker_logs_dir @ hermes_cli/kanban_db.py:worker_logs_dir
  * Returns malloc'd worker-logs dir for board. Caller frees. */
 char *worker_logs_dir(const char *board)
 {
@@ -675,7 +664,6 @@ char *worker_logs_dir(const char *board)
 }
 
 /*
- * PoP: board_metadata_path @ hermes_cli/kanban_db.py:board_metadata_path
  * Returns malloc'd "<board_dir>/board.json". Caller frees. */
 char *board_metadata_path(const char *board)
 {
@@ -690,7 +678,6 @@ char *board_metadata_path(const char *board)
 }
 
 /*
- * PoP: _default_board_display_name @ hermes_cli/kanban_db.py:_default_board_display_name
  * Turns "atm10-server" -> "Atm10 Server". Returns malloc'd string. Caller frees. */
 char *default_board_display_name(const char *slug)
 {
@@ -727,7 +714,6 @@ char *default_board_display_name(const char *slug)
 }
 
 /*
- * PoP: clear_current_board @ hermes_cli/kanban_db.py:clear_current_board
  * Removes <root>/kanban/current if present. Returns 0 on success / not-found. */
 int clear_current_board(void)
 {
@@ -738,7 +724,6 @@ int clear_current_board(void)
 }
 
 /*
- * PoP: _resolve_busy_timeout_ms @ hermes_cli/kanban_db.py:_resolve_busy_timeout_ms
  * Returns the SQLite busy timeout (ms) for Kanban connections. */
 int resolve_busy_timeout_ms(void)
 {
@@ -752,7 +737,6 @@ int resolve_busy_timeout_ms(void)
 }
 
 /*
- * PoP: _to_epoch @ hermes_cli/kanban_db.py:_to_epoch
  * Normalises int/float/numeric-string/ISO-8601 to unix epoch seconds.
  * Returns value, or -1 for None/empty/unparseable. */
 long to_epoch(const char *val)
@@ -800,7 +784,6 @@ long to_epoch(const char *val)
 }
 
 /*
- * PoP: _looks_like_tls_record_at @ hermes_cli/kanban_db.py:_looks_like_tls_record_at
  * Returns 1 for a TLS record header at data[offset:]. */
 int looks_like_tls_record_at(const unsigned char *data, size_t len, size_t offset)
 {
@@ -816,7 +799,6 @@ int looks_like_tls_record_at(const unsigned char *data, size_t len, size_t offse
 }
 
 /*
- * PoP: _validate_sqlite_header @ hermes_cli/kanban_db.py:_validate_sqlite_header
  * Returns 1 if path is absent/empty/sqlite-header, 0 if a non-empty
  * non-sqlite file (caller should error). */
 int validate_sqlite_header(const char *path)
@@ -834,7 +816,6 @@ int validate_sqlite_header(const char *path)
 }
 
 /*
- * PoP: _error_fingerprint @ hermes_cli/kanban_db.py:_error_fingerprint
  * Normalises an error string for grouping identical failures.
  * Returns malloc'd fingerprint (lowercased, host details stripped). Caller frees. */
 char *error_fingerprint(const char *error_text)
@@ -884,7 +865,6 @@ char *error_fingerprint(const char *error_text)
 }
 
 /*
- * PoP: _rotated_log_path @ hermes_cli/kanban_db.py:_rotated_log_path
  * Returns malloc'd "<log>.<generation>". Caller frees. */
 char *rotated_log_path(const char *log_path, int generation)
 {
@@ -897,7 +877,6 @@ char *rotated_log_path(const char *log_path, int generation)
 }
 
 /*
- * PoP: _looks_like_path @ hermes_cli/kanban_db.py:_looks_like_path
  * Returns 1 when a command override is an explicit path, not a name. */
 int looks_like_path(const char *value)
 {
@@ -931,7 +910,6 @@ int is_windows_batch_shim(const char *path)
 }
 
 /*
- * PoP: _scratch_tip_sentinel_path @ hermes_cli/kanban_db.py:_scratch_tip_sentinel_path
  * Returns malloc'd "<kanban_home>/<SCRATCH_TIP_SENTINEL_NAME>". Caller frees. */
 char *scratch_tip_sentinel_path(void)
 {

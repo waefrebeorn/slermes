@@ -114,7 +114,6 @@ static char *strip_code_fences(const char *raw)
  * --------------------------------------------------------------------------- */
 
 /*
- * PoP: goal_contract_is_empty @ hermes_cli/goals.py:is_empty
  * Returns 1 if all contract fields are empty (contract given as JSON). */
 int goals_is_empty(const char *contract_json)
 {
@@ -161,7 +160,6 @@ char *goals_render_block(const char *contract_json)
 }
 
 /*
- * PoP: parse_contract @ hermes_cli/goals.py:parse_contract
  * Split user goal text into headline + structured contract. Returns malloc'd
  * JSON {"headline":"...","contract":{...}}. Caller frees. */
 char *parse_contract_json(const char *text)
@@ -407,7 +405,6 @@ char *goals_render_contract(const char *goalstate_json)
 }
 
 /*
- * PoP: _extract_json_object @ hermes_cli/goals.py:_extract_json_object
  * Best-effort first JSON object from a model reply. Returns malloc'd JSON
  * object string or NULL. Caller frees. */
 char *extract_json_object(const char *raw)
@@ -434,7 +431,6 @@ char *extract_json_object(const char *raw)
 }
 
 /*
- * PoP: _parse_judge_response @ hermes_cli/goals.py:_parse_judge_response
  * Parse a judge reply. Returns malloc'd JSON:
  *   {"verdict":"...","reason":"...","parse_failed":<0/1>,"wait":<json-or-null>}
  * Caller frees. */
@@ -553,7 +549,6 @@ char *parse_judge_response_json(const char *raw)
 }
 
 /*
- * PoP: _goal_judge_max_tokens @ hermes_cli/goals.py:_goal_judge_max_tokens
  * Best-effort read of auxiliary.goal_judge.max_tokens from the hermes config
  * JSON; falls back to DEFAULT_JUDGE_MAX_TOKENS (4096). */
 int goal_judge_max_tokens(void)
@@ -593,7 +588,6 @@ int goal_judge_max_tokens(void)
 }
 
 /*
- * PoP: _render_background_block @ hermes_cli/goals.py:_render_background_block
  * Render a JSON list of background-process dicts into a prompt block.
  * Returns malloc'd string. Caller frees. */
 char *render_background_block_json(const char *processes_json)

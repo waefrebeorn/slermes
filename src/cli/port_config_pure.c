@@ -252,7 +252,6 @@ static const char *SLUG_TO_GROUP[][2] = {
 };
 
 /*
- * PoP: provider_group_for_slug @ hermes_cli/models.py:provider_group_for_slug
  * Return the group_id a provider slug belongs to, or "" if ungrouped.
  */
 const char *provider_group_for_slug(const char *slug)
