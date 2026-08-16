@@ -990,6 +990,22 @@ void plugin_llm_input_free(plugin_llm_input_t *input) {
     free(input->file_name);
 }
 
-/* Port of Python: make_plugin_llm_for_test — N/A, PluginLlm is a Python class with callback injection.
- * C uses direct function calls (resolve_trust_policy, invoke) with struct parameters. Test helpers
- * would construct plugin_llm_input_t + callback structs directly. */
+/* ================================================================
+ *  make_plugin_llm_for_test — Test double with injected callbacks
+ *  Port of Python: make_plugin_llm_for_test()
+ * ================================================================ */
+plugin_llm_test_ctx_t *plugin_llm_make_for_test(
+    plugin_llm_complete_fn complete,
+    plugin_llm_structured_fn complete_structured)
+{
+    plugin_llm_test_ctx_t *ctx = calloc(1, sizeof(*ctx));
+    if (!ctx) return NULL;
+    ctx->complete = complete;
+    ctx->complete_structured = complete_structured;
+    return ctx;
+}
+
+/* Port of Python: make_plugin_llm_for_test — PluginLlm is a Python class with
+ * callback injection. C has no PluginLlm class (the port uses free functions),
+ * so the test double is the injected-callback context above: callers invoke
+ * ctx->complete / ctx->complete_structured instead of plugin_llm_complete. */

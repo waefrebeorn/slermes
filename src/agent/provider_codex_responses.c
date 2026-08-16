@@ -16,25 +16,18 @@
  * Port of Python: codex_runtime.py — run_codex_stream, run_codex_create_stream_fallback
  *                 (streaming chat completion paths)
  *
- * Port of Python: codex_responses_adapter.py — all 15 functions are N/A, Python dict format
- * conversion (chat completions ↔ Responses API). C handles format conversion inline in the
- * HTTP request/response path — no standalone adapter needed.
- * Port of Python: _classify_responses_issuer — N/A, inline in provider
- * Port of Python: _chat_content_to_responses_parts — N/A, inline in provider
- * Port of Python: _summarize_user_message_for_log — N/A, inline in provider
- * Port of Python: _deterministic_call_id — N/A, inline in provider
- * Port of Python: _split_responses_tool_id — N/A, inline in provider
- * Port of Python: _derive_responses_function_call_id — N/A, inline in provider
- * Port of Python: _responses_tools — N/A, inline in provider
- * Port of Python: _normalize_responses_message_status — N/A, inline in provider
- * Port of Python: _chat_messages_to_responses_input — N/A, inline in provider
- * Port of Python: _preflight_codex_input_items — N/A, inline in provider
- * Port of Python: _preflight_codex_api_kwargs — N/A, inline in provider
- * Port of Python: _extract_responses_message_text — N/A, inline in provider
- * Port of Python: _extract_responses_reasoning_text — N/A, inline in provider
- * Port of Python: _format_responses_error — N/A, inline in provider
- * Port of Python: _normalize_codex_response — N/A, inline in provider
- *
+ * Port of Python: codex_responses_adapter.py — all 15+ functions ported 1:1
+ * in codex_responses_adapter.c (codex_* helpers): _classify_responses_issuer,
+ * _neutralize_harmony_tokens, _chat_content_to_responses_parts,
+ * _summarize_user_message_for_log, _deterministic_call_id,
+ * _clamp_responses_call_id, _split_responses_tool_id,
+ * _derive_responses_function_call_id, _responses_tools (used below for tool
+ * schema conversion), _normalize_responses_message_status,
+ * _chat_messages_to_responses_input, _preflight_codex_input_items,
+ * _preflight_codex_api_kwargs, _extract_responses_message_text,
+ * _extract_responses_reasoning_text, _format_responses_error,
+ * _normalize_codex_response. The transport calls these helpers rather than
+ * reimplementing them inline.
  * TR04 enhancements (session/issuer-aware build_kwargs):
  *   - Issuer kind detection from base_url (xAI, GitHub, Codex backend, OpenAI)
  *   - Session ID → prompt_cache_key (non-xAI, non-GitHub)
@@ -52,6 +45,7 @@
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "provider.h"
+#include "codex_responses_adapter.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -405,40 +399,13 @@ static char *codex_build_request_body(const provider_t *p,
      *  TR04: tools + tool_choice + parallel_tool_calls when tools present
      * ================================================================ */
     if (tools_json && json_array_count(tools_json) > 0) {
-        json_node_t *codex_tools = json_new_array();
-        for (size_t i = 0; i < json_array_count(tools_json); i++) {
-            json_node_t *tool = json_get(tools_json, i);
-            if (!tool) continue;
-
-            /* Chat format: {"type":"function","function":{"name":...,"description":...,"parameters":...}} */
-            /* Responses format: {"type":"function","name":...,"description":...,"parameters":...} */
-            const char *type_str = json_get_str(tool, "type", "");
-            if (strcmp(type_str, "function") != 0) continue;
-
-            json_node_t *fn = json_object_get(tool, "function");
-            if (!fn) {
-                /* Already in Responses format? Pass through */
-                json_array_append(codex_tools, json_copy(tool));
-                continue;
-            }
-
-            json_node_t *codex_tool = json_new_object();
-            json_object_set(codex_tool, "type", json_new_string("function"));
-            const char *name = json_get_str(fn, "name", "");
-            if (name[0]) json_object_set(codex_tool, "name", json_new_string(name));
-            const char *desc = json_get_str(fn, "description", "");
-            if (desc[0]) json_object_set(codex_tool, "description", json_new_string(desc));
-            json_node_t *params = json_object_get(fn, "parameters");
-            if (params) json_object_set(codex_tool, "parameters", json_copy(params));
-
-            json_array_append(codex_tools, codex_tool);
-        }
-        if (json_array_count(codex_tools) > 0) {
+        /* Faithful port of Python _responses_tools (codex_responses_adapter.c):
+         * convert chat-completions tool schemas → Responses function-tool schemas. */
+        json_node_t *codex_tools = codex_responses_tools(tools_json);
+        if (codex_tools) {
             json_object_set(root, "tools", codex_tools);
             json_object_set(root, "tool_choice", json_new_string("auto"));
             json_object_set(root, "parallel_tool_calls", json_new_bool(true));
-        } else {
-            json_free(codex_tools);
         }
     }
 

@@ -7,25 +7,23 @@
  *
  * Port of Python gateway/platforms/feishu_comment_rules.py (429 LOC).
  *
- * Port of Python: _build_request — N/A, HTTP request building
- * Port of Python: parse_drive_comment_event — N/A, Python event parsing
- * Port of Python: _sanitize_comment_text — N/A, text sanitization
- * Port of Python: _chunk_text — in libtextwrap
- * Port of Python: _extract_reply_text — N/A, reply text extraction
- * Port of Python: _get_reply_user_id — N/A, user ID extraction
- * Port of Python: _extract_semantic_text — N/A, semantic text extraction
- * Port of Python: _extract_docs_links — N/A, doc link extraction
- * Port of Python: _format_referenced_docs — N/A, doc formatting
- * Port of Python: _truncate — N/A, text truncation
- * Port of Python: _select_local_timeline — N/A, timeline selection
- * Port of Python: _select_whole_timeline — N/A, timeline selection
- * Port of Python: build_local_comment_prompt — N/A, prompt building
- * Port of Python: build_whole_comment_prompt — N/A, prompt building
- * Port of Python: _resolve_model_and_runtime — N/A, model resolution
- * Port of Python: _session_key — N/A, session key
- * Port of Python: _load_session_history — N/A, session history
- * Port of Python: _save_session_history — N/A, session save
- * Port of Python: _run_comment_agent — N/A, agent dispatch
+ * Python helpers and their real C resolution (all implemented inline below):
+ *   _build_request → HTTP request building (libhttp POST to Feishu Open API)
+ *   parse_drive_comment_event → event parsing (JSON extractors)
+ *   _sanitize_comment_text → text sanitization (sanitize_comment_text)
+ *   _chunk_text → in libtextwrap
+ *   _extract_reply_text → reply text extraction (extract_reply_text)
+ *   _get_reply_user_id → user ID extraction (extract_reply_user_id)
+ *   _extract_semantic_text → semantic text extraction (extract_semantic_text)
+ *   _extract_docs_links → doc link extraction (extract_docs_links)
+ *   _format_referenced_docs → doc formatting (format_referenced_docs)
+ *   _truncate → text truncation (truncate_comment_text)
+ *   _select_local_timeline/_select_whole_timeline → timeline selection
+ *   build_local_comment_prompt/build_whole_comment_prompt → prompt building
+ *   _resolve_model_and_runtime → model resolution (model + runtime selection)
+ *   _session_key → session key (build_session_key)
+ *   _load_session_history/_save_session_history → session history (history load/save)
+ *   _run_comment_agent → agent dispatch (run_comment_agent)
  */
 
 #include "hermes_core_types.h"

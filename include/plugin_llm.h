@@ -230,6 +230,41 @@ plugin_llm_structured_result_t *plugin_llm_complete_structured(
     char *err_msg, size_t err_sz);
 
 /* ================================================================
+ *  Test double (Port of Python: make_plugin_llm_for_test)
+ * ================================================================ */
+
+/* Injected completion callback (mirrors Python's _complete override). */
+typedef plugin_llm_result_t *(*plugin_llm_complete_fn)(
+    const char *plugin_id, llm_config_t *llm_cfg, json_node_t *messages,
+    const char *provider, const char *model, const char *agent_id,
+    const char *profile, double temperature, int max_tokens,
+    json_node_t *extra_body, json_node_t *policy_json,
+    char *err_msg, size_t err_sz);
+
+/* Injected structured completion callback. */
+typedef plugin_llm_structured_result_t *(*plugin_llm_structured_fn)(
+    const char *plugin_id, llm_config_t *llm_cfg, const char *instructions,
+    const plugin_llm_input_t *inputs, int input_count, bool json_mode,
+    const json_node_t *json_schema, const char *schema_name,
+    const char *system_prompt, const char *provider, const char *model,
+    const char *agent_id, const char *profile, double temperature,
+    int max_tokens, json_node_t *policy_json, char *err_msg, size_t err_sz);
+
+/* Test harness context: a PluginLlm with injected callbacks (faithful port of
+ * the Python test fixture that overrides the real network completion). */
+typedef struct {
+    plugin_llm_complete_fn      complete;
+    plugin_llm_structured_fn    complete_structured;
+} plugin_llm_test_ctx_t;
+
+/* Build a PluginLlm test double with injected completion callbacks.
+ * Pass NULL for either callback to fall back to the real plugin_llm_complete /
+ * plugin_llm_complete_structured. Caller frees with free(). */
+plugin_llm_test_ctx_t *plugin_llm_make_for_test(
+    plugin_llm_complete_fn complete,
+    plugin_llm_structured_fn complete_structured);
+
+/* ================================================================
  *  Free functions
  * ================================================================ */
 

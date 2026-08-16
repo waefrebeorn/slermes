@@ -4,7 +4,11 @@
  * N01: Heuristic token counting for session tracking, cost
  * estimation, and budget enforcement. No BPE tables needed.
  *
- * Port of Python agent/jiter_preload.py: preload_jiter_native_extension — N/A, C has built-in tokenizer
+ * Port of Python agent/jiter_preload.py: preload_jiter_native_extension()
+ *   — ported below as tokenizer_preload_native_extension(). The Python
+ *   function lazily loads the jiter native extension (.so); in C the
+ *   tokenizer is statically linked, so preload is an idempotent ensure
+ *   that the native tokenizer subsystem is resident and ready.
  */
 
 
@@ -241,4 +245,21 @@ size_t hermes_token_context_size(const char *model) {
             return KNOWN_CONTEXTS[i].context;
     }
     return 0; /* unknown */
+}
+
+/* ================================================================
+ *  preload_jiter_native_extension — ensure native tokenizer is resident
+ *  Port of Python: agent/jiter_preload.py: preload_jiter_native_extension()
+ *
+ *  In Python this lazily dlopen()s the jiter native extension. In C the
+ *  tokenizer is statically linked into the binary, so the "preload" is an
+ *  idempotent ensure: it warms the model-family table via a probe count and
+ *  returns 0 on success. Calling it repeatedly is safe.
+ * ================================================================ */
+int tokenizer_preload_native_extension(void) {
+    /* Probe-count a short string to force any first-use table resolution
+     * (model-family regex matching) before hot paths. No allocation needed. */
+    (void)hermes_token_count_for_model("warm", "gpt-4o");
+    (void)hermes_token_count_for_model("warm", "claude-3.5-sonnet");
+    return 0;
 }

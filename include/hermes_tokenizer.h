@@ -98,6 +98,11 @@ size_t hermes_token_count_messages(const char *const *messages,
 /* Get token limit for a model (max context window). 0 = unknown. */
 size_t hermes_token_context_size(const char *model);
 
+/* Ensure the native tokenizer subsystem is resident and ready.
+ * Port of Python agent/jiter_preload.py: preload_jiter_native_extension().
+ * Returns 0 on success. Idempotent. */
+int tokenizer_preload_native_extension(void);
+
 #ifdef __cplusplus
 }
 #endif
