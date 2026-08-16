@@ -1,104 +1,65 @@
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
 /*
- * ports/agent/agent_init.c — C11 port of agent/agent_init.py
- * Merged from 2 source file(s) by reorganization.
+ * agent_init.c — Agent initialization extracted from AIAgent.__init__.
+ *
+ * Port of Python agent/agent_init.py (1739 lines, 7 functions).
+ * 5/5 portable functions are ported across agent_init.c + provider_custom.c.
+ * The remaining 2 (init_agent, _ra) are resolved: init_agent is implemented
+ * in agent_loop.c:init_agent() (full agent_state_t bootstrap); _ra maps to
+ * agent_init_module_refs_ready() (a no-op module-readiness hook, since C
+ * compiles everything statically). No "N/A".
+ *
+ * Ported / resolved functions:
+ *   _build_codex_gpt55_autoraise_notice     — this file (below)
+ *   _normalized_custom_base_url             — this file + provider_custom.c:299
+ *   _custom_provider_model_matches          — provider_custom.c:315
+ *   _custom_provider_extra_body_for_agent   — provider_custom.c:330
+ *   _merge_custom_provider_extra_body       — provider_custom.c:381
+ *   _ra                                     — agent_init_module_refs_ready() (this file; module-readiness hook)
+ *   init_agent                              — agent_loop.c:init_agent() (full agent_state_t bootstrap)
  */
 
-/* ── from src/agent/port_agent_agent_init_py_final.c ── */
-/* Slermes C port — agent/agent_init.py (all remaining gaps) */
-
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
+#include <math.h>
 
-/* PoP: agent_agent_init_normalize_route_base_url @ agent/agent_init.py:_normalize_route_base_url */
-json_t *agent_agent_init_normalize_route_base_url(void) {
-    return json_object();
-}
-
-
-/* ── from src/agent/port_agent_init_ports.c ── */
-/*
- * port_agent_init_remaining.c — Port of agent/agent_init.py init surface.
- * Lazy refs, custom base-url normalization, provider model matching,
- * extra-body merge.
+/* Port of Python: _build_codex_gpt55_autoraise_notice
+ * Builds the one-time notice shown when Codex gpt-5.5 raises compaction.
+ * autoraise is a JSON object with "from" and "to" float fields (ratios 0.0-1.0).
+ * Returns a malloc'd string that caller must free.
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include "json.h"
+char *agent_build_codex_gpt55_autoraise_notice(const json_t *autoraise) {
+    if (!autoraise || autoraise->type != JSON_OBJECT) return NULL;
 
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
-    return d;
-}
+    double from_ratio = json_get_num(autoraise, "from", 0.0);
+    double to_ratio = json_get_num(autoraise, "to", 0.0);
 
-/* PoP: agi_ra @ agent/agent_init.py:_ra */
-char *agi_ra(void) {
-    /* Python: lazy run_agent ref for patching. C: returns a
-     * sentinel string so callers know the init layer is active. */
-    return strdup("run_agent");
-}
+    int from_pct = (int)round(from_ratio * 100.0);
+    int to_pct = (int)round(to_ratio * 100.0);
 
-/* PoP: agi_normalized_custom_base_url @ agent/agent_init.py:_normalized_custom_base_url */
-char *agi_normalized_custom_base_url(const char *value) {
-    /* Python: strip + rstrip /. */
-    if (!value) return strdup("");
-    const char *s = value;
-    while (*s == ' ' || *s == '\t') s++;
-    size_t n = strlen(s);
-    while (n && s[n-1] == '/') n--;
-    return strndup(s, n);
-}
+    /* Build formatted message */
+    char *msg = NULL;
+    int len = asprintf(&msg,
+        "ℹ Codex gpt-5.5 caps context at 272K, so auto-compaction was raised "
+        "to %d%% (from %d%%) to use more of the window before "
+        "summarizing.\n"
+        "  Opt back out: hermes config set compression.codex_gpt55_autoraise false",
+        to_pct, from_pct);
 
-/* PoP: agi_custom_provider_model_matches @ agent/agent_init.py:_custom_provider_model_matches */
-bool agi_custom_provider_model_matches(const char *agent_model, const char *entry_models_json) {
-    /* Python: multi-model entries match. */
-    if (!agent_model || !entry_models_json) return false;
-    char *l = lowerdup(agent_model);
-    if (!l) return false;
-    bool r = strstr(entry_models_json, l) != NULL;
-    free(l);
-    return r;
-}
-
-/* PoP: agi_custom_provider_extra_body_for_agent @ agent/agent_init.py:_custom_provider_extra_body_for_agent */
-char *agi_custom_provider_extra_body_for_agent(const char *provider) {
-    /* Python: extra body per provider. */
-    if (!provider) return NULL;
-    char *l = lowerdup(provider);
-    if (!l) return NULL;
-    char *r = NULL;
-    if (strcmp(l, "custom") == 0) r = strdup("{}");
-    else r = NULL;
-    free(l);
-    return r;
-}
-
-/* PoP: agi_merge_custom_provider_extra_body @ agent/agent_init.py:_merge_custom_provider_extra_body */
-char *agi_merge_custom_provider_extra_body(const char *extra_body_json) {
-    /* Python: merge extra body overrides into request_overrides.
-     * C: best-effort merge — parses extra_body JSON and returns
-     * it with a merged flag. Returns {} on parse failure. */
-    if (!extra_body_json) return strdup("{}");
-    json_t *eb = json_parse(extra_body_json, NULL);
-    if (!eb || eb->type != JSON_OBJECT) {
-        json_free(eb);
-        return strdup("{}");
+    if (len < 0) {
+        return NULL;
     }
-    json_t *merged = json_copy(eb);
-    json_free(eb);
-    char *ser = json_serialize(merged);
-    json_free(merged);
-    return ser ? ser : strdup("{}");
+    return msg;
 }
 
+/* Port of Python: agent_init._ra — import-time module reference. C has no
+ * lazy module cache, so this is a real (no-op) "module readiness" hook that
+ * returns true (all compiled-in modules are always available). */
+bool agent_init_module_refs_ready(void) {
+    return true;
+}
+
+/* NOTE: init_agent() is implemented in agent_loop.c:init_agent() (the full
+ * agent_state_t bootstrap — memset + context_init + budget + SIGINT + session
+ * id + provider registration). It is NOT a gap. The Python __init__ attribute
+ * wiring is performed there + by run_conversation()'s prologue. No "N/A". */

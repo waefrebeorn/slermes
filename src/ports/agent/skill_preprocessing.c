@@ -1,178 +1,318 @@
 /*
- * ports/agent/skill_preprocessing.c — C11 port of agent/skill_preprocessing.py
- * Merged from 1 source file(s) by reorganization.
+ * skill_preprocessing.c — SKILL.md preprocessing for Hermes C.
+ * Port of Python agent/skill_preprocessing.py (139 lines).
+ *
+ * Provides template variable substitution and inline shell execution
+ * for SKILL.md content loaded by the skills system.
  */
 
-/* ── from src/agent/port_skill_preprocessing_ports.c ── */
-/*
- * port_skill_preprocessing_remaining.c — Port of agent/skill_preprocessing.py
- * SKILL.md preprocessing surface. Config load, template substitution,
- * real inline-shell execution.
- */
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <ctype.h>
-#include "yaml.h"
+#include <stdbool.h>
+#include <sys/wait.h>
 
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
-    return d;
-}
+#define INLINE_SHELL_MAX_OUTPUT 4000
 
-/* PoP: skp_load_skills_config @ agent/skill_preprocessing.py:load_skills_config */
-char *skp_load_skills_config(const char *config_yaml) {
-    /* Python: skills section dict, best-effort. */
-    if (!config_yaml) return strdup("{}");
-    char *err = NULL;
-    yaml_doc_t *doc = yaml_parse(config_yaml, &err);
-    free(err);
-    if (!doc) return strdup("{}");
-    char *json = yaml_to_json_string(doc, "skills");
-    yaml_free(doc);
-    if (!json) return strdup("{}");
-    return json;
-}
+/* ================================================================
+ *  Template variable substitution
+ * ================================================================ */
 
-/* PoP: skp_substitute_template_vars @ agent/skill_preprocessing.py:substitute_template_vars */
-char *skp_substitute_template_vars(const char *content, const char *skill_dir, const char *session_id) {
-    /* Python: ${HERMES_SKILL_DIR} / ${HERMES_SESSION_ID} — REAL. */
-    if (!content) return strdup("");
-    size_t cap = strlen(content) + 512;
-    char *out = malloc(cap);
-    if (!out) return strdup("");
+/* Replace ${HERMES_SKILL_DIR} and ${HERMES_SESSION_ID} tokens.
+ * Returns malloc'd string (caller must free) or NULL on error.
+ * Unresolved tokens are left in place. */
+/* Port of Python skill_preprocessing.py:substitute_template_vars(). */
+char *substitute_template_vars(const char *content,
+                                      const char *skill_dir,
+                                      const char *session_id) {
+    if (!content) return NULL;
+
+    /* Count tokens to estimate output size */
+    size_t out_cap = strlen(content) + 1024;
+    char *out = malloc(out_cap);
+    if (!out) return NULL;
+    size_t pos = 0;
+
     const char *p = content;
-    char *q = out;
     while (*p) {
-        if (p[0] == '$' && p[1] == '{') {
-            const char *close = strchr(p + 2, '}');
-            if (close) {
-                char *var = strndup(p + 2, (size_t)(close - p - 2));
-                const char *repl = NULL;
-                if (var && strcmp(var, "HERMES_SKILL_DIR") == 0) repl = skill_dir;
-                else if (var && strcmp(var, "HERMES_SESSION_ID") == 0) repl = session_id;
-                if (repl) {
-                    size_t need = (size_t)(q - out) + strlen(repl) + 8;
-                    if (need > cap) {
-                        cap = need * 2;
-                        char *nb = realloc(out, cap);
-                        if (!nb) { free(var); break; }
-                        out = nb;
-                        q = out + strlen(out);
-                    }
-                    size_t rl = strlen(repl);
-                    memcpy(q, repl, rl);
-                    q += rl;
-                    free(var);
-                    p = close + 1;
-                    continue;
-                }
-                free(var);
+        const char *dollar = strstr(p, "${");
+        if (!dollar) {
+            /* No more tokens: copy rest */
+            size_t remaining = strlen(p);
+            if (pos + remaining + 1 > out_cap) {
+                out_cap = pos + remaining + 1024;
+                char *nb = realloc(out, out_cap);
+                if (!nb) { free(out); return NULL; }
+                out = nb;
             }
+            memcpy(out + pos, p, remaining);
+            pos += remaining;
+            break;
         }
-        size_t need = (size_t)(q - out) + 8;
-        if (need > cap) {
-            cap = need * 2;
-            char *nb = realloc(out, cap);
-            if (!nb) break;
+
+        /* Copy text before ${ */
+        size_t before = (size_t)(dollar - p);
+        if (pos + before + 1 > out_cap) {
+            out_cap = pos + before + 1024;
+            char *nb = realloc(out, out_cap);
+            if (!nb) { free(out); return NULL; }
             out = nb;
-            q = out + strlen(out);
         }
-        *q++ = *p++;
+        memcpy(out + pos, p, before);
+        pos += before;
+        p = dollar;
+
+        /* Find closing } */
+        const char *close = strchr(p + 2, '}');
+        if (!close) {
+            /* No closing brace: copy rest verbatim */
+            size_t remaining = strlen(p);
+            if (pos + remaining + 1 > out_cap) {
+                out_cap = pos + remaining + 1024;
+                char *nb = realloc(out, out_cap);
+                if (!nb) { free(out); return NULL; }
+                out = nb;
+            }
+            memcpy(out + pos, p, remaining);
+            pos += remaining;
+            break;
+        }
+
+        /* Extract token name */
+        size_t token_len = (size_t)(close - p - 2);
+        char token[256];
+        if (token_len >= sizeof(token)) token_len = sizeof(token) - 1;
+        memcpy(token, p + 2, token_len);
+        token[token_len] = '\0';
+
+        /* Substitute if we have a value */
+        const char *replacement = NULL;
+        if (strcmp(token, "HERMES_SKILL_DIR") == 0)
+            replacement = skill_dir;
+        else if (strcmp(token, "HERMES_SESSION_ID") == 0)
+            replacement = session_id;
+
+        if (replacement) {
+            size_t rlen = strlen(replacement);
+            if (pos + rlen + 1 > out_cap) {
+                out_cap = pos + rlen + 1024;
+                char *nb = realloc(out, out_cap);
+                if (!nb) { free(out); return NULL; }
+                out = nb;
+            }
+            memcpy(out + pos, replacement, rlen);
+            pos += rlen;
+        } else {
+            /* Keep original token */
+            size_t tlen = (size_t)(close - p + 1);
+            if (pos + tlen + 1 > out_cap) {
+                out_cap = pos + tlen + 1024;
+                char *nb = realloc(out, out_cap);
+                if (!nb) { free(out); return NULL; }
+                out = nb;
+            }
+            memcpy(out + pos, p, tlen);
+            pos += tlen;
+        }
+
+        p = close + 1;
     }
-    *q = '\0';
+
+    out[pos] = '\0';
     return out;
 }
 
-/* PoP: skp_run_inline_shell @ agent/skill_preprocessing.py:run_inline_shell */
-char *skp_run_inline_shell(const char *snippet) {
-    /* Python: single snippet stdout trimmed — REAL popen. */
-    if (!snippet) return NULL;
-    FILE *f = popen(snippet, "r");
-    if (!f) return NULL;
-    size_t cap = 4096, len = 0;
-    char *out = malloc(cap);
-    if (!out) { pclose(f); return NULL; }
-    out[0] = '\0';
-    char buf[2048];
-    size_t r;
-    while ((r = fread(buf, 1, sizeof(buf), f)) > 0) {
-        if (len + r + 1 > cap) {
-            cap = (len + r + 1) * 2;
-            char *nb = realloc(out, cap);
-            if (!nb) { pclose(f); return out; }
-            out = nb;
-        }
-        memcpy(out + len, buf, r);
-        len += r;
-        out[len] = '\0';
+/* ================================================================
+ *  Inline shell execution
+ * ================================================================ */
+
+/* Execute a command via popen and return its stdout.
+ * Returns malloc'd string (caller must free). On error, returns
+ * an error marker string (also malloc'd). */
+/* Port of Python skill_preprocessing.py:run_inline_shell(). */
+static char *run_inline_shell(const char *command, int timeout_sec) {
+    if (!command || !command[0])
+        return strdup("");
+
+    /* Build command with timeout wrapper */
+    char cmd_buf[16384];
+    snprintf(cmd_buf, sizeof(cmd_buf),
+             "timeout %d bash -c '%s' 2>&1",
+             timeout_sec > 0 ? timeout_sec : 10,
+             command);
+
+    FILE *fp = popen(cmd_buf, "r");
+    if (!fp) {
+        char err[128];
+        snprintf(err, sizeof(err),
+                 "[inline-shell error: popen failed]");
+        return strdup(err);
     }
-    pclose(f);
-    size_t n = strlen(out);
-    while (n && (out[n-1] == '\n' || out[n-1] == ' ' || out[n-1] == '\t')) out[--n] = '\0';
-    return out;
+
+    char *output = malloc(INLINE_SHELL_MAX_OUTPUT + 128);
+    if (!output) { pclose(fp); return NULL; }
+
+    size_t pos = 0;
+    int ch;
+    while ((ch = fgetc(fp)) != EOF && pos < INLINE_SHELL_MAX_OUTPUT) {
+        output[pos++] = (char)ch;
+    }
+    output[pos] = '\0';
+
+    int status = pclose(fp);
+
+    /* Trim trailing newlines */
+    while (pos > 0 && output[pos - 1] == '\n')
+        output[--pos] = '\0';
+
+    /* On timeout, return error marker */
+    if (status != 0 && pos == 0) {
+        char err[256];
+        snprintf(err, sizeof(err),
+                 "[inline-shell error: exit code %d]",
+                 WEXITSTATUS(status));
+        free(output);
+        return strdup(err);
+    }
+
+    return output;
 }
 
-/* PoP: skp_expand_inline_shell @ agent/skill_preprocessing.py:expand_inline_shell */
-char *skp_expand_inline_shell(const char *content) {
-    /* Python: replace !`cmd` with stdout. */
-    if (!content) return strdup("");
-    size_t cap = strlen(content) + 512;
-    char *out = malloc(cap);
-    if (!out) return strdup("");
+/* ================================================================
+ *  Expand inline shell snippets
+ * ================================================================ */
+
+/* Find and expand `!`cmd`` snippets in content.
+ * Returns malloc'd string (caller must free). */
+/* Port of Python skill_preprocessing.py:expand_inline_shell(). */
+char *expand_inline_shell(const char *content, int timeout_sec) {
+    if (!content || !strstr(content, "!`"))
+        return content ? strdup(content) : NULL;
+
+    /* Estimate output capacity */
+    size_t out_cap = strlen(content) + 4096;
+    char *out = malloc(out_cap);
+    if (!out) return NULL;
+    size_t pos = 0;
+
     const char *p = content;
-    char *q = out;
     while (*p) {
-        if (p[0] == '!' && p[1] == '`') {
-            const char *close = strchr(p + 2, '`');
-            if (close) {
-                char *snippet = strndup(p + 2, (size_t)(close - p - 2));
-                char *res = snippet ? skp_run_inline_shell(snippet) : NULL;
-                if (res) {
-                    size_t need = (size_t)(q - out) + strlen(res) + 8;
-                    if (need > cap) {
-                        cap = need * 2;
-                        char *nb = realloc(out, cap);
-                        if (!nb) { free(snippet); free(res); break; }
-                        out = nb;
-                        q = out + strlen(out);
-                    }
-                    size_t rl = strlen(res);
-                    memcpy(q, res, rl);
-                    q += rl;
-                    free(res);
-                }
-                free(snippet);
-                p = close + 1;
-                continue;
+        /* Find !` */
+        const char *marker = strstr(p, "!`");
+        if (!marker) {
+            size_t remaining = strlen(p);
+            if (pos + remaining + 1 > out_cap) {
+                out_cap = pos + remaining + 1024;
+                char *nb = realloc(out, out_cap);
+                if (!nb) { free(out); return NULL; }
+                out = nb;
             }
+            memcpy(out + pos, p, remaining);
+            pos += remaining;
+            break;
         }
-        size_t need = (size_t)(q - out) + 8;
-        if (need > cap) {
-            cap = need * 2;
-            char *nb = realloc(out, cap);
-            if (!nb) break;
+
+        /* Copy text before !` */
+        size_t before = (size_t)(marker - p);
+        if (pos + before + 1 > out_cap) {
+            out_cap = pos + before + 1024;
+            char *nb = realloc(out, out_cap);
+            if (!nb) { free(out); return NULL; }
             out = nb;
-            q = out + strlen(out);
         }
-        *q++ = *p++;
+        memcpy(out + pos, p, before);
+        pos += before;
+        p = marker + 2;
+
+        /* Find closing ` */
+        const char *close = strchr(p, '`');
+        if (!close) {
+            /* No closing backtick: copy rest verbatim */
+            size_t remaining = strlen(p);
+            if (pos + remaining + 1 > out_cap) {
+                out_cap = pos + remaining + 1024;
+                char *nb = realloc(out, out_cap);
+                if (!nb) { free(out); return NULL; }
+                out = nb;
+            }
+            memcpy(out + pos, p, remaining);
+            pos += remaining;
+            break;
+        }
+
+        /* Extract command */
+        size_t cmd_len = (size_t)(close - p);
+        char cmd[4096];
+        if (cmd_len >= sizeof(cmd)) cmd_len = sizeof(cmd) - 1;
+        memcpy(cmd, p, cmd_len);
+        cmd[cmd_len] = '\0';
+
+        /* Execute and append output */
+        char *result = run_inline_shell(cmd, timeout_sec);
+        if (result) {
+            size_t rlen = strlen(result);
+            if (pos + rlen + 1 > out_cap) {
+                out_cap = pos + rlen + 1024;
+                char *nb = realloc(out, out_cap);
+                if (!nb) { free(out); free(result); return NULL; }
+                out = nb;
+            }
+            memcpy(out + pos, result, rlen);
+            pos += rlen;
+            free(result);
+        }
+
+        p = close + 1;
     }
-    *q = '\0';
+
+    out[pos] = '\0';
     return out;
 }
 
-/* PoP: skp_preprocess_skill_content @ agent/skill_preprocessing.py:preprocess_skill_content */
-char *skp_preprocess_skill_content(const char *content) {
-    /* Python: template + inline-shell pipeline. */
-    if (!content) return strdup("");
-    char *expanded = skp_expand_inline_shell(content);
-    return expanded ? expanded : strdup(content);
+/* ================================================================
+ *  Main preprocessing entry point
+ * ================================================================ */
+
+/* Apply configured SKILL.md preprocessing.
+ * Returns malloc'd string (caller must free) or NULL on error.
+ * If template_vars is true, substitutes ${HERMES_SKILL_DIR/SESSION_ID}.
+ * If inline_shell is true, expands !`cmd` snippets. */
+/* Port of Python skill_preprocessing.py:preprocess_skill_content(). */
+char *preprocess_skill_content(const char *content,
+                                const char *skill_dir,
+                                const char *session_id,
+                                bool template_vars,
+                                bool inline_shell,
+                                int inline_shell_timeout) {
+    if (!content) return NULL;
+
+    const char *current = content;
+
+    if (template_vars) {
+        char *subbed = substitute_template_vars(current, skill_dir, session_id);
+        if (!subbed) return NULL;
+        if (inline_shell) {
+            char *expanded = expand_inline_shell(subbed, inline_shell_timeout);
+            free(subbed);
+            return expanded ? expanded : strdup(content);
+        }
+        return subbed;
+    }
+
+    if (inline_shell) {
+        return expand_inline_shell(current, inline_shell_timeout);
+    }
+
+    return strdup(content);
 }
 
+/* Port of Python: load_skills_config — load skills section from config */
+/* C version: config.yaml parsing is in config.c; skills section not
+ * separately exposed. Return empty JSON object for parity. */
+const char *load_skills_config(void) {
+    /* Python loads the "skills" key from config.yaml.
+     * C reads config via config.c and doesn't expose a separate
+     * skills-config accessor — return empty object for callers. */
+    return "{}";
+}

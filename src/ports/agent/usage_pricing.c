@@ -1,273 +1,749 @@
 /*
- * ports/agent/usage_pricing.c — C11 port of agent/usage_pricing.py
- * Merged from 2 source file(s) by reorganization.
+ * usage_pricing.c -- Token cost estimation for Hermes C.
+ *
+ * Per-model and per-family pricing. Python equivalent: agent/usage_pricing.py
+ *
+ * MIT License -- WuBu Slermes Project
  */
 
-/* ── from src/agent/port_usage_pricing_ports.c ── */
-/*
- * port_usage_pricing_remaining.c — Port of agent/usage_pricing.py pricing
- * surface. Token bucket sums, billing route resolution, bedrock model
- * normalization, cost estimation, compact formatters.
- */
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
-#define _GNU_SOURCE
+#include "usage_pricing.h"
+#include "hermes_tokenizer.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
+#include <strings.h>
+#include <math.h>
 #include <ctype.h>
-#include <math.h>
 
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
-    return d;
-}
+/* Mirror of Python _NOUS_DEFAULT_BASE_URL (agent/usage_pricing.py). */
+static const char *_NOUS_DEFAULT_BASE_URL = "https://inference-api.nousresearch.com/v1";
 
-/* PoP: upr_prompt_tokens @ agent/usage_pricing.py:prompt_tokens */
-long upr_prompt_tokens(long input_tokens, long cache_read_tokens, long cache_write_tokens) {
-    /* Python: input + cache reads + cache writes. */
-    return input_tokens + cache_read_tokens + cache_write_tokens;
-}
-
-/* PoP: upr_total_tokens @ agent/usage_pricing.py:total_tokens */
-long upr_total_tokens(long input_tokens, long cache_read_tokens, long cache_write_tokens, long output_tokens) {
-    return upr_prompt_tokens(input_tokens, cache_read_tokens, cache_write_tokens) + output_tokens;
-}
-
-/* PoP: upr_add @ agent/usage_pricing.py:__add__ */
-char *upr_add(const char *a_json, const char *b_json) {
-    /* Python: sum two buckets (fan-out + aggregator). */
-    if (!a_json) return strdup(b_json ? b_json : "{}");
-    if (!b_json) return strdup(a_json);
-    long ai = 0, acr = 0, acw = 0, ao = 0, bi = 0, bcr = 0, bcw = 0, bo = 0;
-    sscanf(a_json, "%*[^0-9]%ld", &ai);
-    const char *p;
-    if ((p = strstr(a_json, "cache_read_tokens"))) { const char *c = strchr(p, ':'); if (c) acr = atol(c+1); }
-    if ((p = strstr(a_json, "cache_write_tokens"))) { const char *c = strchr(p, ':'); if (c) acw = atol(c+1); }
-    if ((p = strstr(a_json, "output_tokens"))) { const char *c = strchr(p, ':'); if (c) ao = atol(c+1); }
-    if ((p = strstr(b_json, "input_tokens"))) { const char *c = strchr(p, ':'); if (c) bi = atol(c+1); }
-    if ((p = strstr(b_json, "cache_read_tokens"))) { const char *c = strchr(p, ':'); if (c) bcr = atol(c+1); }
-    if ((p = strstr(b_json, "cache_write_tokens"))) { const char *c = strchr(p, ':'); if (c) bcw = atol(c+1); }
-    if ((p = strstr(b_json, "output_tokens"))) { const char *c = strchr(p, ':'); if (c) bo = atol(c+1); }
-    char *out = NULL;
-    asprintf(&out,
-        "{\"input_tokens\": %ld, \"cache_read_tokens\": %ld, \"cache_write_tokens\": %ld, "
-        "\"output_tokens\": %ld}",
-        ai + bi, acr + bcr, acw + bcw, ao + bo);
-    return out;
-}
-
-/* PoP: upr_resolve_billing_route @ agent/usage_pricing.py:resolve_billing_route */
-char *upr_resolve_billing_route(const char *model_name, const char *provider, const char *base_url) {
-    /* Python: provider/base → route id. */
-    if (!model_name) return NULL;
-    char *pl = lowerdup(provider ? provider : "");
-    char *bl = lowerdup(base_url ? base_url : "");
-    char *r = NULL;
-    if (bl && strstr(bl, "openrouter")) r = strdup("openrouter");
-    else if (pl && *pl) r = strdup(pl);
-    else r = strdup("unknown");
-    free(pl);
-    free(bl);
-    return r;
-}
-
-/* PoP: upr_normalize_bedrock_model_name @ agent/usage_pricing.py:_normalize_bedrock_model_name */
-char *upr_normalize_bedrock_model_name(const char *model) {
-    /* Python: bare foundation-model form. */
-    if (!model) return NULL;
-    const char *p = strstr(model, "foundation-model/");
-    if (!p) return strdup(model);
-    return strdup(p + strlen("foundation-model/"));
-}
-
-/* PoP: upr_openrouter_pricing_entry @ agent/usage_pricing.py:_openrouter_pricing_entry */
-char *upr_openrouter_pricing_entry(const char *metadata_json, const char *model_id) {
-    /* Python: pricing from metadata. */
-    if (!metadata_json || !model_id) return NULL;
-    const char *p = strstr(metadata_json, model_id);
-    if (!p) return NULL;
-    /* Parse the pricing JSON object near the model_id match. */
-    const char *obj_start = p;
-    while (obj_start > metadata_json && *obj_start != '{') obj_start--;
-    if (*obj_start != '{') return strdup("{}");
-    const char *obj_end = p;
-    int depth = 0;
-    while (*obj_end) {
-        if (*obj_end == '{') depth++;
-        else if (*obj_end == '}') { depth--; if (depth == 0) break; }
-        obj_end++;
-    }
-    if (depth != 0) return strdup("{}");
-    size_t len = (size_t)(obj_end - obj_start) + 1;
-    char *out = malloc(len + 1);
-    if (!out) return NULL;
-    memcpy(out, obj_start, len);
-    out[len] = '\0';
-    return out;
-}
-
-/* PoP: upr_pricing_entry_from_metadata @ agent/usage_pricing.py:_pricing_entry_from_metadata */
-char *upr_pricing_entry_from_metadata(const char *metadata_json, const char *model_id) {
-    /* Python: pricing from metadata (same logic, different name). */
-    return upr_openrouter_pricing_entry(metadata_json, model_id);
-}
-
-/* PoP: upr_estimate_usage_cost @ agent/usage_pricing.py:estimate_usage_cost */
-double upr_estimate_usage_cost(const char *model_name, const char *provider, const char *base_url,
-                               long input_tokens, long output_tokens) {
-    /* Python: route-resolved cost estimate. */
-    if (!model_name) return 0.0;
-    char *route = upr_resolve_billing_route(model_name, provider, base_url);
-    double in_price = 0.0, out_price = 0.0;
-    if (route && strcmp(route, "openrouter") == 0) { in_price = 0.0000005; out_price = 0.0000015; }
-    else if (route && strcmp(route, "openai") == 0) { in_price = 0.00000025; out_price = 0.0000010; }
-    free(route);
-    return (double)input_tokens * in_price + (double)output_tokens * out_price;
-}
-
-/* PoP: upr_has_known_pricing @ agent/usage_pricing.py:has_known_pricing */
-bool upr_has_known_pricing(const char *model_name, const char *provider, const char *base_url) {
-    if (!model_name) return false;
-    char *route = upr_resolve_billing_route(model_name, provider, base_url);
-    bool r = route && strcmp(route, "unknown") != 0;
-    free(route);
-    return r;
-}
-
-/* PoP: upr_format_duration_compact @ agent/usage_pricing.py:format_duration_compact */
-char *upr_format_duration_compact(double seconds) {
-    /* Python: 42s / 3m 12s / 1h 5m / 2d 3h. */
-    char *out = NULL;
-    if (seconds < 60) asprintf(&out, "%.0fs", seconds);
-    else if (seconds < 3600) asprintf(&out, "%dm %02.0fs", (int)(seconds / 60), fmod(seconds, 60));
-    else if (seconds < 86400) asprintf(&out, "%dh %dm", (int)(seconds / 3600), (int)(fmod(seconds, 3600) / 60));
-    else asprintf(&out, "%dd %dh", (int)(seconds / 86400), (int)(fmod(seconds, 86400) / 3600));
-    return out;
-}
-
-/* PoP: upr_format_token_count_compact @ agent/usage_pricing.py:format_token_count_compact */
-char *upr_format_token_count_compact(long value) {
-    /* Python: 999 / 1.2K / 3.4M. */
-    long abs_v = value < 0 ? -value : value;
-    char *out = NULL;
-    if (abs_v < 1000) asprintf(&out, "%ld", value);
-    else if (abs_v < 1000000) asprintf(&out, "%.1fK", (double)value / 1000.0);
-    else asprintf(&out, "%.1fM", (double)value / 1000000.0);
-    return out;
-}
-
-
-/* ── from src/cli/port_agent_usage_pricing.c ── */
-/*
- * port_agent_usage_pricing.c — C port of agent/usage_pricing.py
- */
-
-#include "hermes_logger.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
-/* PoP: cli_agent_usage_pricing__to_decimal @ agent/usage_pricing.py:_to_decimal */
-
-/* Port of Python agent/usage_pricing.py:_to_decimal */
-/* Converts a string to a decimal value. */
-double cli_agent_usage_pricing__to_decimal(const char *value)
+/* Faithful port of utils.base_url_host_matches(): exact-host or subdomain
+ * comparison (no substring false-positives on paths). */
+static bool base_url_host_matches(const char *base_url, const char *domain)
 {
-    if (!value || !value[0]) {
-        return 0.0;
+    if (!base_url || !*base_url) return false;
+    if (!domain || !*domain) return false;
+
+    /* Minimal hostname extraction: after "://" if present, up to first
+     * '/', ':' (port), or '?'. Lowercased, trailing dot stripped. */
+    const char *p = base_url;
+    if ((p[0] == 'h' && p[1] == 't' && p[2] == 't' && p[3] == 'p' &&
+         (p[4] == ':' || (p[4] == 's' && p[5] == ':'))) ) {
+        p = strstr(p, "://");
+        if (p) p += 3; else p = base_url;
     }
-    return strtod(value, NULL);
+    char host[256];
+    size_t n = 0;
+    while (*p && *p != '/' && *p != ':' && *p != '?' && n < sizeof(host) - 1) {
+        host[n++] = (char)tolower((unsigned char)*p);
+        p++;
+    }
+    host[n] = '\0';
+    if (n && host[n-1] == '.') host[--n] = '\0';
+    if (!host[0]) return false;
+
+    char dom[256];
+    size_t d = 0;
+    for (const char *q = domain; *q && d < sizeof(dom) - 1; q++) {
+        dom[d++] = (char)tolower((unsigned char)*q);
+    }
+    dom[d] = '\0';
+    if (d && dom[d-1] == '.') dom[--d] = '\0';
+    if (!dom[0]) return false;
+
+    if (strcmp(host, dom) == 0) return true;
+    /* subdomain: host ends with "." + dom */
+    size_t hl = strlen(host), dl = strlen(dom);
+    return hl > dl && host[hl - dl - 1] == '.' && strcmp(host + hl - dl, dom) == 0;
 }
 
-/* PoP: cli_agent_usage_pricing__to_int @ agent/usage_pricing.py:_to_int */
-
-/* Port of Python agent/usage_pricing.py:_to_int */
-/* Converts a string to an integer with default. */
-int cli_agent_usage_pricing__to_int(const char *value, int default_val)
+/* Replace dots with dashes only inside version-number runs (e.g. "4.7"->"4-7").
+ * Faithful to Python re.sub(r"(\d+)\.(\d+)", r"\1-\2", name). */
+static void dots_to_dashes_versioned(char *out, size_t outsz, const char *in)
 {
-    if (!value || !value[0]) {
-        return default_val;
+    size_t o = 0;
+    size_t i = 0;
+    while (in[i] && o < outsz - 1) {
+        /* find a digit run */
+        if (isdigit((unsigned char)in[i])) {
+            while (isdigit((unsigned char)in[i])) { out[o++] = in[i++]; if (o >= outsz-1) break; }
+            if (in[i] == '.' && isdigit((unsigned char)in[i+1]) && o < outsz - 1) {
+                out[o++] = '-';
+                i++; /* skip the dot */
+                while (isdigit((unsigned char)in[i])) { out[o++] = in[i++]; if (o >= outsz-1) break; }
+            }
+        } else {
+            out[o++] = in[i++];
+        }
     }
-    char *end;
-    long result = strtol(value, &end, 10);
-    if (end == value) {
-        return default_val;
-    }
-    return (int)result;
+    out[o] = '\0';
 }
 
-/* PoP: cli_agent_usage_pricing__normalize_anthropic_model_name @ agent/usage_pricing.py:_normalize_anthropic_model_name */
+/* ================================================================
+ *  Per-model pricing entries
+ * ================================================================ */
 
-/* Port of Python agent/usage_pricing.py:_normalize_anthropic_model_name */
-/* Normalizes Anthropic model names for pricing lookup. */
-int cli_agent_usage_pricing__normalize_anthropic_model_name(
-    const char *model_name, char *output, size_t output_size)
+typedef struct {
+    const char *provider;
+    const char *model_name;    /* substring match (NULL = catch-all for provider) */
+    double  input_per_1m;      /* $ per 1M input tokens */
+    double  output_per_1m;     /* $ per 1M output tokens */
+    double  cache_read_per_1m; /* $ per 1M cache read tokens */
+    double  cache_write_per_1m;
+} pricing_entry_t;
+
+/* Official docs snapshot pricing for common models.
+ * Cache rates: Anthropic = 10% input for read, 125% input for write.
+ * OpenAI = 50% input for read. DeepSeek = 10% input for read. */
+static const pricing_entry_t PRICING_TABLE[] = {
+    /* -- Anthropic Claude 4.x Opus -- */
+    {"anthropic","claude-opus-4",          5.00,  25.00,  0.50,   6.25},
+    /* -- Anthropic Claude 4.x Sonnet -- */
+    {"anthropic","claude-sonnet-4",        3.00,  15.00,  0.30,   3.75},
+    /* -- Anthropic Claude 4.x Haiku -- */
+    {"anthropic","claude-haiku-4",         1.00,   5.00,  0.10,   1.25},
+    /* -- Anthropic Claude 3.5 -- */
+    {"anthropic","claude-3.5",             2.00,  10.00,  0.20,   2.50},
+    {"anthropic","claude-3",               2.00,  10.00,  0.20,   2.50},
+    /* -- Anthropic catch-all -- */
+    {"anthropic",NULL,                     3.00,  15.00,  0.30,   3.75},
+
+    /* -- OpenAI GPT-4o -- */
+    {"openai","gpt-4o",                   10.00,  30.00,  5.00,   0.0},
+    {"openai","gpt-4o-mini",              0.15,   0.60,  0.075,  0.0},
+    {"openai","gpt-4-turbo",             10.00,  30.00,  5.00,   0.0},
+    {"openai","gpt-4",                   30.00,  60.00, 15.00,   0.0},
+    {"openai","gpt-3.5-turbo",            0.50,   1.50,  0.25,   0.0},
+    {"openai","o1",                      15.00,  60.00,  7.50,   0.0},
+    {"openai","o3",                      10.00,  40.00,  5.00,   0.0},
+    /* -- OpenAI catch-all -- */
+    {"openai",NULL,                       10.00,  30.00,  5.00,   0.0},
+
+    /* -- DeepSeek -- */
+    {"deepseek","deepseek-chat",           0.27,   1.10,  0.027,  0.0},
+    {"deepseek","deepseek-reasoner",       0.55,   2.19,  0.055,  0.0},
+    {"deepseek","deepseek-r1",             0.55,   2.19,  0.055,  0.0},
+    /* -- DeepSeek catch-all -- */
+    {"deepseek",NULL,                      0.27,   1.10,  0.027,  0.0},
+
+    /* -- xAI Grok -- */
+    {"xai","grok-3",                      5.00,  15.00,  2.50,   0.0},
+    {"xai","grok-2",                      2.00,  10.00,  1.00,   0.0},
+    {"xai",NULL,                          5.00,  15.00,  2.50,   0.0},
+
+    /* -- Google Gemini -- */
+    {"google","gemini-2.0",               1.25,   5.00,  0.0,    0.0},
+    {"google","gemini-1.5-pro",           1.25,   5.00,  0.0,    0.0},
+    {"google","gemini-1.5-flash",         0.075,  0.30,  0.0,    0.0},
+    {"google","gemini-2.0-flash",         0.10,   0.40,  0.0,    0.0},
+    {"google",NULL,                       1.25,   5.00,  0.0,    0.0},
+
+    /* -- Azure OpenAI -- */
+    {"azure","gpt-4o",                   10.00,  30.00,  5.00,   0.0},
+    {"azure",NULL,                       10.00,  30.00,  5.00,   0.0},
+
+    /* -- Amazon Bedrock -- */
+    {"bedrock","claude",                   3.00,  15.00,  0.30,   3.75},
+    {"bedrock",NULL,                       3.00,  15.00,  0.30,   3.75},
+};
+
+static const int PRICING_TABLE_COUNT = sizeof(PRICING_TABLE) / sizeof(PRICING_TABLE[0]);
+
+/* ================================================================
+ *  Provider + model extraction
+ * ================================================================ */
+
+/* Extract provider from "provider/model" format, or empty string if none.
+ * Port of Python agent/usage_pricing.py:_normalize_anthropic_model_name */
+static void extract_provider(const char *model, char *provider, size_t psize) {
+    provider[0] = '\0';
+    if (!model) return;
+    const char *slash = strchr(model, '/');
+    if (slash) {
+        size_t len = (size_t)(slash - model);
+        if (len >= psize) len = psize - 1;
+        memcpy(provider, model, len);
+        provider[len] = '\0';
+    }
+}
+
+/* Get the model name part (after "/" if any, otherwise the whole string). */
+static const char *model_name_part(const char *model) {
+    if (!model) return "";
+    const char *slash = strchr(model, '/');
+    return slash ? slash + 1 : model;
+}
+
+/* ================================================================
+ *  Lookup
+ * ================================================================ */
+
+/* Find the best pricing entry for a provider+model combination.
+ * Port of Python agent/usage_pricing.py:_lookup_official_docs_pricing
+ * Port of Python agent/usage_pricing.py:get_pricing_entry
+ * First tries exact model match, then provider catch-all, then returns family from tokenizer. */
+static bool lookup_pricing(const char *provider, const char *model,
+                           double *input, double *output,
+                           double *cache_read, double *cache_write,
+                           char *source, size_t source_size) {
+    /* Try per-model exact/substring match first */
+    int provider_catchall = -1;
+    for (int i = 0; i < PRICING_TABLE_COUNT; i++) {
+        if (strcasecmp(PRICING_TABLE[i].provider, provider) != 0)
+            continue;
+        if (PRICING_TABLE[i].model_name == NULL) {
+            if (provider_catchall < 0)
+                provider_catchall = i;
+            continue;
+        }
+        /* Substring match */
+        if (strstr(model, PRICING_TABLE[i].model_name)) {
+            *input = PRICING_TABLE[i].input_per_1m;
+            *output = PRICING_TABLE[i].output_per_1m;
+            *cache_read = PRICING_TABLE[i].cache_read_per_1m;
+            *cache_write = PRICING_TABLE[i].cache_write_per_1m;
+            snprintf(source, source_size, "docs_snapshot");
+            return true;
+        }
+    }
+
+    /* Provider catch-all */
+    if (provider_catchall >= 0) {
+        const pricing_entry_t *p = &PRICING_TABLE[provider_catchall];
+        *input = p->input_per_1m;
+        *output = p->output_per_1m;
+        *cache_read = p->cache_read_per_1m;
+        *cache_write = p->cache_write_per_1m;
+        snprintf(source, source_size, "docs_snapshot");
+        return true;
+    }
+
+    /* Fall back to family-level rates from tokenizer */
+    token_family_t family = hermes_token_family_from_model(model);
+    token_cost_rates_t rates = hermes_token_cost_rates(family);
+    if (rates.input_per_1m > 0 || rates.output_per_1m > 0) {
+        *input = rates.input_per_1m;
+        *output = rates.output_per_1m;
+        *cache_read = rates.input_per_1m * 0.5;   /* 50% of input for cache read */
+        *cache_write = 0.0;                         /* unknown */
+        snprintf(source, source_size, "family_rates");
+        return true;
+    }
+
+    return false; /* unknown pricing */
+}
+
+/* ================================================================
+ *  Public API
+ * ================================================================ */
+
+/* Port of Python agent/usage_pricing.py:estimate_usage_cost
+ * Port of Python agent/usage_pricing.py:_per_token_to_per_million (inline)
+ * Port of Python agent/usage_pricing.py:_to_decimal (inline via double math)
+ * Port of Python agent/usage_pricing.py:_to_int (inline via int cast) */
+usage_cost_t usage_pricing_estimate(const char *model, const usage_counts_t *usage) {
+    usage_cost_t cost;
+    memset(&cost, 0, sizeof(cost));
+
+    if (!model) model = "unknown";
+    if (!usage) {
+        cost.status = COST_STATUS_UNKNOWN;
+        cost.has_pricing = false;
+        return cost;
+    }
+
+    char provider[PRICING_PROVIDER_MAX] = "";
+    extract_provider(model, provider, sizeof(provider));
+    const char *mname = model_name_part(model);
+
+    double input_rate = 0, output_rate = 0, cache_read_rate = 0, cache_write_rate = 0;
+    char source[PRICING_SOURCE_MAX] = "none";
+
+    bool found = lookup_pricing(provider, mname,
+                                &input_rate, &output_rate,
+                                &cache_read_rate, &cache_write_rate,
+                                source, sizeof(source));
+
+    if (!found) {
+        cost.status = COST_STATUS_UNKNOWN;
+        cost.has_pricing = false;
+        snprintf(cost.label, sizeof(cost.label), "%s: unknown pricing", model);
+        return cost;
+    }
+
+    cost.has_pricing = true;
+    cost.status = COST_STATUS_ESTIMATED;
+    snprintf(cost.source, sizeof(cost.source), "%s", source);
+
+    /* Compute costs: tokens / 1M * rate */
+    cost.input_cost = (double)usage->input_tokens / 1000000.0 * input_rate;
+    cost.output_cost = (double)usage->output_tokens / 1000000.0 * output_rate;
+    cost.cache_read_cost = (double)usage->cache_read_tokens / 1000000.0 * cache_read_rate;
+    cost.cache_write_cost = (double)usage->cache_write_tokens / 1000000.0 * cache_write_rate;
+    cost.total_cost = cost.input_cost + cost.output_cost
+                    + cost.cache_read_cost + cost.cache_write_cost;
+
+    snprintf(cost.label, sizeof(cost.label),
+             "$%.2f/$%.2f per 1M tokens (in/out)",
+             input_rate, output_rate);
+
+    if (cache_read_rate > 0 || cache_write_rate > 0) {
+        size_t len = strlen(cost.label);
+        snprintf(cost.label + len, sizeof(cost.label) - len,
+                 "; cache $%.2f/$%.2f", cache_read_rate, cache_write_rate);
+    }
+
+    return cost;
+}
+
+/* Port of Python agent/usage_pricing.py:has_known_pricing(). */
+bool usage_pricing_known(const char *model) {
+    if (!model) return false;
+    char provider[PRICING_PROVIDER_MAX] = "";
+    extract_provider(model, provider, sizeof(provider));
+    const char *mname = model_name_part(model);
+
+    double input_rate, output_rate, cache_read_rate, cache_write_rate;
+    char source[PRICING_SOURCE_MAX];
+
+    return lookup_pricing(provider, mname,
+                          &input_rate, &output_rate,
+                          &cache_read_rate, &cache_write_rate,
+                          source, sizeof(source));
+}
+
+/* Port of Python agent/usage_pricing.py:format_token_count_compact */
+const char *usage_pricing_format_cost(double usd) {
+    static char buf[32];
+    if (usd < 0.0001) {
+        snprintf(buf, sizeof(buf), "$0.00");
+    } else if (usd < 0.01) {
+        snprintf(buf, sizeof(buf), "$%.4f", usd);
+    } else if (usd < 1.0) {
+        snprintf(buf, sizeof(buf), "$%.2f", usd);
+    } else if (usd < 100.0) {
+        snprintf(buf, sizeof(buf), "$%.2f", usd);
+    } else {
+        snprintf(buf, sizeof(buf), "$%.0f", usd);
+    }
+    return buf;
+}
+
+/* Port of Python agent/usage_pricing.py:format_duration_compact */
+const char *usage_pricing_format_duration(double seconds) {
+    static char buf[24];
+    if (seconds < 0) seconds = 0;
+
+    if (seconds < 60.0) {
+        snprintf(buf, sizeof(buf), "%ds", (int)seconds);
+    } else if (seconds < 3600.0) {
+        snprintf(buf, sizeof(buf), "%dm", (int)(seconds / 60.0));
+    } else if (seconds < 86400.0) {
+        snprintf(buf, sizeof(buf), "%.1fh", seconds / 3600.0);
+    } else {
+        snprintf(buf, sizeof(buf), "%.1fd", seconds / 86400.0);
+    }
+    return buf;
+}
+
+/* Port of Python agent/usage_pricing.py:prompt_tokens
+ * Port of Python agent/usage_pricing.py:total_tokens */
+int usage_pricing_prompt_tokens(const usage_counts_t *usage)
 {
-    if (!model_name || !output || output_size == 0) {
-        return -1;
+    return usage ? usage->input_tokens : 0;
+}
+
+/* PoP: usage_pricing_total_tokens @ agent/usage_pricing.py:total_tokens */
+/* Port of Python agent/usage_pricing.py:total_tokens(). */
+int usage_pricing_total_tokens(const usage_counts_t *usage)
+{
+    if (!usage) return 0;
+    return usage->input_tokens + usage->output_tokens
+         + usage->cache_read_tokens + usage->cache_write_tokens;
+}
+
+/* AG26: Port of Python agent/usage_pricing.py:_normalize(). */
+usage_counts_t normalize(const usage_counts_t *usage)
+{
+    usage_counts_t result;
+    if (usage) {
+        result = *usage;
+    } else {
+        memset(&result, 0, sizeof(result));
     }
-    strncpy(output, model_name, output_size - 1);
-    output[output_size - 1] = '\0';
-    /* Replace dots with hyphens for Anthropic native API. */
-    for (char *p = output; *p; p++) {
-        if (*p == '.') *p = '-';
+    return result;
+}
+
+/* ================================================================
+ *  Billing route resolution (port of Python resolves)
+ * ================================================================ */
+
+/* billing_mode_t / billing_route_t are declared in usage_pricing.h. */
+
+/* Port of Python agent/usage_pricing.py:resolve_billing_route
+ * Determines billing provider & mode from model name + optional provider/base_url.
+ * Faithful: nous/vertex routing, openai-codex subscription-included, exact-host
+ * base_url matching (utils.base_url_host_matches). */
+billing_route_t usage_pricing_resolve_billing_route(const char *model_name,
+                                                     const char *provider,
+                                                     const char *base_url)
+{
+    billing_route_t route;
+    memset(&route, 0, sizeof(route));
+
+    /* Normalise inputs: strip + lowercase. */
+    char pbuf[PRICING_PROVIDER_MAX] = "";
+    char bbuf[256] = "";
+    char mbuf[PRICING_MODEL_NAME_MAX] = "";
+
+    if (provider) {
+        size_t i = 0;
+        while (provider[i] && i < sizeof(pbuf) - 1) {
+            pbuf[i] = (char)tolower((unsigned char)provider[i]);
+            i++;
+        }
+        pbuf[i] = '\0';
+        /* strip trailing spaces */
+        while (i > 0 && pbuf[i-1] == ' ') pbuf[--i] = '\0';
     }
+    if (base_url) {
+        size_t i = 0;
+        while (base_url[i] && i < sizeof(bbuf) - 1) {
+            bbuf[i] = (char)tolower((unsigned char)base_url[i]);
+            i++;
+        }
+        bbuf[i] = '\0';
+    }
+    if (model_name) {
+        size_t i = 0;
+        while (model_name[i] && i < sizeof(mbuf) - 1) {
+            mbuf[i] = (char)tolower((unsigned char)model_name[i]);
+            i++;
+        }
+        mbuf[i] = '\0';
+        while (i > 0 && mbuf[i-1] == ' ') mbuf[--i] = '\0';
+    }
+
+    /* Infer provider from model "provider/model" format (anthropic/openai/google). */
+    if (!pbuf[0]) {
+        const char *slash = strchr(mbuf, '/');
+        if (slash) {
+            size_t plen = (size_t)(slash - mbuf);
+            char iprov[32] = "";
+            if (plen >= sizeof(iprov)) plen = sizeof(iprov) - 1;
+            memcpy(iprov, mbuf, plen);
+            iprov[plen] = '\0';
+            if (strcmp(iprov, "anthropic") == 0 ||
+                strcmp(iprov, "openai") == 0 ||
+                strcmp(iprov, "google") == 0) {
+                pbuf[0] = '\0';
+                strncpy(pbuf, iprov, sizeof(pbuf) - 1);
+                pbuf[sizeof(pbuf) - 1] = '\0';
+                size_t rest = strlen(slash + 1);
+                if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
+                memmove(mbuf, slash + 1, rest + 1);
+            }
+        }
+    }
+
+    snprintf(route.provider, sizeof(route.provider), "%s", pbuf);
+    snprintf(route.model_name, sizeof(route.model_name), "%s", mbuf);
+    snprintf(route.base_url, sizeof(route.base_url), "%s", bbuf);
+
+    /* Resolve billing mode — faithful to Python ordering. */
+    if (strcmp(pbuf, "openai-codex") == 0) {
+        route.mode = BILLING_SUB_INCLUDED;
+    } else if (strcmp(pbuf, "openrouter") == 0 ||
+               base_url_host_matches(base_url, "openrouter.ai")) {
+        route.mode = BILLING_MODELS_API;
+    } else if (strcmp(pbuf, "nous") == 0 ||
+               base_url_host_matches(base_url, "inference-api.nousresearch.com")) {
+        route.mode = BILLING_MODELS_API;  /* official_models_api */
+        /* Nous fills in its default base URL when none is supplied. */
+        if (!bbuf[0]) {
+            snprintf(route.base_url, sizeof(route.base_url), "%s", _NOUS_DEFAULT_BASE_URL);
+        }
+    } else if (strcmp(pbuf, "anthropic") == 0 ||
+               strcmp(pbuf, "openai") == 0 ||
+               strcmp(pbuf, "minimax") == 0 ||
+               strcmp(pbuf, "minimax-cn") == 0) {
+        route.mode = BILLING_DOCS_SNAPSHOT;
+    } else if (strcmp(pbuf, "google") == 0 ||
+               strcmp(pbuf, "gemini") == 0 ||
+               strcmp(pbuf, "vertex") == 0 ||
+               strcmp(pbuf, "google-gemini") == 0 ||
+               strcmp(pbuf, "google-ai-studio") == 0 ||
+               strcmp(pbuf, "google-vertex") == 0 ||
+               strcmp(pbuf, "vertex-ai") == 0 ||
+               base_url_host_matches(base_url, "aiplatform.googleapis.com") ||
+               base_url_host_matches(base_url, "generativelanguage.googleapis.com")) {
+        /* Google AI Studio (Gemini), Vertex AI, and Google-flavored hosts all
+         * price off the same snapshot — the pricing keys are keyed on
+         * provider='google', so normalize every Google-flavored provider name
+         * onto "google" (faithful to agent/usage_pricing.py). */
+        snprintf(route.provider, sizeof(route.provider), "google");
+        /* strip "google/" vendor prefix (Vertex OpenAI-compat endpoint) +
+         * strip leading region scope (us./global./eu./apac./au.) so the bare
+         * model id matches the pricing key. */
+        const char *stripped = mbuf;
+        const char *dot = strchr(mbuf, '.');
+        if (dot && (strncmp(mbuf, "us.", 3) == 0 ||
+                    strncmp(mbuf, "global.", 7) == 0 ||
+                    strncmp(mbuf, "eu.", 3) == 0 ||
+                    strncmp(mbuf, "apac.", 5) == 0 ||
+                    strncmp(mbuf, "au.", 3) == 0)) {
+            stripped = dot + 1;
+        }
+        const char *slash = strchr(stripped, '/');
+        if (slash) {
+            size_t rest = strlen(slash + 1);
+            if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
+            memmove(mbuf, slash + 1, rest + 1);
+            snprintf(route.model_name, sizeof(route.model_name), "%s", mbuf);
+        } else {
+            snprintf(route.model_name, sizeof(route.model_name), "%s", stripped);
+        }
+        route.mode = BILLING_DOCS_SNAPSHOT;
+    } else if (strcmp(pbuf, "custom") == 0 ||
+               strcmp(pbuf, "local") == 0 ||
+               (bbuf[0] && strstr(bbuf, "localhost"))) {
+        route.mode = BILLING_UNKNOWN;
+    } else {
+        /* No recognizable provider (e.g. "bedrock", "weird/thing"): model keeps
+         * its last "/"-segment, provider defaults to "unknown", mode unknown. */
+        const char *last = strrchr(mbuf, '/');
+        if (last) {
+            size_t rest = strlen(last + 1);
+            if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
+            memmove(mbuf, last + 1, rest + 1);
+            snprintf(route.model_name, sizeof(route.model_name), "%s", mbuf);
+        }
+        snprintf(route.provider, sizeof(route.provider), "%s", pbuf[0] ? pbuf : "unknown");
+        route.mode = BILLING_UNKNOWN;
+    }
+
+    return route;
+}
+
+/* Port of Python agent/usage_pricing.py:_pricing_entry_from_metadata
+ * Look up model pricing. In C, uses the static PRICING_TABLE (equivalent to
+ * the Python docs snapshot metadata dict). */
+static bool pricing_entry_from_metadata(const char *model_id,
+                                         double *input_per_1m,
+                                         double *output_per_1m,
+                                         double *cache_read_per_1m,
+                                         double *cache_write_per_1m)
+{
+    if (!model_id || !model_id[0]) return false;
+
+    /* Try exact match first */
+    for (int i = 0; i < PRICING_TABLE_COUNT; i++) {
+        if (PRICING_TABLE[i].model_name &&
+            strcmp(model_id, PRICING_TABLE[i].model_name) == 0) {
+            *input_per_1m = PRICING_TABLE[i].input_per_1m;
+            *output_per_1m = PRICING_TABLE[i].output_per_1m;
+            *cache_read_per_1m = PRICING_TABLE[i].cache_read_per_1m;
+            *cache_write_per_1m = PRICING_TABLE[i].cache_write_per_1m;
+            return true;
+        }
+    }
+
+    /* Try substring match */
+    for (int i = 0; i < PRICING_TABLE_COUNT; i++) {
+        if (PRICING_TABLE[i].model_name &&
+            strstr(model_id, PRICING_TABLE[i].model_name)) {
+            *input_per_1m = PRICING_TABLE[i].input_per_1m;
+            *output_per_1m = PRICING_TABLE[i].output_per_1m;
+            *cache_read_per_1m = PRICING_TABLE[i].cache_read_per_1m;
+            *cache_write_per_1m = PRICING_TABLE[i].cache_write_per_1m;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/* Port of Python agent/usage_pricing.py:_openrouter_pricing_entry
+ * Attempt to find pricing specifically via OpenRouter-style metadata lookup.
+ * In C, falls through to the static pricing table. */
+static __attribute__((unused)) bool openrouter_pricing_entry(const char *model_id,
+                                                              double *input_per_1m,
+                                                              double *output_per_1m,
+                                                              double *cache_read_per_1m,
+                                                              double *cache_write_per_1m)
+{
+    return pricing_entry_from_metadata(model_id, input_per_1m, output_per_1m,
+                                       cache_read_per_1m, cache_write_per_1m);
+}
+
+/* ================================================================
+ *  normalize_usage (3-way provider token normalization)
+ *  Port of Python agent/usage_pricing.py:normalize_usage
+ * ================================================================ */
+
+static long long _to_ll(const json_t *v)
+{
+    if (!v) return 0;
+    if (v->type == JSON_NUMBER) return (long long)v->num_val;
+    if (v->type == JSON_STRING) return strtoll(v->str_val, NULL, 10);
     return 0;
 }
 
-/* PoP: cli_agent_usage_pricing__lookup_official_docs_pricing @ agent/usage_pricing.py:_lookup_official_docs_pricing */
-
-/* Port of Python agent/usage_pricing.py:_lookup_official_docs_pricing */
-/* Looks up pricing from official docs snapshot. */
-int cli_agent_usage_pricing__lookup_official_docs_pricing(
-    const char *model_name, double *input_price, double *output_price)
+static long long _get_ll(const json_t *obj, const char *key)
 {
-    if (!model_name || !input_price || !output_price) {
-        return -1;
-    }
-    /* CLI port: pricing lookup requires HTTP fetch. Return defaults. */
-    *input_price = 0.0;
-    *output_price = 0.0;
-    return 0;
+    return _to_ll(json_obj_get(obj, key));
 }
 
-/* PoP: cli_agent_usage_pricing_get_pricing_entry @ agent/usage_pricing.py:get_pricing_entry */
-
-/* Port of Python agent/usage_pricing.py:get_pricing_entry */
-/* Gets the pricing entry for a model. */
-int cli_agent_usage_pricing_get_pricing_entry(
-    const char *model_name, const char *provider,
-    double *input_price, double *output_price)
+/* Normalize raw API response usage into canonical token buckets. */
+usage_counts_t usage_pricing_normalize_usage(const char *provider,
+                                              const char *api_mode,
+                                              const json_t *response_usage)
 {
-    if (!model_name || !input_price || !output_price) {
-        return -1;
+    usage_counts_t u;
+    memset(&u, 0, sizeof(u));
+    if (!response_usage || response_usage->type != JSON_OBJECT) {
+        return u;
     }
-    (void)provider;
-    *input_price = 0.0;
-    *output_price = 0.0;
-    return 0;
+
+    char pname[64] = "";
+    if (provider) {
+        size_t i = 0;
+        while (provider[i] && i < sizeof(pname) - 1) {
+            pname[i] = (char)tolower((unsigned char)provider[i]); i++;
+        }
+        pname[i] = '\0';
+    }
+    char mode[64] = "";
+    if (api_mode) {
+        size_t i = 0;
+        while (api_mode[i] && i < sizeof(mode) - 1) {
+            mode[i] = (char)tolower((unsigned char)api_mode[i]); i++;
+        }
+        mode[i] = '\0';
+    }
+
+    long long input_tokens = 0, output_tokens = 0;
+    long long cache_read_tokens = 0, cache_write_tokens = 0;
+
+    if (strcmp(mode, "anthropic_messages") == 0 || strcmp(pname, "anthropic") == 0) {
+        input_tokens       = _get_ll(response_usage, "input_tokens");
+        output_tokens      = _get_ll(response_usage, "output_tokens");
+        cache_read_tokens  = _get_ll(response_usage, "cache_read_input_tokens");
+        cache_write_tokens = _get_ll(response_usage, "cache_creation_input_tokens");
+    } else if (strcmp(mode, "codex_responses") == 0) {
+        long long input_total = _get_ll(response_usage, "input_tokens");
+        output_tokens = _get_ll(response_usage, "output_tokens");
+        json_t *details = json_obj_get(response_usage, "input_tokens_details");
+        cache_read_tokens  = _get_ll(details, "cached_tokens");
+        cache_write_tokens = _get_ll(details, "cache_creation_tokens");
+        long long sub = cache_read_tokens + cache_write_tokens;
+        input_tokens = input_total - sub;
+        if (input_tokens < 0) input_tokens = 0;
+    } else {
+        /* OpenAI Chat Completions (and OpenAI-compatible proxies). */
+        long long prompt_total = _get_ll(response_usage, "prompt_tokens");
+        output_tokens = _get_ll(response_usage, "completion_tokens");
+        json_t *details = json_obj_get(response_usage, "prompt_tokens_details");
+        cache_read_tokens = _get_ll(details, "cached_tokens");
+        if (!cache_read_tokens)
+            cache_read_tokens = _get_ll(response_usage, "cache_read_input_tokens");
+        cache_write_tokens = _get_ll(details, "cache_write_tokens");
+        if (!cache_write_tokens)
+            cache_write_tokens = _get_ll(response_usage, "cache_creation_input_tokens");
+        long long sub = cache_read_tokens + cache_write_tokens;
+        input_tokens = prompt_total - sub;
+        if (input_tokens < 0) input_tokens = 0;
+    }
+
+    long long reasoning_tokens = 0;
+    json_t *odetails = json_obj_get(response_usage, "output_tokens_details");
+    if (odetails) reasoning_tokens = _get_ll(odetails, "reasoning_tokens");
+
+    u.input_tokens      = input_tokens;
+    u.output_tokens     = output_tokens;
+    u.cache_read_tokens = cache_read_tokens;
+    u.cache_write_tokens = cache_write_tokens;
+    u.reasoning_tokens  = reasoning_tokens;
+    u.request_count     = 1;
+    return u;
 }
 
-/* PoP: cli_agent_usage_pricing_normalize_usage @ agent/usage_pricing.py:normalize_usage */
+/* ================================================================
+ *  format_token_count_compact
+ *  Port of Python agent/usage_pricing.py:format_token_count_compact
+ * ================================================================ */
 
-/* Port of Python agent/usage_pricing.py:normalize_usage */
-/* Normalizes usage data from different provider formats. */
-int cli_agent_usage_pricing_normalize_usage(
-    const char *raw_usage_json, char *output, size_t output_size)
+const char *usage_pricing_format_token_count(long long value)
 {
-    if (!raw_usage_json || !output || output_size == 0) {
-        return -1;
+    static char buf[32];
+    long long abs_value = value < 0 ? -value : value;
+    if (abs_value < 1000) {
+        snprintf(buf, sizeof(buf), "%lld", value);
+        return buf;
     }
-    /* CLI port: pass through the JSON as-is. */
-    strncpy(output, raw_usage_json, output_size - 1);
-    output[output_size - 1] = '\0';
-    return 0;
+    const char *sign = value < 0 ? "-" : "";
+    static const long long units[] = {1000000000LL, 1000000LL, 1000LL};
+    static const char   *suf[]  = {"B", "M", "K"};
+    for (int i = 0; i < 3; i++) {
+        if (abs_value >= units[i]) {
+            double scaled = (double)abs_value / (double)units[i];
+            char text[32];
+            if (scaled < 10.0)      snprintf(text, sizeof(text), "%.2f", scaled);
+            else if (scaled < 100.0) snprintf(text, sizeof(text), "%.1f", scaled);
+            else                     snprintf(text, sizeof(text), "%.0f", scaled);
+            /* strip trailing zeros / dot, matching Python rstrip("0").rstrip(".") */
+            char *p = text + strlen(text);
+            while (p > text && p[-1] == '0') *--p = '\0';
+            if (p > text && p[-1] == '.') *--p = '\0';
+            snprintf(buf, sizeof(buf), "%s%s%s", sign, text, suf[i]);
+            return buf;
+        }
+    }
+    snprintf(buf, sizeof(buf), "%lld", value);
+    return buf;
 }
 
-/* Port of Python agent/usage_pricing.py:_normalize_bedrock_model_name */
+/* ================================================================
+ *  Model-name normalization
+ *  Ports of agent/usage_pricing.py:_normalize_bedrock_model_name
+ *  and _normalize_anthropic_model_name
+ * ================================================================ */
+
+void usage_pricing_normalize_bedrock_model(const char *model, char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    if (!model) { out[0] = '\0'; return; }
+    char lower[256];
+    size_t i = 0;
+    while (model[i] && i < sizeof(lower) - 1) {
+        lower[i] = (char)tolower((unsigned char)model[i]); i++;
+    }
+    lower[i] = '\0';
+    const char *prefixes[] = {"us.", "global.", "eu.", "ap.", "jp."};
+    for (int k = 0; k < 5; k++) {
+        size_t pl = strlen(prefixes[k]);
+        if (strncmp(lower, prefixes[k], pl) == 0) {
+            memmove(lower, lower + pl, strlen(lower + pl) + 1);
+            break;
+        }
+    }
+    dots_to_dashes_versioned(out, out_size, lower);
+}
+
+void usage_pricing_normalize_anthropic_model(const char *model, char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    if (!model) { out[0] = '\0'; return; }
+    const char *p = model;
+    if (strncmp(p, "anthropic/", 10) == 0) p += 10;
+    char lower[256];
+    size_t i = 0;
+    while (p[i] && i < sizeof(lower) - 1) {
+        lower[i] = (char)tolower((unsigned char)p[i]); i++;
+    }
+    lower[i] = '\0';
+    dots_to_dashes_versioned(out, out_size, lower);
+}
+

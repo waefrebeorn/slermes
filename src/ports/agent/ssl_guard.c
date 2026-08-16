@@ -1,103 +1,171 @@
 /*
- * ports/agent/ssl_guard.c — C11 port of agent/ssl_guard.py
- * Merged from 1 source file(s) by reorganization.
+ * ssl_guard.c — Preventive SSL CA certificate checks for Hermes C.
+ * AG40: Port of Python agent/ssl_guard.py
+ *
+ * Catches broken CA bundle paths before OpenSSL/curl turns them into
+ * opaque "No such file or directory" failures.
  */
 
-/* ── from src/agent/port_ssl_guard_ports.c ── */
-/*
- * port_ssl_guard_remaining.c — Port of agent/ssl_guard.py CA-bundle
- * surface. Skip guard, repair hints, bundle validation with real fs.
- */
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
-#define _GNU_SOURCE
-#include <stdio.h>
+#include "ssl_guard.h"
+#include "hermes_core_types.h"
+#include "hermes_error.h"
+#include "hermes_logger.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <unistd.h>
+#include <stdio.h>
 #include <sys/stat.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
-    return d;
-}
+/* Environment variables that may point to CA bundles */
+static const char *const CA_BUNDLE_ENV_VARS[] = {
+    "HERMES_CA_BUNDLE",
+    "SSL_CERT_FILE",
+    "REQUESTS_CA_BUNDLE",
+    "CURL_CA_BUNDLE",
+    NULL
+};
 
-/* PoP: sslg_skip_ssl_guard_enabled @ agent/ssl_guard.py:_skip_ssl_guard_enabled */
-bool sslg_skip_ssl_guard_enabled(void) {
-    /* Python: HERMES_SKIP_SSL_GUARD in skip values. */
-    const char *v = getenv("HERMES_SKIP_SSL_GUARD");
-    if (!v) return false;
-    char *l = lowerdup(v);
-    if (!l) return false;
-    bool r = strcmp(l, "true") == 0 || strcmp(l, "1") == 0 || strcmp(l, "yes") == 0 ||
-             strcmp(l, "skip") == 0;
-    free(l);
-    return r;
-}
+/* Values that mean "skip SSL guard" */
+static const char *const SKIP_VALUES[] = {
+    "1", "true", "yes", "on",
+    NULL
+};
 
-/* PoP: sslg_repair_hint @ agent/ssl_guard.py:_repair_hint */
-char *sslg_repair_hint(void) {
-    return strdup("Repair: run `hermes doctor --fix` (auto-reinstalls certifi), or set SSL_CERT_FILE to a valid bundle");
-}
+/* ================================================================
+ *  Internal helpers
+ * ================================================================ */
 
-/* PoP: sslg_ssl_err @ agent/ssl_guard.py:_ssl_err */
-char *sslg_ssl_err(const char *label, const char *detail) {
-    char *out = NULL;
-    asprintf(&out, "{\"kind\": \"ssl_config\", \"label\": \"%s\", \"detail\": \"%s\"}",
-             label ? label : "", detail ? detail : "");
-    return out;
-}
-
-/* PoP: sslg_validate_bundle_path @ agent/ssl_guard.py:_validate_bundle_path */
-int sslg_validate_bundle_path(const char *value) {
-    /* Python: expanduser + exists check — REAL. */
-    if (!value) return -1;
-    const char *p = value;
-    char *expanded = NULL;
-    if (p[0] == '~' && (p[1] == '/' || p[1] == '\0')) {
-        const char *home = getenv("HOME");
-        if (home) asprintf(&expanded, "%s%s", home, p + 1);
+static bool str_in_array(const char *needle, const char *const *haystack)
+{
+    if (!needle) return false;
+    for (int i = 0; haystack[i]; i++) {
+        if (strcasecmp(needle, haystack[i]) == 0)
+            return true;
     }
-    const char *path = expanded ? expanded : p;
-    int rc = access(path, F_OK) == 0 ? 0 : -1;
-    free(expanded);
-    return rc;
+    return false;
 }
 
-/* PoP: sslg_verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */
-int sslg_verify_ca_bundle(const char *bundle_path) {
-    /* Python: present + loadable. */
-    if (!bundle_path) return -1;
-    if (sslg_validate_bundle_path(bundle_path) != 0) return -1;
-    FILE *f = fopen(bundle_path, "r");
-    if (!f) return -1;
-    char buf[256];
-    size_t r = fread(buf, 1, sizeof(buf) - 1, f);
-    buf[r] = '\0';
-    fclose(f);
-    /* PEM markers present */
-    if (strstr(buf, "-----BEGIN") == NULL) return -1;
-    return 0;
+/* PoP: ssl_guard_skip_enabled @ agent/ssl_guard.py:_skip_ssl_guard_enabled */
+/* Port of Python agent/ssl_guard.py:_skip_ssl_guard_enabled(). */
+bool ssl_guard_skip_enabled(void)
+{
+    const char *val = getenv("HERMES_SKIP_SSL_GUARD");
+    if (!val) return false;
+    return str_in_array(val, SKIP_VALUES);
 }
 
-/* PoP: sslg_verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */
-int sslg_verify_ca_bundle_with_fallback(const char *bundle_path) {
-    /* Python: backward-compatible wrapper. */
-    int rc = sslg_verify_ca_bundle(bundle_path);
-    if (rc == 0) return 0;
-    /* fallback: default certifi path */
-    const char *h = getenv("HERMES_HOME");
-    char *fb = NULL;
-    if (h && *h) asprintf(&fb, "%s/certifi/cacert.pem", h);
-    if (fb) {
-        if (sslg_verify_ca_bundle(fb) == 0) { free(fb); return 0; }
-        free(fb);
+/* AG26: Port of Python agent/ssl_guard.py:_repair_hint() */
+static const char *ssl_repair_hint(void)
+{
+    /* Return a human-readable hint for fixing SSL CA bundle issues.
+     * Python's _repair_hint() returns a static string; C does the same. */
+    return "Repair: ensure certifi is installed and CA bundle env vars point to valid files";
+}
+
+/* AG26: Port of Python agent/ssl_guard.py:_ssl_err() */
+/* PoP: ssl_err @ hermes_cli/pets.py:_err */
+static hermes_error_t ssl_err(hermes_error_code_t code, const char *message)
+{
+    hermes_error_t e = {0};
+    e.code = code;
+    char full_msg[1024];
+    snprintf(full_msg, sizeof(full_msg), "%s\n%s", message, ssl_repair_hint());
+    size_t len = strlen(full_msg);
+    if (len >= sizeof(e.message)) len = sizeof(e.message) - 1;
+    memcpy(e.message, full_msg, len);
+    e.message[len] = '\0';
+    return e;
+}
+
+/* PoP: validate_bundle_path @ agent/ssl_guard.py:_validate_bundle_path */
+/* Port of Python agent/ssl_guard.py:_validate_bundle_path(). */
+static hermes_error_t validate_bundle_path(const char *label, const char *value, bool require_substantial)
+{
+    struct stat st;
+
+    if (!value || !*value)
+        return ssl_err(HERMES_ERR_CONFIG, "Empty CA bundle path");
+
+    if (stat(value, &st) != 0)
+        return ssl_err(HERMES_ERR_FILE_NOT_FOUND, label);
+
+    if (!S_ISREG(st.st_mode))
+        return ssl_err(HERMES_ERR_INVALID_FORMAT, label);
+
+    if (require_substantial && st.st_size < 1024)
+        return ssl_err(HERMES_ERR_INVALID_FORMAT, label);
+
+    /* Try to load with OpenSSL */
+    SSL_CTX *ctx = SSL_CTX_new(SSLv23_client_method());
+    if (!ctx)
+        return ssl_err(HERMES_ERR_RUNTIME, "Failed to create SSL context");
+
+    if (SSL_CTX_load_verify_locations(ctx, value, NULL) != 1) {
+        SSL_CTX_free(ctx);
+        return ssl_err(HERMES_ERR_INVALID_FORMAT, label);
     }
-    return -1;
+
+    /* Check if any certs were loaded */
+    STACK_OF(X509_NAME) *certs = SSL_CTX_get_client_CA_list(ctx);
+    if (!certs || sk_X509_NAME_num(certs) == 0) {
+        SSL_CTX_free(ctx);
+        return ssl_err(HERMES_ERR_CONFIG, label);
+    }
+
+    SSL_CTX_free(ctx);
+    return (hermes_error_t){HERMES_OK, {0}, {0}};
 }
 
+/* ================================================================
+ *  Public API
+ * ================================================================ */
+
+/* PoP: ssl_guard_verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */
+/* Port of Python agent/ssl_guard.py:verify_ca_bundle(). */
+hermes_error_t ssl_guard_verify_ca_bundle(void)
+{
+    if (ssl_guard_skip_enabled()) {
+        hermes_log(LOG_DEBUG, "ssl_guard", "SSL CA bundle guard skipped via HERMES_SKIP_SSL_GUARD");
+        return (hermes_error_t){HERMES_OK, {0}, {0}};
+    }
+
+    /* Check explicit CA bundle environment variables */
+    for (int i = 0; CA_BUNDLE_ENV_VARS[i]; i++) {
+        const char *value = getenv(CA_BUNDLE_ENV_VARS[i]);
+        if (value) {
+            hermes_error_t err = validate_bundle_path(CA_BUNDLE_ENV_VARS[i], value, false);
+            if (err.code != HERMES_OK)
+                return err;
+        }
+    }
+
+    /* Check certifi's bundled cacert.pem */
+    /* In C, we rely on OpenSSL's default paths, but we can try to find certifi equivalent */
+    /* For now, use OpenSSL's default cert store */
+    SSL_CTX *ctx = SSL_CTX_new(SSLv23_client_method());
+    if (!ctx)
+        return ssl_err(HERMES_ERR_RUNTIME, "Failed to create SSL context for certifi check");
+
+    /* OpenSSL uses SSL_CTX_set_default_verify_paths() for system certs */
+    SSL_CTX_set_default_verify_paths(ctx);
+
+    STACK_OF(X509_NAME) *certs = SSL_CTX_get_client_CA_list(ctx);
+    if (!certs || sk_X509_NAME_num(certs) == 0) {
+        SSL_CTX_free(ctx);
+        return ssl_err(HERMES_ERR_CONFIG, "System CA bundle did not load any certificates");
+    }
+
+    SSL_CTX_free(ctx);
+    return (hermes_error_t){HERMES_OK, {0}, {0}};
+}
+
+/* PoP: ssl_guard_verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */
+/* Port of Python agent/ssl_guard.py:verify_ca_bundle_with_fallback(). */
+hermes_error_t ssl_guard_verify_ca_bundle_with_fallback(void)
+{
+    /* Python's verify_ca_bundle_with_fallback() tries the primary bundle first,
+     * then falls back to a secondary source. In C, we enforce the check directly
+     * without a separate fallback path — delegate to verify_ca_bundle(). */
+    return ssl_guard_verify_ca_bundle();
+}

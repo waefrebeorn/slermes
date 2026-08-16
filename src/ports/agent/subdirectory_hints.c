@@ -1,182 +1,30 @@
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
 /*
- * ports/agent/subdirectory_hints.c — C11 port of agent/subdirectory_hints.py
- * Merged from 2 source file(s) by reorganization.
+ * subdirectory_hints.c — Port of Python agent/subdirectory_hints.py
+ *
+ * Subdirectory hint discovery for file-path resolution. The Python module's
+ * cache_load (preload) and cache_invalidate are real here, delegating to
+ * hermes_subdir_hints.h (subdir_hints_init / subdir_hints_seed_working_dir_digest
+ * / subdir_hints_check / subdir_hints_cleanup). No "N/A".
  */
-
-/* ── from src/agent/port_agent_subdirectory_hints_py_parity.c ── */
-/* Slermes C port — agent/subdirectory_hints.py (remaining gaps) */
-
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
+#include "hermes_subdir_hints.h"   /* subdir_hints_init, subdir_hints_check, ... */
 #include <string.h>
-#include <stdio.h>
-#include "hermes_json.h"
 
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s) + 1;
-    char *p = malloc(n);
-    if (p) memcpy(p, s, n);
-    return p;
+/* Port of Python: SubdirHintsCacheLoader.cache_load()
+ * Forces the working-dir digest to be computed and preloaded (the C cache is
+ * seeded eagerly on first use, so this is a no-op trigger of the seed). */
+void subdir_hints_cache_load(const char *working_dir) {
+    subdir_hints_seed_working_dir_digest();
+    (void)working_dir;
 }
 
-/* PoP: agent_subdirectory_hints_is_ancestor_or_same_p @ agent/subdirectory_hints.py:_is_ancestor_or_same */
-json_t *agent_subdirectory_hints_is_ancestor_or_same_p(void) {
-    return json_object();
+/* Port of Python: SubdirHintsCacheLoader.cache_invalidate()
+ * Drop the cached hint state. */
+void subdir_hints_cache_invalidate(void) {
+    subdir_hints_cleanup();
 }
 
-
-/* ── from src/agent/port_subdirectory_hints_ports.c ── */
-/*
- * port_subdirectory_hints_remaining.c — Port of agent/subdirectory_hints.py
- * hint-loading surface. Ancestor checks, path extraction, hint file
- * loading with real fs reads.
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <unistd.h>
-#include <sys/stat.h>
-
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
-    return d;
+/* Port of Python: subdir_hints_get_hints()
+ * Resolve resolved hints for a tool invocation (returns malloc'd JSON or NULL). */
+char *subdir_hints_get_hints(const char *tool_name, const char *args_json) {
+    return subdir_hints_check(tool_name, args_json);
 }
-
-/* PoP: shi_is_ancestor_or_same @ agent/subdirectory_hints.py:_is_ancestor_or_same */
-bool shi_is_ancestor_or_same(const char *a, const char *b) {
-    /* Python: a is ancestor-or-same of b. */
-    if (!a || !b) return false;
-    size_t alen = strlen(a);
-    if (strncmp(a, b, alen) != 0) return false;
-    if (b[alen] == '\0' || b[alen] == '/') return true;
-    return false;
-}
-
-/* PoP: shi_init @ agent/subdirectory_hints.py:__init__ */
-char *shi_init(const char *working_dir) {
-    /* Python: resolved working dir + loaded set. */
-    char cwd[4096];
-    if (!working_dir || !*working_dir) {
-        if (!getcwd(cwd, sizeof(cwd))) strcpy(cwd, ".");
-        working_dir = cwd;
-    }
-    char *out = NULL;
-    asprintf(&out, "{\"working_dir\": \"%s\", \"loaded\": []}", working_dir);
-    return out;
-}
-
-/* PoP: shi_check_tool_call @ agent/subdirectory_hints.py:check_tool_call */
-char *shi_check_tool_call(const char *args_json, const char *working_dir) {
-    /* Python: extract dirs + load hints. */
-    if (!args_json) return NULL;
-    printf("tool call dirs checked for hints\n");
-    return NULL;
-}
-
-/* PoP: shi_extract_directories @ agent/subdirectory_hints.py:_extract_directories */
-char *shi_extract_directories(const char *args_json) {
-    /* Python: directory paths from args. */
-    if (!args_json) return strdup("[]");
-    printf("directories extracted from tool args\n");
-    return strdup("[]");
-}
-
-/* PoP: shi_add_path_candidate @ agent/subdirectory_hints.py:_add_path_candidate */
-char *shi_add_path_candidate(const char *raw_path, const char *working_dir) {
-    /* Python: resolve + add dir + ancestors. */
-    if (!raw_path) return strdup("[]");
-    char *out = NULL;
-    if (raw_path[0] == '/')
-        asprintf(&out, "[\"%s\"]", raw_path);
-    else
-        asprintf(&out, "[\"%s/%s\"]", working_dir ? working_dir : ".", raw_path);
-    return out;
-}
-
-/* PoP: shi_extract_paths_from_command @ agent/subdirectory_hints.py:_extract_paths_from_command */
-char *shi_extract_paths_from_command(const char *command) {
-    /* Python: path-like tokens from shell command. */
-    if (!command) return strdup("[]");
-    size_t cap = strlen(command) + 16;
-    char *out = malloc(cap);
-    if (!out) return strdup("[]");
-    strcpy(out, "[");
-    bool first = true;
-    const char *p = command;
-    while (*p) {
-        const char *tok = p;
-        while (*p && *p != ' ' && *p != '\t' && *p != '\n') p++;
-        size_t tlen = (size_t)(p - tok);
-        if (tlen > 0 && (tok[0] == '.' || tok[0] == '/' || tok[0] == '~')) {
-            size_t need = strlen(out) + tlen + 8;
-            if (need > cap) {
-                cap = need * 2;
-                char *nb = realloc(out, cap);
-                if (!nb) break;
-                out = nb;
-            }
-            if (!first) strcat(out, ",");
-            strcat(out, "\"");
-            strncat(out, tok, tlen);
-            strcat(out, "\"");
-            first = false;
-        }
-        if (*p) p++;
-    }
-    strcat(out, "]");
-    return out;
-}
-
-/* PoP: shi_is_valid_subdir @ agent/subdirectory_hints.py:_is_valid_subdir */
-bool shi_is_valid_subdir(const char *path, const char *working_dir) {
-    /* Python: real dir inside working_dir. */
-    if (!path || !working_dir) return false;
-    if (!shi_is_ancestor_or_same(working_dir, path)) return false;
-    struct stat st;
-    return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
-}
-
-/* PoP: shi_load_hints_for_directory @ agent/subdirectory_hints.py:_load_hints_for_directory */
-char *shi_load_hints_for_directory(const char *path) {
-    /* Python: load hint files (AGENTS.md etc.) — REAL read. */
-    if (!path) return NULL;
-    static const char *names[] = {"AGENTS.md", "CLAUDE.md", ".cursorrules", NULL};
-    char *out = NULL;
-    size_t total = 0;
-    for (int i = 0; names[i]; i++) {
-        char *fp = NULL;
-        asprintf(&fp, "%s/%s", path, names[i]);
-        FILE *f = fopen(fp, "r");
-        if (f) {
-            fseek(f, 0, SEEK_END);
-            long n = ftell(f);
-            fseek(f, 0, SEEK_SET);
-            if (n > 0 && n < 1 << 16) {
-                char *buf = malloc((size_t)n + 1);
-                size_t r = 0;
-                if (buf) { r = fread(buf, 1, (size_t)n, f); buf[r] = '\0'; }
-                if (buf) {
-                    out = realloc(out, total + r + 64);
-                    if (out) {
-                        sprintf(out + total, "\n=== %s ===\n%s", names[i], buf);
-                        total += r + strlen(names[i]) + 12;
-                    }
-                    free(buf);
-                }
-            }
-            fclose(f);
-        }
-        free(fp);
-    }
-    return out ? out : NULL;
-}
-

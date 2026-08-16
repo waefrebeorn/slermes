@@ -1,147 +1,339 @@
 /*
- * ports/agent/nous_rate_guard.c — C11 port of agent/nous_rate_guard.py
- * Merged from 1 source file(s) by reorganization.
+ * nous_rate_guard.c — Cross-session rate limit guard for Nous Portal.
+ * Port of Python agent/nous_rate_guard.py (325 lines).
+ *
+ * Writes/reads a shared JSON file (~/.hermes/rate_limits/nous.json)
+ * to track cross-session rate limit state.
  */
-
-/* ── from src/agent/port_nous_rate_guard_ports.c ── */
-/*
- * port_nous_rate_guard_remaining.c — Port of agent/nous_rate_guard.py
- * rate-limit surface. State persistence, reset parsing, bucket
- * analysis, genuine-limit classification, formatting.
- */
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
-#define _GNU_SOURCE
+#include "nous_rate_guard.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <errno.h>
 
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
-    return d;
-}
+/* --- Constants --- */
 
-/* PoP: nrg_state_path @ agent/nous_rate_guard.py:_state_path */
-char *nrg_state_path(void) {
-    const char *h = getenv("HERMES_HOME");
-    char *out = NULL;
-    if (h && *h) asprintf(&out, "%s/state/nous_rate_limit.json", h);
-    else asprintf(&out, "%s/.hermes/state/nous_rate_limit.json", getenv("HOME") ? getenv("HOME") : ".");
-    return out;
-}
+#define STATE_SUBDIR    "rate_limits"
+#define STATE_FILENAME  "nous.json"
+#define DEFAULT_COOLDOWN 300.0  /* 5 minutes */
 
-/* PoP: nrg_parse_reset_seconds @ agent/nous_rate_guard.py:_parse_reset_seconds */
-double nrg_parse_reset_seconds(const char *headers_json) {
-    /* Python: best reset-time estimate from headers. */
-    if (!headers_json) return 0.0;
-    const char *p = strstr(headers_json, "retry-after");
-    if (p) {
-        const char *colon = strchr(p, ':');
-        if (colon) {
-            double v = atof(colon + 1);
-            if (v > 0) return v;
-        }
-    }
-    return 0.0;
-}
+/* --- Internal helpers --- */
 
-/* PoP: nrg_record_nous_rate_limit @ agent/nous_rate_guard.py:record_nous_rate_limit */
-int nrg_record_nous_rate_limit(const char *headers_json) {
-    /* Python: parse reset + persist state — REAL file write. */
-    if (!headers_json) return -1;
-    double reset = nrg_parse_reset_seconds(headers_json);
-    char *path = nrg_state_path();
-    char *dir = strdup(path);
-    char *slash = strrchr(dir, '/');
-    if (slash) { *slash = '\0'; mkdir(dir, 0755); }
-    free(dir);
-    FILE *w = fopen(path, "w");
-    if (!w) { free(path); return -1; }
-    fprintf(w, "{\"rate_limited\": true, \"reset_in_seconds\": %.0f, \"recorded_at\": %ld}\n",
-            reset, (long)time(NULL));
-    fclose(w);
-    free(path);
+/* Port of Python agent/nous_rate_guard.py:_state_path().
+ * Build path to the state file: <hermes_home>/rate_limits/nous.json */
+static int state_file_path(const char *hermes_home, char *out, size_t sz) {
+    if (!hermes_home || !hermes_home[0] || !out || sz == 0)
+        return -1;
+    int n = snprintf(out, sz, "%s/%s/%s", hermes_home, STATE_SUBDIR, STATE_FILENAME);
+    if (n < 0 || (size_t)n >= sz)
+        return -1;
     return 0;
 }
 
-/* PoP: nrg_nous_rate_limit_remaining @ agent/nous_rate_guard.py:nous_rate_limit_remaining */
-double nrg_nous_rate_limit_remaining(void) {
-    /* Python: seconds remaining or 0. */
-    char *path = nrg_state_path();
-    FILE *f = fopen(path, "r");
-    if (!f) { free(path); return 0.0; }
-    char buf[512];
-    size_t r = fread(buf, 1, sizeof(buf) - 1, f);
-    buf[r] = '\0';
-    fclose(f);
-    free(path);
-    const char *p = strstr(buf, "reset_in_seconds");
-    if (!p) return 0.0;
-    const char *colon = strchr(p, ':');
-    if (!colon) return 0.0;
-    double reset = atof(colon + 1);
-    const char *rec = strstr(buf, "recorded_at");
-    long recorded = 0;
-    if (rec) {
-        const char *c = strchr(rec, ':');
-        if (c) recorded = atol(c + 1);
+/* Ensure the rate_limits directory exists */
+static int ensure_state_dir(const char *hermes_home) {
+    char dir[4096];
+    int n = snprintf(dir, sizeof(dir), "%s/%s", hermes_home, STATE_SUBDIR);
+    if (n < 0 || (size_t)n >= sizeof(dir))
+        return -1;
+    struct stat st;
+    if (stat(dir, &st) == 0) {
+        if (S_ISDIR(st.st_mode))
+            return 0;
+        errno = ENOTDIR;
+        return -1;
     }
-    double elapsed = (double)(time(NULL) - recorded);
-    double left = reset - elapsed;
-    return left > 0 ? left : 0.0;
+    return mkdir(dir, 0755);
 }
 
-/* PoP: nrg_clear_nous_rate_limit @ agent/nous_rate_guard.py:clear_nous_rate_limit */
-int nrg_clear_nous_rate_limit(void) {
-    /* Python: clear state after success. */
-    char *path = nrg_state_path();
-    int rc = unlink(path);
-    free(path);
-    return rc == 0 ? 0 : 0;
+/* Port of Python tools/file_operations.py:_atomic_write(). */
+/* Atomic write: write to temp file, then rename (POSIX atomic for same-fs) */
+static int atomic_write(const char *path, const char *content) {
+    /* Create temp file in the same directory (same filesystem) */
+    size_t plen = strlen(path);
+    char *tmp_path = (char *)malloc(plen + 16);
+    if (!tmp_path) return -1;
+    memcpy(tmp_path, path, plen);
+    memcpy(tmp_path + plen, ".tmp_XXXXXX", 12);  /* mkstemp needs exactly 6 X's at end */
+    tmp_path[plen + 12] = '\0';
+    /* Use mkstemp for safe temp file creation */
+    int fd = mkstemp(tmp_path);
+    if (fd < 0) {
+        free(tmp_path);
+        return -1;
+    }
+    /* Write content */
+    size_t clen = strlen(content);
+    ssize_t written = write(fd, content, clen);
+    int write_err = (written < 0 || (size_t)written != clen) ? errno : 0;
+    close(fd);
+    if (write_err) {
+        unlink(tmp_path);
+        free(tmp_path);
+        errno = write_err;
+        return -1;
+    }
+    /* Atomic rename */
+    if (rename(tmp_path, path) != 0) {
+        int rename_err = errno;
+        unlink(tmp_path);
+        free(tmp_path);
+        errno = rename_err;
+        return -1;
+    }
+    free(tmp_path);
+    return 0;
 }
 
-/* PoP: nrg_format_remaining @ agent/nous_rate_guard.py:format_remaining */
-char *nrg_format_remaining(double seconds) {
-    /* Python: human-readable duration. */
-    long s = seconds > 0 ? (long)seconds : 0;
-    char *out = NULL;
-    if (s < 60) asprintf(&out, "%lds", s);
-    else if (s < 3600) asprintf(&out, "%ldm %lds", s / 60, s % 60);
-    else asprintf(&out, "%ldh %ldm", s / 3600, (s % 3600) / 60);
-    return out;
+/* --- Public API --- */
+
+/* PoP: nous_rate_guard_record @ rich_sent_store:record */
+/* Port of Python agent/nous_rate_guard.py:record_nous_rate_limit().
+ * Record that Nous Portal is rate-limited.
+ * Writes reset_at timestamp to the shared state file. */
+/* PoP: nous_rate_guard_record @ cron/executions.py:_record */
+void nous_rate_guard_record(const char *hermes_home,
+                             double reset_at,
+                             double default_cooldown_secs) {
+    if (!hermes_home || !hermes_home[0]) return;
+
+    if (ensure_state_dir(hermes_home) != 0)
+        return;
+
+    double now = (double)time(NULL);
+    double effective_reset = reset_at;
+
+    if (effective_reset <= now)
+        effective_reset = now + (default_cooldown_secs > 0 ? default_cooldown_secs : DEFAULT_COOLDOWN);
+
+    /* Build state JSON */
+    json_t *state = json_new_object();
+    json_set(state, "reset_at", json_number(effective_reset));
+    json_set(state, "recorded_at", json_number(now));
+    json_set(state, "reset_seconds", json_number(effective_reset - now));
+
+    char *json_str = json_serialize(state);
+    json_free(state);
+    if (!json_str) return;
+
+    char path[4096];
+    if (state_file_path(hermes_home, path, sizeof(path)) != 0) {
+        free(json_str);
+        return;
+    }
+
+    atomic_write(path, json_str);
+    free(json_str);
 }
 
-/* PoP: nrg_is_genuine_nous_rate_limit @ agent/nous_rate_guard.py:is_genuine_nous_rate_limit */
-bool nrg_is_genuine_nous_rate_limit(const char *body_json) {
-    /* Python: distinguish real account limit from noise. */
-    if (!body_json) return false;
-    char *l = lowerdup(body_json);
-    if (!l) return false;
-    bool r = strstr(l, "rate limit") || strstr(l, "rate_limit") || strstr(l, "429");
-    free(l);
-    return r;
+/* Port of Python agent/nous_rate_guard.py:nous_rate_limit_remaining().
+ * Check if Nous Portal is currently rate-limited.
+ * Returns seconds remaining or -1.0 if not rate-limited. */
+double nous_rate_guard_remaining(const char *hermes_home) {
+    if (!hermes_home || !hermes_home[0]) return -1.0;
+
+    char path[4096];
+    if (state_file_path(hermes_home, path, sizeof(path)) != 0)
+        return -1.0;
+
+    /* Read the file */
+    FILE *f = fopen(path, "r");
+    if (!f) return -1.0;
+
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    if (fsize <= 0) { fclose(f); return -1.0; }
+    fseek(f, 0, SEEK_SET);
+
+    char *content = (char *)malloc((size_t)fsize + 1);
+    if (!content) { fclose(f); return -1.0; }
+    size_t nread = fread(content, 1, (size_t)fsize, f);
+    fclose(f);
+    content[nread] = '\0';
+
+    /* Parse JSON */
+    char *err = NULL;
+    json_t *state = json_parse(content, &err);
+    free(err);
+    free(content);
+    if (!state) return -1.0;
+
+    double reset_at = json_get_num(state, "reset_at", 0.0);
+    json_free(state);
+
+    double now = (double)time(NULL);
+    double remaining = reset_at - now;
+    if (remaining > 0)
+        return remaining;
+
+    /* Expired — clean up the file */
+    unlink(path);
+    return -1.0;
 }
 
-/* PoP: nrg_parse_buckets_from_headers @ agent/nous_rate_guard.py:_parse_buckets_from_headers */
-char *nrg_parse_buckets_from_headers(const char *headers_json) {
-    /* Python: (remaining, reset) per x-ratelimit-* bucket. */
-    if (!headers_json) return strdup("[]");
-    printf("ratelimit buckets parsed from headers\n");
-    return strdup("[]");
+/* Port of Python agent/nous_rate_guard.py:clear_nous_rate_limit().
+ * Clear the rate limit state file. */
+void nous_rate_guard_clear(const char *hermes_home) {
+    if (!hermes_home || !hermes_home[0]) return;
+    char path[4096];
+    if (state_file_path(hermes_home, path, sizeof(path)) != 0)
+        return;
+    unlink(path);
 }
 
-/* PoP: nrg_has_exhausted_bucket @ agent/nous_rate_guard.py:_has_exhausted_bucket */
-bool nrg_has_exhausted_bucket(const char *buckets_json) {
-    /* Python: any bucket remaining==0 with meaningful reset. */
-    if (!buckets_json) return false;
-    return strstr(buckets_json, "\"remaining\": 0") != NULL;
+/* Port of Python agent/nous_rate_guard.py:format_remaining().
+ * Format seconds remaining into human-readable duration. */
+const char *format_remaining(double seconds, char *buf, size_t sz) {
+    if (!buf || sz == 0) return buf;
+    if (seconds < 0) {
+        snprintf(buf, sz, "expired");
+        return buf;
+    }
+    int s = seconds > 0 ? (int)seconds : 0;
+    if (s < 60) {
+        snprintf(buf, sz, "%ds", s);
+    } else if (s < 3600) {
+        int m = s / 60, sec = s % 60;
+        if (sec)
+            snprintf(buf, sz, "%dm %ds", m, sec);
+        else
+            snprintf(buf, sz, "%dm", m);
+    } else {
+        int h = s / 3600, m = (s % 3600) / 60;
+        if (m)
+            snprintf(buf, sz, "%dh %dm", h, m);
+        else
+            snprintf(buf, sz, "%dh", h);
+    }
+    return buf;
 }
 
+/* ================================================================
+ *  Nous rate limit detection helpers
+ * ================================================================ */
+
+#define MIN_RESET_FOR_BREAKER_SECONDS 60.0
+
+/* Port of Python agent/nous_rate_guard.py:_parse_reset_seconds().
+ * Extract the best available reset-time estimate from response headers.
+ * Priority: x-ratelimit-reset-requests-1h, x-ratelimit-reset-requests, retry-after. */
+double parse_reset_seconds(const char *response_headers) {
+    if (!response_headers || !response_headers[0]) return -1.0;
+
+    const char *keys[] = {
+        "x-ratelimit-reset-requests-1h:",
+        "x-ratelimit-reset-requests:",
+        "retry-after:",
+        NULL
+    };
+
+    for (int i = 0; keys[i]; i++) {
+        const char *match = strstr(response_headers, keys[i]);
+        if (!match) continue;
+        match += strlen(keys[i]);
+        while (*match == ' ') match++;
+        char *end = NULL;
+        double val = strtod(match, &end);
+        if (end != match && val > 0)
+            return val;
+    }
+    return -1.0;
+}
+
+/* Port of Python agent/nous_rate_guard.py:_parse_buckets_from_headers().
+ * Extract (remaining, reset_seconds) per bucket from x-ratelimit-* headers.
+ * Returns a malloc'd JSON object with bucket tags as keys. Caller must free. */
+json_t *nous_parse_buckets(const char *response_headers) {
+    json_t *result = json_new_object();
+    if (!response_headers || !response_headers[0]) return result;
+
+    const char *tags[] = {"requests", "requests-1h", "tokens", "tokens-1h", NULL};
+    for (int i = 0; tags[i]; i++) {
+        char rem_key[128], reset_key[128];
+        snprintf(rem_key, sizeof(rem_key), "x-ratelimit-remaining-%s:", tags[i]);
+        snprintf(reset_key, sizeof(reset_key), "x-ratelimit-reset-%s:", tags[i]);
+
+        json_t *bucket = json_new_object();
+        const char *rem_match = strstr(response_headers, rem_key);
+        if (rem_match) {
+            const char *val = rem_match + strlen(rem_key);
+            while (*val == ' ') val++;
+            int remaining = (int)strtol(val, NULL, 10);
+            json_set(bucket, "remaining", json_number((double)remaining));
+        }
+
+        const char *reset_match = strstr(response_headers, reset_key);
+        if (reset_match) {
+            const char *val = reset_match + strlen(reset_key);
+            while (*val == ' ') val++;
+            double reset = strtod(val, NULL);
+            json_set(bucket, "reset", json_number(reset));
+        }
+
+        if (bucket->c.count > 0)
+            json_set(result, tags[i], bucket);
+        else
+            json_free(bucket);
+    }
+    return result;
+}
+
+/* Port of Python agent/nous_rate_guard.py:_has_exhausted_bucket() and _has_exhausted_bucket_in_object().
+ * Return true when any bucket has remaining == 0 AND a meaningful reset window. */
+bool has_exhausted_bucket(json_t *buckets) {
+    if (!buckets || buckets->type != JSON_OBJECT) return false;
+
+    for (size_t i = 0; i < buckets->c.count; i++) {
+        json_t *bucket = buckets->c.items[i];
+        if (!bucket || bucket->type != JSON_OBJECT) continue;
+        double remaining = json_get_num(bucket, "remaining", -1.0);
+        double reset = json_get_num(bucket, "reset", -1.0);
+        if (remaining == 0.0 && reset >= MIN_RESET_FOR_BREAKER_SECONDS)
+            return true;
+    }
+    return false;
+}
+
+/* Port of Python agent/nous_rate_guard.py:_has_exhausted_bucket_in_object().
+ * Accepts a state object (JSON) exposing up to four bucket sub-objects under
+ * the keys requests_min / requests_hour / tokens_min / tokens_hour. Each bucket
+ * has limit/remaining/reset_seconds/remaining_seconds_now. Returns true if any
+ * bucket has limit>0, remaining==0, and a reset window >= MIN. Mirrors the
+ * attribute-walk (getattr with graceful fallback) of the Python original. */
+/* PoP: nous_has_exhausted_bucket_in_object @ agent/nous_rate_guard.py:_has_exhausted_bucket_in_object */
+bool nous_has_exhausted_bucket_in_object(json_t *state)
+{
+    if (!state || state->type != JSON_OBJECT) return false;
+    static const char *attrs[4] = {
+        "requests_min", "requests_hour", "tokens_min", "tokens_hour"
+    };
+    for (int a = 0; a < 4; a++) {
+        json_t *bucket = json_object_get(state, attrs[a]);
+        if (!bucket || bucket->type != JSON_OBJECT) continue;
+        double limit = json_get_num(bucket, "limit", 0.0);
+        if (limit <= 0.0) continue;
+        double remaining = json_get_num(bucket, "remaining", 0.0);
+        if (remaining > 0.0) continue;
+        double reset = json_get_num(bucket, "remaining_seconds_now", -1.0);
+        if (reset < 0.0)
+            reset = json_get_num(bucket, "reset_seconds", 0.0);
+        if (reset >= MIN_RESET_FOR_BREAKER_SECONDS)
+            return true;
+    }
+    return false;
+}
+
+/* Port of Python agent/nous_rate_guard.py:is_genuine_nous_rate_limit().
+ * Decide whether a 429 from Nous Portal is a real account rate limit.
+ * Checks current response headers for exhausted buckets with meaningful
+ * reset windows. Returns true when evidence is conclusive. */
+bool nous_is_genuine_rate_limit(const char *response_headers) {
+    json_t *buckets = nous_parse_buckets(response_headers);
+    bool exhausted = has_exhausted_bucket(buckets);
+    json_free(buckets);
+    return exhausted;
+}

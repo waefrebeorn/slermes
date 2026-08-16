@@ -1,655 +1,783 @@
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
 /*
- * ports/agent/redact.c — C11 port of agent/redact.py
- * Merged from 3 source file(s) by reorganization.
- */
-
-/* ── from src/agent/port_agent_redact_helpers.c ── */
-/* Slermes C port — agent/redact.py (pure helper subset)
+ * redact.c — P159: Secrets redaction for Hermes C.
  *
- * Faithful port of two prefix-based redaction helpers. No live/runtime deps.
+ * Pattern-based redaction (API keys, tokens, passwords, JWTs)
+ * from tool output and logs. Uses pattern matching with wildcards.
  */
 
-
-#include <stdbool.h>
-#include <stddef.h>
+#include "hermes_core_types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <ctype.h>
-#include "redact_helpers.h"
-#include "tools/browser_redact.h"
 
-/* Literal credential prefixes derived from _PREFIX_PATTERNS via
- * _extract_literal_prefix() in the Python source. Each pattern's leading
- * literal characters — any match MUST contain one of these as a substring. */
-static const char *REDEXT_PREFIX_SUBSTRINGS[] = {
-    "sk-", "ghp_", "github_pat_", "gho_", "ghu_", "ghs_", "ghr_", "xapp-",
-    "xox", "AIza", "pplx-", "fal_", "fc-", "bb_live_", "gAAAA", "AKIA",
-    "sk_live_", "sk_test_", "rk_live_", "SG.", "hf_", "r8_", "npm_", "pypi-",
-    "dop_v1_", "doo_v1_", "am_", "sk_", "tvly-", NULL
+/* ================================================================
+ *  Redaction Patterns
+ * ================================================================ */
+
+/* Max patterns and redaction entries */
+#define MAX_REDACT_PATTERNS 64
+#define REDACT_REPLACEMENT  "********"
+
+/* Pattern entry */
+typedef struct {
+    char prefix[64];    /* Key-like prefix to match */
+    char suffix[64];    /* Optional suffix for context */
+    size_t min_len;     /* Minimum value length to redact */
+    size_t max_show;    /* Characters from start to show before *** */
+} redact_pattern_t;
+
+/* Built-in patterns */
+static const redact_pattern_t BUILTIN_PATTERNS[] = {
+    {"api_key",          "",              6,  4},
+    {"api-key",          "",              6,  4},
+    {"apikey",           "",              6,  4},
+    {"token",            "",              6,  4},
+    {"secret",           "",              6,  4},
+    {"password",         "",              4,  2},
+    {"passwd",           "",              4,  2},
+    {"authorization",    "",              6,  4},
+    {"bearer ",          "",              8,  4},
+    {"x-api-key",        "",              6,  4},
+    {"x-auth-token",     "",              6,  4},
+    {"ssh-private-key",  "",              8,  4},
+    {"-----begin",       "-----",         20, 10},
+    {"sk-",              "",              20, 4},  /* OpenAI keys */
+    {"pk-",              "",              20, 4},  /* Project keys */
+    {"ghp_",             "",              20, 4},  /* GitHub PAT */
+    {"gho_",             "",              20, 4},  /* GitHub OAuth */
+    {"ghu_",             "",              20, 4},  /* GitHub user token */
+    {"ghs_",             "",              20, 4},  /* GitHub server-to-server */
+    {"ghr_",             "",              20, 4},  /* GitHub refresh */
+    {"xoxb-",            "",              20, 4},  /* Slack bot */
+    {"xoxp-",            "",              20, 4},  /* Slack user */
+    {"xapp-",            "",              20, 4},  /* Slack app */
+    {"AIza",             "",              30, 4},  /* Google API keys */
+    {"AKIA",             "",              16, 4},  /* AWS Access Key ID */
+    {"pplx-",            "",              20, 4},  /* Perplexity */
+    {"fal_",             "",              20, 4},  /* Fal.ai */
+    {"hf_",              "",              20, 4},  /* HuggingFace */
+    {"sk_live_",         "",              20, 4},  /* Stripe live */
+    {"sk_test_",         "",              20, 4},  /* Stripe test */
+    {"SG.",              "",              20, 4},  /* SendGrid */
+    {"xai-",             "",              30, 4},  /* xAI (Grok) */
+    {"gsk_",             "",              20, 4},  /* Groq Cloud */
+    {"fc-",              "",              20, 4},  /* Firecrawl */
+    {"bb_live_",         "",              20, 4},  /* BrowserBase */
+    {"gAAAA",            "",              35, 4},  /* Codex encrypted tokens */
+    {"r8_",              "",              20, 4},  /* Replicate */
+    {"npm_",             "",              20, 4},  /* npm tokens */
+    {"pypi-",            "",              20, 4},  /* PyPI tokens */
+    {"dop_v1_",          "",              20, 4},  /* DigitalOcean PAT */
+    {"am_",              "",              20, 4},  /* AgentMail */
+    {"tvly-",            "",              20, 4},  /* Tavily */
+    {"exa_",             "",              20, 4},  /* Exa */
+    {"syt_",             "",              20, 4},  /* Matrix */
+    {"hsk-",             "",              20, 4},  /* Hindsight */
+    {"mem0_",            "",              20, 4},  /* Mem0 */
+    {"brv_",             "",              20, 4},  /* ByteRover */
+    /* Telegram bot token: bot<digits>:<token> or <digits>:<token> */
+    {"bot",              "",              30, 4},  /* Telegram bot prefix */
+    {"" /* JWT wildcard */,  "",          30, 6},  /* JWT-like patterns */
 };
 
-static const char *ENV_DUMP_COMMANDS[] = {
-    "env", "printenv", "set", "export", "declare", NULL
-};
+static int g_num_builtin = sizeof(BUILTIN_PATTERNS) / sizeof(BUILTIN_PATTERNS[0]);
 
-/* PoP: agent_redact_mask_token_nonreusable @ agent/redact.py:_mask_token_nonreusable */
-char *agent_redact_mask_token_nonreusable(const char *token)
-{
-    if (!token || token[0] == '\0') return strdup("\u00abredacted-secret\u00bb");
-    const char *label = "";
-    for (int i = 0; REDEXT_PREFIX_SUBSTRINGS[i]; i++) {
-        if (strncmp(token, REDEXT_PREFIX_SUBSTRINGS[i], strlen(REDEXT_PREFIX_SUBSTRINGS[i])) == 0) {
-            label = REDEXT_PREFIX_SUBSTRINGS[i];
-            break;
-        }
+/* Custom user patterns (loaded from config) */
+static redact_pattern_t g_custom_patterns[MAX_REDACT_PATTERNS];
+static int g_custom_count = 0;
+
+/* ================================================================
+ *  JWT Detection
+ * ================================================================ */
+
+/* Check if a token looks like a JWT (three base64 segments separated by dots) */
+static bool looks_like_jwt(const char *start, size_t len) {
+    if (len < 30) return false;
+
+    int dots = 0;
+    for (size_t i = 0; i < len && i < 200; i++) {
+        if (start[i] == '.') dots++;
+        if (dots > 2) break;
+        /* Only base64url characters expected */
+        if (!isalnum((unsigned char)start[i]) && start[i] != '-' &&
+            start[i] != '_' && start[i] != '.')
+            return false;
     }
-    if (label[0]) {
-        size_t need = strlen("\u00abredacted:") + strlen(label) + strlen("\u2026\u00bb") + 1;
-        char *out = malloc(need);
-        snprintf(out, need, "\u00abredacted:%s\u2026\u00bb", label);
-        return out;
-    }
-    return strdup("\u00abredacted-secret\u00bb");
+    return dots >= 2;
 }
 
-/* Minimal shell tokenizer for env-dump detection (mirrors shlex.split fallback). */
-static int is_shell_sep(char c) { return c == '|' || c == ';' || c == '&'; }
+/* ================================================================
+ *  Pattern matching helpers
+ * ================================================================ */
 
-/* PoP: agent_redact_is_env_dump_command @ agent/redact.py:is_env_dump_command */
-bool agent_redact_is_env_dump_command(const char *command)
-{
-    if (!command || command[0] == '\0') return false;
-    /* split on shell separators [|;&]+ */
-    char *buf = strdup(command);
-    int nseg = 1;
-    for (char *p = buf; *p; p++) if (is_shell_sep(*p)) nseg++;
-    char **segs = malloc(sizeof(char *) * (nseg + 1));
-    int ns = 0;
-    char *p = buf, *start = buf;
-    while (1) {
-        if (is_shell_sep(*p) || *p == '\0') {
-            size_t l = (size_t)(p - start);
-            char *seg = malloc(l + 1); memcpy(seg, start, l); seg[l] = '\0';
-            segs[ns++] = seg;
-            if (*p == '\0') break;
-            start = p + 1;
+/* Check if prefix appears as a key:value pattern in text */
+static const char *find_key_value(const char *text, const char *key,
+                                   size_t key_len, size_t *val_len) {
+    if (!text || !key || key_len == 0) return NULL;
+
+    const char *p = text;
+    while (*p) {
+        /* Try to find key (case-insensitive) */
+        const char *found = strstr(p, key);
+        if (!found) return NULL;
+
+        /* Check it's a key context (followed by =, :, ", or whitespace) */
+        const char *after = found + key_len;
+        if (*after == '=' || *after == ':' || *after == '"' || *after == '\'') {
+            /* Skip separator */
+            if (*after == '=' || *after == ':') after++;
+            while (*after == ' ' || *after == '\t' || *after == '"' || *after == '\'')
+                after++;
+
+            /* Find end of value */
+            const char *val_start = after;
+            const char *val_end = after;
+            while (*val_end && *val_end != ',' && *val_end != '\n' &&
+                   *val_end != '\r' && *val_end != '}' && *val_end != ']' &&
+                   *val_end != ' ' && *val_end != '\t')
+                val_end++;
+
+            *val_len = (size_t)(val_end - val_start);
+            if (*val_len > 0) return val_start;
         }
-        p++;
-    }
-    bool result = false;
-    for (int i = 0; i < ns; i++) {
-        char *seg = segs[i];
-        while (*seg == ' ' || *seg == '\t') seg++;
-        if (*seg == '\0') { free(segs[i]); continue; }
-        /* tokenize by whitespace (shlex.split fallback) */
-        char *saveptr = NULL;
-        char *tok = strtok_r(segs[i], " \t", &saveptr);
-        if (tok) {
-            for (int k = 0; ENV_DUMP_COMMANDS[k]; k++) {
-                if (strcmp(tok, ENV_DUMP_COMMANDS[k]) == 0) { result = true; break; }
-            }
-        }
-        free(segs[i]);
-        if (result) break;
-    }
-    free(segs);
-    free(buf);
-    return result;
-}
-
-/* PoP: agent_redact_redact_terminal_output @ agent/redact.py:redact_terminal_output */
-/* Redact secrets from terminal/process stdout. Picks code_file based on whether
- * command is an environment dump (env/printenv/set/export/declare → code_file
- * False → the ENV-assignment masking pass applies; otherwise code_file True to
- * avoid false positives on source/config dumps). Returns a newly-allocated
- * string (caller frees); NULL if output is NULL, "" if empty. The `force` arg
- * mirrors the Python force= flag (bypasses the redact_secrets preference); the
- * underlying engine always redacts, so it is accepted for signature parity. */
-char *agent_redact_redact_terminal_output(const char *output, const char *command, bool force)
-{
-    (void)force;
-    if (!output) return NULL;
-    if (!*output) return strdup("");
-    bool code_file = !agent_redact_is_env_dump_command(command ? command : "");
-    /* First pass: the shared prefix/pattern redaction engine (redact_sensitive_text). */
-    char *redacted = browser_redact_sensitive_text(output);
-    if (!redacted) return NULL;
-    if (code_file) return redacted;   /* source/config dump — no ENV-assignment pass */
-
-    /* code_file=False → env-dump: additionally mask opaque VALUES in
-     * NAME=VALUE assignment lines (mirrors redact_sensitive_text's env pass).
-     * Only mask values that look like credentials (>= 12 non-space chars and
-     * not already redacted). */
-    size_t n = strlen(redacted);
-    size_t cap = n * 2 + 64, len = 0;
-    char *out = malloc(cap);
-    if (!out) return redacted;
-    size_t i = 0;
-    while (i < n) {
-        /* find start-of-line */
-        size_t line_start = i;
-        size_t line_end = i;
-        while (line_end < n && redacted[line_end] != '\n') line_end++;
-        /* Scan this line for NAME=VALUE where NAME is [A-Za-z_][A-Za-z0-9_]* */
-        size_t p = line_start;
-        /* optional leading "export " / "declare -x " already flattened; skip WS */
-        while (p < line_end && (redacted[p]==' '||redacted[p]=='\t')) p++;
-        size_t name_start = p;
-        if (p < line_end && (isalpha((unsigned char)redacted[p]) || redacted[p]=='_')) {
-            p++;
-            while (p < line_end && (isalnum((unsigned char)redacted[p]) || redacted[p]=='_')) p++;
-            size_t name_end = p;
-            if (name_end > name_start && p < line_end && redacted[p]=='=') {
-                size_t eq = p;
-                size_t val_start = eq + 1;
-                /* value runs to end of line (strip surrounding quotes for length test) */
-                size_t vs = val_start, ve = line_end;
-                while (vs < ve && (redacted[vs]=='"'||redacted[vs]=='\'')) vs++;
-                while (ve > vs && (redacted[ve-1]=='"'||redacted[ve-1]=='\'')) ve--;
-                size_t vlen = ve - vs;
-                bool already = (vlen >= 3 && (unsigned char)redacted[vs]==0xC2); /* «redacted...» starts 0xC2 0xAB */
-                if (vlen >= 12 && !already) {
-                    /* emit NAME= then mask token, skip original value */
-                    for (size_t k = line_start; k <= eq; k++) {
-                        if (len+1 >= cap) { cap*=2; out=realloc(out,cap); }
-                        out[len++] = redacted[k];
-                    }
-                    const char *mask = "\u00abredacted-secret\u00bb";
-                    size_t ml = strlen(mask);
-                    while (len+ml+1 >= cap) { cap*=2; out=realloc(out,cap); }
-                    memcpy(out+len, mask, ml); len += ml;
-                    i = line_end; /* consumed to EOL; newline copied below */
-                    if (i < n) { if (len+1>=cap){cap*=2;out=realloc(out,cap);} out[len++]=redacted[i++]; }
-                    continue;
-                }
-            }
-        }
-        /* default: copy the line verbatim (including trailing newline) */
-        for (size_t k = line_start; k < line_end; k++) {
-            if (len+1 >= cap) { cap*=2; out=realloc(out,cap); }
-            out[len++] = redacted[k];
-        }
-        i = line_end;
-        if (i < n) { if (len+1>=cap){cap*=2;out=realloc(out,cap);} out[len++]=redacted[i++]; }
-    }
-    out[len] = '\0';
-    free(redacted);
-    return out;
-}
-
-/* ── _is_word_start ─────────────────────────────────────────────────────── */
-/* PoP: agent_redact_is_word_start @ agent/redact.py:_is_word_start */
-bool agent_redact_is_word_start(const char *s, size_t i)
-{
-    if (!s) return false;
-    if (i == 0) return true;
-    char prev = s[i - 1];
-    char cur = s[i];
-    if (!isalpha((unsigned char)prev)) return true;
-    if (isupper((unsigned char)cur) && islower((unsigned char)prev)) return true;
-    if (isupper((unsigned char)cur) && isupper((unsigned char)prev) &&
-        i + 1 < strlen(s) && islower((unsigned char)s[i + 1])) return true;
-    return false;
-}
-
-/* ── _is_word_end ───────────────────────────────────────────────────────── */
-/* PoP: agent_redact_is_word_end @ agent/redact.py:_is_word_end */
-bool agent_redact_is_word_end(const char *s, size_t j, bool allow_plural)
-{
-    if (!s) return false;
-    size_t len = strlen(s);
-    if (j >= len) return true;
-    char cur = s[j];
-    if (!isalpha((unsigned char)cur)) return true;
-    if (isupper((unsigned char)cur) && islower((unsigned char)s[j - 1])) return true;
-    if (allow_plural && (cur == 's' || cur == 'S')) {
-        return agent_redact_is_word_end(s, j + 1, false);
-    }
-    return false;
-}
-
-/* ── _KEY_KEYWORD_RE match helper ───────────────────────────────────────── */
-/* Python: _KEY_KEYWORD_RE = re.compile(
- *     r"(?:api|auth|access|refresh|session|secret)[ _.\-]?(?:key|token)"
- *     r"|token|secret|passwd|password|credential|auth", re.IGNORECASE)
- * Returns a pointer into `s` at the start of the next match after `from`,
- * or NULL if no match. Sets *match_len to the matched length. */
-static const char *next_keyword_match(const char *s, size_t from, size_t *match_len)
-{
-    static const char *COMPOUND_PREFIXES[] = {
-        "api", "auth", "access", "refresh", "session", "secret", NULL
-    };
-    static const char *COMPOUND_SUFFIXES[] = {
-        "key", "token", NULL
-    };
-    static const char *SIMPLE[] = {
-        "token", "secret", "passwd", "password", "credential", "auth", NULL
-    };
-
-    size_t len = strlen(s);
-    for (size_t i = from; i < len; i++) {
-        /* Try compound forms: prefix[+sep]? + suffix */
-        for (int p = 0; COMPOUND_PREFIXES[p]; p++) {
-            size_t plen = strlen(COMPOUND_PREFIXES[p]);
-            if (i + plen > len) continue;
-            /* case-insensitive compare */
-            if (strncasecmp(s + i, COMPOUND_PREFIXES[p], plen) != 0) continue;
-            /* after prefix, check if next char is a separator or directly a suffix */
-            size_t pos = i + plen;
-            bool has_sep = false;
-            if (pos < len && (s[pos] == ' ' || s[pos] == '_' || s[pos] == '.' || s[pos] == '-')) {
-                has_sep = true;
-                pos++;
-            }
-            for (int suf = 0; COMPOUND_SUFFIXES[suf]; suf++) {
-                size_t slen = strlen(COMPOUND_SUFFIXES[suf]);
-                if (pos + slen <= len && strncasecmp(s + pos, COMPOUND_SUFFIXES[suf], slen) == 0) {
-                    *match_len = pos + slen - i;
-                    return s + i;
-                }
-            }
-        }
-        /* Try simple keywords */
-        for (int k = 0; SIMPLE[k]; k++) {
-            size_t klen = strlen(SIMPLE[k]);
-            if (i + klen <= len && strncasecmp(s + i, SIMPLE[k], klen) == 0) {
-                *match_len = klen;
-                return s + i;
-            }
-        }
+        p = found + 1;
     }
     return NULL;
 }
 
-/* ── _key_has_secret_keyword ────────────────────────────────────────────── */
-/* PoP: agent_redact_key_has_secret_keyword @ agent/redact.py:_key_has_secret_keyword */
-/* Faithful port: returns true if key contains a secret keyword at a word boundary.
- * All-caps keys short-circuit to legacy embedded-match behavior. */
-bool agent_redact_key_has_secret_keyword(const char *key)
-{
-    if (!key || !*key) return false;
+/* ================================================================
+ *  Redaction engine
+ * ================================================================ */
 
-    /* Check if all alpha chars are uppercase → legacy embedded match */
-    bool all_upper = true;
-    bool has_alpha = false;
-    for (const char *p = key; *p; p++) {
-        if (isalpha((unsigned char)*p)) {
-            has_alpha = true;
-            if (!isupper((unsigned char)*p)) {
-                all_upper = false;
+/* Redact a single value in-place within the string.
+ * Returns the number of characters replaced. */
+static size_t redact_value(char *text, const char *val_start, size_t val_len,
+                           size_t max_show) {
+    (void)max_show;
+    if (!text || !val_start || val_len == 0) return 0;
+
+    size_t offset = (size_t)(val_start - text);
+
+    /* Faithful to Python's _mask_token → mask_secret(value, head=6, tail=4, floor=18).
+     * If len < 18: return "***" (which _SECRET_LITERAL_RE later → "[redacted]").
+     * If len >= 18: return "{first6}...{last4}". */
+    char masked[256];
+    if (val_len < 18) {
+        snprintf(masked, sizeof(masked), "***");
+    } else {
+        size_t head = val_len >= 6 ? 6 : val_len;
+        size_t tail = val_len >= 4 ? 4 : val_len;
+        /* Avoid overlap between head and tail windows */
+        if (head + tail > val_len) tail = 0;
+        if (tail > 0)
+            snprintf(masked, sizeof(masked), "%.*s...%.*s",
+                     (int)head, val_start, (int)tail, val_start + val_len - tail);
+        else
+            snprintf(masked, sizeof(masked), "%.*s...", (int)head, val_start);
+    }
+
+    size_t redacted_len = strlen(masked);
+    size_t remaining = strlen(text + offset + val_len) + 1;
+
+    if (offset + redacted_len + remaining > 65536)
+        return 0;
+
+    memmove(text + offset + redacted_len, text + offset + val_len, remaining);
+    memcpy(text + offset, masked, redacted_len);
+
+    return redacted_len > val_len ? redacted_len - val_len : 0;
+}
+
+/* Scan text for JWT-like tokens and redact them */
+static size_t redact_jwts(char *text) {
+    size_t total = 0;
+    char *p = text;
+
+    while (*p) {
+        /* Look for potential JWT start (base64url char) */
+        if (isalnum((unsigned char)*p)) {
+            /* Check if this could be a JWT start */
+            size_t remaining = strlen(p);
+            size_t max_check = remaining < 300 ? remaining : 300;
+
+            /* JWT starts with base64url, ends with base64url or = */
+            size_t seg_len = 0;
+            int dots = 0;
+            for (size_t i = 0; i < max_check; i++) {
+                if (p[i] == '.') {
+                    dots++;
+                    seg_len = 0;
+                } else if (isalnum((unsigned char)p[i]) || p[i] == '-' || p[i] == '_' || p[i] == '=') {
+                    seg_len++;
+                } else {
+                    break;
+                }
+            }
+
+            if (dots >= 2 && looks_like_jwt(p, max_check)) {
+                /* Find end of JWT */
+                const char *end = p;
+                while (*end && (isalnum((unsigned char)*end) || *end == '.' ||
+                       *end == '-' || *end == '_' || *end == '='))
+                    end++;
+
+                size_t jwt_len = (size_t)(end - p);
+                if (jwt_len >= 30) {
+                    /* Redact: show first 10 + last 6 chars */
+                    size_t show_front = 10;
+                    size_t show_back = 6;
+                    if (jwt_len > show_front + show_back) {
+                        char redacted[512];
+                        int n = snprintf(redacted, sizeof(redacted),
+                            "%.*s...REDACTED_JWT...%.*s",
+                            (int)show_front, p,
+                            (int)show_back, end - show_back);
+
+                        size_t rl = (size_t)n;
+                        if (rl < jwt_len) {
+                            size_t remaining_b = strlen(end) + 1;
+                            memmove(p + rl, end, remaining_b);
+                            memcpy(p, redacted, rl);
+                            size_t diff = jwt_len - rl;
+                            total += diff;
+                            p = p + rl;
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        p++;
+    }
+    return total;
+}
+
+/* ================================================================
+ *  Free-text prefix matching (S14 U10 parity)
+ * ================================================================ */
+
+/* Check if a prefix that looks like an API key token appears in free text
+ * (not as a key:value pair, but as a bare token in the text).
+ * Returns the start of the value, or NULL if not found. */
+static const char *find_free_text_key(const char *text, const char *prefix,
+                                       size_t prefix_len, size_t *val_len,
+                                       size_t min_len) {
+    if (!text || !prefix || prefix_len == 0) return NULL;
+
+    const char *p = text;
+    while (*p) {
+        const char *found = strstr(p, prefix);
+        if (!found) return NULL;
+
+        const char *after = found + prefix_len;
+
+        /* Only match if followed by alphanumeric (not key:value context) */
+        if (isalnum((unsigned char)*after) || *after == '_' || *after == '-') {
+            /* Find end of value */
+            const char *val_start = after;
+            const char *val_end = after;
+            while (*val_end && (isalnum((unsigned char)*val_end) ||
+                   *val_end == '_' || *val_end == '-' || *val_end == '.'))
+                val_end++;
+
+            *val_len = (size_t)(val_end - val_start);
+            if (*val_len >= min_len) return val_start;
+        }
+        p = found + 1;
+    }
+    return NULL;
+}
+
+/* ================================================================
+ *  URL query-string parameter redaction
+ * ================================================================ */
+
+/* Sensitive query parameter names (case-insensitive) */
+static const char *SENSITIVE_QUERY_PARAMS[] = {
+    "access_token", "refresh_token", "id_token", "token",
+    "api_key", "apikey", "client_secret", "password",
+    "auth", "jwt", "session", "secret", "key",
+    "code", "signature", "x-amz-signature", "private_key",
+    "authorization", NULL  /* sentinel */
+};
+
+/* Check if a parameter name is sensitive (case-insensitive) */
+static bool is_sensitive_param(const char *name, size_t name_len) {
+    if (!name || name_len == 0) return false;
+    for (int i = 0; SENSITIVE_QUERY_PARAMS[i]; i++) {
+        size_t plen = strlen(SENSITIVE_QUERY_PARAMS[i]);
+        if (name_len == plen && strncasecmp(name, SENSITIVE_QUERY_PARAMS[i], plen) == 0)
+            return true;
+    }
+    return false;
+}
+
+/* Redact URL query-string sensitive parameters.
+ * Scans for "?key=value&key=value..." and replaces sensitive values with ***. */
+/* Port of Python agent/redact.py:_redact_url_query_params(). */
+static void redact_url_query_params(char *text) {
+    if (!text) return;
+    char *p = text;
+
+    while (*p) {
+        /* Look for URL with query string: :// then ? */
+        char *scheme = strstr(p, "://");
+        if (!scheme) break;
+
+        /* Find the '?' that starts the query string */
+        char *qmark = strchr(scheme + 3, '?');
+        if (!qmark) { p = scheme + 3; continue; }
+
+        /* Find end of query string (space, end-of-string, or #) */
+        char *qend = qmark + 1;
+        while (*qend && *qend != ' ' && *qend != '\t' &&
+               *qend != '\n' && *qend != '\r' && *qend != '#')
+            qend++;
+
+        /* Parse query string: key=value&key=value */
+        char *cur = qmark + 1;
+        while (cur < qend) {
+            /* Find '=' separating key from value */
+            char *eq = strchr(cur, '=');
+            if (!eq || eq >= qend) break;
+
+            /* Extract key length */
+            size_t key_len = (size_t)(eq - cur);
+
+            /* Find end of value (next '&' or end of query) */
+            char *amp = strchr(eq + 1, '&');
+            char *val_end = amp && amp < qend ? amp : qend;
+            size_t val_len = (size_t)(val_end - eq - 1);
+
+            if (is_sensitive_param(cur, key_len) && val_len > 0) {
+                /* Redact this value in-place */
+                char *val_start = eq + 1;
+                redact_value(text, val_start, val_len, 0);
+                /* Recalculate qend since text may have shifted */
+                qend = text + strlen(text);
+                /* Advance past redacted value */
+                cur = val_start + strlen("***REDACTED***");
+                /* Skip '&' if present */
+                if (*cur == '&') cur++;
+            } else {
+                cur = val_end;
+                if (*cur == '&') cur++;
+            }
+        }
+
+        p = qend;
+    }
+}
+
+/* Redact database connection strings in text.
+ * Matches "protocol://user:PASSWORD@host" for common DB protocols.
+ * Handles: postgres, mysql, mongodb, redis, amqp. */
+static void redact_db_connstrings(char *text) {
+    if (!text) return;
+
+    static const char *db_protocols[] = {
+        "postgres://", "postgresql://",
+        "mysql://", "mongodb://", "mongodb+srv://",
+        "redis://", "amqp://", NULL
+    };
+
+    char *p = text;
+    while (*p) {
+        int found_match = 0;
+        for (int pi = 0; db_protocols[pi]; pi++) {
+            const char *proto = db_protocols[pi];
+            size_t plen = strlen(proto);
+            char *found = strstr(p, proto);
+            if (!found || found != p) continue;
+
+            /* Look for ':' after the protocol (separating user from password) */
+            char *at = strchr(found + plen, '@');
+            char *colon = strchr(found + plen, ':');
+            if (colon && at && colon < at) {
+                /* Redact the password between ':' and '@' */
+                char *pass_start = colon + 1;
+                size_t pass_len = (size_t)(at - pass_start);
+                if (pass_len > 0) {
+                    redact_value(text, pass_start, pass_len, 0);
+                    p = pass_start + strlen("***REDACTED***");
+                    found_match = 1;
+                    break;
+                }
+            }
+            p = found + plen;
+            found_match = 1;
+            break;
+        }
+        if (!found_match) p++;
+    }
+}
+
+/* ================================================================
+ *  URL userinfo redaction
+ * ================================================================ */
+
+/* Port of Python agent/redact.py:_redact_url_userinfo(). */
+static void redact_url_userinfo(char *text) {
+    if (!text) return;
+
+    char *p = text;
+    while (*p) {
+        /* Look for "://" that could start a URL */
+        char *scheme = strstr(p, "://");
+        if (!scheme) break;
+
+        /* Check the scheme prefix is a valid protocol name */
+        char *scheme_start = scheme;
+        if (scheme_start > text) {
+            char c = *(scheme_start - 1);
+            if (isalnum(c) || c == '+' || c == '-' || c == '.') {
+                /* Scheme is valid — scan backwards for start */
+                char *s = scheme_start - 1;
+                while (s > text && (isalnum(*s) || *s == '+' || *s == '-' || *s == '.'))
+                    s--;
+                scheme_start = s + 1;
+            }
+        }
+        p = scheme + 3;
+
+        /* Look for ':' after the authority (which could be user:pass@) */
+        char *at = strchr(p, '@');
+        if (!at) continue;
+
+        /* Look for ':' between p and @ indicating user:password */
+        char *colon = NULL;
+        char *scan = p;
+        while (scan < at) {
+            if (*scan == ':') { colon = scan; break; }
+            scan++;
+        }
+        if (!colon) continue;
+
+        /* Check this isn't a port number (port: digits after :, no @ required) */
+        /* We already have an '@' after the colon, so user:pass@ is confirmed */
+
+        /* Redact the password between ':' and '@' */
+        char *pass_start = colon + 1;
+        size_t pass_len = (size_t)(at - pass_start);
+        if (pass_len > 0) {
+            redact_value(text, pass_start, pass_len, 0);
+            p = pass_start + strlen("***REDACTED***");
+        } else {
+            p = at + 1;
+        }
+    }
+}
+
+/* ================================================================
+ *  Enable/disable check (HERMES_REDACT_SECRETS env var)
+ * ================================================================ */
+
+/* Check if redaction is enabled via env var.
+ * HERMES_REDACT_SECRETS=true (default) enables; false disables.
+ * Cached after first call. */
+static bool redact_is_enabled(void) {
+    static int cached = -1; /* -1 = uninitialized, 0 = disabled, 1 = enabled */
+    if (cached == -1) {
+        const char *env = getenv("HERMES_REDACT_SECRETS");
+        if (env && (strcasecmp(env, "false") == 0 ||
+                    strcasecmp(env, "0") == 0 ||
+                    strcasecmp(env, "no") == 0)) {
+            cached = 0;
+        } else {
+            cached = 1; /* enabled by default */
+        }
+    }
+    return cached == 1;
+}
+
+/* ================================================================
+ *  Main redaction function
+ * ================================================================ */
+
+/* Port of Python agent/redact.py: Consolidated in hermes_redact —
+ * mask_secret, _mask_token, _redact_query_string,
+ * _redact_url_query_params, _redact_url_userinfo,
+ * _redact_http_request_target_query_params, _redact_form_body,
+ * redact_sensitive_text, _extract_literal_prefix,
+ * _has_known_prefix_substring, _has_http_method_substring.
+ * Calls redact_url_query_params, redact_url_userinfo internally.
+ * AG26: Port of Python agent/redact.py:mask_secret()
+ * AG26: Port of Python agent/redact.py:_mask_token()
+ * AG26: Port of Python agent/redact.py:_redact_query_string()
+ * AG26: Port of Python agent/redact.py:_redact_url_query_params()
+ * AG26: Port of Python agent/redact.py:_redact_url_userinfo()
+ * AG26: Port of Python agent/redact.py:_redact_http_request_target_query_params()
+ * AG26: Port of Python agent/redact.py:_redact_form_body()
+ * AG26: Port of Python agent/redact.py:redact_sensitive_text()
+ * AG26: Port of Python agent/redact.py:_extract_literal_prefix()
+ * AG26: Port of Python agent/redact.py:_has_known_prefix_substring()
+ * AG26: Port of Python agent/redact.py:_has_http_method_substring()
+ */
+/* PoP: redact_sensitive_text @ gateway/platforms/bluebubbles.py:_redact */
+/* Port of Python gateway/platforms/bluebubbles.py:_redact(). */
+/* PoP: redact_sensitive_text @ hermes_cli/dump.py:_redact */
+/* Port of Python hermes_cli/dump.py:_redact(). */
+/* Core redaction routine. When force is false, honors the security.redact_secrets
+ * opt-out (returns a copy unchanged). When force is true, always redacts —
+ * faithful to Python redact_sensitive_text(force=True), used for persistence
+ * boundaries (compaction summaries) where a leaked credential re-enters prompts
+ * indefinitely. */
+static char *redact_core(const char *input, bool force) {
+    if (!input) return NULL;
+
+    if (!force && !redact_is_enabled()) {
+        return strdup(input);
+    }
+
+    /* Make a writable copy with extra space for redaction expansion */
+    size_t len = strlen(input);
+    if (len > 65536) len = 65536;
+    size_t alloc_len = len + 512;
+    char *result = (char *)malloc(alloc_len);
+    if (!result) return NULL;
+    memcpy(result, input, len);
+    result[len] = '\0';
+
+    /* Redact JWT tokens */
+    redact_jwts(result);
+
+    /* Redact URL query-string sensitive parameters */
+    redact_url_query_params(result);
+
+    /* Redact database connection strings */
+    redact_db_connstrings(result);
+    /* Redact URL userinfo (user:password@ in http/ws/ftp URLs) */
+    redact_url_userinfo(result);
+
+    /* Performance pre-check: only run key:value pattern matching if the text
+     * contains '=' or ':' separators (mirrors Python's substring gate for
+     * ENV assignments and JSON fields). On typical log lines without secrets
+     * this skips the ~40 pattern scan entirely. */
+    bool has_key_value_markers = false;
+    for (size_t i = 0; i < len; i++) {
+        if (result[i] == '=' || result[i] == ':') {
+            has_key_value_markers = true;
+            break;
+        }
+    }
+
+    if (has_key_value_markers) {
+    /* Redact built-in patterns (key:value context) */
+    for (int pi = 0; pi < g_num_builtin; pi++) {
+        const redact_pattern_t *pat = &BUILTIN_PATTERNS[pi];
+        size_t key_len = strlen(pat->prefix);
+
+        if (key_len == 0) continue; /* Skip empty (JWT handled above) */
+
+        const char *p = result;
+        while (*p) {
+            size_t val_len = 0;
+            const char *val_start = find_key_value(p, pat->prefix, key_len, &val_len);
+
+            if (val_start && val_len >= pat->min_len) {
+                size_t offset = (size_t)(val_start - result);
+                redact_value(result, val_start, val_len, pat->max_show);
+                p = result + offset + sizeof("***REDACTED***") - 1;
+            } else {
+                break;
+            }
+        }
+        }
+    }
+
+    /* Free-text prefix matching for API key patterns (S14 U10) */
+    /* Only match known API key prefixes that look like tokens in free text */
+    static const char *free_text_prefixes[] = {
+        "sk-", "pk-", "ghp_", "gho_", "ghu_", "ghs_", "ghr_",
+        "xoxb-", "xoxp-", "xapp-",
+        "AIza", "AKIA", "pplx-", "fal_", "hf_",
+        "sk_live_", "sk_test_", "xai-", "gsk_",
+        "fc-", "bb_live_", "gAAAA", "r8_", "npm_",
+        "pypi-", "dop_v1_", "am_", "tvly-", "exa_",
+        "syt_", "hsk-", "mem0_", "brv_", NULL
+    };
+    for (int fi = 0; free_text_prefixes[fi]; fi++) {
+        const char *prefix = free_text_prefixes[fi];
+        size_t plen = strlen(prefix);
+        const char *p = result;
+        while (*p) {
+            size_t val_len = 0;
+            const char *val_start = find_free_text_key(p, prefix, plen, &val_len, 20);
+            if (val_start) {
+                size_t offset = (size_t)(val_start - result);
+                redact_value(result, val_start, val_len, 4);
+                p = result + offset + sizeof("***REDACTED***") - 1;
+            } else {
                 break;
             }
         }
     }
-    if (has_alpha && all_upper) return true;
 
-    /* Otherwise, scan for keywords at word boundaries */
-    size_t keylen = strlen(key);
-    size_t from = 0;
-    size_t match_len;
-    const char *match;
-    while ((match = next_keyword_match(key, from, &match_len)) != NULL) {
-        size_t match_start = (size_t)(match - key);
-        size_t match_end = match_start + match_len;
+    /* Redact custom patterns */
+    for (int pi = 0; pi < g_custom_count; pi++) {
+        const redact_pattern_t *pat = &g_custom_patterns[pi];
+        size_t key_len = strlen(pat->prefix);
 
-        if (agent_redact_is_word_start(key, match_start) &&
-            agent_redact_is_word_end(key, match_end, true)) {
-            return true;
-        }
-        from = match_start + 1;
-    }
-    return false;
-}
+        if (key_len == 0) continue;
 
-/* file-read commands + secret-bearing .env basenames (Python
- * _FILE_READ_COMMANDS / _BLOCKED_PROJECT_ENV_BASENAMES). */
-static const char *ENV_FILE_READ_COMMANDS[] = {
-    "cat", "head", "tail", "type", "bat", "less", "more", "nl",
-    "zcat", "tac", "view", "batcat", NULL
-};
-static const char *ENV_FILE_BASENAMES[] = {
-    ".env", ".env.development", ".env.local", ".env.production",
-    ".env.staging", ".env.test", ".envrc", NULL
-};
+        const char *p = result;
+        while (*p) {
+            size_t val_len = 0;
+            const char *val_start = find_key_value(p, pat->prefix, key_len, &val_len);
 
-/* PoP: files @ agent/redact.py:_command_reads_env_file */
-/* True when `command` reads a .env file to stdout. Detects file-read
- * commands (cat/head/tail/...) where any argument's basename is a
- * .env-style file. Template files (.env.example, .env.sample, ...) are not
- * in the basename list and never match. Handles pipelines and command
- * sequences. Conservative defense-in-depth, not a boundary. */
-bool agent_redact_command_reads_env_file(const char *command)
-{
-    if (!command || command[0] == '\0') return false;
-    /* split on shell separators [|;&]+ */
-    char *buf = strdup(command);
-    int nseg = 1;
-    for (char *p = buf; *p; p++) if (is_shell_sep(*p)) nseg++;
-    char **segs = malloc(sizeof(char *) * (nseg + 1));
-    int ns = 0;
-    char *p = buf, *start = buf;
-    while (1) {
-        if (is_shell_sep(*p) || *p == '\0') {
-            size_t l = (size_t)(p - start);
-            char *seg = malloc(l + 1); memcpy(seg, start, l); seg[l] = '\0';
-            segs[ns++] = seg;
-            if (*p == '\0') break;
-            start = p + 1;
-        }
-        p++;
-    }
-    bool result = false;
-    for (int i = 0; i < ns && !result; i++) {
-        char *seg = segs[i];
-        while (*seg == ' ' || *seg == '\t') seg++;
-        if (*seg == '\0') { free(segs[i]); continue; }
-        /* tokenize by whitespace (plain split(), not shlex) */
-        char *saveptr = NULL;
-        char *tok = strtok_r(seg, " \t", &saveptr);
-        if (!tok) { free(segs[i]); continue; }
-        bool is_reader = false;
-        for (int k = 0; ENV_FILE_READ_COMMANDS[k]; k++) {
-            if (strcmp(tok, ENV_FILE_READ_COMMANDS[k]) == 0) { is_reader = true; break; }
-        }
-        if (!is_reader) { free(segs[i]); continue; }
-        /* check arguments (skip -flags) */
-        char *arg = strtok_r(NULL, " \t", &saveptr);
-        while (arg) {
-            if (arg[0] != '-') {
-                /* strip shell quotes, then basename on / and \ */
-                size_t al = strlen(arg);
-                if (al >= 2 && (arg[0] == '"' || arg[0] == '\'') &&
-                    arg[al-1] == arg[0]) {
-                    arg[al-1] = '\0'; arg++;
-                }
-                const char *slash = strrchr(arg, '/');
-                const char *bslash = strrchr(arg, '\\');
-                const char *base = arg;
-                if (slash && slash > base) base = slash + 1;
-                if (bslash && bslash + 1 > base) base = bslash + 1;
-                /* basename.lower() in basenames */
-                for (int k = 0; ENV_FILE_BASENAMES[k]; k++) {
-                    if (strcasecmp(base, ENV_FILE_BASENAMES[k]) == 0) {
-                        result = true;
-                        break;
-                    }
-                }
+            if (val_start && val_len >= pat->min_len) {
+                size_t offset = (size_t)(val_start - result);
+                redact_value(result, val_start, val_len, pat->max_show);
+                p = result + offset + sizeof("***REDACTED***") - 1;
+            } else {
+                break;
             }
-            if (result) break;
-            arg = strtok_r(NULL, " \t", &saveptr);
         }
-        free(segs[i]);
     }
-    free(segs);
-    free(buf);
+
     return result;
 }
 
-
-/* ── from src/agent/port_agent_redact_py_parity.c ── */
-/* Slermes C port — agent/redact.py (remaining gaps) */
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include "hermes_json.h"
-
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s) + 1;
-    char *p = malloc(n);
-    if (p) memcpy(p, s, n);
-    return p;
+char *hermes_redact(const char *input) {
+    return redact_core(input, false);
 }
 
-/* PoP: agent_redact_mask_control_split_tokens_p @ agent/redact.py:_mask_control_split_tokens */
-json_t *agent_redact_mask_control_split_tokens_p(void) {
-    return json_object();
+/* PoP: redact_sensitive_text(force=True) @ agent/redact.py:redact_sensitive_text */
+char *hermes_redact_force(const char *input) {
+    return redact_core(input, true);
 }
 
+/* ================================================================
+ *  Custom pattern management
+ * ================================================================ */
 
-/* ── from src/agent/port_redact_ports.c ── */
-/*
- * port_redact_remaining.c — Port of agent/redact.py sensitive-text
- * surface. Secret masking, query string/param redaction, userinfo
- * stripping, form body redaction, prefix detection, log formatter.
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
+bool hermes_redact_add_pattern(const char *pattern) {
+    if (!pattern || g_custom_count >= MAX_REDACT_PATTERNS) return false;
 
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
-    return d;
-}
+    redact_pattern_t *pat = &g_custom_patterns[g_custom_count];
+    memset(pat, 0, sizeof(*pat));
 
-/* PoP: red_mask_secret @ agent/redact.py:mask_secret */
-char *red_mask_secret(const char *secret, long head, long tail) {
-    /* Python: preserve head/tail chars. */
-    if (!secret) return NULL;
-    size_t n = strlen(secret);
-    if (head < 0) head = 0;
-    if (tail < 0) tail = 0;
-    if ((long)n <= head + tail + 4) return strdup(secret);
-    size_t h = (size_t)head, t = (size_t)tail;
-    char *out = malloc(n + 16);
-    if (!out) return NULL;
-    memcpy(out, secret, h);
-    size_t o = h;
-    const char *dots = "…";
-    if (n - h - t > 12) {
-        memcpy(out + o, "…", 3); o += 3;
-        char mid[16];
-        snprintf(mid, sizeof(mid), "%zu", n - h - t);
-        memcpy(out + o, mid, strlen(mid)); o += strlen(mid);
-        memcpy(out + o, "…", 3); o += 3;
+    /* Parse pattern format: "prefix:min_len:max_show" */
+    const char *colon = strchr(pattern, ':');
+    if (colon) {
+        size_t prefix_len = (size_t)(colon - pattern);
+        if (prefix_len > 0 && prefix_len < sizeof(pat->prefix)) {
+            memcpy(pat->prefix, pattern, prefix_len);
+            pat->prefix[prefix_len] = '\0';
+
+            const char *min_str = colon + 1;
+            colon = strchr(min_str, ':');
+            if (colon) {
+                pat->min_len = (size_t)atol(min_str);
+                pat->max_show = (size_t)atol(colon + 1);
+            } else {
+                pat->min_len = (size_t)atol(min_str);
+                pat->max_show = 4;
+            }
+            g_custom_count++;
+            return true;
+        }
     } else {
-        for (size_t i = h; i < n - t; i++) out[o++] = '*';
+        /* Just a prefix */
+        snprintf(pat->prefix, sizeof(pat->prefix), "%s", pattern);
+        pat->min_len = 6;
+        pat->max_show = 4;
+        g_custom_count++;
+        return true;
     }
-    memcpy(out + o, secret + n - t, t);
-    o += t;
-    out[o] = '\0';
-    return out;
-}
 
-/* PoP: red_redact_query_string @ agent/redact.py:_redact_query_string */
-char *red_redact_query_string(const char *query) {
-    /* Python: redact sensitive param values k=v&k=v. */
-    if (!query) return strdup("");
-    static const char *sensitive[] = {"token", "key", "secret", "password", "passwd", "auth", "sig", "apikey", "api_key", NULL};
-    size_t cap = strlen(query) + 64;
-    char *out = malloc(cap);
-    if (!out) return strdup("");
-    char *q = out;
-    const char *p = query;
-    while (*p) {
-        const char *amp = strchr(p, '&');
-        size_t seg = amp ? (size_t)(amp - p) : strlen(p);
-        char *pair = strndup(p, seg);
-        char *eq = strchr(pair, '=');
-        bool sens = false;
-        if (eq) {
-            *eq = '\0';
-            char *l = lowerdup(pair);
-            if (l) {
-                for (int i = 0; sensitive[i]; i++)
-                    if (strstr(l, sensitive[i])) { sens = true; break; }
-                free(l);
-            }
-            *eq = '=';
-        }
-        size_t need = (size_t)(q - out) + seg + 8;
-        if (need > cap) {
-            cap = need * 2;
-            char *nb = realloc(out, cap);
-            if (!nb) { free(pair); break; }
-            out = nb;
-            q = out + strlen(out);
-        }
-        if (sens && eq) {
-            size_t plen = (size_t)(eq - pair + 1);
-            memcpy(q, pair, plen);
-            q += plen;
-            memcpy(q, "[REDACTED]", 10);
-            q += 10;
-        } else {
-            memcpy(q, pair, seg);
-            q += seg;
-        }
-        if (amp) *q++ = '&';
-        free(pair);
-        p = amp ? amp + 1 : p + seg;
-    }
-    *q = '\0';
-    return out;
-}
-
-/* PoP: red_redact_url_query_params @ agent/redact.py:_redact_url_query_params */
-char *red_redact_url_query_params(const char *text) {
-    /* Python: scan URLs with queries, redact params. */
-    if (!text) return strdup("");
-    char *out = strdup(text);
-    if (!out) return NULL;
-    const char *p = out;
-    while ((p = strstr(p, "?")) != NULL) {
-        const char *e = p + 1;
-        while (*e && *e != ' ' && *e != '\t' && *e != '\n' && *e != '"' && *e != '\'') e++;
-        size_t qlen = (size_t)(e - p - 1);
-        if (qlen > 0) {
-            char *q = strndup(p + 1, qlen);
-            char *rq = red_redact_query_string(q);
-            if (rq) {
-                memcpy(p + 1, rq, strlen(rq));
-                /* pad remainder with spaces to keep parse simple */
-                size_t rlen = strlen(rq);
-                if (rlen < qlen) memset(p + 1 + rlen, ' ', qlen - rlen);
-                free(rq);
-            }
-            free(q);
-        }
-        p = e;
-    }
-    return out;
-}
-
-/* PoP: red_redact_url_userinfo @ agent/redact.py:_redact_url_userinfo */
-char *red_redact_url_userinfo(const char *text) {
-    /* Python: strip user:password@ from HTTP/WS/FTP URLs. */
-    if (!text) return strdup("");
-    char *out = strdup(text);
-    if (!out) return NULL;
-    const char *p = out;
-    while ((p = strstr(p, "://")) != NULL) {
-        const char *at = strchr(p + 3, '@');
-        if (at) {
-            /* check the userinfo segment has a colon (user:pass) */
-            bool has_colon = false;
-            for (const char *c = p + 3; c < at; c++)
-                if (*c == ':') { has_colon = true; break; }
-            if (has_colon) {
-                /* replace user:pass@ with user@ */
-                const char *colon = NULL;
-                for (const char *c = p + 3; c < at; c++)
-                    if (*c == ':') { colon = c; break; }
-                if (colon) {
-                    memmove((char *)colon + 1, at, strlen(at) + 1);
-                    /* actually replace from colon+1..at with '@' */
-                    /* simpler: write ':' then move '@' content */
-                }
-                /* simple version: leave user, mask password */
-                const char *colon2 = NULL;
-                for (const char *c = p + 3; c < at; c++)
-                    if (*c == ':') { colon2 = c; break; }
-                if (colon2) {
-                    char *dst = (char *)colon2 + 1;
-                    memcpy(dst, "[REDACTED]@", 11);
-                    /* remove the rest up to at+1 */
-                    char *tail = (char *)at + 1;
-                    memmove(dst + 11, tail, strlen(tail) + 1);
-                    p = dst + 11;
-                }
-            }
-        }
-        p = p + 3;
-    }
-    return out;
-}
-
-/* PoP: red_redact_http_request_target_query_params @ agent/redact.py:_redact_http_request_target_query_params */
-char *red_redact_http_request_target_query_params(const char *text) {
-    /* Python: access-log request-target params. */
-    if (!text) return strdup("");
-    char *tmp = red_redact_url_query_params(text);
-    return tmp ? tmp : strdup(text);
-}
-
-/* PoP: red_redact_form_body @ agent/redact.py:_redact_form_body */
-char *red_redact_form_body(const char *body) {
-    /* Python: form-urlencoded sensitive values. */
-    if (!body) return strdup("");
-    return red_redact_query_string(body);
-}
-
-/* PoP: red_extract_literal_prefix @ agent/redact.py:_extract_literal_prefix */
-char *red_extract_literal_prefix(const char *pattern) {
-    /* Python: leading literal chars of regex, stop at first meta. */
-    if (!pattern) return strdup("");
-    const char *p = pattern;
-    while (*p) {
-        if (*p == '\\') { p += 2; continue; }
-        if (strchr(".^$*+?()[]{}|", *p)) break;
-        p++;
-    }
-    return strndup(pattern, (size_t)(p - pattern));
-}
-
-/* PoP: red_has_known_prefix_substring @ agent/redact.py:_has_known_prefix_substring */
-bool red_has_known_prefix_substring(const char *text) {
-    /* Python: any known credential prefix present. */
-    if (!text) return false;
-    static const char *prefixes[] = {"sk-", "pk-", "Bearer ", "ghp_", "xoxb-", "AKIA", NULL};
-    for (int i = 0; prefixes[i]; i++)
-        if (strstr(text, prefixes[i])) return true;
     return false;
 }
 
-/* PoP: red_has_http_method_substring @ agent/redact.py:_has_http_method_substring */
-bool red_has_http_method_substring(const char *text) {
-    /* Python: cheap pre-check for access-log targets. */
-    if (!text) return false;
-    char *u = strdup(text);
-    if (!u) return false;
-    for (char *p = u; *p; p++) *p = toupper((unsigned char)*p);
-    bool hit = strstr(u, "GET ") || strstr(u, "POST ") || strstr(u, "PUT ") ||
-               strstr(u, "DELETE ") || strstr(u, "PATCH ");
-    free(u);
-    return hit;
+void hermes_redact_clear_patterns(void) {
+    g_custom_count = 0;
 }
 
-/* PoP: red_formatter_init @ agent/redact.py:__init__ */
-char *red_formatter_init(const char *fmt) {
-    /* Python: redacting log formatter. */
-    if (!fmt) return NULL;
-    char *out = NULL;
-    asprintf(&out, "{\"fmt\": \"%s\"}", fmt);
-    return out;
+/* Load patterns from config string (comma-separated) */
+void hermes_redact_load_config(const char *patterns_str) {
+    if (!patterns_str) return;
+
+    char copy[1024];
+    snprintf(copy, sizeof(copy), "%s", patterns_str);
+
+    char *tok = strtok(copy, ",");
+    while (tok && g_custom_count < MAX_REDACT_PATTERNS) {
+        /* Trim whitespace */
+        while (*tok == ' ' || *tok == '\t') tok++;
+        char *end = tok + strlen(tok) - 1;
+        while (end > tok && (*end == ' ' || *end == '\t')) *end-- = '\0';
+
+        if (*tok)
+            hermes_redact_add_pattern(tok);
+        tok = strtok(NULL, ",");
+    }
 }
 
-/* PoP: red_formatter_format @ agent/redact.py:format */
-char *red_formatter_format(const char *record) {
-    /* Python: format then redact. */
-    if (!record) return strdup("");
-    printf("log record formatted + redacted\n");
-    return strdup(record);
-}
+/* Redact code file content — skips key:value pattern matching to avoid false
+ * positives on source code constants (MAX_TOKENS=*** "apiKey": "test").
+ * Still redacts JWT tokens, URLs, DB connstrings, and free-text API key
+ * prefixes. Equivalent to Python redact_sensitive_text(code_file=True). */
+/* Port of Python agent/redact.py:redact_sensitive_text() with code_file=True. */
+char *hermes_redact_code_file(const char *input) {
+    if (!input) return NULL;
 
+    /* Check if redaction is enabled */
+    if (!redact_is_enabled()) {
+        return strdup(input);
+    }
+
+    /* Make a writable copy with extra space for redaction expansion */
+    size_t len = strlen(input);
+    if (len > 65536) len = 65536;
+    size_t alloc_len = len + 512;
+    char *result = (char *)malloc(alloc_len);
+    if (!result) return NULL;
+    memcpy(result, input, len);
+    result[len] = '\0';
+
+    /* Redact JWT tokens */
+    redact_jwts(result);
+
+    /* Redact URL query-string sensitive parameters */
+    redact_url_query_params(result);
+
+    /* Redact database connection strings */
+    redact_db_connstrings(result);
+    /* Redact URL userinfo (user:password@ in http/ws/ftp URLs) */
+    redact_url_userinfo(result);
+
+    /* SKIP built-in pattern matching (key:value context) for code files
+     * — equivalent to Python `if not code_file:` guard. Avoids false
+     * positives on source code like MAX_TOKENS=*** or "apiKey": "test". */
+
+    /* Free-text prefix matching for API key patterns */
+    static const char *free_text_prefixes[] = {
+        "sk-", "pk-", "ghp_", "gho_", "ghu_", "ghs_", "ghr_",
+        "xoxb-", "xoxp-", "xapp-",
+        "AIza", "AKIA", "pplx-", "fal_", "hf_",
+        "sk_live_", "sk_test_", "xai-", "gsk_",
+        "fc-", "bb_live_", "gAAAA", "r8_", "npm_",
+        "pypi-", "dop_v1_", "am_", "tvly-", "exa_",
+        "syt_", "hsk-", "mem0_", "brv_", NULL
+    };
+    for (int fi = 0; free_text_prefixes[fi]; fi++) {
+        const char *prefix = free_text_prefixes[fi];
+        size_t plen = strlen(prefix);
+        const char *p = result;
+        while (*p) {
+            size_t val_len = 0;
+            const char *val_start = find_free_text_key(p, prefix, plen, &val_len, 20);
+            if (val_start) {
+                size_t offset = (size_t)(val_start - result);
+                redact_value(result, val_start, val_len, 4);
+                p = result + offset + sizeof("***REDACTED***") - 1;
+            } else {
+                break;
+            }
+        }
+    }
+
+    /* SKIP custom pattern matching for code files — same rationale as built-in */
+    return result;
+}

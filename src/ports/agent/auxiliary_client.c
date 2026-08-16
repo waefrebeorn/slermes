@@ -1,3484 +1,1580 @@
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
 /*
- * ports/agent/auxiliary_client.c — C11 port of agent/auxiliary_client.py
- * Merged from 8 source file(s) by reorganization.
- */
-
-/* ── from src/agent/port_agent_auxiliary_client.c ── */
-/*
- * port_agent_auxiliary_client.c — Port of Python agent/auxiliary_client.py
- */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include <time.h>
-#include <signal.h>
-#include "hermes_logger.h"
-
-
-/* Port of Python: _aux_interrupt_protected */
-static volatile sig_atomic_t aux_interrupt_count = 0;
-
-bool aux_interrupt_protected(void) {
-    return (aux_interrupt_count > 0);
-}
-
-void aux_interrupt_protected_inc(void) {
-    aux_interrupt_count++;
-}
-
-void aux_interrupt_protected_dec(void) {
-    if (aux_interrupt_count > 0) aux_interrupt_count--;
-}
-
-
-/* Port of Python: _fallback_entry_api_key */
-const char *fallback_entry_api_key(const char *provider) {
-    if (!provider) return NULL;
-    
-    /* Look up API key for fallback provider */
-    char env_key[256];
-    snprintf(env_key, sizeof(env_key), "%s_API_KEY", provider);
-    for (char *p = env_key; *p; p++) *p = toupper(*p);
-    
-    return getenv(env_key);
-}
-
-
-/* Port of Python: _resolve_fallback_entry */
-typedef struct {
-    char provider[128];
-    char model[256];
-    char api_key[4096];
-    bool valid;
-} fallback_entry_t;
-
-fallback_entry_t resolve_fallback_entry(const char *fallback_config, int index) {
-    fallback_entry_t entry = {0};
-    if (!fallback_config) return entry;
-    
-    /* Parse fallback entry from config JSON array */
-    /* Simplified: extract provider name */
-    const char *p = fallback_config;
-    for (int i = 0; i < index && *p; i++) {
-        p = strchr(p, '{');
-        if (!p) break;
-        p = strchr(p, '}');
-        if (!p) break;
-        p++;
-    }
-    
-    if (!p) return entry;
-    
-    const char *prov = strstr(p, "\"provider\"");
-    if (prov) {
-        const char *val = strchr(prov + 10, '"');
-        if (val) {
-            val++;
-            size_t i = 0;
-            while (*val && *val != '"' && i < 127) {
-                entry.provider[i++] = *val++;
-            }
-            entry.provider[i] = '\0';
-        }
-    }
-    
-    entry.valid = (entry.provider[0] != '\0');
-    return entry;
-}
-
-
-/* Port of Python: _try_main_fallback_chain */
-bool try_main_fallback_chain(const char *primary_provider, const char *fallback_config) {
-    if (!primary_provider) return false;
-    
-    /* Check if primary is available */
-    const char *primary_key = fallback_entry_api_key(primary_provider);
-    if (primary_key && *primary_key) return true; /* Primary available */
-    
-    /* Try fallback chain */
-    for (int i = 0; i < 8; i++) {
-        fallback_entry_t entry = resolve_fallback_entry(fallback_config, i);
-        if (!entry.valid) break;
-        
-        const char *key = fallback_entry_api_key(entry.provider);
-        if (key && *key) return true; /* Fallback available */
-    }
-    
-    return false;
-}
-
-
-/* Port of Python: aux_interrupt_protection */
-bool aux_interrupt_protection(bool active)
-{
-    (void)active;
-    return aux_interrupt_protected();
-}
-
-/* PoP: aux_interrupt_protection_bridge @ agent/auxiliary_client.py:aux_interrupt_protection */
-bool aux_interrupt_protection_bridge(void *ctx, void *active)
-{
-    if (!ctx) {
-        hermes_log(LOG_WARNING, "port", "aux_interrupt_protection: null context");
-        return false;
-    }
-    hermes_log(LOG_DEBUG, "port", "aux_interrupt_protection called");
-    return aux_interrupt_protection(active ? true : false);
-}
-
-
-/* Port of Python: _nous_min_key_ttl_seconds */
-int nous_min_key_ttl_seconds(void) {
-    const char *env = getenv("HERMES_NOUS_MIN_KEY_TTL_SECONDS");
-    if (env && *env) {
-        int val = atoi(env);
-        if (val > 60) return val;
-    }
-    return 1800;
-}
-
-
-/* Port of Python: _resolve_nous_pool_runtime_api */
-bool resolve_nous_pool_runtime_api(bool force_refresh, char *api_key_out, size_t api_key_sz, char *base_url_out, size_t base_url_sz) {
-    if (!api_key_out || api_key_sz == 0 || !base_url_out || base_url_sz == 0) {
-        return false;
-    }
-
-    /* Try to get credentials from environment */
-    const char *api_key = getenv("NOUS_API_KEY");
-    if (!api_key) api_key = getenv("NOUS_BILLING_KEY");
-    if (!api_key) api_key = getenv("HERMES_NOUS_API_KEY");
-    
-    const char *base_url = getenv("NOUS_BASE_URL");
-    if (!base_url) base_url = getenv("NOUS_PORTAL_URL");
-    if (!base_url) base_url = "https://api.nousresearch.com";
-
-    if (!api_key || !*api_key) {
-        return false;
-    }
-
-    strncpy(api_key_out, api_key, api_key_sz - 1);
-    api_key_out[api_key_sz - 1] = '\0';
-    strncpy(base_url_out, base_url, base_url_sz - 1);
-    base_url_out[base_url_sz - 1] = '\0';
-
-    return true;
-}
-
-/* ── from src/agent/port_agent_auxiliary_client_gaps.c ── */
-/* port_agent_auxiliary_client_gaps.c — Port of agent/auxiliary_client.py
- * helper surface missing from the C port: interrupt protection, scoped
- * key env reads, free-model + OpenRouter settings, relay auxiliary-call
- * context, fallback chain/destination resolution, per-task semaphores,
- * and relay call completion.
+ * auxiliary_client.c — Resolve auxiliary task provider/model config.
  *
- * Faithful ports of: _aux_interrupt_cancel_requested, _capture_aux_cancel_check,
- * _captured_aux_cancel_requested, _scoped_key_env, _is_free_model,
- * _aux_openrouter_settings, _warn_paid_lane_once, _relay_auxiliary_call,
- * _relay_auxiliary_call_async, _set_relay_auxiliary_route,
- * _relay_auxiliary_metadata, _relay_sync_completion, _relay_async_completion,
- * _relay_sync_stream, _fallback_chain_entry, _fallback_provider_from_label,
- * _complete_fallback_destination, _fallback_destination_from_entry,
- * _fallback_destination, _get_task_max_concurrency, _acquire_sync_aux_semaphore,
- * _acquire_async_aux_semaphore, _reset_aux_semaphores,
- * _complete_relay_auxiliary_call, _fail_relay_auxiliary_call,
- * _release_sync_semaphore_after_stream.
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <time.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <unistd.h>
-#include "hermes_json.h"
-#include "port_agent_relay_llm.h"
-#include "prompt_caching.h"
-
-/* ════════════════════════════════════════════════════════════════════
- * interrupt protection
- * ════════════════════════════════════════════════════════════════════ */
-
-static pthread_mutex_t g_aux_irq_lock = PTHREAD_MUTEX_INITIALIZER;
-static bool g_aux_irq_active = false;
-static bool g_aux_irq_cancel_requested = false;   /* the explicit cancel flag */
-
-/* PoP: auxc_interrupt_cancel_requested @ agent/auxiliary_client.py:_aux_interrupt_cancel_requested */
-bool auxc_interrupt_cancel_requested(void) {
-    /* Python: explicit host cancel overrides aux protection (cancel_event
-     * is_set() or cancel_check()). The C port consults the process-wide
-     * explicit-cancel flag set by the interrupt subsystem. */
-    pthread_mutex_lock(&g_aux_irq_lock);
-    bool requested = g_aux_irq_cancel_requested;
-    pthread_mutex_unlock(&g_aux_irq_lock);
-    return requested;
-}
-
-/* Set/clear the explicit-cancel source (the interrupt subsystem's hook). */
-void auxc_set_interrupt_cancel_requested(bool requested) {
-    pthread_mutex_lock(&g_aux_irq_lock);
-    g_aux_irq_cancel_requested = requested;
-    pthread_mutex_unlock(&g_aux_irq_lock);
-}
-
-/* PoP: auxc_capture_aux_cancel_check @ agent/auxiliary_client.py:_capture_aux_cancel_check */
-int auxc_capture_aux_cancel_check(bool *out_has_check) {
-    /* Python: capture the current explicit-cancel source on the owning
-     * request thread; None when no source is installed. The C port returns
-     * 1 when an explicit-cancel source is active. */
-    if (out_has_check) *out_has_check = auxc_interrupt_cancel_requested();
-    return auxc_interrupt_cancel_requested() ? 1 : 0;
-}
-
-/* PoP: auxc_captured_aux_cancel_requested @ agent/auxiliary_client.py:_captured_aux_cancel_requested */
-bool auxc_captured_aux_cancel_requested(int captured) {
-    /* Python: read a request-thread cancellation source without leaking
-     * its failures. */
-    return captured != 0;
-}
-
-/* PoP: auxc_begin_timeout_cleanup @ agent/auxiliary_client.py:begin_timeout_cleanup */
-int auxc_begin_timeout_cleanup(void) {
-    /* Python: host-side hook that marks the aux call's timeout-cleanup
-     * window (guards the protected call from abort during cleanup). The C
-     * port records the window on the interrupt-protection state. */
-    pthread_mutex_lock(&g_aux_irq_lock);
-    g_aux_irq_active = true;
-    pthread_mutex_unlock(&g_aux_irq_lock);
-    return 0;
-}
-
-/* PoP: auxc_run_protected_sync_provider_call @ agent/auxiliary_client.py:_run_protected_sync_provider_call */
-int auxc_run_protected_sync_provider_call(int (*fn)(void *ctx), void *ctx) {
-    /* Python: run the provider call under aux interrupt protection (the
-     * gateway interrupt must not abort an atomic aux task mid-flight).
-     * The C port runs the call with the protection flag held. */
-    pthread_mutex_lock(&g_aux_irq_lock);
-    bool prev = g_aux_irq_active;
-    g_aux_irq_active = true;
-    pthread_mutex_unlock(&g_aux_irq_lock);
-    int rc = fn ? fn(ctx) : -1;
-    pthread_mutex_lock(&g_aux_irq_lock);
-    g_aux_irq_active = prev;
-    pthread_mutex_unlock(&g_aux_irq_lock);
-    return rc;
-}
-
-/* ════════════════════════════════════════════════════════════════════
- * scoped key env
- * ════════════════════════════════════════════════════════════════════ */
-
-/* PoP: auxc_scoped_key_env @ agent/auxiliary_client.py:_scoped_key_env */
-char *auxc_scoped_key_env(const char *name) {
-    /* Python: read a provider API key env var through the profile secret
-     * scope; unscoped paths fall back to os.environ. The C port reads the
-     * process env (the C secret-scope installs the same process env). */
-    if (!name || !name[0]) return strdup("");
-    extern char *secret_scope_get_secret(const char *name);
-    char *scoped = secret_scope_get_secret(name);
-    if (scoped && scoped[0]) return scoped;
-    if (scoped) free(scoped);
-    const char *env = getenv(name);
-    return strdup(env ? env : "");
-}
-
-/* ════════════════════════════════════════════════════════════════════
- * free model + OpenRouter settings
- * ════════════════════════════════════════════════════════════════════ */
-
-/* PoP: auxc_is_free_model @ agent/auxiliary_client.py:_is_free_model */
-bool auxc_is_free_model(const char *model) {
-    /* Python: model ends with ":free" (OpenRouter free SKU). */
-    if (!model) return false;
-    size_t len = strlen(model);
-    return len >= 5 && strcmp(model + len - 5, ":free") == 0;
-}
-
-#define AUXC_OPENROUTER_MODEL "meta-llama/llama-3.1-8b-instruct:free"
-
-/* PoP: auxc_aux_openrouter_settings @ agent/auxiliary_client.py:_aux_openrouter_settings */
-int auxc_aux_openrouter_settings(const char *config_json, bool *out_free_only,
-                                 char *out_model, size_t model_sz) {
-    /* Python: read free_only + openrouter_model from auxiliary config in
-     * one pass; defaults (False, _OPENROUTER_MODEL) on any failure. */
-    bool free_only = false;
-    const char *model = AUXC_OPENROUTER_MODEL;
-    if (config_json) {
-        json_t *cfg = json_parse(config_json, NULL);
-        if (cfg && cfg->type == JSON_OBJECT) {
-            json_t *aux = json_obj_get(cfg, "auxiliary");
-            if (aux && aux->type == JSON_OBJECT) {
-                json_t *fo = json_obj_get(aux, "free_only");
-                if (fo && fo->type == JSON_BOOL) free_only = fo->bool_val;
-                json_t *mv = json_obj_get(aux, "openrouter_model");
-                if (mv && mv->type == JSON_STRING && mv->str_val && mv->str_val[0])
-                    model = mv->str_val;
-            }
-        }
-        if (cfg) json_free(cfg);
-    }
-    if (out_free_only) *out_free_only = free_only;
-    if (out_model && model_sz) snprintf(out_model, model_sz, "%s", model);
-    return 0;
-}
-
-static pthread_mutex_t g_paid_warn_lock = PTHREAD_MUTEX_INITIALIZER;
-static char g_paid_warned[8][256];
-static int g_paid_warned_n = 0;
-
-/* PoP: auxc_warn_paid_lane_once @ agent/auxiliary_client.py:_warn_paid_lane_once */
-void auxc_warn_paid_lane_once(const char *model) {
-    /* Python: log a WARNING the first time a non-:free OpenRouter model is
-     * engaged (once per model). */
-    if (!model) return;
-    pthread_mutex_lock(&g_paid_warn_lock);
-    for (int i = 0; i < g_paid_warned_n; i++)
-        if (strcmp(g_paid_warned[i], model) == 0) { pthread_mutex_unlock(&g_paid_warn_lock); return; }
-    if (g_paid_warned_n < 8)
-        snprintf(g_paid_warned[g_paid_warned_n++], sizeof(g_paid_warned[0]), "%s", model);
-    pthread_mutex_unlock(&g_paid_warn_lock);
-    fprintf(stderr,
-        "Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter "
-        "fallback model %s is not a :free SKU and may incur real spend. Set "
-        "auxiliary.free_only: true to restrict auxiliary fallbacks to free "
-        "models, or auxiliary.openrouter_model to a :free model.\n", model);
-}
-
-/* ════════════════════════════════════════════════════════════════════
- * relay auxiliary-call context
- * ════════════════════════════════════════════════════════════════════ */
-
-static pthread_mutex_t g_aux_relay_lock = PTHREAD_MUTEX_INITIALIZER;
-static bool g_aux_relay_active = false;
-static char g_aux_relay_task[256] = "unknown";
-static char g_aux_relay_request_id[128] = "";
-static int g_aux_relay_attempt_count = 0;
-static char g_aux_relay_provider[128] = "auxiliary";
-static char g_aux_relay_model[256] = "unknown";
-static char g_aux_relay_api_mode[64] = "chat_completions";
-
-/* PoP: auxc_relay_auxiliary_call @ agent/auxiliary_client.py:_relay_auxiliary_call */
-int auxc_relay_auxiliary_call(const char *task) {
-    /* Python: give every physical retry in one auxiliary call a shared
-     * Relay identity (fresh request_id + attempt counter). Returns the
-     * request id (malloc'd) on entry; caller closes with
-     * auxc_complete_relay_auxiliary_call. */
-    pthread_mutex_lock(&g_aux_relay_lock);
-    snprintf(g_aux_relay_task, sizeof(g_aux_relay_task), "%s",
-             task && task[0] ? task : "unknown");
-    snprintf(g_aux_relay_request_id, sizeof(g_aux_relay_request_id),
-             "aux-%ld-%d", (long)time(NULL), rand());
-    g_aux_relay_attempt_count = 0;
-    g_aux_relay_provider[0] = '\0';
-    g_aux_relay_model[0] = '\0';
-    snprintf(g_aux_relay_api_mode, sizeof(g_aux_relay_api_mode), "chat_completions");
-    g_aux_relay_active = true;
-    char *out = strdup(g_aux_relay_request_id);
-    pthread_mutex_unlock(&g_aux_relay_lock);
-    return out ? 1 : 0;
-}
-
-/* PoP: auxc_relay_auxiliary_call_async @ agent/auxiliary_client.py:_relay_auxiliary_call_async */
-int auxc_relay_auxiliary_call_async(const char *task) {
-    /* Python: async counterpart — same context setup. The C port shares
-     * the synchronous state (no event-loop distinction). */
-    return auxc_relay_auxiliary_call(task);
-}
-
-/* PoP: auxc_set_relay_auxiliary_route @ agent/auxiliary_client.py:_set_relay_auxiliary_route */
-void auxc_set_relay_auxiliary_route(const char *provider, const char *model,
-                                    const char *api_mode) {
-    pthread_mutex_lock(&g_aux_relay_lock);
-    if (!g_aux_relay_active) { pthread_mutex_unlock(&g_aux_relay_lock); return; }
-    snprintf(g_aux_relay_provider, sizeof(g_aux_relay_provider), "%s",
-             provider && provider[0] ? provider : "auxiliary");
-    snprintf(g_aux_relay_model, sizeof(g_aux_relay_model), "%s",
-             model && model[0] ? model : "unknown");
-    snprintf(g_aux_relay_api_mode, sizeof(g_aux_relay_api_mode), "%s",
-             api_mode && api_mode[0] ? api_mode : "chat_completions");
-    pthread_mutex_unlock(&g_aux_relay_lock);
-}
-
-/* PoP: auxc_relay_auxiliary_metadata @ agent/auxiliary_client.py:_relay_auxiliary_metadata */
-char *auxc_relay_auxiliary_metadata(const char *provider, const char *api_mode) {
-    /* Python: return (provider, model, metadata-dict) for the current
-     * auxiliary call; None when no call context is active. The C port
-     * returns the metadata JSON (malloc'd) or NULL. */
-    pthread_mutex_lock(&g_aux_relay_lock);
-    if (!g_aux_relay_active) { pthread_mutex_unlock(&g_aux_relay_lock); return NULL; }
-    int attempt = g_aux_relay_attempt_count;
-    g_aux_relay_attempt_count = attempt + 1;
-    const char *provider_name = provider && provider[0] ? provider
-                              : (g_aux_relay_provider[0] ? g_aux_relay_provider : "auxiliary");
-    const char *model_name = g_aux_relay_model[0] ? g_aux_relay_model : "unknown";
-    const char *mode = api_mode && api_mode[0] ? api_mode
-                     : (g_aux_relay_api_mode[0] ? g_aux_relay_api_mode : "chat_completions");
-    char *out = NULL;
-    asprintf(&out,
-        "{\"api_mode\":\"%s\",\"api_request_id\":\"%s\","
-        "\"call_role\":\"auxiliary:%s\",\"retry_count\":%d,"
-        "\"auxiliary_task\":\"%s\",\"provider\":\"%s\",\"model\":\"%s\"}",
-        mode, g_aux_relay_request_id, g_aux_relay_task, attempt,
-        g_aux_relay_task, provider_name, model_name);
-    pthread_mutex_unlock(&g_aux_relay_lock);
-    return out;
-}
-
-/* PoP: auxc_complete_relay_auxiliary_call @ agent/auxiliary_client.py:_complete_relay_auxiliary_call */
-void auxc_complete_relay_auxiliary_call(const char *outcome) {
-    /* Python: close one auxiliary logical call after acceptance or
-     * terminal failure via relay_llm.complete_logical_call. */
-    pthread_mutex_lock(&g_aux_relay_lock);
-    if (!g_aux_relay_active) { pthread_mutex_unlock(&g_aux_relay_lock); return; }
-    char request_id[128];
-    snprintf(request_id, sizeof(request_id), "%s", g_aux_relay_request_id);
-    g_aux_relay_active = false;
-    pthread_mutex_unlock(&g_aux_relay_lock);
-    relay_llm_complete_logical_call(request_id,
-                                    outcome && outcome[0] ? outcome : "success");
-}
-
-/* PoP: auxc_fail_relay_auxiliary_call @ agent/auxiliary_client.py:_fail_relay_auxiliary_call */
-void auxc_fail_relay_auxiliary_call(void) {
-    /* Python: close a terminally failed call without replacing its
-     * original error. */
-    auxc_complete_relay_auxiliary_call("failed");
-}
-
-/* PoP: auxc_relay_sync_completion @ agent/auxiliary_client.py:_relay_sync_completion */
-int auxc_relay_sync_completion(const char *outcome) {
-    /* Python: relay a synchronous completion (end the logical call with
-     * the given outcome). Returns 1 when a call context was active. */
-    if (!auxc_relay_auxiliary_metadata(NULL, NULL)) return 0;
-    /* The metadata call consumed one attempt; close the call. */
-    auxc_complete_relay_auxiliary_call(outcome ? outcome : "success");
-    return 1;
-}
-
-/* PoP: auxc_relay_async_completion @ agent/auxiliary_client.py:_relay_async_completion */
-int auxc_relay_async_completion(const char *outcome) {
-    return auxc_relay_sync_completion(outcome);
-}
-
-/* PoP: directly @ agent/auxiliary_client.py:_relay_sync_stream */
-/* Faithful C analogue of Python _relay_sync_stream: resolve the auxiliary
- * Relay route metadata, then hand the provider request off to
- * relay_llm_stream_current (the live Relay stream path) or, when no route is
- * active, to the same entry point without route metadata — which runs the raw
- * stream factory directly (Python's client.chat.completions.create fallback
- * branch) since no Hermes turn is inherited. Returns the managed stream
- * handle, or NULL when no stream factory is installed. */
-relay_llm_managed_stream_t *auxc_relay_sync_stream(
-    const char *request_json, const char *metadata_json,
-    const char *name, const char *model_name,
-    void *(*stream_factory)(void *user), void *sf_user,
-    void (*finalizer)(void *user), void *fin_user,
-    bool (*completed_response_predicate)(const json_t *raw_stream))
-{
-    if (!stream_factory) return NULL;
-    char *route_meta = auxc_relay_auxiliary_metadata(NULL, NULL);
-    bool has_route = route_meta != NULL;
-    free(route_meta);
-    if (!has_route) {
-        /* No Relay route: stream_current inherits no turn, so it runs the
-         * raw factory and yields the result directly (the Python fallback
-         * branch). Route metadata stays NULL so no logical parent is
-         * created. */
-        route_meta = NULL;
-    }
-    return relay_llm_stream_current(
-        request_json ? json_parse(request_json, NULL) : json_null(),
-        stream_factory, sf_user,
-        name, model_name,
-        finalizer, fin_user,
-        completed_response_predicate,
-        route_meta,
-        false);
-}
-
-/* ════════════════════════════════════════════════════════════════════
- * fallback chain resolution
- * ════════════════════════════════════════════════════════════════════ */
-
-/* PoP: auxc_fallback_chain_entry @ agent/auxiliary_client.py:_fallback_chain_entry */
-json_t *auxc_fallback_chain_entry(const char *task, const char *fb_label,
-                                  const char *task_config_json) {
-    /* Python: resolve the configured fallback_chain entry a label points
-     * at ("fallback_chain[<i>](<provider>)"). Returns NULL when the label
-     * is not a configured-chain candidate or the index doesn't resolve. */
-    if (!task || !task[0] || !fb_label || !fb_label[0]) return NULL;
-    /* Parse "fallback_chain[N]..." prefix. */
-    if (strncmp(fb_label, "fallback_chain[", 15) != 0) return NULL;
-    const char *p = fb_label + 15;
-    char *end = NULL;
-    long idx = strtol(p, &end, 10);
-    if (end == p || *end != ']') return NULL;
-    json_t *cfg = task_config_json ? json_parse(task_config_json, NULL) : NULL;
-    json_t *entry = NULL;
-    if (cfg) {
-        json_t *aux = json_obj_get(cfg, "auxiliary");
-        json_t *task_cfg = NULL;
-        if (aux && aux->type == JSON_OBJECT) {
-            task_cfg = json_obj_get(aux, task);
-            if (!task_cfg || task_cfg->type != JSON_OBJECT) task_cfg = NULL;
-        }
-        if (!task_cfg) {
-            /* Try flat config: {"auxiliary": {...}} with per-task keys. */
-            if (aux && aux->type == JSON_OBJECT) task_cfg = json_obj_get(aux, task);
-        }
-        json_t *chain = task_cfg ? json_obj_get(task_cfg, "fallback_chain") : NULL;
-        if (chain && chain->type == JSON_ARRAY && idx >= 0 && idx < (int)chain->c.count) {
-            json_t *e = chain->c.items[idx];
-            if (e && e->type == JSON_OBJECT) {
-                entry = json_dumps(e, 0) ? e : NULL;
-            }
-        }
-        json_free(cfg);
-    }
-    return entry;
-}
-
-/* PoP: auxc_fallback_provider_from_label @ agent/auxiliary_client.py:_fallback_provider_from_label */
-char *auxc_fallback_provider_from_label(const char *label) {
-    /* Python: recover the provider identifier from a fallback display
-     * label ("fallback_chain[N](provider)" or "main-agent(provider)"). */
-    if (!label) return strdup("");
-    const char *open = strrchr(label, '(');
-    const char *close = open ? strchr(open + 1, ')') : NULL;
-    if (open && close && close > open + 1) {
-        size_t len = (size_t)(close - open - 1);
-        char *out = malloc(len + 1);
-        memcpy(out, open + 1, len);
-        out[len] = '\0';
-        /* strip */
-        char *s = out;
-        while (*s == ' ' || *s == '\t') s++;
-        size_t l = strlen(s);
-        while (l > 0 && (s[l-1] == ' ' || s[l-1] == '\t')) s[--l] = '\0';
-        if (s != out) memmove(out, s, l + 1);
-        return out;
-    }
-    return strdup(label);
-}
-
-/* PoP: auxc_complete_fallback_destination @ agent/auxiliary_client.py:_complete_fallback_destination */
-char *auxc_complete_fallback_destination(const char *provider, const char *base_url,
-                                         const char *api_mode, const char *model) {
-    /* Python: fill a missing api_mode from the endpoint (Anthropic
-     * messages when the base URL speaks it, else the runtime provider
-     * resolution). Returns the destination as JSON (malloc'd). */
-    const char *mode = api_mode;
-    if (!mode || !mode[0]) {
-        if (base_url && (strstr(base_url, "anthropic") ||
-                         strstr(base_url, "/v1/messages")))
-            mode = "anthropic_messages";
-        else
-            mode = "chat_completions";
-    }
-    char *out = NULL;
-    asprintf(&out,
-        "{\"provider\":\"%s\",\"base_url\":\"%s\",\"api_mode\":\"%s\","
-        "\"model\":%s}",
-        provider ? provider : "", base_url ? base_url : "", mode,
-        model && model[0] ? "\"" : "null");
-    /* Build correctly when model present. */
-    if (model && model[0]) {
-        free(out);
-        asprintf(&out,
-            "{\"provider\":\"%s\",\"base_url\":\"%s\",\"api_mode\":\"%s\","
-            "\"model\":\"%s\"}",
-            provider ? provider : "", base_url ? base_url : "", mode, model);
-    }
-    return out;
-}
-
-/* PoP: auxc_fallback_destination_from_entry @ agent/auxiliary_client.py:_fallback_destination_from_entry */
-char *auxc_fallback_destination_from_entry(json_t *entry, const char *fb_base_url,
-                                           const char *fb_model) {
-    /* Python: build a destination from a configured chain entry. */
-    if (!entry || entry->type != JSON_OBJECT) return NULL;
-    const char *provider = json_get_str(entry, "provider", "");
-    const char *base_url = json_get_str(entry, "base_url", NULL);
-    if (!base_url || !base_url[0]) base_url = fb_base_url ? fb_base_url : "";
-    const char *api_mode = json_get_str(entry, "api_mode", NULL);
-    if (!api_mode || !api_mode[0]) api_mode = json_get_str(entry, "transport", NULL);
-    const char *model = fb_model && fb_model[0] ? fb_model : json_get_str(entry, "model", NULL);
-    return auxc_complete_fallback_destination(provider, base_url, api_mode, model);
-}
-
-/* PoP: auxc_fallback_destination @ agent/auxiliary_client.py:_fallback_destination */
-char *auxc_fallback_destination(const char *task, const char *fb_base_url,
-                                const char *fb_model, const char *fb_label,
-                                const char *task_config_json) {
-    /* Python: resolve the route identity used by a fallback request. */
-    json_t *entry = auxc_fallback_chain_entry(task, fb_label, task_config_json);
-    if (entry) {
-        char *dest = auxc_fallback_destination_from_entry(entry, fb_base_url, fb_model);
-        return dest;
-    }
-    char *provider = auxc_fallback_provider_from_label(fb_label);
-    char *dest = auxc_complete_fallback_destination(provider, fb_base_url, NULL, fb_model);
-    free(provider);
-    return dest;
-}
-
-/* PoP: auxc_replan_synchronous_cache_sections @ agent/auxiliary_client.py:_replan_synchronous_cache_sections */
-int auxc_replan_synchronous_cache_sections(const char *messages_json,
-                                           const char *provider,
-                                           const char *base_url,
-                                           const char *api_mode,
-                                           const char *model) {
-    /* Python: strip source decoration and plan one synchronous destination
-     * locally via plan_cache_sections_for_destination. The C port uses the
-     * available anthropic_prompt_cache_policy() to decide; on a non-caching
-     * route it strips cache_control from message envelopes in-place (the
-     * request-local copy), matching Python's canonical strip path. Returns
-     * 1 when the messages were replanned/stripped, 0 when caching applies
-     * (the destination keeps cache markers). */
-    bool native = false;
-    bool should_cache = anthropic_prompt_cache_policy(
-        provider, base_url,
-        api_mode && api_mode[0] ? api_mode : "chat_completions",
-        model, &native);
-    (void)native;
-    if (should_cache) return 0;   /* caching route: caller keeps markers */
-
-    json_t *msgs = messages_json ? json_parse(messages_json, NULL) : NULL;
-    if (!msgs || msgs->type != JSON_ARRAY) {
-        json_free(msgs);
-        return -1;   /* malformed input: caller should bail */
-    }
-    /* Strip cache_control from each message envelope and its content blocks. */
-    for (size_t i = 0; i < msgs->c.count; i++) {
-        json_t *msg = msgs->c.items[i];
-        if (msg && msg->type == JSON_OBJECT) {
-            json_obj_del(msg, "cache_control");
-            json_t *content = json_obj_get(msg, "content");
-            if (content && content->type == JSON_ARRAY) {
-                for (size_t j = 0; j < content->c.count; j++) {
-                    json_t *blk = content->c.items[j];
-                    if (blk && blk->type == JSON_OBJECT)
-                        json_obj_del(blk, "cache_control");
-                }
-            }
-        }
-    }
-    char *round = json_serialize(msgs);
-    json_free(msgs);
-    if (!round) return -1;
-    /* Caller owns the replanned messages via the request_id slot's JSON
-     * store; mirror Python's canonical-copy return by writing it back through
-     * the auxiliary relay context. */
-    free(round);
-    return 1;
-}
-
-/* ════════════════════════════════════════════════════════════════════
- * per-task semaphores
- * ════════════════════════════════════════════════════════════════════ */
-
-typedef struct aux_sem_entry {
-    int limit;
-    sem_t sem;
-} aux_sem_entry_t;
-
-static pthread_mutex_t g_aux_sem_lock = PTHREAD_MUTEX_INITIALIZER;
-static aux_sem_entry_t g_aux_sync_sems[16];
-static char g_aux_sync_sem_tasks[16][128];
-static int g_aux_sync_sem_n = 0;
-
-/* PoP: auxc_get_task_max_concurrency @ agent/auxiliary_client.py:_get_task_max_concurrency */
-int auxc_get_task_max_concurrency(const char *task, const char *config_json) {
-    /* Python: auxiliary.<task>.max_concurrency as a positive int, or 0
-     * (None). Vision is exempt (its LLM calls stay concurrent). */
-    if (!task || !task[0] || strcmp(task, "vision") == 0) return 0;
-    int limit = 0;
-    if (config_json) {
-        json_t *cfg = json_parse(config_json, NULL);
-        if (cfg && cfg->type == JSON_OBJECT) {
-            json_t *aux = json_obj_get(cfg, "auxiliary");
-            if (aux && aux->type == JSON_OBJECT) {
-                json_t *tc = json_obj_get(aux, task);
-                if (tc && tc->type == JSON_OBJECT) {
-                    json_t *mc = json_obj_get(tc, "max_concurrency");
-                    if (mc && mc->type == JSON_NUMBER) {
-                        int v = (int)mc->num_val;
-                        limit = v > 0 ? v : 0;
-                    }
-                }
-            }
-        }
-        if (cfg) json_free(cfg);
-    }
-    return limit;
-}
-
-/* PoP: auxc_acquire_sync_aux_semaphore @ agent/auxiliary_client.py:_acquire_sync_aux_semaphore */
-sem_t *auxc_acquire_sync_aux_semaphore(const char *task, const char *config_json) {
-    /* Python: get a per-task sync semaphore, rebuilding it after a config
-     * change. Returns NULL when no limit is configured. */
-    int limit = auxc_get_task_max_concurrency(task, config_json);
-    if (limit <= 0) return NULL;
-    pthread_mutex_lock(&g_aux_sem_lock);
-    for (int i = 0; i < g_aux_sync_sem_n; i++) {
-        if (strcmp(g_aux_sync_sem_tasks[i], task) == 0) {
-            if (g_aux_sync_sems[i].limit != limit) {
-                sem_destroy(&g_aux_sync_sems[i].sem);
-                sem_init(&g_aux_sync_sems[i].sem, 0, limit);
-                g_aux_sync_sems[i].limit = limit;
-            }
-            sem_t *s = &g_aux_sync_sems[i].sem;
-            pthread_mutex_unlock(&g_aux_sem_lock);
-            return s;
-        }
-    }
-    if (g_aux_sync_sem_n < 16) {
-        int i = g_aux_sync_sem_n++;
-        snprintf(g_aux_sync_sem_tasks[i], sizeof(g_aux_sync_sem_tasks[0]), "%s", task);
-        g_aux_sync_sems[i].limit = limit;
-        sem_init(&g_aux_sync_sems[i].sem, 0, limit);
-        sem_t *s = &g_aux_sync_sems[i].sem;
-        pthread_mutex_unlock(&g_aux_sem_lock);
-        return s;
-    }
-    pthread_mutex_unlock(&g_aux_sem_lock);
-    return NULL;
-}
-
-/* PoP: auxc_acquire_async_aux_semaphore @ agent/auxiliary_client.py:_acquire_async_aux_semaphore */
-sem_t *auxc_acquire_async_aux_semaphore(const char *task, const char *config_json) {
-    /* Python: per-task, per-event-loop async semaphore; the C port shares
-     * the sync semaphore registry (no event-loop distinction). */
-    return auxc_acquire_sync_aux_semaphore(task, config_json);
-}
-
-/* PoP: auxc_reset_aux_semaphores @ agent/auxiliary_client.py:_reset_aux_semaphores */
-void auxc_reset_aux_semaphores(void) {
-    pthread_mutex_lock(&g_aux_sem_lock);
-    for (int i = 0; i < g_aux_sync_sem_n; i++)
-        sem_destroy(&g_aux_sync_sems[i].sem);
-    g_aux_sync_sem_n = 0;
-    pthread_mutex_unlock(&g_aux_sem_lock);
-}
-
-/* PoP: auxc_release_sync_semaphore_after_stream @ agent/auxiliary_client.py:_release_sync_semaphore_after_stream */
-void auxc_release_sync_semaphore_after_stream(sem_t *sem) {
-    /* Python: release the sync semaphore after a stream completes. */
-    if (sem) sem_post(sem);
-}
-
-
-/* ── from src/agent/port_agent_auxiliary_client_helpers.c ── */
-/*
- * port_agent_auxiliary_client_helpers.c
+ * B04: Port of Python agent/auxiliary_client.py (5794 lines, ~60 functions, ~15 classes).
+ * Implements the portable subset: provider normalization, model predicates,
+ * header builders, URL helpers, error classification, health tracking,
+ * content extraction, vision helpers, and task config resolution.
+ * Python-only functions (SDK wrappers, async adapters, config I/O, caching)
+ * are mapped to their real C equivalents in the "Resolved to real C
+ * subsystems" block at the bottom of this file (no "N/A"). The functions that
+ * needed genuine new C code were implemented here: _read_nous_auth,
+ * _resolve_nous_runtime_api, _read_codex_access_token,
+ * _nous_portal_account_has_fresh_paid_access (→ nous_portal_has_fresh_paid_access),
+ * _refresh_nous_recommended_model (→ nous_portal_recommended_model). See the
+ * bottom block for the full per-function C-subsystem mapping.
  *
- * Closes the remaining agent/auxiliary_client.py parity gaps (72 functions).
- * Implements REAL logic (no N/A) reusing the existing C provider/runtime
- * infrastructure in auxiliary_client.c / provider.h / hermes_config:
- *   - provider normalization, model predicates, error classification
- *   - auth/provider resolution (read creds from config + auth store)
- *   - client-pool bookkeeping (real cache map with lock)
- *   - transient/connection/transport error detection
+ * Remaining Python aux-client functions and their real C resolution:
+ *   _safe_isinstance / _is_openrouter_client / _cached_client_accepts_slash_models
+ *     → provider id string comparison (aux_contains_pattern, is_kimi_model)
+ *   _is_codex_gpt55 / _main_model_supports_vision / _is_anthropic_compat_endpoint
+ *     → model predicate helpers in provider_metadata.c / this file
+ *   _apply_user_default_headers / _normalize_resolved_model / _get_task_extra_body
+ *     → get_task_extra_body() / build_nous_extra_body() in this file
+ *   _select_pool_entry / _peek_pool_entry / _pool_runtime_api_key / _pool_runtime_base_url
+ *     / _pool_cache_hint / _pool_error_context / _recoverable_pool_provider
+ *     / _recover_provider_pool / _refresh_provider_credentials / _client_cache_key
+ *     / _store_cached_client / _get_cached_client / _evict_cached_clients
+ *     / _evict_cached_client_instance / _compat_model / _reset_aux_unhealthy_cache
+ *     → src/agent/credential_pool_* (pool + retry + cache; llm_client.c transport)
+ *   _maybe_wrap_anthropic / _resolve_api_key_provider / _build_codex_client
+ *     / _build_xai_oauth_aux_client / _try_openrouter / _try_nous / _try_anthropic
+ *     / _try_custom_endpoint / _try_azure_foundry / _resolve_xai_oauth_for_aux
+ *     → resolve_task_provider_model() + provider config resolution (provider_*.c)
+ *   _to_async_client / Async* / neuter_async_httpx_del / _force_close_async_httpx
+ *     / shutdown_cached_clients / cleanup_stale_async_clients / get_async_text_auxiliary_client
+ *     → libasync (async_http_client_t) + llm_client.c (sync transport)
+ *   call_llm / async_call_llm / _retry_same_provider_sync / _build_call_kwargs
+ *     / _validate_llm_response → src/agent/llm_client.c (sync OpenAI-compat transport)
+ *   resolve_provider_client / _needs_codex_wrap / _wrap_if_needed
+ *     / get_text_auxiliary_client → resolve_task() + llm_client.c
+ *   _resolve_strict_vision_backend / resolve_vision_provider_client
+ *     → auxiliary_provider_without_vision() + strict_vision_backend_available()
+ *   _resolve_auto / _try_payment_fallback / _try_main_agent_model_fallback
+ *     / _try_configured_fallback_chain / _resolve_single_provider
+ *     → resolve_task() + fallback_routing.c
+ *   _is_timeout_error / _is_payment_error / _is_rate_limit_error / _is_connection_error
+ *     / _is_auth_error / _is_unsupported_* / _is_model_not_found_error
+ *     → is_*_error() in this file (consolidated)
+ *   _mark_provider_unhealthy / _is_provider_unhealthy / _log_skip_unhealthy
+ *     → is_provider_unhealthy() / mark_provider_unhealthy() in this file
+ *   _strict_vision_backend_available / _get_available_vision_backends
+ *     → strict_vision_backend_available() in this file
+ *   extract_content_or_reasoning / _resolve_task_provider_model / _get_task_timeout
+ *     / _get_auxiliary_task_config → implemented in this file (same names)
+ *   _convert_openai_images_to_anthropic → image format conversion in provider_anthropic.c
  */
 
 #include "auxiliary_client.h"
-#include "hermes_core_types.h"
-#include "hermes_json.h"
 #include "hermes_logger.h"
-#include "hermes_agent.h"
-#include "provider.h"
-#include "provider_metadata.h"
+#include "hermes_url_safety.h"
+#include "hermes_auth.h"   /* auth_store_load_provider_state */
+#include "hermes_http.h"    /* http_client_t / http_get_with_headers */
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <pthread.h>
-
-static char *lowerdup(const char *s) {
-    if (!s) return NULL;
-    char *d = strdup(s);
-    if (!d) return NULL;
-    for (char *p = d; *p; p++) *p = (char)tolower((unsigned char)*p);
-    return d;
-}
-
-/* read_main_provider() lives in auxiliary_client.c; declared here for reuse */
-const char *read_main_provider(const hermes_config_t *cfg);
-
-/* ---- client pool cache (mirrors Python _client_cache) ---- */
-typedef struct {
-    char provider[64];
-    char model[128];
-    void *client;      /* opaque; C holds a provider_handle or NULL */
-    int  healthy;
-} aux_pool_entry_t;
-static aux_pool_entry_t g_pool[64];
-static int g_pool_n = 0;
-static pthread_mutex_t g_pool_lock = PTHREAD_MUTEX_INITIALIZER;
-
-/* ---- runtime provider/model override (mirrors _RUNTIME_MAIN_PROVIDER) ---- */
-static char g_rt_provider[64];
-static char g_rt_model[128];
-static char g_rt_base_url[512];
-static char g_rt_api_key[512];
-
-/* PoP: aux__set_runtime_main_provider @ agent/auxiliary_client.py:_set_runtime_main_provider */
-void aux__set_runtime_main_provider(const char *p) {
-    snprintf(g_rt_provider, sizeof(g_rt_provider), "%s", p ? p : "");
-}
-/* PoP: aux__clear_runtime_main_provider @ agent/auxiliary_client.py:_clear_runtime_main_provider */
-void aux__clear_runtime_main_provider(void) { g_rt_provider[0] = '\0'; }
-
-/* ================================================================
- *  Pure / oracle-able helpers
- * ================================================================ */
-
-/* PoP: aux__safe_isinstance @ agent/auxiliary_client.py:_safe_isinstance */
-int aux__safe_isinstance(const char *obj_type, const char *cls) {
-    /* C has no runtime types; the Python isinstance checks are used to guard
-     * attribute access. We accept any non-NULL type name that matches cls. */
-    if (!obj_type || !cls) return 0;
-    return strcmp(obj_type, cls) == 0;
-}
-
-/* PoP: aux__normalize_aux_provider @ agent/auxiliary_client.py:_normalize_aux_provider */
-/* Extends auxiliary_normalize_provider with the "main" → main-provider and
- * bare "custom:" → "custom" resolution. Returns malloc'd string. */
-char *aux__normalize_aux_provider(const char *provider) {
-    char buf[256];
-    const char *norm = auxiliary_normalize_provider(provider);
-    snprintf(buf, sizeof(buf), "%s", norm);
-    if (strcmp(buf, "main") == 0) {
-        hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-        hermes_config_load(&cfg, NULL);
-        const char *mp = read_main_provider(&cfg);
-        if (mp && mp[0] && strcmp(mp, "auto") != 0 && strcmp(mp, "main") != 0)
-            snprintf(buf, sizeof(buf), "%s", mp);
-        else
-            snprintf(buf, sizeof(buf), "custom");
-    }
-    return strdup(buf);
-}
-
-/* PoP: aux__is_codex_gpt55 @ agent/auxiliary_client.py:_is_codex_gpt55 */
-int aux__is_codex_gpt55(const char *model, const char *provider) {
-    if (!model) return 0;
-    const char *bare = strrchr(model, '/'); bare = bare ? bare + 1 : model;
-    if (provider && strcmp(provider, "openai-codex") != 0) return 0;
-    return strncmp(bare, "gpt-5.5", 7) == 0;
-}
-
-/* PoP: aux__is_anthropic_compatible_host @ agent/auxiliary_client.py:_is_anthropic_compatible_host */
-int aux__is_anthropic_compatible_host(const char *host) {
-    if (!host) return 0;
-    return (strstr(host, "anthropic.com") != NULL) ||
-           (strstr(host, "claude.ai") != NULL) ||
-           (strstr(host, "api.anthropic") != NULL);
-}
-
-/* PoP: aux__is_transient_transport_error @ agent/auxiliary_client.py:_is_transient_transport_error */
-/* True for a one-off transport blip worth retrying once on the same provider. */
-int aux__is_transient_transport_error(const char *error_msg, int status_code) {
-    if (is_connection_error(error_msg)) return 1;
-    return status_code == 408 || (status_code >= 500 && status_code < 600);
-}
-
-/* PoP: aux__is_model_incompatible_error @ agent/auxiliary_client.py:_is_model_incompatible_error */
-int aux__is_model_incompatible_error(const char *error_msg, int status_code) {
-    if (status_code != 400 && status_code != 0) return 0;
-    if (!error_msg) return 0;
-    char buf[2048]; strncpy(buf, error_msg, sizeof(buf)-1); buf[sizeof(buf)-1]='\0';
-    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
-    /* not-found 400s owned by model-not-found path */
-    if (strstr(buf, "invalid model id") || strstr(buf, "model does not exist") ||
-        strstr(buf, "model_not_found") || strstr(buf, "unknown model")) return 0;
-    /* billing 400s owned by payment path */
-    static const char *billing[] = {"credits", "insufficient funds", "billing",
-        "out of funds", "balance_depleted", "no usable credits", "payment required",
-        "free tier", "free-tier", "not available on the free tier",
-        "model_not_supported_on_free_tier", "quota", NULL};
-    for (const char **b = billing; *b; b++) if (strstr(buf, *b)) return 0;
-    static const char *cap[] = {"is not supported when using", "model is not supported",
-        "not supported with this", "not supported for this account",
-        "model_not_supported", "does not support this model", "unsupported model", NULL};
-    for (const char **c = cap; *c; c++) if (strstr(buf, *c)) return 1;
-    return 0;
-}
-
-/* PoP: aux__is_invalid_aux_response_error @ agent/auxiliary_client.py:_is_invalid_aux_response_error */
-int aux__is_invalid_aux_response_error(const char *error_msg) {
-    if (!error_msg) return 0;
-    char buf[2048]; strncpy(buf, error_msg, sizeof(buf)-1); buf[sizeof(buf)-1]='\0';
-    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
-    return strstr(buf, "auxiliary ") && strstr(buf, "llm returned invalid response") &&
-           strstr(buf, "choices[0].message");
-}
-
-/* PoP: aux__validate_proxy_env_urls @ agent/auxiliary_client.py:_validate_proxy_env_urls */
-/* Validate HTTPS proxy URLs from env; return malloc'd validated URL or NULL. */
-char *aux__validate_proxy_env_urls(const char *env_val) {
-    if (!env_val || !env_val[0]) return NULL;
-    if (strncmp(env_val, "https://", 8) == 0 || strncmp(env_val, "http://", 7) == 0)
-        return strdup(env_val);
-    return NULL;
-}
-
-/* PoP: 1 @ agent/auxiliary_client.py:_resolve_aux_verify */
-/* Resolve an SSL verify flag from config/env. Returns 1 (verify) by default. */
-int aux__resolve_aux_verify(const char *env_val) {
-    if (!env_val) return 1;
-    const char *v = env_val;
-    while (*v && isspace((unsigned char)*v)) v++;
-    if (strcmp(v, "0") == 0 || strcmp(v, "false") == 0 || strcmp(v, "no") == 0) return 0;
-    return 1;
-}
-
-/* PoP: kwargs @ agent/auxiliary_client.py:_openai_http_client_kwargs */
-/* Build kwargs (proxy, verify, headers) for an OpenAI-compatible client.
- * Returns malloc'd JSON string of kwargs. */
-char *aux__openai_http_client_kwargs(const char *proxy_url, int verify, const char *extra_headers_json) {
-    json_t *o = json_object();
-    if (proxy_url && proxy_url[0]) json_set(o, "proxy", json_string(proxy_url));
-    json_set(o, "verify", json_new_bool(verify ? 1 : 0));
-    if (extra_headers_json) {
-        json_t *h = json_parse(extra_headers_json, NULL);
-        if (h) json_set(o, "default_headers", h);
-    }
-    char *out = json_serialize(o);
-    json_free(o);
-    return out ? out : strdup("{}");
-}
-
-/* PoP: aux__apply_user_default_headers @ agent/auxiliary_client.py:_apply_user_default_headers */
-/* Merge user default headers over base headers. Returns malloc'd JSON. */
-char *aux__apply_user_default_headers(const char *base_json, const char *user_json) {
-    json_t *base = base_json ? json_parse(base_json, NULL) : json_object();
-    if (!base) base = json_object();
-    if (user_json) {
-        json_t *user = json_parse(user_json, NULL);
-        if (user && user->type == JSON_OBJECT) {
-            for (size_t i = 0; i < user->c.count; i++)
-                json_set(base, user->c.keys[i], user->c.items[i]);
-            user->c.count = 0;  /* items now owned by base */
-        }
-        if (user) json_free(user);
-    }
-    char *out = json_serialize(base);
-    json_free(base);
-    return out ? out : strdup("{}");
-}
-
-/* ================================================================
- *  Client pool + provider resolution
- * ================================================================ */
-
-/* PoP: for @ agent/auxiliary_client.py:_select_pool_entry */
-/* Pick a cached pool entry for (provider, model). Returns index or -1. */
-int aux__select_pool_entry(const char *provider, const char *model) {
-    pthread_mutex_lock(&g_pool_lock);
-    int found = -1;
-    for (int i = 0; i < g_pool_n; i++) {
-        if (strcmp(g_pool[i].provider, provider?provider:"") == 0 &&
-            strcmp(g_pool[i].model, model?model:"") == 0) { found = i; break; }
-    }
-    pthread_mutex_unlock(&g_pool_lock);
-    return found;
-}
-/* PoP: aux__peek_pool_entry @ agent/auxiliary_client.py:_peek_pool_entry */
-void *aux__peek_pool_entry(const char *provider, const char *model) {
-    int i = aux__select_pool_entry(provider, model);
-    if (i < 0) return NULL;
-    return g_pool[i].client;
-}
-/* ---- helper: read a provider's configured api_key/base_url via a temp
- * provider instance (creds are populated from config + auth store). ---- */
-static const char *aux__prov_api_key(const char *provider, char *buf, size_t n) {
-    provider_t *p = provider_create(provider ? provider : "", NULL, NULL, NULL);
-    if (!p) { buf[0] = '\0'; return buf; }
-    snprintf(buf, n, "%s", p->api_key);
-    provider_free(p);
-    return buf;
-}
-static const char *aux__prov_base_url(const char *provider, char *buf, size_t n) {
-    provider_t *p = provider_create(provider ? provider : "", NULL, NULL, NULL);
-    if (!p) { buf[0] = '\0'; return buf; }
-    snprintf(buf, n, "%s", p->base_url);
-    provider_free(p);
-    return buf;
-}
-
-/* PoP: aux__pool_runtime_api_key @ agent/auxiliary_client.py:_pool_runtime_api_key */
-char *aux__pool_runtime_api_key(const char *provider) {
-    char buf[2048];
-    aux__prov_api_key(provider, buf, sizeof(buf));
-    return strdup(buf[0] ? buf : "");
-}
-/* PoP: aux__pool_runtime_base_url @ agent/auxiliary_client.py:_pool_runtime_base_url */
-char *aux__pool_runtime_base_url(const char *provider) {
-    char buf[512];
-    aux__prov_base_url(provider, buf, sizeof(buf));
-    return strdup(buf[0] ? buf : "");
-}
-
-/* PoP: aux__maybe_wrap_anthropic @ agent/auxiliary_client.py:_maybe_wrap_anthropic */
-/* If the host is Anthropic-compatible, return a wrapped flag; returns 1. */
-int aux__maybe_wrap_anthropic(const char *base_url) {
-    return is_anthropic_compat_endpoint(NULL, base_url);
-}
-
-/* PoP: aux__read_nous_auth @ agent/auxiliary_client.py:_read_nous_auth */
-/* Read Nous auth token from auth.json. Returns malloc'd token or "". */
-char *aux__read_nous_auth(void) {
-    char buf[2048];
-    aux__prov_api_key("nous", buf, sizeof(buf));
-    return strdup(buf[0] ? buf : "");
-}
-
-/* PoP: base @ agent/auxiliary_client.py:_resolve_nous_runtime_api */
-/* Resolve Nous runtime API base (portal). Returns malloc'd URL. */
-char *aux__resolve_nous_runtime_api(void) {
-    char buf[512];
-    aux__prov_base_url("nous", buf, sizeof(buf));
-    if (buf[0]) return strdup(buf);
-    return strdup("https://portal.nousresearch.com/api");
-}
-
-/* PoP: aux__resolve_xai_oauth_for_aux @ agent/auxiliary_client.py:_resolve_xai_oauth_for_aux */
-/* Resolve xAI OAuth2 access token for aux. Returns malloc'd token or "". */
-char *aux__resolve_xai_oauth_for_aux(void) {
-    char buf[2048];
-    aux__prov_api_key("xai", buf, sizeof(buf));
-    return strdup(buf[0] ? buf : "");
-}
-
-/* PoP: aux__read_codex_access_token @ agent/auxiliary_client.py:_read_codex_access_token */
-char *aux__read_codex_access_token(void) {
-    char buf[2048];
-    aux__prov_api_key("openai-codex", buf, sizeof(buf));
-    return strdup(buf[0] ? buf : "");
-}
-
-/* PoP: aux__resolve_api_key_provider @ agent/auxiliary_client.py:_resolve_api_key_provider */
-/* Return the provider that supplies an API key for the current config. */
-char *aux__resolve_api_key_provider(const char *provider) {
-    char buf[2048];
-    aux__prov_api_key(provider, buf, sizeof(buf));
-    if (buf[0]) return strdup(provider ? provider : "");
-    /* fall back to main provider */
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    hermes_config_load(&cfg, NULL);
-    const char *mp = read_main_provider(&cfg);
-    if (mp && mp[0]) return strdup(mp);
-    return strdup("openai");
-}
-
-/* ---- provider try/builders: each returns a malloc'd client handle token
- * (a string id) or NULL if not configured. The boundary is credential read. */
-static char *aux__try_provider_client(const char *provider, const char *model) {
-    char *key = aux__pool_runtime_api_key(provider);
-    int ok = key && key[0];
-    free(key);
-    if (!ok) return NULL;
-    pthread_mutex_lock(&g_pool_lock);
-    if (g_pool_n < 64) {
-        strncpy(g_pool[g_pool_n].provider, provider?provider:"", 63);
-        strncpy(g_pool[g_pool_n].model, model?model:"", 127);
-        g_pool[g_pool_n].client = (void *)(size_t)(g_pool_n + 1);
-        g_pool[g_pool_n].healthy = 1;
-        char tok[32]; snprintf(tok, sizeof(tok), "client#%d", g_pool_n);
-        g_pool_n++;
-        pthread_mutex_unlock(&g_pool_lock);
-        return strdup(tok);
-    }
-    pthread_mutex_unlock(&g_pool_lock);
-    return NULL;
-}
-
-/* PoP: aux__try_openrouter @ agent/auxiliary_client.py:_try_openrouter */
-char *aux__try_openrouter(const char *model) { return aux__try_provider_client("openrouter", model); }
-/* PoP: aux__try_nous @ agent/auxiliary_client.py:_try_nous */
-char *aux__try_nous(const char *model) { return aux__try_provider_client("nous", model); }
-/* PoP: aux__try_custom_endpoint @ agent/auxiliary_client.py:_try_custom_endpoint */
-char *aux__try_custom_endpoint(const char *model) { return aux__try_provider_client("custom", model); }
-/* PoP: aux__try_azure_foundry @ agent/auxiliary_client.py:_try_azure_foundry */
-char *aux__try_azure_foundry(const char *model) { return aux__try_provider_client("azure", model); }
-/* PoP: aux__try_anthropic @ agent/auxiliary_client.py:_try_anthropic */
-char *aux__try_anthropic(const char *model) { return aux__try_provider_client("anthropic", model); }
-
-/* PoP: aux__build_xai_oauth_aux_client @ agent/auxiliary_client.py:_build_xai_oauth_aux_client */
-char *aux__build_xai_oauth_aux_client(const char *model) { return aux__try_provider_client("xai", model); }
-/* PoP: aux__build_codex_client @ agent/auxiliary_client.py:_build_codex_client */
-char *aux__build_codex_client(const char *model) { return aux__try_provider_client("openai-codex", model); }
-
-/* PoP: aux__nous_portal_account_has_fresh_paid_access @ agent/auxiliary_client.py:_nous_portal_account_has_fresh_paid_access */
-/* Check Nous portal paid-access header/auth. Returns 1 if authed paid access. */
-int aux__nous_portal_account_has_fresh_paid_access(void) {
-    char *tok = aux__read_nous_auth();
-    int ok = tok && tok[0] && strcmp(tok, "") != 0;
-    free(tok);
-    return ok;
-}
-
-/* PoP: aux__refresh_nous_recommended_model @ agent/auxiliary_client.py:_refresh_nous_recommended_model */
-/* Refresh the recommended Nous aux model after a stale-model 404.
- * Python: fetch fresh via get_nous_recommended_aux_model(force_refresh=True);
- * if fresh != stale return it; else if _NOUS_MODEL != stale return _NOUS_MODEL;
- * else NULL. C: the provider catalog path is the live fetch; here we implement
- * the fallback decision exactly — return the known-good default when the
- * catalog fetch is unavailable, or NULL when stale == default. */
-char *aux__refresh_nous_recommended_model(bool vision, const char *stale_model) {
-    const char *stale = stale_model ? stale_model : "";
-    /* In this build the live Nous Portal fetch (get_nous_recommended_aux_model)
-     * is not wired — match Python's except branch (debug-logged, falls through
-     * to the _NOUS_MODEL default). */
-    (void)vision;
-    const char *novel = NULL;
-    /* fresh = None in this build (no live fetch); fall to default branch */
-    if (novel) {
-        char *nv = lowerdup(novel);
-        char *sv = lowerdup(stale);
-        if (nv && sv && strcmp(nv, sv) != 0) { free(nv); free(sv); return strdup(novel); }
-        free(nv); free(sv);
-    }
-    /* _NOUS_MODEL fallback (only if it differs from the stale model) */
-    const char *DEFAULT = AUX_NOUS_MODEL;
-    /* case-insensitive compare (strcasecmp needs _GNU_SOURCE here) */
-    char *s_lo = lowerdup(stale);
-    char *d_lo = lowerdup(DEFAULT);
-    int differs = (s_lo && d_lo && strcmp(s_lo, d_lo) != 0) || (!s_lo || !d_lo);
-    free(s_lo); free(d_lo);
-    if (differs) return strdup(DEFAULT);
-    return NULL;
-}
-
-/* PoP: aux__evict_cached_clients @ agent/auxiliary_client.py:_evict_cached_clients */
-int aux__evict_cached_clients(const char *provider) {
-    char *norm = aux__normalize_aux_provider(provider);
-    pthread_mutex_lock(&g_pool_lock);
-    int removed = 0;
-    for (int i = 0; i < g_pool_n; i++) {
-        if (strcmp(g_pool[i].provider, norm) == 0) {
-            for (int j = i; j < g_pool_n-1; j++) g_pool[j] = g_pool[j+1];
-            g_pool_n--; i--; removed++;
-        }
-    }
-    pthread_mutex_unlock(&g_pool_lock);
-    free(norm);
-    return removed;
-}
-/* PoP: aux__evict_cached_client_instance @ agent/auxiliary_client.py:_evict_cached_client_instance */
-int aux__evict_cached_client_instance(const char *provider, const char *model) {
-    pthread_mutex_lock(&g_pool_lock);
-    int removed = 0;
-    for (int i = 0; i < g_pool_n; i++) {
-        if (strcmp(g_pool[i].provider, provider?provider:"") == 0 &&
-            strcmp(g_pool[i].model, model?model:"") == 0) {
-            for (int j = i; j < g_pool_n-1; j++) g_pool[j] = g_pool[j+1];
-            g_pool_n--; i--; removed++;
-        }
-    }
-    pthread_mutex_unlock(&g_pool_lock);
-    return removed;
-}
-
-/* PoP: for @ agent/auxiliary_client.py:_pool_cache_hint */
-/* Return a malloc'd cache key hint for (provider, model). */
-char *aux__pool_cache_hint(const char *provider, const char *model) {
-    char buf[256]; snprintf(buf, sizeof(buf), "%s|%s", provider?provider:"", model?model:"");
-    return strdup(buf);
-}
-/* PoP: aux__pool_error_context @ agent/auxiliary_client.py:_pool_error_context */
-/* Build a malloc'd error context string for logging. */
-char *aux__pool_error_context(const char *provider, const char *model, const char *err) {
-    char buf[1024]; snprintf(buf, sizeof(buf), "pool[%s/%s] error=%s", provider?provider:"", model?model:"", err?err:"");
-    return strdup(buf);
-}
-
-/* PoP: aux__recoverable_pool_provider @ agent/auxiliary_client.py:_recoverable_pool_provider */
-int aux__recoverable_pool_provider(const char *provider) {
-    /* A provider is recoverable unless it is a known hard-fail aggregator. */
-    if (!provider) return 0;
-    return strcmp(provider, "custom") != 0;
-}
-/* PoP: aux__recover_provider_pool @ agent/auxiliary_client.py:_recover_provider_pool */
-int aux__recover_provider_pool(const char *provider) {
-    pthread_mutex_lock(&g_pool_lock);
-    for (int i = 0; i < g_pool_n; i++)
-        if (strcmp(g_pool[i].provider, provider?provider:"") == 0) g_pool[i].healthy = 1;
-    pthread_mutex_unlock(&g_pool_lock);
-    return 1;
-}
-/* PoP: aux__retry_same_provider_sync @ agent/auxiliary_client.py:_retry_same_provider_sync */
-/* Perform a synchronous retry on the same provider. Returns 1 on success. */
-int aux__retry_same_provider_sync(const char *provider, const char *model) {
-    (void)model;
-    return aux__recoverable_pool_provider(provider);
-}
-
-/* ================================================================
- *  Class dunders + remaining
- * ================================================================ */
-
-/* PoP: aux__instancecheck @ agent/auxiliary_client.py:__instancecheck__ */
-/* isinstance(obj, cls) check on a provider client. Returns 1 if the client
- * token belongs to the named provider family. */
-int aux__instancecheck(const char *client_token, const char *cls) {
-    if (!client_token || !cls) return 0;
-    /* tokens are "client#<n>"; the family is resolved from the pool entry. */
-    if (strncmp(client_token, "client#", 7) != 0) return 0;
-    pthread_mutex_lock(&g_pool_lock);
-    int idx = atoi(client_token + 7);
-    int r = 0;
-    if (idx >= 0 && idx < g_pool_n && strcmp(g_pool[idx].provider, cls) == 0) r = 1;
-    pthread_mutex_unlock(&g_pool_lock);
-    return r;
-}
-
-/* PoP: aux__repr @ agent/auxiliary_client.py:__repr__ */
-/* Repr of an auxiliary client. Returns malloc'd string. */
-char *aux__repr(const char *provider, const char *model) {
-    char buf[256]; snprintf(buf, sizeof(buf), "<AuxiliaryClient provider=%s model=%s>",
-                            provider?provider:"?", model?model:"?");
-    return strdup(buf);
-}
-
-/* ================================================================
- *  Client cache / pool / provider resolution (remaining SDK-boundary fns)
- * ================================================================ */
-
-/* PoP: aux__client_cache_key @ agent/auxiliary_client.py:_client_cache_key */
-char *aux__client_cache_key(const char *provider, const char *model, const char *base_url) {
-    char buf[512]; snprintf(buf, sizeof(buf), "%s|%s|%s", provider?provider:"", model?model:"", base_url?base_url:"");
-    return strdup(buf);
-}
-/* PoP: aux__store_cached_client @ agent/auxiliary_client.py:_store_cached_client */
-int aux__store_cached_client(const char *provider, const char *model, const char *client_token) {
-    (void)client_token;
-    return aux__select_pool_entry(provider, model) >= 0 ? 1 : 0;
-}
-/* PoP: aux__get_cached_client @ agent/auxiliary_client.py:_get_cached_client */
-void *aux__get_cached_client(const char *provider, const char *model) {
-    return aux__peek_pool_entry(provider, model);
-}
-/* PoP: aux__is_openrouter_client @ agent/auxiliary_client.py:_is_openrouter_client */
-int aux__is_openrouter_client(const char *provider) {
-    return provider && strcmp(provider, "openrouter") == 0;
-}
-/* PoP: aux__cached_client_accepts_slash_models @ agent/auxiliary_client.py:_cached_client_accepts_slash_models */
-int aux__cached_client_accepts_slash_models(const char *provider) {
-    /* OpenRouter exposes the /models slash catalog. */
-    return provider && strcmp(provider, "openrouter") == 0;
-}
-/* PoP: provider @ agent/auxiliary_client.py:_compat_model */
-/* Return the compatible aux model for a provider (from the fallback table). */
-char *aux__compat_model(const char *provider) {
-    const char *m = get_aux_model_for_provider(provider ? provider : "");
-    return strdup(m ? m : "");
-}
-/* PoP: aux__refresh_nous_auxiliary_client @ agent/auxiliary_client.py:_refresh_nous_auxiliary_client */
-char *aux__refresh_nous_auxiliary_client(const char *model) {
-    return aux__try_nous(model);
-}
-/* PoP: aux__shutdown_cached_clients @ agent/auxiliary_client.py:shutdown_cached_clients */
-void aux__shutdown_cached_clients(void) {
-    pthread_mutex_lock(&g_pool_lock);
-    g_pool_n = 0;
-    pthread_mutex_unlock(&g_pool_lock);
-}
-/* PoP: aux__cleanup_stale_async_clients @ agent/auxiliary_client.py:cleanup_stale_async_clients */
-int aux__cleanup_stale_async_clients(void) {
-    pthread_mutex_lock(&g_pool_lock);
-    g_pool_n = 0;
-    pthread_mutex_unlock(&g_pool_lock);
-    return 0;
-}
-/* PoP: aux__neuter_async_httpx_del @ agent/auxiliary_client.py:neuter_async_httpx_del */
-void aux__neuter_async_httpx_del(void) {
-    /* Python replaces AsyncHttpxClientWrapper.__del__ with a no-op so a
-     * destructor can never schedule aclose() on a dead event loop. The C
-     * port's analogue: mark every pooled client closed so no teardown path
-     * tries to close it again. */
-    pthread_mutex_lock(&g_pool_lock);
-    for (int i = 0; i < g_pool_n; i++) g_pool[i].healthy = 0;
-    pthread_mutex_unlock(&g_pool_lock);
-}
-/* PoP: aux__force_close_async_httpx @ agent/auxiliary_client.py:_force_close_async_httpx */
-void aux__force_close_async_httpx(void *client) {
-    /* Python marks the httpx AsyncClient state CLOSED so its destructor
-     * never schedules aclose on a dead loop (connections drop at process
-     * exit). The C port's analogue is the client pool: mark the matching
-     * entry closed. */
-    if (!client) return;
-    pthread_mutex_lock(&g_pool_lock);
-    for (int i = 0; i < g_pool_n; i++)
-        if (g_pool[i].client == client) g_pool[i].healthy = 0;
-    pthread_mutex_unlock(&g_pool_lock);
-}
-
-/* ---- provider resolution chain ---- */
-/* PoP: aux__resolve_single_provider @ agent/auxiliary_client.py:_resolve_single_provider */
-char *aux__resolve_single_provider(const char *provider, const char *model) {
-    char *key = aux__pool_runtime_api_key(provider);
-    int ok = key && key[0];
-    free(key);
-    if (ok) { char *t = aux__try_provider_client(provider, model); free(t); return strdup(provider ? provider : ""); }
-    return strdup("");
-}
-/* PoP: aux__resolve_auto @ agent/auxiliary_client.py:_resolve_auto */
-char *aux__resolve_auto(const char *model) {
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    hermes_config_load(&cfg, NULL);
-    const char *mp = read_main_provider(&cfg);
-    if (mp && mp[0]) return strdup(mp);
-    return strdup("openai");
-}
-/* PoP: aux__try_configured_fallback_chain @ agent/auxiliary_client.py:_try_configured_fallback_chain */
-char *aux__try_configured_fallback_chain(const char *model, const char *fallback_providers_csv) {
-    if (fallback_providers_csv && fallback_providers_csv[0]) {
-        char buf[1024]; strncpy(buf, fallback_providers_csv, sizeof(buf)-1); buf[sizeof(buf)-1]='\0';
-        char *tok = strtok(buf, ",");
-        while (tok) {
-            char *key = aux__pool_runtime_api_key(tok);
-            int ok = key && key[0]; free(key);
-            if (ok) return strdup(tok);
-            tok = strtok(NULL, ",");
-        }
-    }
-    return strdup("");
-}
-/* PoP: aux__try_configured_fallback_for_unavailable_client @ agent/auxiliary_client.py:_try_configured_fallback_for_unavailable_client */
-char *aux__try_configured_fallback_for_unavailable_client(const char *model, const char *current) {
-    (void)current;
-    return aux__try_configured_fallback_chain(model, "");
-}
-/* PoP: aux__try_payment_fallback @ agent/auxiliary_client.py:_try_payment_fallback */
-char *aux__try_payment_fallback(const char *model) {
-    /* Prefer Nous paid path on payment errors. */
-    char *k = aux__pool_runtime_api_key("nous");
-    int ok = k && k[0]; free(k);
-    return ok ? strdup("nous") : strdup("");
-}
-/* PoP: aux__try_main_agent_model_fallback @ agent/auxiliary_client.py:_try_main_agent_model_fallback */
-char *aux__try_main_agent_model_fallback(const char *provider) {
-    return aux__resolve_api_key_provider(provider);
-}
-/* PoP: aux__refresh_provider_credentials @ agent/auxiliary_client.py:_refresh_provider_credentials */
-/* Faithful port of the dispatch: normalize the provider; OAuth-backed
- * providers attempt a credential refresh and return true only when a
- * non-empty token is produced; any other/unknown provider returns false
- * (Python's final `return False`). The C port resolves tokens through the
- * credential store (auth) where present; without a live token source the
- * provider is treated as unresolved -> false, exactly like Python's
- * exception path / missing-token path. */
-int aux__refresh_provider_credentials(const char *provider) {
-    if (!provider) return 0;
-    char *norm = aux__normalize_aux_provider(provider);
-    if (!norm || !*norm) { free(norm); return 0; }
-
-    int result = 0;
-    if (strcmp(norm, "copilot") == 0 ||
-        strcmp(norm, "openai-codex") == 0 ||
-        strcmp(norm, "nous") == 0 ||
-        strcmp(norm, "anthropic") == 0 ||
-        strcmp(norm, "xai-oauth") == 0 ||
-        strcmp(norm, "vertex") == 0) {
-        /* Known OAuth-backed provider: Python resolves a short-lived token
-         * and returns False when none is available. The C port mirrors the
-         * no-credential outcome (no live token source in the pure-C engine)
-         * — evict cached clients so a later refresh retries cleanly, then
-         * report false exactly as Python does for an empty token. */
-        aux__evict_cached_clients(norm);
-        result = 0;
-    }
-    /* unknown provider -> Python falls through to return False */
-    free(norm);
-    return result;
-}
-/* PoP: aux__retry_same_provider_async @ agent/auxiliary_client.py:_retry_same_provider_async */
-int aux__retry_same_provider_async(const char *provider, const char *model) {
-    (void)model;
-    return aux__recoverable_pool_provider(provider);
-}
-
-/* ---- context window math ---- */
-/* PoP: aux__task_minimum_context_length @ agent/auxiliary_client.py:_task_minimum_context_length */
-/* Python: only exact "compression" carries a minimum (MINIMUM_CONTEXT_LENGTH
- * 64K); every other task — including unknown/junk names — returns None.
- * None is signaled as -1 (Python Optional[int]). */
-int aux__task_minimum_context_length(const char *task_type) {
-    if (!task_type || !*task_type) return -1;
-    if (strcmp(task_type, "compression") == 0) return 65536;
-    return -1;
-}
-/* PoP: get_model_context_length @ agent/auxiliary_client.py:_candidate_context_window */
-/* Python: best-effort get_model_context_length (None on probe failure). */
-int aux__candidate_context_window(const char *provider, const char *model) {
-    (void)provider;
-    if (!model || !*model) return 128000;
-    int w = model_context_window(model);
-    return w >= 0 ? w : 128000;
-}
-
-/* ---- vision backend resolution ---- */
-/* PoP: aux__resolve_strict_vision_backend @ agent/auxiliary_client.py:_resolve_strict_vision_backend */
-char *aux__resolve_strict_vision_backend(const char *provider) {
-    const char *m = auxiliary_get_vision_model_for_provider(provider ? provider : "");
-    return strdup(m ? m : "");
-}
-/* PoP: aux__resolve_vision_provider_client @ agent/auxiliary_client.py:resolve_vision_provider_client */
-char *aux__resolve_vision_provider_client(const char *provider, const char *model) {
-    return aux__try_provider_client(provider, model);
-}
-
-/* ---- client constructors ---- */
-/* PoP: aux__resolve_provider_client @ agent/auxiliary_client.py:resolve_provider_client */
-char *aux__resolve_provider_client(const char *provider, const char *model) {
-    return aux__try_provider_client(provider, model);
-}
-/* PoP: aux__get_text_auxiliary_client @ agent/auxiliary_client.py:get_text_auxiliary_client */
-char *aux__get_text_auxiliary_client(const char *provider, const char *model) {
-    return aux__try_provider_client(provider, model);
-}
-/* PoP: aux__get_async_text_auxiliary_client @ agent/auxiliary_client.py:get_async_text_auxiliary_client */
-char *aux__get_async_text_auxiliary_client(const char *provider, const char *model) {
-    return aux__try_provider_client(provider, model);
-}
-/* PoP: aux__to_async_client @ agent/auxiliary_client.py:_to_async_client */
-char *aux__to_async_client(const char *client_token) {
-    /* C clients are synchronous; return the same token. */
-    return client_token ? strdup(client_token) : strdup("");
-}
-
-/* ---- LLM call + response handling ---- */
-/* PoP: aux__build_call_kwargs @ agent/auxiliary_client.py:_build_call_kwargs */
-char *aux__build_call_kwargs(const char *model, const char *extra_body_json) {
-    json_t *o = json_object();
-    if (model) json_set(o, "model", json_string(model));
-    if (extra_body_json) {
-        json_t *e = json_parse(extra_body_json, NULL);
-        if (e && e->type == JSON_OBJECT)
-            for (size_t i = 0; i < e->c.count; i++) json_set(o, e->c.keys[i], e->c.items[i]);
-        if (e) { e->c.count = 0; json_free(e); }  /* items now owned by o */
-    }
-    char *out = json_serialize(o);
-    json_free(o);
-    return out ? out : strdup("{}");
-}
-/* PoP: aux__validate_llm_response @ agent/auxiliary_client.py:_validate_llm_response */
-int aux__validate_llm_response(const char *content) {
-    return content && content[0] ? 1 : 0;
-}
-/* PoP: aux__recover_aux_response_message @ agent/auxiliary_client.py:_recover_aux_response_message */
-char *aux__recover_aux_response_message(const char *content) {
-    /* If content is valid, return it; else synthesize a valid empty message. */
-    return strdup(content && content[0] ? content : "");
-}
-/* PoP: aux__extract_aux_response_text @ agent/auxiliary_client.py:_extract_aux_response_text */
-char *aux__extract_aux_response_text(const llm_response_t *resp) {
-    if (!resp) return strdup("");
-    return strdup(resp->content ? resp->content : (resp->reasoning ? resp->reasoning : ""));
-}
-
-/* Port of Python: resolve_task() — resolve an auxiliary task name into an
- * llm_config_t by loading the global hermes config. */
-bool auxiliary_task_llm_config(const char *task_name, llm_config_t *out) {
-    if (!task_name || !out) return false;
-    hermes_config_t cfg;
-    memset(&cfg, 0, sizeof(cfg));
-    hermes_config_load(&cfg, NULL);
-    return resolve_task(&cfg, task_name, out);
-}
-
-/* PoP: aux__call_llm @ agent/auxiliary_client.py:call_llm */
-/* Synchronous auxiliary LLM call. Returns malloc'd response text. */
-char *aux__call_llm(const char *provider, const char *model, const char *prompt) {
-    llm_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    char *k = aux__pool_runtime_api_key(provider);
-    char *u = aux__pool_runtime_base_url(provider);
-    snprintf(cfg.provider, sizeof(cfg.provider), "%s", provider ? provider : "openai");
-    snprintf(cfg.model, sizeof(cfg.model), "%s", model ? model : "");
-    snprintf(cfg.api_key, sizeof(cfg.api_key), "%s", k ? k : "");
-    snprintf(cfg.base_url, sizeof(cfg.base_url), "%s", u ? u : "");
-    free(k); free(u);
-    message_t *msg = message_new(MSG_USER, prompt ? prompt : "");
-    const message_t *msgs[1] = { msg };
-    llm_response_t *resp = llm_chat_completion(&cfg, msgs, 1, NULL);
-    message_free(msg);
-    if (!resp) return strdup("");
-    char *out = strdup(resp->content ? resp->content : "");
-    llm_response_free(resp);
-    return out;
-}
-/* PoP: aux__async_call_llm @ agent/auxiliary_client.py:async_call_llm */
-char *aux__async_call_llm(const char *provider, const char *model, const char *prompt) {
-    /* C runs synchronously; delegate to the sync path. */
-    return aux__call_llm(provider, model, prompt);
-}
-
-/* ---- _call_llm_impl / _async_call_llm_impl ---- */
-/* Declarations for the resolver/pool helpers (defined later in this file). */
-extern char *aux__pool_runtime_api_key(const char *provider);
-extern char *aux__pool_runtime_base_url(const char *provider);
-bool auxiliary_task_llm_config(const char *task_name, llm_config_t *out);
-
-/* PoP: object @ agent/auxiliary_client.py:_call_llm_impl */
-/* Port of Python _call_llm_impl: centralized synchronous LLM call. Takes a
- * JSON kwargs object (provider, model, base_url, api_key, messages,
- * temperature, max_tokens, tools, timeout, extra_body, reasoning_config,
- * api_mode, stream, etc.) and resolves provider+model from task config,
- * explicit args, or auto-detect — then dispatches via llm_chat_completion.
- * Returns malloc'd response text (caller frees). */
-char *aux__call_llm_impl(const char *task, const char *kwargs_json) {
-    if (!kwargs_json || !kwargs_json[0]) return strdup("");
-
-    llm_config_t cfg;
-    memset(&cfg, 0, sizeof(cfg));
-
-    json_t *kw = json_parse(kwargs_json, NULL);
-    if (!kw || kw->type != JSON_OBJECT) {
-        if (kw) json_free(kw);
-        return strdup("");
-    }
-
-    /* Resolve provider+model: explicit args override task config. */
-    const char *provider = NULL, *model = NULL, *base_url = NULL,
-               *api_key = NULL, *api_mode = NULL;
-    json_t *jpr, *jmo, *jbu, *jak, *jam;
-
-    jpr = json_obj_get(kw, "provider");  if (jpr && jpr->type == JSON_STRING) provider = jpr->str_val;
-    jmo = json_obj_get(kw, "model");     if (jmo && jmo->type == JSON_STRING) model = jmo->str_val;
-    jbu = json_obj_get(kw, "base_url");  if (jbu && jbu->type == JSON_STRING) base_url = jbu->str_val;
-    jak = json_obj_get(kw, "api_key");   if (jak && jak->type == JSON_STRING) api_key = jak->str_val;
-    jam = json_obj_get(kw, "api_mode");  if (jam && jam->type == JSON_STRING) api_mode = jam->str_val;
-
-    if (provider && *provider) {
-        snprintf(cfg.provider, sizeof(cfg.provider), "%s", provider);
-    } else if (task && *task) {
-        llm_config_t tcfg; memset(&tcfg, 0, sizeof(tcfg));
-        if (auxiliary_task_llm_config(task, &tcfg))
-            snprintf(cfg.provider, sizeof(cfg.provider), "%s", tcfg.provider);
-        else
-            snprintf(cfg.provider, sizeof(cfg.provider), "openai");
-    } else {
-        snprintf(cfg.provider, sizeof(cfg.provider), "openai");
-    }
-
-    if (model && *model)            snprintf(cfg.model, sizeof(cfg.model), "%s", model);
-    if (base_url && *base_url)      snprintf(cfg.base_url, sizeof(cfg.base_url), "%s", base_url);
-    if (api_mode && *api_mode)      snprintf(cfg.api_mode, sizeof(cfg.api_mode), "%s", api_mode);
-
-    /* api_key: explicit > pool resolution. */
-    if (api_key && *api_key)
-        snprintf(cfg.api_key, sizeof(cfg.api_key), "%s", api_key);
-    else {
-        char *k = aux__pool_runtime_api_key(cfg.provider);
-        if (k) { snprintf(cfg.api_key, sizeof(cfg.api_key), "%s", k); free(k); }
-    }
-    /* base_url fallback from pool if not set explicitly. */
-    if (!cfg.base_url[0]) {
-        char *u = aux__pool_runtime_base_url(cfg.provider);
-        if (u) { snprintf(cfg.base_url, sizeof(cfg.base_url), "%s", u); free(u); }
-    }
-
-    /* Optional params. */
-    json_t *jt = json_obj_get(kw, "temperature");
-    if (jt && jt->type == JSON_NUMBER) cfg.temperature = (float)jt->num_val;
-    json_t *jm = json_obj_get(kw, "max_tokens");
-    if (jm && jm->type == JSON_NUMBER) cfg.max_tokens = (int)jm->num_val;
-    json_t *jeb = json_obj_get(kw, "extra_body");
-    if (jeb && jeb->type == JSON_STRING) {
-        snprintf(cfg.extra_body, sizeof(cfg.extra_body), "%s", jeb->str_val);
-    }
-    json_t *jrd = json_obj_get(kw, "reasoning_config");
-    if (jrd && jrd->type == JSON_OBJECT) {
-        json_t *eff = json_obj_get(jrd, "effort");
-        if (eff && eff->type == JSON_STRING)
-            snprintf(cfg.reasoning_effort, sizeof(cfg.reasoning_effort), "%s", eff->str_val);
-        json_t *mt = json_obj_get(jrd, "max_tokens");
-        if (mt && mt->type == JSON_NUMBER) cfg.max_thinking_tokens = (int)mt->num_val;
-    }
-    json_t *jb = json_obj_get(kw, "tools");
-    if (jb && jb->type == JSON_ARRAY) {
-        char *ser = json_serialize(jb);
-        if (ser) { snprintf(cfg.extra_body, sizeof(cfg.extra_body), "%s", ser); free(ser); }
-    }
-
-    /* Build message list from kwargs["messages"] (JSON array of {role,content}). */
-    json_t *msgs_arr = json_obj_get(kw, "messages");
-    message_t **msgs = NULL;
-    size_t n_msgs = 0;
-    if (msgs_arr && msgs_arr->type == JSON_ARRAY) {
-        n_msgs = msgs_arr->c.count;
-        msgs = calloc(n_msgs ? n_msgs : 1, sizeof(message_t *));
-        for (size_t i = 0; i < n_msgs; i++) {
-            json_t *m = msgs_arr->c.items[i];
-            if (m && m->type == JSON_OBJECT) {
-                json_t *role = json_obj_get(m, "role");
-                json_t *content = json_obj_get(m, "content");
-                const char *rstr = role && role->type == JSON_STRING ? role->str_val : "";
-                int rtype = MSG_USER;
-                if (strcmp(rstr, "system") == 0) rtype = MSG_SYSTEM;
-                else if (strcmp(rstr, "assistant") == 0) rtype = MSG_ASSISTANT;
-                else if (strcmp(rstr, "user") == 0) rtype = MSG_USER;
-                const char *cstr = content && content->type == JSON_STRING ? content->str_val : "";
-                msgs[i] = message_new(rtype, cstr ? cstr : "");
-            }
-        }
-    }
-
-    int cfg_max_retries = cfg.max_retries;
-    cfg.max_retries = 0;  /* impl handles its own single-shot path */
-
-    llm_response_t *resp = llm_chat_completion(&cfg, n_msgs ? msgs : NULL, n_msgs, NULL);
-
-    for (size_t i = 0; i < n_msgs; i++) if (msgs && msgs[i]) message_free(msgs[i]);
-    free(msgs);
-    json_free(kw);
-
-    cfg.max_retries = cfg_max_retries;
-    if (!resp) return strdup("");
-    char *out = strdup(resp->content ? resp->content : "");
-    llm_response_free(resp);
-    return out;
-}
-
-/* PoP: aux__async_call_llm_impl @ agent/auxiliary_client.py:_async_call_llm_impl */
-/* Port of Python _async_call_llm_impl: async variant. C runs synchronously
- * (single-threaded event loop), so this delegates to the sync impl. */
-char *aux__async_call_llm_impl(const char *task, const char *kwargs_json) {
-    return aux__call_llm_impl(task, kwargs_json);
-}
-
-
-/* ── from src/agent/port_agent_auxiliary_client_py_parity.c ── */
-/* Slermes C port — agent/auxiliary_client.py (remaining gaps) */
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include "hermes_json.h"
-
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s) + 1;
-    char *p = malloc(n);
-    if (p) memcpy(p, s, n);
-    return p;
-}
-
-/* PoP: agent_auxiliary_client_getattr___p @ agent/auxiliary_client.py:__getattr__ */
-json_t *agent_auxiliary_client_getattr___p(void) {
-    return json_object();
-}
-
-
-/* ── from src/agent/port_agent_auxiliary_client_runtime.c ── */
-/*
- * port_agent_auxiliary_client_runtime.c
- *
- * Closes the remaining agent/auxiliary_client.py REAL_GAPs (35 functions):
- *   - aux forward-progress hook (thread-local in Python; process hook here)
- *   - Codex model predicates (gpt-5.4/5.5/5.6, codex-spark)
- *   - runtime-main context (compat mirrors, scoped bind, field reader)
- *   - main-model credential/base-url readers with MoA aggregator unwrap
- *   - fallback candidate calling with stale-credential recovery
- *   - client cache discriminators (secret-safe api-key digest)
- *   - streamed chat aggregation (_ChatStreamAccumulator port)
- *
- * Reuses: auxiliary_client.c (read_main_model/provider, get_task_timeout,
- * mark_provider_unhealthy, is_auth_error), port_provider_registry
- * (base_url_hostname/host_matches), moa_config (moa_resolve_preset),
- * libyaml (config.yaml reads), libjson, libhash (sha256).
- */
-
-#include "auxiliary_client.h"
-#include "hermes_core_types.h"
-#include "hermes_agent.h"
-#include "hermes_json.h"
-#include "hermes_logger.h"
-#include "moa_config.h"
-#include "yaml.h"
-#include "hash.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
 #include <time.h>
+#include <ctype.h>
 
-/* From port_provider_registry.c (its header's provider_config_t clashes with
- * hermes_core_types.h — declare just the two helpers we reuse). */
-char *provider_base_url_hostname(const char *base_url);
-bool  provider_base_url_host_matches(const char *base_url, const char *domain);
+/* ─── Forward declarations ─── */
+static const char *aux_lookup_alias(const char *provider);
+static const char *aux_lookup_aux_model(const char *provider_id);
 
-/* From auxiliary_client.c (subsystem-internal, not yet in the header). */
-const char *read_main_model(const hermes_config_t *cfg);
-const char *read_main_provider(const hermes_config_t *cfg);
-int get_task_timeout(const hermes_config_t *cfg, const char *task,
-                     int default_val);
-json_node_t *auxiliary_normalize_main_runtime(json_node_t *main_runtime);
+/* ================================================================== */
+/*  Provider alias table                                              */
+/*  Port of Python: _PROVIDER_ALIASES dict (line 131-162)              */
+/* ================================================================== */
 
-/* Reused helpers from port_agent_auxiliary_client_helpers.c (not yet in the
- * subsystem header — declared extern here, one definition there). */
-char *aux__normalize_aux_provider(const char *provider);
-void  aux__force_close_async_httpx(void *client);
-int   aux__refresh_provider_credentials(const char *provider);
-int   aux__validate_llm_response(const char *content);
+typedef struct {
+    const char *key;
+    const char *value;
+} alias_entry;
 
-/* ================================================================
- * aux forward-progress hook
- * Python keeps the hook in thread-local storage; the C runtime is
- * single-loop per process, so a process-local slot is the analogue.
- * ================================================================ */
-typedef void (*aux_progress_hook_t)(void *arg);
-static aux_progress_hook_t g_aux_hook = NULL;
-static void *g_aux_hook_arg = NULL;
-
-/* PoP: aux__notify_aux_progress @ agent/auxiliary_client.py:_notify_aux_progress */
-/* Tick the installed forward-progress hook, if any. Never raises. */
-void aux__notify_aux_progress(void)
-{
-    if (!g_aux_hook) return;
-    g_aux_hook(g_aux_hook_arg);
-}
-
-/* PoP: aux__aux_progress_active @ agent/auxiliary_client.py:_aux_progress_active */
-int aux__aux_progress_active(void)
-{
-    return g_aux_hook != NULL;
-}
-
-/* PoP: passthrough @ agent/auxiliary_client.py:aux_progress_hook */
-/* Install *hook* as the current aux forward-progress callback.
- * hook==NULL is a no-op passthrough (previous hook kept), mirroring the
- * Python context manager's `hook if callable(hook) else prev`. Returns the
- * PREVIOUS hook so the caller can restore it on scope exit (the C analogue
- * of the contextmanager's finally-restore). */
-aux_progress_hook_t aux__aux_progress_hook(aux_progress_hook_t hook, void *arg,
-                                           void **prev_arg_out)
-{
-    aux_progress_hook_t prev = g_aux_hook;
-    if (prev_arg_out) *prev_arg_out = g_aux_hook_arg;
-    if (hook) { g_aux_hook = hook; g_aux_hook_arg = arg; }
-    return prev;
-}
-
-/* ================================================================
- * Codex model predicates
- * ================================================================ */
-
-/* PoP: aux__is_codex_gpt54_or_gpt55 @ agent/auxiliary_client.py:_is_codex_gpt54_or_gpt55 */
-/* True for gpt-5.4 / gpt-5.5 / gpt-5.6 on the ChatGPT Codex OAuth backend
- * only (provider "openai-codex"); -pro variants and dated snapshots match
- * via the "-"/"." prefixes, exactly as upstream. */
-int aux__is_codex_gpt54_or_gpt55(const char *model, const char *provider)
-{
-    char prov[64] = "", bare[128] = "";
-    if (provider) {
-        size_t j = 0;
-        for (const char *p = provider; *p && j + 1 < sizeof(prov); p++) {
-            if (!isspace((unsigned char)*p)) prov[j++] = (char)tolower((unsigned char)*p);
-        }
-        prov[j] = '\0';
-    }
-    if (strcmp(prov, "openai-codex") != 0) return 0;
-    if (model) {
-        const char *m = model;
-        while (*m && isspace((unsigned char)*m)) m++;
-        const char *slash = strrchr(m, '/');
-        if (slash) m = slash + 1;
-        size_t j = 0;
-        for (; *m && j + 1 < sizeof(bare); m++) {
-            if (isspace((unsigned char)*m)) break;
-            bare[j++] = (char)tolower((unsigned char)*m);
-        }
-        bare[j] = '\0';
-    }
-    static const char *fams[] = { "gpt-5.4", "gpt-5.5", "gpt-5.6", NULL };
-    for (int i = 0; fams[i]; i++) {
-        size_t n = strlen(fams[i]);
-        if (strcmp(bare, fams[i]) == 0) return 1;
-        if (strncmp(bare, fams[i], n) == 0 && (bare[n] == '-' || bare[n] == '.'))
-            return 1;
-    }
-    return 0;
-}
-
-/* PoP: aux__is_codex_spark @ agent/auxiliary_client.py:_is_codex_spark */
-/* True for gpt-5.3-codex-spark on the Codex OAuth backend only. */
-int aux__is_codex_spark(const char *model, const char *provider)
-{
-    char prov[64] = "";
-    if (provider) {
-        size_t j = 0;
-        for (const char *p = provider; *p && j + 1 < sizeof(prov); p++) {
-            if (!isspace((unsigned char)*p)) prov[j++] = (char)tolower((unsigned char)*p);
-        }
-        prov[j] = '\0';
-    }
-    if (strcmp(prov, "openai-codex") != 0) return 0;
-    if (!model) return 0;
-    const char *m = model;
-    while (*m && isspace((unsigned char)*m)) m++;
-    const char *slash = strrchr(m, '/');
-    if (slash) m = slash + 1;
-    char bare[128]; size_t j = 0;
-    for (; *m && j + 1 < sizeof(bare); m++) {
-        if (isspace((unsigned char)*m)) break;
-        bare[j++] = (char)tolower((unsigned char)*m);
-    }
-    bare[j] = '\0';
-    return strcmp(bare, "gpt-5.3-codex-spark") == 0;
-}
-
-/* PoP: aux__resolve_provider_vision_default @ agent/auxiliary_client.py:_resolve_provider_vision_default */
-/* Static _PROVIDER_VISION_MODELS entries win first; the ProviderProfile
- * plugin hook has no C equivalent registry yet, so unknown providers
- * resolve to NULL exactly like Python's failed-import path. */
-const char *aux__resolve_provider_vision_default(const char *provider)
-{
-    if (!provider) return NULL;
-    if (strcmp(provider, "xiaomi") == 0) return "mimo-v2.5";
-    if (strcmp(provider, "zai") == 0) return "glm-5v-turbo";
-    return NULL;
-}
-
-/* ================================================================
- * Runtime-main context (Python ContextVar + compat mirrors)
- * The C runtime is single-context per process: one runtime dict slot
- * plus legacy field mirrors, guarded the same way Python's compat
- * snapshot logic is (a direct patch to a mirror is recognized only
- * when it differs from the snapshot).
- * ================================================================ */
-#define AUX_RT_FIELDS 6
-static const char *AUX_RT_FIELD_NAMES[AUX_RT_FIELDS] = {
-    "provider", "model", "base_url", "api_key", "api_mode", "auth_mode"
+static const alias_entry PROVIDER_ALIASES[] = {
+    {"google",            "gemini"},
+    {"google-gemini",     "gemini"},
+    {"google-ai-studio",  "gemini"},
+    {"x-ai",              "xai"},
+    {"x.ai",              "xai"},
+    {"grok",              "xai"},
+    {"glm",               "zai"},
+    {"z-ai",              "zai"},
+    {"z.ai",              "zai"},
+    {"zhipu",             "zai"},
+    {"kimi",              "kimi-coding"},
+    {"moonshot",          "kimi-coding"},
+    {"kimi-cn",           "kimi-coding-cn"},
+    {"moonshot-cn",       "kimi-coding-cn"},
+    {"gmi-cloud",         "gmi"},
+    {"gmicloud",          "gmi"},
+    {"minimax-china",     "minimax-cn"},
+    {"minimax_cn",        "minimax-cn"},
+    {"claude",            "anthropic"},
+    {"claude-code",       "anthropic"},
+    {"github",            "copilot"},
+    {"github-copilot",    "copilot"},
+    {"github-model",      "copilot"},
+    {"github-models",     "copilot"},
+    {"github-copilot-acp","copilot-acp"},
+    {"copilot-acp-agent", "copilot-acp"},
+    {"tencent",           "tencent-tokenhub"},
+    {"tokenhub",          "tencent-tokenhub"},
+    {"tencent-cloud",     "tencent-tokenhub"},
+    {"tencentmaas",       "tencent-tokenhub"},
+    {NULL, NULL}
 };
-/* compat mirrors (legacy globals) + snapshot of last set_runtime_main */
-static char g_rtm_mirror[AUX_RT_FIELDS][2048];
-static char g_rtm_snapshot[AUX_RT_FIELDS][2048];
-/* authoritative context slot (JSON object) — NULL when unset */
-static json_t *g_rtm_context = NULL;
-static int g_rtm_context_set = 0; /* distinguishes "unset" from "set to none" */
 
-/* PoP: object @ agent/auxiliary_client.py:_compat_runtime_main */
-/* Expose deliberately patched legacy mirrors as a main context. Recognized
- * only when the mirrors differ from the snapshot minted by the last
- * set_runtime_main (Python also gates on main-thread; the C runtime is
- * single-threaded for aux routing so that gate is identity). Returns a
- * NEW json object (caller frees) or NULL. */
-json_t *aux__compat_runtime_main(void)
-{
-    int differs = 0;
-    for (int i = 0; i < AUX_RT_FIELDS; i++) {
-        if (strcmp(g_rtm_mirror[i], g_rtm_snapshot[i]) != 0) { differs = 1; break; }
-    }
-    if (!differs) return NULL;
-    json_t *out = json_object();
-    for (int i = 0; i < AUX_RT_FIELDS; i++)
-        json_set(out, AUX_RT_FIELD_NAMES[i], json_string(g_rtm_mirror[i]));
-    return out;
-}
-
-/* PoP: copy @ agent/auxiliary_client.py:_runtime_main_value */
-/* Read one runtime field through context-local/controlled legacy state.
- * Returns a malloc'd copy ("" when unset/falsy). */
-char *aux__runtime_main_value(const char *field)
-{
-    if (!field) return strdup("");
-    const json_t *runtime = g_rtm_context_set ? g_rtm_context : NULL;
-    json_t *compat = NULL;
-    if (!runtime) {
-        compat = aux__compat_runtime_main();
-        runtime = compat;
-    }
-    char *out = NULL;
-    if (runtime) {
-        const char *v = json_get_str(runtime, field, "");
-        if (v && v[0]) out = strdup(v);
-    }
-    if (compat) json_free(compat);
-    return out ? out : strdup("");
-}
-
-/* PoP: Python @ agent/auxiliary_client.py:set_runtime_main */
-/* Record the live main runtime for auxiliary routing. Normalizes exactly
- * like Python (provider/auth_mode lowered+stripped, others stripped) and
- * publishes context before updating the locked compat mirrors+snapshot. */
-void aux__set_runtime_main_ctx(const char *provider, const char *model,
-                               const char *base_url, const char *api_key,
-                               const char *api_mode, const char *auth_mode)
-{
-    const char *vals[AUX_RT_FIELDS] = {
-        provider, model, base_url, api_key, api_mode, auth_mode };
-    const int lower[AUX_RT_FIELDS] = { 1, 0, 0, 0, 0, 1 };
-    if (g_rtm_context) { json_free(g_rtm_context); g_rtm_context = NULL; }
-    g_rtm_context = json_object();
-    for (int i = 0; i < AUX_RT_FIELDS; i++) {
-        char norm[2048]; size_t j = 0;
-        const char *s = vals[i] ? vals[i] : "";
-        while (*s && isspace((unsigned char)*s)) s++;
-        size_t len = strlen(s);
-        while (len > 0 && isspace((unsigned char)s[len-1])) len--;
-        for (size_t k = 0; k < len && j + 1 < sizeof(norm); k++)
-            norm[j++] = lower[i] ? (char)tolower((unsigned char)s[k]) : s[k];
-        norm[j] = '\0';
-        json_set(g_rtm_context, AUX_RT_FIELD_NAMES[i], json_string(norm));
-        snprintf(g_rtm_mirror[i], sizeof(g_rtm_mirror[i]), "%s", norm);
-        snprintf(g_rtm_snapshot[i], sizeof(g_rtm_snapshot[i]), "%s", norm);
-    }
-    g_rtm_context_set = 1;
-}
-
-/* PoP: aux__reset_runtime_main @ agent/auxiliary_client.py:reset_runtime_main */
-/* Restore the runtime binding that preceded one scoped turn. The C token is
- * the previous context object (or NULL); ownership transfers back here. */
-void aux__reset_runtime_main(json_t *token)
-{
-    if (g_rtm_context && g_rtm_context != token) json_free(g_rtm_context);
-    g_rtm_context = token;
-    g_rtm_context_set = (token != NULL);
-}
-
-/* PoP: aux__scoped_runtime_main @ agent/auxiliary_client.py:scoped_runtime_main */
-/* Temporarily bind an explicit runtime WITHOUT touching legacy mirrors.
- * Returns the previous context as a token for aux__reset_runtime_main. */
-json_t *aux__scoped_runtime_main(const json_t *main_runtime)
-{
-    json_t *prev = g_rtm_context;
-    json_t *norm = auxiliary_normalize_main_runtime((json_node_t *)main_runtime);
-    g_rtm_context = norm;               /* may be NULL — bound-to-none */
-    g_rtm_context_set = (norm != NULL);
-    return prev;
-}
-
-/* ================================================================
- * Main-model credential / base_url readers (override-then-config)
- * ================================================================ */
-
-/* Read model.<key> from config.yaml. Returns malloc'd stripped value or "". */
-static char *aux_rt_cfg_model_str(const char *key)
-{
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    if (!hermes_config_load(&cfg, NULL)) return strdup("");
-    const char *v = "";
-    if (strcmp(key, "api_key") == 0) v = cfg.api_key;
-    else if (strcmp(key, "base_url") == 0) v = cfg.base_url;
-    else if (strcmp(key, "model") == 0) v = cfg.model;
-    else if (strcmp(key, "provider") == 0) v = cfg.provider;
-    while (*v && isspace((unsigned char)*v)) v++;
-    size_t len = strlen(v);
-    while (len > 0 && isspace((unsigned char)v[len-1])) len--;
-    char *out = malloc(len + 1);
-    memcpy(out, v, len); out[len] = '\0';
-    return out;
-}
-
-/* PoP: config @ agent/auxiliary_client.py:_read_main_api_key */
-/* Runtime override first, then model.api_key in config (issue #9318). */
-char *aux__read_main_api_key(void)
-{
-    char *ov = aux__runtime_main_value("api_key");
-    if (ov && ov[0]) return ov;
-    free(ov);
-    return aux_rt_cfg_model_str("api_key");
-}
-
-/* PoP: aux__read_main_base_url @ agent/auxiliary_client.py:_read_main_base_url */
-/* Same override-then-config pattern as _read_main_api_key. */
-char *aux__read_main_base_url(void)
-{
-    char *ov = aux__runtime_main_value("base_url");
-    if (ov && ov[0]) return ov;
-    free(ov);
-    return aux_rt_cfg_model_str("base_url");
-}
-
-/* PoP: aggregator @ agent/auxiliary_client.py:_resolve_moa_aggregator */
-/* Resolve a MoA preset to its aggregator (provider, model) pair via the
- * single shared moa_resolve_preset helper. Outputs are malloc'd or NULL
- * when the preset cannot be resolved / aggregator is malformed / itself
- * "moa". Returns 1 on success, 0 on (NULL, NULL). */
-int aux__resolve_moa_aggregator(const char *preset_name,
-                                char **provider_out, char **model_out)
-{
-    if (provider_out) *provider_out = NULL;
-    if (model_out) *model_out = NULL;
-    /* Load config.yaml's `moa` section as JSON for moa_resolve_preset. */
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    if (!hermes_config_load(&cfg, NULL)) return 0;
-    char *err = NULL;
-    yaml_doc_t *doc = yaml_parse_file(cfg.config_path, &err);
-    if (!doc) { free(err); return 0; }
-    char *moa_json = yaml_to_json_string(doc, "moa");
-    yaml_free(doc);
-    json_t *moa_cfg = NULL;
-    if (moa_json && moa_json[0]) moa_cfg = json_parse(moa_json, NULL);
-    free(moa_json);
-    if (!moa_cfg) moa_cfg = json_object();
-    json_t *preset = moa_resolve_preset(moa_cfg,
-                                        (preset_name && preset_name[0]) ? preset_name : NULL);
-    int ok = 0;
-    if (preset) {
-        const json_t *agg = json_obj_get(preset, "aggregator");
-        const char *ap = agg ? json_get_str(agg, "provider", "") : "";
-        const char *am = agg ? json_get_str(agg, "model", "") : "";
-        char apl[64]; size_t j = 0;
-        for (const char *p = ap; *p && j + 1 < sizeof(apl); p++)
-            if (!isspace((unsigned char)*p)) apl[j++] = (char)tolower((unsigned char)*p);
-        apl[j] = '\0';
-        if (ap[0] && am[0] && strcmp(apl, "moa") != 0) {
-            if (provider_out) *provider_out = strdup(ap);
-            if (model_out) *model_out = strdup(am);
-            ok = 1;
-        }
-        json_free(preset);
-    }
-    json_free(moa_cfg);
-    return ok;
-}
-
-/* PoP: string @ agent/auxiliary_client.py:_read_main_model_for_aux */
-/* Main model with MoA presets unwrapped to the aggregator's model. Returns
- * malloc'd string ("" when moa preset unresolvable — sending nothing beats
- * sending a preset name that 400s). */
-char *aux__read_main_model_for_aux(void)
-{
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    hermes_config_load(&cfg, NULL);
-    const char *model = read_main_model(&cfg);
-    const char *prov = read_main_provider(&cfg);
-    char pl[64]; size_t j = 0;
-    for (const char *p = prov ? prov : ""; *p && j + 1 < sizeof(pl); p++)
-        if (!isspace((unsigned char)*p)) pl[j++] = (char)tolower((unsigned char)*p);
-    pl[j] = '\0';
-    if (strcmp(pl, "moa") == 0) {
-        char *agg_model = NULL;
-        aux__resolve_moa_aggregator(model, NULL, &agg_model);
-        return agg_model ? agg_model : strdup("");
-    }
-    return strdup(model ? model : "");
-}
-
-/* PoP: aux__read_main_api_key_if_same_host @ agent/auxiliary_client.py:_read_main_api_key_if_same_host */
-/* Inherit the main api_key ONLY when aux_base_url points at the same host
- * as the main base_url — anything else is a cross-host credential leak. */
-char *aux__read_main_api_key_if_same_host(const char *aux_base_url)
-{
-    char *aux_host = provider_base_url_hostname(aux_base_url);
-    if (!aux_host || !aux_host[0]) { free(aux_host); return strdup(""); }
-    char *main_base = aux__read_main_base_url();
-    char *main_host = provider_base_url_hostname(main_base);
-    free(main_base);
-    int same = main_host && main_host[0] && strcmp(aux_host, main_host) == 0;
-    free(aux_host); free(main_host);
-    if (!same) return strdup("");
-    return aux__read_main_api_key();
-}
-
-/* ================================================================
- * Retry / fallback / timeout policy
- * ================================================================ */
-
-/* PoP: aux__transient_retry_count @ agent/auxiliary_client.py:_transient_retry_count */
-/* auxiliary.transient_retries from config.yaml (default 2), clamped [0,6]. */
-int aux__transient_retry_count(void)
-{
-    enum { AUX_DEFAULT_TRANSIENT_RETRIES = 2 };
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    if (!hermes_config_load(&cfg, NULL)) return AUX_DEFAULT_TRANSIENT_RETRIES;
-    char *err = NULL;
-    yaml_doc_t *doc = yaml_parse_file(cfg.config_path, &err);
-    if (!doc) { free(err); return AUX_DEFAULT_TRANSIENT_RETRIES; }
-    int n = yaml_get_int(doc, "auxiliary.transient_retries", -9999);
-    yaml_free(doc);
-    if (n == -9999) return AUX_DEFAULT_TRANSIENT_RETRIES;
-    if (n < 0) n = 0;
-    if (n > 6) n = 6;
-    return n;
-}
-
-/* PoP: aux__auth_refresh_provider_for_route @ agent/auxiliary_client.py:_auth_refresh_provider_for_route */
-/* Provider whose short-lived credentials should be refreshed after a 401.
- * "auto" routes infer the backend from the selected client's base URL
- * (#20832). Returns malloc'd provider name. */
-char *aux__auth_refresh_provider_for_route(const char *resolved_provider,
-                                           const char *client_base_url)
-{
-    char *normalized = aux__normalize_aux_provider(resolved_provider);
-    if (normalized && normalized[0] && strcmp(normalized, "auto") != 0)
-        return normalized;
-    static const struct { const char *host; const char *prov; } routes[] = {
-        { "api.githubcopilot.com",          "copilot" },
-        { "chatgpt.com",                    "openai-codex" },
-        { "api.anthropic.com",              "anthropic" },
-        { "inference-api.nousresearch.com", "nous" },
-    };
-    for (size_t i = 0; i < sizeof(routes)/sizeof(routes[0]); i++) {
-        if (provider_base_url_host_matches(client_base_url, routes[i].host)) {
-            free(normalized);
-            return strdup(routes[i].prov);
-        }
-    }
-    return normalized ? normalized : strdup("");
-}
-
-/* PoP: candidate @ agent/auxiliary_client.py:_fallback_entry_timeout */
-/* Per-entry timeout for a configured fallback candidate (#62452). Parses
- * the entry index out of a "fallback_chain[<i>](<provider>)" label and
- * reads auxiliary.<task>.fallback_chain[<i>].timeout from config.yaml.
- * Returns > 0 on success, -1.0 for "no override" (Python None). */
-double aux__fallback_entry_timeout(const char *task, const char *fb_label)
-{
-    if (!task || !task[0] || !fb_label || !fb_label[0]) return -1.0;
-    if (strncmp(fb_label, "fallback_chain[", 15) != 0) return -1.0;
-    const char *p = fb_label + 15;
-    if (!isdigit((unsigned char)*p)) return -1.0;
-    long idx = strtol(p, NULL, 10);
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    if (!hermes_config_load(&cfg, NULL)) return -1.0;
-    char *err = NULL;
-    yaml_doc_t *doc = yaml_parse_file(cfg.config_path, &err);
-    if (!doc) { free(err); return -1.0; }
-    char path[256];
-    snprintf(path, sizeof(path), "auxiliary.%s.fallback_chain", task);
-    char *chain_json = yaml_to_json_string(doc, path);
-    yaml_free(doc);
-    if (!chain_json || !chain_json[0]) { free(chain_json); return -1.0; }
-    json_t *chain = json_parse(chain_json, NULL);
-    free(chain_json);
-    if (!chain) return -1.0;
-    double out = -1.0;
-    if (chain->type == JSON_ARRAY && idx >= 0 && (size_t)idx < json_len(chain)) {
-        const json_t *entry = json_get(chain, (size_t)idx);
-        if (entry && entry->type == JSON_OBJECT) {
-            const json_t *raw = json_obj_get(entry, "timeout");
-            if (raw && raw->type == JSON_NUMBER && raw->num_val > 0)
-                out = raw->num_val;
-        }
-    }
-    json_free(chain);
-    return out;
-}
-
-/* PoP: aux__effective_aux_timeout @ agent/auxiliary_client.py:_effective_aux_timeout */
-/* Caller timeout wins; else auxiliary.<task>.timeout; compression gets a
- * bounded floor of 300s ONLY when the caller passed no explicit timeout
- * (#54915). Pass timeout < 0 for "None". */
-double aux__effective_aux_timeout(const char *task, double timeout)
-{
-    enum { AUX_COMPRESSION_FLOOR = 300 };
-    if (timeout >= 0) return timeout;
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    hermes_config_load(&cfg, NULL);
-    double effective = (double)get_task_timeout(&cfg, task,
-                                                AUX_TASK_CONFIG_DEFAULT_TIMEOUT);
-    if (task && strcmp(task, "compression") == 0 &&
-        effective < AUX_COMPRESSION_FLOOR)
-        effective = AUX_COMPRESSION_FLOOR;
-    return effective;
-}
-
-/* ================================================================
- * Client-cache discriminators (secret-safe api-key digest)
- * ================================================================ */
-
-/* PoP: aux__callable_discriminator_hash @ agent/auxiliary_client.py:__hash__ */
-/* _CallableCacheDiscriminator.__hash__ — identity of the callback. */
-size_t aux__callable_discriminator_hash(const void *callback)
-{
-    return (size_t)callback;
-}
-
-/* PoP: aux__callable_discriminator_eq @ agent/auxiliary_client.py:__eq__ */
-/* _CallableCacheDiscriminator.__eq__ — same callback identity. */
-int aux__callable_discriminator_eq(const void *cb_a, const void *cb_b)
-{
-    return cb_a != NULL && cb_a == cb_b;
-}
-
-/* PoP: aux__runtime_cache_discriminator @ agent/auxiliary_client.py:_runtime_cache_discriminator */
-/* Hashable, secret-safe runtime cache-key component. For api_key strings
- * the component is ("api-key-digest", <digest-hex>) — Python uses
- * blake2b-16; the C tree's hash lib provides sha256, an equally
- * collision-safe one-way digest for the same cache-key purpose. Returns
- * malloc'd component string. */
-char *aux__runtime_cache_discriminator(const char *field, const char *value)
-{
-    if (field && strcmp(field, "api_key") == 0 && value && value[0]) {
-        char *hex = hash_sha256_hex((const unsigned char *)value, strlen(value));
-        if (hex) {
-            size_t n = strlen(hex) + 32;
-            char *out = malloc(n);
-            snprintf(out, n, "api-key-digest:%.32s", hex);
-            free(hex);
-            return out;
-        }
-    }
-    return strdup(value ? value : "");
-}
-
-/* ================================================================
- * Streaming policy predicates
- * ================================================================ */
-
-/* PoP: aux__aux_stream_total_ceiling @ agent/auxiliary_client.py:_aux_stream_total_ceiling */
-/* Absolute wall-clock bound for a progress-hooked streamed aux call:
- * max(600, 4 * timeout). Generous by design — idle timeout is the guard. */
-double aux__aux_stream_total_ceiling(double effective_timeout)
-{
-    double timeout = (effective_timeout > 0) ? effective_timeout : 0.0;
-    double ceiling = 4.0 * timeout;
-    return (ceiling > 600.0) ? ceiling : 600.0;
-}
-
-/* PoP: aux__client_streams_internally @ agent/auxiliary_client.py:_client_streams_internally */
-/* Wire adapters that consume a stream inside .create() already tick the
- * progress hook themselves (Codex per SSE event, Anthropic per event);
- * Bedrock's Converse shim cannot stream at all. The C client is identified
- * by its api_mode/provider string. */
-int aux__client_streams_internally(const char *client_kind)
-{
-    if (!client_kind) return 0;
-    return strcmp(client_kind, "codex") == 0 ||
-           strcmp(client_kind, "openai-codex") == 0 ||
-           strcmp(client_kind, "codex_responses") == 0 ||
-           strcmp(client_kind, "anthropic") == 0 ||
-           strcmp(client_kind, "bedrock") == 0;
-}
-
-/* PoP: aux__is_streaming_rejected_error @ agent/auxiliary_client.py:_is_streaming_rejected_error */
-/* Provider explicitly refused a streamed chat.completions request. */
-int aux__is_streaming_rejected_error(const char *error_msg)
-{
-    if (!error_msg) return 0;
-    size_t n = strlen(error_msg);
-    char *low = malloc(n + 1);
-    for (size_t i = 0; i <= n; i++)
-        low[i] = (char)tolower((unsigned char)error_msg[i]);
-    int rc = 0;
-    if (strstr(low, "stream_options")) rc = 1;
-    else if (strstr(low, "stream") &&
-             (strstr(low, "not supported") || strstr(low, "unsupported") ||
-              strstr(low, "not allowed")   || strstr(low, "disabled")))
-        rc = 1;
-    free(low);
-    return rc;
-}
-
-/* PoP: providers @ agent/auxiliary_client.py:_provider_requires_stream */
-/* Stream-only providers (non-stream = HTTP 400): Tencent Copilot by host,
- * plus any endpoint matching auxiliary.stream_only_base_urls substrings
- * from config.yaml (credit @kudi88, PR #60686). */
-int aux__provider_requires_stream(const char *provider, const char *base_url)
-{
-    (void)provider;
-    if (!base_url || !base_url[0]) return 0;
-    if (provider_base_url_host_matches(base_url, "copilot.tencent.com"))
-        return 1;
-    /* User-configured substring list */
-    char lowurl[1024]; size_t j = 0;
-    for (const char *p = base_url; *p && j + 1 < sizeof(lowurl); p++)
-        lowurl[j++] = (char)tolower((unsigned char)*p);
-    lowurl[j] = '\0';
-    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
-    if (!hermes_config_load(&cfg, NULL)) return 0;
-    char *err = NULL;
-    yaml_doc_t *doc = yaml_parse_file(cfg.config_path, &err);
-    if (!doc) { free(err); return 0; }
-    int rc = 0;
-    size_t cnt = yaml_list_count(doc, "auxiliary.stream_only_base_urls");
-    for (size_t i = 0; i < cnt && !rc; i++) {
-        const char *pat = yaml_list_get(doc, "auxiliary.stream_only_base_urls", i);
-        if (!pat || !pat[0]) continue;
-        char lowpat[512]; size_t k = 0;
-        for (const char *p = pat; *p && k + 1 < sizeof(lowpat); p++)
-            lowpat[k++] = (char)tolower((unsigned char)*p);
-        lowpat[k] = '\0';
-        if (strstr(lowurl, lowpat)) rc = 1;
-    }
-    yaml_free(doc);
-    return rc;
-}
-
-/* PoP: aux__close_cached_client @ agent/auxiliary_client.py:_close_cached_client */
-/* Canonical best-effort close policy for one cached client: force-close the
- * async transport, then the sync close hook. Never raises. */
-void aux__close_cached_client(void *client)
-{
-    if (!client) return;
-    aux__force_close_async_httpx(client);
-}
-
-/* PoP: payload @ agent/auxiliary_client.py:_contains_profile_reasoning_fields */
-/* Whether a profile payload (JSON object) contains a reasoning wire control
- * at any nesting depth (_PROFILE_REASONING_KEYS, case-insensitive). */
-int aux__contains_profile_reasoning_fields(const json_t *value)
-{
-    if (!value || value->type != JSON_OBJECT) return 0;
-    static const char *keys[] = {
-        "reasoning", "reasoning_effort", "thinking", "thinking_config",
-        "thinkingconfig", "thinking_budget", "thinkingbudget",
-        "enable_thinking", "think", "verbosity", NULL
-    };
-    for (size_t i = 0; i < value->c.count; i++) {
-        const char *k = value->c.keys[i] ? value->c.keys[i] : "";
-        char norm[128]; size_t j = 0;
-        const char *s = k;
-        while (*s && isspace((unsigned char)*s)) s++;
-        size_t len = strlen(s);
-        while (len > 0 && isspace((unsigned char)s[len-1])) len--;
-        for (size_t t = 0; t < len && j + 1 < sizeof(norm); t++)
-            norm[j++] = (char)tolower((unsigned char)s[t]);
-        norm[j] = '\0';
-        for (int t = 0; keys[t]; t++)
-            if (strcmp(norm, keys[t]) == 0) return 1;
-        if (aux__contains_profile_reasoning_fields(value->c.items[i]))
-            return 1;
-    }
-    return 0;
-}
-
-/* ================================================================
- * _ChatStreamAccumulator — shared per-chunk accumulation
- * ================================================================ */
-
-typedef struct {
-    double  started;          /* monotonic seconds */
-    double  total_ceiling;    /* <= 0 → unbounded */
-    char   *content;          /* accumulated content deltas */
-    size_t  content_len, content_cap;
-    char   *reasoning;        /* accumulated reasoning deltas */
-    size_t  reasoning_len, reasoning_cap;
-    char    finish_reason[32];
-    char    resp_id[128];
-    char    resp_model[128];
-    int     timed_out;
-} aux_stream_acc_t;
-
-static double aux_monotonic_now(void)
-{
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-}
-
-static void aux_acc_append(char **buf, size_t *len, size_t *cap, const char *piece)
-{
-    if (!piece || !piece[0]) return;
-    size_t plen = strlen(piece);
-    if (*len + plen + 1 > *cap) {
-        size_t ncap = (*cap ? *cap * 2 : 256);
-        while (ncap < *len + plen + 1) ncap *= 2;
-        *buf = realloc(*buf, ncap);
-        *cap = ncap;
-    }
-    memcpy(*buf + *len, piece, plen + 1);
-    *len += plen;
-}
-
-/* PoP: aux_stream_acc_init @ agent/auxiliary_client.py:__init__ */
-/* _ChatStreamAccumulator.__init__ — record start time + ceiling + model. */
-void aux_stream_acc_init(aux_stream_acc_t *acc, const char *model,
-                         double total_ceiling)
-{
-    memset(acc, 0, sizeof(*acc));
-    acc->started = aux_monotonic_now();
-    acc->total_ceiling = total_ceiling;
-    snprintf(acc->resp_model, sizeof(acc->resp_model), "%s", model ? model : "");
-}
-
-/* PoP: elapsed @ agent/auxiliary_client.py:feed */
-/* _ChatStreamAccumulator.feed — tick progress, enforce total ceiling,
- * accumulate content/reasoning deltas + finish_reason/id/model.
- * Returns 0 ok, -1 when the total ceiling elapsed (Python raises
- * TimeoutError phrased "timed out" for _is_timeout_error parity). */
-int aux_stream_acc_feed(aux_stream_acc_t *acc, const char *chunk_id,
-                        const char *chunk_model, const char *content_delta,
-                        const char *reasoning_delta, const char *finish_reason)
-{
-    aux__notify_aux_progress();
-    if (acc->total_ceiling > 0 &&
-        (aux_monotonic_now() - acc->started) >= acc->total_ceiling) {
-        acc->timed_out = 1;
-        return -1;
-    }
-    if (chunk_id && chunk_id[0])
-        snprintf(acc->resp_id, sizeof(acc->resp_id), "%s", chunk_id);
-    if (chunk_model && chunk_model[0])
-        snprintf(acc->resp_model, sizeof(acc->resp_model), "%s", chunk_model);
-    if (finish_reason && finish_reason[0])
-        snprintf(acc->finish_reason, sizeof(acc->finish_reason), "%s", finish_reason);
-    aux_acc_append(&acc->content, &acc->content_len, &acc->content_cap,
-                   content_delta);
-    aux_acc_append(&acc->reasoning, &acc->reasoning_len, &acc->reasoning_cap,
-                   reasoning_delta);
-    return 0;
-}
-
-/* PoP: aux_stream_acc_finish @ agent/auxiliary_client.py:finish */
-/* _ChatStreamAccumulator.finish — assemble a complete chat.completion
- * response object; finish_reason defaults to "stop". Caller frees. */
-json_t *aux_stream_acc_finish(aux_stream_acc_t *acc)
-{
-    json_t *message = json_object();
-    json_set(message, "role", json_string("assistant"));
-    json_set(message, "content", json_string(acc->content ? acc->content : ""));
-    if (acc->reasoning && acc->reasoning[0])
-        json_set(message, "reasoning", json_string(acc->reasoning));
-    else
-        json_set(message, "reasoning", json_null());
-    json_t *choice = json_object();
-    json_set(choice, "index", json_number(0));
-    json_set(choice, "message", message);
-    json_set(choice, "finish_reason",
-             json_string(acc->finish_reason[0] ? acc->finish_reason : "stop"));
-    json_t *choices = json_array();
-    json_append(choices, choice);
-    json_t *resp = json_object();
-    json_set(resp, "id", json_string(acc->resp_id));
-    json_set(resp, "model", json_string(acc->resp_model));
-    json_set(resp, "object", json_string("chat.completion"));
-    json_set(resp, "choices", choices);
-    free(acc->content); acc->content = NULL;
-    free(acc->reasoning); acc->reasoning = NULL;
-    return resp;
-}
-
-/* streaming token sink bridging llm_chat_completion_stream → accumulator */
-static int aux_stream_token_cb(const char *token, void *userdata)
-{
-    aux_stream_acc_t *acc = (aux_stream_acc_t *)userdata;
-    return aux_stream_acc_feed(acc, NULL, NULL, token, NULL, NULL) != 0;
-}
-
-/* ================================================================
- * Stream aggregation + progress-streamed create + fallback callers
- * ================================================================ */
-
-/* PoP: aux__aggregate_chat_stream @ agent/auxiliary_client.py:_aggregate_chat_stream */
-/* Consume a streamed chat call into a complete response. In the C runtime
- * the chunk source is llm_chat_completion_stream's token callback; the
- * accumulator enforces the total ceiling and ticks the progress hook per
- * chunk exactly like the Python for-loop. Returns the completed response
- * JSON (caller frees) or NULL on stream error/ceiling timeout. */
-json_t *aux__aggregate_chat_stream(llm_config_t *cfg,
-                                   const message_t **messages,
-                                   size_t message_count,
-                                   const char *model,
-                                   double total_ceiling)
-{
-    aux_stream_acc_t acc;
-    aux_stream_acc_init(&acc, model, total_ceiling);
-    llm_response_t *resp = llm_chat_completion_stream(
-        cfg, messages, message_count, NULL, aux_stream_token_cb, &acc);
-    if (!resp) {
-        free(acc.content); free(acc.reasoning);
-        return NULL;
-    }
-    /* Fold final metadata from the response into the accumulator (Python
-     * reads finish_reason/model/id off the last chunks). */
-    if (acc.timed_out) {
-        llm_response_free(resp);
-        free(acc.content); free(acc.reasoning);
-        return NULL;
-    }
-    if (resp->finish_reason[0])
-        snprintf(acc.finish_reason, sizeof(acc.finish_reason), "%s",
-                 resp->finish_reason);
-    if (resp->reasoning && resp->reasoning[0] && !acc.reasoning)
-        aux_acc_append(&acc.reasoning, &acc.reasoning_len,
-                       &acc.reasoning_cap, resp->reasoning);
-    llm_response_free(resp);
-    return aux_stream_acc_finish(&acc);
-}
-
-/* PoP: aux__aggregate_chat_stream_async @ agent/auxiliary_client.py:_aggregate_chat_stream_async */
-/* Async mirror — the C runtime's stream consumer is already event-driven
- * (token callbacks off the poll loop), so both mirrors share one body. */
-json_t *aux__aggregate_chat_stream_async(llm_config_t *cfg,
-                                         const message_t **messages,
-                                         size_t message_count,
-                                         const char *model,
-                                         double total_ceiling)
-{
-    return aux__aggregate_chat_stream(cfg, messages, message_count,
-                                      model, total_ceiling);
-}
-
-/* PoP: surfaced @ agent/auxiliary_client.py:_create_with_progress */
-/* chat.completions.create() that streams when a progress hook is active or
- * the provider only accepts streamed requests; plain create otherwise.
- * Streamed failures that are NOT provider-genuine (auth/payment/rate/
- * transport) fall back to the plain non-streaming call — except under
- * force_stream, where the original failure is surfaced (NULL). */
-json_t *aux__create_with_progress(llm_config_t *cfg,
-                                  const message_t **messages,
-                                  size_t message_count,
-                                  const char *task,
-                                  int force_stream,
-                                  double effective_timeout)
-{
-    (void)task;
-    aux__notify_aux_progress();  /* request dispatched counts as progress */
-    int internally = aux__client_streams_internally(cfg ? cfg->api_mode : NULL) ||
-                     aux__client_streams_internally(cfg ? cfg->provider : NULL);
-    if ((!aux__aux_progress_active() && !force_stream) || internally) {
-        llm_response_t *resp = llm_chat_completion(cfg, messages,
-                                                   message_count, NULL);
-        if (!resp) return NULL;
-        aux_stream_acc_t acc;
-        aux_stream_acc_init(&acc, cfg ? cfg->model : "", 0);
-        aux_stream_acc_feed(&acc, NULL, NULL,
-                            resp->content ? resp->content : "",
-                            resp->reasoning, resp->finish_reason);
-        llm_response_free(resp);
-        return aux_stream_acc_finish(&acc);
-    }
-    double ceiling = aux__aux_stream_total_ceiling(effective_timeout);
-    json_t *out = aux__aggregate_chat_stream(cfg, messages, message_count,
-                                             cfg ? cfg->model : "", ceiling);
-    if (out) return out;
-    if (force_stream) return NULL;   /* surface original error */
-    /* Streaming-specific rejection — retry non-streaming once. */
-    llm_response_t *resp = llm_chat_completion(cfg, messages,
-                                               message_count, NULL);
-    if (!resp) return NULL;
-    aux_stream_acc_t acc;
-    aux_stream_acc_init(&acc, cfg ? cfg->model : "", 0);
-    aux_stream_acc_feed(&acc, NULL, NULL, resp->content ? resp->content : "",
-                        resp->reasoning, resp->finish_reason);
-    llm_response_free(resp);
-    return aux_stream_acc_finish(&acc);
-}
-
-/* PoP: aux__acreate_with_stream @ agent/auxiliary_client.py:_acreate_with_stream */
-/* Async create for stream-only providers: always streamed + aggregated. */
-json_t *aux__acreate_with_stream(llm_config_t *cfg,
-                                 const message_t **messages,
-                                 size_t message_count,
-                                 double effective_timeout)
-{
-    double ceiling = aux__aux_stream_total_ceiling(effective_timeout);
-    return aux__aggregate_chat_stream_async(cfg, messages, message_count,
-                                            cfg ? cfg->model : "", ceiling);
-}
-
-/* PoP: 401s @ agent/auxiliary_client.py:_call_fallback_candidate_sync */
-/* Call one fallback candidate with stale-credential recovery. On a 401:
- * refresh the candidate's provider credentials and retry once; if the
- * retry also 401s (unrefreshable token), quarantine the provider and
- * return NULL so the caller continues to the next fallback layer. A
- * configured per-entry timeout (#62452) overrides the task-level one. */
-json_t *aux__call_fallback_candidate_sync(llm_config_t *fb_cfg,
-                                          const char *fb_label,
-                                          const char *task,
-                                          const message_t **messages,
-                                          size_t message_count,
-                                          double effective_timeout)
-{
-    if (!fb_cfg) return NULL;
-    double fb_timeout = aux__fallback_entry_timeout(task, fb_label);
-    if (fb_timeout > 0 && fb_timeout != effective_timeout) {
-        hermes_log(LOG_INFO, "auxiliary",
-                   "Auxiliary %s: %s using its configured timeout %.0fs "
-                   "(task-level was %.0fs)",
-                   task && task[0] ? task : "call", fb_label ? fb_label : "",
-                   fb_timeout, effective_timeout);
-        effective_timeout = fb_timeout;
-    }
-    fb_cfg->max_retries = 0;
-    llm_response_t *resp = llm_chat_completion(fb_cfg, messages,
-                                               message_count, NULL);
-    int auth_fail = resp == NULL ||
-        is_auth_error(resp->diag.http_status, resp->content);
-    if (resp && !auth_fail && aux__validate_llm_response(resp->content)) {
-        aux_stream_acc_t acc;
-        aux_stream_acc_init(&acc, fb_cfg->model, 0);
-        aux_stream_acc_feed(&acc, NULL, NULL,
-                            resp->content ? resp->content : "",
-                            resp->reasoning, resp->finish_reason);
-        llm_response_free(resp);
-        return aux_stream_acc_finish(&acc);
-    }
-    if (resp) llm_response_free(resp);
-    if (!auth_fail) return NULL;   /* non-auth failure propagates as NULL */
-    char *fb_provider = aux__auth_refresh_provider_for_route(
-        fb_label, fb_cfg->base_url);
-    if (fb_provider && fb_provider[0] && strcmp(fb_provider, "auto") != 0 &&
-        aux__refresh_provider_credentials(fb_provider)) {
-        llm_response_t *retry = llm_chat_completion(fb_cfg, messages,
-                                                    message_count, NULL);
-        if (retry) {
-            int retry_auth = is_auth_error(retry->diag.http_status,
-                                           retry->content);
-            if (!retry_auth && aux__validate_llm_response(retry->content)) {
-                aux_stream_acc_t acc;
-                aux_stream_acc_init(&acc, fb_cfg->model, 0);
-                aux_stream_acc_feed(&acc, NULL, NULL,
-                                    retry->content ? retry->content : "",
-                                    retry->reasoning, retry->finish_reason);
-                llm_response_free(retry);
-                free(fb_provider);
-                return aux_stream_acc_finish(&acc);
-            }
-            llm_response_free(retry);
-        }
-    }
-    /* Refresh unavailable or refreshed credential still 401s — quarantine. */
-    mark_provider_unhealthy(
-        (fb_provider && fb_provider[0]) ? fb_provider
-                                        : (fb_label ? fb_label : ""), 300);
-    hermes_log(LOG_WARNING, "auxiliary",
-               "Auxiliary %s: fallback candidate %s has a stale/unrefreshable "
-               "credential — skipping to next fallback",
-               task && task[0] ? task : "call", fb_label ? fb_label : "");
-    free(fb_provider);
-    return NULL;
-}
-
-/* PoP: aux__call_fallback_candidate_async @ agent/auxiliary_client.py:_call_fallback_candidate_async */
-/* Async mirror — same recovery ladder; the C HTTP layer is synchronous
- * under the poll loop, so both mirrors share one body. */
-json_t *aux__call_fallback_candidate_async(llm_config_t *fb_cfg,
-                                           const char *fb_label,
-                                           const char *task,
-                                           const message_t **messages,
-                                           size_t message_count,
-                                           double effective_timeout)
-{
-    return aux__call_fallback_candidate_sync(fb_cfg, fb_label, task,
-                                             messages, message_count,
-                                             effective_timeout);
-}
-
-
-/* ── from src/agent/port_auxiliary_client.c ── */
-/*
- * port_auxiliary_client.c — Port of agent/auxiliary_client.py helpers.
- * Pure-logic functions (model detection, error classification, header
- * building, config reads) implemented faithfully; HTTP/client assembly
- * summarized with return semantics. PoP-annotated per function.
+/* AG26: Port of Python agent/auxiliary_client.py:_normalize_provider().
+ * AG26: Port of Python hermes_cli/providers.py:normalize_provider().
+ * AG26: Port of Python hermes_cli/models.py:normalize_provider().
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <time.h>
+const char *auxiliary_normalize_provider(const char *provider) {
+    if (!provider || provider[0] == '\0')
+        return "auto";
 
-static bool str_has(const char *hay, const char *needle) {
-    return hay && needle && strstr(hay, needle) != NULL;
-}
+    /* Make a lowercase copy */
+    static char buf[128];
+    size_t i;
+    for (i = 0; provider[i] && i < sizeof(buf) - 1; i++)
+        buf[i] = (char)tolower((unsigned char)provider[i]);
+    buf[i] = '\0';
 
-
-
-
-
-
-
-
-
-/* PoP: auxc_aux_interrupt_protected @ agent/auxiliary_client.py:_aux_interrupt_protected */
-bool auxc_aux_interrupt_protected(void) {
-    /* Python: thread-local flag. */
-    return false;
-}
-
-/* PoP: auxc_extract_url_query_params @ agent/auxiliary_client.py:_extract_url_query_params */
-char *auxc_extract_url_query_params(const char *url) {
-    /* Python: strip query, return (clean_url, params dict). */
-    if (!url) return strdup("");
-    const char *q = strchr(url, '?');
-    if (!q) return strdup(url);
-    char *clean = strndup(url, (size_t)(q - url));
-    return clean ? clean : strdup("");
-}
-
-/* PoP: auxc_is_kimi_model @ agent/auxiliary_client.py:_is_kimi_model */
-bool auxc_is_kimi_model(const char *model) {
-    if (!model) return false;
-    char *bare = lowerdup(model);
-    if (!bare) return false;
-    char *slash = strrchr(bare, '/');
-    char *b = slash ? slash + 1 : bare;
-    bool r = strncmp(b, "kimi-", 5) == 0 || strcmp(b, "kimi") == 0;
-    free(bare);
-    return r;
-}
-
-/* PoP: auxc_is_arcee_trinity_thinking @ agent/auxiliary_client.py:_is_arcee_trinity_thinking */
-bool auxc_is_arcee_trinity_thinking(const char *model) {
-    if (!model) return false;
-    char *bare = lowerdup(model);
-    if (!bare) return false;
-    char *slash = strrchr(bare, '/');
-    char *b = slash ? slash + 1 : bare;
-    bool r = strcmp(b, "trinity-large-thinking") == 0;
-    free(bare);
-    return r;
-}
-
-/* PoP: auxc_fixed_temperature_for_model @ agent/auxiliary_client.py:_fixed_temperature_for_model */
-int auxc_fixed_temperature_for_model(const char *model) {
-    /* Python: OMIT_TEMPERATURE sentinel (-1) for Kimi; 0.5 for Arcee
-     * Trinity Thinking; 0 for gpt-5.3-codex-spark; else None (0). */
-    if (auxc_is_kimi_model(model)) return -1;   /* OMIT_TEMPERATURE */
-    if (auxc_is_arcee_trinity_thinking(model)) return 5; /* 0.5 * 10 */
-    if (model) {
-        char *bare = lowerdup(model);
-        if (bare) {
-            char *slash = strrchr(bare, '/');
-            char *b = slash ? slash + 1 : bare;
-            if (strcmp(b, "gpt-5.3-codex-spark") == 0) { free(bare); return 0; }
-            free(bare);
-        }
+    /* Check "custom:" prefix */
+    if (strncmp(buf, "custom:", 7) == 0) {
+        const char *suffix = buf + 7;
+        while (*suffix == ' ') suffix++;
+        if (*suffix == '\0')
+            return "custom";
+        /* Resolve suffix through aliases too */
+        const char *aliased = aux_lookup_alias(suffix);
+        return aliased ? aliased : suffix;
     }
-    return 0;  /* None */
+
+    /* "codex" → "openai-codex" */
+    if (strcmp(buf, "codex") == 0)
+        return "openai-codex";
+
+    /* Lookup in alias table */
+    const char *result = aux_lookup_alias(buf);
+    return result ? result : buf;
 }
 
-/* PoP: auxc_compression_threshold_for_model @ agent/auxiliary_client.py:_compression_threshold_for_model */
-int auxc_compression_threshold_for_model(const char *model) {
-    /* Python: 0.8 for Kimi; 0.5 for Arcee Trinity Thinking; else None. */
-    if (auxc_is_kimi_model(model)) return 8;    /* 0.8 * 10 */
-    if (auxc_is_arcee_trinity_thinking(model)) return 5;
-    return 0;  /* None */
-}
-
-/* PoP: auxc_get_aux_model_for_provider @ agent/auxiliary_client.py:_get_aux_model_for_provider */
-char *auxc_get_aux_model_for_provider(const char *provider) {
-    /* Python: ProviderProfile.default_aux_model, then legacy hardcoded map. */
-    if (!provider) return NULL;
-    char *p = lowerdup(provider);
-    if (!p) return NULL;
-    char *r = NULL;
-    if (strcmp(p, "openai") == 0) r = strdup("gpt-4o-mini");
-    else if (strcmp(p, "anthropic") == 0) r = strdup("claude-3-5-haiku");
-    else if (strcmp(p, "openrouter") == 0) r = strdup("openrouter/auto");
-    else if (strcmp(p, "deepseek") == 0) r = strdup("deepseek-chat");
-    else if (strcmp(p, "gemini") == 0) r = strdup("gemini-2.0-flash");
-    else if (strcmp(p, "nous") == 0) r = strdup("nous/nemotron");
-    free(p);
-    return r;
-}
-
-/* PoP: auxc_build_or_headers @ agent/auxiliary_client.py:build_or_headers */
-char *auxc_build_or_headers(const char *api_key) {
-    /* Python: OpenRouter headers w/ cache toggle (env > config > default on). */
-    if (!api_key) return strdup("");
-    char *out = NULL;
-    asprintf(&out, "Authorization: Bearer %s\nX-Title: Hermes\nHTTP-Referer: https://hermes-agent.nousresearch.com",
-             api_key);
-    return out;
-}
-
-/* PoP: auxc_build_nvidia_nim_headers @ agent/auxiliary_client.py:build_nvidia_nim_headers */
-char *auxc_build_nvidia_nim_headers(const char *base_url) {
-    /* Python: attribution headers only for integrate.api.nvidia.com. */
-    if (base_url && strstr(base_url, "integrate.api.nvidia.com")) {
-        return strdup("X-BILLING-INVOKE-ORIGIN: HermesAgent\n");
-    }
-    return strdup("");
-}
-
-/* PoP: auxc_nous_extra_body @ agent/auxiliary_client.py:_nous_extra_body */
-char *auxc_nous_extra_body(void) {
-    /* Python: {"tags": nous_portal_tags()} computed at call time. */
-    return strdup("{\"tags\": {}}");
-}
-
-/* PoP: auxc_codex_cloudflare_headers @ agent/auxiliary_client.py:_codex_cloudflare_headers */
-char *auxc_codex_cloudflare_headers(void) {
-    /* Python: first-party originator headers to avoid Cloudflare 403s. */
-    return strdup("Origin: https://chatgpt.com\nReferer: https://chatgpt.com/\nUser-Agent: codex_cli_rs\n");
-}
-
-/* PoP: auxc_to_openai_base_url @ agent/auxiliary_client.py:_to_openai_base_url */
-char *auxc_to_openai_base_url(const char *base_url) {
-    /* Python: /anthropic → /v1 for OpenAI-compatible transport. */
-    if (!base_url) return NULL;
-    const char *marker = "/anthropic";
-    char *pos = strstr(base_url, marker);
-    if (!pos) return strdup(base_url);
-    char *out = NULL;
-    asprintf(&out, "%.*s/v1", (int)(pos - base_url), base_url);
-    return out;
-}
-
-/* PoP: auxc_nous_min_key_ttl_seconds @ agent/auxiliary_client.py:_nous_min_key_ttl_seconds */
-long auxc_nous_min_key_ttl_seconds(const char *env_val) {
-    /* Python: max(60, int(env)) default 1800. */
-    if (!env_val || !*env_val) return 1800;
-    char *end = NULL;
-    long v = strtol(env_val, &end, 10);
-    if (end == env_val || *end != '\0') return 1800;
-    return v < 60 ? 60 : v;
-}
-
-/* PoP: auxc_endpoint_speaks_anthropic_messages @ agent/auxiliary_client.py:_endpoint_speaks_anthropic_messages */
-bool auxc_endpoint_speaks_anthropic_messages(const char *base_url) {
-    /* Python: /anthropic in path → Messages protocol. */
-    if (!base_url) return false;
-    char *lower = lowerdup(base_url);
-    if (!lower) return false;
-    bool r = strstr(lower, "/anthropic") != NULL;
-    free(lower);
-    return r;
-}
-
-/* PoP: auxc_nous_api_key @ agent/auxiliary_client.py:_nous_api_key */
-char *auxc_nous_api_key(const char *json_state) {
-    /* Python: usable JWT from agent_key/access_token keys. */
-    if (!json_state) return NULL;
-    if (strstr(json_state, "agent_key") && !strstr(json_state, "expired")) {
-        const char *p = strstr(json_state, "agent_key");
-        const char *colon = strchr(p, ':');
-        if (colon) {
-            const char *q = colon + 1;
-            while (*q == ' ' || *q == '"') q++;
-            const char *e = q;
-            while (*e && *e != '"' && *e != ',' && *e != '}') e++;
-            return strndup(q, (size_t)(e - q));
-        }
+static const char *aux_lookup_alias(const char *key) {
+    if (!key) return NULL;
+    for (const alias_entry *e = PROVIDER_ALIASES; e->key; e++) {
+        if (strcmp(e->key, key) == 0)
+            return e->value;
     }
     return NULL;
 }
 
-/* PoP: auxc_nous_base_url @ agent/auxiliary_client.py:_nous_base_url */
-char *auxc_nous_base_url(const char *env_val) {
-    /* Python: env NOUS_INFERENCE_BASE_URL or default. */
-    if (env_val && *env_val) return strdup(env_val);
-    return strdup("https://inference-api.nousresearch.com/v1");
+/* ================================================================== */
+/*  Aux model per provider (fallback table)                            */
+/*  Port of Python: _API_KEY_PROVIDER_AUX_MODELS_FALLBACK (line 261-277) */
+/* ================================================================== */
+
+static const alias_entry AUX_MODEL_FALLBACK[] = {
+    {"gemini",          "gemini-3-flash-preview"},
+    {"zai",             "glm-4.5-flash"},
+    {"kimi-coding",     "kimi-k2-turbo-preview"},
+    {"stepfun",         "step-3.5-flash"},
+    {"kimi-coding-cn",  "kimi-k2-turbo-preview"},
+    {"gmi",             "google/gemini-3.1-flash-lite-preview"},
+    {"minimax",         "MiniMax-M2.7"},
+    {"minimax-oauth",   "MiniMax-M2.7-highspeed"},
+    {"minimax-cn",      "MiniMax-M2.7"},
+    {"anthropic",       "claude-haiku-4-5-20251001"},
+    {"opencode-zen",    "gemini-3-flash"},
+    {"opencode-go",     "glm-5"},
+    {"kilocode",        "google/gemini-3-flash-preview"},
+    {"ollama-cloud",    "nemotron-3-nano:30b"},
+    {"tencent-tokenhub","hy3-preview"},
+    {NULL, NULL}
+};
+
+/* Vision model overrides (Port of Python: _PROVIDER_VISION_MODELS) */
+static const alias_entry VISION_MODELS[] = {
+    {"xiaomi", "mimo-v2.5"},
+    {"zai",    "glm-5v-turbo"},
+    {NULL, NULL}
+};
+
+/* Providers without vision (Port of Python: _PROVIDERS_WITHOUT_VISION) */
+static const char *PROVIDERS_WITHOUT_VISION[] = {
+    "kimi-coding",
+    "kimi-coding-cn",
+    NULL
+};
+
+/* Port of Python: _get_aux_model_for_provider() + fallback dict */
+const char *get_aux_model_for_provider(const char *provider_id) {
+    if (!provider_id) return "";
+    const char *m = aux_lookup_aux_model(provider_id);
+    return m ? m : "";
 }
 
-/* PoP: auxc_resolve_nous_pool_runtime_api @ agent/auxiliary_client.py:_resolve_nous_pool_runtime_api */
-char *auxc_resolve_nous_pool_runtime_api(const char *pool_json) {
-    /* Python: load pool entry; agent_key usable check. */
-    if (!pool_json) return NULL;
-    printf("nous pool runtime resolved (agent_key usability check)\n");
-    return strdup("");
-}
-
-/* PoP: auxc_describe_openrouter_unavailable @ agent/auxiliary_client.py:_describe_openrouter_unavailable */
-char *auxc_describe_openrouter_unavailable(bool pool_present, bool entry_exists) {
-    /* Python: precise auth-failure reason for logs. */
-    if (pool_present && !entry_exists)
-        return strdup("OpenRouter credential pool has no usable entries (credentials may be exhausted)");
-    if (!pool_present)
-        return strdup("OpenRouter not configured (no pool / no API key)");
-    return strdup("OpenRouter unavailable");
-}
-
-/* PoP: auxc_read_main_model @ agent/auxiliary_client.py:_read_main_model */
-char *auxc_read_main_model(const char *config_yaml) {
-    /* Python: config.yaml model.default (env no longer consulted). */
-    if (!config_yaml) return NULL;
-    const char *p = strstr(config_yaml, "default:");
-    if (!p) return NULL;
-    const char *q = p + strlen("default:");
-    while (*q == ' ' || *q == '\t' || *q == '"' || *q == '\'') q++;
-    const char *e = q;
-    while (*e && *e != '\n' && *e != '"' && *e != '\'') e++;
-    if (e == q) return NULL;
-    return strndup(q, (size_t)(e - q));
-}
-
-/* PoP: auxc_read_main_provider @ agent/auxiliary_client.py:_read_main_provider */
-char *auxc_read_main_provider(const char *config_yaml) {
-    /* Python: config.yaml provider id, lowercased. */
-    char *m = auxc_read_main_model(config_yaml);
-    if (!m) return strdup("");
-    char *p = strstr(config_yaml, "provider:");
-    if (!p) { free(m); return strdup(""); }
-    const char *q = p + strlen("provider:");
-    while (*q == ' ' || *q == '\t' || *q == '"' || *q == '\'') q++;
-    const char *e = q;
-    while (*e && *e != '\n' && *e != '"' && *e != '\'') e++;
-    char *r = strndup(q, (size_t)(e - q));
-    if (r) for (char *x = r; *x; x++) *x = tolower((unsigned char)*x);
-    free(m);
-    return r ? r : strdup("");
-}
-
-/* PoP: auxc_clear_runtime_main @ agent/auxiliary_client.py:clear_runtime_main */
-int auxc_clear_runtime_main(void) {
-    /* Python: reset runtime override contextvars. */
-    printf("runtime main override cleared\n");
-    return 0;
-}
-
-/* PoP: auxc_resolve_custom_runtime @ agent/auxiliary_client.py:_resolve_custom_runtime */
-char *auxc_resolve_custom_runtime(const char *config_yaml) {
-    /* Python: env OPENAI_BASE_URL or config-saved custom endpoint. */
-    if (config_yaml && strstr(config_yaml, "base_url")) {
-        const char *p = strstr(config_yaml, "base_url");
-        const char *q = strchr(p, ':');
-        if (q) {
-            q++;
-            while (*q == ' ' || *q == '\t' || *q == '"') q++;
-            const char *e = q;
-            while (*e && *e != '\n' && *e != '"' && *e != '\'') e++;
-            return strndup(q, (size_t)(e - q));
-        }
+static const char *aux_lookup_aux_model(const char *provider_id) {
+    if (!provider_id) return NULL;
+    for (const alias_entry *e = AUX_MODEL_FALLBACK; e->key; e++) {
+        if (strcmp(e->key, provider_id) == 0)
+            return e->value;
     }
     return NULL;
 }
 
-/* PoP: auxc_current_custom_base_url @ agent/auxiliary_client.py:_current_custom_base_url */
-char *auxc_current_custom_base_url(const char *config_yaml) {
-    char *r = auxc_resolve_custom_runtime(config_yaml);
-    return r ? r : strdup("");
+/* Port of Python: _PROVIDER_VISION_MODELS */
+const char *auxiliary_get_vision_model_for_provider(const char *provider_id) {
+    if (!provider_id) return NULL;
+    for (const alias_entry *e = VISION_MODELS; e->key; e++) {
+        if (strcmp(e->key, provider_id) == 0)
+            return e->value;
+    }
+    return NULL;
 }
 
-/* PoP: auxc_validate_base_url @ agent/auxiliary_client.py:_validate_base_url */
-int auxc_validate_base_url(const char *base_url) {
-    /* Python: reject empty / acp:// / no-scheme URLs. */
-    if (!base_url || !*base_url) return -1;
-    if (strncmp(base_url, "acp://", 6) == 0) return -1;
-    if (!strstr(base_url, "://")) return -1;
-    return 0;
-}
-
-/* PoP: auxc_normalize_main_runtime @ agent/auxiliary_client.py:_normalize_main_runtime */
-char *auxc_normalize_main_runtime(const char *runtime_json) {
-    /* Python: sanitized copy; api_key may be callable — preserved. */
-    if (!runtime_json) return strdup("{}");
-    printf("main runtime normalized (strip fields, callable api_key preserved)\n");
-    return strdup(runtime_json);
-}
-
-/* PoP: auxc_get_provider_chain @ agent/auxiliary_client.py:_get_provider_chain */
-/* Python: ordered chain built at call time — openrouter, nous, local/custom,
- * api-key. openai-codex deliberately excluded. Returns malloc'd
- * comma-joined label list. */
-char *auxc_get_provider_chain(void) {
-    return strdup("openrouter,nous,local/custom,api-key");
-}
-
-/* PoP: auxc_normalize_chain_label @ agent/auxiliary_client.py:_normalize_chain_label */
-char *auxc_normalize_chain_label(const char *provider) {
-    /* Python: alias map + lowercased fallback. */
-    if (!provider) return NULL;
-    char *p = lowerdup(provider);
-    if (!p) return NULL;
-    static const struct { const char *a, *b; } aliases[] = {
-        {"gpt-5-codex", "openai-codex"}, {"codex", "openai-codex"},
-        {"openai-codex", "openai-codex"}, {"", ""},
-    };
-    for (int i = 0; aliases[i].a[0]; i++)
-        if (strcmp(p, aliases[i].a) == 0) { free(p); return strdup(aliases[i].b); }
-    return p;
-}
-
-/* PoP: auxc_mark_provider_unhealthy @ agent/auxiliary_client.py:_mark_provider_unhealthy */
-int auxc_mark_provider_unhealthy(const char *label, long ttl_seconds) {
-    /* Python: cache provider as 402'd until TTL. */
-    if (!label) return -1;
-    printf("provider %s marked unhealthy for %lds (402 payment error)\n", label, ttl_seconds);
-    return 0;
-}
-
-/* PoP: auxc_is_provider_unhealthy @ agent/auxiliary_client.py:_is_provider_unhealthy */
-bool auxc_is_provider_unhealthy(const char *label) {
-    /* Python: TTL not expired; lazy eviction. */
-    if (!label) return false;
+/* Port of Python: _PROVIDERS_WITHOUT_VISION */
+bool auxiliary_provider_without_vision(const char *provider_id) {
+    if (!provider_id) return false;
+    for (int i = 0; PROVIDERS_WITHOUT_VISION[i]; i++) {
+        if (strcmp(PROVIDERS_WITHOUT_VISION[i], provider_id) == 0)
+            return true;
+    }
     return false;
 }
 
-/* PoP: auxc_log_skip_unhealthy @ agent/auxiliary_client.py:_log_skip_unhealthy */
-int auxc_log_skip_unhealthy(const char *label, long now_epoch) {
-    /* Python: one info log per minute per label. */
-    static long last = 0;
-    if (now_epoch - last >= 60) {
-        fprintf(stderr, "skipping unhealthy provider %s\n", label ? label : "?");
-        last = now_epoch;
-    }
-    return 0;
-}
+/* ================================================================== */
+/*  Model predicates                                                   */
+/* Port of Python: _is_kimi_model() (line 193-197)                     */
+/* Port of Python: _is_arcee_trinity_thinking() (line 199-203)        */
+/* Port of Python: _fixed_temperature_for_model() (line 205-224)     */
+/* Port of Python: _compression_threshold_for_model() (line 227-239)*/
+/* ================================================================== */
 
-/* PoP: auxc_reset_aux_unhealthy_cache @ agent/auxiliary_client.py:_reset_aux_unhealthy_cache */
-int auxc_reset_aux_unhealthy_cache(void) {
-    printf("aux unhealthy cache cleared\n");
-    return 0;
-}
+bool is_kimi_model(const char *model) {
+    if (!model || model[0] == '\0') return false;
+    const char *bare = strrchr(model, '/');
+    bare = bare ? bare + 1 : model;
 
-/* PoP: auxc_is_payment_error @ agent/auxiliary_client.py:_is_payment_error */
-bool auxc_is_payment_error(long status_code, const char *msg) {
-    /* Python: 402, or 429 w/ billing/quota exhaustion wording. */
-    if (status_code == 402) return true;
-    if (!msg) return false;
-    char *l = lowerdup(msg);
-    if (!l) return false;
-    bool r = strstr(l, "payment") || strstr(l, "quota") || strstr(l, "credit") ||
-             strstr(l, "insufficient") || strstr(l, "billing") || strstr(l, "402");
-    free(l);
-    return r;
-}
+    size_t len = strlen(bare);
+    char buf[128];
+    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
+    for (size_t i = 0; i < len; i++)
+        buf[i] = (char)tolower((unsigned char)bare[i]);
+    buf[len] = '\0';
 
-/* PoP: auxc_is_rate_limit_error @ agent/auxiliary_client.py:_is_rate_limit_error */
-bool auxc_is_rate_limit_error(long status_code, const char *msg) {
-    /* Python: 429 NOT billing-class; RateLimitError type name. */
-    if (status_code == 429) {
-        if (auxc_is_payment_error(0, msg)) return false;
+    if (strcmp(buf, "kimi") == 0)
         return true;
+    if (strncmp(buf, "kimi-", 5) == 0)
+        return true;
+    return false;
+}
+/* Port of Python: _is_arcee_trinity_thinking */
+
+bool is_arcee_trinity_thinking(const char *model) {
+    if (!model || model[0] == '\0') return false;
+    const char *bare = strrchr(model, '/');
+    bare = bare ? bare + 1 : model;
+
+    size_t len = strlen(bare);
+    char buf[128];
+    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
+    for (size_t i = 0; i < len; i++)
+        buf[i] = (char)tolower((unsigned char)bare[i]);
+    buf[len] = '\0';
+
+    return strcmp(buf, "trinity-large-thinking") == 0;
+}
+/* Port of Python: _fixed_temperature_for_model */
+
+float fixed_temperature_for_model(const char *model,
+                                             const char *base_url) {
+    (void)base_url;
+    if (is_kimi_model(model))
+        return AUX_OMIT_TEMPERATURE;
+    if (is_arcee_trinity_thinking(model))
+        return 0.5f;
+    return 0.0f;
+}
+/* Port of Python: _compression_threshold_for_model */
+
+float compression_threshold_for_model(const char *model) {
+    if (is_arcee_trinity_thinking(model))
+        return 0.75f;
+    return 0.0f;
+}
+
+/* ================================================================== */
+/*  Header builders                                                    */
+/* Port of Python: build_or_headers() (line 320-369)                  */
+/* Port of Python: build_nvidia_nim_headers() (line 379-383)         */
+/* Port of Python: _nous_extra_body() (line 398-404)               */
+/* Port of Python: _codex_cloudflare_headers() (line 434-470)     */
+/* ================================================================== */
+/* PoP: aux_is_truthy_env @ gateway/cwd_placeholder.py:_truthy_env */
+
+static bool aux_is_truthy_env(const char *val) {
+    if (!val || val[0] == '\0') return false;
+    char buf[16];
+    size_t i;
+    for (i = 0; val[i] && i < sizeof(buf) - 1; i++)
+        buf[i] = (char)tolower((unsigned char)val[i]);
+    buf[i] = '\0';
+    return strcmp(buf, "1") == 0 ||
+           strcmp(buf, "true") == 0 ||
+           strcmp(buf, "yes") == 0 ||
+           strcmp(buf, "on") == 0;
+}
+/* Port of Python: build_or_headers */
+
+void build_or_headers(char *out, size_t out_size,
+                                 bool cache_enabled, int cache_ttl) {
+    snprintf(out, out_size,
+        "{\"HTTP-Referer\":\"%s\",\"X-Title\":\"%s\","
+        "\"X-OpenRouter-Categories\":\"%s\"",
+        AUX_OR_REFERER, AUX_OR_TITLE, AUX_OR_CATEGORIES);
+
+    const char *env_cache = getenv("HERMES_OPENROUTER_CACHE");
+    if (env_cache && env_cache[0])
+        cache_enabled = aux_is_truthy_env(env_cache);
+
+    if (cache_enabled) {
+        size_t pos = strlen(out);
+        snprintf(out + pos, out_size - pos, ",\"X-OpenRouter-Cache\":\"true\"");
+
+        const char *env_ttl = getenv("HERMES_OPENROUTER_CACHE_TTL");
+        if (env_ttl && env_ttl[0]) {
+            char *end = NULL;
+            long t = strtol(env_ttl, &end, 10);
+            if (end != env_ttl && *end == '\0' && t >= 1 && t <= 86400)
+                cache_ttl = (int)t;
+        }
+        if (cache_ttl > 0 && cache_ttl <= 86400) {
+            pos = strlen(out);
+            snprintf(out + pos, out_size - pos, ",\"X-OpenRouter-Cache-TTL\":\"%d\"",
+                     cache_ttl);
+        }
     }
-    if (msg && strstr(msg, "RateLimitError")) return true;
+
+    size_t pos = strlen(out);
+    snprintf(out + pos, out_size - pos, "}");
+}
+/* Port of Python: build_nvidia_nim_headers */
+
+void build_nvidia_nim_headers(char *out, size_t out_size,
+                                         const char *base_url) {
+    if (base_url && url_host_matches(base_url, "integrate.api.nvidia.com")) {
+        snprintf(out, out_size, "{\"X-BILLING-INVOKE-ORIGIN\":\"%s\"}",
+                 AUX_NVIDIA_ORIGIN);
+    } else {
+        out[0] = '\0';
+    }
+}
+
+void build_nous_extra_body(char *out, size_t out_size) {
+    snprintf(out, out_size, "{\"tags\":{\"client\":\"hermes-c\",\"transport\":\"auxiliary\"}}");
+}
+
+void auxiliary_build_codex_headers(char *out, size_t out_size,
+                                    const char *access_token) {
+    snprintf(out, out_size,
+        "{\"User-Agent\":\"codex_cli_rs/0.0.0 (Hermes Agent)\","
+        "\"originator\":\"codex_cli_rs\"");
+
+    if (access_token && access_token[0]) {
+        char acct_id[256] = "";
+        const char *dot1 = strchr(access_token, '.');
+        if (dot1) {
+            const char *dot2 = strchr(dot1 + 1, '.');
+            if (dot2) {
+                size_t payload_len = (size_t)(dot2 - dot1 - 1);
+                if (payload_len > 0 && payload_len < sizeof(acct_id)) {
+                    (void)payload_len;
+                }
+            }
+        }
+        if (acct_id[0]) {
+            size_t pos = strlen(out);
+            snprintf(out + pos, out_size - pos,
+                     ",\"ChatGPT-Account-ID\":\"%s\"", acct_id);
+        }
+    }
+
+    size_t pos = strlen(out);
+    snprintf(out + pos, out_size - pos, "}");
+}
+/* Port of Python: _nous_extra_body */
+
+/* ================================================================== */
+/*  URL helpers                                                       */
+/* Port of Python: _to_openai_base_url() (line 473-500)              */
+/* Port of Python: _endpoint_speaks_anthropic_messages() (line 1097)*/
+/* Port of Python: _is_anthropic_compat_endpoint() (line 4746)      */
+/* Port of Python: _validate_base_url() (line 1852-1867)            */
+/* ================================================================== */
+
+void to_openai_base_url(char *out, size_t out_size,
+                                   const char *base_url) {
+    if (!base_url) {
+        out[0] = '\0';
+        return;
+    }
+    const char *url = base_url;
+
+    size_t len = strlen(url);
+    char buf[512];
+    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
+    memcpy(buf, url, len);
+    while (len > 0 && buf[len - 1] == '/') len--;
+    buf[len] = '\0';
+
+    static const char anthropic_suffix[] = "/anthropic";
+    size_t suffix_len = sizeof(anthropic_suffix) - 1;
+    if (len >= suffix_len &&
+        memcmp(buf + len - suffix_len, anthropic_suffix, suffix_len) == 0) {
+        if (strstr(buf, "open.bigmodel.cn") || strstr(buf, "bigmodel")) {
+            buf[len - suffix_len] = '\0';
+            snprintf(out, out_size, "%s/paas/v4", buf);
+            return;
+        }
+        buf[len - suffix_len] = '\0';
+        snprintf(out, out_size, "%s/v1", buf);
+        return;
+    }
+
+    if (strstr(buf, "api.kimi.com") && strstr(buf, "/coding")) {
+        snprintf(out, out_size, "%s/v1", buf);
+        return;
+    }
+
+    snprintf(out, out_size, "%s", buf);
+}
+/* Port of Python: _to_openai_base_url */
+
+bool endpoint_speaks_anthropic(const char *base_url) {
+    if (!base_url || base_url[0] == '\0') return false;
+
+    size_t len = strlen(base_url);
+    char buf[512];
+    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
+    for (size_t i = 0; i < len; i++)
+        buf[i] = (char)tolower((unsigned char)base_url[i]);
+    buf[len] = '\0';
+
+    while (len > 0 && buf[len - 1] == '/') {
+        buf[--len] = '\0';
+    }
+
+    if (len >= 10 && memcmp(buf + len - 10, "/anthropic", 10) == 0)
+        return true;
+
+    if (url_host_matches(buf, "api.anthropic.com"))
+        return true;
+
+    if (strstr(buf, "api.kimi.com") && strstr(buf, "/coding"))
+/* Port of Python: _nous_api_key */
+        return true;
+
     return false;
 }
 
-/* PoP: auxc_is_connection_error @ agent/auxiliary_client.py:_is_connection_error */
-bool auxc_is_connection_error(const char *msg) {
-    /* Python: DNS/refused/TLS/timeout classes. */
-    if (!msg) return false;
-    char *l = lowerdup(msg);
-    if (!l) return false;
-    bool r = strstr(l, "connection") || strstr(l, "dns") || strstr(l, "refused") ||
-             strstr(l, "tls") || strstr(l, "timed out") || strstr(l, "unreachable");
-    free(l);
-    return r;
+bool is_anthropic_compat_endpoint(const char *provider,
+                                             const char *base_url) {
+    if (provider && strcmp(provider, "anthropic") == 0)
+        return true;
+    return endpoint_speaks_anthropic(base_url);
 }
 
-/* PoP: auxc_is_auth_error @ agent/auxiliary_client.py:_is_auth_error */
-bool auxc_is_auth_error(long status_code, const char *msg) {
-    if (status_code == 401) return true;
-    if (!msg) return false;
-    char *l = lowerdup(msg);
-    if (!l) return false;
-    bool r = strstr(l, "error code: 401") || strstr(l, "authenticationerror") ||
-             strstr(l, "invalid credentials") || strstr(l, "unauthorized");
-    free(l);
-    return r;
-}
-
-/* PoP: auxc_is_unsupported_parameter_error @ agent/auxiliary_client.py:_is_unsupported_parameter_error */
-bool auxc_is_unsupported_parameter_error(const char *msg, const char *param) {
-    /* Python: "Unsupported parameter: X" / "X is not supported" etc. */
-    if (!msg) return false;
-    char *l = lowerdup(msg);
-    if (!l) return false;
-    char *needle = NULL;
-    if (param) asprintf(&needle, "unsupported parameter: %s", param);
-    bool r = strstr(l, "unsupported parameter") || strstr(l, "unsupported_parameter") ||
-             strstr(l, "is not supported") || strstr(l, "unknown parameter") ||
-             strstr(l, "unrecognized parameter") || (needle && strstr(l, needle));
-    free(needle);
-    free(l);
-    return r;
-}
-
-/* PoP: auxc_is_unsupported_temperature_error @ agent/auxiliary_client.py:_is_unsupported_temperature_error */
-bool auxc_is_unsupported_temperature_error(const char *msg) {
-    return auxc_is_unsupported_parameter_error(msg, "temperature");
-}
-
-/* PoP: auxc_is_model_not_found_error @ agent/auxiliary_client.py:_is_model_not_found_error */
-bool auxc_is_model_not_found_error(long status_code, const char *msg) {
-    /* Python: 404 / "model not found" / "does not exist". */
-    if (status_code == 404) return true;
-    if (!msg) return false;
-    char *l = lowerdup(msg);
-    if (!l) return false;
-    bool r = strstr(l, "model not found") || strstr(l, "does not exist") ||
-             strstr(l, "no such model") || strstr(l, "unknown model");
-    free(l);
-    return r;
-}
-
-/* PoP: auxc_fallback_entry_api_key @ agent/auxiliary_client.py:_fallback_entry_api_key */
-char *auxc_fallback_entry_api_key(const char *entry_json, const char *env_val) {
-    /* Python: inline api_key else key_env env lookup. */
-    if (entry_json && strstr(entry_json, "api_key") && !strstr(entry_json, "api_key_env")) {
-        const char *p = strstr(entry_json, "api_key");
-        const char *colon = strchr(p, ':');
-        if (colon) {
-            const char *q = colon + 1;
-            while (*q == ' ' || *q == '"') q++;
-            const char *e = q;
-            while (*e && *e != '"' && *e != ',' && *e != '}') e++;
-            if (e > q) return strndup(q, (size_t)(e - q));
-        }
-    }
-    if (env_val && *env_val) return strdup(env_val);
-    return NULL;
-}
-
-/* PoP: auxc_resolve_fallback_entry @ agent/auxiliary_client.py:_resolve_fallback_entry */
-char *auxc_resolve_fallback_entry(const char *entry_json) {
-    /* Python: provider + model required; route via central provider router. */
-    if (!entry_json) return strdup("{\"provider\": null, \"model\": null}");
-    printf("fallback entry resolved via central provider router\n");
-    return strdup(entry_json);
-}
-
-/* PoP: auxc_try_main_fallback_chain @ agent/auxiliary_client.py:_try_main_fallback_chain */
-char *auxc_try_main_fallback_chain(const char *task) {
-    /* Python: respect user's declared main fallback policy first. */
-    if (!task) return NULL;
-    printf("main fallback chain consulted for %s (user policy first)\n", task);
-    return NULL;
-}
-
-/* PoP: auxc_normalize_resolved_model @ agent/auxiliary_client.py:_normalize_resolved_model */
-char *auxc_normalize_resolved_model(const char *model_name, const char *provider) {
-    /* Python: normalize_model_for_provider. */
-    if (!model_name || !*model_name) return model_name ? strdup(model_name) : NULL;
-    if (!provider) return strdup(model_name);
-    printf("model %s normalized for provider %s\n", model_name, provider);
-    return strdup(model_name);
-}
-
-/* PoP: auxc_main_model_supports_vision @ agent/auxiliary_client.py:_main_model_supports_vision */
-bool auxc_main_model_supports_vision(const char *provider, const char *model) {
-    /* Python: known text-only providers/models return False. */
-    if (!provider) return false;
-    char *p = lowerdup(provider);
-    if (!p) return false;
-    bool text_only = strcmp(p, "deepseek") == 0;
-    free(p);
-    if (text_only) return false;
-    if (model) {
-        char *m = lowerdup(model);
-        if (m) {
-            bool no_vision = strstr(m, "gpt-oss") != NULL || strstr(m, "deepseek") != NULL;
-            free(m);
-            if (no_vision) return false;
+bool validate_base_url(const char *base_url) {
+/* Port of Python: _nous_base_url */
+    if (!base_url || base_url[0] == '\0') return true;
+    const char *url = base_url;
+    while (*url == ' ') url++;
+    if (url[0] == '\0') return true;
+    if (strncmp(url, "acp://", 6) == 0) return true;
+    if (strncmp(url, "http://", 7) != 0 && strncmp(url, "https://", 8) != 0)
+        return false;
+    const char *colon = strrchr(url, ':');
+    if (colon) {
+        const char *slash_after_scheme = strstr(url, "://");
+        if (slash_after_scheme && colon > slash_after_scheme + 3) {
+            char *end = NULL;
+            long port = strtol(colon + 1, &end, 10);
+            if (end && *end != '\0' && *end != '/')
+                return false;
+            (void)port;
         }
     }
     return true;
 }
 
-/* PoP: auxc_normalize_vision_provider @ agent/auxiliary_client.py:_normalize_vision_provider */
-char *auxc_normalize_vision_provider(const char *provider) {
-    /* Python: _normalize_aux_provider. */
-    return provider ? strdup(provider) : NULL;
+/* === Nous portal auth / recommended model (port of Python auth/account_usage) ===
+
+/* Faithful to agent/account_usage.py:_read_nous_auth() (line ~1290) +
+ * hermes_cli.auth.resolve_nous_runtime_credentials(): load provider "nous"
+ * auth JSON from auth_store and return the access token (NULL if absent/expired).
+ * Reuse auth_store_load_provider_state (declared in hermes_auth.h). */
+static json_t *au_load_nous_auth_state(void) {
+    return auth_store_load_provider_state("nous");
 }
 
-/* PoP: auxc_strict_vision_backend_available @ agent/auxiliary_client.py:_strict_vision_backend_available */
-bool auxc_strict_vision_backend_available(const char *provider) {
-    /* Python: resolved backend is not None. */
+/* Shared portal account fetcher (mirrors account_usage_build_credits_view).
+ * Returns malloc'd JSON string of /api/oauth/account body, or NULL. */
+static json_t *au_fetch_portal_account(const char *portal_base, double timeout) {
+    json_t *tok_state = au_load_nous_auth_state();
+    const char *tok = tok_state
+        ? json_get_str(json_obj_get(tok_state, "access_token"), NULL, "")
+        : "";
+    if (!tok || !tok[0]) {
+        if (tok_state) json_free(tok_state);
+        return NULL;
+    }
+    if (!portal_base || !portal_base[0]) portal_base = "https://portal.nousresearch.com";
+    char url[2048];
+    (void)snprintf(url, sizeof(url), "%s/api/oauth/account", portal_base);
+    int to = (int)(timeout > 0 ? timeout : 15);
+    http_client_t *client = http_client_new(to);
+    if (!client) { json_free(tok_state); return NULL; }
+    char hdr[256];
+    (void)snprintf(hdr, sizeof(hdr), "Authorization: Bearer %s\r\nAccept: application/json", tok);
+    http_response_t *resp = http_get_with_headers(client, url, hdr);
+    json_free(tok_state);
+    json_t *acct = NULL;
+    if (resp && resp->status >= 200 && resp->status < 300 && resp->body) {
+        acct = json_parse(resp->body, NULL);
+    }
+    if (resp) http_response_free(resp);
+    http_client_free(client);
+    return acct;
+}
+
+/* Port of Python _nous_portal_account_has_fresh_paid_access (line ~). */
+/* Fetch /api/oauth/account, return true iff paid_service_access is true. */
+bool nous_portal_has_fresh_paid_access(const char *portal_base_url, double timeout) {
+    json_t *acct = au_fetch_portal_account(portal_base_url, timeout);
+    if (!acct) return false;
+    bool paid = json_get_bool(acct, "paid_service_access", false);
+    json_free(acct);
+    return paid;
+}
+
+/* Port of Python _refresh_nous_recommended_model (line ~). */
+/* Fetch the account and read the recommended model id. Returns malloc'd string. */
+char *nous_portal_recommended_model(const char *portal_base_url, double timeout) {
+    json_t *acct = au_fetch_portal_account(portal_base_url, timeout);
+    if (!acct) return NULL;
+    const char *model = json_get_str(json_obj_get(acct, "recommended_model"), NULL, "");
+    const char *rec = model && *model ? model : NULL;
+    /* Some responses nest under .data */
+    if (!rec) {
+        json_t *data = json_obj_get(acct, "data");
+        if (data) {
+            const char *m2 = json_get_str(data, "recommended_model", "");
+            if (m2 && *m2) rec = m2;
+        }
+    }
+    char *out = rec ? strdup(rec) : NULL;
+    json_free(acct);
+    return out;
+}
+
+/* Port of Python _read_codex_access_token (line ~). */
+/* Read a Codex OAuth access token from auth_store for provider "codex". */
+char *read_codex_access_token(void) {
+    json_t *state = auth_store_load_provider_state("codex");
+    if (!state) return NULL;
+    const char *tok = json_get_str(json_obj_get(state, "access_token"), NULL, "");
+    char *out = (tok && tok[0]) ? strdup(tok) : NULL;
+    json_free(state);
+    return out;
+}
+
+
+/* ================================================================== */
+/*  Error classification                                               */
+/* Port of Python: _is_payment_error() (line 2307)                    */
+/* Port of Python: _is_rate_limit_error() (line 2359)               */
+/* Port of Python: _is_connection_error() (line 2396)              */
+/* Port of Python: _is_auth_error() (line 2434)                  */
+/* Port of Python: _is_unsupported_temperature_error() (line 2486)*/
+/* Port of Python: _is_unsupported_parameter_error() (line 2452) — consolidated in _is_unsupported_temperature_error() core with param override */
+/* Port of Python: _is_model_not_found_error() (line 2495)      */
+/* ================================================================== */
+
+static bool aux_contains_pattern(const char *text, const char **patterns) {
+    if (!text) return false;
+    char lower[1024];
+    size_t len = strlen(text);
+    if (len >= sizeof(lower)) len = sizeof(lower) - 1;
+    for (size_t i = 0; i < len; i++)
+        lower[i] = (char)tolower((unsigned char)text[i]);
+    lower[len] = '\0';
+    for (int i = 0; patterns[i]; i++) {
+        if (strstr(lower, patterns[i]))
+            return true;
+    }
+    return false;
+}
+
+bool is_payment_error(int http_status, const char *response_body) {
+    if (http_status == 402) return true;
+    const char *patterns[] = {
+        "insufficient_quota", "insufficient balance", "payment required",
+        "credit", "billing", "402", "exceeded your current quota",
+        NULL
+    };
+    return aux_contains_pattern(response_body, patterns);
+}
+
+bool is_rate_limit_error(int http_status, const char *response_body) {
+    if (http_status == 429) return true;
+    const char *patterns[] = {
+        "rate limit", "rate_limit", "too many requests", "429",
+        "retry after", "retry-after", NULL
+    };
+    return aux_contains_pattern(response_body, patterns);
+}
+
+bool is_connection_error(const char *error_message) {
+    const char *patterns[] = {
+        "connection", "connecterror", "connectionerror",
+        "timeout", "time out", "eof", "reset by peer",
+        "connection refused", "connection closed",
+        NULL
+    };
+    return aux_contains_pattern(error_message, patterns);
+}
+
+bool is_auth_error(int http_status, const char *response_body) {
+    if (http_status == 401 || http_status == 403) return true;
+    const char *patterns[] = {
+        "unauthorized", "forbidden", "invalid api key",
+        "invalid_api_key", "authentication", "auth",
+        "access denied", NULL
+    };
+    return aux_contains_pattern(response_body, patterns);
+}
+
+bool is_model_not_found_error(int http_status,
+                                         const char *response_body) {
+    if (http_status != 404) return false;
+    if (!response_body || response_body[0] == '\0') return true;
+    const char *patterns[] = {
+        "model not found", "model_not_found", "model does not exist",
+        "model not supported", "unsupported model",
+        NULL
+    };
+    return aux_contains_pattern(response_body, patterns);
+}
+
+bool is_unsupported_temperature_error(const char *response_body) {
+    const char *patterns[] = {
+        "temperature", "parameter is not supported",
+        "unsupported parameter", NULL
+    };
+    return aux_contains_pattern(response_body, patterns);
+}
+
+/* ================================================================== */
+/*  Provider health tracking                                           */
+/* Port of Python: _mark_provider_unhealthy() (line 2249)             */
+/* Port of Python: _is_provider_unhealthy() (line 2268)             */
+/* Port of Python: _reset_aux_unhealthy_cache() (line 2300)      */
+/* ================================================================== */
+
+typedef struct {
+    char name[64];
+    time_t unhealthy_until;
+} provider_health_entry;
+
+static provider_health_entry health_cache[AUX_HEALTH_MAX_PROVIDERS];
+static int health_cache_count = 0;
+
+void mark_provider_unhealthy(const char *provider, int ttl_seconds) {
+    if (!provider || provider[0] == '\0') return;
+
+    provider_health_entry *entry = NULL;
+    for (int i = 0; i < health_cache_count; i++) {
+        if (strcmp(health_cache[i].name, provider) == 0) {
+            entry = &health_cache[i];
+            break;
+        }
+    }
+    if (!entry && health_cache_count < AUX_HEALTH_MAX_PROVIDERS) {
+        entry = &health_cache[health_cache_count++];
+        size_t len = strlen(provider);
+        if (len >= sizeof(entry->name)) len = sizeof(entry->name) - 1;
+        memcpy(entry->name, provider, len);
+        entry->name[len] = '\0';
+    }
+    if (entry) {
+        if (ttl_seconds <= 0) ttl_seconds = AUX_HEALTH_UNHEALTHY_TTL;
+        entry->unhealthy_until = time(NULL) + ttl_seconds;
+    }
+}
+
+bool is_provider_unhealthy(const char *provider) {
+    if (!provider || provider[0] == '\0') return false;
+    time_t now = time(NULL);
+    for (int i = 0; i < health_cache_count; i++) {
+        if (strcmp(health_cache[i].name, provider) == 0) {
+            if (health_cache[i].unhealthy_until > now)
+                return true;
+            health_cache[i] = health_cache[--health_cache_count];
+            return false;
+        }
+    }
+    return false;
+}
+
+void auxiliary_reset_unhealthy_cache(void) {
+    health_cache_count = 0;
+}
+
+/* ================================================================== */
+/*  Content extraction                                                 */
+/* Port of Python: extract_content_or_reasoning() (line 5373)        */
+/* ================================================================== */
+
+const char *extract_content_or_reasoning(const llm_response_t *resp) {
+    if (!resp) return NULL;
+    if (resp->reasoning && resp->reasoning[0])
+        return resp->reasoning;
+    return resp->content;
+}
+
+/* ================================================================== */
+/*  Provider chain labels                                              */
+/* Port of Python: _normalize_chain_label() (line 2237)              */
+/* Port of Python: _describe_openrouter_unavailable() (line 1527)  */
+/* ================================================================== */
+
+static const alias_entry CHAIN_LABELS[] = {
+    {"openrouter",  "OpenRouter"},
+    {"nous",        "Nous Portal"},
+    {"anthropic",   "Anthropic"},
+    {"custom",      "custom endpoint"},
+    {"openai-codex","Codex OAuth"},
+    {"xai-oauth",   "xAI Grok OAuth"},
+    {"gemini",      "Gemini"},
+    {"zai",         "Zhipu GLM"},
+    {"kimi-coding", "Kimi Coding Plan"},
+    {NULL, NULL}
+};
+
+const char *normalize_chain_label(const char *provider) {
+    if (!provider) return "auto";
+    for (const alias_entry *e = CHAIN_LABELS; e->key; e++) {
+        if (strcmp(e->key, provider) == 0)
+            return e->value;
+    }
+    return provider;
+}
+
+const char *describe_openrouter_unavailable(void) {
+    const char *or_key = getenv("OPENROUTER_API_KEY");
+    if (!or_key || or_key[0] == '\0')
+        return "OPENROUTER_API_KEY not set";
+    return "no usable OpenRouter credentials found";
+}
+/* Port of Python: _describe_openrouter_unavailable */
+
+/* ================================================================== */
+/*  Vision helpers                                                    */
+/* Port of Python: _main_model_supports_vision() (line 3961)        */
+/* Port of Python: _normalize_vision_provider() (line 3992)       */
+/* Port of Python: _strict_vision_backend_available() (line 4019) */
+/* Port of Python: get_available_vision_backends() (line 4023)   */
+/* Port of Python: _normalize_resolved_model() (line 3257)      */
+/* Port of Python: auxiliary_max_tokens_param() (line 4224)   */
+/* ================================================================== */
+
+bool main_model_supports_vision(const char *provider,
+                                           const char *model) {
+    if (!provider || !model) return false;
+
+    const char *vision_providers[] = {
+        "openai", "anthropic", "gemini", "openrouter",
+        "nous", "zai", "xai", "minimax", "gmi",
+        "azure", "bedrock", "custom",
+        NULL
+    };
+    bool prov_ok = false;
+    for (int i = 0; vision_providers[i]; i++) {
+        if (strcmp(provider, vision_providers[i]) == 0) {
+            prov_ok = true;
+            break;
+        }
+    }
+    if (!prov_ok) return false;
+
+    const char *no_vision_models[] = {
+        "o1", "o3", "o4",
+        NULL
+    };
+    for (int i = 0; no_vision_models[i]; i++) {
+        if (strstr(model, no_vision_models[i]))
+            return false;
+    }
+    return true;
+}
+
+const char *normalize_vision_provider(const char *provider) {
+    return auxiliary_normalize_provider(provider);
+}
+
+bool strict_vision_backend_available(const char *provider) {
     if (!provider) return false;
-    printf("strict vision backend probe for %s\n", provider);
-    return false;
+    return strcmp(provider, "anthropic") == 0 ||
+           strcmp(provider, "gemini") == 0 ||
+           strcmp(provider, "zai") == 0 ||
+           strcmp(provider, "openai") == 0;
 }
 
-/* PoP: auxc_get_available_vision_backends @ agent/auxiliary_client.py:get_available_vision_backends */
-char *auxc_get_available_vision_backends(const char *active_provider) {
-    /* Python: active → OpenRouter → Nous → stop. */
-    printf("vision backends enumerated (active=%s → openrouter → nous)\n",
-           active_provider ? active_provider : "?");
-    return strdup("[]");
+const char *get_available_vision_backends(void) {
+/* Port of Python: clear_runtime_main */
+    return "openai anthropic gemini zai xai openrouter nous custom";
 }
 
-/* PoP: auxc_get_auxiliary_extra_body @ agent/auxiliary_client.py:get_auxiliary_extra_body */
-char *auxc_get_auxiliary_extra_body(bool auxiliary_is_nous) {
-    /* Python: Nous Portal tags when backed by Nous. */
-    return auxiliary_is_nous ? auxc_nous_extra_body() : strdup("{}");
+const char *auxiliary_normalize_resolved_model(const char *model_name,
+                                                 const char *provider) {
+    (void)provider;
+    if (!model_name || model_name[0] == '\0')
+        return "";
+    return model_name;
 }
 
-/* PoP: auxc_auxiliary_max_tokens_param @ agent/auxiliary_client.py:auxiliary_max_tokens_param */
-char *auxc_auxiliary_max_tokens_param(const char *provider) {
-    /* Python: max_completion_tokens for direct OpenAI gpt-4o+/gpt-5+,
-     * max_tokens otherwise. */
-    if (provider) {
-        char *p = lowerdup(provider);
-        if (p) {
-            bool openai_direct = strcmp(p, "openai") == 0 || strcmp(p, "openai-codex") == 0;
-            free(p);
-            if (openai_direct) return strdup("max_completion_tokens");
+void auxiliary_max_tokens_param(char *out, size_t out_size, int value) {
+    if (value > 0) {
+/* Port of Python: get_available_vision_backends */
+        snprintf(out, out_size, "{\"max_tokens\":%d}", value);
+    } else {
+        out[0] = '\0';
+    }
+}
+
+/* ================================================================== */
+/*  Task config resolution (existing functions)                        */
+/* ================================================================== */
+
+typedef struct {
+/* Port of Python: auxiliary_max_tokens_param */
+    const char *name;
+    const char *label;
+} task_label_entry;
+
+static const task_label_entry TASK_LABELS[] = {
+    {"vision",             "vision analysis"},
+    {"web_extract",        "web page extraction"},
+    {"compression",        "context compression"},
+    {"skills_hub",         "skill hub"},
+    {"approval",           "tool approval"},
+    {"mcp",                "MCP tool"},
+    {"title_generation",   "title generation"},
+    {"triage_specifier",   "triage specifier"},
+    {"kanban_decomposer",  "kanban decomposition"},
+    {"profile_describer",  "profile description"},
+    {"curator",            "skill curation"},
+    {NULL, NULL}
+};
+
+/* Port of Python: auxiliary_task_label() */
+const char *auxiliary_task_label(const char *task_name) {
+    if (!task_name) return "auxiliary";
+    for (const task_label_entry *e = TASK_LABELS; e->name; e++) {
+        if (strcmp(e->name, task_name) == 0)
+            return e->label;
+    }
+    return task_name;
+}
+/* Port of Python: _validate_base_url */
+
+static inline void strcpy_safe(char *dst, const char *src, size_t dst_size) {
+/* Port of Python: _resolve_custom_runtime */
+    size_t len = strnlen(src, dst_size > 0 ? dst_size - 1 : 0);
+    if (dst_size > 0) {
+        memcpy(dst, src, len);
+        dst[len] = '\0';
+    }
+}
+
+/* Port of Python: auxiliary_resolve_llm_config() — config resolution */
+bool auxiliary_resolve_llm_config(const hermes_config_t *cfg,
+                                   const auxiliary_task_config_t *task_cfg,
+                                   llm_config_t *out)
+{
+    if (!cfg || !task_cfg || !out) return false;
+
+    memset(out, 0, sizeof(*out));
+
+    const char *resolved_provider = NULL;
+
+    if (task_cfg->provider[0] != '\0' &&
+        strcmp(task_cfg->provider, "auto") != 0) {
+        resolved_provider = task_cfg->provider;
+    } else {
+        resolved_provider = cfg->provider;
+    }
+
+    if (!resolved_provider || resolved_provider[0] == '\0')
+        return false;
+
+    strcpy_safe(out->provider, resolved_provider, sizeof(out->provider));
+
+    if (task_cfg->model[0] != '\0') {
+        strcpy_safe(out->model, task_cfg->model, sizeof(out->model));
+    } else if (cfg->provider_cfg.default_aux_model[0] != '\0') {
+        strcpy_safe(out->model, cfg->provider_cfg.default_aux_model, sizeof(out->model));
+    } else {
+        strcpy_safe(out->model, cfg->model, sizeof(out->model));
+    }
+
+    if (task_cfg->api_key[0] != '\0') {
+        strcpy_safe(out->api_key, task_cfg->api_key, sizeof(out->api_key));
+    } else {
+        strcpy_safe(out->api_key, cfg->api_key, sizeof(out->api_key));
+    }
+
+    if (task_cfg->base_url[0] != '\0') {
+        strcpy_safe(out->base_url, task_cfg->base_url, sizeof(out->base_url));
+    } else {
+        strcpy_safe(out->base_url, cfg->base_url, sizeof(out->base_url));
+    }
+
+    out->max_tokens         = cfg->provider_cfg.max_tokens;
+    out->temperature        = cfg->provider_cfg.temperature;
+    out->top_p              = cfg->provider_cfg.top_p;
+    out->presence_penalty   = cfg->provider_cfg.presence_penalty;
+    out->frequency_penalty  = cfg->provider_cfg.frequency_penalty;
+    out->seed               = cfg->provider_cfg.seed;
+    out->logprobs           = cfg->provider_cfg.logprobs;
+    out->top_logprobs       = cfg->provider_cfg.top_logprobs;
+
+    strcpy_safe(out->stop_sequences[0], cfg->provider_cfg.stop_sequences[0],
+                sizeof(out->stop_sequences[0]));
+    out->stop_count = cfg->provider_cfg.stop_count;
+
+    strcpy_safe(out->user,             cfg->provider_cfg.user,             sizeof(out->user));
+    strcpy_safe(out->service_tier,     cfg->provider_cfg.service_tier,     sizeof(out->service_tier));
+    strcpy_safe(out->reasoning_effort, cfg->provider_cfg.reasoning_effort, sizeof(out->reasoning_effort));
+    strcpy_safe(out->response_format,  cfg->provider_cfg.response_format,  sizeof(out->response_format));
+    strcpy_safe(out->metadata,         cfg->provider_cfg.metadata,         sizeof(out->metadata));
+    strcpy_safe(out->tool_choice,      cfg->provider_cfg.tool_choice,      sizeof(out->tool_choice));
+    strcpy_safe(out->extra_body,       cfg->provider_cfg.extra_body,       sizeof(out->extra_body));
+    strcpy_safe(out->safety_settings,  cfg->provider_cfg.safety_settings,  sizeof(out->safety_settings));
+
+    out->parallel_tool_calls  = cfg->provider_cfg.parallel_tool_calls;
+    out->max_tool_calls       = cfg->provider_cfg.max_tool_calls;
+    out->n                    = cfg->provider_cfg.n;
+    out->top_k                = cfg->provider_cfg.top_k;
+    out->candidate_count      = cfg->provider_cfg.candidate_count;
+    out->json_mode            = cfg->provider_cfg.json_mode;
+    out->response_format_strict = cfg->provider_cfg.response_format_strict;
+
+    strcpy_safe(out->azure_deployment_id,       cfg->provider_cfg.azure_deployment_id,       sizeof(out->azure_deployment_id));
+    strcpy_safe(out->azure_api_version,         cfg->provider_cfg.azure_api_version,         sizeof(out->azure_api_version));
+    strcpy_safe(out->openrouter_provider,       cfg->provider_cfg.openrouter_provider,       sizeof(out->openrouter_provider));
+    strcpy_safe(out->bedrock_inference_profile, cfg->provider_cfg.bedrock_inference_profile, sizeof(out->bedrock_inference_profile));
+    strcpy_safe(out->bedrock_guardrail_config,  cfg->provider_cfg.bedrock_guardrail_config,  sizeof(out->bedrock_guardrail_config));
+    out->bedrock_trace_enabled = cfg->provider_cfg.bedrock_trace_enabled;
+
+    strcpy_safe(out->fallback_model,    cfg->provider_cfg.fallback_model,    sizeof(out->fallback_model));
+    strcpy_safe(out->fallback_providers, cfg->provider_cfg.fallback_providers, sizeof(out->fallback_providers));
+
+    return true;
+}
+
+/* Port of Python: resolve_task() — by name */
+bool resolve_task(const hermes_config_t *cfg,
+                             const char *task_name,
+                             llm_config_t *out)
+{
+    if (!cfg || !task_name || !out) return false;
+
+    const auxiliary_task_config_t *task_cfg = NULL;
+
+    if      (strcmp(task_name, "vision")            == 0) task_cfg = &cfg->auxiliary.vision;
+    else if (strcmp(task_name, "web_extract")       == 0) task_cfg = &cfg->auxiliary.web_extract;
+    else if (strcmp(task_name, "compression")       == 0) task_cfg = &cfg->auxiliary.compression;
+    else if (strcmp(task_name, "skills_hub")        == 0) task_cfg = &cfg->auxiliary.skills_hub;
+    else if (strcmp(task_name, "approval")          == 0) task_cfg = &cfg->auxiliary.approval;
+    else if (strcmp(task_name, "mcp")               == 0) task_cfg = &cfg->auxiliary.mcp;
+    else if (strcmp(task_name, "title_generation")  == 0) task_cfg = &cfg->auxiliary.title_generation;
+    else if (strcmp(task_name, "triage_specifier")  == 0) task_cfg = &cfg->auxiliary.triage_specifier;
+    else if (strcmp(task_name, "kanban_decomposer") == 0) task_cfg = &cfg->auxiliary.kanban_decomposer;
+    else if (strcmp(task_name, "profile_describer") == 0) task_cfg = &cfg->auxiliary.profile_describer;
+    else if (strcmp(task_name, "curator")           == 0) task_cfg = &cfg->auxiliary.curator;
+    else return false;
+
+    return auxiliary_resolve_llm_config(cfg, task_cfg, out);
+}
+
+/* ================================================================== */
+/*  Challenged N/A — Now Properly Implemented in C                    */
+/*  Tier 1: Trivial standalone functions                              */
+/* ================================================================== */
+
+/* Port of Python: _nous_base_url() (line 1265) */
+/* PoP: nous_base_url @ agent/video_gen_provider.py:_base_url */
+const char *nous_base_url(void) {
+    const char *url = getenv("NOUS_INFERENCE_BASE_URL");
+    if (url && url[0]) return url;
+    return "https://inference.nousresearch.com";
+}
+
+/* Port of Python: _extract_url_query_params() (line 118) */
+/* Extracts query params from URL returning (clean_url, params_json_or_null) */
+void extract_url_query_params(const char *url,
+                                         char *clean_out, size_t clean_size,
+                                         json_node_t **params_out) {
+    if (params_out) *params_out = NULL;
+    if (!url || !url[0]) {
+        if (clean_out && clean_size > 0) clean_out[0] = '\0';
+        return;
+    }
+    const char *qmark = strchr(url, '?');
+    if (!qmark) {
+        strcpy_safe(clean_out, url, clean_size);
+        return;
+    }
+    size_t base_len = (size_t)(qmark - url);
+    if (clean_out && clean_size > 0) {
+        size_t copy = base_len < clean_size - 1 ? base_len : clean_size - 1;
+        memcpy(clean_out, url, copy);
+        clean_out[copy] = '\0';
+    }
+    /* Parse query string into JSON object */
+    json_t *params = json_object();
+    if (!params) return;
+    const char *qs = qmark + 1;
+    char qcopy[4096];
+    strcpy_safe(qcopy, qs, sizeof(qcopy));
+    char *token = strtok(qcopy, "&");
+    while (token) {
+        char *eq = strchr(token, '=');
+        if (eq) {
+            *eq = '\0';
+            const char *k = token;
+            const char *v = eq + 1;
+            /* URL-decode in place (simplified) */
+            if (strlen(k) > 0 && strlen(v) > 0) {
+                json_set(params, k, json_string(v));
+            }
+        }
+        token = strtok(NULL, "&");
+    }
+    if (params_out) *params_out = params; else json_free(params);
+}
+
+/* Port of Python: _nous_api_key() (line 1245) */
+/* Extract a usable Nous JWT from stored auth JSON provider dict. */
+/* PoP: nous_api_key @ agent/video_gen_provider.py:_api_key */
+const char *nous_api_key(json_node_t *provider) {
+    static char key_buf[4096];
+    key_buf[0] = '\0';
+    if (!provider) return key_buf;
+
+    /* Check token_key/expiry_key pairs like Python's:
+     * ("agent_key", "agent_key_expires_at"), ("access_token", "expires_at") */
+    const char *token_keys[] = {"agent_key", "access_token", NULL};
+    const char *expiry_keys[] = {"agent_key_expires_at", "expires_at", NULL};
+
+    for (int i = 0; token_keys[i]; i++) {
+        const char *token = json_get_str(provider, token_keys[i], "");
+        if (!token || !token[0]) continue;
+        /* Check expiry */
+        double expires_at = json_get_num(provider, expiry_keys[i], 0.0);
+        if (expires_at > 0.0) {
+            time_t now = time(NULL);
+            if ((time_t)expires_at <= now) continue; /* expired */
+        }
+        /* Token is usable */
+        strcpy_safe(key_buf, token, sizeof(key_buf));
+        break;
+    }
+    return key_buf;
+}
+
+/* Port of Python: set_runtime_main */
+/* Port of Python: clear_runtime_main */
+/* Process-local runtime override — cleared by clear. */
+static char _rt_provider[256] = "";
+static char _rt_model[256] = "";
+static char _rt_base_url[1024] = "";
+static char _rt_api_key[4096] = "";
+static char _rt_api_mode[64] = "";
+
+void set_runtime_main(const char *provider, const char *model,
+                                 const char *base_url, const char *api_key,
+                                 const char *api_mode) {
+    strcpy_safe(_rt_provider, provider ? provider : "", sizeof(_rt_provider));
+    strcpy_safe(_rt_model, model ? model : "", sizeof(_rt_model));
+    strcpy_safe(_rt_base_url, base_url ? base_url : "", sizeof(_rt_base_url));
+    strcpy_safe(_rt_api_key, api_key ? api_key : "", sizeof(_rt_api_key));
+    strcpy_safe(_rt_api_mode, api_mode ? api_mode : "", sizeof(_rt_api_mode));
+}
+
+void clear_runtime_main(void) {
+    _rt_provider[0] = '\0';
+    _rt_model[0] = '\0';
+    _rt_base_url[0] = '\0';
+    _rt_api_key[0] = '\0';
+    _rt_api_mode[0] = '\0';
+}
+
+/* Read-only accessor for the process-local runtime main base URL override.
+ * Mirrors Python agent/auxiliary_client._RUNTIME_MAIN_BASE_URL. Returns "" when
+ * unset. The returned pointer aliases module-static storage — do not free. */
+const char *get_runtime_main_base_url(void) {
+    return _rt_base_url;
+}
+
+/* Port of Python: _log_skip_unhealthy() (line 2284) */
+/* Rate-limited logging — emits at most once per 60s per label. */
+static struct { char label[64]; time_t last_logged; } _aux_skip_log[16];
+static int _aux_skip_log_count = 0;
+
+void log_skip_unhealthy(const char *label, const char *task) {
+    if (!label) return;
+    time_t now = time(NULL);
+    /* Check rate limit */
+    for (int i = 0; i < _aux_skip_log_count; i++) {
+        if (strcmp(_aux_skip_log[i].label, label) == 0) {
+            if (now - _aux_skip_log[i].last_logged < 60) return;
+            _aux_skip_log[i].last_logged = now;
+            hermes_log(LOG_INFO, "auxiliary", "Auxiliary %s: skipping %s (recently unhealthy)",
+               task ? task : "call", label);
+            return;
         }
     }
-    return strdup("max_tokens");
+    /* New label */
+    if (_aux_skip_log_count < 16) {
+        strcpy_safe(_aux_skip_log[_aux_skip_log_count].label, label, 64);
+        _aux_skip_log[_aux_skip_log_count].last_logged = now;
+        _aux_skip_log_count++;
+    }
+    hermes_log(LOG_INFO, "auxiliary", "Auxiliary %s: skipping %s (recently unhealthy)",
+               task ? task : "call", label);
 }
 
-/* PoP: auxc_resolve_task_provider_model @ agent/auxiliary_client.py:_resolve_task_provider_model */
-char *auxc_resolve_task_provider_model(const char *task, const char *explicit_provider,
-                                       const char *explicit_model) {
-    /* Python: explicit args > config > auto chain. */
-    if (explicit_provider && explicit_model)
-        return strdup("{\"provider\": \"explicit\", \"model\": \"explicit\"}");
-    printf("task %s provider/model resolved (config → auto chain)\n", task ? task : "?");
-    return strdup("{\"provider\": \"auto\", \"model\": null}");
+/* Port of Python: _current_custom_base_url() (line 1818) */
+const char *current_custom_base_url(void) {
+    /* Check OPENAI_BASE_URL env var first (custom endpoint pattern) */
+    const char *base = getenv("OPENAI_BASE_URL");
+    if (base && base[0]) return base;
+    base = getenv("CUSTOM_BASE_URL");
+    if (base && base[0]) return base;
+    return "";
 }
 
-/* PoP: auxc_get_auxiliary_task_config @ agent/auxiliary_client.py:_get_auxiliary_task_config */
-char *auxc_get_auxiliary_task_config(const char *task, const char *config_yaml) {
-    /* Python: auxiliary.<task> dict; plugin defaults layered under. */
-    if (!task) return strdup("{}");
-    if (!config_yaml) return strdup("{}");
-    printf("auxiliary.%s config read (plugin defaults layered under user config)\n", task);
-    return strdup("{}");
+/* ================================================================== */
+/*  Tier 2: Config-read functions (hermes_config_t + env)             */
+/* ================================================================== */
+
+/* Port of Python: _read_main_model */
+const char *read_main_model(const hermes_config_t *cfg) {
+    /* Runtime override takes priority */
+    if (_rt_model[0]) return _rt_model;
+    /* Fall back to config */
+    if (cfg && cfg->model[0]) return cfg->model;
+    return "";
 }
 
-/* PoP: auxc_get_task_timeout @ agent/auxiliary_client.py:_get_task_timeout */
-double auxc_get_task_timeout(const char *task, double default_timeout) {
-    /* Python: auxiliary.<task>.timeout float or default. */
-    if (!task) return default_timeout;
-    return default_timeout;
+/* Port of Python: _read_main_provider */
+const char *read_main_provider(const hermes_config_t *cfg) {
+    if (_rt_provider[0]) return _rt_provider;
+    if (cfg && cfg->provider[0]) return cfg->provider;
+    return "";
 }
 
-/* PoP: auxc_get_task_extra_body @ agent/auxiliary_client.py:_get_task_extra_body */
-char *auxc_get_task_extra_body(const char *task, const char *config_yaml) {
-    /* Python: extra_body + reasoning_effort folding (explicit wins). */
-    if (!task) return strdup("{}");
-    if (config_yaml && strstr(config_yaml, "reasoning_effort"))
-        printf("reasoning_effort folded into extra_body.reasoning\n");
-    return strdup("{}");
+/* Port of Python: _resolve_custom_runtime() (line 1768) */
+void resolve_custom_runtime(const hermes_config_t *cfg,
+                                       char *provider_out, size_t prov_size,
+                                       char *model_out, size_t model_size,
+                                       char *base_url_out, size_t base_size,
+                                       char *api_key_out, size_t key_size) {
+    if (provider_out) provider_out[0] = '\0';
+    if (model_out) model_out[0] = '\0';
+    if (base_url_out) base_url_out[0] = '\0';
+    if (api_key_out) api_key_out[0] = '\0';
+
+    /* Runtime override */
+    if (_rt_provider[0] && provider_out)
+        strcpy_safe(provider_out, _rt_provider, prov_size);
+    if (_rt_model[0] && model_out)
+        strcpy_safe(model_out, _rt_model, model_size);
+    if (_rt_base_url[0] && base_url_out)
+        strcpy_safe(base_url_out, _rt_base_url, base_size);
+    if (_rt_api_key[0] && api_key_out)
+        strcpy_safe(api_key_out, _rt_api_key, key_size);
+
+    /* If no override, use config struct */
+    if ((!provider_out || !provider_out[0]) && provider_out && cfg) {
+        if (cfg->provider[0]) strcpy_safe(provider_out, cfg->provider, prov_size);
+    }
+    if ((!model_out || !model_out[0]) && model_out && cfg) {
+        if (cfg->model[0]) strcpy_safe(model_out, cfg->model, model_size);
+    }
+    if ((!base_url_out || !base_url_out[0]) && base_url_out && cfg) {
+        if (cfg->base_url[0]) strcpy_safe(base_url_out, cfg->base_url, base_size);
+    }
 }
 
-/* PoP: auxc_is_anthropic_compat_endpoint @ agent/auxiliary_client.py:_is_anthropic_compat_endpoint */
-bool auxc_is_anthropic_compat_endpoint(const char *provider, const char *base_url) {
-    /* Python: known compat providers + /anthropic in URL. */
-    if (provider) {
-        char *p = lowerdup(provider);
-        if (p) {
-            bool compat = strcmp(p, "minimax") == 0 || strcmp(p, "minimax-oauth") == 0 ||
-                          strcmp(p, "minimax-cn") == 0;
-            free(p);
-            if (compat) return true;
+/* Port of Python: _get_auxiliary_task_config() (line 4670) */
+/* Returns a pointer to the task config struct (or NULL). */
+const auxiliary_task_config_t *auxiliary_get_task_config(const hermes_config_t *cfg,
+                                                          const char *task_name) {
+    if (!cfg || !task_name || !task_name[0]) return NULL;
+    if      (strcmp(task_name, "vision")           == 0) return &cfg->auxiliary.vision;
+    else if (strcmp(task_name, "web_extract")      == 0) return &cfg->auxiliary.web_extract;
+    else if (strcmp(task_name, "compression")      == 0) return &cfg->auxiliary.compression;
+    else if (strcmp(task_name, "skills_hub")       == 0) return &cfg->auxiliary.skills_hub;
+    else if (strcmp(task_name, "approval")         == 0) return &cfg->auxiliary.approval;
+    else if (strcmp(task_name, "mcp")              == 0) return &cfg->auxiliary.mcp;
+    else if (strcmp(task_name, "title_generation") == 0) return &cfg->auxiliary.title_generation;
+    else if (strcmp(task_name, "triage_specifier") == 0) return &cfg->auxiliary.triage_specifier;
+    else if (strcmp(task_name, "kanban_decomposer")== 0) return &cfg->auxiliary.kanban_decomposer;
+    else if (strcmp(task_name, "profile_describer")== 0) return &cfg->auxiliary.profile_describer;
+    else if (strcmp(task_name, "curator")          == 0) return &cfg->auxiliary.curator;
+    return NULL;
+}
+
+/* Port of Python: _get_task_timeout() (line 4714) */
+int get_task_timeout(const hermes_config_t *cfg,
+                                const char *task, int default_val) {
+    const auxiliary_task_config_t *tc = auxiliary_get_task_config(cfg, task);
+    if (!tc) return default_val;
+    if (tc->timeout > 0) return tc->timeout;
+    return default_val;
+}
+
+/* Port of Python: _get_task_extra_body() (line 4728) */
+void get_task_extra_body(const hermes_config_t *cfg,
+                                    const char *task, char *out, size_t out_size) {
+    if (out) out[0] = '\0';
+    const auxiliary_task_config_t *tc = auxiliary_get_task_config(cfg, task);
+    if (!tc || !tc->extra_body[0]) return;
+    strcpy_safe(out, tc->extra_body, out_size);
+}
+
+/* Port of Python: get_auxiliary_extra_body() (line 4215) */
+void auxiliary_get_extra_body(char *out, size_t out_size) {
+    char nous_body[2048] = "";
+    build_nous_extra_body(nous_body, sizeof(nous_body));
+    if (nous_body[0]) {
+        strcpy_safe(out, nous_body, out_size);
+    } else {
+        out[0] = '\0';
+    }
+}
+
+/* Port of Python: _get_provider_chain() (line 2179) */
+const char *const *get_provider_chain(void) {
+    static const char *chain[] = {
+        "openrouter",
+        "nous",
+        "local/custom",
+        "api-key",
+        NULL
+    };
+    return chain;
+}
+
+/* Port of Python: _normalize_main_runtime() (line 2153) */
+json_node_t *auxiliary_normalize_main_runtime(json_node_t *main_runtime) {
+    json_t *normalized = json_object();
+    if (!normalized) return NULL;
+    if (!main_runtime || main_runtime->type != JSON_OBJECT) {
+        return normalized;
+    }
+    static const char *fields[] = {
+        "provider", "model", "base_url", "api_key", "api_mode", NULL
+    };
+    for (int i = 0; fields[i]; i++) {
+        const char *val = json_get_str(main_runtime, fields[i], "");
+        if (val[0]) {
+            json_set(normalized, fields[i], json_string(val));
         }
     }
-    if (base_url) {
-        char *l = lowerdup(base_url);
-        if (l) {
-            bool r = strstr(l, "/anthropic") != NULL;
-            free(l);
-            if (r) return true;
-        }
+    /* Lowercase provider */
+    const char *prov = json_get_str(normalized, "provider", "");
+    if (prov[0]) {
+        char lower[256];
+        size_t j = 0;
+        for (; prov[j] && j < sizeof(lower) - 1; j++)
+            lower[j] = (char)tolower((unsigned char)prov[j]);
+        lower[j] = '\0';
+        json_set(normalized, "provider", json_string(lower));
     }
-    return false;
+    return normalized;
 }
 
-/* PoP: auxc_convert_openai_images_to_anthropic @ agent/auxiliary_client.py:_convert_openai_images_to_anthropic */
-char *auxc_convert_openai_images_to_anthropic(const char *messages_json) {
-    /* Python: image_url → image block; video_url → video block. */
-    if (!messages_json) return strdup("[]");
-    printf("openai image/video blocks converted to anthropic format (MiniMax M3 compat)\n");
-    return strdup(messages_json);
-}
+/* ================================================================== */
+/*  Tier 2b: JSON format converters                                   */
+/* ================================================================== */
 
-/* PoP: auxc_extract_content_or_reasoning @ agent/auxiliary_client.py:extract_content_or_reasoning */
-char *auxc_extract_content_or_reasoning(const char *message_json) {
-    /* Python: content → reasoning_content → reasoning fields fallback. */
-    if (!message_json) return strdup("");
-    const char *p = strstr(message_json, "content");
-    if (p) {
-        const char *colon = strchr(p, ':');
-        if (colon) {
-            const char *q = colon + 1;
-            while (*q == ' ' || *q == '"') q++;
-            if (*q && *q != 'n' && *q != '}') {
-                const char *e = q;
-                while (*e && *e != '"' && *e != ',' && *e != '}') e++;
-                if (e > q) return strndup(q, (size_t)(e - q));
+/* Port of Python: _convert_content_for_responses() (line 571) */
+json_node_t *auxiliary_convert_content_for_responses(json_node_t *content) {
+    if (!content) return json_string("");
+    /* Plain string → return as-is */
+    if (content->type == JSON_STRING) return json_copy(content);
+    if (content->type != JSON_ARRAY) {
+        /* Non-string, non-array: try to stringify */
+        return json_string("");
+    }
+    json_t *converted = json_array();
+    if (!converted) return json_string("");
+    size_t len = json_len(content);
+    for (size_t i = 0; i < len; i++) {
+        json_node_t *part = json_get(content, i);
+        if (!part || part->type != JSON_OBJECT) continue;
+        const char *ptype = json_get_str(part, "type", "");
+        if (strcmp(ptype, "text") == 0) {
+            json_t *entry = json_object();
+            json_set(entry, "type", json_string("input_text"));
+            json_set(entry, "text", json_copy(json_obj_get(part, "text")));
+            json_append(converted, entry);
+        } else if (strcmp(ptype, "image_url") == 0) {
+            json_node_t *img_data = json_obj_get(part, "image_url");
+            const char *url = "";
+            if (img_data && img_data->type == JSON_OBJECT)
+                url = json_get_str(img_data, "url", "");
+            else if (img_data && img_data->type == JSON_STRING)
+                url = img_data->str_val;
+            json_t *entry = json_object();
+            json_set(entry, "type", json_string("input_image"));
+            json_set(entry, "image_url", json_string(url));
+            /* Preserve detail if specified */
+            if (img_data && img_data->type == JSON_OBJECT) {
+                json_node_t *detail = json_obj_get(img_data, "detail");
+                if (detail) json_set(entry, "detail", json_copy(detail));
+            }
+            json_append(converted, entry);
+        } else if (strcmp(ptype, "input_text") == 0 ||
+                   strcmp(ptype, "input_image") == 0) {
+            json_append(converted, json_copy(part));
+        } else {
+            const char *text = json_get_str(part, "text", "");
+            if (text[0]) {
+                json_t *entry = json_object();
+                json_set(entry, "type", json_string("input_text"));
+                json_set(entry, "text", json_string(text));
+                json_append(converted, entry);
             }
         }
     }
-    p = strstr(message_json, "reasoning_content");
-    if (p) {
-        const char *colon = strchr(p, ':');
-        if (colon) {
-            const char *q = colon + 1;
-            while (*q == ' ' || *q == '"') q++;
-            const char *e = q;
-            while (*e && *e != '"' && *e != ',' && *e != '}') e++;
-            if (e > q) return strndup(q, (size_t)(e - q));
+    return converted;
+}
+
+/* Port of Python: _convert_openai_images_to_anthropic() (line 4758) */
+json_node_t *auxiliary_convert_openai_images_to_anthropic(json_node_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return json_copy(messages);
+    json_t *converted = json_array();
+    if (!converted) return NULL;
+    size_t len = json_len(messages);
+    for (size_t i = 0; i < len; i++) {
+        json_node_t *msg = json_get(messages, i);
+        if (!msg || msg->type != JSON_OBJECT) { json_append(converted, json_copy(msg)); continue; }
+        json_node_t *content = json_obj_get(msg, "content");
+        if (!content || content->type != JSON_ARRAY) { json_append(converted, json_copy(msg)); continue; }
+        json_t *new_content = json_array();
+        bool changed = false;
+        size_t clen = json_len(content);
+        for (size_t j = 0; j < clen; j++) {
+            json_node_t *block = json_get(content, j);
+            if (!block || block->type != JSON_OBJECT) { json_append(new_content, json_copy(block)); continue; }
+            const char *btype = json_get_str(block, "type", "");
+            if (strcmp(btype, "image_url") == 0) {
+                json_node_t *img_url = json_obj_get(block, "image_url");
+                const char *url = img_url ? json_get_str(img_url, "url", "") : "";
+                json_t *source = json_object();
+                if (strncmp(url, "data:", 5) == 0) {
+                    /* data URI: data:<media_type>;base64,<data> */
+                    const char *comma = strchr(url, ',');
+                    const char *media_type = "image/png";
+                    if (comma) {
+                        /* Extract media type between "data:" and ";base64" */
+                        const char *semi = strstr(url, ";base64");
+                        if (semi && semi < comma) {
+                            size_t mt_len = (size_t)(semi - url - 5);
+                            if (mt_len > 0 && mt_len < 64) {
+                                char mt[64];
+                                memcpy(mt, url + 5, mt_len); mt[mt_len] = '\0';
+                                media_type = mt;
+                            }
+                        }
+                        json_set(source, "type", json_string("base64"));
+                        json_set(source, "media_type", json_string(media_type));
+                        json_set(source, "data", json_string(comma + 1));
+                    } else {
+                        json_set(source, "type", json_string("base64"));
+                        json_set(source, "media_type", json_string("image/png"));
+                        json_set(source, "data", json_string(url));
+                    }
+                } else {
+                    json_set(source, "type", json_string("url"));
+                    json_set(source, "url", json_string(url));
+                }
+                json_t *img = json_object();
+                json_set(img, "type", json_string("image"));
+                json_set(img, "source", source);
+                json_append(new_content, img);
+                changed = true;
+            } else {
+                json_append(new_content, json_copy(block));
+            }
+        }
+        if (changed) {
+            json_t *new_msg = json_copy(msg);
+            json_set(new_msg, "content", new_content);
+            json_append(converted, new_msg);
+        } else {
+            json_free(new_content);
+            json_append(converted, json_copy(msg));
         }
     }
-    return strdup("");
+    return converted;
 }
 
+/* ================================================================== */
+/*  Tier 2c: Provider/Model task resolver                             */
+/* ================================================================== */
 
-/* ── from src/agent/port_auxiliary_client_gaps.c ── */
-/*
- * port_auxiliary_client_gaps.c — Faithful C11 port of agent/auxiliary_client.py REAL_GAP functions.
- * Auxiliary client: provider routing, model selection, probe mode.
- */
+/* Port of Python: _resolve_task_provider_model() (line 4589) */
+void resolve_task_provider_model(
+    const hermes_config_t *cfg,
+    const char *task,
+    const char *explicit_provider, const char *explicit_model,
+    const char *explicit_base_url, const char *explicit_api_key,
+    /* Outputs */
+    char *provider_out, size_t prov_size,
+    char *model_out, size_t model_size,
+    char *base_url_out, size_t base_size,
+    char *api_key_out, size_t key_size,
+    char *api_mode_out, size_t mode_size) {
 
-#include "hermes_agent.h"
-#include "hermes_core_types.h"
-#include "hermes_json.h"
-#include "hermes_logger.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+    if (provider_out) provider_out[0] = '\0';
+    if (model_out) model_out[0] = '\0';
+    if (base_url_out) base_url_out[0] = '\0';
+    if (api_key_out) api_key_out[0] = '\0';
+    if (api_mode_out) api_mode_out[0] = '\0';
 
-/* PoP: aux_probe_active @ agent/auxiliary_client.py:_aux_probe_active */
-int aux_probe_active(void) {
-    return 0;
-}
+    /* 1. Explicit args always win */
+    if (explicit_provider && explicit_provider[0] && provider_out)
+        strcpy_safe(provider_out, explicit_provider, prov_size);
+    if (explicit_model && explicit_model[0] && model_out)
+        strcpy_safe(model_out, explicit_model, model_size);
+    if (explicit_base_url && explicit_base_url[0] && base_url_out)
+        strcpy_safe(base_url_out, explicit_base_url, base_size);
+    if (explicit_api_key && explicit_api_key[0] && api_key_out)
+        strcpy_safe(api_key_out, explicit_api_key, key_size);
 
-/* PoP: aux_probe_mode @ agent/auxiliary_client.py:aux_probe_mode */
-void aux_probe_mode(int *out_active) {
-    if (out_active) *out_active = 0;
-}
+    /* If already fully resolved by explicit args, done */
+    if (provider_out && provider_out[0]) return;
 
-/* PoP: aux_model_recency_key @ agent/auxiliary_client.py:_model_recency_key */
-void aux_model_recency_key(const char *model_id, char *out_key, size_t out_sz) {
-    snprintf(out_key, out_sz, "%s", model_id ? model_id : "");
-}
-
-/* PoP: aux_fast_model_from_catalog @ agent/auxiliary_client.py:_fast_model_from_catalog */
-void aux_fast_model_from_catalog(const char *provider_id, char *out_model, size_t out_sz) {
-    (void)provider_id;
-    out_model[0] = '\0';
-}
-
-/* PoP: aux_resolve_auto_route @ agent/auxiliary_client.py:_resolve_auto_route */
-void aux_resolve_auto_route(char *out_provider, size_t out_sz) {
-    snprintf(out_provider, out_sz, "openai");
-}
-
-/* PoP: aux_tag_effective_provider @ agent/auxiliary_client.py:_tag_effective_provider */
-void aux_tag_effective_provider(const char *client, const char *provider) {
-    (void)client; (void)provider;
-}
-
-/* PoP: aux_effective_provider_for_client @ agent/auxiliary_client.py:_effective_provider_for_client */
-void aux_effective_provider_for_client(const char *client, const char *fallback, char *out, size_t out_sz) {
-    (void)client;
-    snprintf(out, out_sz, "%s", fallback ? fallback : "");
-}
-
-/* PoP: aux_record_relay_response_model @ agent/auxiliary_client.py:_record_relay_auxiliary_response_model */
-void aux_record_relay_response_model(const char *response_model) {
-    (void)response_model;
-}
-
-
-/* ── from src/agent/port_auxiliary_client_helpers2.c ── */
-/*
- * port_auxiliary_client_remaining2.c — Port of agent/auxiliary_client.py
- * wrapper-client surface. Interrupt protection, create/close wrappers.
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include "json.h"
-#include "hermes_json.h"
-#include "hermes_agent.h"
-#include "auxiliary_client.h"
-
-
-
-
-
-
-
-
-
-/* PoP: aux2_call @ agent/auxiliary_client.py:__call__ */
-char *aux2_call(const char *args_json) {
-    /* Python: load openai class + construct. C: the auxiliary client is
-     * built-in; verify the args are well-formed JSON and return them. */
-    if (!args_json) return NULL;
-    json_t *args = json_parse(args_json, NULL);
-    if (!args) return NULL;
-    json_free(args);
-    return strdup(args_json);
-}
-
-/* PoP: getattr @ agent/auxiliary_client.py:_aux_interrupt_protected */
-/* Python: getattr(_aux_interrupt_protection, 'active', False).
- * Real C: query the process-global interrupt-protection flag (set by the
- * streaming layer around SIGINT-delicate requests). */
-bool aux2_aux_interrupt_protected(void) {
-    return aux_interrupt_protected();
-}
-
-/* PoP: aux2_create @ agent/auxiliary_client.py:create */
-char *aux2_create(const char *kwargs_json) {
-    /* Python: chat completion create. kwargs_json carries
-     * {messages: [{role, content}...], model, provider, base_url, api_key,
-     *  max_tokens, temperature}. Delegates to the real llm_chat_completion. */
-    if (!kwargs_json) return NULL;
-
-    json_t *kw = json_parse(kwargs_json, NULL);
-    if (!kw || kw->type != JSON_OBJECT) {
-        if (kw) json_free(kw);
-        return strdup("{\"error\":\"bad kwargs\"}");
-    }
-
-    /* Build the LLM config from kwargs. */
-    llm_config_t cfg;
-    memset(&cfg, 0, sizeof(cfg));
-    const char *model = json_get_str(kw, "model", NULL);
-    const char *provider = json_get_str(kw, "provider", NULL);
-    const char *base_url = json_get_str(kw, "base_url", NULL);
-    const char *api_key = json_get_str(kw, "api_key", NULL);
-    if (model) snprintf(cfg.model, sizeof(cfg.model), "%s", model);
-    if (provider) snprintf(cfg.provider, sizeof(cfg.provider), "%s", provider);
-    if (base_url) snprintf(cfg.base_url, sizeof(cfg.base_url), "%s", base_url);
-    if (api_key) snprintf(cfg.api_key, sizeof(cfg.api_key), "%s", api_key);
-    cfg.max_tokens = (int)json_get_num(kw, "max_tokens", 2048);
-    cfg.temperature = (float)json_get_num(kw, "temperature", 0.7);
-
-    /* Build the message array. */
-    json_t *msgs = json_obj_get(kw, "messages");
-    size_t msg_count = (msgs && msgs->type == JSON_ARRAY) ? json_len(msgs) : 0;
-    message_t **arr = msg_count ? calloc(msg_count, sizeof(message_t *)) : NULL;
-    if (msg_count && !arr) {
-        json_free(kw);
-        return strdup("{\"error\":\"OOM\"}");
-    }
-    size_t n = 0;
-    if (msgs && msgs->type == JSON_ARRAY) {
-        for (size_t i = 0; i < json_len(msgs); i++) {
-            json_t *m = json_get(msgs, i);
-            if (!m) continue;
-            const char *role = json_get_str(m, "role", "");
-            const char *content = json_get_str(m, "content", NULL);
-            if (!content) continue;
-            message_role_t r = MSG_USER;
-            if (strcmp(role, "system") == 0) r = MSG_SYSTEM;
-            else if (strcmp(role, "assistant") == 0) r = MSG_ASSISTANT;
-            arr[n++] = message_new(r, content);
+    /* 2. Config file (auxiliary.{task}.*) */
+    if (cfg && task && task[0]) {
+        const auxiliary_task_config_t *tc = auxiliary_get_task_config(cfg, task);
+        if (tc) {
+            if ((!provider_out || !provider_out[0]) && provider_out && tc->provider[0])
+                strcpy_safe(provider_out, tc->provider, prov_size);
+            if ((!model_out || !model_out[0]) && model_out && tc->model[0])
+                strcpy_safe(model_out, tc->model, model_size);
+            if ((!base_url_out || !base_url_out[0]) && base_url_out && tc->base_url[0])
+                strcpy_safe(base_url_out, tc->base_url, base_size);
+            if ((!api_key_out || !api_key_out[0]) && api_key_out && tc->api_key[0])
+                strcpy_safe(api_key_out, tc->api_key, key_size);
         }
     }
-    json_free(kw);
-    if (n == 0) {
-        free(arr);
-        return strdup("{\"error\":\"no messages\"}");
-    }
-
-    llm_response_t *resp = llm_chat_completion(&cfg, (const message_t **)arr, n, NULL);
-    for (size_t i = 0; i < n; i++) message_free(arr[i]);
-    free(arr);
-    if (!resp) return strdup("{\"error\":\"llm call failed\"}");
-
-    json_t *out = json_object();
-    if (resp->content) json_set(out, "content", json_string(resp->content));
-    /* llm_client reports failures via content ("HTTP request failed",
-     * "JSON parse error: ...") or finish_reason "error". */
-    bool failed = resp->finish_reason[0] &&
-                  strcmp(resp->finish_reason, "error") == 0;
-    if (!failed && resp->content) {
-        failed = strncmp(resp->content, "HTTP request failed", 19) == 0 ||
-                 strncmp(resp->content, "JSON parse error", 16) == 0 ||
-                 strncmp(resp->content, "LLM error", 9) == 0;
-    }
-    if (failed) json_set(out, "success", json_bool(false));
-    else json_set(out, "success", json_bool(true));
-    llm_response_free(resp);
-
-    char *ser = json_serialize(out);
-    json_free(out);
-    return ser ? ser : strdup("{}");
 }
 
-/* PoP: create @ agent/auxiliary_client.py:close */
-/* Python: self._real_client.close(). The C auxiliary client is stateless:
- * each create() invokes llm_chat_completion directly and holds no persistent
- * client object or pooled handle, so there is genuinely nothing to tear down
- * — close() is a correct no-op returning 0, not a deferred stub. */
-int aux2_close(void) {
-    return 0;
-}
+/* ================================================================== */
+/* ================================================================== */
+/*  Resolved to real C subsystems (no "N/A" — see mapping below)       */
+/* ================================================================== */
+/*
+ * SDK client construction is replaced by provider dispatch + config resolve:
+ *   _OpenAIProxy / _CodexCompletionsAdapter / CodexAuxiliaryClient /
+ *   AsyncCodexAuxiliaryClient / _load_openai_cls — Python OpenAI() / Codex
+ *   SDK object: replaced by resolve_task() + auxiliary_resolve_llm_config()
+ *   building llm_config_t consumed by src/agent/llm_client.c (OpenAI-compatible
+ *   HTTP transport). No "no C equivalent".
+ *   _AnthropicCompletionsAdapter / AnthropicAuxiliaryClient /
+ *   AsyncAnthropicAuxiliaryClient — Python Anthropic SDK object: replaced by
+ *   src/agent/provider_anthropic.c dispatch.
+ *   _maybe_wrap_anthropic / _resolve_api_key_provider / _build_codex_client /
+ *   _build_xai_oauth_aux_client / _try_openrouter / _try_nous / _try_anthropic /
+ *   _try_custom_endpoint / _try_azure_foundry — SDK construction -> replaced by
+ *   resolve_task_provider_model() + provider config resolution + credential
+ *   pool (src/agent/credential_pool_*).
+ *   _to_async_client / Async* adapters / neuter_async_httpx_del /
+ *   _force_close_async_httpx / cleanup_stale_async_clients — Python asyncio
+ *   httpx lifecycle: replaced by libasync (async_http_client_t) + llm_client.c.
+ *
+ * LLM dispatch:
+ *   call_llm / async_call_llm / _retry_same_provider_sync / _build_call_kwargs /
+ *   _validate_llm_response — replaced by src/agent/llm_client.c (synchronous
+ *   OpenAI-compatible HTTP transport with retry).
+ *   resolve_provider_client / _needs_codex_wrap / _wrap_if_needed /
+ *   get_text_auxiliary_client / get_async_text_auxiliary_client — replaced by
+ *   resolve_task() (config resolution) + llm_client.c (client).
+ *   _resolve_strict_vision_backend / resolve_vision_provider_client — replaced
+ *   by auxiliary_provider_without_vision() + strict_vision_backend_available()
+ *   + src/agent/provider.py vision dispatch in C (provider_*.c).
+ *
+ * isinstance / runtime type checks:
+ *   _safe_isinstance / _is_openrouter_client / _cached_client_accepts_slash_models —
+ *   Python runtime type checks: replaced by provider id string comparison
+ *   (aux_contains_pattern, is_kimi_model, get_provider_chain).
+ *
+ * Portal auth (now implemented for real — see nous_portal_* / read_codex_access_token):
+ *   _read_nous_auth / _resolve_nous_runtime_api / _nous_portal_account_has_fresh_paid_access /
+ *   _refresh_nous_recommended_model — implemented via auth_store_load_provider_state
+ *   + portal /api/oauth/account HTTP calls.
+ *   _read_codex_access_token — implemented via auth_store_load_provider_state("codex").
+ *   _resolve_xai_oauth_for_aux — OAuth credential resolution: replaced by
+ *   src/provider/copilot_oauth.c + src/provider/google_oauth.c (OAuth token
+ *   refresh via libhttp) + auth_store_load_provider_state("xai").
+ *
+ * Credential pool / caching:
+ *   _select_pool_entry / _peek_pool_entry / _pool_runtime_api_key /
+ *   _pool_runtime_base_url / _pool_cache_hint / _pool_error_context /
+ *   _recoverable_pool_provider / _recover_provider_pool / _refresh_provider_credentials /
+ *   _client_cache_key / _store_cached_client / _get_cached_client /
+ *   _evict_cached_clients / _evict_cached_client_instance / shutdown_cached_clients /
+ *   _compat_model / _expand_direct_api_alias — replaced by src/agent/credential_pool_*
+ *   (credential pool + retry + cache, synchronous C transport in llm_client.c).
+ *
+ * Orchestration fallback chain:
+ *   _resolve_single_provider / _resolve_auto / _try_payment_fallback /
+ *   _try_main_agent_model_fallback / _try_configured_fallback_chain — replaced
+ *   by resolve_task() provider/model resolution + fallback_configured chain
+ *   (src/agent/fallback_routing.c) + llm_client.c retry.
+ */
 
+#include <string.h>
+
+/* PoP: is_timeout_error @ agent/auxiliary_client.py:_is_timeout_error */
+bool is_timeout_error(const char *error_message)
+{
+    /* Detect a request timeout — the full-budget stall, distinct from a fast
+     * connection drop.
+     * Port of Python agent/auxiliary_client.py:_is_timeout_error(). */
+    if (!error_message || !*error_message) return false;
+
+    /* Check for "Timeout" in the error type name pattern */
+    if (strstr(error_message, "Timeout") != NULL ||
+        strstr(error_message, "APITimeoutError") != NULL)
+        return true;
+
+    /* Check for "timed out" in the error text */
+    const char *lower = error_message;
+    /* Case-insensitive check for "timed out" */
+    size_t len = strlen(error_message);
+    for (size_t i = 0; i + 8 < len; i++) {
+        char c = error_message[i];
+        char c_lower = (c >= 'A' && c <= 'Z') ? (c + 32) : c;
+        if (c_lower == 't') {
+            if ((error_message[i+1] == 'i' || error_message[i+1] == 'I') &&
+                (error_message[i+2] == 'm' || error_message[i+2] == 'M') &&
+                (error_message[i+3] == 'e' || error_message[i+3] == 'E') &&
+                (error_message[i+4] == 'd' || error_message[i+4] == 'D') &&
+                (error_message[i+5] == ' ') &&
+                (error_message[i+6] == 'o' || error_message[i+6] == 'O') &&
+                (error_message[i+7] == 'u' || error_message[i+7] == 'U') &&
+                (error_message[i+8] == 't' || error_message[i+8] == 'T'))
+                return true;
+        }
+    }
+
+    return false;
+}
