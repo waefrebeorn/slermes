@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include "hermes_json.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,6 +91,24 @@ char **render_account_usage_lines(const account_usage_snapshot_t *snap,
 
 /* Free the rendered lines array */
 void account_usage_free_lines(char **lines);
+
+/* === Nous portal credits (port of Python agent/account_usage.py) === */
+
+/* Build a usage snapshot from a parsed Nous portal /api/oauth/account JSON.
+ * Caller frees with account_usage_free(). Returns NULL on failure. */
+account_usage_snapshot_t *account_usage_snapshot_from_credits_state(const json_t *acct);
+
+/* Fetch the Nous portal credits snapshot (network). provider is "nous".
+ * Returns NULL on failure (not logged in / no token). */
+account_usage_snapshot_t *account_usage_build_nous_credits_snapshot(
+    const char *provider, const char *base_url, const char *api_key, double timeout);
+
+/* Render a Nous credits snapshot to display lines, appending the two trailing
+ * affordance lines ("Top up: ..." and "(or run /credits)") that the /usage
+ * surface adds. Returns a NULL-terminated char** the caller frees with
+ * account_usage_free_lines(). */
+char **account_usage_nous_credits_lines(const account_usage_snapshot_t *snap,
+    bool markdown);
 
 /* Port of Python: AccountUsageSnapshot.available (property) */
 bool account_usage_available(const account_usage_snapshot_t *snap);

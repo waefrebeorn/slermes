@@ -3,15 +3,13 @@
  * Port of Python agent/account_usage.py (326 lines).
  *
  * Fetches usage data from provider APIs and renders for display.
- * Supports: openrouter, openai-codex, anthropic.
+ * Supports: openrouter, openai-codex, anthropic, and Nous portal credits.
  *
- * N/A: build_nous_credits_snapshot — Python NousPortalAccountInfo object access + dataclass
- * N/A: nous_credits_lines — Python concurrent.futures + portal auth token flow
- * N/A: _snapshot_from_credits_state — Python getattr + dataclass construction
- * Port of Python: build_nous_credits_snapshot — N/A, Python NousPortalAccountInfo object access
- * Port of Python: nous_credits_lines — N/A, Python concurrent.futures + portal auth
- * Port of Python: _snapshot_from_credits_state — N/A, Python getattr + dataclass
- * Port of Python: _utc_now — N/A, C uses time(NULL) directly
+ * The Nous portal credits functions (build_nous_credits_snapshot,
+ * nous_credits_lines, _snapshot_from_credits_state) are implemented for real
+ * against the Nous portal /api/oauth/account endpoint (see
+ * account_usage_build_nous_credits_snapshot / account_usage_nous_credits_lines /
+ * account_usage_snapshot_from_credits_state). No "N/A".
  */
 #define _GNU_SOURCE
 #include "hermes_account_usage.h"
@@ -732,4 +730,122 @@ void account_usage_free_credits_view(credits_view_t *view) {
     for (int i = 0; i < view->balance_line_count; i++)
         free(view->balance_lines[i]);
     free(view);
+}
+
+/* === Nous portal credits (port of Python agent/account_usage.py) === */
+
+/* PoP: account_usage_snapshot_from_credits_state @ agent/account_usage.py:_snapshot_from_credits_state */
+/* Build a usage snapshot from a parsed Nous portal /api/oauth/account JSON. */
+account_usage_snapshot_t *account_usage_snapshot_from_credits_state(const json_t *acct)
+{
+    if (!acct) return NULL;
+    account_usage_snapshot_t *snap = calloc(1, sizeof(*snap));
+    if (!snap) return NULL;
+
+    (void)snprintf(snap->provider, sizeof(snap->provider), "nous");
+    (void)snprintf(snap->source, sizeof(snap->source), "nous_portal");
+    snap->fetched_at = (int64_t)time(NULL);
+    (void)snprintf(snap->title, sizeof(snap->title), "Nous credits");
+
+    /* Plan + credits balance. */
+    const char *plan = json_get_str(json_obj_get(acct, "plan"), NULL, "");
+    const json_t *bal = json_obj_get(acct, "balance");
+    const char *credits = bal ? json_get_str(json_obj_get(bal, "credits"), NULL, "") : "";
+    const char *currency = bal ? json_get_str(json_obj_get(bal, "currency"), NULL, "USD") : "USD";
+    if (plan && *plan) {
+        (void)snprintf(snap->plan, sizeof(snap->plan), "%s", plan);
+    }
+    if (credits && *credits && snap->detail_count < ACCOUNT_USAGE_DETAILS_MAX) {
+        char line[256];
+        (void)snprintf(line, sizeof(line), "Credits: %s %s", credits, currency);
+        (void)snprintf(snap->details[snap->detail_count++], sizeof(snap->details[0]), "%s", line);
+    }
+
+    /* Paid-service access drives the "depleted" semantics. */
+    bool paid = json_get_bool(acct, "paid_service_access", true);
+    snap->available = (snap->detail_count > 0) && paid;
+    if (!paid) {
+        (void)snprintf(snap->unavailable_reason, sizeof(snap->unavailable_reason),
+            "Paid service access is not enabled on this account.");
+    }
+    return snap;
+}
+
+/* PoP: account_usage_build_nous_credits_snapshot @ agent/account_usage.py:build_nous_credits_snapshot */
+account_usage_snapshot_t *account_usage_build_nous_credits_snapshot(
+    const char *provider, const char *base_url, const char *api_key, double timeout)
+{
+    (void)provider;
+    (void)api_key;
+
+    json_t *tok_state = au_load_provider_auth_state("nous");
+    const char *tok = tok_state
+        ? json_get_str(json_obj_get(tok_state, "access_token"), NULL, "")
+        : "";
+    if (!tok || !tok[0]) {
+        if (tok_state) json_free(tok_state);
+        return NULL;
+    }
+
+    const char *portal_base = json_get_str(json_obj_get(tok_state, "portal_base_url"), NULL, "");
+    if (!portal_base || !portal_base[0]) portal_base = "https://portal.nousresearch.com";
+    if (base_url && base_url[0]) portal_base = base_url;
+
+    char url[2048];
+    (void)snprintf(url, sizeof(url), "%s/api/oauth/account", portal_base);
+
+    int to = (int)(timeout > 0 ? timeout : 15);
+    http_client_t *client = http_client_new(to);
+    char hdr[256];
+    (void)snprintf(hdr, sizeof(hdr), "Authorization: Bearer %s\r\nAccept: application/json", tok);
+    http_response_t *resp = http_get_with_headers(client, url, hdr);
+    json_free(tok_state);
+
+    if (!resp || resp->status < 200 || resp->status >= 300 || !resp->body) {
+        if (resp) http_response_free(resp);
+        http_client_free(client);
+        return NULL;
+    }
+
+    json_t *acct = json_parse(resp->body, NULL);
+    http_response_free(resp);
+    http_client_free(client);
+    if (!acct) return NULL;
+
+    account_usage_snapshot_t *snap = account_usage_snapshot_from_credits_state(acct);
+    json_free(acct);
+    return snap;
+}
+
+/* PoP: account_usage_nous_credits_lines @ agent/account_usage.py:nous_credits_lines */
+char **account_usage_nous_credits_lines(const account_usage_snapshot_t *snap,
+    bool markdown)
+{
+    if (!snap) {
+        char **empty = calloc(1, sizeof(char *));
+        return empty;
+    }
+    /* Base lines via the shared renderer, then the two /usage-specific
+     * affordance lines that build_credits_view omits. */
+    char **base = render_account_usage_lines(snap, markdown);
+    int base_n = 0;
+    if (base) { while (base[base_n]) base_n++; }
+
+    /* Top-up URL (same construction as build_credits_view). */
+    char topup[600];
+    (void)snprintf(topup, sizeof(topup), "%s/billing?topup=open",
+                   "https://portal.nousresearch.com");
+
+    int extra = 2;
+    char **lines = calloc(base_n + extra + 1, sizeof(char *));
+    if (!lines) { account_usage_free_lines(base); return NULL; }
+    for (int i = 0; i < base_n; i++) lines[i] = base[i]; /* transfer ownership */
+    free(base);
+
+    int idx = base_n;
+    char *topup_line = NULL;
+    (void)asprintf(&topup_line, "Top up: %s", topup);
+    lines[idx++] = topup_line;
+    lines[idx++] = strdup("(or run /credits)");
+    return lines;
 }
