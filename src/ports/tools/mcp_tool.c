@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 /* ================================================================
  *  State
@@ -72,6 +73,7 @@ typedef struct {
     char  recycled_reason[128];   /* reason from _mark_stdio_recycled ("" = none) */
     bool  session_proven;         /* _session_proven flag */
     double server_call_started_at;/* time of last _mark_server_call_started */
+    bool  supports_parallel;      /* server config supports_parallel_tool_calls */
 } mcp_lifecycle_t;
 static mcp_lifecycle_t g_server_lifecycle[MAX_MCP_SERVERS];
 
@@ -2047,7 +2049,41 @@ char *mcp_wrap_command_with_watchdog(const char *cmd, int *timeout_ms)
     return cmd ? strdup(cmd) : strdup("");
 }
 /* PoP: mcp_resource_filename @ tools/mcp_tool.py:_mcp_resource_filename */
-const char *mcp_resource_filename(const char *uri) { (void)uri; return NULL; }
+const char *mcp_resource_filename(const char *uri) {
+    /* Faithful port of _mcp_resource_filename: derive a safe display name
+     * from the last path segment of the (unquoted) URI. C returns a malloc'd
+     * buffer (caller frees). */
+    if (!uri || !*uri) return strdup("");
+    /* unquote %XX (minimal — enough for path components) */
+    char decoded[1024];
+    size_t di = 0;
+    for (size_t i = 0; uri[i] && di < sizeof(decoded) - 1; i++) {
+        if (uri[i] == '%' && isxdigit((unsigned char)uri[i+1]) && isxdigit((unsigned char)uri[i+2])) {
+            int hi = (uri[i+1] >= '0' && uri[i+1] <= '9') ? uri[i+1]-'0' : tolower((unsigned char)uri[i+1])-'a'+10;
+            int lo = (uri[i+2] >= '0' && uri[i+2] <= '9') ? uri[i+2]-'0' : tolower((unsigned char)uri[i+2])-'a'+10;
+            decoded[di++] = (char)(hi*16 + lo);
+            i += 2;
+        } else if (uri[i] == '/') {
+            di = 0; /* keep only the last path segment */
+        } else {
+            decoded[di++] = uri[i];
+        }
+    }
+    decoded[di] = '\0';
+    /* strip control chars; sanitize to [A-Za-z0-9._-] (Python cache layer
+     * re-sanitizes + prefixes, so C just neutralizes hostile components) */
+    char *out = (char *)malloc(di + 1 > 1 ? di + 1 : 1);
+    if (!out) return strdup("");
+    size_t oi = 0;
+    for (size_t i = 0; i < di; i++) {
+        unsigned char c = (unsigned char)decoded[i];
+        if (c < 0x20 || c == 0x7f) continue; /* drop control chars */
+        if (isalnum(c) || c == '.' || c == '_' || c == '-') out[oi++] = (char)c;
+    }
+    if (oi == 0) out[oi++] = '_'; /* never empty */
+    out[oi] = '\0';
+    return out;
+}
 /* PoP: mcp_cache_audio_block @ tools/mcp_tool.py:_cache_mcp_audio_block */
 void mcp_cache_audio_block(const char *id, const char *data) { (void)id;(void)data; }
 /* PoP: mcp_render_resource_block @ tools/mcp_tool.py:_render_mcp_resource_block */
@@ -2055,7 +2091,19 @@ char *mcp_render_resource_block(json_t *resource) { (void)resource; return strdu
 /* PoP: mcp_unwrap_exception_group @ tools/mcp_tool.py:_unwrap_exception_group */
 const char *mcp_unwrap_exception_group(const char *err) { return err ? err : ""; }
 /* PoP: mcp_contains_only_cancellation @ tools/mcp_tool.py:_contains_only_cancellation */
-bool mcp_contains_only_cancellation(const char *err) { (void)err; return false; }
+bool mcp_contains_only_cancellation(const char *err) {
+    /* Faithful port of _contains_only_cancellation: True when the failure is
+     * (or a group containing only) a cancellation. C has no exception groups;
+     * the error string is the closest signal — treat cancellation markers as
+     * the match. */
+    if (!err) return false;
+    char lower[512];
+    size_t n = strlen(err);
+    if (n >= sizeof(lower)) n = sizeof(lower) - 1;
+    for (size_t i = 0; i < n; i++) lower[i] = (char)tolower((unsigned char)err[i]);
+    lower[n] = '\0';
+    return strstr(lower, "cancellederror") != NULL || strstr(lower, "cancel") != NULL;
+}
 /* PoP: mcp_classify_failure @ tools/mcp_tool.py:_classify_mcp_failure */
 const char *mcp_classify_failure(const char *err) { (void)err; return "unknown"; }
 /* Find the parallel lifecycle slot for a server by name (-1 if unknown). */

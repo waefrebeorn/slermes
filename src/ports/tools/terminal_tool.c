@@ -214,9 +214,32 @@ const char* _interpret_exit_code(const char *command, int exit_code) {
 }
 
 /* PoP: _command_requires_pipe_stdin @ tools/terminal_tool.py:_command_requires_pipe_stdin */
+/* Faithful port: PTY mode breaks stdin-driven commands (e.g. `gh auth login
+ * --with-token` reads the token from a piped stdin and waits for EOF). */
 bool _command_requires_pipe_stdin(const char *command) {
-    (void)command;
-    return false;
+    if (!command) return false;
+    /* normalized = " ".join(command.lower().split()) */
+    char lower[2048];
+    size_t n = strlen(command);
+    if (n >= sizeof(lower)) n = sizeof(lower) - 1;
+    for (size_t i = 0; i < n; i++)
+        lower[i] = (char)tolower((unsigned char)command[i]);
+    lower[n] = '\0';
+    /* collapse whitespace runs to single spaces */
+    char norm[2048];
+    size_t o = 0, i = 0;
+    while (i < n) {
+        while (i < n && isspace((unsigned char)lower[i])) i++;
+        if (i >= n) break;
+        while (i < n && !isspace((unsigned char)lower[i])) {
+            if (o + 1 < sizeof(norm)) norm[o++] = lower[i];
+            i++;
+        }
+        if (i < n && o + 1 < sizeof(norm)) norm[o++] = ' ';
+    }
+    norm[o] = '\0';
+    return strncmp(norm, "gh auth login", 13) == 0 &&
+           strstr(norm, "--with-token") != NULL;
 }
 
 /* PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_strip_quotes */
@@ -243,8 +266,106 @@ bool _looks_like_help_or_version_command(const char *command) {
 }
 
 /* PoP: _resolve_notification_flag_conflict @ tools/terminal_tool.py:_foreground_background_guidance */
+/* Faithful port: suggest background mode when a foreground command looks
+ * long-lived. Returns a malloc'd guidance string (caller frees) or NULL.
+ * Mirrors the Python regex/prefix analysis (help/version short-circuit,
+ * quote stripping, shell-level wrappers, inline/trailing '&', and the
+ * long-lived foreground patterns). */
 const char* _foreground_background_guidance(const char *command) {
-    (void)command;
+    if (!command) return NULL;
+    if (_looks_like_help_or_version_command(command)) return NULL;
+
+    /* Strip quoted content so keywords inside strings don't false-positive.
+     * We reuse _strip_quotes which removes ', ", ` quoted spans. */
+    char *unquoted = _strip_quotes(command);
+
+    /* _SHELL_LEVEL_BACKGROUND_RE: (?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\(\s*)
+     *                              (?:nohup|disown|setsid)\b  (case-insensitive) */
+    static const char *wrap[] = {"nohup", "disown", "setsid", NULL};
+    bool has_wrapper = false;
+    if (unquoted) {
+        char lwr[2048];
+        size_t n = strlen(unquoted);
+        if (n >= sizeof(lwr)) n = sizeof(lwr) - 1;
+        for (size_t i = 0; i < n; i++) lwr[i] = (char)tolower((unsigned char)unquoted[i]);
+        lwr[n] = '\0';
+        for (const char **w = wrap; *w; w++) {
+            const char *p = strstr(lwr, *w);
+            while (p) {
+                int prev_ok = (p == lwr) || strchr(";&|", p[-1]) ||
+                              (p >= lwr + 2 && p[-1] == '&' && p[-2] == '&') ||
+                              (p >= lwr + 2 && p[-1] == '|' && p[-2] == '|') ||
+                              (p >= lwr + 2 && p[-1] == '(' && p[-2] == '$');
+                int next_ok = (p[strlen(*w)] == '\0') || isspace((unsigned char)p[strlen(*w)]);
+                if (prev_ok && next_ok) { has_wrapper = true; break; }
+                p = strstr(p + 1, *w);
+            }
+            if (has_wrapper) break;
+        }
+    }
+
+    if (has_wrapper) {
+        char *msg = strdup(
+            "Foreground command uses shell-level background wrappers (nohup/disown/setsid). "
+            "Re-send WITHOUT the wrapper as terminal(command=\"<cmd>\", background=true, "
+            "notify_on_complete=true) so Hermes tracks the process, then run readiness "
+            "checks and tests in separate commands.");
+        free(unquoted);
+        return msg;
+    }
+
+    /* inline '&' (X & Y) or trailing '&' (#...) */
+    bool has_amp = false;
+    if (unquoted) {
+        for (size_t i = 0; unquoted[i]; i++) {
+            if (unquoted[i] == '&') {
+                char nxt = unquoted[i+1];
+                if (nxt == '\0' || nxt == '#' || isspace((unsigned char)nxt)) { has_amp = true; break; }
+                /* " & " pattern */
+                if (i > 0 && isspace((unsigned char)unquoted[i-1]) && isspace((unsigned char)nxt)) { has_amp = true; break; }
+            }
+        }
+    }
+
+    if (has_amp) {
+        char *msg = strdup(
+            "Foreground command uses '&' backgrounding. Re-send WITHOUT the '&' as "
+            "terminal(command=\"<cmd>\", background=true) — add notify_on_complete=true "
+            "for bounded jobs — then run health checks and tests in follow-up terminal calls.");
+        free(unquoted);
+        return msg;
+    }
+
+    /* Long-lived foreground patterns (case-insensitive). */
+    static const char *k_long_lived[] = {
+        "npm run dev", "npm run start", "npm run serve", "npm run watch",
+        "pnpm run dev", "pnpm run start", "pnpm run serve", "pnpm run watch",
+        "yarn run dev", "yarn run start", "yarn run serve", "yarn run watch",
+        "bun run dev", "bun run start", "bun run serve", "bun run watch",
+        "docker compose up", "next dev", "vite", "nodemon",
+        "uvicorn", "gunicorn", "python -m http.server", "python3 -m http.server",
+        NULL
+    };
+    bool long_lived = false;
+    if (unquoted) {
+        char lwr[2048];
+        size_t n = strlen(unquoted);
+        if (n >= sizeof(lwr)) n = sizeof(lwr) - 1;
+        for (size_t i = 0; i < n; i++) lwr[i] = (char)tolower((unsigned char)unquoted[i]);
+        lwr[n] = '\0';
+        for (const char **p = k_long_lived; *p; p++) {
+            if (strstr(lwr, *p)) { long_lived = true; break; }
+        }
+    }
+
+    free(unquoted);
+    if (long_lived) {
+        return strdup(
+            "Foreground command looks long-lived (dev server / watcher / compose up). "
+            "Re-send as terminal(command=\"<cmd>\", background=true, notify_on_complete=true) "
+            "so Hermes tracks the process and you can run readiness checks and tests in "
+            "follow-up commands while it runs.");
+    }
     return NULL;
 }
 
