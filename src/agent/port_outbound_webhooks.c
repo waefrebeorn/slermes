@@ -16,6 +16,7 @@
 #include "hermes_json.h"
 #include "hermes_crypto.h"
 #include "hermes_outbound_webhooks.h"
+#include "libhttp/http.h"
 
 /* ── Tool-scoped events set ───────────────────────────────── */
 static const char *OW_TOOL_SCOPED_EVENTS[] = {
@@ -454,12 +455,80 @@ void ow_ensure_worker(void) {
 void ow_deliver(const json_t *delivery) {
     const char *ev = json_get_str(delivery, "event", "?");
     const char *lb = json_get_str(delivery, "label", "?");
-    const char *url = json_get_str(delivery, "url", "?");
+    const char *url = json_get_str(delivery, "url", NULL);
+    const char *body = json_get_str(delivery, "body", NULL);
+    const json_t *headers_j = json_obj_get(delivery, "headers");
     double tm = json_get_num(delivery, "timeout", OW_DEFAULT_TIMEOUT_SECONDS);
+    int timeout = (int)tm;
+    if (timeout < 1) timeout = 1;
+    if (timeout > OW_MAX_TIMEOUT_SECONDS) timeout = OW_MAX_TIMEOUT_SECONDS;
 
-    fprintf(stderr, "[outbound-webhook] deliver event=%s target=%s url=%s timeout=%d\n",
-            ev, lb, url, (int)tm);
-    /* TODO: actual HTTP POST via libhttp */
+    if (!url || !url[0] || !body) {
+        fprintf(stderr, "[outbound-webhook] deliver skipped (missing url/body) event=%s target=%s\n",
+                ev, lb);
+        return;
+    }
+
+    /* Serialize headers object into "Key: Value\n" form. */
+    char *hdr_str = NULL;
+    if (headers_j && headers_j->type == JSON_OBJECT) {
+        size_t cap = 256, len = 0;
+        hdr_str = malloc(cap);
+        if (hdr_str) {
+            hdr_str[0] = '\0';
+            size_t n = headers_j->c.count;
+            for (size_t i = 0; i < n; i++) {
+                const char *k = json_object_get_key_at(headers_j, i);
+                const json_t *v = json_object_get_at(headers_j, i);
+                const char *vs = (v && v->type == JSON_STRING) ? v->str_val : "";
+                if (!k) k = "";
+                size_t need = len + strlen(k) + 2 + strlen(vs) + 2;
+                if (need + 1 > cap) { cap = need + 256; char *nb = realloc(hdr_str, cap); if (!nb) { free(hdr_str); hdr_str = NULL; break; } hdr_str = nb; }
+                len += (size_t)sprintf(hdr_str + len, "%s: %s\n", k, vs);
+            }
+        }
+    }
+
+    (void)hdr_str; /* header string reserved for future signed-header transport */
+
+    http_t *h = http_new(timeout);
+    int status = -1;
+    char last_err[128] = {0};
+    for (int attempt = 1; attempt <= OW_MAX_DELIVERY_ATTEMPTS; attempt++) {
+        http_resp_t *r = http_request(h, HTTP_POST, url, hdr_str, body, strlen(body));
+        if (!r) {
+            snprintf(last_err, sizeof(last_err), "attempt %d: no response", attempt);
+            continue;
+        }
+        status = r->status;
+        if (status >= 200 && status < 300) {
+            fprintf(stderr, "[outbound-webhook] delivered event=%s target=%s (HTTP %d)\n", ev, lb, status);
+            http_resp_free(r);
+            http_free(h);
+            free(hdr_str);
+            return;
+        }
+        if (status >= 400 && status < 500) {
+            fprintf(stderr, "[outbound-webhook] rejected event=%s target=%s: HTTP %d — not retrying\n", ev, lb, status);
+            http_resp_free(r);
+            http_free(h);
+            free(hdr_str);
+            return;
+        }
+        if (status >= 300 && status < 400) {
+            fprintf(stderr, "[outbound-webhook] redirected event=%s target=%s: HTTP %d — redirects not followed\n", ev, lb, status);
+            http_resp_free(r);
+            http_free(h);
+            free(hdr_str);
+            return;
+        }
+        /* 5xx or connection error: retry. */
+        snprintf(last_err, sizeof(last_err), "HTTP %d", status > 0 ? status : -1);
+        http_resp_free(r);
+    }
+    fprintf(stderr, "[outbound-webhook] delivery FAILED event=%s target=%s: %s\n", ev, lb, last_err);
+    http_free(h);
+    free(hdr_str);
 }
 
 /* PoP: ow_make_callback @ agent/outbound_webhooks.py:_make_callback */
