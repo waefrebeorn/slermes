@@ -33,10 +33,10 @@ static bool models_dev_should_hide(const char *provider, const char *model_id);
 static bool models_dev_is_noise(const char *model_id);
 static char *models_dev_format_cost(json_t *entry);
 static char *models_dev_format_capabilities(json_t *entry);
-static bool models_dev_has_cost_data(json_t *entry);
-static bool models_dev_supports_vision(json_t *entry);
-static bool models_dev_supports_pdf(json_t *entry);
-static bool models_dev_supports_audio_input(json_t *entry);
+static bool has_cost_data(json_t *entry);
+static bool supports_vision(json_t *entry);
+static bool supports_pdf(json_t *entry);
+static bool supports_audio_input(json_t *entry);
 static double disk_cache_age_seconds(void);
 
 /* ── extern references into provider_metadata.c ──────────────────────── */
@@ -488,7 +488,7 @@ static bool models_dev_is_noise(const char *model_id) {
 /* PoP: models_dev_format_cost @ agent/models_dev.py:format_cost */
 /* Port of Python agent/models_dev.py:format_cost(). */
 static char *models_dev_format_cost(json_t *entry) {
-    if (!models_dev_has_cost_data(entry))
+    if (!has_cost_data(entry))
         return strdup("unknown");
 
     json_t *cost = json_obj_get(entry, "cost");
@@ -518,9 +518,9 @@ static char *models_dev_format_capabilities(json_t *entry) {
 
     bool has_reasoning = json_get_bool(entry, "reasoning", false);
     bool has_tools = json_get_bool(entry, "tool_call", false);
-    bool has_vision = models_dev_supports_vision(entry);
-    bool has_pdf = models_dev_supports_pdf(entry);
-    bool has_audio = models_dev_supports_audio_input(entry);
+    bool has_vision = supports_vision(entry);
+    bool has_pdf = supports_pdf(entry);
+    bool has_audio = supports_audio_input(entry);
     bool has_structured = json_get_bool(entry, "structured_output", false);
     bool has_open = json_get_bool(entry, "open_weights", false);
 
@@ -712,7 +712,7 @@ char *models_dev_get_model_info_json(const char *provider_id, const char *model_
     return out_json;
 }
 
-static bool models_dev_has_cost_data(json_t *entry) {
+static bool has_cost_data(json_t *entry) {
     if (!entry || entry->type != JSON_OBJECT) return false;
     json_t *cost = json_obj_get(entry, "cost");
     if (!cost || cost->type != JSON_OBJECT) return false;
@@ -723,7 +723,7 @@ static bool models_dev_has_cost_data(json_t *entry) {
     return false;
 }
 
-static bool models_dev_supports_vision(json_t *entry) {
+static bool supports_vision(json_t *entry) {
     if (!entry || entry->type != JSON_OBJECT) return false;
     if (json_get_bool(entry, "attachment", false)) return true;
     json_t *mods = json_obj_get(entry, "modalities");
@@ -740,7 +740,7 @@ static bool models_dev_supports_vision(json_t *entry) {
     return false;
 }
 
-static bool models_dev_supports_pdf(json_t *entry) {
+static bool supports_pdf(json_t *entry) {
     if (!entry || entry->type != JSON_OBJECT) return false;
     json_t *mods = json_obj_get(entry, "modalities");
     if (mods && mods->type == JSON_OBJECT) {
@@ -756,8 +756,8 @@ static bool models_dev_supports_pdf(json_t *entry) {
     return false;
 }
 
-/* PoP: models_dev_supports_audio_input @ agent/models_dev.py:supports_audio_input */
-static bool models_dev_supports_audio_input(json_t *entry) {
+/* PoP: supports_audio_input @ agent/models_dev.py:supports_audio_input */
+static bool supports_audio_input(json_t *entry) {
     if (!entry || entry->type != JSON_OBJECT) return false;
     json_t *mods = json_obj_get(entry, "modalities");
     if (mods && mods->type == JSON_OBJECT) {

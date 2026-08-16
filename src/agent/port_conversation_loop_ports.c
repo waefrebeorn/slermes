@@ -513,7 +513,7 @@ bool cvl_ensure_cached_system_prompt_static(agent_state_t *agent,
     bool stale = (agent->cached_system_prompt_static == NULL ||
                   agent->cached_system_prompt_static[0] == '\0');
     if (stale) {
-        system_prompt_reconstruct_static_prefix(agent, cfg);
+        reconstruct_static_prefix(agent, cfg);
     }
     return stale;
 }

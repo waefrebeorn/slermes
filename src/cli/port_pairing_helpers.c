@@ -88,11 +88,11 @@ char **pairing_split_allowlist(const char *allowlist_str) {
     return out;
 }
 
-/* PoP: pairing_sync_allowlist_add @ gateway/pairing.py:_sync_allowlist_add */
+/* PoP: sync_allowlist_add @ gateway/pairing.py:_sync_allowlist_add */
 /* Add user_id to the platform allowlist env var IF one is configured. On an
  * open gateway (no allowlist) we do nothing. Best-effort; failures are ignored
  * because the pairing store grant still authorizes via the authz union. */
-void pairing_sync_allowlist_add(const char *platform, const char *user_id) {
+void sync_allowlist_add(const char *platform, const char *user_id) {
     const char *env_var = pairing_env_for(platform);
     if (!env_var) return;
     const char *current = getenv(env_var);

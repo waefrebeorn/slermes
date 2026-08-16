@@ -253,9 +253,9 @@ const char *bluebubbles_get_group_id(json_node_t *update) {
  * DELETE /api/v1/chat/{encoded_guid}/typing (stop)
  * ================================================================ */
 
-/* PoP: bluebubbles_send_typing @ gateway/platforms/bluebubbles.py:send_typing */
+/* PoP: send_typing @ gateway/platforms/bluebubbles.py:send_typing */
 /* Port of Python gateway/platforms/bluebubbles.py:send_typing(). */
-bool bluebubbles_send_typing(http_client_t *http, const char *chat_id) {
+bool send_typing(http_client_t *http, const char *chat_id) {
     if (!g_bb_url[0] || !chat_id) return false;
     if (!http) http = http_client_new(10);
     http_client_t *local_http = NULL;
@@ -279,9 +279,9 @@ bool bluebubbles_send_typing(http_client_t *http, const char *chat_id) {
     return ok;
 }
 
-/* PoP: bluebubbles_stop_typing @ gateway/platforms/bluebubbles.py:stop_typing */
+/* PoP: stop_typing @ gateway/platforms/bluebubbles.py:stop_typing */
 /* Port of Python gateway/platforms/bluebubbles.py:stop_typing(). */
-bool bluebubbles_stop_typing(http_client_t *http, const char *chat_id) {
+bool stop_typing(http_client_t *http, const char *chat_id) {
     if (!g_bb_url[0] || !chat_id) return false;
     if (!http) http = http_client_new(10);
     http_client_t *local_http = NULL;

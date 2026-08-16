@@ -41,7 +41,7 @@ bool signal_connect(void) {
 }
 
 /* Stop the signal adapter and release the poll loop. */
-void signal_disconnect(void) {
+void disconnect(void) {
     g_signal_running = false;
     g_signal_available = false;
 }
@@ -119,9 +119,9 @@ bool signal_send_group_message(http_client_t *http,
  *   signal-cli -a <number> send-reaction -e <emoji> \
  *     --target-author <author> --target-timestamp <ts> <recipient>
  * ------------------------------------------------------------------ */
-/* PoP: signal_send_reaction @ gateway/platforms/signal.py:send_reaction */
+/* PoP: send_reaction @ gateway/platforms/signal.py:send_reaction */
 /* Port of Python gateway/platforms/signal.py:send_reaction(). */
-bool signal_send_reaction(http_client_t *http,
+bool send_reaction(http_client_t *http,
                            const char *recipient,
                            const char *target_author,
                            const char *target_timestamp,

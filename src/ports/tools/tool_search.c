@@ -61,7 +61,7 @@ int tool_search_estimate_tokens(const char *schema_json) {
 
 /* PoP: _tokenize @ tools/tool_search.py:_tokenize */
 /* Port of Python: _tokenize() — extract lowercase alphanumeric tokens */
-int tool_search_tokenize(const char *text, char tokens[][64], int max_tokens) {
+int tokenize(const char *text, char tokens[][64], int max_tokens) {
     if (!text || max_tokens <= 0) return 0;
     int count = 0;
     const char *p = text;
@@ -134,7 +134,7 @@ static catalog_source_t classify_source(const char *name, char *source_name, siz
 
 /* PoP: build_catalog @ tools/tool_search.py:build_catalog */
 /* Port of Python: build_catalog() */
-int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
+int build_catalog(const char *tool_schemas[], int schema_count,
                               tool_catalog_t *catalog) {
     if (!catalog || !tool_schemas || schema_count <= 0) return -1;
 
@@ -185,7 +185,7 @@ int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
 
         char search_text[2048];
         tool_search_entry_text(name, desc, param_names, search_text, sizeof(search_text));
-        entry->token_count = tool_search_tokenize(search_text, entry->tokens, CATALOG_MAX_TOKENS);
+        entry->token_count = tokenize(search_text, entry->tokens, CATALOG_MAX_TOKENS);
 
         json_free(root);
         catalog->count++;
@@ -199,7 +199,7 @@ int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
 
 /* PoP: _bm25_score @ tools/tool_search.py:_bm25_score */
 /* Port of Python: _bm25_score() */
-double tool_search_bm25_score(const char *query_tokens[], int query_count,
+double bm25_score(const char *query_tokens[], int query_count,
                               const catalog_entry_t *entry,
                               const int doc_lengths[], int n_docs,
                               const int doc_freq[], int vocab_size) {
@@ -250,7 +250,7 @@ int tool_search_query(const tool_catalog_t *catalog, const char *query,
     if (!catalog || !query || !out_indices || limit <= 0) return 0;
 
     char query_tokens[CATALOG_MAX_TOKENS][64];
-    int qt_count = tool_search_tokenize(query, query_tokens, CATALOG_MAX_TOKENS);
+    int qt_count = tokenize(query, query_tokens, CATALOG_MAX_TOKENS);
     if (qt_count == 0) return 0;
 
     if (limit > catalog->count) limit = catalog->count;
@@ -289,7 +289,7 @@ int tool_search_query(const tool_catalog_t *catalog, const char *query,
     int scored_count = 0;
 
     for (int i = 0; i < catalog->count; i++) {
-        double s = tool_search_bm25_score(qt_ptrs, qt_count, &catalog->entries[i],
+        double s = bm25_score(qt_ptrs, qt_count, &catalog->entries[i],
                                           doc_lengths, n_docs, doc_freq, qt_count);
         if (s > 0) {
             scored[scored_count].idx = i;
@@ -333,7 +333,7 @@ int tool_search_query(const tool_catalog_t *catalog, const char *query,
 
 /* PoP: should_activate @ tools/tool_search.py:should_activate */
 /* Port of Python: should_activate() */
-bool tool_search_should_activate(const tool_search_config_t *config,
+bool should_activate(const tool_search_config_t *config,
                                  int deferrable_tokens,
                                  int context_length) {
     if (!config) return false;
@@ -477,7 +477,7 @@ char *tool_search_assemble(const char *tool_schemas[], int schema_count,
     memset(out_result, 0, sizeof(*out_result));
 
     tool_catalog_t catalog;
-    tool_search_build_catalog(tool_schemas, schema_count, &catalog);
+    build_catalog(tool_schemas, schema_count, &catalog);
 
     int deferrable_tokens = 0;
     for (int i = 0; i < schema_count; i++) {
@@ -487,7 +487,7 @@ char *tool_search_assemble(const char *tool_schemas[], int schema_count,
     out_result->deferred_count = catalog.count;
     out_result->deferred_tokens = deferrable_tokens;
 
-    if (!tool_search_should_activate(config, deferrable_tokens, context_length)) {
+    if (!should_activate(config, deferrable_tokens, context_length)) {
         out_result->activated = false;
         if (context_length > 0) {
             out_result->threshold_tokens = (int)((double)context_length * (config->threshold_pct / 100.0));
@@ -735,7 +735,7 @@ void tool_search_catalog_free(tool_catalog_t *catalog) {
 
 /* PoP: listing_token_budget @ tools/tool_search.py:listing_token_budget */
 /* Port of Python: listing_token_budget() — min(listing_max_tokens, pct% of context) */
-int tool_search_listing_token_budget(const tool_search_config_t *config,
+int listing_token_budget(const tool_search_config_t *config,
                                      int context_length) {
     if (!config) return 4000;
     int pct_leg;
@@ -752,7 +752,7 @@ int tool_search_listing_token_budget(const tool_search_config_t *config,
 
 /* PoP: _short_desc @ tools/tool_search.py:_short_desc */
 /* Port of Python: _short_desc() — first sentence, clipped to max_chars */
-void tool_search_short_desc(const char *description, int max_chars,
+void short_desc(const char *description, int max_chars,
                             char *out, size_t out_size) {
     if (!out || out_size == 0) return;
     out[0] = '\0';
@@ -817,7 +817,7 @@ void tool_search_short_desc(const char *description, int max_chars,
 
 /* PoP: _listing_group_label @ tools/tool_search.py:_listing_group_label */
 /* Port of Python: _listing_group_label() — mcp-foo → foo */
-void tool_search_listing_group_label(const char *source_name,
+void listing_group_label(const char *source_name,
                                      char *out, size_t out_size) {
     if (!out || out_size == 0) return;
     const char *label = source_name && source_name[0] ? source_name : "other";
@@ -852,7 +852,7 @@ char *tool_search_build_catalog_listing(const tool_catalog_t *catalog,
     int ngroups = 0;
     for (int i = 0; i < catalog->count; i++) {
         char label[128];
-        tool_search_listing_group_label(catalog->entries[i].source_name,
+        listing_group_label(catalog->entries[i].source_name,
                                         label, sizeof(label));
         /* Map to group index */
         int gi = -1;
@@ -932,7 +932,7 @@ char *tool_search_build_catalog_listing(const tool_catalog_t *catalog,
             char desc_trunc[512];
             snprintf(desc_trunc, sizeof(desc_trunc), "%.500s",
                      catalog->entries[ei].description);
-            tool_search_short_desc(desc_trunc, 60, short_d, sizeof(short_d));
+            short_desc(desc_trunc, 60, short_d, sizeof(short_d));
             char tool_line[256];
             if (short_d[0]) {
                 snprintf(tool_line, sizeof(tool_line), "- %s: %s",
@@ -1080,7 +1080,7 @@ char *tool_search_build_catalog_listing_with_form(const tool_catalog_t *catalog,
     char groups[CATALOG_MAX_ENTRIES][128];
     for (int i = 0; i < catalog->count; i++) {
         char label[128];
-        tool_search_listing_group_label(catalog->entries[i].source_name,
+        listing_group_label(catalog->entries[i].source_name,
                                         label, sizeof(label));
         int gi = -1;
         for (int g = 0; g < ngroups; g++) {
@@ -1169,7 +1169,7 @@ char *tool_search_build_catalog_listing_with_form(const tool_catalog_t *catalog,
             char desc_trunc[512];
             snprintf(desc_trunc, sizeof(desc_trunc), "%.500s",
                      catalog->entries[ei].description);
-            tool_search_short_desc(desc_trunc, 60, short_d, sizeof(short_d));
+            short_desc(desc_trunc, 60, short_d, sizeof(short_d));
             char tool_line[256];
             if (short_d[0]) {
                 snprintf(tool_line, sizeof(tool_line), "- %s: %s",
@@ -1342,7 +1342,7 @@ char *tool_search_available_source_summary(const tool_catalog_t *catalog) {
 
     for (int i = 0; i < catalog->count; i++) {
         char label[128];
-        tool_search_listing_group_label(catalog->entries[i].source_name,
+        listing_group_label(catalog->entries[i].source_name,
                                         label, sizeof(label));
         int gi = -1;
         for (int g = 0; g < ngroups; g++) {

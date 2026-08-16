@@ -554,7 +554,7 @@ const char *plug_get_pre_tool_call_directive(const char *tool_name) {
 const char *plug_get_pre_tool_call_block_message(const char *tool_name) {
     return plugin_get_pre_tool_call_block_message(tool_name);
 }
-/* PoP: plug_resolve_pre_tool_block @ hermes_cli/plugins.py:resolve_pre_tool_block */
+/* PoP: plug_resolve_pre_tool_block @ hermes_cli/plugins.py:plugin_resolve_pre_tool_block */
 bool plug_resolve_pre_tool_block(const char *block_msg) { return plugin_resolve_pre_tool_block(block_msg); }
 /* PoP: plug_get_pre_verify_continue_message @ hermes_cli/plugins.py:get_pre_verify_continue_message */
 const char *plug_get_pre_verify_continue_message(const char *tool_name) {

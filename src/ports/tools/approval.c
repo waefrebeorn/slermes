@@ -212,8 +212,8 @@ char **approval_permanent_allowlist_list(size_t *out_n) {
 }
 
 
-/* PoP: approval_save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
-int approval_save_permanent_allowlist(const char **patterns, size_t n) {
+/* PoP: save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
+int save_permanent_allowlist(const char **patterns, size_t n) {
     int write = 0;
     for (int i = 0; i < g_approval_count; i++) {
         if (g_approval_cache[i].permanent) {
@@ -783,7 +783,7 @@ typedef struct {
 /* Run all command guards (hardline, sudo-stdin, sensitive-path) for a tool
  * invocation. The C implementation folds this into approval_check, so we
  * delegate. Returns 1=approved, 0=denied, -1=not dangerous. */
-int approval_check_all_command_guards(const char *tool_name, const char *args_json) {
+int check_all_command_guards(const char *tool_name, const char *args_json) {
     return approval_check(tool_name, args_json);
 }
 

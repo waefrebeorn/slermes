@@ -27,10 +27,10 @@ bool ssl_guard_skip_enabled(void);
  *   HERMES_ERR_CONFIG            - certifi not available or no certs loaded
  *
  * If HERMES_SKIP_SSL_GUARD is set, returns HERMES_OK without checking. */
-hermes_error_t ssl_guard_verify_ca_bundle(void);
+hermes_error_t verify_ca_bundle(void);
 
-/* Backward-compatible wrapper (same behavior as ssl_guard_verify_ca_bundle). */
-hermes_error_t ssl_guard_verify_ca_bundle_with_fallback(void);
+/* Backward-compatible wrapper (same behavior as verify_ca_bundle). */
+hermes_error_t verify_ca_bundle_with_fallback(void);
 
 #ifdef __cplusplus
 }

@@ -747,10 +747,10 @@ bool yuanbao_is_running(void) {
 }
 
 /* Send a sticker via the active WebSocket connection. Returns 0 on success, -1 on error. */
-/* PoP: yuanbao_send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
+/* PoP: send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
 /* Port of Python gateway/platforms/yuanbao.py:send_sticker(). */
-/* PoP: yuanbao_send_sticker @ gateway/platforms/yuanbao.py:send */
-int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
+/* PoP: send_sticker @ gateway/platforms/yuanbao.py:send */
+int send_sticker(const char *to_uid, const char *sticker_id,
                           const char *sticker_name, const char *package_id,
                           int width, int height) {
     if (!g_yb.ws || !g_yb.running) return -1;
@@ -1553,23 +1553,23 @@ char *yuanbao_build_timestamp(void) {
     return out;
 }
 
-/* PoP: yuanbao_is_cache_valid @ gateway/platforms/yuanbao.py:SignManager.is_cache_valid */
-bool yuanbao_is_cache_valid(const yuanbao_token_entry_t *entry) {
+/* PoP: is_cache_valid @ gateway/platforms/yuanbao.py:SignManager.is_cache_valid */
+bool is_cache_valid(const yuanbao_token_entry_t *entry) {
     if (!entry) return false;
     double now = (double)time(NULL);
     return (entry->expire_ts - now) > YUANBAO_SIGN_CACHE_REFRESH_MARGIN_S;
 }
 
-/* PoP: yuanbao_clear_locks @ gateway/platforms/yuanbao.py:SignManager.clear_locks */
-void yuanbao_clear_locks(void) {
+/* PoP: clear_locks @ gateway/platforms/yuanbao.py:SignManager.clear_locks */
+void clear_locks(void) {
     pthread_mutex_lock(&yb_sign_mutex);
     /* In C we don't have per-app_key asyncio.Lock objects to clear;
      * we just note that the global mutex is the lock mechanism. */
     pthread_mutex_unlock(&yb_sign_mutex);
 }
 
-/* PoP: yuanbao_purge_expired @ gateway/platforms/yuanbao.py:SignManager.purge_expired */
-int yuanbao_purge_expired(void) {
+/* PoP: purge_expired @ gateway/platforms/yuanbao.py:SignManager.purge_expired */
+int purge_expired(void) {
     pthread_mutex_lock(&yb_sign_mutex);
     double now = (double)time(NULL);
     int purged = 0;
@@ -1726,11 +1726,11 @@ yuanbao_sign_entry_t *yuanbao_get_token(const char *app_key, const char *app_sec
                                          const char *api_domain, const char *route_env) {
     if (!app_key || !app_secret || !api_domain) return NULL;
 
-    yuanbao_purge_expired();
+    purge_expired();
 
     pthread_mutex_lock(&yb_sign_mutex);
     yuanbao_sign_entry_t *cached = yb_sign_find(app_key);
-    if (cached && yuanbao_is_cache_valid((const yuanbao_token_entry_t *)&cached->entry)) {
+    if (cached && is_cache_valid((const yuanbao_token_entry_t *)&cached->entry)) {
         yuanbao_sign_entry_t *copy = malloc(sizeof(*copy));
         if (copy) memcpy(copy, cached, sizeof(*copy));
         pthread_mutex_unlock(&yb_sign_mutex);
@@ -1741,7 +1741,7 @@ yuanbao_sign_entry_t *yuanbao_get_token(const char *app_key, const char *app_sec
     /* Double-checked locking: fetch and re-check under lock */
     pthread_mutex_lock(&yb_sign_mutex);
     cached = yb_sign_find(app_key);
-    if (cached && yuanbao_is_cache_valid((const yuanbao_token_entry_t *)&cached->entry)) {
+    if (cached && is_cache_valid((const yuanbao_token_entry_t *)&cached->entry)) {
         yuanbao_sign_entry_t *copy = malloc(sizeof(*copy));
         if (copy) memcpy(copy, cached, sizeof(*copy));
         pthread_mutex_unlock(&yb_sign_mutex);

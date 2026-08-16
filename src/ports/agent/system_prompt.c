@@ -623,7 +623,7 @@ char *format_tools_for_system_message(tool_registry_t *reg) {
  * A failed reconstruction is memoized per stored prompt
  * (agent._static_rebuild_failed_for) so the retry-loop hot path doesn't
  * re-run file I/O when inputs haven't changed. */
-void system_prompt_reconstruct_static_prefix(agent_state_t *agent,
+void reconstruct_static_prefix(agent_state_t *agent,
                                              const system_prompt_config_t *cfg)
 {
     if (!agent) return;

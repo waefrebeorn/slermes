@@ -73,7 +73,7 @@ bool registry_name_matches(const char *name, const char *pattern);
 
 /* S14 gap #11: Deregister a tool by name. Used for MCP dynamic tool removal.
  * Returns true if tool was found and removed, false if not found. */
-bool registry_deregister(const char *name);
+bool deregister(const char *name);
 
 /* S14 gap #16: Rich query API — get schema JSON for a tool (returns "" if not found) */
 const char *registry_get_schema(const char *name);
@@ -81,7 +81,7 @@ const char *registry_get_schema(const char *name);
 const char *registry_get_emoji(const char *name, const char *default_emoji);
 
 /* S14 gap #16: Rich query API — check if any tool in a toolset is available */
-bool registry_is_toolset_available(const char *toolset);
+bool is_toolset_available(const char *toolset);
 
 /* Full registration (port of Python ToolRegistry.register): accepts the
  * requires_env list + per-tool max result size. requires_env_n is the number
@@ -107,7 +107,7 @@ char *registry_get_tool_to_toolset_map(void);
 const char *registry_get_toolset_for_tool(const char *name);
 
 /* Register an explicit alias -> canonical toolset mapping (overwrites prior). */
-void registry_register_toolset_alias(const char *alias, const char *toolset);
+void register_toolset_alias(const char *alias, const char *toolset);
 /* Canonical toolset name for an alias, or NULL (borrowed). */
 const char *registry_get_toolset_alias_target(const char *alias);
 /* JSON {"alias": "toolset"} snapshot of all alias mappings. Caller frees. */
@@ -118,7 +118,7 @@ char *registry_get_registered_toolset_aliases(void);
 #define REGISTRY_DEFAULT_RESULT_SIZE_CHARS 100000
 
 /* Return per-tool max result size, or *default*, or the global default. */
-int registry_get_max_result_size(const char *name, int default_size);
+int get_max_result_size(const char *name, int default_size);
 
 /* {toolset: available_bool} for every registered toolset (JSON object). */
 char *registry_check_toolset_requirements(void);

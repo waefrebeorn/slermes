@@ -10,7 +10,7 @@
  * Port of Python agent/coding_context.py:_model_family() — consolidated in coding_context_model_family()
  * Port of Python agent/coding_context.py:_edit_format_line() — consolidated in coding_context_edit_format_line()
  * Port of Python agent/coding_context.py:_coding_mode() — consolidated in coding_context_resolve_mode()
- * Port of Python agent/coding_context.py:_resolve_cwd() — consolidated in coding_context_resolve_cwd()
+ * Port of Python agent/coding_context.py:_resolve_cwd() — consolidated in resolve_cwd()
  * Port of Python agent/coding_context.py:_git_root() — consolidated in coding_context_find_git_root()
  * Port of Python agent/coding_context.py:_home() — consolidated in coding_context_get_home()
  * Port of Python agent/coding_context.py:_marker_root() — consolidated in coding_context_find_marker_root()
@@ -31,7 +31,7 @@
  * Port of Python agent/coding_context.py:_enabled_mcp_servers — coding_context_enabled_mcp_servers()
  * Port of Python agent/coding_context.py:_git — coding_context_run_git()
  * Port of Python agent/coding_context.py:_parse_status — coding_context_parse_git_status()
- * Port of Python agent/coding_context.py:_read_small — coding_context_read_small()
+ * Port of Python agent/coding_context.py:_read_small — read_small()
  * Port of Python agent/coding_context.py:_project_facts — coding_context_project_facts()
  * Port of Python agent/coding_context.py:build_coding_workspace_block — ported inline in coding_runtime_mode_system_blocks()
  * Port of Python agent/coding_context.py:resolve_runtime_mode() — consolidated in coding_context_resolve_runtime_mode()
@@ -325,7 +325,7 @@ const char *coding_context_resolve_mode(const hermes_config_t *config) {
 /* ================================================================== */
 
 /* AG26: Port of Python agent/coding_context.py:_resolve_cwd() */
-void coding_context_resolve_cwd(const hermes_config_t *config, char *out, size_t out_size) {
+void resolve_cwd(const hermes_config_t *config, char *out, size_t out_size) {
     if (config && config->agent.agent_cwd[0]) {
         snprintf(out, out_size, "%s", config->agent.agent_cwd);
         return;
@@ -542,7 +542,7 @@ coding_runtime_mode_t *coding_runtime_mode_create(
 
     /* Resolve cwd */
     char resolved_cwd[PATH_MAX];
-    coding_context_resolve_cwd(config, resolved_cwd, sizeof(resolved_cwd));
+    resolve_cwd(config, resolved_cwd, sizeof(resolved_cwd));
     snprintf(mode->cwd, sizeof(mode->cwd), "%s", resolved_cwd);
 
     /* Resolve config mode */
@@ -834,7 +834,7 @@ char *coding_context_parse_git_status(const char *porcelain)
 
 /*
  * Reads a small text file into out (or "" on any failure / oversize). */
-int coding_context_read_small(const char *path, char *out, size_t out_size, size_t max_bytes)
+int read_small(const char *path, char *out, size_t out_size, size_t max_bytes)
 {
     if (out && out_size) out[0] = '\0';
     if (!path || !path[0]) return -1;
@@ -916,7 +916,7 @@ char *coding_context_project_facts(const char *root)
         /* package.json scripts */
         char pkg[256*1024];
         char pjp[PATH_MAX]; snprintf(pjp, sizeof(pjp), "%s/package.json", root);
-        if (coding_context_read_small(pjp, pkg, sizeof(pkg), MAX_FACT_FILE_BYTES) == 0) {
+        if (read_small(pjp, pkg, sizeof(pkg), MAX_FACT_FILE_BYTES) == 0) {
             json_t *pj = json_parse(pkg, NULL);
             if (pj && pj->type == JSON_OBJECT) {
                 json_t *scripts = json_object_get(pj, "scripts");
@@ -947,13 +947,13 @@ char *coding_context_project_facts(const char *root)
         /* pyproject pytest */
         char pp[256*1024];
         char pyp[PATH_MAX]; snprintf(pyp, sizeof(pyp), "%s/pyproject.toml", root);
-        if (coding_context_read_small(pyp, pp, sizeof(pp), MAX_FACT_FILE_BYTES) == 0) {
+        if (read_small(pyp, pp, sizeof(pp), MAX_FACT_FILE_BYTES) == 0) {
             if (strstr(pp, "pytest.ini") || strstr(pp, "[tool.pytest")) strncat(verify, "pytest; ", sizeof(verify)-1);
         }
         /* Makefile targets */
         char mk[256*1024];
         char mkp[PATH_MAX]; snprintf(mkp, sizeof(mkp), "%s/Makefile", root);
-        if (coding_context_read_small(mkp, mk, sizeof(mk), MAX_FACT_FILE_BYTES) == 0) {
+        if (read_small(mkp, mk, sizeof(mk), MAX_FACT_FILE_BYTES) == 0) {
             for (int t = 0; VERIFY_TARGETS[t]; t++) {
                 char pat[128]; snprintf(pat, sizeof(pat), "\n%s:", VERIFY_TARGETS[t]);
                 if (strstr(mk, pat)) { strncat(verify, "make ", sizeof(verify)-1); strncat(verify, VERIFY_TARGETS[t], sizeof(verify)-1); strncat(verify, "; ", sizeof(verify)-1); }
@@ -1162,7 +1162,7 @@ char **coding_context_enabled_mcp_servers(const hermes_config_t *config)
  * Cheap, bounded check for source files in a repo's top two levels. Scans root
  * and immediate subdirs only, capped at CODE_SCAN_MAX_ENTRIES stats. */
 #define CODE_SCAN_MAX_ENTRIES 500
-bool coding_context_has_code_files(const char *root)
+bool has_code_files(const char *root)
 {
     if (!root || !root[0]) return false;
     static const char *CODE_EXTENSIONS[] = {
@@ -1294,7 +1294,7 @@ char *coding_context_coding_instructions(const hermes_config_t *config)
 
 /* Port of Python is_coding_context: whether Hermes should operate in its
  * coding posture right now. Thin wrapper over resolve_runtime_mode().is_coding. */
-int coding_context_is_coding_context(const char *platform, const char *cwd,
+int is_coding_context(const char *platform, const char *cwd,
                                      const hermes_config_t *config) {
     coding_runtime_mode_t *mode = coding_context_resolve_runtime_mode(
         platform, cwd, (const void *)config, NULL);
@@ -1311,7 +1311,7 @@ int coding_context_is_coding_context(const char *platform, const char *cwd,
  * JSON object — NULL outside a workspace. Caller frees the result. */
 char *coding_context_project_facts_for(const char *cwd) {
     char resolved[PATH_MAX];
-    coding_context_resolve_cwd(NULL, resolved, sizeof(resolved));
+    resolve_cwd(NULL, resolved, sizeof(resolved));
 
     char root[PATH_MAX];
     if (!coding_context_find_git_root(resolved, root, sizeof(root))) {

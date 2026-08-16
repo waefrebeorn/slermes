@@ -5,7 +5,7 @@
  * protocol.
  *
  * The sticker pack download / send path is implemented in yuanbao.c
- * (yuanbao_send_sticker(), which performs the websocket upload). This file
+ * (send_sticker(), which performs the websocket upload). This file
  * provides the Python-named entry points that delegate to it. No "N/A":
  * sticker send is real (the protocol transport), not a missing feature.
  */
@@ -17,7 +17,7 @@
  * surfaced as the sticker_name hint and the rest default to 0/NULL. */
 int yuanbao_sticker_send(const char *to_uid, const char *sticker_id,
                           const char *conv_id) {
-    return yuanbao_send_sticker(to_uid, sticker_id, conv_id ? conv_id : "",
+    return send_sticker(to_uid, sticker_id, conv_id ? conv_id : "",
                                 NULL, 0, 0);
 }
 
@@ -26,6 +26,6 @@ int yuanbao_sticker_send(const char *to_uid, const char *sticker_id,
  * Yuanbao protocol. Returns 0 on success. */
 int yuanbao_sticker_build_and_send(const char *to_uid, const char *sticker_id,
                                      const char *conv_id) {
-    return yuanbao_send_sticker(to_uid, sticker_id, conv_id ? conv_id : "",
+    return send_sticker(to_uid, sticker_id, conv_id ? conv_id : "",
                                 NULL, 0, 0);
 }

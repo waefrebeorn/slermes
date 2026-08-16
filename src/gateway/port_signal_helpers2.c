@@ -49,7 +49,7 @@ bool sgl_connect(void) {
 /* PoP: sgl_disconnect @ gateway/platforms/signal.py:disconnect */
 int sgl_disconnect(void) {
     /* Python: stop SSE + cleanup. */
-    extern void signal_disconnect(void);
-    signal_disconnect();
+    extern void disconnect(void);
+    disconnect();
     return 0;
 }

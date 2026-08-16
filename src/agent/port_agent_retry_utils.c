@@ -14,7 +14,7 @@ bool agent_retry_utils_is_zai_coding_overload_error(const char *base_url,
                                                     const char *model,
                                                     const retry_utils_err_t *err)
 {
-    return retry_utils_is_zai_coding_overload_error(base_url, model, err);
+    return is_zai_coding_overload_error(base_url, model, err);
 }
 
 char *agent_retry_utils__error_text(int status_code,

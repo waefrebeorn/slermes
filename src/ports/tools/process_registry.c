@@ -453,8 +453,8 @@ static void _mark_poll_observed(const char *session_id) {
     g_registry.poll_observed[g_registry.poll_observed_count++] = strdup(session_id);
 }
 
-/* PoP: process_registry_drain_should_skip @ tools/process_registry.py:ProcessRegistry._drain_should_skip */
-bool process_registry_drain_should_skip(const char *session_id,
+/* PoP: drain_should_skip @ tools/process_registry.py:ProcessRegistry._drain_should_skip */
+bool drain_should_skip(const char *session_id,
                                         bool skip_poll_observed) {
     if (_session_in_consumed(session_id)) return true;
     if (skip_poll_observed && _session_in_poll_observed(session_id)) return true;
@@ -489,7 +489,7 @@ static void _refresh_detached_session(ProcessSession *s) {
                 s->id, code, reason, src);
             queue_completion_event(evt);
             move_to_finished(s);
-            process_registry_write_checkpoint();
+            write_checkpoint();
         } else if (r == -1 && errno == ECHILD) {
             if (s->running) {
                 session_mark_exited(s, 0, "lost", "backend_lost");
@@ -573,7 +573,7 @@ static void *env_poller_loop(void *arg) {
             move_to_finished(s);
             queue_completion_event(evt);
             free(exit_out);
-            process_registry_write_checkpoint();
+            write_checkpoint();
             break;
         }
         free(exit_out);
@@ -683,7 +683,7 @@ static const char *_env_temp_dir(void *env_ref, char *buf, size_t buflen) {
 void tools_process_registry_init(void) { process_registry_init(); }
 
 /* PoP: process_registry_get_session @ tools/process_registry.py:spawn_local */
-ProcessSession* process_registry_spawn_local(const char *command,
+ProcessSession* spawn_local(const char *command,
                                               const char *cwd,
                                               const char *task_id,
                                               const char *session_key,
@@ -743,7 +743,7 @@ ProcessSession* process_registry_spawn_local(const char *command,
 }
 
 /* PoP: process_registry_get_session @ tools/process_registry.py:spawn_via_env */
-ProcessSession* process_registry_spawn_via_env(const char *command,
+ProcessSession* spawn_via_env(const char *command,
                                                  const char *cwd,
                                                  const char *task_id,
                                                  const char *session_key,
@@ -793,7 +793,7 @@ ProcessSession* process_registry_spawn_via_env(const char *command,
     pthread_t th;
     if (pthread_create(&th, NULL, env_poller_loop, s) == 0)
         pthread_detach(th);
-    process_registry_write_checkpoint();
+    write_checkpoint();
     return s;
 }
 
@@ -964,7 +964,7 @@ char* process_registry_kill(const char *session_id, const char *source,
         if (s->stdin_fd > 0) { close(s->stdin_fd); s->stdin_fd = -1; }
         if (consume_output) _mark_consumed(session_id);
         move_to_finished(s);
-        process_registry_write_checkpoint();
+        write_checkpoint();
         char *result = malloc(1024);
         snprintf(result, 1024,
             "{\"status\":\"killed\",\"command\":\"%s\",\"exit_code\":-15,"
@@ -975,8 +975,8 @@ char* process_registry_kill(const char *session_id, const char *source,
     return strdup("{\"status\":\"error\",\"error\":\"Process stdin not available (non-local backend)\"}");
 }
 
-/* PoP: process_registry_count_running @ tools/process_registry.py:ProcessRegistry.count_running */
-int process_registry_count_running(void) {
+/* PoP: count_running @ tools/process_registry.py:ProcessRegistry.count_running */
+int count_running(void) {
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
     int count = g_registry.running_count;
@@ -1067,8 +1067,8 @@ bool process_registry_has_active_for_task(const char *task_id) {
     return false;
 }
 
-/* PoP: process_registry_has_active_for_session @ tools/process_registry.py:ProcessRegistry.has_active_for_session */
-bool process_registry_has_active_for_session(const char *session_key,
+/* PoP: has_active_for_session @ tools/process_registry.py:ProcessRegistry.has_active_for_session */
+bool has_active_for_session(const char *session_key,
                                              double max_active_age_seconds) {
     registry_init();
     if (!session_key) return false;
@@ -1087,8 +1087,8 @@ bool process_registry_has_active_for_session(const char *session_key,
     return false;
 }
 
-/* PoP: process_registry_has_any_active @ tools/process_registry.py:ProcessRegistry.has_any_active */
-bool process_registry_has_any_active(void) {
+/* PoP: has_any_active @ tools/process_registry.py:ProcessRegistry.has_any_active */
+bool has_any_active(void) {
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
     for (int i = 0; i < g_registry.running_count; i++) {
@@ -1101,8 +1101,8 @@ bool process_registry_has_any_active(void) {
     return false;
 }
 
-/* PoP: process_registry_kill_started_since @ tools/process_registry.py:ProcessRegistry.kill_started_since */
-int process_registry_kill_started_since(const char *task_id,
+/* PoP: kill_started_since @ tools/process_registry.py:ProcessRegistry.kill_started_since */
+int kill_started_since(const char *task_id,
                                         const char **baseline_ids,
                                         int baseline_count,
                                         const char *source) {
@@ -1147,12 +1147,12 @@ int process_registry_kill_started_since(const char *task_id,
     }
     pthread_mutex_unlock(&g_registry.lock);
     _prune_if_needed();
-    process_registry_write_checkpoint();
+    write_checkpoint();
     return killed;
 }
 
-/* PoP: process_registry_kill_all @ tools/process_registry.py:ProcessRegistry.kill_all */
-int process_registry_kill_all(const char *task_id_filter, const char *source,
+/* PoP: kill_all @ tools/process_registry.py:ProcessRegistry.kill_all */
+int kill_all(const char *task_id_filter, const char *source,
                               bool consume_output) {
     if (!source) source = "kill_all";
     registry_init();
@@ -1189,12 +1189,12 @@ int process_registry_kill_all(const char *task_id_filter, const char *source,
     }
     pthread_mutex_unlock(&g_registry.lock);
     _prune_if_needed();
-    process_registry_write_checkpoint();
+    write_checkpoint();
     return killed;
 }
 
-/* PoP: process_registry_write_checkpoint @ tools/process_registry.py:ProcessRegistry._write_checkpoint */
-void process_registry_write_checkpoint(void) {
+/* PoP: write_checkpoint @ tools/process_registry.py:ProcessRegistry._write_checkpoint */
+void write_checkpoint(void) {
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
     FILE *fp = fopen(CHECKPOINT_PATH, "w");
@@ -1221,8 +1221,8 @@ void process_registry_write_checkpoint(void) {
     pthread_mutex_unlock(&g_registry.lock);
 }
 
-/* PoP: process_registry_recover_from_checkpoint @ tools/process_registry.py:ProcessRegistry.recover_from_checkpoint */
-int process_registry_recover_from_checkpoint(void) {
+/* PoP: recover_from_checkpoint @ tools/process_registry.py:ProcessRegistry.recover_from_checkpoint */
+int recover_from_checkpoint(void) {
     registry_init();
     FILE *fp = fopen(CHECKPOINT_PATH, "r");
     if (!fp) return 0;
@@ -1376,8 +1376,8 @@ bool process_registry_completion_consumed(const char *session_id) {
     return found;
 }
 
-/* PoP: process_registry_is_session_waiting @ tools/process_registry.py:ProcessRegistry.is_session_waiting */
-bool process_registry_is_session_waiting(const char *session_id) {
+/* PoP: is_session_waiting @ tools/process_registry.py:ProcessRegistry.is_session_waiting */
+bool is_session_waiting(const char *session_id) {
     if (!session_id || !*session_id) return false;
     ProcessSession *s = process_registry_get_session_ptr(session_id);
     if (!s) return false;
@@ -1395,7 +1395,7 @@ bool process_registry_is_session_waiting(const char *session_id) {
 }
 
 /* PoP: process_registry_set_env_exec @ tools/process_registry.py:read_log */
-char* process_registry_read_log(const char *session_id, int offset, int limit) {
+char* read_log(const char *session_id, int offset, int limit) {
     if (offset < 0) offset = 0;
     if (limit <= 0) limit = 200;
     registry_init();
@@ -1450,7 +1450,7 @@ char* process_registry_read_log(const char *session_id, int offset, int limit) {
 }
 
 /* PoP: process_registry_set_env_exec @ tools/process_registry.py:drain_notifications */
-char* process_registry_drain_notifications(const char *session_key_filter,
+char* drain_notifications(const char *session_key_filter,
                                            bool skip_poll_observed) {
     (void)skip_poll_observed;
     registry_init();
@@ -1503,7 +1503,7 @@ char* process_registry_drain_notifications(const char *session_key_filter,
             }
             bool is_completion = (strstr(evt, "\"type\":") == NULL);
             if (is_completion && esid[0] &&
-                process_registry_drain_should_skip(esid, skip_poll_observed)) {
+                drain_should_skip(esid, skip_poll_observed)) {
                 free(evt);
                 continue;
             }
@@ -1524,7 +1524,7 @@ char* process_registry_drain_notifications(const char *session_key_filter,
 }
 
 /* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.snapshot_running_ids */
-char** process_registry_snapshot_running_ids(const char *task_id, int *count_out) {
+char** snapshot_running_ids(const char *task_id, int *count_out) {
     registry_init();
     if (count_out) *count_out = 0;
     pthread_mutex_lock(&g_registry.lock);
@@ -1542,7 +1542,7 @@ char** process_registry_snapshot_running_ids(const char *task_id, int *count_out
 }
 
 /* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.write_stdin */
-char* process_registry_write_stdin(const char *session_id, const char *data) {
+char* write_stdin(const char *session_id, const char *data) {
     if (!data) data = "";
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -1560,20 +1560,20 @@ char* process_registry_write_stdin(const char *session_id, const char *data) {
 }
 
 /* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.submit_stdin */
-char* process_registry_submit_stdin(const char *session_id, const char *data) {
+char* submit_stdin(const char *session_id, const char *data) {
     if (!data) data = "";
     size_t len = strlen(data);
     char *with_nl = malloc(len + 2);
     memcpy(with_nl, data, len);
     with_nl[len] = '\n';
     with_nl[len + 1] = '\0';
-    char *result = process_registry_write_stdin(session_id, with_nl);
+    char *result = write_stdin(session_id, with_nl);
     free(with_nl);
     return result;
 }
 
 /* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.close_stdin */
-char* process_registry_close_stdin(const char *session_id) {
+char* close_stdin(const char *session_id) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
     if (!s) return strdup("{\"status\":\"not_found\",\"error\":\"No process with that ID\"}");
@@ -1802,7 +1802,7 @@ char* process_registry_handle(const char *action,
         char *r = process_registry_poll(session_id);
         return _redact_process_result(r);
     } else if (strcmp(action, "log") == 0) {
-        char *r = process_registry_read_log(session_id, offset, limit);
+        char *r = read_log(session_id, offset, limit);
         return _redact_process_result(r);
     } else if (strcmp(action, "wait") == 0) {
         char *r = process_registry_wait(session_id, timeout);
@@ -1811,11 +1811,11 @@ char* process_registry_handle(const char *action,
         char *r = process_registry_kill(session_id, NULL, true);
         return _redact_process_result(r);
     } else if (strcmp(action, "write") == 0) {
-        return process_registry_write_stdin(session_id, data ? data : "");
+        return write_stdin(session_id, data ? data : "");
     } else if (strcmp(action, "submit") == 0) {
-        return process_registry_submit_stdin(session_id, data ? data : "");
+        return submit_stdin(session_id, data ? data : "");
     } else if (strcmp(action, "close") == 0) {
-        return process_registry_close_stdin(session_id);
+        return close_stdin(session_id);
     }
     char *err = malloc(256);
     snprintf(err, 256, "{\"error\":\"Unknown process action: %s. Use: list, poll, log, wait, kill, write, submit, close\"}", action);

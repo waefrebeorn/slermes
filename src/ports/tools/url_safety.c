@@ -1165,8 +1165,8 @@ done:
     return result;
 }
 
-/* PoP: url_safety_has_sensitive_query_params @ tools/url_safety.py:has_sensitive_query_params */
-bool url_safety_has_sensitive_query_params(const char *url) {
+/* PoP: has_sensitive_query_params @ tools/url_safety.py:has_sensitive_query_params */
+bool has_sensitive_query_params(const char *url) {
     char *r = sensitive_query_param_name(url);
     bool has = (r != NULL);
     free(r);

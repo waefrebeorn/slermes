@@ -25,7 +25,7 @@
 #include <pthread.h>
 
 /* Forward declaration — defined in src/tools/process_registry.c */
-extern int process_registry_count_running(void);
+extern int count_running(void);
 static const char *const HE_RESOURCE_ATTRIBUTE_KEYS[] = {
     "service.name", "service.namespace", "service.version",
     "service.instance.id", "deployment.environment.name",
@@ -361,7 +361,7 @@ char *he_read_cron_snapshot(void) {
 long he_read_background_work_count(void) {
     long total = 0;
     /* async_delegation.active_task_count() — count via process registry */
-    total += process_registry_count_running();
+    total += count_running();
     return total;
 }
 

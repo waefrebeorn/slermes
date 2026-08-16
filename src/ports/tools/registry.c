@@ -804,9 +804,9 @@ const char *registry_get_emoji(const char *name, const char *default_emoji) {
 }
 
 /* S14 gap #16: Rich query API — check if any tool in a toolset is available */
-/* PoP: registry_is_toolset_available @ tools/registry.py:is_toolset_available */
+/* PoP: is_toolset_available @ tools/registry.py:is_toolset_available */
 /* Port of Python tools/registry.py:is_toolset_available(). */
-bool registry_is_toolset_available(const char *toolset) {
+bool is_toolset_available(const char *toolset) {
     if (!toolset) return false;
     pthread_mutex_lock(&g_registry_mutex);
     bool avail = false;
@@ -972,9 +972,9 @@ void registry_refresh_availability(void) {
 }
 
 /* S14 gap #11: Deregister a tool by name. Removes from array by shifting. */
-/* PoP: registry_deregister @ tools/registry.py:deregister */
+/* PoP: deregister @ tools/registry.py:deregister */
 /* Port of Python tools/registry.py:deregister(). */
-bool registry_deregister(const char *name) {
+bool deregister(const char *name) {
     if (!name) return false;
     pthread_mutex_lock(&g_registry_mutex);
     for (size_t i = 0; i < g_registry.count; i++) {
@@ -1098,8 +1098,8 @@ const char *registry_get_toolset_for_tool(const char *name) {
 
 /* Register an explicit alias for a canonical toolset name. Overwrites a
  * prior alias mapping (mirroring Python's collision-warning-then-overwrite). */
-/* PoP: registry_register_toolset_alias @ tools/registry.py:register_toolset_alias */
-void registry_register_toolset_alias(const char *alias, const char *toolset) {
+/* PoP: register_toolset_alias @ tools/registry.py:register_toolset_alias */
+void register_toolset_alias(const char *alias, const char *toolset) {
     if (!alias || !alias[0] || !toolset) return;
     pthread_mutex_lock(&g_registry_mutex);
     for (size_t i = 0; i < g_aliases_count; i++) {
@@ -1156,8 +1156,8 @@ static bool toolset_has_exposable_tools(const char *toolset) {
 }
 
 /* Return per-tool max result size, or *default*, or the global default. */
-/* PoP: registry_get_max_result_size @ tools/registry.py:get_max_result_size */
-int registry_get_max_result_size(const char *name, int default_size) {
+/* PoP: get_max_result_size @ tools/registry.py:get_max_result_size */
+int get_max_result_size(const char *name, int default_size) {
     pthread_mutex_lock(&g_registry_mutex);
     int out = REGISTRY_DEFAULT_RESULT_SIZE_CHARS;
     for (size_t i = 0; i < g_registry.count; i++) {

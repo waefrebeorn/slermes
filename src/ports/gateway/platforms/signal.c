@@ -2852,7 +2852,7 @@ bool sgl_connect(void) {
 int sgl_disconnect(void) {
     /* Python: stop SSE + cleanup. */
     
-    signal_disconnect();
+    disconnect();
     return 0;
 }
 

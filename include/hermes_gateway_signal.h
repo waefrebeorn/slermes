@@ -17,7 +17,7 @@ void signal_set_cli_path(const char *path);
 bool signal_check_available(void);
 bool signal_is_running(void);
 bool signal_connect(void);
-void signal_disconnect(void);
+void disconnect(void);
 bool signal_send_message(http_client_t *http, const char *to,
                           const char *text);
 json_node_t *signal_poll_messages(http_client_t *http);
@@ -36,7 +36,7 @@ bool signal_send_group_message(http_client_t *http,
 /* Send an emoji reaction to a specific message.
  * target_author: the phone number of the original message sender.
  * target_timestamp: the server timestamp of the original message (string). */
-bool signal_send_reaction(http_client_t *http,
+bool send_reaction(http_client_t *http,
                            const char *recipient,
                            const char *target_author,
                            const char *target_timestamp,

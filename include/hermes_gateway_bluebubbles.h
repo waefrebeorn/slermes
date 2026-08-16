@@ -55,8 +55,8 @@ bool bluebubbles_is_group(json_node_t *update);
 const char *bluebubbles_get_group_id(json_node_t *update);
 
 /* Typing indicator */
-bool bluebubbles_send_typing(http_client_t *http, const char *chat_id);
-bool bluebubbles_stop_typing(http_client_t *http, const char *chat_id);
+bool send_typing(http_client_t *http, const char *chat_id);
+bool stop_typing(http_client_t *http, const char *chat_id);
 
 /* P115: Extended update parsers */
 const char *bluebubbles_get_attachment_path(json_node_t *update);

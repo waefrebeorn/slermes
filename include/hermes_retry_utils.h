@@ -23,7 +23,7 @@ char *retry_utils_error_text(const retry_utils_err_t *err);
 char *error_text(int status_code, const char *msg, const char *body, const char *response);
 
 /* Z.AI Coding Plan overload 429 detector. */
-bool retry_utils_is_zai_coding_overload_error(const char *base_url,
+bool is_zai_coding_overload_error(const char *base_url,
                                               const char *model,
                                               const retry_utils_err_t *err);
 
@@ -38,7 +38,7 @@ char *retry_utils_adaptive_rate_limit_backoff(int attempt,
                                                int short_attempts);
 
 /* Retry-loop ceiling so the full Z.AI long-backoff schedule is reachable. */
-int retry_utils_zai_coding_overload_retry_ceiling(int short_attempts);
+int zai_coding_overload_retry_ceiling(int short_attempts);
 
 /* Parse a Retry-After value into non-negative seconds.
  * Python: retry_utils.parse_retry_after_seconds(value_or_headers).

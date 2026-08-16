@@ -370,7 +370,7 @@ static char *yb_send_sticker_handler(const char *args_json, const char *task_id)
     }
 
     /* Send via yuanbao gateway */
-    int rc = yuanbao_send_sticker(to_uid,
+    int rc = send_sticker(to_uid,
                                    found->sticker_id,
                                    found->name,
                                    found->package_id,

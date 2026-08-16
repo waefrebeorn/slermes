@@ -73,7 +73,7 @@ int ccm_handle_snapshot_command(agent_state_t *state, const char *args) {
 /* PoP: ccm_handle_stop_command @ hermes_cli/cli_commands_mixin.py:_handle_stop_command */
 int ccm_handle_stop_command(const char *args) {
     (void)args;
-    int killed = process_registry_kill_all(NULL, NULL, true);
+    int killed = kill_all(NULL, NULL, true);
     if (killed > 0)
         printf("  Stopping background process(es)...\n  Stopped %d process(es).\n", killed);
     else

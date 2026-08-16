@@ -38,7 +38,7 @@ void approval_load_allowlist(void);
 /* List permanent allowlist command strings (malloc'd NULL-term array, caller frees). */
 char **approval_permanent_allowlist_list(size_t *out_n);
 /* Replace the permanent allowlist with the given patterns and persist. */
-int approval_save_permanent_allowlist(const char **patterns, size_t n);
+int save_permanent_allowlist(const char **patterns, size_t n);
 /* Reload permanent entries from disk (see new entries in a live process). */
 void approval_load_permanent(const char **patterns, size_t n);
 

@@ -133,7 +133,7 @@ int tool_search_estimate_tokens(const char *schema_json);
  * Port of Python: _tokenize().
  * Returns token count (max CATALOG_MAX_TOKENS).
  */
-int tool_search_tokenize(const char *text, char tokens[][64], int max_tokens);
+int tokenize(const char *text, char tokens[][64], int max_tokens);
 
 /**
  * Build search text for a tool entry (name + description + param names).
@@ -146,7 +146,7 @@ void tool_search_entry_text(const char *name, const char *description,
  * Build the deferred-tool catalog from an array of tool schema JSONs.
  * Port of Python: build_catalog().
  */
-int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
+int build_catalog(const char *tool_schemas[], int schema_count,
                               tool_catalog_t *catalog);
 
 /* ── BM25 scoring ─────────────────────────────────────────────────── */
@@ -156,7 +156,7 @@ int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
  * Port of Python: _bm25_score().
  * Standard BM25 with k1=1.5, b=0.75.
  */
-double tool_search_bm25_score(const char *query_tokens[], int query_count,
+double bm25_score(const char *query_tokens[], int query_count,
                               const catalog_entry_t *entry,
                               const int doc_lengths[], int n_docs,
                               const int doc_freq[], int vocab_size);
@@ -175,7 +175,7 @@ int tool_search_query(const tool_catalog_t *catalog, const char *query,
  * Decide whether tool search should activate for the current assembly.
  * Port of Python: should_activate().
  */
-bool tool_search_should_activate(const tool_search_config_t *config,
+bool should_activate(const tool_search_config_t *config,
                                  int deferrable_tokens,
                                  int context_length);
 
@@ -276,21 +276,21 @@ void tool_search_catalog_free(tool_catalog_t *catalog);
  * Port of Python: listing_token_budget().
  * Returns min(listing_max_tokens, threshold_pct% of context).
  */
-int tool_search_listing_token_budget(const tool_search_config_t *config,
+int listing_token_budget(const tool_search_config_t *config,
                                      int context_length);
 
 /**
  * First sentence of a tool description, clipped to max_chars.
  * Port of Python: _short_desc().
  */
-void tool_search_short_desc(const char *description, int max_chars,
+void short_desc(const char *description, int max_chars,
                             char *out, size_t out_size);
 
 /**
  * Human-facing group heading: mcp-github -> github.
  * Port of Python: _listing_group_label().
  */
-void tool_search_listing_group_label(const char *source_name,
+void listing_group_label(const char *source_name,
                                      char *out, size_t out_size);
 
 /**

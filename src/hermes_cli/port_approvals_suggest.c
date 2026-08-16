@@ -268,7 +268,7 @@ int asuggest_apply_proposals(proposal_t **props, size_t n, const int *indices, i
         }
     }
     if (merged) merged[mn] = NULL;
-    approval_save_permanent_allowlist((const char **)merged, mn);
+    save_permanent_allowlist((const char **)merged, mn);
     approval_load_permanent((const char **)merged, mn);
     if (out_merged) *out_merged = merged;
     if (out_n) *out_n = mn;

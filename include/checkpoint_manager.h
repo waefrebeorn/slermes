@@ -37,7 +37,7 @@ tool_checkpoint_mgr_t *checkpoint_manager_create(bool enabled,
 void checkpoint_manager_free(tool_checkpoint_mgr_t *self);
 
 /* Reset per-turn dedup. Call at the start of each agent iteration. */
-void checkpoint_manager_new_turn(tool_checkpoint_mgr_t *self);
+void new_turn(tool_checkpoint_mgr_t *self);
 
 /* Take a checkpoint if enabled and not already done this turn.
  * Returns true if a snapshot was taken. Never raises. */
@@ -87,7 +87,7 @@ char *cli_tools_checkpoint_manager_session_diff(const char *working_dir);
 char *checkpoint_normalize_path(const char *path_value);
 
 /* Take a snapshot directly (no enabled/dedup guards). Returns true on success. */
-bool checkpoint_manager_take(tool_checkpoint_mgr_t *self,
+bool take(tool_checkpoint_mgr_t *self,
                            const char *working_dir,
                            const char *reason);
 

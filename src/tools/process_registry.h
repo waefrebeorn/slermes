@@ -135,14 +135,14 @@ void process_registry_init(void);
 void format_uptime_short(int seconds, char *buf, size_t buf_len);
 
 /* PoP: spawn_local @ tools/process_registry.py:ProcessRegistry.spawn_local */
-ProcessSession* process_registry_spawn_local(const char *command,
+ProcessSession* spawn_local(const char *command,
                                               const char *cwd,
                                               const char *task_id,
                                               const char *session_key,
                                               const char *env_vars_json);
 
 /* PoP: spawn_via_env @ tools/process_registry.py:ProcessRegistry.spawn_via_env */
-ProcessSession* process_registry_spawn_via_env(const char *command,
+ProcessSession* spawn_via_env(const char *command,
                                                  const char *cwd,
                                                  const char *task_id,
                                                  const char *session_key,
@@ -160,7 +160,7 @@ char* process_registry_kill(const char *session_id, const char *source,
                             bool consume_output);
 
 /* PoP: count_running @ tools/process_registry.py:ProcessRegistry.count_running */
-int process_registry_count_running(void);
+int count_running(void);
 
 /* PoP: list_sessions @ tools/process_registry.py:ProcessRegistry.list_sessions */
 char* process_registry_list(const char *task_id_filter, const char *session_key);
@@ -169,31 +169,31 @@ char* process_registry_list(const char *task_id_filter, const char *session_key)
 bool process_registry_has_active_for_task(const char *task_id);
 
 /* PoP: has_active_for_session @ tools/process_registry.py:ProcessRegistry.has_active_for_session */
-bool process_registry_has_active_for_session(const char *session_key,
+bool has_active_for_session(const char *session_key,
                                              double max_active_age_seconds);
 
 /* PoP: kill_all @ tools/process_registry.py:ProcessRegistry.kill_all */
-int process_registry_kill_all(const char *task_id_filter, const char *source,
+int kill_all(const char *task_id_filter, const char *source,
                               bool consume_output);
 
 /* PoP: kill_started_since @ tools/process_registry.py:ProcessRegistry.kill_started_since */
-int process_registry_kill_started_since(const char *task_id,
+int kill_started_since(const char *task_id,
                                         const char **baseline_ids,
                                         int baseline_count,
                                         const char *source);
 
 /* PoP: _write_checkpoint @ tools/process_registry.py:ProcessRegistry._write_checkpoint */
-void process_registry_write_checkpoint(void);
+void write_checkpoint(void);
 
 /* PoP: recover_from_checkpoint @ tools/process_registry.py:ProcessRegistry.recover_from_checkpoint */
-int process_registry_recover_from_checkpoint(void);
+int recover_from_checkpoint(void);
 
 /* PoP: drain_notifications @ tools/process_registry.py:ProcessRegistry.drain_notifications */
-char* process_registry_drain_notifications(const char *session_key_filter,
+char* drain_notifications(const char *session_key_filter,
                                            bool skip_poll_observed);
 
 /* PoP: _drain_should_skip @ tools/process_registry.py:ProcessRegistry._drain_should_skip */
-bool process_registry_drain_should_skip(const char *session_id,
+bool drain_should_skip(const char *session_id,
                                         bool skip_poll_observed);
 
 /* PoP: set_watch_patterns @ tools/process_registry.py:ProcessRegistry.set_watch_patterns */
@@ -213,25 +213,25 @@ void process_registry_append_output(const char *session_id, const char *text);
 bool process_registry_completion_consumed(const char *session_id);
 
 /* PoP: is_session_waiting @ tools/process_registry.py:ProcessRegistry.is_session_waiting */
-bool process_registry_is_session_waiting(const char *session_id);
+bool is_session_waiting(const char *session_id);
 
 /* PoP: read_log @ tools/process_registry.py:ProcessRegistry.read_log */
-char* process_registry_read_log(const char *session_id, int offset, int limit);
+char* read_log(const char *session_id, int offset, int limit);
 
 /* PoP: has_any_active @ tools/process_registry.py:ProcessRegistry.has_any_active */
-bool process_registry_has_any_active(void);
+bool has_any_active(void);
 
 /* PoP: snapshot_running_ids @ tools/process_registry.py:ProcessRegistry.snapshot_running_ids */
-char** process_registry_snapshot_running_ids(const char *task_id, int *count_out);
+char** snapshot_running_ids(const char *task_id, int *count_out);
 
 /* PoP: write_stdin @ tools/process_registry.py:ProcessRegistry.write_stdin */
-char* process_registry_write_stdin(const char *session_id, const char *data);
+char* write_stdin(const char *session_id, const char *data);
 
 /* PoP: submit_stdin @ tools/process_registry.py:ProcessRegistry.submit_stdin */
-char* process_registry_submit_stdin(const char *session_id, const char *data);
+char* submit_stdin(const char *session_id, const char *data);
 
 /* PoP: close_stdin @ tools/process_registry.py:ProcessRegistry.close_stdin */
-char* process_registry_close_stdin(const char *session_id);
+char* close_stdin(const char *session_id);
 
 /* Close-terminal sink (tools/close_terminal_tool.py: request_close_terminal).
  * The desktop gateway injects an on_close sink that emits a terminal.close

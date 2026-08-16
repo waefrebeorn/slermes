@@ -350,14 +350,14 @@ const char *usage_pricing_format_duration(double seconds) {
 
 /* Port of Python agent/usage_pricing.py:prompt_tokens
  * Port of Python agent/usage_pricing.py:total_tokens */
-int usage_pricing_prompt_tokens(const usage_counts_t *usage)
+int prompt_tokens(const usage_counts_t *usage)
 {
     return usage ? usage->input_tokens : 0;
 }
 
-/* PoP: usage_pricing_total_tokens @ agent/usage_pricing.py:total_tokens */
+/* PoP: total_tokens @ agent/usage_pricing.py:total_tokens */
 /* Port of Python agent/usage_pricing.py:total_tokens(). */
-int usage_pricing_total_tokens(const usage_counts_t *usage)
+int total_tokens(const usage_counts_t *usage)
 {
     if (!usage) return 0;
     return usage->input_tokens + usage->output_tokens
@@ -386,7 +386,7 @@ usage_counts_t normalize(const usage_counts_t *usage)
  * Determines billing provider & mode from model name + optional provider/base_url.
  * Faithful: nous/vertex routing, openai-codex subscription-included, exact-host
  * base_url matching (utils.base_url_host_matches). */
-billing_route_t usage_pricing_resolve_billing_route(const char *model_name,
+billing_route_t resolve_billing_route(const char *model_name,
                                                      const char *provider,
                                                      const char *base_url)
 {
@@ -597,7 +597,7 @@ static long long _get_ll(const json_t *obj, const char *key)
 }
 
 /* Normalize raw API response usage into canonical token buckets. */
-usage_counts_t usage_pricing_normalize_usage(const char *provider,
+usage_counts_t normalize_usage(const char *provider,
                                               const char *api_mode,
                                               const json_t *response_usage)
 {

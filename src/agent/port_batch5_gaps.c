@@ -154,8 +154,8 @@ bool models_dev_is_reasoning(const char *model) {
 }
 
 /* ── _supports_vision (L?) ── */
-/* PoP: models_dev_supports_vision @ agent/models_dev.py:_supports_vision */
-bool models_dev_supports_vision(const char *model) {
+/* PoP: supports_vision @ agent/models_dev.py:_supports_vision */
+bool supports_vision(const char *model) {
     if (!model) return false;
     char lowered[256];
     size_t len = strlen(model);

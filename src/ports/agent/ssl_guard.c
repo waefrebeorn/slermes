@@ -121,9 +121,9 @@ static hermes_error_t validate_bundle_path(const char *label, const char *value,
  *  Public API
  * ================================================================ */
 
-/* PoP: ssl_guard_verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */
+/* PoP: verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */
 /* Port of Python agent/ssl_guard.py:verify_ca_bundle(). */
-hermes_error_t ssl_guard_verify_ca_bundle(void)
+hermes_error_t verify_ca_bundle(void)
 {
     if (ssl_guard_skip_enabled()) {
         hermes_log(LOG_DEBUG, "ssl_guard", "SSL CA bundle guard skipped via HERMES_SKIP_SSL_GUARD");
@@ -160,12 +160,12 @@ hermes_error_t ssl_guard_verify_ca_bundle(void)
     return (hermes_error_t){HERMES_OK, {0}, {0}};
 }
 
-/* PoP: ssl_guard_verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */
+/* PoP: verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */
 /* Port of Python agent/ssl_guard.py:verify_ca_bundle_with_fallback(). */
-hermes_error_t ssl_guard_verify_ca_bundle_with_fallback(void)
+hermes_error_t verify_ca_bundle_with_fallback(void)
 {
     /* Python's verify_ca_bundle_with_fallback() tries the primary bundle first,
      * then falls back to a secondary source. In C, we enforce the check directly
      * without a separate fallback path — delegate to verify_ca_bundle(). */
-    return ssl_guard_verify_ca_bundle();
+    return verify_ca_bundle();
 }

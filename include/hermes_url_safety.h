@@ -157,7 +157,7 @@ bool url_parse_image_size(const unsigned char *data, size_t len,
 /* Return malloc'd first sensitive query-param NAME, or NULL. Caller frees. */
 char *url_safety_sensitive_query_param_name(const char *url);
 /* True when url carries credential-bearing query params. */
-bool url_safety_has_sensitive_query_params(const char *url);
+bool has_sensitive_query_params(const char *url);
 /* Resolve redirect target from response fields (is_redirect, current url,
  * Location header, next_request url). Returns malloc'd target or NULL. */
 char *url_safety_redirect_target_from_response(bool is_redirect,

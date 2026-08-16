@@ -24,7 +24,7 @@ void yuanbao_stop(void);
 bool yuanbao_is_running(void);
 
 /* ---- Sticker / messaging ---- */
-int  yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
+int  send_sticker(const char *to_uid, const char *sticker_id,
                            const char *sticker_name, const char *package_id,
                            int width, int height);
 char *yuanbao_query_group_info(const char *group_code, int timeout_sec);

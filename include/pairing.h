@@ -61,10 +61,10 @@ pairing_store_t *pairing_store_open(const char *dir);
 void pairing_store_close(pairing_store_t *st);
 
 /* Approved users. */
-bool pairing_is_approved(pairing_store_t *st, const char *platform, const char *user_id);
-int  pairing_list_approved(pairing_store_t *st, const char *platform, /* NULL = all */
+bool is_approved(pairing_store_t *st, const char *platform, const char *user_id);
+int  list_approved(pairing_store_t *st, const char *platform, /* NULL = all */
                             pairing_approved_t **out);
-bool pairing_approve_user(pairing_store_t *st, const char *platform,
+bool approve_user(pairing_store_t *st, const char *platform,
                           const char *user_id, const char *user_name, double now);
 bool pairing_revoke(pairing_store_t *st, const char *platform, const char *user_id);
 
@@ -73,12 +73,12 @@ char *pairing_generate_code(pairing_store_t *st, const char *platform,
                             const char *user_id, const char *user_name, double now);
 pairing_result_t *pairing_approve_code(pairing_store_t *st, const char *platform,
                                        const char *code, double now);
-int  pairing_list_pending(pairing_store_t *st, const char *platform, double now,
+int  list_pending(pairing_store_t *st, const char *platform, double now,
                           pairing_pending_t **out);
-int  pairing_clear_pending(pairing_store_t *st, const char *platform);
+int  clear_pending(pairing_store_t *st, const char *platform);
 
 /* Lockout inspection. */
-bool pairing_is_locked_out(pairing_store_t *st, const char *platform, double now);
+bool is_locked_out(pairing_store_t *st, const char *platform, double now);
 
 /* Free helpers. */
 void pairing_free_approved(pairing_approved_t *arr, int n);

@@ -940,7 +940,7 @@ size_t agent_curator_cron_referenced_skills(char ***out_names) {
 }
 
 /* Port of Python: get_consolidate */
-bool curator_get_consolidate(void) {
+bool get_consolidate(void) {
     const char *val = getenv("CURATOR_CONSOLIDATE");
     if (val && *val) {
         if (strcmp(val, "true") == 0 || strcmp(val, "1") == 0 || strcmp(val, "yes") == 0)

@@ -1,5 +1,5 @@
 /* auto-proto */ int async_delegation_active_count(void);
-/* auto-proto */ int process_registry_count_running(void);
+/* auto-proto */ int count_running(void);
 /*
  * ports/agent/monitoring/gateway_health_export.c — C11 port of agent/monitoring/gateway_health_export.py
  * Merged from 2 source file(s) by reorganization.
@@ -370,7 +370,7 @@ char *he_read_cron_snapshot(void) {
 long he_read_background_work_count(void) {
     long total = 0;
     /* async_delegation.active_task_count() — count via process registry */
-    total += process_registry_count_running();
+    total += count_running();
     return total;
 }
 

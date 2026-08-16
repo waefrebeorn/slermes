@@ -80,10 +80,10 @@ const char *model_capability_name(model_capability_t cap) {
  * ================================================================ */
 
 /* ── extern functions from models_dev.c ──────────────────────────────── */
-extern bool models_dev_has_cost_data(json_t *entry);
-extern bool models_dev_supports_vision(json_t *entry);
-extern bool models_dev_supports_pdf(json_t *entry);
-extern bool models_dev_supports_audio_input(json_t *entry);
+extern bool has_cost_data(json_t *entry);
+extern bool supports_vision(json_t *entry);
+extern bool supports_pdf(json_t *entry);
+extern bool supports_audio_input(json_t *entry);
 extern const char *models_dev_lookup_provider(const char *provider);
 extern char *get_models_dev_cache_path(void);
 extern double disk_cache_age_seconds(void);

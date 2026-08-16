@@ -195,7 +195,7 @@ char *probe_remote_backend(const char *env_type);
  * The rebuilt stable tier is used ONLY when the stored prompt literally
  * starts with it (startswith gate) — never a rewritten prompt. Failed
  * rebuilds are memoized per stored prompt. */
-void system_prompt_reconstruct_static_prefix(agent_state_t *agent,
+void reconstruct_static_prefix(agent_state_t *agent,
                                              const system_prompt_config_t *cfg);
 
 /* Check if model should use 'developer' role instead of 'system' at API boundary.

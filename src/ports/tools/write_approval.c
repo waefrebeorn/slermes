@@ -397,7 +397,7 @@ char *cli_tools_write_approval_skill_gist(const char *action, const char *name,
     return out;
 }
 
-/* PoP: cli_tools_write_approval_list_pending @ tools/write_approval.py:list_pending */
+/* PoP: cli_tools_write_approval_list_pending @ tools/write_approval.py:cli_tools_write_approval_list_pending */
 json_node_t *cli_tools_write_approval_list_pending(const char *subsystem)
 {
     json_node_t *arr = json_new_array();
@@ -475,36 +475,36 @@ static int port_pending_cmp_created_at(const json_t **a, const json_t **b)
     return 0;
 }
 
-/* Port of Python: list_pending
+/* Port of Python: cli_tools_write_approval_list_pending
  *
  * Scan pending_dir(subsystem)/*.json, parse each, skip unreadable,
  * stable-sort by created_at (oldest first). Return JSON array string.
  * Caller owns the returned malloc'd string and must free it. */
-/* PoP: list_pending @ tools/write_approval.py:list_pending */
-char *list_pending(const char *subsystem)
+/* PoP: cli_tools_write_approval_list_pending @ tools/write_approval.py:cli_tools_write_approval_list_pending */
+char *cli_tools_write_approval_list_pending(const char *subsystem)
 {
     if (!subsystem) {
-        hermes_log(LOG_WARNING, "port", "list_pending: null subsystem");
+        hermes_log(LOG_WARNING, "port", "cli_tools_write_approval_list_pending: null subsystem");
         return strdup("[]");
     }
 
     char *dir = pending_dir(subsystem);
     if (!dir) {
-        hermes_log(LOG_ERROR, "port", "list_pending: pending_dir OOM");
+        hermes_log(LOG_ERROR, "port", "cli_tools_write_approval_list_pending: pending_dir OOM");
         return strdup("[]");
     }
 
     /* If the directory itself doesn't exist, Python returns [] silently. */
     struct stat st;
     if (stat(dir, &st) != 0 || !S_ISDIR(st.st_mode)) {
-        hermes_log(LOG_DEBUG, "port", "list_pending: dir '%s' missing, returning []", dir);
+        hermes_log(LOG_DEBUG, "port", "cli_tools_write_approval_list_pending: dir '%s' missing, returning []", dir);
         free(dir);
         return strdup("[]");
     }
 
     DIR *dp = opendir(dir);
     if (!dp) {
-        hermes_log(LOG_ERROR, "port", "list_pending: opendir('%s') failed: %s",
+        hermes_log(LOG_ERROR, "port", "cli_tools_write_approval_list_pending: opendir('%s') failed: %s",
                    dir, strerror(errno));
         free(dir);
         return strdup("[]");
@@ -534,7 +534,7 @@ char *list_pending(const char *subsystem)
         json_t *doc = json_parse_file(fullpath, &jerr);
         if (!doc) {
             hermes_log(LOG_WARNING, "port",
-                       "list_pending: skipping unreadable pending record '%s': %s",
+                       "cli_tools_write_approval_list_pending: skipping unreadable pending record '%s': %s",
                        fullpath, jerr ? jerr : "(unknown)");
             free(jerr);
             continue;
@@ -546,7 +546,7 @@ char *list_pending(const char *subsystem)
             json_t **grown = realloc(records, new_cap * sizeof(*records));
             if (!grown) {
                 json_free(doc);
-                hermes_log(LOG_ERROR, "port", "list_pending: OOM growing records");
+                hermes_log(LOG_ERROR, "port", "cli_tools_write_approval_list_pending: OOM growing records");
                 break;
             }
             records = grown;
@@ -591,7 +591,7 @@ char *list_pending(const char *subsystem)
     free(records);
 
     if (!txt) {
-        hermes_log(LOG_ERROR, "port", "list_pending: serialize failed");
+        hermes_log(LOG_ERROR, "port", "cli_tools_write_approval_list_pending: serialize failed");
         return strdup("[]");
     }
     return txt;

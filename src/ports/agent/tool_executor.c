@@ -14,7 +14,7 @@
 #include <string.h>
 #include <time.h>
 
-/* C equivalent of hermes_cli.plugins.resolve_pre_tool_block. */
+/* C equivalent of hermes_cli.plugins.plugin_resolve_pre_tool_block. */
 extern bool plugin_resolve_pre_tool_block(const char *block_msg);
 
 /*
@@ -169,7 +169,7 @@ void tool_executor_run_agent_middleware(
     }
     if (hook_resp) free(hook_resp);
 
-    /* Plugin pre-tool-block check (C equivalent of resolve_pre_tool_block). */
+    /* Plugin pre-tool-block check (C equivalent of plugin_resolve_pre_tool_block). */
     if (!block_message && plugin_resolve_pre_tool_block(function_name)) {
         snprintf(block_buf, sizeof(block_buf),
                  "Tool '%s' blocked by plugin pre-tool-call policy", function_name);

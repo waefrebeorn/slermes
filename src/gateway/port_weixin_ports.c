@@ -165,9 +165,9 @@ int wx2_stop_typing(const char *chat_id) {
 /* PoP: wx2_send_image @ gateway/platforms/weixin.py:send_image */
 char *wx2_send_image(const char *chat_id, const char *image_url, const char *caption) {
     /* Python: remote → download, else direct file — delegates to the
-     * real canonical weixin_send_image. */
+     * real canonical send_image. */
     if (!chat_id || !image_url) return strdup("{\"success\": false}");
-    weixin_send_image(chat_id, image_url, 0, caption ? caption : "");
+    send_image(chat_id, image_url, 0, caption ? caption : "");
     return strdup("{\"success\": true}");
 }
 

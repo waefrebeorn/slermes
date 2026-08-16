@@ -76,10 +76,10 @@ const char *usage_pricing_format_cost(double usd);
 const char *usage_pricing_format_duration(double seconds);
 
 /* Extract prompt token count from usage counts (port of Python prompt_tokens). */
-int usage_pricing_prompt_tokens(const usage_counts_t *usage);
+int prompt_tokens(const usage_counts_t *usage);
 
 /* Calculate total token count across all categories (port of Python total_tokens). */
-int usage_pricing_total_tokens(const usage_counts_t *usage);
+int total_tokens(const usage_counts_t *usage);
 
 /* Normalize usage counts — returns a copy with all fields initialized (port of normalize). */
 /* Port of Python: normalize */
@@ -103,7 +103,7 @@ typedef struct {
 
 /* Resolve the billing provider + mode from model name + optional provider/base_url.
  * Faithful port of agent/usage_pricing.py:resolve_billing_route. */
-billing_route_t usage_pricing_resolve_billing_route(const char *model_name,
+billing_route_t resolve_billing_route(const char *model_name,
                                                      const char *provider,
                                                      const char *base_url);
 
@@ -111,7 +111,7 @@ billing_route_t usage_pricing_resolve_billing_route(const char *model_name,
  * Faithful 3-way port of agent/usage_pricing.py:normalize_usage
  * (anthropic_messages / codex_responses / openai-chat-completions shapes).
  * response_usage is a JSON object with provider-specific fields. */
-usage_counts_t usage_pricing_normalize_usage(const char *provider,
+usage_counts_t normalize_usage(const char *provider,
                                               const char *api_mode,
                                               const json_t *response_usage);
 

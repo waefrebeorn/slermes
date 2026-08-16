@@ -21,7 +21,7 @@ void weixin_send_text(const char *chat_id, const char *text,
                        const char *context_token);
 void weixin_send_markdown(const char *chat_id, const char *text,
                            const char *context_token);
-void weixin_send_image(const char *chat_id, const char *image_data,
+void send_image(const char *chat_id, const char *image_data,
                         int image_type, const char *context_token);
 void weixin_send_video(const char *chat_id, const char *video_url,
                         const char *context_token);

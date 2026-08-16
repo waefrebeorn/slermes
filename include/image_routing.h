@@ -154,7 +154,7 @@ char *image_routing__resolve_inference_base_url(const struct json_t *cfg, const 
 
 /* Port of Python agent/image_routing.py _should_probe_ollama_vision().
  * True when the active provider likely fronts a local Ollama server. */
-bool image_routing__should_probe_ollama_vision(const char *provider, const char *base_url);
+bool _should_probe_ollama_vision(const char *provider, const char *base_url);
 
 /* Port of Python agent/image_routing.py _transcode_to_png().
  * Re-encode arbitrary image bytes as PNG. No in-tree codec exists (Python uses

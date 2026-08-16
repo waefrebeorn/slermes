@@ -398,21 +398,21 @@ int wx_u_download_video(const char *arg) {
     const unsigned char *data = (const unsigned char *)resp->body;
     size_t len = resp->body_len;
     unsigned char *plain = NULL;
-    extern int weixin_aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
+    extern int aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
                                          const unsigned char *key, size_t key_len,
                                          unsigned char **out, size_t *out_len);
-    extern int weixin_parse_aes_key(const char *aes_key_b64, unsigned char *out,
+    extern int parse_aes_key(const char *aes_key_b64, unsigned char *out,
                                     size_t *out_len);
     if (key[0] && strcmp(key, "0") != 0) {
         unsigned char raw_key[16];
         size_t raw_len = 0;
-        if (weixin_parse_aes_key(key, raw_key, &raw_len) != 0 || raw_len != 16) {
+        if (parse_aes_key(key, raw_key, &raw_len) != 0 || raw_len != 16) {
             http_resp_free(resp);
             http_free(h);
             return -1;
         }
         size_t plen = 0;
-        if (weixin_aes128_ecb_decrypt(data, len, raw_key, raw_len, &plain, &plen) != 0) {
+        if (aes128_ecb_decrypt(data, len, raw_key, raw_len, &plain, &plen) != 0) {
             http_resp_free(resp);
             http_free(h);
             return -1;

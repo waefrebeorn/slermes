@@ -27,7 +27,7 @@ const coding_context_profile_t *coding_context_get_profile(const char *name);
 const char *coding_context_resolve_mode(const hermes_config_t *config);
 
 /* CWD resolution */
-void coding_context_resolve_cwd(const hermes_config_t *config, char *out, size_t out_size);
+void resolve_cwd(const hermes_config_t *config, char *out, size_t out_size);
 
 /* Git root detection */
 bool coding_context_find_git_root(const char *cwd, char *out, size_t out_size);
@@ -91,7 +91,7 @@ coding_runtime_mode_t *coding_context_resolve_runtime_mode(
  * _project_facts / build_coding_workspace_block). */
 int   coding_context_run_git(const char *cwd, char *out, size_t out_size, const char *fmt, ...);
 char *coding_context_parse_git_status(const char *porcelain);
-int   coding_context_read_small(const char *path, char *out, size_t out_size, size_t max_bytes);
+int   read_small(const char *path, char *out, size_t out_size, size_t max_bytes);
 char *coding_context_project_facts(const char *root);
 char *coding_context_build_workspace_block(const char *cwd);
 
@@ -100,7 +100,7 @@ const char **coding_context_coding_selection(const char *platform, const char *c
 char **coding_context_coding_system_blocks(const char *platform, const char *cwd, const hermes_config_t *config, const char *model, int *out_count);
 const char **coding_context_coding_compact_skill_categories(const char *platform, const char *cwd, const hermes_config_t *config);
 char **coding_context_enabled_mcp_servers(const hermes_config_t *config);
-bool  coding_context_has_code_files(const char *root);
+bool  has_code_files(const char *root);
 char *coding_context_coding_instructions(const hermes_config_t *config);
 
 #endif /* CODING_CONTEXT_H */

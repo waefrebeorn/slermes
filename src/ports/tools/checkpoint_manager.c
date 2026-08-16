@@ -504,7 +504,7 @@ tool_checkpoint_mgr_t *checkpoint_manager_create(bool enabled,
 
 void checkpoint_manager_free(tool_checkpoint_mgr_t *self) { free(self); }
 
-void checkpoint_manager_new_turn(tool_checkpoint_mgr_t *self) {
+void new_turn(tool_checkpoint_mgr_t *self) {
     if (!self) return;
     self->checkpointed_count = 0;
 }
@@ -526,12 +526,12 @@ bool checkpoint_manager_ensure(tool_checkpoint_mgr_t *self,
         return false;
     if (_cm_in_dirset(self, abs_dir)) return false;
     _cm_add_dir(self, abs_dir);
-/* PoP: checkpoint_manager_take @ tools/checkpoint_manager.py:_take */
+/* PoP: take @ tools/checkpoint_manager.py:_take */
 
-    return checkpoint_manager_take(self, abs_dir, reason ? reason : "auto");
+    return take(self, abs_dir, reason ? reason : "auto");
 }
 
-bool checkpoint_manager_take(tool_checkpoint_mgr_t *self,
+bool take(tool_checkpoint_mgr_t *self,
                            const char *working_dir, const char *reason) {
     if (!self || !working_dir) return false;
     char store[MAX_PATH];
@@ -756,7 +756,7 @@ char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
 
     char pre[256];
     snprintf(pre, sizeof(pre), "pre-rollback snapshot (restoring to %.8s)", commit_hash);
-    checkpoint_manager_take(self, abs_dir, pre);
+    take(self, abs_dir, pre);
 
     char dir_hash[64];
     _project_hash(abs_dir, dir_hash, sizeof(dir_hash));

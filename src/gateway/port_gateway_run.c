@@ -1508,7 +1508,7 @@ int gw_reap_gateway_turn_processes(GatewayRunner *self, const char *session_key,
     if (!is_still_current) return 0;
     /* Native: delegate to the in-process process registry instead of
      * shelling out to Python's tools.process_registry. */
-    return process_registry_kill_started_since(session_key, NULL, 0,
+    return kill_started_since(session_key, NULL, 0,
                                                 source ? source : "gateway_turn_timeout");
 }
 
