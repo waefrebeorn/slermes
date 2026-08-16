@@ -10,6 +10,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
+#include "verify_recipes.h"
 #include <time.h>
 #include "hermes_json.h"
 
@@ -356,8 +357,27 @@ json_t *runner_run_verify(
 {
     json_t *phases = json_array();
 
-    /* For simplicity: run bootstrap/build/test phases as no-op stubs */
-    /* In production these would iterate recipe.bootstrap/build/test command lists */
+    /* Faithful port of agent/verify/runner.py:run_verify — detect the
+     * project's recipe and run its bootstrap/build/test command lists in
+     * order, stopping at the first failing phase. */
+    recipe_t *recipe = recipe_detect(root);
+    bool failed = false;
+    if (recipe) {
+        const char *const phase_names[] = {"bootstrap", "build", "test"};
+        char **const cmd_lists[] = {recipe->bootstrap, recipe->build, recipe->test};
+        const size_t cmd_counts[] = {recipe->n_bootstrap, recipe->n_build, recipe->n_test};
+        for (int pi = 0; pi < 3 && !failed; pi++) {
+            for (size_t ci = 0; ci < cmd_counts[pi]; ci++) {
+                json_t *pr = runner_run_phase_command(phase_names[pi], cmd_lists[pi][ci], root, phase_timeout);
+                json_append(phases, pr);
+                /* ok == (exit_code 0 and not timed out); mirrors Python PhaseResult.ok */
+                json_t *ok_val = json_obj_get(pr, "ok");
+                bool ok = (ok_val && ok_val->type == JSON_BOOL && ok_val->bool_val);
+                if (!ok) { failed = true; break; }
+            }
+        }
+        recipe_free(recipe);
+    }
     (void)root;
     (void)phase_timeout;
 
