@@ -18,8 +18,8 @@
 #include "hermes_core_types.h"
 #include "blueprint_cmd.h"
 #include "cron_suggestions.h"
-#include "port_hermes_cli_focus_view.h"
-#include "tools/port_working_diff.h"
+#include "focus_view.h"
+#include "tools/working_diff.h"
 
 /* Real command handlers (cli_cmd_*.c / commands.c) — state-safe (ignore agent_state_t). */
 extern void cmd_cron(const char *args, agent_state_t *state);

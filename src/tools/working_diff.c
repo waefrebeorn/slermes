@@ -13,7 +13,7 @@
  * Untracked files are folded in via `git diff --no-index /dev/null <file>`
  * so brand-new files show up as additions (mirrors Codex CLI /diff).
  */
-#include "port_working_diff.h"
+#include "working_diff.h"
 
 #include <stdio.h>
 #include <stdlib.h>

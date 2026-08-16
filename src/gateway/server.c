@@ -38,7 +38,7 @@
 #include "hermes_gateway_config.h"
 #include "port_gateway_run_deps.h"
 #include "agent_estop.h"      /* estop gate + /pause */
-#include "cli/cli_cmd_parity.h"   /* cmd_pause (estop engage/disengage) */
+#include "hermes_cli/cli_cmd_parity.h"   /* cmd_pause (estop engage/disengage) */
 #include "hermes_redact.h"
 #include "hermes_tirith.h"
 #include "hermes_cron.h"

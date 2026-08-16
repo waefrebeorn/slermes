@@ -10,7 +10,7 @@
 
 #define _POSIX_C_SOURCE 200809L
 
-#include "port_hermes_cli_focus_view.h"
+#include "focus_view.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

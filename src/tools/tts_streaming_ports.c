@@ -25,7 +25,7 @@
 #include "hermes_logger.h"
 #include "hermes_tool_config.h"
 #include "port_tts_streaming_helpers.h"
-#include "port_tools_tts_text_normalize.h"
+#include "tts_text_normalize.h"
 
 /* ── Constants (byte-pinned to Python) ────────────────────────────────── */
 

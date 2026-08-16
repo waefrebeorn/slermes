@@ -16,7 +16,7 @@
 
 #define PCRE2_CODE_UNIT_WIDTH 8
 
-#include "port_tools_tts_text_normalize.h"
+#include "tts_text_normalize.h"
 
 #include <pcre2.h>
 #include <stdlib.h>

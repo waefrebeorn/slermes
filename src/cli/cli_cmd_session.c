@@ -16,7 +16,7 @@ char *relative_time(long ts);
 #include "session_crud.h"
 #include "session_search.h"
 #include "delegate.h"
-#include "agent/port_agent_display_helpers.h"
+#include "agent/display_helpers.h"
 
 /* PoP: cmd_agents @ hermes_cli/main.py:cmd_agents */
 void cmd_agents(const char *args, agent_state_t *state) {

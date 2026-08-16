@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <pcre2.h>
 #include "slermes_home.h"
-#include "cron/port_lifecycle_guard.h"
+#include "cron/lifecycle_guard.h"
 
 /* Faithful copy of _GATEWAY_LIFECYCLE_PATTERN (lifecycle_guard.py:48).
  * Python's `re` is PCRE-compatible, so PCRE2 reproduces it byte-faithfully

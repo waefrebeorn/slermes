@@ -24,7 +24,7 @@
 #include "gw_server_internals.h"
 #include "yaml.h"
 #include "checkpoint_manager.h"
-#include "tools/port_working_diff.h"
+#include "tools/working_diff.h"
 
 /* Declared in src/cli/port_cli_ports_wrappers.c (no shared header yet). */
 extern int hermes_cli_approval_mode_run_approval_mode_command(const char *arg);

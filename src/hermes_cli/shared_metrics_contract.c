@@ -12,7 +12,7 @@
 
  #define _POSIX_C_SOURCE 200809L  /* for strdup */
 
- #include "port_hermes_cli_shared_metrics_contract.h"
+ #include "shared_metrics_contract.h"
 
 #include <stdio.h>
 #include <stdlib.h>

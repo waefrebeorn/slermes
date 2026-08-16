@@ -1,0 +1,550 @@
+{
+ "collision_targets": [
+  "src/agent/agent_runtime_helpers.c",
+  "src/agent/anthropic_adapter.c",
+  "src/agent/antigravity_oauth.c",
+  "src/agent/async_utils.c",
+  "src/agent/auxiliary_client.c",
+  "src/agent/auxiliary_client_gaps.c",
+  "src/agent/background_review.c",
+  "src/agent/browser_provider.c",
+  "src/agent/codex_runtime.c",
+  "src/agent/coding_context.c",
+  "src/agent/config_py_final.c",
+  "src/agent/context_compressor.c",
+  "src/agent/context_references.c",
+  "src/agent/conversation_loop.c",
+  "src/agent/copilot_acp_client.c",
+  "src/agent/credits_tracker.c",
+  "src/agent/display.c",
+  "src/agent/health.c",
+  "src/agent/image_gen_provider.c",
+  "src/agent/insights.c",
+  "src/agent/markdown_tables.c",
+  "src/agent/memory_provider.c",
+  "src/agent/model_metadata.c",
+  "src/agent/onboarding.c",
+  "src/agent/plugin_llm.c",
+  "src/agent/prompt_builder.c",
+  "src/agent/retry_utils.c",
+  "src/agent/skill_commands.c",
+  "src/agent/skill_utils.c",
+  "src/agent/system_prompt.c",
+  "src/agent/think_scrubber.c",
+  "src/agent/title_generator.c",
+  "src/agent/tool_executor.c",
+  "src/agent/tool_guardrails.c",
+  "src/agent/transcription_provider.c",
+  "src/agent/turn_context.c",
+  "src/agent/usage_pricing.c",
+  "src/cron/jobs.c",
+  "src/cron/scheduler.c",
+  "src/gateway/authz_mixin.c",
+  "src/gateway/config.c",
+  "src/gateway/delivery.c",
+  "src/gateway/display_config.c",
+  "src/gateway/platforms_base.c",
+  "src/gateway/run.c",
+  "src/gateway/run_gaps.c",
+  "src/gateway/slash_access.c",
+  "src/gateway/sticker_cache.c",
+  "src/hermes_cli/auth_helpers.c",
+  "src/hermes_cli/batch3_gaps.c",
+  "src/hermes_cli/config.c",
+  "src/hermes_cli/config_helpers.c",
+  "src/hermes_cli/doctor.c",
+  "src/hermes_cli/kanban_db.c",
+  "src/hermes_cli/main.c",
+  "src/hermes_cli/plugins_gaps.c",
+  "src/hermes_cli/service_manager_gaps.c",
+  "src/hermes_cli/setup.c",
+  "src/hermes_cli/voice.c",
+  "src/hermes_cli/web_server.c",
+  "src/hermes_cli/write_approval_commands.c",
+  "src/tools/approval.c",
+  "src/tools/checkpoint_manager.c",
+  "src/tools/clarify_tool.c",
+  "src/tools/env_probe.c",
+  "src/tools/mcp_tool.c",
+  "src/tools/microsoft_graph_client.c",
+  "src/tools/patch_parser.c",
+  "src/tools/path_security.c",
+  "src/tools/session_search_tool.c",
+  "src/tools/tool_backend_helpers.c",
+  "src/tools/tool_output_limits.c",
+  "src/tools/tool_search.c",
+  "src/tools/url_safety.c",
+  "src/tools/voice_mode.c",
+  "src/tools/xai_http.c"
+ ],
+ "collision_sources": [
+  "src/agent/port_agent_antigravity_oauth.c",
+  "src/agent/port_agent_auxiliary_client.c",
+  "src/agent/port_agent_auxiliary_client_gaps.c",
+  "src/agent/port_agent_background_review.c",
+  "src/agent/port_agent_coding_context.c",
+  "src/agent/port_agent_context_compressor.c",
+  "src/agent/port_agent_conversation_loop.c",
+  "src/agent/port_agent_display.c",
+  "src/agent/port_agent_image_gen_provider.c",
+  "src/agent/port_agent_memory_provider.c",
+  "src/agent/port_agent_prompt_builder.c",
+  "src/agent/port_agent_retry_utils.c",
+  "src/agent/port_agent_skill_commands.c",
+  "src/agent/port_agent_skill_utils.c",
+  "src/agent/port_agent_system_prompt.c",
+  "src/agent/port_agent_title_generator.c",
+  "src/agent/port_agent_tool_executor.c",
+  "src/agent/port_agent_turn_context.c",
+  "src/agent/port_antigravity_oauth.c",
+  "src/agent/port_async_utils.c",
+  "src/agent/port_auxiliary_client.c",
+  "src/agent/port_auxiliary_client_gaps.c",
+  "src/agent/port_cron_health.c",
+  "src/agent/port_gateway_config_py_final.c",
+  "src/agent/port_gateway_health.c",
+  "src/agent/port_hermes_cli_config_py_final.c",
+  "src/agent/port_markdown_tables.c",
+  "src/cli/cli.c",
+  "src/cli/cli_cmd_config.c",
+  "src/cli/cli_cmd_gateway.c",
+  "src/cli/cli_cmd_memory.c",
+  "src/cli/cli_cmd_security.c",
+  "src/cli/cli_cmd_session.c",
+  "src/cli/cli_cmd_system.c",
+  "src/cli/config.c",
+  "src/cli/config_setup.c",
+  "src/cli/display_core.c",
+  "src/cli/doctor.c",
+  "src/cli/main.c",
+  "src/cli/paths.c",
+  "src/cli/port_agent_browser_provider_methods.c",
+  "src/cli/port_agent_codex_runtime.c",
+  "src/cli/port_agent_context_references.c",
+  "src/cli/port_agent_copilot_acp_client.c",
+  "src/cli/port_agent_credits_tracker.c",
+  "src/cli/port_agent_image_gen_provider.c",
+  "src/cli/port_agent_insights.c",
+  "src/cli/port_agent_model_metadata.c",
+  "src/cli/port_agent_onboarding.c",
+  "src/cli/port_agent_plugin_llm.c",
+  "src/cli/port_agent_skill_utils.c",
+  "src/cli/port_agent_think_scrubber.c",
+  "src/cli/port_agent_tool_executor.c",
+  "src/cli/port_agent_tool_guardrails.c",
+  "src/cli/port_agent_transcription_provider.c",
+  "src/cli/port_agent_usage_pricing.c",
+  "src/cli/port_anthropic_adapter.c",
+  "src/cli/port_auth_helpers.c",
+  "src/cli/port_cli_batch3_gaps.c",
+  "src/cli/port_config.c",
+  "src/cli/port_config_helpers.c",
+  "src/cli/port_doctor.c",
+  "src/cli/port_gateway_authz_mixin.c",
+  "src/cli/port_gateway_config.c",
+  "src/cli/port_gateway_delivery.c",
+  "src/cli/port_gateway_slash_access.c",
+  "src/cli/port_gateway_sticker_cache.c",
+  "src/cli/port_hermes_cli_voice.c",
+  "src/cli/port_hermes_cli_write_approval_commands.c",
+  "src/cli/port_kanban_db.c",
+  "src/cli/port_kanban_db_na.c",
+  "src/cli/port_main.c",
+  "src/cli/port_main_na.c",
+  "src/cli/port_tools_checkpoint_manager.c",
+  "src/cli/port_tools_clarify_tool.c",
+  "src/cli/port_tools_config_helpers.c",
+  "src/cli/port_tools_env_probe.c",
+  "src/cli/port_tools_microsoft_graph_client.c",
+  "src/cli/port_tools_patch_parser.c",
+  "src/cli/port_tools_path_security.c",
+  "src/cli/port_tools_session_search_tool.c",
+  "src/cli/port_tools_tool_backend_helpers.c",
+  "src/cli/port_tools_tool_output_limits.c",
+  "src/cli/port_tools_tool_search.c",
+  "src/cli/port_tools_url_safety.c",
+  "src/cli/port_tools_voice_mode.c",
+  "src/cli/port_tools_xai_http.c",
+  "src/cli/port_voice.c",
+  "src/cli/port_web_server.c",
+  "src/cli/port_web_server_extra.c",
+  "src/cli/setup_wizard.c",
+  "src/cli/tui_fullscreen.c",
+  "src/cron/port_cron_jobs.c",
+  "src/cron/port_jobs.c",
+  "src/cron/port_scheduler.c",
+  "src/gateway/port_display_config.c",
+  "src/gateway/port_gateway_authz_mixin.c",
+  "src/gateway/port_gateway_platforms_base.c",
+  "src/gateway/port_gateway_run.c",
+  "src/gateway/port_gateway_run_gaps.c",
+  "src/gateway/port_platforms_base.c",
+  "src/gateway/port_run_gaps.c",
+  "src/hermes_cli/port_agent_plugins_gaps.c",
+  "src/hermes_cli/port_batch3_gaps.c",
+  "src/hermes_cli/port_hermes_cli_service_manager_gaps.c",
+  "src/hermes_cli/port_plugins_gaps.c",
+  "src/hermes_cli/port_service_manager_gaps.c",
+  "src/ports/agent/agent_runtime_helpers.c",
+  "src/ports/agent/anthropic_adapter.c",
+  "src/ports/agent/auxiliary_client.c",
+  "src/ports/agent/background_review.c",
+  "src/ports/agent/browser_provider.c",
+  "src/ports/agent/codex_runtime.c",
+  "src/ports/agent/coding_context.c",
+  "src/ports/agent/context_compressor.c",
+  "src/ports/agent/context_references.c",
+  "src/ports/agent/conversation_loop.c",
+  "src/ports/agent/copilot_acp_client.c",
+  "src/ports/agent/credits_tracker.c",
+  "src/ports/agent/insights.c",
+  "src/ports/agent/markdown_tables.c",
+  "src/ports/agent/memory_provider.c",
+  "src/ports/agent/model_metadata.c",
+  "src/ports/agent/plugin_llm.c",
+  "src/ports/agent/prompt_builder.c",
+  "src/ports/agent/retry_utils.c",
+  "src/ports/agent/skill_commands.c",
+  "src/ports/agent/system_prompt.c",
+  "src/ports/agent/title_generator.c",
+  "src/ports/agent/tool_executor.c",
+  "src/ports/agent/tool_guardrails.c",
+  "src/ports/agent/transports/hermes_tools_mcp_server.c",
+  "src/ports/agent/turn_context.c",
+  "src/ports/agent/usage_pricing.c",
+  "src/ports/gateway/config.c",
+  "src/ports/gateway/delivery.c",
+  "src/ports/gateway/display_config.c",
+  "src/ports/gateway/platforms/helpers.c",
+  "src/ports/gateway/restart.c",
+  "src/ports/gateway/run.c",
+  "src/ports/tools/approval.c",
+  "src/ports/tools/checkpoint_manager.c",
+  "src/ports/tools/env_probe.c",
+  "src/ports/tools/mcp_tool.c",
+  "src/ports/tools/microsoft_graph_client.c",
+  "src/ports/tools/path_security.c",
+  "src/ports/tools/registry.c",
+  "src/ports/tools/tool_backend_helpers.c",
+  "src/ports/tools/tool_search.c",
+  "src/ports/tools/url_safety.c",
+  "src/ports/tools/voice_mode.c",
+  "src/ports/tools/xai_http.c",
+  "src/tools/port_approval.c",
+  "src/tools/port_clarify_tool.c",
+  "src/tools/port_mcp_tool.c",
+  "src/tools/port_patch_parser.c",
+  "src/tools/port_session_search_tool.c"
+ ],
+ "target_sources": {
+  "src/agent/tool_executor.c": [
+   "src/agent/port_agent_tool_executor.c",
+   "src/cli/port_agent_tool_executor.c",
+   "src/ports/agent/tool_executor.c"
+  ],
+  "src/agent/health.c": [
+   "src/agent/port_gateway_health.c",
+   "src/agent/port_cron_health.c"
+  ],
+  "src/agent/async_utils.c": [
+   "src/agent/port_async_utils.c"
+  ],
+  "src/agent/config_py_final.c": [
+   "src/agent/port_gateway_config_py_final.c",
+   "src/agent/port_hermes_cli_config_py_final.c"
+  ],
+  "src/agent/antigravity_oauth.c": [
+   "src/agent/port_agent_antigravity_oauth.c",
+   "src/agent/port_antigravity_oauth.c"
+  ],
+  "src/agent/prompt_builder.c": [
+   "src/agent/port_agent_prompt_builder.c",
+   "src/ports/agent/prompt_builder.c"
+  ],
+  "src/agent/image_gen_provider.c": [
+   "src/agent/port_agent_image_gen_provider.c",
+   "src/cli/port_agent_image_gen_provider.c"
+  ],
+  "src/agent/memory_provider.c": [
+   "src/agent/port_agent_memory_provider.c",
+   "src/ports/agent/memory_provider.c",
+   "src/ports/agent/transports/hermes_tools_mcp_server.c"
+  ],
+  "src/agent/conversation_loop.c": [
+   "src/agent/port_agent_conversation_loop.c",
+   "src/ports/agent/conversation_loop.c"
+  ],
+  "src/agent/auxiliary_client_gaps.c": [
+   "src/agent/port_agent_auxiliary_client_gaps.c",
+   "src/agent/port_auxiliary_client_gaps.c"
+  ],
+  "src/agent/background_review.c": [
+   "src/agent/port_agent_background_review.c",
+   "src/ports/agent/background_review.c"
+  ],
+  "src/agent/markdown_tables.c": [
+   "src/agent/port_markdown_tables.c",
+   "src/ports/agent/markdown_tables.c"
+  ],
+  "src/agent/auxiliary_client.c": [
+   "src/agent/port_auxiliary_client.c",
+   "src/agent/port_agent_auxiliary_client.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "src/agent/turn_context.c": [
+   "src/agent/port_agent_turn_context.c",
+   "src/ports/agent/turn_context.c"
+  ],
+  "src/agent/retry_utils.c": [
+   "src/agent/port_agent_retry_utils.c",
+   "src/ports/agent/retry_utils.c"
+  ],
+  "src/agent/context_compressor.c": [
+   "src/agent/port_agent_context_compressor.c",
+   "src/ports/agent/context_compressor.c"
+  ],
+  "src/agent/system_prompt.c": [
+   "src/agent/port_agent_system_prompt.c",
+   "src/ports/agent/system_prompt.c"
+  ],
+  "src/agent/title_generator.c": [
+   "src/agent/port_agent_title_generator.c",
+   "src/ports/agent/title_generator.c"
+  ],
+  "src/agent/skill_utils.c": [
+   "src/agent/port_agent_skill_utils.c",
+   "src/cli/port_agent_skill_utils.c"
+  ],
+  "src/agent/skill_commands.c": [
+   "src/agent/port_agent_skill_commands.c",
+   "src/ports/agent/skill_commands.c"
+  ],
+  "src/agent/coding_context.c": [
+   "src/agent/port_agent_coding_context.c",
+   "src/cli/paths.c",
+   "src/ports/agent/coding_context.c"
+  ],
+  "src/agent/display.c": [
+   "src/agent/port_agent_display.c",
+   "src/cli/display_core.c"
+  ],
+  "src/tools/mcp_tool.c": [
+   "src/tools/port_mcp_tool.c",
+   "src/ports/tools/mcp_tool.c"
+  ],
+  "src/tools/patch_parser.c": [
+   "src/tools/port_patch_parser.c",
+   "src/cli/port_tools_patch_parser.c"
+  ],
+  "src/tools/clarify_tool.c": [
+   "src/tools/port_clarify_tool.c",
+   "src/cli/port_tools_clarify_tool.c"
+  ],
+  "src/tools/approval.c": [
+   "src/tools/port_approval.c",
+   "src/ports/tools/approval.c"
+  ],
+  "src/tools/session_search_tool.c": [
+   "src/tools/port_session_search_tool.c",
+   "src/cli/port_tools_session_search_tool.c"
+  ],
+  "src/gateway/sticker_cache.c": [
+   "src/cli/port_gateway_sticker_cache.c"
+  ],
+  "src/hermes_cli/voice.c": [
+   "src/cli/port_hermes_cli_voice.c",
+   "src/cli/port_voice.c"
+  ],
+  "src/hermes_cli/main.c": [
+   "src/cli/main.c",
+   "src/cli/tui_fullscreen.c",
+   "src/cli/port_main.c",
+   "src/cli/cli_cmd_gateway.c",
+   "src/cli/cli_cmd_config.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/port_main_na.c",
+   "src/cli/cli_cmd_security.c",
+   "src/cli/cli.c",
+   "src/cli/cli_cmd_memory.c"
+  ],
+  "src/hermes_cli/write_approval_commands.c": [
+   "src/cli/cli_cmd_system.c",
+   "src/cli/port_hermes_cli_write_approval_commands.c"
+  ],
+  "src/agent/codex_runtime.c": [
+   "src/cli/port_agent_codex_runtime.c",
+   "src/ports/agent/codex_runtime.c"
+  ],
+  "src/hermes_cli/config_helpers.c": [
+   "src/cli/port_tools_config_helpers.c",
+   "src/cli/port_config_helpers.c"
+  ],
+  "src/agent/transcription_provider.c": [
+   "src/cli/port_agent_transcription_provider.c"
+  ],
+  "src/gateway/config.c": [
+   "src/cli/port_gateway_config.c",
+   "src/ports/gateway/config.c"
+  ],
+  "src/agent/insights.c": [
+   "src/cli/port_agent_insights.c",
+   "src/ports/agent/insights.c"
+  ],
+  "src/tools/tool_backend_helpers.c": [
+   "src/cli/port_tools_tool_backend_helpers.c",
+   "src/ports/tools/tool_backend_helpers.c"
+  ],
+  "src/agent/model_metadata.c": [
+   "src/cli/port_agent_model_metadata.c",
+   "src/ports/agent/model_metadata.c"
+  ],
+  "src/agent/onboarding.c": [
+   "src/cli/port_agent_onboarding.c"
+  ],
+  "src/hermes_cli/auth_helpers.c": [
+   "src/cli/port_auth_helpers.c"
+  ],
+  "src/agent/plugin_llm.c": [
+   "src/cli/port_agent_plugin_llm.c",
+   "src/ports/agent/plugin_llm.c"
+  ],
+  "src/hermes_cli/setup.c": [
+   "src/cli/setup_wizard.c",
+   "src/cli/config_setup.c"
+  ],
+  "src/gateway/delivery.c": [
+   "src/cli/port_gateway_delivery.c",
+   "src/ports/gateway/delivery.c"
+  ],
+  "src/agent/think_scrubber.c": [
+   "src/cli/port_agent_think_scrubber.c"
+  ],
+  "src/hermes_cli/web_server.c": [
+   "src/cli/port_web_server_extra.c",
+   "src/cli/port_web_server.c"
+  ],
+  "src/tools/env_probe.c": [
+   "src/cli/port_tools_env_probe.c",
+   "src/ports/tools/env_probe.c"
+  ],
+  "src/agent/copilot_acp_client.c": [
+   "src/cli/port_agent_copilot_acp_client.c",
+   "src/ports/agent/copilot_acp_client.c"
+  ],
+  "src/hermes_cli/kanban_db.c": [
+   "src/cli/port_kanban_db_na.c",
+   "src/cli/port_kanban_db.c"
+  ],
+  "src/gateway/slash_access.c": [
+   "src/cli/port_gateway_slash_access.c"
+  ],
+  "src/tools/tool_search.c": [
+   "src/cli/port_tools_tool_search.c",
+   "src/ports/tools/tool_search.c"
+  ],
+  "src/tools/url_safety.c": [
+   "src/cli/port_tools_url_safety.c",
+   "src/ports/tools/url_safety.c"
+  ],
+  "src/tools/checkpoint_manager.c": [
+   "src/cli/port_tools_checkpoint_manager.c",
+   "src/ports/tools/checkpoint_manager.c"
+  ],
+  "src/hermes_cli/doctor.c": [
+   "src/cli/doctor.c",
+   "src/cli/port_doctor.c"
+  ],
+  "src/agent/usage_pricing.c": [
+   "src/cli/port_agent_usage_pricing.c",
+   "src/ports/agent/usage_pricing.c"
+  ],
+  "src/agent/credits_tracker.c": [
+   "src/cli/port_agent_credits_tracker.c",
+   "src/ports/agent/credits_tracker.c"
+  ],
+  "src/agent/anthropic_adapter.c": [
+   "src/cli/port_anthropic_adapter.c",
+   "src/ports/agent/anthropic_adapter.c"
+  ],
+  "src/tools/xai_http.c": [
+   "src/cli/port_tools_xai_http.c",
+   "src/ports/tools/xai_http.c"
+  ],
+  "src/tools/tool_output_limits.c": [
+   "src/cli/port_tools_tool_output_limits.c"
+  ],
+  "src/agent/tool_guardrails.c": [
+   "src/cli/port_agent_tool_guardrails.c",
+   "src/ports/agent/tool_guardrails.c"
+  ],
+  "src/hermes_cli/batch3_gaps.c": [
+   "src/cli/port_cli_batch3_gaps.c",
+   "src/hermes_cli/port_batch3_gaps.c"
+  ],
+  "src/gateway/authz_mixin.c": [
+   "src/cli/port_gateway_authz_mixin.c",
+   "src/gateway/port_gateway_authz_mixin.c"
+  ],
+  "src/agent/browser_provider.c": [
+   "src/cli/port_agent_browser_provider_methods.c",
+   "src/ports/agent/browser_provider.c"
+  ],
+  "src/agent/context_references.c": [
+   "src/cli/port_agent_context_references.c",
+   "src/ports/agent/context_references.c"
+  ],
+  "src/tools/microsoft_graph_client.c": [
+   "src/cli/port_tools_microsoft_graph_client.c",
+   "src/ports/tools/microsoft_graph_client.c"
+  ],
+  "src/tools/path_security.c": [
+   "src/cli/port_tools_path_security.c",
+   "src/ports/tools/path_security.c"
+  ],
+  "src/hermes_cli/config.c": [
+   "src/cli/port_config.c",
+   "src/cli/config.c"
+  ],
+  "src/tools/voice_mode.c": [
+   "src/cli/port_tools_voice_mode.c",
+   "src/ports/tools/voice_mode.c"
+  ],
+  "src/hermes_cli/service_manager_gaps.c": [
+   "src/hermes_cli/port_hermes_cli_service_manager_gaps.c",
+   "src/hermes_cli/port_service_manager_gaps.c"
+  ],
+  "src/hermes_cli/plugins_gaps.c": [
+   "src/hermes_cli/port_plugins_gaps.c",
+   "src/hermes_cli/port_agent_plugins_gaps.c"
+  ],
+  "src/gateway/platforms_base.c": [
+   "src/gateway/port_gateway_platforms_base.c",
+   "src/gateway/port_platforms_base.c"
+  ],
+  "src/gateway/run_gaps.c": [
+   "src/gateway/port_run_gaps.c",
+   "src/gateway/port_gateway_run_gaps.c"
+  ],
+  "src/gateway/run.c": [
+   "src/gateway/port_gateway_run.c",
+   "src/ports/gateway/run.c",
+   "src/ports/gateway/restart.c",
+   "src/ports/gateway/platforms/helpers.c"
+  ],
+  "src/gateway/display_config.c": [
+   "src/gateway/port_display_config.c",
+   "src/ports/gateway/display_config.c"
+  ],
+  "src/cron/jobs.c": [
+   "src/cron/port_jobs.c",
+   "src/cron/port_cron_jobs.c"
+  ],
+  "src/cron/scheduler.c": [
+   "src/cron/port_scheduler.c"
+  ],
+  "src/agent/agent_runtime_helpers.c": [
+   "src/ports/agent/agent_runtime_helpers.c",
+   "src/ports/tools/registry.c"
+  ]
+ }
+}

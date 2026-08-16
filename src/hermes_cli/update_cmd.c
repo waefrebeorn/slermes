@@ -20,7 +20,7 @@
 #define _GNU_SOURCE
 #include "port_hermes_cli_update_cmd.h"
 #include "slermes_home.h"
-#include "port_web_git.h"
+#include "web_git.h"
 #include "libjson/json.h"
 #include "hermes_glob.h"
 

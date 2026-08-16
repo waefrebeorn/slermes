@@ -10,7 +10,7 @@
  */
 
 #include "hermes_json.h"
-#include "cli/port_agent_display.h"
+#include "hermes_cli/display.h"
 #include "tools/browser_redact.h"
 #include <stdio.h>
 #include <stdlib.h>

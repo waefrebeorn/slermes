@@ -10,7 +10,7 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
-#include "port_agent_redact_helpers.h"
+#include "redact_helpers.h"
 #include "../tools/browser_redact.h"
 
 /* Literal credential prefixes derived from _PREFIX_PATTERNS via

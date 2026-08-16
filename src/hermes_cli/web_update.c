@@ -18,7 +18,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include "port_web_update.h"
 #include "port_web_server_paths.h"
-#include "port_web_git.h"
+#include "web_git.h"
 #include "slermes_home.h"
 
 #include <stdio.h>

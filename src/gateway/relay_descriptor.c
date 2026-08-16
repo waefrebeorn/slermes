@@ -3,7 +3,7 @@
  */
 #include "hermes_logger.h"
 #include "hermes_gateway_core.h"
-#include "port_gateway_relay_ws_transport.h"
+#include "relay_ws_transport.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

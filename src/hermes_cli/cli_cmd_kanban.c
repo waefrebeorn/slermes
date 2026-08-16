@@ -9,7 +9,7 @@
 #include "hermes_core_types.h"
 
 #include "cli.h"
-#include "port_hermes_cli_kanban_helpers.h"
+#include "kanban_helpers.h"
 
 /* cli_display_error is defined in cli/display.c (centralized styled error
  * printer); route kanban's error prints through it instead of raw printf. */

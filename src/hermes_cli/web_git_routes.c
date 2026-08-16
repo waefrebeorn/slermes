@@ -13,7 +13,7 @@
  * resolver ws_fs_path() from port_web_server_schema_path.c. No god headers.
  */
 
-#include "port_web_git.h"
+#include "web_git.h"
 #include "hermes_json.h"
 #include "hermes_logger.h"
 #include <stdbool.h>

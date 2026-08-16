@@ -15,7 +15,7 @@
 #include "hermes_json.h"
 #include "registry.h"
 #include "process_registry.h"
-#include "port_close_terminal_tool.h"
+#include "close_terminal_tool.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

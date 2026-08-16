@@ -15,7 +15,7 @@
  * model-call projection gates on the relay-runtime envelope.
  */
 #define _POSIX_C_SOURCE 200809L
-#include "port_hermes_cli_shared_metrics_contract.h"
+#include "shared_metrics_contract.h"
 
 #include <ctype.h>
 #include <math.h>
