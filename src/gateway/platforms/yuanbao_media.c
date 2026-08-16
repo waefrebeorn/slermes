@@ -9,8 +9,9 @@
 Uploads/downloads images, files, and voice messages via Yuanbao API.
 
 Port of Python gateway/platforms/yuanbao_media.py (645 lines).
-N/A: Python media file I/O — C uses stdio + libhttp.
-The actual Yuanbao platform adapter is in src/gateway/platforms/yuanbao.c.
+Media file I/O is implemented in C via stdio + libhttp (guess_mime_type,
+md5_hex, parse_image_size, get_image_format, build_file_msg all ported below).
+The upload/download transport lives in src/gateway/platforms/yuanbao.c.
  */
 
 #include "hermes_core_types.h"

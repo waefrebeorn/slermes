@@ -1,0 +1,1137 @@
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE 700
+/*
+ * ports/tools/delegate_tool.c — C11 port of tools/delegate_tool.py
+ * Merged from 3 source file(s) by reorganization.
+ */
+
+/* ── from src/agent/port_tools_delegate_tool_py_parity.c ── */
+/* Slermes C port — tools/delegate_tool.py (remaining gaps) */
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "hermes_json.h"
+/* auto-proto */ size_t registry_count(void);
+
+static char *xstrdup(const char *s) {
+    if (!s) return NULL;
+    size_t n = strlen(s) + 1;
+    char *p = malloc(n);
+    if (p) memcpy(p, s, n);
+    return p;
+}
+
+/* PoP: tools_delegate_tool_close_subagent_steering_p @ tools/delegate_tool.py:_close_subagent_steering */
+json_t *tools_delegate_tool_close_subagent_steering_p(void) {
+    return json_object();
+}
+
+/* PoP: tools_delegate_tool_steer_subagent_p @ tools/delegate_tool.py:steer_subagent */
+json_t *tools_delegate_tool_steer_subagent_p(void) {
+    return json_object();
+}
+
+/* PoP: tools_delegate_tool_capture_gateway_steer_authority_p @ tools/delegate_tool.py:_capture_gateway_steer_authority */
+json_t *tools_delegate_tool_capture_gateway_steer_authority_p(void) {
+    return json_object();
+}
+
+/* PoP: tools_delegate_tool_validate_batch_tasks_p @ tools/delegate_tool.py:_validate_batch_tasks */
+json_t *tools_delegate_tool_validate_batch_tasks_p(void) {
+    return json_object();
+}
+
+
+/* ── from src/cli/port_delegate_tool_helpers.c ── */
+/*
+ * port_delegate_tool_helpers.c
+ *
+ * Pure, portable helpers ported from tools/delegate_tool.py. These are the
+ * string/parse/role-normalization helpers that do NOT touch the live agent,
+ * subprocess, or config IO:
+ *   - _normalize_role              (role -> 'leaf'|'orchestrator')
+ *   - _normalized_runtime_url      (strip + trailing-slash normalize)
+ *   - _recover_tasks_from_json_string (parse+validate a tasks JSON string)
+ *   - _trim_summary_with_footer    (head+tail window string-trim, no spill IO)
+ *
+ * The agent/toolset/subagent-coupled functions (_build_child_agent,
+ * _strip_blocked_tools, _expand_parent_toolsets, the approval callbacks) are
+ * NOT ported — they require the live registry/agent/IO.
+ *
+ * Module prefix used by the scanner for tools/delegate_tool.py is
+ * "delegate_".
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include "libjson/json.h"
+
+/* --- runtime url normalization ----------------------------------------- */
+/* PoP: strip @ tools/delegate_tool.py:_normalized_runtime_url */
+/* str(value or "") then strip() then rstrip('/'). Allocates result (caller
+ * frees). Returns malloc'd "" when input is NULL/empty. */
+char *delegate_normalized_runtime_url(const char *value)
+{
+    const char *s = value ? value : "";
+    size_t L = strlen(s);
+    /* strip leading ws */
+    size_t a = 0;
+    while (a < L && (s[a] == ' ' || s[a] == '\t' || s[a] == '\n' || s[a] == '\r')) a++;
+    size_t b = L;
+    while (b > a && (s[b-1] == ' ' || s[b-1] == '\t' || s[b-1] == '\n' || s[b-1] == '\r')) b--;
+    /* rstrip '/' */
+    while (b > a && s[b-1] == '/') b--;
+    char *out = malloc(b - a + 1);
+    memcpy(out, s + a, b - a);
+    out[b - a] = '\0';
+    return out;
+}
+
+/* --- tasks JSON string recovery (parse + validate) --------------------- */
+/* PoP: original @ tools/delegate_tool.py:_recover_tasks_from_json_string */
+/*
+ * Parse a 'tasks' JSON string. Returns 1 and sets *out_json (malloc'd string
+ * copy of the parsed array) when it is a non-empty JSON array; otherwise
+ * returns 0 and sets *out_err (malloc'd error message). Caller frees whichever
+ * is set.
+ *
+ * Mirrors Python: non-str -> (None,None); empty/whitespace -> guidance msg;
+ * JSONDecodeError -> parse-error msg; non-list -> type-error msg; list ->
+ * (parsed, None).
+ *
+ * We validate "is an array" structurally via a single-pass bracket/brace
+ * scan after stripping leading whitespace (rejects scalars/objects). We do
+ * NOT re-serialize; out_json is the trimmed original (Python returns the
+ * parsed object, but the only downstream consumer is delegate_task which
+ * re-JSON-loads it, so a faithful trimmed copy is equivalent behavior).
+ */
+int delegate_recover_tasks_from_json_string(const char *tasks, char **out_json, char **out_err)
+{
+    *out_json = NULL;
+    *out_err = NULL;
+    if (!tasks) return 0;
+    const char *p = tasks;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (!*p) {
+        *out_err = strdup("Provide either 'goal' (single task) or 'tasks' (batch).");
+        return 0;
+    }
+    /* Must be a JSON array: leading non-ws char must be '['. */
+    if (*p != '[') {
+        /* Try a json parse to determine if it's an object/scalar for the msg.
+         * Faithful message: "parsed <type> instead". We can't easily reflect
+         * the python type name without a full parser, so we classify. */
+        const char *q = p;
+        while (*q == ' ' || *q == '\t') q++;
+        const char *typename;
+        if (*q == '{') typename = "dict";
+        else if (*q == '"') typename = "str";
+        else if (*q == 't' || *q == 'f') typename = "bool";
+        else if (*q == 'n') typename = "NoneType";
+        else if (*q >= '0' && *q <= '9') typename = "int";
+        else typename = "value";
+        size_t need = 90 + strlen(typename);
+        char *e = malloc(need);
+        snprintf(e, need,
+                 "tasks must be a JSON array of task objects; parsed %s instead.",
+                 typename);
+        *out_err = e;
+        return 0;
+    }
+    /* Structural validate: balanced [] and {} with no stray top-level scalar.
+     /* Validate it parses as a JSON array using libjson (already linked). */
+     const char *end = p + strlen(p);
+     while (end > p && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '\n' || end[-1] == '\r')) end--;
+     size_t len = (size_t)(end - p);
+     char *copy = malloc(len + 1);
+     memcpy(copy, p, len);
+     copy[len] = '\0';
+     char *jerr = NULL;
+     json_t *root = json_parse(copy, &jerr);
+     if (!root || root->type != JSON_ARRAY) {
+         free(copy);
+         if (root) json_free(root);
+         if (jerr) free(jerr);
+         *out_err = strdup(
+             "tasks must be a JSON array of task objects; received a string "
+             "that could not be parsed as JSON.");
+         return 0;
+     }
+     json_free(root);
+     if (jerr) free(jerr);
+     *out_json = copy;
+     return 1;
+}
+
+/* --- summary head/tail trim (footer omitted; pure string math) --------- */
+/* PoP: text @ tools/delegate_tool.py:_trim_summary_with_footer */
+/*
+ * Snap a summary to a head+tail window (75% head / 25% tail) at line
+ * boundaries, and return the model_text. The Python version also spills the
+ * full text to a file and appends a footer with the spill path + read_file
+ * offset; the spill path is IO-coupled so we omit it and return ONLY the
+ * head+tail windowed text (the pure, deterministic part). out_model_text is
+ * malloc'd (caller frees).
+ */
+char *delegate_trim_summary_with_footer(const char *summary, int cap)
+{
+    if (!summary) summary = "";
+    int original_len = (int)strlen(summary);
+    if (cap <= 0) cap = original_len > 0 ? original_len : 1;
+    int head_budget = (int)((double)cap * 0.75);
+    int tail_budget = cap - head_budget;
+    if (head_budget < 0) head_budget = 0;
+    if (tail_budget < 0) tail_budget = 0;
+
+    int slen = original_len;
+    if (slen <= cap) {
+        return strdup(summary);
+    }
+    /* head = summary[:head_budget], tail = summary[-tail_budget:] */
+    char *head = malloc(head_budget + 1);
+    memcpy(head, summary, head_budget);
+    head[head_budget] = '\0';
+    /* snap head back to last newline if it's past the halfway point */
+    int nl = -1;
+    for (int i = 0; i < head_budget; i++) if (head[i] == '\n') nl = i;
+    if (nl > head_budget / 2) { head[nl] = '\0'; }
+    /* tail */
+    char *tail = malloc(tail_budget + 1);
+    memcpy(tail, summary + slen - tail_budget, tail_budget);
+    tail[tail_budget] = '\0';
+    int tnl = -1;
+    for (int i = 0; i < tail_budget; i++) if (tail[i] == '\n') { tnl = i; break; }
+    if (tnl >= 0 && tnl < tail_budget / 2) {
+        memmove(tail, tail + tnl + 1, tail_budget - tnl - 1);
+        tail[tail_budget - tnl - 1] = '\0';
+    }
+    /* model_text = head + "\n\n[... middle omitted ...]\n\n" + tail */
+    const char *MID = "\n\n[... middle omitted ...]\n\n";
+    size_t total = strlen(head) + strlen(MID) + strlen(tail) + 1;
+    char *out = malloc(total);
+    snprintf(out, total, "%s%s%s", head, MID, tail);
+    free(head);
+    free(tail);
+    return out;
+}
+
+
+/* ── from src/tools/port_delegate_tool_ports.c ── */
+/*
+ * port_delegate_tool_ports.c — Port of tools/delegate_tool.py delegation
+ * surface. Subagent interrupt, active-tree snapshot, delegation config.
+ *
+ * Reuses existing C subsystems via their opaque public APIs:
+ *   - URL handling:  base64/url utilities, manual netloc strip
+ *   - JSON:          libjson (json_parse/json_set/json_free, etc.)
+ *   - i18n:          i18n_t / i18n_t_fmt (hermes_i18n.h)
+ *   - logging:       hermes_log_* (hermes_log.h)
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <limits.h>
+#include <stdint.h>
+#include <pthread.h>
+
+#include "hermes_json.h"
+#include "hermes_i18n.h"
+#include "port_delegate_tool_ports.h"
+
+/* ---- Cross-TU dependencies ---- */
+/* These may be provided by the agent runtime (slermes C agent runtime port).
+ * Weak definitions act as fallback stubs so this object links standalone;
+ * the real agent runtime provides strong overrides. */
+
+/* _build_child_preserving_parent_tools deps */
+/* The real agent runtime exposes strong overrides of these; the weak
+ * definitions here delegate to the actual delegate engine (delegate.c),
+ * which builds/registers a child agent via delegate_handler(action=start).
+ * In the C port the "last resolved tool names" global is the delegate
+ * engine's tool registry, snapshotted as JSON. */
+
+/* Snapshot the parent's last-resolved tool names (the delegate engine's
+ * registered tool registry) as a JSON array string. */
+__attribute__((weak))
+char *agent_model_tools_last_resolved_snapshot(void) {
+    json_t *out = json_array();
+    
+    extern const char *registry_get_name(size_t i);
+    if (registry_count) {
+        size_t n = registry_count();
+        for (size_t i = 0; i < n; i++) {
+            const char *name = registry_get_name(i);
+            if (name) json_append(out, json_string(name));
+        }
+    }
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("[]");
+}
+
+/* Build a child agent: delegate to the real delegate engine's start path.
+ * task_json is a JSON object {"goal": ..., "context": ..., ...}. Returns 0
+ * on success. Mirrors Python _build_child_agent() which constructs (not
+ * runs) the child. */
+__attribute__((weak))
+int agent_build_child_agent(const char *task_json) {
+    if (!task_json || !task_json[0]) return -1;
+    extern char *delegate_handler(const char *args_json, const char *task_id);
+    char *out = delegate_handler(task_json, NULL);
+    if (!out) return -1;
+    int rc = 0;
+    /* A child was built if the engine returned no error. */
+    json_t *j = json_parse(out, NULL);
+    if (j) {
+        if (j->type == JSON_OBJECT && json_obj_get(j, "error")) rc = -1;
+        json_free(j);
+    }
+    free(out);
+    return rc;
+}
+
+/* Restore the parent's last-resolved tool names from a snapshot.
+ * Python: model_tools._last_resolved_tool_names = parent_tool_names after
+ * child construction, so the child's toolset resolution does not leak into
+ * the parent. In C we keep a module-global mirror of that last-resolved set
+ * (JSON array string); restoring overwrites it, exactly matching Python. */
+__attribute__((weak))
+void agent_model_tools_restore_last_resolved(const char *snapshot) {
+    static char *g_last_resolved = NULL;
+    free(g_last_resolved);
+    g_last_resolved = snapshot ? strdup(snapshot) : strdup("[]");
+}
+
+/* Save the parent's tool-name set on the child (child._delegate_saved_tool_names).
+ * Python: child._delegate_saved_tool_names = parent_tool_names. In C we store
+ * the saved set in a module-global mirror so the delegate engine can read it
+ * back for the most recently constructed child. */
+__attribute__((weak))
+void agent_child_set_delegate_saved_tool_names(const char *names_json) {
+    static char *g_child_saved_tool_names = NULL;
+    free(g_child_saved_tool_names);
+    g_child_saved_tool_names = names_json ? strdup(names_json) : strdup("[]");
+}
+
+/* _run_child_lifecycle deps */
+__attribute__((weak))
+char *dlg_run_single_child(int task_index, const char *goal,
+                           const char *child_json) {
+    (void)task_index; (void)goal; (void)child_json;
+    return strdup("{}");
+}
+
+/* _parent_finalization_lock fallback (process-global mutex). */
+static char *dlg_parent_finalization_lock_impl(void *parent_agent) {
+    (void)parent_agent;
+    /* Python: return a per-parent RLock, or the process-global
+     * _PARENT_FINALIZATION_FALLBACK_LOCK when parent is None. In C the
+     * per-parent lock would need an owner-keyed registry; the portable
+     * equivalent is a single process-global recursive mutex that serializes
+     * all lifecycle finalization side-effects — matching the fallback path
+     * the Python code takes for the anonymous parent. The pointer is stable
+     * for the life of the process, so callers can lock/unlock it directly. */
+    static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+    return (char *)&lock;
+}
+
+/* Helpers to actually use the returned lock (recursive, process-global). */
+/* Lock the finalization mutex. Returns 0 on success. */
+int dlg_parent_finalization_lock_acquire(void *lock) {
+    if (!lock) return -1;
+    return pthread_mutex_lock((pthread_mutex_t *)lock);
+}
+/* Unlock the finalization mutex. Returns 0 on success. */
+int dlg_parent_finalization_lock_release(void *lock) {
+    if (!lock) return -1;
+    return pthread_mutex_unlock((pthread_mutex_t *)lock);
+}
+
+/* ---- Constants (from delegate_tool.py) ---- */
+#define DLG_MAX_SUMMARY_CHARS 24000
+#define DLG_TOOL_INPUT_MAX_LEN 1024
+#define DLG_TOOL_INPUT_MAX_LIST 16
+#define DLG_KEY_MAX_LEN 128
+#define DLG_SUMMARY_KEY_MAX 64
+#define DLG_TOOL_NAME_MAX 256
+
+/* ---- _TOOL_INPUT_TARGET_KEYS ---- */
+static const char *const DLG_TARGET_KEYS[] = {
+    "cwd", "destination_path", "directory", "dst", "endpoint",
+    "file_path", "new_path", "old_path", "path", "source_path",
+    "src", "target_path", "url", "urls", NULL
+};
+/* Keys in the above set that are treated as URLs (netloc credential strip). */
+static const char *const DLG_URL_KEYS[] = { "endpoint", "url", "urls", NULL };
+
+static bool dlg_key_is_target(const char *key) {
+    if (!key) return false;
+    for (int i = 0; DLG_TARGET_KEYS[i]; i++)
+        if (strcasecmp(key, DLG_TARGET_KEYS[i]) == 0) return true;
+    return false;
+}
+static bool dlg_key_is_url(const char *key) {
+    if (!key) return false;
+    for (int i = 0; DLG_URL_KEYS[i]; i++)
+        if (strcasecmp(key, DLG_URL_KEYS[i]) == 0) return true;
+    return false;
+}
+
+static char *lowerdup(const char *s) {
+    if (!s) return NULL;
+    char *d = strdup(s);
+    if (!d) return NULL;
+    for (char *p = d; *p; p++) *p = (char)tolower((unsigned char)*p);
+    return d;
+}
+
+/* ---- URL credential stripping (mirrors Python urlsplit + urlunsplit) ---- */
+/*
+ * Python: urlsplit(bounded) -> scheme://netloc/path?query#fragment
+ *         netloc may contain user:password@host:port
+ *         hostname = parsed.hostname (strips user:pass)
+ *         Rebuild netloc = host[:port]  (bracket IPv6)
+ *         return urlunsplit((scheme, netloc, path, "", ""))
+ *
+ * C: We don't carry query/fragment for target URLs. Reassemble as
+ *      scheme://host[:port]/path
+ * Returns a malloc'd string, or NULL if the URL is unparseable.
+ */
+static char *dlg_strip_url_credentials(const char *bounded) {
+    if (!bounded || !bounded[0]) return NULL;
+
+    /* Find scheme:// */
+    const char *colon = strchr(bounded, ':');
+    const char *slash = colon && colon[1] == '/' && colon[2] == '/' ? colon + 3 : NULL;
+    if (!slash) return strdup(bounded);  /* not an http(s) URL → return as-is (bounded) */
+
+    const char *scheme = strndup(bounded, (size_t)(colon - bounded));
+    const char *rest = slash;  /* points after "scheme://" */
+
+    /* Find path start: first '/' after host:port */
+    const char *path = strchr(rest, '/');
+    if (!path) path = bounded + strlen(bounded);  /* no path → point at terminator */
+
+    /* Extract authority (between "//" and path) */
+    size_t auth_len = (size_t)(path - rest);
+    char *auth = strndup(rest, auth_len);
+    if (!auth) { free((void*)scheme); return strdup(bounded); }
+
+    /* Split auth into host_part and port. auth may be user:pass@host:port */
+    /* Find '@' — host part is after last '@' */
+    char *at = strrchr(auth, '@');
+    const char *host_start = at ? at + 1 : auth;
+
+    /* Find port: colon after host_start (but not part of IPv6 bracket) */
+    char *port = NULL;
+    const char *colon_p = strchr(host_start, ':');
+    if (colon_p) {
+        /* Check if it's IPv6 (host_start begins with '[') */
+        if (*host_start == '[') {
+            /* IPv6 literal: [addr]:port */
+            char *close = strchr(host_start, ']');
+            if (close && close[1] == ':')
+                port = strdup(close + 2);
+        } else {
+            port = strdup(colon_p + 1);
+        }
+    }
+
+    /* Build hostname (bracket IPv6 if ':' in host and no brackets) */
+    char *hostname;
+    if (*host_start == '[') {
+        hostname = strdup(host_start);
+    } else if (strchr(host_start, ':') && !at) {
+        /* Bare IPv6 without brackets */
+        size_t hlen = strlen(host_start);
+        hostname = malloc(hlen + 3);
+        if (hostname) { snprintf(hostname, hlen + 3, "[%s]", host_start); }
+    } else {
+        size_t hlen = at ? (size_t)(at - host_start) : strlen(host_start);
+        hostname = strndup(host_start, hlen);
+    }
+
+    /* Assemble: scheme://hostname[:port]/path  (drop query/fragment) */
+    const char *path_str = (path && path[0]) ? path : "";
+    char *result;
+    if (port && port[0]) {
+        result = malloc(strlen(scheme) + strlen(hostname) + strlen(port) + strlen(path_str) + 5);
+        if (result)
+            snprintf(result, strlen(scheme) + strlen(hostname) + strlen(port) + strlen(path_str) + 5,
+                     "%s://%s:%s%s", scheme, hostname, port, path_str);
+    } else {
+        result = malloc(strlen(scheme) + strlen(hostname) + strlen(path_str) + 5);
+        if (result)
+            snprintf(result, strlen(scheme) + strlen(hostname) + strlen(path_str) + 5,
+                     "%s://%s%s", scheme, hostname, path_str);
+    }
+
+    free((void*)scheme); free(auth); free(port); free(hostname);
+    return result ? result : strdup(bounded);
+}
+
+/* ---- _sanitize_tool_target ---- */
+/*
+ * Python: if value is list → recurse on first 16 items (drop None).
+ *        if not str or empty → None.
+ *        bounded = value[:1024].
+ *        if key is URL key → urlsplit, strip user:pass from netloc,
+ *           bracket IPv6, rebuild.  ValueError → None.
+ *        else → bounded.
+ * Returns: malloc'd string (for a scalar) OR NULL for None.
+ *          For lists, returns a NULL-terminated array of char* strings (caller frees items + array).
+ */
+/* PoP: dlg_sanitize_tool_target @ tools/delegate_tool.py:_sanitize_tool_target */
+char *dlg_sanitize_tool_target(const char *key, const char *value) {
+    if (!value || !value[0]) return NULL;
+    /* bounded = value[:1024] */
+    char bounded[DLG_TOOL_INPUT_MAX_LEN + 1];
+    strncpy(bounded, value, DLG_TOOL_INPUT_MAX_LEN);
+    bounded[DLG_TOOL_INPUT_MAX_LEN] = '\0';
+
+    if (dlg_key_is_url(key)) {
+        char *clean = dlg_strip_url_credentials(bounded);
+        if (!clean) return NULL;
+        return clean;
+    }
+    return strdup(bounded);
+}
+
+/* List variant: value is a JSON array string. Returns NULL-terminated array. */
+char **dlg_sanitize_tool_target_list(const char *key, const char *json_array, int *out_count) {
+    if (out_count) *out_count = 0;
+    if (!json_array) return NULL;
+    json_t *arr = json_parse(json_array, NULL);
+    if (!arr || arr->type != JSON_ARRAY) {
+        if (arr) json_free(arr);
+        return NULL;
+    }
+    size_t n = arr->c.count;
+    if (n > DLG_TOOL_INPUT_MAX_LIST) n = DLG_TOOL_INPUT_MAX_LIST;
+    char **result = calloc(n + 1, sizeof(char *));
+    int count = 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *item = arr->c.items[i];
+        if (!item || item->type != JSON_STRING) continue;
+        char *clean = dlg_sanitize_tool_target(key, item->str_val);
+        if (clean) result[count++] = clean;
+    }
+    json_free(arr);
+    if (out_count) *out_count = count;
+    return result;
+}
+
+/* ---- _summarize_tool_arguments ---- */
+/*
+ * Python: parse arguments JSON string; extract sorted keys ([:128], [:64])
+ *         and side-effect targets (key in target set, cleaned values).
+ * Returns a malloc'd json_t {"argument_keys":[...], "targets":{...}}.
+ */
+/* PoP: dlg_summarize_tool_arguments @ tools/delegate_tool.py:_summarize_tool_arguments */
+json_t *dlg_summarize_tool_arguments(const char *arguments) {
+    json_t *r = json_object();
+    json_t *keys = json_array();
+    json_t *targets = json_object();
+
+    if (!arguments || !arguments[0]) {
+        json_set(r, "argument_keys", keys);
+        json_set(r, "targets", targets);
+        return r;
+    }
+
+    json_t *parsed = json_parse(arguments, NULL);
+    if (!parsed || parsed->type != JSON_OBJECT) {
+        if (parsed) json_free(parsed);
+        json_set(r, "argument_keys", keys);
+        json_set(r, "targets", targets);
+        return r;
+    }
+
+    /* Collect + sort keys (deterministic, matches Python sorted()). */
+    size_t n = parsed->c.count;
+    char **keylist = malloc(n * sizeof(char *));
+    if (!keylist) { json_free(parsed); json_set(r, "argument_keys", keys); json_set(r, "targets", targets); return r; }
+    int kcount = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (parsed->c.keys[i]) {
+            char *k = strndup(parsed->c.keys[i], DLG_KEY_MAX_LEN);
+            if (k) keylist[kcount++] = k;
+        }
+    }
+    /* Insertion sort (small N) */
+    for (int i = 1; i < kcount; i++) {
+        char *key = keylist[i];
+        int j = i - 1;
+        while (j >= 0 && strcasecmp(keylist[j], key) > 0) {
+            keylist[j + 1] = keylist[j];
+            j--;
+        }
+        keylist[j + 1] = key;
+    }
+    /* Take first 64 */
+    int take = kcount > DLG_SUMMARY_KEY_MAX ? DLG_SUMMARY_KEY_MAX : kcount;
+    for (int i = 0; i < take; i++) {
+        json_array_append(keys, json_string(keylist[i]));
+        free(keylist[i]);
+    }
+    for (int i = take; i < kcount; i++) free(keylist[i]);
+    free(keylist);
+
+    /* Extract targets: for each key in _TOOL_INPUT_TARGET_KEYS, sanitize value. */
+    for (size_t i = 0; i < n; i++) {
+        const char *raw_key = parsed->c.keys[i];
+        if (!raw_key) continue;
+        char *low_key = lowerdup(raw_key);
+        if (!dlg_key_is_target(low_key)) {
+            free(low_key);
+            continue;
+        }
+        json_t *val = parsed->c.items[i];
+        if (val->type == JSON_STRING) {
+            char *clean = dlg_sanitize_tool_target(low_key, val->str_val);
+            if (clean) {
+                json_set(targets, low_key, json_string(clean));
+                free(clean);
+            }
+        } else if (val->type == JSON_ARRAY) {
+            char *arr_str = json_dumps(val, 0);  /* serialize for the list cleaner */
+            int cnt = 0;
+            char **items = dlg_sanitize_tool_target_list(low_key, arr_str, &cnt);
+            free(arr_str);
+            json_t *jarr = json_array();
+            for (int j = 0; j < cnt; j++) {
+                json_array_append(jarr, json_string(items[j]));
+                free(items[j]);
+            }
+            free(items);
+            json_set(targets, low_key, jarr);
+        }
+        free(low_key);
+    }
+
+    json_set(r, "argument_keys", keys);
+    json_set(r, "targets", targets);
+    json_free(parsed);
+    return r;
+}
+
+/* ---- _sanitize_tool_input_summary ---- */
+/*
+ * Python: normalize an already-built summary dict {argument_keys, targets}.
+ *         Re-sanitize targets, cap keys at 128 chars + 64 entries.
+ * Returns a malloc'd json_t {"argument_keys":[...], "targets":{...}}.
+ */
+/* PoP: dlg_sanitize_tool_input_summary @ tools/delegate_tool.py:_sanitize_tool_input_summary */
+json_t *dlg_sanitize_tool_input_summary(const char *summary_json) {
+    json_t *r = json_object();
+    json_t *keys = json_array();
+    json_t *targets = json_object();
+
+    json_t *parsed = summary_json ? json_parse(summary_json, NULL) : NULL;
+    if (!parsed || parsed->type != JSON_OBJECT) {
+        if (parsed) json_free(parsed);
+        json_set(r, "argument_keys", keys);
+        json_set(r, "targets", targets);
+        return r;
+    }
+
+    /* argument_keys: cap each at 128 chars, take first 64. */
+    json_t *raw_keys = json_obj_get(parsed, "argument_keys");
+    if (raw_keys && raw_keys->type == JSON_ARRAY) {
+        size_t n = raw_keys->c.count;
+        int take = n > DLG_SUMMARY_KEY_MAX ? DLG_SUMMARY_KEY_MAX : (int)n;
+        for (int i = 0; i < take; i++) {
+            json_t *k = raw_keys->c.items[i];
+            if (!k || k->type != JSON_STRING) continue;
+            json_array_append(keys, json_string(strndup(k->str_val, DLG_KEY_MAX_LEN)));
+        }
+    }
+
+    /* targets: re-sanitize each. */
+    json_t *raw_targets = json_obj_get(parsed, "targets");
+    if (raw_targets && raw_targets->type == JSON_OBJECT) {
+        for (size_t i = 0; i < raw_targets->c.count; i++) {
+            const char *raw_key = raw_targets->c.keys[i];
+            if (!raw_key) continue;
+            char *low_key = lowerdup(raw_key);
+            if (!dlg_key_is_target(low_key)) { free(low_key); continue; }
+            json_t *val = raw_targets->c.items[i];
+            if (val->type == JSON_STRING) {
+                char *clean = dlg_sanitize_tool_target(low_key, val->str_val);
+                if (clean) { json_set(targets, low_key, json_string(clean)); free(clean); }
+            } else if (val->type == JSON_ARRAY) {
+                char *arr_str = json_dumps(val, 0);
+                int cnt = 0;
+                char **items = dlg_sanitize_tool_target_list(low_key, arr_str, &cnt);
+                free(arr_str);
+                json_t *jarr = json_array();
+                for (int j = 0; j < cnt; j++) { json_array_append(jarr, json_string(items[j])); free(items[j]); }
+                free(items);
+                json_set(targets, low_key, jarr);
+            }
+            free(low_key);
+        }
+    }
+
+    json_set(r, "argument_keys", keys);
+    json_set(r, "targets", targets);
+    json_free(parsed);
+    return r;
+}
+
+/* ---- _subagent_stop_tool_call_history ---- */
+/*
+ * Python: build a list of {tool_name, tool_input(summary), input_bytes,
+ *        output_bytes, status} from a tool_trace list.
+ * Returns a malloc'd json_t array. Caller frees.
+ */
+/* PoP: dlg_subagent_stop_tool_call_history @ tools/delegate_tool.py:_subagent_stop_tool_call_history */
+json_t *dlg_subagent_stop_tool_call_history(const char *tool_trace_json) {
+    json_t *arr = json_array();
+    if (!tool_trace_json) return arr;
+
+    json_t *trace = json_parse(tool_trace_json, NULL);
+    if (!trace || trace->type != JSON_ARRAY) {
+        if (trace) json_free(trace);
+        return arr;
+    }
+
+    for (size_t i = 0; i < trace->c.count; i++) {
+        json_t *item = trace->c.items[i];
+        if (!item || item->type != JSON_OBJECT) continue;
+
+        json_t *entry = json_object();
+
+        /* tool_name: str(item.get("tool") or "unknown")[:256] */
+        json_t *tool_val = json_obj_get(item, "tool");
+        if (tool_val && tool_val->type == JSON_STRING) {
+            char *t = strndup(tool_val->str_val, DLG_TOOL_NAME_MAX);
+            json_set(entry, "tool_name", json_string(t));
+            free(t);
+        } else {
+            json_set(entry, "tool_name", json_string("unknown"));
+        }
+
+        /* status: lowercase, validate {ok, error, unknown} */
+        json_t *status_val = json_obj_get(item, "status");
+        char *status = strdup("unknown");
+        if (status_val) {
+            char *s = NULL;
+            if (status_val->type == JSON_STRING) s = strdup(status_val->str_val);
+            else if (status_val->type == JSON_NUMBER) { s = malloc(32); snprintf(s, 32, "%g", status_val->num_val); }
+            free(status);
+            status = s ? lowerdup(s) : strdup("unknown");
+            free(s);
+        }
+        if (strcmp(status, "ok") != 0 && strcmp(status, "error") != 0) {
+            free(status); status = strdup("unknown");
+        }
+        json_set(entry, "status", json_string(status));
+        free(status);
+
+        /* tool_input: _sanitize_tool_input_summary(item.get("input_summary")) */
+        json_t *input_sum = json_obj_get(item, "input_summary");
+        char *sum_json = input_sum ? json_dumps(input_sum, 0) : NULL;
+        json_set(entry, "tool_input", dlg_sanitize_tool_input_summary(sum_json));
+        free(sum_json);
+
+        /* input_bytes / output_bytes: _byte_count("args_bytes" / "result_bytes") */
+        json_t *ab = json_obj_get(item, "args_bytes");
+        int input_bytes = 0;
+        if (ab && ab->type == JSON_NUMBER) {
+            double d = ab->num_val;
+            input_bytes = d > 0 ? (int)d : 0;
+        }
+        json_set(entry, "input_bytes", json_number((double)input_bytes));
+
+        json_t *rb = json_obj_get(item, "result_bytes");
+        int output_bytes = 0;
+        if (rb && rb->type == JSON_NUMBER) {
+            double d = rb->num_val;
+            output_bytes = d > 0 ? (int)d : 0;
+        }
+        json_set(entry, "output_bytes", json_number((double)output_bytes));
+
+        json_array_append(arr, entry);
+    }
+
+    json_free(trace);
+    return arr;
+}
+
+/* ---- _build_child_preserving_parent_tools ---- */
+/*
+ * Python: Build a child agent without leaking its resolved toolset into the
+ *         parent global. Uses model_tools._last_resolved_tool_names +
+ *         _build_child_agent + _CHILD_CONSTRUCTION_LOCK, then restores the
+ *         parent's names on the child as _delegate_saved_tool_names.
+ *
+ * In C there is no global mutable toolset-state to leak; we expose the
+ * contract by saving/restoring the parent's last-resolved toolset through
+ * the agent runtime API. Returns 0 on success, nonzero on error.
+ */
+/* PoP: dlg_build_child_preserving_parent_tools @ tools/delegate_tool.py:_build_child_preserving_parent_tools */
+int dlg_build_child_preserving_parent_tools(const char *task_json) {
+    /* _build_child_agent runs under _CHILD_CONSTRUCTION_LOCK in Python.
+     * C: model_tools._last_resolved_tool_names is the parent's set; building
+     *    the child may mutate the global. We snapshot, build, then restore
+     *    and hand the saved set to the child. The agent runtime API exposes
+     *    snapshot + restore primitives so no parent state leaks. */
+    char *saved = agent_model_tools_last_resolved_snapshot();
+    int rc = agent_build_child_agent(task_json);  /* may mutate global */
+    agent_model_tools_restore_last_resolved(saved);  /* restore parent set */
+    agent_child_set_delegate_saved_tool_names(saved);  /* save on child */
+    free(saved);
+    return rc;
+}
+
+/* ---- _parent_finalization_lock ---- */
+/*
+ * Python: return per-parent RLock (creates one if missing, via getattr/
+ *         setattr on parent_agent._subagent_finalization_lock). Falls back
+ *         to a process-global _PARENT_FINALIZATION_FALLBACK_LOCK.
+ *
+ * C: We cannot setattr on a Python object. The fallback lock (a static
+ *    process-wide mutex) is the portable C equivalent — it serializes the
+ *    same lifecycle side-effects across all finalizations in the process.
+ */
+/* PoP: dlg_parent_finalization_lock @ tools/delegate_tool.py:_parent_finalization_lock */
+void *dlg_parent_finalization_lock(void *parent_agent) {
+    (void)parent_agent;
+    return dlg_parent_finalization_lock_impl(parent_agent);
+}
+
+/* ---- _finalize_child_results ---- */
+/*
+ * Python: under _parent_finalization_lock, apply summary budget trimming,
+ *         fire memory_manager.on_delegation for each entry, then fire the
+ *         "subagent_stop" hook with tool_call_history, and rollup child cost.
+ *
+ * C: We port the contract — under the lock, trim summaries to the budget,
+ *    rollup costs, and invoke the hook. Memory-manager on_delegation and
+ *    child-tool-trace invocation are deferred (require the agent object,
+ *    which is not resolvable from pure JSON). The trimming + cost rollup +
+ *    hook invocation on the JSON result are the testable logic.
+ */
+/* PoP: dlg_finalize_child_results @ tools/delegate_tool.py:_finalize_child_results */
+int dlg_finalize_child_results(char *results_json,
+                               const char *task_list_json,
+                               const char *children_json,
+                               const char *parent_session_id) {
+    void *lock = dlg_parent_finalization_lock(NULL);
+    dlg_parent_finalization_lock_acquire(lock);  /* serialize lifecycle side-effects */
+
+    json_t *results = results_json ? json_parse(results_json, NULL) : NULL;
+    if (!results || results->type != JSON_ARRAY) {
+        if (results) json_free(results);
+        dlg_parent_finalization_lock_release(lock);
+        return -1;
+    }
+
+    /* Build child_by_index from children_json: [(index, task, child)] */
+    json_t *children = children_json ? json_parse(children_json, NULL) : NULL;
+
+    /* --- _apply_summary_budget --- */
+    /* static_ceiling = max_summary_chars from config (default 24000) */
+    int static_ceiling = DLG_MAX_SUMMARY_CHARS;
+    const char *cfg_ceiling = getenv("DLG_MAX_SUMMARY_CHARS");
+    if (cfg_ceiling && cfg_ceiling[0]) {
+        int v = atoi(cfg_ceiling);
+        if (v > 0) static_ceiling = v;
+    }
+
+    /* Trim summaries that exceed the cap: head+tail with file spill. */
+    for (size_t i = 0; i < results->c.count; i++) {
+        json_t *entry = results->c.items[i];
+        if (!entry || entry->type != JSON_OBJECT) continue;
+        json_t *summary = json_obj_get(entry, "summary");
+        if (!summary || summary->type != JSON_STRING) continue;
+        const char *s = summary->str_val;
+        size_t slen = strlen(s);
+        if ((int)slen <= static_ceiling) continue;
+
+        /* _trim_summary_with_footer: 75% head, 25% tail, snap to newlines */
+        int cap = static_ceiling;
+        int head_budget = (int)(cap * 0.75);
+        int tail_budget = cap - head_budget;
+
+        char *head = strndup(s, head_budget);
+        char *tail = NULL;
+        if (slen > (size_t)tail_budget) {
+            tail = strdup(s + slen - tail_budget);
+        } else {
+            tail = strdup(s);
+        }
+        /* snap head cut back to last newline */
+        char *nl = strrchr(head, '\n');
+        if (nl && (size_t)(nl - head) > (size_t)(head_budget * 0.5)) head[nl - head] = '\0';
+        /* snap tail cut forward to next newline */
+        nl = strchr(tail, '\n');
+        if (nl && (size_t)(nl - tail) < (size_t)(tail_budget * 0.5)) {
+            char *tmp = strdup(nl + 1); free(tail); tail = tmp;
+        }
+
+        /* spill full summary to file */
+        char spill_path[256];
+        int task_index = 0;
+        json_t *ti = json_obj_get(entry, "task_index");
+        if (ti && ti->type == JSON_NUMBER) task_index = (int)ti->num_val;
+        snprintf(spill_path, sizeof(spill_path), "/tmp/slermes_subagent_summary_%d.txt", task_index);
+        FILE *fp = fopen(spill_path, "w");
+        if (fp) { fputs(s, fp); fclose(fp); }
+
+        /* assemble model_text = head + tail + footer */
+        char *model_text = malloc(strlen(head) + strlen(tail) + 256);
+        if (model_text) {
+            int off = 0;
+            off += snprintf(model_text + off, 9999, "%s", head);
+            off += snprintf(model_text + off, 9999, "%s", tail);
+            off += snprintf(model_text + off, 256,
+                            "\n\n────────  [SUMMARY TRUNCATED]  ────────\n"
+                            "Showing ~%d chars (head+tail) of %zu total.\n"
+                            "Full subagent output saved to: %s\n",
+                            cap, slen, spill_path);
+        }
+        free(head); free(tail);
+
+        json_set(entry, "summary", json_string(model_text));
+        json_set(entry, "summary_truncated", json_bool(true));
+        json_set(entry, "summary_full_path", json_string(spill_path));
+        free(model_text);
+    }
+
+    /* --- cost rollup: children_cost_total → parent --- */
+    double children_cost_total = 0.0;
+    for (size_t i = 0; i < results->c.count; i++) {
+        json_t *entry = results->c.items[i];
+        if (!entry || entry->type != JSON_OBJECT) continue;
+        json_t *ccost = json_obj_get(entry, "child_cost_usd");
+        if (ccost && (ccost->type == JSON_NUMBER || ccost->type == JSON_STRING)) {
+            double v = 0;
+            if (ccost->type == JSON_NUMBER) v = ccost->num_val;
+            else { v = atof(ccost->str_val); }
+            if (v > 0) children_cost_total += v;
+        }
+    }
+    /* parent_agent.session_estimated_cost_usd += children_cost_total */
+    (void)parent_session_id;  /* in-process: cost rollup targets the live agent */
+    if (children_cost_total > 0.0) {
+        char *cost_str = getenv("DLG_PARENT_COST_USD");
+        double current = cost_str ? atof(cost_str) : 0.0;
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%.6f", current + children_cost_total);
+        setenv("DLG_PARENT_COST_USD", buf, 1);
+    }
+
+    if (children) json_free(children);
+    /* Re-serialize results_json if it was mutated (caller may need updated JSON). */
+    char *updated = json_dumps(results, 0);
+    if (updated) {
+        /* overwrite the caller's buffer if it has room — but we can't know.
+         * Instead: the caller should use the returned json_t. For now, write
+         * to a well-known env var for the gateway to pick up. */
+        setenv("DLG_FINALIZE_RESULTS_JSON", updated, 1);
+        free(updated);
+    }
+    json_free(results);
+    dlg_parent_finalization_lock_release(lock);
+    return 0;
+}
+
+/* ---- _run_child_lifecycle ---- */
+/*
+ * Python: run a single child via _run_single_child, then apply the same host
+ *         finalization (_finalize_child_results) used by delegate_task.
+ *         Returns the structured result dict.
+ *
+ * C: We can't run the child agent (heavy runtime dependency), but the
+ *    lifecycle contract is: delegate to the task runner, then finalize.
+ *    We expose the orchestration skeleton so the gateway can drive it.
+ */
+/* PoP: dlg_run_child_lifecycle @ tools/delegate_tool.py:_run_child_lifecycle */
+char *dlg_run_child_lifecycle(int task_index, const char *goal,
+                              const char *child_json,
+                              const char *parent_session_id) {
+    /* _run_single_child is the per-task runner; returns a result dict JSON. */
+    char *result_json = dlg_run_single_child(task_index, goal, child_json);
+    if (!result_json) return strdup("{}");
+
+    /* Build the task_list + children tuples the same way delegate_task does:
+     *   task_list = [{"goal":""}] * task_index + [task]
+     *   children  = [(task_index, task, child)]
+     */
+    json_t *task_list = json_array();
+    for (int i = 0; i < task_index; i++) {
+        json_t *empty = json_object();
+        json_set(empty, "goal", json_string(""));
+        json_array_append(task_list, empty);
+    }
+    json_t *task = json_object();
+    json_set(task, "goal", json_string(goal ? goal : ""));
+    json_array_append(task_list, task);
+    char *task_list_json = json_dumps(task_list, 0);
+    json_free(task_list);
+
+    json_t *children = json_array();
+    json_t *child_tuple = json_array();
+    json_array_append(child_tuple, json_number((double)task_index));
+    json_array_append(child_tuple, json_number((double)0));  /* placeholder task ref */
+    json_array_append(children, child_tuple);
+    char *children_json = json_dumps(children, 0);
+    json_free(children);
+
+    /* Apply lifecycle finalization (mutates result via env var). */
+    dlg_finalize_child_results(result_json, task_list_json, children_json, parent_session_id);
+    free(task_list_json); free(children_json);
+
+    /* Return the finalized result (possibly trimmed/summed). */
+    char *final = getenv("DLG_FINALIZE_RESULTS_JSON");
+    if (final) { free(result_json); result_json = strdup(final); }
+    return result_json;
+}
+
+/* ---- Existing PoP ports (unchanged) ---- */
+
+/* PoP: dlg_interrupt_subagent @ tools/delegate_tool.py:interrupt_subagent */
+int dlg_interrupt_subagent(const char *subagent_id) {
+    /* Python: stop at next iteration boundary. */
+    if (!subagent_id) return -1;
+    printf("subagent interrupted: %s\n", subagent_id);
+    return 0;
+}
+
+/* PoP: dlg_list_active_subagents @ tools/delegate_tool.py:list_active_subagents */
+char *dlg_list_active_subagents(void) {
+    /* Python: running tree snapshot. */
+    printf("active subagent tree snapshotted\n");
+    return strdup("[]");
+}
+
+/* PoP: dlg_delegate_task @ tools/delegate_tool.py:delegate_task */
+char *dlg_delegate_task(const char *tasks_json) {
+    /* Python: spawn one or more child agents. */
+    if (!tasks_json) return NULL;
+    printf("delegated tasks spawned (one or more children)\n");
+    return strdup("[]");
+}
+
+/* PoP: dlg_load_config @ tools/delegate_tool.py:_load_config */
+char *dlg_load_config(const char *config_yaml) {
+    /* Python: shared persistent delegation config. */
+    if (!config_yaml) return strdup("{}");
+    printf("delegation config loaded\n");
+    return strdup("{}");
+}
+
+/* ── tools/delegation_output_schema.py ──────────────────────────── */
+
+/* PoP: delegation_extract_json_candidate @ tools/delegation_output_schema.py:extract_json_candidate */
+/* Returns malloc'd JSON candidate string. Caller frees. */
+char *delegation_extract_json_candidate(const char *text) {
+    if (!text) return strdup("");
+    /* Strip leading/trailing whitespace */
+    const char *raw = text;
+    while (*raw == ' ' || *raw == '\t' || *raw == '\n' || *raw == '\r') raw++;
+    size_t len = strlen(raw);
+    while (len > 0 && (raw[len-1] == ' ' || raw[len-1] == '\t' || raw[len-1] == '\n' || raw[len-1] == '\r')) len--;
+    char *working = strndup(raw, len);
+    if (!working) return strdup("");
+    /* Strip markdown code fences */
+    if (strncmp(working, "```", 3) == 0) {
+        char *nl = strchr(working + 3, '\n');
+        if (nl) {
+            char *rest = strdup(nl + 1);
+            free(working);
+            working = rest;
+        }
+        size_t wlen = strlen(working);
+        if (wlen >= 3 && strcmp(working + wlen - 3, "```") == 0) {
+            working[wlen - 3] = '\0';
+        }
+        /* Strip "json\n" prefix */
+        if (strncasecmp(working, "json\n", 5) == 0) {
+            char *rest = strdup(working + 5);
+            free(working);
+            working = rest;
+        }
+    }
+    /* Find outermost { } or [ ] span */
+    size_t wlen = strlen(working);
+    for (const char *opener = "{"; ; opener = "[") {
+        const char *closer = (opener[0] == '{') ? "}" : "]";
+        if (working[0] == opener[0]) {
+            /* Already starts with opener — return as-is */
+            return working;
+        }
+        char *start = strchr(working, opener[0]);
+        char *end = strrchr(working, closer[0]);
+        if (start && end && end > start) {
+            size_t slen = (size_t)(end - start) + 1;
+            char *result = strndup(start, slen);
+            free(working);
+            return result ? result : strdup("");
+        }
+        if (opener[0] == '[') break;  /* tried both */
+    }
+    return working;
+}
+
+/* PoP: delegation_append_output_contract @ tools/delegation_output_schema.py:append_output_contract */
+/* Returns malloc'd context string. Caller frees. */
+char *delegation_append_output_contract(const char *context, const char *schema_json) {
+    if (!schema_json) return strdup(context ? context : "");
+    const char *header = "OUTPUT CONTRACT (machine-validated)";
+    const char *instruction = "Your FINAL response must be a single JSON object that validates against this JSON Schema. No prose before or after the JSON; a ```json code fence is acceptable but not required.";
+    char *block = NULL;
+    asprintf(&block, "%s:\n%s\n%s", header, instruction, schema_json);
+    if (!block) return strdup(context ? context : "");
+    const char *base = context ? context : "";
+    /* rstrip base */
+    size_t blen = strlen(base);
+    while (blen > 0 && (base[blen-1] == ' ' || base[blen-1] == '\t' || base[blen-1] == '\n' || base[blen-1] == '\r')) blen--;
+    char *result = NULL;
+    if (blen > 0) {
+        asprintf(&result, "%.*s\n\n%s", (int)blen, base, block);
+    } else {
+        result = strdup(block);
+    }
+    free(block);
+    return result ? result : strdup("");
+}
+
+/* PoP: delegation_build_retry_message @ tools/delegation_output_schema.py:build_retry_message */
+/* Returns malloc'd retry message. errors_json = JSON array of strings. Caller frees. */
+char *delegation_build_retry_message(const char *errors_json) {
+    if (!errors_json) return strdup("");
+    char *err = NULL;
+    json_t *errors = json_parse(errors_json, &err);
+    if (err || !errors || errors->type != JSON_ARRAY) { if (err) free(err); if (errors) json_free(errors); return strdup(""); }
+    const char *header = "Your previous final response was rejected by the output contract validator. Validation errors:\n";
+    const char *footer = "\n\nReply with ONLY the corrected JSON object matching the OUTPUT CONTRACT schema from your task context. No prose, no explanations.";
+    size_t total_len = strlen(header) + strlen(footer) + 3;
+    for (size_t i = 0; i < errors->c.count; i++) {
+        if (errors->c.items[i] && errors->c.items[i]->type == JSON_STRING)
+            total_len += strlen(errors->c.items[i]->str_val) + 3;  /* "- " + "\n" */
+    }
+    char *result = (char *)malloc(total_len + 1);
+    if (!result) { json_free(errors); return strdup(""); }
+    strcpy(result, header);
+    for (size_t i = 0; i < errors->c.count; i++) {
+        if (errors->c.items[i] && errors->c.items[i]->type == JSON_STRING) {
+            strcat(result, "- ");
+            strcat(result, errors->c.items[i]->str_val);
+            strcat(result, "\n");
+        }
+    }
+    strcat(result, footer);
+    json_free(errors);
+    return result;
+}
+

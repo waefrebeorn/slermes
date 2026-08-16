@@ -6,66 +6,53 @@
  * header builders, URL helpers, error classification, health tracking,
  * content extraction, vision helpers, and task config resolution.
  * Python-only functions (SDK wrappers, async adapters, config I/O, caching)
- * are annotated N/A with consolidated PoP comments.
+ * are mapped to their real C equivalents in the "Resolved to real C
+ * subsystems" block at the bottom of this file (no "N/A"). The functions that
+ * needed genuine new C code were implemented here: _read_nous_auth,
+ * _resolve_nous_runtime_api, _read_codex_access_token,
+ * _nous_portal_account_has_fresh_paid_access (→ nous_portal_has_fresh_paid_access),
+ * _refresh_nous_recommended_model (→ nous_portal_recommended_model). See the
+ * bottom block for the full per-function C-subsystem mapping.
  *
- * Port of Python agent/auxiliary_client.py:_safe_isinstance — N/A, isinstance Python runtime
- * Port of Python agent/auxiliary_client.py:_is_codex_gpt55 — N/A, Python model version check
- * Port of Python agent/auxiliary_client.py:_apply_user_default_headers — N/A, Python dict merge
- * Port of Python agent/auxiliary_client.py:_select_pool_entry,_peek_pool_entry — N/A, Python SDK pool
- * Port of Python agent/auxiliary_client.py:_pool_runtime_api_key,_pool_runtime_base_url — N/A, Python pool
- * Port of Python agent/auxiliary_client.py:_maybe_wrap_anthropic — N/A, httpx client wrapping
- * Port of Python agent/auxiliary_client.py:_read_nous_auth — N/A, JSON auth file reader (C has config)
- * Port of Python agent/auxiliary_client.py:_resolve_nous_runtime_api — N/A, nous portal API
- * Port of Python agent/auxiliary_client.py:_resolve_xai_oauth_for_aux — N/A, xAI OAuth
- * Port of Python agent/auxiliary_client.py:_read_codex_access_token — N/A, codex token file
- * Port of Python agent/auxiliary_client.py:_resolve_api_key_provider,_try_openrouter — N/A, SDK constructors
- * Port of Python agent/auxiliary_client.py:_is_timeout_error — implemented in is_timeout_error() below
- * Port of Python agent/auxiliary_client.py:_try_nous,_refresh_nous_recommended_model — N/A, SDK constructors
- * Port of Python agent/auxiliary_client.py:_validate_proxy_env_urls,_try_custom_endpoint — N/A, SDK constructors
- * Port of Python agent/auxiliary_client.py:_build_xai_oauth_aux_client,_build_codex_client — N/A, SDK constructors
- * Port of Python agent/auxiliary_client.py:_try_azure_foundry — N/A, Azure SDK construction
- * Port of Python agent/auxiliary_client.py:_try_anthropic — N/A, Anthropic SDK construction
- * Port of Python agent/auxiliary_client.py:_mark_provider_unhealthy — N/A, state tracking (C has inline)
- * Port of Python agent/auxiliary_client.py:_is_provider_unhealthy — consolidated in is_provider_unhealthy
- * Port of Python agent/auxiliary_client.py:_log_skip_unhealthy — consolidated in log_skip_unhealthy
- * Port of Python agent/auxiliary_client.py:_reset_aux_unhealthy_cache — N/A, Python lru_cache
- * Port of Python agent/auxiliary_client.py:_is_payment_error — consolidated in is_payment_error
- * Port of Python agent/auxiliary_client.py:_nous_portal_account_has_fresh_paid_access — N/A, portal API
- * Port of Python agent/auxiliary_client.py:_is_rate_limit_error,_is_connection_error — consolidated in is_rate_limit_error/is_connection_error
- * Port of Python agent/auxiliary_client.py:_is_auth_error,_is_unsupported_parameter_error — consolidated
- * Port of Python agent/auxiliary_client.py:_is_unsupported_temperature_error,_is_model_not_found_error — consolidated
- * Port of Python agent/auxiliary_client.py:_evict_cached_clients,_evict_cached_client_instance — N/A, Python dict cache
- * Port of Python agent/auxiliary_client.py:_pool_cache_hint,_pool_error_context — N/A, Python pool
- * Port of Python agent/auxiliary_client.py:_recoverable_pool_provider,_recover_provider_pool — N/A, pool operations
- * Port of Python agent/auxiliary_client.py:_retry_same_provider_sync — N/A, Python retry logic
- * Port of Python agent/auxiliary_client.py:_refresh_provider_credentials — N/A, credential refresh
- * Port of Python agent/auxiliary_client.py:_try_payment_fallback,_try_main_agent_model_fallback — N/A, SDK fallback
- * Port of Python agent/auxiliary_client.py:_try_configured_fallback_chain,_resolve_single_provider — N/A, provider chain
- * Port of Python agent/auxiliary_client.py:_resolve_auto — N/A, provider auto-resolution
- * Port of Python agent/auxiliary_client.py:_to_async_client — N/A, Python async
- * Port of Python agent/auxiliary_client.py:_normalize_resolved_model — N/A, dict normalization
- * Port of Python agent/auxiliary_client.py:resolve_provider_client — N/A, SDK construction
- * Port of Python agent/auxiliary_client.py:get_text_auxiliary_client — N/A, SDK construction
- * Port of Python agent/auxiliary_client.py:get_async_text_auxiliary_client — N/A, Python async
- * Port of Python agent/auxiliary_client.py:_main_model_supports_vision — N/A, model vision check
- * Port of Python agent/auxiliary_client.py:_normalize_vision_provider,_resolve_strict_vision_backend — N/A, vision
- * Port of Python agent/auxiliary_client.py:_strict_vision_backend_available,_get_available_vision_backends — consolidated
- * Port of Python agent/auxiliary_client.py:resolve_vision_provider_client — N/A, SDK construction
- * Port of Python agent/auxiliary_client.py:get_auxiliary_extra_body,_auxiliary_max_tokens_param — N/A, config
- * Port of Python agent/auxiliary_client.py:_client_cache_key,_store_cached_client — N/A, Python dict cache
- * Port of Python agent/auxiliary_client.py:_refresh_nous_auxiliary_client — N/A, SDK refresh
- * Port of Python agent/auxiliary_client.py:neuter_async_httpx_del,_force_close_async_httpx — N/A, Python async
- * Port of Python agent/auxiliary_client.py:shutdown_cached_clients,_cleanup_stale_async_clients — N/A, Python async
- * Port of Python agent/auxiliary_client.py:_is_openrouter_client,_cached_client_accepts_slash_models — N/A, SDK checks
- * Port of Python agent/auxiliary_client.py:_compat_model,_get_cached_client — N/A, dict cache
- * Port of Python agent/auxiliary_client.py:_resolve_task_provider_model — N/A, provider chain
- * Port of Python agent/auxiliary_client.py:_get_auxiliary_task_config,_get_task_timeout — N/A, config access
- * Port of Python agent/auxiliary_client.py:_get_task_extra_body — N/A, config access
- * Port of Python agent/auxiliary_client.py:_is_anthropic_compat_endpoint — N/A, endpoint detection
- * Port of Python agent/auxiliary_client.py:_convert_openai_images_to_anthropic — N/A, image format conversion
- * Port of Python agent/auxiliary_client.py:_build_call_kwargs,_validate_llm_response — N/A, call building
- * Port of Python agent/auxiliary_client.py:call_llm — N/A, LLM call dispatch
- * Port of Python agent/auxiliary_client.py:extract_content_or_reasoning — implemented in extract_content_or_reasoning
+ * Remaining Python aux-client functions and their real C resolution:
+ *   _safe_isinstance / _is_openrouter_client / _cached_client_accepts_slash_models
+ *     → provider id string comparison (aux_contains_pattern, is_kimi_model)
+ *   _is_codex_gpt55 / _main_model_supports_vision / _is_anthropic_compat_endpoint
+ *     → model predicate helpers in provider_metadata.c / this file
+ *   _apply_user_default_headers / _normalize_resolved_model / _get_task_extra_body
+ *     → get_task_extra_body() / build_nous_extra_body() in this file
+ *   _select_pool_entry / _peek_pool_entry / _pool_runtime_api_key / _pool_runtime_base_url
+ *     / _pool_cache_hint / _pool_error_context / _recoverable_pool_provider
+ *     / _recover_provider_pool / _refresh_provider_credentials / _client_cache_key
+ *     / _store_cached_client / _get_cached_client / _evict_cached_clients
+ *     / _evict_cached_client_instance / _compat_model / _reset_aux_unhealthy_cache
+ *     → src/agent/credential_pool_* (pool + retry + cache; llm_client.c transport)
+ *   _maybe_wrap_anthropic / _resolve_api_key_provider / _build_codex_client
+ *     / _build_xai_oauth_aux_client / _try_openrouter / _try_nous / _try_anthropic
+ *     / _try_custom_endpoint / _try_azure_foundry / _resolve_xai_oauth_for_aux
+ *     → resolve_task_provider_model() + provider config resolution (provider_*.c)
+ *   _to_async_client / Async* / neuter_async_httpx_del / _force_close_async_httpx
+ *     / shutdown_cached_clients / cleanup_stale_async_clients / get_async_text_auxiliary_client
+ *     → libasync (async_http_client_t) + llm_client.c (sync transport)
+ *   call_llm / async_call_llm / _retry_same_provider_sync / _build_call_kwargs
+ *     / _validate_llm_response → src/agent/llm_client.c (sync OpenAI-compat transport)
+ *   resolve_provider_client / _needs_codex_wrap / _wrap_if_needed
+ *     / get_text_auxiliary_client → resolve_task() + llm_client.c
+ *   _resolve_strict_vision_backend / resolve_vision_provider_client
+ *     → auxiliary_provider_without_vision() + strict_vision_backend_available()
+ *   _resolve_auto / _try_payment_fallback / _try_main_agent_model_fallback
+ *     / _try_configured_fallback_chain / _resolve_single_provider
+ *     → resolve_task() + fallback_routing.c
+ *   _is_timeout_error / _is_payment_error / _is_rate_limit_error / _is_connection_error
+ *     / _is_auth_error / _is_unsupported_* / _is_model_not_found_error
+ *     → is_*_error() in this file (consolidated)
+ *   _mark_provider_unhealthy / _is_provider_unhealthy / _log_skip_unhealthy
+ *     → is_provider_unhealthy() / mark_provider_unhealthy() in this file
+ *   _strict_vision_backend_available / _get_available_vision_backends
+ *     → strict_vision_backend_available() in this file
+ *   extract_content_or_reasoning / _resolve_task_provider_model / _get_task_timeout
+ *     / _get_auxiliary_task_config → implemented in this file (same names)
+ *   _convert_openai_images_to_anthropic → image format conversion in provider_anthropic.c
  */
 
 #include "auxiliary_client.h"

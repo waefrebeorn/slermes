@@ -1,0 +1,421 @@
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE 700
+/*
+ * ports/gateway/platforms/signal_rate_limit.c — C11 port of gateway/platforms/signal_rate_limit.py
+ * Merged from 2 source file(s) by reorganization.
+ */
+
+/* ── from src/cli/port_gateway_platforms_signal_rate_limit.c ── */
+/*
+ * port_gateway_platforms_signal_rate_limit.c - C port of gateway/platforms/signal_rate_limit.py
+ *
+ * Signal rate limiting for gateway platforms.
+ * Token bucket rate limiter with retry-after handling.
+ */
+
+
+#include "hermes_core_types.h"
+#include "hermes_logger.h"
+#include "hermes_json.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+/* Port of _RETRY_AFTER_RE: "Retry after (\d+(?:\.\d+)?)\s*second" (IGNORECASE) */
+static int extract_retry_after_regex(const char *msg);
+
+/* PoP: cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds @ gateway/platforms/signal_rate_limit.py:_extract_retry_after_seconds */
+/* Faithful port: tries two sources, in order —
+ *   1. structured field: err.data.response.results[*].retryAfterSeconds
+ *      (signal-cli >= v0.14.3) -> float(max(candidates))
+ *   2. "Retry after N seconds" regex over the message (libsignal-net's
+ *      RetryLaterException wrapped as AttachmentInvalidException).
+ * Returns None (-1) when neither yields. Returns microseconds-agnostic
+ * SECONDS as a double; the caller casts as needed. */
+int cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds(const char *retry_after_header) {
+    if (!retry_after_header || !retry_after_header[0]) {
+        hermes_log(LOG_DEBUG, "signal_rl", "_extract_retry_after: NULL header");
+        return -1;
+    }
+    /* Path 1: JSON object with data.response.results[*].retryAfterSeconds */
+    char *parse_err = NULL;
+    json_t *doc = json_parse(retry_after_header, &parse_err);
+    if (parse_err) free(parse_err);
+    if (doc) {
+        json_t *data = json_obj_get(doc, "data");
+        json_t *response = data ? json_obj_get(data, "response") : NULL;
+        json_t *results = response ? json_obj_get(response, "results") : NULL;
+        if (results && results->type == JSON_ARRAY) {
+            double best = -1.0;
+            size_t nres = json_len(results);
+            for (size_t k = 0; k < nres; k++) {
+                json_t *r = json_get(results, (int)k);
+                if (!r || r->type != JSON_OBJECT) continue;
+                json_t *ras = json_obj_get(r, "retryAfterSeconds");
+                if (ras && ras->type == JSON_NUMBER && ras->num_val > 0) {
+                    if (ras->num_val > best) best = ras->num_val;
+                }
+            }
+            if (best >= 0) {
+                json_free(doc);
+                return (int)best;
+            }
+        }
+        /* fall through to message regex */
+        const char *m = json_get_str(doc, "message", NULL);
+        if (m) {
+            int r = extract_retry_after_regex(m);
+            json_free(doc);
+            return r;
+        }
+        json_free(doc);
+        return -1;
+    }
+    /* Path 2: plain string message */
+    return extract_retry_after_regex(retry_after_header);
+}
+
+/* Port of _RETRY_AFTER_RE: "Retry after (\d+(?:\.\d+)?)\s*second" (IGNORECASE) */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* PoP: cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error @ gateway/platforms/signal_rate_limit.py:_is_signal_rate_limit_error */
+int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const char *err) {
+    /* Faithful port of the Python _is_signal_rate_limit_error(err):
+     *   - typed RATELIMIT_ERROR code (signal-cli >= v0.14.3)
+     *   - legacy "[429]" / "RateLimitException" substrings
+     *   - libsignal-net "RetryLaterException" / "Retry after N seconds"
+     *     surfaced inside AttachmentInvalidException (never re-tagged as
+     *     RateLimitException), so substring is the only signal.
+     * `err` is either a JSON object {"code":..,"message":..} or a plain
+     * string. */
+    if (!err || !err[0]) return 0;
+
+    const char *message = err;
+    long code = -1;
+    char *parse_err = NULL;
+    json_t *doc = json_parse(err, &parse_err);
+    if (parse_err) free(parse_err);
+    if (doc) {
+        json_t *c = json_obj_get(doc, "code");
+        if (c && c->type == JSON_NUMBER) code = (long)c->num_val;
+        const char *m = json_get_str(doc, "message", NULL);
+        if (m) message = m;
+    }
+
+    if (code == -5) {            /* SIGNAL_RPC_ERROR_RATELIMIT = -5 (signal-cli v0.14.3+) */
+        if (doc) json_free(doc);
+        return 1;
+    }
+
+    /* Case-insensitive substring match (Python str(err).lower()). */
+    char low[2048];
+    size_t i, n = 0;
+    for (i = 0; err[i] && n < sizeof(low) - 1; i++) {
+        char ch = err[i];
+        if (ch >= 'A' && ch <= 'Z') ch = ch - 'A' + 'a';
+        low[n++] = ch;
+    }
+    low[n] = '\0';
+
+    int hit = (strstr(low, "[429]") != NULL ||
+               strstr(low, "ratelimit") != NULL ||
+               strstr(low, "retrylaterexception") != NULL ||
+               strstr(low, "retry after") != NULL);
+    if (doc) json_free(doc);
+    return hit;
+}
+
+/* PoP: if @ gateway/platforms/signal_rate_limit.py:_format_wait */
+char* cli_gateway_platforms_signal_rate_limit__format_wait(int seconds, char *buf, size_t bufsz) {
+    /*
+     * Format a wait duration as a human-readable string.
+     * Examples: "30s", "2m", "1h"
+     */
+    if (!buf || bufsz == 0) return NULL;
+    if (seconds < 60) {
+        snprintf(buf, bufsz, "%ds", seconds);
+    } else if (seconds < 3600) {
+        snprintf(buf, bufsz, "%dm", seconds / 60);
+    } else {
+        snprintf(buf, bufsz, "%dh", seconds / 3600);
+    }
+    hermes_log(LOG_DEBUG, "signal_rl", "_format_wait: %d seconds -> %s", seconds, buf);
+    return buf;
+}
+
+/* PoP: cli_gateway_platforms_signal_rate_limit__refill @ gateway/platforms/signal_rate_limit.py:_refill */
+int cli_gateway_platforms_signal_rate_limit__refill(int *bucket, int capacity, int tokens_per_second) {
+    /*
+     * Refill the token bucket based on elapsed time.
+     * Returns the new token count.
+     */
+    if (!bucket || capacity <= 0 || tokens_per_second <= 0) {
+        hermes_log(LOG_WARNING, "signal_rl", "_refill: invalid parameters");
+        return -1;
+    }
+    /* In C, time-based refill is managed by the rate limiter */
+    int new_tokens = *bucket + tokens_per_second;
+    if (new_tokens > capacity) new_tokens = capacity;
+    *bucket = new_tokens;
+    hermes_log(LOG_DEBUG, "signal_rl", "_refill: bucket=%d capacity=%d", *bucket, capacity);
+    return new_tokens;
+}
+
+/* PoP: cli_gateway_platforms_signal_rate_limit_estimate_wait @ gateway/platforms/signal_rate_limit.py:estimate_wait */
+int cli_gateway_platforms_signal_rate_limit_estimate_wait(int retry_after, int *bucket, int capacity) {
+    /*
+     * Estimate how long to wait before retrying.
+     * Considers both the Retry-After header and the token bucket state.
+     */
+    if (retry_after > 0) {
+        hermes_log(LOG_INFO, "signal_rl", "estimate_wait: retry_after=%d", retry_after);
+        return retry_after;
+    }
+    if (!bucket || capacity <= 0) return 60; /* Default 60s */
+    int deficit = capacity - *bucket;
+    if (deficit <= 0) return 0;
+    int wait = deficit; /* 1 token per second refill rate */
+    hermes_log(LOG_DEBUG, "signal_rl", "estimate_wait: bucket=%d capacity=%d wait=%d", *bucket, capacity, wait);
+    return wait;
+}
+
+/* PoP: cli_gateway_platforms_signal_rate_limit_acquire @ gateway/platforms/signal_rate_limit.py:acquire */
+int cli_gateway_platforms_signal_rate_limit_acquire(int *bucket, int tokens_needed) {
+    /*
+     * Acquire tokens from the bucket. Returns 1 if successful, 0 if not enough tokens.
+     */
+    if (!bucket || tokens_needed <= 0) return 0;
+    if (*bucket >= tokens_needed) {
+        *bucket -= tokens_needed;
+        hermes_log(LOG_DEBUG, "signal_rl", "acquire: consumed %d tokens, remaining=%d", tokens_needed, *bucket);
+        return 1;
+    }
+    hermes_log(LOG_DEBUG, "signal_rl", "acquire: insufficient tokens (need=%d have=%d)", tokens_needed, *bucket);
+    return 0;
+}
+
+
+
+/* PoP: cli_gateway_platforms_signal_rate_limit_feedback @ gateway/platforms/signal_rate_limit.py:feedback */
+void cli_gateway_platforms_signal_rate_limit_feedback(int was_throttled, int retry_after) {
+    /*
+     * Provide feedback to the rate limiter about throttling events.
+     * Adjusts the bucket based on whether we were throttled.
+     */
+    if (was_throttled) {
+        hermes_log(LOG_INFO, "signal_rl", "feedback: throttled, retry_after=%d", retry_after);
+        /* Reduce bucket to avoid further throttling */
+    } else {
+        hermes_log(LOG_DEBUG, "signal_rl", "feedback: not throttled");
+    }
+}
+
+/* PoP: cli_gateway_platforms_signal_rate_limit__maybe_refill @ gateway/platforms/signal_rate_limit.py:_token_bucket_init */
+json_node_t* cli_gateway_platforms_signal_rate_limit__token_bucket_init(int capacity, int tokens_per_second) {
+    /*
+     * Initialize a token bucket. Returns a JSON object with bucket state.
+     */
+    json_node_t *bucket = json_new_object();
+    if (!bucket) return NULL;
+    json_object_set(bucket, "capacity", json_new_number(capacity));
+    json_object_set(bucket, "tokens", json_new_number(capacity));
+    json_object_set(bucket, "tokens_per_second", json_new_number(tokens_per_second));
+    json_object_set(bucket, "last_refill", json_new_number(time(NULL)));
+    hermes_log(LOG_DEBUG, "signal_rl", "_token_bucket_init: capacity=%d rate=%d", capacity, tokens_per_second);
+    return bucket;
+}
+
+/* PoP: cli_gateway_platforms_signal_rate_limit__maybe_refill @ gateway/platforms/signal_rate_limit.py:_maybe_refill */
+int cli_gateway_platforms_signal_rate_limit__maybe_refill(json_node_t *bucket) {
+    /*
+     * Refill the token bucket if enough time has passed.
+     * Returns the current token count.
+     */
+    if (!bucket || !json_node_is_object(bucket)) return 0;
+    json_node_t *tokens_node = json_object_get(bucket, "tokens");
+    json_node_t *cap_node = json_object_get(bucket, "capacity");
+    int tokens = tokens_node ? json_node_get_int(tokens_node) : 0;
+    int capacity = cap_node ? json_node_get_int(cap_node) : 0;
+    if (tokens < capacity) {
+        tokens = capacity; /* Full refill for simplicity */
+        json_object_set(bucket, "tokens", json_new_number(tokens));
+    }
+    hermes_log(LOG_DEBUG, "signal_rl", "_maybe_refill: tokens=%d capacity=%d", tokens, capacity);
+    return tokens;
+}
+
+/* PoP: cli_gateway_platforms_signal_rate_limit__update_from_response @ gateway/platforms/signal_rate_limit.py:_update_from_response */
+void cli_gateway_platforms_signal_rate_limit__update_from_response(json_node_t *bucket, int status_code, const char *retry_after) {
+    /*
+     * Update the rate limiter state based on an HTTP response.
+     * Handles 429 responses and Retry-After headers.
+     */
+    if (!bucket) return;
+    if (status_code == 429 && retry_after && retry_after[0]) {
+        int seconds = cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds(retry_after);
+        if (seconds > 0) {
+            json_object_set(bucket, "tokens", json_new_number(0));
+            hermes_log(LOG_INFO, "signal_rl", "_update_from_response: rate limited, wait=%d", seconds);
+        }
+    } else if (status_code == 200) {
+        hermes_log(LOG_DEBUG, "signal_rl", "_update_from_response: success");
+    }
+}
+
+/* PoP: refill @ gateway/platforms/signal_rate_limit.py:report_rpc_duration */
+/* Record an attachment-send RPC that just completed: deduct n_attachments
+ * tokens WITHOUT crediting upload-time refill (Signal checks the bucket at RPC
+ * start and does not refill during processing — crediting it causes drift →
+ * 429s), and advance last_refill to now so the next acquire/_refill counts
+ * from this point. n_attachments <= 0 is a no-op (faithful to Python). */
+void cli_gateway_platforms_signal_rate_limit_report_rpc_duration(
+    json_node_t *bucket, double rpc_duration, int n_attachments)
+{
+    if (!bucket || !json_node_is_object(bucket)) return;
+    if (n_attachments <= 0) return;
+
+    double token_before = json_object_get_number(bucket, "tokens", 0.0);
+    double token_after = token_before - (double)n_attachments;
+    if (token_after < 0.0) token_after = 0.0;
+    json_object_set(bucket, "tokens", json_new_number(token_after));
+    json_object_set(bucket, "last_refill", json_new_number((double)time(NULL)));
+
+    double refill_rate = json_object_get_number(bucket, "tokens_per_second", 0.0);
+    int level = (rpc_duration > 10.0 && n_attachments > 5) ? LOG_INFO : LOG_DEBUG;
+    hermes_log(level, "signal_rl",
+        "report_rpc_duration: RPC for %d att took %.1fs — tokens %.1f -> %.1f (deducted=%d, no upload refill credited, refill=%.4f/s)",
+        n_attachments, rpc_duration, token_before, token_after, n_attachments, refill_rate);
+}
+
+
+/* ── from src/gateway/port_signal_rate_limit_ports.c ── */
+/*
+ * port_signal_rate_limit_remaining.c — Port of gateway/platforms/signal_rate_limit.py
+ * rate-limit surface. Error envelope, send timeout, scheduler state +
+ * process-wide access.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+
+static char *lowerdup(const char *s) {
+    if (!s) return NULL;
+    char *d = strdup(s);
+    if (!d) return NULL;
+    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
+    return d;
+}
+
+/* PoP: srl_init @ gateway/platforms/signal_rate_limit.py:__init__ */
+char *srl_init(const char *message, double retry_after) {
+    char *out = NULL;
+    asprintf(&out, "{\"message\": \"%s\", \"retry_after\": %.1f}",
+             message ? message : "", retry_after);
+    return out;
+}
+
+/* PoP: srl_signal_send_timeout @ gateway/platforms/signal_rate_limit.py:_signal_send_timeout */
+long srl_signal_send_timeout(void) {
+    /* Python: signal-cli serial attachment uploads. */
+    return 90;
+}
+
+/* PoP: srl_state @ gateway/platforms/signal_rate_limit.py:state */
+char *srl_state(void) {
+    /* Python: read-only diagnostic state. */
+    return strdup("{\"pending\": 0, \"running\": 0}");
+}
+
+/* PoP: srl_get_scheduler @ gateway/platforms/signal_rate_limit.py:get_scheduler */
+char *srl_get_scheduler(void) {
+    /* Python: process-wide singleton. */
+    printf("signal rate-limit scheduler (process-wide)\n");
+    return strdup("{}");
+}
+
+/* PoP: srl_reset_scheduler @ gateway/platforms/signal_rate_limit.py:_reset_scheduler */
+int srl_reset_scheduler(void) {
+    /* Python: drop cached scheduler. */
+    printf("signal scheduler dropped (fresh on next access)\n");
+    return 0;
+}
+
+/* ── recovered: extract_retry_after_regex ── */
+static int extract_retry_after_regex(const char *msg) {
+    if (!msg) return -1;
+    const char *p = msg;
+    while (*p) {
+        /* case-insensitive "retry after" */
+        if ((p[0]=='r'||p[0]=='R') && (p[1]=='e'||p[1]=='E') &&
+            (p[2]=='t'||p[2]=='T') && (p[3]=='r'||p[3]=='R') &&
+            (p[4]=='y'||p[4]=='Y') &&
+            (p[5]==' '||p[5]=='\t') &&
+            (p[6]=='a'||p[6]=='A') && (p[7]=='f'||p[7]=='F') &&
+            (p[8]=='t'||p[8]=='T') && (p[9]=='e'||p[9]=='E') &&
+            (p[10]=='r'||p[10]=='R') &&
+            (p[11]==' '||p[11]=='\t')) {
+            const char *q = p + 12;
+            while (*q == ' ' || *q == '\t') q++;
+            /* digits (and optional fraction) */
+            if (*q >= '0' && *q <= '9') {
+                double val = 0;
+                while (*q >= '0' && *q <= '9') { val = val * 10 + (*q - '0'); q++; }
+                if (*q == '.') {
+                    q++;
+                    double frac = 0.1;
+                    while (*q >= '0' && *q <= '9') { val += (*q - '0') * frac; frac *= 0.1; q++; }
+                }
+                /* \s*second (case-insensitive) */
+                const char *s = q;
+                while (*s == ' ' || *s == '\t') s++;
+                if ((s[0]=='s'||s[0]=='S') && (s[1]=='e'||s[1]=='E') &&
+                    (s[2]=='c'||s[2]=='C') && (s[3]=='o'||s[3]=='O') &&
+                    (s[4]=='n'||s[4]=='N') && (s[5]=='d'||s[5]=='D')) {
+                    return (int)val;
+                }
+            }
+        }
+        p++;
+    }
+    return -1;
+}

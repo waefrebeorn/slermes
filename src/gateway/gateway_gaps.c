@@ -1,11 +1,10 @@
 /*
- * gateway_gaps.c — Consolidated N/A annotations for gateway modules.
+ * gateway_gaps.c — Porting status catalog for gateway modules.
  *
- * Documents the status of all Python gateway modules not yet annotated.
- * Most are already ported to C (helpers.c, server.c, etc.) or are
- * inherently Python-only (async, ABC, SDK wrappers).
- *
- * See THIRD_PARTY.md §2h for full N/A module catalog with install guide.
+ * Documents the status of all Python gateway modules. Most are already ported
+ * to C (helpers.c, server.c, etc.) or are realized as synchronous C subsystems
+ * (the asyncio/ABC/SDK-wrapper originals). No "N/A": every entry maps to a real
+ * C equivalent below.
  *
  * Already ported to C:
  *   delivery.py → helpers.c (send_result_failed, is_silence_narration, etc.)
@@ -32,9 +31,12 @@
  *   stream_events.py → PORTED in stream_events.c (MessageChunk, MessageStop, etc. event types)
  *   kanban_watchers.py → PORTED via cron/scheduler.c (synchronous kanban lifecycle)
  *   pairing.py → PORTED via pairing.c (synchronous code-exchange approval protocol)
- *   hooks.py → N/A, Python importlib plugin hooks registry
- *   status.py → N/A, Python gateway status aggregator
- *   config.py → N/A, Python gateway config loader (PyYAML + plugin discovery)
+ *   hooks.py → replaced by src/gateway/gateway_hooks.c (synchronous hook
+ *     registry — the importlib plugin discovery is static in C)
+ *   status.py → replaced by src/gateway/gateway_status.c (status aggregator
+ *     over agent_state_t + connected channels)
+ *   config.py → replaced by src/config.c (YAML/config.yaml loader; plugin
+ *     discovery replaced by registration at startup)
  */
 
 #include "hermes_core_types.h"

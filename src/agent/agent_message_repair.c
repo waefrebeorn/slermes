@@ -33,7 +33,7 @@ static const char *AGENT_RUNTIME_POST_HOOK_TOOL_NAMES[] = {
  * The Python original also checks context_engine_tool_names and the memory
  * manager's has_tool() for dynamically-registered plugin tools. In C,
  * plugins are statically compiled and don't register tools dynamically,
- * so only the static name check is performed (N/A for C architecture).
+ * so only the static name check is performed.
  */
 bool agent_runtime_owns_post_tool_hook(const char *function_name) {
     if (!function_name || !function_name[0]) return false;

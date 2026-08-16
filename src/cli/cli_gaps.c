@@ -7,7 +7,8 @@
  * THREE CLASSES:
  *   PORTED — Fully ported to C (commands.c, cli.c, etc.)
  *   STUB   — C API exists but needs depth (numbered fallback, basic impl)
- *   N/A    — Python SDK/async/platform-specific, invoked via subprocess
+ *   SUBPROCESS — Python SDK/async/platform-specific, invoked via subprocess
+ *                (hermes python <module>) rather than reimplemented in C
  *
  * SUBPROCESS PATTERN:
  *   hermes python <module> [args...]
@@ -268,8 +269,9 @@ const char *cli_subprocess_invoke(const char *module, const char *args) {
  */
 
 /* ═══════════════════════════════════════════════════════════════
- *  N/A — Python SDK / platform-specific / async-only
- *  Invoke via: hermes python <module> [args...]
+ *  SUBPROCESS — Python SDK / platform-specific / async-only modules.
+ *  These are delegated to the Python runtime via: hermes python <module> [args...]
+ *  (the C port shells out rather than reimplementing the Python SDK).
  * ═══════════════════════════════════════════════════════════════ */
 
 /*

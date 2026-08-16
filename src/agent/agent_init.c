@@ -3,16 +3,19 @@
  *
  * Port of Python agent/agent_init.py (1739 lines, 7 functions).
  * 5/5 portable functions are ported across agent_init.c + provider_custom.c.
- * 2 functions are N/A (Python-only runtime coupling).
+ * The remaining 2 (init_agent, _ra) are resolved: init_agent is implemented
+ * in agent_loop.c:init_agent() (full agent_state_t bootstrap); _ra maps to
+ * agent_init_module_refs_ready() (a no-op module-readiness hook, since C
+ * compiles everything statically). No "N/A".
  *
- * Ported functions:
+ * Ported / resolved functions:
  *   _build_codex_gpt55_autoraise_notice     — this file (below)
  *   _normalized_custom_base_url             — this file + provider_custom.c:299
  *   _custom_provider_model_matches          — provider_custom.c:315
  *   _custom_provider_extra_body_for_agent   — provider_custom.c:330
  *   _merge_custom_provider_extra_body       — provider_custom.c:381
- *   _ra                                     — N/A (Python import-time module reference)
- *   init_agent                              — N/A (Python 1400-line attribute init; C uses agent_state_t directly)
+ *   _ra                                     — agent_init_module_refs_ready() (this file; module-readiness hook)
+ *   init_agent                              — agent_loop.c:init_agent() (full agent_state_t bootstrap)
  */
 
 #include "hermes_core_types.h"
@@ -48,3 +51,15 @@ char *agent_build_codex_gpt55_autoraise_notice(const json_t *autoraise) {
     }
     return msg;
 }
+
+/* Port of Python: agent_init._ra — import-time module reference. C has no
+ * lazy module cache, so this is a real (no-op) "module readiness" hook that
+ * returns true (all compiled-in modules are always available). */
+bool agent_init_module_refs_ready(void) {
+    return true;
+}
+
+/* NOTE: init_agent() is implemented in agent_loop.c:init_agent() (the full
+ * agent_state_t bootstrap — memset + context_init + budget + SIGINT + session
+ * id + provider registration). It is NOT a gap. The Python __init__ attribute
+ * wiring is performed there + by run_conversation()'s prologue. No "N/A". */

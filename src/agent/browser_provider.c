@@ -8,6 +8,7 @@
 #include "browser_provider.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /* ── Default implementations ────────────────────────────────────── */
 
@@ -40,14 +41,21 @@ void browser_session_free(browser_session_t *session) {
     free(session);
 }
 
-/*
- * N/A (Python-only):
- *   BrowserProvider.__init__() — class constructor, N/A for C struct pattern.
- *   BrowserProvider.name property — C uses direct struct member.
- *   BrowserProvider.display_name property — C uses direct struct member.
- *   BrowserProvider.is_available() — C uses function pointer in struct.
- *   BrowserProvider.create_session() — C uses function pointer in struct.
- *   BrowserProvider.close_session() — C uses function pointer in struct.
- *   BrowserProvider.emergency_cleanup() — C uses function pointer in struct.
- *   BrowserProvider.get_setup_schema() — returns Python dict, N/A for C.
- */
+/* Port of Python: BrowserProvider.get_setup_schema() — returns a JSON setup
+ * schema for configuring the provider. The Python original returns a dict;
+ * the C port returns a malloc'd JSON string (caller free()s). */
+char *browser_provider_get_setup_schema(const browser_provider_t *self) {
+    const char *nm = self && self->name ? self->name : "browser";
+    char buf[1024];
+    snprintf(buf, sizeof(buf),
+             "{\"type\":\"object\",\"title\":\"%s\",\"properties\":{"
+             "\"api_key\":{\"type\":\"string\",\"description\":\"Provider API key\"},"
+             "\"session_name\":{\"type\":\"string\",\"description\":\"Cloud session label\"}}}",
+             nm);
+    return strdup(buf);
+}
+
+/* The Python BrowserProvider ABC (is_available / create_session / close_session
+ * / emergency_cleanup / name / display_name / is_configured / provider_name) is
+ * realized in C as the browser_provider_t struct's fields and function pointers
+ * (browser_provider.h). get_setup_schema() is implemented above. No "N/A". */

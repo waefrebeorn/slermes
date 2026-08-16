@@ -1,0 +1,54 @@
+/*
+ * ports/agent/transcription_registry.c — C11 port of agent/transcription_registry.py
+ * Merged from 1 source file(s) by reorganization.
+ */
+
+/* ── from src/agent/port_transcription_registry_ports.c ── */
+/*
+ * port_transcription_registry_remaining.c — Port of agent/transcription_registry.py
+ * provider registry surface. Register/list/get with case-insensitive
+ * matching.
+ */
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE 700
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "hermes_transcription.h"
+
+static char *lowerdup(const char *s) {
+    if (!s) return NULL;
+    char *d = strdup(s);
+    if (!d) return NULL;
+    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
+    return d;
+}
+
+/* PoP: tcr_register_provider @ agent/transcription_registry.py:register_provider */
+int tcr_register_provider(const char *name, const char *provider_desc) {
+    if (!name) return -1;
+    return transcription_register_provider(name, provider_desc) ? 0 : -1;
+}
+
+/* PoP: tcr_list_providers @ agent/transcription_registry.py:list_providers */
+char *tcr_list_providers(void) {
+    return transcription_list_providers();
+}
+
+/* PoP: tcr_get_provider @ agent/transcription_registry.py:get_provider */
+char *tcr_get_provider(const char *name) {
+    /* Python: case-insensitive. */
+    if (!name) return NULL;
+    const char *t = transcription_get_provider(name);
+    return t ? strdup(t) : NULL;
+}
+
+/* PoP: tcr_reset_for_tests @ agent/transcription_registry.py:_reset_for_tests */
+int tcr_reset_for_tests(void) {
+    transcription_reset_for_tests();
+    return 0;
+}
+

@@ -7,7 +7,8 @@
  *   estimate_tokens()         → llm_estimate_tokens() inline in hermes_agent.h:141
  *   count_context_tokens()    → llm_count_context_tokens() in hermes_agent.h:147
  *   should_compress()         → handled inline in run_conversation (compression_feedback + cooldown)
- *   get_compression_ratio()   → N/A (ratio computed inline in llm_compress_context())
+ * get_compression_ratio()   → get_compression_ratio() in this file (real entry point:
+ *                              before_tokens / after_tokens)
  *
  * All ported functions exist with their C names in llm_client.c / context.c.
  * This file is name-parity only — the actual compression logic is in
@@ -23,3 +24,10 @@
  */
 
 #include "hermes_agent.h"   /* llm_compress_context(), llm_truncate_context(), llm_estimate_tokens() */
+
+/* Port of Python context_compressor.get_compression_ratio(before_tokens,
+ * after_tokens): returns after/before as a ratio (0.0 if before is 0). */
+double get_compression_ratio(size_t before_tokens, size_t after_tokens) {
+    if (before_tokens == 0) return 0.0;
+    return (double)after_tokens / (double)before_tokens;
+}

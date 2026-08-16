@@ -172,6 +172,25 @@ static http_response_t *openapi_get(http_client_t *http, const char *url) {
     return resp;
 }
 
+/* DELETE request to Feishu Open API with auth. Returns http_response_t or NULL. */
+static http_response_t *openapi_delete(http_client_t *http, const char *url) {
+    const char *tok = get_tenant_token(http);
+    if (!tok) return NULL;
+
+    http_client_t *h = http ? http : http_client_new(10);
+    http_client_t *local_http = NULL;
+    if (!h) { local_http = http_client_new(10); h = local_http; }
+    if (!h) return NULL;
+
+    char auth_header[1536];
+    snprintf(auth_header, sizeof(auth_header),
+             "Authorization: Bearer %s", tok);
+
+    http_response_t *resp = http_request(h, HTTP_DELETE, url, auth_header, NULL, 0);
+    if (local_http) http_client_free(local_http);
+    return resp;
+}
+
 /* Read a file into a malloc'd buffer. Returns NULL on error.
  * Caller must free(). Sets *out_len to file size. */
 static char *read_file_buf(const char *path, size_t *out_len) {
@@ -863,6 +882,103 @@ char *feishu_comment_get_rules(const char *doc_id)
     char *out = json_serialize(rules);
     json_free(rules);
     return out;
+}
+
+/* PoP: reply_comment @ gateway/platforms/feishu_comment.py (reply_comment) */
+/* Reply to an existing comment thread on a Feishu document (docx).
+ * doc_id: document file token
+ * comment_id: parent comment id to reply under
+ * text: reply text content
+ * Returns malloc'd JSON reply data on success, NULL on failure. */
+char *feishu_comment_reply(const char *doc_id, const char *comment_id,
+                           const char *text)
+{
+    if (!doc_id || !*doc_id || !comment_id || !*comment_id || !text) return NULL;
+
+    json_node_t *body = json_new_object();
+    json_node_t *content = json_new_object();
+    json_set(content, "text", json_new_string(text));
+    json_set(body, "content", content);
+    json_set(body, "reply_to_comment_id", json_new_string(comment_id));
+
+    char url[1024];
+    snprintf(url, sizeof(url),
+             "%s/drive/v1/files/%s/comments?file_type=docx", FEISHU_API_BASE, doc_id);
+
+    http_response_t *resp = openapi_post(NULL, url, body);
+    if (!resp || !resp->body) {
+        if (resp) http_response_free(resp);
+        return NULL;
+    }
+    json_node_t *j = json_parse(resp->body, NULL);
+    http_response_free(resp);
+    if (!j) return NULL;
+    int code = (int)json_get_num(j, "code", -1);
+    char *result = NULL;
+    if (code == 0) {
+        json_node_t *data = json_obj_get(j, "data");
+        if (data) result = json_serialize(data);
+    }
+    json_free(j);
+    return result;
+}
+
+/* PoP: list_comments @ gateway/platforms/feishu_comment.py (list_comments) */
+/* List comments on a Feishu document (docx).
+ * doc_id: document file token
+ * Returns malloc'd JSON array of comments on success, NULL on failure. */
+char *feishu_comment_list(const char *doc_id)
+{
+    if (!doc_id || !*doc_id) return NULL;
+
+    char url[1024];
+    snprintf(url, sizeof(url),
+             "%s/drive/v1/files/%s/comments?file_type=docx&page_size=50",
+             FEISHU_API_BASE, doc_id);
+
+    http_response_t *resp = openapi_get(NULL, url);
+    if (!resp || !resp->body) {
+        if (resp) http_response_free(resp);
+        return NULL;
+    }
+    json_node_t *j = json_parse(resp->body, NULL);
+    http_response_free(resp);
+    if (!j) return NULL;
+    int code = (int)json_get_num(j, "code", -1);
+    char *result = NULL;
+    if (code == 0) {
+        json_node_t *data = json_obj_get(j, "data");
+        if (data) result = json_serialize(data);
+    }
+    json_free(j);
+    return result;
+}
+
+/* PoP: delete_comment @ gateway/platforms/feishu_comment.py (delete_comment) */
+/* Delete a comment on a Feishu document (docx).
+ * doc_id: document file token
+ * comment_id: comment id to delete
+ * Returns true on success. */
+bool feishu_comment_delete(const char *doc_id, const char *comment_id)
+{
+    if (!doc_id || !*doc_id || !comment_id || !*comment_id) return false;
+
+    char url[1024];
+    snprintf(url, sizeof(url),
+             "%s/drive/v1/files/%s/comments/%s?file_type=docx",
+             FEISHU_API_BASE, doc_id, comment_id);
+
+    http_response_t *resp = openapi_delete(NULL, url);
+    if (!resp) return false;
+    json_node_t *j = json_parse(resp->body ? resp->body : "", NULL);
+    http_response_free(resp);
+    bool ok = false;
+    if (j) {
+        int code = (int)json_get_num(j, "code", -1);
+        ok = (code == 0);
+        json_free(j);
+    }
+    return ok;
 }
 
 /* PoP: create_invite @ gateway/platforms/feishu_meeting_invite.py (create_invite) */

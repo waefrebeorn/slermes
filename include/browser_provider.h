@@ -88,6 +88,10 @@ bool browser_provider_is_configured_default(const browser_provider_t *self);
 /* Default provider_name() — returns display_name. */
 const char *browser_provider_name_default(const browser_provider_t *self);
 
+/* Port of Python BrowserProvider.get_setup_schema() — malloc'd JSON schema
+ * string (caller free()s). */
+char *browser_provider_get_setup_schema(const browser_provider_t *self);
+
 #ifdef __cplusplus
 }
 #endif

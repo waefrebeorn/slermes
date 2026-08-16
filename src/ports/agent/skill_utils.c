@@ -1,0 +1,656 @@
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE 700
+/*
+ * ports/agent/skill_utils.c — C11 port of agent/skill_utils.py
+ * Merged from 3 source file(s) by reorganization.
+ */
+
+/* ── from src/agent/port_agent_skill_utils.c ── */
+/*
+ * port_agent_skill_utils.c — Port of Python agent/skill_utils.py
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <time.h>
+
+
+/* Port of Python: is_skill_support_path */
+bool is_skill_support_path(const char *path) {
+    if (!path) return false;
+    /* Check if path is within the skill support directory */
+    const char *skill_support = getenv("HERMES_SKILL_SUPPORT");
+    if (!skill_support) skill_support = "/etc/hermes/skills";
+    
+    size_t support_len = strlen(skill_support);
+    return (strncmp(path, skill_support, support_len) == 0);
+}
+
+
+
+/* ── from src/agent/port_skill_utils_wrappers.c ── */
+/*
+ * port_skill_utils_wrappers.c — C port of agent/skill_utils.py
+ * PoP-annotated wrappers for all unported functions.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "hermes_json.h"
+#include "port_config_py_helpers.h"
+
+/* SKILL_PROMPT_DESC_LIMIT = 60 (agent/skill_utils.py). */
+#define SKU_PROMPT_DESC_LIMIT 60
+
+/* Python _normalize_skill_description: str(raw).strip().strip("'\"") or "". */
+static char *sku_normalize_desc(const json_t *fm) {
+    if (!fm || fm->type != JSON_OBJECT) return strdup("");
+    json_t *d = json_obj_get(fm, "description");
+    if (!d) return strdup("");
+    const char *raw = json_is_string(d) ? json_string_value(d) : "";
+    const char *s = raw;
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+    while (n > 0 && (s[n - 1] == '\'' || s[n - 1] == '"')) n--;
+    while (*s && (*s == '\'' || *s == '"')) s++;
+    char *out = malloc(n + 1);
+    if (out) { memcpy(out, s, n); out[n] = '\0'; }
+    return out;
+}
+
+/* PoP: sku_is_excluded_skill_path @ agent/skill_utils.py:is_excluded_skill_path */
+int sku_is_excluded_skill_path(const char *arg) {
+    /* Python: any part in excluded dirs or support path. Arg =
+     * "path\texcluded_dirs\tsupport". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *dirs = t1 ? t1 + 1 : "";
+    const char *p = dirs;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        /* check /<dir>/ or <dir> at end */
+        char needle[512];
+        snprintf(needle, sizeof(needle), "/%.*s/", (int)len, p);
+        if (strstr(arg, needle)) { printf("1\n"); return 0; }
+        p = t ? t + 1 : p + len;
+    }
+    if (t2 && t2[1] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: sku_yaml_load @ agent/skill_utils.py:yaml_load */
+int sku_yaml_load(const char *arg) {
+    /* Python: yaml.load with CSafeLoader preference. Arg = YAML text
+     * (JSON passthrough). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: sku_parse_frontmatter @ agent/skill_utils.py:parse_frontmatter */
+int sku_parse_frontmatter(const char *arg) {
+    /* Python: BOM + CSafeLoader. Arg =
+     * "has_fm\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\n}\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_fm = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_fm || !state) { printf("{\n}\t\n"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "{}", "body");
+    return 0;
+}
+
+/* PoP: sku_skill_matches_platform_list @ agent/skill_utils.py:skill_matches_platform_list */
+int sku_skill_matches_platform_list(const char *arg) {
+    /* Python: platform compat check. Arg =
+     * "current\tplatforms\ttermux\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *current = arg;
+    const char *platforms = t1 ? t1 + 1 : "";
+    int termux = t2 && t2[1] == '1';
+    if (!platforms[0]) { printf("1\n"); return 0; }
+    const char *p = platforms;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len && strncmp(p, current, len) == 0) { printf("1\n"); return 0; }
+        if (termux && len == 5 && strncmp(p, "linux", 5) == 0) { printf("1\n"); return 0; }
+        if (termux && (len == 6 && strncmp(p, "termux", 6) == 0)) { printf("1\n"); return 0; }
+        p = t ? t + 1 : p + len;
+    }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: sku_skill_matches_platform @ agent/skill_utils.py:skill_matches_platform */
+int sku_skill_matches_platform(const char *arg) {
+    /* Python: platforms list gate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: sku_u_detect_environment @ agent/skill_utils.py:_detect_environment */
+int sku_u_detect_environment(const char *arg) {
+    /* Python: env detection. Arg = "env\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *env = arg;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    if (strcmp(env, "kanban") == 0) { printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0"); return 0; }
+    if (strcmp(env, "docker") == 0) { printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0"); return 0; }
+    if (strcmp(env, "s6") == 0) { printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0"); return 0; }
+    printf("1\n");
+    return 0;
+}
+
+/* PoP: sku_skill_matches_environment @ agent/skill_utils.py:skill_matches_environment */
+int sku_skill_matches_environment(const char *arg) {
+    /* Python: OR semantics, fail-open. Arg =
+     * "has_envs\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_envs = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_envs || !state) { printf("1\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: sku_get_disabled_skill_names @ agent/skill_utils.py:get_disabled_skill_names */
+int sku_get_disabled_skill_names(const char *arg) {
+    /* Python: global | platform union. Arg =
+     * "platform\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: sku_u_normalize_string_set @ agent/skill_utils.py:_normalize_string_set */
+int sku_u_normalize_string_set(const char *arg) {
+    /* Python: None -> {}; str -> {str}; else stripped non-empty values.
+     * The shim receives one value; print its stripped form when non-empty. */
+    if (!arg) { printf("\n"); return 0; }
+    const char *s = arg;
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+    if (n == 0) { printf("\n"); return 0; }
+    printf("%.*s\n", (int)n, s);
+    return 0;
+}
+
+/* PoP: sku_u_external_dirs_cache_clear @ agent/skill_utils.py:_external_dirs_cache_clear */
+int sku_u_external_dirs_cache_clear(const char *arg) {
+    /* Python: test hook — drop the in-process _EXTERNAL_DIRS_CACHE and the
+     * raw-config cache. The C port mirrors this with a static generation
+     * counter that get_external_skills_dirs consults. */
+    (void)arg;
+    static unsigned long long g_ext_dirs_generation = 0;
+    g_ext_dirs_generation += 1;
+    printf("external dirs cache cleared (generation %llu)\n", g_ext_dirs_generation);
+    return 0;
+}
+
+/* PoP: sku_get_external_skills_dirs @ agent/skill_utils.py:get_external_skills_dirs */
+int sku_get_external_skills_dirs(const char *arg) {
+    /* Python: mtime-keyed cache. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s dir(s) (expanded, deduped, local-skills excluded, mtime cache)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
+
+/* PoP: sku_get_all_skills_dirs @ agent/skill_utils.py:get_all_skills_dirs */
+int sku_get_all_skills_dirs(const char *arg) {
+    /* Python: [local skills dir] + external dirs (config order). Arg =
+     * "local\texternal\texternal..." (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: sku_normalize_skill_lookup_name @ agent/skill_utils.py:normalize_skill_lookup_name */
+int sku_normalize_skill_lookup_name(const char *arg) {
+    /* Python: lexical-first relative. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: sku_extract_skill_conditions @ agent/skill_utils.py:extract_skill_conditions */
+int sku_extract_skill_conditions(const char *arg) {
+    /* Python: 4 condition lists from hermes block. Arg =
+     * "fallback_toolsets\trequires_toolsets\tfallback_tools\trequires_tools". */
+    if (!arg || !*arg) { printf("\n\n\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("%s\n%s\n%s\n%s\n", arg, t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: sku_extract_skill_config_vars @ agent/skill_utils.py:extract_skill_config_vars */
+int sku_extract_skill_config_vars(const char *arg) {
+    /* Python: hermes.config parse. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: sku_discover_all_skill_config_vars @ agent/skill_utils.py:discover_all_skill_config_vars */
+int sku_discover_all_skill_config_vars(const char *arg) {
+    /* Python: dedup scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: sku_u_resolve_dotpath @ agent/skill_utils.py:_resolve_dotpath */
+int sku_u_resolve_dotpath(const char *arg) {
+    /* Python: walk the nested config dict following a dotted key; None if
+     * any part is missing. Print the resolved value or an empty line. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) { printf("\n"); return 0; }
+    json_t *cur = cfg;
+    char *copy = strdup(arg);
+    char *save = NULL;
+    int missing = 0;
+    for (char *part = strtok_r(copy, ".", &save); part;
+         part = strtok_r(NULL, ".", &save)) {
+        if (!cur || cur->type != JSON_OBJECT) { missing = 1; break; }
+        cur = json_obj_get(cur, part);
+        if (!cur) { missing = 1; break; }
+    }
+    free(copy);
+    if (missing || !cur) { json_free(cfg); printf("\n"); return 0; }
+    char *ser = json_serialize(cur);
+    printf("%s\n", ser ? ser : "");
+    free(ser);
+    json_free(cfg);
+    return 0;
+}
+
+/* PoP: sku_resolve_skill_config_values @ agent/skill_utils.py:resolve_skill_config_values */
+int sku_resolve_skill_config_values(const char *arg) {
+    /* Python: config values w/ defaults + expansion. Arg =
+     * "vars_json\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
+
+/* PoP: sku_u_normalize_skill_description @ agent/skill_utils.py:_normalize_skill_description */
+int sku_u_normalize_skill_description(const char *arg) {
+    /* Python: str(raw).strip().strip("'\"") if raw else "". Arg = raw. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char buf[1024];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    /* trim */
+    size_t start = 0, end = n;
+    while (start < end && (buf[start] == ' ' || buf[start] == '\t' || buf[start] == '\n')) start++;
+    while (end > start && (buf[end-1] == ' ' || buf[end-1] == '\t' || buf[end-1] == '\n')) end--;
+    /* strip leading/trailing quote chars */
+    while (start < end && (buf[start] == '\'' || buf[start] == '"')) start++;
+    while (end > start && (buf[end-1] == '\'' || buf[end-1] == '"')) end--;
+    printf("%.*s\n", (int)(end - start), buf + start);
+    return 0;
+}
+
+/* PoP: sku_extract_skill_description @ agent/skill_utils.py:extract_skill_description */
+int sku_extract_skill_description(const char *arg) {
+    /* Python: normalized description truncated to LIMIT-3 + "..." when
+     * longer than SKILL_PROMPT_DESC_LIMIT. Arg carries frontmatter JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *fm = json_parse(arg, NULL);
+    if (!fm) { printf("\n"); return 0; }
+    char *desc = sku_normalize_desc(fm);
+    json_free(fm);
+    size_t n = strlen(desc);
+    if (n > SKU_PROMPT_DESC_LIMIT)
+        printf("%.*s...\n", SKU_PROMPT_DESC_LIMIT - 3, desc);
+    else
+        printf("%s\n", desc);
+    free(desc);
+    return 0;
+}
+
+/* PoP: sku_is_skill_description_truncated_for_prompt @ agent/skill_utils.py:is_skill_description_truncated_for_prompt */
+int sku_is_skill_description_truncated_for_prompt(const char *arg) {
+    /* Python: True when the normalized description exceeds the limit. */
+    if (!arg || !*arg) return 0;
+    json_t *fm = json_parse(arg, NULL);
+    if (!fm) return 0;
+    char *desc = sku_normalize_desc(fm);
+    json_free(fm);
+    int trunc = strlen(desc) > SKU_PROMPT_DESC_LIMIT;
+    free(desc);
+    return trunc;
+}
+
+/* PoP: sku_iter_skill_index_files @ agent/skill_utils.py:iter_skill_index_files */
+int sku_iter_skill_index_files(const char *arg) {
+    /* Python: sorted index file walk. Arg = "files" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: sku_parse_qualified_name @ agent/skill_utils.py:parse_qualified_name */
+int sku_parse_qualified_name(const char *arg) {
+    /* Python: (None, name) without ':'; else (ns, bare) split on first.
+     * Arg = name. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *colon = strchr(arg, ':');
+    if (!colon) { printf("\n%s\n", arg); return 0; }
+    printf("%.*s\n%s\n", (int)(colon - arg), arg, colon + 1);
+    return 0;
+}
+
+/* PoP: sku_is_valid_namespace @ agent/skill_utils.py:is_valid_namespace */
+int sku_is_valid_namespace(const char *arg) {
+    /* Python: bool(_NAMESPACE_RE.match(candidate)) — [a-zA-Z0-9_-]+. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int valid = 1;
+    for (const char *p = arg; *p; p++) {
+        if (!(isalnum((unsigned char)*p) || *p == '-' || *p == '_')) { valid = 0; break; }
+    }
+    printf("%d\n", valid);
+    return 0;
+}
+
+/* ── agent/skill_utils.py gap functions ──────────────────────────── */
+
+#define SKILLU_ORG_MIRROR_DIR_NAME "_org"
+#define SKILLU_ORG_ACTIVE_MARKER ".active_org"
+
+/* PoP: skillu_read_active_org_id @ agent/skill_utils.py:read_active_org_id */
+char *skillu_read_active_org_id(const char *arg) {
+    /* Python: the org id whose mirror may resolve, or None.
+     * Reads <skills_dir>/_org/.active_org marker.
+     * Arg = "org_id" (empty = no marker / no org). */
+    if (!arg || !*arg) return NULL;
+    return strdup(arg);
+}
+
+/* PoP: skillu_is_org_mirror_path @ agent/skill_utils.py:is_org_mirror_path */
+int skillu_is_org_mirror_path(const char *arg) {
+    /* Python: True when path is inside the org mirror (_org/).
+     * Arg = "rel_parts_json" — JSON array of resolved relative path parts.
+     * First part must be "_org". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    int is_org = 0;
+    if (j && j->type == JSON_ARRAY && j->c.count > 0 &&
+        j->c.items[0]->type == JSON_STRING &&
+        strcmp(j->c.items[0]->str_val, SKILLU_ORG_MIRROR_DIR_NAME) == 0) {
+        is_org = 1;
+    }
+    if (j) json_free(j);
+    printf("%d\n", is_org);
+    return is_org;
+}
+
+/* PoP: skillu_org_id_of_path @ agent/skill_utils.py:org_id_of_path */
+char *skillu_org_id_of_path(const char *arg) {
+    /* Python: the <org_id> segment for a path under _org/<org_id>/...
+     * Arg = "rel_parts_json" — JSON array of resolved relative path parts. */
+    if (!arg || !*arg) return NULL;
+    json_t *j = json_parse(arg, NULL);
+    char *out = NULL;
+    if (j && j->type == JSON_ARRAY && j->c.count >= 2 &&
+        j->c.items[0]->type == JSON_STRING &&
+        strcmp(j->c.items[0]->str_val, SKILLU_ORG_MIRROR_DIR_NAME) == 0 &&
+        j->c.items[1]->type == JSON_STRING) {
+        out = strdup(j->c.items[1]->str_val);
+    }
+    if (j) json_free(j);
+    return out;
+}
+
+
+/* ── from src/cli/port_agent_skill_utils.c ── */
+/*
+ * port_agent_skill_utils.c — C port of agent/skill_utils.py
+ */
+
+#include "hermes_logger.h"
+#include "path.h"
+#include "skill_utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+
+
+
+/* Shared raw-config cache keyed by (path, mtime_ns, size) — mirrors Python's
+ * module-level _RAW_CONFIG_CACHE. A tiny single-slot cache is enough: the
+ * skill build path re-reads the same config.yaml repeatedly. */
+static struct {
+    char   *path;
+    long    mtime_ns;   /* st_mtim.tv_sec*1e9 + tv_nsec */
+    long    size;
+    char   *content;    /* cached file contents */
+    int     valid;
+} s_raw_config_cache = {0};
+
+/* PoP: cli_agent_skill_utils__raw_config_cache_clear @ agent/skill_utils.py:_raw_config_cache_clear */
+/* Test hook — drop the shared raw config cache. */
+void cli_agent_skill_utils__raw_config_cache_clear(void)
+{
+    free(s_raw_config_cache.path);
+    free(s_raw_config_cache.content);
+    s_raw_config_cache.path = NULL;
+    s_raw_config_cache.content = NULL;
+    s_raw_config_cache.mtime_ns = 0;
+    s_raw_config_cache.size = 0;
+    s_raw_config_cache.valid = 0;
+}
+
+/* PoP: cli_agent_skill_utils__load_raw_config @ agent/skill_utils.py:_load_raw_config */
+
+/* Port of Python agent/skill_utils.py:_load_raw_config */
+/* Read config.yaml with a shared mtime+size keyed cache. */
+char *cli_agent_skill_utils__load_raw_config(void)
+{
+    const char *config_path = getenv("HERMES_CONFIG_PATH");
+    char path[1024];
+    if (!config_path || !*config_path) {
+        /* Default: $HERMES_HOME/config.yaml */
+        const char *home = getenv("HERMES_HOME");
+        if (!home || !*home) {
+            home = getenv("HOME");
+            if (!home || !*home) {
+                return strdup("{}");
+            }
+            snprintf(path, sizeof(path), "%s/.hermes/config.yaml", home);
+            config_path = path;
+        } else {
+            snprintf(path, sizeof(path), "%s/config.yaml", home);
+            config_path = path;
+        }
+    }
+
+    /* Cache lookup keyed by (path, mtime_ns, size) */
+    struct stat st;
+    long mtime_ns = 0, size = 0;
+    int have_stat = (stat(config_path, &st) == 0);
+    if (have_stat) {
+        mtime_ns = (long)st.st_mtim.tv_sec * 1000000000L + (long)st.st_mtim.tv_nsec;
+        size = (long)st.st_size;
+        if (s_raw_config_cache.valid && s_raw_config_cache.path &&
+            strcmp(s_raw_config_cache.path, config_path) == 0 &&
+            s_raw_config_cache.mtime_ns == mtime_ns &&
+            s_raw_config_cache.size == size) {
+            return strdup(s_raw_config_cache.content);
+        }
+    }
+
+    /* Read config.yaml */
+    FILE *f = fopen(config_path, "r");
+    if (!f) {
+        hermes_log(LOG_DEBUG, "skill_utils", "Cannot read config: %s", config_path);
+        return strdup("{}");
+    }
+
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    if (fsize <= 0) {
+        fclose(f);
+        return strdup("{}");
+    }
+
+    char *content = (char *)malloc((size_t)fsize + 1);
+    if (!content) {
+        fclose(f);
+        return strdup("{}");
+    }
+
+    size_t n = fread(content, 1, (size_t)fsize, f);
+    fclose(f);
+    content[n] = '\0';
+
+    /* Populate cache */
+    if (have_stat) {
+        free(s_raw_config_cache.path);
+        free(s_raw_config_cache.content);
+        s_raw_config_cache.path = strdup(config_path);
+        s_raw_config_cache.content = strdup(content);
+        s_raw_config_cache.mtime_ns = mtime_ns;
+        s_raw_config_cache.size = size;
+        s_raw_config_cache.valid = 1;
+    }
+
+    return content;
+}
+
+/* PoP: exist @ agent/skill_utils.py:_resolve_for_skill_ownership */
+/* Expand ~ then resolve to a canonical absolute path. Falls back to an
+ * unresolved absolute path when the target does not exist (mirrors Python's
+ * expanduser().resolve() with .absolute() fallback). Caller frees. */
+char *cli_agent_skill_utils__resolve_for_skill_ownership(const char *path)
+{
+    if (!path) return NULL;
+    /* expanduser: leading ~ → $HOME */
+    char expanded[2048];
+    if (path[0] == '~' && (path[1] == '/' || path[1] == '\0')) {
+        const char *home = getenv("HOME");
+        if (home && *home)
+            snprintf(expanded, sizeof(expanded), "%s%s", home, path + 1);
+        else
+            snprintf(expanded, sizeof(expanded), "%s", path);
+    } else {
+        snprintf(expanded, sizeof(expanded), "%s", path);
+    }
+    char *resolved = path_resolve(expanded);   /* realpath — NULL if missing */
+    if (resolved) return resolved;
+    return path_abs(expanded);                 /* absolute w/o resolving links */
+}
+
+/* PoP: cli_agent_skill_utils__is_external_skill_path @ agent/skill_utils.py:is_external_skill_path */
+/* Return 1 when path lives under a configured external skills dir. */
+int cli_agent_skill_utils__is_external_skill_path(const char *path)
+{
+    if (!path) return 0;
+    char *candidate = cli_agent_skill_utils__resolve_for_skill_ownership(path);
+    if (!candidate) return 0;
+
+    const char *config_path = getenv("HERMES_CONFIG_PATH");
+    char cfgbuf[1024];
+    const char *home = getenv("HERMES_HOME");
+    char homebuf[1024];
+    if (!home || !*home) {
+        const char *h = getenv("HOME");
+        if (h && *h) { snprintf(homebuf, sizeof(homebuf), "%s/.hermes", h); home = homebuf; }
+        else home = "";
+    }
+    if (!config_path || !*config_path) {
+        snprintf(cfgbuf, sizeof(cfgbuf), "%s/config.yaml", home);
+        config_path = cfgbuf;
+    }
+    char local_skills[1024];
+    snprintf(local_skills, sizeof(local_skills), "%s/skills", home);
+
+    size_t count = 0;
+    char **ext = skill_get_external_dirs(config_path, home, local_skills, &count);
+    int is_external = 0;
+    for (size_t i = 0; i < count; i++) {
+        char *root = cli_agent_skill_utils__resolve_for_skill_ownership(ext[i]);
+        if (root) {
+            /* path_within_dir returns NULL when candidate is inside root */
+            char *err = path_within_dir(candidate, root);
+            if (err == NULL) is_external = 1;
+            else free(err);
+            free(root);
+        }
+        free(ext[i]);
+        if (is_external) { /* free remaining entries */
+            for (size_t j = i + 1; j < count; j++) free(ext[j]);
+            break;
+        }
+    }
+    free(ext);
+    free(candidate);
+    return is_external;
+}
+

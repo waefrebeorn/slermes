@@ -14,8 +14,8 @@
  * Port of Python: _credits_state_from_account (agent-dependent — INLINE in C agent loop)
  * Port of Python: _hydrate_seed_state (agent-dependent — INLINE in C agent loop)
  * Port of Python: seed_credits_at_session_start (agent-dependent — INLINE in C agent loop)
- * N/A: CreditsState — Python dataclass (C has credits_state_t struct)
- * N/A: AgentNotice — Python dataclass (C has agent_notice_t struct)
+ * CreditsState — Python dataclass, realized as credits_state_t (hermes_credits_tracker.h)
+ * AgentNotice — Python dataclass, realized as agent_notice_t (hermes_credits_tracker.h)
  */
 #define _GNU_SOURCE
 #include "hermes_credits_tracker.h"

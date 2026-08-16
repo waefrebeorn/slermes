@@ -247,8 +247,9 @@ static struct {
 int tools_daytona_init(const char *image, const char *cwd, long timeout,
                        long cpu, bool persistent)
 {
-    /* Python: store sandbox config (the SDK create is N/A in C — the
-     * request-construction layer is the honest port surface). */
+    /* Python: store sandbox config. The SDK create() is realized in C as
+     * daytona_create_sandbox() (libhttp POST to the Daytona REST API); this
+     * init stores the resolved config used by that call. */
     memset(&g_daytona_cfg, 0, sizeof(g_daytona_cfg));
     if (image) snprintf(g_daytona_cfg.image, sizeof(g_daytona_cfg.image), "%s", image);
     if (cwd) snprintf(g_daytona_cfg.cwd, sizeof(g_daytona_cfg.cwd), "%s", cwd);

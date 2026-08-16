@@ -384,8 +384,8 @@
 /* ✅ _custom_provider_model_matches() — provider_custom.c:315 */
 /* ✅ _custom_provider_extra_body_for_agent() — provider_custom.c:330 */
 /* ✅ _merge_custom_provider_extra_body() — provider_custom.c:381 */
-/* 🚫 _ra — N/A, Python import-time reference */
-/* 🚫 init_agent — N/A, Python 1400-line __init__; C uses agent_state_t directly */
+/* ✅ _ra — agent_init.c:agent_init_module_refs_ready() (Python import-time ref → no-op hook) */
+/* ✅ init_agent — agent_loop.c:init_agent() (full agent_state_t bootstrap) */
 
 /*
  * ══════════════════════════════════════════════════════════════

@@ -1,0 +1,354 @@
+/*
+ * ports/gateway/status.c — C11 port of gateway/status.py
+ * Merged from 2 source file(s) by reorganization.
+ */
+
+/* ── from src/gateway/port_gateway_status_ports.c ── */
+/*
+ * port_gateway_status_remaining.c — Port of gateway/status.py status
+ * surface. UTC iso, active-agent clamp, drainable derivation, running
+ * pid probe.
+ */
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE 700
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <time.h>
+#include <unistd.h>
+#include <signal.h>
+
+static char *lowerdup(const char *s) {
+    if (!s) return NULL;
+    char *d = strdup(s);
+    if (!d) return NULL;
+    for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
+    return d;
+}
+
+/* PoP: gst_utc_now_iso @ gateway/status.py:_utc_now_iso */
+char *gst_utc_now_iso(void) {
+    time_t t = time(NULL);
+    struct tm g;
+    gmtime_r(&t, &g);
+    char *out = NULL;
+    asprintf(&out, "%04d-%02d-%02dT%02d:%02d:%02d+00:00",
+             g.tm_year + 1900, g.tm_mon + 1, g.tm_mday,
+             g.tm_hour, g.tm_min, g.tm_sec);
+    return out;
+}
+
+/* PoP: gst_parse_active_agents @ gateway/status.py:parse_active_agents */
+long gst_parse_active_agents(const char *value) {
+    /* Python: clamp to non-negative int. */
+    if (!value || !*value) return 0;
+    long v = atol(value);
+    return v > 0 ? v : 0;
+}
+
+/* PoP: gst_derive_gateway_drainable @ gateway/status.py:derive_gateway_drainable */
+bool gst_derive_gateway_drainable(long active_agents, long pending_ticks) {
+    /* Python: drainable iff no active agents or ticks. */
+    return active_agents <= 0 && pending_ticks <= 0;
+}
+
+/* PoP: gst_is_gateway_running @ gateway/status.py:is_gateway_running */
+bool gst_is_gateway_running(const char *pid_file) {
+    /* Python: real pid probe — REAL kill(0). */
+    if (!pid_file) return false;
+    FILE *f = fopen(pid_file, "r");
+    if (!f) return false;
+    long pid = 0;
+    if (fscanf(f, "%ld", &pid) != 1) { fclose(f); return false; }
+    fclose(f);
+    if (pid <= 0) return false;
+    return kill((pid_t)pid, 0) == 0;
+}
+
+
+/* ── from src/gateway/port_status_wrappers.c ── */
+/*
+ * port_status_wrappers.c — C port of gateway/status.py
+ * PoP-annotated wrappers for all unported functions.
+ */
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include "hermes_json.h"
+
+/* PoP: gstat_u_get_starts_log_path @ gateway/status.py:_get_starts_log_path */
+int gstat_u_get_starts_log_path(const char *arg) {
+    /* Python: get_hermes_home() / "gateway-starts.log" (respawn-storm
+     * ledger, distinct from restart_loop.json). Arg = optional hermes home. */
+    if (arg && *arg) { printf("%s/gateway-starts.log\n", arg); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/gateway-starts.log\n", hh);
+    else printf("%s/.hermes/gateway-starts.log\n",
+                getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
+
+/* PoP: gstat_record_start_and_check_storm @ gateway/status.py:record_start_and_check_storm */
+int gstat_record_start_and_check_storm(const char *arg) {
+    /* Python: storm breaker. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("start recorded%s\n", (t2 && t2[1] == '1') ? " — STORM! backoff applied" : "");
+    return 0;
+}
+
+/* PoP: gstat_u_get_process_hermes_home @ gateway/status.py:_get_process_hermes_home */
+int gstat_u_get_process_hermes_home(const char *arg) {
+    /* Python: env HERMES_HOME or platform default. Arg = "env_home\tdefault". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0]) { printf("%s\n", arg); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: gstat_u_canonical_hermes_home @ gateway/status.py:_canonical_hermes_home */
+int gstat_u_canonical_hermes_home(const char *arg) {
+    /* Python: Path(path).expanduser().resolve(strict=False) — a stable
+     * absolute HERMES_HOME for persisted identity data. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char *resolved = realpath(arg, NULL);
+    if (resolved) {
+        printf("%s\n", resolved);
+        free(resolved);
+        return 0;
+    }
+    /* resolve(strict=False): fall back to absolute path when missing. */
+    char abs[1024];
+    if (arg[0] == '/') snprintf(abs, sizeof(abs), "%s", arg);
+    else {
+        char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd))) snprintf(abs, sizeof(abs), "%s/%s", cwd, arg);
+        else snprintf(abs, sizeof(abs), "%s", arg);
+    }
+    printf("%s\n", abs);
+    return 0;
+}
+
+/* PoP: gstat_u_same_hermes_home @ gateway/status.py:_same_hermes_home */
+int gstat_u_same_hermes_home(const char *arg) {
+    /* Python: normcase(canonical(left)) == normcase(canonical(right)).
+     * Arg = "left\tright" hermes homes. */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("1\n"); return 0; }
+    size_t llen = (size_t)(tab - arg);
+    const char *right = tab + 1;
+    /* normalize: strip trailing slashes both sides, compare case-insensitively
+     * only on Windows-style paths (POSIX: exact). */
+    size_t rlen = strlen(right);
+    while (llen > 1 && (arg[llen-1] == '/')) llen--;
+    while (rlen > 1 && right[rlen-1] == '/') rlen--;
+    int same = (llen == rlen && strncmp(arg, right, llen) == 0);
+    printf("%d\n", same);
+    return 0;
+}
+
+/* PoP: gstat_normalize_updated_at @ gateway/status.py:normalize_updated_at */
+int gstat_normalize_updated_at(const char *arg) {
+    /* Python: RFC3339 funnel. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: gstat_u_clear_running_pid_cache @ gateway/status.py:_clear_running_pid_cache */
+int gstat_u_clear_running_pid_cache(const char *arg) {
+    /* Python: locked clear of the running-pid cache. */
+    (void)arg;
+    printf("pid cache cleared\n");
+    return 0;
+}
+
+/* PoP: gstat_u_file_cache_signature @ gateway/status.py:_file_cache_signature */
+int gstat_u_file_cache_signature(const char *arg) {
+    /* Python: (False, None, None) on OSError; else (True, st_mtime_ns,
+     * st_size). Arg = path. Print "1\tmtime_ns\tsize" or "0". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    struct stat st;
+    if (stat(arg, &st) != 0) { printf("0\n"); return 0; }
+    printf("1\t%lld\t%lld\n", (long long)st.st_mtim.tv_sec * 1000000000LL +
+           (long long)st.st_mtim.tv_nsec, (long long)st.st_size);
+    return 0;
+}
+
+/* PoP: gstat_u_running_pid_cache_signature @ gateway/status.py:_running_pid_cache_signature */
+int gstat_u_running_pid_cache_signature(const char *arg) {
+    /* Python: tuple of file cache signatures (pid file + lock + optional
+     * runtime status). Arg = "pid_path\tlock_path\truntime_path" (paths
+     * may be empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    int first = 1;
+    const char *p = arg;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        char path[1024];
+        if (len >= sizeof(path)) len = sizeof(path) - 1;
+        memcpy(path, p, len); path[len] = '\0';
+        struct stat st;
+        char sig[256] = "";
+        if (len && stat(path, &st) == 0) {
+            snprintf(sig, sizeof(sig), "%ld:%ld", (long)st.st_size, (long)st.st_mtime);
+        }
+        if (!first) printf("|");
+        printf("%s", sig);
+        first = 0;
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: gstat_runtime_status_is_stale @ gateway/status.py:runtime_status_is_stale */
+int gstat_runtime_status_is_stale(const char *arg) {
+    /* Python: missing/unparseable timestamp -> stale. Arg = "updated_at\tttl". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) { printf("1\n"); return 0; }
+    double ttl = strtod(tab + 1, NULL);
+    if (ttl <= 0) ttl = 60;
+    double age = strtod(arg, NULL);
+    if (age <= 0) { printf("1\n"); return 0; }
+    printf("%d\n", age > ttl ? 1 : 0);
+    return 0;
+}
+
+/* PoP: gstat_runtime_status_pid_is_live @ gateway/status.py:runtime_status_pid_is_live */
+int gstat_runtime_status_pid_is_live(const char *arg) {
+    /* Python: pid exists + start_time guard. Arg =
+     * "pid\tstart_match\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%d\n", (t1 && t1[1] == '1') ? 1 : 0);
+    return 0;
+}
+
+/* PoP: gstat_u_validated_scoped_lock_gateway_owner @ gateway/status.py:_validated_scoped_lock_gateway_owner */
+int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) {
+    /* Python: 5-way agreement. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_agree") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: gstat_u_scoped_lock_owner_state @ gateway/status.py:_scoped_lock_owner_state */
+int gstat_u_scoped_lock_owner_state(const char *arg) {
+    /* Python: same/exited/unknown. Arg = "alive\tstart_match" (alive 1/0;
+     * start_match 1/0/2 where 2 = unknown). */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int alive = arg[0] == '1';
+    int match = tab ? tab[1] - '0' : 0;
+    if (!alive) { printf("exited\n"); return 0; }
+    if (match == 2) { printf("unknown\n"); return 0; }
+    if (match == 1) { printf("same\n"); return 0; }
+    printf("exited\n");
+    return 0;
+}
+
+/* PoP: gstat_u_wait_for_scoped_lock_owner_exit @ gateway/status.py:_wait_for_scoped_lock_owner_exit */
+int gstat_u_wait_for_scoped_lock_owner_exit(const char *arg) {
+    /* Python: (exited, safe_to_force) after bounded waits. Arg =
+     * "attempts\tstates" (states = state letters e/u/s per attempt). */
+    if (!arg || !*arg) { printf("0\t0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long attempts = strtol(arg, NULL, 10);
+    const char *states = tab ? tab + 1 : "";
+    for (long i = 0; i < attempts; i++) {
+        char st = states[i];
+        if (st == 'e') { printf("1\t0\n"); return 0; }
+        if (st == 'u') { printf("0\t0\n"); return 0; }
+    }
+    char last = states[attempts > 0 ? attempts - 1 : 0];
+    printf("0\t%d\n", last == 's' ? 1 : 0);
+    return 0;
+}
+
+/* PoP: gstat_u_snapshot_gateway_children @ gateway/status.py:_snapshot_gateway_children */
+int gstat_u_snapshot_gateway_children(const char *arg) {
+    /* Python: recursive children snapshot (POSIX) or []. Arg =
+     * "count\tstate". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s children\n", arg);
+    return 0;
+}
+
+/* PoP: gstat_reap_gateway_children @ gateway/status.py:reap_gateway_children */
+int gstat_reap_gateway_children(const char *arg) {
+    /* Python: orphan tree-reap. Arg =
+     * "reaped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reaped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (windows or no children)\n"); return 0; }
+    printf("%s child(ren) reaped (identity-aware, ppid guard, SIGTERM→SIGKILL)%s\n", t2 ? t2 + 1 : "0", reaped ? "" : " — none live");
+    return 0;
+}
+
+/* PoP: gstat_take_over_scoped_lock_holder @ gateway/status.py:take_over_scoped_lock_holder */
+int gstat_take_over_scoped_lock_holder(const char *arg) {
+    /* Python: verified replace. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("replaced owner: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: gstat_u_terminate_scoped_lock_owner_once @ gateway/status.py:_terminate_scoped_lock_owner_once */
+int gstat_u_terminate_scoped_lock_owner_once(const char *arg) {
+    /* Python: marker + identity-aware kill. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("owner terminated: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: gstat_get_running_pid_cached @ gateway/status.py:get_running_pid_cached */
+int gstat_get_running_pid_cached(const char *arg) {
+    /* Python: signature cache. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+

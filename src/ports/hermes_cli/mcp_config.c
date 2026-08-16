@@ -1,0 +1,35 @@
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE 700
+#define _GNU_SOURCE
+/*
+ * ports/hermes_cli/mcp_config.c — C11 port of hermes_cli/mcp_config.py
+ * Merged from 1 source file(s) by reorganization.
+ */
+
+/* ── from src/agent/port_hermes_cli_mcp_config_py_parity.c ── */
+/* Slermes C port — hermes_cli/mcp_config.py (remaining gaps) */
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "hermes_json.h"
+
+static char *xstrdup(const char *s) {
+    if (!s) return NULL;
+    size_t n = strlen(s) + 1;
+    char *p = malloc(n);
+    if (p) memcpy(p, s, n);
+    return p;
+}
+
+/* PoP: hermes_cli_mcp_config_info_p @ hermes_cli/mcp_config.py:_info */
+json_t *hermes_cli_mcp_config_info_p(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_mcp_config_success_p @ hermes_cli/mcp_config.py:_success */
+json_t *hermes_cli_mcp_config_success_p(void) {
+    return json_object();
+}
+

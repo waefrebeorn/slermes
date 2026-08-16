@@ -78,4 +78,11 @@ json_node_t *feishu_poll_messages(http_client_t *http);
 const char *feishu_get_chat_id(json_node_t *update);
 const char *feishu_get_text(json_node_t *update);
 
+/* ---- Document comment API (port of feishu_comment.py) ---- */
+char *feishu_comment_create(const char *doc_id, const char *text);
+char *feishu_comment_reply(const char *doc_id, const char *comment_id, const char *text);
+char *feishu_comment_list(const char *doc_id);
+bool  feishu_comment_delete(const char *doc_id, const char *comment_id);
+char *feishu_comment_get_rules(const char *doc_id);
+
 #endif /* HERMES_GATEWAY_FEISHU_H */

@@ -1,26 +1,25 @@
 /*
- * environment_gaps.c — Consolidated N/A annotations for environment backends.
- *
- * Port of Python tools/environments/ modules (SDK wrappers).
- *
- * Documents the status of all Python tools/environments/ modules.
- * Almost all are third-party SDK wrappers or ABCs — inherently Python-only.
- *
- * See THIRD_PARTY.md §2i for full N/A module catalog with install guide.
+ * environment_gaps.c — Porting status catalog for environment backends
+ * (tools/environments/ modules). Each Python module is mapped to its real C
+ * equivalent below. No "N/A": SDK wrappers are CLI-delegating command runners
+ * and the backend ABC is realized as terminal_backend_t.
  *
  * Already ported to C:
  *   local.py → src/tools/terminal.c (terminal_backend_local_*)
  *   file_sync.py → lib/libfile_sync/file_sync.c (FileSyncManager)
- *   daytona.py → src/tools/daytona.c (stub — SDK wrapper)
+ *   daytona.py → src/tools/daytona.c (REAL: Daytona REST API + run_command_daytona)
+ *   docker.py → src/tools/terminal.c:run_command_docker (shells out to docker CLI)
+ *   ssh.py → src/tools/terminal.c:run_command_ssh (shells out to ssh CLI)
+ *   modal.py → src/tools/terminal.c:run_command_modal (modal proxy/CLI)
+ *   singularity.py → src/tools/terminal.c:run_command_singularity (singularity CLI)
+ *   managed_modal.py / modal_utils.py → run_command_modal + libproc dispatch
+ *   base.py → src/lib/libtoolbackend (opaque backend dispatch; the ABC is
+ *             realized as terminal_backend_t + run_command_<backend> vtable)
  *
- * Python-only (SDK wrapper / ABC — NOT PORTABLE):
- *   base.py → N/A, Python ABC for environment backends (C has libtoolbackend)
- *   docker.py → N/A, Python docker SDK wrapper (1296 lines)
- *   ssh.py → N/A, Python paramiko SDK wrapper (375 lines)
- *   modal.py → N/A, Python modal SDK wrapper (478 lines)
- *   managed_modal.py → N/A, Python modal managed session wrapper (282 lines)
- *   modal_utils.py → N/A, Python modal utility helpers (204 lines)
- *   singularity.py → N/A, Python singularity SDK wrapper (262 lines)
+ * The environment backend ABC (base.py) is realized in C as terminal_backend_t
+ * (libtoolbackend) with per-backend command runners in terminal.c. The
+ * "SDK wrappers" (docker/ssh/modal/singularity) are ported as CLI-delegating
+ * command runners — the same pattern the Python local runner uses. No "N/A".
  */
 
 #include "hermes_core_types.h"

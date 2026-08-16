@@ -58,6 +58,11 @@ pthread_mutex_t *yuanbao_sign_get_refresh_lock(const char *app_key);
 char *yuanbao_sign_compute_signature(const char *nonce, const char *timestamp,
                                       const char *app_key, const char *app_secret);
 
+/* Actual definitions in yuanbao.c (SignManager.compute_signature / build_timestamp). */
+char *yuanbao_compute_signature(const char *nonce, const char *timestamp,
+                                const char *app_key, const char *app_secret);
+char *yuanbao_build_timestamp(void);
+
 /* Build Beijing-time ISO-8601 timestamp without milliseconds.
  * Format: "2006-01-02T15:04:05+08:00"
  * Returns malloc'd string (caller must free). NULL on error. */

@@ -81,4 +81,14 @@ double signal_extract_retry_after(const char *error_json);
  * Returns seconds on success, -1.0 when not found. */
 double signal_parse_retry_after_message(const char *msg);
 
+/* ── Rate-limit backoff state machine (port of signal_rate_limit.py) ── */
+typedef struct signal_rate_limit_state signal_rate_limit_state_t;
+
+void   signal_rate_limit_state_init(signal_rate_limit_state_t *s);
+void   signal_rate_limit_record_failure(signal_rate_limit_state_t *s, double retry_after_seconds);
+bool   signal_rate_limit_can_retry(const signal_rate_limit_state_t *s);
+bool   signal_rate_limit_is_error(const char *error_message);
+int    signal_rate_limit_send_timeout(int num_attachments);
+double signal_rate_limit_retry_after(const char *error_json);
+
 #endif /* HERMES_GATEWAY_SIGNAL_H */
