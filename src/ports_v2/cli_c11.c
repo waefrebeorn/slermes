@@ -238,3 +238,62 @@ char *_normalize_slash_confirm_choice(const char *raw, const char **allowed, int
     free(choice);
     return NULL;
 }
+
+/* ── _resolve_checkpoint_ref ────────────────────────────────────────── */
+/* PoP: _resolve_checkpoint_ref @ cli.py:_resolve_checkpoint_ref */
+/* Resolves a checkpoint number (1-indexed) or hash string.
+ * Returns malloc'd hash string or NULL on error. Caller must free. */
+char *_resolve_checkpoint_ref(const char *ref, json_t *checkpoints) {
+    if (!ref || !checkpoints) return NULL;
+
+    /* Try parsing as a number */
+    char *endptr = NULL;
+    long idx = strtol(ref, &endptr, 10);
+    if (endptr && *endptr == '\0' && idx >= 1) {
+        /* 1-indexed: convert to 0-indexed */
+        int i = (int)(idx - 1);
+        int n = (int)json_len(checkpoints);
+        if (i >= 0 && i < n) {
+            json_t *entry = json_get(checkpoints, i);
+            if (entry && json_is_object(entry)) {
+                json_t *hash = json_object_get(entry, "hash");
+                if (hash && json_is_string(hash)) {
+                    return strdup(json_get_str(hash, NULL, NULL));
+                }
+            }
+        }
+        return NULL;
+    }
+
+    /* Not a number — treat as a git hash */
+    return strdup(ref);
+}
+
+/* ── _approval_choices ──────────────────────────────────────────────── */
+/* PoP: _approval_choices @ cli.py:_approval_choices */
+/* Returns a NULL-terminated array of choice strings.
+ * Caller must free the array (but not the strings — they're static). */
+char **_approval_choices(const char *command, bool allow_permanent, bool smart_denied) {
+    static const char *choices_smart[] = {"once", "deny", NULL};
+    static const char *choices_full[] = {"once", "session", "always", "deny", NULL};
+    static const char *choices_no_perm[] = {"once", "session", "deny", NULL};
+    static const char *choices_full_view[] = {"once", "session", "always", "deny", "view", NULL};
+    static const char *choices_no_perm_view[] = {"once", "session", "deny", "view", NULL};
+
+    const char **src;
+    if (smart_denied) {
+        src = choices_smart;
+    } else if (allow_permanent) {
+        src = (command && strlen(command) > 70) ? choices_full_view : choices_full;
+    } else {
+        src = (command && strlen(command) > 70) ? choices_no_perm_view : choices_no_perm;
+    }
+
+    /* Count and copy */
+    int n = 0;
+    while (src[n]) n++;
+    char **result = (char**)malloc((n + 1) * sizeof(char*));
+    for (int i = 0; i < n; i++) result[i] = (char*)src[i];
+    result[n] = NULL;
+    return result;
+}
