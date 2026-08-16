@@ -110,6 +110,24 @@ account_usage_snapshot_t *account_usage_build_nous_credits_snapshot(
 char **account_usage_nous_credits_lines(const account_usage_snapshot_t *snap,
     bool markdown);
 
+/* === Nous portal auth / recommended model (port of Python auth/account_usage) === */
+
+/* Port of Python _nous_portal_account_has_fresh_paid_access: fetch
+ * /api/oauth/account from the portal and return true iff the account
+ * currently has paid_service_access. */
+bool nous_portal_has_fresh_paid_access(const char *portal_base_url, double timeout);
+
+/* Port of Python _refresh_nous_recommended_model: fetch the portal's
+ * recommended model for the account (returns malloc'd model id or NULL).
+ * Faithful to hermes_cli.models.fetch_nous_recommended_models. */
+char *nous_portal_recommended_model(const char *portal_base_url, double timeout);
+
+/* Port of Python _read_codex_access_token: read a Codex OAuth access token
+ * from the stored auth state for provider "codex". Returns malloc'd token or
+ * NULL. */
+char *read_codex_access_token(void);
+
+
 /* Port of Python: AccountUsageSnapshot.available (property) */
 bool account_usage_available(const account_usage_snapshot_t *snap);
 

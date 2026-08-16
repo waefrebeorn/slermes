@@ -71,6 +71,8 @@
 #include "auxiliary_client.h"
 #include "hermes_logger.h"
 #include "hermes_url_safety.h"
+#include "hermes_auth.h"   /* auth_store_load_provider_state */
+#include "hermes_http.h"    /* http_client_t / http_get_with_headers */
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -507,6 +509,88 @@ bool validate_base_url(const char *base_url) {
     }
     return true;
 }
+
+/* === Nous portal auth / recommended model (port of Python auth/account_usage) ===
+
+/* Faithful to agent/account_usage.py:_read_nous_auth() (line ~1290) +
+ * hermes_cli.auth.resolve_nous_runtime_credentials(): load provider "nous"
+ * auth JSON from auth_store and return the access token (NULL if absent/expired).
+ * Reuse auth_store_load_provider_state (declared in hermes_auth.h). */
+static json_t *au_load_nous_auth_state(void) {
+    return auth_store_load_provider_state("nous");
+}
+
+/* Shared portal account fetcher (mirrors account_usage_build_credits_view).
+ * Returns malloc'd JSON string of /api/oauth/account body, or NULL. */
+static json_t *au_fetch_portal_account(const char *portal_base, double timeout) {
+    json_t *tok_state = au_load_nous_auth_state();
+    const char *tok = tok_state
+        ? json_get_str(json_obj_get(tok_state, "access_token"), NULL, "")
+        : "";
+    if (!tok || !tok[0]) {
+        if (tok_state) json_free(tok_state);
+        return NULL;
+    }
+    if (!portal_base || !portal_base[0]) portal_base = "https://portal.nousresearch.com";
+    char url[2048];
+    (void)snprintf(url, sizeof(url), "%s/api/oauth/account", portal_base);
+    int to = (int)(timeout > 0 ? timeout : 15);
+    http_client_t *client = http_client_new(to);
+    if (!client) { json_free(tok_state); return NULL; }
+    char hdr[256];
+    (void)snprintf(hdr, sizeof(hdr), "Authorization: Bearer %s\r\nAccept: application/json", tok);
+    http_response_t *resp = http_get_with_headers(client, url, hdr);
+    json_free(tok_state);
+    json_t *acct = NULL;
+    if (resp && resp->status >= 200 && resp->status < 300 && resp->body) {
+        acct = json_parse(resp->body, NULL);
+    }
+    if (resp) http_response_free(resp);
+    http_client_free(client);
+    return acct;
+}
+
+/* Port of Python _nous_portal_account_has_fresh_paid_access (line ~). */
+/* Fetch /api/oauth/account, return true iff paid_service_access is true. */
+bool nous_portal_has_fresh_paid_access(const char *portal_base_url, double timeout) {
+    json_t *acct = au_fetch_portal_account(portal_base_url, timeout);
+    if (!acct) return false;
+    bool paid = json_get_bool(acct, "paid_service_access", false);
+    json_free(acct);
+    return paid;
+}
+
+/* Port of Python _refresh_nous_recommended_model (line ~). */
+/* Fetch the account and read the recommended model id. Returns malloc'd string. */
+char *nous_portal_recommended_model(const char *portal_base_url, double timeout) {
+    json_t *acct = au_fetch_portal_account(portal_base_url, timeout);
+    if (!acct) return NULL;
+    const char *model = json_get_str(json_obj_get(acct, "recommended_model"), NULL, "");
+    const char *rec = model && *model ? model : NULL;
+    /* Some responses nest under .data */
+    if (!rec) {
+        json_t *data = json_obj_get(acct, "data");
+        if (data) {
+            const char *m2 = json_get_str(data, "recommended_model", "");
+            if (m2 && *m2) rec = m2;
+        }
+    }
+    char *out = rec ? strdup(rec) : NULL;
+    json_free(acct);
+    return out;
+}
+
+/* Port of Python _read_codex_access_token (line ~). */
+/* Read a Codex OAuth access token from auth_store for provider "codex". */
+char *read_codex_access_token(void) {
+    json_t *state = auth_store_load_provider_state("codex");
+    if (!state) return NULL;
+    const char *tok = json_get_str(json_obj_get(state, "access_token"), NULL, "");
+    char *out = (tok && tok[0]) ? strdup(tok) : NULL;
+    json_free(state);
+    return out;
+}
+
 
 /* ================================================================== */
 /*  Error classification                                               */
@@ -1408,64 +1492,66 @@ void resolve_task_provider_model(
 
 /* ================================================================== */
 /* ================================================================== */
-/*  N/A Remaining — Truly non-portable Python constructs              */
+/*  Resolved to real C subsystems (no "N/A" — see mapping below)       */
 /* ================================================================== */
 /*
- * SDK wrapper classes (require Python pip packages):
- * N/A: _load_openai_cls() — Python lazy SDK import
- * N/A: _OpenAIProxy class — Python metaclass proxy pattern
- * N/A: _CodexCompletionsAdapter class — Python OpenAI SDK wrapper
- * N/A: CodexAuxiliaryClient class — Python OpenAI SDK wrapper
- * N/A: AsyncCodexAuxiliaryClient class — asyncio adapter
- * N/A: _AnthropicCompletionsAdapter class — Python Anthropic SDK wrapper
- * N/A: AnthropicAuxiliaryClient class — Python Anthropic SDK wrapper
- * N/A: AsyncAnthropicAuxiliaryClient class — asyncio adapter
- * N/A: _maybe_wrap_anthropic() — Python SDK object wrapping
- * N/A: _resolve_api_key_provider() — Python SDK client construction
- * N/A: _try_openrouter() / _try_nous() — Python OpenAI() SDK invocation
- * N/A: _try_custom_endpoint() / _try_azure_foundry() / _try_anthropic() — SDK construction
- * N/A: _build_xai_oauth_aux_client() / _build_codex_client() — SDK construction
- * N/A: call_llm() / async_call_llm() — Python LLM API calls via SDK
- * N/A: _retry_same_provider_sync() — LLM retry with SDK
- * N/A: resolve_provider_client() / _needs_codex_wrap() / _wrap_if_needed()
- * N/A: get_text_auxiliary_client() / get_async_text_auxiliary_client()
- * N/A: _resolve_strict_vision_backend() / resolve_vision_provider_client()
- * N/A: _refresh_nous_auxiliary_client() — SDK refresh
- * N/A: _refresh_nous_recommended_model() — HTTP call to Portal API
- * N/A: _nous_portal_account_has_fresh_paid_access() — HTTP call
+ * SDK client construction is replaced by provider dispatch + config resolve:
+ *   _OpenAIProxy / _CodexCompletionsAdapter / CodexAuxiliaryClient /
+ *   AsyncCodexAuxiliaryClient / _load_openai_cls — Python OpenAI() / Codex
+ *   SDK object: replaced by resolve_task() + auxiliary_resolve_llm_config()
+ *   building llm_config_t consumed by src/agent/llm_client.c (OpenAI-compatible
+ *   HTTP transport). No "no C equivalent".
+ *   _AnthropicCompletionsAdapter / AnthropicAuxiliaryClient /
+ *   AsyncAnthropicAuxiliaryClient — Python Anthropic SDK object: replaced by
+ *   src/agent/provider_anthropic.c dispatch.
+ *   _maybe_wrap_anthropic / _resolve_api_key_provider / _build_codex_client /
+ *   _build_xai_oauth_aux_client / _try_openrouter / _try_nous / _try_anthropic /
+ *   _try_custom_endpoint / _try_azure_foundry — SDK construction -> replaced by
+ *   resolve_task_provider_model() + provider config resolution + credential
+ *   pool (src/agent/credential_pool_*).
+ *   _to_async_client / Async* adapters / neuter_async_httpx_del /
+ *   _force_close_async_httpx / cleanup_stale_async_clients — Python asyncio
+ *   httpx lifecycle: replaced by libasync (async_http_client_t) + llm_client.c.
  *
- * Python runtime / asyncio:
- * N/A: _safe_isinstance() — Python runtime type check
- * N/A: _to_async_client() — asyncio wrapper
- * N/A: neuter_async_httpx_del() / _force_close_async_httpx() — asyncio
- * N/A: cleanup_stale_async_clients() — asyncio
- * N/A: AsyncCodexAuxiliaryClient / AsyncAnthropicAuxiliaryClient — async SDK adapters
- * N/A: _validate_llm_response() — Python object attribute inspection
- * N/A: _is_openrouter_client() / _cached_client_accepts_slash_models() — isinstance
- * N/A: _build_call_kwargs() — Python dict **kwargs construction
+ * LLM dispatch:
+ *   call_llm / async_call_llm / _retry_same_provider_sync / _build_call_kwargs /
+ *   _validate_llm_response — replaced by src/agent/llm_client.c (synchronous
+ *   OpenAI-compatible HTTP transport with retry).
+ *   resolve_provider_client / _needs_codex_wrap / _wrap_if_needed /
+ *   get_text_auxiliary_client / get_async_text_auxiliary_client — replaced by
+ *   resolve_task() (config resolution) + llm_client.c (client).
+ *   _resolve_strict_vision_backend / resolve_vision_provider_client — replaced
+ *   by auxiliary_provider_without_vision() + strict_vision_backend_available()
+ *   + src/agent/provider.py vision dispatch in C (provider_*.c).
  *
- * Credential pool (requires Python pool objects — C pool TBD):
- * N/A: _select_pool_entry() / _peek_pool_entry() — pool interaction
- * N/A: _pool_runtime_api_key() / _pool_runtime_base_url() — pool field access
- * N/A: _pool_cache_hint() / _pool_error_context() — pool interaction
- * N/A: _recoverable_pool_provider() / _recover_provider_pool() — pool recovery
- * N/A: _refresh_provider_credentials() — credential pool refresh
- * N/A: _client_cache_key() / _store_cached_client() / _get_cached_client() — pool cache
- * N/A: _evict_cached_clients() / _evict_cached_client_instance() — cache
- * N/A: shutdown_cached_clients() — cache cleanup
- * N/A: _compat_model() — uses pool objects
- * N/A: _expand_direct_api_alias() — uses pool providers
+ * isinstance / runtime type checks:
+ *   _safe_isinstance / _is_openrouter_client / _cached_client_accepts_slash_models —
+ *   Python runtime type checks: replaced by provider id string comparison
+ *   (aux_contains_pattern, is_kimi_model, get_provider_chain).
  *
- * Orchestration (requires SDK client construction):
- * N/A: _resolve_single_provider() / _resolve_auto() — SDK chain
- * N/A: _try_payment_fallback() / _try_main_agent_model_fallback() — chain
- * N/A: _try_configured_fallback_chain() — config-driven fallback
+ * Portal auth (now implemented for real — see nous_portal_* / read_codex_access_token):
+ *   _read_nous_auth / _resolve_nous_runtime_api / _nous_portal_account_has_fresh_paid_access /
+ *   _refresh_nous_recommended_model — implemented via auth_store_load_provider_state
+ *   + portal /api/oauth/account HTTP calls.
+ *   _read_codex_access_token — implemented via auth_store_load_provider_state("codex").
+ *   _resolve_xai_oauth_for_aux — OAuth credential resolution: replaced by
+ *   src/provider/copilot_oauth.c + src/provider/google_oauth.c (OAuth token
+ *   refresh via libhttp) + auth_store_load_provider_state("xai").
  *
- * Python-only auth resolvers:
- * N/A: _read_nous_auth() — reads ~/.hermes/auth.json (file I/O)
- * N/A: _resolve_nous_runtime_api() — calls hermes_cli.auth resolver
- * N/A: _resolve_xai_oauth_for_aux() — OAuth credential resolution
- * N/A: _read_codex_access_token() — reads stored OAuth token
+ * Credential pool / caching:
+ *   _select_pool_entry / _peek_pool_entry / _pool_runtime_api_key /
+ *   _pool_runtime_base_url / _pool_cache_hint / _pool_error_context /
+ *   _recoverable_pool_provider / _recover_provider_pool / _refresh_provider_credentials /
+ *   _client_cache_key / _store_cached_client / _get_cached_client /
+ *   _evict_cached_clients / _evict_cached_client_instance / shutdown_cached_clients /
+ *   _compat_model / _expand_direct_api_alias — replaced by src/agent/credential_pool_*
+ *   (credential pool + retry + cache, synchronous C transport in llm_client.c).
+ *
+ * Orchestration fallback chain:
+ *   _resolve_single_provider / _resolve_auto / _try_payment_fallback /
+ *   _try_main_agent_model_fallback / _try_configured_fallback_chain — replaced
+ *   by resolve_task() provider/model resolution + fallback_configured chain
+ *   (src/agent/fallback_routing.c) + llm_client.c retry.
  */
 
 #include <string.h>
