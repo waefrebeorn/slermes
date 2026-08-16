@@ -1,0 +1,6665 @@
+{
+ "__init__.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_update_cmd.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "_early_recovery.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "_parser.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli__parser_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "_scan_venv_blockers.py": {
+  "marker_files": [
+   "src/cli/port_scan_venv_blockers.c"
+  ],
+  "func_match_files": []
+ },
+ "_startup_fast.py": {
+  "marker_files": [
+   "src/cli/port_startup_fast.c"
+  ],
+  "func_match_files": []
+ },
+ "_subprocess_compat.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli__subprocess_compat_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "account_usage.py": {
+  "marker_files": [
+   "src/agent/port_account_usage_ports.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/ports/agent/auxiliary_client.c",
+   "src/tools/account_usage.c"
+  ],
+  "func_match_files": []
+ },
+ "active_sessions.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_hermes_cli_active_sessions_py_final.c",
+   "src/agent/port_hermes_cli_active_sessions_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/kanban_workers.c",
+   "src/cli/port_active_sessions_ports.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_goals_manager.c",
+   "src/tools/browser_camofox_state.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/account_usage.py": {
+  "marker_files": [
+   "src/tools/account_usage.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/agent_init.py": {
+  "marker_files": [
+   "src/ports/agent/agent_init.c",
+   "src/ports/agent/chat_completion_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/agent_runtime_helpers.py": {
+  "marker_files": [
+   "src/agent/agent_message_repair.c",
+   "src/agent/agent_message_sanitize.c",
+   "src/agent/credential_pool_engine.c",
+   "src/agent/llm_client.c",
+   "src/ports/agent/agent_runtime_helpers.c",
+   "src/ports/agent/conversation_loop.c",
+   "src/ports/agent/prompt_caching.c",
+   "src/ports/tools/registry.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/anthropic_adapter.py": {
+  "marker_files": [
+   "src/agent/provider_anthropic.c",
+   "src/cli/port_anthropic_adapter.c",
+   "src/ports/agent/anthropic_adapter.c",
+   "src/ports/agent/prompt_caching.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/antigravity_code_assist.py": {
+  "marker_files": [
+   "src/agent/port_agent_antigravity_code_assist.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/antigravity_oauth.py": {
+  "marker_files": [
+   "src/agent/port_agent_antigravity_oauth.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/async_utils.py": {
+  "marker_files": [
+   "src/agent/async_utils.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/auxiliary_client.py": {
+  "marker_files": [
+   "src/agent/port_agent_auxiliary_client.c",
+   "src/gateway/server.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/backend_identity.py": {
+  "marker_files": [
+   "src/agent/port_backend_identity.c"
+  ],
+  "func_match_files": [
+   "src/agent/port_backend_identity.c"
+  ]
+ },
+ "agent/background_review.py": {
+  "marker_files": [
+   "src/agent/llm_client.c",
+   "src/agent/port_agent_background_review.c",
+   "src/ports/agent/background_review.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/bedrock_adapter.py": {
+  "marker_files": [
+   "src/agent/provider_bedrock.c",
+   "src/ports/agent/bedrock_adapter.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/billing_view.py": {
+  "marker_files": [
+   "src/agent/port_agent_billing_view.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/browser_provider.py": {
+  "marker_files": [
+   "src/cli/port_agent_browser_provider_methods.c",
+   "src/ports/agent/browser_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/browser_registry.py": {
+  "marker_files": [
+   "src/agent/browser_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/chat_completion_helpers.py": {
+  "marker_files": [
+   "src/ports/agent/chat_completion_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/codex_runtime.py": {
+  "marker_files": [
+   "src/cli/port_agent_codex_runtime.c",
+   "src/ports/agent/codex_runtime.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/coding_context.py": {
+  "marker_files": [
+   "src/agent/port_agent_coding_context.c",
+   "src/cli/paths.c",
+   "src/ports/agent/coding_context.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/context_breakdown.py": {
+  "marker_files": [
+   "src/ports/agent/context_breakdown.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/context_compressor.py": {
+  "marker_files": [
+   "src/agent/context.c",
+   "src/agent/llm_client.c",
+   "src/agent/port_agent_context_compressor.c",
+   "src/ports/agent/context_compressor.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/context_engine.py": {
+  "marker_files": [
+   "src/ports/agent/context_engine.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/context_references.py": {
+  "marker_files": [
+   "src/cli/port_agent_context_references.c",
+   "src/ports/agent/context_references.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/conversation_compression.py": {
+  "marker_files": [
+   "src/agent/llm_client.c",
+   "src/ports/agent/conversation_compression.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/conversation_loop.py": {
+  "marker_files": [
+   "src/agent/agent_loop.c",
+   "src/agent/port_agent_conversation_loop.c",
+   "src/agent/provider_openai.c",
+   "src/ports/agent/conversation_loop.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/copilot_acp_client.py": {
+  "marker_files": [
+   "src/cli/port_agent_copilot_acp_client.c",
+   "src/ports/agent/copilot_acp_client.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/credential_persistence.py": {
+  "marker_files": [
+   "src/agent/credential_persistence.c",
+   "src/agent/credential_pool_persistence.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/credential_pool.py": {
+  "marker_files": [
+   "src/agent/credential_pool_custom.c",
+   "src/agent/credential_pool_engine.c",
+   "src/agent/credential_pool_persistence.c",
+   "src/agent/credential_pool_sync.c",
+   "src/tools/memory.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/credential_sources.py": {
+  "marker_files": [
+   "src/ports/agent/credential_sources.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/credits_tracker.py": {
+  "marker_files": [
+   "src/cli/port_agent_credits_tracker.c",
+   "src/ports/agent/credits_tracker.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/curator.py": {
+  "marker_files": [
+   "src/ports/agent/curator.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/curator_backup.py": {
+  "marker_files": [
+   "src/tools/curator_backup.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/delegation_context.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/port_agent_delegation_context.c"
+  ]
+ },
+ "agent/display.py": {
+  "marker_files": [
+   "src/agent/port_agent_display.c",
+   "src/cli/display_core.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/error_classifier.py": {
+  "marker_files": [
+   "src/cli/port_agent_error_classifier.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/errors.py": {
+  "marker_files": [
+   "src/hermes_error.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/file_safety.py": {
+  "marker_files": [
+   "src/agent/file_safety.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/gemini_cloudcode_adapter.py": {
+  "marker_files": [
+   "src/agent/gemini_cloudcode_adapter.c",
+   "src/agent/provider_google.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/gemini_native_adapter.py": {
+  "marker_files": [
+   "src/agent/provider_google.c",
+   "src/ports/agent/gemini_native_adapter.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/gemini_schema.py": {
+  "marker_files": [
+   "src/ports/agent/gemini_schema.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/google_code_assist.py": {
+  "marker_files": [
+   "src/agent/google_code_assist.c",
+   "src/gateway/platforms/weixin.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/google_oauth.py": {
+  "marker_files": [
+   "src/cli/port_agent_google_oauth.c",
+   "src/provider/google_oauth.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/i18n.py": {
+  "marker_files": [
+   "src/ports/agent/i18n.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/image_gen_provider.py": {
+  "marker_files": [
+   "src/agent/port_agent_image_gen_provider.c",
+   "src/cli/port_agent_image_gen_provider.c",
+   "src/tools/image_gen_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/image_gen_registry.py": {
+  "marker_files": [
+   "src/tools/image_gen_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/image_routing.py": {
+  "marker_files": [
+   "src/ports/agent/image_routing.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/insights.py": {
+  "marker_files": [
+   "src/agent/provider_metadata.c",
+   "src/cli/display_core.c",
+   "src/cli/port_agent_insights.c",
+   "src/ports/agent/insights.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/iteration_budget.py": {
+  "marker_files": [
+   "src/agent/budget_tracker.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/jiter_preload.py": {
+  "marker_files": [
+   "src/hermes_tokenizer.c",
+   "src/jiter_preload.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/learn_prompt.py": {
+  "marker_files": [
+   "src/agent/port_agent_learn_prompt.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/lmstudio_reasoning.py": {
+  "marker_files": [
+   "src/agent/lmstudio_reasoning.c",
+   "src/agent/lmstudio_reasoning_py.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/manual_compression_feedback.py": {
+  "marker_files": [
+   "src/ports/agent/manual_compression_feedback.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/markdown_tables.py": {
+  "marker_files": [
+   "src/ports/agent/markdown_tables.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/memory_manager.py": {
+  "marker_files": [
+   "src/agent/port_agent_memory_manager.c",
+   "src/agent/think_scrubber.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/memory_provider.py": {
+  "marker_files": [
+   "src/agent/port_agent_memory_provider.c",
+   "src/ports/agent/memory_provider.c",
+   "src/ports/agent/transports/hermes_tools_mcp_server.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/message_content.py": {
+  "marker_files": [
+   "src/agent/port_agent_message_content.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/message_sanitization.py": {
+  "marker_files": [
+   "src/agent/sanitize.c",
+   "src/ports/agent/message_sanitization.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/model_metadata.py": {
+  "marker_files": [
+   "src/agent/provider_metadata.c",
+   "src/cli/port_agent_model_metadata.c",
+   "src/ports/agent/model_metadata.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/models_dev.py": {
+  "marker_files": [
+   "src/agent/provider_metadata.c",
+   "src/ports/agent/models_dev.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/monitoring/__init__.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/hermes_state/hermes_state_open.c",
+   "src/agent/think_scrubber.c",
+   "src/agent/transcription_provider.c",
+   "src/cli/display_core.c",
+   "src/cli/port_turn_summary_cli.c"
+  ]
+ },
+ "agent/monitoring/cron_health.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/monitoring/emitter.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/port_agent_monitoring_health_export.c",
+   "src/agent/port_gateway_health.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ]
+ },
+ "agent/monitoring/events.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/acp/events.c",
+   "src/agent/audit.c",
+   "src/cli/kanban_query.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/tui_eventpub.c",
+   "src/cli/tui_eventpub.h",
+   "src/gateway/gw_notifier.c",
+   "src/gateway/platforms/wecom_callback.c",
+   "src/plugins/plugin_observability.c",
+   "src/tools/port_browser_supervisor_ports.c"
+  ]
+ },
+ "agent/monitoring/gateway_health.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/monitoring/gateway_health_export.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/port_agent_monitoring_health_export_pure.c"
+  ]
+ },
+ "agent/monitoring/otlp_exporter.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/monitoring/policy.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/gateway/gw_session.c",
+   "src/gateway/port_qqbot_wrappers.c",
+   "src/gateway/port_session_stall.c",
+   "src/gateway/port_yuanbao_wrappers.c",
+   "src/gateway/slash_access.c",
+   "src/ports/agent/codex_responses_adapter.c"
+  ]
+ },
+ "agent/monitoring/redaction.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/agent_message_sanitize.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/ports/agent/redact.c"
+  ]
+ },
+ "agent/moonshot_schema.py": {
+  "marker_files": [
+   "src/agent/moonshot_schema.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/nous_rate_guard.py": {
+  "marker_files": [
+   "src/ports/agent/nous_rate_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/onboarding.py": {
+  "marker_files": [
+   "src/agent/onboarding.c",
+   "src/cli/port_agent_onboarding.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/oneshot.py": {
+  "marker_files": [
+   "src/cli/port_agent_oneshot.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/plugin_llm.py": {
+  "marker_files": [
+   "src/cli/port_agent_plugin_llm.c",
+   "src/ports/agent/plugin_llm.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/portal_tags.py": {
+  "marker_files": [
+   "src/agent/portal_tags.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/process_bootstrap.py": {
+  "marker_files": [
+   "src/agent/proxy_utils.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/prompt_builder.py": {
+  "marker_files": [
+   "src/agent/port_agent_prompt_builder.c",
+   "src/agent/prompt_builder_guidance.c",
+   "src/ports/agent/prompt_builder.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/prompt_caching.py": {
+  "marker_files": [
+   "src/ports/agent/prompt_caching.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/proxy_sources/__init__.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/hermes_state/hermes_state_open.c",
+   "src/agent/think_scrubber.c",
+   "src/agent/transcription_provider.c",
+   "src/cli/display_core.c",
+   "src/cli/port_turn_summary_cli.c"
+  ]
+ },
+ "agent/proxy_sources/iron_proxy.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/redact.py": {
+  "marker_files": [
+   "src/ports/agent/redact.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/relay_llm.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/relay_runtime.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/relay_tools.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/retry_utils.py": {
+  "marker_files": [
+   "src/ports/agent/retry_utils.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/runtime_cwd.py": {
+  "marker_files": [
+   "src/agent/runtime_cwd.c",
+   "src/ports/agent/prompt_builder.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/secret_scope.py": {
+  "marker_files": [
+   "src/agent/port_agent_secret_scope.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/shell_hooks.py": {
+  "marker_files": [
+   "src/agent/provider_google.c",
+   "src/ports/agent/shell_hooks.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/skill_bundles.py": {
+  "marker_files": [
+   "src/ports/agent/skill_bundles.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/skill_commands.py": {
+  "marker_files": [
+   "src/ports/agent/skill_commands.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/skill_preprocessing.py": {
+  "marker_files": [
+   "src/ports/agent/skill_preprocessing.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/skill_utils.py": {
+  "marker_files": [
+   "src/agent/port_agent_skill_utils.c",
+   "src/cli/port_agent_skill_utils.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/ssl_guard.py": {
+  "marker_files": [
+   "src/ports/agent/ssl_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/stream_diag.py": {
+  "marker_files": [
+   "src/agent/stream_diag.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/subagent_lifecycle.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/subdirectory_hints.py": {
+  "marker_files": [
+   "src/agent/subdir_hints.c",
+   "src/ports/agent/subdirectory_hints.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/system_prompt.py": {
+  "marker_files": [
+   "src/agent/port_agent_system_prompt.c",
+   "src/ports/agent/system_prompt.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/think_scrubber.py": {
+  "marker_files": [
+   "src/agent/think_scrubber.c",
+   "src/cli/port_agent_think_scrubber.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/title_generator.py": {
+  "marker_files": [
+   "src/ports/agent/title_generator.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/token_refresh.py": {
+  "marker_files": [
+   "src/agent/llm_client.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/tool_executor.py": {
+  "marker_files": [
+   "src/agent/port_agent_tool_executor.c",
+   "src/cli/port_agent_tool_executor.c",
+   "src/ports/agent/conversation_loop.c",
+   "src/ports/agent/tool_executor.c",
+   "src/tools/tool_result.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/tool_guardrails.py": {
+  "marker_files": [
+   "src/cli/port_agent_tool_guardrails.c",
+   "src/ports/agent/tool_guardrails.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/tool_result_classification.py": {
+  "marker_files": [
+   "src/tools/tool_result.c",
+   "src/tools/tool_result_classification.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/trajectory.py": {
+  "marker_files": [
+   "src/agent/trajectory.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/transcription_provider.py": {
+  "marker_files": [
+   "src/agent/transcription_provider.c",
+   "src/cli/port_agent_transcription_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/transcription_registry.py": {
+  "marker_files": [
+   "src/tools/transcribe.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/tts_provider.py": {
+  "marker_files": [
+   "src/cli/port_agent_tts_provider_methods.c",
+   "src/tools/tts.c",
+   "src/tools/tts_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/tts_registry.py": {
+  "marker_files": [
+   "src/tools/tts.c",
+   "src/tools/tts_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/turn_context.py": {
+  "marker_files": [
+   "src/ports/agent/turn_context.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/turn_finalizer.py": {
+  "marker_files": [
+   "src/ports/agent/turn_finalizer.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/turn_summary.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "agent/usage_pricing.py": {
+  "marker_files": [
+   "src/cli/port_agent_usage_pricing.c",
+   "src/ports/agent/usage_pricing.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/video_gen_provider.py": {
+  "marker_files": [
+   "src/tools/video_gen_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/video_gen_registry.py": {
+  "marker_files": [
+   "src/tools/video_gen_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/web_search_provider.py": {
+  "marker_files": [
+   "src/cli/port_agent_web_search_provider.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "agent/web_search_registry.py": {
+  "marker_files": [
+   "src/tools/web_search_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "agent_cache_pressure.py": {
+  "marker_files": [
+   "src/ports/gateway/agent_cache_pressure.c"
+  ],
+  "func_match_files": []
+ },
+ "agent_import.py": {
+  "marker_files": [
+   "src/agent/port_batch4_gaps.c",
+   "src/agent/port_hermes_cli_agent_import_py_parity.c",
+   "src/cli/port_hermes_cli_agent_import.c",
+   "src/file_ops.c"
+  ],
+  "func_match_files": []
+ },
+ "agent_init.py": {
+  "marker_files": [
+   "src/agent/port_agent_agent_init_py_final.c",
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_init_ports.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/cli/port_config_py_pure.c",
+   "src/ports/agent/agent_init.c",
+   "src/ports/agent/chat_completion_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "agent_plugins.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_agent_plugins_py_parity.c",
+   "src/hermes_cli/port_agent_plugins_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "agent_runtime_helpers.py": {
+  "marker_files": [
+   "src/agent/agent_message_payload.c",
+   "src/agent/agent_message_repair.c",
+   "src/agent/agent_message_sanitize.c",
+   "src/agent/agent_runtime_pure.c",
+   "src/agent/credential_pool_engine.c",
+   "src/agent/hermes_state/hermes_state_repair.c",
+   "src/agent/llm_client.c",
+   "src/agent/port_agent_agent_runtime_helpers_py_parity.c",
+   "src/agent/port_agent_intent_ack.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_runtime_helpers_ports.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_prompt_caching_plan.c",
+   "src/ports/agent/agent_runtime_helpers.c",
+   "src/ports/agent/conversation_loop.c",
+   "src/ports/agent/prompt_caching.c",
+   "src/ports/tools/registry.c"
+  ],
+  "func_match_files": []
+ },
+ "ansi_strip.py": {
+  "marker_files": [
+   "src/tools/ansi_strip.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "anthropic_adapter.py": {
+  "marker_files": [
+   "src/agent/port_agent_anthropic_adapter_py_parity.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_anthropic_adapter_ports.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/provider_anthropic.c",
+   "src/cli/port_agent_anthropic_adapter.c",
+   "src/cli/port_anthropic_adapter.c",
+   "src/ports/agent/anthropic_adapter.c",
+   "src/ports/agent/prompt_caching.c"
+  ],
+  "func_match_files": []
+ },
+ "antigravity_code_assist.py": {
+  "marker_files": [
+   "src/agent/port_agent_antigravity_code_assist.c"
+  ],
+  "func_match_files": []
+ },
+ "antigravity_oauth.py": {
+  "marker_files": [
+   "src/agent/port_agent_antigravity_oauth.c",
+   "src/agent/port_antigravity_oauth.c"
+  ],
+  "func_match_files": []
+ },
+ "approval.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_tools_approval_py_parity.c",
+   "src/cli/port_cli_commands_mixin_wrappers.c",
+   "src/ports/tools/approval.c",
+   "src/tools/port_approval.c",
+   "src/tools/port_approval_gaps.c",
+   "src/tools/port_approval_helpers2.c",
+   "src/tools/port_approval_ports.c",
+   "src/tools/port_approval_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "approval_mode.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "approvals_suggest.py": {
+  "marker_files": [
+   "src/agent/port_approvals_suggest_proposals.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_approvals_suggest_py_final.c",
+   "src/agent/port_hermes_cli_approvals_suggest_py_parity.c",
+   "src/agent/port_real_gaps.c",
+   "src/hermes_cli/port_approvals_suggest.c",
+   "src/ports/tools/approval.c"
+  ],
+  "func_match_files": []
+ },
+ "approvals_test.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_approvals_test_py_final.c",
+   "src/agent/port_hermes_cli_approvals_test_py_parity.c",
+   "src/hermes_cli/port_approvals_suggest.c"
+  ],
+  "func_match_files": []
+ },
+ "async_delegation.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_async_delegation_py_final.c",
+   "src/agent/port_tools_async_delegation_py_parity.c",
+   "src/tools/port_async_delegation_wrappers.c",
+   "src/tools/port_tools_async_delegation.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "async_utils.py": {
+  "marker_files": [
+   "src/agent/async_utils.c",
+   "src/agent/port_async_utils.c"
+  ],
+  "func_match_files": []
+ },
+ "audio_container.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/tools/port_tools_audio_container.c",
+   "src/tools/port_tts_tool_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "auth.py": {
+  "marker_files": [
+   "src/agent/agent_loop.c",
+   "src/agent/credential_pool_sync.c",
+   "src/agent/port_final_missing_gaps.c",
+   "src/agent/port_small_mods_gaps.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_auth_helpers.c",
+   "src/cli/port_auth_helpers2.c",
+   "src/cli/port_auth_na.c",
+   "src/cli/port_auth_store.c",
+   "src/cli/port_auth_wrappers.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_provider_registry.c",
+   "src/hermes_cli/auth_helpers.c",
+   "src/hermes_cli/port_batch3_gaps.c",
+   "src/ports/agent/credential_sources.c",
+   "src/provider/token_exchange.c"
+  ],
+  "func_match_files": []
+ },
+ "auth_commands.py": {
+  "marker_files": [
+   "src/cli/cli.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "authz_mixin.py": {
+  "marker_files": [
+   "src/cli/port_gateway_authz_mixin.c",
+   "src/gateway/port_gateway_authz_mixin.c",
+   "src/gateway/port_gateway_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "aux_accounting.py": {
+  "marker_files": [
+   "src/agent/port_aux_accounting.c"
+  ],
+  "func_match_files": []
+ },
+ "auxiliary_client.py": {
+  "marker_files": [
+   "src/agent/port_agent_auxiliary_client.c",
+   "src/agent/port_agent_auxiliary_client_gaps.c",
+   "src/agent/port_agent_auxiliary_client_helpers.c",
+   "src/agent/port_agent_auxiliary_client_py_parity.c",
+   "src/agent/port_agent_auxiliary_client_runtime.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_auxiliary_client.c",
+   "src/agent/port_auxiliary_client_gaps.c",
+   "src/agent/port_auxiliary_client_helpers2.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/process_bootstrap.c",
+   "src/gateway/server.c",
+   "src/ports/agent/agent_runtime_helpers.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "azure_detect.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_azure_detect.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "azure_identity_adapter.py": {
+  "marker_files": [
+   "src/agent/port_azure_identity_adapter_ports.c",
+   "src/ports/agent/azure_identity_adapter.c"
+  ],
+  "func_match_files": []
+ },
+ "backend_identity.py": {
+  "marker_files": [
+   "src/agent/port_backend_identity.c"
+  ],
+  "func_match_files": []
+ },
+ "background_review.py": {
+  "marker_files": [
+   "src/agent/llm_client.c",
+   "src/agent/port_agent_background_review.c",
+   "src/agent/port_background_review_ports.c",
+   "src/ports/agent/background_review.c"
+  ],
+  "func_match_files": []
+ },
+ "backup.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_backup_py_final.c",
+   "src/agent/port_hermes_cli_backup_py_parity.c",
+   "src/agent/port_truly_missing_gaps.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_backup.c",
+   "src/tools/curator_backup.c"
+  ],
+  "func_match_files": []
+ },
+ "bang_shell.py": {
+  "marker_files": [
+   "src/cli/port_bang_shell_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "banner.py": {
+  "marker_files": [
+   "src/agent/port_batch6_gaps.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_banner_pure.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_slash_exec.c",
+   "src/cli/port_web_update.c",
+   "src/hermes_cli/port_banner_gaps.c",
+   "src/hermes_cli/port_batch3_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "battery.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_battery.c",
+   "src/battery.c"
+  ],
+  "func_match_files": []
+ },
+ "bedrock_adapter.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_bedrock_adapter_ports.c",
+   "src/agent/provider_bedrock.c",
+   "src/cli/port_agent_bedrock_adapter.c",
+   "src/ports/agent/bedrock_adapter.c"
+  ],
+  "func_match_files": []
+ },
+ "billing_links.py": {
+  "marker_files": [
+   "src/agent/port_billing_links.c",
+   "src/ports/agent/conversation_loop.c"
+  ],
+  "func_match_files": []
+ },
+ "billing_usage.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_billing_usage.c"
+  ],
+  "func_match_files": []
+ },
+ "billing_view.py": {
+  "marker_files": [
+   "src/agent/billing_pure.c",
+   "src/agent/port_agent_billing_view.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_billing_view_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "binary_extensions.py": {
+  "marker_files": [
+   "src/tools/binary_extensions.c",
+   "src/tools/file_fs_ops.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "blueprint_cmd.py": {
+  "marker_files": [
+   "src/agent/port_batch6_gaps.c",
+   "src/agent/port_hermes_cli_blueprint_cmd_py_final.c",
+   "src/cli/blueprint_cmd.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c"
+  ],
+  "func_match_files": []
+ },
+ "blueprints.py": {
+  "marker_files": [
+   "src/cli/port_tools_blueprints.c"
+  ],
+  "func_match_files": []
+ },
+ "bounded_response.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_camofox.py": {
+  "marker_files": [
+   "src/agent/port_tools_browser_camofox_py_final.c",
+   "src/cli/port_nous_billing.c",
+   "src/cli/port_tools_browser_camofox.c",
+   "src/ports/tools/browser_camofox.c",
+   "src/session_db.c",
+   "src/tools/browser.c",
+   "src/tools/browser_tool_env.c",
+   "src/tools/browser_tool_install.c",
+   "src/tools/memory.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_camofox_state.py": {
+  "marker_files": [
+   "src/tools/browser_camofox_state.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_cdp_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_browser_cdp_tool.c",
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_connect.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_hermes_cli_browser_connect_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_dialog_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_browser_cdp_tool.c",
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_provider.py": {
+  "marker_files": [
+   "src/agent/port_browser_provider_ports.c",
+   "src/cli/port_agent_browser_provider_methods.c",
+   "src/ports/agent/browser_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_registry.py": {
+  "marker_files": [
+   "src/agent/browser_registry.c",
+   "src/agent/port_browser_registry_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_supervisor.py": {
+  "marker_files": [
+   "src/tools/browser.c",
+   "src/tools/browser_redact.c",
+   "src/tools/browser_supervisor_redact.c",
+   "src/tools/browser_supervisor_redact.h",
+   "src/tools/port_browser_supervisor.c",
+   "src/tools/port_browser_supervisor_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_tools_browser_tool_py_parity.c",
+   "src/tools/browser.c",
+   "src/tools/browser_tool_cdp.c",
+   "src/tools/browser_tool_env.c",
+   "src/tools/browser_tool_eval.c",
+   "src/tools/browser_tool_install.c",
+   "src/tools/browser_tool_path.c",
+   "src/tools/browser_tool_platform.c",
+   "src/tools/port_browser_tool_helpers.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "browser_use_cli.py": {
+  "marker_files": [
+   "src/tools/port_browser_use_cli_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "budget_config.py": {
+  "marker_files": [
+   "src/tools/port_budget_config.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "build_info.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c"
+  ],
+  "func_match_files": []
+ },
+ "bundles.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_system.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "callbacks.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_hermes_cli_callbacks_py_final.c",
+   "src/agent/port_hermes_cli_callbacks_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c"
+  ],
+  "func_match_files": []
+ },
+ "cgroup_cleanup.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_cgroup_cleanup.c",
+   "src/gateway/port_gateway_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "channel_directory.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_final_missing_gaps.c",
+   "src/agent/port_gateway_channel_directory_py_parity.c",
+   "src/cli/port_gateway_channel_directory.c",
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/ports/gateway/channel_directory.c"
+  ],
+  "func_match_files": []
+ },
+ "chat_completion_helpers.py": {
+  "marker_files": [
+   "src/agent/port_agent_chat_completion_helpers_py_parity.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_chat_completion_helpers_ports.c",
+   "src/ports/agent/chat_completion_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "checkpoint_manager.py": {
+  "marker_files": [
+   "src/agent/checkpoint.c",
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_tools_checkpoint_manager_py_final.c",
+   "src/agent/port_tools_checkpoint_manager_py_parity.c",
+   "src/cli/port_tools_checkpoint_manager.c",
+   "src/ports/tools/checkpoint_manager.c",
+   "src/tools/port_checkpoint_manager_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "checkpoints.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_hermes_cli_checkpoints_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_checkpoints_format.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "clarify_gateway.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_clarify_gateway_py_final.c",
+   "src/agent/port_tools_clarify_gateway_py_parity.c",
+   "src/cli/port_tools_clarify_gateway.c",
+   "src/tools/clarify.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "clarify_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_clarify_tool.c",
+   "src/tools/port_clarify_tool.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "claw.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "cli.py": {
+  "marker_files": [
+   "src/cli/port_cli_pet_input.c"
+  ],
+  "func_match_files": []
+ },
+ "cli_agent_setup_mixin.py": {
+  "marker_files": [
+   "src/agent/agent_loop.c",
+   "src/agent/port_batch13_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "cli_billing_mixin.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_parity.c",
+   "src/cli/port_cli_billing_mixin_ports.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "cli_commands_mixin.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/cli/cli_cmd_parity.c",
+   "src/cli/port_cli_commands_mixin_wrappers.c",
+   "src/cli/port_cli_parity_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "cli_output.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/display.c"
+  ],
+  "func_match_files": []
+ },
+ "clipboard.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_clipboard_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "close_terminal_tool.py": {
+  "marker_files": [
+   "src/tools/port_close_terminal_tool.c",
+   "src/tools/port_close_terminal_tool.h",
+   "src/tools/process_registry.h"
+  ],
+  "func_match_files": []
+ },
+ "code_execution_tool.py": {
+  "marker_files": [
+   "src/cli/port_code_execution_helpers.c",
+   "src/tools/exec_code.c",
+   "src/tools/port_code_execution_tool_ports.c",
+   "src/tools/rate_limit.c"
+  ],
+  "func_match_files": []
+ },
+ "code_skew.py": {
+  "marker_files": [
+   "src/gateway/port_code_skew_ports.c",
+   "src/gateway/port_gateway_code_skew.c"
+  ],
+  "func_match_files": []
+ },
+ "codex_models.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "codex_responses_adapter.py": {
+  "marker_files": [
+   "src/agent/port_codex_responses_adapter_ports.c",
+   "src/ports/agent/codex_responses_adapter.c"
+  ],
+  "func_match_files": []
+ },
+ "codex_runtime.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/cli/port_agent_codex_runtime.c",
+   "src/ports/agent/codex_runtime.c",
+   "src/ports/agent/transports/codex_app_server_session.c"
+  ],
+  "func_match_files": []
+ },
+ "codex_runtime_plugin_migration.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "codex_runtime_switch.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_session_listing.c"
+  ],
+  "func_match_files": []
+ },
+ "coding_context.py": {
+  "marker_files": [
+   "src/agent/port_agent_coding_context.c",
+   "src/agent/port_agent_coding_context_py_final.c",
+   "src/agent/port_batch2_gaps.c",
+   "src/agent/port_coding_ctx_gaps.c",
+   "src/cli/paths.c",
+   "src/ports/agent/coding_context.c"
+  ],
+  "func_match_files": []
+ },
+ "colors.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/display.c"
+  ],
+  "func_match_files": []
+ },
+ "commands.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_commands_py_parity.c",
+   "src/cli/cli_cmd_parity.c",
+   "src/cli/cli_cmd_parity.h",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/gateway_command_sanitize.c",
+   "src/cli/port_cli_command_registry.c",
+   "src/cli/port_commands_wrappers.c",
+   "src/cli/port_hermes_cli_slash_exec.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "completion.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c",
+   "src/cli/port_cli_command_registry.c",
+   "src/cli/port_completion.c",
+   "src/cli/port_completion_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "config.py": {
+  "marker_files": [
+   "src/agent/port_agent_title_generator.c",
+   "src/agent/port_batch9_gaps.c",
+   "src/agent/port_gateway_config_py_final.c",
+   "src/agent/port_hermes_cli_config_py_final.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/config.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_config.c",
+   "src/cli/port_config_helpers.c",
+   "src/cli/port_config_migrations.c",
+   "src/cli/port_config_ports.c",
+   "src/cli/port_config_pure.c",
+   "src/cli/port_config_py_io.c",
+   "src/cli/port_config_py_pure.c",
+   "src/cli/port_gateway_config.c",
+   "src/cli/port_hermes_cli_update_cmd.c",
+   "src/cli/port_web_server_paths.c",
+   "src/gateway/port_gateway_config_helpers2.c",
+   "src/gateway/port_gateway_config_ports.c",
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/hermes_cli/port_batch3_gaps.c",
+   "src/hermes_cli/port_hermes_cli_config_gaps.c",
+   "src/ports/agent/credential_sources.c",
+   "src/ports/agent/skill_commands.c",
+   "src/ports/gateway/config.c"
+  ],
+  "func_match_files": []
+ },
+ "config_migrations.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_config_migrations_py_parity.c",
+   "src/cli/port_config_migrations.c"
+  ],
+  "func_match_files": []
+ },
+ "console_engine.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_console_engine_py_final.c",
+   "src/api_server.c",
+   "src/cli/cli_cmd_session.h",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/config_migrate.c",
+   "src/cli/port_config_py_io.c",
+   "src/cli/port_console_engine_ports.c",
+   "src/tools/tool_config.c",
+   "src/web_dashboard.c"
+  ],
+  "func_match_files": []
+ },
+ "container_boot.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_container_boot_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "context_breakdown.py": {
+  "marker_files": [
+   "src/agent/port_agent_context_breakdown_gaps.c",
+   "src/cli/port_context_breakdown_helpers.c",
+   "src/ports/agent/context_breakdown.c"
+  ],
+  "func_match_files": []
+ },
+ "context_compressor.py": {
+  "marker_files": [
+   "src/agent/context.c",
+   "src/agent/context_compressor_pure.c",
+   "src/agent/llm_client.c",
+   "src/agent/port_agent_context_compressor.c",
+   "src/agent/port_context_compressor_micro.c",
+   "src/agent/port_context_compressor_ports.c",
+   "src/agent/port_context_compressor_wrappers.c",
+   "src/agent/port_multi_mod_gaps.c",
+   "src/cli/port_agent_context_compressor.c",
+   "src/ports/agent/context_compressor.c"
+  ],
+  "func_match_files": []
+ },
+ "context_engine.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_context_engine_ports.c",
+   "src/ports/agent/context_engine.c"
+  ],
+  "func_match_files": []
+ },
+ "context_references.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_context_references_ports.c",
+   "src/cli/port_agent_context_references.c",
+   "src/ports/agent/context_references.c"
+  ],
+  "func_match_files": []
+ },
+ "context_switch_guard.py": {
+  "marker_files": [
+   "src/agent/context.c",
+   "src/agent/port_agent_context_compressor.c",
+   "src/cli/port_context_switch_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "conversation_compression.py": {
+  "marker_files": [
+   "src/agent/conversation_compression_helpers.c",
+   "src/agent/llm_client.c",
+   "src/agent/port_conversation_compression_ports.c",
+   "src/ports/agent/conversation_compression.c"
+  ],
+  "func_match_files": []
+ },
+ "conversation_loop.py": {
+  "marker_files": [
+   "src/agent/agent_loop.c",
+   "src/agent/llm_client.c",
+   "src/agent/port_agent_conversation_loop.c",
+   "src/agent/port_agent_conversation_loop_py_parity.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_conversation_loop_ports.c",
+   "src/agent/provider_openai.c",
+   "src/ports/agent/chat_completion_helpers.c",
+   "src/ports/agent/conversation_loop.c"
+  ],
+  "func_match_files": []
+ },
+ "copilot_acp_client.py": {
+  "marker_files": [
+   "src/agent/port_copilot_acp_client_helpers2.c",
+   "src/agent/port_copilot_acp_client_ports.c",
+   "src/cli/port_agent_copilot_acp_client.c",
+   "src/ports/agent/copilot_acp_client.c"
+  ],
+  "func_match_files": []
+ },
+ "copilot_auth.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_copilot_auth_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/provider/copilot_oauth.c"
+  ],
+  "func_match_files": []
+ },
+ "credential_files.py": {
+  "marker_files": [
+   "src/agent/port_batch8_gaps.c",
+   "src/agent/port_context_references_ports.c",
+   "src/agent/port_tools_credential_files_py_final.c",
+   "src/cli/port_tools_credential_files.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "credential_lifecycle.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "credential_persistence.py": {
+  "marker_files": [
+   "src/agent/credential_persistence.c",
+   "src/agent/credential_pool_persistence.c"
+  ],
+  "func_match_files": []
+ },
+ "credential_pool.py": {
+  "marker_files": [
+   "src/agent/credential_pool_custom.c",
+   "src/agent/credential_pool_engine.c",
+   "src/agent/credential_pool_persistence.c",
+   "src/agent/credential_pool_sync.c",
+   "src/agent/port_agent_credential_pool_py_parity.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_credential_pool_ports.c",
+   "src/tools/memory.c"
+  ],
+  "func_match_files": []
+ },
+ "credential_sources.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_credential_sources_ports.c",
+   "src/ports/agent/credential_sources.c"
+  ],
+  "func_match_files": []
+ },
+ "credits_tracker.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_credits_tracker_ports.c",
+   "src/agent/port_small_mods_gaps.c",
+   "src/cli/port_agent_credits_tracker.c",
+   "src/ports/agent/credits_tracker.c"
+  ],
+  "func_match_files": []
+ },
+ "cron.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_hermes_cli_cron_py_final.c",
+   "src/agent/port_hermes_cli_cron_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "cron/jobs.py": {
+  "marker_files": [
+   "src/cron/cron_extras.c"
+  ],
+  "func_match_files": []
+ },
+ "cron/scheduler_provider.py": {
+  "marker_files": [
+   "src/cron/port_cron_scheduler_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "cron/suggestions.py": {
+  "marker_files": [
+   "src/agent/logger.c"
+  ],
+  "func_match_files": []
+ },
+ "cronjob_tools.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_tools_cronjob_tools_py_final.c",
+   "src/agent/port_tools_cronjob_tools_py_parity.c",
+   "src/gateway/platforms/api_server_adapter_cron.c",
+   "src/tools/cron_prompt_sanitize.c",
+   "src/tools/cron_prompt_sanitize.h",
+   "src/tools/port_cronjob_tools.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "curator.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_curator_ports.c",
+   "src/agent/port_hermes_cli_curator_py_final.c",
+   "src/agent/port_hermes_cli_curator_py_parity.c",
+   "src/cli/cli_cmd_config.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_cmd_session.h",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/ports/agent/curator.c"
+  ],
+  "func_match_files": []
+ },
+ "curator_backup.py": {
+  "marker_files": [
+   "src/agent/port_curator_backup_ports.c",
+   "src/tools/curator_backup.c"
+  ],
+  "func_match_files": []
+ },
+ "curses_ui.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_hermes_cli_curses_ui_py_parity.c",
+   "src/agent/think_scrubber.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_curses_ui.c"
+  ],
+  "func_match_files": []
+ },
+ "cwd_placeholder.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "daemon_pool.py": {
+  "marker_files": [
+   "src/agent/conversation_compression_helpers.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "dashboard_procs.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_batch9_gaps.c",
+   "src/agent/port_hermes_cli_dashboard_procs_py_final.c",
+   "src/agent/port_hermes_cli_dashboard_procs_py_parity.c",
+   "src/cli/port_main_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "dashboard_register.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_nous_billing.c"
+  ],
+  "func_match_files": []
+ },
+ "dead_targets.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_gateway_dead_targets_py_final.c",
+   "src/gateway/dead_targets.h",
+   "src/gateway/port_gateway_util_helpers.c",
+   "src/ports/gateway/dead_targets.c"
+  ],
+  "func_match_files": []
+ },
+ "debug.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_hermes_cli_debug_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/hermes_cli/debug_cli.c"
+  ],
+  "func_match_files": []
+ },
+ "debug_helpers.py": {
+  "marker_files": [
+   "src/cli/port_tools_debug_helpers.c",
+   "src/tools/port_debug_helpers_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "default_soul.py": {
+  "marker_files": [
+   "src/cli/port_default_soul.c"
+  ],
+  "func_match_files": []
+ },
+ "delegate_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_tools_delegate_tool_py_parity.c",
+   "src/cli/port_delegate_tool_helpers.c",
+   "src/tools/delegate.c",
+   "src/tools/port_delegate_tool_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "delegation_context.py": {
+  "marker_files": [
+   "src/agent/port_agent_delegation_context.c",
+   "src/agent/port_agent_delegation_context_py_final.c",
+   "src/agent/port_batch9_gaps.c",
+   "src/agent/port_real_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "delegation_live_log.py": {
+  "marker_files": [
+   "src/tools/port_delegation_live_log_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "delegation_output_schema.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_tools_delegation_output_schema_py_final.c",
+   "src/agent/port_tools_delegation_output_schema_py_parity.c",
+   "src/tools/port_delegate_tool_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "delivery.py": {
+  "marker_files": [
+   "src/cli/port_gateway_delivery.c",
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_gateway_util_helpers.c",
+   "src/ports/gateway/delivery.c"
+  ],
+  "func_match_files": []
+ },
+ "delivery_ledger.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_gateway_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "dep_ensure.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_dep_ensure_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "desktop_ui.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "diagnostics_upload.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "dingtalk_auth.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "discord_tool.py": {
+  "marker_files": [
+   "src/agent/port_tools_discord_tool_py_final.c",
+   "src/cli/port_tools_discord_helpers.c",
+   "src/tools/discord.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "display.py": {
+  "marker_files": [
+   "src/agent/port_agent_display.c",
+   "src/agent/port_agent_display_helpers.c",
+   "src/agent/port_agent_display_py_parity.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_display_ports.c",
+   "src/cli/display_core.c",
+   "src/cli/display_diff.c",
+   "src/cli/port_agent_display.c",
+   "src/cli/port_agent_display.h",
+   "src/cli/port_display_tool_preview.c",
+   "src/cli/port_display_tool_preview.h"
+  ],
+  "func_match_files": []
+ },
+ "display_config.py": {
+  "marker_files": [
+   "src/gateway/port_display_config.c",
+   "src/gateway/port_display_config.h",
+   "src/ports/gateway/display_config.c"
+  ],
+  "func_match_files": []
+ },
+ "doctor.py": {
+  "marker_files": [
+   "src/agent/port_batch5_gaps.c",
+   "src/agent/port_hermes_cli_doctor_py_final.c",
+   "src/agent/port_tools_computer_use_doctor_py_final.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/display_diff.c",
+   "src/cli/doctor.c",
+   "src/cli/port_doctor.c",
+   "src/cli/port_doctor_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "doctor_live.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_doctor_live_py_parity.c",
+   "src/hermes_cli/port_doctor_live_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "drain_control.py": {
+  "marker_files": [
+   "src/agent/port_truly_missing_gaps.c",
+   "src/cli/port_drain_control_helpers.c",
+   "src/gateway/port_gateway_drain_control.c"
+  ],
+  "func_match_files": []
+ },
+ "dump.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_dump_ports.c",
+   "src/cli/port_plugins_cmd_wrappers.c",
+   "src/gateway/server.c",
+   "src/ports/agent/redact.c"
+  ],
+  "func_match_files": []
+ },
+ "entry.py": {
+  "marker_files": [
+   "src/cli/tui_entry.c",
+   "src/cli/tui_entry.h"
+  ],
+  "func_match_files": []
+ },
+ "env_loader.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_env_loader_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/main.c"
+  ],
+  "func_match_files": []
+ },
+ "env_passthrough.py": {
+  "marker_files": [
+   "src/cli/port_tools_env_passthrough.c",
+   "src/tools/port_environments_base_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "env_probe.py": {
+  "marker_files": [
+   "src/cli/port_tools_env_probe.c",
+   "src/ports/tools/env_probe.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "error_classifier.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/cli/port_agent_error_classifier.c"
+  ],
+  "func_match_files": []
+ },
+ "errors.py": {
+  "marker_files": [
+   "src/hermes_error.c"
+  ],
+  "func_match_files": []
+ },
+ "estop.py": {
+  "marker_files": [
+   "src/agent/port_agent_estop.c",
+   "src/cli/cli_cmd_parity.c"
+  ],
+  "func_match_files": []
+ },
+ "event_publisher.py": {
+  "marker_files": [
+   "src/cli/tui_eventpub.c",
+   "src/cli/tui_eventpub.h"
+  ],
+  "func_match_files": []
+ },
+ "fal_common.py": {
+  "marker_files": [
+   "src/cli/port_tools_fal_common.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "fallback_cmd.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_hermes_cli_fallback_cmd_py_final.c",
+   "src/agent/port_hermes_cli_fallback_cmd_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_fallback_cmd.c"
+  ],
+  "func_match_files": []
+ },
+ "fallback_config.py": {
+  "marker_files": [
+   "src/agent/port_hermes_cli_fallback_config_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_fallback_config.c"
+  ],
+  "func_match_files": []
+ },
+ "feishu_doc_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_feishu_drive_tool.c",
+   "src/tools/feishu_tools.c",
+   "src/tools/port_feishu_doc_tool_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "feishu_drive_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_feishu_drive_tool.c",
+   "src/tools/port_feishu_drive_tool.c",
+   "src/tools/port_feishu_drive_tool_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "file_operations.py": {
+  "marker_files": [
+   "src/agent/file_safety.c",
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_tools_file_operations_py_parity.c",
+   "src/ports/agent/nous_rate_guard.c",
+   "src/tools/file.c",
+   "src/tools/file_batch.c",
+   "src/tools/file_fs_ops.c",
+   "src/tools/file_fs_ops.h",
+   "src/tools/file_lint.c",
+   "src/tools/file_lint.h",
+   "src/tools/file_ops_lint.c",
+   "src/tools/file_ops_lint.h",
+   "src/tools/file_pagination_ops.c",
+   "src/tools/file_pagination_ops.h",
+   "src/tools/file_text_ops.c",
+   "src/tools/file_text_ops.h",
+   "src/tools/patch.c",
+   "src/tools/port_file_operations.c",
+   "src/tools/port_file_operations_gaps.c",
+   "src/tools/port_file_operations_ports.c",
+   "src/tools/port_file_operations_search.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "file_safety.py": {
+  "marker_files": [
+   "src/agent/file_safety.c",
+   "src/agent/port_file_safety_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "file_state.py": {
+  "marker_files": [
+   "src/cli/port_file_state_helpers.c",
+   "src/ports/agent/image_routing.c",
+   "src/ports/tools/registry.c",
+   "src/provider/google_oauth.c",
+   "src/tools/port_file_state_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "file_tools.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_tools_file_tools_py_final.c",
+   "src/agent/port_tools_file_tools_py_parity.c",
+   "src/cli/port_file_tools_helpers.c",
+   "src/tools/file.c",
+   "src/tools/port_file_tools_helpers.c",
+   "src/tools/port_file_tools_helpers2.c",
+   "src/tools/port_file_tools_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "flux3_video_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_tools_flux3_video_tool_py_parity.c",
+   "src/ports/tools/flux3_video_tool.c",
+   "src/tools/port_tools_flux3_video.c"
+  ],
+  "func_match_files": []
+ },
+ "focus_pane_tool.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "focus_view.py": {
+  "marker_files": [
+   "src/cli/port_cli_commands_mixin_wrappers.c",
+   "src/cli/port_hermes_cli_focus_view.c",
+   "src/cli/port_hermes_cli_focus_view.h"
+  ],
+  "func_match_files": []
+ },
+ "fuzzy_match.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_fuzzy_match_py_parity.c",
+   "src/cli/port_fuzzy_match_helpers.c",
+   "src/cli/port_tools_fuzzy_match.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway.py": {
+  "marker_files": [
+   "src/agent/port_batch8_gaps.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_gateway_wrappers.c",
+   "src/cli/port_gateway.c",
+   "src/cli/port_gateway_cli_ports.c",
+   "src/cli/port_hermes_cli_gateway_platform.c",
+   "src/gateway/server.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/authz_mixin.py": {
+  "marker_files": [
+   "src/cli/port_gateway_authz_mixin.c",
+   "src/gateway/port_gateway_authz_mixin.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/channel_directory.py": {
+  "marker_files": [
+   "src/ports/gateway/channel_directory.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/code_skew.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_code_skew.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/config.py": {
+  "marker_files": [
+   "src/cli/port_gateway_config.c",
+   "src/ports/gateway/config.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/delivery.py": {
+  "marker_files": [
+   "src/cli/port_gateway_delivery.c",
+   "src/ports/gateway/delivery.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/display_config.py": {
+  "marker_files": [
+   "src/ports/gateway/display_config.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/hooks.py": {
+  "marker_files": [
+   "src/cli/port_gateway_hooks.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/lifecycle_ledger.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "gateway/memory_monitor.py": {
+  "marker_files": [
+   "src/gateway/memory_monitor.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/message_timestamps.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_message_timestamps.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/mirror.py": {
+  "marker_files": [
+   "src/gateway/mirror.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/platform_registry.py": {
+  "marker_files": [
+   "src/cli/port_gateway_platform_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/platforms/media_cache.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "gateway/relay/command_manifest.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "gateway/relay/media.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/port_whatsapp_cloud_helpers.c",
+   "src/gateway/platforms/webhook.c",
+   "src/tools/send_message.c"
+  ]
+ },
+ "gateway/response_filters.py": {
+  "marker_files": [
+   "src/cli/port_gateway_response_filters.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/restart.py": {
+  "marker_files": [
+   "src/ports/gateway/platforms/helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/rich_sent_store.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_rich_sent_store.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/run.py": {
+  "marker_files": [
+   "src/gateway/gateway_lifecycle.c",
+   "src/gateway/gateway_runtime.c",
+   "src/gateway/server.c",
+   "src/ports/agent/curator.c",
+   "src/ports/agent/image_routing.c",
+   "src/ports/gateway/platforms/helpers.c",
+   "src/ports/gateway/restart.c",
+   "src/ports/gateway/run.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/runtime_footer.py": {
+  "marker_files": [
+   "src/ports/gateway/runtime_footer.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/session.py": {
+  "marker_files": [
+   "src/gateway/gw_session.c",
+   "src/gateway/server.c",
+   "src/ports/gateway/session.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/session_context.py": {
+  "marker_files": [
+   "src/ports/gateway/session_context.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/session_state.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "gateway/shutdown_flush.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "gateway/shutdown_forensics.py": {
+  "marker_files": [
+   "src/ports/gateway/shutdown_forensics.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/slash_access.py": {
+  "marker_files": [
+   "src/cli/port_gateway_slash_access.c",
+   "src/gateway/slash_access.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/sticker_cache.py": {
+  "marker_files": [
+   "src/cli/port_gateway_sticker_cache.c",
+   "src/gateway/sticker_cache.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/stream_consumer.py": {
+  "marker_files": [
+   "src/gateway/server.c",
+   "src/ports/gateway/stream_consumer.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/stream_dispatch.py": {
+  "marker_files": [
+   "src/gateway/stream_events.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway/streaming_tts_consumer.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_gateway_run_wrappers.c"
+  ]
+ },
+ "gateway/turn_context.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "gateway/wake.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "gateway/whatsapp_identity.py": {
+  "marker_files": [
+   "src/gateway/whatsapp_identity.c",
+   "src/ports/gateway/platforms/helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway_enroll.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "gateway_windows.py": {
+  "marker_files": [
+   "src/agent/port_batch9_gaps.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_gateway_windows_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "gemini_cloudcode_adapter.py": {
+  "marker_files": [
+   "src/agent/gemini_cloudcode_adapter.c",
+   "src/agent/provider_google.c",
+   "src/cli/port_agent_gemini_cloudcode_adapter_methods.c"
+  ],
+  "func_match_files": []
+ },
+ "gemini_native_adapter.py": {
+  "marker_files": [
+   "src/agent/port_gemini_native_adapter_ports.c",
+   "src/agent/port_gemini_native_helpers2.c",
+   "src/agent/provider_google.c",
+   "src/ports/agent/gemini_native_adapter.c"
+  ],
+  "func_match_files": []
+ },
+ "gemini_schema.py": {
+  "marker_files": [
+   "src/ports/agent/gemini_schema.c"
+  ],
+  "func_match_files": []
+ },
+ "goals.py": {
+  "marker_files": [
+   "src/agent/port_hermes_cli_goals_py_final.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_goals_data.c",
+   "src/cli/port_goals_helpers.c",
+   "src/cli/port_goals_manager.c",
+   "src/cli/port_goals_ports.c",
+   "src/gateway/platforms/api_server_adapter.c",
+   "src/gateway/platforms/api_server_adapter_sessions.c",
+   "src/hermes_cli/port_goals_gaps.c",
+   "src/tools/delegate.c"
+  ],
+  "func_match_files": []
+ },
+ "google_code_assist.py": {
+  "marker_files": [
+   "src/agent/google_code_assist.c",
+   "src/gateway/platforms/weixin.c"
+  ],
+  "func_match_files": []
+ },
+ "google_oauth.py": {
+  "marker_files": [
+   "src/cli/port_agent_google_oauth.c",
+   "src/provider/google_oauth.c"
+  ],
+  "func_match_files": []
+ },
+ "gui_uninstall.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "heartbeat.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_heartbeat.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/_early_recovery.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/_scan_venv_blockers.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/agent_import.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/port_batch4_gaps.c"
+  ]
+ },
+ "hermes_cli/approval_mode.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/approvals_suggest.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/port_approvals_suggest_proposals.c"
+  ]
+ },
+ "hermes_cli/auth.py": {
+  "marker_files": [
+   "src/cli/port_auth_na.c",
+   "src/ports/agent/credential_sources.c",
+   "src/provider/token_exchange.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/backup.py": {
+  "marker_files": [
+   "src/tools/curator_backup.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/bundles.py": {
+  "marker_files": [
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/cli_agent_setup_mixin.py": {
+  "marker_files": [
+   "src/agent/agent_loop.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/cli_output.py": {
+  "marker_files": [
+   "src/cli/display.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/config.py": {
+  "marker_files": [
+   "src/cli/config.c",
+   "src/cli/port_config.c",
+   "src/ports/agent/credential_sources.c",
+   "src/ports/agent/skill_commands.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/config_defaults.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/config_migrations.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/context_switch_guard.py": {
+  "marker_files": [
+   "src/cli/port_context_switch_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/copilot_auth.py": {
+  "marker_files": [
+   "src/provider/copilot_oauth.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/curator.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/curses_ui.py": {
+  "marker_files": [
+   "src/agent/think_scrubber.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/dashboard_procs.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/port_batch9_gaps.c"
+  ]
+ },
+ "hermes_cli/doctor.py": {
+  "marker_files": [
+   "src/cli/doctor.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/dump.py": {
+  "marker_files": [
+   "src/gateway/server.c",
+   "src/ports/agent/redact.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/env_loader.py": {
+  "marker_files": [
+   "src/cli/config_setup.c",
+   "src/main.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/fallback_config.py": {
+  "marker_files": [
+   "src/cli/config_setup.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/focus_view.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/port_hermes_cli_focus_view.h"
+  ]
+ },
+ "hermes_cli/gateway.py": {
+  "marker_files": [
+   "src/cli/port_gateway.c",
+   "src/gateway/server.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/goals.py": {
+  "marker_files": [
+   "src/gateway/platforms/api_server_adapter.c",
+   "src/gateway/platforms/api_server_adapter_sessions.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/hooks.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_system.c",
+   "src/cli/port_hermes_cli_hooks.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/init_command.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/kanban_db.py": {
+  "marker_files": [
+   "src/cli/port_kanban_db.c",
+   "src/cli/port_kanban_db_na.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/kanban_swarm.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_kanban_swarm.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/lifecycle.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/transcription_provider.c",
+   "src/cli/kanban_runs.c",
+   "src/cli/port_cli_parity_gaps.c",
+   "src/cli/port_cli_profiles.c",
+   "src/cli/port_web_server_status.c",
+   "src/tools/mcp_tool_pure.c",
+   "src/tools/port_tools_vercel_sandbox_env.c",
+   "src/tools/tool_init.c"
+  ]
+ },
+ "hermes_cli/main.py": {
+  "marker_files": [
+   "src/cli/cli.c",
+   "src/cli/cli_cmd_config.c",
+   "src/cli/cli_cmd_gateway.c",
+   "src/cli/cli_cmd_memory.c",
+   "src/cli/cli_cmd_security.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_main.c",
+   "src/cli/port_main_na.c",
+   "src/cli/tui_fullscreen.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/mcp_config.py": {
+  "marker_files": [
+   "src/tools/tool_result.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/mcp_startup.py": {
+  "marker_files": [
+   "src/mcp_serve.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/memory_setup.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_memory_setup.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/model_search.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/models.py": {
+  "marker_files": [
+   "src/cli/config_setup.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/nous_billing.py": {
+  "marker_files": [
+   "src/cli/port_nous_billing.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/observability/__init__.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/hermes_state/hermes_state_open.c",
+   "src/agent/think_scrubber.c",
+   "src/agent/transcription_provider.c",
+   "src/cli/display_core.c",
+   "src/cli/port_turn_summary_cli.c"
+  ]
+ },
+ "hermes_cli/observability/relay_runtime.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/observability/relay_shared_metrics.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/observability/shared_metrics.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/observability/shared_metrics_contract.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/port_hermes_cli_shared_metrics_contract.h"
+  ]
+ },
+ "hermes_cli/observability/shared_metrics_subscriber.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/pairing.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_system.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/partial_compress.py": {
+  "marker_files": [
+   "src/cli/commands.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/plugins.py": {
+  "marker_files": [
+   "src/agent/hook_registry.c",
+   "src/ports/tools/skills_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/portal_cli.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/profile_distribution.py": {
+  "marker_files": [
+   "src/tools/curator_backup.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/prompt_size.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_prompt_size.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/providers.py": {
+  "marker_files": [
+   "src/cli/cli.c",
+   "src/cli/config_setup.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/proxy_cli.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/port_main_ports.c"
+  ]
+ },
+ "hermes_cli/pty_bridge.py": {
+  "marker_files": [
+   "src/tools/file.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/send_cmd.py": {
+  "marker_files": [
+   "src/agent/credential_pool_sync.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/session_recovery.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/sessions_cmd.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/setup.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_config.c",
+   "src/cli/config_setup.c",
+   "src/cli/setup_wizard.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/setup_hidden_env.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/skills_config.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_skills_config.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/slash_exec.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/sqlite_runtime.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/sqlite_safe_read.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/gateway/sqlite_safe_read.c"
+  ]
+ },
+ "hermes_cli/subcommands/approvals.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/tools/port_approval.c"
+  ]
+ },
+ "hermes_cli/subcommands/import_agent.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/subcommands/monitoring.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/port_subcommands_parsers.c"
+  ]
+ },
+ "hermes_cli/subcommands/sync.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/port_agent_runtime_helpers_ports.c",
+   "src/cli/port_cli_gateway_wrappers.c",
+   "src/gateway/port_streaming_tts_consumer.c",
+   "src/tools/port_image_generation_tool.c",
+   "src/tools/port_skills_sync_client.c"
+  ]
+ },
+ "hermes_cli/timeouts.py": {
+  "marker_files": [
+   "src/cli/config_setup.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/uninstall.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_config.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/update_cmd.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/port_hermes_cli_update_cmd.c"
+  ]
+ },
+ "hermes_cli/update_lock.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/vercel_auth.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/voice.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_voice.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/web_deps.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/web_models.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "hermes_cli/web_routers/__init__.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/hermes_state/hermes_state_open.c",
+   "src/agent/think_scrubber.c",
+   "src/agent/transcription_provider.c",
+   "src/cli/display_core.c",
+   "src/cli/port_turn_summary_cli.c"
+  ]
+ },
+ "hermes_cli/web_routers/cron.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/cli_gaps.c",
+   "src/cli/port_tools_session_search_tool.c"
+  ]
+ },
+ "hermes_cli/web_routers/git.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/lsp_manager.c",
+   "src/cli/port_cli_pet_input.c",
+   "src/cli/port_web_git_routes.c",
+   "src/cli/port_web_git_routes.h"
+  ]
+ },
+ "hermes_cli/web_routers/mcp.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/cli_gaps.c"
+  ]
+ },
+ "hermes_cli/web_routers/profiles.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/kanban_notify.c",
+   "src/cli/port_web_server_wrappers.c",
+   "src/tools/port_kanban_tools.c"
+  ]
+ },
+ "hermes_cli/web_routers/sessions.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/agent/hermes_state/hermes_state_gaps.c",
+   "src/agent/hermes_state/hermes_state_lifecycle.c",
+   "src/agent/hermes_state/hermes_state_locks.c",
+   "src/agent/hermes_state/hermes_state_misc.c",
+   "src/agent/hermes_state/hermes_state_open.c",
+   "src/agent/hermes_state/hermes_state_tokens.c",
+   "src/agent/hermes_state/port_hermes_state_ports.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/port_state_usage_db.c",
+   "src/cli/port_tools_session_search_tool.c",
+   "src/cli/session_recovery/session_recovery_orphans.c",
+   "src/cli/tui_json_rpc.c",
+   "src/gateway/port_whatsapp_identity_ports.c",
+   "src/session_db.c",
+   "src/session_switcher.c",
+   "src/titlebar.c",
+   "src/tools/session_crud.c",
+   "src/web_server.c"
+  ]
+ },
+ "hermes_cli/web_routers/skills.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/api_server.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/port_cli_command_registry.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_cli_profiles.c",
+   "src/cli/port_hermes_cli_skills_config.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_learning_graph_render.c",
+   "src/cli/port_subcommands_parsers.c",
+   "src/ports/agent/curator.c",
+   "src/ports/agent/skill_bundles.c",
+   "src/skills_hub.c",
+   "src/tools/skill_mgmt.c"
+  ]
+ },
+ "hermes_cli/web_routers/tools.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/acp/edit_approval.c",
+   "src/api_server.c",
+   "src/cli/cli_cmd_mcp.c",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/port_plugins_wrappers.c",
+   "src/cli/port_subcommands_parsers.c",
+   "src/gateway/server.c",
+   "src/ports/agent/copilot_acp_client.c",
+   "src/ports/tools/tool_search.c",
+   "src/titlebar.c",
+   "src/tools/cronjob.c",
+   "src/tools/feishu_tools.c",
+   "src/tools/port_approval_wrappers.c",
+   "src/tools/port_kanban_tools.c",
+   "src/tools/port_toolsets.c",
+   "src/tools/terminal.c",
+   "src/tools/web.c",
+   "src/tools/yuanbao_tools.c"
+  ]
+ },
+ "hermes_cli/web_server.py": {
+  "marker_files": [
+   "src/cli/port_web_server_extra.c",
+   "src/ports/agent/i18n.c",
+   "src/web_dashboard.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/webhook.py": {
+  "marker_files": [
+   "src/cli/cli.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/write_approval_commands.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_system.c",
+   "src/cli/port_hermes_cli_write_approval_commands.c",
+   "src/tools/file.c"
+  ],
+  "func_match_files": []
+ },
+ "hermes_cli/xai_retirement.py": {
+  "marker_files": [
+   "src/cli/cli.c"
+  ],
+  "func_match_files": []
+ },
+ "homeassistant_tool.py": {
+  "marker_files": [
+   "src/agent/port_tools_homeassistant_tool_py_final.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "hook_output_spill.py": {
+  "marker_files": [
+   "src/agent/port_tools_hook_output_spill_py_final.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "hooks.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_system.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/port_gateway_hooks.c",
+   "src/cli/port_hermes_cli_hooks.c",
+   "src/gateway/port_gateway_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "i18n.py": {
+  "marker_files": [
+   "src/agent/port_i18n_ports.c",
+   "src/ports/agent/i18n.c"
+  ],
+  "func_match_files": []
+ },
+ "image_gen_provider.py": {
+  "marker_files": [
+   "src/agent/port_agent_image_gen_provider.c",
+   "src/agent/port_agent_image_gen_provider_py_final.c",
+   "src/agent/port_agent_image_gen_provider_py_parity.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_image_gen_provider_ports.c",
+   "src/cli/port_agent_image_gen_provider.c",
+   "src/tools/image_gen_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "image_gen_registry.py": {
+  "marker_files": [
+   "src/agent/port_image_gen_registry_ports.c",
+   "src/tools/image_gen_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "image_generation_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch8_gaps.c",
+   "src/agent/port_tools_image_generation_tool_py_final.c",
+   "src/tools/image_gen_path.c",
+   "src/tools/image_gen_path.h",
+   "src/tools/port_image_generation_tool.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "image_routing.py": {
+  "marker_files": [
+   "src/agent/port_image_routing_ports.c",
+   "src/ports/agent/image_routing.c"
+  ],
+  "func_match_files": []
+ },
+ "image_source.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_tools_image_source_py_final.c",
+   "src/agent/port_tools_image_source_py_parity.c",
+   "src/tools/port_tools_async_delegation.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/vision.c"
+  ],
+  "func_match_files": []
+ },
+ "init_command.py": {
+  "marker_files": [
+   "src/cli/port_cli_commands_mixin_wrappers.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "input_sanitize.py": {
+  "marker_files": [
+   "src/cli/port_input_sanitize.c"
+  ],
+  "func_match_files": []
+ },
+ "insights.py": {
+  "marker_files": [
+   "src/agent/port_agent_insights_gaps.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_insights_ports.c",
+   "src/agent/provider_metadata.c",
+   "src/cli/display_core.c",
+   "src/cli/port_agent_insights.c",
+   "src/ports/agent/insights.c"
+  ],
+  "func_match_files": []
+ },
+ "interrupt.py": {
+  "marker_files": [
+   "src/tools/port_interrupt.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "interrupt_compat.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "inventory.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_inventory_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "iteration_budget.py": {
+  "marker_files": [
+   "src/agent/budget_tracker.c",
+   "src/agent/port_iteration_budget_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "jiter_preload.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/hermes_tokenizer.c",
+   "src/jiter_preload.c"
+  ],
+  "func_match_files": []
+ },
+ "journey.py": {
+  "marker_files": [
+   "src/app_desktop.c",
+   "src/cli/cli_cmd_parity.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_journey_ports.c",
+   "src/cli/port_pty_clamp_helpers.c",
+   "src/ports/agent/shell_hooks.c",
+   "src/terminal.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban.py": {
+  "marker_files": [
+   "src/agent/port_batch8_gaps.c",
+   "src/agent/port_hermes_cli_kanban_py_final.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_kanban_helpers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/hermes_cli/kanban_format.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_db.py": {
+  "marker_files": [
+   "src/agent/port_batch2_gaps.c",
+   "src/agent/port_batch4_gaps.c",
+   "src/agent/port_final_missing_gaps.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/kanban_boards.c",
+   "src/cli/kanban_lifecycle.c",
+   "src/cli/kanban_model.c",
+   "src/cli/kanban_notify.c",
+   "src/cli/kanban_query.c",
+   "src/cli/kanban_runs.c",
+   "src/cli/kanban_schema.c",
+   "src/cli/kanban_stats.c",
+   "src/cli/kanban_tasks.c",
+   "src/cli/kanban_util.c",
+   "src/cli/kanban_workers.c",
+   "src/cli/port_goals_manager.c",
+   "src/cli/port_kanban_db.c",
+   "src/cli/port_kanban_db_gaps.c",
+   "src/cli/port_kanban_db_na.c",
+   "src/cli/port_kanban_db_ports.c",
+   "src/cli/port_kanban_db_wrappers.c",
+   "src/tools/kanban_adapter.c",
+   "src/tools/port_feishu_drive_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_decompose.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/kanban_decompose.c",
+   "src/cli/port_kanban_decompose_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_diagnostics.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_kanban_diagnostics_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_kanban_diagnostics.c",
+   "src/cli/port_kanban_diagnostics_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_specify.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/kanban_decompose.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_stop.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_swarm.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_kanban_swarm_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_kanban_swarm.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_tools.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_tools_kanban_tools_py_parity.c",
+   "src/tools/kanban_handlers.c",
+   "src/tools/port_kanban_tools.c",
+   "src/tools/port_kanban_tools_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "kanban_watchers.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_gateway_kanban_watchers_py_parity.c",
+   "src/cli/kanban_workers.c",
+   "src/gateway/port_gateway_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "lazy_deps.py": {
+  "marker_files": [
+   "src/agent/port_tools_lazy_deps_py_final.c",
+   "src/cli/port_lazy_deps.c",
+   "src/cli/port_lazy_deps_helpers.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/port_tools_wake_word.c",
+   "src/tools/web_base64_img.c"
+  ],
+  "func_match_files": []
+ },
+ "learn_prompt.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_learn_prompt.c"
+  ],
+  "func_match_files": []
+ },
+ "learning_graph.py": {
+  "marker_files": [
+   "src/cli/port_learning_graph.c",
+   "src/cli/port_learning_graph_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "learning_graph_render.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_small_mods_gaps.c",
+   "src/cli/port_learning_graph_render.c",
+   "src/cli/port_learning_graph_render_helpers.c",
+   "src/tools/todo.c"
+  ],
+  "func_match_files": []
+ },
+ "learning_mutations.py": {
+  "marker_files": [
+   "src/cli/port_learning_mutations.c"
+  ],
+  "func_match_files": []
+ },
+ "lifecycle.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "lifecycle_ledger.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_gateway_lifecycle_ledger_py_parity.c",
+   "src/ports/gateway/lifecycle_ledger.c"
+  ],
+  "func_match_files": []
+ },
+ "linux_desktop_entry.py": {
+  "marker_files": [
+   "src/cli/port_linux_desktop_entry.c"
+  ],
+  "func_match_files": []
+ },
+ "lmstudio_reasoning.py": {
+  "marker_files": [
+   "src/agent/lmstudio_reasoning.c",
+   "src/agent/lmstudio_reasoning_py.c",
+   "src/agent/port_agent_core_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "logs.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_logs.c"
+  ],
+  "func_match_files": []
+ },
+ "main.py": {
+  "marker_files": [
+   "src/agent/port_batch7_gaps.c",
+   "src/agent/port_final_missing_gaps.c",
+   "src/cli/cli.c",
+   "src/cli/cli_cmd_config.c",
+   "src/cli/cli_cmd_gateway.c",
+   "src/cli/cli_cmd_kanban.c",
+   "src/cli/cli_cmd_mcp.c",
+   "src/cli/cli_cmd_memory.c",
+   "src/cli/cli_cmd_security.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_cmd_skills.c",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_hermes_cli_gateway_platform.c",
+   "src/cli/port_hermes_cli_main_cmds.c",
+   "src/cli/port_hermes_cli_main_gaps.c",
+   "src/cli/port_hermes_cli_main_helpers.c",
+   "src/cli/port_hermes_cli_update_cmd.c",
+   "src/cli/port_main.c",
+   "src/cli/port_main_na.c",
+   "src/cli/port_main_ports.c",
+   "src/cli/port_main_wrappers.c",
+   "src/cli/port_startup_fast.c",
+   "src/cli/tui_fullscreen.c",
+   "src/ports/gateway/status.c",
+   "src/tools/file.c",
+   "src/tools/port_file_tools_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "managed_scope.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_managed_scope_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "managed_tool_gateway.py": {
+  "marker_files": [
+   "src/cli/port_tools_managed_tool_gateway.c",
+   "src/ports/tools/managed_tool_gateway.c"
+  ],
+  "func_match_files": []
+ },
+ "managed_uv.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_hermes_cli_managed_uv_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_managed_uv_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "manual_compression_feedback.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/ports/agent/manual_compression_feedback.c"
+  ],
+  "func_match_files": []
+ },
+ "markdown_tables.py": {
+  "marker_files": [
+   "src/agent/port_agent_markdown_tables_py_final.c",
+   "src/agent/port_agent_markdown_tables_py_parity.c",
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_markdown_tables.c",
+   "src/agent/port_markdown_tables.h",
+   "src/agent/port_markdown_tables_gaps.c",
+   "src/agent/port_markdown_tables_ports.c",
+   "src/agent/port_real_gaps.c",
+   "src/ports/agent/markdown_tables.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_catalog.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_config.py": {
+  "marker_files": [
+   "src/agent/budget_tracker.c",
+   "src/agent/port_batch6_gaps.c",
+   "src/agent/port_hermes_cli_mcp_config_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/tui_fullscreen.c",
+   "src/desktop_app_common.c",
+   "src/ports/agent/conversation_loop.c",
+   "src/tools/tool_result.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_dashboard_oauth.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_oauth.py": {
+  "marker_files": [
+   "src/cli/port_tools_mcp_oauth_manager.c",
+   "src/tools/port_mcp_oauth_ports.c",
+   "src/tools/port_mcp_oauth_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_oauth_manager.py": {
+  "marker_files": [
+   "src/cli/port_tools_mcp_oauth_manager.c",
+   "src/tools/port_mcp_oauth_manager_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_picker.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_schema_cache.py": {
+  "marker_files": [
+   "src/ports/tools/mcp_schema_cache.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_security.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_mcp_security.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_serve.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_startup.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_mcp_startup_py_final.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/mcp_serve.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_stdio_watchdog.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "mcp_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_multi_mod_gaps.c",
+   "src/agent/port_tools_mcp_tool_py_parity.c",
+   "src/ports/tools/mcp_tool.c",
+   "src/tools/mcp_tool_pure.c",
+   "src/tools/port_mcp_tool.c",
+   "src/tools/port_mcp_tool_gaps.c",
+   "src/tools/port_mcp_tool_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "mem_trim.py": {
+  "marker_files": [
+   "src/cli/port_mem_trim.c"
+  ],
+  "func_match_files": []
+ },
+ "memory_manager.py": {
+  "marker_files": [
+   "src/agent/hermes_state/hermes_state_misc.c",
+   "src/agent/port_agent_memory_manager.c",
+   "src/agent/port_agent_memory_manager_py_parity.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_memory_manager_helpers.c",
+   "src/agent/port_memory_manager_ports.c",
+   "src/agent/port_memory_manager_wrappers.c",
+   "src/agent/think_scrubber.c",
+   "src/cli/cli_cmd_config.c",
+   "src/gateway/gw_dispatch.c"
+  ],
+  "func_match_files": []
+ },
+ "memory_monitor.py": {
+  "marker_files": [
+   "src/gateway/memory_monitor.c"
+  ],
+  "func_match_files": []
+ },
+ "memory_oauth.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "memory_provider.py": {
+  "marker_files": [
+   "src/agent/port_agent_memory_provider.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_memory_provider_ports.c",
+   "src/ports/agent/conversation_loop.c",
+   "src/ports/agent/memory_provider.c",
+   "src/ports/agent/transports/hermes_tools_mcp_server.c"
+  ],
+  "func_match_files": []
+ },
+ "memory_providers.py": {
+  "marker_files": [
+   "src/cli/port_memory_providers.c"
+  ],
+  "func_match_files": []
+ },
+ "memory_setup.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_hermes_cli_memory_setup_py_final.c",
+   "src/agent/port_hermes_cli_memory_setup_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_memory_setup.c"
+  ],
+  "func_match_files": []
+ },
+ "memory_tool.py": {
+  "marker_files": [
+   "src/agent/conversation_compression_helpers.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_memory_tool_py_final.c",
+   "src/cli/port_learning_mutations.c",
+   "src/ports/gateway/pairing.c",
+   "src/tools/image_gen.c",
+   "src/tools/memory.c",
+   "src/tools/port_memory_tool.c",
+   "src/tools/port_memory_tool_ports.c",
+   "src/tools/skills.c",
+   "src/tools/tool_init.c"
+  ],
+  "func_match_files": []
+ },
+ "message_content.py": {
+  "marker_files": [
+   "src/agent/port_agent_message_content.c",
+   "src/agent/port_message_content_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "message_sanitization.py": {
+  "marker_files": [
+   "src/agent/agent_message_sanitize.c",
+   "src/agent/message_sanitization_pure.c",
+   "src/agent/port_agent_message_sanitization_py_final.c",
+   "src/agent/port_message_sanitization_ports.c",
+   "src/agent/sanitize.c",
+   "src/ports/agent/message_sanitization.c"
+  ],
+  "func_match_files": []
+ },
+ "message_timestamps.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_message_timestamps.c",
+   "src/gateway/port_message_timestamps_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "microsoft_graph_auth.py": {
+  "marker_files": [
+   "src/cli/port_tools_microsoft_graph_auth.c",
+   "src/cli/port_tools_microsoft_graph_client.c",
+   "src/tools/microsoft_graph_auth.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "microsoft_graph_client.py": {
+  "marker_files": [
+   "src/cli/port_tools_microsoft_graph_client.c",
+   "src/ports/tools/microsoft_graph_client.c",
+   "src/tools/browser.c",
+   "src/tools/port_microsoft_graph_client_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "middleware.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_middleware.c",
+   "src/cli/port_plugins_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "migrate.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_migrate.c"
+  ],
+  "func_match_files": []
+ },
+ "mirror.py": {
+  "marker_files": [
+   "src/cli/port_gateway_mirror.c",
+   "src/gateway/mirror.c"
+  ],
+  "func_match_files": []
+ },
+ "mixture_of_agents_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_mixture_of_agents_tool_py_parity.c",
+   "src/cli/port_moa_pure_helpers.c",
+   "src/cli/port_tools_mixture_of_agents_tool.c",
+   "src/tools/mixture_of_agents.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "moa_cmd.py": {
+  "marker_files": [
+   "src/agent/port_hermes_cli_moa_cmd_py_final.c",
+   "src/cli/cli_cmd_parity.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/web_dashboard.c"
+  ],
+  "func_match_files": []
+ },
+ "moa_config.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_moa_config_py_final.c",
+   "src/agent/port_hermes_cli_moa_config_py_parity.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_moa_config.c",
+   "src/cli/port_moa_config_pure.c"
+  ],
+  "func_match_files": []
+ },
+ "moa_loop.py": {
+  "marker_files": [
+   "src/agent/port_moa_loop_ports.c",
+   "src/agent/port_moa_loop_wrappers.c",
+   "src/gateway/gw_dispatch.c"
+  ],
+  "func_match_files": []
+ },
+ "moa_performance.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/cli/port_moa_pure_helpers.c",
+   "src/ports/tools/moa_performance.c",
+   "src/tools/port_moa_performance_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "moa_slash.py": {
+  "marker_files": [
+   "src/cli/port_moa_slash.c"
+  ],
+  "func_match_files": []
+ },
+ "moa_trace.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_moa_trace_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "model_catalog.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_model_catalog_py_final.c",
+   "src/agent/port_hermes_cli_model_catalog_py_parity.c",
+   "src/agent/provider_metadata.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_models_helpers.c",
+   "src/pet/pet_manifest.c"
+  ],
+  "func_match_files": []
+ },
+ "model_cost_guard.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_model_cost_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "model_metadata.py": {
+  "marker_files": [
+   "src/agent/port_agent_model_metadata_py_parity.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_model_metadata_ports.c",
+   "src/agent/port_transports_codex_gaps.c",
+   "src/agent/provider_metadata.c",
+   "src/cli/port_agent_model_metadata.c",
+   "src/ports/agent/model_metadata.c"
+  ],
+  "func_match_files": []
+ },
+ "model_normalize.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_model_normalize_py_final.c",
+   "src/agent/port_hermes_cli_model_normalize_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/model_catalog.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_model_normalize.c"
+  ],
+  "func_match_files": []
+ },
+ "model_search.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "model_setup_flows.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_model_setup_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "model_switch.py": {
+  "marker_files": [
+   "src/agent/port_batch9_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_model_switch_helpers.c",
+   "src/cli/port_model_switch_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "models.py": {
+  "marker_files": [
+   "src/agent/port_batch2_gaps.c",
+   "src/agent/port_batch7_gaps.c",
+   "src/agent/port_truly_missing_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/config_setup.c",
+   "src/cli/model_catalog.c",
+   "src/cli/port_config_pure.c",
+   "src/cli/port_hermes_cli_models.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_moa_pure_helpers.c",
+   "src/cli/port_model_normalize.c",
+   "src/cli/port_models_helpers.c",
+   "src/cli/port_models_net.c",
+   "src/cli/port_models_pure.c",
+   "src/cli/port_models_py_helpers.c",
+   "src/cli/port_models_validate.c",
+   "src/cli/port_provider_meta.c",
+   "src/hermes_cli/port_batch3_gaps.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "models_dev.py": {
+  "marker_files": [
+   "src/agent/port_agent_models_dev_gaps.c",
+   "src/agent/port_batch5_gaps.c",
+   "src/agent/port_models_dev_ports.c",
+   "src/agent/provider_metadata.c",
+   "src/ports/agent/models_dev.c"
+  ],
+  "func_match_files": []
+ },
+ "moonshot_schema.py": {
+  "marker_files": [
+   "src/agent/moonshot_schema.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_moonshot_schema_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "native_compaction.py": {
+  "marker_files": [
+   "src/agent/agent_runtime_pure.c",
+   "src/agent/port_agent_native_compaction_py_parity.c",
+   "src/agent/port_batch15_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "neutts_synth.py": {
+  "marker_files": [
+   "src/agent/port_tools_neutts_synth_py_final.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "nous_account.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_hermes_cli_nous_account_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/port_nous_account_ports.c",
+   "src/cli/port_nous_account_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "nous_auth_keepalive.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "nous_billing.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_nous_billing_py_final.c",
+   "src/agent/port_hermes_cli_nous_billing_py_parity.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_nous_billing.c",
+   "src/cli/port_nous_billing_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "nous_rate_guard.py": {
+  "marker_files": [
+   "src/agent/port_nous_rate_guard_ports.c",
+   "src/ports/agent/nous_rate_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "nous_subscription.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_nous_subscription_py_parity.c",
+   "src/cli/cli_cmd_config.c",
+   "src/cli/commands.c",
+   "src/cli/port_nous_sub_wrappers.c",
+   "src/cli/port_nous_subscription_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "npm_engine.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_npm_engine.c"
+  ],
+  "func_match_files": []
+ },
+ "onboarding.py": {
+  "marker_files": [
+   "src/agent/onboarding.c",
+   "src/agent/port_onboarding_ports.c",
+   "src/cli/port_agent_onboarding.c"
+  ],
+  "func_match_files": []
+ },
+ "onepassword_secrets_cli.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "oneshot.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/cli/port_agent_oneshot.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "online_research.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_online_research_py_final.c",
+   "src/agent/port_tools_online_research_py_parity.c",
+   "src/cli/port_moa_pure_helpers.c",
+   "src/ports/tools/online_research.c",
+   "src/tools/port_online_research_ports.c",
+   "src/tools/port_research_helpers.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "open_preview_tool.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "openrouter_client.py": {
+  "marker_files": [
+   "src/cli/port_tools_openrouter_client.c"
+  ],
+  "func_match_files": []
+ },
+ "osv_check.py": {
+  "marker_files": [
+   "src/cli/port_tools_osv_check.c"
+  ],
+  "func_match_files": []
+ },
+ "outbound_webhooks.py": {
+  "marker_files": [
+   "src/agent/port_agent_outbound_webhooks_py_final.c",
+   "src/agent/port_agent_outbound_webhooks_py_parity.c",
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_outbound_webhooks.c",
+   "src/agent/port_real_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "pairing.py": {
+  "marker_files": [
+   "src/agent/port_batch8_gaps.c",
+   "src/agent/port_gateway_pairing_py_parity.c",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_pairing_helpers.c",
+   "src/cli/port_pairing_ports.c",
+   "src/gateway/port_gateway_util_helpers.c",
+   "src/plugins/plugin_google_meet.c",
+   "src/ports/gateway/pairing.c"
+  ],
+  "func_match_files": []
+ },
+ "partial_compress.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "patch_parser.py": {
+  "marker_files": [
+   "src/cli/port_tools_patch_parser.c",
+   "src/tools/patch.c",
+   "src/tools/port_patch_parser.c",
+   "src/tools/port_patch_parser.h",
+   "src/tools/session_search.c"
+  ],
+  "func_match_files": []
+ },
+ "path_security.py": {
+  "marker_files": [
+   "src/cli/port_tools_path_security.c",
+   "src/ports/tools/path_security.c"
+  ],
+  "func_match_files": []
+ },
+ "paths.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "personality.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_personality_py_parity.c",
+   "src/cli/port_personality.c"
+  ],
+  "func_match_files": []
+ },
+ "pets.py": {
+  "marker_files": [
+   "src/app_state.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/pet/pet_commands.c",
+   "src/ports/agent/skill_bundles.c",
+   "src/ports/agent/ssl_guard.c",
+   "src/ports/tools/voice_mode.c"
+  ],
+  "func_match_files": []
+ },
+ "platform_registry.py": {
+  "marker_files": [
+   "src/cli/port_gateway_platform_registry.c",
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_platform_registry_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "platforms.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_platform_tools.c"
+  ],
+  "func_match_files": []
+ },
+ "plugin_llm.py": {
+  "marker_files": [
+   "src/agent/port_plugin_llm_ports.c",
+   "src/cli/port_agent_plugin_llm.c",
+   "src/ports/agent/plugin_llm.c"
+  ],
+  "func_match_files": []
+ },
+ "plugins.py": {
+  "marker_files": [
+   "src/agent/hook_registry.c",
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_hermes_cli_plugins_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/port_plugin_manifest.c",
+   "src/cli/port_plugins_ports.c",
+   "src/cli/port_plugins_wrappers.c",
+   "src/cli/port_profiles_helpers.c",
+   "src/hermes_cli/port_plugins_gaps.c",
+   "src/ports/tools/skills_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "plugins_cmd.py": {
+  "marker_files": [
+   "src/agent/port_batch6_gaps.c",
+   "src/agent/port_hermes_cli_plugins_cmd_py_final.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_plugins_cmd_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "portal_cli.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_hermes_cli_portal_cli_py_final.c",
+   "src/agent/port_hermes_cli_portal_cli_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "portal_tags.py": {
+  "marker_files": [
+   "src/agent/port_portal_tags_ports.c",
+   "src/agent/portal_tags.c"
+  ],
+  "func_match_files": []
+ },
+ "process_bootstrap.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/process_bootstrap.c",
+   "src/agent/proxy_utils.c",
+   "src/agent/think_scrubber.c",
+   "src/tools/file.c"
+  ],
+  "func_match_files": []
+ },
+ "process_registry.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_batch2_gaps.c",
+   "src/agent/port_batch5_gaps.c",
+   "src/agent/port_multi_mod_gaps.c",
+   "src/agent/port_tools_process_registry_py_final.c",
+   "src/ports/tools/process_registry.c",
+   "src/tools/port_environments/base.c",
+   "src/tools/process.c",
+   "src/tools/process_registry.h"
+  ],
+  "func_match_files": []
+ },
+ "profile_describer.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/kanban_decompose.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "profile_distribution.py": {
+  "marker_files": [
+   "src/agent/port_batch9_gaps.c",
+   "src/agent/port_hermes_cli_profile_distribution_py_final.c",
+   "src/agent/port_hermes_cli_profile_distribution_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_profile_distribution_ports.c",
+   "src/tools/curator_backup.c"
+  ],
+  "func_match_files": []
+ },
+ "profile_routing.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_gateway_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "profiles.py": {
+  "marker_files": [
+   "src/agent/port_batch8_gaps.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_cli_profiles.c",
+   "src/cli/port_hermes_cli_slash_exec.c",
+   "src/cli/port_kanban_db.c",
+   "src/cli/port_profiles_helpers.c",
+   "src/hermes_cli/kanban_format.c",
+   "src/ports/gateway/config.c"
+  ],
+  "func_match_files": []
+ },
+ "project_tools.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "project_tree.py": {
+  "marker_files": [
+   "src/cli/port_project_tree.c"
+  ],
+  "func_match_files": []
+ },
+ "projects_cmd.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "projects_db.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_projects_db_ports.c",
+   "src/hermes_cli/projects_db.c"
+  ],
+  "func_match_files": []
+ },
+ "prompt_builder.py": {
+  "marker_files": [
+   "src/agent/port_agent_prompt_builder.c",
+   "src/agent/port_agent_prompt_builder_py_parity.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_prompt_builder_ports.c",
+   "src/agent/prompt_builder_guidance.c",
+   "src/agent/prompt_builder_guidance.h",
+   "src/ports/agent/prompt_builder.c"
+  ],
+  "func_match_files": []
+ },
+ "prompt_cache_boundary.py": {
+  "marker_files": [
+   "src/agent/port_prompt_cache_boundary.c"
+  ],
+  "func_match_files": []
+ },
+ "prompt_caching.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_prompt_caching_plan.c",
+   "src/agent/port_prompt_caching_ports.c",
+   "src/agent/port_prompt_caching_strip.c",
+   "src/ports/agent/prompt_caching.c"
+  ],
+  "func_match_files": []
+ },
+ "prompt_size.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_prompt_size.c"
+  ],
+  "func_match_files": []
+ },
+ "prompt_stash.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/hermes_cli/port_prompt_stash.c"
+  ],
+  "func_match_files": []
+ },
+ "provider.py": {
+  "marker_files": [
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "provider_catalog.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_provider_catalog.c"
+  ],
+  "func_match_files": []
+ },
+ "providers.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_hermes_cli_providers_py_parity.c",
+   "src/cli/cli.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/ports/agent/auxiliary_client.c"
+  ],
+  "func_match_files": []
+ },
+ "proxy_cli.py": {
+  "marker_files": [
+   "src/agent/port_hermes_cli_proxy_cli_py_final.c",
+   "src/cli/cli_cmd_gateway.h",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_slash_exec.c",
+   "src/cli/port_proxy_cli_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "psutil_android.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_update_cmd.c"
+  ],
+  "func_match_files": []
+ },
+ "pt_input_extras.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_hermes_cli_pt_input_extras_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_cmd_session.h",
+   "src/cli/commands.c"
+  ],
+  "func_match_files": []
+ },
+ "pty_bridge.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_pty_bridge_ports.c",
+   "src/cli/port_pty_clamp_helpers.c",
+   "src/pty.c",
+   "src/tools/file.c"
+  ],
+  "func_match_files": []
+ },
+ "pty_session.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_pty_session_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "rate_limit_tracker.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/tools/rate_limit.c"
+  ],
+  "func_match_files": []
+ },
+ "react_to_message_tool.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "reactions.py": {
+  "marker_files": [
+   "src/agent/port_agent_reactions.c"
+  ],
+  "func_match_files": []
+ },
+ "read_extract.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_tools_read_extract_py_parity.c",
+   "src/tools/port_read_extract_gaps.c",
+   "src/tools/port_tools_read_extract.c"
+  ],
+  "func_match_files": []
+ },
+ "read_preview_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_read_preview_tool_py_parity.c"
+  ],
+  "func_match_files": []
+ },
+ "read_terminal_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_read_terminal_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "read_window_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_read_window_tool_py_parity.c"
+  ],
+  "func_match_files": []
+ },
+ "readiness.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_gateway_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "reasoning_summaries.py": {
+  "marker_files": [
+   "src/agent/port_agent_reasoning_summaries.c"
+  ],
+  "func_match_files": []
+ },
+ "reasoning_timeouts.py": {
+  "marker_files": [
+   "src/agent/port_agent_reasoning_timeouts.c"
+  ],
+  "func_match_files": []
+ },
+ "redact.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_redact_helpers.c",
+   "src/agent/port_agent_redact_helpers.h",
+   "src/agent/port_agent_redact_py_parity.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_redact_ports.c",
+   "src/ports/agent/redact.c",
+   "src/ports/tools/url_safety.c",
+   "src/tools/browser_redact.c",
+   "src/tools/browser_redact.h"
+  ],
+  "func_match_files": []
+ },
+ "registry.py": {
+  "marker_files": [
+   "src/agent/port_agent_replay_cleanup.c",
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_tools_registry_py_final.c",
+   "src/agent/port_tools_registry_py_parity.c",
+   "src/ports/tools/registry.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_registry_cache.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/tool_result.c",
+   "src/web_server.c"
+  ],
+  "func_match_files": []
+ },
+ "relaunch.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "relay_llm.py": {
+  "marker_files": [
+   "src/agent/port_agent_relay_llm.c"
+  ],
+  "func_match_files": []
+ },
+ "relay_runtime.py": {
+  "marker_files": [
+   "src/agent/port_agent_relay_runtime.c",
+   "src/agent/port_agent_relay_runtime_py_parity.c",
+   "src/agent/port_batch13_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "relay_tools.py": {
+  "marker_files": [
+   "src/agent/port_relay_tools.c"
+  ],
+  "func_match_files": []
+ },
+ "relay_ws_transport.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_relay_ws_transport.h"
+  ],
+  "func_match_files": []
+ },
+ "replay_cleanup.py": {
+  "marker_files": [
+   "src/agent/port_agent_replay_cleanup.c",
+   "src/agent/port_agent_replay_cleanup.h"
+  ],
+  "func_match_files": []
+ },
+ "resource_limits.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_resource_limits_py_parity.c",
+   "src/cli/port_hermes_cli_main_cmds.c"
+  ],
+  "func_match_files": []
+ },
+ "response_filters.py": {
+  "marker_files": [
+   "src/cli/port_gateway_response_filters.c",
+   "src/gateway/port_gateway_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "restart.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_gateway_util_helpers.c",
+   "src/ports/gateway/platforms/helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "restart_loop_guard.py": {
+  "marker_files": [
+   "src/gateway/restart_loop_guard.h",
+   "src/ports/gateway/restart_loop_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "retry_utils.py": {
+  "marker_files": [
+   "src/agent/port_retry_utils_ports.c",
+   "src/agent/port_small_mods_gaps.c",
+   "src/ports/agent/retry_utils.c"
+  ],
+  "func_match_files": []
+ },
+ "rich_sent_store.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_rich_sent_store.c",
+   "src/gateway/port_gateway_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "route_identity.py": {
+  "marker_files": [
+   "src/agent/port_hermes_cli_route_identity_py_final.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_config_py_pure.c"
+  ],
+  "func_match_files": []
+ },
+ "run.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_gateway_run_py_parity.c",
+   "src/agent/port_truly_missing_gaps.c",
+   "src/cli/cli_cmd_parity.c",
+   "src/cli/port_cli_commands_mixin_wrappers.c",
+   "src/cli/port_scale_to_zero_helpers.c",
+   "src/gateway/gateway_lifecycle.c",
+   "src/gateway/gateway_runner.c",
+   "src/gateway/gateway_runtime.c",
+   "src/gateway/port_gateway_run.c",
+   "src/gateway/port_gateway_run_agent.c",
+   "src/gateway/port_gateway_run_deps.c",
+   "src/gateway/port_gateway_run_gaps.c",
+   "src/gateway/port_gateway_run_helpers.c",
+   "src/gateway/port_gateway_run_ports.c",
+   "src/gateway/port_gateway_run_wrappers.c",
+   "src/gateway/port_run_gaps.c",
+   "src/gateway/run_pure.c",
+   "src/gateway/run_pure2.c",
+   "src/gateway/server.c",
+   "src/ports/agent/curator.c",
+   "src/ports/agent/image_routing.c",
+   "src/ports/gateway/platforms/helpers.c",
+   "src/ports/gateway/restart.c",
+   "src/ports/gateway/run.c",
+   "src/ports/gateway/status.c"
+  ],
+  "func_match_files": []
+ },
+ "run_agent.py": {
+  "marker_files": [
+   "src/ports/agent/conversation_loop.c"
+  ],
+  "func_match_files": []
+ },
+ "runtime_cwd.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_runtime_cwd_ports.c",
+   "src/agent/runtime_cwd.c",
+   "src/ports/agent/prompt_builder.c"
+  ],
+  "func_match_files": []
+ },
+ "runtime_footer.py": {
+  "marker_files": [
+   "src/ports/gateway/runtime_footer.c"
+  ],
+  "func_match_files": []
+ },
+ "runtime_provider.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_runtime_provider_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_provider_registry.c",
+   "src/cli/port_runtime_provider.c",
+   "src/cli/port_timeouts.c"
+  ],
+  "func_match_files": []
+ },
+ "scale_to_zero.py": {
+  "marker_files": [
+   "src/cli/port_gateway_scale_to_zero.c",
+   "src/cli/port_scale_to_zero_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "schema_sanitizer.py": {
+  "marker_files": [
+   "src/cli/port_tools_schema_sanitizer.c",
+   "src/cli/port_tools_schema_sanitizer.h",
+   "src/ports/agent/gemini_schema.c"
+  ],
+  "func_match_files": []
+ },
+ "secret_prompt.py": {
+  "marker_files": [
+   "src/cli/cli.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "secret_scope.py": {
+  "marker_files": [
+   "src/agent/port_agent_secret_scope.c",
+   "src/cli/port_whatsapp_common_helpers.c",
+   "src/gateway/platforms/weixin.c",
+   "src/gateway/port_bluebubbles_ports.c",
+   "src/gateway/port_bluebubbles_wrappers.c",
+   "src/gateway/port_qqbot_adapter_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "secrets_cli.py": {
+  "marker_files": [
+   "src/agent/port_batch9_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/ports/tools/checkpoint_manager.c"
+  ],
+  "func_match_files": []
+ },
+ "security_advisories.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_security_advisories.c"
+  ],
+  "func_match_files": []
+ },
+ "security_audit.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_security_audit_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_security_audit.c"
+  ],
+  "func_match_files": []
+ },
+ "security_audit_startup.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_config.c"
+  ],
+  "func_match_files": []
+ },
+ "self_repo_guard.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_self_repo_guard_py_parity.c",
+   "src/tools/port_self_repo_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "send_cmd.py": {
+  "marker_files": [
+   "src/agent/credential_pool_sync.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_send_cmd_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "send_message_tool.py": {
+  "marker_files": [
+   "src/agent/port_tools_send_message_tool_py_final.c",
+   "src/cron/port_cron_scheduler_runtime_impl.c",
+   "src/tools/port_send_message_tool.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/send_message.c",
+   "src/tools/send_message_target.c",
+   "src/tools/send_message_target.h"
+  ],
+  "func_match_files": []
+ },
+ "server.py": {
+  "marker_files": [
+   "src/cli/tui_json_rpc.c",
+   "src/pet/pet_commands.c"
+  ],
+  "func_match_files": []
+ },
+ "service_manager.py": {
+  "marker_files": [
+   "src/agent/port_batch2_gaps.c",
+   "src/agent/port_batch7_gaps.c",
+   "src/agent/port_hermes_cli_service_manager_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_service_manager_ports.c",
+   "src/hermes_cli/port_hermes_cli_service_manager_gaps.c",
+   "src/hermes_cli/port_service_manager_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "session.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_gateway_session_py_parity.c",
+   "src/agent/port_multi_mod_gaps.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/port_verification_stop_helpers.c",
+   "src/gateway/gw_session.c",
+   "src/gateway/port_gateway_session_ports.c",
+   "src/gateway/port_session_gaps.c",
+   "src/gateway/port_session_helpers2.c",
+   "src/gateway/server.c",
+   "src/ports/gateway/session.c",
+   "src/tools/port_cronjob_tools.c"
+  ],
+  "func_match_files": []
+ },
+ "session_activity.py": {
+  "marker_files": [
+   "src/agent/port_session_activity.c"
+  ],
+  "func_match_files": []
+ },
+ "session_context.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_session_context_ports.c",
+   "src/ports/gateway/session_context.c"
+  ],
+  "func_match_files": []
+ },
+ "session_export.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_session_export_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "session_export_html.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "session_export_md.py": {
+  "marker_files": [
+   "src/cli/port_session_export_md_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "session_filters.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "session_listing.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_session_listing_py_final.c",
+   "src/agent/port_hermes_cli_session_listing_py_parity.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_session_listing.c"
+  ],
+  "func_match_files": []
+ },
+ "session_recap.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_session_recap.c"
+  ],
+  "func_match_files": []
+ },
+ "session_recovery.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_session_recovery_py_final.c",
+   "src/agent/port_hermes_cli_session_recovery_py_parity.c",
+   "src/cli/session_recovery/session_recovery_copy.c",
+   "src/cli/session_recovery/session_recovery_internal.h",
+   "src/cli/session_recovery/session_recovery_main.c",
+   "src/cli/session_recovery/session_recovery_meta.c",
+   "src/cli/session_recovery/session_recovery_orphans.c",
+   "src/cli/session_recovery/session_recovery_paths.c",
+   "src/cli/session_recovery/session_recovery_preflight.c",
+   "src/cli/session_recovery/session_recovery_salvage.c",
+   "src/cli/session_recovery/session_recovery_verify.c"
+  ],
+  "func_match_files": []
+ },
+ "session_search_tool.py": {
+  "marker_files": [
+   "src/agent/logger.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_session_search_tool_py_parity.c",
+   "src/cli/port_tools_session_search_tool.c",
+   "src/tools/port_session_search_tool.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/session_search.c"
+  ],
+  "func_match_files": []
+ },
+ "session_stall.py": {
+  "marker_files": [
+   "src/gateway/port_session_stall.c"
+  ],
+  "func_match_files": []
+ },
+ "session_state.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/gateway/port_gateway_session_state.c"
+  ],
+  "func_match_files": []
+ },
+ "sessions_cmd.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_sessions_cmd_py_final.c",
+   "src/agent/port_hermes_cli_sessions_cmd_py_parity.c",
+   "src/cli/cli_cmd_session.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_main_helpers.c",
+   "src/cli/port_main_wrappers.c",
+   "src/cli/port_web_server_paths.c"
+  ],
+  "func_match_files": []
+ },
+ "setup.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_hermes_cli_setup_py_parity.c",
+   "src/cli/cli_cmd_config.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_setup_ports.c",
+   "src/cli/setup_wizard.c"
+  ],
+  "func_match_files": []
+ },
+ "setup_hidden_env.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/setup_wizard.c"
+  ],
+  "func_match_files": []
+ },
+ "setup_whatsapp_cloud.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "shared_metrics_contract.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_shared_metrics_contract.c"
+  ],
+  "func_match_files": []
+ },
+ "shell_hooks.py": {
+  "marker_files": [
+   "src/agent/port_shell_hooks_ports.c",
+   "src/agent/provider_google.c",
+   "src/cli/port_cron_jobs_helpers.c",
+   "src/ports/agent/shell_hooks.c"
+  ],
+  "func_match_files": []
+ },
+ "shutdown_flush.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_gateway_shutdown_flush_py_final.c",
+   "src/agent/port_gateway_shutdown_flush_py_parity.c",
+   "src/gateway/port_shutdown_flush_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "shutdown_forensics.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_gateway_shutdown_forensics_py_parity.c",
+   "src/cli/port_gateway_shutdown_forensics.c",
+   "src/ports/gateway/shutdown_forensics.c"
+  ],
+  "func_match_files": []
+ },
+ "shutdown_watchdog.py": {
+  "marker_files": [
+   "src/file_ops.c",
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_shutdown_watchdog_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "signal_rate_limit.py": {
+  "marker_files": [
+   "src/gateway/port_signal_rate_limit.c"
+  ],
+  "func_match_files": []
+ },
+ "sizefmt.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_sizefmt.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_bundles.py": {
+  "marker_files": [
+   "src/agent/port_skill_bundles_ports.c",
+   "src/cli/port_hermes_cli_slash_exec.c",
+   "src/ports/agent/skill_bundles.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_commands.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_skill_commands.c",
+   "src/agent/port_agent_title_generator.c",
+   "src/agent/port_skill_commands_ports.c",
+   "src/ports/agent/skill_commands.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_linter.py": {
+  "marker_files": [
+   "src/ports/tools/skill_linter.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_manager_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_tools_skill_manager_tool_py_final.c",
+   "src/agent/port_tools_skill_manager_tool_py_parity.c",
+   "src/plugins/plugin_skills.c",
+   "src/ports/tools/checkpoint_manager.c",
+   "src/tools/port_skill_manager_tool_ports.c",
+   "src/tools/port_skill_mgr_tool_wrappers.c",
+   "src/tools/skill_manager_val.c",
+   "src/tools/skill_mgmt.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_preprocessing.py": {
+  "marker_files": [
+   "src/agent/port_skill_preprocessing_ports.c",
+   "src/ports/agent/skill_preprocessing.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_provenance.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_usage.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_tools_skill_usage_py_parity.c",
+   "src/cli/tui_transport.c",
+   "src/cron/cron_suggestions.c",
+   "src/cron/port_cron_jobs.c",
+   "src/tools/port_skill_usage_ports.c",
+   "src/tools/port_skill_usage_wrappers.c",
+   "src/tools/port_skills_sync.c",
+   "src/tools/port_skills_sync_client.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "skill_utils.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_skill_utils.c",
+   "src/agent/port_skill_utils_wrappers.c",
+   "src/cli/port_agent_skill_utils.c",
+   "src/ports/tools/skill_linter.c"
+  ],
+  "func_match_files": []
+ },
+ "skills_ast_audit.py": {
+  "marker_files": [
+   "src/cli/port_tools_skills_ast_audit.c"
+  ],
+  "func_match_files": []
+ },
+ "skills_config.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_skills.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_skills_config.c"
+  ],
+  "func_match_files": []
+ },
+ "skills_guard.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_tools_skills_guard_py_parity.c",
+   "src/cli/port_tools_skills_guard.c",
+   "src/ports/tools/skills_guard.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/todo.c"
+  ],
+  "func_match_files": []
+ },
+ "skills_hub.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_batch4_gaps.c",
+   "src/agent/port_final_gaps.c",
+   "src/agent/port_hermes_cli_skills_hub_py_final.c",
+   "src/agent/port_real_gaps.c",
+   "src/agent/port_tools_skills_hub_py_parity.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/gateway_command_sanitize.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/provider/copilot_oauth.c",
+   "src/skills_hub.c",
+   "src/tools/port_skill_usage_wrappers.c",
+   "src/tools/port_skills_hub.c",
+   "src/tools/port_skills_hub_gaps.c",
+   "src/tools/port_skills_hub_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "skills_sync.py": {
+  "marker_files": [
+   "src/tools/curator_backup.c",
+   "src/tools/port_skills_sync.c",
+   "src/tools/port_skills_sync_ports.c",
+   "src/tools/skills_sync_fs.c",
+   "src/tools/skills_sync_fs.h"
+  ],
+  "func_match_files": []
+ },
+ "skills_sync_client.py": {
+  "marker_files": [
+   "src/agent/port_batch6_gaps.c",
+   "src/agent/port_tools_skills_sync_client_py_parity.c",
+   "src/tools/port_skills_sync_client.c"
+  ],
+  "func_match_files": []
+ },
+ "skills_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_tools_skills_tool_py_parity.c",
+   "src/tools/port_skills_tool.c",
+   "src/tools/port_skills_tool_ports.c",
+   "src/tools/skill_mgmt.c",
+   "src/tools/skill_prereqs.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "skin_cmd.py": {
+  "marker_files": [
+   "src/cli/port_cli_commands_mixin_wrappers.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "skin_engine.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "slack_cli.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "slash_access.py": {
+  "marker_files": [
+   "src/cli/port_gateway_slash_access.c",
+   "src/gateway/slash_access.c"
+  ],
+  "func_match_files": []
+ },
+ "slash_commands.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_small_mods_gaps.c",
+   "src/gateway/gateway_runner.c",
+   "src/gateway/port_slash_command_guards.c",
+   "src/gateway/port_slash_commands.c"
+  ],
+  "func_match_files": []
+ },
+ "slash_confirm.py": {
+  "marker_files": [
+   "src/tools/port_tools_slash_confirm.c"
+  ],
+  "func_match_files": []
+ },
+ "slash_exec.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_slash_exec.c"
+  ],
+  "func_match_files": []
+ },
+ "slash_worker.py": {
+  "marker_files": [
+   "src/cli/tui_slash_worker.c",
+   "src/cli/tui_slash_worker.h"
+  ],
+  "func_match_files": []
+ },
+ "sqlite_runtime.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "sqlite_safe_read.py": {
+  "marker_files": [
+   "src/gateway/sqlite_safe_read.c"
+  ],
+  "func_match_files": []
+ },
+ "sqlite_util.py": {
+  "marker_files": [
+   "src/hermes_cli/sqlite_util.c",
+   "src/hermes_cli/sqlite_util.h"
+  ],
+  "func_match_files": []
+ },
+ "ssl_guard.py": {
+  "marker_files": [
+   "src/agent/port_ssl_guard_ports.c",
+   "src/ports/agent/ssl_guard.c"
+  ],
+  "func_match_files": []
+ },
+ "ssl_verify.py": {
+  "marker_files": [
+   "src/agent/port_agent_ssl_verify.c"
+  ],
+  "func_match_files": []
+ },
+ "status.py": {
+  "marker_files": [
+   "src/agent/port_agent_monitoring_health_export.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_status_py_parity.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_status_helpers.c",
+   "src/cron/cron_locking.c",
+   "src/gateway/port_gateway_status_ports.c",
+   "src/gateway/port_status_wrappers.c",
+   "src/ports/gateway/status.c"
+  ],
+  "func_match_files": []
+ },
+ "status_phrases.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "stdio.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_gateway_platform.c"
+  ],
+  "func_match_files": []
+ },
+ "sticker_cache.py": {
+  "marker_files": [
+   "src/cli/port_gateway_sticker_cache.c",
+   "src/gateway/sticker_cache.c"
+  ],
+  "func_match_files": []
+ },
+ "stream_consumer.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/think_scrubber.c",
+   "src/gateway/platforms/api_server_adapter.c",
+   "src/gateway/port_gateway_util_helpers.c",
+   "src/gateway/server.c",
+   "src/gateway/stream_consumer.h",
+   "src/ports/gateway/stream_consumer.c"
+  ],
+  "func_match_files": []
+ },
+ "stream_diag.py": {
+  "marker_files": [
+   "src/agent/port_stream_diag_ports.c",
+   "src/agent/stream_diag.c"
+  ],
+  "func_match_files": []
+ },
+ "stream_dispatch.py": {
+  "marker_files": [
+   "src/gateway/port_stream_dispatch_ports.c",
+   "src/gateway/stream_events.c"
+  ],
+  "func_match_files": []
+ },
+ "stream_events.py": {
+  "marker_files": [
+   "src/gateway/stream_events.c"
+  ],
+  "func_match_files": []
+ },
+ "stream_single_writer.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "streaming_tts_consumer.py": {
+  "marker_files": [
+   "src/gateway/port_streaming_tts_consumer.c"
+  ],
+  "func_match_files": []
+ },
+ "subagent_lifecycle.py": {
+  "marker_files": [
+   "src/agent/port_subagent_lifecycle.c"
+  ],
+  "func_match_files": []
+ },
+ "subdirectory_hints.py": {
+  "marker_files": [
+   "src/agent/port_agent_subdirectory_hints_py_parity.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_subdirectory_hints_ports.c",
+   "src/agent/subdir_hints.c",
+   "src/ports/agent/subdirectory_hints.c"
+  ],
+  "func_match_files": []
+ },
+ "subscription_view.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "suggestions_cmd.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_parity.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "system_prompt.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_system_prompt.c",
+   "src/agent/port_system_prompt_ports.c",
+   "src/ports/agent/chat_completion_helpers.c",
+   "src/ports/agent/prompt_builder.c",
+   "src/ports/agent/system_prompt.c"
+  ],
+  "func_match_files": []
+ },
+ "systemd_notify.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_systemd_notify_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "telegram_managed_bot.py": {
+  "marker_files": [
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "terminal_hints.py": {
+  "marker_files": [
+   "src/agent/port_batch8_gaps.c",
+   "src/agent/port_tools_terminal_hints_py_parity.c",
+   "src/tools/port_tools_terminal_hints.c"
+  ],
+  "func_match_files": []
+ },
+ "terminal_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch5_gaps.c",
+   "src/agent/port_truly_missing_gaps.c",
+   "src/ports/tools/terminal_tool.c",
+   "src/tools/port_terminal_tool_gaps.c",
+   "src/tools/port_terminal_tool_ports.c",
+   "src/tools/port_terminal_tool_wrappers.c",
+   "src/tools/rate_limit.c",
+   "src/tools/terminal.c",
+   "src/tools/terminal_env_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "test_commands_execute.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_slash_exec.c"
+  ],
+  "func_match_files": []
+ },
+ "think_scrubber.py": {
+  "marker_files": [
+   "src/agent/port_think_scrubber_helpers2.c",
+   "src/agent/think_scrubber.c",
+   "src/cli/port_agent_think_scrubber.c"
+  ],
+  "func_match_files": []
+ },
+ "thinking_timeout_guidance.py": {
+  "marker_files": [
+   "src/agent/port_agent_thinking_timeout_guidance.c"
+  ],
+  "func_match_files": []
+ },
+ "thread_context.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "thread_scoped_output.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_thread_scoped_output_py_parity.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_thread_scoped_output_ports.c",
+   "src/cli/port_voice.c",
+   "src/tools/send_message_target.c",
+   "src/tools/tirith.c"
+  ],
+  "func_match_files": []
+ },
+ "threat_patterns.py": {
+  "marker_files": [
+   "src/cli/port_tools_threat_patterns.c"
+  ],
+  "func_match_files": []
+ },
+ "timefmt.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_timefmt.c"
+  ],
+  "func_match_files": []
+ },
+ "timeouts.py": {
+  "marker_files": [
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_timeouts.c"
+  ],
+  "func_match_files": []
+ },
+ "tips.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_hermes_cli_tips_py_parity.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c"
+  ],
+  "func_match_files": []
+ },
+ "tirith_security.py": {
+  "marker_files": [
+   "src/agent/port_batch9_gaps.c",
+   "src/agent/port_tools_tirith_security_py_final.c",
+   "src/agent/port_tools_tirith_security_py_parity.c",
+   "src/cli/port_web_server_paths.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/tirith.c"
+  ],
+  "func_match_files": []
+ },
+ "title_generator.py": {
+  "marker_files": [
+   "src/agent/port_agent_title_generator.c",
+   "src/agent/port_agent_title_generator_py_parity.c",
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_title_generator_ports.c",
+   "src/agent/title.c",
+   "src/ports/agent/title_generator.c"
+  ],
+  "func_match_files": []
+ },
+ "todo_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_todo_tool.c",
+   "src/tools/port_todo_tool_ports.c",
+   "src/tools/skills.c",
+   "src/tools/todo.c"
+  ],
+  "func_match_files": []
+ },
+ "token_refresh.py": {
+  "marker_files": [
+   "src/agent/llm_client.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_backend_helpers.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_backend_helpers.c",
+   "src/ports/tools/tool_backend_helpers.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_dispatch_helpers.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_tool_dispatch_helpers.c",
+   "src/agent/port_agent_tool_dispatch_helpers_py_final.c",
+   "src/agent/port_agent_tool_dispatch_helpers_py_parity.c",
+   "src/agent/port_batch14_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_executor.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_tool_executor.c",
+   "src/agent/port_agent_tool_executor_py_parity.c",
+   "src/agent/port_batch11_gaps.c",
+   "src/agent/port_tool_executor_ports.c",
+   "src/cli/port_agent_tool_executor.c",
+   "src/ports/agent/conversation_loop.c",
+   "src/ports/agent/tool_executor.c",
+   "src/tools/tool_result.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_guardrails.py": {
+  "marker_files": [
+   "src/agent/port_tool_guardrails_ports.c",
+   "src/cli/port_agent_tool_guardrails.c",
+   "src/ports/agent/tool_guardrails.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_output_limits.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_output_limits.c",
+   "src/tools/tool_output_limits.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_result_classification.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_replay_cleanup.c",
+   "src/ports/agent/tool_guardrails.c",
+   "src/tools/tool_result.c",
+   "src/tools/tool_result_classification.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_result_storage.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_result_storage.c",
+   "src/tools/result_storage.c"
+  ],
+  "func_match_files": []
+ },
+ "tool_search.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_search.c",
+   "src/ports/tools/tool_search.c",
+   "src/tools/port_tool_search_ports.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/ansi_strip.py": {
+  "marker_files": [
+   "src/tools/ansi_strip.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/approval.py": {
+  "marker_files": [
+   "src/ports/tools/approval.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/audio_container.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "tools/binary_extensions.py": {
+  "marker_files": [
+   "src/tools/binary_extensions.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/blueprints.py": {
+  "marker_files": [
+   "src/cli/port_tools_blueprints.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/browser_camofox.py": {
+  "marker_files": [
+   "src/ports/tools/browser_camofox.c",
+   "src/tools/memory.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/browser_cdp_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_browser_cdp_tool.c",
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/browser_dialog_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_browser_cdp_tool.c",
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/browser_supervisor.py": {
+  "marker_files": [
+   "src/tools/port_browser_supervisor.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/browser_tool.py": {
+  "marker_files": [
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/checkpoint_manager.py": {
+  "marker_files": [
+   "src/agent/checkpoint.c",
+   "src/cli/port_tools_checkpoint_manager.c",
+   "src/ports/tools/checkpoint_manager.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/clarify_gateway.py": {
+  "marker_files": [
+   "src/tools/clarify.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/clarify_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_clarify_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/code_execution_tool.py": {
+  "marker_files": [
+   "src/tools/exec_code.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/computer_use/browser_route.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/tools/computer_use.c"
+  ]
+ },
+ "tools/cronjob_tools.py": {
+  "marker_files": [
+   "src/gateway/platforms/api_server_adapter_cron.c",
+   "src/tools/cron_prompt_sanitize.c",
+   "src/tools/port_cronjob_tools.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/debug_helpers.py": {
+  "marker_files": [
+   "src/cli/port_tools_debug_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/delegate_tool.py": {
+  "marker_files": [
+   "src/tools/delegate.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/discord_tool.py": {
+  "marker_files": [
+   "src/tools/discord.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/env_passthrough.py": {
+  "marker_files": [
+   "src/cli/port_tools_env_passthrough.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/env_probe.py": {
+  "marker_files": [
+   "src/cli/port_tools_env_probe.c",
+   "src/ports/tools/env_probe.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/environments/vercel_sandbox.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "tools/fal_common.py": {
+  "marker_files": [
+   "src/cli/port_tools_fal_common.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/feishu_doc_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_feishu_drive_tool.c",
+   "src/tools/feishu_tools.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/file_operations.py": {
+  "marker_files": [
+   "src/agent/file_safety.c",
+   "src/ports/agent/nous_rate_guard.c",
+   "src/tools/file.c",
+   "src/tools/file_batch.c",
+   "src/tools/patch.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/file_state.py": {
+  "marker_files": [
+   "src/ports/tools/registry.c",
+   "src/provider/google_oauth.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/file_tools.py": {
+  "marker_files": [
+   "src/tools/port_file_tools_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/image_generation_tool.py": {
+  "marker_files": [
+   "src/tools/port_image_generation_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/kanban_tools.py": {
+  "marker_files": [
+   "src/tools/port_kanban_tools.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/managed_tool_gateway.py": {
+  "marker_files": [
+   "src/ports/tools/managed_tool_gateway.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/memory_tool.py": {
+  "marker_files": [
+   "src/tools/image_gen.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/microsoft_graph_auth.py": {
+  "marker_files": [
+   "src/tools/microsoft_graph_auth.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/microsoft_graph_client.py": {
+  "marker_files": [
+   "src/cli/port_tools_microsoft_graph_client.c",
+   "src/ports/tools/microsoft_graph_client.c",
+   "src/tools/browser.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/mixture_of_agents_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_mixture_of_agents_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/openrouter_client.py": {
+  "marker_files": [
+   "src/cli/port_tools_openrouter_client.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/osv_check.py": {
+  "marker_files": [
+   "src/cli/port_tools_osv_check.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/patch_parser.py": {
+  "marker_files": [
+   "src/cli/port_tools_patch_parser.c",
+   "src/tools/patch.c",
+   "src/tools/session_search.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/path_security.py": {
+  "marker_files": [
+   "src/cli/port_tools_path_security.c",
+   "src/ports/tools/path_security.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/process_registry.py": {
+  "marker_files": [
+   "src/ports/tools/process_registry.c",
+   "src/tools/process.c",
+   "src/tools/process_registry.h"
+  ],
+  "func_match_files": []
+ },
+ "tools/rate_limit_tracker.py": {
+  "marker_files": [
+   "src/tools/rate_limit.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/read_extract.py": {
+  "marker_files": [
+   "src/tools/port_tools_read_extract.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/read_terminal_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_read_terminal_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/registry.py": {
+  "marker_files": [
+   "src/ports/tools/registry.c",
+   "src/tools/tool_result.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/schema_sanitizer.py": {
+  "marker_files": [
+   "src/ports/agent/gemini_schema.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/send_message_tool.py": {
+  "marker_files": [
+   "src/tools/port_send_message_tool.c",
+   "src/tools/send_message.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/session_search_tool.py": {
+  "marker_files": [
+   "src/agent/logger.c",
+   "src/cli/port_tools_session_search_tool.c",
+   "src/tools/port_session_search_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/skill_manager_tool.py": {
+  "marker_files": [
+   "src/tools/skill_mgmt.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/skill_usage.py": {
+  "marker_files": [
+   "src/cli/tui_transport.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/skills_ast_audit.py": {
+  "marker_files": [
+   "src/cli/port_tools_skills_ast_audit.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/skills_guard.py": {
+  "marker_files": [
+   "src/ports/tools/skills_guard.c",
+   "src/tools/todo.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/skills_hub.py": {
+  "marker_files": [
+   "src/provider/copilot_oauth.c",
+   "src/skills_hub.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/skills_sync.py": {
+  "marker_files": [
+   "src/tools/curator_backup.c",
+   "src/tools/port_skills_sync.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/skills_sync_client.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/tools/port_skills_sync_client.c"
+  ]
+ },
+ "tools/skills_tool.py": {
+  "marker_files": [
+   "src/tools/skill_mgmt.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/terminal_tool.py": {
+  "marker_files": [
+   "src/ports/tools/terminal_tool.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/tirith_security.py": {
+  "marker_files": [
+   "src/tools/tirith.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/todo_tool.py": {
+  "marker_files": [
+   "src/cli/port_tools_todo_tool.c",
+   "src/tools/skills.c",
+   "src/tools/todo.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/tool_backend_helpers.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_backend_helpers.c",
+   "src/ports/tools/tool_backend_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/tool_output_limits.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_output_limits.c",
+   "src/tools/tool_output_limits.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/tool_result_storage.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_result_storage.c",
+   "src/tools/result_storage.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/tool_search.py": {
+  "marker_files": [
+   "src/cli/port_tools_tool_search.c",
+   "src/ports/tools/tool_search.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/transcription_tools.py": {
+  "marker_files": [
+   "src/tools/image_gen_registry.c",
+   "src/tools/transcribe.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/tts_text_normalize.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/tools/port_tools_tts_text_normalize.c",
+   "src/tools/port_tools_tts_text_normalize.h"
+  ]
+ },
+ "tools/url_safety.py": {
+  "marker_files": [
+   "src/cli/port_tools_url_safety.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/vision_tools.py": {
+  "marker_files": [
+   "src/tools/vision.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/voice_mode.py": {
+  "marker_files": [
+   "src/cli/port_tools_voice_mode.c",
+   "src/ports/tools/voice_mode.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/wake_word.py": {
+  "marker_files": [],
+  "func_match_files": [
+   "src/cli/display_core.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_kanban_db.c",
+   "src/ports/tools/voice_mode.c",
+   "src/tools/port_tools_wake_word.c"
+  ]
+ },
+ "tools/web_tools.py": {
+  "marker_files": [
+   "src/tools/port_web_tools.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/working_diff.py": {
+  "marker_files": [],
+  "func_match_files": []
+ },
+ "tools/x_search_tool.py": {
+  "marker_files": [
+   "src/tools/x_search.c"
+  ],
+  "func_match_files": []
+ },
+ "tools/xai_http.py": {
+  "marker_files": [
+   "src/cli/port_tools_xai_http.c"
+  ],
+  "func_match_files": []
+ },
+ "tools_config.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_hermes_cli_tools_config_py_parity.c",
+   "src/cli/commands.c",
+   "src/cli/config_setup.c",
+   "src/cli/port_platform_tools.c",
+   "src/cli/port_tools_config_helpers.c",
+   "src/cron/port_cron_scheduler_toolsets.c"
+  ],
+  "func_match_files": []
+ },
+ "toolset_validation.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_toolset_validation.c"
+  ],
+  "func_match_files": []
+ },
+ "trace_upload.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "trajectory.py": {
+  "marker_files": [
+   "src/agent/port_trajectory_ports.c",
+   "src/agent/trajectory.c"
+  ],
+  "func_match_files": []
+ },
+ "transcription_provider.py": {
+  "marker_files": [
+   "src/agent/port_transcription_provider_ports.c",
+   "src/agent/transcription_provider.c",
+   "src/cli/port_agent_transcription_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "transcription_registry.py": {
+  "marker_files": [
+   "src/agent/port_transcription_registry_ports.c",
+   "src/tools/transcribe.c"
+  ],
+  "func_match_files": []
+ },
+ "transcription_stt.py": {
+  "marker_files": [
+   "src/tools/transcription_tools_pure.c"
+  ],
+  "func_match_files": []
+ },
+ "transcription_tools.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_tools_transcription_tools_py_final.c",
+   "src/agent/port_tools_transcription_tools_py_parity.c",
+   "src/ports/tools/voice_mode.c",
+   "src/tools/image_gen_registry.c",
+   "src/tools/port_transcription_tools_ports.c",
+   "src/tools/port_transcription_wrappers.c",
+   "src/tools/transcribe.c",
+   "src/tools/transcribe_helpers.c",
+   "src/tools/transcription_tools_pure.c"
+  ],
+  "func_match_files": []
+ },
+ "tts_provider.py": {
+  "marker_files": [
+   "src/agent/port_tts_provider_ports.c",
+   "src/cli/port_agent_tts_provider_methods.c",
+   "src/tools/tts.c",
+   "src/tools/tts_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "tts_registry.py": {
+  "marker_files": [
+   "src/agent/port_tts_registry_ports.c",
+   "src/tools/tts.c",
+   "src/tools/tts_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "tts_streaming.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tts_streaming_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "tts_text_normalize.py": {
+  "marker_files": [
+   "src/tools/port_tools_tts_text_normalize.c",
+   "src/tools/port_tools_tts_text_normalize.h"
+  ],
+  "func_match_files": []
+ },
+ "tts_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch9_gaps.c",
+   "src/gateway/port_gateway_platforms_base_media.c",
+   "src/tools/image_gen_registry.c",
+   "src/tools/port_tts_tool.c",
+   "src/tools/port_tts_tool_gaps.c",
+   "src/tools/port_tts_tool_ports.c",
+   "src/tools/transcription_tools_pure.c",
+   "src/tools/tts.c"
+  ],
+  "func_match_files": []
+ },
+ "turn_context.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_agent_turn_context.c",
+   "src/agent/port_agent_turn_context_py_parity.c",
+   "src/agent/port_batch15_gaps.c",
+   "src/ports/agent/conversation_loop.c",
+   "src/ports/agent/turn_context.c"
+  ],
+  "func_match_files": []
+ },
+ "turn_finalizer.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/ports/agent/turn_finalizer.c"
+  ],
+  "func_match_files": []
+ },
+ "turn_lease.py": {
+  "marker_files": [
+   "src/gateway/gateway_runtime.c",
+   "src/gateway/port_gateway_ports_wrappers.c",
+   "src/gateway/port_turn_lease_ports.c"
+  ],
+  "func_match_files": []
+ },
+ "turn_retry_state.py": {
+  "marker_files": [
+   "src/ports/agent/turn_retry_state.c",
+   "src/ports/agent/turn_retry_state.h"
+  ],
+  "func_match_files": []
+ },
+ "turn_summary.py": {
+  "marker_files": [
+   "src/agent/port_small_mods_gaps.c",
+   "src/agent/port_turn_summary.c",
+   "src/cli/port_turn_summary_cli.c"
+  ],
+  "func_match_files": []
+ },
+ "uninstall.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_config.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/port_hermes_cli_gateway_platform.c",
+   "src/cli/port_uninstall_ports.c",
+   "src/cli/port_uninstall_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "update_cmd.py": {
+  "marker_files": [
+   "src/agent/port_batch6_gaps.c",
+   "src/agent/port_hermes_cli_update_cmd_py_final.c",
+   "src/cli/port_hermes_cli_update_cmd.c",
+   "src/hermes_cli/port_batch3_gaps.c",
+   "src/hermes_cli/port_update_cmd_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "update_lock.py": {
+  "marker_files": [
+   "src/cli/port_hermes_cli_update_lock.c",
+   "src/cli/port_web_update.c"
+  ],
+  "func_match_files": []
+ },
+ "url_safety.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_tools_url_safety_py_parity.c",
+   "src/cli/port_tools_url_safety.c",
+   "src/ports/tools/url_safety.c",
+   "src/tools/port_tools_url_safety_ssrf.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/port_url_safety_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "urllib_security.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "usage_pricing.py": {
+  "marker_files": [
+   "src/agent/port_usage_pricing_ports.c",
+   "src/cli/port_agent_usage_pricing.c",
+   "src/ports/agent/usage_pricing.c"
+  ],
+  "func_match_files": []
+ },
+ "vercel_auth.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "verification.py": {
+  "marker_files": [
+   "src/agent/port_batch9_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "verification_evidence.py": {
+  "marker_files": [
+   "src/agent/port_agent_core_helpers.c",
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_real_gaps.c",
+   "src/agent/port_verif_evidence_wrappers.c",
+   "src/ports/agent/verification_evidence.c"
+  ],
+  "func_match_files": []
+ },
+ "verification_stop.py": {
+  "marker_files": [
+   "src/agent/port_truly_missing_gaps.c",
+   "src/cli/port_verification_stop_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "verify_cmd.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_hermes_cli_verify_cmd_py_final.c",
+   "src/agent/port_hermes_cli_verify_cmd_py_parity.c"
+  ],
+  "func_match_files": []
+ },
+ "verify_hooks.py": {
+  "marker_files": [
+   "src/agent/port_agent_verify_hooks.c",
+   "src/agent/port_batch9_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "vertex_adapter.py": {
+  "marker_files": [
+   "src/cli/port_vertex_adapter_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "video_gen_provider.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_video_gen_provider_ports.c",
+   "src/ports/agent/auxiliary_client.c",
+   "src/tools/video_gen.c",
+   "src/tools/video_gen_provider.c"
+  ],
+  "func_match_files": []
+ },
+ "video_gen_registry.py": {
+  "marker_files": [
+   "src/agent/port_video_gen_registry_ports.c",
+   "src/tools/video_gen_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "video_generation_tool.py": {
+  "marker_files": [
+   "src/agent/port_batch10_gaps.c",
+   "src/agent/port_tools_video_generation_tool_py_final.c",
+   "src/agent/port_tools_video_generation_tool_py_parity.c",
+   "src/cli/port_tools_video_generation_tool.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/video_gen.c"
+  ],
+  "func_match_files": []
+ },
+ "vision_analysis.py": {
+  "marker_files": [
+   "src/tools/vision_analysis_native.c"
+  ],
+  "func_match_files": []
+ },
+ "vision_delegate.py": {
+  "marker_files": [
+   "src/tools/vision_analysis_native.c"
+  ],
+  "func_match_files": []
+ },
+ "vision_tools.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_tools_vision_tools_py_parity.c",
+   "src/tools/port_vision_helpers.c",
+   "src/tools/port_vision_wrappers.c",
+   "src/tools/vision.c"
+  ],
+  "func_match_files": []
+ },
+ "voice.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/agent/port_hermes_cli_voice_py_final.c",
+   "src/agent/port_hermes_cli_voice_py_parity.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/cli/port_hermes_cli_voice.c",
+   "src/ports/tools/voice_mode.c"
+  ],
+  "func_match_files": []
+ },
+ "voice_mode.py": {
+  "marker_files": [
+   "src/agent/port_batch13_gaps.c",
+   "src/agent/port_tools_voice_mode_py_parity.c",
+   "src/cli/port_tools_voice_mode.c",
+   "src/ports/tools/voice_mode.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_voice_mode_ports.c",
+   "src/tools/voice_mode_pure.c"
+  ],
+  "func_match_files": []
+ },
+ "wake.py": {
+  "marker_files": [
+   "src/gateway/port_gateway_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "wake_word.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/tools/port_tools_wake_word.c",
+   "src/tools/port_wake_word_gaps.c"
+  ],
+  "func_match_files": []
+ },
+ "web_deps.py": {
+  "marker_files": [
+   "src/agent/port_web_deps.c"
+  ],
+  "func_match_files": []
+ },
+ "web_git.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_web_git_py_parity.c",
+   "src/cli/port_tools_env_passthrough.c",
+   "src/cli/port_web_git.c",
+   "src/cli/port_web_git.h"
+  ],
+  "func_match_files": []
+ },
+ "web_models.py": {
+  "marker_files": [
+   "src/cli/port_cli_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "web_search_provider.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_web_search_provider_ports.c",
+   "src/cli/port_agent_web_search_provider.c",
+   "src/tools/skills.c"
+  ],
+  "func_match_files": []
+ },
+ "web_search_registry.py": {
+  "marker_files": [
+   "src/agent/port_agent_ports_wrappers.c",
+   "src/agent/port_web_search_registry_ports.c",
+   "src/tools/web_search_registry.c"
+  ],
+  "func_match_files": []
+ },
+ "web_server.py": {
+  "marker_files": [
+   "src/agent/port_batch6_gaps.c",
+   "src/cli/port_hermes_cli_update_cmd.c",
+   "src/cli/port_web_git_routes.c",
+   "src/cli/port_web_git_routes.h",
+   "src/cli/port_web_server.c",
+   "src/cli/port_web_server_auth.c",
+   "src/cli/port_web_server_chat_argv.c",
+   "src/cli/port_web_server_console.c",
+   "src/cli/port_web_server_cron_dash.c",
+   "src/cli/port_web_server_events.c",
+   "src/cli/port_web_server_extra.c",
+   "src/cli/port_web_server_fs.c",
+   "src/cli/port_web_server_helpers2.c",
+   "src/cli/port_web_server_managed_files.c",
+   "src/cli/port_web_server_prune.c",
+   "src/cli/port_web_server_schema_path.c",
+   "src/cli/port_web_server_session_endpoints.c",
+   "src/cli/port_web_server_sessions_admin.c",
+   "src/cli/port_web_server_status.c",
+   "src/cli/port_web_server_themes.c",
+   "src/cli/port_web_server_wrappers.c",
+   "src/cli/port_web_server_ws_auth.c",
+   "src/cli/port_web_update.c",
+   "src/cli/setup_wizard.c",
+   "src/gateway/run_pure.c",
+   "src/hermes_cli/port_web_server_gaps.c",
+   "src/ports/agent/context_references.c",
+   "src/ports/agent/i18n.c",
+   "src/ports/tools/checkpoint_manager.c",
+   "src/web_dashboard.c"
+  ],
+  "func_match_files": []
+ },
+ "web_tools.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_web_tools_py_parity.c",
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_web_tools.c",
+   "src/tools/web_base64_img.c",
+   "src/tools/web_base64_img.h"
+  ],
+  "func_match_files": []
+ },
+ "webhook.py": {
+  "marker_files": [
+   "src/cli/cli.c",
+   "src/cli/cli_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_cli_ports_wrappers.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/gateway/platforms/webhook.c",
+   "src/gateway/port_webhook.c",
+   "src/tools/feishu_comment_rules.c"
+  ],
+  "func_match_files": []
+ },
+ "website_policy.py": {
+  "marker_files": [
+   "src/cli/port_tools_website_policy.c",
+   "src/tools/port_tools_ports_wrappers.c"
+  ],
+  "func_match_files": []
+ },
+ "whatsapp_identity.py": {
+  "marker_files": [
+   "src/cli/port_gateway_whatsapp_identity.c",
+   "src/gateway/port_whatsapp_identity_ports.c",
+   "src/gateway/whatsapp_identity.c",
+   "src/ports/gateway/platforms/helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "win_pty_bridge.py": {
+  "marker_files": [
+   "src/agent/port_batch12_gaps.c",
+   "src/cli/commands.c",
+   "src/cli/port_pty_clamp_helpers.c",
+   "src/cli/port_win_pty_bridge_ports.c",
+   "src/pty.c",
+   "src/tools/file.c"
+  ],
+  "func_match_files": []
+ },
+ "windows_ssh_runtime.py": {
+  "marker_files": [
+   "src/agent/port_hermes_cli_windows_ssh_runtime_py_final.c",
+   "src/cli/port_windows_ssh_runtime_ports.c",
+   "src/cli/port_windows_ssh_wrappers.c",
+   "src/gateway/platforms/weixin.c"
+  ],
+  "func_match_files": []
+ },
+ "working_diff.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_working_diff_py_final.c",
+   "src/agent/port_tools_working_diff_py_parity.c",
+   "src/cli/port_cli_commands_mixin_wrappers.c",
+   "src/tools/port_working_diff.c",
+   "src/tools/port_working_diff.h"
+  ],
+  "func_match_files": []
+ },
+ "write_approval.py": {
+  "marker_files": [
+   "src/cli/port_tools_write_approval.c",
+   "src/tools/port_tools_util_helpers.c",
+   "src/tools/port_write_approval.c"
+  ],
+  "func_match_files": []
+ },
+ "write_approval_commands.py": {
+  "marker_files": [
+   "src/cli/cli_cmd_session.c",
+   "src/cli/cli_cmd_system.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_write_approval_commands.c",
+   "src/tools/file.c"
+  ],
+  "func_match_files": []
+ },
+ "x_search_tool.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/x_search.c"
+  ],
+  "func_match_files": []
+ },
+ "xai_http.py": {
+  "marker_files": [
+   "src/agent/port_batch15_gaps.c",
+   "src/agent/port_tools_xai_http_py_final.c",
+   "src/agent/port_tools_xai_http_py_parity.c",
+   "src/cli/port_tools_xai_http.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "xai_retirement.py": {
+  "marker_files": [
+   "src/agent/port_batch14_gaps.c",
+   "src/agent/port_hermes_cli_xai_retirement_py_parity.c",
+   "src/cli/cli.c",
+   "src/cli/commands.c",
+   "src/cli/port_hermes_cli_util_helpers.c",
+   "src/xai_retirement.c"
+  ],
+  "func_match_files": []
+ },
+ "xai_video_tools.py": {
+  "marker_files": [
+   "src/tools/port_tools_ports_wrappers.c",
+   "src/tools/port_tools_util_helpers.c"
+  ],
+  "func_match_files": []
+ },
+ "yuanbao_tools.py": {
+  "marker_files": [
+   "src/cli/port_tools_yuanbao_tools.c",
+   "src/tools/yuanbao_tools.c"
+  ],
+  "func_match_files": []
+ }
+}
