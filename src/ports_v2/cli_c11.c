@@ -110,3 +110,131 @@ char *_parse_service_tier_config(const char *raw) {
     free(value);
     return result;
 }
+
+/* ── _split_destructive_skip ────────────────────────────────────────── */
+/* PoP: _split_destructive_skip @ cli.py:_split_destructive_skip */
+/* Returns malloc'd remainder in *remainder, sets *skip to true if skip token found.
+ * Caller must free(*remainder). */
+void _split_destructive_skip(const char *cmd_text, char **remainder, bool *skip) {
+    static const char *skip_tokens[] = {"now", "--yes", "-y", NULL};
+
+    *skip = false;
+    *remainder = strdup("");
+
+    if (!cmd_text || !*cmd_text) return;
+
+    /* Copy and tokenize */
+    char *work = strdup(cmd_text);
+    if (!work) return;
+
+    /* Strip leading whitespace */
+    char *p = work;
+    while (*p == ' ' || *p == '\t') p++;
+
+    /* Skip leading /cmd word */
+    if (*p == '/') {
+        while (*p && *p != ' ' && *p != '\t') p++;
+        while (*p == ' ' || *p == '\t') p++;
+    }
+
+    /* Process tokens */
+    char *out = (char*)malloc(strlen(p) + 1);
+    if (!out) { free(work); return; }
+    out[0] = '\0';
+
+    char *token = strtok(p, " \t");
+    while (token) {
+        /* Check if token is a skip token */
+        bool is_skip = false;
+        for (int i = 0; skip_tokens[i]; i++) {
+            if (strcasecmp(token, skip_tokens[i]) == 0) {
+                is_skip = true;
+                break;
+            }
+        }
+        if (is_skip) {
+            *skip = true;
+        } else {
+            if (out[0]) strcat(out, " ");
+            strcat(out, token);
+        }
+        token = strtok(NULL, " \t");
+    }
+
+    free(work);
+    *remainder = out;
+}
+
+/* ── _compute_model_picker_viewport ─────────────────────────────────── */
+/* PoP: _compute_model_picker_viewport @ cli.py:_compute_model_picker_viewport */
+void _compute_model_picker_viewport(int selected, int scroll_offset, int n,
+                                     int term_rows, int reserved_below,
+                                     int panel_chrome, int min_visible,
+                                     int *out_scroll_offset, int *out_visible) {
+    int max_visible = min_visible;
+    int available = term_rows - reserved_below - panel_chrome;
+    if (available > max_visible) max_visible = available;
+
+    if (n <= max_visible) {
+        *out_scroll_offset = 0;
+        *out_visible = n;
+        return;
+    }
+
+    int visible = max_visible;
+    if (selected < scroll_offset) {
+        scroll_offset = selected;
+    } else if (selected >= scroll_offset + visible) {
+        scroll_offset = selected - visible + 1;
+    }
+    int max_offset = n - visible;
+    if (scroll_offset < 0) scroll_offset = 0;
+    if (scroll_offset > max_offset) scroll_offset = max_offset;
+
+    *out_scroll_offset = scroll_offset;
+    *out_visible = visible;
+}
+
+/* ── _normalize_slash_confirm_choice ────────────────────────────────── */
+/* PoP: _normalize_slash_confirm_choice @ cli.py:_normalize_slash_confirm_choice */
+/* Returns malloc'd normalized choice or NULL. Caller must free. */
+char *_normalize_slash_confirm_choice(const char *raw, const char **allowed, int n_choices) {
+    if (!raw) return NULL;
+
+    /* Strip and lowercase */
+    while (*raw == ' ' || *raw == '\t') raw++;
+    char *choice = strdup(raw);
+    if (!choice) return NULL;
+    for (char *p = choice; *p; p++) *p = tolower((unsigned char)*p);
+    /* Trim trailing whitespace */
+    char *end = choice + strlen(choice);
+    while (end > choice && (end[-1] == ' ' || end[-1] == '\t')) end--;
+    *end = '\0';
+
+    if (!choice[0]) { free(choice); return NULL; }
+
+    /* Alias map */
+    static const char *keys[] = {"1","once","approve","yes","y","ok","2","always","remember","3","cancel","nevermind","no","n",NULL};
+    static const char *vals[] = {"once","once","once","once","once","once","always","always","always","cancel","cancel","cancel","cancel","cancel"};
+
+    const char *normalized = NULL;
+    for (int i = 0; keys[i]; i++) {
+        if (strcmp(choice, keys[i]) == 0) {
+            normalized = vals[i];
+            break;
+        }
+    }
+    if (!normalized) normalized = choice;  /* direct match */
+
+    /* Check if normalized is in allowed set */
+    for (int i = 0; i < n_choices; i++) {
+        if (strcmp(normalized, allowed[i]) == 0) {
+            char *result = strdup(normalized);
+            free(choice);
+            return result;
+        }
+    }
+
+    free(choice);
+    return NULL;
+}
