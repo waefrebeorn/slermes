@@ -41,6 +41,8 @@
 #else
 #include <pty.h>
 #endif
+/* Daytona cloud sandbox exec backend (src/tools/daytona.c). */
+char *daytona_run_command(const char *command, int timeout_sec);
 #ifdef __linux__
 #include <sys/vfs.h>
 #endif
@@ -2025,6 +2027,11 @@ char *terminal_handler(const char *args_json, const char *task_id) {
     if (backend && strcasecmp(backend, "modal") == 0) {
         char *res5 = run_command_modal(command, timeout);
         return _inject_interpretation(res5, command);
+    }
+
+    if (backend && strcasecmp(backend, "daytona") == 0) {
+        char *res7 = daytona_run_command(command, timeout);
+        return _inject_interpretation(res7, command);
     }
 
     char *res_default = run_command(full_command, timeout);
