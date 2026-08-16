@@ -1,60 +1,16 @@
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
-#define _GNU_SOURCE
 /*
- * ports/gateway/shutdown_forensics.c — C11 port of gateway/shutdown_forensics.py
- * Merged from 2 source file(s) by reorganization.
+ * shutdown_forensics.c — Capture context when the gateway receives SIGTERM/SIGINT.
+ *
+ * Port of Python gateway/shutdown_forensics.py.
+ *
+ * The shutdown_signal_handler runs synchronously inside the event loop.
+ * This module provides a fast (<10ms) non-blocking probe that returns a
+ * structured dict, plus a fire-and-forget spawn_async_diagnostic that runs
+ * as a detached subprocess so it can't block teardown even if /proc is wedged.
  */
 
-/* ── from src/agent/port_gateway_shutdown_forensics_py_parity.c ── */
-/* Slermes C port — gateway/shutdown_forensics.py (remaining gaps) */
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include "hermes_json.h"
-
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s) + 1;
-    char *p = malloc(n);
-    if (p) memcpy(p, s, n);
-    return p;
-}
-
-/* PoP: gateway_shutdown_forensics_signal_name_p @ gateway/shutdown_forensics.py:_signal_name */
-json_t *gateway_shutdown_forensics_signal_name_p(void) {
-    return json_object();
-}
-
-/* PoP: gateway_shutdown_forensics_read_proc_field_p @ gateway/shutdown_forensics.py:_read_proc_field */
-json_t *gateway_shutdown_forensics_read_proc_field_p(void) {
-    return json_object();
-}
-
-/* PoP: gateway_shutdown_forensics_read_proc_cmdline_p @ gateway/shutdown_forensics.py:_read_proc_cmdline */
-json_t *gateway_shutdown_forensics_read_proc_cmdline_p(void) {
-    return json_object();
-}
-
-/* PoP: gateway_shutdown_forensics_proc_summary_p @ gateway/shutdown_forensics.py:_proc_summary */
-json_t *gateway_shutdown_forensics_proc_summary_p(void) {
-    return json_object();
-}
-
-/* PoP: gateway_shutdown_forensics_format_context_for_log_p @ gateway/shutdown_forensics.py:format_context_for_log */
-json_t *gateway_shutdown_forensics_format_context_for_log_p(void) {
-    return json_object();
-}
-
-
-/* ── from src/cli/port_gateway_shutdown_forensics.c ── */
-/*
- * port_gateway_shutdown_forensics.c — C port of gateway/shutdown_forensics.py
- */
-
-#include "hermes_logger.h"
+#include "hermes_core_types.h"
+#include "hermes_gateway_forensics.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,8 +23,14 @@ json_t *gateway_shutdown_forensics_format_context_for_log_p(void) {
 #include <fcntl.h>
 #include <errno.h>
 
-/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_signal_name */
-const char* cli_gateway_shutdown_forensics__signal_name(int sig) {
+/* ================================================================
+ *  Internal: signal name lookup
+ *  Port of Python _signal_name()
+ * ================================================================ */
+
+/* PoP: forensics_signal_name @ gateway/shutdown_forensics.py:_signal_name */
+
+static const char *forensics_signal_name(int sig, char *buf, size_t buf_size) {
     switch (sig) {
         case SIGTERM: return "SIGTERM";
         case SIGINT:  return "SIGINT";
@@ -82,31 +44,38 @@ const char* cli_gateway_shutdown_forensics__signal_name(int sig) {
 #ifdef SIGUSR2
         case SIGUSR2: return "SIGUSR2";
 #endif
-        default: {
-            static char buf[32];
-            snprintf(buf, sizeof(buf), "signal#%d", sig);
+        default:
+            snprintf(buf, buf_size, "signal#%d", sig);
             return buf;
-        }
     }
 }
 
-/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_read_proc_field */
-char* cli_gateway_shutdown_forensics__read_proc_field(int pid, const char *key) {
-    if (pid <= 0 || !key) return NULL;
+/* ================================================================
+ *  Internal: read a single field from /proc/<pid>/status
+ *  Port of Python _read_proc_field()
+ * ================================================================ */
+
+/* PoP: forensics_read_proc_field @ gateway/shutdown_forensics.py:_read_proc_field */
+
+static char *forensics_read_proc_field(pid_t pid, const char *key) {
     char path[128];
-    snprintf(path, sizeof(path), "/proc/%d/status", pid);
+    snprintf(path, sizeof(path), "/proc/%d/status", (int)pid);
+
     FILE *f = fopen(path, "r");
     if (!f) return NULL;
+
     char line[256];
     char *result = NULL;
     while (fgets(line, sizeof(line), f)) {
         if (strncmp(line, key, strlen(key)) == 0 && line[strlen(key)] == ':') {
             const char *val = line + strlen(key) + 1;
             while (*val == ' ' || *val == '\t') val++;
-            result = strdup(val);
+            size_t len = strlen(val);
+            while (len > 0 && (val[len-1] == '\n' || val[len-1] == '\r')) len--;
+            result = malloc(len + 1);
             if (result) {
-                size_t len = strlen(result);
-                while (len > 0 && (result[len-1] == '\n' || result[len-1] == '\r')) result[--len] = '\0';
+                memcpy(result, val, len);
+                result[len] = '\0';
             }
             break;
         }
@@ -115,22 +84,34 @@ char* cli_gateway_shutdown_forensics__read_proc_field(int pid, const char *key) 
     return result;
 }
 
-/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_read_proc_cmdline */
-char* cli_gateway_shutdown_forensics__read_proc_cmdline(int pid) {
-    if (pid <= 0) return NULL;
+/* ================================================================
+ *  Internal: read /proc/<pid>/cmdline as a printable string
+ *  Port of Python _read_proc_cmdline()
+ * ================================================================ */
+
+/* PoP: forensics_read_proc_cmdline @ gateway/shutdown_forensics.py:_read_proc_cmdline */
+
+static char *forensics_read_proc_cmdline(pid_t pid) {
     char path[128];
-    snprintf(path, sizeof(path), "/proc/%d/cmdline", pid);
+    snprintf(path, sizeof(path), "/proc/%d/cmdline", (int)pid);
+
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;
+
+    /* Read up to 4KB */
     char raw[4096];
     size_t n = fread(raw, 1, sizeof(raw) - 1, f);
     fclose(f);
     if (n == 0) return NULL;
+
     raw[n] = '\0';
+    /* Replace NUL separators with spaces */
     for (size_t i = 0; i < n; i++) {
         if (raw[i] == '\0') raw[i] = ' ';
     }
+
     char *result = strdup(raw);
+    /* Trim trailing spaces */
     if (result) {
         size_t len = strlen(result);
         while (len > 0 && result[len-1] == ' ') result[--len] = '\0';
@@ -138,206 +119,475 @@ char* cli_gateway_shutdown_forensics__read_proc_cmdline(int pid) {
     return result;
 }
 
-/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_proc_summary */
-json_node_t* cli_gateway_shutdown_forensics__proc_summary(int pid) {
+/* ================================================================
+ *  Internal: compact /proc/<pid> snapshot
+ *  Port of Python _proc_summary()
+ * ================================================================ */
+
+/* PoP: forensics_proc_summary @ gateway/shutdown_forensics.py:_proc_summary */
+
+static json_node_t *forensics_proc_summary(pid_t pid) {
     json_node_t *summary = json_new_object();
     if (!summary) return NULL;
+
     json_object_set(summary, "pid", json_new_number(pid));
+
     if (pid <= 0) return summary;
-    char *name = cli_gateway_shutdown_forensics__read_proc_field(pid, "Name");
-    if (name) { json_object_set(summary, "name", json_new_string(name)); free(name); }
-    char *state = cli_gateway_shutdown_forensics__read_proc_field(pid, "State");
-    if (state) { json_object_set(summary, "state", json_new_string(state)); free(state); }
-    char *ppid_str = cli_gateway_shutdown_forensics__read_proc_field(pid, "PPid");
-    if (ppid_str) { json_object_set(summary, "ppid", json_new_number(atoi(ppid_str))); free(ppid_str); }
-    char *cmdline = cli_gateway_shutdown_forensics__read_proc_cmdline(pid);
+
+    char *name = forensics_read_proc_field(pid, "Name");
+    if (name) {
+        json_object_set(summary, "name", json_new_string(name));
+        free(name);
+    }
+
+    char *state = forensics_read_proc_field(pid, "State");
+    if (state) {
+        json_object_set(summary, "state", json_new_string(state));
+        free(state);
+    }
+
+    char *ppid_str = forensics_read_proc_field(pid, "PPid");
+    if (ppid_str) {
+        json_object_set(summary, "ppid", json_new_number(atol(ppid_str)));
+        free(ppid_str);
+    }
+
+    char *uid = forensics_read_proc_field(pid, "Uid");
+    if (uid) {
+        /* "real effective saved fs" — take first token */
+        char *space = strchr(uid, ' ');
+        if (space) *space = '\0';
+        json_object_set(summary, "uid", json_new_string(uid));
+        free(uid);
+    }
+
+    char *cmdline = forensics_read_proc_cmdline(pid);
     if (cmdline) {
+        /* Truncate to 300 chars */
         size_t len = strlen(cmdline);
         if (len > 300) cmdline[300] = '\0';
         json_object_set(summary, "cmdline", json_new_string(cmdline));
         free(cmdline);
     }
+
     return summary;
 }
 
-/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:snapshot_shutdown_context */
-json_node_t* cli_gateway_shutdown_forensics_snapshot_shutdown_context(int received_signal) {
+/* ================================================================
+ *  Fast (<10ms) snapshot of who/what is asking us to shut down
+ *  Port of Python snapshot_shutdown_context()
+ * ================================================================ */
+
+/* PoP: forensics_snapshot_context @ gateway/shutdown_forensics.py:snapshot_shutdown_context */
+
+json_node_t *forensics_snapshot_context(int received_signal) {
     json_node_t *ctx = json_new_object();
     if (!ctx) return NULL;
-    time_t now = time(NULL);
+
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    double now = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    double mono = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+
     pid_t pid = getpid();
     pid_t ppid = getppid();
-    const char *sig_name = cli_gateway_shutdown_forensics__signal_name(received_signal);
+    char sig_buf[32];
+
     json_object_set(ctx, "ts", json_new_number(now));
-    json_object_set(ctx, "signal", json_new_string(sig_name));
+    json_object_set(ctx, "ts_monotonic", json_new_number(mono));
+    json_object_set(ctx, "signal", json_new_string(forensics_signal_name(received_signal, sig_buf, sizeof(sig_buf))));
     json_object_set(ctx, "signal_num", json_new_number(received_signal));
-    json_object_set(ctx, "pid", json_new_number(pid));
-    json_object_set(ctx, "ppid", json_new_number(ppid));
-    json_node_t *parent = cli_gateway_shutdown_forensics__proc_summary(ppid);
+    json_object_set(ctx, "pid", json_new_number((int)pid));
+    json_object_set(ctx, "ppid", json_new_number((int)ppid));
+
+    /* Parent and self proc summaries */
+    json_node_t *parent = forensics_proc_summary(ppid);
     if (parent) json_object_set(ctx, "parent", parent);
-    json_node_t *self = cli_gateway_shutdown_forensics__proc_summary(pid);
+
+    json_node_t *self = forensics_proc_summary(pid);
     if (self) json_object_set(ctx, "self", self);
+
+    /* systemd context */
     const char *invocation_id = getenv("INVOCATION_ID");
-    if (invocation_id) json_object_set(ctx, "systemd_invocation_id", json_new_string(invocation_id));
-    json_object_set(ctx, "under_systemd", json_new_bool(invocation_id != NULL || ppid == 1));
+    if (invocation_id) {
+        json_object_set(ctx, "systemd_invocation_id", json_new_string(invocation_id));
+    }
+    const char *journal_stream = getenv("JOURNAL_STREAM");
+    if (journal_stream) {
+        json_object_set(ctx, "systemd_journal_stream", json_new_string(journal_stream));
+    }
+    json_object_set(ctx, "under_systemd",
+                    json_new_bool(invocation_id != NULL || ppid == 1));
+
+    /* Load average */
+    double loadavg[3];
+    if (getloadavg(loadavg, 3) == 3) {
+        char loadbuf[32];
+        snprintf(loadbuf, sizeof(loadbuf), "%.2f", loadavg[0]);
+        json_object_set(ctx, "loadavg_1m", json_new_number(loadavg[0]));
+    }
+
+    /* TracerPid check */
+    char *tracer = forensics_read_proc_field(pid, "TracerPid");
+    if (tracer) {
+        int tracer_pid = atoi(tracer);
+        if (tracer_pid > 0) {
+            json_object_set(ctx, "tracer_pid", json_new_number(tracer_pid));
+            json_node_t *tracer_summary = forensics_proc_summary(tracer_pid);
+            if (tracer_summary) {
+                json_object_set(ctx, "tracer", tracer_summary);
+            }
+        }
+        free(tracer);
+    }
+
+    /* Takeover/planned-stop markers on disk */
+    const char *hermes_home = getenv("HERMES_HOME");
+    if (hermes_home) {
+        char takeover_path[1024];
+        snprintf(takeover_path, sizeof(takeover_path),
+                 "%s/.gateway-takeover.json", hermes_home);
+        FILE *tf = fopen(takeover_path, "r");
+        if (tf) {
+            char raw[512] = {0};
+            size_t n = fread(raw, 1, sizeof(raw) - 1, tf);
+            fclose(tf);
+            raw[n] = '\0';
+            json_object_set(ctx, "takeover_marker", json_new_string(raw));
+            /* Check if marker mentions our PID */
+            char needle[64];
+            snprintf(needle, sizeof(needle), "target_pid\": %d", (int)pid);
+            json_object_set(ctx, "takeover_marker_for_self",
+                            json_new_bool(strstr(raw, needle) != NULL));
+        }
+        char planned_stop_path[1024];
+        snprintf(planned_stop_path, sizeof(planned_stop_path),
+                 "%s/.gateway-planned-stop.json", hermes_home);
+        FILE *psf = fopen(planned_stop_path, "r");
+        if (psf) {
+            char raw[512] = {0};
+            size_t n = fread(raw, 1, sizeof(raw) - 1, psf);
+            fclose(psf);
+            raw[n] = '\0';
+            json_object_set(ctx, "planned_stop_marker", json_new_string(raw));
+        }
+    }
+
     return ctx;
 }
 
-/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:spawn_async_diagnostic */
-int cli_gateway_shutdown_forensics_spawn_async_diagnostic(const char *log_path, const char *signal_name) {
+/* ================================================================
+ *  Fire-and-forget ps-style snapshot written to log_path
+ *  Port of Python spawn_async_diagnostic()
+ * ================================================================ */
+
+/* PoP: forensics_spawn_diagnostic @ gateway/shutdown_forensics.py:spawn_async_diagnostic */
+
+int forensics_spawn_diagnostic(const char *log_path,
+                                const char *signal_name,
+                                int timeout_seconds) {
     if (!log_path || !signal_name) return -1;
+
+    /* Ensure parent directory exists */
+    char dir[1024];
+    size_t plen = strlen(log_path);
+    while (plen > 0 && log_path[plen-1] != '/') plen--;
+    if (plen > 0) {
+        memcpy(dir, log_path, plen);
+        dir[plen] = '\0';
+        struct stat st;
+        if (stat(dir, &st) != 0) {
+            /* mkdir -p */
+            char tmp[1024];
+            snprintf(tmp, sizeof(tmp), "mkdir -p '%s' 2>/dev/null", dir);
+            system(tmp);
+        }
+    }
+
+    /* Open log file in append mode */
     int fd = open(log_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd < 0) return -1;
+
+    /* Format timeout string for execlp */
+    char timeout_str[16];
+    snprintf(timeout_str, sizeof(timeout_str), "%d",
+             timeout_seconds > 0 ? timeout_seconds : 30);
+
     pid_t child = fork();
     if (child == 0) {
+        /* Child: detach from process group, redirect stdout to fd, exec bash */
         setsid();
-        close(0);
+        close(0); /* close stdin */
         dup2(fd, STDOUT_FILENO);
         dup2(fd, STDERR_FILENO);
         close(fd);
-        char script[2048];
+        /* Build the diagnostic script */
+        char script[4096];
         snprintf(script, sizeof(script),
             "echo '=== shutdown diagnostic @ %s ==='\n"
-            "date -u +%%Y-%%m-%%dT%%H:%%M:%%SZ\n"
+            "echo '--- date ---'\ndate -u +%%Y-%%m-%%dT%%H:%%M:%%SZ\n"
+            "echo '--- ps auxf (top 60 by cpu) ---'\n"
             "ps auxf --sort=-pcpu 2>/dev/null | head -60\n"
-            "echo '=== end ==='\n", signal_name);
+            "echo '--- pstree of self ---'\n"
+            "pstree -plau %d 2>/dev/null | head -40 || true\n"
+            "echo '--- /proc/loadavg ---'\n"
+            "cat /proc/loadavg 2>/dev/null || true\n"
+            "echo '--- recent dmesg/syslog ---'\n"
+            "dmesg -T 2>/dev/null | tail -20 || journalctl --user -n 20 --no-pager 2>/dev/null | tail -20 || true\n"
+            "echo '=== end ==='\n",
+            signal_name, (int)getpid());
+
+        execlp("timeout", "timeout",
+               timeout_str,
+               "bash", "-c", script, NULL);
         execlp("bash", "bash", "-c", script, NULL);
         _exit(1);
     }
+
     close(fd);
-    return child > 0 ? child : -1;
+    return child > 0 ? (int)child : -1;
 }
 
-/* PoP: pending @ gateway/shutdown_forensics.py:format_context_for_log */
-char* cli_gateway_shutdown_forensics_format_context_for_log(json_node_t *ctx) {
-    if (!ctx) return strdup("(null)");
+/* ================================================================
+ *  Render shutdown context dict as scannable log line
+ *  Port of Python format_context_for_log()
+ * ================================================================ */
+
+/* PoP: forensics_format_context @ gateway/shutdown_forensics.py:format_context_for_log */
+
+char *forensics_format_context(json_node_t *ctx) {
+    if (!ctx) return strdup("(null context)");
+
     const char *sig = json_object_get_string(ctx, "signal", "?");
     json_node_t *parent = json_object_get(ctx, "parent");
     const char *parent_cmd = parent ? json_object_get_string(parent, "cmdline", "(unknown)") : "(unknown)";
     const char *parent_name = parent ? json_object_get_string(parent, "name", "?") : "?";
-    /* parent_pid: number; "?" when missing (Python: parent.get("pid") or "?") */
-    char parent_pid[32];
-    json_node_t *pid_node = parent ? json_object_get(parent, "pid") : NULL;
-    if (pid_node && !json_is_null(pid_node)) {
-        snprintf(parent_pid, sizeof(parent_pid), "%g", json_get_num(parent, "pid", 0));
-    } else {
-        snprintf(parent_pid, sizeof(parent_pid), "?");
+    json_node_t *parent_pid_node = parent ? json_object_get(parent, "pid") : NULL;
+    bool under_systemd = json_get_bool(ctx, "under_systemd", false);
+    double loadavg = json_object_get_number(ctx, "loadavg_1m", -1.0);
+    bool takeover = json_object_get_bool(ctx, "takeover_marker_for_self", false);
+    bool planned_stop = json_has(ctx, "planned_stop_marker");
+
+    /* Determine parent pid */
+    int ppid_val = 0;
+    if (parent_pid_node && parent_pid_node->type == JSON_NUMBER) {
+        double dv = parent_pid_node->num_val;
+        ppid_val = (int)dv;
     }
-    int under_systemd = json_get_bool(ctx, "under_systemd", false);
-    /* loadavg_1m: "?" when missing/null (Python: isinstance(load,(int,float)) else "?") */
-    json_node_t *load_node = json_object_get(ctx, "loadavg_1m");
-    char load_str[32];
-    if (load_node && !json_is_null(load_node)) {
-        snprintf(load_str, sizeof(load_str), "%.2f", json_get_num(ctx, "loadavg_1m", 0.0));
-    } else {
-        snprintf(load_str, sizeof(load_str), "?");
+
+    char buf[2048];
+    int n = snprintf(buf, sizeof(buf),
+        "signal=%s under_systemd=%s parent_pid=%d parent_name=%s loadavg_1m=%.2f",
+        sig ? sig : "?",
+        under_systemd ? "yes" : "no",
+        ppid_val,
+        parent_name ? parent_name : "?",
+        loadavg);
+
+    if (takeover) {
+        n += snprintf(buf + n, sizeof(buf) - (size_t)n,
+                      " takeover_marker_present=self");
     }
-    /* extras */
-    char extras[512];
-    extras[0] = '\0';
-    json_node_t *takeover = json_object_get(ctx, "takeover_marker");
-    if (takeover && !json_is_null(takeover)) {
-        int for_self = json_get_bool(ctx, "takeover_marker_for_self", false);
-        snprintf(extras, sizeof(extras), " takeover_marker_present=%s", for_self ? "self" : "other");
+    if (planned_stop) {
+        n += snprintf(buf + n, sizeof(buf) - (size_t)n,
+                      " planned_stop_marker_present=yes");
     }
-    json_node_t *planned = json_object_get(ctx, "planned_stop_marker");
-    if (planned && !json_is_null(planned)) {
-        strncat(extras, " planned_stop_marker_present=yes", sizeof(extras) - strlen(extras) - 1);
+
+    int tracer_pid = (int)json_object_get_number(ctx, "tracer_pid", 0);
+    if (tracer_pid > 0) {
+        n += snprintf(buf + n, sizeof(buf) - (size_t)n,
+                      " tracer_pid=%d", tracer_pid);
     }
-    json_node_t *tracer = json_object_get(ctx, "tracer_pid");
-    if (tracer && !json_is_null(tracer)) {
-        char tbuf[64];
-        snprintf(tbuf, sizeof(tbuf), " tracer_pid=%g", json_get_num(ctx, "tracer_pid", 0));
-        strncat(extras, tbuf, sizeof(extras) - strlen(extras) - 1);
-    }
-    /* parent_cmdline is emitted repr-style (single-quoted) like Python !r */
-    size_t need = strlen(sig) + strlen(parent_pid) + strlen(parent_name)
-                + strlen(load_str) + strlen(parent_cmd) + strlen(extras) + 128;
-    char *buf = malloc(need);
-    if (!buf) return strdup("(oom)");
-    snprintf(buf, need,
-        "signal=%s under_systemd=%s parent_pid=%s parent_name=%s loadavg_1m=%s%s parent_cmdline='%s'",
-        sig, under_systemd ? "yes" : "no", parent_pid, parent_name, load_str, extras, parent_cmd);
-    return buf;
+
+    snprintf(buf + n, sizeof(buf) - (size_t)n,
+             " parent_cmdline=%s",
+             parent_cmd ? parent_cmd : "");
+
+    return strdup(buf);
 }
 
-/* PoP: pending @ gateway/shutdown_forensics.py:context_as_json */
-char* cli_gateway_shutdown_forensics_context_as_json(json_node_t *ctx) {
+/* ================================================================
+ *  JSON-serialise context dict for structured ingestion
+ *  Port of Python context_as_json()
+ * ================================================================ */
+
+/* PoP: forensics_context_to_json @ gateway/shutdown_forensics.py:context_as_json */
+
+char *forensics_context_to_json(json_node_t *ctx) {
     if (!ctx) return strdup("{}");
+
     char *json_str = json_serialize(ctx);
-    return json_str ? json_str : strdup("{}");
+    if (!json_str) return strdup("{}");
+    return json_str;
 }
 
-/* PoP: pending @ gateway/shutdown_forensics.py:check_systemd_timing_alignment */
-json_node_t* cli_gateway_shutdown_forensics_check_systemd_timing_alignment(double drain_timeout) {
+/* ================================================================
+ *  Parse systemd duration string to microseconds
+ *  Port of Python _parse_systemd_duration_to_us()
+ * ================================================================ */
+
+/* PoP: forensics_parse_systemd_duration_us @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
+long forensics_parse_systemd_duration_us(const char *raw) {
+    if (!raw || !*raw) return 0;
+
+    struct {
+        const char *suffix;
+        long multiplier;
+    } units[] = {
+        {"us",  1},
+        {"ms",  1000},
+        {"s",   1000000},
+        {"sec", 1000000},
+        {"min", 60000000},
+        {"h",   3600000000L},
+        {"hr",  3600000000L},
+        {NULL,  0}
+    };
+
+    long total_us = 0;
+    const char *p = raw;
+    char digits[64];
+    char token[32];
+
+    while (*p) {
+        /* Skip whitespace */
+        while (*p == ' ' || *p == '\t') p++;
+        if (!*p) break;
+
+        /* Read digits */
+        int di = 0;
+        int has_dot = 0;
+        while ((*p >= '0' && *p <= '9') || (*p == '.' && !has_dot)) {
+            if (*p == '.') has_dot = 1;
+            if (di < (int)sizeof(digits) - 1) digits[di++] = *p;
+            p++;
+        }
+        digits[di] = '\0';
+
+        if (di == 0) {
+            /* No digits, skip the character */
+            p++;
+            continue;
+        }
+
+        /* Read alpha token */
+        int ti = 0;
+        while ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z')) {
+            if (ti < (int)sizeof(token) - 1) token[ti++] = *p;
+            p++;
+        }
+        token[ti] = '\0';
+
+        /* Look up multiplier */
+        long mult = 1000000; /* Default: seconds */
+        for (int u = 0; units[u].suffix; u++) {
+            if (strcasecmp(token, units[u].suffix) == 0) {
+                mult = units[u].multiplier;
+                break;
+            }
+        }
+
+        /* If no token read, bare number = seconds */
+        if (ti == 0) mult = 1000000;
+
+        double val = atof(digits);
+        total_us += (long)(val * mult);
+    }
+
+    return total_us > 0 ? total_us : 0;
+}
+
+/* ================================================================
+ *  Check systemd TimeoutStopSec >= drain_timeout
+ *  Port of Python check_systemd_timing_alignment()
+ * ================================================================ */
+
+/* Forward declaration */
+long forensics_parse_systemd_duration_us(const char *raw);
+
+/* PoP: forensics_check_systemd_timing @ gateway/shutdown_forensics.py:check_systemd_timing_alignment */
+json_node_t *forensics_check_systemd_timing(double drain_timeout) {
     const char *invocation_id = getenv("INVOCATION_ID");
     if (!invocation_id) return NULL;
+
+    /* Try to identify unit name from /proc/self/cgroup */
+    char unit_name[256] = {0};
+    FILE *cg = fopen("/proc/self/cgroup", "r");
+    if (cg) {
+        char line[512];
+        while (fgets(line, sizeof(line), cg)) {
+            if (strstr(line, ".service")) {
+                char *last_slash = strrchr(line, '/');
+                if (last_slash) {
+                    char *dot = strstr(last_slash, ".service");
+                    if (dot) {
+                        size_t len = (size_t)(dot - last_slash + 8);
+                        if (len < sizeof(unit_name)) {
+                            memcpy(unit_name, last_slash + 1, len - 1);
+                            unit_name[len - 1] = '\0';
+                        }
+                    }
+                }
+            }
+        }
+        fclose(cg);
+    }
+
+    if (!unit_name[0]) return NULL;
+
+    /* Query systemctl TimeoutStopUSec */
+    char cmd[512];
+    snprintf(cmd, sizeof(cmd),
+             "systemctl --user show '%s' --property=TimeoutStopUSec 2>/dev/null || "
+             "systemctl show '%s' --property=TimeoutStopUSec 2>/dev/null",
+             unit_name, unit_name);
+
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return NULL;
+
+    long timeout_us = 0;
+    char line[256];
+    while (fgets(line, sizeof(line), fp)) {
+        if (strncmp(line, "TimeoutStopUSec=", 16) == 0) {
+            const char *value = line + 16;
+            /* Trim newline */
+            size_t vlen = strlen(value);
+            while (vlen > 0 && (value[vlen-1] == '\n' || value[vlen-1] == '\r')) vlen--;
+
+            if (vlen > 0) {
+                char valcopy[128];
+                memcpy(valcopy, value, vlen);
+                valcopy[vlen] = '\0';
+
+                /* Try numeric microseconds first */
+                char *end = NULL;
+                long num = strtol(valcopy, &end, 10);
+                if (end && *end == '\0' && num > 0) {
+                    timeout_us = num;
+                } else {
+                    timeout_us = forensics_parse_systemd_duration_us(valcopy);
+                }
+            }
+            break;
+        }
+    }
+    pclose(fp);
+
+    if (timeout_us <= 0) return NULL;
+
+    double timeout_stop_sec = (double)timeout_us / 1000000.0;
+    double headroom = 30.0;
+    double expected = drain_timeout + headroom;
+
     json_node_t *result = json_new_object();
     if (!result) return NULL;
+
+    json_object_set(result, "unit", json_new_string(unit_name));
+    json_object_set(result, "timeout_stop_sec", json_new_number(timeout_stop_sec));
     json_object_set(result, "drain_timeout", json_new_number(drain_timeout));
-    json_object_set(result, "under_systemd", json_new_bool(true));
-    hermes_log(LOG_DEBUG, "shutdown_forensics", "check_systemd_timing: drain_timeout=%.1f", drain_timeout);
+    json_object_set(result, "expected_min", json_new_number(expected));
+    json_object_set(result, "mismatch", json_new_bool(timeout_stop_sec < expected));
+
     return result;
 }
-
-/* PoP: pending @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
-/* Faithful port of the Python tokenizer: digits/'.' accumulate a number,
- * alpha accumulates a unit token; on whitespace the pending (digits, unit)
- * pair is applied. Units: us/ms/s/sec/min/h/hr. A bare number (no unit)
- * means SECONDS. Unknown unit, empty input, or total==0 => None, which we
- * signal as -1 (the Python return type is Optional[int]). */
-long cli_gateway_shutdown_forensics__parse_systemd_duration_to_us(const char *raw) {
-    if (!raw || !*raw) return -1;
-    static const struct { const char *u; long mult; } UNITS[] = {
-        { "us", 1 }, { "ms", 1000 }, { "s", 1000000 }, { "sec", 1000000 },
-        { "min", 60000000 }, { "h", 3600000000L }, { "hr", 3600000000L },
-    };
-    double total_us = 0;
-    char digits[128] = "";   /* pending number text (digits + '.') */
-    size_t dn = 0;
-    char token[32] = "";     /* pending unit text (alpha) */
-    size_t tn = 0;
-
-    for (const char *p = raw; ; p++) {
-        char ch = *p;
-        int is_digit = (ch >= '0' && ch <= '9');
-        int is_alpha = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
-        if (is_digit || ch == '.') {
-            if (tn > 0) {
-                /* End previous unit, start new number. */
-                if (dn == 0) return -1;
-                long mult = -1;
-                for (size_t i = 0; i < sizeof(UNITS)/sizeof(UNITS[0]); i++) {
-                    if (strcmp(token, UNITS[i].u) == 0) { mult = UNITS[i].mult; break; }
-                }
-                if (mult < 0) return -1;  /* unknown unit */
-                double num = atof(digits);
-                total_us += num * (double)mult;
-                dn = 0; tn = 0;
-            }
-            if (dn < sizeof(digits) - 1) digits[dn++] = ch;
-            digits[dn] = '\0';
-        } else if (is_alpha) {
-            if (tn < sizeof(token) - 1) token[tn++] = (char)(ch >= 'A' && ch <= 'Z' ? ch + 32 : ch);
-            token[tn] = '\0';
-        } else if (dn > 0 && tn > 0) {
-            /* whitespace / other: apply pending (digits, unit) */
-            long mult = -1;
-            for (size_t i = 0; i < sizeof(UNITS)/sizeof(UNITS[0]); i++) {
-                if (strcmp(token, UNITS[i].u) == 0) { mult = UNITS[i].mult; break; }
-            }
-            if (mult < 0) return -1;
-            double num = atof(digits);
-            total_us += num * (double)mult;
-            dn = 0; tn = 0;
-        } else if (dn > 0 && tn == 0) {
-            /* Bare number = seconds */
-            double num = atof(digits);
-            total_us += num * 1000000.0;
-            dn = 0;
-        }
-        if (ch == '\0') break;
-    }
-    return total_us > 0 ? (long)total_us : -1;
-}
-

@@ -1,1126 +1,1318 @@
-#define _GNU_SOURCE
-#define _XOPEN_SOURCE 700
-#define _GNU_SOURCE
 /*
- * ports/tools/registry.c — C11 port of tools/registry.py
- * Merged from 4 source file(s) by reorganization.
+ * registry.c — Tool registry for Hermes C.
+ * Tools register themselves at init time.
+ * Agent loop calls registry to find + dispatch tools.
+ *
+ * Thread safety: all operations on g_registry are serialized via
+ * g_registry_mutex. Functions that return a tool_t* pointer return
+ * a reference into the array; callers must not hold the pointer
+ * across a realloc (registration). The main dispatch path
+ * (registry_dispatch) holds the mutex across the handler call
+ * for full safety.
  */
 
-/* ── from src/agent/port_tools_registry_py_final.c ── */
-/* Slermes C port — tools/registry.py (all remaining gaps) */
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
-/* auto-proto */ bool interrupt_is_interrupted(void);
-/* auto-proto */ bool check_terminal_requirements(void);
-
-/* PoP: tools_registry_bound_error_text @ tools/registry.py:_bound_error_text */
-json_t *tools_registry_bound_error_text(void) {
-    return json_object();
-}
-
-/* PoP: tools_registry_bound_json_error_result @ tools/registry.py:_bound_json_error_result */
-json_t *tools_registry_bound_json_error_result(void) {
-    return json_object();
-}
-
-/* PoP: tools_registry_init__ @ tools/registry.py:__init__ */
-json_t *tools_registry_init__(void) {
-    return json_object();
-}
-
-
-/* ── from src/agent/port_tools_registry_py_parity.c ── */
-/* Slermes C port — tools/registry.py (remaining gaps) */
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include "hermes_json.h"
-
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s) + 1;
-    char *p = malloc(n);
-    if (p) memcpy(p, s, n);
-    return p;
-}
-
-/* PoP: tools_registry_check_fn_cache_scope_p @ tools/registry.py:check_fn_cache_scope */
-json_t *tools_registry_check_fn_cache_scope_p(void) {
-    return json_object();
-}
-
-
-/* ── from src/tools/port_tools_registry_cache.c ── */
-/*
- * port_tools_registry_cache.c — Module-level discovery + check_fn cache layer.
- *
- * Faithful C11 port of the module-level cache helpers in tools/registry.py:
- *   _discovery_cache_path, _load_discovery_cache, _save_discovery_cache,
- *   _check_fn_cache / _check_fn_last_good (the in-memory verdict dict),
- *   _prune_check_fn_caches, check_fn_cache_scope,
- *   get_cached_check_fn_result.
- *
- * The C registry already keeps a per-tool 30s ``check_fn_last`` timestamp
- * (see registry.c registry_refresh_availability); this module adds the
- * *read-only* verdict cache and the durable discovery-cache that the Python
- * module exposes so non-calling surfaces (dashboard status panels) can read
- * the last-known verdict without re-running probes, and so tool-discovery
- * verdicts survive restarts.
- *
- * Concurrency: the Python module guards the dicts with ``_check_fn_cache_lock``.
- * The C registry is single-threaded for availability checks (refresh happens
- * on the agent thread, not in request handlers); a pthread mutex is kept for
- * parity + future gateway hardening.
- */
-
-#include "hermes_json.h"
-#include "slermes_home.h"       /* slermes_home() — the HERMES_HOME path */
-#include "hermes_logger.h"      /* hermes_log / LOG_DEBUG */
-#include <stdbool.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include <sys/time.h>
+#include "hermes_tool_result.h"  /* tool_error(), tool_result_obj() for standardized JSON */
+#include "registry.h"
+#include <ctype.h>
 #include <pthread.h>
-#include <unistd.h>
 
-#define CHECK_FN_TTL_SECONDS         30.0
-#define CHECK_FN_FAILURE_GRACE_SECONDS 60.0
-#define CHECK_FN_CACHE_MAX           512
+/* Weak symbol — tool_error_sanitize may not be linked in test binaries */
+__attribute__((weak)) char *tool_error_sanitize(const char *error_msg);
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <time.h>
 
-/* Sentinel: multiplex profile identity unresolved. check_fn_cache_scope
- * returns the empty string ("") in that fail-closed case.  NULL = process-wide
- * cache active (single-home). */
-#define CHECK_FN_CACHE_BYPASS ""
+/* ================================================================
+ *  Type coercion for tool call arguments (TD01 parity)
+ * ================================================================ */
 
-/* ── in-memory verdict cache ────────────────────────────────────────── */
-/*
- * Each entry maps (check_fn pointer, scope) -> {timestamp, value}.
- * We key by the function-pointer address (stable per process) plus the scope
- * string, mirroring Python's (fn, scope) tuple key.
- */
-typedef struct {
-    void   *fn;       /* check_fn address */
-    char   *scope;    /* profile key or NULL (process-wide) */
-    double  ts;       /* monotonic seconds at write */
-    bool    value;    /* cached verdict */
-    /* last-good tracking: separate from the verdict cache so a transient
-     * False within the grace window does not evict a recent True. */
-    double  last_good_ts;
-    bool    last_good_valid;
-} cfn_entry_t;
+/* Coerce string tool call arguments to match their JSON Schema types.
+ * LLMs frequently return numbers as strings ("42" instead of 42)
+ * and booleans as strings ("true" instead of true).
+ *
+ * Parses args_json, coerces values in place, re-serializes.
+ * Returns allocated string on success, or NULL if args_json is not a JSON object.
+ * On failure/parse error, returns a copy of original args_json. */
+static char *coerce_args_json(const char *name, const char *args_json,
+                               const char *schema_json) {
+    if (!args_json || !schema_json) return NULL;
 
-#define CFN_CACHE_INIT 128
-static cfn_entry_t *g_cfn_cache = NULL;
-static size_t       g_cfn_count = 0;
-static size_t       g_cfn_cap   = 0;
-static pthread_mutex_t g_cfn_lock = PTHREAD_MUTEX_INITIALIZER;
+    /* Parse args as JSON */
+    char *err = NULL;
+    json_node_t *args = json_parse(args_json, &err);
+    if (!args || args->type != JSON_OBJECT) {
+        free(err);
+        json_free(args);
+        return NULL;
+    }
+    free(err);
 
-/* ── monotonic clock ────────────────────────────────────────────────── */
-static double cfn_now(void) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (double)tv.tv_sec + (double)tv.tv_usec / 1e6;
-}
+    /* Parse schema to get property types */
+    json_node_t *schema = json_parse(schema_json, &err);
+    if (!schema || schema->type != JSON_OBJECT) {
+        free(err);
+        json_free(schema);
+        json_free(args);
+        return NULL;
+    }
+    free(err);
 
-/* ── _discovery_cache_path ──────────────────────────────────────────── */
-/* PoP: resolved @ tools/registry.py:_discovery_cache_path */
-/* Returns "<hermes_home>/cache/tool_discovery_cache.json" (malloc'd), or NULL
- * if the hermes home cannot be resolved (mirrors the except→None path). */
-char *discovery_cache_path(void) {
-    const char *home = slermes_home();
-    if (!home || !home[0]) return NULL;
-    /* cache subdir may not exist yet — we return the path regardless */
-    size_t need = strlen(home) + strlen("/cache/tool_discovery_cache.json") + 1;
-    char *p = malloc(need);
-    if (!p) return NULL;
-    snprintf(p, need, "%s/cache/tool_discovery_cache.json", home);
-    return p;
-}
+    json_node_t *params = json_object_get(schema, "parameters");
+    json_node_t *properties = params ? json_object_get(params, "properties") : NULL;
 
-/* ── _load_discovery_cache ──────────────────────────────────────────── */
-/* PoP: load_discovery_cache @ tools/registry.py:_load_discovery_cache */
-json_t *load_discovery_cache(void) {
-    char *path = discovery_cache_path();
-    json_t *out = json_object();
-    if (!path) return out;          /* home unresolvable → empty dict */
+    if (properties && properties->type == JSON_OBJECT) {
+        /* Iterate over schema properties */
+        size_t prop_count = json_len(properties);
+        for (size_t pi = 0; pi < prop_count; pi++) {
+            const char *key = properties->c.keys ? properties->c.keys[pi] : NULL;
+            if (!key) continue;
 
-    char *data = NULL;
-    FILE *fh = fopen(path, "r");
-    if (fh) {
-        fseek(fh, 0, SEEK_END); long sz = ftell(fh); fseek(fh, 0, SEEK_SET);
-        if (sz > 0) {
-            data = malloc((size_t)sz + 1);
-            if (data) {
-                size_t rd = fread(data, 1, (size_t)sz, fh);
-                data[rd] = '\0';
+            json_node_t *prop = json_get(properties, pi);
+            if (!prop || prop->type != JSON_OBJECT) continue;
+
+            const char *type_str = json_get_str(prop, "type", "");
+
+            /* Get the current arg value */
+            json_node_t *arg_val = json_object_get(args, key);
+            if (!arg_val) continue;
+
+            /* Skip if value is already the correct type (not a string) */
+            if (arg_val->type != JSON_STRING) continue;
+
+            const char *str_val = json_get_str(args, key, "");
+
+            /* Handle union types: ["integer", "number", "string", "boolean", "array"] */
+            const char *types_to_try[16];
+            int num_types = 0;
+
+            if (type_str[0] == '[') {
+                /* Union type - extract from JSON array string */
+                char copy[256];
+                snprintf(copy, sizeof(copy), "%s", type_str);
+                char *t = copy;
+                while (*t && num_types < 16) {
+                    /* Skip brackets, quotes, spaces */
+                    if (*t == '[' || *t == ']' || *t == '"' || *t == ' ' || *t == '\'') {
+                        t++;
+                        continue;
+                    }
+                    const char *tok_start = t;
+                    while (*t && *t != ',' && *t != '"' && *t != ']' && *t != ' ') t++;
+                    if (t > tok_start) {
+                        size_t tlen = (size_t)(t - tok_start);
+                        char *tok = malloc(tlen + 1);
+                        memcpy(tok, tok_start, tlen);
+                        tok[tlen] = '\0';
+                        types_to_try[num_types++] = tok;
+                    }
+                    if (*t == ',') t++;
+                }
+            } else if (type_str[0]) {
+                types_to_try[num_types++] = strdup(type_str);
+            }
+
+            bool coerced = false;
+
+            for (int ti = 0; ti < num_types && !coerced; ti++) {
+                const char *expected = types_to_try[ti];
+                if (strcmp(expected, "integer") == 0) {
+                    /* Try to parse as integer */
+                    char *end = NULL;
+                    long val = strtol(str_val, &end, 10);
+                    if (end && *end == '\0' && end != str_val) {
+                        json_object_set(args, key, json_new_number((double)val));
+                        coerced = true;
+                    }
+                } else if (strcmp(expected, "number") == 0) {
+                    char *end = NULL;
+                    double val = strtod(str_val, &end);
+                    if (end && *end == '\0' && end != str_val) {
+                        json_object_set(args, key, json_new_number(val));
+                        coerced = true;
+                    }
+                } else if (strcmp(expected, "boolean") == 0) {
+                    if (strcasecmp(str_val, "true") == 0 || strcmp(str_val, "1") == 0) {
+                        json_object_set(args, key, json_new_bool(true));
+                        coerced = true;
+                    } else if (strcasecmp(str_val, "false") == 0 || strcmp(str_val, "0") == 0) {
+                        json_object_set(args, key, json_new_bool(false));
+                        coerced = true;
+                    }
+                } else if (strcmp(expected, "array") == 0) {
+                    /* Try to parse as JSON array first */
+                    char *arr_err = NULL;
+                    json_node_t *parsed = json_parse(str_val, &arr_err);
+                    if (parsed && parsed->type == JSON_ARRAY) {
+                        json_object_set(args, key, parsed);
+                        json_free(parsed);
+                        coerced = true;
+                    } else {
+                        /* Wrap bare value in array */
+                        json_node_t *arr = json_new_array();
+                        json_node_t *item = json_new_string(str_val);
+                        json_array_append(arr, item);
+                        json_object_set(args, key, arr);
+                        json_free(arr);
+                        coerced = true;
+                    }
+                    free(arr_err);
+                }
+            }
+
+            /* Free allocated type strings */
+            for (int ti = 0; ti < num_types; ti++) {
+                free((void *)types_to_try[ti]);
             }
         }
-        fclose(fh);
     }
-    free(path);
 
-    if (data) {
-        char *err = NULL;
-        json_t *parsed = json_parse(data, &err);
-        free(data);
-        if (parsed && parsed->type == JSON_OBJECT) {
-            json_free(out);
-            return parsed;          /* real cache loaded */
-        }
-        if (parsed) json_free(parsed);
-        if (err) free(err);
-    }
-    /* any error → empty dict (full scan) */
-    return out;
-}
-
-/* ── _save_discovery_cache (best-effort atomic write) ───────────────── */
-/* PoP: save_discovery_cache @ tools/registry.py:_save_discovery_cache */
-void save_discovery_cache(const json_t *cache) {
-    char *path = discovery_cache_path();
-    if (!path) return;
-    char *serialized = json_serialize(cache);
-    if (!serialized) { free(path); return; }
-
-    /* temp path: "<path>.tmp.<pid>" */
-    size_t plen = strlen(path);
-    size_t tlen = plen + 32;
-    char *tmp = malloc(tlen);
-    if (!tmp) { free(path); free(serialized); return; }
-    snprintf(tmp, tlen, "%s.tmp.%d", path, (int)getpid());
-
-    FILE *fh = fopen(tmp, "w");
-    if (!fh) { free(tmp); free(path); free(serialized); return; }
-    fputs(serialized, fh);
-    fflush(fh);
-    /* best-effort fsync for durability parity */
-    fsync(fileno(fh));
-    fclose(fh);
-    /* atomic rename: tmp → path */
-    rename(tmp, path);
-    free(tmp); free(path); free(serialized);
-}
-
-/* ── helpers ───────────────────────────────────────────────────────── */
-/* Two scopes match: both NULL (process-wide) or both non-NULL & equal. */
-static bool scope_match(const char *a, const char *b) {
-    if (!a && !b) return true;
-    if (!a || !b) return false;
-    return strcmp(a, b) == 0;
-}
-
-/* ── check_fn_cache_scope ───────────────────────────────────────────── */
-/* PoP: check_fn_cache_scope @ tools/registry.py:check_fn_cache_scope */
-char *check_fn_cache_scope(void) {
-    /* is_multiplex_active is not wired in the C single-home agent; single-
-     * profile processes keep the historical process-wide cache (scope==NULL,
-     * cache ACTIVE — NOT a bypass).  Fail-closed bypass is the empty string
-     * (CHECK_FN_CACHE_BYPASS) and only arises when multiplex is active but
-     * the profile override can't be resolved — not reachable in single-home. */
-    return NULL;
-}
-
-/* ── _prune_check_fn_caches ────────────────────────────────────────── */
-/* PoP: cfn_prune @ tools/registry.py:_prune_check_fn_caches */
-static void cfn_prune(double now) {
-    /* expire TTL-stale verdicts */
-    for (size_t i = 0; i < g_cfn_count; i++) {
-        if (now - g_cfn_cache[i].ts >= CHECK_FN_TTL_SECONDS) {
-            /* invalidate this entry */
-            g_cfn_cache[i].ts = 0; g_cfn_cache[i].value = false;
-            free(g_cfn_cache[i].scope);
-            g_cfn_cache[i].scope = NULL; g_cfn_cache[i].fn = NULL;
-        }
-    }
-    /* expire last-good grace entries */
-    for (size_t i = 0; i < g_cfn_count; i++) {
-        if (g_cfn_cache[i].last_good_valid &&
-            now - g_cfn_cache[i].last_good_ts >= CHECK_FN_FAILURE_GRACE_SECONDS) {
-            g_cfn_cache[i].last_good_valid = false;
-        }
-    }
-    /* compact: drop fully-invalidated entries */
-    size_t w = 0;
-    for (size_t i = 0; i < g_cfn_count; i++) {
-        if (g_cfn_cache[i].fn != NULL) g_cfn_cache[w++] = g_cfn_cache[i];
-    }
-    g_cfn_count = w;
-    /* cap at max (FIFO eviction: drop from front) */
-    while (g_cfn_count >= (size_t)CHECK_FN_CACHE_MAX && g_cfn_count > 0) {
-        free(g_cfn_cache[0].scope);
-        for (size_t i = 1; i < g_cfn_count; i++)
-            g_cfn_cache[i-1] = g_cfn_cache[i];
-        g_cfn_count--;
-    }
-}
-
-/* ── get_cached_check_fn_result ────────────────────────────────────── */
-/* PoP: verdict @ tools/registry.py:get_cached_check_fn_result */
-/* Return the current cached verdict for *fn* if its TTL is still valid.
- * NEVER executes the probe.  For read-only surfaces.  Returns: default_value
- * when no fresh verdict (hit=false), cached value when hit=true. */
-bool get_cached_check_fn_result(void *fn, bool *hit, bool default_value) {
-    double now = cfn_now();
-    char *scope = check_fn_cache_scope();
-    bool result = default_value;
-    bool found = false;
-
-    /* CHECK_FN_CACHE_BYPASS is the empty string "": unresolved multiplex
-     * profile identity → no trustworthy cached verdict → return default.
-     * NULL scope means process-wide cache (active). */
-    if (scope && *scope == '\0') {
-        free(scope);
-        *hit = false; return default_value;
-    }
-    pthread_mutex_lock(&g_cfn_lock);
-    for (size_t i = 0; i < g_cfn_count; i++) {
-        if (g_cfn_cache[i].fn == fn &&
-            scope_match(scope, g_cfn_cache[i].scope)) {
-            if (now - g_cfn_cache[i].ts < CHECK_FN_TTL_SECONDS) {
-                result = g_cfn_cache[i].value;
-                found = true;
-            }
-            break;
-        }
-    }
-    pthread_mutex_unlock(&g_cfn_lock);
-    free(scope);
-    *hit = found;
+    /* Serialize back */
+    char *result = json_serialize(args);
+    json_free(schema);
+    json_free(args);
     return result;
 }
 
-/* ── cache write + read-for-call path (used by _check_fn_cached parity) ─ */
-/* PoP: check_fn_cached @ tools/registry.py:_check_fn_cached */
-bool check_fn_cached(bool (*fn)(void)) {
-    double now = cfn_now();
-    char *scope = check_fn_cache_scope();
-    /* BYPASS (empty string): probe without caching, swallow errors. */
-    if (scope && *scope == '\0') {
-        bool v = fn ? fn() : false;
-        free(scope);
-        return v;
-    }
-    pthread_mutex_lock(&g_cfn_lock);
-    cfn_prune(now);
+/* ================================================================
+ *  Registry state — thread-safe via g_registry_mutex
+ * ================================================================ */
 
-    /* look for existing entry (scope NULL == process-wide) */
-    for (size_t i = 0; i < g_cfn_count; i++) {
-        if (g_cfn_cache[i].fn == (void*)fn &&
-            scope_match(scope, g_cfn_cache[i].scope)) {
-            if (now - g_cfn_cache[i].ts < CHECK_FN_TTL_SECONDS) {
-                bool v = g_cfn_cache[i].value;
-                pthread_mutex_unlock(&g_cfn_lock);
-                free(scope);
-                return v;
+static tool_registry_t g_registry = {NULL, 0, 0};
+static pthread_mutex_t g_registry_mutex = PTHREAD_MUTEX_INITIALIZER;
+static uint64_t g_registry_generation = 0;
+
+/* Toolset alias store (Python ToolRegistry._toolset_aliases). Maps an alias
+ * string to its canonical toolset name. Bounded; entries are short. */
+#define REG_ALIAS_MAX 64
+typedef struct { char alias[64]; char toolset[32]; } reg_alias_t;
+static reg_alias_t g_aliases[REG_ALIAS_MAX];
+static size_t g_aliases_count = 0;
+
+/* Generation counter — bumped on every mutation.
+ * Callers that cache tool metadata can compare against this to
+ * detect stale cache entries, mirroring Python's ToolRegistry._generation. */
+uint64_t registry_generation(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    uint64_t gen = g_registry_generation;
+    pthread_mutex_unlock(&g_registry_mutex);
+    return gen;
+}
+
+/* Internal unlocked find — caller must hold g_registry_mutex */
+static tool_t *find_unlocked(const char *name) {
+    if (!name) return NULL;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0 && g_registry.tools[i].available)
+            return &g_registry.tools[i];
+    }
+    return NULL;
+}
+
+/* ================================================================
+ *  Registration
+ * ================================================================ */
+/* PoP: registry_register @ tools/registry.py:register */
+
+bool registry_register(const char *name, const char *description,
+                        const char *schema_json,
+                        char *(*handler)(const char *args_json, const char *task_id))
+{
+    return registry_register_ex(name, description, schema_json, "", handler);
+}
+
+static bool registry_register_ex_locked(const char *name, const char *description,
+                          const char *schema_json, const char *toolset,
+                          char *(*handler)(const char *args_json, const char *task_id),
+                          const char *const *requires_env, size_t requires_env_n,
+                          int max_result_size_chars)
+{
+    if (!name || !handler) return false;
+
+    /* Check if already registered — detect cross-toolset shadowing */
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            if (toolset && toolset[0] && g_registry.tools[i].toolset[0] &&
+                strcmp(g_registry.tools[i].toolset, toolset) != 0) {
+                fprintf(stderr, "[registry] Shadow warning: '%s' from toolset '%s' shadows existing '%s' in '%s'\n",
+                        name, toolset, g_registry.tools[i].name, g_registry.tools[i].toolset);
             }
-            break;
+            return false;
         }
     }
 
-    /* ensure capacity */
-    if (g_cfn_count >= g_cfn_cap) {
-        size_t ncap = g_cfn_cap ? g_cfn_cap * 2 : CFN_CACHE_INIT;
-        cfn_entry_t *na = realloc(g_cfn_cache, ncap * sizeof(*na));
-        if (!na) {
-            pthread_mutex_unlock(&g_cfn_lock);
-            free(scope);
-            bool v = fn ? fn() : false;
-            return v;
-        }
-        g_cfn_cache = na; g_cfn_cap = ncap;
+    /* Grow if needed */
+    if (g_registry.count >= g_registry.capacity) {
+        size_t new_cap = g_registry.capacity == 0 ? 32 : g_registry.capacity * 2;
+        tool_t *new_tools = (tool_t *)realloc(g_registry.tools,
+                                               new_cap * sizeof(tool_t));
+        if (!new_tools) return false;
+        g_registry.tools = new_tools;
+        g_registry.capacity = new_cap;
     }
 
-    bool raised = false;
-    bool value = false;
-    if (fn) {
-        value = fn();
+    tool_t *t = &g_registry.tools[g_registry.count++];
+    memset(t, 0, sizeof(*t));
+    snprintf(t->name, sizeof(t->name), "%s", name);
+    snprintf(t->description, sizeof(t->description), "%s", description ? description : "");
+    if (schema_json)
+        snprintf(t->schema_json, sizeof(t->schema_json), "%s", schema_json);
+    if (toolset)
+        snprintf(t->toolset, sizeof(t->toolset), "%s", toolset);
+    t->handler = handler;
+    t->available = true;
+
+    /* Set default emoji based on toolset */
+    if (toolset) {
+        if (strcmp(toolset, "terminal") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xF0\x9F\x96\xA5");  /* 🖥️ */
+        else if (strcmp(toolset, "file") == 0 || strcmp(toolset, "filesystem") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xF0\x9F\x93\x81");  /* 📁 */
+        else if (strcmp(toolset, "web") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xF0\x9F\x8C\x90");  /* 🌐 */
+        else if (strcmp(toolset, "code") == 0 || strcmp(toolset, "exec_code") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xE2\x9C\x8F");      /* ✏️ */
+        else if (strcmp(toolset, "browser") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xF0\x9F\x94\x8D");  /* 🔍 */
+        else if (strcmp(toolset, "memory") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xF0\x9F\xA7\xA0");  /* 🧠 */
+        else if (strcmp(toolset, "session") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xF0\x9F\x93\x9D");  /* 📝 */
+        else if (strcmp(toolset, "cron") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xE2\x8F\xB0");      /* ⏰ */
+        else if (strcmp(toolset, "messaging") == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xF0\x9F\x93\xA8");  /* 📨 */
+        else if (strcmp(toolset, "plugin") == 0 || strcmp(toolset, "mcp") == 0 ||
+                 strncmp(toolset, "mcp-", 4) == 0)
+            snprintf(t->emoji, sizeof(t->emoji), "\xE2\x9A\xA1");      /* ⚡ */
+        else
+            snprintf(t->emoji, sizeof(t->emoji), "\xE2\x9A\xA1");      /* ⚡ default */
     } else {
-        raised = true; value = false;
+        snprintf(t->emoji, sizeof(t->emoji), "\xE2\x9A\xA1");          /* ⚡ default */
     }
 
-    /* last-good grace: if we have a recent True and this run was False,
-     * return the True without caching the False. */
-    for (size_t i = 0; i < g_cfn_count; i++) {
-        if (g_cfn_cache[i].fn == (void*)fn &&
-            scope_match(scope, g_cfn_cache[i].scope)) {
-            if (g_cfn_cache[i].last_good_valid &&
-                g_cfn_cache[i].value &&
-                now - g_cfn_cache[i].last_good_ts < CHECK_FN_FAILURE_GRACE_SECONDS &&
-                !value && !raised) {
-                /* suppress transient failure, keep stale True */
-                pthread_mutex_unlock(&g_cfn_lock);
-                free(scope);
-                return g_cfn_cache[i].value;
-            }
-            break;
-        }
-    }
-
-    /* cache the verdict */
-    cfn_entry_t *e = &g_cfn_cache[g_cfn_count++];
-    e->fn = (void*)fn;
-    e->scope = scope ? strdup(scope) : NULL;
-    e->ts = now;
-    e->value = value;
-    if (value && !raised) {
-        e->last_good_ts = now;
-        e->last_good_valid = true;
-    } else {
-        e->last_good_valid = false;
-    }
-
-    pthread_mutex_unlock(&g_cfn_lock);
-    free(scope);
-    return value;
-}
-
-/* PoP: invalidate_check_fn_cache @ tools/registry.py:invalidate_check_fn_cache */
-void invalidate_check_fn_cache(void) {
-    pthread_mutex_lock(&g_cfn_lock);
-    for (size_t i = 0; i < g_cfn_count; i++) {
-        free(g_cfn_cache[i].scope);
-    }
-    g_cfn_count = 0;
-    pthread_mutex_unlock(&g_cfn_lock);
-}
-
-
-/* ── from src/tools/port_tools_util_helpers.c ── */
-/*
- * port_tools_remaining_gaps.c — real PoP ports for remaining tools/ gaps.
- */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <time.h>
-#include <unistd.h>
-#include <ctype.h>
-#include <limits.h>
-#include <sys/stat.h>
-#include <errno.h>
-
-#include "libjson/json.h"
-#include "hermes_logger.h"
-
-/* PoP: tools_check_file_requirements @ tools/__init__.py:check_file_requirements */
-int tools_check_file_requirements(void)
-{
-    
-    return check_terminal_requirements();
-}
-
-/* PoP: tools_async_delegation_reset @ tools/async_delegation.py:_reset_for_tests */
-int tools_async_delegation_reset(void)
-{
-    return 0;
-}
-
-/* PoP: tools_camofox_auth_headers @ tools/browser_camofox.py:_auth_headers */
-char *tools_camofox_auth_headers(void)
-{
-    const char *key = getenv("CAMOFOX_API_KEY");
-    if (!key || !*key) return strdup("{}");
-    json_t *o = json_object();
-    char *hdr = malloc(strlen(key) + 16);
-    if (!hdr) { json_free(o); return strdup("{}"); }
-    sprintf(hdr, "Bearer %s", key);
-    json_set(o, "Authorization", json_string(hdr));
-    free(hdr);
-    char *s = json_serialize(o);
-    json_free(o);
-    return s ? s : strdup("{}");
-}
-
-/* PoP: tools_cleanup_all_browsers @ tools/browser_tool.py:cleanup_all_browsers */
-int tools_cleanup_all_browsers(void)
-{
-    return 0;
-}
-
-/* PoP: tools_budget_for_context_window @ tools/budget_config.py:budget_for_context_window */
-char *tools_budget_for_context_window(long context_length)
-{
-    json_t *o = json_object();
-    if (!o) return strdup("{}");
-    if (context_length <= 0) context_length = 200000;
-    /* fixed defaults for 200K+; scale down for smaller windows */
-    long result_chars = 100000, turn_chars = 200000;
-    if (context_length < 200000) {
-        result_chars = context_length / 2;
-        turn_chars = context_length;
-    }
-    json_set(o, "max_result_size_chars", json_number((double)result_chars));
-    json_set(o, "max_turn_chars", json_number((double)turn_chars));
-    json_set(o, "context_length", json_number((double)context_length));
-    char *s = json_serialize(o);
-    json_free(o);
-    return s ? s : strdup("{}");
-}
-
-/* PoP: tools_clarify_clear_session @ tools/clarify_gateway.py:clear_session */
-long tools_clarify_clear_session(const char *session_key)
-{
-    if (!session_key) return 0;
-    return 0;
-}
-
-/* PoP: tools_flatten_choice @ tools/clarify_tool.py:_flatten_choice */
-char *tools_flatten_choice(const char *c)
-{
-    if (!c) return strdup("");
-    /* if it's JSON dict-shaped, extract "description" or "label" */
-    const char *p = c;
-    while (*p == ' ' || *p == '{') p++;
-    if (*p == '"' || strncmp(p, "description", 11) == 0) {
-        json_t *o = json_parse(c, NULL);
-        if (o && o->type == JSON_OBJECT) {
-            const char *d = json_get_str(o, "description", NULL);
-            if (!d) d = json_get_str(o, "label", NULL);
-            if (!d) d = json_get_str(o, "value", NULL);
-            if (d) { char *out = strdup(d); json_free(o); return out; }
-        }
-        if (o) json_free(o);
-    }
-    return strdup(c);
-}
-
-/* PoP: tools_perm_run @ tools/computer_use/permissions.py:_run */
-int tools_perm_run(const char *binary, const char *args_json, double timeout,
-                   char *out_buf, size_t outsz)
-{
-    if (!binary || !out_buf) return -1;
-    /* build a shell command from the args JSON array */
-    char cmd[8192];
-    snprintf(cmd, sizeof(cmd), "%s", binary);
-    json_t *arr = args_json ? json_parse(args_json, NULL) : NULL;
-    if (arr && arr->type == JSON_ARRAY) {
-        size_t n = json_len(arr);
-        for (size_t i = 0; i < n && strlen(cmd) < sizeof(cmd) - 512; i++) {
-            json_t *item = json_get(arr, i);
-            if (!item || item->type != JSON_STRING) continue;
-            const char *s = item->str_val;
-            strcat(cmd, " \"");
-            strncat(cmd, s, 400);
-            strcat(cmd, "\"");
-        }
-    }
-    if (arr) json_free(arr);
-    snprintf(cmd + strlen(cmd), sizeof(cmd) - strlen(cmd), " 2>&1");
-    FILE *fp = popen(cmd, "r");
-    if (!fp) return -1;
-    size_t total = 0;
-    while (total < outsz - 1) {
-        size_t got = fread(out_buf + total, 1, outsz - 1 - total, fp);
-        if (got == 0) break;
-        total += got;
-    }
-    out_buf[total] = '\0';
-    int rc = pclose(fp);
-    (void)timeout;
-    return rc;
-}
-
-/* PoP: tools_vision_aux_override @ tools/computer_use/vision_routing.py:_explicit_aux_vision_override */
-bool tools_vision_aux_override(const char *cfg_json)
-{
-    if (!cfg_json || !*cfg_json) return false;
-    json_t *o = json_parse(cfg_json, NULL);
-    if (!o || o->type != JSON_OBJECT) { if (o) json_free(o); return false; }
-    json_t *aux = json_obj_get(o, "auxiliary");
-    bool r = false;
-    if (aux && aux->type == JSON_OBJECT) {
-        json_t *vis = json_obj_get(aux, "vision");
-        if (vis && vis->type == JSON_OBJECT) {
-            r = json_has(vis, "provider") || json_has(vis, "model") ||
-                json_has(vis, "enabled");
-        }
-    }
-    json_free(o);
-    return r;
-}
-
-/* PoP: tools_vision_lookup_supports @ tools/computer_use/vision_routing.py:_lookup_supports_vision */
-bool tools_vision_lookup_supports(const char *provider, const char *model,
-                                  const char *cfg_json)
-{
-    (void)model; (void)cfg_json;
-    if (!provider) return false;
-    return true;
-}
-
-/* PoP: tools_cronjob_canonical_skills @ tools/cronjob_tools.py:_canonical_skills */
-char **tools_cronjob_canonical_skills(const char *skill, const char *skills_json,
-                                      int *out_count)
-{
-    char **out = NULL;
-    int n = 0, cap = 0;
-    if (skills_json && *skills_json) {
-        json_t *arr = json_parse(skills_json, NULL);
-        if (arr && arr->type == JSON_ARRAY) {
-            size_t cnt = json_len(arr);
-            for (size_t i = 0; i < cnt; i++) {
-                json_t *item = json_get(arr, i);
-                if (!item || item->type != JSON_STRING) continue;
-                const char *s = item->str_val;
-                if (n >= cap) { cap = cap ? cap * 2 : 4; out = realloc(out, (size_t)cap * sizeof(char *)); }
-                if (!out) { if (arr) json_free(arr); if (out_count) *out_count = 0; return NULL; }
-                out[n++] = strdup(s);
+    /* requires_env + per-tool max result size. */
+    if (requires_env && requires_env_n) {
+        size_t n = requires_env_n < 8 ? requires_env_n : 8;
+        for (size_t k = 0; k < n; k++) {
+            if (requires_env[k] && requires_env[k][0]) {
+                snprintf(t->requires_env[t->requires_env_count],
+                         sizeof(t->requires_env[t->requires_env_count]),
+                         "%s", requires_env[k]);
+                t->requires_env_count++;
             }
         }
-        if (arr) json_free(arr);
-    } else if (skill && *skill) {
-        out = malloc(sizeof(char *));
-        if (out) out[n++] = strdup(skill);
     }
-    if (out_count) *out_count = n;
-    return out;
-}
+    t->max_result_size_chars = max_result_size_chars;
 
-/* PoP: tools_cronjob_normalize_optional @ tools/cronjob_tools.py:_normalize_optional_job_value */
-char *tools_cronjob_normalize_optional(const char *value, bool strip_trailing_slash)
-{
-    if (!value) return NULL;
-    char *s = strdup(value);
-    /* trim */
-    size_t n = strlen(s);
-    while (n && (s[n-1] == ' ' || s[n-1] == '\t' || s[n-1] == '\n' || s[n-1] == '\r')) s[--n] = '\0';
-    char *p = s;
-    while (*p == ' ' || *p == '\t') p++;
-    if (strip_trailing_slash) {
-        n = strlen(p);
-        while (n && p[n-1] == '/') p[--n] = '\0';
-    }
-    char *out = strdup(p);
-    free(s);
-    return out;
-}
-
-/* PoP: tools_desktop_ui_available @ tools/desktop_ui.py:available */
-bool tools_desktop_ui_available(void)
-{
-    return getenv("HERMES_DESKTOP") != NULL;
-}
-
-/* PoP: tools_desktop_ui_emit @ tools/desktop_ui.py:emit */
-bool tools_desktop_ui_emit(const char *event, const char *payload_json)
-{
-    (void)payload_json;
-    if (!event || !tools_desktop_ui_available()) return false;
     return true;
 }
 
-/* PoP: tools_discord_error_init @ tools/discord_tool.py:__init__ */
-char *tools_discord_error_init(long status, const char *body)
+bool registry_register_ex(const char *name, const char *description,
+                          const char *schema_json, const char *toolset,
+                          char *(*handler)(const char *args_json, const char *task_id))
 {
-    char *out = malloc(64 + (body ? strlen(body) : 0));
-    if (!out) return strdup("");
-    sprintf(out, "Discord API error %ld: %s", status, body ? body : "");
-    return out;
+    return registry_register_ex_full(name, description, schema_json, toolset,
+                                     handler, NULL, 0, 0);
 }
 
-/* Daytona sandbox config state (Python DaytonaEnvironment.__init__:
- * stores image/cwd/timeout/cpu/persistent before the SDK create call). */
-static struct {
-    char image[512];
-    char cwd[1024];
-    long timeout;
-    long cpu;
-    bool persistent;
-    bool configured;
-} g_daytona_cfg;
-
-/* PoP: tools_daytona_init @ tools/environments/daytona.py:__init__ */
-int tools_daytona_init(const char *image, const char *cwd, long timeout,
-                       long cpu, bool persistent)
+bool registry_register_ex_full(const char *name, const char *description,
+                               const char *schema_json, const char *toolset,
+                               char *(*handler)(const char *args_json, const char *task_id),
+                               const char *const *requires_env, size_t requires_env_n,
+                               int max_result_size_chars)
 {
-    /* Python: store sandbox config. The SDK create() is realized in C as
-     * daytona_create_sandbox() (libhttp POST to the Daytona REST API); this
-     * init stores the resolved config used by that call. */
-    memset(&g_daytona_cfg, 0, sizeof(g_daytona_cfg));
-    if (image) snprintf(g_daytona_cfg.image, sizeof(g_daytona_cfg.image), "%s", image);
-    if (cwd) snprintf(g_daytona_cfg.cwd, sizeof(g_daytona_cfg.cwd), "%s", cwd);
-    g_daytona_cfg.timeout = timeout;
-    g_daytona_cfg.cpu = cpu;
-    g_daytona_cfg.persistent = persistent;
-    g_daytona_cfg.configured = true;
-    return 0;
-}
-
-/* PoP: tools_daytona_cleanup @ tools/environments/daytona.py:cleanup */
-int tools_daytona_cleanup(void)
-{
-    /* Python: stop/delete the sandbox. Release the recorded config. */
-    memset(&g_daytona_cfg, 0, sizeof(g_daytona_cfg));
-    return 0;
-}
-
-/* PoP: tools_file_sync_init @ tools/environments/file_sync.py:__init__ */
-int tools_file_sync_init(double sync_interval)
-{
-    (void)sync_interval;
-    return 0;
-}
-
-/* PoP: time @ tools/environments/file_sync.py:sync */
-/* Run a sync cycle: touch the sync marker with current time (rate-limited
- * unless force, mirroring the Python interval gate). */
-int tools_file_sync_sync(bool force)
-{
-    const char *home = getenv("HERMES_HOME");
-    char dir[1200], marker[1400];
-    if (home) snprintf(dir, sizeof(dir), "%s/state", home);
-    else snprintf(dir, sizeof(dir), "%s/.hermes/state", getenv("HOME") ? getenv("HOME") : ".");
-    if (mkdir(dir, 0755) != 0 && errno != EEXIST) return -1;
-    snprintf(marker, sizeof(marker), "%s/file_sync_last", dir);
-    struct stat st;
-    if (!force && stat(marker, &st) == 0) {
-        /* rate limit: skip if synced within the interval */
-        time_t now = time(NULL);
-        if (now - st.st_mtime < 5) return 0;
-    }
-    FILE *fp = fopen(marker, "w");
-    if (!fp) return -1;
-    fprintf(fp, "%ld\n", (long)time(NULL));
-    fclose(fp);
-    return 0;
-}
-
-/* PoP: tools_modal_before_execute @ tools/environments/modal_utils.py:_before_execute */
-int tools_modal_before_execute(void)
-{
-    return 0;
-}
-
-/* PoP: tools_singularity_init @ tools/environments/singularity.py:__init__ */
-int tools_singularity_init(const char *image, const char *cwd, long timeout,
-                           double cpu, bool persistent)
-{
-    (void)cwd; (void)timeout; (void)cpu; (void)persistent;
-    /* REAL: validate image + singularity executable presence. */
-    if (!image || !*image) return -1;
-    char cmd[512];
-    snprintf(cmd, sizeof(cmd), "command -v singularity >/dev/null 2>&1");
-    if (system(cmd) != 0) return -1;
-    return 0;
-}
-
-/* PoP: tools_singularity_cleanup @ tools/environments/singularity.py:cleanup */
-int tools_singularity_cleanup(void)
-{
-    return 0;
-}
-
-/* PoP: tools_fal_common_init @ tools/fal_common.py:__init__ */
-int tools_fal_common_init(const char *key)
-{
-    if (!key || !*key) return -1;
-    return 0;
-}
-
-/* PoP: tools_ha_run_async @ tools/homeassistant_tool.py:_run_async */
-int tools_ha_run_async(void)
-{
-    return 0;
-}
-
-/* PoP: tools_coerce_positive_int @ tools/hook_output_spill.py:_coerce_positive_int */
-long tools_coerce_positive_int(const char *value, long default_val)
-{
-    if (!value || !*value) return default_val;
-    char *end = NULL;
-    long iv = strtol(value, &end, 10);
-    if (end == value || *end != '\0') return default_val;
-    return iv > 0 ? iv : default_val;
-}
-
-/* PoP: tools_image_generate @ tools/image_generation_tool.py:image_generate_tool */
-int tools_image_generate(const char *prompt, const char *aspect_ratio,
-                         long num_images)
-{
-    if (!prompt || !*prompt) return -1;
-    (void)aspect_ratio; (void)num_images;
-    return 0;
-}
-
-/* PoP: tools_build_dynamic_image_schema @ tools/image_generation_tool.py:_build_dynamic_image_schema */
-char *tools_build_dynamic_image_schema(void)
-{
-    return strdup("{\"prompt\": {\"type\": \"string\", \"description\": \"Image description\"}}");
-}
-
-/* PoP: tools_image_source_init @ tools/image_source.py:__init__ */
-char *tools_image_source_init(const char *message, const char *src, const char *origin)
-{
-    (void)src; (void)origin;
-    return strdup(message ? message : "");
-}
-
-/* PoP: tools_interrupt_set @ tools/interrupt.py:set */
-int tools_interrupt_set(bool state)
-{
-    /* Python: set_interrupt(active, thread_id) — real per-thread signal. */
-    extern void set_interrupt(bool active, unsigned long thread_id);
-    set_interrupt(state, 0);   /* 0 -> current thread */
-    return 0;
-}
-
-/* PoP: tools_interrupt_wait @ tools/interrupt.py:wait */
-bool tools_interrupt_wait(double timeout)
-{
-    /* Python: wait() returns current state immediately (is_set()).
-     * Delegate to the real interrupt tracker (lib/libinterrupt). */
-    (void)timeout;
-    
-    return interrupt_is_interrupted();
-}
-
-/* PoP: tools_lazy_deps_init @ tools/lazy_deps.py:__init__ */
-char *tools_lazy_deps_init(const char *feature, const char *missing_json, const char *reason)
-{
-    char *out = malloc(128 + (feature ? strlen(feature) : 0) + (reason ? strlen(reason) : 0));
-    if (!out) return strdup("");
-    if (missing_json && *missing_json)
-        sprintf(out, "%s is unavailable: missing %s (%s)", feature ? feature : "", missing_json, reason ? reason : "");
-    else
-        sprintf(out, "%s is unavailable (%s)", feature ? feature : "", reason ? reason : "");
-    return out;
-}
-
-/* PoP: tools_lazy_deps_available @ tools/lazy_deps.py:is_available */
-bool tools_lazy_deps_available(const char *feature)
-{
-    (void)feature;
-    return true;
-}
-
-/* PoP: tools_mcp_oauth_snapshot @ tools/mcp_dashboard_oauth.py:snapshot */
-char *tools_mcp_oauth_snapshot(const char *flow_id, const char *server_name,
-                               const char *status)
-{
-    json_t *o = json_object();
-    if (!o) return strdup("{}");
-    json_set(o, "flow_id", json_string(flow_id ? flow_id : ""));
-    json_set(o, "server_name", json_string(server_name ? server_name : ""));
-    json_set(o, "status", json_string(status ? status : ""));
-    char *s = json_serialize(o);
-    json_free(o);
-    return s ? s : strdup("{}");
-}
-
-/* PoP: tools_mcp_watchdog_main @ tools/mcp_stdio_watchdog.py:main */
-int tools_mcp_watchdog_main(long ppid, const char *command_json)
-{
-    if (ppid <= 0) return -1;
-    (void)command_json;
-    return 0;
-}
-
-/* PoP: tools_ms_graph_init @ tools/microsoft_graph_auth.py:__init__ */
-int tools_ms_graph_init(const char *client_id, double timeout)
-{
-    (void)timeout;
-    if (!client_id) return -1;
-    return 0;
-}
-
-/* PoP: tools_moa_provider_health_init @ tools/mixture_of_agents_tool.py:__init__ */
-int tools_moa_provider_health_init(void)
-{
-    return 0;
-}
-
-/* PoP: tools_moa_http_client_init @ tools/mixture_of_agents_tool.py:__init__ */
-int tools_moa_http_client_init(void)
-{
-    return 0;
-}
-
-/* PoP: tools_neutts_write_wav @ tools/neutts_synth.py:_write_wav */
-int tools_neutts_write_wav(const char *path, const short *samples, long count,
-                           long sample_rate)
-{
-    if (!path || !samples || count <= 0) return -1;
-    FILE *fp = fopen(path, "wb");
-    if (!fp) return -1;
-    long data_bytes = count * 2;
-    long byte_rate = sample_rate * 2;
-    fwrite("RIFF", 1, 4, fp);
-    unsigned int riff_size = (unsigned int)(36 + data_bytes);
-    fwrite(&riff_size, 4, 1, fp);
-    fwrite("WAVE", 1, 4, fp);
-    fwrite("fmt ", 1, 4, fp);
-    unsigned int fmt_size = 16;
-    fwrite(&fmt_size, 4, 1, fp);
-    unsigned short audio_fmt = 1; /* PCM */
-    fwrite(&audio_fmt, 2, 1, fp);
-    unsigned short channels = 1;
-    fwrite(&channels, 2, 1, fp);
-    unsigned int sr = (unsigned int)sample_rate;
-    fwrite(&sr, 4, 1, fp);
-    fwrite(&byte_rate, 4, 1, fp);
-    unsigned short block_align = 2;
-    fwrite(&block_align, 2, 1, fp);
-    unsigned short bits = 16;
-    fwrite(&bits, 2, 1, fp);
-    fwrite("data", 1, 4, fp);
-    fwrite(&data_bytes, 4, 1, fp);
-    fwrite(samples, 2, (size_t)count, fp);
-    fclose(fp);
-    return 0;
-}
-
-/* PoP: tools_neutts_main @ tools/neutts_synth.py:main */
-int tools_neutts_main(const char *text, const char *out_path,
-                      const char *ref_audio, const char *ref_text)
-{
-    if (!text || !out_path || !ref_audio || !ref_text) return -1;
-    return 0;
-}
-
-/* PoP: tools_registry_entry_init @ tools/registry.py:__init__ */
-int tools_registry_entry_init(const char *name, const char *toolset,
-                              const char *schema_json)
-{
-    if (!name || !toolset) return -1;
-    (void)schema_json;
-    return 0;
-}
-
-/* PoP: tools_registry_init @ tools/registry.py:__init__ */
-int tools_registry_init(const char *name)
-{
-    (void)name;
-    return 0;
-}
-
-/* PoP: tools_is_telegram_thread_not_found @ tools/send_message_tool.py:_is_telegram_thread_not_found */
-bool tools_is_telegram_thread_not_found(const char *error_text)
-{
-    if (!error_text) return false;
-    return strstr(error_text, "thread not found") != NULL ||
-           strstr(error_text, "TOPIC_ID_INVALID") != NULL ||
-           strstr(error_text, "message thread not found") != NULL;
-}
-
-/* PoP: tools_registry_standalone_send @ tools/send_message_tool.py:_registry_standalone_send */
-int tools_registry_standalone_send(const char *platform_name, const char *chat_id,
-                                   const char *message, const char *thread_id)
-{
-    /* Python: standalone_sender_fn on the platform entry. Delegate to the
-     * real registry sender (src/tools/port_send_message_tool.c). */
-    if (!platform_name || !message) return -1;
-    extern char *registry_standalone_send(const char *platform_name, json_t *pconfig,
-                                          const char *chat_id, const char *message,
-                                          const char *thread_id);
-    char *result = registry_standalone_send(platform_name, NULL, chat_id,
-                                            message, thread_id);
-    if (!result) return -1;
-    int ok = strstr(result, "\"error\"") == NULL ? 0 : -1;
-    free(result);
+    pthread_mutex_lock(&g_registry_mutex);
+    bool ok = registry_register_ex_locked(name, description, schema_json, toolset,
+                                          handler, requires_env, requires_env_n,
+                                          max_result_size_chars);
+    if (ok) g_registry_generation++;
+    pthread_mutex_unlock(&g_registry_mutex);
     return ok;
 }
 
-/* PoP: tools_session_search_scroll @ tools/session_search_tool.py:_scroll */
-int tools_session_search_scroll(const char *db_path, const char *session_id,
-                                long around_message_id, long window,
-                                char *out, size_t outsz)
-{
-    if (!db_path || !session_id || !out) return -1;
-    (void)around_message_id; (void)window;
-    snprintf(out, outsz, "{\"status\": \"ok\"}");
-    return 0;
+void registry_set_available(const char *name, bool available) {
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            g_registry.tools[i].available = available;
+            g_registry_generation++;
+            pthread_mutex_unlock(&g_registry_mutex);
+            return;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
 }
 
-/* PoP: tools_url_safety_async_init @ tools/url_safety.py:__init__ */
-int tools_url_safety_async_init(const char *schemes_by_origin_json)
-{
-    (void)schemes_by_origin_json;
-    return 0;
+/* ================================================================
+ *  Lookup + dispatch
+ * ================================================================ */
+
+tool_t *registry_find(const char *name) {
+    pthread_mutex_lock(&g_registry_mutex);
+    tool_t *t = find_unlocked(name);
+    pthread_mutex_unlock(&g_registry_mutex);
+    return t;
 }
 
-/* PoP: tools_url_safety_sync_init @ tools/url_safety.py:__init__ */
-int tools_url_safety_sync_init(const char *schemes_by_origin_json)
-{
-    (void)schemes_by_origin_json;
-    return 0;
+/* ================================================================
+ *  Tool name repair (port of Python repair_tool_call())
+ * ================================================================ */
+
+/* Levenshtein distance between two strings */
+static size_t levenshtein_distance(const char *s1, const char *s2) {
+    size_t len1 = strlen(s1), len2 = strlen(s2);
+    size_t *row = malloc((len2 + 1) * sizeof(size_t));
+    if (!row) return SIZE_MAX;
+    for (size_t j = 0; j <= len2; j++) row[j] = j;
+    for (size_t i = 1; i <= len1; i++) {
+        size_t prev = row[0];
+        row[0] = i;
+        for (size_t j = 1; j <= len2; j++) {
+            size_t cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
+            size_t min = row[j - 1] + 1; /* insert */
+            size_t del = row[j] + 1;     /* delete */
+            if (del < min) min = del;
+            size_t sub = prev + cost;    /* substitute */
+            if (sub < min) min = sub;
+            prev = row[j];
+            row[j] = min;
+        }
+    }
+    size_t dist = row[len2];
+    free(row);
+    return dist;
 }
 
-/* PoP: tools_video_coerce_int @ tools/video_generation_tool.py:_coerce_int */
-long tools_video_coerce_int(const char *value, bool *ok)
-{
-    if (ok) *ok = false;
-    if (!value || !*value || strcmp(value, "\"\"") == 0) return 0;
-    char *end = NULL;
-    long v = strtol(value, &end, 10);
-    if (end == value || *end != '\0') return 0;
-    if (ok) *ok = true;
-    return v;
+/* Levenshtein similarity ratio 0.0-1.0 */
+static double levenshtein_ratio(const char *s1, const char *s2) {
+    if (!s1 || !s2) return 0.0;
+    size_t len1 = strlen(s1), len2 = strlen(s2);
+    if (len1 == 0 && len2 == 0) return 1.0;
+    size_t max_len = len1 > len2 ? len1 : len2;
+    size_t dist = levenshtein_distance(s1, s2);
+    return 1.0 - (double)dist / (double)max_len;
 }
 
-/* PoP: tools_video_coerce_bool @ tools/video_generation_tool.py:_coerce_bool */
-bool tools_video_coerce_bool(const char *value, bool *ok)
-{
-    if (ok) *ok = false;
-    if (!value) return false;
-    char *low = strdup(value);
-    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
-    bool r;
-    if (strcmp(low, "1") == 0 || strcmp(low, "true") == 0 || strcmp(low, "yes") == 0 ||
-        strcmp(low, "on") == 0) { r = true; if (ok) *ok = true; }
-    else if (strcmp(low, "0") == 0 || strcmp(low, "false") == 0 || strcmp(low, "no") == 0 ||
-             strcmp(low, "off") == 0) { r = false; if (ok) *ok = true; }
-    else r = false;
-    free(low);
+/* Normalize: lowercase + hyphens/spaces -> underscores.
+ * Returns malloc'd string (caller frees). */
+static char *name_norm(const char *s) {
+    if (!s) return NULL;
+    char *r = strdup(s);
+    if (!r) return NULL;
+    for (char *p = r; *p; p++) {
+        *p = (char)tolower((unsigned char)*p);
+        if (*p == '-' || *p == ' ') *p = '_';
+    }
     return r;
 }
 
-/* PoP: tools_write_approval_pending_dir @ tools/write_approval.py:_pending_dir */
-char *tools_write_approval_pending_dir(const char *subsystem)
-{
-    const char *home = getenv("HERMES_HOME");
-    char *out = malloc(1200);
-    if (!out) return strdup("");
-    if (home) snprintf(out, 1200, "%s/pending/%s", home, subsystem ? subsystem : "");
-    else snprintf(out, 1200, "%s/.hermes/pending/%s", getenv("HOME") ? getenv("HOME") : ".", subsystem ? subsystem : "");
-    return out;
+/* CamelCase -> snake_case: "TodoTool" -> "todo_tool".
+ * Returns malloc'd string (caller frees). */
+static char *name_camel_to_snake(const char *s) {
+    if (!s || !s[0]) return NULL;
+    size_t len = strlen(s), out_len = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (i > 0 && isupper((unsigned char)s[i]) && islower((unsigned char)s[i - 1]))
+            out_len++;
+        out_len++;
+    }
+    char *r = malloc(out_len + 1);
+    if (!r) return NULL;
+    size_t pos = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (i > 0 && isupper((unsigned char)s[i]) && islower((unsigned char)s[i - 1]))
+            r[pos++] = '_';
+        r[pos++] = (char)tolower((unsigned char)s[i]);
+    }
+    r[pos] = '\0';
+    return r;
 }
 
-/* PoP: tools_write_approval_decision @ tools/write_approval.py:__init__ */
-char *tools_write_approval_decision(bool allow, bool blocked, bool stage,
-                                    const char *message)
-{
-    json_t *o = json_object();
-    if (!o) return strdup("{}");
-    json_set(o, "allow", json_bool(allow));
-    json_set(o, "blocked", json_bool(blocked));
-    json_set(o, "stage", json_bool(stage));
-    json_set(o, "message", json_string(message ? message : ""));
-    char *s = json_serialize(o);
-    json_free(o);
-    return s ? s : strdup("{}");
-}
-
-/* PoP: tools_xai_get_env_value @ tools/xai_http.py:get_env_value */
-char *tools_xai_get_env_value(const char *name, const char *default_val)
-{
-    const char *home = getenv("HERMES_HOME");
-    char path[1400];
-    if (home) snprintf(path, sizeof(path), "%s/.env", home);
-    else snprintf(path, sizeof(path), "%s/.hermes/.env", getenv("HOME") ? getenv("HOME") : ".");
-    FILE *fp = fopen(path, "r");
-    if (fp) {
-        char line[1024];
-        size_t nlen = strlen(name);
-        while (fgets(line, sizeof(line), fp)) {
-            if (strncmp(line, name, nlen) == 0 && line[nlen] == '=') {
-                const char *v = line + nlen + 1;
-                size_t n = strlen(v);
-                while (n && (v[n-1] == '\n' || v[n-1] == '\r' || v[n-1] == ' ')) n--;
-                fclose(fp);
-                return strndup(v, n);
+/* Strip _tool/-tool/tool suffix (case-insensitive).
+ * Returns malloc'd string (caller frees), or NULL if no suffix found. */
+static char *name_strip_tool_suffix(const char *s) {
+    if (!s || !s[0]) return NULL;
+    size_t len = strlen(s);
+    static const char *suffixes[] = {"_tool", "-tool", "tool"};
+    for (size_t i = 0; i < 3; i++) {
+        size_t slen = strlen(suffixes[i]);
+        if (len > slen) {
+            const char *tail = s + len - slen;
+            bool match = true;
+            for (size_t j = 0; j < slen; j++) {
+                if (tolower((unsigned char)tail[j]) != (unsigned char)suffixes[i][j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                size_t new_len = len - slen;
+                while (new_len > 0 && (s[new_len - 1] == '_' || s[new_len - 1] == '-'))
+                    new_len--;
+                return strndup(s, new_len);
             }
         }
-        fclose(fp);
     }
-    const char *v = getenv(name);
-    return strdup(v ? v : (default_val ? default_val : ""));
+    return NULL;
 }
 
-/* PoP: tools_xai_coerce_bool @ tools/xai_http.py:_coerce_bool */
-bool tools_xai_coerce_bool(const char *value, bool default_val)
+/* Attempt to repair a mismatched tool name.
+ *
+ * Port of Python agent/agent_runtime_helpers.py:repair_tool_call().
+ * Applies normalization pipeline: lowercase, hyphens->underscores,
+ * CamelCase->snake_case, _tool suffix stripping (up to 2x), fuzzy match.
+ *
+ * Returns malloc'd repaired name (caller frees), or NULL if no match. */
+char *repair_tool_call(const char *tool_name) {
+    if (!tool_name || !tool_name[0]) return NULL;
+
+    pthread_mutex_lock(&g_registry_mutex);
+
+    /* Fast path: exact match already handled by caller */
+    char *lowered = strdup(tool_name);
+    if (!lowered) { pthread_mutex_unlock(&g_registry_mutex); return NULL; }
+    for (char *p = lowered; *p; p++) *p = (char)tolower((unsigned char)*p);
+
+    /* 1. Lowercase direct match */
+    if (find_unlocked(lowered)) { pthread_mutex_unlock(&g_registry_mutex); return lowered; }
+
+    /* 2. Normalized: lowercase + hyphens/spaces -> underscores */
+    char *normalized = name_norm(tool_name);
+    if (normalized && find_unlocked(normalized)) { free(lowered); pthread_mutex_unlock(&g_registry_mutex); return normalized; }
+
+    /* 3. CamelCase -> snake_case */
+    char *camel = name_camel_to_snake(tool_name);
+    if (camel && find_unlocked(camel)) { free(lowered); free(normalized); pthread_mutex_unlock(&g_registry_mutex); return camel; }
+
+    /* 4. Build variant set and try suffix stripping (up to 2x) */
+    #define MAX_VARIANTS 64
+    char *variants[MAX_VARIANTS];
+    size_t n_variants = 0;
+
+    #define ADD_VAR(v) do { \
+        if ((v) && n_variants < MAX_VARIANTS) { \
+            bool _dup = false; \
+            for (size_t _i = 0; _i < n_variants; _i++) { \
+                if (strcmp(variants[_i], (v)) == 0) { _dup = true; break; } \
+            } \
+            if (!_dup) variants[n_variants++] = strdup(v); \
+        } \
+    } while(0)
+
+    /* Seed variants */
+    ADD_VAR(tool_name);
+    ADD_VAR(lowered);
+    ADD_VAR(normalized);
+    ADD_VAR(camel);
+
+    /* Apply suffix stripping iteratively */
+    for (int round = 0; round < 2; round++) {
+        size_t old_count = n_variants;
+        for (size_t i = 0; i < old_count; i++) {
+            char *stripped = name_strip_tool_suffix(variants[i]);
+            if (stripped) {
+                ADD_VAR(stripped);
+                char *sn = name_norm(stripped);
+                ADD_VAR(sn);
+                free(sn);
+                char *sc = name_camel_to_snake(stripped);
+                ADD_VAR(sc);
+                free(sc);
+            }
+            free(stripped);
+        }
+    }
+
+    /* Check all variants */
+    for (size_t i = 0; i < n_variants; i++) {
+        if (variants[i][0] && find_unlocked(variants[i])) {
+            char *result = strdup(variants[i]);
+            for (size_t j = 0; j < n_variants; j++) free(variants[j]);
+            free(lowered); free(normalized); free(camel);
+            pthread_mutex_unlock(&g_registry_mutex);
+            return result;
+        }
+    }
+
+    /* 5. Fuzzy match (Levenshtein ratio >= 0.7) */
+    const char *best_match = NULL;
+    double best_ratio = 0.7;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        double ratio = levenshtein_ratio(lowered, g_registry.tools[i].name);
+        if (ratio > best_ratio) {
+            best_ratio = ratio;
+            best_match = g_registry.tools[i].name;
+        }
+    }
+
+    for (size_t j = 0; j < n_variants; j++) free(variants[j]);
+    free(lowered); free(normalized); free(camel);
+
+    if (best_match) {
+        char *r = strdup(best_match);
+        pthread_mutex_unlock(&g_registry_mutex);
+        return r;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return NULL;
+
+    #undef ADD_VAR
+    #undef MAX_VARIANTS
+}
+/* PoP: registry_dispatch @ tools/registry.py:dispatch */
+
+char *registry_dispatch(const char *name, const char *args_json,
+                        const char *task_id)
 {
-    if (!value) return default_val;
-    char *low = strdup(value);
-    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
-    char *s = low;
-    while (*s == ' ') s++;
-    bool r;
-    if (strcmp(s, "1") == 0 || strcmp(s, "true") == 0 || strcmp(s, "yes") == 0 ||
-        strcmp(s, "on") == 0 || strcmp(s, "enabled") == 0) r = true;
-    else if (strcmp(s, "0") == 0 || strcmp(s, "false") == 0 || strcmp(s, "no") == 0 ||
-             strcmp(s, "off") == 0 || strcmp(s, "disabled") == 0) r = false;
-    else r = default_val;
-    free(low);
+    if (!name) return tool_error("null tool name", NULL);
+
+    /* Lock, find, dispatch handler under lock for safety */
+    pthread_mutex_lock(&g_registry_mutex);
+    tool_t *tool = find_unlocked(name);
+    if (tool) {
+        if (tool->handler) {
+            /* Coerce string args to match JSON Schema types (TD01) */
+            char *coerced = coerce_args_json(tool->name, args_json, tool->schema_json);
+            const char *dispatch_args = coerced ? coerced : args_json;
+            char *result = tool->handler(dispatch_args, task_id);
+            free(coerced);
+            pthread_mutex_unlock(&g_registry_mutex);
+            /* Sanitize error results — strip CDATA, role tags, fences from tool
+             * error messages before they enter conversation history.
+             * Port of Python model_tools._sanitize_tool_error(). */
+            if (result && strncmp(result, "{\"error\"", 7) == 0 && tool_error_sanitize) {
+                char *sanitized = tool_error_sanitize(result);
+                if (sanitized) {
+                    free(result);
+                    result = sanitized;
+                }
+            }
+            return result;
+        }
+        pthread_mutex_unlock(&g_registry_mutex);
+        return tool_error("tool has no handler", NULL);
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+
+    /* Tool not found — try repair (locks internally) */
+    char *repaired = repair_tool_call(name);
+    if (repaired) {
+        pthread_mutex_lock(&g_registry_mutex);
+        tool = find_unlocked(repaired);
+        free(repaired);
+        if (tool) {
+            if (tool->handler) {
+                /* Coerce string args to match JSON Schema types (TD01) */
+                char *coerced = coerce_args_json(tool->name, args_json, tool->schema_json);
+                const char *dispatch_args = coerced ? coerced : args_json;
+                char *result = tool->handler(dispatch_args, task_id);
+                free(coerced);
+                pthread_mutex_unlock(&g_registry_mutex);
+                /* Sanitize error results on repaired path too */
+                if (result && strncmp(result, "{\"error\"", 7) == 0 && tool_error_sanitize) {
+                    char *sanitized = tool_error_sanitize(result);
+                    if (sanitized) {
+                        free(result);
+                        result = sanitized;
+                    }
+                }
+                return result;
+            }
+            pthread_mutex_unlock(&g_registry_mutex);
+            return tool_error("tool has no handler", NULL);
+        }
+        pthread_mutex_unlock(&g_registry_mutex);
+    }
+
+    /* Not found after repair either — error */
+    char buf[512];
+    char *sanitized = tool_error_sanitize ? tool_error_sanitize(name) : NULL;
+    snprintf(buf, sizeof(buf), "{\"error\": \"tool '%s' not found\"}",
+             sanitized ? sanitized : (name ? name : "(null)"));
+    free(sanitized);
+    return strdup(buf);
+}
+
+/* Port of Python tools/file_state.py:get_registry(). */
+/* ================================================================
+ *  Get registry for agent loop
+ * ================================================================ */
+
+tool_registry_t *get_registry(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    tool_registry_t *r = &g_registry;
+    pthread_mutex_unlock(&g_registry_mutex);
     return r;
 }
 
-/* PoP: tools_xai_video_coerce_int @ tools/xai_video_tools.py:_coerce_int */
-long tools_xai_video_coerce_int(const char *value, bool *ok)
-{
-    if (ok) *ok = false;
-    if (!value) return 0;
-    char *end = NULL;
-    long v = strtol(value, &end, 10);
-    if (end == value || *end != '\0') return 0;
-    if (ok) *ok = true;
-    return v;
+size_t registry_count(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    size_t c = g_registry.count;
+    pthread_mutex_unlock(&g_registry_mutex);
+    return c;
 }
 
-/* PoP: tools_cu_run_doctor @ tools/computer_use/doctor.py:run_doctor */
-int tools_cu_run_doctor(const char *driver_cmd, bool json_output)
-{
-    (void)driver_cmd; (void)json_output;
-    return 0;
+/* ================================================================
+ *  Generate tools JSON for LLM API call
+ * ================================================================ */
+
+json_node_t *registry_to_json(void) {
+    json_node_t *tools = json_new_array();
+
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (!g_registry.tools[i].available) continue;
+
+        json_node_t *tool = json_new_object();
+        json_object_set(tool, "type", json_new_string("function"));
+
+        json_node_t *fn = json_new_object();
+        json_object_set(fn, "name", json_new_string(g_registry.tools[i].name));
+        json_object_set(fn, "description", json_new_string(g_registry.tools[i].description));
+
+        /* Parse schema from JSON string */
+        if (g_registry.tools[i].schema_json[0]) {
+            char *err = NULL;
+            json_node_t *schema = json_parse(g_registry.tools[i].schema_json, &err);
+            if (schema) {
+                json_object_set(fn, "parameters", schema);
+            } else {
+                json_object_set(fn, "parameters", json_new_object());
+                free(err);
+            }
+        } else {
+            json_object_set(fn, "parameters", json_new_object());
+        }
+
+        json_object_set(tool, "function", fn);
+        json_array_append(tools, tool);
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return tools;
 }
 
-/* PoP: tools_project_resolve @ tools/project_tools.py:_resolve */
-int tools_project_resolve(const char *token, char *out, size_t outsz)
-{
-    if (!token || !out) return -1;
-    if (!*token) { snprintf(out, outsz, "{}"); return 0; }
-    json_t *o = json_object();
-    json_set(o, "token", json_string(token));
-    char *s = json_serialize(o);
-    json_free(o);
-    if (s) { snprintf(out, outsz, "%s", s); free(s); }
-    return 0;
+/* Accessors for testing */
+size_t registry_get_count(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    size_t c = g_registry.count;
+    pthread_mutex_unlock(&g_registry_mutex);
+    return c;
 }
 
-/* PoP: registry_bound_error_text @ tools/registry.py:_bound_error_text */
-/* Returns malloc'd bounded error text. Caller frees. */
-char *registry_bound_error_text(const char *text) {
-    if (!text) return strdup("");
-    size_t len = strlen(text);
-    size_t max_chars = 4000;  /* _MAX_TOOL_ERROR_CHARS */
-    if (len <= max_chars) return strdup(text);
-    const char *marker = "...[TRUNCATED]";  /* _TOOL_ERROR_TRUNCATION_MARKER */
-    size_t marker_len = strlen(marker);
-    char *out = (char *)malloc(max_chars + marker_len + 1);
-    memcpy(out, text, max_chars);
-    memcpy(out + max_chars, marker, marker_len);
-    out[max_chars + marker_len] = '\0';
+const char *registry_get_name(size_t i) {
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *n = NULL;
+    if (i < g_registry.count) n = g_registry.tools[i].name;
+    pthread_mutex_unlock(&g_registry_mutex);
+    return n;
+}
+
+/* P52: Per-tool timeout */
+void registry_set_timeout(const char *name, int seconds) {
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            g_registry.tools[i].timeout_sec = seconds;
+            g_registry_generation++;
+            pthread_mutex_unlock(&g_registry_mutex);
+            return;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+int  registry_get_timeout(const char *name) {
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            int t = g_registry.tools[i].timeout_sec;
+            pthread_mutex_unlock(&g_registry_mutex);
+            return t;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return 0; /* Not found */
+}
+
+/* P150: Set toolset for a registered tool */
+void registry_set_toolset(const char *name, const char *toolset) {
+    if (!name || !toolset) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            snprintf(g_registry.tools[i].toolset, sizeof(g_registry.tools[i].toolset), "%s", toolset);
+            g_registry_generation++;
+            pthread_mutex_unlock(&g_registry_mutex);
+            return;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* P150: Get toolset for a registered tool */
+const char *registry_get_toolset(const char *name) {
+    if (!name) return "";
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *t = "";
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            t = g_registry.tools[i].toolset;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return t;
+}
+
+/* S14 gap #16: Rich query API — get tool schema JSON */
+/* PoP: registry_get_schema @ tools/registry.py:get_schema */
+/* Port of Python tools/registry.py:get_schema(). */
+const char *registry_get_schema(const char *name) {
+    if (!name) return "";
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *s = "";
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            s = g_registry.tools[i].schema_json;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return s;
+}
+
+/* Rich query: return display emoji for a tool, or default (⚡) if unset */
+/* PoP: registry_get_emoji @ tools/registry.py:get_emoji */
+/* Port of Python tools/registry.py:get_emoji(). */
+const char *registry_get_emoji(const char *name, const char *default_emoji) {
+    if (!name) return default_emoji ? default_emoji : "\xE2\x9A\xA1";
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *e = NULL;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            e = g_registry.tools[i].emoji;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return e ? e : (default_emoji ? default_emoji : "\xE2\x9A\xA1");
+}
+
+/* S14 gap #16: Rich query API — check if any tool in a toolset is available */
+/* PoP: registry_is_toolset_available @ tools/registry.py:is_toolset_available */
+/* Port of Python tools/registry.py:is_toolset_available(). */
+bool registry_is_toolset_available(const char *toolset) {
+    if (!toolset) return false;
+    pthread_mutex_lock(&g_registry_mutex);
+    bool avail = false;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].toolset, toolset) == 0 && g_registry.tools[i].available) {
+            avail = true;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return avail;
+}
+
+/* Per-tool availability getter (mirrors Python registry.is_available). */
+bool registry_is_available(const char *name) {
+    if (!name) return false;
+    pthread_mutex_lock(&g_registry_mutex);
+    bool avail = false;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0 && g_registry.tools[i].available) {
+            avail = true;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return avail;
+}
+
+/* P150: Check if a toolset is present in comma-separated list */
+static bool toolset_in_list(const char *toolset, const char *csv) {
+    if (!csv || !*csv) return true; /* empty list means "all" */
+    if (!toolset || !*toolset) return true; /* unlabeled tools always visible */
+
+    /* Tokenize the CSV list */
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "%s", csv);
+    char *save;
+    char *tok = strtok_r(buf, ", ", &save);
+    while (tok) {
+        if (strcmp(tok, toolset) == 0) return true;
+        tok = strtok_r(NULL, ", ", &save);
+    }
+    return false;
+}
+
+/* P150: Filter a tool_registry_t copy by enabled/disabled toolsets.
+ * Modifies the 'available' flag on tools. Only operates on the COPY,
+ * not the global registry. Pass NULL for either to skip that filter.
+ * Empty string means "all" (no filter applied). */
+void registry_filter_by_toolset(tool_registry_t *reg,
+                                 const char *enabled_csv,
+                                 const char *disabled_csv) {
+    if (!reg) return;
+
+    for (size_t i = 0; i < reg->count; i++) {
+        /* If disabled list is set and tool is in it, mark unavailable */
+        if (disabled_csv && *disabled_csv) {
+            if (toolset_in_list(reg->tools[i].toolset, disabled_csv)) {
+                reg->tools[i].available = false;
+                continue;
+            }
+        }
+        /* If enabled list is set and tool is NOT in it, mark unavailable */
+        if (enabled_csv && *enabled_csv) {
+            if (!toolset_in_list(reg->tools[i].toolset, enabled_csv)) {
+                reg->tools[i].available = false;
+            }
+        }
+    }
+}
+
+/* P55: Wildcard pattern matching — simple glob support */
+bool registry_name_matches(const char *name, const char *pattern) {
+    if (!name || !pattern) return false;
+
+    /* If no wildcard, exact match */
+    if (!strchr(pattern, '*'))
+        return strcmp(name, pattern) == 0;
+
+    /* Find positions of '*' */
+    const char *star = strchr(pattern, '*');
+
+    /* Pattern: "prefix*" — match prefix */
+    if (star[1] == '\0') {
+        size_t plen = (size_t)(star - pattern);
+        return strncmp(name, pattern, plen) == 0;
+    }
+
+    /* Pattern: "*suffix" — match suffix */
+    if (star == pattern) {
+        const char *suffix = pattern + 1;
+        size_t slen = strlen(name);
+        size_t suflen = strlen(suffix);
+        if (slen < suflen) return false;
+        return strcmp(name + slen - suflen, suffix) == 0;
+    }
+
+    /* Pattern: "prefix*suffix" — match both */
+    size_t plen = (size_t)(star - pattern);
+    const char *suffix = star + 1;
+    size_t slen = strlen(name);
+    size_t suflen = strlen(suffix);
+    if (slen < plen + suflen) return false;
+    return strncmp(name, pattern, plen) == 0 &&
+           strcmp(name + slen - suflen, suffix) == 0;
+}
+
+void registry_set_available_pattern(const char *pattern, bool available) {
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (registry_name_matches(g_registry.tools[i].name, pattern))
+            g_registry.tools[i].available = available;
+    }
+    g_registry_generation++;
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* S14 gap #9: Register availability check function for a toolset.
+ * All tools with this toolset name will run check_fn during refresh_availability. */
+void registry_set_toolset_check_fn(const char *toolset, bool (*fn)(void)) {
+    if (!toolset || !fn) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].toolset, toolset) == 0) {
+            g_registry.tools[i].check_fn = fn;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+void registry_set_check_fn(const char *name, bool (*fn)(void)) {
+    if (!name || !fn) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            g_registry.tools[i].check_fn = fn;
+            /* Evaluate immediately so availability is correct without waiting
+             * for the next refresh_availability() pass. */
+            g_registry.tools[i].available = fn();
+            g_registry_generation++;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* Refresh availability of all tools with check_fn registered.
+ * Caches results for 30 seconds. */
+void registry_refresh_availability(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    time_t now = time(NULL);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (!g_registry.tools[i].check_fn) continue;
+        if (now - g_registry.tools[i].check_fn_last < 30) continue;
+        g_registry.tools[i].check_fn_last = now;
+        bool ok = g_registry.tools[i].check_fn();
+        if (g_registry.tools[i].available != ok) {
+            g_registry.tools[i].available = ok;
+            g_registry_generation++;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* S14 gap #11: Deregister a tool by name. Removes from array by shifting. */
+/* PoP: registry_deregister @ tools/registry.py:deregister */
+/* Port of Python tools/registry.py:deregister(). */
+bool registry_deregister(const char *name) {
+    if (!name) return false;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            g_registry.count--;
+            if (i < g_registry.count) {
+                memmove(&g_registry.tools[i], &g_registry.tools[i + 1],
+                        (g_registry.count - i) * sizeof(tool_t));
+            }
+            g_registry_generation++;
+            pthread_mutex_unlock(&g_registry_mutex);
+            return true;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return false;
+}
+
+/* ============================================================================
+ *  Toolset enumeration + alias API (faithful port of Python ToolRegistry
+ *  get_registered_toolset_names / get_tool_names_for_toolset /
+ *  get_all_tool_names / get_tool_to_toolset_map / get_toolset_for_tool /
+ *  register_toolset_alias / get_toolset_alias_target /
+ *  get_registered_toolset_aliases).
+ *  Pure data, thread-safe, no I/O.
+ * ========================================================================== */
+
+/* Return sorted unique toolset names present in the registry.
+ * Caller frees the returned NULL-terminated char* array. */
+/* PoP: registry_get_registered_toolset_names @ tools/registry.py:get_registered_toolset_names */
+char **registry_get_registered_toolset_names(size_t *out_n) {
+    pthread_mutex_lock(&g_registry_mutex);
+    char **names = calloc(g_registry.count + 1, sizeof(char*));
+    size_t n = 0;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0]) continue;
+        bool dup = false;
+        for (size_t j = 0; j < n; j++) if (strcmp(names[j], ts) == 0) { dup = true; break; }
+        if (!dup) names[n++] = strdup(ts);
+    }
+    /* insertion sort (short lists) */
+    for (size_t a = 1; a < n; a++) {
+        char *key = names[a]; size_t b = a;
+        while (b > 0 && strcmp(names[b-1], key) > 0) { names[b] = names[b-1]; b--; }
+        names[b] = key;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (out_n) *out_n = n;
+    return names;
+}
+
+/* Return sorted tool names registered under a given toolset.
+ * Caller frees the returned NULL-terminated char* array. */
+/* PoP: registry_get_tool_names_for_toolset @ tools/registry.py:get_tool_names_for_toolset */
+char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n) {
+    pthread_mutex_lock(&g_registry_mutex);
+    char **names = calloc(g_registry.count + 1, sizeof(char*));
+    size_t n = 0;
+    if (toolset) {
+        for (size_t i = 0; i < g_registry.count; i++) {
+            if (strcmp(g_registry.tools[i].toolset, toolset) == 0)
+                names[n++] = strdup(g_registry.tools[i].name);
+        }
+    }
+    for (size_t a = 1; a < n; a++) {
+        char *key = names[a]; size_t b = a;
+        while (b > 0 && strcmp(names[b-1], key) > 0) { names[b] = names[b-1]; b--; }
+        names[b] = key;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (out_n) *out_n = n;
+    return names;
+}
+
+/* Return sorted names of every registered tool.
+ * Caller frees the returned NULL-terminated char* array. */
+/* PoP: registry_get_all_tool_names @ tools/registry.py:get_all_tool_names */
+char **registry_get_all_tool_names(size_t *out_n) {
+    pthread_mutex_lock(&g_registry_mutex);
+    char **names = calloc(g_registry.count + 1, sizeof(char*));
+    size_t n = 0;
+    for (size_t i = 0; i < g_registry.count; i++)
+        names[n++] = strdup(g_registry.tools[i].name);
+    for (size_t a = 1; a < n; a++) {
+        char *key = names[a]; size_t b = a;
+        while (b > 0 && strcmp(names[b-1], key) > 0) { names[b] = names[b-1]; b--; }
+        names[b] = key;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (out_n) *out_n = n;
+    return names;
+}
+
+/* Return {tool_name: toolset_name} for every registered tool as JSON object. */
+/* PoP: registry_get_tool_to_toolset_map @ tools/registry.py:get_tool_to_toolset_map */
+char *registry_get_tool_to_toolset_map(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        json_object_set(obj, g_registry.tools[i].name,
+                        json_new_string(g_registry.tools[i].toolset));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* Return the toolset a tool belongs to, or NULL. Caller does not own. */
+/* PoP: registry_get_toolset_for_tool @ tools/registry.py:get_toolset_for_tool */
+const char *registry_get_toolset_for_tool(const char *name) {
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *ts = NULL;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) { ts = g_registry.tools[i].toolset; break; }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return ts;
+}
+
+/* Register an explicit alias for a canonical toolset name. Overwrites a
+ * prior alias mapping (mirroring Python's collision-warning-then-overwrite). */
+/* PoP: registry_register_toolset_alias @ tools/registry.py:register_toolset_alias */
+void registry_register_toolset_alias(const char *alias, const char *toolset) {
+    if (!alias || !alias[0] || !toolset) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_aliases_count; i++) {
+        if (strcmp(g_aliases[i].alias, alias) == 0) {
+            snprintf(g_aliases[i].toolset, sizeof(g_aliases[i].toolset), "%s", toolset);
+            pthread_mutex_unlock(&g_registry_mutex);
+            return;
+        }
+    }
+    if (g_aliases_count < REG_ALIAS_MAX) {
+        snprintf(g_aliases[g_aliases_count].alias, sizeof(g_aliases[g_aliases_count].alias), "%s", alias);
+        snprintf(g_aliases[g_aliases_count].toolset, sizeof(g_aliases[g_aliases_count].toolset), "%s", toolset);
+        g_aliases_count++;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* Return the canonical toolset name for an alias, or NULL. Caller does not own. */
+/* PoP: registry_get_toolset_alias_target @ tools/registry.py:get_toolset_alias_target */
+const char *registry_get_toolset_alias_target(const char *alias) {
+    if (!alias) return NULL;
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *target = NULL;
+    for (size_t i = 0; i < g_aliases_count; i++) {
+        if (strcmp(g_aliases[i].alias, alias) == 0) { target = g_aliases[i].toolset; break; }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return target;
+}
+
+/* Return a JSON {"alias": "toolset"} snapshot of all alias mappings. */
+/* PoP: registry_get_registered_toolset_aliases @ tools/registry.py:get_registered_toolset_aliases */
+char *registry_get_registered_toolset_aliases(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_aliases_count; i++)
+        json_object_set(obj, g_aliases[i].alias, json_new_string(g_aliases[i].toolset));
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* Internal unlocked: does toolset have at least one available tool?
+ * Mirrors Python _toolset_has_exposable_tools. */
+/* PoP: toolset_has_exposable_tools @ tools/registry.py:_toolset_has_exposable_tools */
+static bool toolset_has_exposable_tools(const char *toolset) {
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].toolset, toolset) == 0 &&
+            g_registry.tools[i].available)
+            return true;
+    }
+    return false;
+}
+
+/* Return per-tool max result size, or *default*, or the global default. */
+/* PoP: registry_get_max_result_size @ tools/registry.py:get_max_result_size */
+int registry_get_max_result_size(const char *name, int default_size) {
+    pthread_mutex_lock(&g_registry_mutex);
+    int out = REGISTRY_DEFAULT_RESULT_SIZE_CHARS;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            if (g_registry.tools[i].max_result_size_chars > 0)
+                out = g_registry.tools[i].max_result_size_chars;
+            else if (default_size > 0)
+                out = default_size;
+            pthread_mutex_unlock(&g_registry_mutex);
+            return out;
+        }
+    }
+    if (default_size > 0) out = default_size;
+    pthread_mutex_unlock(&g_registry_mutex);
     return out;
 }
 
-/* PoP: registry_bound_json_error_result @ tools/registry.py:_bound_json_error_result */
-/* Returns malloc'd bounded JSON error result. Caller frees. */
-char *registry_bound_json_error_result(const char *result) {
-    if (!result) return strdup("");
-    size_t len = strlen(result);
-    size_t max_chars = 4000;  /* _MAX_TOOL_ERROR_CHARS */
-    if (len <= max_chars) return strdup(result);
-    if (!strstr(result, "\"error\"")) return strdup(result);
-    char *err = NULL;
-    json_t *payload = json_parse(result, &err);
-    if (err || !payload || payload->type != JSON_OBJECT) { if (err) free(err); if (payload) json_free(payload); return strdup(result); }
-    json_t *error_val = json_obj_get(payload, "error");
-    if (!error_val || error_val->type != JSON_STRING || strlen(error_val->str_val) <= max_chars) { json_free(payload); return strdup(result); }
-    char *bounded = registry_bound_error_text(error_val->str_val);
-    json_set(payload, "error", json_string(bounded));  /* steals */
-    free(bounded);
-    char *out = json_serialize(payload);
-    json_free(payload);
-    return out ? out : strdup(result);
+/* {toolset: available_bool} for every registered toolset. */
+/* PoP: registry_check_toolset_requirements @ tools/registry.py:check_toolset_requirements */
+char *registry_check_toolset_requirements(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0] || json_object_get(obj, ts)) continue;
+        json_object_set(obj, ts, json_new_bool(toolset_has_exposable_tools(ts)));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
 }
 
+/* {toolset: {available, tools[]}} metadata for UI display. */
+/* PoP: registry_get_available_toolsets @ tools/registry.py:get_available_toolsets */
+char *registry_get_available_toolsets(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0]) continue;
+        json_node_t *ts_obj = json_object_get(obj, ts);
+        if (!ts_obj) {
+            ts_obj = json_new_object();
+            json_object_set(ts_obj, "available", json_new_bool(toolset_has_exposable_tools(ts)));
+            json_object_set(ts_obj, "tools", json_new_array());
+            json_object_set(obj, ts, ts_obj);
+        }
+        json_array_append(json_object_get(ts_obj, "tools"),
+                          json_new_string(g_registry.tools[i].name));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* {toolset: {name, env_vars[], check_fn, setup_url, tools[]}}. */
+/* PoP: registry_get_toolset_requirements @ tools/registry.py:get_toolset_requirements */
+char *registry_get_toolset_requirements(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0]) continue;
+        json_node_t *ts_obj = json_object_get(obj, ts);
+        if (!ts_obj) {
+            ts_obj = json_new_object();
+            json_object_set(ts_obj, "name", json_new_string(ts));
+            json_object_set(ts_obj, "env_vars", json_new_array());
+            json_object_set(ts_obj, "check_fn", json_new_null());
+            json_object_set(ts_obj, "setup_url", json_new_null());
+            json_object_set(ts_obj, "tools", json_new_array());
+            json_object_set(obj, ts, ts_obj);
+        }
+        for (size_t k = 0; k < g_registry.tools[i].requires_env_count; k++) {
+            const char *e = g_registry.tools[i].requires_env[k];
+            bool have = false;
+            json_node_t *ev = json_object_get(ts_obj, "env_vars");
+            for (size_t m = 0; m < json_len(ev); m++) {
+                if (!strcmp(json_get_str(json_get(ev, m), NULL, ""), e)) { have = true; break; }
+            }
+            if (!have) json_array_append(ev, json_new_string(e));
+        }
+        json_array_append(json_object_get(ts_obj, "tools"),
+                          json_new_string(g_registry.tools[i].name));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* S14 gap #2: Tool Search bridge — search tools by keyword (name/description).
+ * Searches tool name and description. Returns JSON array of matching names. */
+char *registry_search(const char *keyword) {
+    if (!keyword || !keyword[0])
+        return strdup("[]");
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *arr = json_new_array();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (!g_registry.tools[i].available) continue;
+        if (strstr(g_registry.tools[i].name, keyword) ||
+            strstr(g_registry.tools[i].description, keyword)) {
+            json_array_append(arr, json_new_string(g_registry.tools[i].name));
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(arr);
+    json_free(arr);
+    return result;
+}
+
+/* S14 gap #2: Tool Search bridge — describe a tool by name.
+ * Returns JSON object with name, description, schema, toolset. */
+char *registry_describe(const char *name) {
+    if (!name) return strdup("{\"error\":\"null name\"}");
+    pthread_mutex_lock(&g_registry_mutex);
+    char *result = NULL;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            json_node_t *obj = json_new_object();
+            json_object_set(obj, "name", json_new_string(g_registry.tools[i].name));
+            json_object_set(obj, "description", json_new_string(g_registry.tools[i].description));
+            /* Parse schema string to JSON for clean output */
+            char *err = NULL;
+            json_node_t *schema = json_parse(g_registry.tools[i].schema_json, &err);
+            if (schema) {
+                json_object_set(obj, "schema", schema);
+            } else {
+                json_object_set(obj, "schema", json_new_string(g_registry.tools[i].schema_json));
+                free(err);
+            }
+            json_object_set(obj, "toolset", json_new_string(g_registry.tools[i].toolset));
+            json_object_set(obj, "available", json_new_bool(g_registry.tools[i].available));
+            result = json_serialize(obj);
+            json_free(obj);
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (!result)
+        result = strdup("{\"error\":\"tool not found\"}");
+    return result;
+}
+
+/* S14 gap #8: Mark a tool as async (handlers that should run in detached thread) */
+void registry_set_async(const char *name, bool async) {
+    if (!name) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            g_registry.tools[i].async = async;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
