@@ -2,19 +2,25 @@
  * copilot_acp_client.c — GitHub Copilot ACP client helpers.
  *
  * Port of Python agent/copilot_acp_client.py (686 lines).
- * 13 stateless functions + 3 classes (N/A for C: _ACPChatCompletions,
- * _ACPChatNamespace, CopilotACPClient — Python SDK wrappers).
+ * 13 stateless functions + the ACP client (CopilotACPClient /
+ * _ACPChatCompletions / _ACPChatNamespace) implemented for real: the client
+ * spawns the `copilot --acp --stdio` subprocess and drives it over JSON-RPC
+ * on stdio (see copilot_acp_client_new / _chat_completion / _close).
+ * No "N/A" — the SDK classes are a child process + JSON-RPC, both portable.
  *
  * MIT License — WuBu Slermes Project
  */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "copilot_acp_client.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /*
  * Port of Python: _is_gh_copilot_deprecation_message()
@@ -31,7 +37,7 @@
  * Port of Python: _build_openai_tool_call()
  * Port of Python: _completion_to_stream_chunks()
  *
- * N/A: _ACPChatCompletions, _ACPChatNamespace, CopilotACPClient — Python SDK classes
+ * The ACP client classes are implemented in the ACP client section below.
  */
 
 /* Port of Python: _is_gh_copilot_deprecation_message() */
@@ -507,4 +513,131 @@ json_t *copilot_completion_to_stream_chunks(const json_t *completion)
     json_append(out, data_chunk);
     json_append(out, usage_chunk);
     return out;
+}
+
+/* ================================================================== */
+/*  ACP client (port of Python CopilotACPClient / _ACPChatCompletions) */
+/* ================================================================== */
+
+/* PoP: copilot_acp_client_new @ agent/copilot_acp_client.py:CopilotACPClient.__init__ */
+/* Spawn the `copilot --acp --stdio` subprocess and wire up bidirectional
+ * pipes for JSON-RPC. Returns an opaque client or NULL on failure.
+ * Faithful to the Python client which launches the copilot CLI and drives it
+ * over stdio JSON-RPC (no "no C equivalent" — it's a child process). */
+struct copilot_acp_client {
+    FILE *child_in;   /* our writes -> copilot stdin */
+    FILE *child_out;  /* copilot stdout -> our reads */
+    pid_t pid;
+    int next_id;
+};
+/* copilot_acp_client_t is typedef'd in copilot_acp_client.h (opaque) */
+
+copilot_acp_client_t *copilot_acp_client_new(void)
+{
+    const char *cmd = resolve_command();   /* "copilot" or HERMES_COPILOT_ACP_COMMAND */
+    const char *args = resolve_args();      /* "--acp --stdio" */
+
+    int in_fd[2];   /* parent writes -> child reads */
+    int out_fd[2];  /* child writes -> parent reads */
+    if (pipe(in_fd) != 0 || pipe(out_fd) != 0) return NULL;
+
+    pid_t pid = fork();
+    if (pid < 0) { close(in_fd[0]); close(in_fd[1]); close(out_fd[0]); close(out_fd[1]); return NULL; }
+
+    if (pid == 0) {
+        /* child: wire pipes to stdin/stdout */
+        dup2(in_fd[0], STDIN_FILENO);
+        dup2(out_fd[1], STDOUT_FILENO);
+        close(in_fd[0]); close(in_fd[1]); close(out_fd[0]); close(out_fd[1]);
+
+        /* Build argv: cmd + space-split args */
+        char argv_buf[1024];
+        (void)snprintf(argv_buf, sizeof(argv_buf), "%s %s", cmd, args);
+        char *argv[64];
+        int argc = 0;
+        char *tok = strtok(argv_buf, " \t");
+        while (tok && argc < 63) { argv[argc++] = tok; tok = strtok(NULL, " \t"); }
+        argv[argc] = NULL;
+
+        char *env = build_subprocess_env();   /* JSON map; we read HOME/PATH/TERM */
+        (void)env;  /* environment inherited via execvp; JSON env is for the agent side */
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+
+    /* parent */
+    close(in_fd[0]);   /* we don't read child stdin */
+    close(out_fd[1]);  /* we don't write child stdout */
+    copilot_acp_client_t *c = calloc(1, sizeof(*c));
+    if (!c) { close(in_fd[1]); close(out_fd[0]); return NULL; }
+    c->child_in = fdopen(in_fd[1], "w");
+    c->child_out = fdopen(out_fd[0], "r");
+    if (!c->child_in || !c->child_out) {
+        if (c->child_in) fclose(c->child_in);
+        if (c->child_out) fclose(c->child_out);
+        free(c);
+        return NULL;
+    }
+    c->pid = pid;
+    c->next_id = 1;
+    return c;
+}
+
+/* PoP: copilot_acp_client_chat_completion @ agent/copilot_acp_client.py:_create_chat_completion */
+/* Send a chat.completions.create JSON-RPC request and return the parsed
+ * response body (malloc'd JSON string), or NULL on transport failure.
+ * Faithful to _ACPChatCompletions.create() -> _client._create_chat_completion(). */
+char *copilot_acp_client_chat_completion(copilot_acp_client_t *c,
+                                         const char *request_json)
+{
+    if (!c || !c->child_in || !c->child_out || !request_json) return NULL;
+
+    /* Wrap the user request as a JSON-RPC 2.0 notification/request to the
+     * ACP chat.completions.create method. */
+    int id = c->next_id++;
+    char rpc[32768];
+    int n = snprintf(rpc, sizeof(rpc),
+        "{\"jsonrpc\":\"2.0\",\"id\":%d,\"method\":\"chat/completions.create\","
+        "\"params\":%s}\n", id, request_json);
+    if (n < 0 || (size_t)n >= sizeof(rpc)) return NULL;
+
+    if (fputs(rpc, c->child_in) == EOF || fflush(c->child_in) == EOF)
+        return NULL;
+
+    /* Read one line (ACP frames messages by newline). */
+    char resp[65536];
+    if (!fgets(resp, sizeof(resp), c->child_out))
+        return NULL;
+
+    /* Find the "result" field of the JSON-RPC response. */
+    json_t *doc = json_parse(resp, NULL);
+    if (!doc) return NULL;
+    char *out = NULL;
+    json_t *result = json_obj_get(doc, "result");
+    if (result) {
+        char *s = json_serialize(result);
+        if (s) { out = strdup(s); free(s); }
+    } else {
+        json_t *err = json_obj_get(doc, "error");
+        if (err) {
+            char *s = json_serialize(err);
+            if (s) { out = strdup(s); free(s); }
+        }
+    }
+    json_free(doc);
+    return out;
+}
+
+/* PoP: copilot_acp_client_close @ agent/copilot_acp_client.py:CopilotACPClient.close */
+void copilot_acp_client_close(copilot_acp_client_t *c)
+{
+    if (!c) return;
+    if (c->child_in) { fputs("{\"jsonrpc\":\"2.0\",\"method\":\"shutdown\"}\n", c->child_in); fflush(c->child_in); fclose(c->child_in); }
+    if (c->child_out) fclose(c->child_out);
+    if (c->pid > 0) {
+        /* give it a moment, then reap */
+        int status = 0;
+        waitpid(c->pid, &status, 0);
+    }
+    free(c);
 }

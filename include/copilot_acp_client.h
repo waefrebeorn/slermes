@@ -3,7 +3,10 @@
  * @brief GitHub Copilot ACP client helpers.
  *
  * Port of Python agent/copilot_acp_client.py (686 lines).
- * All 11 stateless functions ported to C. 3 SDK wrapper classes N/A.
+ * 11 stateless functions ported to C, plus the ACP client classes
+ * (CopilotACPClient / _ACPChatCompletions / _ACPChatNamespace) implemented
+ * for real: spawns the `copilot --acp --stdio` subprocess and drives JSON-RPC
+ * over stdio. No "N/A".
  *
  * MIT License — WuBu Slermes Project
  */
@@ -61,6 +64,23 @@ json_t *copilot_build_openai_tool_call(const char *call_id,
  *  ACP completion json_t into OpenAI-style stream chunks. Returns a malloc'd
  *  json_t* array [data_chunk, usage_chunk]. Caller frees. */
 json_t *copilot_completion_to_stream_chunks(const json_t *completion);
+
+/* === ACP client classes (port of CopilotACPClient / _ACPChatCompletions) === */
+/** Opaque handle to a live `copilot --acp --stdio` subprocess. */
+typedef struct copilot_acp_client copilot_acp_client_t;
+
+/** Port of Python CopilotACPClient.__init__: spawn the copilot ACP subprocess
+ *  and wire stdio JSON-RPC pipes. Returns NULL on failure. */
+copilot_acp_client_t *copilot_acp_client_new(void);
+
+/** Port of Python _ACPChatCompletions.create / _create_chat_completion:
+ *  send a chat.completions.create JSON-RPC request, return the parsed
+ *  response (malloc'd JSON string, caller frees) or NULL on failure. */
+char *copilot_acp_client_chat_completion(copilot_acp_client_t *c,
+                                         const char *request_json);
+
+/** Port of Python CopilotACPClient.close: send shutdown, reap child. */
+void copilot_acp_client_close(copilot_acp_client_t *c);
 
 #ifdef __cplusplus
 }
