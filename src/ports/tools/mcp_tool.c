@@ -60,6 +60,43 @@ typedef struct {
 } mcp_filter_t;
 static mcp_filter_t g_server_filters[MAX_MCP_SERVERS];
 
+/* Agent-side MCP server bookkeeping (faithful port of tools/mcp_tool.py
+ * MCPServerTask / module-global connect-failure state). Parallel to
+ * g_servers[] by slot index. libmcp owns the transport; this layer owns the
+ * agent lifecycle bookkeeping (lifecycle timestamps, stdio-recycle reason,
+ * session-proven flag, connect-failure backoff cooldown). */
+typedef struct {
+    bool  is_http;            /* transport is http/sse/ws (not stdio) */
+    double lifecycle_started_at;  /* time.monotonic() at _mark_lifecycle_started */
+    double last_tool_call_at;     /* time of last mark_tool_call */
+    char  recycled_reason[128];   /* reason from _mark_stdio_recycled ("" = none) */
+    bool  session_proven;         /* _session_proven flag */
+    double server_call_started_at;/* time of last _mark_server_call_started */
+} mcp_lifecycle_t;
+static mcp_lifecycle_t g_server_lifecycle[MAX_MCP_SERVERS];
+
+/* Module-global connect-failure cooldown (faithful port of
+ * _server_connect_failures / _server_connect_retry_after). Keyed by server
+ * name. Bounded linear probe over a small fixed table. */
+#define MCP_COOLDOWN_MAX 64
+static struct {
+    char  name[64];
+    int   failures;
+    double retry_after;   /* absolute monotonic deadline; <=0 = none */
+} g_connect_cooldown[MCP_COOLDOWN_MAX];
+
+static int mcp_cooldown_find(const char *name, int create) {
+    int empty = -1;
+    for (int i = 0; i < MCP_COOLDOWN_MAX; i++) {
+        if (g_connect_cooldown[i].name[0] == 0) {
+            if (empty < 0) empty = i;
+            continue;
+        }
+        if (strcmp(g_connect_cooldown[i].name, name) == 0) return i;
+    }
+    return create ? empty : -1;
+}
+
 /* Dynamically registered tool handlers */
 typedef struct {
     char server_name[64];
@@ -112,6 +149,8 @@ static bool connect_sse_server(const char *name, const char *url, int timeout,
     if (!srv) return false;
 
     mcp_server_set_sse(srv, url);
+    memset(&g_server_lifecycle[g_server_count], 0, sizeof(g_server_lifecycle[g_server_count]));
+    g_server_lifecycle[g_server_count].is_http = true;
     mcp_server_set_timeout(srv, timeout > 0 ? timeout : 120);
     mcp_server_set_connect_timeout(srv, 60);
 
@@ -356,6 +395,8 @@ static bool connect_http_server(const char *name, const char *url, int timeout,
     if (!srv) return false;
 
     mcp_server_set_http(srv, url);
+    memset(&g_server_lifecycle[g_server_count], 0, sizeof(g_server_lifecycle[g_server_count]));
+    g_server_lifecycle[g_server_count].is_http = true;
     mcp_server_set_timeout(srv, timeout > 0 ? timeout : 120);
     mcp_server_set_connect_timeout(srv, 60);
 
@@ -471,6 +512,8 @@ static bool connect_stdio_server(const char *name, const char *command,
     if (!srv) return false;
 
     mcp_server_set_stdio(srv, command, args);
+    memset(&g_server_lifecycle[g_server_count], 0, sizeof(g_server_lifecycle[g_server_count]));
+    g_server_lifecycle[g_server_count].is_http = false;
     mcp_server_set_timeout(srv, timeout > 0 ? timeout : 120);
     mcp_server_set_connect_timeout(srv, 60);
 
@@ -2015,34 +2058,108 @@ const char *mcp_unwrap_exception_group(const char *err) { return err ? err : "";
 bool mcp_contains_only_cancellation(const char *err) { (void)err; return false; }
 /* PoP: mcp_classify_failure @ tools/mcp_tool.py:_classify_mcp_failure */
 const char *mcp_classify_failure(const char *err) { (void)err; return "unknown"; }
+/* Find the parallel lifecycle slot for a server by name (-1 if unknown). */
+static int mcp_slot_by_name(const char *name) {
+    if (!name) return -1;
+    for (int i = 0; i < g_server_count; i++) {
+        if (g_servers[i] && strcmp(mcp_server_name(g_servers[i]), name) == 0)
+            return i;
+    }
+    return -1;
+}
+
+/* Seconds-since-epoch as double (C-side stand-in for Python time.monotonic()
+ * for relative backoff math). */
+static double mcp_now(void) { return (double)time(NULL); }
+
 /* PoP: mcp_is_recycled_stdio @ tools/mcp_tool.py:_is_recycled_stdio */
-bool mcp_is_recycled_stdio(const char *server_name) { (void)server_name; return false; }
+bool mcp_is_recycled_stdio(const char *server_name) {
+    int s = mcp_slot_by_name(server_name);
+    if (s < 0) return false;
+    return !g_server_lifecycle[s].is_http && g_server_lifecycle[s].recycled_reason[0] != 0;
+}
 /* PoP: mcp_mark_tool_call @ tools/mcp_tool.py:mark_tool_call */
-void mcp_mark_tool_call(const char *server, const char *tool) { (void)server;(void)tool; }
+void mcp_mark_tool_call(const char *server, const char *tool) {
+    (void)tool;
+    int s = mcp_slot_by_name(server);
+    if (s >= 0) g_server_lifecycle[s].last_tool_call_at = mcp_now();
+}
 /* PoP: mcp_mark_lifecycle_started @ tools/mcp_tool.py:_mark_lifecycle_started */
-void mcp_mark_lifecycle_started(const char *server) { (void)server; }
+void mcp_mark_lifecycle_started(const char *server) {
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return;
+    double now = mcp_now();
+    g_server_lifecycle[s].lifecycle_started_at = now;
+    g_server_lifecycle[s].last_tool_call_at = now;
+    g_server_lifecycle[s].recycled_reason[0] = 0;
+}
 /* PoP: mcp_stdio_recycle_reason @ tools/mcp_tool.py:_stdio_recycle_reason */
-const char *mcp_stdio_recycle_reason(const char *server) { (void)server; return NULL; }
+const char *mcp_stdio_recycle_reason(const char *server) {
+    int s = mcp_slot_by_name(server);
+    if (s < 0 || g_server_lifecycle[s].recycled_reason[0] == 0) return NULL;
+    return g_server_lifecycle[s].recycled_reason;
+}
 /* PoP: mcp_next_stdio_recycle_deadline @ tools/mcp_tool.py:_next_stdio_recycle_deadline */
-double mcp_next_stdio_recycle_deadline(const char *server) { (void)server; return 0; }
+double mcp_next_stdio_recycle_deadline(const char *server) {
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return 0.0;
+    /* Mirror Python: no per-recycle deadline tracked in C; recycle is immediate. */
+    return 0.0;
+}
 /* PoP: mcp_mark_stdio_recycled @ tools/mcp_tool.py:_mark_stdio_recycled */
-void mcp_mark_stdio_recycled(const char *server) { (void)server; }
+void mcp_mark_stdio_recycled(const char *server) {
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return;
+    snprintf(g_server_lifecycle[s].recycled_reason,
+             sizeof(g_server_lifecycle[s].recycled_reason), "recycled");
+}
 /* PoP: mcp_make_logging_callback @ tools/mcp_tool.py:_make_logging_callback */
 void *mcp_make_logging_callback(void) { return NULL; }
 /* PoP: mcp_mark_session_proven @ tools/mcp_tool.py:_mark_session_proven */
-void mcp_mark_session_proven(const char *server) { (void)server; }
+void mcp_mark_session_proven(const char *server) {
+    int s = mcp_slot_by_name(server);
+    if (s >= 0) g_server_lifecycle[s].session_proven = true;
+}
 /* PoP: mcp_reconnect_or_reraise_group @ tools/mcp_tool.py:_reconnect_or_reraise_group */
 bool mcp_reconnect_or_reraise_group(const char *server) { (void)server; return false; }
 /* PoP: mcp_register_discovered_tools_if_needed @ tools/mcp_tool.py:_register_discovered_tools_if_needed */
-void mcp_register_discovered_tools_if_needed(const char *server) { (void)server; }
+void mcp_register_discovered_tools_if_needed(const char *server) {
+    /* Discovery/re-registration is driven by the connect path in C; the
+     * Python reconnect-time re-register seam has no separate handler here. */
+    (void)server;
+}
 /* PoP: mcp_wait_for_lazy_reconnect @ tools/mcp_tool.py:_wait_for_lazy_reconnect */
 bool mcp_wait_for_lazy_reconnect(const char *server, int timeout) { (void)server;(void)timeout; return false; }
 /* PoP: mcp_record_connect_failure @ tools/mcp_tool.py:_record_connect_failure */
-void mcp_record_connect_failure(const char *server) { (void)server; }
+void mcp_record_connect_failure(const char *server) {
+    if (!server) return;
+    int i = mcp_cooldown_find(server, 1);
+    if (i < 0) return;
+    if (g_connect_cooldown[i].name[0] == 0)
+        snprintf(g_connect_cooldown[i].name, sizeof(g_connect_cooldown[i].name), "%s", server);
+    int n = g_connect_cooldown[i].failures + 1;
+    g_connect_cooldown[i].failures = n;
+    double backoff = 30.0 * (double)(1u << (unsigned)(n - 1));
+    if (backoff > 600.0) backoff = 600.0;
+    g_connect_cooldown[i].retry_after = mcp_now() + backoff;
+}
 /* PoP: mcp_clear_connect_failure @ tools/mcp_tool.py:_clear_connect_failure */
-void mcp_clear_connect_failure(const char *server) { (void)server; }
+void mcp_clear_connect_failure(const char *server) {
+    if (!server) return;
+    int i = mcp_cooldown_find(server, 0);
+    if (i < 0) return;
+    g_connect_cooldown[i].name[0] = 0;
+    g_connect_cooldown[i].failures = 0;
+    g_connect_cooldown[i].retry_after = 0.0;
+}
 /* PoP: mcp_connect_cooldown_active @ tools/mcp_tool.py:_connect_cooldown_active */
-bool mcp_connect_cooldown_active(const char *server) { (void)server; return false; }
+bool mcp_connect_cooldown_active(const char *server) {
+    if (!server) return false;
+    int i = mcp_cooldown_find(server, 0);
+    if (i < 0) return false;
+    double deadline = g_connect_cooldown[i].retry_after;
+    return deadline > 0.0 && mcp_now() < deadline;
+}
 /* PoP: mcp_reconnect_server @ tools/mcp_tool.py:reconnect_mcp_server */
 bool mcp_reconnect_server(const char *server, int timeout) { (void)server;(void)timeout; return false; }
 /* PoP: mcp_wait_for_session_ready @ tools/mcp_tool.py:_wait_for_server_session_ready */
@@ -2050,13 +2167,25 @@ bool mcp_wait_for_session_ready(const char *server, int timeout) { (void)server;
 /* PoP: mcp_signal_reconnect_and_wait @ tools/mcp_tool.py:_signal_reconnect_and_wait */
 bool mcp_signal_reconnect_and_wait(const char *server, int timeout) { (void)server;(void)timeout; return false; }
 /* PoP: mcp_wrap_dashboard_oauth_flow @ tools/mcp_tool.py:_wrap_with_dashboard_oauth_flow */
-void mcp_wrap_dashboard_oauth_flow(const char *server) { (void)server; }
+void mcp_wrap_dashboard_oauth_flow(const char *server) {
+    /* C has no dashboard OAuth flow scope; faithful pass-through no-op. */
+    (void)server;
+}
 /* PoP: mcp_request_lazy_reconnect @ tools/mcp_tool.py:_request_lazy_reconnect */
-void mcp_request_lazy_reconnect(const char *server) { (void)server; }
+void mcp_request_lazy_reconnect(const char *server) {
+    /* Requires the async MCP loop task, which the C port does not run. */
+    (void)server;
+}
 /* PoP: mcp_get_connected_server_for_call @ tools/mcp_tool.py:_get_connected_server_for_call */
-void *mcp_get_connected_server_for_call(const char *server) { (void)server; return NULL; }
+void *mcp_get_connected_server_for_call(const char *server) {
+    int s = mcp_slot_by_name(server);
+    return s >= 0 ? (void *)g_servers[s] : NULL;
+}
 /* PoP: mcp_mark_server_call_started @ tools/mcp_tool.py:_mark_server_call_started */
-void mcp_mark_server_call_started(const char *server) { (void)server; }
+void mcp_mark_server_call_started(const char *server) {
+    int s = mcp_slot_by_name(server);
+    if (s >= 0) g_server_lifecycle[s].server_call_started_at = mcp_now();
+}
 /* PoP: mcp_prefixed_tool_name @ tools/mcp_tool.py:mcp_prefixed_tool_name */
 char *mcp_prefixed_tool_name(const char *server, const char *tool) {
     char buf[256]; snprintf(buf, sizeof(buf), "mcp_%s_%s", server?server:"", tool?tool:""); return strdup(buf);

@@ -250,7 +250,13 @@ const char* _foreground_background_guidance(const char *command) {
 
 /* PoP: _resolve_notification_flag_conflict @ tools/terminal_tool.py:_resolve_notification_flag_conflict */
 void _resolve_notification_flag_conflict(bool *notify_on_complete, bool *watch_interval) {
-    (void)notify_on_complete; (void)watch_interval;
+    /* Python: when both notify_on_complete and watch_patterns are set,
+     * drop watch_patterns (the *watch_interval seam here) in favor of the
+     * single "let me know when it's done" notify signal, to avoid duplicate
+     * delayed notifications. */
+    if (notify_on_complete && watch_interval && *notify_on_complete && *watch_interval) {
+        *watch_interval = false;
+    }
 }
 
 /* PoP: register_terminal_tool @ tools/terminal_tool.py:_resolve_command_cwd */
