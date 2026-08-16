@@ -48,7 +48,7 @@ static bool sb_init(sb_t *sb)
     return true;
 }
 
-static void sb_put(sb_t *sb, const char *s)
+static void put(sb_t *sb, const char *s)
 {
     if (!s || !sb->buf) return;
     size_t sl = strlen(s);
@@ -114,7 +114,7 @@ char *scheduler_cron_job_origin_log_suffix(const json_t *job)
         char field[320];
         snprintf(field, sizeof(field), "%sorigin_%s='%s'",
                  any ? " " : " ", *k, s);
-        sb_put(&sb, field);
+        put(&sb, field);
         any = true;
     }
 
@@ -310,13 +310,13 @@ char *scheduler_build_job_prompt(const json_t *job,
         }
         if (success) {
             if (script_output && script_output[0]) {
-                sb_put(&prompt,
+                put(&prompt,
                        "## Script Output\n"
                        "The following data was collected by a pre-run "
                        "script. Use it as context for your analysis.\n\n"
                        "```\n");
-                sb_put(&prompt, script_output);
-                sb_put(&prompt, "\n```\n\n");
+                put(&prompt, script_output);
+                put(&prompt, "\n```\n\n");
                 has_injected_data = true;
             } else {
                 /* No output — skip the AI call entirely. */
@@ -326,12 +326,12 @@ char *scheduler_build_job_prompt(const json_t *job,
                 return NULL;
             }
         } else {
-            sb_put(&prompt,
+            put(&prompt,
                    "## Script Error\n"
                    "The data-collection script failed. Report this to "
                    "the user.\n\n```\n");
-            sb_put(&prompt, script_output ? script_output : "");
-            sb_put(&prompt, "\n```\n\n");
+            put(&prompt, script_output ? script_output : "");
+            put(&prompt, "\n```\n\n");
             has_injected_data = true;
         }
         free(inline_output);
@@ -383,13 +383,13 @@ char *scheduler_build_job_prompt(const json_t *job,
                 char hdr[160];
                 snprintf(hdr, sizeof(hdr),
                          "## Output from job '%s'\n", src_id);
-                sb_put(&prompt, hdr);
-                sb_put(&prompt,
+                put(&prompt, hdr);
+                put(&prompt,
                        "The following is the most recent output from a "
                        "preceding cron job. Use it as context for your "
                        "analysis.\n\n```\n");
-                sb_put(&prompt, text);
-                sb_put(&prompt, "\n```\n\n");
+                put(&prompt, text);
+                put(&prompt, "\n```\n\n");
                 has_injected_data = true;
             }
             free(text);
@@ -400,9 +400,9 @@ char *scheduler_build_job_prompt(const json_t *job,
     /* ── 3. cron hint + user prompt ────────────────────────────── */
     sb_t final_prompt;
     if (!sb_init(&final_prompt)) { free(prompt.buf); return NULL; }
-    sb_put(&final_prompt, CRON_HINT);
-    sb_put(&final_prompt, prompt.buf);   /* injected blocks first */
-    sb_put(&final_prompt, user_prompt);
+    put(&final_prompt, CRON_HINT);
+    put(&final_prompt, prompt.buf);   /* injected blocks first */
+    put(&final_prompt, user_prompt);
     free(prompt.buf);
 
     /* ── 4. skills normalization ───────────────────────────────── */
@@ -470,8 +470,8 @@ char *scheduler_build_job_prompt(const json_t *job,
             free(bundle_key);
             if (payload) {
                 const char *msg = json_get_str(payload, "message", "");
-                if (any_parts) sb_put(&parts, "\n\n");
-                sb_put(&parts, msg);
+                if (any_parts) put(&parts, "\n\n");
+                put(&parts, msg);
                 any_parts = true;
                 json_free(payload);
                 continue;
@@ -509,14 +509,14 @@ char *scheduler_build_job_prompt(const json_t *job,
 
         char *cdup = strdup(content);
         strip_inplace2(cdup);
-        if (any_parts) sb_put(&parts, "\n\n");
+        if (any_parts) put(&parts, "\n\n");
         char note[512];
         snprintf(note, sizeof(note),
             "[IMPORTANT: The user has invoked the \"%s\" skill, indicating "
             "they want you to follow its instructions. The full skill "
             "content is loaded below.]\n\n", skill_name);
-        sb_put(&parts, note);
-        sb_put(&parts, cdup);
+        put(&parts, note);
+        put(&parts, cdup);
         free(cdup);
         any_parts = true;
         json_free(doc);
@@ -538,16 +538,16 @@ char *scheduler_build_job_prompt(const json_t *job,
             "response with a brief notice so the user is aware, e.g.: "
             "'⚠️ Skill(s) not found and skipped: %s']",
             skipped_csv, skipped_csv);
-        sb_put(&assembled, notice);
-        if (any_parts) sb_put(&assembled, "\n");
+        put(&assembled, notice);
+        if (any_parts) put(&assembled, "\n");
     }
-    sb_put(&assembled, parts.buf);
+    put(&assembled, parts.buf);
     free(parts.buf);
 
     if (final_prompt.buf[0]) {
-        sb_put(&assembled, "\n\nThe user has provided the following "
+        put(&assembled, "\n\nThe user has provided the following "
                            "instruction alongside the skill invocation: ");
-        sb_put(&assembled, final_prompt.buf);
+        put(&assembled, final_prompt.buf);
     }
     free(final_prompt.buf);
 

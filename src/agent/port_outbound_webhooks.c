@@ -385,8 +385,8 @@ void ow_reset_for_tests(void) {
     pthread_mutex_unlock(&g_queue.lock);
 }
 
-/* PoP: ow_enqueue @ agent/outbound_webhooks.py:_enqueue */
-bool ow_enqueue(const json_t *delivery) {
+/* PoP: enqueue @ agent/outbound_webhooks.py:_enqueue */
+static bool enqueue(const json_t *delivery) {
     if (!delivery) return false;
     ow_ensure_worker();
 
