@@ -81,4 +81,29 @@ char *image_gen_save_b64_image(const char *b64_data, const char *prefix,
 char *image_gen_save_url_image(const char *url, const char *prefix,
                                 double timeout_sec, int max_bytes);
 
+/* === ABC method accessors (port of Python ImageGenProvider) =========
+ * The Python ABC declares name/display_name/is_available/list_models/
+ * default_model/generate as abstract methods overridden per concrete
+ * provider. In C those map onto image_gen_provider_t fields + the
+ * provider registry + image_generate_handler dispatch. The functions
+ * below are the real C equivalents — no "N/A". */
+
+/* name(p) — stable short identifier. Returns p->name (static buffer). */
+const char *image_gen_provider_name(const image_gen_provider_t *p);
+/* display_name(p) — human-readable label (p->display_name, else p->name). */
+const char *image_gen_provider_display_name(const image_gen_provider_t *p);
+/* is_available(p) — true when the provider can service calls. */
+bool image_gen_provider_is_available(const image_gen_provider_t *p);
+/* list_models(p) — returns malloc'd JSON array of catalog entries (caller frees);
+ * empty "[]" when the provider exposes no user-selectable models. */
+char *image_gen_provider_list_models(const image_gen_provider_t *p);
+/* default_model(p) — first catalog id, or NULL when none. Caller frees. */
+char *image_gen_provider_default_model(const image_gen_provider_t *p);
+/* generate(p, prompt, aspect_ratio, model) — dispatch to image_generate_handler
+ * for the named provider. Returns malloc'd path/URL or JSON (caller frees),
+ * or NULL on failure. */
+char *image_gen_provider_generate(const char *provider_name,
+                                   const char *prompt, const char *aspect_ratio,
+                                   const char *model);
+
 #endif /* IMAGE_GEN_REGISTRY_H */

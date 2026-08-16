@@ -4,26 +4,27 @@
  * Port of Python agent/image_gen_provider.py (324 lines, ~20 functions/methods).
  * Implements the portable subset: provider vtable, aspect ratio resolution,
  * image cache directory, base64/URL image saving, success/error response builders.
- * Python-only constructs (abc.ABC, abstractmethod decorators, PluginContext usage)
- * are annotated N/A with consolidated PoP comments.
+ * The abstract ABC methods (name/display_name/is_available/list_models/
+ * default_model/generate) are implemented as real accessors over
+ * image_gen_provider_t + the provider registry + image_generate_handler.
  *
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.name — N/A, plugin registration field
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.display_name — N/A, plugin metadata
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.is_available — N/A, plugin capability check
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.list_models — N/A, plugin catalog
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.get_setup_schema — N/A, plugin setup
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.default_model — N/A, plugin default
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.generate — N/A, plugin implementation
+ * Port of Python agent/image_gen_provider.py:ImageGenProvider.name — image_gen_provider_name
+ * Port of Python agent/image_gen_provider.py:ImageGenProvider.display_name — image_gen_provider_display_name
+ * Port of Python agent/image_gen_provider.py:ImageGenProvider.is_available — image_gen_provider_is_available
+ * Port of Python agent/image_gen_provider.py:ImageGenProvider.list_models — image_gen_provider_list_models
+ * Port of Python agent/image_gen_provider.py:ImageGenProvider.get_setup_schema — C uses config.yaml provider block
+ * Port of Python agent/image_gen_provider.py:ImageGenProvider.default_model — image_gen_provider_default_model
+ * Port of Python agent/image_gen_provider.py:ImageGenProvider.generate — image_gen_provider_generate
  * Port of Python agent/image_gen_provider.py:VALID_ASPECT_RATIOS — ported as constant
  * Port of Python agent/image_gen_provider.py:DEFAULT_ASPECT_RATIO — ported as constant
- * Port of Python agent/image_gen_provider.py:resolve_aspect_ratio() — consolidated in image_gen_resolve_aspect_ratio()
- * Port of Python agent/image_gen_provider.py:_images_cache_dir() — consolidated in image_gen_cache_dir()
- * Port of Python agent/image_gen_provider.py:save_b64_image() — consolidated in image_gen_save_b64_image()
- * Port of Python agent/image_gen_provider.py:save_url_image() — consolidated in image_gen_save_url_image()
- * Port of Python agent/image_gen_provider.py:success_response() — consolidated in image_gen_success_response()
- * Port of Python agent/image_gen_provider.py:error_response() — consolidated in image_gen_error_response()
- * Port of Python agent/image_gen_provider.py:PluginContext.register_image_gen_provider() — N/A, plugin system
- * Port of Python agent/image_gen_provider.py:image_gen.provider config key — N/A, C uses config.yaml directly
+ * Port of Python agent/image_gen_provider.py:resolve_aspect_ratio() — image_gen_resolve_aspect_ratio()
+ * Port of Python agent/image_gen_provider.py:_images_cache_dir() — image_gen_cache_dir()
+ * Port of Python agent/image_gen_provider.py:save_b64_image() — image_gen_save_b64_image()
+ * Port of Python agent/image_gen_provider.py:save_url_image() — image_gen_save_url_image()
+ * Port of Python agent/image_gen_provider.py:success_response() — image_gen_success_response()
+ * Port of Python agent/image_gen_provider.py:error_response() — image_gen_error_response()
+ * Port of Python agent/image_gen_provider.py:PluginContext.register_image_gen_provider() — image_gen_register_provider
+ * Port of Python agent/image_gen_provider.py:image_gen.provider config key — C config.yaml provider block
  */
 
 /* strcasestr and friends are GNU extensions — musl (alpine) needs
@@ -392,34 +393,122 @@ json_t *image_gen_error_response(const char *error, const char *error_type,
     return payload;
 }
 
-/* ================================================================== */
-/*  AG26 Annotations                                                  */
-/* ================================================================== */
-
-/* Port of Python agent/image_gen_provider.py:ImageGenProvider
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.name
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.display_name
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.is_available
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.list_models
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.get_setup_schema
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.default_model
- * Port of Python agent/image_gen_provider.py:ImageGenProvider.generate
- * Port of Python agent/image_gen_provider.py:VALID_ASPECT_RATIOS
- * Port of Python agent/image_gen_provider.py:DEFAULT_ASPECT_RATIO
- * Port of Python agent/image_gen_provider.py:resolve_aspect_ratio()
- * Port of Python agent/image_gen_provider.py:_images_cache_dir()
- * Port of Python agent/image_gen_provider.py:save_b64_image()
- * Port of Python agent/image_gen_provider.py:save_url_image()
- * Port of Python agent/image_gen_provider.py:success_response()
- * Port of Python agent/image_gen_provider.py:error_response()
- * Port of Python agent/image_gen_provider.py:PluginContext.register_image_gen_provider() — N/A, plugin system
- * Port of Python agent/image_gen_provider.py:image_gen.provider config key — N/A, C uses config.yaml directly
- */
-
 /* PoP: image_gen_capabilities @ agent/image_gen_provider.py:capabilities */
 const char *image_gen_capabilities(void)
 {
     /* Return the default capabilities dict for an image gen provider.
      * Port of Python agent/image_gen_provider.py:ImageGenProvider.capabilities. */
     return "{\"modalities\":[\"text\"],\"max_reference_images\":0}";
+}
+
+/* ================================================================== */
+/*  ABC method accessors (port of Python ImageGenProvider)            */
+/* ================================================================== */
+
+/* Local view of image_gen_provider_t matching include/image_gen_registry.h
+ * (name / display_name / is_available). Used only for field access in the
+ * accessors below; the canonical struct lives in image_gen_registry.h.
+ * Layout MUST stay identical to that struct. */
+typedef struct {
+    char name[64];
+    char display_name[64];
+    bool (*is_available)(void);
+} image_gen_provider_t;
+
+/* image_generate_handler is defined in image_gen.c (tool dispatch). */
+extern char *image_gen_generate_handler(const char *args_json, const char *task_id);
+
+/* PoP: image_gen_provider_name @ agent/image_gen_provider.py:ImageGenProvider.name */
+const char *image_gen_provider_name(const image_gen_provider_t *p)
+{
+    return p ? p->name : "";
+}
+
+/* PoP: image_gen_provider_display_name @ agent/image_gen_provider.py:ImageGenProvider.display_name */
+const char *image_gen_provider_display_name(const image_gen_provider_t *p)
+{
+    if (!p) return "";
+    if (p->display_name[0]) return p->display_name;
+    return p->name;
+}
+
+/* PoP: image_gen_provider_is_available @ agent/image_gen_provider.py:ImageGenProvider.is_available */
+bool image_gen_provider_is_available(const image_gen_provider_t *p)
+{
+    if (!p) return false;
+    if (p->is_available) return p->is_available();
+    return true;
+}
+
+/* PoP: image_gen_provider_list_models @ agent/image_gen_provider.py:ImageGenProvider.list_models */
+char *image_gen_provider_list_models(const image_gen_provider_t *p)
+{
+    (void)p;
+    /* The C registry stores only name/display_name/is_available; concrete
+     * model catalogs live in the per-provider handlers. Default (no
+     * user-selectable models) matches the Python base-class default []. */
+    return strdup("[]");
+}
+
+/* PoP: image_gen_provider_default_model @ agent/image_gen_provider.py:ImageGenProvider.default_model */
+char *image_gen_provider_default_model(const image_gen_provider_t *p)
+{
+    (void)p;
+    /* No catalog in the registry representation -> None. */
+    return NULL;
+}
+
+/* PoP: image_gen_provider_generate @ agent/image_gen_provider.py:ImageGenProvider.generate */
+static void json_escape_into(const char *src, char *dst, size_t cap)
+{
+    /* Minimal JSON string escaper for the prompt/model fields. */
+    size_t j = 0;
+    if (src) {
+        for (const char *p = src; *p && j + 2 < cap; p++) {
+            char c = *p;
+            if (c == '"' || c == '\\') {
+                if (j + 3 >= cap) break;
+                dst[j++] = '\\'; dst[j++] = c;
+            } else if (c == '\n') {
+                if (j + 3 >= cap) break;
+                dst[j++] = '\\'; dst[j++] = 'n';
+            } else if (c == '\r') {
+                if (j + 3 >= cap) break;
+                dst[j++] = '\\'; dst[j++] = 'r';
+            } else if (c == '\t') {
+                if (j + 3 >= cap) break;
+                dst[j++] = '\\'; dst[j++] = 't';
+            } else {
+                dst[j++] = c;
+            }
+        }
+    }
+    dst[j] = '\0';
+}
+
+char *image_gen_provider_generate(const char *provider_name,
+                                   const char *prompt, const char *aspect_ratio,
+                                   const char *model)
+{
+    if (!provider_name || !prompt) return NULL;
+    const char *ar = aspect_ratio ? aspect_ratio : "landscape";
+    char esc_prompt[4096], esc_model[1024];
+    json_escape_into(prompt, esc_prompt, sizeof(esc_prompt));
+    json_escape_into(model, esc_model, sizeof(esc_model));
+
+    char args[8192];
+    int n = snprintf(args, sizeof(args),
+        "{\"provider\":\"%s\",\"prompt\":\"%s\",\"aspect_ratio\":\"%s\"",
+        provider_name, esc_prompt, ar);
+    if (n < 0 || (size_t)n >= sizeof(args)) return NULL;
+    if (model && *model) {
+        size_t cur = (size_t)n;
+        int m = snprintf(args + cur, sizeof(args) - cur, ",\"model\":\"%s\"", esc_model);
+        if (m < 0) return NULL;
+    }
+    size_t cur = strlen(args);
+    if (cur + 2 >= sizeof(args)) return NULL;
+    strcat(args, "}");
+
+    return image_gen_generate_handler(args, "image_gen_provider");
 }
