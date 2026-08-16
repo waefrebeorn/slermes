@@ -490,6 +490,12 @@ class CIndexer:
     def find_pop_for_python(self, python_name, py_file=""):
         matches = []
         for pop in self.pop_annotations:
+            # Skip PoPs from files not in the build (dead stubs)
+            if self._build_files and pop.c_file and pop.c_file not in self._build_files:
+                continue
+            # Skip PoPs with invalid c_function (malformed annotations)
+            if not pop.c_function or pop.c_function in ('string', 'int', 'char', 'void', 'bool', 'float', 'double', 'long', 'short', 'unsigned', 'signed', 'size_t', 'ssize_t', 'json_t', 'json_node_t', 'sqlite3', 'FILE'):
+                continue
             # Match by exact name or by class-qualified name (e.g. "GatewayRunner.progress_callback")
             matched = False
             if python_name in pop.python_functions:
@@ -1194,7 +1200,11 @@ class ParityAnalyzer:
                                 c_function=pop.c_function, pop_annotation=pop,
                                 stub_reason="PoP annotation with no C function body (annotation-only stub)",
                                 severity="HIGH", da_flags=["DA-4:annotation-only-stub"])
-            if self._recursive_bootleg(pop.c_function):
+            # Check if ANY implementation of this function is non-trivial
+            # (a real port may exist alongside stubs in other files)
+            all_bodies = [body for name, body in self._port_defined.items() if name == pop.c_function]
+            has_real_impl = any(body.strip() not in ('', 'return json_object();', 'return NULL;', 'return 0;', 'return false;', 'return 0.0;') for body in all_bodies)
+            if not has_real_impl and self._recursive_bootleg(pop.c_function):
                 # Cross-check the Python side: a trivial Python function ports
                 # faithfully as a trivial C function — only flag when the
                 # Python does real work that the C body omits.
