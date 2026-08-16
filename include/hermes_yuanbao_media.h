@@ -60,6 +60,19 @@ char *yuanbao_build_file_msg(const char *url,
                              const char *uuid,
                              int size);
 
+/** Guess MIME type from filename extension. Port of Python guess_mime_type().
+ *  Returns a static string (do not free). */
+const char *yuanbao_guess_mime_type(const char *filename);
+
+/** MD5 hex digest of data. Port of Python md5_hex(). Caller frees result. */
+char *yuanbao_md5_hex(const unsigned char *data, size_t len);
+
+/** Parse image width/height from a buffer (PNG/JPEG/GIF/WebP).
+ *  Port of Python parse_image_size(). On success sets *width/*height and
+ *  returns true; returns false when the format is unrecognized. */
+bool yuanbao_parse_image_size(const unsigned char *data, size_t len,
+                              int *width, int *height);
+
 #ifdef __cplusplus
 }
 #endif
