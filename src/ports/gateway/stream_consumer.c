@@ -527,7 +527,36 @@ void gw_stream_consumer_add_commentary(gw_stream_consumer_t *c, const char *text
 /* PoP helpers for gateway/stream_consumer.py */
 
 /* PoP: sc_escape_code_fences_for_display @ gateway/stream_consumer.py:escape_code_fences_for_display */
-void sc_escape_code_fences_for_display(char *buf, size_t sz) { (void)buf;(void)sz; }
+/* Escape triple-backtick markers in-place so text can be safely wrapped in an
+ * outer ``` block. Python: return text.replace("```", "\\`\\`\\`").
+ * Editing in place expands each 3-byte ``` to 6 bytes (\`\`\`), so we render
+ * into a temp buffer bounded by `sz` then copy back. */
+void sc_escape_code_fences_for_display(char *buf, size_t sz) {
+    if (!buf || sz == 0) return;
+    size_t inlen = strlen(buf);
+    /* worst case: every byte part of a ``` triple expands 3->6; 2x+3 is safe */
+    char *tmp = (char *)malloc(inlen * 2 + 4);
+    if (!tmp) return;
+    size_t o = 0, i = 0;
+    while (i + 2 < inlen + 1 && i + 2 <= inlen) {
+        if (buf[i] == '`' && buf[i+1] == '`' && buf[i+2] == '`') {
+            if (o + 6 < inlen * 2 + 3) {
+                tmp[o++] = '\\'; tmp[o++] = '`';
+                tmp[o++] = '\\'; tmp[o++] = '`';
+                tmp[o++] = '\\'; tmp[o++] = '`';
+            }
+            i += 3;
+        } else {
+            if (o + 1 < inlen * 2 + 3) tmp[o++] = buf[i];
+            i += 1;
+        }
+    }
+    tmp[o] = '\0';
+    size_t n = o < sz - 1 ? o : sz - 1;
+    memcpy(buf, tmp, n);
+    buf[n] = '\0';
+    free(tmp);
+}
 /* PoP: ensure_closed_code_fences */
 /* PoP: sc_ensure_closed_code_fences @ gateway/stream_consumer.py:ensure_closed_code_fences */
 char *sc_ensure_closed_code_fences(const char *text){ if(!text) return strdup(""); return strdup(text); }
@@ -665,7 +694,20 @@ void sc_send_failure_may_have_delivered(void){(void)0;}
 /* PoP: _fallback_flood_retry_delay */
 double sc_fallback_flood_retry_delay(int attempt){ return (double)attempt * 2.0; }
 /* PoP: _is_flood_error */
-bool sc_is_flood_error(const char *err_text){ (void)err_text; return false; }
+/* Faithful port: a SendResult failure is a flood/rate-limit error when its
+ * error text contains "flood", "retry after", or "rate" (case-insensitive). */
+bool sc_is_flood_error(const char *err_text){
+    if (!err_text || !*err_text) return false;
+    char lower[512];
+    size_t n = strlen(err_text);
+    if (n >= sizeof(lower)) n = sizeof(lower) - 1;
+    for (size_t i = 0; i < n; i++)
+        lower[i] = (char)tolower((unsigned char)err_text[i]);
+    lower[n] = '\0';
+    return strstr(lower, "flood") != NULL
+        || strstr(lower, "retry after") != NULL
+        || strstr(lower, "rate") != NULL;
+}
 /* PoP: _resolve_draft_streaming */
 bool sc_resolve_draft_streaming(void){ return false; }
 /* PoP: sc_send_draft_frame @ gateway/stream_consumer.py:_fallback_flood_retry_delay */
