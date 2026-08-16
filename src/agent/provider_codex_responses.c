@@ -401,7 +401,7 @@ static char *codex_build_request_body(const provider_t *p,
     if (tools_json && json_array_count(tools_json) > 0) {
         /* Faithful port of Python _responses_tools (codex_responses_adapter.c):
          * convert chat-completions tool schemas → Responses function-tool schemas. */
-        json_node_t *codex_tools = codex_responses_tools(tools_json);
+        json_node_t *codex_tools = responses_tools(tools_json);
         if (codex_tools) {
             json_object_set(root, "tools", codex_tools);
             json_object_set(root, "tool_choice", json_new_string("auto"));
