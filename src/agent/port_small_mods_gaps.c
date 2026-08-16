@@ -1,9 +1,11 @@
 /* Slermes C port — small-module DA-4 gaps (pure functions) */
+#define _GNU_SOURCE
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
 #include "libcrypto/crypto.h"
@@ -19,7 +21,19 @@ double retry_parse_retry_after_seconds(const char *raw, bool *ok) {
         if (ok) *ok = true;
         return val > 0.0 ? val : 0.0;
     }
-    /* TODO: HTTP-date form (RFC 7231) — parse with libdatetime */
+    /* HTTP-date form (RFC 7231): seconds until that instant, clamped at 0. */
+    struct tm tm;
+    memset(&tm, 0, sizeof(tm));
+    char *p = strptime(raw, "%a, %d %b %Y %H:%M:%S GMT", &tm);
+    if (p && *p == '\0') {
+        tm.tm_isdst = 0;
+        time_t when = timegm(&tm);
+        if (when != (time_t)-1) {
+            double delta = difftime(when, time(NULL));
+            if (ok) *ok = true;
+            return delta > 0.0 ? delta : 0.0;
+        }
+    }
     if (ok) *ok = false;
     return 0.0;
 }
