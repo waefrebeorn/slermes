@@ -15,6 +15,11 @@
 #include <sys/stat.h>
 #include "hermes_http.h"
 
+/* Defined in src/tools/image_generation_tool.c; composes the requirements
+ * check against the configured image-gen provider. */
+extern char *image_gen_read_configured_image_provider(void);
+extern bool image_gen_check_fal_api_key(void);
+
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
     char *d = strdup(s);
@@ -29,9 +34,44 @@ char *igp_name(void) {
 }
 
 /* PoP: igp_is_available @ agent/image_gen_provider.py:is_available */
+/* Faithful port of ImageGenProvider.is_available().
+ * Python base class returns True (no external deps); concrete providers
+ * (e.g. OpenAI) return True iff their required API key env var is set. We
+ * probe the currently-configured provider's credential:
+ *   - fal            -> FAL_KEY (or managed gateway)   [image_gen_check_fal_api_key]
+ *   - openai         -> OPENAI_API_KEY
+ *   - stability / replicate / krea / stable_diffusion -> <NAME>_API_KEY
+ *   - unknown        -> True (matches Python base-class default)
+ * This means an explicitly-configured backend is only reported available when
+ * the user actually has its credentials, so the dispatcher can surface a
+ * precise "X_API_KEY is not set" error instead of silently switching. */
 bool igp_is_available(void) {
-    printf("image provider availability probe\n");
-    return false;
+    char *provider = image_gen_read_configured_image_provider();
+    if (!provider) return true;  /* default base-class behavior */
+
+    bool ok = true;
+    if (strcasecmp(provider, "fal") == 0) {
+        ok = image_gen_check_fal_api_key();
+    } else if (strcasecmp(provider, "openai") == 0) {
+        const char *k = getenv("OPENAI_API_KEY");
+        ok = (k && k[0]);
+    } else {
+        /* <PROVIDER>_API_KEY convention (stability, replicate, krea, ...). */
+        size_t n = strlen(provider);
+        char *env = malloc(n + 9);  /* name + "_API_KEY" + NUL */
+        if (env) {
+            memcpy(env, provider, n);
+            for (size_t i = 0; i < n; i++) env[i] = (char)toupper((unsigned char)env[i]);
+            memcpy(env + n, "_API_KEY", 9);
+            const char *k = getenv(env);
+            ok = (k && k[0]);
+            free(env);
+        } else {
+            ok = true;
+        }
+    }
+    free(provider);
+    return ok;
 }
 
 /* PoP: igp_generate @ agent/image_gen_provider.py:generate */

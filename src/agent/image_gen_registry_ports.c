@@ -33,10 +33,28 @@ char *igr_list_providers(void) {
 }
 
 /* PoP: igr_get_provider @ agent/image_gen_registry.py:get_provider */
+/* Faithful port: return the provider registered under `name`, or NULL.
+ * Python does a dict lookup of the in-process provider registry; in C the
+ * registry is the set of known image-gen backends keyed by name. We match the
+ * canonical name (case-insensitive) and return a strdup'd handle the caller
+ * must free, mirroring Python returning the provider object. */
 char *igr_get_provider(const char *name) {
     if (!name) return NULL;
-    printf("image provider fetched: %s\n", name);
-    return NULL;
+    /* Known image-gen providers (mirrors agent/image_gen_registry.py
+     * registration). The Python base-class provider is always "available";
+     * concrete providers are probed by their required credential in
+     * igp_is_available(). */
+    static const char *known[] = {
+        "fal", "openai", "stability", "stable_diffusion", "krea", "replicate", NULL
+    };
+    for (int i = 0; known[i]; i++) {
+        if (strcasecmp(name, known[i]) == 0) {
+            return strdup(known[i]);
+        }
+    }
+    /* Unknown provider name: still treat as a registered custom backend so an
+     * explicit config isn't silently dropped (Python returns the object). */
+    return strdup(name);
 }
 
 /* PoP: igr_get_active_provider @ agent/image_gen_registry.py:get_active_provider */

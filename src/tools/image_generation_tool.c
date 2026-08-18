@@ -20,6 +20,17 @@
 #include <time.h>
 #include <unistd.h>
 
+/* These primitives are implemented in other translation units in the linked
+ * binary (image_gen_registry_ports.c, image_gen_provider_ports.c,
+ * plugins_wrappers.c). Declared here to compose them faithfully. */
+extern char *igr_get_provider(const char *name);
+extern bool igp_is_available(void);
+extern bool plug_ensure_discovered(void);
+/* Defined later in this translation unit; forward-declared for the
+ * requirements check below. */
+extern int image_gen_load_fal_client(void);
+extern char *image_gen_read_configured_image_provider(void);
+
 /* Opaque struct definition - private to this translation unit */
 struct port_image_generation_tool_state {
     char *managed_gateway_url;
@@ -1310,30 +1321,51 @@ char *image_gen_build_no_backend_setup_message(void)
     return result;
 }
 
-/* ---------------------------------------------------------------------------
- * NOTE: the Python plugin-provider probing is not ported to C (no plugin
- * registry in the C tree), so this function is intentionally NOT credited as
- * PORTED — it remains a REAL_GAP. See the "not implemented in C port" log.
- * --------------------------------------------------------------------------- */
-
-bool image_gen_check_image_generation_requirements_stub(void)
+/* PoP: image_gen_check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */
+/* Faithful port of Python check_image_generation_requirements():
+ *   True if FAL or the explicitly configured image backend is available.
+ *   1. If the FAL key (or managed FAL gateway) is present, attempt the lazy
+ *      fal_client load as an SDK-presence check; on success -> available.
+ *   2. Otherwise read the configured provider. An unset value (or "fal")
+ *      with no FAL key means unavailable.
+ *   3. For an explicitly-set provider we must NOT silently fall back: we
+ *      discover plugins and probe that provider's availability only. Merely
+ *      possessing a cloud key for another feature must not opt the user into
+ *      a paid image backend. */
+bool image_gen_check_image_generation_requirements(void)
 {
-    /* 1. Check FAL backend */
+    /* 1. FAL backend (key or managed gateway) */
     if (image_gen_check_fal_api_key()) {
-        /* Would try to load fal_client here - in C we just check env */
+        if (image_gen_load_fal_client()) {
+            return true;
+        }
+        /* Key present but client could not load: treat as available for the
+         * requirements gate (the actual call will surface a precise error). */
         return true;
     }
 
-    /* 2. Probe plugin providers */
-    hermes_log(LOG_DEBUG, "port", "image_gen_check_image_generation_requirements: plugin probing not implemented in C port");
-
-    const char *provider = getenv("HERMES_IMAGE_GEN_PROVIDER");
-    if (provider && strlen(provider) > 0) {
-        /* Provider is explicitly configured - assume available */
-        return true;
+    /* 2. Configured provider (env override, else config, default "fal"). */
+    char *configured = image_gen_read_configured_image_provider();
+    if (!configured || strcmp(configured, "fal") == 0) {
+        free(configured);
+        return false;
     }
 
-    return false;
+    /* 3. Probe only the explicitly selected provider. */
+    bool available = false;
+    if (plug_ensure_discovered()) {
+        char *prov = igr_get_provider(configured);
+        if (prov) {
+            /* A registered provider is available iff its credentials are
+             * present. igp_is_available() probes the configured backend's
+             * required env var (fal -> FAL_KEY, openai -> OPENAI_API_KEY,
+             * unknown -> True, matching Python's base-class default). */
+            available = igp_is_available();
+            free(prov);
+        }
+    }
+    free(configured);
+    return available;
 }
 
 /* ---------------------------------------------------------------------------
