@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include "hermes_json.h"
+#include "path_security.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -203,4 +205,86 @@ int skillstool_reset_skill_view_dedup(const char *arg) {
     (void)arg;
     printf("skill_view dedup cache cleared\n");
     return 0;
+}
+
+/* PoP: skillstool_plugin_skill_linked_files @ tools/skills_tool.py:_plugin_skill_linked_files */
+/* Walk each skill category dir (references/templates/assets/scripts); for each
+ * file under it, keep the path only if validate_within_dir(path, skill_root)
+ * is NULL (inside the skill root). Return a JSON object mapping category ->
+ * [relative-path strings], or the JSON literal "null" when nothing qualifies.
+ * Caller frees the returned string. */
+static void stt_collect_files(const char *root, const char *rel,
+                               const char *skill_root, json_t *arr)
+{
+    char path[8192];
+    snprintf(path, sizeof(path), "%s%s%s", root,
+             rel[0] ? "/" : "", rel);
+    DIR *dir = opendir(path);
+    if (!dir) return;
+    struct dirent *e;
+    char names[1024][256];
+    int n = 0;
+    while ((e = readdir(dir)) != NULL && n < 1024) {
+        if (e->d_name[0] == '.' || strcmp(e->d_name, ".") == 0 ||
+            strcmp(e->d_name, "..") == 0) continue;
+        strncpy(names[n], e->d_name, 255); names[n][255] = '\0';
+        n++;
+    }
+    closedir(dir);
+    for (int i = 1; i < n; i++) {
+        char key[256]; strncpy(key, names[i], 255); key[255] = '\0';
+        int j = i - 1;
+        while (j >= 0 && strcmp(names[j], key) > 0) {
+            strncpy(names[j+1], names[j], 255); names[j+1][255] = '\0'; j--;
+        }
+        strncpy(names[j+1], key, 255); names[j+1][255] = '\0';
+    }
+    for (int i = 0; i < n; i++) {
+        char full[8192], rel2[8192];
+        snprintf(full, sizeof(full), "%s/%s", path, names[i]);
+        snprintf(rel2, sizeof(rel2), "%s%s%s", rel, rel[0] ? "/" : "", names[i]);
+        struct stat st;
+        if (stat(full, &st) != 0) continue;
+        if (S_ISDIR(st.st_mode)) {
+            stt_collect_files(root, rel2, skill_root, arr);
+        } else if (S_ISREG(st.st_mode)) {
+            char *err = cli_tools_path_security_validate_within_dir(full, skill_root);
+            if (err == NULL) {
+                json_array_append(arr, json_new_string(rel2));
+            } else {
+                free(err);
+            }
+        }
+    }
+}
+
+char *skillstool_plugin_skill_linked_files(const char *skill_root) {
+    if (!skill_root || !*skill_root) return strdup("null");
+    const char *cats[] = {"references", "templates", "assets", "scripts"};
+    json_t *result = json_new_object();
+    bool any = false;
+    for (int c = 0; c < 4; c++) {
+        char base[8704];
+        snprintf(base, sizeof(base), "%s/%s", skill_root, cats[c]);
+        struct stat st;
+        if (stat(base, &st) != 0 || !S_ISDIR(st.st_mode)) continue;
+        json_t *arr = json_new_array();
+        stt_collect_files(base, "", skill_root, arr);
+        if (json_len(arr) > 0) {
+            json_object_set(result, cats[c], arr);
+            any = true;
+        } else {
+            json_free(arr);
+        }
+    }
+    char *out;
+    if (any) {
+        char *ser = json_serialize(result);
+        out = ser ? strdup(ser) : strdup("null");
+        if (ser) free(ser);
+    } else {
+        out = strdup("null");
+    }
+    json_free(result);
+    return out;
 }
