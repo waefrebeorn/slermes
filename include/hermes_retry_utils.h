@@ -27,6 +27,12 @@ bool is_zai_coding_overload_error(const char *base_url,
                                               const char *model,
                                               const retry_utils_err_t *err);
 
+/* Public `retry_utils_is_zai_coding_overload_error` — parity alias for Python
+ * retry_utils.is_zai_coding_overload_error. */
+bool retry_utils_is_zai_coding_overload_error(const char *base_url,
+                                              const char *model,
+                                              const retry_utils_err_t *err);
+
 /* Provider-aware backoff policy.
  * Returns malloc'd "W|label" on Z.AI overload long-backoff tier,
  * "SHORT" for short tier, or NULL if policy does not apply. */
