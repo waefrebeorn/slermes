@@ -1471,6 +1471,7 @@ void web_free_strv(char **v)
     free(v);
 }
 
+/* PoP: web_client_ip @ hermes_cli/dashboard_auth/routes.py:_client_ip */
 /* Reusable client-IP resolution (Port of the dashboard_auth _client_ip helper,
  * identical across middleware.py / routes.py / token_auth.py):
  *   x_forwarded_for (may be ""): take the first comma-separated value, trimmed.
