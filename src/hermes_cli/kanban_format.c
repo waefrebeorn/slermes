@@ -32,7 +32,7 @@ const char *kanban_status_icon(const char *status) {
 }
 
 /* PoP: _fmt_ts @ hermes_cli/kanban.py:_fmt_ts */
-char *_fmt_ts(long ts) {
+char *kanban_fmt_ts (long ts) {
     if (!ts) return xstrdup("");
     struct tm tm;
     if (localtime_r(&ts, &tm) == NULL) return xstrdup("");
@@ -42,7 +42,7 @@ char *_fmt_ts(long ts) {
 }
 
 /* PoP: _fmt_task_line @ hermes_cli/kanban.py:_fmt_task_line */
-char *_fmt_task_line(const kanban_task_t *t) {
+char *kanban_fmt_task_line (const kanban_task_t *t) {
     const char *icon = kanban_status_icon(t->status);
     const char *assignee = (t->assignee && *t->assignee) ? t->assignee : "(unassigned)";
     /* tenant display: " [tenant]" when present (mirrors Python's
@@ -138,7 +138,7 @@ char *kanban_task_to_json(const kanban_task_t *t) {
 }
 
 /* PoP: _run_state_kwargs @ hermes_cli/kanban.py:_run_state_kwargs */
-char *_run_state_kwargs(const char *state_type, const char *state_name) {
+char *kanban_run_state_kwargs (const char *state_type, const char *state_name) {
     bool st = state_type && *state_type;
     bool sn = state_name && *state_name;
     if (st != sn) return NULL;            /* mismatched -> invalid */
@@ -150,7 +150,7 @@ char *_run_state_kwargs(const char *state_type, const char *state_name) {
 }
 
 /* PoP: _parse_workspace_flag @ hermes_cli/kanban.py:_parse_workspace_flag */
-int _parse_workspace_flag(const char *value, char **out_kind, char **out_path, char **errmsg) {
+int kanban_parse_workspace_flag (const char *value, char **out_kind, char **out_path, char **errmsg) {
     *out_kind = NULL; *out_path = NULL; *errmsg = NULL;
     if (!value || !*value) { *out_kind = xstrdup("scratch"); return 0; }
     char *v = xstrdup(value);
@@ -193,7 +193,7 @@ int _parse_workspace_flag(const char *value, char **out_kind, char **out_path, c
 }
 
 /* PoP: _parse_branch_flag @ hermes_cli/kanban.py:_parse_branch_flag */
-char *_parse_branch_flag(const char *value, char **errmsg) {
+char *kanban_parse_branch_flag (const char *value, char **errmsg) {
     *errmsg = NULL;
     if (value == NULL) return NULL;
     char *b = xstrdup(value);
@@ -208,7 +208,7 @@ char *_parse_branch_flag(const char *value, char **errmsg) {
 }
 
 /* PoP: _parse_duration @ hermes_cli/kanban.py:_parse_duration */
-long _parse_duration(const char *value) {
+long kanban_parse_duration(const char *value) {
     if (value == NULL || value[0]=='\0') return -2;
     char *s = xstrdup(value);
     char *p = s; while (*p==' '||*p=='\t') p++;
@@ -245,7 +245,7 @@ void kanban_task_free(kanban_task_t *t) {
 }
 
 /* PoP: _profile_author @ hermes_cli/kanban.py:_profile_author */
-char *_profile_author(void) {
+char *kanban_profile_author (void) {
     const char *v = getenv("HERMES_PROFILE_NAME");
     if (v && v[0]) return strdup(v);
     v = getenv("HERMES_PROFILE");
@@ -258,7 +258,7 @@ char *_profile_author(void) {
 }
 
 /* PoP: _worker_run_id_for @ hermes_cli/kanban.py:_worker_run_id_for */
-long _worker_run_id_for(const char *task_id) {
+long kanban_worker_run_id_for (const char *task_id) {
     const char *env_task = getenv("HERMES_KANBAN_TASK");
     if (!env_task || strcmp(env_task, task_id ? task_id : "") != 0) return -1;
     const char *raw = getenv("HERMES_KANBAN_RUN_ID");
