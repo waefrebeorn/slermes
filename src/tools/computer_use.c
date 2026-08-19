@@ -2435,3 +2435,27 @@ char *computer_use_get_computer_use_schema(void)
     "you need to verify an action's effect.\"}}, \"required\": [\"action\"]}}";
     return strdup(SCHEMA);
 }
+
+/* PoP: cu_backend_wait @ tools/computer_use/backend.py:Backend.wait */
+/* Default implementation: time.sleep clamped to [0, 30] seconds.
+ * Returns a cu_action_t (the C ActionResult equivalent) with ok=true,
+ * action="wait", and a message reporting the waited duration. */
+cu_action_t *cu_backend_wait(double seconds) {
+    double clamped = seconds;
+    if (clamped < 0.0) clamped = 0.0;
+    if (clamped > 30.0) clamped = 30.0;
+    /* sleep clamped seconds */
+    if (clamped > 0.0) {
+        struct timespec ts;
+        ts.tv_sec = (time_t)clamped;
+        ts.tv_nsec = (long)((clamped - ts.tv_sec) * 1e9);
+        nanosleep(&ts, NULL);
+    }
+    cu_action_t *act = (cu_action_t *)calloc(1, sizeof(cu_action_t));
+    if (act) {
+        act->ok = true;
+        snprintf(act->action, sizeof(act->action), "wait");
+        snprintf(act->message, sizeof(act->message), "waited %.2fs", clamped);
+    }
+    return act;
+}
