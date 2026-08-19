@@ -1,7 +1,6 @@
 /* AUTO-GENERATED integration oracle harness for port_config_helpers (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_config_helpers.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

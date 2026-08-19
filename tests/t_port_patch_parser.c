@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tools/port_patch_parser.h"
+#include "tools/patch_parser.h"
 
 static char *read_file(const char *path)
 {

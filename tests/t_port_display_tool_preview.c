@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hermes_json.h"
-#include "cli/port_display_tool_preview.h"
+#include "hermes_cli/display_tool_preview.h"
 
 static char *read_file(const char *path)
 {

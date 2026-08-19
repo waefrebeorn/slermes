@@ -6,7 +6,7 @@
  * Prints the canonical JSON result (json.dumps(ensure_ascii=False) form).
  */
 #include "hermes_json.h"
-#include "gateway/port_display_config.h"
+#include "gateway/display_config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

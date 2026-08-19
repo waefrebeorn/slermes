@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "agent/port_markdown_tables.h"
+#include "agent/markdown_tables.h"
 
 static char *read_file(const char *path)
 {

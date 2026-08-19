@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "cli/port_hermes_cli_shared_metrics_contract.h"
+#include "hermes_cli/shared_metrics_contract.h"
 
 /* ── JSON emit helpers ─────────────────────────────────────────── */
 static char *json_esc(const char *s) {
