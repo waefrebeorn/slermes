@@ -70,6 +70,12 @@ for port in "${PORTS[@]}"; do
     echo "{\"commit\":\"$CURRENT_COMMIT\",\"port\":\"$port\",\"verdict\":\"$VERDICT\",\"timestamp\":\"$(date -Iseconds)\"}" >> "$RESULT_HISTORY"
     continue
   fi
+  if [ "$port" = "watercup_all" ]; then
+    if bash "$SLERMES_ROOT/tests/oracle/run_watercup_all.sh"; then VERDICT="pass"
+    else VERDICT="fail"; [ "$MODE" = "check" ] && OVERALL=1; fi
+    echo "{\"commit\":\"$CURRENT_COMMIT\",\"port\":\"$port\",\"verdict\":\"$VERDICT\",\"timestamp\":\"$(date -Iseconds)\"}" >> "$RESULT_HISTORY"
+    continue
+  fi
 
   # Run the oracle. The runner uses SLERMES_HOME/HERMES_HOME isolation,
   # so neither side touches the real ~/.hermes. All artifacts go to

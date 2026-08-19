@@ -1,0 +1,11 @@
+{
+  "name": "model_normalize_detect_vendor",
+  "subsystem": "hermes_cli",
+  "c_src": "harness.c",
+  "c_fn": "detect_vendor",
+  "py_module": "hermes_cli/model_normalize.py",
+  "py_fn": "detect_vendor",
+  "twin": "twin.py",
+  "inputs": ["claude-sonnet-4.6", "gpt-5.4-mini", "anthropic/claude-sonnet-4.6", "qwen3.5-plus", "my-custom-model", "", "openai/gpt-4o", "llama-3-70b", "/", "QWEN-7B"],
+  "note": "Faithful port of Python detect_vendor. C harness embeds a minimal vendor table; twin uses LIVE _VENDOR_PREFIXES. Cup mismatch => C table diverged from LIVE."
+}

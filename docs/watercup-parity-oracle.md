@@ -1,6 +1,6 @@
 # The Water-Cup Parity Oracle
 
-**Status:** design + reference implementation (v1).
+**Status:** design + reference implementation (v1) + **project-wide framework (v2)**.
 **Problem it solves:** the existing oracle (`tests/oracle/`) diffs *output*
 fixtures. That is gameable: a C port can return a hardcoded `json_object()`
 (or a copy of the expected vector) and pass every fixture while doing *none* of
@@ -84,3 +84,52 @@ class). A port is parity-closed only when BOTH say MATCH.
 
 The only way to make the cup match is to **execute the same algorithm** — which
 is exactly what a faithful port does. There is no shortcut.
+
+## v2 — Project-wide framework (language-agnostic)
+
+The water-cup is **not Python-specific**. The cup is a byte stream of
+`B<depth>:<0|1>` / `L<depth>` / `R<depth>` / `r<depth>` / `V<hash>` events folded
+with FNV-1a. Any source language translated to C11 — Python, TypeScript, Rust —
+carves the **same shape** when the logic is identical. A stub that returns a
+constant cannot reproduce the real trace, so the cup never matches.
+
+This is what makes it scale "project wide": instead of 600 hand-built demos, a
+**generic registry-driven engine** runs every gate.
+
+### Layout
+```
+tests/watercup/
+  watercup.h          # C tracer (no-op under WCUP_DISABLED)
+  watercup_py.py      # Python tracer, byte-identical FNV-1a
+  wc_run.py           # GENERIC engine: build each gate, run C + LIVE twin, diff cups
+  gates/<name>/
+    gate.json         # {name, subsystem, c_src, c_fn, py_module, py_fn, inputs}
+    harness.c         # traced C copy of the ported fn (+ main dispatch)
+    twin.py           # imports LIVE Python twin, traces SAME branch ladder
+  run_watercup_all.sh # CI deep-gate (fail-closed)
+```
+
+### Adding a gate (no code in the runner)
+1. `mkdir tests/watercup/gates/<fn>`
+2. Write `gate.json` (name the LIVE python module + fn, list a correlated input walk).
+3. Write `harness.c` — a faithful, **traced** copy of the C11 port, with `main`
+   dispatching `<c_fn>` over `argv`.
+4. Write `twin.py` exposing `run(inputs) -> [cup, ...]`, importing the LIVE python
+   source and tracing the **same branch ladder** (so divergence = real logic
+   difference, not tracing convention).
+
+`wc_run.py` builds, runs, and diffs automatically. Register the `watercup_all`
+port in `tests/oracle/registry.json` and `run_oracles.sh` dispatches it in CI
+alongside the diff oracle.
+
+### Current gates (live, fail-closed in CI)
+| gate | subsystem | status |
+|------|-----------|--------|
+| `usage_pricing_format_cost_label` | agent | RED — `0.00005` rounding FAP (Decimal `ROUND_HALF_EVEN` vs C `printf` half-away) |
+| `model_normalize_detect_vendor` | hermes_cli | RED — `""` empty-string guard FAP (Python falsy check absent in C) |
+| `web_fs_list` | web | GREEN — decision-structure cup matches LIVE (I/O abstracted to shared tree) |
+| `watercup_web_auth` | web | RED — auth allowlist set diverges from LIVE `PUBLIC_API_PATHS` |
+| `watercup_json_escape` | web | RED — `web_app.c` copy B dropped `<0x20` control-char escape vs `web_server.c` + LIVE |
+
+A port is parity-closed only when **both** the diff oracle AND the water-cup say
+MATCH. The cup is the deep gate that catches the "right output, wrong path" class.

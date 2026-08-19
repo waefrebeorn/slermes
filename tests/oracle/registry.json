@@ -2,6 +2,13 @@
   "version": 1,
   "description": "Agnostic oracle registry \u2014 maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
   "ports": {
+    "watercup_all": {
+      "type": "watercup",
+      "deep_gate": true,
+      "framework": "tests/watercup/wc_run.py",
+      "contract": "GENERIC project-wide gate: every gate under tests/watercup/gates/ is built (traced C harness) and compared against the LIVE Python twin. Language-agnostic — any source translated to C11 carves the same cup when the logic matches. Fail-closed: any gate mismatch fails CI.",
+      "runner": "tests/oracle/run_watercup_all.sh"
+    },
     "watercup_web_auth": {
       "type": "watercup",
       "deep_gate": true,
