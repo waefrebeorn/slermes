@@ -130,6 +130,12 @@ void usage_pricing_normalize_bedrock_model(const char *model, char *out, size_t 
  * Faithful port of agent/usage_pricing.py:_normalize_anthropic_model_name. */
 void usage_pricing_normalize_anthropic_model(const char *model, char *out, size_t out_size);
 
+/* Format a cost amount as a display label (faithful port of
+ * agent/usage_pricing.py:format_cost_label): "$0.00" for zero,
+ * "~$%.4f" for sub-cent (< $0.01, with the "~$0.0000" -> "~$<0.0001"
+ * honesty guard), "~$%.2f" otherwise. Writes into caller buffer. */
+void usage_pricing_format_cost_label(double amount, char *buf, size_t bufsz);
+
 #ifdef __cplusplus
 }
 #endif

@@ -856,3 +856,31 @@ int cli_agent_usage_pricing_normalize_usage(
 }
 
 /* Port of Python agent/usage_pricing.py:_normalize_bedrock_model_name */
+
+/* PoP: usage_pricing_format_cost_label @ agent/usage_pricing.py:format_cost_label */
+/* Faithful port of format_cost_label(amount: Decimal) -> str.
+ * Scales precision to magnitude (mirrors the Python f-string rules):
+ *   - amount == 0          -> "$0.00"
+ *   - amount < 0.01 (sub-cent) -> "~$%.4f"; if that renders "~$0.0000"
+ *     (a positive amount that rounds to zero at 4dp — the #79220 dishonesty
+ *     guard) -> "~$<0.0001"
+ *   - else                 -> "~$%.2f"
+ * amount is a double (C11 has no Decimal); the 4dp boundary check is
+ * reproduced exactly via the rendered-string comparison. */
+void usage_pricing_format_cost_label(double amount, char *buf, size_t bufsz)
+{
+    if (!buf || bufsz == 0) return;
+    if (amount == 0.0) {
+        snprintf(buf, bufsz, "$0.00");
+        return;
+    }
+    if (amount < 0.01) {
+        snprintf(buf, bufsz, "~$%.4f", amount);
+        /* honest guard: never render a zero-looking sub-cent label */
+        if (strcmp(buf, "~$0.0000") == 0) {
+            snprintf(buf, bufsz, "~$<0.0001");
+        }
+        return;
+    }
+    snprintf(buf, bufsz, "~$%.2f", amount);
+}

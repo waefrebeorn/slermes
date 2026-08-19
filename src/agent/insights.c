@@ -1431,3 +1431,13 @@ json_node_t* cli_insights__export_json(json_node_t *overview) {
 /* Port of Python agent/insights.py:_compute_activity_patterns */
 
 /* Port of Python agent/insights.py:_compute_top_sessions */
+
+/* PoP: insights_fmt_est_cost @ agent/insights.py:_fmt_est_cost */
+/* Format an aggregate estimated cost via the shared cost-label helper
+ * (usage_pricing_format_cost_label, the C port of format_cost_label) so
+ * sub-cent aggregates render at 4dp instead of collapsing to "~$0.00". */
+void insights_fmt_est_cost(double est_cost, char *buf, size_t bufsz)
+{
+    if (!buf || bufsz == 0) { return; }
+    usage_pricing_format_cost_label(est_cost, buf, bufsz);
+}
