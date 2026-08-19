@@ -158,13 +158,26 @@ def compute():
     with open(os.path.join(REPO, "live_parity_scan.json"), encoding="utf-8") as f:
         doc = json.load(f)
     tot = doc["totals"]
-    total = tot["total"]
-    ported = tot["ported"]
-    real = tot["real_gaps"]
-    partial = tot["partial"]
+    # The scanner's totals are sometimes emitted as strings (e.g. a count that
+    # round-tripped through a JSON string field). Coerce at the boundary so
+    # the '{:,}' format string never sees a str and raises
+    # "Cannot specify ',' with 's'" (observed 2026-08-19).
+    def _i(v, d=0):
+        try:
+            return int(v)
+        except (TypeError, ValueError):
+            return d
+    total = _i(tot["total"])
+    ported = _i(tot["ported"])
+    real = _i(tot["real_gaps"])
+    partial = _i(tot["partial"])
     pct = tot["coverage_pct"]
-    da4 = tot.get("da4_annotation_only_stubs", 0)
-    genuine = tot.get("genuine_gaps", real)
+    try:
+        pct = float(pct)
+    except (TypeError, ValueError):
+        pct = 0.0
+    da4 = _i(tot.get("da4_annotation_only_stubs", 0))
+    genuine = _i(tot.get("genuine_gaps", real))
 
     # BOOTLEG count from the recursive hunter (0 = every function does real
     # observable work or faithfully mirrors Python's own trivial behavior).
