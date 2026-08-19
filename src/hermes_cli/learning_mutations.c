@@ -602,7 +602,6 @@ char *learning_mutations_edit_node(const char *node_id, const char *content)
             goto edit_out;
         }
     }
-    /* PoP: learning_mutations_clear_skill_cache @ agent/learning_mutations.py:_clear_skill_cache */
     clear_skills_system_prompt_cache(home, 1);
     json_object_set(r, "ok", json_bool(1));
     json_object_set(r, "message", json_new_string("updated skill"));
@@ -612,4 +611,14 @@ edit_out:
     char *ret = strdup(dump ? dump : "{}");
     free(dump); json_free(r);
     return ret;
+}
+
+/* PoP: learning_mutations_clear_skill_cache @ agent/learning_mutations.py:_clear_skill_cache */
+/* Clear the skills system-prompt cache (including the snapshot). Mirrors the
+ * Python: wraps clear_skills_system_prompt_cache(clear_snapshot=True); the
+ * Python swallows any exception, so a NULL home falls back to the inherited
+ * environment without aborting. */
+void learning_mutations_clear_skill_cache(void) {
+    const char *home = getenv("HERMES_HOME");
+    clear_skills_system_prompt_cache(home ? home : "", 1);
 }
