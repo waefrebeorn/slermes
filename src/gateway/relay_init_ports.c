@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include "hermes_http.h"
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -313,4 +314,35 @@ char *rly_relay_display_name(void) {
         return NULL;
     }
     return value;
+}
+
+/* PoP: rly_relay_fronted_platforms @ gateway/relay/__init__.py:relay_fronted_platforms */
+/* The logical platform names the relay connector fronts for this gateway:
+ * relay_platform_identities() minus the generic "relay" fallback. Returns a
+ * malloc'd JSON array string (e.g. ["telegram","discord"]), or "[]" when the
+ * relay fronts nothing. Mirrors the Python set comprehension. */
+char *rly_relay_fronted_platforms(void) {
+    char *ident = rly_relay_platform_identities();
+    char *out = NULL;
+    json_t *arr = NULL;
+    if (ident) {
+        arr = json_parse(ident, NULL);
+        free(ident);
+    }
+    json_t *result = json_new_array();
+    if (arr && arr->type == JSON_ARRAY) {
+        int n = (int)json_len(arr);
+        for (int i = 0; i < n; i++) {
+            json_t *e = json_get(arr, (size_t)i);
+            const char *s = (e && e->type == JSON_STRING) ? e->str_val : "";
+            if (strcmp(s, "relay") == 0) continue;
+            json_array_append(result, json_new_string(s));
+        }
+    }
+    if (arr) json_free(arr);
+    char *ser = json_serialize(result);
+    out = ser ? strdup(ser) : strdup("[]");
+    if (ser) free(ser);
+    json_free(result);
+    return out ? out : strdup("[]");
 }
