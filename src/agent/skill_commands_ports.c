@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include "port_web_server_paths.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -137,4 +138,12 @@ char *skc_build_preloaded_skills_prompt(const char *skills_json) {
     if (!skills_json) return strdup("");
     printf("preloaded skills prompt built\n");
     return strdup(skills_json);
+}
+
+/* PoP: skc_resolve_skill_commands_home @ agent/skill_commands.py:_resolve_skill_commands_home */
+/* Return the effective Hermes home the skill scan should be scoped to.
+ * Mirrors the Python: str(get_hermes_home()). Caller frees the result. */
+char *skc_resolve_skill_commands_home(void) {
+    const char *home = get_hermes_home();
+    return strdup(home ? home : "");
 }
