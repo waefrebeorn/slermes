@@ -21,6 +21,7 @@
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
+#include "hermes_logger.h"
 #include <math.h>
 
 /* Port of Python: _build_codex_gpt55_autoraise_notice
@@ -63,3 +64,35 @@ bool agent_init_module_refs_ready(void) {
  * agent_state_t bootstrap — memset + context_init + budget + SIGINT + session
  * id + provider registration). It is NOT a gap. The Python __init__ attribute
  * wiring is performed there + by run_conversation()'s prologue. No "N/A". */
+
+/* PoP: agent_init_warn_memory_provider_unavailable @ agent/agent_init.py:_warn_memory_provider_unavailable */
+/* Warn (once per provider) when a configured memory provider is unavailable.
+ * is_available() is a fast, side-effect-free hot-path check and can't log for
+ * itself, so without this warning an unavailable provider is silently dropped.
+ * `reason` is the provider's unavailable_reason() — an actionable hint appended
+ * when present. Mirrors the Python set-dedup + logger.warning behaviour. */
+#define AGENT_INIT_MAX_WARNED 16
+static char *g_warned_unavailable[AGENT_INIT_MAX_WARNED];
+static int   g_warned_unavailable_n = 0;
+
+void agent_init_warn_memory_provider_unavailable(const char *name, const char *reason) {
+    if (!name) return;
+    for (int i = 0; i < g_warned_unavailable_n; i++) {
+        if (g_warned_unavailable[i] && strcmp(g_warned_unavailable[i], name) == 0)
+            return; /* already warned for this provider */
+    }
+    if (g_warned_unavailable_n < AGENT_INIT_MAX_WARNED) {
+        g_warned_unavailable[g_warned_unavailable_n++] = strdup(name);
+    }
+    char msg[1024];
+    if (reason && *reason) {
+        snprintf(msg, sizeof(msg),
+                 "Memory provider '%s' is selected but reports unavailable — "
+                 "external memory is disabled for this session. (%s)", name, reason);
+    } else {
+        snprintf(msg, sizeof(msg),
+                 "Memory provider '%s' is selected but reports unavailable — "
+                 "external memory is disabled for this session.", name);
+    }
+    hermes_log(LOG_WARNING, "agent_init", "%s", msg);
+}
