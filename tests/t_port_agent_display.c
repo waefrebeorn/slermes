@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cli/port_agent_display.h"
+#include "hermes_cli/display.h"
 
 static char *read_file(const char *path)
 {

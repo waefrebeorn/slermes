@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_agent_redact_helpers (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_agent_redact_helpers.h"
+#include "agent/redact_helpers.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

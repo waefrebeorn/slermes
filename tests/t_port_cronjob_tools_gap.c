@@ -13,7 +13,6 @@
  * JSON fields are extracted with json_obj_get/json_get_str (not json_serialize)
  * to stay consistent with the project's json ABI.
  */
-#include "port_cronjob_tools.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,7 +1,6 @@
 /* AUTO-GENERATED integration oracle harness for port_agent_tool_executor (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_agent_tool_executor.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
