@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 #include "crypto.h"
+#include "provider.h"
 #include <limits.h>
 
 static char *lowerdup(const char *s) {
@@ -266,4 +267,67 @@ bool cct_is_openai_api_base_url(const char *base_url) {
     memcpy(host, host_start, hl); host[hl] = '\0';
     free(hp);
     return strcmp(host, "api.openai.com") == 0;
+}
+
+/* PoP: cct_thinking_requests_output_headroom @ agent/gemini_native_adapter.py:_thinking_requests_output_headroom */
+/* Return true when Gemini will spend output tokens on thinking — i.e. the
+ * answer must be given output headroom above the visible-text budget.
+ * Mirrors gemini_native_adapter._thinking_requests_output_headroom. */
+static bool cct_thinking_requests_output_headroom(const json_t *thinking_config)
+{
+    json_t *normalized = google_normalize_thinking_config(thinking_config);
+    if (!normalized) return false;
+    bool result = false;
+    json_t *inc = json_obj_get(normalized, "include_thoughts");
+    if (inc && inc->type == JSON_BOOL && !inc->bool_val) {
+        bool has_level = json_obj_get(normalized, "thinking_level") != NULL;
+        json_t *budget = json_obj_get(normalized, "thinking_budget");
+        bool has_budget = budget && (budget->type == JSON_NUMBER) && (budget->num_val != 0.0);
+        result = has_level || has_budget;
+    } else {
+        json_t *budget = json_obj_get(normalized, "thinking_budget");
+        bool neg_budget_no_level =
+            budget && (budget->type == JSON_NUMBER) && (budget->num_val <= 0.0) &&
+            json_obj_get(normalized, "thinking_level") == NULL;
+        result = !neg_budget_no_level;
+    }
+    json_free(normalized);
+    return result;
+}
+
+/* PoP: cct_effective_gemini_max_output_tokens @ agent/gemini_native_adapter.py:_effective_gemini_max_output_tokens */
+/* Faithful port: resolve native maxOutputTokens. Gemini applies a low internal
+ * default and truncates when thinking is enabled, so raise a too-small explicit
+ * cap to the published 65,535 ceiling. `thinking_config_json` is the JSON
+ * string produced by cct_build_gemini_thinking_config (may be NULL). */
+long cct_effective_gemini_max_output_tokens(long max_tokens, const char *thinking_config_json)
+{
+    const long GEMINI_DEFAULT = 65535;
+    if (thinking_config_json == NULL || *thinking_config_json == '\0') {
+        return (max_tokens > 0) ? max_tokens : GEMINI_DEFAULT;
+    }
+    json_t *tc = json_parse(thinking_config_json, NULL);
+    if (!tc) return (max_tokens > 0) ? max_tokens : GEMINI_DEFAULT;
+    /* thinking_config may be wrapped under "thinkingConfig" */
+    json_t *inner = json_obj_get(tc, "thinkingConfig");
+    json_t *cfg = inner ? inner : tc;
+    bool requests = cct_thinking_requests_output_headroom(cfg);
+    json_free(tc);
+    if (max_tokens <= 0) return GEMINI_DEFAULT;
+    return requests ? (max_tokens > GEMINI_DEFAULT ? max_tokens : GEMINI_DEFAULT) : max_tokens;
+}
+
+/* PoP: cct_raise_gemini_thinking_max_tokens @ agent/transports/chat_completions.py:_raise_gemini_thinking_max_tokens */
+/* Raise Gemini output caps that thinking tokens would otherwise consume.
+ * Delegates to cct_build_gemini_thinking_config + cct_effective_gemini_max_output_tokens.
+ * Returns the (possibly raised) requested cap. */
+long cct_raise_gemini_thinking_max_tokens(
+    const char *model, const char *reasoning_json, long requested)
+{
+    (void)model;
+    char *tc_json = cct_build_gemini_thinking_config(reasoning_json);
+    if (!tc_json) return requested;
+    long effective = cct_effective_gemini_max_output_tokens(requested, tc_json);
+    free(tc_json);
+    return effective;
 }
