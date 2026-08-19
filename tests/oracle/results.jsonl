@@ -12261,3 +12261,5 @@
 {"commit":"8b1ded2f06597e0c38add15e8d08e23819c05bdf","port":"port_config_helpers","verdict":"fail","timestamp":"2026-08-16T07:22:56-04:00"}
 {"commit":"8b1ded2f06597e0c38add15e8d08e23819c05bdf","port":"port_config_py_pure","verdict":"fail","timestamp":"2026-08-16T07:22:57-04:00"}
 {"commit":"8b1ded2f06597e0c38add15e8d08e23819c05bdf","port":"port_cron_jobs","verdict":"fail","timestamp":"2026-08-16T07:22:58-04:00"}
+{"commit":"546f9d3f2c05cddb3385f10c0434e083813f5694","port":"watercup_web_auth","verdict":"fail","timestamp":"2026-08-19T08:04:54-04:00"}
+{"commit":"546f9d3f2c05cddb3385f10c0434e083813f5694","port":"watercup_json_escape","verdict":"fail","timestamp":"2026-08-19T08:12:57-04:00"}

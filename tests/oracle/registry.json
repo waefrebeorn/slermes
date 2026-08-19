@@ -2,6 +2,24 @@
   "version": 1,
   "description": "Agnostic oracle registry \u2014 maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
   "ports": {
+    "watercup_web_auth": {
+      "type": "watercup",
+      "deep_gate": true,
+      "harness": "tests/watercup/audit_web_auth.c",
+      "oracle": "tests/watercup/audit_web_auth_py.py",
+      "live_python": "hermes_cli/dashboard_auth/public_paths.py + hermes_cli/web_server.py",
+      "contract": "C trace-cup == LIVE-Python trace-cup over a correlated input walk (FNV-1a fold). Fails on ANY mismatch — catches stubs / wrong-constant-set FAPs the output-diff oracle misses.",
+      "runner": "tests/oracle/run_watercup.sh"
+    },
+    "watercup_json_escape": {
+      "type": "watercup",
+      "deep_gate": true,
+      "harness": "tests/watercup/audit_json_escape.c",
+      "oracle": "tests/watercup/audit_json_escape_py.py",
+      "live_python": "hermes_cli (json.dumps)",
+      "contract": "Language-agnostic: C11 copy A (web_server.c) vs C11 copy B (web_app.c) vs LIVE Python json.dumps. Catches the drifted control-char escape branch in copy B. Proves the cup works across ANY translation to C11.",
+      "runner": "tests/oracle/run_watercup_json_escape.sh"
+    },
     "agent_import": {
       "harness": "tests/t_port_agent_import.c",
       "oracle": "tests/sta_oracle_agent_import.py",

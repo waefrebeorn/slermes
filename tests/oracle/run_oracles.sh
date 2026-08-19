@@ -54,7 +54,23 @@ fi
 OVERALL=0
 for port in "${PORTS[@]}"; do
   echo "=== Oracle: $port (commit: $CURRENT_COMMIT) ==="
-  
+
+  # Water-cup deep-gates: distinct contract (cup-hash equality, not JSON diff).
+  # Dispatched to their own runners because the standard diff oracle cannot
+  # express a trace-cup verdict. Registered as watercup_* ports below.
+  if [ "$port" = "watercup_web_auth" ]; then
+    if bash "$SLERMES_ROOT/tests/oracle/run_watercup.sh"; then VERDICT="pass"
+    else VERDICT="fail"; [ "$MODE" = "check" ] && OVERALL=1; fi
+    echo "{\"commit\":\"$CURRENT_COMMIT\",\"port\":\"$port\",\"verdict\":\"$VERDICT\",\"timestamp\":\"$(date -Iseconds)\"}" >> "$RESULT_HISTORY"
+    continue
+  fi
+  if [ "$port" = "watercup_json_escape" ]; then
+    if bash "$SLERMES_ROOT/tests/oracle/run_watercup_json_escape.sh"; then VERDICT="pass"
+    else VERDICT="fail"; [ "$MODE" = "check" ] && OVERALL=1; fi
+    echo "{\"commit\":\"$CURRENT_COMMIT\",\"port\":\"$port\",\"verdict\":\"$VERDICT\",\"timestamp\":\"$(date -Iseconds)\"}" >> "$RESULT_HISTORY"
+    continue
+  fi
+
   # Run the oracle. The runner uses SLERMES_HOME/HERMES_HOME isolation,
   # so neither side touches the real ~/.hermes. All artifacts go to
   # tests/oracle/build/ instead of /tmp.
