@@ -132,4 +132,30 @@ int todo_tool__dedupe_by_id(TodoItem *items, int count)
     return write;
 }
 
+/* PoP: tdt_normalize_order @ tools/todo_tool.py:_normalize_order */
+/* Lift the active step ahead of any earlier unfinished placeholders.
+ * Matches Python: find the first in_progress item; if there is a pending
+ * item before it, move the active item to just before that pending one.
+ * Reorders the in-memory store in place. No-op when there is no active
+ * step or no earlier pending. */
+void tdt_normalize_order(void) {
+    if (!_items || _item_count <= 0) return;
+    int active_index = -1;
+    for (int i = 0; i < _item_count; i++) {
+        if (strcmp(_items[i].status, "in_progress") == 0) { active_index = i; break; }
+    }
+    if (active_index < 0) return;
+    int pending_index = -1;
+    for (int i = 0; i < active_index; i++) {
+        if (strcmp(_items[i].status, "pending") == 0) { pending_index = i; break; }
+    }
+    if (pending_index < 0) return;
+    TodoItem active = _items[active_index];
+    /* shift [pending_index, active_index) right by one */
+    for (int i = active_index; i > pending_index; i--) {
+        _items[i] = _items[i - 1];
+    }
+    _items[pending_index] = active;
+}
+
 
