@@ -276,3 +276,28 @@ void bu_cli_skill_text(char *out, size_t out_sz) {
 void bu_dynamic_schema_overrides(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "{}");
 }
+
+/* PoP: bu_user_local_bin_dir @ tools/browser_use_cli.py:_user_local_bin_dir */
+/* The standard user-level tool dir (~/.local/bin on POSIX; uv's default
+ * tool bin dir %APPDATA%/uv/bin on Windows). Desktop/TUI workers may start
+ * with a minimal PATH that omits it even when `uv tool install browser-use`
+ * placed the binary there. Returns a malloc'd path, or NULL on failure. */
+char *bu_user_local_bin_dir(void) {
+#ifdef _WIN32
+    const char *appdata = getenv("APPDATA");
+    if (!appdata || !*appdata) return NULL;
+    size_t n = strlen(appdata) + strlen("\\uv\\bin") + 1;
+    char *p = malloc(n);
+    if (!p) return NULL;
+    snprintf(p, n, "%s\\uv\\bin", appdata);
+    return p;
+#else
+    const char *home = getenv("HOME");
+    if (!home || !*home) return NULL;
+    size_t n = strlen(home) + strlen("/.local/bin") + 1;
+    char *p = malloc(n);
+    if (!p) return NULL;
+    snprintf(p, n, "%s/.local/bin", home);
+    return p;
+#endif
+}

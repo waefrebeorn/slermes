@@ -39,6 +39,7 @@
  */
 #include "hermes_hooks.h"
 #include "hermes_json.h"
+#include "port_config_py_helpers.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -742,6 +743,18 @@ int register_from_config(const json_t *config) {
     int parsed = iter_configured_hooks(config);
     if (parsed <= 0) return 0;
     return shell_hooks_register_all();
+}
+
+/* PoP: shell_hooks_re_register_config_hooks @ agent/shell_hooks.py:re_register_config_hooks */
+/* Re-register shell hooks from config after a plugin force-reload.
+ * Mirrors the Python: reload config and re-run register_from_config so
+ * config-owned hooks (which the plugin ownership ledger cannot restore)
+ * are wired again. Commands already allowlisted stay allowlisted, so this
+ * never re-prompts at a TTY for previously-approved hooks. */
+void shell_hooks_re_register_config_hooks(void) {
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) return;
+    register_from_config(cfg);
 }
 
 /* ================================================================
