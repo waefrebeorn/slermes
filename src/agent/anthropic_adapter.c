@@ -101,6 +101,15 @@ void* cli_agent_anthropic_adapter_create_anthropic_message(void* p1, void* p2, v
 #include <ctype.h>
 #include <stdbool.h>
 
+/* PoP: anthropic_is_opencode_endpoint @ agent/anthropic_adapter.py:_is_opencode_endpoint */
+/* Return true for OpenCode's Zen/Go relay (opencode.ai). Faithful delegation
+ * to utils.base_url_host_matches (C: provider_base_url_host_matches, defined
+ * in auxiliary_client_runtime.c). */
+extern bool provider_base_url_host_matches(const char *base_url, const char *domain);
+bool anthropic_is_opencode_endpoint(const char *base_url) {
+    return provider_base_url_host_matches(base_url ? base_url : "", "opencode.ai");
+}
+
 /* Port of Python: _is_stream_unavailable_error */
 bool anthropic_is_stream_unavailable_error(const char *error_msg) {
     if (!error_msg) return false;

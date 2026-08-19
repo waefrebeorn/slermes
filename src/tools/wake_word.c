@@ -67,6 +67,7 @@ static const char *ww_default_for(const char *key)
     return NULL;
 }
 
+/* PoP: ww_get_str @ tools/wake_word.py:_get */
 const char *ww_get_str(const json_t *cfg, const char *key)
 {
     if (!cfg || cfg->type != JSON_OBJECT || !key) {
