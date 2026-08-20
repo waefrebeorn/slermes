@@ -32,6 +32,7 @@ diff oracle AND the water-cup say MATCH.
 | `usage_pricing_format_cost_label` | agent | ✅ GREEN | sub-cent rounding (ROUND_HALF_EVEN) matches Python `Decimal` |
 | `model_normalize_detect_vendor` | hermes_cli | ✅ GREEN | empty-string guard matches Python falsy semantics |
 | `subscription_view_format_tier_row` | agent | ✅ GREEN | thousands-grouped money + credits suffix matches LIVE |
+| `registry_validate_args` | tools | ✅ GREEN | P0 centralized input validation — rejects bad/type-mismatched args before dispatch, returns standardized error |
 | `watercup_web_auth` | web | 🔴 RED | auth allowlist set diverges from LIVE `PUBLIC_API_PATHS` |
 | `watercup_json_escape` | web | 🔴 RED | `web_app.c` copy B dropped `<0x20` control-char escape vs `web_server.c`+LIVE |
 
@@ -74,9 +75,22 @@ The C tree does NOT mirror the Python package tree 1:1. Of **523 Python modules*
    C serves 4 endpoints unauthenticated that Python 401s, and 401s 6 public
    endpoints Python serves. **Fix `src/web_dashboard.c::is_public_path` + the
    loopback/IPv6 + `hmac.compare_digest` uses.**
-2. **`watercup_json_escape`** — `src/web_app.c::web_json_escape` dropped the
+3. **`watercup_json_escape`** — `src/web_app.c::web_json_escape` dropped the
    `<0x20 → \u00XX` control-char branch present in `src/web_server.c` + LIVE
    `json.dumps`. **Fix `web_json_escape` to escape control chars.**
+
+3b. **Tool input validation gate (SHIPPED ✅)** — `src/ports/tools/registry.c::
+    validate_args_json` now runs BEFORE `coerce_args_json`/handler on both dispatch
+    paths (main + repaired) and rejects non-object args, type-mismatched present
+    args (string/integer/number/boolean/array/object + union `type` arrays), and
+    missing `required` args — returning a standardized `tool_error` JSON with
+    `retryable:false` + a recovery hint (no handler side effects on bad input).
+    Proven by `tests/watercup/gates/registry_validate_args/verify.c` (9 assertions,
+    ALL PASS against real libjson). **Bonus:** building it root-caused + fixed two
+    LATENT libjson bugs in the existing `coerce_args_json` — `json_len()` (array
+    length) was used where `json_object_size()` (object count) was needed, and
+    `json_get(obj, index)` (array accessor) was used where `json_object_get_at()`
+    was needed — so coercion was silently a no-op before; it now actually coerces.
 
 ### P1 — Cheat-surface closure (the "173 missing-from-index" class)
 3. Resolve the 473 DA-4 annotation-only stubs (PoP comment, no body) — give them

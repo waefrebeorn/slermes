@@ -29,9 +29,13 @@ __attribute__((weak)) char *tool_error_sanitize(const char *error_msg);
 
 /* ================================================================
  *  Type coercion for tool call arguments (TD01 parity)
- * ================================================================ */
+ /* ================================================================ */
 
-/* Coerce string tool call arguments to match their JSON Schema types.
+ /* Forward declaration — central input validation gate (P0), defined below. */
+ static char *validate_args_json(const char *name, const char *args_json,
+                                 const char *schema_json);
+
+ /* Coerce string tool call arguments to match their JSON Schema types.
  * LLMs frequently return numbers as strings ("42" instead of 42)
  * and booleans as strings ("true" instead of true).
  *
@@ -67,12 +71,12 @@ static char *coerce_args_json(const char *name, const char *args_json,
 
     if (properties && properties->type == JSON_OBJECT) {
         /* Iterate over schema properties */
-        size_t prop_count = json_len(properties);
+        size_t prop_count = json_object_size(properties);
         for (size_t pi = 0; pi < prop_count; pi++) {
-            const char *key = properties->c.keys ? properties->c.keys[pi] : NULL;
+            const char *key = json_object_get_key_at(properties, pi);
             if (!key) continue;
 
-            json_node_t *prop = json_get(properties, pi);
+            json_node_t *prop = json_object_get_at(properties, pi);
             if (!prop || prop->type != JSON_OBJECT) continue;
 
             const char *type_str = json_get_str(prop, "type", "");
@@ -576,6 +580,13 @@ char *registry_dispatch(const char *name, const char *args_json,
     tool_t *tool = find_unlocked(name);
     if (tool) {
         if (tool->handler) {
+            /* P0: validate BEFORE coercion/handler. A validation failure short-circuits
+             * dispatch with a standardized error (no handler side effects). */
+            char *verr = validate_args_json(tool->name, args_json, tool->schema_json);
+            if (verr) {
+                pthread_mutex_unlock(&g_registry_mutex);
+                return verr;
+            }
             /* Coerce string args to match JSON Schema types (TD01) */
             char *coerced = coerce_args_json(tool->name, args_json, tool->schema_json);
             const char *dispatch_args = coerced ? coerced : args_json;
@@ -607,6 +618,12 @@ char *registry_dispatch(const char *name, const char *args_json,
         free(repaired);
         if (tool) {
             if (tool->handler) {
+                /* P0: validate BEFORE coercion/handler (repaired path too). */
+                char *verr = validate_args_json(tool->name, args_json, tool->schema_json);
+                if (verr) {
+                    pthread_mutex_unlock(&g_registry_mutex);
+                    return verr;
+                }
                 /* Coerce string args to match JSON Schema types (TD01) */
                 char *coerced = coerce_args_json(tool->name, args_json, tool->schema_json);
                 const char *dispatch_args = coerced ? coerced : args_json;
@@ -638,10 +655,179 @@ char *registry_dispatch(const char *name, const char *args_json,
     return strdup(buf);
 }
 
-/* Port of Python tools/file_state.py:get_registry(). */
 /* ================================================================
- *  Get registry for agent loop
+ *  Argument validation — the central input gate (P0).
+ *
+ *  Port of Python tools/registry.py input validation. Runs BEFORE the
+ *  handler (and before coercion) so a malformed/mistyped call is rejected
+ *  with a standardized, machine-readable error instead of reaching tool
+ *  code. This is a structural control: it prevents a single bad model
+ *  emission (wrong type, missing required arg) from triggering whatever
+ *  side effects the handler would have performed.
+ *
+ *  Returns NULL if args are valid (or there is no schema to validate
+ *  against). On failure returns a malloc'd JSON error of the shape
+ *  {"error":..., "retryable":"false", "recovery_hint":...} that the
+ *  dispatcher returns directly WITHOUT invoking the handler.
  * ================================================================ */
+static char *validate_args_json(const char *name, const char *args_json,
+                                const char *schema_json)
+{
+    if (!args_json || !schema_json) return NULL;  /* nothing to validate */
+
+    char *err = NULL;
+    json_node_t *args = json_parse(args_json, &err);
+    if (!args || args->type != JSON_OBJECT) {
+        free(err);
+        json_free(args);
+        return tool_error("tool arguments must be a JSON object",
+                          "tool", name ? name : "",
+                          "retryable", "false",
+                          "recovery_hint", "pass a JSON object {\"key\": value, ...} as the arguments",
+                          NULL);
+    }
+    free(err);
+
+    json_node_t *schema = json_parse(schema_json, &err);
+    if (!schema || schema->type != JSON_OBJECT) {
+        free(err);
+        json_free(schema);
+        json_free(args);
+        return NULL;  /* unparseable schema -> skip validation, don't block */
+    }
+    free(err);
+
+    json_node_t *params = json_object_get(schema, "parameters");
+    json_node_t *properties = params ? json_object_get(params, "properties") : NULL;
+
+    /* (1) Required-property presence (activates as schemas declare "required"). */
+    json_node_t *required = params ? json_object_get(params, "required") : NULL;
+    if (required && required->type == JSON_ARRAY) {
+        size_t rc = json_len(required);
+        for (size_t i = 0; i < rc; i++) {
+            json_node_t *rn = json_get(required, (int)i);
+            if (!rn || rn->type != JSON_STRING) continue;
+            const char *kptr = json_string_value_safe(rn);
+            char keybuf[96];
+            snprintf(keybuf, sizeof(keybuf), "%s", kptr ? kptr : "");
+            if (!json_object_get(args, keybuf)) {
+                json_free(schema);
+                json_free(args);
+                char hint[160];
+                snprintf(hint, sizeof(hint),
+                         "the '%s' argument is required for %s but was missing",
+                         keybuf, name ? name : "this tool");
+                return tool_error("missing required argument",
+                                  "tool", name ? name : "",
+                                  "missing", keybuf,
+                                  "retryable", "false",
+                                  "recovery_hint", hint,
+                                  NULL);
+            }
+        }
+    }
+
+    /* (2) Type correctness of present properties against the schema. */
+    if (properties && properties->type == JSON_OBJECT) {
+        size_t pc = json_object_size(properties);
+        for (size_t pi = 0; pi < pc; pi++) {
+            const char *key = json_object_get_key_at(properties, pi);
+            if (!key) continue;
+            json_node_t *prop = json_object_get_at(properties, pi);
+            if (!prop || prop->type != JSON_OBJECT) continue;
+            json_node_t *arg_val = json_object_get(args, key);
+            if (!arg_val) continue;  /* absent -> required check handles it */
+
+            const char *type_str = json_get_str(prop, "type", "");
+            /* Resolve the effective expected type. "type" may be a scalar string
+             * ("string") or a union array (["string","null"]); take the first. */
+            const char *expected = type_str;
+            char union_buf[64];
+            json_node_t *type_node = json_object_get(prop, "type");
+            if (type_node && type_node->type == JSON_ARRAY) {
+                json_node_t *first = json_get(type_node, 0);
+                const char *fst = (first && first->type == JSON_STRING)
+                                      ? json_string_value_safe(first) : "";
+                snprintf(union_buf, sizeof(union_buf), "%s", fst ? fst : "");
+                expected = union_buf;
+            }
+            if (!expected[0]) continue;
+
+            bool ok = true;
+            if (strcmp(expected, "string") == 0) {
+                ok = (arg_val->type == JSON_STRING);
+            } else if (strcmp(expected, "integer") == 0 || strcmp(expected, "number") == 0) {
+                /* a JSON number is fine; a string is only OK if it is numeric AND
+                 * the tool has not yet coerced it (coercion runs after validation).
+                 * A non-numeric string is a hard error. */
+                if (arg_val->type == JSON_STRING) {
+                    const char *sv = json_string_value_safe(arg_val);
+                    if (!sv) { ok = false; }
+                    else {
+                        char *end = NULL;
+                        strtod(sv, &end);
+                        ok = (end && *end == '\0' && end != sv);
+                    }
+                } else {
+                    ok = (arg_val->type == JSON_NUMBER);
+                }
+            } else if (strcmp(expected, "boolean") == 0) {
+                if (arg_val->type == JSON_STRING) {
+                    const char *sv = json_string_value_safe(arg_val);
+                    ok = (sv && (strcasecmp(sv, "true") == 0 ||
+                                 strcasecmp(sv, "false") == 0 ||
+                                 strcmp(sv, "1") == 0 ||
+                                 strcmp(sv, "0") == 0));
+                } else {
+                    ok = (arg_val->type == JSON_BOOL);
+                }
+            } else if (strcmp(expected, "array") == 0) {
+                if (arg_val->type == JSON_STRING) {
+                    const char *sv = json_string_value_safe(arg_val);
+                    char *ae = NULL;
+                    json_node_t *p = sv ? json_parse(sv, &ae) : NULL;
+                    free(ae);
+                    ok = (p && p->type == JSON_ARRAY);
+                    json_free(p);
+                } else {
+                    ok = (arg_val->type == JSON_ARRAY);
+                }
+            } else if (strcmp(expected, "object") == 0) {
+                ok = (arg_val->type == JSON_OBJECT);
+            }
+            /* unknown expected type -> don't block (schema may use vendor ext) */
+
+            if (!ok) {
+                /* key/expected point into the schema we are about to free; copy
+                 * them into locals first so tool_error reads live memory. */
+                char keybuf[96];
+                snprintf(keybuf, sizeof(keybuf), "%s", key ? key : "");
+                char expbuf[64];
+                snprintf(expbuf, sizeof(expbuf), "%s", expected ? expected : "");
+                json_free(schema);
+                json_free(args);
+                char hint[200];
+                snprintf(hint, sizeof(hint),
+                         "argument '%s' for %s must be of type %s; the provided value is not",
+                         keybuf, name ? name : "this tool", expbuf);
+                return tool_error("argument type mismatch",
+                                  "tool", name ? name : "",
+                                  "argument", keybuf,
+                                  "expected", expbuf,
+                                  "retryable", "false",
+                                  "recovery_hint", hint,
+                                  NULL);
+            }
+        }
+    }
+
+    json_free(schema);
+    json_free(args);
+    return NULL;  /* valid */
+}
+
+
+
 
 tool_registry_t *get_registry(void) {
     pthread_mutex_lock(&g_registry_mutex);
