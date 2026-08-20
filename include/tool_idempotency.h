@@ -53,6 +53,12 @@ char *tool_idem_get(tool_idem_cache_t *c, const char *key);
 /* Remove a key (e.g. on explicit invalidate). Returns true if it was present. */
 bool tool_idem_invalidate(tool_idem_cache_t *c, const char *key);
 
+/* Attach a JSON persistence file. On attach, any non-expired entries in the file
+ * are loaded into the cache (surviving process restarts). Thereafter every
+ * tool_idem_put rewrites the file atomically, so the cache is durable. Pass NULL
+ * to detach (stops auto-save). The path should live under HERMES_HOME. */
+void tool_idem_attach(tool_idem_cache_t *c, const char *path);
+
 /* Current entry count (diagnostics). */
 size_t tool_idem_count(const tool_idem_cache_t *c);
 

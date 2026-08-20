@@ -37,13 +37,14 @@ diff oracle AND the water-cup say MATCH.
 | `watercup_json_escape` | web | ✅ GREEN | `web_json_escape` now escapes `<0x20` like LIVE `json.dumps` (`\b`/`\f` short, else `\u00XX`) |
 | `tool_result_classification` | tools | ✅ GREEN | P1: classifies tool errors retryable/permanent (fail-closed default) + `tool_error_with_class` tag |
 | `tool_idempotency` | tools | ✅ GREEN | P1: omap-backed idempotency cache — retry returns cached result (no double side effect) |
+| `tool_idempotency_persist` | tools | ✅ GREEN | P1 restart-survival: put flushes to JSON; fresh cache recovers entry (safe retry survives restart) |
 | `tool_dispatch_retry` | agent | ✅ GREEN | P1: loop retry policy consumes tool_classify_error (transient→retry, permanent→no) |
 | `billing_format_money` | agent | ✅ GREEN | money formatter — whole→`$N`, fractional→`$N.NN` matches LIVE `billing_view.format_money` (13 cups) |
 | `format_size` | tools | ✅ GREEN | byte sizes B/KB/MB/GB/TB; fixed C cap-at-GB gap vs LIVE `sizefmt.format_bytes` |
 
-> **12 project-wide gates GREEN** (incl. `subscription_view_format_tier_row`, `registry_validate_args`, `watercup_web_auth`, `watercup_json_escape`, `tool_result_classification`, `tool_idempotency`, `tool_dispatch_retry`, `billing_format_money`, `format_size`).
+> **13 project-wide gates GREEN** (incl. `subscription_view_format_tier_row`, `registry_validate_args`, `watercup_web_auth`, `watercup_json_escape`, `tool_result_classification`, `tool_idempotency`, `tool_idempotency_persist`, `tool_dispatch_retry`, `billing_format_money`, `format_size`).
 > Candidate pool for more gates: **3,042 pure functions** with both a C port and a LIVE
-> Python twin (from the PoP-annotation cross-reference). Only 12 are currently gated.
+> Python twin (from the PoP-annotation cross-reference). Only 13 are currently gated.
 
 ### 1C. PoP-integrity audit (`scripts/audit_ports.py` v2 — hardened this session)
 v1 reported ~17,500 false-positive "orphans" (broken regex). v2 scans definitions
@@ -120,6 +121,13 @@ Built the two structural fixes the agent-tooling research identified as the
   the cached result on retry WITHOUT re-running the handler (no double send), and
   successful results are stored. `tool_registry_shutdown()` frees the cache.
   Proven by `tests/watercup/gates/tool_idempotency/`.
+- **Restart-survival** — `tool_idem_attach(cache, path)` (path under HERMES_HOME,
+  resolved like `main.c`: `SLERMES_HOME` → `~/.slermes` → `~/.hermes`). On attach,
+  non-expired entries are loaded from a JSON file; every `tool_idem_put` rewrites
+  that file (omap-backed, libjson-serialized). So the cache — and therefore safe
+  retries — survives process restarts, not just in-process. Wired into the
+  registry's `idem_ensure()` so the production cache is durable by default.
+  Proven by `tests/watercup/gates/tool_idempotency_persist/` (put→flush→fresh-attach→recover).
 
 - **Loop consumption (the non-speculative consumer)** — `src/agent/conversation_loop.c`
   now unifies its ad-hoc `classify_tool_result` on `tool_classify_error` (single

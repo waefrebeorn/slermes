@@ -207,7 +207,28 @@ static tool_idem_cache_t *g_idem_cache = NULL;
 static bool g_idem_enabled = true;   /* operator kill-switch */
 
 static void idem_ensure(void) {
-    if (!g_idem_cache) g_idem_cache = tool_idem_new();
+    if (g_idem_cache) return;
+    g_idem_cache = tool_idem_new();
+    if (!g_idem_cache) return;
+    /* Restart-survival: persist to a JSON file under HERMES_HOME so the cache
+     * (and therefore safe retries) survives process restarts. Resolution mirrors
+     * main.c: SLERMES_HOME, else ~/.slermes, else ~/.hermes. */
+    const char *home_env = getenv("SLERMES_HOME");
+    char hh[512];
+    if (home_env && *home_env) {
+        snprintf(hh, sizeof hh, "%s", home_env);
+    } else {
+        const char *uh = getenv("HOME");
+        if (!uh) return;  /* no home -> keep in-memory only */
+        snprintf(hh, sizeof hh, "%s/.slermes", uh);
+        if (access(hh, F_OK) != 0) {
+            snprintf(hh, sizeof hh, "%s/.hermes", uh);
+            if (access(hh, F_OK) != 0) return;
+        }
+    }
+    char path[640];
+    snprintf(path, sizeof path, "%s/idempotency_cache.json", hh);
+    tool_idem_attach(g_idem_cache, path);
 }
 
 /* Generation counter — bumped on every mutation.
