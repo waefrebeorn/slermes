@@ -140,14 +140,17 @@ static json_node_t *read_manifest(const char *snap_dir) {
  * Returns statically allocated buffer (valid until next call). */
 const char *format_size(unsigned long long bytes) {
     static char buf[32];
-    static const char *units[] = {"B", "KB", "MB", "GB", NULL};
+    static const char *units[] = {"B", "KB", "MB", "GB", "TB", NULL};
     double val = (double)bytes;
     int u = 0;
-    while (u < 3 && val >= 1024.0) { val /= 1024.0; u++; }
-    if (u == 0)
+    /* Match LIVE hermes_cli/sizefmt.py::format_bytes: integer bytes below 1024,
+     * then one decimal per 1024 step, up to TB (no cap). */
+    if (val < 1024.0) {
         snprintf(buf, sizeof(buf), "%llu B", bytes);
-    else
-        snprintf(buf, sizeof(buf), "%.1f %s", val, units[u]);
+        return buf;
+    }
+    while (units[u + 1] && val >= 1024.0) { val /= 1024.0; u++; }
+    snprintf(buf, sizeof(buf), "%.1f %s", val, units[u]);
     return buf;
 }
 
