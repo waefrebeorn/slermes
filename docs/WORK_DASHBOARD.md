@@ -73,6 +73,33 @@ The C tree does NOT mirror the Python package tree 1:1. Of **523 Python modules*
 
 > **Reorg plan (per `slermes-name-parity` skill Phases 1 & 3):** bring the C tree to
 > 1:1 with Python via (a) org-parity relocation `src/ports/<pkg>/X.c`→`src/<pkg>/X.c`
+
+### 1E. Function-level parity gaps (deepest picture — fresh battleground scan)
+Ran `tests/slermes_parity_battleground.py --json` (the canonical, fail-closed
+oracle). It cross-references **every** Python function against the C tree by name
++ PoP annotation:
+
+- **15,516** live Python functions scanned.
+- **2,308** classified `REAL_GAP` (all HIGH severity). Of those, **1,809** carry
+  `DA-1:no-c-equivalent` — genuinely unported (not a stale-scanner artifact; the
+  battleground resolves names + PoP credits, unlike the stale `live_parity_scan.json`
+  which over-reports because it can't resolve the C index).
+- **Top gap concentration:** `cli.py` (262), `hermes_cli/plugins.py` (120),
+  `gateway/platforms/api_server.py` (84), `hermes_cli/tools_config.py` (79),
+  `hermes_cli/kanban.py` (56), `gateway/run.py` (52), `hermes_cli/console_engine.py` (52).
+  These are large orchestration modules (CLI wiring, plugin registry, API server) —
+  heavy ports, not quick wins.
+
+> **Strategy:** close the **small, self-contained, pure-function** REAL_GAPs with a
+> faithful C port + a water-cup gate proving it against the LIVE twin. Example closed
+> this session: `agent/chat_completion_helpers.py::_status_code_from_value`
+> (`cch_status_code_from_value` in `src/agent/chat_completion_helpers_ports.c`, gated
+> + GREEN). The big orchestration modules are tracked as bulk work, ported behind
+> their own gates when a pure helper within them is extractable.
+
+| Gate | Subsystem | Status | What it proves |
+|------|-----------|--------|----------------|
+| `cch_status_code_from_value` | agent | ✅ GREEN | HTTP-status parse from int/str; closes REAL_GAP `_status_code_from_value` (DA-1, HIGH) |
 > and (b) file-level thin-wrapper `.c` files for modules whose real code lives elsewhere.
 > Execute in TWO git-checkpointed phases (mechanical rename, then collisions) — never one
 > blind pass.

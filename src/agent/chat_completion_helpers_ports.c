@@ -182,3 +182,44 @@ long cch_estimate_chunk_bytes(const char *arg) {
     printf("%ld\n", size);
     return size;
 }
+
+/* PoP: cch_status_code_from_value @ agent/chat_completion_helpers.py:_status_code_from_value
+ * Parse an HTTP status code from an int (100-599) or a string. Returns the
+ * status code, or -1 when none can be extracted (LIVE returns None).
+ * Arg = the value (int as decimal string, or arbitrary string). */
+int cch_status_code_from_value(const char *arg) {
+    /* Python:
+     *   if isinstance(value, int) and 100 <= value < 600: return value
+     *   if not isinstance(value, str): return None
+     *   match = re.search(r"(?:HTTP_STATUS/)?\b([1-5]\d\d)\b", value, IGNORECASE)
+     *   if not match: return None
+     *   try: return int(match.group(1))
+     *   except ValueError: return None
+     */
+    if (!arg || !*arg) return -1;
+    /* int path: a pure decimal integer string in [100,600) */
+    char *end = NULL;
+    long iv = strtol(arg, &end, 10);
+    if (*end == '\0') {
+        if (iv >= 100 && iv < 600) return (int)iv;
+        return -1; /* int but out of range -> None */
+    }
+    /* string path: regex (?:HTTP_STATUS/)?\b([1-5]\d\d)\b (case-insensitive) */
+    const char *p = arg;
+    while (*p) {
+        /* optional "HTTP_STATUS/" prefix */
+        if (strncasecmp(p, "HTTP_STATUS/", 11) == 0) p += 11;
+        /* word boundary then [1-5]\d\d */
+        if (isdigit((unsigned char)p[0]) && p[0] >= '1' && p[0] <= '5' &&
+            isdigit((unsigned char)p[1]) && isdigit((unsigned char)p[2])) {
+            /* ensure it's a 3-digit run (not 4 digits) -> stop at next non-digit */
+            int code = (p[0]-'0')*100 + (p[1]-'0')*10 + (p[2]-'0');
+            char nxt = p[3];
+            if (!(isdigit((unsigned char)nxt) || (nxt >= 'a' && nxt <= 'z') || (nxt >= 'A' && nxt <= 'Z'))) {
+                return code;
+            }
+        }
+        p++;
+    }
+    return -1;
+}
