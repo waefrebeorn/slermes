@@ -27,6 +27,7 @@
 #include "hermes_url_safety.h"
 #include "hermes_tool_guardrails.h"
 #include "acp/edit_approval.h"
+#include "tool_result_classification.h"   /* tool_classify_error() — retry signal */
 #include "todo_hydrate.h"
 #include "file_mutation_verifier.h"
 #include "provider_metadata.h"
@@ -118,11 +119,33 @@ static int is_trivial_prompt(const char *text)
     return 0;
 }
 
+static void *tool_dispatch_thread(void *arg);
+
+/* P93: Tool result classification (shared enum). */
+typedef enum {
+    TOOL_RESULT_SUCCESS = 0,
+    TOOL_RESULT_ERROR,   /* Non-fatal error — loop continues */
+    TOOL_RESULT_FATAL,   /* Fatal error — abort loop */
+} tool_result_class_t;
+
+/* P1: retry a tool call when the result is a TRANSIENT (retryable) error.
+ * Safe because registry_dispatch is idempotent on args (omap-backed cache: a
+ * retry with the same args returns the cached result WITHOUT re-executing the
+ * handler, so no double side effect). Errors are never cached, so a transient
+ * failure genuinely re-executes. Bounded by TOOL_RETRY_MAX with exponential
+ * backoff. Permanent/unknown errors are NOT retried (fail-closed). */
+#ifndef TOOL_RETRY_MAX
+#define TOOL_RETRY_MAX 3
+#endif
+static char *dispatch_with_retry(const char *name, const char *args,
+                                 const char *session_id, int *duration_ms_out);
+
 static void *tool_dispatch_thread(void *arg) {
     struct tool_dispatch_arg *a = (struct tool_dispatch_arg *)arg;
     struct timespec ts_start, ts_end;
     clock_gettime(CLOCK_MONOTONIC, &ts_start);
-    *a->result_out = registry_dispatch(a->tool_name, a->tool_args, a->session_id);
+    *a->result_out = dispatch_with_retry(a->tool_name, a->tool_args, a->session_id,
+                                         a->duration_ms_out);
     clock_gettime(CLOCK_MONOTONIC, &ts_end);
     if (a->duration_ms_out) {
         int64_t ns = (int64_t)(ts_end.tv_sec - ts_start.tv_sec) * 1000000000L +
@@ -132,28 +155,52 @@ static void *tool_dispatch_thread(void *arg) {
     return NULL;
 }
 
-/* P93: Tool result classification */
-typedef enum {
-    TOOL_RESULT_SUCCESS = 0,
-    TOOL_RESULT_ERROR,   /* Non-fatal error — loop continues */
-    TOOL_RESULT_FATAL,   /* Fatal error — abort loop */
-} tool_result_class_t;
+/* P1: retry a tool call when the result is a TRANSIENT (retryable) error.
+ * Safe because registry_dispatch is idempotent on args (omap-backed cache: a
+ * retry with the same args returns the cached result WITHOUT re-executing the
+ * handler, so no double side effect). Errors are never cached, so a transient
+ * failure genuinely re-executes. Bounded by TOOL_RETRY_MAX with exponential
+ * backoff. Permanent/unknown errors are NOT retried (fail-closed). */
+#ifndef TOOL_RETRY_MAX
+#define TOOL_RETRY_MAX 3
+#endif
+static char *dispatch_with_retry(const char *name, const char *args,
+                                 const char *session_id, int *duration_ms_out) {
+    (void)duration_ms_out;
+    char *result = registry_dispatch(name, args, session_id);
+    for (int attempt = 1; attempt < TOOL_RETRY_MAX; attempt++) {
+        if (tool_classify_error(result) != TOOL_ERR_TRANSIENT) break;
+        /* exponential backoff: 1s, 2s, 4s ... */
+        struct timespec ts = { (time_t)(1u << (unsigned)(attempt - 1)), 0 };
+        nanosleep(&ts, NULL);
+        fprintf(stderr, "[tool-retry] transient error from '%s', retry %d/%d\n",
+                name ? name : "?", attempt, TOOL_RETRY_MAX - 1);
+        free(result);
+        result = registry_dispatch(name, args, session_id);
+    }
+    return result;
+}
 
-/* Classify a tool result string. Returns classification level. */
+/* P93: Tool result classification — now delegates to the shared
+ * tool_classify_error() (src/tools/tool_result_classification.c) for the
+ * retry signal, and additionally flags FATAL patterns that abort the loop.
+ * Single source of truth: dispatch tags errors with _retry_class; here we
+ * consult it so a transient error is treated as non-fatal (and will have been
+ * retried by dispatch_with_retry). */
 static tool_result_class_t classify_tool_result(const char *result, const char *tool_name) {
     (void)tool_name;
     if (!result || !*result) return TOOL_RESULT_ERROR;
-
-    /* Check for error patterns in JSON result */
     if (strstr(result, "\"error\"")) {
-        /* Check for fatal patterns */
+        /* Fatal patterns still abort the loop (unchanged behavior). */
         if (strstr(result, "fatal") || strstr(result, "FATAL") ||
             strstr(result, "not found") || strstr(result, "permission denied") ||
             strstr(result, "access denied") || strstr(result, "unauthorized"))
             return TOOL_RESULT_FATAL;
+        /* Transient errors are non-fatal (retried by dispatch_with_retry). */
+        if (tool_classify_error(result) == TOOL_ERR_TRANSIENT)
+            return TOOL_RESULT_ERROR;
         return TOOL_RESULT_ERROR;
     }
-
     return TOOL_RESULT_SUCCESS;
 }
 
@@ -1355,10 +1402,11 @@ retry_done:
         for (int i = 0; i < n_calls; i++) {
             if (works[i].approved) {
                 struct timespec ts_s, ts_e;
-                clock_gettime(CLOCK_MONOTONIC, &ts_s);
-                works[i].result = registry_dispatch(
-                    works[i].tool_name, works[i].tool_args, state->session_id);
-                clock_gettime(CLOCK_MONOTONIC, &ts_e);
+                clock_gettime(CLOCK_MONOTONIC, ts_s);
+                works[i].result = dispatch_with_retry(
+                    works[i].tool_name, works[i].tool_args, state->session_id,
+                    &works[i].duration_ms);
+                clock_gettime(CLOCK_MONOTONIC, ts_e);
                 int64_t ns = (int64_t)(ts_e.tv_sec - ts_s.tv_sec) * 1000000000L +
                              (int64_t)(ts_e.tv_nsec - ts_s.tv_nsec);
                 works[i].duration_ms = (int)(ns / 1000000);
