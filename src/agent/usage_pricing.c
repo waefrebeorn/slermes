@@ -721,8 +721,9 @@ void usage_pricing_normalize_bedrock_model(const char *model, char *out, size_t 
         lower[i] = (char)tolower((unsigned char)model[i]); i++;
     }
     lower[i] = '\0';
-    const char *prefixes[] = {"us.", "global.", "eu.", "ap.", "jp."};
-    for (int k = 0; k < 5; k++) {
+    const char *prefixes[] = {"global.", "us.", "eu.", "apac.", "ap.",
+                               "au.", "jp.", "ca.", "sa.", "me.", "af."};
+    for (int k = 0; k < 11; k++) {
         size_t pl = strlen(prefixes[k]);
         if (strncmp(lower, prefixes[k], pl) == 0) {
             memmove(lower, lower + pl, strlen(lower + pl) + 1);
@@ -730,6 +731,28 @@ void usage_pricing_normalize_bedrock_model(const char *model, char *out, size_t 
         }
     }
     dots_to_dashes_versioned(out, out_size, lower);
+    /* Match LIVE _normalize_bedrock_model_name trailing-component stripping:
+     * drop ":N", "-vN", and "-YYYYMMDD" suffixes (Bedrock inference-profile ids). */
+    size_t len = strlen(out);
+    char *colon = strrchr(out, ':');
+    if (colon && colon[1] && strchr(colon, ':') == colon) {
+        const char *p = colon + 1;
+        int all_digit = 1;
+        for (; *p; p++) if (!isdigit((unsigned char)*p)) { all_digit = 0; break; }
+        if (all_digit) { *colon = '\0'; len = colon - out; }
+    }
+    char *vdash = NULL;
+    if (len >= 2 && out[len-2] == '-' && out[len-3] == 'v' && isdigit((unsigned char)out[len-1])) {
+        vdash = out + len - 3;
+    } else if (len >= 3 && out[len-3] == '-' && out[len-2] == 'v' && isdigit((unsigned char)out[len-1])) {
+        vdash = out + len - 3;
+    }
+    if (vdash) { *vdash = '\0'; len = vdash - out; }
+    if (len >= 9 && out[len-9] == '-') {
+        int date = 1;
+        for (int d = 1; d <= 8; d++) if (!isdigit((unsigned char)out[len-d])) { date = 0; break; }
+        if (date) { out[len-9] = '\0'; }
+    }
 }
 
 void usage_pricing_normalize_anthropic_model(const char *model, char *out, size_t out_size)

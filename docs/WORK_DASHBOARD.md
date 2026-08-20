@@ -38,13 +38,16 @@ diff oracle AND the water-cup say MATCH.
 | `tool_result_classification` | tools | ✅ GREEN | P1: classifies tool errors retryable/permanent (fail-closed default) + `tool_error_with_class` tag |
 | `tool_idempotency` | tools | ✅ GREEN | P1: omap-backed idempotency cache — retry returns cached result (no double side effect) |
 | `tool_idempotency_persist` | tools | ✅ GREEN | P1 restart-survival: put flushes to JSON; fresh cache recovers entry (safe retry survives restart) |
+| `billing_parse_money` | agent | ✅ GREEN | parse `$`/space-stripped money strings; 10 cups match LIVE `billing_view.parse_money` (valid-input path) |
+| `usage_pricing_normalize_bedrock_model` | agent | ✅ GREEN | Bedrock id normalization — fixed C 5→11 prefix gap + trailing-strip; 9 cups match LIVE |
+| `usage_pricing_normalize_anthropic_model` | agent | ✅ GREEN | Anthropic id normalization (strip `anthropic/` + dots→dashes); 8 cups match LIVE |
 | `tool_dispatch_retry` | agent | ✅ GREEN | P1: loop retry policy consumes tool_classify_error (transient→retry, permanent→no) |
 | `billing_format_money` | agent | ✅ GREEN | money formatter — whole→`$N`, fractional→`$N.NN` matches LIVE `billing_view.format_money` (13 cups) |
 | `format_size` | tools | ✅ GREEN | byte sizes B/KB/MB/GB/TB; fixed C cap-at-GB gap vs LIVE `sizefmt.format_bytes` |
 
-> **13 project-wide gates GREEN** (incl. `subscription_view_format_tier_row`, `registry_validate_args`, `watercup_web_auth`, `watercup_json_escape`, `tool_result_classification`, `tool_idempotency`, `tool_idempotency_persist`, `tool_dispatch_retry`, `billing_format_money`, `format_size`).
+> **16 project-wide gates GREEN** (incl. `subscription_view_format_tier_row`, `registry_validate_args`, `watercup_web_auth`, `watercup_json_escape`, `tool_result_classification`, `tool_idempotency`, `tool_idempotency_persist`, `billing_parse_money`, `usage_pricing_normalize_bedrock_model`, `usage_pricing_normalize_anthropic_model`, `tool_dispatch_retry`, `billing_format_money`, `format_size`).
 > Candidate pool for more gates: **3,042 pure functions** with both a C port and a LIVE
-> Python twin (from the PoP-annotation cross-reference). Only 13 are currently gated.
+> Python twin (from the PoP-annotation cross-reference). Only 16 are currently gated.
 
 ### 1C. PoP-integrity audit (`scripts/audit_ports.py` v2 — hardened this session)
 v1 reported ~17,500 false-positive "orphans" (broken regex). v2 scans definitions
