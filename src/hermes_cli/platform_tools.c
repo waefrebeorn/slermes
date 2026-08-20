@@ -6,6 +6,7 @@
 #define _GNU_SOURCE
 #include "platform_tools.h"
 #include "toolsets.h"
+#include "tools_config_toolsets.h" /* tools_config_get_plugin_toolset_keys */
 #include "hermes_auth.h" /* auth_entry_t for xai_credentials_present */
 #include <stdlib.h>
 #include <string.h>
@@ -19,10 +20,10 @@ extern char *config_py_get_env_value_prefer_dotenv(const char *key);
 /* PoP: platform_tools_configurable_keys @ hermes_cli/tools_config.py:CONFIGURABLE_TOOLSETS */
 static const char *const CONFIGURABLE_KEYS[] = {
     "web", "browser", "terminal", "file", "code_execution", "vision",
-    "video", "image_gen", "video_gen", "x_search", "tts", "skills", "todo",
-    "memory", "context_engine", "session_search", "clarify", "delegation",
-    "cronjob", "homeassistant", "spotify", "discord", "discord_admin",
-    "yuanbao", "computer_use", NULL
+    "video", "image_gen", "video_gen", "bfl", "x_search", "tts", "stt",
+    "skills", "todo", "memory", "context_engine", "session_search",
+    "clarify", "delegation", "cronjob", "homeassistant", "spotify",
+    "discord", "discord_admin", "yuanbao", "computer_use", NULL
 };
 
 /* PoP: platform_tools_configurable_keys @ hermes_cli/tools_config.py:_DEFAULT_OFF_TOOLSETS */
@@ -660,6 +661,59 @@ void platform_tools_save(json_t *config, const char *platform,
             else json_free(remaining);
         }
     }
+
+    /* known_builtin_toolsets: record which builtin toolsets this platform's
+     * checklist has put in front of the user (parity with Python
+     * _save_platform_tools). Without it, a toolset the user unchecks here is
+     * indistinguishable from one that shipped after they saved.
+     * Python: sorted(ts_key for ts_key, _, _ in CONFIGURABLE_TOOLSETS) */
+    {
+        json_t *kbt = json_obj_get(config, "known_builtin_toolsets");
+        if (!kbt || kbt->type != JSON_OBJECT) {
+            kbt = json_object();
+            json_set(config, "known_builtin_toolsets", kbt);
+        }
+        /* Sorted copy of CONFIGURABLE_KEYS (insertion sort). */
+        size_t n_keys = 0;
+        while (CONFIGURABLE_KEYS[n_keys]) n_keys++;
+        const char **sorted = (const char **)calloc(n_keys + 1, sizeof *sorted);
+        if (sorted) {
+            memcpy(sorted, CONFIGURABLE_KEYS, n_keys * sizeof *sorted);
+            for (size_t i = 1; i < n_keys; i++) {
+                const char *v = sorted[i];
+                size_t j = i;
+                while (j > 0 && strcmp(sorted[j-1], v) > 0) {
+                    sorted[j] = sorted[j-1]; j--;
+                }
+                sorted[j] = v;
+            }
+            json_t *barr = json_array();
+            for (size_t i = 0; i < n_keys; i++)
+                json_append(barr, json_string(sorted[i]));
+            json_set(kbt, platform, barr);
+            free(sorted);
+        }
+    }
+
+    /* known_plugin_toolsets: record which plugin toolsets are known for this
+     * platform (parity with Python _save_platform_tools). */
+    {
+        size_t pn = 0;
+        char **plugin_keys = tools_config_get_plugin_toolset_keys(&pn);
+        if (pn > 0) {
+            json_t *kpt = json_obj_get(config, "known_plugin_toolsets");
+            if (!kpt || kpt->type != JSON_OBJECT) {
+                kpt = json_object();
+                json_set(config, "known_plugin_toolsets", kpt);
+            }
+            json_t *parr = json_array();
+            for (size_t i = 0; i < pn; i++)
+                json_append(parr, json_string(plugin_keys[i]));
+            json_set(kpt, platform, parr);
+        }
+        tools_config_free_list(plugin_keys, pn);
+    }
+
     ps_free(&enabled);
     ps_free(&preserved);
 }

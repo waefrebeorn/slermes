@@ -227,6 +227,13 @@ ISO="$ISO TMPDIR=$TMPH"
 # changes with PYTHONHASHSEED. Pin it to 0 so live-Python order is stable and
 # matches the C port's fixed tables.
 ISO="$ISO PYTHONHASHSEED=0"
+# Plugin discovery: both the C harness and the Python oracle resolve the
+# bundled plugins directory independently — the C via getbundled_plugins_dir()
+# (HERMES_BUNDLED_PLUGINS env or cwd-relative "plugins"), the Python via
+# get_bundled_plugins_dir() (HERMES_BUNDLED_PLUGINS or Path(__file__).parent).
+# Point both at the slermes repo's own plugins/ so they discover the same
+# manifests. $ROOT is the slermes root (runners/ is 3 dirs deep).
+ISO="$ISO HERMES_BUNDLED_PLUGINS=$ROOT/plugins"
 # Real fixture dir: both C harness and Python oracle resolve fixture-relative
 # paths (sample_skill/, *.md) against this. The runner hands both sides a
 # TEMP-substituted copy (FSUB), whose dir is /tmp — relative paths would

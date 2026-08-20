@@ -392,4 +392,6 @@ PHASE1_OBJ = $(DEPS_OBJ) $(CLI_PORT_NEW2)
 PHASE2_OBJ = $(PHASE1_OBJ) src/main.o $(AGENT_OBJ) $(CLI_OBJ)
 PHASE3_OBJ = $(PHASE2_OBJ) $(TOOLS_OBJ)
 PHASE4_OBJ = $(PHASE3_OBJ) $(GATEWAY_OBJ)
-PHASE5_OBJ = $(PHASE4_OBJ) $(CRON_OBJ) $(AGENT_PORT_REGEN) $(TOOLS_PORT_REGEN) $(GATEWAY_PORT_REGEN) src/hermes_cli/turn_summary_cli.o src/hermes_cli/parity_gaps.o src/hermes_cli/pure_gaps.o src/tools/file_operations_gaps.o src/agent/markdown_tables_gaps.o src/hermes_cli/config_gaps.o src/hermes_cli/service_manager_gaps.o src/agent/context_breakdown_gaps.o src/agent/models_dev_gaps.o src/agent/insights_gaps.o src/agent/small_mods_gaps.o src/agent/hermes_state_gaps.o src/agent/multi_mod_gaps.o src/agent/truly_missing_gaps.o src/agent/final_missing_gaps.o
+PHASE5_OBJ = $(PHASE4_OBJ) $(CRON_OBJ) $(AGENT_PORT_REGEN) $(TOOLS_PORT_REGEN) $(GATEWAY_PORT_REGEN) src/hermes_cli/turn_summary_cli.o src/hermes_cli/parity_gaps.o src/hermes_cli/pure_gaps.o src/tools/file_operations_gaps.o src/agent/markdown_tables_gaps.o src/hermes_cli/config_gaps.o src/hermes_cli/service_manager_gaps.o src/agent/context_breakdown_gaps.o src/agent/models_dev_gaps.o src/agent/insights_gaps.o src/agent/small_mods_gaps.o src/agent/hermes_state_gaps.o src/agent/multi_mod_gaps.o src/agent/truly_missing_gaps.o src/agent/final_missing_gaps.o \
+  src/hermes_cli/plugins_core.o src/hermes_cli/plugins_gaps.o \
+  src/hermes_cli/tools_config_cua.o src/hermes_cli/tools_config_toolsets.o

@@ -1,0 +1,104 @@
+valid_section_id	web
+valid_section_id	a
+valid_section_id	0
+valid_section_id	web.search
+valid_section_id	web_search-1
+valid_section_id	Web
+valid_section_id	-web
+valid_section_id	_web
+valid_section_id	
+valid_section_id	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+valid_section_id	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+valid_section_id	wéb
+valid_section_id	web!
+valid_section_id	9.9.9
+format_section	web	hello
+format_section	a	
+format_section	plug.in	multi line body
+format_section	x	ünïcode ✓
+format_sections	
+format_sections	a=one
+format_sections	a=one|b=two
+format_sections	a=|b=x|c=long body here
+detect_kind	def register(): pass
+detect_kind	x = register_memory_provider(y)
+detect_kind	MemoryProvider
+detect_kind	register_provider(ProviderProfile())
+detect_kind	register_provider only
+detect_kind	ProviderProfile only
+detect_kind	register_memory_provider and register_provider ProviderProfile
+detect_kind	
+skill_namespace	mine
+skill_namespace	image_gen/openai
+skill_namespace	Plugin Name
+skill_namespace	--__--
+skill_namespace	
+skill_namespace	é-plug
+skill_namespace	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+skill_namespace	UPPER_case-1
+load_order	a:A:;b:B:a
+load_order	b:B:a;a:A:
+load_order	a:A:b;b:B:a
+load_order	a:A:missing
+load_order	x:X:;y:Y:X;z:Z:y
+load_order	solo:Solo:
+load_order	a:A:a
+load_order	c:C:a,b;a:A:;b:B:a
+web_caps	ddgs
+web_caps	brave-free
+web_caps	firecrawl
+web_caps	exa
+web_caps	tavily
+web_caps	unknown-backend
+web_caps	
+checklist_keys	cli
+checklist_keys	telegram
+checklist_keys	cron
+checklist_keys	api_server
+checklist_keys	discord
+known_platforms	
+effective_toolsets	
+post_setup_keys	
+restorable_dep	faster_whisper
+restorable_dep	kittentts
+restorable_dep	piper
+restorable_dep	ddgs
+restorable_dep	langfuse
+restorable_dep	nope
+restorable_dep	
+apply_toolset_change	{"platforms": {"cli": {"tools": ["web", "file"]}}}	cli:enable:memory,todo
+apply_toolset_change	{"platforms": {"cli": {"tools": ["web", "file"]}}}	cli:disable:web
+apply_toolset_change	{"platforms": {"cli": {"tools": ["web", "file"]}}}	telegram:enable:web
+apply_toolset_change	{"platforms": {"telegram": {"tools": []}}}	cli:enable:memory,todo
+apply_toolset_change	{"platforms": {"telegram": {"tools": []}}}	cli:disable:web
+apply_toolset_change	{"platforms": {"telegram": {"tools": []}}}	telegram:enable:web
+apply_toolset_change	{}	cli:enable:memory,todo
+apply_toolset_change	{}	cli:disable:web
+apply_toolset_change	{}	telegram:enable:web
+reconfigure_enabled	web	{"platforms": {"cli": {"tools": ["web", "file"]}}}
+reconfigure_enabled	web	{"platforms": {"telegram": {"tools": []}}}
+reconfigure_enabled	web	{}
+reconfigure_enabled	file	{"platforms": {"cli": {"tools": ["web", "file"]}}}
+reconfigure_enabled	file	{"platforms": {"telegram": {"tools": []}}}
+reconfigure_enabled	file	{}
+reconfigure_enabled	stt	{"platforms": {"cli": {"tools": ["web", "file"]}}}
+reconfigure_enabled	stt	{"platforms": {"telegram": {"tools": []}}}
+reconfigure_enabled	stt	{}
+reconfigure_enabled	memory	{"platforms": {"cli": {"tools": ["web", "file"]}}}
+reconfigure_enabled	memory	{"platforms": {"telegram": {"tools": []}}}
+reconfigure_enabled	memory	{}
+detect_active_provider	[]
+detect_active_provider	[{"name": "a", "env_vars": [{"key": "NOPE_UNSET_XYZ"}]}, {"name": "b", "env_vars": []}]
+detect_active_provider	[{"name": "a", "env_vars": [{"key": "HOME"}]}]
+detect_active_provider	[{"name": "a", "env_vars": []}, {"name": "b", "env_vars": [{"key": "HOME"}]}]
+cache_roundtrip	web,file	srv1
+cache_roundtrip	b,a,b	
+cache_roundtrip		x,y
+cache_roundtrip		
+scan_directory	plugdir	bundled
+scan_directory	plugdir/image_gen	user
+scan_directory	plugdir/empty_cat	user
+scan_directory	plugdir/nonexistent	user
+skill_dirs	plugdir/alpha/skills
+skill_dirs	plugdir/beta/skills
+skill_dirs	plugdir
