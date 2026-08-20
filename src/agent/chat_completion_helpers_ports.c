@@ -223,3 +223,207 @@ int cch_status_code_from_value(const char *arg) {
     }
     return -1;
 }
+
+/* ── batch: pure helper functions from chat_completion_helpers.py ──── */
+
+/* Local helper: extract a string representation from a JSON scalar
+ * (string → strdup, number → snprintf, bool → "true"/"false", else NULL).
+ * Caller frees. */
+static char *cch_scalar_to_str(const json_t *v) {
+    if (!v) return NULL;
+    if (v->type == JSON_STRING && v->str_val) return strdup(v->str_val);
+    if (v->type == JSON_NUMBER) {
+        char buf[32];
+        snprintf(buf, sizeof buf, "%g", v->num_val);
+        return strdup(buf);
+    }
+    if (v->type == JSON_BOOL) return strdup(v->bool_val ? "true" : "false");
+    return NULL;
+}
+
+/* PoP: cch_status_code_from_payload @ agent/chat_completion_helpers.py:_status_code_from_payload
+ * Extract an HTTP status code from a JSON payload object. Returns the code or
+ * -1 when none can be extracted (LIVE returns None). */
+int cch_status_code_from_payload(const json_t *payload) {
+    if (!payload || payload->type != JSON_OBJECT) return -1;
+    /* Candidates: status_code, status, http_status, then error.* sub-keys,
+     * then top-level code. */
+    const char *keys[] = { "status_code", "status", "http_status", NULL };
+    for (const char **k = keys; *k; k++) {
+        json_t *v = json_obj_get(payload, *k);
+        if (v) {
+            char *s = cch_scalar_to_str(v);
+            if (s) { int code = cch_status_code_from_value(s); free(s); if (code >= 0) return code; }
+        }
+    }
+    json_t *error_obj = json_obj_get(payload, "error");
+    if (error_obj && error_obj->type == JSON_OBJECT) {
+        const char *ekeys[] = { "status_code", "status", "http_status", "code", NULL };
+        for (const char **k = ekeys; *k; k++) {
+            json_t *v = json_obj_get(error_obj, *k);
+            if (v) {
+                char *s = cch_scalar_to_str(v);
+                if (s) { int code = cch_status_code_from_value(s); free(s); if (code >= 0) return code; }
+            }
+        }
+    }
+    json_t *code_v = json_obj_get(payload, "code");
+    if (code_v) {
+        char *s = cch_scalar_to_str(code_v);
+        if (s) { int code = cch_status_code_from_value(s); free(s); if (code >= 0) return code; }
+    }
+    return -1;
+}
+
+/* PoP: cch_payload_has_error_shape @ agent/chat_completion_helpers.py:_payload_has_error_shape */
+bool cch_payload_has_error_shape(const json_t *payload) {
+    if (!payload || payload->type != JSON_OBJECT) return false;
+    json_t *err = json_obj_get(payload, "error");
+    if (err && (err->type == JSON_OBJECT || err->type == JSON_STRING)) return true;
+    json_t *msg = json_obj_get(payload, "message");
+    if (msg) {
+        char *ms = cch_scalar_to_str(msg);
+        bool msg_truthy = ms && *ms;
+        free(ms);
+        if (msg_truthy) {
+            json_t *code = json_obj_get(payload, "code");
+            json_t *err_code = json_obj_get(payload, "error_code");
+            if (code || err_code) return true;
+            if (cch_status_code_from_payload(payload) >= 0) return true;
+        }
+    }
+    return false;
+}
+
+/* PoP: cch_json_object_from_text @ agent/chat_completion_helpers.py:_json_object_from_text
+ * Parse a JSON object from text. Returns a malloc'd JSON string (or NULL). */
+char *cch_json_object_from_text(const char *text) {
+    if (!text) return NULL;
+    /* stripped = text.strip() */
+    const char *p = text;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (*p != '{') return NULL;
+    json_t *parsed = json_parse(p, NULL);
+    if (!parsed || parsed->type != JSON_OBJECT) {
+        if (parsed) json_free(parsed);
+        return NULL;
+    }
+    char *out = json_serialize(parsed);
+    json_free(parsed);
+    return out;
+}
+
+/* PoP: cch_provider_error_body @ agent/chat_completion_helpers.py:_provider_error_body
+ * Normalize a provider error payload to OpenAI-style {"error": {...}}. */
+char *cch_provider_error_body(const json_t *payload, int status_code) {
+    json_t *pl = payload ? json_copy(payload) : json_object();
+    if (!pl) pl = json_object();
+    if (pl->type != JSON_OBJECT) { json_free(pl); pl = json_object(); }
+    /* If payload.error is already a dict, return payload as-is. */
+    json_t *error_obj = json_obj_get(pl, "error");
+    if (error_obj && error_obj->type == JSON_OBJECT) {
+        char *out = json_serialize(pl);
+        json_free(pl);
+        return out;
+    }
+    /* Build normalized error. */
+    const char *code = json_get_str(pl, "code", NULL);
+    if (!code) code = json_get_str(pl, "error_code", NULL);
+    if (!code) code = json_get_str(pl, "type", NULL);
+    char code_buf[64];
+    if (!code && status_code > 0) {
+        snprintf(code_buf, sizeof code_buf, "HTTP_%d", status_code);
+        code = code_buf;
+    }
+    if (!code) code = "provider_stream_error";
+    const char *message = json_get_str(pl, "message", NULL);
+    if (!message) message = json_get_str(pl, "error_description", NULL);
+    if (!message) message = json_get_str(pl, "error", NULL);
+    if (!message) message = "Provider stream returned an error event.";
+
+    json_t *normalized = json_object();
+    json_set(normalized, "message", json_string(message));
+    json_set(normalized, "code", json_string(code));
+    for (const char **k = (const char *[]){"request_id", "param", "type", NULL}; *k; k++) {
+        json_t *v = json_obj_get(pl, *k);
+        if (v) json_set(normalized, *k, json_copy(v));
+    }
+    json_t *result = json_object();
+    json_set(result, "error", normalized);
+    char *out = json_serialize(result);
+    json_free(result);
+    json_free(pl);
+    return out;
+}
+
+/* _PROVIDER_STREAM_SSE_FIELDS = {"event", "data", "id", "retry"} */
+static const char *const SSE_FIELDS[] = { "event", "data", "id", "retry", NULL };
+
+/* PoP: cch_provider_stream_text_may_be_sse @ agent/chat_completion_helpers.py:_provider_stream_text_may_be_sse
+ * Return true while pending text still looks like an SSE control block. */
+bool cch_provider_stream_text_may_be_sse(const char *text) {
+    if (!text) return false;
+    /* stripped = text.lstrip() */
+    const char *stripped = text;
+    while (*stripped == ' ' || *stripped == '\t' || *stripped == '\n' || *stripped == '\r') stripped++;
+    if (!*stripped) return false;
+    /* trailing_newline = stripped.endswith(("\n", "\r")) */
+    size_t slen = strlen(stripped);
+    bool trailing_newline = (slen > 0 && (stripped[slen-1] == '\n' || stripped[slen-1] == '\r'));
+
+    /* Split into lines. */
+    char *copy = strdup(stripped);
+    if (!copy) return false;
+    /* Count lines */
+    size_t n_lines = 1;
+    for (char *p = copy; *p; p++) if (*p == '\n') n_lines++;
+    char **lines = (char **)calloc(n_lines, sizeof *lines);
+    if (!lines) { free(copy); return false; }
+    size_t nl = 0;
+    char *save = NULL;
+    for (char *tok = strtok_r(copy, "\n", &save); tok; tok = strtok_r(NULL, "\n", &save))
+        lines[nl++] = tok;
+
+    bool saw_sse_field = false;
+    for (size_t index = 0; index < nl; index++) {
+        char *line = lines[index];
+        /* line = raw_line.rstrip("\r") */
+        size_t llen = strlen(line);
+        while (llen > 0 && line[llen-1] == '\r') line[--llen] = '\0';
+        if (*line == '\0') continue;
+        if (line[0] == ':') { saw_sse_field = true; continue; }
+        /* field, sep, _value = line.partition(":") */
+        char *sep = strchr(line, ':');
+        char *field = line;
+        if (sep) *sep = '\0';
+        /* field_name = field.strip().lower() */
+        char *fn = strdup(field);
+        if (fn) {
+            char *start = fn;
+            while (*start == ' ' || *start == '\t') start++;
+            char *end = start + strlen(start);
+            while (end > start && (end[-1] == ' ' || end[-1] == '\t')) end--;
+            *end = '\0';
+            for (char *p = start; *p; p++) *p = tolower((unsigned char)*p);
+            if (sep) {
+                for (const char **sf = SSE_FIELDS; *sf; sf++) {
+                    if (strcmp(start, *sf) == 0) { saw_sse_field = true; break; }
+                }
+            }
+            /* is_last_incomplete = index == nl-1 and not trailing_newline */
+            bool is_last = (index == nl - 1);
+            if (is_last && !trailing_newline) {
+                for (const char **sf = SSE_FIELDS; *sf; sf++) {
+                    if (strncmp(*sf, start, strlen(start)) == 0) { free(fn); free(lines); free(copy); return true; }
+                }
+            }
+            free(fn);
+        }
+        if (sep) *sep = ':'; /* restore for potential debugging */
+        free(lines); free(copy);
+        return false;
+    }
+    free(lines);
+    free(copy);
+    return saw_sse_field;
+}
