@@ -31,24 +31,41 @@ diff oracle AND the water-cup say MATCH.
 | `web_fs_list` | web | ✅ GREEN | decision-structure cup (I/O abstracted) matches LIVE Python |
 | `usage_pricing_format_cost_label` | agent | ✅ GREEN | sub-cent rounding (ROUND_HALF_EVEN) matches Python `Decimal` |
 | `model_normalize_detect_vendor` | hermes_cli | ✅ GREEN | empty-string guard matches Python falsy semantics |
+| `subscription_view_format_tier_row` | agent | ✅ GREEN | thousands-grouped money + credits suffix matches LIVE |
 | `watercup_web_auth` | web | 🔴 RED | auth allowlist set diverges from LIVE `PUBLIC_API_PATHS` |
 | `watercup_json_escape` | web | 🔴 RED | `web_app.c` copy B dropped `<0x20` control-char escape vs `web_server.c`+LIVE |
+
+> **4 project-wide gates GREEN** (incl. `subscription_view_format_tier_row` added this session).
+> Candidate pool for more gates: **3,042 pure functions** with both a C port and a LIVE
+> Python twin (from the PoP-annotation cross-reference). Only 4 are currently gated.
 
 ### 1C. PoP-integrity audit (`scripts/audit_ports.py` v2 — hardened this session)
 v1 reported ~17,500 false-positive "orphans" (broken regex). v2 scans definitions
 **and** declarations:
 | Issue | Count | Action |
 |-------|-------|--------|
-| TRUE_ORPHAN (C fn credited but absent) | see `audit_ports.py --json` | re-port or fix PoP credit |
+| TRUE_ORPHAN (C fn credited but absent) | see `audit_ports.py --json` (~6,431, over-inclusive) | re-port or fix PoP credit |
 | MULTILINE_POP (scanner-blind comment) | 255 | fold onto one line |
 | DUP_CREDIT (C fn → 2+ python twins) | 751 | disambiguate names |
 | STUB_MARKER (TODO/FIXME in port body) | 17 | implement |
 
-> **Note:** the TRUE_ORPHAN count is still over-inclusive (it flags legitimate
-> namespace renames like `register_tool`→`plugin_register_tool`). The real,
-> actionable surface is the **name-parity gap** (C names must match Python 1:1 per
-> the standing edict) — those are real and worth closing, but don't treat the raw
-> count as gospel.
+> **Note:** the TRUE_ORPHAN count is over-inclusive — it includes legitimate
+> namespace renames (`register_tool`→`plugin_register_tool`, permitted by the v2.2
+> name-parity protocol) and detector regex gaps. The authoritative parity picture is
+> the live scanner (§1A) + the **3,042 pure-ish twin functions** (§1D).
+
+### 1D. File-level organization parity (the "match the filesystem" gap)
+The C tree does NOT mirror the Python package tree 1:1. Of **523 Python modules**
+(agent/, hermes_cli/, tools/, gateway/, cron/):
+- **318** have a same-named C file (`usage_pricing.py`→`usage_pricing.c`).
+- **205** have NO same-named C file — their code lives under a different filename
+  (`hermes_cli/commands.py`→`src/cli/commands.c`; `agent/subscription_view.py`→`src/agent/ports_wrappers.c`).
+
+> **Reorg plan (per `slermes-name-parity` skill Phases 1 & 3):** bring the C tree to
+> 1:1 with Python via (a) org-parity relocation `src/ports/<pkg>/X.c`→`src/<pkg>/X.c`
+> and (b) file-level thin-wrapper `.c` files for modules whose real code lives elsewhere.
+> Execute in TWO git-checkpointed phases (mechanical rename, then collisions) — never one
+> blind pass.
 
 ## §2 — The work, ranked (this is the to-do)
 
@@ -68,15 +85,23 @@ v1 reported ~17,500 false-positive "orphans" (broken regex). v2 scans definition
    Python twin (name-parity).
 5. Fold the 255 MULTILINE_POP comments onto one line so the scanner can read them.
 
-### P2 — Breadth (the 2,329 REAL_GAPs)
-6. Close genuine gaps prioritized by subsystem usage. The `gates/` framework makes
-   any pure function gateable in 3 files — expand the water-cup coverage to the
-   highest-traffic modules (usage_pricing, model_normalize, web_server, kanban_db).
+### P2 — Breadth (the 2,329 REAL_GAPs + water-cup expansion)
+6. Expand water-cup coverage across the **3,042 pure twin functions** (§1D). Each gate
+   is 3 files (`gate.json` + `harness.c` + `twin.py`); `wc_run.py` builds+runs+diffs
+   automatically. Priority: error_classifier, rate_limit_tracker, subscription_view,
+   model_normalize, usage_pricing, kanban_db, auth, config.
+7. Close the 2,329 REAL_GAPs prioritized by subsystem usage.
 
-### P3 — Hygiene
-7. Keep `audit_ports.py` green; run `make parity-walkway` to refresh §1A.
-8. Add a CI step that fails if `watercup_all` regresses (already wired in
-   `run_oracles.sh`).
+### P3 — File organization parity ("match the filesystem")
+8. Execute the `slermes-name-parity` Phase 1 (mechanical rename + org-parity relocation)
+   in TWO git-checkpointed passes. Target: C tree mirrors Python package tree 1:1
+   (close the 205/523 file-name gap from §1D). Collisions resolved per the skill's
+   symbol-aware-merge reference — never blind bulk-merge (drops load-bearing code).
+9. Add file-level thin-wrapper `.c` files for modules whose real code lives elsewhere.
+
+### P4 — Hygiene
+10. Keep `audit_ports.py` clean; run `make parity-walkway` to refresh §1A. Water-cup
+    `watercup_all` gate must stay GREEN in CI.
 
 ## §3 — How to find work when you walk in
 
