@@ -32,9 +32,9 @@ diff oracle AND the water-cup say MATCH.
 | `usage_pricing_format_cost_label` | agent | ✅ GREEN | sub-cent rounding (ROUND_HALF_EVEN) matches Python `Decimal` |
 | `model_normalize_detect_vendor` | hermes_cli | ✅ GREEN | empty-string guard matches Python falsy semantics |
 | `subscription_view_format_tier_row` | agent | ✅ GREEN | thousands-grouped money + credits suffix matches LIVE |
-| `registry_validate_args` | tools | ✅ GREEN | P0 centralized input validation — rejects bad/type-mismatched args before dispatch, returns standardized error |
-| `watercup_web_auth` | web | 🔴 RED | auth allowlist set diverges from LIVE `PUBLIC_API_PATHS` |
-| `watercup_json_escape` | web | 🔴 RED | `web_app.c` copy B dropped `<0x20` control-char escape vs `web_server.c`+LIVE |
+| `registry_validate_args` | tools | ✅ GREEN | P0 centralized input validation — rejects bad/type-mismatched args before dispatch |
+| `watercup_web_auth` | web | ✅ GREEN | `is_public_path` now == LIVE `PUBLIC_API_PATHS` (8 paths, 1:1 parity) |
+| `watercup_json_escape` | web | ✅ GREEN | `web_json_escape` now escapes `<0x20` like LIVE `json.dumps` (`\b`/`\f` short, else `\u00XX`) |
 
 > **4 project-wide gates GREEN** (incl. `subscription_view_format_tier_row` added this session).
 > Candidate pool for more gates: **3,042 pure functions** with both a C port and a LIVE
@@ -71,13 +71,18 @@ The C tree does NOT mirror the Python package tree 1:1. Of **523 Python modules*
 ## §2 — The work, ranked (this is the to-do)
 
 ### P0 — FAPs the water-cup already caught (real, verified, fixable)
-1. **`watercup_web_auth`** — `is_public_path()` allowlist ≠ LIVE `PUBLIC_API_PATHS`.
-   C serves 4 endpoints unauthenticated that Python 401s, and 401s 6 public
-   endpoints Python serves. **Fix `src/web_dashboard.c::is_public_path` + the
-   loopback/IPv6 + `hmac.compare_digest` uses.**
-3. **`watercup_json_escape`** — `src/web_app.c::web_json_escape` dropped the
-   `<0x20 → \u00XX` control-char branch present in `src/web_server.c` + LIVE
-   `json.dumps`. **Fix `web_json_escape` to escape control chars.**
+1. **`watercup_web_auth` (SHIPPED ✅)** — `src/web_dashboard.c::is_public_path()`
+   now matches LIVE `PUBLIC_API_PATHS` exactly (8 paths). Removed 4 spurious
+   C-only entries (`/health`, `/api/version`, `/api/token`, `/api/platforms`);
+   added 6 LIVE entries (`/api/config/defaults`, `/api/config/schema`,
+   `/api/model/info`, `/api/dashboard/themes`, `/api/dashboard/plugins`,
+   `/api/cron/fire`). Proven by `tests/watercup/gates/watercup_web_auth/`
+   (harness + LIVE-Python twin, both PASS).
+3. **`watercup_json_escape` (SHIPPED ✅)** — `src/web_app.c::web_json_escape` now
+   escapes control chars `< 0x20` like LIVE `json.dumps`: `\b`/`\f` short
+   escapes, everything else `< 0x20` as `\u00XX`. Previously emitted raw
+   control bytes (invalid JSON). Proven by
+   `tests/watercup/gates/watercup_json_escape/` (harness + LIVE twin, both PASS).
 
 3b. **Tool input validation gate (SHIPPED ✅)** — `src/ports/tools/registry.c::
     validate_args_json` now runs BEFORE `coerce_args_json`/handler on both dispatch

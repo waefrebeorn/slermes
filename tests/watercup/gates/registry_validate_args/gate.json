@@ -4,6 +4,8 @@
   "kind": "unit",
   "c_src": "verify.c",
   "c_fn": "validate_args_json",
+  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "src/tools"],
+  "extra_src": ["lib/libjson/json.c", "src/tools/tool_result.c"],
   "py_module": "ports/tools/registry.py (validate_args_json port)",
   "py_fn": "validate_args_json",
   "status": "GREEN",

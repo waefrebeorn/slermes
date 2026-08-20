@@ -57,15 +57,26 @@ static char g_req_raw[8192] = "";
  * Non-static so the auth helpers in port_web_server_auth.c can validate it. */
 char g_session_token[SESSION_TOKEN_LEN] = "";
 
-/* Public API paths that do NOT require auth (mirrors Python _PUBLIC_API_PATHS). */
+/* Public API paths that do NOT require auth. Mirrors the authoritative
+ * LIVE Python hermes_cli/dashboard_auth/public_paths.PUBLIC_API_PATHS
+ * (single source of truth — both middlewares import the same frozenset).
+ * Keep this list in 1:1 parity with that set; do not add local entries. */
 static bool is_public_path(const char *path) {
     if (!path) return false;
-    if (strcmp(path, "/api/health") == 0) return true;
-    if (strcmp(path, "/health") == 0) return true;
-    if (strcmp(path, "/api/status") == 0) return true;
-    if (strcmp(path, "/api/version") == 0) return true;
-    if (strcmp(path, "/api/token") == 0) return true;
-    if (strcmp(path, "/api/platforms") == 0) return true;
+    static const char *const public_paths[] = {
+        "/api/health",
+        "/api/status",
+        "/api/config/defaults",
+        "/api/config/schema",
+        "/api/model/info",
+        "/api/dashboard/themes",
+        "/api/dashboard/plugins",
+        "/api/cron/fire",
+        NULL
+    };
+    for (int i = 0; public_paths[i]; i++) {
+        if (strcmp(path, public_paths[i]) == 0) return true;
+    }
     return false;
 }
 

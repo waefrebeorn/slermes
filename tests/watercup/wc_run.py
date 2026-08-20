@@ -38,10 +38,10 @@ Exit code is fail-closed: non-zero if ANY gate has a cup mismatch.
 import os, sys, json, subprocess, argparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SLERMES = os.path.dirname(HERE)                 # .../slermes
-DEV = os.path.dirname(SLERMES)                 # .../hermes-agent-dev
 GATES = os.path.join(HERE, "gates")
-BUILD = os.path.join(SLERMES, "tests", "oracle", "build", "watercup")
+BUILD = os.path.join(HERE, "build")
+# Repo root is two levels up from tests/watercup/ (tests/watercup -> tests -> slermes).
+REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 from watercup_py import Cup
 
@@ -55,8 +55,12 @@ def build_harness(gate_dir, g):
     src = os.path.join(gate_dir, g["c_src"])
     out = os.path.join(BUILD, g["name"])
     os.makedirs(BUILD, exist_ok=True)
-    r = subprocess.run(["cc", "-I", HERE, src, "-o", out, "-lm"],
-                       capture_output=True, text=True)
+    cflags = g.get("cflags", [])
+    # cflags/extra_src entries are relative to the slermes root.
+    cflags = [os.path.join(REPO, c) if not c.startswith("-") else c for c in cflags]
+    extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
+    cmd = ["cc", "-I", HERE] + cflags + [src] + extra + ["-o", out, "-lm"]
+    r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
         raise RuntimeError("BUILD FAIL for %s:\n%s" % (g["name"], r.stderr))
     return out
@@ -72,7 +76,7 @@ def run_harness(out, g):
 def load_live_module(py_module):
     """Import a LIVE Python source file by path (not by installed name)."""
     import importlib.util as ilu
-    path = os.path.join(DEV, py_module)
+    path = os.path.join(REPO, py_module)
     modname = "wc_live_" + py_module.replace("/", "_").replace(".", "_")
     spec = ilu.spec_from_file_location(modname, path)
     mod = ilu.module_from_spec(spec)
@@ -98,6 +102,33 @@ def run_twin(g):
     return twin.run(g["inputs"])
 
 
+def run_unit_gate(gd, g):
+    """Unit-style gate: the harness.c and twin.py are self-contained assertion
+    programs (each prints RESULT and exits 0 on success, non-zero on failure).
+    Both must pass. This covers contracts that are boolean/invariant rather
+    than a branch-ladder cup trace (e.g. allowlist parity, control-char escaping)."""
+    import importlib.util as ilu
+    # harness
+    out = build_harness(gd, g)
+    rh = subprocess.run([out], capture_output=True, text=True)
+    if rh.returncode != 0:
+        print("  HARNESS FAIL (exit %d):\n%s" % (rh.returncode, rh.stdout.strip()))
+        return 1
+    # twin (LIVE python) — optional for pure-C unit gates that assert their own
+    # contract (e.g. registry_validate_args verifies against libjson directly).
+    twin_path = os.path.join(GATES, g["name"], "twin.py")
+    if os.path.exists(twin_path):
+        rt = subprocess.run([sys.executable, twin_path], capture_output=True, text=True,
+                             cwd=gd)
+        if rt.returncode != 0:
+            print("  TWIN FAIL (exit %d):\n%s" % (rt.returncode, rt.stdout.strip()))
+            return 1
+    else:
+        print("  (no twin.py — harness-only unit gate)")
+    print("  -> harness + LIVE twin both PASS")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("gate", nargs="?", default=None)
@@ -121,7 +152,12 @@ def main():
         gd = os.path.join(GATES, name)
         g = json.load(open(os.path.join(gd, "gate.json")))
         print("-- %s (subsystem: %s) --" % (name, g.get("subsystem", "?")))
+        kind = g.get("kind", "cup")
         try:
+            if kind == "unit":
+                fail = run_unit_gate(gd, g)
+                overall_fail += fail
+                continue
             out = build_harness(gd, g)
             c_cups = run_harness(out, g)
             py_cups = run_twin(g)

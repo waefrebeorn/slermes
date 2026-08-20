@@ -427,16 +427,35 @@ static const char *web_json_string(const char *json, const char *key, char *buf,
 static void web_json_escape(const char *src, char *dst, size_t dst_size) {
     int i = 0;
     while (*src && i < (int)dst_size - 2) {
-        switch (*src) {
+        unsigned char c = (unsigned char)*src;
+        switch (c) {
             case '"':  dst[i++] = '\\'; dst[i++] = '"'; break;
             case '\\': dst[i++] = '\\'; dst[i++] = '\\'; break;
+            case '\b': dst[i++] = '\\'; dst[i++] = 'b'; break;
+            case '\f': dst[i++] = '\\'; dst[i++] = 'f'; break;
             case '\n': dst[i++] = '\\'; dst[i++] = 'n'; break;
             case '\r': dst[i++] = '\\'; dst[i++] = 'r'; break;
             case '\t': dst[i++] = '\\'; dst[i++] = 't'; break;
-            default:   dst[i++] = *src; break;
+            default:
+                /* Control characters (< 0x20) that have no short escape
+                 * (0x00-0x07, 0x0b, 0x0e-0x1f) are emitted as \u00XX to match
+                 * LIVE Python json.dumps (and libjson json_escape_string).
+                 * 0x08/0x0c are handled above as \b/\f. Raw control bytes
+                 * would otherwise produce invalid JSON. */
+                if (c < 0x20) {
+                    if (i < (int)dst_size - 7) {
+                        i += snprintf(dst + i, dst_size - (size_t)i, "\\u%04x", c);
+                    } else {
+                        goto done;
+                    }
+                } else {
+                    dst[i++] = (char)c;
+                }
+                break;
         }
         src++;
     }
+done:
     dst[i] = '\0';
 }
 
