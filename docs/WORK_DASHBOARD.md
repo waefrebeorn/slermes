@@ -163,6 +163,30 @@ primitives from the research, now end-to-end.
    symbol-aware-merge reference — never blind bulk-merge (drops load-bearing code).
 9. Add file-level thin-wrapper `.c` files for modules whose real code lives elsewhere.
 
+**Reorg checkpoint executed this session (git mv, build-preserving, BUILD=0):**
+- **Subpackage relocation by naming convention** (verifiable, no fragile map): 45 C files
+  moved into Python-mirroring subpackage dirs:
+  - `agent/lsp/` ← all `lsp_*.c` (17 files)
+  - `agent/transports/` ← `transport_*.c`
+  - `gateway/relay/` ← all `relay_*.c` (18 files)
+  - `gateway/platforms/qqbot/` ← `qqbot_*.c`
+  - `gateway/platforms/msgraph_webhook/` ← `msgraph_webhook_*.c`
+  - `tools/computer_use/` ← `computer_use_*.c`
+  - `objects.mk` regenerated (63 `.o` path references updated); `make slermes` stays GREEN;
+    water-cup CI green. C tree now mirrors the Python package subpackage layout.
+- **Earlier in session**: removed 1,143 in-tree `.o` build artifacts (gitignored, not
+  tracked) and quarantined 248 bootleg-class `*_py_parity`/`*_py_final`/`batch*_gaps`/
+  `*_scaffold` orphans (confirmed unreferenced by any `#include`) into `quarantine/src/`.
+- **REMAINING (genuine code-split work, NOT a rename — deferred):** ~347 collision groups
+  where multiple C files share a normalized leaf (e.g. `config.c` + `config_ports.c` +
+  `config_gaps.c` + `config_pure.c` all → `config.c`). These need real CODE SPLITS
+  (one Python module → multiple C translation units), not renames. Blind bulk-merge is
+  forbidden (drops load-bearing code). Each must be split per `pyport_map`/PoP evidence.
+- **Mapping tooling caveat**: `scripts/pyport_map.json` `marker_files` is UNRELIABLE
+  (e.g. maps `session_db.c`→`browser_camofox.c`); `func_match_files` is noisy (many-to-many).
+  Relocations were driven by naming convention + `live_parity_scan.json` module paths, NOT
+  the fragile `marker_files` heuristic.
+
 ### P4 — Hygiene
 10. Keep `audit_ports.py` clean; run `make parity-walkway` to refresh §1A. Water-cup
     `watercup_all` gate must stay GREEN in CI.

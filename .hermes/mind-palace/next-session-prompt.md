@@ -67,7 +67,7 @@ _Generated 2026-08-09T06:01:00Z — live scanner `tests/slermes_parity_battlegro
 
 **Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,640 ahead / 3 behind upstream/main (last merge 2026-08-19 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,640 ahead / 7 behind upstream/main (last merge 2026-08-19 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-19T07:45:26Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-19T07:50:58Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->
