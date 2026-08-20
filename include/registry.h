@@ -157,6 +157,10 @@ bool get_cached_check_fn_result(void *fn, bool *hit, bool default_value);
 bool check_fn_cached(bool (*fn)(void));
 void invalidate_check_fn_cache(void);
 
+/* Free process-wide registry resources (idempotency cache, aliases). Safe to
+ * call once at process exit; idempotent. */
+void tool_registry_shutdown(void);
+
 #ifdef __cplusplus
 }
 #endif

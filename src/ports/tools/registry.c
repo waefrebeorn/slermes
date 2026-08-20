@@ -15,6 +15,8 @@
 #include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_tool_result.h"  /* tool_error(), tool_result_obj() for standardized JSON */
+#include "tool_result_classification.h"  /* tool_classify_error() for retry signals */
+#include "tool_idempotency.h"            /* idempotency cache for safe retries */
 #include "registry.h"
 #include <ctype.h>
 #include <pthread.h>
@@ -196,6 +198,17 @@ static uint64_t g_registry_generation = 0;
 typedef struct { char alias[64]; char toolset[32]; } reg_alias_t;
 static reg_alias_t g_aliases[REG_ALIAS_MAX];
 static size_t g_aliases_count = 0;
+
+/* Process-wide idempotency cache for tool side effects. Allocated lazily on
+ * first dispatch (so a tool process that never dispatches pays nothing) and
+ * freed at process exit via tool_registry_shutdown(). Properly allocated, not a
+ * landlocked static. Guarded by g_registry_mutex when touched from dispatch. */
+static tool_idem_cache_t *g_idem_cache = NULL;
+static bool g_idem_enabled = true;   /* operator kill-switch */
+
+static void idem_ensure(void) {
+    if (!g_idem_cache) g_idem_cache = tool_idem_new();
+}
 
 /* Generation counter — bumped on every mutation.
  * Callers that cache tool metadata can compare against this to
@@ -587,11 +600,33 @@ char *registry_dispatch(const char *name, const char *args_json,
                 pthread_mutex_unlock(&g_registry_mutex);
                 return verr;
             }
+            /* P1: idempotency — a retry with the same key returns the cached
+             * result WITHOUT re-executing the handler (no double side effect). */
+            char *idem_key = NULL;
+            if (g_idem_enabled) {
+                idem_ensure();
+                idem_key = tool_idem_key(tool->name, args_json);
+                if (idem_key) {
+                    char *cached = tool_idem_get(g_idem_cache, idem_key);
+                    if (cached) {
+                        free(idem_key);
+                        pthread_mutex_unlock(&g_registry_mutex);
+                        return cached;   /* safe retry: replay stored result */
+                    }
+                }
+            }
             /* Coerce string args to match JSON Schema types (TD01) */
             char *coerced = coerce_args_json(tool->name, args_json, tool->schema_json);
             const char *dispatch_args = coerced ? coerced : args_json;
             char *result = tool->handler(dispatch_args, task_id);
             free(coerced);
+            /* P1: store successful results in the idempotency cache so a later
+             * retry is safe. (Errors are not cached — they should be retried if
+             * transient; the classifier below tells the loop which.) */
+            if (result && idem_key && g_idem_cache && !tool_result_is_error(result)) {
+                tool_idem_put(g_idem_cache, idem_key, result, 0);
+            }
+            free(idem_key);
             pthread_mutex_unlock(&g_registry_mutex);
             /* Sanitize error results — strip CDATA, role tags, fences from tool
              * error messages before they enter conversation history.
@@ -601,6 +636,13 @@ char *registry_dispatch(const char *name, const char *args_json,
                 if (sanitized) {
                     free(result);
                     result = sanitized;
+                }
+                /* P1: tag the error with its retry class so the agent loop can
+                 * decide whether to retry. Non-destructive: appends a field. */
+                tool_error_class_t cls = tool_classify_error(result);
+                if (cls != TOOL_ERR_NONE) {
+                    char *tagged = tool_error_with_class(result, cls);
+                    if (tagged) { free(result); result = tagged; }
                 }
             }
             return result;
@@ -624,11 +666,30 @@ char *registry_dispatch(const char *name, const char *args_json,
                     pthread_mutex_unlock(&g_registry_mutex);
                     return verr;
                 }
+                /* P1: idempotency — safe retry returns cached result. */
+                char *idem_key = NULL;
+                if (g_idem_enabled) {
+                    idem_ensure();
+                    idem_key = tool_idem_key(tool->name, args_json);
+                    if (idem_key) {
+                        char *cached = tool_idem_get(g_idem_cache, idem_key);
+                        if (cached) {
+                            free(idem_key);
+                            pthread_mutex_unlock(&g_registry_mutex);
+                            return cached;
+                        }
+                    }
+                }
                 /* Coerce string args to match JSON Schema types (TD01) */
                 char *coerced = coerce_args_json(tool->name, args_json, tool->schema_json);
                 const char *dispatch_args = coerced ? coerced : args_json;
                 char *result = tool->handler(dispatch_args, task_id);
                 free(coerced);
+                /* P1: store successful results for safe retry. */
+                if (result && idem_key && g_idem_cache && !tool_result_is_error(result)) {
+                    tool_idem_put(g_idem_cache, idem_key, result, 0);
+                }
+                free(idem_key);
                 pthread_mutex_unlock(&g_registry_mutex);
                 /* Sanitize error results on repaired path too */
                 if (result && strncmp(result, "{\"error\"", 7) == 0 && tool_error_sanitize) {
@@ -636,6 +697,12 @@ char *registry_dispatch(const char *name, const char *args_json,
                     if (sanitized) {
                         free(result);
                         result = sanitized;
+                    }
+                    /* P1: tag error with retry class for the agent loop. */
+                    tool_error_class_t cls = tool_classify_error(result);
+                    if (cls != TOOL_ERR_NONE) {
+                        char *tagged = tool_error_with_class(result, cls);
+                        if (tagged) { free(result); result = tagged; }
                     }
                 }
                 return result;
@@ -1500,5 +1567,16 @@ void registry_set_async(const char *name, bool async) {
             break;
         }
     }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* Free process-wide registry resources. Idempotent. */
+void tool_registry_shutdown(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    if (g_idem_cache) {
+        tool_idem_free(g_idem_cache);
+        g_idem_cache = NULL;
+    }
+    g_aliases_count = 0;
     pthread_mutex_unlock(&g_registry_mutex);
 }

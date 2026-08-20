@@ -35,10 +35,12 @@ diff oracle AND the water-cup say MATCH.
 | `registry_validate_args` | tools | ✅ GREEN | P0 centralized input validation — rejects bad/type-mismatched args before dispatch |
 | `watercup_web_auth` | web | ✅ GREEN | `is_public_path` now == LIVE `PUBLIC_API_PATHS` (8 paths, 1:1 parity) |
 | `watercup_json_escape` | web | ✅ GREEN | `web_json_escape` now escapes `<0x20` like LIVE `json.dumps` (`\b`/`\f` short, else `\u00XX`) |
+| `tool_result_classification` | tools | ✅ GREEN | P1: classifies tool errors retryable/permanent (fail-closed default) + `tool_error_with_class` tag |
+| `tool_idempotency` | tools | ✅ GREEN | P1: omap-backed idempotency cache — retry returns cached result (no double side effect) |
 
-> **4 project-wide gates GREEN** (incl. `subscription_view_format_tier_row` added this session).
+> **9 project-wide gates GREEN** (incl. `subscription_view_format_tier_row`, `registry_validate_args`, `watercup_web_auth`, `watercup_json_escape`, `tool_result_classification`, `tool_idempotency` added this session).
 > Candidate pool for more gates: **3,042 pure functions** with both a C port and a LIVE
-> Python twin (from the PoP-annotation cross-reference). Only 4 are currently gated.
+> Python twin (from the PoP-annotation cross-reference). Only 9 are currently gated.
 
 ### 1C. PoP-integrity audit (`scripts/audit_ports.py` v2 — hardened this session)
 v1 reported ~17,500 false-positive "orphans" (broken regex). v2 scans definitions
@@ -96,6 +98,28 @@ The C tree does NOT mirror the Python package tree 1:1. Of **523 Python modules*
     length) was used where `json_object_size()` (object count) was needed, and
     `json_get(obj, index)` (array accessor) was used where `json_object_get_at()`
     was needed — so coercion was silently a no-op before; it now actually coerces.
+
+### P1 — Tool-layer reliability (SHIPPED ✅, research-backed)
+Built the two structural fixes the agent-tooling research identified as the
+"retries are structurally broken" gap:
+
+- **Error classification** — `src/tools/tool_result_classification.c` (was a
+  name-parity STUB; now REAL). `tool_classify_error()` returns
+  `NONE/TRANSIENT/PERMANENT`: explicit `"retryable"` field wins; else keyword
+  heuristics on message+code+status; **default PERMANENT (fail-closed)** so the
+  agent loop never blindly retries an unknown error. `tool_error_with_class()`
+  non-destructively appends `_retry_class` to an error result so the loop can
+  decide. Proven by `tests/watercup/gates/tool_result_classification/`.
+- **Idempotency keys** — `src/tools/tool_idempotency.c` + `include/tool_idempotency.h`,
+  omap-backed (no landlocked static). `tool_idem_key(tool,args)` (explicit
+  `idempotency_key` arg overrides); `tool_idem_put/get` with TTL. Wired into
+  `registry_dispatch` (both main + repaired paths): lookup-before-exec returns
+  the cached result on retry WITHOUT re-running the handler (no double send), and
+  successful results are stored. `tool_registry_shutdown()` frees the cache.
+  Proven by `tests/watercup/gates/tool_idempotency/`.
+
+These give the agent a real retry signal (transient vs permanent) and make
+retries safe (idempotent) — the two missing primitives from the research.
 
 ### P1 — Cheat-surface closure (the "173 missing-from-index" class)
 3. Resolve the 473 DA-4 annotation-only stubs (PoP comment, no body) — give them
