@@ -164,6 +164,7 @@ PORT_OBJ = \
  \
  src/tools/read_terminal_tool.o \
  src/tools/schema_sanitizer.o \
+ src/tools/skill_ledger.o \
  \
  src/tools/skills_ast_audit.o \
  src/hermes_cli/skills_guard.o \
