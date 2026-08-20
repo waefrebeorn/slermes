@@ -186,7 +186,10 @@ char *model_normalize_strip_match_prefix(const char *model_name, const char *tar
 /* detect_vendor — first hyphen/version token -> vendor slug. Caller frees (or NULL). */
 char *model_normalize_detect_vendor(const char *model_name)
 {
-    if (!model_name) return NULL;
+    /* LIVE Python's detect_vendor does `name = model_name.strip(); if not name:
+     * return None` — empty/whitespace-only strings are falsy and short-circuit to
+     * None. Mirror that exactly: a bare "" must return NULL the same way. */
+    if (!model_name || model_name[0] == '\0') return NULL;
     char tmp[256];
     size_t n = strlen(model_name);
     if (n >= sizeof(tmp)) n = sizeof(tmp) - 1;

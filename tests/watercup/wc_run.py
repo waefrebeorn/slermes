@@ -55,7 +55,7 @@ def build_harness(gate_dir, g):
     src = os.path.join(gate_dir, g["c_src"])
     out = os.path.join(BUILD, g["name"])
     os.makedirs(BUILD, exist_ok=True)
-    r = subprocess.run(["cc", "-I", HERE, src, "-o", out],
+    r = subprocess.run(["cc", "-I", HERE, src, "-o", out, "-lm"],
                        capture_output=True, text=True)
     if r.returncode != 0:
         raise RuntimeError("BUILD FAIL for %s:\n%s" % (g["name"], r.stderr))

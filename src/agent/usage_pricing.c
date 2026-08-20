@@ -875,7 +875,21 @@ void usage_pricing_format_cost_label(double amount, char *buf, size_t bufsz)
         return;
     }
     if (amount < 0.01) {
-        snprintf(buf, bufsz, "~$%.4f", amount);
+        /* LIVE Python uses Decimal with ROUND_HALF_EVEN (banker's rounding) for
+         * the 4dp sub-cent format. C printf rounds half-away-from-zero, which
+         * diverges on the exact half case (e.g. 0.00005 -> "0.0001" in C but
+         * "0.0000" in Python). Reproduce ROUND_HALF_EVEN here so the label
+         * matches LIVE Python byte-for-byte (the #79220 honesty guard depends on
+         * the rendered string). */
+        double scaled = amount * 10000.0;
+        double fl = floor(scaled);
+        double frac = scaled - fl;
+        long long q = (long long)fl;
+        if (frac > 0.5) q += 1;
+        else if (frac < 0.5) { /* q unchanged */ }
+        else { /* exactly .5: round to even */ if (q % 2) q += 1; }
+        double rounded = (double)q / 10000.0;
+        snprintf(buf, bufsz, "~$%.4f", rounded);
         /* honest guard: never render a zero-looking sub-cent label */
         if (strcmp(buf, "~$0.0000") == 0) {
             snprintf(buf, bufsz, "~$<0.0001");

@@ -1,0 +1,101 @@
+# Slermes — Work Dashboard (Single Source of Truth)
+
+> **This is the only doc you read when you walk into a room.** Everything else is
+> detail. It reconciles the project's real detectors into one actionable plan and
+> is regenerated/updated as work closes. Last updated: **2026-08-19** (session:
+> water-cup project-wide + detector hardening + FAP closure).
+>
+> **Orientation rule:** trust the numbers in §1 (live scanner + water-cup gates),
+> not the auto-generated prose in `parity-summary.md` / `GAP_LIST.md` — those
+> were found to be stale/contradictory and have been moved to `docs/archive/`.
+
+## §1 — Ground truth (what the detectors actually say RIGHT NOW)
+
+### 1A. Function-level parity (live scanner `live_parity_scan.json`, 2026-08-19)
+| Class | Count | % | Meaning |
+|-------|-------|---|---------|
+| PORTED | 13,581 | 85.2% | C11 + PoP annotation + real body |
+| REAL_GAP | 2,329 | 14.6% | not yet ported |
+| ├ annotation-only stubs (DA-4) | 473 | — | PoP comment, NO real C body (scanner-fooling) |
+| └ genuine gaps (no C at all) | 1,856 | — | nothing in the tree |
+| PARTIAL | 32 | 0.2% | C fn present, annotation missing |
+| BOOTLEG (echo stubs) | 0 | — | no-work stubs (recursive_false_gap_hunter) |
+| **TOTAL** | **15,942** | 100% | all Python fns scanned |
+
+### 1B. Water-cup deep-gate (behavioral, language-agnostic — `tests/watercup/`)
+Runs in CI via `watercup_all` port. A port is parity-closed only when BOTH the
+diff oracle AND the water-cup say MATCH.
+
+| Gate | Subsystem | Status | What it guards |
+|------|-----------|--------|----------------|
+| `web_fs_list` | web | ✅ GREEN | decision-structure cup (I/O abstracted) matches LIVE Python |
+| `usage_pricing_format_cost_label` | agent | ✅ GREEN | sub-cent rounding (ROUND_HALF_EVEN) matches Python `Decimal` |
+| `model_normalize_detect_vendor` | hermes_cli | ✅ GREEN | empty-string guard matches Python falsy semantics |
+| `watercup_web_auth` | web | 🔴 RED | auth allowlist set diverges from LIVE `PUBLIC_API_PATHS` |
+| `watercup_json_escape` | web | 🔴 RED | `web_app.c` copy B dropped `<0x20` control-char escape vs `web_server.c`+LIVE |
+
+### 1C. PoP-integrity audit (`scripts/audit_ports.py` v2 — hardened this session)
+v1 reported ~17,500 false-positive "orphans" (broken regex). v2 scans definitions
+**and** declarations:
+| Issue | Count | Action |
+|-------|-------|--------|
+| TRUE_ORPHAN (C fn credited but absent) | see `audit_ports.py --json` | re-port or fix PoP credit |
+| MULTILINE_POP (scanner-blind comment) | 255 | fold onto one line |
+| DUP_CREDIT (C fn → 2+ python twins) | 751 | disambiguate names |
+| STUB_MARKER (TODO/FIXME in port body) | 17 | implement |
+
+> **Note:** the TRUE_ORPHAN count is still over-inclusive (it flags legitimate
+> namespace renames like `register_tool`→`plugin_register_tool`). The real,
+> actionable surface is the **name-parity gap** (C names must match Python 1:1 per
+> the standing edict) — those are real and worth closing, but don't treat the raw
+> count as gospel.
+
+## §2 — The work, ranked (this is the to-do)
+
+### P0 — FAPs the water-cup already caught (real, verified, fixable)
+1. **`watercup_web_auth`** — `is_public_path()` allowlist ≠ LIVE `PUBLIC_API_PATHS`.
+   C serves 4 endpoints unauthenticated that Python 401s, and 401s 6 public
+   endpoints Python serves. **Fix `src/web_dashboard.c::is_public_path` + the
+   loopback/IPv6 + `hmac.compare_digest` uses.**
+2. **`watercup_json_escape`** — `src/web_app.c::web_json_escape` dropped the
+   `<0x20 → \u00XX` control-char branch present in `src/web_server.c` + LIVE
+   `json.dumps`. **Fix `web_json_escape` to escape control chars.**
+
+### P1 — Cheat-surface closure (the "173 missing-from-index" class)
+3. Resolve the 473 DA-4 annotation-only stubs (PoP comment, no body) — give them
+   real C or drop the false credit.
+4. Resolve the 751 DUP_CREDIT collisions — each C fn must credit exactly one
+   Python twin (name-parity).
+5. Fold the 255 MULTILINE_POP comments onto one line so the scanner can read them.
+
+### P2 — Breadth (the 2,329 REAL_GAPs)
+6. Close genuine gaps prioritized by subsystem usage. The `gates/` framework makes
+   any pure function gateable in 3 files — expand the water-cup coverage to the
+   highest-traffic modules (usage_pricing, model_normalize, web_server, kanban_db).
+
+### P3 — Hygiene
+7. Keep `audit_ports.py` green; run `make parity-walkway` to refresh §1A.
+8. Add a CI step that fails if `watercup_all` regresses (already wired in
+   `run_oracles.sh`).
+
+## §3 — How to find work when you walk in
+
+```
+1. make parity-walkway          # refresh live_parity_scan.json (§1A)
+2. python3 scripts/audit_ports.py --json   # refresh PoP-integrity (§1C)
+3. bash tests/oracle/run_watercup_all.sh   # refresh water-cup gates (§1B)
+4. Read §2 of THIS file. Do the top P0 item. Close it. Update §1B.
+```
+
+## §4 — Architecture of the audit tooling (so you don't reinvent it)
+- **Diff oracle** (`tests/oracle/`): output-vector equality. Coarse gate.
+- **Water-cup** (`tests/watercup/`): behavioral trace-cup (B/L/R/r/V → FNV-1a).
+  Deep gate; language-agnostic; catches "right output, wrong path".
+  - `wc_run.py` = generic engine. `gates/<name>/` = {gate.json, harness.c, twin.py}.
+  - Add a gate: `mkdir gates/<fn>` + 3 files. No runner changes needed.
+- **PoP audit** (`scripts/audit_ports.py`): flags orphan/multiline/dup/stub PoPs.
+- **Gap scanner** (`tests/slermes_parity_battleground.py`): function-level parity.
+
+> **Stale/contradictory docs** (`parity-summary.md`, `GAP_LIST.md`,
+> `real-gap-list.md` with over-optimistic claims) are archived under
+> `docs/archive/` — don't trust their prose; trust this dashboard + the live JSON.

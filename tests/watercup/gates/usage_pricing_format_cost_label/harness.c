@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include <stdbool.h>
 #include "watercup.h"
 
@@ -21,7 +22,15 @@ static const char *format_cost_label(double amount, char *buf, size_t bufsz) {
         WCUP_BRANCH(0);
         if (amount < 0.01) {
             WCUP_BRANCH(1);
-            snprintf(buf, bufsz, "~$%.4f", amount);
+            /* ROUND_HALF_EVEN (banker's) to match LIVE Python Decimal:.4f */
+            double scaled = amount * 10000.0;
+            double fl = floor(scaled);
+            double frac = scaled - fl;
+            long long q = (long long)fl;
+            if (frac > 0.5) q += 1;
+            else if (frac == 0.5) { if (q % 2) q += 1; }
+            double rounded = (double)q / 10000.0;
+            snprintf(buf, bufsz, "~$%.4f", rounded);
             if (strcmp(buf, "~$0.0000") == 0) {
                 WCUP_BRANCH(1);
                 snprintf(buf, bufsz, "~$<0.0001");

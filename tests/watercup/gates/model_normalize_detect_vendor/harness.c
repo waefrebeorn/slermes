@@ -24,7 +24,7 @@ static const struct { const char *tok; const char *vendor; } VENDOR_PREFIXES[] =
 static void detect_vendor(const char *model_name) {
     WCUP_BEGIN("detect_vendor");
     WCUP_VALSTR(model_name ? model_name : "(null)");
-    if (!model_name) { WCUP_BRANCH(0); WCUP_VALSTR("ret:null"); char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup); WCUP_END("detect_vendor"); return; }
+    if (!model_name || model_name[0] == '\0') { WCUP_BRANCH(0); WCUP_VALSTR("ret:null"); char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup); WCUP_END("detect_vendor"); return; }
     WCUP_BRANCH(1);
     char tmp[256];
     size_t n = strlen(model_name);
