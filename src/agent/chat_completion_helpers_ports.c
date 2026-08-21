@@ -295,8 +295,7 @@ bool cch_payload_has_error_shape(const json_t *payload) {
     return false;
 }
 
-/* PoP: cch_json_object_from_text @ agent/chat_completion_helpers.py:_json_object_from_text
- * Parse a JSON object from text. Returns a malloc'd JSON string (or NULL). */
+/* PoP: cch_json_object_from_text @ agent/chat_completion_helpers.py:_json_object_from_text */
 char *cch_json_object_from_text(const char *text) {
     if (!text) return NULL;
     /* stripped = text.strip() */
