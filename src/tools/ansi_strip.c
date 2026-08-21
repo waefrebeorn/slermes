@@ -55,9 +55,48 @@ static char *ansi_strip_handler(const char *args_json, const char *task_id) {
     return json_out;
 }
 
+/* Port of Python tools/ansi_strip.py:strip_unicode_tags.
+ * Remove Unicode tag characters (U+E0000–U+E007F), preserving valid
+ * emoji-tag sequences (U+1F3F4 ... U+E007F). */
+/* PoP: strip_unicode_tags_handler @ tools/ansi_strip.py:strip_unicode_tags */
+static char *strip_unicode_tags_handler(const char *args_json, const char *task_id) {
+    (void)task_id;
+    if (!args_json) return strdup("{\"error\":\"No args\"}");
+
+    char *err = NULL;
+    json_node_t *args = json_parse(args_json, &err);
+    if (!args) { free(err); return strdup("{\"error\":\"JSON parse\"}"); }
+
+    const char *text = json_object_get_string(args, "text", NULL);
+    if (!text) {
+        json_free(args);
+        return strdup("{\"error\":\"Missing text\"}");
+    }
+
+    char *clean = strip_unicode_tags(text);
+    if (!clean) {
+        json_free(args);
+        return strdup("{\"error\":\"Strip failed\"}");
+    }
+
+    json_node_t *result = json_new_object();
+    json_object_set(result, "original_length", json_new_number((double)strlen(text)));
+    json_object_set(result, "stripped", json_new_string(clean));
+    json_object_set(result, "stripped_length", json_new_number((double)strlen(clean)));
+    free(clean);
+
+    json_free(args);
+    char *json_out = json_serialize(result);
+    json_free(result);
+    return json_out;
+}
+
 /* Port of Python: tool registration */
 void registry_init_ansi_strip(void) {
     registry_register("strip_ansi",
         "Remove ANSI escape codes from text. Returns cleaned text with original and stripped lengths.",
         SCHEMA, ansi_strip_handler);
+    registry_register("strip_unicode_tags",
+        "Remove Unicode tag characters from text, preserving valid emoji-tag sequences.",
+        SCHEMA, strip_unicode_tags_handler);
 }

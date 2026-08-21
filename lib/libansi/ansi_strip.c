@@ -248,3 +248,174 @@ char *strip_ansi(const char *text) {
     if (!buf) return NULL;
     return ansi_strip_buf(text, buf, len + 1);
 }
+
+/* --- Unicode TAG stripping (UTF-8 aware) --- */
+
+/* Decode the codepoint at s[0..] (UTF-8). Sets *bytes to the UTF-8 length
+ * (1-4) and returns the codepoint, or (uint32_t)-1 on invalid leading byte. */
+static uint32_t utf8_decode(const unsigned char *s, size_t avail, size_t *bytes) {
+    unsigned char b0 = s[0];
+    if (b0 < 0x80) { *bytes = 1; return b0; }
+    if ((b0 & 0xE0) == 0xC0) {
+        if (avail < 2) { *bytes = 1; return (uint32_t)-1; }
+        *bytes = 2;
+        return ((uint32_t)(b0 & 0x1F) << 6) | (s[1] & 0x3F);
+    }
+    if ((b0 & 0xF0) == 0xE0) {
+        if (avail < 3) { *bytes = 1; return (uint32_t)-1; }
+        *bytes = 3;
+        return ((uint32_t)(b0 & 0x0F) << 12) | ((uint32_t)(s[1] & 0x3F) << 6) | (s[2] & 0x3F);
+    }
+    if ((b0 & 0xF8) == 0xF0) {
+        if (avail < 4) { *bytes = 1; return (uint32_t)-1; }
+        *bytes = 4;
+        return ((uint32_t)(b0 & 0x07) << 18) | ((uint32_t)(s[1] & 0x3F) << 12) |
+               ((uint32_t)(s[2] & 0x3F) << 6) | (s[3] & 0x3F);
+    }
+    *bytes = 1;
+    return (uint32_t)-1;
+}
+
+/* Fast-path check: any plane-14 tag character (U+E0000–U+E007F).
+ * These are 4-byte UTF-8 sequences with lead 0xF3 and second byte 0xA0. */
+static bool has_unicode_tag(const char *text) {
+    if (!text) return false;
+    for (const unsigned char *p = (const unsigned char *)text; *p; p++) {
+        if (*p == 0xF3 && p[1] == 0xA0) return true;
+    }
+    return false;
+}
+
+
+char *strip_unicode_tags_buf(const char *text, char *buf, size_t buf_size) {
+    if (!text || !buf || buf_size == 0) return NULL;
+    if (!has_unicode_tag(text)) {
+        size_t len = strlen(text);
+        if (len >= buf_size) { buf[0] = '\0'; return NULL; }
+        memcpy(buf, text, len + 1);
+        return buf;
+    }
+    const unsigned char *src = (const unsigned char *)text;
+    size_t srclen = strlen(text);
+    size_t si = 0, di = 0;
+    while (si < srclen && di < buf_size - 1) {
+        size_t blen;
+        uint32_t cp = utf8_decode(src + si, srclen - si, &blen);
+        if (cp == (uint32_t)-1) { /* invalid byte — copy verbatim */ }
+        if (cp == 0x1F3F4) {
+            /* Potential emoji tag sequence: U+1F3F4 + U+E0020..U+E007E{1,} + U+E007F */
+            size_t scan = si + blen;
+            bool valid = false;
+            if (scan < srclen) {
+                size_t probe = scan;
+                /* first spec char must be in range */
+                size_t spec_start = probe;
+                while (probe < srclen) {
+                    size_t pb; uint32_t pcp = utf8_decode(src + probe, srclen - probe, &pb);
+                    if (pcp >= 0xE0020 && pcp <= 0xE007E) { probe += pb; continue; }
+                    if (pcp == 0xE007F) { valid = (probe > spec_start); break; }
+                    break;
+                }
+                (void)spec_start;
+            }
+            if (valid) {
+                /* emit base + spec + cancel tag verbatim */
+                /* recompute end: base + sequence */
+                /* find cancel tag end */
+                size_t probe = si + blen;
+                while (probe < srclen) {
+                    size_t pb; uint32_t pcp = utf8_decode(src + probe, srclen - probe, &pb);
+                    if (pcp == 0xE007F) { probe += pb; break; }
+                    probe += pb;
+                }
+                size_t seqlen = probe - si;
+                if (di + seqlen < buf_size) { memcpy(buf + di, src + si, seqlen); di += seqlen; }
+                si = probe;
+                continue;
+            }
+            /* not a valid sequence: emit base char normally */
+        }
+        if (cp >= 0xE0000 && cp <= 0xE007F) {
+            /* plane-14 tag char not part of a valid emoji sequence: strip */
+            si += blen;
+            continue;
+        }
+        /* copy the codepoint verbatim */
+        if (di + blen < buf_size) { memcpy(buf + di, src + si, blen); di += blen; }
+        si += blen;
+    }
+    buf[di] = '\0';
+    return buf;
+}
+
+/* PoP: strip_unicode_tags @ tools/ansi_strip.py:strip_unicode_tags */
+char *strip_unicode_tags(const char *text) {
+    if (!text) return NULL;
+    size_t len = strlen(text);
+    char *buf = (char *)malloc(len + 1);
+    if (!buf) return NULL;
+    return strip_unicode_tags_buf(text, buf, len + 1);
+}
+
+/* --- sanitize_display_text --- */
+
+/* Fast-path check mirroring Python _HAS_CONTROL: any of
+ * 0x00-0x08, 0x0b-0x1f, 0x7f-0x9f. */
+static bool has_display_control(const char *text) {
+    if (!text) return false;
+    for (const unsigned char *p = (const unsigned char *)text; *p; p++) {
+        unsigned char c = *p;
+        if (c <= 0x08) return true;
+        if (c >= 0x0b && c <= 0x1f) return true;
+        if (c >= 0x7f && c <= 0x9f) return true;
+    }
+    return false;
+}
+
+/* PoP: sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
+char *sanitize_display_text(const char *text) {
+    if (!text) return NULL;
+    if (!has_display_control(text)) {
+        size_t len = strlen(text);
+        char *out = (char *)malloc(len + 1);
+        if (!out) return NULL;
+        memcpy(out, text, len + 1);
+        return out;
+    }
+    /* strip ANSI sequences first */
+    char *stripped = strip_ansi(text);
+    if (!stripped) return NULL;
+
+    /* normalize CR: \r\n -> \n, remaining \r -> \n */
+    size_t inlen = strlen(stripped);
+    char *out = (char *)malloc(inlen + 1);
+    if (!out) { free(stripped); return NULL; }
+    size_t oi = 0;
+    for (size_t i = 0; i < inlen; i++) {
+        if (stripped[i] == '\r') {
+            if (stripped[i + 1] == '\n') i++;   /* \r\n -> \n */
+            out[oi++] = '\n';
+        } else {
+            out[oi++] = stripped[i];
+        }
+    }
+    out[oi] = '\0';
+
+    /* remove C0 controls: 0x00-0x08, 0x0b, 0x0c, 0x0e-0x1f, 0x7f
+     * (preserve tab 0x09 and newline 0x0a). */
+    size_t wi = 0;
+    for (size_t i = 0; i < oi; i++) {
+        unsigned char c = (unsigned char)out[i];
+        bool remove = (c <= 0x08) ||
+                      (c == 0x0b) || (c == 0x0c) ||
+                      (c >= 0x0e && c <= 0x1f) ||
+                      (c == 0x7f);
+        if (!remove) out[wi++] = out[i];
+    }
+    out[wi] = '\0';
+
+    free(stripped);
+    /* shrink to fit */
+    char *final = (char *)realloc(out, strlen(out) + 1);
+    return final ? final : out;
+}

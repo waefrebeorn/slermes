@@ -14,6 +14,7 @@
 #include "hermes_json.h"
 #include "registry.h"
 #include "credential_pool.h"
+#include "ansi_strip.h"
 
 /* PoP: tools_computer_use_tool_u_canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
 int tools_computer_use_tool_u_canon_key_combo(const char *arg) {
@@ -3727,13 +3728,22 @@ int tools_voice_mode_cancel_2(const char *arg) {
 
 /* PoP: tools_ansi_strip_sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
 int tools_ansi_strip_sanitize_display_text(const char *arg) {
-    /* Python: strip escapes + control chars. Arg = "text\tstate\tresult". */
+    /* Python: strip escapes + control chars. Arg = "text\tstate\tresult".
+     * When state==1, run the real sanitize_display_text() on text. */
     if (!arg || !*arg) { printf("\n"); return 0; }
     const char *t1 = strchr(arg, '\t');
-    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
     int state = t1 && t1[1] == '1';
     if (!state) { printf("%s\n", arg); return 0; }
-    printf("%s\n", t2 ? t2 + 1 : arg);
+    /* state==1: sanitize the text field (everything before the first tab) */
+    size_t text_len = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    char *text = (char *)malloc(text_len + 1);
+    if (!text) { printf("%s\n", arg); return 0; }
+    memcpy(text, arg, text_len);
+    text[text_len] = '\0';
+    char *clean = sanitize_display_text(text);
+    free(text);
+    printf("%s\n", clean ? clean : arg);
+    free(clean);
     return 0;
 }
 
