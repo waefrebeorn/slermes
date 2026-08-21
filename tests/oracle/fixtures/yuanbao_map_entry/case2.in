@@ -1,0 +1,22 @@
+{
+ "ops": [
+  {
+   "op": "encode",
+   "key": "session_id",
+   "value": "abc-123"
+  },
+  {
+   "op": "encode",
+   "key": "x",
+   "value": "y"
+  },
+  {
+   "op": "decode",
+   "hex": "0a0a73657373696f6e5f696412076162632d313233"
+  },
+  {
+   "op": "decode",
+   "hex": "0a0178120179"
+  }
+ ]
+}

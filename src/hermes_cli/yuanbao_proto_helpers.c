@@ -273,9 +273,10 @@ char *yuanbao_proto_decode_biz_msg(const unsigned char *data, size_t len)
 
 /* ---- MsgContent encode/decode ---- */
 /* PoP: yb_encode_msg_content @ gateway/platforms/yuanbao_proto.py:_encode_msg_content */
+/* PoP: yuanbao_proto_encode_map_entry @ gateway/platforms/yuanbao_proto.py:_encode_map_entry */
+/* PoP: yuanbao_proto_decode_map_entry @ gateway/platforms/yuanbao_proto.py:_decode_map_entry */
 
-/* PoP: yb_encode_msg_content @ gateway/platforms/yuanbao_proto.py:_decode_map_entry */
-/* PoP: yb_encode_msg_content @ gateway/platforms/yuanbao_proto.py:_encode_map_entry */static void yb_encode_msg_content(yb_buf *b, const char *json_content)
+static void yb_encode_msg_content(yb_buf *b, const char *json_content)
 {
     /* content is a JSON object; we parse and encode known fields */
     json_t *c = json_parse(json_content, NULL);
@@ -321,6 +322,41 @@ char *yuanbao_proto_decode_biz_msg(const unsigned char *data, size_t len)
         }
     }
     json_free(c);
+}
+
+/* Encode a single entry of a protobuf map<string, string> (field 1 key,
+ * field 2 value). Mirrors yuanbao_proto.py:_encode_map_entry — empty key or
+ * value is omitted, exactly like the Python `if key:` / `if value:` guards. */
+/* PoP: yuanbao_proto_encode_map_entry @ gateway/platforms/yuanbao_proto.py:_encode_map_entry */
+unsigned char *yuanbao_proto_encode_map_entry(const char *key, const char *value, size_t *out_len)
+{
+    yb_buf b; yb_init(&b);
+    if (key && *key) yb_f_str(&b, 1, key);
+    if (value && *value) yb_f_str(&b, 2, value);
+    unsigned char *out = malloc(b.len ? b.len : 1);
+    memcpy(out, b.p, b.len);
+    if (out_len) *out_len = b.len;
+    yb_free(&b);
+    return out;
+}
+
+/* Decode a single entry of a protobuf map<string, string>, returning a
+ * malloc'd JSON array [key, value]. Mirrors yuanbao_proto.py:_decode_map_entry. */
+/* PoP: yuanbao_proto_decode_map_entry @ gateway/platforms/yuanbao_proto.py:_decode_map_entry */
+char *yuanbao_proto_decode_map_entry(const unsigned char *data, size_t len)
+{
+    yb_fields fs;
+    if (!yb_parse_fields(data, len, &fs)) { yb_fields_free(&fs); return strdup("[\"\",\"\"]"); }
+    char kbuf[1024], vbuf[1024];
+    yb_get_string(&fs, 1, kbuf, sizeof(kbuf));
+    yb_get_string(&fs, 2, vbuf, sizeof(vbuf));
+    json_t *arr = json_new_array();
+    json_array_append(arr, json_string(kbuf));
+    json_array_append(arr, json_string(vbuf));
+    char *out = json_dumps(arr, 0);
+    json_free(arr);
+    yb_fields_free(&fs);
+    return out;
 }
 
 /* ---- MsgBodyElement encode ---- */

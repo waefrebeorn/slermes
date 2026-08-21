@@ -1,0 +1,36 @@
+{
+ "ops": [
+  {
+   "op": "encode",
+   "key": "foo",
+   "value": "bar"
+  },
+  {
+   "op": "encode",
+   "key": "",
+   "value": "bar"
+  },
+  {
+   "op": "encode",
+   "key": "foo",
+   "value": ""
+  },
+  {
+   "op": "encode",
+   "key": "",
+   "value": ""
+  },
+  {
+   "op": "decode",
+   "hex": "0a03666f6f1203626172"
+  },
+  {
+   "op": "decode",
+   "hex": "1203626172"
+  },
+  {
+   "op": "decode",
+   "hex": ""
+  }
+ ]
+}
