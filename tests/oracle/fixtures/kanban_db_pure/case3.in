@@ -1,0 +1,34 @@
+{
+  "ops": [
+    {
+      "op": "relative_age",
+      "ts": 1000,
+      "now": 1000
+    },
+    {
+      "op": "relative_age",
+      "ts": 1000,
+      "now": 1030
+    },
+    {
+      "op": "relative_age",
+      "ts": 1000,
+      "now": 3600
+    },
+    {
+      "op": "relative_age",
+      "ts": 1000,
+      "now": 7200
+    },
+    {
+      "op": "relative_age",
+      "ts": 1000,
+      "now": 90000
+    },
+    {
+      "op": "relative_age",
+      "ts": 5000,
+      "now": 1000
+    }
+  ]
+}

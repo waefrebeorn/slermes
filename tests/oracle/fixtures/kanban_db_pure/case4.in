@@ -1,0 +1,40 @@
+{
+  "ops": [
+    {
+      "op": "normalize_slug",
+      "slug": "My Board"
+    },
+    {
+      "op": "normalize_slug",
+      "slug": "  atm10-server  "
+    },
+    {
+      "op": "normalize_slug",
+      "slug": ""
+    },
+    {
+      "op": "normalize_slug",
+      "slug": "-bad"
+    },
+    {
+      "op": "normalize_slug",
+      "slug": "good_slug-1"
+    },
+    {
+      "op": "normalize_slug",
+      "slug": null
+    },
+    {
+      "op": "display_name",
+      "slug": "atm10-server"
+    },
+    {
+      "op": "display_name",
+      "slug": "my_cool_board"
+    },
+    {
+      "op": "display_name",
+      "slug": "single"
+    }
+  ]
+}

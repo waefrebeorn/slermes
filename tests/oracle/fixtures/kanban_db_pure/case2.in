@@ -1,0 +1,44 @@
+{
+  "ops": [
+    {
+      "op": "claim_ttl",
+      "ttl": null
+    },
+    {
+      "op": "claim_ttl",
+      "ttl": 0
+    },
+    {
+      "op": "claim_ttl",
+      "ttl": 42
+    },
+    {
+      "op": "crash_grace",
+      "env": null
+    },
+    {
+      "op": "crash_grace",
+      "env": "60"
+    },
+    {
+      "op": "crash_grace",
+      "env": "-5"
+    },
+    {
+      "op": "crash_grace",
+      "env": "abc"
+    },
+    {
+      "op": "rate_cooldown",
+      "env": null
+    },
+    {
+      "op": "rate_cooldown",
+      "env": "10"
+    },
+    {
+      "op": "rate_cooldown",
+      "env": "0"
+    }
+  ]
+}

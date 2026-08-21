@@ -1,0 +1,28 @@
+{
+  "ops": [
+    {
+      "op": "normalize_effort",
+      "effort": "High"
+    },
+    {
+      "op": "normalize_effort",
+      "effort": "  "
+    },
+    {
+      "op": "normalize_effort",
+      "effort": "none"
+    },
+    {
+      "op": "normalize_effort",
+      "effort": "bogus"
+    },
+    {
+      "op": "normalize_effort",
+      "effort": "ULTRA"
+    },
+    {
+      "op": "normalize_effort",
+      "effort": "minimal"
+    }
+  ]
+}
