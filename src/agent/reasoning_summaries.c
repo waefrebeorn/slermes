@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "reasoning_summaries.h"
 
 static int pcs_isspace_char(char c)
 {
@@ -35,7 +36,7 @@ static int pcs_prev_ends_whitespace(const char *s)
     return pcs_isspace_char(s[len - 1]);
 }
 
-/* PoP: heading @ agent/reasoning_summaries.py:separate_glued_reasoning_blocks */
+/* PoP: rs_separate_glued_reasoning_blocks @ agent/reasoning_summaries.py:separate_glued_reasoning_blocks */
 /* Return *delta*, prefixed with "\n\n" when it glues onto *previous*.
  *
  * A break is inserted when:
