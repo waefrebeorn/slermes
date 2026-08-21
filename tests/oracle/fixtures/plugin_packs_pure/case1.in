@@ -1,0 +1,83 @@
+{
+  "ops": [
+    {
+      "op": "is_exact_sha",
+      "ref": "e8d59971d2b7901405b39dac7b03bdd616272d0d"
+    },
+    {
+      "op": "is_exact_sha",
+      "ref": "v1.2.3"
+    },
+    {
+      "op": "is_exact_sha",
+      "ref": "e8d59971d2b7901405b39dac7b03bdd616272d0"
+    },
+    {
+      "op": "entry_label",
+      "item": {
+        "name": "hermes-media-studio"
+      },
+      "index": 0
+    },
+    {
+      "op": "entry_label",
+      "item": {
+        "repo": "owner/relay"
+      },
+      "index": 1
+    },
+    {
+      "op": "entry_label",
+      "item": {},
+      "index": 2
+    },
+    {
+      "op": "validate_config_seed",
+      "plugin_id": "hermes-media-studio",
+      "seed": {
+        "default_model": "flux-3"
+      }
+    },
+    {
+      "op": "validate_config_seed",
+      "plugin_id": "p",
+      "seed": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "op": "validate_config_seed",
+      "plugin_id": "p",
+      "seed": {
+        "granted_capabilities": [
+          "x"
+        ]
+      }
+    },
+    {
+      "op": "validate_config_seed",
+      "plugin_id": "p",
+      "seed": {
+        "allow_something": true
+      }
+    },
+    {
+      "op": "validate_config_seed",
+      "plugin_id": "p",
+      "seed": {
+        "api_key": "abc"
+      }
+    },
+    {
+      "op": "validate_config_seed",
+      "plugin_id": "p",
+      "seed": {
+        "nested": {
+          "ok": 1
+        }
+      }
+    }
+  ]
+}
