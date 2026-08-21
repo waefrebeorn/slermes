@@ -16,6 +16,7 @@
 #define TBR_STALE_AFTER_SECONDS (30LL * 24 * 3600)
 
 /* _SANITIZE_RE = [^A-Za-z0-9._-] ; sanitize strips + replaces, caps 120. */
+/* PoP: tbr_sanitize @ hermes_cli/terminal_breadcrumbs.py:_SANITIZE_RE */
 char *tbr_sanitize(const char *raw) {
     char *s = strdup(raw ? raw : "");
     /* strip leading/trailing whitespace + slashes */

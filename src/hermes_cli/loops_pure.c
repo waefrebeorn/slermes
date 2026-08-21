@@ -30,6 +30,11 @@
 #include <ctype.h>
 #include <regex.h>
 
+static const long LOOPS_DEFAULT_MIN_INTERVAL_SECONDS = 30;
+static const long LOOPS_DEFAULT_MAX_TICKS              = 100;
+static const long LOOPS_DEFAULT_SELF_PACED_FLOOR_SECONDS = 60;
+static const long LOOPS_DEFAULT_SELF_PACED_CEILING_SECONDS = (15 * 60);
+
 /* parse_interval_token -------------------------------------------------  */
 /* ^(?=\d)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$  (case-insensitive)  */
 /* PoP: loops_parse_interval_token @ hermes_cli/loops.py:parse_interval_token */
@@ -62,12 +67,9 @@ int loops_parse_interval_token(const char *token) {
     return (total > 0) ? (int)total : -1;
 }
 
-#define LOOPS_DEFAULT_MIN_INTERVAL_SECONDS   (30)
-#define LOOPS_DEFAULT_MAX_TICKS              (100)
-#define LOOPS_DEFAULT_SELF_PACED_FLOOR_SECONDS (60)
-#define LOOPS_DEFAULT_SELF_PACED_CEILING_SECONDS (15 * 60)
-
+#
 /* --- format_interval --------------------------------------------- */
+/* PoP: loops_format_interval @ hermes_cli/loops.py:format_interval */
 char *loops_format_interval(double seconds) {
     if (seconds < 0) seconds = 0;
     long secs = (long)(seconds + 0.5);
@@ -196,9 +198,7 @@ static void json_escape(const char *s, char *out, size_t outsz) {
 }
 
 /* --- parse_loop_args ---------------------------------------------  */
-/* Returns a JSON object string:
- *   {"interval_seconds": N|null, "prompt": "...", "times": N,
- *    "until": "...", "error": "..."|null} */
+/* PoP: loops_parse_loop_args @ hermes_cli/loops.py:parse_loop_args */
 char *loops_parse_loop_args(const char *text) {
     if (!text) text = "";
     while (*text && isspace((unsigned char)*text)) text++;
@@ -338,3 +338,5 @@ char *loops_parse_loop_args(const char *text) {
     free(raw_dup);
     return out;
 }
+
+/* Configuration defaults (mirror of _loops_config() defaults)            */
