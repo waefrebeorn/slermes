@@ -1,0 +1,146 @@
+{
+  "ops": [
+    {
+      "op": "is_session_id",
+      "value": "20260812_135332_ab12cd"
+    },
+    {
+      "op": "is_session_id",
+      "value": "2026-08-12_13:53:32_x"
+    },
+    {
+      "op": "is_session_id",
+      "value": "2026081_135332_abc"
+    },
+    {
+      "op": "looks_like_source",
+      "value": "telegram"
+    },
+    {
+      "op": "looks_like_source",
+      "value": "MySource"
+    },
+    {
+      "op": "looks_like_source",
+      "value": "a"
+    },
+    {
+      "op": "looks_like_source",
+      "value": "AbC"
+    },
+    {
+      "op": "looks_like_source",
+      "value": ""
+    },
+    {
+      "op": "classify_row",
+      "nfield": 55,
+      "cells": [
+        "20260812_135332_ab12cd",
+        "telegram",
+        "user"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 55,
+      "cells": [
+        "20260812_135332_ab12cd",
+        "unknown123",
+        "user"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 18,
+      "cells": [
+        "20260812_135332_ab12cd",
+        "gpt-4"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 18,
+      "cells": [
+        "20260812_135332_ab12cd",
+        ""
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 14,
+      "cells": [
+        "20260812_135332_ab12cd",
+        "cli"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 33,
+      "cells": [
+        "20260812_135332_ab12cd",
+        "web"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 33,
+      "cells": [
+        "20260812_135332_ab12cd",
+        "nope"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 52,
+      "cells": [
+        null,
+        "user",
+        "assistant"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 52,
+      "cells": [
+        null,
+        "user",
+        "tool"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 52,
+      "cells": [
+        null,
+        "x",
+        "badrole"
+      ]
+    },
+    {
+      "op": "classify_row",
+      "nfield": 99,
+      "cells": [
+        "20260812_135332_ab12cd",
+        "cli"
+      ]
+    },
+    {
+      "op": "heuristic_started_at",
+      "cells": [
+        10,
+        "x",
+        1700000000.0,
+        50
+      ]
+    },
+    {
+      "op": "heuristic_started_at",
+      "cells": [
+        "no",
+        "nums",
+        5
+      ]
+    }
+  ]
+}
