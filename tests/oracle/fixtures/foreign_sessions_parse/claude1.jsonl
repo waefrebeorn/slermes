@@ -1,0 +1,5 @@
+{"type":"summary","summary":"Fix the cwd bug in resolver"}
+{"type":"user","sessionId":"sess-abc","cwd":"/home/wubu/proj","message":{"role":"user","content":[{"type":"text","text":"Can you fix the resolver?"}]}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Sure, looking now."},{"type":"tool_use","name":"grep"}]}}
+{"type":"user","message":{"role":"user","content":"<user_instructions> injected context </user_instructions> do the thing"}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Done. The fix is in main."}]}}

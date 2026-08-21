@@ -1,0 +1,5 @@
+{"type":"session_meta","payload":{"cwd":"/home/wubu/codex","session_id":"cx-1","id":"cx-1"}}
+{"type":"response_item","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":"Run the build"}]}}
+{"type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Building now."}]}}
+{"type":"response_item","payload":{"type":"custom_tool_call","name":"shell","tool":"shell"}}
+{"type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Build succeeded."}]}}

@@ -1,0 +1,8 @@
+{
+ "ops": [
+  {
+   "op": "claude",
+   "file": "/home/wubu/hermes-agent-dev/slermes/tests/oracle/fixtures/foreign_sessions_parse/claude1.jsonl"
+  }
+ ]
+}

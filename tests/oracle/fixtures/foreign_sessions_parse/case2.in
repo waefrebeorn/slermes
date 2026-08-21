@@ -1,0 +1,8 @@
+{
+ "ops": [
+  {
+   "op": "codex",
+   "file": "/home/wubu/hermes-agent-dev/slermes/tests/oracle/fixtures/foreign_sessions_parse/codex1.jsonl"
+  }
+ ]
+}
