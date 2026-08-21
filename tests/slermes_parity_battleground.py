@@ -882,8 +882,9 @@ class ParityAnalyzer:
         return True
 
     _FUNC_DEF = re.compile(
+        r'(?:^|\n)[ \t]*(?!#\s*define\b|#\s*undef\b)'
         r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
-        r'(?:[\w:]+\s*\*?\s+)+?(\**\w+)\s*\(([^;{]*?)\)\s*\n?\s*\{', re.S)
+        r'(?:[\w:]+\s*\*?\s+)+?(\**\w+)\s*\(([^;{]*?)\)\s*\n?\s*\{', re.S | re.M)
 
     @staticmethod
     def _strip_comments(content):

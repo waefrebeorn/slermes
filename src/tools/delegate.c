@@ -312,7 +312,6 @@ void delegate_list(json_node_t *result) {
 /* PoP: delegate_pause @ src/tools/delegate.c:delegate_pause */
 /* Port of Python tools/delegate_tool.py:set_spawn_paused(). */
 /* PoP: delegate_pause @ tools/delegate_tool.py:pause */
-/* PoP: delegate_pause @ hermes_cli/goals.py:pause */
 static void delegate_pause(bool paused, json_node_t *result) {
     bool new_state = set_spawn_paused(paused);
     json_object_set(result, "paused", json_new_bool(new_state));

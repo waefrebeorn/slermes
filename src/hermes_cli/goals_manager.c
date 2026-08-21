@@ -9,33 +9,7 @@
  * are intentionally NOT implemented here — they require network/LLM/process
  * dependencies. Process liveness + persistence are injected via a vtable so
  * this module stays pure (no DB, TTY, network, or OS-process calls).
- *
-/* PoP: index @ hermes_cli/goals.py:set */
-/* PoP: index @ hermes_cli/goals.py:set_contract */
-/* PoP: index @ hermes_cli/goals.py:pause */
-/* PoP: index @ hermes_cli/goals.py:resume */
-/* PoP: index @ hermes_cli/goals.py:clear */
-/* PoP: index @ hermes_cli/goals.py:mark_done */
-/* PoP: index @ hermes_cli/goals.py:add_subgoal */
-/* PoP: index @ hermes_cli/goals.py:remove_subgoal */
-/* PoP: index @ hermes_cli/goals.py:clear_subgoals */
-/* PoP: index @ hermes_cli/goals.py:status_line */
-/* PoP: index @ hermes_cli/goals.py:has_goal */
-/* PoP: index @ hermes_cli/goals.py:has_contract */
-/* PoP: index @ hermes_cli/goals.py:is_active */
-/* PoP: index @ hermes_cli/goals.py:is_waiting */
-/* PoP: index @ hermes_cli/goals.py:stop_waiting */
-/* PoP: index @ hermes_cli/goals.py:wait_on */
-/* PoP: index @ hermes_cli/goals.py:wait_on_session */
-/* PoP: index @ hermes_cli/goals.py:wait_for_seconds */
-/* PoP: index @ hermes_cli/goals.py:next_continuation_prompt */
-/* PoP: index @ hermes_cli/goals.py:render_contract */
-/* PoP: index @ hermes_cli/goals.py:render_subgoals */
-/* PoP: index @ hermes_cli/goals.py:_extract_json_object */
-/* PoP: index @ hermes_cli/goals.py:_parse_judge_response */
-/* PoP: index @ hermes_cli/goals.py:_render_background_block */
-/* PoP: index @ hermes_cli/goals.py:_goal_judge_max_tokens */
-
+ */
 
 #include "goal_contract.h"
 #include "goal_contract_internal.h"

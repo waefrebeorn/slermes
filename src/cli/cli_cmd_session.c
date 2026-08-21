@@ -1494,13 +1494,6 @@ void cmd_usage(const char *args, agent_state_t *state) {
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:status */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:stop */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:uninstall */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:clear_goal */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:judge_goal */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:load_goal */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:pause */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:resume */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:save_goal */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:set */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/_parser.py:build_top_level_parser */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:_accent_hex */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:_agent_spacer_height */
