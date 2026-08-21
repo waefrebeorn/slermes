@@ -494,6 +494,7 @@ static void bmp_cache_put(const char *key, char *val) {
     }
 }
 
+/* PoP: get_bot_mode_protocol_section @ tools/bot_mode_probe.py:get_bot_mode_protocol_section */
 const char *get_bot_mode_protocol_section(const char *home, int force_refresh) {
     char resolved[4608];
     bot_mode_probe_resolve_home(home, resolved, sizeof(resolved));
@@ -562,6 +563,7 @@ static char *bmp_sha256_hex(const unsigned char *data, size_t len) {
     return out;
 }
 
+/* PoP: capability_fingerprint @ tools/bot_mode_probe.py:capability_fingerprint */
 char *capability_fingerprint(const char *home) {
     char resolved[4608];
     bot_mode_probe_resolve_home(home, resolved, sizeof(resolved));
@@ -739,6 +741,7 @@ char *capability_fingerprint(const char *home) {
     return fp;
 }
 
+/* PoP: epoch_line @ tools/bot_mode_probe.py:epoch_line */
 char *epoch_line(const char *home) {
     char *fp = capability_fingerprint(home);
     size_t L = strlen(BMP_EPOCH_PREFIX) + strlen(fp) + 1;
@@ -748,6 +751,7 @@ char *epoch_line(const char *home) {
     return line;
 }
 
+/* PoP: stored_prompt_capability_stale @ tools/bot_mode_probe.py:stored_prompt_capability_stale */
 int stored_prompt_capability_stale(const char *stored_prompt, const char *home) {
     if (!stored_prompt) return 0;
     const char *p = strstr(stored_prompt, BMP_EPOCH_PREFIX);
@@ -769,6 +773,7 @@ int stored_prompt_capability_stale(const char *stored_prompt, const char *home) 
     return stale;
 }
 
+/* PoP: stored_bot_chat_prompt_needs_upgrade @ tools/bot_mode_probe.py:stored_bot_chat_prompt_needs_upgrade */
 int stored_bot_chat_prompt_needs_upgrade(const char *stored_prompt, const char *home) {
     if (!stored_prompt) return 0;
     if (strstr(stored_prompt, BMP_EPOCH_PREFIX) != NULL) return 0;

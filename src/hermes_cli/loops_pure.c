@@ -36,7 +36,8 @@
 #define LOOPS_DEFAULT_SELF_PACED_CEILING_SECONDS (15 * 60)
 
 /* ─── parse_interval_token ──────────────────────────────────────── */
-/* ^(?=\d)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$  (case-insensitive) */
+/* ^(?=\d)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$  (case-insensitive) *//* PoP: loops_parse_interval_token @ hermes_cli/loops.py:parse_interval_token */
+
 int loops_parse_interval_token(const char *token) {
     if (!token) return -1;
     while (*token && isspace((unsigned char)*token)) token++;
@@ -82,7 +83,8 @@ char *loops_format_interval(double seconds) {
 }
 
 /* ─── response_signals_complete ─────────────────────────────────── */
-/* (?im)^\s*LOOP_COMPLETE\s*[.!]?\s*$ */
+/* (?im)^\s*LOOP_COMPLETE\s*[.!]?\s*$ *//* PoP: loops_response_signals_complete @ hermes_cli/loops.py:response_signals_complete */
+
 int loops_response_signals_complete(const char *response) {
     if (!response) return 0;
     /* case-insensitive, multiline: a line that is only LOOP_COMPLETE */
@@ -110,6 +112,7 @@ static long cfg_int(json_t *cfg, const char *key, long dflt) {
     }
     return dflt;
 }
+/* PoP: loops_min_interval_seconds @ hermes_cli/loops.py:min_interval_seconds */
 
 int loops_min_interval_seconds(const char *config_json) {
     json_t *cfg = config_json ? json_parse(config_json, NULL) : NULL;
@@ -122,7 +125,8 @@ int loops_min_interval_seconds(const char *config_json) {
     if (v < 5) v = 5;
     if (cfg) json_free(cfg);
     return (int)v;
-}
+}/* PoP: loops_max_ticks_default @ hermes_cli/loops.py:max_ticks_default */
+
 int loops_max_ticks_default(const char *config_json) {
     json_t *cfg = config_json ? json_parse(config_json, NULL) : NULL;
     json_t *loops = cfg ? json_object_get(cfg, "loops") : NULL;
@@ -134,7 +138,8 @@ int loops_max_ticks_default(const char *config_json) {
     if (v < 0) v = 0;
     if (cfg) json_free(cfg);
     return (int)v;
-}
+}/* PoP: loops_self_paced_floor_seconds @ hermes_cli/loops.py:self_paced_floor_seconds */
+
 int loops_self_paced_floor_seconds(const char *config_json) {
     json_t *cfg = config_json ? json_parse(config_json, NULL) : NULL;
     json_t *loops = cfg ? json_object_get(cfg, "loops") : NULL;
@@ -146,7 +151,8 @@ int loops_self_paced_floor_seconds(const char *config_json) {
     if (v < 10) v = 10;
     if (cfg) json_free(cfg);
     return (int)v;
-}
+}/* PoP: loops_self_paced_ceiling_seconds @ hermes_cli/loops.py:self_paced_ceiling_seconds */
+
 int loops_self_paced_ceiling_seconds(const char *config_json) {
     json_t *cfg = config_json ? json_parse(config_json, NULL) : NULL;
     json_t *loops = cfg ? json_object_get(cfg, "loops") : NULL;

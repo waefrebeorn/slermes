@@ -10,11 +10,6 @@
  *   _heuristic_started_at           -> laf_heuristic_started_at
  *
  * The sqlite/.recover/CLI glue is NOT ported (subprocess + DB, not pure logic).
- *
- * laf_classify_row(nfield, cells_json) returns a malloc'd JSON string:
- *   a quoted class name ("sessions" | "messages" | "session_model_usage")
- *   or the literal "null" when unclassifiable. laf_heuristic_started_at
- *   returns a double (0.0 when no in-window numeric cell).
  */
 
 #include "hermes_core_types.h"
@@ -28,7 +23,8 @@
 #define LAF_EPOCH_LOW  1000000000.0
 #define LAF_EPOCH_HIGH 4000000000.0
 
-/* SESSION_ID_PATTERN = ^\d{8}_\d{6}_ */
+/* SESSION_ID_PATTERN = ^\d{8}_\d{6}_ *//* PoP: laf_is_session_id @ hermes_cli/session_lost_and_found.py:_is_session_id */
+
 int laf_is_session_id(const char *value) {
     if (!value) return 0;
     for (int i = 0; i < 8; i++) if (value[i] < '0' || value[i] > '9') return 0;
@@ -60,6 +56,7 @@ static int laf_source_shape(const char *v) {
     }
     return 1;
 }
+/* PoP: laf_looks_like_source @ hermes_cli/session_lost_and_found.py:_looks_like_source */
 
 int laf_looks_like_source(const char *value) {
     if (!value || !*value) return 0;
@@ -123,6 +120,7 @@ char *laf_classify_row(int nfield, const char *cells_json) {
     json_free(cells);
     return result;
 }
+/* PoP: laf_heuristic_started_at @ hermes_cli/session_lost_and_found.py:_heuristic_started_at */
 
 double laf_heuristic_started_at(const char *cells_json) {
     json_t *cells = json_parse(cells_json, NULL);

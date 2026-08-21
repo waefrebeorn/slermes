@@ -28,7 +28,8 @@
 #include <strings.h>
 #include <ctype.h>
 
-/* _EXACT_SHA_RE = ^[0-9a-fA-F]{40}$ */
+/* _EXACT_SHA_RE = ^[0-9a-fA-F]{40}$ *//* PoP: plugin_pack_is_exact_sha @ hermes_cli/plugin_packs.py:_EXACT_SHA_RE.fullmatch */
+
 int plugin_pack_is_exact_sha(const char *ref) {
     if (!ref) return 0;
     size_t n = strlen(ref);
@@ -42,6 +43,8 @@ int plugin_pack_is_exact_sha(const char *ref) {
 }
 
 /* _entry_label(item, index) -> "'name'" | "'repo'" | "#index+1" */
+/* PoP: plugin_pack_entry_label @ hermes_cli/plugin_packs.py:_entry_label */
+
 char *plugin_pack_entry_label(json_t *item, int index) {
     const char *name = NULL, *repo = NULL;
     if (item && item->type == JSON_OBJECT) {
@@ -87,7 +90,8 @@ static int key_is_secret_shaped(const char *key) {
 }
 
 /* validate_config_seed(plugin_id, seed_json) -> malloc'd JSON string.
- * Success: serialized validated dict. Failure: {"error":"..."}. */
+ * Success: serialized validated dict. Failure: {"error":"..."}. *//* PoP: plugin_pack_validate_config_seed @ hermes_cli/plugin_packs.py:validate_config_seed */
+
 char *plugin_pack_validate_config_seed(const char *plugin_id, const char *seed_json) {
     char pid[256];
     snprintf(pid, sizeof(pid), "%s", plugin_id ? plugin_id : "");

@@ -63,18 +63,21 @@ char *kanban_normalize_reasoning_effort(const char *effort) {
     return err;
 }
 
-/* ─── ttl/grace/cooldown resolvers (env modeled as explicit arg) ─── */
+/* ─── ttl/grace/cooldown resolvers (env modeled as explicit arg) ─── *//* PoP: kanban_resolve_claim_ttl_seconds @ hermes_cli/kanban_db.py:_resolve_claim_ttl_seconds */
+
 int kanban_resolve_claim_ttl_seconds(int ttl_seconds) {
     if (ttl_seconds > 0) return ttl_seconds;
     return KANBAN_DEFAULT_CLAIM_TTL_SECONDS;
-}
+}/* PoP: kanban_resolve_crash_grace_seconds @ hermes_cli/kanban_db.py:_resolve_crash_grace_seconds */
+
 int kanban_resolve_crash_grace_seconds(const char *env) {
     if (env && *env) {
         char *end; long v = strtol(env, &end, 10);
         if (*end == '\0' && v >= 0) return (int)v;
     }
     return KANBAN_DEFAULT_CRASH_GRACE_SECONDS;
-}
+}/* PoP: kanban_resolve_rate_limit_cooldown_seconds @ hermes_cli/kanban_db.py:_resolve_rate_limit_cooldown_seconds */
+
 int kanban_resolve_rate_limit_cooldown_seconds(const char *env) {
     if (env && *env) {
         char *end; long v = strtol(env, &end, 10);

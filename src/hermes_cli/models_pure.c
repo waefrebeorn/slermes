@@ -113,7 +113,8 @@ char *models_xai_finalize_catalog(const char *json_ids) {
     return res;
 }
 
-/* ─── is_nous_free_tier ─────────────────────────────────────────── */
+/* ─── is_nous_free_tier ─────────────────────────────────────────── *//* PoP: models_is_nous_free_tier @ hermes_cli/models.py:is_nous_free_tier */
+
 int models_is_nous_free_tier(const char *json_account_info) {
     if (!json_account_info) return 0;
     json_t *info = json_parse(json_account_info, NULL);

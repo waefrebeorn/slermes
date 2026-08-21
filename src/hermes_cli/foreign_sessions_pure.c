@@ -31,7 +31,8 @@
 /* _WRAPPER_TAG_RE = ^<(user_instructions|environment_context|
  *   recommended_plugins|skills_instructions|permissions[_-]instructions|
  *   turn_context|command-name|command-message|local-command-stdout|
- *   system-reminder)\b  (case-insensitive) */
+ *   system-reminder)\b  (case-insensitive) *//* PoP: foreign_sessions_is_wrapper_text @ hermes_cli/foreign_sessions.py:_is_wrapper_text */
+
 int foreign_sessions_is_wrapper_text(const char *text) {
     if (!text) return 0;
     while (*text == ' ' || *text == '\t') text++;
@@ -54,7 +55,8 @@ int foreign_sessions_is_wrapper_text(const char *text) {
     return 0;
 }
 
-/* _flatten_blocks(content, source) */
+/* _flatten_blocks(content, source) *//* PoP: foreign_sessions_flatten_blocks @ hermes_cli/foreign_sessions.py:_flatten_blocks */
+
 char *foreign_sessions_flatten_blocks(const char *content_json, const char *source) {
     json_t *content = json_parse(content_json, NULL);
     /* size parts generously */
@@ -114,6 +116,8 @@ char *foreign_sessions_flatten_blocks(const char *content_json, const char *sour
 }
 
 /* _merge_turns(raw_turns_json) -> JSON array of {role, content} */
+/* PoP: foreign_sessions_merge_turns @ hermes_cli/foreign_sessions.py:_merge_turns */
+
 char *foreign_sessions_merge_turns(const char *raw_turns_json) {
     json_t *raw = json_parse(raw_turns_json, NULL);
     /* Build output as JSON manually for clarity. */
@@ -189,7 +193,8 @@ char *foreign_sessions_merge_turns(const char *raw_turns_json) {
     return out;
 }
 
-/* ForeignSession.label: [<name>] <title[:60]> */
+/* ForeignSession.label: [<name>] <title[:60]> *//* PoP: foreign_sessions_session_label @ hermes_cli/foreign_sessions.py:ForeignSession.label */
+
 char *foreign_sessions_session_label(const char *source, const char *title_guess,
                                      const char *stem) {
     const char *name = "?";

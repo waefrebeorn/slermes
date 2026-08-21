@@ -60,7 +60,8 @@ int console_engine_capture_output(char *(*fn)(void), char *out, size_t outsz) {
 
 /* ─── _is_status_footer_rule ─────────────────────────────────────── */
 /* A line made entirely of '-' (after ANSI strip + box-drawing '─' -> '-'
- * substitution) and at least 8 chars wide. */
+ * substitution) and at least 8 chars wide. *//* PoP: console_engine_is_status_footer_rule @ hermes_cli/console_engine.py:_is_status_footer_rule */
+
 int console_engine_is_status_footer_rule(const char *line) {
     if (!line) return 0;
     char *clean = strip_ansi(line);

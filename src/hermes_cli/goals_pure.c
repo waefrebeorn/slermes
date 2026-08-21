@@ -78,7 +78,8 @@ static void contract_trim(char *s) {
     s[en - st] = '\0';
 }
 
-/* ─── contract lifecycle ─────────────────────────────────────────── */
+/* ─── contract lifecycle ─────────────────────────────────────────── *//* PoP: goals_contract_is_empty @ hermes_cli/goals.py:GoalContract.is_empty */
+
 int goals_contract_is_empty(const goals_contract_t *c) {
     for (int i = 0; i < 5; i++) {
         char buf[1024];
@@ -116,7 +117,8 @@ char *goals_contract_to_json(const goals_contract_t *c) {
     return out;
 }
 
-/* populates *c from a JSON object string; returns 0 on success. */
+/* populates *c from a JSON object string; returns 0 on success. *//* PoP: goals_contract_from_json @ hermes_cli/goals.py:GoalContract.from_dict */
+
 int goals_contract_from_json(goals_contract_t *c, const char *json_str) {
     if (!c) return -1;
     memset(c, 0, sizeof(*c));
@@ -316,6 +318,7 @@ char *goals_gate_to_json(const goals_gate_t *g) {
         cmd, g->timeout_seconds, g->max_retries, g->attempts, ec, tail, fp);
     return out;
 }
+/* PoP: goals_gate_from_json @ hermes_cli/goals.py:GoalGate.from_dict */
 
 int goals_gate_from_json(goals_gate_t *g, const char *json_str) {
     if (!g) return -1;

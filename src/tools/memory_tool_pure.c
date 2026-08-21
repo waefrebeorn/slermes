@@ -3,8 +3,11 @@
  * tools/memory_tool.py (the bounded curated memory store).
  *
  * Ports the side-effect-free surface:
+ *
  *   get_memory_dir              -> memory_tool_get_memory_dir (returns malloc'd path)
+ *
  *   _drift_error                -> memory_tool_drift_error (malloc'd JSON dict)
+ *
  *   _read_failed_error          -> memory_tool_read_failed_error (malloc'd JSON dict)
  *   MemoryStore consolidation counter:
  *     reset_consolidation_failures -> memory_tool_pure_store_reset_consolidation_failures
@@ -77,13 +80,15 @@ char *memory_tool_read_failed_error(const char *path_name) {
 typedef struct memory_tool_pure_store {
     int consolidation_failures;
 } memory_tool_pure_store_t;
+/* PoP: memory_tool_pure_store_reset_consolidation_failures @ tools/memory_tool.py:reset_consolidation_failures */
 
 void memory_tool_pure_store_reset_consolidation_failures(memory_tool_pure_store_t *s) {
     if (s) s->consolidation_failures = 0;
 }
 
 /* Returns a malloc'd JSON dict. On under-cap it mirrors `response` (the
- * caller's JSON) unchanged; past cap returns a terminal result. */
+ * caller's JSON) unchanged; past cap returns a terminal result. *//* PoP: memory_tool_pure_store_consolidation_failure @ tools/memory_tool.py:_consolidation_failure */
+
 char *memory_tool_pure_store_consolidation_failure(memory_tool_pure_store_t *s, const char *response_json) {
     if (!s) return strdup(response_json ? response_json : "{}");
     s->consolidation_failures += 1;
