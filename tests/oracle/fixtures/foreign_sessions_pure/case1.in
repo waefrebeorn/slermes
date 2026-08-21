@@ -1,0 +1,92 @@
+{
+  "ops": [
+    {
+      "op": "is_wrapper_text",
+      "text": "<user_instructions>\nDo the thing"
+    },
+    {
+      "op": "is_wrapper_text",
+      "text": "<system-reminder>note</system-reminder>"
+    },
+    {
+      "op": "is_wrapper_text",
+      "text": "hello world"
+    },
+    {
+      "op": "flatten_blocks",
+      "content": "just a string",
+      "source": "claude"
+    },
+    {
+      "op": "flatten_blocks",
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        },
+        {
+          "type": "tool_use",
+          "name": "grep"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "thinking"
+        },
+        {
+          "type": "input_text",
+          "text": "world"
+        },
+        "loose string"
+      ],
+      "source": "codex"
+    },
+    {
+      "op": "merge_turns",
+      "turns": [
+        [
+          "user",
+          "hi"
+        ],
+        [
+          "user",
+          "there"
+        ],
+        [
+          "assistant",
+          "ok"
+        ],
+        [
+          "assistant",
+          "done"
+        ],
+        [
+          "user",
+          "thanks"
+        ]
+      ]
+    },
+    {
+      "op": "merge_turns",
+      "turns": [
+        [
+          "assistant",
+          "preface reply"
+        ]
+      ]
+    },
+    {
+      "op": "session_label",
+      "source": "claude",
+      "title": "My Long Session Title That Exceeds Limit",
+      "stem": "abc123"
+    },
+    {
+      "op": "session_label",
+      "source": "codex",
+      "title": "",
+      "stem": "sess-9"
+    }
+  ]
+}
