@@ -1,0 +1,36 @@
+{
+  "ops": [
+    {
+      "op": "parse_loop_args",
+      "text": "/loop 5m check the deploy status"
+    },
+    {
+      "op": "parse_loop_args",
+      "text": "/loop every 10m /babysit-prs"
+    },
+    {
+      "op": "parse_loop_args",
+      "text": "/loop keep fixing the failing test until the suite passes"
+    },
+    {
+      "op": "parse_loop_args",
+      "text": "/loop 2m poll CI --times 30"
+    },
+    {
+      "op": "parse_loop_args",
+      "text": "/loop 5m watch the queue --until queue depth reaches zero"
+    },
+    {
+      "op": "parse_loop_args",
+      "text": "/loop --times 0 x"
+    },
+    {
+      "op": "parse_loop_args",
+      "text": ""
+    },
+    {
+      "op": "parse_loop_args",
+      "text": "/loop 5m"
+    }
+  ]
+}

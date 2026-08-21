@@ -1,0 +1,69 @@
+{
+  "ops": [
+    {
+      "op": "config_min",
+      "config": null
+    },
+    {
+      "op": "config_min",
+      "config": {
+        "loops": {
+          "min_interval_seconds": 10
+        }
+      }
+    },
+    {
+      "op": "config_min",
+      "config": {
+        "loops": {
+          "min_interval_seconds": 2
+        }
+      }
+    },
+    {
+      "op": "config_max",
+      "config": null
+    },
+    {
+      "op": "config_max",
+      "config": {
+        "loops": {
+          "max_ticks": 50
+        }
+      }
+    },
+    {
+      "op": "config_floor",
+      "config": null
+    },
+    {
+      "op": "config_floor",
+      "config": {
+        "loops": {
+          "self_paced_floor_seconds": 30
+        }
+      }
+    },
+    {
+      "op": "config_ceiling",
+      "config": null
+    },
+    {
+      "op": "config_ceiling",
+      "config": {
+        "loops": {
+          "self_paced_ceiling_seconds": 120
+        }
+      }
+    },
+    {
+      "op": "config_ceiling",
+      "config": {
+        "loops": {
+          "self_paced_floor_seconds": 300,
+          "self_paced_ceiling_seconds": 100
+        }
+      }
+    }
+  ]
+}

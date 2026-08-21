@@ -1,0 +1,24 @@
+{
+  "ops": [
+    {
+      "op": "response_complete",
+      "text": "All done now.\nLOOP_COMPLETE"
+    },
+    {
+      "op": "response_complete",
+      "text": "LOOP_COMPLETE."
+    },
+    {
+      "op": "response_complete",
+      "text": "The task is complete but no marker."
+    },
+    {
+      "op": "response_complete",
+      "text": "  loop_complete  !  "
+    },
+    {
+      "op": "response_complete",
+      "text": "LOOP_COMPLETE embedded in middle of text line"
+    }
+  ]
+}

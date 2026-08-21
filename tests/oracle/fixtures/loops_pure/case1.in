@@ -1,0 +1,36 @@
+{
+  "ops": [
+    {
+      "op": "parse_interval",
+      "token": "5m"
+    },
+    {
+      "op": "parse_interval",
+      "token": "30s"
+    },
+    {
+      "op": "parse_interval",
+      "token": "2h"
+    },
+    {
+      "op": "parse_interval",
+      "token": "1h30m"
+    },
+    {
+      "op": "parse_interval",
+      "token": "0s"
+    },
+    {
+      "op": "parse_interval",
+      "token": "5"
+    },
+    {
+      "op": "parse_interval",
+      "token": "abc"
+    },
+    {
+      "op": "parse_interval",
+      "token": "5x"
+    }
+  ]
+}
