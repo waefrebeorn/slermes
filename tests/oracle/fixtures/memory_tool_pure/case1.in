@@ -1,0 +1,41 @@
+{
+  "ops": [
+    {
+      "op": "drift_error",
+      "path_name": "MEMORY.md",
+      "bak_path": ".bak.1700000000"
+    },
+    {
+      "op": "read_failed_error",
+      "path_name": "USER.md"
+    },
+    {
+      "op": "consolidation",
+      "response": {
+        "success": true
+      },
+      "calls": 1
+    },
+    {
+      "op": "consolidation",
+      "response": {
+        "success": true
+      },
+      "calls": 3
+    },
+    {
+      "op": "consolidation",
+      "response": {
+        "success": true
+      },
+      "calls": 4
+    },
+    {
+      "op": "consolidation",
+      "response": {
+        "success": true
+      },
+      "calls": 10
+    }
+  ]
+}
