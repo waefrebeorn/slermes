@@ -1,0 +1,13 @@
+{
+ "ops": [
+  {
+   "line": "npm run build -- --watch"
+  },
+  {
+   "line": "echo \"unterminated"
+  },
+  {
+   "line": "a \"b c\" d'e f'"
+  }
+ ]
+}

@@ -1,0 +1,49 @@
+{
+ "ops": [
+  {
+   "line": "ls -la"
+  },
+  {
+   "line": "echo 'hello world'"
+  },
+  {
+   "line": "grep \"foo bar\" file"
+  },
+  {
+   "line": "cmd arg\\ with\\ space"
+  },
+  {
+   "line": "a # comment b c"
+  },
+  {
+   "line": "git commit -m 'a message with spaces'"
+  },
+  {
+   "line": "echo \"nested \\\"quotes\\\" here\""
+  },
+  {
+   "line": "prog 'single'\\''quote'"
+  },
+  {
+   "line": ""
+  },
+  {
+   "line": "   "
+  },
+  {
+   "line": "a\\nb"
+  },
+  {
+   "line": "x='y z' w"
+  },
+  {
+   "line": "echo $HOME"
+  },
+  {
+   "line": "weird\\#notcomment"
+  },
+  {
+   "line": "trail \\\\"
+  }
+ ]
+}
