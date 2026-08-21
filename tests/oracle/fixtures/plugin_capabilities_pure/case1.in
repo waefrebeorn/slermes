@@ -1,0 +1,175 @@
+{
+  "ops": [
+    {
+      "op": "is_valid_capability",
+      "id": "tools.override"
+    },
+    {
+      "op": "is_valid_capability",
+      "id": "bogus.cap"
+    },
+    {
+      "op": "parse_declared_capabilities",
+      "raw": [
+        "tools.override",
+        "bogus",
+        "llm.model_override",
+        "tools.override"
+      ],
+      "name": "p"
+    },
+    {
+      "op": "parse_declared_capabilities",
+      "raw": "not-a-list",
+      "name": "p"
+    },
+    {
+      "op": "capability_set_hash",
+      "caps": [
+        "tools.override",
+        "llm.model_override"
+      ]
+    },
+    {
+      "op": "capability_set_hash",
+      "caps": [
+        "llm.model_override",
+        "tools.override"
+      ]
+    },
+    {
+      "op": "capability_set_hash",
+      "caps": []
+    },
+    {
+      "op": "granted_capabilities",
+      "plugin_id": "p",
+      "config": {
+        "plugins": {
+          "entries": {
+            "p": {
+              "granted_capabilities": [
+                "tools.override",
+                "llm.model_override"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "op": "granted_capabilities",
+      "plugin_id": "p",
+      "config": {
+        "plugins": {
+          "entries": {
+            "p": {}
+          }
+        }
+      }
+    },
+    {
+      "op": "legacy_gate_set",
+      "entry": {
+        "allow_tool_override": true
+      },
+      "capability": "tools.override"
+    },
+    {
+      "op": "legacy_gate_set",
+      "entry": {
+        "allow_tool_override": false
+      },
+      "capability": "tools.override"
+    },
+    {
+      "op": "legacy_gate_set",
+      "entry": {
+        "llm": {
+          "allow_model_override": true
+        }
+      },
+      "capability": "llm.model_override"
+    },
+    {
+      "op": "plugin_capability_granted",
+      "plugin_id": "p",
+      "capability": "tools.override",
+      "config": {
+        "plugins": {
+          "entries": {
+            "p": {
+              "granted_capabilities": [
+                "tools.override",
+                "llm.model_override"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "op": "plugin_capability_granted",
+      "plugin_id": "p",
+      "capability": "llm.model_override",
+      "config": {
+        "plugins": {
+          "entries": {
+            "p": {
+              "granted_capabilities": [
+                "tools.override",
+                "llm.model_override"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "op": "plugin_capability_granted",
+      "plugin_id": "p",
+      "capability": "tools.override",
+      "config": {
+        "plugins": {
+          "entries": {
+            "p": {
+              "allow_tool_override": true,
+              "llm": {
+                "allow_model_override": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "op": "plugin_capability_granted",
+      "plugin_id": "p",
+      "capability": "bogus.cap",
+      "config": {
+        "plugins": {
+          "entries": {
+            "p": {
+              "granted_capabilities": [
+                "tools.override",
+                "llm.model_override"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "op": "plugin_capability_granted",
+      "plugin_id": "p",
+      "capability": "llm.model_override",
+      "config": {
+        "plugins": {
+          "entries": {
+            "p": {}
+          }
+        }
+      }
+    }
+  ]
+}
