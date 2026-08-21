@@ -1,5 +1,5 @@
 /*
- * port_moa_config_pure.c — Faithful C11 ports of the module-level pure helpers
+ * port_moa_config_pure.c - Faithful C11 ports of the module-level pure helpers
  * from Python hermes_cli/moa_config.py that are still REAL_GAPs in the parity
  * battleground (the _or_none / fanout / reasoning-effort / slot / payload
  * validators).
@@ -54,8 +54,7 @@ static int moa_parse_reasoning_effort(const char *value,
 
 /* ============================================================
  * _coerce_float_or_none
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: moa_coerce_float_or_none @ hermes_cli/moa_config.py:_coerce_float_or_none */
 int moa_coerce_float_or_none(const char *value, double *out) {
     if (out) *out = 0.0;
@@ -69,8 +68,7 @@ int moa_coerce_float_or_none(const char *value, double *out) {
 
 /* ============================================================
  * _coerce_int_or_none
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: moa_coerce_int_or_none @ hermes_cli/moa_config.py:_coerce_int_or_none */
 int moa_coerce_int_or_none(const char *value, long *out) {
     if (out) *out = 0;
@@ -90,8 +88,7 @@ int moa_coerce_int_or_none(const char *value, long *out) {
 
 /* ============================================================
  * _coerce_fanout
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: moa_coerce_fanout @ hermes_cli/moa_config.py:_coerce_fanout */
 void moa_coerce_fanout(const char *value, char *out, size_t out_size) {
     char buf[64];
@@ -109,8 +106,7 @@ void moa_coerce_fanout(const char *value, char *out, size_t out_size) {
 
 /* ============================================================
  * _clean_reasoning_effort
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: moa_clean_reasoning_effort @ hermes_cli/moa_config.py:_clean_reasoning_effort */
 char *moa_clean_reasoning_effort(const char *value) {
     if (!value) return NULL;
@@ -129,8 +125,7 @@ char *moa_clean_reasoning_effort(const char *value) {
 
 /* ============================================================
  * _slot_problem  (and _clean_slot helper)
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: moa_slot_problem @ hermes_cli/moa_config.py:_slot_problem */
 char *moa_slot_problem(const json_t *slot) {
     if (!slot || slot->type != JSON_OBJECT)
@@ -162,8 +157,7 @@ char *moa_slot_problem(const json_t *slot) {
 
 /* ============================================================
  * validate_moa_payload
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: moa_validate_moa_payload @ hermes_cli/moa_config.py:validate_moa_payload */
 char **moa_validate_moa_payload(const json_t *raw, int *out_count) {
     char **problems = NULL;

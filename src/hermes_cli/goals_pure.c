@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* goals_pure.c — Faithful port of the pure, deterministic helpers in
+/* goals_pure.c - Faithful port of the pure, deterministic helpers in
  * hermes_cli/goals.py (the /goal structured-completion contract).
  *
  * Ports the side-effect-free surface: the GoalContract dataclass, the
@@ -78,7 +78,8 @@ static void contract_trim(char *s) {
     s[en - st] = '\0';
 }
 
-/* ─── contract lifecycle ─────────────────────────────────────────── *//* PoP: goals_contract_is_empty @ hermes_cli/goals.py:GoalContract.is_empty */
+/* --- contract lifecycle -------------------------------------------  */
+/* PoP: goals_contract_is_empty @ hermes_cli/goals.py:GoalContract.is_empty */
 
 int goals_contract_is_empty(const goals_contract_t *c) {
     for (int i = 0; i < 5; i++) {
@@ -117,7 +118,8 @@ char *goals_contract_to_json(const goals_contract_t *c) {
     return out;
 }
 
-/* populates *c from a JSON object string; returns 0 on success. *//* PoP: goals_contract_from_json @ hermes_cli/goals.py:GoalContract.from_dict */
+/* populates *c from a JSON object string; returns 0 on success.  */
+/* PoP: goals_contract_from_json @ hermes_cli/goals.py:GoalContract.from_dict */
 
 int goals_contract_from_json(goals_contract_t *c, const char *json_str) {
     if (!c) return -1;
@@ -160,7 +162,7 @@ char *goals_contract_render_block(const goals_contract_t *c) {
     return out;
 }
 
-/* ─── parse_contract ─────────────────────────────────────────────── */
+/* --- parse_contract -----------------------------------------------  */
 /* maps a lowercase prefix to a canonical field index, or -1. */
 static int contract_alias_field(const char *prefix_lower) {
     /* build alias table inline (prefix -> field idx) */
@@ -277,7 +279,7 @@ char *goals_parse_contract(const char *text) {
     return out;
 }
 
-/* ─── GoalGate lifecycle ─────────────────────────────────────────── */
+/* --- GoalGate lifecycle -------------------------------------------  */
 /* GoalGate as a fixed struct. */
 typedef struct goals_gate {
     char command[1024];
@@ -352,7 +354,7 @@ int goals_gate_from_json(goals_gate_t *g, const char *json_str) {
 }
 
 
-/* ─── opaque allocators (match public header) ────────────────────── */
+/* --- opaque allocators (match public header) ---------------------- */
 goals_contract_t *goals_contract_new(void) {
     return (goals_contract_t *)calloc(1, sizeof(goals_contract_t));
 }

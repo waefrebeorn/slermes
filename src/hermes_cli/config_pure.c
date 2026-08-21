@@ -3,7 +3,7 @@
  *
  * Pure, portable helper functions ported from hermes_cli/config.py and
  * hermes_cli/models.py. These contain no file I/O, no networking, and no
- * os.* / platform calls — only JSON-tree manipulation and small constant
+ * os.* / platform calls - only JSON-tree manipulation and small constant
  * table lookups. Each function is a faithful, self-contained port of its
  * Python counterpart.
  *
@@ -64,8 +64,7 @@ json_t *config_deep_merge(const json_t *base, const json_t *override)
  *  _items_by_unique_name  (config.py:_items_by_unique_name)
  *  Return a name-indexed object only when every item is a dict with a unique
  *  string "name". Otherwise return NULL. Caller frees the returned object.
- * =========================================================================== */
-
+ * ===========================================================================  */
 /* PoP: config_items_by_unique_name @ hermes_cli/config.py:_items_by_unique_name */
 json_t *config_items_by_unique_name(const json_t *items)
 {
@@ -102,8 +101,7 @@ json_t *config_items_by_unique_name(const json_t *items)
  *  Migrate legacy root-level max_turns into agent.max_turns. Inject the schema
  *  default (90) only when the user actually set max_turns somewhere; otherwise
  *  leave it absent. Returns a NEW object (caller frees) or NULL on bad input.
- * =========================================================================== */
-
+ * ===========================================================================  */
 /* PoP: config_normalize_max_turns @ hermes_cli/config.py:_normalize_max_turns_config */
 json_t *config_normalize_max_turns(const json_t *config_in)
 {
@@ -175,9 +173,8 @@ char *config_strip_non_ascii_credential(const char *key, const char *value,
     if (!value) return NULL;
 
     if (!has_non_ascii(value))
-        return strdup(value); /* all ASCII — nothing to do */
-
-    /* Build the ASCII-only (drop) sanitized copy. */
+        return strdup(value); /* all ASCII - nothing to do  */
+/* Build the ASCII-only (drop) sanitized copy. */
     char *san = (char *)malloc(strlen(value) + 1);
     if (!san) return NULL;
     size_t j = 0;
@@ -230,8 +227,7 @@ char *config_strip_non_ascii_credential(const char *key, const char *value,
  *  provider_group_for_slug  (models.py:provider_group_for_slug)
  *  Reverse index member-slug -> group_id, built once from the static
  *  PROVIDER_GROUPS table. Returns "" for ungrouped slugs.
- * =========================================================================== */
-
+ * ===========================================================================  */
 /* member slug -> group_id, expanded from PROVIDER_GROUPS in models.py */
 static const char *SLUG_TO_GROUP[][2] = {
     {"kimi-coding",     "kimi"},
@@ -253,7 +249,7 @@ static const char *SLUG_TO_GROUP[][2] = {
 
 /*
  * Return the group_id a provider slug belongs to, or "" if ungrouped.
- */
+  */
 /* PoP: provider_group_for_slug @ hermes_cli/models.py:provider_group_for_slug */
 const char *provider_group_for_slug(const char *slug)
 {

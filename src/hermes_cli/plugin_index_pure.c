@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
-/* plugin_index_pure.c — Faithful C11 port of the pure, deterministic
+/* plugin_index_pure.c - Faithful C11 port of the pure, deterministic
  * search/resolve/validation logic in hermes_cli/plugin_index.py (community
- * plugin index: fetch/cache is NOT ported — network/FS glue).
+ * plugin index: fetch/cache is NOT ported - network/FS glue).
  *
  * Ports (PoP):
  *   PluginIndexEntry.install_identifier -> pindex_install_identifier
@@ -10,7 +10,7 @@
  *   search_index + _score_entry          -> pindex_search_index
  *
  * Fuzzy score uses difflib.SequenceMatcher.ratio() == 2*LCS/(len(a)+len(b))
- * over the lowercase name — implemented exactly via LCS length (DP).
+ * over the lowercase name - implemented exactly via LCS length (DP).
  *
  * All char* returns are malloc'd (free with free()).
  */
@@ -64,7 +64,8 @@ static int pindex_valid_repo(const char *repo) {
     return 1;
 }
 
-/* _parse_entries: returns malloc'd JSON array of normalized entry objects. *//* PoP: pindex_parse_entries @ hermes_cli/plugin_index.py:_parse_entries */
+/* _parse_entries: returns malloc'd JSON array of normalized entry objects.  */
+/* PoP: pindex_parse_entries @ hermes_cli/plugin_index.py:_parse_entries */
 
 char *pindex_parse_entries(const char *raw_json) {
     json_t *raw = json_parse(raw_json, NULL);
@@ -136,7 +137,8 @@ char *pindex_parse_entries(const char *raw_json) {
     return out;
 }
 
-/* resolve_name: returns JSON {"entry": name|null, "candidates":[names]} *//* PoP: pindex_resolve_name @ hermes_cli/plugin_index.py:resolve_name */
+/* resolve_name: returns JSON {"entry": name|null, "candidates":[names]}  */
+/* PoP: pindex_resolve_name @ hermes_cli/plugin_index.py:resolve_name */
 
 char *pindex_resolve_name(const char *entries_json, const char *name) {
     json_t *entries = json_parse(entries_json, NULL);
@@ -185,7 +187,8 @@ char *pindex_resolve_name(const char *entries_json, const char *name) {
     return out;
 }
 
-/* search_index: returns JSON array of entry names ranked (desc score, then name) *//* PoP: pindex_search_index @ hermes_cli/plugin_index.py:search_index */
+/* search_index: returns JSON array of entry names ranked (desc score, then name)  */
+/* PoP: pindex_search_index @ hermes_cli/plugin_index.py:search_index */
 
 char *pindex_search_index(const char *entries_json, const char *term, const char *capability) {
     json_t *entries = json_parse(entries_json, NULL);

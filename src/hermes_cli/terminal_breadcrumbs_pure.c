@@ -1,4 +1,4 @@
-/* terminal_breadcrumbs_pure.c — Faithful C11 port of the pure, deterministic
+/* terminal_breadcrumbs_pure.c - Faithful C11 port of the pure, deterministic
  * helpers in hermes_cli/terminal_breadcrumbs.py (per-terminal session
  * breadcrumbs). The tty/config/DB glue is NOT ported (not pure logic).
  *
@@ -40,7 +40,8 @@ char *tbr_sanitize(const char *raw) {
 
 /* Mirrors read_breadcrumb's staleness gate: ts (epoch float) older than the
  * window from now is stale. Returns 1 if stale, 0 otherwise. A non-finite /
- * missing ts is treated as stale (best-effort: drop). *//* PoP: tbr_is_stale_payload @ hermes_cli/terminal_breadcrumbs.py:_STALE_AFTER_SECONDS */
+ * missing ts is treated as stale (best-effort: drop).  */
+/* PoP: tbr_is_stale_payload @ hermes_cli/terminal_breadcrumbs.py:_STALE_AFTER_SECONDS */
 
 int tbr_is_stale_payload(double ts, double now) {
     if (!(ts == ts) || ts <= 0.0) return 1;  /* NaN or missing -> stale */

@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* loops_pure.c — Faithful port of the pure, deterministic helpers in
+/* loops_pure.c - Faithful port of the pure, deterministic helpers in
  * hermes_cli/loops.py (the /loop recurring-wakeup command).
  *
  * Ports the side-effect-free surface: interval parsing/formatting, loop-arg
@@ -30,13 +30,9 @@
 #include <ctype.h>
 #include <regex.h>
 
-#define LOOPS_DEFAULT_MIN_INTERVAL_SECONDS   30
-#define LOOPS_DEFAULT_MAX_TICKS              100
-#define LOOPS_DEFAULT_SELF_PACED_FLOOR_SECONDS 60
-#define LOOPS_DEFAULT_SELF_PACED_CEILING_SECONDS (15 * 60)
-
-/* ─── parse_interval_token ──────────────────────────────────────── */
-/* ^(?=\d)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$  (case-insensitive) *//* PoP: loops_parse_interval_token @ hermes_cli/loops.py:parse_interval_token */
+/* parse_interval_token -------------------------------------------------  */
+/* ^(?=\d)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$  (case-insensitive)  */
+/* PoP: loops_parse_interval_token @ hermes_cli/loops.py:parse_interval_token */
 
 int loops_parse_interval_token(const char *token) {
     if (!token) return -1;
@@ -66,7 +62,12 @@ int loops_parse_interval_token(const char *token) {
     return (total > 0) ? (int)total : -1;
 }
 
-/* ─── format_interval ───────────────────────────────────────────── */
+#define LOOPS_DEFAULT_MIN_INTERVAL_SECONDS   (30)
+#define LOOPS_DEFAULT_MAX_TICKS              (100)
+#define LOOPS_DEFAULT_SELF_PACED_FLOOR_SECONDS (60)
+#define LOOPS_DEFAULT_SELF_PACED_CEILING_SECONDS (15 * 60)
+
+/* --- format_interval --------------------------------------------- */
 char *loops_format_interval(double seconds) {
     if (seconds < 0) seconds = 0;
     long secs = (long)(seconds + 0.5);
@@ -82,8 +83,9 @@ char *loops_format_interval(double seconds) {
     return strdup(buf);
 }
 
-/* ─── response_signals_complete ─────────────────────────────────── */
-/* (?im)^\s*LOOP_COMPLETE\s*[.!]?\s*$ *//* PoP: loops_response_signals_complete @ hermes_cli/loops.py:response_signals_complete */
+/* --- response_signals_complete -----------------------------------  */
+/* (?im)^\s*LOOP_COMPLETE\s*[.!]?\s*$  */
+/* PoP: loops_response_signals_complete @ hermes_cli/loops.py:response_signals_complete */
 
 int loops_response_signals_complete(const char *response) {
     if (!response) return 0;
@@ -96,7 +98,7 @@ int loops_response_signals_complete(const char *response) {
     return found;
 }
 
-/* ─── config helpers (optional config JSON: NULL -> defaults) ───── */
+/* --- config helpers (optional config JSON: NULL -> defaults) ----- */
 static const char *cfg_str(json_t *cfg, const char *key) {
     json_t *v = json_object_get(cfg, key);
     if (v && v->type == JSON_STRING) return v->str_val;
@@ -193,7 +195,7 @@ static void json_escape(const char *s, char *out, size_t outsz) {
     out[o] = '\0';
 }
 
-/* ─── parse_loop_args ───────────────────────────────────────────── */
+/* --- parse_loop_args ---------------------------------------------  */
 /* Returns a JSON object string:
  *   {"interval_seconds": N|null, "prompt": "...", "times": N,
  *    "until": "...", "error": "..."|null} */

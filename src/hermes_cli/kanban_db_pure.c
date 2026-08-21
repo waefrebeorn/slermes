@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* kanban_db_pure.c — Faithful port of the pure, deterministic helpers in
+/* kanban_db_pure.c - Faithful port of the pure, deterministic helpers in
  * hermes_cli/kanban_db.py (the Kanban board/dispatcher DB layer).
  *
  * Ports the side-effect-free surface: reasoning-effort normalization,
@@ -40,7 +40,7 @@ static const char *VALID_REASONING_EFFORTS[] = {
     "minimal", "low", "medium", "high", "xhigh", "max", "ultra", NULL
 };
 
-/* ─── normalize_reasoning_effort ─────────────────────────────────── */
+/* --- normalize_reasoning_effort -----------------------------------  */
 /* Returns malloc'd normalized string, or NULL (None) for empty, or
  * "__ERR__: ..." when invalid. */
 char *kanban_normalize_reasoning_effort(const char *effort) {
@@ -63,7 +63,8 @@ char *kanban_normalize_reasoning_effort(const char *effort) {
     return err;
 }
 
-/* ─── ttl/grace/cooldown resolvers (env modeled as explicit arg) ─── *//* PoP: kanban_resolve_claim_ttl_seconds @ hermes_cli/kanban_db.py:_resolve_claim_ttl_seconds */
+/* --- ttl/grace/cooldown resolvers (env modeled as explicit arg) ---  */
+/* PoP: kanban_resolve_claim_ttl_seconds @ hermes_cli/kanban_db.py:_resolve_claim_ttl_seconds */
 
 int kanban_resolve_claim_ttl_seconds(int ttl_seconds) {
     if (ttl_seconds > 0) return ttl_seconds;
@@ -86,7 +87,7 @@ int kanban_resolve_rate_limit_cooldown_seconds(const char *env) {
     return KANBAN_DEFAULT_RATE_LIMIT_COOLDOWN_SECONDS;
 }
 
-/* ─── _relative_age ──────────────────────────────────────────────── */
+/* --- _relative_age ------------------------------------------------ */
 char *kanban_relative_age(long ts, long now) {
     if (ts < 0) {
         char *e = strdup("__ERR__: invalid ts");
@@ -108,7 +109,7 @@ char *kanban_relative_age(long ts, long now) {
     char b[32]; snprintf(b, sizeof(b), "%ldd ago", d); return strdup(b);
 }
 
-/* ─── _normalize_board_slug ──────────────────────────────────────── */
+/* --- _normalize_board_slug ----------------------------------------  */
 /* Returns malloc'd slug, or NULL for empty, or "__ERR__: ..." invalid. */
 char *kanban_normalize_board_slug(const char *slug) {
     if (!slug) return NULL;
@@ -139,7 +140,7 @@ char *kanban_normalize_board_slug(const char *slug) {
     return s; /* malloc'd */
 }
 
-/* ─── _default_board_display_name ────────────────────────────────── */
+/* --- _default_board_display_name ---------------------------------- */
 char *kanban_default_board_display_name(const char *slug) {
     if (!slug) slug = "";
     /* slug.replace("_","-").split("-") -> capitalize each part -> join " " */

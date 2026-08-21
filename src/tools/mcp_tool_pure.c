@@ -1,5 +1,5 @@
 /*
- * mcp_tool_pure.c — Pure-logic helpers ported from tools/mcp_tool.py.
+ * mcp_tool_pure.c - Pure-logic helpers ported from tools/mcp_tool.py.
  *
  * These are the subprocess-free, asyncio-free functions from mcp_tool.py:
  * file-lock acquisition (fcntl, POSIX-only), the discovery-lock cookie,
@@ -26,8 +26,8 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 
-/* ── _LockCookie ─────────────────────────────────────────── */
-/* PoP: str @ tools/mcp_tool.py:_LockCookie.__init__ */
+/* -- _LockCookie -------------------------------------------  */
+/* PoP: str @ tools/mcp_tool.py:_LockCookie.__init__  */
 /* PoP: str @ tools/mcp_tool.py:_LockCookie.release */
 struct mcp_lock_cookie {
     int fd;
@@ -42,13 +42,13 @@ static char *mcp_join_path(const char *path, const char *key)
         strcpy(r, key);
         return r;
     }
-    /* "%s.%s" → path + '.' + key + NUL = strlen(path)+strlen(key)+3 bytes */
+    /* "%s.%s" -> path + '.' + key + NUL = strlen(path)+strlen(key)+3 bytes */
     char *r = malloc(strlen(path) + strlen(key) + 3);
     sprintf(r, "%s.%s", path, key);
     return r;
 }
 
-/* Python: f"{path}[{i}]" → path + '[' + idx + ']' + NUL */
+/* Python: f"{path}[{i}]" -> path + '[' + idx + ']' + NUL */
 static char *mcp_join_path_index(const char *path, const char *idx)
 {
     char *r = malloc(strlen(path) + 1 + strlen(idx) + 1 + 1 + 1);
@@ -69,7 +69,7 @@ void mcp_lock_cookie_release(struct mcp_lock_cookie *c)
 {
     if (!c || !c->held) return;
     if (c->fd >= 0) {
-        /* Python: fcntl.flock(fd, LOCK_UN) — ignore errors */
+        /* Python: fcntl.flock(fd, LOCK_UN) - ignore errors */
 #ifdef LOCK_UN
         flock(c->fd, LOCK_UN);
 #endif
@@ -86,14 +86,14 @@ void mcp_lock_cookie_free(struct mcp_lock_cookie *c)
     free(c);
 }
 
-/* ── _acquire_lock_on_fh ─────────────────────────────────── */
-/* PoP: mcp_acquire_lock_on_fh @ tools/mcp_tool.py:_acquire_lock_on_fh */
+/* -- _acquire_lock_on_fh -----------------------------------  */
+/* PoP: mcp_acquire_lock_on_fh @ tools/mcp_tool.py:_acquire_lock_on_fh  */
 /*
  * Faithful port of _acquire_lock_on_fh. Python returns True/False on
  * EACCES/EAGAIN/EWOULDBLOCK and re-raises other OSErrors as RuntimeError.
  * We mirror: return true/false for the "refused" cases; for other fcntl
  * errors set *err_reraise and return false-with-raise signal via out-param.
- * Windows (portalocker) path omitted — slermes is POSIX-targeted (Linux/macOS);
+ * Windows (portalocker) path omitted - slermes is POSIX-targeted (Linux/macOS);
  * no god-platform concessions here.
  */
 bool mcp_acquire_lock_on_fh(int fd, int *out_errno_reraise)
@@ -108,14 +108,14 @@ bool mcp_acquire_lock_on_fh(int fd, int *out_errno_reraise)
     if (out_errno_reraise) *out_errno_reraise = e;
     return false;
 #else
-    /* No flock on this platform — locking unavailable. */
+    /* No flock on this platform - locking unavailable. */
     if (out_errno_reraise) *out_errno_reraise = ENOSYS;
     return false;
 #endif
 }
 
-/* ── _try_acquire_mcp_discovery_lock ─────────────────────── */
-/* PoP: MCP_LOCK_COOKIE @ tools/mcp_tool.py:_try_acquire_mcp_discovery_lock */
+/* -- _try_acquire_mcp_discovery_lock -----------------------  */
+/* PoP: MCP_LOCK_COOKIE @ tools/mcp_tool.py:_try_acquire_mcp_discovery_lock  */
 /* Returns: MCP_LOCK_COOKIE (acquired), MCP_LOCK_BUSY (held by other),
  *          MCP_LOCK_UNAVAILABLE (broken/unavailable). */
 enum mcp_lock_result mcp_try_acquire_mcp_discovery_lock(struct mcp_lock_cookie **out)
@@ -135,7 +135,7 @@ enum mcp_lock_result mcp_try_acquire_mcp_discovery_lock(struct mcp_lock_cookie *
     int reraise = 0;
     bool acquired = mcp_acquire_lock_on_fh(fd, &reraise);
     if (reraise != 0) {
-        /* unexpected fcntl error → _LOCK_UNAVAILABLE */
+        /* unexpected fcntl error -> _LOCK_UNAVAILABLE */
         close(fd);
         return MCP_LOCK_UNAVAILABLE;
     }
@@ -148,14 +148,14 @@ enum mcp_lock_result mcp_try_acquire_mcp_discovery_lock(struct mcp_lock_cookie *
     return MCP_LOCK_BUSY;
 }
 
-/* ── _warn_hidden_whitespace ─────────────────────────────── */
-/* PoP: mcp_warn_hidden_whitespace @ tools/mcp_tool.py:_warn_hidden_whitespace */
+/* -- _warn_hidden_whitespace -------------------------------  */
+/* PoP: mcp_warn_hidden_whitespace @ tools/mcp_tool.py:_warn_hidden_whitespace  */
 /*
  * Faithful port: walks a json_t config (str/dict/list), collects dotted key
  * paths whose string value has leading/trailing whitespace. De-dupes
  * (server_name, key_path) via the provided already-flagged check; the caller
  * owns the warned-set lifecycle (mirroring module-global _whitespace_warned).
- * Logs nothing itself — returns the flagged list for testability; the caller
+ * Logs nothing itself - returns the flagged list for testability; the caller
  * decides how to surface.
  */
 char **mcp_warn_hidden_whitespace(const char *server_name,
@@ -190,7 +190,7 @@ char **mcp_warn_hidden_whitespace(const char *server_name,
         if (v->type == JSON_STRING) {
             const char *s = v->str_val;
             size_t sl = strlen(s);
-            /* Python: value != value.strip() — check leading/trailing ws */
+            /* Python: value != value.strip() - check leading/trailing ws */
             bool dirty = false;
             if (sl > 0) {
                 if (isspace((unsigned char)s[0]) || isspace((unsigned char)s[sl-1]))
@@ -240,8 +240,8 @@ void mcp_warn_hidden_whitespace_free(char **items, size_t n)
     free(items);
 }
 
-/* ── matches_name_filter ─────────────────────────────────── */
-/* PoP: first @ tools/mcp_tool.py:matches_name_filter */
+/* -- matches_name_filter -----------------------------------  */
+/* PoP: first @ tools/mcp_tool.py:matches_name_filter  */
 /*
  * Exact membership first (O(1)), then fnmatch-case for patterns containing
  * glob metacharacters. Matches Python's fnmatchcase exactly via libpath.
@@ -265,12 +265,12 @@ bool matches_name_filter(const char *tool_name, const char **patterns, size_t n)
     return false;
 }
 
-/* ── MCP trust + identity header helpers (tools/mcp_tool.py) ─────────── */
+/* -- MCP trust + identity header helpers (tools/mcp_tool.py) ----------- */
 
 #define _TRUST_FULL     "full"
 #define _TRUST_UNTRUSTED "untrusted"
 
-/* PoP: mcp_normalize_server_trust @ tools/mcp_tool.py:_normalize_server_trust */
+/* PoP: mcp_normalize_server_trust @ tools/mcp_tool.py:_normalize_server_trust  */
 /* Return "full" or "untrusted". Missing/None -> full; unknown -> untrusted. */
 char *mcp_normalize_server_trust(const json_t *value) {
     if (!value || value->type == JSON_NULL) return strdup(_TRUST_FULL);
@@ -304,7 +304,7 @@ char *mcp_normalize_server_trust(const json_t *value) {
     return strdup(_TRUST_UNTRUSTED);
 }
 
-/* PoP: mcp_annotation_read_only_hint @ tools/mcp_tool.py:_annotation_read_only_hint */
+/* PoP: mcp_annotation_read_only_hint @ tools/mcp_tool.py:_annotation_read_only_hint  */
 /* Return true only when annotations.readOnlyHint is exactly True. */
 bool mcp_annotation_read_only_hint(const json_t *mcp_tool) {
     if (!mcp_tool) return false;
@@ -323,7 +323,7 @@ bool mcp_annotation_read_only_hint(const json_t *mcp_tool) {
     return (hint->type == JSON_BOOL && hint->num_val != 0);
 }
 
-/* PoP: mcp_resolve_identity_header @ tools/mcp_tool.py:_resolve_identity_header */
+/* PoP: mcp_resolve_identity_header @ tools/mcp_tool.py:_resolve_identity_header  */
 /* Returns a json_t* array [name, value], or NULL. Caller must json_free. */
 #include "port_gateway_run_deps.h"  /* gw_active_profile_name */
 json_t *mcp_resolve_identity_header(const char *server_name, const json_t *config) {
@@ -366,7 +366,7 @@ json_t *mcp_resolve_identity_header(const char *server_name, const json_t *confi
     return arr;
 }
 
-/* PoP: headers @ tools/mcp_tool.py:_apply_identity_header */
+/* PoP: headers @ tools/mcp_tool.py:_apply_identity_header  */
 /* Merge the resolved identity header into headers (in place). Returns headers. */
 json_t *mcp_apply_identity_header(const char *server_name, const json_t *config, json_t *headers) {
     if (!headers || headers->type != JSON_OBJECT) return headers;
@@ -403,7 +403,7 @@ json_t *mcp_apply_identity_header(const char *server_name, const json_t *config,
     return headers;
 }
 
-/* PoP: mcp_context_var_value @ tools/mcp_tool.py:_context_var_value */
+/* PoP: mcp_context_var_value @ tools/mcp_tool.py:_context_var_value  */
 /* Returns malloc'd resolved value or NULL. Caller frees. */
 char *mcp_context_var_value(const char *ref) {
     if (!ref) return NULL;
@@ -412,7 +412,7 @@ char *mcp_context_var_value(const char *ref) {
         return strdup(home ? home : "~");
     }
     if (strcmp(ref, "workspaceFolder") == 0) {
-        /* Would need _authoritative_workspace_root() — fallback to cwd */
+        /* Would need _authoritative_workspace_root() - fallback to cwd */
         char buf[4096];
         if (getcwd(buf, sizeof(buf))) return strdup(buf);
         return strdup(".");

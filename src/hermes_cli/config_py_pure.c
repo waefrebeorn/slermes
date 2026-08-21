@@ -1,5 +1,5 @@
 /*
- * port_config_py_pure.c — Faithful C11 ports of the module-level pure helpers
+ * port_config_py_pure.c - Faithful C11 ports of the module-level pure helpers
  * from Python hermes_cli/config.py that require NO filesystem / config-load I/O.
  * (I/O helpers live in port_config_py_io.c.)
  *
@@ -20,10 +20,9 @@
 
 /* ============================================================
  * Route-identity normalizer (hermes_cli/route_identity.py)
- * ============================================================ */
-
-/* PoP: config_normalize_route_base_url @ hermes_cli/config.py:normalize_route_base_url */
-/* PoP: config_normalize_route_base_url @ agent/agent_init.py:_normalize_route_base_url */
+ * ============================================================  */
+/* PoP: config_normalize_route_base_url @ hermes_cli/config.py:normalize_route_base_url  */
+/* PoP: config_normalize_route_base_url @ agent/agent_init.py:_normalize_route_base_url  */
 /* PoP: config_normalize_route_base_url @ hermes_cli/route_identity.py:normalize_route_base_url */
 char *config_normalize_route_base_url(const char *url) {
     if (!url) return strdup("");
@@ -56,8 +55,7 @@ char *config_normalize_route_base_url(const char *url) {
 
 /* ============================================================
  * Wrappers over already-ported helpers
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_coerce_ssl_verify @ hermes_cli/config.py:_coerce_ssl_verify */
 int config_coerce_ssl_verify(const char *value) {
     /* coerce_ssl_verify(value, is_bool, bool_val): returns 1/0/-1 sentinel.
@@ -286,8 +284,7 @@ int config_py_unset_nested(json_t *config, const char *dotted_key) {
 
 /* ============================================================
  * _explicit_config_paths
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_explicit_paths @ hermes_cli/config.py:_explicit_config_paths */
 char **config_py_explicit_paths(const json_t *config, int *out_count) {
     char **result = NULL;
@@ -295,8 +292,8 @@ char **config_py_explicit_paths(const json_t *config, int *out_count) {
     if (out_count) *out_count = 0;
     if (!config) return NULL;
 
-    /* iterative DFS using a path stack of segments */
-    /* simple recursive helper via explicit stack of (node, depth, pathbuf) */
+    /* iterative DFS using a path stack of segments  */
+/* simple recursive helper via explicit stack of (node, depth, pathbuf) */
     typedef struct { const json_t *node; int depth; char path[2048]; } frame;
     frame *stack = (frame *)malloc(sizeof(frame) * 512);
     int sp = 0;
@@ -349,8 +346,7 @@ char **config_py_explicit_paths(const json_t *config, int *out_count) {
 
 /* ============================================================
  * _strip_default_values
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_strip_default_values @ hermes_cli/config.py:_strip_default_values */
 json_t *config_py_strip_default_values(const json_t *config, const json_t *defaults,
                                         char **preserve_keys, int preserve_count) {
@@ -358,8 +354,8 @@ json_t *config_py_strip_default_values(const json_t *config, const json_t *defau
     if (!config) return result;
     if (!cfg_is_object(config)) return result;
 
-    /* build preserve set */
-    /* helper to test membership */
+    /* build preserve set  */
+/* helper to test membership */
     #define IN_PRESERVE(p) (config_path_in_preserve((p), preserve_keys, preserve_count))
 
     for (size_t i = 0; i < config->c.count; i++) {
@@ -416,8 +412,7 @@ static int config_path_in_preserve(const char *path, char **preserve_keys, int p
 
 /* ============================================================
  * _normalize_root_model_keys
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_normalize_root_model_keys @ hermes_cli/config.py:_normalize_root_model_keys */
 json_t *config_py_normalize_root_model_keys(const json_t *config_in) {
     if (!config_in) return json_new_object();
@@ -486,8 +481,7 @@ static const char *cfg_string_value_safe(const json_t *n) {
 
 /* ============================================================
  * _merge_partial_save
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_merge_partial_save @ hermes_cli/config.py:_merge_partial_save */
 json_t *config_py_merge_partial_save(const json_t *raw, const json_t *override) {
     if (!override) return raw ? json_copy(raw) : json_new_object();
@@ -621,8 +615,7 @@ char *config_expand_env_vars_local(const char *input) {
 
 /* ============================================================
  * _env_ref_var_name / _env_ref_snapshot / _env_expand_match
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_env_ref_var_name @ hermes_cli/config.py:_env_ref_var_name */
 char *config_py_env_ref_var_name(const char *ref) {
     if (!ref) return NULL;
@@ -638,7 +631,7 @@ char *config_py_env_ref_var_name(const char *ref) {
         char *name = r + 4;
         while (*name == ' ' || *name == '\t') name++;
         if (*name == '\0') { free(r); return NULL; }
-        /* return name (caller frees) — shift */
+        /* return name (caller frees) - shift */
         memmove(r, name, strlen(name) + 1);
         return r;
     }
@@ -715,8 +708,7 @@ char *config_py_env_expand_match(const char *inner) {
 
 /* ============================================================
  * normalize_extra_headers
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_normalize_extra_headers @ hermes_cli/config.py:normalize_extra_headers */
 json_t *config_py_normalize_extra_headers(const json_t *extra_headers) {
     json_t *out = json_new_object();
@@ -739,8 +731,7 @@ json_t *config_py_normalize_extra_headers(const json_t *extra_headers) {
 
 /* ============================================================
  * is_provider_enabled
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_is_provider_enabled @ hermes_cli/config.py:is_provider_enabled */
 bool config_py_is_provider_enabled(const json_t *provider_cfg) {
     if (!provider_cfg || provider_cfg->type != JSON_OBJECT) return true;
@@ -758,8 +749,7 @@ bool config_py_is_provider_enabled(const json_t *provider_cfg) {
 
 /* ============================================================
  * _custom_provider_entry_to_provider_config
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_custom_provider_entry_to_provider_config @ hermes_cli/config.py:_custom_provider_entry_to_provider_config */
 json_t *config_py_custom_provider_entry_to_provider_config(const json_t *entry, const char *provider_key) {
     char *norm_json = normalize_custom_provider_entry_json(json_serialize(entry), provider_key ? provider_key : "");
@@ -787,8 +777,7 @@ json_t *config_py_custom_provider_entry_to_provider_config(const json_t *entry, 
 
 /* ============================================================
  * get_config_value / unset_config_value
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_get_config_value @ hermes_cli/config.py:get_config_value */
 json_t *config_py_get_config_value(const json_t *cfg, const char *dotted_key, const json_t *default_val) {
     json_t *v = config_py_get_nested(cfg, dotted_key);
@@ -803,8 +792,7 @@ int config_py_unset_config_value(json_t *cfg, const char *dotted_key) {
 
 /* ============================================================
  * _resolve_hermes_uid_gid
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_resolve_hermes_uid_gid @ hermes_cli/config.py:_resolve_hermes_uid_gid */
 void config_py_resolve_hermes_uid_gid(long *out_uid, long *out_gid) {
     long uid = -1, gid = -1;
@@ -832,8 +820,7 @@ void config_py_chown_to_hermes_uid(const char *path) {
 
 /* ============================================================
  * _is_container
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_is_container @ hermes_cli/config.py:_is_container */
 bool config_py_is_container(void) {
     if (getenv("HERMES_CONTAINER") || getenv("HERMES_SKIP_CHMOD")) return true;
@@ -854,8 +841,7 @@ bool config_py_is_container(void) {
 
 /* ============================================================
  * _secure_dir / _secure_file (best-effort chmod)
- * ============================================================ */
-
+ * ============================================================  */
 /* PoP: config_py_secure_dir @ hermes_cli/config.py:_secure_dir */
 void config_py_secure_dir(const char *path) {
     /* managed mode + container checks omitted for the pure helper; the io
@@ -885,7 +871,7 @@ void config_py_secure_file(const char *path) {
 }
 
 /* ============================================================
- * save_config_value — faithful port of hermes_cli/config.py:save_config_value
+ * save_config_value - faithful port of hermes_cli/config.py:save_config_value
  * Loads the merged config as JSON, sets a dotted key, and persists atomically.
  * Returns 0 on success, -1 on failure.
  * ============================================================ */

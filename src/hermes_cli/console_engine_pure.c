@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* console_engine_pure.c — Faithful port of the pure helper cluster in
+/* console_engine_pure.c - Faithful port of the pure helper cluster in
  * hermes_cli/console_engine.py (the safe Hermes Console command engine).
  *
  * This file ports ONLY the pure, deterministic, side-effect-free helpers
@@ -36,7 +36,7 @@
 #include <strings.h>
 #include <ctype.h>
 
-/* ─── _capture_output ──────────────────────────────────────────────
+/* --- _capture_output ----------------------------------------------
  * Runs fn() capturing stdout+stderr; on non-zero SystemExit raises via
  * returning an error string (caller decides). Here we model it as:
  *   capture_out(fn, out_buf, err_buf, max)
@@ -58,9 +58,10 @@ int console_engine_capture_output(char *(*fn)(void), char *out, size_t outsz) {
     return 0;
 }
 
-/* ─── _is_status_footer_rule ─────────────────────────────────────── */
-/* A line made entirely of '-' (after ANSI strip + box-drawing '─' -> '-'
- * substitution) and at least 8 chars wide. *//* PoP: console_engine_is_status_footer_rule @ hermes_cli/console_engine.py:_is_status_footer_rule */
+/* --- _is_status_footer_rule ---------------------------------------  */
+/* A line made entirely of '-' (after ANSI strip + box-drawing '-' -> '-'
+ * substitution) and at least 8 chars wide.  */
+/* PoP: console_engine_is_status_footer_rule @ hermes_cli/console_engine.py:_is_status_footer_rule */
 
 int console_engine_is_status_footer_rule(const char *line) {
     if (!line) return 0;
@@ -76,7 +77,7 @@ int console_engine_is_status_footer_rule(const char *line) {
         char c = s[i];
         if (c == '\xe2' && (size_t)(len - i) >= 3 &&
             (unsigned char)s[i+1] == 0x94 && (unsigned char)s[i+2] == 0x80) {
-            /* U+2500 box-drawing light horizontal — treat as '-' */
+            /* U+2500 box-drawing light horizontal - treat as '-' */
             i += 2;
             continue;
         }
@@ -86,7 +87,7 @@ int console_engine_is_status_footer_rule(const char *line) {
     return 1;
 }
 
-/* ─── _strip_console_status_footer ──────────────────────────────── */
+/* --- _strip_console_status_footer -------------------------------- */
 char *console_engine_strip_status_footer(const char *text) {
     if (!text) return strdup("");
     /* Split into lines preserving content. */
@@ -176,7 +177,7 @@ char *console_engine_strip_status_footer(const char *text) {
     return res;
 }
 
-/* ─── _table_summary ─────────────────────────────────────────────── */
+/* --- _table_summary ----------------------------------------------- */
 char *console_engine_table_summary(const char *summary, int limit) {
     if (!summary) return strdup("");
     if (limit <= 0) limit = 76;
@@ -212,7 +213,7 @@ char *console_engine_table_summary(const char *summary, int limit) {
     return res;
 }
 
-/* ─── POSIX shlex.split (for _split_line, non-Windows) ──────────── */
+/* --- POSIX shlex.split (for _split_line, non-Windows) ------------  */
 /* Faithful POSIX shell word splitting: whitespace, single/double quotes,
  * backslash escapes, no brace/$ expansion. Returns malloc'd argv array
  * (NULL-terminated) on success; returns NULL on unbalanced quotes
@@ -284,15 +285,15 @@ static char **posix_shlex_split(const char *line, char *errbuf, size_t errsz) {
     return argv;
 }
 
-/* ─── _split_line ───────────────────────────────────────────────── */
+/* --- _split_line -------------------------------------------------  */
 /* Returns a JSON array string of tokens (or an error marker). We return
  * the tokens as a malloc'd JSON array string for easy oracle diffing. */
 char *console_engine_split_line(const char *line, char *errbuf, size_t errsz) {
     if (errbuf) errbuf[0] = '\0';
     if (!line) return strdup("[]");
     char **argv = posix_shlex_split(line, errbuf, errsz);
-    if (!argv) return NULL; /* unbalanced quote -> caller raises */
-    /* build JSON array */
+    if (!argv) return NULL; /* unbalanced quote -> caller raises  */
+/* build JSON array */
     size_t total = 2;
     for (size_t k = 0; argv[k]; k++) total += strlen(argv[k]) * 2 + 6;
     char *res = (char *)malloc(total + 1);
@@ -314,7 +315,8 @@ char *console_engine_split_line(const char *line, char *errbuf, size_t errsz) {
     return res;
 }
 
-/* ─── _contains_shell_syntax ────────────────────────────────────── */
+/* --- _contains_shell_syntax -------------------------------------- */
+/* PoP: console_engine_contains_shell_syntax @ hermes_cli/console_engine.py:_contains_shell_syntax */
 int console_engine_contains_shell_syntax(const char *line, const char *tokens_csv) {
     if (!line) return 0;
     /* tokens list */
@@ -356,7 +358,7 @@ int console_engine_contains_shell_syntax(const char *line, const char *tokens_cs
     return found;
 }
 
-/* ─── _format_sessions ──────────────────────────────────────────── */
+/* --- _format_sessions -------------------------------------------- */
 char *console_engine_format_sessions(const char *json_sessions) {
     /* json_sessions: a JSON array of session objects (id, source,
      * message_count, title, preview). We parse with libjson. */
@@ -402,7 +404,7 @@ char *console_engine_format_sessions(const char *json_sessions) {
     return out;
 }
 
-/* ─── _format_job ───────────────────────────────────────────────── */
+/* --- _format_job ------------------------------------------------- */
 char *console_engine_format_job(const char *json_job, const char *action) {
     if (!json_job) return strdup("");
     json_t *job = json_parse(json_job, NULL);
@@ -420,7 +422,7 @@ char *console_engine_format_job(const char *json_job, const char *action) {
     return strdup(buf);
 }
 
-/* ─── _clean_summary ────────────────────────────────────────────── */
+/* --- _clean_summary ---------------------------------------------- */
 char *console_engine_clean_summary(const char *text) {
     if (!text || !*text) return strdup("");
     /* collapse whitespace */

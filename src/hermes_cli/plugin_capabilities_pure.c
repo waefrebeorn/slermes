@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* plugin_capabilities_pure.c — Faithful C11 port of the pure, deterministic
+/* plugin_capabilities_pure.c - Faithful C11 port of the pure, deterministic
  * capability-declaration + consent-state logic in
  * hermes_cli/plugin_capabilities.py (plugin capability declarations + consent,
  * #64228).
@@ -30,7 +30,7 @@
 #include <string.h>
 #include <strings.h>
 
-/* VALID_CAPABILITY_IDS — the canonical registry (1:1 with enforcing gates). */
+/* VALID_CAPABILITY_IDS - the canonical registry (1:1 with enforcing gates). */
 static const char *PC_VALID_IDS[] = {
     "tools.override",
     "llm.provider_override",
@@ -227,9 +227,8 @@ int pc_plugin_capability_granted(const char *plugin_id, const char *capability,
     int idx = pc_idx(capability);
     if (idx < 0) return 0; /* unknown id -> fail closed */
     json_t *config = json_parse(config_json, NULL);
-    if (!config) return 0; /* fail closed on unparseable config */
-
-    /* granted_capabilities check */
+    if (!config) return 0; /* fail closed on unparseable config  */
+/* granted_capabilities check */
     json_t *entry = pc_entry_from_config(config_json, plugin_id);
     int granted = 0;
     if (entry) {

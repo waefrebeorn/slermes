@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* memory_tool_pure.c — Faithful port of the pure, deterministic helpers in
+/* memory_tool_pure.c - Faithful port of the pure, deterministic helpers in
  * tools/memory_tool.py (the bounded curated memory store).
  *
  * Ports the side-effect-free surface:
@@ -14,7 +14,7 @@
  *     _consolidation_failure        -> memory_tool_pure_store_consolidation_failure
  *
  * _scan_memory_content is intentionally NOT ported here (it delegates to
- * tools.threat_patterns.first_threat_message — a separate module to port).
+ * tools.threat_patterns.first_threat_message - a separate module to port).
  * Callers receive freshly malloc'd strings (free with free()) or NULL.
  */
 
@@ -29,7 +29,8 @@
 
 #define MEMORY_MAX_CONSOLIDATION_FAILURES_PER_TURN 3
 
-/* ─── get_memory_dir ─────────────────────────────────────────────── */
+/* --- get_memory_dir ----------------------------------------------- */
+/* PoP: memory_tool_get_memory_dir @ tools/memory_tool.py:get_memory_dir */
 char *memory_tool_get_memory_dir(void) {
     char home[4096];
     hermes_home_dir(home, sizeof(home));
@@ -40,7 +41,7 @@ char *memory_tool_get_memory_dir(void) {
     return out;
 }
 
-/* ─── _drift_error ───────────────────────────────────────────────── */
+/* --- _drift_error ------------------------------------------------- */
 char *memory_tool_drift_error(const char *path_name, const char *bak_path) {
     char *out = (char *)malloc(2048);
     const char *pname = path_name ? path_name : "";
@@ -61,7 +62,7 @@ char *memory_tool_drift_error(const char *path_name, const char *bak_path) {
     return out;
 }
 
-/* ─── _read_failed_error ─────────────────────────────────────────── */
+/* --- _read_failed_error ------------------------------------------- */
 char *memory_tool_read_failed_error(const char *path_name) {
     char *out = (char *)malloc(1024);
     const char *pname = path_name ? path_name : "";
@@ -76,7 +77,7 @@ char *memory_tool_read_failed_error(const char *path_name) {
     return out;
 }
 
-/* ─── MemoryStore consolidation counter (opaque) ─────────────────── */
+/* --- MemoryStore consolidation counter (opaque) ------------------- */
 typedef struct memory_tool_pure_store {
     int consolidation_failures;
 } memory_tool_pure_store_t;
@@ -87,7 +88,8 @@ void memory_tool_pure_store_reset_consolidation_failures(memory_tool_pure_store_
 }
 
 /* Returns a malloc'd JSON dict. On under-cap it mirrors `response` (the
- * caller's JSON) unchanged; past cap returns a terminal result. *//* PoP: memory_tool_pure_store_consolidation_failure @ tools/memory_tool.py:_consolidation_failure */
+ * caller's JSON) unchanged; past cap returns a terminal result.  */
+/* PoP: memory_tool_pure_store_consolidation_failure @ tools/memory_tool.py:_consolidation_failure */
 
 char *memory_tool_pure_store_consolidation_failure(memory_tool_pure_store_t *s, const char *response_json) {
     if (!s) return strdup(response_json ? response_json : "{}");

@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* models_pure.c — Faithful port of the pure, deterministic model-catalog
+/* models_pure.c - Faithful port of the pure, deterministic model-catalog
  * helpers in hermes_cli/models.py (the `hermes model` picker + Nous Portal
  * tier detection).
  *
@@ -10,7 +10,7 @@
  *   _is_model_free              -> models_is_model_free
  *   is_nous_free_tier           -> models_is_nous_free_tier
  *
- * These are pure list/dict transformations — fully oracle-able. The
+ * These are pure list/dict transformations - fully oracle-able. The
  * network-backed _xai_curated_models / _codex_curated_models are intentionally
  * NOT ported (they read disk/network; not faithfully oracle-able standalone).
  *
@@ -34,7 +34,7 @@ static const char *XAI_CURATED_EXTRAS[] = {
     "grok-4.6", "grok-4.5", "grok-composer-2.5-fast", NULL
 };
 
-/* ─── helpers ────────────────────────────────────────────────────── */
+/* --- helpers ------------------------------------------------------ */
 static char **strlist_dup(char **in, size_t n) {
     char **out = (char **)malloc(sizeof(char *) * (n + 1));
     for (size_t i = 0; i < n; i++) out[i] = strdup(in[i]);
@@ -79,7 +79,7 @@ static char **json_to_strlist(json_t *arr, size_t *n) {
     return out;
 }
 
-/* ─── _xai_promote_top ───────────────────────────────────────────── */
+/* --- _xai_promote_top ---------------------------------------------  */
 /* Standalone: replicate _xai_finalize_catalog = promote_top(merge_extras(ids)).
  * models_net.c owns array-signatured variants; we operate on JSON strings. */
 char *models_xai_finalize_catalog(const char *json_ids) {
@@ -113,7 +113,8 @@ char *models_xai_finalize_catalog(const char *json_ids) {
     return res;
 }
 
-/* ─── is_nous_free_tier ─────────────────────────────────────────── *//* PoP: models_is_nous_free_tier @ hermes_cli/models.py:is_nous_free_tier */
+/* --- is_nous_free_tier -------------------------------------------  */
+/* PoP: models_is_nous_free_tier @ hermes_cli/models.py:is_nous_free_tier */
 
 int models_is_nous_free_tier(const char *json_account_info) {
     if (!json_account_info) return 0;

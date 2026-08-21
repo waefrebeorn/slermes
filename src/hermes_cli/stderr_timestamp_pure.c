@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* stderr_timestamp_pure.c — Faithful C11 port of the pure, deterministic
+/* stderr_timestamp_pure.c - Faithful C11 port of the pure, deterministic
  * helpers in hermes_cli/stderr_timestamp.py (run a child while prefixing
  * each stderr line with a logging-style timestamp).
  *
@@ -15,7 +15,7 @@
  *
  * Time/IO-bound helpers (_write_timestamped_line, _copy_stderr_with_timestamps,
  * _install_signal_forwarders, _restore_signal_handlers, main) are not ported
- * here — they are process/signal/IO glue, not pure logic.
+ * here - they are process/signal/IO glue, not pure logic.
  *
  * Reuses gateway_status.looks_like_gateway_command_line (already ported in
  * gateway/status.c) for the gateway-argv check, exactly as the Python does.
@@ -30,11 +30,12 @@
 
 #define STS_EXTERNAL_SUPERVISOR_FLAG "--external-supervisor"
 
-/* ── _timestamp() ──────────────────────────────────────────────────
+/* -- _timestamp() --------------------------------------------------
  * Mirrors logging.Formatter's %(asctime)s shape with millisecond precision:
  *   "%Y-%m-%d %H:%M:%S,%f"[:23]  -> "YYYY-MM-DD HH:MM:SS,mmm"
  * (Python truncates the 6-digit %f to 3 digits via [:23].)
  */
+/* PoP: stderr_ts_timestamp @ hermes_cli/stderr_timestamp.py:_timestamp */
 void stderr_ts_timestamp(char *buf, size_t cap) {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
@@ -46,11 +47,12 @@ void stderr_ts_timestamp(char *buf, size_t cap) {
              tm.tm_hour, tm.tm_min, tm.tm_sec, ms);
 }
 
-/* ── _TIMESTAMP_PREFIX.match ───────────────────────────────────────
+/* -- _TIMESTAMP_PREFIX.match ---------------------------------------
  * ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}(?:\s|$)
  * Returns 1 if the rendered line already carries a logging timestamp prefix
  * (so we must NOT double-prefix it).
- *//* PoP: stderr_ts_has_timestamp_prefix @ hermes_cli/stderr_timestamp.py:_TIMESTAMP_PREFIX.match */
+  */
+/* PoP: stderr_ts_has_timestamp_prefix @ hermes_cli/stderr_timestamp.py:_TIMESTAMP_PREFIX.match */
 
 int stderr_ts_has_timestamp_prefix(const char *line) {
     if (!line) return 0;
@@ -74,21 +76,23 @@ int stderr_ts_has_timestamp_prefix(const char *line) {
     return 1;
 }
 
-/* ── _command_exit_code ──────────────────────────────────────────── *//* PoP: stderr_ts_command_exit_code @ hermes_cli/stderr_timestamp.py:_command_exit_code */
+/* -- _command_exit_code --------------------------------------------  */
+/* PoP: stderr_ts_command_exit_code @ hermes_cli/stderr_timestamp.py:_command_exit_code */
 
 int stderr_ts_command_exit_code(int returncode) {
     if (returncode < 0) return 128 + (-returncode);
     return returncode;
 }
 
-/* ── _is_launchd_supervised ────────────────────────────────────────
+/* -- _is_launchd_supervised ----------------------------------------
  * True when XPC_SERVICE_NAME is set and not "0".
- *//* PoP: stderr_ts_is_launchd_supervised @ hermes_cli/stderr_timestamp.py:_is_launchd_supervised */
+  */
+/* PoP: stderr_ts_is_launchd_supervised @ hermes_cli/stderr_timestamp.py:_is_launchd_supervised */
 
 int stderr_ts_is_launchd_supervised(const char *xpc_service_name) {
     if (!xpc_service_name || !*xpc_service_name) return 0;
-    /* Python .strip() then bool(... and != "0") */
-    /* strip leading/trailing whitespace */
+    /* Python .strip() then bool(... and != "0")  */
+/* strip leading/trailing whitespace */
     while (*xpc_service_name == ' ' || *xpc_service_name == '\t') xpc_service_name++;
     size_t l = strlen(xpc_service_name);
     while (l > 0 && (xpc_service_name[l - 1] == ' ' || xpc_service_name[l - 1] == '\t')) l--;
@@ -98,7 +102,8 @@ int stderr_ts_is_launchd_supervised(const char *xpc_service_name) {
     return 1;
 }
 
-/* ── _is_hermes_gateway_run_argv ────────────────────────────────── *//* PoP: stderr_ts_is_gateway_run_argv @ hermes_cli/stderr_timestamp.py:_is_hermes_gateway_run_argv */
+/* -- _is_hermes_gateway_run_argv ----------------------------------  */
+/* PoP: stderr_ts_is_gateway_run_argv @ hermes_cli/stderr_timestamp.py:_is_hermes_gateway_run_argv */
 
 int stderr_ts_is_gateway_run_argv(char **argv, int argc) {
     /* Python: " ".join(str(part) for part in command) then
@@ -116,7 +121,8 @@ int stderr_ts_is_gateway_run_argv(char **argv, int argc) {
     return r;
 }
 
-/* ── _with_external_supervisor_flag ─────────────────────────────── *//* PoP: stderr_ts_with_external_supervisor_flag @ hermes_cli/stderr_timestamp.py:_with_external_supervisor_flag */
+/* -- _with_external_supervisor_flag -------------------------------  */
+/* PoP: stderr_ts_with_external_supervisor_flag @ hermes_cli/stderr_timestamp.py:_with_external_supervisor_flag */
 
 void stderr_ts_with_external_supervisor_flag(char **argv, int argc,
                                              char **out, int *outc) {
@@ -130,7 +136,8 @@ void stderr_ts_with_external_supervisor_flag(char **argv, int argc,
     *outc = j;
 }
 
-/* ── _prepare_child_command ─────────────────────────────────────── *//* PoP: stderr_ts_prepare_child_command @ hermes_cli/stderr_timestamp.py:_prepare_child_command */
+/* -- _prepare_child_command ---------------------------------------  */
+/* PoP: stderr_ts_prepare_child_command @ hermes_cli/stderr_timestamp.py:_prepare_child_command */
 
 void stderr_ts_prepare_child_command(char **argv, int argc,
                                      const char *xpc_service_name,

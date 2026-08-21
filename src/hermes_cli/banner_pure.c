@@ -1,4 +1,4 @@
-/* banner_pure.c — Port of hermes_cli/banner.py pure helpers.
+/* banner_pure.c - Port of hermes_cli/banner.py pure helpers.
  * Deterministic string/URL/format functions (no git, no subprocess, no TTY).
  */
 #define _GNU_SOURCE
@@ -46,7 +46,7 @@ char *banner_canonical_github_remote(const char *url) {
         const char *path_start = p;
         const char *slash = strchr(path_start, '/');
         const char *netloc_end = slash ? slash : path_start + strlen(path_start);
-        /* netloc may have userinfo@ or :port — Python urlparse keeps them in
+        /* netloc may have userinfo@ or :port - Python urlparse keeps them in
          * netloc; the Python code uses f"{netloc}{path}". We replicate that
          * literally (urlparse includes userinfo and port in netloc). */
         const char *path = slash ? slash : "";
@@ -127,7 +127,7 @@ char *banner_format_context_length(long long tokens) {
 
 /* PoP: banner_display_toolset_name @ hermes_cli/banner.py:_display_toolset_name */
 char *banner_display_toolset_name(const char *toolset_name) {
-    /* Python: `if not toolset_name: return "unknown"` — empty string is falsy. */
+    /* Python: `if not toolset_name: return "unknown"` - empty string is falsy. */
     if (!toolset_name || !*toolset_name) return strdup("unknown");
     size_t l = strlen(toolset_name);
     if (l >= 6 && strcmp(toolset_name + l - 6, "_tools") == 0) {
@@ -137,7 +137,7 @@ char *banner_display_toolset_name(const char *toolset_name) {
     return strdup(toolset_name);
 }
 
-/* PoP: banner_format_update_notice @ hermes_cli/banner.py:_format_update_notice */
+/* PoP: banner_format_update_notice @ hermes_cli/banner.py:_format_update_notice  */
 /* Render the update warning line for a non-zero behind result. Caller frees. */
 char *banner_format_update_notice(int behind) {
     if (behind > 0) {
@@ -165,7 +165,7 @@ char *banner_format_update_notice(int behind) {
     return line;
 }
 
-/* PoP: banner_snapshot_path @ hermes_cli/banner.py:_banner_snapshot_path */
+/* PoP: banner_snapshot_path @ hermes_cli/banner.py:_banner_snapshot_path  */
 /* Return path to banner snapshot JSON. Caller frees. */
 char *banner_snapshot_path(void) {
     char *home = dashboard_procs_hermes_home_dir();

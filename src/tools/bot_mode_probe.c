@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
-/* bot_mode_probe.c — Port of Python tools/bot_mode_probe.py
+/* bot_mode_probe.c - Port of Python tools/bot_mode_probe.py
  *
- * Bot Mode roster probe — canonical Bot Chat system prompt section.
+ * Bot Mode roster probe - canonical Bot Chat system prompt section.
  * Pure filesystem + YAML + SHA-256 logic (no network). Faithful to the
  * Python source: same silent-failure contract, same cached-probe entry
  * point, same capability-epoch fingerprint.
@@ -36,11 +36,11 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-/* ─── protocol constants ─────────────────────────────────────────── */
+/* --- protocol constants ------------------------------------------- */
 static const char *BMP_PROTOCOL_HEADING = "## Messaging other agents";
 static const char *BMP_EPOCH_PREFIX = "Capability epoch: ";
 
-/* ─── string builder (append + real newline via char 10) ─────────── */
+/* --- string builder (append + real newline via char 10) ----------- */
 typedef struct {
     char *buf;
     size_t len;
@@ -87,7 +87,7 @@ static void sb_free(bmp_sb *sb) {
     sb->len = sb->cap = 0;
 }
 
-/* ─── path helpers ────────────────────────────────────────────────── */
+/* --- path helpers -------------------------------------------------- */
 static void path_join(char *out, size_t n, const char *a, const char *b) {
     if (!a || !b) { if (out) out[0] = '\0'; return; }
     size_t la = strlen(a);
@@ -124,7 +124,7 @@ static void base_name(const char *p, char *out, size_t n) {
     out[blen] = '\0';
 }
 
-/* ─── file read ──────────────────────────────────────────────────── */
+/* --- file read ---------------------------------------------------- */
 static char *read_text(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;
@@ -151,7 +151,7 @@ static int path_is_file(const char *p) {
     return S_ISREG(st.st_mode);
 }
 
-/* ─── home resolution ────────────────────────────────────────────── */
+/* --- home resolution ---------------------------------------------- */
 const char *bot_mode_probe_resolve_home(const char *home, char *out, size_t n) {
     if (home && *home) {
         snprintf(out, n, "%s", home);
@@ -175,7 +175,7 @@ const char *bot_mode_probe_resolve_home(const char *home, char *out, size_t n) {
     return out;
 }
 
-/* ─── Python _hermes_root / _profile_name ────────────────────────── */
+/* --- Python _hermes_root / _profile_name -------------------------- */
 static void bmp_hermes_root(const char *home, char *out, size_t n) {
     char parent[4096];
     dir_name(home, parent, sizeof(parent));
@@ -201,7 +201,7 @@ static void bmp_profile_name(const char *home, char *out, size_t n) {
     out[n - 1] = '\0';
 }
 
-/* ─── _is_bot_managed ────────────────────────────────────────────── */
+/* --- _is_bot_managed ---------------------------------------------- */
 static int bmp_is_bot_managed(const char *profile_dir) {
     char meta[4608];
     path_join(meta, sizeof(meta), profile_dir, "profile.yaml");
@@ -227,7 +227,7 @@ static int bmp_is_bot_managed(const char *profile_dir) {
     return found;
 }
 
-/* ─── roster ─────────────────────────────────────────────────────── */
+/* --- roster ------------------------------------------------------- */
 typedef struct { char *name; char *dir; } bmp_roster_entry;
 
 static int bmp_roster_cmp(const void *a, const void *b) {
@@ -279,7 +279,7 @@ static void bmp_roster_free(bmp_roster_entry *arr, size_t count) {
     free(arr);
 }
 
-/* ─── _soul_has_protocol ─────────────────────────────────────────── */
+/* --- _soul_has_protocol ------------------------------------------- */
 static int bmp_soul_has_protocol(const char *profile_dir) {
     char soul[4608];
     path_join(soul, sizeof(soul), profile_dir, "SOUL.md");
@@ -290,14 +290,14 @@ static int bmp_soul_has_protocol(const char *profile_dir) {
     return found;
 }
 
-/* ─── _handle ────────────────────────────────────────────────────── */
+/* --- _handle ------------------------------------------------------ */
 static void bmp_handle(const char *name, char *out, size_t n) {
     if (strcmp(name, "default") == 0) snprintf(out, n, "hermes");
     else snprintf(out, n, "%s", name);
     out[n - 1] = '\0';
 }
 
-/* ─── _peers (bot_peers keys, non-empty, sorted) ─────────────────── */
+/* --- _peers (bot_peers keys, non-empty, sorted) ------------------- */
 static char **bmp_peers(const char *root, size_t *count) {
     *count = 0;
     char cfg[4608];
@@ -342,7 +342,7 @@ static void bmp_peers_free(char **names, size_t count) {
     free(names);
 }
 
-/* ─── _peer_paragraph ────────────────────────────────────────────── */
+/* --- _peer_paragraph ---------------------------------------------- */
 static void bmp_peer_paragraph(const char *root, bmp_sb *sb) {
     size_t pc = 0;
     char **peers = bmp_peers(root, &pc);
@@ -374,7 +374,7 @@ static void bmp_peer_paragraph(const char *root, bmp_sb *sb) {
     bmp_peers_free(peers, pc);
 }
 
-/* ─── _build_section ─────────────────────────────────────────────── */
+/* --- _build_section ----------------------------------------------- */
 static char *bmp_build_section(const char *home) {
     char root[4608];
     bmp_hermes_root(home, root, sizeof(root));
@@ -462,7 +462,7 @@ static char *bmp_build_section(const char *home) {
     return result;
 }
 
-/* ─── cached probe entry point ───────────────────────────────────── */
+/* --- cached probe entry point ------------------------------------- */
 #define BMP_CACHE_MAX 64
 typedef struct { char *key; char *val; } bmp_cache_entry;
 static bmp_cache_entry g_cache[BMP_CACHE_MAX];
@@ -514,7 +514,7 @@ void bot_mode_probe_reset_cache_for_tests(void) {
     g_cache_n = 0;
 }
 
-/* ─── capability fingerprint ─────────────────────────────────────── */
+/* --- capability fingerprint --------------------------------------- */
 static void json_escape_str(const char *s, bmp_sb *sb) {
     sb_append_c(sb, '"');
     if (s) {

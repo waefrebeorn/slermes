@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* session_lost_and_found_pure.c — Faithful C11 port of the pure, deterministic
+/* session_lost_and_found_pure.c - Faithful C11 port of the pure, deterministic
  * classification heuristics in hermes_cli/session_lost_and_found.py (page-level
  * schema-less session DB salvage).
  *
@@ -23,7 +23,8 @@
 #define LAF_EPOCH_LOW  1000000000.0
 #define LAF_EPOCH_HIGH 4000000000.0
 
-/* SESSION_ID_PATTERN = ^\d{8}_\d{6}_ *//* PoP: laf_is_session_id @ hermes_cli/session_lost_and_found.py:_is_session_id */
+/* SESSION_ID_PATTERN = ^\d{8}_\d{6}_  */
+/* PoP: laf_is_session_id @ hermes_cli/session_lost_and_found.py:_is_session_id */
 
 int laf_is_session_id(const char *value) {
     if (!value) return 0;
@@ -69,6 +70,7 @@ static int laf_is_role(const char *v) {
            strcmp(v, "tool") == 0 || strcmp(v, "system") == 0;
 }
 
+/* PoP: laf_classify_row @ hermes_cli/session_lost_and_found.py:classify_lost_and_found_row */
 char *laf_classify_row(int nfield, const char *cells_json) {
     json_t *cells = json_parse(cells_json, NULL);
     char *result = (char *)malloc(8);

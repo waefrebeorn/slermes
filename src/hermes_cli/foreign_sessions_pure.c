@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* foreign_sessions_pure.c — Faithful C11 port of the pure, deterministic
+/* foreign_sessions_pure.c - Faithful C11 port of the pure, deterministic
  * helpers in hermes_cli/foreign_sessions.py (import sessions from Claude Code
  * / Codex CLI).
  *
@@ -15,7 +15,7 @@
  * _flatten_blocks takes a JSON string (the message "content") and a source
  * ("claude" | "codex"); returns malloc'd flattened text. _merge_turns takes a
  * JSON array of [role, text] pairs and returns a JSON array of
- * {"role","content"} objects. All strings are malloc'd — free() them.
+ * {"role","content"} objects. All strings are malloc'd - free() them.
  */
 
 #include "hermes_core_types.h"
@@ -31,7 +31,8 @@
 /* _WRAPPER_TAG_RE = ^<(user_instructions|environment_context|
  *   recommended_plugins|skills_instructions|permissions[_-]instructions|
  *   turn_context|command-name|command-message|local-command-stdout|
- *   system-reminder)\b  (case-insensitive) *//* PoP: foreign_sessions_is_wrapper_text @ hermes_cli/foreign_sessions.py:_is_wrapper_text */
+ *   system-reminder)\b  (case-insensitive)  */
+/* PoP: foreign_sessions_is_wrapper_text @ hermes_cli/foreign_sessions.py:_is_wrapper_text */
 
 int foreign_sessions_is_wrapper_text(const char *text) {
     if (!text) return 0;
@@ -55,7 +56,8 @@ int foreign_sessions_is_wrapper_text(const char *text) {
     return 0;
 }
 
-/* _flatten_blocks(content, source) *//* PoP: foreign_sessions_flatten_blocks @ hermes_cli/foreign_sessions.py:_flatten_blocks */
+/* _flatten_blocks(content, source)  */
+/* PoP: foreign_sessions_flatten_blocks @ hermes_cli/foreign_sessions.py:_flatten_blocks */
 
 char *foreign_sessions_flatten_blocks(const char *content_json, const char *source) {
     json_t *content = json_parse(content_json, NULL);
@@ -115,7 +117,7 @@ char *foreign_sessions_flatten_blocks(const char *content_json, const char *sour
     return out;
 }
 
-/* _merge_turns(raw_turns_json) -> JSON array of {role, content} */
+/* _merge_turns(raw_turns_json) -> JSON array of {role, content}  */
 /* PoP: foreign_sessions_merge_turns @ hermes_cli/foreign_sessions.py:_merge_turns */
 
 char *foreign_sessions_merge_turns(const char *raw_turns_json) {
@@ -193,7 +195,8 @@ char *foreign_sessions_merge_turns(const char *raw_turns_json) {
     return out;
 }
 
-/* ForeignSession.label: [<name>] <title[:60]> *//* PoP: foreign_sessions_session_label @ hermes_cli/foreign_sessions.py:ForeignSession.label */
+/* ForeignSession.label: [<name>] <title[:60]>  */
+/* PoP: foreign_sessions_session_label @ hermes_cli/foreign_sessions.py:ForeignSession.label */
 
 char *foreign_sessions_session_label(const char *source, const char *title_guess,
                                      const char *stem) {

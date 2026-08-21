@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-/* plugin_packs_pure.c — Faithful C11 port of the pure, deterministic
+/* plugin_packs_pure.c - Faithful C11 port of the pure, deterministic
  * validation helpers in hermes_cli/plugin_packs.py (declarative plugin packs).
  *
  * Ports (PoP):
@@ -7,12 +7,12 @@
  *   _entry_label                      -> plugin_pack_entry_label
  *   validate_config_seed              -> plugin_pack_validate_config_seed
  *     (returns malloc'd JSON: the validated dict on success, or
- *      {"error":"..."} on rejection — exactly what the Python raises as
+ *      {"error":"..."} on rejection - exactly what the Python raises as
  *      PackError, so the oracle can diff it)
  *   secret/allow_/reserved key checks -> inlined inside validate_config_seed
  *
  * YAML parsing (parse_pack/load_pack) and index resolution/render are NOT
- * ported — they need the yaml lib + network + rich rendering.
+ * ported - they need the yaml lib + network + rich rendering.
  *
  * Rejects mirror Python: non-dict seed, non-str/empty keys, reserved keys
  * (granted_capabilities/capabilities_consent), allow_* trust gates, and
@@ -28,7 +28,8 @@
 #include <strings.h>
 #include <ctype.h>
 
-/* _EXACT_SHA_RE = ^[0-9a-fA-F]{40}$ *//* PoP: plugin_pack_is_exact_sha @ hermes_cli/plugin_packs.py:_EXACT_SHA_RE.fullmatch */
+/* _EXACT_SHA_RE = ^[0-9a-fA-F]{40}$  */
+/* PoP: plugin_pack_is_exact_sha @ hermes_cli/plugin_packs.py:_EXACT_SHA_RE.fullmatch */
 
 int plugin_pack_is_exact_sha(const char *ref) {
     if (!ref) return 0;
@@ -42,7 +43,7 @@ int plugin_pack_is_exact_sha(const char *ref) {
     return 1;
 }
 
-/* _entry_label(item, index) -> "'name'" | "'repo'" | "#index+1" */
+/* _entry_label(item, index) -> "'name'" | "'repo'" | "#index+1"  */
 /* PoP: plugin_pack_entry_label @ hermes_cli/plugin_packs.py:_entry_label */
 
 char *plugin_pack_entry_label(json_t *item, int index) {
@@ -90,7 +91,8 @@ static int key_is_secret_shaped(const char *key) {
 }
 
 /* validate_config_seed(plugin_id, seed_json) -> malloc'd JSON string.
- * Success: serialized validated dict. Failure: {"error":"..."}. *//* PoP: plugin_pack_validate_config_seed @ hermes_cli/plugin_packs.py:validate_config_seed */
+ * Success: serialized validated dict. Failure: {"error":"..."}.  */
+/* PoP: plugin_pack_validate_config_seed @ hermes_cli/plugin_packs.py:validate_config_seed */
 
 char *plugin_pack_validate_config_seed(const char *plugin_id, const char *seed_json) {
     char pid[256];
