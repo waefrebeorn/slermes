@@ -1,0 +1,100 @@
+{
+  "ops": [
+    {
+      "op": "has_timestamp_prefix",
+      "line": "2024-01-02 03:04:05,123 already stamped"
+    },
+    {
+      "op": "has_timestamp_prefix",
+      "line": "2024-1-2 3:4:5 plain line"
+    },
+    {
+      "op": "has_timestamp_prefix",
+      "line": "2024-01-02 03:04:05,123456 extra"
+    },
+    {
+      "op": "command_exit_code",
+      "rc": -9
+    },
+    {
+      "op": "command_exit_code",
+      "rc": 0
+    },
+    {
+      "op": "command_exit_code",
+      "rc": 130
+    },
+    {
+      "op": "is_launchd_supervised",
+      "xpc": "com.hermes.gateway"
+    },
+    {
+      "op": "is_launchd_supervised",
+      "xpc": "0"
+    },
+    {
+      "op": "is_launchd_supervised",
+      "xpc": ""
+    },
+    {
+      "op": "is_gateway_run_argv",
+      "argv": [
+        "hermes",
+        "gateway",
+        "run"
+      ]
+    },
+    {
+      "op": "is_gateway_run_argv",
+      "argv": [
+        "echo",
+        "hello"
+      ]
+    },
+    {
+      "op": "with_external_supervisor_flag",
+      "argv": [
+        "hermes",
+        "gateway",
+        "run"
+      ]
+    },
+    {
+      "op": "with_external_supervisor_flag",
+      "argv": [
+        "hermes",
+        "gateway",
+        "run",
+        "--external-supervisor"
+      ]
+    },
+    {
+      "op": "prepare_child_command",
+      "argv": [
+        "hermes",
+        "gateway",
+        "run",
+        "--replace"
+      ],
+      "xpc": "com.hermes"
+    },
+    {
+      "op": "prepare_child_command",
+      "argv": [
+        "hermes",
+        "gateway",
+        "run",
+        "--replace"
+      ],
+      "xpc": "0"
+    },
+    {
+      "op": "prepare_child_command",
+      "argv": [
+        "echo",
+        "hi"
+      ],
+      "xpc": "com.hermes"
+    }
+  ]
+}
