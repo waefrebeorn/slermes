@@ -1,0 +1,17 @@
+{
+ "ops": [
+  {
+   "op": "canonical",
+   "obj": {
+    "type": "sync-manifest",
+    "version": 1,
+    "skills": [
+     {
+      "name": "x",
+      "enabled": true
+     }
+    ]
+   }
+  }
+ ]
+}

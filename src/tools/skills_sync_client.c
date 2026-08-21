@@ -67,6 +67,38 @@ extern int cli_agent_skill_utils__is_external_skill_path(const char *path);
 extern char *read_skill_name(const char *skill_md_path, const char *fallback);
 
 /* ── canonical_json_bytes (L186) ──────────────────────────────────────── */
+/* PoP: skills_sync_canonical_json_bytes @ tools/skills_sync_client.py:canonical_json_bytes */
+/* Recursively sort object keys (by strcmp) to mirror Python's
+ * json.dumps(sort_keys=True), and descend into nested objects/arrays so the
+ * entire tree serializes in canonical order. */
+static void json_obj_sort_keys(json_t *node) {
+    if (!node) return;
+    if (node->type == JSON_OBJECT) {
+        size_t n = node->c.count;
+        char **keys = node->c.keys;
+        json_t **items = node->c.items;
+        for (size_t i = 1; i < n; i++) {
+            char *kk = keys[i];
+            json_t *it = items[i];
+            size_t j = i;
+            while (j > 0 && strcmp(keys[j - 1], kk) > 0) {
+                keys[j] = keys[j - 1];
+                items[j] = items[j - 1];
+                j--;
+            }
+            keys[j] = kk;
+            items[j] = it;
+        }
+        for (size_t i = 0; i < n; i++) {
+            json_obj_sort_keys(items[i]);
+        }
+    } else if (node->type == JSON_ARRAY) {
+        for (size_t i = 0; i < node->c.count; i++) {
+            json_obj_sort_keys(node->c.items[i]);
+        }
+    }
+}
+
 
 /* Canonical JSON serialization for tree/commit hashing (sync contract):
  * UTF-8, keys sorted lexicographically, no insignificant whitespace, no
@@ -78,6 +110,7 @@ extern char *read_skill_name(const char *skill_md_path, const char *fallback);
  * to match Python's sort_keys=True. */
 char *skills_sync_canonical_json_bytes(json_t *obj, size_t *out_len) {
     if (!obj) return NULL;
+    json_obj_sort_keys(obj);
     char *ser = json_serialize(obj);
     if (!ser) return NULL;
     if (out_len) *out_len = strlen(ser);
@@ -85,6 +118,7 @@ char *skills_sync_canonical_json_bytes(json_t *obj, size_t *out_len) {
 }
 
 /* ── build_sync_manifest_bytes (L118) ─────────────────────────────────── */
+/* PoP: skills_sync_build_manifest_bytes @ tools/skills_sync_client.py:build_sync_manifest_bytes */
 
 /* Serialize the per-skill opt-in map into canonical sync-manifest bytes.
  * skills maps skill name -> enabled. Emits the shape parseSyncManifest
@@ -132,6 +166,7 @@ char *skills_sync_build_manifest_bytes(const char *const *names,
 }
 
 /* ── parse_sync_manifest (L136) ───────────────────────────────────────── */
+/* PoP: skills_sync_parse_manifest @ tools/skills_sync_client.py:parse_sync_manifest */
 
 /* Parse sync-manifest bytes into {name: enabled}, or NULL if the bytes are
  * not a well-formed manifest. Strict (mirrors parseSyncManifest): unknown
@@ -176,6 +211,7 @@ json_t *skills_sync_parse_manifest(const char *data, size_t len) {
 }
 
 /* ── wire_address (L181) ──────────────────────────────────────────────── */
+/* PoP: skills_sync_wire_address @ tools/skills_sync_client.py:wire_address */
 
 /* Return "sha256:<64-hex>" — the wire address of data. Uses the FULL 64-hex
  * sha256 digest (a DIFFERENT namespace from the local truncated content_hash). */

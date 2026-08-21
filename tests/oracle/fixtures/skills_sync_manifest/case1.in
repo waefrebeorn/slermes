@@ -1,0 +1,24 @@
+{
+ "ops": [
+  {
+   "op": "manifest_roundtrip",
+   "skills": {
+    "alpha": true,
+    "beta": false,
+    "gamma": true
+   }
+  },
+  {
+   "op": "canonical",
+   "obj": {
+    "b": 1,
+    "a": 2,
+    "c": [
+     1,
+     2,
+     3
+    ]
+   }
+  }
+ ]
+}

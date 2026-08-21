@@ -1,0 +1,16 @@
+{
+ "ops": [
+  {
+   "op": "manifest_roundtrip",
+   "skills": {}
+  },
+  {
+   "op": "manifest_roundtrip",
+   "skills": {
+    "zeta": false,
+    "apple": true,
+    "mango": true
+   }
+  }
+ ]
+}

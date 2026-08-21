@@ -194,7 +194,7 @@ PORT_OBJ = \
  src/hermes_cli/memory_setup.o \
  src/hermes_cli/toolset_validation.o \
  src/tools/memory_tool.o \
- src/tools/skills_hub.o src/tools/skills_hub_ports.o src/tools/skills_hub_gaps.o src/tools/skill_manager_tool_ports.o src/tools/skill_usage_ports.o src/tools/todo_tool_ports.o \
+  src/tools/skills_hub.o src/tools/skills_hub_ports.o src/tools/skills_hub_gaps.o src/tools/skill_manager_tool_ports.o src/tools/skill_usage_ports.o src/tools/todo_tool_ports.o \
  src/tools/mcp_tool_ports.o \
  src/tools/send_message_tool.o \
  src/tools/tts_tool.o src/tools/tts_tool_ports.o src/tools/approval_ports.o src/tools/approval_helpers2.o src/tools/cua_backend_ports.o src/tools/voice_mode_ports.o src/tools/environments_base_ports.o src/tools/environments_modal_ports.o src/tools/environments_docker_ports.o src/tools/browser_supervisor_ports.o src/tools/tool_search_ports.o src/tools/moa_performance_ports.o src/tools/tts_streaming_ports.o src/tools/delegation_live_log_ports.o src/tools/memory_tool_ports.o src/tools/computer_use/computer_use_tool_ports.o src/tools/delegate_tool.o \
