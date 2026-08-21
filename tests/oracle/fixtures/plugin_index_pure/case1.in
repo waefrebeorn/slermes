@@ -1,0 +1,312 @@
+{
+  "ops": [
+    {
+      "op": "install_identifier",
+      "repo": "owner/foo",
+      "subdir": "plugins/x"
+    },
+    {
+      "op": "install_identifier",
+      "repo": "owner/foo",
+      "subdir": ""
+    },
+    {
+      "op": "parse_entries",
+      "raw": {
+        "plugins": [
+          {
+            "name": "Foo Bar",
+            "repo": "owner/foo",
+            "subdir": "/plugins/x/",
+            "description": "does foo",
+            "tags": [
+              "util",
+              "foo"
+            ],
+            "capabilities": [
+              "tools.override"
+            ]
+          },
+          {
+            "name": "Foobar",
+            "repo": "owner/foobar",
+            "ref": "abc",
+            "tags": [
+              "foo"
+            ]
+          },
+          {
+            "name": "Baz",
+            "repo": "owner/baz",
+            "description": "unrelated"
+          },
+          {
+            "name": "Bad",
+            "repo": "no-slash",
+            "tags": []
+          },
+          {
+            "name": "",
+            "repo": "owner/empty",
+            "description": "dropped: empty name"
+          }
+        ]
+      }
+    },
+    {
+      "op": "resolve_name",
+      "entries": [
+        {
+          "name": "Foo Bar",
+          "repo": "owner/foo",
+          "subdir": "/plugins/x/",
+          "description": "does foo",
+          "tags": [
+            "util",
+            "foo"
+          ],
+          "capabilities": [
+            "tools.override"
+          ]
+        },
+        {
+          "name": "Foobar",
+          "repo": "owner/foobar",
+          "ref": "abc",
+          "tags": [
+            "foo"
+          ]
+        },
+        {
+          "name": "Baz",
+          "repo": "owner/baz",
+          "description": "unrelated"
+        },
+        {
+          "name": "Bad",
+          "repo": "no-slash",
+          "tags": []
+        },
+        {
+          "name": "",
+          "repo": "owner/empty",
+          "description": "dropped: empty name"
+        }
+      ],
+      "name": "Foo Bar"
+    },
+    {
+      "op": "resolve_name",
+      "entries": [
+        {
+          "name": "Foo Bar",
+          "repo": "owner/foo",
+          "subdir": "/plugins/x/",
+          "description": "does foo",
+          "tags": [
+            "util",
+            "foo"
+          ],
+          "capabilities": [
+            "tools.override"
+          ]
+        },
+        {
+          "name": "Foobar",
+          "repo": "owner/foobar",
+          "ref": "abc",
+          "tags": [
+            "foo"
+          ]
+        },
+        {
+          "name": "Baz",
+          "repo": "owner/baz",
+          "description": "unrelated"
+        },
+        {
+          "name": "Bad",
+          "repo": "no-slash",
+          "tags": []
+        },
+        {
+          "name": "",
+          "repo": "owner/empty",
+          "description": "dropped: empty name"
+        }
+      ],
+      "name": "foo"
+    },
+    {
+      "op": "resolve_name",
+      "entries": [
+        {
+          "name": "Foo Bar",
+          "repo": "owner/foo",
+          "subdir": "/plugins/x/",
+          "description": "does foo",
+          "tags": [
+            "util",
+            "foo"
+          ],
+          "capabilities": [
+            "tools.override"
+          ]
+        },
+        {
+          "name": "Foobar",
+          "repo": "owner/foobar",
+          "ref": "abc",
+          "tags": [
+            "foo"
+          ]
+        },
+        {
+          "name": "Baz",
+          "repo": "owner/baz",
+          "description": "unrelated"
+        },
+        {
+          "name": "Bad",
+          "repo": "no-slash",
+          "tags": []
+        },
+        {
+          "name": "",
+          "repo": "owner/empty",
+          "description": "dropped: empty name"
+        }
+      ],
+      "name": "Nonexistent"
+    },
+    {
+      "op": "search_index",
+      "entries": [
+        {
+          "name": "Foo Bar",
+          "repo": "owner/foo",
+          "subdir": "/plugins/x/",
+          "description": "does foo",
+          "tags": [
+            "util",
+            "foo"
+          ],
+          "capabilities": [
+            "tools.override"
+          ]
+        },
+        {
+          "name": "Foobar",
+          "repo": "owner/foobar",
+          "ref": "abc",
+          "tags": [
+            "foo"
+          ]
+        },
+        {
+          "name": "Baz",
+          "repo": "owner/baz",
+          "description": "unrelated"
+        },
+        {
+          "name": "Bad",
+          "repo": "no-slash",
+          "tags": []
+        },
+        {
+          "name": "",
+          "repo": "owner/empty",
+          "description": "dropped: empty name"
+        }
+      ],
+      "term": "foo",
+      "capability": null
+    },
+    {
+      "op": "search_index",
+      "entries": [
+        {
+          "name": "Foo Bar",
+          "repo": "owner/foo",
+          "subdir": "/plugins/x/",
+          "description": "does foo",
+          "tags": [
+            "util",
+            "foo"
+          ],
+          "capabilities": [
+            "tools.override"
+          ]
+        },
+        {
+          "name": "Foobar",
+          "repo": "owner/foobar",
+          "ref": "abc",
+          "tags": [
+            "foo"
+          ]
+        },
+        {
+          "name": "Baz",
+          "repo": "owner/baz",
+          "description": "unrelated"
+        },
+        {
+          "name": "Bad",
+          "repo": "no-slash",
+          "tags": []
+        },
+        {
+          "name": "",
+          "repo": "owner/empty",
+          "description": "dropped: empty name"
+        }
+      ],
+      "term": "",
+      "capability": null
+    },
+    {
+      "op": "search_index",
+      "entries": [
+        {
+          "name": "Foo Bar",
+          "repo": "owner/foo",
+          "subdir": "/plugins/x/",
+          "description": "does foo",
+          "tags": [
+            "util",
+            "foo"
+          ],
+          "capabilities": [
+            "tools.override"
+          ]
+        },
+        {
+          "name": "Foobar",
+          "repo": "owner/foobar",
+          "ref": "abc",
+          "tags": [
+            "foo"
+          ]
+        },
+        {
+          "name": "Baz",
+          "repo": "owner/baz",
+          "description": "unrelated"
+        },
+        {
+          "name": "Bad",
+          "repo": "no-slash",
+          "tags": []
+        },
+        {
+          "name": "",
+          "repo": "owner/empty",
+          "description": "dropped: empty name"
+        }
+      ],
+      "term": "foo",
+      "capability": "tools.override"
+    }
+  ]
+}
