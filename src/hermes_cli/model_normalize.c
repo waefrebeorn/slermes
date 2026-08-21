@@ -184,6 +184,7 @@ char *model_normalize_strip_match_prefix(const char *model_name, const char *tar
 }
 
 /* detect_vendor — first hyphen/version token -> vendor slug. Caller frees (or NULL). */
+/* PoP: model_normalize_detect_vendor @ hermes_cli/model_normalize.py:detect_vendor */
 char *model_normalize_detect_vendor(const char *model_name)
 {
     /* LIVE Python's detect_vendor does `name = model_name.strip(); if not name:
@@ -236,7 +237,7 @@ char *model_normalize_prepend_vendor(const char *model_name)
     return out;
 }
 
-/* PoP: string @ hermes_cli/models.py:normalize_copilot_model_id */
+/* PoP: model_normalize_copilot_model_id @ hermes_cli/model_normalize.py:normalize_copilot_model_id */
 /* Copilot-specific resolver (pure part). Python's version also does a live
  * catalog lookup; that dynamic part is a REAL_GAP here — we resolve against
  * the static alias table and strip the vendor/prefix, reproducing the
@@ -311,6 +312,7 @@ char *model_normalize_copilot_model_id(const char *model_id)
 }
 
 /* normalize_model_for_provider — primary entry point. Caller frees. */
+/* PoP: model_normalize_for_provider @ hermes_cli/model_normalize.py:normalize_model_for_provider */
 char *model_normalize_for_provider(const char *model_input, const char *target_provider)
 {
     if (!model_input) return strdup("");
