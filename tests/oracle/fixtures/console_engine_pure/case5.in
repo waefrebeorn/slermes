@@ -1,0 +1,25 @@
+{
+  "ops": [
+    {
+      "op": "format_sessions",
+      "sessions": [
+        {
+          "id": "abc123def456",
+          "source": "cli",
+          "message_count": 12,
+          "title": "Fix the parser"
+        },
+        {
+          "id": "xyz",
+          "source": "gateway",
+          "message_count": 3,
+          "preview": "long\npreview text"
+        }
+      ]
+    },
+    {
+      "op": "format_sessions",
+      "sessions": []
+    }
+  ]
+}

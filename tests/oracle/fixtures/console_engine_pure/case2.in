@@ -1,0 +1,19 @@
+{
+  "ops": [
+    {
+      "op": "table_summary",
+      "summary": "this  is    a    long   summary that should be collapsed",
+      "limit": 76
+    },
+    {
+      "op": "table_summary",
+      "summary": "short summary",
+      "limit": 76
+    },
+    {
+      "op": "table_summary",
+      "summary": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "limit": 30
+    }
+  ]
+}

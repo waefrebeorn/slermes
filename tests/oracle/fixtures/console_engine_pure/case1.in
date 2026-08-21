@@ -1,0 +1,32 @@
+{
+  "ops": [
+    {
+      "op": "is_footer_rule",
+      "line": "────────────────"
+    },
+    {
+      "op": "is_footer_rule",
+      "line": "----"
+    },
+    {
+      "op": "is_footer_rule",
+      "line": "---x---"
+    },
+    {
+      "op": "is_footer_rule",
+      "line": "\u001b[32m──────\u001b[0m"
+    },
+    {
+      "op": "strip_footer",
+      "text": "Some output here\n\nRun 'hermes doctor' to fix X\nRun 'hermes setup' to configure Y\n────────────"
+    },
+    {
+      "op": "strip_footer",
+      "text": "Just one line"
+    },
+    {
+      "op": "strip_footer",
+      "text": "A\nB\n\nRun 'hermes doctor' to fix\nRun 'hermes setup' to config"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "ops": [
+    {
+      "op": "contains_shell",
+      "line": "ls -la | grep x",
+      "tokens": "|,&,&&,;,>,>>,<"
+    },
+    {
+      "op": "contains_shell",
+      "line": "ls -la",
+      "tokens": "|,&,&&,;,>,>>,<"
+    },
+    {
+      "op": "contains_shell",
+      "line": "echo $(whoami)",
+      "tokens": ""
+    },
+    {
+      "op": "contains_shell",
+      "line": "cat file > out.txt",
+      "tokens": ">"
+    }
+  ]
+}

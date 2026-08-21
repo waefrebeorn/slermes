@@ -1,0 +1,34 @@
+{
+  "ops": [
+    {
+      "op": "format_job",
+      "job": {
+        "id": "job-9",
+        "name": "nightly",
+        "state": "running"
+      },
+      "action": "start"
+    },
+    {
+      "op": "format_job",
+      "job": {
+        "job_id": "j2",
+        "name": "one-off",
+        "status": "done"
+      },
+      "action": "run"
+    },
+    {
+      "op": "clean_summary",
+      "text": "  do   the   thing  "
+    },
+    {
+      "op": "clean_summary",
+      "text": "Run `hermes foo` silently"
+    },
+    {
+      "op": "clean_summary",
+      "text": ""
+    }
+  ]
+}

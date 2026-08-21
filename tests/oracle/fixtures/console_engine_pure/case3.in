@@ -1,0 +1,20 @@
+{
+  "ops": [
+    {
+      "op": "split_line",
+      "line": "sessions export /tmp/out.jsonl"
+    },
+    {
+      "op": "split_line",
+      "line": "run --name \"my job\" --flag"
+    },
+    {
+      "op": "split_line",
+      "line": "a 'single quoted' b"
+    },
+    {
+      "op": "split_line",
+      "line": "echo hello\\ world"
+    }
+  ]
+}
