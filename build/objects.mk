@@ -87,7 +87,7 @@ PORT_OBJ = \
  src/hermes_cli/session_listing.o \
  src/hermes_cli/project_tree.o \
  src/hermes_cli/models_helpers.o \
- src/hermes_cli/models_net.o \
+ src/hermes_cli/models_net.o src/hermes_cli/models_pure_impl.o \
  src/hermes_cli/models_pure.o \
  src/hermes_cli/models_validate.o \
  src/hermes_cli/status_helpers.o \

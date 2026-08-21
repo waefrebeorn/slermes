@@ -1,0 +1,54 @@
+{
+  "ops": [
+    {
+      "op": "is_nous_free_tier",
+      "account": {
+        "paid_service_access": {
+          "allowed": false
+        }
+      }
+    },
+    {
+      "op": "is_nous_free_tier",
+      "account": {
+        "paid_service_access": {
+          "allowed": true
+        }
+      }
+    },
+    {
+      "op": "is_nous_free_tier",
+      "account": {
+        "paid_service_access": {
+          "paid_access": false
+        }
+      }
+    },
+    {
+      "op": "is_nous_free_tier",
+      "account": {
+        "subscription": {
+          "monthly_charge": 0
+        }
+      }
+    },
+    {
+      "op": "is_nous_free_tier",
+      "account": {
+        "subscription": {
+          "monthly_charge": 19.99
+        }
+      }
+    },
+    {
+      "op": "is_nous_free_tier",
+      "account": {
+        "subscription": {}
+      }
+    },
+    {
+      "op": "is_nous_free_tier",
+      "account": {}
+    }
+  ]
+}
