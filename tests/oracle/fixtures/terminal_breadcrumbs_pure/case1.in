@@ -1,0 +1,35 @@
+{
+  "ops": [
+    {
+      "op": "sanitize",
+      "raw": "/dev/pts/3"
+    },
+    {
+      "op": "sanitize",
+      "raw": "  Weird/Name:with*chars  "
+    },
+    {
+      "op": "sanitize",
+      "raw": "plain_name"
+    },
+    {
+      "op": "sanitize",
+      "raw": "/leading/and/trailing/"
+    },
+    {
+      "op": "is_stale",
+      "ts": 1000000.0,
+      "now": 3678400.0
+    },
+    {
+      "op": "is_stale",
+      "ts": 1000000.0,
+      "now": 3505600.0
+    },
+    {
+      "op": "is_stale",
+      "ts": 0,
+      "now": 2000000.0
+    }
+  ]
+}
