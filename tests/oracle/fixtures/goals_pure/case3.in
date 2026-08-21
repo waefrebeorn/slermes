@@ -1,0 +1,39 @@
+{
+  "ops": [
+    {
+      "op": "gate_to_dict",
+      "gate": {
+        "command": "pytest -q"
+      }
+    },
+    {
+      "op": "gate_to_dict",
+      "gate": {
+        "command": "make",
+        "timeout_seconds": 60,
+        "max_retries": 2,
+        "attempts": 1,
+        "last_exit_code": 0,
+        "last_output_tail": "ok",
+        "last_failed_fingerprint": "abc"
+      }
+    },
+    {
+      "op": "gate_from_dict",
+      "gate": {
+        "command": "ls"
+      }
+    },
+    {
+      "op": "gate_from_dict",
+      "gate": null
+    },
+    {
+      "op": "gate_from_dict",
+      "gate": {
+        "command": "x",
+        "last_exit_code": null
+      }
+    }
+  ]
+}

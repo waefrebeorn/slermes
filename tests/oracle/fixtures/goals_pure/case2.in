@@ -1,0 +1,43 @@
+{
+  "ops": [
+    {
+      "op": "contract_is_empty",
+      "contract": {}
+    },
+    {
+      "op": "contract_is_empty",
+      "contract": null
+    },
+    {
+      "op": "contract_is_empty",
+      "contract": {
+        "outcome": "x"
+      }
+    },
+    {
+      "op": "contract_to_dict",
+      "contract": {
+        "outcome": "done",
+        "verification": "tests green"
+      }
+    },
+    {
+      "op": "contract_from_dict",
+      "contract": {
+        "constraints": " keep shape "
+      }
+    },
+    {
+      "op": "contract_render",
+      "contract": {
+        "outcome": "Ship",
+        "verification": "CI green",
+        "boundaries": "src only"
+      }
+    },
+    {
+      "op": "contract_render",
+      "contract": {}
+    }
+  ]
+}

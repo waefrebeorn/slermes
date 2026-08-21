@@ -1,0 +1,28 @@
+{
+  "ops": [
+    {
+      "op": "parse_contract",
+      "text": "Migrate auth to JWT\nverify: the auth test suite passes\nconstraints: keep the public /login response shape unchanged\nboundaries: only touch services/auth and its tests\nstop when: a schema change needs product sign-off"
+    },
+    {
+      "op": "parse_contract",
+      "text": "Fix bug: the parser crashes on empty input"
+    },
+    {
+      "op": "parse_contract",
+      "text": "Just a free-form goal with no contract"
+    },
+    {
+      "op": "parse_contract",
+      "text": "done when: the queue drains\nevidence: logs show zero depth\nVerify: CI is green"
+    },
+    {
+      "op": "parse_contract",
+      "text": ""
+    },
+    {
+      "op": "parse_contract",
+      "text": "goal: ship the release\nscope: src/cli only\nmust not: break the TUI"
+    }
+  ]
+}
