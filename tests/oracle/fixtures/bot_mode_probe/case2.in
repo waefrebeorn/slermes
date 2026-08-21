@@ -1,0 +1,22 @@
+{
+  "home": "case2",
+  "files": {
+    "case2/profile.yaml": "ui_meta:\n  hermes-bots:\n    roster: [self]\n",
+    "case2/SOUL.md": "plain soul, no protocol\n",
+    "case2/config.yaml": "skills:\n  disabled: [alpha, Beta]\ntools:\n  enabled_toolsets: [web, api]\nskills_disabled_unused: x\n"
+  },
+  "ops": [
+    {
+      "op": "section",
+      "home": "case2"
+    },
+    {
+      "op": "fingerprint",
+      "home": "case2"
+    },
+    {
+      "op": "epoch_line",
+      "home": "case2"
+    }
+  ]
+}

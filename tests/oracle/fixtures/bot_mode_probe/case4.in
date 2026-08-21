@@ -1,0 +1,17 @@
+{
+  "home": "case4",
+  "files": {
+    "case4/profile.yaml": "ui_meta:\n  hermes-bots:\n    x: 1\n",
+    "case4/SOUL.md": "## Messaging other agents\nthis soul already has it\n"
+  },
+  "ops": [
+    {
+      "op": "section",
+      "home": "case4"
+    },
+    {
+      "op": "fingerprint",
+      "home": "case4"
+    }
+  ]
+}

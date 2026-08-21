@@ -1,0 +1,20 @@
+{
+  "home": "case3",
+  "files": {
+    "case3/profile.yaml": "ui_meta:\n  hermes-bots:\n    roster: [self]\n",
+    "case3/SOUL.md": "plain\n",
+    "case3/profiles/team2/profile.yaml": "ui_meta:\n  hermes-bots:\n    roster: [self]\n",
+    "case3/profiles/team2/SOUL.md": "plain team2\n",
+    "case3/config.yaml": "model: x\n"
+  },
+  "ops": [
+    {
+      "op": "section",
+      "home": "case3"
+    },
+    {
+      "op": "fingerprint",
+      "home": "case3"
+    }
+  ]
+}

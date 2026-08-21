@@ -1,0 +1,32 @@
+{
+  "home": "case1",
+  "files": {
+    "case1/config.yaml": "model: gpt\n",
+    "case1/SOUL.md": "just a normal soul\n",
+    "case1/skills/alpha/SKILL.md": "name: alpha\n"
+  },
+  "ops": [
+    {
+      "op": "section",
+      "home": "case1"
+    },
+    {
+      "op": "fingerprint",
+      "home": "case1"
+    },
+    {
+      "op": "epoch_line",
+      "home": "case1"
+    },
+    {
+      "op": "stale",
+      "stored": "normal prompt with no epoch",
+      "home": "case1"
+    },
+    {
+      "op": "upgrade",
+      "stored": "normal prompt with no epoch",
+      "home": "case1"
+    }
+  ]
+}

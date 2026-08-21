@@ -1,0 +1,38 @@
+{
+  "home": "case6",
+  "files": {
+    "case6/profile.yaml": "ui_meta:\n  hermes-bots: {}\n",
+    "case6/config.yaml": "skills:\n  disabled: [x]\n"
+  },
+  "ops": [
+    {
+      "op": "fingerprint",
+      "home": "case6"
+    },
+    {
+      "op": "stale",
+      "stored": "Capability epoch: 000000000000 some prompt",
+      "home": "case6"
+    },
+    {
+      "op": "stale",
+      "stored": "a normal prompt with no epoch stamp",
+      "home": "case6"
+    },
+    {
+      "op": "upgrade",
+      "stored": "plain legacy prompt body",
+      "home": "case6"
+    },
+    {
+      "op": "upgrade",
+      "stored": "## Messaging other agents\nalready migrated",
+      "home": "case6"
+    },
+    {
+      "op": "upgrade",
+      "stored": "Capability epoch: 000000000000 stamped",
+      "home": "case6"
+    }
+  ]
+}

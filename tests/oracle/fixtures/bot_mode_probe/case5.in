@@ -1,0 +1,17 @@
+{
+  "home": "case5",
+  "files": {
+    "case5/profile.yaml": "ui_meta:\n  hermes-bots: {}\n",
+    "case5/config.yaml": "bot_peers:\n  alice:\n    url: http://a\n  bob:\n    url: http://b\n"
+  },
+  "ops": [
+    {
+      "op": "section",
+      "home": "case5"
+    },
+    {
+      "op": "fingerprint",
+      "home": "case5"
+    }
+  ]
+}
