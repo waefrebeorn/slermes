@@ -1610,6 +1610,11 @@
       "oracle": "tests/sta_oracle_approval_transport.py",
       "fixtures": "tests/oracle/fixtures/approval_transport"
     },
+    "platform_actions": {
+      "harness": "tests/t_port_platform_actions.c",
+      "oracle": "tests/sta_oracle_platform_actions.py",
+      "fixtures": "tests/oracle/fixtures/platform_actions"
+    },
     "command_token_source": {
       "harness": "tests/t_port_command_token_source.c",
       "oracle": "tests/sta_oracle_command_token_source.py",

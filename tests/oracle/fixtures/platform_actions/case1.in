@@ -1,0 +1,23 @@
+{
+  "ops": [
+    {"kind":"add_reaction","granted":true,"runner":true,"registered":true,"connected":true,"platform":"telegram","chat_id":"12345","message_id":"777","emoji":"👍","op_ok":true},
+    {"kind":"add_reaction","granted":true,"runner":true,"registered":true,"connected":true,"platform":"telegram","chat_id":"12345","message_id":"777","emoji":"👍","op_ok":false},
+    {"kind":"add_reaction","granted":true,"platform":"discord","chat_id":"999888","message_id":"42","emoji":"🎉","op_ok":true},
+    {"kind":"add_reaction","granted":true,"platform":"discord","chat_id":"999888","message_id":"42","emoji":"🎉","op_ok":false},
+    {"kind":"add_reaction","granted":true,"platform":"discord","chat_id":"999888","message_id":"42","emoji":"🎉","client":false},
+    {"kind":"add_reaction","granted":true,"platform":"discord","chat_id":"abc","message_id":"42","emoji":"🎉"},
+    {"kind":"add_reaction","granted":true,"platform":"slack","chat_id":"1","message_id":"2","emoji":"x"},
+    {"kind":"add_reaction","granted":false,"platform":"telegram","chat_id":"1","message_id":"2","emoji":"x"},
+    {"kind":"add_reaction","granted":true,"platform":"telegram","chat_id":" ","message_id":"2","emoji":"x"},
+    {"kind":"add_reaction","granted":true,"runner":false,"platform":"telegram","chat_id":"1","message_id":"2","emoji":"x"},
+    {"kind":"add_reaction","granted":true,"platform":"carrier-pigeon","chat_id":"1","message_id":"2","emoji":"x"},
+    {"kind":"add_reaction","granted":true,"registered":false,"platform":"telegram","chat_id":"1","message_id":"2","emoji":"x"},
+    {"kind":"add_reaction","granted":true,"connected":false,"platform":"telegram","chat_id":"1","message_id":"2","emoji":"x"},
+    {"kind":"set_thread_title","granted":true,"platform":"telegram","chat_id":"12345","thread_id":"88","title":"Deploy talk","op_ok":true},
+    {"kind":"set_thread_title","granted":true,"platform":"telegram","chat_id":"12345","thread_id":"88","title":"Deploy talk","op_ok":false},
+    {"kind":"set_thread_title","granted":true,"platform":"discord","chat_id":"ignored","thread_id":"t1","title":"New name","op_ok":true},
+    {"kind":"set_thread_title","granted":true,"platform":"discord","chat_id":"ignored","thread_id":"t1","title":"New name","op_ok":false},
+    {"kind":"set_thread_title","granted":true,"platform":"slack","chat_id":"1","thread_id":"2","title":"x"},
+    {"kind":"set_thread_title","granted":true,"platform":"telegram","chat_id":"1","thread_id":"","title":"x"}
+  ]
+}
