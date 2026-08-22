@@ -22,6 +22,11 @@
 #include <string.h>
 #include <unistd.h>
 
+static const char *arr_str(json_t *a, size_t i) {
+    json_t *e = json_get(a, i);
+    return (e && e->type == JSON_STRING) ? e->str_val : "";
+}
+
 static char *read_file(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) { fprintf(stderr, "cannot read %s\n", path); exit(1); }
@@ -79,7 +84,7 @@ static approval_request_t *mk_req(json_t *c) {
     const char *pks[16]; size_t n_pk = 0;
     if (pk && pk->type == JSON_ARRAY)
         for (; n_pk < json_len(pk) && n_pk < 16; n_pk++)
-            pks[n_pk] = json_get_str(json_get(pk, n_pk), "", "");
+            pks[n_pk] = arr_str(pk, n_pk);
     double to = json_get_num(c, "timeout_seconds", 300.0);
     return approval_request_create(
         json_get_str(c, "command", ""), json_get_str(c, "description", ""),

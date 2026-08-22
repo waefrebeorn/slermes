@@ -1615,6 +1615,11 @@
       "oracle": "tests/sta_oracle_platform_actions.py",
       "fixtures": "tests/oracle/fixtures/platform_actions"
     },
+    "verify_cmd": {
+      "harness": "tests/t_port_verify_cmd.c",
+      "oracle": "tests/sta_oracle_verify_cmd.py",
+      "fixtures": "tests/oracle/fixtures/verify_cmd"
+    },
     "command_token_source": {
       "harness": "tests/t_port_command_token_source.c",
       "oracle": "tests/sta_oracle_command_token_source.py",
