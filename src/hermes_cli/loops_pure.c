@@ -22,6 +22,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "loops_pure.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,9 +92,10 @@ char *loops_format_interval(double seconds) {
 
 int loops_response_signals_complete(const char *response) {
     if (!response) return 0;
-    /* case-insensitive, multiline: a line that is only LOOP_COMPLETE */
+    /* case-insensitive, multiline: a line that is only LOOP_COMPLETE
+     * (POSIX ERE has no (?i) inline flag — REG_ICASE below does it). */
     regex_t re;
-    if (regcomp(&re, "(?i)^[[:space:]]*LOOP_COMPLETE[[:space:]]*[.!]?[[:space:]]*$", REG_EXTENDED | REG_NEWLINE | REG_ICASE) != 0)
+    if (regcomp(&re, "^[[:space:]]*LOOP_COMPLETE[[:space:]]*[.!]?[[:space:]]*$", REG_EXTENDED | REG_NEWLINE | REG_ICASE) != 0)
         return 0;
     int found = (regexec(&re, response, 0, NULL, 0) == 0);
     regfree(&re);
@@ -208,6 +210,13 @@ char *loops_parse_loop_args(const char *text) {
     size_t rl = strlen(raw);
     while (rl > 0 && isspace((unsigned char)raw[rl - 1])) raw[--rl] = '\0';
 
+    /* Empty input → error "empty" (matches Python's early `if not raw` check). */
+    if (raw[0] == '\0') {
+        char *out = strdup("{\"interval_seconds\":null,\"prompt\":\"\",\"times\":0,\"until\":\"\",\"error\":\"empty\"}");
+        free(raw_dup);
+        return out;
+    }
+
     long times = 0;
     char until[4096]; until[0] = '\0';
 
@@ -225,8 +234,12 @@ char *loops_parse_loop_args(const char *text) {
                 if (*end != '\0' || tvv < 1) {
                     free(tv);
                     regfree(&rt);
-                    /* error */
-                    char *out = strdup("{\"interval_seconds\":null,\"prompt\":\"\",\"times\":0,\"until\":\"\",\"error\":\"--times expects a positive integer\"}");
+                    /* Python: error = f"--times expects a positive integer, got {m.group(1)!r}" */
+                    char *out = (char *)malloc(strlen(tv) + 96);
+                    snprintf(out, strlen(tv) + 96,
+                        "{\"interval_seconds\":null,\"prompt\":\"\",\"times\":0,\"until\":\"\","
+                        "\"error\":\"--times expects a positive integer, got '%s'\"}", tv);
+                    free(tv);
                     free(raw_dup);
                     return out;
                 }
@@ -314,13 +327,30 @@ char *loops_parse_loop_args(const char *text) {
             while (*rest && isspace((unsigned char)*rest)) rest++;
             free(prompt);
             prompt = strdup(rest);
+        } else {
+            /* No leading interval token: the whole remaining text (after any
+             * "every" sugar) is the prompt, exactly like Python (which only
+             * reassigns raw when maybe is not None). */
+            free(prompt);
+            prompt = strdup(raw);
         }
         free(first);
     }
 
-    const char *err = "null";
+    /* Python returns EARLY on missing prompt, with interval_seconds left null
+     * (result fields are never assigned on the error path). */
     if (prompt[0] == '\0') {
-        err = "\"missing prompt (usage: /loop [interval] <prompt>)\"";
+        char pe[8192]; json_escape(prompt, pe, sizeof(pe));
+        char ue[8192]; json_escape(until, ue, sizeof(ue));
+        size_t cap2 = strlen(pe) + strlen(ue) + 256;
+        char *out = (char *)malloc(cap2);
+        snprintf(out, cap2,
+            "{\"interval_seconds\":null,\"prompt\":\"%s\",\"times\":%ld,\"until\":\"%s\","
+            "\"error\":\"missing prompt (usage: /loop [interval] <prompt>)\"}",
+            pe, times, ue);
+        free(prompt);
+        free(raw_dup);   /* raw may alias raw_dup — free only the owner */
+        return out;
     }
 
     /* build JSON (escape prompt/until) */
@@ -332,11 +362,248 @@ char *loops_parse_loop_args(const char *text) {
     if (interval >= 0) snprintf(iv, sizeof(iv), "%ld", interval);
     else strcpy(iv, "null");
     snprintf(out, cap,
-        "{\"interval_seconds\":%s,\"prompt\":\"%s\",\"times\":%ld,\"until\":\"%s\",\"error\":%s}",
-        iv, pesc, times, uesc, err);
+        "{\"interval_seconds\":%s,\"prompt\":\"%s\",\"times\":%ld,\"until\":\"%s\",\"error\":null}",
+        iv, pesc, times, uesc);
     free(prompt);
-    free(raw_dup);
+    free(raw);
     return out;
 }
 
 /* Configuration defaults (mirror of _loops_config() defaults)            */
+
+/* ──────────────────────────────────────────────────────────────────────
+ * LoopState: serialized /loop state (loops.py::LoopState dataclass).
+ * Opaque struct; constructed/inspected only through the functions here.
+ * ──────────────────────────────────────────────────────────────────── */
+
+struct loop_state {
+    char   *prompt;
+    char   *status;            /* active | paused | done | cleared */
+    char   *mode;              /* interval | self_paced */
+    double  interval_seconds;
+    double  current_delay;
+    long    times;
+    char   *until;
+    long    max_ticks;
+    long    ticks_fired;
+    double  created_at;
+    double  last_fired_at;
+    double  next_due_at;
+    int     awaiting_response;
+    char   *last_response_digest;
+    char   *paused_reason;
+    char   *last_stop_reason;
+};
+
+/* PoP: loops_state_from_json @ hermes_cli/loops.py:LoopState.from_json */
+loop_state_t *loops_state_from_json(const char *raw) {
+    if (!raw) return NULL;
+    json_t *data = json_parse(raw, NULL);
+    if (!data || data->type != JSON_OBJECT) {
+        if (data) json_free(data);
+        return NULL;
+    }
+    loop_state_t *s = (loop_state_t *)calloc(1, sizeof(*s));
+    if (!s) { json_free(data); return NULL; }
+    s->prompt  = strdup(json_get_str(data, "prompt", ""));
+    s->status  = strdup(json_get_str(data, "status", "active"));
+    s->mode    = strdup(json_get_str(data, "mode", "interval"));
+    s->interval_seconds = json_get_num(data, "interval_seconds", 0.0);
+    s->current_delay    = json_get_num(data, "current_delay", 0.0);
+    s->times    = (long)json_get_num(data, "times", 0.0);
+    s->until    = strdup(json_get_str(data, "until", ""));
+    s->max_ticks   = (long)json_get_num(data, "max_ticks", 100.0);
+    s->ticks_fired = (long)json_get_num(data, "ticks_fired", 0.0);
+    s->created_at     = json_get_num(data, "created_at", 0.0);
+    s->last_fired_at  = json_get_num(data, "last_fired_at", 0.0);
+    s->next_due_at    = json_get_num(data, "next_due_at", 0.0);
+    s->awaiting_response = json_get_bool(data, "awaiting_response", false) ? 1 : 0;
+    s->last_response_digest = strdup(json_get_str(data, "last_response_digest", ""));
+    json_t *pr = json_obj_get(data, "paused_reason");
+    s->paused_reason = (pr && pr->type == JSON_STRING) ? strdup(pr->str_val) : NULL;
+    json_t *ls = json_obj_get(data, "last_stop_reason");
+    s->last_stop_reason = (ls && ls->type == JSON_STRING) ? strdup(ls->str_val) : NULL;
+    json_free(data);
+    return s;
+}
+
+/* PoP: loops_state_cadence_label @ hermes_cli/loops.py:LoopState.cadence_label */
+char *loops_state_cadence_label(const loop_state_t *s) {
+    if (!s) return strdup("");
+    if (strcmp(s->mode, "self_paced") == 0) {
+        if (s->current_delay > 0) {
+            char *d = loops_format_interval(s->current_delay);
+            char *out = malloc(strlen(d) + 32);
+            snprintf(out, strlen(d) + 32, "self-paced, currently %s", d);
+            free(d);
+            return out;
+        }
+        return strdup("self-paced");
+    }
+    char *iv = loops_format_interval(s->interval_seconds);
+    char *out = malloc(strlen(iv) + 16);
+    snprintf(out, strlen(iv) + 16, "every %s", iv);
+    free(iv);
+    return out;
+}
+
+/* PoP: loops_state_remaining_label @ hermes_cli/loops.py:LoopState.remaining_label */
+/* now is injected (deterministic; Python uses time.time()). */
+char *loops_state_remaining_label(const loop_state_t *s, double now) {
+    if (!s || strcmp(s->status, "active") != 0) return strdup("");
+    double remaining = s->next_due_at - now;
+    if (remaining <= 0) return strdup("due now");
+    char *iv = loops_format_interval(remaining);
+    char *out = malloc(strlen(iv) + 16);
+    snprintf(out, strlen(iv) + 16, "next in %s", iv);
+    free(iv);
+    return out;
+}
+
+/* PoP: loops_state_is_due @ hermes_cli/loops.py:LoopManager.is_due */
+int loops_state_is_due(const loop_state_t *s, double now) {
+    if (!s || strcmp(s->status, "active") != 0) return 0;
+    if (s->awaiting_response) return 0;
+    if (now < 0) now = 0;  /* caller injects real time; <0 guard only */
+    return now >= s->next_due_at ? 1 : 0;
+}
+
+/* PoP: loops_digest_response @ hermes_cli/loops.py:_digest_response
+ * Stable digest for self-paced change detection. Uses SHA-256 from libcrypto
+ * if available; the oracle compares against Python's hashlib.sha256 hexdigest.
+ * To keep this self-contained and oracle-verifiable, we reproduce the exact
+ * normalization Python does (whitespace collapse, strip clock/timestamp tokens)
+ * and then SHA-256 the result. */
+#include <openssl/sha.h>
+char *loops_digest_response(const char *response) {
+    if (!response) response = "";
+    char *buf = strdup(response);
+    /* strip + collapse whitespace like Python's .strip().lower() + \s+ -> ' ' */
+    /* normalize: lower, then remove timestamp/clock tokens */
+    size_t n = strlen(buf);
+    for (size_t i = 0; i < n; i++) buf[i] = (char)tolower((unsigned char)buf[i]);
+    /* remove HH:MM(:SS) */
+    {
+        regex_t re;
+        if (regcomp(&re, "[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?", REG_EXTENDED) == 0) {
+            regmatch_t m;
+            while (regexec(&re, buf, 1, &m, 0) == 0) {
+                size_t pre = (size_t)m.rm_so;
+                size_t post = (size_t)m.rm_eo;
+                memmove(buf + pre, buf + post, strlen(buf + post) + 1);
+            }
+            regfree(&re);
+        }
+    }
+    /* remove YYYY-MM-DD */
+    {
+        regex_t re;
+        if (regcomp(&re, "[0-9]{4}-[0-9]{2}-[0-9]{2}", REG_EXTENDED) == 0) {
+            regmatch_t m;
+            while (regexec(&re, buf, 1, &m, 0) == 0) {
+                size_t pre = (size_t)m.rm_so;
+                size_t post = (size_t)m.rm_eo;
+                memmove(buf + pre, buf + post, strlen(buf + post) + 1);
+            }
+            regfree(&re);
+        }
+    }
+    /* remove <num>(.<num>)? (s|search units) — word-bounded like Python \b */
+    {
+        regex_t re;
+        if (regcomp(&re, "\\<[0-9]+(\\.[0-9]+)?[ \t]*(s|sec|secs|seconds|m|min|mins|minutes|h|hr|hrs|hours)\\>", REG_EXTENDED | REG_ICASE) == 0) {
+            regmatch_t m;
+            while (regexec(&re, buf, 1, &m, 0) == 0) {
+                size_t pre = (size_t)m.rm_so;
+                size_t post = (size_t)m.rm_eo;
+                memmove(buf + pre, buf + post, strlen(buf + post) + 1);
+            }
+            regfree(&re);
+        }
+    }
+    /* collapse whitespace to single spaces, trim */
+    {
+        char *out = malloc(strlen(buf) + 1);
+        size_t o = 0, i = 0;
+        int last_space = 1;
+        while (buf[i]) {
+            if (isspace((unsigned char)buf[i])) {
+                if (!last_space) { out[o++] = ' '; last_space = 1; }
+                i++;
+            } else { out[o++] = buf[i++]; last_space = 0; }
+        }
+        out[o] = '\0';
+        free(buf); buf = out;
+    }
+    /* SHA-256 hex digest */
+    unsigned char md[SHA256_DIGEST_LENGTH];
+    SHA256((const unsigned char *)buf, strlen(buf), md);
+    char *hex = malloc(SHA256_DIGEST_LENGTH * 2 + 1);
+    static const char *hx = "0123456789abcdef";
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+        hex[i*2]   = hx[md[i] >> 4];
+        hex[i*2+1] = hx[md[i] & 0xf];
+    }
+    hex[SHA256_DIGEST_LENGTH * 2] = '\0';
+    free(buf);
+    return hex;
+}
+
+/* PoP: loops_state_status_line @ hermes_cli/loops.py:LoopManager.status_line
+ * now injected for deterministic remaining-label computation. */
+char *loops_state_status_line(const loop_state_t *s, double now) {
+    if (!s || strcmp(s->status, "cleared") == 0)
+        return strdup("No loop set. Start one with /loop [interval] <prompt>.");
+    char *cad = loops_state_cadence_label(s);
+    /* Python: fired = f"{ticks} tick{'s' if ticks != 1 else ''}" */
+    char fired[64];
+    snprintf(fired, sizeof(fired), "%ld tick%s", s->ticks_fired,
+             s->ticks_fired == 1 ? "" : "s");
+    char caps[320];
+    if (s->times)
+        snprintf(caps, sizeof(caps), "%ld/%ld runs", s->ticks_fired, s->times);
+    else if (s->max_ticks)
+        snprintf(caps, sizeof(caps), "%ld/%ld budget", s->ticks_fired, s->max_ticks);
+    else
+        snprintf(caps, sizeof(caps), "%s", fired);
+    if (s->until && s->until[0]) {
+        size_t need = strlen(caps) + strlen(s->until) + 16;
+        char *c2 = malloc(need);
+        snprintf(c2, need, "%s, until: %s", caps, s->until);
+        strcpy(caps, c2); free(c2);
+    }
+    char meta[1024];
+    snprintf(meta, sizeof(meta), "%s, %s", cad, caps);
+    free(cad);
+    char *base;
+    if (strcmp(s->status, "active") == 0) {
+        char *rem = loops_state_remaining_label(s, now);
+        char *tail = (rem && rem[0]) ? rem : "";
+        size_t need = 64 + strlen(meta) + (tail ? strlen(tail) : 0) + strlen(s->prompt);
+        base = malloc(need);
+        if (s->awaiting_response)
+            snprintf(base, need, "\xE2\x86\xBB Loop (active, %s, wakeup running): %s", meta, s->prompt);
+        else
+            snprintf(base, need, "\xE2\x86\xBB Loop (active, %s, %s): %s", meta, tail, s->prompt);
+        free(rem);
+    } else if (strcmp(s->status, "paused") == 0) {
+        size_t need = 64 + strlen(meta) + (s->paused_reason ? strlen(s->paused_reason) : 0) + strlen(s->prompt);
+        base = malloc(need);
+        snprintf(base, need, "\xE2\x8F\xB8 Loop (paused, %s%s%s): %s", meta,
+                 s->paused_reason ? " — " : "", s->paused_reason ? s->paused_reason : "", s->prompt);
+    } else { /* done */
+        size_t need = 64 + strlen(meta) + (s->last_stop_reason ? strlen(s->last_stop_reason) : 0) + strlen(s->prompt);
+        base = malloc(need);
+        snprintf(base, need, "\xE2\x9C\x93 Loop finished (%s%s%s): %s", fired,
+                 s->last_stop_reason ? " — " : "", s->last_stop_reason ? s->last_stop_reason : "", s->prompt);
+    }
+    return base;
+}
+
+/* Free a loop_state_t allocated by loops_state_from_json. */
+void loops_state_free(loop_state_t *s) {
+    if (!s) return;
+    free(s->prompt); free(s->status); free(s->mode); free(s->until);
+    free(s->last_response_digest); free(s->paused_reason); free(s->last_stop_reason);
+    free(s);
+}
