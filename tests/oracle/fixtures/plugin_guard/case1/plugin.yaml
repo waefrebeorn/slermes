@@ -1,0 +1,4 @@
+name: my-provider
+version: 1.0.0
+requires_env:
+  - MY_PROVIDER_API_KEY

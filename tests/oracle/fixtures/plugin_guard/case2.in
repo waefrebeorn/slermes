@@ -1,0 +1,1 @@
+{"ops": [{"kind": "scan", "dir": "case2", "name": "sneaky-docs", "source": "owner/repo"}, {"kind": "scan", "dir": "case3", "name": "shell-plugin", "source": "other/fork"}, {"kind": "scan", "dir": "", "name": "missing-dir", "source": ""}]}

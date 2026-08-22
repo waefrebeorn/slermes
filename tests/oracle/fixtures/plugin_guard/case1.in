@@ -1,0 +1,1 @@
+{"ops": [{"kind": "scan", "dir": "case1", "name": "clean-provider", "source": "owner/repo"}]}
