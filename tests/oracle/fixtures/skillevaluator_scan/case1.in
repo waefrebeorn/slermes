@@ -1,0 +1,1 @@
+{"ops": [{"kind": "is_secrets_class", "check": "jwt_tokens"}, {"kind": "is_secrets_class", "check": "emails"}, {"kind": "is_secrets_class", "check": "private_keys"}, {"kind": "is_secrets_class", "check": ""}, {"kind": "location", "file": "", "line": 0}, {"kind": "location", "file": "README.md", "line": 0}, {"kind": "location", "file": "src/a.py", "line": 42}]}
