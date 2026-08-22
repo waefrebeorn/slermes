@@ -1,0 +1,15 @@
+{
+  "ops": [
+    {"kind":"ensure_dir","path":"x","private":true},
+    {"kind":"write_text","path":"x/a.txt","text":"A","private":true,"overwrite":false},
+    {"kind":"symlink","link":"x/link.txt","target":"a.txt"},
+    {"kind":"write_text","path":"x/link.txt","text":"nope","private":true,"overwrite":true},
+    {"kind":"open_exclusive","path":"x/link.txt","write":"also nope","private":true,"overwrite":false},
+    {"kind":"ensure_dir","path":"x/sub","private":false},
+    {"kind":"write_text","path":"x/sub/b.bin","text":"pub","private":false,"overwrite":true},
+    {"kind":"write_raw","path":"x/d","text":"file not dir"},
+    {"kind":"ensure_dir","path":"x/d","private":true},
+    {"kind":"write_text","path":"x/d/inner.txt","text":"never","private":true,"overwrite":true},
+    {"kind":"open_exclusive","path":"x/d","private":true,"overwrite":true}
+  ]
+}

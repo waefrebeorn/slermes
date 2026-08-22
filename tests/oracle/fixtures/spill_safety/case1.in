@@ -1,0 +1,15 @@
+{
+  "ops": [
+    {"kind":"ensure_dir","path":"spills","private":true},
+    {"kind":"ensure_dir","path":"cache/deep","private":false},
+    {"kind":"write_text","path":"spills/term.txt","text":"hello spill\nline two","private":true,"overwrite":false},
+    {"kind":"write_text","path":"spills/term.txt","text":"second","private":true,"overwrite":false},
+    {"kind":"write_text","path":"spills/term.txt","text":"overwritten body","private":true,"overwrite":true},
+    {"kind":"write_text","path":"cache/public.txt","text":"shared cache data","private":false,"overwrite":false},
+    {"kind":"symlink","link":"spills/evil","target":"/etc/passwd"},
+    {"kind":"write_text","path":"spills/evil","text":"pwned","private":true,"overwrite":true},
+    {"kind":"open_exclusive","path":"spills/hook.out","write":"hook ctx","private":true,"overwrite":false},
+    {"kind":"write_raw","path":"spills/dir_conflict","text":"i am a file"},
+    {"kind":"ensure_dir","path":"spills/dir_conflict","private":true}
+  ]
+}
