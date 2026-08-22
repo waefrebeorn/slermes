@@ -1,0 +1,21 @@
+{
+  "ops": [
+    {"kind":"mint","command":"printf 'tok_abc123'","label":"prov"},
+    {"kind":"mint","command":"printf '  spaced-token  '","label":"prov"},
+    {"kind":"mint","command":"exit 3","label":"gw"},
+    {"kind":"mint","command":"exit 127","label":"missing-helper"},
+    {"kind":"mint","command":"printf ''","label":"empty"},
+    {"kind":"mint","command":"printf '   \\n  '","label":"blank"},
+    {"kind":"mint","command":"printf '{\"access_token\":\"json_tok\",\"expires_in\":120}'","label":"databricks"},
+    {"kind":"mint","command":"printf '{\"access_token\":\" json_tok2 \",\"expires_in\":0}'","label":"zero-ttl"},
+    {"kind":"mint","command":"printf '{\"access_token\":\"\"}'","label":"no-field"},
+    {"kind":"mint","command":"printf '{\"other\":1}'","label":"no-field"},
+    {"kind":"mint","command":"printf 'not json at all'","label":"bare"},
+    {"kind":"mint","command":"printf '{bad json'","label":"badjson"},
+    {"kind":"mint","command":"printf 'line1\\nline2'","label":"multi"},
+    {"kind":"mint","command":"printf '{\"access_token\":\"iso_tok\",\"expiry\":\"2020-01-01T00:00:00Z\"}'","label":"expired-iso"},
+    {"kind":"build_provider","key_cmd":"","label":"p"},
+    {"kind":"build_provider","key_cmd":"   ","label":"p"},
+    {"kind":"build_provider","key_cmd":"my-auth-cli print-token --profile prod","label":"gateway"}
+  ]
+}
