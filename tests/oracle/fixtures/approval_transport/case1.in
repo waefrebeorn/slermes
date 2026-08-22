@@ -1,0 +1,15 @@
+{
+  "ops": [
+    {"kind":"create","command":"rm -rf /tmp/x","description":"delete temp dir","pattern_key":"rm -rf *","pattern_keys":["rm -rf *","rm *"],"session_key":"sess-1","surface":"cli","allow_session":true,"allow_permanent":false,"timeout_seconds":300},
+    {"kind":"create","command":"deploy","description":"","pattern_key":"deploy","pattern_keys":[],"session_key":"s2","surface":"telegram","allow_session":true,"allow_permanent":true,"timeout_seconds":12.5},
+    {"kind":"respond","command":"deploy","description":"","pattern_key":"deploy","pattern_keys":[],"session_key":"s2","surface":"telegram","allow_session":true,"allow_permanent":true,"timeout_seconds":12.5,"choice":"always"},
+    {"kind":"invoke","command":"ls","description":"list files","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","allow_session":false,"allow_permanent":false,"timeout_seconds":5,"present":"ok_once"},
+    {"kind":"invoke","command":"ls","description":"list files","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","allow_session":false,"allow_permanent":false,"timeout_seconds":5,"present":"ok_deny"},
+    {"kind":"invoke","command":"ls","description":"x","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","timeout_seconds":5,"present":"wrong_type"},
+    {"kind":"invoke","command":"ls","description":"x","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","timeout_seconds":5,"present":"raise"},
+    {"kind":"invoke","command":"ls","description":"x","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","timeout_seconds":5,"present":"stale_id"},
+    {"kind":"invoke","command":"ls","description":"x","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","timeout_seconds":5,"present":"stale_digest"},
+    {"kind":"invoke","command":"ls","description":"x","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","timeout_seconds":5,"present":"bad_choice"},
+    {"kind":"invoke","command":"sleepy","description":"x","pattern_key":"k","pattern_keys":[],"session_key":"s4","surface":"cli","timeout_seconds":0.2,"poll_interval":0.02,"present":"sleep"}
+  ]
+}

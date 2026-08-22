@@ -1,0 +1,5 @@
+{
+  "ops": [
+    {"kind":"invoke","command":"ls","description":"x","pattern_key":"ls","pattern_keys":["ls"],"session_key":"s3","surface":"cli","timeout_seconds":5,"poll_interval":0.02,"present":"interrupt","polls_before_interrupt":2}
+  ]
+}
