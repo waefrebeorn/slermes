@@ -1,0 +1,15 @@
+[project]
+name = "hermes-agent"
+
+[project.scripts]
+hermes = "hermes_cli.main:main"
+hermes-acp = "hermes_cli.acp:main"
+
+[project.optional-dependencies]
+all = ["hermes-agent[voice]", "hermes-agent[browser]"]
+voice = ["sounddevice>=0.4,<1"]
+browser = ["playwright>=1.40,<2"]
+termux-all = ["hermes-agent[voice]"]
+
+[dependency-groups]
+dev = ["pytest"]

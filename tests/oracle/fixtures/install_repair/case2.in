@@ -1,0 +1,1 @@
+{"ops": [{"kind": "bump", "content": "{\"attempts\": 4}"}, {"kind": "bump", "content": ""}, {"kind": "bump", "content": "garbage not json"}, {"kind": "bump", "content": "[]"}, {"kind": "bump", "content": "{\"attempts\": \"7\"}"}, {"kind": "make_uv", "at": ".hermes/bin"}]}
