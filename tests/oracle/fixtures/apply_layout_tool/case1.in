@@ -1,0 +1,11 @@
+{
+  "ops": [
+    {"kind":"apply","preset":"focus","emit":"ok"},
+    {"kind":"apply","preset":"  quad  ","emit":"ok"},
+    {"kind":"apply","preset":"","emit":"ok"},
+    {"kind":"apply","preset":"   ","emit":"none"},
+    {"kind":"apply","preset":"terminal-deck","emit":"false"},
+    {"kind":"apply","preset":"default","emit":"raise"},
+    {"kind":"schema"}
+  ]
+}
