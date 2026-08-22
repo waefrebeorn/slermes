@@ -1,0 +1,9 @@
+{"ops": [
+  {"kind": "is_persistence_only", "key": "timestamp"},
+  {"kind": "is_persistence_only", "key": "role"},
+  {"kind": "is_persistence_only", "key": "content"},
+  {"kind": "is_persistence_only", "key": ""},
+  {"kind": "stamp", "message": {"role": "user", "content": "hi"}},
+  {"kind": "stamp", "message": {"role": "user", "content": "hi"}, "timestamp": 1700000000.5},
+  {"kind": "stamp", "message": {"role": "assistant", "timestamp": 42.0}}
+]}
