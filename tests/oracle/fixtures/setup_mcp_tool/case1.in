@@ -1,0 +1,14 @@
+{
+  "ops": [
+    {"kind":"setup","server":"linear","action":"install","reason":"To read the JIRA ticket you linked","cb":"ok_json"},
+    {"kind":"setup","server":"","action":"install","cb":"ok_json"},
+    {"kind":"setup","server":"  ","cb":"nocb"},
+    {"kind":"setup","server":"linear","action":"","cb":"nocb"},
+    {"kind":"setup","server":"linear","action":"ENABLE","cb":"ok_json"},
+    {"kind":"setup","server":"x","action":"uninstall","cb":"ok_json"},
+    {"kind":"setup","server":"github","action":"authorize","reason":"","cb":"none"},
+    {"kind":"setup","server":"db","cb":"raise"},
+    {"kind":"setup","server":"legacy","cb":"ok_text"},
+    {"kind":"schema"}
+  ]
+}
