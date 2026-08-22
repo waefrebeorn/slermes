@@ -1,0 +1,1 @@
+{"ops": [{"kind": "apply", "config": {"gateway": {"strict": true, "media_delivery_allow_dirs": ["/srv/media", "/mnt/photos", ""], "trust_recent_files": false}}}, {"kind": "apply", "config": {"gateway": {"strict": "yes-string"}}, "preset": {"HERMES_MEDIA_DELIVERY_STRICT": "keepme", "HERMES_MEDIA_ALLOW_DIRS": "preset-dirs"}}, {"kind": "apply", "config": {}}]}

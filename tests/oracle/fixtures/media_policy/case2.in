@@ -1,0 +1,1 @@
+{"ops": [{"kind": "apply", "config": {"gateway": {"strict": null, "trust_recent_files": 0, "media_delivery_allow_dirs": "/single/path"}}}, {"kind": "apply", "config": {"gateway": {"strict": 0, "trust_recent_files": ""}}}, {"kind": "apply", "config": {"gateway": {"media_delivery_allow_dirs": [2, "x"]}}}, {"kind": "apply", "config": {"gateway": {"media_delivery_allow_dirs": []}}}]}
