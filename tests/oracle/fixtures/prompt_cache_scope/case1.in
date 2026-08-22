@@ -1,0 +1,40 @@
+{
+  "ops": [
+    {
+      "kind": "call",
+      "sid": "s1",
+      "db": false,
+      "persist_disabled": false
+    },
+    {
+      "kind": "call",
+      "sid": "s1",
+      "db": true,
+      "lineage": "ok",
+      "lineage_root": "root-1"
+    },
+    {
+      "kind": "call",
+      "sid": "s1",
+      "db": true,
+      "lineage": "none"
+    },
+    {
+      "kind": "call",
+      "sid": null,
+      "db": true,
+      "lineage": "ok",
+      "lineage_root": "x"
+    },
+    {
+      "kind": "call",
+      "sid": "",
+      "db": false
+    },
+    {
+      "kind": "safe_call",
+      "sid": "s2",
+      "db": false
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "ops": [
+    {
+      "kind": "call",
+      "sid": "s3",
+      "db": true,
+      "lineage": "raise"
+    },
+    {
+      "kind": "call",
+      "sid": "s3",
+      "db": true,
+      "lineage": "raise",
+      "persist_disabled": true
+    },
+    {
+      "kind": "call",
+      "sid": "s4",
+      "db": true,
+      "lineage": "empty"
+    },
+    {
+      "kind": "call",
+      "sid": "s5",
+      "db": true,
+      "lineage": "nonlist"
+    },
+    {
+      "kind": "call",
+      "sid": "s6",
+      "db": true,
+      "lineage": "badroot"
+    },
+    {
+      "kind": "call",
+      "sid": "s7",
+      "db": true,
+      "lineage": "ok",
+      "lineage_root": ""
+    },
+    {
+      "kind": "call",
+      "sid": "s8",
+      "db": true,
+      "lineage": "ok",
+      "lineage_root": "r8"
+    },
+    {
+      "kind": "call",
+      "sid": "s8",
+      "db": true,
+      "lineage": "ok",
+      "lineage_root": "OTHER"
+    },
+    {
+      "kind": "safe_call",
+      "sid": "s9",
+      "db": true,
+      "lineage": "ok",
+      "lineage_root": "r9"
+    },
+    {
+      "kind": "safe_call",
+      "sid": "s9",
+      "db": true,
+      "lineage": "raise"
+    }
+  ]
+}
