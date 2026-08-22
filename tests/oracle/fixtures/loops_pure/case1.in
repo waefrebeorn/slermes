@@ -1,36 +1,45 @@
 {
   "ops": [
-    {
-      "op": "parse_interval",
-      "token": "5m"
-    },
-    {
-      "op": "parse_interval",
-      "token": "30s"
-    },
-    {
-      "op": "parse_interval",
-      "token": "2h"
-    },
-    {
-      "op": "parse_interval",
-      "token": "1h30m"
-    },
-    {
-      "op": "parse_interval",
-      "token": "0s"
-    },
-    {
-      "op": "parse_interval",
-      "token": "5"
-    },
-    {
-      "op": "parse_interval",
-      "token": "abc"
-    },
-    {
-      "op": "parse_interval",
-      "token": "5x"
-    }
+    {"kind":"parse_interval","token":"30s"},
+    {"kind":"parse_interval","token":"5m"},
+    {"kind":"parse_interval","token":"2h"},
+    {"kind":"parse_interval","token":"1h30m"},
+    {"kind":"parse_interval","token":"0"},
+    {"kind":"parse_interval","token":"42"},
+    {"kind":"parse_interval","token":"abc"},
+    {"kind":"parse_interval","token":""},
+    {"kind":"format_interval","seconds":90},
+    {"kind":"format_interval","seconds":3661},
+    {"kind":"format_interval","seconds":0},
+    {"kind":"parse_loop_args","text":"5m check the deploy status"},
+    {"kind":"parse_loop_args","text":"every 10m /babysit-prs"},
+    {"kind":"parse_loop_args","text":"keep fixing the failing test until the suite passes"},
+    {"kind":"parse_loop_args","text":"2m poll CI --times 30"},
+    {"kind":"parse_loop_args","text":"5m watch the queue --until queue depth reaches zero"},
+    {"kind":"parse_loop_args","text":"--times 0 oops"},
+    {"kind":"parse_loop_args","text":""},
+    {"kind":"parse_loop_args","text":"5m"},
+    {"kind":"response_complete","text":"All done.\nLOOP_COMPLETE"},
+    {"kind":"response_complete","text":"LOOP_COMPLETE!"},
+    {"kind":"response_complete","text":"no marker here"},
+    {"kind":"response_complete","text":""},
+    {"kind":"digest","text":"checked at 14:02:33 all green, queue depth 25m ago"},
+    {"kind":"digest","text":"STATE UNCHANGED\nchecked at 09:15:00"},
+    {"kind":"state_label","which":"cadence","now":1000.0,
+       "raw":"{\"prompt\":\"check deploy\",\"status\":\"active\",\"mode\":\"interval\",\"interval_seconds\":300,\"current_delay\":300,\"next_due_at\":1030,\"ticks_fired\":2,\"max_ticks\":100}"},
+    {"kind":"state_label","which":"remaining","now":1000.0,
+       "raw":"{\"prompt\":\"check deploy\",\"status\":\"active\",\"mode\":\"interval\",\"interval_seconds\":300,\"next_due_at\":1030}"},
+    {"kind":"state_label","which":"remaining","now":1100.0,
+       "raw":"{\"prompt\":\"check deploy\",\"status\":\"active\",\"mode\":\"interval\",\"interval_seconds\":300,\"next_due_at\":1030}"},
+    {"kind":"state_label","which":"status","now":1000.0,
+       "raw":"{\"prompt\":\"check deploy\",\"status\":\"active\",\"mode\":\"interval\",\"interval_seconds\":300,\"ticks_fired\":2,\"max_ticks\":100,\"next_due_at\":1030}"},
+    {"kind":"state_label","which":"status","now":1000.0,
+       "raw":"{\"prompt\":\"refine test\",\"status\":\"active\",\"mode\":\"self_paced\",\"current_delay\":120,\"ticks_fired\":3,\"next_due_at\":1030,\"awaiting_response\":true}"},
+    {"kind":"state_label","which":"status","now":1000.0,
+       "raw":"{\"prompt\":\"review\",\"status\":\"paused\",\"paused_reason\":\"user-paused\",\"ticks_fired\":1,\"max_ticks\":100}"},
+    {"kind":"state_label","which":"status","now":1000.0,
+       "raw":"{\"prompt\":\"done task\",\"status\":\"done\",\"last_stop_reason\":\"complete\",\"ticks_fired\":5}"},
+    {"kind":"state_label","which":"status","now":1000.0,
+       "raw":"{\"prompt\":\"x\",\"status\":\"cleared\",\"ticks_fired\":0}"}
   ]
 }
