@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {"kind":"has_stream_observer_hooks"},
+    {"kind":"reasoning_enabled"},
+    {"kind":"has_reasoning"},
+    {"kind":"setup","hooks":{"on_stream_delta":["cb_a","cb_b"],"on_stream_end":["cb_c"]}},
+    {"kind":"dispatchers_for","hook":"on_stream_delta"},
+    {"kind":"dispatchers_for","hook":"on_stream_start"},
+    {"kind":"enqueue","hook":"on_stream_delta","payload":{"text":"hello","seq":1}},
+    {"kind":"calls"},
+    {"kind":"enqueue","hook":"on_stream_end","payload":{"text":"done"}},
+    {"kind":"calls"},
+    {"kind":"reconfigure","hook":"on_stream_delta","names":["cb_b","cb_d"]},
+    {"kind":"dispatchers_for","hook":"on_stream_delta"},
+    {"kind":"enqueue","hook":"on_stream_delta","payload":{"text":"second","seq":2}},
+    {"kind":"wait_idle"},
+    {"kind":"calls"},
+    {"kind":"shutdown"},
+    {"kind":"dispatchers_for","hook":"on_stream_delta"},
+    {"kind":"enqueue_after_shutdown","hook":"on_stream_delta"}
+  ]
+}
