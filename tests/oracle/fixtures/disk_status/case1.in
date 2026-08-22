@@ -1,0 +1,124 @@
+{
+  "ops": [
+    {
+      "kind": "classify",
+      "free": 256,
+      "total": 2048
+    },
+    {
+      "kind": "classify",
+      "free": 255,
+      "total": 2048
+    },
+    {
+      "kind": "classify",
+      "free": 1024,
+      "total": 102400
+    },
+    {
+      "kind": "classify",
+      "free": 1023,
+      "total": 102400
+    },
+    {
+      "kind": "classify",
+      "free": 512,
+      "total": 1024
+    },
+    {
+      "kind": "classify",
+      "free": 511,
+      "total": 1024
+    },
+    {
+      "kind": "classify",
+      "free": 40960,
+      "total": 40960
+    },
+    {
+      "kind": "classify",
+      "free": 0,
+      "total": 0
+    },
+    {
+      "kind": "classify",
+      "free": null,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "free": -5,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "free": 10.5,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "free": true,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "free": "100",
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "free": 100,
+      "total": null
+    },
+    {
+      "kind": "classify",
+      "free": 100,
+      "total": "x"
+    },
+    {
+      "kind": "classify",
+      "free": 100,
+      "total": 50.5
+    },
+    {
+      "kind": "classify",
+      "free": 100,
+      "total": 0
+    },
+    {
+      "kind": "classify",
+      "free": 100,
+      "total": -1
+    },
+    {
+      "kind": "classify",
+      "free": true,
+      "total": true
+    },
+    {
+      "kind": "collect",
+      "total_bytes": 104857600,
+      "free_bytes": 26214400
+    },
+    {
+      "kind": "collect",
+      "total_bytes": 3221225472,
+      "free_bytes": 1073741824
+    },
+    {
+      "kind": "collect",
+      "total_bytes": 1073741824,
+      "free_bytes": 1073741824
+    },
+    {
+      "kind": "collect",
+      "total_bytes": 0,
+      "free_bytes": 0
+    },
+    {
+      "kind": "collect",
+      "total_bytes": 5368709120,
+      "free_bytes": 5242880
+    }
+  ]
+}

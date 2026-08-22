@@ -1,0 +1,29 @@
+{
+  "ops": [
+    {
+      "kind": "classify",
+      "free": 1,
+      "total": 1024
+    },
+    {
+      "kind": "classify",
+      "free": 2048,
+      "total": 2048
+    },
+    {
+      "kind": "classify",
+      "free": 1536,
+      "total": 2048
+    },
+    {
+      "kind": "collect",
+      "total_bytes": 2147483648,
+      "free_bytes": 1610612736
+    },
+    {
+      "kind": "collect",
+      "total_bytes": 104857600,
+      "free_bytes": 0
+    }
+  ]
+}

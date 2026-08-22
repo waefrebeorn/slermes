@@ -1605,10 +1605,63 @@
       "oracle": "tests/sta_oracle_setup_mcp_tool.py",
       "fixtures": "tests/oracle/fixtures/setup_mcp_tool"
     },
+    "approval_transport": {
+      "harness": "tests/t_port_approval_transport.c",
+      "oracle": "tests/sta_oracle_approval_transport.py",
+      "fixtures": "tests/oracle/fixtures/approval_transport"
+    },
     "command_token_source": {
       "harness": "tests/t_port_command_token_source.c",
       "oracle": "tests/sta_oracle_command_token_source.py",
       "fixtures": "tests/oracle/fixtures/command_token_source",
+      "normalize": {
+        "float_int_equal": true
+      }
+    },
+    "disk_status": {
+      "harness": "tests/t_port_disk_status.c",
+      "oracle": "tests/sta_oracle_disk_status.py",
+      "fixtures": "tests/oracle/fixtures/disk_status",
+      "normalize": {
+        "float_int_equal": true
+      }
+    },
+    "memory_status": {
+      "harness": "tests/t_port_memory_status.c",
+      "oracle": "tests/sta_oracle_memory_status.py",
+      "fixtures": "tests/oracle/fixtures/memory_status",
+      "normalize": {
+        "float_int_equal": true
+      }
+    },
+    "gitlock": {
+      "harness": "tests/t_port_gitlock.c",
+      "oracle": "tests/sta_oracle_gitlock.py",
+      "fixtures": "tests/oracle/fixtures/gitlock",
+      "normalize": {
+        "float_int_equal": true
+      }
+    },
+    "model_data_policy_guard": {
+      "harness": "tests/t_port_model_data_policy_guard.c",
+      "oracle": "tests/sta_oracle_model_data_policy_guard.py",
+      "fixtures": "tests/oracle/fixtures/model_data_policy_guard",
+      "normalize": {
+        "float_int_equal": true
+      }
+    },
+    "model_selection_guards": {
+      "harness": "tests/t_port_model_selection_guards.c",
+      "oracle": "tests/sta_oracle_model_selection_guards.py",
+      "fixtures": "tests/oracle/fixtures/model_selection_guards",
+      "normalize": {
+        "float_int_equal": true
+      }
+    },
+    "prompt_cache_scope": {
+      "harness": "tests/t_port_prompt_cache_scope.c",
+      "oracle": "tests/sta_oracle_prompt_cache_scope.py",
+      "fixtures": "tests/oracle/fixtures/prompt_cache_scope",
       "normalize": {
         "float_int_equal": true
       }
