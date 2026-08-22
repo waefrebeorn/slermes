@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 _skill_commands: Dict[str, Dict[str, Any]] = {}
 _skill_commands_platform: Optional[str] = None
+_skill_commands_home: Optional[str] = None
 # Patterns for sanitizing skill names into clean hyphen-separated slugs.
 _SKILL_INVALID_CHARS = re.compile(r"[^a-z0-9-]")
 _SKILL_MULTI_HYPHEN = re.compile(r"-{2,}")
@@ -206,6 +207,22 @@ def _resolve_skill_commands_platform() -> Optional[str]:
     except Exception:
         resolved_platform = os.getenv("HERMES_PLATFORM")
     return resolved_platform or None
+
+
+def _resolve_skill_commands_home() -> str:
+    """Return the effective Hermes home the skill scan should be scoped to.
+
+    A gateway session can switch between profiles that each carry their own
+    ``skills.external_dirs`` (via ``set_hermes_home_override``), but the
+    module-level scan only tracked ``_resolve_skill_commands_platform()``.
+    Switching profiles without a platform change left the previous profile's
+    skill list cached, so ``get_skill_commands()`` reported a cache miss for
+    skills that only exist under the new profile (#88023).
+    """
+    from hermes_constants import get_hermes_home
+
+    return str(get_hermes_home())
+
 
 def _load_skill_payload(skill_identifier: str, task_id: str | None = None) -> tuple[dict[str, Any], Path | None, str] | None:
     """Load a skill by name/path and return (loaded_payload, skill_dir, display_name)."""
@@ -405,24 +422,37 @@ def scan_skill_commands() -> Dict[str, Dict[str, Any]]:
     Returns:
         Dict mapping "/skill-name" to {name, description, skill_md_path, skill_dir}.
     """
-    global _skill_commands, _skill_commands_platform
+    global _skill_commands, _skill_commands_platform, _skill_commands_home
     _skill_commands_platform = _resolve_skill_commands_platform()
+    _skill_commands_home = _resolve_skill_commands_home()
     _skill_commands = {}
     try:
         from tools.skills_tool import SKILLS_DIR, _parse_frontmatter, skill_matches_platform, skill_matches_environment, _get_disabled_skill_names
-        from agent.skill_utils import get_external_skills_dirs, iter_skill_index_files
+        from agent.skill_utils import (
+            get_external_skills_dirs,
+            get_project_skills_dirs,
+            iter_project_skill_files,
+            iter_skill_index_files,
+        )
         from hermes_cli.commands import resolve_command
         disabled = _get_disabled_skill_names()
         seen_names: set = set()
 
-        # Scan local dir first, then external dirs
-        dirs_to_scan = []
+        # Scan project dirs first (highest precedence), then local, then external.
+        # Project dirs iterate through the quarantine chokepoint.
+        project_dirs = list(get_project_skills_dirs())
+        dirs_to_scan = list(project_dirs)
         if SKILLS_DIR.exists():
             dirs_to_scan.append(SKILLS_DIR)
         dirs_to_scan.extend(get_external_skills_dirs())
 
         for scan_dir in dirs_to_scan:
-            for skill_md in iter_skill_index_files(scan_dir, "SKILL.md"):
+            _iter = (
+                iter_project_skill_files(scan_dir)
+                if scan_dir in project_dirs
+                else iter_skill_index_files(scan_dir, "SKILL.md")
+            )
+            for skill_md in _iter:
                 if any(part in {'.git', '.github', '.hub', '.archive'} for part in skill_md.parts):
                     continue
                 try:
@@ -500,11 +530,14 @@ def get_skill_commands() -> Dict[str, Dict[str, Any]]:
 
     Rescans when the active platform scope changes (e.g. a gateway
     process serving Telegram and Discord concurrently) so each platform
-    sees its own ``skills.platform_disabled`` view (#14536).
+    sees its own ``skills.platform_disabled`` view (#14536), and when the
+    active profile's Hermes home changes (e.g. Desktop switching profiles
+    mid-session) so each profile sees its own ``skills.external_dirs`` (#88023).
     """
     if (
         not _skill_commands
         or _skill_commands_platform != _resolve_skill_commands_platform()
+        or _skill_commands_home != _resolve_skill_commands_home()
     ):
         scan_skill_commands()
     return _skill_commands
@@ -838,87 +871,3 @@ def build_preloaded_skills_prompt(
         loaded_names.append(skill_name)
 
     return "\n\n".join(prompt_parts), loaded_names, missing
-
-
-# --- restored from canonical Hermes Python (agent/skill_commands.py) to fix
-# version skew with the dev tree's hermes_state / hermes_state_common ---
-_SKILL_NAME_RE = re.compile(re.escape(_SKILL_INVOCATION_PREFIX) + r'"([^"]*)"')
-
-# SQL LIKE pattern matching a skill-expanded turn, for listing queries that
-# have to recognize scaffolding before the row reaches Python. The prefix
-# contains no LIKE wildcards (`%`, `_`), so it needs no ESCAPE clause.
-SKILL_SCAFFOLD_SQL_LIKE = _SKILL_INVOCATION_PREFIX + "%"
-
-# Marks where a preview query joined the head and tail of a long scaffolded
-# message. ``describe_skill_invocation`` may hand back a span that runs across
-# the joint (a bundle instruction cut off by the head window); callers cut the
-# description there rather than show the skill body on the far side.
-SKILL_EXCERPT_JOINT = "\x1e"
-
-
-def extract_user_instruction_from_skill_message(content: Any) -> Optional[str]:
-    """Recover the user's instruction from a slash-skill-expanded turn.
-
-    Returns:
-        - The original string unchanged when it is NOT skill scaffolding
-          (a normal user message passes straight through).
-        - The extracted user instruction when the scaffolding carried one.
-        - ``None`` when the content is skill scaffolding with no user
-          instruction (i.e. a bare ``/skill`` invocation). Callers that feed
-          memory providers should skip the turn in that case — there is no
-          user content worth storing.
-    """
-    if not isinstance(content, str):
-        return None
-
-    if not content.startswith(_SKILL_INVOCATION_PREFIX):
-        return content
-
-    if _BUNDLE_MARKER in content:
-        return _extract_bundle_user_instruction(content)
-
-    if _SINGLE_SKILL_MARKER in content:
-        return _extract_single_skill_user_instruction(content)
-
-    return None
-
-
-def describe_skill_invocation(content: Any, separator: str = " — ") -> Optional[str]:
-    """Render a slash-skill-expanded turn the way the user typed it.
-
-    The expanded message embeds the whole skill body, so any surface that
-    summarizes a user turn from its raw content — session titles, sidebar
-    previews, the ``/rewind`` picker — otherwise shows the skill's own prose
-    as if the user had written it. That is how a skill's opening line ends up
-    as a session title.
-
-    Returns ``"/work — fix the title leak"``, or ``"/work"`` for a bare
-    invocation, or ``None`` when *content* is not skill scaffolding (the
-    caller should then summarize it as an ordinary message).
-
-    *separator* joins the command and the instruction. Previews use the
-    default em dash; pass ``" "`` for the literal invocation the user typed,
-    which is what chat transcripts render.
-    """
-    if not isinstance(content, str) or not content.startswith(_SKILL_INVOCATION_PREFIX):
-        return None
-
-    match = _SKILL_NAME_RE.match(content)
-    name = (match.group(1) if match else "").strip()
-    # Bundle headers already carry their typed "/a /b" keys; a single skill is
-    # a bare name.
-    label = name if name.startswith("/") else f"/{name}"
-
-    instruction = extract_user_instruction_from_skill_message(content)
-    if instruction and instruction is not content:
-        # An excerpted message (head + tail, joined by SKILL_EXCERPT_JOINT) can
-        # put the joint inside the matched span — keep only the side the
-        # instruction marker was found on.
-        instruction = instruction.split(SKILL_EXCERPT_JOINT)[0]
-        instruction = " ".join(instruction.split())
-        if instruction:
-            return f"{label}{separator}{instruction}" if name else instruction
-
-    return label if name else None
-
-
