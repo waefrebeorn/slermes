@@ -1,0 +1,130 @@
+{
+  "ops": [
+    {
+      "kind": "warnings",
+      "model": "gpt-5.5",
+      "provider": null,
+      "model_info": {
+        "cost_input": 1.0,
+        "cost_output": 2.0
+      }
+    },
+    {
+      "kind": "warnings",
+      "model": "gpt-5.5",
+      "provider": "openai",
+      "model_info": {
+        "cost_input": 25.5,
+        "cost_output": 3.0,
+        "provider_id": "openai"
+      }
+    },
+    {
+      "kind": "warnings",
+      "model": "gpt-5.5",
+      "provider": "openai",
+      "model_info": {
+        "cost_input": 10.0,
+        "cost_output": 120.0
+      }
+    },
+    {
+      "kind": "warnings",
+      "model": "gpt-5.5",
+      "provider": "anthropic",
+      "model_info": {
+        "cost_input": 25.5,
+        "cost_output": 3.0,
+        "provider_id": "google"
+      }
+    },
+    {
+      "kind": "warnings",
+      "model": "gpt-5.5-pro",
+      "provider": "openrouter",
+      "model_info": null
+    },
+    {
+      "kind": "warnings",
+      "model": "muse-spark-1.2-contributor",
+      "provider": "meta-ai",
+      "model_info": null
+    },
+    {
+      "kind": "warnings",
+      "model": "muse-spark-1.2-contributor",
+      "provider": "meta-ai",
+      "model_info": {
+        "cost_input": 50.0,
+        "cost_output": 150.0,
+        "provider_id": "meta"
+      }
+    },
+    {
+      "kind": "warnings",
+      "model": "cheap-model",
+      "provider": null,
+      "model_info": null
+    },
+    {
+      "kind": "warnings",
+      "model": "",
+      "provider": "meta"
+    },
+    {
+      "kind": "combined",
+      "model": "muse-spark-1.2-contributor",
+      "provider": "meta-ai",
+      "model_info": {
+        "cost_input": 50.0,
+        "cost_output": 200.0,
+        "provider_id": "meta"
+      }
+    },
+    {
+      "kind": "combined",
+      "model": "muse-spark-1.2",
+      "provider": "meta-ai",
+      "model_info": null
+    },
+    {
+      "kind": "combined_message",
+      "warnings": [
+        {
+          "kind": "cost",
+          "title": "Expensive Model Warning",
+          "model": "a",
+          "provider": "p",
+          "message": "MSG ONE"
+        },
+        {
+          "kind": "data_policy",
+          "title": "Data-Training Tier Warning",
+          "model": "b",
+          "provider": "q",
+          "message": "MSG TWO"
+        }
+      ]
+    },
+    {
+      "kind": "warnings",
+      "model": "gpt-5.5",
+      "provider": "openai",
+      "model_info": {
+        "cost_input": 30.0,
+        "cost_output": 3.0
+      },
+      "include_kinds": [
+        "data_policy"
+      ]
+    },
+    {
+      "kind": "warnings",
+      "model": "muse-spark-1.2-contributor",
+      "provider": "meta-ai",
+      "include_kinds": [
+        "data_policy"
+      ]
+    }
+  ]
+}
