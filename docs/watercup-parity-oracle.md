@@ -111,25 +111,79 @@ tests/watercup/
 
 ### Adding a gate (no code in the runner)
 1. `mkdir tests/watercup/gates/<fn>`
-2. Write `gate.json` (name the LIVE python module + fn, list a correlated input walk).
-3. Write `harness.c` — a faithful, **traced** copy of the C11 port, with `main`
-   dispatching `<c_fn>` over `argv`.
-4. Write `twin.py` exposing `run(inputs) -> [cup, ...]`, importing the LIVE python
-   source and tracing the **same branch ladder** (so divergence = real logic
-   difference, not tracing convention).
+2. Write `gate.json` (name the LIVE python module + fn, list a correlated input
+   walk; optional `cflags`/`extra_src` to link the real ported `.c`).
+3. Write `harness.c` — a traced copy of the C11 port (or link the real `.c`
+   via `extra_src` so the cup traces shipped code), with `main` dispatching
+   `<c_fn>` over `argv`. Print EXACTLY one cup hash per input on stdout —
+   any extra output (results, labels) breaks the line diff.
+4. Write `twin.py` exposing `run(inputs) -> [cup, ...]`, tracing the **same
+   branch ladder in the same order** as the C harness (so divergence = real
+   logic difference, not tracing convention).
 
-`wc_run.py` builds, runs, and diffs automatically. Register the `watercup_all`
-port in `tests/oracle/registry.json` and `run_oracles.sh` dispatches it in CI
-alongside the diff oracle.
+`wc_run.py` builds (with stale-binary detection), runs, and diffs
+automatically. The `watercup_all` port in `tests/oracle/registry.json` makes
+`run_oracles.sh` dispatch it in CI alongside the diff oracle.
 
-### Current gates (live, fail-closed in CI)
-| gate | subsystem | status |
-|------|-----------|--------|
-| `usage_pricing_format_cost_label` | agent | RED — `0.00005` rounding FAP (Decimal `ROUND_HALF_EVEN` vs C `printf` half-away) |
-| `model_normalize_detect_vendor` | hermes_cli | RED — `""` empty-string guard FAP (Python falsy check absent in C) |
-| `web_fs_list` | web | GREEN — decision-structure cup matches LIVE (I/O abstracted to shared tree) |
-| `watercup_web_auth` | web | RED — auth allowlist set diverges from LIVE `PUBLIC_API_PATHS` |
-| `watercup_json_escape` | web | RED — `web_app.c` copy B dropped `<0x20` control-char escape vs `web_server.c` + LIVE |
+### Runner flags (v3)
+```
+python3 tests/watercup/wc_run.py                    # all gates, fail-closed
+python3 tests/watercup/wc_run.py <gate> [<gate>...]  # selected gates
+python3 tests/watercup/wc_run.py --list             # gate names
+python3 tests/watercup/wc_run.py --verbose <gate>    # per-gate detail
+python3 tests/watercup/wc_run.py --json             # machine-readable report
+python3 tests/watercup/wc_run.py --coverage          # subsystem coverage map
+python3 tests/watercup/wc_run.py --force             # rebuild all harnesses
+```
+Every run appends per-gate pass/fail to `tests/watercup/build/results.jsonl`.
+Builds are cached: a harness recompiles only when its sources, `watercup.h`,
+or `gate.json` are newer than the binary (the #1 historical source of false
+REDs was a stale binary).
+
+### Tracer-convention pitfalls (learned the hard way)
+1. **Rung order is the contract.** The cup encodes *which rung fired, in
+   position order*. A mismatch can be a real FAP **or** a tracing-convention
+   drift (twin traces the same set in a different order). Always verify
+   fixability: align the twin's ladder to the C harness's; if the cup then
+   matches, the drift was convention (fix the twin). If it still mismatches,
+   you found a real divergence.
+2. **V events must exist on both sides or neither.** `WCUP_VALSTR` in C with
+   no matching `c.valstr()` in the twin (or vice versa) mismatches every cup.
+   For pure branch-ladder gates, emit V events on NEITHER side.
+3. **Harness stdout is the cup stream.** Print one 16-hex cup per input and
+   nothing else — route results/diagnostics to stderr.
+4. **Boolean fixture fields**: reading a JSON boolean via `json_get_num`
+   returns the default (0) — use `json_bool_value`. Same class of bug as the
+   loops oracle's `--times` fixture.
+
+### Current gates (v3 runner, all GREEN as of 2026-08-22)
+
+| gate | subsystem | cups | what it pins |
+|------|-----------|------|--------------|
+| `billing_format_money` | agent | 13 | money formatting (Decimal vs C rounding) |
+| `billing_parse_money` | agent | 10 | money parsing ladder |
+| `cch_status_code_from_value` | agent | 16 | status-code mapping |
+| `format_size` | tools | 12 | byte sizes B..TB (GB-cap gap fixed) |
+| `loops_format_interval` | hermes_cli | 13 | h/m/s assembly, `0s` fallback |
+| `loops_parse_loop_args` | hermes_cli | 13 | 7-rung /loop argument parser |
+| `model_normalize_detect_vendor` | hermes_cli | 10 | vendor detection incl. empty-guard |
+| `prompt_cache_scope` | agent | 6 | rotation-stable scope (#79017): memo, lineage, fallback |
+| `repetition_guard` | agent | 5 | repetition-loop guard (#86581): fail-open, fast+general paths |
+| `registry_validate_args` | tools | unit | registry arg validation contract |
+| `subscription_view_format_tier_row` | agent | 7 | tier-row rendering |
+| `tool_dispatch_retry` | tools | unit | retry classification contract |
+| `tool_idempotency` (+persist) | tools | unit | idempotency contract |
+| `tool_result_classification` | tools | unit | result classification contract |
+| `usage_pricing_format_cost_label` | agent | 14 | cost labels (rounding parity) |
+| `usage_pricing_normalize_anthropic_model` | agent | 8 | Anthropic model names |
+| `usage_pricing_normalize_bedrock_model` | agent | 9 | Bedrock model names |
+| `watercup_json_escape` | web | unit | `<0x20` escape (C11-vs-C11 drift caught) |
+| `watercup_web_auth` | web | unit | auth allowlist vs LIVE PUBLIC_API_PATHS |
+
+Earlier RED findings (rounding FAP, empty-string guard, auth allowlist,
+control-char escape) were fixed after the cup flagged them; the gates stay
+as regression pins. Run `python3 tests/watercup/wc_run.py --coverage` for
+the live subsystem map, and `--json`/`--verbose` for machine/human detail.
 
 A port is parity-closed only when **both** the diff oracle AND the water-cup say
 MATCH. The cup is the deep gate that catches the "right output, wrong path" class.

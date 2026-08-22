@@ -41,7 +41,9 @@ make -j$(nproc)
 | [Build System](docs/architecture/build-system.md) | Make targets, dependencies, packaging |
 | [Development](docs/dev/index.md) | Building, testing, contributing |
 | [Parity Summary](docs/parity-summary.md) | Live parity scan results (what's ported vs. not) |
-| [Real Gap List](docs/real-gap-list.md) | 1,346 honest REAL_GAPs across 230 modules |
+| [Real Gap List](docs/real-gap-list.md) | Honest REAL_GAPs across modules |
+| [FAP](docs/fap.md) | Behavioral divergences the scanner can't see + the oracle harness |
+| [Water-Cup Parity Oracle](docs/watercup-parity-oracle.md) | Trace-cup deep gate: right output, wrong path fails |
 
 ## How to read the parity numbers
 

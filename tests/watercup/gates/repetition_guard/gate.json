@@ -1,0 +1,19 @@
+{
+  "name": "repetition_guard",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "repetition_guard_is_repetition_dominated",
+  "py_module": "agent/repetition_guard.py",
+  "py_fn": "is_repetition_dominated",
+  "cflags": ["-I", "include"],
+  "extra_src": ["src/agent/repetition_guard.c"],
+  "inputs": [
+    "-",
+    "tests/watercup/gates/repetition_guard/probe_short.txt",
+    "tests/watercup/gates/repetition_guard/probe_line_repeat.txt",
+    "tests/watercup/gates/repetition_guard/probe_window_repeat.txt",
+    "tests/watercup/gates/repetition_guard/probe_clean.txt"
+  ],
+  "notes": "Repetition-loop guard (issue #86581): fail-open on empty, short-input rejection, line-repeat fast path, window-repeat general path, clean text. Harness links the REAL src/agent/repetition_guard.c so the cup traces shipped code. Probes are files under the gate dir; '-' is the empty probe."
+}

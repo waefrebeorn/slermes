@@ -89,7 +89,7 @@ Any `cases: MISMATCH` line from `run_oracles.sh` is a **FAP candidate**. Triage:
 | `usage_pricing` | False FAP | **RESOLVED** (v623) | Divergence was caused by the runner's broken `libjson/json.h` include path, not a C bug. Fixed by the runner include-root change. Now MATCH. |
 | `coding_context` | False FAP | **NORMALIZED** (v623) | Leaked the real git/workspace root path (`/home/.../slermes`). Wired the previously-dead `normalize` block in `run_oracle.sh` so env noise is stripped before diff. Now MATCH. |
 | `web_git_base` | Runner bug | **RESOLVED** (v623) | `port_web_git.h` exists at `src/cli/`; the runner just didn't add `src/<subdir>` include roots. Added `SRCINCS` (all `src/*` dirs) to the runner. Now compiles. |
-| `curator_backup` | Harness bug | OPEN | C harness repeats the first fixture case instead of iterating all `.in` cases; the oracle varies `keep`. Harness iteration bug, not a C fidelity gap. Next work. |
+| `curator_backup` | Harness bug | **FIXED** | The harness now iterates all `.in` fixture cases (verified MATCH on the current runner). |
 | 31 web_server_*/other | Harness bug | OPEN | These oracles emit no output (harness or oracle produces nothing for the fixture) so the runner records no verdict. Per-harness emission debug needed; not C fidelity FAPs. |
 | 17 oracles (title_stack, run_pure, kanban_util, web_server_*, etc.) | Env/install | OPEN | Their Python oracle `import hermes_state` (and similar) which **does not exist in the dev repo** — it only lives in the stale `~/.hermes/hermes-agent/` install, which has version skew with the dev repo's `agent/` modules (`SKILL_EXCERPT_JOINT` missing). The oracle crashes (ImportError) so no verdict is recorded. **This is a broken/version-skewed Python-Hermes install, not a C fidelity gap and not a harness bug.** Restore a consistent Python-Hermes source tree (refresh the install from the dev repo) to unblock; do NOT mutate the user's live Python env blindly. |
 
@@ -106,3 +106,20 @@ If you change C code that has an oracle, **run the oracle**. If you add a port,
 **register it in `tests/oracle/registry.json`** so its FAPs can be found. A
 `PORTED` count of 11,500+ with 0 `REAL_GAP` tells you nothing about FAPs — only
 the oracle does.
+
+## The deep gate: water-cup trace-cups
+
+The output-diff oracle above has one blind spot it can never cover: a C function
+that returns the *right* value by executing the *wrong* control flow passes every
+fixture. That class is what the **water-cup** (`tests/watercup/`, see
+`docs/watercup-parity-oracle.md`) is for — it diffs the *traced branch/loop/
+recursion ladder*, not just outputs, so "right output, wrong path" fails.
+
+Run both:
+
+```bash
+bash tests/oracle/run_oracles.sh        # diff oracle (breadth)
+python3 tests/watercup/wc_run.py        # water-cup deep gate (path parity)
+```
+
+A port is parity-closed only when BOTH say MATCH.
