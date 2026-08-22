@@ -1,0 +1,61 @@
+{"ops": [
+  {"kind": "resolve_repo_root", "path": "", "git": []},
+  {"kind": "resolve_repo_root", "path": "@NOTREPO@", "git": [
+    {"rc": 128, "stdout": "", "stderr": "fatal: not a git repository"}
+  ]},
+  {"kind": "resolve_repo_root", "path": "/tmp", "git": [
+    {"rc": 0, "stdout": "/tmp/repo\n", "stderr": ""}
+  ]},
+
+  {"kind": "create", "cwd": "/tmp", "id": "a1", "git": [
+    {"rc": 128, "stdout": "", "stderr": "not a repo"}
+  ]},
+  {"kind": "create", "cwd": "/tmp", "id": "a1", "git": [
+    {"rc": 0, "stdout": "abc123def\n"},
+    {"rc": 1, "stdout": "", "stderr": "worktree add failed"}
+  ]},
+  {"kind": "create", "cwd": "/tmp", "id": "a2", "git": [
+    {"rc": 0, "stdout": "abc123def456\n"},
+    {"rc": 0, "stdout": "Preparing worktree\n"}
+  ]},
+
+  {"kind": "mark_unproven", "payload": {"path": "/r/.worktrees/subagent-x", "branch": "hermes-subagent/subagent-x", "commits": 0, "dirty": false, "pruned": false}, "reason": "rev-list exit 128: fatal: bad revision", "unmeasured": "commits"},
+  {"kind": "mark_unproven", "payload": {"path": "/w", "branch": "b"}, "reason": "inspection raised"},
+
+  {"kind": "unproven_payload", "info": {"path": "/p1", "branch": "br1"}, "reason": "finalize raised"},
+
+  {"kind": "finalize", "exists": false, "prune": true, "git": [], "info": {"path": "/gone/wt", "branch": "ns/gone", "repo_root": "/r", "base_commit": "abc"}},
+
+  {"kind": "finalize", "exists": false, "prune": true, "git": [], "info": {"path": "/nonexistent_swt_probe", "branch": "ns/x", "repo_root": "", "base_commit": ""}},
+
+  {"kind": "finalize", "exists": true, "prune": true, "git": [
+    {"rc": 1, "stdout": "", "stderr": "fatal: bad object abc"}
+  ], "info": {"path": "/tmp", "branch": "ns/bad", "repo_root": "/r", "base_commit": ""}},
+
+  {"kind": "finalize", "exists": true, "prune": true, "git": [
+    {"rc": 1, "stdout": "", "stderr": "fatal: bad object deadbeef"},
+    {"rc": 0, "stdout": "", "stderr": ""}
+  ], "info": {"path": "/tmp", "branch": "ns/mixed", "repo_root": "/r", "base_commit": "deadbeef"}},
+
+  {"kind": "finalize", "exists": true, "prune": true, "git": [
+    {"rc": 0, "stdout": "0\n"},
+    {"rc": 0, "stdout": "", "stderr": ""}
+  ], "info": {"path": "/tmp", "branch": "ns/clean", "repo_root": "@SBX@/repo", "base_commit": "feed0001"}},
+
+  {"kind": "finalize", "exists": true, "prune": true, "git": [
+    {"rc": 0, "stdout": "3\n"},
+    {"rc": 0, "stdout": "", "stderr": ""}
+  ], "info": {"path": "/tmp", "branch": "ns/work", "repo_root": "/r", "base_commit": "cafe0002"}},
+
+  {"kind": "finalize", "exists": true, "prune": true, "git": [
+    {"rc": 0, "stdout": "0\n"},
+    {"rc": 0, "stdout": " M file.txt\n"}
+  ], "info": {"path": "/tmp", "branch": "ns/dirty", "repo_root": "/r", "base_commit": "beef0003"}},
+
+  {"kind": "finalize", "exists": true, "prune": false, "git": [
+    {"rc": 0, "stdout": "0\n"},
+    {"rc": 0, "stdout": "", "stderr": ""}
+  ], "info": {"path": "/tmp", "branch": "ns/noprune", "repo_root": "/r", "base_commit": "d00d0004"}},
+
+  {"kind": "context_note", "info": {"path": "/r/.worktrees/subagent-a1", "branch": "hermes-subagent/subagent-a1"}}
+]}
