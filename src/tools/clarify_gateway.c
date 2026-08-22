@@ -41,6 +41,15 @@ typedef struct clarify_entry {
 static clarify_entry_t *g_entries = NULL;
 static int g_entry_count = 0;
 
+
+/* Per-session notify callbacks — Python: _notify_cbs dict. */
+typedef struct notify_cb {
+    char session_key[256];
+    void *cb;
+    struct notify_cb *next;
+} notify_cb_t;
+static notify_cb_t *g_notify_cbs = NULL;
+
 /* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:signature */
 
 /* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:wait_for_response */
@@ -151,8 +160,21 @@ void cli_tools_clarify_gateway_register_notify(const char *session_key, void *ca
         hermes_log(LOG_WARNING, "clarify_gateway", "register_notify: NULL key or callback");
         return;
     }
-    hermes_log(LOG_INFO, "clarify_gateway",
-               "register_notify: registered callback for session=%.40s", session_key);
+    /* Mirrors Python's _notify_cbs dict: upsert per-session callback. */
+    notify_cb_t *cur = g_notify_cbs;
+    while (cur) {
+        if (strcmp(cur->session_key, session_key) == 0) {
+            cur->cb = callback;
+            return;
+        }
+        cur = cur->next;
+    }
+    notify_cb_t *node = calloc(1, sizeof(*node));
+    if (!node) return;
+    snprintf(node->session_key, sizeof(node->session_key), "%s", session_key);
+    node->cb = callback;
+    node->next = g_notify_cbs;
+    g_notify_cbs = node;
 }
 
 /* PoP: cli_tools_clarify_gateway_unregister_notify @ tools/clarify_gateway.py:unregister_notify */
@@ -162,6 +184,17 @@ void cli_tools_clarify_gateway_unregister_notify(const char *session_key) {
      * Cancel any pending entries so blocked threads unwind when the run ends.
      */
     if (!session_key) return;
+    /* Drop the per-session notify callback (Python: _notify_cbs.pop). */
+    notify_cb_t **pp = &g_notify_cbs;
+    while (*pp) {
+        if (strcmp((*pp)->session_key, session_key) == 0) {
+            notify_cb_t *dead = *pp;
+            *pp = dead->next;
+            free(dead);
+            break;
+        }
+        pp = &(*pp)->next;
+    }
     int cancelled = 0;
     clarify_entry_t *cur = g_entries;
     while (cur) {
@@ -177,9 +210,13 @@ void cli_tools_clarify_gateway_unregister_notify(const char *session_key) {
 
 /* PoP: cli_tools_clarify_gateway_get_notify @ tools/clarify_gateway.py:get_notify */
 void *cli_tools_clarify_gateway_get_notify(const char *session_key) {
-    /* Per-session notify callbacks are not retained in this C port (the
-     * gateway calls send_clarify directly). Return NULL (no callback). */
-    (void)session_key;
+    /* Python: with _lock: return _notify_cbs.get(session_key) */
+    if (!session_key) return NULL;
+    notify_cb_t *cur = g_notify_cbs;
+    while (cur) {
+        if (strcmp(cur->session_key, session_key) == 0) return cur->cb;
+        cur = cur->next;
+    }
     return NULL;
 }
 

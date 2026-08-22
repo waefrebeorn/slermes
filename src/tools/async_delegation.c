@@ -347,7 +347,11 @@ static void *worker_entry(void *arg) {
 
 /* ---- public API ------------------------------------------------------ */
 
-void async_delegation_init(void) { /* mutex/cond statically initialized */ }
+void async_delegation_init(void) {
+    /* Python default is also a no-op — tools/async_delegation.py creates its
+     * module-level locks (_executor_lock etc.) statically at import time;
+     * C pthread mutexes here are likewise statically initialized. */
+}
 
 void async_delegation_shutdown(void) {
     async_delegation_interrupt_all("shutdown");

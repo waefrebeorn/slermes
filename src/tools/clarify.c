@@ -55,15 +55,24 @@ static char *(*g_clarify_gw_wait_fn)(int timeout_sec) = NULL;
 static void (*g_clarify_gw_begin_fn)(const char *, const char *, const char *,
                                      const char *, const char (*)[256], int) = NULL;
 
+/* Extended gateway send (platform callback): fn(platform, chat_id, text,
+ * choices[], n_choices, session_key) — mirrors Python's _send_fn contract in
+ * tools/clarify_gateway.py where batch-capable platforms accept choices. */
+static bool (*g_clarify_gw_send_ext_fn)(const char *, const char *, const char *,
+                                        const char **, int, const char *) = NULL;
+static char g_clarify_session_key[128] = "";
+
+/* PoP: clarify_set_gateway_send @ tools/clarify_tool.py:set_platform_callback */
 void clarify_set_gateway_send(bool (*fn)(const char *, const char *, const char *,
                                          const char **, int, const char *),
                                const char *platform, const char *chat_id) {
-    /* We store the simple 3-arg send internally, but accept the platform's
-       extended signature for compatibility. The extended args are unused —
-       we fall back to text-mode clarify (choices listed as numbered text). */
-    (void)fn;
-    (void)platform;
-    (void)chat_id;
+    /* Store the platform's extended-signature send callback plus the current
+     * per-message routing context. NULL fn clears the registration (used by
+     * server.c when a message stream ends). */
+    g_clarify_gw_send_ext_fn = fn;
+    snprintf(g_clarify_platform, sizeof(g_clarify_platform), "%s", platform ? platform : "");
+    snprintf(g_clarify_chat_id, sizeof(g_clarify_chat_id), "%s", chat_id ? chat_id : "");
+    if (!fn) g_clarify_gw_send_fn = NULL;
 }
 
 void clarify_set_gateway_wait(char *(*fn)(int timeout_sec)) {
@@ -145,7 +154,15 @@ char *clarify_handler(const char *args_json, const char *task_id) {
             snprintf(prompt_buf, sizeof(prompt_buf),
                     "❓ %s\n\n*(Type your answer or reply 'skip' to cancel)*", question);
         }
-        g_clarify_gw_send_fn(g_clarify_platform, g_clarify_chat_id, prompt_buf);
+        if (g_clarify_gw_send_ext_fn) {
+            /* Batch-capable platform path: pass choices through directly. */
+            g_clarify_gw_send_ext_fn(g_clarify_platform, g_clarify_chat_id, prompt_buf,
+                                     n_choices > 0 ? choice_strs : NULL,
+                                     n_choices,
+                                     task_id ? task_id : "");
+        } else {
+            g_clarify_gw_send_fn(g_clarify_platform, g_clarify_chat_id, prompt_buf);
+        }
 
         /* Block until user responds or timeout */
         char *resp = g_clarify_gw_wait_fn(300); /* 5 minute timeout */
