@@ -98,6 +98,7 @@ static char *get_planned_stop_marker_path(char *buf, size_t n) {
 /* Machine-local directory for token-scoped gateway locks. Mirrors
  * _get_lock_dir(): HERMES_GATEWAY_LOCK_DIR override, else
  * $XDG_STATE_HOME/hermes/gateway-locks, else ~/.local/state/hermes/... */
+/* PoP: gwstatus_get_lock_dir @ gateway/status.py:_get_lock_dir */
 static char *get_lock_dir(char *buf, size_t n) {
     const char *override = getenv("HERMES_GATEWAY_LOCK_DIR");
     if (override && override[0]) {
@@ -588,6 +589,7 @@ static bool record_matches_live_gateway_pid(json_t *record, pid_t pid,
  * "profiles"). The root/default home has no such parent -> NULL (default).
  * Writes the profile name into out[] and returns out, or NULL for default.
  * --------------------------------------------------------------------- */
+/* PoP: gwstatus_profile_name_for_home @ gateway/status.py:_profile_name_for_home */
 static const char *profile_name_for_home(const char *profile_home,
                                          char *out, size_t n) {
     if (!profile_home || !profile_home[0]) return NULL;
@@ -618,7 +620,10 @@ static void str_tolower_buf(const char *src, char *dst, size_t n) {
 /* -----------------------------------------------------------------------
  * Mirrors hermes_cli.gateway._matches_current_profile so a cross-profile
  * liveness fallback scopes a recycled PID to the right profile.
- * --------------------------------------------------------------------- */
+ * ---------------------------------------------------------------------
+
+ * PoP: gwstatus_command_line_belongs_to_profile @ gateway/status.py:_command_line_belongs_to_profile
+ */
 static bool command_line_belongs_to_profile(const char *command,
                                             const char *profile_home) {
     if (!command) return false;
@@ -657,6 +662,7 @@ static bool command_line_belongs_to_profile(const char *command,
 /* -----------------------------------------------------------------------
  * The gateway lock file carries the same record shape as the PID file.
  * --------------------------------------------------------------------- */
+/* PoP: gwstatus_read_gateway_lock_record @ gateway/status.py:_read_gateway_lock_record */
 static json_t *read_gateway_lock_record(const char *lock_path) {
     char buf[1200];
     const char *path = lock_path;
@@ -667,6 +673,7 @@ static json_t *read_gateway_lock_record(const char *lock_path) {
 /* -----------------------------------------------------------------------
  * Rewrite an open lock fd from offset 0 with the current PID record + fsync.
  * --------------------------------------------------------------------- */
+/* PoP: write_gateway_lock_record @ gateway/status.py:_write_gateway_lock_record */
 static void write_gateway_lock_record(int fd) {
     if (fd < 0) return;
     json_t *record = build_pid_record();
@@ -686,6 +693,7 @@ static void write_gateway_lock_record(int fd) {
  * Force-unlink a stale PID file and its sibling lock metadata (called after
  * the runtime lock is confirmed inactive, so the metadata is known dead).
  * --------------------------------------------------------------------- */
+/* PoP: gwstatus_cleanup_invalid_pid_path @ gateway/status.py:_cleanup_invalid_pid_path */
 static void cleanup_invalid_pid_path(const char *pid_path, bool cleanup_stale) {
     if (!cleanup_stale || !pid_path) return;
     unlink(pid_path);
@@ -833,6 +841,7 @@ pid_t gwstatus_get_running_pid(const char *pid_path, bool cleanup_stale) {
 /* -----------------------------------------------------------------------
  * Conservative fallback: validate the runtime status record against the OS.
  * --------------------------------------------------------------------- */
+/* PoP: gwstatus_get_runtime_status_running_pid @ gateway/status.py:get_runtime_status_running_pid */
 pid_t gwstatus_get_runtime_status_running_pid(const char *runtime_json,
                                               const char *expected_home) {
     char *owned = NULL;
@@ -1585,4 +1594,90 @@ void gwstatus_clear_planned_stop_marker(void) {
     char path[1200];
     get_planned_stop_marker_path(path, sizeof(path));
     unlink(path);
+}
+
+/*
+ * Best-effort profile label for a HERMES_HOME path: the name for
+ * <root>/profiles/<name> layouts, "default" for the deployment root home,
+ * NULL when no label can be inferred. Never fails — diagnostics only.
+ * default_hermes_root/platform_default are injectable for determinism. 
+ * PoP: _profile_label_for_home @ gateway/status.py:_profile_label_for_home
+ */
+static const char *gwstatus_profile_home_regex(void) {
+    return "^[a-z0-9][a-z0-9_-]{0,63}$";
+}
+
+char *_profile_label_for_home(const char *home,
+                              const char *default_root) {
+    if (!home || !home[0]) return NULL;
+    /* _canonical_hermes_home: expanduser + absolute. Only ~ needs expansion. */
+    char canonical[1200];
+    if (home[0] == '~') {
+        const char *h = getenv("HOME");
+        if (!h || !h[0]) return NULL;
+        snprintf(canonical, sizeof canonical, "%s%s", h, home + 1);
+    } else {
+        snprintf(canonical, sizeof canonical, "%s", home);
+    }
+    /* normcase is a no-op on POSIX; strip trailing slashes like realpath would. */
+    size_t cl = strlen(canonical);
+    while (cl > 1 && canonical[cl - 1] == '/') canonical[--cl] = '\0';
+
+    /* parent.name == "profiles" and name matches ^[a-z0-9][a-z0-9_-]{0,63}$ */
+    const char *base = strrchr(canonical, '/');
+    base = base ? base + 1 : canonical;
+    char parent[1200];
+    snprintf(parent, sizeof parent, "%s", canonical);
+    char *pslash = strrchr(parent, '/');
+    if (pslash) *pslash = '\0';
+    const char *pname = strrchr(parent, '/');
+    pname = pname ? pname + 1 : parent;
+    int label_ok = (islower((unsigned char)base[0]) || isdigit((unsigned char)base[0]));
+    for (const char *q = base; *q; q++) {
+        unsigned char c = (unsigned char)*q;
+        if (!(islower(c) || isdigit(c) || c == '_' || c == '-')) { label_ok = 0; break; }
+    }
+    size_t bl = strlen(base);
+    if (bl == 0 || bl > 64) label_ok = 0;
+    if (strcmp(pname, "profiles") == 0 && label_ok)
+        return strdup(base);
+    if (default_root && default_root[0]) {
+        char dr[1200];
+        snprintf(dr, sizeof dr, "%s", default_root);
+        size_t dl = strlen(dr);
+        while (dl > 1 && dr[dl - 1] == '/') dr[--dl] = '\0';
+        if (strcmp(canonical, dr) == 0) return strdup("default");
+    }
+    return NULL;
+}
+
+/*
+ * Profile label for the gateway owning a scoped credential lock. Prefers
+ * the explicit "profile" field; falls back to inferring from "hermes_home".
+ * NULL for legacy/malformed records so callers keep PID-only wording. 
+ * PoP: scoped_lock_owner_label @ gateway/status.py:scoped_lock_owner_label
+ */
+char *scoped_lock_owner_label(json_t *record, const char *default_root) {
+    if (!record || record->type != JSON_OBJECT) return NULL;
+    json_t *prof = json_object_get(record, "profile");
+    if (prof && prof->type == JSON_STRING) {
+        const char *pv = prof->str_val;
+        while (*pv == ' ') pv++;
+        size_t pl = strlen(pv);
+        while (pl > 0 && pv[pl - 1] == ' ') pl--;
+        char trimmed[128];
+        if (pl >= sizeof trimmed) pl = sizeof trimmed - 1;
+        memcpy(trimmed, pv, pl); trimmed[pl] = '\0';
+        int ok = strlen(trimmed) > 0 &&
+                 (islower((unsigned char)trimmed[0]) || isdigit((unsigned char)trimmed[0]));
+        for (const char *q = trimmed; *q; q++) {
+            unsigned char c = (unsigned char)*q;
+            if (!(islower(c) || isdigit(c) || c == '_' || c == '-')) { ok = 0; break; }
+        }
+        if (ok && strlen(trimmed) <= 64) return strdup(trimmed);
+    }
+    json_t *home = json_object_get(record, "hermes_home");
+    if (home && home->type == JSON_STRING && home->str_val[0])
+        return _profile_label_for_home(home->str_val, default_root);
+    return NULL;
 }
