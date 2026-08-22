@@ -1,0 +1,2490 @@
+{
+ "total_functions": 23013,
+ "suspicious": [
+  {
+   "file": "src/agent/agent_init.c",
+   "fn": "agent_init_module_refs_ready",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/agent_runtime_helpers.c",
+   "fn": "void",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/agent_runtime_helpers.c",
+   "fn": "iter_httpx_pool_objects",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/agent_runtime_helpers.c",
+   "fn": "connection_candidates",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/agent_runtime_helpers.c",
+   "fn": "cleanup_dead_connections",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/agent_runtime_helpers.c",
+   "fn": "force_close_tcp_sockets",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/auxiliary_client.c",
+   "fn": "auxc_aux_interrupt_protected",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/auxiliary_client.c",
+   "fn": "aux_probe_active",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/auxiliary_client.c",
+   "fn": "aux_tag_effective_provider",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/auxiliary_client.c",
+   "fn": "aux_record_relay_response_model",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/auxiliary_client_helpers2.c",
+   "fn": "aux2_close",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/bitwarden_ports.c",
+   "fn": "bw_override_existing",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/chat_completion_helpers.c",
+   "fn": "cch_ra",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/chat_completion_helpers.c",
+   "fn": "noop_token_cb",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_compressor_ports.c",
+   "fn": "cc_on_session_reset",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "context_engine_default_update_from_response",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "context_engine_default_should_compress",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "context_engine_default_compress",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "context_engine_default_should_defer_preflight",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "default_should_compress_preflight",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "default_has_content_to_compress",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "default_on_session_start",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine.c",
+   "fn": "default_on_session_end",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine_ports.c",
+   "fn": "ceg_should_compress_preflight",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/context_engine_ports.c",
+   "fn": "ceg_should_defer_preflight_to_real_usage",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/conversation_compression_helpers.c",
+   "fn": "cc_ctx_refresh_guards",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/copilot_acp_client_helpers2.c",
+   "fn": "cac2_close",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/core_helpers.c",
+   "fn": "petr_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_custom.c",
+   "fn": "_normalize_pool_priorities",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_custom.c",
+   "fn": "_is_suppressed",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_custom.c",
+   "fn": "_is_source_suppressed",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_custom.c",
+   "fn": "_prune_stale_seeded_entries",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_sync.c",
+   "fn": "_sync_codex_entry_from_auth_store",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_sync.c",
+   "fn": "_sync_xai_oauth_entry_from_auth_store",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_sync.c",
+   "fn": "_sync_nous_entry_from_auth_store",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/credential_pool_sync.c",
+   "fn": "_sync_device_code_entry_to_auth_store",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_arm_watchdog",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_arm_shutdown_watchdog",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_save_worktree_cache",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_worktree_merged",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_state_db_maint",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_configure_history",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_clear_history",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_suspend_history",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_record_history_entry",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_record_history",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_replay_history",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_cprint",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_visible_print",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_detect_file_drop",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_auto_attach_clipboard",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_apply_paste_patch",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_preserve_ctrl_enter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_bind_submit_keys",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_disable_cpr_warn",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_terminal_leak_cpr",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_build_cpr_output",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_select_classic_output",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_estimate_input_height",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_run_kanban_loop",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/final_gaps.c",
+   "fn": "cli_main_final",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/hermes_state/hermes_state_gaps.c",
+   "fn": "hermes_state_discard_partial_read_conn",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/hermes_state/hermes_state_gaps.c",
+   "fn": "hermes_state_close_read_conn",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/i18n.c",
+   "fn": "i18n_set_locales_dir",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/i18n.c",
+   "fn": "reset_language_cache",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/insights_gaps.c",
+   "fn": "in_render_insights",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/iron_proxy_ports.c",
+   "fn": "ipx_reset_for_tests",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/memory_provider.c",
+   "fn": "builtin_is_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/memory_provider.c",
+   "fn": "builtin_get_config_schema",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/otlp_exporter.c",
+   "fn": "otlp_exporter_is_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/outbound_webhooks.c",
+   "fn": "ow_make_callback",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/outbound_webhooks.c",
+   "fn": "ow_redirect_request",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/prompt_builder.c",
+   "fn": "clear_backend_probe_cache",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/prompt_builder.c",
+   "fn": "skill_should_show",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/provider_bedrock.c",
+   "fn": "bedrock_traceback_frames",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/provider_bedrock.c",
+   "fn": "reset_discovery_cache",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/provider_bedrock.c",
+   "fn": "build_converse_kwargs",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/provider_bedrock.c",
+   "fn": "call_converse",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/provider_bedrock.c",
+   "fn": "call_converse_stream",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/provider_profiles_builtin.c",
+   "fn": "pp_null_models",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/secret_sources_base_ports.c",
+   "fn": "ssb_override_existing",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/stream_diag.c",
+   "fn": "stream_diag_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/agent/system_prompt.c",
+   "fn": "invalidate_system_prompt",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/agent/tts_provider_ports.c",
+   "fn": "ttp_voice_compatible",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/app_desktop.c",
+   "fn": "app_desktop_pin_session",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cli/config_setup.c",
+   "fn": "setup_current_reasoning_effort",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/cron_extras.c",
+   "fn": "cron_notify_on_complete",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/cron_extras.c",
+   "fn": "cron_notify_on_failure",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/cron_scripts.c",
+   "fn": "cron_script_set_interpreter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/jobs.c",
+   "fn": "resolve_default_model_snapshot",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/jobs.c",
+   "fn": "cron_classify_items_main",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/scheduler_gaps.c",
+   "fn": "sched_try_register_running_job",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/scheduler_gaps.c",
+   "fn": "sched_release_running_job",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/scheduler_gaps.c",
+   "fn": "sched_write_usage_audit",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/scheduler_gaps.c",
+   "fn": "sched_preflight_check_provider_key",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/scheduler_gaps.c",
+   "fn": "sched_preflight_check_skills",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/cron/scheduler_gaps.c",
+   "fn": "sched_preflight_job_config",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/agent_cache_pressure.c",
+   "fn": "acb_transcript_persistence_caught_up",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/bluebubbles_wrappers.c",
+   "fn": "bb_check_bluebubbles_requirements",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/bluebubbles_wrappers.c",
+   "fn": "bb_u_compile_mention_patterns",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/bluebubbles_wrappers.c",
+   "fn": "bb_u_message_matches_mention_patterns",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/config.c",
+   "fn": "gw_check_connected_whatsapp",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/config.c",
+   "fn": "gw_check_connected_api_server",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/config.c",
+   "fn": "gw_check_connected_webhook",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_wait_for_shutdown",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_has_setup_skill",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_connect_adapter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_disconnect_adapter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_active_api_run_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_scale_to_zero_has_background_work",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_scale_to_zero_should_arm",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_scale_to_zero_is_idle",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_clear_restart_failure_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_telegram_topic_auto_rename_disabled",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_should_send_telegram_capability_hint",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_session_is_active",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_cache_session_source",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_get_cached_session_source",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runner.c",
+   "fn": "gateway_runner_is_duplicate_voice_transcript",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gateway_runtime.c",
+   "fn": "gw_systemd_notify",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_has_active_processes_safe",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_heal_compression_tip_locked",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_save_entries",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_session_dunder_getattr",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_ensure_loaded_locked",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "set_expiry_finalized",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "advance_compression_session",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "switch_session",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_append_transcript_message",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_rebuild_fts_once",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "_clear_dirty_transcript",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "rewrite_transcript",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/gw_session.c",
+   "fn": "rewind_session",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/api_server_adapter_cron.c",
+   "fn": "cron_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base.c",
+   "fn": "pb_supports_draft_streaming",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base.c",
+   "fn": "pb_edit_message",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base.c",
+   "fn": "pb_delete_message",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base.c",
+   "fn": "pb_send_typing",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base.c",
+   "fn": "pb_stop_typing",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base.c",
+   "fn": "strdup",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_default_connect",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_default_disconnect",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_default_delete_message",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_default_send_typing",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_default_stop_typing",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_default_get_chat_info",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_acquire_lock",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/base_adapter.c",
+   "fn": "gw_base_platform_adapter_release_lock",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/feishu.c",
+   "fn": "feishu_poll_messages",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/msgraph_webhook/msgraph_webhook_helpers.c",
+   "fn": "msgraph_webhook_check_requirements",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/qqbot/qqbot_adapter_ports.c",
+   "fn": "qqa_enforces_own_access_policy",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/qqbot/qqbot_wrappers.c",
+   "fn": "qqbot_check_qq_requirements",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/qqbot/qqbot_wrappers.c",
+   "fn": "qqbot_u_parse_json",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/platforms/weixin.c",
+   "fn": "weixin_check_requirements",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/relay/relay_adapter_ports.c",
+   "fn": "rla_authorization_is_upstream",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/relay/relay_runtime.c",
+   "fn": "relay_noop_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/relay/relay_runtime.c",
+   "fn": "relay_noop_retain_managed_execution",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/relay/relay_runtime.c",
+   "fn": "relay_noop_release_managed_execution",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/relay/relay_runtime.c",
+   "fn": "relay_noop_managed_execution_enabled",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run.c",
+   "fn": "gw_watch_gateway_turn_inactivity",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run.c",
+   "fn": "gw_busy_start_command",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_gaps.c",
+   "fn": "gw_recover_unclean_sessions",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_gaps.c",
+   "fn": "gw_queue_retryable_fatal_platform",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_gaps.c",
+   "fn": "gw_interrupt_api_server_runs",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_gaps.c",
+   "fn": "gw_deliver_queued_first_response",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_gaps.c",
+   "fn": "gw_attach_session_title_callback",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_gaps.c",
+   "fn": "gw_make_profile_busy_session_handler",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_gaps.c",
+   "fn": "gw_start_heartbeat_poller",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/gateway/run_pure2.c",
+   "fn": "gw_ensure_windows_gateway_venv_imports",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_wrappers.c",
+   "fn": "grun_u_handle_suggestions_command",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/run_wrappers.c",
+   "fn": "grun_u_handle_blueprint_command",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/session_gaps.c",
+   "fn": "session_mark_turn_active",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/session_gaps.c",
+   "fn": "session_clear_turn_active",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/session_gaps.c",
+   "fn": "session_recover_interrupted_turns",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/session_gaps.c",
+   "fn": "session_discard_active_turn_markers",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/session_gaps.c",
+   "fn": "session_drain_spooled_drops",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/session_state.c",
+   "fn": "dflt_null",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/sqlite_safe_read.c",
+   "fn": "sqlite_safe_offline_file_access_exit",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "gw_stream_consumer_edit_message",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_on_segment_break",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_on_commentary",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_flush_pending_sync",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_notify_new_message",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_signal_flush",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_on_delta",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_send_new_chunk",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_continuation_text",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_send_fallback_final",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_send_empty_fallback_final",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_send_failure_may_have_delivered",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_resolve_draft_streaming",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_send_draft_frame",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_flush_segment_tail_on_edit_failure",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_try_strip_cursor",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_send_commentary",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_should_send_fresh_final",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_track_preview_id",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_track_preview_ids_from_result",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_adapter_prefers_fresh_final",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_try_fresh_final",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_suppress_silence_marker",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/stream_consumer.c",
+   "fn": "sc_send_or_edit",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/util_helpers.c",
+   "fn": "gw_hooks_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/util_helpers.c",
+   "fn": "gw_whatsapp_enforces_own_access_policy",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/util_helpers.c",
+   "fn": "gw_delivery_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/util_helpers.c",
+   "fn": "gw_delivery_ledger_prune",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/weixin_ports.c",
+   "fn": "wx2_enforces_own_access_policy",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/yuanbao_ports.c",
+   "fn": "yb2_ws",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/yuanbao_ports.c",
+   "fn": "yb2_enforces_own_access_policy",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/gateway/yuanbao_wrappers.c",
+   "fn": "yb_acquire_file_6",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/banner_gaps.c",
+   "fn": "banner_prefetch_banner_data",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/banner_gaps.c",
+   "fn": "banner_defer_update_notice",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/banner_gaps.c",
+   "fn": "banner_save_snapshot",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/clipboard.c",
+   "fn": "clipboard_read_image",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/clipboard.c",
+   "fn": "clipboard_write_image",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/commands_wrappers.c",
+   "fn": "cmd_build_description",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/commands_wrappers.c",
+   "fn": "cmd_is_gateway_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/commands_wrappers.c",
+   "fn": "cmd_completion_text",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/commands_wrappers.c",
+   "fn": "cmd_get_suggestion",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/config_gaps.c",
+   "fn": "config_print_config_warnings",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/config_gaps.c",
+   "fn": "config_warn_deprecated_cwd_env_vars",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/config_gaps.c",
+   "fn": "config_invalidate_env_cache",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/discord_helpers.c",
+   "fn": "discord_request",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/discord_helpers.c",
+   "fn": "discord_make_handler",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/doctor_helpers.c",
+   "fn": "doctor_check_version_consistency",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/doctor_helpers.c",
+   "fn": "doctor_check_gateway_service_linger",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/doctor_live_gaps.c",
+   "fn": "doctor_maybe_run_live_checks",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/file_tools_helpers.c",
+   "fn": "file_tools_registered_task_cwd_override",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/file_tools_helpers.c",
+   "fn": "file_tools_get_container_mirror_prefix_for_task",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/gaps.c",
+   "fn": "cli_finalize_preloaded_skills",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/gaps.c",
+   "fn": "cli_start_heartbeat_watchdog",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/helpers2.c",
+   "fn": "cl2_reload_mcp",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/helpers2.c",
+   "fn": "cl2_reload_skills",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/jobs_helpers.c",
+   "fn": "_ensure_croniter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_db_gaps.c",
+   "fn": "kanban_parents_satisfied",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_db_gaps.c",
+   "fn": "kanban_request_review",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_db_gaps.c",
+   "fn": "kanban_reclaim_dangling_run",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_db_gaps.c",
+   "fn": "kanban_reopen_review_task",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_db_gaps.c",
+   "fn": "kanban_reconcile_orphaned",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_db_gaps.c",
+   "fn": "kanban_review_dispatch_enabled",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_db_wrappers.c",
+   "fn": "kdbport_list_runs",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/kanban_model.c",
+   "fn": "kdb_task_last_failure_error",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/main_gaps.c",
+   "fn": "main_g_ensure_project_root_on_path_fast",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/managed_uv_wrappers.c",
+   "fn": "muv_rebuild_venv",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/managed_uv_wrappers.c",
+   "fn": "_reload_hermes_constants",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/model_catalog.c",
+   "fn": "resolve_static_model_alias",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/pet_input.c",
+   "fn": "cli__build_cpr_disabled_output",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/platforms_base_helpers.c",
+   "fn": "gw_base__enforces_own_access_policy",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/platforms_base_helpers.c",
+   "fn": "gw_base__authorization_is_upstream",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/platforms_base_helpers.c",
+   "fn": "gw_base__streaming_overflow_limit",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/platforms_base_helpers.c",
+   "fn": "gw_base__on_processing_start",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/platforms_base_helpers.c",
+   "fn": "gw_base__session_task_is_stale",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/platforms_base_helpers.c",
+   "fn": "gw_base__create_handoff_thread",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/plugins_cmd_wrappers.c",
+   "fn": "pcmd_get_current_memory_provider",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/plugins_cmd_wrappers.c",
+   "fn": "pcmd_get_current_context_engine",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_pets_set_pet_scale",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_model_catalog_u_cache_path",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_journey_u_cmd_edit",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_journey_cmd_journey",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_middleware_u_invoke_middleware",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_middleware_u_has_middleware",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_dump_u_memory_provider",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_curator_u_cmd_archive",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_dashboard_auth_base_start_login",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_dashboard_auth_base_complete_login",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_dashboard_auth_base_verify_session",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_dashboard_auth_base_refresh_session",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_dashboard_auth_base_revoke_session",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_skin_cmd_skin_command",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_bundles_u_cmd_show",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/ports_wrappers.c",
+   "fn": "hermes_cli_bundles_u_cmd_create",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/profiles.c",
+   "fn": "profile_migrate_config_if_outdated",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/profiles.c",
+   "fn": "profile_maybe_register_gateway_service",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/profiles_router_gaps.c",
+   "fn": "profiles_warn_read_error",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/service_manager.c",
+   "fn": "sm_is_running",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/shared_metrics_gaps.c",
+   "fn": "metrics_record_client_active",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/shared_metrics_gaps.c",
+   "fn": "metrics_validate_counter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/shared_metrics_gaps.c",
+   "fn": "metrics_record_counter_in_transaction",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/shared_metrics_gaps.c",
+   "fn": "metrics_create_counter_aggregates_table",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/shared_metrics_gaps.c",
+   "fn": "metrics_migrate_v1_counter_aggregates",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/tools_config_toolsets.c",
+   "fn": "tools_config_hidden_nous_gateway_message",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/update_cmd_gaps.c",
+   "fn": "update_reload_config_modules",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/update_cmd_gaps.c",
+   "fn": "update_stop_process_trees",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/update_cmd_gaps.c",
+   "fn": "update_refresh_bootstrap_cache_scripts",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/util_helpers.c",
+   "fn": "hcli_kanban_cmd_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/util_helpers.c",
+   "fn": "hcli_dash_native_reset",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/util_helpers.c",
+   "fn": "hcli_dash_tickets_reset",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/util_helpers.c",
+   "fn": "hcli_slash_completer_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/util_helpers.c",
+   "fn": "hcli_slash_autosuggest_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/util_helpers.c",
+   "fn": "sm_subscriber_deactivate",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/web_server_gaps.c",
+   "fn": "ws_terminate_desktop_managed_gateway",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/web_server_gaps.c",
+   "fn": "ws_open_session_db_at_path",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/web_server_gaps.c",
+   "fn": "ws_raise_if_cron_registration_error",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/web_server_gaps.c",
+   "fn": "ws_is_serve_orphaned",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/web_server_gaps.c",
+   "fn": "ws_start_parent_death_watchdog",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/web_server_gaps.c",
+   "fn": "ws_demo",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/web_server_sessions_admin.c",
+   "fn": "COALESCE",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/web_server_sessions_admin.c",
+   "fn": "COALESCE",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/hermes_cli/webhook_helpers.c",
+   "fn": "webhook_check_requirements",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/write_approval.c",
+   "fn": "cli_tools_write_approval__prompt_inline_memory_approval",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/hermes_cli/yuanbao_tools.c",
+   "fn": "cli_tools_yuanbao_tools__get_active_adapter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/main_desktop.c",
+   "fn": "signal_handler",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_achievements.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_achievements.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_browser.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_browser.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_browser.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_context_engine.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_context_engine.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_context_engine.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_dashboard_auth.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_dashboard_auth.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_dashboard_auth.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_disk_cleanup.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_disk_cleanup.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_file_memory.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_file_memory.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_google_meet.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_google_meet.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_honcho.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_image_gen.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_image_gen.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_kanban.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_kanban.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_kanban.c",
+   "fn": "board_add_event",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/plugins/plugin_model_providers.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_model_providers.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_model_providers.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_observability.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_observability.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_platforms.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_platforms.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_platforms.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_security_guidance.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_security_guidance.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_skills.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_skills.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_spotify.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_spotify.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_teams_pipeline.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_teams_pipeline.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_teams_pipeline.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_video_gen.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_video_gen.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_video_gen.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_web.c",
+   "fn": "plugin_deps_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_web.c",
+   "fn": "plugin_deps_list",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/plugins/plugin_web.c",
+   "fn": "plugin_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/sidebar.c",
+   "fn": "sidebar_handle_hover",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/terminal.c",
+   "fn": "term_set_charset",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/terminal.c",
+   "fn": "terminal_selection_clear",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/terminal.c",
+   "fn": "terminal_selection_get",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/terminal.c",
+   "fn": "terminal_selection_text",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/titlebar.c",
+   "fn": "titlebar_handle_hover",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/async_delegation.c",
+   "fn": "async_delegation_init",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/browser_tool_helpers.c",
+   "fn": "browser__is_legacy_provider_registry_overridden",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/browser_use_cli_gaps.c",
+   "fn": "bu_blocked_url_in_code",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/checkpoint_manager.c",
+   "fn": "_migrate_legacy_store",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/checkpoint_manager.c",
+   "fn": "_cm_repair_bare_repo_dirs",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/checkpoint_manager.c",
+   "fn": "maybe_auto_prune_checkpoints",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/clarify.c",
+   "fn": "bool",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/clarify_gateway.c",
+   "fn": "cli_tools_clarify_gateway_get_notify",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/clarify_tool.c",
+   "fn": "clarify_check_requirements",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "noop_is_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "noop_start",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "noop_stop",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "x11_start",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "x11_stop",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "wayland_start",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "wayland_stop",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "make_macos_backend",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "win_is_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "win_start",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "win_stop",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/computer_use.c",
+   "fn": "make_windows_backend",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_check_logging_callback_support",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_cache_audio_block",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_make_logging_callback",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_reconnect_or_reraise_group",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_register_discovered_tools_if_needed",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_wait_for_lazy_reconnect",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_reconnect_server",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_wait_for_session_ready",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_signal_reconnect_and_wait",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_wrap_dashboard_oauth_flow",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_request_lazy_reconnect",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool.c",
+   "fn": "mcp_is_tool_parallel_safe",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool_gaps.c",
+   "fn": "mcp_record_tool_trust_metadata",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool_gaps.c",
+   "fn": "mcp_trust_gate_check",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool_ports.c",
+   "fn": "mct_ensure_mcp_loop",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool_ports.c",
+   "fn": "mct_has_registered_mcp_tools",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool_ports.c",
+   "fn": "mct_stop_mcp_loop_if_idle",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mcp_tool_ports.c",
+   "fn": "mct_stop_mcp_loop",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory.c",
+   "fn": "plugin_open",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory.c",
+   "fn": "plugin_get",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory.c",
+   "fn": "plugin_count",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory.c",
+   "fn": "plugin_vtable_persist",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory.c",
+   "fn": "plugin_vtable_load",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory.c",
+   "fn": "plugin_get_by_hash",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory.c",
+   "fn": "plugin_compress_old",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory_storage.c",
+   "fn": "vtable_inmem_persist",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory_storage.c",
+   "fn": "vtable_inmem_load",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory_storage.c",
+   "fn": "vtable_sqlite_persist",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory_storage.c",
+   "fn": "vtable_sqlite_load",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/memory_tool.c",
+   "fn": "memory_tool_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/mixture_of_agents.c",
+   "fn": "moa_http_client_enter",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/mixture_of_agents.c",
+   "fn": "moa_http_client_exit",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/patch_parser.c",
+   "fn": "patch_parser_write_file_accepts_pre_content",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/ports_wrappers.c",
+   "fn": "tools_online_research_u__aenter__",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/ports_wrappers.c",
+   "fn": "tools_skills_hub_u_find_skill_dir",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/registry_cache.c",
+   "fn": "check_fn_cache_scope",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/skill_mgr_tool_wrappers.c",
+   "fn": "smt_u_validate_category",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/skill_mgr_tool_wrappers.c",
+   "fn": "smt_u_validate_frontmatter",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/terminal_tool.c",
+   "fn": "register_terminal_tool",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/terminal_tool_gaps.c",
+   "fn": "terminal_docker_isolation_enabled",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/terminal_tool_gaps.c",
+   "fn": "terminal_has_isolation_overrides",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/terminal_tool_gaps.c",
+   "fn": "terminal_ensure_task_env",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/terminal_tool_gaps.c",
+   "fn": "terminal_evict_environment",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_warn_once",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_reset_spawn_warning_state",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_verify_cosign",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_verify_checksum",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_extract_tirith_binary",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_install_tirith",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_is_explicit_path",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_resolve_tirith_path",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_background_install",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "ensure_installed",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "_is_app_tld_finding",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "tirith_set_path",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tirith.c",
+   "fn": "tirith_set_enabled",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/todo_tool.c",
+   "fn": "todo_tool_check_requirements",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tool_search.c",
+   "fn": "tool_search_catalog_free",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/transcribe.c",
+   "fn": "registry_init_transcribe_impl",
+   "kind": "EMPTY_BODY"
+  },
+  {
+   "file": "src/tools/tts_tool_gaps.c",
+   "fn": "tts_target_file_bytes",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tts_tool_gaps.c",
+   "fn": "tts_concat_audio_files",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/tts_tool_gaps.c",
+   "fn": "tts_text_to_speech_single",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_async_delegation_reset",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_cleanup_all_browsers",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_file_sync_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_modal_before_execute",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_singularity_cleanup",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_ha_run_async",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_lazy_deps_available",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_moa_provider_health_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_moa_http_client_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_registry_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_url_safety_async_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_url_safety_sync_init",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/util_helpers.c",
+   "fn": "tools_cu_run_doctor",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/vision_helpers.c",
+   "fn": "vision_build_scale_note",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/vision_wrappers.c",
+   "fn": "vi_vision_concurrency_slot",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/voice_mode.c",
+   "fn": "record_thread",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word.c",
+   "fn": "ww_owns_listener",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word.c",
+   "fn": "ww_pause_listening",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word.c",
+   "fn": "ww_resume_listening",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word.c",
+   "fn": "ww_stop_listening",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word.c",
+   "fn": "ww_is_listening",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word.c",
+   "fn": "ww_audio_is_silent",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word_gaps.c",
+   "fn": "wake_local_input_device_ready",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word_gaps.c",
+   "fn": "wake_resample_audio_frame",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/tools/wake_word_gaps.c",
+   "fn": "wake_feed_audio",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_minimize",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_maximize",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_restore",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_terminal_search",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_terminal_find_next",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_terminal_enable_hyperlinks",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_terminal_has_hyperlinks",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_create",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_destroy",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_set_title",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_stubs.c",
+   "fn": "window_focus",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "seat_handle_name",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "registry_handle_global_remove",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_platform_has_gpu",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_focus",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_set_position",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_is_fullscreen",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_get_renderer",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_render_begin",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_render_end",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_clear",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_draw_rect",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_fill_rect",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_fill_rect_rounded",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_fill_circle",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_draw_text",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_draw_line",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_draw_image",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_get_mouse_button",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_set_mouse_pos",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_clipboard_get",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_clipboard_set",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_wayland.c",
+   "fn": "window_enable_dnd",
+   "kind": "CONST_RETURN"
+  },
+  {
+   "file": "src/window_win32.c",
+   "fn": "window_platform_has_gpu",
+   "kind": "CONST_RETURN"
+  }
+ ]
+}

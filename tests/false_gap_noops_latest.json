@@ -1,0 +1,1182 @@
+[
+ {
+  "file": "src/agent/agent_runtime_helpers.c",
+  "fn": "connection_candidates",
+  "pop": "/* PoP: connection_candidates @"
+ },
+ {
+  "file": "src/agent/auxiliary_client.c",
+  "fn": "auxc_aux_interrupt_protected",
+  "pop": "/* PoP: auxc_aux_interrupt_protected @"
+ },
+ {
+  "file": "src/agent/auxiliary_client.c",
+  "fn": "aux_probe_active",
+  "pop": "/* PoP: aux_probe_active @"
+ },
+ {
+  "file": "src/agent/auxiliary_client.c",
+  "fn": "aux_tag_effective_provider",
+  "pop": "/* PoP: aux_tag_effective_provider @"
+ },
+ {
+  "file": "src/agent/auxiliary_client.c",
+  "fn": "aux_record_relay_response_model",
+  "pop": "/* PoP: aux_record_relay_response_model @"
+ },
+ {
+  "file": "src/agent/bitwarden_ports.c",
+  "fn": "bw_override_existing",
+  "pop": "/* PoP: bw_override_existing @"
+ },
+ {
+  "file": "src/agent/context_compressor_ports.c",
+  "fn": "cc_on_session_reset",
+  "pop": "/* PoP: cc_on_session_reset @"
+ },
+ {
+  "file": "src/agent/context_engine_ports.c",
+  "fn": "ceg_should_compress_preflight",
+  "pop": "/* PoP: ceg_should_compress_preflight @"
+ },
+ {
+  "file": "src/agent/context_engine_ports.c",
+  "fn": "ceg_should_defer_preflight_to_real_usage",
+  "pop": "/* PoP: ceg_should_defer_preflight_to_real_usage @"
+ },
+ {
+  "file": "src/agent/conversation_compression_helpers.c",
+  "fn": "cc_ctx_refresh_guards",
+  "pop": "/* PoP: cc_ctx_refresh_guards @"
+ },
+ {
+  "file": "src/agent/copilot_acp_client_helpers2.c",
+  "fn": "cac2_close",
+  "pop": "/* PoP: cac2_close @"
+ },
+ {
+  "file": "src/agent/core_helpers.c",
+  "fn": "petr_init",
+  "pop": "/* PoP: petr_init @"
+ },
+ {
+  "file": "src/agent/iron_proxy_ports.c",
+  "fn": "ipx_reset_for_tests",
+  "pop": "/* PoP: ipx_reset_for_tests @"
+ },
+ {
+  "file": "src/agent/memory_provider.c",
+  "fn": "builtin_get_config_schema",
+  "pop": "/* PoP: builtin_get_config_schema @"
+ },
+ {
+  "file": "src/agent/otlp_exporter.c",
+  "fn": "otlp_exporter_is_available",
+  "pop": "/* PoP: otlp_exporter_is_available @"
+ },
+ {
+  "file": "src/agent/outbound_webhooks.c",
+  "fn": "ow_make_callback",
+  "pop": "/* PoP: ow_make_callback @"
+ },
+ {
+  "file": "src/agent/outbound_webhooks.c",
+  "fn": "ow_redirect_request",
+  "pop": "/* PoP: ow_redirect_request @"
+ },
+ {
+  "file": "src/agent/prompt_builder.c",
+  "fn": "clear_backend_probe_cache",
+  "pop": "/* PoP: clear_backend_probe_cache @"
+ },
+ {
+  "file": "src/agent/prompt_builder.c",
+  "fn": "skill_should_show",
+  "pop": "/* PoP: skill_should_show @"
+ },
+ {
+  "file": "src/agent/secret_sources_base_ports.c",
+  "fn": "ssb_override_existing",
+  "pop": "/* PoP: ssb_override_existing @"
+ },
+ {
+  "file": "src/agent/tts_provider_ports.c",
+  "fn": "ttp_voice_compatible",
+  "pop": "/* PoP: ttp_voice_compatible @"
+ },
+ {
+  "file": "src/cron/jobs.c",
+  "fn": "cron_classify_items_main",
+  "pop": "/* PoP: cron_classify_items_main @"
+ },
+ {
+  "file": "src/gateway/agent_cache_pressure.c",
+  "fn": "acb_transcript_persistence_caught_up",
+  "pop": "/* PoP: acb_transcript_persistence_caught_up @"
+ },
+ {
+  "file": "src/gateway/bluebubbles_wrappers.c",
+  "fn": "bb_check_bluebubbles_requirements",
+  "pop": "/* PoP: bb_check_bluebubbles_requirements @"
+ },
+ {
+  "file": "src/gateway/bluebubbles_wrappers.c",
+  "fn": "bb_u_compile_mention_patterns",
+  "pop": "/* PoP: bb_u_compile_mention_patterns @"
+ },
+ {
+  "file": "src/gateway/bluebubbles_wrappers.c",
+  "fn": "bb_u_message_matches_mention_patterns",
+  "pop": "/* PoP: bb_u_message_matches_mention_patterns @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_wait_for_shutdown",
+  "pop": "/* PoP: gateway_runner_wait_for_shutdown @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_has_setup_skill",
+  "pop": "/* PoP: gateway_runner_has_setup_skill @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_connect_adapter",
+  "pop": "/* PoP: gateway_runner_connect_adapter @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_connect_adapter",
+  "pop": "/* PoP: gateway_runner_connect_adapter @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_active_api_run_count",
+  "pop": "/* PoP: gateway_runner_active_api_run_count @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_scale_to_zero_has_background_work",
+  "pop": "/* PoP: gateway_runner_scale_to_zero_has_background_work @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_scale_to_zero_should_arm",
+  "pop": "/* PoP: gateway_runner_scale_to_zero_should_arm @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_scale_to_zero_is_idle",
+  "pop": "/* PoP: gateway_runner_scale_to_zero_is_idle @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_clear_restart_failure_count",
+  "pop": "/* PoP: gateway_runner_clear_restart_failure_count @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_telegram_topic_auto_rename_disabled",
+  "pop": "/* PoP: gateway_runner_telegram_topic_auto_rename_disabled @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_should_send_telegram_capability_hint",
+  "pop": "/* PoP: gateway_runner_should_send_telegram_capability_hint @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_session_is_active",
+  "pop": "/* PoP: gateway_runner_session_is_active @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_cache_session_source",
+  "pop": "/* PoP: gateway_runner_cache_session_source @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_get_cached_session_source",
+  "pop": "/* PoP: gateway_runner_get_cached_session_source @"
+ },
+ {
+  "file": "src/gateway/gateway_runner.c",
+  "fn": "gateway_runner_is_duplicate_voice_transcript",
+  "pop": "/* PoP: gateway_runner_is_duplicate_voice_transcript @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_has_active_processes_safe",
+  "pop": "/* PoP: _has_active_processes_safe @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_heal_compression_tip_locked",
+  "pop": "/* PoP: _heal_compression_tip_locked @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_save_entries",
+  "pop": "/* PoP: _save_entries @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_session_dunder_getattr",
+  "pop": "/* PoP: _session_dunder_getattr @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_ensure_loaded_locked",
+  "pop": "/* PoP: _ensure_loaded_locked @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "set_expiry_finalized",
+  "pop": "/* PoP: set_expiry_finalized @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "advance_compression_session",
+  "pop": "/* PoP: advance_compression_session @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "switch_session",
+  "pop": "/* PoP: switch_session @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_append_transcript_message",
+  "pop": "/* PoP: _append_transcript_message @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_rebuild_fts_once",
+  "pop": "/* PoP: _rebuild_fts_once @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_clear_dirty_transcript",
+  "pop": "/* PoP: _clear_dirty_transcript @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "rewrite_transcript",
+  "pop": "/* PoP: rewrite_transcript @"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "rewind_session",
+  "pop": "/* PoP: rewind_session @"
+ },
+ {
+  "file": "src/gateway/platforms/base.c",
+  "fn": "pb_supports_draft_streaming",
+  "pop": "/* PoP: pb_supports_draft_streaming @"
+ },
+ {
+  "file": "src/gateway/platforms/base.c",
+  "fn": "pb_edit_message",
+  "pop": "/* PoP: pb_edit_message @"
+ },
+ {
+  "file": "src/gateway/platforms/base.c",
+  "fn": "pb_delete_message",
+  "pop": "/* PoP: pb_delete_message @"
+ },
+ {
+  "file": "src/gateway/platforms/base.c",
+  "fn": "pb_send_typing",
+  "pop": "/* PoP: pb_send_typing @"
+ },
+ {
+  "file": "src/gateway/platforms/base.c",
+  "fn": "pb_stop_typing",
+  "pop": "/* PoP: pb_stop_typing @"
+ },
+ {
+  "file": "src/gateway/platforms/msgraph_webhook/msgraph_webhook_helpers.c",
+  "fn": "msgraph_webhook_check_requirements",
+  "pop": "/* PoP: msgraph_webhook_check_requirements @"
+ },
+ {
+  "file": "src/gateway/platforms/qqbot/qqbot_adapter_ports.c",
+  "fn": "qqa_enforces_own_access_policy",
+  "pop": "/* PoP: qqa_enforces_own_access_policy @"
+ },
+ {
+  "file": "src/gateway/platforms/qqbot/qqbot_wrappers.c",
+  "fn": "qqbot_check_qq_requirements",
+  "pop": "/* PoP: qqbot_check_qq_requirements @"
+ },
+ {
+  "file": "src/gateway/platforms/qqbot/qqbot_wrappers.c",
+  "fn": "qqbot_u_parse_json",
+  "pop": "/* PoP: qqbot_u_parse_json @"
+ },
+ {
+  "file": "src/gateway/platforms/weixin.c",
+  "fn": "weixin_check_requirements",
+  "pop": "/* PoP: weixin_check_requirements @"
+ },
+ {
+  "file": "src/gateway/platforms/weixin.c",
+  "fn": "weixin_check_requirements",
+  "pop": "/* PoP: weixin_check_requirements @"
+ },
+ {
+  "file": "src/gateway/relay/relay_adapter_ports.c",
+  "fn": "rla_authorization_is_upstream",
+  "pop": "/* PoP: rla_authorization_is_upstream @"
+ },
+ {
+  "file": "src/gateway/relay/relay_runtime.c",
+  "fn": "relay_noop_available",
+  "pop": "/* PoP: relay_noop_available @"
+ },
+ {
+  "file": "src/gateway/relay/relay_runtime.c",
+  "fn": "relay_noop_retain_managed_execution",
+  "pop": "/* PoP: relay_noop_retain_managed_execution @"
+ },
+ {
+  "file": "src/gateway/relay/relay_runtime.c",
+  "fn": "relay_noop_release_managed_execution",
+  "pop": "/* PoP: relay_noop_release_managed_execution @"
+ },
+ {
+  "file": "src/gateway/relay/relay_runtime.c",
+  "fn": "relay_noop_managed_execution_enabled",
+  "pop": "/* PoP: relay_noop_managed_execution_enabled @"
+ },
+ {
+  "file": "src/gateway/run.c",
+  "fn": "gw_watch_gateway_turn_inactivity",
+  "pop": "/* PoP: gw_watch_gateway_turn_inactivity @"
+ },
+ {
+  "file": "src/gateway/run.c",
+  "fn": "gw_busy_start_command",
+  "pop": "/* PoP: gw_busy_start_command @"
+ },
+ {
+  "file": "src/gateway/run_pure2.c",
+  "fn": "gw_ensure_windows_gateway_venv_imports",
+  "pop": "/* PoP: gw_ensure_windows_gateway_venv_imports @"
+ },
+ {
+  "file": "src/gateway/run_wrappers.c",
+  "fn": "grun_u_handle_suggestions_command",
+  "pop": "/* PoP: grun_u_handle_suggestions_command @"
+ },
+ {
+  "file": "src/gateway/run_wrappers.c",
+  "fn": "grun_u_handle_blueprint_command",
+  "pop": "/* PoP: grun_u_handle_blueprint_command @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_on_segment_break",
+  "pop": "/* PoP: sc_on_segment_break @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_on_commentary",
+  "pop": "/* PoP: sc_on_commentary @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_flush_pending_sync",
+  "pop": "/* PoP: sc_flush_pending_sync @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_notify_new_message",
+  "pop": "/* PoP: sc_notify_new_message @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_signal_flush",
+  "pop": "/* PoP: sc_signal_flush @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_on_delta",
+  "pop": "/* PoP: sc_on_delta @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_new_chunk",
+  "pop": "/* PoP: sc_send_new_chunk @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_fallback_final",
+  "pop": "/* PoP: sc_send_fallback_final @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_fallback_final",
+  "pop": "/* PoP: sc_send_fallback_final @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_empty_fallback_final",
+  "pop": "/* PoP: sc_send_empty_fallback_final @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_empty_fallback_final",
+  "pop": "/* PoP: sc_send_empty_fallback_final @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_failure_may_have_delivered",
+  "pop": "/* PoP: sc_send_failure_may_have_delivered @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_draft_frame",
+  "pop": "/* PoP: sc_send_draft_frame @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_draft_frame",
+  "pop": "/* PoP: sc_send_draft_frame @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_flush_segment_tail_on_edit_failure",
+  "pop": "/* PoP: sc_flush_segment_tail_on_edit_failure @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_flush_segment_tail_on_edit_failure",
+  "pop": "/* PoP: sc_flush_segment_tail_on_edit_failure @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_commentary",
+  "pop": "/* PoP: sc_send_commentary @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_commentary",
+  "pop": "/* PoP: sc_send_commentary @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_track_preview_id",
+  "pop": "/* PoP: sc_track_preview_id @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_track_preview_ids_from_result",
+  "pop": "/* PoP: sc_track_preview_ids_from_result @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_adapter_prefers_fresh_final",
+  "pop": "/* PoP: sc_adapter_prefers_fresh_final @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_adapter_prefers_fresh_final",
+  "pop": "/* PoP: sc_adapter_prefers_fresh_final @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_suppress_silence_marker",
+  "pop": "/* PoP: sc_suppress_silence_marker @"
+ },
+ {
+  "file": "src/gateway/stream_consumer.c",
+  "fn": "sc_send_or_edit",
+  "pop": "/* PoP: sc_send_or_edit @"
+ },
+ {
+  "file": "src/gateway/util_helpers.c",
+  "fn": "gw_hooks_init",
+  "pop": "/* PoP: gw_hooks_init @"
+ },
+ {
+  "file": "src/gateway/util_helpers.c",
+  "fn": "gw_whatsapp_enforces_own_access_policy",
+  "pop": "/* PoP: gw_whatsapp_enforces_own_access_policy @"
+ },
+ {
+  "file": "src/gateway/util_helpers.c",
+  "fn": "gw_delivery_init",
+  "pop": "/* PoP: gw_delivery_init @"
+ },
+ {
+  "file": "src/gateway/util_helpers.c",
+  "fn": "gw_delivery_ledger_prune",
+  "pop": "/* PoP: gw_delivery_ledger_prune @"
+ },
+ {
+  "file": "src/gateway/weixin_ports.c",
+  "fn": "wx2_enforces_own_access_policy",
+  "pop": "/* PoP: wx2_enforces_own_access_policy @"
+ },
+ {
+  "file": "src/gateway/yuanbao_ports.c",
+  "fn": "yb2_ws",
+  "pop": "/* PoP: yb2_ws @"
+ },
+ {
+  "file": "src/gateway/yuanbao_ports.c",
+  "fn": "yb2_enforces_own_access_policy",
+  "pop": "/* PoP: yb2_enforces_own_access_policy @"
+ },
+ {
+  "file": "src/gateway/yuanbao_wrappers.c",
+  "fn": "yb_acquire_file_6",
+  "pop": "/* PoP: yb_acquire_file_6 @"
+ },
+ {
+  "file": "src/hermes_cli/commands_wrappers.c",
+  "fn": "cmd_build_description",
+  "pop": "/* PoP: cmd_build_description @"
+ },
+ {
+  "file": "src/hermes_cli/commands_wrappers.c",
+  "fn": "cmd_is_gateway_available",
+  "pop": "/* PoP: cmd_is_gateway_available @"
+ },
+ {
+  "file": "src/hermes_cli/commands_wrappers.c",
+  "fn": "cmd_completion_text",
+  "pop": "/* PoP: cmd_completion_text @"
+ },
+ {
+  "file": "src/hermes_cli/commands_wrappers.c",
+  "fn": "cmd_get_suggestion",
+  "pop": "/* PoP: cmd_get_suggestion @"
+ },
+ {
+  "file": "src/hermes_cli/discord_helpers.c",
+  "fn": "discord_request",
+  "pop": "/* PoP: discord_request @"
+ },
+ {
+  "file": "src/hermes_cli/discord_helpers.c",
+  "fn": "discord_make_handler",
+  "pop": "/* PoP: discord_make_handler @"
+ },
+ {
+  "file": "src/hermes_cli/doctor_helpers.c",
+  "fn": "doctor_check_version_consistency",
+  "pop": "/* PoP: doctor_check_version_consistency @"
+ },
+ {
+  "file": "src/hermes_cli/doctor_helpers.c",
+  "fn": "doctor_check_gateway_service_linger",
+  "pop": "/* PoP: doctor_check_gateway_service_linger @"
+ },
+ {
+  "file": "src/hermes_cli/file_tools_helpers.c",
+  "fn": "file_tools_registered_task_cwd_override",
+  "pop": "/* PoP: file_tools_registered_task_cwd_override @"
+ },
+ {
+  "file": "src/hermes_cli/file_tools_helpers.c",
+  "fn": "file_tools_get_container_mirror_prefix_for_task",
+  "pop": "/* PoP: file_tools_get_container_mirror_prefix_for_task @"
+ },
+ {
+  "file": "src/hermes_cli/helpers2.c",
+  "fn": "cl2_reload_mcp",
+  "pop": "/* PoP: cl2_reload_mcp @"
+ },
+ {
+  "file": "src/hermes_cli/helpers2.c",
+  "fn": "cl2_reload_skills",
+  "pop": "/* PoP: cl2_reload_skills @"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_wrappers.c",
+  "fn": "kdbport_list_runs",
+  "pop": "/* PoP: kdbport_list_runs @"
+ },
+ {
+  "file": "src/hermes_cli/kanban_model.c",
+  "fn": "kdb_task_last_failure_error",
+  "pop": "/* PoP: kdb_task_last_failure_error @"
+ },
+ {
+  "file": "src/hermes_cli/managed_uv_wrappers.c",
+  "fn": "muv_rebuild_venv",
+  "pop": "/* PoP: muv_rebuild_venv @"
+ },
+ {
+  "file": "src/hermes_cli/model_catalog.c",
+  "fn": "resolve_static_model_alias",
+  "pop": "/* PoP: resolve_static_model_alias @"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__enforces_own_access_policy",
+  "pop": "/* PoP: gw_base__enforces_own_access_policy @"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__authorization_is_upstream",
+  "pop": "/* PoP: gw_base__authorization_is_upstream @"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__on_processing_start",
+  "pop": "/* PoP: gw_base__on_processing_start @"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__session_task_is_stale",
+  "pop": "/* PoP: gw_base__session_task_is_stale @"
+ },
+ {
+  "file": "src/hermes_cli/plugins_cmd_wrappers.c",
+  "fn": "pcmd_get_current_memory_provider",
+  "pop": "/* PoP: pcmd_get_current_memory_provider @"
+ },
+ {
+  "file": "src/hermes_cli/plugins_cmd_wrappers.c",
+  "fn": "pcmd_get_current_memory_provider",
+  "pop": "/* PoP: pcmd_get_current_memory_provider @"
+ },
+ {
+  "file": "src/hermes_cli/plugins_cmd_wrappers.c",
+  "fn": "pcmd_get_current_context_engine",
+  "pop": "/* PoP: pcmd_get_current_context_engine @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri",
+  "pop": "/* PoP: hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_pets_set_pet_scale",
+  "pop": "/* PoP: hermes_cli_pets_set_pet_scale @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_model_catalog_u_cache_path",
+  "pop": "/* PoP: hermes_cli_model_catalog_u_cache_path @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_journey_u_cmd_edit",
+  "pop": "/* PoP: hermes_cli_journey_u_cmd_edit @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_journey_cmd_journey",
+  "pop": "/* PoP: hermes_cli_journey_cmd_journey @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_middleware_u_invoke_middleware",
+  "pop": "/* PoP: hermes_cli_middleware_u_invoke_middleware @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_middleware_u_has_middleware",
+  "pop": "/* PoP: hermes_cli_middleware_u_has_middleware @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_dump_u_memory_provider",
+  "pop": "/* PoP: hermes_cli_dump_u_memory_provider @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_curator_u_cmd_archive",
+  "pop": "/* PoP: hermes_cli_curator_u_cmd_archive @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_dashboard_auth_base_start_login",
+  "pop": "/* PoP: hermes_cli_dashboard_auth_base_start_login @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_dashboard_auth_base_complete_login",
+  "pop": "/* PoP: hermes_cli_dashboard_auth_base_complete_login @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_dashboard_auth_base_verify_session",
+  "pop": "/* PoP: hermes_cli_dashboard_auth_base_verify_session @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_dashboard_auth_base_refresh_session",
+  "pop": "/* PoP: hermes_cli_dashboard_auth_base_refresh_session @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_dashboard_auth_base_revoke_session",
+  "pop": "/* PoP: hermes_cli_dashboard_auth_base_revoke_session @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_skin_cmd_skin_command",
+  "pop": "/* PoP: hermes_cli_skin_cmd_skin_command @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_bundles_u_cmd_show",
+  "pop": "/* PoP: hermes_cli_bundles_u_cmd_show @"
+ },
+ {
+  "file": "src/hermes_cli/ports_wrappers.c",
+  "fn": "hermes_cli_bundles_u_cmd_create",
+  "pop": "/* PoP: hermes_cli_bundles_u_cmd_create @"
+ },
+ {
+  "file": "src/hermes_cli/profiles.c",
+  "fn": "profile_migrate_config_if_outdated",
+  "pop": "/* PoP: profile_migrate_config_if_outdated @"
+ },
+ {
+  "file": "src/hermes_cli/profiles.c",
+  "fn": "profile_maybe_register_gateway_service",
+  "pop": "/* PoP: profile_maybe_register_gateway_service @"
+ },
+ {
+  "file": "src/hermes_cli/service_manager.c",
+  "fn": "sm_is_running",
+  "pop": "/* PoP: sm_is_running @"
+ },
+ {
+  "file": "src/hermes_cli/tools_config_toolsets.c",
+  "fn": "tools_config_hidden_nous_gateway_message",
+  "pop": "/* PoP: tools_config_hidden_nous_gateway_message @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "hcli_kanban_cmd_list",
+  "pop": "/* PoP: hcli_kanban_cmd_list @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "hcli_kanban_cmd_list",
+  "pop": "/* PoP: hcli_kanban_cmd_list @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "hcli_dash_native_reset",
+  "pop": "/* PoP: hcli_dash_native_reset @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "hcli_dash_tickets_reset",
+  "pop": "/* PoP: hcli_dash_tickets_reset @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "hcli_slash_completer_init",
+  "pop": "/* PoP: hcli_slash_completer_init @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "hcli_slash_completer_init",
+  "pop": "/* PoP: hcli_slash_completer_init @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "hcli_slash_autosuggest_init",
+  "pop": "/* PoP: hcli_slash_autosuggest_init @"
+ },
+ {
+  "file": "src/hermes_cli/util_helpers.c",
+  "fn": "sm_subscriber_deactivate",
+  "pop": "/* PoP: sm_subscriber_deactivate @"
+ },
+ {
+  "file": "src/hermes_cli/webhook_helpers.c",
+  "fn": "webhook_check_requirements",
+  "pop": "/* PoP: webhook_check_requirements @"
+ },
+ {
+  "file": "src/hermes_cli/write_approval.c",
+  "fn": "cli_tools_write_approval__prompt_inline_memory_approval",
+  "pop": "/* PoP: cli_tools_write_approval__prompt_inline_memory_approval @"
+ },
+ {
+  "file": "src/tools/checkpoint_manager.c",
+  "fn": "maybe_auto_prune_checkpoints",
+  "pop": "/* PoP: maybe_auto_prune_checkpoints @"
+ },
+ {
+  "file": "src/tools/clarify_gateway.c",
+  "fn": "cli_tools_clarify_gateway_get_notify",
+  "pop": "/* PoP: cli_tools_clarify_gateway_get_notify @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "noop_is_available",
+  "pop": "/* PoP: noop_is_available @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "noop_is_available",
+  "pop": "/* PoP: noop_is_available @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "noop_stop",
+  "pop": "/* PoP: noop_stop @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "noop_stop",
+  "pop": "/* PoP: noop_stop @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "make_macos_backend",
+  "pop": "/* PoP: make_macos_backend @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "make_macos_backend",
+  "pop": "/* PoP: make_macos_backend @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "make_windows_backend",
+  "pop": "/* PoP: make_windows_backend @"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "make_windows_backend",
+  "pop": "/* PoP: make_windows_backend @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_check_logging_callback_support",
+  "pop": "/* PoP: mcp_check_logging_callback_support @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_cache_audio_block",
+  "pop": "/* PoP: mcp_cache_audio_block @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_make_logging_callback",
+  "pop": "/* PoP: mcp_make_logging_callback @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_reconnect_or_reraise_group",
+  "pop": "/* PoP: mcp_reconnect_or_reraise_group @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_register_discovered_tools_if_needed",
+  "pop": "/* PoP: mcp_register_discovered_tools_if_needed @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_wait_for_lazy_reconnect",
+  "pop": "/* PoP: mcp_wait_for_lazy_reconnect @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_reconnect_server",
+  "pop": "/* PoP: mcp_reconnect_server @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_wait_for_session_ready",
+  "pop": "/* PoP: mcp_wait_for_session_ready @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_signal_reconnect_and_wait",
+  "pop": "/* PoP: mcp_signal_reconnect_and_wait @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_wrap_dashboard_oauth_flow",
+  "pop": "/* PoP: mcp_wrap_dashboard_oauth_flow @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_request_lazy_reconnect",
+  "pop": "/* PoP: mcp_request_lazy_reconnect @"
+ },
+ {
+  "file": "src/tools/mcp_tool.c",
+  "fn": "mcp_is_tool_parallel_safe",
+  "pop": "/* PoP: mcp_is_tool_parallel_safe @"
+ },
+ {
+  "file": "src/tools/mcp_tool_ports.c",
+  "fn": "mct_ensure_mcp_loop",
+  "pop": "/* PoP: mct_ensure_mcp_loop @"
+ },
+ {
+  "file": "src/tools/mcp_tool_ports.c",
+  "fn": "mct_has_registered_mcp_tools",
+  "pop": "/* PoP: mct_has_registered_mcp_tools @"
+ },
+ {
+  "file": "src/tools/mcp_tool_ports.c",
+  "fn": "mct_stop_mcp_loop_if_idle",
+  "pop": "/* PoP: mct_stop_mcp_loop_if_idle @"
+ },
+ {
+  "file": "src/tools/mcp_tool_ports.c",
+  "fn": "mct_stop_mcp_loop",
+  "pop": "/* PoP: mct_stop_mcp_loop @"
+ },
+ {
+  "file": "src/tools/memory_tool.c",
+  "fn": "memory_tool_available",
+  "pop": "/* PoP: memory_tool_available @"
+ },
+ {
+  "file": "src/tools/mixture_of_agents.c",
+  "fn": "moa_http_client_enter",
+  "pop": "/* PoP: moa_http_client_enter @"
+ },
+ {
+  "file": "src/tools/mixture_of_agents.c",
+  "fn": "moa_http_client_exit",
+  "pop": "/* PoP: moa_http_client_exit @"
+ },
+ {
+  "file": "src/tools/ports_wrappers.c",
+  "fn": "tools_online_research_u__aenter__",
+  "pop": "/* PoP: tools_online_research_u__aenter__ @"
+ },
+ {
+  "file": "src/tools/ports_wrappers.c",
+  "fn": "tools_skills_hub_u_find_skill_dir",
+  "pop": "/* PoP: tools_skills_hub_u_find_skill_dir @"
+ },
+ {
+  "file": "src/tools/registry_cache.c",
+  "fn": "check_fn_cache_scope",
+  "pop": "/* PoP: check_fn_cache_scope @"
+ },
+ {
+  "file": "src/tools/skill_mgr_tool_wrappers.c",
+  "fn": "smt_u_validate_category",
+  "pop": "/* PoP: smt_u_validate_category @"
+ },
+ {
+  "file": "src/tools/skill_mgr_tool_wrappers.c",
+  "fn": "smt_u_validate_frontmatter",
+  "pop": "/* PoP: smt_u_validate_frontmatter @"
+ },
+ {
+  "file": "src/tools/terminal_tool.c",
+  "fn": "register_terminal_tool",
+  "pop": "/* PoP: register_terminal_tool @"
+ },
+ {
+  "file": "src/tools/terminal_tool.c",
+  "fn": "register_terminal_tool",
+  "pop": "/* PoP: register_terminal_tool @"
+ },
+ {
+  "file": "src/tools/terminal_tool.c",
+  "fn": "register_terminal_tool",
+  "pop": "/* PoP: register_terminal_tool @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_warn_once",
+  "pop": "/* PoP: _warn_once @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_warn_once",
+  "pop": "/* PoP: _warn_once @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_reset_spawn_warning_state",
+  "pop": "/* PoP: _reset_spawn_warning_state @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_verify_cosign",
+  "pop": "/* PoP: _verify_cosign @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_verify_checksum",
+  "pop": "/* PoP: _verify_checksum @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_is_explicit_path",
+  "pop": "/* PoP: _is_explicit_path @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_is_explicit_path",
+  "pop": "/* PoP: _is_explicit_path @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_is_explicit_path",
+  "pop": "/* PoP: _is_explicit_path @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_background_install",
+  "pop": "/* PoP: _background_install @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_background_install",
+  "pop": "/* PoP: _background_install @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "ensure_installed",
+  "pop": "/* PoP: ensure_installed @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "ensure_installed",
+  "pop": "/* PoP: ensure_installed @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_is_app_tld_finding",
+  "pop": "/* PoP: _is_app_tld_finding @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "_is_app_tld_finding",
+  "pop": "/* PoP: _is_app_tld_finding @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "tirith_set_path",
+  "pop": "/* PoP: tirith_set_path @"
+ },
+ {
+  "file": "src/tools/tirith.c",
+  "fn": "tirith_set_enabled",
+  "pop": "/* PoP: tirith_set_enabled @"
+ },
+ {
+  "file": "src/tools/todo_tool.c",
+  "fn": "todo_tool_check_requirements",
+  "pop": "/* PoP: todo_tool_check_requirements @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_async_delegation_reset",
+  "pop": "/* PoP: tools_async_delegation_reset @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_cleanup_all_browsers",
+  "pop": "/* PoP: tools_cleanup_all_browsers @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_file_sync_init",
+  "pop": "/* PoP: tools_file_sync_init @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_modal_before_execute",
+  "pop": "/* PoP: tools_modal_before_execute @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_singularity_cleanup",
+  "pop": "/* PoP: tools_singularity_cleanup @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_ha_run_async",
+  "pop": "/* PoP: tools_ha_run_async @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_lazy_deps_available",
+  "pop": "/* PoP: tools_lazy_deps_available @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_moa_provider_health_init",
+  "pop": "/* PoP: tools_moa_provider_health_init @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_moa_http_client_init",
+  "pop": "/* PoP: tools_moa_http_client_init @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_registry_init",
+  "pop": "/* PoP: tools_registry_init @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_url_safety_async_init",
+  "pop": "/* PoP: tools_url_safety_async_init @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_url_safety_sync_init",
+  "pop": "/* PoP: tools_url_safety_sync_init @"
+ },
+ {
+  "file": "src/tools/util_helpers.c",
+  "fn": "tools_cu_run_doctor",
+  "pop": "/* PoP: tools_cu_run_doctor @"
+ },
+ {
+  "file": "src/tools/vision_helpers.c",
+  "fn": "vision_build_scale_note",
+  "pop": "/* PoP: vision_build_scale_note @"
+ },
+ {
+  "file": "src/tools/vision_wrappers.c",
+  "fn": "vi_vision_concurrency_slot",
+  "pop": "/* PoP: vi_vision_concurrency_slot @"
+ },
+ {
+  "file": "src/tools/wake_word.c",
+  "fn": "ww_owns_listener",
+  "pop": "/* PoP: ww_owns_listener @"
+ },
+ {
+  "file": "src/tools/wake_word.c",
+  "fn": "ww_pause_listening",
+  "pop": "/* PoP: ww_pause_listening @"
+ },
+ {
+  "file": "src/tools/wake_word.c",
+  "fn": "ww_resume_listening",
+  "pop": "/* PoP: ww_resume_listening @"
+ },
+ {
+  "file": "src/tools/wake_word.c",
+  "fn": "ww_stop_listening",
+  "pop": "/* PoP: ww_stop_listening @"
+ },
+ {
+  "file": "src/tools/wake_word.c",
+  "fn": "ww_is_listening",
+  "pop": "/* PoP: ww_is_listening @"
+ },
+ {
+  "file": "src/tools/wake_word.c",
+  "fn": "ww_audio_is_silent",
+  "pop": "/* PoP: ww_audio_is_silent @"
+ }
+]
