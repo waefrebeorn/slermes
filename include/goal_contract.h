@@ -33,6 +33,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -212,6 +213,20 @@ typedef struct goal_manager_t goal_manager_t;
  * goal_manager_free. */
 goal_manager_t *goal_manager_new(const char *session_id, const goal_manager_vtab_t *vtab, int default_max_turns);
 void goal_manager_free(goal_manager_t *m);
+
+/* Quality-gate surface (goals.py: GoalManager.add_gate/remove_gate/
+ * clear_gates/render_gates/_check_gates). */
+struct goal_gate_s *goal_manager_add_gate(goal_manager_t *m, const char *command,
+                                   int timeout_seconds, int max_retries);
+char *goal_manager_remove_gate(goal_manager_t *m, long index_1based);
+long goal_manager_clear_gates(goal_manager_t *m);
+char *goal_manager_render_gates(const goal_manager_t *m);
+char *goal_manager_check_gates(goal_manager_t *m, double now);
+goal_state_t *goal_manager_wait_on_session(goal_manager_t *m,
+                                           const char *session_id,
+                                           const char *reason, double now);
+goal_state_t *goal_manager_set_full(goal_manager_t *m, const char *goal,
+                                    int max_turns, const goal_contract_t *contract);
 
 const char *goal_manager_session_id(const goal_manager_t *m);
 goal_state_t *goal_manager_state(goal_manager_t *m);

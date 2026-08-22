@@ -11,12 +11,20 @@
  * this module stays pure (no DB, TTY, network, or OS-process calls).
  */
 
+#include "hermes_json.h"
 #include "goal_contract.h"
 #include "goal_contract_internal.h"
 #include "tools/process_registry.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
+/* goals_gaps.c seam */
+char *goal_workspace_fingerprint(const char *cwd);
+bool goal_run_gate(const char *command, int timeout_seconds, const char *cwd,
+                   int *exit_code_out, char **tail_out);
+static char *xstrdup(const char *s) { return s ? strdup(s) : strdup(""); }
 #include <stdio.h>
 #include <time.h>
 #include <errno.h>
@@ -446,6 +454,7 @@ goal_state_t *goal_manager_wait_on(goal_manager_t *m, long pid, const char *reas
     return m->state;
 }
 
+/* PoP: goal_manager_wait_on_session @ hermes_cli/goals.py:GoalManager.wait_on_session */
 goal_state_t *goal_manager_wait_on_session(goal_manager_t *m, const char *session_id, const char *reason, double now) {
     if (!m || !m->state || strcmp(goal_state_status_str(m->state), "active") != 0) return NULL;
     if (!session_id || !session_id[0]) return NULL;
@@ -584,6 +593,7 @@ char *goal_manager_next_continuation_prompt(const goal_manager_t *m) {
     return out;
 }
 
+/* PoP: goal_manager_render_contract @ hermes_cli/goals.py:GoalManager.render_contract */
 char *goal_manager_render_contract(const goal_manager_t *m) {
     if (!m || !m->state) return strdup("(no active goal)");
     if (!goal_state_has_contract(m->state))
@@ -896,4 +906,262 @@ char *goal_gather_background_processes(const char *task_id) {
     out[len] = '\0';
     json_free(doc);
     return out;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Quality gates (goals.py: add_gate / remove_gate / clear_gates /
+ * render_gates / _check_gates) + wait_on_session + faithful set().
+ * Gate commands run through goal_run_gate (goals_gaps.c); workspace
+ * fingerprints come from goal_workspace_fingerprint.
+ * ──────────────────────────────────────────────────────────────────── */
+
+/*
+ * Append a quality-gate command to the active goal. Returns the created
+ * gate; NULL models Python's RuntimeError/ValueError paths (empty command,
+ * no active goal). timeout/max_retries <= 0 select the defaults. 
+ * PoP: goal_manager_add_gate @ hermes_cli/goals.py:GoalManager.add_gate
+ */
+goal_gate_t *goal_manager_add_gate(goal_manager_t *m, const char *command,
+                                   int timeout_seconds, int max_retries) {
+    if (!m || !m->state || !goal_manager_has_goal(m)) return NULL;
+    if (!command) return NULL;
+    char cmd[2048];
+    snprintf(cmd, sizeof cmd, "%s", command);
+    size_t l = strlen(cmd);
+    while (l > 0 && isspace((unsigned char)cmd[l - 1])) cmd[--l] = '\0';
+    char *cs = cmd;
+    while (*cs && isspace((unsigned char)*cs)) cs++;
+    if (*cs == '\0') return NULL; /* ValueError: gate command is empty */
+
+    goal_gate_t *g = calloc(1, sizeof(*g));
+    g->command = strdup(cs);
+    g->timeout_seconds = timeout_seconds > 0
+        ? timeout_seconds : GOALS_DEFAULT_GATE_TIMEOUT_SECONDS;
+    g->max_retries = max_retries > 0
+        ? max_retries : GOALS_DEFAULT_GATE_MAX_RETRIES;
+
+    goal_state_t *st = m->state;
+    st->gates = realloc(st->gates, (st->n_gates + 1) * sizeof(goal_gate_t *));
+    st->gates[st->n_gates++] = g;
+    persist(m);
+    return g;
+}
+
+/*
+ * Remove a gate by 1-based index. Returns the removed command (malloc'd);
+ * NULL on no-goal or out-of-range. 
+ * PoP: goal_manager_remove_gate @ hermes_cli/goals.py:GoalManager.remove_gate
+ */
+char *goal_manager_remove_gate(goal_manager_t *m, long index_1based) {
+    if (!m || !m->state || !goal_manager_has_goal(m)) return NULL;
+    goal_state_t *st = m->state;
+    long idx = index_1based - 1;
+    if (idx < 0 || (size_t)idx >= st->n_gates) return NULL;
+    goal_gate_t *g = st->gates[idx];
+    char *removed = strdup(g->command ? g->command : "");
+    memmove(&st->gates[idx], &st->gates[idx + 1],
+            (st->n_gates - (size_t)idx - 1) * sizeof(goal_gate_t *));
+    st->n_gates--;
+    /* free the gate */
+    free(g->command); free(g->last_output_tail); free(g->last_failed_fingerprint);
+    free(g);
+    persist(m);
+    return removed;
+}
+
+/*
+ * Remove all gates. Returns the previous count. 
+ * PoP: goal_manager_clear_gates @ hermes_cli/goals.py:GoalManager.clear_gates
+ */
+long goal_manager_clear_gates(goal_manager_t *m) {
+    if (!m || !m->state || !goal_manager_has_goal(m)) return -1;
+    goal_state_t *st = m->state;
+    long prev = (long)st->n_gates;
+    for (size_t i = 0; i < st->n_gates; i++) {
+        goal_gate_t *g = st->gates[i];
+        free(g->command); free(g->last_output_tail); free(g->last_failed_fingerprint);
+        free(g);
+    }
+    free(st->gates);
+    st->gates = NULL;
+    st->n_gates = 0;
+    persist(m);
+    return prev;
+}
+
+/*
+ * (goals.py owns it; same rendering rules as render_subgoals.) 
+ * PoP: goal_manager_render_gates @ hermes_cli/goals.py:GoalManager.render_gates
+ */
+char *goal_manager_render_gates(const goal_manager_t *m) {
+    if (!m || !m->state)
+        return strdup("(no active goal)");
+    const goal_state_t *st = m->state;
+    if (st->n_gates == 0)
+        return strdup("(no quality gates \xE2\x80\x94 use /goal gate add <command> to require one)");
+    size_t cap = 128;
+    for (size_t i = 0; i < st->n_gates; i++)
+        cap += strlen(st->gates[i]->command ? st->gates[i]->command : "") + 96;
+    char *out = malloc(cap);
+    size_t o = 0;
+    for (size_t i = 0; i < st->n_gates; i++) {
+        const goal_gate_t *g = st->gates[i];
+        char line[512];
+        if (!g->has_last_exit_code) {
+            snprintf(line, sizeof line, "- %zu. $ %s", i + 1,
+                     g->command ? g->command : "");
+        } else if (g->last_exit_code == 0) {
+            snprintf(line, sizeof line, "- %zu. $ %s \xE2\x9C\x93 passing",
+                     i + 1, g->command ? g->command : "");
+        } else {
+            snprintf(line, sizeof line,
+                     "- %zu. $ %s \xE2\x9C\x97 failing (exit %ld, attempt %d/%d)",
+                     i + 1, g->command ? g->command : "",
+                     g->last_exit_code, g->attempts, g->max_retries);
+        }
+        o += (size_t)snprintf(out + o, cap - o, "%s\n", line);
+    }
+    if (o > 0) out[o - 1] = '\0'; /* strip trailing newline like "\n".join */
+    return out;
+}
+
+/* Injectable run_gate seam (tests script gate outcomes). Defaults to the
+ * real goal_run_gate in goals_gaps.c. */
+typedef bool (*goal_run_gate_fn)(const char *command, int timeout_seconds,
+                                 const char *cwd, int *exit_code_out,
+                                 char **tail_out);
+static goal_run_gate_fn g_run_gate_hook = NULL;
+
+/*
+ * Run quality gates in order; returns a malloc'd decision JSON on failure:
+ *   {"status":"active","should_continue":true,"continuation_prompt":...,
+ *    "verdict":"gate_failed","reason":...,"message":...}
+ *   {"status":"paused","should_continue":false,...} when retries exhausted
+ * or malloc'd "null" when there are no gates / every gate passes. An
+ * unchanged workspace since a gate's last failure replays that failure and
+ * advances attempts instead of re-running (Prime-Agent unchanged-gate rule). 
+ * PoP: goal_manager_check_gates @ hermes_cli/goals.py:GoalManager._check_gates
+ */
+char *goal_manager_check_gates(goal_manager_t *m, double now) {
+    goal_state_t *st = m ? m->state : NULL;
+    if (!st || st->n_gates == 0) return strdup("null");
+
+    char *fingerprint = goal_workspace_fingerprint(NULL);
+    char *out = NULL;
+    for (size_t i = 0; i < st->n_gates; i++) {
+        goal_gate_t *g = st->gates[i];
+        int unchanged = fingerprint && fingerprint[0] &&
+                        g->has_last_exit_code && g->last_exit_code != 0 &&
+                        g->last_failed_fingerprint &&
+                        strcmp(g->last_failed_fingerprint, fingerprint) == 0;
+        bool passed;
+        long exit_code;
+        char *tail = NULL;
+        if (unchanged) {
+            passed = false;
+            exit_code = g->has_last_exit_code ? g->last_exit_code : -1;
+            tail = g->last_output_tail ? strdup(g->last_output_tail) : strdup("");
+        } else {
+            int rc_exit = -1;
+            passed = g_run_gate_hook
+                ? g_run_gate_hook(g->command, g->timeout_seconds, NULL,
+                                  &rc_exit, &tail)
+                : goal_run_gate(g->command, g->timeout_seconds, NULL,
+                                &rc_exit, &tail);
+            exit_code = rc_exit;
+        }
+        g->has_last_exit_code = 1;
+        g->last_exit_code = exit_code;
+        free(g->last_output_tail);
+        g->last_output_tail = tail;
+
+        if (passed) {
+            g->attempts = 0;
+            free(g->last_failed_fingerprint);
+            g->last_failed_fingerprint = strdup("");
+            continue;
+        }
+        g->attempts += 1;
+        free(g->last_failed_fingerprint);
+        g->last_failed_fingerprint = strdup(fingerprint ? fingerprint : "");
+        const char *skipped_note =
+            unchanged ? " (workspace unchanged since last failure \xE2\x80\x94 not re-run)" : "";
+
+        if (g->attempts > g->max_retries) {
+            free(st->status);
+            st->status = strdup("paused");
+            char pr[512];
+            snprintf(pr, sizeof pr,
+                     "quality gate exhausted %d retries: $ %s",
+                     g->attempts - 1, g->command);
+            free(st->paused_reason);
+            st->paused_reason = strdup(pr);
+            persist(m);
+            out = malloc(1024 + strlen(pr));
+            snprintf(out, 1024 + strlen(pr),
+                "{\"status\":\"paused\",\"should_continue\":false,"
+                "\"continuation_prompt\":null,\"verdict\":\"gate_failed\","
+                "\"reason\":\"gate exhausted retries: $ %s\","
+                "\"message\":\"\xE2\x8F\xB8 Goal paused \xE2\x80\x94 quality gate still failing after "
+                "%d retries: $ %s (exit %ld). Fix it manually or /goal gate remove it, "
+                "then /goal resume.\"}",
+                g->command, g->max_retries, g->command, exit_code);
+            break;
+        }
+
+        persist(m);
+        {
+            char *esc_goal = xstrdup(st->goal ? st->goal : "");
+            char prompt[4096];
+            snprintf(prompt, sizeof prompt,
+                "[Continuing toward your standing goal \xE2\x80\x94 a quality gate failed]\n"
+                "Goal: %s\n\n"
+                "The quality gate command below must pass before this goal can be "
+                "declared done, and it just failed (attempt %d/%d):\n"
+                "  $ %s\n"
+                "Exit code: %ld\n"
+                "Output (tail):\n"
+                "```\n%s\n```\n\n"
+                "Fix the underlying problem so this gate passes, then re-run it to "
+                "confirm. Do not declare the goal complete while any gate fails.",
+                esc_goal, g->attempts, g->max_retries, g->command,
+                exit_code, tail ? tail : "(no output)");
+            free(esc_goal);
+            char reason[256], msg[512];
+            snprintf(reason, sizeof reason,
+                     "gate failed (exit %ld): $ %s", exit_code, g->command);
+            snprintf(msg, sizeof msg,
+                     "\xE2\x9C\x97 Quality gate failed (%d/%d turns, attempt %d/%d)%s: $ %s",
+                     st->turns_used, st->max_turns, g->attempts, g->max_retries,
+                     skipped_note, g->command);
+            out = malloc(strlen(prompt) + strlen(reason) + strlen(msg) + 160);
+            /* JSON-escape via json_serialize of a built object */
+            json_t *obj = json_new_object();
+            json_object_set(obj, "status", json_string("active"));
+            json_object_set(obj, "should_continue", json_new_bool(1));
+            json_object_set(obj, "continuation_prompt", json_string(prompt));
+            json_object_set(obj, "verdict", json_string("gate_failed"));
+            json_object_set(obj, "reason", json_string(reason));
+            json_object_set(obj, "message", json_string(msg));
+            out = json_serialize(obj);
+            json_free(obj);
+            break;
+        }
+    }
+    free(fingerprint);
+    if (!out) out = strdup("null");
+    return out;
+}
+
+
+
+/*
+ * The original set() drops an explicitly-passed contract=NULL into a fresh
+ * empty GoalContract — this variant preserves exactly that semantics while
+ * sharing the contract-copy loop with set_contract. 
+ * PoP: goal_manager_set_faithful @ hermes_cli/goals.py:GoalManager.set
+ */
+goal_state_t *goal_manager_set_full(goal_manager_t *m, const char *goal,
+                                    int max_turns, const goal_contract_t *contract) {
+    return goal_manager_set(m, goal, max_turns, contract);
 }
