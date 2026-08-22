@@ -1,0 +1,59 @@
+{
+  "ops": [
+    {
+      "kind": "warn",
+      "model": "muse-spark-1.2-contributor",
+      "provider": "meta-ai"
+    },
+    {
+      "kind": "warn",
+      "model": "MUSE-SPARK-contributor ",
+      "provider": null
+    },
+    {
+      "kind": "warn",
+      "model": "some-contributor-model",
+      "provider": "openrouter"
+    },
+    {
+      "kind": "warn",
+      "model": "contributor-x",
+      "provider": "meta"
+    },
+    {
+      "kind": "warn",
+      "model": "x-contributor-y",
+      "provider": "meta"
+    },
+    {
+      "kind": "warn",
+      "model": "contributor",
+      "provider": "meta"
+    },
+    {
+      "kind": "warn",
+      "model": "muse-spark-1.2",
+      "provider": "meta-ai"
+    },
+    {
+      "kind": "warn",
+      "model": "",
+      "provider": "meta"
+    },
+    {
+      "kind": "warn",
+      "model": "   ",
+      "provider": "meta"
+    },
+    {
+      "kind": "warn",
+      "model": "gpt-5.5",
+      "provider": null
+    },
+    {
+      "kind": "warn",
+      "model": "  Muse-Spark-1.2-Contributor",
+      "provider": " Meta-AI "
+    }
+  ]
+}
