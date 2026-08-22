@@ -133,6 +133,7 @@ typedef struct {
     char                model_override[128];   /* per-session model override */
     bool                resume_pending;        /* session resume pending flag */
     bool                suspended;              /* session suspended flag */
+    bool                expiry_finalized;       /* session.py:set_expiry_finalized durable flag */
 } gw_session_entry_t;
 
 /* ================================================================

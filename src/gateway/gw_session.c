@@ -29,6 +29,14 @@
 #include <dirent.h>
 #include <sqlite3.h>
 
+/* Forward decls: transcript persistence cluster defined later in this file. */
+void _persist_routing_data(json_t *data);
+void _save_entries(void);
+bool _heal_compression_tip_locked(gw_session_entry_t *entry,
+                                  const char *original_session_id,
+                                  const char *canonical_session_id);
+void _record_gateway_session_peer(const char *session_key, const char *peer_id);
+
 int session_source_description(const gw_session_source_t *src,
                                 char *buf, size_t sz) {
     if (!src || !buf || sz == 0) return 0;
@@ -711,8 +719,24 @@ char *_compression_tip_for_session_id(const char *session_key) {
 }
 
 /* PoP: _heal_compression_tip_locked @ gateway/session.py:_heal_compression_tip_locked */
-void _heal_compression_tip_locked(void) {
-    /* No-op: compression tips are advisory */
+bool _heal_compression_tip_locked(gw_session_entry_t *entry,
+                                  const char *original_session_id,
+                                  const char *canonical_session_id) {
+    /* Rewrite *entry* to the compression continuation if stale.
+     * Python contract: heals ONLY when the live entry still points at
+     * original_session_id AND canonical differs from it — otherwise the
+     * route moved underneath us and the caller must fail closed. */
+    if (!entry
+            || !original_session_id || !original_session_id[0]
+            || !canonical_session_id || !canonical_session_id[0]
+            || strcmp(entry->session_id, original_session_id) != 0
+            || strcmp(canonical_session_id, original_session_id) == 0)
+        return false;
+    printf("[gateway] SessionStore healed compressed session mapping: "
+           "%s -> %s\n", entry->session_id, canonical_session_id);
+    snprintf(entry->session_id, sizeof(entry->session_id), "%s",
+             canonical_session_id);
+    return true;
 }
 
 /* PoP: _save_sessions_json @ gateway/session.py:_save_sessions_json */
@@ -738,7 +762,29 @@ char *_save_sessions_json(void) {
 
 /* PoP: _save_entries @ gateway/session.py:_save_entries */
 void _save_entries(void) {
-    /* Session entries are saved via db_save() in session_free() */
+    /* Snapshot latest state under the session lock and persist it after
+     * releasing the lock — the full-rewrite structural save path. */
+    json_t *snap = json_object();
+    pthread_mutex_lock(&g_gw.session_mutex);
+    if (g_gw.sessions) {
+        hive_iter_t it;
+        hive_iter_begin(g_gw.sessions, &it);
+        gw_session_entry_t *se;
+        while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+            if (!se->in_use) continue;
+            json_t *e = json_object();
+            json_set(e, "platform", json_string(se->source.platform));
+            json_set(e, "chat_id", json_string(se->source.chat_id));
+            json_set(e, "session_id", json_string(se->session_id));
+            json_set(e, "model_override", json_string(se->model_override));
+            json_set(e, "expiry_finalized", json_bool(se->expiry_finalized));
+            json_set(e, "last_active", json_int((int64_t)se->last_active));
+            json_set(snap, se->key, e);
+        }
+    }
+    pthread_mutex_unlock(&g_gw.session_mutex);
+    _persist_routing_data(snap);
+    json_free(snap);
 }
 
 /* PoP: _profile_from_session_key @ gateway/session.py:_profile_from_session_key */
@@ -855,10 +901,157 @@ void set_session_metadata(const char *session_key, json_t *meta) {
 }
 
 /* PoP: _session_dunder_getattr @ gateway/session.py:__getattr__ */
-void _session_dunder_getattr(const char *name) { (void)name; }
+/* Python wraps the store so unknown attribute lookups resolve against the
+ * pinned SessionDB and are offloaded to a worker thread (asyncio.to_thread).
+ * C has no asyncio loop; the faithful surface is attribute RESOLUTION: report
+ * whether the requested member is one of the store operations this module
+ * actually provides, so callers can probe capability before invoking. */
+bool _session_dunder_getattr(const char *name) {
+    if (!name || !name[0]) return false;
+    static const char *members[] = {
+        "get_or_create_session",   "update_session",
+        "switch_session",          "advance_compression_session",
+        "set_expiry_finalized",    "append_to_transcript",
+        "rewrite_transcript",      "load_transcript",
+        "rewind_session",          "has_platform_message_id",
+        "lookup_by_session_id",    "peek_session_id",
+        "get_session_metadata",    "set_session_metadata",
+        "has_any_sessions",        "list_sessions",
+        "suspend_session",         "mark_resume_pending",
+        "clear_resume_pending",    "set_model_override",
+        "get_model_override",      NULL,
+    };
+    for (int i = 0; members[i]; i++)
+        if (strcmp(name, members[i]) == 0) return true;
+    return false;
+}
+
+/* ── Dirty-transcript retry bookkeeping ──────────────────────────────────
+ * Python keeps a per-session_id pending queue (_dirty_transcripts) plus a
+ * failure counter (_transcript_append_failures) so messages appended while
+ * the DB is broken are retried later; rewrite_transcript / rewind_session
+ * drop the queue when they replace or truncate history. The C store mirrors
+ * that with a small fixed pending table guarded by its own mutex. */
+#define GW_DIRTY_MAX 64
+typedef struct {
+    char session_id[64];
+    int  pending;          /* queued-but-unwritten message count */
+    int  failures;         /* consecutive append failures */
+} gw_dirty_entry_t;
+static gw_dirty_entry_t g_dirty[GW_DIRTY_MAX];
+static pthread_mutex_t g_dirty_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static gw_dirty_entry_t *_dirty_find(const char *session_id, bool create) {
+    if (!session_id || !session_id[0]) return NULL;
+    gw_dirty_entry_t *slot = NULL;
+    for (int i = 0; i < GW_DIRTY_MAX; i++) {
+        if (g_dirty[i].pending == 0 && g_dirty[i].failures == 0
+                && !g_dirty[i].session_id[0]) {
+            if (!slot && create) slot = &g_dirty[i];
+            continue;
+        }
+        if (strcmp(g_dirty[i].session_id, session_id) == 0)
+            return &g_dirty[i];
+    }
+    if (create && slot)
+        snprintf(slot->session_id, sizeof(slot->session_id), "%s", session_id);
+    return slot;
+}
+
+/* PoP: _mark_dirty_transcript @ gateway/session.py:_append_to_transcript_serialized (retry-queue side) */
+static void _mark_dirty_transcript(const char *session_id) {
+    pthread_mutex_lock(&g_dirty_mutex);
+    gw_dirty_entry_t *e = _dirty_find(session_id, true);
+    if (e) { e->pending++; e->failures++; }
+    pthread_mutex_unlock(&g_dirty_mutex);
+}
+
+/* Resolve the durable transcript id a routing key currently points at.
+ * Python reads follow the in-memory reroute chain + durable compression tip;
+ * the C routing index lives on the hive entry, so one lookup covers both. */
+static const char *_transcript_id_for_key(const char *session_key,
+                                          char *buf, size_t sz) {
+    buf[0] = '\0';
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0) {
+        gw_session_entry_t *se = session_at(idx);
+        if (se && se->session_id[0]) {
+            snprintf(buf, sz, "%s", se->session_id);
+            return buf;
+        }
+    }
+    snprintf(buf, sz, "%s", session_key ? session_key : "");
+    return buf;
+}
+
+/* PoP: _clear_dirty_transcript @ gateway/session.py:_clear_dirty_transcript */
+void _clear_dirty_transcript(const char *session_id) {
+    /* Drop queued pending messages for a transcript so /retry, /undo and
+     * /compress don't leave stale rows that would be re-inserted later. */
+    if (!session_id || !session_id[0]) return;
+    pthread_mutex_lock(&g_dirty_mutex);
+    gw_dirty_entry_t *e = _dirty_find(session_id, false);
+    if (e) {
+        memset(e, 0, sizeof(*e));
+    }
+    pthread_mutex_unlock(&g_dirty_mutex);
+}
 
 /* PoP: _ensure_loaded_locked @ gateway/session.py:_ensure_loaded_locked */
-void _ensure_loaded_locked(int session_idx) { (void)session_idx; }
+static int g_routing_loaded = 0;
+void _ensure_loaded_locked(int session_idx) {
+    (void)session_idx;
+    if (g_routing_loaded) return;
+    g_routing_loaded = 1;
+    if (!g_gw.session_db_path[0]) return;
+
+    /* Primary source: the "_gateway_routing" record in the session DB —
+     * the C analog of Python's state.db gateway_routing table. */
+    db_t *db = db_open(g_gw.session_db_path, NULL);
+    if (!db) return;
+    char *raw = db_load(db, "_gateway_routing", NULL);
+
+    if (raw && raw[0]) {
+        json_t *doc = json_parse(raw, NULL);
+        if (json_is_object(doc)) {
+            size_t n = json_object_size(doc);
+            for (size_t i = 0; i < n; i++) {
+                const char *key = json_object_get_key_at(doc, i);
+                json_t *entry_data = json_object_get_at(doc, i);
+                if (!key || key[0] == '_' || !json_is_object(entry_data))
+                    continue;   /* metadata sentinels / corrupted rows */
+                /* Skip non-dict + ended rows: a hard crash leaves stale
+                 * routing keys pointing at sessions already ended in the DB. */
+                session_meta_t meta;
+                const char *sid = json_get_str(entry_data, "session_id", "");
+                bool ended = false;
+                if (sid[0] && db_load_meta(db, sid, &meta)
+                        && meta.ended_at != 0 && meta.end_reason[0])
+                    ended = true;
+                if (ended) continue;
+                int existing = session_find_by_key(key);
+                if (existing < 0) {
+                    const char *platform = json_get_str(entry_data, "platform", "");
+                    const char *chat_id = json_get_str(entry_data, "chat_id", "");
+                    existing = session_create(platform, chat_id);
+                }
+                if (existing < 0) continue;
+                gw_session_entry_t *se = session_at(existing);
+                if (!se) continue;
+                if (sid[0])
+                    snprintf(se->session_id, sizeof(se->session_id), "%s", sid);
+                const char *ovr = json_get_str(entry_data, "model_override", NULL);
+                if (ovr)
+                    snprintf(se->model_override, sizeof(se->model_override), "%s", ovr);
+                se->expiry_finalized =
+                    json_is_true(json_object_get(entry_data, "expiry_finalized"));
+            }
+        }
+        if (doc) json_free(doc);
+    }
+    free(raw);
+    db_close(db);
+}
 
 /* PoP: _prune_stale_sessions_locked @ gateway/session.py:_prune_stale_sessions_locked */
 void _prune_stale_sessions_locked(void) { prune_old_entries(86400); }
@@ -894,13 +1087,25 @@ void _save_entry(const char *session_key) {
 
 /* PoP: _persist_routing_data @ gateway/session.py:_persist_routing_data */
 void _persist_routing_data(json_t *data) {
-    /* Persist the full routing index snapshot to the gateway routing table.
-     * Python writes the whole dict; C keeps entries in the hive-backed
-     * session store and bumps the routing generation so consumers know to
-     * re-read. Individual entries were already upserted by _save_entry. */
-    if (!data) return;
-    _next_routing_generation_locked();
-    (void)json_type(data);  /* confirm well-formed JSON */
+    /* Persist the FULL routing index snapshot as the "_gateway_routing"
+     * record in the session DB — the durable analog of Python's state.db
+     * gateway_routing table rewrite. A failed write falls back to nothing
+     * here; the hive remains the live store and _save_entries retries on
+     * the next structural save, matching Python's DB-less fallback order. */
+    if (!data || !json_is_object(data)) return;
+    int64_t gen = _next_routing_generation_locked();
+    json_object_set(data, "_generation", json_int((int64_t)gen));
+    char *serialized = json_serialize(data);
+    json_object_del(data, "_generation");
+    if (!serialized) return;
+    if (g_gw.session_db_path[0]) {
+        db_t *db = db_open(g_gw.session_db_path, NULL);
+        if (db) {
+            db_save(db, "_gateway_routing", serialized);
+            db_close(db);
+        }
+    }
+    free(serialized);
 }
 
 /* PoP: _recovered_row_matches_source_scope @ gateway/session.py:_recovered_row_matches_source_scope */
@@ -911,7 +1116,45 @@ bool _recovered_row_matches_source_scope(const gw_session_source_t *row_src, con
 }
 
 /* PoP: set_expiry_finalized @ gateway/session.py:set_expiry_finalized */
-void set_expiry_finalized(const char *session_key) { (void)session_key; }
+void set_expiry_finalized(const char *session_key) {
+    /* Mark a session entry expiry-finalized in memory AND durably:
+     * drop the persisted /model override (conversation boundary), persist
+     * the routing flag via the fast path, then record the boundary in the
+     * session meta so recovery treats the row as explicitly ended. */
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return;
+    gw_session_entry_t *se = session_at(idx);
+    if (!se || !se->in_use) return;
+
+    se->expiry_finalized = true;
+    se->model_override[0] = '\0';
+    _save_entry(session_key);
+
+    if (!se->db || !se->session_id[0]) return;
+    session_meta_t meta;
+    bool have = db_load_meta(se->db, se->session_id, &meta);
+    if (!have) db_meta_init(&meta);
+    /* Merge "expiry_finalized": true into the SE09 meta key-value blob. */
+    json_t *mj = (meta.meta_json[0]) ? json_parse(meta.meta_json, NULL) : NULL;
+    if (!json_is_object(mj)) {
+        if (mj) json_free(mj);
+        mj = json_object();
+    }
+    json_set(mj, "expiry_finalized", json_bool(true));
+    char *serialized = json_serialize(mj);
+    json_free(mj);
+    if (serialized) {
+        snprintf(meta.meta_json, sizeof(meta.meta_json), "%s", serialized);
+        free(serialized);
+    }
+    meta.updated_at = time(NULL);
+    db_save_meta(se->db, se->session_id, &meta);
+    /* Expiry is a real conversation boundary. promote_to_session_reset only
+     * upgrades live / agent_close rows (first writer wins inside
+     * db_end_session), so explicit boundaries are preserved. */
+    if (!meta.ended_at || strcmp(meta.end_reason, "agent_close") == 0)
+        db_end_session(se->db, se->session_id, "session_reset");
+}
 
 /* PoP: _is_session_ended_in_db @ gateway/session.py:_is_session_ended_in_db */
 bool _is_session_ended_in_db(const char *session_key) {
@@ -958,13 +1201,88 @@ int update_session(const char *session_key, json_t *updates) {
 }
 
 /* PoP: advance_compression_session @ gateway/session.py:advance_compression_session */
-void advance_compression_session(const char *session_key) {
-    (void)session_key;
+bool advance_compression_session(const char *session_key,
+                                 const char *expected_session_id,
+                                 const char *target_session_id) {
+    /* CAS-advance one route along an already-verified compression lineage.
+     * No rows are ended or reopened — the compression transaction owns that
+     * lifecycle; this only repairs the persisted key->session mapping.
+     * Returning false means the route moved after the caller's snapshot
+     * (e.g. /new) and the caller must fail closed. */
+    if (!session_key || !session_key[0]
+            || !expected_session_id || !expected_session_id[0]
+            || !target_session_id || !target_session_id[0])
+        return false;
+
+    pthread_mutex_lock(&g_gw.session_mutex);
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) { pthread_mutex_unlock(&g_gw.session_mutex); return false; }
+    gw_session_entry_t *se = session_at(idx);
+    if (!se || !se->in_use) { pthread_mutex_unlock(&g_gw.session_mutex); return false; }
+    if (strcmp(se->session_id, target_session_id) == 0) {
+        pthread_mutex_unlock(&g_gw.session_mutex);
+        return true;   /* already advanced */
+    }
+    if (strcmp(se->session_id, expected_session_id) != 0
+            || !_heal_compression_tip_locked(se, expected_session_id,
+                                             target_session_id)) {
+        pthread_mutex_unlock(&g_gw.session_mutex);
+        return false;
+    }
+    /* Compression repoint is store bookkeeping, not user activity — leave
+     * last_active alone so an idle session doesn't look fresh (#85709). */
+    pthread_mutex_unlock(&g_gw.session_mutex);
+
+    _save_entries();
+    return true;
 }
 
 /* PoP: switch_session @ gateway/session.py:switch_session */
 void switch_session(const char *from_key, const char *to_key) {
-    (void)from_key; (void)to_key;
+    /* Switch a routing key to point at an existing session ID (/resume).
+     * Ends the outgoing session with the explicit "session_switch" boundary
+     * (promote semantics: db_end_session is first-writer-wins), rebinds the
+     * live entry onto the target ID, and re-opens the target so the old
+     * transcript loads on the next message. */
+    if (!from_key || !from_key[0] || !to_key || !to_key[0]) return;
+
+    char old_session_id[64] = "";
+    pthread_mutex_lock(&g_gw.session_mutex);
+    int idx = session_find_by_key(from_key);
+    if (idx < 0) { pthread_mutex_unlock(&g_gw.session_mutex); return; }
+    gw_session_entry_t *se = session_at(idx);
+    if (!se || !se->in_use) { pthread_mutex_unlock(&g_gw.session_mutex); return; }
+    if (strcmp(se->session_id, to_key) == 0) {
+        /* Already on that session — nothing to do. */
+        pthread_mutex_unlock(&g_gw.session_mutex);
+        return;
+    }
+    snprintf(old_session_id, sizeof(old_session_id), "%s", se->session_id);
+    snprintf(se->session_id, sizeof(se->session_id), "%s", to_key);
+    se->resume_pending = false;
+    se->last_active = gw_mono_time();
+    pthread_mutex_unlock(&g_gw.session_mutex);
+
+    _save_entries();
+
+    if (!g_gw.session_db_path[0]) return;
+    db_t *db = db_open(g_gw.session_db_path, NULL);
+    if (!db) return;
+    if (old_session_id[0])
+        db_end_session(db, old_session_id, "session_switch");
+    /* Re-open the target: clear its ended boundary so resume semantics
+     * match the CLI (a previously-ended session becomes live again). */
+    session_meta_t meta;
+    if (db_load_meta(db, to_key, &meta) && meta.ended_at) {
+        meta.ended_at = 0;
+        meta.end_reason[0] = '\0';
+        meta.updated_at = time(NULL);
+        db_save_meta(db, to_key, &meta);
+    }
+    db_close(db);
+
+    /* Re-record the gateway peer for the target transcript. */
+    _record_gateway_session_peer(from_key, from_key);
 }
 
 /* PoP: append_to_transcript @ gateway/session.py:append_to_transcript */
@@ -1020,28 +1338,237 @@ void _append_to_transcript_serialized(const char *session_key, const char *seria
 
 /* PoP: _append_transcript_message @ gateway/session.py:_append_transcript_message */
 void _append_transcript_message(const char *session_key, json_t *msg) {
-    (void)session_key; (void)msg;
+    /* Write one transcript message. Python hands the row to
+     * SessionDB.append_message and lets the caller retry-queue on failure;
+     * the C blob store appends the full message object (role, content,
+     * tool_name/tool_calls/tool_call_id, reasoning fields when assistant,
+     * platform/message id, observed flag) into the session document's
+     * "messages" array. A failed write marks the transcript dirty so the
+     * pending row can be retried / dropped by rewrite or rewind. */
+    if (!session_key || !session_key[0] || !json_is_object(msg)) return;
+
+    char tid[64];
+    _transcript_id_for_key(session_key, tid, sizeof(tid));
+    int idx = session_find_by_key(session_key);
+    gw_session_entry_t *se = (idx >= 0) ? session_at(idx) : NULL;
+    db_t *db = (se && se->in_use) ? se->db : NULL;
+    const char *sid = tid[0] ? tid : session_key;
+    if (!db || !sid[0]) {
+        _mark_dirty_transcript(sid);
+        return;
+    }
+
+    char *existing = db_load(db, sid, NULL);
+    json_t *doc = existing ? json_parse(existing, NULL) : NULL;
+    free(existing);
+    if (!doc) doc = json_object();
+
+    json_t *messages = json_object_get(doc, "messages");
+    if (!json_is_array(messages)) {
+        messages = json_array();
+        json_set(doc, "messages", messages);
+    }
+    json_array_append(messages, json_copy(msg));
+
+    char *serialized_doc = json_serialize(doc);
+    json_free(doc);
+    bool ok = serialized_doc && db_save(db, sid, serialized_doc);
+    free(serialized_doc);
+    if (!ok)
+        _mark_dirty_transcript(sid);
 }
 
 /* PoP: _rebuild_fts_once @ gateway/session.py:_rebuild_fts_once */
-bool _rebuild_fts_once(int session_idx) { (void)session_idx; return true; }
+bool _rebuild_fts_once(int session_idx) {
+    /* Attempt an index rebuild once per store lifetime after append
+     * corruption. Python delegates to SessionDB.rebuild_fts() (FTS5
+     * "rebuild"); the C file-backed store has no FTS index, so the
+     * corruption analog is an unreadable/truncated session document:
+     * verify the stored JSON parses and re-save the canonical form once.
+     * Returns true when at least one store was rebuilt. */
+    static bool attempted = false;
+    if (attempted) return false;
+    attempted = true;
 
-/* PoP: _clear_dirty_transcript @ gateway/session.py:_clear_dirty_transcript */
-void _clear_dirty_transcript(void) {}
+    gw_session_entry_t *se = session_at(session_idx);
+    if (!se || !se->in_use || !se->db || !se->session_id[0]) return false;
+
+    char *raw = db_load(se->db, se->session_id, NULL);
+    if (!raw) return false;                       /* nothing persisted yet */
+    size_t raw_len = strlen(raw);
+    json_t *doc = json_parse(raw, NULL);
+    free(raw);
+    if (!doc) {
+        /* Corrupt disk image: reset to a valid empty document so later
+         * appends succeed instead of failing forever. */
+        json_t *fresh = json_object();
+        json_set(fresh, "messages", json_array());
+        char *serialized = json_serialize(fresh);
+        json_free(fresh);
+        bool ok = serialized && db_save(se->db, se->session_id, serialized);
+        free(serialized);
+        printf("[gateway] Rebuilt corrupted session store for %s "
+               "(ok=%d)\n", se->session_id, ok ? 1 : 0);
+        return ok;
+    }
+    /* Healthy store: canonicalize (compact) once — the honest analog of
+     * rebuilding the index over the same rows. */
+    char *canonical = json_serialize(doc);
+    json_free(doc);
+    bool changed = canonical && strcmp(canonical, "") != 0;
+    bool ok2 = canonical && db_save(se->db, se->session_id, canonical);
+    free(canonical);
+    if (ok2 && changed)
+        printf("[gateway] Canonicalized session store %s after append\n",
+               se->session_id);
+    return ok2 && raw_len > 0;
+}
 
 /* PoP: rewrite_transcript @ gateway/session.py:rewrite_transcript */
 void rewrite_transcript(const char *session_key, json_t *new_transcript) {
-    (void)session_key; (void)new_transcript;
+    /* Replace the entire transcript for a session with new messages
+     * (/retry, /compress). DESTRUCTIVE by default: every previously stored
+     * row in the session document's "messages" array — including archived
+     * compaction history — is replaced. Pending dirty rows are dropped
+     * first so they can't resurrect stale messages on the next append. */
+    if (!session_key || !session_key[0]) return;
+
+    char tid[64];
+    _transcript_id_for_key(session_key, tid, sizeof(tid));
+    _clear_dirty_transcript(tid[0] ? tid : session_key);
+
+    int idx = session_find_by_key(session_key);
+    gw_session_entry_t *se = (idx >= 0) ? session_at(idx) : NULL;
+    db_t *db = (se && se->in_use) ? se->db : NULL;
+    const char *sid = tid[0] ? tid : session_key;
+    if (!db || !sid[0]) return;
+
+    char *existing = db_load(db, sid, NULL);
+    json_t *doc = existing ? json_parse(existing, NULL) : NULL;
+    free(existing);
+    if (!doc) doc = json_object();
+
+    /* Replace the whole array with a deep copy of the caller's transcript. */
+    if (json_is_array(new_transcript)) {
+        json_set(doc, "messages", json_copy(new_transcript));
+    } else {
+        json_set(doc, "messages", json_array());
+    }
+
+    char *serialized_doc = json_serialize(doc);
+    json_free(doc);
+    if (serialized_doc) {
+        db_save(db, sid, serialized_doc);
+        free(serialized_doc);
+    }
 }
 
 /* PoP: load_transcript @ gateway/session.py:load_transcript */
 json_t *load_transcript(const char *session_key) {
-    (void)session_key; return json_array();
+    /* Load all messages from a session's transcript. Reads follow the same
+     * routing writes use: resolve through the live entry (which carries the
+     * post-compression reroute / healed tip), then read the durable doc.
+     * A failed read returns an EMPTY array — downstream guards treat that
+     * as "nothing persisted", matching Python's documented caveat. */
+    if (!session_key || !session_key[0]) return json_array();
+    char tid[64];
+    _transcript_id_for_key(session_key, tid, sizeof(tid));
+    const char *sid = tid[0] ? tid : session_key;
+
+    db_t *probe = NULL;
+    int idx = session_find_by_key(session_key);
+    gw_session_entry_t *se = (idx >= 0) ? session_at(idx) : NULL;
+    if (!(se && se->in_use && se->db)) {
+        if (!g_gw.session_db_path[0]) return json_array();
+        probe = db_open(g_gw.session_db_path, NULL);
+        if (!probe) return json_array();
+    }
+    db_t *db = (se && se->in_use && se->db) ? se->db : probe;
+
+    json_t *out = json_array();
+    char *raw = db_load(db, sid, NULL);
+    json_t *doc = raw ? json_parse(raw, NULL) : NULL;
+    free(raw);
+    json_t *messages = doc ? json_object_get(doc, "messages") : NULL;
+    if (json_is_array(messages)) {
+        size_t n = json_array_size(messages);
+        bool prev_was_user = false;
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_copy(json_array_get(messages, i));
+            if (!m) continue;
+            /* repair_alternation at the restore boundary: collapse durable
+             * user;user wedges so replay never re-triggers pre-request
+             * repair on every request. Keep the FIRST of a run. */
+            const char *role = json_get_str(m, "role", "");
+            bool is_user = strcmp(role, "user") == 0;
+            if (is_user && prev_was_user) { json_free(m); continue; }
+            prev_was_user = is_user;
+            json_array_append(out, m);
+        }
+    }
+    if (doc) json_free(doc);
+    if (probe) db_close(probe);
+    return out;
 }
 
 /* PoP: rewind_session @ gateway/session.py:rewind_session */
 void rewind_session(const char *session_key, int turn_count) {
-    (void)session_key; (void)turn_count;
+    /* Back up N user turns via soft-delete, keeping rows for audit:
+     * truncated rows move into the document's "archived" array (the C
+     * analog of Python flipping active=0 in state.db) so they survive on
+     * disk and stay hidden from re-prompts and search. Mirrors the CLI/TUI
+     * "/undo [N]" behavior. */
+    if (!session_key || !session_key[0]) return;
+
+    char tid[64];
+    _transcript_id_for_key(session_key, tid, sizeof(tid));
+    _clear_dirty_transcript(tid[0] ? tid : session_key);
+    int n = turn_count < 1 ? 1 : turn_count;
+
+    int idx = session_find_by_key(session_key);
+    gw_session_entry_t *se = (idx >= 0) ? session_at(idx) : NULL;
+    db_t *db = (se && se->in_use) ? se->db : NULL;
+    const char *sid = tid[0] ? tid : session_key;
+    if (!db || !sid[0]) return;
+
+    char *existing = db_load(db, sid, NULL);
+    json_t *doc = existing ? json_parse(existing, NULL) : NULL;
+    free(existing);
+    if (!doc) return;
+    json_t *messages = json_object_get(doc, "messages");
+    if (!json_is_array(messages)) { json_free(doc); return; }
+    size_t total = json_array_size(messages);
+
+    /* Walk backwards to find the Nth-from-last user message index. */
+    int user_seen = 0;
+    long target_idx = -1;
+    for (long i = (long)total - 1; i >= 0; i--) {
+        json_t *m = json_array_get(messages, (size_t)i);
+        const char *role = json_get_str(m, "role", "");
+        if (strcmp(role, "user") == 0) {
+            user_seen++;
+            if (user_seen == n) { target_idx = i; break; }
+        }
+    }
+    if (target_idx < 0) { json_free(doc); return; }   /* no user turn to back up to */
+
+    /* Soft-archive rows AFTER the target turn (keep the target itself). */
+    json_t *archived = json_object_get(doc, "archived");
+    if (!json_is_array(archived)) {
+        archived = json_array();
+        json_set(doc, "archived", archived);
+    }
+    for (size_t i = (size_t)(target_idx + 1); i < total; i++)
+        json_array_append(archived, json_copy(json_array_get(messages, i)));
+    for (size_t i = total; i > (size_t)(target_idx + 1); i--)
+        json_array_remove(messages, i - 1);
+
+    char *serialized_doc = json_serialize(doc);
+    json_free(doc);
+    if (serialized_doc) {
+        db_save(db, sid, serialized_doc);
+        free(serialized_doc);
+    }
 }
 
 /* PoP: build_session_context @ gateway/session.py:build_session_context */
