@@ -1,0 +1,114 @@
+{
+  "ops": [
+    {
+      "kind": "classify",
+      "avail": 65536,
+      "total": 1024000
+    },
+    {
+      "kind": "classify",
+      "avail": 65535,
+      "total": 1024000
+    },
+    {
+      "kind": "classify",
+      "avail": 131072,
+      "total": 1024000
+    },
+    {
+      "kind": "classify",
+      "avail": 131071,
+      "total": 1024000
+    },
+    {
+      "kind": "classify",
+      "avail": 99999999,
+      "total": 100000000
+    },
+    {
+      "kind": "classify",
+      "avail": 4999999,
+      "total": 100000000
+    },
+    {
+      "kind": "classify",
+      "avail": 15000000,
+      "total": 100000000
+    },
+    {
+      "kind": "classify",
+      "avail": null,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "avail": -1,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "avail": 5.5,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "avail": true,
+      "total": 100
+    },
+    {
+      "kind": "classify",
+      "avail": 100,
+      "total": null
+    },
+    {
+      "kind": "classify",
+      "avail": 100,
+      "total": 0
+    },
+    {
+      "kind": "classify",
+      "avail": 100,
+      "total": -50
+    },
+    {
+      "kind": "classify",
+      "avail": 100,
+      "total": 2.5
+    },
+    {
+      "kind": "classify",
+      "avail": 100,
+      "total": false
+    },
+    {
+      "kind": "collect",
+      "home": "fresh_ok",
+      "now": 1787400360.0
+    },
+    {
+      "kind": "collect",
+      "home": "fresh_critical",
+      "now": 1787400420.0
+    },
+    {
+      "kind": "collect",
+      "home": "fresh_elevated_frac",
+      "now": 1787400300.5
+    },
+    {
+      "kind": "collect",
+      "home": "stale",
+      "now": 1787400600.0
+    },
+    {
+      "kind": "collect",
+      "home": "future",
+      "now": 1787400600.0
+    },
+    {
+      "kind": "collect",
+      "home": "corrupt_hb",
+      "now": 1787400600.0
+    }
+  ]
+}

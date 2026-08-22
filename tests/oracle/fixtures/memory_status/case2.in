@@ -1,0 +1,39 @@
+{
+  "ops": [
+    {
+      "kind": "collect",
+      "home": "no_mem_key",
+      "now": 1787400360.0
+    },
+    {
+      "kind": "collect",
+      "home": "bad_ts",
+      "now": 1787400360.0
+    },
+    {
+      "kind": "collect",
+      "home": "empty_home",
+      "now": 1787400360.0
+    },
+    {
+      "kind": "collect",
+      "home": "sentinel_only",
+      "now": 1787400360.0
+    },
+    {
+      "kind": "collect",
+      "home": "corrupt_sentinel",
+      "now": 1787400360.0
+    },
+    {
+      "kind": "collect",
+      "home": "nonexistent_dir",
+      "now": 1787400360.0
+    },
+    {
+      "kind": "collect",
+      "home": "fresh_ok",
+      "now": 1787400300.0
+    }
+  ]
+}
