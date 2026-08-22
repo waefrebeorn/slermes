@@ -30,7 +30,7 @@
  *  Forward declarations
  * ====================================================================== */
 
-static char *handle_computer_use(const char *args_json, const char *task_id);
+char *handle_computer_use(const char *args_json, const char *task_id); /* non-static: re-exported by tools/computer_use_tool.py shim port */
 /* PoP: noop_is_available @ tools/computer_use/cua_backend.py:action */
 /* PoP: noop_is_available @ tools/computer_use/cua_backend.py:_action */
 static char *dispatch_action(cu_backend_t *b, const char *action, json_t *args);
@@ -1830,6 +1830,13 @@ cu_backend_t *cu_get_global_backend(void) {
     return g_cu_backend;
 }
 
+/* Shim seam: true when a global backend instance is already cached (without
+ * creating one), so computer_use_tool.release_computer_use_session can report
+ * whether a backend was found and released, like the Python map-pop. */
+int cu_has_global_backend(void) {
+    return g_cu_backend != NULL;
+}
+
 /* PoP: cu_reset_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.set_config */
 void cu_reset_global_backend(void) {
     if (g_cu_backend) {
@@ -2230,7 +2237,7 @@ static char *dispatch_action(cu_backend_t *b, const char *action,
  * ====================================================================== */
 
 /* PoP: handle_computer_use @ tools/computer_use/cua_backend.py:CuaDriverBackend.call_tool */
-static char *handle_computer_use(const char *args_json, const char *task_id) {
+char *handle_computer_use(const char *args_json, const char *task_id) {
     (void)task_id;
 
     json_t *args = json_parse(args_json, NULL);
