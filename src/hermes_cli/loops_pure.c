@@ -376,24 +376,7 @@ char *loops_parse_loop_args(const char *text) {
  * Opaque struct; constructed/inspected only through the functions here.
  * ──────────────────────────────────────────────────────────────────── */
 
-struct loop_state {
-    char   *prompt;
-    char   *status;            /* active | paused | done | cleared */
-    char   *mode;              /* interval | self_paced */
-    double  interval_seconds;
-    double  current_delay;
-    long    times;
-    char   *until;
-    long    max_ticks;
-    long    ticks_fired;
-    double  created_at;
-    double  last_fired_at;
-    double  next_due_at;
-    int     awaiting_response;
-    char   *last_response_digest;
-    char   *paused_reason;
-    char   *last_stop_reason;
-};
+#include "loops_state_internal.h"
 
 /* PoP: loops_state_from_json @ hermes_cli/loops.py:LoopState.from_json */
 loop_state_t *loops_state_from_json(const char *raw) {
@@ -468,12 +451,12 @@ int loops_state_is_due(const loop_state_t *s, double now) {
     return now >= s->next_due_at ? 1 : 0;
 }
 
-/* PoP: loops_digest_response @ hermes_cli/loops.py:_digest_response
- * Stable digest for self-paced change detection. Uses SHA-256 from libcrypto
- * if available; the oracle compares against Python's hashlib.sha256 hexdigest.
- * To keep this self-contained and oracle-verifiable, we reproduce the exact
- * normalization Python does (whitespace collapse, strip clock/timestamp tokens)
- * and then SHA-256 the result. */
+/*
+ * Stable digest for self-paced change detection. Reproduces Python's exact
+ * normalization (whitespace collapse, strip clock/timestamp tokens) and
+ * SHA-256s the result (libcrypto).
+ * PoP: loops_digest_response @ hermes_cli/loops.py:_digest_response
+ */
 #include <openssl/sha.h>
 char *loops_digest_response(const char *response) {
     if (!response) response = "";

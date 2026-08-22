@@ -157,6 +157,7 @@ struct goal_manager_t {
     goal_state_t *state;   /* NULL when no goal loaded */
 };
 
+/* PoP: goal_manager_new @ hermes_cli/goals.py:load_goal,GoalManager.__init__ */
 goal_manager_t *goal_manager_new(const char *session_id, const goal_manager_vtab_t *vtab, int default_max_turns) {
     goal_manager_t *m = calloc(1, sizeof(*m));
     if (!m) return NULL;
@@ -184,6 +185,7 @@ void goal_manager_free(goal_manager_t *m) {
 }
 
 const char *goal_manager_session_id(const goal_manager_t *m) { return m ? m->session_id : ""; }
+/* PoP: goal_manager_state @ hermes_cli/goals.py:state */
 goal_state_t *goal_manager_state(goal_manager_t *m) { return m ? m->state : NULL; }
 
 static void persist(goal_manager_t *m) {
@@ -194,9 +196,11 @@ static void persist(goal_manager_t *m) {
     }
 }
 
+/* PoP: goal_manager_is_active @ hermes_cli/goals.py:is_active */
 bool goal_manager_is_active(const goal_manager_t *m) {
     return m && m->state && strcmp(goal_state_status_str(m->state), "active") == 0;
 }
+/* PoP: goal_manager_has_goal @ hermes_cli/goals.py:has_goal */
 bool goal_manager_has_goal(const goal_manager_t *m) {
     if (!m || !m->state) return false;
     const char *st = goal_state_status_str(m->state);
@@ -206,6 +210,7 @@ bool goal_manager_has_contract(const goal_manager_t *m) {
     return m && m->state && goal_state_has_contract(m->state);
 }
 
+/* PoP: goal_manager_status_line @ hermes_cli/goals.py:status_line */
 char *goal_manager_status_line(const goal_manager_t *m) {
     if (!m || !m->state) return strdup("No active goal. Set one with /goal <text>.");
     const goal_state_t *s = m->state;
@@ -318,6 +323,7 @@ goal_state_t *goal_manager_set(goal_manager_t *m, const char *goal, int max_turn
     return s;
 }
 
+/* PoP: goal_manager_set_contract @ hermes_cli/goals.py:set_contract */
 goal_state_t *goal_manager_set_contract(goal_manager_t *m, const goal_contract_t *contract) {
     if (!m || !m->state) return NULL;
     goal_contract_t *copy = goal_contract_new();
@@ -332,6 +338,7 @@ goal_state_t *goal_manager_set_contract(goal_manager_t *m, const goal_contract_t
     return m->state;
 }
 
+/* PoP: goal_manager_pause @ hermes_cli/goals.py:pause */
 goal_state_t *goal_manager_pause(goal_manager_t *m, const char *reason) {
     if (!m || !m->state) return NULL;
     goal_state_set_status(m->state, GOAL_STATUS_PAUSED);
@@ -359,6 +366,7 @@ goal_state_t *goal_manager_resume(goal_manager_t *m, bool reset_budget) {
     return m->state;
 }
 
+/* PoP: goal_manager_clear @ hermes_cli/goals.py:clear_goal */
 goal_state_t *goal_manager_clear(goal_manager_t *m) {
     if (!m || !m->state) return NULL;
     goal_state_set_status(m->state, GOAL_STATUS_CLEARED);
@@ -368,6 +376,7 @@ goal_state_t *goal_manager_clear(goal_manager_t *m) {
     return NULL;
 }
 
+/* PoP: goal_manager_mark_done @ hermes_cli/goals.py:mark_done */
 void goal_manager_mark_done(goal_manager_t *m, const char *reason) {
     if (!m || !m->state) return;
     goal_state_set_status(m->state, GOAL_STATUS_DONE);
@@ -376,6 +385,7 @@ void goal_manager_mark_done(goal_manager_t *m, const char *reason) {
     persist(m);
 }
 
+/* PoP: goal_manager_add_subgoal @ hermes_cli/goals.py:add_subgoal */
 char *goal_manager_add_subgoal(goal_manager_t *m, const char *text) {
     if (!m || !m->state || !goal_manager_has_goal(m)) return NULL;
     if (!text || !text[0]) return NULL;
@@ -394,6 +404,7 @@ char *goal_manager_add_subgoal(goal_manager_t *m, const char *text) {
     return ret; /* caller owns */
 }
 
+/* PoP: goal_manager_remove_subgoal @ hermes_cli/goals.py:remove_subgoal */
 char *goal_manager_remove_subgoal(goal_manager_t *m, int index_1based) {
     if (!m || !m->state || !goal_manager_has_goal(m)) return NULL;
     char *removed = goal_state_remove_subgoal(m->state, index_1based);
@@ -401,6 +412,7 @@ char *goal_manager_remove_subgoal(goal_manager_t *m, int index_1based) {
     return removed; /* caller owns */
 }
 
+/* PoP: goal_manager_clear_subgoals @ hermes_cli/goals.py:clear_subgoals */
 int goal_manager_clear_subgoals(goal_manager_t *m) {
     if (!m || !m->state || !goal_manager_has_goal(m)) return -1;
     int prev = (int)m->state->n_subgoals;
@@ -412,6 +424,7 @@ int goal_manager_clear_subgoals(goal_manager_t *m) {
     return prev;
 }
 
+/* PoP: goal_manager_render_subgoals @ hermes_cli/goals.py:render_subgoals */
 char *goal_manager_render_subgoals(const goal_manager_t *m) {
     if (!m || !m->state) return strdup("(no active goal)");
     if (m->state->n_subgoals == 0) return strdup("(no subgoals — use /subgoal <text> to add criteria)");
@@ -420,6 +433,7 @@ char *goal_manager_render_subgoals(const goal_manager_t *m) {
 
 /* ── wait barriers ────────────────────────────────────────────────── */
 
+/* PoP: goal_manager_wait_on @ hermes_cli/goals.py:wait_on */
 goal_state_t *goal_manager_wait_on(goal_manager_t *m, long pid, const char *reason, double now) {
     if (!m || !m->state || strcmp(goal_state_status_str(m->state), "active") != 0) return NULL;
     if (pid <= 0) return NULL;
@@ -445,6 +459,7 @@ goal_state_t *goal_manager_wait_on_session(goal_manager_t *m, const char *sessio
     return m->state;
 }
 
+/* PoP: goal_manager_wait_for_seconds @ hermes_cli/goals.py:wait_for_seconds */
 goal_state_t *goal_manager_wait_for_seconds(goal_manager_t *m, int seconds, const char *reason, double now) {
     if (!m || !m->state || strcmp(goal_state_status_str(m->state), "active") != 0) return NULL;
     if (seconds <= 0) return NULL;
@@ -457,6 +472,7 @@ goal_state_t *goal_manager_wait_for_seconds(goal_manager_t *m, int seconds, cons
     return m->state;
 }
 
+/* PoP: goal_manager_stop_waiting @ hermes_cli/goals.py:stop_waiting */
 bool goal_manager_stop_waiting(goal_manager_t *m) {
     if (!m || !m->state) return false;
     if (m->state->waiting_on_pid == 0 &&
@@ -471,6 +487,7 @@ bool goal_manager_stop_waiting(goal_manager_t *m) {
     return true;
 }
 
+/* PoP: goal_manager_is_waiting @ hermes_cli/goals.py:is_waiting */
 bool goal_manager_is_waiting(goal_manager_t *m, double now) {
     if (!m || !m->state) return false;
     goal_state_t *s = m->state;
@@ -498,6 +515,7 @@ bool goal_manager_is_waiting(goal_manager_t *m, double now) {
 
 /* ── continuation prompt + contract render ───────────────────────── */
 
+/* PoP: goal_manager_next_continuation_prompt @ hermes_cli/goals.py:next_continuation_prompt */
 char *goal_manager_next_continuation_prompt(const goal_manager_t *m) {
     if (!m || !m->state || strcmp(goal_state_status_str(m->state), "active") != 0) return NULL;
     const goal_state_t *s = m->state;
@@ -575,6 +593,7 @@ char *goal_manager_render_contract(const goal_manager_t *m) {
 
 /* ── judge prompt helpers ─────────────────────────────────────────── */
 
+/* PoP: goal_judge_max_tokens_resolved @ hermes_cli/goals.py:_goal_judge_max_tokens */
 int goal_judge_max_tokens_resolved(int (*resolve)(void)) {
     if (resolve) {
         int v = resolve();
@@ -625,6 +644,7 @@ static char *extract_json(const char *text) {
     return json;
 }
 
+/* PoP: goal_judge_extract_json_object @ hermes_cli/goals.py:_extract_json_object */
 char *goal_judge_extract_json_object(const char *raw) {
     if (!raw || !raw[0]) return NULL;
     char *text = strdup(raw);
@@ -643,6 +663,7 @@ char *goal_judge_extract_json_object(const char *raw) {
     return json;
 }
 
+/* PoP: goal_judge_parse_response @ hermes_cli/goals.py:_parse_judge_response */
 void goal_judge_parse_response(const char *raw,
                                char **verdict_out, char **reason_out,
                                bool *parse_failed_out, char **wait_directive_out) {
@@ -760,6 +781,7 @@ void goal_judge_parse_response(const char *raw,
 }
 
 /* render background block from an array of JSON process strings */
+/* PoP: goal_judge_render_background_block @ hermes_cli/goals.py:_render_background_block */
 char *goal_judge_render_background_block(const char *const *json_processes) {
     if (!json_processes) return strdup("");
     size_t cap = 1024, len = 0;

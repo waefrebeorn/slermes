@@ -171,11 +171,142 @@ def _status_line(s, now):
     return f"Loop ({s.get('status')}, {meta}): {s['prompt']}"
 
 
+
+
+# ── LoopManager ops (drive the LIVE hermes_cli.loops module) ─────────────
+def _run_manager_ops(ops):
+    """Execute manager-level ops against the real LoopManager with an
+    in-memory store; emit one JSON line per op."""
+    import importlib, sys as _sys, types, time as _time
+    dev = "/home/wubu/hermes-agent-dev"
+    if dev not in _sys.path:
+        _sys.path.insert(0, dev)
+    import hermes_cli.loops as loops
+
+    class MemDB:
+        def __init__(self):
+            self.data = {}
+        def load(self, sid):
+            return self.data.get("loop:" + sid)
+        def save(self, sid, js):
+            self.data["loop:" + sid] = js
+            return 0
+        def list_prefix(self, prefix):
+            out = []
+            for k, v in self.data.items():
+                if k.startswith(prefix):
+                    out.append({"session_id": k[len(prefix):], "json": v})
+            return json.dumps(out)
+
+    import time as _tmod
+    CLOCK = [1000.0]
+    class FakeTime:
+        @staticmethod
+        def time(): return CLOCK[0]
+    _orig_time = loops.time.time
+    loops.time = FakeTime
+    db = MemDB()
+    vtab = type("V", (), {"load": db.load, "save": db.save, "list_prefix": db.list_prefix})()
+    mgrs = {}
+    NOW = [1000.0]
+    FLOOR, CEIL = 60.0, 900.0
+
+    def get_mgr(sid):
+        if sid not in mgrs:
+            # monkeypatch config knobs for determinism
+            loops.min_interval_seconds = lambda: 30
+            loops.max_ticks_default = lambda: 100
+            loops.self_paced_floor_seconds = lambda: int(FLOOR)
+            loops.self_paced_ceiling_seconds = lambda: int(CEIL)
+
+            loops.load_loop = lambda s: (loops.LoopState.from_json(db.load(s)) if db.load(s) else None)
+            loops.save_loop = lambda s, st: db.save(s, st.to_json())
+            mgrs[sid] = loops.LoopManager.__new__(loops.LoopManager)
+            mgrs[sid].session_id = sid
+            raw = db.load(sid)
+            mgrs[sid]._state = loops.LoopState.from_json(raw) if raw else None
+        return mgrs[sid]
+
+    for c in ops:
+        kind = c.get("kind")
+        now = c.get("now", NOW[0])
+        CLOCK[0] = now
+        if kind == "manager_new":
+            m = get_mgr(c.get("session_id", "s1"))
+            st = m._state
+            out = json.loads(st.to_json()) if st else None
+        elif kind == "set":
+            m = get_mgr(c.get("session_id", "s1"))
+            try:
+                st = m.set(c.get("prompt", ""), interval_seconds=c.get("interval_seconds"),
+                           times=c.get("times", 0), until=c.get("until", ""))
+                out = json.loads(st.to_json())
+            except ValueError as e:
+                out = {"error": str(e)}
+        elif kind == "pause":
+            st = get_mgr(c.get("session_id", "s1")).pause(c.get("reason", "user-paused"))
+            out = json.loads(st.to_json()) if st else None
+        elif kind == "resume":
+            st = get_mgr(c.get("session_id", "s1")).resume()
+            out = json.loads(st.to_json()) if st else None
+        elif kind == "clear":
+            out = get_mgr(c.get("session_id", "s1")).clear()
+        elif kind == "mark_done":
+            get_mgr(c.get("session_id", "s1")).mark_done(c.get("reason", ""))
+            out = None
+        elif kind == "is_due":
+            out = get_mgr(c.get("session_id", "s1")).is_due(now)
+        elif kind == "fire_tick":
+            msg = get_mgr(c.get("session_id", "s1")).fire_tick()
+            out = msg
+        elif kind == "abandon_tick":
+            get_mgr(c.get("session_id", "s1")).abandon_tick()
+            out = None
+        elif kind == "complete_tick":
+            d = get_mgr(c.get("session_id", "s1")).complete_tick(c.get("response", ""))
+            out = d
+        elif kind == "status_line":
+            out = get_mgr(c.get("session_id", "s1")).status_line()
+        elif kind == "has_loop":
+            out = get_mgr(c.get("session_id", "s1")).has_loop()
+        elif kind == "is_active":
+            out = get_mgr(c.get("session_id", "s1")).is_active()
+        elif kind == "state_dump":
+            st = get_mgr(c.get("session_id", "s1"))._state
+            out = json.loads(st.to_json()) if st else None
+        elif kind == "goal_blocks":
+            # monkeypatch GoalManager path
+            active = c.get("active", False)
+            waiting = c.get("waiting", False)
+            class FakeMgr:
+                def __init__(self, session_id): pass
+                def is_active(self): return active
+                def is_waiting(self): return waiting
+            import hermes_cli.goals as goals_mod
+            orig = getattr(goals_mod, "GoalManager", None)
+            goals_mod.GoalManager = FakeMgr
+            try:
+                out = loops.goal_blocks_loop_tick(c.get("session_id", "s1"))
+            except Exception:
+                out = False
+            finally:
+                if orig is not None: goals_mod.GoalManager = orig
+        else:
+            out = None
+        print(json.dumps({"out": out}, ensure_ascii=False, sort_keys=True))
+
+
 def main():
     fixture = sys.argv[1]
     with open(fixture) as f:
         root = json.load(f)
-    for c in root.get("ops", []):
+    ops = root.get("ops", [])
+    if any(c.get("kind", "").startswith(("manager_", "set", "pause", "resume", "clear",
+        "mark_done", "is_due", "fire_tick", "abandon_tick", "complete_tick",
+        "status_line", "has_loop", "is_active", "state_dump", "goal_blocks")) for c in ops):
+        _run_manager_ops(ops)
+        return
+    for c in ops:
         kind = c.get("kind")
         if kind == "parse_interval":
             out = parse_interval_token(c.get("token"))

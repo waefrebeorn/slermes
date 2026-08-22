@@ -1,0 +1,31 @@
+{"ops": [
+  {"kind": "manager_new", "session_id": "s3"},
+  {"kind": "set", "session_id": "s3", "prompt": "poll CI", "interval_seconds": 120, "times": 2, "now": 1000.0},
+  {"kind": "fire_tick", "session_id": "s3", "now": 1120.0},
+  {"kind": "complete_tick", "session_id": "s3", "response": "CI green on run 1", "now": 1150.0},
+  {"kind": "fire_tick", "session_id": "s3", "now": 1300.0},
+  {"kind": "complete_tick", "session_id": "s3", "response": "CI green on run 2", "now": 1330.0},
+  {"kind": "state_dump", "session_id": "s3"},
+
+  {"kind": "manager_new", "session_id": "s4"},
+  {"kind": "set", "session_id": "s4", "prompt": "watch the queue", "interval_seconds": 300, "until": "queue depth reaches zero", "now": 1000.0},
+  {"kind": "fire_tick", "session_id": "s4", "now": 1300.0},
+  {"kind": "complete_tick", "session_id": "s4", "response": "the queue is empty now, all jobs drained", "now": 1350.0},
+  {"kind": "state_dump", "session_id": "s4"},
+
+  {"kind": "manager_new", "session_id": "s5"},
+  {"kind": "set", "session_id": "s5", "prompt": "long watcher", "interval_seconds": 60, "now": 1000.0},
+  {"kind": "fire_tick", "session_id": "s5", "now": 1060.0},
+  {"kind": "complete_tick", "session_id": "s5", "response": "...LOOP_COMPLETE", "now": 1100.0},
+  {"kind": "state_dump", "session_id": "s5"},
+
+  {"kind": "manager_new", "session_id": "s6"},
+  {"kind": "set", "session_id": "s6", "prompt": "budget test", "interval_seconds": 60, "now": 1000.0},
+  {"kind": "state_dump", "session_id": "s6"},
+
+  {"kind": "goal_blocks", "session_id": "g1", "active": false, "waiting": false},
+  {"kind": "goal_blocks", "session_id": "g2", "active": true, "waiting": false},
+  {"kind": "goal_blocks", "session_id": "g3", "active": true, "waiting": true},
+
+  {"kind": "abandon_tick", "session_id": "sx"}
+]}
