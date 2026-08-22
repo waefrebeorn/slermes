@@ -1,0 +1,92 @@
+{
+  "ops": [
+    {
+      "kind": "clear",
+      "repo": "r1",
+      "min_age": -1,
+      "now": 1700001200,
+      "git_running": 0
+    },
+    {
+      "kind": "clear",
+      "repo": "r1",
+      "min_age": -1,
+      "now": 1700001200,
+      "git_running": 1
+    },
+    {
+      "kind": "clear",
+      "repo": "r1",
+      "min_age": -1,
+      "now": 1700000600,
+      "git_running": 0
+    },
+    {
+      "kind": "clear",
+      "repo": "r1",
+      "min_age": 1200,
+      "now": 1700001200,
+      "git_running": 0
+    },
+    {
+      "kind": "clear",
+      "repo": "r1",
+      "min_age": 0,
+      "now": 1700001200,
+      "git_running": 0
+    },
+    {
+      "kind": "clear",
+      "repo": "r2",
+      "min_age": -1,
+      "now": 1700001200,
+      "git_running": 0
+    },
+    {
+      "kind": "clear",
+      "repo": "r2",
+      "min_age": -1,
+      "now": 1700001200,
+      "git_running": 0
+    },
+    {
+      "kind": "clear",
+      "repo": "nosuchrepo",
+      "min_age": -1,
+      "now": 1700001200,
+      "git_running": 0
+    },
+    {
+      "kind": "clear",
+      "repo": "r1",
+      "min_age": -1,
+      "now": 1700001199,
+      "git_running": 1
+    },
+    {
+      "kind": "ancestor",
+      "repo": "rgit",
+      "rev": "HEAD"
+    },
+    {
+      "kind": "ancestor",
+      "repo": "rgit",
+      "rev": "main"
+    },
+    {
+      "kind": "ancestor",
+      "repo": "rgit",
+      "rev": "nonexistent-rev"
+    },
+    {
+      "kind": "ancestor",
+      "repo": "nosuchrepo",
+      "rev": "HEAD"
+    },
+    {
+      "kind": "ancestor",
+      "repo": "rgit",
+      "rev": ""
+    }
+  ]
+}
