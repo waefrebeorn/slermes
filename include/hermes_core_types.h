@@ -131,8 +131,8 @@ typedef struct {
  * ================================================================ */
 typedef struct {
     char   name[64];
-    char   description[512];
-    char   schema_json[4096];
+    char   description[2048]; /* 512 truncated real tool descriptions (read_window_below ~704) — Python registry has no limit */
+    char   schema_json[16384]; /* 4096 truncated real tool schemas (computer_use ~10.4KB) — Python registry has no limit */
     char *(*handler)(const char *args_json, const char *task_id);
     bool  available;
     int   timeout_sec;   /* P52: per-tool timeout. 0 = inherit default. -1 = no timeout. */
