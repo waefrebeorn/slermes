@@ -1,0 +1,11 @@
+{
+  "ops": [
+    {"kind":"keys_env_at","path":""},
+    {"kind":"keys_env_at","path":"OPENROUTER_API_KEY"},
+    {"kind":"keys_env_at","path":"NOUS_BASE_URL"},
+    {"kind":"keys_env_at","path":"HERMES_PREFILL_MESSAGES_FILE"},
+    {"kind":"type_at","path":"toolsets"},
+    {"kind":"count_default_keys"},
+    {"kind":"count_env_vars"}
+  ]
+}

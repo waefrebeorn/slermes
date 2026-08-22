@@ -1,0 +1,32 @@
+{
+  "ops": [
+    {"kind":"full_default"},
+    {"kind":"full_env"},
+    {"kind":"count_default_keys"},
+    {"kind":"count_env_vars"},
+    {"kind":"fresh_parse_check"},
+    {"kind":"keys_at","path":""},
+    {"kind":"keys_at","path":"database"},
+    {"kind":"keys_at","path":"agent"},
+    {"kind":"keys_at","path":"display"},
+    {"kind":"keys_at","path":"voice"},
+    {"kind":"keys_at","path":"gateway"},
+    {"kind":"keys_at","path":"tools"},
+    {"kind":"type_at","path":"model"},
+    {"kind":"type_at","path":"providers"},
+    {"kind":"type_at","path":"toolsets.0"},
+    {"kind":"type_at","path":"database.wal_autocheckpoint"},
+    {"kind":"type_at","path":"database.journal_mode"},
+    {"kind":"type_at","path":"runtime.nofile_soft_limit"},
+    {"kind":"type_at","path":"max_concurrent_sessions"},
+    {"kind":"type_at","path":"max_live_sessions"},
+    {"kind":"type_at","path":"session.terminal_continue"},
+    {"kind":"type_at","path":"agent.max_turns"},
+    {"kind":"type_at","path":"_config_version"},
+    {"kind":"type_at","path":"no.such.path"},
+    {"kind":"str_at","path":"model"},
+    {"kind":"str_at","path":"database.journal_mode"},
+    {"kind":"str_at","path":"session.terminal_continue"},
+    {"kind":"str_at","path":"vertex.region"}
+  ]
+}
