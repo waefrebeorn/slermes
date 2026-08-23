@@ -47,9 +47,9 @@ int main(int argc, char **argv) {
     for (int i = 2; i < argc; i++) {
         char probe[4096];
         snprintf(probe, sizeof probe, "%s", argv[i]);
-        char *f[5] = {NULL,NULL,NULL,NULL,NULL};
+        char *f[5] = {probe, NULL, NULL, NULL, NULL};
         int nf = 0;
-        for (char *p = probe; *p && nf < 5; p++)
+        for (char *p = probe; *p && nf < 4; p++)
             if (*p == '|') { *p = '\0'; f[++nf] = p + 1; }
         int enabled      = f[0] ? atoi(f[0]) : 1;
         const char *admins  = f[1] ? f[1] : "";
