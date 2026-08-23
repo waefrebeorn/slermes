@@ -214,8 +214,8 @@ static int translate_and_compile(const raw_pattern_t *raw)
     char *posix = pyre_to_posix(raw->pattern);
     if (!posix) return -1;
 
-    /* Compile regex */
-    hregex_t *re = regex_compile(posix, 0);
+    /* Compile regex — python uses re.IGNORECASE for every pattern */
+    hregex_t *re = regex_compile(posix, REGEX_FLAG_ICASE);
     if (!re) {
         free(posix);
         return -1;
