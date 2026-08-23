@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <pthread.h>
+#include <time.h>
+#include <errno.h>
 
 /* Forward declarations for PoP helpers defined later in this file. */
 char *sc_clean_for_display(const char *text);
@@ -117,6 +121,28 @@ static const char *k_close_tags[] = {
 static const int k_close_tag_lens[] = {23, 8, 12, 11, 11, 10};
 static const int k_close_tag_count = 6;
 
+/* ── Work-queue plumbing (Python queue.Queue + threading.Event) ────────── */
+typedef enum {
+    SC_Q_DELTA = 0,
+    SC_Q_COMMENTARY,
+    SC_Q_NEW_SEGMENT,
+    SC_Q_FLUSH,
+    SC_Q_DONE
+} sc_q_kind_t;
+
+typedef struct sc_event {
+    pthread_mutex_t m;
+    pthread_cond_t  cv;
+    bool set;
+} sc_event_t;
+
+typedef struct sc_q_item {
+    sc_q_kind_t        kind;
+    char              *text;
+    sc_event_t        *flush;
+    struct sc_q_item  *next;
+} sc_q_item_t;
+
 struct gw_stream_consumer {
     char  *accumulated;     /* visible accumulated text */
     size_t acc_len;
@@ -141,6 +167,44 @@ struct gw_stream_consumer {
     bool    final_response_sent;
     bool    final_content_delivered;
     char   *message_id;            /* last-sent/edited message ID (owned) */
+
+    /* ── Streaming / fallback state (Python instance attrs) ── */
+    bool    already_sent;
+    bool    edit_supported;
+    bool    use_draft_streaming;
+    bool    fallback_final_send;
+    char   *draft_id;
+    char   *fallback_prefix;
+    double  message_created_ts;
+    double  fresh_final_after_seconds;
+    int     max_fallback_flood_retry_seconds;
+    json_t *preview_ids;
+    json_t *segment_preview_ids;
+
+    /* ── Adapter + transport callbacks (installed by the gateway) ── */
+    void *adapter;
+    char  chat_id[128];
+    char  transport_mode[8];
+    char  chat_type[16];
+    json_t *(*send_fn)(void *adapter, gw_stream_consumer_t *c,
+                       const char *content, const char *reply_to,
+                       bool final, bool expect_edits);
+    json_t *(*edit_fn)(void *adapter, gw_stream_consumer_t *c,
+                       const char *message_id, const char *content);
+    bool   (*delete_fn)(void *adapter, gw_stream_consumer_t *c,
+                        const char *message_id);
+    bool   (*send_draft_fn)(void *adapter, gw_stream_consumer_t *c,
+                            const char *draft_id, const char *content);
+    bool   (*supports_draft_fn)(void *adapter, gw_stream_consumer_t *c);
+    bool   (*prefers_fresh_final_fn)(void *adapter, gw_stream_consumer_t *c,
+                                     const char *text);
+
+    /* ── Work queue (Python self._queue) ── */
+    pthread_mutex_t q_lock;
+    pthread_cond_t  q_cond;
+    sc_q_item_t    *q_head, *q_tail;
+    void (*on_new_message_cb)(void *user);
+    void  *on_new_message_user;
 };
 
 gw_stream_consumer_t *gw_stream_consumer_new(const gw_stream_consumer_cfg_t *cfg)
