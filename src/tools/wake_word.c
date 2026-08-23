@@ -1273,22 +1273,42 @@ void ww_detector_failed(ww_detector_t *det)
     pthread_mutex_unlock(&det->lock);
 }
 
+/* Module-level listener lease (Python: _detector / _detector_owner guarded by
+ * _detector_lock). The started detector is registered here so the ownership
+ * and pause/resume/stop surface below can enforce the lease. */
+static pthread_mutex_t g_ww_lease_lock = PTHREAD_MUTEX_INITIALIZER;
+static ww_detector_t *g_ww_detector = NULL;
+static void *g_ww_detector_owner = NULL;
+
 /* PoP: ww_start_listening @ tools/wake_word.py:start_listening */
 ww_detector_t *ww_start_listening(void (*on_wake)(void),
                                   void *owner,
                                   const json_t *config)
 {
-    (void)owner; /* In the C port, owner tracking is handled
-                  * by the caller — we just build and start. */
+    pthread_mutex_lock(&g_ww_lease_lock);
+    if (g_ww_detector != NULL) {
+        if (g_ww_detector_owner != owner) {
+            /* Python raises WakeWordInUse("Wake-word microphone is already owned.") */
+            pthread_mutex_unlock(&g_ww_lease_lock);
+            return NULL;
+        }
+        /* Same owner re-arming: swap the callback and resume (Python path). */
+        g_ww_detector->on_wake = on_wake;
+        ww_detector_resume(g_ww_detector);
+        ww_detector_t *det = g_ww_detector;
+        pthread_mutex_unlock(&g_ww_lease_lock);
+        return det;
+    }
 
     void *engine = ww_build_engine(config);
-    if (!engine) return NULL;
+    if (!engine) { pthread_mutex_unlock(&g_ww_lease_lock); return NULL; }
 
     ww_detector_t *det = ww_detector_create(
         engine, on_wake, WW_FIRE_COOLDOWN_SECONDS,
         ww_detector_failed, 0);
     if (!det) {
         /* Engine cleanup is Python-side. */
+        pthread_mutex_unlock(&g_ww_lease_lock);
         return NULL;
     }
 
@@ -1296,53 +1316,90 @@ ww_detector_t *ww_start_listening(void (*on_wake)(void),
     if (rc != 0) {
         ww_detector_stop(det);
         free(det);
+        pthread_mutex_unlock(&g_ww_lease_lock);
         return NULL;
     }
+    g_ww_detector = det;
+    g_ww_detector_owner = owner;
+    pthread_mutex_unlock(&g_ww_lease_lock);
     return det;
 }
 
 /* PoP: ww_owns_listener @ tools/wake_word.py:owns_listener */
 bool ww_owns_listener(void *owner)
 {
-    (void)owner;
-    /* In the C port, the global detector is managed by the
-     * caller. This is a stub that returns false — the actual
-     * ownership tracking is done by the application layer. */
-    return false;
+    /* Python: _detector is not None and _detector_owner is owner */
+    pthread_mutex_lock(&g_ww_lease_lock);
+    bool owned = g_ww_detector != NULL && g_ww_detector_owner == owner;
+    pthread_mutex_unlock(&g_ww_lease_lock);
+    return owned;
 }
 
 /* PoP: ww_pause_listening @ tools/wake_word.py:pause_listening */
 bool ww_pause_listening(void *owner)
 {
-    (void)owner;
-    /* Application-level implementation. */
-    return false;
+    /* Python: release the microphone only when owner holds the lease. */
+    pthread_mutex_lock(&g_ww_lease_lock);
+    if (g_ww_detector == NULL || g_ww_detector_owner != owner) {
+        pthread_mutex_unlock(&g_ww_lease_lock);
+        return false;
+    }
+    ww_detector_pause(g_ww_detector);
+    pthread_mutex_unlock(&g_ww_lease_lock);
+    return true;
 }
 
 /* PoP: ww_resume_listening @ tools/wake_word.py:resume_listening */
 bool ww_resume_listening(void *owner)
 {
-    (void)owner;
-    return false;
+    /* Python: re-open the microphone only when owner holds the lease. */
+    pthread_mutex_lock(&g_ww_lease_lock);
+    if (g_ww_detector == NULL || g_ww_detector_owner != owner) {
+        pthread_mutex_unlock(&g_ww_lease_lock);
+        return false;
+    }
+    int rc = ww_detector_resume(g_ww_detector);
+    pthread_mutex_unlock(&g_ww_lease_lock);
+    return rc == 0;
 }
 
 /* PoP: ww_stop_listening @ tools/wake_word.py:stop_listening */
 bool ww_stop_listening(void *owner)
 {
-    (void)owner;
-    return false;
+    /* Python: fully stop the detector only when owner holds the lease, then
+     * clear the module lease. */
+    pthread_mutex_lock(&g_ww_lease_lock);
+    if (g_ww_detector == NULL || g_ww_detector_owner != owner) {
+        pthread_mutex_unlock(&g_ww_lease_lock);
+        return false;
+    }
+    ww_detector_t *det = g_ww_detector;
+    g_ww_detector = NULL;
+    g_ww_detector_owner = NULL;
+    pthread_mutex_unlock(&g_ww_lease_lock);
+    ww_detector_stop(det);
+    free(det);
+    return true;
 }
 
 /* PoP: ww_is_listening @ tools/wake_word.py:is_listening */
 bool ww_is_listening(void)
 {
-    return false; /* Application-level state. */
+    pthread_mutex_lock(&g_ww_lease_lock);
+    ww_detector_t *det = g_ww_detector;
+    pthread_mutex_unlock(&g_ww_lease_lock);
+    return det != NULL && ww_detector_running(det);
 }
 
 /* PoP: ww_audio_is_silent @ tools/wake_word.py:audio_is_silent */
 bool ww_audio_is_silent(void)
 {
-    return false; /* Application-level state. */
+    /* True when the armed stream has delivered only silence (dead mic). */
+    pthread_mutex_lock(&g_ww_lease_lock);
+    ww_detector_t *det = g_ww_detector;
+    bool silent = det != NULL && det->audio_silent;
+    pthread_mutex_unlock(&g_ww_lease_lock);
+    return silent;
 }
 
 /* PoP: ww_get_input_device_status @ tools/wake_word.py:get_input_device_status */
