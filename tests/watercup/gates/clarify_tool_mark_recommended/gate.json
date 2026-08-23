@@ -1,0 +1,22 @@
+{
+  "name": "clarify_tool_mark_recommended",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mark_recommended",
+  "py_module": "tools/clarify_tool.py",
+  "py_fn": "mark_recommended",
+  "cflags": [],
+  "extra_src": [],
+  "inputs": [
+    "only-one",
+    "rebase\u001freset\u001finspect",
+    "  rebase  \u001freset",
+    "rebase (Recommended)\u001freset",
+    "rebase (recommended)\u001freset",
+    "a\u001fb\u001fc\u001fd\u001fe",
+    "x (RECOMMENDED)\u001fy",
+    "ship it\u001froll back"
+  ],
+  "notes": "Traced copy of src/tools/clarify_tool.c::clarify_mark_recommended; LIVE twin tools/clarify_tool.py::mark_recommended. Choices are '\\u001f'-joined in one argv element (argv-safe; choices containing the separator excluded). C uses ASCII strcasecmp for the already-labeled check, LIVE uses casefold — equivalent for the ASCII inputs walked here."
+}

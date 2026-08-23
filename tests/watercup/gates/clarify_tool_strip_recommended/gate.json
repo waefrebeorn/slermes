@@ -1,0 +1,23 @@
+{
+  "name": "clarify_tool_strip_recommended",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "strip_recommended",
+  "py_module": "tools/clarify_tool.py",
+  "py_fn": "strip_recommended",
+  "cflags": [],
+  "extra_src": [],
+  "inputs": [
+    "Rebase onto main",
+    "Rebase onto main (Recommended)",
+    "rebase onto main (RECOMMENDED)",
+    "  padded choice  ",
+    "(Recommended)",
+    "not labeled",
+    "choice (recommended",
+    "Ship it (Recommended)  ",
+    ""
+  ],
+  "notes": "Traced copy of src/tools/clarify_tool.c::clarify_strip_recommended; LIVE twin tools/clarify_tool.py::strip_recommended. Empty-string argv is the NULL sentinel (same result either way: empty in -> empty out). C uses ASCII strcasecmp, LIVE uses casefold — equivalent for the ASCII inputs walked here."
+}
