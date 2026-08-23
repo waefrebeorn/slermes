@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <limits.h>
+#include <sys/stat.h>
 
 #include "hermes_tool_result.h"
 #include "libjson/json.h"
