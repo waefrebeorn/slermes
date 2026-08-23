@@ -28,6 +28,7 @@ void    term_rec_clear_session_cwd(const char *session_key);
 /* --- task env overrides (register_task_env_overrides / clear_task_env_overrides) */
 void    term_reg_register_task_env_overrides(const char *task_id, json_t *overrides);
 void    term_reg_clear_task_env_overrides(const char *task_id);
+json_t *term_reg_get_task_overrides(const char *task_id); /* raw copy or NULL; caller frees */
 
 /* --- container-task id resolution */
 void    term_resolve_container_task_id(const char *task_id, char *out, size_t outsz);

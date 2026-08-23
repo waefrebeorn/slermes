@@ -215,6 +215,18 @@ void term_reg_clear_task_env_overrides(const char *task_id) {
     term_rec_clear_session_cwd(task_id);
 }
 
+/* Raw override lookup (the _task_env_overrides[task_id] read used by the
+ * isolation-override predicate). Returns a json copy or NULL; caller frees. */
+json_t *term_reg_get_task_overrides(const char *task_id) {
+    if (!task_id || !*task_id) return NULL;
+    pthread_mutex_lock(&g_lock);
+    registry_init_locked();
+    json_t *ov = json_obj_get(g_task_overrides, task_id);
+    json_t *out = ov ? json_copy(ov) : NULL;
+    pthread_mutex_unlock(&g_lock);
+    return out;
+}
+
 /* PoP: term_resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
 /* Map a tool-call task_id to the container/sandbox key. Subagents collapse to
  * "default"; override-registered rollouts with isolation keys stay distinct. */
