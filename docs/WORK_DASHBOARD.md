@@ -107,7 +107,7 @@ oracle). It cross-references **every** Python function against the C tree by nam
 ## §2 — The work, ranked (this is the to-do)
 
 ### P0 — FAPs the water-cup already caught (real, verified, fixable)
-1. **`watercup_web_auth` (SHIPPED ✅)** — `src/web_dashboard.c::is_public_path()`
+1. **`watercup_web_auth` (SHIPPED ✅)** — `src/web_dashboard.c::is_public_path`
    now matches LIVE `PUBLIC_API_PATHS` exactly (8 paths). Removed 4 spurious
    C-only entries (`/health`, `/api/version`, `/api/token`, `/api/platforms`);
    added 6 LIVE entries (`/api/config/defaults`, `/api/config/schema`,
@@ -128,9 +128,9 @@ oracle). It cross-references **every** Python function against the C tree by nam
     `retryable:false` + a recovery hint (no handler side effects on bad input).
     Proven by `tests/watercup/gates/registry_validate_args/verify.c` (9 assertions,
     ALL PASS against real libjson). **Bonus:** building it root-caused + fixed two
-    LATENT libjson bugs in the existing `coerce_args_json` — `json_len()` (array
-    length) was used where `json_object_size()` (object count) was needed, and
-    `json_get(obj, index)` (array accessor) was used where `json_object_get_at()`
+    LATENT libjson bugs in the existing `coerce_args_json` — `json_len` (array
+    length) was used where `json_object_size` (object count) was needed, and
+    `json_get(obj, index)` (array accessor) was used where `json_object_get_at`
     was needed — so coercion was silently a no-op before; it now actually coerces.
 
 ### P1 — Tool-layer reliability (SHIPPED ✅, research-backed)
@@ -138,10 +138,10 @@ Built the two structural fixes the agent-tooling research identified as the
 "retries are structurally broken" gap:
 
 - **Error classification** — `src/tools/tool_result_classification.c` (was a
-  name-parity STUB; now REAL). `tool_classify_error()` returns
+  name-parity STUB; now REAL). `tool_classify_error` returns
   `NONE/TRANSIENT/PERMANENT`: explicit `"retryable"` field wins; else keyword
   heuristics on message+code+status; **default PERMANENT (fail-closed)** so the
-  agent loop never blindly retries an unknown error. `tool_error_with_class()`
+  agent loop never blindly retries an unknown error. `tool_error_with_class`
   non-destructively appends `_retry_class` to an error result so the loop can
   decide. Proven by `tests/watercup/gates/tool_result_classification/`.
 - **Idempotency keys** — `src/tools/tool_idempotency.c` + `include/tool_idempotency.h`,
@@ -149,19 +149,19 @@ Built the two structural fixes the agent-tooling research identified as the
   `idempotency_key` arg overrides); `tool_idem_put/get` with TTL. Wired into
   `registry_dispatch` (both main + repaired paths): lookup-before-exec returns
   the cached result on retry WITHOUT re-running the handler (no double send), and
-  successful results are stored. `tool_registry_shutdown()` frees the cache.
+  successful results are stored. `tool_registry_shutdown` frees the cache.
   Proven by `tests/watercup/gates/tool_idempotency/`.
 - **Restart-survival** — `tool_idem_attach(cache, path)` (path under HERMES_HOME,
   resolved like `main.c`: `SLERMES_HOME` → `~/.slermes` → `~/.hermes`). On attach,
   non-expired entries are loaded from a JSON file; every `tool_idem_put` rewrites
   that file (omap-backed, libjson-serialized). So the cache — and therefore safe
   retries — survives process restarts, not just in-process. Wired into the
-  registry's `idem_ensure()` so the production cache is durable by default.
+  registry's `idem_ensure` so the production cache is durable by default.
   Proven by `tests/watercup/gates/tool_idempotency_persist/` (put→flush→fresh-attach→recover).
 
 - **Loop consumption (the non-speculative consumer)** — `src/agent/conversation_loop.c`
   now unifies its ad-hoc `classify_tool_result` on `tool_classify_error` (single
-  source of truth) and adds `dispatch_with_retry()`: on a TRANSIENT-tagged error it
+  source of truth) and adds `dispatch_with_retry`: on a TRANSIENT-tagged error it
   re-dispatches up to `TOOL_RETRY_MAX` (3) times with exponential backoff;
   PERMANENT/unknown errors are NOT retried (fail-closed). This is safe because
   `registry_dispatch` is idempotent on args (omap cache returns the prior result

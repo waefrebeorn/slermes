@@ -40,7 +40,7 @@
 ## The 6 improvements (ranked by ROI)
 
 ### P0 — Centralized tool-input validation  (highest ROI, lowest risk)
-Add `tool_arg_schema_t` + `tool_validate_args()` in `src/agent/tool_executor.c`. Each
+Add `tool_arg_schema_t` + `tool_validate_args` in `src/agent/tool_executor.c`. Each
 tool declares expected keys/types/ranges/required. Executor rejects malformed calls
 with a structured error **before** the body runs. Kills the 112-file duplicated-parse
 problem and blocks injection-driven bad calls. *This is the first thing to build.*

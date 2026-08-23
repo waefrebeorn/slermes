@@ -2,11 +2,11 @@
 
 **Status:** design + reference implementation (v1) + **project-wide framework (v2)**.
 **Problem it solves:** the existing oracle (`tests/oracle/`) diffs *output*
-fixtures. That is gameable: a C port can return a hardcoded `json_object()`
+fixtures. That is gameable: a C port can return a hardcoded `json_object`
 (or a copy of the expected vector) and pass every fixture while doing *none* of
 the real work. The parity scanner (`slermes_parity_battleground.py`) is even
 weaker — it never executes anything, so a `/* PoP: */` annotation on an empty
-`{ return json_object(); }` body closes the gap.
+`{ return json_object; }` body closes the gap.
 
 The water-cup oracle makes parity *behavioral and path-dependent*, so faking
 the output without flowing water through the real control structure fails.
@@ -20,7 +20,7 @@ commit-relevant intermediate-value hashes. Two cups (Python + C) are
 **parity-matched** iff, over a stream of inputs, they carve the *same shape*.
 
 A cheater who only fakes the *output* carves a *different shape*: a stub that
-`return json_object()` has no branch/loop/recursion trace, so its cup is empty
+`return json_object` has no branch/loop/recursion trace, so its cup is empty
 or degenerate and never matches the Python cup.
 
 ## Three nesting cups (deeper = harder to game)
@@ -48,14 +48,14 @@ or degenerate and never matches the Python cup.
    some outputs but violates an invariant is caught.
 
 **Anti-gaming property:** the shape is *derived from execution*, not from the
-declared result. You cannot `return json_object()` (or a copied vector) *and*
+declared result. You cannot `return json_object` (or a copied vector) *and*
 reproduce the branch/loop/recursion trace of the real algorithm, because that
 trace is a function of the input in a way a stub does not compute.
 
 ## Reference implementation (this directory)
 
 - `tests/watercup/watercup.h` — C tracer API (`WCUP_PUSH`, `WCUP_BRANCH`,
-  `WCUP_LOOP`, `WCUP_VAL`, `WCUP_RECURSE`) + `wcup_finalize()` returning the
+  `WCUP_LOOP`, `WCUP_VAL`, `WCUP_RECURSE`) + `wcup_finalize` returning the
   cup-hash hex string. Compiles to a no-op when `WCUP_DISABLED` is defined, so
   it is zero-cost in production builds.
 - `tests/watercup/watercup_py.py` — Python equivalent tracer using
@@ -77,7 +77,7 @@ class). A port is parity-closed only when BOTH say MATCH.
 
 | Vector | Diff oracle | Water-cup |
 |---|---|---|
-| hardcoded `return json_object()` | passes if fixture expects `{}` | **fails**: empty trace-cup |
+| hardcoded `return json_object` | passes if fixture expects `{}` | **fails**: empty trace-cup |
 | copied expected vector | passes on that fixture | **fails**: trace diverges on the *stream* |
 | right output, wrong path | **passes** (the gap) | **fails**: branch/loop trace differs |
 | right output, invariant-violating | **passes** | **fails**: equivalence-cup |
@@ -148,7 +148,7 @@ REDs was a stale binary).
    matches, the drift was convention (fix the twin). If it still mismatches,
    you found a real divergence.
 2. **V events must exist on both sides or neither.** `WCUP_VALSTR` in C with
-   no matching `c.valstr()` in the twin (or vice versa) mismatches every cup.
+   no matching `c.valstr` in the twin (or vice versa) mismatches every cup.
    For pure branch-ladder gates, emit V events on NEITHER side.
 3. **Harness stdout is the cup stream.** Print one 16-hex cup per input and
    nothing else — route results/diagnostics to stderr.
