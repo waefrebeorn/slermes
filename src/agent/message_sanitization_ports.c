@@ -251,7 +251,9 @@ char *msz_repair_tool_call_arguments(const char *args_json) {
 
 /* PoP: msz_strip_non_ascii @ agent/message_sanitization.py:_strip_non_ascii */
 char *msz_strip_non_ascii(const char *text) {
-    /* Python: remove non-ASCII, closest ASCII or drop. */
+    /* Python: text.encode('ascii', errors='ignore').decode('ascii') —
+     * every non-ASCII byte is DROPPED (no curly-quote substitution;
+     * fixed to match LIVE semantics). */
     if (!text) return strdup("");
     size_t cap = strlen(text) + 1;
     char *out = malloc(cap);
@@ -260,28 +262,103 @@ char *msz_strip_non_ascii(const char *text) {
     for (const char *p = text; *p; p++) {
         unsigned char c = (unsigned char)*p;
         if (c < 0x80) *q++ = *p;
-        else {
-            /* common curly quotes → ascii; else drop */
-            if ((unsigned char)p[0] == 0xE2 && (unsigned char)p[1] == 0x80) {
-                unsigned char lo = (unsigned char)p[2];
-                if (lo == 0x98 || lo == 0x99) *q++ = '\'';
-                else if (lo == 0x9C || lo == 0x9D) *q++ = '"';
-                else if (lo == 0x94) *q++ = '-';
-                else if (lo == 0xA6) *q++ = '|';
-                p += 2;
-                continue;
-            }
-        }
     }
     *q = '\0';
     return out;
 }
 
+/* Core of _sanitize_messages_non_ascii: in-place pass over a parsed
+ * messages ARRAY. Returns true if any content was sanitized. Ladder
+ * mirrors LIVE agent/message_sanitization.py::_sanitize_messages_non_ascii
+ * rung-for-rung (see tests/watercup/gates/
+ * agent_message_sanitization_sanitize_messages_non_ascii). */
+static bool msz_str_field_changed(json_t *obj, const char *key, bool *found) {
+    json_t *node = json_obj_get(obj, key);
+    if (!node || node->type != JSON_STRING) return false;
+    char *s = msz_strip_non_ascii(node->str_val);
+    bool changed = strcmp(s, node->str_val) != 0;
+    if (changed) {
+        json_set(obj, key, json_string(s));
+        *found = true;
+    }
+    free(s);
+    return changed;
+}
+
+bool msz_sanitize_messages_non_ascii_core(json_t *messages) {
+    bool found = false;
+    if (!messages || messages->type != JSON_ARRAY) return false;
+    size_t n = json_len(messages);
+    for (size_t i = 0; i < n; i++) {
+        json_t *msg = json_get(messages, i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+
+        /* content: string or list of parts with "text" */
+        json_t *content = json_obj_get(msg, "content");
+        if (content && content->type == JSON_STRING) {
+            msz_str_field_changed(msg, "content", &found);
+        } else if (content && content->type == JSON_ARRAY) {
+            size_t pn = json_len(content);
+            for (size_t j = 0; j < pn; j++) {
+                json_t *part = json_get(content, j);
+                if (!part || part->type != JSON_OBJECT) continue;
+                msz_str_field_changed(part, "text", &found);
+            }
+        }
+
+        /* name field */
+        msz_str_field_changed(msg, "name", &found);
+
+        /* tool_calls[].function.arguments */
+        json_t *tcs = json_obj_get(msg, "tool_calls");
+        if (tcs && tcs->type == JSON_ARRAY) {
+            size_t tn = json_len(tcs);
+            for (size_t j = 0; j < tn; j++) {
+                json_t *tc = json_get(tcs, j);
+                if (!tc || tc->type != JSON_OBJECT) continue;
+                /* Python: fn = tc.get("function", {}) -> missing means an
+                 * empty dict (still a dict); present-but-non-dict fails. */
+                json_t *fn = json_obj_get(tc, "function");
+                bool fn_is_dict = (fn == NULL) || fn->type == JSON_OBJECT;
+                if (!fn_is_dict) continue;
+                json_t *args = fn ? json_obj_get(fn, "arguments") : NULL;
+                if (args && args->type == JSON_STRING) {
+                    char *s = msz_strip_non_ascii(args->str_val);
+                    if (strcmp(s, args->str_val) != 0) {
+                        json_set(fn, "arguments", json_string(s));
+                        found = true;
+                    }
+                    free(s);
+                }
+            }
+        }
+
+        /* any additional top-level string fields */
+        size_t kn = msg->c.count;
+        for (size_t k = 0; k < kn; k++) {
+            const char *key = msg->c.keys[k];
+            if (!key) continue;
+            if (strcmp(key, "content") == 0 || strcmp(key, "name") == 0 ||
+                strcmp(key, "tool_calls") == 0 || strcmp(key, "role") == 0)
+                continue;
+            msz_str_field_changed(msg, key, &found);
+        }
+    }
+    return found;
+}
+
 /* PoP: msz_sanitize_messages_non_ascii @ agent/message_sanitization.py:_sanitize_messages_non_ascii */
 char *msz_sanitize_messages_non_ascii(const char *messages_json) {
     if (!messages_json) return strdup("[]");
-    printf("message non-ascii stripped\n");
-    return strdup(messages_json);
+    json_t *m = json_parse(messages_json, NULL);
+    if (!m || m->type != JSON_ARRAY) {
+        if (m) json_free(m);
+        return strdup(messages_json);
+    }
+    msz_sanitize_messages_non_ascii_core(m);
+    char *out = json_serialize(m);
+    json_free(m);
+    return out ? out : strdup(messages_json);
 }
 
 /* PoP: msz_sanitize_tools_non_ascii @ agent/message_sanitization.py:_sanitize_tools_non_ascii */
