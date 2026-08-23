@@ -220,7 +220,105 @@ gw_stream_consumer_t *gw_stream_consumer_new(const gw_stream_consumer_cfg_t *cfg
     if (cfg && cfg->cursor && cfg->cursor[0]) {
         c->cursor = strdup(cfg->cursor);
     }
+    c->preview_ids = json_array();
+    c->segment_preview_ids = json_array();
+    c->max_fallback_flood_retry_seconds = 30;
+    snprintf(c->transport_mode, sizeof(c->transport_mode), "edit");
+    snprintf(c->chat_type, sizeof(c->chat_type), "dm");
+    pthread_mutex_init(&c->q_lock, NULL);
+    pthread_cond_init(&c->q_cond, NULL);
     return c;
+}
+
+/* Transport wiring: install the platform adapter + dispatch callbacks and
+ * connection metadata before run(). Mirrors Python __init__ binding
+ * (adapter, chat_id, cfg.transport, cfg.fresh_final_after_seconds). */
+void gw_stream_consumer_bind_transport(
+        gw_stream_consumer_t *c, void *adapter, const char *chat_id,
+        const char *transport_mode, const char *chat_type,
+        double fresh_final_after_seconds,
+        json_t *(*send_fn)(void *, gw_stream_consumer_t *, const char *,
+                           const char *, bool, bool),
+        json_t *(*edit_fn)(void *, gw_stream_consumer_t *, const char *,
+                           const char *),
+        bool (*delete_fn)(void *, gw_stream_consumer_t *, const char *),
+        bool (*send_draft_fn)(void *, gw_stream_consumer_t *, const char *,
+                              const char *),
+        bool (*supports_draft_fn)(void *, gw_stream_consumer_t *),
+        bool (*prefers_fresh_final_fn)(void *, gw_stream_consumer_t *,
+                                       const char *)) {
+    if (!c) return;
+    c->adapter = adapter;
+    snprintf(c->chat_id, sizeof(c->chat_id), "%s", chat_id ? chat_id : "");
+    snprintf(c->transport_mode, sizeof(c->transport_mode), "%s",
+             (transport_mode && transport_mode[0]) ? transport_mode : "edit");
+    snprintf(c->chat_type, sizeof(c->chat_type), "%s",
+             (chat_type && chat_type[0]) ? chat_type : "dm");
+    c->fresh_final_after_seconds = fresh_final_after_seconds;
+    c->send_fn = send_fn;
+    c->edit_fn = edit_fn;
+    c->delete_fn = delete_fn;
+    c->send_draft_fn = send_draft_fn;
+    c->supports_draft_fn = supports_draft_fn;
+    c->prefers_fresh_final_fn = prefers_fresh_final_fn;
+}
+
+void gw_stream_consumer_set_on_new_message(gw_stream_consumer_t *c,
+                                           void (*cb)(void *), void *user) {
+    if (!c) return;
+    c->on_new_message_cb = cb;
+    c->on_new_message_user = user;
+}
+
+/* ── Queue internals ─────────────────────────────────────────────────── */
+static void sc_signal_flush(sc_event_t *flush_event);
+static sc_event_t *sc_event_new(void) {
+    sc_event_t *e = calloc(1, sizeof(*e));
+    if (!e) return NULL;
+    pthread_mutex_init(&e->m, NULL);
+    pthread_cond_init(&e->cv, NULL);
+    e->set = false;
+    return e;
+}
+
+static void sc_enqueue(gw_stream_consumer_t *c, sc_q_item_t *item) {
+    pthread_mutex_lock(&c->q_lock);
+    item->next = NULL;
+    if (c->q_tail) c->q_tail->next = item; else c->q_head = item;
+    c->q_tail = item;
+    pthread_cond_broadcast(&c->q_cond);
+    pthread_mutex_unlock(&c->q_lock);
+}
+
+/* Pop one queued item (FIFO). Blocks up to timeout_secs; returns false on
+ * timeout/empty. The gateway's consumer run-loop calls this to drive the
+ * async side (the analog of Python's run() reading self._queue). */
+bool sc_queue_pop(gw_stream_consumer_t *c, sc_q_kind_t *kind_out,
+                  char **text_out, sc_event_t **flush_out, double timeout_secs) {
+    if (!c) return false;
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    ts.tv_sec += (time_t)timeout_secs;
+    ts.tv_nsec += (long)((timeout_secs - (double)(time_t)timeout_secs) * 1e9);
+    if (ts.tv_nsec >= 1000000000L) { ts.tv_sec++; ts.tv_nsec -= 1000000000L; }
+    pthread_mutex_lock(&c->q_lock);
+    while (!c->q_head) {
+        if (pthread_cond_timedwait(&c->q_cond, &c->q_lock, &ts) == ETIMEDOUT
+                && !c->q_head) {
+            pthread_mutex_unlock(&c->q_lock);
+            return false;
+        }
+    }
+    sc_q_item_t *it = c->q_head;
+    c->q_head = it->next;
+    if (!c->q_head) c->q_tail = NULL;
+    pthread_mutex_unlock(&c->q_lock);
+    if (kind_out) *kind_out = it->kind;
+    if (text_out) *text_out = it->text; else free(it->text);
+    if (flush_out) *flush_out = it->flush;
+    else if (it->flush) { sc_signal_flush(it->flush); free(it->flush); }
+    free(it);
+    return true;
 }
 
 void gw_stream_consumer_free(gw_stream_consumer_t *c)
@@ -233,6 +331,26 @@ void gw_stream_consumer_free(gw_stream_consumer_t *c)
     for (size_t i = 0; i < c->commentary_count; i++) free(c->commentary[i]);
     free(c->commentary);
     free(c->delivered_final_text);
+    free(c->draft_id);
+    free(c->fallback_prefix);
+    if (c->preview_ids) json_free(c->preview_ids);
+    if (c->segment_preview_ids) json_free(c->segment_preview_ids);
+    pthread_mutex_lock(&c->q_lock);
+    sc_q_item_t *it = c->q_head;
+    while (it) {
+        sc_q_item_t *nx = it->next;
+        free(it->text);
+        if (it->flush) {
+            pthread_mutex_destroy(&it->flush->m);
+            pthread_cond_destroy(&it->flush->cv);
+            free(it->flush);
+        }
+        free(it);
+        it = nx;
+    }
+    pthread_mutex_unlock(&c->q_lock);
+    pthread_mutex_destroy(&c->q_lock);
+    pthread_cond_destroy(&c->q_cond);
     free(c);
 }
 
@@ -644,175 +762,666 @@ bool gw_stream_consumer_final_content_delivered(const gw_stream_consumer_t *c) {
 const char *gw_stream_consumer_message_id(const gw_stream_consumer_t *c) {
     return (c && c->message_id && c->message_id[0]) ? c->message_id : NULL;
 }
-/* Setters invoked by the transport as messages are sent/edited/finalized. */
-void gw_stream_consumer_set_final_response_sent(gw_stream_consumer_t *c) {
-    if (c) c->final_response_sent = true;
-}
-void gw_stream_consumer_set_final_content_delivered(gw_stream_consumer_t *c) {
-    if (c) c->final_content_delivered = true;
-}
-void gw_stream_consumer_set_message_id(gw_stream_consumer_t *c, const char *msg_id) {
-    if (!c) return;
-    free(c->message_id);
-    c->message_id = msg_id ? strdup(msg_id) : NULL;
-}
-/* Edit the in-flight message text. Python's async _edit_message delegates to
- * the adapter; C exposes the same seam so the transport wires it in. */
-bool gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
-                                      const char *message_id, const char *text) {
-    (void)c; (void)message_id; (void)text;
-    return true;
-}
-/* PoP: sc_on_segment_break @ gateway/stream_consumer.py:on_segment_break */
-void sc_on_segment_break(void){(void)0;}
-/* PoP: sc_on_commentary @ gateway/stream_consumer.py:on_commentary */
-void sc_on_commentary(const char *commentary){(void)commentary;}
-
-/* ─── turn-final payload reconciliation (#71643) ────────────────────────── */
-/* Port of GatewayStreamConsumer._record_turn_final_payload. */
-/* PoP: gw_stream_consumer_record_turn_final_payload @ gateway/stream_consumer.py:_record_turn_final_payload */
-void gw_stream_consumer_record_turn_final_payload(gw_stream_consumer_t *c, const char *text) {
-    if (!c) return;
-    if (c->turn_split_delivery) {
-        free(c->delivered_final_text);
-        c->delivered_final_text = NULL;
-        return;
-    }
-    char *cleaned = sc_clean_for_display(text);
-    char *fenced = sc_ensure_closed_code_fences(cleaned);
-    free(cleaned);
-    /* strip + normalize whitespace like Python .strip() */
-    if (fenced) {
-        char *s = fenced;
-        while (*s && isspace((unsigned char)*s)) s++;
-        char *e = s + strlen(s);
-        while (e > s && isspace((unsigned char)*(e-1))) e--;
-        free(c->delivered_final_text);
-        c->delivered_final_text = strndup(s, (size_t)(e - s));
-    } else {
-        free(c->delivered_final_text);
-        c->delivered_final_text = NULL;
-    }
-}
-
-/* Port of GatewayStreamConsumer.delivered_final_matches. */
-/* PoP: gw_stream_consumer_delivered_final_matches @ gateway/stream_consumer.py:delivered_final_matches */
-int gw_stream_consumer_delivered_final_matches(gw_stream_consumer_t *c, const char *final_text) {
-    if (!c) return -1; /* None */
-    if (c->turn_split_delivery) return -1;
-    if (!c->delivered_final_text) return -1;
-    char *cleaned = sc_clean_for_display(final_text);
-    char *fenced = sc_ensure_closed_code_fences(cleaned);
-    free(cleaned);
-    int result = -1;
-    if (fenced) {
-        char *s = fenced;
-        while (*s && isspace((unsigned char)*s)) s++;
-        char *e = s + strlen(s);
-        while (e > s && isspace((unsigned char)*(e-1))) e--;
-        if (e > s) {
-            if (strcmp(s, c->delivered_final_text) == 0) {
-                result = 1; /* True */
-            } else if (gw_stream_consumer_has_delivered_text(c, final_text)) {
-                result = 1;
-            } else {
-                result = 0; /* False */
-            }
-        }
-        free(fenced);
-    }
-    return result;
-}
-
-/* PoP: sc_flush_pending_sync @ gateway/stream_consumer.py:flush_pending_sync */
-void sc_flush_pending_sync(void){(void)0;}
-/* PoP: sc_notify_new_message @ gateway/stream_consumer.py:_notify_new_message */
-void sc_notify_new_message(const char *text){(void)text;}
-/* PoP: sc_signal_flush @ gateway/stream_consumer.py:_signal_flush */
-void sc_signal_flush(void){(void)0;}
-/* PoP: sc_on_delta @ gateway/stream_consumer.py:on_delta */
-void sc_on_delta(const char *delta){(void)delta;}
 /* PoP: sc_clean_for_display @ gateway/stream_consumer.py:_clean_for_display */
 char *sc_clean_for_display(const char *text){
     if (!text) return strdup("");
     return gw_base__strip_media_directives_for_display(text);
 }
-/* PoP: sc_send_new_chunk @ gateway/stream_consumer.py:_send_new_chunk */
-void sc_send_new_chunk(const char *chunk){(void)chunk;}
-/* PoP: _continuation_text */
-const char *sc_continuation_text(void){ return ""; }
-/* PoP: sc_balance_fences_across_chunks @ gateway/stream_consumer.py:_continuation_text */
-/* PoP: _balance_fences_across_chunks */
-char *sc_balance_fences_across_chunks(const char *prefix, const char *rest){ (void)prefix;(void)rest; return strdup(""); }
-/* PoP: _split_text_chunks */
-/* PoP: sc_split_text_chunks @ gateway/stream_consumer.py:_balance_fences_across_chunks */
-json_t *sc_split_text_chunks(const char *text, size_t max_chars){ (void)text;(void)max_chars; return json_array(); }
-/* PoP: _truncate_for_stream */
-char *sc_truncate_for_stream(const char *text, size_t max_chars){ if(!text) return strdup(""); return strdup(text); }
-/* PoP: sc_send_fallback_final @ gateway/stream_consumer.py:_split_text_chunks */
-/* PoP: sc_send_fallback_final @ gateway/stream_consumer.py:_send_fallback_final */
-void sc_send_fallback_final(const char *text){(void)text;}
-/* PoP: sc_send_empty_fallback_final @ gateway/stream_consumer.py:_send_empty_fallback_final */
-/* PoP: sc_send_empty_fallback_final @ gateway/stream_consumer.py:_truncate_for_stream */
-void sc_send_empty_fallback_final(void){(void)0;}
-/* PoP: sc_send_failure_may_have_delivered @ gateway/stream_consumer.py:_send_failure_may_have_delivered */
-void sc_send_failure_may_have_delivered(void){(void)0;}
-/* PoP: _fallback_flood_retry_delay */
-double sc_fallback_flood_retry_delay(int attempt){ return (double)attempt * 2.0; }
-/* PoP: _is_flood_error */
-/* Faithful port: a SendResult failure is a flood/rate-limit error when its
- * error text contains "flood", "retry after", or "rate" (case-insensitive). */
-bool sc_is_flood_error(const char *err_text){
-    if (!err_text || !*err_text) return false;
-    char lower[512];
-    size_t n = strlen(err_text);
-    if (n >= sizeof(lower)) n = sizeof(lower) - 1;
-    for (size_t i = 0; i < n; i++)
-        lower[i] = (char)tolower((unsigned char)err_text[i]);
-    lower[n] = '\0';
-    return strstr(lower, "flood") != NULL
-        || strstr(lower, "retry after") != NULL
-        || strstr(lower, "rate") != NULL;
+
+/* ─── Transport dispatch (Python async _edit_message / adapter.send) ───── */
+
+/* PoP: gw_stream_consumer_edit_message @ gateway/stream_consumer.py:_edit_message */
+bool gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
+                                     const char *message_id, const char *text) {
+    /* Python awaits self.adapter.edit_message(...); the C transport installs
+     * the edit hook at bind time. Returns success; NULL hook = unsupported. */
+    if (!c || !message_id || !c->edit_fn) return false;
+    json_t *result = c->edit_fn(c->adapter, c, message_id, text);
+    bool ok = result && json_is_true(json_obj_get(result, "success"));
+    if (result) json_free(result);
+    return ok;
 }
-/* PoP: _resolve_draft_streaming */
-bool sc_resolve_draft_streaming(void){ return false; }
-/* PoP: sc_send_draft_frame @ gateway/stream_consumer.py:_fallback_flood_retry_delay */
-/* PoP: sc_send_draft_frame @ gateway/stream_consumer.py:_send_draft_frame */
-void sc_send_draft_frame(const char *frame){(void)frame;}
-/* PoP: sc_flush_segment_tail_on_edit_failure @ gateway/stream_consumer.py:_flush_segment_tail_on_edit_failure */
-/* PoP: sc_flush_segment_tail_on_edit_failure @ gateway/stream_consumer.py:_is_flood_error */
-void sc_flush_segment_tail_on_edit_failure(void){(void)0;}
-/* PoP: _try_strip_cursor */
-bool sc_try_strip_cursor(char *buf, size_t sz){ (void)buf;(void)sz; return false; }
-/* PoP: sc_send_commentary @ gateway/stream_consumer.py:_resolve_draft_streaming */
-/* PoP: sc_send_commentary @ gateway/stream_consumer.py:_send_commentary */
-void sc_send_commentary(const char *commentary){(void)commentary;}
-/* PoP: _should_send_fresh_final */
-bool sc_should_send_fresh_final(void){ return true; }
-/* PoP: _raw_message_limit */
-/* PoP: sc_raw_message_limit @ gateway/stream_consumer.py:_try_strip_cursor */
-size_t sc_raw_message_limit(void){ return 4096; }
+
+/* ─── Queue-facing callbacks (agent worker thread side) ─────────────────── */
+
+/* PoP: sc_on_segment_break @ gateway/stream_consumer.py:on_segment_break */
+void sc_on_segment_break(gw_stream_consumer_t *c) {
+    if (!c) return;
+    sc_q_item_t *it = calloc(1, sizeof(*it));
+    if (!it) return;
+    it->kind = SC_Q_NEW_SEGMENT;
+    sc_enqueue(c, it);
+}
+
+/* PoP: sc_on_commentary @ gateway/stream_consumer.py:on_commentary */
+void sc_on_commentary(gw_stream_consumer_t *c, const char *commentary) {
+    if (!c || !commentary || !commentary[0]) return;
+    sc_q_item_t *it = calloc(1, sizeof(*it));
+    if (!it) return;
+    it->kind = SC_Q_COMMENTARY;
+    it->text = strdup(commentary);
+    sc_enqueue(c, it);
+}
+
+/* PoP: sc_flush_pending_sync @ gateway/stream_consumer.py:flush_pending_sync */
+bool sc_flush_pending_sync(gw_stream_consumer_t *c, double timeout_secs) {
+    /* Block until everything queued before this point has been delivered:
+     * enqueue a FLUSH barrier behind pending work; the run loop sets the
+     * event when it drains past it. Returns false on timeout. */
+    if (!c) return false;
+    sc_event_t *evt = sc_event_new();
+    if (!evt) return false;
+    sc_q_item_t *it = calloc(1, sizeof(*it));
+    if (!it) { free(evt); return false; }
+    it->kind = SC_Q_FLUSH;
+    it->flush = evt;
+    sc_enqueue(c, it);
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    ts.tv_sec += (time_t)timeout_secs;
+    ts.tv_nsec += (long)((timeout_secs - (double)(time_t)timeout_secs) * 1e9);
+    if (ts.tv_nsec >= 1000000000L) { ts.tv_sec++; ts.tv_nsec -= 1000000000L; }
+    pthread_mutex_lock(&evt->m);
+    while (!evt->set) {
+        if (pthread_cond_timedwait(&evt->cv, &evt->m, &ts) == ETIMEDOUT
+                && !evt->set) {
+            pthread_mutex_unlock(&evt->m);
+            return false;
+        }
+    }
+    pthread_mutex_unlock(&evt->m);
+    pthread_mutex_destroy(&evt->m);
+    pthread_cond_destroy(&evt->cv);
+    free(evt);
+    return true;
+}
+
+/* PoP: sc_notify_new_message @ gateway/stream_consumer.py:_notify_new_message */
+void sc_notify_new_message(gw_stream_consumer_t *c) {
+    /* Fire the on_new_message callback; plain C callbacks cannot throw. */
+    if (!c || !c->on_new_message_cb) return;
+    c->on_new_message_cb(c->on_new_message_user);
+}
+
+/* PoP: sc_signal_flush @ gateway/stream_consumer.py:_signal_flush */
+static void sc_signal_flush(sc_event_t *flush_event) {
+    /* Wake a thread blocked in flush_pending_sync(). Centralised so every
+     * loop exit path that consumed a FLUSH barrier sets the event. */
+    if (!flush_event) return;
+    pthread_mutex_lock(&flush_event->m);
+    flush_event->set = true;
+    pthread_cond_broadcast(&flush_event->cv);
+    pthread_mutex_unlock(&flush_event->m);
+}
+
+/* PoP: sc_on_delta @ gateway/stream_consumer.py:on_delta */
+void sc_on_delta(gw_stream_consumer_t *c, const char *text) {
+    /* Thread-safe callback from the agent worker thread. NULL text signals
+     * a tool boundary: finalize the current segment, next text starts a new
+     * message below any tool-progress bubbles. */
+    if (!c) return;
+    if (text && text[0]) {
+        sc_q_item_t *it = calloc(1, sizeof(*it));
+        if (!it) return;
+        it->kind = SC_Q_DELTA;
+        it->text = strdup(text);
+        sc_enqueue(c, it);
+    } else if (!text) {
+        sc_on_segment_break(c);
+    }
+}
+
+/* ─── Send / fallback paths ─────────────────────────────────────────────── */
+
+double gw_stream_consumer_now(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+
 /* PoP: sc_track_preview_id @ gateway/stream_consumer.py:_track_preview_id */
-void sc_track_preview_id(const char *preview_id){(void)preview_id;}
+static void sc_track_preview_id(gw_stream_consumer_t *c, const char *message_id) {
+    /* Record a real preview message id for finalization cleanup. */
+    if (!c || !message_id || !message_id[0]
+            || strcmp(message_id, "__no_edit__") == 0)
+        return;
+    json_array_append(c->preview_ids, json_string(message_id));
+    json_array_append(c->segment_preview_ids, json_string(message_id));
+}
+
 /* PoP: sc_track_preview_ids_from_result @ gateway/stream_consumer.py:_track_preview_ids_from_result */
-void sc_track_preview_ids_from_result(json_t *result){(void)result;}
-/* PoP: sc_adapter_prefers_fresh_final @ gateway/stream_consumer.py:_should_send_fresh_final */
+static void sc_track_preview_ids_from_result(gw_stream_consumer_t *c,
+                                             json_t *result) {
+    /* Record every message id a send/edit result exposes: primary id plus
+     * continuation ids from an oversized split. */
+    if (!c || !json_is_object(result)) return;
+    const char *mid = json_get_str(result, "message_id", NULL);
+    if (mid) sc_track_preview_id(c, mid);
+    json_t *cont = json_obj_get(result, "continuation_message_ids");
+    if (json_is_array(cont)) {
+        size_t n = json_array_size(cont);
+        for (size_t i = 0; i < n; i++) {
+            json_t *e = json_array_get(cont, i);
+            if (json_is_string(e)) sc_track_preview_id(c, e->str_val);
+        }
+    }
+    json_t *raw = json_obj_get(result, "raw_response");
+    json_t *mids = json_is_object(raw) ? json_obj_get(raw, "message_ids") : NULL;
+    if (json_is_array(mids)) {
+        size_t n = json_array_size(mids);
+        for (size_t i = 0; i < n; i++) {
+            json_t *e = json_array_get(mids, i);
+            if (json_is_string(e)) sc_track_preview_id(c, e->str_val);
+        }
+    }
+}
+
+/* PoP: sc_send_new_chunk @ gateway/stream_consumer.py:_send_new_chunk */
+char *sc_send_new_chunk(gw_stream_consumer_t *c, const char *text,
+                        const char *reply_to_id, bool final) {
+    /* Send a new message chunk, optionally threaded to a previous message.
+     * Returns malloc'd message_id so callers can thread subsequent chunks. */
+    if (!c || !c->send_fn) return NULL;
+    char *cleaned = sc_clean_for_display(text);
+    if (!cleaned) return NULL;
+    bool blank = true;
+    for (const char *s = cleaned; *s; s++)
+        if (!isspace((unsigned char)*s)) { blank = false; break; }
+    if (blank) { free(cleaned); return reply_to_id ? strdup(reply_to_id) : NULL; }
+
+    json_t *result = c->send_fn(c->adapter, c, cleaned, reply_to_id,
+                                final, !final);
+    if (!result) { free(cleaned); c->edit_supported = false; return NULL; }
+    bool success = json_is_true(json_obj_get(result, "success"));
+    const char *mid = json_get_str(result, "message_id", NULL);
+    if (success && mid && mid[0]) {
+        free(c->message_id);
+        c->message_id = strdup(mid);
+        c->message_created_ts = gw_stream_consumer_now();
+        sc_track_preview_ids_from_result(c, result);
+        c->already_sent = true;
+        gw_stream_consumer_set_last_sent(c, cleaned);
+        free(cleaned);
+        sc_notify_new_message(c);
+        json_free(result);
+        return strdup(mid);
+    }
+    c->edit_supported = false;
+    free(cleaned);
+    json_free(result);
+    return reply_to_id ? strdup(reply_to_id) : NULL;
+}
+
+/* PoP: sc_continuation_text @ gateway/stream_consumer.py:_continuation_text */
+char *sc_continuation_text(gw_stream_consumer_t *c, const char *final_text) {
+    /* Return only the part of final_text the user has not already seen. */
+    if (!final_text) return strdup("");
+    char *prefix;
+    if (c && c->fallback_prefix && c->fallback_prefix[0]) {
+        prefix = strdup(c->fallback_prefix);
+    } else {
+        prefix = gw_stream_consumer_visible_prefix(c);
+    }
+    size_t plen = prefix ? strlen(prefix) : 0;
+    if (plen > 0 && strncmp(final_text, prefix, plen) == 0) {
+        const char *rest = final_text + plen;
+        while (*rest && isspace((unsigned char)*rest)) rest++;
+        free(prefix);
+        return strdup(rest);
+    }
+    free(prefix);
+    return strdup(final_text);
+}
+
+/* PoP: sc_split_text_chunks @ gateway/stream_consumer.py:_split_text_chunks */
+json_t *sc_split_text_chunks(const char *text, size_t limit) {
+    /* Fence-balanced fallback chunking: prefer newline boundaries, close an
+     * open ``` at the split and reopen on the tail. */
+    json_t *out = json_array();
+    if (!text || !text[0] || limit == 0) return out;
+    size_t len = strlen(text);
+    size_t start = 0;
+    bool fence_open = false;
+    while (start < len) {
+        size_t take = len - start;
+        if (take > limit) {
+            take = limit;
+            size_t best = 0;
+            for (size_t i = start; i < start + take; i++)
+                if (text[i] == '\n') best = i + 1;
+            if (best > start) take = best - start;
+        }
+        size_t fences = 0;
+        for (size_t i = start; i + 3 <= start + take && i + 3 <= len; i++) {
+            if (strncmp(text + i, "```", 3) == 0) { fences++; i += 2; }
+        }
+        char *chunk = strndup(text + start, take);
+        if (!chunk) { json_free(out); return json_array(); }
+        bool leaves_open = (fences % 2 == 1);
+        if (leaves_open && start + take < len) {
+            char *closed = malloc(strlen(chunk) + 8);
+            if (closed) {
+                snprintf(closed, strlen(chunk) + 8, "%s\n```", chunk);
+                free(chunk);
+                chunk = closed;
+            }
+        }
+        char *final_chunk = chunk;
+        if (fence_open) {
+            final_chunk = malloc(strlen("```\n") + strlen(chunk) + 1);
+            if (final_chunk)
+                snprintf(final_chunk, strlen("```\n") + strlen(chunk) + 1,
+                         "```\n%s", chunk);
+            else
+                final_chunk = chunk;
+        }
+        json_array_append(out, json_string(final_chunk));
+        if (final_chunk != chunk) free(final_chunk);
+        free(chunk);
+        fence_open = leaves_open ? !fence_open : fence_open;
+        start += take;
+    }
+    return out;
+}
+
+/* PoP: sc_balance_fences_across_chunks @ gateway/stream_consumer.py:_balance_fences_across_chunks */
+json_t *sc_balance_fences_across_chunks(json_t *chunks) {
+    /* Close orphaned ``` fences at each boundary and reopen on the next
+     * chunk. Returns a new balanced array; input untouched. */
+    json_t *out = json_array();
+    if (!json_is_array(chunks)) return out;
+    bool open = false;
+    size_t n = json_array_size(chunks);
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_array_get(chunks, i);
+        const char *txt = json_is_string(e) ? e->str_val : "";
+        char *buf;
+        if (open) {
+            size_t need = strlen("```\n") + strlen(txt) + 1;
+            buf = malloc(need);
+            if (buf) snprintf(buf, need, "```\n%s", txt);
+        } else {
+            buf = strdup(txt);
+        }
+        size_t fences = 0;
+        for (const char *s = txt; (s = strstr(s, "```")) != NULL; s += 3)
+            fences++;
+        open = (fences % 2 == 1) ? !open : open;
+        if (open && buf) {
+            size_t need = strlen(buf) + 8;
+            char *closed = realloc(buf, need);
+            if (closed) {
+                buf = closed;
+                strncat(buf, "\n```", need - strlen(buf) - 1);
+            }
+        }
+        json_array_append(out, json_string(buf ? buf : ""));
+        free(buf);
+    }
+    return out;
+}
+
+/* PoP: sc_truncate_for_stream @ gateway/stream_consumer.py:_truncate_for_stream */
+json_t *sc_truncate_for_stream(gw_stream_consumer_t *c, const char *text,
+                               size_t limit) {
+    /* The adapter's canonical splitter is folded into the transport hooks;
+     * use the consumer's own fence-aware chunker here. */
+    (void)c;
+    return sc_split_text_chunks(text, limit);
+}
+
+/* PoP: sc_send_failure_may_have_delivered @ gateway/stream_consumer.py:_send_failure_may_have_delivered */
+bool sc_send_failure_may_have_delivered(json_t *result_or_error) {
+    /* True for timeout failures where retrying may duplicate the message. */
+    if (!result_or_error) return false;
+    if (json_is_true(json_obj_get(result_or_error, "retryable")))
+        return false;
+    const char *err = json_get_str(result_or_error, "error", "");
+    return strstr(err, "timeout") != NULL
+        || strstr(err, "timed out") != NULL;
+}
+
+/* PoP: sc_resolve_draft_streaming @ gateway/stream_consumer.py:_resolve_draft_streaming */
+bool sc_resolve_draft_streaming(gw_stream_consumer_t *c) {
+    /* Honors cfg.transport: "edit"/"off" never use drafts; "draft"/"auto"
+     * require adapter support (chat-type gated in the adapter hook). */
+    if (!c) return false;
+    const char *transport = c->transport_mode[0] ? c->transport_mode : "edit";
+    if (strcmp(transport, "edit") == 0 || strcmp(transport, "off") == 0)
+        return false;
+    if (!c->supports_draft_fn || !c->supports_draft_fn(c->adapter, c))
+        return false;
+    return true;
+}
+
+/* PoP: sc_send_draft_frame @ gateway/stream_consumer.py:_send_draft_frame */
+bool sc_send_draft_frame(gw_stream_consumer_t *c, const char *text) {
+    /* Emit one animated draft frame. On any failure permanently disable
+     * drafts for this run so frames fall back to the edit path. */
+    if (!c || !c->draft_id) {
+        if (c) c->use_draft_streaming = false;
+        return false;
+    }
+    if (!c->send_draft_fn || !c->send_draft_fn(c->adapter, c, c->draft_id, text)) {
+        c->use_draft_streaming = false;
+        return false;
+    }
+    return true;
+}
+
+/* PoP: sc_try_strip_cursor @ gateway/stream_consumer.py:_try_strip_cursor */
+bool sc_try_strip_cursor(gw_stream_consumer_t *c);
+
+/* PoP: sc_flush_segment_tail_on_edit_failure @ gateway/stream_consumer.py:_flush_segment_tail_on_edit_failure */
+void sc_flush_segment_tail_on_edit_failure(gw_stream_consumer_t *c) {
+    /* Deliver un-sent tail content before a segment-break reset: send the
+     * text after the last delivered prefix as a new message and best-effort
+     * strip the stuck cursor from the previous partial message. */
+    if (!c) return;
+    if (!c->fallback_final_send)
+        sc_try_strip_cursor(c);
+    char *visible = (c->fallback_prefix && c->fallback_prefix[0])
+        ? strdup(c->fallback_prefix)
+        : gw_stream_consumer_visible_prefix(c);
+    const char *tail_txt = c->accumulated ? c->accumulated : "";
+    size_t vlen = visible ? strlen(visible) : 0;
+    if (vlen > 0 && strncmp(tail_txt, visible, vlen) == 0) {
+        tail_txt += vlen;
+        while (*tail_txt && isspace((unsigned char)*tail_txt)) tail_txt++;
+    }
+    char *cleaned = sc_clean_for_display(tail_txt);
+    free(visible);
+    if (!cleaned) return;
+    bool blank = true;
+    for (const char *s = cleaned; *s; s++)
+        if (!isspace((unsigned char)*s)) { blank = false; break; }
+    if (blank || !c->send_fn) { free(cleaned); return; }
+    json_t *result = c->send_fn(c->adapter, c, cleaned, NULL, false, false);
+    free(cleaned);
+    if (result) {
+        if (json_is_true(json_obj_get(result, "success")))
+            c->already_sent = true;
+        json_free(result);
+    }
+}
+
+/* PoP: sc_try_strip_cursor @ gateway/stream_consumer.py:_try_strip_cursor */
+bool sc_try_strip_cursor(gw_stream_consumer_t *c) {
+    /* Best-effort edit removing the trailing cursor from the last visible
+     * message so the user never sees a stuck cursor block. */
+    if (!c || !c->message_id || strcmp(c->message_id, "__no_edit__") == 0)
+        return false;
+    char *prefix = gw_stream_consumer_visible_prefix(c);
+    if (!prefix) return false;
+    bool blank = true;
+    for (const char *s = prefix; *s; s++)
+        if (!isspace((unsigned char)*s)) { blank = false; break; }
+    bool ok = false;
+    if (!blank)
+        ok = gw_stream_consumer_edit_message(c, c->message_id, prefix);
+    if (ok)
+        gw_stream_consumer_set_last_sent(c, prefix);
+    free(prefix);
+    return ok;
+}
+
+/* PoP: sc_send_commentary @ gateway/stream_consumer.py:_send_commentary */
+bool sc_send_commentary(gw_stream_consumer_t *c, const char *text) {
+    /* Send a completed interim commentary message. Deliberately does NOT
+     * set already_sent (#10454) — commentary is not the final response. */
+    if (!c || !c->send_fn) return false;
+    char *cleaned = sc_clean_for_display(text);
+    if (!cleaned) return false;
+    bool blank = true;
+    for (const char *s = cleaned; *s; s++)
+        if (!isspace((unsigned char)*s)) { blank = false; break; }
+    if (blank) { free(cleaned); return false; }
+    json_t *result = c->send_fn(c->adapter, c, cleaned, NULL, false, false);
+    bool ok = result && json_is_true(json_obj_get(result, "success"));
+    if (ok) {
+        sc_notify_new_message(c);
+        size_t n = c->commentary_count;
+        if (n + 1 > c->commentary_cap) {
+            size_t nc = c->commentary_cap ? c->commentary_cap * 2 : 4;
+            char **grown = realloc(c->commentary, nc * sizeof(char *));
+            if (grown) { c->commentary = grown; c->commentary_cap = nc; }
+        }
+        if (c->commentary_count < c->commentary_cap)
+            c->commentary[c->commentary_count++] = strdup(cleaned);
+    }
+    free(cleaned);
+    if (result) json_free(result);
+    return ok;
+}
+
+/* PoP: sc_should_send_fresh_final @ gateway/stream_consumer.py:_should_send_fresh_final */
+bool sc_should_send_fresh_final(gw_stream_consumer_t *c) {
+    if (!c) return false;
+    double threshold = c->fresh_final_after_seconds;
+    if (threshold <= 0.0) return false;
+    if (!c->message_id || strcmp(c->message_id, "__no_edit__") == 0)
+        return false;
+    if (c->message_created_ts <= 0.0) return false;
+    return (gw_stream_consumer_now() - c->message_created_ts) >= threshold;
+}
+
 /* PoP: sc_adapter_prefers_fresh_final @ gateway/stream_consumer.py:_adapter_prefers_fresh_final */
-bool sc_adapter_prefers_fresh_final(void){ return true; }
-/* PoP: _try_fresh_final */
-bool sc_try_fresh_final(const char *text){ (void)text; return false; }
+bool sc_adapter_prefers_fresh_final(gw_stream_consumer_t *c, const char *text) {
+    if (!c || !c->message_id || strcmp(c->message_id, "__no_edit__") == 0)
+        return false;
+    if (!c->prefers_fresh_final_fn) return false;
+    return c->prefers_fresh_final_fn(c->adapter, c, text);
+}
+
+/* PoP: sc_try_fresh_final @ gateway/stream_consumer.py:_try_fresh_final */
+bool sc_try_fresh_final(gw_stream_consumer_t *c, const char *text,
+                        bool is_turn_final) {
+    /* Fresh send + best-effort delete of stale previews. Sealed heads of a
+     * multi-message split must NOT be deleted (#78541). */
+    if (!c || !c->send_fn) return false;
+    if (c->turn_split_delivery) return false;
+    json_t *result = c->send_fn(c->adapter, c, text, NULL, true, false);
+    if (!result || !json_is_true(json_obj_get(result, "success"))) {
+        if (result) json_free(result);
+        return false;
+    }
+    const char *new_mid = json_get_str(result, "message_id", NULL);
+    if (c->delete_fn) {
+        size_t n = json_array_size(c->preview_ids);
+        for (size_t i = 0; i < n; i++) {
+            json_t *e = json_array_get(c->preview_ids, i);
+            if (!json_is_string(e)) continue;
+            if (strcmp(e->str_val, "__no_edit__") == 0) continue;
+            if (new_mid && strcmp(e->str_val, new_mid) == 0) continue;
+            c->delete_fn(c->adapter, c, e->str_val);
+        }
+    }
+    json_free(c->preview_ids);
+    c->preview_ids = json_array();
+    if (new_mid && new_mid[0]) {
+        free(c->message_id);
+        c->message_id = strdup(new_mid);
+        c->message_created_ts = gw_stream_consumer_now();
+    } else {
+        free(c->message_id);
+        c->message_id = strdup("__no_edit__");
+        c->message_created_ts = 0.0;
+    }
+    c->already_sent = true;
+    gw_stream_consumer_set_last_sent(c, text);
+    if (is_turn_final)
+        c->final_response_sent = true;
+    json_free(result);
+    return true;
+}
+
 /* PoP: sc_suppress_silence_marker @ gateway/stream_consumer.py:_suppress_silence_marker */
-bool sc_suppress_silence_marker(void){ return true; }
-/* PoP: sc_raw_message_limit_by_platform @ gateway/stream_consumer.py:_raw_message_limit */
-int sc_raw_message_limit_by_platform(const char *platform_name){
-    if(!platform_name) return 4096;
-    if(strcmp(platform_name,"telegram")==0) return 4096;
-    if(strcmp(platform_name,"discord")==0) return 2000;
-    return 4096;
+void sc_suppress_silence_marker(gw_stream_consumer_t *c) {
+    /* Retract streamed previews when the final reply is a silence marker.
+     * Delivery flags stay FALSE and already_sent cleared. */
+    if (!c) return;
+    if (c->delete_fn && c->message_id
+            && strcmp(c->message_id, "__no_edit__") != 0)
+        c->delete_fn(c->adapter, c, c->message_id);
+    size_t n = json_array_size(c->preview_ids);
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_array_get(c->preview_ids, i);
+        if (json_is_string(e) && c->delete_fn)
+            c->delete_fn(c->adapter, c, e->str_val);
+    }
+    json_free(c->preview_ids);
+    c->preview_ids = json_array();
+    c->already_sent = false;
+    c->final_response_sent = false;
+    c->final_content_delivered = false;
 }
-/* PoP: sc_try_fresh_final_v2 @ gateway/stream_consumer.py:_try_fresh_final */
-char *sc_try_fresh_final_v2(const char *adapter_name, const char *content){
-    (void)adapter_name; return content ? strdup(content) : strdup("");
+
+/* PoP: sc_send_empty_fallback_final @ gateway/stream_consumer.py:_send_empty_fallback_final */
+const char *sc_send_empty_fallback_final(gw_stream_consumer_t *c,
+                                         const char *final_text) {
+    /* "delivered" on success, "failed" when safe to retry, "ambiguous"
+     * when a timeout may have reached the platform already. */
+    if (!c || !c->send_fn) return "failed";
+    for (int attempt = 0; attempt < 2; attempt++) {
+        json_t *res = c->send_fn(c->adapter, c, final_text, NULL, true, false);
+        if (!res)
+            return "failed";
+        if (json_is_true(json_obj_get(res, "success"))) {
+            const char *mid = json_get_str(res, "message_id", NULL);
+            if (mid && mid[0]) {
+                free(c->message_id);
+                c->message_id = strdup(mid);
+            }
+            json_free(res);
+            return "delivered";
+        }
+        bool may_have = sc_send_failure_may_have_delivered(res);
+        double retry_after = json_number_value(json_obj_get(res, "retry_after"));
+        json_free(res);
+        if (may_have) return "ambiguous";
+        if (attempt == 0 && retry_after > 0.0
+                && retry_after <= (double)c->max_fallback_flood_retry_seconds) {
+            struct timespec ts = { (time_t)retry_after,
+                (long)((retry_after - (double)(time_t)retry_after) * 1e9) };
+            nanosleep(&ts, NULL);
+            continue;
+        }
+        return "failed";
+    }
+    return "failed";
 }
+
+/* PoP: sc_send_fallback_final @ gateway/stream_consumer.py:_send_fallback_final */
+void sc_send_fallback_final(gw_stream_consumer_t *c, const char *text) {
+    /* Send the final continuation after streaming edits stop working.
+     * Retries each chunk once on flood-control failures with a delay. */
+    if (!c || !c->send_fn) return;
+    char *cleaned = sc_clean_for_display(text);
+    char *fenced = cleaned ? sc_ensure_closed_code_fences(cleaned) : NULL;
+    free(cleaned);
+    char *continuation = sc_continuation_text(c, fenced ? fenced : "");
+    free(fenced);
+    c->fallback_final_send = false;
+    bool blank = true;
+    for (const char *s = continuation; s && *s; s++)
+        if (!isspace((unsigned char)*s)) { blank = false; break; }
+    if (blank) { free(continuation); return; }
+    json_t *chunks = sc_split_text_chunks(continuation, 4096);
+    free(continuation);
+    size_t n = json_array_size(chunks);
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_array_get(chunks, i);
+        if (!json_is_string(e)) continue;
+        for (int attempt = 0; attempt < 2; attempt++) {
+            json_t *res = c->send_fn(c->adapter, c, e->str_val, NULL, true, false);
+            if (res && json_is_true(json_obj_get(res, "success"))) {
+                c->already_sent = true;
+                c->final_response_sent = true;
+                c->final_content_delivered = true;
+                const char *mid = json_get_str(res, "message_id", NULL);
+                if (mid && mid[0]) {
+                    free(c->message_id);
+                    c->message_id = strdup(mid);
+                }
+                json_free(res);
+                break;
+            }
+            double retry_after = res ? json_number_value(json_obj_get(res, "retry_after")) : 0.0;
+            if (res) json_free(res);
+            if (attempt == 0 && retry_after > 0.0
+                    && retry_after <= (double)c->max_fallback_flood_retry_seconds) {
+                struct timespec ts = { (time_t)retry_after,
+                    (long)((retry_after - (double)(time_t)retry_after) * 1e9) };
+                nanosleep(&ts, NULL);
+                continue;
+            }
+            break;   /* leave final delivery to the gateway */
+        }
+    }
+    json_free(chunks);
+}
+
 /* PoP: sc_send_or_edit @ gateway/stream_consumer.py:_send_or_edit */
-void sc_send_or_edit(const char *text, const char *message_id){ (void)text;(void)message_id; }
+bool sc_send_or_edit(gw_stream_consumer_t *c, const char *text,
+                     bool finalize, bool is_turn_final) {
+    /* Send or edit the streaming message; true when delivered. */
+    (void)is_turn_final;
+    if (!c) return false;
+    char *cleaned = sc_clean_for_display(text);
+    if (!cleaned) return false;
+    char *fenced = sc_ensure_closed_code_fences(cleaned);
+    free(cleaned);
+
+    const char *cursor = c->cursor ? c->cursor : "";
+    size_t clen = strlen(cursor);
+    char *vis = NULL;
+    if (clen > 0 && strstr(fenced, cursor)) {
+        size_t n = strlen(fenced);
+        vis = malloc(n + 1);
+        if (vis) {
+            size_t j = 0;
+            for (size_t i = 0; i < n;) {
+                if (strncmp(fenced + i, cursor, clen) == 0)
+                    i += clen;
+                else
+                    vis[j++] = fenced[i++];
+            }
+            vis[j] = '\0';
+        }
+    }
+    char *vs = vis ? vis : fenced;
+    bool vis_blank = true;
+    for (const char *s = vs; *s; s++)
+        if (!isspace((unsigned char)*s)) { vis_blank = false; break; }
+    if (vis_blank) { free(vis); free(fenced); return true; }
+    free(vis);
+
+    /* Guard: no standalone message for 1-2 tokens + cursor ("X ▉" tofu). */
+    if (c->message_id == NULL && clen > 0 && strstr(fenced, cursor)
+            && strlen(vs) < 4) {
+        free(fenced);
+        return true;
+    }
+
+    bool ok;
+    if (c->use_draft_streaming && !finalize && c->message_id == NULL) {
+        if (c->last_sent_text && strcmp(fenced, c->last_sent_text) == 0) {
+            free(fenced);
+            return true;   /* identical frame — no-op skip */
+        }
+        ok = sc_send_draft_frame(c, fenced);
+        /* Drafts mark "something on screen" but NOT already_sent — the
+         * fallback final send must still fire to deliver a real message. */
+    } else if (c->message_id && strcmp(c->message_id, "__no_edit__") != 0) {
+        ok = gw_stream_consumer_edit_message(c, c->message_id, fenced);
+        if (!ok) c->edit_supported = false;
+    } else {
+        char *mid = sc_send_new_chunk(c, fenced, NULL, finalize);
+        ok = mid != NULL;
+        free(mid);
+    }
+    if (ok)
+        gw_stream_consumer_set_last_sent(c, fenced);
+    free(fenced);
+    return ok;
+}
