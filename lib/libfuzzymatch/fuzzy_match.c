@@ -230,14 +230,39 @@ static char *trim_each_line(const char *s)
     int lc = split_lines(s, lines, MAX_LINES);
     if (lc == 0) return sstrdup("");
 
-    char *trimmed[MAX_LINES];
+    /* Python: "\n".join(line.strip() for line in s.split("\n")).
+     * split_lines() hands back POINTERS into s whose strlen() runs past the
+     * line, so bound each line by the next line's start (minus its '\n'). */
+    size_t cap = strlen(s) + 2;
+    char *result = (char *)malloc(cap);
+    if (!result) return NULL;
+    size_t o = 0;
     for (int i = 0; i < lc; i++) {
-        const char *t = trim_str(lines[i]);
-        trimmed[i] = sstrdup(t ? t : lines[i]);
+        const char *ln = lines[i];
+        size_t body;
+        int had_nl;
+        if (i + 1 < lc) {
+            body = (size_t)(lines[i + 1] - ln);
+            had_nl = (body > 0 && ln[body - 1] == '\n');
+            body = had_nl ? body - 1 : body;
+        } else {
+            body = strlen(ln);
+            had_nl = 0;
+        }
+        size_t a = 0, b = body;
+        while (a < b && isspace((unsigned char)ln[a])) a++;
+        while (b > a && isspace((unsigned char)ln[b - 1])) b--;
+        if (o + (b - a) + 2 >= cap) {
+            cap = (o + (b - a) + 2) * 2;
+            char *n = (char *)realloc(result, cap);
+            if (!n) { free(result); return NULL; }
+            result = n;
+        }
+        memcpy(result + o, ln + a, b - a);
+        o += b - a;
+        if (had_nl) result[o++] = '\n';
     }
-    /* Rejoin without separator (each line already includes its newline) */
-    char *result = join_strings((const char **)trimmed, lc, "");
-    for (int i = 0; i < lc; i++) free(trimmed[i]);
+    result[o] = '\0';
     return result;
 }
 
@@ -249,17 +274,41 @@ static char *trim_boundary(const char *s)
     int lc = split_lines(s, lines, MAX_LINES);
     if (lc == 0) return sstrdup("");
 
-    char *trimmed[MAX_LINES];
+    /* Trim ONLY the boundary lines' outer whitespace; middle lines pass
+     * through verbatim (python _strategy_trimmed_boundary). Bound each
+     * line by the next line's start (split_lines pointers overrun). */
+    size_t cap = strlen(s) + 2;
+    char *result = (char *)malloc(cap);
+    if (!result) return NULL;
+    size_t o = 0;
     for (int i = 0; i < lc; i++) {
-        if (i == 0 || i == lc - 1) {
-            const char *t = trim_str(lines[i]);
-            trimmed[i] = sstrdup(t ? t : lines[i]);
+        const char *ln = lines[i];
+        size_t body;
+        int had_nl;
+        if (i + 1 < lc) {
+            body = (size_t)(lines[i + 1] - ln);
+            had_nl = (body > 0 && ln[body - 1] == '\n');
+            body = had_nl ? body - 1 : body;
         } else {
-            trimmed[i] = sstrdup(lines[i]);
+            body = strlen(ln);
+            had_nl = 0;
         }
+        size_t a = 0, b = body;
+        if (i == 0 || i == lc - 1) {
+            while (a < b && isspace((unsigned char)ln[a])) a++;
+            while (b > a && isspace((unsigned char)ln[b - 1])) b--;
+        }
+        if (o + (b - a) + 2 >= cap) {
+            cap = (o + (b - a) + 2) * 2;
+            char *n = (char *)realloc(result, cap);
+            if (!n) { free(result); return NULL; }
+            result = n;
+        }
+        memcpy(result + o, ln + a, b - a);
+        o += b - a;
+        if (had_nl) result[o++] = '\n';
     }
-    char *result = join_strings((const char **)trimmed, lc, "");
-    for (int i = 0; i < lc; i++) free(trimmed[i]);
+    result[o] = '\0';
     return result;
 }
 
@@ -557,6 +606,110 @@ static fuzzy_result_t *strategy_trim_boundary(const char *content,
     return r;
 }
 
+/* ─── difflib.SequenceMatcher-compatible ratio ───────────────────────── */
+
+static int sm_find_longest_match(const unsigned char *a, size_t alo, size_t ahi,
+                                 const unsigned char *b, size_t blo, size_t bhi,
+                                 size_t *best_i, size_t *best_j)
+{
+    size_t n = bhi - blo;
+    if (n == 0 || ahi <= alo) { *best_i = alo; *best_j = blo; return 0; }
+    size_t *dp = (size_t *)calloc(n + 1, sizeof(size_t));   /* current row */
+    size_t *prev = (size_t *)calloc(n + 1, sizeof(size_t)); /* previous row */
+    size_t bestlen = 0;
+    *best_i = alo; *best_j = blo;
+    for (size_t i = alo; i < ahi; i++) {
+        memcpy(prev, dp, (n + 1) * sizeof(size_t));
+        memset(dp, 0, (n + 1) * sizeof(size_t));
+        for (size_t j = 0; j < n; j++) {
+            if (a[i] == b[blo + j]) {
+                size_t k = (j == 0) ? 1 : prev[j] + 1;   /* prev row, col j-1 */
+                /* careful: prev[j-1] is previous row's value at column j-1 */
+                k = (j == 0) ? 1 : prev[j - 1] + 1;
+                dp[j] = k;
+                if (k > bestlen) {
+                    bestlen = k;
+                    *best_i = i + 1 - k;
+                    *best_j = blo + j + 1 - k;
+                }
+            } else {
+                dp[j] = 0;
+            }
+        }
+    }
+    free(dp); free(prev);
+    return (int)bestlen;
+}
+
+static void sm_accum(const unsigned char *a, size_t alo, size_t ahi,
+                     const unsigned char *b, size_t blo, size_t bhi,
+                     size_t *matched)
+{
+    if (alo >= ahi || blo >= bhi) return;
+    size_t bi, bj;
+    int k = sm_find_longest_match(a, alo, ahi, b, blo, bhi, &bi, &bj);
+    if (k > 0) {
+        *matched += (size_t)k;
+        sm_accum(a, alo, bi, b, blo, bj, matched);
+        sm_accum(a, bi + (size_t)k, ahi, b, bj + (size_t)k, bhi, matched);
+    }
+}
+
+/* difflib SequenceMatcher(None, a, b).ratio() (autojunk irrelevant <200). */
+double fuzzy_sm_ratio(const char *x, const char *y)
+{
+    if (!x) x = "";
+    if (!y) y = "";
+    size_t lx = strlen(x), ly = strlen(y);
+    if (lx == 0 && ly == 0) return 1.0;
+    if (lx == 0 || ly == 0) return 0.0;
+    size_t matched = 0;
+    sm_accum((const unsigned char *)x, 0, lx,
+             (const unsigned char *)y, 0, ly, &matched);
+    return (2.0 * (double)matched) / (double)(lx + ly);
+}
+
+/* split into malloc'd lines WITHOUT newlines (python s.split("\n")) */
+static int split_lines_bare(const char *s, char **out, int max)
+{
+    if (!s) return 0;
+    int count = 0;
+    const char *start = s;
+    for (;;) {
+        const char *nl = strchr(start, '\n');
+        size_t len = nl ? (size_t)(nl - start) : strlen(start);
+        if (count < max) {
+            out[count] = (char *)malloc(len + 1);
+            if (out[count]) {
+                memcpy(out[count], start, len);
+                out[count][len] = '\0';
+            }
+            count++;
+        }
+        if (!nl) break;
+        start = nl + 1;
+    }
+    return count;
+}
+
+/* trim into a caller buffer (avoids trim_str's mixed ownership) */
+static void trim_into(const char *s, char *out, size_t cap)
+{
+    if (!s || cap == 0) { if (cap) out[0] = '\0'; return; }
+    const char *a = s;
+    while (*a && isspace((unsigned char)*a)) a++;
+    size_t len = strlen(a);
+    while (len > 0 && isspace((unsigned char)a[len - 1])) len--;
+    if (len >= cap) len = cap - 1;
+    memcpy(out, a, len);
+    out[len] = '\0';
+}
+
+static void free_lines(char **lines, int n)
+{
+    for (int i = 0; i < n; i++) free(lines[i]);
+}
+
 /* Port of Python tools/fuzzy_match.py:_strategy_block_anchor(). */
 /* Strategy 7: Block anchor — match first+last line, ratio check on middle */
 static fuzzy_result_t *strategy_block_anchor(const char *content,
@@ -565,114 +718,81 @@ static fuzzy_result_t *strategy_block_anchor(const char *content,
                                               bool replace_all)
 {
     (void)replace_all; /* Block anchor only does first match */
-
     if (!content || !old_string || !new_string) return NULL;
 
-    const char *c_lines[MAX_LINES], *o_lines[MAX_LINES];
-    int c_lc = split_lines(content, c_lines, MAX_LINES);
-    (void)c_lc;
-    int o_lc = split_lines(old_string, o_lines, MAX_LINES);
+    char *c_lines[MAX_LINES], *p_lines[MAX_LINES];
+    int c_lc = split_lines_bare(content, c_lines, MAX_LINES);
+    int p_lc = split_lines_bare(old_string, p_lines, MAX_LINES);
+    /* python: pattern_lines = norm_pattern.split('\n'); need >= 2 lines */
+    if (p_lc < 2) { free_lines(c_lines, c_lc); free_lines(p_lines, p_lc); return NULL; }
 
-    if (o_lc < 3) return NULL; /* Need at least 3 lines for anchor matching */
+    const char *first_line = p_lines[0];
+    const char *last_line  = p_lines[p_lc - 1];
 
-    const char *old_first = o_lines[0];
-    const char *old_last = o_lines[o_lc - 1];
-
-    /* Scan content for first-line match */
-    char *first = sstrdup(trim_str(old_first));
-    char *last = sstrdup(trim_str(old_last));
-    if (!first || !last) { free(first); free(last); return NULL; }
-
-    /* Find first occurrence of trimmed first line */
-    const char *match_start = strstr(content, first);
-    free(first);
-
-    if (!match_start) { free(last); return NULL; }
-
-    /* Check if trimmed last line appears after match_start */
-    const char *tail = match_start + strlen(old_first);
-    const char *match_end = strstr(tail, last);
-    free(last);
-
-    if (!match_end) return NULL;
-
-    /* Extract the block between start and end */
-    size_t block_len = (size_t)(match_end + strlen(old_last) - match_start);
-    char *block = (char *)malloc(block_len + 1);
-    if (!block) return NULL;
-    memcpy(block, match_start, block_len);
-    block[block_len] = '\0';
-
-    /* Check similarity ratio between extracted block and old_string */
-    double ratio = fuzzy_ratio(block, old_string);
-    free(block);
-
-    if (ratio < BLOCK_ANCHOR_RATIO) return NULL;
-
-    /* Match — do replacement */
-    char *before = (char *)malloc((size_t)(match_start - content) + 1);
-    if (!before) return NULL;
-    memcpy(before, content, (size_t)(match_start - content));
-    before[match_start - content] = '\0';
-
-    size_t total = strlen(before) + strlen(new_string) + strlen(match_end + strlen(old_last)) + 1;
-    char *result = (char *)malloc(total);
-    if (!result) { free(before); return NULL; }
-    strcpy(result, before);
-    strcat(result, new_string);
-    strcat(result, match_end + strlen(old_last));
-    free(before);
-
-    fuzzy_result_t *r = (fuzzy_result_t *)calloc(1, sizeof(fuzzy_result_t));
-    if (!r) { free(result); return NULL; }
-    r->content = result;
-    r->match_count = 1;
-    r->strategy = 7;
-    return r;
-}
-
-/* Strategy 8: Context-aware — 50% line similarity threshold */
-static fuzzy_result_t *strategy_context(const char *content,
-                                         const char *old_string,
-                                         const char *new_string,
-                                         bool replace_all)
-{
-    (void)replace_all; /* Only first match for context */
-
-    if (!content || !old_string || !new_string) return NULL;
-
-    const char *c_lines[MAX_LINES], *o_lines[MAX_LINES];
-    int c_lc = split_lines(content, c_lines, MAX_LINES);
-    int o_lc = split_lines(old_string, o_lines, MAX_LINES);
-
-    if (o_lc < 1 || c_lc < o_lc) return NULL;
-
-    /* Slide window over content lines */
-    for (int start = 0; start <= c_lc - o_lc; start++) {
-        /* Count matching lines */
-        int matching = 0;
-        for (int j = 0; j < o_lc; j++) {
-            const char *ct = trim_str(c_lines[start + j]);
-            const char *ot = trim_str(o_lines[j]);
-            if (ct && ot && strcmp(ct, ot) == 0)
-                matching++;
+    /* windows whose stripped first/last lines anchor exactly */
+    int potential[MAX_LINES];
+    int candidate_count = 0;
+    for (int i = 0; i + p_lc <= c_lc; i++) {
+        char fs[1024], ls[1024];
+        trim_into(c_lines[i], fs, sizeof fs);
+        trim_into(c_lines[i + p_lc - 1], ls, sizeof ls);
+        if (strcmp(fs, first_line) == 0 && strcmp(ls, last_line) == 0) {
+            if (candidate_count < MAX_LINES) potential[candidate_count] = i;
+            candidate_count++;
         }
-        if ((double)matching / (double)o_lc >= CONTEXT_RATIO) {
-            /* Build replacement */
-            char *before = (char *)malloc((size_t)(c_lines[start] - content) + 1);
-            if (!before) return NULL;
-            memcpy(before, content, (size_t)(c_lines[start] - content));
-            before[c_lines[start] - content] = '\0';
+    }
 
-            const char *block_end = c_lines[start + o_lc - 1] + strlen(c_lines[start + o_lc - 1]);
-            size_t total = strlen(before) + strlen(new_string) + strlen(block_end) + 1;
-            char *result = (char *)malloc(total);
-            if (!result) { free(before); return NULL; }
-            strcpy(result, before);
-            strcat(result, new_string);
-            strcat(result, block_end);
-            free(before);
+    double threshold = (candidate_count == 1) ? 0.50 : 0.70;
 
+    for (int w = 0; w < candidate_count; w++) {
+        int i = potential[w];
+        double similarity;
+        if (p_lc <= 2) {
+            similarity = 1.0;
+        } else {
+            /* join middles with newline and compare with difflib ratio */
+            size_t mc_cap = 4096, mp_cap = 4096;
+            char *mc = (char *)malloc(mc_cap), *mp = (char *)malloc(mp_cap);
+            if (!mc || !mp) { free(mc); free(mp); break; }
+            mc[0] = mp[0] = '\0';
+            size_t mo = 0, po = 0;
+            for (int k = 1; k < p_lc - 1 && k < p_lc; k++) {
+                if (mo + strlen(c_lines[i + k]) + 2 < mc_cap) {
+                    if (mo) mc[mo++] = '\n';
+                    strcpy(mc + mo, c_lines[i + k]); mo += strlen(c_lines[i + k]);
+                }
+                if (po + strlen(p_lines[k]) + 2 < mp_cap) {
+                    if (po) mp[po++] = '\n';
+                    strcpy(mp + po, p_lines[k]); po += strlen(p_lines[k]);
+                }
+            }
+            similarity = fuzzy_sm_ratio(mc, mp);
+            free(mc); free(mp);
+        }
+        if (similarity >= threshold) {
+            /* replace content lines [i, i+p_lc) with new_string */
+            size_t pre = 0;
+            for (int k = 0; k < i; k++) pre += strlen(c_lines[k]) + 1;
+            size_t post = 0;
+            for (int k = i + p_lc; k < c_lc; k++) post += strlen(c_lines[k]) + 1;
+            char *result = (char *)malloc(pre + strlen(new_string) + post + 2);
+            if (!result) break;
+            size_t o = 0;
+            for (int k = 0; k < i; k++) {
+                memcpy(result + o, c_lines[k], strlen(c_lines[k]));
+                o += strlen(c_lines[k]);
+                result[o++] = '\n';
+            }
+            memcpy(result + o, new_string, strlen(new_string));
+            o += strlen(new_string);
+            for (int k = i + p_lc; k < c_lc; k++) {
+                result[o++] = '\n';
+                memcpy(result + o, c_lines[k], strlen(c_lines[k]));
+                o += strlen(c_lines[k]);
+            }
+            result[o] = '\0';
+            free_lines(c_lines, c_lc);
+            free_lines(p_lines, p_lc);
             fuzzy_result_t *r = (fuzzy_result_t *)calloc(1, sizeof(fuzzy_result_t));
             if (!r) { free(result); return NULL; }
             r->content = result;
@@ -681,6 +801,94 @@ static fuzzy_result_t *strategy_context(const char *content,
             return r;
         }
     }
+    free_lines(c_lines, c_lc);
+    free_lines(p_lines, p_lc);
+    return NULL;
+}
+
+/* Strategy 9: Context-aware — anchored line-by-line similarity (python
+ * _strategy_context_aware: anchor pre-filter on first/last lines at 0.80,
+ * then EVERY non-blank pattern line must be >=0.80 similar to its aligned
+ * content line). */
+static fuzzy_result_t *strategy_context(const char *content,
+                                         const char *old_string,
+                                         const char *new_string,
+                                         bool replace_all)
+{
+    (void)replace_all; /* Only first match for context */
+    if (!content || !old_string || !new_string) return NULL;
+
+    char *c_lines[MAX_LINES], *p_lines[MAX_LINES];
+    int c_lc = split_lines_bare(content, c_lines, MAX_LINES);
+    int p_lc = split_lines_bare(old_string, p_lines, MAX_LINES);
+    if (p_lc < 1 || c_lc < p_lc) {
+        free_lines(c_lines, c_lc); free_lines(p_lines, p_lc);
+        return NULL;
+    }
+
+    char first_pat[1024], last_pat[1024];
+    {
+        char first_pat[1024];
+        trim_into(p_lines[0], first_pat, sizeof first_pat);
+        trim_into(p_lines[p_lc - 1], last_pat, sizeof last_pat);
+    }
+
+    for (int i = 0; i + p_lc <= c_lc; i++) {
+        char b_first[1024], b_last[1024];
+        {
+            char b_first[1024];
+            trim_into(c_lines[i], b_first, sizeof b_first);
+            trim_into(c_lines[i + p_lc - 1], b_last, sizeof b_last);
+        }
+        if (strcmp(first_pat, b_first) == 0) {
+            if (fuzzy_sm_ratio(first_pat, b_first) < 0.80) continue;
+        } else if (fuzzy_sm_ratio(first_pat, b_first) < 0.80) {
+            continue;
+        }
+        if (fuzzy_sm_ratio(last_pat, b_last) < 0.80) continue;
+
+        int all_match = 1;
+        for (int j = 0; j < p_lc; j++) {
+            char ptb[1024], ctb[1024];
+            trim_into(p_lines[j], ptb, sizeof ptb);
+            trim_into(c_lines[i + j], ctb, sizeof ctb);
+            if (!ptb[0]) continue;
+            double sim = fuzzy_sm_ratio(ptb, ctb);
+            if (sim < 0.80) { all_match = 0; break; }
+        }
+        if (all_match) {
+            size_t pre = 0;
+            for (int k = 0; k < i; k++) pre += strlen(c_lines[k]) + 1;
+            size_t post = 0;
+            for (int k = i + p_lc; k < c_lc; k++) post += strlen(c_lines[k]) + 1;
+            char *result = (char *)malloc(pre + strlen(new_string) + post + 2);
+            if (!result) break;
+            size_t o = 0;
+            for (int k = 0; k < i; k++) {
+                memcpy(result + o, c_lines[k], strlen(c_lines[k]));
+                o += strlen(c_lines[k]);
+                result[o++] = '\n';
+            }
+            memcpy(result + o, new_string, strlen(new_string));
+            o += strlen(new_string);
+            for (int k = i + p_lc; k < c_lc; k++) {
+                result[o++] = '\n';
+                memcpy(result + o, c_lines[k], strlen(c_lines[k]));
+                o += strlen(c_lines[k]);
+            }
+            result[o] = '\0';
+            free_lines(c_lines, c_lc);
+            free_lines(p_lines, p_lc);
+            fuzzy_result_t *r = (fuzzy_result_t *)calloc(1, sizeof(fuzzy_result_t));
+            if (!r) { free(result); return NULL; }
+            r->content = result;
+            r->match_count = 1;
+            r->strategy = 9;
+            return r;
+        }
+    }
+    free_lines(c_lines, c_lc);
+    free_lines(p_lines, p_lc);
     return NULL;
 }
 
@@ -713,6 +921,31 @@ fuzzy_result_t fuzzy_find_and_replace(const char *content,
 
     if (!content || !old_string || !new_string) {
         null_result.error = sstrdup("NULL argument");
+        return null_result;
+    }
+    /* LIVE guards (run before the strategy chain):
+     *   "" old            -> "old_string cannot be empty"
+     *   whitespace-only   -> "old_string is only whitespace ..."
+     *   old == new        -> IDENTICAL_STRINGS_ERROR */
+    if (!*old_string) {
+        null_result.error = sstrdup("old_string cannot be empty");
+        return null_result;
+    }
+    {
+        int only_ws = 1;
+        for (const char *q = old_string; *q; q++)
+            if (!isspace((unsigned char)*q)) { only_ws = 0; break; }
+        if (only_ws) {
+            null_result.error = sstrdup(
+                "old_string is only whitespace \u2014 provide non-blank text to match");
+            return null_result;
+        }
+    }
+    if (strcmp(old_string, new_string) == 0) {
+        null_result.error = sstrdup(
+            "No edit was applied because old_string and new_string are identical. "
+            "Provide the existing text to replace in old_string and the changed "
+            "replacement text in new_string.");
         return null_result;
     }
 
