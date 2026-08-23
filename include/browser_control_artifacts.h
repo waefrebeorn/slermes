@@ -87,6 +87,7 @@ void bca_store_free(bca_store_t *store);
 const char *bca_store_root(const bca_store_t *store);
 double bca_store_ttl_seconds(const bca_store_t *store);
 long bca_store_max_bytes(const bca_store_t *store);
+const char *const *bca_store_allowed_mime_types(const bca_store_t *store);
 
 /* _sweep_orphan_files @ ...:_sweep_orphan_files — delete id-shaped/*.tmp
  * files with no live index entry; returns count removed. */

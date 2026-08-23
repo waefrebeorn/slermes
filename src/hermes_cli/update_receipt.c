@@ -38,7 +38,7 @@ static char *ur_strdup(const char *s)
     return out;
 }
 
-/* PoP: _utc_now_iso @ hermes_cli/update_receipt.py:_utc_now_iso */
+/* PoP: _utc_now_iso @hermes_cli/update_receipt.py:_utc_now_iso */
 static char *ur_utc_now_iso(void)
 {
     struct timespec ts;
@@ -85,7 +85,7 @@ static void ur_add_code_identity(json_t *obj)
     }
 }
 
-/* PoP: __init__ @ hermes_cli/update_receipt.py:UpdateReceipt.__init__ */
+/* PoP: __init__ @hermes_cli/update_receipt.py:__init__ */
 update_receipt_t *update_receipt_new(void)
 {
     update_receipt_t *r = calloc(1, sizeof(*r));
@@ -128,7 +128,7 @@ void update_receipt_free(update_receipt_t *receipt)
 
 json_t *update_receipt_data(update_receipt_t *r) { return r ? r->data : NULL; }
 
-/* PoP: step @ hermes_cli/update_receipt.py:UpdateReceipt.step */
+/* PoP: step @hermes_cli/update_receipt.py:step */
 void update_receipt_step(update_receipt_t *r, const char *name, int ok,
                          const char *detail)
 {
@@ -145,7 +145,7 @@ void update_receipt_step(update_receipt_t *r, const char *name, int ok,
     else json_free(entry);
 }
 
-/* PoP: skip @ hermes_cli/update_receipt.py:UpdateReceipt.skip */
+/* PoP: skip @hermes_cli/update_receipt.py:skip */
 void update_receipt_skip(update_receipt_t *r, const char *name,
                          const char *reason)
 {
@@ -161,7 +161,7 @@ void update_receipt_skip(update_receipt_t *r, const char *name,
     else json_free(entry);
 }
 
-/* PoP: gateway_restart_result @ ...:UpdateReceipt.gateway_restart_result */
+/* PoP: gateway_restart_result @hermes_cli/update_receipt.py:gateway_restart_result */
 void update_receipt_gateway_restart_result(
     update_receipt_t *r, json_t *restarted_services,
     json_t *relaunched_profiles, json_t *externally_supervised_profiles,
@@ -201,7 +201,7 @@ void update_receipt_gateway_restart_result(
     }
 }
 
-/* PoP: finalize @ hermes_cli/update_receipt.py:UpdateReceipt.finalize */
+/* PoP: finalize @hermes_cli/update_receipt.py:finalize */
 void update_receipt_finalize(update_receipt_t *r, const char *outcome)
 {
     if (!r || !r->data) return;
@@ -220,7 +220,7 @@ update_receipt_t *update_receipt_current(void) { return ur_current; }
 
 void update_receipt_set_current(update_receipt_t *r) { ur_current = r; }
 
-/* PoP: _receipt_dir @ hermes_cli/update_receipt.py:_receipt_dir */
+/* PoP: _receipt_dir @hermes_cli/update_receipt.py:_receipt_dir */
 char *update_receipt_dir(void)
 {
     char home[1024];
@@ -232,22 +232,22 @@ char *update_receipt_dir(void)
     return out;
 }
 
-/* PoP: begin_update_receipt @ hermes_cli/update_receipt.py:begin_update_receipt */
+/* PoP: begin_update_receipt @hermes_cli/update_receipt.py:begin_update_receipt */
 void begin_update_receipt(void) { ur_current = update_receipt_new(); }
 
-/* PoP: record_step @ hermes_cli/update_receipt.py:record_step */
+/* PoP: record_step @hermes_cli/update_receipt.py:record_step */
 void record_step(const char *name, int ok, const char *detail)
 {
     if (ur_current) update_receipt_step(ur_current, name, ok, detail);
 }
 
-/* PoP: record_skip @ hermes_cli/update_receipt.py:record_skip */
+/* PoP: record_skip @hermes_cli/update_receipt.py:record_skip */
 void record_skip(const char *name, const char *reason)
 {
     if (ur_current) update_receipt_skip(ur_current, name, reason);
 }
 
-/* PoP: record_gateway_restart @ ...:record_gateway_restart */
+/* PoP: record_gateway_restart @hermes_cli/update_receipt.py:record_gateway_restart */
 void record_gateway_restart(json_t *restarted_services,
                             json_t *relaunched_profiles,
                             json_t *externally_supervised_profiles,
@@ -268,7 +268,7 @@ void record_gateway_restart(json_t *restarted_services,
         failed_n, incomplete, phase_error);
 }
 
-/* PoP: _prune_old_receipts @ hermes_cli/update_receipt.py:_prune_old_receipts */
+/* PoP: _prune_old_receipts @hermes_cli/update_receipt.py:_prune_old_receipts */
 void prune_old_receipts(const char *directory)
 {
     DIR *dir = opendir(directory);
@@ -314,7 +314,7 @@ void prune_old_receipts(const char *directory)
     }
 }
 
-/* PoP: finalize_update_receipt @ ...:finalize_update_receipt */
+/* PoP: finalize_update_receipt @hermes_cli/update_receipt.py:finalize_update_receipt */
 char *finalize_update_receipt(const char *outcome, json_t *fleet,
                               const char *stop_reason)
 {
@@ -367,7 +367,7 @@ char *finalize_update_receipt(const char *outcome, json_t *fleet,
     return written;
 }
 
-/* PoP: finalize_pending_update_receipt @ ...:finalize_pending_update_receipt */
+/* PoP: finalize_pending_update_receipt @hermes_cli/update_receipt.py:finalize_pending_update_receipt */
 char *finalize_pending_update_receipt(int exit_code, const char *stop_reason)
 {
     if (!ur_current) return NULL;
@@ -383,7 +383,7 @@ char *finalize_pending_update_receipt(int exit_code, const char *stop_reason)
     return finalize_update_receipt(outcome, NULL, stop_reason);
 }
 
-/* PoP: read_latest_receipt @ hermes_cli/update_receipt.py:read_latest_receipt */
+/* PoP: read_latest_receipt @hermes_cli/update_receipt.py:read_latest_receipt */
 json_t *read_latest_receipt(void)
 {
     char *directory = update_receipt_dir();
@@ -450,7 +450,7 @@ static void ur_fleet_state(json_t *identity_or_record,
         *state_out = "stale";
 }
 
-/* PoP: collect_fleet_versions @ hermes_cli/update_receipt.py:collect_fleet_versions */
+/* PoP: collect_fleet_versions @hermes_cli/update_receipt.py:collect_fleet_versions */
 json_t *collect_fleet_versions(void)
 {
     json_t *results = json_array();
@@ -588,7 +588,7 @@ json_t *collect_fleet_versions(void)
     return results;
 }
 
-/* PoP: print_fleet_version_matrix @ ...:print_fleet_version_matrix */
+/* PoP: print_fleet_version_matrix @hermes_cli/update_receipt.py:print_fleet_version_matrix */
 int print_fleet_version_matrix(json_t *fleet)
 {
     if (!fleet || fleet->type != JSON_ARRAY || json_len(fleet) == 0)

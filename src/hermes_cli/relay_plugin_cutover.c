@@ -31,8 +31,7 @@ static const char *const LEGACY_RELAY_EXPORT_ENV_VARS[] = {
     NULL,
 };
 
-/* PoP: legacy_relay_plugin_keys @ hermes_cli/relay_plugin_cutover.py:
- * legacy_relay_plugin_keys */
+/* PoP: legacy_relay_plugin_keys @hermes_cli/relay_plugin_cutover.py:legacy_relay_plugin_keys */
 char **cutover_legacy_relay_plugin_keys(const char *const *values, size_t n,
                                         size_t *out_n)
 {
@@ -67,7 +66,7 @@ char **cutover_legacy_relay_plugin_keys(const char *const *values, size_t n,
     return found;
 }
 
-/* PoP: configured_legacy_relay_env_vars @ ...:configured_legacy_relay_env_vars */
+/* PoP: configured_legacy_relay_env_vars @hermes_cli/relay_plugin_cutover.py:configured_legacy_relay_env_vars */
 char **cutover_configured_legacy_relay_env_vars(
     const char *const *env_names, const char *const *env_vals, size_t n,
     size_t *out_n)

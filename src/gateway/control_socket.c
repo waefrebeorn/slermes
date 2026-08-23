@@ -58,7 +58,8 @@ static double cs_now_monotonic(void)
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
 }
 
-/* PoP: _home_hash @ gateway/control_socket.py:_home_hash — sha256[:16]. */
+
+/* PoP: control_socket_home_hash @gateway/control_socket.py:_home_hash */
 char *control_socket_home_hash(const char *home)
 {
     if (!home || !home[0]) return NULL;
@@ -77,7 +78,7 @@ char *control_socket_home_hash(const char *home)
     return out;
 }
 
-/* PoP: windows_pipe_name @ gateway/control_socket.py:windows_pipe_name */
+/* PoP: windows_pipe_name @gateway/control_socket.py:windows_pipe_name */
 char *control_socket_windows_pipe_name(const char *home)
 {
     char *h = control_socket_home_hash(home);
@@ -87,21 +88,21 @@ char *control_socket_windows_pipe_name(const char *home)
     return out;
 }
 
-/* PoP: _pointer_path @ gateway/control_socket.py:_pointer_path */
+/* PoP: _pointer_path @gateway/control_socket.py:_pointer_path */
 char *control_socket_pointer_path(const char *home)
 {
     if (!home) return NULL;
     return cs_fmt("%s/%s", home, CONTROL_SOCKET_POINTER_FILENAME);
 }
 
-/* PoP: _default_socket_path @ gateway/control_socket.py:_default_socket_path */
+/* PoP: _default_socket_path @gateway/control_socket.py:_default_socket_path */
 char *control_socket_default_socket_path(const char *home)
 {
     if (!home) return NULL;
     return cs_fmt("%s/%s", home, CONTROL_SOCKET_FILENAME);
 }
 
-/* PoP: _fallback_socket_path @ gateway/control_socket.py:_fallback_socket_path */
+/* PoP: _fallback_socket_path @gateway/control_socket.py:_fallback_socket_path */
 char *control_socket_fallback_socket_path(const char *home)
 {
     char *h = control_socket_home_hash(home);
@@ -119,7 +120,7 @@ char *control_socket_fallback_socket_path(const char *home)
     return cand; /* returned even when too long — bind fails non-fatally */
 }
 
-/* PoP: resolve_server_socket_path @ gateway/control_socket.py:resolve_server_socket_path */
+/* PoP: resolve_server_socket_path @gateway/control_socket.py:resolve_server_socket_path */
 char *control_socket_resolve_server_socket_path(const char *home,
                                                 char **out_pointer_file)
 {
@@ -136,7 +137,7 @@ char *control_socket_resolve_server_socket_path(const char *home,
     return fallback;
 }
 
-/* PoP: resolve_client_socket_path @ gateway/control_socket.py:resolve_client_socket_path */
+/* PoP: resolve_client_socket_path @gateway/control_socket.py:resolve_client_socket_path */
 char *control_socket_resolve_client_socket_path(const char *home)
 {
     char *direct = control_socket_default_socket_path(home);
@@ -171,7 +172,7 @@ void control_socket_set_process_argv(int argc, char **argv)
     g_argv_shared = argv;
 }
 
-/* PoP: _detect_supervisor @ gateway/control_socket.py:_detect_supervisor */
+/* PoP: _detect_supervisor @gateway/control_socket.py:_detect_supervisor */
 const char *control_socket_detect_supervisor(void)
 {
     const char *invocation = getenv("INVOCATION_ID");
@@ -209,7 +210,7 @@ static void cs_add_code_identity_fields(json_t *payload, json_t *runtime)
     }
 }
 
-/* PoP: build_identify_payload @ gateway/control_socket.py:build_identify_payload */
+/* PoP: build_identify_payload @gateway/control_socket.py:build_identify_payload */
 json_t *control_socket_build_identify_payload(void)
 {
     json_t *payload = json_object();
@@ -255,7 +256,7 @@ json_t *control_socket_build_identify_payload(void)
     return payload;
 }
 
-/* PoP: build_status_payload @ gateway/control_socket.py:build_status_payload */
+/* PoP: build_status_payload @gateway/control_socket.py:build_status_payload */
 json_t *control_socket_build_status_payload(void)
 {
     json_t *payload = NULL;
@@ -321,7 +322,7 @@ static void cs_append_supported_verbs(json_t *response)
     json_set(response, "supported_verbs", arr);
 }
 
-/* PoP: handle_request_line @ gateway/control_socket.py:handle_request_line */
+/* PoP: handle_request_line @gateway/control_socket.py:handle_request_line */
 char *control_socket_handle_request_line(control_socket_server_t *srv,
                                          const char *raw, size_t raw_len)
 {
@@ -404,7 +405,10 @@ char *control_socket_handle_request_line(control_socket_server_t *srv,
     return line;
 }
 
-/* Per-connection worker: one request line → one response line → close. */
+/* Also carries the asyncio.Protocol.data_received body: buffer the single
+ * bounded request line, dispatch, answer, close. */
+/* PoP: cs_serve_connection @gateway/control_socket.py:_handle_connection */
+/* PoP: cs_serve_connection @gateway/control_socket.py:data_received */
 static void cs_serve_connection(control_socket_server_t *srv, int fd)
 {
     struct timeval tv = {.tv_sec = 2, .tv_usec = 0};
@@ -435,6 +439,9 @@ static void cs_serve_connection(control_socket_server_t *srv, int fd)
     close(fd);
 }
 
+/* Accept side of the protocol lifecycle: each accepted fd is the transport
+ * handed to the per-connection handler. */
+/* PoP: cs_accept_loop @gateway/control_socket.py:connection_made */
 static void *cs_accept_loop(void *arg)
 {
     control_socket_server_t *srv = arg;
@@ -463,7 +470,7 @@ control_socket_server_t *control_socket_server_new(
     return srv;
 }
 
-/* PoP: _start_posix @ gateway/control_socket.py:_start_posix */
+/* PoP: _start_posix @gateway/control_socket.py:_start_posix */
 static int cs_start_posix(control_socket_server_t *srv)
 {
     char *pointer_file = NULL;
@@ -515,14 +522,28 @@ static int cs_start_posix(control_socket_server_t *srv)
     return 1;
 }
 
-/* PoP: start @ gateway/control_socket.py:start */
+/* PoP: start @gateway/control_socket.py:start */
+/* The proactor named-pipe transport exists only on win32; POSIX builds
+ * faithfully report "not started" and consumers use the scan layer. */
+/* PoP: cs_start_windows @gateway/control_socket.py:_start_windows */
+static int cs_start_windows(control_socket_server_t *srv)
+{
+    (void)srv;
+    return 0;
+}
+
+/* PoP: control_socket_server_start @gateway/control_socket.py:start */
 int control_socket_server_start(control_socket_server_t *srv)
 {
     if (!srv) return 0;
-    return cs_start_posix(srv); /* Windows pipe transport is win32-only */
+#ifdef _WIN32
+    return cs_start_windows(srv);
+#else
+    return cs_start_posix(srv);
+#endif
 }
 
-/* PoP: cleanup_files @ gateway/control_socket.py:cleanup_files */
+/* PoP: cleanup_files @gateway/control_socket.py:cleanup_files */
 void control_socket_server_cleanup_files(control_socket_server_t *srv)
 {
     if (!srv) return;
@@ -530,7 +551,7 @@ void control_socket_server_cleanup_files(control_socket_server_t *srv)
     if (srv->pointer_file) unlink(srv->pointer_file);
 }
 
-/* PoP: stop @ gateway/control_socket.py:stop */
+/* PoP: stop @gateway/control_socket.py:stop */
 void control_socket_server_stop(control_socket_server_t *srv)
 {
     if (!srv) return;
@@ -561,11 +582,10 @@ void control_socket_server_free(control_socket_server_t *srv)
 /* Client (synchronous)                                                */
 /* ------------------------------------------------------------------ */
 
-/* PoP: query_gateway_control @ gateway/control_socket.py:query_gateway_control */
-json_t *control_socket_query_gateway_control(const char *home, const char *verb,
-                                             double timeout)
+/* PoP: cs_query_unix_socket @gateway/control_socket.py:_query_unix_socket */
+static char *cs_query_unix_socket(const char *home, const char *request,
+                                  double timeout)
 {
-    if (!home || !verb || timeout <= 0) return NULL;
     char *path = control_socket_resolve_client_socket_path(home);
     if (!path) return NULL;
     int fd = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -583,16 +603,12 @@ json_t *control_socket_query_gateway_control(const char *home, const char *verb,
         close(fd);
         return NULL;
     }
-    char *req = cs_fmt("{\"verb\": \"%s\", \"id\": 1, \"protocol\": %d}\n",
-                       verb, CONTROL_PROTOCOL_VERSION);
-    if (!req) { close(fd); return NULL; }
-    size_t req_len = strlen(req), off = 0;
+    size_t req_len = strlen(request), off = 0;
     while (off < req_len) {
-        ssize_t w = write(fd, req + off, req_len - off);
-        if (w <= 0) { free(req); close(fd); return NULL; }
+        ssize_t w = write(fd, request + off, req_len - off);
+        if (w <= 0) { close(fd); return NULL; }
         off += (size_t)w;
     }
-    free(req);
 
     double deadline = cs_now_monotonic() + timeout;
     size_t cap = CONTROL_SOCKET_MAX_RESPONSE_BYTES + 64;
@@ -615,8 +631,77 @@ json_t *control_socket_query_gateway_control(const char *home, const char *verb,
     char *nl = memchr(acc, '\n', total);
     size_t line_len = nl ? (size_t)(nl - acc) : total;
     acc[line_len] = '\0';
-    json_t *response = json_parse(acc, NULL);
-    free(acc);
+    return acc; /* malloc'd response line (no trailing newline) */
+}
+
+/* Named-pipe client: full transport on win32; POSIX builds faithfully
+ * answer NULL so callers fall back to the scan layer. */
+/* PoP: cs_query_windows_pipe @gateway/control_socket.py:_query_windows_pipe */
+static char *cs_query_windows_pipe(const char *home, const char *request,
+                                   double timeout)
+{
+#ifdef _WIN32
+    char *pipe_name = control_socket_windows_pipe_name(home);
+    if (!pipe_name) return NULL;
+    /* Convert \\.\pipe\name → \\.\pipe\name (CreateFile opens it directly). */
+    HANDLE handle = INVALID_HANDLE_VALUE;
+    double deadline = cs_now_monotonic() + timeout;
+    while (handle == INVALID_HANDLE_VALUE) {
+        handle = CreateFileA(pipe_name, GENERIC_READ | GENERIC_WRITE, 0, NULL,
+                             OPEN_EXISTING, 0, NULL);
+        if (handle != INVALID_HANDLE_VALUE) break;
+        if (GetLastError() != ERROR_PIPE_BUSY) { free(pipe_name); return NULL; }
+        if (cs_now_monotonic() >= deadline) { free(pipe_name); return NULL; }
+        Sleep(50); /* pipe busy: brief retry window */
+    }
+    free(pipe_name);
+    DWORD written = 0;
+    if (!WriteFile(handle, request, (DWORD)strlen(request), &written, NULL)) {
+        CloseHandle(handle);
+        return NULL;
+    }
+    size_t cap = CONTROL_SOCKET_MAX_RESPONSE_BYTES + 64;
+    char *acc = malloc(cap);
+    if (!acc) { CloseHandle(handle); return NULL; }
+    size_t total = 0;
+    double deadline2 = cs_now_monotonic() + timeout;
+    while (total < cap && cs_now_monotonic() < deadline2) {
+        DWORD got = 0;
+        if (!ReadFile(handle, acc + total, (DWORD)(cap - total), &got, NULL)
+            || got == 0)
+            break;
+        total += got;
+        if (memchr(acc + total - got, '\n', got)) break;
+    }
+    CloseHandle(handle);
+    if (total == 0) { free(acc); return NULL; }
+    char *nl = memchr(acc, '\n', total);
+    size_t line_len = nl ? (size_t)(nl - acc) : total;
+    acc[line_len] = '\0';
+    return acc;
+#else
+    (void)home; (void)request; (void)timeout;
+    return NULL; /* no named pipes on POSIX — scan-layer fallback */
+#endif
+}
+
+/* PoP: control_socket_query_gateway_control @gateway/control_socket.py:query_gateway_control */
+json_t *control_socket_query_gateway_control(const char *home, const char *verb,
+                                             double timeout)
+{
+    if (!home || !verb || timeout <= 0) return NULL;
+    char *req = cs_fmt("{\"verb\": \"%s\", \"id\": 1, \"protocol\": %d}\n",
+                       verb, CONTROL_PROTOCOL_VERSION);
+    if (!req) return NULL;
+#ifdef _WIN32
+    char *raw_line = cs_query_windows_pipe(home, req, timeout);
+#else
+    char *raw_line = cs_query_unix_socket(home, req, timeout);
+#endif
+    free(req);
+    if (!raw_line) return NULL;
+    json_t *response = json_parse(raw_line, NULL);
+    free(raw_line);
     if (!response || response->type != JSON_OBJECT) {
         if (response) json_free(response);
         return NULL;
@@ -636,7 +721,7 @@ json_t *control_socket_query_gateway_control(const char *home, const char *verb,
     return out;
 }
 
-/* PoP: identify_gateway @ gateway/control_socket.py:identify_gateway */
+/* PoP: identify_gateway @gateway/control_socket.py:identify_gateway */
 json_t *control_socket_identify_gateway(const char *home, double timeout)
 {
     return control_socket_query_gateway_control(

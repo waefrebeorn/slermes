@@ -16,10 +16,10 @@
 #include <string.h>
 #include <string.h>
 
-/* PoP: _repo_root @ hermes_cli/worktree_cmd.py:_repo_root (cli._git_repo_root) */
+/* PoP: worktree_cmd_repo_root @hermes_cli/worktree_cmd.py:_repo_root */
 static char *worktree_cmd_repo_root(void) { return wgc_git_repo_root(); }
 
-/* PoP: _fmt_size @ hermes_cli/worktree_cmd.py:_fmt_size */
+/* PoP: _fmt_size @hermes_cli/worktree_cmd.py:_fmt_size */
 char *worktree_cmd_fmt_size(int has_size, int size_mb)
 {
     char buf[32];
@@ -38,7 +38,7 @@ static void free_actions(char **actions, size_t n)
     free(actions);
 }
 
-/* PoP: cmd_worktree @ hermes_cli/worktree_cmd.py:cmd_worktree */
+/* PoP: cmd_worktree @hermes_cli/worktree_cmd.py:cmd_worktree */
 int worktree_cmd_cmd_worktree(const char *repo, const char *action,
                               int dry_run, int trees_only, int branches_only)
 {

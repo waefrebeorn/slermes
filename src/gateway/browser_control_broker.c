@@ -101,7 +101,10 @@ static int str_eq_field(const char *a, const char *b)
     return strcmp(av, bv) == 0;
 }
 
-/* PoP: _same_scope_identity @ gateway/browser_control_broker.py:_same_scope_identity */
+/* The stable identity tuple is compared field-by-field by
+ * bcb_same_scope_identity below (same six fields, same order). */
+/* PoP: bcb_same_scope_identity @gateway/browser_control_broker.py:_scope_identity */
+/* PoP: bcb_same_scope_identity @gateway/browser_control_broker.py:_same_scope_identity */
 int bcb_same_scope_identity(const bcb_scope_t *a, const bcb_scope_t *b)
 {
     if (!a || !b) return a == b;
@@ -113,7 +116,7 @@ int bcb_same_scope_identity(const bcb_scope_t *a, const bcb_scope_t *b)
            str_eq_field(a->transport_family, b->transport_family);
 }
 
-/* PoP: ControllerScope equality @ ...:ControllerScope (structural, all fields) */
+/* Port note: full ControllerScope structural equality (Python dataclass __eq__). */
 int bcb_scope_equal(const bcb_scope_t *a, const bcb_scope_t *b)
 {
     if (!bcb_same_scope_identity(a, b)) return 0;
@@ -129,7 +132,7 @@ int bcb_scope_equal(const bcb_scope_t *a, const bcb_scope_t *b)
     return 1;
 }
 
-/* PoP: browser_control_protocol_supported @ ...:browser_control_protocol_supported */
+/* PoP: browser_control_protocol_supported @gateway/browser_control_broker.py:browser_control_protocol_supported */
 int bcb_browser_control_protocol_supported(const json_t *value)
 {
     return value && value->type == JSON_NUMBER &&
@@ -175,7 +178,7 @@ static int bcb_flag_true(const json_t *config, const char *key)
     return v && v->type == JSON_BOOL && v->bool_val;
 }
 
-/* PoP: browser_control_developer_mode @ ...:browser_control_developer_mode */
+/* PoP: browser_control_developer_mode @gateway/browser_control_broker.py:browser_control_developer_mode */
 int bcb_browser_control_developer_mode(const json_t *config)
 {
     if (!config) {
@@ -187,7 +190,7 @@ int bcb_browser_control_developer_mode(const json_t *config)
     return bcb_flag_true(config, "developer_mode");
 }
 
-/* PoP: browser_control_enabled @ ...:browser_control_enabled */
+/* PoP: browser_control_enabled @gateway/browser_control_broker.py:browser_control_enabled */
 int bcb_browser_control_enabled(const json_t *config)
 {
     if (!config) {
@@ -199,7 +202,7 @@ int bcb_browser_control_enabled(const json_t *config)
     return bcb_flag_true(config, "enabled");
 }
 
-/* PoP: filter_browser_control_capabilities @ ...:filter_browser_control_capabilities */
+/* PoP: filter_browser_control_capabilities @gateway/browser_control_broker.py:filter_browser_control_capabilities */
 char **bcb_filter_browser_control_capabilities(const json_t *value,
                                                int developer_mode,
                                                size_t *out_n)
@@ -283,6 +286,7 @@ struct bcb_broker {
     size_t stores_n, stores_cap;
 };
 
+/* PoP: bcb_get_browser_control_broker @gateway/browser_control_broker.py:get_browser_control_broker */
 bcb_broker_t *bcb_get_browser_control_broker(void)
 {
     static bcb_broker_t *global = NULL;
@@ -295,7 +299,7 @@ bcb_broker_t *bcb_get_browser_control_broker(void)
     return global;
 }
 
-/* PoP: __init__ @ gateway/browser_control_broker.py:BrowserControlBroker.__init__ */
+/* PoP: __init__ @gateway/browser_control_broker.py:__init__ */
 bcb_broker_t *bcb_broker_new(double ticket_ttl, double command_timeout,
                              double (*clock_fn)(void *), int developer_mode)
 {
@@ -325,7 +329,8 @@ void bcb_broker_free(bcb_broker_t *broker)
     free(broker);
 }
 
-/* _developer_mode_now @ ...:BrowserControlBroker._developer_mode_now */
+/* PoP: _developer_mode_now @gateway/browser_control_broker.py:_developer_mode_now */
+/* PoP: bcb_broker_developer_mode_prop @gateway/browser_control_broker.py:developer_mode */
 int bcb_broker_developer_mode(bcb_broker_t *broker)
 {
     if (broker->developer_mode_pinned >= 0)
@@ -333,7 +338,7 @@ int bcb_broker_developer_mode(bcb_broker_t *broker)
     return bcb_browser_control_developer_mode(NULL);
 }
 
-/* PoP: attach_artifact_store @ ...:BrowserControlBroker.attach_artifact_store */
+/* PoP: attach_artifact_store @gateway/browser_control_broker.py:attach_artifact_store */
 void bcb_broker_attach_artifact_store(bcb_broker_t *broker,
                                       const bcb_artifact_store_vtab_t *store,
                                       const char *profile_id)
@@ -374,7 +379,7 @@ void bcb_broker_attach_artifact_store(bcb_broker_t *broker,
     pthread_mutex_unlock(&broker->lock);
 }
 
-/* PoP: _artifact_store_for_scope @ ...:BrowserControlBroker._artifact_store_for_scope */
+/* PoP: _artifact_store_for_scope @gateway/browser_control_broker.py:_artifact_store_for_scope */
 const bcb_artifact_store_vtab_t *bcb_broker_artifact_store_for_scope(
     bcb_broker_t *broker, const bcb_scope_t *scope)
 {
@@ -398,7 +403,7 @@ const bcb_artifact_store_vtab_t *bcb_broker_artifact_store_for_scope(
 /* Tickets                                                             */
 /* ------------------------------------------------------------------ */
 
-/* PoP: mint_ticket @ ...:BrowserControlBroker.mint_ticket */
+/* PoP: mint_ticket @gateway/browser_control_broker.py:mint_ticket */
 bcb_ticket_t *bcb_broker_mint_ticket(bcb_broker_t *broker,
                                      const bcb_scope_t *scope)
 {
@@ -471,7 +476,7 @@ bcb_ticket_t *bcb_broker_mint_ticket(bcb_broker_t *broker,
     return ticket;
 }
 
-/* PoP: consume_ticket @ ...:BrowserControlBroker.consume_ticket */
+/* PoP: consume_ticket @gateway/browser_control_broker.py:consume_ticket */
 bcb_error_t bcb_broker_consume_ticket(bcb_broker_t *broker, const char *value,
                                       bcb_scope_t *out_scope)
 {
@@ -494,7 +499,7 @@ bcb_error_t bcb_broker_consume_ticket(bcb_broker_t *broker, const char *value,
     return err;
 }
 
-/* _prune_tickets @ ...:BrowserControlBroker._prune_tickets */
+/* PoP: _prune_tickets @gateway/browser_control_broker.py:_prune_tickets */
 void bcb_broker_prune_tickets(bcb_broker_t *broker, double now)
 {
     if (!broker) return;
@@ -529,7 +534,7 @@ static bcb_controller_t *bcb_find_controller(bcb_broker_t *broker,
     return NULL;
 }
 
-/* _cancel_frame @ ...:BrowserControlBroker._cancel_frame (static) */
+/* PoP: bcb_cancel_frame @gateway/browser_control_broker.py:_cancel_frame */
 static json_t *bcb_cancel_frame(const bcb_pending_t *pending)
 {
     json_t *frame = json_object();
@@ -546,8 +551,8 @@ static json_t *bcb_cancel_frame(const bcb_pending_t *pending)
     return frame;
 }
 
-/* _defer_cancel_locked @ ...:BrowserControlBroker._defer_cancel_locked
- * (caller holds the lock) */
+/* Caller holds the lock. */
+/* PoP: bcb_defer_cancel_locked @gateway/browser_control_broker.py:_defer_cancel_locked */
 static void bcb_defer_cancel_locked(bcb_controller_t *controller,
                                     const bcb_pending_t *pending)
 {
@@ -571,8 +576,8 @@ static void bcb_defer_cancel_locked(bcb_controller_t *controller,
     }
 }
 
-/* _emit_cancel_frames @ ...:BrowserControlBroker._emit_cancel_frames —
- * invoked outside the broker lock. */
+/* Invoked outside the broker lock. */
+/* PoP: bcb_emit_cancel_frames @gateway/browser_control_broker.py:_emit_cancel_frames */
 static void bcb_emit_cancel_frames(bcb_controller_t *controller,
                                    bcb_pending_t **pendings, size_t n)
 {
@@ -615,7 +620,7 @@ static void bcb_insert_controller(bcb_broker_t *broker, bcb_scope_t scope,
     broker->controllers[broker->controllers_n++] = c;
 }
 
-/* PoP: attach @ gateway/browser_control_broker.py:BrowserControlBroker.attach */
+/* PoP: attach @gateway/browser_control_broker.py:attach */
 bcb_error_t bcb_broker_attach(bcb_broker_t *broker, const bcb_scope_t *scope,
                               bcb_send_fn send, void *owner)
 {
@@ -712,7 +717,7 @@ bcb_error_t bcb_broker_attach(bcb_broker_t *broker, const bcb_scope_t *scope,
     return BCB_OK;
 }
 
-/* PoP: select @ ...:BrowserControlBroker.select */
+/* PoP: select @gateway/browser_control_broker.py:select */
 int bcb_broker_select(bcb_broker_t *broker, const bcb_scope_t *scope,
                       const char *capability)
 {
@@ -737,7 +742,7 @@ int bcb_broker_select(bcb_broker_t *broker, const bcb_scope_t *scope,
     return matches == 1;
 }
 
-/* PoP: is_owner @ ...:BrowserControlBroker.is_owner */
+/* PoP: is_owner @gateway/browser_control_broker.py:is_owner */
 int bcb_broker_is_owner(bcb_broker_t *broker, const bcb_scope_t *scope,
                         void *owner)
 {
@@ -754,7 +759,7 @@ int bcb_broker_is_owner(bcb_broker_t *broker, const bcb_scope_t *scope,
     return matches == 1;
 }
 
-/* PoP: disconnect @ ...:BrowserControlBroker.disconnect (NULL owner = unset) */
+/* PoP: bcb_broker_disconnect @gateway/browser_control_broker.py:disconnect */
 int bcb_broker_disconnect(bcb_broker_t *broker, const bcb_scope_t *scope,
                           void *owner)
 {
@@ -776,7 +781,22 @@ int bcb_broker_disconnect(bcb_broker_t *broker, const bcb_scope_t *scope,
     return 1;
 }
 
-/* _resolve_pending @ ...:BrowserControlBroker._resolve_pending (locked) */
+/* PoP: bcb_pending_for_scope_locked @gateway/browser_control_broker.py:_pending_for_scope_locked */
+static void bcb_pending_for_scope_locked(bcb_broker_t *broker,
+                                         const bcb_scope_t *scope,
+                                         bcb_pending_t **out, size_t cap,
+                                         size_t *out_n)
+{
+    size_t n = 0;
+    for (size_t i = 0; i < broker->pending_n && n < cap; i++) {
+        bcb_pending_t *p = broker->pending[i];
+        if (bcb_same_scope_identity(&p->scope, scope))
+            out[n++] = p;
+    }
+    *out_n = n;
+}
+
+/* PoP: bcb_resolve_pending_locked @gateway/browser_control_broker.py:_resolve_pending */
 static void bcb_resolve_pending_locked(bcb_broker_t *broker,
                                        bcb_pending_t *pending, int cancelled)
 {
@@ -793,7 +813,7 @@ static void bcb_resolve_pending_locked(bcb_broker_t *broker,
     /* NOTE: freed by the waiter after it observes done/cancelled. */
 }
 
-/* PoP: detach @ ...:BrowserControlBroker.detach (NULL owner = unset) */
+/* PoP: bcb_broker_detach @gateway/browser_control_broker.py:detach */
 void bcb_broker_detach(bcb_broker_t *broker, const bcb_scope_t *scope,
                        void *owner, int notify_controller)
 {
@@ -815,11 +835,7 @@ void bcb_broker_detach(bcb_broker_t *broker, const bcb_scope_t *scope,
     /* Collect this scope's pendings and resolve them cancelled. */
     bcb_pending_t *pendings[256];
     size_t pn = 0;
-    for (size_t i = 0; i < broker->pending_n && pn < 256; i++) {
-        bcb_pending_t *p = broker->pending[i];
-        if (bcb_same_scope_identity(&p->scope, scope))
-            pendings[pn++] = p;
-    }
+    bcb_pending_for_scope_locked(broker, scope, pendings, 256, &pn);
     for (size_t i = 0; i < pn; i++)
         bcb_resolve_pending_locked(broker, pendings[i], 1);
     /* Drop the controller from the registry while holding its send lock so a
@@ -848,7 +864,7 @@ void bcb_broker_detach(bcb_broker_t *broker, const bcb_scope_t *scope,
     nanosleep(&ts, NULL);
 }
 
-/* _validate_artifact_reference @ ...:BrowserControlBroker._validate_artifact_reference */
+/* PoP: _validate_artifact_reference @gateway/browser_control_broker.py:_validate_artifact_reference */
 static bcb_error_t bcb_validate_artifact_reference(
     bcb_broker_t *broker, const bcb_scope_t *scope, const char *action,
     const json_t *arguments, char *err, size_t err_sz)
@@ -890,7 +906,7 @@ static void bcb_mint_command_id(char out[64])
     out[32] = '\0';
 }
 
-/* PoP: dispatch @ gateway/browser_control_broker.py:BrowserControlBroker.dispatch */
+/* PoP: dispatch @gateway/browser_control_broker.py:dispatch */
 bcb_error_t bcb_broker_dispatch(bcb_broker_t *broker, const bcb_scope_t *scope,
                                 const char *action, const json_t *arguments,
                                 const char *tool_call_id, json_t **result)
@@ -1066,7 +1082,8 @@ bcb_error_t bcb_broker_dispatch(bcb_broker_t *broker, const bcb_scope_t *scope,
     return outcome;
 }
 
-/* complete @ ...:complete — resolve by id; single-shot. */
+/* Resolve by id; single-shot. */
+/* PoP: bcb_broker_complete @gateway/browser_control_broker.py:complete */
 int bcb_broker_complete(bcb_broker_t *broker, const char *command_id,
                         const bcb_scope_t *scope, int ok, json_t *result)
 {
@@ -1093,7 +1110,7 @@ int bcb_broker_complete(bcb_broker_t *broker, const char *command_id,
     return 0;
 }
 
-/* cancel @ ...:cancel */
+/* PoP: bcb_broker_cancel @gateway/browser_control_broker.py:cancel */
 int bcb_broker_cancel(bcb_broker_t *broker, const bcb_scope_t *scope,
                       const char *tool_call_id)
 {
@@ -1139,7 +1156,7 @@ int bcb_broker_cancel(bcb_broker_t *broker, const bcb_scope_t *scope,
     return 1;
 }
 
-/* scope_for_session @ ...:scope_for_session */
+/* PoP: bcb_broker_scope_for_session @gateway/browser_control_broker.py:scope_for_session */
 bcb_scope_t *bcb_broker_scope_for_session(bcb_broker_t *broker,
                                           const char *session_id,
                                           const char *task_id,
@@ -1176,7 +1193,7 @@ bcb_scope_t *bcb_broker_scope_for_session(bcb_broker_t *broker,
     return NULL;
 }
 
-/* lane_registered @ ...:lane_registered */
+/* PoP: bcb_broker_lane_registered @gateway/browser_control_broker.py:lane_registered */
 int bcb_broker_lane_registered(bcb_broker_t *broker, const char *session_id,
                                const char *task_id, const char *principal_id,
                                const char *transport_family)
@@ -1198,7 +1215,7 @@ int bcb_broker_lane_registered(bcb_broker_t *broker, const char *session_id,
     return 0;
 }
 
-/* disconnect_owner @ ...:disconnect_owner */
+/* PoP: bcb_broker_disconnect_owner @gateway/browser_control_broker.py:disconnect_owner */
 int bcb_broker_disconnect_owner(bcb_broker_t *broker, void *owner)
 {
     if (!broker) return 0;
@@ -1217,7 +1234,7 @@ int bcb_broker_disconnect_owner(bcb_broker_t *broker, void *owner)
     return disconnected;
 }
 
-/* detach_owner @ ...:detach_owner */
+/* PoP: bcb_broker_detach_owner @gateway/browser_control_broker.py:detach_owner */
 int bcb_broker_detach_owner(bcb_broker_t *broker, void *owner,
                             int notify_controller)
 {
@@ -1263,10 +1280,11 @@ void bcb_broker_reset(bcb_broker_t *broker)
     pthread_mutex_unlock(&broker->lock);
 }
 
+/* PoP: bcb_broker_ticket_ttl_seconds @gateway/browser_control_broker.py:ticket_ttl_seconds */
 double bcb_broker_ticket_ttl_seconds(bcb_broker_t *broker)
 { return broker ? broker->ticket_ttl : 0.0; }
 
-/* pending_count @ ...:pending_count */
+/* PoP: bcb_broker_pending_count @gateway/browser_control_broker.py:pending_count */
 int bcb_broker_pending_count(bcb_broker_t *broker)
 {
     if (!broker) return 0;

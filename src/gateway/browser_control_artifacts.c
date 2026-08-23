@@ -67,7 +67,7 @@ static double bca_now(bca_store_t *s)
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
 }
 
-/* PoP: _sha256 @ gateway/browser_control_artifacts.py:_sha256 */
+/* PoP: _sha256 @gateway/browser_control_artifacts.py:_sha256 */
 void bca_sha256_hex(const unsigned char *data, size_t len, char out[65])
 {
     unsigned char digest[32];
@@ -80,7 +80,7 @@ void bca_sha256_hex(const unsigned char *data, size_t len, char out[65])
     out[64] = '\0';
 }
 
-/* PoP: artifact_scope_key @ gateway/browser_control_artifacts.py:artifact_scope_key */
+/* PoP: artifact_scope_key @gateway/browser_control_artifacts.py:artifact_scope_key */
 bca_error_t bca_artifact_scope_key(const bca_scope_t *scope, char out[65])
 {
     if (!scope || !scope->principal_id || !scope->principal_id[0])
@@ -119,7 +119,7 @@ json_t *bca_receipt_to_dict(const bca_receipt_t *r, const char *download_path)
     return o;
 }
 
-/* PoP: _normalize_content_type @ gateway/browser_control_artifacts.py:_normalize_content_type */
+/* PoP: _normalize_content_type @gateway/browser_control_artifacts.py:_normalize_content_type */
 void bca_normalize_content_type(const char *value, char *out, size_t out_sz)
 {
     if (!value || !out || out_sz == 0) { if (out && out_sz) out[0] = '\0'; return; }
@@ -142,7 +142,7 @@ void bca_normalize_content_type(const char *value, char *out, size_t out_sz)
     out[n] = '\0';
 }
 
-/* PoP: _bounded_filename @ gateway/browser_control_artifacts.py:_bounded_filename */
+/* PoP: _bounded_filename @gateway/browser_control_artifacts.py:_bounded_filename */
 char *bca_bounded_filename(const char *value)
 {
     const size_t limit = 160;
@@ -177,7 +177,7 @@ static int bca_is_valid_id(const char *id)
     return 1;
 }
 
-/* PoP: _artifact_path @ gateway/browser_control_artifacts.py:_artifact_path */
+/* PoP: _artifact_path @gateway/browser_control_artifacts.py:_artifact_path */
 static bca_error_t bca_artifact_path(const bca_store_t *store,
                                      const char *artifact_id, char *out,
                                      size_t out_sz)
@@ -204,7 +204,7 @@ static void bca_copy_receipt(bca_receipt_t *dst, const bca_receipt_t *src)
     dst->filename = src->filename ? strdup(src->filename) : NULL;
 }
 
-/* PoP: __init__ @ gateway/browser_control_artifacts.py:ArtifactStore.__init__ */
+/* PoP: __init__ @gateway/browser_control_artifacts.py:__init__ */
 bca_store_t *bca_store_new(const char *root, double ttl_seconds, long max_bytes,
                            const char *const *allowed_mime,
                            double (*clock_fn)(void *))
@@ -233,16 +233,27 @@ void bca_store_free(bca_store_t *store)
     free(store);
 }
 
+/* PoP: bca_store_root @gateway/browser_control_artifacts.py:ArtifactStore.root */
 const char *bca_store_root(const bca_store_t *store)
 { return store ? store->root : NULL; }
 
+/* PoP: bca_store_allowed_mime_types @gateway/browser_control_artifacts.py:ArtifactStore.allowed_mime_types */
+const char *const *bca_store_allowed_mime_types(const bca_store_t *store)
+{
+    return store ? (store->allowed_mime ? store->allowed_mime
+                                        : BCA_DEFAULT_ALLOWED_MIME_TYPES)
+                 : NULL;
+}
+
+/* PoP: bca_store_ttl_seconds @gateway/browser_control_artifacts.py:ArtifactStore.ttl_seconds */
 double bca_store_ttl_seconds(const bca_store_t *store)
 { return store ? store->ttl_seconds : 0.0; }
 
+/* PoP: bca_store_max_bytes @gateway/browser_control_artifacts.py:ArtifactStore.max_bytes */
 long bca_store_max_bytes(const bca_store_t *store)
 { return store ? store->max_bytes : 0; }
 
-/* PoP: _sweep_orphan_files @ gateway/browser_control_artifacts.py:_sweep_orphan_files */
+/* PoP: _sweep_orphan_files @gateway/browser_control_artifacts.py:_sweep_orphan_files */
 int bca_store_sweep_orphan_files(bca_store_t *store)
 {
     if (!store) return 0;
@@ -283,7 +294,7 @@ static int bca_mime_allowed(const bca_store_t *s, const char *mime)
     return 0;
 }
 
-/* PoP: store @ gateway/browser_control_artifacts.py:ArtifactStore.store */
+/* PoP: store @gateway/browser_control_artifacts.py:store */
 bca_error_t bca_store_store(bca_store_t *store, const unsigned char *data,
                             size_t len, const char *filename,
                             const char *content_type, const bca_scope_t *scope,
@@ -378,7 +389,7 @@ bca_error_t bca_store_store(bca_store_t *store, const unsigned char *data,
     return BCA_OK;
 }
 
-/* PoP: _entry_for @ gateway/browser_control_artifacts.py:ArtifactStore._entry_for */
+/* PoP: _entry_for @gateway/browser_control_artifacts.py:_entry_for */
 static bca_entry_t *bca_entry_for_locked(bca_store_t *store,
                                          const char *artifact_id,
                                          const bca_scope_t *scope, double now,
@@ -399,7 +410,7 @@ static bca_entry_t *bca_entry_for_locked(bca_store_t *store,
     /* Target's own expiry is checked BEFORE sweeping other entries so an
      * expired artifact surfaces as ArtifactExpired rather than vanishing. */
     if (!entry) {
-        /* _prune_expired_locked @ ...:ArtifactStore._prune_expired_locked */
+        /* PoP: _prune_expired_locked @gateway/browser_control_artifacts.py:_prune_expired_locked */
         for (size_t i = 0; i < store->entries_n;) {
             if (store->entries[i].receipt.expires_at <= now) {
                 unlink(store->entries[i].path);
@@ -434,7 +445,7 @@ static bca_entry_t *bca_entry_for_locked(bca_store_t *store,
     return entry;
 }
 
-/* PoP: validate @ gateway/browser_control_artifacts.py:ArtifactStore.validate */
+/* PoP: validate @gateway/browser_control_artifacts.py:validate */
 bca_error_t bca_store_validate(bca_store_t *store, const char *artifact_id,
                                const bca_scope_t *scope,
                                bca_receipt_t *out_receipt)
@@ -449,7 +460,7 @@ bca_error_t bca_store_validate(bca_store_t *store, const char *artifact_id,
     return err;
 }
 
-/* PoP: load @ gateway/browser_control_artifacts.py:ArtifactStore.load */
+/* PoP: load @gateway/browser_control_artifacts.py:load */
 bca_error_t bca_store_load(bca_store_t *store, const char *artifact_id,
                            const bca_scope_t *scope, unsigned char **out_data,
                            size_t *out_len, bca_receipt_t *out_receipt)
@@ -510,7 +521,7 @@ bca_error_t bca_store_load(bca_store_t *store, const char *artifact_id,
     return BCA_OK;
 }
 
-/* PoP: prune_expired @ gateway/browser_control_artifacts.py:ArtifactStore.prune_expired */
+/* PoP: prune_expired @gateway/browser_control_artifacts.py:prune_expired */
 int bca_store_prune_expired(bca_store_t *store, const double *now_in)
 {
     if (!store) return 0;
@@ -549,7 +560,7 @@ int bca_store_prune_expired(bca_store_t *store, const double *now_in)
     return removed;
 }
 
-/* PoP: count @ gateway/browser_control_artifacts.py:ArtifactStore.count */
+/* PoP: count @gateway/browser_control_artifacts.py:count */
 int bca_store_count(const bca_store_t *store)
 {
     if (!store) return 0;
@@ -560,7 +571,7 @@ int bca_store_count(const bca_store_t *store)
 /* Rate limiter                                                        */
 /* ------------------------------------------------------------------ */
 
-/* PoP: __init__ @ gateway/browser_control_artifacts.py:ArtifactRateLimiter.__init__ */
+/* PoP: __init__ @gateway/browser_control_artifacts.py:__init__ */
 bca_rate_limiter_t *bca_rate_limiter_new(double window_seconds, int max_requests,
                                          double (*clock_fn)(void *))
 {
@@ -612,7 +623,7 @@ static bca_hits_t *rl_bucket(bca_rate_limiter_t *lim, const char *key,
     return b;
 }
 
-/* PoP: allow @ gateway/browser_control_artifacts.py:ArtifactRateLimiter.allow */
+/* PoP: allow @gateway/browser_control_artifacts.py:allow */
 int bca_rate_limiter_allow(bca_rate_limiter_t *lim, const char *key)
 {
     if (!lim || !key || !key[0]) return 0;
@@ -642,7 +653,7 @@ int bca_rate_limiter_allow(bca_rate_limiter_t *lim, const char *key)
     return 1;
 }
 
-/* PoP: reset @ gateway/browser_control_artifacts.py:ArtifactRateLimiter.reset */
+/* PoP: reset @gateway/browser_control_artifacts.py:reset */
 void bca_rate_limiter_reset(bca_rate_limiter_t *lim, const char *key)
 {
     if (!lim || !key) return;

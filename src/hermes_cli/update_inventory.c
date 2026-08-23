@@ -51,7 +51,7 @@ void upd_plan_free(upd_plan_t *plan)
     free(plan->expected_version);
 }
 
-/* PoP: to_dict @ hermes_cli/update_inventory.py:RuntimeRecord.to_dict */
+/* PoP: to_dict @hermes_cli/update_inventory.py:to_dict */
 json_t *upd_runtime_record_to_dict(const upd_runtime_record_t *rec)
 {
     json_t *o = json_object();
@@ -73,7 +73,7 @@ json_t *upd_runtime_record_to_dict(const upd_runtime_record_t *rec)
     return o;
 }
 
-/* PoP: to_dict @ hermes_cli/update_inventory.py:UpdatePlan.to_dict */
+/* PoP: to_dict @hermes_cli/update_inventory.py:to_dict */
 json_t *upd_plan_to_dict(const upd_plan_t *plan)
 {
     if (!plan) return NULL;
@@ -108,7 +108,7 @@ json_t *upd_plan_to_dict(const upd_plan_t *plan)
     return o;
 }
 
-/* PoP: _detect_supervisor_for_pid @ ...:_detect_supervisor_for_pid */
+/* PoP: _detect_supervisor_for_pid @hermes_cli/update_inventory.py:_detect_supervisor_for_pid */
 void update_inventory_detect_supervisor_for_pid(long pid,
                                                 const long *service_pids,
                                                 size_t n, char out[16])
@@ -135,7 +135,7 @@ void update_inventory_detect_supervisor_for_pid(long pid,
     snprintf(out, 16, "manual");
 }
 
-/* PoP: _restart_mechanism @ ...:_restart_mechanism */
+/* PoP: _restart_mechanism @hermes_cli/update_inventory.py:_restart_mechanism */
 char *update_inventory_restart_mechanism(const char *supervisor,
                                          const char *profile)
 {
@@ -188,7 +188,7 @@ static int pi_profile_id_valid(const char *name)
     return 1;
 }
 
-/* PoP: collect_runtime_inventory @ ...:collect_runtime_inventory */
+/* PoP: collect_runtime_inventory @hermes_cli/update_inventory.py:collect_runtime_inventory */
 int collect_runtime_inventory(upd_plan_t *out_plan)
 {
     upd_plan_t *plan = out_plan;
@@ -356,7 +356,7 @@ int collect_runtime_inventory(upd_plan_t *out_plan)
     return 1;
 }
 
-/* PoP: print_update_plan @ ...:print_update_plan */
+/* PoP: print_update_plan @hermes_cli/update_inventory.py:print_update_plan */
 void print_update_plan(const upd_plan_t *plan)
 {
     if (!plan) return;
@@ -397,7 +397,7 @@ void print_update_plan(const upd_plan_t *plan)
     }
 }
 
-/* PoP: record_plan_in_receipt @ ...:record_plan_in_receipt */
+/* PoP: record_plan_in_receipt @hermes_cli/update_inventory.py:record_plan_in_receipt */
 void record_plan_in_receipt(const upd_plan_t *plan)
 {
     if (!plan) return;

@@ -51,8 +51,7 @@ static int bcr_str_blank(const char *s)
     return 1;
 }
 
-/* PoP: extension_controller_available @ tools/browser_extension_router.py:
- * extension_controller_available */
+/* PoP: extension_controller_available @tools/browser_extension_router.py:extension_controller_available */
 int bcr_extension_controller_available(const char *action)
 {
     /* try-imports degrade to "unavailable" — fail closed. */
@@ -86,7 +85,7 @@ int bcr_extension_controller_available(const char *action)
     return broker->select(broker->ctx, scope, action);
 }
 
-/* PoP: route_browser_tool @ tools/browser_extension_router.py:route_browser_tool */
+/* PoP: route_browser_tool @tools/browser_extension_router.py:route_browser_tool */
 bcr_route_result_t bcr_route_browser_tool(
     const char *action, const char *args_json, bcr_fallback_fn fallback,
     void *fallback_ctx, const bcr_broker_vtab_t *broker, int enabled,
@@ -147,9 +146,7 @@ fallback:
     return BCR_FELL_BACK;
 }
 
-/* PoP: current_tool_call_id @ tools/browser_extension_router.py:
- * current_tool_call_id — the approval observability binding; bare/offline
- * callers have none and get "". */
+/* PoP: bcr_current_tool_call_id @tools/browser_extension_router.py:current_tool_call_id */
 char *bcr_current_tool_call_id(void)
 {
     /* tools.approval._approval_tool_call_id binding: the observability
@@ -167,8 +164,7 @@ char *bcr_current_tool_call_id(void)
     return id;
 }
 
-/* PoP: routed_browser_handler @ tools/browser_extension_router.py:
- * routed_browser_handler */
+/* PoP: routed_browser_handler @tools/browser_extension_router.py:routed_browser_handler */
 bcr_route_result_t bcr_routed_browser_handler(
     const char *action, const char *args_json, bcr_fallback_fn fallback,
     void *fallback_ctx, const char *session_id, const char *task_id,

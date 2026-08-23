@@ -144,7 +144,8 @@ int wgc_run_git(char *const args[], const char *cwd, int timeout,
     return rc;
 }
 
-/* PoP: _git_repo_root @ cli.py:_git_repo_root (imported by worktree_gc) */
+/* PoP: wgc_git_repo_root @hermes_cli/worktree_gc.py:_git_repo_root
+ * PoP-of cli.py:_git_repo_root (classification primitive imported by worktree_gc) */
 char *wgc_git_repo_root(void)
 {
     char *const args[] = {"rev-parse", "--show-toplevel", NULL};
@@ -158,7 +159,7 @@ char *wgc_git_repo_root(void)
     return root;
 }
 
-/* PoP: _repo_is_shallow @ cli.py:_repo_is_shallow */
+/* PoP: _repo_is_shallow @hermes_cli/worktree_gc.py:_repo_is_shallow */
 int wgc_repo_is_shallow(const char *repo_path)
 {
     char path[4096];
@@ -167,14 +168,14 @@ int wgc_repo_is_shallow(const char *repo_path)
     return stat(path, &st) == 0;
 }
 
-/* PoP: _deepen_shallow_repo @ cli.py:_deepen_shallow_repo */
+/* PoP: _deepen_shallow_repo @hermes_cli/worktree_gc.py:_deepen_shallow_repo */
 int wgc_deepen_shallow_repo(const char *repo_root)
 {
     char *const args[] = {"fetch", "--unshallow", "--quiet", NULL};
     return wgc_run_git(args, repo_root, 120, NULL, NULL) == 0;
 }
 
-/* PoP: _worktree_has_unpushed_commits @ cli.py:_worktree_has_unpushed_commits */
+/* PoP: _worktree_has_unpushed_commits @hermes_cli/worktree_gc.py:_worktree_has_unpushed_commits */
 int wgc_worktree_has_unpushed_commits(const char *worktree_path, int timeout)
 {
     char *const args[] = {"status", "-sb", NULL};
@@ -208,7 +209,7 @@ static json_t *wgc_cache_get(json_t *cache, const char *key)
                                                : NULL;
 }
 
-/* PoP: _worktree_commits_all_merged_upstream @ cli.py:_worktree_commits_all_merged_upstream */
+/* PoP: _worktree_commits_all_merged_upstream @hermes_cli/worktree_gc.py:_worktree_commits_all_merged_upstream */
 int wgc_worktree_commits_all_merged_upstream(const char *worktree_path,
                                              int timeout, long max_ahead,
                                              void *cache_v)
@@ -304,7 +305,8 @@ char *wgc_worktree_lock_is_live(const char *repo_root,
     return wgc_strdup_n("live", 4);
 }
 
-/* PoP: _tree_size_mb @ hermes_cli/worktree_gc.py:_tree_size_mb — du -sm. */
+/* du -sm, best-effort. */
+/* PoP: wgc_tree_size_mb @hermes_cli/worktree_gc.py:_tree_size_mb */
 static int wgc_tree_size_mb(const char *path, int *has_size)
 {
     *has_size = 0;
@@ -325,7 +327,7 @@ static int wgc_tree_size_mb(const char *path, int *has_size)
     return mb;
 }
 
-/* PoP: _dirty_split @ hermes_cli/worktree_gc.py:_dirty_split */
+/* PoP: _dirty_split @hermes_cli/worktree_gc.py:_dirty_split */
 static void wgc_dirty_split(const char *path, int *tracked_dirty,
                             char ***untracked, size_t *untracked_n)
 {
@@ -355,7 +357,7 @@ static void wgc_dirty_split(const char *path, int *tracked_dirty,
     free(out);
 }
 
-/* PoP: _archive_untracked @ hermes_cli/worktree_gc.py:_archive_untracked */
+/* PoP: _archive_untracked @hermes_cli/worktree_gc.py:_archive_untracked */
 static char *wgc_archive_untracked(const char *tree, char **untracked,
                                    size_t untracked_n)
 {
@@ -430,7 +432,7 @@ static wgc_tree_record_t *wgc_push_record(wgc_tree_record_t **records_p,
     return r;
 }
 
-/* PoP: audit_worktrees @ hermes_cli/worktree_gc.py:audit_worktrees */
+/* PoP: audit_worktrees @hermes_cli/worktree_gc.py:audit_worktrees */
 wgc_tree_record_t *wgc_audit_worktrees(const char *repo_root, int with_sizes,
                                        size_t *out_n)
 {
@@ -498,7 +500,7 @@ void wgc_free_tree_records(wgc_tree_record_t *recs, size_t n)
     free(recs);
 }
 
-/* PoP: reclaim_worktrees @ hermes_cli/worktree_gc.py:reclaim_worktrees */
+/* PoP: reclaim_worktrees @hermes_cli/worktree_gc.py:reclaim_worktrees */
 char **wgc_reclaim_worktrees(const char *repo_root, int dry_run,
                              wgc_tree_record_t *records, size_t records_n,
                              size_t *out_n)
@@ -588,7 +590,7 @@ char **wgc_reclaim_worktrees(const char *repo_root, int dry_run,
     return actions;
 }
 
-/* PoP: audit_branches @ hermes_cli/worktree_gc.py:audit_branches */
+/* PoP: audit_branches @hermes_cli/worktree_gc.py:audit_branches */
 wgc_branch_record_t *wgc_audit_branches(const char *repo_root, size_t *out_n)
 {
     if (out_n) *out_n = 0;
@@ -762,7 +764,7 @@ void wgc_free_branch_records(wgc_branch_record_t *recs, size_t n)
     free(recs);
 }
 
-/* PoP: reclaim_branches @ hermes_cli/worktree_gc.py:reclaim_branches */
+/* PoP: reclaim_branches @hermes_cli/worktree_gc.py:reclaim_branches */
 char **wgc_reclaim_branches(const char *repo_root, int dry_run,
                             wgc_branch_record_t *records, size_t records_n,
                             size_t *out_n)
@@ -816,7 +818,7 @@ void wgc_free_actions(char **actions, size_t n)
     free(actions);
 }
 
-/* PoP: worktrees_summary @ hermes_cli/worktree_gc.py:worktrees_summary */
+/* PoP: worktrees_summary @hermes_cli/worktree_gc.py:worktrees_summary */
 void wgc_worktrees_summary(const char *repo_root, size_t *out_count,
                            int *out_size_mb, int *has_size)
 {

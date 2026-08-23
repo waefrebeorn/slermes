@@ -54,7 +54,7 @@ static char *pi_fmt(const char *fmt, ...)
 
 static pthread_mutex_t pi_ledger_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: install_id @ hermes_cli/process_identity.py:install_id */
+/* PoP: install_id @hermes_cli/process_identity.py:install_id */
 char *process_identity_install_id(const char *project_root)
 {
     char root[PATH_MAX];
@@ -83,8 +83,8 @@ char *process_identity_install_id(const char *project_root)
     return full;
 }
 
-/* PoP: _own_create_time @ hermes_cli/process_identity.py:_own_create_time
- * psutil create_time ≈ boot_time + starttime/HZ; read both from /proc. */
+/* psutil create_time ≈ boot_time + starttime/HZ; read both from /proc. */
+/* PoP: process_identity_own_create_time @hermes_cli/process_identity.py:_own_create_time */
 double process_identity_own_create_time(void)
 {
     long hz = sysconf(_SC_CLK_TCK);
@@ -122,7 +122,7 @@ double process_identity_own_create_time(void)
     return boot + (double)start_ticks / (double)hz;
 }
 
-/* PoP: build_spawn_tag @ hermes_cli/process_identity.py:build_spawn_tag */
+/* PoP: build_spawn_tag @hermes_cli/process_identity.py:build_spawn_tag */
 char *process_identity_build_spawn_tag(const char *purpose,
                                        const char *project_root)
 {
@@ -141,7 +141,7 @@ char *process_identity_build_spawn_tag(const char *purpose,
     return tag;
 }
 
-/* PoP: spawn_env @ hermes_cli/process_identity.py:spawn_env */
+/* PoP: spawn_env @hermes_cli/process_identity.py:spawn_env */
 void process_identity_spawn_env(const char *purpose, const char *project_root,
                                 char **out_var, char **out_val)
 {
@@ -149,7 +149,7 @@ void process_identity_spawn_env(const char *purpose, const char *project_root,
     *out_val = process_identity_build_spawn_tag(purpose, project_root);
 }
 
-/* PoP: parse_spawn_tag @ hermes_cli/process_identity.py:parse_spawn_tag */
+/* PoP: parse_spawn_tag @hermes_cli/process_identity.py:parse_spawn_tag */
 int process_identity_parse_spawn_tag(const char *raw,
                                      process_identity_spawn_tag_t *out)
 {
@@ -197,7 +197,7 @@ static void pi_default_hermes_root(char *buf, size_t sz)
         snprintf(buf, sz, "/tmp/.slermes");
 }
 
-/* PoP: _ledger_path @ hermes_cli/process_identity.py:_ledger_path */
+/* PoP: _ledger_path @hermes_cli/process_identity.py:_ledger_path */
 char *process_identity_ledger_path(void)
 {
     char root[1024];
@@ -205,7 +205,7 @@ char *process_identity_ledger_path(void)
     return pi_fmt("%s/%s", root, PROCESS_IDENTITY_LEDGER_FILENAME);
 }
 
-/* PoP: _read_ledger @ hermes_cli/process_identity.py:_read_ledger */
+/* PoP: _read_ledger @hermes_cli/process_identity.py:_read_ledger */
 json_t *process_identity_read_ledger(const char *path, int *corrupt)
 {
     if (corrupt) *corrupt = 0;
@@ -247,7 +247,7 @@ json_t *process_identity_read_ledger(const char *path, int *corrupt)
     return filtered;
 }
 
-/* PoP: _quarantine_ledger @ hermes_cli/process_identity.py:_quarantine_ledger */
+/* PoP: _quarantine_ledger @hermes_cli/process_identity.py:_quarantine_ledger */
 void process_identity_quarantine_ledger(const char *path)
 {
     if (!path) return;
@@ -262,9 +262,7 @@ static int pi_file_exists(const char *path)
     return stat(path, &st) == 0;
 }
 
-/* PoP: _pid_alive_matches @ hermes_cli/process_identity.py:_pid_alive_matches
- * True/False provable via /proc; -1 when /proc can't say. create_time within
- * 2.0 seconds counts as the same live process (PID-reuse guard). */
+/* PoP: pi_pid_alive_matches @hermes_cli/process_identity.py:_pid_alive_matches */
 static int pi_pid_alive_matches(long pid, int has_create, double create_time)
 {
     char stat_path[64];
@@ -303,7 +301,7 @@ static int pi_pid_alive_matches(long pid, int has_create, double create_time)
     return diff < 2.0 ? 1 : 0;
 }
 
-/* PoP: register_self @ hermes_cli/process_identity.py:register_self */
+/* PoP: register_self @hermes_cli/process_identity.py:register_self */
 int process_identity_register_self(const char *purpose,
                                    const char *project_root)
 {
@@ -443,7 +441,7 @@ int process_identity_register_self(const char *purpose,
     return ok;
 }
 
-/* PoP: ledger_entries @ hermes_cli/process_identity.py:ledger_entries */
+/* PoP: ledger_entries @hermes_cli/process_identity.py:ledger_entries */
 json_t *process_identity_ledger_entries(const char *project_root)
 {
     char *want_install = process_identity_install_id(project_root);
@@ -490,7 +488,7 @@ json_t *process_identity_ledger_entries(const char *project_root)
     return out;
 }
 
-/* PoP: spawner_is_dead @ hermes_cli/process_identity.py:spawner_is_dead */
+/* PoP: spawner_is_dead @hermes_cli/process_identity.py:spawner_is_dead */
 int process_identity_spawner_is_dead(json_t *entry)
 {
     if (!entry || entry->type != JSON_OBJECT) return -1;
@@ -508,8 +506,8 @@ int process_identity_spawner_is_dead(json_t *entry)
     return !alive;
 }
 
-/* PoP: attach_self_to_kill_on_close_job @ ...:attach_self_to_kill_on_close_job
- * Windows-only by contract; POSIX builds faithfully report failure. */
+/* Windows-only by contract; POSIX builds faithfully report failure. */
+/* PoP: process_identity_attach_self_to_kill_on_close_job @hermes_cli/process_identity.py:attach_self_to_kill_on_close_job */
 int process_identity_attach_self_to_kill_on_close_job(void)
 {
     return 0; /* _IS_WINDOWS is false on this platform */
