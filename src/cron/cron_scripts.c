@@ -9,6 +9,8 @@
 /* PoP: cron scripts (port of cron/jobs) */
 
 #include "hermes_core_types.h"
+#include "hermes_json.h"
+#include "cron_jobs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,9 +24,21 @@
 
 /* Set interpreter for a script job */
 bool cron_script_set_interpreter(const char *job_name, const char *interpreter) {
-    (void)job_name;
-    (void)interpreter;
-    /* Stored in job store as script_type field */
+    if (!job_name || !*job_name || !interpreter || !*interpreter)
+        return false;
+    /* Persist the interpreter on the job record ("script_type" field) via the
+     * shared job store so script runs resolve it consistently. */
+    extern json_t *cronjobs_update_job(const char *job_id, const json_t *updates,
+                                       char **err);
+    json_t *updates = json_object();
+    if (!updates) return false;
+    json_set(updates, "script_type", json_string(interpreter));
+    char *err = NULL;
+    json_t *updated = cronjobs_update_job(job_name, updates, &err);
+    free(err);
+    json_free(updates);
+    if (!updated) return false;
+    json_free(updated);
     return true;
 }
 

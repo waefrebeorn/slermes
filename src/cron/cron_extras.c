@@ -120,17 +120,32 @@ const char *cron_notify_get_channel(void) {
     return g_notify_channel[0] ? g_notify_channel : NULL;
 }
 
-bool cron_notify_on_complete(const char *job_name, bool enabled) {
-    (void)job_name;
-    (void)enabled;
-    /* Notification settings per-job are stored in the job store */
+static bool cron_notify_set_flag(const char *job_name, const char *field,
+                                 bool enabled)
+{
+    extern json_t *cronjobs_update_job(const char *job_id, const json_t *updates,
+                                       char **err);
+    if (!job_name || !*job_name) return false;
+    json_t *updates = json_object();
+    if (!updates) return false;
+    json_set(updates, field, json_bool(enabled));
+    char *err = NULL;
+    json_t *updated = cronjobs_update_job(job_name, updates, &err);
+    free(err);
+    json_free(updates);
+    if (!updated) return false;
+    json_free(updated);
     return true;
 }
 
+bool cron_notify_on_complete(const char *job_name, bool enabled) {
+    /* Persist the per-job flag in the job store; the scheduler reads it at
+     * fire time to decide whether to deliver a completion notification. */
+    return cron_notify_set_flag(job_name, "notify_on_complete", enabled);
+}
+
 bool cron_notify_on_failure(const char *job_name, bool enabled) {
-    (void)job_name;
-    (void)enabled;
-    return true;
+    return cron_notify_set_flag(job_name, "notify_on_failure", enabled);
 }
 
 /* Send notification about job completion/failure.

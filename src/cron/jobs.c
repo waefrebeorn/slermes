@@ -128,6 +128,7 @@ void cron_run_job(const char *name, const char *command) {
 #include "datetime.h"
 #include "cron.h"
 #include "libjson/json.h"
+#include "port_config_py_helpers.h"
 #include "hermes_logger.h"
 
 #include <stdio.h>
@@ -1065,7 +1066,32 @@ static char *ensure_aware(const char *iso) {
  * Python path fail-opens to None when config is missing/unreadable. We mirror
  * that exactly (null snapshot), so an unpinned-model job carries no snapshot
  * and the fire-time drift guard treats "no snapshot" as "no assertion". */
-static char *resolve_default_model_snapshot(void) { return NULL; }
+/* Resolve the global default model like the cron ticker: config.yaml
+ * model.default (or "model" alias), env expansion. Fail-open NULL (#44585). */
+static char *resolve_default_model_snapshot(void) {
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) return NULL;
+    json_t *model_node = json_object_get(cfg, "model");
+    char *out = NULL;
+    if (model_node && model_node->type == JSON_STRING) {
+        out = strdup(model_node->str_val ? model_node->str_val : "");
+    } else if (model_node && model_node->type == JSON_OBJECT) {
+        json_t *def = json_object_get(model_node, "default");
+        if (def && def->type == JSON_STRING && def->str_val && *def->str_val)
+            out = strdup(def->str_val);
+    }
+    json_free(cfg);
+    /* Env expansion of ${VAR} references. */
+    if (out && strchr(out, '$')) {
+        const char *env_model = getenv("HERMES_MODEL");
+        if (env_model && *env_model) {
+            free(out);
+            out = strdup(env_model);
+        }
+    }
+    if (out && !*out) { free(out); out = NULL; }
+    return out;
+}
 
 /* PoP: compute_provider_model_snapshots @ cron/jobs.py:_compute_provider_model_snapshots */
 static void compute_provider_model_snapshots(const char *provider, const char *model,
@@ -2390,10 +2416,206 @@ char *cron_jobs_ambiguous_init(const char *ref, const char *matches_json)
     return s ? s : strdup("{}");
 }
 
-/* PoP: cron_classify_items_main @ cron/scripts/classify_items.py:main */
-int cron_classify_items_main(void)
+/* PoP: cron_classify_items_main @ cron/scripts/classify_items.py:main
+ * Classify candidate items by urgency and print only the urgent ones.
+ * argv mirrors the Python CLI: --criteria (required), --threshold N
+ * (default 7), --input-file PATH (default stdin), --format text|json.
+ * Exit codes: 0 ok/silent, 2 bad input, 3 no classifier client, 4 call failed. */
+static json_t *ci_load_items(const char *raw) {
+    if (!raw) return NULL;
+    const char *s = raw;
+    while (*s == ' ' || *s == '\n' || *s == '\t' || *s == '\r') s++;
+    if (!*s) return json_array();
+    char *err = NULL;
+    json_t *data = json_parse(s, &err);
+    if (!data) {
+        fprintf(stderr, "classify_items: input is not valid JSON: %s\n",
+                err ? err : "?");
+        free(err);
+        return NULL;
+    }
+    json_t *items = json_array();
+    if (data->type == JSON_OBJECT) {
+        json_t *wrapped = json_object_get(data, "items");
+        if (wrapped && wrapped->type == JSON_ARRAY) {
+            json_free(items);
+            items = wrapped;          /* take ownership */
+            /* detach from data to avoid double free below */
+            json_object_set(data, "items", json_array());
+        } else {
+            json_append(items, data);
+            data = NULL;
+        }
+    } else if (data->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(data); i++) {
+            json_t *e = json_get(data, i);
+            if (e && e->type == JSON_OBJECT)
+                json_append(items, json_copy(e));
+        }
+    } else {
+        fprintf(stderr, "classify_items: expected a JSON list or {items: [...]}\n");
+        json_free(items); json_free(data);
+        return NULL;
+    }
+    if (data) json_free(data);
+    return items;
+}
+
+int cron_classify_items_main(int argc, char **argv)
 {
-    return 0;
+    const char *criteria = NULL, *input_file = NULL, *format = "text";
+    int threshold = 7;
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--criteria") == 0 && i + 1 < argc)
+            criteria = argv[++i];
+        else if (strcmp(argv[i], "--threshold") == 0 && i + 1 < argc)
+            threshold = atoi(argv[++i]);
+        else if (strcmp(argv[i], "--input-file") == 0 && i + 1 < argc)
+            input_file = argv[++i];
+        else if (strcmp(argv[i], "--format") == 0 && i + 1 < argc)
+            format = argv[++i];
+    }
+    if (!criteria || !*criteria) {
+        fprintf(stderr,
+                "classify_items: --criteria is required\n");
+        return 2;
+    }
+    /* Load items JSON from file or stdin. */
+    char *raw = NULL;
+    if (input_file) {
+        FILE *f = fopen(input_file, "rb");
+        if (!f) { perror("classify_items"); return 2; }
+        fseek(f, 0, SEEK_END); long n = ftell(f); fseek(f, 0, SEEK_SET);
+        raw = malloc((size_t)n + 1);
+        if (!raw) { fclose(f); return 2; }
+        size_t got = fread(raw, 1, (size_t)n, f);
+        raw[got] = '\0';
+        fclose(f);
+    } else {
+        size_t cap = 65536, len = 0;
+        raw = malloc(cap);
+        if (!raw) return 2;
+        size_t r;
+        while ((r = fread(raw + len, 1, cap - len - 1, stdin)) > 0) {
+            len += r;
+            if (cap - len - 1 < 1024) { cap *= 2; raw = realloc(raw, cap); }
+        }
+        raw[len] = '\0';
+    }
+    json_t *items = ci_load_items(raw);
+    free(raw);
+    if (!items) return 2;
+    size_t n_items = json_is_array(items) ? json_len(items) : 0;
+    if (n_items == 0) { json_free(items); return 0; }   /* silent quiet interval */
+
+    /* Build the classification prompt (same shape as _build_prompt). */
+    size_t pcap = 4096 + n_items * 1400;
+    char *prompt = malloc(pcap);
+    if (!prompt) { json_free(items); return 4; }
+    size_t off = 0;
+    off += (size_t)snprintf(prompt + off, pcap - off,
+             "USER IMPORTANCE CRITERIA:\n%s\n\nITEMS:\n", criteria);
+    for (size_t i = 0; i < n_items && off < pcap - 2048; i++) {
+        json_t *item = json_get(items, i);
+        char view[1200];
+        char *vs = item ? json_serialize(item) : NULL;
+        snprintf(view, sizeof(view), "%.*s", 1199, vs ? vs : "{}");
+        free(vs);
+        off += (size_t)snprintf(prompt + off, pcap - off, "[%zu] %s\n", i, view);
+    }
+    snprintf(prompt + off, pcap - off,
+             "\nReturn ONLY a JSON array: "
+             "[{\"index\": <int>, \"score\": <int 0-10>, \"reason\": \"<short>\"}] "
+             "one object per item, same order. Be conservative.\n");
+
+    /* One cheap LLM call via the auxiliary client (task="monitor"). */
+    extern char *aux__call_llm_impl(const char *task, const char *kwargs_json);
+    json_t *kw = json_object();
+    json_set(kw, "max_tokens", json_number(1024));
+    json_set(kw, "temperature", json_number(0));
+    json_t *msgs = json_array();
+    json_t *m = json_object();
+    json_set(m, "role", json_string("user"));
+    json_set(m, "content", json_string(prompt));
+    json_append(msgs, m);
+    json_set(kw, "messages", msgs);
+    char *kwargs_str = json_serialize(kw);
+    json_free(kw);
+    free(prompt);
+    if (!kwargs_str) { json_free(items); return 4; }
+    char *content = aux__call_llm_impl("monitor", kwargs_str);
+    free(kwargs_str);
+    if (!content || !*content) {
+        fprintf(stderr, "classify_items: classifier call failed\n");
+        free(content);
+        json_free(items);
+        return 4;
+    }
+
+    /* Parse scores: tolerate markdown fences; last-ditch first-[...last-]. */
+    char *text = content;
+    while (*text == ' ' || *text == '\n' || *text == '`') text++;
+    char *end_arr = strrchr(text, ']');
+    char *start_arr = strchr(text, '[');
+    long *scores = calloc(n_items, sizeof(long));
+    bool *have = calloc(n_items, sizeof(bool));
+    if (start_arr && end_arr && end_arr > start_arr) {
+        char save = end_arr[1];
+        end_arr[1] = '\0';
+        char *err = NULL;
+        json_t *arr = json_parse(start_arr, &err);
+        free(err);
+        end_arr[1] = save;
+        if (arr && arr->type == JSON_ARRAY) {
+            for (size_t i = 0; i < json_len(arr); i++) {
+                json_t *o = json_get(arr, i);
+                if (!o || o->type != JSON_OBJECT) continue;
+                json_t *ix = json_object_get(o, "index");
+                json_t *sc = json_object_get(o, "score");
+                if (ix && sc && ix->type == JSON_NUMBER && sc->type == JSON_NUMBER) {
+                    long idx = (long)ix->num_val;
+                    if (idx >= 0 && (size_t)idx < n_items) {
+                        scores[idx] = (long)sc->num_val;
+                        have[idx] = true;
+                    }
+                }
+            }
+        }
+        if (arr) json_free(arr);
+    }
+    free(content);
+
+    /* Surface items at/above threshold. */
+    bool as_json = strcmp(format, "json") == 0;
+    json_t *out_arr = as_json ? json_array() : NULL;
+    int surfaced = 0;
+    for (size_t i = 0; i < n_items; i++) {
+        if (!have[i] || scores[i] < threshold) continue;
+        json_t *item = json_get(items, i);
+        char *is = item ? json_serialize(item) : NULL;
+        if (as_json) {
+            json_t *entry = json_object();
+            char idbuf[64];
+            snprintf(idbuf, sizeof(idbuf), "item-%zu", i);
+            json_set(entry, "id", json_string(idbuf));
+            json_set(entry, "score", json_number((double)scores[i]));
+            if (item) json_set(entry, "item", json_copy(item));
+            json_append(out_arr, entry);
+        } else if (is) {
+            printf("%s\n", is);
+        }
+        free(is);
+        surfaced++;
+    }
+    if (as_json) {
+        char *os = json_serialize(out_arr);
+        if (os && surfaced) printf("%s\n", os);
+        free(os);
+        json_free(out_arr);
+    }
+    free(scores); free(have);
+    json_free(items);
+    return 0;   /* below-threshold silence and success share exit 0 */
 }
 
 /* PoP: cronjobs_validate_job_mode_invariants @ cron/jobs.py:_validate_job_mode_invariants */
