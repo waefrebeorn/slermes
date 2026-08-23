@@ -72,7 +72,11 @@ static regex_slot_t G_PROVIDER_ERROR_RE = {
     "|error[ ]+code[ ]*:"
     "|http[ ]*[0-9][0-9][0-9]"
     "|incorrect[ ]+api[ ]+key"
-    "|invalid[ ]+api[ ]+key)", false, {0}
+    "|([[:alnum:]_]+[.])?(api[ ]*)?connection[ ]*(error|timeout)"
+    "|([[:alnum:]_]+[.])?connect[ ]*(error|timeout)"
+    "|connection[ ]+refused|connection[ ]+reset|connection[ ]+aborted"
+    "|actively[ ]+refused|winerror[ ]+10061|errno[ ]+111"
+    "|all[ ]+connection[ ]+attempts[ ]+failed)", false, {0}
 };
 static regex_slot_t G_POLICY_RE = {
     /* run.py _GATEWAY_PROVIDER_POLICY_RE */
@@ -94,6 +98,16 @@ static regex_slot_t G_AUTH_RE = {
 static regex_slot_t G_RATE_RE = {
     /* run.py _GATEWAY_RATE_LIMIT_RE */
     "(rate[ ]+limit|rate-limited|429|quota|usage[ ]+limit)", false, {0}
+};
+static regex_slot_t G_CONNECTION_RE = {
+    /* run.py _GATEWAY_CONNECTION_ERROR_RE (water-cup gate: was missing) */
+    "((([[:alnum:]_]+)[.])?(api[ ]*)?connection[ ]*(error|timeout)"
+    "|(([[:alnum:]_]+)[.])?connect[ ]*(error|timeout)"
+    "|connection[ ]+refused|connection[ ]+reset|connection[ ]+aborted"
+    "|actively[ ]+refused|winerror[ ]+10061|errno[ ]+111"
+    "|no[ ]+route[ ]+to[ ]+host|network[ ]+is[ ]+unreachable"
+    "|cannot[ ]+connect|failed[ ]+to[ ]+establish"
+    "|could[ ]+not[ ]+connect)", false, {0}
 };
 static regex_slot_t G_SHAPE_RE = {
     /* run.py _GATEWAY_PROVIDER_ERROR_SHAPE_RE (^ optional non-word prefix) */
@@ -243,6 +257,12 @@ char *gateway_provider_error_reply_regex(const char *text) {
     if (regex_match(&G_RATE_RE, text)) {
         return strdup("\xe2\x8f\xb1\xef\xb8\x8f The model provider is "
                       "rate-limiting requests. Please wait a moment and try again.");
+    }
+    if (regex_match(&G_CONNECTION_RE, text)) {
+        /* run.py _GATEWAY_CONNECTION_ERROR_RE rung (was REAL_GAP) */
+        return strdup("\xe2\x9a\xa0\xef\xb8\x8f The model server is not "
+                      "responding \xe2\x80\x94 it looks like the configured "
+                      "model endpoint is not running or is unreachable.");
     }
     /* Generic fallback. */
     return strdup("\xe2\x9a\xa0\xef\xb8\x8f The model provider failed after "
