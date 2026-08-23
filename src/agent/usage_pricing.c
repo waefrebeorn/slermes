@@ -693,10 +693,13 @@ const char *usage_pricing_format_token_count(long long value)
             if (scaled < 10.0)      snprintf(text, sizeof(text), "%.2f", scaled);
             else if (scaled < 100.0) snprintf(text, sizeof(text), "%.1f", scaled);
             else                     snprintf(text, sizeof(text), "%.0f", scaled);
-            /* strip trailing zeros / dot, matching Python rstrip("0").rstrip(".") */
-            char *p = text + strlen(text);
-            while (p > text && p[-1] == '0') *--p = '\0';
-            if (p > text && p[-1] == '.') *--p = '\0';
+            /* strip trailing zeros / dot ONLY when a '.' is present,
+             * matching Python rstrip("0").rstrip(".") guarded by `if "." in text` */
+            if (strchr(text, '.')) {
+                char *p = text + strlen(text);
+                while (p > text && p[-1] == '0') *--p = '\0';
+                if (p > text && p[-1] == '.') *--p = '\0';
+            }
             snprintf(buf, sizeof(buf), "%s%s%s", sign, text, suf[i]);
             return buf;
         }
