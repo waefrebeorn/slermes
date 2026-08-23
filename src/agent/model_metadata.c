@@ -799,3 +799,15 @@ char *mm_resolve_requests_verify(void) {
     return strdup("true");
 }
 
+/* === merged from transports_codex_gaps.c === */
+/* ── agent/model_metadata.py:_list_providers ── */
+/* Fallback: returns empty list when providers module isn't available.
+ * In C, we don't have the Python providers import, so we return []. */
+
+/* PoP: mm_list_providers @ agent/model_metadata.py:_list_providers */
+json_t *mm_list_providers(void)
+{
+    /* Python: try: from providers import list_providers; except: return []
+     * In C, we always take the except path — no providers module to import. */
+    return json_array();
+}

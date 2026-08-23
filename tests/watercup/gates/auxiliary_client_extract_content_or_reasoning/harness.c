@@ -29,6 +29,10 @@ int url_host_matches(const char *a, const char *b) { (void)a; (void)b; return 0;
 char *auth_store_load_provider_status(const char *p, char **o) { (void)p; if (o) *o = NULL; return NULL; }
 void *auth_store_load_provider_state(const char *p) { (void)p; return NULL; }
 int hermes_log(int lvl, const char *fmt, ...) { (void)lvl; (void)fmt; return 0; }
+char *secret_scope_get_secret(const char *name) { (void)name; return NULL; }
+char *anthropic_prompt_cache_policy(const char *model) { (void)model; return NULL; }
+void *relay_llm_complete_logical_call(const char *id, void *req) { (void)id; (void)req; return NULL; }
+int relay_llm_stream_current(const char *id, void *req, void *cb, void *ctx) { (void)id; (void)req; (void)cb; (void)ctx; return -1; }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s extract <message-json>...\n", argv[0]); return 2; }

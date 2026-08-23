@@ -1,3 +1,10 @@
+#include "hermes_json.h"
+#include "hermes_logger.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* === merged from browser_use_cli_gaps.c === */
 /*
  * port_browser_use_cli_gaps.c — Faithful C11 port of tools/browser_use_cli.py REAL_GAP functions.
  * Browser Use CLI management: backend detection, CLI install, workspace, screenshots.
@@ -301,3 +308,4 @@ char *bu_user_local_bin_dir(void) {
     return p;
 #endif
 }
+

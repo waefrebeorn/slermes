@@ -16,6 +16,8 @@
 /* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_spotify_command */
 
 #include "hermes_core_types.h"
+#include "slermes_home.h"
+#include "file_ops.h"
 #include "hermes_agent.h"
 #include "hermes_display.h"
 #include "hermes_skin.h"
@@ -1192,3 +1194,109 @@ void continuous_on_silence(void *ctx)
     hermes_log(LOG_INFO, "port", "continuous_on_silence: threshold=%dms", ms);
 }
 
+
+/* === merged from parity_gaps.c (worktree merge verdict cache) === */
+#define WORKTREE_MERGE_CACHE_MAX 1000
+#include <limits.h>
+
+
+
+/* ── Worktree merge verdict cache ────────────────────────────────────────
+ */
+char *cli_worktree_merge_cache_path(void) {
+    const char *home = slermes_home();
+    if (!home) return NULL;
+    char *cache_dir = malloc(strlen(home) + 7); /* "/cache" + '\0' */
+    if (!cache_dir) return NULL;
+    sprintf(cache_dir, "%s/cache", home);
+    char *path = malloc(strlen(cache_dir) + 31);
+    if (!path) { free(cache_dir); return NULL; }
+    sprintf(path, "%s/worktree_merge_verdicts.json", cache_dir);
+    free(cache_dir);
+    return path;
+}
+
+/* PoP: cli_load_worktree_merge_cache @ cli.py:_load_worktree_merge_cache */
+json_t *cli_load_worktree_merge_cache(void) {
+    char *path = cli_worktree_merge_cache_path();
+    if (!path) return json_object();
+    size_t len = 0;
+    char *content = file_read_text(path, &len);
+    free(path);
+    if (!content) return json_object();
+    json_t *raw = json_parse(content, NULL);
+    free(content);
+    if (!raw || raw->type != JSON_OBJECT) {
+        if (raw) json_free(raw);
+        return json_object();
+    }
+    json_t *entries = json_obj_get(raw, "verdicts");
+    if (!entries || entries->type != JSON_OBJECT) {
+        json_t *out = json_object();
+        json_free(raw);
+        return out;
+    }
+    /* Filter to bool verdicts only. */
+    json_t *out = json_object();
+    for (size_t i = 0; i < entries->c.count; i++) {
+        json_t *v = entries->c.items[i];
+        if (v && v->type == JSON_BOOL) {
+            json_set(out, entries->c.keys[i], json_bool(v->bool_val));
+        }
+    }
+    json_free(raw);
+    return out;
+}
+
+/* PoP: cli_save_worktree_merge_cache @ cli.py:_save_worktree_merge_cache */
+void cli_save_worktree_merge_cache(json_t *verdicts) {
+    if (!verdicts) return;
+    char *path = cli_worktree_merge_cache_path();
+    if (!path) return;
+
+    json_t *out = json_object();
+    json_set(out, "version", json_number(1));
+    json_t *verdicts_out = json_object();
+
+    /* Collect keys (preserve insertion order). */
+    const char **keys = NULL;
+    size_t nkeys = 0, cap = 0;
+    for (size_t i = 0; i < verdicts->c.count; i++) {
+        if (nkeys >= cap) {
+            cap = cap ? cap * 2 : 16;
+            keys = realloc(keys, cap * sizeof(char*));
+            if (!keys) break;
+        }
+        json_t *v = verdicts->c.items[i];
+        if (v && v->type == JSON_BOOL)
+            keys[nkeys++] = verdicts->c.keys[i];
+    }
+    /* Only keep last WORKTREE_MERGE_CACHE_MAX entries. */
+    size_t start = nkeys > WORKTREE_MERGE_CACHE_MAX ? nkeys - WORKTREE_MERGE_CACHE_MAX : 0;
+    for (size_t i = start; i < nkeys; i++) {
+        json_t *v = json_obj_get(verdicts, keys[i]);
+        if (v && v->type == JSON_BOOL)
+            json_set(verdicts_out, keys[i], json_bool(v->bool_val));
+    }
+    free(keys);
+    json_set(out, "verdicts", verdicts_out);
+
+    char *payload = json_serialize(out);
+    json_free(out);
+    if (!payload) { free(path); return; }
+
+    /* Write atomically via temp + rename. */
+    char tmp_path[PATH_MAX];
+    snprintf(tmp_path, sizeof(tmp_path), "%s.%d.tmp", path, (int)getpid());
+    FILE *f = fopen(tmp_path, "w");
+    if (f) {
+        fputs(payload, f);
+        fclose(f);
+        rename(tmp_path, path);
+    } else {
+        /* Best-effort cleanup of temp file on failure. */
+        unlink(tmp_path);
+    }
+    free(payload);
+    free(path);
+}
