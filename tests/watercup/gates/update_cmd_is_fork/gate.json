@@ -1,0 +1,21 @@
+{
+  "name": "update_cmd_is_fork",
+  "subsystem": "hermes_cli",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_fork",
+  "py_module": "hermes_cli/update_cmd.py",
+  "py_fn": "_is_fork",
+  "inputs": [
+    "https://github.com/NousResearch/hermes-agent.git",
+    "git@github.com:NousResearch/hermes-agent.git",
+    "https://github.com/NousResearch/hermes-agent/",
+    "https://github.com/someone/hermes-agent.git",
+    "git@github.com:forker/hermes-agent",
+    "",
+    "https://github.com/nousresearch/hermes-agent",
+    "https://gitlab.com/NousResearch/hermes-agent.git",
+    "file:///tmp/repo"
+  ],
+  "notes": "Fork detection vs OFFICIAL_REPO_URLS with .git// normalization. LIVE stores a set \u2014 both sides trace the URL list in SORTED order so cups are hash-seed stable. Empty-string input hits C's !*origin_url branch; LIVE treats '' as falsy identically (both False)."
+}
