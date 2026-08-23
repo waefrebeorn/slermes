@@ -1,0 +1,24 @@
+{
+  "name": "datetime_strftime_directives",
+  "subsystem": "libdatetime",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "datetime_strftime_directives",
+  "py_module": null,
+  "py_fn": "datetime.strftime",
+  "cflags": ["-I", "lib"],
+  "extra_src": ["lib/libdatetime/datetime.c"],
+  "inputs": [
+    "1700000000|%Y-%m-%d %H:%M:%S",
+    "1700000000|%F %T",
+    "1700000000|%A %B %e, %j",
+    "1700000000|%a %b %p %I:%M %Z %z",
+    "1700000000|week=%U iso-week=%W year=%y",
+    "1700000000|100%% done %Q",
+    "0|%Y-%m-%dT%H:%M:%S%z",
+    "951782400|%c",
+    "4102444800|%Y-%m-%d (%B)",
+    "1700000061|%S seconds past %H"
+  ],
+  "notes": "strftime directive coverage: date/time components, locale-independent names (%A/%B/%p), week numbers (%U/%W), day-of-year, tz name/offset, escapes and an unknown directive. Harness links the REAL libdatetime datetime.c pinned to TZ=UTC; twin uses timezone.utc-aware datetime."
+}
