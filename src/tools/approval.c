@@ -1719,6 +1719,11 @@ void approval_set_current_observability_context(const char *ctx) {
     snprintf(g_current_observability_context, sizeof(g_current_observability_context), "%s", ctx);
 }
 
+/* PoP: _approval_tool_call_id read-back @ tools/approval.py:_approval_tool_call_id */
+void approval_get_current_observability_context(char *buf, size_t sz) {
+    snprintf(buf, sz, "%s", g_current_observability_context);
+}
+
 /* PoP: approval_reset_current_observability_context @ tools/approval.py:reset_current_observability_context */
 void approval_reset_current_observability_context(void) {
     g_current_observability_context[0] = '\0';

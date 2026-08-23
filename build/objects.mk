@@ -18,6 +18,8 @@ HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plug
  src/hermes_cli/update_inventory.o \
  src/hermes_cli/worktree_gc.o \
  src/hermes_cli/worktree_cmd.o \
+ src/hermes_cli/relay_plugin_cutover.o \
+ src/tools/browser_extension_router.o \
 
 HERMES_CLI_PORT_EXTRA_OBJ = \
 
