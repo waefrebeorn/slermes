@@ -1,0 +1,20 @@
+{
+  "name": "mcp_tool_sanitize_mcp_name_component",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sanitize_mcp_name_component",
+  "py_module": "tools/mcp_tool.py",
+  "py_fn": "sanitize_mcp_name_component",
+  "inputs": [
+    "",
+    "github",
+    "My Tool.v2",
+    "web_search!",
+    "  spaced  ",
+    "tool_123",
+    "a b\tc",
+    "@#$%"
+  ],
+  "notes": "MCP tool-name component sanitizer (mcp_tool.c::mcp_tool_sanitize_mcp_name_component vs LIVE tools/mcp_tool.py::sanitize_mcp_name_component). DOCUMENTED DIVERGENCE (excluded): LIVE maps '-' to '_' but the C port preserves hyphens, so hyphen-bearing inputs are not exercised; also the C port loops over UTF-8 bytes where LIVE iterates codepoints, so non-ASCII inputs are excluded too."
+}

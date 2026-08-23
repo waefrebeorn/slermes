@@ -1,17 +1,16 @@
-/* gate: context_compressor_append_text_to_content
- * Traced copy of src/agent/context_compressor_ports.c::
- * cc_append_text_to_content.
+/* gate: context_compressor_append_text_to_content — traced copy of
+ * src/agent/context_compressor_ports.c::cc_append_text_to_content.
  * LIVE twin: agent/context_compressor.py::_append_text_to_content.
  *
- * Input argv token encoding (one per input): "<prepend>\t<content_json>"
- *   prepend: '1' to prepend, otherwise append; text is the fixed literal
- *            WCUP_NOTE on both sides
+ * Input encoding (single argv token per case): "<content_json>\t<text>\t<prepend 0|1>"
  *
- * Branch ladder (twin.py mirrors EXACTLY, same rung order):
- *   B1: no-content trigger (null / empty-string / empty-list encodings)
- *   B2: list-shaped content -> insert a text block
- *   B3: string-shaped content -> concatenate
- *   VSTR: result kind ("scalar" | "blocks" | "opaque")
+ * Branch ladder (twin.py mirrors EXACTLY):
+ *   B1: content null/empty-sentinel -> text as bare string
+ *   B2: content is a list
+ *     B3: prepend vs append inside the list
+ *   B4: content is a string
+ *     B5: prepend vs append on the string
+ *   else: passthrough unchanged
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,74 +18,78 @@
 #include <stdbool.h>
 #include "watercup.h"
 
-static const char *TEXT = "WCUP_NOTE";
-
-/* faithful traced copy of the port body; returns malloc'd JSON-ish result */
-static char *append_port(const char *cj, const char *text, bool prepend) {
+static char *wc_append_text_to_content(const char *content_json, const char *text,
+                                       bool prepend) {
+    WCUP_BEGIN("append_text_to_content");
+    char *out = NULL;
     if (!text) text = "";
-    if (!cj || strcmp(cj, "[]") == 0 ||
-        strcmp(cj, "\"\"") == 0 || strcmp(cj, "null") == 0) {
-        char *out = NULL;
+    if (!content_json || strcmp(content_json, "[]") == 0 ||
+        strcmp(content_json, "\"\"") == 0 || strcmp(content_json, "null") == 0) {
+        WCUP_BRANCH(1);                              /* B1 */
         asprintf(&out, "\"%s\"", text);
-        return out;
+        goto done;
     }
-    if (cj[0] == '[') {
-        size_t len = strlen(cj);
-        char *out = malloc(len + strlen(text) + 64);
-        if (!out) return strdup(cj);
-        if (prepend)
+    WCUP_BRANCH(0);
+    if (content_json[0] == '[') {                    /* B2 */
+        WCUP_BRANCH(1);
+        size_t len = strlen(content_json);
+        out = malloc(len + strlen(text) + 64);
+        if (!out) { out = strdup(content_json); goto done; }
+        if (prepend) {                               /* B3 */
+            WCUP_BRANCH(1);
             snprintf(out, len + strlen(text) + 64,
-                     "[{\"type\":\"text\",\"text\":\"%s\"},%s", text, cj + 1);
-        else
+                     "[{\"type\":\"text\",\"text\":\"%s\"},%s", text, content_json + 1);
+        } else {
+            WCUP_BRANCH(0);
             snprintf(out, len + strlen(text) + 64,
                      "%.*s,{\"type\":\"text\",\"text\":\"%s\"}]",
-                     (int)(len - 1), cj, text);
-        return out;
+                     (int)(len - 1), content_json, text);
+        }
+        goto done;
     }
-    if (cj[0] == '"') {
-        size_t len = strlen(cj);
-        char *out = malloc(len + strlen(text) + 8);
-        if (!out) return strdup(cj);
-        if (prepend)
-            snprintf(out, len + strlen(text) + 8, "\"%s%.*s\"", text,
-                     (int)(len - 2), cj + 1);
-        else
+    WCUP_BRANCH(0);
+    if (content_json[0] == '"') {                    /* B4 */
+        WCUP_BRANCH(1);
+        size_t len = strlen(content_json);
+        out = malloc(len + strlen(text) + 8);
+        if (!out) { out = strdup(content_json); goto done; }
+        if (prepend) {                               /* B5 */
+            WCUP_BRANCH(1);
+            snprintf(out, len + strlen(text) + 8, "\"%s%.*s\"",
+                     text, (int)(len - 2), content_json + 1);
+        } else {
+            WCUP_BRANCH(0);
             snprintf(out, len + strlen(text) + 8, "\"%.*s%s\"",
-                     (int)(len - 2), cj + 1, text);
-        return out;
+                     (int)(len - 2), content_json + 1, text);
+        }
+        goto done;
     }
-    return strdup(cj);
-}
-
-static void run_one(const char *arg) {
-    WCUP_BEGIN("_append_text_to_content");
-
-    const char *tab = strchr(arg, '\t');
-    bool prepend = arg[0] == '1';
-    const char *cj = tab ? tab + 1 : "";
-
-    WCUP_BRANCH(!cj || strcmp(cj, "[]") == 0 ||
-                strcmp(cj, "\"\"") == 0 || strcmp(cj, "null") == 0); /* B1 */
-    WCUP_BRANCH(cj[0] == '[');                                      /* B2 */
-    WCUP_BRANCH(cj[0] == '"');                                      /* B3 */
-    char *res = append_port(cj, TEXT, prepend);
-    const char *kind =
-        (cj[0] == '[') ? "blocks" :
-        (cj[0] == '"' || !cj[0] || strcmp(cj, "[]") == 0 ||
-         strcmp(cj, "\"\"") == 0 || strcmp(cj, "null") == 0) ? "scalar" : "opaque";
-    WCUP_VALSTR(kind);
-    free(res);
-
-    {
+    WCUP_BRANCH(0);                                  /* passthrough */
+    out = strdup(content_json);
+done: {
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_append_text_to_content");
+        WCUP_END("append_text_to_content");
+        return out;
     }
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s cc_append_text_to_content <p\\tcj...>\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) run_one(argv[i]);
+    if (argc < 3) {
+        fprintf(stderr, "usage: %s append_text_to_content <content>\\t<text>\\t<prep>...\n", argv[0]);
+        return 2;
+    }
+    for (int i = 2; i < argc; i++) {
+        char *arg = strdup(argv[i]);
+        char *t1 = strchr(arg, '\t');
+        char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+        if (!t1 || !t2) { fprintf(stderr, "bad input: %s\n", argv[i]); free(arg); continue; }
+        *t1 = '\0'; *t2 = '\0';
+        bool prepend = t2[1] == '1';
+        wc_append_text_to_content(strcmp(arg, "NULL") == 0 ? NULL : arg,
+                                  t1 + 1, prepend);
+        free(arg);
+    }
     return 0;
 }

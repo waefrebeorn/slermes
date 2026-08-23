@@ -538,7 +538,7 @@ recipe_t *recipe_detect_python(const char *root)
         recipe_add_bootstrap(r, install);
         if (has_tests) recipe_add_test(r, "pytest");
         recipe_set_start(r, start);
-        recipe_set_port(r, 8000);
+        recipe_set_port(r, 5000);
         recipe_set_readiness(r, "/");
         recipe_add_evidence(r, "Detected Python project");
         recipe_add_evidence(r, "Detected Flask dependency");
