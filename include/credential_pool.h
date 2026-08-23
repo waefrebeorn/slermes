@@ -60,6 +60,7 @@ typedef struct {
     char     agent_key[2048];
     char     agent_key_expires_at[64];
     long long expires_at_ms;      /* OAuth token expiry, epoch ms */
+    int      priority;            /* pool ordering (Python PooledCredential.priority) */
 
     json_t  *extra;               /* optional extra key/value bag (JSON object) */
     char     source[CREDENTIAL_POOL_NAME_MAX]; /* origin of the key (e.g. env var, file, manual) */

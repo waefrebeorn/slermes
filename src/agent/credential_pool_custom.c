@@ -7,6 +7,7 @@ No god headers — only the minimal includes each module requires. C11 only.
 */
 
 #include "credential_pool.h"
+#include "port_auth_store.h"
 #include "credential_pool_internals.h"
 #include "hermes_json.h"
 #include "hermes_yaml.h"
@@ -358,10 +359,83 @@ bool _get_custom_provider_config(const char *pool_key, char *out_config, size_t 
 
 
 /* Port of Python agent/credential_pool.py:_normalize_pool_priorities(). */
+/* Only anthropic has a curated source-priority ladder. Manual entries keep
+ * priority order and come first; seeded entries sort by (source_rank,
+ * priority, label) with Python's stable-sort tie-break preserved via the
+ * original index. Priorities are rewritten to 0..n-1; returns whether
+ * anything changed. */
+typedef struct {
+    int idx;          /* original index in pool->entries */
+    int priority;
+    const char *label;
+    const char *source;
+    bool manual;
+} cp_norm_key_t;
+
+static int cp_norm_cmp_manual(const void *a, const void *b) {
+    const cp_norm_key_t *x = a, *y = b;
+    /* Python sorted() is stable — break ties on the original index. */
+    if (x->priority != y->priority) return (x->priority > y->priority) - (x->priority < y->priority);
+    return (x->idx > y->idx) - (x->idx < y->idx);
+}
+
+static int cp_norm_source_rank(const char *source) {
+    static const char *const ranks[] = {
+        "env:ANTHROPIC_TOKEN", "env:CLAUDE_CODE_OAUTH_TOKEN",
+        "hermes_pkce", "claude_code", "env:ANTHROPIC_API_KEY",
+    };
+    for (int i = 0; i < 5; i++)
+        if (strcmp(source, ranks[i]) == 0) return i;
+    return 5; /* len(source_rank): unknown sources sort last */
+}
+
+static int cp_norm_cmp_seeded(const void *a, const void *b) {
+    const cp_norm_key_t *x = a, *y = b;
+    int rx = cp_norm_source_rank(x->source), ry = cp_norm_source_rank(y->source);
+    if (rx != ry) return (rx > ry) - (rx < ry);
+    if (x->priority != y->priority) return (x->priority > y->priority) - (x->priority < y->priority);
+    int lc = strcmp(x->label ? x->label : "", y->label ? y->label : "");
+    if (lc != 0) return lc;
+    return (x->idx > y->idx) - (x->idx < y->idx);
+}
+
 bool _normalize_pool_priorities(const char *provider, credential_pool_t *pool) {
-    (void)provider; (void)pool;
-    /* Full implementation would reorder based on source priority */
-    return false;
+    if (!provider || !pool || strcmp(provider, "anthropic") != 0)
+        return false;
+
+    cp_norm_key_t keys[CREDENTIAL_POOL_MAX_KEYS];
+    int n_manual = 0, n_seeded = 0;
+    for (int i = 0; i < pool->entry_count; i++) {
+        credential_entry_t *e = &pool->entries[i];
+        cp_norm_key_t k = { i, e->priority, e->label, e->source,
+                            _is_manual_source(e->source) };
+        keys[i] = k;
+        if (k.manual) n_manual++; else n_seeded++;
+    }
+    if (pool->entry_count == 0) return false;
+
+    /* Stable partition: manual first (priority order), then seeded
+     * (rank, priority, label). Two qsorts over disjoint subranges. */
+    cp_norm_key_t ordered[CREDENTIAL_POOL_MAX_KEYS];
+    int m = 0, s = 0;
+    for (int i = 0; i < pool->entry_count; i++) {
+        if (keys[i].manual) ordered[m++] = keys[i];
+    }
+    for (int i = 0; i < pool->entry_count; i++) {
+        if (!keys[i].manual) ordered[n_manual + s++] = keys[i];
+    }
+    qsort(ordered, n_manual, sizeof(cp_norm_key_t), cp_norm_cmp_manual);
+    qsort(ordered + n_manual, n_seeded, sizeof(cp_norm_key_t), cp_norm_cmp_seeded);
+
+    bool changed = false;
+    for (int new_priority = 0; new_priority < pool->entry_count; new_priority++) {
+        credential_entry_t *e = &pool->entries[ordered[new_priority].idx];
+        if (e->priority != new_priority) {
+            e->priority = new_priority;
+            changed = true;
+        }
+    }
+    return changed;
 }
 
 /* Port of Python agent/credential_pool.py:_seed_from_env().
@@ -469,24 +543,78 @@ bool credential_pool_is_prunable(const credential_entry_t *entry) {
     return _is_prunable(entry);
 }
 
-/* Port of Python agent/credential_pool.py:_is_suppressed().
- * Suppression hooks are disabled in the C port (no consumer); an entry is
- * never suppressed by source. */
+/* Port of Python agent/credential_pool.py:_is_suppressed(). */
+/* Python imports hermes_cli.auth.is_source_suppressed as _is_suppressed (the
+ * same check under a second name at a different call site); both read the
+ * auth store's suppressed_sources[provider] list. */
+bool _is_source_suppressed(const char *provider, const char *source);
 static bool _is_suppressed(const char *provider, const char *source) {
-    (void)provider; (void)source;
-    return false;
+    return _is_source_suppressed(provider, source);
 }
 
 /* Port of Python agent/credential_pool.py:_is_source_suppressed(). */
-static bool _is_source_suppressed(const char *provider, const char *source) {
-    (void)provider; (void)source;
-    return false;
+/* Real port of hermes_cli/auth.py:is_source_suppressed — load the active
+ * auth store and test membership in suppressed_sources.<provider>[]. */
+bool _is_source_suppressed(const char *provider, const char *source) {
+    if (!provider || !source) return false;
+    json_t *store = authstore_load(NULL);
+    if (!store || store->type != JSON_OBJECT)
+        { if (store) json_free(store); return false; }
+    json_t *sup = json_obj_get(store, "suppressed_sources");
+    bool found = false;
+    if (sup && sup->type == JSON_OBJECT) {
+        json_t *list = json_obj_get(sup, provider);
+        if (list && list->type == JSON_ARRAY) {
+            size_t n = json_array_size(list);
+            for (size_t i = 0; i < n; i++) {
+                json_t *e = json_array_get(list, i);
+                if (e && e->type == JSON_STRING && strcmp(e->str_val, source) == 0) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+    json_free(store);
+    return found;
 }
 
 /* Port of Python agent/credential_pool.py:_prune_stale_seeded_entries(). */
-bool _prune_stale_seeded_entries(credential_pool_t *pool, const char **active_sources, int num_sources) {
-    (void)pool; (void)active_sources; (void)num_sources;
-    return false;
+/* Keep manual entries, entries whose source is still actively seeded, and
+ * non-prunable persisted entries; drop the rest. env:* entries are only
+ * dropped when prune_env_sources was explicitly enabled (bug #9331 guard).
+ * Returns whether any entry was removed. */
+bool _prune_stale_seeded_entries(credential_pool_t *pool,
+                                 const char **active_sources, int num_sources) {
+    if (!pool || pool->entry_count <= 0) return false;
+
+    int w = 0;
+    for (int i = 0; i < pool->entry_count; i++) {
+        credential_entry_t *e = &pool->entries[i];
+        bool keep = _is_manual_source(e->source);
+        if (!keep && active_sources) {
+            for (int s = 0; s < num_sources; s++) {
+                if (active_sources[s] && strcmp(e->source, active_sources[s]) == 0) {
+                    keep = true;
+                    break;
+                }
+            }
+        }
+        if (!keep)
+            keep = !_is_prunable(e);
+        if (keep) {
+            if (w != i)
+                pool->entries[w] = pool->entries[i];
+            w++;
+        } else if (e->extra) {
+            json_free(e->extra);
+            e->extra = NULL;
+        }
+    }
+    if (w == pool->entry_count)
+        return false;
+    pool->entry_count = w;
+    return true;
 }
 
 /* === end of file === */
