@@ -1,66 +1,86 @@
-/* gate: model_normalize_detect_vendor — traced C copy of the CONTROL STRUCTURE
- * of src/hermes_cli/model_normalize.c::model_normalize_detect_vendor, which is a
- * faithful port of Python hermes_cli/model_normalize.py:detect_vendor.
- *
- * The cup encodes the ALGORITHM SHAPE (which branch path is taken), not the
- * specific vendor string — so it matches LIVE Python as long as the routing
- * logic is identical, regardless of how many vendor prefixes each side has. This
- * is the honest language-agnostic contract: same logic => same cup.
+/* gate: model_normalize_detect_vendor — traced C copy of
+ * src/hermes_cli/model_normalize.c::model_normalize_detect_vendor.
+ * Twin: LIVE hermes_cli/model_normalize.py::detect_vendor.
+ * Trace contract (matches twin.py):
+ *   b0: lowercased name non-empty
+ *   b1: '/' NOT in name
+ *   exact-token scan: LOOP tick per table entry (no inner branch), then
+ *   b2: exact hit found
+ *   startswith scan: LOOP tick per entry, then b3: hit found
+ * Single V event: vendor slug ("" for None).
  */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <stdbool.h>
 #include "watercup.h"
 
-/* minimal vendor table — only used to drive the branch shape; the cup does NOT
- * embed the vendor string, so table size differences don't cause false FAPs. */
 static const struct { const char *tok; const char *vendor; } VENDOR_PREFIXES[] = {
-    {"claude", "anthropic"}, {"gpt", "openai"}, {"anthropic", "anthropic"},
-    {"openai", "openai"}, {"qwen", "qwen"}, {"llama", "meta"}, {NULL, NULL}
+    {"claude", "anthropic"}, {"gpt", "openai"}, {"o1", "openai"}, {"o3", "openai"},
+    {"o4", "openai"}, {"gemini", "google"}, {"gemma", "google"}, {"deepseek", "deepseek"},
+    {"glm", "z-ai"}, {"kimi", "moonshotai"}, {"minimax", "minimax"}, {"grok", "x-ai"},
+    {"qwen", "qwen"}, {"mimo", "xiaomi"}, {"trinity", "arcee-ai"}, {"nemotron", "nvidia"},
+    {"llama", "meta-llama"}, {"step", "stepfun"}, {NULL, NULL},
 };
 
 static void detect_vendor(const char *model_name) {
     WCUP_BEGIN("detect_vendor");
-    WCUP_VALSTR(model_name ? model_name : "(null)");
-    if (!model_name || model_name[0] == '\0') { WCUP_BRANCH(0); WCUP_VALSTR("ret:null"); char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup); WCUP_END("detect_vendor"); return; }
-    WCUP_BRANCH(1);
-    char tmp[256];
+    char out[64] = "";
+    if (!model_name) model_name = "";
+    /* Python: name = model_name.strip(); inputs carry no surrounding
+     * whitespace (C port does not strip), so this mirrors LIVE exactly. */
     size_t n = strlen(model_name);
-    if (n >= sizeof(tmp)) n = sizeof(tmp) - 1;
-    for (size_t i = 0; i < n; i++) tmp[i] = (char)tolower((unsigned char)model_name[i]);
-    tmp[n] = '\0';
-    char *slash = strchr(tmp, '/');
-    if (slash) {
-        WCUP_BRANCH(1);                       /* slash-prefix path */
-        if (slash == tmp) { WCUP_BRANCH(0); WCUP_VALSTR("ret:null"); }
-        else { WCUP_BRANCH(1); WCUP_VALSTR("ret:prefixed"); }
+    while (n > 0 && (model_name[n-1] == ' ' || model_name[n-1] == '\t')) n--;
+    const char *s = model_name;
+    while (*s == ' ' || *s == '\t') { s++; n--; }
+    char low[256];
+    size_t k = 0;
+    for (size_t i = 0; i < n && k < sizeof low - 1; i++) low[k++] = (char)tolower((unsigned char)s[i]);
+    low[k] = '\0';
+    int nonempty = (low[0] != '\0');
+    WCUP_BRANCH(low[0] != '\0');                               /* b0 */
+    char *slash = strchr(low, '/');
+    /* twin emits b1 unconditionally, even for the empty-name rung */
+    WCUP_BRANCH(slash == NULL);                                /* b1 */
+    if (low[0] == '\0') {
+        out[0] = '\0';
+    } else if (slash) {
+        if (slash == low) out[0] = '\0';                       /* prefix.lower() or None */
+        else { *slash = '\0'; strcpy(out, low); }
     } else {
-        WCUP_BRANCH(0);                       /* token-loop path */
-        char *first = strdup(tmp);
-        char *hyp = strchr(first, '-');
-        if (hyp) *hyp = '\0';
-        int exact = 0;
-        for (int i = 0; VENDOR_PREFIXES[i].tok; i++) {
-            if (strcmp(first, VENDOR_PREFIXES[i].tok) == 0) { exact = 1; break; }
-        }
-        if (exact) { WCUP_BRANCH(1); WCUP_VALSTR("ret:exact"); }
-        else {
-            WCUP_BRANCH(0);
-            int sw = 0;
+            /* first hyphen-delimited token, exact scan (loop ticks only) */
+            char first[256];
+            strcpy(first, low);
+            char *hyp = strchr(first, '-');
+            if (hyp) *hyp = '\0';
+            int hit = -1;
             for (int i = 0; VENDOR_PREFIXES[i].tok; i++) {
-                if (strncmp(tmp, VENDOR_PREFIXES[i].tok, strlen(VENDOR_PREFIXES[i].tok)) == 0) { sw = 1; break; }
+                WCUP_LOOP_TICK();
+                if (strcmp(first, VENDOR_PREFIXES[i].tok) == 0) { hit = i; break; }
             }
-            WCUP_VALSTR(sw ? "ret:startswith" : "ret:null");
-        }
-        free(first);
+            WCUP_BRANCH(hit >= 0);                             /* b2 */
+            if (hit >= 0) {
+                strcpy(out, VENDOR_PREFIXES[hit].vendor);
+            } else {
+                hit = -1;
+                for (int i = 0; VENDOR_PREFIXES[i].tok; i++) {
+                    WCUP_LOOP_TICK();
+                    if (strncmp(low, VENDOR_PREFIXES[i].tok, strlen(VENDOR_PREFIXES[i].tok)) == 0) { hit = i; break; }
+                }
+                WCUP_BRANCH(hit >= 0);                         /* b3 */
+                if (hit >= 0) strcpy(out, VENDOR_PREFIXES[hit].vendor);
+                else out[0] = '\0';
+            }
     }
-    char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup); WCUP_END("detect_vendor");
+    WCUP_VALSTR(out);
+    char cup[32];
+    WCUP_FINALIZE(cup, sizeof cup);
+    printf("%s\n", cup);
+    WCUP_END("detect_vendor");
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s detect_vendor <name>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s detect_vendor <model>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) detect_vendor(argv[i]);
     return 0;
 }

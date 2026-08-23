@@ -1,0 +1,11 @@
+{
+  "name": "image_routing_coerce_capability_bool",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "imgr_coerce_capability_bool",
+  "py_module": "agent/image_routing.py",
+  "py_fn": "_coerce_capability_bool",
+  "inputs": ["true", "TRUE", "1", "yes", "false", "0", "no", "garbage", "", "null"],
+  "notes": "Traced copy of image_routing_ports.c::imgr_coerce_capability_bool vs LIVE agent/image_routing.py::_coerce_capability_bool (string-rung subset; None encoded as -1). Inputs avoid documented divergences: C does not strip whitespace, and LIVE's _TRUE_TOKENS includes 'on' which the C port omits."
+}
