@@ -34,6 +34,7 @@ struct kanban_task {
     long  created_at, started_at, completed_at;
     long  claim_expires, current_run_id;
     int   consecutive_failures, block_recurrences;
+    char *last_failure_error;
     int   goal_mode;
     long  goal_max_turns;
     long  max_runtime_seconds, last_heartbeat_at;
@@ -137,6 +138,7 @@ kanban_task_t *kdb_task_from_row(sqlite3_stmt *st)
     t->claim_expires    = col_long(st, "claim_expires", 0);
     t->current_run_id   = col_long(st, "current_run_id", 0);
     t->consecutive_failures = col_int(st, "consecutive_failures", 0);
+    t->last_failure_error   = col_text(st, "last_failure_error");
     t->block_recurrences     = col_int(st, "block_recurrences", 0);
     t->goal_mode        = col_int(st, "goal_mode", 0);
     t->goal_max_turns   = col_long(st, "goal_max_turns", 0);
@@ -170,6 +172,7 @@ void kdb_task_free(kanban_task_t *t)
     free(t->branch_name); free(t->project_id); free(t->tenant);
     free(t->result); free(t->idempotency_key); free(t->session_id);
     free(t->block_kind); free(t->model_override); free(t->skills_json); free(t->created_by);
+    free(t->last_failure_error);
     free(t);
 }
 
@@ -208,7 +211,7 @@ const char *kdb_task_result(const kanban_task_t *t)        { return t ? t->resul
 /* PoP: kdb_task_consecutive_failures @ hermes_cli/kanban_db.py:consecutive_failures */
 int         kdb_task_consecutive_failures(const kanban_task_t *t){ return t ? t->consecutive_failures : 0; }
 /* PoP: kdb_task_last_failure_error @ hermes_cli/kanban_db.py:last_failure_error */
-const char *kdb_task_last_failure_error(const kanban_task_t *t){ return NULL; /* stored separately */ }
+const char *kdb_task_last_failure_error(const kanban_task_t *t){ return (t && t->last_failure_error && t->last_failure_error[0]) ? t->last_failure_error : NULL; }
 /* PoP: kdb_task_current_run_id @ hermes_cli/kanban_db.py:current_run_id */
 long        kdb_task_current_run_id(const kanban_task_t *t){ return t ? t->current_run_id : 0; }
 /* PoP: kdb_task_block_kind @ hermes_cli/kanban_db.py:block_kind */

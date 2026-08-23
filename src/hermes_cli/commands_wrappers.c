@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "cli_command_registry.h"
 
 /* PoP: cmd_build_command_lookup @ hermes_cli/commands.py:_build_command_lookup */
 json_t *cmd_build_command_lookup(void) {
@@ -17,7 +18,17 @@ json_t *cmd_build_command_lookup(void) {
 }
 /* PoP: cmd_build_description @ hermes_cli/commands.py:_build_description */
 const char *cmd_build_description(const char *command_name) {
-    (void)command_name; return "";
+    /* Python: f"{desc} (usage: /{name} {args_hint})" when args_hint set. */
+    static char buf[512];
+    const cli_command_def_t *def = command_name ? cli_resolve_command(command_name) : NULL;
+    if (!def) return "";
+    if (def->args_hint && def->args_hint[0]) {
+        snprintf(buf, sizeof(buf), "%s (usage: /%s %s)",
+                 def->description, def->name, def->args_hint);
+    } else {
+        snprintf(buf, sizeof(buf), "%s", def->description);
+    }
+    return buf;
 }
 /* PoP: cmd_is_gateway_known_command @ hermes_cli/commands.py:is_gateway_known_command */
 bool cmd_is_gateway_known_command(const char *command_name) {
@@ -146,7 +157,20 @@ json_t *cmd_stacked_skill_completions(const char *prefix) {
 }
 /* PoP: cmd_completion_text @ hermes_cli/commands.py:_completion_text */
 const char *cmd_completion_text(const char *command_name) {
-    (void)command_name; return "";
+    /* Python _completion_text(cmd_name, word): when the user already typed the
+     * full command, append a trailing space so the dropdown stays visible —
+     * EXCEPT for picker commands (model, skin, personality), where Enter must
+     * execute instead of blocking on a picker. */
+    static char buf[128];
+    if (!command_name || !command_name[0]) return "";
+    if (strcmp(command_name, "model") == 0 ||
+        strcmp(command_name, "skin") == 0 ||
+        strcmp(command_name, "personality") == 0) {
+        snprintf(buf, sizeof(buf), "%s", command_name);
+    } else {
+        snprintf(buf, sizeof(buf), "%s ", command_name);
+    }
+    return buf;
 }
 /* PoP: cmd_extract_path_word @ hermes_cli/commands.py:_extract_path_word */
 const char *cmd_extract_path_word(const char *input, char *out, size_t sz) {
@@ -225,5 +249,24 @@ json_t *cmd_personality_completions(const char *prefix) {
 }
 /* PoP: cmd_get_suggestion @ hermes_cli/commands.py:get_suggestion */
 const char *cmd_get_suggestion(const char *partial_command) {
-    (void)partial_command; return NULL;
+    /* Python get_suggestion (still-typing branch): /upd → suggest "ate".
+     * Prefer the SHORTEST matching command name sharing the prefix. Returns
+     * the ghost-text remainder, or NULL. */
+    static char buf[128];
+    if (!partial_command) return NULL;
+    const char *word = partial_command;
+    if (*word == '/') word++;               /* accept with or without slash */
+    size_t wlen = strlen(word);
+    if (wlen == 0) return NULL;
+    const cli_command_def_t *best = NULL;
+    for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        if (c->gateway_only) continue;
+        if (strncmp(c->name, word, wlen) != 0) continue;
+        if (strlen(c->name) == wlen) continue;   /* exact match: no suggestion */
+        if (!best || strlen(c->name) < strlen(best->name)) best = c;
+    }
+    if (!best) return NULL;
+    snprintf(buf, sizeof(buf), "%s", best->name + wlen);
+    return buf;
 }

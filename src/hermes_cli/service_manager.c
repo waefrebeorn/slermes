@@ -33,9 +33,25 @@ int sm_validate_profile_name(const char *name) {
 
 /* PoP: sm_is_running @ hermes_cli/service_manager.py:is_running */
 int sm_is_running(const char *name) {
+    /* Python delegates to the manager backend's probe (systemd: is-active ==
+     * active; launchd/Windows: their own probes). C mirrors the systemd user
+     * service probe — `systemctl --user is-active` on the hermes gateway unit
+     * — which is the only backend this port installs. */
     (void)name;
-    /* Check if service is running. In C, check PID file or system service. */
-    return 0;
+    const char *unit = getenv("HERMES_GATEWAY_SERVICE_UNIT");
+    if (!unit || !unit[0]) unit = "hermes-gateway";
+    char cmd[512];
+    snprintf(cmd, sizeof(cmd),
+             "systemctl --user is-active \"%s\" 2>/dev/null", unit);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return 0;
+    char state[64] = {0};
+    size_t n = fread(state, 1, sizeof(state) - 1, fp);
+    int rc = pclose(fp);
+    if (n == 0 || rc != 0) return 0;
+    /* strip trailing newline */
+    while (n > 0 && (state[n - 1] == '\n' || state[n - 1] == '\r')) state[--n] = '\0';
+    return strcmp(state, "active") == 0 ? 1 : 0;
 }
 
 /* PoP: sm_supports_runtime_registration @ hermes_cli/service_manager.py:supports_runtime_registration */
