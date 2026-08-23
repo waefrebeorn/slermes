@@ -665,7 +665,10 @@ bool cli_agent_credits_tracker_is_free_tier_model(const char *model, const char 
     /* Check for :free suffix — the canonical Nous free SKU marker */
     size_t len = strlen(model);
     if (len >= 5 && strcmp(model + len - 5, ":free") == 0) return true;
-    /* Pricing cache lookup omitted — CLI/TUI-specific, gateway uses :free suffix only */
+    /* Stealth-preview SKUs are free-tier but carry no :free suffix. */
+    if (len >= 8 && strncmp(model, "stealth/", 8) == 0) return true;
+    /* Pricing cache lookup omitted — CLI/TUI-specific, gateway uses :free
+     * suffix + stealth/ prefix only */
     return false;
 }
 

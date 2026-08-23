@@ -360,6 +360,12 @@ json_t *mcp_resolve_identity_header(const char *server_name, const json_t *confi
     if (strcmp(p, "static") != 0) return NULL;
     json_t *val = json_obj_get(raw, "value");
     if (!val || val->type != JSON_STRING || !val->str_val || !*val->str_val) return NULL;
+    /* LIVE also rejects values that are blank after strip(). */
+    const char *vs = val->str_val;
+    while (*vs == ' ' || *vs == '\t') vs++;
+    size_t vl = strlen(vs);
+    while (vl > 0 && (vs[vl-1] == ' ' || vs[vl-1] == '\t')) vl--;
+    if (vl == 0) return NULL;  /* warn + ignore */
     json_t *arr = json_array();
     json_append(arr, json_string(name_str));
     json_append(arr, json_string(val->str_val));

@@ -110,7 +110,10 @@ char *plugin_pack_validate_config_seed(const char *plugin_id, const char *seed_j
 
     /* Build validated copy, checking each key. */
     json_t *validated = json_object();
-    size_t n = json_len(seed);
+    /* NOTE: json_len() is array-only (returns 0 for objects); objects need
+     * json_object_size(). The old code iterated 0 keys — every seed passed
+     * validation unchecked. */
+    size_t n = json_object_size(seed);
     for (size_t i = 0; i < n; i++) {
         const char *key = json_object_get_key_at(seed, i);
         json_t *val = json_object_get_at(seed, i);
@@ -144,7 +147,11 @@ char *plugin_pack_validate_config_seed(const char *plugin_id, const char *seed_j
             json_free(validated); json_free(seed);
             return out;
         }
-        json_object_set(validated, key, val);
+        /* deep-copy: json_object_set/json_set stores the node itself (takes
+         * ownership), and json_free frees children — sharing val between
+         * validated and seed would double-free on the success path. */
+        json_t *val_copy = json_copy(val);
+        json_object_set(validated, key, val_copy);
     }
 
     char *serialized = json_serialize(validated);

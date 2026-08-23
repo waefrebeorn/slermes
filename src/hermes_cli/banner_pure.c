@@ -40,18 +40,27 @@ char *banner_canonical_github_remote(const char *url) {
     } else if (strncmp(s, ssh_url, strlen(ssh_url)) == 0) {
         snprintf(value, cap + 1, "github.com/%s", s + strlen(ssh_url));
     } else {
-        /* urlparse(value): extract netloc + path */
+        /* urlparse(value): netloc exists ONLY behind an explicit
+         * "<scheme>://" prefix; without a scheme everything is path
+         * (Python urlparse puts the whole thing in .path, .netloc == ""). */
         const char *scheme_end = strstr(s, "://");
-        const char *p = scheme_end ? scheme_end + 3 : s;
-        const char *path_start = p;
-        const char *slash = strchr(path_start, '/');
-        const char *netloc_end = slash ? slash : path_start + strlen(path_start);
+        const char *path_start;
+        if (scheme_end) {
+            path_start = scheme_end + 3;
+        } else {
+            /* no scheme: netloc is empty; Python keeps `value` unchanged
+             * because parsed.netloc is falsy — replicate by leaving
+             * path_start NULL so we fall through to the whole-input copy. */
+            path_start = NULL;
+        }
+        const char *slash = path_start ? strchr(path_start, '/') : NULL;
+        const char *netloc_end = slash ? slash : (path_start ? path_start + strlen(path_start) : s);
         /* netloc may have userinfo@ or :port - Python urlparse keeps them in
          * netloc; the Python code uses f"{netloc}{path}". We replicate that
          * literally (urlparse includes userinfo and port in netloc). */
         const char *path = slash ? slash : "";
-        size_t nl = (size_t)(netloc_end - path_start);
-        if (nl == 0 && !*path) {
+        size_t nl = path_start ? (size_t)(netloc_end - path_start) : 0;
+        if (!path_start || (nl == 0 && !*path)) {
             /* no netloc and no path: value = whole input */
             snprintf(value, cap + 1, "%s", s);
         } else {

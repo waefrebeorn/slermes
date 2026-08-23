@@ -1,0 +1,24 @@
+{
+  "name": "agent_replay_cleanup_strip_interrupted_tool_tails",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "strip_interrupted_tool_tails",
+  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": ["src/agent/replay_cleanup.c", "lib/libjson/json.c"],
+  "inputs": [
+    "[]",
+    "[{\"role\":\"user\",\"content\":\"hi\"},{\"role\":\"assistant\",\"content\":\"hello there\"}]",
+    "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c1\",\"function\":{\"name\":\"read_file\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c1\",\"content\":\"file contents ok\"},{\"role\":\"user\",\"content\":\"next\"}]",
+    "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c2\",\"function\":{\"name\":\"write_file\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c2\",\"content\":\"[Command interrupted by user]\"}]",
+    "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c3\",\"function\":{\"name\":\"read_file\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c3\",\"content\":\"{\\\"exit_code\\\": 130, \\\"interrupt\\\": true}\"}]",
+    "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c4\",\"function\":{\"name\":\"bash\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c4\",\"content\":\"partial output\"},{\"role\":\"tool\",\"tool_call_id\":\"c4\",\"content\":\"[command interrupted]\"}]",
+    "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c5\",\"function\":{\"name\":\"web_search\",\"arguments\":\"{}\"}},{\"id\":\"c6\",\"function\":{\"name\":\"bash\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c6\",\"content\":\"exit_code -1 interrupt\"}]",
+    "[{\"role\":\"tool\",\"tool_call_id\":\"lonely\",\"content\":\"[COMMAND INTERRUPTED]\"},{\"role\":\"user\",\"content\":\"after orphan\"}]",
+    "[{\"role\":\"user\",\"content\":\"go\"},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c7\",\"function\":{\"name\":\"browser_click\",\"arguments\":\"{}\"}}]},{\"role\":\"user\",\"content\":\"dangling calls, no results\"}]",
+    "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c8\",\"function\":{\"name\":\"read_file\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c8\",\"content\":\"fine\"},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c9\",\"function\":{\"name\":\"patch\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c9\",\"content\":\"[command interrupted]\"},{\"role\":\"user\",\"content\":\"queued msg\"}]",
+    "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c10\",\"function\":{\"name\":\"skill_view\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c10\",\"content\":\"{\"} ]",
+    "[{\"role\":\"assistant\",\"content\":\"plain reply\"},{\"role\":\"tool\",\"tool_call_id\":\"x\",\"content\":\"just exit_code 0\"},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c11\",\"function\":{\"name\":\"terminal\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c11\",\"content\":\"exit code 130 but no interrupt word\"}]"
+  ],
+  "notes": "Interrupted assistant→tool replay-block sanitizer. Harness carries a traced copy of the REAL src/agent/replay_cleanup.c ladder (the real file + libjson are linked via extra_src so json parsing semantics are the port's own); twin imports LIVE agent/replay_cleanup.py::strip_interrupted_tool_tails plus LIVE agent/tool_result_classification.py::tool_may_have_side_effect. Covers: empty history, clean exchanges, preserved read-only blocks, recovered side-effecting interrupted blocks (single + mixed results), stripped read-only interrupted blocks, orphan interrupted tool results, dangling unanswered calls, multi-block histories, exit_code-130/-1+interrupt markers, and near-miss marker texts."
+}

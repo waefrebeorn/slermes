@@ -114,10 +114,35 @@ bool hs_is_disk_full_error_port(const char *errmsg) {
 /* ── classify_persistence_error (L1402) ── */
 /* PoP: hs_classify_persistence_error @ hermes_state.py:classify_persistence_error */
 const char *hs_classify_persistence_error(const char *errmsg) {
+    /* LIVE ladder: turn_lease / compression_closed / compression by phrase
+     * (typed exceptions are covered by their message phrases for strings
+     * that survived RPC wrapping), then corruption BEFORE lock/disk, then
+     * locked/busy, then disk-full/readonly, else unknown. */
     if (!errmsg) return "unknown";
-    if (hs_is_disk_full_error_port(errmsg)) return "disk_full";
-    if (hs_is_malformed_db_error(errmsg)) return "malformed";
-    if (strstr(errmsg, "locked") != NULL) return "locked";
-    if (strstr(errmsg, "busy") != NULL) return "busy";
+    char lowered[1024];
+    size_t i = 0;
+    for (; errmsg[i] && i < sizeof(lowered) - 1; i++)
+        lowered[i] = (char)tolower((unsigned char)errmsg[i]);
+    lowered[i] = '\0';
+    if (strstr(lowered, "turn lease")) return "turn_lease";
+    if (strstr(lowered, "closed by compression")) return "compression_closed";
+    if (strstr(lowered, "being compressed") || strstr(lowered, "compression lease"))
+        return "compression";
+    static const char *const CORRUPTION_MARKERS[] = {
+        "malformed", "file is not a database", "not a database",
+        "database corruption", NULL
+    };
+    for (int m = 0; CORRUPTION_MARKERS[m]; m++)
+        if (strstr(lowered, CORRUPTION_MARKERS[m])) return "corrupt";
+    if (strstr(lowered, "locked") || strstr(lowered, "busy")) return "locked";
+    static const char *const DISK_FULL_MARKERS[] = {
+        "no space left on device", "not enough space", "database or disk is full",
+        "disk full", "full disk", "enospc", NULL
+    };
+    bool disk = false;
+    for (int m = 0; DISK_FULL_MARKERS[m]; m++)
+        if (strstr(lowered, DISK_FULL_MARKERS[m])) { disk = true; break; }
+    if (disk || strstr(lowered, "disk") || strstr(lowered, "readonly")
+        || strstr(lowered, "read-only")) return "disk";
     return "unknown";
 }

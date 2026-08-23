@@ -281,7 +281,7 @@ bool step_up_nous_billing_scope(bool open_browser, float timeout_seconds)
  *  match the Python dataclass fields (code, provider, relogin_required, msg).
  * =========================================================================== */
 
-#define CODEX_RATE_LIMITED_CODE 429
+#define CODEX_RATE_LIMITED_CODE "codex_rate_limited"
 
 typedef struct {
     const char *code;          /* e.g. "subscription_required", "429", ... */

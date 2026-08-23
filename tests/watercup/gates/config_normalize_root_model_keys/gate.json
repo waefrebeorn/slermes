@@ -1,0 +1,30 @@
+{
+  "name": "config_normalize_root_model_keys",
+  "subsystem": "hermes_cli",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "normalize_root_model_keys",
+  "py_module": "hermes_cli/config.py",
+  "py_fn": "_normalize_root_model_keys",
+  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [
+    "src/hermes_cli/config_py_pure.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "{}",
+    "{\"model\":\"gpt-x\"}",
+    "{\"provider\":\"openrouter\",\"model\":{\"default\":\"m1\"}}",
+    "{\"context_length\":100000,\"base_url\":\"http://x\"}",
+    "{\"api_base\":\"http://y\",\"model\":{}}",
+    "{\"provider\":\"p\",\"base_url\":\"b\",\"context_length\":9,\"api_base\":\"a\",\"model\":{\"name\":\"nm\"}}",
+    "{\"model\":{\"model\":\"legacy-id\"}}",
+    "{\"model\":{\"default\":\"keep\",\"model\":\"stale\",\"name\":\"stale2\"}}",
+    "{\"model\":{\"default\":\"d\",\"api_base\":\"ignored\",\"base_url\":\"kept\"}}",
+    "{\"messages\":3,\"agent\":{\"max_turns\":5}}"
+  ],
+  "notes": [
+    "Harness LINKS the real C port config_py_normalize_root_model_keys with libjson; cup = degenerate-parse guard + V(compact serialized normalized config).",
+    "KNOWN DIVERGENCE (documented, inputs avoid it): the C port predates two LIVE behaviors — (1) flattening dict-valued model.default/model/name into default+provider, and (2) promoting in-model model.api_base to base_url (it deletes it without promoting when no root api_base). Inputs exclude nested-dict values and bare model.api_base-without-base_url configs. Both are real port gaps worth a follow-up fix."
+  ]
+}

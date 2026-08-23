@@ -71,23 +71,67 @@ hregex_t *regex_compile(const char *pattern, int flags) {
      * naming decoration so named groups compile as plain capture groups
      * with the same indices. */
     size_t plen = strlen(pattern);
-    char *clean = (char *)malloc(plen + 1);
+    /* Worst case: each 2-char "\X" escape expands to at most 11 chars
+     * ([[:space:]] etc.), so over-allocate generously. */
+    char *clean = (char *)malloc(plen * 12 + 16);
     if (!clean) { free(re); return NULL; }
     size_t o = 0;
-    for (size_t i = 0; i < plen; i++) {
+    /* NOTE: no i++ clause — every path advances `i` itself (a continue
+     * after consuming an escape pair would otherwise skip the char that
+     * follows, e.g. the "*" in "\s*"). */
+    for (size_t i = 0; i < plen;) {
         if (pattern[i] == '\\' && i + 1 < plen) {
-            clean[o++] = pattern[i]; clean[o++] = pattern[++i];
+            /* Translate Perl-class escapes POSIX ERE doesn't know (\d \D
+             * \s \S \w \W) so patterns ported from Python re actually match
+             * — regcomp accepts them silently but they don't mean classes. */
+            char c2 = pattern[i + 1];
+            if (c2 == 'd' || c2 == 'D') {
+                clean[o++] = '[';
+                if (c2 == 'D') clean[o++] = '^';
+                clean[o++] = '0'; clean[o++] = '-'; clean[o++] = '9';
+                clean[o++] = ']';
+                i += 2; continue;
+            }
+            if (c2 == 's' || c2 == 'S') {
+                clean[o++] = '[';
+                if (c2 == 'S') clean[o++] = '^';
+                clean[o++] = '['; clean[o++] = ':'; clean[o++] = 's';
+                clean[o++] = 'p'; clean[o++] = 'a'; clean[o++] = 'c';
+                clean[o++] = 'e'; clean[o++] = ':'; clean[o++] = ']';
+                clean[o++] = ']';
+                i += 2; continue;
+            }
+            if (c2 == 'w' || c2 == 'W') {
+                clean[o++] = '[';
+                if (c2 == 'W') clean[o++] = '^';
+                clean[o++] = 'A'; clean[o++] = '-'; clean[o++] = 'Z';
+                clean[o++] = 'a'; clean[o++] = '-'; clean[o++] = 'z';
+                clean[o++] = '0'; clean[o++] = '-'; clean[o++] = '9';
+                clean[o++] = '_'; clean[o++] = ']';
+                i += 2; continue;
+            }
+            /* copy the escape pair and advance PAST both chars — a bare
+             * `continue` here would re-read the escaped char as a literal
+             * on the next iteration (e.g. "\$" became "\$$", which made
+             * glibc reject patterns like exfil_curl with "Unmatched {"). */
+            clean[o++] = pattern[i]; clean[o++] = pattern[i + 1];
+            i += 2;
             continue;
         }
-        if (pattern[i] == '(' && pattern[i+1] == '?' &&
+        if (pattern[i] == '(' && pattern[i + 1] == '?' &&
             (pattern[i+2] == 'P' || pattern[i+2] == '<')) {
             clean[o++] = '(';
             i += 2;                       /* consume "?P" or "?<" */
             if (pattern[i] == 'P') i++;   /* skip P before < */
             while (i < plen && pattern[i] != '>') i++;  /* skip name */
+            i++;                          /* consume '>' — otherwise it leaks
+                                             into the ERE as a literal (e.g.
+                                             "(?P<w>[a-z]+)" became "(w>[a-z]+)"
+                                             and matched nothing). */
             continue;
         }
         clean[o++] = pattern[i];
+        i++;
     }
     clean[o] = '\0';
     int err = regcomp(&re->native, clean, cflags);

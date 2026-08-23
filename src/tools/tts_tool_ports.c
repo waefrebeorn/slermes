@@ -183,19 +183,32 @@ bool tts_is_command_tts_voice_compatible(const char *config_json) {
 
 /* PoP: tts_shell_quote_context @ tools/tts_tool.py:_shell_quote_context */
 char tts_shell_quote_context(const char *command, long position) {
-    /* Python: quote char active before position ("'", '"', or 0). */
+    /* Python: quote char active before position ("'", '"', or 0).
+     * Faithful port of the LIVE state machine: a single quote-state var,
+     * backslash-escape tracked only inside double quotes, and a bare
+     * backslash in bare context skips the NEXT char. */
     if (!command || position < 0) return 0;
-    char single = 0, dbl = 0;
+    char quote = 0;   /* 0, '\'', or '"' — mirrors LIVE `quote: Optional[str]` */
+    int escaped = 0;
     long i = 0;
-    for (; i < position && command[i]; i++) {
+    while (i < position && command[i]) {
         char c = command[i];
-        if (c == '\\') { i++; continue; }
-        if (c == '\'') single = single ? 0 : '\'';
-        else if (c == '"') dbl = dbl ? 0 : '"';
+        if (quote == '\'') {
+            if (c == '\'') quote = 0;
+        } else if (quote == '"') {
+            if (escaped) escaped = 0;
+            else if (c == '\\') escaped = 1;
+            else if (c == '"') quote = 0;
+        } else if (c == '\'') {
+            quote = '\'';
+        } else if (c == '"') {
+            quote = '"';
+        } else if (c == '\\') {
+            i += 1;
+        }
+        i += 1;
     }
-    if (single) return '\'';
-    if (dbl) return '"';
-    return 0;
+    return quote;
 }
 
 /* PoP: tts_render_command_tts_template @ tools/tts_tool.py:_render_command_tts_template */

@@ -1057,7 +1057,16 @@ char *read_extract_notebook_output_text(const char *output_json) {
             };
             for (int k = 0; k < 4; k++) {
                 json_node_t *v = json_object_get(out, v3keys[k][0]);
-                if (v) json_object_set(data_owned, v3keys[k][1], v);
+                if (!v) continue;
+                /* json_set takes ownership — deep-copy the borrowed v3 value
+                 * so freeing data_owned never frees into `out`. */
+                char *ser = json_serialize(v);
+                if (ser) {
+                    json_node_t *copy = json_parse(ser, NULL);
+                    if (copy) json_object_set(data_owned, v3keys[k][1], copy);
+                    else json_object_set(data_owned, v3keys[k][1], json_string(""));
+                    free(ser);
+                }
             }
             data = data_owned;
         }

@@ -142,15 +142,32 @@ json_t *tsc_iter_command_stt_providers(void) {
 }
 
 /* PoP: tsc_shell_quote_context_stt @ tools/transcription_tools.py:_shell_quote_context_stt */
-char *tsc_shell_quote_context_stt(const char *text) {
-    if (!text) return strdup("''");
-    size_t len = strlen(text);
-    char *out = malloc(len + 3);
-    out[0] = '\'';
-    memcpy(out + 1, text, len);
-    out[len + 1] = '\'';
-    out[len + 2] = '\0';
-    return out;
+char *tsc_shell_quote_context_stt(const char *command, long position) {
+    /* Python: quote char active before position ("'", '"', or 0).
+     * Faithful port of the LIVE state machine (mirrors
+     * tools/tts_tool_ports.c::tts_shell_quote_context). */
+    if (!command || position < 0) return strdup("");
+    char quote = 0;
+    int escaped = 0;
+    long i = 0;
+    while (i < position && command[i]) {
+        char c = command[i];
+        if (quote == '\'') {
+            if (c == '\'') quote = 0;
+        } else if (quote == '"') {
+            if (escaped) escaped = 0;
+            else if (c == '\\') escaped = 1;
+            else if (c == '"') quote = 0;
+        } else if (c == '\'') {
+            quote = '\'';
+        } else if (c == '"') {
+            quote = '"';
+        } else if (c == '\\') {
+            i += 1;
+        }
+        i += 1;
+    }
+    return strdup(quote == '\'' ? "'" : quote == '"' ? "\"" : "");
 }
 /* PoP: tsc_render_command_stt_template @ tools/transcription_tools.py:_render_command_stt_template */
 char *tsc_render_command_stt_template(const char *template_str, const char *audio_path, const char *model) {

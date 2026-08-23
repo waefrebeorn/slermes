@@ -14,6 +14,9 @@
  * active HERMES_HOME auth.json path. */
 extern char *auth_file_path(void);
 
+/* Declared in src/agent/anthropic_adapter_ports.c. */
+extern char *antr_sanitize_tool_id(const char *tool_id);
+
 /* PoP: cli_agent_anthropic_adapter__resolve_positive_anthropic_max_tokens @ agent/anthropic_adapter.py:_get_anthropic_sdk */
 const char* cli_agent_anthropic_adapter__get_anthropic_sdk(void) {
     hermes_log(LOG_DEBUG, "anthropic_adapter", "_get_anthropic_sdk: lazy import not available in C");
@@ -161,10 +164,90 @@ int cli_agent_anthropic_adapter__sanitize_replay_block(const char *block_json, c
         hermes_log(LOG_WARNING, "anthropic_adapter", "_sanitize_replay_block: invalid args");
         return -1;
     }
-    /* Strip signature fields from thinking blocks for replay safety */
-    strncpy(buf, block_json, bufsize - 1);
-    buf[bufsize - 1] = '\0';
-    hermes_log(LOG_DEBUG, "anthropic_adapter", "_sanitize_replay_block: processed %zu bytes", strlen(buf));
+    /* LIVE: whitelist per block type; return None (drop) for anything that
+     * isn't a dict or carries an unusable payload. C contract: 0 = kept
+     * (buf holds sanitized JSON), 2 = dropped (LIVE None). */
+    json_t *b = json_parse(block_json, NULL);
+    if (!b || b->type != JSON_OBJECT) {
+        if (b) json_free(b);
+        return 2;
+    }
+    const char *btype = json_get_str(b, "type", NULL);
+    json_t *out = NULL;
+    bool drop = false;
+
+    if (btype && strcmp(btype, "text") == 0) {
+        json_t *tv = json_obj_get(b, "text");
+        const char *text = (tv && tv->type == JSON_STRING) ? tv->str_val : NULL;
+        /* blank / non-string text drops the block (#69512) */
+        if (!text) { drop = true; }
+        else {
+            bool blank = true;
+            for (const char *p = text; *p; p++)
+                if (!isspace((unsigned char)*p)) { blank = false; break; }
+            if (blank) drop = true;
+        }
+        if (!drop) {
+            out = json_object();
+            json_set(out, "type", json_string("text"));
+            json_set(out, "text", json_string(text));
+            json_t *cits = json_obj_get(b, "citations");
+            if (cits && cits->type == JSON_ARRAY && json_len(cits) > 0)
+                json_set(out, "citations", json_copy(cits));
+            json_t *cc = json_obj_get(b, "cache_control");
+            if (cc && cc->type == JSON_OBJECT)
+                json_set(out, "cache_control", json_copy(cc));
+        }
+    } else if (btype && strcmp(btype, "thinking") == 0) {
+        out = json_object();
+        json_set(out, "type", json_string("thinking"));
+        json_t *th = json_obj_get(b, "thinking");
+        json_set(out, "thinking", json_string(th && th->type == JSON_STRING ? th->str_val : ""));
+        json_t *sig = json_obj_get(b, "signature");
+        if (sig && sig->type == JSON_STRING && sig->str_val[0])
+            json_set(out, "signature", json_string(sig->str_val));
+    } else if (btype && strcmp(btype, "redacted_thinking") == 0) {
+        json_t *data = json_obj_get(b, "data");
+        if (!data) drop = true;
+        else {
+            out = json_object();
+            json_set(out, "type", json_string("redacted_thinking"));
+            json_set(out, "data", json_copy(data));
+        }
+    } else if (btype && strcmp(btype, "tool_use") == 0) {
+        json_t *idv = json_obj_get(b, "id");
+        char *tid = antr_sanitize_tool_id(idv && idv->type == JSON_STRING ? idv->str_val : "");
+        out = json_object();
+        json_set(out, "type", json_string("tool_use"));
+        json_set(out, "id", json_string(tid ? tid : "tool_0"));
+        free(tid);
+        json_t *nm = json_obj_get(b, "name");
+        json_set(out, "name", json_string(nm && nm->type == JSON_STRING ? nm->str_val : ""));
+        json_t *input = json_obj_get(b, "input");
+        json_set(out, "input", (input && input->type == JSON_OBJECT) ? json_copy(input) : json_object());
+        json_t *cc = json_obj_get(b, "cache_control");
+        if (cc && cc->type == JSON_OBJECT)
+            json_set(out, "cache_control", json_copy(cc));
+    } else if (btype && strcmp(btype, "image") == 0) {
+        json_t *src = json_obj_get(b, "source");
+        if (!src || src->type != JSON_OBJECT) drop = true;
+        else {
+            out = json_object();
+            json_set(out, "type", json_string("image"));
+            json_set(out, "source", json_copy(src));
+        }
+    } else {
+        drop = true;
+    }
+    json_free(b);
+
+    if (drop || !out) { if (out) json_free(out); return 2; }
+    hermes_log(LOG_DEBUG, "anthropic_adapter", "_sanitize_replay_block: sanitized block");
+    char *ser = json_serialize(out);
+    json_free(out);
+    if (!ser) return -1;
+    snprintf(buf, bufsize, "%s", ser);
+    free(ser);
     return 0;
 }
 

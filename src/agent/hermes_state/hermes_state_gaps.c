@@ -282,9 +282,19 @@ const char *hermes_state_classify_persistence_error(const char *err_str) {
     for (; err_str[i] && i < sizeof(lowered) - 1; i++)
         lowered[i] = (char)tolower((unsigned char)err_str[i]);
     lowered[i] = '\0';
-    if (strstr(lowered, "locked") || strstr(lowered, "busy")
-        || strstr(lowered, "being compressed")
-        || strstr(lowered, "compression lease"))
+    /* LIVE ladder: phrase buckets for typed exceptions first, then
+     * corruption BEFORE lock/disk, then locked/busy, then disk. */
+    if (strstr(lowered, "turn lease")) return "turn_lease";
+    if (strstr(lowered, "closed by compression")) return "compression_closed";
+    if (strstr(lowered, "being compressed") || strstr(lowered, "compression lease"))
+        return "compression";
+    static const char *const CORRUPTION_MARKERS[] = {
+        "malformed", "file is not a database", "not a database",
+        "database corruption", NULL
+    };
+    for (int m = 0; CORRUPTION_MARKERS[m]; m++)
+        if (strstr(lowered, CORRUPTION_MARKERS[m])) return "corrupt";
+    if (strstr(lowered, "locked") || strstr(lowered, "busy"))
         return "locked";
     if (hermes_state_is_disk_full_error(lowered)
         || strstr(lowered, "disk")

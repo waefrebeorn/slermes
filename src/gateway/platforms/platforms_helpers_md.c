@@ -227,12 +227,13 @@ char *helpers_md_split_at_paragraph_boundary(const char *text, size_t max_chars,
         const char *p = window_end;
         while (p > text && p[-1] != '\n') p--;
         if (p > text) {
-            /* p[-1] is '\n'; pos = index of '\n' */
+            /* p[-1] is '\n'; pos = index of the \n. Python returns
+             * text[:pos + 1] — head INCLUDES the newline (head+tail==text). */
             size_t pos = (size_t)(p - text - 1); /* index of the \n */
-            char *head = (char *)malloc(pos + 1);
+            char *head = (char *)malloc(pos + 2);
             if (!head) return NULL;
-            memcpy(head, text, pos);
-            head[pos] = '\0';
+            memcpy(head, text, pos + 1);
+            head[pos + 1] = '\0';
             *tail_out = strdup(text + pos + 1);
             return head;
         }

@@ -201,19 +201,29 @@ void pet_repair_internal_alpha_holes(pet_img_t *img) {
     int *queue = (int *)malloc((size_t)w * h * sizeof(int));
     if (!queue) { free(visited); return; }
 
-    /* Mark true background: transparent pixels reachable from the edge. */
+    /* Mark true background: transparent pixels reachable from the edge.
+     * Iterate the two border rows/cols explicitly (the old `y += (h-1)`
+     * trick looped forever when h==1 or w==1). */
     int qhead = 0, qtail = 0;
-    for (int x = 0; x < w; x++) {
-        for (int y = 0; y < h; y += (h - 1)) {
-            if (px_at(img,x,y)->a <= PET_ALPHA_FLOOR && !visited[(size_t)y*w+x]) {
-                visited[(size_t)y*w+x] = 1; queue[qtail++] = y*w+x;
+    if (w > 0 && h > 0) {
+        for (int x = 0; x < w; x++) {
+            const int ys[2] = {0, h - 1};
+            for (int yi = 0; yi < 2; yi++) {
+                int y = ys[yi];
+                if (!visited[(size_t)y*w+x] && px_at(img,x,y)->a <= PET_ALPHA_FLOOR) {
+                    visited[(size_t)y*w+x] = 1; queue[qtail++] = y*w+x;
+                }
+                if (h == 1) break;
             }
         }
-    }
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x += (w - 1)) {
-            if (px_at(img,x,y)->a <= PET_ALPHA_FLOOR && !visited[(size_t)y*w+x]) {
-                visited[(size_t)y*w+x] = 1; queue[qtail++] = y*w+x;
+        for (int y = 0; y < h; y++) {
+            const int xs[2] = {0, w - 1};
+            for (int xi = 0; xi < 2; xi++) {
+                int x = xs[xi];
+                if (!visited[(size_t)y*w+x] && px_at(img,x,y)->a <= PET_ALPHA_FLOOR) {
+                    visited[(size_t)y*w+x] = 1; queue[qtail++] = y*w+x;
+                }
+                if (w == 1) break;
             }
         }
     }

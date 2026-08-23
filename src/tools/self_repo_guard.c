@@ -73,7 +73,7 @@ static const char *const srg_simple_wrappers[] = {"builtin", "exec", "nohup", "s
 /* ────────────── small list helpers ────────────── */
 
 static bool srg_str_in(const char *const *list, const char *value) {
-    if (!value) return false;
+    if (!list || !value) return false;
     for (int i = 0; list[i]; i++)
         if (strcmp(list[i], value) == 0) return true;
     return false;

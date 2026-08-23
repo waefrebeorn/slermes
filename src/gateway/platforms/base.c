@@ -272,12 +272,17 @@ int no_proxy_entry_matches(const char *entry, const char *host, int port)
 
     if (strncmp(lhost, "*.", 2) == 0) {
         const char *suffix = lhost + 1; /* ".domain" */
-        return (strcmp(lh, suffix+1) == 0) || ends_with(lh, suffix);
+        return ends_with(lh, suffix);
     }
     if (lhost[0] == '.') {
         return (strcmp(lh, lhost+1) == 0) || ends_with(lh, lhost);
     }
-    return (strcmp(lh, lhost) == 0) || ends_with(lh, lhost);
+    /* LIVE: host == token or host.endswith("." + token) — the suffix must
+     * include the leading dot so "notexample.com" does not match
+     * "example.com" (parity fix vs gateway/platforms/base.py). */
+    char dotted[260];
+    snprintf(dotted, sizeof dotted, ".%s", lhost);
+    return (strcmp(lh, lhost) == 0) || ends_with(lh, dotted);
 }
 
 /* PoP: is_host_excluded_by_no_proxy @ gateway/platforms/base.py:is_host_excluded_by_no_proxy */

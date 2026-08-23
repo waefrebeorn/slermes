@@ -1054,29 +1054,34 @@ size_t skip_shell_whitespace(const char *s, size_t i, size_t len) {
 
 /* PoP: scan_dollar_paren_end @ tools/approval.py:_scan_dollar_paren_end */
 size_t scan_dollar_paren_end(const char *s, size_t start, size_t len) {
-    /* start points at '$('; we need to find matching ')' */
-    int depth = 0;
-    bool in_single = false, in_double = false, escaped = false;
-    for (size_t i = start; i < len; i++) {
+    /* start points at '$('; LIVE seeds depth=1 at start+2, treats bare '('
+     * as an ordinary character, increments depth only on nested "$(" and is
+     * quote-aware ('..' / ".." with backslash escapes inside double quotes).
+     * Returns the offset just past the matching ')' or len when unmatched
+     * (LIVE returns None; len is this port's sentinel). */
+    int depth = 1;
+    char quote = 0;
+    size_t i = start + 2;
+    while (i < len) {
         char c = s[i];
-        if (escaped) {
-            escaped = false;
+        if (quote) {
+            if (c == '\\' && quote == '"' && i + 1 < len) { i += 2; continue; }
+            if (c == quote) quote = 0;
+            i++;
             continue;
         }
-        if (c == '\\' && (in_single || in_double)) {
-            escaped = true;
-            continue;
-        }
-        if (c == '\'' && !in_double) { in_single = !in_single; continue; }
-        if (c == '"' && !in_single) { in_double = !in_double; continue; }
-        if (c == '(' && !in_single && !in_double) { depth++; continue; }
-        if (c == ')' && !in_single && !in_double) {
+        if (c == '\'' || c == '"') { quote = c; i++; continue; }
+        if (c == '\\' && i + 1 < len) { i += 2; continue; }
+        if (c == '$' && i + 1 < len && s[i + 1] == '(') { depth++; i += 2; continue; }
+        if (c == ')') {
             depth--;
-            if (depth == 0) return i + 1;
+            i++;
+            if (depth == 0) return i;
             continue;
         }
+        i++;
     }
-    return len; /* unmatched - return end */
+    return len; /* unmatched - return end sentinel */
 }
 
 /* PoP: scan_backtick_end @ tools/approval.py:_scan_backtick_end */
@@ -1255,6 +1260,11 @@ char *replace_simple_shell_expansions(const char *command)
 }
 
 /* PoP: strip_shell_word_syntax @ tools/approval.py:_strip_shell_word_syntax */
+/* Quote-aware state machine, mirroring LIVE Python
+ * tools/approval.py::_strip_shell_word_syntax exactly: inside single quotes
+ * nothing is special; inside double quotes backslash-escapes the next char;
+ * outside quotes backslash escapes the next char and quote chars open a
+ * quoted region (dropped). */
 char *strip_shell_word_syntax(const char *word)
 {
     if (!word) return strdup("");
@@ -1262,11 +1272,18 @@ char *strip_shell_word_syntax(const char *word)
     char *out = malloc(len + 1);
     if (!out) return strdup(word);
     size_t o = 0;
-    for (size_t i = 0; i < len; i++) {
+    char quote = 0;
+    size_t i = 0;
+    while (i < len) {
         char c = word[i];
-        if (c == '\\' && i + 1 < len) { out[o++] = word[++i]; continue; }
-        if (c == '\'' || c == '"' || c == '$' || c == '`' || c == '{' || c == '}') continue;
-        out[o++] = c;
+        if (quote) {
+            if (c == '\\' && quote == '"' && i + 1 < len) { out[o++] = word[i + 1]; i += 2; continue; }
+            if (c == quote) { quote = 0; i++; continue; }
+            out[o++] = c; i++; continue;
+        }
+        if (c == '\'' || c == '"') { quote = c; i++; continue; }
+        if (c == '\\' && i + 1 < len) { out[o++] = word[i + 1]; i += 2; continue; }
+        out[o++] = c; i++;
     }
     out[o] = '\0';
     return out;

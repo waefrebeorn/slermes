@@ -10992,32 +10992,62 @@ int hermes_cli_relaunch_u_build_inherited_flag_table(const char *arg) {
 
 /* PoP: hermes_cli_relaunch_u_extract_inherited_flags @ hermes_cli/relaunch.py:_extract_inherited_flags */
 int hermes_cli_relaunch_u_extract_inherited_flags(const char *arg) {
-    /* Python: carry-over flags (+ value). Arg = "argv" (space-sep). */
+    /* Python: carry-over flags (+ value). Arg = "argv" (space-sep).
+     * Table mirrors LIVE _INHERITED_FLAGS_TABLE (relaunch.py) exactly:
+     * each entry is flag + takes_value. */
+    static const struct { const char *flag; int takes_value; } flags_table[] = {
+        {"-m", 1}, {"--model", 1}, {"--provider", 1}, {"--reasoning", 1},
+        {"--accept-hooks", 0}, {"--skills", 1}, {"-s", 1}, {"--yolo", 0},
+        {"--pass-session-id", 0}, {"--ignore-user-config", 0},
+        {"--ignore-rules", 0}, {"--safe-mode", 0}, {"--tui", 0},
+        {"--cli", 0}, {"--dev", 0}, {"--profile", 1}, {"-p", 1},
+        {NULL, 0}
+    };
     if (!arg || !*arg) { printf("\n"); return 0; }
-    /* known inherited flags table: each is "flag" or "flag=1" for takes_value */
-    static const char *flags_table[] = {"--tui", "--web", "--profile", "--gateway", NULL};
     const char *p = arg;
-    int first = 1;
-    while (*p) {
+    char *toks[512]; int nt = 0;
+    while (*p && nt < 512) {
         const char *sp = strchr(p, ' ');
         size_t len = sp ? (size_t)(sp - p) : strlen(p);
         if (len) {
-            char tok[512];
-            if (len >= sizeof(tok)) len = sizeof(tok) - 1;
-            memcpy(tok, p, len); tok[len] = '\0';
-            for (int i = 0; flags_table[i]; i++) {
-                size_t fl = strlen(flags_table[i]);
-                if (strncmp(tok, flags_table[i], fl) == 0 &&
-                    (tok[fl] == '\0' || tok[fl] == '=')) {
+            char *tok = strndup(p, len);
+            toks[nt++] = tok;
+        }
+        p = sp ? sp + 1 : p + len;
+    }
+    int first = 1;
+    for (int i = 0; i < nt; i++) {
+        const char *tok = toks[i];
+        const char *eq = strchr(tok, '=');
+        if (eq) {
+            size_t keylen = (size_t)(eq - tok);
+            for (int k = 0; flags_table[k].flag; k++) {
+                if (strlen(flags_table[k].flag) == keylen &&
+                    strncmp(tok, flags_table[k].flag, keylen) == 0) {
                     if (!first) printf("\n");
                     printf("%s", tok);
                     first = 0;
                     break;
                 }
             }
+            continue;
         }
-        p = sp ? sp + 1 : p + len;
+        for (int k = 0; flags_table[k].flag; k++) {
+            if (strcmp(tok, flags_table[k].flag) == 0) {
+                if (!first) printf("\n");
+                printf("%s", tok);
+                first = 0;
+                if (flags_table[k].takes_value &&
+                    i + 1 < nt && toks[i + 1][0] != '-') {
+                    i++;
+                    printf("\n%s", toks[i]);
+                    break;
+                }
+                break;
+            }
+        }
     }
+    for (int i = 0; i < nt; i++) free(toks[i]);
     printf("\n");
     return 0;
 }

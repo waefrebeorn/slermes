@@ -340,7 +340,7 @@ char *cc_str_arg(const json_t *args, const char *key, const char *def) {
     json_t *v = json_obj_get(args, key);
     if (!v) return def ? strdup(def) : strdup("");
     if (v->type == JSON_STRING) {
-        return strdup(json_get_str(v, "", def ? def : ""));
+        return strdup(v->str_val ? v->str_val : "");
     }
     if (v->type == JSON_NULL) {
         return def ? strdup(def) : strdup("");
@@ -370,11 +370,14 @@ static const char *extract_group(const char *pattern, const char *text) {
     if (!re) return "?";
     regex_match_t *m = regex_search(re, text);
     const char *res = "?";
-    if (m && m->group_count > 1 && m->groups[1])
-        res = m->groups[1];
+    char *owned = NULL;
+    if (m && m->group_count >= 1 && m->groups[1]) {   /* group_count excludes group 0 */
+        owned = strdup(m->groups[1]);   /* groups die with regex_match_free */
+        res = owned;
+    }
     regex_match_free(m);
     regex_free(re);
-    return res;
+    return res ? res : "?";
 }
 
 char *cc_summarize_tool_result_unguarded(const char *tool_name,
@@ -576,10 +579,18 @@ char *cc_content_text_for_contains(const json_t *content) {
         const char *seg = NULL;
         if (item && item->type == JSON_STRING) seg = item->str_val;
         else if (item && item->type == JSON_OBJECT) {
-            const char *t = json_get_str(item, "type", "");
-            if (strcmp(t, "text") == 0) seg = json_get_str(item, "text", NULL);
+            /* LIVE Python accepts ANY dict with a str "text" (no type filter). */
+            const json_t *tv = json_obj_get(item, "text");
+            if (tv && tv->type == JSON_STRING) seg = tv->str_val;
         }
-        if (!seg) continue;
+        /* LIVE: "\n".join(part for part in parts if part) — skip empties,
+         * join with '\n' separators. */
+        if (!seg || !*seg) continue;
+        if (len > 0) {
+            if (len + 1 >= cap) { cap = (len + 2) * 2; char *n2 = realloc(out, cap); if (!n2) { free(out); return strdup(""); } out = n2; }
+            out[len++] = '\n';
+            out[len] = '\0';
+        }
         size_t need = len + strlen(seg) + 1;
         if (need > cap) { cap = need * 2; char *n2 = realloc(out, cap); if (!n2) { free(out); return strdup(""); } out = n2; }
         memcpy(out + len, seg, strlen(seg));

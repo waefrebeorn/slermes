@@ -90,7 +90,20 @@ int moa_coerce_int_or_none(const char *value, long *out) {
  * _coerce_fanout
  * ============================================================  */
 /* PoP: moa_coerce_fanout @ hermes_cli/moa_config.py:_coerce_fanout */
+/* traced _coerce_int helper: None/"" -> default; int() else int(float()) else default */
+static long moa_fanout_coerce_int(const char *s, long defval) {
+    if (!s || !*s) return defval;
+    char *end = NULL;
+    long n = strtol(s, &end, 10);
+    if (end != s && *end == '\0') return n;
+    double d = strtod(s, &end);
+    if (end != s && *end == '\0') return (long)d;
+    return defval;
+}
+
 void moa_coerce_fanout(const char *value, char *out, size_t out_size) {
+    /* Python hermes_cli/moa_config.py::_coerce_fanout (string form; the dict
+     * mapping form {mode: every_n, n: N} is normalized by the caller). */
     char buf[64];
     snprintf(buf, sizeof buf, "%s", value ? value : "");
     /* trim + lower */
@@ -98,10 +111,26 @@ void moa_coerce_fanout(const char *value, char *out, size_t out_size) {
     size_t L = strlen(p);
     while (L > 0 && (p[L-1] == ' ' || p[L-1] == '\t')) p[--L] = '\0';
     for (char *q = p; *q; q++) *q = (char)tolower((unsigned char)*q);
-    if (strcmp(p, "per_iteration") == 0 || strcmp(p, "user_turn") == 0)
+    if (strcmp(p, "per_iteration") == 0 || strcmp(p, "user_turn") == 0) {
         snprintf(out, out_size, "%s", p);
-    else
-        snprintf(out, out_size, "per_iteration");
+        return;
+    }
+    if (strncmp(p, "every_n", 7) == 0) {
+        const char *sep = strchr(p, ':');
+        long n = 0;
+        if (sep) {
+            /* Python: _coerce_int(rest.strip(), 0) */
+            char rest[64];
+            snprintf(rest, sizeof rest, "%s", sep + 1);
+            char *r = rest; while (*r == ' ' || *r == '\t') r++;
+            size_t RL = strlen(r);
+            while (RL > 0 && (r[RL-1] == ' ' || r[RL-1] == '\t')) r[--RL] = '\0';
+            n = moa_fanout_coerce_int(r, 0);
+        }
+        if (n >= 2) { snprintf(out, out_size, "every_n:%ld", n); return; }
+        if (n == 1) { snprintf(out, out_size, "per_iteration"); return; }
+    }
+    snprintf(out, out_size, "user_turn");
 }
 
 /* ============================================================

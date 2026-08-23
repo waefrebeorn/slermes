@@ -1456,9 +1456,13 @@ char *weixin_normalize_markdown_blocks(const char *content) {
         if (i) strncat(res, "\n", cap - strlen(res) - 1);
         strncat(res, out[i], cap - strlen(res) - 1);
     }
-    /* trim trailing newlines */
+    /* Python "\n".join(result).strip(): strip BOTH ends of ALL whitespace */
     size_t L = strlen(res);
-    while (L > 0 && res[L-1] == '\n') res[--L] = '\0';
+    size_t b = 0;
+    while (b < L && (res[b]=='\n'||res[b]=='\r'||res[b]=='\t'||res[b]==' '||res[b]=='\v'||res[b]=='\f')) b++;
+    while (L > b && (res[L-1]=='\n'||res[L-1]=='\r'||res[L-1]=='\t'||res[L-1]==' '||res[L-1]=='\v'||res[L-1]=='\f')) L--;
+    if (b > 0) memmove(res, res + b, L - b);
+    res[L-b] = '\0';
     for (int i = 0; i < no; i++) free(out[i]);
     free(out); free(lines);
     return res;

@@ -1,0 +1,22 @@
+{
+ "inputs": [
+  "{\"role\": \"user\", \"content\": \"plain user message, no summary\"}",
+  "{\"role\": \"user\", \"content\": \"[CONTEXT SUMMARY]: old stuff[END OF PRIOR CONTEXT \u2014 COMPACTION SUMMARY BELOW][CONTEXT SUMMARY]: newer stuff\\nmore\"}",
+  "{\"role\": \"user\", \"content\": \"keep this prior tail[END OF PRIOR CONTEXT \u2014 COMPACTION SUMMARY BELOW][CONTEXT SUMMARY]: the new summary\"}",
+  "{\"role\": \"user\", \"content\": \"[PRIOR CONTEXT \u2014 for reference only; not a new message] header-stripped tail[END OF PRIOR CONTEXT \u2014 COMPACTION SUMMARY BELOW][CONTEXT SUMMARY]: s\"}",
+  "{\"role\": \"user\", \"content\": \"[CONTEXT SUMMARY]: standalone summary\\n--- END OF CONTEXT SUMMARY \u2014 respond to the message below, not the summary above ---now do the real thing\"}",
+  "{\"role\": \"user\", \"content\": \"[CONTEXT SUMMARY]: standalone\\n--- END OF CONTEXT SUMMARY \u2014 respond to the message below, not the summary above ---   spaced remainder   \"}",
+  "\"just a plain string, not an object\"",
+  "[{\"role\": \"user\", \"content\": \"a list, not an object\"}]"
+ ],
+ "cups": [
+  "581aba65db198bec",
+  "2a2f5912ffbd2eeb",
+  "a232043903d2af50",
+  "2c5ab096cd3eac20",
+  "cfc02174b527620a",
+  "aef7346e32974a57",
+  "4ebe6acb22be9669",
+  "4ebe6acb22be9669"
+ ]
+}

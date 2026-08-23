@@ -67,40 +67,93 @@ char *cas2_notification_scope_ids(const char *notification_json) {
 
 /* PoP: cas2_coerce_turn_input_text @ agent/transports/codex_app_server_session.py:_coerce_turn_input_text */
 char *cas2_coerce_turn_input_text(const char *content_json) {
-    /* Python: rich content → plain text input. */
+    /* Faithful port of the LIVE ladder: string passthrough; list of
+     * strings / {text,input_text} parts / image markers joined with
+     * "\n\n"; default question when everything is blank. */
     if (!content_json) return strdup("");
-    if (content_json[0] == '"') {
-        size_t n = strlen(content_json);
-        if (n >= 2) return strndup(content_json + 1, n - 2);
-        return strdup("");
-    }
-    /* extract text pieces */
-    size_t cap = strlen(content_json) + 16;
-    char *out = malloc(cap);
-    if (!out) return strdup("");
-    out[0] = '\0';
-    const char *p = content_json;
-    while ((p = strstr(p, "\"text\"")) != NULL) {
-        const char *colon = strchr(p, ':');
-        if (!colon) break;
-        const char *v = colon + 1;
-        while (*v == ' ' || *v == '"') v++;
-        const char *e = v;
-        while (*e && *e != '"') e++;
-        if (e > v) {
-            size_t need = strlen(out) + (size_t)(e - v) + 4;
-            if (need > cap) {
-                cap = need * 2;
-                char *nb = realloc(out, cap);
-                if (!nb) break;
-                out = nb;
+    json_t *root = json_parse(content_json, NULL);
+    if (!root) return strdup("");
+    char *out = NULL;
+    if (root->type == JSON_STRING) {
+        out = strdup((root->str_val));
+    } else if (root->type == JSON_ARRAY) {
+        size_t cap = strlen(content_json) + 64;
+        out = malloc(cap);
+        if (out) {
+            out[0] = '\0';
+            size_t n = json_len(root);
+            for (size_t i = 0; i < n; i++) {
+                json_t *item = json_get(root, i);
+                if (!item) continue;
+                const char *piece = NULL;
+                char numbuf[32];
+                if (item->type == JSON_STRING) {
+                    const char *s = (item->str_val);
+                    /* LIVE: skip blank strings */
+                    int blank = 1;
+                    for (const char *q = s; *q; q++)
+                        if (*q != ' ' && *q != '\t' && *q != '\n' && *q != '\r') { blank = 0; break; }
+                    if (blank) continue;
+                    piece = s;
+                } else if (item->type == JSON_OBJECT) {
+                    json_t *t = json_obj_get(item, "type");
+                    const char *ty = (t && t->type == JSON_STRING) ? (t->str_val) : NULL;
+                    if (ty && (strcmp(ty, "text") == 0 || strcmp(ty, "input_text") == 0)) {
+                        json_t *tv = json_obj_get(item, "text");
+                        json_t *cv = json_obj_get(item, "content");
+                        const char *s = NULL;
+                        if (tv && tv->type == JSON_STRING && (tv->str_val)[0]) s = (tv->str_val);
+                        else if (cv && cv->type == JSON_STRING && (cv->str_val)[0]) s = (cv->str_val);
+                        if (s && *s) piece = s;
+                    } else if (ty && (strcmp(ty, "image") == 0 || strcmp(ty, "image_url") == 0 ||
+                                      strcmp(ty, "input_image") == 0)) {
+                        piece = "[image attached]";
+                    }
+                } else if (item->type == JSON_NULL) {
+                    continue;   /* LIVE: None items are skipped silently */
+                } else {
+                    /* non-dict scalar (number/bool): str(item) — keep in sync with twin */
+                    if (item->type == JSON_NUMBER) {
+                        snprintf(numbuf, sizeof numbuf, "%lld", (long long)(item->num_val));
+                        piece = numbuf;
+                    } else if (item->type == JSON_BOOL) {
+                        piece = item->bool_val ? "True" : "False";
+                    } else {
+                        piece = "";
+                    }
+                }
+                if (piece && *piece) {
+                    size_t need = strlen(out) + strlen(piece) + 3;
+                    if (need > cap) { cap = need * 2; char *nb = realloc(out, cap); if (!nb) break; out = nb; }
+                    if (*out) strcat(out, "\n\n");
+                    strcat(out, piece);
+                }
             }
-            if (*out) strcat(out, " ");
-            strncat(out, v, (size_t)(e - v));
+            /* strip leading/trailing whitespace */
+            if (out) {
+                char *s = out;
+                while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+                memmove(out, s, strlen(s) + 1);
+                size_t L = strlen(out);
+                while (L > 0 && (out[L-1]==' '||out[L-1]=='\t'||out[L-1]=='\n'||out[L-1]=='\r')) out[--L] = '\0';
+                if (!*out) { free(out); out = strdup("What do you see in this image?"); }
+            }
         }
-        p = e;
+    } else if (root->type == JSON_NULL) {
+        out = strdup("");
+    } else {
+        /* scalar top-level: mirror Python str() for numbers/bools */
+        if (root->type == JSON_NUMBER) {
+            char buf[32]; snprintf(buf, sizeof buf, "%lld", (long long)(root->num_val));
+            out = strdup(buf);
+        } else if (root->type == JSON_BOOL) {
+            out = strdup(root->bool_val ? "True" : "False");
+        } else {
+            out = strdup("");
+        }
     }
-    return out;
+    json_free(root);
+    return out ? out : strdup("");
 }
 
 /* PoP: cas2_init @ agent/transports/codex_app_server_session.py:__init__ */

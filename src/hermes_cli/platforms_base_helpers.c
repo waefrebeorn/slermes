@@ -155,7 +155,14 @@ char *gw_base__resolve_channel_prompt(const char *extra_json, const char *channe
             if (p && p->type == JSON_STRING) {
                 const char *s = p->str_val ? p->str_val : "";
                 while (*s && isspace((unsigned char)*s)) s++;
-                if (*s) { result = strdup(s); break; }
+                /* Python str().strip(): trim trailing whitespace too. */
+                size_t sl = strlen(s);
+                while (sl > 0 && isspace((unsigned char)s[sl-1])) sl--;
+                if (sl) {
+                    result = (char *)malloc(sl + 1);
+                    if (result) { memcpy(result, s, sl); result[sl] = '\0'; }
+                    break;
+                }
             }
         }
     }

@@ -26,12 +26,15 @@ void session_coerce_text(const json_t *value, char *out, size_t out_cap) {
             json_t *block = json_get(value, i);
             if (!block) continue;
             const char *text = NULL;
-            if (block->type == JSON_STRING) text = block->str_val;
+            int is_str_block = block->type == JSON_STRING;
+            if (is_str_block) text = block->str_val;
             else if (block->type == JSON_OBJECT) {
                 const json_t *t = json_obj_get(block, "text");
                 if (t && t->type == JSON_STRING) text = t->str_val;
             }
-            if (text && text[0]) {
+            /* LIVE: str blocks are always collected; dict blocks need truthy
+             * text ("\n".join over all collected parts). */
+            if (text && (is_str_block || text[0])) {
                 size_t tl = strlen(text);
                 if (off + tl + 1 < out_cap) {
                     if (off > 0) { out[off++] = '\n'; }

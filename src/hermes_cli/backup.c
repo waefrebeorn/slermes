@@ -36,12 +36,12 @@
 static const char *EXCLUDED_DIRS[] = {
     "hermes-agent", "__pycache__", ".git", "node_modules", "backups",
     "checkpoints", ".venv", "venv", "site-packages", ".cache", ".tox",
-    ".nox", ".pytest_cache", ".mypy_cache", ".ruff_cache", NULL,
+    ".nox", ".pytest_cache", ".mypy_cache", ".ruff_cache",
+    "browser-profiles", "state-snapshots", NULL,
 };
 /* --- Excluded file basenames --- */
 static const char *EXCLUDED_NAMES[] = {
-    "gateway.pid", "cron.pid", "gateway_state.json", "gateway.lock",
-    "processes.json", NULL,
+    ".backup.lock", "gateway.pid", "cron.pid", NULL,
 };
 /* --- Excluded file-name suffixes --- */
 static const char *EXCLUDED_SUFFIXES[] = {

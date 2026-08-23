@@ -140,24 +140,31 @@ char *gw_format_concise_process_notification(const char *session_id,
         n += (size_t)snprintf(text + n, cap - n, " (%s)", dur);
     }
     if (!ok && output && output[strspn(output, " \t\r\n")] != '\0') {
-        /* Last 5 non-blank lines of stripped output. */
-        const char *lines[6]; int nl = 0;
-        const char *s = output;
-        while (*s) {
-            while (*s == '\n' || *s == ' ' || *s == '\t' || *s == '\r') s++;
-            if (!*s) break;
-            const char *e = s;
-            while (*e && *e != '\n') e++;
-            lines[nl % 5] = s; nl++;
-            s = (*e == '\n') ? e + 1 : e;
+        /* Last 5 non-blank lines of stripped output.
+         * Faithful to LIVE: strip() the whole output first, split on '\n',
+         * drop fully-blank lines, keep the last 5 verbatim (leading spaces
+         * preserved). */
+        const char *b = output;
+        while (*b == ' ' || *b == '\t' || *b == '\r' || *b == '\n') b++;
+        const char *endp = output + strlen(output);
+        while (endp > b && (endp[-1]==' '||endp[-1]=='\t'||endp[-1]=='\r'||endp[-1]=='\n')) endp--;
+        const char *lines[6]; int lens[6]; int nl = 0;
+        const char *p2 = b;
+        while (p2 < endp) {
+            const char *e2 = memchr(p2, '\n', (size_t)(endp - p2));
+            if (!e2) e2 = endp;
+            int allws = 1;
+            for (const char *q = p2; q < e2; q++)
+                if (!(*q==' '||*q=='\t'||*q=='\r')) { allws = 0; break; }
+            if (!allws) { lines[nl % 5] = p2; lens[nl % 5] = (int)(e2 - p2); nl++; }
+            p2 = (e2 < endp) ? e2 + 1 : endp;
         }
         int start = nl > 5 ? nl - 5 : 0;
         char tail[1024]; size_t t = 0;
         for (int i = start; i < nl && i < start + 5; i++) {
-            const char *ln = lines[i % 5];
-            size_t ll = strcspn(ln, "\n");
-            if (t + ll + 2 < sizeof tail) {
-                memcpy(tail + t, ln, ll); t += ll;
+            int li = i % 5;
+            if (t + (size_t)lens[li] + 2 < sizeof tail) {
+                memcpy(tail + t, lines[li], (size_t)lens[li]); t += (size_t)lens[li];
                 tail[t++] = '\n';
             }
         }

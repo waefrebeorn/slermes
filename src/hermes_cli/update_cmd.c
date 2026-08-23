@@ -713,17 +713,25 @@ const char *uc_resolve_pre_update_backup_mode(bool no_backup, bool backup,
     if (strcmp(raw_config_json, "false") == 0)
         return "off";
 
-    /* String mode */
-    if (strcmp(raw_config_json, "off") == 0 ||
-        strcmp(raw_config_json, "false") == 0 ||
-        strcmp(raw_config_json, "none") == 0 ||
-        strcmp(raw_config_json, "disabled") == 0)
+    /* String mode: Python does str(raw).strip().lower() before comparing. */
+    char modebuf[128];
+    snprintf(modebuf, sizeof modebuf, "%s", raw_config_json);
+    char *m = modebuf;
+    while (*m == ' ' || *m == '\t') m++;
+    size_t ML = strlen(m);
+    while (ML > 0 && (m[ML-1] == ' ' || m[ML-1] == '\t')) m[--ML] = '\0';
+    for (char *q = m; *q; q++) *q = (char)tolower((unsigned char)*q);
+
+    if (strcmp(m, "off") == 0 ||
+        strcmp(m, "false") == 0 ||
+        strcmp(m, "none") == 0 ||
+        strcmp(m, "disabled") == 0)
         return "off";
-    if (strcmp(raw_config_json, "full") == 0 ||
-        strcmp(raw_config_json, "zip") == 0 ||
-        strcmp(raw_config_json, "true") == 0)
+    if (strcmp(m, "full") == 0 ||
+        strcmp(m, "zip") == 0 ||
+        strcmp(m, "true") == 0)
         return "full";
-    if (strcmp(raw_config_json, "quick") == 0)
+    if (strcmp(m, "quick") == 0)
         return "quick";
 
     /* Unknown value: warn + default to "quick" (mirrors Python logging.warning +
