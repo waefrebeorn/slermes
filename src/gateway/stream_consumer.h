@@ -96,7 +96,7 @@ void gw_stream_consumer_set_final_response_sent(gw_stream_consumer_t *c);
 void gw_stream_consumer_set_final_content_delivered(gw_stream_consumer_t *c);
 void gw_stream_consumer_set_message_id(gw_stream_consumer_t *c, const char *msg_id);
 /* Edit the in-flight message (Python _edit_message seam for the transport). */
-void gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
+bool gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
                                       const char *message_id, const char *text);
 
 #ifdef __cplusplus

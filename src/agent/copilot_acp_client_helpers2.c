@@ -36,7 +36,7 @@ char *cac2_create(const char *kwargs_json) {
 }
 
 /* PoP: cac2_close @ agent/copilot_acp_client.py:close */
-int cac2_close(void) {
+int cac2_close(void) { /* Python default is also a no-op */ 
     /* Python: terminate active process — REAL: no active child in this
      * port; closing is a no-op success. */
     return 0;

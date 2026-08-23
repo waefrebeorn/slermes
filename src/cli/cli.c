@@ -42,6 +42,7 @@
 #include <fcntl.h>
 #include "hermes_tirith.h"
 #include "registry.h"
+#include "banner_boot.h"
 
 /* ================================================================
  *  State
@@ -268,88 +269,28 @@ static int cli_tool_event_cb(const char *event_type, const char *tool_name,
  *  Display helpers
  * ================================================================ */
 
+/* Boot banner — LIVE Hermes parity (PoP: cli.py::show_banner +
+ * hermes_cli/banner.py::build_welcome_banner). Rendering lives in
+ * src/hermes_cli/banner_boot.c; this call site supplies the live agent
+ * state (model, cwd, session id, YOLO flag) and the active skin. */
 static void print_banner(void) {
     if (!g_cli.interactive) return;
 
-    /* ASCII art logo: OSSIFRAG in block letters */
-    const char *logo_lines[] = {
-        " █████╗ ██████╗ ███████╗███████╗       █████╗  ██████╗ ███████╗███╗   ██╗████████╗",
-        "██╔══██╗██╔══██╗██╔════╝██╔════╝      ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝",
-        "███████║██████╔╝█████╗  ███████╗█████╗███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║",
-        "██╔══██║██╔══██╗██╔══╝  ╚════██║╚════╝██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║",
-        "██║  ██║██║  ██║███████╗███████║      ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║",
-        "╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝      ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝",
-    };
-    /* Skin-driven gradient: use banner_accent as base if available,
-     * otherwise fall back to classic Hermes gold gradient */
-    const char *accent_str = NULL;
-    if (g_skin) accent_str = skin_get(g_skin, "colors.banner_accent", NULL);
-    int start_r = 163, start_g = 38, start_b = 31;   /* #A3261F */
-    int end_r = 235, end_g = 108, end_b = 50;         /* #EB6C32 */
-    if (accent_str && accent_str[0] == '#') {
-        /* Try to parse the accent color and derive a gradient */
-        int ar, ag, ab;
-        if (ansi_parse_hex(accent_str, &ar, &ag, &ab)) {
-            /* Dim the accent for the start, brighten for the end */
-            start_r = ar * 2 / 3; start_g = ag * 2 / 3; start_b = ab * 2 / 3;
-            end_r = ar; end_g = ag; end_b = ab;
-        }
-    }
-    for (int i = 0; i < 6; i++) {
-        float t = (float)i / 5.0f;
-        int r = (int)(start_r + (end_r - start_r) * t);
-        int g = (int)(start_g + (end_g - start_g) * t);
-        int b = (int)(start_b + (end_b - start_b) * t);
-        display_set_fg_rgb(r, g, b);
-        display_set_style(DISPLAY_BOLD);
-        printf("%s", logo_lines[i]);
-        display_reset();
-        printf("\n");
-    }
+    const char *yolo_env = getenv("HERMES_YOLO_MODE");
+    if (!yolo_env || !*yolo_env) yolo_env = getenv("SLERMES_YOLO_MODE");
 
-    /* Build banner content lines */
-    char banner_lines[4096];
-    int pos = 0;
-    const char *title_color = skin_get(g_skin, "colors.banner_title", "#FFD700");
-    const char *text_color = skin_get(g_skin, "colors.banner_text", "#FFF8DC");
-    const char *dim_color = skin_get(g_skin, "colors.banner_dim", "#B8860B");
+    banner_boot_info_t bi;
+    memset(&bi, 0, sizeof(bi));
+    bi.model         = g_cli.config.model[0] ? g_cli.config.model : "";
+    bi.cwd           = getcwd(NULL, 0);
+    bi.session_id    = g_cli.agent.session_id;
+    bi.context_length = HERMES_MAX_CTX_TOKENS;
+    bi.yolo          = (yolo_env && *yolo_env) ? true : false;
+    bi.compact       = false;
+    bi.skin          = g_skin;
 
-    /* Parse colors for ANSI embedding */
-    int tr, tg, tb, dr, dg, db;
-    if (!ansi_parse_hex(title_color, &tr, &tg, &tb)) { tr=255; tg=215; tb=0; }
-    if (!ansi_parse_hex(dim_color, &dr, &dg, &db)) { dr=184; dg=134; db=11; }
-
-    /* Title line */
-    pos += snprintf(banner_lines + pos, sizeof(banner_lines) - (size_t)pos,
-        "\x1B[1;38;2;%d;%d;%dm  WuBu Slermes v%s — C Translation\x1B[0m\n",
-        tr, tg, tb, HERMES_VERSION);
-
-    /* Model/Provider line */
-    pos += snprintf(banner_lines + pos, sizeof(banner_lines) - (size_t)pos,
-        "\x1B[2;38;2;%d;%d;%dm  Model: %s  Provider: %s\x1B[0m\n",
-        dr, dg, db,
-        g_cli.config.model[0] ? g_cli.config.model : "(default)",
-        g_cli.config.provider[0] ? g_cli.config.provider : "(default)");
-
-    /* Stats summary line — dynamically queried */
-    size_t tool_count = g_cli.agent.tools.count > 0 ? g_cli.agent.tools.count : registry_get_count();
-    int gw_count = gw_platform_get_count();
-    int prov_count = provider_get_count();
-    const char *home = g_cli.agent.hermes_home[0] ? g_cli.agent.hermes_home : "~/.hermes";
-    pos += snprintf(banner_lines + pos, sizeof(banner_lines) - (size_t)pos,
-        "\x1B[2;38;2;%d;%d;%dm  Tools: %zu  Gateways: %d  Providers: %d  Config: %s\x1B[0m",
-        dr, dg, db, tool_count, gw_count, prov_count, home);
-
-    /* Display as panel with skin border color */
-    const char *border_color = skin_get(g_skin, "colors.banner_border", "#CD7F32");
-    display_panel_hex(" Slermes C ", banner_lines, border_color);
-
-    /* Hint line + random tip */
-    display_printf_hex(text_color, DISPLAY_DIM,
-        "  Type /help for commands, /exit to quit\n");
-    if (g_cli.interactive) {
-        display_show_tip();
-    }
+    banner_boot_show(&bi);
+    free((void *)bi.cwd);
 
     /* Auto-load goal from mind-palace */
     if (g_cli.interactive) {

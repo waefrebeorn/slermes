@@ -907,7 +907,7 @@ long pb_message_len_fn(const char *text) {
 }
 
 /* PoP: pb_supports_draft_streaming @ gateway/platforms/base.py:supports_draft_streaming */
-bool pb_supports_draft_streaming(void) {
+bool pb_supports_draft_streaming(void) { /* Python default is also a no-op */ 
     /* Python: default False (Telegram 9.5+ overrides). */
     return false;
 }
@@ -955,7 +955,7 @@ int pb_send(const char *chat_id, const char *content) {
 }
 
 /* PoP: pb_edit_message @ gateway/platforms/base.py:edit_message */
-int pb_edit_message(const char *chat_id, const char *message_id, const char *content, bool finalize) {
+int pb_edit_message(const char *chat_id, const char *message_id, const char *content, bool finalize) { /* Python default is also a no-op */ 
     /* Python: optional; success=False fallback to new message. */
     (void)chat_id; (void)message_id; (void)content; (void)finalize;
     return 0;  /* success=False */
@@ -998,7 +998,7 @@ int pb_send_clarify(const char *chat_id, const char *question, const char *choic
 }
 
 /* PoP: pb_send_typing @ gateway/platforms/base.py:send_typing */
-int pb_send_typing(const char *chat_id, const char *metadata_json) {
+int pb_send_typing(const char *chat_id, const char *metadata_json) { /* Python default is also a no-op */ 
     (void)chat_id; (void)metadata_json;
     return 0;  /* pass */
 }

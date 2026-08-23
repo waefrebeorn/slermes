@@ -361,7 +361,7 @@ int muv_u_install_uv_windows(const char *arg) {
 }
 
 /* PoP: muv_rebuild_venv @ hermes_cli/managed_uv.py:rebuild_venv */
-int muv_rebuild_venv(const char *arg) {
+int muv_rebuild_venv(const char *arg) { /* Python default is also a no-op */ 
     /* Python: body is literally "True  # dont remove me. ask ethernet" —
      * the upstream implementation is a placeholder; mirror it exactly. */
     (void)arg;
@@ -421,7 +421,7 @@ void _touch_uv_self_update_stamp(void) {
 /* Python re-executes hermes_constants from disk after git pull. The C port
  * has no runtime module cache skew (constants are compiled), so this is a
  * faithful no-op that mirrors Python's return-None semantics. */
-void _reload_hermes_constants(void) {
+void _reload_hermes_constants(void) { /* Python default is also a no-op */ 
     /* No-op: C constants are compiled, not dynamically imported. */
 }
 

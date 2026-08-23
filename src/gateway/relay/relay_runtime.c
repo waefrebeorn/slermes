@@ -778,7 +778,7 @@ void relay_runtime_shutdown(relay_runtime_t *rt)
 /* ── NoopRelayRuntime ─────────────────────────────────────────────────── */
 
 /* PoP: relay_noop_available @ agent/relay_runtime.py:available */
-bool relay_noop_available(void) { return false; }
+bool relay_noop_available(void) { /* Python default is also a no-op */  return false; }
 
 /* PoP: relay_noop_apply_tool_request_intercepts @ agent/relay_runtime.py:apply_tool_request_intercepts */
 char *relay_noop_apply_tool_request_intercepts(const char *session_id,
@@ -790,7 +790,7 @@ char *relay_noop_apply_tool_request_intercepts(const char *session_id,
 }
 
 /* PoP: relay_noop_retain_managed_execution @ agent/relay_runtime.py:retain_managed_execution */
-void relay_noop_retain_managed_execution(const char *consumer) { (void)consumer; }
+void relay_noop_retain_managed_execution(const char *consumer) { /* Python default is also a no-op */  (void)consumer; }
 /* PoP: relay_noop_release_managed_execution @ agent/relay_runtime.py:release_managed_execution */
 void relay_noop_release_managed_execution(const char *consumer) { (void)consumer; }
 /* PoP: relay_noop_managed_execution_enabled @ agent/relay_runtime.py:managed_execution_enabled */

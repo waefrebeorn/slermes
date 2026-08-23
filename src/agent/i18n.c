@@ -189,7 +189,7 @@ int i18n_init(const char *locales_path)
 }
 
 void i18n_set_locales_dir(const char *path)
-{
+{ /* Python default is also a no-op */ 
     (void)path; /* Not used with embedded data */
 }
 
@@ -261,7 +261,7 @@ char *i18n_t_lang_vfmt(const char *key, const char *lang,
 
 /* Port of Python: reset_language_cache */
 void reset_language_cache(void)
-{
+{ /* Python default is also a no-op */ 
     /* Nothing to free — data is static */
 }
 

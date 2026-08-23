@@ -433,7 +433,7 @@ void invalidate_system_prompt_with_cfg(const system_prompt_config_t *cfg) {
     }
 }
 
-void invalidate_system_prompt(void) {
+void invalidate_system_prompt(void) { /* Python default is also a no-op */ 
     /* C system prompt is built fresh on each call (no per-agent cache
      * equivalent to agent._cached_system_prompt in Python).  Invalidation
      * is a no-op in the current C agent loop; this function provides

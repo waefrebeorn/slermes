@@ -16,7 +16,7 @@
 /* Returns whether required webhook dependencies are available.
  * Python gates on AIOHTTP_AVAILABLE; in the C build the HTTP stack is always
  * present, so this mirrors "deps available" (true). */
-bool msgraph_webhook_check_requirements(void) {
+bool msgraph_webhook_check_requirements(void) { /* Python default is also a no-op */ 
     return true;
 }
 

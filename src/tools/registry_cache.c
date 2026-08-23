@@ -161,7 +161,7 @@ static bool scope_match(const char *a, const char *b) {
 
 /* ── check_fn_cache_scope ───────────────────────────────────────────── */
 /* PoP: check_fn_cache_scope @ tools/registry.py:check_fn_cache_scope */
-char *check_fn_cache_scope(void) {
+char *check_fn_cache_scope(void) { /* Python default is also a no-op */ 
     /* is_multiplex_active is not wired in the C single-home agent; single-
      * profile processes keep the historical process-wide cache (scope==NULL,
      * cache ACTIVE — NOT a bypass).  Fail-closed bypass is the empty string

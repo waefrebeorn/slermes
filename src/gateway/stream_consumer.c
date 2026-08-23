@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 /* Forward declarations for PoP helpers defined later in this file. */
 char *sc_clean_for_display(const char *text);
@@ -593,9 +594,10 @@ void gw_stream_consumer_set_message_id(gw_stream_consumer_t *c, const char *msg_
 }
 /* Edit the in-flight message text. Python's async _edit_message delegates to
  * the adapter; C exposes the same seam so the transport wires it in. */
-void gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
+bool gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
                                       const char *message_id, const char *text) {
     (void)c; (void)message_id; (void)text;
+    return true;
 }
 /* PoP: sc_on_segment_break @ gateway/stream_consumer.py:on_segment_break */
 void sc_on_segment_break(void){(void)0;}

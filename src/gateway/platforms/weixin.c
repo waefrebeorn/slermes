@@ -795,7 +795,7 @@ void random_wechat_uin(char *out, size_t out_sz)
 /* PoP: weixin_check_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
 /* PoP: weixin_check_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
 bool weixin_check_requirements(void)
-{
+{ /* Python default is also a no-op */ 
     return true; /* C port: always available in compiled binary */
 }
 

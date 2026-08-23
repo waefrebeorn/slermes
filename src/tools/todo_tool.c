@@ -27,7 +27,7 @@ static int _item_count = 0;
 
 /* PoP: todo_tool_check_requirements @ tools/todo_tool.py:check_todo_requirements */
 /* Todo tool has no external requirements — always available. */
-bool todo_tool_check_requirements(void) {
+bool todo_tool_check_requirements(void) { /* Python default is also a no-op */ 
     return true;
 }
 

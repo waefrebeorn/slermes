@@ -84,7 +84,7 @@ double gw_auto_continue_freshness_window(void) {
 
 /* ────────── _ensure_windows_gateway_venv_imports ────────── */
 /* PoP: gw_ensure_windows_gateway_venv_imports @ gateway/run.py:_ensure_windows_gateway_venv_imports */
-void gw_ensure_windows_gateway_venv_imports(void) {
+void gw_ensure_windows_gateway_venv_imports(void) { /* Python default is also a no-op */ 
     /* Non-Windows builds are a no-op (guarded by sys.platform != "win32" in
      * the original). The Windows venv PATH surgery exists only to make a
      * detached *Python* import venv packages; inert for this native binary. */

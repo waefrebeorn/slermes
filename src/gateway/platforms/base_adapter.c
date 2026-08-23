@@ -194,7 +194,7 @@ void gw_base_platform_adapter_free(gw_base_platform_adapter_t *adapter) {
 /* Default implementations */
 
 /* Port of Python: connect */
-bool gw_base_platform_adapter_default_connect(gw_base_platform_adapter_t *adapter) {
+bool gw_base_platform_adapter_default_connect(gw_base_platform_adapter_t *adapter) { /* Python default is also a no-op */ 
     (void)adapter;
     return false;  // Subclasses must override
 }
@@ -223,7 +223,7 @@ gw_send_result_t gw_base_platform_adapter_default_edit_message(gw_base_platform_
 
 /* Port of Python: delete_message */
 bool gw_base_platform_adapter_default_delete_message(gw_base_platform_adapter_t *adapter,
-                                                      const char *chat_id, const char *message_id) {
+                                                      const char *chat_id, const char *message_id) { /* Python default is also a no-op */ 
     (void)adapter; (void)chat_id; (void)message_id;
     return false;
 }
@@ -296,7 +296,7 @@ gw_send_result_t gw_base_platform_adapter_default_send_image_file(gw_base_platfo
 
 /* Port of Python: send_typing */
 void gw_base_platform_adapter_default_send_typing(gw_base_platform_adapter_t *adapter,
-                                                   const char *chat_id, json_node_t *metadata) {
+                                                   const char *chat_id, json_node_t *metadata) { /* Python default is also a no-op */ 
     (void)adapter; (void)chat_id; (void)metadata;
     // Optional - subclasses override if platform supports it
 }
@@ -351,7 +351,7 @@ gw_send_result_t gw_base_platform_adapter_default_send_clarify(gw_base_platform_
 
 /* Port of Python: get_chat_info */
 json_node_t *gw_base_platform_adapter_default_get_chat_info(gw_base_platform_adapter_t *adapter,
-                                                             const char *chat_id) {
+                                                             const char *chat_id) { /* Python default is also a no-op */ 
     (void)adapter; (void)chat_id;
     return NULL;
 }
@@ -401,7 +401,7 @@ void gw_base_platform_adapter_set_fatal_error(gw_base_platform_adapter_t *adapte
 /* Port of Python: _acquire_platform_lock */
 bool gw_base_platform_adapter_acquire_lock(gw_base_platform_adapter_t *adapter,
                                             const char *scope, const char *identity,
-                                            const char *resource_desc) {
+                                            const char *resource_desc) { /* Python default is also a no-op */ 
     (void)adapter;
     // Use gateway status module
     return false;  // Placeholder - would call acquire_scoped_lock

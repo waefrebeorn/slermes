@@ -46,7 +46,7 @@ void iter_pool_sockets(const http_t *client,
 /* slermes' libhttp opens a fresh connection per request; no persistent pool
  * to introspect (yields nothing). */
 void iter_httpx_pool_objects(void)
-{
+{ /* Python default is also a no-op */ 
 }
 
 /* PoP: connection_candidates @ agent/agent_runtime_helpers.py:_connection_candidates */
@@ -67,7 +67,7 @@ bool cleanup_dead_connections(agent_state_t *agent)
 
 /* Port of Python agent/agent_runtime_helpers.py:force_close_tcp_sockets(). */
 int force_close_tcp_sockets(agent_state_t *agent)
-{
+{ /* Python default is also a no-op */ 
     /* Python force-closes all tracked TCP sockets during cleanup.
      * C relies on the OS to close sockets on process exit; no separate
      * tracking needed. Return 0 to indicate no sockets closed. */

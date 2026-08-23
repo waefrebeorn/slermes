@@ -85,7 +85,7 @@ char *qqa_name(void) {
 }
 
 /* PoP: qqa_enforces_own_access_policy @ gateway/platforms/qqbot/adapter.py:enforces_own_access_policy */
-bool qqa_enforces_own_access_policy(void) {
+bool qqa_enforces_own_access_policy(void) { /* Python default is also a no-op */ 
     /* Python: DM/group gated at intake. */
     return true;
 }

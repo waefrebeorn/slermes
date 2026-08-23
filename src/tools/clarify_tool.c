@@ -632,7 +632,7 @@ char *clarify_tool(const char *question, const char *choices_json, bool multi_se
 }
 
 /* PoP: check_clarify_requirements @ tools/clarify_tool.py:check_clarify_requirements */
-bool clarify_check_requirements(void) {
+bool clarify_check_requirements(void) { /* Python default is also a no-op */ 
     return true;
 }
 

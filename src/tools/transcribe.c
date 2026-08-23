@@ -69,7 +69,7 @@ static void init_transcribe(void) {
 /* Called from tool_init.c — registers the transcribe tool name.
  * The constructor above handles the actual registration, but tool_init.c
  * also calls registry_init_transcribe() which needs a definition. */
-void registry_init_transcribe_impl(void) {
+void registry_init_transcribe_impl(void) { /* Python default is also a no-op */ 
     /* Already registered via constructor — nothing to do here.
      * This function exists so tool_init.c can link. */
 }

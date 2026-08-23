@@ -817,7 +817,7 @@ bool cc_lock_api_is_absent_on_session_db(const void *lock_db) {
  * this default) without a duplicate-symbol clash. */
 extern void cc_ctx_refresh_guards(const void *compressor);
 __attribute__((weak))
-void cc_ctx_refresh_guards(const void *compressor) {
+void cc_ctx_refresh_guards(const void *compressor) { /* Python default is also a no-op */ 
     (void)compressor; /* overridden by the ContextCompressor port */
 }
 void cc_refresh_persisted_compression_guards(const void *compressor) {

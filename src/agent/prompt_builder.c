@@ -1499,7 +1499,7 @@ const char *session_cwd_override(void) {
 
 /* Port of Python: _clear_backend_probe_cache — reset backend probe cache */
 /* PoP: clear_backend_probe_cache @ agent/prompt_builder.py:_clear_backend_probe_cache */
-void clear_backend_probe_cache(void) {
+void clear_backend_probe_cache(void) { /* Python default is also a no-op */ 
     /* Static probe cache lives in system_prompt.c; clear it */
     /* The cache stores env_type:cwd_hint -> result strings */
     /* For now, nothing to do — C doesn't cache probes at module level */
@@ -1512,7 +1512,7 @@ void clear_backend_probe_cache(void) {
  * This stub is retained for source-level parity; the real filtering happens
  * at skill-load time in skill_preprocessing.c. */
 /* PoP: skill_should_show @ agent/prompt_builder.py:_skill_should_show */
-bool skill_should_show(void) {
+bool skill_should_show(void) { /* Python default is also a no-op */ 
     /* In C, skill filtering is done at load time, not at prompt-build time.
      * All loaded skills are always shown in the prompt.
      * Python checks available_tools/available_toolsets dynamically;

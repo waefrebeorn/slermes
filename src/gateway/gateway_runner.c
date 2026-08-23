@@ -14,9 +14,8 @@
 #include "cron_scheduler_runtime.h"
 #include "platforms/base.h"
 #include "async_delegation.h"
+#include "gw_server_internals.h"
 #include <sys/stat.h>
-
-double gw_mono_time(void);   /* defined in gateway server internals */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

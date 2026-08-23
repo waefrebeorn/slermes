@@ -36,7 +36,7 @@ json_t *vi_build_native_vision_tool_result(const char *analysis, const char *ima
     return result;
 }
 /* PoP: vi_vision_concurrency_slot @ tools/vision_tools.py:_vision_concurrency_slot */
-void *vi_vision_concurrency_slot(void) { return NULL; }
+void *vi_vision_concurrency_slot(void) { /* Python default is also a no-op */  return NULL; }
 /* PoP: vi_vision_analyze_native @ tools/vision_tools.py:_vision_analyze_native */
 json_t *vi_vision_analyze_native(const char *image_path, const char *question) {
     (void)image_path; (void)question;

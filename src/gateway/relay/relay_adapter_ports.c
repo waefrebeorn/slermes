@@ -28,7 +28,7 @@ char *rla_init(const char *descriptor_json) {
 }
 
 /* PoP: rla_authorization_is_upstream @ gateway/relay/adapter.py:authorization_is_upstream */
-bool rla_authorization_is_upstream(void) {
+bool rla_authorization_is_upstream(void) { /* Python default is also a no-op */ 
     /* Python: connector enforces auth, not local. */
     return true;
 }

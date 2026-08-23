@@ -84,7 +84,7 @@ char *yb2_extract_text(const char *msg_body_json) {
 }
 
 /* PoP: yb2_ws @ gateway/platforms/yuanbao.py:ws */
-char *yb2_ws(void) {
+char *yb2_ws(void) { /* Python default is also a no-op */ 
     /* Python: raw ws accessor. */
     return NULL;
 }
@@ -163,7 +163,7 @@ char *yb2_get_active(void) {
 }
 
 /* PoP: yb2_enforces_own_access_policy @ gateway/platforms/yuanbao.py:enforces_own_access_policy */
-bool yb2_enforces_own_access_policy(void) {
+bool yb2_enforces_own_access_policy(void) { /* Python default is also a no-op */ 
     /* Python: DM/group gated via dm_policy/group_policy. */
     return true;
 }

@@ -53,6 +53,7 @@ typedef struct {
     char dependencies[MAX_DEPS][MAX_DEP_LEN];
     int  dep_count;
     char path[MAX_PATH];
+    char category[64];   /* category dir name (banner groups by this) */
 } skill_info_t;
 
 /* ── YAML frontmatter parser ──────────────────────────────────────── */
@@ -220,7 +221,8 @@ static int json_escape_str(char *buf, size_t bufsz, const char *src) {
 }
 
 /* Scan a category directory for skill subdirs containing SKILL.md */
-static void scan_category_dir(const char *cat_dir, skill_info_t *skills, int max_skills, int *count) {
+static void scan_category_dir(const char *cat_dir, const char *cat_name,
+                              skill_info_t *skills, int max_skills, int *count) {
     DIR *d = opendir(cat_dir);
     if (!d) return;
     struct dirent *de;
@@ -232,6 +234,7 @@ static void scan_category_dir(const char *cat_dir, skill_info_t *skills, int max
         if (stat(skill_md, &st) == 0) {
             skill_info_t info;
             if (skill_parse(skill_md, &info) == 0) {
+                snprintf(info.category, sizeof(info.category), "%s", cat_name);
                 skills[(*count)++] = info;
             }
         }
@@ -268,7 +271,9 @@ int skills_discover(skill_info_t *skills, int max_skills, const char *extra_path
             snprintf(cat_dir, sizeof(cat_dir), "%s/%s", base_dir, de->d_name);
             struct stat st;
             if (stat(cat_dir, &st) == 0 && S_ISDIR(st.st_mode)) {
-                scan_category_dir(cat_dir, skills, max_skills, &count);
+                const char *bn = strrchr(cat_dir, '/');
+                scan_category_dir(cat_dir, bn ? bn + 1 : cat_dir,
+                                  skills, max_skills, &count);
             }
         }
         closedir(d);
@@ -285,7 +290,9 @@ int skills_discover(skill_info_t *skills, int max_skills, const char *extra_path
                 snprintf(cat_dir, sizeof(cat_dir), "%s/%s", extra_path, de->d_name);
                 struct stat st;
                 if (stat(cat_dir, &st) == 0 && S_ISDIR(st.st_mode)) {
-                    scan_category_dir(cat_dir, skills, max_skills, &count);
+                    const char *bn = strrchr(cat_dir, '/');
+                scan_category_dir(cat_dir, bn ? bn + 1 : cat_dir,
+                                  skills, max_skills, &count);
                 }
             }
             closedir(d);

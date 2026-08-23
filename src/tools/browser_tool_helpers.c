@@ -69,7 +69,7 @@ int browser__should_inject_engine(const char *engine) {
 
 /* PoP: false @ tools/browser_tool.py:_is_legacy_provider_registry_overridden */
 /* The C port has no plugin registry to override; report false (production path). */
-int browser__is_legacy_provider_registry_overridden(void) { return 0; }
+int browser__is_legacy_provider_registry_overridden(void) { /* Python default is also a no-op */  return 0; }
 
 /* PoP: browser__ensure_browser_plugins_loaded @ tools/browser_tool.py:_ensure_browser_plugins_loaded */
 void browser__ensure_browser_plugins_loaded(void) {

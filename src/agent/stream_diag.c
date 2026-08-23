@@ -21,7 +21,7 @@
 
 /* Port of Python agent/stream_diag.py:stream_diag_init(). */
 /* Port of Python agent/stream_diag.py. */
-void stream_diag_init(stream_diag_t *diag) {
+void stream_diag_init(stream_diag_t *diag) { /* Python default is also a no-op */ 
     (void)diag; /* stream_diag_t is zero-initialized via calloc in llm_client.c */
 }
 

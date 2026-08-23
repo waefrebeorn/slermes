@@ -133,7 +133,7 @@ int wx2_disconnect(void) {
 }
 
 /* PoP: wx2_enforces_own_access_policy @ gateway/platforms/weixin.py:enforces_own_access_policy */
-bool wx2_enforces_own_access_policy(void) {
+bool wx2_enforces_own_access_policy(void) { /* Python default is also a no-op */ 
     /* Python: DM/group gated at intake via dm_policy/group_policy. */
     return true;
 }

@@ -219,7 +219,7 @@ void relay_session_state_conversation_clear(session_conversation_state_t *c) {
 typedef json_t *(*default_fn)(void);
 typedef bool (*presence_fn)(const json_t *v);
 
-static json_t *dflt_null(void)   { return json_null(); }
+static json_t *dflt_null(void)   { /* Python default is also a no-op */  return json_null(); }
 static json_t *dflt_zero(void)   { return json_number(0.0); }
 static json_t *dflt_zero_i(void) { return json_number(0); }
 static json_t *dflt_str(void)    { return json_string(""); }

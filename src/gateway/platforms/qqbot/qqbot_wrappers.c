@@ -17,7 +17,7 @@
 static void *g_qqbot_interaction_callback = NULL;
 
 /* PoP: qqbot_check_qq_requirements @ gateway/platforms/qqbot/adapter.py:check_qq_requirements */
-int qqbot_check_qq_requirements(const char *arg) {
+int qqbot_check_qq_requirements(const char *arg) { /* Python default is also a no-op */ 
     /* C port implements the QQ adapter natively; deps are present. */
     return 1;
 }
