@@ -2072,12 +2072,20 @@ json_t *anthropic_convert_assistant_message(const json_t *m) {
                 json_free(converted);
             }
         } else {
-            const char *text = json_get_str(content, NULL, "");
-            if (!text) text = "";
-            json_t *tb = json_object();
-            json_set(tb, "type", json_string("text"));
-            json_set(tb, "text", json_string(text));
-            json_append(blocks, tb);
+            /* Scalar content: read the string directly (json_get_str with a
+             * NULL key returns "" for string nodes — LIVE keeps the text).
+             * LIVE drops whitespace-only scalars instead of emitting a
+             * blank text block, so mirror that here. */
+            const char *text = (content->type == JSON_STRING && content->str_val)
+                ? content->str_val : "";
+            const char *p = text;
+            while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+            if (*p) {
+                json_t *tb = json_object();
+                json_set(tb, "type", json_string("text"));
+                json_set(tb, "text", json_string(text));
+                json_append(blocks, tb);
+            }
         }
     }
 
@@ -2150,10 +2158,15 @@ json_t *anthropic_convert_assistant_message(const json_t *m) {
         }
     }
 
-    /* Empty guard — Anthropic rejects empty assistant content */
+    /* Empty guard — Anthropic rejects empty assistant content.
+     * LIVE only re-emits the scalar when it has non-whitespace text; a
+     * whitespace-only scalar was already dropped above and must fall through
+     * to the "(empty)" placeholder (caught by water-cup input {"content":"   "}). */
     if (json_len(blocks) == 0 && content && content->type == JSON_STRING) {
         const char *ct = content->str_val;
-        if (ct && *ct) {
+        const char *scan = ct;
+        while (*scan == ' ' || *scan == '\t' || *scan == '\n' || *scan == '\r') scan++;
+        if (ct && *scan) {
             json_t *tb = json_object();
             json_set(tb, "type", json_string("text"));
             json_set(tb, "text", json_string(ct));
