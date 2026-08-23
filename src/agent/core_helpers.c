@@ -291,13 +291,54 @@ char *lgr_chart_bucket_init(const char *label, double ts)
     return s ? s : strdup("{}");
 }
 
+/* Renderer configuration — Python PetRenderer fields (render.py __init__).
+ * RENDER_MODES = ("auto", "kitty", "iterm", "sixel", "unicode", "off"). */
+static const char *PETR_RENDER_MODES[] = {
+    "auto", "kitty", "iterm", "sixel", "unicode", "off"
+};
+typedef struct petr_config {
+    char spritesheet[512];
+    char mode[16];
+    double scale;
+    long unicode_cols;
+    long frame_w;
+    long frame_h;
+    long frames_per_state;
+    int initialized;
+} petr_config_t;
+static petr_config_t g_petr = {
+    "", "unicode", 1.0 /* DEFAULT_SCALE */, 20, 0, 0, 0, 0
+};
+
 /* PoP: petr_init @ agent/pet/render.py:__init__ */
 int petr_init(const char *spritesheet, const char *mode, double scale,
               long unicode_cols, long frame_w, long frame_h, long frames_per_state)
 {
-    (void)spritesheet; (void)mode; (void)scale; (void)unicode_cols;
-    (void)frame_w; (void)frame_h; (void)frames_per_state;
+    snprintf(g_petr.spritesheet, sizeof(g_petr.spritesheet), "%s",
+             spritesheet ? spritesheet : "");
+    /* Python: self.mode = mode if mode in RENDER_MODES else "unicode" */
+    int mode_ok = 0;
+    if (mode && *mode) {
+        for (size_t i = 0; i < sizeof(PETR_RENDER_MODES) / sizeof(*PETR_RENDER_MODES); i++) {
+            if (strcmp(mode, PETR_RENDER_MODES[i]) == 0) { mode_ok = 1; break; }
+        }
+    }
+    snprintf(g_petr.mode, sizeof(g_petr.mode), "%s",
+             (mode_ok && mode) ? mode : "unicode");
+    g_petr.scale = (scale > 0.0) ? scale : 1.0;
+    g_petr.unicode_cols = (unicode_cols > 0) ? unicode_cols : 20;
+    g_petr.frame_w = frame_w;
+    g_petr.frame_h = frame_h;
+    g_petr.frames_per_state = frames_per_state;
+    g_petr.initialized = 1;
     return 0;
+}
+
+/* PoP: petr_available @ agent/pet/render.py:available */
+int petr_available(void) {
+    if (!g_petr.initialized || strcmp(g_petr.mode, "off") == 0) return 0;
+    struct stat st;
+    return stat(g_petr.spritesheet, &st) == 0 && S_ISREG(st.st_mode);
 }
 
 /* PoP: petr_frame @ agent/pet/render.py:frame */

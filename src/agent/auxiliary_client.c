@@ -1772,8 +1772,10 @@ static char *lowerdup(const char *s) {
 
 /* PoP: auxc_aux_interrupt_protected @ agent/auxiliary_client.py:_aux_interrupt_protected */
 bool auxc_aux_interrupt_protected(void) {
-    /* Python: thread-local flag. */
-    return false;
+    /* Python: thread-local _aux_interrupt_protection.active flag; the C port
+     * tracks the same state via aux_interrupt_protected() (sig_atomic counter
+     * driven by aux_interrupt_protected_inc/dec). */
+    return aux_interrupt_protected();
 }
 
 /* PoP: auxc_extract_url_query_params @ agent/auxiliary_client.py:_extract_url_query_params */
@@ -2391,14 +2393,29 @@ char *auxc_extract_content_or_reasoning(const char *message_json) {
 #include <stdlib.h>
 #include <string.h>
 
+/* Python: _aux_probe_state = threading.local() — probe-mode flag is per-thread. */
+static _Thread_local int g_aux_probe_active_tl = 0;
+
 /* PoP: aux_probe_active @ agent/auxiliary_client.py:_aux_probe_active */
 int aux_probe_active(void) {
-    return 0;
+    return g_aux_probe_active_tl ? 1 : 0;
+}
+
+/* PoP: aux_probe_enter @ agent/auxiliary_client.py:aux_probe_mode */
+int aux_probe_enter(void) {
+    int prev = g_aux_probe_active_tl;
+    g_aux_probe_active_tl = 1;
+    return prev;
+}
+
+/* PoP: aux_probe_exit @ agent/auxiliary_client.py:aux_probe_mode */
+void aux_probe_exit(int prev) {
+    g_aux_probe_active_tl = prev;
 }
 
 /* PoP: aux_probe_mode @ agent/auxiliary_client.py:aux_probe_mode */
 void aux_probe_mode(int *out_active) {
-    if (out_active) *out_active = 0;
+    if (out_active) *out_active = aux_probe_active();
 }
 
 /* PoP: aux_model_recency_key @ agent/auxiliary_client.py:_model_recency_key */
@@ -2417,19 +2434,73 @@ void aux_resolve_auto_route(char *out_provider, size_t out_sz) {
     snprintf(out_provider, out_sz, "openai");
 }
 
+/* Client → effective-provider tags. Python sets the attribute
+ * `_hermes_aux_effective_provider` on the client object so it survives cache
+ * reuse; C clients are opaque handles, so keep a small side table keyed by the
+ * client pointer (mirrors the attribute's lifetime). */
+#define AUX_TAG_MAX 32
+typedef struct aux_provider_tag {
+    const void *client;
+    char provider[64];
+} aux_provider_tag_t;
+static aux_provider_tag_t g_aux_provider_tags[AUX_TAG_MAX];
+static size_t g_aux_provider_tag_count = 0;
+
 /* PoP: aux_tag_effective_provider @ agent/auxiliary_client.py:_tag_effective_provider */
 void aux_tag_effective_provider(const char *client, const char *provider) {
-    (void)client; (void)provider;
+    /* Python: if client is None or not provider: return */
+    if (!client || !provider || !provider[0]) return;
+    for (size_t i = 0; i < g_aux_provider_tag_count; i++) {
+        if (g_aux_provider_tags[i].client == (const void *)client) {
+            snprintf(g_aux_provider_tags[i].provider,
+                     sizeof(g_aux_provider_tags[i].provider), "%s", provider);
+            return;
+        }
+    }
+    if (g_aux_provider_tag_count < AUX_TAG_MAX) {
+        aux_provider_tag_t *t = &g_aux_provider_tags[g_aux_provider_tag_count++];
+        t->client = (const void *)client;
+        snprintf(t->provider, sizeof(t->provider), "%s", provider);
+    } else {
+        /* Table full: evict slot 0 (Python attributes die with GC'd clients). */
+        memmove(&g_aux_provider_tags[0], &g_aux_provider_tags[1],
+                sizeof(aux_provider_tag_t) * (AUX_TAG_MAX - 1));
+        aux_provider_tag_t *t = &g_aux_provider_tags[AUX_TAG_MAX - 1];
+        t->client = (const void *)client;
+        snprintf(t->provider, sizeof(t->provider), "%s", provider);
+    }
 }
 
 /* PoP: aux_effective_provider_for_client @ agent/auxiliary_client.py:_effective_provider_for_client */
 void aux_effective_provider_for_client(const char *client, const char *fallback, char *out, size_t out_sz) {
-    (void)client;
+    for (size_t i = 0; i < g_aux_provider_tag_count; i++) {
+        if (g_aux_provider_tags[i].client == (const void *)client &&
+            g_aux_provider_tags[i].provider[0]) {
+            snprintf(out, out_sz, "%s", g_aux_provider_tags[i].provider);
+            return;
+        }
+    }
     snprintf(out, out_sz, "%s", fallback ? fallback : "");
 }
 
+/* Relay-aux call context (Python: _RELAY_AUX_CALL_CONTEXT contextvar holds a
+ * dict; only "response_model" is consumed downstream here). */
+static _Thread_local char g_relay_aux_response_model[128] = "";
+
 /* PoP: aux_record_relay_response_model @ agent/auxiliary_client.py:_record_relay_auxiliary_response_model */
 void aux_record_relay_response_model(const char *response_model) {
-    (void)response_model;
+    /* Python: only record when a relay-aux call context is active and the
+     * model string is non-blank; blank clears (response without a model). */
+    if (!response_model || !response_model[0]) {
+        g_relay_aux_response_model[0] = '\0';
+        return;
+    }
+    snprintf(g_relay_aux_response_model, sizeof(g_relay_aux_response_model),
+             "%s", response_model);
+}
+
+/* PoP: aux_take_relay_response_model @ agent/auxiliary_client.py:_RELAY_AUX_CALL_CONTEXT */
+const char *aux_take_relay_response_model(void) {
+    return g_relay_aux_response_model[0] ? g_relay_aux_response_model : NULL;
 }
 

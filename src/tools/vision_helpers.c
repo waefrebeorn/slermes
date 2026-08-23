@@ -473,11 +473,90 @@ int vision_is_path_like_video_source(const char *value) {
 
 /* PoP: vision_build_scale_note @ tools/vision_tools.py:_build_scale_note */
 /* Returns malloc'd note string or NULL. Caller frees. */
+/* PoP: vision_build_scale_note @ tools/vision_tools.py:_build_scale_note */
 char *vision_build_scale_note(const char *scale_json, const char *crop_json) {
-    (void)scale_json;
-    (void)crop_json;
-    /* Full implementation would parse JSON and build note string.
-     * This is a wiring seam — the full logic needs JSON parsing of
-     * scale_info and crop_offset dicts. */
-    return NULL;
+    /* Build a coordinate-mapping disclosure note. scale_json carries
+     * orig_width/orig_height/new_width/new_height when a downscale happened;
+     * crop_json carries x/y when a region zoom was applied. NULL when neither
+     * applies — no note, no noise. Mirrors Python's "%.2f" factor formatting
+     * and the two fixed disclosure clauses verbatim. */
+    char *parts[2] = {NULL, NULL};
+    int n_parts = 0;
+
+    if (scale_json) {
+        char *err = NULL;
+        json_node_t *s = json_parse(scale_json, &err);
+        if (err) free(err);
+        if (s) {
+            json_node_t *ow_n = json_object_get(s, "orig_width");
+            json_node_t *oh_n = json_object_get(s, "orig_height");
+            json_node_t *nw_n = json_object_get(s, "new_width");
+            json_node_t *nh_n = json_object_get(s, "new_height");
+            if (ow_n && oh_n && nw_n && nh_n &&
+                ow_n->type == JSON_NUMBER && oh_n->type == JSON_NUMBER &&
+                nw_n->type == JSON_NUMBER && nh_n->type == JSON_NUMBER) {
+                double ow = ow_n->num_val, oh = oh_n->num_val;
+                double nw = nw_n->num_val, nh = nh_n->num_val;
+                double fx = (nw != 0.0) ? ow / nw : 1.0;
+                double fy = (nh != 0.0) ? oh / nh : 1.0;
+                char fxs[32], fys[32];
+                snprintf(fxs, sizeof(fxs), "%.2f", fx);
+                snprintf(fys, sizeof(fys), "%.2f", fy);
+                char buf[512];
+                if (strcmp(fxs, fys) == 0) {
+                    snprintf(buf, sizeof(buf),
+                             "Image downscaled from %dx%d to %dx%d for vision; "
+                             "multiply any coordinates you report by %s "
+                             "to map back to the original image.",
+                             (int)ow, (int)oh, (int)nw, (int)nh, fxs);
+                } else {
+                    snprintf(buf, sizeof(buf),
+                             "Image downscaled from %dx%d to %dx%d for vision; "
+                             "multiply any x coordinates you report by %s and "
+                             "any y coordinates by %s to map back to the "
+                             "original image.",
+                             (int)ow, (int)oh, (int)nw, (int)nh, fxs, fys);
+                }
+                parts[n_parts++] = strdup(buf);
+            }
+            json_free(s);
+        }
+    }
+
+    if (crop_json && n_parts < 2) {
+        char *err = NULL;
+        json_node_t *c = json_parse(crop_json, &err);
+        if (err) free(err);
+        if (c) {
+            json_node_t *x_n = json_object_get(c, "x");
+            json_node_t *y_n = json_object_get(c, "y");
+            if (x_n && y_n &&
+                x_n->type == JSON_NUMBER && y_n->type == JSON_NUMBER) {
+                char buf[384];
+                snprintf(buf, sizeof(buf),
+                         "Analysis was performed on a cropped region of the original "
+                         "image starting at offset (%d, "
+                         "%d); coordinates are relative to that crop "
+                         "origin — add the offset to map back to the full image.",
+                         (int)x_n->num_val, (int)y_n->num_val);
+                parts[n_parts++] = strdup(buf);
+            }
+            json_free(c);
+        }
+    }
+
+    if (n_parts == 0) return NULL;
+    if (n_parts == 1) return parts[0];
+
+    size_t len = strlen(parts[0]) + 1 + strlen(parts[1]) + 1;
+    char *out = malloc(len);
+    if (!out) {
+        free(parts[0]);
+        free(parts[1]);
+        return NULL;
+    }
+    snprintf(out, len, "%s %s", parts[0], parts[1]);
+    free(parts[0]);
+    free(parts[1]);
+    return out;
 }

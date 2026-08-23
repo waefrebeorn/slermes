@@ -30,7 +30,10 @@ char *ssb_fetch(const char *cfg_json) {
 
 /* PoP: ssb_override_existing @ agent/secret_sources/base.py:override_existing */
 bool ssb_override_existing(void) {
-    /* Python: may this source overwrite env vars? */
+    /* Python default is also a no-op: base.py returns
+     * bool(cfg.get("override_existing", False)) — the base-class default is
+     * False (never overwrite .env/shell vars); only Bitwarden overrides to
+     * True via bw_override_existing(). */
     return false;
 }
 

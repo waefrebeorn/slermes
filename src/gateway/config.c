@@ -607,9 +607,13 @@ static bool gw_check_connected_weixin(const gw_platform_config_t *cfg) {
             (cfg->token[0] || (cfg->extra && json_object_get(cfg->extra, "token"))));
 }
 
+/* PoP: gw_check_connected_whatsapp @ gateway/config.py:_PLATFORM_CONNECTED_CHECKERS */
 static bool gw_check_connected_whatsapp(const gw_platform_config_t *cfg) {
-    (void)cfg;
-    return true; /* bridge handles auth */
+    /* WhatsApp has no dedicated entry in Python's _PLATFORM_CONNECTED_CHECKERS,
+     * so it takes the generic "token or api_key" enrollment check. */
+    return cfg && (cfg->token[0] ||
+           (cfg->extra && json_object_get(cfg->extra, "token")) ||
+           (cfg->extra && json_object_get(cfg->extra, "api_key")));
 }
 
 static bool gw_check_connected_whatsapp_cloud(const gw_platform_config_t *cfg) {
@@ -631,11 +635,25 @@ static bool gw_check_connected_sms(const gw_platform_config_t *cfg) {
     return getenv("TWILIO_ACCOUNT_SID") != NULL;
 }
 
+/* PoP: gw_check_connected_api_server @ gateway/config.py:_has_usable_api_server_key */
 static bool gw_check_connected_api_server(const gw_platform_config_t *cfg) {
-    (void)cfg;
-    return true;
+    /* Python: _has_usable_api_server_key(cfg.extra["key"]) — the key must be
+     * present and at least 16 chars (has_usable_secret min_length=16), so the
+     * platform is only enrolled when the adapter would actually start. */
+    if (!cfg || !cfg->extra) return false;
+    json_node_t *key = json_object_get(cfg->extra, "key");
+    if (!key || key->type != JSON_STRING) return false;
+    const char *k = key->str_val ? key->str_val : "";
+    const char *start = k;
+    const char *end = k + strlen(k);
+    while (start < end && isspace((unsigned char)*start)) start++;
+    while (end > start && isspace((unsigned char)end[-1])) end--;
+    return (size_t)(end - start) >= 16;
 }
 
+/* Python default is also a no-op — gateway/config.py: Platform.WEBHOOK maps to
+ * `lambda cfg: True`, so webhook is always considered connected. */
+/* PoP: gw_check_connected_webhook @ gateway/config.py:_PLATFORM_CONNECTED_CHECKERS */
 static bool gw_check_connected_webhook(const gw_platform_config_t *cfg) {
     (void)cfg;
     return true;

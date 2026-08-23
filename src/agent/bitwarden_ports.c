@@ -215,8 +215,11 @@ long bw_apply_bitwarden_secrets(const char *secrets_json) {
 
 /* PoP: bw_override_existing @ agent/secret_sources/bitwarden.py:override_existing */
 bool bw_override_existing(void) {
-    /* Python: config flag default. */
-    return false;
+    /* Bitwarden Secret Manager's point is centralized rotation: Python's
+     * override_existing() defaults TRUE (cfg.get("override_existing", True),
+     * matching DEFAULT_CONFIG) — if .env had the final say, rotating a key in
+     * Bitwarden wouldn't take effect until the stale .env line was deleted. */
+    return true;
 }
 
 /* PoP: bw_protected_env_vars @ agent/secret_sources/bitwarden.py:protected_env_vars */

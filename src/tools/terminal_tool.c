@@ -487,8 +487,12 @@ char* _handle_terminal(const char *args_json) {
     return result;
 }
 
-/* Register the terminal tool handler in the tool registry */
+/* Register the terminal tool handler in the tool registry.
+ * The canonical registration lives in registry_init_terminal() (src/tools/terminal.c),
+ * which also wires terminal.env_passthrough config; delegate to it so this
+ * alternate entry point performs the real registration instead of nothing. */
+void register_terminal_tool(void);
+extern void registry_init_terminal(void);
 void register_terminal_tool(void) {
-    /* This would be called from tools/tool_init.c */
-    /* tool_register("terminal", _handle_terminal, SCHEMA); */
+    registry_init_terminal();
 }
