@@ -137,7 +137,13 @@ bcr_route_result_t bcr_route_browser_tool(
     return BCR_ROUTED;
 
 fallback:
-    if (fallback) fallback(fallback_ctx);
+    if (fallback) {
+        char *fb_result = fallback(fallback_ctx); /* legacy return value */
+        if (fb_result) {
+            if (out) *out = fb_result;
+            else free(fb_result);
+        }
+    }
     return BCR_FELL_BACK;
 }
 
