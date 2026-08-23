@@ -4,6 +4,7 @@
  * Implements text wrapping, filling, dedent, and shorten for CLI output.
  */
 
+#define _POSIX_C_SOURCE 200809L
 #include "textwrap.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -375,4 +376,112 @@ char **textwrap_chunk(const char *text, int max_len, size_t *count) {
 
     *count = n;
     return chunks;
+}
+
+/* ================================================================
+ *  PoP: textwrap.shorten / textwrap.indent (2026-08-22 lib audit)
+ * ================================================================ */
+
+char *textwrap_indent(const char *text, const char *prefix) {
+    if (!prefix) prefix = "";
+    if (!text) return strdup("");
+    size_t plen = strlen(prefix);
+    size_t tlen = strlen(text);
+    /* count non-whitespace-only lines */
+    size_t cap = tlen + 1;
+    const char *p = text;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t ll = nl ? (size_t)(nl - p) : strlen(p);
+        int only_ws = 1;
+        for (size_t i = 0; i < ll; i++)
+            if (!isspace((unsigned char)p[i])) { only_ws = 0; break; }
+        if (!only_ws && ll > 0) cap += plen;
+        if (!nl) break;
+        p = nl + 1;
+    }
+    char *out = (char *)malloc(cap);
+    if (!out) return NULL;
+    size_t o = 0;
+    p = text;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t ll = nl ? (size_t)(nl - p) : strlen(p);
+        int only_ws = 1;
+        for (size_t i = 0; i < ll; i++)
+            if (!isspace((unsigned char)p[i])) { only_ws = 0; break; }
+        if (!only_ws && ll > 0) {
+            memcpy(out + o, prefix, plen);
+            o += plen;
+        }
+        memcpy(out + o, p, ll);
+        o += ll;
+        if (!nl) break;
+        out[o++] = '\n';
+        p = nl + 1;
+    }
+    out[o] = '\0';
+    return out;
+}
+
+char *textwrap_shorten_py(const char *text, int max_len) {
+    if (!text || max_len <= 0) return strdup("");
+    static const char PLACEHOLDER[] = " [...]";
+    const size_t phlen = sizeof(PLACEHOLDER) - 1;
+    size_t len = strlen(text);
+    if ((int)len <= max_len) return strdup(text);
+
+    /* tokenize into whitespace-separated words (Python re-joins with a
+     * single space, matching textwrap's collapse-whitespace default) */
+    char **words = (char **)calloc(MAX_WORDS, sizeof(char *));
+    if (!words) return NULL;
+    int nwords = 0;
+    const char *p = text;
+    while (*p && nwords < MAX_WORDS) {
+        while (*p && isspace((unsigned char)*p)) p++;
+        if (!*p) break;
+        const char *start = p;
+        while (*p && !isspace((unsigned char)*p)) p++;
+        words[nwords] = (char *)malloc((size_t)(p - start) + 1);
+        if (!words[nwords]) break;
+        memcpy(words[nwords], start, (size_t)(p - start));
+        words[nwords][p - start] = '\0';
+        nwords++;
+    }
+
+    /* drop words from the end until body + placeholder fits */
+    char *result = NULL;
+    for (int end = nwords; end >= 0; end--) {
+        /* measure: words joined by single spaces, then placeholder
+         * (preceded by a space) when any words are kept; placeholder
+         * alone when none fit */
+        size_t need = 0;
+        for (int i = 0; i < end; i++) need += strlen(words[i]);
+        if (end > 1) need += (size_t)(end - 1);   /* joining spaces */
+        if (end > 0) need += phlen;      /* space + "[...]" body */
+        else if (phlen <= (size_t)max_len) need += phlen;
+        if (need == 0) need = 1;         /* empty fallback */
+        if ((long long)need <= (long long)max_len || end == 0) {
+            result = (char *)malloc(need + 1);
+            if (result) {
+                size_t o = 0;
+                for (int i = 0; i < end; i++) {
+                    if (i > 0) result[o++] = ' ';
+                    size_t wl = strlen(words[i]);
+                    memcpy(result + o, words[i], wl);
+                    o += wl;
+                }
+                if (end > 0 || phlen <= (size_t)max_len) {
+                    if (end > 0) result[o++] = ' ';
+                    memcpy(result + o, PLACEHOLDER + 1, phlen - 1);
+                    o += phlen - 1;
+                }
+                result[o] = '\0';
+            }
+            break;
+        }
+    }
+    for (int i = 0; i < nwords; i++) free(words[i]);
+    free(words);
+    return result ? result : strdup("");
 }

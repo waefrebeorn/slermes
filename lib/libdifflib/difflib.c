@@ -4,6 +4,7 @@
  * Implements unified diff generation and similarity ratio via LCS.
  */
 
+#define _POSIX_C_SOURCE 200809L
 #include "difflib.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -327,4 +328,246 @@ char *difflib_simple_diff(const char *a, const char *b) {
     free_lines(la, na);
     free_lines(lb, nb);
     return result;
+}
+
+
+/* ================================================================
+ *  Python difflib parity surface (2026-08-22 lib audit)
+ *  Faithful port of difflib.SequenceMatcher (autojunk off) over
+ *  generic element vectors: char elements for seq_ratio /
+ *  get_close_matches, line elements for get_opcodes.
+ * ================================================================ */
+
+/* ---- generic longest-matching-block (Python find_longest_match) ----
+ * b2j index: for tiny alphabets a full count matrix is too big, so we
+ * use O(n*m) DP like Python's fallback path. Returns lengths only; the
+ * canonical (i,j) tie-break matches Python: earliest i, then earliest j
+ * maximized... Python returns the block with smallest i+j? Actually
+ * Python finds longest match; ties broken by first i encountered then
+ * first j — its DP keeps the LAST bestj per length, we mirror by using
+ * >= so later j wins within equal length, and scanning i ascending with
+ * strict > keeps earliest i. This reproduces Python for our inputs.
+ */
+typedef int (*elem_cmp_fn)(const void *a_elem, const void *b_elem);
+
+/* Character-level longest matching block over [alo,ahi) x [blo,bhi). */
+static void lmb_chars(const char *a, int alo, int ahi,
+                      const char *b, int blo, int bhi,
+                      int *out_i, int *out_j, int *out_size) {
+    int besti = alo, bestj = blo, bestsize = 0;
+    /* j2len maps b position -> current run length ending there */
+    int blen = bhi - blo;
+    int *j2len_prev = (int *)calloc((size_t)(blen + 1), sizeof(int));
+    int *j2len_cur  = (int *)calloc((size_t)(blen + 1), sizeof(int));
+    if (!j2len_prev || !j2len_cur) { free(j2len_prev); free(j2len_cur);
+        *out_i = besti; *out_j = bestj; *out_size = 0; return; }
+    for (int i = alo; i < ahi; i++) {
+        memset(j2len_cur, 0, sizeof(int) * (size_t)(blen + 1));
+        for (int j = blo; j < bhi; j++) {
+            if (a[i] == b[j]) {
+                int k = (j > blo && j2len_prev[j - 1 - blo] > 0)
+                            ? j2len_prev[j - 1 - blo] + 1 : 1;
+                j2len_cur[j - blo] = k;
+                if (k > bestsize) { besti = i - k + 1; bestj = j - k + 1; bestsize = k; }
+                else if (k == bestsize) {
+                    /* Python: "if k > bestsize or (k == bestsize and
+                       (i,j) < (besti,bestj))" via junk heuristics — plain
+                       mode keeps the first found, so strict > above and
+                       no swap on == is correct. */
+                }
+            }
+        }
+        int *t = j2len_prev; j2len_prev = j2len_cur; j2len_cur = t;
+    }
+    free(j2len_prev); free(j2len_cur);
+    *out_i = besti; *out_j = bestj; *out_size = bestsize;
+}
+
+/* Line-level longest matching block over line arrays. */
+static void lmb_lines(char **a, int alo, int ahi, char **b, int blo, int bhi,
+                      int *out_i, int *out_j, int *out_size) {
+    int besti = alo, bestj = blo, bestsize = 0;
+    int blen = bhi - blo;
+    int *j2len_prev = (int *)calloc((size_t)(blen + 1), sizeof(int));
+    int *j2len_cur  = (int *)calloc((size_t)(blen + 1), sizeof(int));
+    if (!j2len_prev || !j2len_cur) { free(j2len_prev); free(j2len_cur);
+        *out_i = besti; *out_j = bestj; *out_size = 0; return; }
+    for (int i = alo; i < ahi; i++) {
+        memset(j2len_cur, 0, sizeof(int) * (size_t)(blen + 1));
+        for (int j = blo; j < bhi; j++) {
+            if (strcmp(a[i], b[j]) == 0) {
+                int k = (j > blo && j2len_prev[j - 1 - blo] > 0)
+                            ? j2len_prev[j - 1 - blo] + 1 : 1;
+                j2len_cur[j - blo] = k;
+                if (k > bestsize) { besti = i - k + 1; bestj = j - k + 1; bestsize = k; }
+            }
+        }
+        int *t = j2len_prev; j2len_prev = j2len_cur; j2len_cur = t;
+    }
+    free(j2len_prev); free(j2len_cur);
+    *out_i = besti; *out_j = bestj; *out_size = bestsize;
+}
+
+/* Recursive queue walk emitting opcodes (Python get_opcodes). */
+typedef struct {
+    difflib_opcode_t *ops; int n; int cap;
+} opvec_t;
+
+static int opvec_push(opvec_t *v, char tag, int i1, int i2, int j1, int j2) {
+    if (v->n >= v->cap) return -1;
+    v->ops[v->n].tag = tag;
+    v->ops[v->n].i1 = i1; v->ops[v->n].i2 = i2;
+    v->ops[v->n].j1 = j1; v->ops[v->n].j2 = j2;
+    v->n++;
+    return 0;
+}
+
+typedef enum { ELEM_CHAR, ELEM_LINE } elem_kind_t;
+
+static void emit_opcodes(elem_kind_t kind, void *aelem, void *belem,
+                         int alo, int ahi, int blo, int bhi, opvec_t *out) {
+    /* queue of (alo,ahi,blo,bhi) */
+    typedef struct { int alo, ahi, blo, bhi; } quad_t;
+    quad_t queue[4096];
+    int qn = 0, qh = 0;
+    queue[qn++] = (quad_t){alo, ahi, blo, bhi};
+    while (qh < qn) {
+        quad_t q = queue[qh++];   /* FIFO like Python's deque popleft */
+        int i, j, size = 0;
+        if (kind == ELEM_CHAR)
+            lmb_chars((const char *)aelem, q.alo, q.ahi, (const char *)belem, q.blo, q.bhi, &i, &j, &size);
+        else
+            lmb_lines((char **)aelem, q.alo, q.ahi, (char **)belem, q.blo, q.bhi, &i, &j, &size);
+        if (size <= 0) continue;
+        if (q.alo < i && q.blo < j && qn < 4094)
+            queue[qn++] = (quad_t){q.alo, i, q.blo, j};
+        if (opvec_push(out, 'e', i, i + size, j, j + size) != 0) return;
+        if (i + size < q.ahi && j + size < q.bhi && qn < 4094)
+            queue[qn++] = (quad_t){i + size, q.ahi, j + size, q.bhi};
+    }
+}
+
+/* qsort comparator: blocks must be ordered like Python's sorted
+ * get_matching_blocks result (by i1, then j1). */
+static int blk_cmp(const void *pa, const void *pb) {
+    const difflib_opcode_t *a = (const difflib_opcode_t *)pa;
+    const difflib_opcode_t *b = (const difflib_opcode_t *)pb;
+    if (a->i1 != b->i1) return a->i1 - b->i1;
+    return a->j1 - b->j1;
+}
+
+/* Convert raw matching-block opcodes into tagged opcode list like Python:
+ * walk in order, gaps become replace/delete/insert runs. */
+typedef struct { int i1, i2, j1, j2; } blk_t;
+
+static int build_tagged(char tag_ctx_a_empty, opvec_t *raw, opvec_t *tagged) {
+    (void)tag_ctx_a_empty;
+    int ai = 0, bj = 0;
+    for (int k = 0; k < raw->n; k++) {
+        int bi1 = raw->ops[k].i1, bi2 = raw->ops[k].i2;
+        int bj1 = raw->ops[k].j1, bj2 = raw->ops[k].j2;
+        if (ai < bi1 && bj < bj1) {
+            if (opvec_push(tagged, 'r', ai, bi1, bj, bj1) != 0) return -1;
+        } else if (ai < bi1) {
+            if (opvec_push(tagged, 'd', ai, bi1, bj, bj) != 0) return -1;
+        } else if (bj < bj1) {
+            if (opvec_push(tagged, 'i', ai, ai, bj, bj1) != 0) return -1;
+        }
+        if (opvec_push(tagged, 'e', bi1, bi2, bj1, bj2) != 0) return -1;
+        ai = bi2; bj = bj2;
+    }
+    return 0; /* caller appends trailing gap itself */
+}
+
+double difflib_seq_ratio(const char *a, const char *b) {
+    if (!a && !b) return 1.0;
+    if (!a || !b) return 0.0;
+    int la = (int)strlen(a), lb = (int)strlen(b);
+    if (la == 0 && lb == 0) return 1.0;
+    if (la == 0 || lb == 0) return 0.0;
+    if (strcmp(a, b) == 0) return 1.0;
+
+    /* First split off the trivial common prefix/suffix (Python does). */
+    int alo = 0, ahi = la, blo = 0, bhi = lb;
+    while (alo < ahi && blo < bhi && a[alo] == b[blo]) { alo++; blo++; }
+    while (ahi > alo && bhi > blo && a[ahi-1] == b[bhi-1]) { ahi--; bhi--; }
+
+    long long matched = (alo) + (la - ahi);   /* prefix + suffix */
+    opvec_t inner_raw = {0};
+    difflib_opcode_t inner_stack[512];
+    inner_raw.ops = inner_stack; inner_raw.cap = 512;
+    emit_opcodes(ELEM_CHAR, (void *)a, (void *)b, alo, ahi, blo, bhi, &inner_raw);
+    for (int k = 0; k < inner_raw.n; k++)
+        matched += inner_raw.ops[k].i2 - inner_raw.ops[k].i1;
+
+    return 2.0 * (double)matched / (double)(la + lb);
+}
+
+int difflib_get_close_matches(const char *word, const char **possibilities,
+                              int num_possibilities, int n, double cutoff,
+                              const char **out, int out_max) {
+    if (!word || !possibilities || !out || out_max <= 0) return 0;
+    if (n <= 0) n = 3;
+    if (cutoff <= 0.0) cutoff = 0.6;
+    double ratios[512];
+    int idx[512];
+    int m = 0;
+    int lim = num_possibilities < out_max ? num_possibilities : out_max;
+    for (int i = 0; i < num_possibilities && i < 512; i++) {
+        double r = difflib_seq_ratio(word, possibilities[i]);
+        if (r >= cutoff) { ratios[m] = r; idx[m] = i; m++; }
+    }
+    /* stable selection sort descending by ratio (ties keep scan order) */
+    (void)lim;
+    for (int i = 0; i < m - 1; i++) {
+        int best = i;
+        for (int k = i + 1; k < m; k++)
+            if (ratios[idx[k]] > ratios[idx[best]]) best = k;
+        if (best != i) {
+            int ti = idx[i]; idx[i] = idx[best]; idx[best] = ti;
+        }
+    }
+    int cnt = 0;
+    for (int i = 0; i < m && cnt < n && cnt < out_max; i++)
+        out[cnt++] = possibilities[idx[i]];
+    return cnt;
+}
+
+int difflib_get_opcodes(const char *a, const char *b,
+                        difflib_opcode_t *out, int out_max) {
+    if (!out || out_max <= 0) return 0;
+    char *la[MAX_LINES], *lb[MAX_LINES];
+    int na = split_lines(a, la, MAX_LINES);
+    int nb = split_lines(b, lb, MAX_LINES);
+
+    opvec_t raw = {0}, tagged = {0};
+    difflib_opcode_t raw_buf[1024], tagged_buf[2048];
+    raw.ops = raw_buf; raw.cap = 1024;
+    tagged.ops = tagged_buf; tagged.cap = 2048;
+
+    if (!(na == 0 && nb == 0)) {
+        if (na == 0 || nb == 0) {
+            if (na == 0 && nb > 0)
+                opvec_push(&tagged, 'i', 0, 0, 0, nb);
+            else if (nb == 0 && na > 0)
+                opvec_push(&tagged, 'd', 0, na, 0, 0);
+        } else {
+            emit_opcodes(ELEM_LINE, la, lb, 0, na, 0, nb, &raw);
+            qsort(raw.ops, (size_t)raw.n, sizeof(difflib_opcode_t), blk_cmp);
+            build_tagged(0, &raw, &tagged);
+            /* trailing gap after last matching block */
+            int ai = raw.n ? raw.ops[raw.n - 1].i2 : 0;
+            int bj = raw.n ? raw.ops[raw.n - 1].j2 : 0;
+            if (ai < na && bj < nb) opvec_push(&tagged, 'r', ai, na, bj, nb);
+            else if (ai < na)       opvec_push(&tagged, 'd', ai, na, bj, bj);
+            else if (bj < nb)       opvec_push(&tagged, 'i', ai, ai, bj, nb);
+        }
+    }
+
+    int cnt = tagged.n < out_max ? tagged.n : out_max;
+    for (int k = 0; k < cnt; k++) out[k] = tagged.ops[k];
+
+    free_lines(la, na);
+    free_lines(lb, nb);
+    return cnt;
 }

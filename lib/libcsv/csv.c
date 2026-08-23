@@ -6,6 +6,7 @@
  * embedded newlines in quoted fields, and variable-width rows.
  */
 
+#define _POSIX_C_SOURCE 200809L
 #include "csv.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +22,7 @@ struct csv_writer_t {
     FILE *fp;
     char  delimiter;
     bool  owned_fp;  /* true if we should fclose on close */
+    csv_quote_mode_t quote_mode;  /* default MINIMAL (0 via calloc) */
 };
 
 csv_writer_t *csv_writer_open(const char *path, char delimiter) {
@@ -45,35 +47,80 @@ csv_writer_t *csv_writer_open_file(FILE *fp, char delimiter) {
     return w;
 }
 
-/* Escape and write a single field. Handles: embedded delimiter, quote, newline. */
-static void write_escaped_field(FILE *fp, const char *field, char delimiter) {
-    if (!field) {
-        fputs("", fp);
-        return;
-    }
+bool csv_writer_set_quote_mode(csv_writer_t *w, csv_quote_mode_t mode) {
+    if (!w) return false;
+    w->quote_mode = mode;
+    return true;
+}
 
-    /* Check if quoting is needed */
+csv_quote_mode_t csv_writer_quote_mode(csv_writer_t *w) {
+    return w ? w->quote_mode : CSV_QUOTE_MINIMAL;
+}
+
+/* PoP: Python csv writer's _needs_ quoting decision + QUOTE_NONNUMERIC's
+ * numeric test (float(value) parseability). */
+static bool field_is_numeric(const char *field) {
+    if (!field || !*field) return false;
+    char *end = NULL;
+    (void)strtod(field, &end);
+    return end && *end == '\0';
+}
+
+char *csv_escape_field(const char *field, char delimiter, csv_quote_mode_t mode) {
+    if (!field) field = "";
     bool need_quote = false;
+    bool special = false;
     for (const char *p = field; *p; p++) {
         if (*p == '"' || *p == delimiter || *p == '\n' || *p == '\r') {
-            need_quote = true;
+            special = true;
             break;
         }
     }
+    switch (mode) {
+    case CSV_QUOTE_ALL:
+        need_quote = true;
+        break;
+    case CSV_QUOTE_NONNUMERIC:
+        need_quote = !field_is_numeric(field);
+        break;
+    case CSV_QUOTE_NONE:
+        if (special) return NULL;   /* PoP: csv.Error("need to escape...") */
+        need_quote = false;
+        break;
+    case CSV_QUOTE_MINIMAL:
+    default:
+        need_quote = special;
+        break;
+    }
 
-    if (!need_quote) {
-        fputs(field, fp);
+    size_t flen = strlen(field);
+    if (!need_quote) return strdup(field);
+    /* quoted: len + 2 quotes + doubling of internal quotes */
+    char *out = (char *)malloc(flen * 2 + 3);
+    if (!out) return NULL;
+    size_t o = 0;
+    out[o++] = '"';
+    for (const char *p = field; *p; p++) {
+        if (*p == '"') out[o++] = '"';
+        out[o++] = *p;
+    }
+    out[o++] = '"';
+    out[o] = '\0';
+    return out;
+}
+
+/* Escape and write a single field. Handles: embedded delimiter, quote, newline. */
+static void write_escaped_field(FILE *fp, const char *field, char delimiter,
+                                csv_quote_mode_t mode) {
+    char *esc = csv_escape_field(field, delimiter, mode);
+    if (!esc) {
+        /* QUOTE_NONE data loss — write raw (writer returns false via
+         * csv_escape_field contract; here we preserve legacy raw write). */
+        fputs(field ? field : "", fp);
         return;
     }
-
-    /* Write quoted field, escaping internal quotes by doubling them */
-    fputc('"', fp);
-    for (const char *p = field; *p; p++) {
-        if (*p == '"')
-            fputc('"', fp);  /* double the quote */
-        fputc(*p, fp);
-    }
-    fputc('"', fp);
+    fputs(esc, fp);
+    free(esc);
 }
 
 bool csv_writer_write_row(csv_writer_t *w, const char **fields, int count) {
@@ -81,7 +128,12 @@ bool csv_writer_write_row(csv_writer_t *w, const char **fields, int count) {
 
     for (int i = 0; i < count; i++) {
         if (i > 0) fputc(w->delimiter, w->fp);
-        write_escaped_field(w->fp, fields[i], w->delimiter);
+        if (w->quote_mode == CSV_QUOTE_NONE) {
+            char *chk = csv_escape_field(fields[i], w->delimiter, CSV_QUOTE_NONE);
+            if (!chk) return false;   /* PoP: csv.Error */
+            free(chk);
+        }
+        write_escaped_field(w->fp, fields[i], w->delimiter, w->quote_mode);
     }
     fputc('\n', w->fp);
     return true;

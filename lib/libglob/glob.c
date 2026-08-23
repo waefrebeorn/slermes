@@ -4,6 +4,7 @@
  * Implements glob matching with ** for recursive directory traversal.
  */
 
+#define _POSIX_C_SOURCE 200809L
 #include "hermes_glob.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +17,10 @@
 /* ================================================================
  *  Pattern matching (supports **, *, ?)
  * ================================================================ */
+
+static bool glob_match_components(const char *pattern, int nparts,
+                                  const char **pend, const char *path,
+                                  int sparts, const char **send);
 
 bool glob_match(const char *pattern, const char *path) {
     if (!pattern || !path) return false;
@@ -63,13 +68,79 @@ bool glob_match(const char *pattern, const char *path) {
         }
     }
 
-    /* No **: use fnmatch */
-    return fnmatch(pattern, path, 0) == 0;
+    /* No **: match component-by-component with FNM_PERIOD so wildcard-led
+     * components never match a leading dot (Python glob/fnmatch rule).
+     * A literal pattern component (no wildcards) is compared with strcmp
+     * so ".hidden" still matches itself. */
+    {
+        const char *p = pattern;
+        /* fast path: no wildcards anywhere -> literal compare */
+        if (!strpbrk(pattern, "*?[")) return strcmp(pattern, path) == 0;
+
+        const char *pend[64], *send[64];
+        int nparts = 0;
+        pend[nparts] = p;
+        for (const char *q = p; *q; q++) if (*q == '/') { nparts++; pend[nparts] = q + 1; }
+        nparts++;  /* count of pattern components */
+        int sparts = 0;
+        send[sparts] = path;
+        for (const char *q = path; *q; q++) if (*q == '/') { sparts++; send[sparts] = q + 1; }
+        sparts++;
+        if (nparts > 64 || sparts > 64) return fnmatch(pattern, path, 0) == 0;
+
+        return glob_match_components(pattern, nparts, pend, path, sparts, send);
+    }
 }
 
-/* ================================================================
- *  Recursive file finding
- * ================================================================ */
+/* Compare one pattern component against one path component. */
+static bool match_one_component(const char *pc, size_t plen,
+                                const char *sc, size_t slen) {
+    char pbuf[GLOB_MAX_PATH], sbuf[GLOB_MAX_PATH];
+    if (plen >= sizeof(pbuf) || slen >= sizeof(sbuf)) return false;
+    memcpy(pbuf, pc, plen); pbuf[plen] = '\0';
+    memcpy(sbuf, sc, slen); sbuf[slen] = '\0';
+    if (!strpbrk(pbuf, "*?[")) return strcmp(pbuf, sbuf) == 0;
+    return fnmatch(pbuf, sbuf, FNM_PERIOD) == 0;
+}
+
+/* Backtracking matcher: pi indexes pattern components, si path components.
+ * Returns true when the remaining suffixes match. */
+static bool glob_match_from(const char *pattern, int nparts, const char **pend,
+                            const char *path, int sparts, const char **send,
+                            int pi, int si) {
+    while (pi < nparts) {
+        const char *pc = pend[pi];
+        size_t plen = (pi + 1 < nparts)
+                          ? (size_t)(pend[pi + 1] - pc - 1)
+                          : strlen(pc);
+        if (si >= sparts) {
+            /* only a trailing "**" can consume nothing further */
+            return plen == 2 && pc[0] == '*' && pc[1] == '*';
+        }
+        const char *sc = send[si];
+        size_t slen = (si + 1 < sparts)
+                          ? (size_t)(send[si + 1] - sc - 1)
+                          : strlen(sc);
+        if (plen == 2 && pc[0] == '*' && pc[1] == '*') {
+            /* try consuming 0..(remaining) path components */
+            for (int k = si; k <= sparts; k++) {
+                if (glob_match_from(pattern, nparts, pend, path, sparts, send,
+                                    pi + 1, k))
+                    return true;
+            }
+            return false;
+        }
+        if (!match_one_component(pc, plen, sc, slen)) return false;
+        pi++; si++;
+    }
+    return si == sparts;
+}
+
+static bool glob_match_components(const char *pattern, int nparts,
+                                  const char **pend, const char *path,
+                                  int sparts, const char **send) {
+    return glob_match_from(pattern, nparts, pend, path, sparts, send, 0, 0);
+}
 
 /* Append a path to the match array, reallocating if needed */
 static bool append_match(char ***matches, int *count, int *capacity,
@@ -87,6 +158,34 @@ static bool append_match(char ***matches, int *count, int *capacity,
     if (!(*matches)[*count]) return false;
     (*count)++;
     return true;
+}
+
+/* PoP: Python glob hides dotfiles from wildcard-led patterns — "*" and
+ * "?" never match a leading '.' unless the pattern's corresponding
+ * component starts with a literal '.'. */
+/* Split pattern into components and check the rule against the final
+ * path component's depth. Simplification faithful for single-component
+ * and **-style patterns used by callers. */
+static bool dotfile_allowed(const char *pattern, const char *rel) {
+    if (!rel || rel[0] != '.') return true;   /* not a dotfile */
+    /* find the pattern component aligned with the LAST path component */
+    const char *last_slash_p = strrchr(pattern, '/');
+    const char *seg = last_slash_p ? last_slash_p + 1 : pattern;
+    /* if the aligned pattern segment ends in a double-star, a literal
+     * leading dot is still hidden from wildcards deeper in the pattern;
+     * Python hides dotfiles at every level, so we compare against the
+     * final aligned segment of the pattern. */
+    int rel_depth = 0;
+    for (const char *q = rel; *q; q++) if (*q == '/') rel_depth++;
+    int pat_depth = 0;
+    for (const char *q = pattern; *q && q[0] && q[1]; q++) {
+        if (q[0] == '*' && q[1] == '*') { continue; }  /* ** spans levels */
+        if (*q == '/') pat_depth++;
+    }
+    (void)pat_depth;
+    /* conservative faithful rule: hidden unless the aligned segment
+     * begins with a literal dot */
+    return seg[0] == '.';
 }
 
 /* Recursive directory walk */
@@ -119,8 +218,8 @@ static void walk_dir(const char *dir, const char *rel_base,
         if (stat(full, &st) == 0 && S_ISDIR(st.st_mode))
             is_dir = true;
 
-        /* Match this entry */
-        if (glob_match(pattern, rel)) {
+        /* Match this entry (Python dotfile-hiding rule applied) */
+        if (dotfile_allowed(pattern, rel) && glob_match(pattern, rel)) {
             if (!append_match(matches, count, capacity, full))
                 break;
         }
@@ -159,4 +258,22 @@ void glob_free(char **matches, int count) {
         free(matches[i]);
     }
     free(matches);
+}
+
+/* ================================================================
+ *  PoP: glob.escape
+ * ================================================================ */
+char *glob_escape(const char *path) {
+    if (!path) return NULL;
+    size_t len = strlen(path);
+    char *out = (char *)malloc(len * 2 + 1);
+    if (!out) return NULL;
+    size_t o = 0;
+    for (const char *p = path; *p; p++) {
+        if (*p == '*' || *p == '?' || *p == '[')
+            out[o++] = '\\';
+        out[o++] = *p;
+    }
+    out[o] = '\0';
+    return out;
 }

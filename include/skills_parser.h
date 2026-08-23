@@ -16,6 +16,7 @@ typedef struct {
     char dependencies[16][64];
     int  dep_count;
     char path[1024];
+    char category[64];   /* category dir name (banner groups by this) */
 } skill_info_t;
 
 /* Discover skills from ~/.slermes/skills/ and optional extra path */

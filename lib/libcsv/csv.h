@@ -51,6 +51,31 @@ bool csv_writer_write_row_va(csv_writer_t *w, int count, ...);
  *  Safe to call with NULL. */
 void csv_writer_close(csv_writer_t *w);
 
+/* ─── Quoting modes (PoP: Python csv quoting constants) ─────────── */
+
+/** PoP: csv.QUOTE_MINIMAL / QUOTE_ALL / QUOTE_NONNUMERIC / QUOTE_NONE.
+ *  Default is CSV_QUOTE_MINIMAL. */
+typedef enum {
+    CSV_QUOTE_MINIMAL    = 0,  /* quote only when delimiter/quote/newline present */
+    CSV_QUOTE_ALL        = 1,  /* quote every field */
+    CSV_QUOTE_NONNUMERIC = 2,  /* quote anything that is not parseable as a number */
+    CSV_QUOTE_NONE       = 3   /* never quote (write fails if field needs it) */
+} csv_quote_mode_t;
+
+/** csv_writer_set_quote_mode(w, mode) — Set quoting behavior
+ *  (Python csv.writer(quoting=...)). Default CSV_QUOTE_MINIMAL.
+ *  Returns true on success. */
+bool csv_writer_set_quote_mode(csv_writer_t *w, csv_quote_mode_t mode);
+
+/** csv_writer_quote_mode(w) — Current quoting mode (CSV_QUOTE_MINIMAL if w NULL). */
+csv_quote_mode_t csv_writer_quote_mode(csv_writer_t *w);
+
+/** csv_escape_field(field, delimiter, mode) — Escape a single field per
+ *  quoting mode. Returns malloc'd string; NULL when QUOTE_NONE would lose
+ *  data (field contains delimiter/quote/newline), mirroring Python's
+ *  csv.Error. Caller free(). */
+char *csv_escape_field(const char *field, char delimiter, csv_quote_mode_t mode);
+
 /* ─── Reader ─────────────────────────────────────────────── */
 
 /** csv_reader_t — Opaque CSV reader handle.

@@ -41,6 +41,13 @@ char **glob_find(const char *pattern, const char *base_dir, int *count);
  */
 void glob_free(char **matches, int count);
 
+/**
+ * PoP: glob.escape(pathname) — Backslash-escape every glob metacharacter
+ * (* ? [ ]) in `path` so it matches literally. Returns malloc'd string,
+ * caller free(). NULL on allocation failure (or NULL input).
+ */
+char *glob_escape(const char *path);
+
 #ifdef __cplusplus
 }
 #endif

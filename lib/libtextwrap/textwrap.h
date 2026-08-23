@@ -47,8 +47,27 @@ char *textwrap_dedent(const char *text);
 /**
  * Shorten text to fit within max_len, appending "..." if truncated.
  * Caller free()s result.
+ *
+ * NOTE: superseded by textwrap_shorten_py(), a faithful port of Python
+ * textwrap.shorten (placeholder " [...]", whole words dropped from the
+ * end). Kept for legacy callers; no src/ callers exist (2026-08 audit).
  */
 char *textwrap_shorten(const char *text, int max_len);
+
+/**
+ * PoP: textwrap.shorten(text, width=max_len) — default placeholder
+ * " [...]", words dropped from the end until the text plus placeholder
+ * fit within max_len. Returns malloc'd string, caller free().
+ */
+char *textwrap_shorten_py(const char *text, int max_len);
+
+/**
+ * PoP: textwrap.indent(text, prefix) — prepend prefix to every line of
+ * text except lines consisting solely of whitespace (Python default
+ * predicate). Returns malloc'd string, caller free(). NULL prefix is
+ * treated as "".
+ */
+char *textwrap_indent(const char *text, const char *prefix);
 
 /**
  * Split text into chunks at newline boundaries within max_len per chunk.
