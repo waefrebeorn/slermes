@@ -14,6 +14,7 @@ src/hermes_cli/config_defaults.o \
 # Auto-generated hermes_cli/ port objects (empty — placeholder)
 HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plugins.o \
  src/hermes_cli/process_identity.o \
+ src/hermes_cli/update_receipt.o \
 
 HERMES_CLI_PORT_EXTRA_OBJ = \
 
