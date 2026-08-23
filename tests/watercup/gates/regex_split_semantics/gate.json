@@ -1,0 +1,24 @@
+{
+  "name": "regex_split_semantics",
+  "subsystem": "libregex",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "regex_split_semantics",
+  "py_module": null,
+  "py_fn": "re.split",
+  "cflags": ["-I", "lib"],
+  "extra_src": ["lib/libregex/hermes_regex.c"],
+  "inputs": [
+    "-1|[0-9]+|a12b34c",
+    "2|[ ]+|a b  c d",
+    "-1|([0-9])([0-9])|a12b34",
+    "-1|(?P<w>[a-z]+)@|x@ y@ z",
+    "-1|x*|ab",
+    "-1|x*|a b",
+    "0|[0-9]|abc",
+    "-1|,|,,",
+    "-1|(a)|(b)|zabz",
+    "-1|[ ]*|  lead"
+  ],
+  "notes": "Python re.split semantics: maxsplit limit (S1), no-match remainder (S2), zero-width consume-one-char incl. end-of-string trailing empty field (S3), and captured-group splicing incl. named groups (?P<...>). Harness links the REAL lib/libregex/hermes_regex.c; V event pins the joined field list from the shipped regex_split."
+}

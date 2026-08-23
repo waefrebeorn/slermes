@@ -272,34 +272,61 @@ int regex_split(hregex_t *re, const char *str, int maxsplit,
                 char **out, int out_max) {
     if (!re || !str || !out || out_max <= 0) return 0;
     size_t slen = strlen(str);
-    size_t pos = 0;
+    size_t pos = 0;      /* search cursor */
+    size_t last = 0;     /* start of the pending segment */
     int count = 0;
     int splits = 0;
+    int ngroups = regex_group_count(re);
     regmatch_t pmatch[REGEX_MAX_GROUPS];
+    /* Python re.split semantics (3.7+): each match appends the pending
+     * segment [last, match_start) plus its captured groups ("" for
+     * non-participating); a zero-width match leaves `last` at the match end
+     * while advancing the search cursor past one character — except at
+     * end-of-string, where the remainder becomes "". */
     while (count < out_max) {
-        int last_field = (maxsplit >= 0 && splits >= maxsplit);
-        if (last_field ||
-            regexec(&re->native, str + pos, 1, pmatch, 0) != 0 ||
-            pmatch[0].rm_so < 0) {
-            /* remainder is the final field */
-            out[count++] = strdup(str + pos);
+        int stop = (maxsplit >= 0 && splits >= maxsplit);
+        if (!stop &&
+            regexec(&re->native, str + pos, ngroups + 1, pmatch, 0) == 0 &&
+            pmatch[0].rm_so >= 0) {
+            size_t mstart = pos + (size_t)pmatch[0].rm_so;
+            size_t mend   = pos + (size_t)pmatch[0].rm_eo;
+            size_t seg_len = (mstart >= last) ? (mstart - last) : 0;
+            if (count < out_max) {
+                out[count] = (char *)malloc(seg_len + 1);
+                if (out[count]) {
+                    memcpy(out[count], str + last, seg_len);
+                    out[count][seg_len] = '\0';
+                }
+                count++;
+            }
+            for (int g = 1; g <= ngroups && count < out_max; g++) {
+                const char *gtxt = "";
+                char *gbuf = NULL;
+                if (pmatch[g].rm_so >= 0) {
+                    size_t gl = (size_t)(pmatch[g].rm_eo - pmatch[g].rm_so);
+                    gbuf = (char *)malloc(gl + 1);
+                    memcpy(gbuf, str + pos + pmatch[g].rm_so, gl);
+                    gbuf[gl] = '\0';
+                    gtxt = gbuf;
+                }
+                out[count++] = strdup(gtxt);
+                free(gbuf);
+            }
+            splits++;
+            if (mend == mstart) {
+                if (mend >= slen) { last = slen + 1; break; }  /* trailing "" */
+                last = mend;
+                pos = mend + 1;
+            } else {
+                last = pos = mend;
+            }
+        } else {
             break;
         }
-        size_t ms = (size_t)pmatch[0].rm_so, me = (size_t)pmatch[0].rm_eo;
-        out[count] = (char *)malloc(ms + 1);
-        if (out[count]) {
-            memcpy(out[count], str + pos, ms);
-            out[count][ms] = '\0';
-        }
-        count++;
-        splits++;
-        if (me == ms) {
-            if (pos + me >= slen) { out[count++] = strdup(""); break; }
-            pos += me + 1;
-        } else {
-            pos += me;
-        }
-        if (pos > slen) { out[count++] = strdup(""); break; }
+    }
+    if (count < out_max) {
+        const char *rem = (last <= slen) ? str + last : str + slen;
+        out[count++] = strdup(rem);
     }
     return count;
 }
