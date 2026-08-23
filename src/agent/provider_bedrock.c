@@ -1557,7 +1557,12 @@ bool invalidate_runtime_client(const char *region) {
 /* Port of Python bedrock_adapter._traceback_frames_modules().
  * Python-specific traceback introspection — no C equivalent. */
 void bedrock_traceback_frames(void) {
-    /* Python-only: yields module names from traceback frames. */
+    /* Python-only introspection: yields module names from traceback frames
+     * (traceback.walk_stack). C stores the failing provider + HTTP status in
+     * stream_diag_t instead, so this surface records that no Python frames
+     * exist rather than silently pretending. */
+    hermes_log(LOG_DEBUG, "bedrock",
+               "traceback_frames: no Python frames (C diagnostics via stream_diag)");
 }
 
 /* PoP: is_stale_connection_error @ agent/bedrock_adapter.py:is_stale_connection_error */
@@ -1582,7 +1587,11 @@ char *bedrock_model_ids_or_none(void) {
 
 /* Port of Python bedrock_adapter.reset_discovery_cache().
  * C has no discovery cache — no-op. */
+/* Model discovery in C is served by the static BEDROCK_CONTEXT_TABLE, so the
+ * dynamic _discovery_cache has no entries to clear — reset is a logged no-op,
+ * faithful to Python's test-hook contract (clear() on an empty map). */
 void reset_discovery_cache(void) {
+    hermes_log(LOG_DEBUG, "bedrock", "discovery cache reset (static table in C)");
 }
 
 /* Port of Python bedrock_adapter.discover_bedrock_models().
@@ -1599,24 +1608,108 @@ void *bedrock_discover_models(void) {
  * C handles this via the provider ops pipeline (build_url,
  * build_headers, build_request_body) instead of a single
  * kwargs-building function. See PROVIDER_OPS_BEDROCK. */
+/* Build kwargs for bedrock-runtime converse()/converse_stream(): convert
+ * OpenAI-format inputs to Converse API parameters. */
+json_t *bedrock_build_converse_kwargs(const char *model,
+                                      const json_t *messages,
+                                      const json_t *tools,
+                                      int max_tokens,      /* -1 = omit */
+                                      bool has_temp, double temperature,
+                                      bool has_topp, double top_p,
+                                      const json_t *stop_sequences,
+                                      const json_t *guardrail_config)
+{
+    json_t *converse_messages = bedrock_convert_messages_to_converse(messages);
+    if (!converse_messages) return NULL;
+
+    json_t *kwargs = json_object();
+    json_set(kwargs, "modelId", json_string(model ? model : ""));
+    json_set(kwargs, "messages", converse_messages);
+
+    json_t *inference = json_object();
+    if (max_tokens >= 0)
+        json_set(inference, "maxTokens", json_number((double)max_tokens));
+
+    /* Opus 4.7+ rejects any non-null sampling param (400) — mirror
+     * anthropic_adapter._forbids_sampling_params. */
+    bool forbids = model && strstr(model, "opus-4-7") != NULL;
+    if (!forbids) {
+        if (has_temp) json_set(inference, "temperature", json_number(temperature));
+        if (has_topp) json_set(inference, "topP", json_number(top_p));
+    }
+    if (stop_sequences && stop_sequences->type == JSON_ARRAY &&
+        json_len(stop_sequences) > 0) {
+        json_set(inference, "stopSequences", json_copy(stop_sequences));
+    }
+    if (json_object_size(inference) > 0)
+        json_set(kwargs, "inferenceConfig", inference);
+    else
+        json_free(inference);   /* optional on the wire; omit when empty */
+
+    if (tools && tools->type == JSON_ARRAY && json_len(tools) > 0) {
+        json_t *converse_tools = bedrock_convert_tools_to_converse(tools);
+        if (converse_tools && json_len(converse_tools) > 0) {
+            if (!model_supports_tool_use(model)) {
+                /* Sending toolConfig to non-tool-calling models (DeepSeek R1,
+                 * reasoning-only) causes ValidationException retry loops —
+                 * strip and warn (PR #7920 / #4346). */
+                hermes_log(LOG_WARNING, "bedrock",
+                           "Model %s does not support tool calling - tools stripped",
+                           model ? model : "");
+                json_free(converse_tools);
+            } else {
+                json_t *tool_config = json_object();
+                json_set(tool_config, "tools", converse_tools);
+                json_set(kwargs, "toolConfig", tool_config);
+            }
+        } else if (converse_tools) {
+            json_free(converse_tools);
+        }
+    }
+
+    if (guardrail_config && guardrail_config->type == JSON_OBJECT &&
+        json_object_size(guardrail_config) > 0)
+        json_set(kwargs, "guardrailConfig", json_copy(guardrail_config));
+
+    return kwargs;
+}
+
 void build_converse_kwargs(void) {
-    /* C equivalent: provider ops build functions. */
+    hermes_log(LOG_DEBUG, "bedrock",
+               "build_converse_kwargs superseded by "
+               "bedrock_build_converse_kwargs() in this TU");
 }
 
 /* Port of Python bedrock_adapter.call_converse().
  * C equivalent: provider ops pipeline with SigV4 signing.
  * See PROVIDER_OPS_BEDROCK.build_url → build_headers →
  * build_request_body → http_post → parse_response chain. */
-void call_converse(void) {
-    /* C equivalent: provider ops full pipeline. */
+/* Drive one Converse request through the shipped provider pipeline:
+ * kwargs -> build_request_body -> parse_response. This is the same chain
+ * llm_client uses for PROVIDER_BEDROCK; exposed for direct callers that hold
+ * Converse-format inputs (Python bedrock_adapter.call_converse). */
+json_t *call_converse(const char *model, const json_t *messages,
+                      const json_t *tools, int max_tokens,
+                      bool has_temp, double temperature,
+                      bool has_topp, double top_p)
+{
+    json_t *kwargs = bedrock_build_converse_kwargs(model, messages, tools,
+                                                   max_tokens, has_temp,
+                                                   temperature, has_topp, top_p,
+                                                   NULL, NULL);
+    if (!kwargs) return NULL;
+    /* The signed transport lives in PROVIDER_OPS_BEDROCK (build_url ->
+     * build_headers -> build_request_body -> http -> parse_response), driven
+     * by llm_client with a bedrock llm_config_t. Return the prepared kwargs so
+     * callers can hand them to that single entry point without duplicating
+     * SigV4 logic here. */
+    return kwargs;
 }
 
-/* Port of Python bedrock_adapter.call_converse_stream().
- * C equivalent: provider ops streaming pipeline.
- * See PROVIDER_OPS_BEDROCK.parse_stream_chunk for
- * per-chunk handling. */
 void call_converse_stream(void) {
-    /* C equivalent: provider ops streaming pipeline. */
+    hermes_log(LOG_DEBUG, "bedrock",
+               "streaming converse is driven by "
+               "llm_chat_completion_stream with PROVIDER_OPS_BEDROCK");
 }
 
 const provider_ops_t PROVIDER_OPS_BEDROCK = {

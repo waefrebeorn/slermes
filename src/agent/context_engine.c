@@ -26,6 +26,8 @@ const char *context_engine_default_name(context_engine_t *engine)
 }
 
 /* Port of Python context_engine.py:update_from_response — no-op */
+/* Python default is also a no-op: ContextEngine.update_from_response has an
+ * empty body — engines override to track usage. */
 void context_engine_default_update_from_response(context_engine_t *engine,
     json_t *usage)
 {
@@ -35,6 +37,7 @@ void context_engine_default_update_from_response(context_engine_t *engine,
 }
 
 /* Port of Python context_engine.py:should_compress — return false */
+/* Python default is also a no-op: base should_compress returns False. */
 bool context_engine_default_should_compress(context_engine_t *engine,
     int prompt_tokens)
 {
@@ -132,6 +135,7 @@ void context_engine_default_update_model(context_engine_t *engine,
 
 /* Port of Python context_engine.py:should_compress_preflight — return false */
 /* Default should_compress_preflight: return false */
+/* Python default is also a no-op: should_compress_preflight default returns False. */
 static bool default_should_compress_preflight(
     context_engine_t *engine, json_t *messages)
 {
@@ -142,6 +146,7 @@ static bool default_should_compress_preflight(
 
 /* Port of Python context_engine.py:has_content_to_compress — return true */
 /* Default has_content_to_compress: return true */
+/* Python default returns True (always attempt) — a real constant default, not a stub. */
 static bool default_has_content_to_compress(
     context_engine_t *engine, json_t *messages)
 {

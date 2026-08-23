@@ -51,8 +51,9 @@ char *ceg_compress(const char *messages_json) {
 }
 
 /* PoP: ceg_should_compress_preflight @ agent/context_engine.py:should_compress_preflight */
+/* Python default is also a no-op: the abstract-base default returns False
+ * ("skip pre-flight"); only engines with a cheap estimator override it. */
 bool ceg_should_compress_preflight(void) {
-    /* Python: rough check before API call — REAL fixed threshold. */
     return false;
 }
 
