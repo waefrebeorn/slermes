@@ -49,7 +49,28 @@ static int dow_name_to_num(const char *s) {
     return -1;
 }
 
-/* Parse a single field (e.g., "step /5 in *", "1,3,5", "MON-FRI", "*") */
+/* Days in month with proper leap-year handling (LIVE croniter parity). */
+static int days_in_month(int mon, int year_full) {
+    switch (mon) {
+        case 2:
+            if ((year_full % 4 == 0 && year_full % 100 != 0) || year_full % 400 == 0)
+                return 29;
+            return 28;
+        case 4: case 6: case 9: case 11: return 30;
+        default: return 31;
+    }
+}
+
+/* Weekday for a civil date (Sakamoto's method): 0=Sunday. */
+static int wday_for(int year_full, int mon, int dom) {
+    static const int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+    int y = year_full;
+    if (mon < 3) y -= 1;
+    return (y + y / 4 - y / 100 + y / 400 + t[mon - 1] + dom) % 7;
+}
+
+/* Parse a single field (e.g., "step /5 in *", "1,3,5", "MON-FRI", "*")
+ * Out-of-range values are REJECTED, matching LIVE croniter's validation. */
 static bool parse_field(const char *str, cron_field_t *f, int min, int max) {
     memset(f, 0, sizeof(*f));
 
@@ -100,8 +121,9 @@ static bool parse_field(const char *str, cron_field_t *f, int min, int max) {
             }
 
             if (start_val > end_val) { int t = start_val; start_val = end_val; end_val = t; }
+            if (start_val < min || end_val > max) return false;
             for (int i = start_val; i <= end_val; i++) {
-                if (i >= min && i <= max) f->bits[i - min] = true;
+                f->bits[i - min] = true;
             }
         } else {
             /* Single value */
@@ -113,7 +135,8 @@ static bool parse_field(const char *str, cron_field_t *f, int min, int max) {
             } else {
                 val = atoi(tok);
             }
-            if (val >= min && val <= max) f->bits[val - min] = true;
+            if (val < min || val > max) return false;
+            f->bits[val - min] = true;
         }
 
         tok = strtok_r(NULL, ",", &saveptr);
@@ -270,10 +293,7 @@ bool cron_next(const cron_expr_t *cron, const struct tm *from, struct tm *out) {
             /* Skip past dates before 'from' */
             if (year == from->tm_year && mon - 1 < from->tm_mon) continue;
 
-            int max_dom = 31;
-            /* Approximate — not handling Feb leap year precisely, close enough for cron */
-            if (mon == 2) max_dom = 28;
-            else if (mon == 4 || mon == 6 || mon == 9 || mon == 11) max_dom = 30;
+            int max_dom = days_in_month(mon, year + 1900);
 
             for (int dom = 1; dom <= max_dom; dom++) {
                 out->tm_mday = dom;
@@ -281,9 +301,11 @@ bool cron_next(const cron_expr_t *cron, const struct tm *from, struct tm *out) {
                 /* Skip past dates before 'from' */
                 if (year == from->tm_year && mon - 1 == from->tm_mon && dom < from->tm_mday) continue;
 
-                /* Check dom/dow */
+                /* Check dom/dow (wday computed for THIS candidate date —
+                 * the stale from->tm_wday was a parity bug vs croniter) */
+                int wday = wday_for(year + 1900, mon, dom);
                 bool dom_ok = field_match(&cron->dom, dom, 1);
-                bool dow_ok = field_match(&cron->dow, out->tm_wday, 0);
+                bool dow_ok = field_match(&cron->dow, wday, 0);
 
                 if (!cron->dom.any && !cron->dow.any) {
                     if (!dom_ok && !dow_ok) continue;
