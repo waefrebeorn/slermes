@@ -132,6 +132,11 @@ typedef struct {
     char                last_message_id[128];  /* last platform message ID seen */
     char                model_override[128];   /* per-session model override */
     bool                resume_pending;        /* session resume pending flag */
+    char                resume_reason[32];     /* why resume is pending ("restart_interrupted", …) */
+    double              last_resume_marked_at; /* epoch secs freshness of resume mark (0 = never) */
+    /* gateway/session.py durable active-turn markers */
+    char                active_turn_token[40];       /* uuid4().hex owner token (empty = none) */
+    char                active_turn_started_at[32];  /* ISO timestamp when the turn began */
     bool                suspended;              /* session suspended flag */
     bool                expiry_finalized;       /* session.py:set_expiry_finalized durable flag */
 } gw_session_entry_t;
