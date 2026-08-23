@@ -12,6 +12,11 @@
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "cron_scheduler_runtime.h"
+#include "platforms/base.h"
+#include "async_delegation.h"
+#include <sys/stat.h>
+
+double gw_mono_time(void);   /* defined in gateway server internals */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -112,6 +117,24 @@ struct GatewayRunner {
     /* ── Caches ──────────────────────────────────────────── */
     /* _session_sources, _agent_cache, etc. */
 
+    /* ── _session_sources LRU cache (Python OrderedDict, max 512) ── */
+    struct gw_runner_src_lru {
+        char *key;
+        gw_session_source_t src;
+        double last_use;
+    } *session_sources;
+    int session_sources_count;
+    int session_sources_capacity;
+    int session_sources_max;
+
+    /* ── Scale-to-zero / runtime bookkeeping ─────────────── */
+    double last_inbound_at;               /* monotonic stamp of last real inbound */
+    json_t *telegram_capability_hint_ts;  /* chat_id -> last hint monotonic ts */
+    json_t *recent_voice_transcripts;     /* "guild:user" -> [[ts, text], ...] */
+
+    /* ── Shutdown signalling ─────────────────────────────── */
+    pthread_cond_t shutdown_cond;
+
     /* ── Locks ────────────────────────────────────────────── */
     pthread_mutex_t lock;
     pthread_mutex_t agent_cache_lock;
@@ -167,7 +190,14 @@ GatewayRunner *gateway_runner_create(const char *config_path)
     /* config.stt_echo_transcripts defaults True. */
     self->stt_echo_transcripts = 1;
 
+    /* LRU cache + scale-to-zero bookkeeping (Python __init__ defaults). */
+    self->session_sources_max = 512;
+    self->last_inbound_at = gw_mono_time();
+    self->telegram_capability_hint_ts = json_object();
+    self->recent_voice_transcripts = json_object();
+
     /* Init locks */
+    pthread_cond_init(&self->shutdown_cond, NULL);
     pthread_mutex_init(&self->lock, NULL);
     pthread_mutex_init(&self->agent_cache_lock, NULL);
     pthread_mutex_init(&self->completion_delivery_lock, NULL);
@@ -201,6 +231,14 @@ void gateway_runner_destroy(GatewayRunner *self)
             free(arr[i].key);
         free(arr);
     }
+    if (self->telegram_capability_hint_ts) json_free(self->telegram_capability_hint_ts);
+    if (self->recent_voice_transcripts) json_free(self->recent_voice_transcripts);
+    if (self->session_sources) {
+        for (int i = 0; i < self->session_sources_count; i++)
+            free(self->session_sources[i].key);
+        free(self->session_sources);
+    }
+    pthread_cond_destroy(&self->shutdown_cond);
     pthread_mutex_destroy(&self->lock);
     pthread_mutex_destroy(&self->agent_cache_lock);
     pthread_mutex_destroy(&self->completion_delivery_lock);
@@ -225,10 +263,13 @@ void gateway_runner_request_stop(GatewayRunner *self, const char *reason)
 {
     if (!self) return;
     self->draining = 1;
+    self->shutdown_event_set = 1;   /* Python: self._shutdown_event.set() */
     if (reason) {
         strncpy(self->exit_reason, reason, sizeof(self->exit_reason) - 1);
         self->exit_reason[sizeof(self->exit_reason) - 1] = '\0';
     }
+    /* Wake anyone blocked in wait_for_shutdown(). */
+    pthread_cond_broadcast(&self->shutdown_cond);
 }
 
 /* PoP: gateway_runner_request_restart @ gateway/run.py:GatewayRunner.request_restart */
@@ -244,8 +285,13 @@ int gateway_runner_request_restart(GatewayRunner *self, int detached, int via_se
 /* PoP: gateway_runner_wait_for_shutdown @ gateway/run.py:GatewayRunner.wait_for_shutdown */
 void gateway_runner_wait_for_shutdown(GatewayRunner *self)
 {
-    (void)self;
-    /* In production, blocks on an event/signal */
+    /* Python: await self._shutdown_event.wait(). Block the caller until
+     * request_stop() flips shutdown_event_set and broadcasts. */
+    if (!self) return;
+    pthread_mutex_lock(&self->lock);
+    while (!self->shutdown_event_set)
+        pthread_cond_wait(&self->shutdown_cond, &self->lock);
+    pthread_mutex_unlock(&self->lock);
 }
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -301,8 +347,24 @@ int gateway_runner_running_agent_count(const GatewayRunner *self)
 /* PoP: gateway_runner_has_setup_skill @ gateway/run.py:GatewayRunner._has_setup_skill */
 bool gateway_runner_has_setup_skill(const GatewayRunner *self)
 {
+    /* Python: tools.skill_manager_tool._find_skill("hermes-agent-setup").
+     * The skill resolver walks HERMES_HOME/skills then repo skills/ dirs
+     * looking for <name>/SKILL.md — mirror that lookup. */
     (void)self;
-    return false; /* TODO: check from config */
+    const char *home = getenv("HERMES_HOME");
+    char hermes_home[512];
+    if (!home || !home[0]) {
+        const char *homedir = getenv("HOME");
+        if (!homedir || !homedir[0]) return false;
+        snprintf(hermes_home, sizeof(hermes_home), "%s/.hermes", homedir);
+        home = hermes_home;
+    }
+    /* _find_skill walks the HERMES_HOME skills dir; a skill "exists" when
+     * its SKILL.md is present on disk. */
+    char cand[1152];
+    snprintf(cand, sizeof(cand), "%s/skills/hermes-agent-setup/SKILL.md", home);
+    struct stat st;
+    return stat(cand, &st) == 0 && S_ISREG(st.st_mode);
 }
 
 /* PoP: gateway_runner_scale_to_zero_idle_timeout @ gateway/run.py:GatewayRunner._scale_to_zero_idle_timeout_seconds */
@@ -558,15 +620,57 @@ void gw_ephemeral_change_key(const char *session_key, const char *prefix,
 int gateway_runner_connect_adapter(GatewayRunner *self,
                                     const char *platform_name)
 {
-    (void)self; (void)platform_name;
-    return -1; /* TODO */
+    /* Find the registered adapter for this platform and invoke its connect
+     * vtable (Python awaits adapter.connect(is_reconnect=...) under a
+     * timeout; the C connect calls are synchronous, so no detach-on-timeout
+     * wrapper is required — the timeout budget applies to the watcher's
+     * retry loop, not the call itself). Returns 0 on success, -1 when the
+     * platform is unknown or the connect failed. */
+    if (!self || !platform_name || !platform_name[0]) return -1;
+    pthread_mutex_lock(&self->lock);
+    for (int i = 0; i < self->adapter_count; i++) {
+        gw_base_platform_adapter_t *ad =
+            (gw_base_platform_adapter_t *)self->adapters[i];
+        if (!ad || !ad->config || !ad->config->name[0])
+            continue;
+        if (strcasecmp(ad->config->name, platform_name) != 0)
+            continue;
+        gw_connect_fn connect = ad->connect ? ad->connect
+                                : gw_base_platform_adapter_default_connect;
+        bool ok = connect(ad);
+        if (ok) gw_base_platform_adapter_mark_connected(ad);
+        else    gw_base_platform_adapter_mark_disconnected(ad);
+        pthread_mutex_unlock(&self->lock);
+        return ok ? 0 : -1;
+    }
+    pthread_mutex_unlock(&self->lock);
+    printf("[gateway] connect_adapter: no adapter registered for %s\n",
+           platform_name);
+    return -1;
 }
 
 void gateway_runner_disconnect_adapter(GatewayRunner *self,
                                         const char *platform_name)
 {
-    (void)self; (void)platform_name;
-    /* TODO */
+    /* Python stop()/reconnect path: adapter.disconnect() — flip the
+     * adapter's runtime state down and release its poller. Missing adapters
+     * are skipped silently (idempotent disconnect). */
+    if (!self || !platform_name || !platform_name[0]) return;
+    pthread_mutex_lock(&self->lock);
+    for (int i = 0; i < self->adapter_count; i++) {
+        gw_base_platform_adapter_t *ad =
+            (gw_base_platform_adapter_t *)self->adapters[i];
+        if (!ad || !ad->config || !ad->config->name[0])
+            continue;
+        if (strcasecmp(ad->config->name, platform_name) != 0)
+            continue;
+        gw_disconnect_fn disconnect = ad->disconnect
+            ? ad->disconnect : gw_base_platform_adapter_default_disconnect;
+        disconnect(ad);
+        gw_base_platform_adapter_mark_disconnected(ad);
+        break;
+    }
+    pthread_mutex_unlock(&self->lock);
 }
 
 /* Borrowed view of the connected adapter list (opaque accessor). */
@@ -606,33 +710,90 @@ int gateway_runner_active_cron_job_count(const GatewayRunner *self)
 /* PoP: gateway_runner_active_api_run_count @ gateway/run.py:GatewayRunner._active_api_run_count */
 int gateway_runner_active_api_run_count(const GatewayRunner *self)
 {
-    /* Python: API-server work outside _running_agents — via the api_server
-     * adapter's active_agent_work_count(). The C port has no separate
-     * api-server work registry; the adapter work is part of the runner's
-     * own count, so report 0 here (no double counting). */
-    (void)self;
+    /* Python: API-server work outside _running_agents, via the api_server
+     * adapter's active_agent_work_count() hook. Duck-typed: when no
+     * api_server adapter exists (or it carries no work counter), the count
+     * is 0 so the shutdown drain never double counts. */
+    if (!self) return 0;
+    pthread_mutex_lock(&self->lock);
+    for (int i = 0; i < self->adapter_count; i++) {
+        gw_base_platform_adapter_t *ad =
+            (gw_base_platform_adapter_t *)self->adapters[i];
+        if (!ad || !ad->config || strcasecmp(ad->config->name, "api_server") != 0)
+            continue;
+        int count = ad->running ? 1 : 0;   /* adapter-owned work marker */
+        pthread_mutex_unlock(&self->lock);
+        return count > 0 ? count : 0;
+    }
+    pthread_mutex_unlock(&self->lock);
     return 0;
 }
 
 /* PoP: gateway_runner_scale_to_zero_has_background_work @ gateway/run.py:GatewayRunner._scale_to_zero_has_live_background_work */
 bool gateway_runner_scale_to_zero_has_background_work(const GatewayRunner *self)
 {
-    (void)self;
+    /* Python _scale_to_zero_has_live_background_work: live background work
+     * must block a suspend. Checks the runner's own non-watcher background
+     * tasks + the async-delegation registry's active tasks (+ process
+     * registry). Supervised watchers are excluded — counting them would
+     * keep the gateway awake forever. */
+    if (!self) return false;
+    if (gateway_runner_running_agent_count(self) > 0)
+        return true;
+    if (async_delegation_active_task_count() > 0)
+        return true;
+    size_t cron_running = 0;
+    char **ids = scheduler_get_running_job_ids(&cron_running);
+    if (ids) {
+        for (size_t i = 0; i < cron_running; i++) free(ids[i]);
+        free(ids);
+    }
+    if (cron_running > 0)
+        return true;
     return false;
 }
 
 /* PoP: gateway_runner_scale_to_zero_should_arm @ gateway/run.py:GatewayRunner._scale_to_zero_should_arm */
 bool gateway_runner_scale_to_zero_should_arm(const GatewayRunner *self)
 {
-    (void)self;
-    return false;
+    /* Python should_arm(enabled, relay_only_or_absent, wake_url):
+     * opted in via the HERMES_SCALE_TO_ZERO stamp + relay-only/absent
+     * messaging + a registered wake URL. */
+    const char *stamp = getenv("HERMES_SCALE_TO_ZERO");
+    if (!stamp || !stamp[0]) return false;
+    static const char *truthy[] = {"1","true","yes","on",NULL};
+    bool enabled = false;
+    for (int i = 0; truthy[i]; i++)
+        if (strcasecmp(stamp, truthy[i]) == 0) { enabled = true; break; }
+    if (!enabled) return false;
+
+    const char *wake_url = getenv("HERMES_RELAY_WAKE_URL");
+    if (!wake_url || !wake_url[0]) return false;
+
+    /* Relay-only-or-absent messaging: every ACTIVE messaging platform other
+     * than "relay" disables arming. */
+    for (int i = 0; i < self->adapter_count; i++) {
+        gw_base_platform_adapter_t *ad =
+            (gw_base_platform_adapter_t *)self->adapters[i];
+        if (!ad || !ad->config || !ad->config->enabled) continue;
+        if (strcasecmp(ad->config->name, "relay") != 0)
+            return false;
+    }
+    return true;
 }
 
 /* PoP: gateway_runner_scale_to_zero_is_idle @ gateway/run.py:GatewayRunner._scale_to_zero_is_idle */
 bool gateway_runner_scale_to_zero_is_idle(const GatewayRunner *self)
 {
-    (void)self;
-    return true;
+    /* Python is_idle(running_agent_count, seconds_since_last_inbound,
+     * idle_timeout_seconds, has_live_background_work): idle when no running
+     * agent, the idle window elapsed, and no live background work. */
+    if (!self) return true;
+    if (gateway_runner_running_agent_count(self) > 0) return false;
+    if (gateway_runner_scale_to_zero_has_background_work(self)) return false;
+    double timeout = gateway_runner_scale_to_zero_idle_timeout(self);
+    double idle_secs = gw_mono_time() - self->last_inbound_at;
+    return idle_secs >= timeout;
 }
 
 /* PoP: gateway_runner_request_clean_exit @ gateway/run.py:GatewayRunner._request_clean_exit */
@@ -701,23 +862,100 @@ int gateway_runner_queue_depth(const GatewayRunner *self, const char *session_ke
 void gateway_runner_clear_restart_failure_count(GatewayRunner *self,
                                                   const char *session_key)
 {
-    (void)self; (void)session_key;
+    /* Python: drop the session's entry from HERMES_HOME/.restart_failure_counts
+     * after a successful turn; unlink the file once it is empty. */
+    (void)self;
+    if (!session_key || !session_key[0]) return;
+    const char *home = getenv("HERMES_HOME");
+    char homebuf[512];
+    if (!home || !home[0]) {
+        const char *hd = getenv("HOME");
+        if (!hd || !hd[0]) return;
+        snprintf(homebuf, sizeof(homebuf), "%s/.hermes", hd);
+        home = homebuf;
+    }
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/%s", home, ".restart_failure_counts");
+    FILE *fp = fopen(path, "r");
+    if (!fp) return;
+    char buf[16384];
+    size_t got = fread(buf, 1, sizeof(buf) - 1, fp);
+    fclose(fp);
+    buf[got] = '\0';
+    json_t *counts = json_parse(buf, NULL);
+    if (!json_is_object(counts)) { if (counts) json_free(counts); return; }
+    json_object_del(counts, session_key);
+    if (json_object_size(counts) == 0) {
+        json_free(counts);
+        remove(path);
+        return;
+    }
+    char *serialized = json_serialize(counts);
+    json_free(counts);
+    if (!serialized) return;
+    fp = fopen(path, "w");
+    if (fp) { fputs(serialized, fp); fclose(fp); }
+    free(serialized);
 }
 
 /* PoP: gateway_runner_telegram_topic_auto_rename_disabled @ gateway/run.py:GatewayRunner._telegram_topic_auto_rename_disabled */
 bool gateway_runner_telegram_topic_auto_rename_disabled(const GatewayRunner *self,
                                                          const void *source)
 {
-    (void)self; (void)source;
+    /* Python: config.platforms[source.platform].extra.disable_topic_auto_rename.
+     * Default false — auto-rename enabled. Accepts bool or truthy string
+     * ("1"/"true"/"yes"/"on"). */
+    const gw_session_source_t *src_p = (const gw_session_source_t *)source;
+    if (!self || !src_p || !src_p->platform[0]) return false;
+    pthread_mutex_lock(&self->lock);
+    for (int i = 0; i < self->adapter_count; i++) {
+        gw_base_platform_adapter_t *ad =
+            (gw_base_platform_adapter_t *)self->adapters[i];
+        if (!ad || !ad->config ||
+            strcasecmp(ad->config->name, src_p->platform) != 0)
+            continue;
+        json_t *extra = ad->config->extra;
+        json_t *v = json_is_object(extra)
+            ? json_obj_get(extra, "disable_topic_auto_rename") : NULL;
+        bool disabled = false;
+        if (json_is_bool(v)) disabled = v->bool_val;
+        else if (json_is_string(v)) {
+            const char *s = v->str_val ? v->str_val : "";
+            static const char *truthy[] = {"1","true","yes","on",NULL};
+            for (int k = 0; truthy[k]; k++)
+                if (strcasecmp(s, truthy[k]) == 0) { disabled = true; break; }
+        } else if (v && !json_is_null(v)) disabled = true;
+        pthread_mutex_unlock(&self->lock);
+        return disabled;
+    }
+    pthread_mutex_unlock(&self->lock);
     return false;
 }
 
 /* PoP: gateway_runner_should_send_telegram_capability_hint @ gateway/run.py:GatewayRunner._should_send_telegram_capability_hint */
-bool gateway_runner_should_send_telegram_capability_hint(const GatewayRunner *self,
+bool gateway_runner_should_send_telegram_capability_hint(GatewayRunner *self,
                                                           const void *source)
 {
-    (void)self; (void)source;
-    return false;
+    /* Rate-limit the capability-hint screenshot per chat: 300s cooldown
+     * (Python _TELEGRAM_CAPABILITY_HINT_COOLDOWN_S). */
+    static const double COOLDOWN_S = 300.0;
+    const gw_session_source_t *src_p = (const gw_session_source_t *)source;
+    if (!self) return false;
+    if (!src_p || !src_p->chat_id[0]) return true;   /* no chat to key on */
+    pthread_mutex_lock(&self->lock);
+    if (!self->telegram_capability_hint_ts)
+        self->telegram_capability_hint_ts = json_object();
+    json_t *prev = json_obj_get(self->telegram_capability_hint_ts, src_p->chat_id);
+    double now = gw_mono_time();
+    double last = json_is_number(prev) ? prev->num_val : 0.0;
+    if (now - last < COOLDOWN_S) {
+        pthread_mutex_unlock(&self->lock);
+        return false;
+    }
+    json_set(self->telegram_capability_hint_ts, src_p->chat_id,
+             json_double(now));
+    pthread_mutex_unlock(&self->lock);
+    return true;
 }
 
 /* PoP: gateway_runner_telegram_topic_help_text @ gateway/run.py:GatewayRunner._telegram_topic_help_text */
@@ -815,7 +1053,18 @@ void gateway_runner_session_key_for_source(const GatewayRunner *self,
 bool gateway_runner_session_is_active(const GatewayRunner *self,
                                        const char *session_key)
 {
-    (void)self; (void)session_key;
+    /* Python: session_key in self._running_agents — a turn is in flight. */
+    if (!self || !session_key || !session_key[0]) return false;
+    pthread_mutex_lock(&self->lock);
+    gw_running_agent_entry_t *arr =
+        (gw_running_agent_entry_t *)self->running_agents;
+    for (int i = 0; i < self->running_agent_count; i++) {
+        if (strcmp(arr[i].key, session_key) == 0) {
+            pthread_mutex_unlock(&self->lock);
+            return true;
+        }
+    }
+    pthread_mutex_unlock(&self->lock);
     return false;
 }
 
@@ -895,14 +1144,65 @@ void gateway_runner_cache_session_source(GatewayRunner *self,
                                           const char *session_key,
                                           const void *source)
 {
-    (void)self; (void)session_key; (void)source;
+    /* Python _cache_session_source: store a copy of the live source under
+     * the routing key in an LRU capped at _session_sources_max (512). */
+    const gw_session_source_t *src_p = (const gw_session_source_t *)source;
+    if (!self || !session_key || !session_key[0] || !src_p) return;
+    pthread_mutex_lock(&self->lock);
+    double now = gw_mono_time();
+    struct gw_runner_src_lru *arr =
+        (struct gw_runner_src_lru *)self->session_sources;
+    for (int i = 0; i < self->session_sources_count; i++) {
+        if (strcmp(arr[i].key, session_key) == 0) {
+            arr[i].src = *src_p;      /* update in place + MRU bump */
+            arr[i].last_use = now;
+            pthread_mutex_unlock(&self->lock);
+            return;
+        }
+    }
+    if (self->session_sources_count >= self->session_sources_max) {
+        /* Evict LRU (smallest last_use). */
+        int lru = 0;
+        for (int i = 1; i < self->session_sources_count; i++)
+            if (arr[i].last_use < arr[lru].last_use) lru = i;
+        free(arr[lru].key);
+        arr[lru] = arr[self->session_sources_count - 1];
+        self->session_sources_count--;
+    }
+    if (self->session_sources_count >= self->session_sources_capacity) {
+        int ncap = self->session_sources_capacity
+            ? self->session_sources_capacity * 2 : 8;
+        struct gw_runner_src_lru *grown = realloc(
+            arr, (size_t)ncap * sizeof(*grown));
+        if (!grown) { pthread_mutex_unlock(&self->lock); return; }
+        self->session_sources = grown;
+        arr = grown;
+        self->session_sources_capacity = ncap;
+    }
+    arr[self->session_sources_count].key = strdup(session_key);
+    arr[self->session_sources_count].src = *src_p;
+    arr[self->session_sources_count].last_use = now;
+    self->session_sources_count++;
+    pthread_mutex_unlock(&self->lock);
 }
 
 /* PoP: gateway_runner_get_cached_session_source @ gateway/run.py:GatewayRunner._get_cached_session_source */
 const void *gateway_runner_get_cached_session_source(const GatewayRunner *self,
                                                       const char *session_key)
 {
-    (void)self; (void)session_key;
+    /* Python _get_cached_session_source with move_to_end on hit. */
+    if (!self || !session_key || !session_key[0]) return NULL;
+    pthread_mutex_lock(&self->lock);
+    struct gw_runner_src_lru *arr =
+        (struct gw_runner_src_lru *)self->session_sources;
+    for (int i = 0; i < self->session_sources_count; i++) {
+        if (strcmp(arr[i].key, session_key) == 0) {
+            arr[i].last_use = gw_mono_time();   /* MRU bump */
+            pthread_mutex_unlock(&self->lock);
+            return &arr[i].src;
+        }
+    }
+    pthread_mutex_unlock(&self->lock);
     return NULL;
 }
 
@@ -925,11 +1225,104 @@ const char *gateway_runner_telegram_topic_root_new_message(const GatewayRunner *
 }
 
 /* PoP: gateway_runner_is_duplicate_voice_transcript @ gateway/run.py:GatewayRunner._is_duplicate_voice_transcript */
-bool gateway_runner_is_duplicate_voice_transcript(const GatewayRunner *self,
+bool gateway_runner_is_duplicate_voice_transcript(GatewayRunner *self,
                                                    int guild_id, int user_id,
                                                    const char *transcript)
 {
-    (void)self; (void)guild_id; (void)user_id; (void)transcript;
+    /* Suppress repeated STT outputs for the same recent utterance: dedupe
+     * exact and near-exact repeats per guild/user over a 12s window while
+     * keeping the last 5 transcripts. Near-exact uses an LCS ratio >= 0.95
+     * for strings of length >= 16 (Python SequenceMatcher.ratio()). */
+    if (!self) return false;
+    static const double WINDOW_SECONDS = 12.0;
+    static const size_t KEEP_LAST = 5;
+
+    /* Normalize: collapse whitespace, drop non-word chars, lowercase. */
+    if (!transcript) return false;
+    size_t n = strlen(transcript);
+    char *norm = malloc(n + 1);
+    if (!norm) return false;
+    size_t j = 0;
+    bool last_space = true;   /* trims leading */
+    for (size_t i = 0; i < n; i++) {
+        char c = transcript[i];
+        if (isspace((unsigned char)c)) {
+            if (!last_space) { norm[j++] = ' '; last_space = true; }
+        } else if (isalnum((unsigned char)c) || c == '_') {
+            norm[j++] = (char)tolower((unsigned char)c);
+            last_space = false;
+        }
+    }
+    while (j > 0 && norm[j - 1] == ' ') j--;
+    norm[j] = '\0';
+    if (!norm[0]) { free(norm); return false; }
+
+    char key[160];
+    snprintf(key, sizeof(key), "%d:%d", guild_id, user_id);
+    double now = gw_mono_time();
+
+    pthread_mutex_lock(&self->lock);
+    if (!self->recent_voice_transcripts)
+        self->recent_voice_transcripts = json_object();
+    json_t *recent = json_obj_get(self->recent_voice_transcripts, key);
+    if (!json_is_array(recent)) {
+        recent = json_array();
+        json_set(self->recent_voice_transcripts, key, recent);
+    }
+    /* Drop entries outside the window, checking for duplicates. */
+    size_t cnt = json_array_size(recent);
+    bool duplicate = false;
+    json_t *kept = json_array();
+    for (size_t i = 0; i < cnt; i++) {
+        json_t *e = json_array_get(recent, i);
+        if (!json_is_array(e) || json_array_size(e) < 2) continue;
+        double ts = json_number_value(json_array_get(e, 0));
+        if (now - ts > WINDOW_SECONDS) continue;
+        const char *prior = json_get_str(e, "", NULL);
+        json_t *prior_node = json_array_get(e, 1);
+        prior = json_is_string(prior_node) ? prior_node->str_val : "";
+        if (strcmp(prior, norm) == 0) { duplicate = true; }
+        else if (strlen(prior) >= 16 && strlen(norm) >= 16) {
+            /* LCS-based similarity ratio. */
+            size_t a = strlen(prior), b = strlen(norm);
+            size_t *dp = calloc((b + 1), sizeof(size_t));
+            if (dp) {
+                for (size_t r = 1; r <= a; r++) {
+                    size_t prev_diag = 0;
+                    for (size_t c2 = 1; c2 <= b; c2++) {
+                        size_t temp = dp[c2];
+                        dp[c2] = (prior[r - 1] == norm[c2 - 1])
+                            ? prev_diag + 1
+                            : (dp[c2] > dp[c2 - 1] ? dp[c2] : dp[c2 - 1]);
+                        prev_diag = temp;
+                    }
+                }
+                double ratio = 2.0 * (double)dp[b] / (double)(a + b);
+                free(dp);
+                if (ratio >= 0.95) duplicate = true;
+            }
+        }
+        json_array_append(kept, json_copy(e));
+    }
+    if (duplicate) {
+        json_set(self->recent_voice_transcripts, key, kept);
+        pthread_mutex_unlock(&self->lock);
+        free(norm);
+        return true;
+    }
+    /* Record this transcript, keep only the last KEEP_LAST. */
+    json_t *entry = json_array();
+    json_array_append(entry, json_double(now));
+    json_array_append(entry, json_string(norm));
+    free(norm);
+    json_array_append(kept, entry);
+    size_t kcnt = json_array_size(kept);
+    json_t *trimmed = json_array();
+    for (size_t i = (kcnt > KEEP_LAST ? kcnt - KEEP_LAST : 0); i < kcnt; i++)
+        json_array_append(trimmed, json_copy(json_array_get(kept, i)));
+    json_set(self->recent_voice_transcripts, key, trimmed);
+    json_free(kept);
+    pthread_mutex_unlock(&self->lock);
     return false;
 }
 /* ════════════════════════════════════════════════════════════════════════
