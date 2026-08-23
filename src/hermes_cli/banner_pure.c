@@ -101,11 +101,20 @@ bool banner_is_official_ssh_remote(const char *url) {
 }
 
 /* PoP: banner_format_context_length @ hermes_cli/banner.py:_format_context_length */
+/* Python round() is ROUND_HALF_EVEN (banker's); C round() is half-away.
+ * Exact-half token counts (e.g. 2_500_000 -> 2.5) must round to even. */
+static double banner_py_round(double v) {
+    double f = floor(v);
+    double diff = v - f;
+    if (diff > 0.5) return f + 1;
+    if (diff < 0.5) return f;
+    return (fmod(f, 2.0) == 0.0) ? f : f + 1;
+}
 char *banner_format_context_length(long long tokens) {
     char *out = NULL;
     if (tokens >= 1000000) {
         double val = tokens / 1000000.0;
-        double rounded = round(val);
+        double rounded = banner_py_round(val);
         if (fabs(val - rounded) < 0.05) {
             asprintf(&out, "%.0fM", rounded);
         } else {
@@ -113,7 +122,7 @@ char *banner_format_context_length(long long tokens) {
         }
     } else if (tokens >= 1000) {
         double val = tokens / 1000.0;
-        double rounded = round(val);
+        double rounded = banner_py_round(val);
         if (fabs(val - rounded) < 0.05) {
             asprintf(&out, "%.0fK", rounded);
         } else {
