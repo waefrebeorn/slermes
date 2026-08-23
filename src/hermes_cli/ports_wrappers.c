@@ -10123,7 +10123,24 @@ int hermes_cli_urllib_security_open_credentialed_url(const char *arg) {
 }
 
 /* PoP: hermes_cli_bundles_u_cmd_show @ hermes_cli/bundles.py:_cmd_show */
-int hermes_cli_bundles_u_cmd_show(const char *arg) { (void)arg; return 0; }
+int hermes_cli_bundles_u_cmd_show(const char *arg) {
+    /* Python _cmd_show: print bundle slug/name, description, file path and
+     * skill list; "Bundle '<name>' not found." + exit 1 when unknown.
+     * Arg = "name\tslug\tdescription\tpath\tskills(;sep)". */
+    if (!arg || !*arg) { printf("Bundle '' not found.\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    if (!t4) { printf("Bundle '%s' not found.\n", arg); return 1; }
+    printf("/%.*s  %.*s\n",
+           (int)(t2 - (t1 + 1)), t1 + 1,
+           (int)(t3 - (t2 + 1)), t2 + 1);
+    size_t dlen = (size_t)(t4 - (t3 + 1));
+    if (dlen > 0) printf("  %.*s\n", (int)dlen, t3 + 1);
+    printf("  File: %s\n", t4 + 1);
+    return 0;
+}
 
 /* PoP: hermes_cli_bundles_u_cmd_create @ hermes_cli/bundles.py:_cmd_create */
 int hermes_cli_bundles_u_cmd_create(const char *arg) {
