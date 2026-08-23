@@ -162,16 +162,41 @@ char *fsf_get_cross_profile_warning(const char *path) {
 
 /* PoP: fsf_find_sandbox_mirror_segments @ agent/file_safety.py:_find_sandbox_mirror_segments */
 char *fsf_find_sandbox_mirror_segments(const char *path) {
-    /* Python: index of inner .hermes part in mirror path. */
+    /* Python: index of the inner ".hermes" part in
+     * …/sandboxes/<backend>/<task>/home/.hermes/…  — returns -1 (None) when
+     * the sandbox-mirror shape is absent. Walks path segments exactly like
+     * LIVE _find_sandbox_mirror_segments walks `parts`. */
     if (!path) return strdup("-1");
-    const char *p = path;
-    long idx = -1;
-    long count = 0;
-    while ((p = strstr(p, ".hermes")) != NULL) {
-        idx = count;
-        p += 7;
-        count++;
+    /* split on '/', dropping empty segments (mirrors Path.parts) */
+    char *copy = strdup(path);
+    size_t n = 0, cap = 8;
+    char **parts = malloc(cap * sizeof(char *));
+    char *tok = copy;
+    while (*tok == '/') tok++;          /* leading empties */
+    while (*tok) {
+        char *slash = strchr(tok, '/');
+        size_t len = slash ? (size_t)(slash - tok) : strlen(tok);
+        if (len == 0) { tok++; continue; }   /* duplicate slashes */
+        if (n == cap) { cap *= 2; parts = realloc(parts, cap * sizeof(char *)); }
+        parts[n] = strndup(tok, len);
+        n++;
+        if (!slash) break;
+        tok = slash + 1;
     }
+    free(copy);
+
+    long idx = -1;
+    for (size_t i = 0; i < n; i++) {
+        if (strcmp(parts[i], "sandboxes") != 0) continue;
+        /* need at least: sandboxes / <backend> / <task> / home / .hermes / thing */
+        if ((long)i + 5 >= (long)n) continue;
+        if (strcmp(parts[i + 3], "home") == 0 && strcmp(parts[i + 4], ".hermes") == 0) {
+            idx = (long)(i + 4);
+            break;
+        }
+    }
+    for (size_t i = 0; i < n; i++) free(parts[i]);
+    free(parts);
     char *out = NULL;
     asprintf(&out, "%ld", idx);
     return out;

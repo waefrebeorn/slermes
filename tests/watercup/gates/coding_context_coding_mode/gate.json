@@ -1,0 +1,24 @@
+{
+  "name": "coding_context_coding_mode",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "coding_ctx_mode",
+  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": ["src/agent/coding_ctx_gaps.c", "lib/libjson/json.c"],
+  "py_module": "agent/coding_context.py",
+  "py_fn": "_coding_mode",
+  "inputs": [
+    "{\"agent\": {\"coding_context\": \"focus\"}}",
+    "{\"agent\": {\"coding_context\": \"strict\"}}",
+    "{\"agent\": {\"coding_context\": \"ON\"}}",
+    "{\"agent\": {\"coding_context\": \"always \"}}",
+    "{\"agent\": {\"coding_context\": \"off\"}}",
+    "{\"agent\": {\"coding_context\": \"never\"}}",
+    "{}",
+    "{\"agent\": {}}",
+    "{\"agent\": {\"coding_context\": \"sometimes\"}}",
+    "not-json"
+  ],
+  "notes": "PORT FIX APPLIED: coding_ctx_mode previously read a top-level 'coding_mode' key and returned 'default'; it now reads agent.coding_context (LIVE nesting), strip()s and lowercases the raw value, and normalizes through LIVE's focus/on/off ladders. config==NULL maps to the empty-config path ('auto') since the readonly config load is not harnessable."
+}

@@ -486,30 +486,56 @@ char *antr_convert_tools_to_anthropic(const char *tools_json) {
 
 /* PoP: antr_image_source_from_openai_url @ agent/anthropic_adapter.py:_image_source_from_openai_url */
 char *antr_image_source_from_openai_url(const char *url) {
-    /* Python: data: URLs → base64 source; else url source. */
-    if (!url || !*url) return strdup("{\"type\": \"url\", \"url\": \"\"}");
+    /* Python: strip; data: URLs -> base64 source (media_type defaults to
+     * image/jpeg, only accepted when it starts with "image/"); else url. */
+    char *clean = NULL;
+    if (url) {
+        const char *s = url;
+        while (*s == ' ' || *s == '\t' || *s == '\n') s++;
+        clean = strdup(s);
+        size_t cl = strlen(clean);
+        while (cl > 0 && (clean[cl-1] == ' ' || clean[cl-1] == '\t' || clean[cl-1] == '\n')) clean[--cl] = '\0';
+    }
+    if (!clean || !*clean) {
+        free(clean);
+        return strdup("{\"type\": \"url\", \"url\": \"\"}");
+    }
+    url = clean;
     if (strncmp(url, "data:", 5) == 0) {
-        /* data:[<mediatype>][;base64],<data> */
+        /* data:[<mediatype>][;base64],<data> — LIVE uses partition(","):
+         * a missing comma yields an empty data payload, not a URL fallback. */
         const char *comma = strchr(url, ',');
-        if (!comma) return strdup("{\"type\": \"url\", \"url\": \"\"}");
-        char *header = strndup(url + 5, (size_t)(comma - url - 5));
-        char *media_type = strdup("image/png");
-        if (header) {
-            char *semi = strchr(header, ';');
-            if (semi && semi != header) {
-                char *mt = strndup(header, (size_t)(semi - header));
-                if (mt && *mt) { free(media_type); media_type = mt; }
-                else free(mt);
-            }
+        const char *header = url + 5;
+        char *media_type = strdup("image/jpeg");
+        if (!comma) {
+            char *out = NULL;
+            asprintf(&out, "{\"type\": \"base64\", \"media_type\": \"%s\", \"data\": \"\"}",
+                     media_type);
+            free(media_type); free(clean);
+            return out;
         }
+        char *mime_part = strndup(header, (size_t)(comma - header));
+        char *semi = strchr(mime_part, ';');
+        if (semi) *semi = '\0';
+        /* trim */
+        char *mp = mime_part;
+        while (*mp == ' ') mp++;
+        size_t ml = strlen(mp);
+        while (ml > 0 && mp[ml-1] == ' ') mp[--ml] = '\0';
+        if (strncmp(mp, "image/", 6) == 0 && ml > 0) {
+            free(media_type);
+            media_type = strdup(mp);
+        }
+        free(mime_part);
         char *out = NULL;
         asprintf(&out, "{\"type\": \"base64\", \"media_type\": \"%s\", \"data\": \"%s\"}",
                  media_type, comma + 1);
-        free(header); free(media_type);
+        free(media_type); free(clean);
         return out;
     }
     char *out = NULL;
     asprintf(&out, "{\"type\": \"url\", \"url\": \"%s\"}", url);
+    free(clean);
     return out;
 }
 

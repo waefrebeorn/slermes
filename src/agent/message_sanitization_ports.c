@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -90,11 +91,162 @@ char *msz_escape_invalid_chars_in_json_strings(const char *json) {
 }
 
 /* PoP: msz_repair_tool_call_arguments @ agent/message_sanitization.py:_repair_tool_call_arguments */
+/* Faithful port of the LIVE repair ladder (see tests/watercup/gates/
+ * message_sanitization_repair_tool_call_arguments): strip -> None -> strict
+ * parse (pass 0) -> trailing-comma strip -> close unclosed structures ->
+ * bounded excess-closer trim loop -> final parse -> control-char escape pass
+ * -> "{}" fallback. tool_name only feeds WARNING logs in Python. */
+static bool msz_rta_parses(const char *s)
+{
+    if (!s) return false;
+    json_t *j = json_parse(s, NULL);
+    if (!j) return false;
+    json_free(j);
+    return true;
+}
+
 char *msz_repair_tool_call_arguments(const char *args_json) {
-    /* Python: repair malformed tool_call args. */
-    if (!args_json) return strdup("");
-    char *escaped = msz_escape_invalid_chars_in_json_strings(args_json);
-    return escaped ? escaped : strdup(args_json);
+    /* Python: raw_stripped = raw_args.strip() if isinstance(str) else "" */
+    char *raw_stripped;
+    if (!args_json) {
+        raw_stripped = strdup("");
+    } else {
+        const char *b = args_json;
+        while (*b && isspace((unsigned char)*b)) b++;
+        const char *e = args_json + strlen(args_json);
+        while (e > b && isspace((unsigned char)e[-1])) e--;
+        raw_stripped = strndup(b, (size_t)(e - b));
+        if (!raw_stripped) return strdup("{}");
+    }
+
+    /* Fast-path: empty / whitespace-only -> empty object */
+    if (!raw_stripped[0]) { free(raw_stripped); return strdup("{}"); }
+    /* Python-literal None -> normalise to {} */
+    if (strcmp(raw_stripped, "None") == 0) { free(raw_stripped); return strdup("{}"); }
+
+    /* Repair pass 0: strict JSON parse (json.loads, strict=True oracle).
+     * On success re-serialise compactly like json.dumps(separators=(",",":")). */
+    {
+        json_t *parsed = json_parse(raw_stripped, NULL);
+        if (parsed) {
+            char *out = json_serialize(parsed);
+            json_free(parsed);
+            free(raw_stripped);
+            return out ? out : strdup("{}");
+        }
+    }
+
+    /* Attempt common JSON repairs */
+    char *fixed = strdup(raw_stripped);
+    /* 1. Strip trailing commas before } or ] (regex r',\s*([}\]])' -> r'\1') */
+    {
+        size_t n = strlen(fixed), w = 0;
+        for (size_t i = 0; i < n; ) {
+            if (fixed[i] == ',') {
+                size_t k = i + 1;
+                while (k < n && isspace((unsigned char)fixed[k])) k++;
+                if (k < n && (fixed[k] == '}' || fixed[k] == ']')) { i++; continue; }
+            }
+            fixed[w++] = fixed[i++];
+        }
+        fixed[w] = '\0';
+    }
+    /* 2. Close unclosed structures */
+    {
+        int open_curly = 0, open_bracket = 0;
+        bool in_str = false;
+        for (const char *p = fixed; *p; p++) {
+            if (*p == '"' && !(p > fixed && p[-1] == '\\')) in_str = !in_str;
+            if (!in_str) {
+                if (*p == '{') open_curly++;
+                else if (*p == '}') open_curly--;
+                else if (*p == '[') open_bracket++;
+                else if (*p == ']') open_bracket--;
+            }
+        }
+        size_t fl = strlen(fixed);
+        if (open_curly > 0 || open_bracket > 0) {
+            fixed = realloc(fixed, fl + (size_t)(open_curly > 0 ? open_curly : 0) +
+                                    (size_t)(open_bracket > 0 ? open_bracket : 0) + 1);
+            for (int i = 0; i < open_curly; i++) fixed[fl++] = '}';
+            for (int i = 0; i < open_bracket; i++) fixed[fl++] = ']';
+            fixed[fl] = '\0';
+        }
+    }
+    /* 3. Remove excess closing braces/brackets (bounded to 50 iterations) */
+    for (int _ = 0; _ < 50; _++) {
+        if (msz_rta_parses(fixed)) break;
+        size_t fl = strlen(fixed);
+        long c_curly = 0, o_curly = 0, c_brack = 0, o_brack = 0;
+        for (const char *p = fixed; *p; p++) {
+            if (*p == '{') o_curly++;
+            else if (*p == '}') c_curly++;
+            else if (*p == '[') o_brack++;
+            else if (*p == ']') c_brack++;
+        }
+        if (fl > 0 && fixed[fl - 1] == '}' && c_curly > o_curly) {
+            fixed[fl - 1] = '\0';
+        } else if (fl > 0 && fixed[fl - 1] == ']' && c_brack > o_brack) {
+            fixed[fl - 1] = '\0';
+        } else {
+            break;
+        }
+    }
+
+    if (msz_rta_parses(fixed)) {
+        char *out = fixed;
+        free(raw_stripped);
+        return out;
+    }
+
+    /* Repair pass 4: escape unescaped control chars inside JSON strings,
+     * then retry. Faithful to _escape_invalid_chars_in_json_strings: ALL
+     * ctrl chars inside strings are escaped; already-escaped pairs pass
+     * through as-is. */
+    {
+        size_t cap = strlen(fixed) * 6 + 8;
+        char *escaped = malloc(cap);
+        if (escaped) {
+            size_t w = 0;
+            bool in_str = false;
+            for (size_t i = 0; fixed[i]; ) {
+                char ch = fixed[i];
+                if (in_str) {
+                    unsigned char c = (unsigned char)ch;
+                    if (ch == '\\' && fixed[i + 1]) {
+                        if (w + 2 >= cap) { cap = (w + 2) * 2; escaped = realloc(escaped, cap); }
+                        escaped[w++] = ch; escaped[w++] = fixed[i + 1];
+                        i += 2;
+                        continue;
+                    }
+                    if (ch == '"') { in_str = false; escaped[w++] = ch; i++; continue; }
+                    if (c < 0x20) {
+                        if (w + 8 >= cap) { cap = (w + 8) * 2; escaped = realloc(escaped, cap); }
+                        w += (size_t)sprintf(escaped + w, "\\u%04x", c);
+                        i++;
+                        continue;
+                    }
+                    escaped[w++] = ch; i++;
+                    continue;
+                }
+                if (ch == '"') in_str = true;
+                escaped[w++] = ch; i++;
+            }
+            escaped[w] = '\0';
+            if (strcmp(escaped, fixed) != 0 && msz_rta_parses(escaped)) {
+                free(fixed);
+                free(raw_stripped);
+                return escaped;
+            }
+            free(escaped);
+        }
+    }
+
+    /* Last resort: replace with empty object so the API request doesn't
+     * crash the entire session. */
+    free(fixed);
+    free(raw_stripped);
+    return strdup("{}");
 }
 
 /* PoP: msz_strip_non_ascii @ agent/message_sanitization.py:_strip_non_ascii */

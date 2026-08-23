@@ -1,0 +1,33 @@
+{
+  "name": "chat_transports_snake_case_gemini_thinking",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cct_snake_case_gemini_thinking_config",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libcrypto"
+  ],
+  "extra_src": [
+    "src/agent/chat_completions_ports.c",
+    "lib/libjson/json.c"
+  ],
+  "py_module": "agent/transports/chat_completions.py",
+  "py_fn": "_snake_case_gemini_thinking_config",
+  "inputs": [
+    "{\"includeThoughts\": true}",
+    "{\"thinkingLevel\": \" HIGH \"}",
+    "{\"thinkingBudget\": 1024.7}",
+    "{\"includeThoughts\": false, \"thinkingLevel\": \"Low\", \"thinkingBudget\": -3}",
+    "{}",
+    "[1]",
+    "{\"includeThoughts\": \"yes\"}",
+    "not-json",
+    "{\"thinkingLevel\": \"\"}"
+  ],
+  "notes": "PORT FIX APPLIED: cct_snake_case_gemini_thinking_config previously did a blind textual camelCase\u2192snake_case rename of the raw JSON text; it now parses the object and performs LIVE's type-checked translation (bool include_thoughts; non-empty stripped+lowered thinking_level; int thinking_budget), returning NULL when nothing translates. VSTR compares compact JSON with LIVE's insertion order."
+}

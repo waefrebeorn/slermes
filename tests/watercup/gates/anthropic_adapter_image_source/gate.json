@@ -1,0 +1,22 @@
+{
+  "name": "anthropic_adapter_image_source",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "antr_image_source_from_openai_url",
+  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": ["src/agent/anthropic_adapter_ports.c", "lib/libjson/json.c"],
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_image_source_from_openai_url",
+  "inputs": [
+    "",
+    "   ",
+    "https://example.com/cat.png",
+    "data:image/png;base64,iVBORw0KGgo=",
+    "data:;base64,AAAA",
+    "data:text/plain;base64,SGVsbG8=",
+    "data:image/jpeg,rawbytes",
+    "data:nocomma"
+  ],
+  "notes": "PORT FIX APPLIED: antr_image_source_from_openai_url previously defaulted media_type to image/png (LIVE: image/jpeg), accepted non-image mime parts, and fell back to a url-source when a data: URL had no comma (LIVE: base64 with empty payload); it now matches LIVE exactly, including whitespace strip. Value event carries the JSON dict with double quotes on both sides."
+}

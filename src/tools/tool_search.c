@@ -774,8 +774,12 @@ void short_desc(const char *description, int max_chars,
         collapsed[cl++] = *p++;
     }
     collapsed[cl] = '\0';
+    /* LIVE " ".join(text.split()) never leaves a trailing space */
+    if (cl > 0 && collapsed[cl - 1] == ' ') collapsed[--cl] = '\0';
 
-    /* Find first sentence end (skip leading spaces) */
+    /* Find first sentence end [.!?\n] (LIVE _SENTENCE_END_RE). The ending
+     * char is kept only when it is '.', matching
+     * text[:m.start() + (1 if text[m.start()] == "." else 0)]. */
     char *sp = collapsed;
     while (*sp == ' ') sp++;
     char trunc[1024];
@@ -783,7 +787,7 @@ void short_desc(const char *description, int max_chars,
     const char *src = sp;
     while (*src && tl < sizeof(trunc) - 1) {
         if (*src == '.' || *src == '!' || *src == '?' || *src == '\n') {
-            trunc[tl++] = *src; /* include the sentence-ending char if '.' */
+            if (*src == '.') trunc[tl++] = *src; /* keep only '.' */
             src++;
             break;
         }
@@ -791,7 +795,8 @@ void short_desc(const char *description, int max_chars,
     }
     trunc[tl] = '\0';
 
-    /* If over budget, clip at max_chars, never mid-word */
+    /* If over budget, clip at max_chars, never mid-word; LIVE appends the
+     * UTF-8 ellipsis "…" after stripping trailing ",;: ". */
     if ((int)tl > max_chars) {
         trunc[max_chars] = '\0';
         /* Find last space */
@@ -805,10 +810,11 @@ void short_desc(const char *description, int max_chars,
         /* Strip trailing comma/colon/space */
         char *end = trunc + strlen(trunc);
         while (end > trunc && strchr(",;: ", end[-1])) { *--end = '\0'; }
-        /* Add ellipsis */
+        /* Add LIVE's single-char UTF-8 ellipsis "…" */
         size_t elen = strlen(trunc);
-        if (elen + 2 < sizeof(trunc)) {
-            trunc[elen] = '.'; trunc[elen + 1] = '.'; trunc[elen + 2] = '\0';
+        if (elen + 3 < sizeof(trunc)) {
+            trunc[elen] = (char)0xe2; trunc[elen + 1] = (char)0x80;
+            trunc[elen + 2] = (char)0xa6; trunc[elen + 3] = '\0';
         }
     }
 

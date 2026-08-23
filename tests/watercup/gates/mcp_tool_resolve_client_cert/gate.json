@@ -1,0 +1,26 @@
+{
+  "name": "mcp_tool_resolve_client_cert",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_client_cert",
+  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": ["lib/libjson/json.c"],
+  "inputs": [
+    "{}",
+    "{\"client_key\": \"/etc/hostname\"}",
+    "{\"client_cert\": \"/etc/hostname\"}",
+    "{\"client_cert\": \"~/no_such_cert.pem\"}",
+    "{\"client_cert\": \"/etc\", \"client_key\": \"/etc/hostname\"}",
+    "{\"client_cert\": \"/etc/hostname\", \"client_key\": \"/etc/hostname\"}",
+    "{\"client_cert\": [\"/etc/hostname\", \"/etc/hostname\"]}",
+    "{\"client_cert\": [\"/etc/hostname\", \"/etc/hostname\", \"pw\"]}",
+    "{\"client_cert\": [\"/etc/hostname\", \"/etc/hostname\", 5]}",
+    "{\"client_cert\": [\"/etc/hostname\"]}",
+    "{\"client_cert\": [\"/etc/hostname\"], \"client_key\": \"/etc/hostname\"}",
+    "{\"client_cert\": \"   \"}",
+    "{\"client_cert\": 5}",
+    "{\"client_cert\": \"~\"}"
+  ],
+  "notes": "mTLS client-cert resolution ladder. PORT FIX: src/tools/mcp_tool.c::mcp_tool_resolve_client_cert was a signature-mismatched simplification (cert+key concat, no branches, no ~ expansion, no isfile); rewritten to the full LIVE tools/mcp_tool.py::_resolve_client_cert ladder (none / list form len2-len3 with key mutual-exclusion and string passphrase check / string form single-vs-pair; _expand validates non-blank strings, expands ~ via $HOME, and requires a regular file). Returns a JSON result object encoding kind or error class. Fixture paths use /etc/hostname (regular file) and /etc (directory, fails os.path.isfile) so both sides see identical filesystem truth. Harness carries a traced copy of the ported ladder; the real ports file is linked via extra_src."
+}

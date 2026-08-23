@@ -251,15 +251,15 @@ char *verification_stop_status_detail(const char *status_json)
     json_t *ev = json_object_get(st, "evidence");
     if (ev && ev->type == JSON_OBJECT) {
         json_t *cmd = json_object_get(ev, "canonical_command");
-        if (!cmd || cmd->type != JSON_STRING) cmd = json_object_get(ev, "command");
+        if (!cmd || cmd->type != JSON_STRING || !json_string_value(cmd)[0])
+            cmd = json_object_get(ev, "command");  /* LIVE: falsy '' falls through */
         json_t *sum = json_object_get(ev, "output_summary");
         if ((cmd && cmd->type == JSON_STRING) || (sum && sum->type == JSON_STRING)) {
             size_t cap = strlen(state) + 4096;
             char *n = realloc(out, cap);
             if (n) {
                 out = n;
-                strcat(out, "\n");
-                if (cmd && cmd->type == JSON_STRING) { strcat(out, "last command `"); strcat(out, json_string_value(cmd)); strcat(out, "`"); }
+                if (cmd && cmd->type == JSON_STRING) { strcat(out, "\nlast command `"); strcat(out, json_string_value(cmd)); strcat(out, "`"); }
                 if (sum && sum->type == JSON_STRING) {
                     const char *summary = json_string_value(sum);
                     size_t sl = strlen(summary);

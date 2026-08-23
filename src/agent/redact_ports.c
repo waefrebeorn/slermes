@@ -52,7 +52,11 @@ char *red_mask_secret(const char *secret, long head, long tail) {
 char *red_redact_query_string(const char *query) {
     /* Python: redact sensitive param values k=v&k=v. */
     if (!query) return strdup("");
-    static const char *sensitive[] = {"token", "key", "secret", "password", "passwd", "auth", "sig", "apikey", "api_key", NULL};
+    /* LIVE _SENSITIVE_QUERY_PARAMS — exact (case-insensitive) key match */
+    static const char *sensitive[] = {"access_token", "refresh_token", "id_token",
+        "token", "api_key", "apikey", "client_secret", "password", "auth",
+        "jwt", "session", "secret", "key", "code", "signature",
+        "x-amz-signature", NULL};
     size_t cap = strlen(query) + 64;
     char *out = malloc(cap);
     if (!out) return strdup("");
@@ -69,7 +73,7 @@ char *red_redact_query_string(const char *query) {
             char *l = lowerdup(pair);
             if (l) {
                 for (int i = 0; sensitive[i]; i++)
-                    if (strstr(l, sensitive[i])) { sens = true; break; }
+                    if (strcmp(l, sensitive[i]) == 0) { sens = true; break; }
                 free(l);
             }
             *eq = '=';
@@ -86,8 +90,8 @@ char *red_redact_query_string(const char *query) {
             size_t plen = (size_t)(eq - pair + 1);
             memcpy(q, pair, plen);
             q += plen;
-            memcpy(q, "[REDACTED]", 10);
-            q += 10;
+            memcpy(q, "***", 3);   /* LIVE mask */
+            q += 3;
         } else {
             memcpy(q, pair, seg);
             q += seg;

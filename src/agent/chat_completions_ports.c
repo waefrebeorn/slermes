@@ -44,27 +44,44 @@ char *cct_build_gemini_thinking_config(const char *reasoning_json) {
 
 /* PoP: cct_snake_case_gemini_thinking_config @ agent/transports/chat_completions.py:_snake_case_gemini_thinking_config */
 char *cct_snake_case_gemini_thinking_config(const char *config_json) {
-    /* Python: camelCase → snake_case field names. */
+    /* Python: type-checked translation of Gemini camelCase thinking keys to
+     * OpenAI-compat snake_case fields. Returns NULL when nothing translates
+     * or the input is not an object. */
     if (!config_json) return NULL;
-    char *out = malloc(strlen(config_json) + 32);
-    if (!out) return NULL;
-    const char *p = config_json;
-    char *q = out;
-    while (*p) {
-        if (strncmp(p, "thinkingBudget", 14) == 0) {
-            memcpy(q, "thinking_budget", 15);
-            q += 15;
-            p += 14;
-        } else if (strncmp(p, "includeThoughts", 15) == 0) {
-            memcpy(q, "include_thoughts", 16);
-            q += 16;
-            p += 15;
-        } else {
-            *q++ = *p++;
-        }
+    json_t *cfg = json_parse(config_json, NULL);
+    if (!cfg || cfg->type != JSON_OBJECT) { if (cfg) json_free(cfg); return NULL; }
+
+    json_t *out = json_new_object();
+    json_t *v;
+    /* includeThoughts must be a bool */
+    if ((v = json_obj_get(cfg, "includeThoughts")) != NULL &&
+        v->type == JSON_BOOL)
+        json_object_set(out, "include_thoughts", json_bool(v->bool_val));
+    /* thinkingLevel must be a non-empty string -> strip+lower */
+    if ((v = json_obj_get(cfg, "thinkingLevel")) != NULL &&
+        v->type == JSON_STRING && v->str_val && v->str_val[0]) {
+        char buf[256];
+        const char *s = v->str_val;
+        while (*s == ' ' || *s == '\t' || *s == '\n') s++;
+        size_t i = 0;
+        for (; s[i] && i < sizeof(buf) - 1; i++)
+            buf[i] = (char)tolower((unsigned char)s[i]);
+        size_t len = i;
+        while (len > 0 && (buf[len-1] == ' ' || buf[len-1] == '\t' || buf[len-1] == '\n')) len--;
+        buf[len] = '\0';
+        if (len > 0)
+            json_object_set(out, "thinking_level", json_string(buf));
     }
-    *q = '\0';
-    return out;
+    /* thinkingBudget must be numeric -> int */
+    if ((v = json_obj_get(cfg, "thinkingBudget")) != NULL &&
+        v->type == JSON_NUMBER)
+        json_object_set(out, "thinking_budget", json_int((int)v->num_val));
+
+    json_free(cfg);
+    if (json_object_size(out) == 0) { json_free(out); return NULL; }
+    char *serialized = json_serialize(out);
+    json_free(out);
+    return serialized;
 }
 
 /* PoP: cct_is_gemini_openai_compat_base_url @ agent/transports/chat_completions.py:_is_gemini_openai_compat_base_url */

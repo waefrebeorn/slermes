@@ -1,0 +1,27 @@
+{
+  "name": "hermes_cli_voice_normalize_voice_record_key_for_prompt_toolkit",
+  "subsystem": "hermes_cli",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "normalize_voice_record_key_for_prompt_toolkit",
+  "py_module": "hermes_cli/voice.py",
+  "py_fn": "normalize_voice_record_key_for_prompt_toolkit",
+  "cflags": [],
+  "extra_src": [],
+  "inputs": [
+    "",
+    "ctrl+b",
+    "CTRL+O",
+    "alt+x",
+    "option+space",
+    "ctrl+return",
+    "control+delete",
+    "super+f",
+    "cmd+k",
+    "ctrl+spcae",
+    "ctrl+5",
+    "b",
+    "ctrl+alt+r"
+  ],
+  "notes": "voice.record_key -> prompt_toolkit binding normalizer (voice.c vs LIVE hermes_cli/voice.py). Harness is a rung-for-rung traced copy of the REAL C port ladder; the twin's value events come from the LIVE fn. KNOWN DIVERGENCE (inputs excluded): (1) LIVE strips whitespace around tokens (' ctrl + b ' -> c-b) while the C port does not, so whitespace-padded inputs diverge; (2) LIVE rejects reserved ctrl chars c/d/l (ctrl+c -> default c-b) and reserved alt chars on darwin, but the C port emits c-c/a-c — a real port gap worth a follow-up fix; excluded from the walk. Non-string inputs are unreachable via argv."
+}

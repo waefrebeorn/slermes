@@ -2088,8 +2088,14 @@ int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) {
     if (!arg || !*arg) { printf("\n"); return 0; }
     const char *t1 = strchr(arg, '\t');
     const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
-    if (arg[0] == '1') { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
-    printf("%s\n", t2 ? t2 + 1 : "");
+    const char *p_end = arg + strlen(arg);
+    if (arg[0] == '1') {
+        /* profile field runs from t1+1 up to t2 (or end) */
+        printf("%.*s\n", (int)((t2 ? t2 : p_end) - (t1 ? t1 + 1 : p_end)),
+               t1 ? t1 + 1 : "");
+        return 0;
+    }
+    printf("%.*s\n", (int)(t2 ? p_end - (t2 + 1) : 0), t2 ? t2 + 1 : "");
     return 0;
 }
 

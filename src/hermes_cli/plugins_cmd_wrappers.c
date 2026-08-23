@@ -78,15 +78,145 @@ void pcmd_sanitize_plugin_name(const char *input, char *out, size_t sz) {
     out[j] = '\0';
 }
 /* PoP: pcmd_resolve_git_url @ hermes_cli/plugins_cmd.py:_resolve_git_url */
-char *pcmd_resolve_git_url(const char *input) {
-    if (!input) return NULL;
-    /* If it looks like a URL, return copy; else treat as owner/repo */
-    if (strstr(input, "://") || strncmp(input, "git@", 4) == 0) {
-        return strdup(input);
+/* PoP: plugins_cmd_resolve_git_url @ hermes_cli/plugins_cmd.py:_resolve_git_url */
+static const char *const PCMD_GITHUB_BROWSER_SEGMENTS[] = {
+    "actions", "blob", "commit", "commits", "issues",
+    "pull", "pulls", "releases", "tree", "wiki", NULL,
+};
+
+static bool pcmd_str_ends_with(const char *s, const char *suffix) {
+    size_t ls = strlen(s), lf = strlen(suffix);
+    return ls >= lf && strcmp(s + ls - lf, suffix) == 0;
+}
+
+/* LIVE semantics: returns a malloc'd clone URL (or NULL when the identifier
+ * matches no accepted form, mirroring LIVE's ValueError) and stores the
+ * optional subdirectory in *out_subdir (NULL when at the repo root). */
+char *pcmd_resolve_git_url(const char *identifier, char **out_subdir) {
+    if (out_subdir) *out_subdir = NULL;
+    if (!identifier) return NULL;
+
+    static const char *const URL_PREFIXES[] =
+        {"https://", "http://", "git@", "ssh://", "file://", NULL};
+    int is_url = 0;
+    for (int i = 0; URL_PREFIXES[i]; i++)
+        if (strncmp(identifier, URL_PREFIXES[i], strlen(URL_PREFIXES[i])) == 0)
+            { is_url = 1; break; }
+
+    char buf[1024];
+
+    if (is_url) {
+        /* GitHub browser URLs: https://github.com/<owner>/<repo>/<seg>[/...] */
+        if (strncmp(identifier, "https://github.com/", 19) == 0) {
+            const char *path = identifier + 19;
+            snprintf(buf, sizeof buf, "%s", path);
+            char *q = strchr(buf, '?'); if (q) *q = '\0';
+            q = strchr(buf, '#');       if (q) *q = '\0';
+            /* strip leading/trailing '/' */
+            char *s = buf;
+            while (*s == '/') s++;
+            size_t L = strlen(s);
+            while (L > 0 && s[L - 1] == '/') s[--L] = '\0';
+            /* split on '/' */
+            char *parts[64]; int np = 0;
+            char *tok = strtok(s, "/");
+            while (tok && np < 64) { parts[np++] = tok; tok = strtok(NULL, "/"); }
+            int seg_ok = np >= 3 && parts[0][0] && parts[1][0];
+            if (seg_ok) {
+                int in_seg = 0;
+                for (int i = 0; PCMD_GITHUB_BROWSER_SEGMENTS[i]; i++)
+                    if (strcmp(parts[2], PCMD_GITHUB_BROWSER_SEGMENTS[i]) == 0)
+                        { in_seg = 1; break; }
+                if (in_seg) {
+                    const char *repo = parts[1];
+                    char repo_buf[512];
+                    snprintf(repo_buf, sizeof repo_buf, "%s", repo);
+                    size_t rl = strlen(repo_buf);
+                    if (rl >= 4 && strcmp(repo_buf + rl - 4, ".git") == 0)
+                        repo_buf[rl - 4] = '\0';
+                    char subdir_buf[512]; subdir_buf[0] = '\0';
+                    if (strcmp(parts[2], "tree") == 0 && np >= 5) {
+                        size_t off = 0;
+                        for (int i = 4; i < np; i++) {
+                            if (!parts[i][0]) continue;
+                            size_t pl = strlen(parts[i]);
+                            if (off && off < sizeof subdir_buf - 1)
+                                subdir_buf[off++] = '/';
+                            if (off + pl < sizeof subdir_buf) {
+                                memcpy(subdir_buf + off, parts[i], pl);
+                                off += pl;
+                            }
+                        }
+                        subdir_buf[off] = '\0';
+                    }
+                    char url_buf[768];
+                    snprintf(url_buf, sizeof url_buf,
+                             "https://github.com/%s/%s.git", parts[0], repo_buf);
+                    if (out_subdir && subdir_buf[0])
+                        *out_subdir = strdup(subdir_buf);
+                    return strdup(url_buf);
+                }
+            }
+        }
+
+        /* explicit #subdir fragment — any scheme */
+        const char *hash = strchr(identifier, '#');
+        if (hash) {
+            size_t ul = (size_t)(hash - identifier);
+            char *url = malloc(ul + 1);
+            memcpy(url, identifier, ul); url[ul] = '\0';
+            const char *frag = hash + 1;
+            while (*frag == '/') frag++;
+            if (out_subdir && *frag) *out_subdir = strdup(frag);
+            return url;
+        }
+
+        /* natural .git/ boundary */
+        static const char MARKER[] = ".git/";
+        const char *idx = strstr(identifier, MARKER);
+        if (idx) {
+            size_t ul = (size_t)(idx - identifier) + 4;
+            char *url = malloc(ul + 1);
+            memcpy(url, identifier, ul); url[ul] = '\0';
+            const char *sub = idx + 5;
+            while (*sub == '/') sub++;
+            if (out_subdir && *sub) *out_subdir = strdup(sub);
+            return url;
+        }
+
+        return strdup(identifier);
     }
-    char buf[512];
-    snprintf(buf, sizeof(buf), "https://github.com/%s.git", input);
-    return strdup(buf);
+
+    /* owner/repo[/subdir...] shorthand */
+    const char *p = identifier;
+    while (*p == '/') p++;
+    char clean[512];
+    snprintf(clean, sizeof clean, "%s", p);
+    size_t cl = strlen(clean);
+    while (cl > 0 && clean[cl - 1] == '/') clean[--cl] = '\0';
+    char *parts2[64]; int n2 = 0;
+    char *tok2 = strtok(clean, "/");
+    while (tok2 && n2 < 64) { if (tok2[0]) parts2[n2++] = tok2; tok2 = strtok(NULL, "/"); }
+    if (n2 >= 2) {
+        char subdir_buf[512]; subdir_buf[0] = '\0';
+        size_t off = 0;
+        for (int i = 2; i < n2; i++) {
+            size_t pl = strlen(parts2[i]);
+            if (off && off < sizeof subdir_buf - 1) subdir_buf[off++] = '/';
+            if (off + pl < sizeof subdir_buf) {
+                memcpy(subdir_buf + off, parts2[i], pl);
+                off += pl;
+            }
+        }
+        subdir_buf[off] = '\0';
+        snprintf(buf, sizeof buf, "https://github.com/%s/%s.git",
+                 parts2[0], parts2[1]);
+        if (out_subdir && subdir_buf[0]) *out_subdir = strdup(subdir_buf);
+        return strdup(buf);
+    }
+
+    /* LIVE raises ValueError here; C port signals invalid with NULL. */
+    return NULL;
 }
 /* PoP: pcmd_resolve_subdir_within @ hermes_cli/plugins_cmd.py:_resolve_subdir_within */
 const char *pcmd_resolve_subdir_within(const char *repo_path, char *out, size_t sz) {

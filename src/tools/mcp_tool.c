@@ -27,6 +27,7 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include <sys/stat.h>
 
 /* ================================================================
  *  State
@@ -2740,14 +2741,129 @@ bool mcp_tool_validate_remote_mcp_url(const char *url)
 
 /* Port of Python: _resolve_client_cert */
 /* PoP: mcp_tool_resolve_client_cert @ tools/mcp_tool.py:_resolve_client_cert */
-char *mcp_tool_resolve_client_cert(const char *cert_path, const char *key_path)
+/* Faithful port of the LIVE mTLS cert resolution ladder (see
+ * tests/watercup/gates/mcp_tool_resolve_client_cert): none / list-form
+ * (2 or 3 elements, key-mutually-exclusive) / string form (single combined
+ * PEM or cert+key pair). Paths are ~-expanded and must exist (isfile).
+ * Returns a JSON result object:
+ *   {"kind":"none"} | {"kind":"single","path":P}
+ *   {"kind":"pair","cert":C,"key":K}
+ *   {"kind":"triple","cert":C,"key":K,"password":PW}
+ *   {"kind":"error_value","label":L}      (bad type / empty / both forms)
+ *   {"kind":"error_notfound","label":L,"path":P} */
+static bool mcp_cert_expand(json_t *val, const char *label, char *out, size_t cap,
+                            bool *is_value_error, bool *is_notfound)
 {
-    if (!cert_path || !key_path) return NULL;
-    size_t len = strlen(cert_path) + strlen(key_path) + 2;
-    char *result = malloc(len);
-    if (!result) return NULL;
-    snprintf(result, len, "%s:%s", cert_path, key_path);
-    return result;
+    *is_value_error = false;
+    *is_notfound = false;
+    if (!val || val->type != JSON_STRING || !val->str_val ||
+        !val->str_val[0] ||
+        strspn(val->str_val, " \t\r\n") == strlen(val->str_val)) {
+        /* Python: non-str or blank -> ValueError */
+        *is_value_error = true;
+        return false;
+    }
+    const char *p = val->str_val;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') p++;
+    char expanded[1024];
+    if (p[0] == '~' && (p[1] == '\0' || p[1] == '/')) {
+        const char *home = getenv("HOME");
+        if (!home || !home[0]) home = "/";
+        if (p[1] == '\0') snprintf(expanded, sizeof expanded, "%s", home);
+        else snprintf(expanded, sizeof expanded, "%s%s", home, p + 1);
+    } else {
+        snprintf(expanded, sizeof expanded, "%s", p);
+    }
+    /* Python: os.path.isfile — regular files only, directories fail. */
+    struct stat st;
+    if (stat(expanded, &st) != 0 || !S_ISREG(st.st_mode)) {
+        *is_notfound = true;
+        return false;
+    }
+    snprintf(out, cap, "%s", expanded);
+    (void)label;
+    return true;
+}
+
+char *mcp_tool_resolve_client_cert(const char *server_name, const char *config_json)
+{
+    (void)server_name;
+    json_t *cfg = config_json ? json_parse(config_json, NULL) : NULL;
+    json_t *raw_cert = cfg ? json_obj_get(cfg, "client_cert") : NULL;
+    json_t *raw_key = cfg ? json_obj_get(cfg, "client_key") : NULL;
+    char out[4096];
+
+    if ((!raw_cert || raw_cert->type == JSON_NULL) &&
+        (!raw_key || raw_key->type == JSON_NULL)) {
+        if (cfg) json_free(cfg);
+        return strdup("{\"kind\":\"none\"}");
+    }
+
+    bool cert_is_list = raw_cert && raw_cert->type == JSON_ARRAY;
+    if (cert_is_list) {
+        bool key_set = raw_key && raw_key->type != JSON_NULL;
+        if (key_set) {
+            if (cfg) json_free(cfg);
+            return strdup("{\"kind\":\"error_value\",\"label\":\"both_forms\"}");
+        }
+        size_t len = raw_cert->c.count;
+        char cp[1024], kp[1024];
+        bool verr, nf;
+        if (len == 2) {
+            if (!mcp_cert_expand(json_get(raw_cert, 0), "client_cert[0]", cp, sizeof cp, &verr, &nf) ||
+                !mcp_cert_expand(json_get(raw_cert, 1), "client_cert[1]", kp, sizeof kp, &verr, &nf)) {
+                json_free(cfg);
+                return strdup(verr ? "{\"kind\":\"error_value\",\"label\":\"client_cert\"}"
+                                   : "{\"kind\":\"error_notfound\",\"label\":\"client_cert\"}");
+            }
+            snprintf(out, sizeof out,
+                     "{\"kind\":\"pair\",\"cert\":\"%s\",\"key\":\"%s\"}", cp, kp);
+            json_free(cfg);
+            return strdup(out);
+        }
+        if (len == 3) {
+            json_t *pw = json_get(raw_cert, 2);
+            if (!pw || pw->type != JSON_STRING || !pw->str_val) {
+                json_free(cfg);
+                return strdup("{\"kind\":\"error_value\",\"label\":\"passphrase\"}");
+            }
+            if (!mcp_cert_expand(json_get(raw_cert, 0), "client_cert[0]", cp, sizeof cp, &verr, &nf) ||
+                !mcp_cert_expand(json_get(raw_cert, 1), "client_cert[1]", kp, sizeof kp, &verr, &nf)) {
+                json_free(cfg);
+                return strdup(verr ? "{\"kind\":\"error_value\",\"label\":\"client_cert\"}"
+                                   : "{\"kind\":\"error_notfound\",\"label\":\"client_cert\"}");
+            }
+            snprintf(out, sizeof out,
+                     "{\"kind\":\"triple\",\"cert\":\"%s\",\"key\":\"%s\",\"password\":\"%s\"}",
+                     cp, kp, pw->str_val);
+            json_free(cfg);
+            return strdup(out);
+        }
+        json_free(cfg);
+        return strdup("{\"kind\":\"error_value\",\"label\":\"list_length\"}");
+    }
+
+    /* String form for client_cert. */
+    char cp[1024], kp[1024];
+    bool verr, nf;
+    if (!mcp_cert_expand(raw_cert, "client_cert", cp, sizeof cp, &verr, &nf)) {
+        json_free(cfg);
+        return strdup(verr ? "{\"kind\":\"error_value\",\"label\":\"client_cert\"}"
+                           : "{\"kind\":\"error_notfound\",\"label\":\"client_cert\"}");
+    }
+    if (raw_key && raw_key->type != JSON_NULL) {
+        if (!mcp_cert_expand(raw_key, "client_key", kp, sizeof kp, &verr, &nf)) {
+            json_free(cfg);
+            return strdup(verr ? "{\"kind\":\"error_value\",\"label\":\"client_key\"}"
+                               : "{\"kind\":\"error_notfound\",\"label\":\"client_key\"}");
+        }
+        snprintf(out, sizeof out, "{\"kind\":\"pair\",\"cert\":\"%s\",\"key\":\"%s\"}", cp, kp);
+        json_free(cfg);
+        return strdup(out);
+    }
+    snprintf(out, sizeof out, "{\"kind\":\"single\",\"path\":\"%s\"}", cp);
+    json_free(cfg);
+    return strdup(out);
 }
 
 /* Port of Python: _format_connect_error */

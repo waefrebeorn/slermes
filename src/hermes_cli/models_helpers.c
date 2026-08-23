@@ -482,16 +482,32 @@ char *opencode_model_api_mode(const char *provider_id, const char *model_id)
     char *r;
     if (low[0] == '\0') {
         r = strdup("chat_completions");
-    } else if (strcmp(prov, "opencode-go") == 0) {
-        if (strncmp(low, "minimax-", 8) == 0 || strcmp(low, "qwen3.7-max") == 0)
-            r = strdup("anthropic_messages");
-        else r = strdup("chat_completions");
-    } else if (strcmp(prov, "opencode-zen") == 0) {
-        if (strncmp(low, "claude-", 7) == 0) r = strdup("anthropic_messages");
-        else if (strncmp(low, "gpt-", 4) == 0) r = strdup("codex_responses");
-        else r = strdup("chat_completions");
     } else {
-        r = strdup("chat_completions");
+        /* opencode-free is Zen-hosted: it shares Zen's per-model routing. */
+        const char *fam = prov;
+        if (strcmp(fam, "opencode-free") == 0) fam = "opencode-zen";
+        if (strcmp(fam, "opencode-go") == 0) {
+            if (strncmp(low, "gpt-", 4) == 0 || strncmp(low, "grok-", 5) == 0)
+                r = strdup("codex_responses");
+            else if (strncmp(low, "muse-spark", 10) == 0)
+                r = strdup("codex_responses");
+            else if (strncmp(low, "minimax-", 8) == 0)
+                r = strdup("anthropic_messages");
+            else if (strncmp(low, "qwen", 4) == 0)
+                r = strdup("anthropic_messages");
+            else r = strdup("chat_completions");
+        } else if (strcmp(fam, "opencode-zen") == 0) {
+            if (strncmp(low, "claude-", 7) == 0) r = strdup("anthropic_messages");
+            else if (strncmp(low, "gpt-", 4) == 0 || strncmp(low, "grok-", 5) == 0)
+                r = strdup("codex_responses");
+            else if (strncmp(low, "muse-spark", 10) == 0)
+                r = strdup("codex_responses");
+            else if (strncmp(low, "qwen", 4) == 0)
+                r = strdup("anthropic_messages");
+            else r = strdup("chat_completions");
+        } else {
+            r = strdup("chat_completions");
+        }
     }
     free(norm); free(low);
     return r;

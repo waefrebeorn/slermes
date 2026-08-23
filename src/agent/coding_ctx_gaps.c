@@ -50,10 +50,37 @@ const char *coding_ctx_edit_format_line(const char *model) {
 /* ── _coding_mode (L336) ── */
 /* PoP: coding_ctx_mode @ agent/coding_context.py:_coding_mode */
 const char *coding_ctx_mode(json_t *config) {
-    if (!config) return "default";
-    const char *mode = json_get_str(config, "coding_mode", NULL);
-    if (mode) return mode;
-    return "default";
+    /* Python: normalized agent.coding_context mode (auto/focus/on/off).
+     * config==NULL maps to the empty-config path (the readonly config load
+     * stays out of this pure helper). */
+    const char *raw = "auto";
+    if (config && config->type == JSON_OBJECT) {
+        json_t *agent = json_obj_get(config, "agent");
+        if (agent && agent->type == JSON_OBJECT) {
+            json_t *cc = json_obj_get(agent, "coding_context");
+            if (cc && cc->type == JSON_STRING && json_string_value(cc))
+                raw = json_string_value(cc);
+        }
+    }
+    static char mode[64];
+    size_t i = 0;
+    for (; raw[i] && i < sizeof(mode) - 1; i++)
+        mode[i] = (char)tolower((unsigned char)raw[i]);
+    /* strip leading/trailing whitespace, LIVE str(raw).strip() */
+    char *s = mode; size_t len = i;
+    while (len > 0 && (s[0] == ' ' || s[0] == '\t' || s[0] == '\n')) { s++; len--; }
+    while (len > 0 && (s[len-1] == ' ' || s[len-1] == '\t' || s[len-1] == '\n')) len--;
+    s[len] = '\0';
+
+    if (strcmp(s, "focus") == 0 || strcmp(s, "strict") == 0 || strcmp(s, "lean") == 0)
+        return "focus";
+    if (strcmp(s, "on") == 0 || strcmp(s, "true") == 0 || strcmp(s, "yes") == 0 ||
+        strcmp(s, "1") == 0 || strcmp(s, "always") == 0)
+        return "on";
+    if (strcmp(s, "off") == 0 || strcmp(s, "false") == 0 || strcmp(s, "no") == 0 ||
+        strcmp(s, "0") == 0 || strcmp(s, "never") == 0)
+        return "off";
+    return "auto";
 }
 
 /* ── _coding_instructions (L356) ── */

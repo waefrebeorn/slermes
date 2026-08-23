@@ -1,0 +1,23 @@
+{
+  "name": "tool_search_short_desc",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "short_desc",
+  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": ["src/tools/tool_search.c", "lib/libjson/json.c"],
+  "py_module": "tools/tool_search.py",
+  "py_fn": "_short_desc",
+  "inputs": [
+    "60\tShort and sweet. Long tail that nobody reads.",
+    "60\tNo terminator at all just rambles on and on past the sixty character budget line for sure yes",
+    "20\tClips mid word boundary here!",
+    "10\tA very long first sentence. Then more.",
+    "60\t",
+    "60\t   spaced   out \t input \\t here  ",
+    "15\tEnds with period.",
+    "12\tEnds without period. Trailing detail.",
+    "8\tWordy sentence, comma; colon: clipped"
+  ],
+  "notes": "PORT FIX APPLIED: short_desc previously kept any [.!?\\n] terminator (LIVE keeps only '.'), appended '..' instead of LIVE's single UTF-8 ellipsis '\\u2026', and never stripped trailing ',;: ' before the ellipsis when no space existed in the clip window; it now matches LIVE exactly. Inputs encode tabs/newlines as literal backslash escapes."
+}

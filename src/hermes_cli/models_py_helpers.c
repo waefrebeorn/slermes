@@ -85,26 +85,44 @@ int models_live_http_fetch(const char *url, const char *headers_json,
 bool models_compute_sale_discount(const char *prompt, const char *completion,
                                   const json_t *original,
                                   int *out_pct, char **out_was_prompt, char **out_was_completion) {
+    /* LIVE hermes_cli/models.py::compute_sale_discount — the FREE/$0 branch
+     * runs FIRST, before the dict / was-empty early returns. */
     if (out_pct) *out_pct = 0;
     if (out_was_prompt) *out_was_prompt = NULL;
     if (out_was_completion) *out_was_completion = NULL;
-    if (!original || original->type != JSON_OBJECT) return false;
 
-    json_t *was_prompt = json_object_get(original, "prompt");
-    json_t *was_completion = json_object_get(original, "completion");
-    const char *wp = (was_prompt && was_prompt->type == JSON_STRING) ? was_prompt->str_val : NULL;
-    const char *wc = (was_completion && was_completion->type == JSON_STRING) ? was_completion->str_val : NULL;
-    if ((wp == NULL || wp[0] == '\0') && (wc == NULL || wc[0] == '\0')) return false;
-
-    /* _finite / _nonneg helpers */
     #define FINITE(raw) (models_finite_float((raw)))
     #define NONNEG(raw) (models_nonneg_float((raw)))
 
     const char *cp = (prompt && prompt[0]) ? prompt : NULL;
     const char *cc = (completion && completion[0]) ? completion : NULL;
-    int cur_prompt_zero = (cp && strtod(cp, NULL) == 0.0);
-    int cur_comp_zero = (cc && strtod(cc, NULL) == 0.0);
-    if (cur_prompt_zero && cur_comp_zero) return false;
+
+    const char *wp = NULL, *wc = NULL;
+    if (original && original->type == JSON_OBJECT) {
+        json_t *jp = json_object_get(original, "prompt");
+        json_t *jc = json_object_get(original, "completion");
+        wp = (jp && jp->type == JSON_STRING) ? jp->str_val : NULL;
+        wc = (jc && jc->type == JSON_STRING) ? jc->str_val : NULL;
+    }
+
+    /* Free / $0 special case: current prompt rate is 0 and the completion
+     * side is 0-or-unparseable(None). An unparseable side reads as None in
+     * LIVE (_nonneg -> None), which satisfies `in (0, None)`. */
+    {
+        double cur_c_any = cc ? NONNEG(cc) : -1.0;      /* -1.0 sentinel == None */
+        int p_zero = (cp != NULL && NONNEG(cp) == 0.0);
+        int c_zero_or_none = (cc == NULL || cur_c_any <= 0.0);
+        if (p_zero && c_zero_or_none) {
+            if (out_pct) *out_pct = 100;
+            if (out_was_prompt) *out_was_prompt = strdup(wp ? wp : "");
+            if (out_was_completion) *out_was_completion = strdup(wc ? wc : "");
+            return true;
+        }
+    }
+
+    if (!original || original->type != JSON_OBJECT) return false;
+
+    if ((wp == NULL || wp[0] == '\0') && (wc == NULL || wc[0] == '\0')) return false;
 
     double cur_p = FINITE(cp);
     double orig_p = FINITE(wp);

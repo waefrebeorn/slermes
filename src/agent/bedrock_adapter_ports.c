@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -114,16 +115,159 @@ char *brd_converse_stop_reason_to_openai(const char *reason) {
     if (strcmp(reason, "max_tokens") == 0) return strdup("length");
     if (strcmp(reason, "guardrail_intervened") == 0) return strdup("content_filter");
     if (strcmp(reason, "content_blocked") == 0) return strdup("content_filter");
+    if (strcmp(reason, "content_filtered") == 0) return strdup("content_filter");
     if (strcmp(reason, "stop_sequence") == 0) return strdup("stop");
     return strdup("stop");
 }
 
 /* PoP: brd_normalize_converse_response @ agent/bedrock_adapter.py:normalize_converse_response */
+/* PoP: bedrock_adapter_normalize_converse_response @ agent/bedrock_adapter.py:normalize_converse_response */
 char *brd_normalize_converse_response(const char *response_json) {
-    /* Python: Converse output → OpenAI message shape. */
     if (!response_json) return strdup("{}");
-    printf("converse response normalized to openai shape\n");
-    return strdup(response_json);
+    json_t *response = json_parse(response_json, NULL);
+    if (!response || response->type != JSON_OBJECT) {
+        if (response) json_free(response);
+        return strdup("{}");
+    }
+
+    json_t *output = json_obj_get(response, "output");
+    if (!output || output->type != JSON_OBJECT) output = json_object();
+    json_t *message = json_obj_get(output, "message");
+    if (!message || message->type != JSON_OBJECT) message = json_object();
+    json_t *content_blocks = json_obj_get(message, "content");
+    if (!content_blocks || content_blocks->type != JSON_ARRAY)
+        content_blocks = NULL;
+
+    const char *stop_reason = json_get_str(response, "stopReason", NULL);
+    char *fr_buf = brd_converse_stop_reason_to_openai(
+        stop_reason ? stop_reason : "end_turn");
+    const char *finish_reason = fr_buf;
+
+    /* content / reasoning / tool_call assembly */
+    json_t *text_parts = json_array();
+    json_t *reasoning_parts = json_array();
+    json_t *tool_calls = json_array();
+    size_t nblocks = content_blocks ? json_len(content_blocks) : 0;
+    for (size_t i = 0; i < nblocks; i++) {
+        json_t *block = json_get(content_blocks, (int)i);
+        if (!block || block->type != JSON_OBJECT) continue;
+        json_t *t = json_obj_get(block, "text");
+        if (t && t->type == JSON_STRING) {
+            json_append(text_parts, json_string(t->str_val));
+            continue;
+        }
+        json_t *rc = json_obj_get(block, "reasoningContent");
+        if (rc && rc->type == JSON_OBJECT) {
+            const char *tt = json_get_str(rc, "text", "");
+            if (tt && tt[0])
+                json_append(reasoning_parts, json_string(tt));
+            continue;
+        }
+        json_t *tu = json_obj_get(block, "toolUse");
+        if (tu && tu->type == JSON_OBJECT) {
+            json_t *call = json_object();
+            json_set(call, "id",
+                     json_string(json_get_str(tu, "toolUseId", "")));
+            json_set(call, "type", json_string("function"));
+            json_t *fn = json_object();
+            json_set(fn, "name", json_string(json_get_str(tu, "name", "")));
+            json_t *input = json_obj_get(tu, "input");
+            char *args;
+            if (input && (input->type == JSON_OBJECT || input->type == JSON_ARRAY))
+                args = json_serialize(input);
+            else
+                args = strdup("{}");
+            json_set(fn, "arguments", json_string(args));
+            free(args);
+            json_set(call, "function", fn);
+            json_append(tool_calls, call);
+        }
+    }
+
+    /* join text parts with "\n" (empty -> null), reasoning with "\n\n" */
+    char *content = NULL, *reasoning = NULL;
+    {
+        size_t total = 0;
+        for (size_t i = 0; i < json_len(text_parts); i++) {
+            json_t *p = json_get(text_parts, (int)i);
+            total += strlen(p->str_val) + 1;
+        }
+        content = malloc(total + 1);
+        content[0] = '\0';
+        for (size_t i = 0; i < json_len(text_parts); i++) {
+            if (i) strcat(content, "\n");
+            strcat(content, json_get(text_parts, (int)i)->str_val);
+        }
+        total = 0;
+        for (size_t i = 0; i < json_len(reasoning_parts); i++) {
+            json_t *p = json_get(reasoning_parts, (int)i);
+            total += strlen(p->str_val) + 2;
+        }
+        reasoning = malloc(total + 1);
+        reasoning[0] = '\0';
+        for (size_t i = 0; i < json_len(reasoning_parts); i++) {
+            if (i) strcat(reasoning, "\n\n");
+            strcat(reasoning, json_get(reasoning_parts, (int)i)->str_val);
+        }
+    }
+    int n_tool_calls = (int)json_len(tool_calls);
+
+    /* usage: Converse inputTokens excludes cache tokens; restore OpenAI's
+     * prompt-includes-cache convention. */
+    json_t *usage_data = json_obj_get(response, "usage");
+    if (!usage_data || usage_data->type != JSON_OBJECT) usage_data = NULL;
+    long input_tokens = usage_data ? (long)json_get_num(usage_data, "inputTokens", 0) : 0;
+    long cache_read = usage_data ? (long)json_get_num(usage_data, "cacheReadInputTokens", 0) : 0;
+    long cache_write = usage_data ? (long)json_get_num(usage_data, "cacheWriteInputTokens", 0) : 0;
+    long output_tokens = usage_data ? (long)json_get_num(usage_data, "outputTokens", 0) : 0;
+
+    if (n_tool_calls > 0 && strcmp(finish_reason, "stop") == 0)
+        finish_reason = "tool_calls";
+
+    json_t *msg = json_object();
+    json_set(msg, "role", json_string("assistant"));
+    if (content[0])
+        json_set(msg, "content", json_string(content));
+    else
+        json_set(msg, "content", json_null());
+    if (n_tool_calls > 0)
+        json_set(msg, "tool_calls", tool_calls);
+    else
+        json_set(msg, "tool_calls", json_null());
+    if (reasoning[0])
+        json_set(msg, "reasoning_content", json_string(reasoning));
+    else
+        json_set(msg, "reasoning_content", json_null());
+
+    json_t *choice = json_object();
+    json_set(choice, "index", json_int(0));
+    json_set(choice, "message", msg);
+    json_set(choice, "finish_reason", json_string(finish_reason));
+
+    json_t *choices = json_array();
+    json_append(choices, choice);
+
+    json_t *usage = json_object();
+    json_set(usage, "prompt_tokens",
+             json_int(input_tokens + cache_read + cache_write));
+    json_set(usage, "completion_tokens", json_int(output_tokens));
+    json_set(usage, "total_tokens",
+             json_int(input_tokens + cache_read + cache_write + output_tokens));
+    json_set(usage, "cache_read_input_tokens", json_int(cache_read));
+    json_set(usage, "cache_creation_input_tokens", json_int(cache_write));
+
+    json_t *out = json_object();
+    json_set(out, "choices", choices);
+    json_set(out, "usage", usage);
+    json_set(out, "model", json_string(json_get_str(response, "modelId", "")));
+
+    char *result = json_serialize(out);
+    json_free(out);
+    free(content);
+    free(reasoning);
+    free(fr_buf);
+    json_free(response);
+    return result;
 }
 
 /* PoP: brd_normalize_converse_stream_events @ agent/bedrock_adapter.py:normalize_converse_stream_events */

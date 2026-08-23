@@ -804,25 +804,27 @@ int main_u_format_aux_current(const char *arg) {
     const char *t1 = strchr(arg, '\t');
     const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
     const char *base = arg;
-    const char *provider = t1 ? t1 + 1 : "auto";
+    size_t base_len = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    const char *provider_raw = t1 ? t1 + 1 : "";
+    size_t plen = t1 ? (size_t)((t2 ? t2 : arg + strlen(arg)) - (t1 + 1)) : 0;
     const char *model = t2 ? t2 + 1 : "";
-    if (base[0]) {
+    if (base_len > 0) {
         const char *short_base = base;
         if (strncmp(short_base, "https://", 8) == 0) short_base += 8;
         else if (strncmp(short_base, "http://", 7) == 0) short_base += 7;
-        size_t blen = strlen(short_base);
+        size_t blen = (size_t)((base + base_len) - short_base);
         while (blen > 0 && short_base[blen-1] == '/') blen--;
-        printf("custom (%.*s)%s\n", (int)blen, short_base, model[0] ? " · " : "");
-        if (model[0]) printf("%s\n", model);
+        printf("custom (%.*s)%s%s\n", (int)blen, short_base,
+               model[0] ? " · " : "", model[0] ? model : "");
         return 0;
     }
-    if (strcmp(provider, "auto") == 0 || !provider[0]) {
-        printf("auto%s\n", model[0] ? " · " : "");
-        if (model[0]) printf("%s\n", model);
+    int is_auto = (plen == 4 && strncmp(provider_raw, "auto", 4) == 0) || plen == 0;
+    if (is_auto) {
+        printf("auto%s%s\n", model[0] ? " · " : "", model[0] ? model : "");
         return 0;
     }
-    if (model[0]) printf("%s · %s\n", provider, model);
-    else printf("%s\n", provider);
+    if (model[0]) printf("%.*s · %s\n", (int)plen, provider_raw, model);
+    else printf("%.*s\n", (int)plen, provider_raw);
     return 0;
 }
 

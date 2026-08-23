@@ -1,0 +1,24 @@
+{
+  "name": "message_sanitization_repair_tool_call_arguments",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "repair_tool_call_arguments",
+  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": ["src/agent/message_sanitization_ports.c", "lib/libjson/json.c"],
+  "inputs": [
+    "",
+    "   ",
+    "None",
+    "{\"a\": 1}",
+    "  {\"a\": 1, \"b\": [1, 2]}  ",
+    "{\"a\": 1,}",
+    "{\"a\": [1, 2,], \"b\": 3,}",
+    "{\"a\": \"b\"",
+    "[1, 2",
+    "{\"a\": 1}}}",
+    "{\"a\": ",
+    "{\"a\": \"unclosed"
+  ],
+  "notes": "Malformed tool_call argument JSON repair ladder. PORT FIX: src/agent/message_sanitization_ports.c::msz_repair_tool_call_arguments was a thin escape-only stub diverging from LIVE agent/message_sanitization.py::_repair_tool_call_arguments; rewritten as the full ladder (strip -> None -> strict parse/reserialise -> trailing-comma strip -> close unclosed structures -> bounded excess-closer trim loop -> final parse -> control-char escape pass -> '{}' fallback) with libjson as the parse oracle. Harness carries a traced copy of that port; the real ports file is linked via extra_src. Known excluded divergence classes (not exercised by inputs): literal control chars inside strings (Python pass-0 uses json.loads(strict=False) so it repairs them early; libjson rejects them), NaN/Infinity literals (Python accepts, libjson rejects), and brace/bracket characters inside string values (Python's count-based closer accounting is string-blind, the port tracks strings)."
+}
