@@ -113,9 +113,26 @@ bool tool_guardrail_is_mutating(const char *tool_name)
 /* File-mutation tool names that prove a write landed on success. */
 static const char *file_mutating_tools[] = {"write_file", "patch", NULL};
 
+/* Python truthiness for a data["error"] lookup: null/false/0/"" are falsy
+ * and do NOT count as an error (LIVE agent/tool_result_classification.py). */
+static bool trc_json_value_truthy(json_node_t *n)
+{
+    if (!n) return false;
+    switch (n->type) {
+    case JSON_NULL: return false;
+    case JSON_BOOL: return n->bool_val;
+    case JSON_STRING: return n->str_val && n->str_val[0];
+    case JSON_NUMBER: return n->num_val != 0.0;
+    default: return true;
+    }
+}
+
 /* Port of Python: file_mutation_result_landed */
 bool file_mutation_result_landed(const char *tool_name, const char *result) {
     if (!tool_name || !result) return false;
+
+    /* Python truthiness for a data["error"] lookup: null/false/0/"" are falsy
+     * and do NOT count as an error (LIVE agent/tool_result_classification.py). */
 
     /* Check if this is a file-mutating tool. */
     bool is_mutating = false;
@@ -131,8 +148,10 @@ bool file_mutation_result_landed(const char *tool_name, const char *result) {
         if (data) json_free(data);
         return false;
     }
-    json_node_t *err_node = json_object_get(data, "error");
-    if (err_node) { json_free(data); return false; }
+    if (trc_json_value_truthy(json_object_get(data, "error"))) {
+        json_free(data);
+        return false;
+    }
 
     if (strcmp(tool_name, "write_file") == 0) {
         json_node_t *bw = json_object_get(data, "bytes_written");

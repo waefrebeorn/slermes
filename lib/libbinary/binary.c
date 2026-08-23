@@ -47,9 +47,9 @@ static const char *const BINARY_EXTENSIONS[] = {
     ".rar", ".rlib", ".rpm",
     ".sketch", ".so", ".sqlite", ".sqlite3", ".swf",
     ".tar", ".tgz", ".tif", ".tiff", ".ttf",
-    ".wad", ".war", ".wasm", ".wav", ".webm", ".webp", ".wma", ".wmv",
+    ".war", ".wasm", ".wav", ".webm", ".webp", ".wma", ".wmv",
     ".woff", ".woff2",
-    ".x", ".xd", ".xls", ".xlsx", ".xz",
+    ".xd", ".xls", ".xlsx", ".xz",
     ".z", ".zip",
 };
 
@@ -71,9 +71,10 @@ bool has_binary_extension(const char *path)
     if (!path || !*path)
         return false;
 
-    /* Find last dot */
+    /* Find last dot (LIVE: path.rfind('.'); a leading-dot name like ".PNG"
+     * checks the whole lowercased name against the set, same as Python) */
     const char *dot = strrchr(path, '.');
-    if (!dot || dot == path)
+    if (!dot)
         return false;
 
     /* Lowercase the extension for comparison */
