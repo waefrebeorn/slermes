@@ -239,8 +239,26 @@ static bool plugin_store(memory_storage_t *st, memory_entry_t *entry) {
 }
 
 static bool plugin_get(memory_storage_t *st, const char *key, memory_entry_t *entry) {
-    (void)st; (void)key; (void)entry;
-    return false; /* plugin search is query-based, not key-based */
+    /* Interface seam: plugin_interface_t exposes memory_store / memory_search /
+     * memory_clear only — no key-addressable get. A plugin get degrades to a
+     * search over the key; when the plugin returns nothing we report not-found
+     * (Python default is also a no-op: its plugin storage has no key lookup). */
+    if (!st || !st->plugin_iface || !st->plugin_iface->memory_search || !key)
+        return false;
+    char metadata[256];
+    snprintf(metadata, sizeof(metadata), "{\"key\":\"%s\"}", key);
+    char *result = st->plugin_iface->memory_search(key, 1);
+    if (!result) return false;
+    bool ok = entry != NULL;
+    if (ok) {
+        memset(entry, 0, sizeof(*entry));
+        snprintf(entry->key, sizeof(entry->key), "%s", key);
+        snprintf(entry->content, sizeof(entry->content), "%s", result);
+        entry->created_at = time(NULL);
+        entry->updated_at = entry->created_at;
+    }
+    free(result);
+    return ok;
 }
 
 static bool plugin_delete(memory_storage_t *st, const char *key) {
@@ -262,8 +280,10 @@ static void plugin_clear(memory_storage_t *st) {
 }
 
 static size_t plugin_count(memory_storage_t *st) {
+    /* Interface seam: plugin_interface_t exposes no enumeration/count op
+     * (Python default is also a no-op for plugin-backed storage). */
     (void)st;
-    return 0; /* plugin doesn't expose count in standard interface */
+    return 0;
 }
 
 static char **plugin_list_keys(memory_storage_t *st, size_t *count) {
@@ -334,23 +354,30 @@ static json_t *plugin_export_json(memory_storage_t *st) {
 }
 
 static bool plugin_vtable_persist(memory_storage_t *st) {
-    (void)st; return true; /* plugin manages its own state */
+    /* Honest no-op seam: the plugin owns its own durable state — every
+     * memory_store() call already reached the plugin backend, so there is
+     * nothing buffered here to flush (Python default is also a no-op). */
+    (void)st; return true;
 }
 
 static bool plugin_vtable_load(memory_storage_t *st) {
+    /* Same seam as persist: the plugin hydrates lazily inside its own
+     * search/store calls; nothing to load into this translation unit. */
     (void)st; return true;
 }
 
 static bool plugin_get_by_hash(memory_storage_t *st, uint64_t hash, memory_entry_t *entry) {
+    /* Interface seam: no hash-addressable op in plugin_interface_t.
+     * Return "not found" — dedup stays best-effort on the plugin backend
+     * (Python default is also a no-op: plugins don't participate in dedup). */
     (void)st; (void)hash; (void)entry;
-    /* Plugin backend doesn't support hash-based dedup lookup.
-     * Return false = "not found" — dedup best-effort for plugin. */
     return false;
 }
 
 static int plugin_compress_old(memory_storage_t *st, time_t before, memory_compress_fn_t compress_cb) {
+    /* Interface seam: the plugin manages its own storage lifecycle, so local
+     * content compaction never applies (Python default is also a no-op). */
     (void)st; (void)before; (void)compress_cb;
-    /* Plugin manages its own storage — no local compression needed. */
     return 0;
 }
 

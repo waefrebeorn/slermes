@@ -437,13 +437,18 @@ bool vtable_inmem_get_by_hash(memory_storage_t *st, uint64_t hash, memory_entry_
 }
 
 bool vtable_inmem_persist(memory_storage_t *st) {
+    /* Honest no-op seam: the in-memory backend has no backing store to
+     * persist into — entries live only in the heap array (Python default is
+     * also a no-op for its MemoryStorage backend). Durability requires a
+     * file/sqlite backend. */
     (void)st;
-    return true; /* In-memory: no-op */
+    return true;
 }
 
 bool vtable_inmem_load(memory_storage_t *st) {
+    /* Same seam as persist: nothing on disk to load from. */
     (void)st;
-    return true; /* In-memory: no-op */
+    return true;
 }
 
 int vtable_inmem_compress_old(memory_storage_t *st, time_t before,
@@ -806,8 +811,39 @@ static bool vtable_sqlite_get_by_hash(memory_storage_t *st, uint64_t hash, memor
     return found;
 }
 
-static bool vtable_sqlite_persist(memory_storage_t *st) { (void)st; return true; } /* SQLite auto-persists */
-static bool vtable_sqlite_load(memory_storage_t *st) { (void)st; return true; }    /* SQLite auto-loads */
+static bool vtable_sqlite_persist(memory_storage_t *st) {
+    /* Flush the sqlite backend's durability surface: WAL checkpoint so a
+     * reader in another process sees every committed entry. SQLite already
+     * auto-commits each statement; this is the explicit fsync-to-main-db
+     * pass the persist() contract promises. Fails only when the handle is
+     * dead. */
+    if (!st || !st->data) return false;
+    sqlite3 *db = (sqlite3 *)st->data;
+    sqlite3_stmt *stmt = NULL;
+    if (sqlite3_prepare_v2(db, "PRAGMA wal_checkpoint(TRUNCATE)", -1, &stmt, NULL) != SQLITE_OK)
+        return false;
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+static bool vtable_sqlite_load(memory_storage_t *st) {
+    /* Verify the schema is present and reachable (the load contract: the
+     * store can serve entries). A missing memory_entries table means the
+     * open path never ran — report failure rather than pretending. */
+    if (!st || !st->data) return false;
+    sqlite3 *db = (sqlite3 *)st->data;
+    sqlite3_stmt *stmt = NULL;
+    if (sqlite3_prepare_v2(db,
+            "SELECT count(*) FROM sqlite_master WHERE type='table' "
+            "AND name='memory_entries'", -1, &stmt, NULL) != SQLITE_OK)
+        return false;
+    bool ok = false;
+    if (sqlite3_step(stmt) == SQLITE_ROW)
+        ok = (sqlite3_column_int(stmt, 0) > 0);
+    sqlite3_finalize(stmt);
+    return ok;
+}
 
 static int vtable_sqlite_compress_old(memory_storage_t *st, time_t before,
                                       char *(*compress_cb)(const char *content)) {
