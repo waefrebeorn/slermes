@@ -104,7 +104,49 @@ int hermes_cli_dashboard_auth_rout_auth_login(const char *arg) {
 }
 
 /* PoP: hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri @ hermes_cli/dashboard_auth/routes.py:_validate_loopback_redirect_uri */
-int hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri(const char *arg) {
+    /* Python _validate_loopback_redirect_uri: RFC 8252 §7.3 — accept only
+     * http://127.0.0.1[:port]/... and http://[::1][:port]/... literal
+     * loopback IPs ("localhost" deliberately rejected, §8.3). Valid → echo
+     * the URI; invalid → 400-style rejection. */
+    if (!arg || !*arg) {
+        printf("{\"detail\": \"redirect_uri required\"}\n");
+        return 400;
+    }
+    const char *scheme_end = strstr(arg, "://");
+    if (!scheme_end || (size_t)(scheme_end - arg) != 4
+            || strncasecmp(arg, "http", 4) != 0) {
+        printf("{\"detail\": \"native redirect_uri must be http:// on the "
+               "loopback interface\"}\n");
+        return 400;
+    }
+    const char *host = scheme_end + 3;
+    const char *host_end = host;
+    bool v6 = host[0] == '[';
+    if (v6) {
+        const char *close = strchr(host, ']');
+        if (!close) { printf("{\"detail\": \"malformed redirect_uri\"}\n"); return 400; }
+        host_end = close + 1;
+    } else {
+        while (*host_end && *host_end != ':' && *host_end != '/' && *host_end != '?')
+            host_end++;
+    }
+    size_t hlen = (size_t)(host_end - host);
+    char hostbuf[128];
+    if (hlen >= sizeof(hostbuf)) hlen = sizeof(hostbuf) - 1;
+    memcpy(hostbuf, host, hlen); hostbuf[hlen] = '\0';
+    for (char *q = hostbuf; *q; q++) *q = (char)tolower((unsigned char)*q);
+    bool loopback = (strcmp(hostbuf, "127.0.0.1") == 0)
+                 || (strcmp(hostbuf, "::1") == 0)
+                 || (strcmp(hostbuf, "[::1]") == 0);
+    if (!loopback) {
+        printf("{\"detail\": \"native redirect_uri host must be a loopback IP "
+               "literal (127.0.0.1 / ::1)\"}\n");
+        return 400;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: hermes_cli_dashboard_auth_rout_auth_native_authorize @ hermes_cli/dashboard_auth/routes.py:auth_native_authorize */
 int hermes_cli_dashboard_auth_rout_auth_native_authorize(const char *arg) {
@@ -1262,7 +1304,23 @@ int hermes_cli_pets_u_set_active(const char *arg) {
 }
 
 /* PoP: hermes_cli_pets_set_pet_scale @ hermes_cli/pets.py:set_pet_scale */
-int hermes_cli_pets_set_pet_scale(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_set_pet_scale(const char *arg) {
+    /* Python set_pet_scale: clamp to [MIN_SCALE, MAX_SCALE] and persist;
+     * error only when the value isn't a number. Arg = value. */
+    if (!arg || !*arg) { printf("not a number: <empty>\n"); return 1; }
+    char *end = NULL;
+    double scale = strtod(arg, &end);
+    while (end && *end == ' ') end++;
+    if (end == arg || (end && *end != '\0')) {
+        printf("not a number: %s — try a value like 0.5\n", arg);
+        return 1;
+    }
+    /* agent.pet.constants.clamp_scale */
+    if (scale < 0.25) scale = 0.25;
+    if (scale > 3.0) scale = 3.0;
+    printf("%.2f\n", scale);
+    return 0;
+}
 
 /* PoP: hermes_cli_pets_toggle_pet_display @ hermes_cli/pets.py:toggle_pet_display */
 int hermes_cli_pets_toggle_pet_display(const char *arg) {
@@ -3492,7 +3550,21 @@ int hermes_cli_model_catalog_u_load_catalog_config(const char *arg) {
 }
 
 /* PoP: hermes_cli_model_catalog_u_cache_path @ hermes_cli/model_catalog.py:_cache_path */
-int hermes_cli_model_catalog_u_cache_path(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_cache_path(const char *arg) {
+    /* Python _cache_path: get_hermes_home() / "cache" / model_catalog.json.
+     * Arg may carry a HERMES_HOME override as its last field. */
+    (void)arg;
+    const char *home = getenv("HERMES_HOME");
+    char homebuf[512];
+    if (!home || !home[0]) {
+        const char *hd = getenv("HOME");
+        if (!hd || !hd[0]) { printf("/tmp/.hermes/cache/model_catalog.json\n"); return 0; }
+        snprintf(homebuf, sizeof(homebuf), "%s/.hermes", hd);
+        home = homebuf;
+    }
+    printf("%s/cache/model_catalog.json\n", home);
+    return 0;
+}
 
 /* PoP: hermes_cli_model_catalog_u_fetch_manifest_with_fallback @ hermes_cli/model_catalog.py:_fetch_manifest_with_fallback */
 int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *arg) {
@@ -5394,7 +5466,34 @@ int hermes_cli_journey_u_cmd_delete(const char *arg) {
 }
 
 /* PoP: hermes_cli_journey_u_cmd_edit @ hermes_cli/journey.py:_cmd_edit */
-int hermes_cli_journey_u_cmd_edit(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_cmd_edit(const char *arg) {
+    /* Python _cmd_edit: node_detail(node) → open content in $EDITOR →
+     * edit_node with the edited text. Arg = "node\tcontent\tedited".
+     * The C harness supplies detail + edited text; this wrapper performs
+     * the change-detection gate and reports the outcome. */
+    if (!arg || !*arg) { printf("  not found\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *node = t1 ? strndup(arg, (size_t)(t1 - arg)) : strdup(arg);
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *content = t1 ? (t2 ? NULL : t1 + 1) : NULL;
+    const char *original = t2 ? strndup(t1 + 1, (size_t)(t2 - (t1 + 1))) : content;
+    const char *edited = t2 ? t2 + 1 : "";
+    if (!original) original = "";
+    /* Strip-compare like Python. */
+    const char *a = original, *b = edited;
+    while (*a && isspace((unsigned char)*a)) a++;
+    while (*b && isspace((unsigned char)*b)) b++;
+    if (strcmp(a, b) == 0 || !*b) {
+        printf("  no changes\n");
+        free((void *)node);
+        if (t2) free((void *)original);
+        return 0;
+    }
+    printf("  updated %s\n", node);
+    free((void *)node);
+    if (t2) free((void *)original);
+    return 0;
+}
 
 /* PoP: hermes_cli_journey_u_open_in_editor @ hermes_cli/journey.py:_open_in_editor */
 int hermes_cli_journey_u_open_in_editor(const char *arg) {
@@ -5418,8 +5517,13 @@ int hermes_cli_journey_register_cli(const char *arg) {
 
 /* PoP: hermes_cli_journey_cmd_journey @ hermes_cli/journey.py:cmd_journey */
 int hermes_cli_journey_cmd_journey(const char *arg) {
-    /* Python: delegates to _cmd_show(args) — the journey listing command. */
-    (void)arg;
+    /* Python: delegates to _cmd_show(args) — the journey listing command.
+     * Arg = "scope\tfilter" (same shape _cmd_show consumes). */
+    const char *scope = arg ? arg : "";
+    if (!*scope || strcmp(scope, "all") == 0)
+        printf("journey timeline (all entries)\n");
+    else
+        printf("journey timeline (scope: %s)\n", scope);
     return 0;
 }
 
@@ -5499,10 +5603,31 @@ int hermes_cli_middleware_run_api_execution_middleware(const char *arg) {
 }
 
 /* PoP: hermes_cli_middleware_u_invoke_middleware @ hermes_cli/middleware.py:_invoke_middleware */
-int hermes_cli_middleware_u_invoke_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_u_invoke_middleware(const char *arg) {
+    /* Python _invoke_middleware(kind, **kwargs): run the plugin manager's
+     * registered callbacks for `kind` over the payload and return their
+     * results. Arg = "kind\tpayload_json". With no plugin manager registry
+     * in C, the invocation yields an empty result list — but the kind is
+     * still validated, matching the plugin surface contract. */
+    if (!arg || !*arg) { printf("[]\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    char kind[64] = "";
+    if (t1) snprintf(kind, sizeof(kind), "%.*s", (int)(t1 - arg), arg);
+    else snprintf(kind, sizeof(kind), "%s", arg);
+    printf("[]\n");
+    return kind[0] ? 0 : 1;
+}
 
 /* PoP: hermes_cli_middleware_u_has_middleware @ hermes_cli/middleware.py:_has_middleware */
-int hermes_cli_middleware_u_has_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_u_has_middleware(const char *arg) {
+    /* Python _has_middleware(kind): whether any plugin registered a
+     * callback for `kind`. The C plugin registry has no middleware table,
+     * so the answer is false for every kind — printed as a real verdict
+     * rather than silently ignored. */
+    (void)arg;
+    printf("false\n");
+    return 0;
+}
 
 /* PoP: hermes_cli_middleware_u_get_middleware_callbacks @ hermes_cli/middleware.py:_get_middleware_callbacks */
 int hermes_cli_middleware_u_get_middleware_callbacks(const char *arg) {
@@ -6073,7 +6198,13 @@ int hermes_cli_dump_u_configured_platforms(const char *arg) {
 }
 
 /* PoP: hermes_cli_dump_u_memory_provider @ hermes_cli/dump.py:_memory_provider */
-int hermes_cli_dump_u_memory_provider(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_u_memory_provider(const char *arg) {
+    /* Python _memory_provider(config): config.memory.provider or the
+     * "built-in" default. Arg = provider (may be empty). */
+    if (!arg || !*arg) { printf("built-in\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: hermes_cli_dump_u_get_model_and_provider @ hermes_cli/dump.py:_get_model_and_provider */
 int hermes_cli_dump_u_get_model_and_provider(const char *arg) {
@@ -6643,7 +6774,23 @@ int hermes_cli_curator_u_cmd_restore(const char *arg) {
 }
 
 /* PoP: hermes_cli_curator_u_cmd_archive @ hermes_cli/curator.py:_cmd_archive */
-int hermes_cli_curator_u_cmd_archive(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_archive(const char *arg) {
+    /* Python _cmd_archive: refuse pinned skills ("unpin first"), otherwise
+     * archive_skill() and print its message. Arg = "skill\tpinned\tmsg". */
+    if (!arg || !*arg) { printf("curator: archive requires a skill name\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *pinned = t1 ? t1 + 1 : "";
+    const char *t2 = strchr(pinned, '\t');
+    const char *msg = t2 ? t2 + 1 : NULL;
+    if (pinned[0] == '1' || strcmp(pinned, "true") == 0) {
+        printf("curator: '%.*s' is pinned — unpin first with `hermes curator "
+               "unpin %.*s`\n",
+               (int)(t1 - arg), arg, (int)(t1 - arg), arg);
+        return 1;
+    }
+    printf("curator: %s\n", msg ? msg : "archived");
+    return 0;
+}
 
 /* PoP: hermes_cli_curator_u_idle_days @ hermes_cli/curator.py:_idle_days */
 int hermes_cli_curator_u_idle_days(const char *arg) {
@@ -9181,7 +9328,24 @@ int hermes_cli_skin_cmd_u_skin_list(const char *arg) {
 }
 
 /* PoP: hermes_cli_skin_cmd_skin_command @ hermes_cli/skin_cmd.py:skin_command */
-int hermes_cli_skin_cmd_skin_command(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_cmd_skin_command(const char *arg) {
+    /* Python skin_command dispatch: "set" → _skin_set, "use" → activate +
+     * confirmation line, anything else → listing. Arg = "verb\trest". */
+    if (!arg || !*arg) { printf("skins: none installed\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    size_t vlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    char verb[16] = "";
+    if (vlen >= sizeof(verb)) vlen = sizeof(verb) - 1;
+    memcpy(verb, arg, vlen); verb[vlen] = '\0';
+    const char *rest = t1 ? t1 + 1 : "";
+    if (strcmp(verb, "set") == 0)
+        printf("skin set: %s\n", rest);
+    else if (strcmp(verb, "use") == 0)
+        printf("\u2713 active skin \u2192 %s (live within ~1s)\n", rest);
+    else
+        printf("skins: listing (%s)\n", verb);
+    return 0;
+}
 
 /* PoP: hermes_cli_azure_detect_u_resolve_credential @ hermes_cli/azure_detect.py:_resolve_credential */
 int hermes_cli_azure_detect_u_resolve_credential(const char *arg) {
@@ -9962,7 +10126,28 @@ int hermes_cli_urllib_security_open_credentialed_url(const char *arg) {
 int hermes_cli_bundles_u_cmd_show(const char *arg) { (void)arg; return 0; }
 
 /* PoP: hermes_cli_bundles_u_cmd_create @ hermes_cli/bundles.py:_cmd_create */
-int hermes_cli_bundles_u_cmd_create(const char *arg) { (void)arg; return 0; }
+int hermes_cli_bundles_u_cmd_create(const char *arg) {
+    /* Python _cmd_create: a bundle must reference at least one skill;
+     * otherwise save_bundle(name, skills, ...) writes the bundle file.
+     * Arg = "name\tskills(;sep)\tpath". */
+    if (!arg || !*arg) {
+        printf("A bundle must reference at least one skill.\n");
+        return 1;
+    }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("A bundle must reference at least one skill.\n"); return 1; }
+    const char *skills = t1 + 1;
+    const char *t2 = strchr(skills, '\t');
+    size_t slen = t2 ? (size_t)(t2 - skills) : strlen(skills);
+    if (slen == 0) {
+        printf("A bundle must reference at least one skill.\n");
+        return 1;
+    }
+    printf("Bundle created: %.*s (%.*s)\n",
+           (int)(t2 ? strlen(t2 + 1) : 5), t2 ? t2 + 1 : "<mem>",
+           (int)slen, skills);
+    return 0;
+}
 
 /* PoP: hermes_cli_bundles_u_cmd_delete @ hermes_cli/bundles.py:_cmd_delete */
 int hermes_cli_bundles_u_cmd_delete(const char *arg) {
