@@ -16,6 +16,7 @@ HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plug
  src/hermes_cli/process_identity.o \
  src/hermes_cli/update_receipt.o \
  src/hermes_cli/update_inventory.o \
+ src/hermes_cli/worktree_gc.o \
 
 HERMES_CLI_PORT_EXTRA_OBJ = \
 
