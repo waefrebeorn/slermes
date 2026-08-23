@@ -23,10 +23,31 @@ char *summarize_api_error(const char *raw_error) {
     size_t raw_len = strlen(raw_error);
     if (raw_len > 8192) raw_len = 8192;
 
-    /* Check for malformed streaming response */
-    if (strstr(raw_error, "expected ident at line") ||
-        strstr(raw_error, "Expected value") ||
-        strstr(raw_error, "Invalid JSON")) {
+    /* Network/DNS resolution failure → offline hint (LIVE walks the exception
+     * chain; this port sees the flattened message). */
+    {
+        static const char *markers[] = {
+            "temporary failure in name resolution",
+            "name or service not known",
+            "nodename nor servname provided, or not known",
+            "getaddrinfo failed",
+            "no address associated with hostname",
+            "network is unreachable",
+            NULL
+        };
+        char low[8192];
+        for (size_t i = 0; i <= raw_len && i < sizeof(low); i++)
+            low[i] = (char)tolower((unsigned char)raw_error[i]);
+        for (int i = 0; markers[i]; i++) {
+            if (strstr(low, markers[i]))
+                return strdup("Hermes can't reach the model provider. You may be offline. "
+                              "Check your internet connection and try again.");
+        }
+    }
+
+    /* Check for malformed streaming response (LIVE: ValueError with
+     * "expected ident at line"). */
+    if (strstr(raw_error, "expected ident at line")) {
         char buf[400];
         snprintf(buf, sizeof(buf), "Malformed provider streaming response: %.300s", raw_error);
         return strdup(buf);
@@ -51,6 +72,11 @@ char *summarize_api_error(const char *raw_error) {
         if (ray) {
             const char *start = ray + 7;
             while (*start == ' ') start++;
+            /* LIVE regex expects the Cloudflare <strong> wrapper — skip it. */
+            if (strncmp(start, "<strong", 7) == 0) {
+                const char *gt = strchr(start, '>');
+                if (gt) start = gt + 1;
+            }
             const char *end = strchr(start, '<');
             if (!end) end = strchr(start, '\n');
             if (!end) end = start + strlen(start);
@@ -79,40 +105,20 @@ char *summarize_api_error(const char *raw_error) {
         return strdup(buf);
     }
 
-    /* Check for JSON body errors */
+    /* Check for JSON body errors (LIVE: body dict → error.message if the
+     * "error" member is a dict, else top-level "message"; truncated to 300). */
     json_t *root = json_parse(raw_error, NULL);
     if (root && root->type == JSON_OBJECT) {
-        json_t *error_obj = json_object_get(root, "error");
-        if (error_obj && error_obj->type == JSON_OBJECT) {
-            json_t *msg = json_object_get(error_obj, "message");
-            json_t *code = json_object_get(error_obj, "code");
-            json_t *type = json_object_get(error_obj, "type");
+        const char *msg = NULL;
+        json_t *err_obj = json_object_get(root, "error");
+        if (err_obj && err_obj->type == JSON_OBJECT)
+            msg = json_object_get_string(err_obj, "message", NULL);
+        if (!msg)
+            msg = json_object_get_string(root, "message", NULL);
 
-            char buf[512];
-            if (code && code->type == JSON_STRING && code->str_val) {
-                if (msg && msg->type == JSON_STRING && msg->str_val) {
-                    snprintf(buf, sizeof(buf), "[%s] %s: %.400s",
-                             code->str_val,
-                             type && type->type == JSON_STRING ? type->str_val : "error",
-                             msg->str_val);
-                } else {
-                    /* code present, message absent → Python returns the
-                     * generic "API error (see logs)" string. */
-                    snprintf(buf, sizeof(buf), "API error (see logs)");
-                }
-            } else if (msg && msg->type == JSON_STRING) {
-                snprintf(buf, sizeof(buf), "%.400s", msg->str_val);
-            } else {
-                snprintf(buf, sizeof(buf), "API error (see logs)");
-            }
-            json_free(root);
-            return strdup(buf);
-        }
-
-        json_t *err_str = json_object_get(root, "error");
-        if (err_str && err_str->type == JSON_STRING && err_str->str_val) {
-            char buf[512];
-            snprintf(buf, sizeof(buf), "%.400s", err_str->str_val);
+        char buf[512];
+        if (msg && msg[0]) {
+            snprintf(buf, sizeof(buf), "%.300s", msg);
             json_free(root);
             return strdup(buf);
         }
@@ -121,22 +127,19 @@ char *summarize_api_error(const char *raw_error) {
         json_free(root);
     }
 
-    /* Truncated raw error as fallback */
+    /* Fallback: truncate the raw string (LIVE: prefix + raw[:500]). */
     {
-        char buf[512];
-        size_t len = strlen(raw_error);
-        if (len > 400) {
-            const char *nl = strchr(raw_error, '\n');
-            if (nl && (size_t)(nl - raw_error) < 400) {
-                memcpy(buf, raw_error, (size_t)(nl - raw_error));
-                buf[nl - raw_error] = '\0';
-            } else {
-                memcpy(buf, raw_error, 400);
-                buf[400] = '\0';
-            }
-        } else {
-            snprintf(buf, sizeof(buf), "%s", raw_error);
+        int status_code = 0;
+        const char *sc = strstr(raw_error, "HTTP ");
+        if (sc) {
+            sc += 5;
+            if (isdigit((unsigned char)*sc)) status_code = atoi(sc);
         }
+        char buf[600];
+        if (status_code > 0)
+            snprintf(buf, sizeof(buf), "HTTP %d: %.500s", status_code, raw_error);
+        else
+            snprintf(buf, sizeof(buf), "%.500s", raw_error);
         return strdup(buf);
     }
 }
