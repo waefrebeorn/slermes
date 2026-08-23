@@ -32,6 +32,12 @@ int stored_bot_chat_prompt_needs_upgrade(const char *stored_prompt, const char *
 /* Clear the cached probe (test hook). */
 void bot_mode_probe_reset_cache_for_tests(void);
 
+/* Public _peers wrapper: registered peer gateway names, sorted, malloc'd
+ * array of malloc'd strings (bot_mode_dm consumer). Free with
+ * bot_mode_probe_peers_free. */
+char **bot_mode_probe_peers(const char *root, size_t *count);
+void   bot_mode_probe_peers_free(char **names, size_t count);
+
 #ifdef __cplusplus
 }
 #endif

@@ -342,6 +342,14 @@ static void bmp_peers_free(char **names, size_t count) {
     free(names);
 }
 
+/* Public wrapper for consumers outside this TU (bot_mode_dm port). */
+char **bot_mode_probe_peers(const char *root, size_t *count) {
+    return bmp_peers(root, count);
+}
+void bot_mode_probe_peers_free(char **names, size_t count) {
+    bmp_peers_free(names, count);
+}
+
 /* --- _peer_paragraph ---------------------------------------------- */
 static void bmp_peer_paragraph(const char *root, bmp_sb *sb) {
     size_t pc = 0;
