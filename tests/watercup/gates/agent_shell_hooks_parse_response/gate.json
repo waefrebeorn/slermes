@@ -1,0 +1,25 @@
+{
+  "name": "agent_shell_hooks_parse_response",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "parse_response",
+  "py_module": "agent/shell_hooks.py",
+  "py_fn": "_parse_response",
+  "inputs": [
+    "",
+    "   \n\t ",
+    "not json at all",
+    "[1, 2, 3]",
+    "{}",
+    "{\"action\": \"block\", \"message\": \"no tool for you\"}",
+    "{\"action\": \"block\", \"reason\": \"policy violation\"}",
+    "{\"decision\": \"block\", \"reason\": \"stop here\"}",
+    "{\"decision\": \"block\", \"message\": \"m1\", \"reason\": \"r2\"}",
+    "{\"action\": \"block\"}",
+    "{\"context\": \"system prompt addendum\"}",
+    "{\"context\": \"\", \"other\": 1}",
+    "{\"action\": \"continue\"}"
+  ],
+  "notes": "Shell-hook stdout response parser (shell_hooks_ports.c vs LIVE agent/shell_hooks.py). The C port omits the event parameter and therefore lacks the pre_tool_call 'modify' translation and the pre_verify continue/block rung — inputs hitting those paths are EXCLUDED (documented divergence worth a follow-up port fix). Also excluded: non-string block fields (LIVE type-checks, C's json_get_str yields NULL), whitespace-only context (LIVE strips before truthiness, C does not), numeric-string novita-style payloads n/a here."
+}

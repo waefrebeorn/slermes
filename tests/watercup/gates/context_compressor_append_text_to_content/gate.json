@@ -1,0 +1,25 @@
+{
+  "name": "context_compressor_append_text_to_content",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cc_append_text_to_content",
+  "cflags": ["-I", "include"],
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_append_text_to_content",
+  "inputs": [
+    "0\t\"hello world\"",
+    "1\t\"hello world\"",
+    "0\t\"\"",
+    "1\t[{\"type\":\"text\",\"text\":\"a\"}]",
+    "1\t[{\"type\":\"image_url\",\"image_url\":{\"url\":\"x\"}}]",
+    "0\t[{\"type\":\"text\",\"text\":\"a\"},{\"type\":\"text\",\"text\":\"b\"}]",
+    "0\t[[1,2],[3]]",
+    "1\t[[1,2],[3]]",
+    "0\t[\"plain\",\"parts\"]",
+    "1\t{\"type\":\"text\",\"text\":\"dict is opaque to the port\"}",
+    "0\t\"multi \\\"quoted\\\" text\"",
+    "1\t\"tail\""
+  ],
+  "notes": "Traced copy of context_compressor_ports.c::cc_append_text_to_content vs LIVE agent/context_compressor.py::_append_text_to_content. Inputs encode <prepend>\\t<content_json>. KNOWN DIVERGENCE (documented, inputs avoid): the C port treats the JSON encodings '[]', '\"\"' and 'null' as no-content (returning a quoted text literal), while LIVE distinguishes None (returns bare text), [] (returns [text_block]) and '' (concatenates); the port also does not JSON-escape text containing quotes/backslashes, so text is the fixed quote-free literal WCUP_NOTE and dict/scalar contents (opaque passthrough in C but str()-rendered in LIVE) are limited to one shape-classification-only input."
+}
