@@ -1,0 +1,27 @@
+{
+  "name": "path_security_traversal",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "path_security_traversal",
+  "py_module": "tools/path_security.py",
+  "py_fn": "has_traversal_component",
+  "inputs": [
+    "",
+    "/",
+    "..",
+    "../etc/passwd",
+    "a/../b",
+    "..foo/bar",
+    "foo..bar/baz",
+    "a/b/..",
+    "/..",
+    ".../a",
+    "a/b../..",
+    "ok/path",
+    "./..",
+    "a/../../..",
+    "//../x"
+  ],
+  "notes": "Path traversal component detector — C char-scan (src/tools/path_security.c::cli_tools_path_security_has_traversal_component) vs LIVE tools/path_security.py::has_traversal_component (Path.parts membership). Rung contract: one B per component compared against '..'."
+}
