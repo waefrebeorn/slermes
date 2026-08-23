@@ -1,0 +1,23 @@
+{
+  "name": "tts_tool_resolve_max_text_length",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_max_text_length",
+  "py_module": "tools/tts_tool.py",
+  "py_fn": "_resolve_max_text_length",
+  "inputs": [
+    "wubuvoice\u001f-",
+    "custom_cmd\u001f-",
+    "\u001f-",
+    "wubuvoice\u001f4096",
+    "wubuvoice\u001f0",
+    "wubuvoice\u001fb",
+    "wubuvoice\u001f-5",
+    "minimax_local\u001f2500",
+    "mistral_voice\u001fnonsense"
+  ],
+  "notes": [
+    "C port (tts_tool_ports.c::tts_resolve_max_text_length) implements only the override->FALLBACK rungs of LIVE's six-rung resolution (ElevenLabs model table, PROVIDER_MAX_TEXT_LENGTH table and command-provider lookup are unported). Gate walks providers OUTSIDE those tables so the shared rungs pin parity; table-backed providers are a documented divergence."
+  ]
+}

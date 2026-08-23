@@ -1,0 +1,34 @@
+{
+  "name": "config_unset_nested",
+  "subsystem": "hermes_cli",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "unset_nested",
+  "py_module": "hermes_cli/config.py",
+  "py_fn": "_unset_nested",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "src/hermes_cli/config_py_pure.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "{\"a\":{\"b\":1}}\u001fa.b",
+    "{\"a\":{\"b\":1}}\u001fa.b.c",
+    "{\"a\":{}}\u001fa.x",
+    "{\"a\":[1,2,3]}\u001fa.1",
+    "{\"a\":[1,2,3]}\u001fa.9",
+    "{\"a\":{\"b\":{}}}\u001fa.b",
+    "{\"a\":{\"b\":1,\"c\":2}}\u001fa.b",
+    "{}\u001fa",
+    "{\"a\":{\"b\":1}}\u001fb",
+    "{\"a\":[{\"b\":2}]}\u001fa.0.b"
+  ],
+  "notes": [
+    "Harness LINKS the real C port (src/hermes_cli/config_py_pure.c::config_py_unset_nested) with libjson and no-op stubs for unrelated symbols in that translation unit. Ladder mirrors segment-split/walk/delete verdicts; LIVE's empty-dict pruning is post-removal cleanup outside the traced return path."
+  ]
+}
