@@ -172,3 +172,10 @@ char *ws_tickets_consume_internal_credential(const char *value)
     hermes_log(LOG_DEBUG, "ws_tickets", "Internal credential validated successfully");
     return strdup("server-internal");
 }
+
+/* Test-only: drop all minted tickets (port of ws_tickets._reset_for_tests). */
+void ws_tickets_reset_for_tests(void)
+{
+    _ticket_count = 0;
+    memset(_tickets, 0, sizeof(_tickets));
+}

@@ -25,4 +25,7 @@ char *ws_tickets_consume_internal_credential(const char *value);
 /* _gc_expired_locked: drop expired tickets. */
 void ws_tickets__gc_expired_locked(void);
 
+/* _reset_for_tests: drop every minted ticket (test support). */
+void ws_tickets_reset_for_tests(void);
+
 #endif /* WS_TICKETS_H */

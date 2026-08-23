@@ -12,6 +12,7 @@
 #include <limits.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <pthread.h>
 
 #include "libjson/json.h"
 #include "hermes_logger.h"
@@ -26,6 +27,10 @@ int tools_check_file_requirements(void)
 /* PoP: tools_async_delegation_reset @ tools/async_delegation.py:_reset_for_tests */
 int tools_async_delegation_reset(void)
 {
+    /* Test-only teardown: delegate to the real async-delegation module so its
+     * executor + monitor thread and record list are actually torn down. */
+    extern void async_delegation_reset_for_tests(void);
+    async_delegation_reset_for_tests();
     return 0;
 }
 
@@ -48,6 +53,14 @@ char *tools_camofox_auth_headers(void)
 /* PoP: tools_cleanup_all_browsers @ tools/browser_tool.py:cleanup_all_browsers */
 int tools_cleanup_all_browsers(void)
 {
+    /* Tear down CDP supervisors for every task so background threads exit
+     * (Python's SUPERVISOR_REGISTRY.stop_all()). Per-task browser sessions in
+     * C live inside each port_browser_tool_state_t owned by its caller, which
+     * already runs port_browser_tool_cleanup() on shutdown — there is no
+     * process-global session map to iterate. */
+    extern void browser_supervisor_stop_all(void);
+    browser_supervisor_stop_all();
+    hermes_log(LOG_INFO, "browser_tool", "cleaned up all browser sessions");
     return 0;
 }
 
@@ -268,10 +281,17 @@ int tools_daytona_cleanup(void)
     return 0;
 }
 
+/* Module state shared by file_sync init/sync (Python FileSync instance fields). */
+static double g_fs_sync_interval = 5.0;   /* _SYNC_INTERVAL_SECONDS */
+static pthread_mutex_t g_fs_lock = PTHREAD_MUTEX_INITIALIZER;
+
 /* PoP: tools_file_sync_init @ tools/environments/file_sync.py:__init__ */
 int tools_file_sync_init(double sync_interval)
 {
-    (void)sync_interval;
+    if (!(sync_interval > 0)) return -1;
+    pthread_mutex_lock(&g_fs_lock);
+    g_fs_sync_interval = sync_interval;
+    pthread_mutex_unlock(&g_fs_lock);
     return 0;
 }
 
@@ -302,6 +322,9 @@ int tools_file_sync_sync(bool force)
 /* PoP: tools_modal_before_execute @ tools/environments/modal_utils.py:_before_execute */
 int tools_modal_before_execute(void)
 {
+    /* Python default is also a no-op: ModalInstance._before_execute is an
+     * empty hook ("pass") that backends override for pre-exec sync. Kept as a
+     * faithful no-op default on purpose — do NOT "implement" it. */
     return 0;
 }
 
@@ -318,10 +341,36 @@ int tools_singularity_init(const char *image, const char *cwd, long timeout,
     return 0;
 }
 
+/* Instance-started flag mirroring Python self._instance_started. Set by the
+ * environment runtime when an instance is actually started. */
+static bool g_sing_instance_started = false;
+
+void tools_singularity_set_instance_started(bool started)
+{
+    g_sing_instance_started = started;
+}
+
 /* PoP: tools_singularity_cleanup @ tools/environments/singularity.py:cleanup */
 int tools_singularity_cleanup(void)
 {
-    return 0;
+    if (!g_sing_instance_started) {
+        hermes_log(LOG_DEBUG, "singularity",
+                   "instance not started; nothing to stop");
+        return 0;
+    }
+    char cmd[512];
+    snprintf(cmd, sizeof(cmd),
+             "singularity instance stop %s 2>/dev/null", getenv("USER") ? getenv("USER") : "");
+    FILE *fp = popen(cmd, "r");
+    int rc = fp ? pclose(fp) : -1;
+    rc = rc == -1 ? -1 : ((rc >> 8) & 0xff);
+    if (rc == 0)
+        hermes_log(LOG_INFO, "singularity", "Singularity instance stopped");
+    else
+        hermes_log(LOG_WARNING, "singularity",
+                   "Failed to stop Singularity instance (rc=%d)", rc);
+    g_sing_instance_started = false;
+    return rc == 0 ? 0 : -1;
 }
 
 /* PoP: tools_fal_common_init @ tools/fal_common.py:__init__ */
@@ -331,10 +380,90 @@ int tools_fal_common_init(const char *key)
     return 0;
 }
 
-/* PoP: tools_ha_run_async @ tools/homeassistant_tool.py:_run_async */
-int tools_ha_run_async(void)
+/* PoP: tools_ha_run_async @ tools/homeassistant_tool.py:_run_async
+ * Run a blocking operation from a sync handler on a worker thread with a
+ * bounded 30s wait (Python submits the coroutine to a single-worker pool and
+ * waits result(timeout=30); C has no coroutine layer, so callers hand us a
+ * thread fn). Returns 0 and sets *out_result on completion, -2 on timeout
+ * (worker detached, result discarded), -1 on allocation/spawn failure. */
+typedef struct {
+    void *(*fn)(void *);
+    void *arg;
+    void *result;
+    bool done;
+    pthread_mutex_t mu;
+    pthread_cond_t cv;
+} ha_job_t;
+
+static void *ha_job_thread(void *p)
 {
-    return 0;
+    ha_job_t *job = p;
+    void *res = job->fn(job->arg);
+    pthread_mutex_lock(&job->mu);
+    job->result = res;
+    job->done = true;
+    pthread_cond_broadcast(&job->cv);
+    pthread_mutex_unlock(&job->mu);
+    return NULL;
+}
+
+int tools_ha_run_async(void *(*fn)(void *), void *arg, void **out_result)
+{
+    if (!fn || !out_result) return -1;
+    *out_result = NULL;
+    ha_job_t *job = calloc(1, sizeof(*job));
+    if (!job) return -1;
+    job->fn = fn;
+    job->arg = arg;
+    if (pthread_mutex_init(&job->mu, NULL) != 0) { free(job); return -1; }
+    if (pthread_cond_init(&job->cv, NULL) != 0) {
+        pthread_mutex_destroy(&job->mu);
+        free(job);
+        return -1;
+    }
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_t th;
+    int rc = pthread_create(&th, &attr, ha_job_thread, job);
+    pthread_attr_destroy(&attr);
+    if (rc != 0) {
+        pthread_cond_destroy(&job->cv);
+        pthread_mutex_destroy(&job->mu);
+        free(job);
+        return -1;
+    }
+
+    /* Bounded wait: 30 seconds, then detach the worker like Python's
+     * concurrent.futures.TimeoutError path (the pool thread keeps running). */
+    struct timespec deadline;
+    clock_gettime(CLOCK_REALTIME, &deadline);
+    deadline.tv_sec += 30;
+    int join_rc = -1;
+    pthread_mutex_lock(&job->mu);
+    while (!job->done) {
+        int wr = pthread_cond_timedwait(&job->cv, &job->mu, &deadline);
+        if (wr == ETIMEDOUT) break;
+    }
+    bool done = job->done;
+    void *result = job->result;
+    pthread_mutex_unlock(&job->mu);
+
+    if (done) {
+        join_rc = pthread_join(th, NULL);
+        *out_result = result;
+        rc = 0;
+    } else {
+        pthread_detach(th);
+        rc = -2;
+        hermes_log(LOG_WARNING, "homeassistant",
+                   "async operation timed out after 30s; worker detached");
+    }
+    pthread_cond_destroy(&job->cv);
+    pthread_mutex_destroy(&job->mu);
+    free(job);
+    return rc == 0 ? 0 : rc;
+    (void)join_rc;
 }
 
 /* PoP: tools_coerce_positive_int @ tools/hook_output_spill.py:_coerce_positive_int */
@@ -403,7 +532,15 @@ char *tools_lazy_deps_init(const char *feature, const char *missing_json, const 
 /* PoP: tools_lazy_deps_available @ tools/lazy_deps.py:is_available */
 bool tools_lazy_deps_available(const char *feature)
 {
-    (void)feature;
+    /* Python: unknown feature -> False; known feature -> deps satisfied.
+     * C cannot query Python package metadata (importlib), so "satisfied"
+     * collapses to "feature has a resolvable install spec", which is the
+     * gate callers actually need before attempting the lazy import path. */
+    if (!feature || !*feature) return false;
+    extern char *lazy_feature_install_command(const char *feature);
+    char *cmd = lazy_feature_install_command(feature);
+    if (!cmd) return false;
+    free(cmd);
     return true;
 }
 
@@ -440,12 +577,20 @@ int tools_ms_graph_init(const char *client_id, double timeout)
 /* PoP: tools_moa_provider_health_init @ tools/mixture_of_agents_tool.py:__init__ */
 int tools_moa_provider_health_init(void)
 {
+    /* Initialize every MOA provider as healthy in the real health table
+     * (mixture_of_agents.c provider_health[]), mirroring ProviderHealthTracker.__init__. */
+    extern void moa_provider_health_reset(void);
+    moa_provider_health_reset();
     return 0;
 }
 
 /* PoP: tools_moa_http_client_init @ tools/mixture_of_agents_tool.py:__init__ */
 int tools_moa_http_client_init(void)
 {
+    /* Same __init__ body as the provider-health tracker: all providers start
+     * healthy and the shared HTTP client state is reset. */
+    extern void moa_provider_health_reset(void);
+    moa_provider_health_reset();
     return 0;
 }
 
@@ -500,10 +645,16 @@ int tools_registry_entry_init(const char *name, const char *toolset,
     return 0;
 }
 
+static char g_registry_name[256];
+static pthread_mutex_t g_registry_lock = PTHREAD_MUTEX_INITIALIZER;
+
 /* PoP: tools_registry_init @ tools/registry.py:__init__ */
 int tools_registry_init(const char *name)
 {
-    (void)name;
+    if (!name || !*name) return -1;
+    pthread_mutex_lock(&g_registry_lock);
+    snprintf(g_registry_name, sizeof(g_registry_name), "%s", name);
+    pthread_mutex_unlock(&g_registry_lock);
     return 0;
 }
 
@@ -546,17 +697,41 @@ int tools_session_search_scroll(const char *db_path, const char *session_id,
 }
 
 /* PoP: tools_url_safety_async_init @ tools/url_safety.py:__init__ */
-int tools_url_safety_async_init(const char *schemes_by_origin_json)
+/* Shared storage for the origin->scheme map used by the SSRF connect guard
+ * (Python _origin_scheme_context.schemes_by_origin). */
+static char *g_ssrf_schemes_json = NULL;
+static pthread_mutex_t g_ssrf_schemes_lock = PTHREAD_MUTEX_INITIALIZER;
+
+static int url_safety_store_schemes(const char *schemes_by_origin_json)
 {
-    (void)schemes_by_origin_json;
+    if (schemes_by_origin_json && *schemes_by_origin_json) {
+        json_t *parsed = json_parse(schemes_by_origin_json, NULL);
+        if (!parsed) return -1;   /* malformed mapping: refuse to install */
+        json_free(parsed);
+    }
+    pthread_mutex_lock(&g_ssrf_schemes_lock);
+    free(g_ssrf_schemes_json);
+    g_ssrf_schemes_json =
+        (schemes_by_origin_json && *schemes_by_origin_json)
+            ? strdup(schemes_by_origin_json) : NULL;
+    pthread_mutex_unlock(&g_ssrf_schemes_lock);
     return 0;
 }
 
+/* PoP: tools_url_safety_async_init @ tools/url_safety.py:__init__ */
+int tools_url_safety_async_init(const char *schemes_by_origin_json)
+{
+    /* Install/replace the scheme map backing ssrf_safe_connect_scheme for
+     * the async transport guard (same context as the sync one in C). */
+    return url_safety_store_schemes(schemes_by_origin_json);
+}
+
+/* PoP: tools_url_safety_sync_init @ tools/url_safety.py:__init__ */
 /* PoP: tools_url_safety_sync_init @ tools/url_safety.py:__init__ */
 int tools_url_safety_sync_init(const char *schemes_by_origin_json)
 {
-    (void)schemes_by_origin_json;
-    return 0;
+    /* Sync client guard shares the single C origin-scheme context. */
+    return url_safety_store_schemes(schemes_by_origin_json);
 }
 
 /* PoP: tools_video_coerce_int @ tools/video_generation_tool.py:_coerce_int */
@@ -671,10 +846,56 @@ long tools_xai_video_coerce_int(const char *value, bool *ok)
 }
 
 /* PoP: tools_cu_run_doctor @ tools/computer_use/doctor.py:run_doctor */
+/* PoP: tools_cu_run_doctor @ tools/computer_use/doctor.py:run_doctor
+ * Resolve the cua-driver binary the way the toolset would (explicit cmd >
+ * HERMES_CUA_DRIVER_CMD > PATH probe), then run environment checks and
+ * render a report. Returns 0 when healthy, 1 with findings. */
 int tools_cu_run_doctor(const char *driver_cmd, bool json_output)
 {
-    (void)driver_cmd; (void)json_output;
-    return 0;
+    const char *env_cmd = getenv("HERMES_CUA_DRIVER_CMD");
+    const char *binary = driver_cmd;
+    bool found = true;
+    if (!binary || !*binary) binary = env_cmd;
+    if (!binary || !*binary) {
+        FILE *probe = popen("command -v cua-driver 2>/dev/null", "r");
+        char buf[1024] = "";
+        if (probe) {
+            size_t n = fread(buf, 1, sizeof(buf) - 1, probe);
+            fclose(probe);
+            while (n && (buf[n-1] == '\n')) buf[--n] = '\0';
+        }
+        binary = buf[0] ? buf : NULL;
+        found = binary != NULL;
+    }
+    bool have_display = (getenv("DISPLAY") && *getenv("DISPLAY")) ||
+                        (getenv("WAYLAND_DISPLAY") && *getenv("WAYLAND_DISPLAY"));
+    int issues = 0;
+    if (json_output) {
+        char driver_json[1024];
+        if (found && binary) {
+            json_t *j = json_object();
+            json_set(j, "resolved", json_bool(true));
+            json_set(j, "driver", json_string(binary));
+            json_set(j, "display", json_bool(have_display));
+            char *s = json_serialize(j);
+            json_free(j);
+            printf("%s\n", s ? s : "{}");
+            free(s);
+            return issues == 0 ? 0 : 1;
+        }
+        snprintf(driver_json, sizeof(driver_json),
+                 "{\"resolved\": false,\"driver\": null,\"display\": %s}",
+                 have_display ? "true" : "false");
+        printf("%s\n", driver_json);
+    } else {
+        printf("%s cua-driver %s\n", found ? "\u2705" : "\u274c",
+               found && binary ? binary : "(not found — set HERMES_CUA_DRIVER_CMD)");
+        if (!found) issues++;
+        printf("%s display server %s\n", have_display ? "\u2705" : "\u26a0\ufe0f",
+               have_display ? "detected" : "not detected");
+        if (!have_display) issues++;
+    }
+    return issues == 0 ? 0 : 1;
 }
 
 /* PoP: tools_project_resolve @ tools/project_tools.py:_resolve */

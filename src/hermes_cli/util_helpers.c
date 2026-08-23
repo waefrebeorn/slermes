@@ -7,6 +7,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <sqlite3.h>
+#include "kanban_db.h"
+#include "hermes_logger.h"
 #include "slermes_home.h"
 #include <unistd.h>
 #include <ctype.h>
@@ -460,7 +463,57 @@ int hcli_projects_resolve(const char *ident, char *out, size_t outsz)
 /* PoP: hcli_kanban_cmd_list @ hermes_cli/kanban.py:_cmd_list */
 int hcli_kanban_cmd_list(const char *assignee, bool mine)
 {
-    (void)assignee; (void)mine;
+    extern sqlite3 *kdb_connect(const char *board);
+    extern void kdb_close(sqlite3 *conn);
+    typedef struct kanban_task kanban_task_t;
+    extern kanban_task_t **kdb_list_tasks(sqlite3 *, const char *, const char *,
+                                          const char *, const char *, int, int, int *);
+    extern void kdb_task_list_free(kanban_task_t **);
+    extern const char *kdb_task_id(const kanban_task_t *);
+    extern const char *kdb_task_title(const kanban_task_t *);
+    extern const char *kdb_task_status(const kanban_task_t *);
+    extern const char *kdb_task_assignee(const kanban_task_t *);
+
+    char eff_assignee[256] = "";
+    if (mine) {
+        /* "mine" resolves to the current OS user, matching the CLI's
+         * default identity when no explicit assignee is given. */
+        const char *u = getenv("USER");
+        if (!u || !*u) u = getenv("LOGNAME");
+        snprintf(eff_assignee, sizeof(eff_assignee), "%s", u ? u : "");
+    } else if (assignee && *assignee) {
+        snprintf(eff_assignee, sizeof(eff_assignee), "%s", assignee);
+    }
+
+    sqlite3 *conn = kdb_connect(NULL);
+    if (!conn) {
+        printf("  Kanban board not found. Run: slermes kanban init\n");
+        return -1;
+    }
+    int count = 0;
+    kanban_task_t **tasks =
+        kdb_list_tasks(conn, NULL,
+                       eff_assignee[0] ? eff_assignee : NULL,
+                       NULL, NULL, 0, 0, &count);
+    kdb_close(conn);
+    if (!tasks || count == 0) {
+        printf("  No kanban tasks%s%s.\n",
+               eff_assignee[0] ? " assigned to " : "",
+               eff_assignee[0] ? eff_assignee : "");
+        if (tasks) kdb_task_list_free(tasks);
+        return 0;
+    }
+    printf("\n  %d kanban task(s):\n\n", count);
+    for (int i = 0; i < count; i++) {
+        printf("  %s [%s] %s%s%s\n",
+               kdb_task_id(tasks[i]),
+               kdb_task_status(tasks[i]),
+               kdb_task_title(tasks[i]) ? kdb_task_title(tasks[i]) : "(untitled)",
+               kdb_task_assignee(tasks[i]) && *kdb_task_assignee(tasks[i]) ? " -> " : "",
+               kdb_task_assignee(tasks[i]) && *kdb_task_assignee(tasks[i])
+                   ? kdb_task_assignee(tasks[i]) : "");
+    }
+    kdb_task_list_free(tasks);
     return 0;
 }
 
@@ -474,12 +527,22 @@ int hcli_dash_verify_token(const char *token)
 /* PoP: hcli_dash_native_reset @ hermes_cli/dashboard_auth/native_flow.py:_reset_for_tests */
 int hcli_dash_native_reset(void)
 {
+    /* Python _reset_for_tests drops _pending/_issued maps. The C native-flow
+     * port is stateless (pending/issued live in the gateway process, not this
+     * CLI TU), so a reset here only clears local caches — none exist — and is
+     * recorded for test diagnostics like every other _reset_for_tests port. */
+    hermes_log(LOG_DEBUG, "dashboard_auth",
+               "native flow state reset (no local pending/issued cache)");
     return 0;
 }
 
 /* PoP: hcli_dash_tickets_reset @ hermes_cli/dashboard_auth/ws_tickets.py:_reset_for_tests */
 int hcli_dash_tickets_reset(void)
 {
+    /* Drop all minted single-use browser tickets (Python clears the ticket
+     * store under its lock). */
+    extern void ws_tickets_reset_for_tests(void);
+    ws_tickets_reset_for_tests();
     return 0;
 }
 
@@ -735,13 +798,24 @@ char *hcli_browser_hint(const char *binary)
 /* PoP: hcli_slash_completer_init @ hermes_cli/commands.py:__init__ */
 int hcli_slash_completer_init(void)
 {
-    return 0;
+    /* Python builds the slash-command completer from the command registry.
+     * Refresh availability so completion candidates reflect current state. */
+    extern void registry_refresh_availability(void);
+    extern size_t registry_get_count(void);
+    registry_refresh_availability();
+    return (int)registry_get_count();
 }
 
-/* PoP: hcli_slash_autosuggest_init @ hermes_cli/commands.py:__init__ */
+/* PoP: hcli_slash_autosuggest_init @ hermes_cli/commands.py:_autosuggest */
 int hcli_slash_autosuggest_init(void)
 {
-    return 0;
+    /* Autosuggest shares the completer's candidate list: refresh the
+     * registry-backed availability so suggestions never offer disabled
+     * commands. Returns the candidate count like the completer. */
+    extern void registry_refresh_availability(void);
+    extern size_t registry_get_count(void);
+    registry_refresh_availability();
+    return (int)registry_get_count();
 }
 
 /* PoP: hcli_safe_redirect_init @ hermes_cli/urllib_security.py:__init__ */
@@ -909,11 +983,19 @@ char *sm_subscriber_init(const char *store_json, const char *hermes_version,
 }
 
 /* PoP: sm_subscriber_deactivate @ hermes_cli/observability/shared_metrics_subscriber.py:deactivate */
-void sm_subscriber_deactivate(const char *handle) {
-    /* Python: stop accepting events (set _active = False under lock).
-     * In C there is no per-subscriber mutable state (the relay runtime
-     * owns the active flag); this is a no-op that preserves the API. */
+/* Shared-metrics subscriber active flag (mirrors Python module _active). */
+static volatile bool g_sm_subscriber_active = true;
+
+bool sm_subscriber_is_active(void)
+{
+    return g_sm_subscriber_active;
+}
+
+void sm_subscriber_deactivate(const char *handle)
+{
+    /* Python: stop accepting events (_active = False under lock). */
     (void)handle;
+    g_sm_subscriber_active = false;
 }
 
 /* PoP: sm_subscriber_call @ hermes_cli/observability/shared_metrics_subscriber.py:__call__ */

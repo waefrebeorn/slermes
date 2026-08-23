@@ -456,6 +456,14 @@ static void init_provider_health() {
     }
 }
 
+/* Public reset for the shared health table (util_helpers init wrappers). */
+void moa_provider_health_reset(void)
+{
+    pthread_mutex_lock(&health_mutex);
+    init_provider_health();
+    pthread_mutex_unlock(&health_mutex);
+}
+
 static int get_provider_index(const char *provider_name) {
     for (int i = 0; i < MOA_PROVIDERS_COUNT; i++) {
         if (strcmp(MOA_PROVIDERS[i].name, provider_name) == 0) {
