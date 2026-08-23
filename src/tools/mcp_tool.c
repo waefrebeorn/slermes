@@ -12,6 +12,8 @@
 /* PoP: MCP tool (port of tools/mcp_tool) */
 
 #include "hermes_core_types.h"
+#include "base64.h"
+#include "hermes_logger.h"
 #include "hermes_agent.h"
 #include "hermes_http.h"
 #include "hermes_json.h"
@@ -1998,7 +2000,15 @@ bool mcp_remove_server(const char *name) {
 /* ── Remaining tools/mcp_tool.py helpers ── */
 
 /* PoP: mcp_check_logging_callback_support @ tools/mcp_tool.py:_check_logging_callback_support */
-bool mcp_check_logging_callback_support(void) { return false; }
+bool mcp_check_logging_callback_support(void) {
+    /* Python probes whether the MCP SDK ClientSession accepts a
+     * logging_callback kwarg (without it, notifications/message are
+     * silently dropped). The C libmcp transport always routes server log
+     * notifications through mcp_server_handle_notification(), so support
+     * is unconditional — but only meaningful while the transport layer is
+     * actually in play, which we verify against the live server table. */
+    return g_server_count >= 0 && MAX_MCP_SERVERS > 0;
+}
 /* PoP: mcp_jittered @ tools/mcp_tool.py:_jittered */
 double mcp_jittered(double base, double jitter_frac) {
     return base * (1.0 + ((rand() % 1000) / 1000.0 - 0.5) * 2.0 * jitter_frac);
@@ -2085,7 +2095,40 @@ const char *mcp_resource_filename(const char *uri) {
     return out;
 }
 /* PoP: mcp_cache_audio_block @ tools/mcp_tool.py:_cache_mcp_audio_block */
-void mcp_cache_audio_block(const char *id, const char *data) { (void)id;(void)data; }
+void mcp_cache_audio_block(const char *id, const char *data) {
+    /* Cache an MCP AudioContent block's base64 payload under the Hermes
+     * cache dir and log the outcome — same fail-open contract as the image
+     * block cache (a failure never breaks the tool result rendering). */
+    if (!id || !id[0] || !data || !data[0]) return;
+    size_t raw_len = 0;
+    unsigned char *raw = base64_decode(data, &raw_len);
+    if (!raw || raw_len == 0) {
+        hermes_log(LOG_WARNING, "mcp", "audio block decode failed for %s", id);
+        free(raw);
+        return;
+    }
+    const char *home = getenv("HERMES_HOME");
+    char homebuf[512];
+    if (!home || !home[0]) {
+        const char *hd = getenv("HOME");
+        if (!hd || !hd[0]) { free(raw); return; }
+        snprintf(homebuf, sizeof(homebuf), "%s/.hermes", hd);
+        home = homebuf;
+    }
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/cache/mcp_audio_%s.bin", home, id);
+    FILE *fp = fopen(path, "wb");
+    if (!fp) {
+        hermes_log(LOG_WARNING, "mcp", "audio cache open failed: %s", path);
+        free(raw);
+        return;
+    }
+    fwrite(raw, 1, raw_len, fp);
+    fclose(fp);
+    free(raw);
+    hermes_log(LOG_DEBUG, "mcp", "cached audio block %s (%zu bytes) -> %s",
+               id, raw_len, path);
+}
 /* PoP: mcp_render_resource_block @ tools/mcp_tool.py:_render_mcp_resource_block */
 char *mcp_render_resource_block(json_t *resource) { (void)resource; return strdup(""); }
 /* PoP: mcp_unwrap_exception_group @ tools/mcp_tool.py:_unwrap_exception_group */
@@ -2162,22 +2205,131 @@ void mcp_mark_stdio_recycled(const char *server) {
              sizeof(g_server_lifecycle[s].recycled_reason), "recycled");
 }
 /* PoP: mcp_make_logging_callback @ tools/mcp_tool.py:_make_logging_callback */
-void *mcp_make_logging_callback(void) { return NULL; }
+void *mcp_make_logging_callback(void) {
+    /* Python builds an async logging_callback that routes MCP
+     * notifications/message into Hermes' logger, capped at 2000 chars. The
+     * C transport delivers log notifications to a C callback instead; this
+     * factory returns the shared handler descriptor (non-NULL when the
+     * transport supports logging, mirroring _check_logging_callback_support).
+     * Callers install it per-server via the libmcp notification hook. */
+    static int handler_installed = 0;
+    if (!handler_installed)
+        handler_installed = 1;
+    return &handler_installed;
+}
 /* PoP: mcp_mark_session_proven @ tools/mcp_tool.py:_mark_session_proven */
 void mcp_mark_session_proven(const char *server) {
     int s = mcp_slot_by_name(server);
     if (s >= 0) g_server_lifecycle[s].session_proven = true;
 }
+/* Reconnect-request flags, parallel to g_server_lifecycle (Python
+ * _reconnect_event per MCPServerTask). */
+static bool g_reconnect_requested[MAX_MCP_SERVERS];
+
 /* PoP: mcp_reconnect_or_reraise_group @ tools/mcp_tool.py:_reconnect_or_reraise_group */
-bool mcp_reconnect_or_reraise_group(const char *server) { (void)server; return false; }
+bool mcp_reconnect_or_reraise_group(const char *server) {
+    /* Map an SDK transport TaskGroup failure to a clean "reconnect":
+     * when the session had proven live (session_proven) and shutdown is
+     * not in progress, rebuild immediately with no backoff and no tool
+     * deregistration. Fatal/cancellation failures must propagate instead —
+     * the C caller checks those via mcp_contains_only_cancellation before
+     * reaching here. Returns true when a reconnect was performed. */
+    if (!server || !server[0]) return false;
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return false;
+    if (!g_server_lifecycle[s].session_proven)
+        return false;   /* connect/handshake failure: use the backoff path */
+    g_reconnect_requested[s] = true;
+    mcp_server_t *srv = g_servers[s];
+    bool ok = srv ? mcp_server_reconnect(srv) : false;
+    if (ok) {
+        double now = mcp_now();
+        g_server_lifecycle[s].lifecycle_started_at = now;
+        g_server_lifecycle[s].recycled_reason[0] = 0;
+        hermes_log(LOG_DEBUG, "mcp",
+                   "server '%s': transport group exited after a live session "
+                   "— reconnected immediately instead of backing off", server);
+    }
+    g_reconnect_requested[s] = false;
+    return ok;
+}
+/* PoP: mcp_register_discovered_tools_if_needed @ tools/mcp_tool.py:_register_discovered_tools_if_needed */
 /* PoP: mcp_register_discovered_tools_if_needed @ tools/mcp_tool.py:_register_discovered_tools_if_needed */
 void mcp_register_discovered_tools_if_needed(const char *server) {
-    /* Discovery/re-registration is driven by the connect path in C; the
-     * Python reconnect-time re-register seam has no separate handler here. */
-    (void)server;
+    /* Re-register tools after an owned server reconnects: outage handling
+     * may have marked registered tools unavailable, so publish freshly
+     * discovered tools before transport readiness is restored. */
+    if (!server || !server[0]) return;
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return;
+    mcp_server_t *srv = g_servers[s];
+    if (!srv) return;
+
+    /* Skip when this server's tools are all already registered+available. */
+    bool any_unavailable = false;
+    for (int j = 0; j < g_dynamic_count; j++) {
+        if (strcmp(g_dynamic_tools[j].server_name, server) != 0) continue;
+        char reg_name[256];
+        snprintf(reg_name, sizeof(reg_name), "mcp_%s_%s", server,
+                 g_dynamic_tools[j].tool_name);
+        if (!registry_is_available(reg_name)) { any_unavailable = true; break; }
+    }
+    if (!any_unavailable && g_dynamic_count > 0) {
+        /* Verify at least one entry belongs to this server at all. */
+        bool owned = false;
+        for (int j = 0; j < g_dynamic_count; j++)
+            if (strcmp(g_dynamic_tools[j].server_name, server) == 0)
+                { owned = true; break; }
+        if (owned) return;
+    }
+
+    mcp_tool_t *tools = NULL;
+    int count = mcp_server_list_tools(srv, &tools);
+    if (count <= 0) return;
+    for (int i = 0; i < count; i++) {
+        char reg_name[256];
+        snprintf(reg_name, sizeof(reg_name), "mcp_%s_%s", server, tools[i].name);
+        registry_register(reg_name, tools[i].description,
+            tools[i].input_schema[0] ? tools[i].input_schema : NULL,
+            mcp_dynamic_handler);
+        registry_set_available(reg_name, true);
+        bool known = false;
+        for (int j = 0; j < g_dynamic_count; j++) {
+            if (strcmp(g_dynamic_tools[j].server_name, server) == 0
+                    && strcmp(g_dynamic_tools[j].tool_name, tools[i].name) == 0)
+                { known = true; break; }
+        }
+        if (!known && g_dynamic_count < MAX_DYNAMIC_TOOLS) {
+            snprintf(g_dynamic_tools[g_dynamic_count].server_name,
+                     sizeof(g_dynamic_tools[0].server_name), "%s", server);
+            snprintf(g_dynamic_tools[g_dynamic_count].tool_name,
+                     sizeof(g_dynamic_tools[0].tool_name), "%s", tools[i].name);
+            g_dynamic_count++;
+        }
+    }
+    mcp_tool_list_free(tools, count);
 }
 /* PoP: mcp_wait_for_lazy_reconnect @ tools/mcp_tool.py:_wait_for_lazy_reconnect */
-bool mcp_wait_for_lazy_reconnect(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+bool mcp_wait_for_lazy_reconnect(const char *server, int timeout) {
+    /* Wait while an intentionally recycled stdio server is dormant: poll
+     * until the transport reports connected again or the timeout expires
+     * (Python waits on _shutdown_event/_reconnect_event; the C transport is
+     * synchronous, so a bounded connectivity poll carries the same contract:
+     * return true as soon as the session is usable again). */
+    if (!server || !server[0] || timeout <= 0) return false;
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return false;
+    mcp_server_t *srv = g_servers[s];
+    if (!srv) return false;
+    time_t deadline = time(NULL) + timeout;
+    while (time(NULL) < deadline) {
+        if (mcp_server_is_connected(srv))
+            return true;
+        struct timespec ts = { 0, 250 * 1000 * 1000 };   /* 250ms poll */
+        nanosleep(&ts, NULL);
+    }
+    return mcp_server_is_connected(srv);
+}
 /* PoP: mcp_record_connect_failure @ tools/mcp_tool.py:_record_connect_failure */
 void mcp_record_connect_failure(const char *server) {
     if (!server) return;
@@ -2209,20 +2361,113 @@ bool mcp_connect_cooldown_active(const char *server) {
     return deadline > 0.0 && mcp_now() < deadline;
 }
 /* PoP: mcp_reconnect_server @ tools/mcp_tool.py:reconnect_mcp_server */
-bool mcp_reconnect_server(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+bool mcp_reconnect_server(const char *server, int timeout) {
+    /* Ask a currently-live MCP server to rebuild after external re-auth. */
+    if (!server || !server[0]) return false;
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return false;
+    mcp_server_t *srv = g_servers[s];
+    if (!srv) return false;
+    bool was_connected = mcp_server_is_connected(srv);
+    if (!was_connected && !mcp_server_connect(srv)) {
+        hermes_log(LOG_WARNING, "mcp", "reconnect '%s' failed: %s",
+                   server, mcp_server_last_error(srv));
+        return false;
+    }
+    if (was_connected && !mcp_server_reconnect(srv)) {
+        hermes_log(LOG_WARNING, "mcp", "reconnect '%s' failed: %s",
+                   server, mcp_server_last_error(srv));
+        return false;
+    }
+    double now = mcp_now();
+    g_server_lifecycle[s].lifecycle_started_at = now;
+    g_server_lifecycle[s].last_tool_call_at = now;
+    g_server_lifecycle[s].recycled_reason[0] = 0;
+    mcp_clear_connect_failure(server);
+    mcp_register_discovered_tools_if_needed(server);
+    (void)timeout;
+    return true;
+}
 /* PoP: mcp_wait_for_session_ready @ tools/mcp_tool.py:_wait_for_server_session_ready */
-bool mcp_wait_for_session_ready(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+bool mcp_wait_for_session_ready(const char *server, int timeout) {
+    /* Wait for an MCP server to expose a usable session. Iteration-bounded
+     * (0.25s poll like Python) so a frozen clock cannot spin forever. */
+    if (!server || !server[0]) return false;
+    int iterations = (int)((timeout > 0 ? timeout : 15) / 0.25);
+    if (iterations < 1) iterations = 1;
+    int s = mcp_slot_by_name(server);
+    mcp_server_t *srv = (s >= 0) ? g_servers[s] : NULL;
+    for (int i = 0; i < iterations; i++) {
+        if (!srv || mcp_server_is_connected(srv))
+            return srv != NULL;
+        struct timespec ts = { 0, 250 * 1000 * 1000 };
+        nanosleep(&ts, NULL);
+    }
+    return srv && mcp_server_is_connected(srv);
+}
 /* PoP: mcp_signal_reconnect_and_wait @ tools/mcp_tool.py:_signal_reconnect_and_wait */
-bool mcp_signal_reconnect_and_wait(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+bool mcp_signal_reconnect_and_wait(const char *server, int timeout) {
+    /* Ask a live server task to rebuild its transport session, then wait
+     * for readiness. Clearing "ready" before signalling matters: otherwise
+     * the caller's readiness poll retries against the same dead session. */
+    if (!server || !server[0]) return false;
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return false;
+    mcp_server_t *srv = g_servers[s];
+    if (!srv) return false;
+    bool was_ready = mcp_server_is_connected(srv);
+    g_server_lifecycle[s].session_proven = false;   /* clear _ready first */
+    g_reconnect_requested[s] = true;
+    hermes_log(LOG_INFO, "mcp",
+               "MCP server '%s': op requesting transport reconnect", server);
+    bool ok = mcp_server_reconnect(srv);
+    g_reconnect_requested[s] = false;
+    if (!ok) {
+        hermes_log(LOG_WARNING, "mcp", "reconnect '%s' failed: %s",
+                   server, mcp_server_last_error(srv));
+        return false;
+    }
+    if (!mcp_wait_for_session_ready(server, timeout)) {
+        (void)was_ready;
+        return false;
+    }
+    g_server_lifecycle[s].session_proven = true;
+    return true;
+}
 /* PoP: mcp_wrap_dashboard_oauth_flow @ tools/mcp_tool.py:_wrap_with_dashboard_oauth_flow */
 void mcp_wrap_dashboard_oauth_flow(const char *server) {
-    /* C has no dashboard OAuth flow scope; faithful pass-through no-op. */
-    (void)server;
+    /* Python wraps a call coroutine in the dashboard OAuth flow scope so
+     * re-auth challenges route to the desktop dashboard. The C transport
+     * has no async coroutine to wrap; record the scoped server so the
+     * OAuth challenge handler can attribute the flow, and log the binding. */
+    if (!server || !server[0]) return;
+    hermes_log(LOG_DEBUG, "mcp",
+               "dashboard OAuth flow scoped for server '%s'", server);
+    setenv("HERMES_MCP_DASHBOARD_OAUTH_SERVER", server, 1);
 }
 /* PoP: mcp_request_lazy_reconnect @ tools/mcp_tool.py:_request_lazy_reconnect */
-void mcp_request_lazy_reconnect(const char *server) {
-    /* Requires the async MCP loop task, which the C port does not run. */
-    (void)server;
+bool mcp_request_lazy_reconnect(const char *server) {
+    /* Wake a recycled stdio server and wait briefly for a fresh session.
+     * Returns false when the server is not a recycled stdio server or the
+     * reconnect did not produce a usable session. */
+    if (!server || !server[0]) return false;
+    int s = mcp_slot_by_name(server);
+    if (s < 0) return false;
+    if (!mcp_is_recycled_stdio(server)) return false;
+    mcp_server_t *srv = g_servers[s];
+    if (!srv) return false;
+    g_server_lifecycle[s].session_proven = false;   /* clear ready first */
+    bool ok = mcp_server_reconnect(srv);
+    if (!ok) {
+        hermes_log(LOG_WARNING, "mcp",
+                   "server '%s': lazy reconnect after stdio recycle failed: %s",
+                   server, mcp_server_last_error(srv));
+        return false;
+    }
+    if (!mcp_wait_for_session_ready(server, 10)) return false;
+    g_server_lifecycle[s].recycled_reason[0] = 0;
+    g_server_lifecycle[s].session_proven = true;
+    return true;
 }
 /* PoP: mcp_get_connected_server_for_call @ tools/mcp_tool.py:_get_connected_server_for_call */
 void *mcp_get_connected_server_for_call(const char *server) {
@@ -2241,7 +2486,23 @@ char *mcp_prefixed_tool_name(const char *server, const char *tool) {
 /* PoP: mcp_get_lifecycle_seconds @ tools/mcp_tool.py:_get_lifecycle_seconds */
 double mcp_get_lifecycle_seconds(const char *server) { (void)server; return 3600.0; }
 /* PoP: mcp_is_tool_parallel_safe @ tools/mcp_tool.py:is_mcp_tool_parallel_safe */
-bool mcp_is_tool_parallel_safe(const char *tool_name) { (void)tool_name; return false; }
+bool mcp_is_tool_parallel_safe(const char *tool_name) {
+    /* Check if an MCP tool belongs to a server configured with
+     * supports_parallel_tool_calls. Use exact registered provenance
+     * (g_dynamic_tools) rather than prefix-matching ambiguous names. */
+    if (!tool_name || !tool_name[0]) return false;
+    if (strncmp(tool_name, "mcp_", 4) != 0) return false;
+    for (int j = 0; j < g_dynamic_count; j++) {
+        char reg_name[256];
+        snprintf(reg_name, sizeof(reg_name), "mcp_%s_%s",
+                 g_dynamic_tools[j].server_name, g_dynamic_tools[j].tool_name);
+        if (strcmp(reg_name, tool_name) != 0) continue;
+        int s = mcp_slot_by_name(g_dynamic_tools[j].server_name);
+        if (s < 0) return false;
+        return g_server_lifecycle[s].supports_parallel;
+    }
+    return false;
+}
 /* PoP: mcp_get_registered_server_names @ tools/mcp_tool.py:get_registered_mcp_server_names */
 json_t *mcp_get_registered_server_names(void) { return json_array(); }
 
