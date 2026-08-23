@@ -399,18 +399,40 @@ void gw_base_platform_adapter_set_fatal_error(gw_base_platform_adapter_t *adapte
 }
 
 /* Port of Python: _acquire_platform_lock */
+/* Port of BasePlatformAdapter._acquire_platform_lock: acquire the machine-
+ * scoped gateway lock for this adapter's identity via gateway/status.c. */
 bool gw_base_platform_adapter_acquire_lock(gw_base_platform_adapter_t *adapter,
                                             const char *scope, const char *identity,
-                                            const char *resource_desc) { /* Python default is also a no-op */ 
-    (void)adapter;
-    // Use gateway status module
-    return false;  // Placeholder - would call acquire_scoped_lock
+                                            const char *resource_desc)
+{
+    extern bool gwstatus_acquire_scoped_lock(const char *scope, const char *identity,
+                                             const char *metadata_json,
+                                             char **out_existing);
+    if (!adapter || !scope || !identity) return false;
+    adapter->platform_lock_scope = scope;
+    adapter->platform_lock_identity = identity;
+    char *existing = NULL;
+    bool acquired = gwstatus_acquire_scoped_lock(scope, identity, NULL, &existing);
+    free(existing);
+    if (!acquired && resource_desc)
+        hermes_log(LOG_ERROR, "platform_adapter",
+                   "%s already in use — stop the other gateway first",
+                   resource_desc);
+    return acquired;
 }
 
 /* Port of Python: _release_platform_lock */
-void gw_base_platform_adapter_release_lock(gw_base_platform_adapter_t *adapter) {
-    (void)adapter;
-    // Use gateway status module
+/* Port of BasePlatformAdapter._release_platform_lock. */
+void gw_base_platform_adapter_release_lock(gw_base_platform_adapter_t *adapter)
+{
+    extern void gwstatus_release_scoped_lock(const char *scope, const char *identity);
+    if (!adapter) return;
+    if (!adapter->platform_lock_identity || !*adapter->platform_lock_identity)
+        return;
+    gwstatus_release_scoped_lock(adapter->platform_lock_scope,
+                                 adapter->platform_lock_identity);
+    adapter->platform_lock_identity = NULL;
+    adapter->platform_lock_scope = NULL;
 }
 
 /* Port of Python: should_send_media_as_audio */

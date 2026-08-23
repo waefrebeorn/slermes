@@ -370,6 +370,10 @@ struct gw_base_platform_adapter {
     char *fatal_error_message;
     bool fatal_error_retryable;
 
+    /* Scoped platform lock state (_acquire_platform_lock / _release) */
+    const char *platform_lock_scope;
+    const char *platform_lock_identity;
+
     /* Session tracking */
     struct gw_session_tracker *session_tracker;  // Opaque, platform-specific
 

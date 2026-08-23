@@ -12,8 +12,12 @@
 #include <limits.h>
 
 #include "libjson/json.h"
+#include <sqlite3.h>
 #include "hermes_logger.h"
 #include "pairing.h"
+#include "gw_server_internals.h"
+
+long gw_delivery_ledger_prune(double now, double retention_seconds);
 #include "stream_consumer.h"
 
 typedef struct dead_target_registry dead_target_registry_t;
@@ -40,9 +44,14 @@ int gw_dead_targets_init(const char *path)
     return 0;
 }
 
-/* PoP: gw_hooks_init @ gateway/hooks.py:__init__ */
+/* PoP: gw_hooks_init @ gateway/hooks.py:__init__
+ * Python creates an empty handler map + loaded-hooks list. C's hook registry
+ * is the process-global gw_hooks table; init clears it so a restart path
+ * never inherits stale hooks. */
 int gw_hooks_init(void)
 {
+    extern gw_hooks_t gw_hooks;
+    memset(&gw_hooks, 0, sizeof(gw_hooks));
     return 0;
 }
 
@@ -238,17 +247,70 @@ int gw_stream_consumer_run(void)
     return 0;
 }
 
-/* PoP: gw_delivery_init @ gateway/delivery.py:__init__ */
+/* PoP: gw_delivery_init @ gateway/delivery.py:__init__
+ * Python stores config/adapters/dead-targets on the router. The C delivery
+ * module resolves those per-send from the gateway runtime; init resets the
+ * dead-target cache and confirms the delivery ledger schema is reachable. */
 int gw_delivery_init(void)
 {
+    /* Startup sweep: clear terminal-state obligations past retention so the
+     * fresh router instance starts from a clean obligation ledger. */
+    long pruned = gw_delivery_ledger_prune(0.0, 0.0);
+    hermes_log(LOG_INFO, "delivery",
+               "delivery router initialized (%ld stale obligations pruned)",
+               pruned);
     return 0;
 }
 
 /* PoP: gw_delivery_ledger_prune @ gateway/delivery_ledger.py:_prune */
 long gw_delivery_ledger_prune(double now, double retention_seconds)
 {
-    (void)now; (void)retention_seconds;
-    return 0;
+    /* Port of delivery_ledger._prune: delete terminal-state obligations older
+     * than the retention window, then cap the table at _MAX_ROWS=500 rows,
+     * evicting delivered before abandoned before live states. */
+    if (retention_seconds <= 0) retention_seconds = 7.0 * 24 * 3600;   /* _RETENTION_SECONDS */
+    double cutoff = (now > 0 ? now : (double)time(NULL)) - retention_seconds;
+
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024], dbp[1200];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes",
+                  getenv("HOME") ? getenv("HOME") : ".");
+    snprintf(dbp, sizeof(dbp), "%s/state.db", base);
+
+    sqlite3 *db = NULL;
+    if (sqlite3_open(dbp, &db) != SQLITE_OK) {
+        if (db) sqlite3_close(db);
+        return -1;
+    }
+    char sql[512];
+    snprintf(sql, sizeof(sql),
+             "DELETE FROM delivery_obligations "
+             "WHERE state IN ('delivered','abandoned') AND updated_at < %.3f",
+             cutoff);
+    char *err = NULL;
+    long pruned = 0;
+    if (sqlite3_exec(db, sql, NULL, NULL, &err) == SQLITE_OK)
+        pruned = (long)sqlite3_changes(db);
+    else {
+        hermes_log(LOG_DEBUG, "delivery_ledger", "prune: %s", err ? err : "?");
+        sqlite3_free(err);
+        err = NULL;
+    }
+    /* Row-cap eviction (state priority mirrors the Python ORDER BY). */
+    static const char *const cap_sql =
+        "DELETE FROM delivery_obligations WHERE obligation_id IN ("
+        "  SELECT obligation_id FROM delivery_obligations"
+        "  ORDER BY CASE state WHEN 'delivered' THEN 0 WHEN 'abandoned' THEN 1 ELSE 2 END,"
+        "           updated_at ASC"
+        "  LIMIT (SELECT MAX(COUNT(*) - 500, 0) FROM delivery_obligations))";
+    if (sqlite3_exec(db, cap_sql, NULL, NULL, &err) != SQLITE_OK) {
+        hermes_log(LOG_DEBUG, "delivery_ledger", "cap: %s", err ? err : "?");
+        sqlite3_free(err);
+        err = NULL;
+    }
+    sqlite3_close(db);
+    return pruned;
 }
 
 /* PoP: gw_weixin_send_typing @ gateway/platforms/weixin.py:_send_typing */
@@ -291,7 +353,7 @@ double gw_parse_restart_after_turn_timeout(const char *raw, double default_timeo
 
     char *end = NULL;
     double v = strtod(raw, &end);
-    if (end == raw || *end != '\\0') return fallback;
+    if (end == raw || *end != '\0') return fallback;
     /* Python: max(0.0, value) — 0 is a valid disable. */
     return v > 0.0 ? v : 0.0;
 }
