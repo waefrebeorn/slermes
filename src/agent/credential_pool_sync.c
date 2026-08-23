@@ -15,6 +15,7 @@ No god headers — only the minimal includes each module requires. C11 only.
 #include "hermes_json.h"
 #include "hermes_yaml.h"
 #include "hermes_auth.h"
+#include "port_auth_store.h"
 #include "provider.h"
 #include <ctype.h>
 #include <stdio.h>
@@ -90,29 +91,267 @@ bool _mark_exhausted(credential_pool_t *pool, int index, int http_status, const 
     return true;
 }
 
+/* Shared sync machinery (auth-store read + entry adoption). Mirrors the
+ * Python pattern: load auth.json under _auth_store_lock, resolve
+ * providers.<id> state, adopt fresher tokens when they differ. */
+static json_t *cp_sync_load_provider_state(const char *provider_id) {
+    json_t *store = authstore_load(NULL);
+    if (!store || store->type != JSON_OBJECT)
+        { if (store) json_free(store); return NULL; }
+    json_t *state = authstore_load_provider_state(store, provider_id);
+    json_free(store);
+    return state;
+}
+
 /* Port of Python agent/credential_pool.py:_sync_codex_entry_from_auth_store(). */
+/* Sync a Codex device_code pool entry from auth.json when tokens differ.
+ * When a Codex OAuth access token expires the pool entry gets frozen with a
+ * future last_error_reset_at even though fresh credentials may be sitting on
+ * disk from another process's device-code login — this adopts them. Only
+ * applies to device_code-sourced entries; env/API-key entries have no
+ * auth.json shadow to sync from. Returns true when the entry was updated. */
 bool _sync_codex_entry_from_auth_store(credential_pool_t *pool, int index) {
-    (void)pool; (void)index;
-    /* Full implementation would read auth.json for codex tokens */
-    return false;
+    if (!pool || index < 0 || index >= pool->entry_count) return false;
+    if (strcmp(pool->provider_name, "openai-codex") != 0) return false;
+    credential_entry_t *e = &pool->entries[index];
+    if (strcmp(e->source, "device_code") != 0 &&
+        strcmp(e->source, "manual:device_code") != 0)
+        return false;
+
+    json_t *state = cp_sync_load_provider_state("openai-codex");
+    if (!state || state->type != JSON_OBJECT) { if (state) json_free(state); return false; }
+    json_t *tokens = json_obj_get(state, "tokens");
+    if (!tokens || tokens->type != JSON_OBJECT) { json_free(state); return false; }
+    const char *store_access = json_get_str(tokens, "access_token", "");
+    const char *store_refresh = json_get_str(tokens, "refresh_token", "");
+    const char *entry_access = e->access_token;
+    const char *entry_refresh = e->refresh_token;
+
+    /* Adopt auth.json tokens when either side differs; also adopt when the
+     * store has only a refresh_token (another process rotated the pair and
+     * its access_token was already consumed). */
+    bool should_adopt = false;
+    if (store_access[0] &&
+        (strcmp(store_access, entry_access) != 0 ||
+         (store_refresh[0] && strcmp(store_refresh, entry_refresh) != 0)))
+        should_adopt = true;
+    else if (store_refresh[0] && !store_access[0] &&
+             strcmp(store_refresh, entry_refresh) != 0)
+        should_adopt = true;
+
+    bool changed = false;
+    if (should_adopt) {
+        credential_entry_t updated = *e;
+        snprintf(updated.access_token, sizeof(updated.access_token), "%s",
+                 store_access[0] ? store_access : e->access_token);
+        snprintf(updated.refresh_token, sizeof(updated.refresh_token), "%s",
+                 store_refresh[0] ? store_refresh : e->refresh_token);
+        /* Clear last_status / last_error_* bookkeeping (the analogs live in
+         * the persisted JSON; in-memory we reset the cooldown clock). */
+        updated.consecutive_failures = 0;
+        updated.status = CRED_OK;
+        _replace_entry(pool, index, &updated);
+        changed = true;
+    }
+    json_free(state);
+    if (changed)
+        credential_pool_persist_entries(pool); /* self._persist() */
+    return changed;
 }
 
 /* Port of Python agent/credential_pool.py:_sync_xai_oauth_entry_from_auth_store(). */
+/* xAI OAuth refresh tokens are single-use: when another process refreshes,
+ * it writes the new pair under providers["xai-oauth"]["tokens"]; without this
+ * resync our in-memory entry replays a consumed refresh_token. Only applies
+ * to device_code-sourced singleton entries. */
 bool _sync_xai_oauth_entry_from_auth_store(credential_pool_t *pool, int index) {
-    (void)pool; (void)index;
-    return false;
+    if (!pool || index < 0 || index >= pool->entry_count) return false;
+    if (strcmp(pool->provider_name, "xai-oauth") != 0) return false;
+    credential_entry_t *e = &pool->entries[index];
+    if (strcmp(e->source, "device_code") != 0) return false;
+
+    json_t *state = cp_sync_load_provider_state("xai-oauth");
+    if (!state || state->type != JSON_OBJECT) { if (state) json_free(state); return false; }
+    json_t *tokens = json_obj_get(state, "tokens");
+    if (!tokens || tokens->type != JSON_OBJECT) { json_free(state); return false; }
+    const char *store_access = json_get_str(tokens, "access_token", "");
+    const char *store_refresh = json_get_str(tokens, "refresh_token", "");
+
+    bool should_sync =
+        store_access[0] &&
+        (strcmp(store_access, e->access_token) != 0 ||
+         (store_refresh[0] && strcmp(store_refresh, e->refresh_token) != 0));
+
+    bool changed = false;
+    if (should_sync) {
+        credential_entry_t updated = *e;
+        snprintf(updated.access_token, sizeof(updated.access_token), "%s", store_access);
+        snprintf(updated.refresh_token, sizeof(updated.refresh_token), "%s",
+                 store_refresh[0] ? store_refresh : e->refresh_token);
+        updated.consecutive_failures = 0;
+        updated.status = CRED_OK;
+        _replace_entry(pool, index, &updated);
+        changed = true;
+    }
+    json_free(state);
+    if (changed)
+        credential_pool_persist_entries(pool);
+    return changed;
 }
 
 /* Port of Python agent/credential_pool.py:_sync_nous_entry_from_auth_store(). */
+/* Nous OAuth refresh tokens are single-use: a concurrent cron refreshing via
+ * resolve_nous_runtime_credentials writes fresh tokens to auth.json; the pool
+ * entry detects that and adopts the newer pair (plus agent_key / base_url /
+ * extra bookkeeping), avoiding a refresh-reuse revocation on the portal. */
 bool _sync_nous_entry_from_auth_store(credential_pool_t *pool, int index) {
-    (void)pool; (void)index;
-    return false;
+    if (!pool || index < 0 || index >= pool->entry_count) return false;
+    if (strcmp(pool->provider_name, "nous") != 0) return false;
+    credential_entry_t *e = &pool->entries[index];
+    if (strcmp(e->source, "device_code") != 0) return false;
+
+    json_t *state = cp_sync_load_provider_state("nous");
+    if (!state || state->type != JSON_OBJECT) { if (state) json_free(state); return false; }
+
+    const char *store_refresh = json_get_str(state, "refresh_token", "");
+    const char *store_access = json_get_str(state, "access_token", "");
+
+    /* comparable_updates: any non-empty value that differs triggers sync. */
+    bool should_sync = false;
+    if (store_access[0] && strcmp(store_access, e->access_token) != 0) should_sync = true;
+    if (!should_sync && store_refresh[0] && strcmp(store_refresh, e->refresh_token) != 0) should_sync = true;
+    long long expires_at = (long long)json_get_num(state, "expires_at", 0);
+    if (!should_sync && expires_at > 0 && expires_at != e->expires_at_ms) should_sync = true;
+    const char *agent_key = json_get_str(state, "agent_key", "");
+    if (!should_sync && agent_key[0] && strcmp(agent_key, e->agent_key) != 0) should_sync = true;
+    const char *ake_exp = json_get_str(state, "agent_key_expires_at", "");
+    if (!should_sync && ake_exp[0] && strcmp(ake_exp, e->agent_key_expires_at) != 0) should_sync = true;
+    const char *base_url = json_get_str(state, "inference_base_url", "");
+    if (!should_sync && base_url[0] && strcmp(base_url, e->inference_base_url) != 0) should_sync = true;
+
+    bool changed = false;
+    if (should_sync) {
+        credential_entry_t updated = *e;
+        if (store_access[0]) snprintf(updated.access_token, sizeof(updated.access_token), "%s", store_access);
+        if (store_refresh[0]) snprintf(updated.refresh_token, sizeof(updated.refresh_token), "%s", store_refresh);
+        if (expires_at > 0) updated.expires_at_ms = expires_at;
+        if (agent_key[0]) snprintf(updated.agent_key, sizeof(updated.agent_key), "%s", agent_key);
+        if (ake_exp[0]) snprintf(updated.agent_key_expires_at, sizeof(updated.agent_key_expires_at), "%s", ake_exp);
+        if (base_url[0]) snprintf(updated.inference_base_url, sizeof(updated.inference_base_url), "%s", base_url);
+        updated.consecutive_failures = 0;
+        updated.status = CRED_OK;
+        /* extra bookkeeping keys: obtained_at / expires_in / agent_key_* */
+        if (!updated.extra) updated.extra = json_object();
+        static const char *const extra_keys[] = {
+            "obtained_at", "expires_in", "agent_key_id",
+            "agent_key_expires_in", "agent_key_reused",
+            "agent_key_obtained_at", NULL,
+        };
+        for (const char *const *k = extra_keys; *k; k++) {
+            json_t *v = json_obj_get(state, *k);
+            if (v && v->type != JSON_NULL)
+                json_set(updated.extra, *k, json_copy(v));
+        }
+        _replace_entry(pool, index, &updated);
+        changed = true;
+    }
+    json_free(state);
+    if (changed)
+        credential_pool_persist_entries(pool);
+    return changed;
 }
 
 /* Port of Python agent/credential_pool.py:_sync_device_code_entry_to_auth_store(). */
+/* Write refreshed pool-entry tokens back to auth.json providers so the next
+ * load_pool() cannot re-seed a consumed single-use refresh token. Applies to
+ * any OAuth provider whose singleton lives in auth.json (nous / openai-codex /
+ * xai-oauth) seeded from device_code; manual:* entries never write back.
+ * set_active=false on every write: a pool sync-back is token-rotation side
+ * effect, not a user provider choice (#74339 root-vs-profile write routing). */
 bool _sync_device_code_entry_to_auth_store(credential_pool_t *pool, int index) {
-    (void)pool; (void)index;
-    return false;
+    if (!pool || index < 0 || index >= pool->entry_count) return false;
+    credential_entry_t *e = &pool->entries[index];
+    if (strcmp(e->source, "device_code") != 0) return false;
+
+    const char *provider = pool->provider_name;
+    const char *wt_id = NULL;
+    if (strcmp(provider, "nous") == 0) wt_id = "nous";
+    else if (strcmp(provider, "openai-codex") == 0) wt_id = "openai-codex";
+    else if (strcmp(provider, "xai-oauth") == 0) wt_id = "xai-oauth";
+    else return false;
+
+    json_t *store = authstore_load(NULL);
+    if (!store) return false;
+    char *source_path = NULL;
+    json_t *state = authstore_load_provider_state_with_source(store, provider, &source_path);
+    if (!state || state->type != JSON_OBJECT) {
+        if (state) json_free(state);
+        free(source_path);
+        json_free(store);
+        return false;
+    }
+
+    /* Resolve whether the grant came from the global root — write back ONLY
+     * to root in that case so the profile does not accrue a shadowing
+     * providers.<id> key that blocks both root fallback and write-through. */
+    char *global_root = cp_auth_json_path();
+    bool is_from_root = source_path && global_root &&
+                        authstore_same_path(source_path, global_root);
+
+    if (strcmp(provider, "nous") == 0) {
+        json_object_set(state, "access_token", json_string(e->access_token));
+        if (e->refresh_token[0])
+            json_object_set(state, "refresh_token", json_string(e->refresh_token));
+        if (e->expires_at_ms > 0)
+            json_object_set(state, "expires_at", json_int(e->expires_at_ms));
+        if (e->agent_key[0])
+            json_object_set(state, "agent_key", json_string(e->agent_key));
+        if (e->agent_key_expires_at[0])
+            json_object_set(state, "agent_key_expires_at", json_string(e->agent_key_expires_at));
+        static const char *const extra_keys[] = {
+            "obtained_at", "expires_in", "agent_key_id",
+            "agent_key_expires_in", "agent_key_reused",
+            "agent_key_obtained_at", NULL,
+        };
+        for (const char *const *k = extra_keys; *k; k++) {
+            json_t *v = e->extra ? json_obj_get(e->extra, *k) : NULL;
+            if (v && v->type != JSON_NULL)
+                json_object_set(state, *k, json_copy(v));
+        }
+        if (e->inference_base_url[0])
+            json_object_set(state, "inference_base_url",
+                            json_string(e->inference_base_url));
+    } else { /* openai-codex / xai-oauth: nested tokens object */
+        json_t *tokens = json_obj_get(state, "tokens");
+        if (!tokens || tokens->type != JSON_OBJECT) {
+            json_free(state); free(source_path); free(global_root); json_free(store);
+            return false;
+        }
+        json_object_set(tokens, "access_token", json_string(e->access_token));
+        if (e->refresh_token[0])
+            json_object_set(tokens, "refresh_token", json_string(e->refresh_token));
+    }
+
+    bool ok = true;
+    if (is_from_root && wt_id) {
+        /* Root-resolved grant: write through to the global root only. */
+        char *ser = json_serialize(state);
+        if (ser) {
+            credential_pool_write_through_provider_state_to_global_root(wt_id, ser);
+            free(ser);
+        } else ok = false;
+    } else {
+        /* Profile genuinely owns this provider — normal profile-store write,
+         * set_active=false. */
+        authstore_store_provider_state(store, provider, state, false);
+        char *saved = authstore_save(store, NULL);
+        free(saved);
+    }
+    json_free(state);
+    free(source_path);
+    free(global_root);
+    json_free(store);
+    return ok;
 }
 
 /* Port of Python agent/credential_pool.py:_refresh_entry(). */
