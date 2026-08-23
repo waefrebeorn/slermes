@@ -1,0 +1,918 @@
+[
+ {
+  "file": "src/agent/agent_init.c",
+  "fn": "agent_init_module_refs_ready"
+ },
+ {
+  "file": "src/agent/agent_runtime_helpers.c",
+  "fn": "void"
+ },
+ {
+  "file": "src/agent/chat_completion_helpers.c",
+  "fn": "noop_token_cb"
+ },
+ {
+  "file": "src/agent/context_engine.c",
+  "fn": "default_on_session_end"
+ },
+ {
+  "file": "src/agent/credential_pool_custom.c",
+  "fn": "_normalize_pool_priorities"
+ },
+ {
+  "file": "src/agent/credential_pool_custom.c",
+  "fn": "_is_suppressed"
+ },
+ {
+  "file": "src/agent/credential_pool_custom.c",
+  "fn": "_is_source_suppressed"
+ },
+ {
+  "file": "src/agent/credential_pool_custom.c",
+  "fn": "_prune_stale_seeded_entries"
+ },
+ {
+  "file": "src/agent/credential_pool_sync.c",
+  "fn": "_sync_codex_entry_from_auth_store"
+ },
+ {
+  "file": "src/agent/credential_pool_sync.c",
+  "fn": "_sync_xai_oauth_entry_from_auth_store"
+ },
+ {
+  "file": "src/agent/credential_pool_sync.c",
+  "fn": "_sync_nous_entry_from_auth_store"
+ },
+ {
+  "file": "src/agent/credential_pool_sync.c",
+  "fn": "_sync_device_code_entry_to_auth_store"
+ },
+ {
+  "file": "src/agent/insights_gaps.c",
+  "fn": "in_render_insights"
+ },
+ {
+  "file": "src/agent/memory_provider.c",
+  "fn": "builtin_is_available"
+ },
+ {
+  "file": "src/agent/memory_provider.c",
+  "fn": "builtin_get_config_schema"
+ },
+ {
+  "file": "src/agent/outbound_webhooks.c",
+  "fn": "ow_make_callback"
+ },
+ {
+  "file": "src/agent/provider_profiles_builtin.c",
+  "fn": "pp_null_models"
+ },
+ {
+  "file": "src/app_desktop.c",
+  "fn": "app_desktop_pin_session"
+ },
+ {
+  "file": "src/cli/config_setup.c",
+  "fn": "setup_current_reasoning_effort"
+ },
+ {
+  "file": "src/gateway/agent_cache_pressure.c",
+  "fn": "acb_transcript_persistence_caught_up"
+ },
+ {
+  "file": "src/gateway/bluebubbles_wrappers.c",
+  "fn": "bb_u_compile_mention_patterns"
+ },
+ {
+  "file": "src/gateway/bluebubbles_wrappers.c",
+  "fn": "bb_u_message_matches_mention_patterns"
+ },
+ {
+  "file": "src/gateway/gateway_runtime.c",
+  "fn": "gw_systemd_notify"
+ },
+ {
+  "file": "src/gateway/gw_session.c",
+  "fn": "_has_active_processes_safe"
+ },
+ {
+  "file": "src/gateway/platforms/api_server_adapter_cron.c",
+  "fn": "cron_available"
+ },
+ {
+  "file": "src/gateway/platforms/base.c",
+  "fn": "strdup"
+ },
+ {
+  "file": "src/gateway/platforms/feishu.c",
+  "fn": "feishu_poll_messages"
+ },
+ {
+  "file": "src/gateway/platforms/qqbot/qqbot_wrappers.c",
+  "fn": "qqbot_u_parse_json"
+ },
+ {
+  "file": "src/gateway/run.c",
+  "fn": "gw_watch_gateway_turn_inactivity"
+ },
+ {
+  "file": "src/gateway/run.c",
+  "fn": "gw_busy_start_command"
+ },
+ {
+  "file": "src/gateway/run_gaps.c",
+  "fn": "gw_recover_unclean_sessions"
+ },
+ {
+  "file": "src/gateway/run_gaps.c",
+  "fn": "gw_queue_retryable_fatal_platform"
+ },
+ {
+  "file": "src/gateway/run_gaps.c",
+  "fn": "gw_interrupt_api_server_runs"
+ },
+ {
+  "file": "src/gateway/run_gaps.c",
+  "fn": "gw_deliver_queued_first_response"
+ },
+ {
+  "file": "src/gateway/run_gaps.c",
+  "fn": "gw_attach_session_title_callback"
+ },
+ {
+  "file": "src/gateway/run_gaps.c",
+  "fn": "gw_make_profile_busy_session_handler"
+ },
+ {
+  "file": "src/gateway/run_gaps.c",
+  "fn": "gw_start_heartbeat_poller"
+ },
+ {
+  "file": "src/gateway/run_wrappers.c",
+  "fn": "grun_u_handle_suggestions_command"
+ },
+ {
+  "file": "src/gateway/run_wrappers.c",
+  "fn": "grun_u_handle_blueprint_command"
+ },
+ {
+  "file": "src/gateway/session_gaps.c",
+  "fn": "session_mark_turn_active"
+ },
+ {
+  "file": "src/gateway/session_gaps.c",
+  "fn": "session_clear_turn_active"
+ },
+ {
+  "file": "src/gateway/session_gaps.c",
+  "fn": "session_recover_interrupted_turns"
+ },
+ {
+  "file": "src/gateway/session_gaps.c",
+  "fn": "session_discard_active_turn_markers"
+ },
+ {
+  "file": "src/gateway/session_gaps.c",
+  "fn": "session_drain_spooled_drops"
+ },
+ {
+  "file": "src/gateway/sqlite_safe_read.c",
+  "fn": "sqlite_safe_offline_file_access_exit"
+ },
+ {
+  "file": "src/gateway/util_helpers.c",
+  "fn": "gw_whatsapp_enforces_own_access_policy"
+ },
+ {
+  "file": "src/gateway/yuanbao_wrappers.c",
+  "fn": "yb_acquire_file_6"
+ },
+ {
+  "file": "src/hermes_cli/banner_gaps.c",
+  "fn": "banner_prefetch_banner_data"
+ },
+ {
+  "file": "src/hermes_cli/banner_gaps.c",
+  "fn": "banner_defer_update_notice"
+ },
+ {
+  "file": "src/hermes_cli/banner_gaps.c",
+  "fn": "banner_save_snapshot"
+ },
+ {
+  "file": "src/hermes_cli/clipboard.c",
+  "fn": "clipboard_read_image"
+ },
+ {
+  "file": "src/hermes_cli/clipboard.c",
+  "fn": "clipboard_write_image"
+ },
+ {
+  "file": "src/hermes_cli/commands_wrappers.c",
+  "fn": "cmd_is_gateway_available"
+ },
+ {
+  "file": "src/hermes_cli/config_gaps.c",
+  "fn": "config_print_config_warnings"
+ },
+ {
+  "file": "src/hermes_cli/config_gaps.c",
+  "fn": "config_warn_deprecated_cwd_env_vars"
+ },
+ {
+  "file": "src/hermes_cli/config_gaps.c",
+  "fn": "config_invalidate_env_cache"
+ },
+ {
+  "file": "src/hermes_cli/discord_helpers.c",
+  "fn": "discord_request"
+ },
+ {
+  "file": "src/hermes_cli/discord_helpers.c",
+  "fn": "discord_make_handler"
+ },
+ {
+  "file": "src/hermes_cli/doctor_helpers.c",
+  "fn": "doctor_check_version_consistency"
+ },
+ {
+  "file": "src/hermes_cli/doctor_helpers.c",
+  "fn": "doctor_check_gateway_service_linger"
+ },
+ {
+  "file": "src/hermes_cli/doctor_live_gaps.c",
+  "fn": "doctor_maybe_run_live_checks"
+ },
+ {
+  "file": "src/hermes_cli/file_tools_helpers.c",
+  "fn": "file_tools_registered_task_cwd_override"
+ },
+ {
+  "file": "src/hermes_cli/file_tools_helpers.c",
+  "fn": "file_tools_get_container_mirror_prefix_for_task"
+ },
+ {
+  "file": "src/hermes_cli/gaps.c",
+  "fn": "cli_finalize_preloaded_skills"
+ },
+ {
+  "file": "src/hermes_cli/gaps.c",
+  "fn": "cli_start_heartbeat_watchdog"
+ },
+ {
+  "file": "src/hermes_cli/jobs_helpers.c",
+  "fn": "_ensure_croniter"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_gaps.c",
+  "fn": "kanban_parents_satisfied"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_gaps.c",
+  "fn": "kanban_request_review"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_gaps.c",
+  "fn": "kanban_reclaim_dangling_run"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_gaps.c",
+  "fn": "kanban_reopen_review_task"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_gaps.c",
+  "fn": "kanban_reconcile_orphaned"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_gaps.c",
+  "fn": "kanban_review_dispatch_enabled"
+ },
+ {
+  "file": "src/hermes_cli/kanban_db_wrappers.c",
+  "fn": "kdbport_list_runs"
+ },
+ {
+  "file": "src/hermes_cli/model_catalog.c",
+  "fn": "resolve_static_model_alias"
+ },
+ {
+  "file": "src/hermes_cli/pet_input.c",
+  "fn": "cli__build_cpr_disabled_output"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__enforces_own_access_policy"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__authorization_is_upstream"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__streaming_overflow_limit"
+ },
+ {
+  "file": "src/hermes_cli/platforms_base_helpers.c",
+  "fn": "gw_base__create_handoff_thread"
+ },
+ {
+  "file": "src/hermes_cli/plugins_cmd_wrappers.c",
+  "fn": "pcmd_get_current_memory_provider"
+ },
+ {
+  "file": "src/hermes_cli/plugins_cmd_wrappers.c",
+  "fn": "pcmd_get_current_context_engine"
+ },
+ {
+  "file": "src/hermes_cli/profiles_router_gaps.c",
+  "fn": "profiles_warn_read_error"
+ },
+ {
+  "file": "src/hermes_cli/shared_metrics_gaps.c",
+  "fn": "metrics_record_client_active"
+ },
+ {
+  "file": "src/hermes_cli/shared_metrics_gaps.c",
+  "fn": "metrics_validate_counter"
+ },
+ {
+  "file": "src/hermes_cli/shared_metrics_gaps.c",
+  "fn": "metrics_record_counter_in_transaction"
+ },
+ {
+  "file": "src/hermes_cli/shared_metrics_gaps.c",
+  "fn": "metrics_create_counter_aggregates_table"
+ },
+ {
+  "file": "src/hermes_cli/shared_metrics_gaps.c",
+  "fn": "metrics_migrate_v1_counter_aggregates"
+ },
+ {
+  "file": "src/hermes_cli/update_cmd_gaps.c",
+  "fn": "update_reload_config_modules"
+ },
+ {
+  "file": "src/hermes_cli/update_cmd_gaps.c",
+  "fn": "update_stop_process_trees"
+ },
+ {
+  "file": "src/hermes_cli/update_cmd_gaps.c",
+  "fn": "update_refresh_bootstrap_cache_scripts"
+ },
+ {
+  "file": "src/hermes_cli/web_server_gaps.c",
+  "fn": "ws_terminate_desktop_managed_gateway"
+ },
+ {
+  "file": "src/hermes_cli/web_server_gaps.c",
+  "fn": "ws_open_session_db_at_path"
+ },
+ {
+  "file": "src/hermes_cli/web_server_gaps.c",
+  "fn": "ws_raise_if_cron_registration_error"
+ },
+ {
+  "file": "src/hermes_cli/web_server_gaps.c",
+  "fn": "ws_is_serve_orphaned"
+ },
+ {
+  "file": "src/hermes_cli/web_server_gaps.c",
+  "fn": "ws_start_parent_death_watchdog"
+ },
+ {
+  "file": "src/hermes_cli/web_server_gaps.c",
+  "fn": "ws_demo"
+ },
+ {
+  "file": "src/hermes_cli/web_server_sessions_admin.c",
+  "fn": "COALESCE"
+ },
+ {
+  "file": "src/hermes_cli/web_server_sessions_admin.c",
+  "fn": "COALESCE"
+ },
+ {
+  "file": "src/hermes_cli/write_approval.c",
+  "fn": "cli_tools_write_approval__prompt_inline_memory_approval"
+ },
+ {
+  "file": "src/hermes_cli/yuanbao_tools.c",
+  "fn": "cli_tools_yuanbao_tools__get_active_adapter"
+ },
+ {
+  "file": "src/main_desktop.c",
+  "fn": "signal_handler"
+ },
+ {
+  "file": "src/plugins/plugin_achievements.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_achievements.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_browser.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_browser.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_browser.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/plugins/plugin_context_engine.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_context_engine.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_context_engine.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/plugins/plugin_dashboard_auth.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_dashboard_auth.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_dashboard_auth.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/plugins/plugin_disk_cleanup.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_disk_cleanup.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_file_memory.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_file_memory.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_google_meet.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_google_meet.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_honcho.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_image_gen.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_image_gen.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_kanban.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_kanban.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_kanban.c",
+  "fn": "board_add_event"
+ },
+ {
+  "file": "src/plugins/plugin_model_providers.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_model_providers.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_model_providers.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/plugins/plugin_observability.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_observability.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_platforms.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_platforms.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_platforms.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/plugins/plugin_security_guidance.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_security_guidance.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_skills.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_skills.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_spotify.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_spotify.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_teams_pipeline.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_teams_pipeline.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_teams_pipeline.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/plugins/plugin_video_gen.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_video_gen.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_video_gen.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/plugins/plugin_web.c",
+  "fn": "plugin_deps_count"
+ },
+ {
+  "file": "src/plugins/plugin_web.c",
+  "fn": "plugin_deps_list"
+ },
+ {
+  "file": "src/plugins/plugin_web.c",
+  "fn": "plugin_init"
+ },
+ {
+  "file": "src/sidebar.c",
+  "fn": "sidebar_handle_hover"
+ },
+ {
+  "file": "src/terminal.c",
+  "fn": "term_set_charset"
+ },
+ {
+  "file": "src/terminal.c",
+  "fn": "terminal_selection_clear"
+ },
+ {
+  "file": "src/terminal.c",
+  "fn": "terminal_selection_get"
+ },
+ {
+  "file": "src/terminal.c",
+  "fn": "terminal_selection_text"
+ },
+ {
+  "file": "src/titlebar.c",
+  "fn": "titlebar_handle_hover"
+ },
+ {
+  "file": "src/tools/browser_use_cli_gaps.c",
+  "fn": "bu_blocked_url_in_code"
+ },
+ {
+  "file": "src/tools/checkpoint_manager.c",
+  "fn": "_migrate_legacy_store"
+ },
+ {
+  "file": "src/tools/checkpoint_manager.c",
+  "fn": "_cm_repair_bare_repo_dirs"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "noop_is_available"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "noop_start"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "noop_stop"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "x11_start"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "x11_stop"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "wayland_start"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "wayland_stop"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "make_macos_backend"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "win_is_available"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "win_start"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "win_stop"
+ },
+ {
+  "file": "src/tools/computer_use.c",
+  "fn": "make_windows_backend"
+ },
+ {
+  "file": "src/tools/mcp_tool_gaps.c",
+  "fn": "mcp_record_tool_trust_metadata"
+ },
+ {
+  "file": "src/tools/mcp_tool_gaps.c",
+  "fn": "mcp_trust_gate_check"
+ },
+ {
+  "file": "src/tools/memory.c",
+  "fn": "plugin_open"
+ },
+ {
+  "file": "src/tools/memory.c",
+  "fn": "plugin_get"
+ },
+ {
+  "file": "src/tools/memory.c",
+  "fn": "plugin_count"
+ },
+ {
+  "file": "src/tools/memory.c",
+  "fn": "plugin_vtable_persist"
+ },
+ {
+  "file": "src/tools/memory.c",
+  "fn": "plugin_vtable_load"
+ },
+ {
+  "file": "src/tools/memory.c",
+  "fn": "plugin_get_by_hash"
+ },
+ {
+  "file": "src/tools/memory.c",
+  "fn": "plugin_compress_old"
+ },
+ {
+  "file": "src/tools/memory_storage.c",
+  "fn": "vtable_inmem_persist"
+ },
+ {
+  "file": "src/tools/memory_storage.c",
+  "fn": "vtable_inmem_load"
+ },
+ {
+  "file": "src/tools/memory_storage.c",
+  "fn": "vtable_sqlite_persist"
+ },
+ {
+  "file": "src/tools/memory_storage.c",
+  "fn": "vtable_sqlite_load"
+ },
+ {
+  "file": "src/tools/memory_tool.c",
+  "fn": "memory_tool_available"
+ },
+ {
+  "file": "src/tools/patch_parser.c",
+  "fn": "patch_parser_write_file_accepts_pre_content"
+ },
+ {
+  "file": "src/tools/ports_wrappers.c",
+  "fn": "tools_skills_hub_u_find_skill_dir"
+ },
+ {
+  "file": "src/tools/skill_mgr_tool_wrappers.c",
+  "fn": "smt_u_validate_category"
+ },
+ {
+  "file": "src/tools/skill_mgr_tool_wrappers.c",
+  "fn": "smt_u_validate_frontmatter"
+ },
+ {
+  "file": "src/tools/terminal_tool_gaps.c",
+  "fn": "terminal_docker_isolation_enabled"
+ },
+ {
+  "file": "src/tools/terminal_tool_gaps.c",
+  "fn": "terminal_has_isolation_overrides"
+ },
+ {
+  "file": "src/tools/terminal_tool_gaps.c",
+  "fn": "terminal_ensure_task_env"
+ },
+ {
+  "file": "src/tools/terminal_tool_gaps.c",
+  "fn": "terminal_evict_environment"
+ },
+ {
+  "file": "src/tools/tool_search.c",
+  "fn": "tool_search_catalog_free"
+ },
+ {
+  "file": "src/tools/tts_tool_gaps.c",
+  "fn": "tts_target_file_bytes"
+ },
+ {
+  "file": "src/tools/tts_tool_gaps.c",
+  "fn": "tts_concat_audio_files"
+ },
+ {
+  "file": "src/tools/tts_tool_gaps.c",
+  "fn": "tts_text_to_speech_single"
+ },
+ {
+  "file": "src/tools/voice_mode.c",
+  "fn": "record_thread"
+ },
+ {
+  "file": "src/tools/wake_word_gaps.c",
+  "fn": "wake_local_input_device_ready"
+ },
+ {
+  "file": "src/tools/wake_word_gaps.c",
+  "fn": "wake_resample_audio_frame"
+ },
+ {
+  "file": "src/tools/wake_word_gaps.c",
+  "fn": "wake_feed_audio"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_terminal_search"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_terminal_find_next"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_terminal_enable_hyperlinks"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_terminal_has_hyperlinks"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_create"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_destroy"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_set_title"
+ },
+ {
+  "file": "src/window_stubs.c",
+  "fn": "window_focus"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "seat_handle_name"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "registry_handle_global_remove"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_platform_has_gpu"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_focus"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_set_position"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_is_fullscreen"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_get_renderer"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_render_begin"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_render_end"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_clear"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_draw_rect"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_fill_rect"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_fill_rect_rounded"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_fill_circle"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_draw_text"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_draw_line"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_draw_image"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_get_mouse_button"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_set_mouse_pos"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_clipboard_get"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_clipboard_set"
+ },
+ {
+  "file": "src/window_wayland.c",
+  "fn": "window_enable_dnd"
+ },
+ {
+  "file": "src/window_win32.c",
+  "fn": "window_platform_has_gpu"
+ }
+]
