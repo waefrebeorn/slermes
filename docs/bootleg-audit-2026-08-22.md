@@ -1,10 +1,43 @@
-# Bootleg Audit — 2026-08-22
+# Bootleg Audit — 2026-08-22 (RESOLVED — see Resolution below)
 
 **Scanner:** `scripts/stub_hunter.py` (new, linear-time). The old
 `tests/recursive_false_gap_hunter.py` predates the port_-prefix purge and
 scans 0 files — it has been superseded.
 
-## Headline numbers
+## Resolution (same day)
+
+The full fix campaign ran as five parallel workstreams plus follow-up
+passes. **497 suspicious → 279**, and the remaining 279 are triaged:
+~94 legitimate (platform-conditional windowing, backend-selection no-ops,
+`_stubs.c` placeholders, documented Python-default no-op seams) + ~185
+long-tail entries queued in `tests/unexplained_noops.json` for the next
+pass. Every high-value cluster is now real code:
+
+| Cluster | Fns fixed | Commit |
+|---|---|---|
+| gw_session transcript persistence | 13 | `c9ce510336` |
+| gateway_runner adapters/scale-to-zero | 15 | `86cd89a072` |
+| stream_consumer notification/delta | 24 | `43a12faa37` |
+| mcp_tool reconnect/session | 12 | `69f9080f59` |
+| tirith security chain | 13 | `2b88dc8932` |
+| ports_wrappers dashboard/journey/bundles | 17 | `66db1d0fb8` |
+| cron cluster | 12 | `f647be2bca` |
+| final_gaps cli surface | 25 | `2107b3c` |
+| util_helpers tools+cli | 19 | `3d1f7d88f0` |
+| memory vtables | 11 | `a4b655ab42` |
+| provider_bedrock converse | 5 | `e65293d932` |
+| platforms/base (3 real + 18 verified Python no-ops) | 21 | `98deadb47c` |
+| clarify/async_delegation/wake_word/kanban/service_manager + long tail | ~40 | various |
+
+Also closed the same day: TUI boot-appearance parity (`0b79407ba5` —
+byte-exact logo art, two-column panel, compact path), the 79-lib dependency
+audit (`5e0099e6f9`, 5 libs FIXED with a 36-case oracle), and the upstream
+quarry re-sync (2,852 commits) with all oracle drift repaired
+(`e284c8d582`: provider_auth 55-provider table, turn_retry_state new field,
+toolsets browser_exec/kanban_request_* alignment, bfl recently-shipped
+auto-enable, run_pure name parity).
+
+## Original findings (pre-fix)
 
 | Metric | Count |
 |---|---|

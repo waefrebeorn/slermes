@@ -44,6 +44,9 @@ make -j$(nproc)
 | [Real Gap List](docs/real-gap-list.md) | Honest REAL_GAPs across modules |
 | [FAP](docs/fap.md) | Behavioral divergences the scanner can't see + the oracle harness |
 | [Water-Cup Parity Oracle](docs/watercup-parity-oracle.md) | Trace-cup deep gate: right output, wrong path fails |
+| [Session Prestige 2026-08-22](docs/session-prestige-2026-08-22.md) | Session wrap-up: status, in-flight work, next-session queue |
+| [Bootleg Audit](docs/bootleg-audit-2026-08-22.md) | Empty-body audit: 497 found, fix campaign results, remaining queue |
+| [Lib Audit](docs/lib_audit_2026-08-22.md) | All 79 dependency libs vs Python twins; 5 fixed with oracles |
 
 ## How to read the parity numbers
 
