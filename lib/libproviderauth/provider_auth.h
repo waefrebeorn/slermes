@@ -41,7 +41,8 @@ typedef enum {
     PROVIDER_AUTH_OAUTH_EXTERNAL,   /* "oauth_external" */
     PROVIDER_AUTH_AWS_SDK,          /* "aws_sdk" */
     PROVIDER_AUTH_EXTERNAL_PROCESS, /* "external_process" */
-    PROVIDER_AUTH_OAUTH_MINIMAX     /* "oauth_minimax" */
+    PROVIDER_AUTH_OAUTH_MINIMAX,    /* "oauth_minimax" */
+    PROVIDER_AUTH_VERTEX            /* "vertex" */
 } provider_auth_type_t;
 
 /*

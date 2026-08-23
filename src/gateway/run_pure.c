@@ -156,8 +156,8 @@ static const char *G_FALLBACK_PREFIX = "[System note: A new message";
 /* ------------------------------------------------------------------ */
 
 /* run.py _gateway_platform_value */
-/* PoP: _value @ gateway/run.py:_gateway_platform_value */
-char *_value(const void *platform) {
+/* PoP: gateway_platform_value @ gateway/run.py:_gateway_platform_value */
+char *gateway_platform_value(const void *platform) {
     /* `platform` may be a string or an object with a `value` attribute.
      * We accept a plain C string here (the harness/oracle only use strings);
      * callers passing enums should pass the already-normalized string. */
@@ -182,7 +182,7 @@ char *_value(const void *platform) {
 /* run.py _gateway_surface_passes_raw_text */
 /* PoP: gateway_surface_passes_raw_text @ gateway/run.py:_gateway_surface_passes_raw_text */
 bool gateway_surface_passes_raw_text(const char *platform) {
-    char *pv = _value(platform);
+    char *pv = gateway_platform_value(platform);
     bool res = false;
     for (int i = 0; G_RAW_TEXT_PLATFORMS[i]; i++) {
         if (strcmp(pv, G_RAW_TEXT_PLATFORMS[i]) == 0) { res = true; break; }
@@ -195,7 +195,7 @@ bool gateway_surface_passes_raw_text(const char *platform) {
 /* PoP: gateway_non_conversational_metadata @ gateway/run.py:_non_conversational_metadata */
 json_node_t *gateway_non_conversational_metadata(json_node_t *metadata,
                                                   const char *platform) {
-    char *pv = _value(platform);
+    char *pv = gateway_platform_value(platform);
     bool is_discord = strcmp(pv, "discord") == 0;
     free(pv);
     if (!is_discord) return metadata; /* unchanged */

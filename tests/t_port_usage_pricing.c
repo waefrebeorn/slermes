@@ -55,7 +55,7 @@ static json_t *emit_normalize_usage(const json_t *c)
     const char *provider = json_get_str(c, "provider", "");
     const char *api_mode = json_get_str(c, "api_mode", "");
     json_t *usage = json_obj_get(c, "usage");
-    usage_counts_t u = usage_pricing_normalize_usage(provider, api_mode, usage);
+    usage_counts_t u = normalize_usage(provider, api_mode, usage);
 
     json_t *o = json_new_object();
     json_set(o, "fn", json_string("normalize_usage"));
@@ -72,7 +72,7 @@ static json_t *emit_resolve_billing_route(const json_t *c)
     const char *model = json_get_str(c, "model", "");
     const char *provider = json_get_str(c, "provider", "");
     const char *base_url = json_get_str(c, "base_url", "");
-    billing_route_t r = usage_pricing_resolve_billing_route(model, provider, base_url);
+    billing_route_t r = resolve_billing_route(model, provider, base_url);
 
     json_t *o = json_new_object();
     json_set(o, "fn", json_string("resolve_billing_route"));

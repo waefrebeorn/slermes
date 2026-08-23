@@ -7,7 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hermes_json.h"
-#include "cli/port_tools_schema_sanitizer.h"
+
+/* live decls from src/tools/schema_sanitizer.c */
+char *cli_tools_schema_sanitizer__strip_pattern_and_format(const char *json_input, int *stripped_count);
+char *cli_tools_schema_sanitizer__strip_slash_enum(const char *json_input, int *stripped_count);
+char *cli_tools_schema_sanitizer__sanitize_tool_schemas(const char *tools_json);
 
 static char *read_file(const char *path)
 {

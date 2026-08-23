@@ -20,6 +20,7 @@ typedef enum {
     IDX_vertex_auth_retry_attempted,
     IDX_thinking_sig_retry_attempted,
     IDX_invalid_encrypted_content_retry_attempted,
+    IDX_native_compaction_reject_retry_attempted,
     IDX_image_shrink_retry_attempted,
     IDX_multimodal_tool_content_retry_attempted,
     IDX_oauth_1m_beta_retry_attempted,
@@ -48,6 +49,7 @@ static const char *TRS_NAMES[IDX_COUNT] = {
     "vertex_auth_retry_attempted",
     "thinking_sig_retry_attempted",
     "invalid_encrypted_content_retry_attempted",
+    "native_compaction_reject_retry_attempted",
     "image_shrink_retry_attempted",
     "multimodal_tool_content_retry_attempted",
     "oauth_1m_beta_retry_attempted",
@@ -142,6 +144,15 @@ void turn_retry_state_set_invalid_encrypted_content_retry_attempted(turn_retry_s
 
 /* PoP: turn_retry_state_get_image_shrink_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */
 bool turn_retry_state_get_image_shrink_retry_attempted(const turn_retry_state_t *s) {
+
+/* PoP: turn_retry_state_get_native_compaction_reject_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */
+bool turn_retry_state_get_native_compaction_reject_retry_attempted(const turn_retry_state_t *s) {
+    return s ? s->f[IDX_native_compaction_reject_retry_attempted] : false;
+}
+/* PoP: turn_retry_state_set_native_compaction_reject_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */
+void turn_retry_state_set_native_compaction_reject_retry_attempted(turn_retry_state_t *s, bool v) {
+    if (s) s->f[IDX_native_compaction_reject_retry_attempted] = v;
+}
     return s ? s->f[IDX_image_shrink_retry_attempted] : false;
 }
 /* PoP: turn_retry_state_set_image_shrink_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */

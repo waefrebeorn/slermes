@@ -563,6 +563,56 @@ char **platform_tools_get(const json_t *config, const char *platform,
         ps_free(&all_tool_names);
     }
 
+    /* PoP: _enable_recently_shipped_toolsets @ hermes_cli/tools_config.py:
+     * turn on toolsets that shipped after this platform's saved list ("bfl").
+     * Only where the composite default would have enabled it anyway. */
+    {
+        bool declined = false;
+        {
+            char *known = NULL;
+            /* declined = recorded in known_builtin_toolsets */
+            const json_t *kt = config ? json_obj_get(config, "known_builtin_toolsets") : NULL;
+            if (kt && kt->type == JSON_ARRAY) {
+                for (size_t i = 0; i < json_len(kt) && !declined; i++) {
+                    char *s = json_scalar_to_str(json_get(kt, i));
+                    if (s && strcmp(s, "bfl") == 0) declined = true;
+                    free(s);
+                }
+            }
+            (void)known;
+        }
+        if (!declined && !explicit_empty_selection &&
+            !ps_has(&enabled, "bfl") &&
+            toolset_allowed_for_platform("bfl", platform)) {
+            pset_t bfl_tools = {0};
+            size_t bn = 0;
+            char **bt = toolsets_resolve("bfl", true, &bn);
+            for (size_t j = 0; j < bn; j++) ps_add(&bfl_tools, bt[j]);
+            toolsets_free_list(bt, bn);
+            if (bfl_tools.n > 0) {
+                /* composite default: hermes-<platform> (or the platform's
+                 * registered default) resolved WITHOUT the registry */
+                const char *def = platform_tools_default_toolset(platform);
+                char fallback[128];
+                if (!def) {
+                    snprintf(fallback, sizeof(fallback), "hermes-%s", platform);
+                    def = fallback;
+                }
+                pset_t composite = {0};
+                size_t cn = 0;
+                char **ct = toolsets_resolve(def, false, &cn);
+                for (size_t j = 0; j < cn; j++) ps_add(&composite, ct[j]);
+                toolsets_free_list(ct, cn);
+                bool subset = composite.n > 0;
+                for (size_t j = 0; j < bfl_tools.n && subset; j++)
+                    if (!ps_has(&composite, bfl_tools.v[j])) subset = false;
+                if (subset) ps_add(&enabled, "bfl");
+                ps_free(&composite);
+            }
+            ps_free(&bfl_tools);
+        }
+    }
+
     /* recovery + plugin + context-engine + passthrough + MCP + disabled */
     char **result = platform_tools_get_finish(config, platform,
                                               include_default_mcp_servers,

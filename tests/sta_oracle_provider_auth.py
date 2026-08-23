@@ -26,6 +26,7 @@ ENUM = {
     "aws_sdk": 4,
     "external_process": 5,
     "oauth_minimax": 6,
+    "vertex": 7,
 }
 DEFAULT_ENUM = 0  # anything unmapped -> UNKNOWN (as the C side would)
 
