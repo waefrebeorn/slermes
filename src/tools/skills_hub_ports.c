@@ -278,14 +278,127 @@ char *sh_coerce_skill_payload(const char *data_json) {
     return strdup(data_json);
 }
 
-/* PoP: sh_search_score @ tools/skills_hub.py:_search_score */
-int sh_search_score(const char *query, const char *identifier, const char *name) {
-    /* Python: identifier/name match scoring; 0 on no match. */
-    if (!query || !*query) return 1;
+/* PoP: sh_query_terms @ tools/skills_hub.py:_query_terms
+ * Split on runs of [^a-z0-9] after lowercasing; drop empties. */
+static size_t sh_query_terms(const char *s, char **out, size_t max) {
+    size_t n = 0;
+    if (!s) return 0;
+    for (const char *p = s; *p; ) {
+        while (*p && !((*p >= 'a' && *p <= 'z') || (*p >= '0' && *p <= '9'))) p++;
+        if (!*p) break;
+        const char *start = p;
+        while (*p && ((*p >= 'a' && *p <= 'z') || (*p >= '0' && *p <= '9'))) p++;
+        if (n < max) {
+            size_t len = (size_t)(p - start);
+            char *t = malloc(len + 1);
+            if (!t) break;
+            memcpy(t, start, len);
+            t[len] = '\0';
+            out[n++] = t;
+        } else break;
+    }
+    return n;
+}
+
+static void sh_free_terms(char **terms, size_t n) {
+    for (size_t i = 0; i < n; i++) free(terms[i]);
+}
+
+/* " ".join(terms) — caller frees. */
+static char *sh_join_terms(char **terms, size_t n) {
+    size_t len = 1;
+    for (size_t i = 0; i < n; i++) len += strlen(terms[i]) + 1;
+    char *out = malloc(len + 1);
+    if (!out) return NULL;
+    out[0] = '\0';
+    size_t off = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (i) out[off++] = ' ';
+        size_t tl = strlen(terms[i]);
+        memcpy(out + off, terms[i], tl);
+        off += tl;
+    }
+    out[off] = '\0';
+    return out;
+}
+
+static bool sh_terms_prefix_eq(char **prefix, size_t pn, char **hay, size_t hn) {
+    if (pn > hn) return false;
+    for (size_t i = 0; i < pn; i++)
+        if (strcmp(prefix[i], hay[i]) != 0) return false;
+    return true;
+}
+
+static bool sh_terms_contains(char **hay, size_t hn, const char *needle) {
+    for (size_t i = 0; i < hn; i++)
+        if (strcmp(hay[i], needle) == 0) return true;
+    return false;
+}
+
+#define SH_MAX_TERMS 64
+
+/* PoP: sh_search_score @ tools/skills_hub.py:_search_score
+ * Faithful port of SkillsHub._search_score: tiered identifier/name/
+ * description match scoring. NULL fields are treated as "" (Python's
+ * ``meta.X or ""``). */
+int sh_search_score(const char *query, const char *identifier,
+                    const char *name, const char *description) {
+    char *query_norm = lowerdup(query ? query : "");
+    if (query_norm) {
+        /* strip() then collapse handled by term split; strip edges first */
+        char *s = query_norm;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        size_t l = strlen(s);
+        while (l > 0 && (s[l-1]==' '||s[l-1]=='\t'||s[l-1]=='\n'||s[l-1]=='\r')) s[--l] = '\0';
+        memmove(query_norm, s, l + 1);
+    }
+    if (!query_norm || !*query_norm) { free(query_norm); return 1; }
+
+    char *id_lc   = lowerdup(identifier   ? identifier   : "");
+    char *name_lc = lowerdup(name         ? name         : "");
+    char *desc_lc = lowerdup(description ? description : "");
+
+    static char ni_terms[SH_MAX_TERMS][32], nn_terms[SH_MAX_TERMS][32];
+    static char qt_terms[SH_MAX_TERMS][32], it_terms[SH_MAX_TERMS][32],
+                nt_terms[SH_MAX_TERMS][32];
+    char *ni[SH_MAX_TERMS], *nn[SH_MAX_TERMS], *qt[SH_MAX_TERMS],
+         *it[SH_MAX_TERMS], *nt[SH_MAX_TERMS];
+    size_t ni_n = sh_query_terms(id_lc, ni, SH_MAX_TERMS);
+    size_t nn_n = sh_query_terms(name_lc, nn, SH_MAX_TERMS);
+    size_t qt_n = sh_query_terms(query_norm, qt, SH_MAX_TERMS);
+    size_t it_n = sh_query_terms(id_lc, it, SH_MAX_TERMS);
+    size_t nt_n = sh_query_terms(name_lc, nt, SH_MAX_TERMS);
+    /* back fixed-size storage */
+    for (size_t i = 0; i < ni_n; i++) { memcpy(ni_terms[i], ni[i], strlen(ni[i])+1); free(ni[i]); ni[i] = ni_terms[i]; }
+    for (size_t i = 0; i < nn_n; i++) { memcpy(nn_terms[i], nn[i], strlen(nn[i])+1); free(nn[i]); nn[i] = nn_terms[i]; }
+    for (size_t i = 0; i < qt_n; i++) { memcpy(qt_terms[i], qt[i], strlen(qt[i])+1); free(qt[i]); qt[i] = qt_terms[i]; }
+    for (size_t i = 0; i < it_n; i++) { memcpy(it_terms[i], it[i], strlen(it[i])+1); free(it[i]); it[i] = it_terms[i]; }
+    for (size_t i = 0; i < nt_n; i++) { memcpy(nt_terms[i], nt[i], strlen(nt[i])+1); free(nt[i]); nt[i] = nt_terms[i]; }
+
+    char *ni_join = sh_join_terms(ni, ni_n);
+    char *nn_join = sh_join_terms(nn, nn_n);
+
     int score = 0;
-    if (identifier && strstr(identifier, query)) score += 3;
-    if (name && strstr(name, query)) score += 2;
-    if (name && strcasestr(name, query)) score += 1;
+    if (strcmp(query_norm, id_lc) == 0) score += 140;
+    if (strcmp(query_norm, name_lc) == 0) score += 130;
+    if (ni_join && strcmp(ni_join, query_norm) == 0) score += 125;
+    if (nn_join && strcmp(nn_join, query_norm) == 0) score += 120;
+    if (ni_join && strncmp(ni_join, query_norm, strlen(query_norm)) == 0) score += 95;
+    if (nn_join && strncmp(nn_join, query_norm, strlen(query_norm)) == 0) score += 90;
+    if (qt_n > 0 && sh_terms_prefix_eq(qt, qt_n, it, it_n)) score += 70;
+    if (qt_n > 0 && sh_terms_prefix_eq(qt, qt_n, nt, nt_n)) score += 65;
+    if (strstr(id_lc, query_norm)) score += 40;
+    if (strstr(name_lc, query_norm)) score += 35;
+    if (strstr(desc_lc, query_norm)) score += 10;
+
+    for (size_t i = 0; i < qt_n; i++) {
+        if (sh_terms_contains(it, it_n, qt[i])) score += 15;
+        if (sh_terms_contains(nt, nt_n, qt[i])) score += 12;
+        if (strstr(desc_lc, qt[i])) score += 3;
+    }
+
+    free(ni_join); free(nn_join);
+    free(query_norm); free(id_lc); free(name_lc); free(desc_lc);
     return score;
 }
 
