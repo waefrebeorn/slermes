@@ -522,7 +522,7 @@ int difflib_get_close_matches(const char *word, const char **possibilities,
     for (int i = 0; i < m - 1; i++) {
         int best = i;
         for (int k = i + 1; k < m; k++)
-            if (ratios[idx[k]] > ratios[idx[best]]) best = k;
+            if (ratios[k] > ratios[best]) best = k;
         if (best != i) {
             int ti = idx[i]; idx[i] = idx[best]; idx[best] = ti;
         }

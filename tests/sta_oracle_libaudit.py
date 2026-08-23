@@ -47,6 +47,9 @@ def run_c_expectations():
     exp["re.groupindex.word"] = "-1"  # pattern has no named groups
     exp["re.sub.xplus"] = re.sub("x+", "X", "axxxbxxxc")
     exp["re.findall.digits"] = SEP.join(re.findall(r"[0-9]+", "a1b22c333"))
+    xp = re.findall("x+", "axxxbxxxc")
+    exp["re.findall.xplus.count"] = str(len(xp))
+    exp["re.findall.xplus"] = SEP.join(xp)
     pat_named = re.compile(r"(?P<word>[a-z]+)@[a-z]+\.[a-z]+")
     m = pat_named.search("mail bob@example.org now")
     assert m is not None
@@ -92,8 +95,7 @@ def run_c_expectations():
     # static type (all str fields), which does not exist in the untyped C
     # API. libcsv quotes only fields that are NOT number-parseable, so
     # "1.5" stays unquoted. Encode the C contract here explicitly.
-    exp["csv.nonnumeric"] = wr(csv.QUOTE_ALL)  # same bytes as ALL for this row minus 1.5
-    exp["csv.nonnumeric"] = 'a,"b,c","say ""hi""",1.5\\n' 
+    exp["csv.nonnumeric"] = R'"a","b,c","say ""hi""",1.5\n'
     exp["csv.quote_none.error"] = "error"
     exp["csv.quote_none.plain"] = "plain"
 
@@ -110,8 +112,8 @@ def run_c_expectations():
     long_text = "Word " * 30
     exp["tw.shorten2"] = textwrap.shorten(long_text, width=30)
     exp["tw.shorten3"] = textwrap.shorten("nospaceverylongword", width=10)
-    exp["tw.indent.blank"] = textwrap.indent("a\n\nb", "  ")
-    exp["tw.indent.all"] = textwrap.indent("x\ny", "> ")
+    exp["tw.indent.blank"] = textwrap.indent("a\n\nb", "  ").replace("\n", "~")
+    exp["tw.indent.all"] = textwrap.indent("x\ny", "> ").replace("\n", "~")
 
     return exp
 

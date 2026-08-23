@@ -43,6 +43,23 @@ test-libs:
 	@echo "=== Testing checkpoint_persist ==="
 	@gcc -O2 -g -Wall -Wextra -I include $(LIB_INCS) tests/test_checkpoint_persist.c src/agent/checkpoint.c src/agent/context.c lib/libjson/json.o -o /tmp/t_chkpersist -lm 2>/dev/null && /tmp/t_chkpersist 2>&1 || echo "(no test runner)"
 
+# Dependency-library audit oracle (2026-08-22): regex/difflib/csv/glob/
+# textwrap Python-parity surface, diffed against live stdlib twins by
+# tests/sta_oracle_libaudit.py. Fail-closed: nonzero on any mismatch.
+test-lib-audit:
+	@gcc -std=c11 -O2 -g -Wall -Wextra -I lib/libregex -I lib/libdifflib \
+		-I lib/libcsv -I lib/libglob -I lib/libtextwrap \
+		tests/test_lib_audit.c lib/libregex/hermes_regex.c lib/libdifflib/difflib.c \
+		lib/libcsv/csv.c lib/libglob/glob.c lib/libtextwrap/textwrap.o \
+		-o /tmp/t_lib_audit -lm 2>/dev/null || \
+		gcc -std=c11 -O2 -g -Wall -Wextra -I lib/libregex -I lib/libdifflib \
+		-I lib/libcsv -I lib/libglob -I lib/libtextwrap \
+		tests/test_lib_audit.c lib/libregex/hermes_regex.c lib/libdifflib/difflib.c \
+		lib/libcsv/csv.c lib/libglob/glob.c lib/libtextwrap/textwrap.c \
+		-o /tmp/t_lib_audit -lm
+	@/tmp/t_lib_audit > /tmp/t_lib_audit.out
+	@python3 tests/sta_oracle_libaudit.py /tmp/t_lib_audit.out
+
 # Cron job store (port of cron/jobs.py) — disk-backed real-behavior test.
 test-cronjobs:
 	@gcc -O2 -g -Wall -Wextra -I include $(LIB_INCS) tests/cron_jobs_test.c \

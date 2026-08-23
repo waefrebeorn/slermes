@@ -189,8 +189,16 @@ int main(void) {
         r = textwrap_shorten_py("nospaceverylongword", 10);
         pv("tw.shorten3", r); free(r);
         r = textwrap_indent("a\n\nb", "  ");
+        {   /* escape newlines so the oracle's line parser sees one record */
+            char *q = r;
+            for (; q && *q; q++) if (*q == '\n') *q = '~';
+        }
         pv("tw.indent.blank", r); free(r);
         r = textwrap_indent("x\ny", "> ");
+        {
+            char *q = r;
+            for (; q && *q; q++) if (*q == '\n') *q = '~';
+        }
         pv("tw.indent.all", r); free(r);
     }
 

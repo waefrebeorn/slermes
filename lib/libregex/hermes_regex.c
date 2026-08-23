@@ -232,9 +232,11 @@ char *regex_replace_n(hregex_t *re, const char *str, const char *replacement,
 }
 
 char *regex_replace(hregex_t *re, const char *str, const char *replacement) {
-    /* Python re.sub default count=0 replaces ALL occurrences. The legacy
-     * single-shot behavior is kept only under the old name for callers
-     * that relied on it; new code should use regex_replace_n. */
+    /* Legacy contract preserved: NULL replacement passes the string through.
+     * Python re.sub default count=0 replaces ALL occurrences — new code
+     * wanting that should call regex_replace_n(..., count=0). */
+    if (!str) return NULL;
+    if (!replacement) return strdup(str);
     return regex_replace_n(re, str, replacement, 1);
 }
 

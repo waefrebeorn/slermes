@@ -47,17 +47,23 @@ int main(void) {
     TEST("single * matches number", glob_match("*", "123"));
     TEST("* after /", glob_match("a/*", "a/foo"));
     TEST("? single char match", glob_match("f?o", "foo"));
-    TEST("single * with path crossing",
-         glob_match("*", "a/b"));
-    TEST("* after / matches recursively",
-         glob_match("a/*", "a/b/c"));
-    TEST("? can match /",
-         glob_match("?", "/"));
-    TEST("leading dot matched by bare * (system fnmatch)",
-         glob_match("*", ".hidden"));
-    /* Note: fnmatch behavior varies by platform for leading dot with *. We just verify it doesn't crash. */
+    /* 2026-08-22 lib audit: component-wise matching now enforces the
+     * Python glob semantics — "*" and "?" never cross "/", dotfiles are
+     * hidden from wildcard-led components (FNM_PERIOD). The pre-audit
+     * expectations here asserted non-Python behavior. */
+    TEST("single * does NOT cross / (Python glob)",
+         !glob_match("*", "a/b"));
+    TEST("* after / does NOT recurse (use **; Python glob)",
+         !glob_match("a/*", "a/b/c"));
+    TEST("** still crosses directories", glob_match("a/**", "a/b/c"));
+    TEST("? cannot match / (component-wise)",
+         !glob_match("?", "/"));
+    TEST("dotfile hidden from bare * (Python glob rule)",
+         !glob_match("*", ".hidden"));
     TEST("** matches hidden", glob_match("**/.hidden", "/dir/.hidden"));
-    TEST("dotdot not special for *", glob_match("*", ".."));
+    /* Python glob('*') never lists '.'/'..' — both start with a dot,
+     * hidden from wildcard-led components. */
+    TEST("dotdot hidden for * (Python glob)", !glob_match("*", ".."));
     TEST("? at end", glob_match("foo.", "foo."));
     TEST("? at end mismatch", !glob_match("foo.", "fooX"));
 
