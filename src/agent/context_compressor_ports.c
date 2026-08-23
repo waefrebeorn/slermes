@@ -620,11 +620,159 @@ char *cc_generate_summary(const char *serialized_json, long budget) {
 }
 
 /* PoP: cc_sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */
+/* PoP: cc_sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs
+ *
+ * REAL implementation (replaces earlier passthrough stub). Mirrors LIVE
+ * ContextCompressor._sanitize_tool_pairs with quiet_mode=True:
+ *   1. collect surviving assistant tool_call ids (call_id || id),
+ *   2. collect tool result ids,
+ *   3. drop role="tool" results whose id has no surviving call,
+ *   4. strip orphaned tool_calls from assistant messages (preserving the
+ *      trailing in-flight request), blanking content when a message loses
+ *      all calls. Returns serialized sanitized array.
+ */
+static const char *cc_stp_role(const json_t *msg) {
+    json_t *r = json_obj_get(msg, "role");
+    return (r && r->type == JSON_STRING) ? r->str_val : NULL;
+}
+
+static char *cc_stp_tc_id(const json_t *tc) {
+    if (!tc || tc->type != JSON_OBJECT) return strdup("");
+    const char *cid = json_get_str(tc, "call_id", "");
+    if (!cid) cid = "";
+    if (!cid[0]) {
+        const char *id = json_get_str(tc, "id", "");
+        if (!id) id = "";
+        cid = id;
+    }
+    return strdup(cid);
+}
+
+static int cc_stp_str_in(char **set, size_t n, const char *s) {
+    for (size_t i = 0; i < n; i++)
+        if (strcmp(set[i], s) == 0) return 1;
+    return 0;
+}
+
 char *cc_sanitize_tool_pairs(const char *messages_json) {
-    /* Python: drop orphan tool_use/tool_result pairs. */
     if (!messages_json) return strdup("[]");
-    printf("tool pairs sanitized (orphans dropped)\n");
-    return strdup(messages_json);
+    json_t *msgs = json_parse(messages_json, NULL);
+    if (!msgs || msgs->type != JSON_ARRAY) {
+        if (msgs) json_free(msgs);
+        return strdup("[]");
+    }
+
+    /* 1. surviving assistant tool_call ids */
+    char **surviving = calloc(msgs->c.count * 8 + 8, sizeof(char *));
+    size_t nsurv = 0;
+    for (size_t i = 0; i < msgs->c.count; i++) {
+        json_t *m = msgs->c.items[i];
+        if (!m || m->type != JSON_OBJECT || !cc_stp_role(m) ||
+            strcmp(cc_stp_role(m), "assistant") != 0) continue;
+        json_t *tcs = json_obj_get(m, "tool_calls");
+        if (!tcs || tcs->type != JSON_ARRAY || tcs->c.count == 0) continue;
+        for (size_t j = 0; j < tcs->c.count; j++) {
+            char *cid = cc_stp_tc_id(json_get(tcs, j));
+            if (cid[0]) surviving[nsurv++] = cid;
+            else free(cid);
+        }
+    }
+
+    /* 2. result ids */
+    char **results = calloc(msgs->c.count + 1, sizeof(char *));
+    size_t nres = 0;
+    for (size_t i = 0; i < msgs->c.count; i++) {
+        json_t *m = msgs->c.items[i];
+        if (!m || m->type != JSON_OBJECT) continue;
+        const char *role = cc_stp_role(m);
+        if (!role || strcmp(role, "tool") != 0) continue;
+        const char *cid = json_get_str(m, "tool_call_id", "");
+        if (cid && cid[0]) results[nres++] = strdup(cid);
+    }
+
+    /* 3. remove orphaned results */
+    size_t n_orphaned = 0;
+    for (size_t i = 0; i < nres; i++)
+        if (!cc_stp_str_in(surviving, nsurv, results[i])) n_orphaned++;
+    if (n_orphaned > 0) {
+        for (long i = (long)msgs->c.count - 1; i >= 0; i--) {
+            json_t *m = msgs->c.items[i];
+            if (!m || m->type != JSON_OBJECT) continue;
+            const char *role = cc_stp_role(m);
+            if (!role || strcmp(role, "tool") != 0) continue;
+            const char *cid = json_get_str(m, "tool_call_id", "");
+            if (cid && cc_stp_str_in(results, nres, cid) &&
+                !cc_stp_str_in(surviving, nsurv, cid)) {
+                json_free(m);
+                memmove(&msgs->c.items[i], &msgs->c.items[i + 1],
+                        (msgs->c.count - (size_t)i - 1) * sizeof(json_t *));
+                msgs->c.count--;
+            }
+        }
+    }
+
+    /* 4. strip orphaned tool_calls */
+    size_t n_missing = 0;
+    for (size_t i = 0; i < nsurv; i++)
+        if (!cc_stp_str_in(results, nres, surviving[i])) n_missing++;
+    long stripped_msgs = 0;
+    if (n_missing > 0) {
+        /* trailing in-flight protection */
+        long idx = (long)msgs->c.count - 1;
+        while (idx >= 0) {
+            json_t *m = msgs->c.items[idx];
+            const char *role = (m && m->type == JSON_OBJECT) ? cc_stp_role(m) : NULL;
+            if (role && strcmp(role, "tool") == 0) { idx--; continue; }
+            break;
+        }
+        json_t *trailing = NULL;
+        if (idx >= 0) {
+            json_t *m = msgs->c.items[idx];
+            const char *role = (m && m->type == JSON_OBJECT) ? cc_stp_role(m) : NULL;
+            if (role && strcmp(role, "assistant") == 0) trailing = m;
+        }
+        for (size_t i = 0; i < msgs->c.count; i++) {
+            json_t *m = msgs->c.items[i];
+            if (!m || m->type != JSON_OBJECT) continue;
+            const char *role = cc_stp_role(m);
+            if (!role || strcmp(role, "assistant") != 0) continue;
+            if (m == trailing) continue;
+            json_t *tcs = json_obj_get(m, "tool_calls");
+            if (!tcs || tcs->type != JSON_ARRAY || tcs->c.count == 0) continue;
+            json_t *kept = json_array();
+            for (size_t j = 0; j < tcs->c.count; j++) {
+                char *cid = cc_stp_tc_id(json_get(tcs, j));
+                int miss = cc_stp_str_in(surviving, nsurv, cid) &&
+                           !cc_stp_str_in(results, nres, cid);
+                free(cid);
+                if (!miss) json_append(kept, json_copy(json_get(tcs, j)));
+            }
+            if (json_len(kept) != json_len(tcs)) {
+                stripped_msgs++;
+                if (json_len(kept) > 0) {
+                    json_set(m, "tool_calls", kept);
+                } else {
+                    json_free(kept);
+                    json_obj_del(m, "tool_calls");
+                    const char *content = json_get_str(m, "content", NULL);
+                    if (!content || !content[0] ||
+                        strspn(content, " \t\n\r") == strlen(content))
+                        json_set(m, "content", json_string("(tool call removed)"));
+                }
+            } else {
+                json_free(kept);
+            }
+        }
+    }
+
+    for (size_t i = 0; i < nsurv; i++) free(surviving[i]);
+    for (size_t i = 0; i < nres; i++) free(results[i]);
+    free(surviving);
+    free(results);
+
+    char *out = json_serialize(msgs);
+    json_free(msgs);
+    return out ? out : strdup("[]");
 }
 
 /* PoP: cc_align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */

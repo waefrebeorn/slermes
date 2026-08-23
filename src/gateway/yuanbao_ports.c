@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_gateway_yuanbao.h"
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -75,12 +76,238 @@ char *yb2_build_source(const char *group_code, const char *user_openid) {
     return out;
 }
 
-/* PoP: yb2_extract_text @ gateway/platforms/yuanbao.py:_extract_text */
-char *yb2_extract_text(const char *msg_body_json) {
-    /* Python: TIMTextElem → text; image/file elems → labels. */
-    if (!msg_body_json) return strdup("");
-    printf("msg body text extracted (tim text/image/file elems)\n");
+/* PoP: yb2_extract_text @ gateway/platforms/yuanbao.py:_extract_text
+ *
+ * REAL implementation (replaces earlier empty-string stub). Mirrors LIVE
+ * ExtractContentMiddleware._extract_text:
+ *   TIMTextElem -> text; TIMImageElem/Sound/Video -> "[image|ybres:RID]"
+ *   style labels; TIMFileElem -> "[file: name]" / "[file:name|ybres:RID]";
+ *   TIMCustomElem -> data JSON dispatch (1002 mention, 1010 share card,
+ *   1007 link understanding, 1009 chat record); TIMFaceElem -> "[emoji: n]";
+ *   unknown types -> "[<type>]". Elems joined with spaces.
+ */
+#define YB_CARD_CONTENT_MAX_LENGTH 1000
+
+/* Port of _parse_resource_id: resourceId/resourceid query param of url. */
+char *yb2_parse_resource_id(const char *url) {
+    if (!url || !*url) return strdup("");
+    const char *q = strchr(url, '?');
+    if (!q) return strdup("");
+    q++;
+    size_t qlen = strlen(q);
+    const char *p = q;
+    while (p < q + qlen) {
+        const char *amp = strchr(p, '&');
+        size_t seg = amp ? (size_t)(amp - p) : strlen(p);
+        const char *eq = memchr(p, '=', seg);
+        size_t klen = eq ? (size_t)(eq - p) : seg;
+        if ((klen == 10 && strncmp(p, "resourceId", 10) == 0) ||
+            (klen == 10 && strncmp(p, "resourceid", 10) == 0)) {
+            if (eq) {
+                size_t vlen = seg - klen - 1;
+                char *v = strndup(eq + 1, vlen);
+                /* strip */
+                char *s = v;
+                while (*s == ' ' || *s == '\t') s++;
+                size_t l = strlen(s);
+                while (l && (s[l-1] == ' ' || s[l-1] == '\t')) s[--l] = '\0';
+                memmove(v, s, l + 1);
+                return v;
+            }
+            return strdup("");
+        }
+        p += seg + (amp ? 1 : 0);
+    }
     return strdup("");
+}
+
+/* Port of _format_shared_link(custom): share card placeholder text. */
+static char *yb2_format_shared_link(const json_t *custom) {
+    const char *title = json_get_str((json_t *)custom, "title", "");
+    if (!title) title = "";
+    const char *link = json_get_str((json_t *)custom, "link", "");
+    if (!link) link = "";
+    char *out = NULL;
+    size_t w = 0;
+    FILE *f = open_memstream(&out, &w);   /* _GNU_SOURCE */
+    if (link[0])
+        fprintf(f, "[share_card: %s | %s]", title, link);
+    else
+        fprintf(f, "[share_card: %s]", title);
+    int appended = 0;
+    const char *fields[] = {"card_content", "wechat_des"};
+    for (int i = 0; i < 2 && !appended; i++) {
+        json_t *val = json_obj_get(custom, fields[i]);
+        if (val && val->type == JSON_STRING && val->str_val && val->str_val[0]) {
+            size_t l = strlen(val->str_val);
+            if (l > (size_t)YB_CARD_CONTENT_MAX_LENGTH)
+                fprintf(f, "\nPreview: %.*s...(truncated)",
+                        (int)YB_CARD_CONTENT_MAX_LENGTH, val->str_val);
+            else
+                fprintf(f, "\nPreview: %s", val->str_val);
+            appended = 1;
+        }
+    }
+    if (link[0])
+        fprintf(f, "\n[visit link for full content]");
+    fclose(f);
+    return out;
+}
+
+/* Port of _format_link_understanding(custom): NULL when no usable link. */
+static char *yb2_format_link_understanding(const json_t *custom) {
+    json_t *content = json_obj_get(custom, "content");
+    if (!content || content->type != JSON_STRING || !content->str_val[0])
+        return NULL;
+    json_t *parsed = json_parse(content->str_val, NULL);
+    const char *link = NULL;
+    if (parsed && parsed->type == JSON_OBJECT)
+        link = json_get_str(parsed, "link", NULL);
+    if (!link || !link[0]) {
+        if (parsed) json_free(parsed);
+        return NULL;
+    }
+    char *out = NULL;
+    asprintf(&out, "[link: %s | visit link for full content]", link);
+    if (parsed) json_free(parsed);
+    return out;
+}
+
+char *yb2_extract_text(const char *msg_body_json) {
+    if (!msg_body_json) return strdup("");
+    json_t *body = json_parse(msg_body_json, NULL);
+    if (!body || body->type != JSON_ARRAY) {
+        if (body) json_free(body);
+        return strdup("");
+    }
+    char *out = NULL;
+    size_t outw = 0;
+    FILE *f = open_memstream(&out, &outw);
+    int first = 1;
+    for (size_t i = 0; i < body->c.count; i++) {
+        json_t *elem = body->c.items[i];
+        if (!elem || elem->type != JSON_OBJECT) continue;
+        json_t *et_v = json_obj_get(elem, "msg_type");
+        const char *etype = (et_v && et_v->type == JSON_STRING) ? et_v->str_val : "";
+        json_t *content = json_obj_get(elem, "msg_content");
+        if (!content || content->type != JSON_OBJECT) content = json_object();
+
+        char part[8192];
+        part[0] = '\0';
+        if (strcmp(etype, "TIMTextElem") == 0) {
+            const char *text = json_get_str(content, "text", "");
+            if (text && text[0]) snprintf(part, sizeof part, "%s", text);
+        } else if (strcmp(etype, "TIMImageElem") == 0) {
+            json_t *arr = json_obj_get(content, "image_info_array");
+            json_t *info = NULL;
+            if (!arr || arr->type != JSON_ARRAY) arr = NULL;
+            if (arr) {
+                if (arr->c.count > 1 && json_get(arr, 1) && json_get(arr, 1)->type == JSON_OBJECT)
+                    info = json_get(arr, 1);
+                else if (arr->c.count > 0 && json_get(arr, 0) && json_get(arr, 0)->type == JSON_OBJECT)
+                    info = json_get(arr, 0);
+            }
+            const char *raw_url = info ? json_get_str(info, "url", "") : "";
+            char *rid = yb2_parse_resource_id(raw_url ? raw_url : "");
+            if (rid[0]) snprintf(part, sizeof part, "[image|ybres:%s]", rid);
+            else snprintf(part, sizeof part, "[image]");
+            free(rid);
+        } else if (strcmp(etype, "TIMFileElem") == 0) {
+            const char *filename = json_get_str(content, "file_name",
+                                   json_get_str(content, "fileName",
+                                   json_get_str(content, "filename", "")));
+            if (!filename) filename = "";
+            const char *furl = json_get_str(content, "url", "");
+            char *rid = yb2_parse_resource_id(furl ? furl : "");
+            if (rid[0]) {
+                if (filename[0]) snprintf(part, sizeof part, "[file:%s|ybres:%s]", filename, rid);
+                else snprintf(part, sizeof part, "[file|ybres:%s]", rid);
+            } else {
+                if (filename[0]) snprintf(part, sizeof part, "[file: %s]", filename);
+                else snprintf(part, sizeof part, "[file]");
+            }
+            free(rid);
+        } else if (strcmp(etype, "TIMSoundElem") == 0) {
+            const char *surl = json_get_str(content, "url", "");
+            char *rid = yb2_parse_resource_id(surl ? surl : "");
+            if (rid[0]) snprintf(part, sizeof part, "[voice|ybres:%s]", rid);
+            else snprintf(part, sizeof part, "[voice]");
+            free(rid);
+        } else if (strcmp(etype, "TIMVideoFileElem") == 0) {
+            const char *vurl = json_get_str(content, "url", "");
+            char *rid = yb2_parse_resource_id(vurl ? vurl : "");
+            if (rid[0]) snprintf(part, sizeof part, "[video|ybres:%s]", rid);
+            else snprintf(part, sizeof part, "[video]");
+            free(rid);
+        } else if (strcmp(etype, "TIMCustomElem") == 0) {
+            const char *data_val = json_get_str(content, "data", "");
+            if (data_val && data_val[0]) {
+                json_t *custom = json_parse(data_val, NULL);
+                if (!custom) {
+                    /* JSONDecodeError -> LIVE appends the raw data value */
+                    snprintf(part, sizeof part, "%s", data_val);
+                } else if (custom->type != JSON_OBJECT) {
+                    json_free(custom);
+                    snprintf(part, sizeof part, "[unsupported message type]");
+                } else {
+                    json_t *ctype_v = json_obj_get(custom, "elem_type");
+                    long ctype = (ctype_v && ctype_v->type == JSON_NUMBER)
+                                     ? (long)ctype_v->num_val : -1;
+                    if (ctype == 1002) {
+                        const char *t = json_get_str(custom, "text", "[mention]");
+                        snprintf(part, sizeof part, "%s", t ? t : "[mention]");
+                    } else if (ctype == 1010) {
+                        char *s = yb2_format_shared_link(custom);
+                        snprintf(part, sizeof part, "%s", s);
+                        free(s);
+                    } else if (ctype == 1007) {
+                        char *s = yb2_format_link_understanding(custom);
+                        if (s) snprintf(part, sizeof part, "%s", s);
+                        else snprintf(part, sizeof part, "[unsupported message type]");
+                        free(s);
+                    } else if (ctype == 1009) {
+                        const char *t = json_get_str(custom, "text", "[chat record]");
+                        snprintf(part, sizeof part, "%s", t ? t : "[chat record]");
+                    } else {
+                        snprintf(part, sizeof part, "[unsupported message type]");
+                    }
+                    json_free(custom);
+                }
+            } else {
+                snprintf(part, sizeof part, "[unsupported message type]");
+            }
+        } else if (strcmp(etype, "TIMFaceElem") == 0) {
+            const char *raw_data = json_get_str(content, "data", "");
+            char face_name[256] = "";
+            if (raw_data && raw_data[0]) {
+                json_t *fd = json_parse(raw_data, NULL);
+                if (fd && fd->type == JSON_OBJECT) {
+                    const char *n = json_get_str(fd, "name", "");
+                    if (n) { snprintf(face_name, sizeof face_name, "%s", n); }
+                }
+                if (fd) json_free(fd);
+            }
+            /* strip */
+            char *fn = face_name;
+            while (*fn == ' ' || *fn == '\t' || *fn == '\n' || *fn == '\r') fn++;
+            size_t fl = strlen(fn);
+            while (fl && strchr(" \t\n\r", fn[fl-1])) fn[--fl] = '\0';
+            memmove(face_name, fn, fl + 1);
+            if (face_name[0]) snprintf(part, sizeof part, "[emoji: %s]", face_name);
+            else snprintf(part, sizeof part, "[emoji]");
+        } else if (etype[0]) {
+            snprintf(part, sizeof part, "[%s]", etype);
+        }
+
+        if (part[0]) {
+            if (!first) fprintf(f, " ");
+            first = 0;
+            fprintf(f, "%s", part);
+        }
+    }
+    fclose(f);
+    json_free(body);
+    return out ? out : strdup("");
 }
 
 /* PoP: yb2_ws @ gateway/platforms/yuanbao.py:ws */

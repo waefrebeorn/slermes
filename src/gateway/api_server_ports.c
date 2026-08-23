@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -20,11 +21,347 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: aps_normalize_multimodal_content @ gateway/platforms/api_server.py:_normalize_multimodal_content */
+/* PoP: aps_normalize_multimodal_content @ gateway/platforms/api_server.py:_normalize_multimodal_content
+ *
+ * REAL implementation (replaces earlier passthrough stub). Mirrors LIVE:
+ *   - None -> ""
+ *   - str  -> truncated to MAX_NORMALIZED_TEXT_LENGTH
+ *   - list of parts -> text parts kept, image parts validated (http(s) or
+ *     data:image/ URLs), file parts and unknown types rejected.
+ *   - non-list non-str scalars fall back to _normalize_chat_content.
+ * Returns a malloc'd JSON serialization of the normalized content; invalid
+ * input returns {"error": "<code>:<message>"} (LIVE raises ValueError with
+ * the same "code:message" string).
+ */
+#define APS_MAX_NORMALIZED_TEXT_LENGTH 65536
+#define APS_MAX_CONTENT_LIST_SIZE 1000
+
+static const char *const APS_TEXT_PART_TYPES[] = {"text", "input_text", "output_text", NULL};
+static const char *const APS_IMAGE_PART_TYPES[] = {"image_url", "input_image", NULL};
+static const char *const APS_FILE_PART_TYPES[] = {"file", "input_file", NULL};
+
+static bool aps_type_in(const char *const *types, const char *s) {
+    for (int i = 0; types[i]; i++)
+        if (strcmp(types[i], s) == 0) return true;
+    return false;
+}
+
+/* Python str() of a scalar JSON value (fallback path of _normalize_chat_content). */
+static char *aps_py_str(const json_t *v) {
+    char buf[64];
+    if (!v || v->type == JSON_NULL) return strdup("None");
+    if (v->type == JSON_BOOL) return strdup(v->bool_val ? "True" : "False");
+    if (v->type == JSON_NUMBER) {
+        double d = v->num_val;
+        if (d == (double)(long long)d && d > -1e15 && d < 1e15)
+            snprintf(buf, sizeof buf, "%lld", (long long)d);
+        else
+            snprintf(buf, sizeof buf, "%.17g", d);
+        return strdup(buf);
+    }
+    if (v->type == JSON_STRING) return strdup(v->str_val ? v->str_val : "");
+    return NULL;
+}
+
+static char *aps_truncate(const char *s) {
+    size_t n = strlen(s);
+    if (n <= (size_t)APS_MAX_NORMALIZED_TEXT_LENGTH) return strdup(s);
+    return strndup(s, (size_t)APS_MAX_NORMALIZED_TEXT_LENGTH);
+}
+
+/* Port of gateway/platforms/api_server.py:_normalize_chat_content (depth-bounded). */
+char *aps_normalize_chat_content(const json_t *content, int depth);
+
+char *aps_normalize_chat_content(const json_t *content, int depth) {
+    if (depth > 10) return strdup("");
+    if (!content || content->type == JSON_NULL) return strdup("");
+    if (content->type == JSON_STRING) return aps_truncate(content->str_val);
+    if (content->type == JSON_ARRAY) {
+        char **parts = calloc(content->c.count + 1, sizeof(char *));
+        size_t nparts = 0, total_len = 0;
+        size_t n = content->c.count;
+        if (n > (size_t)APS_MAX_CONTENT_LIST_SIZE) n = (size_t)APS_MAX_CONTENT_LIST_SIZE;
+        for (size_t i = 0; i < n; i++) {
+            json_t *item = content->c.items[i];
+            if (item && item->type == JSON_STRING) {
+                if (item->str_val && item->str_val[0]) {
+                    char *part = aps_truncate(item->str_val);
+                    parts[nparts++] = part;
+                    total_len += strlen(part);
+                }
+            } else if (item && item->type == JSON_OBJECT) {
+                json_t *t = json_obj_get(item, "type");
+                char tbuf[128] = "";
+                if (t && t->type == JSON_STRING) {
+                    snprintf(tbuf, sizeof tbuf, "%s", t->str_val);
+                    for (char *p = tbuf; *p; p++) *p = (char)tolower((unsigned char)*p);
+                }
+                if (aps_type_in(APS_TEXT_PART_TYPES, tbuf)) {
+                    json_t *text = json_obj_get(item, "text");
+                    /* Python: text = item.get("text",""); if text: */
+                    int truthy = 0;
+                    if (text) {
+                        switch (text->type) {
+                        case JSON_NULL: truthy = 0; break;
+                        case JSON_BOOL: truthy = text->bool_val; break;
+                        case JSON_NUMBER: truthy = text->num_val != 0.0; break;
+                        case JSON_STRING: truthy = text->str_val[0] != '\0'; break;
+                        default: truthy = text->c.count > 0; break;
+                        }
+                    }
+                    if (truthy) {
+                        char *s = text->type == JSON_STRING ? strdup(text->str_val)
+                                                            : aps_py_str(text);
+                        if (s) {
+                            char *part = aps_truncate(s);
+                            free(s);
+                            parts[nparts++] = part;
+                            total_len += strlen(part);
+                        }
+                    }
+                }
+                /* image_url / other non-text parts silently skipped */
+            } else if (item && item->type == JSON_ARRAY) {
+                char *nested = aps_normalize_chat_content(item, depth + 1);
+                if (nested && nested[0]) {
+                    parts[nparts++] = nested;
+                    total_len += strlen(nested);
+                } else free(nested);
+            }
+            if (total_len >= (size_t)APS_MAX_NORMALIZED_TEXT_LENGTH) break;
+        }
+        /* join "\n" then truncate to cap */
+        size_t cap = (size_t)APS_MAX_NORMALIZED_TEXT_LENGTH;
+        char *out = malloc(total_len + 1 + nparts + 1);
+        size_t w = 0;
+        for (size_t i = 0; i < nparts; i++) {
+            if (i) out[w++] = '\n';
+            size_t l = strlen(parts[i]);
+            if (w + l > cap) { memcpy(out + w, parts[i], cap - w); w = cap; break; }
+            memcpy(out + w, parts[i], l);
+            w += l;
+        }
+        out[w] = '\0';
+        for (size_t i = 0; i < nparts; i++) free(parts[i]);
+        free(parts);
+        return out;
+    }
+    /* Fallback: unexpected scalar types */
+    char *s = aps_py_str(content);
+    if (!s) return strdup("");
+    char *out = aps_truncate(s);
+    free(s);
+    return out;
+}
+
+/* Serialize the normalized result to a malloc'd JSON string. On validation
+ * failure returns {"error": "<code>:<message>"}. */
 char *aps_normalize_multimodal_content(const char *content_json) {
     if (!content_json) return NULL;
-    printf("multimodal content normalized\n");
-    return strdup(content_json);
+    json_t *content = json_parse(content_json, NULL);
+    if (!content) return strdup("{\"error\": \"invalid_content_part:Content must be valid JSON.\"}");
+
+    json_t *result = NULL;   /* owned */
+    const char *verr = NULL; /* ValueError message when set */
+
+    if (content->type == JSON_NULL) {
+        result = json_string("");
+    } else if (content->type == JSON_STRING) {
+        char *t = aps_truncate(content->str_val);
+        result = json_string(t);
+        free(t);
+    } else if (content->type != JSON_ARRAY) {
+        char *flat = aps_normalize_chat_content(content, 0);
+        result = json_string(flat);
+        free(flat);
+    } else {
+        size_t n = content->c.count;
+        if (n > (size_t)APS_MAX_CONTENT_LIST_SIZE) n = (size_t)APS_MAX_CONTENT_LIST_SIZE;
+        result = json_object();
+        json_t *parts = json_array();
+        for (size_t i = 0; i < n && !verr; i++) {
+            json_t *part = content->c.items[i];
+            if (part && part->type == JSON_STRING) {
+                if (part->str_val && part->str_val[0]) {
+                    char *trimmed = aps_truncate(part->str_val);
+                    json_t *tp = json_object();
+                    json_set(tp, "type", json_string("text"));
+                    json_set(tp, "text", json_string(trimmed));
+                    json_append(parts, tp);
+                    free(trimmed);
+                }
+                continue;
+            }
+            if (!part || part->type != JSON_OBJECT) continue; /* unknown scalars ignored */
+
+            json_t *raw_type = json_obj_get(part, "type");
+            char ptype[128] = "";
+            if (raw_type && raw_type->type == JSON_STRING) {
+                snprintf(ptype, sizeof ptype, "%s", raw_type->str_val);
+                for (char *p = ptype; *p; p++) *p = (char)tolower((unsigned char)*p);
+            }
+
+            if (aps_type_in(APS_TEXT_PART_TYPES, ptype)) {
+                json_t *text = json_obj_get(part, "text");
+                if (!text || text->type == JSON_NULL) continue;
+                char *ts = NULL;
+                if (text->type == JSON_STRING) ts = strdup(text->str_val);
+                else ts = aps_py_str(text);
+                if (!ts) continue;
+                if (!ts[0]) { free(ts); continue; }
+                char *trimmed = aps_truncate(ts);
+                free(ts);
+                json_t *tp = json_object();
+                json_set(tp, "type", json_string("text"));
+                json_set(tp, "text", json_string(trimmed));
+                json_append(parts, tp);
+                free(trimmed);
+                continue;
+            }
+
+            if (aps_type_in(APS_IMAGE_PART_TYPES, ptype)) {
+                json_t *detail_v = json_obj_get(part, "detail");
+                char detail[256] = "";
+                int have_detail = 0;
+                json_t *url_value = NULL;
+                json_t *image_ref = json_obj_get(part, "image_url");
+                if (image_ref && image_ref->type == JSON_OBJECT) {
+                    url_value = json_obj_get(image_ref, "url");
+                    json_t *d2 = json_obj_get(image_ref, "detail");
+                    if (d2) { detail_v = d2; }
+                } else {
+                    url_value = image_ref;
+                }
+                if (detail_v && detail_v->type == JSON_STRING) {
+                    snprintf(detail, sizeof detail, "%s", detail_v->str_val);
+                    have_detail = 1;
+                } else if (detail_v && detail_v->type != JSON_NULL) {
+                    have_detail = 1; /* non-string, non-null -> error below */
+                }
+                if (!url_value || url_value->type != JSON_STRING || !url_value->str_val[0]) {
+                    verr = "invalid_image_url:Image parts must include a non-empty image URL.";
+                    break;
+                }
+                /* trim whitespace */
+                const char *us = url_value->str_val;
+                while (*us == ' ' || *us == '\t' || *us == '\n' || *us == '\r') us++;
+                size_t ul = strlen(us);
+                while (ul > 0 && (us[ul-1]==' '||us[ul-1]=='\t'||us[ul-1]=='\n'||us[ul-1]=='\r')) ul--;
+                char *u = strndup(us, ul);
+                char lowered[2048];
+                snprintf(lowered, sizeof lowered, "%s", u);
+                for (char *p = lowered; *p; p++) *p = (char)tolower((unsigned char)*p);
+                if (strncmp(lowered, "data:", 5) == 0) {
+                    if (strncmp(lowered, "data:image/", 11) != 0 || !strchr(u, ',')) {
+                        free(u);
+                        verr = "unsupported_content_type:Only image data URLs are supported. Non-image data payloads are not supported.";
+                        break;
+                    }
+                } else if (strncmp(lowered, "http://", 7) != 0 && strncmp(lowered, "https://", 8) != 0) {
+                    free(u);
+                    verr = "invalid_image_url:Image inputs must use http(s) URLs or data:image/... URLs.";
+                    break;
+                }
+                json_t *ipart = json_object();
+                json_set(ipart, "type", json_string("image_url"));
+                json_t *iu = json_object();
+                json_set(iu, "url", json_string(u));
+                free(u);
+                if (have_detail) {
+                    if (!detail[0] || strspn(detail, " \t\n\r") == strlen(detail)) {
+                        json_free(ipart); json_free(iu); json_free(parts); json_free(result);
+                        char *emsg = NULL;
+                        asprintf(&emsg, "{\"error\": \"%s\"}",
+                                 "invalid_content_part:Image detail must be a non-empty string when provided.");
+                        json_free(content);
+                        return emsg;
+                    }
+                    char *dtrim = detail + strspn(detail, " \t\n\r");
+                    size_t dl = strlen(dtrim);
+                    while (dl > 0 && (dtrim[dl-1]==' '||dtrim[dl-1]=='\t'||dtrim[dl-1]=='\n'||dtrim[dl-1]=='\r')) dl--;
+                    char *dc = strndup(dtrim, dl);
+                    json_set(iu, "detail", json_string(dc));
+                    free(dc);
+                }
+                json_set(ipart, "image_url", iu);
+                json_append(parts, ipart);
+                continue;
+            }
+
+            if (aps_type_in(APS_FILE_PART_TYPES, ptype)) {
+                verr = "unsupported_content_type:Inline image inputs are supported, but uploaded files and document inputs are not supported on this endpoint.";
+                break;
+            }
+
+            {
+                char *msg = NULL;
+                char *raw_s = aps_py_str(raw_type ? (json_t *)raw_type : NULL);
+                /* Python repr of the raw type: strings get quotes */
+                char rbuf[256];
+                if (raw_type && raw_type->type == JSON_STRING)
+                    snprintf(rbuf, sizeof rbuf, "'%s'", raw_type->str_val);
+                else
+                    snprintf(rbuf, sizeof rbuf, "%s", raw_s ? raw_s : "None");
+                free(raw_s);
+                asprintf(&msg,
+                         "unsupported_content_type:Unsupported content part type %s. Only text and image_url/input_image parts are supported.",
+                         rbuf);
+                verr = msg;
+                break;
+            }
+        }
+
+        if (verr) {
+            char *emsg = NULL;
+            asprintf(&emsg, "{\"error\": \"%s\"}", verr);
+            json_free(result);
+            json_free(parts);
+            json_free(content);
+            return emsg;
+        }
+        if (json_len(parts) == 0) {
+            json_free(parts);
+            json_free(result);
+            result = json_string("");
+        } else {
+            int all_text = 1;
+            for (size_t i = 0; i < json_len(parts); i++) {
+                json_t *p = json_get(parts, i);
+                json_t *t = json_obj_get(p, "type");
+                if (!t || t->type != JSON_STRING || strcmp(t->str_val, "text") != 0) all_text = 0;
+            }
+            if (all_text) {
+                char *joined = NULL;
+                size_t cap = 0;
+                for (size_t i = 0; i < json_len(parts); i++)
+                    cap += strlen(json_string_value(json_obj_get(json_get(parts, i), "text"))) + 1;
+                joined = malloc(cap + 1);
+                size_t w = 0;
+                for (size_t i = 0; i < json_len(parts); i++) {
+                    if (i) joined[w++] = '\n';
+                    const char *tx = json_string_value(json_obj_get(json_get(parts, i), "text"));
+                    size_t l = strlen(tx);
+                    memcpy(joined + w, tx, l);
+                    w += l;
+                }
+                joined[w] = '\0';
+                json_free(parts);
+                json_free(result);
+                result = json_string(joined);
+                free(joined);
+            } else {
+                json_free(result);
+                result = parts;
+            }
+        }
+    }
+
+{
+        char *out = json_serialize(result);
+        json_free(result);
+        json_free(content);
+        return out ? out : strdup("null");
+    }
 }
 
 /* PoP: aps_notify_cron_provider_jobs_changed @ gateway/platforms/api_server.py:_notify_cron_provider_jobs_changed */
