@@ -1,0 +1,24 @@
+{
+  "name": "errorclassifier_402",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "errorclassifier_402",
+  "py_module": "agent/error_classifier.py",
+  "py_fn": "_classify_402",
+  "inputs": [
+    "usage limit exceeded, try again in 5 minutes",
+    "you have used all your quota, resets at midnight utc",
+    "usage limit exceeded",
+    "try again later",
+    "resets at the top of the hour",
+    "insufficient credits in your account balance",
+    "payment required for this model",
+    "your plan does not include this endpoint",
+    "",
+    "some completely unrelated provider error text",
+    "quota window exhausted, wait a moment and retry",
+    "key limit exceeded — requests remaining: 0"
+  ],
+  "notes": "402 disambiguation ladder (billing vs transient usage-limit) — C lib/liberrorclassifier/error_classifier.c::classify_402 vs LIVE agent/error_classifier.py::_classify_402. Inputs are pre-lowercased because LIVE lowercases error_msg upstream of this helper."
+}
