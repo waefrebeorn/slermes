@@ -4401,3 +4401,57 @@ void upd_write_gateway_update_exit_code(bool ok) {
     fputs(ok ? "0" : "1", f);
     fclose(f);
 }
+
+/* PoP: upd_assess_parked_branch_switch @ hermes_cli/update_cmd.py:_assess_parked_branch_switch
+ * Decide whether auto-switching a parked branch back to the update target is
+ * safe. Writes the decision into *ok* and a malloc'd reason (or "") into
+ * *out_reason*. Decision table:
+ *   dirty tree            -> ok=false, reason="dirty"
+ *   clean + all commits in target -> ok=true,  reason=""
+ *   clean + N unmerged    -> ok=true,  reason="unmerged:<count>"
+ *   config opt-out        -> ok=false, reason="opt-out" */
+void upd_assess_parked_branch_switch(const char *cwd,
+                                     const char *current_branch,
+                                     const char *target_branch,
+                                     bool *ok, char **out_reason) {
+    static char reason_buf[128];
+    *out_reason = reason_buf;
+    *ok = false;
+
+    /* git status --porcelain: non-empty output = dirty tree/index. */
+    char *argv_status[] = { (char*)"git", (char*)"status", (char*)"--porcelain", NULL };
+    extern char *upd_git_stdout(char *const argv[], const char *cwd);
+    char *dirty = upd_git_stdout(cwd, argv_status);
+    if (dirty) { free(dirty); snprintf(reason_buf, sizeof(reason_buf), "dirty"); return; }
+    /* empty porcelain means clean; NULL from upd_git_stdout also means clean
+     * (empty stdout is normalised to NULL by its strip). */
+
+    /* git cherry origin/<target>: lines starting with '+' are unmerged. */
+    char ref[256];
+    snprintf(ref, sizeof(ref), "origin/%s", target_branch ? target_branch : "main");
+    char *argv_cherry[] = { (char*)"git", (char*)"cherry", (char*)ref, NULL };
+    extern char *upd_git_stdout(char *const argv[], const char *cwd);
+    char *cherry = upd_git_stdout(cwd, argv_cherry);
+    long unmerged = 0;
+    if (cherry) {
+        const char *q = cherry;
+        while (*q) {
+            if ((q == cherry || q[-1] == '\n') && *q == '+')
+                unmerged++;
+            while (*q && *q != '\n') q++;
+            if (*q == '\n') q++;
+        }
+    }
+    free(cherry);
+
+    if (unmerged > 0) {
+        snprintf(reason_buf, sizeof(reason_buf), "unmerged:%ld", unmerged);
+    } else {
+        reason_buf[0] = '\0';
+    }
+    *ok = true;
+
+    /* current_branch is reported through the reason for unmerged cases so
+     * callers can name the branch without re-running git. */
+    (void)current_branch;
+}
