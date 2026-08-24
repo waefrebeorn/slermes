@@ -447,3 +447,30 @@ char *aps_init(long max_size, const char *db_path) {
     }
     return out;
 }
+
+/* ── request-string / compaction-carrier helpers (v706l parity batch) ── */
+
+extern json_t *hermes_json_get(const json_t *obj, const char *key);
+extern bool context_compressor_is_compaction_summary_message(const void *message);
+
+/* PoP: apis_clean_request_string @ gateway/platforms/api_server.py:_clean_request_string */
+char *apis_clean_request_string(const char *value) {
+    /* Stripped request string, or NULL for absent/non-string values
+     * (represented here as NULL input or empty-after-strip). */
+    if (!value) return NULL;
+    const char *b = value;
+    while (*b == ' ' || *b == '\t' || *b == '\n' || *b == '\r') b++;
+    if (!*b) return NULL;
+    const char *e = b + strlen(b);
+    while (e > b && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
+    return strndup(b, (size_t)(e - b));
+}
+
+/* PoP: apis_is_compressed_summary_message @ gateway/platforms/api_server.py:_is_compressed_summary_message */
+bool apis_is_compressed_summary_message(const void *message) {
+    /* Recognize every model-side compaction carrier shape via the shared
+     * compressor content classifier (SessionDB drops the in-process marker). */
+    if (!message) return false;
+    extern int context_compressor__is_compaction_summary_message(const void *msg);
+    return context_compressor__is_compaction_summary_message(message) != 0;
+}
