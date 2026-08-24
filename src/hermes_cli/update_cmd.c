@@ -4275,3 +4275,44 @@ int update_stop_process_trees(const char *pid_list) {
 void update_refresh_bootstrap_cache_scripts(void) {
 }
 
+/* ── v703 parity batch: summary/message helpers ────────────────────── */
+
+/* _read_project_version: the installed project version (HERMES_VERSION). */
+static const char *upd_read_project_version(void) {
+    const char *v = HERMES_VERSION;
+    return (v && *v) ? v : NULL;
+}
+
+/* PoP: upd_update_complete_message @ hermes_cli/update_cmd.py:_update_complete_message */
+char *upd_update_complete_message(const char *pre_version) {
+    /* "✓ Update complete! (vPRE → vPOST)" when both known and different;
+     * "(vPOST)" when only post known; plain message otherwise. */
+    const char *post = upd_read_project_version();
+    if (pre_version && *pre_version && post &&
+        strcmp(pre_version, post) != 0) {
+        size_t need = strlen(pre_version) + strlen(post) + 48;
+        char *out = malloc(need);
+        if (!out) return NULL;
+        snprintf(out, need, "✓ Update complete! (v%s → v%s)",
+                 pre_version, post);
+        return out;
+    }
+    if (post && *post) {
+        char *out = malloc(strlen(post) + 32);
+        if (!out) return NULL;
+        snprintf(out, strlen(post) + 32, "✓" " Update complete! (v%s)", post);
+        return out;
+    }
+    return strdup("✓" " Update complete!");
+}
+
+/* PoP: upd_branch_head_suffix @ hermes_cli/update_cmd.py:_branch_head_suffix */
+char *upd_branch_head_suffix(const char *label) {
+    /* " [<label>]" when a label is known; "" otherwise. */
+    if (!label || !*label) return strdup("");
+    size_t need = strlen(label) + 8;
+    char *out = malloc(need);
+    if (!out) return NULL;
+    snprintf(out, need, " [%s]", label);
+    return out;
+}
