@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T12:33:45Z from `live_parity_scan.json` by `make parity-walkway`. **2,177 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T13:04:22Z from `live_parity_scan.json` by `make parity-walkway`. **2,171 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -1316,18 +1316,14 @@
 - _migrate_to_37 (function)
 - _migrate_to_38 (function)
 
-### hermes_cli/console_engine.py (51 gaps)
+### hermes_cli/console_engine.py (47 gaps)
 
 - _capture_output (function)
 - _strip_console_status_footer (function)
-- _table_summary (function)
 - _split_line (function)
-- _format_sessions (function)
-- _format_job (function)
 - _parser_root (function)
 - _subparser_actions (function)
 - _choice_help (function)
-- _clean_summary (function)
 - _summaries_from_parser (function)
 - _noop_console_command (function)
 - _extracted_summaries (function)
@@ -1523,14 +1519,12 @@
 - _anthropic_oauth_credentials_present (function)
 - _provider_is_keyless (function)
 
-### hermes_cli/kanban.py (56 gaps)
+### hermes_cli/kanban.py (54 gaps)
 
 - _check_dispatcher_presence (function)
 - build_parser (function)
 - _is_delegated_child_cli_mutation (function)
 - _dispatch_boards (function)
-- _board_task_counts (function)
-- _cmd_boards_list (function)
 - _cmd_boards_create (function)
 - _cmd_boards_rm (function)
 - _cmd_boards_switch (function)
