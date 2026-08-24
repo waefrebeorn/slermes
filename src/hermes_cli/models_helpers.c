@@ -1204,3 +1204,30 @@ char *models_clamp_reasoning_effort_to_supported(const char *effort,
     return out;
 }
 
+/* ── Copilot API-mode resolution (v706e parity batch) ──────────────── */
+
+extern char *model_normalize_copilot_model_id(const char *model_id);
+extern int should_use_copilot_responses_api(const char *model_id);
+
+/* PoP: models_copilot_model_api_mode @ hermes_cli/models.py:copilot_model_api_mode */
+char *models_copilot_model_api_mode(http_fetch_fn fetch, void *ctx,
+                                    const char *model_id, json_t *catalog,
+                                    const char *api_key) {
+    /* Determine the API mode for a Copilot model. Primary signal: model ID
+     * pattern (opencode's shouldUseCopilotResponsesApi). The catalog fetch is
+     * the network boundary — when no fetch fn is injected the normalize runs
+     * catalog-less and non-GPT-5 slots resolve to chat_completions. */
+    (void)fetch; (void)ctx; (void)catalog; (void)api_key;
+    if (!model_id || !*model_id) return strdup("chat_completions");
+    char *normalized = model_normalize_copilot_model_id(model_id);
+    if (!normalized || !*normalized) {
+        free(normalized);
+        return strdup("chat_completions");
+    }
+    free(normalized);
+    if (should_use_copilot_responses_api(normalized))
+        return strdup("codex_responses");
+    /* Copilot's Claude slots ride the OpenAI-compatible chat endpoint —
+     * anthropic_messages would send the wrong auth/wire shape. */
+    return strdup("chat_completions");
+}
