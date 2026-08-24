@@ -4312,3 +4312,31 @@ bool hermes_state_in_test_context(void) {
     hs_in_test_context_memo = r ? 1 : 0;
     return r;
 }
+
+/* PoP: hermes_state_resolve_journal_mode @ hermes_state.py:resolve_journal_mode */
+const char *hermes_state_resolve_journal_mode(void) {
+    /* database.journal_mode in config: "wal" (default) or "delete". Invalid
+     * or malformed values fail safely to "wal". */
+    extern json_t *config_py_load_config_readonly(void);
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg || !json_is_object(cfg)) { if (cfg) json_free(cfg); return "wal"; }
+    const json_t *db = json_obj_get(cfg, "database");
+    const char *raw = NULL;
+    if (db && json_is_object(db)) {
+        const json_t *jm = json_obj_get(db, "journal_mode");
+        if (jm && json_is_string(jm)) raw = json_string_value(jm);
+    }
+    char mode[32] = "wal";
+    if (raw && *raw) {
+        size_t k = 0;
+        for (const char *q = raw; *q && k < sizeof(mode) - 1; q++)
+            mode[k++] = (char)tolower((unsigned char)*q);
+        mode[k] = '\0';
+    } else {
+        strcpy(mode, "wal");   /* missing key defaults to wal */
+    }
+    json_free(cfg);
+    if (strcmp(mode, "wal") == 0 || strcmp(mode, "delete") == 0)
+        return (strcmp(mode, "wal") == 0) ? "wal" : "delete";
+    return "wal";
+}
