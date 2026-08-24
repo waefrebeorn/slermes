@@ -4340,3 +4340,11 @@ const char *hermes_state_resolve_journal_mode(void) {
         return (strcmp(mode, "wal") == 0) ? "wal" : "delete";
     return "wal";
 }
+
+/* PoP: hermes_state_repair_backup_headroom_bytes @ hermes_state.py:_repair_backup_headroom_bytes */
+double hermes_state_repair_backup_headroom_bytes(double total_bytes) {
+    /* Free space required beyond the copy: 256 MiB floor + 2% of volume. */
+    const double MIN_FREE = 256.0 * 1024.0 * 1024.0;
+    double frac = total_bytes * 0.02;
+    return (frac > MIN_FREE) ? frac : MIN_FREE;   /* Python max(a,b): a unless b>a */
+}
