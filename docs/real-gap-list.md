@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T16:18:48Z from `live_parity_scan.json` by `make parity-walkway`. **2,093 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T16:34:26Z from `live_parity_scan.json` by `make parity-walkway`. **2,087 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -2247,22 +2247,17 @@
 
 - remove_windows_bin_launchers (function)
 
-### hermes_cli/update_cmd.py (51 gaps)
+### hermes_cli/update_cmd.py (46 gaps)
 
 - _purge_stale_hermes_modules (function)
 - _migrate_sibling_profile_configs (function)
-- _editable_install_is_current (function)
-- _web_build_toolchain_ready (function)
 - _reload_process_scan_modules (function)
-- _assess_parked_branch_switch (function)
 - _called_process_error_cmd_parts (function)
 - _called_process_error_is_git (function)
 - _called_process_error_is_python_dep_install (function)
 - _format_update_failure_stage (function)
 - _shim_quarantine_error_type (function)
-- _refuse_update_for_contended_shims (function)
 - _should_zip_fallback_on_update_error (function)
-- _zip_overlay_block_reason (function)
 - _abort_zip_update_if_dirty_tree (function)
 - _read_project_version (function)
 - _park_stashed_changes (function)
@@ -2382,14 +2377,13 @@
 - find_retired_xai_refs (function)
 - apply_migration (function)
 
-### hermes_state.py (58 gaps)
+### hermes_state.py (57 gaps)
 
 - _apply_wal_size_limit (function)
 - is_malformed_schema_error (function)
 - _cross_process_repair_lock (function)
 - _bump_schema_cookie (function)
 - _mask_volatile_header (function)
-- _repair_failure_consumes_attempt (function)
 - _db_fingerprint (function)
 - _backup_content_identity (function)
 - _record_repair_outcome (function)
