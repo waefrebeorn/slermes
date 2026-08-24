@@ -223,10 +223,28 @@ def compute():
     else:
         phase = "PORT"
 
+    # Bulletproof coercion: every numeric field MUST be int/float before it
+    # reaches any format string ("Cannot specify ',' with 's'" = a str leaked
+    # through; observed intermittently when the scanner round-trips a value
+    # as a JSON string mid-write). Fail loud with the offending key.
+    def _strict_int(key, v):
+        try:
+            return int(v)
+        except (TypeError, ValueError):
+            raise SystemExit(f"parity-walkway: non-numeric {key}={v!r} ({type(v).__name__}) "
+                             "from live_parity_scan.json — rerun scripts/parity_truth.py")
+    ported = _strict_int('ported', ported)
+    real = _strict_int('real', real)
+    partial = _strict_int('partial', partial)
+    total = _strict_int('total', total)
+    da4 = _strict_int('da4', da4)
+    genuine = _strict_int('genuine', genuine)
+
     return dict(ported=ported, real=real, partial=partial, total=total,
-                pct=pct, bootleg=bootleg, ahead=ahead, behind=behind,
+                pct=pct, bootleg=bootleg if bootleg is None else int(bootleg),
+                ahead=int(ahead), behind=int(behind),
                 last_merge=last_merge, phase=phase, version=current_version(),
-                stamp=doc.get("_generated_at", "unknown-time"),
+                stamp=str(doc.get("_generated_at", "unknown-time")),
                 da4=da4, genuine=genuine)
 
 

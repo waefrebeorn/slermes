@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T10:12:54Z from `live_parity_scan.json` by `make parity-walkway`. **2,241 REAL_GAP across 284 modules** (of 16,592 total functions).
+> Generated 2026-08-24T11:38:20Z from `live_parity_scan.json` by `make parity-walkway`. **2,232 REAL_GAP across 281 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -81,17 +81,19 @@
 - _resolve_direct_stale_timeout (function)
 - _inline_nonstream_hard_timeout (function)
 
-### agent/codex_runtime.py (3 gaps)
+### agent/codex_runtime.py (5 gaps)
 
 - _codex_request_failure_details (function)
 - _log_codex_request_failure (function)
 - _sanitize_consumer_codex_request (function)
+- _is_plain_json_data (function)
+- _bypass_sdk_request_transform (function)
 
 ### agent/coding_context.py (1 gaps)
 
 - build_coding_workspace_block (function)
 
-### agent/context_compressor.py (19 gaps)
+### agent/context_compressor.py (24 gaps)
 
 - _is_hygiene_idle_timeout_error (function)
 - _looks_like_compaction_summary (function)
@@ -112,6 +114,11 @@
 - ContextCompressor._build_chunk_digests (method)
 - ContextCompressor._augment_summary_lean (method)
 - ContextCompressor._tool_call_id_variants (method)
+- _handoff_only_content (function)
+- split_user_originated_turn (function)
+- user_originated_turn_view (function)
+- history_before_user_originated_turn (function)
+- retryable_user_text (function)
 
 ### agent/context_references.py (4 gaps)
 
@@ -215,8 +222,10 @@
 
 - slot_metrics (function)
 
-### agent/model_metadata.py (5 gaps)
+### agent/model_metadata.py (7 gaps)
 
+- _extract_flat_context_length (function)
+- _context_length_from_model_payload (function)
 - _stale_pre_catalog_cache_entry (function)
 - _model_name_suggests_minimax (function)
 - _model_name_suggests_stale_32k_underreport (function)
@@ -345,10 +354,8 @@
 
 - get_source_environment (function)
 
-### agent/secret_sources/registry.py (3 gaps)
+### agent/secret_sources/registry.py (1 gaps)
 
-- snapshot_registration (function)
-- restore_registration (function)
 - list_plugin_sources (function)
 
 ### agent/skill_utils.py (5 gaps)
@@ -478,27 +485,15 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (289 gaps)
+### cli.py (278 gaps)
 
 - _reverse_alias_for_display (function)
-- _load_prefill_messages (function)
-- _resolve_prefill_messages_file (function)
-- _parse_reasoning_config (function)
-- _parse_service_tier_config (function)
-- load_cli_config (function)
-- _AsyncHttpxDelNeuter.find_spec (method)
-- AIAgent (function)
 - get_tool_definitions (function)
 - get_toolset_for_tool (function)
 - get_all_toolsets (function)
 - get_toolset_info (function)
-- validate_toolset (function)
-- _sync_process_session_id (function)
 - get_job (function)
 - _cleanup_all_terminals (function)
-- set_sudo_password_callback (function)
-- set_approval_callback (function)
-- set_secret_capture_callback (function)
 - _cleanup_all_browsers (function)
 - _mark_tui_input_modes_active (function)
 - _prepare_deferred_agent_startup (function)
@@ -649,6 +644,7 @@
 - HermesCLI.new_session (method)
 - HermesCLI._consume_pending_resume_selection (method)
 - HermesCLI.save_conversation (method)
+- HermesCLI._rewind_persisted_user_turn (method)
 - HermesCLI.retry_last (method)
 - HermesCLI.undo_last (method)
 - HermesCLI._undo_content_to_text (method)
@@ -775,9 +771,10 @@
 - BlueprintSlot.__post_init__ (method)
 - get_blueprint (function)
 
-### cron/jobs.py (12 gaps)
+### cron/jobs.py (13 gaps)
 
 - _fire_job_lock (function)
+- job_payload_is_empty (function)
 - _job_is_stale_error_recurring (function)
 - _schedule_cadence_seconds (function)
 - _record_persisted_error_recovery (function)
@@ -806,7 +803,7 @@
 - _references_at (function)
 - _has_binary_magic (function)
 
-### cron/scheduler.py (28 gaps)
+### cron/scheduler.py (29 gaps)
 
 - _close_late_session_db_result (function)
 - _failure_streak_nudge (function)
@@ -828,6 +825,7 @@
 - _terminate_cron_script_process (function)
 - _drain_script_pipes (function)
 - _windows_cron_bootstrap_argv (function)
+- _block_and_pause_job (function)
 - _is_transient_provider_resolve_error (function)
 - _cron_preflight_enabled (function)
 - _cron_cleanup_timeout_seconds (function)
@@ -866,8 +864,9 @@
 
 - apply_media_policy_env (function)
 
-### gateway/pairing.py (2 gaps)
+### gateway/pairing.py (3 gaps)
 
+- _default_pairing_dir (function)
 - _iter_live_gateway_adapters (function)
 - _secure_write (function)
 
@@ -995,6 +994,10 @@
 - async BasePlatformAdapter._bounded_history_media_paths_for_session (method)
 - BasePlatformAdapter.toolsets_for_source (method)
 
+### gateway/platforms/signal.py (1 gaps)
+
+- _sig_secret (function)
+
 ### gateway/platforms/webhook.py (1 gaps)
 
 - WebhookAdapter.toolsets_for_source (method)
@@ -1003,8 +1006,9 @@
 
 - async WeixinAdapter._recycle_poll_session (method)
 
-### gateway/platforms/yuanbao.py (2 gaps)
+### gateway/platforms/yuanbao.py (3 gaps)
 
+- _yb_secret (function)
 - async MessageSender.send_text (method)
 - async OutboundManager.send_text (method)
 
@@ -1041,7 +1045,7 @@
 - parse_cron_drain_timeout (function)
 - resolve_cron_drain_budget (function)
 
-### gateway/run.py (15 gaps)
+### gateway/run.py (17 gaps)
 
 - _interim_metadata (function)
 - _approval_send_outcome (function)
@@ -1058,13 +1062,15 @@
 - GatewayRunner._on_reconnect_watcher_gave_up (method)
 - GatewayRunner._schedule_slow_reconnect_watcher_respawn (method)
 - GatewayRunner._spawn_reconnect_watcher (method)
+- _replace_target_belongs_to_other_profile (function)
+- _looks_like_profile_conflict_from_cmdline (function)
 
 ### gateway/scale_to_zero.py (2 gaps)
 
 - self_suspend_available (function)
 - suspend_self (function)
 
-### gateway/session.py (8 gaps)
+### gateway/session.py (9 gaps)
 
 - auto_continue_freshness_window (function)
 - SessionStore._open_session_db_for_active_scope (method)
@@ -1074,6 +1080,7 @@
 - SessionStore._routing_scope (method)
 - SessionStore._reconcile_recovered_routing_locked (method)
 - SessionStore.lookup_by_session_key (method)
+- SessionStore._get_transcript_drain_lock (method)
 
 ### gateway/session_db_recovery.py (4 gaps)
 
@@ -1136,8 +1143,9 @@
 - _write_user_path_raw (function)
 - migrate_windows_bin_path (function)
 
-### hermes_cli/_parser.py (1 gaps)
+### hermes_cli/_parser.py (2 gaps)
 
+- top_level_value_flag_sets (function)
 - build_top_level_parser (function)
 
 ### hermes_cli/_scan_venv_blockers.py (4 gaps)
@@ -1185,11 +1193,13 @@
 - evaluate_command (function)
 - approvals_test_command (function)
 
-### hermes_cli/auth.py (10 gaps)
+### hermes_cli/auth.py (12 gaps)
 
 - _LazyHttpx.__getattr__ (method)
 - _LazyHttpx.__setattr__ (method)
 - _LazyHttpx.__delattr__ (method)
+- _secret_matches_declared_prefix (function)
+- _warn_malformed_secret (function)
 - _parse_retry_after_seconds (function)
 - _scope_values (function)
 - _spotify_scope_list (function)
@@ -1222,10 +1232,9 @@
 - restore_cron_jobs_all_profiles (function)
 - _prune_pre_update_backups (function)
 
-### hermes_cli/banner.py (11 gaps)
+### hermes_cli/banner.py (10 gaps)
 
 - cprint (function)
-- get_available_skills (function)
 - _github_compare_behind (function)
 - _upstream_main_sha (function)
 - _check_via_rev (function)
@@ -1406,14 +1415,9 @@
 - copilot_device_code_login (function)
 - get_copilot_api_token (function)
 
-### hermes_cli/cron.py (6 gaps)
+### hermes_cli/cron.py (1 gaps)
 
-- cron_list (function)
-- cron_tick (function)
-- cron_status (function)
-- cron_create (function)
-- cron_edit (function)
-- cron_resume (function)
+- _builtin_gateway_liveness (function)
 
 ### hermes_cli/curator.py (4 gaps)
 
@@ -1422,8 +1426,19 @@
 - _cmd_usage (function)
 - register_cli (function)
 
-### hermes_cli/curses_ui.py (3 gaps)
+### hermes_cli/curses_ui.py (14 gaps)
 
+- MenuNavigationStart.should_replay (method)
+- set_menu_navigation_handler (function)
+- reset_menu_navigation_handler (function)
+- _cancel_scoped_navigation (function)
+- _back_scoped_navigation (function)
+- _read_numbered_input (function)
+- _parse_int (function)
+- _parse_csi_u_key (function)
+- _parse_csi_numbers (function)
+- _enhanced_key_action (function)
+- _read_csi_tail (function)
 - curses_checklist (function)
 - curses_radiolist (function)
 - curses_single_select (function)
@@ -1437,13 +1452,9 @@
 
 - _client_ip (function)
 
-### hermes_cli/dashboard_auth/registry.py (5 gaps)
+### hermes_cli/dashboard_auth/registry.py (1 gaps)
 
 - _merged (function)
-- snapshot_registration (function)
-- restore_registration (function)
-- register_global_provider (function)
-- unregister_global_provider (function)
 
 ### hermes_cli/dashboard_auth/token_auth.py (1 gaps)
 
@@ -1461,13 +1472,6 @@
 - _lock_owned_serve_pids (function)
 - _process_age_seconds (function)
 - _reap_orphaned_desktop_local_serves (function)
-
-### hermes_cli/debug.py (4 gaps)
-
-- collect_debug_report (function)
-- build_debug_share (function)
-- run_debug_share (function)
-- run_debug_delete (function)
 
 ### hermes_cli/dep_ensure.py (2 gaps)
 
@@ -1613,7 +1617,7 @@
 - _cmd_repair (function)
 - run_slash (function)
 
-### hermes_cli/kanban_db.py (17 gaps)
+### hermes_cli/kanban_db.py (12 gaps)
 
 - _kanban_observer_consumed (function)
 - _fire_worker_spawned_hook (function)
@@ -1624,11 +1628,6 @@
 - _cleanup_worktree_workspace (function)
 - check_respawn_guard (function)
 - _system_memory_sample (function)
-- derive_default_max_in_progress (function)
-- resolve_max_in_progress (function)
-- configured_max_in_progress (function)
-- count_running_tasks (function)
-- count_running_tasks_other_boards (function)
 - _memory_pressure_level (function)
 - _worker_terminal_timeout_env (function)
 - purge_stale_done_notify_subs (function)
@@ -2167,11 +2166,12 @@
 
 - _prune_never_active_keyed (function)
 
-### hermes_cli/setup.py (32 gaps)
+### hermes_cli/setup.py (37 gaps)
 
 - _get_credential_pool_strategies (function)
 - _set_credential_pool_strategy (function)
 - _set_reasoning_effort (function)
+- _handle_setup_menu_navigation (function)
 - _curses_prompt_choice (function)
 - is_noninteractive (function)
 - _prompt_container_resources (function)
@@ -2195,6 +2195,10 @@
 - _print_migration_preview (function)
 - _offer_openclaw_migration (function)
 - _run_portal_one_shot (function)
+- _setup_navigation_scope (function)
+- _run_setup_steps (function)
+- run_setup_action_with_navigation (function)
+- _run_setup_wizard_impl (function)
 - _run_first_time_quick_setup (function)
 - _blank_slate_minimal_toolsets (function)
 - _blank_slate_minimize_config (function)
@@ -2353,7 +2357,7 @@
 
 - remove_windows_bin_launchers (function)
 
-### hermes_cli/update_cmd.py (59 gaps)
+### hermes_cli/update_cmd.py (60 gaps)
 
 - _purge_stale_hermes_modules (function)
 - _migrate_sibling_profile_configs (function)
@@ -2412,22 +2416,16 @@
 - _desktop_app_present (function)
 - _rebuild_desktop_after_update (function)
 - _restart_phase_failure_is_incomplete (function)
+- _fleet_probe_expected_runtimes (function)
 - _print_items (function)
 - _service_restart_sec (function)
-
-### hermes_cli/update_inventory.py (3 gaps)
-
-- describe_restart_mechanism (function)
-- match_runtime_outcomes (function)
-- report_unaccounted_runtimes (function)
 
 ### hermes_cli/urllib_security.py (1 gaps)
 
 - _resolved_https_context (function)
 
-### hermes_cli/voice.py (4 gaps)
+### hermes_cli/voice.py (3 gaps)
 
-- pt_key_to_sequence (function)
 - start_recording (function)
 - start_continuous (function)
 - speak_text (function)
@@ -2503,7 +2501,7 @@
 - find_retired_xai_refs (function)
 - apply_migration (function)
 
-### hermes_state.py (66 gaps)
+### hermes_state.py (71 gaps)
 
 - _process_looks_like_pytest (function)
 - _has_pytest_ancestor (function)
@@ -2567,21 +2565,25 @@
 - SessionDB.get_active_message_watermark (method)
 - SessionDB._message_column_names (method)
 - SessionDB._is_explicit_branch_session (method)
+- SessionDB._canonical_replayed_user_content (method)
+- SessionDB._exact_replayed_user_clone_key (method)
+- SessionDB._find_duplicate_replayed_user_message (method)
+- SessionDB.get_active_message_ids (method)
+- SessionDB._active_transcript_counts (method)
 - SessionDB._apply_prune_age_filter (method)
 - SessionDB.count_prune_matches (method)
 - SessionDB.count_open_prune_matches (method)
 - SessionDB.list_meta_prefix (method)
 
-### tools/approval.py (14 gaps)
+### tools/approval.py (13 gaps)
 
 - _is_single_query_approval_context (function)
 - _resolve_cli_approval_callback (function)
 - _should_fall_through_to_cli_approval (function)
+- _contains_shell_carrier (function)
+- _mask_quoted_prose (function)
 - _check_sudo_stdin_guard (function)
 - _is_shell_token_spliced_gateway_lifecycle (function)
-- list_gateway_approvals (function)
-- ack_gateway_approval (function)
-- get_pending_gateway_approval (function)
 - _get_single_query_approval_mode (function)
 - get_plugin_manager (function)
 - _get_approval_transport_config (function)
@@ -2603,10 +2605,8 @@
 - has_opaque_document_extension (function)
 - is_pdf_path (function)
 
-### tools/bot_failure_reasons.py (3 gaps)
+### tools/bot_failure_reasons.py (1 gaps)
 
-- is_auto_retryable (function)
-- retry_action (function)
 - classify_agent_error (function)
 
 ### tools/bot_mode_dm.py (18 gaps)
@@ -2647,7 +2647,7 @@
 - _build_section (function)
 - _reset_cache_for_tests (function)
 
-### tools/bot_relay.py (8 gaps)
+### tools/bot_relay.py (9 gaps)
 
 - _normalize_roster_row (function)
 - write_remote_roster (function)
@@ -2657,6 +2657,7 @@
 - _sweep_stale (function)
 - cleanup_bot_relay_artifacts (function)
 - waiter_command (function)
+- _hermes_cli (function)
 
 ### tools/browser_tool.py (9 gaps)
 
@@ -2751,7 +2752,7 @@
 - _bounds_scale (function)
 - _bounds_space_note (function)
 
-### tools/cronjob_tools.py (6 gaps)
+### tools/cronjob_tools.py (7 gaps)
 
 - _validate_bot_chat_deliver (function)
 - _resolve_cron_context_deliver (function)
@@ -2759,6 +2760,7 @@
 - _latest_job_output_excerpt (function)
 - _try_dispatch_background_run (function)
 - _apply_continuity (function)
+- _gateway_liveness_notice (function)
 
 ### tools/delegate_tool.py (11 gaps)
 
@@ -2909,12 +2911,13 @@
 - apply_memory_pending (function)
 - _build_memory_schema_overrides (function)
 
-### tools/process_registry.py (10 gaps)
+### tools/process_registry.py (11 gaps)
 
 - _worker_memory_max_bytes (function)
 - _systemd_run_user_scope_available (function)
 - _is_supervised_gateway_process (function)
 - _stop_systemd_unit (function)
+- ProcessRegistry._emit_lifetime_watch_disabled (method)
 - ProcessRegistry.wait_for_pending_completions (method)
 - ProcessRegistry._oneshot_completion_wait_seconds (method)
 - ProcessRegistry._resolve_prefix (method)
@@ -2931,14 +2934,13 @@
 - _pdf_coverage_note_from_bytes (function)
 - _sheet_rows (function)
 
-### tools/registry.py (16 gaps)
+### tools/registry.py (14 gaps)
 
 - no_cache_check_fn (function)
 - check_fn_cache_scope (function)
 - _run_check_fn_uncached (function)
 - ToolRegistry.current_scope_key (method)
 - ToolRegistry._merged_tools (method)
-- ToolRegistry.snapshot_registration (method)
 - ToolRegistry.get_all_entries (method)
 - ToolRegistry.snapshot_plugin_override_policy (method)
 - ToolRegistry.restore_plugin_override_policy (method)
@@ -2948,7 +2950,6 @@
 - ToolRegistry._plugin_scope_of (method)
 - ToolRegistry.plugin_scope_for_module (method)
 - ToolRegistry.plugin_scope_for_callable (method)
-- ToolRegistry.restore_registration (method)
 
 ### tools/self_repo_guard.py (2 gaps)
 
@@ -2972,13 +2973,6 @@
 - _find_skill (function)
 - _attach_lint_findings (function)
 
-### tools/skill_usage.py (4 gaps)
-
-- telemetry_provenance (function)
-- _emit_skill_lifecycle (function)
-- record_created (function)
-- record_installed (function)
-
 ### tools/skillevaluator_scan.py (1 gaps)
 
 - tier1_advisory_enabled (function)
@@ -2995,15 +2989,12 @@
 - _hermes_home (function)
 - _manifest_file (function)
 
-### tools/skills_sync_client.py (12 gaps)
+### tools/skills_sync_client.py (9 gaps)
 
 - _decode_jwt_payload_unverified (function)
 - resolve_identity (function)
 - dev_gate_open (function)
 - resolve_sync_base_url (function)
-- sync_feature_enabled (function)
-- sync_org_auto_propose (function)
-- sync_default_opt_in (function)
 - is_sync_eligible (function)
 - list_synced_skill_names (function)
 - _all_local_skill_names (function)
@@ -3023,21 +3014,12 @@
 - _maybe_reap_docker_orphans (function)
 - _interpret_signal_exit (function)
 
-### tools/tool_backend_helpers.py (3 gaps)
+### tools/tool_result_storage.py (4 gaps)
 
-- read_selection (function)
-- selection_exists (function)
-- selection_error (function)
-
-### tools/tool_result_storage.py (7 gaps)
-
-- get_spillover_dir (function)
-- cleanup_spillover_cache (function)
 - _prune_spillover_once (function)
 - _is_host_side_env (function)
 - _write_to_spillover (function)
 - _sandbox_visible_spillover_path (function)
-- extract_persisted_path (function)
 
 ### tools/transcription_tools.py (4 gaps)
 
