@@ -583,3 +583,31 @@ char *apis_redact_api_error_text(const char *value, int limit) {
         redacted[limit] = '\0';
     return redacted;
 }
+
+/* ── client-message projection (v706p parity batch) ────────────────── */
+
+extern json_t *project_compaction_message_for_display(const json_t *message);
+
+static const char *const APIS_COMPACTION_INTERNAL_FIELDS[] = {
+    "tool_calls", "finish_reason", "reasoning",
+    "reasoning_content", "reasoning_details",
+    "codex_reasoning_items", "codex_message_items",
+};
+
+/* PoP: apis_project_client_message @ gateway/platforms/api_server.py:_project_client_message */
+json_t *apis_project_client_message(const json_t *message) {
+    /* Remove model-only compaction scaffolding from a client message.
+     * project==NULL means a standalone handoff: emit the hidden empty row
+     * (content="", display_kind="hidden") so clients can reconcile stable
+     * message identities. */
+    if (!message || !json_is_object(message)) return NULL;
+    json_t *projected = project_compaction_message_for_display(message);
+    if (projected) return projected;
+
+    projected = json_copy(message);
+    for (size_t i = 0; i < sizeof(APIS_COMPACTION_INTERNAL_FIELDS) / sizeof(*APIS_COMPACTION_INTERNAL_FIELDS); i++)
+        json_obj_del(projected, APIS_COMPACTION_INTERNAL_FIELDS[i]);
+    json_set(projected, "content", json_string(""));
+    json_set(projected, "display_kind", json_string("hidden"));
+    return projected;
+}
