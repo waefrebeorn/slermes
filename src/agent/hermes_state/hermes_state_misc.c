@@ -4389,3 +4389,14 @@ char *hermes_state_repair_scratch_space_error(const char *db_path) {
              required, free_b);
     return msg;
 }
+
+/* PoP: hermes_state_repair_ledger_path @ hermes_state.py:_repair_ledger_path */
+char *hermes_state_repair_ledger_path(const char *db_path) {
+    /* <db>.repair-attempts.json sibling. Malloc'd; NULL on bad input. */
+    if (!db_path || !*db_path) return NULL;
+    size_t need = strlen(db_path) + sizeof(".repair-attempts.json");
+    char *out = malloc(need);
+    if (!out) return NULL;
+    snprintf(out, need, "%s.repair-attempts.json", db_path);
+    return out;
+}
