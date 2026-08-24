@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T16:34:26Z from `live_parity_scan.json` by `make parity-walkway`. **2,087 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T20:42:17Z from `live_parity_scan.json` by `make parity-walkway`. **2,080 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -1789,16 +1789,12 @@
 - export_pack (function)
 - pack_command (function)
 
-### hermes_cli/plugins.py (99 gaps)
+### hermes_cli/plugins.py (95 gaps)
 
 - _select_entry_point_group (function)
 - discover_entrypoint_manifests (function)
-- _serialized_replacement (function)
 - _plugin_home_scope (function)
-- _parse_manifest_v2_fields (function)
-- validate_config_schema (function)
 - _read_source_from_origin (function)
-- resolve_module_origin (function)
 - _resolve_module_source (function)
 - PluginRegistration.active (method)
 - PluginRegistration.dispose (method)
@@ -2247,14 +2243,12 @@
 
 - remove_windows_bin_launchers (function)
 
-### hermes_cli/update_cmd.py (46 gaps)
+### hermes_cli/update_cmd.py (44 gaps)
 
 - _purge_stale_hermes_modules (function)
 - _migrate_sibling_profile_configs (function)
 - _reload_process_scan_modules (function)
 - _called_process_error_cmd_parts (function)
-- _called_process_error_is_git (function)
-- _called_process_error_is_python_dep_install (function)
 - _format_update_failure_stage (function)
 - _shim_quarantine_error_type (function)
 - _should_zip_fallback_on_update_error (function)
@@ -2377,7 +2371,7 @@
 - find_retired_xai_refs (function)
 - apply_migration (function)
 
-### hermes_state.py (57 gaps)
+### hermes_state.py (56 gaps)
 
 - _apply_wal_size_limit (function)
 - is_malformed_schema_error (function)
@@ -2399,7 +2393,6 @@
 - _concrete_state_db_holder_pids (function)
 - _read_proc_cmdline (function)
 - _looks_like_hermes (function)
-- classify_session_status (function)
 - SessionDB._close_connection_quietly (method)
 - SessionDB._foreign_state_db_holders (method)
 - SessionDB._reap_inactive_orphan_desktop_holders (method)
