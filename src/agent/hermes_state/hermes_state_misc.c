@@ -4617,3 +4617,60 @@ double hermes_state_repair_snapshot_timeout_seconds(const char *source_path) {
     double by_size = source_bytes / MIN_THROUGHPUT;
     return (by_size > LOCK_TIMEOUT) ? by_size : LOCK_TIMEOUT;
 }
+
+/* PoP: hermes_state_record_repair_outcome @ hermes_state.py:_record_repair_outcome
+ * Update the persistent attempt ledger after a repair pass. repaired=true
+ * removes the ledger. Otherwise increment failed_attempts when the
+ * fingerprint matches the recorded one, else reset to 1. Never raises. */
+void hermes_state_record_repair_outcome(const char *db_path, bool repaired,
+                                        const char *fingerprint) {
+    extern char *hermes_state_repair_ledger_path(const char *db_path);
+    extern json_t *hermes_state_read_repair_ledger(const char *db_path);
+    char *ledger_path = hermes_state_repair_ledger_path(db_path);
+    if (!ledger_path) return;
+
+    if (repaired) {
+        unlink(ledger_path);
+        free(ledger_path);
+        return;
+    }
+
+    json_t *ledger = hermes_state_read_repair_ledger(db_path);
+    const char *recorded = ledger ? json_string_value(json_obj_get(ledger, "fingerprint")) : NULL;
+    const json_t *fa = ledger ? json_obj_get(ledger, "failed_attempts") : NULL;
+    long attempts = (fa && fa->type == JSON_NUMBER) ? (long)fa->num_val : 0;
+
+    char *fp = NULL;
+    if (fingerprint && *fingerprint) {
+        fp = strdup(fingerprint);
+    } else {
+        extern char *hermes_state_db_fingerprint(const char *db_path);
+        fp = hermes_state_db_fingerprint(db_path);
+    }
+    if (!fp) {
+        /* No prior key to extend and no safe way to mint one: the in-process
+         * claim and cross-process lock still bound this run. */
+        if (ledger) json_free(ledger);
+        free(ledger_path);
+        return;
+    }
+
+    long new_attempts = (recorded && strcmp(recorded, fp) == 0) ? attempts + 1 : 1;
+
+    FILE *f = fopen(ledger_path, "w");
+    if (f) {
+        time_t now = time(NULL);
+        struct tm tmv;
+        localtime_r(&now, &tmv);
+        char iso[32];
+        strftime(iso, sizeof(iso), "%Y-%m-%dT%H:%M:%S", &tmv);
+        fprintf(f,
+            "{\"fingerprint\": \"%s\", \"failed_attempts\": %ld, "
+            "\"last_attempt\": \"%s\"}\n",
+            fp, new_attempts, iso);
+        fclose(f);
+    }
+    free(fp);
+    if (ledger) json_free(ledger);
+    free(ledger_path);
+}
