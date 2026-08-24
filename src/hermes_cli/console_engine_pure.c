@@ -496,3 +496,44 @@ char *ce_clean_summary(const char *text) {
     if (strncmp(flat, "Run `hermes ", 12) == 0) { free(flat); return strdup(""); }
     return flat;
 }
+
+/* PoP: ce_format_sessions @ hermes_cli/console_engine.py:_format_sessions */
+char *ce_format_sessions(const json_t *sessions) {
+    /* Aligned table: ID(32) Source(12) Msgs(>5) Title/Preview. Empty input
+     * renders the documented "No sessions found." line. */
+    size_t n = (sessions && json_is_array(sessions)) ? json_array_size(sessions) : 0;
+    if (n == 0) return strdup("No sessions found.");
+
+    char *out = malloc(n * 256 + 128);
+    if (!out) return NULL;
+    int off = snprintf(out, 256,
+        "%-32s %-12s %5s  %s\n%-82s",
+        "ID", "Source", "Msgs", "Title / Preview",
+        "----------------------------------------------------------------------------------");
+    for (size_t i = 0; i < n; i++) {
+        const json_t *s = json_array_get(sessions, i);
+        if (!s || !json_is_object(s)) continue;
+        const char *id = json_string_value(json_object_get(s, "id"));
+        const char *source = json_string_value(json_object_get(s, "source"));
+        double messages = 0;
+        const json_t *mc = json_object_get(s, "message_count");
+        if (mc && mc->type == JSON_NUMBER) messages = mc->num_val;
+        const char *title = json_string_value(json_object_get(s, "title"));
+        if (!title || !*title)
+            title = json_string_value(json_object_get(s, "preview"));
+        if (!title) title = "";
+        /* truncate title to 60, newlines -> spaces */
+        char tbuf[61];
+        size_t k = 0;
+        for (const char *q = title; *q && k < 60; q++, k++)
+            tbuf[k] = (*q == '\n') ? ' ' : *q;
+        tbuf[k] = '\0';
+        char idb[33], srcb[13];
+        snprintf(idb, sizeof(idb), "%.32s", id ? id : "");
+        snprintf(srcb, sizeof(srcb), "%.12s",
+                 (source && *source) ? source : "-");
+        off += snprintf(out + off, 256,
+                        "\n%-32s %-12s %5.0f  %s", idb, srcb, messages, tbuf);
+    }
+    return out;
+}
