@@ -4826,3 +4826,32 @@ bool upd_web_build_toolchain_ready(char **roots, int n_roots) {
     }
     return tsc_ok && vite_ok;
 }
+
+/* PoP: upd_editable_install_is_current @ hermes_cli/update_cmd.py:_editable_install_is_current
+ * True when the pulled commits cannot have invalidated the editable install:
+ * git diff --name-only <pre_pull_sha>..HEAD against the install-defining
+ * files must be empty. No pre_pull_sha or git failure => false (fail closed). */
+bool upd_editable_install_is_current(const char *cwd, const char *pre_pull_sha) {
+    if (!pre_pull_sha || !*pre_pull_sha) return false;
+    static const char *DEFINING[] = {
+        "pyproject.toml", "setup.py", "setup.cfg", "MANIFEST.in", NULL
+    };
+    for (int i = 0; DEFINING[i]; i++) {
+        char range[512];
+        snprintf(range, sizeof(range), "%s..HEAD", pre_pull_sha);
+        char *argv[8] = { (char*)"git", (char*)"diff", (char*)"--name-only",
+                          range, (char*)"--", NULL };
+        /* one probe per defining file keeps the fixed argv layout */
+        size_t need = strlen(cwd ? cwd : ".") + strlen(pre_pull_sha) + strlen(DEFINING[i]) + 64;
+        (void)need;
+        char *argv2[10];
+        int c = 0;
+        for (int k = 0; k < 5 && argv[k]; k++) argv2[c++] = argv[k];
+        argv2[c++] = (char*)DEFINING[i];
+        argv2[c] = NULL;
+        extern char *upd_git_stdout(char *const argv[], const char *cwd);
+        char *out = upd_git_stdout(cwd, argv2);
+        if (out) { free(out); return false; }   /* a defining file changed */
+    }
+    return true;
+}
