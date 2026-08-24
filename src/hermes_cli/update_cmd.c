@@ -4610,3 +4610,41 @@ void upd_print_update_completion(const char *message) {
             printf("=== hermes-update completed %s ===\n", action_id);
     }
 }
+
+/* PoP: upd_print_parked_branch_skip_warning @ hermes_cli/update_cmd.py:_print_parked_branch_skip_warning */
+void upd_print_parked_branch_skip_warning(const char *cwd,
+                                          const char *current_branch,
+                                          const char *target_branch,
+                                          const char *reason) {
+    /* LOUD block explaining a parked-branch skip, with behind-count and the
+     * exact resolution commands. */
+    long behind = -1;
+    char ref[256];
+    snprintf(ref, sizeof(ref), "HEAD..origin/%s", target_branch ? target_branch : "main");
+    char *argv[] = { (char*)"git", (char*)"rev-list", ref, (char*)"--count", NULL };
+    extern char *upd_git_stdout(char *const argv[], const char *cwd);
+    char *cnt = upd_git_stdout(cwd, argv);
+    if (cnt) { behind = atol(cnt); free(cnt); }
+
+    const char *why;
+    if (strcmp(reason, "dirty") == 0)
+        why = "the working tree has uncommitted changes";
+    else if (strcmp(reason, "disabled") == 0)
+        why = "updates.auto_switch_parked_branch is set to false in config.yaml";
+    else
+        why = "the branch state could not be verified against origin/<target>";
+
+    printf("\n");
+    printf("====================================================================\n");
+    printf("\u26a0 CODE UPDATE SKIPPED -- checkout is parked on '%s'\n", current_branch);
+    printf("  Not auto-switching to %s: %s.\n",
+           target_branch ? target_branch : "main", why);
+    if (behind > 0)
+        printf("  This checkout is %ld commit(s) BEHIND origin/%s -- the code "
+               "you are running is stale.\n", behind,
+               target_branch ? target_branch : "main");
+    printf("\n  To resolve, inspect the branch and switch back yourself:\n");
+    printf("    git -C %s status\n", cwd ? cwd : ".");
+    printf("    git -C %s checkout %s && hermes update\n",
+           cwd ? cwd : ".", target_branch ? target_branch : "main");
+}
