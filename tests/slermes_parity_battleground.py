@@ -261,7 +261,7 @@ class CIndexer:
         self._load_build_files()
         c_func_pattern = re.compile(
             r'^(?:static\s+)?(?:const\s+)?(?:__attribute__\(\s*unused\s*\)\s+)?'
-            r'(?:\w+\s*\*?\s+)*(?:\*\s*)?(\w+)\s*\(', re.MULTILINE)
+            r'(?:\w+\s*\*+\s+|\w+\s+)*(?:\*+\s*|\s*)(\w+)\s*\(', re.MULTILINE)
         pop_patterns = [
             re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
             re.compile(r'/\*(?:[^*]|\*[^/])*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),

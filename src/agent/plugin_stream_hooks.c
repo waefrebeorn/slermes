@@ -197,6 +197,7 @@ static void *psh_worker(void *arg)
     }
 }
 
+/* PoP: plugin_stream_hooks__callback_name @ agent/plugin_stream_hooks.py:_callback_name */
 const char *plugin_stream_hooks__callback_name(const psh_callback_t *cb)
 {
     return cb && cb->name ? cb->name : "<callable>";
