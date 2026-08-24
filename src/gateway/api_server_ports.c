@@ -451,7 +451,7 @@ char *aps_init(long max_size, const char *db_path) {
 /* ── request-string / compaction-carrier helpers (v706l parity batch) ── */
 
 extern json_t *hermes_json_get(const json_t *obj, const char *key);
-extern bool context_compressor_is_compaction_summary_message(const void *message);
+extern int context_compressor__is_compaction_summary_message(const json_t *message);
 
 /* PoP: apis_clean_request_string @ gateway/platforms/api_server.py:_clean_request_string */
 char *apis_clean_request_string(const char *value) {
@@ -467,11 +467,11 @@ char *apis_clean_request_string(const char *value) {
 }
 
 /* PoP: apis_is_compressed_summary_message @ gateway/platforms/api_server.py:_is_compressed_summary_message */
-bool apis_is_compressed_summary_message(const void *message) {
+bool apis_is_compressed_summary_message(const json_t *message) {
     /* Recognize every model-side compaction carrier shape via the shared
      * compressor content classifier (SessionDB drops the in-process marker). */
     if (!message) return false;
-    extern int context_compressor__is_compaction_summary_message(const void *msg);
+    extern int context_compressor__is_compaction_summary_message(const json_t *msg);
     return context_compressor__is_compaction_summary_message(message) != 0;
 }
 
@@ -610,4 +610,53 @@ json_t *apis_project_client_message(const json_t *message) {
     json_set(projected, "content", json_string(""));
     json_set(projected, "display_kind", json_string("hidden"));
     return projected;
+}
+
+/* PoP: apis_auto_truncate_response_history @ gateway/platforms/api_server.py:_auto_truncate_response_history */
+json_t *apis_auto_truncate_response_history(const json_t *history, int limit) {
+    /* Keep recent Responses history without dropping compaction summaries:
+     * summaries are preserved wherever they sit; the remaining budget fills
+     * from the newest end. limit<=0 or short history returns it unchanged. */
+    size_t n = (history && json_is_array(history)) ? json_array_size(history) : 0;
+    if (limit <= 0 || (size_t)limit >= n)
+        return json_copy(history ? history : json_array());
+
+    /* index compaction summaries */
+    size_t summary_idx[256];
+    size_t n_summ = 0;
+    for (size_t i = 0; i < n && n_summ < 256; i++) {
+        const json_t *msg = json_array_get(history, i);
+            if (msg && context_compressor__is_compaction_summary_message(msg))
+            summary_idx[n_summ++] = i;
+    }
+    if (n_summ == 0) {
+        /* tail slice */
+        json_t *out = json_array();
+        if (!out) return NULL;
+        for (size_t i = n - (size_t)limit; i < n; i++)
+            json_array_append(out, json_copy(json_array_get(history, i)));
+        return out;
+    }
+
+    bool keep[4096];
+    memset(keep, 0, sizeof(keep));
+    size_t kept = 0;
+    for (size_t k = 0; k < n_summ && kept < (size_t)limit; k++, kept++) {
+        keep[summary_idx[k]] = true;
+    }
+    long remaining = (long)limit - (long)n_summ;
+    if (remaining > 0) {
+        for (size_t idx = n; idx-- > 0 && remaining > 0;) {
+            bool is_summary = false;
+            for (size_t k = 0; k < n_summ; k++)
+                if (summary_idx[k] == idx) { is_summary = true; break; }
+            if (!is_summary) { keep[idx] = true; remaining--; }
+        }
+    }
+
+    json_t *out = json_array();
+    if (!out) return NULL;
+    for (size_t i = 0; i < n; i++)
+        if (keep[i]) json_array_append(out, json_copy(json_array_get(history, i)));
+    return out;
 }
