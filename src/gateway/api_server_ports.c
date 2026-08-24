@@ -576,9 +576,9 @@ char *apis_redact_api_error_text(const char *value, int limit) {
     /* Redact API-bound error text before it crosses the HTTP boundary.
      * Reuses the shared redact_sensitive_text(force=True) port; limit<0
      * means no truncation. */
-    extern char *redact_sensitive_text(const char *text);
+    extern char *hermes_redact_force(const char *text);
     if (!value) return strdup("");
-    char *redacted = redact_sensitive_text(value);
+    char *redacted = hermes_redact_force(value);
     if (limit >= 0 && redacted && strlen(redacted) > (size_t)limit)
         redacted[limit] = '\0';
     return redacted;
