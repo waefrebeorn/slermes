@@ -101,6 +101,11 @@ parity:
 	@python3 scripts/parity_truth.py
 	@python3 scripts/gen_parity_walkway.py
 
+# Organization parity: every Python module needs a canonical C home, and every
+# C file must justify its place. Writes docs/organization-parity.{md,json}.
+org-parity:
+	@python3 scripts/org_parity_scan.py
+
 # Rank REAL_GAP modules by closure value (pure-leaf ratio + oracle + size).
 # Use this to pick the next module to port — highest score = best first.
 gap-triage:
