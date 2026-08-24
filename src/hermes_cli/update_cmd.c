@@ -4786,3 +4786,43 @@ char *upd_zip_overlay_block_reason(const char *root, bool ignore_staging_artifac
     }
     return NULL;
 }
+
+/* ── web build toolchain probe (v706w parity batch) ────────────────── */
+
+static bool upd_npm_bin_exists(const char *bin_dir, const char *name) {
+    /* POSIX shim, plus .cmd/.ps1/.exe Windows variants. */
+    static const char *EXTS[] = { "", ".cmd", ".ps1", ".exe" };
+    for (int i = 0; i < 4; i++) {
+        char cand[4200];
+        snprintf(cand, sizeof(cand), "%s/%s%s", bin_dir, name, EXTS[i]);
+        struct stat st;
+        if (stat(cand, &st) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: upd_web_build_toolchain_ready @ hermes_cli/update_cmd.py:_web_build_toolchain_ready
+ * True when tsc and vite shims are reachable from any of the NUL-terminated
+ * roots array (roots[0..n-1]). Callers must pass every root the build
+ * would search; checking one reports a healthy tree as broken. */
+bool upd_web_build_toolchain_ready(char **roots, int n_roots) {
+    /* bin_dirs that exist as directories */
+    char bins[16][4096];
+    int nbins = 0;
+    for (int r = 0; r < n_roots && nbins < 16; r++) {
+        if (!roots[r] || !*roots[r]) continue;
+        char dir[4200];
+        snprintf(dir, sizeof(dir), "%s/node_modules/.bin", roots[r]);
+        struct stat st;
+        if (stat(dir, &st) == 0 && S_ISDIR(st.st_mode)) {
+            snprintf(bins[nbins++], 4096, "%s", dir);
+        }
+    }
+    if (nbins == 0) return false;
+    bool tsc_ok = false, vite_ok = false;
+    for (int b = 0; b < nbins; b++) {
+        if (!tsc_ok && upd_npm_bin_exists(bins[b], "tsc")) tsc_ok = true;
+        if (!vite_ok && upd_npm_bin_exists(bins[b], "vite")) vite_ok = true;
+    }
+    return tsc_ok && vite_ok;
+}
