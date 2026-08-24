@@ -4588,3 +4588,13 @@ json_t *hermes_state_read_repair_ledger(const char *db_path) {
     if (raw) json_free(raw);
     return out;
 }
+
+/* PoP: hermes_state_mask_volatile_header @ hermes_state.py:_mask_volatile_header
+ * Zero the commit-counter fields (bytes 24..28 and 92..96) so ordinary
+ * writes don't re-key the ledger fingerprint. Operates in place on a buffer
+ * of *len* bytes; no-op below 96 bytes. */
+void hermes_state_mask_volatile_header(unsigned char *head, size_t len) {
+    if (!head || len < 96) return;
+    memset(head + 24, 0, 4);
+    memset(head + 92, 0, 4);
+}
