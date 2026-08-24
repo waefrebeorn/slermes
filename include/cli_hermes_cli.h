@@ -71,6 +71,10 @@ struct hcli {
     hcli_msg_t *history;
     size_t history_len;
 
+    /* Enabled toolset names as a JSON array string (self.enabled_toolsets);
+     * NULL/empty means "all" (no explicit enable list). */
+    char *enabled_toolsets_json;
+
     /* Model/runtime identity */
     char *model;
     char *provider;
@@ -109,6 +113,21 @@ struct hcli {
     /* Optional hook: persist YOLO flag onto a session row (bound to
      * _persist_session_yolo); NULL when unavailable (unbound test stand-ins). */
     void (*persist_yolo)(hcli_t *self, const char *session_key, bool enabled);
+
+    /* ── Status-bar / session-lease state (_release_active_session & co) ── */
+    void *active_session_lease;                 /* _active_session_lease */
+    void (*lease_release)(void *lease);         /* lease.release() */
+
+    char *pending_title;                        /* _pending_title */
+    char *status_bar_title_session_id;          /* _status_bar_title_session_id */
+    char *status_bar_title_cache;               /* _status_bar_title_cache */
+    double status_bar_title_checked_at;         /* _status_bar_title_checked_at (monotonic) */
+
+    double prompt_start_time;                   /* _prompt_start_time */
+    bool   has_prompt_start_time;
+    double prompt_duration;                     /* _prompt_duration */
+    double last_turn_finished_at;               /* _last_turn_finished_at */
+    bool   has_last_turn_finished_at;
 };
 
 /* ── Lifecycle ─────────────────────────────────────────────────────────── */
@@ -236,8 +255,84 @@ void hcli_transfer_session_yolo(hcli_t *self, const char *old_id, const char *ne
 bool hcli_is_session_yolo_active(hcli_t *self);
 /* PoP: hcli_toggle_yolo @ cli.py:_toggle_yolo */
 void hcli_toggle_yolo(hcli_t *self);
-/* PoP: hcli_persist_session_yolo @ cli.py:_persist_session_yolo */
+/* ── PoP: hcli_persist_session_yolo @ cli.py:_persist_session_yolo */
 void hcli_persist_session_yolo(hcli_t *self, const char *session_key, bool enabled);
+
+/* ── Batch 0 continuation: status-bar / formatting surface ─────────────── */
+
+/* PoP: hcli_release_active_session @ cli.py:_release_active_session
+ * Release the active-session lease (best effort) and clear it. */
+void hcli_release_active_session(hcli_t *self);
+
+/* PoP: cli_redraw_rebuilds_scrollback @ cli.py:_redraw_rebuilds_scrollback
+ * display.cli_rebuild_scrollback_on_redraw config gate; string truthy set
+ * {"1","true","yes","on","always"}. */
+bool cli_redraw_rebuilds_scrollback(void);
+
+/* PoP: cli_status_bar_context_style @ cli.py:_status_bar_context_style
+ * percent_used < 0 means Python None. Returns a shared style-class string. */
+const char *cli_status_bar_context_style(int percent_used);
+
+/* PoP: cli_battery_status_style @ cli.py:_battery_status_style */
+const char *cli_battery_status_style(const char *category);
+
+/* PoP: cli_compression_count_style @ cli.py:_compression_count_style */
+const char *cli_compression_count_style(int count);
+
+/* PoP: cli_build_context_bar @ cli.py:_build_context_bar
+ * "[████░░░░]" style bar; percent_used < 0 means None → 0%. Malloc'd. */
+char *cli_build_context_bar(int percent_used, int width);
+
+/* PoP: cli_format_prompt_elapsed @ cli.py:_format_prompt_elapsed
+ * has_start=false + duration==0 → "⏲ 0s". When has_start, elapsed is
+ * now() - start_time, else duration. Malloc'd. */
+char *cli_format_prompt_elapsed(bool has_start, double start_time,
+                                double duration, bool live);
+
+/* PoP: cli_format_idle_since @ cli.py:_format_idle_since
+ * "" while live / never finished; else "✓ <compact>". Malloc'd. */
+char *cli_format_idle_since(bool has_last_finished_at, double last_finished_at,
+                            bool turn_live);
+
+/* PoP: hcli_get_status_bar_session_title @ cli.py:_get_status_bar_session_title
+ * pending_title short-circuit, 1.5s monotonic cache, then SessionDB lookup.
+ * Malloc'd (possibly empty). */
+char *hcli_get_status_bar_session_title(hcli_t *self);
+
+/* PoP: cli_status_bar_display_width @ cli.py:_status_bar_display_width
+ * Terminal cell width (prompt_toolkit get_cwidth port): wide East-Asian /
+ * emoji = 2, combining/variation selectors = 0, ambiguous = 1. */
+int cli_status_bar_display_width(const char *text);
+
+/* PoP: cli_trim_status_bar_text @ cli.py:_trim_status_bar_text
+ * Trim to one terminal row with a "..." suffix. Malloc'd. */
+char *cli_trim_status_bar_text(const char *text, int max_width);
+
+/* PoP: cli_right_align_status_title @ cli.py:_right_align_status_title
+ * Pin a bounded session-title badge to the far-right edge. Malloc'd. */
+char *cli_right_align_status_title(const char *text, const char *title, int width);
+
+/* PoP: hcli_right_align_status_title_fragments @ cli.py:_right_align_status_title_fragments
+ * Styled counterpart. Input frags are parallel arrays of style/value strings;
+ * returns a malloc'd hcli_fragment_t array (+*out_len) or NULL when the badge
+ * cannot be placed (no title / narrow width) — caller frees via
+ * hcli_fragments_free(). */
+hcli_fragment_t *hcli_right_align_status_title_fragments(char **styles,
+                                                         char **values,
+                                                         size_t n,
+                                                         const char *title,
+                                                         int width,
+                                                         size_t *out_len);
+
+/* PoP: cli_get_tui_terminal_width @ cli.py:_get_tui_terminal_width
+ * Live TTY width via TIOCGWINSZ (the C stand-in for prompt_toolkit's app
+ * output), falling back to the shutil default of 80 columns. */
+int cli_get_tui_terminal_width(void);
+
+/* PoP: cli_scrollback_box_width @ cli.py:_scrollback_box_width
+ * width <= 0 means auto-detect; floor of 32 columns. */
+int cli_scrollback_box_width(int width);
+
 
 #ifdef __cplusplus
 }
