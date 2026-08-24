@@ -604,3 +604,33 @@ void banner_compute_toolset_availability(const char *enable_toolsets_json,
     free(text);
 }
 
+extern json_t *skills_tool_find_all_skills(int skip_disabled);   /* tools/skills_tool.c */
+
+/* PoP: banner_get_available_skills @ hermes_cli/banner.py:get_available_skills */
+json_t *banner_get_available_skills(void) {
+    /* Skills grouped by category ({"general": [names...]}), filtered by
+     * platform + disabled state — that filtering already happens inside the
+     * skills_tool walk we reuse. Per-process cached in Python; the banner
+     * renders once, so a fresh walk per call is behaviorally identical. */
+    json_t *all = skills_tool_find_all_skills(1);
+    json_t *out = json_object();
+    if (!out) { json_free(all); return NULL; }
+    if (!all) return out;   /* exception path in Python returns {} */
+    size_t n = json_array_size(all);
+    for (size_t i = 0; i < n; i++) {
+        const json_t *skill = json_array_get(all, i);
+        if (!skill || !json_is_object(skill)) continue;
+        const char *category = json_string_value(json_object_get(skill, "category"));
+        const char *name = json_string_value(json_object_get(skill, "name"));
+        if (!category || !*category) category = "general";
+        if (!name) continue;
+        json_t *list = json_object_get(out, category);
+        if (!list || !json_is_array(list)) {
+            list = json_array();
+            json_set(out, category, list);   /* steals on first insert */
+        }
+        json_array_append(list, json_string(name));
+    }
+    json_free(all);
+    return out;
+}

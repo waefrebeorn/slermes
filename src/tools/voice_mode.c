@@ -1872,3 +1872,74 @@ int tools_voice_mode_cancel_2(const char *arg) {
     printf("Termux voice recording cancelled\n");
     return 0;
 }
+
+/* ── voice.py key-specifier helpers (v683 parity batch) ───────────── */
+
+/* PoP: voice_pt_key_to_sequence @ hermes_cli/voice.py:pt_key_to_sequence */
+char **voice_pt_key_to_sequence(const char *pt_key) {
+    /* prompt_toolkit rejects "a-x" strings directly; Alt-modifiers become
+     * ("escape", "x"). Returns a NULL-terminated malloc'd char* array. */
+    char **seq = malloc(3 * sizeof(char *));
+    if (!seq) return NULL;
+    if (pt_key && strncmp(pt_key, "a-", 2) == 0) {
+        seq[0] = strdup("escape");
+        seq[1] = strdup(pt_key + 2);
+        seq[2] = NULL;
+    } else {
+        seq[0] = strdup(pt_key ? pt_key : "");
+        seq[1] = NULL;
+    }
+    return seq;
+}
+
+/* PoP: voice_format_record_key_for_status @ hermes_cli/voice.py:format_voice_record_key_for_status */
+char *voice_format_record_key_for_status(const char *raw) {
+    /* Mirrors the TUI formatVoiceRecordKey: Ctrl+B / Alt+Space /
+     * Ctrl+Enter. Malformed configs surface the documented default so
+     * status never advertises a shortcut that won't bind. `raw` arrives
+     * already normalized (c-x / a-x lowercase form). */
+    const char *normalized = (raw && *raw) ? raw : "";
+    char prefix[16] = "";
+    const char *key = normalized;
+
+    if (strncmp(normalized, "c-", 2) == 0) {
+        snprintf(prefix, sizeof(prefix), "Ctrl+");
+        key = normalized + 2;
+    } else if (strncmp(normalized, "a-", 2) == 0) {
+        snprintf(prefix, sizeof(prefix), "Alt+");
+        key = normalized + 2;
+    } else if (strchr(normalized, '+')) {
+        /* super+<key> / win+<key> — title-case render for readability. */
+        const char *plus = strchr(normalized, '+');
+        size_t mod_len = (size_t)(plus - normalized);
+        if (mod_len < sizeof(prefix) - 1) {
+            prefix[0] = (char)toupper((unsigned char)normalized[0]);
+            memcpy(prefix + 1, normalized + 1, mod_len - 1);
+            prefix[mod_len] = '+';
+            prefix[mod_len + 1] = '\0';
+        }
+        key = plus + 1;
+    } else {
+        return strdup("Ctrl+B");
+    }
+
+    if (!key[0]) {
+        char *out = strdup(prefix);
+        size_t l = strlen(out);
+        if (l && out[l-1] == '+') out[l-1] = '\0';
+        return out;
+    }
+    if (strlen(key) == 1) {
+        char up[2] = { (char)toupper((unsigned char)key[0]), '\0' };
+        char *out = malloc(strlen(prefix) + 2);
+        if (!out) return NULL;
+        strcpy(out, prefix); strcat(out, up);
+        return out;
+    }
+    char *out = malloc(strlen(prefix) + strlen(key) + 1);
+    if (!out) return NULL;
+    strcpy(out, prefix);
+    out[strlen(prefix)] = (char)toupper((unsigned char)key[0]);
+    strcpy(out + strlen(prefix) + 1, key + 1);
+    return out;
+}
