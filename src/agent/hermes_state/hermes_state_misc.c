@@ -4700,3 +4700,28 @@ char *hermes_state_persistent_repair_exhausted_error(const char *db_path) {
     free(ledger_name);
     return out;
 }
+
+/* PoP: hermes_state_repair_failure_consumes_attempt @ hermes_state.py:_repair_failure_consumes_attempt */
+bool hermes_state_repair_failure_consumes_attempt(int sqlite_errorcode, const char *msg) {
+    /* Whether a pre-strategy SQLite failure proves deterministic corruption.
+     * Lock contention/timeouts/disk-full/I-O are environmental aborts that
+     * must NOT exhaust the repair ledger; only corruption-class result codes
+     * (or their legacy message shapes) do. Pass sqlite_errorcode < 0 when the
+     * code is unknown (Python's getattr(exc, "sqlite_errorcode", None)). */
+    if (sqlite_errorcode >= 0) {
+        /* Extended result codes retain the primary code in the low byte. */
+        int primary_code = sqlite_errorcode & 0xFF;
+        return primary_code == SQLITE_CORRUPT || primary_code == SQLITE_NOTADB;
+    }
+    /* Compatibility path: do not turn generic DatabaseError messages such as
+     * "disk is full" or "readonly" into permanent failures. */
+    if (!msg) return false;
+    char low[512];
+    size_t n = strlen(msg);
+    if (n >= sizeof(low)) n = sizeof(low) - 1;
+    for (size_t i = 0; i < n; i++)
+        low[i] = (char)tolower((unsigned char)msg[i]);
+    low[n] = '\0';
+    return strstr(low, "file is not a database") != NULL
+        || strstr(low, "database disk image is malformed") != NULL;
+}
