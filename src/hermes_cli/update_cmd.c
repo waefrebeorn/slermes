@@ -4930,3 +4930,16 @@ bool upd_called_process_error_is_python_dep_install(char *const cmd[]) {
         strcmp(exe, "uv") == 0 || strcmp(exe, "uv.exe") == 0;
     return has_install && (has_pip || exe_is_pip_family);
 }
+
+/* PoP: upd_format_update_failure_stage @ hermes_cli/update_cmd.py:_format_update_failure_stage
+ * Name the update stage that actually failed — keyed on what the command
+ * was, not on exception type (#87304, #85840). */
+const char *upd_format_update_failure_stage(char *const cmd[]) {
+    extern bool upd_called_process_error_is_python_dep_install(char *const cmd[]);
+    extern bool upd_called_process_error_is_git(char *const cmd[]);
+    if (upd_called_process_error_is_python_dep_install(cmd))
+        return "Python dependency install failed";
+    if (upd_called_process_error_is_git(cmd))
+        return "Git update failed";
+    return "Update step failed";
+}
