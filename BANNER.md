@@ -5,7 +5,7 @@
 <!-- PARITY:AUTO -->
 **v671 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
 
-**Upstream sync checkpoint:** 1,832 ahead / 565 behind upstream/main (last merge 2026-08-24 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,852 ahead / 0 behind upstream/main (last merge 2026-08-19 (upstream fetched)). The repo is up to date with upstream.
 
 <!-- /PARITY:AUTO -->
 
