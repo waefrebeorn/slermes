@@ -208,4 +208,28 @@ char *plugins_state_path(const char *data_namespace);
  * changes the target's inode, so the lock lives beside it. Caller frees. */
 char *plugins_state_lock_path(const char *path);
 
+/* ── wave 9: config schema, manifest v2, serialized replacement, origin ─ */
+
+/* PoP: plg_validate_config_schema @ hermes_cli/plugins.py:validate_config_schema
+ * Fresh JSON array of human-actionable warning strings (caller frees).
+ * Never fails; non-mapping inputs yield an empty array (#64165). */
+json_t *plg_validate_config_schema(const char *plugin_id,
+                                   const json_t *schema,
+                                   const json_t *settings);
+
+/* PoP: plg_parse_manifest_v2_fields @ hermes_cli/plugins.py:_parse_manifest_v2_fields
+ * Fresh JSON object of normalized PluginManifest kwargs (caller frees):
+ * manifest_version, api_version (int|null), requires_plugins, config_schema,
+ * python_dependencies, license, homepage, tags. Problems warn, never fail. */
+json_t *plg_parse_manifest_v2_fields(const json_t *data, const char *key);
+
+/* PoP: plg_serialized_replacement @ hermes_cli/plugins.py:_serialized_replacement
+ * Run method(args) under the replacement-coordinator lock — one atomic
+ * snapshot/write/lease transaction. Returns the callback's result. */
+void *plg_serialized_replacement(void *(*method)(void *), void *args);
+
+/* PoP: plg_resolve_module_origin @ hermes_cli/plugins.py:resolve_module_origin
+ * Module source path without importing it, or NULL. Caller frees. */
+char *plg_resolve_module_origin(const char *module_name);
+
 #endif /* SLERMES_PLUGINS_CORE_H */

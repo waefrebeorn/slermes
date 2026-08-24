@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <pthread.h>
 
 #include "hermes_json.h"
 #include "../../lib/libcrypto/crypto.h"
@@ -50,6 +51,8 @@ static char *pc_strdup(const char *s) {
     if (p) memcpy(p, s, n);
     return p;
 }
+
+static char *plg_dep_vr_str(const json_t *vr);
 
 /* Count Unicode codepoints in a UTF-8 string (Python's len() on a str).
  * strlen counts bytes; Python's len(content) counts codepoints. */
@@ -1399,4 +1402,531 @@ char *plugins_state_lock_path(const char *path) {
     else
         snprintf(out, need, ".%s.lock", name);
     return out;
+}
+
+
+/* ── wave 9: config-schema validation, manifest v2 fields, serialized
+ *    replacement decorator, module-origin resolution ─────────────────── */
+
+/* SUPPORTED_MANIFEST_VERSION @ hermes_cli/plugins.py */
+#define PLG_SUPPORTED_MANIFEST_VERSION 2
+
+/* _CONFIG_SCHEMA_TYPES: logical type groups a declared "type" may map to. */
+typedef enum {
+    PLG_CT_STRING = 1 << 0,
+    PLG_CT_INT    = 1 << 1,
+    PLG_CT_FLOAT  = 1 << 2,
+    PLG_CT_BOOL   = 1 << 3,
+    PLG_CT_LIST   = 1 << 4,
+    PLG_CT_DICT   = 1 << 5,
+} plg_config_type_t;
+
+/* Map a declared schema "type" string (lowercased) to its accepted group,
+ * or 0 when unknown (type check skipped). Mirrors _CONFIG_SCHEMA_TYPES. */
+static plg_config_type_t plg_config_schema_type(const char *stype) {
+    if (!stype) return (plg_config_type_t)0;
+    char lower[32];
+    size_t n = strlen(stype);
+    if (n >= sizeof(lower)) return (plg_config_type_t)0;
+    for (size_t i = 0; i <= n; i++)
+        lower[i] = (char)tolower((unsigned char)stype[i]);
+    if (!strcmp(lower, "str") || !strcmp(lower, "string"))   return PLG_CT_STRING;
+    if (!strcmp(lower, "int") || !strcmp(lower, "integer"))  return PLG_CT_INT;
+    if (!strcmp(lower, "float") || !strcmp(lower, "number")) return PLG_CT_FLOAT;
+    if (!strcmp(lower, "bool") || !strcmp(lower, "boolean")) return PLG_CT_BOOL;
+    if (!strcmp(lower, "list") || !strcmp(lower, "array"))   return PLG_CT_LIST;
+    if (!strcmp(lower, "dict") || !strcmp(lower, "object"))  return PLG_CT_DICT;
+    return (plg_config_type_t)0;
+}
+
+/* Python's type(value).__name__ for a JSON node — used only inside the
+ * human-actionable warning text. */
+static const char *plg_json_pytype_name(const json_t *v) {
+    if (!v || v->type == JSON_NULL)   return "NoneType";
+    if (v->type == JSON_BOOL)         return "bool";
+    if (v->type == JSON_STRING)       return "str";
+    if (v->type == JSON_ARRAY)        return "list";
+    if (v->type == JSON_OBJECT)       return "dict";
+    /* JSON_NUMBER: bool is not an int subclass here, but int vs float must
+     * be distinguished exactly as Python prints it. */
+    double d = v->num_val;
+    if (d == (double)(long long)d && d >= -9.007199254740992e15 &&
+        d <= 9.007199254740992e15)
+        return "int";
+    return "float";
+}
+
+/* True when `value` satisfies the expected group. In this tree bools are
+ * their own type (JSON_BOOL), so Python's "bool is an int subclass" hazard
+ * cannot fire — a true/false never satisfies int/float, matching the
+ * explicit guard in the Python source. */
+static bool plg_value_matches(const json_t *value, plg_config_type_t expected) {
+    if (!value) return false;
+    switch (value->type) {
+    case JSON_STRING: return (expected & PLG_CT_STRING) != 0;
+    case JSON_NUMBER:
+        if (expected & PLG_CT_FLOAT) return true;
+        if (expected & PLG_CT_INT) {
+            double d = value->num_val;
+            return d == (double)(long long)d && d >= -9.007199254740992e15 &&
+                   d <= 9.007199254740992e15;
+        }
+        return false;
+    case JSON_BOOL:   return (expected & PLG_CT_BOOL) != 0;
+    case JSON_ARRAY:  return (expected & PLG_CT_LIST) != 0;
+    case JSON_OBJECT: return (expected & PLG_CT_DICT) != 0;
+    default:          return false;
+    }
+}
+
+/* Validate a plugin's config entry against its declared config_schema:
+ * fresh JSON array of human-actionable warnings (caller frees); never
+ * fails — mismatches must not block plugin load (#64165). */
+/* PoP: plg_validate_config_schema @ hermes_cli/plugins.py:validate_config_schema */
+json_t *plg_validate_config_schema(const char *plugin_id,
+                                   const json_t *schema,
+                                   const json_t *settings) {
+    json_t *warnings = json_array();
+    if (!warnings) return NULL;
+    if (!json_is_object(schema) || !json_is_object(settings)) return warnings;
+
+    size_t n = json_object_size(schema);
+    for (size_t i = 0; i < n; i++) {
+        const char *skey = json_object_get_key_at(schema, i);
+        const json_t *spec = json_object_get_at(schema, i);
+        if (!skey || !json_is_object(spec))
+            continue;                       /* not a Mapping spec */
+
+        const json_t *present = json_obj_get(settings, skey);
+        if (!present) {
+            const json_t *required = json_obj_get(spec, "required");
+            if (json_is_true(required) && !json_obj_get(spec, "default")) {
+                char msg[512];
+                snprintf(msg, sizeof(msg),
+                         "plugins.entries.%s.settings.%s is required by the "
+                         "plugin's config_schema but is not set",
+                         plugin_id ? plugin_id : "", skey);
+                json_append(warnings, json_string(msg));
+            }
+            continue;
+        }
+
+        const json_t *stype_node = json_obj_get(spec, "type");
+        const char *stype = json_string_value_safe(stype_node);
+        plg_config_type_t expected =
+            stype ? plg_config_schema_type(stype) : (plg_config_type_t)0;
+        if (expected) {
+            if (!plg_value_matches(present, expected)) {
+                char msg[512];
+                snprintf(msg, sizeof(msg),
+                         "plugins.entries.%s.settings.%s should be %s "
+                         "(got %s)", plugin_id ? plugin_id : "", skey,
+                         stype ? stype : "", plg_json_pytype_name(present));
+                json_append(warnings, json_string(msg));
+            }
+        }
+    }
+    return warnings;
+}
+
+/* Validate and normalize the manifest v2 fields (#64165): fresh JSON object
+ * of PluginManifest kwargs (caller frees); problems warn on stderr only. */
+/* PoP: plg_parse_manifest_v2_fields @ hermes_cli/plugins.py:_parse_manifest_v2_fields */
+json_t *plg_parse_manifest_v2_fields(const json_t *data, const char *key) {
+    json_t *out = json_object();
+    if (!out) return NULL;
+
+    /* manifest_version — absent means v1 (supported forever). */
+    long mv = 1;
+    const json_t *raw_mv = json_is_object(data)
+                               ? json_obj_get(data, "manifest_version") : NULL;
+    if (raw_mv) {
+        if (json_is_number(raw_mv)) {
+            mv = (long)raw_mv->num_val;
+        } else {
+            fprintf(stderr,
+                    "WARNING Plugin %s: manifest_version is not an integer; "
+                    "treating as 1\n", key ? key : "");
+            mv = 1;
+        }
+    }
+    if (mv > PLG_SUPPORTED_MANIFEST_VERSION)
+        fprintf(stderr,
+                "WARNING Plugin %s: manifest_version %ld is newer than this "
+                "Hermes supports (%d); loading anyway and ignoring unknown "
+                "fields\n", key ? key : "", mv, PLG_SUPPORTED_MANIFEST_VERSION);
+    json_set(out, "manifest_version", json_number((double)mv));
+
+    /* api_version — plugin API generation (independent of manifest_version). */
+    const json_t *raw_api =
+        json_is_object(data) ? json_obj_get(data, "api_version") : NULL;
+    if (!raw_api || json_is_null(raw_api)) {
+        json_set(out, "api_version", json_null());
+    } else if (json_is_number(raw_api)) {
+        json_set(out, "api_version",
+                 json_int((long)raw_api->num_val));
+    } else {
+        fprintf(stderr,
+                "WARNING Plugin %s: api_version is not an integer; ignoring\n",
+                key ? key : "");
+        json_set(out, "api_version", json_null());
+    }
+
+    /* requires_plugins — list of {id, version_range?} (str shorthand ok). */
+    json_t *deps = json_array();
+    if (!deps) { json_free(out); return NULL; }
+    const json_t *raw_deps =
+        json_is_object(data) ? json_obj_get(data, "requires_plugins") : NULL;
+    bool deps_bad = raw_deps && !json_is_null(raw_deps) &&
+                    !json_is_array(raw_deps);
+    if (deps_bad)
+        fprintf(stderr,
+                "WARNING Plugin %s: requires_plugins must be a list; ignoring\n",
+                key ? key : "");
+    if (raw_deps && json_is_array(raw_deps)) {
+        size_t nd = json_len(raw_deps);
+        for (size_t i = 0; i < nd; i++) {
+            const json_t *item = json_get(raw_deps, i);
+            if (item && json_is_string(item)) {
+                json_t *dep = json_object();
+                if (!dep) continue;
+                json_set(dep, "id", json_string(json_string_value(item)));
+                json_set(dep, "version_range", json_null());
+                json_append(deps, dep);
+            } else if (item && json_is_object(item)) {
+                const json_t *id = json_obj_get(item, "id");
+                if (json_is_string(id) && json_string_value(id)[0]) {
+                    const json_t *vr = json_obj_get(item, "version_range");
+                    json_t *dep = json_object();
+                    if (!dep) continue;
+                    json_set(dep, "id", json_string(json_string_value(id)));
+                    if (!vr || json_is_null(vr))
+                        json_set(dep, "version_range", json_null());
+                    else
+                        json_set(dep, "version_range",
+                                 json_string(plg_dep_vr_str(vr)));
+                    json_append(deps, dep);
+                } else {
+                    fprintf(stderr,
+                            "WARNING Plugin %s: requires_plugins entry must "
+                            "be a plugin id string or a {id, version_range} "
+                            "mapping; skipping\n", key ? key : "");
+                }
+            } else {
+                fprintf(stderr,
+                        "WARNING Plugin %s: requires_plugins entry must be a "
+                        "plugin id string or a {id, version_range} mapping; "
+                        "skipping\n", key ? key : "");
+            }
+        }
+    }
+    json_set(out, "requires_plugins", deps);
+
+    /* python_dependencies — validated and surfaced ONLY; never auto-installed. */
+    json_t *pydeps = json_array();
+    if (!pydeps) { json_free(out); return NULL; }
+    const json_t *raw_pydeps =
+        json_is_object(data) ? json_obj_get(data, "python_dependencies") : NULL;
+    if (raw_pydeps && !json_is_null(raw_pydeps) && !json_is_array(raw_pydeps))
+        fprintf(stderr,
+                "WARNING Plugin %s: python_dependencies must be a list of "
+                "requirement strings; ignoring\n", key ? key : "");
+    if (raw_pydeps && json_is_array(raw_pydeps)) {
+        size_t np = json_len(raw_pydeps);
+        for (size_t i = 0; i < np; i++) {
+            const json_t *item = json_get(raw_pydeps, i);
+            if (item && json_is_string(item)) {
+                const char *s = json_string_value(item);
+                while (*s == ' ' || *s == '\t' || *s == '\n' ||
+                       *s == '\r') s++;                 /* lstrip */
+                size_t len = strlen(s);
+                while (len && (s[len-1]==' '||s[len-1]=='\t'||
+                               s[len-1]=='\n'||s[len-1]=='\r')) len--; /*rstrip*/
+                if (len) {
+                    char *req = malloc(len + 1);
+                    if (req) {
+                        memcpy(req, s, len);
+                        req[len] = '\0';
+                        json_append(pydeps, json_string(req));
+                        free(req);
+                    }
+                }
+            } else {
+                fprintf(stderr,
+                        "WARNING Plugin %s: python_dependencies entry must be "
+                        "a non-empty requirement string; skipping\n",
+                        key ? key : "");
+            }
+        }
+    }
+    json_set(out, "python_dependencies", pydeps);
+
+    /* config_schema — mapping of key -> {type?, default?, description?,
+     * required?}. Unknown declared types warn; the check is skipped later. */
+    json_t *schema = json_object();
+    if (!schema) { json_free(out); return NULL; }
+    const json_t *raw_schema =
+        json_is_object(data) ? json_obj_get(data, "config_schema") : NULL;
+    if (raw_schema && !json_is_null(raw_schema) && !json_is_object(raw_schema))
+        fprintf(stderr,
+                "WARNING Plugin %s: config_schema must be a mapping; ignoring\n",
+                key ? key : "");
+    if (raw_schema && json_is_object(raw_schema)) {
+        size_t ns = json_object_size(raw_schema);
+        for (size_t i = 0; i < ns; i++) {
+            const char *skey = json_object_get_key_at(raw_schema, i);
+            const json_t *spec = json_object_get_at(raw_schema, i);
+            if (!spec || !json_is_object(spec)) {
+                fprintf(stderr,
+                        "WARNING Plugin %s: config_schema entry %s must be a "
+                        "mapping (e.g. {type: str}); skipping\n",
+                        key ? key : "", skey ? skey : "?");
+                continue;
+            }
+            const json_t *stype_node = json_obj_get(spec, "type");
+            const char *stype = json_string_value_safe(stype_node);
+            if (stype && !plg_config_schema_type(stype))
+                fprintf(stderr,
+                        "WARNING Plugin %s: config_schema key %s declares "
+                        "unknown type %s (known: array, bool, dict, float, "
+                        "int, list, number, object, str, string); type check "
+                        "will be skipped for it\n", key ? key : "",
+                        skey ? skey : "?", stype);
+            json_set(schema, skey, json_copy(spec));
+        }
+    }
+    json_set(out, "config_schema", schema);
+
+    /* Standard metadata. */
+    const char *license_s = json_object_get_string(data, "license", "");
+    json_set(out, "license", json_string(license_s ? license_s : ""));
+    const char *homepage_s = json_object_get_string(data, "homepage", "");
+    json_set(out, "homepage", json_string(homepage_s ? homepage_s : ""));
+
+    json_t *tags = json_array();
+    if (!tags) { json_free(out); return NULL; }
+    const json_t *raw_tags =
+        json_is_object(data) ? json_obj_get(data, "tags") : NULL;
+    if (raw_tags && !json_is_null(raw_tags) && !json_is_array(raw_tags))
+        fprintf(stderr, "WARNING Plugin %s: tags must be a list; ignoring\n",
+                key ? key : "");
+    if (raw_tags && json_is_array(raw_tags)) {
+        size_t nt = json_len(raw_tags);
+        for (size_t i = 0; i < nt; i++) {
+            const json_t *t = json_get(raw_tags, i);
+            if (t && json_is_string(t))
+                json_append(tags, json_string(json_string_value(t)));
+        }
+    }
+    json_set(out, "tags", tags);
+
+    /* Forward compat: unknown fields warn (never fail). Keep v1 manifests
+     * quiet at debug level — they predate the known-field census. */
+    static const char *const KNOWN_MANIFEST_FIELDS[] = {
+        /* v1 */
+        "name", "version", "description", "author", "requires_env",
+        "provides_tools", "provides_hooks", "kind", "hooks", "label",
+        "optional_env", "platforms", "external_dependencies",
+        "pip_dependencies", "provides_browser_providers",
+        "provides_web_providers",
+        /* v2 (#64165) */
+        "manifest_version", "api_version", "requires_plugins",
+        "python_dependencies", "config_schema", "license", "homepage", "tags",
+        /* reserved for sibling sub-issues so their manifests don't warn */
+        "capabilities", "emits", "listens", "hermes", "depends",
+        NULL
+    };
+    char *unknown = NULL;
+    size_t unknown_len = 0;
+    if (json_is_object(data)) {
+        size_t nk = json_object_size(data);
+        for (size_t i = 0; i < nk; i++) {
+            const char *k = json_object_get_key_at(data, i);
+            if (!k) continue;
+            bool known = false;
+            for (size_t j = 0; KNOWN_MANIFEST_FIELDS[j]; j++)
+                if (!strcmp(k, KNOWN_MANIFEST_FIELDS[j])) { known = true; break; }
+            if (known) continue;
+            size_t kl = strlen(k);
+            char *nb = realloc(unknown, unknown_len + kl + 3);
+            if (!nb) break;
+            unknown = nb;
+            if (unknown_len) unknown[unknown_len++] = ',';
+            memcpy(unknown + unknown_len, k, kl);
+            unknown_len += kl;
+            unknown[unknown_len] = '\0';
+        }
+    }
+    if (unknown && unknown_len) {
+        if (mv >= 2)
+            fprintf(stderr,
+                    "WARNING Plugin %s: unknown manifest field(s) ignored: %s "
+                    "(newer manifest schema or typo; plugin still loads)\n",
+                    key ? key : "", unknown);
+        else
+            fprintf(stderr,
+                    "DEBUG Plugin %s: unknown manifest field(s) ignored: %s "
+                    "(newer manifest schema or typo; plugin still loads)\n",
+                    key ? key : "", unknown);
+    }
+    free(unknown);
+
+    return out;
+}
+
+/* str() of a version_range node: strings pass through, numbers/bools get
+ * their Python repr spelling. Caller frees. */
+static char *plg_dep_vr_str(const json_t *vr) {
+    if (json_is_string(vr)) return pc_strdup(json_string_value(vr));
+    char buf[64];
+    if (json_is_bool(vr))
+        snprintf(buf, sizeof(buf), "%s", vr->bool_val ? "True" : "False");
+    else if (json_is_number(vr)) {
+        double d = vr->num_val;
+        if (d == (double)(long long)d)
+            snprintf(buf, sizeof(buf), "%lld", (long long)d);
+        else
+            snprintf(buf, sizeof(buf), "%g", d);
+    } else
+        snprintf(buf, sizeof(buf), "None");
+    return pc_strdup(buf);
+}
+
+/* ── replacement_coordinator.transaction() parity ──────────────────────
+ * registration_lifecycle.ReplacementCoordinator serializes registry
+ * snapshot/write/acquire behind one re-entrant lock; _serialized_replacement
+ * wraps a method so its body runs inside that lock. The C mirror holds the
+ * coordinator mutex across the wrapped call. */
+static pthread_mutex_t plg_replacement_lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+
+/* Snapshot → write → lease attachment as one atomic transaction. */
+/* PoP: plg_serialized_replacement @ hermes_cli/plugins.py:_serialized_replacement */
+void *plg_serialized_replacement(void *(*method)(void *), void *args) {
+    pthread_mutex_lock(&plg_replacement_lock);
+    void *result = method ? method(args) : NULL;
+    pthread_mutex_unlock(&plg_replacement_lock);
+    return result;
+}
+
+/* Source path WITHOUT importing (NULL on anything unexpected); top-level
+ * name via PYTHONPATH + cwd search, dotted parts walked by hand per the
+ * PathFinder file-layout conventions. Caller frees. */
+static bool plg_is_regular_file(const char *path) {
+    struct stat st;
+    return path && stat(path, &st) == 0 && S_ISREG(st.st_mode);
+}
+
+/* PoP: plg_resolve_module_origin @ hermes_cli/plugins.py:resolve_module_origin */
+char *plg_resolve_module_origin(const char *module_name) {
+    if (!module_name) return NULL;
+
+    /* parts = [p for p in module_name.split(".") if p] */
+    char **parts = NULL;
+    size_t n_parts = 0;
+    const char *p = module_name;
+    while (*p) {
+        const char *dot = strchr(p, '.');
+        size_t seg = dot ? (size_t)(dot - p) : strlen(p);
+        if (seg) {
+            char **np = realloc(parts, (n_parts + 1) * sizeof(char *));
+            if (!np) { plugins_free_list(parts, n_parts); return NULL; }
+            parts = np;
+            parts[n_parts] = malloc(seg + 1);
+            if (!parts[n_parts]) {
+                plugins_free_list(parts, n_parts);
+                return NULL;
+            }
+            memcpy(parts[n_parts], p, seg);
+            parts[n_parts][seg] = '\0';
+            n_parts++;
+        }
+        p = dot ? dot + 1 : p + seg;
+    }
+    if (n_parts == 0) { plugins_free_list(parts, n_parts); return NULL; }
+
+    /* Search directories: $PYTHONPATH segments then "." (cwd), like sys.path. */
+    char **dirs = NULL;
+    size_t n_dirs = 0;
+    bool dirs_failed = false;
+    const char *pp = getenv("PYTHONPATH");
+    if (pp && *pp) {
+        const char *q = pp;
+        while (*q) {
+            const char *colon = strchr(q, ':');
+            size_t seg = colon ? (size_t)(colon - q) : strlen(q);
+            char **nd = realloc(dirs, (n_dirs + 1) * sizeof(char *));
+            if (!nd) { dirs_failed = true; break; }
+            dirs = nd;
+            dirs[n_dirs] = malloc(seg + 1);
+            if (!dirs[n_dirs]) { dirs_failed = true; break; }
+            memcpy(dirs[n_dirs], q, seg);
+            dirs[n_dirs][seg] = '\0';
+            n_dirs++;
+            q = colon ? colon + 1 : q + seg;
+        }
+    }
+    if (!dirs_failed) {
+        char **nd = realloc(dirs, (n_dirs + 1) * sizeof(char *));
+        if (nd) {
+            dirs = nd;
+            dirs[n_dirs] = pc_strdup(".");
+            if (dirs[n_dirs]) n_dirs++;
+        }
+    }
+
+    char *result = NULL;
+    char *search_dir = NULL;   /* current submodule_search_locations (single dir) */
+    bool have_search_dir = false;
+
+    for (size_t pi = 0; pi < n_parts; pi++) {
+        const char *part = parts[pi];
+        char *found_origin = NULL;
+        char *next_dir = NULL;
+
+        size_t ndir = have_search_dir ? 1 : n_dirs;
+        for (size_t di = 0; di < ndir; di++) {
+            const char *base = have_search_dir ? search_dir : dirs[di];
+
+            size_t need = strlen(base) + 1 + strlen(part) +
+                          strlen("/__init__.py") + 1;
+            char *pkg_init = malloc(need);
+            char *mod_file = malloc(strlen(base) + 1 + strlen(part) + 4);
+            if (!pkg_init || !mod_file) {
+                free(pkg_init); free(mod_file);
+                continue;
+            }
+            snprintf(pkg_init, need, "%s/%s/__init__.py", base, part);
+            snprintf(mod_file, need, "%s/%s.py", base, part);
+
+            if (plg_is_regular_file(pkg_init)) {
+                found_origin = pkg_init;
+                next_dir = malloc(strlen(base) + 1 + strlen(part) + 1);
+                if (next_dir) snprintf(next_dir, strlen(base) + 1 +
+                                       strlen(part) + 1, "%s/%s", base, part);
+                else { free(pkg_init); found_origin = NULL; }
+            } else if (plg_is_regular_file(mod_file)) {
+                found_origin = mod_file;
+            } else {
+                free(pkg_init);
+                free(mod_file);
+            }
+            if (found_origin) break;
+        }
+
+        if (!found_origin) goto done;      /* except Exception: return None */
+
+        if (pi + 1 == n_parts || !next_dir) {
+            result = found_origin;
+            goto done;
+        }
+        free(search_dir);
+        search_dir = next_dir;
+        have_search_dir = true;
+    }
+
+done:
+    free(search_dir);
+    plugins_free_list(dirs, n_dirs);
+    plugins_free_list(parts, n_parts);
+    return result;
 }
