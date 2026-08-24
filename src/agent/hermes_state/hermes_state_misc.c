@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <sys/statvfs.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <sqlite3.h>
@@ -4347,4 +4348,44 @@ double hermes_state_repair_backup_headroom_bytes(double total_bytes) {
     const double MIN_FREE = 256.0 * 1024.0 * 1024.0;
     double frac = total_bytes * 0.02;
     return (frac > MIN_FREE) ? frac : MIN_FREE;   /* Python max(a,b): a unless b>a */
+}
+
+/* PoP: hermes_state_repair_scratch_space_error @ hermes_state.py:_repair_scratch_space_error */
+char *hermes_state_repair_scratch_space_error(const char *db_path) {
+    /* NULL = space is fine. Otherwise a malloc'd human-readable error.
+     * Required = snapshot(main+sidecars) + 2x snapshot (VACUUM reserve)
+     * + backup headroom; compares against the volume's free bytes. */
+    extern double hermes_state_repair_backup_headroom_bytes(double total_bytes);
+    if (!db_path || !*db_path) return NULL;
+
+    struct stat st;
+    if (stat(db_path, &st) != 0) return NULL;
+    double snapshot_bytes = (double)st.st_size;
+    static const char *SIDECARS[] = { "-wal", "-shm", "-journal" };
+    for (int i = 0; i < 3; i++) {
+        char side[4200];
+        snprintf(side, sizeof(side), "%s%s", db_path, SIDECARS[i]);
+        struct stat ss;
+        if (stat(side, &ss) == 0) snapshot_bytes += (double)ss.st_size;
+    }
+
+    /* volume of the db's parent directory */
+    char parent[4200];
+    snprintf(parent, sizeof(parent), "%s", db_path);
+    char *slash = strrchr(parent, '/');
+    if (slash) *slash = '\0'; else strcpy(parent, ".");
+    struct statvfs vfs;
+    if (statvfs(parent, &vfs) != 0) return NULL;
+    double total = (double)vfs.f_frsize * (double)vfs.f_blocks;
+    double free_b = (double)vfs.f_frsize * (double)vfs.f_bavail;
+    double headroom = hermes_state_repair_backup_headroom_bytes(total);
+
+    double required = snapshot_bytes + (2.0 * snapshot_bytes) + headroom;
+    if (free_b >= required) return NULL;
+    char *msg = malloc(256);
+    if (!msg) return NULL;
+    snprintf(msg, 256,
+             "Insufficient free space for repair: need %.0f bytes, have %.0f.",
+             required, free_b);
+    return msg;
 }
