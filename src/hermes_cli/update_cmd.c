@@ -4504,3 +4504,20 @@ bool upd_is_zip_staging_artifact_status_line(const char *line) {
 
     return upd_ends_with_staging_suffix(norm);
 }
+
+/* PoP: upd_print_parked_branch_kept_notice @ hermes_cli/update_cmd.py:_print_parked_branch_kept_notice */
+void upd_print_parked_branch_kept_notice(const char *current_branch,
+                                         const char *target_branch,
+                                         const char *unmerged_count) {
+    /* LOUD notice when a clean parked branch with unmerged commits is
+     * auto-switched back to the update target. */
+    const char *bar = "==============================================================";
+    printf("\n%s\n", bar);
+    printf("\u26a0 Checkout was parked on '%s' with %s commit(s) not merged "
+           "into origin/%s.\n", current_branch, unmerged_count, target_branch);
+    printf("  Switching to %s so the update can proceed -- your commit(s) are "
+           "safe on '%s'.\n", target_branch, current_branch);
+    printf("\n  To pick the work back up later:\n");
+    printf("    git checkout %s\n", current_branch);
+    printf("%s\n", bar);
+}
