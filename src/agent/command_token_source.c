@@ -47,6 +47,7 @@ static void mint_alarm_handler(int sig)
     g_mint_timed_out = 1;
 }
 
+/* PoP: _mint @ agent/command_token_source.py:_mint */
 char *command_token_source__mint(const char *command, const char *label,
                                  char *err, size_t err_sz, double *out_ttl)
 {

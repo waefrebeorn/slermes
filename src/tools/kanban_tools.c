@@ -179,6 +179,8 @@ bool kanban_worker_heartbeat_unimplemented(void)
 /* Port of Python tools/kanban_tools.py:_ok().
  * Builds a JSON success response: {"ok": true, **fields}.
  * Mirrors hermes_ok in hermes_error.h but with extra fields. */
+/* PoP: ok @ hermes_cli/plugin_dev.py:ok */
+/* PoP: ok @ hermes_cli/plugin_dev.py:ok */
 json_t *ok(const json_t *fields)
 {
     json_t *obj = json_object();

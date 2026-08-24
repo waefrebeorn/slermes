@@ -25,6 +25,8 @@ int is_persistence_only_message_field(const char *key) {
  * Attach a creation timestamp without replacing source-provided time.
  * Works on a json object message mapping (libjson). Returns the same
  * message pointer, like the Python helper returns the same mapping. */
+/* PoP: stamp_message_timestamp @ agent/message_metadata.py:stamp_message_timestamp */
+/* PoP: stamp_message_timestamp @ agent/message_metadata.py:stamp_message_timestamp */
 json_t *stamp_message_timestamp(json_t *message, double timestamp) {
     if (!message || message->type != JSON_OBJECT) return message;
     json_t *existing = json_object_get(message, "timestamp");

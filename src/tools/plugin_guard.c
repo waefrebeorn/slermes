@@ -264,6 +264,7 @@ int plugin_guard__pattern_exempt_on_code(const char *pattern_id)
     return str_in(PG_CODE_EXEMPT_PATTERN_IDS, pattern_id);
 }
 
+/* PoP: _filter_findings @ tools/plugin_guard.py:_filter_findings */
 void plugin_guard__filter_findings(const pg_finding_list_t *in,
                                    const char *rel_path,
                                    pg_finding_list_t *out)
@@ -346,6 +347,7 @@ static void walk(const char *root, const char *prefix, pg_file_t **arr,
     closedir(d);
 }
 
+/* PoP: _check_plugin_structure @ tools/plugin_guard.py:_check_plugin_structure */
 pg_finding_list_t *plugin_guard__check_plugin_structure(const char *dir)
 {
     pg_finding_list_t *out = calloc(1, sizeof *out);
@@ -403,6 +405,7 @@ pg_finding_list_t *plugin_guard__check_plugin_structure(const char *dir)
     return out;
 }
 
+/* PoP: scan_plugin @ tools/plugin_guard.py:scan_plugin */
 pg_plugin_scan_result_t *plugin_guard_scan_plugin(const char *plugin_dir,
                                                   const char *source)
 {

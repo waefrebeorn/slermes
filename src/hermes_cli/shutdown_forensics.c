@@ -234,6 +234,7 @@ json_node_t* cli_gateway_shutdown_forensics_check_systemd_timing_alignment(doubl
  * pair is applied. Units: us/ms/s/sec/min/h/hr. A bare number (no unit)
  * means SECONDS. Unknown unit, empty input, or total==0 => None, which we
  * signal as -1 (the Python return type is Optional[int]). */
+/* PoP: parse_systemd_duration_to_us @ gateway/shutdown_forensics.py:parse_systemd_duration_to_us */
 long cli_gateway_shutdown_forensics__parse_systemd_duration_to_us(const char *raw) {
     if (!raw || !*raw) return -1;
     static const struct { const char *u; long mult; } UNITS[] = {

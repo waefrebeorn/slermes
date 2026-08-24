@@ -39,6 +39,7 @@ static const char *const SECRETS_CLASS_CHECKS[] = {
     "private_keys",
 };
 
+/* PoP: is_secrets_class @ tools/skillevaluator_scan.py:is_secrets_class */
 bool skillevaluator_scan_is_secrets_class(const char *check) {
     if (!check) return false;
     for (size_t i = 0; i < sizeof(SECRETS_CLASS_CHECKS) / sizeof(SECRETS_CLASS_CHECKS[0]); i++) {
@@ -87,6 +88,7 @@ static char *str_truncate_200(const char *s) {
 /* ------------------------------------------------------------------ */
 /* splits                                                              */
 /* ------------------------------------------------------------------ */
+/* PoP: advisory_findings @ tools/skillevaluator_scan.py:advisory_findings */
 size_t skillevaluator_scan_advisory_findings(const skillevaluator_scan_report_t *r,
                                              skillevaluator_scan_finding_t **out) {
     size_t n = 0;
@@ -101,6 +103,7 @@ size_t skillevaluator_scan_advisory_findings(const skillevaluator_scan_report_t 
     return n;
 }
 
+/* PoP: secrets_findings @ tools/skillevaluator_scan.py:secrets_findings */
 size_t skillevaluator_scan_secrets_findings(const skillevaluator_scan_report_t *r,
                                             skillevaluator_scan_finding_t **out) {
     size_t n = 0;
@@ -141,6 +144,7 @@ static char *json_str_or(const json_t *obj, const char *key, const char *def) {
     return xstrdup(def);
 }
 
+/* PoP: _parse_report @ tools/skillevaluator_scan.py:_parse_report */
 skillevaluator_scan_report_t *skillevaluator_scan_parse_report(const json_t *report) {
     skillevaluator_scan_report_t *r = calloc(1, sizeof(*r));
     if (!r) return NULL;
@@ -227,6 +231,7 @@ skillevaluator_scan_report_t *skillevaluator_scan_parse_report(const json_t *rep
 /* ------------------------------------------------------------------ */
 /* format_tier1_report                                                 */
 /* ------------------------------------------------------------------ */
+/* PoP: format_tier1_report @ tools/skillevaluator_scan.py:format_tier1_report */
 char *skillevaluator_scan_format_tier1_report(const skillevaluator_scan_report_t *r,
                                               int limit) {
     if (!r || !r->available) return strdup("");
@@ -291,6 +296,7 @@ char *skillevaluator_scan_format_tier1_report(const skillevaluator_scan_report_t
 /* scanner_available                                                   */
 /* ------------------------------------------------------------------ */
 /* shutil.which(SCANNER_BIN): search PATH for an executable file. */
+/* PoP: scanner_available @ tools/skillevaluator_scan.py:scanner_available */
 static bool default_scanner_available(void) {
     const char *path_env = getenv("PATH");
     if (!path_env) path_env = "/usr/bin:/bin";
@@ -414,6 +420,7 @@ static char *newest_report_path(const char *outdir) {
     return full;
 }
 
+/* PoP: run_tier1_scan @ tools/skillevaluator_scan.py:run_tier1_scan */
 skillevaluator_scan_report_t *skillevaluator_run_tier1_scan(const char *skill_dir,
                                                             int timeout) {
     skillevaluator_scan_report_t *unavail = calloc(1, sizeof(*unavail));

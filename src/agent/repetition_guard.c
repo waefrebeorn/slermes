@@ -93,6 +93,7 @@ static void rg_map_free(rg_map_t *m) {
 /* PoP: _line_repetition_dominated @ agent/repetition_guard.py         */
 /* ------------------------------------------------------------------ */
 
+/* PoP: _line_repetition_dominated @ agent/repetition_guard.py:_line_repetition_dominated */
 static int repetition_guard_line_repetition_dominated(const char *text, size_t n) {
     rg_map_t counts;
     if (rg_map_init(&counts, 64) != 0) return 0;
@@ -147,6 +148,7 @@ static int repetition_guard_line_repetition_dominated(const char *text, size_t n
 /* PoP: is_repetition_dominated @ agent/repetition_guard.py            */
 /* ------------------------------------------------------------------ */
 
+/* PoP: is_repetition_dominated @ agent/repetition_guard.py:is_repetition_dominated */
 int repetition_guard_is_repetition_dominated(const char *text) {
     if (!text) return 0;  /* non-string / absent input fails open */
     size_t n = strlen(text);

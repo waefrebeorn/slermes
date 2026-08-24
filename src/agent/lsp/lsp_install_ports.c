@@ -22,6 +22,7 @@ static char *lowerdup(const char *s) {
 }
 
 /* PoP: lspi_is_windows @ agent/lsp/install.py:_is_windows */
+/* PoP: _is_windows @ hermes_cli/_install_repair.py:_is_windows */
 bool lspi_is_windows(void) {
     /* Python: os.name == "nt" — REAL uname probe. */
 #ifdef _WIN32

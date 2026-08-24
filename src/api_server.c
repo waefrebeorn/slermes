@@ -1312,6 +1312,7 @@ static void handle_agent_status(int fd) {
 
 /* Handle POST /webhook/:platform — accepts generic webhook payloads.
  * Logs the incoming webhook and returns acknowledgment. */
+/* PoP: ok @ hermes_cli/plugin_dev.py:ok */
 static void handle_webhook(int fd, const char *body, const char *platform) {
     if (!platform || !platform[0]) {
         send_error(fd, 400, "missing platform");

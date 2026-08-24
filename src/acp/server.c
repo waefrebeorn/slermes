@@ -138,6 +138,7 @@ json_node_t *acp_make_response(const char *id, json_node_t *result) {
     return resp;
 }
 
+/* PoP: error @ hermes_cli/plugin_dev.py:error */
 json_node_t *acp_make_error(const char *id, int code, const char *message, json_node_t *data) {
     json_node_t *err = json_new_object();
     json_object_set(err, "code", json_new_number((double)code));

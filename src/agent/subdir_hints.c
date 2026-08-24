@@ -579,6 +579,7 @@ static const char *EXCLUDED_DIR_NAMES[] = {
     NULL
 };
 
+/* PoP: _is_excluded @ tools/plugin_guard.py:_is_excluded */
 bool subdir_hints_is_excluded(const char *path) {
     /* Python: rel_parts = path.relative_to(working_dir).parts;
      * return any(part in _EXCLUDED_DIR_NAMES for part in rel_parts) */

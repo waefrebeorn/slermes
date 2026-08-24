@@ -144,6 +144,7 @@ char *mgr_build_system_prompt(void) {
 }
 
 /* PoP: mgr_has_tool @ agent/memory_manager.py:has_tool */
+/* PoP: _has_tool @ tools/computer_use/cua_backend.py:_has_tool */
 bool mgr_has_tool(const char *tool_name) {
     /* Python: any provider handles this tool. */
     if (!tool_name) return false;

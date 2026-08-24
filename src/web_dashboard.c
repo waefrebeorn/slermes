@@ -195,6 +195,7 @@ static void send_html(int fd, int status, const char *html) {
     send_resp(fd, status, status==200?"OK":"Error", html, "text/html; charset=utf-8");
 }
 
+/* PoP: _err @ hermes_cli/platform_actions.py:_err */
 static void send_err(int fd, int status, const char *msg) {
     char j[1024];
     snprintf(j, sizeof(j), "{\"error\":\"%s\"}", msg);

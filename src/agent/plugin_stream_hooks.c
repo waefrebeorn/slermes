@@ -207,6 +207,7 @@ const char *plugin_stream_hooks__callback_name(const psh_callback_t *cb)
 /* consumer lookup (_registered_callbacks)                              */
 /* ------------------------------------------------------------------ */
 
+/* PoP: _registered_callbacks @ agent/plugin_stream_hooks.py:_registered_callbacks */
 size_t plugin_stream_hooks__registered_callbacks(const char *hook_name,
                                                  psh_callback_t *out,
                                                  size_t out_cap)
@@ -248,6 +249,7 @@ void plugin_stream_hooks_set_consumer_registry(const char *hook_name,
 /* dispatcher lifecycle                                                */
 /* ------------------------------------------------------------------ */
 
+/* PoP: _stop_dispatcher @ agent/plugin_stream_hooks.py:_stop_dispatcher */
 static void psh_stop_dispatcher(psh_dispatcher_t *d, double timeout)
 {
     psh_item_t stop = { .is_stop = 1, .payload = NULL };
@@ -267,6 +269,7 @@ static void psh_stop_dispatcher(psh_dispatcher_t *d, double timeout)
 /* Returns malloc'd array of NEW dispatcher lists matching hook_name,
  * creating one worker thread per fresh callback and stopping stale ones.
  * Caller frees the array (dispatchers themselves stay owned by the module). */
+/* PoP: _dispatchers_for @ agent/plugin_stream_hooks.py:_dispatchers_for */
 static psh_dispatcher_t **psh_dispatchers_for(const char *hook_name, size_t *out_n)
 {
     psh_callback_t cbs[64];

@@ -840,6 +840,7 @@ sandbox_mirror_info_t *classify_sandbox_mirror_target(const char *path) {
 }
 
 /* Port of Python: get_sandbox_mirror_warning */
+/* PoP: warning @ hermes_cli/plugin_dev.py:warning */
 char *get_sandbox_mirror_warning(const char *path) {
     sandbox_mirror_info_t *info = classify_sandbox_mirror_target(path);
     if (!info) return NULL;

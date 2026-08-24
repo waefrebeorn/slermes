@@ -28,6 +28,7 @@
 
 /* ── external reuse (port_auth_na.c) ── */
 extern char *auth_file_path(void);           /* malloc'd <home>/auth.json */
+/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
 extern char *_global_auth_file_path(void);    /* malloc'd or NULL */
 extern int   has_usable_secret(const char *value, int min_length);
 /* port_config_py_io.c */

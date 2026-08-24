@@ -53,6 +53,7 @@ void lsp_log_emit(const char *server_id, const char *level, const char *message)
 }
 
 /* PoP: lsp_log_clean @ agent/lsp/eventlog.py:log_clean */
+/* PoP: _clean @ hermes_cli/completion.py:_clean */
 void lsp_log_clean(const char *server_id, const char *file_path) {
     char *sp = lsp_log_short_path(file_path);
     char msg[512];

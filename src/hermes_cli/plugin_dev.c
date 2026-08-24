@@ -99,6 +99,7 @@ bool pd_report_ok(const pd_report_t *r) {
     return true;
 }
 
+/* PoP: format_text @ hermes_cli/plugin_dev.py:format_text */
 char *plugin_dev_format_text(const pd_report_t *r) {
     size_t cap = 256;
     for (size_t i = 0; i < r->n_findings; i++) cap += strlen(r->findings[i].message) + 32;
@@ -163,6 +164,7 @@ static char *expanduser_path(const char *raw, const char *cwd) {
     return strdup(raw ? raw : ".");
 }
 
+/* PoP: resolve_plugin_path @ hermes_cli/plugin_dev.py:resolve_plugin_path */
 char *plugin_dev_resolve_plugin_path(const char *target,
                                      const char *hermes_home,
                                      const char *bundled_dir,
@@ -312,6 +314,7 @@ static char *msg_printf(const char *fmt, ...) {
     return strdup(stackbuf);
 }
 
+/* PoP: _check_manifest_v2 @ hermes_cli/plugin_dev.py:_check_manifest_v2 */
 void plugin_dev_check_manifest_v2(pd_report_t *report, const json_t *manifest) {
     /* mv = getattr(manifest, "manifest_version", 1) */
     long mv = 1;

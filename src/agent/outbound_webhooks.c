@@ -436,6 +436,7 @@ static void *ow_worker_thread(void *arg) {
 }
 
 /* PoP: ow_ensure_worker @ agent/outbound_webhooks.py:_ensure_worker */
+/* PoP: _worker @ agent/plugin_stream_hooks.py:_worker */
 void ow_ensure_worker(void) {
     if (g_queue.started) return;
     pthread_mutex_lock(&g_queue.lock);

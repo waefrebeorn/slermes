@@ -56,6 +56,7 @@ int platform_actions_capability_granted(const platform_actions_t *pa)
 
 /* ── PoP: _resolve_adapter — (adapter, error_dict), exactly one non-None ─ */
 
+/* PoP: _resolve_adapter @ hermes_cli/platform_actions.py:_resolve_adapter */
 const pa_adapter_t *platform_actions_resolve_adapter(
     const platform_actions_t *pa, const char *platform, json_t **out_err)
 {
@@ -166,6 +167,7 @@ const pa_adapter_t *platform_actions_gate(const platform_actions_t *pa,
 
 /* ── PoP: add_reaction / set_thread_title v1 verbs ─────────────────────── */
 
+/* PoP: add_reaction @ hermes_cli/platform_actions.py:add_reaction */
 json_t *platform_actions_add_reaction(const platform_actions_t *pa,
                                       const char *platform,
                                       const char *chat_id,
@@ -207,6 +209,7 @@ json_t *platform_actions_add_reaction(const platform_actions_t *pa,
     return result;
 }
 
+/* PoP: set_thread_title @ hermes_cli/platform_actions.py:set_thread_title */
 json_t *platform_actions_set_thread_title(const platform_actions_t *pa,
                                           const char *platform,
                                           const char *chat_id,
@@ -255,6 +258,7 @@ json_t *platform_actions_set_thread_title(const platform_actions_t *pa,
 
 /* ── PoP: _discord_add_reaction ────────────────────────────────────────── */
 
+/* PoP: _discord_add_reaction @ hermes_cli/platform_actions.py:_discord_add_reaction */
 json_t *platform_actions_discord_add_reaction(const pa_adapter_t *adapter,
                                               const char *chat_id,
                                               const char *message_id,

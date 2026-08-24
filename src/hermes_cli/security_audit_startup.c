@@ -93,6 +93,7 @@ int hermes_cli_security_audit_star_u_network_listener_without_auth(const char *a
 }
 
 /* PoP: hermes_cli_security_audit_star_run_security_audit @ hermes_cli/security_audit_startup.py:run_security_audit */
+/* PoP: _audit @ hermes_cli/platform_actions.py:_audit */
 int hermes_cli_security_audit_star_run_security_audit(const char *arg) {
     /* Python: run all checks, fail-safe. Arg = "findings_json\tcount". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }

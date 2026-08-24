@@ -1781,6 +1781,7 @@ int ws_raise_if_cron_registration_error(const char *error_msg,
 /* Return "linux:<starttime>" for pid from /proc/<pid>/stat field 22.
  * Returns false when the process is absent (ProcessLookupError) or the stat
  * data is malformed (OSError) — callers fail safe. */
+/* PoP: _process_start_marker @ hermes_cli/web_server.py:_process_start_marker */
 static bool ws_process_start_marker(int pid, char *out, size_t sz) {
     char path[64];
     snprintf(path, sizeof(path), "/proc/%d/stat", pid);
@@ -1808,6 +1809,7 @@ static bool ws_process_start_marker(int pid, char *out, size_t sz) {
     return true;
 }
 
+/* PoP: _valid_parent_start_marker @ hermes_cli/web_server.py:_valid_parent_start_marker */
 static bool ws_valid_parent_start_marker(const char *marker) {
     if (!marker) return false;
     const char *colon = strchr(marker, ':');
@@ -1832,6 +1834,7 @@ static bool ws_valid_parent_start_marker(const char *marker) {
     return strcmp(prefix, "ps") == 0;
 }
 
+/* PoP: _parent_start_markers_match @ hermes_cli/web_server.py:_parent_start_markers_match */
 static bool ws_parent_start_markers_match(const char *actual, const char *expected) {
     if (!actual || !expected) return false;
     if (strcmp(actual, expected) == 0) return true;

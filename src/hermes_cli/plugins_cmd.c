@@ -402,6 +402,7 @@ static void p_flat_install_dir(const char *ident, char *out, size_t sz) {
 }
 
 /* Install metadata sidecar: <home>/plugins/.install-metadata.json */
+/* PoP: _read_install_metadata @ hermes_cli/plugins_cmd.py:_read_install_metadata */
 static json_t *p_read_install_metadata(void) {
     char home[1024], path[2048];
     p_home(home, sizeof home);
@@ -416,6 +417,7 @@ static json_t *p_read_install_metadata(void) {
     return meta ? meta : json_object();
 }
 
+/* PoP: _write_install_metadata @ hermes_cli/plugins_cmd.py:_write_install_metadata */
 static int p_write_install_metadata(const json_t *meta) {
     char home[1024], path[2048], tmp[2200];
     p_home(home, sizeof home);

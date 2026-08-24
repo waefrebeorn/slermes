@@ -462,6 +462,7 @@ static char *pending_filename(const char *platform) {
     return n;
 }
 
+/* PoP: generate_code @ gateway/pairing.py:generate_code */
 char *pairing_generate_code(pairing_store_t *st, const char *platform, const char *user_id, const char *user_name, double now) {
     cleanup_expired(st, platform, now);
     char *pname = pending_filename(platform);

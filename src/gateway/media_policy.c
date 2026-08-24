@@ -35,6 +35,7 @@ static int mp_truthy(const json_t *v) {
     }
 }
 
+/* PoP: _load_gateway_cfg @ gateway/media_policy.py:_load_gateway_cfg */
 json_t *media_policy_load_gateway_cfg(json_t *config) {
     if (!config) {
         config = credential_pool_load_config_safe();

@@ -142,6 +142,7 @@ static int rg(const char *const args[], const char *cwd,
  * True when the terminal backend is local (worktrees visible to tools).
  * Default hook reads config.yaml's terminal.backend via the shared loader
  * seam; NULL hook means legacy entry point => local (Python's except path). */
+/* PoP: local_backend_active @ tools/subagent_worktree.py:local_backend_active */
 int local_backend_active(void)
 {
     if (subagent_worktree_local_backend_hook)
@@ -150,6 +151,7 @@ int local_backend_active(void)
 }
 
 /* PoP: resolve_repo_root @ tools/subagent_worktree.py */
+/* PoP: resolve_repo_root @ tools/subagent_worktree.py:resolve_repo_root */
 char *resolve_repo_root(const char *path)
 {
     if (!path || !path[0]) return NULL;
@@ -183,6 +185,7 @@ char *resolve_repo_root(const char *path)
 }
 
 /* PoP: _ensure_gitignore_entry @ tools/subagent_worktree.py */
+/* PoP: _ensure_gitignore_entry @ tools/subagent_worktree.py:_ensure_gitignore_entry */
 void subagent_worktree__ensure_gitignore_entry(const char *repo_root)
 {
     if (!repo_root || !repo_root[0]) return;
@@ -224,6 +227,7 @@ void subagent_worktree__ensure_gitignore_entry(const char *repo_root)
 /* PoP: create_subagent_worktree @ tools/subagent_worktree.py
  * Returns a malloc'd JSON object string {"path","branch","repo_root",
  * "base_commit"} or NULL on silent downgrade. */
+/* PoP: create_subagent_worktree @ tools/subagent_worktree.py:create_subagent_worktree */
 char *create_subagent_worktree(const char *parent_cwd, const char *subagent_id)
 {
     char *repo_root = resolve_repo_root(parent_cwd);
@@ -328,6 +332,7 @@ char *create_subagent_worktree(const char *parent_cwd, const char *subagent_id)
 
 /* PoP: mark_worktree_payload_unproven @ tools/subagent_worktree.py (#88113).
  * Mutates the payload object in place and returns it. */
+/* PoP: mark_worktree_payload_unproven @ tools/subagent_worktree.py:mark_worktree_payload_unproven */
 json_t *mark_worktree_payload_unproven(json_t *payload, const char *reason,
                                        const char *unmeasured)
 {
@@ -351,6 +356,7 @@ json_t *mark_worktree_payload_unproven(json_t *payload, const char *reason,
 }
 
 /* PoP: unproven_worktree_payload @ tools/subagent_worktree.py */
+/* PoP: unproven_worktree_payload @ tools/subagent_worktree.py:unproven_worktree_payload */
 json_t *unproven_worktree_payload(json_t *info, const char *reason)
 {
     json_t *payload = json_new_object();
@@ -368,6 +374,7 @@ json_t *unproven_worktree_payload(json_t *info, const char *reason)
 
 /* PoP: finalize_subagent_worktree @ tools/subagent_worktree.py.
  * Returns a malloc'd JSON payload string. prune != 0 mirrors prune=True. */
+/* PoP: finalize_subagent_worktree @ tools/subagent_worktree.py:finalize_subagent_worktree */
 char *finalize_subagent_worktree(json_t *info, int prune)
 {
     json_t *jp = info ? json_object_get(info, "path") : NULL;
@@ -484,6 +491,7 @@ emit:
 }
 
 /* PoP: build_worktree_context_note @ tools/subagent_worktree.py */
+/* PoP: build_worktree_context_note @ tools/subagent_worktree.py:build_worktree_context_note */
 char *build_worktree_context_note(const char *path, const char *branch)
 {
     size_t cap = strlen(path) + strlen(branch) + 640;

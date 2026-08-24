@@ -69,6 +69,7 @@ void registry_init_close_terminal(void);
  * gate OFF -> writes flow freely (allow); gate ON -> stage (the core binary
  * has no interactive prompt channel, mirroring Python's None -> stage). */
 extern int  cli_tools_write_approval_write_approval_enabled(const char *subsystem);
+/* PoP: _gate @ hermes_cli/platform_actions.py:_gate */
 extern int  cli_tools_write_approval_evaluate_gate(const char *subsystem, const char *action, const char *detail);
 extern json_node_t *cli_tools_write_approval_stage_write(const char *subsystem, const json_node_t *payload, const char *summary, const char *origin);
 

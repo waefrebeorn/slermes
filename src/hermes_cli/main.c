@@ -393,6 +393,7 @@ bool _try_redownload_electron_dist(const char* project_root, const char* env)
 #include "hermes_json.h"
 
 /* ── startup_fast wrappers (defined in port_startup_fast.c) ─────────── */
+/* PoP: _is_termux_env @ hermes_cli/_install_repair.py:_is_termux_env */
 extern bool sf_is_termux_env(void);
 extern bool sf_is_termux_fast_version_argv(int argc, char **argv);
 extern bool sf_is_global_fast_version_argv(int argc, char **argv);

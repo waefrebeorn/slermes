@@ -84,6 +84,7 @@ void vc_result_free(vc_result_t *r)
 
 /* ── PoP: _merge_project_facts_commands ────────────────────────────────── */
 
+/* PoP: _merge_project_facts_commands @ hermes_cli/verify_cmd.py:_merge_project_facts_commands */
 void verify_cmd_merge_project_facts_commands(vc_recipe_t *recipe,
                                              const char *const *commands,
                                              size_t n_commands)
@@ -132,6 +133,7 @@ void verify_cmd_merge_project_facts_commands(vc_recipe_t *recipe,
 
 /* ── PoP: _record_evidence ─────────────────────────────────────────────── */
 
+/* PoP: _record_evidence @ hermes_cli/verify_cmd.py:_record_evidence */
 char *verify_cmd_record_evidence(const char *root, const vc_recipe_t *recipe,
                                  const vc_result_t *result, int partial,
                                  const verify_cmd_hooks_t *hooks,
@@ -178,6 +180,7 @@ char *verify_cmd_record_evidence(const char *root, const vc_recipe_t *recipe,
 
 /* ── PoP: _print_human_report ──────────────────────────────────────────── */
 
+/* PoP: _print_human_report @ hermes_cli/verify_cmd.py:_print_human_report */
 void verify_cmd_print_human_report(const vc_recipe_t *recipe,
                                    const char *source,
                                    const vc_result_t *result, FILE *out)
@@ -244,6 +247,7 @@ void verify_cmd_print_human_report(const vc_recipe_t *recipe,
 
 /* ── PoP: run_verify_command ───────────────────────────────────────────── */
 
+/* PoP: run_verify_command @ hermes_cli/verify_cmd.py:run_verify_command */
 int verify_cmd_run_verify_command(const verify_cmd_args_t *args,
                                   const verify_cmd_hooks_t *hooks,
                                   const char *session_id)

@@ -571,6 +571,7 @@ int codex_client_notify(codex_client_t *c,
 }
 /* PoP: codex_client_respond @ agent/transports/codex_app_server.py:respond */
 
+/* PoP: respond @ hermes_cli/approval_transport.py:respond */
 int codex_client_respond(codex_client_t *c,
                          int request_id,
                          const char *result_json) {

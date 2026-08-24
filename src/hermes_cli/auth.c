@@ -405,6 +405,8 @@ char *auth_file_path(void)
  * Returns malloc'd global-root auth.json when in profile mode (root != home),
  * else NULL (classic mode). Caller frees result (or ignores NULL). */
 /* PoP: _global_auth_file_path @ hermes_cli/auth.py:_auth_file_path */
+/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
+/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
 char *_global_auth_file_path(void)
 {
     const char *home = auth_hermes_home();

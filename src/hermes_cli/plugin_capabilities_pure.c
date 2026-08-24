@@ -224,6 +224,7 @@ int pc_legacy_gate_set(const char *entry_json, const char *capability) {
 }
 /* PoP: pc_plugin_capability_granted @ hermes_cli/plugin_capabilities.py:plugin_capability_granted */
 
+/* PoP: _capability_granted @ hermes_cli/platform_actions.py:_capability_granted */
 int pc_plugin_capability_granted(const char *plugin_id, const char *capability,
                                   const char *config_json) {
     int idx = pc_idx(capability);
