@@ -4219,3 +4219,96 @@ bool hermes_state_reopen_orphaned_compression_session(hermes_state_db_t *db,
     sqlite3_finalize(up);
     return ok && sqlite3_changes(db->db) == 1;
 }
+
+/* ── test-context detection trio (v706 parity batch) ───────────────── */
+
+/* PoP: hermes_state_process_looks_like_pytest @ hermes_state.py:_process_looks_like_pytest */
+bool hermes_state_process_looks_like_pytest(const char *cmdline) {
+    /* cmdline is a NUL-separated argv snapshot (procps style). True when any
+     * token's basename is "pytest" or (token "python"/"python3"-like with a
+     * later bare "-m pytest"). Unreadable/empty => false (fail open). */
+    if (!cmdline || !*cmdline) return false;
+    const char *p = cmdline;
+    bool saw_python = false;
+    while (*p) {
+        /* token = [p, e) */
+        const char *e = p;
+        while (*e) e++;
+        /* strip quotes and take basename across both separators */
+        const char *b = p;
+        const char *q = p;
+        while (q < e) {
+            if (*q == '/' ) b = q + 1;
+            q++;
+        }
+        size_t blen = (size_t)(e - b);
+        char tok[256];
+        if (blen < sizeof(tok)) {
+            size_t k = 0;
+            for (const char *r = b; r < e && k < sizeof(tok) - 1; r++) {
+                if (*r != '"' && *r != '\'') tok[k++] = *r;
+            }
+            tok[k] = '\0';
+            /* basename again after quote-strip */
+            char *base = strrchr(tok, '/');
+            base = base ? base + 1 : tok;
+            if (strcmp(base, "pytest") == 0) return true;
+            if (strncmp(base, "python", 6) == 0 &&
+                (base[6] == '\0' || (base[6] == '.'))) 
+                saw_python = true;
+            else if (saw_python && strcmp(base, "-m") == 0)
+                ; /* -m alone isn't proof; pytest token must follow */
+        }
+        p = e + 1;
+    }
+    (void)saw_python;
+    return false;
+}
+
+/* PoP: hermes_state_has_pytest_ancestor @ hermes_state.py:_has_pytest_ancestor */
+bool hermes_state_has_pytest_ancestor(void) {
+    /* Walk /proc self parent chain; a pytest-looking ancestor backs up the
+     * env probe (survives env rebuilds, #82770). Fails open (false). */
+    pid_t pid = getpid();
+    for (int depth = 0; depth < 32; depth++) {
+        char stat_path[64];
+        snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", (int)pid);
+        FILE *f = fopen(stat_path, "r");
+        if (!f) return false;
+        char line[8192];
+        if (!fgets(line, sizeof(line), f)) { fclose(f); return false; }
+        fclose(f);
+        /* field 4 = ppid (after the parenthesised comm). Parse past last ')'. */
+        char *close_paren = strrchr(line, ')');
+        if (!close_paren) return false;
+        int ppid = 0;
+        if (sscanf(close_paren + 1, " %*c %d", &ppid) != 1) return false;
+        if (ppid <= 1) return false;
+
+        char cmd_path[64];
+        snprintf(cmd_path, sizeof(cmd_path), "/proc/%d/cmdline", ppid);
+        FILE *cf = fopen(cmd_path, "rb");
+        if (!cf) return false;
+        char cmd[16384];
+        size_t n = fread(cmd, 1, sizeof(cmd) - 1, cf);
+        fclose(cf);
+        cmd[n] = '\0';
+        /* convert NUL separators to spaces so the scanner sees tokens */
+        for (size_t i = 0; i < n; i++) if (cmd[i] == '\0') cmd[i] = ' ';
+        if (strstr(cmd, "pytest") != NULL) return true;
+        pid = (pid_t)ppid;
+    }
+    return false;
+}
+
+/* Memoised answer (Python module global). */
+static int hs_in_test_context_memo = -1;
+
+/* PoP: hermes_state_in_test_context @ hermes_state.py:_in_test_context */
+bool hermes_state_in_test_context(void) {
+    if (hs_in_test_context_memo >= 0) return hs_in_test_context_memo == 1;
+    bool r = hermes_state_running_under_pytest();
+    if (!r) r = hermes_state_has_pytest_ancestor();
+    hs_in_test_context_memo = r ? 1 : 0;
+    return r;
+}
