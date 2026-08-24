@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T11:38:20Z from `live_parity_scan.json` by `make parity-walkway`. **2,232 REAL_GAP across 281 modules** (of 16,643 total functions).
+> Generated 2026-08-24T12:33:45Z from `live_parity_scan.json` by `make parity-walkway`. **2,177 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -62,17 +62,13 @@
 - snapshot_registration (function)
 - restore_registration (function)
 
-### agent/chat_completion_helpers.py (16 gaps)
+### agent/chat_completion_helpers.py (12 gaps)
 
 - _join_worker_for_relay_teardown (function)
 - ProviderStreamError._format_message (method)
-- _status_code_from_value (function)
-- _status_code_from_payload (function)
 - _parse_provider_sse_events (function)
-- _provider_error_body (function)
 - _provider_stream_error_from_json_decode_error (function)
 - _iter_provider_stream_chunks (function)
-- _provider_stream_text_may_be_sse (function)
 - _provider_stream_error_from_text (function)
 - _prompt_cache_scope_for_agent (function)
 - _record_interrupted_provider_wait (function)
@@ -258,10 +254,8 @@
 
 - build_gateway_health_snapshot (function)
 
-### agent/monitoring/gateway_health_export.py (3 gaps)
+### agent/monitoring/gateway_health_export.py (1 gaps)
 
-- _require_metrics_sdk (function)
-- _start_metric_provider (function)
 - _start_diagnostic_log_streamer (function)
 
 ### agent/native_compaction.py (2 gaps)
@@ -358,13 +352,12 @@
 
 - list_plugin_sources (function)
 
-### agent/skill_utils.py (5 gaps)
+### agent/skill_utils.py (4 gaps)
 
 - _project_trusted_dirs_from_config (function)
 - _candidate_project_skills_dirs (function)
 - _project_scan_cache_dir (function)
 - _project_quarantine_cache_clear (function)
-- iter_skill_index_files (function)
 
 ### agent/subagent_lifecycle.py (1 gaps)
 
@@ -485,18 +478,8 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (278 gaps)
+### cli.py (253 gaps)
 
-- _reverse_alias_for_display (function)
-- get_tool_definitions (function)
-- get_toolset_for_tool (function)
-- get_all_toolsets (function)
-- get_toolset_info (function)
-- get_job (function)
-- _cleanup_all_terminals (function)
-- _cleanup_all_browsers (function)
-- _mark_tui_input_modes_active (function)
-- _prepare_deferred_agent_startup (function)
 - _arm_exit_watchdog (function)
 - _arm_exit_watchdog_on_shutdown_signal (function)
 - _run_cleanup (function)
@@ -505,30 +488,21 @@
 - _emit_interrupted_session_end (function)
 - _notify_single_query_session_finalize (function)
 - _flush_one_shot_session_store (function)
-- _wait_for_oneshot_background_completions (function)
 - _finalize_single_query (function)
 - _reset_terminal_input_modes_on_exit (function)
 - _normalize_git_bash_path (function)
 - _git_repo_root (function)
-- _path_is_within_root (function)
 - _cleanup_failed_worktree_add (function)
-- _maintain_pack_health (function)
 - _setup_worktree (function)
-- _worktree_has_unpushed_commits (function)
 - _repo_is_shallow (function)
 - _deepen_shallow_repo (function)
-- _worktree_merge_cache_path (function)
-- _worktree_commits_all_merged_upstream (function)
-- _worktree_branch_pr_merged (function)
 - _cleanup_worktree (function)
 - _run_state_db_auto_maintenance (function)
 - _run_checkpoint_auto_maintenance (function)
 - _prune_stale_worktrees (function)
-- _prune_orphaned_branches (function)
 - _hex_to_ansi (function)
 - _luminance_from_hex (function)
 - _query_osc11_background (function)
-- _heal_cooked_mode_drift (function)
 - _detect_light_mode (function)
 - _maybe_remap_for_light_mode (function)
 - _install_skin_light_mode_hook (function)
@@ -537,19 +511,13 @@
 - _SkinAwareAnsi.__radd__ (method)
 - _post_stream_transform_output (function)
 - _hermes_call_output_screen_diff (function)
-- _is_ghostty_terminal (function)
 - _terminal_supports_extended_enter_keys (function)
 - _enable_extended_enter_keys (function)
-- _cli_multiline_shortcuts_enabled (function)
 - _is_backslash_line_continuation (function)
 - _apply_backslash_line_continuation (function)
-- _select_classic_cli_pt_output (function)
 - _status_bar_visible_from_display_config (function)
 - _get_plugin_cmd_handler_names (function)
-- _parse_skills_argument (function)
 - save_config_value (function)
-- _normalize_moa_model (function)
-- _split_model_config_default (function)
 - _VoiceInputMessage.__str__ (method)
 - HermesCLI._claim_active_session (method)
 - HermesCLI._release_active_session (method)
@@ -803,13 +771,11 @@
 - _references_at (function)
 - _has_binary_magic (function)
 
-### cron/scheduler.py (29 gaps)
+### cron/scheduler.py (27 gaps)
 
 - _close_late_session_db_result (function)
 - _failure_streak_nudge (function)
 - _resolve_job_reasoning_config (function)
-- _CancelEventLike.is_set (method)
-- _CombinedCancelEvent.is_set (method)
 - _inflight_min_allowance_minutes (function)
 - _cron_interval_minutes (function)
 - _job_interval_minutes (function)
@@ -1495,9 +1461,8 @@
 
 - load_hermes_dotenv (function)
 
-### hermes_cli/fallback_cmd.py (2 gaps)
+### hermes_cli/fallback_cmd.py (1 gaps)
 
-- cmd_fallback_add (function)
 - cmd_fallback (function)
 
 ### hermes_cli/foreign_sessions.py (8 gaps)
@@ -1879,7 +1844,7 @@
 - export_pack (function)
 - pack_command (function)
 
-### hermes_cli/plugins.py (107 gaps)
+### hermes_cli/plugins.py (103 gaps)
 
 - _select_entry_point_group (function)
 - discover_entrypoint_manifests (function)
@@ -1953,7 +1918,6 @@
 - PluginManager._validate_plugin_config_schema (method)
 - PluginManager._restore_deferred_platform (method)
 - PluginManager._load_plugin_scoped (method)
-- PluginManager._load_portable_plugin (method)
 - PluginManager._directory_module_name (method)
 - PluginManager._policy_module_name (method)
 - PluginManager._invoke_hook_callback (method)
@@ -1969,15 +1933,12 @@
 - PluginManager.iter_hook_callbacks (method)
 - PluginManager.render_system_prompt_sections (method)
 - PluginManager.list_plugins (method)
-- PluginManager.list_plugin_skill_metadata (method)
 - _plugin_home_key (function)
 - _clear_plugin_submodules (function)
 - _reset_plugin_managers_for_tests (function)
-- has_enabled_agent_plugin_mcp (function)
 - discover_plugins (function)
 - start_background_plugin_discovery (function)
 - _join_background_discovery (function)
-- get_plugin_toolset_keys_nowait (function)
 - unload_plugins (function)
 - _delivery_manager (function)
 - render_system_prompt_sections (function)
@@ -1989,7 +1950,7 @@
 - get_plugin_error_classification (function)
 - get_plugin_subscriptions (function)
 
-### hermes_cli/plugins_cmd.py (24 gaps)
+### hermes_cli/plugins_cmd.py (23 gaps)
 
 - _scan_on_install_enabled (function)
 - _scan_plugin_tree (function)
@@ -2012,7 +1973,6 @@
 - _run_capability_consent (function)
 - _bundled_default_on (function)
 - cmd_show (function)
-- cmd_toggle (function)
 - _run_plugin_git (function)
 - _stash_ref (function)
 
@@ -2084,7 +2044,7 @@
 - _configured_nofile_soft_limit (function)
 - apply_nofile_soft_limit (function)
 
-### hermes_cli/runtime_provider.py (21 gaps)
+### hermes_cli/runtime_provider.py (18 gaps)
 
 - _config_base_url_trustworthy_for_bare_custom (function)
 - _fallback_api_mode (function)
@@ -2094,19 +2054,16 @@
 - _nous_inference_base_url_override (function)
 - _maybe_apply_codex_app_server_runtime (function)
 - _resolve_runtime_from_pool_entry (function)
-- resolve_requested_provider (function)
 - _try_resolve_from_custom_pool (function)
 - _lift_max_output_tokens (function)
 - _lift_extra_headers (function)
 - _get_named_custom_provider (function)
-- has_named_custom_provider (function)
 - _custom_provider_request_overrides (function)
 - _resolve_named_custom_runtime (function)
 - _resolve_openrouter_runtime (function)
 - _resolve_azure_foundry_runtime (function)
 - _resolve_explicit_runtime (function)
 - resolve_runtime_provider (function)
-- format_runtime_provider_error (function)
 
 ### hermes_cli/secret_prompt.py (1 gaps)
 
@@ -2136,12 +2093,6 @@
 - WindowsServiceManager.install (method)
 - WindowsServiceManager.restart (method)
 - S6ServiceManager.restart (method)
-
-### hermes_cli/session_export.py (3 gaps)
-
-- normalize_save_format (function)
-- render_session_for_save (function)
-- default_save_filename (function)
 
 ### hermes_cli/session_lost_and_found.py (11 gaps)
 
@@ -2238,11 +2189,9 @@
 - get_active_skin (function)
 - set_active_skin (function)
 
-### hermes_cli/sqlite_safe_read.py (3 gaps)
+### hermes_cli/sqlite_safe_read.py (1 gaps)
 
-- has_live_connection (function)
 - _tracking_factory (function)
-- offline_file_access (function)
 
 ### hermes_cli/status.py (2 gaps)
 
@@ -2605,27 +2554,19 @@
 - has_opaque_document_extension (function)
 - is_pdf_path (function)
 
-### tools/bot_failure_reasons.py (1 gaps)
+### tools/bot_mode_dm.py (14 gaps)
 
-- classify_agent_error (function)
-
-### tools/bot_mode_dm.py (18 gaps)
-
-- _local_roster (function)
 - _peers (function)
-- _resolve_local_name (function)
 - _err (function)
 - _try_relay_delivery (function)
 - _dm_dir (function)
 - cleanup_bot_dm_cache (function)
 - _sweep_stale_dm_files (function)
-- _write_dm_file (function)
 - _unlink_dm_file (function)
 - _delivery_lock (function)
 - _run_delivery (function)
 - _delivery_command (function)
 - _start_delivery (function)
-- _spawn_delivery (function)
 - _delivery_main (function)
 - _agent_home (function)
 - _session_title (function)
@@ -2732,10 +2673,9 @@
 - CuaDriverBackend.stop (method)
 - CuaDriverBackend.drag (method)
 
-### tools/computer_use/doctor.py (3 gaps)
+### tools/computer_use/doctor.py (2 gaps)
 
 - _drive_fallback_probes (function)
-- _compose_fallback_report (function)
 - _apply_display_count_guard (function)
 
 ### tools/computer_use/tool.py (11 gaps)
@@ -2911,14 +2851,13 @@
 - apply_memory_pending (function)
 - _build_memory_schema_overrides (function)
 
-### tools/process_registry.py (11 gaps)
+### tools/process_registry.py (10 gaps)
 
 - _worker_memory_max_bytes (function)
 - _systemd_run_user_scope_available (function)
 - _is_supervised_gateway_process (function)
 - _stop_systemd_unit (function)
 - ProcessRegistry._emit_lifetime_watch_disabled (method)
-- ProcessRegistry.wait_for_pending_completions (method)
 - ProcessRegistry._oneshot_completion_wait_seconds (method)
 - ProcessRegistry._resolve_prefix (method)
 - ProcessRegistry.kill_process (method)
