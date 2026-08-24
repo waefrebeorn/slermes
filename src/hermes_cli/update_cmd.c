@@ -4943,3 +4943,88 @@ const char *upd_format_update_failure_stage(char *const cmd[]) {
         return "Git update failed";
     return "Update step failed";
 }
+
+/* ── sibling-profile config migration (v706w7 parity batch) ────────── */
+
+extern bool hermes_config_migrate(hermes_config_t *cfg, const char *config_dir);
+extern char *profile_normalize_name(const char *name);
+extern char *profile_dir_for(const char *name);
+
+static bool upd_profile_id_valid(const char *name) {
+    /* _PROFILE_ID_RE: [a-z0-9][a-z0-9-]* (lowercase id slug). */
+    if (!name || !*name) return false;
+    if (!isalnum((unsigned char)name[0]) ||
+        !(isdigit((unsigned char)name[0]) || islower((unsigned char)name[0])))
+        return false;
+    for (const char *q = name + 1; *q; q++)
+        if (!(isalnum((unsigned char)*q) || *q == '-')) return false;
+    return true;
+}
+
+/* PoP: upd_migrate_sibling_profile_configs @ hermes_cli/update_cmd.py:_migrate_sibling_profile_configs
+ * Migrate every sibling profile's config.yaml to the current version (#91277
+ * phase 2): iterate the profiles root, skip the active home, run the quiet
+ * non-interactive migration. Returns count migrated; *skipped* gets profiles
+ * whose config needed no migration. */
+int upd_migrate_sibling_profile_configs(int *skipped) {
+    if (skipped) *skipped = 0;
+    int migrated = 0;
+    const char *active_home = getenv("HERMES_HOME");
+    if (!active_home || !*active_home) active_home = getenv("HOME");
+    char root[4096];
+    {
+        const char *home = getenv("HOME");
+        if (!home || !*home) return 0;
+        snprintf(root, sizeof(root), "%s/.hermes/profiles", home);
+    }
+    struct stat st;
+    if (stat(root, &st) != 0 || !S_ISDIR(st.st_mode)) return 0;
+
+    DIR *d = opendir(root);
+    if (!d) return 0;
+    struct dirent *ent;
+    char names[64][256];
+    int n = 0;
+    while ((ent = readdir(d)) && n < 64) {
+        if (ent->d_name[0] == '.') continue;
+        if (!upd_profile_id_valid(ent->d_name)) continue;
+        snprintf(names[n++], 256, "%s", ent->d_name);
+    }
+    closedir(d);
+
+    /* sorted() — insertion sort on the small name array */
+    for (int i = 1; i < n; i++) {
+        char tmp[256];
+        snprintf(tmp, sizeof(tmp), "%s", names[i]);
+        int j2 = i - 1;
+        while (j2 >= 0 && strcmp(names[j2], tmp) > 0) {
+            snprintf(names[j2+1], 256, "%s", names[j2]);
+            j2--;
+        }
+        snprintf(names[j2+1], 256, "%s", tmp);
+    }
+
+    for (int i = 0; i < n; i++) {
+        /* resolve and skip the active home */
+        char dir[4200], cfgpath[4352];
+        snprintf(dir, sizeof(dir), "%s/%s", root, names[i]);
+        struct stat dst;
+        if (stat(dir, &dst) != 0 || !S_ISDIR(dst.st_mode)) continue;
+        char rdir[4200], rhome[4200];
+        if (!realpath(dir, rdir)) continue;
+        if (active_home && realpath(active_home, rhome) && strcmp(rdir, rhome) == 0)
+            continue;
+        snprintf(cfgpath, sizeof(cfgpath), "%s/config.yaml", dir);
+        if (stat(cfgpath, &st) != 0 || !S_ISREG(st.st_mode)) continue;
+
+        hermes_config_t cfg;
+        memset(&cfg, 0, sizeof(cfg));
+        /* The C engine fuses load+migrate: true means a migration ran. */
+        if (hermes_config_migrate(&cfg, dir)) {
+            migrated++;
+        } else if (skipped) {
+            (*skipped)++;
+        }
+    }
+    return migrated;
+}
