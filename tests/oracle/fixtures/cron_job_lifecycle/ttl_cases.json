@@ -1,0 +1,1 @@
+[{"env": "", "expected": 1800.0}, {"env": "900", "expected": 2700.0}, {"env": "0", "expected": 1800.0}, {"env": "-5", "expected": 1800.0}, {"env": "abc", "expected": 1800.0}, {"env": "200", "expected": 1800.0}, {"env": "600.5", "expected": 1801.5}]
