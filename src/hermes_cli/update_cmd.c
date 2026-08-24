@@ -4521,3 +4521,92 @@ void upd_print_parked_branch_kept_notice(const char *current_branch,
     printf("    git checkout %s\n", current_branch);
     printf("%s\n", bar);
 }
+
+/* PoP: upd_print_update_summary @ hermes_cli/update_cmd.py:_print_update_summary */
+void upd_print_update_summary(const json_t *node_failures, bool desktop_build_ok,
+                              const char *pre_update_version) {
+    /* Final update banner. A failed Desktop rebuild is non-fatal but must
+     * not print the success line (#88251). */
+    printf("\n");
+    bool have_failures = node_failures && json_is_array(node_failures) &&
+                         json_array_size(node_failures) > 0;
+    if (have_failures || !desktop_build_ok) {
+        char parts[1024] = "";
+        size_t used = 0;
+        if (have_failures) {
+            /* ", ".join(node_failures) — bounded to 512 bytes. */
+            char list[512] = "";
+            size_t n = json_array_size(node_failures);
+            for (size_t i = 0; i < n; i++) {
+                const char *s = json_string_value(json_array_get(node_failures, i));
+                if (!s) continue;
+                size_t left = sizeof(list) - strlen(list);
+                snprintf(list + strlen(list), left, "%s%s", i ? ", " : "", s);
+            }
+            snprintf(parts + used, sizeof(parts) - used,
+                     "Node.js dependencies for %s did not refresh", list);
+        }
+        if (!desktop_build_ok) {
+            size_t used2 = strlen(parts);
+            snprintf(parts + used2, sizeof(parts) - used2,
+                     "%sthe desktop app was not rebuilt and is still on the previous build",
+                     used2 ? "; " : "");
+        }
+        printf("\u26a0 Update partially complete -- %s.\n", parts);
+        if (have_failures)
+            printf("  Code and Python deps are updated, but the dashboard/TUI may\n"
+                   "  be in a mixed state until the Node deps are rebuilt.\n");
+        if (!desktop_build_ok)
+            printf("  Run `hermes desktop` to retry the desktop rebuild.\n");
+        return;
+    }
+
+    /* Success path: delegate to the completion message + completion printer. */
+    extern void upd_print_update_completion(const char *message);
+    extern char *upd_update_complete_message(const char *pre_version);
+    char *msg = upd_update_complete_message(pre_update_version);
+    upd_print_update_completion(msg ? msg : "");
+    free(msg);
+}
+
+/* PoP: upd_print_update_completion @ hermes_cli/update_cmd.py:_print_update_completion
+ * Print the outcome plus, when HERMES_ACTION_ID is a 32-hex action id, a
+ * terminal receipt line the Desktop can match after it restarts. */
+void upd_print_update_completion(const char *message) {
+    extern char *upd_branch_head_suffix_from_cwd(const char *cwd);
+    extern char *upd_branch_head_label(const char *cwd);
+    (void)upd_branch_head_label;
+    /* message + branch-head suffix */
+    char suffix[128] = "";
+    char *repo = NULL;
+    {
+        /* resolve repo via the same helper used by the banner path */
+        extern char *banner_resolve_repo_dir(void);
+        repo = banner_resolve_repo_dir();
+    }
+    if (repo) {
+        char *argv_branch[] = { (char*)"git", (char*)"rev-parse", (char*)"--abbrev-ref", (char*)"HEAD", NULL };
+        char *branch = upd_git_stdout(repo, argv_branch);
+        if (branch) {
+            if (strcmp(branch, "HEAD") == 0) strcpy(branch, "detached");
+            char *argv_sha[] = { (char*)"git", (char*)"rev-parse", (char*)"--short=8", (char*)"HEAD", NULL };
+            char *sha = upd_git_stdout(repo, argv_sha);
+            if (sha) {
+                snprintf(suffix, sizeof(suffix), " Â· %s @ %s", branch, sha);
+                free(sha);
+            }
+            free(branch);
+        }
+        free(repo);
+    }
+    printf("%s%s\n", message ? message : "", suffix);
+
+    const char *action_id = getenv("HERMES_ACTION_ID");
+    if (action_id && strlen(action_id) == 32) {
+        bool hex_ok = true;
+        for (const char *q = action_id; *q; q++)
+            if (!isxdigit((unsigned char)*q)) { hex_ok = false; break; }
+        if (hex_ok)
+            printf("=== hermes-update completed %s ===\n", action_id);
+    }
+}
