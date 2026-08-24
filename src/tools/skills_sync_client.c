@@ -234,6 +234,7 @@ char *skills_sync_wire_address(const unsigned char *data, size_t len) {
 /* Decode a JWT payload WITHOUT signature verification. Safe here: the server
  * re-verifies every call; we only read the dev-gate claim. base64url decode
  * of the middle segment, then JSON-parse. Returns NULL on any failure. */
+/* PoP: skills_sync_decode_jwt_payload @ tools/skills_sync_client.py:_decode_jwt_payload_unverified */
 json_t *skills_sync_decode_jwt_payload(const char *token) {
     if (!token) return NULL;
     const char *first_dot = strchr(token, '.');
@@ -316,6 +317,7 @@ static char *read_nous_bearer(void) {
     return out;
 }
 
+/* PoP: skills_sync_resolve_identity @ tools/skills_sync_client.py:resolve_identity */
 json_t *skills_sync_resolve_identity(void) {
     char *api_key = read_nous_bearer();
     if (!api_key) return NULL;
@@ -348,6 +350,7 @@ json_t *skills_sync_resolve_identity(void) {
 
 /* ── dev_gate_open (L284) ─────────────────────────────────────────────── */
 
+/* PoP: skills_sync_dev_gate_open @ tools/skills_sync_client.py:dev_gate_open */
 bool skills_sync_dev_gate_open(void) {
     json_t *ident = skills_sync_resolve_identity();
     if (!ident) return false;
