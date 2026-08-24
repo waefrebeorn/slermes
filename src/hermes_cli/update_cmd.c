@@ -26,6 +26,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
@@ -4314,5 +4316,73 @@ char *upd_branch_head_suffix(const char *label) {
     char *out = malloc(need);
     if (!out) return NULL;
     snprintf(out, need, " [%s]", label);
+    return out;
+}
+
+/* git helper: run argv in cwd, capture stripped stdout. Malloc'd or NULL. */
+static char *upd_git_stdout(char *const argv[], const char *cwd) {
+    int out_pipe[2];
+    if (pipe(out_pipe) != 0) return NULL;
+    pid_t pid = fork();
+    if (pid < 0) { close(out_pipe[0]); close(out_pipe[1]); return NULL; }
+    if (pid == 0) {
+        if (cwd && *cwd) { if (chdir(cwd) != 0) _exit(127); }
+        dup2(out_pipe[1], STDOUT_FILENO);
+        close(out_pipe[0]); close(out_pipe[1]);
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    close(out_pipe[1]);
+    char buf[512]; size_t cap = 1024, len = 0;
+    char *out = malloc(cap);
+    if (!out) { close(out_pipe[0]); waitpid(pid, NULL, 0); return NULL; }
+    ssize_t r;
+    while ((r = read(out_pipe[0], buf, sizeof(buf))) > 0) {
+        if (len + (size_t)r + 1 > cap) { cap *= 2; char *tmp = realloc(out, cap); if (!tmp) break; out = tmp; }
+        memcpy(out + len, buf, (size_t)r); len += (size_t)r;
+    }
+    close(out_pipe[0]);
+    int status = 0; waitpid(pid, &status, 0);
+    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { free(out); return NULL; }
+    out[len] = '\0';
+    char *b = out;
+    while (*b && (*b == ' ' || *b == '\n' || *b == '\t' || *b == '\r')) b++;
+    char *stripped = strdup(b);
+    free(out);
+    if (!stripped) return NULL;
+    char *e = stripped + strlen(stripped);
+    while (e > stripped && (e[-1] == ' ' || e[-1] == '\n' || e[-1] == '\t' || e[-1] == '\r')) *--e = '\0';
+    return stripped[0] ? stripped : NULL;
+}
+
+/* PoP: upd_branch_head_label @ hermes_cli/update_cmd.py:_branch_head_label */
+char *upd_branch_head_label(const char *cwd) {
+    /* "<branch> @ <short-sha>" for the checkout; NULL when unknown. */
+    char *argv_branch[] = { (char*)"git", (char*)"rev-parse", (char*)"--abbrev-ref", (char*)"HEAD", NULL };
+    char *branch = upd_git_stdout(cwd, argv_branch);
+    if (!branch) return NULL;
+    char *argv_sha[] = { (char*)"git", (char*)"rev-parse", (char*)"--short", (char*)"HEAD", NULL };
+    char *sha = upd_git_stdout(cwd, argv_sha);
+    free(branch);
+    if (!sha) return NULL;
+    const char *label = (strcmp(branch, "HEAD") == 0) ? "detached" : branch;
+    size_t need = strlen(label) + strlen(sha) + 4;
+    char *out = malloc(need);
+    if (!out) { free(sha); return NULL; }
+    snprintf(out, need, "%s @ %s", label, sha);
+    free(branch); free(sha);
+    return out;
+}
+
+/* PoP: upd_branch_head_suffix2 @ hermes_cli/update_cmd.py:_branch_head_suffix */
+char *upd_branch_head_suffix_from_cwd(const char *cwd) {
+    /* " [<branch> @ <short-sha>]" — "" when unknown. */
+    char *label = upd_branch_head_label(cwd);
+    if (!label) return strdup("");
+    size_t need = strlen(label) + 8;
+    char *out = malloc(need);
+    if (!out) { free(label); return NULL; }
+    snprintf(out, need, " [%s]", label);
+    free(label);
     return out;
 }
