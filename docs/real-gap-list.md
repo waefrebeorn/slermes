@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T13:30:04Z from `live_parity_scan.json` by `make parity-walkway`. **2,152 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T14:11:27Z from `live_parity_scan.json` by `make parity-walkway`. **2,130 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -478,7 +478,7 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (239 gaps)
+### cli.py (231 gaps)
 
 - _arm_exit_watchdog (function)
 - _arm_exit_watchdog_on_shutdown_signal (function)
@@ -660,27 +660,19 @@
 - HermesCLI._show_context_breakdown (method)
 - HermesCLI._show_usage (method)
 - HermesCLI._show_insights (method)
-- HermesCLI._check_config_mcp_changes (method)
-- HermesCLI._split_destructive_skip (method)
 - HermesCLI._confirm_destructive_slash (method)
 - HermesCLI._confirm_and_reload_mcp (method)
 - HermesCLI._on_tool_gen_start (method)
 - HermesCLI._on_tool_progress (method)
-- HermesCLI._on_tool_start (method)
-- HermesCLI._on_tool_complete (method)
 - HermesCLI._voice_start_recording (method)
-- HermesCLI._voice_stt_model (method)
-- HermesCLI._voice_stt_provider (method)
 - HermesCLI._voice_restart_recording_async (method)
 - HermesCLI._voice_stop_and_transcribe (method)
 - HermesCLI._voice_speak_response_async (method)
 - HermesCLI._voice_speak_response (method)
 - HermesCLI._voice_full_duplex_listener (method)
 - HermesCLI._voice_submit_barge_utterance (method)
-- HermesCLI._voice_beeps_enabled (method)
 - HermesCLI._enable_voice_mode (method)
 - HermesCLI._typed_voice_stop (method)
-- HermesCLI._disable_voice_mode (method)
 - HermesCLI._maybe_start_wake_word (method)
 - HermesCLI._start_wake_word_listener (method)
 - HermesCLI._stop_wake_word_listener (method)
@@ -2286,14 +2278,13 @@
 
 - remove_windows_bin_launchers (function)
 
-### hermes_cli/update_cmd.py (58 gaps)
+### hermes_cli/update_cmd.py (57 gaps)
 
 - _purge_stale_hermes_modules (function)
 - _migrate_sibling_profile_configs (function)
 - _editable_install_is_current (function)
 - _web_build_toolchain_ready (function)
 - _reload_process_scan_modules (function)
-- _branch_head_label (function)
 - _assess_parked_branch_switch (function)
 - _print_parked_branch_skip_warning (function)
 - _print_parked_branch_kept_notice (function)
@@ -2428,30 +2419,17 @@
 - find_retired_xai_refs (function)
 - apply_migration (function)
 
-### hermes_state.py (71 gaps)
+### hermes_state.py (58 gaps)
 
-- _process_looks_like_pytest (function)
-- _has_pytest_ancestor (function)
-- _in_test_context (function)
 - _apply_wal_size_limit (function)
-- resolve_journal_mode (function)
 - is_malformed_schema_error (function)
 - _cross_process_repair_lock (function)
 - _bump_schema_cookie (function)
 - _mask_volatile_header (function)
-- _repair_backup_headroom_bytes (function)
-- _repair_scratch_space_error (function)
-- _repair_snapshot_timeout_seconds (function)
 - _repair_failure_consumes_attempt (function)
-- _repair_ledger_path (function)
 - _db_fingerprint (function)
 - _backup_content_identity (function)
-- _read_repair_ledger (function)
-- _persistent_repair_attempts_exhausted (function)
-- _persistent_repair_exhausted_error (function)
 - _record_repair_outcome (function)
-- _existing_malformed_backups (function)
-- _prune_malformed_backups (function)
 - _connect_repair_durable (function)
 - _reapply_durability_barriers (function)
 - _exclusive_repair_db_guard (function)
