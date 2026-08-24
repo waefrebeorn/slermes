@@ -4,6 +4,17 @@
  */
 
 #include "kanban_format.h"
+
+#include <sqlite3.h>
+/* kanban_db engine API (avoid pulling the full header: its kanban_task_t
+ * conflicts with this unit's local format types) */
+struct sqlite3;
+extern struct sqlite3 *kdb_connect_path(const char *db_path);
+extern char *kanban_db_path(const char *board);
+extern char *get_current_board(void);
+extern char *kdb_list_boards(int include_archived);
+#include "hermes_json.h"
+#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -267,4 +278,71 @@ long kanban_worker_run_id_for (const char *task_id) {
     long v = strtol(raw, &end, 10);
     if (*end != '\0') return -1;
     return v;
+}
+
+/* ── boards summary helpers (v696 parity batch) ────────────────────── */
+
+/* PoP: kbn_board_task_counts @ hermes_cli/kanban.py:_board_task_counts */
+json_t *kbn_board_task_counts(const char *slug) {
+    /* {status: count} for a board via GROUP BY on the tasks table. Safe on
+     * an empty/missing DB (returns {} like Python). */
+    json_t *out = json_object();
+    if (!out || !slug || !*slug) return out;
+
+    char *db_path = kanban_db_path(slug);
+    if (!db_path) return out;
+    struct stat st;
+    if (stat(db_path, &st) != 0) { free(db_path); return out; }
+
+    sqlite3 *db = kdb_connect_path(db_path);
+    free(db_path);
+    if (!db) return out;
+
+    sqlite3_stmt *stmt = NULL;
+    if (sqlite3_prepare_v2(db, "SELECT status, COUNT(*) AS n FROM tasks GROUP BY status", -1,
+                           &stmt, NULL) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            const unsigned char *status = sqlite3_column_text(stmt, 0);
+            int n = sqlite3_column_int(stmt, 1);
+            if (status)
+                json_set(out, (const char *)status, json_int((double)n));
+        }
+    }
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    return out;
+}
+
+/* PoP: kbn_cmd_boards_list @ hermes_cli/kanban.py:_cmd_boards_list */
+json_t *kbn_cmd_boards_list(int include_archived) {
+    /* Enrich each board entry with is_current + per-status counts + total.
+     * Returns [{...board..., "is_current":bool,"counts":{...},"total":N}]. */
+    char *boards_json = kdb_list_boards(include_archived);
+    json_t *boards = boards_json ? json_parse(boards_json, NULL) : NULL;
+    free(boards_json);
+    if (!boards || !json_is_array(boards)) {
+        if (boards) json_free(boards);
+        return json_array();
+    }
+    char *current = get_current_board();
+
+    size_t n = json_array_size(boards);
+    for (size_t i = 0; i < n; i++) {
+        json_t *b = json_array_get(boards, i);
+        if (!b || !json_is_object(b)) continue;
+        const char *slug = json_string_value(json_object_get(b, "slug"));
+        bool is_current = current && slug && strcmp(current, slug) == 0;
+        json_set(b, "is_current", json_new_bool(is_current));
+        json_t *counts = kbn_board_task_counts(slug);
+        long total = 0;
+        if (!counts) counts = json_object();
+        for (size_t k = 0; k < counts->c.count; k++) {
+            const json_t *v = counts->c.items[k];
+            if (v && v->type == JSON_NUMBER) total += (long)v->num_val;
+        }
+        json_set(b, "counts", counts);   /* steals */
+        json_set(b, "total", json_int((double)total));
+    }
+    free(current);
+    return boards;
 }
