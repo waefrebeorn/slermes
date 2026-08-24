@@ -4725,3 +4725,37 @@ bool hermes_state_repair_failure_consumes_attempt(int sqlite_errorcode, const ch
     return strstr(low, "file is not a database") != NULL
         || strstr(low, "database disk image is malformed") != NULL;
 }
+
+/* ── session lifecycle classification (v706w9 parity batch) ────────── */
+
+/* PoP: hermes_state_classify_session_status @ hermes_state.py:classify_session_status */
+const char *hermes_state_classify_session_status(const char *role,
+                                                 bool has_tool_calls,
+                                                 const char *finish_reason) {
+    /* Classify a session's lifecycle from the shape of its final message.
+     * Benign default for unrecognized shapes: "complete". */
+    static const char *ERROR_FINISH[] = { "error", "agent_error", "content_filter", NULL };
+
+    char fr[64] = "";
+    if (finish_reason && *finish_reason) {
+        size_t k = 0;
+        for (const char *q = finish_reason; *q && k < sizeof(fr)-1; q++)
+            if (*q != ' ' && *q != '\t') fr[k++] = (char)tolower((unsigned char)*q);
+        fr[k] = '\0';
+    }
+    for (int i = 0; ERROR_FINISH[i]; i++)
+        if (strcmp(fr, ERROR_FINISH[i]) == 0) return "error";
+
+    char r[32] = "";
+    if (role && *role) {
+        size_t k = 0;
+        for (const char *q = role; *q && k < sizeof(r)-1; q++)
+            if (*q != ' ' && *q != '\t') r[k++] = (char)tolower((unsigned char)*q);
+        r[k] = '\0';
+    }
+    if (strcmp(r, "assistant") == 0)
+        return has_tool_calls ? "interrupted" : "complete";
+    if (strcmp(r, "user") == 0 || strcmp(r, "tool") == 0)
+        return "interrupted";
+    return "complete";
+}
