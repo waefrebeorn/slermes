@@ -4402,7 +4402,8 @@ void upd_write_gateway_update_exit_code(bool ok) {
     fclose(f);
 }
 
-/* PoP: upd_assess_parked_branch_switch @ hermes_cli/update_cmd.py:_assess_parked_branch_switch
+/* PoP: upd_assess_parked_branch_switch @ hermes_cli/update_cmd.py:_assess_parked_branch_switch */
+ /*
  * Decide whether auto-switching a parked branch back to the update target is
  * safe. Writes the decision into *ok* and a malloc'd reason (or "") into
  * *out_reason*. Decision table:
@@ -4569,7 +4570,8 @@ void upd_print_update_summary(const json_t *node_failures, bool desktop_build_ok
     free(msg);
 }
 
-/* PoP: upd_print_update_completion @ hermes_cli/update_cmd.py:_print_update_completion
+/* PoP: upd_print_update_completion @ hermes_cli/update_cmd.py:_print_update_completion */
+ /*
  * Print the outcome plus, when HERMES_ACTION_ID is a 32-hex action id, a
  * terminal receipt line the Desktop can match after it restarts. */
 void upd_print_update_completion(const char *message) {
@@ -4664,7 +4666,8 @@ void upd_write_update_incomplete_marker(void) {
     fclose(f);
 }
 
-/* PoP: upd_refuse_update_for_contended_shims @ hermes_cli/update_cmd.py:_refuse_update_for_contended_shims
+/* PoP: upd_refuse_update_for_contended_shims @ hermes_cli/update_cmd.py:_refuse_update_for_contended_shims */
+ /*
  * Refuse the dependency sync when live shims could not be quarantined
  * (#87331 fail-closed): running the installer with a live holder strands
  * the venv half-updated. Prints the refusal, writes the deferral marker,
@@ -4726,7 +4729,8 @@ void upd_print_called_process_error_tail(const char *blob, int limit) {
     }
 }
 
-/* PoP: upd_zip_overlay_block_reason @ hermes_cli/update_cmd.py:_zip_overlay_block_reason
+/* PoP: upd_zip_overlay_block_reason @ hermes_cli/update_cmd.py:_zip_overlay_block_reason */
+ /*
  * Why overlaying a ZIP onto root would destroy work, or NULL if safe. Runs
  * git status --porcelain -uall (fail-closed on git errors); optionally
  * filters our own two-phase-swap staging artifacts out of the check. */
@@ -4801,7 +4805,8 @@ static bool upd_npm_bin_exists(const char *bin_dir, const char *name) {
     return false;
 }
 
-/* PoP: upd_web_build_toolchain_ready @ hermes_cli/update_cmd.py:_web_build_toolchain_ready
+/* PoP: upd_web_build_toolchain_ready @ hermes_cli/update_cmd.py:_web_build_toolchain_ready */
+ /*
  * True when tsc and vite shims are reachable from any of the NUL-terminated
  * roots array (roots[0..n-1]). Callers must pass every root the build
  * would search; checking one reports a healthy tree as broken. */
@@ -4827,7 +4832,8 @@ bool upd_web_build_toolchain_ready(char **roots, int n_roots) {
     return tsc_ok && vite_ok;
 }
 
-/* PoP: upd_editable_install_is_current @ hermes_cli/update_cmd.py:_editable_install_is_current
+/* PoP: upd_editable_install_is_current @ hermes_cli/update_cmd.py:_editable_install_is_current */
+ /*
  * True when the pulled commits cannot have invalidated the editable install:
  * git diff --name-only <pre_pull_sha>..HEAD against the install-defining
  * files must be empty. No pre_pull_sha or git failure => false (fail closed). */
