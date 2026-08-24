@@ -442,3 +442,57 @@ char *console_engine_clean_summary(const char *text) {
     if (strncmp(res, "Run `hermes ", 12) == 0) { free(res); return strdup(""); }
     return res;
 }
+
+/* ── summary/line helpers (v695 parity batch) ──────────────────────── */
+
+static char *ce_collapse_ws(const char *s) {
+    /* Python " ".join(str(s).split()): collapse all whitespace runs to one
+     * space, trim ends. Malloc'd; NULL on OOM. */
+    size_t cap = strlen(s) + 1;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    size_t len = 0;
+    const char *p = s;
+    while (*p) {
+        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+        if (!*p) break;
+        if (len) out[len++] = ' ';
+        while (*p && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r')
+            out[len++] = *p++;
+    }
+    out[len] = '\0';
+    return out;
+}
+
+/* PoP: ce_table_summary @ hermes_cli/console_engine.py:_table_summary */
+char *ce_table_summary(const char *summary, int limit) {
+    /* Collapse whitespace; truncate at limit-3 + "..." when over. */
+    if (!summary) return strdup("");
+    if (limit <= 0) limit = 76;
+    char *flat = ce_collapse_ws(summary);
+    if (!flat) return NULL;
+    size_t flen = strlen(flat);
+    if ((int)flen <= limit) return flat;
+    char *head = strndup(flat, (size_t)limit - 3);
+    free(flat);
+    if (!head) return NULL;
+    /* rstrip the head */
+    char *e = head + strlen(head);
+    while (e > head && isspace((unsigned char)e[-1])) *--e = '\0';
+    char *out = malloc(strlen(head) + 4);
+    if (!out) { free(head); return NULL; }
+    strcpy(out, head); strcat(out, "...");
+    free(head);
+    return out;
+}
+
+/* PoP: ce_clean_summary @ hermes_cli/console_engine.py:_clean_summary */
+char *ce_clean_summary(const char *text) {
+    if (!text || !*text) return strdup("");
+    if (strcmp(text, "==SUPPRESS==") == 0) return strdup("");
+    char *flat = ce_collapse_ws(text);
+    if (!flat) return NULL;
+    if (!flat[0]) { free(flat); return strdup(""); }
+    if (strncmp(flat, "Run `hermes ", 12) == 0) { free(flat); return strdup(""); }
+    return flat;
+}
