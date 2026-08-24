@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+typedef struct json_t json_t;
+
 /* ── system-prompt sections ───────────────────────────────────────────── */
 
 /* PLUGIN_SECTIONS_START / PLUGIN_SECTIONS_END sentinels (borrowed). */
@@ -136,5 +138,74 @@ char **plugins_cached_string_list(const char *field, size_t *out_n);
 char **plugins_list_skill_dirs(const char *dir, size_t *out_n);
 
 void plugins_free_list(char **list, size_t n);
+
+/* ── wave 8: plugin state / config pure helpers ───────────────────────── */
+
+/* PoP: plugins_select_entry_point_group @ hermes_cli/plugins.py:_select_entry_point_group
+ * `entry_points` is a JSON array of entry-point objects each carrying a
+ * "group" string (the C stand-in for importlib.metadata's EntryPoints /
+ * dict-of-groups). Returns a newly-allocated JSON array (caller frees) with
+ * only the entries whose "group" matches. */
+json_t *plugins_select_entry_point_group(const json_t *entry_points,
+                                         const char *group);
+
+/* PoP: plugins_plugin_data_namespace @ hermes_cli/plugins.py:_plugin_data_namespace
+ * One Windows-safe directory component for plugin-owned data. Portable
+ * Agent Plugin namespaces that already match the PLUGIN_DATA pattern pass
+ * through; everything else goes through the portable namespace algorithm.
+ * Caller frees. */
+char *plugins_plugin_data_namespace(const char *plugin_id,
+                                    const char *skill_namespace);
+
+/* PoP: plugins_nested_plugin_value @ hermes_cli/plugins.py:_nested_plugin_value
+ * Walk `root` (a JSON object tree) along `segments` (dot-split key path).
+ * Returns the node at the path, or `default` when any step is missing or
+ * not an object. Borrowed pointer. */
+const json_t *plugins_nested_plugin_value(const json_t *root,
+                                          const char *const *segments,
+                                          size_t n_segments,
+                                          const json_t *default_val);
+
+/* PoP: plugins_nested_plugin_mapping @ hermes_cli/plugins.py:_nested_plugin_mapping
+ * Build {segments[0]: {segments[1]: ... value}} — a fresh JSON object tree.
+ * `value` is deep-copied into the leaf; caller frees the returned root. */
+json_t *plugins_nested_plugin_mapping(const char *const *segments,
+                                      size_t n_segments,
+                                      const json_t *value);
+
+/* PoP: plugins_state_quota_bytes @ hermes_cli/plugins.py:PluginState.quota_bytes
+ * The per-plugin state quota: 10 MiB. */
+size_t plugins_state_quota_bytes(void);
+
+/* PoP: plugins_validate_state_key @ hermes_cli/plugins.py:PluginState._validate_key
+ * True when key is 1-128 chars matching ^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$
+ * and contains no "..". */
+bool plugins_validate_state_key(const char *key);
+
+/* PoP: plugins_setting_segment_valid @ hermes_cli/plugins.py:_PLUGIN_SETTING_SEGMENT_RE.fullmatch
+ * ^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$ */
+bool plugins_setting_segment_valid(const char *segment);
+
+/* PoP: plugins_relative_segments @ hermes_cli/plugins.py:_plugin_relative_segments
+ * Validate and split a plugin-relative settings key on '.'. On success
+ * returns a malloc'd array of malloc'd segments (*out_n set); on failure
+ * returns NULL (Python raises ValueError). Reserved roots ("model",
+ * "plugins", "security", "settings", case-insensitive), '/', '\\', empty
+ * keys and invalid segments are rejected. Caller frees via
+ * plugins_free_list. */
+char **plugins_relative_segments(const char *key, size_t *out_n);
+
+/* PoP: plugins_state_data_dir @ hermes_cli/plugins.py:PluginState.data_dir
+ * <hermes home>/plugin-data/<data_namespace>. Caller frees. */
+char *plugins_state_data_dir(const char *data_namespace);
+
+/* PoP: plugins_state_path @ hermes_cli/plugins.py:PluginState.path
+ * <data_dir>/state.json. Caller frees. */
+char *plugins_state_path(const char *data_namespace);
+
+/* PoP: plugins_state_lock_path @ hermes_cli/plugins.py:_locked_plugin_state.lock_path
+ * Sibling lock file ".<name>.lock" next to `path` — atomic replacement
+ * changes the target's inode, so the lock lives beside it. Caller frees. */
+char *plugins_state_lock_path(const char *path);
 
 #endif /* SLERMES_PLUGINS_CORE_H */

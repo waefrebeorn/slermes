@@ -13,6 +13,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #include "hermes_json.h"
 #include "../../lib/libcrypto/crypto.h"
@@ -1160,3 +1161,242 @@ void plugin_list_skill_metadata(const char *raw_config_json, char *out_json,
     free(text);
 }
 
+
+/* ── wave 8: plugin state / config pure helpers ───────────────────────── */
+
+/* PoP: plugins_select_entry_point_group @ hermes_cli/plugins.py:_select_entry_point_group
+ * Python: entry_points.select(group=group) when the API has .select, else a
+ * dict lookup, else a filter over iterables of named tuples. In C the entry
+ * points arrive as one JSON array of {group: ...} records, so all three
+ * branches collapse to the same group filter. */
+json_t *plugins_select_entry_point_group(const json_t *entry_points,
+                                         const char *group) {
+    json_t *out = json_array();
+    if (!out) return NULL;
+    if (!entry_points || entry_points->type != JSON_ARRAY || !group) return out;
+    for (size_t i = 0; i < entry_points->c.count; i++) {
+        const json_t *ep = entry_points->c.items[i];
+        if (!ep || ep->type != JSON_OBJECT) continue;
+        const char *g = json_get_str(ep, "group", NULL);
+        if (g && strcmp(g, group) == 0)
+            json_append(out, json_copy(ep));
+    }
+    return out;
+}
+
+/* ^[A-Za-z0-9][A-Za-z0-9_-]{0,191}$ — fullmatch. */
+static bool pc_portable_data_pattern(const char *s) {
+    if (!s || !*s) return false;
+    unsigned char c0 = (unsigned char)s[0];
+    if (!((c0 >= 'A' && c0 <= 'Z') || (c0 >= 'a' && c0 <= 'z')
+          || (c0 >= '0' && c0 <= '9')))
+        return false;
+    size_t n = strlen(s);
+    if (n > 192) return false;
+    for (size_t i = 1; i < n; i++) {
+        unsigned char c = (unsigned char)s[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+              || (c >= '0' && c <= '9') || c == '_' || c == '-'))
+            return false;
+    }
+    return true;
+}
+
+/* PoP: plugins_plugin_data_namespace @ hermes_cli/plugins.py:_plugin_data_namespace */
+char *plugins_plugin_data_namespace(const char *plugin_id,
+                                    const char *skill_namespace) {
+    const char *candidate = (skill_namespace && *skill_namespace)
+                                ? skill_namespace
+                                : plugin_id;
+    /* Portable Agent Plugins already receive this exact PLUGIN_DATA path. */
+    if (skill_namespace && *skill_namespace && candidate &&
+        strncmp(candidate, "agent-plugin-", 13) == 0 &&
+        pc_portable_data_pattern(candidate))
+        return strdup(candidate);
+    /* Reuse the portable namespace algorithm for native/nested ids too.
+     * Its fixed prefix avoids Windows reserved device names while the
+     * digest prevents collisions after unsafe characters are folded. */
+    return plugins_portable_skill_namespace(candidate ? candidate : "");
+}
+
+/* PoP: plugins_nested_plugin_value @ hermes_cli/plugins.py:_nested_plugin_value */
+const json_t *plugins_nested_plugin_value(const json_t *root,
+                                          const char *const *segments,
+                                          size_t n_segments,
+                                          const json_t *default_val) {
+    const json_t *current = root;
+    for (size_t i = 0; i < n_segments; i++) {
+        if (!current || current->type != JSON_OBJECT) return default_val;
+        const json_t *next = json_obj_get(current, segments[i]);
+        if (!next) return default_val;
+        current = next;
+    }
+    return current;
+}
+
+/* PoP: plugins_nested_plugin_mapping @ hermes_cli/plugins.py:_nested_plugin_mapping */
+json_t *plugins_nested_plugin_mapping(const char *const *segments,
+                                      size_t n_segments,
+                                      const json_t *value) {
+    /* nested = value; for segment in reversed(segments): nested = {segment: nested} */
+    json_t *nested = value ? json_copy(value) : json_null();
+    if (!nested) return NULL;
+    for (size_t i = n_segments; i > 0; i--) {
+        json_t *obj = json_object();
+        if (!obj) { json_free(nested); return NULL; }
+        json_set(obj, segments[i - 1], nested);
+        nested = obj;
+    }
+    return nested;
+}
+
+/* PoP: plugins_state_quota_bytes @ hermes_cli/plugins.py:PluginState.quota_bytes
+ * _PLUGIN_STATE_QUOTA_BYTES = 10 * 1024 * 1024 */
+size_t plugins_state_quota_bytes(void) { return 10u * 1024u * 1024u; }
+
+/* PoP: plugins_validate_state_key @ hermes_cli/plugins.py:PluginState._validate_key
+ * _PLUGIN_STATE_KEY_RE = ^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$ plus ".." ban.
+ * Python raises ValueError; C callers check the boolean. */
+bool plugins_validate_state_key(const char *key) {
+    if (!key || !*key) return false;
+    unsigned char c0 = (unsigned char)key[0];
+    if (!((c0 >= 'A' && c0 <= 'Z') || (c0 >= 'a' && c0 <= 'z')
+          || (c0 >= '0' && c0 <= '9')))
+        return false;
+    size_t n = strlen(key);
+    if (n > 128) return false;
+    if (strstr(key, "..")) return false;
+    for (size_t i = 1; i < n; i++) {
+        unsigned char c = (unsigned char)key[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+              || (c >= '0' && c <= '9') || c == '_' || c == '-'
+              || c == '.' || c == ':'))
+            return false;
+    }
+    return true;
+}
+
+/* PoP: plugins_setting_segment_valid @ hermes_cli/plugins.py:_PLUGIN_SETTING_SEGMENT_RE.fullmatch
+ * ^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$ */
+bool plugins_setting_segment_valid(const char *segment) {
+    if (!segment || !*segment) return false;
+    unsigned char c0 = (unsigned char)segment[0];
+    if (!((c0 >= 'A' && c0 <= 'Z') || (c0 >= 'a' && c0 <= 'z')
+          || (c0 >= '0' && c0 <= '9')))
+        return false;
+    size_t n = strlen(segment);
+    if (n > 128) return false;
+    for (size_t i = 1; i < n; i++) {
+        unsigned char c = (unsigned char)segment[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+              || (c >= '0' && c <= '9') || c == '_' || c == '-'))
+            return false;
+    }
+    return true;
+}
+
+/* PoP: plugins_relative_segments @ hermes_cli/plugins.py:_plugin_relative_segments
+ * Returns NULL (Python raises ValueError) on empty keys, '/', '\\', invalid
+ * segments, or reserved roots ("model", "plugins", "security", "settings",
+ * case-insensitive). Caller frees via plugins_free_list. */
+char **plugins_relative_segments(const char *key, size_t *out_n) {
+    if (out_n) *out_n = 0;
+    if (!key || !*key) return NULL;
+    if (strchr(key, '/') || strchr(key, '\\')) return NULL;
+    bool reserved_root = false;
+    static const char *const RESERVED_ROOTS[] = {
+        "model", "plugins", "security", "settings", NULL
+    };
+    char **segs = NULL;
+    size_t n = 0, cap = 0;
+    const char *p = key;
+    bool first = true;
+    for (;;) {
+        const char *dot = strchr(p, '.');
+        size_t len = dot ? (size_t)(dot - p) : strlen(p);
+        char *seg = malloc(len + 1);
+        if (!seg) goto fail;
+        memcpy(seg, p, len);
+        seg[len] = '\0';
+        if (!plugins_setting_segment_valid(seg)) { free(seg); goto fail; }
+        if (first) {
+            first = false;
+            for (size_t r = 0; RESERVED_ROOTS[r]; r++) {
+                /* segments[0].lower() in reserved roots */
+                const char *s = seg;
+                const char *rsv = RESERVED_ROOTS[r];
+                bool eq = true;
+                for (; *s && *rsv; s++, rsv++)
+                    if (tolower((unsigned char)*s) != *rsv) { eq = false; break; }
+                if (eq && !*s && !*rsv) { reserved_root = true; break; }
+            }
+        }
+        if (n == cap) {
+            cap = cap ? cap * 2 : 4;
+            char **ns = realloc(segs, cap * sizeof *segs);
+            if (!ns) { free(seg); goto fail; }
+            segs = ns;
+        }
+        segs[n++] = seg;
+        if (!dot) break;
+        p = dot + 1;
+    }
+    if (reserved_root) goto fail;
+    if (out_n) *out_n = n;
+    return segs;
+fail:
+    plugins_free_list(segs, n);
+    return NULL;
+}
+
+/* PoP: plugins_state_data_dir @ hermes_cli/plugins.py:PluginState.data_dir
+ * get_hermes_home() / "plugin-data" / self._data_namespace */
+char *plugins_state_data_dir(const char *data_namespace) {
+    if (!data_namespace) data_namespace = "";
+    const char *home_env = getenv("HERMES_HOME");
+    char *home_dyn = NULL;
+    const char *home;
+    if (home_env && *home_env) {
+        home = home_env;
+    } else {
+        home_dyn = pc_hermes_home();
+        home = home_dyn ? home_dyn : "";
+    }
+    size_t need = strlen(home) + strlen("/plugin-data/") +
+                  strlen(data_namespace) + 1;
+    char *out = malloc(need);
+    if (!out) { free(home_dyn); return NULL; }
+    snprintf(out, need, "%s/plugin-data/%s", home, data_namespace);
+    free(home_dyn);
+    return out;
+}
+
+/* PoP: plugins_state_path @ hermes_cli/plugins.py:PluginState.path */
+char *plugins_state_path(const char *data_namespace) {
+    char *dir = plugins_state_data_dir(data_namespace);
+    if (!dir) return NULL;
+    size_t need = strlen(dir) + strlen("/state.json") + 1;
+    char *out = malloc(need);
+    if (!out) { free(dir); return NULL; }
+    snprintf(out, need, "%s/state.json", dir);
+    free(dir);
+    return out;
+}
+
+/* PoP: plugins_state_lock_path @ hermes_cli/plugins.py:_locked_plugin_state.lock_path
+ * path.with_name(f".{path.name}.lock") — the lock lives in a sibling file
+ * because atomic replacement changes the target's inode/handle. */
+char *plugins_state_lock_path(const char *path) {
+    if (!path) return NULL;
+    const char *slash = strrchr(path, '/');
+    const char *name = slash ? slash + 1 : path;
+    size_t dir_len = slash ? (size_t)(slash - path) : 0;
+    size_t need = dir_len + 2 + strlen(name) + strlen(".lock") + 1;
+    char *out = malloc(need);
+    if (!out) return NULL;
+    if (dir_len)
+        snprintf(out, need, "%.*s/.%s.lock", (int)dir_len, path, name);
+    else
+        snprintf(out, need, ".%s.lock", name);
+    return out;
+}
