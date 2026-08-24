@@ -436,9 +436,10 @@ int pca_prompt_cache_plan_marker_count(const json_t *plan)
 }
 
 /* ── anthropic_prompt_cache_policy ───────────────────────────────────────── */
-/* PoP: anthropic_prompt_cache_policy @ agent/agent_runtime_helpers.py:anthropic_prompt_cache_policy
+/*
  * Resolves (should_cache, use_native_layout) from provider/base_url/api_mode/model.
- * MoA branch & kimi/alibabra/minimax sub-dispatch included. */
+ * PoP: anthropic_prompt_cache_policy @ agent/agent_runtime_helpers.py:anthropic_prompt_cache_policy
+ */
 void pca_anthropic_prompt_cache_policy(const char *provider,
                                         const char *base_url,
                                         const char *api_mode,

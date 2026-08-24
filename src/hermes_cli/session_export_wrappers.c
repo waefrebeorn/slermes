@@ -607,10 +607,11 @@ int sexp_u_finish_markdown(const char *arg) {
 /* ── /save surface (normalize_save_format / render_session_for_save /
  *    default_save_filename) — pure string/JSON functions. ─────────────── */
 
-/* PoP: normalize_save_format @ hermes_cli/session_export.py:normalize_save_format
+/*
  * Map a user-typed /save format token to a canonical format: json/snapshot →
  * "json", md/markdown → "md", html → "html". Returns malloc'd canonical token,
- * or NULL for an unknown format (Python raises ValueError). */
+ * PoP: normalize_save_format @ hermes_cli/session_export.py:normalize_save_format
+ */
 char *sexp_normalize_save_format(const char *fmt) {
     const char *p = (fmt && *fmt) ? fmt : "json";
     while (*p == ' ' || *p == '\t') p++;
@@ -802,10 +803,11 @@ static char *sexp_sv_render_html(const json_t *session) {
     return buf;
 }
 
-/* PoP: render_session_for_save @ hermes_cli/session_export.py:render_session_for_save
+/*
  * ``json`` → pretty-printed JSON; ``md`` → the shared full-markdown renderer;
  * ``html`` → the standalone single-page HTML export. Returns malloc'd text or
- * NULL for an unknown format (Python raises ValueError). Caller frees. */
+ * PoP: render_session_for_save @ hermes_cli/session_export.py:render_session_for_save
+ */
 char *sexp_render_session_for_save(const json_t *session, const char *fmt) {
     if (!session || !json_is_object(session)) return NULL;
     char *canonical = sexp_normalize_save_format(fmt);
@@ -823,9 +825,10 @@ char *sexp_render_session_for_save(const json_t *session, const char *fmt) {
     return out;
 }
 
-/* PoP: default_save_filename @ hermes_cli/session_export.py:default_save_filename
+/*
  * "hermes_session_<safe_id>.<fmt>" where safe_id keeps only alphanumerics,
- * '-' and '_' (falling back to "session"). Returns malloc'd; caller frees. */
+ * PoP: default_save_filename @ hermes_cli/session_export.py:default_save_filename
+ */
 char *sexp_default_save_filename(const char *session_id, const char *fmt) {
     char safe_id[256];
     size_t o = 0;

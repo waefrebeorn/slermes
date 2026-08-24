@@ -30,11 +30,11 @@ static char *cp_tool_error(const char *message)
     return out;
 }
 
-/* PoP: _normalize_target @ tools/open_preview_tool.py:_normalize_target
- *
+/*
  * Coax a bare host/domain into a fetchable URL; leave paths + schemes alone.
  * ``www.cnn.com`` -> ``https://www.cnn.com``; ``localhost:3000`` ->
- * ``http://localhost:3000``. File paths and explicit schemes pass through. */
+ * PoP: _normalize_target @ tools/open_preview_tool.py:_normalize_target
+ */
 char *preview_normalize_target(const char *raw)
 {
     const char *v = raw ? raw : "";

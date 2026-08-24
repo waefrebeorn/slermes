@@ -13,12 +13,13 @@
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: hermes_cli_codex_runtime_plugi_u_translate_one_server @ hermes_cli/codex_runtime_plugin_migration.py:_translate_one_server */
-/* PoP: hermes_cli_codex_runtime_plugi_u_translate_one_server @ hermes_cli/codex_runtime_plugin_migration.py:_translate_one_server
+/*
  * REAL port (replaces the earlier echo wrapper — parity win).
  * Arg: one Hermes MCP server config as a JSON object. Returns a JSON record
  * {"entry": <codex inline-table dict or null>, "skipped": [<reason strings>]}
  * or NULL when cfg_json is unparseable. Caller frees.
- * Trace surface: branch ladder + one V event per appended skipped reason. */
+ * PoP: hermes_cli_codex_runtime_plugi_u_translate_one_server @ hermes_cli/codex_runtime_plugin_migration.py:_translate_one_server
+ */
 char *hermes_cli_codex_runtime_plugi_u_translate_one_server(const char *cfg_json) {
     json_t *cfg = cfg_json ? json_parse(cfg_json, NULL) : NULL;
     if (!json_is_object(cfg)) {           /* Python: not isinstance(dict) */

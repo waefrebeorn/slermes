@@ -2416,11 +2416,12 @@ char *cron_jobs_ambiguous_init(const char *ref, const char *matches_json)
     return s ? s : strdup("{}");
 }
 
-/* PoP: cron_classify_items_main @ cron/scripts/classify_items.py:main
+/*
  * Classify candidate items by urgency and print only the urgent ones.
  * argv mirrors the Python CLI: --criteria (required), --threshold N
  * (default 7), --input-file PATH (default stdin), --format text|json.
- * Exit codes: 0 ok/silent, 2 bad input, 3 no classifier client, 4 call failed. */
+ * PoP: cron_classify_items_main @ cron/scripts/classify_items.py:main
+ */
 static json_t *ci_load_items(const char *raw) {
     if (!raw) return NULL;
     const char *s = raw;

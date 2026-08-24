@@ -17,9 +17,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: chronos_fire_purpose @ plugins/cron_providers/chronos/verify.py:_FIRE_PURPOSE
+/*
  * Scopes a token to the fire endpoint. A general agent JWT (without this
- * claim) must NOT be replayable against /api/cron/fire. */
+ * PoP: chronos_fire_purpose @ plugins/cron_providers/chronos/verify.py:_FIRE_PURPOSE
+ */
 const char *chronos_fire_purpose(void) { return "cron_fire"; }
 
 /* Pluggable verifier hook (Python get_fire_verifier). Returns a JSON object
@@ -32,16 +33,16 @@ void chronos_set_fire_verifier(chronos_verify_fn fn) { g_verify_hook = fn; }
 
 chronos_verify_fn chronos_get_fire_verifier(void) { return g_verify_hook; }
 
-/* PoP: chronos_verify_nas_fire_token @ plugins/cron_providers/chronos/verify.py:verify_nas_fire_token
+/*
  * Verify a NAS-minted JWT for purpose=cron_fire. Returns decoded claims as a
  * JSON object on success; NULL + reason on failure.
- *
  * NOTE: full RS256 signature verification requires the NAS JWK set. The lib/
  * crypto layer exposes HMAC signing but no RSA-verify primitive yet — until
  * one lands, this port enforces the CLAIM checks (purpose, expiry window,
  * issuer presence) and delegates signature trust to the transport: /api/cron/
  * fire must only be reachable from the trusted relay interface. This matches
- * the Python deployment where PyJWT holds the NAS public key. */
+ * PoP: chronos_verify_nas_fire_token @ plugins/cron_providers/chronos/verify.py:verify_nas_fire_token
+ */
 json_t *chronos_verify_nas_fire_token(const char *token, char *reason,
                                       size_t reason_sz) {
     if (!token || !*token) {

@@ -33,16 +33,16 @@ const char *hs_schema_ddl(void) {
     return hs_common_schema_sql();
 }
 
-/* PoP: hs_schema_apply @ hermes_state_schema.py:_ensure_schema
+/*
  * Applies the canonical DDL to an open database. Idempotent: every statement
  * is CREATE TABLE/INDEX/TRIGGER IF NOT EXISTS.
- *
  * IMPORTANT: do NOT split this DDL on ';' — it contains CREATE TRIGGER bodies
  * whose internal statements end with ';' (messages_fts_insert etc.). The
  * Python side uses executescript(), which handles trigger bodies correctly;
  * sqlite3_exec() does too, because it also executes multiple statements per
  * call. We delegate to sqlite3_exec on the whole buffer, matching
- * hermes_state_db_open(). Returns 0 on success. */
+ * PoP: hs_schema_apply @ hermes_state_schema.py:_ensure_schema
+ */
 int hs_schema_apply(sqlite3 *db, char *err, size_t err_sz) {
     extern const char *HERMES_STATE_SCHEMA_SQL;
     const char *ddl = HERMES_STATE_SCHEMA_SQL;

@@ -275,8 +275,7 @@ char *whatsapp_common_get_wsecret(const char *name, const char *default_value) {
 
 /* ── Live DM allowlist ──────────────────────────────────────────────── */
 
-/* PoP: _live_dm_allow_from @ gateway/platforms/whatsapp_common.py:_live_dm_allow_from
- *
+/*
  * Source precedence matches construction: explicit config wins over any env
  * carrier. When the adapter was seeded from an env var, re-read that same key
  * so pairing approve/revoke takes effect without restart (including an empty
@@ -285,10 +284,10 @@ char *whatsapp_common_get_wsecret(const char *name, const char *default_value) {
  * falling back to the construction-time snapshot. Config-seeded adapters keep
  * the in-memory snapshot, which pairing revoke purges in place — a
  * lower-precedence or stale env value must not broaden access.
- *
  * C adaptation: the adapter owns the instance state (_dm_allowlist_source key
  * string + _allow_from snapshot array). This function receives both as params
- * so it is caller-state explicit (no hidden instance). */
+ * PoP: _live_dm_allow_from @ gateway/platforms/whatsapp_common.py:_live_dm_allow_from
+ */
 /* PoP: whatsapp_common_live_dm_allow_from @ gateway/platforms/whatsapp_common.py:_live_dm_allow_from */
 json_t *whatsapp_common_live_dm_allow_from(const char *dm_allowlist_source,
                                             json_t *allow_from_snapshot) {

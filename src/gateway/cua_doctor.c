@@ -312,8 +312,9 @@ char *cua_doctor_cli_doctor_snippet(const char *raw_output)
 
 /* ── Fallback report composition ─────────────────────────── */
 
-/* PoP: _compose_fallback_report @ tools/computer_use/doctor.py:_compose_fallback_report
- * (MCP subprocess probes pre-resolved by caller into probes_t) */
+/*
+ * PoP: _compose_fallback_report @ tools/computer_use/doctor.py:_compose_fallback_report
+ */
 json_t *cua_doctor_compose_fallback_report(const char *binary,
                                            const cua_doctor_probes_t *probes,
                                            const char *reason,

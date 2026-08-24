@@ -432,4 +432,3 @@ char *cli_tools_xai_http_maybe_mark_xai_storage_notice_seen(const char *section_
     return notice;
 }
 
-

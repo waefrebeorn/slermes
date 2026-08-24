@@ -957,8 +957,9 @@ char *sched_parse_bot_chat_deliver_token(const char *part) {
     return NULL;
 }
 
-/* PoP: sched_write_usage_audit @ cron/scheduler.py:_write_usage_audit
- * Append one JSONL line to ~/.hermes/cron/usage_audit.jsonl. Never raises. */
+/*
+ * PoP: sched_write_usage_audit @ cron/scheduler.py:_write_usage_audit
+ */
 void sched_write_usage_audit(const char *job_id, int status) {
     const char *home = getenv("HOME");
     if (!home) home = ".";
@@ -1112,4 +1113,42 @@ int cron_scheduler_u_teardown_cron_agent(const char *arg) {
     if (!state) { printf("teardown skipped (no agent)\n"); return 0; }
     printf("cron agent torn down%s\n", (tab && tab[1] == '1') ? " + stale clients reaped" : "");
     return 0;
+}
+
+/* ── _CombinedCancelEvent (cron/scheduler.py) ──────────────────────── */
+
+/* Duck-typed threading.Event that ORs several cancellation sources. The C
+ * model: each source is a (const void *handle, int (*is_set_fn)(const void *),
+ * void (*set_fn)(void *)) triple; NULL entries are skipped (Python drops
+ * None events in __init__). */
+typedef struct sched_cancel_source {
+    const void *handle;
+    int (*is_set_fn)(const void *handle);
+    void (*set_fn)(const void *handle);
+} sched_cancel_source_t;
+
+typedef struct sched_combined_cancel_event {
+    sched_cancel_source_t *sources;
+    size_t count;
+} sched_combined_cancel_event_t;
+
+/* PoP: sched_combined_cancel_event_is_set @ cron/scheduler.py:_CombinedCancelEvent.is_set */
+bool sched_combined_cancel_event_is_set(const sched_combined_cancel_event_t *ev) {
+    if (!ev) return false;
+    for (size_t i = 0; i < ev->count; i++) {
+        const sched_cancel_source_t *s = &ev->sources[i];
+        if (s->handle && s->is_set_fn && s->is_set_fn(s->handle))
+            return true;
+    }
+    return false;
+}
+
+/* PoP: sched_combined_cancel_event_set @ cron/scheduler.py:_CombinedCancelEvent.set */
+void sched_combined_cancel_event_set(sched_combined_cancel_event_t *ev) {
+    if (!ev) return;
+    for (size_t i = 0; i < ev->count; i++) {
+        sched_cancel_source_t *s = &ev->sources[i];
+        if (s->handle && s->set_fn)
+            s->set_fn(s->handle);
+    }
 }

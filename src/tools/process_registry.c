@@ -1889,3 +1889,86 @@ char *process_registry_build_systemd_scope_argv(const char *shell_argv_json, con
     json_free(result);
     return out ? out : strdup("[]");
 }
+
+/* PoP: wait_for_pending_completions @ tools/process_registry.py:wait_for_pending_completions */
+/* Bounded wait for tracked notify_on_complete background processes (#90879).
+ * Only notify_on_complete sessions are waited on; plain background processes
+ * carry no completion contract. Timeout defaults to the
+ * terminal.oneshot_completion_wait_seconds config value (fallback 600). */
+char *process_registry_wait_for_pending_completions(const char *task_id)
+{
+    registry_init();
+
+    /* Resolve the bounded linger (s): config terminal.oneshot_completion_wait_seconds. */
+    double timeout = 600.0;
+    extern json_t *config_py_read_raw_config(void);
+    json_t *cfg = config_py_read_raw_config();
+    if (cfg && cfg->type == JSON_OBJECT) {
+        json_t *term = json_obj_get(cfg, "terminal");
+        if (term && term->type == JSON_OBJECT) {
+            json_t *v = json_obj_get(term, "oneshot_completion_wait_seconds");
+            if (v && v->type == JSON_NUMBER) timeout = v->num_val;
+        }
+        json_free(cfg);
+    }
+    if (timeout <= 0.0) return strdup("{\"waited\":[],\"completed\":[],\"timed_out\":[]}");
+
+    /* Snapshot pending notify_on_complete session ids under the registry lock. */
+    char **ids = NULL;
+    int n_ids = 0, cap_ids = 0;
+    pthread_mutex_lock(&g_registry.lock);
+    for (int i = 0; i < g_registry.running_count; i++) {
+        ProcessSession *s = g_registry.running[i];
+        if (!s || !s->notify_on_complete || !s->running) continue;
+        if (task_id && *task_id && strcmp(s->task_id, task_id) != 0) continue;
+        if (n_ids >= cap_ids) {
+            cap_ids = cap_ids ? cap_ids * 2 : 8;
+            char **np = realloc(ids, cap_ids * sizeof(char *));
+            if (!np) break;
+            ids = np;
+        }
+        ids[n_ids++] = strdup(s->id);
+    }
+    pthread_mutex_unlock(&g_registry.lock);
+
+    json_t *result = json_object();
+    json_t *j_waited = json_array(), *j_completed = json_array(), *j_timed_out = json_array();
+    double deadline = (double)time(NULL) + timeout;
+
+    for (int i = 0; i < n_ids; i++) {
+        json_append(j_waited, json_string(ids[i]));
+        ProcessSession *s = process_registry_get_session_ptr(ids[i]);
+        if (!s) { free(ids[i]); continue; }
+        while ((double)time(NULL) < deadline) {
+            _refresh_detached_session(s);
+            reconcile_local_exit(s);
+            pthread_mutex_lock(&s->lock);
+            bool exited = !s->running;
+            if (!exited) {
+                double remaining = deadline - (double)time(NULL);
+                struct timespec ts;
+                ts.tv_sec = time(NULL) + (remaining > 1.0 ? 1 : 1);
+                ts.tv_nsec = 0;
+                if (remaining <= 1.0)
+                    pthread_cond_timedwait(&s->completion_event, &s->lock, &ts);
+                else
+                    pthread_cond_timedwait(&s->completion_event, &s->lock, &ts);
+            }
+            pthread_mutex_unlock(&s->lock);
+            if (exited) break;
+        }
+        pthread_mutex_lock(&s->lock);
+        bool exited = !s->running;
+        pthread_mutex_unlock(&s->lock);
+        json_append(exited ? j_completed : j_timed_out, json_string(ids[i]));
+        free(ids[i]);
+    }
+    free(ids);
+
+    json_set(result, "waited", j_waited);
+    json_set(result, "completed", j_completed);
+    json_set(result, "timed_out", j_timed_out);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out ? out : strdup("{\"waited\":[],\"completed\":[],\"timed_out\":[]}");
+}

@@ -3408,8 +3408,9 @@ bool hermes_state_set_auto_title(hermes_state_db_t *db, const char *session_id,
     return wrote;
 }
 
-/* PoP: set_auto_title_if_empty @ hermes_state.py:SessionDB.set_auto_title_if_empty
- * (already implemented in hermes_state_misc.c — see hermes_state_set_auto_title_if_empty). */
+/*
+ * PoP: set_auto_title_if_empty @ hermes_state.py:SessionDB.set_auto_title_if_empty
+ */
 
 /* PoP: hermes_state_set_session_read @ hermes_state.py:SessionDB.set_session_read */
 bool hermes_state_set_session_read(hermes_state_db_t *db, const char *session_id,

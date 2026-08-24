@@ -27,9 +27,10 @@ char *hs_search_messages_impl(void *db, const char *query) {
     return hermes_state_search_messages_impl(db, query);
 }
 
-/* PoP: hs_search_sanitize_fts5_query @ hermes_state_search.py:_sanitize_fts5_query
+/*
  * Sanitize user input into a safe FTS5 query string. Ported alongside the
- * search implementation; re-exported here under the search-module name. */
+ * PoP: hs_search_sanitize_fts5_query @ hermes_state_search.py:_sanitize_fts5_query
+ */
 extern char *hs_sanitize_fts5_query(const char *raw);
 char *hs_search_sanitize_fts5_query(const char *raw) {
     return hermes_state_sanitize_fts5_query(raw);

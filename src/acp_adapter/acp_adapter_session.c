@@ -20,10 +20,11 @@
 
 /* ── cwd helpers ─────────────────────────────────────────────────────── */
 
-/* PoP: acps_translate_acp_cwd @ acp_adapter/session.py:_translate_acp_cwd
+/*
  * Delegates to hermes_constants.translate_cwd_for_wsl_backend — ported in
  * src/hermes_constants.c (WSL backend translation). Native Linux/macOS keeps
- * the original cwd unchanged. */
+ * PoP: acps_translate_acp_cwd @ acp_adapter/session.py:_translate_acp_cwd
+ */
 static int hcs_is_wsl(void) {
     FILE *f = fopen("/proc/sys/kernel/osrelease", "r");
     if (!f) return 0;
@@ -39,9 +40,10 @@ static int hcs_is_wsl(void) {
     return wsl;
 }
 
-/* PoP: hc_translate_cwd_for_wsl_backend @ hermes_constants.py:translate_cwd_for_wsl_backend
+/*
  * Normalize a cross-boundary cwd when Hermes runs inside WSL. No-op off WSL
- * and for paths that are already POSIX. */
+ * PoP: hc_translate_cwd_for_wsl_backend @ hermes_constants.py:translate_cwd_for_wsl_backend
+ */
 int hc_translate_cwd_for_wsl_backend(const char *cwd, char *out, size_t out_sz) {
     if (!hcs_is_wsl()) return 0;  /* keep original */
     /* UNC \\wsl.localhost\... -> strip to the POSIX path inside */

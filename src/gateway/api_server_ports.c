@@ -21,17 +21,17 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: aps_normalize_multimodal_content @ gateway/platforms/api_server.py:_normalize_multimodal_content
- *
+/*
  * REAL implementation (replaces earlier passthrough stub). Mirrors LIVE:
- *   - None -> ""
- *   - str  -> truncated to MAX_NORMALIZED_TEXT_LENGTH
- *   - list of parts -> text parts kept, image parts validated (http(s) or
- *     data:image/ URLs), file parts and unknown types rejected.
- *   - non-list non-str scalars fall back to _normalize_chat_content.
+ * - None -> ""
+ * - str  -> truncated to MAX_NORMALIZED_TEXT_LENGTH
+ * - list of parts -> text parts kept, image parts validated (http(s) or
+ * data:image/ URLs), file parts and unknown types rejected.
+ * - non-list non-str scalars fall back to _normalize_chat_content.
  * Returns a malloc'd JSON serialization of the normalized content; invalid
  * input returns {"error": "<code>:<message>"} (LIVE raises ValueError with
  * the same "code:message" string).
+ * PoP: aps_normalize_multimodal_content @ gateway/platforms/api_server.py:_normalize_multimodal_content
  */
 #define APS_MAX_NORMALIZED_TEXT_LENGTH 65536
 #define APS_MAX_CONTENT_LIST_SIZE 1000

@@ -183,10 +183,11 @@ long cch_estimate_chunk_bytes(const char *arg) {
     return size;
 }
 
-/* PoP: cch_status_code_from_value @ agent/chat_completion_helpers.py:_status_code_from_value
+/*
  * Parse an HTTP status code from an int (100-599) or a string. Returns the
  * status code, or -1 when none can be extracted (LIVE returns None).
- * Arg = the value (int as decimal string, or arbitrary string). */
+ * PoP: cch_status_code_from_value @ agent/chat_completion_helpers.py:_status_code_from_value
+ */
 int cch_status_code_from_value(const char *arg) {
     /* Python:
      *   if isinstance(value, int) and 100 <= value < 600: return value
@@ -241,9 +242,10 @@ static char *cch_scalar_to_str(const json_t *v) {
     return NULL;
 }
 
-/* PoP: cch_status_code_from_payload @ agent/chat_completion_helpers.py:_status_code_from_payload
+/*
  * Extract an HTTP status code from a JSON payload object. Returns the code or
- * -1 when none can be extracted (LIVE returns None). */
+ * PoP: cch_status_code_from_payload @ agent/chat_completion_helpers.py:_status_code_from_payload
+ */
 int cch_status_code_from_payload(const json_t *payload) {
     if (!payload || payload->type != JSON_OBJECT) return -1;
     /* Candidates: status_code, status, http_status, then error.* sub-keys,
@@ -312,8 +314,9 @@ char *cch_json_object_from_text(const char *text) {
     return out;
 }
 
-/* PoP: cch_provider_error_body @ agent/chat_completion_helpers.py:_provider_error_body
- * Normalize a provider error payload to OpenAI-style {"error": {...}}. */
+/*
+ * PoP: cch_provider_error_body @ agent/chat_completion_helpers.py:_provider_error_body
+ */
 char *cch_provider_error_body(const json_t *payload, int status_code) {
     json_t *pl = payload ? json_copy(payload) : json_object();
     if (!pl) pl = json_object();
@@ -358,8 +361,9 @@ char *cch_provider_error_body(const json_t *payload, int status_code) {
 /* _PROVIDER_STREAM_SSE_FIELDS = {"event", "data", "id", "retry"} */
 static const char *const SSE_FIELDS[] = { "event", "data", "id", "retry", NULL };
 
-/* PoP: cch_provider_stream_text_may_be_sse @ agent/chat_completion_helpers.py:_provider_stream_text_may_be_sse
- * Return true while pending text still looks like an SSE control block. */
+/*
+ * PoP: cch_provider_stream_text_may_be_sse @ agent/chat_completion_helpers.py:_provider_stream_text_may_be_sse
+ */
 bool cch_provider_stream_text_may_be_sse(const char *text) {
     if (!text) return false;
     /* stripped = text.lstrip() */

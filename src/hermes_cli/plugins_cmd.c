@@ -982,10 +982,11 @@ void cmd_capabilities(const char *name) {
 /* cmd_toggle                                                          */
 /* ------------------------------------------------------------------ */
 
-/* PoP: cmd_toggle @ hermes_cli/plugins_cmd.py:cmd_toggle
+/*
  * Text-mode path of the composite UI (_run_composite_fallback semantics):
  * numbered toggling persisted by canonical key. The curses screen is the
- * terminal-UI boundary and is not portable to the C host process. */
+ * PoP: cmd_toggle @ hermes_cli/plugins_cmd.py:cmd_toggle
+ */
 void cmd_toggle(void) {
     if (!isatty(0)) {
         printf("Interactive mode requires a terminal.\n");
@@ -1101,9 +1102,10 @@ void cmd_toggle(void) {
 /* cmd_plugin_doctor                                                   */
 /* ------------------------------------------------------------------ */
 
-/* PoP: cmd_plugin_doctor @ hermes_cli/plugins_cmd.py:cmd_plugin_doctor
+/*
  * doctor_plugin() service boundary: the C side performs the discovery +
- * manifest validation half of the report directly. */
+ * PoP: cmd_plugin_doctor @ hermes_cli/plugins_cmd.py:cmd_plugin_doctor
+ */
 void cmd_plugin_doctor(const char *target, int ci) {
     if (!target || !*target) target = ".";
     if (!p_is_dir(target)) {
@@ -1258,9 +1260,10 @@ static json_t *p_pack_load(const char *source) {
     return doc;
 }
 
-/* PoP: resolve_pack_plugins @ hermes_cli/plugin_packs.py:resolve_pack_plugins
+/*
  * repo[/subdir] entries resolve directly; bare names go through the
- * community index. Failures carried per entry as resolve_error. */
+ * PoP: resolve_pack_plugins @ hermes_cli/plugin_packs.py:resolve_pack_plugins
+ */
 json_t *resolve_pack_plugins(const json_t *pack) {
     json_t *out = json_array();
     const json_t *plugins = pack ? json_obj_get(pack, "plugins") : NULL;
@@ -1389,10 +1392,11 @@ void render_pack_review(const json_t *pack, const json_t *resolved) {
            "after install - a pack never bulk-grants.\n", nres);
 }
 
-/* PoP: install_pack_plugins @ hermes_cli/plugin_packs.py:install_pack_plugins
+/*
  * Fan-out to ordinary pinned installs; per-plugin failures never abort.
  * The capability-consent screen is the interactive boundary: declared caps
- * are surfaced with their grant command instead of being silently granted. */
+ * PoP: install_pack_plugins @ hermes_cli/plugin_packs.py:install_pack_plugins
+ */
 json_t *install_pack_plugins(const json_t *pack, const json_t *resolved,
                              int force) {
     json_t *results = json_array();

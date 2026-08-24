@@ -89,10 +89,11 @@ void sqlite_safe_untrack_connection(const char *path)
     free(key);
 }
 
-/* PoP: has_live_connection @ hermes_cli/sqlite_safe_read.py:has_live_connection
+/*
  * Note: Python's _key() is called inside _live_lock. Here we resolve first (realpath
  * is syscall), then check membership under the lock — the membership check is
- * atomic w.r.t. track/untrack which also operate under the lock. */
+ * PoP: has_live_connection @ hermes_cli/sqlite_safe_read.py:has_live_connection
+ */
 bool sqlite_safe_has_live_connection(const char *path)
 {
     char *key = sqlite_safe_key(path);
@@ -198,9 +199,10 @@ unsigned char *sqlite_safe_read_header_bytes_preopen(const char *path, size_t le
 
 /* ── Offline file access guard ───────────────────────────────────── */
 
-/* PoP: offline_file_access @ hermes_cli/sqlite_safe_read.py:offline_file_access
+/*
  * Enter/exit the critical section: holds the lock while checking + caller does
- * raw I/O. Returns SQLITE_SAFE_ERR_LIVE_CONN if a connection is live. */
+ * PoP: offline_file_access @ hermes_cli/sqlite_safe_read.py:offline_file_access
+ */
 sqlite_safe_error_t sqlite_safe_offline_file_access_enter(const char *path)
 {
     if (!path || !*path) return SQLITE_SAFE_ERR_OK;
@@ -235,11 +237,12 @@ void sqlite_safe_offline_file_access_exit(const char *path)
 
 /* ── Connected, tracked connection ─────────────────────────────── */
 
-/* PoP: connect_tracked @ hermes_cli/sqlite_safe_read.py:connect_tracked
+/*
  * Note: Python's _retrofit_tracking (swapping __class__ for a Tracked mixin)
  * is a Python metaclass feature with no C equivalent — a C sqlite3* opened here
  * is simply tracked via the registry on open and untracked on close by the
- * caller via sqlite_safe_untrack_connection. The URI/decode logic is faithful. */
+ * PoP: connect_tracked @ hermes_cli/sqlite_safe_read.py:connect_tracked
+ */
 sqlite3 *sqlite_safe_connect_tracked(const char *path,
                                      const char *tracking_path,
                                      const sqlite_safe_open_fn *open_fn,
@@ -325,9 +328,10 @@ sqlite_safe_tracked_conn_t *sqlite_safe_tracked_conn_open(const char *path,
 
 /* PoP: tracked @ hermes_cli/sqlite_safe_read.py:_retrofit_tracking */
 /* PoP: tracked @ hermes_cli/sqlite_safe_read.py:TrackedConnection */
-/* PoP: close @ hermes_cli/sqlite_safe_read.py:_TrackingMixin.close
+/*
  * Contract: close() first; untrack only after close succeeds; a failing close
- * leaves the connection tracked (guard stays refused). */
+ * PoP: close @ hermes_cli/sqlite_safe_read.py:_TrackingMixin.close
+ */
 int sqlite_safe_tracked_conn_close(sqlite_safe_tracked_conn_t *tc)
 {
     if (!tc) return SQLITE_SAFE_ERR_OK;

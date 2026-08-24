@@ -278,8 +278,9 @@ char *sh_coerce_skill_payload(const char *data_json) {
     return strdup(data_json);
 }
 
-/* PoP: sh_query_terms @ tools/skills_hub.py:_query_terms
- * Split on runs of [^a-z0-9] after lowercasing; drop empties. */
+/*
+ * PoP: sh_query_terms @ tools/skills_hub.py:_query_terms
+ */
 static size_t sh_query_terms(const char *s, char **out, size_t max) {
     size_t n = 0;
     if (!s) return 0;
@@ -337,10 +338,11 @@ static bool sh_terms_contains(char **hay, size_t hn, const char *needle) {
 
 #define SH_MAX_TERMS 64
 
-/* PoP: sh_search_score @ tools/skills_hub.py:_search_score
+/*
  * Faithful port of SkillsHub._search_score: tiered identifier/name/
  * description match scoring. NULL fields are treated as "" (Python's
- * ``meta.X or ""``). */
+ * PoP: sh_search_score @ tools/skills_hub.py:_search_score
+ */
 int sh_search_score(const char *query, const char *identifier,
                     const char *name, const char *description) {
     char *query_norm = lowerdup(query ? query : "");

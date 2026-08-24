@@ -109,11 +109,12 @@ static char *rp_strip_lower(const char *s) {
     return out;
 }
 
-/* PoP: resolve_requested_provider @ hermes_cli/runtime_provider.py:resolve_requested_provider
+/*
  * Resolve the provider request from explicit arg → config model.provider →
  * HERMES_INFERENCE_PROVIDER env → "auto". The persisted config selection is
  * deliberately preferred over any stale shell/.env override so chat uses the
- * endpoint the user last saved. Returns malloc'd lowercase id; caller frees. */
+ * PoP: resolve_requested_provider @ hermes_cli/runtime_provider.py:resolve_requested_provider
+ */
 char *runtime_provider_resolve_requested(const char *requested) {
     /* 1. explicit argument wins */
     char *req = rp_strip_lower(requested);
@@ -143,11 +144,12 @@ char *runtime_provider_resolve_requested(const char *requested) {
     return strdup("auto");
 }
 
-/* PoP: format_runtime_provider_error @ hermes_cli/runtime_provider.py:format_runtime_provider_error
+/*
  * AuthError instances route through auth.py:format_auth_error; everything else
  * formats via str(error). In C the exception type is an explicit pointer:
  * non-NULL `error` means AuthError; otherwise `fallback` is str(error).
- * Returns malloc'd message; caller frees. */
+ * PoP: format_runtime_provider_error @ hermes_cli/runtime_provider.py:format_runtime_provider_error
+ */
 char *runtime_provider_format_error(const auth_error_t *error,
                                     const char *fallback) {
     if (error) return auth_format_error(error);

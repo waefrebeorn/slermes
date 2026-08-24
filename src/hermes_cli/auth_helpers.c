@@ -17,8 +17,9 @@ static const char *PLACEHOLDERS[] = {
     "your-api-key", "placeholder", "example", "dummy", "null", "none", NULL
 };
 
-/* PoP: has_usable_secret @ hermes_cli/auth.py:has_usable_secret
- * Canonical impl in port_auth_na.c — this file declares it for linkage. */
+/*
+ * PoP: has_usable_secret @ hermes_cli/auth.py:has_usable_secret
+ */
 bool has_usable_secret(const char *value, int min_length);
 
 /* ── kimi base url ── */

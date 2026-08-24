@@ -469,14 +469,15 @@ static bool cli_ts_list_contains(const json_t *list, const char *ts) {
     return false;
 }
 
-/* PoP: get_tool_definitions @ cli.py:get_tool_definitions
+/*
  * Python: wait for MCP discovery, then model_tools.get_tool_definitions with
  * enabled/disabled-toolset filtering over the registry. C equivalent:
  * refresh registry availability (the discovery-lock join happens upstream in
  * the agent build path), then assemble OpenAI-format definitions for every
  * available registered tool passing the filter. skip_tool_search_assembly is
  * accepted for signature parity; the C port has no post-collapse assembly
- * step to skip. Returns an owned JSON array; caller frees. */
+ * PoP: get_tool_definitions @ cli.py:get_tool_definitions
+ */
 json_t *cli_get_tool_definitions(const json_t *enabled_toolsets,
                                  const json_t *disabled_toolsets,
                                  bool quiet_mode,
@@ -523,8 +524,9 @@ json_t *cli_get_tool_definitions(const json_t *enabled_toolsets,
     return out;
 }
 
-/* PoP: get_toolset_for_tool @ cli.py:get_toolset_for_tool
- * Python delegates to model_tools → registry.get_toolset_for_tool. */
+/*
+ * PoP: get_toolset_for_tool @ cli.py:get_toolset_for_tool
+ */
 const char *cli_get_toolset_for_tool(const char *tool_name) {
     return registry_get_toolset_for_tool(tool_name);
 }
@@ -558,9 +560,10 @@ static json_t *cli_toolset_def_to_json(const char *name,
     return o;
 }
 
-/* PoP: get_all_toolsets @ cli.py:get_all_toolsets
+/*
  * Python returns {name: definition} for static + plugin-registered toolsets.
- * Returns malloc'd serialized JSON object; caller frees. */
+ * PoP: get_all_toolsets @ cli.py:get_all_toolsets
+ */
 char *cli_get_all_toolsets(void) {
     json_t *result = json_object();
     size_t n = 0;
@@ -575,9 +578,10 @@ char *cli_get_all_toolsets(void) {
     return s;
 }
 
-/* PoP: get_toolset_info @ cli.py:get_toolset_info
+/*
  * {name, description, direct_tools, includes, resolved_tools, tool_count,
- *  is_composite} or NULL when unknown. Caller frees. */
+ * PoP: get_toolset_info @ cli.py:get_toolset_info
+ */
 char *cli_get_toolset_info(const char *name) {
     if (!name) return NULL;
     const toolset_def_t *def = toolsets_get_static(name);
@@ -606,9 +610,10 @@ bool cli_validate_toolset(const char *name) {
 
 /* Port of Python cli:_sync_process_session_id */
 
-/* PoP: get_job @ cli.py:get_job
+/*
  * Python lazily imports cron.get_job; C delegates to the cron jobs port
- * (normalized record or NULL). Caller owns the returned JSON. */
+ * PoP: get_job @ cli.py:get_job
+ */
 json_t *cli_get_job(const char *job_id) {
     return cronjobs_get_job(job_id);
 }

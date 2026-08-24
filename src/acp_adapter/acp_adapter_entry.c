@@ -18,8 +18,9 @@ int acpe_print_version(void) {
     return 0;
 }
 
-/* PoP: acpe_run_check @ acp_adapter/entry.py:_run_check
- * Environment sanity probe: verify the state dir and config are readable. */
+/*
+ * PoP: acpe_run_check @ acp_adapter/entry.py:_run_check
+ */
 int acpe_run_check(char *out_json, size_t out_sz) {
     const char *home = getenv("HERMES_HOME");
     if (!home || !*home) home = getenv("HOME");
@@ -30,9 +31,10 @@ int acpe_run_check(char *out_json, size_t out_sz) {
     return ok ? 0 : 1;
 }
 
-/* PoP: acpe_parse_args @ acp_adapter/entry.py:_parse_args
+/*
  * Arg = NUL-delimited args. Returns action string:
- *   "serve" | "version" | "check" | "setup" | "help" */
+ * PoP: acpe_parse_args @ acp_adapter/entry.py:_parse_args
+ */
 void acpe_parse_args(const char *const *argv, char *out, size_t out_sz) {
     snprintf(out, out_sz, "serve"); /* default action: start the server */
     for (int i = 0; argv && argv[i]; i++) {

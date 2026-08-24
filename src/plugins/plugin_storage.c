@@ -17,9 +17,10 @@
 #include <sys/types.h>
 #include <sqlite3.h>
 
-/* PoP: pstore_validate_name @ plugins/plugin_storage.py:_validate_name
+/*
  * Mirrors the plugin-name shape `hermes plugins install` accepts; rejects
- * separators/traversal. Returns 0 when valid. */
+ * PoP: pstore_validate_name @ plugins/plugin_storage.py:_validate_name
+ */
 int pstore_validate_name(const char *name) {
     if (!name || !*name) return 1;
     size_t n = strlen(name);
@@ -35,9 +36,10 @@ int pstore_validate_name(const char *name) {
     return 0;
 }
 
-/* PoP: pstore_data_dir @ plugins/plugin_storage.py:plugin_data_dir
+/*
  * Returns (and creates) <hermes home>/plugin-data/<name>/ in out.
- * Returns 0 on success. */
+ * PoP: pstore_data_dir @ plugins/plugin_storage.py:plugin_data_dir
+ */
 int pstore_data_dir(const char *name, char *out, size_t out_sz) {
     if (pstore_validate_name(name) != 0) {
         hermes_log(LOG_ERROR, "plugin_storage", "invalid plugin name for storage: %s", name);
@@ -57,9 +59,10 @@ int pstore_data_dir(const char *name, char *out, size_t out_sz) {
     return 0;
 }
 
-/* PoP: pstore_db_open @ plugins/plugin_storage.py:plugin_db
+/*
  * Opens <data dir>/<filename> with WAL + foreign_keys=ON (created on first
- * use). Returns NULL on error (message via hermes_log). */
+ * PoP: pstore_db_open @ plugins/plugin_storage.py:plugin_db
+ */
 sqlite3 *pstore_db_open(const char *name, const char *filename) {
     if (!filename || !*filename || strchr(filename, '/') || strstr(filename, "..")) {
         hermes_log(LOG_ERROR, "plugin_storage", "invalid plugin db filename: %s",

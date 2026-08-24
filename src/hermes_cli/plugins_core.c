@@ -912,15 +912,17 @@ void plugin_collect_directory_manifests(char *out_json, size_t out_sz) {
     free(text);
 }
 
-/* PoP: plugin_has_enabled_portable_mcp @ hermes_cli/plugins.py:has_enabled_portable_mcp
- * raw_config is the parsed config as JSON (plugins.enabled / .disabled). */
+/*
+ * PoP: plugin_has_enabled_portable_mcp @ hermes_cli/plugins.py:has_enabled_portable_mcp
+ */
 int plugin_has_enabled_portable_mcp(const char *raw_config_json) {
     return plugins_has_enabled_portable_mcp(raw_config_json) ? 1 : 0;
 }
 
-/* PoP: plugin_has_enabled_agent_plugin_mcp @ hermes_cli/plugins.py:has_enabled_agent_plugin_mcp
+/*
  * Python: PluginManager().has_enabled_portable_mcp(raw_config) — a fresh
- * manager, i.e. manifest-only scanning with no registry mutation. */
+ * PoP: plugin_has_enabled_agent_plugin_mcp @ hermes_cli/plugins.py:has_enabled_agent_plugin_mcp
+ */
 int plugin_has_enabled_agent_plugin_mcp(const char *raw_config_json) {
     return plugins_has_enabled_portable_mcp(raw_config_json) ? 1 : 0;
 }
@@ -1038,10 +1040,11 @@ void plugin_read_keys_cache(char *out_json, size_t out_sz) {
     free(blob);
 }
 
-/* PoP: plugin_get_toolset_keys_nowait @ hermes_cli/plugins.py:get_plugin_toolset_keys_nowait
+/*
  * Discovery in the C port is synchronous (no background thread), so the live
  * value is always available; the persisted set is the fallback when the cache
- * is the only source. */
+ * PoP: plugin_get_toolset_keys_nowait @ hermes_cli/plugins.py:get_plugin_toolset_keys_nowait
+ */
 void plugin_get_toolset_keys_nowait(char *out_json, size_t out_sz) {
     size_t n = 0;
     char **keys = plugins_cached_string_list("toolset_keys", &n);
@@ -1057,10 +1060,11 @@ void plugin_get_portable_mcp_names_nowait(char *out_json, size_t out_sz) {
     plugins_free_list(names, n);
 }
 
-/* PoP: plugin_load_portable @ hermes_cli/plugins.py:_load_portable_plugin
+/*
  * Registers a portable package's MCP servers into the caller-owned registry
  * JSON. Returns the server map declared by the package (empty when it has
- * none or the manifest is unreadable). */
+ * PoP: plugin_load_portable @ hermes_cli/plugins.py:_load_portable_plugin
+ */
 void plugin_load_portable(const char *manifest_path, char *out_json,
                           size_t out_sz) {
     snprintf(out_json, out_sz, "{}");
@@ -1086,10 +1090,11 @@ void plugin_load_portable(const char *manifest_path, char *out_json,
     json_free(mcp);
 }
 
-/* PoP: plugin_list_skill_metadata @ hermes_cli/plugins.py:list_plugin_skill_metadata
+/*
  * Progressive-disclosure metadata for the SKILL.md files each enabled plugin
  * ships under <plugin>/skills/<name>/SKILL.md, sorted by qualified name
- * (mirrors `sorted(self._plugin_skills.items())`). */
+ * PoP: plugin_list_skill_metadata @ hermes_cli/plugins.py:list_plugin_skill_metadata
+ */
 void plugin_list_skill_metadata(const char *raw_config_json, char *out_json,
                                 size_t out_sz) {
     json_t *arr = json_array();

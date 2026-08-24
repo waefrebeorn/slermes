@@ -29,9 +29,10 @@ int cus_is_valid_action(const char *action) {
     return 0;
 }
 
-/* PoP: cus_schema @ tools/computer_use/schema.py:COMPUTER_USE_SCHEMA
+/*
  * Compact tool-schema summary for the tool list. Full parameter detail is
- * carried by cua-driver's own discovery at runtime. */
+ * PoP: cus_schema @ tools/computer_use/schema.py:COMPUTER_USE_SCHEMA
+ */
 json_t *cus_schema(void) {
     json_t *s = json_object();
     json_set(s, "name", json_string("computer_use"));

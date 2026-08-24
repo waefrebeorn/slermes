@@ -122,10 +122,11 @@ bool he_enabled(const char *config_json)
     return enabled;
 }
 
-/* PoP: _require_metrics_sdk @ agent/monitoring/gateway_health_export.py:_require_metrics_sdk
+/*
  * The C port does not dynamically import the OTLP SDK (it's not available in
  * C). Faithful behavior: check if OTLP config is present, return false.
- * In Python this raises RuntimeError if unavailable; in C we fail-open. */
+ * PoP: _require_metrics_sdk @ agent/monitoring/gateway_health_export.py:_require_metrics_sdk
+ */
 bool he_require_metrics_sdk(const char *config_json) {
     /* Check if OTLP endpoint is configured — mirrors Python's attempt to
      * import the SDK. If no endpoint, the SDK is "unavailable". */
@@ -145,9 +146,10 @@ bool he_require_metrics_sdk(const char *config_json) {
     return false;
 }
 
-/* PoP: _start_metric_provider @ agent/monitoring/gateway_health_export.py:_start_metric_provider
+/*
  * Starts the OTLP metric provider. OTLP SDK not ported to C; degrade to
- * NULL (no provider) — same as Python's except Exception → None. */
+ * PoP: _start_metric_provider @ agent/monitoring/gateway_health_export.py:_start_metric_provider
+ */
 void *he_start_metric_provider(const char *config_json) {
     /* Attempt to resolve SDK availability (mirrors Python's import flow).
      * The actual OTLP exporter/reader/provider creation is not available in C. */

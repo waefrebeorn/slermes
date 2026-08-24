@@ -688,11 +688,12 @@ static bool pr_named_custom_exists(const char *candidate) {
     return found;
 }
 
-/* PoP: has_named_custom_provider @ hermes_cli/runtime_provider.py:has_named_custom_provider
+/*
  * True when config defines a providers:/custom_providers: entry matching the
  * requested name (thin public wrapper over the _get_named_custom_provider
  * existence scan; Python's try/except → false maps to the scan's own
- * error-tolerant behavior). */
+ * PoP: has_named_custom_provider @ hermes_cli/runtime_provider.py:has_named_custom_provider
+ */
 bool provider_has_named_custom(const char *requested_provider) {
     char *req_norm = provider_normalize_custom_name(requested_provider);
     if (!req_norm || !*req_norm || strcmp(req_norm, "auto") == 0) {

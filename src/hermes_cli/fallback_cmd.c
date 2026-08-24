@@ -338,9 +338,10 @@ int cmd_fallback_list(void) {
     return 0;
 }
 
-/* PoP: _numbered_pick @ hermes_cli/fallback_cmd.py:_numbered_pick
+/*
  * Fallback numbered-list picker when curses is unavailable. Returns the
- * chosen index or -1 on cancel/EOF. */
+ * PoP: _numbered_pick @ hermes_cli/fallback_cmd.py:_numbered_pick
+ */
 int fallback_numbered_pick(const char *question, const char **choices, int n) {
     printf("%s\n", question);
     for (int i = 0; i < n; i++) printf("  %d. %s\n", i + 1, choices[i]);
@@ -363,11 +364,12 @@ int fallback_numbered_pick(const char *question, const char **choices, int n) {
     }
 }
 
-/* PoP: cmd_fallback_add @ hermes_cli/fallback_cmd.py:cmd_fallback_add
+/*
  * The provider/model picker itself is the interactive boundary; it is
  * invoked through a weak hook so hosts that link a picker implementation
  * get the full flow. Without a hook the flow restores state and reports
- * "No fallback added." exactly like a user cancellation. */
+ * PoP: cmd_fallback_add @ hermes_cli/fallback_cmd.py:cmd_fallback_add
+ */
 extern __attribute__((weak)) int hermes_select_provider_and_model_hook(void);
 
 int cmd_fallback_add(void) {

@@ -380,12 +380,13 @@ int tools_fal_common_init(const char *key)
     return 0;
 }
 
-/* PoP: tools_ha_run_async @ tools/homeassistant_tool.py:_run_async
+/*
  * Run a blocking operation from a sync handler on a worker thread with a
  * bounded 30s wait (Python submits the coroutine to a single-worker pool and
  * waits result(timeout=30); C has no coroutine layer, so callers hand us a
  * thread fn). Returns 0 and sets *out_result on completion, -2 on timeout
- * (worker detached, result discarded), -1 on allocation/spawn failure. */
+ * PoP: tools_ha_run_async @ tools/homeassistant_tool.py:_run_async
+ */
 typedef struct {
     void *(*fn)(void *);
     void *arg;
@@ -846,10 +847,11 @@ long tools_xai_video_coerce_int(const char *value, bool *ok)
 }
 
 /* PoP: tools_cu_run_doctor @ tools/computer_use/doctor.py:run_doctor */
-/* PoP: tools_cu_run_doctor @ tools/computer_use/doctor.py:run_doctor
+/*
  * Resolve the cua-driver binary the way the toolset would (explicit cmd >
  * HERMES_CUA_DRIVER_CMD > PATH probe), then run environment checks and
- * render a report. Returns 0 when healthy, 1 with findings. */
+ * PoP: tools_cu_run_doctor @ tools/computer_use/doctor.py:run_doctor
+ */
 int tools_cu_run_doctor(const char *driver_cmd, bool json_output)
 {
     const char *env_cmd = getenv("HERMES_CUA_DRIVER_CMD");

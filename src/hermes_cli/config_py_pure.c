@@ -917,10 +917,11 @@ bool is_nix_install_method(const char *method) {
     return false;
 }
 
-/* PoP: get_custom_provider_model_capability @ hermes_cli/config.py:get_custom_provider_model_capability
+/*
  * Returns a new json bool node, or NULL when no explicit boolean capability
  * is declared. When custom_providers is NULL the read-only merged config's
- * compatible custom-provider view is loaded (read-only path, never mutated). */
+ * PoP: get_custom_provider_model_capability @ hermes_cli/config.py:get_custom_provider_model_capability
+ */
 json_t *get_custom_provider_model_capability(const char *model,
                                              const char *base_url,
                                              const char *capability,
@@ -976,11 +977,12 @@ json_t *get_custom_provider_model_capability(const char *model,
     return result;
 }
 
-/* PoP: split_model_config_default @ hermes_cli/config.py:split_model_config_default
+/*
  * Canonicalize a config ``model.default``/``model.model`` value.
  * A dict-valued default pairs the model string with the provider it must be
  * routed through; anything else canonicalizes to (str(raw).strip(), "").
- * Both out params are malloc'd (possibly ""); either may be NULL to skip. */
+ * PoP: split_model_config_default @ hermes_cli/config.py:split_model_config_default
+ */
 void split_model_config_default(const json_t *raw_default, char **out_model,
                                 char **out_provider) {
     char *model = strdup(""), *provider = strdup("");
@@ -1050,10 +1052,11 @@ static int cpi_str_in_set(const char *s, const char *const *set) {
     return 0;
 }
 
-/* PoP: resolve_turn_limit @ hermes_cli/config.py:resolve_turn_limit
+/*
  * Normalize a raw ``agent.max_turns`` value into an iteration cap.
  * null/bool/unparseable → default; numbers ≤ 0 and the unlimited spellings →
- * LONG_MAX; numeric strings parse via long then double fallback. Always ≥ 1. */
+ * PoP: resolve_turn_limit @ hermes_cli/config.py:resolve_turn_limit
+ */
 long resolve_turn_limit(const json_t *raw, long default_value) {
     static const char *const unlimited_spellings[] = {
         "none", "null", "unlimited", "infinite", "infinity", "inf",
@@ -1093,9 +1096,10 @@ long resolve_turn_limit(const json_t *raw, long default_value) {
     return default_value;
 }
 
-/* PoP: render_personality_prompt @ hermes_cli/config.py:render_personality_prompt
+/*
  * Delegates to hermes_cli/personality.py:render_personality_prompt
- * (single owner), ported as per_render_personality_prompt. Caller frees. */
+ * PoP: render_personality_prompt @ hermes_cli/config.py:render_personality_prompt
+ */
 char *render_personality_prompt(const json_t *value) {
     return per_render_personality_prompt(value);
 }
@@ -1160,9 +1164,10 @@ static bool cli_terminal_config_value_is_bridgeable(const char *key, const json_
     return true;
 }
 
-/* PoP: terminal_config_owned_env_vars @ hermes_cli/config.py:terminal_config_owned_env_vars
+/*
  * Env vars explicitly owned by a raw ``terminal`` config section. Non-dict
- * input → empty set. Returns a new JSON array of env-var name strings. */
+ * PoP: terminal_config_owned_env_vars @ hermes_cli/config.py:terminal_config_owned_env_vars
+ */
 json_t *terminal_config_owned_env_vars(const json_t *terminal_config) {
     json_t *owned = json_array();
     if (!terminal_config || terminal_config->type != JSON_OBJECT) return owned;
@@ -1192,8 +1197,9 @@ static char *cpi_model_assignment_text(const json_t *value) {
     return strdup("");
 }
 
-/* PoP: cli_cron_model_drift_guard_enabled @ hermes_cli/config.py:cron_model_drift_guard_enabled
- * Only the literal YAML boolean false disables this fail-closed spend guard. */
+/*
+ * PoP: cli_cron_model_drift_guard_enabled @ hermes_cli/config.py:cron_model_drift_guard_enabled
+ */
 static bool cli_cron_model_drift_guard_enabled(const json_t *config) {
     if (!config) {
         json_t *cfg = config_py_load_config_readonly();
@@ -1209,8 +1215,9 @@ static bool cli_cron_model_drift_guard_enabled(const json_t *config) {
     return guard->bool_val != false;
 }
 
-/* PoP: cli_cron_fleet_default_covers_axis @ hermes_cli/config.py:_cron_fleet_default_covers_axis
- * True when cron.model / cron.model_provider covers *axis*. */
+/*
+ * PoP: cli_cron_fleet_default_covers_axis @ hermes_cli/config.py:_cron_fleet_default_covers_axis
+ */
 static bool cli_cron_fleet_default_covers_axis(const char *axis, const json_t *config) {
     if (!config) {
         json_t *cfg = config_py_load_config_readonly();
@@ -1230,10 +1237,11 @@ static bool cli_cron_fleet_default_covers_axis(const char *axis, const json_t *c
     return covered;
 }
 
-/* PoP: resolve_cron_model_drift_defaults @ hermes_cli/config.py:resolve_cron_model_drift_defaults
+/*
  * Global provider/model values cron compares against snapshots. Truthy
  * configured model wins HERMES_MODEL; the environment is only a fallback.
- * Both out strings are malloc'd; either may be NULL to skip. */
+ * PoP: resolve_cron_model_drift_defaults @ hermes_cli/config.py:resolve_cron_model_drift_defaults
+ */
 void resolve_cron_model_drift_defaults(const json_t *config, char **out_provider,
                                        char **out_model) {
     char *provider = strdup("");
@@ -1273,10 +1281,11 @@ void resolve_cron_model_drift_defaults(const json_t *config, char **out_provider
     if (out_model) *out_model = model; else free(model);
 }
 
-/* PoP: cron_model_drift_axes @ hermes_cli/config.py:cron_model_drift_axes
+/*
  * The unpinned axes ("provider"/"model") that the fail-closed cron guard
  * would block, given the current assignment vs each job's snapshot.
- * Returns a new JSON array of axis-name strings ([] when nothing drifts). */
+ * PoP: cron_model_drift_axes @ hermes_cli/config.py:cron_model_drift_axes
+ */
 json_t *cron_model_drift_axes(const json_t *job, const char *current_provider,
                               const char *current_model, const json_t *config) {
     json_t *drifted = json_array();
@@ -1383,10 +1392,11 @@ static json_t *cpi_unavailable_cron_model_impact(bool guard_enabled) {
     return r;
 }
 
-/* PoP: build_cron_model_impact @ hermes_cli/config.py:build_cron_model_impact
+/*
  * Bounded, profile-local summary of jobs blocked by model drift. Job-store
  * inspection is best effort: an unreadable store yields available=false.
- * When jobs is NULL the active profile's store is loaded via cron/jobs.py. */
+ * PoP: build_cron_model_impact @ hermes_cli/config.py:build_cron_model_impact
+ */
 json_t *build_cron_model_impact(const char *current_provider, const char *current_model,
                                 const json_t *config, const json_t *jobs) {
     bool guard_enabled = cli_cron_model_drift_guard_enabled(config);

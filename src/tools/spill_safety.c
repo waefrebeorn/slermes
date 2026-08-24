@@ -15,11 +15,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-/* PoP: ensure_spill_dir @ tools/spill_safety.py:ensure_spill_dir
+/*
  * Python: path.mkdir(mode=0o700 if private else default, parents=True,
  * exist_ok=True); st = os.lstat(path); refuse non-dirs; chmod 0700 when
  * private and mode differs. mkdir -p semantics come from recursive parent
- * creation; exist_ok=True means EEXIST on the leaf is not an error. */
+ * PoP: ensure_spill_dir @ tools/spill_safety.py:ensure_spill_dir
+ */
 spill_status_t spill_safety_ensure_spill_dir(const char *path, int private_flag)
 {
     if (!path || !*path)

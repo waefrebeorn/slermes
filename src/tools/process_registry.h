@@ -242,4 +242,10 @@ void process_registry_set_close_sink(process_registry_close_sink_t sink);
  * else {status:ok, closed:<id>, note:...}. Caller frees. */
 char *process_registry_request_close_terminal(const char *session_id);
 
+/* PoP: wait_for_pending_completions @ tools/process_registry.py:wait_for_pending_completions */
+/* Bounded wait for tracked notify_on_complete background processes.
+ * Returns malloc'd JSON {"waited":[...],"completed":[...],"timed_out":[...]}.
+ * Caller frees. */
+char *process_registry_wait_for_pending_completions(const char *task_id);
+
 #endif /* HERMES_PROCESS_REGISTRY_H */

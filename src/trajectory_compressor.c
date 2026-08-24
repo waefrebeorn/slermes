@@ -31,8 +31,9 @@ int tc_protect_last_turns(void) { return 3; }
 /* PoP: tc_target_max_tokens_default @ trajectory_compressor.py:TARGET_MAX_TOKENS */
 int tc_target_max_tokens(void) { return 16000; }
 
-/* PoP: tc_estimate_tokens @ trajectory_compressor.py:_estimate_tokens
- * chars/4 heuristic — same ratio the Python estimator uses. */
+/*
+ * PoP: tc_estimate_tokens @ trajectory_compressor.py:_estimate_tokens
+ */
 long tc_estimate_tokens(const char *text) {
     if (!text) return 0;
     return (long)(strlen(text) / 4);

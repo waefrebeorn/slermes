@@ -20,8 +20,9 @@ int hlog_setup_logging(const char *mode) {
     return 0;
 }
 
-/* PoP: hlog_set_session_context @ hermes_logging.py:set_session_context
- * All log lines emitted on this thread include [session_id] for correlation. */
+/*
+ * PoP: hlog_set_session_context @ hermes_logging.py:set_session_context
+ */
 void hlog_set_session_context(const char *session_id) {
     hermes_log_set_context(session_id, NULL, NULL, 0);
 }

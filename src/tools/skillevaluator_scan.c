@@ -53,6 +53,7 @@ bool skillevaluator_scan_finding_is_secrets_class(const skillevaluator_scan_find
 }
 
 /* Tier1Finding.location() */
+/* PoP: skillevaluator_scan_finding_location @ tools/skillevaluator_scan.py:location */
 char *skillevaluator_scan_finding_location(const skillevaluator_scan_finding_t *f) {
     if (!f) return strdup("?");
     if (f->file && f->file[0] && f->line) {

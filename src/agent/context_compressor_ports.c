@@ -620,16 +620,16 @@ char *cc_generate_summary(const char *serialized_json, long budget) {
 }
 
 /* PoP: cc_sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */
-/* PoP: cc_sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs
- *
+/*
  * REAL implementation (replaces earlier passthrough stub). Mirrors LIVE
  * ContextCompressor._sanitize_tool_pairs with quiet_mode=True:
- *   1. collect surviving assistant tool_call ids (call_id || id),
- *   2. collect tool result ids,
- *   3. drop role="tool" results whose id has no surviving call,
- *   4. strip orphaned tool_calls from assistant messages (preserving the
- *      trailing in-flight request), blanking content when a message loses
- *      all calls. Returns serialized sanitized array.
+ * 1. collect surviving assistant tool_call ids (call_id || id),
+ * 2. collect tool result ids,
+ * 3. drop role="tool" results whose id has no surviving call,
+ * 4. strip orphaned tool_calls from assistant messages (preserving the
+ * trailing in-flight request), blanking content when a message loses
+ * all calls. Returns serialized sanitized array.
+ * PoP: cc_sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs
  */
 static const char *cc_stp_role(const json_t *msg) {
     json_t *r = json_obj_get(msg, "role");

@@ -532,8 +532,9 @@ char *loops_digest_response(const char *response) {
     return hex;
 }
 
-/* PoP: loops_state_status_line @ hermes_cli/loops.py:LoopManager.status_line
- * now injected for deterministic remaining-label computation. */
+/*
+ * PoP: loops_state_status_line @ hermes_cli/loops.py:LoopManager.status_line
+ */
 char *loops_state_status_line(const loop_state_t *s, double now) {
     if (!s || strcmp(s->status, "cleared") == 0)
         return strdup("No loop set. Start one with /loop [interval] <prompt>.");

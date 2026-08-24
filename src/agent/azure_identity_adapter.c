@@ -311,10 +311,11 @@ static bool resolve_token(const entra_identity_config_t *cfg,
     return false;
 }
 
-/* PoP: agent_azure_identity_adapter_build_credential @ agent/azure_identity_adapter.py:build_credential
+/*
  * Returns a stable, non-NULL credential handle. There is exactly one cached
  * credential per process (lru_cache maxsize=1). The handle is the cache slot
- * itself; callers pass it to materialize/describe. */
+ * PoP: agent_azure_identity_adapter_build_credential @ agent/azure_identity_adapter.py:build_credential
+ */
 azure_cred_cache_t *agent_azure_identity_adapter_build_credential(const entra_identity_config_t *config)
 {
     pthread_mutex_lock(&g_cred_lock);
@@ -336,10 +337,11 @@ azure_cred_cache_t *agent_azure_identity_adapter_build_credential(const entra_id
     return &g_cred_cache;
 }
 
-/* PoP: agent_azure_identity_adapter_build_token_provider @ agent/azure_identity_adapter.py:build_token_provider
+/*
  * Returns a token-provider handle (a freshly built credential). The caller
  * invokes materialize_bearer_for_http(provider) to mint a token. The provider
- * caches its token until expiry. */
+ * PoP: agent_azure_identity_adapter_build_token_provider @ agent/azure_identity_adapter.py:build_token_provider
+ */
 azure_cred_cache_t *agent_azure_identity_adapter_build_token_provider(
     const char *scope, const entra_identity_config_t *config,
     const char *base_url, bool exclude_interactive_browser)
@@ -381,9 +383,10 @@ bool agent_azure_identity_adapter_has_azure_identity_credentials(
     return resolve_token(&eff, tok, sizeof(tok), &exp) && tok[0] != '\0';
 }
 
-/* PoP: agent_azure_identity_adapter_materialize_bearer_for_http @ agent/azure_identity_adapter.py:materialize_bearer_for_http
+/*
  * materialize a fresh (or cached) bearer token for an outbound HTTP request.
- * Accepts either a token-provider handle or a literal API-key string. */
+ * PoP: agent_azure_identity_adapter_materialize_bearer_for_http @ agent/azure_identity_adapter.py:materialize_bearer_for_http
+ */
 bool agent_azure_identity_adapter_materialize_bearer_for_http(
     const void *value, char *out_token, size_t out_cap)
 {
@@ -432,8 +435,9 @@ bool agent_azure_identity_adapter_materialize_bearer_for_http(
     return false;
 }
 
-/* PoP: agent_azure_identity_adapter_describe_active_credential @ agent/azure_identity_adapter.py:describe_active_credential
- * Returns a JSON diagnostic object (caller frees). Never raises. */
+/*
+ * PoP: agent_azure_identity_adapter_describe_active_credential @ agent/azure_identity_adapter.py:describe_active_credential
+ */
 json_t *agent_azure_identity_adapter_describe_active_credential(
     const entra_identity_config_t *config, const char *scope,
     double timeout_seconds, bool allow_install)
@@ -492,11 +496,12 @@ json_t *agent_azure_identity_adapter_describe_active_credential(
     return info;
 }
 
-/* PoP: agent_azure_identity_adapter_build_bearer_http_client @ agent/azure_identity_adapter.py:build_bearer_http_client
+/*
  * Returns an opaque client handle whose requests carry a fresh Bearer token.
  * Implemented over http_t with a per-request Authorization injection. The
  * returned handle is an azure_bearer_client_t (free with
- * agent_azure_identity_adapter_bearer_http_client_free). */
+ * PoP: agent_azure_identity_adapter_build_bearer_http_client @ agent/azure_identity_adapter.py:build_bearer_http_client
+ */
 typedef struct {
     http_t *http;
     azure_cred_cache_t *provider;

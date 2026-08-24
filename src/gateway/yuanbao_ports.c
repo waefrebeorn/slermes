@@ -76,15 +76,15 @@ char *yb2_build_source(const char *group_code, const char *user_openid) {
     return out;
 }
 
-/* PoP: yb2_extract_text @ gateway/platforms/yuanbao.py:_extract_text
- *
+/*
  * REAL implementation (replaces earlier empty-string stub). Mirrors LIVE
  * ExtractContentMiddleware._extract_text:
- *   TIMTextElem -> text; TIMImageElem/Sound/Video -> "[image|ybres:RID]"
- *   style labels; TIMFileElem -> "[file: name]" / "[file:name|ybres:RID]";
- *   TIMCustomElem -> data JSON dispatch (1002 mention, 1010 share card,
- *   1007 link understanding, 1009 chat record); TIMFaceElem -> "[emoji: n]";
- *   unknown types -> "[<type>]". Elems joined with spaces.
+ * TIMTextElem -> text; TIMImageElem/Sound/Video -> "[image|ybres:RID]"
+ * style labels; TIMFileElem -> "[file: name]" / "[file:name|ybres:RID]";
+ * TIMCustomElem -> data JSON dispatch (1002 mention, 1010 share card,
+ * 1007 link understanding, 1009 chat record); TIMFaceElem -> "[emoji: n]";
+ * unknown types -> "[<type>]". Elems joined with spaces.
+ * PoP: yb2_extract_text @ gateway/platforms/yuanbao.py:_extract_text
  */
 #define YB_CARD_CONTENT_MAX_LENGTH 1000
 

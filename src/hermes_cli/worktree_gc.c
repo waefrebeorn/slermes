@@ -14,10 +14,16 @@
 #define _DEFAULT_SOURCE
 
 #include "worktree_gc.h"
-#include "port_cli_parity_gaps.h"
+
+/* worktree merge-cache API (src/cli/cli.c) */
+
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+/* worktree merge-cache API (src/cli/cli.c) */
+extern char *cli_load_worktree_merge_cache(void);
+extern void cli_save_worktree_merge_cache(json_t *verdicts);
 #include <string.h>
 #include <ctype.h>
 #include <dirent.h>
@@ -144,8 +150,9 @@ int wgc_run_git(char *const args[], const char *cwd, int timeout,
     return rc;
 }
 
-/* PoP: wgc_git_repo_root @hermes_cli/worktree_gc.py:_git_repo_root
- * PoP-of cli.py:_git_repo_root (classification primitive imported by worktree_gc) */
+/*
+ * PoP: wgc_git_repo_root @ hermes_cli/worktree_gc.py:_git_repo_root
+ */
 char *wgc_git_repo_root(void)
 {
     char *const args[] = {"rev-parse", "--show-toplevel", NULL};

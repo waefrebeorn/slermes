@@ -14,9 +14,10 @@
 
 static long g_permission_request_counter = 0;
 
-/* PoP: acpp_permission_option_supports_kind @ acp_adapter/permissions.py:_permission_option_supports_kind
+/*
  * The C implementation owns its ACP encoding — every kind it emits is
- * supported by construction (the Python probe guards against SDK drift). */
+ * PoP: acpp_permission_option_supports_kind @ acp_adapter/permissions.py:_permission_option_supports_kind
+ */
 int acpp_permission_option_supports_kind(const char *kind) {
     static const char *const supported[] = {
         "allow_once", "allow_always", "reject_once", "reject_always", NULL
@@ -27,9 +28,10 @@ int acpp_permission_option_supports_kind(const char *kind) {
     return 0;
 }
 
-/* PoP: acpp_build_permission_options @ acp_adapter/permissions.py:_build_permission_options
+/*
  * Returns a JSON array of {option_id, kind, name} rows matching Hermes
- * approval semantics. Caller frees with json_free. */
+ * PoP: acpp_build_permission_options @ acp_adapter/permissions.py:_build_permission_options
+ */
 json_t *acpp_build_permission_options(int allow_permanent, int smart_denied) {
     json_t *arr = json_array();
     json_t *row;
@@ -72,9 +74,10 @@ json_t *acpp_build_permission_options(int allow_permanent, int smart_denied) {
     return arr;
 }
 
-/* PoP: acpp_build_permission_tool_call @ acp_adapter/permissions.py:_build_permission_tool_call
+/*
  * Tool-call update attached to a permission request. Unique perm-check-N id
- * per request so concurrent requests don't collide. */
+ * PoP: acpp_build_permission_tool_call @ acp_adapter/permissions.py:_build_permission_tool_call
+ */
 json_t *acpp_build_permission_tool_call(const char *command, const char *description) {
     char tool_call_id[48];
     snprintf(tool_call_id, sizeof tool_call_id, "perm-check-%ld",
@@ -107,9 +110,10 @@ json_t *acpp_build_permission_tool_call(const char *command, const char *descrip
     return update;
 }
 
-/* PoP: acpp_map_outcome_to_hermes @ acp_adapter/permissions.py:_map_outcome_to_hermes
+/*
  * Map an ACP permission outcome option-id into a Hermes approval string.
- * outcome_json = {"option_id": "..."}; allowed_ids = NUL-delimited list. */
+ * PoP: acpp_map_outcome_to_hermes @ acp_adapter/permissions.py:_map_outcome_to_hermes
+ */
 void acpp_map_outcome_to_hermes(const char *outcome_json,
                                 char *const *allowed_ids,
                                 char *out, size_t out_sz) {

@@ -441,9 +441,10 @@ const char *bot_failure_retry_action(const char *reason)
     return "none";
 }
 
-/* PoP: bot_failure_classify_agent_error @ tools/bot_failure_reasons.py:classify_agent_error
+/*
  * (promoted from the former inlined br_classify_agent_error — same rules,
- * now shared by write_reply and external callers). */
+ * PoP: bot_failure_classify_agent_error @ tools/bot_failure_reasons.py:classify_agent_error
+ */
 void bot_failure_classify_agent_error(const char *text, char *out, size_t n)
 {
     const char *raw = text ? text : "";

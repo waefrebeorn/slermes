@@ -66,8 +66,9 @@ static int is_sensitive_param(const char *key_lower)
     return 0;
 }
 
-/* PoP: sensitive_query_param_name @ tools/url_safety.py:sensitive_query_param_name
- * Wrapper — canonical implementation is in url_safety.c */
+/*
+ * PoP: sensitive_query_param_name @ tools/url_safety.py:sensitive_query_param_name
+ */
 char *sensitive_query_param_name(const char *url);  /* decl only, impl in url_safety.c */
 
 /* PoP: has_sensitive_query_params */

@@ -293,8 +293,9 @@ static int roster_cmp(const void *a, const void *b)
     return strcmp(*(char *const *)a, *(char *const *)b);
 }
 
-/* PoP: _local_roster @ tools/bot_mode_dm.py:_local_roster
- * Profile names on this install: default + every named profile (sorted). */
+/*
+ * PoP: _local_roster @ tools/bot_mode_dm.py:_local_roster
+ */
 char **bot_mode_dm_local_roster(const char *root, size_t *count)
 {
     size_t cap = 8, nc = 1;
@@ -339,8 +340,9 @@ char *bot_mode_dm_handle(const char *name, char *out, size_t n)
     return out;
 }
 
-/* PoP: _resolve_local_name @ tools/bot_mode_dm.py:_resolve_local_name
- * Map a target handle to a profile name ('hermes' -> 'default'). */
+/*
+ * PoP: _resolve_local_name @ tools/bot_mode_dm.py:_resolve_local_name
+ */
 char *bot_mode_dm_resolve_local_name(const char *target,
                                      const char *const *roster, size_t n)
 {
@@ -361,8 +363,9 @@ char *bot_mode_dm_resolve_local_name(const char *target,
     return NULL;
 }
 
-/* PoP: _write_dm_file @ tools/bot_mode_dm.py:_write_dm_file
- * The message rides a temp file — never inline shell text. */
+/*
+ * PoP: _write_dm_file @ tools/bot_mode_dm.py:_write_dm_file
+ */
 char *bot_mode_dm_write_dm_file(const char *content)
 {
     char tmpl[] = "/tmp/hermes-dm-XXXXXX.txt";
@@ -383,8 +386,9 @@ char *bot_mode_dm_write_dm_file(const char *content)
 
 /* ── delivery ───────────────────────────────────────────────────────────── */
 
-/* PoP: _spawn_delivery @ tools/bot_mode_dm.py:_spawn_delivery
- * Run the delivery command tracked + background, notify on completion. */
+/*
+ * PoP: _spawn_delivery @ tools/bot_mode_dm.py:_spawn_delivery
+ */
 static char *bmd_spawn_delivery(const char *command, const char *label,
                                 const char *task_id)
 {

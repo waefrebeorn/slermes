@@ -101,8 +101,9 @@ void gwtc_free(gw_turn_context_t *ctx) {
     free(ctx);
 }
 
-/* PoP: gwtc_set_message @ gateway/turn_context.py:TurnContext.message
- * The ONE ex-``nonlocal`` field — rebound by run_sync, read by the outer body. */
+/*
+ * PoP: gwtc_set_message @ gateway/turn_context.py:TurnContext.message
+ */
 void gwtc_set_message(gw_turn_context_t *ctx, const char *msg) {
     free(ctx->message);
     ctx->message = msg ? strdup(msg) : NULL;

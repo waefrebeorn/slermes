@@ -265,10 +265,11 @@ static json_t *su_load_raw_config_json(void) {
     return parsed;
 }
 
-/* PoP: sku_parse_literal_list @ agent/skill_utils.py:parse_config_string_list
+/*
  * Mini ast.literal_eval for a bracketed scalar list ('["a","b"]' /
  * "['a']" / "[1, 2]"). Returns a JSON array of item strings, or NULL when
- * the text does not parse as a list. Caller frees. */
+ * PoP: sku_parse_literal_list @ agent/skill_utils.py:parse_config_string_list
+ */
 static json_t *su_parse_literal_list(const char *text) {
     const char *p = text;
     while (*p && isspace((unsigned char)*p)) p++;
@@ -329,10 +330,11 @@ static json_t *su_parse_literal_list(const char *text) {
     return items;
 }
 
-/* PoP: parse_config_string_list @ agent/skill_utils.py:parse_config_string_list
+/*
  * Normalize a config value that may hold a JSON-array string into a list.
  * A quoted-list string is parsed back into items (#86661); a plain scalar
- * string means one name (#13026). Returns a new JSON array of strings. */
+ * PoP: parse_config_string_list @ agent/skill_utils.py:parse_config_string_list
+ */
 json_t *parse_config_string_list(const json_t *value) {
     json_t *out = json_array();
     if (!value || value->type == JSON_NULL) return out;
@@ -377,10 +379,11 @@ json_t *parse_config_string_list(const json_t *value) {
     return out;
 }
 
-/* PoP: find_project_root @ agent/skill_utils.py:find_project_root
+/*
  * Nearest ancestor containing ``.git`` (dir or file), walking up from
  * TERMINAL_CWD / *start* / cwd, capped at 64 levels. The home dir itself is
- * never a project. Caller frees; NULL when not inside a git checkout. */
+ * PoP: find_project_root @ agent/skill_utils.py:find_project_root
+ */
 char *find_project_root(const char *start) {
     char cur[PATH_MAX];
     if (start && *start) {
@@ -483,8 +486,9 @@ static json_t *su_project_trusted_dirs_from_config(void) {
     return result;
 }
 
-/* PoP: is_project_root_trusted @ agent/skill_utils.py:is_project_root_trusted
- * True when *root* resolves to an entry of skills.trusted_project_dirs. */
+/*
+ * PoP: is_project_root_trusted @ agent/skill_utils.py:is_project_root_trusted
+ */
 bool is_project_root_trusted(const char *root) {
     if (!root || !*root) return false;
     char *resolved = realpath(root, NULL);
@@ -544,9 +548,10 @@ static char *su_get_skills_dir(void) {
     return strdup(local);
 }
 
-/* PoP: get_external_skills_dirs @ agent/skill_utils.py:get_external_skills_dirs
+/*
  * Validated, deduplicated, existing entries from skills.external_dirs,
- * skipping paths resolving to the local skills dir. Caller frees. */
+ * PoP: get_external_skills_dirs @ agent/skill_utils.py:get_external_skills_dirs
+ */
 static json_t *su_get_external_skills_dirs(void) {
     json_t *dirs = json_array();
     char local_skills[PATH_MAX];
@@ -594,9 +599,10 @@ static json_t *su_get_external_skills_dirs(void) {
     return dirs;
 }
 
-/* PoP: get_project_skills_dirs @ agent/skill_utils.py:get_project_skills_dirs
+/*
  * Trusted project-local skill dirs for the current cwd ([]-equivalent when
- * not in a trusted git checkout or discovery is disabled). Caller frees. */
+ * PoP: get_project_skills_dirs @ agent/skill_utils.py:get_project_skills_dirs
+ */
 json_t *get_project_skills_dirs(void) {
     json_t *dirs = json_array();
 
@@ -622,10 +628,11 @@ json_t *get_project_skills_dirs(void) {
     return dirs;
 }
 
-/* PoP: get_untrusted_project_skills_root @ agent/skill_utils.py:get_untrusted_project_skills_root
+/*
  * When cwd's project has skills but is NOT trusted: (root, skill_count).
  * Returns false when there is nothing to notify about; on true, *out_root
- * is malloc'd (caller frees) and *out_count is set. */
+ * PoP: get_untrusted_project_skills_root @ agent/skill_utils.py:get_untrusted_project_skills_root
+ */
 bool get_untrusted_project_skills_root(char **out_root, int *out_count) {
     json_t *parsed = su_load_raw_config_json();
     if (parsed && parsed->type == JSON_OBJECT) {
@@ -661,10 +668,11 @@ bool get_untrusted_project_skills_root(char **out_root, int *out_count) {
     return true;
 }
 
-/* PoP: get_scan_ordered_skills_dirs @ agent/skill_utils.py:get_scan_ordered_skills_dirs
+/*
  * All skill dirs in precedence order: project → local → external.
  * First-wins name dedup over this order gives project skills priority.
- * Caller frees. */
+ * PoP: get_scan_ordered_skills_dirs @ agent/skill_utils.py:get_scan_ordered_skills_dirs
+ */
 json_t *get_scan_ordered_skills_dirs(void) {
     json_t *dirs = get_project_skills_dirs();
     char *local = su_get_skills_dir();
@@ -779,10 +787,11 @@ static int su_strcmp_qsort(const void *a, const void *b) {
     return strcmp(ja->str_val ? ja->str_val : "", jb->str_val ? jb->str_val : "");
 }
 
-/* PoP: sku_iter_skill_index_files @ agent/skill_utils.py:iter_skill_index_files
+/*
  * Walk skills_dir yielding sorted paths matching *filename*. Excludes Hermes
  * metadata, VCS, virtualenv/dependency, cache, and skill support dirs; org
- * mirrors (_org/) resolve only the active org's subdir. Caller frees. */
+ * PoP: sku_iter_skill_index_files @ agent/skill_utils.py:iter_skill_index_files
+ */
 json_t *sku_iter_skill_index_files(const char *skills_dir, const char *filename) {
     json_t *matches = json_array();
     if (!skills_dir || !*skills_dir || !filename) return matches;
@@ -821,9 +830,10 @@ static struct {
 } s_quarantine_cache[SU_QUARANTINE_CACHE_CAP];
 static int s_quarantine_cache_n = 0;
 
-/* PoP: is_quarantined_project_skill @ agent/skill_utils.py:is_quarantined_project_skill
+/*
  * True when a project skill's scan verdict is ``dangerous``. Fail-closed:
- * a scanner crash or missing scanner quarantines the skill. */
+ * PoP: is_quarantined_project_skill @ agent/skill_utils.py:is_quarantined_project_skill
+ */
 bool is_quarantined_project_skill(const char *skill_md) {
     if (!skill_md || !*skill_md) return true;
     char key[PATH_MAX * 2];
@@ -871,10 +881,11 @@ bool is_quarantined_project_skill(const char *skill_md) {
     return quarantined;
 }
 
-/* PoP: iter_project_skill_files @ agent/skill_utils.py:iter_project_skill_files
+/*
  * Yield non-quarantined SKILL.md files under a trusted project dir. The
  * single iteration chokepoint so the quarantine cannot be bypassed.
- * Caller frees. */
+ * PoP: iter_project_skill_files @ agent/skill_utils.py:iter_project_skill_files
+ */
 json_t *iter_project_skill_files(const char *project_dir) {
     json_t *out = json_array();
     if (!project_dir || !*project_dir) return out;

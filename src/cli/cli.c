@@ -1203,6 +1203,7 @@ void continuous_on_silence(void *ctx)
 
 /* ── Worktree merge verdict cache ────────────────────────────────────────
  */
+/* PoP: _worktree_merge_cache_path @ cli.py:_worktree_merge_cache_path */
 char *cli_worktree_merge_cache_path(void) {
     const char *home = slermes_home();
     if (!home) return NULL;

@@ -44,10 +44,11 @@ int gw_dead_targets_init(const char *path)
     return 0;
 }
 
-/* PoP: gw_hooks_init @ gateway/hooks.py:__init__
+/*
  * Python creates an empty handler map + loaded-hooks list. C's hook registry
  * is the process-global gw_hooks table; init clears it so a restart path
- * never inherits stale hooks. */
+ * PoP: gw_hooks_init @ gateway/hooks.py:__init__
+ */
 int gw_hooks_init(void)
 {
     extern gw_hooks_t gw_hooks;
@@ -247,10 +248,11 @@ int gw_stream_consumer_run(void)
     return 0;
 }
 
-/* PoP: gw_delivery_init @ gateway/delivery.py:__init__
+/*
  * Python stores config/adapters/dead-targets on the router. The C delivery
  * module resolves those per-send from the gateway runtime; init resets the
- * dead-target cache and confirms the delivery ledger schema is reachable. */
+ * PoP: gw_delivery_init @ gateway/delivery.py:__init__
+ */
 int gw_delivery_init(void)
 {
     /* Startup sweep: clear terminal-state obligations past retention so the
