@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T14:11:27Z from `live_parity_scan.json` by `make parity-walkway`. **2,130 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T14:52:31Z from `live_parity_scan.json` by `make parity-walkway`. **2,109 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -478,7 +478,7 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (231 gaps)
+### cli.py (217 gaps)
 
 - _arm_exit_watchdog (function)
 - _arm_exit_watchdog_on_shutdown_signal (function)
@@ -541,19 +541,13 @@
 - HermesCLI._get_voice_status_fragments (method)
 - HermesCLI._build_status_bar_text (method)
 - HermesCLI._get_status_bar_fragments (method)
-- HermesCLI._render_stash_panel (method)
-- HermesCLI._normalize_model_for_provider (method)
 - HermesCLI._on_thinking (method)
 - HermesCLI._on_notice (method)
 - HermesCLI._flush_credit_notices (method)
 - HermesCLI._on_notice_clear (method)
 - HermesCLI._current_reasoning_callback (method)
-- HermesCLI._emit_reasoning_preview (method)
-- HermesCLI._flush_reasoning_preview (method)
 - HermesCLI._format_submitted_user_message_preview (method)
 - HermesCLI._expand_paste_references (method)
-- HermesCLI._print_user_message_preview (method)
-- HermesCLI._stream_reasoning_delta (method)
 - HermesCLI._close_reasoning_box (method)
 - HermesCLI._stream_delta (method)
 - HermesCLI._emit_stream_text (method)
@@ -563,7 +557,6 @@
 - HermesCLI._command_spinner_frame (method)
 - HermesCLI._busy_command (method)
 - HermesCLI._open_external_editor (method)
-- HermesCLI._inline_pastes (method)
 - HermesCLI._install_tool_callbacks (method)
 - HermesCLI._ensure_tirith_security (method)
 - HermesCLI._show_security_advisories (method)
@@ -690,26 +683,19 @@
 - HermesCLI._sudo_password_callback (method)
 - HermesCLI._approval_callback (method)
 - HermesCLI._approval_choices (method)
-- HermesCLI._computer_use_approval_callback (method)
-- HermesCLI._handle_approval_selection (method)
 - HermesCLI._get_approval_display_fragments (method)
 - HermesCLI._secret_capture_callback (method)
 - HermesCLI._capture_modal_input_snapshot (method)
 - HermesCLI._restore_modal_input_snapshot (method)
-- HermesCLI._submit_secret_response (method)
-- HermesCLI._cancel_secret_capture (method)
 - HermesCLI._clear_secret_input_buffer (method)
 - HermesCLI._clear_terminal_on_exit (method)
-- HermesCLI._print_exit_summary (method)
 - HermesCLI._get_tui_prompt_symbols (method)
 - HermesCLI._audio_level_bar (method)
 - HermesCLI._get_tui_prompt_fragments (method)
-- HermesCLI._get_tui_prompt_text (method)
 - HermesCLI._build_tui_style_dict (method)
 - HermesCLI._apply_tui_skin_style (method)
 - HermesCLI._get_extra_tui_widgets (method)
 - HermesCLI._register_extra_tui_keybindings (method)
-- HermesCLI._build_tui_layout_children (method)
 - _run_kanban_goal_loop_q (function)
 
 ### cron/blueprint_catalog.py (2 gaps)
@@ -1675,7 +1661,7 @@
 - list_authenticated_providers (function)
 - list_picker_providers (function)
 
-### hermes_cli/models.py (66 gaps)
+### hermes_cli/models.py (65 gaps)
 
 - _custom_provider_ssl_context (function)
 - _xai_finalize_catalog (function)
@@ -1732,7 +1718,6 @@
 - _fetch_github_models (function)
 - _copilot_catalog_ids (function)
 - _github_reasoning_efforts_for_model_id (function)
-- copilot_model_api_mode (function)
 - opencode_provider_family (function)
 - is_opencode_zen_free_model (function)
 - opencode_zen_free_headers (function)
@@ -2278,7 +2263,7 @@
 
 - remove_windows_bin_launchers (function)
 
-### hermes_cli/update_cmd.py (57 gaps)
+### hermes_cli/update_cmd.py (51 gaps)
 
 - _purge_stale_hermes_modules (function)
 - _migrate_sibling_profile_configs (function)
@@ -2286,8 +2271,6 @@
 - _web_build_toolchain_ready (function)
 - _reload_process_scan_modules (function)
 - _assess_parked_branch_switch (function)
-- _print_parked_branch_skip_warning (function)
-- _print_parked_branch_kept_notice (function)
 - _called_process_error_cmd_parts (function)
 - _called_process_error_is_git (function)
 - _called_process_error_is_python_dep_install (function)
@@ -2295,13 +2278,9 @@
 - _shim_quarantine_error_type (function)
 - _refuse_update_for_contended_shims (function)
 - _should_zip_fallback_on_update_error (function)
-- _print_called_process_error_tail (function)
 - _zip_overlay_block_reason (function)
-- _is_zip_staging_artifact_status_line (function)
 - _abort_zip_update_if_dirty_tree (function)
 - _read_project_version (function)
-- _print_update_summary (function)
-- _write_gateway_update_exit_code (function)
 - _park_stashed_changes (function)
 - _capture_active_lazy_features (function)
 - _capture_active_tool_dependencies (function)
