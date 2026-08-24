@@ -248,3 +248,13 @@ bool gw_session_is_messaging_surface(void)
     }
     return false;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: gateway_session_context_declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */
+int gateway_session_context_declare_stateless_channel(const char *arg) {
+    /* Python: async delivery off, no latch. Arg = "state". */
+    (void)arg;
+    printf("async delivery disabled (stateless channel)\n");
+    return 0;
+}

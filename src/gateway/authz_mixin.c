@@ -298,3 +298,147 @@ const char *authz_get_unauthorized_dm_behavior(void) {
     return gateway_config_get_unauthorized_dm_behavior_global();
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: gateway_authz_mixin_u_auth_env @ gateway/authz_mixin.py:_auth_env */
+int gateway_authz_mixin_u_auth_env(const char *arg) {
+    /* Python: secret_scope value then env, else default, stripped. Arg =
+     * "name\tsecret_val\tenv_val\tdefault". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *secret = t1 ? t1 + 1 : "";
+    const char *env = t2 ? t2 + 1 : "";
+    const char *dflt = t3 ? t3 + 1 : "";
+    if (secret[0]) { printf("%s\n", secret); return 0; }
+    if (env[0]) { printf("%s\n", env); return 0; }
+    printf("%s\n", dflt);
+    return 0;
+}
+
+/* PoP: gateway_authz_mixin_u_platform_gate_env @ gateway/authz_mixin.py:_platform_gate_env */
+/* Read a platform allow/deny gate env var with per-profile isolation.
+ * Authoritative under multiplex: when a profile secret scope is installed
+ * AND multiplexing is active, a key absent from the scope returns default
+ * instead of falling through to os.environ (which may hold another
+ * profile's first-writer-bridged value). Single-profile behaves like the
+ * legacy os.getenv read. Arg =
+ * "name\tmultiplex\tscope\tsecret_val\tenv_val\tdefault". */
+int gateway_authz_mixin_u_platform_gate_env(const char *arg) {
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *multiplex = t1 ? t1 + 1 : "0";
+    const char *scope = t2 ? t2 + 1 : "0";
+    const char *secret = t3 ? t3 + 1 : "";
+    const char *env = t4 ? t4 + 1 : "";
+    const char *dflt = t5 ? t5 + 1 : "";
+    int is_multiplex = multiplex[0] == '1';
+    int scope_installed = scope[0] == '1';
+    const char *val;
+    if (is_multiplex && scope_installed) {
+        val = secret[0] ? secret : dflt;
+    } else {
+        val = env[0] ? env : dflt;
+    }
+    /* strip */
+    while (*val == ' ' || *val == '\t') val++;
+    const char *e = val + strlen(val);
+    while (e > val && (e[-1] == ' ' || e[-1] == '\t')) e--;
+    printf("%.*s\n", (int)(e - val), val);
+    return 0;
+}
+
+/* PoP: gateway_authz_mixin_u_coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
+int gateway_authz_mixin_u_coerce_allow_set(const char *arg) {
+    /* Python: list -> stripped set; scalar -> comma split. Arg = "raw_json
+     * or scalar". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (j && json_is_array(j)) {
+        size_t n = json_array_size(j);
+        int first = 1;
+        for (size_t i = 0; i < n; i++) {
+            json_t *it = json_array_get(j, i);
+            const char *s = it && json_is_string(it) ? json_string_value(it) : "";
+            while (*s == ' ') s++;
+            size_t len = strlen(s);
+            while (len > 0 && s[len-1] == ' ') len--;
+            if (len) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)len, s);
+                first = 0;
+            }
+        }
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    if (j) json_free(j);
+    /* comma split */
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *comma = strchr(p, ',');
+        size_t len = comma ? (size_t)(comma - p) : strlen(p);
+        const char *t = p;
+        while (len > 0 && (*t == ' ')) { t++; len--; }
+        while (len > 0 && t[len-1] == ' ') len--;
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, t);
+            first = 0;
+        }
+        p = comma ? comma + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: gateway_authz_mixin_u_registered_transport_adapter @ gateway/authz_mixin.py:_registered_transport_adapter */
+int gateway_authz_mixin_u_registered_transport_adapter(const char *arg) {
+    /* Python: adapter provenance. Arg = "platform\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: gateway_authz_mixin_u_adapter_profile_for_source @ gateway/authz_mixin.py:_adapter_profile_for_source */
+int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) {
+    /* Python: transport-owning profile or source profile. Arg =
+     * "matched\tprofile\tsource_profile". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *p_end = arg + strlen(arg);
+    if (arg[0] == '1') {
+        /* profile field runs from t1+1 up to t2 (or end) */
+        printf("%.*s\n", (int)((t2 ? t2 : p_end) - (t1 ? t1 + 1 : p_end)),
+               t1 ? t1 + 1 : "");
+        return 0;
+    }
+    printf("%.*s\n", (int)(t2 ? p_end - (t2 + 1) : 0), t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: gateway_authz_mixin_u_pairing_store_for @ gateway/authz_mixin.py:_pairing_store_for */
+int gateway_authz_mixin_u_pairing_store_for(const char *arg) {
+    /* Python: per-profile store else global. Arg =
+     * "profile\tregistered\tstore". */
+    if (!arg || !*arg) { printf("global pairing store\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int registered = t1 && t1[1] == '1';
+    if (registered) printf("profile pairing store: %s\n", arg);
+    else printf("global pairing store (fallback)\n");
+    return 0;
+}

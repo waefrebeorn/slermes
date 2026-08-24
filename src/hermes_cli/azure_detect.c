@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include "json.h"
 #include "azure_detect.h"
+#include <stdio.h>
 
 /* PoP: azure_strip_trailing_v1 @ hermes_cli/azure_detect.py:_strip_trailing_v1 */
 void azure_strip_trailing_v1(const char *url, char *out, size_t out_cap) {
@@ -82,4 +83,70 @@ json_t *azure_extract_model_ids(const json_t *payload) {
         }
     }
     return out;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_azure_detect_u_resolve_credential @ hermes_cli/azure_detect.py:_resolve_credential */
+int hermes_cli_azure_detect_u_resolve_credential(const char *arg) {
+    /* Python: token/mode pair. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\tapi_key\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "provider_fail") == 0) { printf("\tentra_id\n"); return 0; }
+    if (strcmp(state, "api_key") == 0) { printf("%s\tapi_key\n", tab ? tab + 1 : ""); return 0; }
+    printf("%s\tentra_id\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_azure_detect_u_apply_auth_headers @ hermes_cli/azure_detect.py:_apply_auth_headers */
+int hermes_cli_azure_detect_u_apply_auth_headers(const char *arg) {
+    /* Python: bearer-only for entra_id; both otherwise. Arg =
+     * "mode\tto_ken\tapplied". */
+    if (!arg || !*arg) { printf("no auth headers\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t mlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (mlen == 8 && strncmp(arg, "entra_id", 8) == 0) printf("Authorization: Bearer %s\n", t1 ? t1 + 1 : "");
+    else printf("api-key: %s\nAuthorization: Bearer %s\n", t2 ? t2 + 1 : "", t1 ? t1 + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_azure_detect_u_http_get_json @ hermes_cli/azure_detect.py:_http_get_json */
+int hermes_cli_azure_detect_u_http_get_json(const char *arg) {
+    /* Python: authed GET. Arg = "url\tstate\tstatus\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "200", t3 ? t3 + 1 : "{}");
+    return 0;
+}
+
+/* PoP: hermes_cli_azure_detect_u_probe_openai_models @ hermes_cli/azure_detect.py:_probe_openai_models */
+int hermes_cli_azure_detect_u_probe_openai_models(const char *arg) {
+    /* Python: /models probe. Arg = "state\tcount\tresult". */
+    if (!arg || !*arg) { printf("0\t0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t0\n"); return 0; }
+    printf("1\t%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
+
+/* PoP: hermes_cli_azure_detect_u_probe_anthropic_messages @ hermes_cli/azure_detect.py:_probe_anthropic_messages */
+int hermes_cli_azure_detect_u_probe_anthropic_messages(const char *arg) {
+    /* Python: zero-token probe. Arg =
+     * "speaks\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int speaks = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (Anthropic-shaped 4xx/200)\n", speaks ? "1" : "0");
+    return 0;
 }

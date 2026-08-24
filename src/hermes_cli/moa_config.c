@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include "json.h"
 #include "moa_config.h"
+#include <math.h>
 
 const char *MOA_MARKER_PREFIX = "__HERMES_MOA_TURN_V1__";
 const char *MOA_DEFAULT_PRESET_NAME = "default";
@@ -515,4 +516,69 @@ void moa_decode_turn(const char *message, char *prompt_out, size_t prompt_cap,
 /* PoP: moa_build_turn_prompt @ hermes_cli/moa_config.py:build_moa_turn_prompt */
 char *moa_build_turn_prompt(const char *user_prompt, const json_t *config, const char *preset) {
     return moa_encode_turn(user_prompt, config, preset);
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_moa_config_u_default_reference_models @ hermes_cli/moa_config.py:_default_reference_models */
+/* Python: [slot | "enabled": True for slot in DEFAULT_MOA_REFERENCE_MODELS].
+ * Returns JSON array on stdout: [{"provider":"openai-codex","model":"gpt-5.5","enabled":true},...]. */
+int hermes_cli_moa_config_u_default_reference_models(const char *arg) {
+    (void)arg;
+    printf("[{\"provider\":\"openai-codex\",\"model\":\"gpt-5.5\",\"enabled\":true},"
+           "{\"provider\":\"openrouter\",\"model\":\"deepseek/deepseek-v4-pro\",\"enabled\":true}]");
+    return 0;
+}
+
+/* PoP: hermes_cli_moa_config_u_coerce_reference_timeout @ hermes_cli/moa_config.py:_coerce_reference_timeout */
+int hermes_cli_moa_config_u_coerce_reference_timeout(const char *arg) {
+    /* Python: finite positive or default. Arg = "value\tdefault". */
+    if (!arg || !*arg) { printf("900.00\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    double dflt = tab ? strtod(tab + 1, NULL) : 900.0;
+    if (strcmp(arg, "none") == 0 || strcmp(arg, "true") == 0 || strcmp(arg, "false") == 0 || !*arg) {
+        printf("%.2f\n", dflt);
+        return 0;
+    }
+    char *end = NULL;
+    double v = strtod(arg, &end);
+    if (end == arg || !isfinite(v) || v <= 0) { printf("%.2f\\n", dflt); return 0; }
+    printf("%.2f\\n", v);
+    return 0;
+}
+
+/* PoP: hermes_cli_moa_config_u_coerce_degraded_reference_policy @ hermes_cli/moa_config.py:_coerce_degraded_reference_policy */
+int hermes_cli_moa_config_u_coerce_degraded_reference_policy(const char *arg) {
+    /* Python: str(value or "loud").strip().lower(); "loud" if not in
+     * {"loud","silent"}. Arg = value. */
+    const char *v = (arg && *arg) ? arg : "loud";
+    while (*v == ' ' || *v == '\t') v++;
+    char buf[32];
+    size_t n = strlen(v);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, v, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    if (strcmp(buf, "silent") == 0) printf("silent\n");
+    else printf("loud\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_moa_config_coerce_privacy_filter @ hermes_cli/moa_config.py:coerce_privacy_filter */
+int hermes_cli_moa_config_coerce_privacy_filter(const char *arg) {
+    /* Python: '' / display / full. Arg = "value\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *value = arg;
+    if (strcmp(value, "true") == 0 || strcmp(value, "on") == 0 || strcmp(value, "yes") == 0 || strcmp(value, "1") == 0) { printf("full\n"); return 0; }
+    if (strcmp(value, "display") == 0 || strcmp(value, "full") == 0) { printf("%s\n", value); return 0; }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_moa_config_moa_usage @ hermes_cli/moa_config.py:moa_usage */
+int hermes_cli_moa_config_moa_usage(const char *arg) {
+    /* Python: the /moa usage string. */
+    (void)arg;
+    printf("Usage: /moa <prompt>  (runs one prompt through the default MoA preset, then restores your model; pick a preset from the model picker to switch for the session)\n");
+    return 0;
 }

@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "hermes_json.h"
 
 /* PoP: cli_hermes_cli_skills_config_get_disabled_skills @ hermes_cli/skills_config.py:get_disabled_skills */
 
@@ -138,3 +139,49 @@ char *cli_hermes_cli_skills_config__select_platform(const char *args)
     return NULL;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_skills_config_u_normalize_skill_names @ hermes_cli/skills_config.py:_normalize_skill_names */
+int hermes_cli_skills_config_u_normalize_skill_names(const char *arg) {
+    /* Python: None -> empty; str -> single; set of stripped. Arg =
+     * "values_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || json_is_null(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    if (json_is_string(j)) {
+        const char *s = json_string_value(j);
+        while (*s == ' ') s++;
+        if (*s) printf("%s\n", s);
+        else printf("\n");
+        json_free(j);
+        return 0;
+    }
+    if (json_is_array(j)) {
+        size_t n = json_array_size(j);
+        int first = 1;
+        for (size_t i = 0; i < n; i++) {
+            json_t *it = json_array_get(j, i);
+            if (!it) continue;
+            const char *s = json_is_string(it) ? json_string_value(it) : "";
+            while (*s == ' ') s++;
+            size_t len = strlen(s);
+            while (len > 0 && s[len-1] == ' ') len--;
+            if (len) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)len, s);
+                first = 0;
+            }
+        }
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    if (j) json_free(j);
+    printf("\n");
+    return 0;
+}

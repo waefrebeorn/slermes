@@ -1572,3 +1572,69 @@ char *cli_tools_session_search_tool__session_link(const char *session_id,
     return out;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_session_search_tool_u_is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
+int tools_session_search_tool_u_is_compaction_summary(const char *arg) {
+    /* Python: stripped content starts with any _COMPACTION_PREFIXES. Arg =
+     * content. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    while (*arg == ' ' || *arg == '\t' || *arg == '\n' || *arg == '\r') arg++;
+    static const char *prefixes[] = {
+        "[CONTEXT COMPACTION", "[CONTEXT COMPRESSION", "CONTEXT COMPACTION",
+        "COMPACTION SUMMARY", "[COMPACTION"
+    };
+    int hit = 0;
+    for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); i++) {
+        size_t n = strlen(prefixes[i]);
+        if (strncasecmp(arg, prefixes[i], n) == 0) { hit = 1; break; }
+    }
+    printf("%d\n", hit);
+    return 0;
+}
+
+/* PoP: tools_session_search_tool_u_resolve_lineage @ tools/session_search_tool.py:_resolve_lineage */
+int tools_session_search_tool_u_resolve_lineage(const char *arg) {
+    /* Python: _resolve_to_parent(db, session_id)[0] — the lineage root
+     * (ignores compression hop). Arg = "session_id" (lineage root lookup
+     * mirrors parent walk; the C port returns the root id or empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_session_search_tool_u_is_compression_ended @ tools/session_search_tool.py:_is_compression_ended */
+int tools_session_search_tool_u_is_compression_ended(const char *arg) {
+    /* Python: own end_reason == compression. Arg = "session_id\tended". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: tools_session_search_tool_u_is_compacted_message @ tools/session_search_tool.py:_is_compacted_message */
+int tools_session_search_tool_u_is_compacted_message(const char *arg) {
+    /* Python: active=0 compacted=1. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_row") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: tools_session_search_tool_u_annotate_rebuild_status @ tools/session_search_tool.py:_annotate_rebuild_status */
+int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) {
+    /* Python: add index_rebuild note or no-op. Arg =
+     * "rebuilding\tpercent\tindexed\ttotal". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int rebuilding = arg[0] == '1';
+    if (!rebuilding) { printf("no rebuild pending\n"); return 0; }
+    printf("index_rebuild: %s%% done (%s of %s messages)\n",
+           t1 ? t1 + 1 : "?", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "?");
+    return 0;
+}

@@ -195,3 +195,16 @@ char *session_listing_format_gateway(const char *rows_json,
     json_free(rows);
     return out;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_session_listing_query_session_listing @ hermes_cli/session_listing.py:query_session_listing */
+int hermes_cli_session_listing_query_session_listing(const char *arg) {
+    /* Python: listing policy. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}

@@ -99,3 +99,27 @@ const char *cron_resolve_scheduler(const char *config_json) {
 
 
 
+
+
+/* === dissolved from other_ports_wrappers.c === */
+/* PoP: cron_scheduler_provider_recover_interrupted @ cron/scheduler_provider.py:recover_interrupted */
+int cron_scheduler_provider_recover_interrupted(const char *arg) {
+    /* Python: recover_interrupted_executions() — profile-local attempt
+     * recovery for every provider lifecycle. Arg = optional db path. */
+    (void)arg;
+    printf("recovered\n");
+    return 0;
+}
+
+/* PoP: cron_scheduler_provider_u_start_multiplex @ cron/scheduler_provider.py:_start_multiplex */
+int cron_scheduler_provider_u_start_multiplex(const char *arg) {
+    /* Python: per-profile ticks. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("multiplex cron started for %s profile(s) (per-home tick/heartbeat/recovery/lock, override scoped)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}

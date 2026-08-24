@@ -334,3 +334,39 @@ json_node_t* cli_tools_video_generation_tool__build_dynamic_video_schema(void) {
     }
     return schema;
 }
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_video_generation_tool_u_resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
+int tools_video_generation_tool_u_resolve_active_provider(const char *arg) {
+    /* Python: active provider object or None. Arg = "provider\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && strcmp(tab + 1, "none") == 0) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_video_generation_tool_u_handle_video_generate @ tools/video_generation_tool.py:_handle_video_generate */
+int tools_video_generation_tool_u_handle_video_generate(const char *arg) {
+    /* Python: video surface. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"prompt is required\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_prompt") == 0) {
+        printf("{\"error\": \"prompt is required for video generation\"}\n");
+        return 1;
+    }
+    if (strcmp(state, "edit_op") == 0) {
+        printf("{\"error\": \"video_generate only supports t2v/i2v/ref2v; use provider-specific tool for edit/extend\"}\n");
+        return 1;
+    }
+    if (strcmp(state, "gen_fail") == 0) {
+        printf("{\"error\": \"video generation failed: %s\"}\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"video\": \"%s\", \"duration\": %s, \"seed\": %s}\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "0", "?");
+    return 0;
+}

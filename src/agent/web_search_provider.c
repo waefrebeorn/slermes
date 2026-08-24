@@ -122,3 +122,17 @@ char *cli_agent_web_search_provider_get_setup_schema(const char *provider_id)
         "\"required\":[\"api_key\"]"
     "}");
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_web_search_provider_get_provider_env @ agent/web_search_provider.py:get_provider_env */
+int agent_web_search_provider_get_provider_env(const char *arg) {
+    /* Python: config-aware env lookup. Arg = "name\tstate\tvalue". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}

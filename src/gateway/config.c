@@ -1387,3 +1387,134 @@ int cli_gateway_config__scan_bundled_plugin_platforms(char *names[], int max_nam
     return gateway_config_scan_bundled_plugin_platforms(names, max_names);
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: gateway_config_u_env_multiplex_profiles_override @ gateway/config.py:_env_multiplex_profiles_override */
+int gateway_config_u_env_multiplex_profiles_override(const char *arg) {
+    /* Python: env > config > default. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "unset") == 0 || strcmp(state, "blank") == 0 || strcmp(state, "unknown") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: gateway_config_u_normalize_transport_token @ gateway/config.py:_normalize_transport_token */
+int gateway_config_u_normalize_transport_token(const char *arg) {
+    /* Python: bool -> auto/off; str lower or auto. Arg = "type\tvalue". */
+    if (!arg || !*arg) { printf("auto\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *typ = arg;
+    const char *val = tab ? tab + 1 : "";
+    if (strcmp(typ, "bool") == 0) {
+        printf("%s\n", (val[0] == '1' || strcmp(val, "true") == 0) ? "auto" : "off");
+        return 0;
+    }
+    if (strcmp(typ, "none") == 0) { printf("auto\n"); return 0; }
+    if (!val[0]) { printf("auto\n"); return 0; }
+    printf("%s\n", val);
+    return 0;
+}
+
+/* PoP: gateway_config_coerce_systemd_watchdog_seconds @ gateway/config.py:coerce_systemd_watchdog_seconds */
+int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) {
+    /* Python: bounded positive or 0. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
+
+/* PoP: gateway_config_u_coerce_dict @ gateway/config.py:_coerce_dict */
+int gateway_config_u_coerce_dict(const char *arg) {
+    /* Python: value if isinstance(value, dict) else {}. Arg = JSON value. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *v = json_parse(arg, NULL);
+    if (v && json_is_object(v)) {
+        char *s = json_serialize(v);
+        printf("%s\n", s ? s : "{}");
+        free(s);
+        json_free(v);
+        return 0;
+    }
+    if (v) json_free(v);
+    printf("{}\n");
+    return 0;
+}
+
+/* PoP: gateway_config_u_getenv_str @ gateway/config.py:_getenv_str */
+int gateway_config_u_getenv_str(const char *arg) {
+    /* Python: _getenv(name, default) -> value if not None else default.
+     * Arg = "name\tdefault". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char name[256];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    memcpy(name, arg, nlen);
+    name[nlen] = '\0';
+    const char *def = tab ? tab + 1 : "";
+    const char *val = getenv(name);
+    printf("%s\n", val ? val : def);
+    return 0;
+}
+
+/* PoP: gateway_config_u_getenv_int @ gateway/config.py:_getenv_int */
+int gateway_config_u_getenv_int(const char *arg) {
+    /* Python: int(env var) or default. Arg = "name\tdefault". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char name[128];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    memcpy(name, arg, nlen); name[nlen] = '\0';
+    long dflt = tab ? strtol(tab + 1, NULL, 10) : 0;
+    const char *raw = getenv(name);
+    if (!raw) { printf("%ld\n", dflt); return 0; }
+    while (*raw == ' ' || *raw == '\t') raw++;
+    char *end = NULL;
+    long v = strtol(raw, &end, 10);
+    if (end == raw) { printf("%ld\n", dflt); return 0; }
+    printf("%ld\n", v);
+    return 0;
+}
+
+/* PoP: gateway_config_platform_binds_port @ gateway/config.py:platform_binds_port */
+int gateway_config_platform_binds_port(const char *arg) {
+    /* Python: platform in set + mode-conditional match. Arg =
+     * "platform\tin_set\tmode_match". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int in_set = t1 && t1[1] == '1';
+    if (!in_set) { printf("0\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: gateway_config_persist_home_channel @ gateway/config.py:persist_home_channel */
+int gateway_config_persist_home_channel(const char *arg) {
+    /* Python: save home_channel into platform config. Arg =
+     * "platform\thome_json\tenabled_if_new\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("home channel persisted: %s (home=%s)\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
+
+/* PoP: gateway_config_u_has_usable_api_server_key @ gateway/config.py:_has_usable_api_server_key */
+int gateway_config_u_has_usable_api_server_key(const char *arg) {
+    /* Python: key present and >=16 chars. Arg = key. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    size_t len = strlen(p);
+    while (len > 0 && (p[len-1] == ' ')) len--;
+    printf("%d\n", len >= 16 ? 1 : 0);
+    return 0;
+}

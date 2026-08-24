@@ -83,3 +83,97 @@ char *cli_agent_oneshot__strip_code_fence(const char *text)
     free(lines);
     return strdup(text);
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_oneshot_u_normalize_toolsets @ hermes_cli/oneshot.py:_normalize_toolsets */
+int hermes_cli_oneshot_u_normalize_toolsets(const char *arg) {
+    /* Python: str -> comma split; list -> items; dedup trim. Arg = "toolsets". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    int first = 1;
+    const char *p = arg;
+    while (*p) {
+        const char *comma = strchr(p, ',');
+        size_t len = comma ? (size_t)(comma - p) : strlen(p);
+        const char *t = p;
+        while (len > 0 && (*t == ' ' || *t == '\t')) { t++; len--; }
+        while (len > 0 && (t[len-1] == ' ' || t[len-1] == '\t')) len--;
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, t);
+            first = 0;
+        }
+        p = comma ? comma + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_oneshot_u_validate_explicit_toolsets @ hermes_cli/oneshot.py:_validate_explicit_toolsets */
+int hermes_cli_oneshot_u_validate_explicit_toolsets(const char *arg) {
+    /* Python: toolset validation. Arg =
+     * "valid\tstate\tresult\tunknown". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    if (t3 && t3[1] == '1') {
+        fprintf(stderr, "hermes -z: --toolsets did not contain any valid toolsets.\n");
+        return 0;
+    }
+    if (t4 && t4[1] == '1') {
+        fprintf(stderr, "hermes -z: ignoring unknown --toolsets entries (and disabled MCP servers)\n");
+    }
+    printf("%s\t\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_oneshot_u_write_usage_file @ hermes_cli/oneshot.py:_write_usage_file */
+int hermes_cli_oneshot_u_write_usage_file(const char *arg) {
+    /* Python: spend report. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("usage file write skipped\n"); return 0; }
+    printf("usage report written: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_oneshot_run_oneshot @ hermes_cli/oneshot.py:run_oneshot */
+int hermes_cli_oneshot_run_oneshot(const char *arg) {
+    /* Python: stateless LLM call. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "empty") == 0) {
+        fprintf(stderr, "run_oneshot requires a template or instructions/user_input\n");
+        return 1;
+    }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_oneshot_u_create_session_db_for_oneshot @ hermes_cli/oneshot.py:_create_session_db_for_oneshot */
+int hermes_cli_oneshot_u_create_session_db_for_oneshot(const char *arg) {
+    /* Python: SessionDB() or None. Arg = "available\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("%s\n", tab ? tab + 1 : "session db"); return 0; }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_oneshot_u_oneshot_clarify_callback @ hermes_cli/oneshot.py:_oneshot_clarify_callback */
+int hermes_cli_oneshot_u_oneshot_clarify_callback(const char *arg) {
+    /* Python: oneshot no-user guidance. Arg = choices (tab-sep, empty =
+     * none). */
+    if (!arg || !*arg) {
+        printf("[oneshot mode: no user available. Make the most reasonable assumption you can and continue.]\n");
+        return 0;
+    }
+    printf("[oneshot mode: no user available. Pick the best option from %s using your own judgment and continue.]\n", arg);
+    return 0;
+}

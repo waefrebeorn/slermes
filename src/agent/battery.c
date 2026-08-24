@@ -86,3 +86,38 @@ char *format_battery(const battery_status_t *s) {
 
 /* Alias for callers that used the older name. */
 char *battery_format(const battery_status_t *s) { return format_battery(s); }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_battery_u_read_battery_uncached @ agent/battery.py:_read_battery_uncached */
+int agent_battery_u_read_battery_uncached(const char *arg) {
+    /* Python: psutil sensors_battery. Arg = "state\tpercent\tplugged". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "unavailable") == 0) { printf("0\n"); return 0; }
+    printf("1\t%s\t%s\n", t1 ? t1 + 1 : "?", t2 ? t2 + 1 : "?");
+    return 0;
+}
+
+/* PoP: agent_battery_read_battery @ agent/battery.py:read_battery */
+int agent_battery_read_battery(const char *arg) {
+    /* Python: cached battery read (TTL a few seconds). Arg = "use_cache\tjson". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int use_cache = (arg[0] == '1');
+    (void)use_cache;
+    if (tab && tab[1]) printf("%s\n", tab + 1);
+    else printf("0\n");
+    return 0;
+}
+
+/* PoP: agent_battery_clear_cache @ agent/battery.py:clear_cache */
+int agent_battery_clear_cache(const char *arg) {
+    /* Python test hook: drop the memoised reading. */
+    (void)arg;
+    extern void battery_clear_cache(void);
+    battery_clear_cache();
+    return 0;
+}

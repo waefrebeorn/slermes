@@ -743,3 +743,18 @@ void resolve_platform_hint(const char *platform_key, const char *default_hint,
 }
 
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_system_prompt_u_tui_embedded_pane_clarifier @ agent/system_prompt.py:_tui_embedded_pane_clarifier */
+int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) {
+    /* Python: desktop terminal clarifier append. Arg =
+     * "hint\tdesktop_terminal\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int desktop = t1 && t1[1] == '1';
+    if (!desktop) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}

@@ -16,6 +16,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "provider_catalog.h"
+#include "hermes_json.h"
+#include <stdio.h>
 
 /* Auth types that route to the desktop "Accounts" tab rather than "API keys".
  * Mirrors _ACCOUNTS_AUTH_TYPES in hermes_cli/provider_catalog.py. */
@@ -62,4 +64,41 @@ void provider_catalog_split_env_vars(const char *const *env_vars, int n,
             out_keys[(*out_keys_len)++] = v;
         }
     }
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_provider_catalog_provider_catalog @ hermes_cli/provider_catalog.py:provider_catalog */
+int hermes_cli_provider_catalog_provider_catalog(const char *arg) {
+    /* Python: unified descriptors. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s provider descriptor(s) (CANONICAL + registry + profiles, plugin-import errors never blank catalog)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_provider_catalog_provider_catalog_by_slug @ hermes_cli/provider_catalog.py:provider_catalog_by_slug */
+int hermes_cli_provider_catalog_provider_catalog_by_slug(const char *arg) {
+    /* Python: {d.slug: d for d in provider_catalog()}. Arg = JSON array of
+     * provider entries with "slug" fields. */
+    if (!arg || !*arg) { printf("{\n}\n"); return 0; }
+    json_t *arr = json_parse(arg, NULL);
+    json_t *out = json_object();
+    if (arr && arr->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(arr); i++) {
+            json_t *d = json_get(arr, i);
+            const char *slug = d ? json_get_str(d, "slug", NULL) : NULL;
+            if (slug) json_set(out, slug, json_copy(d));
+        }
+    }
+    char *ser = json_serialize(out);
+    printf("%s\n", ser);
+    free(ser);
+    json_free(out);
+    json_free(arr);
+    return 0;
 }

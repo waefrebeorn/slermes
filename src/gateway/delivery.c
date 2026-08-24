@@ -411,3 +411,35 @@ int cli_gateway_delivery__save_full_output(
 }
 
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: gateway_delivery_is_relay @ gateway/delivery.py:is_relay */
+int gateway_delivery_is_relay(const char *arg) {
+    /* Python: transport_platform == RELAY. Arg = "1"/"0". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: gateway_delivery_resolve_delivery_transport @ gateway/delivery.py:resolve_delivery_transport */
+int gateway_delivery_resolve_delivery_transport(const char *arg) {
+    /* Python: native > relay. Arg =
+     * "has_native\tnative_enabled\thas_relay\tfronts\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int has_native = arg[0] == '1';
+    int native_enabled = t1 && t1[1] == '1';
+    int has_relay = t2 && t2[1] == '1';
+    int fronts = t3 && t3[1] == '1';
+    int state = t4 && t4[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (has_native && native_enabled) { printf("native adapter\n"); return 0; }
+    if (has_relay && fronts) { printf("relay transport\n"); return 0; }
+    printf("\n");
+    return 0;
+}

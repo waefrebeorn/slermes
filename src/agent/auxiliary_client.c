@@ -3109,3 +3109,28 @@ void auxc_release_sync_semaphore_after_stream(sem_t *sem) {
     if (sem) sem_post(sem);
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_auxiliary_client_u_try_nvidia_nim @ agent/auxiliary_client.py:_try_nvidia_nim */
+int agent_auxiliary_client_u_try_nvidia_nim(const char *arg) {
+    /* Python: NIM probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("client, %s\n", tab ? tab + 1 : "nvidia/nemotron-3-ultra-550b-a55b:free");
+    return 0;
+}
+
+/* PoP: agent_auxiliary_client_u_obj_get @ agent/auxiliary_client.py:_obj_get */
+int agent_auxiliary_client_u_obj_get(const char *arg) {
+    /* Python: value = getattr(obj, key, default); if value is default and
+     * isinstance(obj, dict): value = obj.get(key, default); return value.
+     * Arg = "key\tvalue" (or "key" when absent); echoes value when found. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) printf("%s\n", tab + 1);
+    else printf("\n");
+    return 0;
+}

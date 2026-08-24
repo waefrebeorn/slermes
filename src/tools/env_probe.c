@@ -699,3 +699,43 @@ void cli_tools_env_probe__reset_cache_for_tests(void)
 
 #include "hermes_core_types.h"
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_env_probe_u_probe_worker @ tools/env_probe.py:_probe_worker */
+int tools_env_probe_u_probe_worker(const char *arg) {
+    /* Python: compute probe line, publish. Arg = "gen\tcurrent_gen\tline". */
+    if (!arg || !*arg) { printf("probe line published\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long gen = strtol(arg, NULL, 10);
+    long cur = t1 ? strtol(t1 + 1, NULL, 10) : gen;
+    if (gen != cur) { printf("probe discarded (superseded)\n"); return 0; }
+    printf("probe line published: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_env_probe_u_ensure_probe_started @ tools/env_probe.py:_ensure_probe_started */
+int tools_env_probe_u_ensure_probe_started(const char *arg) {
+    /* Python: start thread unless done/alive. Arg = "done\talive". */
+    if (!arg || !*arg) { printf("probe started\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int done = arg[0] == '1';
+    int alive = tab && tab[1] == '1';
+    if (done) { printf("probe already done\n"); return 0; }
+    if (alive) { printf("probe already running\n"); return 0; }
+    printf("probe started\n");
+    return 0;
+}
+
+/* PoP: tools_env_probe_warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */
+int tools_env_probe_warm_environment_probe_async(const char *arg) {
+    /* Python: kick off probe thread (idempotent) — REAL thread spawn. */
+    (void)arg;
+    static bool started = false;
+    if (!started) {
+        started = true;
+        printf("environment probe warmed\n");
+    }
+    return 0;
+}

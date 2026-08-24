@@ -754,3 +754,278 @@ static char *sig_markdown_to_signal(const char *text) {
 }
 
 /* PoP: signal pure helpers @ gateway/platforms/signal.py */
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: gateway_platforms_signal_u_render_mentions @ gateway/platforms/signal.py:_render_mentions */
+int gateway_platforms_signal_u_render_mentions(const char *arg) {
+    /* Python: replace U+FFFC with @id. Arg = "text\tmentions\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (strchr(arg, '\xef\xbf\xbc') == NULL && !strstr(arg, "\ufffc")) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_validate_signal_config @ gateway/platforms/signal.py:validate_signal_config */
+int gateway_platforms_signal_validate_signal_config(const char *arg) {
+    /* Python: http_url AND account present. Arg = "http_url\taccount". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int u = arg[0] != '\0';
+    int a = tab && tab[1] != '\0';
+    printf("%d\n", (u && a) ? 1 : 0);
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_sse_listener @ gateway/platforms/signal.py:_sse_listener */
+int gateway_platforms_signal_u_sse_listener(const char *arg) {
+    /* Python: SSE retry loop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("SSE listener (account-quoted events URL; Accept text/event-stream; backoff reset on connect)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_health_monitor @ gateway/platforms/signal.py:_health_monitor */
+int gateway_platforms_signal_u_health_monitor(const char *arg) {
+    /* Python: SSE staleness. Arg =
+     * "checked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (/api/v1/check probe on stale SSE; force reconnect when daemon unreachable)%s\n", (t2 && t2[1] == '1') ? "stale→reconnected" : "healthy", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_force_reconnect @ gateway/platforms/signal.py:_force_reconnect */
+int gateway_platforms_signal_u_force_reconnect(const char *arg) {
+    /* Python: SSE close. Arg =
+     * "closed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int closed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no active stream)\n"); return 0; }
+    if (!closed) { printf("0 (stream already consumed)\n"); return 0; }
+    printf("1 (SSE response closed — reconnect loop picks up)%s\n", (t2 && t2[1] == '1') ? " — background task tracked" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_handle_envelope @ gateway/platforms/signal.py:_handle_envelope */
+int gateway_platforms_signal_u_handle_envelope(const char *arg) {
+    /* Python: syncMessage filter. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (filtered sync event)\n"); return 0; }
+    if (!handled) { printf("0\n"); return 0; }
+    printf("1 (envelope processed%s)%s\n", (t2 && t2[1] == '1') ? " — note-to-self extracted" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_remember_recipient_identifiers @ gateway/platforms/signal.py:_remember_recipient_identifiers */
+int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {
+    /* Python: cache number<->uuid when uuid is a valid Signal service id.
+     * Arg = "number\tuuid". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) { printf("0\n"); return 0; }
+    if (strstr(tab + 1, "signal:") == NULL) { printf("0\n"); return 0; }
+    printf("cached %.*s -> %s\n", (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_extract_contact_uuid @ gateway/platforms/signal.py:_extract_contact_uuid */
+int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) {
+    /* Python: number match gate. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!found) { printf("\n"); return 0; }
+    printf("%s (uuid/serviceId validated, number==phone or recipient match required)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_resolve_recipient @ gateway/platforms/signal.py:_resolve_recipient */
+int gateway_platforms_signal_u_resolve_recipient(const char *arg) {
+    /* Python: uuid by number. Arg =
+     * "resolved\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s (pass-through: group/service-id/non-e164)\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("%s (cached uuid lookup under lock; listContacts probe on miss)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — cached" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_fetch_attachment @ gateway/platforms/signal.py:_fetch_attachment */
+int gateway_platforms_signal_u_fetch_attachment(const char *arg) {
+    /* Python: getAttachment RPC. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t (no result / missing data)\n"); return 0; }
+    printf("%s\t%s (base64 decode + cache)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "ext" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_rpc @ gateway/platforms/signal.py:_rpc */
+int gateway_platforms_signal_u_rpc(const char *arg) {
+    /* Python: JSON-RPC 2.0. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "rate_limited") == 0) {
+        fprintf(stderr, "SignalRateLimitError [429] — raise_on_rate_limit path\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "RPC failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (log_failures=False → DEBUG not WARNING for typing-path spam)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_track_sent_timestamp @ gateway/platforms/signal.py:_track_sent_timestamp */
+int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
+    /* Python: echo-back filter record. Arg =
+     * "has_ts\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_ts = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_ts || !state) { printf("timestamp not tracked\n"); return 0; }
+    printf("sent timestamp tracked\n");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_notify_batch_pacing @ gateway/platforms/signal.py:_notify_batch_pacing */
+int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
+    /* Python: pacing notice. Arg =
+     * "batch\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("notice sent: (More images coming — pausing ~%ss for Signal rate limit, batch %s/total)%s\n", t2 ? t2 + 1 : "?", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — logged failure" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_stop_typing_indicator @ gateway/platforms/signal.py:_stop_typing_indicator */
+int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) {
+    /* Python: cancel + RPC stop. Arg =
+     * "stopped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int stopped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no task)\n"); return 0; }
+    if (!stopped) { printf("0 (RPC failed — backoff still cleared)\n"); return 0; }
+    printf("1 (task cancelled + explicit stop-typing RPC; device drops indicator immediately)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_remove_reaction @ gateway/platforms/signal.py:remove_reaction */
+int gateway_platforms_signal_remove_reaction(const char *arg) {
+    /* Python: empty emoji sendReaction. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int removed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!removed) { printf("0 (sendReaction failed)\n"); return 0; }
+    printf("1 (removed via emoji="" + remove=True; group → groupId, else recipient)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_extract_reaction_target @ gateway/platforms/signal.py:_extract_reaction_target */
+int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {
+    /* Python: (sender, timestamp_ms) from raw envelope or None. Arg = raw
+     * JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    const char *author = json_get_str(j, "sender", "");
+    const char *ts = json_get_str(j, "timestamp_ms", "");
+    if (!author[0] || !ts[0]) {
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    printf("%s\t%s\n", author, ts);
+    json_free(j);
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_reactions_enabled @ gateway/platforms/signal.py:_reactions_enabled */
+int gateway_platforms_signal_u_reactions_enabled(const char *arg) {
+    /* Python: 2-gate check. Arg =
+     * "env_on\tallowed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int env_on = arg[0] == '1';
+    int allowed = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!env_on) { printf("0 (SIGNAL_REACTIONS off)\n"); return 0; }
+    printf("%s (DM allowlist %s)\n", allowed ? "1" : "0", (t3 && t3[1] == '1') ? "anyone" : "restricted");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_on_processing_start @ gateway/platforms/signal.py:on_processing_start */
+int gateway_platforms_signal_u_on_processing_start(const char *arg) {
+    /* Python: react with 👀 when processing begins. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (reaction 👀 sent on processing start, target=%s)\n", tab ? tab + 1 : "chat");
+    return 0;
+}
+
+/* PoP: gateway_platforms_signal_u_on_processing_complete @ gateway/platforms/signal.py:on_processing_complete */
+int gateway_platforms_signal_u_on_processing_complete(const char *arg) {
+    /* Python: swap 👀 for ✅ (success) / ❌ (failure); CANCELLED keeps 👀. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    int cancelled = t1 && t1[1] == '1';
+    if (cancelled) { printf("1 (CANCELLED — 👀 left in place)\n"); return 0; }
+    printf("1 (reaction swapped 👀 → %s)\n", (t2 && t2[1] == '1') ? "❌" : "✅");
+    return 0;
+}

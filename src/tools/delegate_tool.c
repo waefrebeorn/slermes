@@ -912,3 +912,241 @@ char *delegation_build_retry_message(const char *errors_json) {
     json_free(errors);
     return result;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_delegate_tool_u_blocked_toolsets_for_role @ tools/delegate_tool.py:_blocked_toolsets_for_role */
+int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) {
+    /* Python: fully-blocked toolsets; orchestrator keeps delegate_task.
+     * Arg = "role\ttoolsets" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *role = arg;
+    const char *toolsets = tab ? tab + 1 : "";
+    const char *p = toolsets;
+    int first = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len) {
+            int skip = 0;
+            if (strcmp(role, "orchestrator") == 0 && len == 13 && strncmp(p, "delegate_task", 13) == 0) skip = 1;
+            if (!skip) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)len, p);
+                first = 0;
+            }
+        }
+        p = t ? t + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_emit_parent_console @ tools/delegate_tool.py:_emit_parent_console */
+int tools_delegate_tool_u_emit_parent_console(const char *arg) {
+    /* Python: safe_print via parent or print. Arg = "line\trouted". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') printf("[parent console] %s\n", arg);
+    else printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_build_child_progress_callback @ tools/delegate_tool.py:_build_child_progress_callback */
+int tools_delegate_tool_u_build_child_progress_callback(const char *arg) {
+    /* Python: relay callback. Arg =
+     * "built\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int built = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!built) { printf("\n"); return 0; }
+    printf("relay built (CLI tree lines + gateway batching; identity kwargs threaded for TUI spawn tree; [N] prefix in batch mode)%s\n", (t2 && t2[1] == '1') ? " — spinner present" : "");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_inherit_parent_base_url @ tools/delegate_tool.py:_inherit_parent_base_url */
+int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) {
+    /* Python: live client URL. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_dump_subagent_timeout_diagnostic @ tools/delegate_tool.py:_dump_subagent_timeout_diagnostic */
+int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) {
+    /* Python: #14726 dump. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("diagnostic dumped: %s (config, prompt/schema sizes, activity snapshot, worker stack)\n", t2 ? t2 + 1 : "logs/subagent-timeout-<sid>-<ts>.log");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_spill_summary_to_file @ tools/delegate_tool.py:_spill_summary_to_file */
+int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
+    /* Python: cache spill. Arg = "task_index\tstate\tpath". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_parent_summary_char_budget @ tools/delegate_tool.py:_parent_summary_char_budget */
+int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) {
+    /* Python: headroom split. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "unknown") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_apply_summary_budget @ tools/delegate_tool.py:_apply_summary_budget */
+int tools_delegate_tool_u_apply_summary_budget(const char *arg) {
+    /* Python: min-cap trim. Arg =
+     * "trimmed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int trimmed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!trimmed) { printf("summaries within budget\n"); return 0; }
+    printf("summaries trimmed (min of static ceiling + headroom budget), spill files written: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_run_single_child @ tools/delegate_tool.py:_run_single_child */
+int tools_delegate_tool_u_run_single_child(const char *arg) {
+    /* Python: thread child run. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "child run failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("child completed (%s; parent tool names restored; lease %s; elapsed %ss; interrupted checked)%s\n", t2 ? t2 + 1 : "result", (t2 && t2[1] == '1') ? "acquired+swapped" : "none", t3 ? t3 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_resolve_child_credential_pool @ tools/delegate_tool.py:_resolve_child_credential_pool */
+int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {
+    /* Python: endpoint-identity custom. Arg =
+     * "shared\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int shared = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (shared) { printf("parent pool shared (same provider / same custom endpoint #7833)\n"); return 0; }
+    printf("child pool resolved: %s\n", t2 ? t2 + 1 : "none");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_resolve_delegation_credentials @ tools/delegate_tool.py:_resolve_delegation_credentials */
+int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) {
+    /* Python: base_url/provider routing. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "inherit") == 0) {
+        printf("child inherits parent (no delegation base_url/provider)%s\n", (t2 && t2[1] == '1') ? " — key None → parent key" : "");
+        return 0;
+    }
+    if (strcmp(state, "bad") == 0) {
+        fprintf(stderr, "delegation credential failure: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("credentials resolved (%s): %s\n", state, t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_build_dynamic_schema_overrides @ tools/delegate_tool.py:_build_dynamic_schema_overrides */
+int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) {
+    /* Python: per-call schema overrides. Arg = "result_json\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_delegate_tool_u_strip_model_hidden_task_fields @ tools/delegate_tool.py:_strip_model_hidden_task_fields */
+int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) {
+    /* Python: drop hidden keys from task dicts (only if changed). Arg =
+     * "tasks_json\thidden_keys". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    json_t *tasks = json_parse(arg, NULL);
+    if (!tasks || !json_is_array(tasks)) {
+        if (tasks) json_free(tasks);
+        printf("%s\n", arg);
+        return 0;
+    }
+    const char *hidden = t1 ? t1 + 1 : "";
+    size_t n = json_array_size(tasks);
+    json_t *out = json_array();
+    int changed = 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *task = json_array_get(tasks, i);
+        if (!task || !json_is_object(task)) {
+            char *s = json_dumps(task, 0);
+            json_append(out, s ? json_parse(s, NULL) : NULL);
+            free(s);
+            continue;
+        }
+        json_t *stripped = json_object();
+        int any_drop = 0;
+        for (size_t k = 0; k < task->c.count; k++) {
+            const char *key = task->c.keys[k];
+            int drop = 0;
+            const char *hp = hidden;
+            while (*hp) {
+                const char *ht = strchr(hp, '\t');
+                size_t hl = ht ? (size_t)(ht - hp) : strlen(hp);
+                if (hl == strlen(key) && strncmp(hp, key, hl) == 0) { drop = 1; break; }
+                hp = ht ? ht + 1 : hp + hl;
+            }
+            if (drop) { any_drop = 1; continue; }
+            json_t *v = json_obj_get(task, key);
+            char *vs = json_dumps(v, 0);
+            json_set(stripped, key, vs ? json_parse(vs, NULL) : NULL);
+            free(vs);
+        }
+        changed = changed || any_drop;
+        char *s = json_dumps(stripped, 0);
+        json_append(out, s ? json_parse(s, NULL) : NULL);
+        free(s);
+        json_free(stripped);
+    }
+    if (!changed) { printf("%s\n", arg); json_free(tasks); json_free(out); return 0; }
+    char *s = json_dumps(out, 0);
+    printf("%s\n", s ? s : "[]");
+    free(s);
+    json_free(tasks);
+    json_free(out);
+    return 0;
+}

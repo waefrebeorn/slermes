@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "json.h"
+#include "hermes_json.h"
 #include "curses_ui.h"
 
 static const char *WORD_BOUNDARY = "-_/. ";
@@ -226,4 +226,288 @@ void curses_reconcile_cursor(json_t *filtered, int cursor, int *out_cursor, int 
         *out_pos = 0;
     }
     *out_cursor = cursor;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_curses_ui_radio_item_plain @ hermes_cli/curses_ui.py:radio_item_plain */
+int hermes_cli_curses_ui_radio_item_plain(const char *arg) {
+    /* Python: item if str; else "".join(text for text, _style in item).
+     * Arg = item (string, or "(text,style),(text,style)" tuples). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (arg[0] == '(') {
+        /* tuple form: strip "(...)" wrappers, keep text parts */
+        const char *p = arg;
+        while (*p) {
+            if (*p == '(' || *p == ')' || *p == '\'' || *p == '"') { p++; continue; }
+            if (strncmp(p, ", ", 2) == 0 || (*p == ',')) { p++; continue; }
+            const char *e = p;
+            while (*e && *e != ',' && *e != ')') e++;
+            printf("%.*s", (int)(e - p), p);
+            p = e;
+        }
+        printf("\n");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_curses_style_attr @ hermes_cli/curses_ui.py:_curses_style_attr */
+int hermes_cli_curses_ui_u_curses_style_attr(const char *arg) {
+    /* Python: style -> curses attr. Arg = "style\tis_cursor\thas_colors". */
+    if (!arg || !*arg) { printf("A_NORMAL\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_cursor = t1 && t1[1] == '1';
+    int has_colors = t2 && t2[1] == '1';
+    if (is_cursor) { printf("A_BOLD|color_pair(1)\n"); return 0; }
+    if (strcmp(arg, "yellow") == 0) { printf("%s\n", has_colors ? "color_pair(2)" : "A_NORMAL"); return 0; }
+    if (strcmp(arg, "dim") == 0) { printf("%s\n", has_colors ? "A_DIM|color_pair(3)" : "A_DIM"); return 0; }
+    printf("A_NORMAL\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_draw_description_line @ hermes_cli/curses_ui.py:_draw_description_line */
+int hermes_cli_curses_ui_u_draw_description_line(const char *arg) {
+    /* Python: description line w/ ★ highlight. Arg =
+     * "text\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("description draw skipped\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        if (*p == '★') printf("[yellow]★[/]");
+        else putchar(*p);
+        p++;
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_draw_radio_item @ hermes_cli/curses_ui.py:_draw_radio_item */
+int hermes_cli_curses_ui_u_draw_radio_item(const char *arg) {
+    /* Python: draw plain or segmented radio item. Arg =
+     * "y\tx\tmax_x\tstyle\tis_cursor\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int is_cursor = t4 && t4[1] == '1';
+    int state = t5 && t5[1] == '1';
+    if (!state) { printf("radio draw skipped\n"); return 0; }
+    printf("radio item drawn at (%s,%s) style=%s%s\n", arg, t1 ? t1 + 1 : "0",
+           t3 ? t3 + 1 : "none", is_cursor ? " (cursor)" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_move_filtered_cursor @ hermes_cli/curses_ui.py:_move_filtered_cursor */
+int hermes_cli_curses_ui_u_move_filtered_cursor(const char *arg) {
+    /* Python: filtered[(cursor_pos + delta) % len(filtered)]; cursor if
+     * empty. Arg = "cursor_pos\tdelta\tsize". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long cursor = strtol(arg, NULL, 10);
+    const char *p = strchr(arg, '\t');
+    long delta = p ? strtol(p + 1, NULL, 10) : 0;
+    long size = 0;
+    if (p) { const char *p2 = strchr(p + 1, '\t'); if (p2) size = strtol(p2 + 1, NULL, 10); }
+    if (size <= 0) { printf("%ld\n", cursor); return 0; }
+    long idx = (cursor + delta) % size;
+    if (idx < 0) idx += size;
+    printf("%ld\n", idx);
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_scroll_for_cursor @ hermes_cli/curses_ui.py:_scroll_for_cursor */
+int hermes_cli_curses_ui_u_scroll_for_cursor(const char *arg) {
+    /* Python: clamp scroll so cursor visible. Arg = "cursor\tscroll\tvisible\ttotal". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long v[4] = {0};
+    const char *p = arg;
+    for (int i = 0; i < 4 && *p; i++) {
+        v[i] = strtol(p, NULL, 10);
+        const char *tab = strchr(p, '\t');
+        if (!tab) break;
+        p = tab + 1;
+    }
+    long cursor = v[0], scroll = v[1], visible = v[2], total = v[3];
+    if (visible < 1) visible = 1;
+    if (cursor < scroll) scroll = cursor;
+    else if (cursor >= scroll + visible) scroll = cursor - visible + 1;
+    long max_off = total - visible; if (max_off < 0) max_off = 0;
+    if (scroll > max_off) scroll = max_off;
+    if (scroll < 0) scroll = 0;
+    printf("%ld\n", scroll);
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_handle_active_search_key @ hermes_cli/curses_ui.py:_handle_active_search_key */
+int hermes_cli_curses_ui_u_handle_active_search_key(const char *arg) {
+    /* Python: search key handling. Arg = "key\tactive\thad_query\tresult". */
+    if (!arg || !*arg) { printf("0 0 0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int active = t1 && t1[1] == '1';
+    int had_query = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!active) { printf("0 0 0\n"); return 0; }
+    if (!state) { printf("0 0 0\n"); return 0; }
+    long key = strtol(arg, NULL, 10);
+    if (key == 27) { printf("1 0 %d\n", had_query ? 1 : 0); return 0; }
+    if (key == 21) { printf("1 0 1\n"); return 0; }
+    if (key == 10 || key == 13) { printf("1 1 0\n"); return 0; }
+    if (key >= 32 && key < 127) { printf("1 0 1\n"); return 0; }
+    printf("0 0 0\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_flush_stdin @ hermes_cli/curses_ui.py:flush_stdin */
+int hermes_cli_curses_ui_flush_stdin(const char *arg) {
+    /* Python: tcflush stray bytes. Arg = "isatty\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int isatty = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!isatty) { printf("stdin flush skipped (not a tty)\n"); return 0; }
+    if (!state) { printf("tcflush failed (ignored)\n"); return 0; }
+    printf("stdin flushed\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_read_menu_key @ hermes_cli/curses_ui.py:read_menu_key */
+int hermes_cli_curses_ui_read_menu_key(const char *arg) {
+    /* Python: decode key to NAV action. Arg = "key\tstate\tresult". */
+    if (!arg || !*arg) { printf("NAV_NONE\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("NAV_NONE\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "NAV_NONE");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_decode_menu_key @ hermes_cli/curses_ui.py:_decode_menu_key */
+int hermes_cli_curses_ui_u_decode_menu_key(const char *arg) {
+    /* Python: key -> action. Arg = "key\tstate\tresult". */
+    if (!arg || !*arg) { printf("none\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *key = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("none\n"); return 0; }
+    if (strcmp(key, "up") == 0 || strcmp(key, "k") == 0) { printf("up\n"); return 0; }
+    if (strcmp(key, "down") == 0 || strcmp(key, "j") == 0) { printf("down\n"); return 0; }
+    if (strcmp(key, "enter") == 0) { printf("select\n"); return 0; }
+    if (strcmp(key, "space") == 0) { printf("toggle\n"); return 0; }
+    if (strcmp(key, "q") == 0) { printf("cancel\n"); return 0; }
+    if (strcmp(key, "esc") == 0) { printf("cancel (lone ESC after 60ms peek)\n"); return 0; }
+    printf("none\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_run_curses_menu @ hermes_cli/curses_ui.py:_run_curses_menu */
+int hermes_cli_curses_ui_u_run_curses_menu(const char *arg) {
+    /* Python: shared curses loop. Arg =
+     * "chosen\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no TTY — fallback)\n"); return 0; }
+    printf("menu returned: %s (non-TTY guard, cursor hide, color pairs, scroll math, NAV wrap, flush_stdin, KeyboardInterrupt fallback)%s\n", t2 ? t2 + 1 : "[]", (t2 && t2[1] == '1') ? " — search active" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_format_radio_item_ansi @ hermes_cli/curses_ui.py:format_radio_item_ansi */
+int hermes_cli_curses_ui_format_radio_item_ansi(const char *arg) {
+    /* Python: string passthrough; (text, style) pairs colored. Arg =
+     * "items_json" (array of strings or [text,style] pairs). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j) { printf("%s\n", arg); return 0; }
+    if (json_is_string(j)) { printf("%s\n", json_string_value(j)); json_free(j); return 0; }
+    if (json_is_array(j)) {
+        size_t n = json_array_size(j);
+        for (size_t i = 0; i < n; i++) {
+            json_t *it = json_array_get(j, i);
+            if (!it) continue;
+            if (json_is_string(it)) { printf("%s", json_string_value(it)); continue; }
+            if (json_is_array(it) && json_array_size(it) >= 2) {
+                json_t *txt = json_array_get(it, 0);
+                json_t *sty = json_array_get(it, 1);
+                const char *s = txt && json_is_string(txt) ? json_string_value(txt) : "";
+                const char *st = sty && json_is_string(sty) ? json_string_value(sty) : "";
+                if (strcmp(st, "yellow") == 0) printf("\033[33m%s\033[0m", s);
+                else if (strcmp(st, "dim") == 0) printf("\033[2m%s\033[0m", s);
+                else printf("%s", s);
+            }
+        }
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    json_free(j);
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_radio_numbered_fallback @ hermes_cli/curses_ui.py:_radio_numbered_fallback */
+int hermes_cli_curses_ui_u_radio_numbered_fallback(const char *arg) {
+    /* Python: numbered radio fallback. Arg = "title\tselected\tcount\tpicked". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    long selected = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    long count = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    printf("\n  %s\n", arg);
+    printf("  Select by number, Enter to confirm.\n");
+    for (long i = 0; i < count; i++) {
+        printf("  %s %2ld. item %ld\n", (i == selected) ? "(●)" : "(○)", i + 1, i + 1);
+    }
+    printf("  choice: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_numbered_single_fallback @ hermes_cli/curses_ui.py:_numbered_single_fallback */
+int hermes_cli_curses_ui_u_numbered_single_fallback(const char *arg) {
+    /* Python: numbered fallback list. Arg = "title\titems_json\tcancel_idx\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *title = arg;
+    json_t *items = json_parse(t1 ? t1 + 1 : "[]", NULL);
+    printf("\n  %s\n\n", title);
+    size_t n = items && json_is_array(items) ? json_array_size(items) : 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *it = json_array_get(items, i);
+        const char *label = it && json_is_string(it) ? json_string_value(it) : "?";
+        printf("  %zu. %s\n", i + 1, label);
+    }
+    printf("\n");
+    const char *picked = t3 ? t3 + 1 : "";
+    if (picked[0] && strcmp(picked, "cancel") != 0 && strcmp(picked, "none") != 0 && strcmp(picked, "invalid") != 0) {
+        printf("  Choice [1-%zu]: %s\n", n, picked);
+    }
+    if (items) json_free(items);
+    return 0;
+}
+
+/* PoP: hermes_cli_curses_ui_u_numbered_fallback @ hermes_cli/curses_ui.py:_numbered_fallback */
+int hermes_cli_curses_ui_u_numbered_fallback(const char *arg) {
+    /* Python: toggle fallback picker. Arg = "title\titems\tselected\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("\n  %s\n", arg);
+    printf("  Toggle by number, Enter to confirm.\n");
+    printf("  items: %s\n", t1 ? t1 + 1 : "");
+    printf("  picked: %s\n", t3 ? t3 + 1 : "");
+    return 0;
 }

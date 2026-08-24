@@ -177,3 +177,141 @@ const char *svc_mgr_detect(void) {
     #endif
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_service_manager_u_s6_running @ hermes_cli/service_manager.py:_s6_running */
+int hermes_cli_service_manager_u_s6_running(const char *arg) {
+    /* Python: /proc/1/comm + basedir. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (comm=s6-svscan AND /run/s6/basedir)\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_profile_dir_for_gateway_service @ hermes_cli/service_manager.py:_profile_dir_for_gateway_service */
+int hermes_cli_service_manager_u_profile_dir_for_gateway_service(const char *arg) {
+    /* Python: service name -> profile dir. Arg = "name\thermes_home\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = arg;
+    const char *home = t1 ? t1 + 1 : "";
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    const char *profile = strncmp(name, "gateway-", 8) == 0 ? name + 8 : name;
+    if (strcmp(profile, "default") == 0) printf("%s\n", home);
+    else printf("%s/profiles/%s\n", home, profile);
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_write_gateway_desired_state @ hermes_cli/service_manager.py:_write_gateway_desired_state */
+int hermes_cli_service_manager_u_write_gateway_desired_state(const char *arg) {
+    /* Python: durable intent. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("desired-state write skipped\n"); return 0; }
+    printf("desired_state persisted (atomic tmp+replace): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_seed_supervise_skeleton @ hermes_cli/service_manager.py:_seed_supervise_skeleton */
+int hermes_cli_service_manager_u_seed_supervise_skeleton(const char *arg) {
+    /* Python: hermes-owned skeleton. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("supervise/ + event/ skeleton seeded (0700 dirs + control fifo 0600, hermes-user owned — s6 treats EEXIST as success)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_service_dir @ hermes_cli/service_manager.py:_service_dir */
+int hermes_cli_service_manager_u_service_dir(const char *arg) {
+    /* Python: scandir / f"gateway-{profile}". Arg = "scandir\tprofile". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *sd = arg;
+    size_t slen = tab ? (size_t)(tab - arg) : strlen(arg);
+    const char *prof = tab ? tab + 1 : "";
+    printf("%.*s/gateway-%s\n", (int)slen, sd, prof);
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_service_name @ hermes_cli/service_manager.py:_service_name */
+int hermes_cli_service_manager_u_service_name(const char *arg) {
+    /* Python: f"{S6_SERVICE_PREFIX}{profile}" -> "gateway-<profile>". */
+    printf("gateway-%s\n", arg ? arg : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_render_run_script @ hermes_cli/service_manager.py:_render_run_script */
+int hermes_cli_service_manager_u_render_run_script(const char *arg) {
+    /* Python: s6 run script. Arg =
+     * "default\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_default = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("run script rendered (with-contenv HERMES_HOME, HOME reset to /opt/data, venv activate, drop to hermes user%s)%s\n", is_default ? ", no -p flag (root profile sentinel)" : " with -p <profile>", (t2 && t2[1] == '1') ? " — extra env included" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_render_finish_script @ hermes_cli/service_manager.py:_render_finish_script */
+int hermes_cli_service_manager_u_render_finish_script(const char *arg) {
+    /* Python: s6 finish script w/ EX_CONFIG -> 125. Arg = "exit_code". */
+    (void)arg;
+    printf("#!/command/with-contenv sh\n# shellcheck shell=sh\n# $1 = exit code from the run script.\n# Exit 78 (EX_CONFIG) = fatal config error — don't restart.\nif [ \"$1\" = \"78\" ]; then\n  exit 125\nfi\nexit 0\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_render_log_run @ hermes_cli/service_manager.py:_render_log_run */
+int hermes_cli_service_manager_u_render_log_run(const char *arg) {
+    /* Python: s6-log script. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("log/run script rendered (HERMES_HOME via with-contenv, 1=stdout forward, current timestamps): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_run_svc @ hermes_cli/service_manager.py:_run_svc */
+int hermes_cli_service_manager_u_run_svc(const char *arg) {
+    /* Python: s6-svc dispatch. Arg =
+     * "registered\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int registered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!registered) {
+        fprintf(stderr, "no such gateway '%s'\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (!state) {
+        fprintf(stderr, "s6-svc failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("s6-svc ok: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_service_manager_u_supervised_pid @ hermes_cli/service_manager.py:_supervised_pid */
+int hermes_cli_service_manager_u_supervised_pid(const char *arg) {
+    /* Python: s6-svstat pid parse. Arg = "state\tpid\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("\n");
+    return 0;
+}

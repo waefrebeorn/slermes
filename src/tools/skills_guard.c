@@ -426,3 +426,20 @@ void registry_init_skills_guard(void) {
         "Supports trust levels: builtin, trusted, community, agent-created.",
         SCHEMA, skills_guard_handler);
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_skills_guard_scan_file @ tools/skills_guard.py:scan_file */
+int tools_skills_guard_scan_file(const char *arg) {
+    /* Python: threat scan. Arg =
+     * "findings\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int findings = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    if (!findings) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}

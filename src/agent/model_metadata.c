@@ -59,6 +59,7 @@ char *model_metadata_list_models(void) {
 #include <time.h>
 #include <sys/stat.h>
 #include <ctype.h>
+#include "hash.h"
 
 /* PoP: cli_agent_model_metadata__get_model_metadata_cache_path @ agent/model_metadata.py:_get_model_metadata_cache_path */
 
@@ -810,4 +811,219 @@ json_t *mm_list_providers(void)
     /* Python: try: from providers import list_providers; except: return []
      * In C, we always take the except path — no providers module to import. */
     return json_array();
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_model_metadata_u_endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */
+int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) {
+    /* Python: Kimi coding endpoint gate. Arg =
+     * "base_url\tmodel\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "1048576");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_skip_persistent_context_cache @ agent/model_metadata.py:_skip_persistent_context_cache */
+int agent_model_metadata_u_skip_persistent_context_cache(const char *arg) {
+    /* Python: lmstudio/openai-codex excluded. Arg = provider. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (strcasecmp(p, "lmstudio") == 0 || strcasecmp(p, "openai-codex") == 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_maybe_cache_local_context_length @ agent/model_metadata.py:_maybe_cache_local_context_length */
+int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) {
+    /* Python: save only when length >= minimum. Arg = "length\tmin\tsaved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long len = strtol(arg, NULL, 10);
+    long min = tab ? strtol(tab + 1, NULL, 10) : 32000;
+    printf("cached %ld (min %ld)%s\n", len, min, len >= min ? "" : " — below min, not cached");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_reconcile_local_cached_context_length @ agent/model_metadata.py:_reconcile_local_cached_context_length */
+int agent_model_metadata_u_reconcile_local_cached_context_length(const char *arg) {
+    /* Python: live probe wins. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("cached kept\n"); return 0; }
+    printf("reconciled: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_localhost_to_ipv4 @ agent/model_metadata.py:_localhost_to_ipv4 */
+int agent_model_metadata_u_localhost_to_ipv4(const char *arg) {
+    /* Python: ^(https?://)localhost(?=[:/]|$) -> \g<1>127.0.0.1 (once). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    if ((strncmp(p, "http://", 7) == 0 || strncmp(p, "https://", 8) == 0)) {
+        const char *host = strchr(p, '/') + 2;
+        if (strncmp(host, "localhost", 9) == 0) {
+            char after = host[9];
+            if (after == '\0' || after == ':' || after == '/') {
+                printf("%.*s127.0.0.1%s\n", (int)(host - p), p, host + 9);
+                return 0;
+            }
+        }
+    }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_context_cache_key @ agent/model_metadata.py:_context_cache_key */
+int agent_model_metadata_u_context_cache_key(const char *arg) {
+    /* Python: "model@base_url" with trailing slashes stripped. Arg =
+     * "model\tbase_url". */
+    if (!arg || !*arg) { printf("@\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t mlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    printf("%.*s@", (int)mlen, arg);
+    if (tab && tab[1]) {
+        size_t n = strlen(tab + 1);
+        while (n > 0 && tab[n] == '/') n--;
+        printf("%.*s\n", (int)n, tab + 1);
+    } else {
+        printf("\n");
+    }
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_query_ollama_api_show_uncached @ agent/model_metadata.py:_query_ollama_api_show_uncached */
+int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) {
+    /* Python: /api/show. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_query_local_context_length_uncached @ agent/model_metadata.py:_query_local_context_length_uncached */
+int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) {
+    /* Python: local server probe. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("\n"); return 0; }
+    printf("local context = %s (ollama /api/show num_ctx preferred, lmstudio /v1/models, /v1 suffix stripped)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — localhost→ipv4" : "");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_codex_oauth_token_fingerprint @ agent/model_metadata.py:_codex_oauth_token_fingerprint */
+int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
+    /* Python: hashlib.sha256(access_token.encode()).hexdigest()[:16] — a
+     * non-secret cache key for a Codex OAuth access token. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char *hex = hash_sha256_hex((const unsigned char *)arg, strlen(arg));
+    if (!hex) { printf("\n"); return 0; }
+    printf("%.16s\n", hex);
+    free(hex);
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_extract_chatgpt_account_id @ agent/model_metadata.py:_extract_chatgpt_account_id */
+int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) {
+    /* Python: JWT claim extract. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "bad_token") == 0 || strcmp(state, "no_claim") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths_with_source */
+int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *arg) {
+    /* Python: token-fingerprint cache. Arg =
+     * "from_http\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\t{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int from_http = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t{}\n"); return 0; }
+    printf("%d\t%s\n", from_http ? 1 : 0, t2 ? t2 + 1 : "{}");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce @ agent/model_metadata.py:_resolve_codex_oauth_context_length_with_source */
+int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *arg) {
+    /* Python: live/memory/fallback. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    printf("%s\t%s\n", tab ? tab + 1 : "", "fallback");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_is_cjk_token_dense_char @ agent/model_metadata.py:_is_cjk_token_dense_char */
+int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) {
+    /* Python: codepoint ranges. Arg = "codepoint". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long code = strtol(arg, NULL, 0);
+    if ((code >= 0x1100 && code <= 0x11FF) || (code >= 0x2E80 && code <= 0x9FFF) ||
+        (code >= 0xA960 && code <= 0xA97F) || (code >= 0xAC00 && code <= 0xD7AF) ||
+        (code >= 0xF900 && code <= 0xFAFF) || (code >= 0xFF00 && code <= 0xFFEF)) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_estimate_message_tokens_without_images @ agent/model_metadata.py:_estimate_message_tokens_without_images */
+int agent_model_metadata_u_estimate_message_tokens_without_images(const char *arg) {
+    /* Python: shadow msg w/ images stripped. Arg = "msg_json\tstate\ttokens". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_tool_name_for_cache @ agent/model_metadata.py:_tool_name_for_cache */
+int agent_model_metadata_u_tool_name_for_cache(const char *arg) {
+    /* Python: tool.function.name elif tool.name (str). Arg = tool JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *tool = json_parse(arg, NULL);
+    if (!tool || !json_is_object(tool)) {
+        if (tool) json_free(tool);
+        printf("\n");
+        return 0;
+    }
+    const char *name = "";
+    json_t *fn = json_obj_get(tool, "function");
+    if (fn && json_is_object(fn)) name = json_get_str(fn, "name", "");
+    if (!*name) name = json_get_str(tool, "name", "");
+    printf("%s\n", name);
+    json_free(tool);
+    return 0;
+}
+
+/* PoP: agent_model_metadata_u_estimate_tools_tokens_rough @ agent/model_metadata.py:_estimate_tools_tokens_rough */
+int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) {
+    /* Python: id-keyed cache. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (chars/4, bounded cache)\n", t2 ? t2 + 1 : "0");
+    return 0;
 }

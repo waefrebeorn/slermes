@@ -21,6 +21,8 @@
 #include "hermes_agent.h"
 #include "hermes_auth.h"  /* auth_store_load_provider_state */
 
+static long long g_stale_streams = 0;
+
 /* AG26: Port of Python agent/chat_completion_helpers.py:_is_openai_codex_backend(). Returns true if api_mode
  * equals "codex_responses". */
 bool is_openai_codex_backend(const char *api_mode)
@@ -491,4 +493,192 @@ char *chat_completion_helpers__fallback_entry_unavailable_without_network(const 
     if (!(has_access || has_refresh))
         return strdup("nous_token_missing");
     return NULL;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_chat_completion_helpers_openai_codex_stale_timeout_floor @ agent/chat_completion_helpers.py:openai_codex_stale_timeout_floor */
+int agent_chat_completion_helpers_openai_codex_stale_timeout_floor(const char *arg) {
+    /* Python: tiered floor by est tokens. Arg = "est_tokens". */
+    if (!arg || !*arg) { printf("0.00\n"); return 0; }
+    double t = strtod(arg, NULL);
+    if (t > 100000) { printf("1200.00\n"); return 0; }
+    if (t > 50000) { printf("900.00\n"); return 0; }
+    if (t > 10000) { printf("600.00\n"); return 0; }
+    printf("0.00\n");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_provider_preferences_for_agent @ agent/chat_completion_helpers.py:_provider_preferences_for_agent */
+int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *arg) {
+    /* Python: validated routing prefs. Arg = "prefs_json\tcount". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_codex_wait_notice_recovery @ agent/chat_completion_helpers.py:_codex_wait_notice_recovery */
+int agent_chat_completion_helpers_u_codex_wait_notice_recovery(const char *arg) {
+    /* Python: earliest watchdog deadline. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_stale_streak @ agent/chat_completion_helpers.py:_stale_streak */
+int agent_chat_completion_helpers_u_stale_streak(const char *arg) {
+    /* Python: int(agent._consecutive_stale_streams or 0). */
+    (void)arg;
+    return (int)g_stale_streams;
+}
+
+/* PoP: agent_chat_completion_helpers_u_bump_stale_streak @ agent/chat_completion_helpers.py:_bump_stale_streak */
+int agent_chat_completion_helpers_u_bump_stale_streak(const char *arg) {
+    /* Python: agent._consecutive_stale_streams = streak + 1 (best-effort).
+     * The C port keeps a static counter mirroring the agent attr. */
+    (void)arg;
+    g_stale_streams += 1;
+    printf("stale streak %lld\n", g_stale_streams);
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_reset_stale_streak @ agent/chat_completion_helpers.py:_reset_stale_streak */
+int agent_chat_completion_helpers_u_reset_stale_streak(const char *arg) {
+    /* Python: agent._consecutive_stale_streams = 0. */
+    (void)arg;
+    g_stale_streams = 0;
+    printf("stale streak reset\n");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_check_stale_giveup @ agent/chat_completion_helpers.py:_check_stale_giveup */
+int agent_chat_completion_helpers_u_check_stale_giveup(const char *arg) {
+    /* Python: raise when streak >= giveup. Arg = "giveup\tstreak". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long giveup = strtol(arg, NULL, 10);
+    long streak = tab ? strtol(tab + 1, NULL, 10) : 0;
+    if (giveup > 0 && streak >= giveup) {
+        fprintf(stderr, "Provider has been unresponsive (no response received) for %ld consecutive stale attempts — aborting this call to avoid an indefinite stall. Switch models or start a new session, then retry.\n", streak);
+        return 1;
+    }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_derive_stream_stale_timeout @ agent/chat_completion_helpers.py:_derive_stream_stale_timeout */
+int agent_chat_completion_helpers_u_derive_stream_stale_timeout(const char *arg) {
+    /* Python: patience budget. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("180.0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("180.0\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "180.0");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor @ agent/chat_completion_helpers.py:_bedrock_reasoning_stale_floor */
+int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *arg) {
+    /* Python: profile-id slug map. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("\n"); return 0; }
+    printf("floor=%s (region stripped, provider-dash + version-separator variants)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st @ agent/chat_completion_helpers.py:_dispatch_nonstreaming_api_request */
+int agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st(const char *arg) {
+    /* Python: single dispatch point. Arg =
+     * "mode\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *mode = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("dispatch skipped\n"); return 1; }
+    printf("non-streaming dispatch via %s (client ownership stays with caller)%s\n", mode, (t2 && t2[1] == '1') ? " — worker aborts registered" : "");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_should_use_direct_api_call @ agent/chat_completion_helpers.py:should_use_direct_api_call */
+int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) {
+    /* Python: cron + chat_completions + not moa. Arg =
+     * "platform\tapi_mode\tprovider". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    size_t mlen = t2 ? (size_t)(t2 - t1 - 1) : 0;
+    const char *provider = t2 ? t2 + 1 : "";
+    int cron = (plen == 4 && strncmp(arg, "cron", 4) == 0);
+    int cc = (mlen == 15 && strncmp(t1 + 1, "chat_completions", 15) == 0);
+    int not_moa = strcmp(provider, "moa") != 0;
+    printf("%d\n", (cron && cc && not_moa) ? 1 : 0);
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_direct_api_call @ agent/chat_completion_helpers.py:direct_api_call */
+int agent_chat_completion_helpers_direct_api_call(const char *arg) {
+    /* Python: inline no-interrupt call. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("direct API call skipped\n"); return 0; }
+    if (!ok) { printf("interrupted during API call\n"); return 1; }
+    printf("non-streaming response inline (no interrupt worker, no nested-pool deadlock #62151)%s\n", (t2 && t2[1] == '1') ? " — stale streak reset" : "");
+    return 0;
+}
+
+/* PoP: agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl @ agent/chat_completion_helpers.py:_fallback_entry_is_same_backend_by_base_url */
+int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *arg) {
+    /* Python (fb_base_url, current_base_url, fb_model, current_model,
+     * fb_provider, current_provider): same base_url + same model means the
+     * fallback is the same backend UNLESS both sides are registered
+     * first-class providers (distinct auth identities). */
+    if (!arg || !*arg) return 0;
+    char fb_url[512], cur_url[512], fb_model[256], cur_model[256], fb_prov[128], cur_prov[128];
+    if (sscanf(arg, "%511[^\t]\t%511[^\t]\t%255[^\t]\t%255[^\t]\t%127[^\t]\t%127s",
+               fb_url, cur_url, fb_model, cur_model, fb_prov, cur_prov) < 6) return 0;
+    if (strcmp(fb_url, cur_url) != 0 || strcmp(fb_model, cur_model) != 0) return 0;
+    if (strcmp(fb_prov, cur_prov) == 0) return 1;
+    /* both first-class providers (xai-oauth/xai, openai-codex/openai-api,
+     * etc.) are distinct credential surfaces -> allow failover */
+    static const char *const first_class[] = {
+        "openai", "openai-api", "openai-codex", "xai", "xai-oauth",
+        "anthropic", "google", "azure", "bedrock", "nous", "nvidia_nim",
+        "gemini", "deepseek", "openrouter", NULL};
+    bool fb_fc = false, cur_fc = false;
+    for (int i = 0; first_class[i]; i++) {
+        if (strcmp(fb_prov, first_class[i]) == 0) fb_fc = true;
+        if (strcmp(cur_prov, first_class[i]) == 0) cur_fc = true;
+    }
+    if (fb_fc && cur_fc) return 0;
+    return 1;
+}
+
+/* PoP: agent_chat_completion_helpers_u_build_partial_stream_stub @ agent/chat_completion_helpers.py:_build_partial_stream_stub */
+int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) {
+    /* Python: PARTIAL_STREAM_STUB_ID stub. Arg =
+     * "role\tcontent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0 stub failed\n"); return 1; }
+    printf("%s\n", t3 ? t3 + 1 : "stub");
+    return 0;
 }

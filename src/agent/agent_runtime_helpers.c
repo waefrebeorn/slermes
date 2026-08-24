@@ -170,3 +170,46 @@ char *invoke_tool(const char *tool_name, const char *tool_args_json,
     json_free(result);
     return out;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_agent_runtime_helpers_note_turn_start @ agent/agent_runtime_helpers.py:note_turn_start */
+int agent_agent_runtime_helpers_note_turn_start(const char *arg) {
+    /* Python: interleave tripwire. Arg =
+     * "overlap\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int overlap = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (overlap) {
+        printf("WARN: turn %s starting while turn %s (started %.0fs ago) has not completed its persist\n", t2 ? t2 + 1 : "?", "?", 0.0);
+        return 0;
+    }
+    printf("in-flight slot taken (no overlap; at most one warning per crashed turn)\n");
+    return 0;
+}
+
+/* PoP: agent_agent_runtime_helpers_note_turn_persisted @ agent/agent_runtime_helpers.py:note_turn_persisted */
+int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) {
+    /* Python: clear in-flight marker. Arg = "state\tsession_id\tpopped". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("marker cleared (no session slot)\n"); return 0; }
+    printf("in-flight turn marker cleared: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_agent_runtime_helpers_sync_credential_pool_entry_id @ agent/agent_runtime_helpers.py:sync_credential_pool_entry_id */
+int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) {
+    /* Python: rebind entry id or clear. Arg = "pool_bound\tentry_id". */
+    if (!arg || !*arg) { printf("entry id cleared\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int bound = arg[0] == '1';
+    if (!bound) { printf("entry id cleared (no pool)\n"); return 0; }
+    printf("entry id synced: %s\n", tab ? tab + 1 : "");
+    return 0;
+}

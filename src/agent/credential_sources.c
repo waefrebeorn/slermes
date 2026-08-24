@@ -641,3 +641,17 @@ void credential_sources_init(void) {
         .description = "Custom provider config.yaml api_key field"
     });
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_credential_sources_u_remove_xai_oauth_device_code @ agent/credential_sources.py:_remove_xai_oauth_device_code */
+int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) {
+    /* Python: clear auth store singleton. Arg = "cleared\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("removal skipped\n"); return 0; }
+    if (arg[0] == '1') printf("Cleared xai-oauth OAuth tokens from auth store\n");
+    printf("Run `hermes model` → xAI Grok OAuth (SuperGrok / Premium+) to re-authenticate if needed.\n");
+    return 0;
+}

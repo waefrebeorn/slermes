@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdio.h>
 
 static json_t *sanitize_node(json_t *node, int depth);
 
@@ -265,4 +266,41 @@ bool is_moonshot_model(const char *model) {
     if (strstr(buf, "moonshot") || strstr(buf, "/kimi"))
         return true;
     return false;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_moonshot_schema_u_ensure_required_array @ agent/moonshot_schema.py:_ensure_required_array */
+int agent_moonshot_schema_u_ensure_required_array(const char *arg) {
+    /* Python: required as list, pruned to props. Arg = "node_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *props = json_obj_get(j, "properties");
+    json_t *req = json_obj_get(j, "required");
+    if (req && json_is_array(req)) {
+        if (props && json_is_object(props)) {
+            /* prune entries not in props */
+            json_t *out = json_array();
+            size_t n = json_array_size(req);
+            for (size_t i = 0; i < n; i++) {
+                json_t *r = json_array_get(req, i);
+                if (!r || !json_is_string(r)) continue;
+                json_t *p = json_obj_get(props, json_string_value(r));
+                if (p) json_append(out, json_string(json_string_value(r)));
+            }
+            json_set(j, "required", out);
+        }
+    } else {
+        json_set(j, "required", json_array());
+    }
+    char *s = json_dumps(j, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(j);
+    return 0;
 }

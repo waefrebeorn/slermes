@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "json.h"
 #include "session_recap.h"
+#include <hermes_json.h>
 
 /* PoP: session_coerce_text @ hermes_cli/session_recap.py:_coerce_text */
 void session_coerce_text(const json_t *value, char *out, size_t out_cap) {
@@ -465,4 +466,49 @@ done:
         free(lines[i]);
     }
     return result;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_session_recap_u_iter_assistant_tool_calls @ hermes_cli/session_recap.py:_iter_assistant_tool_calls */
+int hermes_cli_session_recap_u_iter_assistant_tool_calls(const char *arg) {
+    /* Python: yield (name, args) for assistant tool_calls. Arg = messages
+     * JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *msgs = json_parse(arg, NULL);
+    if (!msgs || !json_is_array(msgs)) {
+        if (msgs) json_free(msgs);
+        printf("\n");
+        return 0;
+    }
+    size_t n = json_array_size(msgs);
+    int first = 1;
+    for (size_t i = 0; i < n; i++) {
+        json_t *m = json_array_get(msgs, i);
+        if (!m || !json_is_object(m)) continue;
+        const char *role = json_get_str(m, "role", "");
+        if (strcmp(role, "assistant") != 0) continue;
+        json_t *tcs = json_obj_get(m, "tool_calls");
+        if (!tcs || !json_is_array(tcs)) continue;
+        size_t tn = json_array_size(tcs);
+        for (size_t j = 0; j < tn; j++) {
+            json_t *tc = json_array_get(tcs, j);
+            if (!tc || !json_is_object(tc)) continue;
+            json_t *fn = json_obj_get(tc, "function");
+            const char *name = "";
+            const char *args = "";
+            if (fn && json_is_object(fn)) {
+                name = json_get_str(fn, "name", "");
+                args = json_get_str(fn, "arguments", "");
+            }
+            if (!name[0]) name = json_get_str(tc, "name", "");
+            if (!name[0]) continue;
+            if (!first) printf("\n");
+            printf("%s\t%s", name, args);
+            first = 0;
+        }
+    }
+    printf("\n");
+    json_free(msgs);
+    return 0;
 }

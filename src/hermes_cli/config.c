@@ -1184,3 +1184,31 @@ json_t *hermes_cli_config_known_top_level_keys(void) {
     return json_object();
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_config_custom_endpoint_key_env @ hermes_cli/config.py:custom_endpoint_key_env */
+int hermes_cli_config_custom_endpoint_key_env(const char *arg) {
+    /* Python: identity -> HERMES_CUSTOM_<SLUG>_API_KEY. Arg = identity. */
+    if (!arg || !*arg) { printf("HERMES_CUSTOM_API_KEY\n"); return 0; }
+    char out[512];
+    size_t w = 0;
+    int last_sep = 1;
+    for (const char *p = arg; *p && w < sizeof(out)-1; p++) {
+        char c = *p;
+        if ((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+            out[w++] = c;
+            last_sep = 0;
+        } else if (c >= 'a' && c <= 'z') {
+            out[w++] = (char)(c - 'a' + 'A');
+            last_sep = 0;
+        } else {
+            if (!last_sep) out[w++] = '_';
+            last_sep = 1;
+        }
+    }
+    while (w > 0 && out[w-1] == '_') w--;
+    if (!w) { printf("HERMES_CUSTOM_API_KEY\n"); return 0; }
+    printf("HERMES_CUSTOM_%.*s_API_KEY\n", (int)w, out);
+    return 0;
+}

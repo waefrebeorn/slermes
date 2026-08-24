@@ -1266,3 +1266,30 @@ char *describe_skill_invocation(const char *content) {
     return NULL;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_skill_commands_split_stacked_skill_commands @ agent/skill_commands.py:split_stacked_skill_commands */
+int agent_skill_commands_split_stacked_skill_commands(const char *arg) {
+    /* Python: stacked /skill tokens. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t%s\n", tab ? tab + 1 : ""); return 0; }
+    printf("%s\t\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_skill_commands_build_stacked_skill_invocation_message @ agent/skill_commands.py:build_stacked_skill_invocation_message */
+int agent_skill_commands_build_stacked_skill_invocation_message(const char *arg) {
+    /* Python: stacked slash builder. Arg =
+     * "loaded\tmissing\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n\t\t\n"); return 0; }
+    printf("message built: loaded=%s missing=%s (blocks start with [Loaded as part of the...])\n", t1 ? t1 + 1 : "[]", t3 ? t3 + 1 : "[]");
+    return 0;
+}

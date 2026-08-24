@@ -356,3 +356,20 @@ int cli_tools_clarify_gateway_resolve_text_response_for_session(const char *sess
     free(coerced);
     return ok;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_clarify_gateway_resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */
+int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) {
+    /* Python: clarify.timeout > agent.clarify_timeout > 3600. Arg =
+     * "legacy\tagent\tresult". */
+    if (!arg || !*arg) { printf("3600\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *legacy = arg;
+    const char *agent_v = t1 ? t1 + 1 : "";
+    if (strcmp(legacy, "none") != 0) { printf("%s\n", legacy); return 0; }
+    if (agent_v[0]) { printf("%s\n", agent_v); return 0; }
+    printf("3600\n");
+    return 0;
+}

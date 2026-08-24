@@ -1621,3 +1621,22 @@ int cli_tools_tool_search__format_search_hit(
     return 0;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_tool_search_u_safe_float @ tools/tool_search.py:_safe_float */
+int tools_tool_search_u_safe_float(const char *arg) {
+    /* Python: float(value) or fallback. Arg = "value\tfallback". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char val[128];
+    size_t vlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (vlen >= sizeof(val)) vlen = sizeof(val) - 1;
+    memcpy(val, arg, vlen); val[vlen] = '\0';
+    const char *fb = tab ? tab + 1 : "0";
+    char *end = NULL;
+    double d = strtod(val, &end);
+    if (end == val || (*end != '\0' && *end != ' ')) { printf("%s\n", fb); return 0; }
+    printf("%g\n", d);
+    return 0;
+}

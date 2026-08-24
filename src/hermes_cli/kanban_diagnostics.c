@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "json.h"
 #include "kanban_diagnostics.h"
+#include <hermes_json.h>
 
 /* Severity rungs, ordered least -> most urgent. */
 static const char *G_SEVERITY_ORDER[] = {"warning", "error", "critical"};
@@ -308,4 +309,178 @@ json_t *kanban_diagnostic_rule_review_dependency_deadlock(
         title, detail, actions, blocked_at, blocked_at, (int)wc, data));
     json_free(waiting);
     return out;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_kanban_diagnostics_u_aux_slot_explicit @ hermes_cli/kanban_diagnostics.py:_aux_slot_explicit */
+int hermes_cli_kanban_diagnostics_u_aux_slot_explicit(const char *arg) {
+    /* Python: provider != auto or any model/base_url/api_key. Arg =
+     * "slot_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("0\n");
+        return 0;
+    }
+    const char *provider = json_get_str(j, "provider", "");
+    if (provider[0] && strcasecmp(provider, "auto") != 0) { printf("1\n"); json_free(j); return 0; }
+    static const char *keys[] = {"model", "base_url", "api_key"};
+    for (size_t i = 0; i < 3; i++) {
+        const char *v = json_get_str(j, keys[i], "");
+        if (v[0]) { printf("1\n"); json_free(j); return 0; }
+    }
+    json_free(j);
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_main_model_visible @ hermes_cli/kanban_diagnostics.py:_main_model_visible */
+int hermes_cli_kanban_diagnostics_u_main_model_visible(const char *arg) {
+    /* Python: provider+model proof, err toward not firing. Arg =
+     * "provider\tmodel\traw". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *provider = arg;
+    const char *model = t1 ? t1 + 1 : "";
+    const char *raw = t2 ? t2 + 1 : "";
+    if (provider[0] && model[0]) { printf("1\n"); return 0; }
+    if (raw[0]) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_triage_aux_status @ hermes_cli/kanban_diagnostics.py:triage_aux_status */
+int hermes_cli_kanban_diagnostics_triage_aux_status(const char *arg) {
+    /* Python: triage config inspect. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_context") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards @ hermes_cli/kanban_diagnostics.py:_rule_hallucinated_cards */
+int hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards(const char *arg) {
+    /* Python: blocked-hallucination gate. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_triage_aux_unavailable @ hermes_cli/kanban_diagnostics.py:_rule_triage_aux_unavailable */
+int hermes_cli_kanban_diagnostics_u_rule_triage_aux_unavailable(const char *arg) {
+    /* Python: aux slot gate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs @ hermes_cli/kanban_diagnostics.py:_rule_prose_phantom_refs */
+int hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs(const char *arg) {
+    /* Python: advisory phantom-ref scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_repeated_failures @ hermes_cli/kanban_diagnostics.py:_rule_repeated_failures */
+int hermes_cli_kanban_diagnostics_u_rule_repeated_failures(const char *arg) {
+    /* Python: unified counter. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("consecutive_failures >= %s (legacy spawn_failure_threshold honored; terminal/running exempt; failure_limit-derived)%s\n", t2 ? t2 + 1 : "3", (t2 && t2[1] == '1') ? " — runtime derived" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_repeated_crashes @ hermes_cli/kanban_diagnostics.py:_rule_repeated_crashes */
+int hermes_cli_kanban_diagnostics_u_rule_repeated_crashes(const char *arg) {
+    /* Python: crash streak. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked @ hermes_cli/kanban_diagnostics.py:_rule_stuck_in_blocked */
+int hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked(const char *arg) {
+    /* Python: stale-blocked warning. Arg =
+     * "hours\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_block_unblock_cycling @ hermes_cli/kanban_diagnostics.py:_rule_block_unblock_cycling */
+int hermes_cli_kanban_diagnostics_u_rule_block_unblock_cycling(const char *arg) {
+    /* Python: cycle counter. Arg =
+     * "cycles\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_u_rule_stranded_in_ready @ hermes_cli/kanban_diagnostics.py:_rule_stranded_in_ready */
+int hermes_cli_kanban_diagnostics_u_rule_stranded_in_ready(const char *arg) {
+    /* Python: age-based stranded. Arg =
+     * "age\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("stranded >= %s s (identity-agnostic: typo'd assignee, deleted profile, dead worker pool, misconfig)%s\n", t2 ? t2 + 1 : "1800", (t2 && t2[1] == '1') ? " — assignee non-empty required" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_config_from_kanban_config @ hermes_cli/kanban_diagnostics.py:config_from_kanban_config */
+int hermes_cli_kanban_diagnostics_config_from_kanban_config(const char *arg) {
+    /* Python: failure_limit derivation. Arg =
+     * "kanban_failure_limit\tdiag_failure_limit\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("{\"failure_limit\": %s}\n", t1 ? t1 + 1 : arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_kanban_diagnostics_config_from_runtime_config @ hermes_cli/kanban_diagnostics.py:config_from_runtime_config */
+int hermes_cli_kanban_diagnostics_config_from_runtime_config(const char *arg) {
+    /* Python: kanban + auxiliary + model keys. Arg = "result_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
 }

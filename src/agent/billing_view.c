@@ -409,3 +409,61 @@ const char *billing_fallback_portal_url(void) {
 }
 
 #endif /* SRC_AGENT_PORT_AGENT_BILLING_VIEW_C */
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_billing_view_can_change_plan @ agent/billing_view.py:can_change_plan */
+int agent_billing_view_can_change_plan(const char *arg) {
+    /* Python: can_change_plan_raw if not None else is_admin. Arg =
+     * "raw\tis_admin" (raw empty = None). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab > arg) {
+        printf("%d\n", strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0);
+        return 0;
+    }
+    const char *admin = tab ? tab + 1 : arg;
+    printf("%d\n", strcmp(admin, "1") == 0 || strcmp(admin, "true") == 0);
+    return 0;
+}
+
+/* PoP: agent_billing_view_u_parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */
+int agent_billing_view_u_parse_auto_reload_card(const char *arg) {
+    /* Python: canonical/none or distinct with payment fields. Arg =
+     * "card_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    const char *kind = json_get_str(j, "kind", "");
+    if (strcmp(kind, "canonical") == 0 || strcmp(kind, "none") == 0) {
+        printf("AutoReloadCard(kind=%s)\n", kind);
+        json_free(j);
+        return 0;
+    }
+    if (strcmp(kind, "distinct") == 0) {
+        printf("AutoReloadCard(kind=distinct, brand=%s, last4=%s)\n",
+               json_get_str(j, "brand", "?"), json_get_str(j, "last4", "?"));
+        json_free(j);
+        return 0;
+    }
+    json_free(j);
+    printf("\n");
+    return 0;
+}
+
+/* PoP: agent_billing_view_u_dev_fixture_billing_state @ agent/billing_view.py:_dev_fixture_billing_state */
+int agent_billing_view_u_dev_fixture_billing_state(const char *arg) {
+    /* Python: 6 fixture map. Arg = "name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!name[0]) { printf("\n"); return 0; }
+    printf("fixture billing state: %s (org_acme, card %s, autoreload %s)\n", name, (t2 && t2[1] == '1') ? "on-file" : "none", (t2 && t2[1] == '2') ? "on" : "off");
+    return 0;
+}

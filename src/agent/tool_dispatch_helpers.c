@@ -11,6 +11,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <regex.h>
+#include "hermes_json.h"
+#include "libtooldispatch/tool_dispatch_helpers.h"
 
 /* From port_agent_core_helpers.c (agent/tool_dispatch_helpers.py:_canonical_path). */
 extern char *tdh_canonical_path(const char *raw_path, const char *execution_cwd);
@@ -60,63 +62,6 @@ static bool is_file_mutating(const char *tool_name)
     return false;
 }
 
-/* Re-implementation of _extract_file_mutation_targets (needed by _extract_landed_file_mutation_paths). */
-static char **extract_file_mutation_targets(const char *tool_name, const char *path,
-                                            const char *mode, const char *patch, int *out_n)
-{
-    int cap = 4, n = 0;
-    char **paths = malloc(sizeof(char *) * cap);
-    if (!is_file_mutating(tool_name)) { *out_n = 0; return paths; }
-    if (strcmp(tool_name, "write_file") == 0) {
-        if (path && path[0]) { paths[n++] = strdup(path); }
-    } else { /* patch */
-        const char *m = mode ? mode : "replace";
-        if (strcmp(m, "replace") == 0) {
-            if (path && path[0]) paths[n++] = strdup(path);
-        } else if (strcmp(m, "patch") == 0) {
-            if (patch && patch[0]) {
-                static regex_t re1, re2; static bool comp = false;
-                if (!comp) {
-                    regcomp(&re1, "^\\*\\*\\*[ \t]+(Update|Add|Delete)[ \t]+File:[ \t]*(.+)$", REG_EXTENDED | REG_NEWLINE);
-                    regcomp(&re2, "^\\*\\*\\*[ \t]+Move[ \t]+File:[ \t]*(.+?)[ \t]*->[ \t]*(.+)$", REG_EXTENDED | REG_NEWLINE);
-                    comp = true;
-                }
-                char *buf = strdup(patch);
-                regmatch_t mm[3];
-                size_t off = 0;
-                while (regexec(&re1, buf + off, 3, mm, 0) == 0) {
-                    /* find capture group 2 */
-                    int so = mm[2].rm_so, eo = mm[2].rm_eo;
-                    size_t l = (size_t)(eo - so);
-                    char *pv = malloc(l + 1); memcpy(pv, buf + off + so, l); pv[l] = '\0';
-                    /* trim trailing ws */
-                    while (l > 0 && (pv[l-1]==' '||pv[l-1]=='\t')) pv[--l]='\0';
-                    if (pv[0]) { if (n>=cap){cap*=2;paths=realloc(paths,sizeof(char*)*cap);} paths[n++]=pv; }
-                    else free(pv);
-                    off += (size_t)mm[0].rm_eo;
-                }
-                off = 0;
-                while (regexec(&re2, buf + off, 3, mm, 0) == 0) {
-                    int so = mm[1].rm_so, eo = mm[1].rm_eo;
-                    size_t l = (size_t)(eo - so); char *sv = malloc(l+1); memcpy(sv, buf+off+so, l); sv[l]='\0';
-                    while (l>0 && (sv[l-1]==' '||sv[l-1]=='\t')) sv[--l]='\0';
-                    int so2 = mm[2].rm_so, eo2 = mm[2].rm_eo;
-                    size_t l2 = (size_t)(eo2-so2); char *dv = malloc(l2+1); memcpy(dv, buf+off+so2, l2); dv[l2]='\0';
-                    while (l2>0 && (dv[l2-1]==' '||dv[l2-1]=='\t')) dv[--l2]='\0';
-                    if (sv[0]) { if (n>=cap){cap*=2;paths=realloc(paths,sizeof(char*)*cap);} paths[n++]=sv; } else free(sv);
-                    if (dv[0]) { if (n>=cap){cap*=2;paths=realloc(paths,sizeof(char*)*cap);} paths[n++]=dv; } else free(dv);
-                    off += (size_t)mm[0].rm_eo;
-                }
-                free(buf);
-            }
-        }
-    }
-    paths = realloc(paths, sizeof(char *) * (n + 1));
-    paths[n] = NULL;
-    *out_n = n;
-    return paths;
-}
-
 /* Minimal JSON string/array extraction for files_modified / resolved_path.
  * Only handles the specific shapes the Python code reads. */
 static bool json_get_string_field(const char *json, const char *key, char *out, size_t outsz)
@@ -162,8 +107,15 @@ char **agent_tool_dispatch_extract_landed_file_mutation_paths(const char *tool_n
         json_get_string_field(args_json, "patch", patch, sizeof(patch));
     }
     int targets_n = 0;
-    char **targets = extract_file_mutation_targets(tool_name, path[0]?path:NULL,
-                                                   mode[0]?mode:NULL, patch[0]?patch:NULL, &targets_n);
+    char *args_buf = NULL;
+    /* rebuild minimal args json for the lib ABI */
+    size_t ab_len = strlen(path)+strlen(mode)+strlen(patch)+64;
+    args_buf = malloc(ab_len);
+    snprintf(args_buf, ab_len, "{\"path\":\"%s\",\"mode\":\"%s\",\"patch\":%s}",
+             path, mode, patch[0] ? patch : "\"\"");
+    char **targets = extract_file_mutation_targets(tool_name, args_buf,
+                                                   (size_t *)&targets_n);
+    free(args_buf);
     if (!is_file_mutating(tool_name) || !result) { *out_n = targets_n; return targets; }
     /* try JSON parse of result */
     char *rbuf = strdup(result);
@@ -253,11 +205,10 @@ char **agent_tool_dispatch_extract_parallel_scope_paths(
     const char *eff_mode = mode[0] ? mode : "replace";
     if (strcmp(tool_name, "patch") == 0 && strcmp(eff_mode, "patch") == 0) {
         int tn = 0;
-        char **targets = extract_file_mutation_targets(tool_name,
-                            path[0] ? path : NULL, mode[0] ? mode : NULL,
-                            patch[0] ? patch : NULL, &tn);
+        char **targets = extract_file_mutation_targets(tool_name, args_json,
+                                                       (size_t *)&tn);
         for (int i = 0; i < tn && nraw < 128; i++) raw_paths[nraw++] = targets[i];
-        free(targets);
+        free_mutation_targets(targets, (size_t)tn);
     } else {
         if (path[0]) {
             raw_paths[nraw++] = strdup(path);
@@ -295,4 +246,228 @@ char **agent_tool_dispatch_extract_parallel_scope_paths(
     }
     *out_n = n;
     return scoped;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* The following 16 functions are NOT re-implemented here: the faithful C port
+ * of agent/tool_dispatch_helpers.py lives in lib/libtooldispatch/
+ * (tool_dispatch_helpers.c). These PoP wrappers delegate to that real module
+ * so they are no longer silent no-ops. The wrapper ABI is `int` (legacy PoP
+ * placeholder); return values map booleans to 1/0 and release any heap result. */
+
+/* PoP: agent_tool_dispatch_helpers_u_is_destructive_command @ agent/tool_dispatch_helpers.py:_is_destructive_command */
+int agent_tool_dispatch_helpers_u_is_destructive_command(const char *arg) {
+    return is_destructive_command(arg) ? 1 : 0;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_is_mcp_tool_parallel_safe @ agent/tool_dispatch_helpers.py:_is_mcp_tool_parallel_safe */
+int agent_tool_dispatch_helpers_u_is_mcp_tool_parallel_safe(const char *arg) {
+    return is_mcp_tool_parallel_safe(arg) ? 1 : 0;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_plan_tool_batch_segments @ agent/tool_dispatch_helpers.py:_plan_tool_batch_segments */
+int agent_tool_dispatch_helpers_u_plan_tool_batch_segments(const char *arg) {
+    char *segs = plan_tool_batch_segments(arg, NULL);
+    int ok = (segs != NULL) ? 1 : 0;
+    free(segs);
+    return ok;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_should_parallelize_tool_batch @ agent/tool_dispatch_helpers.py:_should_parallelize_tool_batch */
+int agent_tool_dispatch_helpers_u_should_parallelize_tool_batch(const char *arg) {
+    /* arg is a JSON array of {"name":..,"arguments":..}; reuse the segment planner. */
+    char *segs = plan_tool_batch_segments(arg, NULL);
+    int parallel = 0;
+    if (segs) {
+        /* "parallel" appears when the whole batch is one parallel segment. */
+        parallel = (strstr(segs, "\"parallel\"") != NULL) ? 1 : 0;
+        free(segs);
+    }
+    return parallel;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_extract_parallel_scope_path @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_path */
+int agent_tool_dispatch_helpers_u_extract_parallel_scope_path(const char *arg) {
+    /* arg is a JSON {"name":..,"arguments":..} object; decompose it. */
+    char *jerr = NULL;
+    json_t *obj = json_parse(arg ? arg : "{}", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!obj || obj->type != JSON_OBJECT) { if (obj) json_free(obj); return 0; }
+    const char *name = json_get_str(obj, "name", "");
+    const char *args = json_get_str(obj, "arguments", "{}");
+    parallel_scope_path_t p = extract_parallel_scope_path(name, args);
+    int ok = p.ok ? 1 : 0;
+    free_parallel_scope_path(&p);
+    json_free(obj);
+    return ok;
+}
+
+/* PoP: extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
+/* Wrapper exposing the lib's extract_parallel_scope_paths (returns a JSON
+ * array of canonical scope-path strings for a path-scoped tool call). */
+char *agent_tool_dispatch_helpers_u_extract_parallel_scope_paths(
+    const char *tool_name, const char *args_json)
+{
+    size_t n = 0;
+    char **paths = extract_parallel_scope_paths(tool_name, args_json, &n);
+    json_t *arr = json_array();
+    for (size_t i = 0; i < n; i++)
+        json_append(arr, json_string(paths[i] ? paths[i] : ""));
+    char *out = json_serialize(arr);
+    json_free(arr);
+    free_scope_paths(paths, n);
+    return out ? out : strdup("[]");
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_paths_overlap @ agent/tool_dispatch_helpers.py:_paths_overlap */
+int agent_tool_dispatch_helpers_u_paths_overlap(const char *arg) {
+    /* arg is a JSON [left, right] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *l = json_get(arr, 0), *r = json_get(arr, 1);
+    int ov = 0;
+    if (l && r && l->type == JSON_STRING && r->type == JSON_STRING)
+        ov = paths_overlap(l->str_val, r->str_val) ? 1 : 0;
+    json_free(arr);
+    return ov;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_is_multimodal_tool_result @ agent/tool_dispatch_helpers.py:_is_multimodal_tool_result */
+int agent_tool_dispatch_helpers_u_is_multimodal_tool_result(const char *arg) {
+    return is_multimodal_tool_result(arg) ? 1 : 0;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_multimodal_text_summary @ agent/tool_dispatch_helpers.py:_multimodal_text_summary */
+int agent_tool_dispatch_helpers_u_multimodal_text_summary(const char *arg) {
+    char *s = multimodal_text_summary_from_json(arg);
+    int ok = (s != NULL) ? 1 : 0;
+    free(s);
+    return ok;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_append_subdir_hint_to_multimodal @ agent/tool_dispatch_helpers.py:_append_subdir_hint_to_multimodal */
+int agent_tool_dispatch_helpers_u_append_subdir_hint_to_multimodal(const char *arg) {
+    /* arg is a JSON [result_json, hint] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int ok = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        char *res = append_subdir_hint_to_multimodal(a->str_val, b->str_val);
+        ok = (res != NULL) ? 1 : 0;
+        free(res);
+    }
+    json_free(arr);
+    return ok;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_extract_file_mutation_targets @ agent/tool_dispatch_helpers.py:_extract_file_mutation_targets */
+int agent_tool_dispatch_helpers_u_extract_file_mutation_targets(const char *arg) {
+    /* arg is a JSON [tool_name, args_json] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int n = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        size_t cnt = 0;
+        char **t = extract_file_mutation_targets(a->str_val, b->str_val, &cnt);
+        n = (int)cnt;
+        free_mutation_targets(t, cnt);
+    }
+    json_free(arr);
+    return n;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_extract_error_preview @ agent/tool_dispatch_helpers.py:_extract_error_preview */
+int agent_tool_dispatch_helpers_u_extract_error_preview(const char *arg) {
+    /* arg is a JSON [result, max_len] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0);
+    json_t *m = json_get(arr, 1);
+    int len = 180;
+    if (m && m->type == JSON_NUMBER) len = (int)m->num_val;
+    int ok = 0;
+    if (a && a->type == JSON_STRING) {
+        char *e = extract_error_preview(a->str_val, (size_t)len);
+        ok = (e != NULL) ? 1 : 0;
+        free(e);
+    }
+    json_free(arr);
+    return ok;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_trajectory_normalize_msg @ agent/tool_dispatch_helpers.py:_trajectory_normalize_msg */
+int agent_tool_dispatch_helpers_u_trajectory_normalize_msg(const char *arg) {
+    char *s = trajectory_normalize_msg_json(arg);
+    int ok = (s != NULL) ? 1 : 0;
+    free(s);
+    return ok;
+}
+
+/* PoP: agent_tool_dispatch_helpers_make_tool_result_message @ agent/tool_dispatch_helpers.py:make_tool_result_message */
+int agent_tool_dispatch_helpers_make_tool_result_message(const char *arg) {
+    /* arg is a JSON [name, content, tool_call_id] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+    const char *name = json_get_str(arr, "name", "");
+    const char *content = json_get_str(arr, "content", "");
+    const char *tcid = json_get_str(arr, "tool_call_id", "");
+    char *msg = make_tool_result_message_json(name, content, tcid);
+    int ok = (msg != NULL) ? 1 : 0;
+    free(msg);
+    json_free(arr);
+    return ok;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_is_untrusted_tool @ agent/tool_dispatch_helpers.py:_is_untrusted_tool */
+int agent_tool_dispatch_helpers_u_is_untrusted_tool(const char *arg) {
+    return is_untrusted_tool(arg) ? 1 : 0;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_tool_output_risk_metadata @ agent/tool_dispatch_helpers.py:_tool_output_risk_metadata */
+int agent_tool_dispatch_helpers_u_tool_output_risk_metadata(const char *arg) {
+    /* arg is a JSON [tool_name, content] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int ok = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        char *meta = tool_output_risk_metadata(a->str_val, b->str_val);
+        ok = (meta != NULL) ? 1 : 0;
+        free(meta);
+    }
+    json_free(arr);
+    return ok;
+}
+
+/* PoP: agent_tool_dispatch_helpers_u_maybe_wrap_untrusted @ agent/tool_dispatch_helpers.py:_maybe_wrap_untrusted */
+int agent_tool_dispatch_helpers_u_maybe_wrap_untrusted(const char *arg) {
+    /* arg is a JSON [name, content] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int ok = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        char *w = maybe_wrap_untrusted(a->str_val, b->str_val);
+        ok = (w != NULL) ? 1 : 0;
+        free(w);
+    }
+    json_free(arr);
+    return ok;
 }

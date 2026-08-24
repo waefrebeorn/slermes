@@ -1097,3 +1097,27 @@ int clipboard_write_clipboard_text(const char *arg) {
     printf("1\n");
     return 1;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_partial_compress_extract_compress_flags @ hermes_cli/partial_compress.py:extract_compress_flags */
+int hermes_cli_partial_compress_extract_compress_flags(const char *arg) {
+    /* Python: strip /compress flags. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t0\t0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t0\t0\n"); return 0; }
+    printf("%s\t1\t0\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_partial_compress_summarize_compress_preview @ hermes_cli/partial_compress.py:summarize_compress_preview */
+int hermes_cli_partial_compress_summarize_compress_preview(const char *arg) {
+    /* Python: preview report. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}

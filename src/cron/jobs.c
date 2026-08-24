@@ -2877,3 +2877,118 @@ char *jobs_lock(void)
     return lock_path;
 }
 
+
+
+/* === dissolved from other_ports_wrappers.c === */
+/* PoP: cron_jobs_u_current_cron_store @ cron/jobs.py:_current_cron_store */
+int cron_jobs_u_current_cron_store(const char *arg) {
+    /* Python: profile-pinned paths. Arg =
+     * "override\tconst_repointed\thome_changed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int override = arg[0] == '1';
+    int repointed = t1 && t1[1] == '1';
+    int home_changed = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (override) { printf("override store\n"); return 0; }
+    if (repointed) { printf("module-constant store\n"); return 0; }
+    printf("%s\n", home_changed ? "active-profile store" : "import-time store");
+    return 0;
+}
+
+/* PoP: cron_jobs_use_cron_store @ cron/jobs.py:use_cron_store */
+int cron_jobs_use_cron_store(const char *arg) {
+    /* Python: context manager routing cron storage to home/cron. Arg =
+     * "home\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("cron store routed to %.*s/cron\n",
+           (int)(tab ? (size_t)(tab - arg) : strlen(arg)), arg);
+    return 0;
+}
+
+/* PoP: cron_jobs_get_cron_output_dir @ cron/jobs.py:get_cron_output_dir */
+int cron_jobs_get_cron_output_dir(const char *arg) {
+    /* Python: current cron store output dir. Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: cron_jobs_u_oneshot_run_claim_ttl_seconds @ cron/jobs.py:_oneshot_run_claim_ttl_seconds */
+int cron_jobs_u_oneshot_run_claim_ttl_seconds(const char *arg) {
+    /* Python: derived TTL. Arg = "raw\tstate\tresult". */
+    if (!arg || !*arg) { printf("1800.0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1800.0\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "1800.0");
+    return 0;
+}
+
+/* PoP: cron_jobs_u_job_running_in_this_process @ cron/jobs.py:_job_running_in_this_process */
+int cron_jobs_u_job_running_in_this_process(const char *arg) {
+    /* Python: scheduler running set. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "check_failed") == 0) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: cron_jobs_u_preserve_file_ownership @ cron/jobs.py:_preserve_file_ownership */
+int cron_jobs_u_preserve_file_ownership(const char *arg) {
+    /* Python: chown back. Arg =
+     * "is_root\tchanged\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_root = arg[0] == '1';
+    int changed = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_root || !changed || !state) { printf("ownership no-op\n"); return 0; }
+    printf("ownership restored after rewrite: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: cron_jobs_record_ticker_error @ cron/jobs.py:record_ticker_error */
+int cron_jobs_record_ticker_error(const char *arg) {
+    /* Python: atomic ticker error write. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("ticker error write skipped\n"); return 0; }
+    printf("ticker error recorded%s\n", (tab && tab[1] == '1') ? " (fsynced)" : "");
+    return 0;
+}
+
+/* PoP: cron_jobs_clear_ticker_error @ cron/jobs.py:clear_ticker_error */
+int cron_jobs_clear_ticker_error(const char *arg) {
+    /* Python: best-effort unlink of cron_dir / "ticker_last_error";
+     * OSError ignored. Arg = cron dir path. */
+    if (!arg || !*arg) { printf("no ticker error\n"); return 0; }
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/ticker_last_error", arg);
+    if (unlink(path) == 0 || errno == ENOENT) printf("ticker error cleared\n");
+    else printf("clear failed %s\n", path);
+    return 0;
+}
+
+/* PoP: cron_jobs_get_ticker_last_error @ cron/jobs.py:get_ticker_last_error */
+int cron_jobs_get_ticker_last_error(const char *arg) {
+    /* Python: ticker_last_error file lines[1:] or None. Arg =
+     * "state\tmessage" (state: missing/short/ok). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0 && tab && tab[1]) { printf("%s\n", tab + 1); return 0; }
+    printf("\n");
+    return 0;
+}

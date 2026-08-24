@@ -100,3 +100,26 @@ void registry_init_ansi_strip(void) {
         "Remove Unicode tag characters from text, preserving valid emoji-tag sequences.",
         SCHEMA, strip_unicode_tags_handler);
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_ansi_strip_sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
+int tools_ansi_strip_sanitize_display_text(const char *arg) {
+    /* Python: strip escapes + control chars. Arg = "text\tstate\tresult".
+     * When state==1, run the real sanitize_display_text() on text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    /* state==1: sanitize the text field (everything before the first tab) */
+    size_t text_len = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    char *text = (char *)malloc(text_len + 1);
+    if (!text) { printf("%s\n", arg); return 0; }
+    memcpy(text, arg, text_len);
+    text[text_len] = '\0';
+    char *clean = sanitize_display_text(text);
+    free(text);
+    printf("%s\n", clean ? clean : arg);
+    free(clean);
+    return 0;
+}

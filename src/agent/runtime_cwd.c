@@ -24,3 +24,25 @@ void set_runtime_cwd(const char *cwd) {
 char *format_cwd_in_prompt(void) {
     return build_environment_hints();
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_runtime_cwd_u_is_install_tree @ agent/runtime_cwd.py:_is_install_tree */
+int agent_runtime_cwd_u_is_install_tree(const char *arg) {
+    /* Python: p == root or under root. Arg = "path\troot". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    char p[1024], r[1024];
+    size_t plen = (size_t)(tab - arg);
+    if (plen >= sizeof(p)) plen = sizeof(p) - 1;
+    memcpy(p, arg, plen); p[plen] = '\0';
+    snprintf(r, sizeof(r), "%s", tab + 1);
+    char rp[1100], rr[1100];
+    if (!realpath(p, rp) || !realpath(r, rr)) { printf("0\n"); return 0; }
+    if (strcmp(rp, rr) == 0) { printf("1\n"); return 0; }
+    size_t rlen = strlen(rr);
+    if (strncmp(rp, rr, rlen) == 0 && rp[rlen] == '/') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}

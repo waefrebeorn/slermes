@@ -108,3 +108,17 @@ char *handle_reply_comment(const char *args)
              (long)time(NULL));
     return result;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_feishu_drive_tool_u_do_request @ tools/feishu_drive_tool.py:_do_request */
+int tools_feishu_drive_tool_u_do_request(const char *arg) {
+    /* Python: lark request. Arg = "state\tcode\tresult". */
+    if (!arg || !*arg) { printf("0\t\t{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\tmsg\t{}\n"); return 0; }
+    printf("0\t\t%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}

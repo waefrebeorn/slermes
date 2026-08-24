@@ -514,3 +514,18 @@ char *cli_hermes_cli_memory_setup__curses_select(
 /* Port of Python hermes_cli/memory_setup.py:_print_cancelled_setup */
 
 /* Port of Python hermes_cli/memory_setup.py:_clear_interactive_transition */
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_memory_setup_u_env_line_safe @ hermes_cli/memory_setup.py:_env_line_safe */
+int hermes_cli_memory_setup_u_env_line_safe(const char *arg) {
+    /* Python: strip NUL + line separators. Arg = value. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        char c = *p;
+        if (c != '\x00' && c != '\n' && c != '\r' && c != '\v' && c != '\f') putchar(c);
+        p++;
+    }
+    printf("\n");
+    return 0;
+}

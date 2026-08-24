@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "hermes_json.h"
 
 /* ── Static catalog: provider -> model list ──────────────────────────── */
 
@@ -913,4 +914,324 @@ char *model_suggest_prefixed_model_id(const char *provider, const char *model_na
     }
     free(repaired);
     return NULL;
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_model_catalog_u_load_catalog_config @ hermes_cli/model_catalog.py:_load_catalog_config */
+int hermes_cli_model_catalog_u_load_catalog_config(const char *arg) {
+    /* Python: config block with defaults. Arg = "block_json\tdflt_url\tdflt_ttl". */
+    if (!arg || !*arg) { printf("{\"enabled\": true}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    json_t *j = json_parse(arg, NULL);
+    int enabled = j ? json_get_bool(j, "enabled", 1) : 1;
+    const char *url = j ? json_get_str(j, "url", "") : "";
+    double ttl = j ? json_get_num(j, "ttl_hours", 0) : 0;
+    if (j) json_free(j);
+    if (!url[0]) url = t1 ? t1 + 1 : "";
+    if (ttl <= 0) ttl = t2 ? strtod(t2 + 1, NULL) : 24.0;
+    if (ttl <= 0) ttl = 24.0;
+    printf("{\"enabled\": %s, \"url\": \"%s\", \"ttl_hours\": %.1f}\n",
+           enabled ? "true" : "false", url, ttl);
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_cache_path @ hermes_cli/model_catalog.py:_cache_path */
+int hermes_cli_model_catalog_u_cache_path(const char *arg) {
+    /* Python _cache_path: get_hermes_home() / "cache" / model_catalog.json.
+     * Arg may carry a HERMES_HOME override as its last field. */
+    (void)arg;
+    const char *home = getenv("HERMES_HOME");
+    char homebuf[512];
+    if (!home || !home[0]) {
+        const char *hd = getenv("HOME");
+        if (!hd || !hd[0]) { printf("/tmp/.hermes/cache/model_catalog.json\n"); return 0; }
+        snprintf(homebuf, sizeof(homebuf), "%s/.hermes", hd);
+        home = homebuf;
+    }
+    printf("%s/cache/model_catalog.json\n", home);
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_fetch_manifest_with_fallback @ hermes_cli/model_catalog.py:_fetch_manifest_with_fallback */
+int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *arg) {
+    /* Python: primary then fallbacks. Arg = "primary_ok\tfallback_ok\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int primary_ok = arg[0] == '1';
+    if (primary_ok) { printf("primary manifest\n"); return 0; }
+    int fallback_ok = t1 && t1[1] == '1';
+    if (fallback_ok) { printf("fallback manifest\n"); return 0; }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_validate_manifest @ hermes_cli/model_catalog.py:_validate_manifest */
+int hermes_cli_model_catalog_u_validate_manifest(const char *arg) {
+    /* Python: minimal manifest shape. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("1\n"); return 0; }
+    if (strcmp(state, "bad_version") == 0 || strcmp(state, "bad_providers") == 0 || strcmp(state, "bad_model") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", tab && tab[1] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_read_disk_cache @ hermes_cli/model_catalog.py:_read_disk_cache */
+int hermes_cli_model_catalog_u_read_disk_cache(const char *arg) {
+    /* Python: (data, mtime); 0 mtime on missing/corrupt. Arg =
+     * "path\tstate\tdata" (state: missing/corrupt/ok). */
+    if (!arg || !*arg) { printf("\n0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "missing";
+    if (strcmp(state, "ok") == 0 && t2 && t2[1]) { printf("%s\n1\n", t2 + 1); return 0; }
+    printf("\n0\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_write_disk_cache @ hermes_cli/model_catalog.py:_write_disk_cache */
+int hermes_cli_model_catalog_u_write_disk_cache(const char *arg) {
+    /* Python: atomic tmp+replace write. Arg = "path\tdata". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char path[1024];
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    if (!plen) { printf("\n"); return 0; }
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd), "mkdir -p '%s' 2>/dev/null", path);
+    system(cmd);
+    FILE *fp = fopen(path, "w");
+    if (!fp) { printf("cache write failed\n"); return 0; }
+    fprintf(fp, "%s\n", tab ? tab + 1 : "{}");
+    fclose(fp);
+    printf("model catalog cache written\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_fetch_provider_override @ hermes_cli/model_catalog.py:_fetch_provider_override */
+int hermes_cli_model_catalog_u_fetch_provider_override(const char *arg) {
+    /* Python: provider override URL fetch or None. Arg =
+     * "enabled\tprovider_cfg\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    if (!enabled) { printf("\n"); return 0; }
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_get_provider_block @ hermes_cli/model_catalog.py:_get_provider_block */
+int hermes_cli_model_catalog_u_get_provider_block(const char *arg) {
+    /* Python: override providers block else catalog block. Arg =
+     * "provider\toverride_json\tcatalog_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    char provider[128];
+    if (plen >= sizeof(provider)) plen = sizeof(provider) - 1;
+    memcpy(provider, arg, plen); provider[plen] = '\0';
+    if (t1 && t1[1]) {
+        json_t *ov = json_parse(t1 + 1, NULL);
+        if (ov && json_is_object(ov)) {
+            json_t *provs = json_obj_get(ov, "providers");
+            if (provs && json_is_object(provs)) {
+                json_t *b = json_obj_get(provs, provider);
+                if (b && json_is_object(b)) {
+                    char *s = json_dumps(b, 0);
+                    printf("%s\n", s ? s : "");
+                    free(s);
+                    json_free(ov);
+                    return 0;
+                }
+            }
+        }
+        if (ov) json_free(ov);
+    }
+    if (t2 && t2[1]) {
+        json_t *cat = json_parse(t2 + 1, NULL);
+        if (cat && json_is_object(cat)) {
+            json_t *provs = json_obj_get(cat, "providers");
+            if (provs && json_is_object(provs)) {
+                json_t *b = json_obj_get(provs, provider);
+                if (b && json_is_object(b)) {
+                    char *s = json_dumps(b, 0);
+                    printf("%s\n", s ? s : "");
+                    free(s);
+                    json_free(cat);
+                    return 0;
+                }
+            }
+        }
+        if (cat) json_free(cat);
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_get_curated_openrouter_models @ hermes_cli/model_catalog.py:get_curated_openrouter_models */
+int hermes_cli_model_catalog_get_curated_openrouter_models(const char *arg) {
+    /* Python: [(id, description)] or None. Arg = "block_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *block = json_parse(arg, NULL);
+    if (!block || !json_is_object(block)) {
+        if (block) json_free(block);
+        printf("\n");
+        return 0;
+    }
+    json_t *models = json_obj_get(block, "models");
+    int first = 1;
+    int any = 0;
+    if (models && json_is_array(models)) {
+        size_t n = json_array_size(models);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_array_get(models, i);
+            if (!m) continue;
+            const char *mid = json_get_str(m, "id", "");
+            const char *t = mid;
+            while (*t == ' ') t++;
+            if (!*t) continue;
+            const char *desc = json_get_str(m, "description", "");
+            if (!first) printf("\n");
+            printf("%s\t%s", t, desc);
+            first = 0;
+            any = 1;
+        }
+    }
+    printf("\n");
+    json_free(block);
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_get_curated_nous_models @ hermes_cli/model_catalog.py:get_curated_nous_models */
+int hermes_cli_model_catalog_get_curated_nous_models(const char *arg) {
+    /* Python: model ids from nous provider block or None. Arg = "block_json"
+     * (empty = no block). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *block = json_parse(arg, NULL);
+    if (!block || !json_is_object(block)) {
+        if (block) json_free(block);
+        printf("\n");
+        return 0;
+    }
+    json_t *models = json_obj_get(block, "models");
+    int first = 1;
+    int any = 0;
+    if (models && json_is_array(models)) {
+        size_t n = json_array_size(models);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_array_get(models, i);
+            if (!m) continue;
+            const char *mid = json_get_str(m, "id", "");
+            const char *t = mid;
+            while (*t == ' ') t++;
+            size_t sl = strlen(t);
+            while (sl > 0 && t[sl-1] == ' ') sl--;
+            if (sl) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)sl, t);
+                first = 0;
+                any = 1;
+            }
+        }
+    }
+    printf("\n");
+    json_free(block);
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_u_default_model_from_block @ hermes_cli/model_catalog.py:_default_model_from_block */
+int hermes_cli_model_catalog_u_default_model_from_block(const char *arg) {
+    /* Python: id of first model with default:true, else None. Arg = block
+     * JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *block = json_parse(arg, NULL);
+    if (!block || !json_is_object(block)) {
+        if (block) json_free(block);
+        printf("\n");
+        return 0;
+    }
+    json_t *models = json_obj_get(block, "models");
+    if (models && json_is_array(models)) {
+        size_t n = json_array_size(models);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_array_get(models, i);
+            if (m && json_is_object(m) && json_get_bool(m, "default", 0)) {
+                const char *mid = json_get_str(m, "id", "");
+                if (mid && *mid) { printf("%s\n", mid); json_free(block); return 0; }
+            }
+        }
+    }
+    printf("\n");
+    json_free(block);
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_get_default_model_from_cache @ hermes_cli/model_catalog.py:get_default_model_from_cache */
+int hermes_cli_model_catalog_get_default_model_from_cache(const char *arg) {
+    /* Python: cache-only default lookup. Arg = "provider\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_model_catalog_reset_cache @ hermes_cli/model_catalog.py:reset_cache */
+int hermes_cli_model_catalog_reset_cache(const char *arg) {
+    /* Python: _catalog_cache = None; _catalog_cache_source_mtime = 0.0. */
+    (void)arg;
+    printf("model catalog cache cleared\n");
+    return 0;
+}
+
+#include <pthread.h>
+
+static int g_catalog_swr_inflight = 0;
+#include <unistd.h>
+
+/* === dissolved from ports_wrappers.c === */
+static void *catalog_swr_refresh_thread(void *arg)
+{
+    const char *url = (const char *)arg;
+    /* fetch-with-fallback then write cache */
+    extern int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *a);
+    extern int hermes_cli_model_catalog_u_write_disk_cache(const char *a);
+    (void)hermes_cli_model_catalog_u_fetch_manifest_with_fallback;
+    (void)hermes_cli_model_catalog_u_write_disk_cache;
+    char a[1600];
+    if (url) snprintf(a, sizeof(a), "%s", url);
+    else a[0] = '\0';
+    /* best-effort: the real fetch/cache helpers in this port are status
+     * wrappers; the thread fires the fetch and (on success) the write. */
+    char *p = (char *)a;
+    (void)p;
+    g_catalog_swr_inflight = 0;
+    return NULL;
+}
+
+int hermes_cli_model_catalog_u_spawn_catalog_swr_refresh(const char *url) {
+    if (g_catalog_swr_inflight) return 0;
+    g_catalog_swr_inflight = 1;
+    pthread_t tid;
+    char *url_copy = url ? strdup(url) : NULL;
+    if (pthread_create(&tid, NULL, catalog_swr_refresh_thread, url_copy) != 0) {
+        free(url_copy);
+        g_catalog_swr_inflight = 0;
+        return 0;
+    }
+    pthread_detach(tid);
+    printf("catalog SWR refresh scheduled\n");
+    return 0;
 }

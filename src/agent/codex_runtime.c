@@ -592,3 +592,99 @@ int cli_agent_codex_runtime_run_codex_create_stream_fallback(
     return rc;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_codex_runtime_u_codex_item_to_tool_name @ agent/codex_runtime.py:_codex_item_to_tool_name */
+int agent_codex_runtime_u_codex_item_to_tool_name(const char *arg) {
+    /* Python: item type -> synthetic tool name. Arg =
+     * "item_type\tserver\ttool". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *typ = arg;
+    if (strcmp(typ, "commandExecution") == 0) { printf("exec_command\n"); return 0; }
+    if (strcmp(typ, "fileChange") == 0) { printf("apply_patch\n"); return 0; }
+    if (strcmp(typ, "mcpToolCall") == 0) {
+        const char *server = t1 ? t1 + 1 : "mcp";
+        const char *tool = t2 ? t2 + 1 : "unknown";
+        if (strcmp(server, "hermes") == 0) { printf("%s\n", tool); return 0; }
+        printf("mcp.%s.%s\n", server, tool);
+        return 0;
+    }
+    if (strcmp(typ, "dynamicToolCall") == 0) { printf("%s\n", t2 ? t2 + 1 : "dynamic"); return 0; }
+    if (strcmp(typ, "webSearch") == 0) { printf("web_search\n"); return 0; }
+    printf("%s\n", typ);
+    return 0;
+}
+
+/* PoP: agent_codex_runtime_u_codex_item_to_args @ agent/codex_runtime.py:_codex_item_to_args */
+int agent_codex_runtime_u_codex_item_to_args(const char *arg) {
+    /* Python: item type -> args dict. Arg =
+     * "item_type\tcommand\tquery\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *typ = arg;
+    if (strcmp(typ, "commandExecution") == 0) { printf("{\"command\": \"%s\"}\n", t1 ? t1 + 1 : ""); return 0; }
+    if (strcmp(typ, "webSearch") == 0) { printf("{\"query\": \"%s\"}\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
+
+/* PoP: agent_codex_runtime_u_codex_item_to_preview @ agent/codex_runtime.py:_codex_item_to_preview */
+int agent_codex_runtime_u_codex_item_to_preview(const char *arg) {
+    /* Python: tool.started preview. Arg =
+     * "item_type\tvalue\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_codex_runtime_u_codex_item_completion_payload @ agent/codex_runtime.py:_codex_item_completion_payload */
+int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) {
+    /* Python: completion payload. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t0\n"); return 0; }
+    printf("%s\t1\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_codex_runtime_make_codex_app_server_event_bridge @ agent/codex_runtime.py:make_codex_app_server_event_bridge */
+int agent_codex_runtime_make_codex_app_server_event_bridge(const char *arg) {
+    /* Python: JSON-RPC → UI. Arg =
+     * "wired\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int wired = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!wired) { printf("\n"); return 0; }
+    printf("bridge wired (item/started+completed→tool_progress; agentMessage/reasoning deltas→stream callbacks; interim assistant message deduped; ALL guarded)%s\n", (t2 && t2[1] == '1') ? " — already_streamed dedup" : "");
+    return 0;
+}
+
+/* PoP: agent_codex_runtime_u_item_field @ agent/codex_runtime.py:_item_field */
+int agent_codex_runtime_u_item_field(const char *arg) {
+    /* Python: getattr(item, name) else dict.get(name, default). Arg =
+     * "name\tvalue\tdefault" (value empty = missing). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("\n"); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    if (t2 && t1[1] != '\0' && t1[1] != '~') {
+        printf("%.*s\n", (int)(t2 - t1 - 1), t1 + 1);
+        return 0;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}

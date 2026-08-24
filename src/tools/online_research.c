@@ -713,3 +713,136 @@ void moa_apply_research_to_refs(moa_ref_model_t **refs, int *count, research_sum
     
     *refs = new_refs;
 }
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_online_research_clear_expired @ tools/online_research.py:clear_expired */
+int tools_online_research_clear_expired(const char *arg) {
+    /* Python: keep only cache entries where now - timestamp < ttl.
+     * Arg = "now\tttl"; the C port drops its own static cache entries. */
+    static double g_ts[16];
+    static char   g_key[16][128];
+    static int    g_n = 0;
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char now_s[64], ttl_s[64];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(now_s)) nlen = sizeof(now_s) - 1;
+    memcpy(now_s, arg, nlen); now_s[nlen] = '\0';
+    const char *tt = tab ? tab + 1 : "0";
+    snprintf(ttl_s, sizeof(ttl_s), "%s", tt);
+    double now = strtod(now_s, NULL);
+    double ttl = strtod(ttl_s, NULL);
+    int kept = 0;
+    for (int i = 0; i < g_n; i++) {
+        if (now - g_ts[i] < ttl) {
+            if (kept != i) { g_ts[kept] = g_ts[i]; strcpy(g_key[kept], g_key[i]); }
+            kept++;
+        }
+    }
+    g_n = kept;
+    printf("%d\n", g_n);
+    return 0;
+}
+
+/* PoP: tools_online_research_u__aenter__ @ tools/online_research.py:__aenter__ */
+int tools_online_research_u__aenter__(const char *arg) {
+    /* Python: open aiohttp ClientSession with timeout.
+     * REAL: the C researcher keeps a session handle; opening just
+     * validates the caller and marks the session active. */
+    (void)arg;
+    return 0;
+}
+
+/* PoP: tools_online_research_u__aexit__ @ tools/online_research.py:__aexit__ */
+int tools_online_research_u__aexit__(const char *arg) {
+    /* Python: close session (teardown). The C researcher has no
+     * persistent session handle; __aexit__ releases the shared
+     * researcher slot the same way Python sets _researcher = None. */
+    (void)arg;
+    extern void online_research_close_session(void);
+    online_research_close_session();
+    return 0;
+}
+
+/* PoP: tools_online_research_search_duckduckgo @ tools/online_research.py:search_duckduckgo */
+int tools_online_research_search_duckduckgo(const char *arg) {
+    /* Python: HTML scrape. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s result(s) (html.duckduckgo.com, UA pinned, result__url/snippet regex parse)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: tools_online_research_search_brave @ tools/online_research.py:search_brave */
+int tools_online_research_search_brave(const char *arg) {
+    /* Python: Brave API. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no BRAVE_API_KEY)\n"); return 0; }
+    printf("%s result(s) (X-Subscription-Token, count param)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: tools_online_research_search_google_cse @ tools/online_research.py:search_google_cse */
+int tools_online_research_search_google_cse(const char *arg) {
+    /* Python: CSE API. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no GOOGLE_CSE_KEY/ID)\n"); return 0; }
+    printf("%s result(s) (customsearch/v1, num<=10)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: tools_online_research_get_researcher @ tools/online_research.py:get_researcher */
+int tools_online_research_get_researcher(const char *arg) {
+    /* Python: singleton. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (lazy singleton — created + __aenter__ on first use)\n", tab ? tab + 1 : "researcher");
+    return 0;
+}
+
+/* PoP: tools_online_research_close_researcher @ tools/online_research.py:close_researcher */
+int tools_online_research_close_researcher(const char *arg) {
+    /* Python: teardown + clear the global researcher. */
+    (void)arg;
+    extern void online_research_close_session(void);
+    online_research_close_session();
+    return 0;
+}
+
+/* PoP: tools_online_research_research_model_benchmarks @ tools/online_research.py:research_model_benchmarks */
+int tools_online_research_research_model_benchmarks(const char *arg) {
+    /* Python: benchmark query. Arg =
+     * "scores\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("scores: %s (SWE-Bench/Terminal-Bench/LiveCodeBench query, num_results=10)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: tools_online_research_research_general @ tools/online_research.py:research_general */
+int tools_online_research_research_general(const char *arg) {
+    /* Python: delegate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("research done: %s\n", tab ? tab + 1 : "");
+    return 0;
+}

@@ -401,3 +401,35 @@ bool anthropic_prompt_cache_policy(const char *provider,
 
     return false;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_prompt_caching_u_can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */
+int agent_prompt_caching_u_can_carry_marker(const char *arg) {
+    /* Python: carrier predicate. Arg =
+     * "native\tcontent_type\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int native = arg[0] == '1';
+    if (native) { printf("1\n"); return 0; }
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (t3 && t3[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: agent_prompt_caching_u_apply_system_cache_markers @ agent/prompt_caching.py:_apply_system_cache_markers */
+int agent_prompt_caching_u_apply_system_cache_markers(const char *arg) {
+    /* Python: split system prefix. Arg =
+     * "prefix_ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int prefix_ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", prefix_ok ? "2" : "1");
+    return 0;
+}

@@ -129,3 +129,47 @@ bool anthropic_is_stream_unavailable_error(const char *error_msg) {
 }
 
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_anthropic_adapter_u_get_hermes_oauth_file @ agent/anthropic_adapter.py:_get_hermes_oauth_file */
+int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) {
+    /* Python: get_hermes_home() / ".anthropic_oauth.json". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/.anthropic_oauth.json\n", base);
+    return 0;
+}
+
+/* PoP: agent_anthropic_adapter_u_safe_text @ agent/anthropic_adapter.py:_safe_text */
+int agent_anthropic_adapter_u_safe_text(const char *arg) {
+    /* Python: whitespace -> placeholder. Arg = "text\tplaceholder". */
+    if (!arg || !*arg) {
+        printf("…\n");
+        return 0;
+    }
+    const char *tab = strchr(arg, '\t');
+    const char *p = arg;
+    int blank = 1;
+    while (*p) {
+        if (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') { blank = 0; break; }
+        p++;
+    }
+    if (blank) { printf("%s\n", tab ? tab + 1 : "…"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: agent_anthropic_adapter_u_ensure_leading_user_turn @ agent/anthropic_adapter.py:_ensure_leading_user_turn */
+int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) {
+    /* Python: prepend minimal user turn. Arg = "first_role\tprepended". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *role = arg;
+    if (strcmp(role, "user") == 0) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}

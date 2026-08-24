@@ -89,3 +89,15 @@ char *browser_camofox_state_get_camofox_identity(const char *task_id)
     free(session_digest);
     return result;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_browser_camofox_state_get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_state_dir */
+int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) {
+    /* Python: get_hermes_home() / CAMOFOX_STATE_DIR_NAME / CAMOFOX_STATE_SUBDIR. */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/camofox/state\n", hh);
+    else printf("%s/.hermes/camofox/state\n", getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}

@@ -1504,3 +1504,15 @@ int in_insights_command(int argc, char **argv) {
     return 0;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_insights_u_get_model_usage @ agent/insights.py:_get_model_usage */
+int agent_insights_u_get_model_usage(const char *arg) {
+    /* Python: per-model usage rows or []. Arg = "rows_json\ttable_missing". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}

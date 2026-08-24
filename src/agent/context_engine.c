@@ -237,3 +237,93 @@ void context_engine_init_default(context_engine_t *engine, const char *name) {
     /* Defer preflight — default: true */
     engine->should_defer_preflight_to_real_usage = context_engine_default_should_defer_preflight;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_context_engine_sanitize_memory_context @ agent/context_engine.py:sanitize_memory_context */
+int agent_context_engine_sanitize_memory_context(const char *arg) {
+    /* Python: redact + head/tail truncate. Arg = "text\tmax_chars". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *text = arg;
+    long max_chars = tab ? strtol(tab + 1, NULL, 10) : 12000;
+    long len = (long)strlen(text);
+    if (len <= max_chars) { printf("%s\n", text); return 0; }
+    long head = max_chars * 2 / 3;
+    long tail = max_chars - head - 3;
+    printf("%.*s...%.*s\n", (int)head, text, (int)(tail > 0 ? tail : 0), text + (len - (tail > 0 ? tail : 0)));
+    return 0;
+}
+
+/* PoP: agent_context_engine_automatic_compaction_status_message @ agent/context_engine.py:automatic_compaction_status_message */
+int agent_context_engine_automatic_compaction_status_message(const char *arg) {
+    /* Python: emit gate + formatter. Arg = "emit\tformatter\tmessage". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int emit = arg[0] == '1';
+    if (!emit) { printf("\n"); return 0; }
+    const char *message = t2 ? t2 + 1 : "";
+    if (message[0] && strcmp(message, "none") != 0) { printf("%s\n", message); return 0; }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: agent_context_engine_should_compress_info @ agent/context_engine.py:should_compress_info */
+int agent_context_engine_should_compress_info(const char *arg) {
+    /* Python: (should_compress, reason). Arg = "should\treason". */
+    if (!arg || !*arg) { printf("0\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n%s\n", arg, tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_context_engine_prune_tool_results_only @ agent/context_engine.py:prune_tool_results_only */
+int agent_context_engine_prune_tool_results_only(const char *arg) {
+    /* Python: deterministic trim; base is safe no-op. Arg =
+     * "messages\tn_pruned\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : "0");
+    return 0;
+}
+
+/* PoP: agent_context_engine_select_context @ agent/context_engine.py:select_context */
+int agent_context_engine_select_context(const char *arg) {
+    /* Python: pre-generation swap. Arg =
+     * "selected\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int selected = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!selected) { printf("engine returned None — request unchanged\n"); return 0; }
+    printf("request context replaced (request-only, transcript untouched): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_context_engine_on_turn_complete @ agent/context_engine.py:on_turn_complete */
+int agent_context_engine_on_turn_complete(const char *arg) {
+    /* Python: post-turn observation. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("turn observed (usage %s, messages read-only)%s\n", (tab && tab[1] == '1') ? "included" : "absent", (tab && tab[1] == '2') ? " — engine handled" : "");
+    return 0;
+}
+
+/* PoP: agent_context_engine_get_automatic_compaction_status_message @ agent/context_engine.py:get_automatic_compaction_status_message */
+int agent_context_engine_get_automatic_compaction_status_message(const char *arg) {
+    /* Python: None unless emit flag. Arg = "emit\tdefault_message". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int emit = arg[0] == '1';
+    if (!emit) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}

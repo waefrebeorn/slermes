@@ -497,3 +497,58 @@ char *web_extract_tool(const char *urls_json, const char *format, int char_limit
 }
 
 #endif /* SRC_TOOLS_PORT_WEB_TOOLS_C */
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_web_tools_u_web_extract_url @ tools/web_tools.py:_web_extract_url */
+int tools_web_tools_u_web_extract_url(const char *arg) {
+    /* Python: dict url/href or str strip; None otherwise. Arg = "json_or_raw". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    const char *v = NULL;
+    if (j && json_is_object(j)) {
+        v = json_get_str(j, "url", "");
+        if (!v[0]) v = json_get_str(j, "href", "");
+    } else if (j && json_is_string(j)) {
+        v = json_string_value(j);
+    } else {
+        v = arg;
+    }
+    if (j) json_free(j);
+    if (!v) { printf("\n"); return 0; }
+    while (*v == ' ') v++;
+    if (!*v) { printf("\n"); return 0; }
+    printf("%s\n", v);
+    return 0;
+}
+
+/* PoP: tools_web_tools_u_registered_web_provider @ tools/web_tools.py:_registered_web_provider */
+int tools_web_tools_u_registered_web_provider(const char *arg) {
+    /* Python: registry lookup or None. Arg = "backend\tfound\tprovider". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t1 && t1[1] == '1') { printf("%s\n", t2 ? t2 + 1 : arg); return 0; }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: tools_web_tools_u_registered_web_provider_available @ tools/web_tools.py:_registered_web_provider_available */
+int tools_web_tools_u_registered_web_provider_available(const char *arg) {
+    /* Python: None unregistered / True/False availability. Arg =
+     * "registered\tavailable". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int registered = arg[0] == '1';
+    if (!registered) { printf("\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: tools_web_tools_u_list_registered_web_providers @ tools/web_tools.py:_list_registered_web_providers */
+int tools_web_tools_u_list_registered_web_providers(const char *arg) {
+    /* Python: registry list_providers or []. Arg = names (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}

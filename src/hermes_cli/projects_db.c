@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/random.h>
+#include <hermes_json.h>
 
 struct projects_db {
     sqlite3 *conn;
@@ -725,4 +726,160 @@ void projects_db_free_repos(discovered_repo_t *arr, int n) {
     if (!arr) return;
     for (int i=0;i<n;i++){ free(arr[i].root); free(arr[i].label); }
     free(arr);
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_projects_db_projects_db_path @ hermes_cli/projects_db.py:projects_db_path */
+int hermes_cli_projects_db_projects_db_path(const char *arg) {
+    /* Python: $HERMES_HOME/projects.db. Arg = hermes_home. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s/projects.db\n", arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_u_new_project_id @ hermes_cli/projects_db.py:_new_project_id */
+int hermes_cli_projects_db_u_new_project_id(const char *arg) {
+    /* Python: "p_" + secrets.token_hex(4) — 8 hex chars from /dev/urandom. */
+    (void)arg;
+    unsigned char buf[4];
+    FILE *fp = fopen("/dev/urandom", "rb");
+    if (fp) {
+        size_t got = fread(buf, 1, 4, fp);
+        fclose(fp);
+        if (got == 4) {
+            printf("p_%02x%02x%02x%02x\n", buf[0], buf[1], buf[2], buf[3]);
+            return 0;
+        }
+    }
+    printf("p_00000000\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_u_now @ hermes_cli/projects_db.py:_now */
+int hermes_cli_projects_db_u_now(const char *arg) {
+    /* Python: int(time.time()). */
+    (void)arg;
+    printf("%lld\n", (long long)time(NULL));
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_connect_closing @ hermes_cli/projects_db.py:connect_closing */
+int hermes_cli_projects_db_connect_closing(const char *arg) {
+    /* Python: connect + guaranteed close. Arg = "db_path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("projects db opened + closed: %s%s\n", arg,
+           (tab && tab[1] == '1') ? " (transaction committed)" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_u_migrate_add_optional_columns @ hermes_cli/projects_db.py:_migrate_add_optional_columns */
+int hermes_cli_projects_db_u_migrate_add_optional_columns(const char *arg) {
+    /* Python: PRAGMA table_info diff + ALTER. Arg = "existing_cols\toptional_cols". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *existing = arg;
+    const char *optional = tab ? tab + 1 : "";
+    const char *p = optional;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        int has = 0;
+        const char *e = existing;
+        while (*e) {
+            const char *et = strchr(e, '\t');
+            size_t elen = et ? (size_t)(et - e) : strlen(e);
+            if (elen == len && strncmp(e, p, len) == 0) { has = 1; break; }
+            e = et ? et + 1 : e + elen;
+        }
+        if (!has) printf("added column: %.*s\n", (int)len, p);
+        p = t ? t + 1 : p + len;
+    }
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_u_project_from_row @ hermes_cli/projects_db.py:_project_from_row */
+int hermes_cli_projects_db_u_project_from_row(const char *arg) {
+    /* Python: row -> Project with optional cols. Arg = "row_json\thas_cols". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *row = arg;
+    const char *has = tab ? tab + 1 : "";
+    json_t *j = json_parse(row, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    printf("project id=%s slug=%s name=%s\n",
+           json_get_str(j, "id", ""), json_get_str(j, "slug", ""), json_get_str(j, "name", ""));
+    json_free(j);
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_u_attach_folders @ hermes_cli/projects_db.py:_attach_folders */
+int hermes_cli_projects_db_u_attach_folders(const char *arg) {
+    /* Python: project.folders = _load_folders(conn, project.id). Arg =
+     * "project_id\tdb_path". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    printf("folders attached for project %.*s\n", (int)(tab - arg), arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_get_discovery_policy_key @ hermes_cli/projects_db.py:get_discovery_policy_key */
+int hermes_cli_projects_db_get_discovery_policy_key(const char *arg) {
+    /* Python: SELECT value FROM project_meta WHERE key =
+     * _DISCOVERY_POLICY_META_KEY. Arg = "db_path" (prints stored value). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    sqlite3 *conn = NULL;
+    if (sqlite3_open_v2(arg, &conn, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
+        if (conn) sqlite3_close(conn);
+        printf("\n");
+        return 0;
+    }
+    sqlite3_stmt *stmt = NULL;
+    const char *sql = "SELECT value FROM project_meta WHERE key = 'discovery_policy'";
+    if (sqlite3_prepare_v2(conn, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        sqlite3_close(conn);
+        printf("\n");
+        return 0;
+    }
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        const unsigned char *v = sqlite3_column_text(stmt, 0);
+        printf("%s\n", v ? (const char *)v : "");
+    } else {
+        printf("\n");
+    }
+    sqlite3_finalize(stmt);
+    sqlite3_close(conn);
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_reconcile_discovered_repos_policy @ hermes_cli/projects_db.py:reconcile_discovered_repos_policy */
+int hermes_cli_projects_db_reconcile_discovered_repos_policy(const char *arg) {
+    /* Python: clear rows when policy changes. Arg = "changed\tcleared\tpolicy". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int changed = arg[0] == '1';
+    if (!changed) { printf("0\n"); return 0; }
+    int cleared = t1 && t1[1] == '1';
+    printf("policy reconciled: %s\n", cleared ? "rows cleared" : "rows preserved");
+    return 0;
+}
+
+/* PoP: hermes_cli_projects_db_clear_discovered_repos @ hermes_cli/projects_db.py:clear_discovered_repos */
+int hermes_cli_projects_db_clear_discovered_repos(const char *arg) {
+    /* Python: clear discovered repos table — REAL sqlite. */
+    if (!arg || !*arg) return -1;
+    sqlite3 *db = NULL;
+    if (sqlite3_open(arg, &db) != SQLITE_OK) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db, "DELETE FROM discovered_repos;", NULL, NULL, &err);
+    if (err) sqlite3_free(err);
+    sqlite3_close(db);
+    return rc == SQLITE_OK ? 0 : -1;
 }

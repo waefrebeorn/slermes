@@ -1850,3 +1850,25 @@ int voice_mode__pulse_socket_reachable(void)
     return 0;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_voice_mode_cancel @ tools/voice_mode.py:cancel */
+int tools_voice_mode_cancel(const char *arg) {
+    /* Python: stop recording, unlink path. Arg = "path\texists". */
+    if (!arg || !*arg) { printf("voice recording cancelled\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') unlink(arg);
+    printf("Termux voice recording cancelled\n");
+    return 0;
+}
+
+/* PoP: tools_voice_mode_cancel_2 @ tools/voice_mode.py:cancel */
+int tools_voice_mode_cancel_2(const char *arg) {
+    /* Python: duplicate stub — same as cancel. Arg = "path\texists". */
+    if (!arg || !*arg) { printf("voice recording cancelled\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') unlink(arg);
+    printf("Termux voice recording cancelled\n");
+    return 0;
+}

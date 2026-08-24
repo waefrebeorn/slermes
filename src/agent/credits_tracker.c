@@ -672,3 +672,23 @@ bool cli_agent_credits_tracker_is_free_tier_model(const char *model, const char 
     return false;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_credits_tracker_has_data @ agent/credits_tracker.py:has_data */
+int agent_credits_tracker_has_data(const char *arg) {
+    /* Python: self.captured_at > 0. */
+    if (!arg || !*arg) return 0;
+    return strtod(arg, NULL) > 0;
+}
+
+/* PoP: agent_credits_tracker_age_seconds @ agent/credits_tracker.py:age_seconds */
+int agent_credits_tracker_age_seconds(const char *arg) {
+    /* Python: if not has_data (captured_at <= 0) -> float("inf");
+     * else time.time() - self.captured_at. Arg = "captured_at" epoch. */
+    if (!arg || !*arg) { printf("inf\n"); return 0; }
+    double captured = strtod(arg, NULL);
+    if (captured <= 0) { printf("inf\n"); return 0; }
+    printf("%g\n", (double)time(NULL) - captured);
+    return 0;
+}

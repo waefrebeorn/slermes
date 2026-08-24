@@ -174,3 +174,21 @@ void fallback_config_free_entries(fallback_entry_t *entries, int count)
     }
     free(entries);
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_fallback_config_resolve_entry_api_key @ hermes_cli/fallback_config.py:resolve_entry_api_key */
+int hermes_cli_fallback_config_resolve_entry_api_key(const char *arg) {
+    /* Python: inline api_key else key_env/env. Arg =
+     * "api_key\tkey_env\tenv_value". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *inline_key = arg;
+    const char *key_env = t1 ? t1 + 1 : "";
+    const char *env_value = t2 ? t2 + 1 : "";
+    if (inline_key[0]) { printf("%s\n", inline_key); return 0; }
+    if (key_env[0] && env_value[0]) { printf("%s\n", env_value); return 0; }
+    printf("\n");
+    return 0;
+}

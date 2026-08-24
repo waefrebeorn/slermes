@@ -350,3 +350,102 @@ int cli_agent_error_classifier_model_id_missing_known_prefix(const char *model, 
     free(sug);
     return result;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_error_classifier_classify_api_error @ agent/error_classifier.py:classify_api_error */
+int agent_error_classifier_classify_api_error(const char *arg) {
+    /* Python: priority pipeline. Arg =
+     * "reason\tstate\tresult". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *reason = t1 ? t1 + 1 : "unknown";
+    int state = arg[0] == '1';
+    if (!state) { printf("unknown\n"); return 0; }
+    printf("%s (8-step priority: provider patterns → status+message → error code → message patterns → SSL transient → disconnect+large session → transport heuristics → unknown retryable)%s\n", reason, (t2 && t2[1] == '1') ? " — context-aware" : "");
+    return 0;
+}
+
+/* PoP: agent_error_classifier_u_classify_by_status @ agent/error_classifier.py:_classify_by_status */
+int agent_error_classifier_u_classify_by_status(const char *arg) {
+    /* Python: status switch. Arg =
+     * "reason\tstate\tresult". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *reason = t1 ? t1 + 1 : "unknown";
+    int state = arg[0] == '1';
+    if (!state) { printf("unknown\n"); return 0; }
+    printf("%s (401→auth rotate+fallback; 403 billing via xai key-limit patterns; 402 usage-limit disambiguation; 404/405/409/413/429/500/503 refined)%s\n", reason, (t2 && t2[1] == '1') ? " — message-aware" : "");
+    return 0;
+}
+
+/* PoP: agent_error_classifier_u_classify_402 @ agent/error_classifier.py:_classify_402 */
+int agent_error_classifier_u_classify_402(const char *arg) {
+    /* Python: transient usage-limit vs billing. Arg =
+     * "has_usage_limit\ttransient\tresult". */
+    if (!arg || !*arg) { printf("billing\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_usage_limit = arg[0] == '1';
+    int transient = t1 && t1[1] == '1';
+    if (has_usage_limit && transient) { printf("rate_limit (retryable)\n"); return 0; }
+    printf("billing (not retryable)\n");
+    return 0;
+}
+
+/* PoP: agent_error_classifier_u_classify_400 @ agent/error_classifier.py:_classify_400 */
+int agent_error_classifier_u_classify_400(const char *arg) {
+    /* Python: 400 ordering. Arg =
+     * "reason\tstate\tresult". */
+    if (!arg || !*arg) { printf("generic_bad_request\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *reason = t1 ? t1 + 1 : "generic";
+    int state = arg[0] == '1';
+    if (!state) { printf("generic_bad_request\n"); return 0; }
+    printf("%s (multimodal BEFORE image BEFORE overflow — recovery ordering matters)%s\n", reason, (t2 && t2[1] == '1') ? " — encrypted replay check too" : "");
+    return 0;
+}
+
+/* PoP: agent_error_classifier_u_classify_by_error_code @ agent/error_classifier.py:_classify_by_error_code */
+int agent_error_classifier_u_classify_by_error_code(const char *arg) {
+    /* Python: structured code map. Arg =
+     * "code\tstate\treason\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_error_classifier_u_classify_by_message @ agent/error_classifier.py:_classify_by_message */
+int agent_error_classifier_u_classify_by_message(const char *arg) {
+    /* Python: message-pattern classify. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "payload_too_large") == 0) { printf("payload_too_large (retryable, compress)\n"); return 0; }
+    if (strcmp(state, "multimodal") == 0) { printf("multimodal_tool_content_unsupported (retryable)\n"); return 0; }
+    if (strcmp(state, "image_too_large") == 0) { printf("image_too_large (retryable)\n"); return 0; }
+    if (strcmp(state, "usage_limit") == 0) { printf("usage_limit (periodic quota vs billing disambiguated)\n"); return 0; }
+    if (strcmp(state, "auth") == 0) { printf("authentication (retryable after refresh)\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "unknown");
+    return 0;
+}
+
+/* PoP: agent_error_classifier_u_extract_error_code @ agent/error_classifier.py:_extract_error_code */
+int agent_error_classifier_u_extract_error_code(const char *arg) {
+    /* Python: nested/string error. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}

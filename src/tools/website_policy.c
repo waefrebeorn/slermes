@@ -193,3 +193,19 @@ int cli_tools_website_policy__extract_host_from_urlish(const char *url, char *bu
     hermes_log(LOG_DEBUG, "website_policy", "_extract_host_from_urlish: '%s' -> '%s'", url, buf);
     return (buf[0] != '\0') ? 0 : -1;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_website_policy_check_website_access @ tools/website_policy.py:check_website_access */
+int tools_website_policy_check_website_access(const char *arg) {
+    /* Python: fail-open blocklist. Arg =
+     * "blocked\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int blocked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !blocked) { printf("\n"); return 0; }
+    printf("blocked: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}

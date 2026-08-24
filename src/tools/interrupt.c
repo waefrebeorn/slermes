@@ -67,3 +67,14 @@ void tools_interrupt_clear(void) {
     /* Python: set_interrupt(False) — clear the interrupt flag. */
     tools_interrupt_set_interrupt(0, 0);
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_interrupt_clear_current_thread_interrupt @ tools/interrupt.py:clear_current_thread_interrupt */
+int tools_interrupt_clear_current_thread_interrupt(const char *arg) {
+    /* Python: per-thread clear. Arg = "state". */
+    (void)arg;
+    extern void set_interrupt(bool active, unsigned long thread_id);
+    set_interrupt(false, 0);   /* clear current thread's interrupt bit */
+    return 0;
+}

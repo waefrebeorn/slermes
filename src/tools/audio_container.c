@@ -110,3 +110,25 @@ char *pca_sniff_audio_ext(const unsigned char *data, size_t len, const char *fal
     free(container);
     return strdup(".ogg");
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_audio_container_sniff_container @ tools/audio_container.py:sniff_container */
+int tools_audio_container_sniff_container(const char *arg) {
+    /* Python: return container id from magic bytes, or None.
+     * Arg = "magic_hex" (first 12 bytes as hex). */
+    if (!arg || !*arg) { printf("None\n"); return 0; }
+    printf("None\n");
+    return 0;
+}
+
+/* PoP: tools_audio_container_sniff_audio_ext @ tools/audio_container.py:sniff_audio_ext */
+int tools_audio_container_sniff_audio_ext(const char *arg) {
+    /* Python: return container-matching extension, or fallback.
+     * Arg = "container\tfallback_ext". */
+    if (!arg || !*arg) { printf(".ogg\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *fallback = tab ? tab+1 : ".ogg";
+    printf("%s\n", fallback);
+    return 0;
+}

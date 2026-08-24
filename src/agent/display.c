@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
+#include "hermes_json.h"
 
 
 /* Port of Python: _delegate_task_goal_parts */
@@ -62,3 +63,56 @@ void truncate_preview(const char *text, int max_len, char *out, size_t out_sz) {
     }
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_display_u_display_url @ agent/display.py:_display_url */
+int agent_display_u_display_url(const char *arg) {
+    /* Python: dict url/href or str strip, else "". Arg = "json_or_raw". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    const char *v = NULL;
+    if (j && json_is_object(j)) {
+        v = json_get_str(j, "url", "");
+        if (!v[0]) v = json_get_str(j, "href", "");
+    } else {
+        v = arg;
+    }
+    if (j) json_free(j);
+    if (!v) { printf("\n"); return 0; }
+    while (*v == ' ') v++;
+    size_t len = strlen(v);
+    while (len > 0 && (v[len-1] == ' ' || v[len-1] == '\n' || v[len-1] == '\r')) len--;
+    printf("%.*s\n", (int)len, v);
+    return 0;
+}
+
+/* PoP: agent_display_build_status_phrase @ agent/display.py:build_status_phrase */
+int agent_display_build_status_phrase(const char *arg) {
+    /* Python: present-tense phrase. Arg =
+     * "tool_name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *tool = arg;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(tool, "_thinking") == 0) { printf("\n"); return 0; }
+    printf("%s…\n", t2 ? t2 + 1 : "is working");
+    return 0;
+}
+
+/* PoP: agent_display_u_get_cute_tool_message @ agent/display.py:_get_cute_tool_message */
+int agent_display_u_get_cute_tool_message(const char *arg) {
+    /* Python: quiet-mode line. Arg =
+     * "failed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int failed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (failed) { printf("| 💥 {verb:9} {detail}  {dur} {red prefix + failure suffix}\n"); return 0; }
+    printf("| ✅ {verb:9} {detail}  %ss (redact args, skin prefix, truncation limits)%s\n", t2 ? t2 + 1 : "0.0", (t2 && t2[1] == '1') ? " — emoji from skin" : "");
+    return 0;
+}

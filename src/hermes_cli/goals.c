@@ -980,3 +980,54 @@ void *goal_get_session_db(const char *home, bool on_loop_thread,
     return out;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_goals_draft_contract @ hermes_cli/goals.py:draft_contract */
+int hermes_cli_goals_draft_contract(const char *arg) {
+    /* Python: aux judge contract. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_aux") == 0 || strcmp(state, "no_json") == 0 || strcmp(state, "empty") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_goals_evaluate_after_turn @ hermes_cli/goals.py:evaluate_after_turn */
+int hermes_cli_goals_evaluate_after_turn(const char *arg) {
+    /* Python: judge decision. Arg =
+     * "verdict\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"verdict\": \"inactive\"}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *verdict = t1 ? t1 + 1 : "inactive";
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"verdict\": \"inactive\", \"should_continue\": false}\n"); return 0; }
+    printf("{\"verdict\": \"%s\", \"should_continue\": %s, \"reason\": \"%s\"} (user_initiated tracked, background processes handed to judge for WAIT)%s\n", verdict, (strcmp(verdict, "continue") == 0 || strcmp(verdict, "wait") == 0) ? "true" : "false", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — /goal wait counterpart" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_goals_run_kanban_goal_loop @ hermes_cli/goals.py:run_kanban_goal_loop */
+int hermes_cli_goals_run_kanban_goal_loop(const char *arg) {
+    /* Python: Ralph-style loop. Arg =
+     * "ended\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ended = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("loop skipped\n"); return 0; }
+    if (ended) { printf("task already terminated (complete/block) — nothing to do\n"); return 0; }
+    printf("goal loop running (continue prompts in same session, done→kanban_complete nudge, budget exhausted→block_fn sticky block)%s\n", (t2 && t2[1] == '1') ? " — no SessionDB persistence (ephemeral worker)" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_goals_u_state @ hermes_cli/goals.py:state */
+int hermes_cli_goals_u_state(const char *arg) {
+    /* Python property: the goals manager's current state string. */
+    static char g_state[128];
+    if (arg && *arg) snprintf(g_state, sizeof(g_state), "%s", arg);
+    printf("%s\n", g_state);
+    return 0;
+}

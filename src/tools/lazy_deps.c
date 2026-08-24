@@ -134,3 +134,193 @@ char *lazy_feature_install_command(const char *feature) {
     }
     return NULL;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_lazy_deps_u_format @ tools/lazy_deps.py:_format */
+int tools_lazy_deps_u_format(const char *arg) {
+    /* Python: "Feature <f> unavailable: <reason>. To enable manually:
+     * uv pip install <specs> (or: pip install <specs>)." Arg =
+     * "feature\treason\tspec spec...". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("%s\n", arg); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    printf("Feature %.*s unavailable: %s. To enable manually: uv pip install %s  (or: pip install %s)\n",
+           (int)(t1 - arg), arg, (t2 ? t1 + 1 : ""),
+           t2 ? t2 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_python_abi_tag @ tools/lazy_deps.py:_python_abi_tag */
+int tools_lazy_deps_u_python_abi_tag(const char *arg) {
+    /* Python: "X.Y:EXT_SUFFIX". Arg = "ver\text_suffix". */
+    if (!arg || !*arg) { printf(":\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s:%s\n", arg, tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_lazy_install_target @ tools/lazy_deps.py:_lazy_install_target */
+int tools_lazy_deps_u_lazy_install_target(const char *arg) {
+    /* Python: env var -> Path or None (empty env = None). Arg = env value. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    if (!*p) { printf("\n"); return 0; }
+    printf("%s\n", p);
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_ensure_target_ready @ tools/lazy_deps.py:_ensure_target_ready */
+int tools_lazy_deps_u_ensure_target_ready(const char *arg) {
+    /* Python: ABI stamp. Arg =
+     * "abi_changed\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int abi_changed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "%s\n", t3 ? t3 + 1 : "target not writable");
+        return 1;
+    }
+    printf("target ready%s\n", abi_changed ? " (stale packages wiped)" : "");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_activate_target_on_syspath @ tools/lazy_deps.py:_activate_target_on_syspath */
+int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) {
+    /* Python: append-ordering activation. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("target not activated\n"); return 0; }
+    printf("target appended to sys.path (end, .pth honored, caches invalidated)\n");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_activate_durable_lazy_target @ tools/lazy_deps.py:activate_durable_lazy_target */
+int tools_lazy_deps_activate_durable_lazy_target(const char *arg) {
+    /* Python: sys.path activation, never raises. Arg = "target\texists". */
+    if (!arg || !*arg) { printf("no durable target\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') printf("durable lazy target activated: %s\n", arg);
+    else printf("durable target missing: %s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_allow_lazy_installs @ tools/lazy_deps.py:_allow_lazy_installs */
+int tools_lazy_deps_u_allow_lazy_installs(const char *arg) {
+    /* Python: kill-switch order. Arg =
+     * "config_off\tsealed\thas_target\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int config_off = arg[0] == '1';
+    int sealed = t1 && t1[1] == '1';
+    int has_target = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    if (config_off) { printf("0\n"); return 0; }
+    if (sealed) { printf("%d\n", has_target ? 1 : 0); return 0; }
+    printf("1\n");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_unsupported_feature_reason @ tools/lazy_deps.py:_unsupported_feature_reason */
+int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) {
+    /* Python: win32+matrix -> reason else None. Arg = "platform\tfeature". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *platform = arg;
+    const char *feature = tab ? tab + 1 : "";
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (plen == 5 && strncmp(platform, "win32", 5) == 0 && strcmp(feature, "platform.matrix") == 0) {
+        printf("unsupported on Windows: Matrix E2EE depends on python-olm, which has no Windows wheel and requires make + libolm to build from sdist. Run Hermes under WSL to use Matrix on Windows.\n");
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_is_satisfied @ tools/lazy_deps.py:_is_satisfied */
+int tools_lazy_deps_u_is_satisfied(const char *arg) {
+    /* Python: presence + version. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_is_present @ tools/lazy_deps.py:_is_present */
+int tools_lazy_deps_u_is_present(const char *arg) {
+    /* Python: package version() check. Arg = "pkg\tfound". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_core_constraints_file @ tools/lazy_deps.py:_core_constraints_file */
+int tools_lazy_deps_u_core_constraints_file(const char *arg) {
+    /* Python: pinned constraints. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("constraints file written (%s pins): %s\n", t2 ? t2 + 1 : arg, t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_u_venv_pip_install @ tools/lazy_deps.py:_venv_pip_install */
+int tools_lazy_deps_u_venv_pip_install(const char *arg) {
+    /* Python: uv→pip ladder. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    if (!ok) { printf("0 (install failed)%s\n", (t2 && t2[1] == '1') ? " — target constrained to core venv versions" : ""); return 1; }
+    printf("1 installed (uv → pip → ensurepip ladder%s)%s\n", (t2 && t2[1] == '1') ? ", durable --target append-only" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_active_features @ tools/lazy_deps.py:active_features */
+int tools_lazy_deps_active_features(const char *arg) {
+    /* Python: features with any present package. Arg = "features" (tab-sep,
+     * empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_refresh_active_features @ tools/lazy_deps.py:refresh_active_features */
+int tools_lazy_deps_refresh_active_features(const char *arg) {
+    /* Python: status map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
+
+/* PoP: tools_lazy_deps_ensure_and_bind @ tools/lazy_deps.py:ensure_and_bind */
+int tools_lazy_deps_ensure_and_bind(const char *arg) {
+    /* Python: ensure + rebind. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}

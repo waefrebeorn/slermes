@@ -766,3 +766,30 @@ int sched_create_job_with_scheduler_registration(const char *job_id, char *out_j
     return 1;
 }
 
+
+
+/* === dissolved from other_ports_wrappers.c === */
+/* PoP: cron_scheduler_u_windows_cron_python_invocation @ cron/scheduler.py:_windows_cron_python_invocation */
+int cron_scheduler_u_windows_cron_python_invocation(const char *arg) {
+    /* Python: uv launcher bypass. Arg =
+     * "is_windows\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!is_windows || !state) { printf("%s\n{}\n", arg); return 0; }
+    printf("%s\n{}\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
+
+/* PoP: cron_scheduler_u_teardown_cron_agent @ cron/scheduler.py:_teardown_cron_agent */
+int cron_scheduler_u_teardown_cron_agent(const char *arg) {
+    /* Python: agent.close + client reap. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("teardown skipped (no agent)\n"); return 0; }
+    printf("cron agent torn down%s\n", (tab && tab[1] == '1') ? " + stale clients reaped" : "");
+    return 0;
+}

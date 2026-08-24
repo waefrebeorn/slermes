@@ -177,3 +177,60 @@ char *finalize_turn(agent_state_t *state) {
         return strdup(explainer);
     }
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_turn_finalizer_u_is_pure_tool_call_tail @ agent/turn_finalizer.py:_is_pure_tool_call_tail */
+int agent_turn_finalizer_u_is_pure_tool_call_tail(const char *arg) {
+    /* Python: tool_calls + no text. Arg = "has_tool_calls\ttext\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_tc = arg[0] == '1';
+    if (!has_tc) { printf("0\n"); return 0; }
+    const char *text = t1 ? t1 + 1 : "";
+    int blank = 1;
+    const char *p = text;
+    while (*p) {
+        if (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') { blank = 0; break; }
+        p++;
+    }
+    printf("%d\n", blank ? 1 : 0);
+    return 0;
+}
+
+/* PoP: agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng @ agent/turn_finalizer.py:_drop_verification_continuation_scaffolding */
+int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *arg) {
+    /* Python: strip nudge messages with continuation flags. Arg = messages
+     * JSON (array). */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    json_t *msgs = json_parse(arg, NULL);
+    if (!msgs || !json_is_array(msgs)) {
+        if (msgs) json_free(msgs);
+        printf("[]\n");
+        return 0;
+    }
+    static const char *flags[] = {"is_verification_continuation", "verification_continuation"};
+    json_t *out = json_array();
+    size_t n = json_array_size(msgs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *m = json_array_get(msgs, i);
+        if (!m || !json_is_object(m)) { json_append(out, json_parse("null", NULL)); continue; }
+        int drop = 0;
+        for (size_t f = 0; f < sizeof(flags)/sizeof(flags[0]); f++) {
+            json_t *fv = json_obj_get(m, flags[f]);
+            if (fv && !json_is_null(fv) && json_is_bool(fv) && (fv)->bool_val) { drop = 1; break; }
+            if (fv && !json_is_null(fv) && !json_is_bool(fv)) { drop = 1; break; }
+        }
+        if (drop) continue;
+        char *s = json_dumps(m, 0);
+        json_append(out, s ? json_parse(s, NULL) : json_parse("null", NULL));
+        free(s);
+    }
+    char *s = json_dumps(out, 0);
+    printf("%s\n", s ? s : "[]");
+    free(s);
+    json_free(out);
+    json_free(msgs);
+    return 0;
+}

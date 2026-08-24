@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "json.h"
 #include "fallback_cmd.h"
+#include <hermes_json.h>
 
 /* Strip leading + trailing whitespace in place (Python .strip()). */
 static void strip_inplace(char *s) {
@@ -114,4 +115,109 @@ void fallback_describe_primary(const json_t *config, char *out, size_t out_cap) 
         strip_inplace(s);
         if (s[0] != '\0') { strncpy(out, s, out_cap-1); out[out_cap-1]='\0'; }
     }
+}
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_fallback_cmd_u_read_chain @ hermes_cli/fallback_cmd.py:_read_chain */
+int hermes_cli_fallback_cmd_u_read_chain(const char *arg) {
+    /* Python: get_fallback_chain normalized list. Arg = chain JSON. */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_fallback_cmd_u_write_chain @ hermes_cli/fallback_cmd.py:_write_chain */
+int hermes_cli_fallback_cmd_u_write_chain(const char *arg) {
+    /* Python: config["fallback_providers"] = chain; drop fallback_model.
+     * Arg = "chain_json\tconfig_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *chain = tab ? arg : arg;
+    const char *cfg = tab ? tab + 1 : "";
+    json_t *config = json_parse(cfg, NULL);
+    if (!config || !json_is_object(config)) {
+        if (config) json_free(config);
+        config = json_object();
+    }
+    json_t *ch = json_parse(chain, NULL);
+    if (ch) { json_set(config, "fallback_providers", ch); }
+    json_obj_del(config, "fallback_model");
+    char *s = json_dumps(config, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(config);
+    return 0;
+}
+
+/* PoP: hermes_cli_fallback_cmd_u_snapshot_auth_active_provider @ hermes_cli/fallback_cmd.py:_snapshot_auth_active_provider */
+int hermes_cli_fallback_cmd_u_snapshot_auth_active_provider(const char *arg) {
+    /* Python: auth store "active_provider" or None. Arg = auth JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *store = json_parse(arg, NULL);
+    if (!store || !json_is_object(store)) {
+        if (store) json_free(store);
+        printf("\n");
+        return 0;
+    }
+    const char *ap = json_get_str(store, "active_provider", "");
+    printf("%s\n", ap);
+    json_free(store);
+    return 0;
+}
+
+/* PoP: hermes_cli_fallback_cmd_u_restore_auth_active_provider @ hermes_cli/fallback_cmd.py:_restore_auth_active_provider */
+int hermes_cli_fallback_cmd_u_restore_auth_active_provider(const char *arg) {
+    /* Python: best-effort write-back. Arg = "value\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("auth restore skipped (best-effort)\n"); return 0; }
+    printf("active_provider restored: %s\n", arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_fallback_cmd_u_restore_model_cfg @ hermes_cli/fallback_cmd.py:_restore_model_cfg */
+int hermes_cli_fallback_cmd_u_restore_model_cfg(const char *arg) {
+    /* Python: cfg["model"] = snapshot; pop when None. Arg =
+     * "model_json\tconfig_json" (model empty = pop). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    json_t *cfg = json_parse(tab ? tab + 1 : "", NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        cfg = json_object();
+    }
+    if (!tab || tab == arg) {
+        json_obj_del(cfg, "model");
+    } else {
+        json_t *m = json_parse(arg, NULL);
+        if (m) json_set(cfg, "model", m);
+    }
+    char *s = json_dumps(cfg, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(cfg);
+    return 0;
+}
+
+/* PoP: hermes_cli_fallback_cmd_u_numbered_pick @ hermes_cli/fallback_cmd.py:_numbered_pick */
+int hermes_cli_fallback_cmd_u_numbered_pick(const char *arg) {
+    /* Python: numbered-list fallback picker. Arg =
+     * "choices\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *choices = arg;
+    const char *picked = t1 ? t1 + 1 : "";
+    printf("\n");
+    const char *p = choices;
+    int i = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        printf("  %d. %.*s\n", i++, (int)len, p);
+        p = t ? t + 1 : p + len;
+    }
+    printf("choice: %s\n", picked[0] ? picked : "(none)");
+    return 0;
 }

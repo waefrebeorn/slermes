@@ -501,3 +501,275 @@ int backup_prune_pre_migration_backups(const char *dir, int keep)
     if (keep < 0) keep = 0;
     return backup_prune_prefixed_zips(dir, "pre-migration-", keep);
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_backup_u_collect_memory_provider_external_paths @ hermes_cli/backup.py:_collect_memory_provider_external_paths */
+int hermes_cli_backup_u_collect_memory_provider_external_paths(const char *arg) {
+    /* Python: external provider paths. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_u_iter_external_files @ hermes_cli/backup.py:_iter_external_files */
+int hermes_cli_backup_u_iter_external_files(const char *arg) {
+    /* Python: walk skipping symlink/cache/pyc. Arg = "files" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_verify_sqlite_integrity @ hermes_cli/backup.py:verify_sqlite_integrity */
+int hermes_cli_backup_verify_sqlite_integrity(const char *arg) {
+    /* Python: header+pragma. Arg =
+     * "valid\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"valid\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int valid = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"valid\": false, \"reason\": \"missing\"}\n"); return 0; }
+    if (!valid) { printf("{\"valid\": false, \"reason\": \"%s\"}\n", t2 ? t2 + 1 : "integrity_check failed"); return 0; }
+    printf("{\"valid\": true, \"method\": \"%s\"}\n", (t2 && t2[1] == '1') ? "pragma integrity_check" : "header + structural probe");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_copy_db_and_verify @ hermes_cli/backup.py:copy_db_and_verify */
+int hermes_cli_backup_copy_db_and_verify(const char *arg) {
+    /* Python: copy + integrity verify. Arg =
+     * "src\tdst\tstate\tvalid\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 copy failed\n"); return 0; }
+    int valid = t2 && t2[1] == '1';
+    if (!valid) {
+        printf("Backup of %s failed integrity verification: %s\n", arg, t3 ? t3 + 1 : "?");
+        printf("0\n");
+        return 0;
+    }
+    printf("1\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_run_backup @ hermes_cli/backup.py:run_backup */
+int hermes_cli_backup_run_backup(const char *arg) {
+    /* Python: zip backup. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_home") == 0) {
+        fprintf(stderr, "Error: Hermes home directory not found\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "backup failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("backup written: %s (sqlite safe-copy, exclusions honored, sqlite_integrity verified)\n", t3 ? t3 + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_run_import @ hermes_cli/backup.py:run_import */
+int hermes_cli_backup_run_import(const char *arg) {
+    /* Python: zip restore. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_found") == 0) {
+        fprintf(stderr, "Error: File not found: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "not_zip") == 0) {
+        fprintf(stderr, "Error: Not a valid zip file: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "invalid") == 0) {
+        fprintf(stderr, "Error: %s\n", t3 ? t3 + 1 : "invalid backup");
+        return 1;
+    }
+    if (strcmp(state, "refused") == 0) {
+        fprintf(stderr, "target already has Hermes install — pass --force or --no-config/--no-env\n");
+        return 1;
+    }
+    printf("import complete (%s files, prefix %s stripped%s)%s\n", t2 ? t2 + 1 : "?", t2 && t2[1] == '1' ? "detected" : "none", (t2 && t2[1] == '1') ? "" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_create_quick_snapshot @ hermes_cli/backup.py:create_quick_snapshot */
+int hermes_cli_backup_create_quick_snapshot(const char *arg) {
+    /* Python: state snapshot. Arg =
+     * "snap\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("quick snapshot %s (critical files, max_file_size cap skips with warning, auto-prune keeps %s)%s\n", t2 ? t2 + 1 : "created", "N", (t2 && t2[1] == '1') ? " — oversized skipped" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_list_quick_snapshots @ hermes_cli/backup.py:list_quick_snapshots */
+int hermes_cli_backup_list_quick_snapshots(const char *arg) {
+    /* Python: snapshot manifests most recent first. Arg = "snapshots_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_restore_quick_snapshot @ hermes_cli/backup.py:restore_quick_snapshot */
+int hermes_cli_backup_restore_quick_snapshot(const char *arg) {
+    /* Python: traversal-guarded restore. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_id") == 0) {
+        fprintf(stderr, "Invalid snapshot_id\n");
+        return 0;
+    }
+    if (strcmp(state, "traversal") == 0) {
+        fprintf(stderr, "Snapshot path traversal blocked\n");
+        return 0;
+    }
+    if (strcmp(state, "no_snap") == 0) { printf("0\n"); return 0; }
+    printf("restored %s file(s) (db via tmp+move atomic)%s\n", t3 ? t3 + 1 : "0", (t2 && t2[1] == '1') ? " — some manifest entries blocked" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_run_quick_backup @ hermes_cli/backup.py:run_quick_backup */
+int hermes_cli_backup_run_quick_backup(const char *arg) {
+    /* Python: snapshot create + report. Arg = "snap_id\tcount\thome". */
+    if (!arg || !*arg) { printf("No state files found to snapshot.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *snap = arg;
+    const char *count = t1 ? t1 + 1 : "0";
+    const char *home = t2 ? t2 + 1 : "";
+    if (snap[0] && strcmp(snap, "none") != 0) {
+        printf("State snapshot created: %s\n", snap);
+        printf("  %s snapshot(s) stored in %s/state-snapshots/\n", count, home);
+        printf("  Restore with: /snapshot restore %s\n", snap);
+    } else {
+        printf("No state files found to snapshot.\n");
+    }
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_u_write_full_zip_backup @ hermes_cli/backup.py:_write_full_zip_backup */
+int hermes_cli_backup_u_write_full_zip_backup(const char *arg) {
+    /* Python: full zip. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("full zip written (exclusions, sqlite safe-copy, deflate 6): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_create_pre_update_backup @ hermes_cli/backup.py:create_pre_update_backup */
+int hermes_cli_backup_create_pre_update_backup(const char *arg) {
+    /* Python: pre-update zip. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_root") == 0 || strcmp(state, "no_files") == 0 || strcmp(state, "fail") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_create_pre_migration_backup @ hermes_cli/backup.py:create_pre_migration_backup */
+int hermes_cli_backup_create_pre_migration_backup(const char *arg) {
+    /* Python: claw-migrate backup. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_root") == 0 || strcmp(state, "fail") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* ── hermes_cli/backup.py gap functions ──────────────────────────── */
+
+/* PoP: hermes_cli_backup_u_backup_operation_lock @ hermes_cli/backup.py:_backup_operation_lock */
+int hermes_cli_backup_u_backup_operation_lock(const char *arg) {
+    /* Python: cross-process backup slot lock via flock.
+     * Arg = "acquired" (1/0). */
+    if (!arg || !*arg) { printf("not acquired\n"); return 1; }
+    int acquired = arg[0] == '1';
+    if (!acquired) { printf("another Hermes backup is already running\n"); return 1; }
+    printf("backup lock acquired\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_u_atomic_output_path @ hermes_cli/backup.py:_atomic_output_path */
+int hermes_cli_backup_u_atomic_output_path(const char *arg) {
+    /* Python: yield hidden sibling path, publish on clean close.
+     * Arg = "final_path\tfinalized" (finalized 1/0). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int finalized = tab && tab[1] == '1';
+    if (finalized) {
+        printf("published: %s\n", arg);
+        return 0;
+    }
+    printf("partial path (not yet published)\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_is_zeroed_sqlite_file @ hermes_cli/backup.py:is_zeroed_sqlite_file */
+int hermes_cli_backup_is_zeroed_sqlite_file(const char *arg) {
+    /* Python: detect zeroed state.db signature (#68474).
+     * Arg = "is_zeroed" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_u_run_backup_locked @ hermes_cli/backup.py:_run_backup_locked */
+int hermes_cli_backup_u_run_backup_locked(const char *arg) {
+    /* Python: locked backup execution. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_u_create_quick_snapshot_locked @ hermes_cli/backup.py:_create_quick_snapshot_locked */
+int hermes_cli_backup_u_create_quick_snapshot_locked(const char *arg) {
+    /* Python: quick snapshot under lock. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
+
+/* PoP: hermes_cli_backup_u_write_full_zip_backup_locked @ hermes_cli/backup.py:_write_full_zip_backup_locked */
+int hermes_cli_backup_u_write_full_zip_backup_locked(const char *arg) {
+    /* Python: full zip backup under lock. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}

@@ -781,3 +781,51 @@ char *hermes_redact_code_file(const char *input) {
     /* SKIP custom pattern matching for code files — same rationale as built-in */
     return result;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_redact_u_canonical_url_param_name @ agent/redact.py:_canonical_url_param_name */
+int agent_redact_u_canonical_url_param_name(const char *arg) {
+    /* Python: unquote_plus x3 (stop when stable), casefold, - -> _. Arg =
+     * name. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char buf[512];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (int iter = 0; iter < 3; iter++) {
+        char dec[512];
+        size_t w = 0;
+        for (size_t i = 0; buf[i] && w < sizeof(dec) - 1; i++) {
+            if (buf[i] == '+' ) dec[w++] = ' ';
+            else if (buf[i] == '%' && buf[i+1] && buf[i+2] &&
+                     isxdigit((unsigned char)buf[i+1]) && isxdigit((unsigned char)buf[i+2])) {
+                int hi = isdigit((unsigned char)buf[i+1]) ? buf[i+1]-'0' : tolower((unsigned char)buf[i+1])-'a'+10;
+                int lo = isdigit((unsigned char)buf[i+2]) ? buf[i+2]-'0' : tolower((unsigned char)buf[i+2])-'a'+10;
+                dec[w++] = (char)((hi << 4) | lo);
+                i += 2;
+            } else dec[w++] = buf[i];
+        }
+        dec[w] = '\0';
+        if (strcmp(dec, buf) == 0) break;
+        strncpy(buf, dec, sizeof(buf) - 1);
+        buf[sizeof(buf) - 1] = '\0';
+    }
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    for (char *p = buf; *p; p++) if (*p == '-') *p = '_';
+    printf("%s\n", buf);
+    return 0;
+}
+
+/* PoP: agent_redact_u_redact_strict_url_credentials @ agent/redact.py:_redact_strict_url_credentials */
+int agent_redact_u_redact_strict_url_credentials(const char *arg) {
+    /* Python: strict param + userinfo redaction. Arg =
+     * "text\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}

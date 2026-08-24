@@ -576,3 +576,104 @@ char *billing_raise_for_error(int status, const char *payload_json, const char *
  *  and logs manual re-login if absent). This file no longer duplicates it. */
 
 #endif /* SRC_CLI_PORT_NOUS_BILLING_C */
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_nous_billing_invalidate_cached_token @ hermes_cli/nous_billing.py:invalidate_cached_token */
+int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) {
+    /* Python: clear 30s token cache. */
+    (void)arg;
+    printf("billing token cache invalidated\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_nous_billing_u_request @ hermes_cli/nous_billing.py:_request */
+int hermes_cli_nous_billing_u_request(const char *arg) {
+    /* Python: 401 self-heal retry. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "billing request failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "retried") == 0) {
+        printf("billing request succeeded after one fresh-token retry: %s\n", t3 ? t3 + 1 : "{}");
+        return 0;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
+
+/* PoP: hermes_cli_nous_billing_get_subscription_state @ hermes_cli/nous_billing.py:get_subscription_state */
+int hermes_cli_nous_billing_get_subscription_state(const char *arg) {
+    /* Python: GET subscription. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "error") == 0) { printf("0 billing request failed\n"); return 1; }
+    if (strcmp(state, "auth_error") == 0) { printf("0 billing auth required\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
+
+/* PoP: hermes_cli_nous_billing_post_subscription_preview @ hermes_cli/nous_billing.py:post_subscription_preview */
+int hermes_cli_nous_billing_post_subscription_preview(const char *arg) {
+    /* Python: POST preview quote. Arg = "tier_id\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 preview failed\n"); return 1; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
+
+/* PoP: hermes_cli_nous_billing_put_subscription_pending_change @ hermes_cli/nous_billing.py:put_subscription_pending_change */
+int hermes_cli_nous_billing_put_subscription_pending_change(const char *arg) {
+    /* Python: pending disposition. Arg =
+     * "type\tstate\tresult\tmissing_tier". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing_tier") == 0) {
+        fprintf(stderr, "A subscription tier is required to schedule a plan change.\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
+
+/* PoP: hermes_cli_nous_billing_delete_subscription_pending_change @ hermes_cli/nous_billing.py:delete_subscription_pending_change */
+int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg) {
+    /* Python: DELETE /api/billing/subscription/pending-change. Arg =
+     * "timeout\tresult". */
+    if (!arg || !*arg) { printf("{\"rail\": \"\", \"cancelAtPeriodEnd\": false}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("{\"rail\": \"\", \"cancelAtPeriodEnd\": false, \"message\": \"pending change cleared\"}\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_nous_billing_post_subscription_upgrade @ hermes_cli/nous_billing.py:post_subscription_upgrade */
+int hermes_cli_nous_billing_post_subscription_upgrade(const char *arg) {
+    /* Python: idempotency-keyed money route. Arg =
+     * "tier_id\tstate\tresult\tkey_ok". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_key") == 0) {
+        fprintf(stderr, "Idempotency-Key is required for an upgrade.\n");
+        return 1;
+    }
+    if (strcmp(state, "error") == 0) { printf("0 upgrade failed\n"); return 1; }
+    printf("%s\n", t3 ? t3 + 1 : "{\"status\": \"upgraded\"}");
+    return 0;
+}

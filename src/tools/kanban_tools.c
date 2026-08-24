@@ -464,3 +464,121 @@ bool kanban_inject_new_comments_from_env(bool (*steer_fn)(const char *note))
     free(note);
     return ok;
 }
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_kanban_tools_u_is_delegated_child_context @ tools/kanban_tools.py:_is_delegated_child_context */
+int tools_kanban_tools_u_is_delegated_child_context(const char *arg) {
+    /* Python: is_delegated_child_context() from agent.delegation_context;
+     * False on any error. Arg = optional "1"/"0" delegation marker. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0);
+    return 0;
+}
+
+/* PoP: tools_kanban_tools_u_reject_delegated_child_mutation @ tools/kanban_tools.py:_reject_delegated_child_mutation */
+int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) {
+    /* Python: None or tool_error for child. Arg = "tool_name\tis_child". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_child = tab && tab[1] == '1';
+    if (!is_child) { printf("\n"); return 0; }
+    printf("error: %s refused: delegate_task child agents are not Kanban run owners. Return findings to the parent agent; the dispatcher worker or an explicitly configured Kanban orchestrator must perform board mutations.\n", arg);
+    return 1;
+}
+
+/* PoP: tools_kanban_tools_u_connect @ tools/kanban_tools.py:_connect */
+int tools_kanban_tools_u_connect(const char *arg) {
+    /* Python: lazy kb import + connect. Arg = "board\tstate". */
+    if (!arg || !*arg) { printf("kanban db connected (default)\n"); return 0; }
+    printf("kanban db connected: %s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_kanban_tools_heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
+int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) {
+    /* Python: env-identity heartbeat. Arg =
+     * "attempted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int attempted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !attempted) { printf("0 (no kanban worker env)\n"); return 0; }
+    printf("1 (heartbeat attempted, rate-limited at %s interval)\n", t2 ? t2 + 1 : "5s");
+    return 0;
+}
+
+/* PoP: tools_kanban_tools_u_handle_attach @ tools/kanban_tools.py:_handle_attach */
+int tools_kanban_tools_u_handle_attach(const char *arg) {
+    /* Python: base64 attach. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"attach failed\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_b64") == 0) {
+        printf("{\"error\": \"content_base64 is not valid base64\"}\n");
+        return 0;
+    }
+    if (strcmp(state, "too_large") == 0) {
+        printf("{\"error\": \"attachment exceeds size limit\"}\n");
+        return 0;
+    }
+    printf("attachment stored: id=%s size=%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "0");
+    return 0;
+}
+
+/* PoP: tools_kanban_tools_u_download_url_with_cap @ tools/kanban_tools.py:_download_url_with_cap */
+int tools_kanban_tools_u_download_url_with_cap(const char *arg) {
+    /* Python: SSRF-guarded fetch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\t\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_scheme") == 0 || strcmp(state, "ssrf") == 0 || strcmp(state, "too_large") == 0 || strcmp(state, "too_many") == 0) {
+        fprintf(stderr, "download rejected: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\t%s\n", t3 ? t3 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_kanban_tools_u_handle_attach_url @ tools/kanban_tools.py:_handle_attach_url */
+int tools_kanban_tools_u_handle_attach_url(const char *arg) {
+    /* Python: server-side fetch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"attach failed\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fetch_fail") == 0) {
+        printf("{\"error\": \"kanban_attach_url: failed to fetch: %s\"}\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "too_large") == 0) {
+        printf("{\"error\": \"kanban_attach_url: exceeds size cap\"}\n");
+        return 0;
+    }
+    printf("attached from URL: id=%s size=%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "0");
+    return 0;
+}
+
+/* PoP: tools_kanban_tools_u_handle_attachments @ tools/kanban_tools.py:_handle_attachments */
+int tools_kanban_tools_u_handle_attachments(const char *arg) {
+    /* Python: attachment listing. Arg = "count\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"ok\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("{\"ok\": false, \"error\": \"%s\"}\n", t3 ? t3 + 1 : "kanban_attachments failed");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{\"ok\": true, \"attachments\": []}");
+    return 0;
+}

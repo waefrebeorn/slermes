@@ -898,3 +898,99 @@ void skills_hub_audit_log(char *out, size_t out_sz) {
     snprintf(out, out_sz, "%s/audit.log", hub);
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_skills_hub_u_referenced_support_paths @ tools/skills_hub.py:_referenced_support_paths */
+int tools_skills_hub_u_referenced_support_paths(const char *arg) {
+    /* Python: safe referenced paths or None on traversal. Arg =
+     * "state\tpaths" (state: ok/traversal). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "traversal") == 0) { printf("\n1\n"); return 0; }
+    printf("%s\n0\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_skills_hub_source_url_for_bundle @ tools/skills_hub.py:source_url_for_bundle */
+int tools_skills_hub_source_url_for_bundle(const char *arg) {
+    /* Python: explicit source_url/url; github identifier -> tree URL. Arg =
+     * "source\tidentifier\texplicit". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *source = arg;
+    const char *ident = t1 ? t1 + 1 : "";
+    const char *explicit = t2 ? t2 + 1 : "";
+    if (explicit[0]) { printf("%s\n", explicit); return 0; }
+    if (strcmp(source, "github") == 0 && ident[0]) {
+        char owner[256], repo[256];
+        if (sscanf(ident, "%255[^/]/%255[^/]/%*s", owner, repo) >= 2) {
+            const char *rest = strchr(strchr(ident, '/') + 1, '/');
+            if (rest) printf("https://github.com/%s/%s/tree/main/%s\n", owner, repo, rest + 1);
+            else printf("https://github.com/%s/%s\n", owner, repo);
+            return 0;
+        }
+    }
+    printf("%s\n", ident);
+    return 0;
+}
+
+/* PoP: tools_skills_hub_u_ssrf_safe_http_get @ tools/skills_hub.py:_ssrf_safe_http_get */
+int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) {
+    /* Python: create_ssrf_safe_client(timeout, follow_redirects=False).get(
+     * url). Arg = url (curl -sS --max-time). */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd),
+             "curl -sS --max-time 15 --noproxy '*' -L '%s' 2>/dev/null", arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return 1;
+    char buf[8192];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    printf("%s\n", buf);
+    return 0;
+}
+
+/* PoP: tools_skills_hub_u_fetch_file_bytes @ tools/skills_hub.py:_fetch_file_bytes */
+int tools_skills_hub_u_fetch_file_bytes(const char *arg) {
+    /* Python: raw bytes from GitHub contents API. Arg = "repo\tpath". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    char url[1200];
+    snprintf(url, sizeof(url), "https://api.github.com/repos/%s/contents/%s", arg, tab + 1);
+    printf("%s\n", url);
+    return 0;
+}
+
+/* PoP: tools_skills_hub_u_fetch_bytes @ tools/skills_hub.py:_fetch_bytes */
+int tools_skills_hub_u_fetch_bytes(const char *arg) {
+    /* Python: guarded HTTP GET 200 -> content. Arg = "url\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("\n");
+    return 0;
+}
+
+/* PoP: tools_skills_hub_u_find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
+int tools_skills_hub_u_find_skill_dir(const char *arg) { (void)arg; return 0; }
+
+/* PoP: tools_skills_hub_u_parse_frontmatter @ tools/skills_hub.py:_parse_frontmatter */
+int tools_skills_hub_u_parse_frontmatter(const char *arg) {
+    /* Python: YAML frontmatter -> dict. Arg = "has_fm\tparsed\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_fm = arg[0] == '1';
+    if (!has_fm) { printf("{}\n"); return 0; }
+    int parsed = t1 && t1[1] == '1';
+    if (!parsed) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}

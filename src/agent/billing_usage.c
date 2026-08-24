@@ -296,3 +296,27 @@ bool usage_model_has_total_spendable(const usage_model_t *m) {
 
 const usage_bar_t *usage_model_plan_bar(const usage_model_t *m)  { return m ? m->plan_bar : NULL; }
 const usage_bar_t *usage_model_topup_bar(const usage_model_t *m) { return m ? m->topup_bar : NULL; }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_billing_usage_build_usage_model @ agent/billing_usage.py:build_usage_model */
+int agent_billing_usage_build_usage_model(const char *arg) {
+    /* Python: fail-open usage model. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{\"available\": false}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"available\": false}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{\"available\": false}");
+    return 0;
+}
+
+/* PoP: agent_billing_usage_u_dev_fixture_usage_model @ agent/billing_usage.py:_dev_fixture_usage_model */
+int agent_billing_usage_u_dev_fixture_usage_model(const char *arg) {
+    /* Python: fixture map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("fixture usage model: %s\n", tab ? tab + 1 : "free");
+    return 0;
+}

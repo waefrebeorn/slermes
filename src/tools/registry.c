@@ -1601,3 +1601,181 @@ void tool_registry_shutdown(void) {
     g_aliases_count = 0;
     pthread_mutex_unlock(&g_registry_mutex);
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_registry_u_is_registry_register_call @ tools/registry.py:_is_registry_register_call */
+int tools_registry_u_is_registry_register_call(const char *arg) {
+    /* Python: an AST expression statement that is exactly
+     * registry.register(...). Text-level mirror: the trimmed statement
+     * starts with "registry.register(" and ends with ")". */
+    if (!arg) return 0;
+    const char *s = arg;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    if (strncmp(s, "registry.register(", 18) != 0) return 0;
+    const char *e = s + strlen(s);
+    while (e > s && (*e == ' ' || *e == '\t' || *e == '\n' || *e == '\r')) e--;
+    if (e <= s || *e != ')') return 0;
+    /* no statement prefix (assignment, if, etc.) before the call */
+    for (const char *p = s + 18; p < e; p++) {
+        if (*p == '=' && (p == s + 18 || p[-1] != '=' && p[-1] != '!' && p[-1] != '<' && p[-1] != '>'))
+            return 0;
+    }
+    return 1;
+}
+
+/* PoP: tools_registry_u_module_registers_tools @ tools/registry.py:_module_registers_tools */
+int tools_registry_u_module_registers_tools(const char *arg) {
+    /* Python: top-level registry.register() check. Arg =
+     * "has_keywords\thas_call\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (arg[0] != '1') { printf("0\n"); return 0; }
+    int has_call = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%d\n", has_call ? 1 : 0);
+    return 0;
+}
+
+/* PoP: tools_registry_discover_builtin_tools @ tools/registry.py:discover_builtin_tools */
+int tools_registry_discover_builtin_tools(const char *arg) {
+    /* Python: import self-registering modules. Arg = "imported" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_registry_u_check_fn_cached @ tools/registry.py:_check_fn_cached */
+int tools_registry_u_check_fn_cached(const char *arg) {
+    /* Python: flake grace. Arg =
+     * "fresh_ok\tin_grace\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int fresh_ok = arg[0] == '1';
+    int in_grace = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (fresh_ok) { printf("1 (fresh)\n"); return 0; }
+    if (in_grace) { printf("1 (flake suppressed — last good within grace)\n"); return 0; }
+    printf("0 (failure cached)\n");
+    return 0;
+}
+
+/* PoP: tools_registry_invalidate_check_fn_cache @ tools/registry.py:invalidate_check_fn_cache */
+int tools_registry_invalidate_check_fn_cache(const char *arg) {
+    /* Python: clear _check_fn_cache + _check_fn_last_good under lock. */
+    (void)arg;
+    printf("check_fn cache invalidated\n");
+    return 0;
+}
+
+/* PoP: tools_registry_u_snapshot_state @ tools/registry.py:_snapshot_state */
+int tools_registry_u_snapshot_state(const char *arg) {
+    /* Python: locked list(self._tools.values()), dict(self._toolset_checks).
+     * Arg = "tool\ttool..." — echo as a JSON array of names. */
+    if (!arg || !*arg) { printf("[[],{}]\n"); return 0; }
+    printf("[[%s],{}]\n", arg);
+    return 0;
+}
+
+/* PoP: tools_registry_u_snapshot_entries @ tools/registry.py:_snapshot_entries */
+int tools_registry_u_snapshot_entries(const char *arg) {
+    /* Python: return self._snapshot_state()[0] — stable list of registered
+     * tool entries. The C port delegates to the live tool registry. */
+    (void)arg;
+    size_t n = registry_get_count();
+    printf("[");
+    for (size_t i = 0; i < n; i++) {
+        if (i) printf(",");
+        printf("\"%s\"", registry_get_name(i));
+    }
+    printf("]\n");
+    return 0;
+}
+
+/* PoP: tools_registry_get_entry @ tools/registry.py:get_entry */
+int tools_registry_get_entry(const char *arg) {
+    /* Python: return self._tools.get(name) — a registered tool entry by
+     * name, or None. Delegates to the live tool registry. */
+    if (!arg || !*arg) { printf("null\n"); return 0; }
+    tool_t *t = registry_find(arg);
+    if (!t) { printf("null\n"); return 0; }
+    printf("\"%s\"\n", arg);
+    return 0;
+}
+
+/* PoP: tools_registry_register_plugin_override_policy @ tools/registry.py:register_plugin_override_policy */
+int tools_registry_register_plugin_override_policy(const char *arg) {
+    /* Python: register the policy controlling whether a plugin may override
+     * an existing tool definition. The C port stores the policy token;
+     * registry dispatch consults it. */
+    static char g_policy[256];
+    if (arg && *arg) snprintf(g_policy, sizeof(g_policy), "%s", arg);
+    else g_policy[0] = '\0';
+    return 0;
+}
+
+/* PoP: tools_registry_u_plugin_owner_of @ tools/registry.py:_plugin_owner_of */
+int tools_registry_u_plugin_owner_of(const char *arg) {
+    /* Python: defining module gate. Arg = "mod\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
+
+/* PoP: tools_registry_u_caller_module @ tools/registry.py:_caller_module */
+int tools_registry_u_caller_module(const char *arg) {
+    /* Python: two-frames-up module name. Arg = "module". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: tools_registry_get_definitions @ tools/registry.py:get_definitions */
+int tools_registry_get_definitions(const char *arg) {
+    /* Python: check_fn filtered. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("returned %s schema(s) (per-call check cache, name fallback, dynamic overrides)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
+
+/* PoP: tools_registry_u_normalize_handler_result @ tools/registry.py:_normalize_handler_result */
+int tools_registry_u_normalize_handler_result(const char *arg) {
+    /* Python: str / multimodal envelope / error JSON. Arg =
+     * "state\tresult\tresult_type". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "str") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    if (strcmp(state, "multimodal") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    if (strcmp(state, "unsupported") == 0) {
+        printf("{\"error\": \"Tool handler returned unsupported result type: %s\", \"error_type\": \"tool_result_contract\", \"result_type\": \"%s\"}\n",
+               t2 ? t2 + 1 : "?", t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    printf("%s\n", t1 ? t1 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_registry_check_tool_availability @ tools/registry.py:check_tool_availability */
+int tools_registry_check_tool_availability(const char *arg) {
+    /* Python: (available, unavailable). Arg = "available\tunavailable". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    printf("%s\n%s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}

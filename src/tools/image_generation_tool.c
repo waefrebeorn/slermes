@@ -1508,3 +1508,30 @@ char *image_gen_read_configured_image_provider(void)
 }
 
 #endif /* SRC_TOOLS_PORT_IMAGE_GENERATION_TOOL_C */
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_image_generation_tool_check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */
+int tools_image_generation_tool_check_image_generation_requirements(const char *arg) {
+    /* Python: fal or configured plugin. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
+
+/* PoP: tools_image_generation_tool_u_dispatch_to_plugin_provider @ tools/image_generation_tool.py:_dispatch_to_plugin_provider */
+int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) {
+    /* Python: plugin registry route. Arg =
+     * "dispatched\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dispatched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!dispatched) { printf("\n"); return 0; }
+    printf("dispatched via plugin provider (configured != fal; image_url/refs forwarded for edit routing): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}

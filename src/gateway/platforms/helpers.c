@@ -865,3 +865,25 @@ char *canonical_whatsapp_identifier(const char *identifier) {
     json_free(aliases);
     return result;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: gateway_platforms_helpers_discard @ gateway/platforms/helpers.py:discard */
+int gateway_platforms_helpers_discard(const char *arg) {
+    /* Python: self._seen.pop(msg_id, None) — release a claimed message ID
+     * after cancelled/failed handoff. The C port keeps a static seen-set. */
+    static char g_seen_ids[64][128];
+    static int g_seen_count = 0;
+    if (!arg || !*arg) { printf("missing\n"); return 0; }
+    for (int i = 0; i < g_seen_count; i++) {
+        if (strcmp(g_seen_ids[i], arg) == 0) {
+            memmove(&g_seen_ids[i][0], &g_seen_ids[i + 1][0],
+                    (size_t)(g_seen_count - i - 1) * sizeof(g_seen_ids[0]));
+            g_seen_count--;
+            printf("discarded %s\n", arg);
+            return 0;
+        }
+    }
+    printf("absent %s\n", arg);
+    return 0;
+}

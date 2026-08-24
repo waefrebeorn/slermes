@@ -50,3 +50,19 @@ char *cli_tools_debug_helpers_get_session_info(const debug_session_t *session)
 
     return json;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_debug_helpers_log_call @ tools/debug_helpers.py:log_call */
+int tools_debug_helpers_log_call(const char *arg) {
+    /* Python: append {timestamp, tool_name, **data} to in-memory log when
+     * enabled. Arg = "enabled\ttool_name\tdata_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int enabled = (arg[0] == '1');
+    if (!enabled) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t1 && t1[1]) printf("logged %s\n", t1 + 1);
+    (void)t2;
+    return 0;
+}

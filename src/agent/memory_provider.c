@@ -260,3 +260,78 @@ int memory_provider_is_trivial_prompt(const char *text) {
     return 0;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: agent_memory_provider_queue_prefetch @ agent/memory_provider.py:queue_prefetch */
+int agent_memory_provider_queue_prefetch(const char *arg) {
+    /* Python: default no-op — providers that background-prefetch override. */
+    (void)arg;
+    printf("no-op\n");
+    return 0;
+}
+
+/* PoP: agent_memory_provider_sync_turn @ agent/memory_provider.py:sync_turn */
+int agent_memory_provider_sync_turn(const char *arg) {
+    /* Python: persist completed turn (abstract, providers implement). Arg =
+     * "turn_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("turn synced: %s\n", arg);
+    return 0;
+}
+
+/* PoP: agent_memory_provider_on_turn_start @ agent/memory_provider.py:on_turn_start */
+int agent_memory_provider_on_turn_start(const char *arg) {
+    /* Python: default no-op hook (kwargs ignored). */
+    (void)arg;
+    printf("no-op\n");
+    return 0;
+}
+
+/* PoP: agent_memory_provider_on_session_switch @ agent/memory_provider.py:on_session_switch */
+int agent_memory_provider_on_session_switch(const char *arg) {
+    /* Python: session-switch hook. Arg =
+     * "new_session\treset\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("default no-op\n"); return 0; }
+    printf("provider switched to session: %s%s\n", t3 ? t3 + 1 : "", (t1 && t1[1] == '1') ? " (reset buffers)" : "");
+    return 0;
+}
+
+/* PoP: agent_memory_provider_on_pre_compress @ agent/memory_provider.py:on_pre_compress */
+int agent_memory_provider_on_pre_compress(const char *arg) {
+    /* Python: extract insights or empty string (default). Arg = messages
+     * JSON. */
+    (void)arg;
+    printf("\n");
+    return 0;
+}
+
+/* PoP: agent_memory_provider_on_delegation @ agent/memory_provider.py:on_delegation */
+int agent_memory_provider_on_delegation(const char *arg) {
+    /* Python: observation hook on parent when subagent completes (no-op
+     * base; subclasses record). Arg = "task\tresult\tchild". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("delegation observed: task=%.*s child=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: agent_memory_provider_on_memory_write @ agent/memory_provider.py:on_memory_write */
+int agent_memory_provider_on_memory_write(const char *arg) {
+    /* Python: mirror hook (abstract). Arg = "action\ttarget\tcontent". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("memory write: action=%.*s target=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t1 ? t1 + 1 : "");
+    return 0;
+}

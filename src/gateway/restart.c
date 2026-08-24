@@ -77,3 +77,17 @@ bool is_fresh_gateway_interruption(double timestamp, double now, double window_s
     return (now - timestamp) <= window_secs;
 }
 
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: gateway_restart_is_gateway_supervisor_process @ gateway/restart.py:is_gateway_supervisor_process */
+int gateway_restart_is_gateway_supervisor_process(const char *arg) {
+    /* Python: INVOCATION_ID / s6 / XPC / EXTERNAL env truthy. Arg =
+     * "flags\ttruthy" (flags = i/s/x per char). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') { printf("1\n"); return 0; }
+    if (strchr(arg, 'i') || strchr(arg, 's') || strchr(arg, 'x')) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}

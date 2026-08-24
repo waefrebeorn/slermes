@@ -127,3 +127,16 @@ int cli_tools_mixture_of_agents_tool_get_moa_configuration(
              "\"min_successful_references\":1}");
     return 0;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_mixture_of_agents_tool_u_build_auth_header @ tools/mixture_of_agents_tool.py:_build_auth_header */
+int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) {
+    /* Python: env key. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Bearer %s\n", tab ? tab + 1 : "***");
+    return 0;
+}

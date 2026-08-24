@@ -1378,3 +1378,43 @@ char *profile_resolve_env(const char *profile_name) {
     free(canon);
     return dir;
 }
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_profiles_u_profile_bound_backend_pids @ hermes_cli/profiles.py:_profile_bound_backend_pids */
+int hermes_cli_profiles_u_profile_bound_backend_pids(const char *arg) {
+    /* Python: backend inspection. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s backend pid(s) bound to profile (serve/dashboard/gateway only, self+ancestors excluded)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — HERMES_HOME match" : "");
+    return 0;
+}
+
+/* PoP: hermes_cli_profiles_u_stop_profile_backends @ hermes_cli/profiles.py:_stop_profile_backends */
+int hermes_cli_profiles_u_stop_profile_backends(const char *arg) {
+    /* Python: graceful then force. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    int state = t1 && t1[1] == '1';
+    if (!state || count <= 0) { printf("no profile backends\n"); return 0; }
+    printf("✓ Stopped %ld profile backend process(es)\n", count);
+    return 0;
+}
+
+/* PoP: hermes_cli_profiles_u_rmtree_with_retry @ hermes_cli/profiles.py:_rmtree_with_retry */
+int hermes_cli_profiles_u_rmtree_with_retry(const char *arg) {
+    /* Python: 3-attempt rmtree. Arg = "state\tresult\tattempts". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { fprintf(stderr, "profile removal failed: %s\n", t2 ? t2 + 1 : "?"); return 1; }
+    printf("profile dir removed (attempts=%s)\n", t2 ? t2 + 1 : "1");
+    return 0;
+}

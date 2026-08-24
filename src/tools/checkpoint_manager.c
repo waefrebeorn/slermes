@@ -1311,3 +1311,61 @@ char *cli_tools_checkpoint_manager_session_diff(const char *working_dir) {
 }
 
 /* Port of Python tools/checkpoint_manager.py:_repair_bare_repo_dirs */
+
+
+/* === dissolved from ports_wrappers.c === */
+/* PoP: tools_checkpoint_manager_u_volume_evidence @ tools/checkpoint_manager.py:_volume_evidence */
+int tools_checkpoint_manager_u_volume_evidence(const char *arg) {
+    /* Python: parent dev/ino. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
+
+/* PoP: tools_checkpoint_manager_u_pre_v2_shadow_repos @ tools/checkpoint_manager.py:_pre_v2_shadow_repos */
+int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) {
+    /* Python: pre-v2 scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
+
+/* PoP: tools_checkpoint_manager_u_workdir_is_observably_gone @ tools/checkpoint_manager.py:_workdir_is_observably_gone */
+int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
+    /* Python: 3-step corroboration. Arg =
+     * "gone\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int gone = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!gone) { printf("0 (parent missing = volume absent — know nothing)\n"); return 0; }
+    printf("1 (parent present + identity matched + gone: %s)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
+
+/* PoP: tools_checkpoint_manager_u_dir_has_any_entry @ tools/checkpoint_manager.py:_dir_has_any_entry */
+int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
+    /* Python: scandir stops at first entry. Arg = directory. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    DIR *d = opendir(arg);
+    if (!d) { printf("0\n"); return 0; }
+    struct dirent *e;
+    int any = 0;
+    while ((e = readdir(d))) {
+        if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
+        any = 1;
+        break;
+    }
+    closedir(d);
+    printf("%d\n", any);
+    return 0;
+}
