@@ -4598,3 +4598,22 @@ void hermes_state_mask_volatile_header(unsigned char *head, size_t len) {
     memset(head + 24, 0, 4);
     memset(head + 92, 0, 4);
 }
+
+/* PoP: hermes_state_repair_snapshot_timeout_seconds @ hermes_state.py:_repair_snapshot_timeout_seconds */
+double hermes_state_repair_snapshot_timeout_seconds(const char *source_path) {
+    /* Bound one SQLite snapshot by source size incl. live sidecars:
+     * max(120.0, total_bytes / 10 MiB/s). */
+    if (!source_path || !*source_path) return 120.0;
+    double source_bytes = 0.0;
+    static const char *SUF[] = { "", "-wal", "-shm", "-journal" };
+    for (int i = 0; i < 4; i++) {
+        char cand[4200];
+        snprintf(cand, sizeof(cand), "%s%s", source_path, SUF[i]);
+        struct stat st;
+        if (stat(cand, &st) == 0) source_bytes += (double)st.st_size;
+    }
+    const double LOCK_TIMEOUT = 120.0;
+    const double MIN_THROUGHPUT = 10.0 * 1024.0 * 1024.0;
+    double by_size = source_bytes / MIN_THROUGHPUT;
+    return (by_size > LOCK_TIMEOUT) ? by_size : LOCK_TIMEOUT;
+}
