@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T14:52:31Z from `live_parity_scan.json` by `make parity-walkway`. **2,109 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T15:29:26Z from `live_parity_scan.json` by `make parity-walkway`. **2,097 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -478,7 +478,7 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (217 gaps)
+### cli.py (211 gaps)
 
 - _arm_exit_watchdog (function)
 - _arm_exit_watchdog_on_shutdown_signal (function)
@@ -526,14 +526,11 @@
 - HermesCLI._force_full_redraw (method)
 - HermesCLI._schedule_focus_regain_redraw (method)
 - HermesCLI._clear_prompt_toolkit_screen (method)
-- HermesCLI._recover_after_resize (method)
 - HermesCLI._schedule_resize_recovery (method)
 - HermesCLI._install_resize_recovery (method)
-- HermesCLI._get_status_bar_snapshot (method)
 - HermesCLI._status_bar_display_width (method)
 - HermesCLI._use_minimal_tui_chrome (method)
 - HermesCLI._tui_input_rule_height (method)
-- HermesCLI._spinner_widget_height (method)
 - HermesCLI._render_spinner_text (method)
 - HermesCLI._on_reaction (method)
 - HermesCLI._voice_record_key_label (method)
@@ -549,7 +546,6 @@
 - HermesCLI._format_submitted_user_message_preview (method)
 - HermesCLI._expand_paste_references (method)
 - HermesCLI._close_reasoning_box (method)
-- HermesCLI._stream_delta (method)
 - HermesCLI._emit_stream_text (method)
 - HermesCLI._flush_stream (method)
 - HermesCLI._reset_stream_state (method)
@@ -681,8 +677,6 @@
 - HermesCLI._clarify_batch_enter (method)
 - HermesCLI._clarify_callback_batch (method)
 - HermesCLI._sudo_password_callback (method)
-- HermesCLI._approval_callback (method)
-- HermesCLI._approval_choices (method)
 - HermesCLI._get_approval_display_fragments (method)
 - HermesCLI._secret_capture_callback (method)
 - HermesCLI._capture_modal_input_snapshot (method)
@@ -811,22 +805,17 @@
 - PlatformRegistry.is_deferred_load_cancelled (method)
 - PlatformRegistry.registered_names (method)
 
-### gateway/platforms/api_server.py (100 gaps)
+### gateway/platforms/api_server.py (94 gaps)
 
 - _prefix_names_served_profile (function)
 - _ArtifactScopeFacade.__repr__ (method)
 - _approval_event_choices (function)
 - _browser_controller_ws_sender (function)
 - ThreadSafeAsyncQueue.put_threadsafe (method)
-- _clean_request_string (function)
 - _request_reasoning_config (function)
-- _request_service_tier (function)
 - _apply_runtime_agent_overrides (function)
 - _resolve_request_runtime_agent_kwargs (function)
 - _request_agent_overrides (function)
-- _is_compressed_summary_message (function)
-- _project_client_message (function)
-- _auto_truncate_response_history (function)
 - _multimodal_validation_error (function)
 - _session_chat_user_message (function)
 - check_api_server_requirements (function)
@@ -834,7 +823,6 @@
 - ResponseStore.__len__ (method)
 - async cors_middleware (function)
 - _resolve_media_to_data_urls (function)
-- _redact_api_error_text (function)
 - _openai_error (function)
 - _admit_api_agent_request (function)
 - _release_pending_api_work (function)
