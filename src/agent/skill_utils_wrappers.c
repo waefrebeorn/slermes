@@ -353,14 +353,6 @@ int sku_is_skill_description_truncated_for_prompt(const char *arg) {
     return trunc;
 }
 
-/* PoP: sku_iter_skill_index_files @ agent/skill_utils.py:iter_skill_index_files */
-int sku_iter_skill_index_files(const char *arg) {
-    /* Python: sorted index file walk. Arg = "files" (tab-sep). */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    printf("%s\n", arg);
-    return 0;
-}
-
 /* PoP: sku_parse_qualified_name @ agent/skill_utils.py:parse_qualified_name */
 int sku_parse_qualified_name(const char *arg) {
     /* Python: (None, name) without ':'; else (ns, bare) split on first.

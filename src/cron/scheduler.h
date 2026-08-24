@@ -151,4 +151,11 @@ bool cron_job_set_model(const char *name, const char *model,
                          const char *provider, const char *base_url);
 int cron_run_agent_job(struct cron_job_t *job);
 
+/* ── In-flight guard + bot-chat deliver token (parity batch) ──────── */
+void sched_record_forced_release(const char *job_id, const char *name,
+                                 double age_seconds, double allowance_seconds);
+json_t *sched_get_inflight_guard_stats(void);
+json_t *sched_sweep_stale_inflight(const json_t *due_jobs);
+char *sched_parse_bot_chat_deliver_token(const char *part);
+
 #endif /* CRON_SCHEDULER_H */

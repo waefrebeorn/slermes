@@ -11,6 +11,7 @@
 #include "hermes_core_types.h"
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -888,4 +889,594 @@ int config_py_save_value(const char *dotted_key, json_t *value) {
     int rc = config_py_atomic_config_write(path, cfg);
     json_free(cfg);
     return rc;
+}
+
+/* ============================================================
+ * hermes_cli/config.py REAL_GAP closures — pure config helpers.
+ * C names use the bare stripped Python names (module "config" makes
+ * config_-style prefixes invisible to the parity scanner).
+ * ============================================================ */
+
+#include <limits.h>
+#include "cron_jobs.h"
+#include "port_personality.h"
+
+/* TURN_LIMIT_UNLIMITED = sys.maxsize (hermes_cli/config.py:3092). */
+#define SLERMES_TURN_LIMIT_UNLIMITED ((long)LONG_MAX)
+
+/* _NIX_MANAGED_SYSTEMS = {"nixos", "home-manager"} (config.py:342). */
+static const char *const s_nix_managed_systems[] = {"nixos", "home-manager", NULL};
+
+/* PoP: is_nix_install_method @ hermes_cli/config.py:is_nix_install_method */
+bool is_nix_install_method(const char *method) {
+    if (!method) return false;
+    if (strcmp(method, "nix") == 0) return true;
+    for (int i = 0; s_nix_managed_systems[i]; i++) {
+        if (strcmp(method, s_nix_managed_systems[i]) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: get_custom_provider_model_capability @ hermes_cli/config.py:get_custom_provider_model_capability
+ * Returns a new json bool node, or NULL when no explicit boolean capability
+ * is declared. When custom_providers is NULL the read-only merged config's
+ * compatible custom-provider view is loaded (read-only path, never mutated). */
+json_t *get_custom_provider_model_capability(const char *model,
+                                             const char *base_url,
+                                             const char *capability,
+                                             const json_t *custom_providers) {
+    if (!model || !*model || !base_url || !*base_url || !capability || !*capability)
+        return NULL;
+
+    json_t *providers = NULL;
+    json_t *loaded_config = NULL;
+    if (!custom_providers) {
+        loaded_config = config_py_load_config_readonly();
+        if (!loaded_config) return NULL;
+        providers = config_py_get_compatible_custom_providers(loaded_config);
+        if (!providers) { json_free(loaded_config); return NULL; }
+    } else {
+        providers = (json_t *)custom_providers;
+    }
+
+    char *target_url_raw = config_normalize_route_base_url(base_url);
+    json_t *result = NULL;
+    if (target_url_raw && *target_url_raw && providers->type == JSON_ARRAY) {
+        size_t n = json_array_size(providers);
+        for (size_t i = 0; i < n && !result; i++) {
+            json_t *entry = json_get(providers, i);
+            if (!entry || entry->type != JSON_OBJECT) continue;
+            /* Python: normalize_route_base_url(entry.get("base_url")) — a
+             * missing base_url normalizes from None → "" and never matches. */
+            json_t *eb = json_obj_get(entry, "base_url");
+            char *entry_url =
+                (eb && eb->type == JSON_STRING) ? config_normalize_route_base_url(eb->str_val)
+                                                : strdup("");
+            if (entry_url && *entry_url && strcmp(entry_url, target_url_raw) == 0) {
+                json_t *models = json_obj_get(entry, "models");
+                if (models && models->type == JSON_OBJECT) {
+                    json_t *model_cfg = json_obj_get(models, model);
+                    if (model_cfg && model_cfg->type == JSON_OBJECT) {
+                        json_t *value = json_obj_get(model_cfg, capability);
+                        if (value && value->type == JSON_BOOL) {
+                            result = json_bool(value->bool_val);
+                        }
+                    }
+                }
+            }
+            free(entry_url);
+        }
+    }
+    free(target_url_raw);
+
+    if (loaded_config) {
+        json_free(providers);
+        json_free(loaded_config);
+    }
+    return result;
+}
+
+/* PoP: split_model_config_default @ hermes_cli/config.py:split_model_config_default
+ * Canonicalize a config ``model.default``/``model.model`` value.
+ * A dict-valued default pairs the model string with the provider it must be
+ * routed through; anything else canonicalizes to (str(raw).strip(), "").
+ * Both out params are malloc'd (possibly ""); either may be NULL to skip. */
+void split_model_config_default(const json_t *raw_default, char **out_model,
+                                char **out_provider) {
+    char *model = strdup(""), *provider = strdup("");
+    if (raw_default && raw_default->type == JSON_OBJECT) {
+        json_t *prov = json_obj_get(raw_default, "provider");
+        const char *ptext = (prov && prov->type == JSON_STRING) ? prov->str_val : "";
+        /* str(x or "") then strip: non-string truthy values stringify via str(). */
+        char pbuf[64];
+        if (prov && prov->type != JSON_STRING && prov->type != JSON_NULL) {
+            snprintf(pbuf, sizeof(pbuf), "%g", prov->num_val);
+            ptext = pbuf;
+        }
+        free(provider);
+        provider = strdup(ptext ? ptext : "");
+        char *ps = provider;
+        while (*ps && isspace((unsigned char)*ps)) ps++;
+        memmove(provider, ps, strlen(ps) + 1);
+        size_t plen = strlen(provider);
+        while (plen > 0 && isspace((unsigned char)provider[plen - 1])) provider[--plen] = '\0';
+
+        /* model = raw.get("model") or raw.get("default") */
+        json_t *mv = json_obj_get(raw_default, "model");
+        if (!mv || mv->type == JSON_NULL) mv = json_obj_get(raw_default, "default");
+        if (mv) {
+            if (mv->type == JSON_STRING) {
+                free(model);
+                model = strdup(mv->str_val ? mv->str_val : "");
+            } else if (mv->type == JSON_NUMBER) {
+                free(model);
+                char mbuf[64];
+                snprintf(mbuf, sizeof(mbuf), "%g", mv->num_val);
+                model = strdup(mbuf);
+            } else if (mv->type == JSON_BOOL) {
+                free(model);
+                model = strdup("True");   /* str(True) */
+            }
+        }
+        char *ms = model;
+        while (*ms && isspace((unsigned char)*ms)) ms++;
+        memmove(model, ms, strlen(ms) + 1);
+        size_t mlen = strlen(model);
+        while (mlen > 0 && isspace((unsigned char)model[mlen - 1])) model[--mlen] = '\0';
+    } else if (raw_default && raw_default->type != JSON_NULL) {
+        char buf[256];
+        if (raw_default->type == JSON_STRING) {
+            snprintf(buf, sizeof(buf), "%s", raw_default->str_val ? raw_default->str_val : "");
+        } else if (raw_default->type == JSON_NUMBER) {
+            snprintf(buf, sizeof(buf), "%g", raw_default->num_val);
+        } else {
+            snprintf(buf, sizeof(buf), "%s", raw_default->bool_val ? "True" : "False");
+        }
+        free(model);
+        model = strdup(buf);
+        char *ms = model;
+        while (*ms && isspace((unsigned char)*ms)) ms++;
+        memmove(model, ms, strlen(ms) + 1);
+        size_t mlen = strlen(model);
+        while (mlen > 0 && isspace((unsigned char)model[mlen - 1])) model[--mlen] = '\0';
+    }
+    if (out_model) *out_model = model; else free(model);
+    if (out_provider) *out_provider = provider; else free(provider);
+}
+
+static int cpi_str_in_set(const char *s, const char *const *set) {
+    for (int i = 0; set[i]; i++)
+        if (strcmp(s, set[i]) == 0) return 1;
+    return 0;
+}
+
+/* PoP: resolve_turn_limit @ hermes_cli/config.py:resolve_turn_limit
+ * Normalize a raw ``agent.max_turns`` value into an iteration cap.
+ * null/bool/unparseable → default; numbers ≤ 0 and the unlimited spellings →
+ * LONG_MAX; numeric strings parse via long then double fallback. Always ≥ 1. */
+long resolve_turn_limit(const json_t *raw, long default_value) {
+    static const char *const unlimited_spellings[] = {
+        "none", "null", "unlimited", "infinite", "infinity", "inf",
+        "\xe2\x88\x9e", "-1", "0", NULL, /* \u221e = infinity sign */
+    };
+    if (!raw || raw->type == JSON_NULL) return default_value;
+    if (raw->type == JSON_BOOL) return default_value;  /* bool rejected explicitly */
+    if (raw->type == JSON_NUMBER) {
+        long n = (long)raw->num_val;   /* int(raw): truncates floats */
+        if (n <= 0) return SLERMES_TURN_LIMIT_UNLIMITED;
+        return n;
+    }
+    if (raw->type == JSON_STRING) {
+        const char *p = raw->str_val ? raw->str_val : "";
+        while (*p && isspace((unsigned char)*p)) p++;
+        char s[128];
+        snprintf(s, sizeof(s), "%s", p);
+        size_t slen = strlen(s);
+        while (slen > 0 && isspace((unsigned char)s[slen - 1])) s[--slen] = '\0';
+        for (char *q = s; *q; q++) *q = (char)tolower((unsigned char)*q);
+        if (!s[0]) return default_value;
+        if (cpi_str_in_set(s, unlimited_spellings)) return SLERMES_TURN_LIMIT_UNLIMITED;
+        /* try: n = int(s); except: n = int(float(s)); except: return default */
+        char *end = NULL;
+        errno = 0;
+        long n = strtol(s, &end, 10);
+        if (end == s || (end && *end != '\0') || errno == ERANGE) {
+            errno = 0;
+            double d = strtod(s, &end);
+            if (end == s || (end && *end != '\0')) return default_value;  /* unparseable */
+            n = (long)d;   /* int(float(s)) truncates toward zero */
+        }
+        if (n <= 0) return SLERMES_TURN_LIMIT_UNLIMITED;
+        return n;
+    }
+    /* Unknown type (list, dict, …) — don't crash the agent over bad config. */
+    return default_value;
+}
+
+/* PoP: render_personality_prompt @ hermes_cli/config.py:render_personality_prompt
+ * Delegates to hermes_cli/personality.py:render_personality_prompt
+ * (single owner), ported as per_render_personality_prompt. Caller frees. */
+char *render_personality_prompt(const json_t *value) {
+    return per_render_personality_prompt(value);
+}
+
+/* TERMINAL_CONFIG_ENV_MAP (hermes_cli/config.py:3491). */
+static const struct { const char *key; const char *env_var; }
+s_terminal_config_env_map[] = {
+    {"backend", "TERMINAL_ENV"},
+    {"modal_mode", "TERMINAL_MODAL_MODE"},
+    {"degraded_mode", "TERMINAL_DEGRADED_MODE"},
+    {"cwd", "TERMINAL_CWD"},
+    {"timeout", "TERMINAL_TIMEOUT"},
+    {"lifetime_seconds", "TERMINAL_LIFETIME_SECONDS"},
+    {"docker_image", "TERMINAL_DOCKER_IMAGE"},
+    {"docker_forward_env", "TERMINAL_DOCKER_FORWARD_ENV"},
+    {"singularity_image", "TERMINAL_SINGULARITY_IMAGE"},
+    {"modal_image", "TERMINAL_MODAL_IMAGE"},
+    {"daytona_image", "TERMINAL_DAYTONA_IMAGE"},
+    {"vercel_runtime", "TERMINAL_VERCEL_RUNTIME"},
+    {"ssh_host", "TERMINAL_SSH_HOST"},
+    {"ssh_user", "TERMINAL_SSH_USER"},
+    {"ssh_port", "TERMINAL_SSH_PORT"},
+    {"ssh_key", "TERMINAL_SSH_KEY"},
+    {"container_cpu", "TERMINAL_CONTAINER_CPU"},
+    {"container_memory", "TERMINAL_CONTAINER_MEMORY"},
+    {"container_disk", "TERMINAL_CONTAINER_DISK"},
+    {"container_persistent", "TERMINAL_CONTAINER_PERSISTENT"},
+    {"docker_volumes", "TERMINAL_DOCKER_VOLUMES"},
+    {"docker_env", "TERMINAL_DOCKER_ENV"},
+    {"docker_mount_cwd_to_workspace", "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE"},
+    {"docker_network", "TERMINAL_DOCKER_NETWORK"},
+    {"docker_extra_args", "TERMINAL_DOCKER_EXTRA_ARGS"},
+    {"docker_shm_size", "TERMINAL_DOCKER_SHM_SIZE"},
+    {"docker_run_as_host_user", "TERMINAL_DOCKER_RUN_AS_HOST_USER"},
+    {"docker_persist_across_processes", "TERMINAL_DOCKER_PERSIST_ACROSS_PROCESSES"},
+    {"docker_orphan_reaper", "TERMINAL_DOCKER_ORPHAN_REAPER"},
+    {"sandbox_dir", "TERMINAL_SANDBOX_DIR"},
+    {"persistent_shell", "TERMINAL_PERSISTENT_SHELL"},
+    {NULL, NULL},
+};
+
+/* PoP: cli_terminal_config_value_is_bridgeable @ hermes_cli/config.py:_terminal_config_value_is_bridgeable */
+static bool cli_terminal_config_value_is_bridgeable(const char *key, const json_t *value) {
+    if (strcmp(key, "cwd") == 0) {
+        char buf[256];
+        if (value && value->type == JSON_STRING) {
+            snprintf(buf, sizeof(buf), "%s", value->str_val ? value->str_val : "");
+        } else if (value && value->type == JSON_NUMBER) {
+            snprintf(buf, sizeof(buf), "%g", value->num_val);
+        } else if (value && value->type == JSON_BOOL) {
+            snprintf(buf, sizeof(buf), "%s", value->bool_val ? "True" : "False");
+        } else {
+            buf[0] = '\0';   /* str(None or "") == "" */
+        }
+        char *s = buf;
+        while (*s && isspace((unsigned char)*s)) s++;
+        size_t n = strlen(s);
+        while (n > 0 && isspace((unsigned char)s[n - 1])) s[--n] = '\0';
+        if (strcmp(s, ".") == 0 || strcmp(s, "auto") == 0 || strcmp(s, "cwd") == 0)
+            return false;
+    }
+    return true;
+}
+
+/* PoP: terminal_config_owned_env_vars @ hermes_cli/config.py:terminal_config_owned_env_vars
+ * Env vars explicitly owned by a raw ``terminal`` config section. Non-dict
+ * input → empty set. Returns a new JSON array of env-var name strings. */
+json_t *terminal_config_owned_env_vars(const json_t *terminal_config) {
+    json_t *owned = json_array();
+    if (!terminal_config || terminal_config->type != JSON_OBJECT) return owned;
+    for (int i = 0; s_terminal_config_env_map[i].key; i++) {
+        json_t *value = json_obj_get(terminal_config, s_terminal_config_env_map[i].key);
+        if (!value) continue;
+        if (!cli_terminal_config_value_is_bridgeable(s_terminal_config_env_map[i].key, value))
+            continue;
+        json_append(owned, json_string(s_terminal_config_env_map[i].env_var));
+    }
+    return owned;
+}
+
+/* ---- cron model-drift helpers (hermes_cli/config.py:4884-5105) ---- */
+
+/* _model_assignment_text: trimmed scalar string value, or "". Caller frees. */
+static char *cpi_model_assignment_text(const json_t *value) {
+    if (value && value->type == JSON_STRING && value->str_val) {
+        char *s = strdup(value->str_val);
+        char *p = s;
+        while (*p && isspace((unsigned char)*p)) p++;
+        memmove(s, p, strlen(p) + 1);
+        size_t n = strlen(s);
+        while (n > 0 && isspace((unsigned char)s[n - 1])) s[--n] = '\0';
+        return s;
+    }
+    return strdup("");
+}
+
+/* PoP: cli_cron_model_drift_guard_enabled @ hermes_cli/config.py:cron_model_drift_guard_enabled
+ * Only the literal YAML boolean false disables this fail-closed spend guard. */
+static bool cli_cron_model_drift_guard_enabled(const json_t *config) {
+    if (!config) {
+        json_t *cfg = config_py_load_config_readonly();
+        bool enabled = cli_cron_model_drift_guard_enabled(cfg);
+        if (cfg) json_free(cfg);
+        return enabled;
+    }
+    if (config->type != JSON_OBJECT) return true;
+    json_t *cron_cfg = json_obj_get(config, "cron");
+    if (!cron_cfg || cron_cfg->type != JSON_OBJECT) return true;
+    json_t *guard = json_obj_get(cron_cfg, "model_drift_guard");
+    if (!guard || guard->type != JSON_BOOL) return true;   /* default True */
+    return guard->bool_val != false;
+}
+
+/* PoP: cli_cron_fleet_default_covers_axis @ hermes_cli/config.py:_cron_fleet_default_covers_axis
+ * True when cron.model / cron.model_provider covers *axis*. */
+static bool cli_cron_fleet_default_covers_axis(const char *axis, const json_t *config) {
+    if (!config) {
+        json_t *cfg = config_py_load_config_readonly();
+        bool covers = cli_cron_fleet_default_covers_axis(axis, cfg);
+        if (cfg) json_free(cfg);
+        return covers;
+    }
+    if (config->type != JSON_OBJECT) return false;
+    json_t *cron_cfg = json_obj_get(config, "cron");
+    if (!cron_cfg || cron_cfg->type != JSON_OBJECT) return false;
+    const char *key = (strcmp(axis, "model") == 0) ? "model" : "model_provider";
+    json_t *value = json_obj_get(cron_cfg, key);
+    if (!value || value->type != JSON_STRING) return false;
+    char *t = cpi_model_assignment_text(value);
+    bool covered = t[0] != '\0';
+    free(t);
+    return covered;
+}
+
+/* PoP: resolve_cron_model_drift_defaults @ hermes_cli/config.py:resolve_cron_model_drift_defaults
+ * Global provider/model values cron compares against snapshots. Truthy
+ * configured model wins HERMES_MODEL; the environment is only a fallback.
+ * Both out strings are malloc'd; either may be NULL to skip. */
+void resolve_cron_model_drift_defaults(const json_t *config, char **out_provider,
+                                       char **out_model) {
+    char *provider = strdup("");
+    char *model = cpi_model_assignment_text(NULL);
+    free(model);
+    const char *env_model = getenv("HERMES_MODEL");
+    model = strdup(env_model ? env_model : "");
+    {
+        char *t = model;
+        while (*t && isspace((unsigned char)*t)) t++;
+        memmove(model, t, strlen(t) + 1);
+        size_t n = strlen(model);
+        while (n > 0 && isspace((unsigned char)model[n - 1])) model[--n] = '\0';
+    }
+    json_t *model_config = NULL;
+    if (config && config->type == JSON_OBJECT)
+        model_config = json_obj_get(config, "model");
+    if (model_config && model_config->type == JSON_STRING) {
+        free(model);
+        model = cpi_model_assignment_text(model_config);
+    } else if (model_config && model_config->type == JSON_OBJECT) {
+        free(provider);
+        json_t *prov = json_obj_get(model_config, "provider");
+        provider = cpi_model_assignment_text(prov);
+        json_t *mv = json_obj_get(model_config, "default");
+        if (!mv || mv->type == JSON_NULL) mv = json_obj_get(model_config, "model");
+        if (!mv || mv->type == JSON_NULL) mv = json_obj_get(model_config, "name");
+        char *configured = cpi_model_assignment_text(mv);
+        if (configured[0]) {
+            free(model);
+            model = configured;
+        } else {
+            free(configured);
+        }
+    }
+    if (out_provider) *out_provider = provider; else free(provider);
+    if (out_model) *out_model = model; else free(model);
+}
+
+/* PoP: cron_model_drift_axes @ hermes_cli/config.py:cron_model_drift_axes
+ * The unpinned axes ("provider"/"model") that the fail-closed cron guard
+ * would block, given the current assignment vs each job's snapshot.
+ * Returns a new JSON array of axis-name strings ([] when nothing drifts). */
+json_t *cron_model_drift_axes(const json_t *job, const char *current_provider,
+                              const char *current_model, const json_t *config) {
+    json_t *drifted = json_array();
+    if (!job || job->type != JSON_OBJECT) return drifted;
+    if (!cli_cron_model_drift_guard_enabled(config)) return drifted;
+
+    char cur_lower[2][512];
+    const char *cur_raw[2] = {current_provider, current_model};
+    for (int i = 0; i < 2; i++) {
+        snprintf(cur_lower[i], sizeof(cur_lower[i]), "%s", cur_raw[i] ? cur_raw[i] : "");
+        for (char *q = cur_lower[i]; *q; q++) *q = (char)tolower((unsigned char)*q);
+    }
+
+    static const char axes[2][9] = {"provider", "model"};
+    for (int i = 0; i < 2; i++) {
+        const char *axis = axes[i];
+        if (cli_cron_fleet_default_covers_axis(axis, config)) continue;
+        char key[64];
+        snprintf(key, sizeof(key), "%s", axis);
+        char *pinned = cpi_model_assignment_text(json_obj_get(job, key));
+        bool has_pinned = pinned[0] != '\0';
+        free(pinned);
+        if (has_pinned) continue;
+        snprintf(key, sizeof(key), "%s_snapshot", axis);
+        json_t *snap_node = json_obj_get(job, key);
+        char *snapshot = cpi_model_assignment_text(snap_node);
+        for (char *q = snapshot; *q; q++) *q = (char)tolower((unsigned char)*q);
+        const char *current = cur_lower[i];
+        bool drifted_here =
+            snapshot[0] != '\0' && current[0] != '\0' && strcmp(snapshot, current) != 0;
+        free(snapshot);
+        if (drifted_here) json_append(drifted, json_string(axis));
+    }
+    return drifted;
+}
+
+#define CRON_MODEL_IMPACT_JOB_LIMIT 50
+#define CRON_MODEL_IMPACT_ID_LIMIT 256
+#define CRON_MODEL_IMPACT_NAME_LIMIT 120
+
+/* Unicode category C* ≈ control characters: C0 controls, DEL, C1 controls. */
+static bool cpi_has_control_char(const char *s) {
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+        if (*p < 0x20 || *p == 0x7f || (*p >= 0x80 && *p <= 0x9f)) return true;
+    }
+    return false;
+}
+
+static char *cpi_valid_cron_impact_job_id(const json_t *value) {
+    if (!value || value->type != JSON_STRING) return strdup("");
+    char *job_id = cpi_model_assignment_text(value);
+    size_t n = strlen(job_id);
+    if (!n || n > CRON_MODEL_IMPACT_ID_LIMIT || cpi_has_control_char(job_id)) {
+        free(job_id);
+        return strdup("");
+    }
+    return job_id;
+}
+
+/* Collapse all whitespace runs to single spaces, drop control chars, clip. */
+static void cpi_squash_ws(char *s, size_t limit) {
+    char *out = s, *p = s;
+    bool in_ws = false;
+    while (*p) {
+        if (isspace((unsigned char)*p)) {
+            in_ws = (out != s);
+        } else {
+            if (in_ws && out != s) *out++ = ' ';
+            in_ws = false;
+            *out++ = *p;
+            if ((size_t)(out - s) >= limit) break;
+        }
+        p++;
+    }
+    *out = '\0';
+}
+
+static char *cpi_cron_impact_job_name(const json_t *value, const char *job_id) {
+    if (value && value->type == JSON_STRING && value->str_val &&
+        !cpi_has_control_char(value->str_val) && value->str_val[0]) {
+        char *name = strdup(value->str_val);
+        cpi_squash_ws(name, CRON_MODEL_IMPACT_NAME_LIMIT);
+        size_t n = strlen(name);
+        while (n > 0 && isspace((unsigned char)name[n - 1])) name[--n] = '\0';
+        if (name[0]) return name;
+        free(name);
+    }
+    char buf[CRON_MODEL_IMPACT_NAME_LIMIT + 16];
+    snprintf(buf, sizeof(buf), "Job %s", job_id ? job_id : "");
+    buf[CRON_MODEL_IMPACT_NAME_LIMIT] = '\0';
+    char *name = strdup(buf);
+    size_t n = strlen(name);
+    while (n > 0 && isspace((unsigned char)name[n - 1])) name[--n] = '\0';
+    return name;
+}
+
+static json_t *cpi_unavailable_cron_model_impact(bool guard_enabled) {
+    json_t *r = json_object();
+    json_set(r, "available", json_bool(false));
+    json_set(r, "guard_enabled", json_bool(guard_enabled));
+    json_set(r, "affected_count", json_int(0));
+    json_set(r, "truncated", json_bool(false));
+    json_set(r, "jobs", json_array());
+    return r;
+}
+
+/* PoP: build_cron_model_impact @ hermes_cli/config.py:build_cron_model_impact
+ * Bounded, profile-local summary of jobs blocked by model drift. Job-store
+ * inspection is best effort: an unreadable store yields available=false.
+ * When jobs is NULL the active profile's store is loaded via cron/jobs.py. */
+json_t *build_cron_model_impact(const char *current_provider, const char *current_model,
+                                const json_t *config, const json_t *jobs) {
+    bool guard_enabled = cli_cron_model_drift_guard_enabled(config);
+
+    json_t *jobs_list = NULL;
+    bool owned_jobs = false;
+    if (!jobs) {
+        char *err = NULL;
+        jobs_list = cronjobs_load_jobs(&err);
+        free(err);
+        owned_jobs = true;
+        if (!jobs_list) return cpi_unavailable_cron_model_impact(guard_enabled);
+    } else {
+        jobs_list = (json_t *)jobs;
+    }
+    if (jobs_list->type != JSON_ARRAY) {
+        if (owned_jobs) json_free(jobs_list);
+        return cpi_unavailable_cron_model_impact(guard_enabled);
+    }
+
+    json_t *result = json_object();
+    json_set(result, "available", json_bool(true));
+    json_set(result, "guard_enabled", json_bool(guard_enabled));
+    json_set(result, "affected_count", json_int(0));
+    json_set(result, "truncated", json_bool(false));
+    json_set(result, "jobs", json_array());
+    if (!guard_enabled) {
+        if (owned_jobs) json_free(jobs_list);
+        return result;
+    }
+
+    /* seen_ids set: linear scan over the bounded jobs list is fine. */
+    char seen[CRON_MODEL_IMPACT_JOB_LIMIT][CRON_MODEL_IMPACT_ID_LIMIT + 1];
+    size_t seen_n = 0;
+    long affected = 0;
+
+    size_t n = json_array_size(jobs_list);
+    for (size_t i = 0; i < n; i++) {
+        json_t *job = json_get(jobs_list, i);
+        if (!job || job->type != JSON_OBJECT) continue;
+        if (!cronjobs_is_job_runnable(job)) continue;
+        json_t *no_agent = json_obj_get(job, "no_agent");
+        bool no_agent_truthy = false;
+        if (no_agent) {
+            if (no_agent->type == JSON_BOOL) no_agent_truthy = no_agent->bool_val;
+            else if (no_agent->type == JSON_NUMBER) no_agent_truthy = no_agent->num_val != 0.0;
+            else if (no_agent->type == JSON_STRING)
+                no_agent_truthy = no_agent->str_val && no_agent->str_val[0];
+            /* JSON_NULL → falsy */
+        }
+        if (no_agent_truthy)
+            continue;   /* truthy no_agent skips the agent path entirely */
+        char *job_id = cpi_valid_cron_impact_job_id(json_obj_get(job, "id"));
+        if (!job_id[0]) { free(job_id); continue; }
+        bool dup = false;
+        for (size_t k = 0; k < seen_n; k++)
+            if (strcmp(seen[k], job_id) == 0) { dup = true; break; }
+        if (dup) { free(job_id); continue; }
+        if (seen_n < CRON_MODEL_IMPACT_JOB_LIMIT) {
+            snprintf(seen[seen_n], sizeof(seen[seen_n]), "%s", job_id);
+            seen_n++;
+        }
+        json_t *axes = cron_model_drift_axes(job, current_provider, current_model, config);
+        if (json_array_size(axes) == 0) {
+            json_free(axes);
+            free(job_id);
+            continue;
+        }
+        json_free(axes);
+        affected++;
+        size_t listed = json_array_size(json_obj_get(result, "jobs"));
+        if (listed < CRON_MODEL_IMPACT_JOB_LIMIT) {
+            json_t *entry = json_object();
+            json_set(entry, "id", json_string(job_id));
+            char *name = cpi_cron_impact_job_name(json_obj_get(job, "name"), job_id);
+            json_set(entry, "name", json_string(name));
+            free(name);
+            json_set(entry, "drifted_axes",
+                     cron_model_drift_axes(job, current_provider, current_model, config));
+            json_append(json_obj_get(result, "jobs"), entry);
+        }
+        free(job_id);
+    }
+
+    json_t *count_node = json_obj_get(result, "affected_count");
+    count_node->num_val = (double)affected;
+    size_t listed_total = json_array_size(json_obj_get(result, "jobs"));
+    json_t *trunc = json_obj_get(result, "truncated");
+    trunc->bool_val = (size_t)affected > listed_total;
+
+    if (owned_jobs) json_free(jobs_list);
+    return result;
 }

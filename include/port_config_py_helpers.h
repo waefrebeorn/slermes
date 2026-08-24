@@ -273,6 +273,30 @@ void config_py_apply_custom_provider_extra_headers_to_client_kwargs(json_t *clie
 /* PoP: recommended_update_command_for_method @ hermes_cli/config.py:recommended_update_command_for_method */
 void config_py_recommended_update_command_for_method(const char *method, char *out, size_t out_size);
 
+/* ---- hermes_cli/config.py REAL_GAP closures (bare Python names) ---- */
+/* PoP: is_nix_install_method @ hermes_cli/config.py:is_nix_install_method */
+bool is_nix_install_method(const char *method);
+/* PoP: get_custom_provider_model_capability @ hermes_cli/config.py:get_custom_provider_model_capability */
+json_t *get_custom_provider_model_capability(const char *model, const char *base_url,
+                                             const char *capability,
+                                             const json_t *custom_providers);
+/* PoP: split_model_config_default @ hermes_cli/config.py:split_model_config_default */
+void split_model_config_default(const json_t *raw_default, char **out_model, char **out_provider);
+/* PoP: resolve_turn_limit @ hermes_cli/config.py:resolve_turn_limit */
+long resolve_turn_limit(const json_t *raw, long default_value);
+/* PoP: render_personality_prompt @ hermes_cli/config.py:render_personality_prompt */
+char *render_personality_prompt(const json_t *value);
+/* PoP: terminal_config_owned_env_vars @ hermes_cli/config.py:terminal_config_owned_env_vars */
+json_t *terminal_config_owned_env_vars(const json_t *terminal_config);
+/* PoP: resolve_cron_model_drift_defaults @ hermes_cli/config.py:resolve_cron_model_drift_defaults */
+void resolve_cron_model_drift_defaults(const json_t *config, char **out_provider, char **out_model);
+/* PoP: cron_model_drift_axes @ hermes_cli/config.py:cron_model_drift_axes */
+json_t *cron_model_drift_axes(const json_t *job, const char *current_provider,
+                              const char *current_model, const json_t *config);
+/* PoP: build_cron_model_impact @ hermes_cli/config.py:build_cron_model_impact */
+json_t *build_cron_model_impact(const char *current_provider, const char *current_model,
+                                const json_t *config, const json_t *jobs);
+
 #ifdef __cplusplus
 }
 #endif

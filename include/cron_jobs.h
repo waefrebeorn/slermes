@@ -65,6 +65,19 @@ char *cronjobs_schedule_display_for_job(const json_t *job);
 /* Return a read-safe normalized copy of a job record (json_free). */
 json_t *cronjobs_normalize_job_record(const json_t *job);
 
+/* ── Job-lifecycle claim/fence helpers (cron/jobs.py) ─────────────── */
+double cronjobs_oneshot_run_claim_ttl_seconds(void);
+bool   cronjobs_is_terminal_job(const json_t *job);
+bool   cronjobs_mark_drift_alerted(const char *job_id);
+void   cronjobs_clear_drift_alerted(const char *job_id);
+bool   cronjobs_note_fire_forward_failure(const char *job_id, const char *detail);
+bool   cronjobs_clear_run_claim(const char *job_id);
+bool   cronjobs_heartbeat_fire_claim(const char *job_id, const char *expected_owner);
+/* Re-arm a completed one-shot; returns normalized record (caller frees) or
+ * NULL with *err set to a malloc'd message. */
+json_t *cronjobs_rearm_oneshot(const char *job_id, const char *run_at, char **err);
+json_t *cronjobs_get_persisted_error_recovery_stats(void);
+
 /* ── Schedule parsing ─────────────────────────────────────────────── */
 /* Parse "30m"/"2h"/"1d" → minutes; -1 on invalid. */
 int cronjobs_parse_duration(const char *s);
@@ -220,5 +233,31 @@ json_t *cronjobs_merge_unexpected_disk_jobs(const json_t *jobs,
 bool cronjobs_set_preflight_alerted(const char *job_id, bool value);
 bool cronjobs_mark_preflight_alerted(const char *job_id);
 void cronjobs_clear_preflight_alerted(const char *job_id);
+
+/* ── Job-lifecycle helpers (parity batch, cron/jobs.py) ───────────── */
+/* Terminal-state predicate: state in {"completed","error"}. */
+bool cronjobs_is_terminal_job(const json_t *job);
+json_t *cronjobs_get_persisted_error_recovery_stats(void);
+/* Per-job fire fence: acquire the flock'd .fire-<uuid5>.lock (30s poll,
+ * fail closed). fd on success, -1 unavailable. */
+int cron_jobs_fire_fence_acquire(const char *job_id);
+/* Fenced fire-claim ownership check; true iff expected_owner holds the
+ * job's live fire_claim and the fence was taken. */
+bool cron_jobs_fire_claim_fence(const char *job_id, const char *expected_owner);
+/* Alert-dedup marker (drift variant; returns the PRIOR value). */
+bool cronjobs_mark_drift_alerted(const char *job_id);
+void cronjobs_clear_drift_alerted(const char *job_id);
+/* Stamp last_fire_error = {at, detail[:500]}; true when job found. */
+bool cronjobs_note_fire_forward_failure(const char *job_id,
+                                        const char *detail);
+/* Clear a failed one-shot dispatch's run_claim; true when cleared. */
+bool cronjobs_clear_run_claim(const char *job_id);
+/* Refresh an owned fire_claim lease; true when refreshed. */
+bool cronjobs_heartbeat_fire_claim(const char *job_id,
+                                   const char *expected_owner);
+/* Re-arm a completed one-shot as a new occurrence. Normalized record
+ * (json_free) or NULL with *err set (mirrors Python ValueErrors). */
+json_t *cronjobs_rearm_oneshot(const char *ref, const char *run_at,
+                               char **err);
 
 #endif /* CRON_JOBS_H */

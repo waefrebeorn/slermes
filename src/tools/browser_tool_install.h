@@ -19,4 +19,6 @@ bool browser_is_always_blocked_url(const char *url);
 bool browser_is_safe_url(const char *url);
 bool browser_is_camofox_mode(void);
 
+json_t *browser_evaluate_url_safety(const char *url);
+
 #endif /* SLERMES_BROWSER_TOOL_INSTALL_H */

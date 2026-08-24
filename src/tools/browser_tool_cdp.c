@@ -23,6 +23,7 @@
 #include "browser_tool_cdp.h"
 
 #include "browser_tool_platform.h"
+#include "browser_extension_router.h"
 json_t *browser_supervisor_get_or_start(const char *session_key);
 void browser_supervisor_stop_all(void);
 
@@ -330,3 +331,97 @@ json_t *browser_check_browser_vision_requirements(void)
     return result;
 }
 
+
+
+/* ---- Routed requirement gates (check_browser_*_requirements family) ---- */
+
+/* Python check_browser_requirements(): boolean availability of the local/
+ * cloud browser backend. The json_t* twin below (browser_check_browser_
+ * requirements) reports diagnostics; this is the gate used by check_fns. */
+static bool browser_check_browser_requirements_met(void)
+{
+    extern int bu_is_browser_use_cli_mode(void);
+    extern int browser__requires_real_termux_browser_install(void);
+    extern char *browser__get_cloud_provider(void);
+
+    /* Browser Use CLI backend hides the whole browser_* surface. */
+    if (bu_is_browser_use_cli_mode()) return false;
+
+    /* Camofox backend only needs the server URL. */
+    if (browser_is_camofox_mode()) return true;
+
+    /* CDP override connects to an existing endpoint without the CLI. */
+    char *cdp = browser_get_cdp_override();
+    if (cdp && cdp[0]) { free(cdp); return true; }
+    free(cdp);
+
+    /* agent-browser CLI is required for local launch and cloud flows. */
+    char *ab = browser_find_agent_browser();
+    if (!ab) return false;
+    free(ab);
+
+    /* Termux bare-npx fallback is too fragile to count as satisfied. */
+    if (browser__requires_real_termux_browser_install()) return false;
+
+    /* Cloud mode: provider hosts its own Chromium; env-driven providers in
+     * the C port are configured whenever a provider is selected. */
+    char *provider = browser__get_cloud_provider();
+    if (provider) { free(provider); return true; }
+
+    /* Local Lightpanda provides text/navigation without Chromium. */
+    if (browser_using_lightpanda_engine()) return true;
+
+    /* Local Chrome mode needs a Chromium build on disk. */
+    return browser_chromium_installed();
+}
+
+/* PoP: browser_check_browser_routed_requirements @ tools/browser_tool.py:check_browser_routed_requirements */
+bool browser_check_browser_routed_requirements(const char *action)
+{
+    /* Availability gate for tools that can use either browser backend:
+     * local/cloud requirements OR the extension controller for this action. */
+    return browser_check_browser_requirements_met() ||
+           bcr_extension_controller_available(action);
+}
+
+/* PoP: check_browser_navigate_requirements @ tools/browser_tool.py:check_browser_navigate_requirements */
+bool check_browser_navigate_requirements(void)
+{
+    return browser_check_browser_routed_requirements("browser_navigate");
+}
+
+/* PoP: check_browser_snapshot_requirements @ tools/browser_tool.py:check_browser_snapshot_requirements */
+bool check_browser_snapshot_requirements(void)
+{
+    return browser_check_browser_routed_requirements("browser_snapshot");
+}
+
+/* PoP: check_browser_click_requirements @ tools/browser_tool.py:check_browser_click_requirements */
+bool check_browser_click_requirements(void)
+{
+    return browser_check_browser_routed_requirements("browser_click");
+}
+
+/* PoP: check_browser_type_requirements @ tools/browser_tool.py:check_browser_type_requirements */
+bool check_browser_type_requirements(void)
+{
+    return browser_check_browser_routed_requirements("browser_type");
+}
+
+/* PoP: check_browser_scroll_requirements @ tools/browser_tool.py:check_browser_scroll_requirements */
+bool check_browser_scroll_requirements(void)
+{
+    return browser_check_browser_routed_requirements("browser_scroll");
+}
+
+/* PoP: check_browser_back_requirements @ tools/browser_tool.py:check_browser_back_requirements */
+bool check_browser_back_requirements(void)
+{
+    return browser_check_browser_routed_requirements("browser_back");
+}
+
+/* PoP: check_browser_press_requirements @ tools/browser_tool.py:check_browser_press_requirements */
+bool check_browser_press_requirements(void)
+{
+    return browser_check_browser_routed_requirements("browser_press");
+}

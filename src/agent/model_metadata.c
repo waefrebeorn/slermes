@@ -1027,3 +1027,156 @@ int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) {
     printf("%s (chars/4, bounded cache)\n", t2 ? t2 + 1 : "0");
     return 0;
 }
+
+/* ── Grok / Codex-900k helpers (agent/model_metadata.py) ────────────────── */
+
+static void mm_lower_strip_dup(const char *s, char *out, size_t cap) {
+    size_t n = 0;
+    const char *p = s ? s : "";
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    const char *e = p + strlen(p);
+    while (e > p && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
+    for (; p < e && n + 1 < cap; p++)
+        out[n++] = (char)tolower((unsigned char)*p);
+    out[n] = '\0';
+}
+
+/* PoP: is_grok_46_family @ agent/model_metadata.py:is_grok_46_family */
+bool is_grok_46_family(const char *model) {
+    /* Python: name = (model or "").strip().lower().replace("_", "-");
+     * if "/" in name: name = name.rsplit("/", 1)[-1];
+     * return name == "grok-4.6" or name.startswith("grok-4.6-"). */
+    char name[512];
+    mm_lower_strip_dup(model, name, sizeof(name));
+    for (char *p = name; *p; p++) {
+        if (*p == '_') *p = '-';
+    }
+    const char *slash = strrchr(name, '/');
+    const char *leaf = slash ? slash + 1 : name;
+    return strcmp(leaf, "grok-4.6") == 0 ||
+           strncmp(leaf, "grok-4.6-", 9) == 0;
+}
+
+/* Codex "-900k" variant constants (agent/model_metadata.py module scope). */
+#define CODEX_CONTEXT_VARIANT_SUFFIX "-900k"
+static const char *const CODEX_900K_ELIGIBLE_BASES[] = {
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
+    "gpt-5.4",                    /* exact; gpt-5.4-mini enforces 272K */
+    "gpt-daybreak-blue-latest",   /* verified Sol alias */
+};
+static const char *const CODEX_900K_SNAPSHOT_BASES[] = {
+    "gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"
+};
+
+/* Python _bare_codex_slug(): (model or "").strip().lower().rsplit("/",1)[-1] */
+static void mm_bare_codex_slug(const char *model, char *out, size_t cap) {
+    mm_lower_strip_dup(model, out, cap);
+    const char *slash = strrchr(out, '/');
+    if (slash) memmove(out, slash + 1, strlen(slash + 1) + 1);
+}
+
+/* True iff s matches Python re ^\d{4}-\d{2}-\d{2}$ exactly. */
+static bool mm_is_date_snapshot(const char *s) {
+    size_t n = strlen(s);
+    if (n != 10 || s[4] != '-' || s[7] != '-') return false;
+    for (size_t i = 0; i < 10; i++) {
+        if (i == 4 || i == 7) continue;
+        if (!isdigit((unsigned char)s[i])) return false;
+    }
+    return true;
+}
+
+/* PoP: is_codex_900k_base @ agent/model_metadata.py:is_codex_900k_base */
+bool is_codex_900k_base(const char *model) {
+    /* Python: slug = _bare_codex_slug(model); reject empty or already
+     * suffixed; exact membership in eligible bases, else a dated snapshot
+     * of the routable 5.6 bases (base-YYYY-MM-DD). */
+    char slug[512];
+    mm_bare_codex_slug(model, slug, sizeof(slug));
+    size_t sl = strlen(slug);
+    if (!sl) return false;
+    if (sl >= strlen(CODEX_CONTEXT_VARIANT_SUFFIX) &&
+        strcmp(slug + sl - strlen(CODEX_CONTEXT_VARIANT_SUFFIX),
+               CODEX_CONTEXT_VARIANT_SUFFIX) == 0)
+        return false;
+    for (size_t i = 0;
+         i < sizeof(CODEX_900K_ELIGIBLE_BASES) / sizeof(CODEX_900K_ELIGIBLE_BASES[0]);
+         i++) {
+        if (strcmp(slug, CODEX_900K_ELIGIBLE_BASES[i]) == 0) return true;
+    }
+    /* Dated snapshots of the routable 5.6 bases (gpt-5.6-sol-2026-07-09). */
+    for (size_t i = 0;
+         i < sizeof(CODEX_900K_SNAPSHOT_BASES) / sizeof(CODEX_900K_SNAPSHOT_BASES[0]);
+         i++) {
+        const char *base = CODEX_900K_SNAPSHOT_BASES[i];
+        size_t bl = strlen(base);
+        if (strncmp(slug, base, bl) == 0 && slug[bl] == '-' &&
+            mm_is_date_snapshot(slug + bl + 1))
+            return true;
+    }
+    return false;
+}
+
+/* PoP: is_codex_context_variant @ agent/model_metadata.py:is_codex_context_variant */
+bool is_codex_context_variant(const char *model) {
+    /* Python: bare slug must carry the -900k suffix AND its base must be
+     * an eligible -900k carrier (gpt-5.5-900k is an invalid alias). */
+    char slug[512];
+    mm_bare_codex_slug(model, slug, sizeof(slug));
+    size_t sl = strlen(slug);
+    size_t suflen = strlen(CODEX_CONTEXT_VARIANT_SUFFIX);
+    if (sl < suflen ||
+        strcmp(slug + sl - suflen, CODEX_CONTEXT_VARIANT_SUFFIX) != 0)
+        return false;
+    slug[sl - suflen] = '\0';
+    return is_codex_900k_base(slug);
+}
+
+/* PoP: strip_codex_context_variant_suffix @ agent/model_metadata.py:strip_codex_context_variant_suffix */
+char *strip_codex_context_variant_suffix(const char *model) {
+    /* Python: raw = (model or "").strip(); if not raw (case-insensitively)
+     * ends with the suffix, return raw unchanged. Otherwise strip it only
+     * when the base is an eligible -900k carrier; an ineligible alias like
+     * gpt-5.5-900k is returned unchanged. Preserves vendor/ namespace. */
+    const char *p = model ? model : "";
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    const char *e = p + strlen(p);
+    while (e > p && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
+    size_t raw_len = (size_t)(e - p);
+    char *raw = malloc(raw_len + 1);
+    if (!raw) return NULL;
+    memcpy(raw, p, raw_len);
+    raw[raw_len] = '\0';
+
+    size_t suflen = strlen(CODEX_CONTEXT_VARIANT_SUFFIX);
+    if (raw_len < suflen) return raw;
+    /* Case-insensitive suffix check on the tail of raw. */
+    const char *tail = raw + raw_len - suflen;
+    char lowtail[16];
+    for (size_t i = 0; i < suflen && i < sizeof(lowtail) - 1; i++)
+        lowtail[i] = (char)tolower((unsigned char)tail[i]);
+    lowtail[suflen < sizeof(lowtail) - 1 ? suflen : sizeof(lowtail) - 1] = '\0';
+    if (strcmp(lowtail, CODEX_CONTEXT_VARIANT_SUFFIX) != 0) return raw;
+
+    /* base = raw[: -len(suffix)] — eligibility check is case-insensitive,
+     * mirroring is_codex_900k_base's lowercasing. */
+    char *base = malloc(raw_len - suflen + 1);
+    if (!base) { free(raw); return NULL; }
+    memcpy(base, raw, raw_len - suflen);
+    base[raw_len - suflen] = '\0';
+    if (is_codex_900k_base(base)) {
+        free(raw);
+        return base;
+    }
+    free(base);
+    return raw;
+}
+
+/* PoP: has_codex_context_variant @ agent/model_metadata.py:has_codex_context_variant */
+bool has_codex_context_variant(const char *model_bare) {
+    /* Python: thin alias over is_codex_900k_base for picker readability. */
+    return is_codex_900k_base(model_bare);
+}
+

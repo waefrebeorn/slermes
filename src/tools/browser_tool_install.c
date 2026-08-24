@@ -20,6 +20,11 @@
 #include <dirent.h>
 
 #include "browser_tool_platform.h"
+#include <stdarg.h>
+#include "url_safety_cli.h"
+#include "hermes_url_safety.h"
+extern char *sensitive_query_param_name(const char *url); /* impl in url_safety.c */
+#include "url_safety_helpers.h"
 
 struct browser_tool_install {
     int unused;
@@ -164,3 +169,155 @@ bool browser_is_camofox_mode(void)
     return url && strlen(url) > 0;
 }
 
+
+
+/* ---- URL safety gate (evaluate_url_safety family) ---------------------- */
+
+/* website_policy port has no public header; declare the pieces we reuse. */
+extern const char *cli_tools_website_policy__get_default_config_path(void);
+extern void cli_tools_website_policy__normalize_host(const char *host, char *buf, size_t bufsize);
+extern int cli_tools_website_policy__match_host_against_rule(const char *host, const char *pattern);
+extern int cli_tools_website_policy__iter_blocklist_file_rules(const char *path, char **rules, int max_rules);
+extern int cli_tools_website_policy__extract_host_from_urlish(const char *url, char *buf, size_t bufsize);
+
+/* Python check_website_access(): consult the configured website blocklist.
+ * The C policy port keeps rules in a plain rules file; HERMES_WEBSITE_BLOCKLIST
+ * overrides the path, defaulting to <HERMES_HOME|HOME>/website_blocklist.txt.
+ * On a hit, fills host/rule/source and returns a malloc'd message; else NULL. */
+static char *browser_eval_website_block_hit(const char *url,
+                                            char *host_out, size_t host_size,
+                                            char *rule_out, size_t rule_size,
+                                            const char **source)
+{
+    static char msg[512];
+    if (!url || !*url) return NULL;
+
+    char host[256];
+    if (cli_tools_website_policy__extract_host_from_urlish(url, host, sizeof(host)) != 0)
+        return NULL;
+    cli_tools_website_policy__normalize_host(host, host, sizeof(host));
+    if (!host[0]) return NULL;
+
+    const char *env_path = getenv("HERMES_WEBSITE_BLOCKLIST");
+    char path[1024];
+    if (env_path && env_path[0]) {
+        snprintf(path, sizeof(path), "%s", env_path);
+    } else {
+        const char *home = cli_tools_website_policy__get_default_config_path();
+        if (!home || !home[0]) return NULL;
+        snprintf(path, sizeof(path), "%s/website_blocklist.txt", home);
+    }
+
+    enum { MAX_RULES = 256 };
+    char *rules[MAX_RULES];
+    int n = cli_tools_website_policy__iter_blocklist_file_rules(path, rules, MAX_RULES);
+    char *hit = NULL;
+    for (int i = 0; i < n; i++) {
+        if (!hit && cli_tools_website_policy__match_host_against_rule(host, rules[i]))
+            hit = rules[i]; /* keep for copy; free the rest */
+        else
+            free(rules[i]);
+    }
+    if (!hit) return NULL;
+
+    snprintf(msg, sizeof(msg), "Blocked by website access policy: '%s' is blocked by rule '%s'.",
+             host, hit);
+    snprintf(host_out, host_size, "%s", host);
+    snprintf(rule_out, rule_size, "%s", hit);
+    free(hit);
+    *source = "file";
+    return msg;
+}
+
+static json_t *browser_eval_error(const char *error_fmt, ...)
+{
+    va_list ap;
+    va_start(ap, error_fmt);
+    char buf[768];
+    vsnprintf(buf, sizeof(buf), error_fmt, ap);
+    va_end(ap);
+    json_t *obj = json_object();
+    if (!obj) return NULL;
+    json_set(obj, "success", json_bool(false));
+    json_set(obj, "error", json_string(buf));
+    return obj;
+}
+
+/* PoP: browser_evaluate_url_safety @ tools/browser_tool.py:evaluate_url_safety */
+json_t *browser_evaluate_url_safety(const char *url)
+{
+    /* Run URL safety checks; NULL json when safe, else an error object. */
+    if (!url || !*url) return NULL;
+
+    /* Secret exfiltration guard: raw + URL-decoded forms. url_has_secret()
+     * already checks both (agent/redact.py:_PREFIX_RE twin). */
+    if (url_has_secret(url)) {
+        return browser_eval_error(
+            "Blocked: URL contains what appears to be an API key or token. "
+            "Secrets must not be sent in URLs.");
+    }
+
+    /* Re-check the request-normalized form (tools/url_safety.py:
+     * normalize_url_for_request twin). */
+    char normalized[4096];
+    if (cli_tools_url_safety_normalize_url_for_request(url, normalized,
+                                                       sizeof(normalized)) == 0 &&
+        normalized[0] && strcmp(normalized, url) != 0 &&
+        url_has_secret(normalized)) {
+        return browser_eval_error(
+            "Blocked: URL contains what appears to be an API key or token. "
+            "Secrets must not be sent in URLs.");
+    }
+    if (normalized[0])
+        url = normalized;
+
+    bool local = browser_is_local_backend();
+
+    /* Credential-like query parameter guard (skipped for local backends). */
+    char *qkey = sensitive_query_param_name(url);
+    if (qkey && qkey[0] && !local) {
+        json_t *err = browser_eval_error(
+            "Blocked: URL contains a credential-like query parameter (%s). "
+            "Cloud browser backends are third-party readers; use a local "
+            "browser/CDP session or remove the sensitive query parameter "
+            "before navigating.",
+            qkey);
+        free(qkey);
+        return err;
+    }
+    free(qkey);
+
+    /* Cloud metadata endpoint blocklist. */
+    if (browser_is_always_blocked_url(url)) {
+        return browser_eval_error(
+            "Blocked: URL targets a cloud metadata endpoint");
+    }
+
+    /* SSRF guard: private/internal addresses unless local backend or opted out
+     * via browser.allow_private_urls. */
+    if (!local && !browser_allow_private_urls() && !browser_is_safe_url(url)) {
+        return browser_eval_error(
+            "Blocked: URL targets a private or internal address");
+    }
+
+    /* Website access policy (check_website_access). */
+    char host[256], rule[256];
+    const char *source = NULL;
+    char *msg = browser_eval_website_block_hit(url, host, sizeof(host),
+                                               rule, sizeof(rule), &source);
+    if (msg) {
+        json_t *obj = browser_eval_error("%s", msg);
+        if (obj) {
+            json_t *bp = json_object();
+            if (bp) {
+                json_set(bp, "host", json_string(host));
+                json_set(bp, "rule", json_string(rule));
+                json_set(bp, "source", json_string(source));
+                json_set(obj, "blocked_by_policy", bp);
+            }
+        }
+        return obj;
+    }
+
+    return NULL; /* safe */
+}

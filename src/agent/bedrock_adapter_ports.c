@@ -374,3 +374,270 @@ long brd_get_bedrock_context_length(const char *model) {
     free(l);
     return v;
 }
+
+/* ── Bedrock Mantle / OpenAI Responses support (agent/bedrock_adapter.py) ── */
+
+static const char *const BEDROCK_OPENAI_RESPONSES_MODEL_IDS[] = {
+    "openai.gpt-5.5",
+    "openai.gpt-5.6-sol",
+    "openai.gpt-5.6-terra",
+    "openai.gpt-5.6-luna",
+};
+
+/* Python _BEDROCK_OPENAI_HOST_RE: ^bedrock-mantle\.([a-z0-9-]+)\.api\.aws$
+ * (IGNORECASE). On match, copies group 1 (region) into out; else false. */
+static bool brd_match_mantle_host(const char *host, char *out, size_t cap) {
+    static const char P[] = "bedrock-mantle.";
+    static const char S[] = ".api.aws";
+    size_t plen = strlen(P), slen = strlen(S);
+    size_t hl = host ? strlen(host) : 0;
+    if (!host || strncasecmp(host, P, plen) != 0 || hl < plen + slen + 1)
+        return false;
+    const char *mid = host + plen;
+    size_t mlen = hl - plen - slen;
+    if (strcasecmp(host + hl - slen, S) != 0) return false;
+    for (size_t i = 0; i < mlen; i++) {
+        char c = mid[i];
+        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
+              (c >= 'A' && c <= 'Z') || c == '-'))
+            return false;
+    }
+    if (mlen + 1 > cap) mlen = cap - 1;
+    memcpy(out, mid, mlen);
+    out[mlen] = '\0';
+    return true;
+}
+
+/* Extract urlparse(b).hostname without pulling in a URL library:
+ * skip scheme "://", take up to the first of / ? #, strip userinfo,
+ * drop :port. Lowercases (urlparse lowercases hostname). */
+static bool brd_url_hostname(const char *url, char *out, size_t cap) {
+    const char *p = url ? url : "";
+    const char *sep = strstr(p, "://");
+    if (sep) p = sep + 3;
+    /* path/query/fragment start */
+    const char *e = p;
+    while (*e && *e != '/' && *e != '?' && *e != '#') e++;
+    /* strip userinfo (everything before last '@' inside authority) */
+    const char *at = NULL;
+    for (const char *q = p; q < e; q++) if (*q == '@') at = q;
+    if (at) p = at + 1;
+    /* strip port */
+    const char *colon = NULL;
+    for (const char *q = p; q < e; q++) if (*q == ':') colon = q;
+    if (colon) e = colon;
+    if (e <= p) { out[0] = '\0'; return false; }
+    size_t n = (size_t)(e - p);
+    if (n + 1 > cap) n = cap - 1;
+    for (size_t i = 0; i < n; i++) out[i] = (char)tolower((unsigned char)p[i]);
+    out[n] = '\0';
+    return true;
+}
+
+/* Python resolve_bedrock_runtime_region() fallback chain when no explicit
+ * region is given: config bedrock.region is handled by callers that hold a
+ * config; here env AWS_REGION → AWS_DEFAULT_REGION → us-east-1 (the
+ * resolve_bedrock_region tail). */
+static void brd_runtime_region_fallback(char *out, size_t cap) {
+    const char *r = getenv("AWS_REGION");
+    if (!r || !*r) r = getenv("AWS_DEFAULT_REGION");
+    if (!r || !*r) r = "us-east-1";
+    snprintf(out, cap, "%s", r);
+}
+
+/* PoP: is_openai_bedrock_model @ agent/bedrock_adapter.py:is_openai_bedrock_model */
+bool is_openai_bedrock_model(const char *model_id) {
+    /* Python: normalized = str(model_id or "").strip().lower();
+     * return normalized in {m.lower() for m in MODEL_IDS}.
+     * GPT-OSS Converse models intentionally do NOT match. */
+    if (!model_id) return false;
+    /* Python: str(model_id or "").strip().lower() — trim BOTH ends. */
+    const char *s = model_id;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    const char *se = s + strlen(s);
+    while (se > s && (se[-1] == ' ' || se[-1] == '\t' ||
+                      se[-1] == '\n' || se[-1] == '\r')) se--;
+    for (size_t i = 0;
+         i < sizeof(BEDROCK_OPENAI_RESPONSES_MODEL_IDS) /
+             sizeof(BEDROCK_OPENAI_RESPONSES_MODEL_IDS[0]);
+         i++) {
+        const char *m = BEDROCK_OPENAI_RESPONSES_MODEL_IDS[i];
+        if ((size_t)(se - s) != strlen(m)) continue;
+        if (strncasecmp(s, m, strlen(m)) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: merge_bedrock_openai_model_ids @ agent/bedrock_adapter.py:merge_bedrock_openai_model_ids */
+char *merge_bedrock_openai_model_ids(const char *model_ids_json) {
+    /* Python: append Mantle-only OpenAI Responses models to a discovered
+     * Bedrock list, case-insensitively deduped. JSON array in, array out. */
+    json_t *merged = json_array();
+    json_t *seen = json_array();   /* lowercase strings already present */
+    json_t *in = NULL;
+    if (model_ids_json && *model_ids_json) in = json_parse(model_ids_json, NULL);
+    if (in && in->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(in); i++) {
+            json_t *v = json_get(in, (int)i);
+            if (!v || v->type != JSON_STRING) continue;
+            char low[512];
+            snprintf(low, sizeof(low), "%s", v->str_val);
+            for (char *q = low; *q; q++) *q = (char)tolower((unsigned char)*q);
+            bool dup = false;
+            for (size_t j = 0; j < json_len(seen); j++) {
+                json_t *s = json_get(seen, (int)j);
+                if (s && s->type == JSON_STRING && strcmp(s->str_val, low) == 0) {
+                    dup = true;
+                    break;
+                }
+            }
+            if (!dup) {
+                json_append(merged, json_string(v->str_val));
+                json_append(seen, json_string(low));
+            }
+        }
+    }
+    if (in) json_free(in);
+
+    for (size_t i = 0;
+         i < sizeof(BEDROCK_OPENAI_RESPONSES_MODEL_IDS) /
+             sizeof(BEDROCK_OPENAI_RESPONSES_MODEL_IDS[0]);
+         i++) {
+        const char *id = BEDROCK_OPENAI_RESPONSES_MODEL_IDS[i];
+        bool dup = false;
+        for (size_t j = 0; j < json_len(seen); j++) {
+            json_t *s = json_get(seen, (int)j);
+            if (s && s->type == JSON_STRING &&
+                strcasecmp(s->str_val, id) == 0) { dup = true; break; }
+        }
+        if (!dup) json_append(merged, json_string(id));
+    }
+    json_free(seen);
+    char *out = json_serialize(merged);
+    json_free(merged);
+    return out;
+}
+
+/* PoP: bedrock_openai_base_url @ agent/bedrock_adapter.py:bedrock_openai_base_url */
+char *bedrock_openai_base_url(const char *region) {
+    /* Python: resolved = (region or "").strip()
+     * or resolve_bedrock_runtime_region();
+     * return f"https://bedrock-mantle.{resolved}.api.aws/openai/v1" */
+    char resolved[128];
+    size_t n = 0;
+    const char *p = region ? region : "";
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    const char *e = p + strlen(p);
+    while (e > p && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
+    n = (size_t)(e - p);
+    if (n > 0 && n < sizeof(resolved)) {
+        memcpy(resolved, p, n);
+        resolved[n] = '\0';
+    } else {
+        brd_runtime_region_fallback(resolved, sizeof(resolved));
+    }
+    char *out = malloc(strlen(resolved) + 64);
+    if (!out) return NULL;
+    snprintf(out, strlen(resolved) + 64,
+             "https://bedrock-mantle.%s.api.aws/openai/v1", resolved);
+    return out;
+}
+
+/* PoP: bedrock_openai_region_from_base_url @ agent/bedrock_adapter.py:bedrock_openai_region_from_base_url */
+char *bedrock_openai_region_from_base_url(const char *base_url) {
+    /* Python: hostname must match ^bedrock-mantle\.([a-z0-9-]+)\.api\.aws$;
+     * return group 1 or None. Caller frees. */
+    char host[256], region[192];
+    if (!brd_url_hostname(base_url, host, sizeof(host))) return NULL;
+    if (!brd_match_mantle_host(host, region, sizeof(region))) return NULL;
+    return strdup(region);
+}
+
+/* PoP: is_bedrock_openai_base_url @ agent/bedrock_adapter.py:is_bedrock_openai_base_url */
+bool is_bedrock_openai_base_url(const char *base_url) {
+    /* Python: host regex match AND rstrip("/").lower() of the path in
+     * {"", "/openai", "/openai/v1"} (bare host accepted so callers can
+     * normalize before appending the path). */
+    char host[256], region[192];
+    if (!brd_url_hostname(base_url, host, sizeof(host))) return false;
+    if (!brd_match_mantle_host(host, region, sizeof(region))) return false;
+    /* path = between end of authority and first ? or # */
+    const char *p = base_url ? base_url : "";
+    const char *sep = strstr(p, "://");
+    if (sep) p = sep + 3;
+    while (*p && *p != '/') p++;          /* skip authority */
+    const char *pe = p;
+    while (*pe && *pe != '?' && *pe != '#') pe++;
+    /* rstrip('/') then lowercase */
+    while (pe > p && pe[-1] == '/') pe--;
+    char path[256];
+    size_t n = (size_t)(pe - p);
+    if (n >= sizeof(path)) n = sizeof(path) - 1;
+    for (size_t i = 0; i < n; i++)
+        path[i] = (char)tolower((unsigned char)p[i]);
+    path[n] = '\0';
+    return path[0] == '\0' ||
+           strcmp(path, "/openai") == 0 ||
+           strcmp(path, "/openai/v1") == 0;
+}
+
+/* PoP: configure_bedrock_openai_client_kwargs @ agent/bedrock_adapter.py:configure_bedrock_openai_client_kwargs */
+char *configure_bedrock_openai_client_kwargs(const char *client_kwargs_json,
+                                             double timeout) {
+    /* Python: install SigV4 auth on OpenAI SDK kwargs for Bedrock Mantle.
+     * - non-Mantle base_url → kwargs unchanged
+     * - real bearer api_key (non-empty, not "aws-sdk"/"no-key-required")
+     *   → unchanged (SDK bearer auth stays)
+     * - otherwise set api_key="aws-sdk" and attach a SigV4 http_client
+     *   descriptor {"auth": "sigv4", "service", "region", optional timeout}
+     *   (C has no httpx object; the descriptor carries what build_
+     *   bedrock_openai_http_client(region, timeout) would construct).
+     * Returns serialized JSON dict; caller frees. */
+    json_t *kw = NULL;
+    if (client_kwargs_json && *client_kwargs_json)
+        kw = json_parse(client_kwargs_json, NULL);
+    if (!kw || kw->type != JSON_OBJECT) {
+        if (kw) json_free(kw);
+        return strdup(client_kwargs_json ? client_kwargs_json : "{}");
+    }
+
+    const char *base_url = json_get_str(kw, "base_url", "");
+    if (!is_bedrock_openai_base_url(base_url)) {
+        char *unchanged = json_serialize(kw);
+        json_free(kw);
+        return unchanged;
+    }
+    json_t *key_node = json_obj_get(kw, "api_key");
+    if (key_node && key_node->type == JSON_STRING) {
+        const char *k = key_node->str_val;
+        const char *s = k;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        if (*s && strcmp(k, "aws-sdk") != 0 &&
+            strcmp(k, "no-key-required") != 0) {
+            char *unchanged = json_serialize(kw);
+            json_free(kw);
+            return unchanged;
+        }
+    }
+
+    char region[192];
+    char *parsed = bedrock_openai_region_from_base_url(base_url);
+    if (parsed) {
+        snprintf(region, sizeof(region), "%s", parsed);
+        free(parsed);
+    } else {
+        brd_runtime_region_fallback(region, sizeof(region));
+    }
+    json_set(kw, "api_key", json_string("aws-sdk"));
+    json_t *hc = json_object();
+    json_set(hc, "auth", json_string("sigv4"));
+    json_set(hc, "service", json_string("bedrock"));
+    json_set(hc, "region", json_string(region));
+    if (timeout > 0)
+        json_set(hc, "timeout", json_number(timeout));
+    json_set(kw, "http_client", hc);
+    char *out = json_serialize(kw);
+    json_free(kw);
+    return out;
+}
+

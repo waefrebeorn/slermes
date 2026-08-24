@@ -18,6 +18,10 @@
 #include "slermes_home.h"
 #include "agent_estop.h"   /* estop gate (cron/jobs.py scheduler.py) */
 #include "../cron/scheduler.h"
+#include "cron_jobs.h"
+#include "datetime.h"
+#include <ctype.h>
+#include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -635,6 +639,322 @@ void sched_release_running_job(const char *job_id) {
         }
     }
     pthread_mutex_unlock(&g_running_lock);
+}
+
+/* ── In-flight guard: stats + stale sweep (cron/scheduler.py) ──────── */
+
+#define SCHED_FORCED_RELEASE_HISTORY 20
+static long g_forced_release_count = 0;
+static json_t *g_forced_releases = NULL;   /* bounded history list */
+
+static json_t *forced_releases_list(void) {
+    if (!g_forced_releases) g_forced_releases = json_array();
+    return g_forced_releases;
+}
+
+/* Floor for the stale in-flight allowance, in minutes: config
+ * cron.inflight_max_minutes, else HERMES_CRON_INFLIGHT_MAX_MINUTES env,
+ * else the Python default of 30.0 (_INFLIGHT_MIN_ALLOWANCE_MINUTES). */
+static double inflight_min_allowance_minutes(void) {
+    json_t *cfg = config_py_load_config_impl(0);
+    if (cfg) {
+        json_t *cron = json_object_get(cfg, "cron");
+        json_t *val = json_is_object(cron)
+            ? json_object_get(cron, "inflight_max_minutes") : NULL;
+        if (val && val->type == JSON_NUMBER && json_number_value(val) > 0) {
+            double v = json_number_value(val);
+            json_free(cfg);
+            return v;
+        }
+        json_free(cfg);
+    }
+    const char *raw = getenv("HERMES_CRON_INFLIGHT_MAX_MINUTES");
+    if (raw && *raw) {
+        char *end = NULL;
+        double v = strtod(raw, &end);
+        if (end && *end == '\0' && v > 0) return v;
+    }
+    return 30.0;
+}
+
+/* PoP: sched_record_forced_release @ cron/scheduler.py:_record_forced_release */
+/* Persist a countable signal for one forced release (best-effort):
+ * bounded in-memory history + one JSONL line under ~/.hermes/cron/. */
+void sched_record_forced_release(const char *job_id, const char *name,
+                                 double age_seconds, double allowance_seconds) {
+    char *now = now_iso();
+    json_t *entry = json_object();
+    if (!entry) { free(now); return; }
+    json_set(entry, "job_id", json_string(job_id ? job_id : ""));
+    json_set(entry, "name", json_string(name ? name : ""));
+    json_set(entry, "age_seconds", json_number(((long)(age_seconds * 10.0)) / 10.0));
+    json_set(entry, "allowance_seconds",
+             json_number(((long)(allowance_seconds * 10.0)) / 10.0));
+    json_set(entry, "at", json_string(now ? now : ""));
+    free(now);
+
+    pthread_mutex_lock(&g_running_lock);
+    json_t *list = forced_releases_list();
+    json_append(list, entry);   /* list owns entry now */
+    while (json_array_size(list) > (size_t)SCHED_FORCED_RELEASE_HISTORY) {
+        json_t *trimmed = json_array();
+        size_t n = json_array_size(list);
+        for (size_t i = 1; i < n; i++)
+            json_append(trimmed, json_copy(json_array_get(list, i)));
+        json_free(list);
+        g_forced_releases = list = trimmed;
+    }
+    pthread_mutex_unlock(&g_running_lock);
+
+    /* JSONL telemetry under the cron dir — never let it break a tick. */
+    const char *home = getenv("HOME");
+    if (!home) home = ".";
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/.hermes/cron/inflight_forced_releases.jsonl",
+             home);
+    FILE *fh = fopen(path, "a");
+    if (fh) {
+        pthread_mutex_lock(&g_running_lock);
+        json_t *last = json_array_get(forced_releases_list(),
+                                      json_array_size(forced_releases_list()) - 1);
+        char *line = last ? json_serialize(last) : NULL;
+        pthread_mutex_unlock(&g_running_lock);
+        if (line) { fprintf(fh, "%s\n", line); free(line); }
+        fclose(fh);
+    }
+}
+
+/* PoP: get_inflight_guard_stats @ cron/scheduler.py:get_inflight_guard_stats */
+/* Probe-visible snapshot of the in-flight guard: sorted running ids, their
+ * ages, the monotonic forced-release counter, and recent forced releases.
+ * Returns a fresh JSON object (json_free). */
+json_t *sched_get_inflight_guard_stats(void) {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    double now = (double)tv.tv_sec + (double)tv.tv_usec / 1e6;
+
+    json_t *out = json_object();
+    if (!out) return NULL;
+
+    pthread_mutex_lock(&g_running_lock);
+
+    /* running: sorted copy of the live ids */
+    char ids[SCHED_RUNNING_MAX][128];
+    int cnt = g_running_count;
+    for (int i = 0; i < cnt; i++)
+        snprintf(ids[i], sizeof(ids[i]), "%s", g_running_ids[i]);
+    for (int i = 1; i < cnt; i++) {          /* insertion sort */
+        char tmp[128];
+        double tage = g_running_since[i];
+        snprintf(tmp, sizeof(tmp), "%s", ids[i]);
+        int j = i - 1;
+        while (j >= 0 && strcmp(ids[j], tmp) > 0) {
+            snprintf(ids[j + 1], sizeof(ids[j + 1]), "%s", ids[j]);
+            g_running_since[j + 1] = g_running_since[j];
+            j--;
+        }
+        snprintf(ids[j + 1], sizeof(ids[j + 1]), "%s", tmp);
+        g_running_since[j + 1] = tage;
+    }
+    json_t *running = json_array();
+    json_t *ages = json_object();
+    for (int i = 0; i < cnt; i++) {
+        json_append(running, json_string(ids[i]));
+        json_set(ages, ids[i],
+                 json_number(((long)((now - g_running_since[i]) * 10.0)) / 10.0));
+    }
+    json_set(out, "running", running ? running : json_array());
+    json_set(out, "running_ages_seconds", ages ? ages : json_object());
+    json_set(out, "forced_releases", json_number((double)g_forced_release_count));
+
+    json_t *recent_copy = g_forced_releases
+        ? json_copy(g_forced_releases) : json_array();
+    if (!recent_copy) recent_copy = json_array();
+    json_set(out, "recent_forced_releases", recent_copy);
+
+    pthread_mutex_unlock(&g_running_lock);
+    return out;
+}
+
+/* Best-effort interval length for a job, in seconds (<=0 when unknown).
+ * Reads the persisted schedule dict: interval jobs use minutes*60; cron
+ * jobs measure the gap between the next two fire times with
+ * cronjobs_compute_next_run (mirrors scheduler.py:_job_interval_minutes /
+ * _cron_interval_minutes). */
+static double job_interval_seconds(const json_t *job) {
+    if (!job) return 0.0;
+    json_t *schedule = json_object_get(job, "schedule");
+    if (!schedule || schedule->type != JSON_OBJECT) return 0.0;
+    const char *kind = json_object_get_string(schedule, "kind", "");
+    if (strcmp(kind, "interval") == 0) {
+        json_t *m = json_object_get(schedule, "minutes");
+        if (m && m->type == JSON_NUMBER && json_number_value(m) > 0)
+            return json_number_value(m) * 60.0;
+        return 0.0;
+    }
+    if (strcmp(kind, "cron") == 0) {
+        const char *expr = json_object_get_string(schedule, "expr", "");
+        if (!expr || !*expr) return 0.0;
+        char *first = cronjobs_compute_next_run(schedule, NULL);
+        if (!first) return 0.0;
+        char *second = cronjobs_compute_next_run(schedule, first);
+        double gap = 0.0;
+        if (second) {
+            time_t a = datetime_parse_iso8601(first);
+            time_t b = datetime_parse_iso8601(second);
+            if (a != (time_t)-1 && b != (time_t)-1 && b > a)
+                gap = difftime(b, a);
+            free(second);
+        }
+        free(first);
+        return gap;
+    }
+    return 0.0;
+}
+
+/* PoP: sweep_stale_inflight @ cron/scheduler.py:sweep_stale_inflight */
+/* Force-release in-flight claims that can no longer be making progress:
+ * a claim is stale when it is older than max(2*interval, floor) (or was
+ * registered without an age, which is adopted so it becomes sweepable one
+ * allowance from now). Every release bumps the probe-visible counter,
+ * records a JSONL row, and — unless the job is finite-repeat, whose budget
+ * must not be consumed by a non-run — writes a synthetic failure through
+ * cronjobs_mark_job_run so the wedge surfaces on the job row. due_jobs is
+ * the optional array of currently-due job records used to resolve names
+ * and intervals. Returns a fresh JSON array of released job ids (json_free).
+ *
+ * Note: the C engine has no future handles, so every claim is treated as
+ * the "future missing" class, and the durable-ledger terminal reconciliation
+ * (Python's latest_executions branch) applies only when a ledger row can be
+ * read — absent that port the age bound alone governs release. */
+json_t *sched_sweep_stale_inflight(const json_t *due_jobs) {
+    double floor_seconds = inflight_min_allowance_minutes() * 60.0;
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    double now = (double)tv.tv_sec + (double)tv.tv_usec / 1e6;
+
+    json_t *released = json_array();
+    if (!released) return NULL;
+
+    pthread_mutex_lock(&g_running_lock);
+    for (int i = g_running_count - 1; i >= 0; i--) {
+        const char *job_id = g_running_ids[i];
+        double started = g_running_since[i];
+        double age = now - started;
+
+        /* Resolve interval from the due_jobs snapshot (outside-lock data is
+         * a plain read; Python precomputes this before taking the lock too). */
+        double interval_seconds = 0.0;
+        const char *name = job_id;
+        bool finite_repeat = false;
+        if (due_jobs && due_jobs->type == JSON_ARRAY) {
+            size_t n = json_array_size(due_jobs);
+            for (size_t k = 0; k < n; k++) {
+                json_t *j = json_array_get(due_jobs, k);
+                const char *jid = json_object_get_string(j, "id", NULL);
+                if (!jid || strcmp(jid, job_id) != 0) continue;
+                interval_seconds = job_interval_seconds(j);
+                const char *nm = json_object_get_string(j, "name", NULL);
+                if (nm && *nm) name = nm;
+                json_t *repeat = json_object_get(j, "repeat");
+                json_t *times_v = json_is_object(repeat)
+                    ? json_object_get(repeat, "times") : NULL;
+                if (times_v && times_v->type == JSON_NUMBER &&
+                    json_number_value(times_v) > 0)
+                    finite_repeat = true;
+                break;
+            }
+        }
+
+        double allowance = floor_seconds;
+        if (interval_seconds > 0 &&
+            2.0 * interval_seconds > allowance)
+            allowance = 2.0 * interval_seconds;
+
+        if (age < allowance) continue;   /* genuinely still inside its window */
+
+        /* Release the claim. */
+        char id_copy[128];
+        snprintf(id_copy, sizeof(id_copy), "%s", job_id);
+        memmove(&g_running_ids[i], &g_running_ids[i + 1],
+                (size_t)(g_running_count - i - 1) * sizeof(g_running_ids[0]));
+        memmove(&g_running_since[i], &g_running_since[i + 1],
+                (size_t)(g_running_count - i - 1) * sizeof(double));
+        g_running_count--;
+        g_forced_release_count += 1;
+        pthread_mutex_unlock(&g_running_lock);
+
+        hermes_log(LOG_WARNING, "cron",
+                   "event=forced_release job='%s' id=%s age=%.0fs "
+                   "allowance=%.0fs future=missing — stale in-flight claim "
+                   "released; the job was skipping every fire with 'already "
+                   "running'", name, id_copy, age, allowance);
+        sched_record_forced_release(id_copy, name, age, allowance);
+
+        if (finite_repeat) {
+            hermes_log(LOG_WARNING, "cron",
+                       "job_untouched job='%s' id=%s — finite-repeat job "
+                       "released without mark_job_run (repeat budget "
+                       "preserved)", name, id_copy);
+        } else {
+            char msg[512];
+            snprintf(msg, sizeof(msg),
+                     "Stale in-flight claim force-released after %.1fm "
+                     "(allowance %.1fm); previous run never released the "
+                     "scheduler in-flight guard", age / 60.0, allowance / 60.0);
+            cronjobs_mark_job_run(id_copy, false, msg, NULL);
+        }
+
+        json_append(released, json_string(id_copy));
+
+        /* Re-take the lock for the next iteration of the mutated set. */
+        pthread_mutex_lock(&g_running_lock);
+        /* Restart scanning from the tail: indices shifted after removal. */
+        i = g_running_count;
+    }
+    pthread_mutex_unlock(&g_running_lock);
+    return released;
+}
+
+/* PoP: parse_bot_chat_deliver_token @ cron/scheduler.py:parse_bot_chat_deliver_token */
+/* Return the target profile for a ``bot-chat[:<name>]`` deliver token:
+ * malloc'd "" for the bare token (the job's own profile), the profile name
+ * for the explicit form, or NULL when part is not a bot-chat token at all.
+ * Case-insensitive on the token. Caller frees. */
+char *sched_parse_bot_chat_deliver_token(const char *part) {
+    /* strip both ends */
+    const char *b = part ? part : "";
+    while (*b == ' ' || *b == '\t' || *b == '\n' || *b == '\r') b++;
+    size_t len = strlen(b);
+    while (len > 0 && (b[len - 1] == ' ' || b[len - 1] == '\t' ||
+                       b[len - 1] == '\n' || b[len - 1] == '\r'))
+        len--;
+    char raw[256];
+    if (len >= sizeof(raw)) len = sizeof(raw) - 1;
+    memcpy(raw, b, len);
+    raw[len] = '\0';
+
+    char lowered[256];
+    for (size_t i = 0; i <= len; i++)
+        lowered[i] = (char)tolower((unsigned char)raw[i]);
+
+    const char *platform = "bot-chat";
+    size_t plen = strlen(platform);
+    if (strcmp(lowered, platform) == 0)
+        return strdup("");
+    if (strncmp(lowered, platform, plen) == 0 && lowered[plen] == ':') {
+        /* strip the value portion's ends too */
+        const char *v = raw + plen + 1;
+        size_t vlen = len - plen - 1;
+        while (*v == ' ' || *v == '\t') { v++; vlen--; }
+        while (vlen > 0 && (v[vlen - 1] == ' ' || v[vlen - 1] == '\t')) vlen--;
+        char *out = malloc(vlen + 1);
+        if (!out) return NULL;
+        memcpy(out, v, vlen);
+        out[vlen] = '\0';
+        return out;
+    }
+    return NULL;
 }
 
 /* PoP: sched_write_usage_audit @ cron/scheduler.py:_write_usage_audit

@@ -35,4 +35,13 @@ json_t *browser_check_browser_vision_requirements(void);
 void cdp_set_url(const char *url);
 const char *cdp_get_url(void);
 
+bool browser_check_browser_routed_requirements(const char *action);
+bool check_browser_navigate_requirements(void);
+bool check_browser_snapshot_requirements(void);
+bool check_browser_click_requirements(void);
+bool check_browser_type_requirements(void);
+bool check_browser_scroll_requirements(void);
+bool check_browser_back_requirements(void);
+bool check_browser_press_requirements(void);
+
 #endif /* SLERMES_BROWSER_TOOL_CDP_H */
