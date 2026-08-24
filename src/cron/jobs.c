@@ -3011,10 +3011,17 @@ double cronjobs_oneshot_run_claim_ttl_seconds(void) {
         if (end && end != raw) timeout = v;   /* Python float() failure keeps default */
         else timeout = DEFAULT_CRON_INACTIVITY_TIMEOUT;
     }
-    if (timeout <= 0.0)
+    if (!(timeout > 0.0)) {
+        /* Python: timeout <= 0 OR NaN both fall to... actually NaN passes the
+         * `<= 0` test as False, then max(nan*3, floor) returns nan (Python max
+         * keeps the first argument on any-False comparison). Mirror exactly. */
+        if (timeout != timeout)   /* NaN */
+            return timeout * HEADROOM;   /* propagates NaN like Python */
         return TTL_FLOOR;   /* unlimited runs — fixed fallback floor */
+    }
     double derived = timeout * HEADROOM;
-    return derived > TTL_FLOOR ? derived : TTL_FLOOR;
+    /* Python max(a, b): returns a unless b > a. NaN-derived propagates. */
+    return (derived > TTL_FLOOR) ? derived : TTL_FLOOR;
 }
 
 /* Claim liveness (mirrors _claim_is_live): claim is {"by":..., "at": iso}. */
