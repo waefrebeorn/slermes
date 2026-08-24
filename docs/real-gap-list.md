@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T13:04:22Z from `live_parity_scan.json` by `make parity-walkway`. **2,171 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T13:30:04Z from `live_parity_scan.json` by `make parity-walkway`. **2,152 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -478,7 +478,7 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (253 gaps)
+### cli.py (239 gaps)
 
 - _arm_exit_watchdog (function)
 - _arm_exit_watchdog_on_shutdown_signal (function)
@@ -520,32 +520,18 @@
 - save_config_value (function)
 - _VoiceInputMessage.__str__ (method)
 - HermesCLI._claim_active_session (method)
-- HermesCLI._release_active_session (method)
 - HermesCLI._mark_terminal_io_broken (method)
 - HermesCLI._invalidate (method)
 - HermesCLI._paint_now (method)
 - HermesCLI._force_full_redraw (method)
 - HermesCLI._schedule_focus_regain_redraw (method)
-- HermesCLI._redraw_rebuilds_scrollback (method)
 - HermesCLI._clear_prompt_toolkit_screen (method)
 - HermesCLI._recover_after_resize (method)
 - HermesCLI._schedule_resize_recovery (method)
 - HermesCLI._install_resize_recovery (method)
-- HermesCLI._status_bar_context_style (method)
-- HermesCLI._battery_status_style (method)
-- HermesCLI._compression_count_style (method)
-- HermesCLI._build_context_bar (method)
-- HermesCLI._format_prompt_elapsed (method)
-- HermesCLI._format_idle_since (method)
 - HermesCLI._get_status_bar_snapshot (method)
-- HermesCLI._get_status_bar_session_title (method)
 - HermesCLI._status_bar_display_width (method)
-- HermesCLI._trim_status_bar_text (method)
-- HermesCLI._right_align_status_title (method)
-- HermesCLI._right_align_status_title_fragments (method)
-- HermesCLI._get_tui_terminal_width (method)
 - HermesCLI._use_minimal_tui_chrome (method)
-- HermesCLI._scrollback_box_width (method)
 - HermesCLI._tui_input_rule_height (method)
 - HermesCLI._spinner_widget_height (method)
 - HermesCLI._render_spinner_text (method)
@@ -2300,7 +2286,7 @@
 
 - remove_windows_bin_launchers (function)
 
-### hermes_cli/update_cmd.py (60 gaps)
+### hermes_cli/update_cmd.py (58 gaps)
 
 - _purge_stale_hermes_modules (function)
 - _migrate_sibling_profile_configs (function)
@@ -2308,7 +2294,6 @@
 - _web_build_toolchain_ready (function)
 - _reload_process_scan_modules (function)
 - _branch_head_label (function)
-- _branch_head_suffix (function)
 - _assess_parked_branch_switch (function)
 - _print_parked_branch_skip_warning (function)
 - _print_parked_branch_kept_notice (function)
@@ -2324,7 +2309,6 @@
 - _is_zip_staging_artifact_status_line (function)
 - _abort_zip_update_if_dirty_tree (function)
 - _read_project_version (function)
-- _update_complete_message (function)
 - _print_update_summary (function)
 - _write_gateway_update_exit_code (function)
 - _park_stashed_changes (function)
@@ -2922,11 +2906,8 @@
 - _hermes_home (function)
 - _manifest_file (function)
 
-### tools/skills_sync_client.py (9 gaps)
+### tools/skills_sync_client.py (6 gaps)
 
-- _decode_jwt_payload_unverified (function)
-- resolve_identity (function)
-- dev_gate_open (function)
 - resolve_sync_base_url (function)
 - is_sync_eligible (function)
 - list_synced_skill_names (function)
