@@ -4455,3 +4455,52 @@ void upd_assess_parked_branch_switch(const char *cwd,
      * callers can name the branch without re-running git. */
     (void)current_branch;
 }
+
+/* ── zip-staging artifact detection (v706d parity batch) ───────────── */
+
+static bool upd_ends_with_staging_suffix(const char *s) {
+    /* _ZIP_STAGING_ARTIFACT_SUFFIXES = (".hermes-update-staging",
+     *  ".hermes-update-old") */
+    size_t len = strlen(s);
+    static const char *SUF[] = { ".hermes-update-staging", ".hermes-update-old" };
+    for (int i = 0; i < 2; i++) {
+        size_t sl = strlen(SUF[i]);
+        if (len >= sl && strcmp(s + len - sl, SUF[i]) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: upd_is_zip_staging_artifact_status_line @ hermes_cli/update_cmd.py:_is_zip_staging_artifact_status_line */
+bool upd_is_zip_staging_artifact_status_line(const char *line) {
+    /* True when a porcelain status line is our own two-phase-swap artifact:
+     * payload = line[3:]; top-level dir after strip/quote/backslash-normalise
+     * ends with a staging suffix. */
+    if (!line) return false;
+    size_t len = strlen(line);
+    const char *payload = (len >= 3) ? line + 3 : line;
+
+    /* strip whitespace both ends */
+    while (*payload == ' ' || *payload == '\t') payload++;
+    const char *pe = payload + strlen(payload);
+    while (pe > payload && (pe[-1] == ' ' || pe[-1] == '\t' || pe[-1] == '\n' || pe[-1] == '\r')) pe--;
+
+    /* strip surrounding double quotes */
+    if (pe - payload >= 2 && *payload == '"' && pe[-1] == '"') {
+        payload++; pe--;
+    }
+
+    /* backslashes -> slashes on the fly; find first '/' */
+    char norm[1024];
+    size_t k = 0;
+    for (const char *q = payload; q < pe && k < sizeof(norm) - 1; q++)
+        norm[k++] = (*q == '\\') ? '/' : *q;
+    norm[k] = '\0';
+    /* rstrip('/') */
+    k = strlen(norm);
+    while (k > 0 && norm[k-1] == '/') norm[--k] = '\0';
+    /* take top-level segment before first '/' */
+    char *slash = strchr(norm, '/');
+    if (slash) *slash = '\0';
+
+    return upd_ends_with_staging_suffix(norm);
+}
