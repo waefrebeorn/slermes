@@ -537,3 +537,22 @@ char *ce_format_sessions(const json_t *sessions) {
     }
     return out;
 }
+
+/* PoP: ce_format_job @ hermes_cli/console_engine.py:_format_job */
+char *ce_format_job(const json_t *job, const char *action) {
+    /* "{action} job: {name} ({id}) [{state}]" with effective_job_state. */
+    extern const char *cronjobs_effective_job_state(const json_t *job);
+    if (!job || !json_is_object(job)) return strdup("");
+    const char *id = json_string_value(json_object_get(job, "id"));
+    if (!id || !*id) id = json_string_value(json_object_get(job, "job_id"));
+    if (!id || !*id) id = "?";
+    const char *name = json_string_value(json_object_get(job, "name"));
+    if (!name || !*name) name = "(unnamed)";
+    const char *state = cronjobs_effective_job_state(job);
+    if (!state) state = "";
+    size_t need = strlen(action) + strlen(name) + strlen(id) + strlen(state) + 32;
+    char *out = malloc(need);
+    if (!out) return NULL;
+    snprintf(out, need, "%s job: %s (%s) [%s]", action, name, id, state);
+    return out;
+}
