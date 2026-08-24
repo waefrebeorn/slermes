@@ -4386,3 +4386,18 @@ char *upd_branch_head_suffix_from_cwd(const char *cwd) {
     free(label);
     return out;
 }
+
+/* PoP: upd_write_gateway_update_exit_code @ hermes_cli/update_cmd.py:_write_gateway_update_exit_code */
+void upd_write_gateway_update_exit_code(bool ok) {
+    /* Persist 0/1 to <home>/.update_exit_code for the desktop/gateway poller.
+     * Best-effort: OSError is swallowed in Python too. */
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    if (!home || !*home) return;
+    char path[4096];
+    snprintf(path, sizeof(path), "%s/.update_exit_code", home);
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    fputs(ok ? "0" : "1", f);
+    fclose(f);
+}
