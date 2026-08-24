@@ -83,4 +83,10 @@ int acquire_turn_lock(const char *root, const char *profile,
 /* Release a lock acquired by acquire_turn_lock (the generator's finally). */
 void release_turn_lock(int fd);
 
+/* tools/bot_failure_reasons.py ports (promoted from bot_relay's inline
+ * classifier — shared by write_reply and external callers). */
+void bot_failure_classify_agent_error(const char *text, char *out, size_t n);
+int bot_failure_is_auto_retryable(const char *reason);
+const char *bot_failure_retry_action(const char *reason);
+
 #endif /* BOT_RELAY_H */

@@ -17,6 +17,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "hermes_json.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,6 +62,61 @@ void debug_free_pending(debug_pending_t *arr, int n);
  * hermes_redact) then mask email addresses. Caller frees. Returns a copy
  * (or NULL if input empty). */
 char *debug_redact_log_text(const char *text);
+
+/* ── debug-share core (hermes_cli/debug.py) ──────────────────────────────
+ * Real implementations of the share pipeline. Network uploads go through
+ * libhttp; pending-delete bookkeeping reuses this header's store above. */
+
+/* Single-read snapshot of one log file (LogSnapshot). */
+typedef struct {
+    char *tail_text;  /* summary tail for the report */
+    char *full_text;  /* full text for the standalone paste; NULL if none */
+} debug_log_snapshot_t;
+
+/* Capture a log once and derive tail/full views from the same read.
+ * Mirrors _capture_log_snapshot: resolves primary or .1 rotation, reads at
+ * most ~512KB from the end, optionally force-redacts both views. */
+void debug_capture_log_snapshot(const char *log_name, int tail_lines,
+                                int redact, debug_log_snapshot_t *out);
+
+/* Free a snapshot's strings. */
+void debug_free_log_snapshot(debug_log_snapshot_t *snap);
+
+/* collect_debug_report @ hermes_cli/debug.py:collect_debug_report — build the
+ * summary report: system dump + per-log tails, exactly Python's layout.
+ * Any tail may be NULL/empty. Returns a malloc'd string. */
+char *debug_collect_debug_report(int log_lines, const char *dump_text,
+                                 const char *agent_tail,
+                                 const char *errors_tail,
+                                 const char *gateway_tail,
+                                 const char *gui_tail,
+                                 const char *desktop_tail);
+
+/* Upload content to a paste service (paste.rs first, dpaste.com fallback).
+ * Returns a malloc'd URL, or NULL with *err set to a malloc'd message
+ * mirroring the RuntimeError text. */
+char *debug_upload_to_pastebin(const char *content, int expiry_days,
+                               char **err);
+
+/* build_debug_share @ hermes_cli/debug.py:build_debug_share — collect report +
+ * full logs, upload each, schedule auto-deletion. Returns a JSON object:
+ *   {"urls": {label: url}, "failures": ["label: err"],
+ *    "redacted": bool, "auto_delete_seconds": 21600, "report": "..."}
+ * NULL (with *err) when the required report upload fails. */
+json_t *debug_build_debug_share(int log_lines, int expiry_days, int redact,
+                                char **err);
+
+/* run_debug_share @ hermes_cli/debug.py:run_debug_share — the CLI flow.
+ * `confirm_cb` returns nonzero to proceed with upload (interactive consent
+ * gate; pass NULL together with confirm=1 to skip prompting). Returns process
+ * exit code (0 success, 1 failure/abort). */
+int debug_run_debug_share(int lines, int expire, int local_only, int nous,
+                          int redact,
+                          const char **extra_argv, int extra_argc);
+
+/* run_debug_delete @ hermes_cli/debug.py:run_debug_delete — delete pastes by
+ * URL. Returns process exit code (0). */
+int debug_run_debug_delete(const char *const *urls, int n);
 
 #ifdef __cplusplus
 }

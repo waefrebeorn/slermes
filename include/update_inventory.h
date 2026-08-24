@@ -66,6 +66,33 @@ void print_update_plan(const upd_plan_t *plan);
  * receipt. Never raises. */
 void record_plan_in_receipt(const upd_plan_t *plan);
 
+/* describe_restart_mechanism @ ...:describe_restart_mechanism — human-readable
+ * description of a restart mechanism id (malloc'd, caller frees). */
+char *update_inventory_describe_restart_mechanism(const char *mechanism,
+                                                  const char *profile);
+
+/* match_runtime_outcomes @ ...:match_runtime_outcomes — reconcile the plan's
+ * runtimes against the restart phase's bookkeeping. Returns a JSON array of
+ * {"kind","profile","pid","mechanism","outcome"} rows (outcome is one of
+ * "restarted" / "stopped" / "failed" / "unaccounted"). Never raises.
+ *
+ *   restarted_services / failed_units : JSON arrays of strings
+ *   relaunched_profiles / externally_supervised_profiles : JSON arrays of strings
+ *   killed_pids : JSON array of numbers
+ */
+json_t *upd_match_runtime_outcomes(const upd_plan_t *plan,
+                                   const json_t *restarted_services,
+                                   const json_t *relaunched_profiles,
+                                   const json_t *externally_supervised_profiles,
+                                   const json_t *killed_pids,
+                                   const json_t *failed_units);
+
+/* report_unaccounted_runtimes @ ...:report_unaccounted_runtimes — print a loud
+ * warning for runtimes the restart phase never touched. `outcomes` is the
+ * array returned by upd_match_runtime_outcomes(). Returns nonzero when at
+ * least one planned runtime is unaccounted (caller exits 1). */
+int update_inventory_report_unaccounted_runtimes(const json_t *outcomes);
+
 #ifdef __cplusplus
 }
 #endif

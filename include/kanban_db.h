@@ -742,3 +742,25 @@ void kdb_retag_legacy_worker_sessions(const char *workspaces_root);
 #endif
 
 #endif /* SLERMES_KANBAN_DB_H */
+
+/* ── max-in-progress resolution (kanban_db.py:9664-9783) ─────────────── */
+/* Python returns Optional[int]; the C port uses -1L as the None sentinel.
+ * Memory-derived default for kanban.max_in_progress when unset:
+ * clamp(MemTotalKiB / 1024 / 512, 2, 8); -1 when total memory unknown.
+ * `sample` may be NULL (sampled internally via llg_sample_memory()) or a
+ * pre-captured {"mem_total_kib": N} object. Caller frees nothing here. */
+long kdb_derive_default_max_in_progress(const json_t *sample);
+
+/* resolve_max_in_progress — explicit operator value always wins; otherwise
+ * the memory-derived default. */
+long kdb_resolve_max_in_progress(long configured);
+
+/* configured_max_in_progress — kanban.max_in_progress from config, or -1
+ * when unset/invalid (only a positive integer counts). */
+long kdb_configured_max_in_progress(void);
+
+/* count_running_tasks_other_boards — total running tasks across every board
+ * EXCEPT `board` (NULL = current board). Boards matched by resolved DB path,
+ * so a HERMES_KANBAN_DB override that pins every board to one file yields 0.
+ * Fails open per board. */
+int kdb_count_running_tasks_other_boards(const char *board);

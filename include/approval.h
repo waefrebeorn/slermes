@@ -54,6 +54,14 @@ void approval_reset_session(void);
 void approval_set_allowlist_path(const char *path);
 void approval_save_allowlist(void);
 void approval_set_gateway_wait(char *(*fn)(int timeout_sec));
+
+/* Gateway approval registry reads (tools/approval.py ports).
+ * list: replay-safe copies of unresolved approvals for a session (JSON array,
+ * caller frees). ack: mark a payload's request_id as received by the client.
+ * get_pending: malloc'd copy of the oldest unresolved approval payload. */
+json_t *approval_list_gateway_approvals(const char *session_key);
+int approval_ack_gateway_approval(const char *session_key, const char *request_id);
+char *approval_get_pending_gateway_approval(const char *session_key);
 void gw_approval_set_context(const char *platform, const char *chat_id);
 void clarify_set_gateway_send(bool (*fn)(const char *, const char *, const char *,
                                          const char **, int, const char *),
