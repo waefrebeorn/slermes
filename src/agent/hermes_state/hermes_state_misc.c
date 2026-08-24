@@ -4473,3 +4473,118 @@ void hermes_state_prune_malformed_backups(const char *db_path, int keep) {
     }
     json_free(list);
 }
+
+/* ── persistent repair budget (v712 parity batch) ──────────────────── */
+
+#define HS_MAX_PERSISTENT_REPAIR_ATTEMPTS 3
+#define HS_FINGERPRINT_SAMPLE_BYTES 4096
+
+/* PoP: hermes_state_db_fingerprint @ hermes_state.py:_db_fingerprint
+ * Cheap identity: size + bounded head/tail content sample, mtime excluded
+ * on purpose (#82770 class). Malloc'd hex or NULL when unreadable. */
+char *hermes_state_db_fingerprint(const char *db_path) {
+    if (!db_path || !*db_path) return NULL;
+    FILE *f = fopen(db_path, "rb");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END);
+    long total = ftell(f);
+    long size = total;
+    fseek(f, 0, SEEK_SET);
+    char head[HS_FINGERPRINT_SAMPLE_BYTES];
+    size_t hn = fread(head, 1, sizeof(head), f);
+    /* tail sample */
+    char tail[HS_FINGERPRINT_SAMPLE_BYTES];
+    size_t tn = 0;
+    long tail_off = size - (long)sizeof(tail);
+    if (tail_off > 0) {
+        fseek(f, tail_off, SEEK_SET);
+        tn = fread(tail, 1, sizeof(tail), f);
+    }
+    fclose(f);
+    if (size <= 0) return NULL;
+
+    extern char *hash_sha256_hex(const unsigned char *data, size_t len);
+    char size_part[64];
+    snprintf(size_part, sizeof(size_part), "%ld:", size);
+    /* digest over size + head + tail */
+    size_t need = strlen(size_part) + hn + tn;
+    unsigned char *blob = malloc(need ? need : 1);
+    if (!blob) return NULL;
+    size_t off = 0;
+    memcpy(blob + off, size_part, strlen(size_part)); off += strlen(size_part);
+    memcpy(blob + off, head, hn); off += hn;
+    memcpy(blob + off, tail, tn); off += tn;
+    char *hex = hash_sha256_hex(blob, off);
+    free(blob);
+
+    /* prefix with size so the ledger's size-prefix fallback still works */
+    char *out = malloc(strlen(size_part) + (hex ? strlen(hex) : 0) + 1);
+    if (!out) { free(hex); return NULL; }
+    strcpy(out, size_part);
+    strcat(out, hex ? hex : "");
+    free(hex);
+    return out;
+}
+
+/* PoP: hermes_state_persistent_repair_attempts_exhausted @ hermes_state.py:_persistent_repair_attempts_exhausted */
+bool hermes_state_persistent_repair_attempts_exhausted(const char *db_path) {
+    /* True only when the ledger records >= MAX failed attempts against the
+     * CURRENT fingerprint. Missing/corrupt ledger reads as not exhausted. */
+    extern json_t *hermes_state_read_repair_ledger(const char *db_path);
+    json_t *ledger = hermes_state_read_repair_ledger(db_path);
+    if (!ledger || !json_is_object(ledger)) { if (ledger) json_free(ledger); return false; }
+
+    const char *recorded = json_string_value(json_obj_get(ledger, "fingerprint"));
+    char *fp = hermes_state_db_fingerprint(db_path);
+    bool exhausted = false;
+    if (!fp) {
+        /* fingerprint unavailable: fall back to recorded SIZE prefix */
+        struct stat st;
+        if (stat(db_path, &st) != 0) { json_free(ledger); free(fp); return false; }
+        char prefix[64];
+        snprintf(prefix, sizeof(prefix), "%ld:", (long)st.st_size);
+        exhausted = recorded && strncmp(recorded, prefix, strlen(prefix)) == 0 &&
+                    ({
+                const json_t *_fa = json_obj_get(ledger, "failed_attempts");
+                (_fa && _fa->type == JSON_NUMBER) ? (long)_fa->num_val >= HS_MAX_PERSISTENT_REPAIR_ATTEMPTS : false;
+            });
+    } else {
+        bool same = recorded && strcmp(recorded, fp) == 0;
+        long attempts = 0;
+        const json_t *fa = json_obj_get(ledger, "failed_attempts");
+        if (fa && fa->type == JSON_NUMBER) attempts = (long)fa->num_val;
+        exhausted = same && attempts >= HS_MAX_PERSISTENT_REPAIR_ATTEMPTS;
+    }
+    free(fp);
+    json_free(ledger);
+    return exhausted;
+}
+
+/* PoP: hermes_state_read_repair_ledger @ hermes_state.py:_read_repair_ledger */
+json_t *hermes_state_read_repair_ledger(const char *db_path) {
+    extern char *hermes_state_repair_ledger_path(const char *db_path);
+    json_t *out = json_object();
+    if (!out) return NULL;
+    char *lp = hermes_state_repair_ledger_path(db_path);
+    if (!lp) return out;
+    FILE *f = fopen(lp, "rb");
+    free(lp);
+    if (!f) return out;
+    fseek(f, 0, SEEK_END);
+    long n = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (n < 0 || n > 1 << 20) { fclose(f); return out; }
+    char *buf = malloc((size_t)n + 1);
+    if (!buf) { fclose(f); return out; }
+    size_t rd = fread(buf, 1, (size_t)n, f);
+    buf[rd] = '\0';
+    fclose(f);
+    json_t *raw = json_parse(buf, NULL);
+    free(buf);
+    if (raw && json_is_object(raw)) {
+        json_free(out);
+        return raw;   /* adopt the parsed object */
+    }
+    if (raw) json_free(raw);
+    return out;
+}
