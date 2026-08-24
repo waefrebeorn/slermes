@@ -265,6 +265,13 @@ int  cc_cursor_after_splice(const json_t *result, int fallback);
 /* New message array with consecutive plain-text real user turns merged. Caller frees. */
 json_t *cc_merge_adjacent_user_turns(const json_t *result);
 
+/* salvage_grown_transcript @ agent/context_compressor.py:salvage_grown_transcript
+ * — mechanically shrink a compression candidate (deep copy) or return NULL.
+ * budget < 0 means Python's None → estimate_messages_tokens_rough(original). */
+json_t *salvage_grown_transcript(const json_t *original,
+                                 const json_t *candidate,
+                                 long budget);
+
 /* ── batch 5: standalone handoff + user-turn predicates (pure) ─────────── */
 /* True when a summary-bearing row still carries a live user ask after handoff stripped. */
 bool cc_handoff_carries_live_user_content(const json_t *message);

@@ -470,8 +470,7 @@ void banner_snapshot_fingerprint(char *out_fp, size_t out_sz) {
             snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts),
                      "|%s:absent", names[i]);
     }
-    extern const char *hermes_version_string(void);
-    const char *ver = hermes_version_string();
+    const char *ver = HERMES_VERSION;
     if (ver && *ver)
         snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts), "|%s", ver);
     else

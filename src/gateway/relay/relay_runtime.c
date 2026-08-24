@@ -978,6 +978,7 @@ struct relay_turn {
     char           *task_id;
     relay_handle_t  handle;
     bool            closed;
+    bool            relay_enabled;      /* turn.relay_enabled (concurrent turns skip instrumentation) */
     bool            active_registered;  /* turn._active_registered */
     bool            token_set;          /* turn._token not None (this turn set it) */
     relay_turn_t   *prev_turn;          /* value current_turn held before begin (Python reset semantics) */
@@ -1270,6 +1271,7 @@ relay_turn_t *relay_coordinator_begin_turn(relay_coordinator_t *co, relay_lease_
     }
     turn->task_id = rr_strdup(task_id);
     turn->lease   = lease;
+    turn->relay_enabled = true;   /* Python RelayTurnContext default */
     lease->refcount++;
 
     relay_runtime_t *rt = relay_host_runtime(lease->host);
@@ -1292,12 +1294,16 @@ relay_turn_t *relay_coordinator_begin_turn(relay_coordinator_t *co, relay_lease_
         rr_turn_key(turn, tk, sizeof tk);
         pthread_mutex_lock(&co->lock);
         omap_t *set = (omap_t *)omap_get(co->active_turns, key);
+        bool active_was_empty = (set == NULL);
         if (!set) {
             set = omap_new(NULL);
             if (set && !omap_set(co->active_turns, key, set)) { omap_free(set); set = NULL; }
         }
         if (set) omap_set(set, tk, turn);
         turn->active_registered = set != NULL;
+        /* Python: turn.relay_enabled = False when an active turn already
+         * existed for this conversation key (concurrent-turn guard). */
+        turn->relay_enabled = active_was_empty;
         pthread_mutex_unlock(&co->lock);
         free(key);
     }
@@ -1804,4 +1810,27 @@ void relay_reset_for_tests(void)
 void relay_runtime_shutdown_all(void)
 {
     relay_host_registry_shutdown_all(relay_host_registry_global());
+}
+
+/* PoP: pop_relay_scope @ agent/relay_runtime.py:pop_relay_scope */
+bool pop_relay_scope(const relay_backend_t *be, relay_handle_t handle,
+                     const char *output_json, const char *metadata_json,
+                     const char *timestamp_json)
+{
+    if (!be || !be->scope_pop) return false;
+    /* Python filters kwargs to what the live binding's signature accepts
+     * (older wheels reject 'metadata'; none take 'timestamp'). The C backend
+     * vtable is the binding here: its scope_pop slot carries (output,
+     * metadata) only, so a non-NULL timestamp is filtered out exactly as
+     * inspect-signature filtering would drop it. NULL output/metadata are
+     * withheld just like the kwargs dict built only from non-None values. */
+    (void)timestamp_json;
+    return be->scope_pop(be->ctx, handle, output_json, metadata_json);
+}
+
+/* PoP: relay_instrumentation_enabled @ agent/relay_runtime.py:relay_instrumentation_enabled */
+bool relay_instrumentation_enabled(void)
+{
+    relay_turn_t *turn = relay_current_turn();
+    return turn == NULL || (turn->relay_enabled && !turn->closed);
 }

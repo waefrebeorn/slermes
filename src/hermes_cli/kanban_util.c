@@ -881,7 +881,7 @@ int kdb_guard_existing_db_is_healthy(const char *path, char **reason_out)
     if (stat(resolved, &stt) != 0 || stt.st_size == 0) return 0;
     sqlite3 *probe = NULL;
     int prc = sqlite3_open_v2(resolved, &probe,
-                               SQLITE_OPEN_READWRITE | SQLITE_OPEN_NOMUTEX, NULL);
+                               SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX, NULL);
     if (prc != SQLITE_OK) {
         if (probe) sqlite3_close(probe);
         /* open refusal => treat as transient (let caller see a lock error) */

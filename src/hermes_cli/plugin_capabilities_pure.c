@@ -25,6 +25,7 @@
 #include "hermes_json.h"
 #include "hermes_crypto.h"
 
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -133,6 +134,7 @@ char *pc_parse_declared_capabilities(const char *raw_json, const char *plugin_na
     return out;
 }
 
+/* PoP: pc_capability_set_hash @ hermes_cli/plugin_capabilities.py:capability_set_hash */
 char *pc_capability_set_hash(const char *caps_json) {
     json_t *caps = json_parse(caps_json, NULL);
     /* collect valid ids, sort, join with \n, sha256 */
@@ -251,4 +253,235 @@ int pc_plugin_capability_granted(const char *plugin_id, const char *capability,
     int legacy = pc_legacy_gate_in_entry(e2, idx);
     json_free(config);
     return legacy;
+}
+
+/* ── Consent-state helpers ──────────────────────────────────────────────── */
+
+/* Filter a JSON array of capability ids to valid ones, deduping while
+ * preserving first-seen order (Python: dict.fromkeys). Returns a new array. */
+static json_t *pc_valid_dedupe(const json_t *caps) {
+    json_t *out = json_array();
+    if (!out) return NULL;
+    if (caps && caps->type == JSON_ARRAY) {
+        for (size_t i = 0; i < caps->c.count; i++) {
+            json_t *e = caps->c.items[i];
+            if (!e || e->type != JSON_STRING || !e->str_val) continue;
+            char *s = strdup(e->str_val);
+            if (!s) continue;
+            char *q = s;
+            while (*q==' '||*q=='\t') q++;
+            size_t L = strlen(q); while (L>0 && (q[L-1]==' '||q[L-1]=='\t')) q[--L]=0;
+            int dup = 0, valid = pc_is_valid_capability(q);
+            if (!valid) { free(s); continue; }
+            for (size_t j = 0; j < out->c.count && !dup; j++) {
+                json_t *x = out->c.items[j];
+                if (x->type == JSON_STRING && x->str_val && strcmp(x->str_val, q) == 0)
+                    dup = 1;
+            }
+            if (!dup) json_append(out, json_string(q));
+            free(s);
+        }
+    }
+    return out;
+}
+
+/* PoP: pc_consent_hash @ hermes_cli/plugin_capabilities.py:consent_hash */
+/* Return the stored consent hash for plugin_id (malloc'd), or NULL when
+ * absent/corrupt. config_json may be the full config or just the entry. */
+char *pc_consent_hash(const char *plugin_id, const char *config_json) {
+    json_t *entry = pc_entry_from_config(config_json, plugin_id);
+    if (!entry) return NULL;
+    json_t *consent = json_obj_get(entry, "consent");
+    char *out = NULL;
+    if (consent && consent->type == JSON_OBJECT) {
+        json_t *h = json_obj_get(consent, "hash");
+        if (h && h->type == JSON_STRING && h->str_val && *h->str_val)
+            out = strdup(h->str_val);
+    }
+    json_free(entry);
+    return out;
+}
+
+/* PoP: pc_pending_capabilities @ hermes_cli/plugin_capabilities.py:pending_capabilities */
+/* Capabilities declared by the plugin but not yet granted — everything is
+ * pending at first consent; on update re-consent only the additions.
+ * Returns a malloc'd JSON array string. */
+char *pc_pending_capabilities(const char *plugin_id, const char *declared_json,
+                              const char *config_json) {
+    json_t *declared = json_parse(declared_json, NULL);
+    json_t *filtered = pc_valid_dedupe(declared);
+    if (declared) json_free(declared);
+    char *granted_json = pc_granted_capabilities(plugin_id, config_json);
+    json_t *granted = granted_json ? json_parse(granted_json, NULL) : NULL;
+    free(granted_json);
+
+    char *out = malloc(2);
+    out[0] = '['; out[1] = '\0';
+    size_t outlen = 1;
+    if (filtered) {
+        for (size_t i = 0; i < filtered->c.count; i++) {
+            json_t *c = filtered->c.items[i];
+            if (!c || c->type != JSON_STRING) continue;
+            int in_granted = 0;
+            if (granted && granted->type == JSON_ARRAY) {
+                for (size_t j = 0; j < granted->c.count && !in_granted; j++) {
+                    json_t *g = granted->c.items[j];
+                    if (g && g->type == JSON_STRING && g->str_val &&
+                        strcmp(g->str_val, c->str_val) == 0) in_granted = 1;
+                }
+            }
+            if (in_granted) continue;
+            char *esc = json_escape_string(c->str_val ? c->str_val : "");
+            out = realloc(out, outlen + (outlen > 1 ? 1 : 0) + strlen(esc ? esc : "\"\"") + 1);
+            strcat(out, (outlen > 1) ? "," : "");
+            strcat(out, esc ? esc : "\"\"");
+            outlen += (outlen > 1 ? 1 : 0) + strlen(esc ? esc : "");
+            free(esc);
+        }
+        json_free(filtered);
+    }
+    if (granted) json_free(granted);
+    out = realloc(out, outlen + 2);
+    strcat(out, "]");
+    return out;
+}
+
+/* PoP: pc_declared_set_changed @ hermes_cli/plugin_capabilities.py:declared_set_changed */
+/* True when the declared set differs from what the user consented to. No
+ * stored consent at all counts as changed (never consented). */
+int pc_declared_set_changed(const char *plugin_id, const char *declared_json,
+                            const char *config_json) {
+    char *stored = pc_consent_hash(plugin_id, config_json);
+    if (!stored) return 1;
+    json_t *declared = json_parse(declared_json, NULL);
+    json_t *filtered = pc_valid_dedupe(declared);
+    if (declared) json_free(declared);
+    char *ser = filtered ? json_serialize(filtered) : NULL;
+    if (filtered) json_free(filtered);
+    char *now_hash = ser ? pc_capability_set_hash(ser) : pc_capability_set_hash("[]");
+    free(ser);
+    int changed = !now_hash || strcmp(stored, now_hash) != 0;
+    free(now_hash);
+    free(stored);
+    return changed;
+}
+
+/* PoP: pc_record_consent @ hermes_cli/plugin_capabilities.py:record_consent */
+/* Pure core of record_consent: applies the consent decision to config_json
+ * and returns the updated full-config JSON (malloc'd) — merging granted
+ * capabilities with any previous grant (sorted, valid ids only), writing the
+ * consent record (sha256 of the declared set + UTC timestamp), and mirroring
+ * each grant into its legacy allow_* gate so existing enforcement keeps
+ * working. Config load/save stays at the caller boundary. Returns NULL when
+ * config_json doesn't parse as an object. */
+char *pc_record_consent(const char *config_json, const char *plugin_id,
+                        const char *granted_json, const char *declared_json)
+{
+    json_t *config = json_parse(config_json, NULL);
+    if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return NULL; }
+
+    json_t *granted_in = json_parse(granted_json, NULL);
+    json_t *declared_in = json_parse(declared_json, NULL);
+    json_t *granted_list = pc_valid_dedupe(granted_in);
+    json_t *declared_list = pc_valid_dedupe(declared_in);
+    if (granted_in) json_free(granted_in);
+    if (declared_in) json_free(declared_in);
+
+    /* plugins.entries.<plugin_id>, creating each level as needed. */
+    json_t *plugins = json_obj_get(config, "plugins");
+    if (!plugins || plugins->type != JSON_OBJECT) {
+        plugins = json_object();
+        json_set(config, "plugins", plugins);
+    }
+    json_t *entries = json_obj_get(plugins, "entries");
+    if (!entries || entries->type != JSON_OBJECT) {
+        entries = json_object();
+        json_set(plugins, "entries", entries);
+    }
+    json_t *entry = json_obj_get(entries, plugin_id);
+    if (!entry || entry->type != JSON_OBJECT) {
+        entry = json_object();
+        json_set(entries, plugin_id, entry);
+    }
+
+    /* Merge previously-granted capabilities into the new set. */
+    json_t *merged = json_array();
+    json_t *previous = json_obj_get(entry, "granted_capabilities");
+    if (previous && previous->type == JSON_ARRAY) {
+        for (size_t i = 0; i < previous->c.count; i++) {
+            json_t *c = previous->c.items[i];
+            if (c && c->type == JSON_STRING && c->str_val && pc_is_valid_capability(c->str_val)) {
+                int dup = 0;
+                for (size_t j = 0; j < merged->c.count && !dup; j++) {
+                    json_t *x = merged->c.items[j];
+                    if (strcmp(x->str_val, c->str_val) == 0) dup = 1;
+                }
+                if (!dup) json_append(merged, json_string(c->str_val));
+            }
+        }
+    }
+    for (size_t i = 0; i < granted_list->c.count; i++) {
+        json_t *c = granted_list->c.items[i];
+        int dup = 0;
+        for (size_t j = 0; j < merged->c.count && !dup; j++) {
+            json_t *x = merged->c.items[j];
+            if (strcmp(x->str_val, c->str_val) == 0) dup = 1;
+        }
+        if (!dup) json_append(merged, json_copy(c));
+    }
+    /* Sort the stored set (Python: sorted(...)). */
+    for (size_t i = 1; i < merged->c.count; i++) {
+        json_t *keyv = merged->c.items[i];
+        size_t j = i;
+        while (j > 0 && strcmp(merged->c.items[j-1]->str_val, keyv->str_val) > 0) {
+            merged->c.items[j] = merged->c.items[j-1];
+            j--;
+        }
+        merged->c.items[j] = keyv;
+    }
+    json_set(entry, "granted_capabilities", merged);
+
+    /* Consent record: hash of the declared set + UTC timestamp (seconds). */
+    char *declared_ser = json_serialize(declared_list);
+    char *hash = pc_capability_set_hash(declared_ser ? declared_ser : "[]");
+    free(declared_ser);
+    json_t *consent = json_object();
+    if (hash) json_set(consent, "hash", json_string(hash));
+    free(hash);
+    char tsbuf[32];
+    time_t now = time(NULL);
+    struct tm tm_utc;
+    gmtime_r(&now, &tm_utc);
+    strftime(tsbuf, sizeof(tsbuf), "%Y-%m-%dT%H:%M:%S+00:00", &tm_utc);
+    json_set(consent, "granted_at", json_string(tsbuf));
+    json_set(entry, "consent", consent);
+
+    /* Bridge: mirror each granted capability into its legacy allow_* gate. */
+    for (int gi = 0; PC_VALID_IDS[gi]; gi++) {
+        int present = 0;
+        for (size_t i = 0; i < merged->c.count && !present; i++)
+            if (strcmp(merged->c.items[i]->str_val, PC_VALID_IDS[gi]) == 0) present = 1;
+        if (!present) continue;
+        json_t *node = entry;
+        for (int k = 0; k < 3; k++) {
+            const char *part = PC_LEGACY_PATHS[gi][k];
+            if (!part) break;
+            if (PC_LEGACY_PATHS[gi][k+1]) { /* intermediate: dict per level */
+                json_t *child = json_obj_get(node, part);
+                if (!child || child->type != JSON_OBJECT) {
+                    child = json_object();
+                    json_set(node, part, child);
+                }
+                node = child;
+            } else {
+                json_set(node, part, json_bool(true));
+            }
+        }
+    }
+
+    json_free(granted_list);
+    json_free(declared_list);
+    char *out = json_serialize(config);
+    json_free(config);
+    return out;
 }

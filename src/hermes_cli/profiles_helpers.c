@@ -221,3 +221,22 @@ int profiles_should_redact_export_file(const char *filename) {
     }
     return 0;
 }
+
+/* PoP: profiles_format_profile_label @ hermes_cli/profiles.py:format_profile_label */
+/* Render a profile for display: "display_name (canonical_id)". Falls back to
+ * the bare canonical id when no display name is set (or it equals the id).
+ * Returns a malloc'd string; caller frees. */
+char *profiles_format_profile_label(const char *name, const char *display_name)
+{
+    const char *dn = display_name ? display_name : "";
+    while (*dn == ' ' || *dn == '\t' || *dn == '\n' || *dn == '\r') dn++;
+    size_t L = strlen(dn);
+    while (L > 0 && (dn[L-1]==' '||dn[L-1]=='\t'||dn[L-1]=='\n'||dn[L-1]=='\r')) L--;
+    if (!name) name = "";
+    if (L == 0 || (strlen(name) == L && strncmp(name, dn, L) == 0))
+        return strdup(name);
+    size_t n = L + strlen(name) + 8;
+    char *out = malloc(n);
+    if (out) snprintf(out, n, "%.*s (%s)", (int)L, dn, name);
+    return out;
+}

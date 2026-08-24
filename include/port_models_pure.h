@@ -177,10 +177,10 @@ void models_save_ollama_cloud_cache(const char *json);
 
 /* ── Nous free-tier / portal recommendation unions ─────────────────────── */
 
-/* Faithful port of models.py:check_nous_free_tier. Returns 1 if the account is
- * free-tier (best-effort), else 0. Uses injected pricing resolver. */
-int models_check_nous_free_tier(http_fetch_fn fetch, void *ctx,
-                                nous_creds_fn resolve_nous, void *nous_ctx);
+/* Faithful port of models.py:check_nous_free_tier lives in
+ * src/hermes_cli/models_net.c as models_check_nous_free_tier(int force_fresh)
+ * — see include/port_models_net.h (the earlier injectable-resolver variant
+ * declared here was never implemented; removed to close the gap for real). */
 
 /* Faithful port of models.py:_merge_with_models_dev. Returns a malloc'd
  * NULL-terminated merged array (caller frees each + array) from live + dev

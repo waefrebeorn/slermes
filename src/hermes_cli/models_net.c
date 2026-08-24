@@ -9,6 +9,7 @@
  */
 
 #include "port_models_net.h"
+#include "port_models_pure.h"
 #include "port_models_helpers.h"
 #include "model_catalog.h"
 #include "libjson/json.h"
@@ -18,6 +19,7 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
+#include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -532,4 +534,561 @@ char *models_fetch_nous_recommended_models(http_fetch_fn fetch, void *ctx,
     /* Fall back to the last-known-good disk copy. */
     char *disk = read_nous_recommended_disk(base);
     return disk;
+}
+
+/* ── Reasoning-capability catalogs (OpenRouter / Nous Portal) ──────────── */
+
+#define MODELS_REASONING_CAPS_DISK_TTL_SECONDS (24.0 * 3600.0)
+#define MODELS_REASONING_CAPS_FAIL_TTL_SECONDS 60.0
+#define MODELS_DEFAULT_NOUS_INFERENCE_BASE "https://inference-api.nousresearch.com"
+
+/* Per-provider reasoning-caps state (memory cache + failure backoff). */
+typedef struct {
+    char  *cache;        /* serialized {model_id: caps-or-null} map, or NULL */
+    int    disk_checked; /* one disk-mirror attempt per process              */
+    double failed_at;    /* monotonic timestamp of last failed fetch, or -1  */
+} caps_state;
+static caps_state g_or_caps_state;
+static caps_state g_nous_caps_state;
+
+static double caps_monotonic(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+
+/* PoP: models_reasoning_caps_disk_path @ hermes_cli/models.py:_reasoning_caps_disk_path */
+char *models_reasoning_caps_disk_path(void) {
+    char home[4096];
+    hermes_home_dir(home, sizeof(home));
+    size_t n = strlen(home) + strlen("/cache/reasoning_caps.json") + 1;
+    char *p = malloc(n);
+    if (p) snprintf(p, n, "%s/cache/reasoning_caps.json", home);
+    return p;
+}
+
+/* Strip whitespace in place-ish helper for effort strings. */
+static char *caps_strip_dup(const char *s) {
+    if (!s) return NULL;
+    char *d = strdup(s);
+    if (!d) return NULL;
+    char *q = d;
+    while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+    size_t L = strlen(q);
+    while (L > 0 && (q[L-1]==' '||q[L-1]=='\t'||q[L-1]=='\n'||q[L-1]=='\r')) q[--L] = 0;
+    memmove(d, q, L + 1);
+    return d;
+}
+
+/* PoP: models_parse_openrouter_reasoning_capabilities_node @ hermes_cli/models.py:parse_openrouter_reasoning_capabilities */
+/* Core parser over a parsed catalog item. Returns a new JSON node:
+ *   {"supports_reasoning":true,"supported_efforts":[...]|null,"mandatory":bool}
+ * or {"supports_reasoning":false} when the entry omits "reasoning" from
+ * supported_parameters, or NULL when capability can't be determined. */
+static json_t *models_parse_openrouter_reasoning_capabilities_node(const json_t *item)
+{
+    if (!item || item->type != JSON_OBJECT) return NULL;
+    json_t *params = json_obj_get(item, "supported_parameters");
+    if (!params || params->type != JSON_ARRAY)
+        return NULL; /* field absent/malformed — unknown capability */
+    int has_reasoning = 0;
+    for (size_t i = 0; i < params->c.count && !has_reasoning; i++) {
+        json_t *e = params->c.items[i];
+        if (e->type == JSON_STRING && e->str_val && strcmp(e->str_val, "reasoning") == 0)
+            has_reasoning = 1;
+    }
+    if (!has_reasoning) {
+        json_t *neg = json_object();
+        if (neg) json_set(neg, "supports_reasoning", json_bool(false));
+        return neg;
+    }
+    json_t *reasoning = json_obj_get(item, "reasoning");
+    int mandatory = 0;
+    json_t *efforts = NULL;
+    if (reasoning && reasoning->type == JSON_OBJECT) {
+        json_t *mnd = json_obj_get(reasoning, "mandatory");
+        mandatory = mnd && mnd->type == JSON_BOOL && mnd->bool_val;
+        json_t *raw = json_obj_get(reasoning, "supported_efforts");
+        if (raw && raw->type == JSON_ARRAY) {
+            /* list(dict.fromkeys(str(effort).strip().lower() ...)): dedupe
+             * preserving first-seen order; empty list stays an empty list. */
+            efforts = json_array();
+            for (size_t i = 0; efforts && i < raw->c.count; i++) {
+                json_t *e2 = raw->c.items[i];
+                if (!e2 || e2->type != JSON_STRING || !e2->str_val) continue;
+                char *s = caps_strip_dup(e2->str_val);
+                if (!s || !*s) { free(s); continue; }
+                for (char *p = s; *p; p++) *p = (char)tolower((unsigned char)*p);
+                int dup = 0;
+                for (size_t j = 0; j < efforts->c.count && !dup; j++) {
+                    json_t *x = efforts->c.items[j];
+                    if (x->type == JSON_STRING && x->str_val && strcmp(x->str_val, s) == 0)
+                        dup = 1;
+                }
+                if (!dup) json_append(efforts, json_string(s));
+                free(s);
+            }
+            if (!efforts) return NULL; /* OOM */
+        }
+    }
+    json_t *out = json_object();
+    if (!out) { if (efforts) json_free(efforts); return NULL; }
+    json_set(out, "supports_reasoning", json_bool(true));
+    json_set(out, "supported_efforts", efforts ? efforts : json_null());
+    json_set(out, "mandatory", json_bool(mandatory ? true : false));
+    return out;
+}
+
+/* PoP: models_parse_openrouter_reasoning_capabilities @ hermes_cli/models.py:parse_openrouter_reasoning_capabilities */
+/* Normalize one OpenRouter catalog entry's reasoning metadata. item_json is
+ * one entry of the /v1/models data array. Returns a malloc'd JSON object
+ * string per the tri-state contract, or NULL when capability can't be
+ * determined (missing/malformed supported_parameters). Caller frees. */
+char *models_parse_openrouter_reasoning_capabilities(const char *item_json)
+{
+    if (!item_json) return NULL;
+    json_t *item = json_parse(item_json, NULL);
+    json_t *caps = item ? models_parse_openrouter_reasoning_capabilities_node(item) : NULL;
+    char *out = caps ? json_serialize(caps) : NULL;
+    if (caps) json_free(caps);
+    if (item) json_free(item);
+    return out;
+}
+
+/* PoP: models_read_reasoning_caps_disk @ hermes_cli/models.py:_read_reasoning_caps_disk */
+static json_t *models_read_reasoning_caps_disk(void) {
+    char *path = models_reasoning_caps_disk_path();
+    if (!path) return NULL;
+    char *err = NULL;
+    json_t *doc = json_parse_file(path, &err);
+    if (err) free(err);
+    free(path);
+    if (!doc || doc->type != JSON_OBJECT) { if (doc) json_free(doc); return NULL; }
+    return doc;
+}
+
+/* PoP: models_load_reasoning_caps_disk @ hermes_cli/models.py:_load_reasoning_caps_disk */
+/* Returns the serialized caps map for url (malloc'd) and fills *age_seconds,
+ * or NULL. A missing/bad ts counts as fully stale, like Python. */
+static char *models_load_reasoning_caps_disk(const char *url, double *age_seconds) {
+    json_t *data = models_read_reasoning_caps_disk();
+    if (!data) return NULL;
+    json_t *entry = json_obj_get(data, url);
+    json_t *caps = entry ? json_obj_get(entry, "caps") : NULL;
+    if (!entry || entry->type != JSON_OBJECT || !caps || caps->type != JSON_OBJECT ||
+        caps->c.count == 0) {
+        json_free(data);
+        return NULL;
+    }
+    json_t *ts = json_obj_get(entry, "ts");
+    double saved = (ts && ts->type == JSON_NUMBER) ? ts->num_val : 0.0;
+    double now = (double)time(NULL);
+    double age = now - saved;
+    if (!(age >= 0.0)) age = MODELS_REASONING_CAPS_DISK_TTL_SECONDS; /* bad ts -> stale */
+    if (age < 0.0) age = 0.0;
+    if (age_seconds) *age_seconds = age;
+    char *out = json_serialize(caps);
+    json_free(data);
+    return out;
+}
+
+/* PoP: models_save_reasoning_caps_disk @ hermes_cli/models.py:_save_reasoning_caps_disk */
+/* Merge url's caps map into the shared disk mirror, atomically. Best-effort. */
+static void models_save_reasoning_caps_disk(const char *url, const json_t *map) {
+    char *path = models_reasoning_caps_disk_path();
+    if (!path || !url || !map) { free(path); return; }
+    /* Ensure the cache directory exists (parents are created by callers of
+     * hermes_home_dir; only the trailing component is ours). */
+    char dir[4096];
+    snprintf(dir, sizeof(dir), "%s/cache", "");
+    {
+        /* derive dir from path by trimming the filename */
+        snprintf(dir, sizeof(dir), "%.*s", (int)(strlen(path) - strlen("/reasoning_caps.json")), path);
+    #ifdef S_IRWXU
+        mkdir(dir, 0755); /* ignore EEXIST */
+    #endif
+    }
+    json_t *data = models_read_reasoning_caps_disk();
+    if (!data) data = json_object();
+    if (!data) { free(path); return; }
+    json_t *entry = json_object();
+    if (entry) {
+        json_set(entry, "ts", json_number((double)time(NULL)));
+        json_set(entry, "caps", json_copy(map));
+        json_set(data, url, entry);
+    }
+    char *ser = json_serialize(data);
+    json_free(data);
+    if (!ser) { free(path); return; }
+    size_t plen = strlen(path);
+    char *tmp = malloc(plen + 8);
+    if (tmp) {
+        snprintf(tmp, plen + 8, "%s.tmp", path);
+        FILE *f = fopen(tmp, "w");
+        if (f) {
+            fputs(ser, f);
+            fclose(f);
+            if (rename(tmp, path) != 0) unlink(tmp);
+        } else {
+            free(tmp);
+            tmp = NULL;
+        }
+    }
+    if (!tmp) { FILE *f2 = fopen(path, "w"); if (f2) { fputs(ser, f2); fclose(f2); } }
+    free(tmp);
+    free(ser);
+    free(path);
+}
+
+/* PoP: models_seed_reasoning_caps @ hermes_cli/models.py:_seed_reasoning_caps */
+/* Parse a /v1/models data array into a per-model caps map, mirror it to disk
+ * for url, and return the serialized map (malloc'd) — or NULL when the array
+ * has no usable entries (callers remember that as a failure, not empty). */
+static char *models_seed_reasoning_caps(const json_t *items, const char *url) {
+    if (!items || items->type != JSON_ARRAY || !url) return NULL;
+    json_t *map = json_object();
+    if (!map) return NULL;
+    for (size_t i = 0; i < items->c.count; i++) {
+        json_t *item = items->c.items[i];
+        if (!item || item->type != JSON_OBJECT) continue;
+        json_t *idn = json_obj_get(item, "id");
+        if (!idn || idn->type != JSON_STRING || !idn->str_val) continue;
+        char *mid = caps_strip_dup(idn->str_val);
+        if (!mid || !*mid) { free(mid); continue; }
+        json_set(map, mid, models_parse_openrouter_reasoning_capabilities_node(item));
+        free(mid);
+    }
+    if (map->c.count == 0) { json_free(map); return NULL; }
+    models_save_reasoning_caps_disk(url, map);
+    char *out = json_serialize(map);
+    json_free(map);
+    return out;
+}
+
+/* Shared fetch of one OpenRouter-shaped /v1/models catalog → caps map.
+ * Sends Accept + User-Agent because the Portal 403s anonymous reads. The
+ * HTTP call itself is the injectable boundary (http_fetch_fn). */
+static char *fetch_reasoning_caps_catalog(const char *url, http_fetch_fn fetch, void *ctx) {
+    if (!url || !fetch) return NULL;
+    char *body = NULL; size_t blen = 0;
+    int rc = fetch(url,
+                   "{\"Accept\":\"application/json\",\"User-Agent\":\"hermes-cli\"}",
+                   &body, &blen, ctx);
+    if (rc != 0 || !body) { if (body) free(body); return NULL; }
+    json_t *payload = json_parse(body, NULL);
+    free(body);
+    if (!payload) return NULL;
+    json_t *data = (payload->type == JSON_OBJECT) ? json_obj_get(payload, "data") : NULL;
+    char *map = models_seed_reasoning_caps(data, url);
+    json_free(payload);
+    return map;
+}
+
+/* Cache-only lookup: memory, else the disk mirror (once per process). Never
+ * blocks on HTTP; stale disk copies still count (a stale verdict beats no
+ * verdict). Python's background warmers (_warm_reasoning_caps_async /
+ * warm_*_async) are concurrency machinery around this same refresh closure
+ * and are intentionally not ported here. */
+static char *caps_cached(caps_state *st, const char *url) {
+    if (!st->cache && !st->disk_checked) {
+        st->disk_checked = 1;
+        st->cache = models_load_reasoning_caps_disk(url, NULL);
+    }
+    return st->cache;
+}
+
+/* Fetch path with the 60-second failure backoff so hot per-turn callers
+ * don't pay an HTTP round-trip while offline. force refetches past the cache. */
+static char *caps_fetch(caps_state *st, const char *url, http_fetch_fn fetch,
+                        void *ctx, int force) {
+    if (st->cache && !force) return st->cache;
+    if (st->failed_at >= 0 &&
+        (caps_monotonic() - st->failed_at) < MODELS_REASONING_CAPS_FAIL_TTL_SECONDS)
+        return NULL;
+    char *map = fetch_reasoning_caps_catalog(url, fetch, ctx);
+    if (!map) {
+        st->failed_at = caps_monotonic();
+        return NULL;
+    }
+    free(st->cache);
+    st->cache = map;
+    st->failed_at = -1;
+    return st->cache;
+}
+
+/* PoP: models_resolve_nous_pricing_credentials @ hermes_cli/models.py:_resolve_nous_pricing_credentials */
+/* Return (api_key, base_url) for Nous Portal pricing/inference. Base URL
+ * precedence: NOUS_INFERENCE_BASE_URL env override → injected runtime
+ * credential resolver → production default. Strips a trailing "/v1" so
+ * callers append their own path. api_key is best-effort (""). */
+void models_resolve_nous_pricing_credentials(nous_creds_fn resolve, void *ctx,
+                                             char **out_key, char **out_base)
+{
+    char *env_base = NULL, *key = NULL, *creds_base = NULL;
+    const char *raw = getenv("NOUS_INFERENCE_BASE_URL");
+    if (raw && *raw) {
+        env_base = caps_strip_dup(raw);
+        if (env_base) {
+            size_t L = strlen(env_base);
+            while (L > 0 && env_base[L-1] == '/') env_base[--L] = 0;
+            if (!*env_base) { free(env_base); env_base = NULL; }
+        }
+    }
+    if (resolve) resolve(&key, &creds_base, ctx);
+    if (creds_base) {
+        char *s = caps_strip_dup(creds_base);
+        free(creds_base);
+        creds_base = s;
+        if (creds_base) {
+            size_t L = strlen(creds_base);
+            while (L > 0 && creds_base[L-1] == '/') creds_base[--L] = 0;
+        }
+    }
+    const char *pick = env_base ? env_base
+                     : (creds_base && *creds_base) ? creds_base
+                     : MODELS_DEFAULT_NOUS_INFERENCE_BASE;
+    size_t L = strlen(pick);
+    if (L >= 3 && strcmp(pick + L - 3, "/v1") == 0) L -= 3;
+    char *base = malloc(L + 1);
+    if (base) { memcpy(base, pick, L); base[L] = 0; }
+    free(env_base);
+    free(creds_base);
+    if (out_key)  *out_key  = key ? key : strdup("");
+    else free(key);
+    if (out_base) *out_base = base ? base : strdup("");
+    else free(base);
+}
+
+/* PoP: models_nous_catalog_url @ hermes_cli/models.py:nous_catalog_url */
+/* The Portal /v1/models URL for the endpoint we actually talk to, resolved
+ * through the documented ladder (env override → credential base → prod).
+ * Returns a malloc'd URL string. Caller frees. */
+char *models_nous_catalog_url(void) {
+    char *key = NULL, *base = NULL;
+    models_resolve_nous_pricing_credentials(NULL, NULL, &key, &base);
+    free(key);
+    if (!base) base = strdup(MODELS_DEFAULT_NOUS_INFERENCE_BASE);
+    size_t n = strlen(base) + strlen("/v1/models") + 1;
+    char *out = malloc(n);
+    if (out) snprintf(out, n, "%s/v1/models", base);
+    free(base);
+    return out;
+}
+
+/* PoP: models_openrouter_model_reasoning_capabilities @ hermes_cli/models.py:openrouter_model_reasoning_capabilities */
+/* Tri-state contract: malloc'd caps JSON with supports_reasoning true/false,
+ * or NULL when unknown (catalog not loaded, model not listed, malformed).
+ * Cache-only unless allow_fetch; the HTTP transport is injectable. Caller
+ * frees a non-NULL result. */
+char *models_openrouter_model_reasoning_capabilities(http_fetch_fn fetch, void *ctx,
+                                                     const char *model_id,
+                                                     int allow_fetch)
+{
+    static const char *URL = "https://openrouter.ai/api/v1/models";
+    if (!model_id) return NULL;
+    char *model = caps_strip_dup(model_id);
+    if (!model || !*model) { free(model); return NULL; }
+    char *map = caps_cached(&g_or_caps_state, URL);
+    if (!map && allow_fetch) map = caps_fetch(&g_or_caps_state, URL, fetch, ctx, 0);
+    char *out = NULL;
+    if (map) {
+        json_t *m = json_parse(map, NULL);
+        json_t *e = m ? json_obj_get(m, model) : NULL;
+        out = e ? json_serialize(e) : NULL;
+        if (m) json_free(m);
+    }
+    free(model);
+    return out;
+}
+
+/* PoP: models_nous_model_reasoning_capabilities @ hermes_cli/models.py:nous_model_reasoning_capabilities */
+/* Nous Portal counterpart of models_openrouter_model_reasoning_capabilities;
+ * same tri-state contract and cache-only default. */
+char *models_nous_model_reasoning_capabilities(http_fetch_fn fetch, void *ctx,
+                                               const char *model_id,
+                                               int allow_fetch)
+{
+    if (!model_id) return NULL;
+    char *model = caps_strip_dup(model_id);
+    if (!model || !*model) { free(model); return NULL; }
+    char *url = models_nous_catalog_url();
+    char *out = NULL;
+    if (url) {
+        char *map = caps_cached(&g_nous_caps_state, url);
+        if (!map && allow_fetch) map = caps_fetch(&g_nous_caps_state, url, fetch, ctx, 0);
+        if (map) {
+            json_t *m = json_parse(map, NULL);
+            json_t *e = m ? json_obj_get(m, model) : NULL;
+            out = e ? json_serialize(e) : NULL;
+            if (m) json_free(m);
+        }
+        free(url);
+    }
+    free(model);
+    return out;
+}
+
+/* ── Nous Portal recommended-model union helpers ────────────────────────── */
+
+/* Collect modelName strings from a payload block (list of dicts). Returns a
+ * malloc'd array of malloc'd strings; *out_n receives the count. */
+static char **portal_block_names(const json_t *block, size_t *out_n) {
+    size_t cap = 8, n = 0;
+    char **names = malloc(cap * sizeof(char *));
+    if (!names) { *out_n = 0; return NULL; }
+    if (block && block->type == JSON_ARRAY) {
+        for (size_t i = 0; i < block->c.count; i++) {
+            json_t *entry = block->c.items[i];
+            if (!entry || entry->type != JSON_OBJECT) continue;
+            json_t *mn = json_obj_get(entry, "modelName");
+            if (!mn || mn->type != JSON_STRING || !mn->str_val || !*mn->str_val) continue;
+            if (n + 1 >= cap) { cap *= 2; names = realloc(names, cap * sizeof(char *)); if (!names) break; }
+            names[n++] = strdup(mn->str_val);
+        }
+    }
+    *out_n = n;
+    return names;
+}
+static void free_names(char **names, size_t n) {
+    for (size_t i = 0; i < n; i++) free(names[i]);
+    free(names);
+}
+
+/* Shared core of union_with_portal_{free,paid}_recommendations.
+ * synthesize_free_pricing adds {"prompt":"0","completion":"0"} entries for
+ * portal ids missing from pricing (free side only — the paid side never
+ * fabricates numbers). Returns {"ids":[...],"pricing":{...}} serialized, or
+ * an echo of the inputs on any failure (silent degradation, like Python). */
+static char *union_with_portal_block(http_fetch_fn fetch, void *ctx,
+                                     const char *curated_ids_json,
+                                     const char *pricing_json,
+                                     const char *portal_base_url,
+                                     int force_refresh,
+                                     const char *block_key,
+                                     int synthesize_free_pricing)
+{
+    /* Fallback builder: echo inputs unchanged. */
+    json_t *ids_fb = json_parse(curated_ids_json, NULL);
+    json_t *pr_fb = (pricing_json && *pricing_json) ? json_parse(pricing_json, NULL) : NULL;
+
+    char *pj = models_fetch_nous_recommended_models(fetch, ctx, portal_base_url, force_refresh);
+    json_t *root = pj ? json_parse(pj, NULL) : NULL;
+    free(pj);
+    json_t *block = (root && root->type == JSON_OBJECT) ? json_obj_get(root, block_key) : NULL;
+
+    size_t nn = 0;
+    char **names = block ? portal_block_names(block, &nn) : NULL;
+    if (!names || nn == 0) {
+        if (names) free_names(names, nn);
+        if (root) json_free(root);
+        /* silent degrade to inputs */
+        json_t *out = json_object();
+        json_set(out, "ids", ids_fb ? ids_fb : json_array());
+        json_set(out, "pricing", pr_fb ? pr_fb : json_object());
+        char *res = json_serialize(out);
+        json_free(out);
+        return res;
+    }
+
+    json_t *aug_ids = ids_fb ? ids_fb : json_array(); /* reuse parsed curated copy */
+    size_t curated_n = aug_ids->type == JSON_ARRAY ? aug_ids->c.count : 0;
+    /* Append portal recommendations not already curated; curated shows first. */
+    for (size_t i = 0; i < nn; i++) {
+        int seen = 0;
+        for (size_t j = 0; j < curated_n && !seen; j++) {
+            json_t *e = aug_ids->c.items[j]; /* note: grows as we append */
+            if (j < aug_ids->c.count && e && e->type == JSON_STRING && e->str_val &&
+                strcmp(e->str_val, names[i]) == 0) seen = 1;
+        }
+        if (!seen) json_append(aug_ids, json_string(names[i]));
+    }
+
+    json_t *pricing_out = pr_fb ? pr_fb : json_object();
+    if (synthesize_free_pricing && pricing_out->type == JSON_OBJECT) {
+        json_t *synthetic = json_object();
+        json_set(synthetic, "prompt", json_string("0"));
+        json_set(synthetic, "completion", json_string("0"));
+        for (size_t i = 0; i < nn; i++) {
+            if (!json_has(pricing_out, names[i]))
+                json_set(pricing_out, names[i], json_copy(synthetic));
+        }
+        json_free(synthetic);
+    }
+
+    json_t *out = json_object();
+    json_set(out, "ids", aug_ids);
+    json_set(out, "pricing", pricing_out);
+    char *res = json_serialize(out);
+    json_free(out);
+    if (root) json_free(root);
+    free_names(names, nn);
+    return res;
+}
+
+/* PoP: models_union_with_portal_free_recommendations @ hermes_cli/models.py:union_with_portal_free_recommendations */
+/* Augment curated ids + pricing with the Portal's freeRecommendedModels.
+ * Returns {"ids":[...],"pricing":{...}} (malloc'd JSON); failures degrade to
+ * echoing the inputs. Caller frees. */
+char *models_union_with_portal_free_recommendations(http_fetch_fn fetch, void *ctx,
+                                                    const char *curated_ids_json,
+                                                    const char *pricing_json,
+                                                    const char *portal_base_url,
+                                                    int force_refresh)
+{
+    return union_with_portal_block(fetch, ctx, curated_ids_json, pricing_json,
+                                   portal_base_url, force_refresh,
+                                   "freeRecommendedModels", 1);
+}
+
+/* PoP: models_union_with_portal_paid_recommendations @ hermes_cli/models.py:union_with_portal_paid_recommendations */
+/* Mirror for paid-tier users over paidRecommendedModels; pricing is left
+ * untouched (no fabricated numbers on the paid side). Caller frees. */
+char *models_union_with_portal_paid_recommendations(http_fetch_fn fetch, void *ctx,
+                                                    const char *curated_ids_json,
+                                                    const char *pricing_json,
+                                                    const char *portal_base_url,
+                                                    int force_refresh)
+{
+    return union_with_portal_block(fetch, ctx, curated_ids_json, pricing_json,
+                                   portal_base_url, force_refresh,
+                                   "paidRecommendedModels", 0);
+}
+
+/* ── Nous free-tier check (cached entitlement probe) ────────────────────── */
+
+#define MODELS_FREE_TIER_CACHE_TTL_SECONDS 180.0
+
+typedef int (*nous_free_tier_probe_fn)(int force_fresh, void *ctx);
+static nous_free_tier_probe_fn g_ft_probe;
+static void *g_ft_probe_ctx;
+
+/* Register the runtime probe used to fetch Nous Portal account info (the
+ * Python imports hermes_cli.nous_account.get_nous_portal_account_info here;
+ * in C the network-backed account layer plugs in via this setter). Passing
+ * NULL restores the default unknown-state probe. */
+void models_set_nous_free_tier_probe(int (*fn)(int force_fresh, void *ctx), void *ctx) {
+    g_ft_probe = fn;
+    g_ft_probe_ctx = ctx;
+}
+
+/* PoP: models_check_nous_free_tier @ hermes_cli/models.py:check_nous_free_tier */
+/* Cached (180s TTL) free-tier check against the Portal account info. True
+ * only when entitlement is known-free; unknown/error states cache False so
+ * this wrapper never blocks users. */
+int models_check_nous_free_tier(int force_fresh)
+{
+    static int cached_result = 0;
+    static int have_cache = 0;
+    static double cached_at = 0.0;
+    double now = caps_monotonic();
+    if (!force_fresh && have_cache && (now - cached_at) < MODELS_FREE_TIER_CACHE_TTL_SECONDS)
+        return cached_result;
+
+    int result = 0;
+    if (g_ft_probe) result = g_ft_probe(force_fresh, g_ft_probe_ctx) ? 1 : 0;
+    /* Error/unknown states cache as False — default to paid, don't block. */
+    cached_result = result;
+    cached_at = now;
+    have_cache = 1;
+    return result;
 }

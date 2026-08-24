@@ -1715,3 +1715,175 @@ json_t *cc_merge_adjacent_user_turns(const json_t *result) {
     (void)rc;
     return m ? m : json_array(); /* return empty array on failure, matching caller's `merged ? merged : json_array()` */
 }
+
+/* ── salvage_grown_transcript ─────────────────────────────────────────────── */
+
+/* _PRUNED_TOOL_PLACEHOLDER @ agent/context_compressor.py:673 */
+#define CC_PRUNED_TOOL_PLACEHOLDER "[Old tool output cleared to save context space]"
+/* _PRUNE_MIN_CHARS @ agent/context_compressor.py:679 */
+#define CC_PRUNE_MIN_CHARS 200
+/* _SALVAGE_SUMMARY_MAX_CHARS @ agent/context_compressor.py:354 */
+#define CC_SALVAGE_SUMMARY_MAX_CHARS 8000
+/* _SALVAGE_KEEP_RECENT_TOOLS @ agent/context_compressor.py:355 */
+#define CC_SALVAGE_KEEP_RECENT_TOOLS 2
+/* _PRUNED_SKILL_RELOAD_NOTICE_HEADER @
+ * agent/conversation_compression.py:2036 (imported by the Python fn). */
+#define CC_PRUNED_SKILL_RELOAD_NOTICE_HEADER \
+    "[Skills pruned during compression — reload before acting on these tasks]"
+
+/* _looks_like_compaction_summary @ agent/context_compressor.py:
+ * _looks_like_compaction_summary — only cap a standalone handoff summary. */
+static bool cc_looks_like_compaction_summary(const json_t *msg, const char *content)
+{
+    size_t clen = strlen(content);
+    const char *tail = content + clen;
+    while (tail > content && isspace((unsigned char)tail[-1])) tail--;
+    size_t marker_len = strlen(CC_SUMMARY_END_MARKER);
+    if ((size_t)(tail - content) < marker_len ||
+        memcmp(tail - marker_len, CC_SUMMARY_END_MARKER, marker_len) != 0)
+        return false;
+    if (strncmp(content, CC_MERGED_PRIOR_CONTEXT_HEADER,
+                strlen(CC_MERGED_PRIOR_CONTEXT_HEADER)) == 0)
+        return false;
+    /* Tool messages are handled exclusively by the stub/keep-recent pass. */
+    if (!json_is_object(msg)) return false;
+    const char *role = json_string_value(json_obj_get((json_t *)msg, "role"));
+    bool has_meta = json_obj_get((json_t *)msg, CC_COMPRESSED_SUMMARY_METADATA_KEY) != NULL;
+    if (role && strcmp(role, "tool") == 0) return false;
+    if (role && (strcmp(role, "user") == 0 || strcmp(role, "assistant") == 0) &&
+        !has_meta)
+        return false;
+    char head[281];
+    snprintf(head, sizeof head, "%s", content);
+    return has_meta ||
+           strstr(head, "CONTEXT COMPACTION") != NULL ||
+           strstr(head, "[CONTEXT COMPACTION]") != NULL ||
+           strstr(head, "Conversation Summary") != NULL;
+}
+
+/* _salvage_reduce_todo_snapshot @ agent/context_compressor.py:
+ * _salvage_reduce_todo_snapshot — last-resort shrink of the synthetic todo
+ * snapshot row (keep the coupled pruned-skill reload notice, else drop it). */
+static void cc_salvage_reduce_todo_snapshot(json_t *out)
+{
+    if (!json_is_array(out)) return;
+    for (int i = (int)json_array_size(out) - 1; i >= 0; i--) {
+        json_t *msg = json_get(out, (size_t)i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        json_t *synthetic = json_obj_get(msg, "_todo_snapshot_synthetic");
+        const char *role = json_string_value(json_obj_get(msg, "role"));
+        if (!synthetic || !json_bool_value(synthetic)) continue;
+        if (!role || strcmp(role, "user") != 0) continue;
+        json_t *content_v = json_obj_get(msg, "content");
+        const char *content = json_is_string(content_v) ? content_v->str_val : NULL;
+        const char *notice = content ? strstr(content, CC_PRUNED_SKILL_RELOAD_NOTICE_HEADER) : NULL;
+        if (content && notice) {
+            /* msg["content"] = content[notice_idx:] */
+            json_set(msg, "content", json_string(notice));
+        } else {
+            json_array_remove(out, (size_t)i);
+        }
+        return;
+    }
+}
+
+/* PoP: salvage_grown_transcript @ agent/context_compressor.py:salvage_grown_transcript */
+json_t *salvage_grown_transcript(const json_t *original,
+                                 const json_t *candidate,
+                                 long budget_in)
+{
+    if (!json_is_array(candidate) || json_array_size(candidate) == 0) return NULL;
+    if (!json_is_array(original) || json_array_size(original) == 0) return NULL;
+
+    long budget = budget_in;
+    if (budget < 0) {
+        budget = estimate_messages_tokens_rough(original);   /* None → rough est */
+    }
+    if (budget <= 0) return NULL;
+
+    /* Deep-copy the candidate so we mutate copies only. */
+    json_t *out = json_copy(candidate);
+    if (!out || out->type != JSON_ARRAY) { json_free(out); return NULL; }
+
+    int tool_indices[4096];
+    int n_tools = 0;
+    int last_assistant_idx = -1;
+    size_t total = json_array_size(out);
+    for (size_t i = 0; i < total; i++) {
+        json_t *msg = json_get(out, i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_string_value(json_obj_get(msg, "role"));
+        if (!role) continue;
+        if (strcmp(role, "tool") == 0 && n_tools < 4096) {
+            tool_indices[n_tools++] = (int)i;
+        } else if (strcmp(role, "assistant") == 0) {
+            last_assistant_idx = (int)i;
+        }
+    }
+    /* keep_tools = last _SALVAGE_KEEP_RECENT_TOOLS tool indices */
+    int keep_start = n_tools > CC_SALVAGE_KEEP_RECENT_TOOLS
+                         ? n_tools - CC_SALVAGE_KEEP_RECENT_TOOLS : 0;
+
+    static const char *const SALVAGE_REASONING_KEYS[] = {
+        "reasoning", "reasoning_content", "reasoning_details",
+    };
+
+    for (size_t index = 0; index < total; index++) {
+        json_t *msg = json_get(out, index);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_string_value(json_obj_get(msg, "role"));
+
+        if (role && strcmp(role, "assistant") == 0 &&
+            (int)index != last_assistant_idx) {
+            for (size_t k = 0; k < 3; k++)
+                json_object_del(msg, SALVAGE_REASONING_KEYS[k]);
+        }
+        bool kept = false;
+        if (role && strcmp(role, "tool") == 0) {
+            for (int k = keep_start; k < n_tools; k++)
+                if (tool_indices[k] == (int)index) { kept = true; break; }
+        }
+        if (role && strcmp(role, "tool") == 0 && !kept) {
+            json_t *cv = json_obj_get(msg, "content");
+            const char *c = json_is_string(cv) ? cv->str_val : NULL;
+            if (c && (long)strlen(c) > CC_PRUNE_MIN_CHARS)
+                json_set(msg, "content", json_string(CC_PRUNED_TOOL_PLACEHOLDER));
+        }
+        json_t *cv = json_obj_get(msg, "content");
+        const char *c = json_is_string(cv) ? cv->str_val : NULL;
+        if (c && (long)strlen(c) > CC_SALVAGE_SUMMARY_MAX_CHARS &&
+            cc_looks_like_compaction_summary(msg, c)) {
+            size_t cap = CC_SALVAGE_SUMMARY_MAX_CHARS;
+            char *trunc = (char *)malloc(cap + 160);
+            if (trunc) {
+                size_t end = cap;
+                while (end > 0 && isspace((unsigned char)c[end - 1])) end--;
+                memcpy(trunc, c, end);
+                strcpy(trunc + end,
+                       "\n…[summary truncated so compaction can shrink]\n\n"
+                       CC_SUMMARY_END_MARKER);
+                json_set(msg, "content", json_string(trunc));
+                free(trunc);
+            }
+        }
+    }
+
+    /* Heavier codex replay sidecars — proven prune with its safety boundary. */
+    cc_prune_stale_reasoning_replay(out);
+
+    if ((long)estimate_messages_tokens_rough(out) >= budget)
+        cc_salvage_reduce_todo_snapshot(out);
+
+    bool any_user = false;
+    for (size_t i = 0; i < json_array_size(out); i++) {
+        json_t *m = json_get(out, i);
+        if (m && m->type == JSON_OBJECT) {
+            const char *r = json_string_value(json_obj_get(m, "role"));
+            if (r && strcmp(r, "user") == 0) { any_user = true; break; }
+        }
+    }
+    if (!any_user) { json_free(out); return NULL; }
+    if ((long)estimate_messages_tokens_rough(out) < budget) return out;
+    json_free(out);
+    return NULL;
+}

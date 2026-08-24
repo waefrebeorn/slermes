@@ -125,6 +125,68 @@ char *models_fetch_nous_recommended_models(http_fetch_fn fetch, void *ctx,
                                             const char *portal_base_url,
                                             int force_refresh);
 
+/* ── Reasoning-capability catalogs (OpenRouter / Nous Portal) ──────────── */
+
+/* Faithful port of models.py:_reasoning_caps_disk_path. Malloc'd path
+ * <hermes_home>/cache/reasoning_caps.json. Caller frees. */
+char *models_reasoning_caps_disk_path(void);
+
+/* Faithful port of models.py:parse_openrouter_reasoning_capabilities.
+ * item_json is one /v1/models catalog entry. Returns a malloc'd JSON object:
+ *   {"supports_reasoning":true,"supported_efforts":[...]|null,"mandatory":bool}
+ *   {"supports_reasoning":false}
+ * or NULL when capability can't be determined (missing/malformed
+ * supported_parameters). Caller frees a non-NULL result. */
+char *models_parse_openrouter_reasoning_capabilities(const char *item_json);
+
+/* Faithful port of models.py:nous_catalog_url — the Portal /v1/models URL,
+ * resolved env override → credential base → prod. Malloc'd; caller frees. */
+char *models_nous_catalog_url(void);
+
+/* Faithful port of models.py:openrouter_model_reasoning_capabilities.
+ * Tri-state: malloc'd caps JSON (supports_reasoning true/false) or NULL when
+ * unknown. Cache-only unless allow_fetch; HTTP transport injectable. */
+char *models_openrouter_model_reasoning_capabilities(http_fetch_fn fetch, void *ctx,
+                                                     const char *model_id,
+                                                     int allow_fetch);
+
+/* Faithful port of models.py:nous_model_reasoning_capabilities — same
+ * tri-state contract and cache-only default as the OpenRouter variant. */
+char *models_nous_model_reasoning_capabilities(http_fetch_fn fetch, void *ctx,
+                                               const char *model_id,
+                                               int allow_fetch);
+
+/* ── Nous Portal recommended-model union helpers ────────────────────────── */
+
+/* Faithful port of models.py:union_with_portal_free_recommendations.
+ * Returns malloc'd {"ids":[...],"pricing":{...}}; failures silently degrade
+ * to echoing the inputs. Caller frees. */
+char *models_union_with_portal_free_recommendations(http_fetch_fn fetch, void *ctx,
+                                                    const char *curated_ids_json,
+                                                    const char *pricing_json,
+                                                    const char *portal_base_url,
+                                                    int force_refresh);
+
+/* Faithful port of models.py:union_with_portal_paid_recommendations (pricing
+ * untouched on the paid side). Caller frees. */
+char *models_union_with_portal_paid_recommendations(http_fetch_fn fetch, void *ctx,
+                                                    const char *curated_ids_json,
+                                                    const char *pricing_json,
+                                                    const char *portal_base_url,
+                                                    int force_refresh);
+
+/* ── Nous free-tier check ──────────────────────────────────────────────── */
+
+/* Register the network-backed account-info probe (Python imports
+ * hermes_cli.nous_account.get_nous_portal_account_info inside
+ * check_nous_free_tier; C plugs it in here). NULL restores the default
+ * unknown-state probe. */
+void models_set_nous_free_tier_probe(int (*fn)(int force_fresh, void *ctx), void *ctx);
+
+/* Faithful port of models.py:check_nous_free_tier — 180s cached free-tier
+ * entitlement check; unknown/error states return 0 (default to paid). */
+int models_check_nous_free_tier(int force_fresh);
+
 #ifdef __cplusplus
 }
 #endif

@@ -429,4 +429,16 @@ bool relay_runtime_in_async_worker(void);
  * inside RelayRuntime.__init__). */
 void relay_runtime_shutdown_all(void);
 
+/* PoP: pop_relay_scope @ agent/relay_runtime.py:pop_relay_scope — pop a Relay
+ * scope, passing only parameters the live binding accepts (timestamp has no
+ * slot in the C vtable and is always filtered out). */
+bool pop_relay_scope(const relay_backend_t *be, relay_handle_t handle,
+                     const char *output_json, const char *metadata_json,
+                     const char *timestamp_json);
+
+/* PoP: relay_instrumentation_enabled @ agent/relay_runtime.py:
+ * relay_instrumentation_enabled — may this inherited turn create Relay
+ * instrumentation? */
+bool relay_instrumentation_enabled(void);
+
 #endif /* PORT_AGENT_RELAY_RUNTIME_H */

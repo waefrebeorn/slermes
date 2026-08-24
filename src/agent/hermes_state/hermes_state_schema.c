@@ -35,38 +35,25 @@ const char *hs_schema_ddl(void) {
 
 /* PoP: hs_schema_apply @ hermes_state_schema.py:_ensure_schema
  * Applies the canonical DDL to an open database. Idempotent: every statement
- * is CREATE TABLE/INDEX IF NOT EXISTS. Returns 0 on success, non-zero on the
- * first sqlite error (message copied into err, may be NULL). */
+ * is CREATE TABLE/INDEX/TRIGGER IF NOT EXISTS.
+ *
+ * IMPORTANT: do NOT split this DDL on ';' — it contains CREATE TRIGGER bodies
+ * whose internal statements end with ';' (messages_fts_insert etc.). The
+ * Python side uses executescript(), which handles trigger bodies correctly;
+ * sqlite3_exec() does too, because it also executes multiple statements per
+ * call. We delegate to sqlite3_exec on the whole buffer, matching
+ * hermes_state_db_open(). Returns 0 on success. */
 int hs_schema_apply(sqlite3 *db, char *err, size_t err_sz) {
     extern const char *HERMES_STATE_SCHEMA_SQL;
     const char *ddl = HERMES_STATE_SCHEMA_SQL;
-    char *copy = strdup(ddl);
-    if (!copy) { if (err) snprintf(err, err_sz, "oom"); return 1; }
-
-    /* Execute statement-by-statement: sqlite3_exec stops at the first error
-     * and the DDL contains no transaction wrapper by design (Python side
-     * executes with executescript(), which commits any pending txn first). */
-    char *p = copy;
-    while (*p) {
-        char *stmt = p;
-        char *end = strstr(p, ";");
-        if (!end) break;
-        *end = '\0';
-        p = end + 1;
-        /* skip whitespace-only statements */
-        char *q = stmt; while (*q==' '||*q=='\n'||*q=='\t'||*q=='\r') q++;
-        if (!*q) continue;
-        char *errmsg = NULL;
-        if (sqlite3_exec(db, stmt, NULL, NULL, &errmsg) != SQLITE_OK) {
-            if (err && err_sz)
-                snprintf(err, err_sz, "%s", errmsg ? errmsg : "sqlite error");
-            sqlite3_free(errmsg);
-            free(copy);
-            return 2;
-        }
+    char *errmsg = NULL;
+    if (sqlite3_exec(db, ddl, NULL, NULL, &errmsg) != SQLITE_OK) {
+        if (err && err_sz)
+            snprintf(err, err_sz, "%s", errmsg ? errmsg : "sqlite error");
         sqlite3_free(errmsg);
+        return 2;
     }
-    free(copy);
+    sqlite3_free(errmsg);
     return 0;
 }
 

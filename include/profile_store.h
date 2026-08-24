@@ -45,6 +45,18 @@ bool profile_validate_alias_name(const char *name, char **err);
 /* ── Resolution ────────────────────────────────────────────────────── */
 /* Resolve a profile name to its HERMES_HOME directory. Caller free(). */
 char *profile_dir_for(const char *name);
+
+/* PoP: profile_list_profile_names @ hermes_cli/profiles.py:list_profile_names
+ * Cheap name-only listing ("default" + sorted profile dirs matching
+ * _PROFILE_ID_RE). Returns a malloc'd JSON array string; caller frees. */
+char *profile_list_profile_names(void);
+
+/* PoP: profile_set_profile_display_name @ hermes_cli/profiles.py:set_profile_display_name
+ * Set (or clear with "") a profile's presentation-only display name.
+ * 0 on success (*out_stored = malloc'd stored value), -1 on error with *err. */
+int profile_set_profile_display_name(const char *profile_name,
+                                     const char *display_name,
+                                     char **out_stored, char **err);
 /* True when the HERMES profile directory exists (default always true).
  * This is the hermes_cli/profiles.py semantic (checks the profile's
  * HERMES_HOME dir); DISTINCT from kanban_db.c's profile_exists (which lists

@@ -14,6 +14,8 @@
 #define _GNU_SOURCE
 #include "port_hermes_state.h"
 #include "libjson/json.h"
+#include "slermes_home.h"
+#include "hermes_core_types.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -103,57 +105,67 @@ bool hs_is_disk_full_error(const char *exc)
 /* resolve_journal_mode                                                */
 /* ------------------------------------------------------------------ */
 
-/* PoP: hs_resolve_journal_mode @ hermes_state.py:resolve_journal_mode */
 char *hs_resolve_journal_mode(void)
 {
-    /* Try to load config.yaml and read database.journal_mode.
-     * On any failure, return "wal" as the safe default. */
-    const char *config_path = "/etc/hermes/config.yaml";
-    json_t *config = NULL;
-    FILE *f = fopen(config_path, "r");
-    if (f) {
-        fseek(f, 0, SEEK_END);
-        long fsize = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        if (fsize > 0 && fsize < 10 * 1024 * 1024) { /* < 10MB */
-            char *buf = malloc((size_t)fsize + 1);
-            if (buf) {
-                size_t rd = fread(buf, 1, (size_t)fsize, f);
-                buf[rd] = '\0';
-                config = json_parse(buf, NULL);
-                free(buf);
-            }
+    /* database.journal_mode in config.yaml is the canonical operator setting.
+     * wal remains the default; use delete when the backing filesystem cannot
+     * provide WAL-safe durability (macOS virtiofs, NFS, SMB). Invalid values
+     * fail safely to the default. Config resolution follows the active
+     * profile via get_slermes_home()/slermes_home(), matching cli/config.c. */
+    char home[HERMES_PATH_MAX];
+    {
+        const char *envh = getenv("HERMES_HOME");
+        if (envh && *envh) snprintf(home, sizeof home, "%s", envh);
+        else {
+            const char *sh = slermes_home();
+            snprintf(home, sizeof home, "%s", (sh && *sh) ? sh :
+                     (getenv("HOME") ? getenv("HOME") : "/tmp"));
         }
-        fclose(f);
     }
+    char cfg_path[HERMES_PATH_MAX + 32];
+    snprintf(cfg_path, sizeof cfg_path, "%s/config.yaml", home);
 
     const char *mode = "wal"; /* safe default */
-    if (config && config->type == JSON_OBJECT) {
-        json_t *database = json_obj_get(config, "database");
-        if (database && database->type == JSON_OBJECT) {
-            json_t *jm = json_obj_get(database, "journal_mode");
-            if (jm && jm->type == JSON_STRING) {
-                const char *raw = jm->str_val;
-                /* strip + lowercase */
-                size_t rl = strlen(raw);
-                size_t s = 0;
-                while (s < rl && isspace((unsigned char)raw[s])) s++;
-                while (rl > s && isspace((unsigned char)raw[rl - 1])) rl--;
-                char *stripped = malloc(rl - s + 1);
-                if (stripped) {
-                    memcpy(stripped, raw + s, rl - s);
-                    stripped[rl - s] = '\0';
-                    for (char *p = stripped; *p; p++)
-                        *p = (char)tolower((unsigned char)*p);
-                    if (strcmp(stripped, "wal") == 0 || strcmp(stripped, "delete") == 0)
-                        mode = stripped;
-                    else
-                        mode = "wal";
-                    free(stripped);
+    FILE *f = fopen(cfg_path, "r");
+    if (!f) {
+        char *fallback = strdup(mode);
+        return fallback;
+    }
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (fsize > 0 && fsize < 10 * 1024 * 1024) {
+        char *buf = malloc((size_t)fsize + 1);
+        if (buf) {
+            size_t rd = fread(buf, 1, (size_t)fsize, f);
+            buf[rd] = '\0';
+            json_t *config = json_parse(buf, NULL);
+            if (config && config->type == JSON_OBJECT) {
+                json_t *database = json_obj_get(config, "database");
+                if (database && database->type == JSON_OBJECT) {
+                    json_t *jm = json_obj_get(database, "journal_mode");
+                    if (jm && jm->type == JSON_STRING) {
+                        const char *raw = jm->str_val;
+                        /* strip + lowercase */
+                        char lowered[64];
+                        size_t rl = strlen(raw);
+                        if (rl >= sizeof lowered) rl = sizeof lowered - 1;
+                        size_t st = 0;
+                        while (st < rl && isspace((unsigned char)raw[st])) st++;
+                        size_t di = 0;
+                        for (size_t k = st; k < rl && di < sizeof lowered - 1; k++)
+                            lowered[di++] = (char)tolower((unsigned char)raw[k]);
+                        lowered[di] = '\0';
+                        while (di > 0 && isspace((unsigned char)lowered[di-1])) lowered[--di]='\0';
+                        if (strcmp(lowered, "wal")==0 || strcmp(lowered,"delete")==0)
+                            mode = (lowered[0]=='d') ? "delete" : "wal";
+                    }
                 }
             }
+            if (config) json_free(config);
+            free(buf);
         }
     }
-    if (config) json_free(config);
+    fclose(f);
     return strdup(mode);
 }

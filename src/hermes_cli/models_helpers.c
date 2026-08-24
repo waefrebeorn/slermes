@@ -37,6 +37,8 @@
  */
 
 #include "port_models_helpers.h"
+#include "port_models_pure.h"
+#include "reasoning_effort.h"
 #include "hermes_json.h"
 #include "hermes_logger.h"
 #include "libcrypto/crypto.h"
@@ -142,6 +144,7 @@ int nous_free_tier_check(const char *account_info_json)
 
 /*
  * Returns malloc'd JSON {"selectable":[...],"unavailable":[...]}. Caller frees. */
+/* PoP: partition_nous_models_by_tier_json @ hermes_cli/models.py:partition_nous_models_by_tier */
 char *partition_nous_models_by_tier_json(const char *model_ids_json,
                                          const char *pricing_json, int free_tier)
 {
@@ -1168,5 +1171,36 @@ void _spawn_catalog_swr_refresh(const char *url) {
         return;
     }
     pthread_detach(tid);  /* daemon thread */
+}
+
+/* ── Reasoning-effort clamping (thin wrapper) ───────────────────────────── */
+
+/* PoP: models_clamp_reasoning_effort_to_supported @ hermes_cli/models.py:clamp_reasoning_effort_to_supported */
+/* Clamp a requested reasoning effort to a provider's supported levels —
+ * thin wrapper over the canonical agent.reasoning_effort.clamp_effort port:
+ * supported level verbatim, else nearest WEAKER level, else weakest
+ * supported level; unknown supported-sets and bespoke names pass through.
+ * supported_efforts_json is a JSON array of strings (or NULL/empty for an
+ * unknown set). Returns malloc'd level or NULL when effort is NULL. Caller
+ * frees. */
+char *models_clamp_reasoning_effort_to_supported(const char *effort,
+                                                 const char *supported_efforts_json)
+{
+    if (!effort) return NULL;
+    const char *table[64];
+    size_t n = 0;
+    json_t *arr = supported_efforts_json ? json_parse(supported_efforts_json, NULL) : NULL;
+    if (arr && arr->type == JSON_ARRAY) {
+        size_t m = json_array_size(arr);
+        for (size_t i = 0; i < m && n < 64; i++) {
+            json_t *e = json_array_get(arr, i);
+            if (e && e->type == JSON_STRING && json_string_value(e))
+                table[n++] = json_string_value(e);
+        }
+    }
+    const char *res = clamp_effort(effort, table, n, NULL, 0);
+    char *out = res ? strdup(res) : NULL;
+    if (arr) json_free(arr);
+    return out;
 }
 

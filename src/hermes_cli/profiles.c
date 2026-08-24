@@ -1418,3 +1418,166 @@ int hermes_cli_profiles_u_rmtree_with_retry(const char *arg) {
     printf("profile dir removed (attempts=%s)\n", t2 ? t2 + 1 : "1");
     return 0;
 }
+
+/* ── Cheap name-only listing + display-name management ──────────────────── */
+
+static int profile_names_cmp(const void *a, const void *b) {
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+
+/* PoP: profile_list_profile_names @ hermes_cli/profiles.py:list_profile_names */
+/* Cheap name-only profile listing: "default" plus profile dirs matching
+ * _PROFILE_ID_RE (^[a-z0-9][a-z0-9_-]{0,63}$), sorted. Reads NO per-profile
+ * config/metadata — a pure directory scan, safe on hot paths. Returns a
+ * malloc'd JSON array string like ["default","work"]; caller frees. */
+char *profile_list_profile_names(void)
+{
+    json_t *arr = json_array();
+    if (!arr) return NULL;
+    json_append(arr, json_string("default"));
+    char *root = profile_profiles_root();
+    DIR *d = root ? opendir(root) : NULL;
+    char **names = NULL;
+    size_t n = 0;
+    if (d) {
+        struct dirent *de;
+        while ((de = readdir(d)) != NULL) {
+            const char *nm = de->d_name;
+            if (strcmp(nm, ".") == 0 || strcmp(nm, "..") == 0 || strcmp(nm, "default") == 0)
+                continue;
+            /* entry.is_dir() */
+            char path[PATH_MAX];
+            snprintf(path, sizeof(path), "%s/%s", root ? root : "", nm);
+            struct stat st;
+            if (stat(path, &st) != 0 || !S_ISDIR(st.st_mode)) continue;
+            /* _PROFILE_ID_RE match */
+            size_t len = strlen(nm);
+            if (len == 0 || len > PROFILE_ID_MAX) continue;
+            if (!islower((unsigned char)nm[0]) && !isdigit((unsigned char)nm[0])) continue;
+            int ok = 1;
+            for (size_t i = 1; i < len && ok; i++) {
+                char c = nm[i];
+                if (!(islower((unsigned char)c) || isdigit((unsigned char)c) ||
+                      c == '-' || c == '_')) ok = 0;
+            }
+            if (!ok) continue;
+            char **tmp = realloc(names, (n + 1) * sizeof(char *));
+            if (!tmp) break;
+            names = tmp;
+            names[n++] = strdup(nm);
+        }
+        closedir(d);
+    }
+    free(root);
+    if (n > 1) qsort(names, n, sizeof(char *), profile_names_cmp);
+    for (size_t i = 0; i < n; i++) json_append(arr, json_string(names[i]));
+    for (size_t i = 0; i < n; i++) free(names[i]);
+    free(names);
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
+}
+
+/* Rewrite profile.yaml preserving description/description_auto and setting
+ * display_name — the meta-write half of set_profile_display_name. */
+static bool profile_write_display_name_meta(const char *dir, const char *dn,
+                                            bool clear)
+{
+    char edesc[4096]; edesc[0] = '\0';
+    bool eauto = false;
+    {
+        size_t nlen = strlen(dir) + strlen("/profile.yaml") + 1;
+        char *path = malloc(nlen);
+        if (!path) return false;
+        snprintf(path, nlen, "%s/profile.yaml", dir);
+        char *perr = NULL;
+        yaml_doc_t *doc = yaml_parse_file(path, &perr);
+        free(perr);
+        if (doc) {
+            const char *d = yaml_get_string(doc, "description");
+            if (d) { strncpy(edesc, d, sizeof(edesc) - 1); edesc[sizeof(edesc) - 1] = '\0'; }
+            eauto = yaml_get_bool(doc, "description_auto", false);
+            yaml_free(doc);
+        }
+        free(path);
+    }
+    char tmp[PATH_MAX];
+    snprintf(tmp, sizeof(tmp), "%s/.profile.yaml.tmp", dir);
+    FILE *f = fopen(tmp, "w");
+    bool ok = false;
+    if (f) {
+        fprintf(f, "description: %s\n", edesc);
+        fprintf(f, "description_auto: %s\n", eauto ? "true" : "false");
+        if (!clear) fprintf(f, "display_name: %s\n", dn);
+        fclose(f);
+        size_t nlen = strlen(dir) + strlen("/profile.yaml") + 1;
+        char *path = malloc(nlen);
+        if (path) {
+            snprintf(path, nlen, "%s/profile.yaml", dir);
+            ok = (rename(tmp, path) == 0);
+            if (!ok) unlink(tmp);
+            free(path);
+        }
+    }
+    if (!ok) unlink(tmp);
+    return ok;
+}
+
+/* PoP: profile_set_profile_display_name @ hermes_cli/profiles.py:set_profile_display_name */
+/* Set (or clear with "") a profile's user-facing display name.
+ * Presentation-only: the canonical profile id is untouched. Returns 0 on
+ * success (stored value copied into *out_stored when non-NULL); -1 on error
+ * with *err filled (caller frees) mirroring Python's FileNotFoundError /
+ * ValueError cases. */
+int profile_set_profile_display_name(const char *profile_name,
+                                     const char *display_name,
+                                     char **out_stored, char **err)
+{
+    if (err) *err = NULL;
+    if (out_stored) *out_stored = NULL;
+    char *canon = profile_normalize_name(profile_name);
+    if (!canon) {
+        if (err) *err = strdup("profile name cannot be empty");
+        return -1;
+    }
+    char *verr = NULL;
+    if (!profile_validate_name(canon, &verr)) {
+        if (err) *err = verr ? verr : strdup("invalid profile name");
+        free(canon);
+        return -1;
+    }
+    char *dir = profile_dir_for(canon);
+    struct stat st;
+    if (!dir || stat(dir, &st) != 0 || !S_ISDIR(st.st_mode)) {
+        size_t n = strlen(canon) + 64;
+        if (err) { *err = malloc(n); if (*err) snprintf(*err, n, "Profile '%s' does not exist.", canon); }
+        free(canon); free(dir);
+        return -1;
+    }
+    /* Cleaned = stripped display name. */
+    char cleaned[512];
+    cleaned[0] = '\0';
+    {
+        const char *src = display_name ? display_name : "";
+        while (*src == ' ' || *src == '\t' || *src == '\n' || *src == '\r') src++;
+        size_t L = strlen(src);
+        while (L > 0 && (src[L-1]==' '||src[L-1]=='\t'||src[L-1]=='\n'||src[L-1]=='\r')) L--;
+        if (L >= sizeof(cleaned)) L = sizeof(cleaned) - 1;
+        memcpy(cleaned, src, L); cleaned[L] = '\0';
+    }
+    if (strlen(cleaned) > 64) {
+        if (err) { *err = malloc(64); if (*err) snprintf(*err, 64, "Display name too long (%zu chars, max 64).", strlen(cleaned)); }
+        free(canon); free(dir);
+        return -1;
+    }
+    bool ok = profile_write_display_name_meta(dir, cleaned, cleaned[0] == '\0');
+    if (!ok) {
+        if (err) *err = strdup("failed to write profile.yaml");
+        free(canon); free(dir);
+        return -1;
+    }
+    if (out_stored) *out_stored = strdup(cleaned);
+    free(canon);
+    free(dir);
+    return 0;
+}

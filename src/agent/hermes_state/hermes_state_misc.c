@@ -2429,7 +2429,12 @@ char *hermes_state_default_db_path(void) {
 
 /* PoP: hermes_state_apply_database_pragmas @ hermes_state.py:apply_database_pragmas */
 int hermes_state_apply_database_pragmas(hermes_state_db_t *db) {
-    /* Python: WAL + synchronous=NORMAL + busy_timeout + foreign_keys. */
+    /* Python: WAL + synchronous=NORMAL + busy_timeout + foreign_keys.
+     * Durability note (sqlite.org/wal.html): WAL+NORMAL is corruption-safe
+     * but a power loss right after commit can roll back recent transactions.
+     * On macOS we keep the existing ports-layer upgrade to synchronous=FULL
+     * (hermes_state_ports.c) since APFS fsync latency there is acceptable;
+     * on Linux NORMAL matches the Python quarry's deliberate trade-off. */
     if (!db || !db->db) return -1;
     char *err = NULL;
     if (sqlite3_exec(db->db, "PRAGMA journal_mode=WAL;"

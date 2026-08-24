@@ -320,7 +320,22 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
         return NULL;
     }
     sqlite3_busy_timeout(h->db, 5000);
-    sqlite3_exec(h->db, "PRAGMA journal_mode=WAL;", NULL, NULL, NULL);
+    /* PoP: hermes_state_db_open journal mode @ hermes_state.py:resolve_journal_mode
+     * Operator-configurable via database.journal_mode in config.yaml (upstream
+     * #68545: virtiofs/NFS cannot provide WAL-safe durability). */
+    {
+        extern char *hs_resolve_journal_mode(void);
+        char *mode = hs_resolve_journal_mode();
+        if (mode) {
+            char pragma_stmt[64];
+            snprintf(pragma_stmt, sizeof pragma_stmt,
+                     "PRAGMA journal_mode=%s;", mode);
+            sqlite3_exec(h->db, pragma_stmt, NULL, NULL, NULL);
+            free(mode);
+        } else {
+            sqlite3_exec(h->db, "PRAGMA journal_mode=WAL;", NULL, NULL, NULL);
+        }
+    }
     char *err = NULL;
     if (sqlite3_exec(h->db, HERMES_STATE_SCHEMA_SQL, NULL, NULL, &err) != SQLITE_OK) {
         if (err) sqlite3_free(err);

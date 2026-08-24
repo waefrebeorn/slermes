@@ -307,3 +307,233 @@ char *doctor_render_state_db_stats(const char *stats_json, int holders) {
     json_free(lines);
     return out ? out : strdup("[]");
 }
+
+/* ════════════════════════════════════════════════════════════════════
+ * Doctor check emitters + Relay plugin cutover findings
+ * (parity batch: hermes_cli/doctor.py check_ok/check_warn/check_fail/
+ *  check_info/collect_relay_plugin_cutover_findings)
+ * ════════════════════════════════════════════════════════════════════ */
+
+#include <unistd.h>
+#include "relay_plugin_cutover.h"
+
+/* Minimal port of hermes_cli/colors.py:color — ANSI codes when stdout is a
+ * TTY and NO_COLOR is unset, empty strings otherwise. */
+static int doctor_use_color(void)
+{
+    static int cached = -1;
+    if (cached < 0) {
+        const char *nc = getenv("NO_COLOR");
+        cached = (isatty(1) && !(nc && nc[0])) ? 1 : 0;
+    }
+    return cached;
+}
+static const char *dc(const char *code) { return doctor_use_color() ? code : ""; }
+#define DC_RESET "\033[0m"
+#define DC_DIM   "\033[2m"
+
+/* PoP: doctor_check_ok @ hermes_cli/doctor.py:check_ok */
+void doctor_check_ok(const char *text, const char *detail)
+{
+    printf("  %s\xe2\x9c\x93%s %s", dc("\033[32m"), DC_RESET, text ? text : "");
+    if (detail && detail[0]) printf(" %s%s%s", dc(DC_DIM), detail, dc(DC_RESET));
+    printf("\n");
+}
+
+/* PoP: doctor_check_warn @ hermes_cli/doctor.py:check_warn */
+void doctor_check_warn(const char *text, const char *detail)
+{
+    printf("  %s\xe2\x9a\xa0%s %s", dc("\033[33m"), DC_RESET, text ? text : "");
+    if (detail && detail[0]) printf(" %s%s%s", dc(DC_DIM), detail, dc(DC_RESET));
+    printf("\n");
+}
+
+/* PoP: doctor_check_fail @ hermes_cli/doctor.py:check_fail */
+void doctor_check_fail(const char *text, const char *detail)
+{
+    printf("  %s\xe2\x9c\x97%s %s", dc("\033[31m"), DC_RESET, text ? text : "");
+    if (detail && detail[0]) printf(" %s%s%s", dc(DC_DIM), detail, dc(DC_RESET));
+    printf("\n");
+}
+
+/* PoP: doctor_check_info @ hermes_cli/doctor.py:check_info */
+void doctor_check_info(const char *text)
+{
+    printf("    %s\xe2\x86\x92%s %s\n", dc("\033[36m"), DC_RESET, text ? text : "");
+}
+
+/* One actionable finding: (legacy location/value, replacement guidance). */
+typedef struct {
+    char *legacy;       /* malloc'd */
+    char *replacement;  /* malloc'd */
+} doctor_finding_t;
+
+/* Free an array returned by doctor_collect_relay_plugin_cutover_findings. */
+void doctor_free_findings(doctor_finding_t *findings, size_t n)
+{
+    if (!findings) return;
+    for (size_t i = 0; i < n; i++) { free(findings[i].legacy); free(findings[i].replacement); }
+    free(findings);
+}
+
+/* LEGACY_RELAY_EXPORT_ENV_VARS — same allowlist as relay_plugin_cutover.c
+ * (kept private there; duplicated here because Python imports it from the
+ * module namespace). */
+static const char *const DOCTOR_LEGACY_RELAY_EXPORT_ENV_VARS[] = {
+    "HERMES_NEMO_RELAY_ATOF_ENABLED",
+    "HERMES_NEMO_RELAY_ATOF_OUTPUT_DIRECTORY",
+    "HERMES_NEMO_RELAY_ATOF_FILENAME",
+    "HERMES_NEMO_RELAY_ATOF_MODE",
+    "HERMES_NEMO_RELAY_ATIF_ENABLED",
+    "HERMES_NEMO_RELAY_ATIF_OUTPUT_DIRECTORY",
+    "HERMES_NEMO_RELAY_ATIF_FILENAME_TEMPLATE",
+    "HERMES_NEMO_RELAY_ATIF_AGENT_NAME",
+    "HERMES_NEMO_RELAY_ATIF_AGENT_VERSION",
+    "HERMES_NEMO_RELAY_ATIF_EXPORT_TIMEOUT_S",
+    "HERMES_NEMO_RELAY_ATIF_MODEL_NAME",
+    "HERMES_NEMO_RELAY_ATIF_SUBAGENT_EXPORT_MODE",
+    NULL,
+};
+
+/* PoP: doctor_collect_relay_plugin_cutover_findings @ hermes_cli/doctor.py:collect_relay_plugin_cutover_findings */
+/* Return actionable findings for the removed Hermes Relay plugin.
+ * raw_config is the parsed config.yaml tree (may be NULL); env_map is passed
+ * as parallel arrays (either may be NULL/0). Findings are appended in the
+ * Python order: plugins.enabled keys first, then legacy exporter env vars. */
+doctor_finding_t *doctor_collect_relay_plugin_cutover_findings(
+    const json_t *raw_config,
+    const char *const *env_names, const char *const *env_vals, size_t n_env,
+    size_t *out_n)
+{
+    if (out_n) *out_n = 0;
+    doctor_finding_t *findings = NULL;
+    size_t n = 0, cap = 0;
+
+/* local append helper */
+#define DF_PUSH(lg, rp)                                                     \
+    do {                                                                    \
+        if (n == cap) {                                                     \
+            size_t nc = cap ? cap * 2 : 8;                                  \
+            doctor_finding_t *nf = realloc(findings, nc * sizeof(*findings));\
+            if (!nf) break;                                                 \
+            findings = nf; cap = nc;                                        \
+        }                                                                   \
+        findings[n].legacy = strdup(lg);                                    \
+        findings[n].replacement = strdup(rp);                               \
+        if (findings[n].legacy && findings[n].replacement) n++;             \
+    } while (0)
+
+    /* 1. Legacy plugin keys under config `plugins.enabled`. */
+    if (raw_config && json_is_object(raw_config)) {
+        const json_t *plugins = json_object_get(raw_config, "plugins");
+        if (plugins && json_is_object(plugins)) {
+            const json_t *enabled = json_object_get(plugins, "enabled");
+            const char **vals = NULL;
+            size_t nv = 0;
+            if (enabled && json_is_array(enabled)) {
+                nv = json_array_size(enabled);
+                vals = malloc((nv ? nv : 1) * sizeof(char *));
+                for (size_t i = 0; i < nv; i++)
+                    vals[i] = json_node_get_string(json_get(enabled, i));
+                /* non-string entries become NULL → skipped by cutover helper */
+            } else if (enabled && json_is_object(enabled)) {
+                /* dict of enabled toolsets → iterate its keys */
+                nv = json_object_size(enabled);
+                vals = malloc((nv ? nv : 1) * sizeof(char *));
+                for (size_t i = 0; i < nv; i++)
+                    vals[i] = json_object_get_key_at(enabled, i);
+            }
+            size_t nk = 0;
+            char **keys = cutover_legacy_relay_plugin_keys(vals, nv, &nk);
+            for (size_t i = 0; i < nk; i++) {
+                char lg[512];
+                snprintf(lg, sizeof(lg), "plugins.enabled: %s", keys[i]);
+                char rp[256];
+                snprintf(rp, sizeof(rp), "remove it and configure %s",
+                         RELAY_PLUGINS_CONFIG_ENV);
+                DF_PUSH(lg, rp);
+                free(keys[i]);
+            }
+            free(keys);
+            free((void *)vals);
+        }
+    }
+
+    /* 2. Legacy exporter env vars: merge caller env_map with the live process
+     * environment (Python: effective_env = dict(env_map or {}), then any of
+     * the watched names missing from it are filled in from os.environ). */
+    size_t merged_n = 0;
+    const char **m_names = NULL, **m_vals = NULL;
+    char **owned_vals = NULL;
+    size_t mcap = n_env + 16;
+    m_names = malloc(mcap * sizeof(char *));
+    m_vals  = malloc(mcap * sizeof(char *));
+    owned_vals = calloc(mcap, sizeof(char *));
+    if (m_names && m_vals && owned_vals) {
+        for (size_t i = 0; i < n_env; i++) {
+            if (!env_names || !env_names[i]) continue;
+            m_names[merged_n] = env_names[i];
+            m_vals[merged_n] = env_vals ? env_vals[i] : NULL;
+            merged_n++;
+        }
+        for (size_t k = 0; DOCTOR_LEGACY_RELAY_EXPORT_ENV_VARS[k]; k++) {
+            const char *name = DOCTOR_LEGACY_RELAY_EXPORT_ENV_VARS[k];
+            int present = 0;
+            for (size_t i = 0; i < merged_n; i++)
+                if (strcmp(m_names[i], name) == 0) { present = 1; break; }
+            const char *val = getenv(name);
+            if (!present && val != NULL) {
+                if (merged_n == mcap) break;
+                m_names[merged_n] = name;
+                owned_vals[merged_n] = strdup(val);
+                m_vals[merged_n] = owned_vals[merged_n];
+                merged_n++;
+            }
+        }
+        {
+            const char *name = RELAY_PLUGINS_CONFIG_ENV;
+            int present = 0;
+            for (size_t i = 0; i < merged_n; i++)
+                if (strcmp(m_names[i], name) == 0) { present = 1; break; }
+            const char *val = getenv(name);
+            if (!present && val != NULL && merged_n < mcap) {
+                m_names[merged_n] = name;
+                owned_vals[merged_n] = strdup(val);
+                m_vals[merged_n] = owned_vals[merged_n];
+                merged_n++;
+            }
+        }
+
+        /* Only sweep exporter vars when the TOML override is blank/unset. */
+        const char *toml = NULL;
+        for (size_t i = 0; i < merged_n; i++)
+            if (strcmp(m_names[i], RELAY_PLUGINS_CONFIG_ENV) == 0)
+                { toml = m_vals[i]; break; }
+        int toml_blank = 1;
+        if (toml) {
+            const char *p = toml;
+            while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+            toml_blank = (*p == '\0');
+        }
+        if (toml_blank) {
+            size_t nn = 0;
+            char **names = cutover_configured_legacy_relay_env_vars(
+                m_names, m_vals, merged_n, &nn);
+            for (size_t i = 0; i < nn; i++) {
+                char rp[256];
+                snprintf(rp, sizeof(rp),
+                         "move exporter settings to %s; this variable is now ignored",
+                         RELAY_PLUGINS_CONFIG_ENV);
+                DF_PUSH(names[i], rp);
+                free(names[i]);
+            }
+            free(names);
+        }
+    }
+    for (size_t i = 0; i < mcap; i++) free(owned_vals[i]);
+    free(owned_vals); free(m_names); free(m_vals);
+#undef DF_PUSH
+
+    if (out_n) *out_n = n;
+    return findings;
+}
