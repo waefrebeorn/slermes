@@ -4648,3 +4648,44 @@ void upd_print_parked_branch_skip_warning(const char *cwd,
     printf("    git -C %s checkout %s && hermes update\n",
            cwd ? cwd : ".", target_branch ? target_branch : "main");
 }
+
+/* PoP: upd_write_update_incomplete_marker @ hermes_cli/update_cmd.py:_write_update_incomplete_marker */
+void upd_write_update_incomplete_marker(void) {
+    /* Mark the install as half-updated so the next fresh launch finishes
+     * the dependency install. Best-effort like Python's OSError swallow. */
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    if (!home || !*home) return;
+    char path[4096];
+    snprintf(path, sizeof(path), "%s/.update_incomplete", home);
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    fputs("pending\n", f);
+    fclose(f);
+}
+
+/* PoP: upd_refuse_update_for_contended_shims @ hermes_cli/update_cmd.py:_refuse_update_for_contended_shims
+ * Refuse the dependency sync when live shims could not be quarantined
+ * (#87331 fail-closed): running the installer with a live holder strands
+ * the venv half-updated. Prints the refusal, writes the deferral marker,
+ * exits 2 (refused, not failure). failed_shims is a NUL-separated list. */
+void upd_refuse_update_for_contended_shims(const char *failed_shims) {
+    printf("\u2717 Cannot continue the update: live Hermes launcher(s) could not be\n");
+    printf("  moved aside:\n");
+    if (failed_shims && *failed_shims) {
+        const char *p = failed_shims;
+        while (*p) {
+            printf("    %s\n", p);
+            p += strlen(p) + 1;
+        }
+    } else {
+        printf("    hermes.exe\n");
+    }
+    printf("  Another process is holding this install's venv -- typically Hermes\n");
+    printf("  Desktop, a gateway, or another hermes REPL -- and mutating the venv\n");
+    printf("  now would strand it half-updated.\n");
+    printf("  The dependency install has been deferred: close the process(es)\n");
+    printf("  above, then run any `hermes` command to finish it automatically.\n");
+    upd_write_update_incomplete_marker();
+    exit(2);
+}
