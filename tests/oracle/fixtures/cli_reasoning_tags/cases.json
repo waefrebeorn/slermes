@@ -1,0 +1,38 @@
+[
+ {
+  "input": "<think>hidden reasoning</think>The answer is 42.",
+  "expected": "The answer is 42."
+ },
+ {
+  "input": "Answer first.\n<think>\nmulti\nline\n</think>\ndone",
+  "expected": "Answer first.\ndone"
+ },
+ {
+  "input": "partial gen <think>never closed",
+  "expected": "partial gen"
+ },
+ {
+  "input": "stuff</think>answer",
+  "expected": "stuffanswer"
+ },
+ {
+  "input": "<REASONING_SCRATCHPAD>x</REASONING_SCRATCHPAD>visible",
+  "expected": "visible"
+ },
+ {
+  "input": "<THINK>upper</THINK>ok",
+  "expected": "ok"
+ },
+ {
+  "input": "<tool_call>{\"name\":\"f\"}</tool_call>result text",
+  "expected": "result text"
+ },
+ {
+  "input": "prose\n<function name=\"x\">body</function>\nafter",
+  "expected": "prose\nafter"
+ },
+ {
+  "input": "plain text stays",
+  "expected": "plain text stays"
+ }
+]
