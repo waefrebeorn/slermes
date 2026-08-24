@@ -570,3 +570,16 @@ char *apis_request_service_tier(const json_t *model_options, bool *is_missing) {
     }
     return NULL;
 }
+
+/* PoP: apis_redact_api_error_text @ gateway/platforms/api_server.py:_redact_api_error_text */
+char *apis_redact_api_error_text(const char *value, int limit) {
+    /* Redact API-bound error text before it crosses the HTTP boundary.
+     * Reuses the shared redact_sensitive_text(force=True) port; limit<0
+     * means no truncation. */
+    extern char *redact_sensitive_text(const char *text);
+    if (!value) return strdup("");
+    char *redacted = redact_sensitive_text(value);
+    if (limit >= 0 && redacted && strlen(redacted) > (size_t)limit)
+        redacted[limit] = '\0';
+    return redacted;
+}
