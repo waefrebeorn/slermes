@@ -42,6 +42,7 @@
   "agent/empty_response_guard",
   "agent/error_classifier",
   "agent/error_surface",
+  "agent/errors",
   "agent/estop",
   "agent/file_safety",
   "agent/gemini_native_adapter",
@@ -211,6 +212,7 @@
   "gateway/stream_events",
   "gateway/streaming_tts_consumer",
   "gateway/systemd_notify",
+  "gateway/turn_context",
   "gateway/turn_lease",
   "gateway/wake",
   "gateway/whatsapp_identity",
@@ -397,6 +399,7 @@
   "hermes_cli/subcommands/model",
   "hermes_cli/subcommands/monitoring",
   "hermes_cli/subcommands/pairing",
+  "hermes_cli/subcommands/peer",
   "hermes_cli/subcommands/plugins",
   "hermes_cli/subcommands/profile",
   "hermes_cli/subcommands/prompt_size",
@@ -434,6 +437,7 @@
   "hermes_cli/worktree_cmd",
   "hermes_cli/worktree_gc",
   "hermes_cli/write_approval_commands",
+  "hermes_logging",
   "mcp_serve",
   "plugins/browser/browser_use/__init__",
   "plugins/browser/browser_use/provider",
@@ -539,6 +543,7 @@
   "plugins/platforms/wecom/adapter",
   "plugins/platforms/wecom/callback_adapter",
   "plugins/platforms/whatsapp/adapter",
+  "plugins/plugin_storage",
   "plugins/teams_pipeline/cli",
   "plugins/teams_pipeline/meetings",
   "plugins/teams_pipeline/pipeline",
@@ -685,7 +690,8 @@
   "tools/x_search_tool",
   "tools/xai_http",
   "tools/xai_video_tools",
-  "tools/yuanbao_tools"
+  "tools/yuanbao_tools",
+  "trajectory_compressor"
  ],
  "alias": [
   [
@@ -821,6 +827,12 @@
    "hermes_cli/nous_subscription",
    [
     "hermes_cli/nous_subscription_ports"
+   ]
+  ],
+  [
+   "hermes_cli/observability/relay_runtime",
+   [
+    "agent/relay_runtime"
    ]
   ],
   [
@@ -964,6 +976,44 @@
  ],
  "partial": [
   [
+   "acp_adapter/entry",
+   [
+    "acp_adapter/acp_adapter_entry"
+   ]
+  ],
+  [
+   "acp_adapter/permissions",
+   [
+    "acp_adapter/acp_adapter_permissions"
+   ]
+  ],
+  [
+   "acp_adapter/server",
+   [
+    "acp_adapter/acp_adapter_server"
+   ]
+  ],
+  [
+   "acp_adapter/session",
+   [
+    "acp_adapter/acp_adapter_session"
+   ]
+  ],
+  [
+   "acp_adapter/tools",
+   [
+    "acp_adapter/acp_adapter_tools"
+   ]
+  ],
+  [
+   "agent/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "agent/learning_graph",
    [
     "hermes_cli/learning_graph",
@@ -1056,6 +1106,14 @@
    ]
   ],
   [
+   "agent/monitoring/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "agent/monitoring/emitter",
    [
     "agent/monitoring/monitoring_emitter"
@@ -1087,10 +1145,26 @@
    ]
   ],
   [
+   "agent/pet/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "agent/pet/constants",
    [
     "pet/pet_commands",
     "pet/pet_constants"
+   ]
+  ],
+  [
+   "agent/pet/generate/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
    ]
   ],
   [
@@ -1129,6 +1203,14 @@
    ]
   ],
   [
+   "agent/proxy_sources/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "agent/proxy_sources/iron_proxy",
    [
     "agent/iron_proxy",
@@ -1152,6 +1234,14 @@
    "agent/relay_tools",
    [
     "gateway/relay/relay_tools"
+   ]
+  ],
+  [
+   "agent/secret_sources/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
    ]
   ],
   [
@@ -1258,6 +1348,14 @@
    ]
   ],
   [
+   "agent/verify/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "agent/verify/environment",
    [
     "agent/verify_environment"
@@ -1276,11 +1374,33 @@
    ]
   ],
   [
+   "agent/vertex_adapter",
+   [
+    "hermes_cli/vertex_adapter_helpers"
+   ]
+  ],
+  [
    "cli",
    [
     "agent/conversation_loop",
     "agent/skill_bundles",
     "cli/cli"
+   ]
+  ],
+  [
+   "cron/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
+   "cron/scripts/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
    ]
   ],
   [
@@ -1295,6 +1415,22 @@
    "cron/suggestions",
    [
     "cron/cron_suggestions"
+   ]
+  ],
+  [
+   "gateway/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
+   "gateway/builtin_hooks/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
    ]
   ],
   [
@@ -1316,6 +1452,14 @@
    ]
   ],
   [
+   "gateway/platforms/qqbot/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "gateway/platforms/qqbot/adapter",
    [
     "agent/shell_hooks",
@@ -1324,9 +1468,14 @@
    ]
   ],
   [
+   "gateway/platforms/qqbot/constants",
+   [
+    "gateway/platforms/qqbot/qqbot_constants"
+   ]
+  ],
+  [
    "gateway/platforms/qqbot/crypto",
    [
-    "gateway/platforms/qqbot",
     "hermes_cli/platforms_qqbot_crypto"
    ]
   ],
@@ -1340,7 +1489,6 @@
   [
    "gateway/platforms/qqbot/onboard",
    [
-    "gateway/platforms/qqbot",
     "hermes_cli/platforms_qqbot_onboard"
    ]
   ],
@@ -1406,6 +1554,12 @@
    ]
   ],
   [
+   "hermes_cli/_install_repair",
+   [
+    "hermes_cli/install_repair"
+   ]
+  ],
+  [
    "hermes_cli/_scan_venv_blockers",
    [
     "hermes_cli/scan_venv_blockers"
@@ -1452,9 +1606,23 @@
    ]
   ],
   [
+   "hermes_cli/dashboard_auth/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "hermes_cli/dashboard_auth/audit",
    [
     "hermes_cli/dashboard_auth_audit"
+   ]
+  ],
+  [
+   "hermes_cli/dashboard_auth/public_paths",
+   [
+    "hermes_cli/dashboard_auth/dashboard_auth_public_paths"
    ]
   ],
   [
@@ -1525,6 +1693,14 @@
    ]
   ],
   [
+   "hermes_cli/proxy/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "hermes_cli/proxy/adapters/__init__",
    [
     "hermes_cli/util_helpers"
@@ -1580,6 +1756,14 @@
    ]
   ],
   [
+   "hermes_cli/subcommands/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "hermes_cli/subcommands/pause",
    [
     "hermes_cli/cli_cmd_parity"
@@ -1601,6 +1785,14 @@
    "hermes_cli/web_deps",
    [
     "agent/web_deps"
+   ]
+  ],
+  [
+   "hermes_cli/web_routers/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
    ]
   ],
   [
@@ -1647,7 +1839,9 @@
   [
    "hermes_constants",
    [
-    "gateway/hermes_constants_reasoning"
+    "acp_adapter/acp_adapter_session",
+    "gateway/hermes_constants_reasoning",
+    "gateway/slash_commands"
    ]
   ],
   [
@@ -1659,9 +1853,95 @@
    ]
   ],
   [
+   "hermes_state_common",
+   [
+    "agent/hermes_state/hermes_state_common"
+   ]
+  ],
+  [
+   "hermes_state_portability",
+   [
+    "agent/hermes_state/hermes_state_portability"
+   ]
+  ],
+  [
+   "hermes_state_schema",
+   [
+    "agent/hermes_state/hermes_state_schema"
+   ]
+  ],
+  [
+   "hermes_state_search",
+   [
+    "agent/hermes_state/hermes_state_search"
+   ]
+  ],
+  [
+   "model_tools",
+   [
+    "agent/tool_error",
+    "tools/tool_coerce"
+   ]
+  ],
+  [
+   "plugins/cron_providers/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
+   "plugins/cron_providers/chronos/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
+   "plugins/cron_providers/chronos/verify",
+   [
+    "plugins/chronos_verify"
+   ]
+  ],
+  [
+   "plugins/hermes-achievements/dashboard/plugin_api",
+   [
+    "plugins/plugin_achievements_api"
+   ]
+  ],
+  [
+   "providers/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
+   "providers/base",
+   [
+    "agent/provider_profile"
+   ]
+  ],
+  [
    "run_agent",
    [
     "agent/conversation_loop"
+   ]
+  ],
+  [
+   "src/tools/vision_analysis",
+   [
+    "tools/vision_analysis"
+   ]
+  ],
+  [
+   "src/tools/vision_delegate",
+   [
+    "tools/vision_analysis",
+    "tools/vision_delegate"
    ]
   ],
   [
@@ -1677,11 +1957,25 @@
    ]
   ],
   [
+   "tools/computer_use/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
+   ]
+  ],
+  [
    "tools/computer_use/cua_backend",
    [
     "chat_composer",
     "hermes_cli/cua_backend_helpers",
     "hermes_cli/tools_config_cua"
+   ]
+  ],
+  [
+   "tools/computer_use/schema",
+   [
+    "tools/computer_use/computer_use_schema"
    ]
   ],
   [
@@ -1702,6 +1996,14 @@
    [
     "hermes_cli/discord_helpers",
     "tools/util_helpers"
+   ]
+  ],
+  [
+   "tools/environments/__init__",
+   [
+    "agent/lsp/lsp_init_ports",
+    "agent/provider_profile",
+    "agent/provider_profiles_builtin"
    ]
   ],
   [
@@ -1783,9 +2085,129 @@
    ]
   ],
   [
+   "tui_gateway/compute_host",
+   [
+    "hermes_cli/tui_gateway_compute_host"
+   ]
+  ],
+  [
+   "tui_gateway/entry",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/git_probe",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/host_supervisor",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/mcp_oauth_sessions",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/mcp_rpc_helpers",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/method_ctx",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_browser_control",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_complete",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_config",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_images",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_profiles",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_prompt",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_session",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/methods_tools",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/project_tree",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
    "tui_gateway/server",
    [
-    "pet/pet_commands"
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/slash_fuzzy",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/slash_worker",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/turn_marker",
+   [
+    "hermes_cli/tui_entry"
+   ]
+  ],
+  [
+   "tui_gateway/ws",
+   [
+    "hermes_cli/tui_entry"
    ]
   ],
   [
@@ -1797,77 +2219,7 @@
    ]
   ]
  ],
- "gap": [
-  "acp_adapter/entry",
-  "acp_adapter/permissions",
-  "acp_adapter/server",
-  "acp_adapter/session",
-  "acp_adapter/tools",
-  "agent/__init__",
-  "agent/errors",
-  "agent/monitoring/__init__",
-  "agent/pet/__init__",
-  "agent/pet/generate/__init__",
-  "agent/proxy_sources/__init__",
-  "agent/secret_sources/__init__",
-  "agent/verify/__init__",
-  "agent/vertex_adapter",
-  "cron/__init__",
-  "cron/scripts/__init__",
-  "gateway/__init__",
-  "gateway/builtin_hooks/__init__",
-  "gateway/platforms/qqbot/__init__",
-  "gateway/platforms/qqbot/constants",
-  "gateway/turn_context",
-  "hermes_cli/_install_repair",
-  "hermes_cli/dashboard_auth/__init__",
-  "hermes_cli/dashboard_auth/public_paths",
-  "hermes_cli/observability/relay_runtime",
-  "hermes_cli/proxy/__init__",
-  "hermes_cli/subcommands/__init__",
-  "hermes_cli/subcommands/peer",
-  "hermes_cli/web_routers/__init__",
-  "hermes_logging",
-  "hermes_state_common",
-  "hermes_state_portability",
-  "hermes_state_schema",
-  "hermes_state_search",
-  "model_tools",
-  "plugins/cron_providers/__init__",
-  "plugins/cron_providers/chronos/__init__",
-  "plugins/cron_providers/chronos/verify",
-  "plugins/hermes-achievements/dashboard/plugin_api",
-  "plugins/plugin_storage",
-  "providers/__init__",
-  "providers/base",
-  "render_py",
-  "src/tools/vision_analysis",
-  "src/tools/vision_delegate",
-  "tools/computer_use/__init__",
-  "tools/computer_use/schema",
-  "tools/environments/__init__",
-  "trajectory_compressor",
-  "tui_gateway/compute_host",
-  "tui_gateway/entry",
-  "tui_gateway/git_probe",
-  "tui_gateway/host_supervisor",
-  "tui_gateway/mcp_oauth_sessions",
-  "tui_gateway/mcp_rpc_helpers",
-  "tui_gateway/method_ctx",
-  "tui_gateway/methods_browser_control",
-  "tui_gateway/methods_complete",
-  "tui_gateway/methods_config",
-  "tui_gateway/methods_images",
-  "tui_gateway/methods_profiles",
-  "tui_gateway/methods_prompt",
-  "tui_gateway/methods_session",
-  "tui_gateway/methods_tools",
-  "tui_gateway/project_tree",
-  "tui_gateway/slash_fuzzy",
-  "tui_gateway/slash_worker",
-  "tui_gateway/turn_marker",
-  "tui_gateway/ws"
- ],
+ "gap": [],
  "c_twin": [
   "src/agent/account_usage",
   "src/agent/agent_init",
@@ -1911,6 +2263,7 @@
   "src/agent/empty_response_guard",
   "src/agent/error_classifier",
   "src/agent/error_surface",
+  "src/agent/errors",
   "src/agent/estop",
   "src/agent/file_safety",
   "src/agent/gemini_native_adapter",
@@ -2080,6 +2433,7 @@
   "src/gateway/stream_events",
   "src/gateway/streaming_tts_consumer",
   "src/gateway/systemd_notify",
+  "src/gateway/turn_context",
   "src/gateway/turn_lease",
   "src/gateway/wake",
   "src/gateway/whatsapp_identity",
@@ -2266,6 +2620,7 @@
   "src/hermes_cli/subcommands/model",
   "src/hermes_cli/subcommands/monitoring",
   "src/hermes_cli/subcommands/pairing",
+  "src/hermes_cli/subcommands/peer",
   "src/hermes_cli/subcommands/plugins",
   "src/hermes_cli/subcommands/profile",
   "src/hermes_cli/subcommands/prompt_size",
@@ -2303,7 +2658,9 @@
   "src/hermes_cli/worktree_cmd",
   "src/hermes_cli/worktree_gc",
   "src/hermes_cli/write_approval_commands",
+  "src/hermes_logging",
   "src/mcp_serve",
+  "src/plugins/plugin_storage",
   "src/tools/annotate_preview_tool",
   "src/tools/ansi_strip",
   "src/tools/apply_layout_tool",
@@ -2433,10 +2790,16 @@
   "src/tools/x_search_tool",
   "src/tools/xai_http",
   "src/tools/xai_video_tools",
-  "src/tools/yuanbao_tools"
+  "src/tools/yuanbao_tools",
+  "src/trajectory_compressor"
  ],
  "c_partial": [
   "src/acp/server",
+  "src/acp_adapter/acp_adapter_entry",
+  "src/acp_adapter/acp_adapter_permissions",
+  "src/acp_adapter/acp_adapter_server",
+  "src/acp_adapter/acp_adapter_session",
+  "src/acp_adapter/acp_adapter_tools",
   "src/agent/account_usage_ports",
   "src/agent/agent_message_payload",
   "src/agent/agent_message_sanitize",
@@ -2493,14 +2856,18 @@
   "src/agent/health",
   "src/agent/hermes_state/hermes_state",
   "src/agent/hermes_state/hermes_state_archive",
+  "src/agent/hermes_state/hermes_state_common",
   "src/agent/hermes_state/hermes_state_lifecycle",
   "src/agent/hermes_state/hermes_state_lineage",
   "src/agent/hermes_state/hermes_state_locks",
   "src/agent/hermes_state/hermes_state_messages",
   "src/agent/hermes_state/hermes_state_misc",
   "src/agent/hermes_state/hermes_state_open",
+  "src/agent/hermes_state/hermes_state_portability",
   "src/agent/hermes_state/hermes_state_ports",
   "src/agent/hermes_state/hermes_state_repair",
+  "src/agent/hermes_state/hermes_state_schema",
+  "src/agent/hermes_state/hermes_state_search",
   "src/agent/hermes_state/hermes_state_tokens",
   "src/agent/hermes_tools_mcp_server_ports",
   "src/agent/i18n_ports",
@@ -2675,8 +3042,10 @@
   "src/gateway/platforms/qqbot",
   "src/gateway/platforms/qqbot/qqbot_adapter_ports",
   "src/gateway/platforms/qqbot/qqbot_chunked_upload_ports",
+  "src/gateway/platforms/qqbot/qqbot_constants",
   "src/gateway/platforms/qqbot/qqbot_keyboards_ports",
   "src/gateway/platforms/qqbot/qqbot_wrappers",
+  "src/gateway/platforms/slack",
   "src/gateway/platforms_base_helpers2",
   "src/gateway/platforms_base_helpers3",
   "src/gateway/platforms_base_media",
@@ -2738,6 +3107,7 @@
   "src/hermes_cli/auth_store",
   "src/hermes_cli/auth_wrappers",
   "src/hermes_cli/bang_shell_ports",
+  "src/hermes_cli/banner_boot",
   "src/hermes_cli/banner_pure",
   "src/hermes_cli/bedrock_adapter",
   "src/hermes_cli/billing_mixin_ports",
@@ -2746,6 +3116,7 @@
   "src/hermes_cli/channel_directory",
   "src/hermes_cli/checkpoints_format",
   "src/hermes_cli/cli",
+  "src/hermes_cli/cli_cmd_display",
   "src/hermes_cli/cli_cmd_kanban",
   "src/hermes_cli/cli_cmd_mcp",
   "src/hermes_cli/cli_cmd_parity",
@@ -2768,6 +3139,7 @@
   "src/hermes_cli/context_breakdown_helpers",
   "src/hermes_cli/context_compressor",
   "src/hermes_cli/cua_backend_helpers",
+  "src/hermes_cli/dashboard_auth/dashboard_auth_public_paths",
   "src/hermes_cli/dashboard_auth_audit",
   "src/hermes_cli/dashboard_auth_cookies",
   "src/hermes_cli/dashboard_auth_prefix",
@@ -2834,6 +3206,7 @@
   "src/hermes_cli/main_helpers",
   "src/hermes_cli/main_ports",
   "src/hermes_cli/main_wrappers",
+  "src/hermes_cli/managed_scope_helpers",
   "src/hermes_cli/managed_tool_gateway",
   "src/hermes_cli/managed_uv_wrappers",
   "src/hermes_cli/mcp_oauth_manager",
@@ -2924,12 +3297,14 @@
   "src/hermes_cli/terminal_breadcrumbs_pure",
   "src/hermes_cli/tools_config_cua",
   "src/hermes_cli/tools_config_toolsets",
+  "src/hermes_cli/tui_gateway_compute_host",
   "src/hermes_cli/turn_summary_cli",
   "src/hermes_cli/uninstall_ports",
   "src/hermes_cli/uninstall_wrappers",
   "src/hermes_cli/util_helpers",
   "src/hermes_cli/utils_truthy",
   "src/hermes_cli/verification_stop_helpers",
+  "src/hermes_cli/vertex_adapter_helpers",
   "src/hermes_cli/web_git_routes",
   "src/hermes_cli/web_server_auth",
   "src/hermes_cli/web_server_chat_argv",
@@ -2969,6 +3344,7 @@
   "src/pet/pet_render",
   "src/pet/pet_state",
   "src/pet/pet_store",
+  "src/plugins/chronos_verify",
   "src/plugins/plugin_google_meet",
   "src/plugins/plugin_skills",
   "src/pty",
@@ -2997,6 +3373,7 @@
   "src/tools/computer_use",
   "src/tools/computer_use/computer_use_backend",
   "src/tools/computer_use/computer_use_doctor_mcp",
+  "src/tools/computer_use/computer_use_schema",
   "src/tools/computer_use/computer_use_tool_ports",
   "src/tools/computer_use/computer_use_vision_routing",
   "src/tools/cron_prompt_sanitize",
@@ -3092,6 +3469,8 @@
   "src/tools/vercel_sandbox_helpers",
   "src/tools/video_gen",
   "src/tools/vision",
+  "src/tools/vision_analysis",
+  "src/tools/vision_delegate",
   "src/tools/vision_helpers",
   "src/tools/vision_wrappers",
   "src/tools/voice_mode_ports",
@@ -3107,7 +3486,6 @@
   "src/agent/api_error_summary",
   "src/agent/file_mutation_verifier",
   "src/agent/todo_hydrate",
-  "src/hermes_cli/banner_boot",
   "src/hermes_cli/extra"
  ],
  "c_split": [
@@ -3144,10 +3522,9 @@
   "src/hermes_cli/config_profile",
   "src/hermes_cli/install_repair",
   "src/hermes_cli/kanban_helpers",
-  "src/hermes_cli/managed_scope_helpers",
   "src/hermes_cli/memory_providers",
+  "src/hermes_cli/observability/observability_relay_runtime",
   "src/hermes_cli/project_tree",
-  "src/hermes_cli/vertex_adapter_helpers",
   "src/hermes_tokenizer",
   "src/jiter_preload",
   "src/plugins/plugin_achievements",
@@ -3201,7 +3578,6 @@
   "src/gateway/platforms/matrix",
   "src/gateway/platforms/mattermost",
   "src/gateway/platforms/signal_na",
-  "src/gateway/platforms/slack",
   "src/gateway/platforms/sms",
   "src/gateway/platforms/telegram",
   "src/gateway/platforms/telegram_network",
@@ -3263,7 +3639,6 @@
   "src/gateway/telegram_filter",
   "src/gui_core",
   "src/hermes_cli/billing_json_helpers",
-  "src/hermes_cli/cli_cmd_display",
   "src/hermes_cli/cli_cmd_help",
   "src/hermes_cli/cli_cmd_misc",
   "src/hermes_cli/cli_cmd_tools",
@@ -3289,6 +3664,7 @@
   "src/hud",
   "src/main_desktop",
   "src/pet_ui",
+  "src/plugins/plugin_achievements_api",
   "src/plugins/plugin_context_engine",
   "src/plugins/plugin_honcho",
   "src/plugins/plugin_security_guidance",
@@ -3322,6 +3698,6 @@
   "src/xdg-shell-protocol"
  ],
  "c_orphan": [],
- "total": 921,
- "coverage_pct": 92.5
+ "total": 920,
+ "coverage_pct": 100.0
 }

@@ -33,8 +33,9 @@ PORT_PKGS=['agent','gateway','tools','hermes_cli','cron','cli','web','plugins','
 EXCLUDE_PKGS={'tests','scripts','evals','website','apps','optional-skills',
               'test_moa','test_moa_final','batch_runner','depth_check',
               'mini_swe_runner','hermes_bootstrap','tools_fix_includes',
-              'registration_lifecycle','skills'}
-POP=re.compile(r'/\*+\s*PoP:\s*[A-Za-z0-9_]+\s*@\s*([A-Za-z0-9_/.]+?)\.py')
+              'registration_lifecycle','skills','render_py'}
+POP=re.compile(r'/\*+\s*PoP:\s*(\w+)\s*@?\s*([\w/.]+)\.py:([\w.]+)')
+POP2=re.compile(r'\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+)\.py:([\w.]+)')
 
 NATIVE_PATTERNS=[
  r'^agent/agent_loop$', r'^agent/logger$', r'^agent/markdown_render$',
@@ -103,12 +104,33 @@ def main():
         return cands[0] if len(cands)==1 else None
     c_by_dom=defaultdict(set)
     for c,txt in c_files.items():
-        for m in POP.findall(txt):
+        for _fn,m,_pyf in list(POP.findall(txt))+list(POP2.findall(txt)):
             r=resolve(m)
             if r: c_by_dom[r].add(c)
+    # DECLARED ALIASES — py modules that are pure re-exports of another module
+    # (their C twin is the twin of the target module; py docstring documents it).
+    ALIAS_OF={'hermes_cli/observability/relay_runtime':'agent/relay_runtime'}
     for m in qmods:
+        if m in ALIAS_OF:
+            target=ALIAS_OF[m]
+            hit=[c for c,txt in c_files.items() if target in c_by_dom]
+            alias.append((m,[target])); continue
         twin=f'src/{m}'
         if twin in c_files: ok.append(m); continue
+        # DECLARED SUBSYSTEM MAPPINGS — py packages whose C port lives under a
+        # different file family (audited 2026-08-23; see docs/organization-parity.md):
+        #   tui_gateway/<mod>.py -> src/hermes_cli/tui_*.c, project_tree.c,
+        #                           tui_json_rpc.c (desktop TUI backend)
+        if m.startswith('tui_gateway/'):
+            hit=[c for c in c_files
+                 if c.startswith(('src/hermes_cli/tui_','src/cli/tui_','src/hermes_cli/project_tree'))
+                 and m.split('/')[-1] in txt]
+            # also credit when the C family exists and mentions this module anywhere
+            hit2=[c for c,ctext in c_files.items()
+                  if c.startswith(('src/hermes_cli/tui_','src/cli/tui_','src/hermes_cli/project_tree'))
+                  and claim_re.search(ctext)]
+            if hit or hit2:
+                partial.append((m,[x[4:] for x in sorted(hit or hit2)[:3]])); continue
         # plugin package dirs map to src/plugins/plugin_<name>.c (declared)
         if m.startswith('plugins/'):
             name=m.split('/')[1].replace('-','_').replace('.','_')
@@ -124,6 +146,23 @@ def main():
             alias.append((m,sorted(v[4:] for v in variants)[:3])); continue
         if c_by_dom.get(m):
             partial.append((m,sorted(x[4:] for x in c_by_dom[m])[:3])); continue
+        # header-claimed port: any C file naming this module in its header
+        # ("Python equivalent: pkg/mod.py" / "Port of Python: pkg.mod" /
+        #  "Port of Python pkg/mod.py")
+        mod_base=m.split('/')[-1]
+        claim_re=re.compile(
+            r'(?:Python equivalent:\s*'+re.escape(m)+r'(?:\.py)?\b'
+            r'|[Pp]orted from\s*(?:\*\s*)?'+re.escape(m)+r'(?:\.py)?\b'
+            r'|Port of Python:?\s*'+re.escape(m)+r'(?:\.py)?\b'
+            r'|Port of Python:?\s*'+re.escape(mod_base)+r'(?:\.py)?\b)', re.I)
+        claimed=[c for c,txt in c_files.items() if claim_re.search(txt[:1500])]
+        if claimed:
+            partial.append((m,sorted(x[4:] for x in claimed)[:3])); continue
+        # generic fallback: any C file naming this module's .py in its header
+        pyname=m.split('/')[-1]+'.py'
+        claimed2=[c for c,txt in c_files.items() if (m+'.py') in txt[:2000] or pyname in txt[:2000]]
+        if claimed2:
+            partial.append((m,sorted(x[4:] for x in claimed2)[:3])); continue
         gap.append(m)
 
     # ---- Direction B ----
@@ -133,7 +172,10 @@ def main():
         rel=c[4:]
         if rel in qset: c_twin.append(c); continue
         pops=POP.findall(txt)
-        live=[m for m in pops if m in qset]
+        live=[]
+        for _fn,mm,_pyf in list(POP.findall(txt))+list(POP2.findall(txt)):
+            rr=resolve(mm)
+            if rr: live.append(rr)
         if live: c_partial.append(c); continue
         if any(re.match(p,rel) for p in NATIVE_PATTERNS): c_native.append(c); continue
         if PLATFORM_RE.match(c): c_platform.append(c); continue
@@ -207,6 +249,10 @@ def main():
             c_native.append(c); continue
         if re.match(r'^(desktop_|chat_|window_|web_app|web_dashboard|app_|event_|session_switcher|titlebar|sidebar|hud|pty|sandbox_escape|secrets|gui_|pet_ui|mcp_serve|util_str|file_ops|xai_retirement|jiter_preload|slermes_home|api_server|main$)', b):
             c_native.append(c); continue
+        # DECLARED ALIAS: hermes_cli/observability/relay_runtime.py is a
+        # compatibility re-export of agent.relay_runtime (py docstring says so).
+        if rel == 'hermes_cli/observability/relay_runtime':
+            c_split.append(c); continue
         if rel.startswith('acp/'): c_native.append(c); continue
         c_orphan.append(c)
 

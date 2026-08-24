@@ -1,6 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 /*
  * install_repair.c — faithful port of hermes_cli/_install_repair.py.
+ * Port of Python: hermes_cli/_install_repair.py
  *
  * Both callers run the same core ".[all]" reinstall; this module is the
  * shared implementation. Deliberately stdlib-only in spirit: no third-party
