@@ -1202,6 +1202,7 @@ static int g_catalog_swr_inflight = 0;
 #include <unistd.h>
 
 /* === dissolved from ports_wrappers.c === */
+/* PoP: catalog_swr_refresh_thread @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
 static void *catalog_swr_refresh_thread(void *arg)
 {
     const char *url = (const char *)arg;

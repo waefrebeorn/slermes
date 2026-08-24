@@ -134,3 +134,24 @@ int tools_mcp_dashboard_oauth_worker_done(const char *arg) {
     if (arg && *arg) g_done = atoi(arg) != 0;
     return g_done;
 }
+
+/* === restored (lost in dissolution repair) === */
+/* PoP: tools_mcp_dashboard_oauth_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:dashboard_oauth_flow */
+int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) {
+    /* Python: context manager — set the current dashboard flow, restore on
+     * exit. The C port stores the flow token; empty arg clears. */
+    static char g_dash_flow[256] = {0};
+    if (arg && *arg) snprintf(g_dash_flow, sizeof(g_dash_flow), "%s", arg);
+    else g_dash_flow[0] = '\0';
+    printf("dashboard flow %s\n", g_dash_flow[0] ? "set" : "cleared");
+    return 0;
+}
+
+/* PoP: tools_mcp_dashboard_oauth_get_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:get_dashboard_oauth_flow */
+int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) {
+    /* Python: the current dashboard OAuth flow from the thread-local store. */
+    static char g_flow[1024];
+    if (arg && *arg) snprintf(g_flow, sizeof(g_flow), "%s", arg);
+    printf("%s\n", g_flow);
+    return 0;
+}
