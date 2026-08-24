@@ -660,3 +660,47 @@ json_t *apis_auto_truncate_response_history(const json_t *history, int limit) {
         if (keep[i]) json_array_append(out, json_copy(json_array_get(history, i)));
     return out;
 }
+
+/* PoP: apis_session_chat_user_message @ gateway/platforms/api_server.py:_session_chat_user_message
+ * Parse and normalize session chat message/input like chat completions.
+ * Writes normalized content into *out_content* (malloc'd JSON string) and a
+ * 400 error JSON into *out_error* on failure. Returns true when ok. */
+bool apis_session_chat_user_message(const json_t *body, const char *param,
+                                    char **out_content, char **out_error) {
+    extern char *aps_normalize_multimodal_content(const char *content_json);
+    if (!body || !json_is_object(body)) { *out_content=NULL; *out_error=strdup("{\"error\":\"Missing 'message' field\"}"); return false; }
+
+    const json_t *msg = json_obj_get(body, "message");
+    if (!msg || ((msg->type == JSON_STRING) && !msg->str_val[0]))
+        msg = json_obj_get(body, "input");
+    if (!msg) {
+        char buf[160];
+        snprintf(buf, sizeof(buf),
+                 "{\"error\": {\"code\": \"missing_message\", \"message\": \"Missing '%s' field\"}}",
+                 param ? param : "message");
+        *out_content = NULL;
+        *out_error = strdup(buf);
+        return false;
+    }
+
+    /* visible payload check: string must be non-empty after trim; arrays non-empty */
+    bool has_payload = false;
+    if (msg->type == JSON_STRING && msg->str_val && msg->str_val[0]) has_payload = true;
+    else if (msg->type == JSON_ARRAY && json_array_size(msg) > 0) has_payload = true;
+    if (!has_payload) {
+        char buf[160];
+        snprintf(buf, sizeof(buf),
+                 "{\"error\": {\"code\": \"missing_message\", \"message\": \"Missing '%s' field\"}}",
+                 param ? param : "message");
+        *out_content = NULL;
+        *out_error = strdup(buf);
+        return false;
+    }
+
+    char *serialized = json_serialize(msg);
+    char *normalized = serialized ? aps_normalize_multimodal_content(serialized) : NULL;
+    free(serialized);
+    *out_content = normalized;   /* may be {"error": ...} shape */
+    *out_error = NULL;
+    return normalized != NULL;
+}
