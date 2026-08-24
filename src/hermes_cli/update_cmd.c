@@ -4689,3 +4689,39 @@ void upd_refuse_update_for_contended_shims(const char *failed_shims) {
     upd_write_update_incomplete_marker();
     exit(2);
 }
+
+/* PoP: upd_print_called_process_error_tail @ hermes_cli/update_cmd.py:_print_called_process_error_tail */
+void upd_print_called_process_error_tail(const char *blob, int limit) {
+    /* Print the last `limit` non-blank lines of captured output. */
+    if (!blob || !*blob) return;
+    if (limit <= 0) limit = 12;
+    /* count non-blank lines */
+    long total = 0;
+    const char *p = blob;
+    bool in_line = false;
+    for (; *p; p++) {
+        if (*p == '\n') { in_line = false; continue; }
+        if (!in_line && *p != ' ' && *p != '\t' && *p != '\r') { total++; in_line = true; }
+    }
+    if (total <= 0) return;
+    long skip = total > limit ? total - limit : 0;
+    printf("  Last output:\n");
+    long idx = 0;
+    const char *start = blob;
+    in_line = false;
+    for (p = blob; ; p++) {
+        if (*p == '\n' || !*p) {
+            if (in_line) {
+                idx++;
+                if (idx > skip) {
+                    printf("    %.*s\n", (int)(p - start), start);
+                }
+            }
+            in_line = false;
+            if (!*p) break;
+            start = p + 1;
+        } else if (!in_line && *p != ' ' && *p != '\t' && *p != '\r') {
+            in_line = true;
+        }
+    }
+}
