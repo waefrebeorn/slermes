@@ -4674,3 +4674,29 @@ void hermes_state_record_repair_outcome(const char *db_path, bool repaired,
     if (ledger) json_free(ledger);
     free(ledger_path);
 }
+
+/* PoP: hermes_state_persistent_repair_exhausted_error @ hermes_state.py:_persistent_repair_exhausted_error */
+char *hermes_state_persistent_repair_exhausted_error(const char *db_path) {
+    /* The stable operator-facing diagnostic for an exhausted repair budget. */
+    extern char *hermes_state_repair_ledger_path(const char *db_path);
+    char *ledger_name = NULL;
+    char *lp = hermes_state_repair_ledger_path(db_path);
+    if (lp) {
+        char *slash = strrchr(lp, '/');
+        ledger_name = strdup(slash ? slash + 1 : lp);
+        free(lp);
+    }
+    const char *lname = (ledger_name && *ledger_name) ? ledger_name : "state.db.repair-attempts.json";
+    size_t need = strlen(db_path) + strlen(lname) + 320;
+    char *out = malloc(need);
+    if (!out) { free(ledger_name); return NULL; }
+    snprintf(out, need,
+        "-- automatic repair has already failed %d times on this exact file -- "
+        "the corruption is beyond the schema/FTS repair strategies "
+        "(likely b-tree page damage). Manual recovery required: restore "
+        "a backup, or salvage with `sqlite3 %s \".recover\"`. "
+        "Delete %s to force another automatic attempt.",
+        HS_MAX_PERSISTENT_REPAIR_ATTEMPTS, db_path, lname);
+    free(ledger_name);
+    return out;
+}
