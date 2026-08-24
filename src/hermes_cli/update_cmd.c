@@ -4861,3 +4861,42 @@ bool upd_editable_install_is_current(const char *cwd, const char *pre_pull_sha) 
     }
     return true;
 }
+
+/* ── CalledProcessError helpers (v706w2 parity batch) ──────────────── */
+
+/* PoP: upd_called_process_error_cmd_parts @ hermes_cli/update_cmd.py:_called_process_error_cmd_parts
+ * C model: the "command" is the argv string array captured at spawn time.
+ * Returns a malloc'd NULL-terminated copy of argv (caller frees each element
+ * and the array); NULL when there is nothing to normalize. */
+char **upd_called_process_error_cmd_parts(char *const cmd[]) {
+    if (!cmd) return NULL;
+    size_t n = 0;
+    while (cmd[n]) n++;
+    if (n == 0) return NULL;
+    char **parts = malloc((n + 1) * sizeof(char *));
+    if (!parts) return NULL;
+    for (size_t i = 0; i < n; i++) parts[i] = strdup(cmd[i]);
+    parts[n] = NULL;
+    return parts;
+}
+
+/* PoP: upd_called_process_error_is_git @ hermes_cli/update_cmd.py:_called_process_error_is_git */
+bool upd_called_process_error_is_git(char *const cmd[]) {
+    /* True when the failed subprocess was git itself: basename of argv[0]
+     * (separators normalized) is "git" or "git.exe". */
+    char **parts = upd_called_process_error_cmd_parts(cmd);
+    if (!parts) return false;
+    bool is_git = false;
+    if (parts[0]) {
+        char name[256];
+        snprintf(name, sizeof(name), "%s", parts[0]);
+        for (char *q = name; *q; q++) if (*q == '\\') *q = '/';
+        char *base = strrchr(name, '/');
+        base = base ? base + 1 : name;
+        for (char *q = base; *q; q++) *q = (char)tolower((unsigned char)*q);
+        is_git = (strcmp(base, "git") == 0 || strcmp(base, "git.exe") == 0);
+    }
+    for (char **p = parts; *p; p++) free(*p);
+    free(parts);
+    return is_git;
+}
