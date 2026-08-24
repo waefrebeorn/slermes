@@ -4900,3 +4900,33 @@ bool upd_called_process_error_is_git(char *const cmd[]) {
     free(parts);
     return is_git;
 }
+
+/* PoP: upd_called_process_error_is_python_dep_install @ hermes_cli/update_cmd.py:_called_process_error_is_python_dep_install */
+bool upd_called_process_error_is_python_dep_install(char *const cmd[]) {
+    /* True when the failed subprocess was a uv/pip (or ensurepip) install. */
+    if (!cmd) return false;
+    bool has_ensurepip = false, has_install = false, has_pip = false;
+    char exe[128] = "";
+    for (int i = 0; cmd[i]; i++) {
+        char low[256];
+        snprintf(low, sizeof(low), "%s", cmd[i]);
+        for (char *q = low; *q; q++) {
+            if (*q == '\\') *q = '/';
+            *q = (char)tolower((unsigned char)*q);
+        }
+        if (strcmp(low, "ensurepip") == 0) has_ensurepip = true;
+        if (strcmp(low, "install") == 0) has_install = true;
+        if (strcmp(low, "pip") == 0) has_pip = true;
+        if (i == 0) {
+            char *base = strrchr(low, '/');
+            base = base ? base + 1 : low;
+            snprintf(exe, sizeof(exe), "%s", base);
+        }
+    }
+    if (has_ensurepip) return true;
+    bool exe_is_pip_family =
+        strcmp(exe, "pip") == 0 || strcmp(exe, "pip.exe") == 0 ||
+        strcmp(exe, "pip3") == 0 || strcmp(exe, "pip3.exe") == 0 ||
+        strcmp(exe, "uv") == 0 || strcmp(exe, "uv.exe") == 0;
+    return has_install && (has_pip || exe_is_pip_family);
+}
