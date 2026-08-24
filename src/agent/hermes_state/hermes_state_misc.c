@@ -4400,3 +4400,76 @@ char *hermes_state_repair_ledger_path(const char *db_path) {
     snprintf(out, need, "%s.repair-attempts.json", db_path);
     return out;
 }
+
+/* ── malformed-backup management (v711 parity batch) ───────────────── */
+
+#define HS_MAX_MALFORMED_BACKUPS 3
+
+/* PoP: hermes_state_existing_malformed_backups @ hermes_state.py:_existing_malformed_backups */
+json_t *hermes_state_existing_malformed_backups(const char *db_path) {
+    /* Timestamped forensic backups of db_path, newest first (name-sorted
+     * reverse). Returns a JSON array of absolute path strings. */
+    json_t *out = json_array();
+    if (!out || !db_path || !*db_path) return out;
+    char dir[4096], base[512];
+    snprintf(dir, sizeof(dir), "%s", db_path);
+    char *slash = strrchr(dir, '/');
+    if (!slash) { strcpy(dir, "."); snprintf(base, sizeof(base), "%s", db_path); }
+    else { snprintf(base, sizeof(base), "%s", slash + 1); *slash = '\0'; }
+    char prefix[600];
+    snprintf(prefix, sizeof(prefix), "%s.malformed-backup-", base);
+    size_t plen = strlen(prefix);
+
+    DIR *d = opendir(dir[0] ? dir : ".");
+    if (!d) return out;
+    /* collect names first so we can sort newest-first by name */
+    enum { CAP = 256 };
+    char *names[CAP];
+    int cnt = 0;
+    struct dirent *de;
+    while ((de = readdir(d)) != NULL && cnt < CAP) {
+        if (strncmp(de->d_name, prefix, plen) != 0) continue;
+        /* skip sidecar-suffixed entries (-wal/-shm/-journal) */
+        size_t nl = strlen(de->d_name);
+        if ((nl > 4 && strcmp(de->d_name + nl - 4, "-wal") == 0) ||
+            (nl > 4 && strcmp(de->d_name + nl - 4, "-shm") == 0) ||
+            (nl > 8 && strcmp(de->d_name + nl - 8, "-journal") == 0))
+            continue;
+        names[cnt++] = strdup(de->d_name);
+    }
+    closedir(d);
+    /* sort descending by name = newest first */
+    for (int i = 0; i < cnt; i++)
+        for (int k = i + 1; k < cnt; k++)
+            if (strcmp(names[i], names[k]) < 0) {
+                char *tmp = names[i]; names[i] = names[k]; names[k] = tmp;
+            }
+    for (int i = 0; i < cnt; i++) {
+        char full[8192];
+        snprintf(full, sizeof(full), "%s/%s", dir, names[i]);
+        json_array_append(out, json_string(full));
+        free(names[i]);
+    }
+    return out;
+}
+
+/* PoP: hermes_state_prune_malformed_backups @ hermes_state.py:_prune_malformed_backups */
+void hermes_state_prune_malformed_backups(const char *db_path, int keep) {
+    /* Delete all but the `keep` newest forensic backups (+ sidecars). */
+    if (keep <= 0) keep = HS_MAX_MALFORMED_BACKUPS;
+    json_t *list = hermes_state_existing_malformed_backups(db_path);
+    if (!list) return;
+    size_t n = json_array_size(list);
+    for (size_t i = (size_t)keep; i < n; i++) {
+        const char *stale = json_string_value(json_array_get(list, i));
+        if (!stale) continue;
+        unlink(stale);
+        char side[8300];
+        static const char *SUF[] = { "-wal", "-shm", "-journal" };
+        for (int s = 0; s < 3; s++) {
+            snprintf(side, sizeof(side), "%s%s", stale, SUF[s]);
+            unlink(side);
+        }
+    }
+    json_free(list);
+}
