@@ -474,3 +474,99 @@ bool apis_is_compressed_summary_message(const void *message) {
     extern int context_compressor__is_compaction_summary_message(const void *msg);
     return context_compressor__is_compaction_summary_message(message) != 0;
 }
+
+/* ── request model_options translation (v706m parity batch) ────────── */
+
+static bool apis_str_nonempty_after_trim(const char *s) {
+    if (!s) return false;
+    for (const char *q = s; *q; q++)
+        if (*q != ' ' && *q != '\t' && *q != '\n' && *q != '\r') return true;
+    return false;
+}
+
+/* PoP: apis_request_reasoning_config @ gateway/platforms/api_server.py:_request_reasoning_config
+ * Translate browser/API model_options into AIAgent reasoning_config JSON.
+ * Accepts structured {"reasoning":{enabled,effort}} and/or the compat scalar
+ * reasoning_effort. Unknown effort values are ignored, not raised.
+ * Returns malloc'd {"enabled":bool[,"effort":str]} or NULL. */
+json_t *apis_request_reasoning_config(const json_t *model_options) {
+    static const char *EFFORTS[] = { "minimal", "low", "medium", "high", NULL };
+    if (!model_options || !json_is_object(model_options)) return NULL;
+
+    const json_t *reasoning = json_obj_get(model_options, "reasoning");
+    json_t *effort_node = json_obj_get(model_options, "reasoning_effort");
+    bool enabled_false = false, enabled_true = false;
+    const char *effort = (effort_node && json_is_string(effort_node))
+        ? json_string_value(effort_node) : NULL;
+
+    if (reasoning && json_is_object(reasoning)) {
+        const json_t *en = json_obj_get(reasoning, "enabled");
+        if (en && en->type == JSON_BOOL)
+            { if (en->bool_val) enabled_true = true; else enabled_false = true; }
+        const json_t *ef = json_obj_get(reasoning, "effort");
+        if (ef && json_is_string(ef)) effort = json_string_value(ef);
+    }
+
+    /* normalize effort */
+    char norm[32] = "";
+    if (effort && *effort) {
+        size_t k = 0;
+        for (const char *q = effort; *q && k < sizeof(norm)-1; q++, k++)
+            norm[k] = (char)tolower((unsigned char)*q);
+        /* strip */
+        while (k > 0 && norm[k-1] == ' ') norm[--k] = '\0';
+        norm[k] = '\0';
+    } else {
+        norm[0] = '\0';
+    }
+    if (enabled_false || strcmp(norm, "none") == 0) {
+        json_t *out = json_object();
+        json_set(out, "enabled", json_new_bool(false));
+        return out;
+    }
+    for (int i = 0; EFFORTS[i]; i++) {
+        if (strcmp(norm, EFFORTS[i]) == 0) {
+            json_t *out = json_object();
+            json_set(out, "enabled", json_new_bool(true));
+            json_set(out, "effort", json_string(norm));
+            return out;
+        }
+    }
+    if (enabled_true) {
+        json_t *out = json_object();
+        json_set(out, "enabled", json_new_bool(true));
+        return out;
+    }
+    return NULL;
+}
+
+/* PoP: apis_request_service_tier @ gateway/platforms/api_server.py:_request_service_tier */
+char *apis_request_service_tier(const json_t *model_options, bool *is_missing) {
+    /* Per-request service_tier override or _REQUEST_OPTION_MISSING sentinel.
+     * is_missing=true mirrors Python's MISSING; NULL value means explicit None. */
+    *is_missing = true;
+    if (!model_options || !json_is_object(model_options)) return NULL;
+    const json_t *tier = json_obj_get(model_options, "service_tier");
+    if (tier) {
+        *is_missing = false;
+        if (tier->type == JSON_NULL) return NULL;
+        if (json_is_string(tier)) {
+            const char *s = json_string_value(tier);
+            /* strip */
+            while (*s == ' ' || *s == '\t') s++;
+            const char *e = s + strlen(s);
+            while (e > s && (e[-1] == ' ' || e[-1] == '\t')) e--;
+            return (e > s) ? strndup(s, (size_t)(e - s)) : NULL;
+        }
+        /* non-string raw passes through as its string form */
+        char *dump = json_serialize(tier);
+        return dump;
+    }
+    if (json_obj_get(model_options, "fast")) {
+        const json_t *fast = json_obj_get(model_options, "fast");
+        bool fastv = fast ? json_is_true(fast) : false;
+        *is_missing = false;
+        return fastv ? strdup("priority") : NULL;
+    }
+    return NULL;
+}
