@@ -704,3 +704,278 @@ bool apis_session_chat_user_message(const json_t *body, const char *param,
     *out_error = NULL;
     return normalized != NULL;
 }
+
+/* ── wave 7 pure leaves ─────────────────────────────────────────────── */
+
+#include "profile_store.h"
+#include "base64.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <limits.h>
+
+extern char *validate_media_delivery_path(const char *path);
+
+/* PoP: apis_prefix_names_served_profile @ gateway/platforms/api_server.py:_prefix_names_served_profile
+ * True when a /p/<profile>/ prefix names the profile this gateway serves.
+ * Single-profile gateways must fail closed on any non-self-referential
+ * prefix (#91583 defect 2): only the profile whose HERMES_HOME matches the
+ * gateway's own home may fall through. */
+bool apis_prefix_names_served_profile(const char *profile) {
+    if (!profile || !*profile) return false;
+    char *canon = profile_normalize_name(profile);
+    if (!canon) return false; /* empty name -> ValueError -> fail closed */
+    char *target = profile_dir_for(canon);
+    char *home = profile_default_home();
+    bool matches = false;
+    if (target && home) {
+        char rtarget[PATH_MAX];
+        char rhome[PATH_MAX];
+        char *a = realpath(target, rtarget);
+        char *b = realpath(home, rhome);
+        /* Python resolve(strict=False) also succeeds for nonexistent paths;
+         * fall back to the lexical comparison when realpath fails. */
+        if (a && b)
+            matches = strcmp(a, b) == 0;
+        else
+            matches = strcmp(target, home) == 0;
+    }
+    free(canon);
+    free(target);
+    free(home);
+    return matches;
+}
+
+/* PoP: apis_approval_event_choices @ gateway/platforms/api_server.py:_approval_event_choices
+ * Choice buttons offered for an approval event. smart_denied or a missing
+ * session allowance collapses to once/deny; permanent allowance adds
+ * "always". Returns malloc'd JSON array string. */
+char *apis_approval_event_choices(bool smart_denied, bool allow_session,
+                                  bool allow_permanent) {
+    if (smart_denied || !allow_session)
+        return strdup("[\"once\", \"deny\"]");
+    if (allow_permanent)
+        return strdup("[\"once\", \"session\", \"always\", \"deny\"]");
+    return strdup("[\"once\", \"session\", \"deny\"]");
+}
+
+/* PoP: apis_apply_runtime_agent_overrides @ gateway/platforms/api_server.py:_apply_runtime_agent_overrides
+ * Merge resolved provider/runtime fields into runtime_kwargs in place.
+ * Only known override keys are honored; null values are skipped; "args"
+ * is always stored as a fresh list copy. Returns runtime_kwargs. */
+json_t *apis_apply_runtime_agent_overrides(json_t *runtime_kwargs,
+                                           const json_t *overrides) {
+    static const char *const KEYS[] = {
+        "api_key", "base_url", "provider", "api_mode",
+        "command", "args", "credential_pool", "max_tokens", NULL
+    };
+    if (!runtime_kwargs) return NULL;
+    if (!overrides || !json_is_object(overrides)) return runtime_kwargs;
+    for (int i = 0; KEYS[i]; i++) {
+        const json_t *v = json_obj_get(overrides, KEYS[i]);
+        if (!v || v->type == JSON_NULL) continue;
+        if (strcmp(KEYS[i], "args") == 0 && json_is_array(v))
+            json_set(runtime_kwargs, "args", json_copy(v));
+        else
+            json_set(runtime_kwargs, KEYS[i], json_copy(v));
+    }
+    return runtime_kwargs;
+}
+
+/* PoP: apis_request_agent_overrides @ gateway/platforms/api_server.py:_request_agent_overrides
+ * Extract per-request model/provider/options for _run_agent. The virtual
+ * /v1/models alias counts as "use the gateway default"; a bare model is
+ * only honored when allow_bare_model (direct_model_requests config or a
+ * Hermes-native endpoint), while an explicit provider is always honored.
+ * Returns a malloc'd JSON object (possibly empty). */
+json_t *apis_request_agent_overrides(const json_t *body,
+                                     const char *virtual_model,
+                                     bool allow_bare_model) {
+    json_t *out = json_object();
+    if (!out) return NULL;
+    if (!body || !json_is_object(body)) return out;
+
+    const json_t *pv = json_obj_get(body, "provider");
+    char *provider = (pv && json_is_string(pv)) ? apis_clean_request_string(pv->str_val) : NULL;
+    if (provider)
+        json_set(out, "requested_provider", json_string(provider));
+
+    const json_t *mv = json_obj_get(body, "model");
+    char *model = (mv && json_is_string(mv)) ? apis_clean_request_string(mv->str_val) : NULL;
+    bool differs_from_virtual = model && (!virtual_model || strcmp(model, virtual_model) != 0);
+    if (model && differs_from_virtual && (provider || allow_bare_model))
+        json_set(out, "requested_model", json_string(model));
+
+    const json_t *opts = json_obj_get(body, "model_options");
+    if (opts && json_is_object(opts))
+        json_set(out, "model_options", json_copy(opts));
+
+    free(provider);
+    free(model);
+    return out;
+}
+
+/* PoP: apis_check_api_server_requirements @ gateway/platforms/api_server.py:check_api_server_requirements
+ * LIVE returns AIOHTTP_AVAILABLE (import guard). The C port's HTTP server
+ * is native and always linked, so the dependency is always available. */
+bool apis_check_api_server_requirements(void) {
+    return true;
+}
+
+/* ── MEDIA:-tag → inline data-URL rewriting (_resolve_media_to_data_urls) ── */
+
+#define APIS_MEDIA_DATA_URL_MAX_BYTES (5 * 1024 * 1024)
+
+static const char *apis_media_image_mime(const char *suffix) {
+    /* _MEDIA_IMG_EXT / _MEDIA_MIME from api_server.py */
+    static const struct { const char *ext; const char *mime; } M[] = {
+        {".png", "image/png"}, {".jpg", "image/jpeg"},
+        {".jpeg", "image/jpeg"}, {".gif", "image/gif"},
+        {".webp", "image/webp"}, {".bmp", "image/bmp"}, {NULL, NULL}
+    };
+    for (int i = 0; M[i].ext; i++)
+        if (strcasecmp(suffix, M[i].ext) == 0) return M[i].mime;
+    return NULL;
+}
+
+static bool apis_is_decor(char c) {
+    return c == '`' || c == '"' || c == '\'' || c == '*' || c == '_';
+}
+
+/* Read file + padded-base64 encode; returns malloc'd "data:<mime>;base64,<b64>"
+ * or NULL when the media must be left untouched. */
+static char *apis_media_to_data_url(const char *path_str) {
+    /* validate_media_delivery_path() strips wrapping quotes/backticks and
+     * trailing punctuation internally, same as MEDIA_TAG_CLEANUP_RE's other
+     * callers rely on. */
+    char *safe_path = validate_media_delivery_path(path_str);
+    if (!safe_path || !safe_path[0]) { free(safe_path); return NULL; }
+
+    const char *suffix = strrchr(safe_path, '.');
+    const char *mime = suffix ? apis_media_image_mime(suffix) : NULL;
+    if (!mime) { free(safe_path); return NULL; }
+
+    struct stat st;
+    if (stat(safe_path, &st) != 0 || !S_ISREG(st.st_mode) ||
+        st.st_size > APIS_MEDIA_DATA_URL_MAX_BYTES) {
+        free(safe_path);
+        return NULL;
+    }
+    FILE *f = fopen(safe_path, "rb");
+    free(safe_path);
+    if (!f) return NULL;
+    size_t cap = (size_t)st.st_size;
+    unsigned char *buf = malloc(cap ? cap : 1);
+    size_t nread = buf ? fread(buf, 1, cap, f) : 0;
+    fclose(f);
+    if (!buf || nread != cap) { free(buf); return NULL; }
+
+    char *b64 = base64_encode(buf, nread);
+    free(buf);
+    if (!b64) return NULL;
+    /* libbase64 emits unpadded output; data URLs use RFC 4648 padding. */
+    size_t bl = strlen(b64);
+    size_t pad = (4 - (bl % 4)) % 4;
+    char *padded = malloc(bl + pad + 1);
+    if (!padded) { free(b64); return NULL; }
+    memcpy(padded, b64, bl);
+    for (size_t i = 0; i < pad; i++) padded[bl + i] = '=';
+    padded[bl + pad] = '\0';
+    free(b64);
+
+    char *out = NULL;
+    asprintf(&out, "![image](data:%s;base64,%s)", mime, padded);
+    free(padded);
+    return out;
+}
+
+/* PoP: apis_resolve_media_to_data_urls @ gateway/platforms/api_server.py:_resolve_media_to_data_urls
+ * Replace ``MEDIA:<image path>`` tags with inline markdown base64 data URLs
+ * so remote OpenAI-compatible frontends can see server-local images. Uses
+ * the same anchored tag matcher (optional decor quotes, absolute/~//drive
+ * path with a known extension, boundary lookahead) and the shared
+ * validate_media_delivery_path safety check every platform adapter goes
+ * through; non-image, oversized, or unvalidated paths stay untouched. */
+char *apis_resolve_media_to_data_urls(const char *text) {
+    if (!text || !strstr(text, "MEDIA:")) return strdup(text ? text : "");
+
+    size_t cap = strlen(text) * 2 + 16;
+    char *out = malloc(cap);
+    if (!out) return strdup(text);
+    size_t w = 0;
+#define APIS_EMIT(s, n) do { \
+        while (w + (n) + 1 > cap) { cap *= 2; char *nb = realloc(out, cap); \
+            if (!nb) { free(out); return NULL; } out = nb; } \
+        memcpy(out + w, (s), (n)); w += (n); } while (0)
+
+    const char *s = text;
+    const char *kw;
+    while ((kw = strstr(s, "MEDIA:")) != NULL) {
+        /* optional decor run immediately before MEDIA: (`"'*_ up to 3) */
+        const char *tag_start = kw;
+        for (int back = 0; back < 3 && tag_start > text &&
+                           apis_is_decor(tag_start[-1]); back++)
+            tag_start--;
+
+        /* parse the anchored tag body after MEDIA: */
+        const char *p = kw + 6;
+        while (*p == ' ' || *p == '\t') p++;
+        char q = 0;
+        if (*p == '`' || *p == '"' || *p == '\'') { q = *p; p++; }
+        /* path anchor: ~/, /, or drive letter X:/ X:\ */
+        bool anchored =
+            (*p == '/' && p[1] != '/') ||
+            (p[0] == '~' && p[1] == '/') ||
+            (((*p >= 'A' && *p <= 'Z') || (*p >= 'a' && *p <= 'z')) &&
+             p[1] == ':' && (p[2] == '/' || p[2] == '\\'));
+        const char *path_start = p;
+        const char *path_end = NULL;
+        if (anchored) {
+            const char *r = p;
+            while (*r && *r != '\n' && !strchr(" \t`\"',;:)]}!", *r) &&
+                   !(r[0] == '.' && (r[1] == '\0' || r[1] == ' ')))
+                r++;
+            path_end = r;
+        }
+        bool replaced = false;
+        if (path_end && path_end > path_start) {
+            size_t raw_len = (size_t)(path_end - path_start);
+            char *raw = strndup(path_start, raw_len);
+            /* inner path: strip matching quote/backtick pair */
+            char *inner = raw;
+            size_t il = strlen(inner);
+            if (il >= 2 && inner[0] == inner[il - 1] &&
+                strchr("`\"'", inner[0])) {
+                inner[il - 1] = '\0';
+                inner++;
+            }
+            char *data_url = q ? NULL : apis_media_to_data_url(raw);
+            if (!data_url && q)
+                data_url = apis_media_to_data_url(inner);
+            free(raw);
+            if (data_url) {
+                /* emit everything before the tag start, then the rewrite */
+                APIS_EMIT(s, (size_t)(tag_start - s));
+                APIS_EMIT(data_url, strlen(data_url));
+                free(data_url);
+                /* consume rest of matched span: closing quote, trailing
+                 * decor chars (up to 3) and one optional '.' terminator */
+                s = path_end;
+                if (q && *s == q) s++;
+                int decor = 0;
+                while (decor < 3 && apis_is_decor(*s)) { s++; decor++; }
+                if (*s == '.' && (s[1] == '\0' || s[1] == ' '))
+                    s++; /* regex trailing "\\.?" before boundary */
+                replaced = true;
+            }
+        }
+        if (!replaced) {
+            /* leave this occurrence verbatim and resume after it */
+            APIS_EMIT(s, (size_t)(kw - s) + 6);
+            s = kw + 6;
+        }
+    }
+    APIS_EMIT(s, strlen(s));
+#undef APIS_EMIT
+    out[w] = '\0';
+    return out;
+}

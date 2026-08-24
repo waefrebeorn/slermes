@@ -69,6 +69,34 @@ typedef struct {
     char *desc;
 } hcli_palette_entry_t;
 
+/* Dangerous-command approval modal state (_approval_state). choices are the
+ * pending verdict tokens ("once"/"session"/"always"/"deny"/"view"); all
+ * strings owned by the hcli_t. response_queue/queue_put is the
+ * queue.put() seam consumed by _handle_approval_selection. */
+typedef struct {
+    char **choices;
+    size_t choice_count;
+    int    selected;
+    bool   show_full;
+    char  *command;                 /* display command string */
+    char  *description;             /* panel description */
+    void  *response_queue;
+    void  (*queue_put)(void *queue, const char *value);
+} hcli_approval_state_t;
+
+/* Secret capture modal state (_secret_state): just the answer channel. */
+typedef struct {
+    void *response_queue;
+    void (*queue_put)(void *queue, const char *value);
+} hcli_secret_state_t;
+
+/* Styled fragment line for panel renderers (confirm/approval/stash/prompt).
+ * Declared here (ahead of struct hcli) because batch-4 seams reference it. */
+typedef struct {
+    char *style;   /* e.g. "class:approval-border" */
+    char *text;    /* fragment text including trailing newline where set */
+} hcli_fragment_t;
+
 struct hcli {
     /* Session persistence */
     hermes_state_db_t *session_db;
@@ -185,6 +213,13 @@ struct hcli {
     bool   stream_box_opened;                   /* _stream_box_opened */
     char  *deferred_content;                    /* _deferred_content */
 
+    /* ── Batch 3: user-message preview options (getattr defaults in py) ─── */
+    bool   show_timestamps;                     /* _show_timestamps */
+    char  *timestamp_format;                    /* _timestamp_format (NULL → "%H:%M") */
+    int    user_message_preview_first_lines;    /* 0 → default 2 */
+    int    user_message_preview_last_lines;     /* 0 → default 2 */
+    void (*invalidate_fn)(hcli_t *self, double min_interval); /* _invalidate seam */
+
     /* ── Batch 3: busy slash-command state (_busy_command) ──────────────── */
     bool   command_running;                     /* _command_running */
     bool   command_blocks_input;                /* _command_blocks_input */
@@ -201,6 +236,61 @@ struct hcli {
      * Bound by the CLI shell at startup; NULL on test stand-ins (the Python
      * path equally no-ops when the import fails). */
     char *(*tool_availability_probe)(hcli_t *self);
+
+    /* ── Batch 4: dangerous-command approval modal (_approval_state) ────── */
+    hcli_approval_state_t *approval_state;      /* NULL = no pending approval */
+    /* _approval_callback seam: prompt for command/description, return the
+     * CLI verdict ("once"/"session"/"always"/"deny"/"timeout") — malloc'd,
+     * caller frees. Bound by the interactive shell; NULL on stand-ins. */
+    char *(*approval_prompt_fn)(hcli_t *self, const char *command,
+                                const char *description);
+
+    /* ── Batch 4: secret capture modal (_secret_state / _secret_deadline) ─ */
+    hcli_secret_state_t   *secret_state;        /* NULL = not capturing */
+    double                 secret_deadline;     /* monotonic; 0 = disarmed */
+
+    /* ── Batch 4: exit summary (_print_exit_summary) ────────────────────── */
+    double session_start_epoch;                 /* self.session_start (wall s) */
+    bool   has_session_start;
+    void (*clear_terminal_fn)(hcli_t *self);    /* _clear_terminal_on_exit seam */
+    void (*goodbye_fn)(const char *fallback);   /* skin get_active_goodbye seam */
+
+    /* ── Batch 4: prompt text (_get_tui_prompt_text) seam ───────────────── */
+    hcli_fragment_t *(*tui_prompt_fragments_fn)(hcli_t *self, size_t *out_len);
+
+    /* ── Batch 4: TUI layout extras (_build_tui_layout_children) ────────── */
+    bool has_pet_widget;                        /* getattr(self,"_pet_widget") */
+    bool has_stash_panel_widget;                /* getattr(self,"_stash_panel_widget") */
+
+    /* ── Batch 5: approval modal runtime + resize recovery + spinner +
+     *           stream delta state (hermes_cli_agent_b5.c) ───────────────── */
+    void   *approval_lock;                      /* _approval_lock (pthread_mutex_t, lazy) */
+    double  approval_deadline;                  /* _approval_deadline (monotonic); 0 = disarmed */
+    int     last_resize_width;                  /* _last_resize_width; -1 = unset */
+    bool    status_bar_suppressed_after_resize;
+    int     status_bar_unsuppress_gen;          /* debounce generation for the
+                                                 * post-resize unsuppress timer */
+    char   *spinner_text;                       /* _spinner_text */
+    bool    spinner_token_flow_enabled;         /* _spinner_token_flow_enabled */
+    bool    agent_running_flag;                 /* mirror of _agent_running for spinner flow */
+    double  tool_start_time;                    /* _tool_start_time (monotonic s); 0 = none */
+    long    turn_token_baseline;                /* _turn_token_baseline */
+    char  *(*spinner_token_flow_fn)(hcli_t *self); /* _spinner_token_flow seam */
+    void  (*clear_prompt_toolkit_screen_fn)(hcli_t *self, void *app, bool rebuild);
+    void  (*replay_output_history_fn)(void);    /* module-level _replay_output_history */
+    void  (*invalidate_simple_fn)(hcli_t *self);/* _invalidate() without throttle arg */
+    /* Stream delta state (_stream_*). stream_last_was_newline starts true. */
+    bool    stream_started;
+    char   *stream_prefilt;
+    bool    in_reasoning_block;
+    bool    stream_last_was_newline;
+    bool    show_reasoning;                     /* self.show_reasoning */
+    void  (*stream_emit_text_fn)(hcli_t *self, const char *text);  /* _emit_stream_text */
+    void  (*stream_reasoning_delta_fn)(hcli_t *self, const char *text);
+    void  (*stream_flush_fn)(hcli_t *self);     /* _flush_stream */
+    void  (*persist_prompt_summary_fn)(hcli_t *self, const char *icon,
+                                       const char *title, const char *command,
+                                       const char *outcome); /* _persist_prompt_summary */
 };
 
 /* ── Lifecycle ─────────────────────────────────────────────────────────── */
@@ -266,11 +356,8 @@ char *hcli_normalize_slash_confirm_choice(const char *raw,
                                           const hcli_confirm_choice_t *choices,
                                           size_t choice_count);
 
-/* Styled fragment line for the confirm panel renderer. */
-typedef struct {
-    char *style;   /* e.g. "class:approval-border" */
-    char *text;    /* fragment text including trailing newline where set */
-} hcli_fragment_t;
+/* Styled fragment line for the confirm panel renderer.
+ * (hcli_fragment_t itself is declared above, before struct hcli.) */
 
 /* ── PoP: hcli_get_slash_confirm_display_fragments @ cli.py:_get_slash_confirm_display_fragments ─
  * Render the /new-/clear-style confirmation panel as styled fragments.
@@ -462,5 +549,141 @@ void hcli_stop_wake_word_listener(hcli_t *self, bool announce);
 
 /* PoP: hcli_start_wake_watchdog @ cli.py:_start_wake_watchdog */
 void hcli_start_wake_watchdog(hcli_t *self);
+
+/* ══════════ Batch 4 (approval + secret capture + exit summary) ═══════════ */
+
+/* PoP: hcli_computer_use_approval_callback @ cli.py:_computer_use_approval_callback
+ * Adapt the generic approval UI for the computer_use tool: prompts via
+ * self->approval_prompt_fn(command="computer_use: <summary>",
+ * description="Allow computer_use to perform `<action>`?") and translates the
+ * CLI verdict ("once"/"session"/"always"/"deny"/"timeout") to the handler's
+ * verdict ("approve_once"/"approve_session"/"always_approve"/"deny").
+ * Unknown/NULL verdicts → "deny". args_json is accepted for signature parity
+ * with the Python callback contract (unused, like Python ignoring `args`).
+ * Returns malloc'd verdict string, caller frees. */
+char *hcli_computer_use_approval_callback(hcli_t *self, const char *action,
+                                          const char *args_json,
+                                          const char *summary);
+
+/* PoP: hcli_handle_approval_selection @ cli.py:_handle_approval_selection
+ * Process the currently selected dangerous-command approval choice. "view"
+ * flips show_full and removes itself from the choices (re-clamping selected);
+ * anything else is delivered to response_queue and tears the modal down.
+ * No state → no-op. */
+void hcli_handle_approval_selection(hcli_t *self);
+
+/* PoP: hcli_submit_secret_response @ cli.py:_submit_secret_response
+ * Deliver the captured secret value to response_queue, clear _secret_state
+ * and _secret_deadline, then paint immediately (modal teardown, #41098).
+ * No active capture → no-op. */
+void hcli_submit_secret_response(hcli_t *self, const char *value);
+
+/* PoP: hcli_cancel_secret_capture @ cli.py:_cancel_secret_capture
+ * Cancel = submit an empty value. */
+void hcli_cancel_secret_capture(hcli_t *self);
+
+/* PoP: hcli_print_exit_summary @ cli.py:_print_exit_summary
+ * Print session resume info on exit. clear_screen=true runs the
+ * _clear_terminal_on_exit seam first (interactive TUI teardown); quiet/-q
+ * mode passes false to preserve printed output. Empty history → goodbye. */
+void hcli_print_exit_summary(hcli_t *self, bool clear_screen);
+
+/* PoP: hcli_get_tui_prompt_text @ cli.py:_get_tui_prompt_text
+ * Join the text of the TUI prompt fragments (via the tui_prompt_fragments_fn
+ * seam) for width calculations. Malloc'd (possibly empty), caller frees. */
+char *hcli_get_tui_prompt_text(hcli_t *self);
+
+/* PoP: hcli_build_tui_layout_children @ cli.py:_build_tui_layout_children
+ * Assemble the ordered root HSplit children list, dropping NULL widgets
+ * (the Python `[item for item in [...] if item is not None]` filter). Widget
+ * identity travels as opaque token strings; extra_widgets are the
+ * _get_extra_tui_widgets() override slots inserted after spacer; the pet and
+ * stash-panel getattr slots follow them when present. Returns a malloc'd
+ * array of *out_len malloc'd tokens, caller frees each + the array. */
+char **hcli_build_tui_layout_children(
+    hcli_t *self,
+    const char *sudo_widget,
+    const char *secret_widget,
+    const char *approval_widget,
+    const char *slash_confirm_widget,   /* nullable keyword default */
+    const char *clarify_widget,
+    const char *model_picker_widget,    /* nullable keyword default */
+    const char *command_palette_widget, /* nullable keyword default */
+    const char *spinner_widget,         /* nullable keyword default */
+    const char *spacer,
+    const char *status_bar,
+    const char *input_rule_top,
+    const char *image_bar,
+    const char *input_area,
+    const char *input_rule_bot,
+    const char *voice_status_bar,
+    const char *completions_menu,
+    size_t extra_count, char *const *extra_widgets,
+    size_t *out_len);
+
+/* One stash row for hcli_render_stash_panel ({stashed_at, preview}). */
+typedef struct {
+    double stashed_at;      /* monotonic timestamp, as in Python */
+    const char *preview;    /* borrowed */
+} hcli_stash_row_t;
+
+/* PoP: hcli_render_stash_panel @ cli.py:_render_stash_panel
+ * Render the stash panel box as styled fragments. All horizontal measurement
+ * goes through cli_status_bar_display_width (get_cwidth port — 📌 is two
+ * terminal cells). Narrow-terminal compact affordances included. Returns a
+ * malloc'd fragment array (+*out_len), caller frees via hcli_fragments_free;
+ * empty stash still renders header/footer rows. */
+hcli_fragment_t *hcli_render_stash_panel(hcli_t *self,
+                                         const hcli_stash_row_t *rows,
+                                         size_t row_count,
+                                         int cursor, int width,
+                                         size_t *out_len);
+
+/* ══════════ Batch 5 (approval callback + resize recovery + snapshot) ═══ */
+
+/* PoP: hcli_approval_choices @ cli.py:_approval_choices
+ * Verdict tokens for the dangerous-command prompt. smart_denied or
+ * !allow_session → [once,deny]; else once/session[/always]/deny.
+ * len(command) > 70 appends "view". Malloc'd array of malloc'd strings;
+ * caller frees each and the array. */
+char **hcli_approval_choices(const char *command, bool allow_permanent,
+                             bool allow_session, bool smart_denied,
+                             size_t *out_count);
+
+/* PoP: hcli_approval_callback @ cli.py:_approval_callback
+ * Serialize concurrent dangerous-command approvals under _approval_lock,
+ * install _approval_state, paint, then poll the response queue at 1s
+ * granularity until answered or approvals.timeout expires ("timeout").
+ * Malloc'd verdict; caller frees. */
+char *hcli_approval_callback(hcli_t *self, const char *command,
+                             const char *description, bool allow_permanent,
+                             bool allow_session, bool smart_denied);
+
+/* PoP: hcli_recover_after_resize @ cli.py:_recover_after_resize
+ * SIGWINCH recovery that preserves scrollback: suppress the status bar,
+ * wipe the visible viewport + replay history only on an OBSERVED width
+ * change, record the new width, run the wrapped on_resize, then schedule
+ * the debounced unsuppress. original_on_resize(self, app). */
+void hcli_recover_after_resize(hcli_t *self, void *app,
+                               void (*original_on_resize)(hcli_t *, void *));
+
+/* PoP: hcli_get_status_bar_snapshot @ cli.py:_get_status_bar_snapshot
+ * Build the status-bar field map (model name/short via reverse alias +
+ * display formatting, duration, session title, prompt elapsed / idle
+ * since, session token counters from agent_state_t, zeros for live
+ * background counters). Returns a JSON object (caller frees). */
+json_t *hcli_get_status_bar_snapshot(hcli_t *self);
+
+/* PoP: hcli_spinner_widget_height @ cli.py:_spinner_widget_height
+ * Visible rows for the spinner/status line above the status bar:
+ * 0 when no text or minimal chrome; ceil(display_width/width) otherwise. */
+int hcli_spinner_widget_height(hcli_t *self, int width);
+
+/* PoP: hcli_stream_delta @ cli.py:_stream_delta
+ * Line-buffered streaming callback: NULL flushes+resets, "" no-op,
+ * otherwise tag-boundary reasoning suppression against the pre-filter
+ * buffer with partial-tag holdback, routing inner content to the
+ * reasoning display when show_reasoning is set. */
+void hcli_stream_delta(hcli_t *self, const char *text);
 
 #endif /* SLERMES_CLI_HERMES_CLI_H */

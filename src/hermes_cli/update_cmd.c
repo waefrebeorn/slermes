@@ -4725,3 +4725,64 @@ void upd_print_called_process_error_tail(const char *blob, int limit) {
         }
     }
 }
+
+/* PoP: upd_zip_overlay_block_reason @ hermes_cli/update_cmd.py:_zip_overlay_block_reason
+ * Why overlaying a ZIP onto root would destroy work, or NULL if safe. Runs
+ * git status --porcelain -uall (fail-closed on git errors); optionally
+ * filters our own two-phase-swap staging artifacts out of the check. */
+char *upd_zip_overlay_block_reason(const char *root, bool ignore_staging_artifacts) {
+    char dotgit[4200];
+    snprintf(dotgit, sizeof(dotgit), "%s/.git", root);
+    struct stat st;
+    if (stat(dotgit, &st) != 0) return NULL;   /* not a checkout — overlay is fine */
+
+    char *argv[] = { (char*)"git", (char*)"status", (char*)"--porcelain",
+                     (char*)"--untracked-files=all", NULL };
+    /* raw capture needed: we must distinguish "clean" (empty) from "error". */
+    int out_pipe[2];
+    if (pipe(out_pipe) != 0) return strdup("could not check the working tree");
+    pid_t pid = fork();
+    if (pid < 0) { close(out_pipe[0]); close(out_pipe[1]); return strdup("could not check the working tree"); }
+    if (pid == 0) {
+        if (chdir(root) != 0) _exit(127);
+        dup2(out_pipe[1], STDOUT_FILENO);
+        dup2(out_pipe[1], STDERR_FILENO);
+        close(out_pipe[0]); close(out_pipe[1]);
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    close(out_pipe[1]);
+    char buf[65536];
+    size_t n = 0;
+    ssize_t r;
+    while ((r = read(out_pipe[0], buf + n, sizeof(buf) - 1 - n)) > 0 && n < sizeof(buf) - 1)
+        n += (size_t)r;
+    buf[n] = '\0';
+    close(out_pipe[0]);
+    int status = 0;
+    waitpid(pid, &status, 0);
+    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+        char *nl = strchr(buf, '\n');
+        char *out = malloc(64 + (size_t)(nl ? nl - buf : 16));
+        if (!out) return NULL;
+        snprintf(out, 64 + (size_t)(nl ? nl - buf : 16),
+                 "could not check the working tree (%.*s)",
+                 (int)(nl ? (size_t)(nl - buf) : strlen(buf)), buf);
+        return out;
+    }
+
+    /* Simplified second pass (authoritative): scan lines directly. */
+    const char *p = buf;
+    while (*p) {
+        size_t ll = strcspn(p, "\n");
+        if (ll == 0) { p++; continue; }
+        char linebuf[1024];
+        snprintf(linebuf, sizeof(linebuf), "%.*s", (int)(ll > 1023 ? 1023 : ll), p);
+        if (!(ignore_staging_artifacts &&
+              upd_is_zip_staging_artifact_status_line(linebuf)))
+            return strdup("the working tree has uncommitted changes or untracked files");
+        p += ll;
+        if (*p == '\n') p++;
+    }
+    return NULL;
+}
