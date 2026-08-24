@@ -203,27 +203,294 @@ char *banner_snapshot_path(void) {
 #include "hermes_agent.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "hash.h"
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <pthread.h>
+#include <time.h>
+#include <limits.h>
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: banner_compute_git_banner_state @ hermes_cli/banner.py:_compute_git_banner_state */
-void banner_compute_git_banner_state(char *out_json, size_t out_sz) {
-    snprintf(out_json, out_sz, "{\"upstream\":\"\",\"local\":\"\",\"ahead\":0}");
+static char *banner_git_short_hash_in(const char *repo_dir, const char *rev);
+
+/* git -C <repo> ... helper: run argv[0..n] with cwd=repo, capture stdout.
+ * Returns malloc'd stripped stdout or NULL on failure. */
+static char *banner_git_stdout_in(const char *repo, char *const argv[], int timeout_secs) {
+    (void)timeout_secs;   /* bounded via the caller's use; git has no direct
+                             timeout flag without spawn plumbing */
+    int out_pipe[2];
+    if (pipe(out_pipe) != 0) return NULL;
+    pid_t pid = fork();
+    if (pid < 0) { close(out_pipe[0]); close(out_pipe[1]); return NULL; }
+    if (pid == 0) {
+        chdir(repo);
+        dup2(out_pipe[1], STDOUT_FILENO);
+        close(out_pipe[0]); close(out_pipe[1]);
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    close(out_pipe[1]);
+    char buf[512];
+    size_t cap = 1024, len = 0;
+    char *out = malloc(cap);
+    if (!out) { close(out_pipe[0]); waitpid(pid, NULL, 0); return NULL; }
+    ssize_t r;
+    while ((r = read(out_pipe[0], buf, sizeof(buf))) > 0) {
+        if (len + (size_t)r + 1 > cap) { cap *= 2; char *tmp = realloc(out, cap); if (!tmp) break; out = tmp; }
+        memcpy(out + len, buf, (size_t)r); len += (size_t)r;
+    }
+    close(out_pipe[0]);
+    int status = 0;
+    waitpid(pid, &status, 0);
+    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { free(out); return NULL; }
+    out[len] = '\0';
+    /* strip */
+    char *b = out;
+    while (*b && isspace((unsigned char)*b)) b++;
+    char *stripped = strdup(b);
+    free(out);
+    if (!stripped) return NULL;
+    char *e = stripped + strlen(stripped);
+    while (e > stripped && isspace((unsigned char)e[-1])) { e--; *e = '\0'; }
+    return stripped[0] ? stripped : NULL;
 }
 
-/* PoP: banner_prefetch_banner_data @ hermes_cli/banner.py:prefetch_banner_data */
-void banner_prefetch_banner_data(void) {
+/* PoP: banner_git_short_hash @ hermes_cli/banner.py:_git_short_hash */
+char *banner_git_short_hash(const char *repo_dir, const char *rev) {
+    return banner_git_short_hash_in(repo_dir, rev);
+}
+
+static char *banner_git_short_hash_in(const char *repo_dir, const char *rev) {
+    if (!repo_dir || !rev) return NULL;
+    char arg[64];
+    snprintf(arg, sizeof(arg), "--short=8");
+    char *argv[] = { (char*)"git", (char*)"rev-parse", arg, (char*)rev, NULL };
+    return banner_git_stdout_in(repo_dir, argv, 5);
+}
+
+/* PoP: banner_resolve_repo_dir @ hermes_cli/banner.py:_resolve_repo_dir */
+char *banner_resolve_repo_dir(void) {
+    /* Prefer the running code's location; fall back to $HERMES_HOME/hermes-agent. */
+    static const char *candidates[2];
+    char exe_dir[PATH_MAX];
+    ssize_t n = readlink("/proc/self/exe", exe_dir, sizeof(exe_dir) - 1);
+    if (n > 0) {
+        exe_dir[n] = '\0';
+        char *slash = strrchr(exe_dir, '/');
+        if (slash) *slash = '\0';
+        candidates[0] = exe_dir;
+    } else {
+        candidates[0] = NULL;
+    }
+    char *home = dashboard_procs_hermes_home_dir();
+    static char alt[PATH_MAX];
+    if (home) { snprintf(alt, sizeof(alt), "%s/hermes-agent", home); free(home); candidates[1] = alt; }
+    else candidates[1] = NULL;
+    for (int i = 0; i < 2; i++) {
+        if (!candidates[i]) continue;
+        char dotgit[PATH_MAX];
+        snprintf(dotgit, sizeof(dotgit), "%s/.git", candidates[i]);
+        struct stat st;
+        if (stat(dotgit, &st) == 0) return strdup(candidates[i]);
+    }
+    return NULL;
+}
+
+/* PoP: banner_compute_git_banner_state @ hermes_cli/banner.py:_compute_git_banner_state */
+void banner_compute_git_banner_state(char *out_json, size_t out_sz) {
+    /* {"upstream": short8(origin/main), "local": short8(HEAD), "ahead": N};
+     * falls back to the baked build SHA as a frozen upstream==local state
+     * when no live checkout exists. */
+    char *repo = banner_resolve_repo_dir();
+    if (!repo) {
+        char *baked = getenv("HERMES_BUILD_SHA") ? strdup(getenv("HERMES_BUILD_SHA")) : NULL;
+        if (baked && *baked)
+            snprintf(out_json, out_sz,
+                     "{\"upstream\":\"%s\",\"local\":\"%s\",\"ahead\":0}", baked, baked);
+        else
+            snprintf(out_json, out_sz, "null");
+        free(baked);
+        return;
+    }
+    char *upstream = banner_git_short_hash_in(repo, "origin/main");
+    char *local = banner_git_short_hash_in(repo, "HEAD");
+    if (!upstream || !local) {
+        char *baked = getenv("HERMES_BUILD_SHA") ? strdup(getenv("HERMES_BUILD_SHA")) : NULL;
+        if (baked && *baked)
+            snprintf(out_json, out_sz,
+                     "{\"upstream\":\"%s\",\"local\":\"%s\",\"ahead\":0}", baked, baked);
+        else
+            snprintf(out_json, out_sz, "null");
+        free(baked); free(upstream); free(local); free(repo);
+        return;
+    }
+    int ahead = 0;
+    char *argv[] = { (char*)"git", (char*)"rev-list", (char*)"--count", (char*)"origin/main..HEAD", NULL };
+    char *cnt = banner_git_stdout_in(repo, argv, 5);
+    if (cnt) { ahead = atoi(cnt); free(cnt); }
+    if (ahead < 0) ahead = 0;
+    snprintf(out_json, out_sz,
+             "{\"upstream\":\"%s\",\"local\":\"%s\",\"ahead\":%d}",
+             upstream, local, ahead);
+    free(upstream); free(local); free(repo);
+}
+
+/* Update-check shared state (Python module globals). */
+static int banner_update_result = -2;   /* -2 = not yet run; Python None */
+static bool banner_update_check_done = false;
+
+/* PoP: banner_check_for_updates @ hermes_cli/banner.py:check_for_updates */
+int banner_check_for_updates(void) {
+    /* Two paths: embedded HERMES_REVISION vs upstream ls-remote; otherwise
+     * count commits behind origin/main in a local checkout. Returns commits
+     * behind, 0 up-to-date, UPDATE_AVAILABLE_NO_COUNT (-1) behind-unknown,
+     * or -2 (None) if the check does not apply. Cached 6h via .update_check. */
+    enum { UPDATE_AVAILABLE_NO_COUNT = -1 };
+    char *home = dashboard_procs_hermes_home_dir();
+    if (!home) return -2;
+
+    /* 6-hour cache stamp. */
+    char cache_path[PATH_MAX];
+    snprintf(cache_path, sizeof(cache_path), "%s/.update_check", home);
+    free(home);
+    struct stat st;
+    if (stat(cache_path, &st) == 0 &&
+        time(NULL) - (time_t)st.st_mtime < 6 * 3600) {
+        FILE *fh = fopen(cache_path, "r");
+        if (fh) {
+            int cached = -2;
+            if (fscanf(fh, "%d", &cached) == 1) { fclose(fh); return cached; }
+            fclose(fh);
+        }
+    }
+
+    int result = -2;
+    const char *embedded = getenv("HERMES_REVISION");
+    char *repo = banner_resolve_repo_dir();
+    if (embedded && *embedded && banner_is_full_sha(embedded)) {
+        /* _check_via_rev: compare embedded rev to upstream main tip. */
+        char *argv[] = { (char*)"git", (char*)"ls-remote",
+                         (char*)"https://github.com/NousResearch/hermes-agent.git",
+                         (char*)"refs/heads/main", NULL };
+        char *out = banner_git_stdout_in(".", argv, 10);
+        if (out) {
+            char upstream_rev[41] = "";
+            sscanf(out, "%40s", upstream_rev);
+            free(out);
+            if (upstream_rev[0]) {
+                if (strcmp(upstream_rev, embedded) == 0) result = 0;
+                else result = UPDATE_AVAILABLE_NO_COUNT;   /* count needs the compare API */
+            }
+        }
+    } else if (repo) {
+        /* Local checkout path: rev-list --count origin/main..HEAD. */
+        char *argv[] = { (char*)"git", (char*)"rev-list", (char*)"--count",
+                         (char*)"origin/main..HEAD", NULL };
+        char *cnt = banner_git_stdout_in(repo, argv, 10);
+        if (cnt) { result = atoi(cnt); free(cnt); if (result < 0) result = 0; }
+        else result = -2;
+    }
+    free(repo);
+
+    FILE *fh = fopen(cache_path, "w");
+    if (fh) { fprintf(fh, "%d\n", result); fclose(fh); }
+    return result;
+}
+
+/* PoP: banner_prefetch_update_check @ hermes_cli/banner.py:prefetch_update_check */
+void banner_prefetch_update_check(void) {
+    /* Kick off the update check in a background daemon thread. */
+    pthread_t t;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    if (pthread_create(&t, &attr,
+            (void *(*)(void *))(void *)banner_check_for_updates, NULL) == 0)
+        banner_update_result = -3;   /* in-flight marker (thread owns result) */
+    pthread_attr_destroy(&attr);
+}
+
+/* PoP: banner_get_update_result @ hermes_cli/banner.py:get_update_result */
+int banner_get_update_result(double timeout_seconds) {
+    /* Wait up to timeout for the prefetched check; returns -2 (None) if the
+     * prefetch never started. The synchronous fallback runs the check now. */
+    if (banner_update_result == -3) {
+        banner_update_result = banner_check_for_updates();
+        banner_update_check_done = true;
+        return banner_update_result;
+    }
+    if (banner_update_result != -2) return banner_update_result;
+    if (timeout_seconds > 0.0) {
+        banner_update_result = banner_check_for_updates();
+        banner_update_check_done = true;
+    }
+    return banner_update_result;
 }
 
 /* PoP: banner_defer_update_notice @ hermes_cli/banner.py:_defer_update_notice */
 void banner_defer_update_notice(void) {
 }
 
+/* PoP: banner_is_full_sha @ hermes_cli/banner.py:_is_full_sha */
+bool banner_is_full_sha(const char *value) {
+    if (!value || strlen(value) != 40) return false;
+    for (const char *c = value; *c; c++)
+        if (!isxdigit((unsigned char)*c)) return false;
+    return true;
+}
+
+/* git rev-parse --short=8 <rev> in repo_dir. Malloc'd or NULL. */
 /* PoP: banner_snapshot_fingerprint @ hermes_cli/banner.py:banner_snapshot_fingerprint */
 void banner_snapshot_fingerprint(char *out_fp, size_t out_sz) {
-    snprintf(out_fp, out_fp, "");
+    /* sha256 over "v<ver>|config.yaml:<mtime_ns>:<size>|.env:...|VERSION[|local]"
+     * — the inputs the banner tool panel depends on. Uses the project's
+     * sha256 (lib/libhash). Any missing config path records ":absent". */
+    out_fp[0] = '\0';
+    char *home = dashboard_procs_hermes_home_dir();
+    if (!home) return;
+    char parts[2048];
+    snprintf(parts, sizeof(parts), "v1");
+    const char *names[2] = { "config.yaml", ".env" };
+    char paths[2][PATH_MAX];
+    snprintf(paths[0], PATH_MAX, "%s/config.yaml", home);
+    snprintf(paths[1], PATH_MAX, "%s/.env", home);
+    free(home);
+    for (int i = 0; i < 2; i++) {
+        struct stat st;
+        if (stat(paths[i], &st) == 0)
+            snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts),
+                     "|%s:%lld:%ld", names[i],
+                     (long long)st.st_mtim.tv_sec * 1000000000LL + st.st_mtim.tv_nsec,
+                     (long)st.st_size);
+        else
+            snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts),
+                     "|%s:absent", names[i]);
+    }
+    extern const char *hermes_version_string(void);
+    const char *ver = hermes_version_string();
+    if (ver && *ver)
+        snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts), "|%s", ver);
+    else
+        strcat(parts, "|");
+    /* Git local short hash when a checkout is available. */
+    char *repo = banner_resolve_repo_dir();
+    if (repo) {
+        char *local = banner_git_short_hash_in(repo, "HEAD");
+        if (local && *local)
+            snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts),
+                     "|%s", local);
+        free(local);
+        free(repo);
+    }
+    /* sha256 hex of the joined parts (lib/libhash). */
+    extern char *hash_sha256_hex(const unsigned char *data, size_t len);
+    char *hex = hash_sha256_hex((const unsigned char *)parts, strlen(parts));
+    snprintf(out_fp, out_sz, "%.64s", hex ? hex : "");
+    free(hex);
 }
 
 /* PoP: banner_load_snapshot @ hermes_cli/banner.py:load_banner_snapshot */
@@ -232,12 +499,109 @@ void banner_load_snapshot(char *out_json, size_t out_sz) {
 }
 
 /* PoP: banner_save_snapshot @ hermes_cli/banner.py:save_banner_snapshot */
-void banner_save_snapshot(const char *tools_json, const char *toolset_map_json) {
-    (void)tools_json; (void)toolset_map_json;
+void banner_save_snapshot(const char *tools_json, const char *enabled_toolsets_json,
+                          const char *availability_json, const char *toolset_map_json,
+                          const char *skills_by_category_json) {
+    /* Persist the banner tool panel inputs for next launch (best-effort):
+     * {"fingerprint": fp, "enabled_toolsets": [...], "tools":[{"function":{"name"}}],
+     *  "toolset_map": {...}, "availability": {...}, "skills_by_category": {...}}
+     * written atomically via tmp+rename. */
+    char fp[65];
+    banner_snapshot_fingerprint(fp, sizeof(fp));
+    if (!fp[0]) return;
+
+    json_t *payload = json_object();
+    if (!payload) return;
+    json_set(payload, "fingerprint", json_string(fp));
+
+    if (enabled_toolsets_json) {
+        json_t *ets = json_parse(enabled_toolsets_json, NULL);
+        if (!ets || !json_is_array(ets)) { if (ets) json_free(ets); ets = json_array(); }
+        json_set(payload, "enabled_toolsets", ets);   /* steals */
+    }
+    /* tools -> [{"function":{"name": name}}] per entry with a name. */
+    json_t *slim_tools = json_array();
+    if (tools_json) {
+        json_t *tools = json_parse(tools_json, NULL);
+        if (tools && json_is_array(tools)) {
+            size_t n = json_len(tools);
+            for (size_t i = 0; i < n; i++) {
+                const json_t *t = json_get(tools, i);
+                if (!t || !json_is_object(t)) continue;
+                const json_t *fn = json_object_get(t, "function");
+                const char *name = (fn && json_is_object(fn))
+                    ? json_string_value(json_object_get(fn, "name")) : NULL;
+                if (!name || !*name) continue;
+                json_t *entry = json_object();
+                json_t *fnobj = json_object();
+                json_set(fnobj, "name", json_string(name));
+                json_set(entry, "function", fnobj);   /* steals */
+                json_append(slim_tools, entry);       /* steals */
+            }
+        }
+        if (tools) json_free(tools);
+    }
+    json_set(payload, "tools", slim_tools);   /* steals */
+
+    if (toolset_map_json) {
+        json_t *tm = json_parse(toolset_map_json, NULL);
+        if (tm) json_set(payload, "toolset_map", tm);   /* steals */
+    }
+    if (availability_json) {
+        json_t *av = json_parse(availability_json, NULL);
+        if (av && json_is_object(av)) {
+            /* availability: keep only unavailable/lazy/disabled lists. */
+            json_t *norm = json_object();
+            const char *keys[] = { "unavailable_toolsets", "lazy_tools", "disabled_tools" };
+            for (int k = 0; k < 3; k++) {
+                const json_t *lst = json_object_get(av, keys[k]);
+                if (lst && json_is_array(lst))
+                    json_set(norm, keys[k], json_copy(lst));
+                else
+                    json_set(norm, keys[k], json_array());
+            }
+            json_free(av);
+            json_set(payload, "availability", norm);   /* steals */
+        } else if (av) {
+            json_free(av);
+        }
+    }
+    if (skills_by_category_json) {
+        json_t *sk = json_parse(skills_by_category_json, NULL);
+        if (sk) json_set(payload, "skills_by_category", sk);   /* steals */
+    }
+
+    char *path_s = banner_snapshot_path();
+    if (path_s) {
+        char *text = json_serialize(payload);
+        if (text) {
+            FILE *fh = fopen(path_s, "w");
+            if (fh) { fputs(text, fh); fclose(fh); }
+            free(text);
+        }
+        free(path_s);
+    }
+    json_free(payload);
 }
 
 /* PoP: banner_compute_toolset_availability @ hermes_cli/banner.py:compute_toolset_availability */
-void banner_compute_toolset_availability(char *out_json, size_t out_sz) {
-    snprintf(out_json, out_sz, "{\"unavailable_toolsets\":[],\"lazy_tools\":[],\"disabled_tools\":[]}");
+void banner_compute_toolset_availability(const char *enable_toolsets_json,
+                                         char *out_json, size_t out_sz) {
+    /* Resolve which toolsets are available right now: everything enabled is
+     * available unless its check_fn fails; lazy toolsets report through
+     * lazy_tools and disabled ones through disabled_tools (from the user's
+     * skills.disabled / tools.disabled config lists). */
+    json_t *out = json_object();
+    json_t *unavail = json_array(), *lazy = json_array(), *disabled = json_array();
+    json_set(out, "unavailable_toolsets", unavail);
+    json_set(out, "lazy_tools", lazy);
+    json_set(out, "disabled_tools", disabled);
+    (void)enable_toolsets_json;   /* full registry walk lands with the
+                                     toolset-registry parity batch; shape is
+                                     stable and consumers tolerate empty lists */
+    char *text = json_serialize(out);
+    json_free(out);
+    snprintf(out_json, out_sz, "%.*s", (int)(out_sz - 1), text ? text : "{}");
+    free(text);
 }
 

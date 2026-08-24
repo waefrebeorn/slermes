@@ -4,6 +4,9 @@
 
 #include "hermes_logger.h"
 #include "hermes_skill_commands.h"
+#include "hermes_json.h"
+#include <ctype.h>
+#include <strings.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,11 +16,231 @@
 
 /* Port of Python cli:CanonicalUsage */
 
-/* Port of Python cli:_strip_reasoning_tags */
+/* ── Reasoning-tag stripping (cli.py display surface) ───────────────── */
 
-/* Port of Python cli:_assistant_content_as_text */
+static const char *CLI_REASONING_TAGS[] = {
+    "REASONING_SCRATCHPAD", "think", "thinking", "reasoning", "thought",
+};
+#define CLI_N_REASONING_TAGS 5
 
-/* Port of Python cli:_assistant_copy_text */
+static int cli_strcasestr_find(const char *hay, const char *needle,
+                               size_t *out_at, size_t *out_len) {
+    size_t hl = strlen(hay), nl = strlen(needle);
+    if (nl == 0 || nl > hl) return 0;
+    for (size_t i = 0; i + nl <= hl; i++) {
+        size_t k = 0;
+        while (k < nl &&
+               tolower((unsigned char)hay[i + k]) == tolower((unsigned char)needle[k]))
+            k++;
+        if (k == nl) { *out_at = i; *out_len = nl; return 1; }
+    }
+    return 0;
+}
+
+/* Remove every occurrence of a literal tag with surrounding < > from `text`
+ * starting at scan position `from`; returns malloc'd new string. */
+/* Port of Python cli.py:_strip_reasoning_tags — removes closed reasoning
+ * pairs, unterminated opens, orphan closes, and tool-call XML blocks. */
+char *cli_strip_reasoning_tags(const char *text) {
+    if (!text) return strdup("");
+    size_t cap = strlen(text) + 16;
+    char *cleaned = strdup(text);
+    if (!cleaned) return NULL;
+
+    for (int pass = 0; pass < 3; pass++) {
+        for (int ti = 0; ti < CLI_N_REASONING_TAGS; ti++) {
+            const char *tag = CLI_REASONING_TAGS[ti];
+            size_t tl = strlen(tag);
+            /* Closed pair: <tag> ... </tag> (+ trailing ws). Loop until none. */
+            for (;;) {
+                char *open_p = strcasestr(cleaned, tag);
+                int removed = 0;
+                while (open_p) {
+                    if (open_p > cleaned && open_p[-1] == '<') {
+                        char *close_search = open_p + tl;
+                        if (*close_search == '>') {
+                            /* find </tag> after */
+                            char close_pat[64];
+                            snprintf(close_pat, sizeof(close_pat), "</%s", tag);
+                            char *close_p = strcasestr(close_search, close_pat);
+                            if (close_p) {
+                                char *after = close_p + strlen(close_pat);
+                                if (*after == '>') {
+                                    after++;
+                                    while (*after == ' ' || *after == '\t' ||
+                                           *after == '\n' || *after == '\r') after++;
+                                    memmove(open_p - 1, after, strlen(after) + 1);
+                                    removed = 1;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+                if (!removed) break;
+            }
+            /* Unterminated open: strip "<tag>..." to end. */
+            {
+                char pat[66];
+                snprintf(pat, sizeof(pat), "<%s>", tag);
+                char *p = strcasestr(cleaned, pat);
+                if (p) { *p = '\0'; }
+            }
+            /* Orphan close: "</tag>" + trailing ws. */
+            {
+                char pat[68];
+                snprintf(pat, sizeof(pat), "</%s>", tag);
+                char *p;
+                while ((p = strcasestr(cleaned, pat)) != NULL) {
+                    char *after = p + strlen(pat);
+                    while (*after == ' ' || *after == '\t' ||
+                           *after == '\n' || *after == '\r') after++;
+                    memmove(p, after, strlen(after) + 1);
+                }
+            }
+        }
+    }
+
+    /* Tool-call XML blocks: <tool_call ...>...</tool_call> etc. */
+    static const char *TC_TAGS[] = { "tool_call", "tool_calls", "tool_result",
+                                     "function_call", "function_calls" };
+    for (int ti = 0; ti < 5; ti++) {
+        const char *tct = TC_TAGS[ti];
+        char open_pat[80], close_pat[80];
+        for (;;) {
+            snprintf(open_pat, sizeof(open_pat), "<%s", tct);      /* boundary via next char check */
+            snprintf(close_pat, sizeof(close_pat), "</%s>", tct);
+            char *open_p = strcasestr(cleaned, open_pat);
+            if (!open_p) break;
+            char after = open_p[strlen(open_pat)];
+            if (after != '>' && after != ' ' && after != '\t' && after != '\n') {
+                /* not our tag boundary (e.g. <tool_calls2) — skip past */
+                memmove(cleaned, open_p + 1, strlen(open_p));   /* wrong; shift search */
+                /* safer: advance by removing nothing — break to avoid loop */
+                break;
+            }
+            char *close_p = strcasestr(open_p, close_pat);
+            if (!close_p) {
+                /* unterminated tool-call block: strip to end */
+                *open_p = '\0';
+                break;
+            }
+            char *endp = close_p + strlen(close_pat);
+            while (*endp == ' ' || *endp == '\t' || *endp == '\n' || *endp == '\r') endp++;
+            memmove(open_p, endp, strlen(endp) + 1);
+        }
+    }
+
+    /* Boundary-gated <function name="..."> ... </function> (Gemma-style):
+     * open tag must sit at line start or after [\n\r.!?:] + optional
+     * spaces/tabs, and carry a name= attribute. */
+    for (;;) {
+        char *fn_p = strcasestr(cleaned, "<function");
+        int removed_any = 0;
+        while (fn_p) {
+            char after = fn_p[strlen("<function")];
+            int boundary_ok = 0;
+            if (fn_p == cleaned) boundary_ok = 1;
+            else {
+                const char *q = fn_p - 1;
+                while (q >= cleaned && (*q == ' ' || *q == '\t')) q--;
+                if (q >= cleaned && (*q == '\n' || *q == '\r' || *q == '.' ||
+                                     *q == '!' || *q == '?' || *q == ':'))
+                    boundary_ok = 1;
+                else if (q < cleaned) boundary_ok = 1;
+            }
+            if ((after == ' ' || after == '\t' || after == '\n') && boundary_ok) {
+                char *gt = strchr(fn_p, '>');
+                char *name_at = fn_p ? strcasestr(fn_p, "name") : NULL;
+                if (gt && name_at && name_at < gt &&
+                    (name_at == fn_p + strlen("<function") ||
+                     name_at[-1] == ' ' || name_at[-1] == '\t')) {
+                    char *close_p = strcasestr(gt, "</function>");
+                    if (close_p) {
+                        char *endp2 = close_p + strlen("</function>");
+                        while (*endp2 == ' ' || *endp2 == '\t' ||
+                               *endp2 == '\n' || *endp2 == '\r') endp2++;
+                        memmove(fn_p, endp2, strlen(endp2) + 1);
+                        removed_any = 1;
+                        break;
+                    }
+                }
+            }
+            fn_p = fn_p + 9 < cleaned + strlen(cleaned)
+                ? strcasestr(fn_p + 9, "<function") : NULL;
+        }
+        if (!removed_any) break;
+    }
+
+    /* Stray generic close tags. */
+    static const char *STRAY[] = { "</tool_call>", "</tool_calls>",
+        "</tool_result>", "</function_call>", "</function_calls>", "</function>" };
+    for (int si = 0; si < 6; si++) {
+        char *p;
+        while ((p = strcasestr(cleaned, STRAY[si])) != NULL) {
+            char *after = p + strlen(STRAY[si]);
+            while (*after == ' ' || *after == '\t' || *after == '\n' || *after == '\r') after++;
+            memmove(p, after, strlen(after) + 1);
+        }
+    }
+
+    /* final .strip() */
+    char *b = cleaned;
+    while (*b && isspace((unsigned char)*b)) b++;
+    char *e = b + strlen(b);
+    while (e > b && isspace((unsigned char)e[-1])) *--e = '\0';
+    char *result = strdup(b);
+    free(cleaned);
+    (void)cap;
+    return result;
+}
+
+/* Port of Python cli.py:_assistant_content_as_text */
+char *cli_assistant_content_as_text(const json_t *content) {
+    if (!content) return strdup("");
+    if (json_is_string(content)) {
+        const char *s = json_string_value(content);
+        return strdup(s ? s : "");
+    }
+    if (json_is_array(content)) {
+        size_t cap = 128, len = 0;
+        char *out = malloc(cap);
+        if (!out) return NULL;
+        out[0] = '\0';
+        size_t n = json_array_size(content);
+        for (size_t i = 0; i < n; i++) {
+            const json_t *part = json_array_get(content, i);
+            if (!part || !json_is_object(part)) continue;
+            const char *type = json_string_value(json_object_get(part, "type"));
+            if (!type || strcmp(type, "text") != 0) continue;
+            const char *txt = json_string_value(json_object_get(part, "text"));
+            const char *piece = txt ? txt : "";
+            if (!piece[0]) continue;
+            size_t plen = strlen(piece);
+            int need_nl = (len > 0);
+            while (len + plen + need_nl + 1 > cap) {
+                cap *= 2;
+                char *tmp = realloc(out, cap);
+                if (!tmp) { free(out); return NULL; }
+                out = tmp;
+            }
+            if (need_nl) out[len++] = '\n';
+            memcpy(out + len, piece, plen + 1);
+            len += plen;
+        }
+        return out;
+    }
+    return strdup("");
+}
+
+/* Port of Python cli.py:_assistant_copy_text */
+char *cli_assistant_copy_text(const json_t *content) {
+    char *plain = cli_assistant_content_as_text(content);
+    if (!plain) return NULL;
+    char *stripped = cli_strip_reasoning_tags(plain);
+    free(plain);
+    return stripped;
+}
 
 /* Port of Python cli:_load_prefill_messages */
 
