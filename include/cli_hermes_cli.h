@@ -22,6 +22,13 @@ extern "C" {
 typedef struct hermes_state_db hermes_state_db_t;
 typedef struct json_t json_t;
 
+/* Pending local-edit snapshot entry (_pending_edit_snapshots[tool_call_id]).
+ * snap is a display_local_edit_snapshot_t* owned by the hcli_t. */
+typedef struct {
+    char *id;
+    void *snap;
+} hcli_pending_snap_t;
+
 /* Opaque HermesCLI instance (cli.py class HermesCLI). */
 typedef struct hcli hcli_t;
 
@@ -128,6 +135,72 @@ struct hcli {
     double prompt_duration;                     /* _prompt_duration */
     double last_turn_finished_at;               /* _last_turn_finished_at */
     bool   has_last_turn_finished_at;
+
+    /* ── Batch 2: config watch (_check_config_mcp_changes) ──────────────── */
+    double last_config_check;                   /* _last_config_check (monotonic s) */
+    double config_mtime;                        /* _config_mtime */
+    char  *config_mcp_servers_json;             /* serialized mcp_servers snapshot
+                                                 * (_config_mcp_servers, env-expanded
+                                                 * because the loader expands). */
+    void (*reload_mcp)(hcli_t *self);           /* self._reload_mcp seam */
+
+    /* ── Batch 2: pending edit snapshots (_pending_edit_snapshots) ──────── */
+    hcli_pending_snap_t *pending_edit_snaps;
+    size_t               pending_edit_snap_count;
+
+    /* ── Batch 2: voice mode + run-state flags ──────────────────────────── */
+    bool should_exit;                           /* _should_exit */
+    bool agent_running;                         /* _agent_running */
+    bool voice_mode;                            /* _voice_mode */
+    bool voice_recording;                       /* _voice_recording */
+    bool voice_processing;                      /* _voice_processing */
+    bool voice_continuous;                      /* _voice_continuous */
+    bool voice_tts;                             /* _voice_tts */
+    char *voice_last_tts_text;                  /* _voice_last_tts_text */
+    void *voice_lock;                           /* lazily created pthread_mutex_t */
+    void *voice_tts_done_ev;                    /* lazily created threading.Event */
+    void *voice_recorder;                       /* opaque recorder handle */
+    void (*recorder_cancel)(void *rec);         /* recorder.cancel() */
+    void (*recorder_shutdown)(void *rec);       /* recorder.shutdown() */
+    void  *voice_tts_stop;                      /* stop event for TTS pipeline */
+    void  (*tts_stop_set)(void *ev);            /* stop_event.set() */
+    void  (*stop_playback_fn)(void);            /* tools.voice_mode.stop_playback */
+    char *(*tts_generate_fn)(const char *text, const char *output_path);
+                                /* tools.tts_tool.text_to_speech_tool seam —
+                                 * returns the tool's raw JSON result string. */
+    void (*voice_fd_listener_fn)(hcli_t *self); /* _voice_full_duplex_listener */
+    bool (*pending_input_nonempty_fn)(hcli_t *self); /* not self._pending_input.empty() */
+
+    /* ── Batch 2: wake word ─────────────────────────────────────────────── */
+    bool wake_word_active;                      /* _wake_word_active */
+    bool wake_suspended;                        /* _wake_suspended */
+    bool wake_watchdog_started;                 /* _wake_watchdog_started */
+
+    /* ── Batch 3: model identity / streaming state ──────────────────────── */
+    bool   model_is_default;                    /* _model_is_default */
+    char  *reasoning_preview_buf;               /* _reasoning_preview_buf */
+    char  *reasoning_buf;                       /* _reasoning_buf */
+    bool   reasoning_box_opened;                /* _reasoning_box_opened */
+    bool   reasoning_shown_this_turn;           /* _reasoning_shown_this_turn */
+    bool   stream_box_opened;                   /* _stream_box_opened */
+    char  *deferred_content;                    /* _deferred_content */
+
+    /* ── Batch 3: busy slash-command state (_busy_command) ──────────────── */
+    bool   command_running;                     /* _command_running */
+    bool   command_blocks_input;                /* _command_blocks_input */
+    char  *command_status;                      /* _command_status */
+    bool   skip_paste_collapse;                 /* _skip_paste_collapse */
+
+    /* ── Batch 3: termios drift watchdog (_check_termios_drift) ─────────── */
+    double last_termios_drift_check;            /* _last_termios_drift_check (monotonic) */
+    bool   termios_drift_notice_shown;          /* _termios_drift_notice_shown */
+
+    /* Injectable probe for model_tools.check_tool_availability() — returns a
+     * malloc'd JSON array of {name, tools[], missing_vars[]} rows for
+     * UNAVAILABLE tools, or NULL when the tool registry is not linked in.
+     * Bound by the CLI shell at startup; NULL on test stand-ins (the Python
+     * path equally no-ops when the import fails). */
+    char *(*tool_availability_probe)(hcli_t *self);
 };
 
 /* ── Lifecycle ─────────────────────────────────────────────────────────── */
@@ -337,5 +410,57 @@ int cli_scrollback_box_width(int width);
 #ifdef __cplusplus
 }
 #endif
+
+/* ══════════ Batch 2 (cli_hermes_cli_skeleton.h wave) — refined API ═════════ */
+
+/* PoP: hcli_check_config_mcp_changes @ cli.py:_check_config_mcp_changes
+ * Detect mcp_servers changes in config.yaml and react. Throttled to one
+ * stat() per 5 s; auto-reloads via self->reload_mcp when enabled. */
+void hcli_check_config_mcp_changes(hcli_t *self);
+
+/* PoP: hcli_split_destructive_skip @ cli.py:_split_destructive_skip
+ * Classmethod: strip "/cmd" word + inline-skip tokens ("now","--yes","-y").
+ * Sets *out_remainder (malloc'd, caller frees; "" when nothing remains).
+ * Returns true iff at least one skip token was found. */
+bool hcli_split_destructive_skip(const char *cmd_text, char **out_remainder);
+
+/* PoP: hcli_on_tool_start @ cli.py:_on_tool_start
+ * Capture local before-state snapshot for write-capable tools. */
+void hcli_on_tool_start(hcli_t *self, const char *tool_call_id,
+                        const char *function_name, const char *function_args_json);
+
+/* PoP: hcli_on_tool_complete @ cli.py:_on_tool_complete
+ * Pop the pending snapshot and render the inline edit diff. */
+void hcli_on_tool_complete(hcli_t *self, const char *tool_call_id,
+                           const char *function_name, const char *function_args_json,
+                           const char *function_result);
+
+/* PoP: hcli_voice_stt_model @ cli.py:_voice_stt_model
+ * STT model override from config ("stt.model", or "stt.local.model" with a
+ * "base" default for the local provider). malloc'd or NULL on error. */
+char *hcli_voice_stt_model(hcli_t *self);
+
+/* PoP: hcli_voice_stt_provider @ cli.py:_voice_stt_provider
+ * Configured STT provider name, lowercased/stripped. malloc'd, never NULL. */
+char *hcli_voice_stt_provider(hcli_t *self);
+
+/* PoP: hcli_voice_speak_response_async @ cli.py:_voice_speak_response_async */
+void hcli_voice_speak_response_async(hcli_t *self, const char *text);
+
+/* PoP: hcli_voice_speak_response @ cli.py:_voice_speak_response
+ * Blocking TTS speak path (Python runs it in a background thread). */
+void hcli_voice_speak_response(hcli_t *self, const char *text);
+
+/* PoP: hcli_voice_beeps_enabled @ cli.py:_voice_beeps_enabled */
+bool hcli_voice_beeps_enabled(hcli_t *self);
+
+/* PoP: hcli_disable_voice_mode @ cli.py:_disable_voice_mode */
+void hcli_disable_voice_mode(hcli_t *self);
+
+/* PoP: hcli_stop_wake_word_listener @ cli.py:_stop_wake_word_listener */
+void hcli_stop_wake_word_listener(hcli_t *self, bool announce);
+
+/* PoP: hcli_start_wake_watchdog @ cli.py:_start_wake_watchdog */
+void hcli_start_wake_watchdog(hcli_t *self);
 
 #endif /* SLERMES_CLI_HERMES_CLI_H */

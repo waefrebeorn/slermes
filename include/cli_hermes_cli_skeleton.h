@@ -139,40 +139,50 @@ char * hcli_render_spinner_text(hcli_t *self);
 json_t * hcli_on_reaction(hcli_t *self);
 
 /* PoP: normalize_model_for_provider @ cli.py:_normalize_model_for_provider */
-bool hcli_normalize_model_for_provider(hcli_t *self);
+bool hcli_normalize_model_for_provider(hcli_t *self, const char *resolved_provider);
 
 /* PoP: flush_reasoning_preview @ cli.py:_flush_reasoning_preview */
-json_t * hcli_flush_reasoning_preview(hcli_t *self);
+void hcli_flush_reasoning_preview(hcli_t *self, bool force);
 
 /* PoP: print_user_message_preview @ cli.py:_print_user_message_preview */
-json_t * hcli_print_user_message_preview(hcli_t *self);
+void hcli_print_user_message_preview(hcli_t *self, const char *user_input);
 
 /* PoP: stream_reasoning_delta @ cli.py:_stream_reasoning_delta */
-json_t * hcli_stream_reasoning_delta(hcli_t *self);
+void hcli_stream_reasoning_delta(hcli_t *self, const char *text);
 
-/* PoP: busy_command @ cli.py:_busy_command */
-json_t * hcli_busy_command(hcli_t *self);
+/* PoP: busy_command @ cli.py:_busy_command
+ * Enter the busy state (set flags + print "⏳ <status>"). Python is a
+ * generator context manager; pair with hcli_busy_command_end() in the
+ * caller's cleanup path (the `finally` branch). */
+void hcli_busy_command(hcli_t *self, const char *status, bool blocks_input);
+void hcli_busy_command_end(hcli_t *self);
 
-/* PoP: inline_pastes @ cli.py:_inline_pastes */
-json_t * hcli_inline_pastes(hcli_t *self);
+/* PoP: inline_pastes @ cli.py:_inline_pastes
+ * buffer_text: in/out pointer to the input-buffer text (freed/replaced when
+ * expansion changes it). cursor_position: in/out cursor index, set to the new
+ * length on expansion (may be NULL). Sets _skip_paste_collapse on change. */
+void hcli_inline_pastes(hcli_t *self, char **buffer_text, size_t *cursor_position);
 
 /* PoP: show_browser_backend_notice @ cli.py:_show_browser_backend_notice */
-json_t * hcli_show_browser_backend_notice(hcli_t *self);
+void hcli_show_browser_backend_notice(hcli_t *self);
 
-/* PoP: restore_session_cwd @ cli.py:_restore_session_cwd */
-json_t * hcli_restore_session_cwd(hcli_t *self);
+/* PoP: restore_session_cwd @ cli.py:_restore_session_cwd
+ * session_meta_json: JSON-encoded session row (as returned by SessionDB.get_session). */
+void hcli_restore_session_cwd(hcli_t *self, const char *session_meta_json, bool quiet);
 
-/* PoP: restore_session_yolo @ cli.py:_restore_session_yolo */
-char * hcli_restore_session_yolo(hcli_t *self);
+/* PoP: restore_session_yolo @ cli.py:_restore_session_yolo
+ * Returns the malloc'd restore message (caller frees) or NULL when nothing
+ * was restored; printed via the console unless quiet. */
+char * hcli_restore_session_yolo(hcli_t *self, const char *session_meta_json, bool quiet);
 
 /* PoP: restore_session_model @ cli.py:_restore_session_model */
-json_t * hcli_restore_session_model(hcli_t *self);
+void hcli_restore_session_model(hcli_t *self, const char *session_meta_json, bool quiet);
 
 /* PoP: check_termios_drift @ cli.py:_check_termios_drift */
-json_t * hcli_check_termios_drift(hcli_t *self);
+void hcli_check_termios_drift(hcli_t *self);
 
 /* PoP: show_tool_availability_warnings @ cli.py:_show_tool_availability_warnings */
-json_t * hcli_show_tool_availability_warnings(hcli_t *self);
+void hcli_show_tool_availability_warnings(hcli_t *self);
 
 /* PoP: show_status @ cli.py:_show_status */
 json_t * hcli_show_status(hcli_t *self);
