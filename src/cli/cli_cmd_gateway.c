@@ -1,3 +1,4 @@
+/* PoP: format_directory_for_display @ gateway/channel_directory.py:format_directory_for_display */
 /*
  * cli_cmd_gateway.c — Gateway slash-command handlers extracted from commands.c.
  * Self-contained command-category module.

@@ -5,16 +5,94 @@
 #include "hermes_logger.h"
 #include "hermes_skill_commands.h"
 #include "hermes_json.h"
+#include "toolsets.h"
+#include "registry.h"
+#include "cron_jobs.h"
+#include "slermes_home.h"
+#include "port_slash_commands.h" /* reasoning_parse_effort (hermes_constants.parse_reasoning_effort) */
+#ifndef HERMES_PATH_MAX
+#define HERMES_PATH_MAX 4096
+#endif
 #include <ctype.h>
 #include <strings.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 /* PoP: string @ cli.py:_print_nous_credits_block */
 /* PoP: string @ cli.py:_show_credits */
 
-/* Port of Python cli:CanonicalUsage */
+/* ── cli.py:CanonicalUsage — dataclass → struct ─────────────────────────
+ * Python re-exports agent/usage_pricing.py:CanonicalUsage lazily; the C home
+ * is this struct + helpers. Fields mirror the dataclass exactly (raw_usage is
+ * an owned JSON value or NULL). prompt_tokens/total_tokens port the
+ * properties, cli_canonical_usage_add ports __add__ (raw_usage dropped on the
+ * sum, request_count added). */
+
+typedef struct {
+    long long input_tokens;
+    long long output_tokens;
+    long long cache_read_tokens;
+    long long cache_write_tokens;
+    long long reasoning_tokens;
+    int       request_count;
+    json_t   *raw_usage;   /* owned; may be NULL */
+} cli_canonical_usage_t;
+
+/* PoP: CanonicalUsage @ cli.py:CanonicalUsage */
+cli_canonical_usage_t *cli_canonical_usage_new(long long input_tokens,
+                                               long long output_tokens,
+                                               long long cache_read_tokens,
+                                               long long cache_write_tokens,
+                                               long long reasoning_tokens,
+                                               int request_count,
+                                               json_t *raw_usage) {
+    cli_canonical_usage_t *u = calloc(1, sizeof(*u));
+    if (!u) return NULL;
+    u->input_tokens       = input_tokens;
+    u->output_tokens      = output_tokens;
+    u->cache_read_tokens  = cache_read_tokens;
+    u->cache_write_tokens = cache_write_tokens;
+    u->reasoning_tokens   = reasoning_tokens;
+    /* Python dataclass default request_count=1 applies when omitted. */
+    u->request_count      = request_count > 0 ? request_count : 1;
+    u->raw_usage          = raw_usage ? json_copy(raw_usage) : NULL;
+    return u;
+}
+
+/* Python @property prompt_tokens: input + cache_read + cache_write. */
+int cli_canonical_usage_prompt_tokens(const cli_canonical_usage_t *u) {
+    if (!u) return 0;
+    return (int)(u->input_tokens + u->cache_read_tokens + u->cache_write_tokens);
+}
+
+/* Python @property total_tokens: prompt_tokens + output_tokens. */
+int cli_canonical_usage_total_tokens(const cli_canonical_usage_t *u) {
+    if (!u) return 0;
+    return cli_canonical_usage_prompt_tokens(u) + (int)u->output_tokens;
+}
+
+/* Python __add__: sum two usage buckets (e.g. MoA fan-out + aggregator).
+ * raw_usage is dropped on the sum; request_count adds. */
+cli_canonical_usage_t *cli_canonical_usage_add(const cli_canonical_usage_t *a,
+                                               const cli_canonical_usage_t *b) {
+    if (!a || !b) return NULL;
+    return cli_canonical_usage_new(
+        a->input_tokens + b->input_tokens,
+        a->output_tokens + b->output_tokens,
+        a->cache_read_tokens + b->cache_read_tokens,
+        a->cache_write_tokens + b->cache_write_tokens,
+        a->reasoning_tokens + b->reasoning_tokens,
+        a->request_count + b->request_count,
+        NULL);
+}
+
+void cli_canonical_usage_free(cli_canonical_usage_t *u) {
+    if (!u) return;
+    if (u->raw_usage) json_free(u->raw_usage);
+    free(u);
+}
 
 /* ── Reasoning-tag stripping (cli.py display surface) ───────────────── */
 
@@ -242,13 +320,134 @@ char *cli_assistant_copy_text(const json_t *content) {
     return stripped;
 }
 
-/* Port of Python cli:_load_prefill_messages */
+/* ── cli.py prefill-message helpers ────────────────────────────────────── */
 
-/* Port of Python cli:_resolve_prefill_messages_file */
+/* Strip leading/trailing whitespace in place-ish: returns malloc'd trimmed. */
+static char *cli_trim_dup(const char *s) {
+    if (!s) return strdup("");
+    const char *a = s;
+    while (*a && isspace((unsigned char)*a)) a++;
+    size_t n = strlen(a);
+    while (n > 0 && isspace((unsigned char)a[n - 1])) n--;
+    char *out = malloc(n + 1);
+    if (!out) return NULL;
+    memcpy(out, a, n);
+    out[n] = '\0';
+    return out;
+}
 
-/* Port of Python cli:_parse_reasoning_config */
+/* PoP: _load_prefill_messages @ cli.py:_load_prefill_messages */
+json_t *cli_load_prefill_messages(const char *file_path) {
+    /* Empty path → empty list (Python returns []). */
+    json_t *empty = json_array();
+    if (!file_path || !*file_path) return empty;
 
-/* Port of Python cli:_parse_service_tier_config */
+    /* expanduser(~) then resolve relative paths from the home dir
+     * (Python anchors at ~/.hermes; the C port's native home analog). */
+    char expanded[HERMES_PATH_MAX];
+    if (file_path[0] == '~' && (file_path[1] == '/' || file_path[1] == '\0')) {
+        const char *home = getenv("HOME");
+        snprintf(expanded, sizeof(expanded), "%s%s", home ? home : "",
+                 file_path + 1);
+    } else {
+        snprintf(expanded, sizeof(expanded), "%s", file_path);
+    }
+    char resolved[HERMES_PATH_MAX];
+    if (expanded[0] != '/') {
+        snprintf(resolved, sizeof(resolved), "%s/%s", slermes_home(), expanded);
+    } else {
+        snprintf(resolved, sizeof(resolved), "%s", expanded);
+    }
+
+    if (access(resolved, F_OK) != 0) {
+        hermes_log(LOG_WARNING, "cli", "Prefill messages file not found: %s",
+                   resolved);
+        return empty;
+    }
+    char *jerr = NULL;
+    json_t *data = json_parse_file(resolved, &jerr);
+    if (jerr) free(jerr);
+    if (!data) {
+        hermes_log(LOG_WARNING, "cli", "Failed to load prefill messages from %s",
+                   resolved);
+        return empty;
+    }
+    if (!json_is_array(data)) {
+        hermes_log(LOG_WARNING,
+                   "cli", "Prefill messages file must contain a JSON array: %s",
+                   resolved);
+        json_free(data);
+        return empty;
+    }
+    json_free(empty);
+    return data;
+}
+
+/* PoP: _resolve_prefill_messages_file @ cli.py:_resolve_prefill_messages_file */
+char *cli_resolve_prefill_messages_file(const json_t *config) {
+    /* 1. HERMES_PREFILL_MESSAGES_FILE env wins. */
+    char *env_path = cli_trim_dup(getenv("HERMES_PREFILL_MESSAGES_FILE"));
+    if (env_path && *env_path) return env_path;
+    free(env_path);
+
+    /* 2. Top-level ``prefill_messages_file`` is canonical. */
+    if (config && json_is_object(config)) {
+        json_t *top = json_obj_get(config, "prefill_messages_file");
+        if (top && json_is_string(top)) {
+            char *v = cli_trim_dup(json_string_value(top));
+            if (v && *v) return v;
+            free(v);
+        }
+        /* 3. Legacy ``agent.prefill_messages_file`` fallback. */
+        json_t *agent_cfg = json_obj_get(config, "agent");
+        if (agent_cfg && json_is_object(agent_cfg)) {
+            json_t *legacy = json_obj_get(agent_cfg, "prefill_messages_file");
+            if (legacy && json_is_string(legacy)) {
+                char *lv = cli_trim_dup(json_string_value(legacy));
+                if (lv && *lv) return lv;
+                free(lv);
+            }
+        }
+    }
+    return strdup("");
+}
+
+/* ── cli.py reasoning / service-tier config parsing ───────────────────── */
+
+/* PoP: _parse_reasoning_config @ cli.py:_parse_reasoning_config */
+json_t *cli_parse_reasoning_config(const char *effort, bool effort_is_bool_false) {
+    json_t *result = reasoning_parse_effort(effort, effort_is_bool_false);
+    char *trimmed = effort_is_bool_false ? NULL : cli_trim_dup(effort);
+    if (trimmed && *trimmed && !result) {
+        hermes_log(LOG_WARNING, "cli",
+                   "Unknown reasoning_effort '%s', using default (medium)",
+                   effort ? effort : "");
+    }
+    free(trimmed);
+    return result;
+}
+
+/* PoP: _parse_service_tier_config @ cli.py:_parse_service_tier_config */
+char *cli_parse_service_tier_config(const char *raw) {
+    char *value = cli_trim_dup(raw);
+    if (value) for (char *c = value; *c; c++) *c = (char)tolower((unsigned char)*c);
+    if (!value || !*value ||
+        strcmp(value, "normal") == 0 || strcmp(value, "default") == 0 ||
+        strcmp(value, "standard") == 0 || strcmp(value, "off") == 0 ||
+        strcmp(value, "none") == 0) {
+        free(value);
+        return NULL;
+    }
+    if (strcmp(value, "fast") == 0 || strcmp(value, "priority") == 0 ||
+        strcmp(value, "on") == 0) {
+        free(value);
+        return strdup("priority");
+    }
+    hermes_log(LOG_WARNING, "cli", "Unknown service_tier '%s', ignoring",
+               raw ? raw : "");
+    free(value);
+    return NULL;
+}
 
 /* Port of Python cli:load_cli_config */
 
@@ -257,27 +456,210 @@ char *cli_assistant_copy_text(const json_t *content) {
 
 /* Port of Python cli:AIAgent */
 
-/* Port of Python cli:get_tool_definitions */
+/* ── cli.py lazy toolset surface — delegates to the C toolset registry ── */
 
-/* Port of Python cli:get_toolset_for_tool */
+/* Does a JSON array of toolset names contain `ts`? */
+static bool cli_ts_list_contains(const json_t *list, const char *ts) {
+    if (!list || !json_is_array(list) || !ts || !*ts) return false;
+    for (size_t i = 0; i < json_len(list); i++) {
+        json_t *v = json_get(list, i);
+        if (v && json_is_string(v) && strcmp(json_string_value(v), ts) == 0)
+            return true;
+    }
+    return false;
+}
 
-/* Port of Python cli:get_all_toolsets */
+/* PoP: get_tool_definitions @ cli.py:get_tool_definitions
+ * Python: wait for MCP discovery, then model_tools.get_tool_definitions with
+ * enabled/disabled-toolset filtering over the registry. C equivalent:
+ * refresh registry availability (the discovery-lock join happens upstream in
+ * the agent build path), then assemble OpenAI-format definitions for every
+ * available registered tool passing the filter. skip_tool_search_assembly is
+ * accepted for signature parity; the C port has no post-collapse assembly
+ * step to skip. Returns an owned JSON array; caller frees. */
+json_t *cli_get_tool_definitions(const json_t *enabled_toolsets,
+                                 const json_t *disabled_toolsets,
+                                 bool quiet_mode,
+                                 bool skip_tool_search_assembly) {
+    (void)quiet_mode;
+    (void)skip_tool_search_assembly;
+    json_t *out = json_array();
+    if (!out) return NULL;
+    bool have_enabled = enabled_toolsets && json_is_array(enabled_toolsets) &&
+                        json_len(enabled_toolsets) > 0;
+    registry_refresh_availability();
+    size_t n = registry_get_count();
+    for (size_t i = 0; i < n; i++) {
+        const char *name = registry_get_name(i);
+        if (!name || !*name) continue;
+        tool_t *t = registry_find(name);
+        if (!t || !t->available) continue;
 
-/* Port of Python cli:get_toolset_info */
+        /* Toolset membership: registry map first, then the tool's own tag. */
+        const char *ts = registry_get_toolset_for_tool(name);
+        if (!ts || !*ts) ts = t->toolset;
+        if (have_enabled) {
+            if (!cli_ts_list_contains(enabled_toolsets, ts)) continue;
+        } else if (cli_ts_list_contains(disabled_toolsets, ts)) {
+            continue;
+        }
 
-/* Port of Python cli:validate_toolset */
+        json_t *params = json_parse(t->schema_json, NULL);
+        if (!params || !json_is_object(params)) {
+            if (params) json_free(params);
+            params = json_object();
+            json_set(params, "type", json_string("object"));
+            json_set(params, "properties", json_object());
+        }
+        json_t *fn = json_object();
+        json_set(fn, "name", json_string(t->name));
+        json_set(fn, "description", json_string(t->description));
+        json_set(fn, "parameters", params);
+        json_t *def = json_object();
+        json_set(def, "type", json_string("function"));
+        json_set(def, "function", fn);
+        json_append(out, def);
+    }
+    return out;
+}
+
+/* PoP: get_toolset_for_tool @ cli.py:get_toolset_for_tool
+ * Python delegates to model_tools → registry.get_toolset_for_tool. */
+const char *cli_get_toolset_for_tool(const char *tool_name) {
+    return registry_get_toolset_for_tool(tool_name);
+}
+
+/* Serialize a static toolset def into {"name","description","tools","includes"}.
+ * When `def` is NULL (plugin-registered name), resolves tools via the
+ * registry-merged resolution so plugin toolsets still appear. */
+static json_t *cli_toolset_def_to_json(const char *name,
+                                       const toolset_def_t *def) {
+    json_t *o = json_object();
+    json_set(o, "name", json_string(name));
+    json_set(o, "description",
+             json_string(def && def->description ? def->description : ""));
+    json_t *tools = json_array();
+    if (def && def->tools)
+        for (size_t i = 0; def->tools[i]; i++)
+            json_append(tools, json_string(def->tools[i]));
+    else {
+        /* Plugin toolset: resolved names stand in for direct tools. */
+        size_t rn = 0;
+        char **rt = toolsets_resolve(name, true, &rn);
+        for (size_t i = 0; rt && i < rn; i++) json_append(tools, json_string(rt[i]));
+        toolsets_free_list(rt, rn);
+    }
+    json_set(o, "tools", tools);
+    json_t *inc = json_array();
+    if (def && def->includes)
+        for (size_t i = 0; def->includes[i]; i++)
+            json_append(inc, json_string(def->includes[i]));
+    json_set(o, "includes", inc);
+    return o;
+}
+
+/* PoP: get_all_toolsets @ cli.py:get_all_toolsets
+ * Python returns {name: definition} for static + plugin-registered toolsets.
+ * Returns malloc'd serialized JSON object; caller frees. */
+char *cli_get_all_toolsets(void) {
+    json_t *result = json_object();
+    size_t n = 0;
+    char **names = toolsets_get_names(&n);
+    for (size_t i = 0; i < n; i++) {
+        const toolset_def_t *def = toolsets_get_static(names[i]);
+        json_set(result, names[i], cli_toolset_def_to_json(names[i], def));
+    }
+    toolsets_free_list(names, n);
+    char *s = json_serialize(result);
+    json_free(result);
+    return s;
+}
+
+/* PoP: get_toolset_info @ cli.py:get_toolset_info
+ * {name, description, direct_tools, includes, resolved_tools, tool_count,
+ *  is_composite} or NULL when unknown. Caller frees. */
+char *cli_get_toolset_info(const char *name) {
+    if (!name) return NULL;
+    const toolset_def_t *def = toolsets_get_static(name);
+    if (!def) return NULL;
+    size_t rn = 0;
+    char **resolved = toolsets_resolve(name, true, &rn);
+    json_t *o = cli_toolset_def_to_json(name, def);
+    json_t *rt = json_array();
+    for (size_t i = 0; i < rn; i++) json_append(rt, json_string(resolved[i]));
+    toolsets_free_list(resolved, rn);
+    json_set(o, "resolved_tools", rt);
+    json_set(o, "tool_count", json_number((double)rn));
+    bool composite = false;
+    if (def->includes)
+        for (size_t i = 0; def->includes[i]; i++) composite = true;
+    json_set(o, "is_composite", json_bool(composite));
+    char *s = json_serialize(o);
+    json_free(o);
+    return s;
+}
+
+/* PoP: validate_toolset @ cli.py:validate_toolset */
+bool cli_validate_toolset(const char *name) {
+    return toolsets_validate(name);
+}
 
 /* Port of Python cli:_sync_process_session_id */
 
-/* Port of Python cli:get_job */
+/* PoP: get_job @ cli.py:get_job
+ * Python lazily imports cron.get_job; C delegates to the cron jobs port
+ * (normalized record or NULL). Caller owns the returned JSON. */
+json_t *cli_get_job(const char *job_id) {
+    return cronjobs_get_job(job_id);
+}
 
 /* Port of Python cli:_cleanup_all_terminals */
 
-/* Port of Python cli:set_sudo_password_callback */
+/* ── cli.py callback registration surface — function-pointer globals ────
+ * Python's terminal_tool/skills_tool setters register process-wide callbacks;
+ * the C port mirrors that with function-pointer globals + setters (matching
+ * the codex_session_set_approval_callback pattern). */
 
-/* Port of Python cli:set_approval_callback */
+typedef void (*cli_sudo_password_callback_t)(const char *prompt);
+typedef bool (*cli_approval_callback_t)(const char *title, const char *description);
+typedef void (*cli_secret_capture_callback_t)(const char *name, const char *value);
 
-/* Port of Python cli:set_secret_capture_callback */
+static cli_sudo_password_callback_t  g_cli_sudo_password_callback  = NULL;
+static cli_approval_callback_t       g_cli_approval_callback       = NULL;
+static cli_secret_capture_callback_t g_cli_secret_capture_callback = NULL;
+
+/* PoP: set_sudo_password_callback @ cli.py:set_sudo_password_callback */
+void cli_set_sudo_password_callback(cli_sudo_password_callback_t cb) {
+    g_cli_sudo_password_callback = cb;
+    hermes_log(LOG_DEBUG, "cli", "sudo password callback registered");
+}
+
+/* Current sudo-password callback (NULL when none registered). */
+cli_sudo_password_callback_t cli_get_sudo_password_callback(void) {
+    return g_cli_sudo_password_callback;
+}
+
+/* PoP: set_approval_callback @ cli.py:set_approval_callback */
+void cli_set_approval_callback(cli_approval_callback_t cb) {
+    g_cli_approval_callback = cb;
+    hermes_log(LOG_DEBUG, "cli", "approval callback registered");
+}
+
+/* Current approval callback (NULL when none registered). */
+cli_approval_callback_t cli_get_approval_callback(void) {
+    return g_cli_approval_callback;
+}
+
+/* PoP: set_secret_capture_callback @ cli.py:set_secret_capture_callback */
+void cli_set_secret_capture_callback(cli_secret_capture_callback_t cb) {
+    g_cli_secret_capture_callback = cb;
+    hermes_log(LOG_DEBUG, "cli", "secret capture callback registered");
+}
+
+/* Current secret-capture callback (NULL when none registered). */
+cli_secret_capture_callback_t cli_get_secret_capture_callback(void) {
+    return g_cli_secret_capture_callback;
+}
 
 /* Port of Python cli:_cleanup_all_browsers */
 

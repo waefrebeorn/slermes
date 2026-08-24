@@ -384,3 +384,143 @@ json_t *su_curated_report(const char *hermes_home) {
     json_free(names);
     return rows;
 }
+
+/* === REAL_GAP closures: telemetry provenance + creation records ============ */
+
+#include "hermes_hooks.h" /* invoke_hook */
+
+/* PoP: su_emit_skill_lifecycle @ tools/skill_usage.py:_emit_skill_lifecycle */
+/* Emit one best-effort on_skill_lifecycle hook fact after an authoritative
+ * state change. Never raises — invoke_hook failures are swallowed. */
+static void su_emit_skill_lifecycle(const char *skill_name, const char *action,
+                                    const char *provenance,
+                                    const char *created_by)
+{
+    if (!skill_name || !action) return;
+    json_t *payload = json_object();
+    if (!payload) return;
+    json_set(payload, "action", json_string(action));
+    json_set(payload, "skill_name", json_string(skill_name));
+    json_set(payload, "provenance", json_string(provenance ? provenance : "unknown"));
+    json_set(payload, "task_id", json_string(""));
+    json_set(payload, "session_id", json_string(""));
+    char *res = invoke_hook("on_skill_lifecycle", json_dumps(payload, 0));
+    if (res) free(res);
+    json_free(payload);
+}
+
+/* PoP: su_telemetry_provenance @ tools/skill_usage.py:telemetry_provenance */
+/* Return the bounded provenance used by shared skill metrics:
+ * installed | agent_created | external | local | unknown. */
+const char *su_telemetry_provenance(const char *hermes_home,
+                                    const char *skill_name,
+                                    const skill_usage_record_t *record)
+{
+    if (!skill_name || !*skill_name) return "unknown";
+    /* Hub-installed or bundled -> "installed" (checked by name). */
+    if (skill_usage_is_hub_installed_by_name(hermes_home, skill_name) ||
+        skill_usage_is_bundled_by_name(hermes_home, skill_name))
+        return "installed";
+    /* Plugin-qualified names ("<plugin>:<skill>"): a plugin-owned skill
+     * counts as installed. */
+    if (strchr(skill_name, ':') != NULL) {
+        extern json_t *plugin_find_skill(const char *name);
+        json_t *hit = plugin_find_skill(skill_name);
+        if (hit) { json_free(hit); return "installed"; }
+    }
+    if (record && strcmp(record->created_by, "installed") == 0)
+        return "installed";
+    if (record && strcmp(record->created_by, "agent") == 0)
+        return "agent_created";
+    /* External dirs carry an upstream owner. */
+    char *ext = skill_usage_find_external_skill_dir(hermes_home, skill_name);
+    if (ext) { free(ext); return "external"; }
+    /* Local dir present, or any record at all -> "local". */
+    bool has_local = false;
+    char root[4096];
+    const char *home = hermes_home;
+    if (!home || !home[0]) home = getenv("HOME");
+    snprintf(root, sizeof(root), "%s/skills/%s/SKILL.md",
+             home ? home : ".", skill_name);
+    FILE *f = fopen(root, "r");
+    if (f) { fclose(f); has_local = true; }
+    if (has_local || record) return "local";
+    return "unknown";
+}
+
+/* PoP: su_record_created @ tools/skill_usage.py:record_created */
+/* Persist explicit creation provenance and emit a successful create fact.
+ * A successful create is a new logical skill even if stale sidecar state
+ * survived an earlier deletion. */
+void su_record_created(const char *hermes_home, const char *skill_name,
+                       bool agent_created)
+{
+    if (!hermes_home || !skill_name || !*skill_name) return;
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+    int idx = skill_usage_find(&map, skill_name);
+    skill_usage_record_t rec;
+    if (idx >= 0) {
+        rec = map.records[idx];
+    } else {
+        memset(&rec, 0, sizeof(rec));
+        snprintf(rec.name, sizeof(rec.name), "%s", skill_name);
+    }
+    /* rec.clear(); rec.update(_empty_record()) — reset the logical fields. */
+    const char *name_keep = rec.name;
+    char name_buf[sizeof(rec.name)];
+    snprintf(name_buf, sizeof(name_buf), "%s", name_keep);
+    memset(&rec, 0, sizeof(rec));
+    snprintf(rec.name, sizeof(rec.name), "%s", name_buf);
+    rec.use_count = 0;
+    rec.view_count = 0;
+    rec.patch_count = 0;
+    rec.state[0] = '\0';
+    rec.pinned = false;
+    rec.sync = false;
+    skill_usage_now_iso(rec.created_at);
+    if (agent_created)
+        snprintf(rec.created_by, sizeof(rec.created_by), "agent");
+    else
+        rec.created_by[0] = '\0';
+    if (idx >= 0)
+        map.records[idx] = rec;
+    else {
+        if (map.count >= SKILL_USAGE_MAX_SKILLS) return;
+        map.records[map.count++] = rec;
+        idx = map.count - 1;
+    }
+    if (skill_usage_save(hermes_home, &map) != 0) return;
+    char prov[32];
+    const char *p = su_telemetry_provenance(hermes_home, skill_name,
+                                            &map.records[idx]);
+    snprintf(prov, sizeof(prov), "%s", p);
+    su_emit_skill_lifecycle(skill_name, "created", prov, rec.created_by);
+}
+
+/* PoP: su_record_installed @ tools/skill_usage.py:record_installed */
+/* Record a successful Skills Hub install without exporting its name:
+ * created_by="installed", state=active, archived_at cleared. */
+void su_record_installed(const char *hermes_home, const char *skill_name)
+{
+    if (!hermes_home || !skill_name || !*skill_name) return;
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+    int idx = skill_usage_find(&map, skill_name);
+    if (idx < 0) {
+        if (map.count >= SKILL_USAGE_MAX_SKILLS) return;
+        idx = map.count++;
+        memset(&map.records[idx], 0, sizeof(map.records[idx]));
+        snprintf(map.records[idx].name, sizeof(map.records[idx].name),
+                 "%s", skill_name);
+    }
+    skill_usage_record_t *rec = &map.records[idx];
+    snprintf(rec->created_by, sizeof(rec->created_by), "installed");
+    snprintf(rec->state, sizeof(rec->state), "%s", SKILL_USAGE_STATE_ACTIVE);
+    rec->archived_at[0] = '\0';
+    if (skill_usage_save(hermes_home, &map) != 0) return;
+    char prov[32];
+    snprintf(prov, sizeof(prov), "%s",
+             su_telemetry_provenance(hermes_home, skill_name, rec));
+    su_emit_skill_lifecycle(skill_name, "installed", prov, rec->created_by);
+}

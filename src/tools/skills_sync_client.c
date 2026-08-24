@@ -496,14 +496,17 @@ static bool ssc_sync_config_bool(const char *env_var, const char *config_key,
 
 
 
+/* PoP: skills_sync_feature_enabled @ tools/skills_sync_client.py:sync_feature_enabled */
 bool skills_sync_feature_enabled(void) {
     return sync_config_bool("HERMES_SYNC_ENABLED", "enabled", false);
 }
 
+/* PoP: skills_sync_org_auto_propose @ tools/skills_sync_client.py:sync_org_auto_propose */
 bool skills_sync_org_auto_propose(void) {
     return sync_config_bool("HERMES_SYNC_ORG_AUTO_PROPOSE", "org_auto_propose", false);
 }
 
+/* PoP: skills_sync_default_opt_in @ tools/skills_sync_client.py:sync_default_opt_in */
 bool skills_sync_default_opt_in(void) {
     return sync_config_bool("HERMES_SYNC_DEFAULT_OPT_IN", "default_opt_in", false);
 }

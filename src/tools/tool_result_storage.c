@@ -4,6 +4,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
+#include "slermes_home.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -283,4 +284,96 @@ char *cli_tools_tool_result_storage__safe_result_filename(const char *tool_use_i
     if (!result) return NULL;
     snprintf(result, need, "%s.txt", safe_stem);
     return result;
+}
+
+/* === REAL_GAP closures: spillover dir + cache cleanup + path extraction ==== */
+
+#include <dirent.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+
+#define TRS_SPILLOVER_SUBDIR "cache/spillover"
+#define TRS_SPILLOVER_MAX_AGE_HOURS 24
+#define TRS_PERSISTED_OUTPUT_TAG "<persisted-output>"
+
+/* PoP: tools_tool_result_storage_get_spillover_dir @ tools/tool_result_storage.py:get_spillover_dir */
+/* Return $HERMES_HOME/cache/spillover into out (not created). */
+int tools_tool_result_storage_get_spillover_dir(char *out, size_t sz)
+{
+    if (!out || sz == 0) return -1;
+    const char *home = slermes_home();
+    if (!home || !home[0]) home = getenv("HERMES_HOME");
+    if (!home || !home[0]) home = getenv("HOME");
+    if (!home || !home[0]) home = ".";
+    int n = snprintf(out, sz, "%s/%s", home, TRS_SPILLOVER_SUBDIR);
+    return (n < 0 || (size_t)n >= sz) ? -1 : 0;
+}
+
+/* PoP: tools_tool_result_storage_cleanup_spillover_cache @ tools/tool_result_storage.py:cleanup_spillover_cache */
+/* Delete spillover files older than max_age_hours. Returns files removed.
+ * Same contract as the gateway cleanup_*_cache helpers: count of removed
+ * files; unreadable/missing directory yields 0 (Python OSError -> 0). */
+int tools_tool_result_storage_cleanup_spillover_cache(int max_age_hours)
+{
+    if (max_age_hours <= 0) max_age_hours = TRS_SPILLOVER_MAX_AGE_HOURS;
+    char dir[4096];
+    if (tools_tool_result_storage_get_spillover_dir(dir, sizeof(dir)) != 0)
+        return 0;
+    DIR *d = opendir(dir);
+    if (!d) return 0; /* OSError on iterdir -> 0 */
+    time_t cutoff = time(NULL) - (time_t)max_age_hours * 3600;
+    int removed = 0;
+    struct dirent *ent;
+    while ((ent = readdir(d)) != NULL) {
+        if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+            continue;
+        char path[4608];
+        snprintf(path, sizeof(path), "%s/%s", dir, ent->d_name);
+        struct stat st;
+        /* f.is_file() and f.stat().st_mtime < cutoff; per-entry OSError is
+         * swallowed and the loop continues. */
+        if (stat(path, &st) != 0) continue;
+        if (!S_ISREG(st.st_mode)) continue;
+        if (st.st_mtime >= cutoff) continue;
+        if (unlink(path) == 0) removed++;
+    }
+    closedir(d);
+    return removed;
+}
+
+/* PoP: tools_tool_result_storage_extract_persisted_path @ tools/tool_result_storage.py:extract_persisted_path */
+/* Return the file path from a <persisted-output> replacement block by
+ * scanning for a line "Full output saved to: <path>" (^ ...$ multiline).
+ * Returns 1 and fills out when found; 0 for non-persisted content or no
+ * path line (Python None). */
+int tools_tool_result_storage_extract_persisted_path(const char *content,
+                                                     char *out, size_t sz)
+{
+    if (out && sz) out[0] = '\0';
+    if (!content || !out || sz == 0) return 0;
+    if (!strstr(content, TRS_PERSISTED_OUTPUT_TAG)) return 0;
+    const char *needle = "Full output saved to: ";
+    const char *p = content;
+    while ((p = strstr(p, needle)) != NULL) {
+        /* Python re.MULTILINE anchors the match at line start. */
+        if (p == content || p[-1] == '\n') {
+            const char *v = p + strlen(needle);
+            const char *e = strchr(v, '\n');
+            size_t len = e ? (size_t)(e - v) : strlen(v);
+            /* .strip() trailing whitespace / carriage returns */
+            while (len > 0 && (v[len - 1] == ' ' || v[len - 1] == '\t' ||
+                               v[len - 1] == '\r'))
+                len--;
+            /* leading strip too (group().strip()) */
+            while (len > 0 && (*v == ' ' || *v == '\t')) { v++; len--; }
+            if (len >= sz) len = sz - 1;
+            memcpy(out, v, len);
+            out[len] = '\0';
+            return 1;
+        }
+        p += strlen(needle);
+    }
+    return 0;
 }

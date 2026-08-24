@@ -335,6 +335,7 @@ static psh_dispatcher_t **psh_dispatchers_for(const char *hook_name, size_t *out
 /* public API                                                          */
 /* ------------------------------------------------------------------ */
 
+/* PoP: enqueue_plugin_stream_hook @ agent/plugin_stream_hooks.py:enqueue_plugin_stream_hook */
 int enqueue_plugin_stream_hook(const char *hook_name, const json_t *payload)
 {
     size_t rn = 0;
@@ -351,6 +352,7 @@ int enqueue_plugin_stream_hook(const char *hook_name, const json_t *payload)
     return queued;
 }
 
+/* PoP: has_stream_observer_hooks @ agent/plugin_stream_hooks.py:has_stream_observer_hooks */
 int has_stream_observer_hooks(void)
 {
     static const char *names[] = { "on_stream_start", "on_stream_delta",
@@ -363,6 +365,7 @@ int has_stream_observer_hooks(void)
     return 0;
 }
 
+/* PoP: stream_reasoning_deltas_enabled @ agent/plugin_stream_hooks.py:stream_reasoning_deltas_enabled */
 int stream_reasoning_deltas_enabled(void)
 {
     /* bool(cfg_get(config, "plugins", "stream_reasoning_deltas", False)) */
@@ -383,6 +386,7 @@ int stream_reasoning_deltas_enabled(void)
     return v;
 }
 
+/* PoP: has_reasoning_stream_observer_hooks @ agent/plugin_stream_hooks.py:has_reasoning_stream_observer_hooks */
 int has_reasoning_stream_observer_hooks(void)
 {
     if (!stream_reasoning_deltas_enabled()) return 0;
@@ -390,6 +394,7 @@ int has_reasoning_stream_observer_hooks(void)
     return plugin_stream_hooks__registered_callbacks("on_stream_delta", cbs, 8) > 0;
 }
 
+/* PoP: shutdown_plugin_stream_hook_dispatcher @ agent/plugin_stream_hooks.py:shutdown_plugin_stream_hook_dispatcher */
 void shutdown_plugin_stream_hook_dispatcher(double timeout)
 {
     pthread_mutex_lock(&g_lock);

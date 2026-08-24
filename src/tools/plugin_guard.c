@@ -504,6 +504,7 @@ void plugin_guard_scan_result_free(pg_plugin_scan_result_t *r)
     free(r);
 }
 
+/* PoP: should_allow_plugin_install @ tools/plugin_guard.py:should_allow_plugin_install */
 void should_allow_plugin_install(const pg_plugin_scan_result_t *result,
                                  int force, int *allowed, char *reason,
                                  size_t reason_sz)

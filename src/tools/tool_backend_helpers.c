@@ -268,3 +268,139 @@ int tools_tool_backend_helpers_prefers_gateway(const char *arg) {
     printf("0\n");
     return 0;
 }
+
+/* === REAL_GAP closures: provider selection read/exists/error ============== */
+
+#include "port_config_py_helpers.h" /* config_py_read_raw_config */
+#include "truthy.h"                 /* is_truthy_value */
+
+#define TBH_NOUS_MANAGED_PROVIDER "nous"
+
+/* PoP: tools_tool_backend_helpers__str_or_none @ tools/tool_backend_helpers.py:read_selection._str_or_none */
+/* Python inner helper _str_or_none: str(value).strip().lower() or None. */
+static int tbh_str_or_none(json_t *raw, const char *key, char *out, size_t sz)
+{
+    out[0] = '\0';
+    if (!raw || raw->type != JSON_OBJECT) return 0;
+    json_t *v = json_obj_get(raw, key);
+    if (!v) return 0;
+    const char *s = NULL;
+    if (v->type == JSON_STRING) s = json_get_str(v, "", "");
+    else if (v->type == JSON_NUMBER) {
+        snprintf(out, sz, "%g", v->num_val);
+    }
+    if (!s) return out[0] ? 1 : 0;
+    size_t n = 0;
+    while (*s == ' ' || *s == '\t') s++;
+    for (; *s && n + 1 < sz; s++) out[n++] = (char)(*s >= 'A' && *s <= 'Z' ? *s + 32 : *s);
+    /* right-trim */
+    while (n > 0 && (out[n - 1] == ' ' || out[n - 1] == '\t')) n--;
+    out[n] = '\0';
+    return out[0] ? 1 : 0;
+}
+
+/* PoP: tools_tool_backend_helpers_read_selection @ tools/tool_backend_helpers.py:read_selection */
+/* Return the stored `hermes tools` provider string for a config section.
+ * Reads the RAW config.yaml so key presence means a selection was actually
+ * written. Legacy shim: truthy use_gateway maps to "nous". Returns the name
+ * in out ("nous" or vendor), or 0 when never configured (Python None). */
+int tools_tool_backend_helpers_read_selection(const char *section,
+                                              char *out, size_t sz)
+{
+    out[0] = '\0';
+    if (!section || !*section || !out || sz == 0) return 0;
+    json_t *cfg = config_py_read_raw_config();
+    if (!cfg) return 0;
+    json_t *raw = json_obj_get(cfg, section);
+    char name[128] = "";
+    if (raw && raw->type == JSON_OBJECT) {
+        /* Per-section selection-name keys; browser.backend is deliberately
+         * excluded (driver choice, not cloud-provider selection). */
+        const char *keys[3];
+        int nk = 0;
+        if (strcmp(section, "browser") == 0) {
+            keys[nk++] = "cloud_provider";
+        } else if (strcmp(section, "web") == 0) {
+            keys[nk++] = "backend";
+        } else {
+            keys[nk++] = "provider";
+            keys[nk++] = "backend";
+            keys[nk++] = "cloud_provider";
+        }
+        for (int i = 0; i < nk; i++) {
+            if (tbh_str_or_none(raw, keys[i], name, sizeof(name))) break;
+            name[0] = '\0';
+        }
+        /* Legacy shim: use_gateway:true was only ever written by the
+         * managed "Nous Subscription" row. */
+        json_t *ug = json_obj_get(raw, "use_gateway");
+        if (ug) {
+            bool truthy = false;
+            if (ug->type == JSON_BOOL) truthy = ug->bool_val;
+            else if (ug->type == JSON_STRING)
+                truthy = is_truthy_value(json_get_str(ug, "", ""), false);
+            if (truthy) {
+                snprintf(out, sz, "%s", TBH_NOUS_MANAGED_PROVIDER);
+                json_free(cfg);
+                return 1;
+            }
+        }
+    }
+    json_free(cfg);
+    if (name[0]) {
+        snprintf(out, sz, "%s", name);
+        return 1;
+    }
+    /* use_gateway:false with no name key is not a usable selection shape. */
+    return 0;
+}
+
+/* PoP: tools_tool_backend_helpers_selection_exists @ tools/tool_backend_helpers.py:selection_exists */
+/* True when ANY selection signal has ever been written for the section:
+ * read_selection() hits, or per-capability web keys
+ * (search_backend / extract_backend) are non-empty in raw config. */
+int tools_tool_backend_helpers_selection_exists(const char *section)
+{
+    char sel[128];
+    if (tools_tool_backend_helpers_read_selection(section, sel, sizeof(sel)))
+        return 1;
+    /* Extra per-capability keys only exist for the web section. */
+    const char **extra = NULL;
+    static const char *WEB_EXTRA[] = {"search_backend", "extract_backend", NULL};
+    if (strcmp(section, "web") == 0) extra = WEB_EXTRA;
+    if (!extra) return 0;
+    json_t *cfg = config_py_read_raw_config();
+    if (!cfg) return 0;
+    json_t *raw = json_obj_get(cfg, section);
+    bool any = false;
+    if (raw && raw->type == JSON_OBJECT) {
+        for (int i = 0; extra[i]; i++) {
+            json_t *v = json_obj_get(raw, extra[i]);
+            if (!v) continue;
+            if (v->type == JSON_STRING && v->str_val && v->str_val[0] &&
+                strspn(v->str_val, " \t") != strlen(v->str_val)) {
+                any = true;
+                break;
+            }
+            if (v->type == JSON_NUMBER) { any = true; break; }
+        }
+    }
+    json_free(cfg);
+    return any ? 1 : 0;
+}
+
+/* PoP: tools_tool_backend_helpers_selection_error @ tools/tool_backend_helpers.py:selection_error */
+/* The uniform honest-error contract for a selected-but-broken provider. */
+void tools_tool_backend_helpers_selection_error(const char *section,
+                                                const char *selection_name,
+                                                const char *failure,
+                                                char *out, size_t sz)
+{
+    if (!out || sz == 0) return;
+    snprintf(out, sz,
+             "%s is configured to use %s (set via hermes tools), but %s. "
+             "Run 'hermes tools' to change it.",
+             section ? section : "",
+             selection_name ? selection_name : "",
+             failure ? failure : "");
+}

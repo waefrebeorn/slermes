@@ -19,6 +19,7 @@
 #include <signal.h>
 
 #include "kanban_db.h"
+#include "lifecycle_ledger.h"
 
 /* Port of Python: _fire_kanban_lifecycle_hook */
 void _fire_kanban_lifecycle_hook(const char* event, const char* task_id)
@@ -1810,3 +1811,154 @@ int kanban_review_dispatch_enabled(void) {
     return enabled ? 1 : 0;
 }
 
+
+/* =========================================================================
+ * max-in-progress resolution (kanban_db.py tail)
+ * ========================================================================= */
+
+#define KDB_MEMORY_GUARD_MB_PER_WORKER 512L
+#define KDB_DERIVED_MAX_IN_PROGRESS_FLOOR 2L
+#define KDB_DERIVED_MAX_IN_PROGRESS_CEILING 8L
+
+/* PoP: kdb_count_running_tasks @ hermes_cli/kanban_db.py:count_running_tasks */
+static int kdb_count_running_tasks(sqlite3 *conn)
+{
+    /* Fails open to 0 — a broken board must not brick dispatch on healthy
+     * ones (OOF-30). */
+    if (!conn) return 0;
+    sqlite3_stmt *stmt = NULL;
+    if (sqlite3_prepare_v2(conn, "SELECT COUNT(*) FROM tasks WHERE status = 'running'",
+                           -1, &stmt, NULL) != SQLITE_OK)
+        return 0;
+    int count = 0;
+    if (sqlite3_step(stmt) == SQLITE_ROW)
+        count = sqlite3_column_int(stmt, 0);
+    sqlite3_finalize(stmt);
+    return count;
+}
+
+/* PoP: kdb_derive_default_max_in_progress @ hermes_cli/kanban_db.py:derive_default_max_in_progress */
+long kdb_derive_default_max_in_progress(const json_t *sample)
+{
+    json_t *owned = NULL;
+    if (!sample) {
+        owned = llg_sample_memory();
+        sample = owned;
+    }
+    long result = -1; /* Python None: no cap when memory can't be determined */
+    if (sample) {
+        json_t *v = json_obj_get(sample, "mem_total_kib");
+        /* isinstance(int) and not bool and > 0 — the JSON shim only produces
+         * JSON_NUMBER for numerics, so just check positivity. */
+        if (v && v->type == JSON_NUMBER && (long)v->num_val > 0) {
+            long total_kib = (long)v->num_val;
+            long workers = (total_kib / 1024) / KDB_MEMORY_GUARD_MB_PER_WORKER;
+            long clamped = workers < KDB_DERIVED_MAX_IN_PROGRESS_CEILING
+                               ? workers : KDB_DERIVED_MAX_IN_PROGRESS_CEILING;
+            if (clamped < KDB_DERIVED_MAX_IN_PROGRESS_FLOOR)
+                clamped = KDB_DERIVED_MAX_IN_PROGRESS_FLOOR;
+            result = clamped;
+        }
+    }
+    if (owned) json_free(owned);
+    return result;
+}
+
+/* PoP: kdb_resolve_max_in_progress @ hermes_cli/kanban_db.py:resolve_max_in_progress */
+long kdb_resolve_max_in_progress(long configured)
+{
+    if (configured >= 0)
+        return configured;
+    return kdb_derive_default_max_in_progress(NULL);
+}
+
+/* PoP: kdb_configured_max_in_progress @ hermes_cli/kanban_db.py:configured_max_in_progress */
+long kdb_configured_max_in_progress(void)
+{
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) return -1;
+    json_t *raw = config_py_get_config_value(cfg, "kanban.max_in_progress", NULL);
+    long result = -1;
+    if (raw) {
+        if (raw->type == JSON_NUMBER) {
+            long ival = (long)raw->num_val;
+            if (ival >= 1) result = ival;
+        } else if (raw->type == JSON_STRING && raw->str_val[0]) {
+            char *end = NULL;
+            long ival = strtol(raw->str_val, &end, 10);
+            if (end && *end == '\0' && ival >= 1) result = ival;
+        }
+    }
+    json_free(cfg);
+    return result;
+}
+
+/* PoP: kdb_count_running_tasks_other_boards @ hermes_cli/kanban_db.py:count_running_tasks_other_boards */
+int kdb_count_running_tasks_other_boards(const char *board)
+{
+    char current_resolved[4096] = {0};
+    {
+        char *cur_path = kanban_db_path(board);
+        if (cur_path) {
+            char expanded[4096];
+            snprintf(expanded, sizeof(expanded), "%s", cur_path);
+            free(cur_path);
+            /* expanduser: leading ~ → $HOME */
+            if (expanded[0] == '~') {
+                const char *home = getenv("HOME");
+                if (home) {
+                    char joined[4096];
+                    snprintf(joined, sizeof(joined), "%s%s", home, expanded + 1);
+                    snprintf(expanded, sizeof(expanded), "%s", joined);
+                }
+            }
+            char resolved[4096];
+            if (realpath(expanded, resolved))
+                snprintf(current_resolved, sizeof(current_resolved), "%s", resolved);
+        }
+    }
+
+    char *boards_json = kdb_list_boards(0);
+    if (!boards_json) return 0;
+    json_t *boards = json_parse(boards_json, NULL);
+    free(boards_json);
+    if (!boards || boards->type != JSON_ARRAY) {
+        if (boards) json_free(boards);
+        return 0;
+    }
+
+    int total = 0;
+    size_t n = json_len(boards);
+    for (size_t i = 0; i < n; i++) {
+        json_t *meta = json_get(boards, i);
+        json_t *slug_node = meta ? json_obj_get(meta, "slug") : NULL;
+        const char *slug = (slug_node && slug_node->type == JSON_STRING &&
+                            slug_node->str_val[0])
+                               ? slug_node->str_val : KB_DEFAULT_BOARD;
+
+        char *path = kanban_db_path(slug);
+        if (!path) continue;
+        char expanded[4096];
+        snprintf(expanded, sizeof(expanded), "%s", path);
+        free(path);
+        if (expanded[0] == '~') {
+            const char *home = getenv("HOME");
+            if (home) {
+                char joined[4096];
+                snprintf(joined, sizeof(joined), "%s%s", home, expanded + 1);
+                snprintf(expanded, sizeof(expanded), "%s", joined);
+            }
+        }
+        char resolved[4096];
+        if (!realpath(expanded, resolved)) continue; /* path.exists() gate */
+        if (current_resolved[0] && strcmp(resolved, current_resolved) == 0)
+            continue; /* this board's own DB — not "other boards" */
+
+        sqlite3 *other = kdb_connect_path(expanded);
+        if (!other) continue; /* fails open per board */
+        total += kdb_count_running_tasks(other);
+        kdb_close(other);
+    }
+    json_free(boards);
+    return total;
+}

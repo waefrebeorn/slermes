@@ -961,6 +961,7 @@ static bool s_yolo_mode_frozen_set = false;
  * per-session approved set (Python _session_approved). */
 static char g_pending_sessions[32][192];
 static char g_pending_payloads[32][2048];
+static bool g_pending_acked[32]; /* _ApprovalEntry.acknowledged */
 static int g_pending_n = 0;
 static char g_session_approved[64][192];
 static int g_session_approved_n = 0;
@@ -2118,6 +2119,7 @@ int approval_resolve_gateway_approval(const char *platform, const char *chat_id)
     for (int j = idx; j < g_pending_n - 1; j++) {
         strcpy(g_pending_sessions[j], g_pending_sessions[j + 1]);
         strcpy(g_pending_payloads[j], g_pending_payloads[j + 1]);
+        g_pending_acked[j] = g_pending_acked[j + 1];
     }
     g_pending_n--;
     hermes_log(LOG_INFO, "approval", "gateway approval resolved for %s",
@@ -2133,6 +2135,7 @@ int approval_submit_pending(const char *session_key, const char *payload) {
         if (strcmp(g_pending_sessions[i], session_key) == 0) {
             snprintf(g_pending_payloads[i], sizeof(g_pending_payloads[i]),
                      "%s", payload ? payload : "");
+            g_pending_acked[i] = false;
             return 1;
         }
     if (g_pending_n >= 32) return 0;
@@ -2140,8 +2143,73 @@ int approval_submit_pending(const char *session_key, const char *payload) {
              "%s", session_key);
     snprintf(g_pending_payloads[g_pending_n], sizeof(g_pending_payloads[g_pending_n]),
              "%s", payload ? payload : "");
+    g_pending_acked[g_pending_n] = false;
     g_pending_n++;
     return 1;
+}
+
+/* === REAL_GAP closures: gateway approval registry reads ==================== */
+
+/* PoP: approval_list_gateway_approvals @ tools/approval.py:list_gateway_approvals */
+/* Return replay-safe snapshots of unresolved approvals for one session as a
+ * malloc'd JSON array of the stored approval payloads (copies — mutating
+ * them does not touch the queue). Caller frees with json_free. */
+json_t *approval_list_gateway_approvals(const char *session_key)
+{
+    json_t *arr = json_array();
+    if (!session_key || !*session_key || !arr) return arr;
+    for (int i = 0; i < g_pending_n; i++) {
+        if (strcmp(g_pending_sessions[i], session_key) != 0) continue;
+        json_t *snap = json_parse(g_pending_payloads[i], NULL);
+        if (snap) json_append(arr, snap);
+        else {
+            /* Non-JSON payload: wrap it as {"raw": ...} so the replay-safe
+             * copy is never lost. */
+            json_t *wrap = json_object();
+            if (wrap) {
+                json_set(wrap, "raw", json_string(g_pending_payloads[i]));
+                json_append(arr, wrap);
+            }
+        }
+    }
+    return arr;
+}
+
+/* PoP: approval_ack_gateway_approval @ tools/approval.py:ack_gateway_approval */
+/* Record that a client received a particular pending approval request.
+ * Matches by request_id inside the payload JSON. Returns true when found. */
+int approval_ack_gateway_approval(const char *session_key, const char *request_id)
+{
+    if (!session_key || !*session_key || !request_id || !*request_id) return 0;
+    for (int i = 0; i < g_pending_n; i++) {
+        if (strcmp(g_pending_sessions[i], session_key) != 0) continue;
+        json_t *snap = json_parse(g_pending_payloads[i], NULL);
+        const char *rid = NULL;
+        if (snap) {
+            rid = json_get_str(json_obj_get(snap, "request_id"), "request_id", "");
+            json_free(snap);
+        }
+        if (!rid || strcmp(rid, "") == 0) continue;
+        if (strcmp(rid, request_id) == 0) {
+            g_pending_acked[i] = true;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* PoP: approval_get_pending_gateway_approval @ tools/approval.py:get_pending_gateway_approval */
+/* Return a copy of the oldest unresolved gateway approval payload for a
+ * session (malloc'd JSON text; read-only snapshot — the queue remains
+ * authoritative). Returns NULL when none / empty key. Caller frees. */
+char *approval_get_pending_gateway_approval(const char *session_key)
+{
+    if (!session_key || !*session_key) return NULL;
+    for (int i = 0; i < g_pending_n; i++) {
+        if (strcmp(g_pending_sessions[i], session_key) != 0) continue;
+        return strdup(g_pending_payloads[i]);
+    }
+    return NULL;
 }
 
 /* PoP: approval_approve_session @ tools/approval.py:approve_session */

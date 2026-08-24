@@ -340,6 +340,7 @@ static void at_worker(at_job_t *job)
     job_unref(job);
 }
 
+/* PoP: invoke_approval_transport @ hermes_cli/approval_transport.py:invoke_approval_transport */
 approval_transport_result_t invoke_approval_transport(
     approval_present_fn present, void *present_ctx,
     const approval_request_t *request,

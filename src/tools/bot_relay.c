@@ -415,9 +415,36 @@ static const struct { const char *pattern; const char *code; } BR_RULES[] = {
     { "model .*(not found|does not exist)|model_not_found", "model_unavailable" },
 };
 
-/* classify_agent_error @ tools/bot_failure_reasons.py:classify_agent_error
- * (inlined here exactly as bot_relay.write_reply imports it). */
-static void br_classify_agent_error(const char *text, char *out, size_t n)
+/* PoP: bot_failure_is_auto_retryable @ tools/bot_failure_reasons.py:is_auto_retryable */
+/* True when `reason` is safe to retry automatically (AUTO_RETRYABLE set). */
+int bot_failure_is_auto_retryable(const char *reason)
+{
+    if (!reason) return 0;
+    static const char *const AUTO_RETRYABLE[] = {
+        "runtime_offline", "delivery_timeout",
+        "provider_rate_limit", "provider_server_error", NULL,
+    };
+    for (int i = 0; AUTO_RETRYABLE[i]; i++)
+        if (strcmp(reason, AUTO_RETRYABLE[i]) == 0) return 1;
+    return 0;
+}
+
+/* PoP: bot_failure_retry_action @ tools/bot_failure_reasons.py:retry_action */
+/* Map a failure reason to the bot-turn retry action:
+ * transient -> "resume"; context_overflow -> "compress_then_resume";
+ * everything else -> "none" (never auto-retry auth/quota/config). */
+const char *bot_failure_retry_action(const char *reason)
+{
+    if (bot_failure_is_auto_retryable(reason)) return "resume";
+    if (reason && strcmp(reason, "context_overflow") == 0)
+        return "compress_then_resume";
+    return "none";
+}
+
+/* PoP: bot_failure_classify_agent_error @ tools/bot_failure_reasons.py:classify_agent_error
+ * (promoted from the former inlined br_classify_agent_error — same rules,
+ * now shared by write_reply and external callers). */
+void bot_failure_classify_agent_error(const char *text, char *out, size_t n)
 {
     const char *raw = text ? text : "";
     const char *b = raw;
@@ -458,7 +485,7 @@ int write_reply(const char *root, const char *envelope_id, const char *reply,
     if (reason && *reason) {
         snprintf(code, sizeof code, "%s", reason);
     } else if (*err) {
-        br_classify_agent_error(err, code, sizeof code);
+        bot_failure_classify_agent_error(err, code, sizeof code);
     } else {
         code[0] = '\0';
     }

@@ -522,6 +522,7 @@ char *optional_base_url(const char *value)
 /*
  * Decode the payload segment of a JWT into a JSON object. Returns NULL on
  * failure; caller frees via json_free. */
+/* PoP: _decode_jwt_claims @ hermes_cli/auth.py:_decode_jwt_claims */
 json_t *_decode_jwt_claims(const char *token)
 {
     if (!token) return NULL;
@@ -639,6 +640,7 @@ char *spotify_scope_string(const char *raw_scope)
 
 /*
  * Returns malloc'd client_id from explicit/state/env, or NULL if missing. */
+/* PoP: _spotify_client_id @ hermes_cli/auth.py:_spotify_client_id */
 char *_spotify_client_id(const char *explicit, const char *state_client_id)
 {
     const char *cands[4];
@@ -716,6 +718,7 @@ char *spotify_accounts_base_url(const char *state_accounts_base_url, const char 
 /*
  * Returns malloc'd PKCE code_verifier (urlsafe base64 of `length` random bytes,
  * stripped of '=' and truncated to 128). Caller frees. */
+/* PoP: _spotify_code_verifier @ hermes_cli/auth.py:_spotify_code_verifier */
 char *_spotify_code_verifier(int length)
 {
     if (length <= 0) length = 64;
@@ -760,6 +763,7 @@ char *oauth_pkce_code_challenge(const char *code_verifier)
 
 /*
  * Build the Spotify PKCE authorize URL. Returns malloc'd string. Caller frees. */
+/* PoP: _spotify_build_authorize_url @ hermes_cli/auth.py:_spotify_build_authorize_url */
 char *_spotify_build_authorize_url(const char *client_id, const char *redirect_uri,
                                   const char *scope, const char *state,
                                   const char *code_challenge, const char *accounts_base_url)
@@ -785,6 +789,7 @@ char *_spotify_build_authorize_url(const char *client_id, const char *redirect_u
 /*
  * Validate a Spotify loopback redirect URI. Returns 0 on success (filling
  * *host_out, *port_out, *path_out via malloc), -1 on invalid (err filled). */
+/* PoP: _spotify_validate_redirect_uri @ hermes_cli/auth.py:_spotify_validate_redirect_uri */
 int _spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
                                   int *port_out, char **path_out, char *err, size_t errsz)
 {
@@ -877,6 +882,7 @@ int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms)
 
 /*
  * Returns access-token expiry as unix seconds. */
+/* PoP: _minimax_resolve_token_expiry_unix @ hermes_cli/auth.py:_minimax_resolve_token_expiry_unix */
 double _minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 {
     long now_ms = (long)(now_unix * 1000.0);
@@ -887,6 +893,7 @@ double _minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 
 /*
  * Returns malloc'd path to the Qwen CLI auth tokens file. Caller frees. */
+/* PoP: _qwen_cli_auth_path @ hermes_cli/auth.py:_qwen_cli_auth_path */
 char *_qwen_cli_auth_path(void)
 {
     const char *home = getenv("HOME");

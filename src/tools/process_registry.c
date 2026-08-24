@@ -1635,6 +1635,7 @@ void _format_age(double seconds, char *buf, size_t buf_len) {
     snprintf(buf, buf_len, "%dh%d%m", h, m);
 }
 
+/* PoP: _format_async_delegation @ tools/process_registry.py:_format_async_delegation */
 char* _format_async_delegation(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1689,6 +1690,7 @@ char* _format_async_delegation(const char *json_evt) {
     return out;
 }
 
+/* PoP: format_process_notification @ tools/process_registry.py:format_process_notification */
 char* format_process_notification(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1752,6 +1754,7 @@ char* format_process_notification(const char *json_evt) {
     return out;
 }
 
+/* PoP: _redact_process_result @ tools/process_registry.py:_redact_process_result */
 char* _redact_process_result(char *json_result) {
     char *err = NULL;
     json_t *r = json_parse(json_result, &err);

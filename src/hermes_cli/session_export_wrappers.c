@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "hermes_logger.h"
 
 #include <time.h>
 
@@ -601,4 +602,241 @@ int sexp_u_finish_markdown(const char *arg) {
     while (n >= 2 && arg[n-1] == '\n' && (arg[n-2] == '\n' || arg[n-2] == '\r')) n--;
     printf("%.*s\n", (int)n, arg);
     return 0;
+}
+
+/* ── /save surface (normalize_save_format / render_session_for_save /
+ *    default_save_filename) — pure string/JSON functions. ─────────────── */
+
+/* PoP: normalize_save_format @ hermes_cli/session_export.py:normalize_save_format
+ * Map a user-typed /save format token to a canonical format: json/snapshot →
+ * "json", md/markdown → "md", html → "html". Returns malloc'd canonical token,
+ * or NULL for an unknown format (Python raises ValueError). */
+char *sexp_normalize_save_format(const char *fmt) {
+    const char *p = (fmt && *fmt) ? fmt : "json";
+    while (*p == ' ' || *p == '\t') p++;
+    size_t n = strlen(p);
+    while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\t' ||
+                     p[n-1] == '\n' || p[n-1] == '\r')) n--;
+    if (n == 4 && strncasecmp(p, "json", 4) == 0) return strdup("json");
+    if (n == 8 && strncasecmp(p, "snapshot", 8) == 0) return strdup("json");
+    if (n == 2 && strncasecmp(p, "md", 2) == 0) return strdup("md");
+    if (n == 8 && strncasecmp(p, "markdown", 8) == 0) return strdup("md");
+    if (n == 4 && strncasecmp(p, "html", 4) == 0) return strdup("html");
+    hermes_log(LOG_WARNING, "session_export",
+               "Unknown format '%.*s' — expected one of: json, md, html",
+               (int)n, p);
+    return NULL;
+}
+
+/* Append one markdown line, growing the buffer. */
+static void sexp_sv_add_line(char **buf, size_t *len, size_t *cap,
+                             const char *line) {
+    size_t ll = strlen(line);
+    size_t need = *len + ll + 2;
+    if (need > *cap) {
+        *cap = need * 2;
+        *buf = realloc(*buf, *cap);
+    }
+    memcpy(*buf + *len, line, ll);
+    *len += ll;
+    (*buf)[(*len)++] = '\n';
+    (*buf)[*len] = '\0';
+}
+
+/* Render one session dict as the shared full-markdown export (Python renders
+ * via render_sessions_export([session], fmt="markdown") → _render_full_markdown:
+ * "# Session: <title>" + metadata lines + non-system messages as "## <label>"
+ * blocks; tool messages become <details> fenced blocks). */
+static char *sexp_sv_render_markdown(const json_t *session) {
+    size_t cap = 4096, len = 0;
+    char *buf = malloc(cap);
+    buf[0] = '\0';
+
+    const char *title = sexp_json_get_str((json_t *)session, "title");
+    const char *sid = sexp_json_get_str((json_t *)session, "id");
+    if (!sid || !*sid) sid = sexp_json_get_str((json_t *)session, "session_id");
+    const char *heading_title =
+        (title && *title) ? title : ((sid && *sid) ? sid : "unknown");
+    char heading[1024];
+    snprintf(heading, sizeof(heading), "# Session: %s",
+             (title && *title) ? title : heading_title);
+    sexp_sv_add_line(&buf, &len, &cap, heading);
+
+    /* metadata lines: id / source / model / title / started / count */
+    char meta[1024];
+    snprintf(meta, sizeof(meta), "- Session ID: `%s`",
+             (sid && *sid) ? sid : "unknown");
+    sexp_sv_add_line(&buf, &len, &cap, meta);
+    const char *source = sexp_json_get_str((json_t *)session, "source");
+    if (source && *source) {
+        snprintf(meta, sizeof(meta), "- Source: `%s`", source);
+        sexp_sv_add_line(&buf, &len, &cap, meta);
+    }
+    const char *model = sexp_json_get_str((json_t *)session, "model");
+    if (model && *model) {
+        snprintf(meta, sizeof(meta), "- Model: `%s`", model);
+        sexp_sv_add_line(&buf, &len, &cap, meta);
+    }
+    if (title && *title) {
+        snprintf(meta, sizeof(meta), "- Title: %s", title);
+        sexp_sv_add_line(&buf, &len, &cap, meta);
+    }
+    json_t *started = json_obj_get((json_t *)session, "started_at");
+    char tsbuf[64] = "";
+    if (started && json_is_number(started)) {
+        time_t t0 = (time_t)json_number_value(started);
+        struct tm tmv;
+        localtime_r(&t0, &tmv);
+        strftime(tsbuf, sizeof(tsbuf), "%Y-%m-%d %H:%M:%S", &tmv);
+    } else if (started && json_is_string(started)) {
+        snprintf(tsbuf, sizeof(tsbuf), "%s", json_string_value(started));
+    }
+    if (tsbuf[0]) {
+        snprintf(meta, sizeof(meta), "- Started: %s", tsbuf);
+        sexp_sv_add_line(&buf, &len, &cap, meta);
+    }
+    json_t *mcount = json_obj_get((json_t *)session, "message_count");
+    if (mcount && json_is_number(mcount)) {
+        snprintf(meta, sizeof(meta), "- Messages: %lld",
+                 (long long)json_number_value(mcount));
+        sexp_sv_add_line(&buf, &len, &cap, meta);
+    }
+    sexp_sv_add_line(&buf, &len, &cap, "");
+
+    /* messages (skip system); heading level 2 */
+    json_t *messages = json_obj_get((json_t *)session, "messages");
+    bool any = false;
+    if (messages && json_is_array(messages)) {
+        for (size_t i = 0; i < json_len(messages); i++) {
+            json_t *m = json_get(messages, i);
+            if (!m || !json_is_object(m)) continue;
+            const char *role = sexp_json_get_str(m, "role");
+            if (!role || strcmp(role, "system") == 0) continue;
+            any = true;
+            char mhead[1152];
+            const char *suffix = "";
+            char sfx[80] = "";
+            json_t *mts = json_obj_get(m, "timestamp");
+            if (mts && json_is_string(mts) && *json_string_value(mts)) {
+                snprintf(sfx, sizeof(sfx), " - %s", json_string_value(mts));
+                suffix = sfx;
+            } else if (mts && json_is_number(mts) &&
+                       (long long)json_number_value(mts) > 0) {
+                time_t t1 = (time_t)json_number_value(mts);
+                struct tm tmv;
+                localtime_r(&t1, &tmv);
+                char tbuf[48];
+                strftime(tbuf, sizeof(tbuf), "%Y-%m-%d %H:%M:%S", &tmv);
+                snprintf(sfx, sizeof(sfx), " - %s", tbuf);
+                suffix = sfx;
+            }
+            char *text = sexp_msg_text(m);
+            if (strcmp(role, "tool") == 0) {
+                const char *tn = sexp_json_get_str(m, "tool_name");
+                if (!tn || !*tn) tn = sexp_json_get_str(m, "name");
+                if (!tn || !*tn) tn = "tool";
+                snprintf(mhead, sizeof(mhead), "## Tool: %s%s", tn, suffix);
+                sexp_sv_add_line(&buf, &len, &cap, mhead);
+                sexp_sv_add_line(&buf, &len, &cap, "");
+                sexp_sv_add_line(&buf, &len, &cap,
+                                 "<details><summary></summary>");
+                sexp_sv_add_line(&buf, &len, &cap, "");
+                sexp_sv_add_line(&buf, &len, &cap, "```text");
+                sexp_sv_add_line(&buf, &len, &cap, text ? text : "");
+                sexp_sv_add_line(&buf, &len, &cap, "```");
+                sexp_sv_add_line(&buf, &len, &cap, "");
+                sexp_sv_add_line(&buf, &len, &cap, "</details>");
+                sexp_sv_add_line(&buf, &len, &cap, "");
+            } else {
+                const char *label =
+                    strcmp(role, "user") == 0     ? "User"
+                    : strcmp(role, "assistant") == 0 ? "Assistant"
+                                                     : role;
+                snprintf(mhead, sizeof(mhead), "## %s%s", label, suffix);
+                sexp_sv_add_line(&buf, &len, &cap, mhead);
+                sexp_sv_add_line(&buf, &len, &cap, "");
+                sexp_sv_add_line(&buf, &len, &cap, text ? text : "");
+                sexp_sv_add_line(&buf, &len, &cap, "");
+            }
+            free(text);
+        }
+    }
+    if (!any) {
+        sexp_sv_add_line(&buf, &len, &cap, "_No messages found._");
+        sexp_sv_add_line(&buf, &len, &cap, "");
+    }
+    /* _finish_markdown: collapse trailing blank lines to one final newline. */
+    size_t n = len;
+    while (n >= 2 && (buf[n-1] == '\n') && (buf[n-2] == '\n')) buf[--n] = '\0';
+    return buf;
+}
+
+/* Render one session dict as the standalone single-file HTML export
+ * (mirrors the C port of session_export_html.generate_html_export). */
+static char *sexp_sv_render_html(const json_t *session) {
+    size_t cap = 4096, len = 0;
+    char *buf = malloc(cap);
+    buf[0] = '\0';
+    const char *title = sexp_json_get_str((json_t *)session, "title");
+    char head[512];
+    snprintf(head, sizeof(head),
+             "<html><head><meta charset=\"utf-8\"><title>%s</title></head>"
+             "<body><h1>%s</h1>",
+             title ? title : "Session", title ? title : "Session");
+    sexp_sv_add_line(&buf, &len, &cap, head);
+    json_t *messages = json_obj_get((json_t *)session, "messages");
+    if (messages && json_is_array(messages)) {
+        for (size_t i = 0; i < json_len(messages); i++) {
+            json_t *m = json_get(messages, i);
+            const char *role = sexp_json_get_str(m, "role");
+            char *content = m ? sexp_msg_text(m) : NULL;
+            if (role && content && *content) {
+                char row[strlen(role) + strlen(content) + 32];
+                snprintf(row, sizeof(row), "<p><b>%s:</b> %s</p>", role, content);
+                sexp_sv_add_line(&buf, &len, &cap, row);
+            }
+            free(content);
+        }
+    }
+    sexp_sv_add_line(&buf, &len, &cap, "</body></html>");
+    return buf;
+}
+
+/* PoP: render_session_for_save @ hermes_cli/session_export.py:render_session_for_save
+ * ``json`` → pretty-printed JSON; ``md`` → the shared full-markdown renderer;
+ * ``html`` → the standalone single-page HTML export. Returns malloc'd text or
+ * NULL for an unknown format (Python raises ValueError). Caller frees. */
+char *sexp_render_session_for_save(const json_t *session, const char *fmt) {
+    if (!session || !json_is_object(session)) return NULL;
+    char *canonical = sexp_normalize_save_format(fmt);
+    if (!canonical) return NULL;
+    char *out = NULL;
+    if (strcmp(canonical, "json") == 0) {
+        out = json_serialize_pretty(session, 2);
+        if (!out) out = json_serialize(session);
+    } else if (strcmp(canonical, "md") == 0) {
+        out = sexp_sv_render_markdown(session);
+    } else if (strcmp(canonical, "html") == 0) {
+        out = sexp_sv_render_html(session);
+    }
+    free(canonical);
+    return out;
+}
+
+/* PoP: default_save_filename @ hermes_cli/session_export.py:default_save_filename
+ * "hermes_session_<safe_id>.<fmt>" where safe_id keeps only alphanumerics,
+ * '-' and '_' (falling back to "session"). Returns malloc'd; caller frees. */
+char *sexp_default_save_filename(const char *session_id, const char *fmt) {
+    char safe_id[256];
+    size_t o = 0;
+    const char *s = session_id ? session_id : "";
+    for (; *s && o + 1 < sizeof(safe_id); s++) {
+        if (isalnum((unsigned char)*s) || *s == '-' || *s == '_')
+            safe_id[o++] = *s;
+    }
+    safe_id[o] = '\0';
+    char out[320];
+    snprintf(out, sizeof(out), "hermes_session_%s.%s",
+             o > 0 ? safe_id : "session", fmt ? fmt : "json");
+    return strdup(out);
 }

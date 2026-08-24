@@ -820,6 +820,7 @@ static char *build_env_passthrough_export(void) {
  * Mirrors Python terminal_tool._validate_workdir().
  * Uses allowlist: alphanumeric plus / \ _ : - . ~ space + @ = ,
  * Returns error string if dangerous, NULL if safe. */
+/* PoP: _validate_workdir @ tools/terminal_tool.py:_validate_workdir */
 static const char *_validate_workdir(const char *workdir) {
     if (!workdir || !workdir[0]) return NULL;
     static const char safe[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

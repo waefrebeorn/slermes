@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -408,4 +409,165 @@ void record_plan_in_receipt(const upd_plan_t *plan)
     json_t *dict = upd_plan_to_dict(plan);
     if (!dict) return;
     json_set(data, "plan", dict); /* replaces any previous value */
+}
+
+/* ---------------------------------------------------------------------
+ * describe_restart_mechanism — display strings for a mechanism id.
+ * Display strings derive from the policy table (_restart_mechanism),
+ * never the other way around (#91277 Phase 2).
+ * --------------------------------------------------------------------- */
+
+/* PoP: upd_describe_restart_mechanism @hermes_cli/update_inventory.py:describe_restart_mechanism */
+char *update_inventory_describe_restart_mechanism(const char *mechanism,
+                                                  const char *profile)
+{
+    char buf[256];
+    if (mechanism && strcmp(mechanism, "systemd") == 0)
+        snprintf(buf, sizeof(buf),
+                 "systemctl restart (drain-first SIGUSR1 when supported)");
+    else if (mechanism && strcmp(mechanism, "launchd") == 0)
+        snprintf(buf, sizeof(buf),
+                 "launchctl kickstart -k (drain-first, per-label domain)");
+    else if (mechanism && strcmp(mechanism, "desktop") == 0)
+        snprintf(buf, sizeof(buf), "Desktop app respawns its serve backend");
+    else if (profile && strcmp(profile, "default") != 0)
+        snprintf(buf, sizeof(buf), "hermes -p %s gateway restart", profile);
+    else
+        snprintf(buf, sizeof(buf), "hermes gateway restart");
+    return ui_strdup(buf);
+}
+
+/* ---------------------------------------------------------------------
+ * match_runtime_outcomes — reconcile plan vs. restart-phase bookkeeping.
+ * --------------------------------------------------------------------- */
+
+static bool upd_json_list_contains_str(const json_t *arr, const char *s)
+{
+    if (!arr || arr->type != JSON_ARRAY || !s) return false;
+    size_t n = json_len(arr);
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_get(arr, i);
+        if (e && e->type == JSON_STRING && strcmp(e->str_val, s) == 0)
+            return true;
+    }
+    return false;
+}
+
+static bool upd_json_list_contains_num(const json_t *arr, long v)
+{
+    if (!arr || arr->type != JSON_ARRAY) return false;
+    size_t n = json_len(arr);
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_get(arr, i);
+        if (e && e->type == JSON_NUMBER && (long)e->num_val == v)
+            return true;
+    }
+    return false;
+}
+
+/* failed_set / restarted_set membership: `r.profile in unit` as a substring
+ * match, with the special case that profile "default" also matches
+ * "hermes-gateway" units (mirrors Python's any(...) checks). */
+static bool upd_units_mention_profile(const json_t *units, const char *profile)
+{
+    if (!units || units->type != JSON_ARRAY || !profile) return false;
+    size_t n = json_len(units);
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_get(units, i);
+        if (!e || e->type != JSON_STRING) continue;
+        if (strstr(e->str_val, profile))
+            return true;
+        if (strcmp(profile, "default") == 0 &&
+            strstr(e->str_val, "hermes-gateway"))
+            return true;
+    }
+    return false;
+}
+
+/* PoP: upd_match_runtime_outcomes @hermes_cli/update_inventory.py:match_runtime_outcomes */
+json_t *upd_match_runtime_outcomes(const upd_plan_t *plan,
+                                   const json_t *restarted_services,
+                                   const json_t *relaunched_profiles,
+                                   const json_t *externally_supervised_profiles,
+                                   const json_t *killed_pids,
+                                   const json_t *failed_units)
+{
+    json_t *outcomes = json_array();
+    if (!outcomes || !plan) return outcomes;
+
+    for (size_t i = 0; i < plan->runtimes_n; i++) {
+        const upd_runtime_record_t *r = &plan->runtimes[i];
+        const char *profile = r->profile ? r->profile : "";
+
+        /* outcome defaults to the blind-spot tripwire. */
+        const char *outcome = "unaccounted";
+        if (upd_json_list_contains_str(relaunched_profiles, profile) ||
+            upd_json_list_contains_str(externally_supervised_profiles, profile)) {
+            outcome = "restarted";
+        } else if (r->pid > 0 &&
+                   upd_json_list_contains_num(killed_pids, r->pid)) {
+            outcome = "stopped";
+        } else if (upd_units_mention_profile(failed_units, profile)) {
+            outcome = "failed";
+        } else if (upd_units_mention_profile(restarted_services, profile)) {
+            outcome = "restarted";
+        }
+
+        json_t *row = json_object();
+        if (!row) continue;
+        json_set(row, "kind", json_string(r->kind ? r->kind : ""));
+        json_set(row, "profile", json_string(profile));
+        if (r->pid > 0)
+            json_set(row, "pid", json_int((int)r->pid));
+        else
+            json_set(row, "pid", json_null());
+        json_set(row, "mechanism",
+                 json_string(r->restart_via ? r->restart_via : ""));
+        json_set(row, "outcome", json_string(outcome));
+        json_append(outcomes, row);
+    }
+    return outcomes;
+}
+
+/* PoP: upd_report_unaccounted_runtimes @hermes_cli/update_inventory.py:report_unaccounted_runtimes */
+int update_inventory_report_unaccounted_runtimes(const json_t *outcomes)
+{
+    if (!outcomes || outcomes->type != JSON_ARRAY) return 0;
+
+    /* Collect unaccounted rows first so silence stays completely silent. */
+    size_t n = json_len(outcomes);
+    bool missed_any = false;
+    for (size_t i = 0; i < n; i++) {
+        json_t *o = json_get(outcomes, i);
+        json_t *oc = o ? json_obj_get(o, "outcome") : NULL;
+        if (oc && oc->type == JSON_STRING &&
+            strcmp(oc->str_val, "unaccounted") == 0) {
+            missed_any = true;
+            break;
+        }
+    }
+    if (!missed_any) return 0;
+
+    printf("\n");
+    printf("  \xe2\x9a\xa0 Planned runtimes the restart phase never touched:\n");
+    for (size_t i = 0; i < n; i++) {
+        json_t *o = json_get(outcomes, i);
+        json_t *oc = o ? json_obj_get(o, "outcome") : NULL;
+        if (!oc || oc->type != JSON_STRING ||
+            strcmp(oc->str_val, "unaccounted") != 0)
+            continue;
+        json_t *kind = json_obj_get(o, "kind");
+        json_t *profile = json_obj_get(o, "profile");
+        json_t *pid = json_obj_get(o, "pid");
+        json_t *mech = json_obj_get(o, "mechanism");
+        printf("    \xe2\x9c\x97 %s [%s] pid %ld — planned mechanism: %s\n",
+               (kind && kind->type == JSON_STRING) ? kind->str_val : "?",
+               (profile && profile->type == JSON_STRING) ? profile->str_val : "?",
+               (pid && pid->type == JSON_NUMBER) ? (long)pid->num_val : -1L,
+               (mech && mech->type == JSON_STRING) ? mech->str_val : "?");
+    }
+    printf("    Restart them manually, then verify:\n");
+    printf("      hermes gateway restart                # active profile\n");
+    printf("      hermes -p <profile> gateway restart   # named profile\n");
+    return 1;
 }

@@ -390,6 +390,7 @@ static void print_line(json_t *out_printed, const char *fmt, ...) {
     json_append(out_printed, json_string(tmp));
 }
 
+/* PoP: run_install_cmd @ hermes_cli/_install_repair.py:_run_install_cmd */
 static int run_install_cmd(char *const *argv, size_t n, const char *root,
                            json_t *out_commands);
 

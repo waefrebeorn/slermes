@@ -247,6 +247,7 @@ char *command_token_source_call(command_token_source_t *s)
     return out;
 }
 
+/* PoP: build_command_token_provider @ agent/command_token_source.py:build_command_token_provider */
 command_token_source_t *build_command_token_provider(const char *key_cmd,
                                                      const char *provider_label)
 {

@@ -68,3 +68,88 @@ char *_canonical_custom_identity(void *ctx, void *base_url, void *config_provide
         base_url ? (const char *)base_url : NULL,
         config_provider ? (const char *)config_provider : NULL);
 }
+
+/* ── runtime_provider.py resolution surface ───────────────────────────── */
+
+#include "slermes_home.h"
+#include "yaml.h"
+#include <ctype.h>
+#include "auth_helpers.h"
+
+/* config.yaml → json_t (owned by caller; free with json_free). Same load
+ * shape as the provider registry's config-backed scans. */
+static json_t *rp_load_config(void) {
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/config.yaml", slermes_home());
+    char *yerr = NULL;
+    yaml_doc_t *doc = yaml_parse_file(path, &yerr);
+    if (yerr) free(yerr);
+    if (!doc) return NULL;
+    char *js = yaml_to_json_string(doc, "");
+    yaml_free(doc);
+    if (!js) return NULL;
+    char *jerr = NULL;
+    json_t *cfg = json_parse(js, &jerr);
+    free(js);
+    if (jerr) free(jerr);
+    return cfg;
+}
+
+/* strip + lowercase into a malloc'd string ("" for NULL). */
+static char *rp_strip_lower(const char *s) {
+    if (!s) return strdup("");
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+    char *out = malloc(n + 1);
+    if (!out) return NULL;
+    for (size_t i = 0; i < n; i++)
+        out[i] = (char)tolower((unsigned char)s[i]);
+    out[n] = '\0';
+    return out;
+}
+
+/* PoP: resolve_requested_provider @ hermes_cli/runtime_provider.py:resolve_requested_provider
+ * Resolve the provider request from explicit arg → config model.provider →
+ * HERMES_INFERENCE_PROVIDER env → "auto". The persisted config selection is
+ * deliberately preferred over any stale shell/.env override so chat uses the
+ * endpoint the user last saved. Returns malloc'd lowercase id; caller frees. */
+char *runtime_provider_resolve_requested(const char *requested) {
+    /* 1. explicit argument wins */
+    char *req = rp_strip_lower(requested);
+    if (req && *req) return req;
+    free(req);
+
+    /* 2. config model.provider */
+    json_t *cfg = rp_load_config();
+    if (cfg) {
+        const json_t *model_cfg = json_obj_get(cfg, "model");
+        if (model_cfg && json_is_object(model_cfg)) {
+            json_t *p = json_obj_get(model_cfg, "provider");
+            if (p && json_is_string(p)) {
+                char *cp = rp_strip_lower(json_string_value(p));
+                if (cp && *cp) { json_free(cfg); return cp; }
+                free(cp);
+            }
+        }
+        json_free(cfg);
+    }
+
+    /* 3. env override (profile-scoped getenv in Python; plain env here) */
+    char *env_p = rp_strip_lower(getenv("HERMES_INFERENCE_PROVIDER"));
+    if (env_p && *env_p) return env_p;
+    free(env_p);
+
+    return strdup("auto");
+}
+
+/* PoP: format_runtime_provider_error @ hermes_cli/runtime_provider.py:format_runtime_provider_error
+ * AuthError instances route through auth.py:format_auth_error; everything else
+ * formats via str(error). In C the exception type is an explicit pointer:
+ * non-NULL `error` means AuthError; otherwise `fallback` is str(error).
+ * Returns malloc'd message; caller frees. */
+char *runtime_provider_format_error(const auth_error_t *error,
+                                    const char *fallback) {
+    if (error) return auth_format_error(error);
+    return strdup(fallback ? fallback : "");
+}
