@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-24T15:57:31Z from `live_parity_scan.json` by `make parity-walkway`. **2,097 REAL_GAP across 279 modules** (of 16,643 total functions).
+> Generated 2026-08-24T16:18:48Z from `live_parity_scan.json` by `make parity-walkway`. **2,093 REAL_GAP across 279 modules** (of 16,643 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -1789,7 +1789,7 @@
 - export_pack (function)
 - pack_command (function)
 
-### hermes_cli/plugins.py (103 gaps)
+### hermes_cli/plugins.py (99 gaps)
 
 - _select_entry_point_group (function)
 - discover_entrypoint_manifests (function)
@@ -1803,13 +1803,9 @@
 - PluginRegistration.active (method)
 - PluginRegistration.dispose (method)
 - _plugin_relative_segments (function)
-- _nested_plugin_value (function)
-- _nested_plugin_mapping (function)
-- _plugin_data_namespace (function)
 - _state_thread_lock (function)
 - _locked_plugin_state (function)
 - PluginState.data_dir (method)
-- PluginState.path (method)
 - PluginState.quota_bytes (method)
 - PluginState._validate_key (method)
 - PluginState._read_unlocked (method)
