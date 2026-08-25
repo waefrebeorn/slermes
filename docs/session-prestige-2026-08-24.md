@@ -206,3 +206,15 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
 - **v755** — agent_runtime_helpers: tool-call id variant expansion (shared
   policy owner, composite call|item spellings) and trailing_continue_intent
   stall-guard gate. Module → ~44/47.
+
+
+## Round 14
+
+- **v757** — error_classifier: _billing_ambiguity_context +
+  _has_usage_limit_transient_signal (message patterns, payload reset
+  fields, Retry-After probes). Module → 18/19.
+- **v758** — codex_runtime: _is_plain_json_data wire-format proof walk.
+  Module → 16/20.
+- **v759** — delegation_context CLOSED (9/9): thread-local dispatcher-owned
+  context gates — delegated-child flag, non-dispatcher enter/exit, and the
+  single identity predicate for HERMES_KANBAN_* gates.
