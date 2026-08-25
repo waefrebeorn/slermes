@@ -21,8 +21,17 @@ from agent.replay_cleanup import (
 )
 
 
+def _strip_ts(x):
+    # Live wall-clock stamps from make_tool_result_message are non-deterministic.
+    if isinstance(x, list):
+        return [_strip_ts(v) for v in x]
+    if isinstance(x, dict):
+        return {k: _strip_ts(v) for k, v in x.items() if k != "timestamp"}
+    return x
+
+
 def compact(obj):
-    return json.dumps(obj, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(_strip_ts(obj), separators=(",", ":"), ensure_ascii=False)
 
 
 def main():

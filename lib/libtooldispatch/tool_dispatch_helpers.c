@@ -13,6 +13,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <limits.h>
+#include <time.h>
 #include <unistd.h>
 
 /* ================================================================
@@ -748,6 +749,13 @@ char *make_tool_result_message_json(const char *name,
     json_set(msg, "tool_name", json_string(name));
     json_set(msg, "content", json_string(wrapped_content ? wrapped_content : content));
     json_set(msg, "tool_call_id", json_string(tool_call_id));
+
+    /* Python routes the dict through agent/message_metadata.py
+     * stamp_message_timestamp(): a message with no timestamp gets
+     * wall_time() attached. Mirror it here (time(NULL) covers the
+     * seconds part of Python's float wall clock). */
+    if (json_obj_get(msg, "timestamp") == NULL)
+        json_set(msg, "timestamp", json_number((double)time(NULL)));
 
     char *result = json_serialize(msg);
     json_free(msg);

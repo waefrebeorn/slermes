@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_gateway_response_filters (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_gateway_response_filters.c"
+#include "../../src/gateway/response_filters.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -29,7 +29,11 @@ _src = open(src_path, encoding="utf-8").read()
 m = _re.search(r"_LOOPBACK_HOST_VALUES[^=]*=\s*frozenset\(\{(.*?)\}\)", _src, _re.S)
 LOOPBACK = eval("frozenset({%s})" % m.group(1))
 mfn = _re.search(r"def _is_accepted_host\(.*?\n(?=\n*@app\.|\n\ndef |\Z)", _src, _re.S)
-ns = {"_LOOPBACK_HOST_VALUES": None}
+# Extract the _host_header_hostname helper too (LIVE _is_accepted_host calls it).
+mhh = _re.search(r"def _host_header_hostname\(.*?\n(?=\n*@app\.|\ndef |\Z)", _src, _re.S)
+import re as _re_mod
+ns = {"_LOOPBACK_HOST_VALUES": None, "re": _re_mod}
+exec(mhh.group(0), ns)  # noqa: S102 — executes the LIVE source verbatim
 exec(mfn.group(0), ns)  # noqa: S102 — executes the LIVE source verbatim
 ns["_is_accepted_host"].__globals__["_LOOPBACK_HOST_VALUES"] = LOOPBACK
 _is_accepted_host = ns["_is_accepted_host"]

@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_file_operations (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_file_operations.c"
+#include "../../src/tools/file_operations.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

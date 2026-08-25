@@ -116,7 +116,8 @@ def build_harness(gate_dir, g, force=False):
     cflags = [os.path.join(REPO, c) if not c.startswith("-") else c
               for c in cflags]
     extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
-    cmd = ["cc", "-I", HERE] + cflags + [src] + extra + ["-o", out, "-lm"]
+    libs = g.get("ldflags", [])
+    cmd = ["cc", "-I", HERE] + cflags + [src] + extra + ["-o", out, "-lm"] + libs
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
         raise RuntimeError("BUILD FAIL for %s:\n%s" % (g["name"], r.stderr))

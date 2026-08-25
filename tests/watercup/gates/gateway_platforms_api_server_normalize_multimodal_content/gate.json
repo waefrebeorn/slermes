@@ -7,11 +7,14 @@
   "cflags": [
     "-I/home/wubu/hermes-agent-dev/slermes/include",
     "-I/home/wubu/hermes-agent-dev/slermes/lib",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson"
+    "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson",
+    "-I/home/wubu/hermes-agent-dev/slermes/lib/libbase64"
   ],
   "extra_src": [
+    "tests/watercup/gates/gateway_platforms_api_server_normalize_multimodal_content/shims.c",
     "src/gateway/api_server_ports.c",
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "lib/libbase64/base64.c"
   ],
   "py_module": "gateway/platforms/api_server.py",
   "py_fn": "_normalize_multimodal_content",

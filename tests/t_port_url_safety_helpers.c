@@ -7,7 +7,7 @@
  */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_url_safety_helpers.h"
+#include "url_safety_helpers.h"
 
 #include <stdio.h>
 #include <stdlib.h>

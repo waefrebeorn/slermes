@@ -4759,3 +4759,49 @@ const char *hermes_state_classify_session_status(const char *role,
         return "interrupted";
     return "complete";
 }
+
+/* ── hermes process heuristics (v706x5 parity batch) ───────────────── */
+
+/* PoP: hermes_state_read_proc_cmdline @ hermes_state.py:_read_proc_cmdline */
+char *hermes_state_read_proc_cmdline(int pid) {
+    /* /proc/<pid>/cmdline, NUL bytes -> spaces, stripped. NULL when
+     * unreadable (process exited, hidepid mount). Bounded at 4 KiB. */
+    char path[64];
+    snprintf(path, sizeof(path), "/proc/%d/cmdline", pid);
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    char raw[4096];
+    size_t n = fread(raw, 1, sizeof(raw) - 1, f);
+    fclose(f);
+    if (n == 0) return NULL;
+    raw[n] = '\0';
+    for (size_t i = 0; i < n; i++)
+        if (raw[i] == '\0') raw[i] = ' ';
+    char *b = raw;
+    while (*b == ' ') b++;
+    char *e = b + strlen(b);
+    while (e > b && e[-1] == ' ') e--;
+    return strndup(b, (size_t)(e - b));
+}
+
+/* PoP: hermes_state_looks_like_hermes @ hermes_state.py:_looks_like_hermes */
+bool hermes_state_looks_like_hermes(const char *cmdline) {
+    /* Heuristic: flag only Hermes-looking processes as potential state.db
+     * holders — never every system daemon. */
+    static const char *MARKERS[] = {
+        "hermes_cli.main", "hermes_cli/main", "hermes serve",
+        "hermes-agent", "hermes gateway", "hermes chat", NULL
+    };
+    if (!cmdline) return false;
+    for (const char *q = cmdline; *q; q++) {
+        ; /* lower in place on a local copy below */
+    }
+    char low[4096];
+    size_t k = 0;
+    for (const char *q = cmdline; *q && k < sizeof(low) - 1; q++, k++)
+        low[k] = (char)tolower((unsigned char)*q);
+    low[k] = '\0';
+    for (int i = 0; MARKERS[i]; i++)
+        if (strstr(low, MARKERS[i]) != NULL) return true;
+    return false;
+}

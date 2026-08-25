@@ -7,6 +7,7 @@
   "py_module": "agent/context_compressor.py",
   "py_fn": "_strip_context_summary_handoff_message",
   "extra_src": [
+    "tests/watercup/gates/contextcompressor_strip_handoff/shims.c",
     "src/agent/context_compressor_pure.c",
     "lib/libjson/json.c",
     "lib/libregex/hermes_regex.c",

@@ -140,20 +140,17 @@ void update_inventory_detect_supervisor_for_pid(long pid,
 char *update_inventory_restart_mechanism(const char *supervisor,
                                          const char *profile)
 {
-    char buf[256];
-    if (strcmp(supervisor, "systemd") == 0)
-        snprintf(buf, sizeof(buf),
-                 "systemctl restart (drain-first SIGUSR1 when supported)");
-    else if (strcmp(supervisor, "launchd") == 0)
-        snprintf(buf, sizeof(buf),
-                 "launchctl kickstart -k (drain-first, per-label domain)");
-    else if (strcmp(supervisor, "desktop") == 0)
-        snprintf(buf, sizeof(buf), "Desktop app respawns its serve backend");
-    else if (profile && strcmp(profile, "default") != 0)
-        snprintf(buf, sizeof(buf), "hermes -p %s gateway restart", profile);
-    else
-        snprintf(buf, sizeof(buf), "hermes gateway restart");
-    return ui_strdup(buf);
+    (void)profile;
+    /* THE policy table (#91277 Phase 2): machine-readable mechanism ids.
+     * Display strings are derived by describe_restart_mechanism — never
+     * the other way around. */
+    if (supervisor && strcmp(supervisor, "systemd") == 0)
+        return ui_strdup("systemd");
+    if (supervisor && strcmp(supervisor, "launchd") == 0)
+        return ui_strdup("launchd");
+    if (supervisor && strcmp(supervisor, "desktop") == 0)
+        return ui_strdup("desktop");
+    return ui_strdup("manual");
 }
 
 static void ui_append_runtime(upd_plan_t *plan, const char *kind,

@@ -7,7 +7,7 @@
 #include <string.h>
 
 #include "hermes_json.h"
-#include "port_web_git.h"
+#include "web_git.h"
 
 int main(int argc, char **argv) {
     if (argc < 2) return 2;

@@ -130,7 +130,9 @@ def trace(item):
     live_out = _CC._sanitize_tool_pairs(
         type("S", (), {"quiet_mode": True,
                        "_get_tool_call_id": staticmethod(
-                           lambda tc: _CC._get_tool_call_id(tc))})(),
+                           lambda tc: _CC._get_tool_call_id(tc)),
+                       "_tool_call_id_variants": staticmethod(
+                           lambda tc: _CC._tool_call_id_variants(tc))})(),
         [_json.loads(_json.dumps(x)) for x in msgs])
 
     n_in = len(msgs)

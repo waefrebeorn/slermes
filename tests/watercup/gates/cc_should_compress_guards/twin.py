@@ -34,6 +34,7 @@ def _make(threshold, cooldown_remaining, ineff, streak):
     comp._ineffective_compression_count = ineff
     comp._fallback_compression_streak = streak
     comp._anti_thrash_recovery_deadline = 0.0
+    comp._structural_no_op_backoff_until = 0.0
     comp.quiet_mode = True
     return comp
 

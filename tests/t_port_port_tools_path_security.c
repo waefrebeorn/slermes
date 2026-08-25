@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_tools_path_security (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_tools_path_security.c"
+#include "../../src/tools/path_security.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

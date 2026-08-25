@@ -96,7 +96,10 @@ static char *msg_tool_call_name(const json_t *msg, size_t idx, char *out, size_t
 }
 
 /* Build a recovery tool-result message matching Python make_tool_result_message:
- * {role, name, tool_name, content, tool_call_id, effect_disposition}. */
+ * {role, name, tool_name, content, tool_call_id, timestamp, effect_disposition}.
+ * Python routes the dict through stamp_message_timestamp(), so a wall-clock
+ * timestamp is attached here too (mirrored inline; libtooldispatch's
+ * make_tool_result_message_json does the same). */
 /* PoP: make_recovery_tool_result @ tools/registry.py:tool_result */
 static json_t *make_recovery_tool_result(const char *name, const char *content,
                                           const char *tool_call_id,
@@ -109,6 +112,8 @@ static json_t *make_recovery_tool_result(const char *name, const char *content,
     json_set(m, "tool_name", json_string(name && name[0] ? name : "unknown"));
     json_set(m, "content", json_string(content ? content : ""));
     json_set(m, "tool_call_id", json_string(tool_call_id ? tool_call_id : ""));
+    /* stamp_message_timestamp(): no existing timestamp -> wall clock. */
+    json_set(m, "timestamp", json_number((double)time(NULL)));
     json_set(m, "effect_disposition", json_string(effect_disposition));
     return m;
 }

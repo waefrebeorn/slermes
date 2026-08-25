@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_hermes_cli_memory_setup (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_hermes_cli_memory_setup.c"
+#include "memory_setup.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

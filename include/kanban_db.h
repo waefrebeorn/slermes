@@ -29,6 +29,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include "hermes_json.h"
 
 #ifdef __cplusplus
 extern "C" {

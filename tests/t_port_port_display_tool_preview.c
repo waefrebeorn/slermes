@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_display_tool_preview (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_display_tool_preview.h"
+#include "display_tool_preview.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

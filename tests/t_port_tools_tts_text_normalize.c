@@ -17,7 +17,7 @@
  * heading sentinel byte \x00 (emitted as \u0000).
  */
 
-#include "port_tools_tts_text_normalize.h"
+#include "tts_text_normalize.h"
 
 #include <stdio.h>
 #include <stdlib.h>

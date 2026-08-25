@@ -9,7 +9,7 @@
  * byte-for-byte.
  */
 
-#include "agent/port_agent_replay_cleanup.h"
+#include "replay_cleanup.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -17,7 +17,8 @@
 #include <string.h>
 
 /* Compact JSON string emitter (no spaces) matching the C port's
- * json_serialize() output so the oracle diff is stable. */
+ * json_serialize() output so the oracle diff is stable. Live wall-clock
+ * "timestamp" fields are stripped here (non-deterministic on both sides). */
 static const char *js(const char *s)
 {
     static char bufs[4][8192];
@@ -26,7 +27,34 @@ static const char *js(const char *s)
     bi = (bi + 1) % 4;
     char *q = b;
     *q++ = '"';
+    int in_ts = 0;
+    int in_ts_skip_leading_space = 0;
     for (const char *p = s; p && *p && q - b < 8000; p++) {
+        /* strip plain "timestamp":<number> before escaping — the live
+         * wall-clock value is non-deterministic on both sides. */
+        if (!in_ts && strncmp(p, "\"timestamp\":", 12) == 0) {
+            p += 11;
+            in_ts = 1;
+            continue;
+        }
+        if (in_ts) {
+            if (*p == '.' || (*p >= '0' && *p <= '9')) continue;
+            in_ts = 0;
+            if (*p == '}') {
+                /* timestamp was the last member: drop the preceding comma */
+                while (q > b + 1 && *(q - 1) == ',') q--;
+                unsigned char c2 = (unsigned char)*p;
+                *q++ = c2;
+                continue;
+            }
+            if (*p == ',') continue; /* swallow the comma after the value */
+            unsigned char c2 = (unsigned char)*p;
+            if (c2 == '"' || c2 == '\\') { *q++ = '\\'; *q++ = c2; }
+            else *q++ = c2;
+            continue;
+        }
+        if (in_ts_skip_leading_space && *p == ' ') { continue; }
+        in_ts_skip_leading_space = 0;
         unsigned char c = (unsigned char)*p;
         if (c == '"' || c == '\\') { *q++ = '\\'; *q++ = c; }
         else *q++ = c;

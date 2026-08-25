@@ -67,23 +67,26 @@ char *summarize_api_error(const char *raw_error) {
             }
         }
 
-        const char *ray = strstr(raw_error, "Ray ID:");
+        /* LIVE regex: Cloudflare Ray ID:\s*<strong[^>]*>([^<]+)</strong> — the
+         * "Cloudflare" prefix and <strong> wrapper are REQUIRED. */
         char ray_id[64] = "";
-        if (ray) {
-            const char *start = ray + 7;
-            while (*start == ' ') start++;
-            /* LIVE regex expects the Cloudflare <strong> wrapper — skip it. */
-            if (strncmp(start, "<strong", 7) == 0) {
-                const char *gt = strchr(start, '>');
-                if (gt) start = gt + 1;
+        {
+            const char *ray = strstr(raw_error, "Cloudflare Ray ID:");
+            if (ray) {
+                const char *start = ray + strlen("Cloudflare Ray ID:");
+                while (*start == ' ') start++;
+                if (strncmp(start, "<strong", 7) == 0) {
+                    const char *gt = strchr(start, '>');
+                    if (gt) start = gt + 1;
+                    const char *lt = strchr(start, '<');
+                    if (lt && (size_t)(lt - start) < sizeof(ray_id)) {
+                        memcpy(ray_id, start, (size_t)(lt - start));
+                        ray_id[lt - start] = '\0';
+                        size_t L = strlen(ray_id);
+                        while (L > 0 && (ray_id[L-1] == ' ' || ray_id[L-1] == '\t')) ray_id[--L] = '\0';
+                    }
+                }
             }
-            const char *end = strchr(start, '<');
-            if (!end) end = strchr(start, '\n');
-            if (!end) end = start + strlen(start);
-            size_t rlen = (size_t)(end - start);
-            if (rlen > 60) rlen = 60;
-            memcpy(ray_id, start, rlen);
-            ray_id[rlen] = '\0';
         }
 
         int status_code = 0;
@@ -109,16 +112,39 @@ char *summarize_api_error(const char *raw_error) {
      * "error" member is a dict, else top-level "message"; truncated to 300). */
     json_t *root = json_parse(raw_error, NULL);
     if (root && root->type == JSON_OBJECT) {
-        const char *msg = NULL;
         json_t *err_obj = json_object_get(root, "error");
-        if (err_obj && err_obj->type == JSON_OBJECT)
-            msg = json_object_get_string(err_obj, "message", NULL);
-        if (!msg)
-            msg = json_object_get_string(root, "message", NULL);
-
-        char buf[512];
-        if (msg && msg[0]) {
-            snprintf(buf, sizeof(buf), "%.300s", msg);
+        if (err_obj && err_obj->type == JSON_OBJECT) {
+            /* LIVE: [code] type: message when a string code is present;
+             * "API error (see logs)" for code-without-message; message
+             * alone when no code; sentinel otherwise. */
+            const char *msg = json_object_get_string(err_obj, "message", NULL);
+            const char *code = json_object_get_string(err_obj, "code", NULL);
+            const char *typ = json_object_get_string(err_obj, "type", NULL);
+            char buf[512];
+            if (code && code[0]) {
+                if (msg && msg[0]) {
+                    snprintf(buf, sizeof(buf), "[%.64s] %.64s: %.300s",
+                             code, (typ && typ[0]) ? typ : "error", msg);
+                    buf[sizeof(buf) - 1] = '\0';
+                    json_free(root);
+                    return strdup(buf);
+                }
+                json_free(root);
+                return strdup("API error (see logs)");
+            }
+            if (msg && msg[0]) {
+                snprintf(buf, sizeof(buf), "%.400s", msg);
+                json_free(root);
+                return strdup(buf);
+            }
+            json_free(root);
+            return strdup("API error (see logs)");
+        }
+        if (err_obj && err_obj->type == JSON_STRING) {
+            /* LIVE: {"error": "..."} -> the string itself. */
+            const char *estr = err_obj->str_val ? err_obj->str_val : "";
+            char buf[512];
+            snprintf(buf, sizeof(buf), "%.400s", estr);
             json_free(root);
             return strdup(buf);
         }

@@ -16,10 +16,12 @@ import agent.message_sanitization as MS  # noqa: E402
 
 
 def norm(x):
+    # Drop live wall-clock timestamps on both sides (make_tool_result_message /
+    # append_message stamp time.time() — inherently non-deterministic).
     if isinstance(x, list):
         return [norm(v) for v in x]
     if isinstance(x, dict):
-        return {k: norm(v) for k, v in x.items()}
+        return {k: norm(v) for k, v in x.items() if k != "timestamp"}
     return x
 
 

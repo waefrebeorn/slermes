@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_tools_url_safety (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_tools_url_safety.c"
+#include "url_safety.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1083,6 +1083,13 @@ bool message_sanitize_close_interrupted(json_t *messages, const char *final_resp
     json_t *turn = json_object();
     json_set(turn, "role", json_string("assistant"));
     json_set(turn, "content", json_string(content));
+    /* Python appends via agent/message_metadata.py append_message(), which
+     * routes through stamp_message_timestamp() — a wall-clock timestamp is
+     * attached when none is present. */
+    {
+        extern json_t *stamp_message_timestamp(json_t *message, double timestamp);
+        stamp_message_timestamp(turn, 0.0);
+    }
     json_append(messages, turn);
     /* ownership: json_set/json_append steal, turn is now owned by array */
     if (trimmed) free(trimmed);
