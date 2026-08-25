@@ -240,3 +240,11 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
 - **v766** — conversation_compression CLOSED: _strip_marker_for_comparison
   (#92231), _pruned_skill_reload_notice (canonical marker scan, cap 20),
   conversation_history_after_compression (legacy/in-place/abort baselines).
+
+
+## Round 17
+
+- **v768** — auxiliary_client: _translate_anthropic_response_format,
+  _without_structured_output_format, _record_route_info. Module → 250/253
+  (remaining three are SDK-client-coupled: client construction, async close
+  scheduling, codex header injection over the live SDK path).
