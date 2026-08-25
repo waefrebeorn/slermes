@@ -185,3 +185,75 @@ void browser_registry_reset(void) {
     pthread_mutex_unlock(&g_lock);
 #endif
 }
+
+/* ── snapshot / generation / restore (plugin re-registration safety) ──── */
+
+static long g_generation = 0;
+
+/* PoP: snapshot_registration @ agent/browser_registry.py
+ * Look up a provider by name under the registry lock (global scope; the
+ * C port has no scoped maps). Returns the provider pointer or NULL. */
+browser_provider_t *browser_registry_snapshot_registration(const char *name)
+{
+    if (!name) return NULL;
+#ifdef __linux__
+    pthread_mutex_lock(&g_lock);
+#endif
+    browser_provider_t *found = NULL;
+    for (int i = 0; i < g_provider_count; i++) {
+        if (strcmp(g_providers[i]->name, name) == 0) { found = g_providers[i]; break; }
+    }
+#ifdef __linux__
+    pthread_mutex_unlock(&g_lock);
+#endif
+    return found;
+}
+
+/* PoP: registry_generation @ agent/browser_registry.py
+ * Cache fingerprint for consumers memoizing resolution. */
+long browser_registry_generation(void)
+{
+    long gen;
+#ifdef __linux__
+    pthread_mutex_lock(&g_lock);
+#endif
+    gen = g_generation;
+#ifdef __linux__
+    pthread_mutex_unlock(&g_lock);
+#endif
+    return gen;
+}
+
+/* PoP: restore_registration @ agent/browser_registry.py
+ * Restore a plugin registration only when *current* is still installed.
+ * previous==NULL removes the slot; otherwise swap back. Bumps generation.
+ * Returns false (no change) when the slot moved on. */
+bool browser_registry_restore_registration(const char *name,
+                                           browser_provider_t *current,
+                                           browser_provider_t *previous)
+{
+    if (!name) return false;
+    bool changed = false;
+#ifdef __linux__
+    pthread_mutex_lock(&g_lock);
+#endif
+    for (int i = 0; i < g_provider_count; i++) {
+        if (strcmp(g_providers[i]->name, name) != 0 || g_providers[i] != current)
+            continue;
+        if (!previous) {
+            /* remove: shift tail down */
+            for (int j = i; j < g_provider_count - 1; j++)
+                g_providers[j] = g_providers[j + 1];
+            g_provider_count--;
+        } else {
+            g_providers[i] = previous;
+        }
+        g_generation++;
+        changed = true;
+        break;
+    }
+#ifdef __linux__
+    pthread_mutex_unlock(&g_lock);
+#endif
+    return changed;
+}
