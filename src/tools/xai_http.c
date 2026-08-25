@@ -432,3 +432,74 @@ char *cli_tools_xai_http_maybe_mark_xai_storage_notice_seen(const char *section_
     return notice;
 }
 
+/* ── resolver closures (battleground 11/14 → 14/14) ────────────────────── */
+
+/* PoP: get_env_value @ tools/xai_http.py:get_env_value
+ * ~/.hermes/.env first (via the shared dotenv-aware getter), then environ. */
+char *xai_http_get_env_value(const char *name)
+{
+    extern char *config_py_get_env_value_prefer_dotenv(const char *name);
+    char *v = config_py_get_env_value_prefer_dotenv(name);
+    if (v) return v;
+    const char *e = getenv(name);
+    return e ? strdup(e) : NULL;
+}
+
+/* PoP: _coerce_bool @ tools/xai_http.py:_coerce_bool */
+bool xai_http_coerce_bool(const json_t *value, bool default_val)
+{
+    if (!value) return default_val;
+    if (value->type == JSON_BOOL) return value->bool_val != 0;
+    if (value->type == JSON_STRING && value->str_val) {
+        const char *s = value->str_val;
+        if (strcasecmp(s, "1") == 0 || strcasecmp(s, "true") == 0 ||
+            strcasecmp(s, "yes") == 0 || strcasecmp(s, "on") == 0 ||
+            strcasecmp(s, "enabled") == 0)
+            return true;
+        if (strcasecmp(s, "0") == 0 || strcasecmp(s, "false") == 0 ||
+            strcasecmp(s, "no") == 0 || strcasecmp(s, "off") == 0 ||
+            strcasecmp(s, "disabled") == 0)
+            return false;
+    }
+    return default_val;
+}
+
+/* PoP: _resolve_explicit_xai_api_key @ tools/xai_http.py:_resolve_explicit_xai_api_key
+ * Delegates to the shared secret machinery — never re-implements scope
+ * policy per-caller. Returns malloc'd key or NULL. */
+char *xai_http_resolve_explicit_xai_api_key(void)
+{
+    extern char *tools_tool_backend_helpers_resolve_provider_secret(
+        const char *env_name, const char *provider);
+    /* The C secret resolver already reads .env-preferred values. */
+    return tools_tool_backend_helpers_resolve_provider_secret("XAI_API_KEY",
+                                                              "xai");
+}
+
+/* PoP: _resolve_explicit_xai_base_url @ tools/xai_http.py:_resolve_explicit_xai_base_url
+ * HERMES_XAI_BASE_URL then XAI_BASE_URL, validated by the auth helper so a
+ * tampered override can't exfiltrate the bearer; falls back to default. */
+char *xai_http_resolve_explicit_xai_base_url(const char *default_url)
+{
+    extern char *auth_u_xai_validate_inference_base_url(const char *url);
+    char *override = NULL;
+    char *a = xai_http_get_env_value("HERMES_XAI_BASE_URL");
+    if (!a || !*a) {
+        free(a);
+        a = xai_http_get_env_value("XAI_BASE_URL");
+    }
+    if (a && *a) {
+        /* strip trailing slashes */
+        size_t l = strlen(a);
+        while (l > 0 && a[l - 1] == '/') { a[l - 1] = '\0'; l--; }
+        override = strdup(a);
+    }
+    free(a);
+
+    const char *candidate = (override && *override) ? override
+                            : (default_url ? default_url : "https://api.x.ai/v1");
+    char *validated = auth_u_xai_validate_inference_base_url(candidate);
+    free(override);
+    if (validated) return validated;
+    return strdup(candidate ? candidate : "https://api.x.ai/v1");
+}
