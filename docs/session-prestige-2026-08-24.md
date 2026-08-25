@@ -225,3 +225,11 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
 - **v761** — browser_registry CLOSED (8/8): snapshot_registration,
   registry_generation cache fingerprint, restore_registration (restore only
   when current still installed; generation bump under lock).
+
+
+## Round 15 (continued)
+
+- **v763** — credential_pool CLOSED (74/74): resolve_runtime_pool_key +
+  get_env_prefer_dotenv (op:// unresolved-reference deferral).
+- **v764** — file_safety CLOSED (20/20): write-approval path gates
+  (~/.ssh/config — ProxyCommand/Match exec influence process execution).
