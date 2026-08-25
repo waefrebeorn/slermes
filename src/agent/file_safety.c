@@ -934,3 +934,60 @@ void sandbox_mirror_info_free(sandbox_mirror_info_t *info) {
     free(info->inner_path);
     memset(info, 0, sizeof(*info));
 }
+
+/* ── write-approval gates (file_safety gap closure) ────────────────────── */
+
+static char *fs_realpath_dup(const char *path)
+{
+    char buf[4096];
+    if (!realpath(path, buf)) return NULL;
+    return strdup(buf);
+}
+
+/* PoP: build_write_approval_paths @ agent/file_safety.py
+ * Paths requiring human APPROVAL (not hard-denied credentials):
+ * realpath(home/.ssh/config). Fills out[0]; returns count (0/1). */
+int file_safety_build_write_approval_paths(const char *home,
+                                           char *out, size_t outsz)
+{
+    if (!home || !out || outsz == 0) return 0;
+    char candidate[4096];
+    snprintf(candidate, sizeof(candidate), "%s/.ssh/config", home);
+    char *resolved = fs_realpath_dup(candidate);
+    if (resolved) {
+        snprintf(out, outsz, "%s", resolved);
+        free(resolved);
+    } else {
+        snprintf(out, outsz, "%s", candidate);
+    }
+    return 1;
+}
+
+/* PoP: is_write_approval_required @ agent/file_safety.py
+ * ~/.ssh/config is routine to edit but can carry ProxyCommand / Match exec —
+ * a write must be human-approved; non-interactive callers fail closed. */
+bool file_safety_is_write_approval_required(const char *path)
+{
+    if (!path) return false;
+    char home[4096];
+    const char *h = getenv("HOME");
+    if (!h || !*h) return false;
+    snprintf(home, sizeof(home), "%s", h);
+    char *home_real = fs_realpath_dup(home);
+    if (!home_real) return false;
+
+    char approval_path[4096];
+    int n = file_safety_build_write_approval_paths(home_real, approval_path,
+                                                   sizeof(approval_path));
+    free(home_real);
+    if (n <= 0) return false;
+
+    char *resolved = fs_realpath_dup(path);
+    if (!resolved) {
+        /* not-yet-existing target: compare the raw expansion against the gate */
+        resolved = strdup(path);
+    }
+    bool hit = strcmp(resolved, approval_path) == 0;
+    free(resolved);
+    return hit;
+}
