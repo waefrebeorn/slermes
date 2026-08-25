@@ -552,3 +552,45 @@ int tools_web_tools_u_list_registered_web_providers(const char *arg) {
     printf("%s\n", arg);
     return 0;
 }
+
+/* ── keyless-rescue decision core (battleground 22/29 closure) ─────────── */
+
+/* PoP: _tavily_explicitly_configured @ tools/web_tools.py:_tavily_explicitly_configured */
+bool web_tools_tavily_explicitly_configured(const json_t *cfg)
+{
+    if (!cfg) return false;
+    static const char *const KEYS[] = { "backend", "search_backend",
+                                        "extract_backend", NULL };
+    for (int i = 0; KEYS[i]; i++) {
+        json_t *v = json_obj_get(cfg, KEYS[i]);
+        if (v && v->type == JSON_STRING && v->str_val &&
+            strcasecmp(v->str_val, "tavily") == 0)
+            return true;
+    }
+    return false;
+}
+
+/* PoP: _keyless_rescue_enabled @ tools/web_tools.py:_keyless_rescue_enabled
+ * web.keyless_rescue (default on) AND web.keyless_fallback (tier itself).
+ * keyless_tier_enabled is the LIVE registry verdict, passed in. */
+bool web_tools_keyless_rescue_enabled(const json_t *cfg,
+                                      bool keyless_tier_enabled)
+{
+    json_t *kr = cfg ? json_obj_get(cfg, "keyless_rescue") : NULL;
+    if (kr && kr->type == JSON_BOOL && !kr->bool_val) return false;
+    /* registry optional: a failed tier check disables rescue */
+    return keyless_tier_enabled;
+}
+
+/* PoP: _rescue_eligible @ tools/web_tools.py:_rescue_eligible
+ * Eligible: keyed/configured path (non-ring backend, or ring vendor in
+ * keyed mode). NOT eligible: provider already went through the keyless
+ * ring (re-walking would just repeat it), or rescue disabled. */
+bool web_tools_rescue_eligible(const char *provider,
+                               bool keyless_rescue_enabled,
+                               bool provider_is_keyless_ring)
+{
+    if (!keyless_rescue_enabled) return false;
+    if (!provider || !*provider) return false;
+    return !provider_is_keyless_ring;
+}
