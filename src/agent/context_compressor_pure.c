@@ -2460,3 +2460,33 @@ json_t *cc_history_before_user_originated_turn(json_t *messages, long index,
     json_append(pair, live);
     return pair;
 }
+
+/* ── stale image retirement ────────────────────────────────────────────── */
+
+#define CC_MAX_KEEP_TOOL_IMAGES 3
+
+/* PoP: _retire_stale_tool_result_images @ agent/context_compressor.py
+ * Walks newest-first; keeps the most recent keep_newest image-bearing tool
+ * messages intact and retires the rest via cc_strip_images_from_tool_msg.
+ * Mutates the array in place; returns the number rewritten. */
+long cc_retire_stale_tool_result_images(json_t *result, long keep_newest)
+{
+    if (!result || result->type != JSON_ARRAY) return 0;
+    if (keep_newest < 0) keep_newest = 0;
+    long seen = 0, pruned = 0;
+    for (size_t ii = result->c.count; ii-- > 0;) {
+        json_t *msg = result->c.items[ii];
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_get_str(msg, "role", "");
+        if (strcmp(role, "tool") != 0) continue;
+        if (!cc_tool_content_has_images(json_obj_get(msg, "content"))) continue;
+        seen++;
+        if (seen <= keep_newest) continue;
+        json_t *new_msg = cc_strip_images_from_tool_msg(msg);
+        if (!new_msg) continue;
+        json_free(result->c.items[ii]);
+        result->c.items[ii] = new_msg;
+        pruned++;
+    }
+    return pruned;
+}
