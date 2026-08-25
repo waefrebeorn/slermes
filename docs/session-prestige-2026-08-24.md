@@ -48,3 +48,22 @@
    detector noise (sampled entries are real implementations) — reclassify
    with the comment convention and shrink the list.
 3. Recursive gap loop continues: next REAL_GAP cluster from the scanner.
+
+
+## Round 2 (recursive loop continues)
+
+1. Upstream quarry re-synced (+79 commits, behind=0). New upstream work triaged.
+2. **v711** — ported `agent/terminal_env_provider.py` TerminalEnvironmentProvider
+   ABC (222-line new module) as a vtable with all base-class @property defaults;
+   wired into AGENT_OBJ, 20 tep_* symbols in binary.
+3. **v712** — ported `_interleave_addrinfos` (RFC 8305 Happy Eyeballs prep,
+   pure) + LIVE-Python oracle (5 cases MATCH).
+4. **v713** — ported `get_browser_snapshot_threshold` (browser.snapshot_threshold
+   config knob, clamped + cached + resettable).
+5. **v714** — signal standalone send enforces MAX_MESSAGE_LENGTH chunking
+   (upstream 48f69e51d3/#67279/#57929).
+6. Rebuild green; final10/hermes_state/process_bootstrap_pure/replay_cleanup
+   oracles re-MATCH after rebuild.
+
+Next: remaining upstream deltas (memory gating verified already covered),
+continue scanner REAL_GAP descent.
