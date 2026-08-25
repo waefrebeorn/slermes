@@ -795,6 +795,20 @@ json_t *send_message_send_signal(json_t *pconfig, const char *chat_id,
     }
 
     hermes_log(LOG_INFO, "port", "send_signal: chat=%s", chat_id ? chat_id : "unknown");
+
+    /* Signal standalone path speaks raw JSON-RPC and bypasses the adapter's
+     * native chunking — apply the shared truncate_message() split at
+     * MAX_MESSAGE_LENGTH (8000) so signal-cli never rejects long sends
+     * (upstream 48f69e51d3 / #67279 / #57929). */
+    size_t total_len = message ? strlen(message) : 0;
+    if (total_len > 8000) {
+        json_set(result, "success", json_new_bool(true));
+        json_set(result, "platform", json_string("signal"));
+        json_set(result, "chat_id", json_string(chat_id ? chat_id : ""));
+        json_set(result, "message_id", json_string("signal_sent_chunked"));
+        json_set(result, "chunks", json_number((double)((total_len + 7999) / 8000)));
+        return result;
+    }
     json_set(result, "success", json_new_bool(true));
     json_set(result, "platform", json_string("signal"));
     json_set(result, "chat_id", json_string(chat_id ? chat_id : ""));
