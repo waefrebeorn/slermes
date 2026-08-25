@@ -223,3 +223,66 @@ json_t *brv_digest_history(const json_t *messages_snapshot, int tail) {
         json_array_append(out, json_copy(json_array_get(messages_snapshot, i)));
     return out;
 }
+
+/* ── review classification + settings gates (battleground 8/23 closure) ── */
+
+#define BRV_REVIEW_MAX_INPUT_TOKENS_DEFAULT 600000
+
+/* PoP: _classify_review_result @ agent/background_review.py:_classify_review_result
+ * Prefix-based (not free-text substring) on the summarize_background_review_actions
+ * formats: "Skill …", "📝 Skill …", "Memory …", "User profile …". */
+char *brv_classify_review_result(json_t *actions)
+{
+    if (!actions || actions->type != JSON_ARRAY || json_len(actions) == 0)
+        return strdup("none");
+    bool has_skill = false, has_memory = false;
+    for (size_t k = 0; k < json_len(actions); k++) {
+        json_t *a = json_get(actions, k);
+        const char *raw = (a && a->type == JSON_STRING) ? a->str_val : "";
+        const char *text = raw;
+        while (*text == ' ' || *text == '\t') text++;
+        if (strncmp(text, "\xF0\x9F\x93\x9D", 4) == 0) { /* 📝 */
+            text += 4;
+            while (*text == ' ') text++;
+        }
+        /* lowercase prefix compare */
+        char head[16] = {0};
+        size_t n = strlen(text);
+        if (n > 15) n = 15;
+        for (size_t c = 0; c < n; c++)
+            head[c] = (text[c] >= 'A' && text[c] <= 'Z') ? text[c] + 32 : text[c];
+        if (strncmp(head, "skill", 5) == 0) has_skill = true;
+        else if (strncmp(head, "memory", 6) == 0 ||
+                 strncmp(head, "user profile", 12) == 0)
+            has_memory = true;
+    }
+    if (has_skill && has_memory) return strdup("skill+memory");
+    if (has_skill) return strdup("skill");
+    if (has_memory) return strdup("memory");
+    return strdup("none");
+}
+
+/* PoP: is_background_review_enabled @ agent/background_review.py
+ * auxiliary.background_review.enabled gate (default true). task_enabled
+ * mirrors utils.is_truthy_value on the config node's "enabled" value; -1
+ * means the key was absent (caller default true). */
+bool brv_is_background_review_enabled(int task_enabled_truthy)
+{
+    return task_enabled_truthy != 0;
+}
+
+/* PoP: _review_input_token_budget @ agent/background_review.py
+ * max_input_tokens with LIVE default 600000; <=0 → unlimited (NULL).
+ * Returns malloc'd int-boxed budget or NULL. Caller frees. */
+int *brv_review_input_token_budget(long raw_budget, bool raw_present)
+{
+    long budget;
+    if (!raw_present)
+        budget = BRV_REVIEW_MAX_INPUT_TOKENS_DEFAULT;
+    else
+        budget = raw_budget;
+    if (budget <= 0) return NULL;
+    int *out = malloc(sizeof(*out));
+    if (out) *out = (int)budget;
+    return out;
+}
