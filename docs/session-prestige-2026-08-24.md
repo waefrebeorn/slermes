@@ -233,3 +233,10 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
   get_env_prefer_dotenv (op:// unresolved-reference deferral).
 - **v764** — file_safety CLOSED (20/20): write-approval path gates
   (~/.ssh/config — ProxyCommand/Match exec influence process execution).
+
+
+## Round 16
+
+- **v766** — conversation_compression CLOSED: _strip_marker_for_comparison
+  (#92231), _pruned_skill_reload_notice (canonical marker scan, cap 20),
+  conversation_history_after_compression (legacy/in-place/abort baselines).
