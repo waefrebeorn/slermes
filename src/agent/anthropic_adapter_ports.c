@@ -844,3 +844,52 @@ char *anthropic_adapter_scrub_blank_text_blocks(const char *arg) {
     json_free(j);
     return result;
 }
+
+/* ── thinking-disable gate (anthropic_adapter gap closure) ─────────────── */
+
+static const char *const MANDATORY_THINKING_CLAUDE_SUBSTRINGS[] = {
+    "claude-fable", NULL,
+};
+
+/* PoP: _is_claude_model @ agent/anthropic_adapter.py */
+bool aa_is_claude_model(const char *model)
+{
+    if (!model) return false;
+    /* "claude" in model.lower() — case-insensitive substring */
+    size_t ml = strlen(model);
+    char *low = malloc(ml + 1);
+    if (!low) return false;
+    for (size_t k = 0; k < ml; k++)
+        low[k] = (char)((model[k] >= 'A' && model[k] <= 'Z') ? model[k] + 32 : model[k]);
+    low[ml] = '\0';
+    bool hit = strstr(low, "claude") != NULL;
+    free(low);
+    return hit;
+}
+
+/* PoP: _accepts_thinking_disable @ agent/anthropic_adapter.py
+ * True when the model accepts an explicit thinking disable. Adaptive Claude
+ * models default thinking ON, so omitting the parameter leaves it thinking;
+ * reasoning-mandatory families (claude-fable) reject the disable outright.
+ * Kimi/Moonshot endpoints speak adaptive but their disable contract is
+ * omission — deliberately not sent a Claude-specific parameter. */
+bool aa_accepts_thinking_disable(const char *model)
+{
+    extern int cli_agent_anthropic_adapter__supports_adaptive_thinking(
+        const char *model);
+    if (!aa_is_claude_model(model)) return false;
+    if (!cli_agent_anthropic_adapter__supports_adaptive_thinking(model))
+        return false;
+    size_t ml = strlen(model);
+    char *low = malloc(ml + 1);
+    if (!low) return false;
+    for (size_t k = 0; k < ml; k++)
+        low[k] = (char)((model[k] >= 'A' && model[k] <= 'Z') ? model[k] + 32 : model[k]);
+    low[ml] = '\0';
+    bool mandatory = false;
+    for (int k = 0; MANDATORY_THINKING_CLAUDE_SUBSTRINGS[k]; k++) {
+        if (strstr(low, MANDATORY_THINKING_CLAUDE_SUBSTRINGS[k])) { mandatory = true; break; }
+    }
+    free(low);
+    return !mandatory;
+}
