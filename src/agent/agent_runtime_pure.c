@@ -175,3 +175,130 @@ const char *cache_policy_stub_api_mode(struct cache_policy_stub *s) { return s ?
 const char *cache_policy_stub_model(struct cache_policy_stub *s) { return s ? s->model : NULL; }
 bool cache_policy_stub_disabled(struct cache_policy_stub *s) { return s ? (s->cache_disabled != 0) : false; }
 
+/* ── tool-call id variants + trailing continue intent (gap closure) ────── */
+
+/* PoP: _expand_tool_id_variants @ agent/message_sanitization.py
+ * Every wire spelling of one or more tool-call identifiers. Responses
+ * bridges expose pairing id and response-item id separately or as
+ * "call_id|response_item_id" — aliases for one call. Appends unique
+ * variant strings into out (capacity out_max); returns count appended.
+ * Strings are malloc'd; caller frees each. */
+int arh_expand_tool_id_variants(const char *const *values, int n_values,
+                                char **out, int out_max)
+{
+    int n_out = 0;
+    for (int k = 0; k < n_values; k++) {
+        const char *raw = values[k];
+        if (!raw) continue;
+        /* strip */
+        while (*raw == ' ' || *raw == '\t') raw++;
+        const char *e = raw + strlen(raw);
+        while (e > raw && (e[-1]==' '||e[-1]=='\t')) e--;
+        size_t len = (size_t)(e - raw);
+        if (len == 0) continue;
+
+        bool dup = false;
+        for (int q = 0; q < n_out; q++)
+            if (strlen(out[q]) == len && strncmp(out[q], raw, len) == 0) { dup = true; break; }
+        if (!dup && n_out < out_max)
+            out[n_out++] = strndup(raw, len);
+
+        /* composite "call_id|response_item_id": split */
+        if (!memchr(raw, '|', len)) continue;
+        const char *part = raw;
+        const char *pend = raw + len;
+        while (part < pend) {
+            const char *bar = memchr(part, '|', (size_t)(pend - part));
+            size_t plen = bar ? (size_t)(bar - part) : (size_t)(pend - part);
+            while (plen > 0 && part[0]==' ') { part++; plen--; }
+            while (plen > 0 && part[plen-1]==' ') plen--;
+            if (plen > 0) {
+                bool pdup = false;
+                for (int q = 0; q < n_out; q++)
+                    if (strlen(out[q]) == plen && strncmp(out[q], part, plen) == 0) { pdup = true; break; }
+                if (!pdup && n_out < out_max)
+                    out[n_out++] = strndup(part, plen);
+            }
+            part = bar ? bar + 1 : pend;
+        }
+    }
+    return n_out;
+}
+
+/* PoP: _tool_call_id_variants @ agent/agent_runtime_helpers.py
+ * Thin forwarder to the shared policy owner over a tool_call object's
+ * call_id / id / response_item_id fields. Caller frees each string. */
+int arh_tool_call_id_variants(const json_t *tc, char **out, int out_max)
+{
+    if (!tc || tc->type != JSON_OBJECT) return 0;
+    const char *vals[3];
+    vals[0] = json_get_str(tc, "call_id", NULL);
+    vals[1] = json_get_str(tc, "id", NULL);
+    vals[2] = json_get_str(tc, "response_item_id", NULL);
+    return arh_expand_tool_id_variants(vals, 3, out, out_max);
+}
+
+#define ARH_TRAILING_CONTINUE_INTENT_MAX_CHARS 400
+#define ARH_TRAILING_CONTINUE_INTENT_TAIL 160
+
+static const char *const TRAILING_INTENTS[] = {
+    "let me now", "i'll now", "i’ll now", "i will now",
+    "now i'll", "now i’ll", "now i will", "next,", "next:", NULL,
+};
+
+/* PoP: trailing_continue_intent @ agent/agent_runtime_helpers.py
+ * Short reply ending on an announced next action → the stall-guard
+ * re-prompts via bounded continuation instead of stopping. Case-insensitive
+ * match of the intent patterns within the last 160 chars, at the tail. */
+bool arh_trailing_continue_intent(const char *text)
+{
+    if (!text) return false;
+    while (*text==' '||*text=='\t'||*text=='\n'||*text=='\r') text++;
+    const char *e = text + strlen(text);
+    while (e > text && (e[-1]==' '||e[-1]=='\t'||e[-1]=='\n'||e[-1]=='\r')) e--;
+    size_t len = (size_t)(e - text);
+    if (len == 0 || len > ARH_TRAILING_CONTINUE_INTENT_MAX_CHARS) return false;
+    size_t start = len > ARH_TRAILING_CONTINUE_INTENT_TAIL
+                       ? len - ARH_TRAILING_CONTINUE_INTENT_TAIL : 0;
+
+    /* lowercase window copy */
+    size_t wlen = len - start;
+    char *win = malloc(wlen + 1);
+    if (!win) return false;
+    for (size_t k = 0; k < wlen; k++) {
+        char c = text[start + k];
+        win[k] = (c >= 'A' && c <= 'Z') ? (char)(c + 32) : c;
+    }
+    win[wlen] = '\0';
+
+    bool hit = false;
+    for (int pi = 0; TRAILING_INTENTS[pi]; pi++) {
+        const char *needle = TRAILING_INTENTS[pi];
+        /* normalize apostrophe variants in needle already handled above */
+        const char *pos = win;
+        while ((pos = strstr(pos, needle)) != NULL) {
+            size_t after = pos - win + strlen(needle);
+            /* must reach the tail with only [^.!?\n]{0,100}[.:…]? whitespace */
+            bool ok = true;
+            size_t span = 0;
+            for (size_t q = after; q < wlen; q++) {
+                char c = win[q];
+                if (c=='.'||c=='!'||c=='?'||c=='\n') {
+                    /* allowed only as final optional punctuation before ws-tail */
+                    size_t r = q + 1;
+                    while (r < wlen && (win[r]==' '||win[r]=='\t')) r++;
+                    ok = (r >= wlen) && (q - after <= 100);
+                    span = 0;
+                    break;
+                }
+                if (++span > 100) { ok = false; break; }
+            }
+            if (ok && after <= wlen) hit = true;
+            if (hit) break;
+            pos += strlen(needle);
+        }
+        if (hit) break;
+    }
+    free(win);
+    return hit;
+}
