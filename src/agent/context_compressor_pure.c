@@ -1887,3 +1887,103 @@ json_t *salvage_grown_transcript(const json_t *original,
     json_free(out);
     return NULL;
 }
+
+/* ── compaction-summary public API + handoff projection ────────────────── */
+
+#define CC_MERGED_SUMMARY_DELIMITER \
+    "[END OF PRIOR CONTEXT — COMPACTION SUMMARY BELOW]"
+#define CC_SUMMARY_END_MARKER \
+    "--- END OF CONTEXT SUMMARY — respond to the message below, not the summary above ---"
+
+extern int cc_is_context_summary_content(const json_t *content);
+extern int cc_has_compressed_summary_metadata(const json_t *message);
+
+/* helper: JSON string from a length-bounded slice */
+static json_t *cc_json_string_slice(const char *s, size_t len)
+{
+    char *tmp = strndup(s, len);
+    if (!tmp) return NULL;
+    json_t *out = json_string(tmp);
+    free(tmp);
+    return out;
+}
+
+/* PoP: is_compaction_summary_message @ agent/context_compressor.py
+ * True when the message is a context-compaction handoff summary. Prefers
+ * the in-process metadata marker, falls back to content heuristics (the
+ * marker does not survive all wire/store round-trips). */
+bool cc_is_compaction_summary_message(const json_t *message)
+{
+    if (!message) return false;
+    if (message->type == JSON_OBJECT &&
+        cc_has_compressed_summary_metadata(message))
+        return true;
+    const char *content = NULL;
+    if (message->type == JSON_OBJECT) {
+        content = json_get_str(message, "content", NULL);
+        if (!content) {
+            /* non-string content: run heuristics on the node itself */
+            return cc_is_context_summary_content(json_obj_get(message, "content"));
+        }
+        return cc_is_context_summary_content(json_string(content));
+    }
+    return cc_is_context_summary_content(message);
+}
+
+/* PoP: _handoff_only_content @ agent/context_compressor.py
+ * Project summary-bearing content to the synthetic handoff alone.
+ * String case: after MERGED delimiter, up to and including SUMMARY_END_MARKER
+ * when present; list case: first delimiter-bearing text part rewritten to the
+ * summary suffix (later parts never retained). Returns a new json_t or NULL
+ * on OOM. Caller frees. */
+json_t *cc_handoff_only_content(const json_t *content)
+{
+    if (!content) return NULL;
+
+    if (content->type == JSON_STRING && content->str_val) {
+        const char *d = strstr(content->str_val, CC_MERGED_SUMMARY_DELIMITER);
+        if (!d) return json_string(content->str_val);
+        const char *suffix = d + strlen(CC_MERGED_SUMMARY_DELIMITER);
+        while (*suffix == ' ' || *suffix == '\t' || *suffix == '\n') suffix++;
+        const char *marker = strstr(suffix, CC_SUMMARY_END_MARKER);
+        size_t len = marker ? (size_t)(marker - suffix) + strlen(CC_SUMMARY_END_MARKER)
+                            : strlen(suffix);
+        return cc_json_string_slice(suffix, len);
+    }
+
+    /* string helper for the suffix slice */
+    if (content->type != JSON_ARRAY) return json_copy(content);
+
+    for (size_t k = 0; k < json_len(content); k++) {
+        json_t *item = json_get(content, k);
+        const char *text = NULL;
+        if (item && item->type == JSON_STRING) text = item->str_val;
+        else if (item && item->type == JSON_OBJECT)
+            text = json_get_str(item, "text", NULL);
+        if (!text || !strstr(text, CC_MERGED_SUMMARY_DELIMITER)) continue;
+
+        const char *d = strstr(text, CC_MERGED_SUMMARY_DELIMITER);
+        const char *suffix = d + strlen(CC_MERGED_SUMMARY_DELIMITER);
+        while (*suffix == ' ' || *suffix == '\t' || *suffix == '\n') suffix++;
+        const char *marker = strstr(suffix, CC_SUMMARY_END_MARKER);
+        size_t len = marker ? (size_t)(marker - suffix) + strlen(CC_SUMMARY_END_MARKER)
+                            : strlen(suffix);
+        if (len == 0) return json_new_array();
+
+        json_t *out_item;
+        if (item->type == JSON_OBJECT) {
+            out_item = json_copy(item);
+            json_set(out_item, "text", cc_json_string_slice(suffix, len));
+            json_t *arr = json_new_array();
+            json_append(arr, out_item);
+            return arr;
+        }
+        out_item = cc_json_string_slice(suffix, len);
+        json_t *arr = json_new_array();
+        json_append(arr, out_item);
+        return arr;
+    }
+    /* Force-user-leading layout: keep live content before SUMMARY_END_MARKER. */
+    /* LIVE keeps the original content in that layout — pass through. */
+    return json_copy(content);
+}
