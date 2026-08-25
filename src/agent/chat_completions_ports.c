@@ -348,3 +348,154 @@ long cct_raise_gemini_thinking_max_tokens(
     free(tc_json);
     return effective;
 }
+
+/* ── provider-SSE parsing + cache-scope wrapper (12-gap closure) ───────── */
+
+/* PoP: _status_code_from_value @ agent/chat_completion_helpers.py
+ * Accept int or digit-string; returns -1 for non-status values (C's NULL). */
+static long cch_status_code_from_value(const char *value)
+{
+    if (!value || !*value) return -1;
+    /* skip spaces */
+    while (*value == ' ') value++;
+    char *end = NULL;
+    long v = strtol(value, &end, 10);
+    if (end == value || (end && *end != '\0')) return -1;
+    if (v < 100 || v > 599) return -1;
+    return v;
+}
+
+/* PoP: _parse_provider_sse_events @ agent/chat_completion_helpers.py
+ * Parse provider text that looks like Server-Sent Events. Returns a JSON
+ * array of {event, data, status_code} objects — the fields LIVE consumers
+ * read. Caller frees. */
+json_t *chat_completion_parse_provider_sse_events(const char *text)
+{
+    json_t *events = json_new_array();
+    if (!events) return NULL;
+
+    /* current event accumulators */
+    char *ev_event = NULL;          /* event: value */
+    json_t *data_lines = json_new_array();   /* data: lines */
+    char *comments[64]; size_t n_comments = 0;
+    char *field_keys[32]; char *field_vals[32]; size_t n_fields = 0;
+
+#define CCH_FLUSH() do { \
+        if ((ev_event && *ev_event) || json_len(data_lines) > 0 || n_comments > 0 || n_fields > 0) { \
+            json_t *obj = json_object(); \
+            if (obj) { \
+                json_set(obj, "event", ev_event ? json_string(ev_event) : json_new_null()); \
+                /* join data with \n */ \
+                size_t total = 0; \
+                for (size_t d = 0; d < json_len(data_lines); d++) \
+                    total += strlen(json_get_str(json_get(data_lines, d), NULL, "")) + 1; \
+                char *joined = malloc(total + 1); \
+                if (joined) { \
+                    joined[0] = '\0'; size_t off = 0; \
+                    for (size_t d = 0; d < json_len(data_lines); d++) { \
+                        const char *l = json_get_str(json_get(data_lines, d), NULL, ""); \
+                        if (d) joined[off++] = '\n'; \
+                        strcpy(joined + off, l); off += strlen(l); \
+                    } \
+                    json_set(obj, "data", json_string(joined)); \
+                    free(joined); \
+                } else { \
+                    json_set(obj, "data", json_string("")); \
+                } \
+                /* status: first parseable among comments then status fields */ \
+                long status = -1; \
+                for (size_t c = 0; c < n_comments && status < 0; c++) \
+                    status = cch_status_code_from_value(comments[c]); \
+                for (const char *const *key = (const char *const[]){"status","status_code","http_status",NULL}; \
+                     *key && status < 0; key++) { \
+                    for (size_t f = 0; f < n_fields && status < 0; f++) \
+                        if (strcmp(field_keys[f], *key) == 0) \
+                            status = cch_status_code_from_value(field_vals[f]); \
+                } \
+                if (status >= 0) \
+                    json_set(obj, "status_code", json_number((double)status)); \
+                json_append(events, obj); \
+            } \
+        } \
+        free(ev_event); ev_event = NULL; \
+        json_free(data_lines); data_lines = json_new_array(); \
+        for (size_t c = 0; c < n_comments; c++) free(comments[c]); n_comments = 0; \
+        for (size_t f = 0; f < n_fields; f++) { free(field_keys[f]); free(field_vals[f]); } n_fields = 0; \
+    } while (0)
+
+    if (!text) text = "";
+    const char *p = text;
+    while (*p) {
+        const char *eol = strchr(p, '\n');
+        size_t len = eol ? (size_t)(eol - p) : strlen(p);
+        char *raw_line = strndup(p, len);
+        if (!raw_line) break;
+        p = eol ? eol + 1 : p + len;
+
+        /* rstrip \r */
+        size_t ll = strlen(raw_line);
+        while (ll > 0 && raw_line[ll - 1] == '\r') raw_line[--ll] = '\0';
+        const char *line = raw_line;
+
+        if (*line == '\0') { free(raw_line); CCH_FLUSH(); continue; }
+        if (*line == ':') {
+            if (n_comments < 64)
+                comments[n_comments++] = strdup(line + 1); /* strip ':'; strip() ~ trim */
+            free(raw_line);
+            continue;
+        }
+
+        /* partition on first ':' */
+        char *colon = strchr(line, ':');
+        if (!colon) {
+            /* field key lowercased, empty value */
+            char *key = strdup(line);
+            for (char *k = key; *k; k++) if (*k >= 'A' && *k <= 'Z') *k += 32;
+            /* trim trailing spaces of key */
+            size_t kl = strlen(key); while (kl && key[kl-1]==' ') key[--kl]='\0';
+            if (n_fields < 32) { field_keys[n_fields] = key; field_vals[n_fields++] = strdup(""); }
+            else free(key);
+            free(raw_line);
+            continue;
+        }
+        *colon = '\0';
+        const char *field_raw = line;
+        const char *value = colon + 1;
+        if (*value == ' ') value++;
+
+        char *key = strdup(field_raw);
+        for (char *k = key; *k; k++) if (*k >= 'A' && *k <= 'Z') *k += 32;
+        size_t kl = strlen(key); while (kl && key[kl-1]==' ') key[--kl]='\0';
+
+        if (strcmp(key, "event") == 0) {
+            free(ev_event);
+            /* .strip() both ends */
+            while (*value==' ') value++;
+            const char *ve = value + strlen(value);
+            while (ve > value && ve[-1]==' ') ve--;
+            ev_event = strndup(value, (size_t)(ve - value));
+        } else if (strcmp(key, "data") == 0) {
+            json_array_append(data_lines, json_string(value));
+        } else {
+            if (n_fields < 32) { field_keys[n_fields] = key; field_vals[n_fields++] = strdup(value); }
+            else free(key);
+            key = NULL;
+        }
+        free(key);
+        free(raw_line);
+    }
+    CCH_FLUSH();
+#undef CCH_FLUSH
+    return events;
+}
+
+/* PoP: _prompt_cache_scope_for_agent @ agent/chat_completion_helpers.py
+ * Guarded wrapper over resolve_prompt_cache_scope_safe (never-raising);
+ * NULL/empty degrades callers to the physical session_id. */
+char *chat_completion_prompt_cache_scope_for_agent(void)
+{
+    extern char *resolve_prompt_cache_scope_safe(void);
+    char *scope = resolve_prompt_cache_scope_safe();
+    if (scope && !*scope) { free(scope); return NULL; }
+    return scope;
+}
