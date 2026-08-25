@@ -248,3 +248,11 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
   _without_structured_output_format, _record_route_info. Module → 250/253
   (remaining three are SDK-client-coupled: client construction, async close
   scheduling, codex header injection over the live SDK path).
+
+
+## Round 18
+
+- **v770** — anthropic_adapter CLOSED (75/75): _accepts_thinking_disable —
+  adaptive Claude models need an explicit disable (omission leaves thinking
+  ON), reasoning-mandatory families reject it, Kimi/Moonshot omission
+  contract deliberately untouched.
