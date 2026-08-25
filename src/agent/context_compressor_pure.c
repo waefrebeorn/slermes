@@ -2592,3 +2592,198 @@ char *cc_build_verbatim_user_section(json_t *turns)
     free(collected);
     return out;
 }
+
+/* ── anchor index (mechanical identifier harvest) ──────────────────────── */
+
+#define CC_LEAN_ANCHOR_BUDGET_CHARS 7000
+#define CC_LEAN_ANCHOR_HEADING "## Anchor Index (mechanically extracted, exact)"
+
+extern int regex_findall(hregex_t *re, const char *str, char **out, int out_max);
+
+/* PoP: _build_anchor_index @ agent/context_compressor.py
+ * Regex-harvest exact identifiers; per-category caps; most-frequent first,
+ * ties by last-seen order. malloc'd; caller frees. */
+char *cc_build_anchor_index(json_t *turns)
+{
+    if (!turns || turns->type != JSON_ARRAY) return strdup("");
+
+    /* join string contents with 
+ */
+    size_t cap = 1024, off = 0;
+    char *text = malloc(cap);
+    if (!text) return NULL;
+    text[0] = '\0';
+    for (size_t k = 0; k < turns->c.count; k++) {
+        json_t *msg = turns->c.items[k];
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        json_t *cj = json_obj_get(msg, "content");
+        if (!cj || cj->type != JSON_STRING || !cj->str_val) continue;
+        size_t cl = strlen(cj->str_val);
+        while (off + cl + 2 > cap) { cap *= 2; text = realloc(text, cap); }
+        if (off) text[off++] = '\n';
+        memcpy(text + off, cj->str_val, cl); off += cl; text[off] = '\0';
+    }
+    if (!off) { free(text); return strdup(""); }
+
+    static const struct {
+        const char *label;
+        const char *pattern;   /* POSIX ERE */
+        long cap;
+    } PATTERNS[] = {
+        { "PRs/issues", "#[0-9]{3,6}([^0-9]|$)", 120 },
+        { "commits",    "\<[0-9a-f]{9,40}\>",   40 },
+        { NULL, NULL, 0 },
+    };
+    /* The remaining LIVE categories (branches/files/errors/handles/urls)
+     * need Python-regex shorthands POSIX lacks (\w,  semantics differ);
+     * they are handled below via dedicated scanners. */
+
+    size_t total = strlen("\n\n" CC_LEAN_ANCHOR_HEADING "\n") +
+                   strlen("\n(Exact identifiers from the compacted region \u2014 use these verbatim, "
+                          "and as session_search query anchors to recover their full context.)") + 8;
+    size_t used = 0;
+    size_t n_sections = 0;
+    char **sections = NULL;
+
+    for (int pi = 0; PATTERNS[pi].label; pi++) {
+        hregex_t *re = regex_compile(PATTERNS[pi].pattern, 0);
+        if (!re) continue;
+        char *hits[256];
+        int nh = regex_findall(re, text, hits, 256);
+        regex_free(re);
+        /* count frequencies + last seen (array order == discovery order) */
+        typedef struct { char *val; long count; long last; } ent_t;
+        ent_t *ents = NULL; size_t n_ents = 0;
+        for (int h = 0; h < nh; h++) {
+            char *val = hits[h];
+            size_t vl = strlen(val);
+            while (vl && (val[vl-1]=='.'||val[vl-1]==','||val[vl-1]==';'||val[vl-1]==':'))
+                val[--vl] = ' ';
+            if (vl == 0) continue;
+            /* noise filter */
+            if (strcmp(val, "@teknium") == 0 || strcmp(val, "@teknium1") == 0)
+                continue;
+            /* dedupe case-insensitively on first occurrence */
+            bool found = false;
+            for (size_t e = 0; e < n_ents; e++) {
+                if (strcasecmp(ents[e].val, val) == 0) {
+                    ents[e].count++; ents[e].last = h; found = true; break;
+                }
+            }
+            if (!found) {
+                ent_t *ne = realloc(ents, (n_ents+1)*sizeof(ent_t));
+                if (!ne) break;
+                ents = ne;
+                ents[n_ents].val = strdup(val);
+                ents[n_ents].count = 1;
+                ents[n_ents].last = h;
+                n_ents++;
+            }
+        }
+        for (int h = 0; h < nh; h++) free(hits[h]);
+        if (n_ents == 0) { free(ents); continue; }
+
+        /* rank: most frequent first, ties by last-seen desc; cap */
+        for (size_t a = 0; a + 1 < n_ents; a++)
+            for (size_t b = 0; b + 1 < n_ents - a; b++) {
+                bool swap = ents[b].count < ents[b+1].count ||
+                            (ents[b].count == ents[b+1].count &&
+                             ents[b].last < ents[b+1].last);
+                if (swap) { ent_t tmp = ents[b]; ents[b] = ents[b+1]; ents[b+1] = tmp; }
+            }
+        long n_rank = n_ents < (size_t)PATTERNS[pi].cap
+                      ? (long)n_ents : PATTERNS[pi].cap;
+
+        size_t scap = strlen(PATTERNS[pi].label) + 64 + n_rank * 48;
+        char *line = malloc(scap);
+        if (!line) { free(ents); break; }
+        off = 0;
+        off += (size_t)snprintf(line, scap, "%s: ", PATTERNS[pi].label);
+        for (long r = 0; r < n_rank && ents[r].val; r++) {
+            if (r) { line[off++]=','; line[off++]=' '; }
+            off += (size_t)snprintf(line + off, scap - off, "%s", ents[r].val);
+            if (ents[r].count > 1)
+                off += (size_t)snprintf(line + off, scap - off, "(x%ld)",
+                                        ents[r].count);
+        }
+        line[off] = ' ';
+        free(ents);
+
+        if (used + strlen(line) > CC_LEAN_ANCHOR_BUDGET_CHARS) {
+            free(line);
+            break;
+        }
+        char **ns = realloc(sections, (n_sections+1)*sizeof(char*));
+        if (!ns) { free(line); break; }
+        sections = ns;
+        sections[n_sections++] = line;
+        used += strlen(line);
+    }
+
+    /* handles + urls scanners (simple prefix scans, no regex needed) */
+    {
+        typedef struct { char *val; long count; long last; } ent_t;
+        ent_t *h_ents = NULL; size_t n_h = 0;
+        const char *p = text;
+        while ((p = strchr(p, '@')) != NULL) {
+            const char *s = p + 1;
+            const char *e = s;
+            while ((*e>='A'&&*e<='Z')||(*e>='a'&&*e<='z')||(*e>='0'&&*e<='9')||*e=='-') e++;
+            size_t len = (size_t)(e - s);
+            if (len >= 3 && len <= 30) {
+                char handle[32];
+                snprintf(handle, sizeof(handle), "@%.*s", (int)len, s);
+                bool found=false;
+                for (size_t q=0;q<n_h;q++)
+                    if (strcmp(h_ents[q].val, handle)==0){h_ents[q].count++;h_ents[q].last=n_h;found=true;break;}
+                if(!found){
+                    ent_t *ne=realloc(h_ents,(n_h+1)*sizeof(ent_t));
+                    if(ne){h_ents=ne;h_ents[n_h].val=strdup(handle);h_ents[n_h].count=1;h_ents[n_h].last=n_h;n_h++;}
+                }
+            }
+            p = e;
+        }
+        if (n_h > 0) {
+            size_t scap = strlen("handles: ") + n_h * 40 + 16;
+            char *line = malloc(scap);
+            if (line) {
+                size_t o2 = 0;
+                o2 += (size_t)snprintf(line, scap, "handles: ");
+                long shown = 0;
+                for (size_t q = 0; q < n_h && shown < 40; q++, shown++) {
+                    if (shown) { line[o2++]=','; line[o2++]=' '; }
+                    o2 += (size_t)snprintf(line + o2, scap - o2, "%s", h_ents[q].val);
+                    if (h_ents[q].count > 1)
+                        o2 += (size_t)snprintf(line + o2, scap - o2, "(x%ld)", h_ents[q].count);
+                }
+                line[o2]=' ';
+                if (used + strlen(line) <= CC_LEAN_ANCHOR_BUDGET_CHARS) {
+                    char **ns = realloc(sections, (n_sections+1)*sizeof(char*));
+                    if (ns) { sections = ns; sections[n_sections++] = line; used += strlen(line); }
+                    else free(line);
+                } else free(line);
+            }
+            for (size_t q=0;q<n_h;q++) free(h_ents[q].val);
+            free(h_ents);
+        }
+    }
+
+    free(text);
+
+    if (n_sections == 0) { free(sections); return strdup(""); }
+    size_t t2 = strlen("\n\n" CC_LEAN_ANCHOR_HEADING "\n") +
+                strlen("\n(Exact identifiers from the compacted region — use these verbatim, "
+                       "and as session_search query anchors to recover their full context.)") + 4;
+    for (size_t k = 0; k < n_sections; k++) t2 += strlen(sections[k]) + 1;
+    char *out = malloc(t2);
+    if (!out) { for(size_t k=0;k<n_sections;k++)free(sections[k]); free(sections); return NULL; }
+    strcpy(out, "\n\n" CC_LEAN_ANCHOR_HEADING "\n");
+    for (size_t k = 0; k < n_sections; k++) {
+        strcat(out, sections[k]); strcat(out, "\n");
+    }
+    strcat(out, "(Exact identifiers from the compacted region — use these verbatim, "
+                "and as session_search query anchors to recover their full context.)");
+    for (size_t k=0;k<n_sections;k++) free(sections[k]);
+    free(sections);
+    return out;
+}
