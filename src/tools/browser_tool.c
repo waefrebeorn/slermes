@@ -66,6 +66,60 @@ int tools_browser_tool_u_is_headed_mode(const char *arg) {
     return 0;
 }
 
+/* ── get_browser_snapshot_threshold (#6ce7ab8bfb) ──────────────────────── */
+/* PoP: get_browser_snapshot_threshold @ tools/browser_tool.py:get_browser_snapshot_threshold */
+#define BROWSER_TOOL_DEFAULT_SNAPSHOT_THRESHOLD 15000
+#define BROWSER_TOOL_MIN_SNAPSHOT_THRESHOLD 1000
+
+static int bt_cached_snapshot_threshold = -1;
+static bool bt_snapshot_threshold_resolved = false;
+
+int tools_browser_tool_get_snapshot_threshold(void)
+{
+    if (bt_snapshot_threshold_resolved && bt_cached_snapshot_threshold >= 0)
+        return bt_cached_snapshot_threshold;
+
+    int result = BROWSER_TOOL_DEFAULT_SNAPSHOT_THRESHOLD;
+    {
+        /* read_raw_config() → cfg["browser"]["snapshot_threshold"];
+         * clamped to MIN; config-loader warnings deliberately ignored
+         * (raw profile-aware read). */
+        extern json_t *config_py_read_raw_config(void);
+        json_t *cfg = config_py_read_raw_config();
+        if (cfg) {
+            json_t *browser = NULL;
+            const char *keys[] = {"browser"};
+            json_t *node = cfg;
+            for (unsigned k = 0; k < sizeof(keys)/sizeof(keys[0]) && node; k++) {
+                node = json_obj_get(node, keys[k]);
+            }
+            browser = node;
+            if (browser) {
+                json_t *val = json_obj_get(browser, "snapshot_threshold");
+                if (val && val->type == JSON_NUMBER) {
+                    int iv = (int)val->num_val;
+                    if (iv < BROWSER_TOOL_MIN_SNAPSHOT_THRESHOLD)
+                        iv = BROWSER_TOOL_MIN_SNAPSHOT_THRESHOLD;
+                    result = iv;
+                }
+            }
+            json_free(cfg);
+        }
+    }
+
+    /* Same race-safety invariant as the command-timeout cache. */
+    bt_cached_snapshot_threshold = result;
+    bt_snapshot_threshold_resolved = true;
+    return result;
+}
+
+/* PoP: reset hook @ tools/browser_tool.py:cleanup_all_browsers (cache reset) */
+void tools_browser_tool_reset_snapshot_threshold(void)
+{
+    bt_cached_snapshot_threshold = -1;
+    bt_snapshot_threshold_resolved = false;
+}
+
 /* PoP: tools_browser_tool_u_store_full_snapshot @ tools/browser_tool.py:_store_full_snapshot */
 int tools_browser_tool_u_store_full_snapshot(const char *arg) {
     /* Python: redacted cache write. Arg = "state\tresult". */
