@@ -86,3 +86,16 @@ continue scanner REAL_GAP descent.
    rescue gate, eligibility rule).
 
 All nm-verified in the shipped binary; rebuild green throughout.
+
+
+## Round 4
+
+- **v721/v722** — ported the frozen plugin system-prompt sections machinery:
+  agent/system_prompt.py _restore_plugin_prompt_sections /
+  _plugin_section_blocks / restore_plugin_prompt_sections and
+  hermes_cli/plugins.py format_system_prompt_section(s) with the
+  PLUGIN_SECTIONS container constants. The oracle caught a real off-by-one
+  in the chars-tag parse plus a missing conversation-start-marker guard —
+  both fixed toward the LIVE contract. system_prompt.py battleground module
+  moves from 8/16 toward full coverage of its pure surface.
+- Full rebuild green; plugin_prompt_sections oracle MATCH (6 cases).
