@@ -1693,6 +1693,11 @@
    "harness": "tests/t_port_final10.c",
    "oracle": "tests/sta_oracle_final10.py",
    "fixtures": "final10"
+  },
+  "process_bootstrap_pure": {
+   "harness": "tests/t_port_process_bootstrap_pure.c",
+   "oracle": "tests/sta_oracle_process_bootstrap_pure.py",
+   "fixtures": "tests/oracle/fixtures/process_bootstrap_pure"
   }
  },
  "normalize": {
