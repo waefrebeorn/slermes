@@ -2010,3 +2010,70 @@ int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *ar
     printf("context engine notified: %s\n", tab ? tab + 1 : "");
     return 0;
 }
+
+/* ── review budget + compression rearm + billing labels (gap closure) ──── */
+
+/* PoP: _review_input_budget_exhausted @ agent/conversation_loop.py
+ * Only forks carrying an explicit _review_input_token_budget are gated.
+ * has_budget=false → not a review fork (False). used >= budget fires. */
+bool ccl_review_input_budget_exhausted(bool has_budget, long budget,
+                                       bool has_used, long used)
+{
+    if (!has_budget || budget <= 0) return false;
+    if (!has_used) return false;
+    return used >= budget;
+}
+
+/* PoP: _should_rearm_compression_budget @ agent/conversation_loop.py
+ * Rearm only after a completed compaction latch plus a positive, normalized
+ * prompt count below threshold from the next provider response. */
+bool ccl_should_rearm_compression_budget(long compression_attempts,
+                                         bool completed_compaction_pending,
+                                         long prompt_tokens,
+                                         long threshold_tokens)
+{
+    return compression_attempts != 0 && completed_compaction_pending &&
+           threshold_tokens > 0 && prompt_tokens > 0 &&
+           prompt_tokens < threshold_tokens;
+}
+
+/* PoP: _billing_terminal_label @ agent/conversation_loop.py
+ * Terminal prefix; unverified (#82154) must not assert exhaustion as fact. */
+char *ccl_billing_terminal_label(const char *summary, bool unverified)
+{
+    char buf[1024];
+    if (unverified)
+        snprintf(buf, sizeof(buf),
+                 "Provider reported usage/credit exhaustion (unverified — the same "
+                 "error can be a content-filter rejection, not billing): %s",
+                 summary ? summary : "");
+    else
+        snprintf(buf, sizeof(buf), "Billing or credits exhausted: %s",
+                 summary ? summary : "");
+    return strdup(buf);
+}
+
+/* PoP: _billing_failure_result @ agent/conversation_loop.py
+ * Structured terminal result — single construction point keeping label,
+ * guidance and ambiguity flag consistent. Caller frees. */
+json_t *ccl_billing_failure_result(const char *summary, bool unverified,
+                                   const char *guidance,
+                                   long api_call_count, const char *provider,
+                                   const char *base_url, const char *model)
+{
+    json_t *result = json_object();
+    if (!result) return NULL;
+    char *label = ccl_billing_terminal_label(summary, unverified);
+    json_set(result, "status", json_string("error"));
+    json_set(result, "terminal", json_bool(true));
+    json_set(result, "error", json_string(label ? label : ""));
+    free(label);
+    json_set(result, "api_call_count", json_number((double)api_call_count));
+    json_set(result, "provider", json_string(provider ? provider : ""));
+    json_set(result, "base_url", json_string(base_url ? base_url : ""));
+    json_set(result, "model", json_string(model ? model : ""));
+    json_set(result, "billing_unverified", json_bool(unverified));
+    if (guidance && *guidance)
+        json_set(result, "guidance", json_string(guidance));
+    return result;
+}
