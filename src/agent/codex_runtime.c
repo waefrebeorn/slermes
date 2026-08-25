@@ -688,3 +688,35 @@ int agent_codex_runtime_u_item_field(const char *arg) {
     printf("%s\n", t2 ? t2 + 1 : "");
     return 0;
 }
+
+/* ── plain-JSON wire-type check (codex gap closure) ────────────────────── */
+
+/* PoP: _is_plain_json_data @ agent/codex_runtime.py:_is_plain_json_data
+ * True when value is composed purely of JSON wire types. Hermes-assembled
+ * Codex payloads are JSON round-trips — provably wire format only when
+ * every node is plain; anything else keeps the typed SDK path.
+ * (C json_t values are always wire-format by construction, so this walks
+ * the tree asserting no exotic node types slipped in.) */
+bool cdr_is_plain_json_data(const json_t *value)
+{
+    if (!value || value->type == JSON_NULL) return true;
+    switch (value->type) {
+    case JSON_STRING:
+    case JSON_NUMBER:
+    case JSON_BOOL:
+        return true;
+    case JSON_OBJECT:
+        for (size_t k = 0; k < value->c.count; k++) {
+            if (!value->c.keys[k] || !cdr_is_plain_json_data(value->c.items[k]))
+                return false;
+        }
+        return true;
+    case JSON_ARRAY:
+        for (size_t k = 0; k < value->c.count; k++)
+            if (!cdr_is_plain_json_data(value->c.items[k]))
+                return false;
+        return true;
+    default:
+        return false;
+    }
+}
