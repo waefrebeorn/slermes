@@ -432,11 +432,31 @@ class CIndexer:
         return None
 
     # ── name matching (heuristic, preserved from prior scanner) ──
+    # Known C-side renames that the prefix heuristics can't derive.
+    # Maps (module_stem, python_name) -> list of C symbol names.
+    ALIAS_MAP = {
+        ("base", "set_source_environment"): ["secret_set_source_environment"],
+        ("base", "reset_source_environment"): ["secret_reset_source_environment"],
+        ("base", "get_source_environment"): ["secret_get_source_environment"],
+        ("registry", "register_source"): ["secret_registry_register"],
+        ("registry", "get_source"): ["secret_registry_get"],
+        ("registry", "list_sources"): ["secret_registry_list"],
+        ("registry", "apply_all"): ["secret_apply_all"],
+    }
+
     def find_c_function(self, python_name, py_file=None, parent_class=None):
         python_name = python_name.lstrip('_')
         matches = []
         if python_name in self.functions:
             matches.extend(self.functions[python_name])
+        # Explicit rename aliases (prefix heuristics miss these).
+        try:
+            mod = (py_file or "").split('/')[-1].replace('.py', '')
+            for alias in self.ALIAS_MAP.get((mod, python_name), []):
+                if alias in self.functions:
+                    matches.extend(self.functions[alias])
+        except Exception:
+            pass
         prefixes = [
             "hermes_","agent_","session_","cli_","cmd_","config_","model_","tool_",
             "gateway_","db_","display_","json_","str_","log_","file_","io_","net_",
