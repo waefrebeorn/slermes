@@ -191,3 +191,36 @@ char **delegated_child_subprocess_env(char **env)
     if (!env) env = environ;
     return scrub_kanban_env(env);
 }
+
+/* ── dispatcher-owned context gates (delegation_context closure) ───────── */
+
+/* Thread-local mirrors of the LIVE ContextVars (children run on worker
+ * threads of the parent process — same isolation requirement). */
+static __thread bool tld_delegated_child_context = false;
+static __thread bool tld_non_dispatcher_owned_context = false;
+
+void delegation_context_set_delegated_child(bool flag)
+{
+    tld_delegated_child_context = flag;
+}
+
+/* PoP: enter/exit_non_dispatcher_owned_context @ agent/delegation_context.py */
+void delegation_context_enter_non_dispatcher_owned(void)
+{
+    tld_non_dispatcher_owned_context = true;
+}
+
+void delegation_context_exit_non_dispatcher_owned(void)
+{
+    tld_non_dispatcher_owned_context = false;
+}
+
+/* PoP: is_dispatcher_owned_worker_context @ agent/delegation_context.py
+ * The single predicate every HERMES_KANBAN_* identity gate uses before
+ * trusting those vars. False for delegate_task children and for cron jobs
+ * fired in-process from a worker. */
+bool delegation_context_is_dispatcher_owned_worker(void)
+{
+    if (tld_delegated_child_context) return false;
+    return !tld_non_dispatcher_owned_context;
+}
