@@ -218,3 +218,10 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
 - **v759** — delegation_context CLOSED (9/9): thread-local dispatcher-owned
   context gates — delegated-child flag, non-dispatcher enter/exit, and the
   single identity predicate for HERMES_KANBAN_* gates.
+
+
+## Round 15
+
+- **v761** — browser_registry CLOSED (8/8): snapshot_registration,
+  registry_generation cache fingerprint, restore_registration (restore only
+  when current still installed; generation bump under lock).
