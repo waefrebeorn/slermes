@@ -2490,3 +2490,105 @@ long cc_retire_stale_tool_result_images(json_t *result, long keep_newest)
     }
     return pruned;
 }
+
+/* ── verbatim user section (lean tail mode) ────────────────────────────── */
+
+#define CC_LEAN_USER_MESSAGE_MAX_CHARS 4000L
+#define CC_LEAN_USER_MESSAGES_BUDGET_CHARS 24000L
+#define CC_LEAN_USER_MESSAGES_HEADING "## User Messages (verbatim, newest first)"
+
+extern bool cc_synthetic_user_row(const json_t *content);
+extern char *cc_content_text_for_contains(const json_t *content);
+
+/* PoP: _build_verbatim_user_section @ agent/context_compressor.py
+ * Real user messages embedded verbatim, newest-first under a char budget;
+ * straddler truncated rather than dropped. "" when no real user rows.
+ * malloc'd; caller frees. */
+char *cc_build_verbatim_user_section(json_t *turns)
+{
+    if (!turns || turns->type != JSON_ARRAY) return strdup("");
+
+    size_t cap = 4096, used_len = 0;
+    size_t n_collected = 0;
+    char **collected = NULL;
+
+    for (size_t ii = turns->c.count; ii-- > 0;) {
+        json_t *msg = turns->c.items[ii];
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_get_str(msg, "role", "");
+        if (strcmp(role, "user") != 0) continue;
+        json_t *cj = json_obj_get(msg, "content");
+        const char *content = NULL;
+        char *projected = NULL;
+        if (cj && cj->type == JSON_STRING) {
+            content = cj->str_val;
+        } else if (cj) {
+            projected = cc_content_text_for_contains(cj);
+            content = projected;
+        }
+        if (!content) continue;
+        if (cc_synthetic_user_row(cj)) { free(projected); continue; }
+
+        /* strip */
+        const char *s = content;
+        while (*s==' '||*s=='\t'||*s=='\n'||*s=='\r') s++;
+        const char *e = s + strlen(s);
+        while (e > s && (e[-1]==' '||e[-1]=='\t'||e[-1]=='\n'||e[-1]=='\r')) e--;
+        size_t tlen = (size_t)(e - s);
+        if (tlen > (size_t)CC_LEAN_USER_MESSAGE_MAX_CHARS)
+            tlen = (size_t)CC_LEAN_USER_MESSAGE_MAX_CHARS;
+        long remaining = CC_LEAN_USER_MESSAGES_BUDGET_CHARS - (long)used_len;
+        if (remaining <= 0) { free(projected); break; }
+        if ((long)tlen > remaining) tlen = (size_t)remaining;
+
+        /* "> " + text with newlines prefixed, optional truncation suffix */
+        size_t nl = 0;
+        for (size_t k2 = 0; k2 < tlen; k2++) if (s[k2]=='\n') nl++;
+        size_t line_cap = 2 + tlen + nl * 2 + 32;
+        char *line = malloc(line_cap);
+        if (!line) { free(projected); break; }
+        size_t off = 0;
+        line[off++]='>'; line[off++]=' ';
+        for (size_t k2 = 0; k2 < tlen; k2++) {
+            line[off++] = s[k2];
+            if (s[k2]=='\n') { line[off++]='>'; line[off++]=' '; }
+        }
+        if ((long)tlen == remaining && (size_t)(e - s) > tlen) {
+            const char *suffix = " …[truncated]";
+            size_t sl = strlen(suffix);
+            memcpy(line + off, suffix, sl); off += sl;
+        }
+        line[off] = '\0';
+
+        char **nc = realloc(collected, (n_collected + 1) * sizeof(char *));
+        if (!nc) { free(line); free(projected); break; }
+        collected = nc;
+        collected[n_collected++] = line;
+        used_len += tlen;
+        free(projected);
+    }
+
+    if (n_collected == 0) { free(collected); return strdup(""); }
+
+    size_t total = strlen("\n\n" CC_LEAN_USER_MESSAGES_HEADING "\n") +
+                   strlen("\n(Every real user message from the compacted region, quoted "
+                          "verbatim. These are the user's actual words and override any "
+                          "paraphrase of them above.)") + 4;
+    for (size_t k = 0; k < n_collected; k++)
+        total += strlen(collected[k]) + 2;
+
+    char *out = malloc(total);
+    if (!out) { for (size_t k=0;k<n_collected;k++) free(collected[k]); free(collected); return NULL; }
+    strcpy(out, "\n\n" CC_LEAN_USER_MESSAGES_HEADING "\n");
+    for (size_t k = 0; k < n_collected; k++) {
+        strcat(out, collected[k]);
+        if (k + 1 < n_collected) strcat(out, "\n\n");
+    }
+    strcat(out, "\n(Every real user message from the compacted region, quoted "
+                "verbatim. These are the user's actual words and override any "
+                "paraphrase of them above.)");
+
+    for (size_t k = 0; k < n_collected; k++) free(collected[k]);
+    free(collected);
+    return out;
+}
