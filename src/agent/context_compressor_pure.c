@@ -2330,3 +2330,44 @@ char *cc_build_recovery_footer(const char *session_id, long region_len)
              region_len, session_id);
     return strdup(buf);
 }
+
+/* PoP: _serialize_turns_for_digest @ agent/context_compressor.py
+ * "[role] content" lines for digest input; tool rows prefer the pristine
+ * snapshot when longer (phase-1 pruning stubs); no-signal rows filtered. */
+char *cc_serialize_turns_for_digest(json_t *turns, json_t *pristine)
+{
+    if (!turns || turns->type != JSON_ARRAY) return strdup("");
+    size_t cap = 256, off = 0;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    out[0] = '\0';
+
+    for (size_t k = 0; k < turns->c.count; k++) {
+        json_t *msg = turns->c.items[k];
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_get_str(msg, "role", "");
+        const char *content = json_get_str(msg, "content", NULL);
+        if (!content || !*content) continue;
+        while (*content == ' '||*content=='\t'||*content=='\n') content++;
+        if (!*content) continue;
+
+        if (pristine && pristine->type == JSON_OBJECT &&
+            strcmp(role ? role : "", "tool") == 0) {
+            const char *tcid = json_get_str(msg, "tool_call_id", "");
+            char key[64];
+            snprintf(key, sizeof(key), "%s", tcid ? tcid : "");
+            const char *original = json_get_str(pristine, key, NULL);
+            if (original && strlen(original) > strlen(content))
+                content = original;
+        }
+        if (!cc_digest_worthy(role ? role : "", content)) continue;
+
+        size_t need = 4 + strlen(role ? role : "") + 1 + strlen(content) + 2;
+        while (off + need > cap) { cap *= 2; out = realloc(out, cap); }
+        off += (size_t)snprintf(out + off, cap - off, "[%s] %s\n\n",
+                                role ? role : "", content);
+    }
+    /* LIVE joins with "\n\n"; strip the single trailing separator */
+    while (off >= 2 && out[off-1]=='\n' && out[off-2]=='\n') out[--off]='\0';
+    return out;
+}
