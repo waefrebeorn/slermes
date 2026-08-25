@@ -187,3 +187,11 @@ All nm-verified in the shipped binary; rebuild green throughout.
 
 context_compressor: 147/171 → 170/171 (the one remaining entry is the
 context.c reinject port under its cc_ name). Module effectively CLOSED.
+
+
+## Round 12
+
+- **v752** — auxiliary_client routing predicates: _task_prefers_fast_model,
+  _is_official_codex_base_url, _is_dual_surface_anthropic_host,
+  _is_structured_output_rejection (fail-closed status gate 400/422).
+  auxiliary_client → 247/253.
