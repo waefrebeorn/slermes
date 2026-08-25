@@ -594,3 +594,52 @@ bool web_tools_rescue_eligible(const char *provider,
     if (!provider || !*provider) return false;
     return !provider_is_keyless_ring;
 }
+
+/* ── policy-block + provider-readiness (web_tools closure, part 1) ─────── */
+
+/* PoP: _policy_blocked_result @ tools/web_tools.py:_policy_blocked_result
+ * True when an extract result failed due to the user's website policy — an
+ * intentional refusal, never a backend outage. Policy blocks must NOT be
+ * rescued. */
+bool web_tools_policy_blocked_result(const json_t *result)
+{
+    if (!result) return false;
+    json_t *flag = json_obj_get(result, "blocked_by_policy");
+    if (flag && flag->type == JSON_BOOL && flag->bool_val)
+        return true;
+    const char *err = json_get_str(result, "error", "");
+    if (err && *err) {
+        /* case-insensitive substring: "blocked by website policy".
+         * LIVE lowercases the whole error string before matching. */
+        size_t n = strlen(err);
+        char *low = malloc(n + 1);
+        if (!low) return false;
+        for (size_t k = 0; k < n; k++)
+            low[k] = (char)((err[k] >= 'A' && err[k] <= 'Z')
+                                ? err[k] + 32 : err[k]);
+        low[n] = '\0';
+        bool hit = strstr(low, "blocked by website policy") != NULL;
+        free(low);
+        return hit;
+    }
+    return false;
+}
+
+/* PoP: _provider_is_ready @ tools/web_tools.py:_provider_is_ready
+ * True when the provider reports availability without raising; keyless-
+ * available providers count as ready (keyless is a working state, not a
+ * misconfiguration). vtable-style provider handle: is_available and
+ * is_keyless_available slots; NULL provider → not ready. */
+typedef struct {
+    bool (*is_available)(void *self);
+    bool (*is_keyless_available)(void *self);
+} web_provider_vt_t;
+
+bool web_tools_provider_is_ready(const web_provider_vt_t *vt, void *provider)
+{
+    if (!provider || !vt) return false;
+    if (vt->is_available && vt->is_available(provider)) return true;
+    if (vt->is_keyless_available && vt->is_keyless_available(provider))
+        return true;
+    return false;
+}
