@@ -2068,3 +2068,57 @@ char *cc_retryable_user_text(const json_t *content, char *err, size_t errsz)
     }
     return text;
 }
+
+/* ── tool-result image handling wrappers ───────────────────────────────── */
+
+extern int cc_is_image_part(const json_t *part);
+extern json_t *cc_strip_image_parts_from_parts(const json_t *parts);
+
+/* PoP: _tool_content_has_images @ agent/context_compressor.py
+ * Handles the unwrapped OpenAI part lists and the native
+ * {_multimodal: true, content: [...]} envelope. */
+bool cc_tool_content_has_images(const json_t *content)
+{
+    if (!content) return false;
+    if (content->type == JSON_OBJECT) {
+        json_t *mm = json_obj_get(content, "_multimodal");
+        if (mm && mm->type == JSON_BOOL && mm->bool_val)
+            return cc_content_has_images(json_obj_get(content, "content"));
+    }
+    return cc_content_has_images(content);
+}
+
+/* PoP: _strip_images_from_tool_msg @ agent/context_compressor.py
+ * Copy of a tool message with image payloads replaced; NULL when nothing
+ * strippable (caller leaves the message untouched). The returned copy
+ * drops the stale api_content sidecar. */
+json_t *cc_strip_images_from_tool_msg(const json_t *msg)
+{
+    if (!msg || msg->type != JSON_OBJECT) return NULL;
+    json_t *content = json_obj_get(msg, "content");
+
+    if (content && content->type == JSON_OBJECT) {
+        json_t *mm = json_obj_get(content, "_multimodal");
+        if (mm && mm->type == JSON_BOOL && mm->bool_val) {
+            const char *summary = json_get_str(content, "text_summary", NULL);
+            char buf[256];
+            snprintf(buf, sizeof(buf), "[screenshot removed] %.200s",
+                     summary && *summary ? summary
+                                         : "[screenshot removed to save context]");
+            json_t *copy = json_copy(msg);
+            if (!copy) return NULL;
+            json_set(copy, "content", json_string(buf));
+            json_obj_del(copy, "api_content");
+            return copy;
+        }
+    }
+
+    /* OpenAI-style part list */
+    json_t *stripped = cc_strip_image_parts_from_parts(content);
+    if (!stripped) return NULL;
+    json_t *copy = json_copy(msg);
+    if (!copy) { json_free(stripped); return NULL; }
+    json_set(copy, "content", stripped);
+    json_obj_del(copy, "api_content");
+    return copy;
+}
