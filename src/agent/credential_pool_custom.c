@@ -619,3 +619,91 @@ bool _prune_stale_seeded_entries(credential_pool_t *pool,
 
 /* === end of file === */
 
+/* ── runtime pool key + dotenv-preferred env (gap closure) ─────────────── */
+
+extern int agent_credential_pool_credential_pool_matches_provider_full(
+    const char *pool_key, const char *provider, const char *base_url);
+
+/* PoP: resolve_runtime_pool_key @ agent/credential_pool.py:resolve_runtime_pool_key
+ * Named custom runtimes keep their configured alias, stored under
+ * "custom:<name>"; the scoped key is returned only when the canonical
+ * provider/endpoint boundary accepts it. Otherwise the normalized runtime
+ * identity is preserved so callers fail closed. malloc'd; caller frees. */
+char *cpool_resolve_runtime_pool_key(const char *provider, const char *base_url)
+{
+    if (!provider) return strdup("");
+    /* strip + lower */
+    const char *s = provider;
+    while (*s==' '||*s=='\t') s++;
+    const char *e = s + strlen(s);
+    while (e > s && (e[-1]==' '||e[-1]=='\t')) e--;
+    size_t plen = (size_t)(e - s);
+    char provider_norm[128];
+    if (plen >= sizeof(provider_norm)) plen = sizeof(provider_norm)-1;
+    for (size_t k = 0; k < plen; k++)
+        provider_norm[k] = (char)((s[k] >= 'A' && s[k] <= 'Z') ? s[k] + 32 : s[k]);
+    provider_norm[plen] = '\0';
+    if (!provider_norm[0]) return strdup("");
+
+    if (strcmp(provider_norm, "custom") == 0) {
+        extern const char *get_custom_provider_pool_key(const char *, const char *);
+        const char *candidate = get_custom_provider_pool_key(base_url, NULL);
+        /* get_custom_provider_pool_key already enforces the canonical
+         * provider/endpoint boundary when resolving the alias. */
+        if (candidate && *candidate) {
+            size_t cl = strlen(candidate);
+            char *out = malloc(cl + 1);
+            if (!out) return NULL;
+            for (size_t k = 0; k < cl; k++)
+                out[k] = (char)((candidate[k] >= 'A' && candidate[k] <= 'Z')
+                                    ? candidate[k] + 32 : candidate[k]);
+            out[cl] = '\0';
+            return out;
+        }
+    }
+    /* named / non-custom runtimes: preserve normalized identity */
+    return strdup(provider_norm);
+}
+
+/* PoP: get_env_prefer_dotenv @ agent/credential_pool.py
+ * .env takes precedence EXCEPT when it holds an unresolved op:// reference —
+ * then the already-resolved secret-scope/environ value wins so provider auth
+ * never receives a URL instead of a key. malloc'd; caller frees. */
+char *cpool_get_env_prefer_dotenv(const char *key)
+{
+    if (!key) return strdup("");
+    extern char *config_py_get_env_value_prefer_dotenv(const char *name);
+    char *dotenv_val = config_py_get_env_value_prefer_dotenv(key);
+    const char *raw = dotenv_val ? dotenv_val : "";
+    /* trim */
+    while (*raw==' '||*raw=='\t') raw++;
+    const char *re_ = raw + strlen(raw);
+    while (re_ > raw && (re_[-1]==' '||re_[-1]=='\t')) re_--;
+
+    bool op_reference = (re_ - raw >= 4 && strncmp(raw, "op://", 4) == 0);
+    if (op_reference) {
+        /* prefer the already-resolved value from the active secret scope
+         * (legacy single-profile mode resolves via environ, set by
+         * load_hermes_dotenv -> apply_onepassword_secrets) */
+        const char *env_resolved = getenv(key);
+        char *scoped = (env_resolved && *env_resolved) ? strdup(env_resolved) : NULL;
+        free(dotenv_val);
+        if (scoped && *scoped) {
+            size_t sl = strlen(scoped);
+            char *t = malloc(sl + 1);
+            if (!t) { free(scoped); return NULL; }
+            /* .strip() */
+            const char *a = scoped;
+            while (*a==' '||*a=='\t') a++;
+            const char *b = a + strlen(a);
+            while (b > a && (b[-1]==' '||b[-1]=='\t')) b--;
+            memcpy(t, a, (size_t)(b - a)); t[b - a] = '\0';
+            free(scoped);
+            return t;
+        }
+        free(scoped);
+        return strndup(raw, (size_t)(re_ - raw));
+    }
+    free(dotenv_val);
+    return strndup(raw, (size_t)(re_ - raw));
+}
