@@ -195,3 +195,14 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
   _is_official_codex_base_url, _is_dual_surface_anthropic_host,
   _is_structured_output_rejection (fail-closed status gate 400/422).
   auxiliary_client → 247/253.
+
+
+## Round 13
+
+- **v754** — conversation_loop: _review_input_budget_exhausted,
+  _should_rearm_compression_budget, _billing_terminal_label,
+  _billing_failure_result (structured terminal construction point).
+  Module → 37/42.
+- **v755** — agent_runtime_helpers: tool-call id variant expansion (shared
+  policy owner, composite call|item spellings) and trailing_continue_intent
+  stall-guard gate. Module → ~44/47.
