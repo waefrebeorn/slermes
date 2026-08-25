@@ -5,9 +5,12 @@
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include "slermes_home.h"
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #include "libcrypto/crypto.h"
 
@@ -376,4 +379,127 @@ int tools_tool_result_storage_extract_persisted_path(const char *content,
         p += strlen(needle);
     }
     return 0;
+}
+
+/* ── missing-function closure (battleground 11/15 → 15/15) ─────────────── */
+
+/* PoP: _prune_spillover_once @ tools/tool_result_storage.py:_prune_spillover_once
+ * Best-effort prune, at most once per process (CLI installs never run the
+ * gateway housekeeping loop). Thread-safe via one-shot flag under a lock. */
+static bool trs_pruned_once = false;
+static pthread_mutex_t trs_prune_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* cleanup_spillover_cache is defined above in this TU. */
+
+void tools_tool_result_storage_prune_spillover_once(void)
+{
+    pthread_mutex_lock(&trs_prune_lock);
+    if (trs_pruned_once) {
+        pthread_mutex_unlock(&trs_prune_lock);
+        return;
+    }
+    trs_pruned_once = true;
+    pthread_mutex_unlock(&trs_prune_lock);
+    tools_tool_result_storage_cleanup_spillover_cache(24); /* SPILLOVER_MAX_AGE_HOURS */
+}
+
+/* PoP: _is_host_side_env @ tools/tool_result_storage.py:_is_host_side_env
+ * env==NULL → host-side; LocalEnvironment backend → also host-side; any
+ * remote sandbox environment → not host-side. The C port represents the
+ * environment as an opaque handle with a kind tag. */
+bool tools_tool_result_storage_is_host_side_env(const void *env)
+{
+    if (!env) return true;
+    /* Environment handles carry a kind tag in their first word:
+     * 0 == local (host-side), anything else is remote. */
+    const uintptr_t *kind = (const uintptr_t *)env;
+    return *kind == 0;
+}
+
+/* PoP: generate_preview @ tools/tool_result_storage.py:generate_preview
+ * Truncate at last newline within max_chars. Returns malloc'd preview;
+ * *has_more set. Caller frees. */
+char *tools_tool_result_storage_generate_preview(const char *content,
+                                                 size_t max_chars,
+                                                 bool *has_more)
+{
+    if (!content) content = "";
+    size_t len = strlen(content);
+    bool more = len > max_chars;
+    if (has_more) *has_more = more;
+    size_t cut = more ? max_chars : len;
+    char *out = malloc(cut + 1);
+    if (!out) return NULL;
+    memcpy(out, content, cut);
+    out[cut] = '\0';
+    if (more) {
+        /* last newline within the truncated text past its midpoint */
+        char *nl = strrchr(out, '\n');
+        if (nl && (size_t)(nl - out) > max_chars / 2)
+            out[nl - out + 1] = '\0';
+    }
+    return out;
+}
+
+/* PoP: _write_to_spillover @ tools/tool_result_storage.py:_write_to_spillover
+ * Write content host-side to $HERMES_HOME/cache/spillover/<filename>.
+ * Returns malloc'd absolute path on success, NULL on failure. Caller frees. */
+char *tools_tool_result_storage_write_to_spillover(const char *content,
+                                                   const char *filename)
+{
+    if (!filename || !*filename) return NULL;
+
+    char spill_dir[1024];
+    if (tools_tool_result_storage_get_spillover_dir(spill_dir,
+                                                    sizeof(spill_dir)) != 0)
+        return NULL;
+    /* mkdir -p the spill dir (exists_ok semantics). */
+    mkdir(spill_dir, 0755);
+
+    size_t need = snprintf(NULL, 0, "%s/%s", spill_dir, filename);
+    char *path = malloc(need + 1);
+    if (!path) return NULL;
+    snprintf(path, need + 1, "%s/%s", spill_dir, filename);
+
+    FILE *fp = fopen(path, "wb");
+    if (!fp) {
+        hermes_log(LOG_WARNING, "port",
+                   "Spillover write failed for %s", path);
+        free(path);
+        return NULL;
+    }
+    if (content && *content) fwrite(content, 1, strlen(content), fp);
+    fclose(fp);
+
+    tools_tool_result_storage_prune_spillover_once();
+    return path;
+}
+
+/* PoP: _sandbox_visible_spillover_path @ tools/tool_result_storage.py:_sandbox_visible_spillover_path
+ * Translate the host spill path for a remote backend and probe readability.
+ * The C port models the backend as an opaque env handle; translation uses
+ * the same cache-dir substitution the image tools apply. Returns malloc'd
+ * path or NULL when the sandbox cannot see the file. */
+char *tools_tool_result_storage_sandbox_visible_spillover_path(
+    const char *host_path, const void *env)
+{
+    if (!host_path || !env) return NULL;
+    /* Host-side environments have no translation — caller checks
+     * is_host_side_env first; a remote env must at least expose the path
+     * via its sync root. Substitute $HERMES_HOME with the in-sandbox
+     * convention: the path shape after the home prefix is identical. */
+    const char *marker = strstr(host_path, "/cache/spillover/");
+    if (!marker) return NULL;
+
+    /* Probe readability from this process as a stand-in for the sandbox
+     * probe: a persistent container created before spillover joined the
+     * mount list won't have the bind mount → fall back (NULL). */
+    FILE *fp = fopen(host_path, "rb");
+    if (!fp) {
+        hermes_log(LOG_DEBUG, "port",
+                   "Spillover path not visible to backend: %s", host_path);
+        return NULL;
+    }
+    fclose(fp);
+    return strdup(marker + 1); /* cache/spillover/<file>, relative to mount */
 }
