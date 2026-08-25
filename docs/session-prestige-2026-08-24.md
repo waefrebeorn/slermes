@@ -108,3 +108,14 @@ All nm-verified in the shipped binary; rebuild green throughout.
 - **v725** — terminal_tool: ported _interpret_signal_exit with the LIVE
   _SIGNAL_EXIT_NOTES table (subprocess-negative definite, 128+signum hedged,
   SIGINT reserved). terminal_tool battleground module now 74/80.
+
+
+## Round 6
+
+- **v727** — web_tools: _policy_blocked_result (blocked_by_policy flag /
+  case-insensitive error match; policy refusals never rescued) and
+  _provider_is_ready (is_available / is_keyless_available vtable slots,
+  fail-soft). web_tools → 27/29.
+- **v728** — vision_helpers crop-region validate/clamp (pure core of
+  _crop_image_region): malformed/inverted/zero-area regions rejected with
+  an error naming the actual dimensions.
