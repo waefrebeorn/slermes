@@ -131,3 +131,14 @@ All nm-verified in the shipped binary; rebuild green throughout.
   (secret_registry_register/get/list, secret_set/reset/get_source_environment,
   scrub_ansi, is_valid_env_name, apply_all). Scanner name-matcher needs a
   mapping table pass.
+
+
+## Round 8
+
+- **v732** — battleground scanner gained an explicit rename ALIAS_MAP keyed on
+  (module_stem, python_name) for C-side renames the prefix heuristics can't
+  derive (secret_sources family first entries).
+- **v733** — background_review pure core: _classify_review_result (prefix-based
+  skill/memory classification, emoji-stripped), enabled gate,
+  _review_input_token_budget (600k default, <=0 unlimited). Module 8/23 → 15/23.
+- Scanner totals after alias map: PORTED 14,574 (87.2%), STUB 0.
