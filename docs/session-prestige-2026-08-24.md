@@ -99,3 +99,12 @@ All nm-verified in the shipped binary; rebuild green throughout.
   both fixed toward the LIVE contract. system_prompt.py battleground module
   moves from 8/16 toward full coverage of its pure surface.
 - Full rebuild green; plugin_prompt_sections oracle MATCH (6 cases).
+
+
+## Round 5
+
+- **v724** — skills_sync: essential skills survive suppression (LIVE gate
+  `suppressed and not in _essential_names()` was skipping all suppressed).
+- **v725** — terminal_tool: ported _interpret_signal_exit with the LIVE
+  _SIGNAL_EXIT_NOTES table (subprocess-negative definite, 128+signum hedged,
+  SIGINT reserved). terminal_tool battleground module now 74/80.
