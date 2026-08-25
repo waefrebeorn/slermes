@@ -370,3 +370,57 @@ int tools_video_generation_tool_u_handle_video_generate(const char *arg) {
     printf("{\"video\": \"%s\", \"duration\": %s, \"seed\": %s}\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "0", "?");
     return 0;
 }
+
+/* ── missing coercers (battleground 9/12 → 12/12) ──────────────────────── */
+
+/* PoP: _coerce_int @ tools/video_generation_tool.py:_coerce_int
+ * None/"" → absent; int-like strings coerce; anything else → absent.
+ * Returns 1 and fills *out on success, 0 when None/uncoercible. */
+int video_generation_tool_coerce_int(const json_t *value, int *out)
+{
+    if (!value || value->type == JSON_NULL) return 0;
+    if (value->type == JSON_NUMBER) {
+        /* Python int(value) truncates floats toward zero. */
+        if (out) *out = (int)value->num_val;
+        return 1;
+    }
+    if (value->type == JSON_STRING && value->str_val) {
+        const char *s = value->str_val;
+        if (!*s) return 0; /* "" → None */
+        char *end = NULL;
+        long v = strtol(s, &end, 10);
+        if (end && *end == '\0' && end != s) {
+            if (out) *out = (int)v;
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
+}
+
+/* PoP: _coerce_bool @ tools/video_generation_tool.py:_coerce_bool
+ * true set: "true","1","yes","on"; false set: "false","0","no","off";
+ * other values → absent. */
+int video_generation_tool_coerce_bool(const json_t *value, int *out)
+{
+    if (!value || value->type == JSON_NULL) return 0;
+    if (value->type == JSON_BOOL) {
+        if (out) *out = value->bool_val ? 1 : 0;
+        return 1;
+    }
+    if (value->type == JSON_STRING && value->str_val) {
+        const char *s = value->str_val;
+        if (strcasecmp(s, "true") == 0 || strcmp(s, "1") == 0 ||
+            strcasecmp(s, "yes") == 0 || strcasecmp(s, "on") == 0) {
+            if (out) *out = 1;
+            return 1;
+        }
+        if (strcasecmp(s, "false") == 0 || strcmp(s, "0") == 0 ||
+            strcasecmp(s, "no") == 0 || strcasecmp(s, "off") == 0) {
+            if (out) *out = 0;
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
+}

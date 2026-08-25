@@ -233,3 +233,165 @@ char *thint_annotate_failure(const char *command, int exit_code, const char *out
     }
     return NULL;
 }
+
+/* ── masked-success annotation (battleground 8/10 → 10/10) ─────────────── */
+
+#define THINT_SCAN_CHARS 4000
+
+/* PoP: _first_token @ tools/terminal_hints.py:_first_token */
+static void thint_first_token(const char *command, char *out, size_t outsz)
+{
+    out[0] = '\0';
+    if (!command) return;
+    const char *s = command;
+    while (*s == ' ' || *s == '\t') s++;
+
+    while (*s) {
+        /* token ends at whitespace */
+        const char *e = s;
+        while (*e && *e != ' ' && *e != '\t') e++;
+        size_t len = (size_t)(e - s);
+        if (len >= outsz) len = outsz - 1;
+
+        /* skip env-var assignments (= present, not starting =, ./, /) */
+        bool has_eq = memchr(s, '=', len) != NULL;
+        bool wrapper = (s[0] == '=' ) || (len > 1 && s[0] == '.' && s[1] == '/') ||
+                       (s[0] == '/');
+        if (has_eq && !wrapper) {
+            s = e;
+            while (*s == ' ' || *s == '\t') s++;
+            continue;
+        }
+        memcpy(out, s, len);
+        out[len] = '\0';
+        /* rsplit("/", 1)[-1] */
+        char *slash = strrchr(out, '/');
+        if (slash) memmove(out, slash + 1, strlen(slash + 1) + 1);
+        return;
+    }
+}
+
+/* PoP: annotate_masked_success @ tools/terminal_hints.py:annotate_masked_success
+ * Advisory note when an exit-0 result likely masks a failure. Returns a
+ * malloc'd note or NULL. Caller frees. */
+char *thint_annotate_masked_success(const char *command, const char *output)
+{
+    static const char *const READONLY_HEADS[] = {
+        "grep", "rg", "ag", "find", "ls", "cat", "head", "tail", "jq", "awk",
+        "sed", "strings", "zcat", "journalctl", "dmesg", "echo", "printf",
+        NULL,
+    };
+    static const char *const PASSTHROUGH[] = {
+        "tail", "head", "cat", "tee", "less", "more", "wc", "sort", "uniq",
+        NULL,
+    };
+
+    const char *cmd = command ? command : "";
+    char window[THINT_SCAN_CHARS + 1];
+    size_t wlen = output ? strlen(output) : 0;
+    if (wlen > THINT_SCAN_CHARS) wlen = THINT_SCAN_CHARS;
+    if (output) { memcpy(window, output, wlen); }
+    window[wlen] = '\0';
+
+    if (!*cmd || !wlen) return NULL;
+
+    char head[128];
+    thint_first_token(cmd, head, sizeof(head));
+    for (int i = 0; READONLY_HEADS[i]; i++)
+        if (strcmp(head, READONLY_HEADS[i]) == 0) return NULL;
+
+    /* _FAILURE_SHAPES: strong tool-specific failure markers. */
+    static const char *const SHAPES[] = {
+        "error[E", "error: could not compile", "error: aborting due to",
+        "Traceback (most recent call last)", "compilation terminated.",
+        "npm ERR!", "BUILD FAILED", "Build FAILED", "FAILED: ",
+        NULL,
+    };
+    bool shape_hit = false;
+    for (int i = 0; SHAPES[i]; i++)
+        if (strstr(window, SHAPES[i])) { shape_hit = true; break; }
+    /* pytest summary: "(=+ )?\d+ failed" at line start */
+    for (const char *p = window; p && !shape_hit; ) {
+        if (p == window || p[-1] == '\n') {
+            size_t eq = 0;
+            while (p[eq] == '=') eq++;
+            if (eq > 0 && p[eq] == ' ') eq++;
+            if (p[eq] >= '0' && p[eq] <= '9') {
+                size_t d = eq;
+                while (p[d] >= '0' && p[d] <= '9') d++;
+                if (strncmp(p + d, " failed", 7) == 0) shape_hit = true;
+            }
+        }
+        p = strchr(p, '\n');
+        if (p) p++;
+    }
+    /* pytest per-test: line starts "FAILED " then word:: or word.py */
+    for (const char *p = window; p && !shape_hit; ) {
+        if ((p == window || p[-1] == '\n') && strncmp(p, "FAILED ", 7) == 0) {
+            const char *w = p + 7;
+            const char *dc = strstr(w, "::");
+            const char *dp = strstr(w, ".py");
+            if ((dc && dc < w + 200) || (dp && dp < w + 200)) shape_hit = true;
+        }
+        p = strchr(p, '\n');
+        if (p) p++;
+    }
+    /* make: "***" at line start with optional [N] */
+    for (const char *p = window; p && !shape_hit; ) {
+        if ((p == window || p[-1] == '\n') && strncmp(p, "make", 4) == 0) {
+            const char *q = p + 4;
+            if (*q == '[') { q = strchr(q, ']'); if (q) q++; }
+            if (q && strncmp(q, ": ***", 5) == 0) shape_hit = true;
+        }
+        p = strchr(p, '\n');
+        if (p) p++;
+    }
+    if (!shape_hit) return NULL;
+
+    /* masking pipe: last segment is a passthrough consumer */
+    bool masking_pipe = false;
+    {
+        const char *last_pipe = NULL;
+        for (const char *p = cmd; *p; p++) {
+            if (*p == '|' && *(p + 1) != '|' &&
+                !(p > cmd && p[-1] == '|')) {
+                /* single pipe — check it's the start of the last segment */
+                last_pipe = p;
+            }
+        }
+        if (last_pipe) {
+            const char *seg = last_pipe + 1;
+            while (*seg == ' ') seg++;
+            for (int i = 0; PASSTHROUGH[i]; i++) {
+                size_t l = strlen(PASSTHROUGH[i]);
+                if (strncmp(seg, PASSTHROUGH[i], l) == 0 &&
+                    !strchr(seg, '|')) {
+                    masking_pipe = true;
+                    break;
+                }
+            }
+        }
+    }
+    if (masking_pipe) {
+        return strdup(
+            "exit_code 0 here is the status of the last pipeline command "
+            "(tail/head/cat/...), NOT of the command before the pipe — and "
+            "the output contains failure indicators. Treat this run as "
+            "FAILED until proven otherwise: re-run the command WITHOUT the "
+            "pipe (output is auto-truncated and the full text is saved to a "
+            "file, so piping through tail/head is never needed) to get the "
+            "real exit code.");
+    }
+
+    /* masking ||: fallback swallows the failure status */
+    if (strstr(cmd, "|| echo ") || strstr(cmd, "|| echo\t") ||
+        strstr(cmd, "|| printf") || strstr(cmd, "|| true") ||
+        strstr(cmd, "|| : ") || strstr(cmd, "|| :")) {
+        return strdup(
+            "exit_code 0 here is the status of the `||` fallback (echo/true), "
+            "NOT of the command before it — and the output contains failure "
+            "indicators. Treat this run as FAILED until proven otherwise: "
+            "re-run the command bare to get its real exit code.");
+    }
+    return NULL;
+}
