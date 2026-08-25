@@ -157,3 +157,18 @@ All nm-verified in the shipped binary; rebuild green throughout.
 - **v738** — _tool_content_has_images + _strip_images_from_tool_msg wrappers
   reusing existing cc_ image primitives. → 152/171.
 - **v739** — _digest_worthy with hand-rolled low-signal tool-ack matcher. → 153/171.
+
+
+## Round 10
+
+- **v741** — context_compressor: split_user_originated_turn (handoff scaffold
+  + canonical live view projection with marker stripping, durable display
+  metadata carry, synthetic/actionable gates).
+- **v742** — _synthetic_user_row (nine scaffold prefixes) +
+  _build_recovery_footer (deterministic session_search pointer).
+- **v743** — _serialize_turns_for_digest (pristine-snapshot substitution for
+  pruned tool stubs, digest_worthy filter). → 155/171.
+- **v744** — _is_hygiene_idle_timeout_error + _lean_recovery_stub.
+- Audit: cc_reinject_pruned_skill_markers was already faithfully ported in
+  context.c (context_compressor__reinject...) — duplicate removed before it
+  ever shipped. context_compressor module 147/171 → ~157/171.
