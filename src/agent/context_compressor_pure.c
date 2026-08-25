@@ -2122,3 +2122,70 @@ json_t *cc_strip_images_from_tool_msg(const json_t *msg)
     json_obj_del(copy, "api_content");
     return copy;
 }
+
+/* ── digest filtering ──────────────────────────────────────────────────── */
+
+/* PoP: _LOW_SIGNAL_TOOL_RE @ agent/context_compressor.py
+ * ^\{?\"?(?:output|status|success)\"?\s*[:=]?\s*\"?(?:|success|true|ok|0|\[])\"?\s*,?\s*
+ * (?:\"exit_code\":\s*0)?\s*}?$  — bare-ack envelope detector. */
+static bool cc_low_signal_tool_match(const char *s)
+{
+    const char *p = s;
+    if (*p == '{') p++;
+    if (*p == '"') p++;
+    if (!(strncmp(p, "output", 6) == 0 || strncmp(p, "status", 6) == 0 ||
+          strncmp(p, "success", 7) == 0))
+        return false;
+    p += strncmp(p, "success", 7) == 0 ? 7 : 6;
+    if (*p == '"') p++;
+    while (*p == ' ' || *p == '\t') p++;
+    if (*p == ':' || *p == '=') { p++; while (*p==' '||*p=='\t') p++; }
+    if (*p == '"') p++;
+    /* value: empty | success | true | ok | 0 | [] */
+    bool matched_value =
+        *p == ',' || *p == '}' ||
+        strncmp(p, "success", 7) == 0 || strncmp(p, "true", 4) == 0 ||
+        strncmp(p, "ok", 2) == 0 || strncmp(p, "0", 1) == 0 ||
+        strncmp(p, "[]", 2) == 0;
+    if (!matched_value) return false;
+    if (*p != ',' && *p != '}') {
+        if (strncmp(p, "success", 7) == 0) p += 7;
+        else if (strncmp(p, "true", 4) == 0) p += 4;
+        else if (strncmp(p, "ok", 2) == 0) p += 2;
+        else if (*p == '0') p += 1;
+        else if (strncmp(p, "[]", 2) == 0) p += 2;
+    }
+    while (*p == ' ' || *p == '\t') p++;
+    if (*p == ',') { p++; while (*p==' '||*p=='\t') p++; }
+    /* optional "exit_code": 0 */
+    if (strncmp(p, "\"exit_code\"\s*:\s*0", 6) == 0) {
+        /* hand-check without regex: "exit_code" : 0 */
+        if (strncmp(p, "\"exit_code\"", 11) == 0) {
+            const char *q = p + 11;
+            while (*q==' ') q++;
+            if (*q==':') { q++; while (*q==' ') q++; if (*q=='0') p = q + 1; }
+        }
+    }
+    while (*p == ' ' || *p == '\t') p++;
+    if (*p == '}') p++;
+    return *p == '\0';
+}
+
+/* PoP: _digest_worthy @ agent/context_compressor.py:_digest_worthy
+ * Filter no-signal rows from digest input. Assistant/user always pass;
+ * tool rows need >=80 chars and a non-low-signal head. */
+bool cc_digest_worthy(const char *role, const char *content)
+{
+    if (!role || strcmp(role, "tool") != 0) return true;
+    if (!content) content = "";
+    const char *s = content;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    const char *e = s + strlen(s);
+    while (e > s && (e[-1]==' '||e[-1]=='\t'||e[-1]=='\n'||e[-1]=='\r')) e--;
+    if ((size_t)(e - s) < 80) return false;
+    char head[201];
+    size_t n = (size_t)(e - s);
+    if (n > 200) n = 200;
+    memcpy(head, s, n); head[n] = '\0';
+    return !cc_low_signal_tool_match(head);
+}
