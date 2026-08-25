@@ -2371,3 +2371,43 @@ char *cc_serialize_turns_for_digest(json_t *turns, json_t *pristine)
     while (off >= 2 && out[off-1]=='\n' && out[off-2]=='\n') out[--off]='\0';
     return out;
 }
+
+/* ── hygiene timeout + lean demotion stub ──────────────────────────────── */
+
+/* PoP: _is_hygiene_idle_timeout_error @ agent/context_compressor.py
+ * True when the durable cooldown came from a hygiene watchdog timeout
+ * (intentional for the pre-agent hygiene pass; must not block the
+ * in-conversation compressor). */
+bool cc_is_hygiene_idle_timeout_error(const char *error)
+{
+    if (!error) return false;
+    /* casefold + strip ≈ lowercase with whitespace trimmed */
+    while (*error == ' ' || *error == '\t' || *error == '\n') error++;
+    size_t n = strlen(error);
+    char *low = malloc(n + 1);
+    if (!low) return false;
+    for (size_t k = 0; k < n; k++)
+        low[k] = (error[k] >= 'A' && error[k] <= 'Z') ? error[k] + 32 : error[k];
+    low[n] = '\0';
+    bool hit = strstr(low, "session hygiene compression timed out") != NULL;
+    free(low);
+    return hit;
+}
+
+/* PoP: _lean_recovery_stub @ agent/context_compressor.py
+ * One-line replacement for a demoted tail tool result. malloc'd; caller frees. */
+char *cc_lean_recovery_stub(const char *tool_name, long content_len,
+                            const char *session_id)
+{
+    char buf[512];
+    snprintf(buf, sizeof(buf),
+             "[%s output demoted at compaction — %ld "
+             "chars preserved in session history.%s%s]",
+             tool_name && *tool_name ? tool_name : "tool",
+             content_len,
+             session_id && *session_id
+                 ? " Recover with session_search(query=..., session_id='"
+                 : "",
+             session_id && *session_id ? "')" : "");
+    return strdup(buf);
+}
