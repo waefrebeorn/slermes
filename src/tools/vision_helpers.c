@@ -560,3 +560,54 @@ char *vision_build_scale_note(const char *scale_json, const char *crop_json) {
     free(parts[1]);
     return out;
 }
+
+/* ── crop-region validation (vision_tools battleground closure) ────────── */
+
+/* PoP: _crop_image_region region handling @ tools/vision_tools.py
+ * Validate + clamp a [x1,y1,x2,y2] region (original-image pixels) against
+ * the actual image dimensions. Returns 0 and fills the clamped rect on
+ * success; returns non-zero with an error message naming the real dims when
+ * the region is malformed, inverted, or clamps to zero area — exactly the
+ * LIVE contract that lets callers retry with sensible values. */
+int vision_helpers_crop_region_validate(const json_t *region,
+                                        int img_w, int img_h,
+                                        int *x1, int *y1,
+                                        int *x2, int *y2,
+                                        char *err, size_t errsz)
+{
+    if (!region || region->type != JSON_ARRAY || json_len(region) < 4) {
+        snprintf(err, errsz,
+                 "region must be [x1, y1, x2, y2] (image is %dx%d)", img_w, img_h);
+        return -1;
+    }
+    long v[4];
+    for (int k = 0; k < 4; k++) {
+        json_t *n = json_get(region, k);
+        if (!n || n->type != JSON_NUMBER) {
+            snprintf(err, errsz,
+                     "region[%d] must be a number (image is %dx%d)", k, img_w, img_h);
+            return -1;
+        }
+        v[k] = (long)n->num_val;
+    }
+    long cx1 = v[0], cy1 = v[1], cx2 = v[2], cy2 = v[3];
+    /* Clamp to image bounds. */
+    if (cx1 < 0) cx1 = 0;
+    if (cy1 < 0) cy1 = 0;
+    if (cx2 > img_w) cx2 = img_w;
+    if (cy2 > img_h) cy2 = img_h;
+    if (cx1 > img_w) cx1 = img_w;
+    if (cy1 > img_h) cy1 = img_h;
+    if (cx2 < 0) cx2 = 0;
+    if (cy2 < 0) cy2 = 0;
+
+    if (cx2 - cx1 <= 0 || cy2 - cy1 <= 0) {
+        snprintf(err, errsz,
+                 "region clamps to zero area (%ld,%ld)-(%ld,%ld); "
+                 "image is %dx%d",
+                 cx1, cy1, cx2, cy2, img_w, img_h);
+        return -1;
+    }
+    *x1 = (int)cx1; *y1 = (int)cy1; *x2 = (int)cx2; *y2 = (int)cy2;
+    return 0;
+}
