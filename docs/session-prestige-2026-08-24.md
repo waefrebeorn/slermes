@@ -172,3 +172,18 @@ All nm-verified in the shipped binary; rebuild green throughout.
 - Audit: cc_reinject_pruned_skill_markers was already faithfully ported in
   context.c (context_compressor__reinject...) — duplicate removed before it
   ever shipped. context_compressor module 147/171 → ~157/171.
+
+
+## Round 11
+
+- **v747** — user_originated_turn_view + history_before_user_originated_turn
+  (rewind prefix with handoff scaffold retained at head).
+- **v748** — _retire_stale_tool_result_images (keep newest 3 image-bearing
+  tool results; in-place retirement).
+- **v749** — _build_verbatim_user_section (newest-first, 4K/message cap,
+  24K budget, truncated straddler, blockquote format).
+- **v750** — _build_anchor_index (libregex harvest of PR/commit ids, handle
+  prefix scan, frequency-ranked, noise-filtered, capped at budget).
+
+context_compressor: 147/171 → 170/171 (the one remaining entry is the
+context.c reinject port under its cc_ name). Module effectively CLOSED.
