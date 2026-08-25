@@ -142,3 +142,18 @@ All nm-verified in the shipped binary; rebuild green throughout.
   skill/memory classification, emoji-stripped), enabled gate,
   _review_input_token_budget (600k default, <=0 unlimited). Module 8/23 → 15/23.
 - Scanner totals after alias map: PORTED 14,574 (87.2%), STUB 0.
+
+
+## Round 9
+
+- **v735** — chat_completion_helpers: _parse_provider_sse_events (faithful
+  SSE state machine: comments, fields, multi-line data join, status from
+  comments then status/status_code/http_status) + _prompt_cache_scope_for_agent
+  guarded wrapper over the existing resolver. Module → 40/50.
+- **v736** — context_compressor: is_compaction_summary_message (metadata
+  marker preferred, content heuristics fallback) and _handoff_only_content
+  (delimiter→END_MARKER slicing both layouts). → 149/171.
+- **v737** — retryable_user_text fail-closed guard (all-text-only flattening).
+- **v738** — _tool_content_has_images + _strip_images_from_tool_msg wrappers
+  reusing existing cc_ image primitives. → 152/171.
+- **v739** — _digest_worthy with hand-rolled low-signal tool-ack matcher. → 153/171.
