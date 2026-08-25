@@ -2189,3 +2189,102 @@ bool cc_digest_worthy(const char *role, const char *content)
     memcpy(head, s, n); head[n] = '\0';
     return !cc_low_signal_tool_match(head);
 }
+
+/* ── split_user_originated_turn family ─────────────────────────────────── */
+
+#define CC_SUMMARY_CARRIER_DURABLE_DISPLAY_METADATA_KEYS_SIZE 1
+static const char *const CC_DURABLE_DISPLAY_KEYS[] = {"reactions", NULL};
+
+/* PoP: split_user_originated_turn @ agent/context_compressor.py
+ * Split a user row into hidden handoff scaffold + canonical live view.
+ * out_handoff/out_live: set to the projected message or left NULL.
+ * Returns nothing; callers pass &json_t* slots. */
+void cc_split_user_originated_turn(const json_t *message,
+                                   json_t **out_handoff,
+                                   json_t **out_live)
+{
+    *out_handoff = NULL;
+    *out_live = NULL;
+    if (!message || message->type != JSON_OBJECT) return;
+
+    const char *role = json_get_str(message, "role", "");
+    if (strcmp(role, "user") != 0) return;
+
+    bool is_summary = cc_is_compaction_summary_message(message) != 0;
+    json_t *handoff = NULL;
+    json_t *candidate = NULL;
+
+    if (is_summary) {
+        handoff = json_object();
+        if (!handoff) return;
+        json_set(handoff, "role", json_string("user"));
+        json_set(handoff, "content",
+                 cc_handoff_only_content(json_obj_get(message, "content")));
+        json_set(handoff, CC_COMPRESSED_SUMMARY_METADATA_KEY, json_bool(true));
+        json_set(handoff, "display_kind", json_string("hidden"));
+        if (json_obj_get(message, CC_COMPRESSED_SUMMARY_HAS_USER_TURN_KEY))
+            json_set(handoff, CC_COMPRESSED_SUMMARY_HAS_USER_TURN_KEY,
+                     json_copy(json_obj_get(message,
+                                            CC_COMPRESSED_SUMMARY_HAS_USER_TURN_KEY)));
+        const char *display_kind = json_get_str(message, "display_kind", NULL);
+        if (display_kind && strcmp(display_kind, "hidden") != 0) {
+            *out_handoff = handoff;
+            return; /* typed display row: synthetic timeline event */
+        }
+        candidate = cc_strip_context_summary_handoff_message(message);
+        if (!candidate) {
+            *out_handoff = handoff;
+            return;
+        }
+    } else {
+        if (json_obj_get(message, "display_kind")) return; /* display row */
+        candidate = json_copy(message);
+        if (!candidate) return;
+    }
+
+    /* strip internal markers */
+    json_obj_del(candidate, CC_COMPRESSED_SUMMARY_METADATA_KEY);
+    json_obj_del(candidate, CC_COMPRESSED_SUMMARY_HAS_USER_TURN_KEY);
+    json_obj_del(candidate, CC_MICRO_COMPACT_MARKER_KEY);
+    json_obj_del(candidate, CC_DB_PERSISTED_MARKER);
+    if (is_summary) json_obj_del(candidate, "_row_id");
+    json_obj_del(candidate, "display_kind");
+    json_obj_del(candidate, "display_metadata");
+
+    /* carry durable display metadata forward */
+    json_t *carrier_metadata = json_obj_get(message, "display_metadata");
+    if (carrier_metadata && carrier_metadata->type == JSON_OBJECT) {
+        json_t *durable = json_object();
+        for (size_t k = 0; k < carrier_metadata->c.count; k++) {
+            const char *k_key = carrier_metadata->c.keys ? carrier_metadata->c.keys[k] : NULL;
+            if (!k_key) continue;
+            for (int d = 0; CC_DURABLE_DISPLAY_KEYS[d]; d++) {
+                if (strcmp(k_key, CC_DURABLE_DISPLAY_KEYS[d]) == 0) {
+                    json_set(durable, k_key,
+                             json_copy(carrier_metadata->c.items[k]));
+                    break;
+                }
+            }
+        }
+        if (json_len(durable) > 0)
+            json_set(candidate, "display_metadata", durable);
+        else
+            json_free(durable);
+    }
+
+    json_obj_del(candidate, "api_content");
+
+    if (cc_is_synthetic_compression_user_turn(candidate)) {
+        json_free(candidate);
+        if (handoff) *out_handoff = handoff;
+        return;
+    }
+    if (!cc_is_actionable_user_turn(candidate)) {
+        json_free(candidate);
+        if (handoff) *out_handoff = handoff;
+        return;
+    }
+
+    if (handoff) *out_handoff = handoff;
+    *out_live = candidate;
+}
