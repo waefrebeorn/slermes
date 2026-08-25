@@ -747,3 +747,60 @@ json_t *_check_disk_usage_warning(void) {
     json_set(warning, "pct_used", json_number(pct_used));
     return warning;
 }
+
+/* ── signal-exit interpretation (battleground 71/80 closure) ───────────── */
+
+/* PoP: _SIGNAL_EXIT_NOTES @ tools/terminal_tool.py:_SIGNAL_EXIT_NOTES */
+static const char *tt_signal_note(int signum)
+{
+    switch (signum) {
+    case 3:  return "SIGQUIT (quit from keyboard)";
+    case 4:  return "SIGILL (illegal instruction — corrupt binary or wrong architecture)";
+    case 6:  return "SIGABRT (abort — assertion failure, fatal runtime error, or glibc abort)";
+    case 7:  return "SIGBUS (bus error — misaligned or unmapped memory access)";
+    case 8:  return "SIGFPE (fatal arithmetic error, e.g. integer division by zero)";
+    case 9:  return "SIGKILL — often the kernel OOM killer on memory exhaustion, "
+                    "or an explicit kill -9";
+    case 11: return "SIGSEGV (segmentation fault — the program crashed)";
+    case 13: return "SIGPIPE (wrote to a closed pipe)";
+    default: return NULL;
+    }
+}
+
+/* PoP: _interpret_signal_exit @ tools/terminal_tool.py:_interpret_signal_exit
+ * Map a signal-termination exit code to a human-readable note. Returns a
+ * malloc'd note or NULL when the exit code is not a signal death.
+ * Negative codes are subprocess semantics (definite); the 128+signum band
+ * hedges with "usually". Caller frees non-NULL. */
+char *tools_terminal_tool_interpret_signal_exit(int exit_code)
+{
+    if (exit_code < 0) {
+        int signum = -exit_code;
+        if (signum == 2) return NULL; /* SIGINT: interrupt-marker path owns it */
+        const char *note = tt_signal_note(signum);
+        if (!note) {
+            char buf[160];
+            snprintf(buf, sizeof(buf),
+                     "Command terminated by signal %d", signum);
+            return strdup(buf);
+        }
+        char buf[320];
+        snprintf(buf, sizeof(buf),
+                 "Command terminated by signal %d: %s", signum, note);
+        return strdup(buf);
+    }
+
+    if (exit_code > 128) {
+        int signum = exit_code - 128;
+        const char *note = tt_signal_note(signum);
+        if (note) {
+            char buf[384];
+            snprintf(buf, sizeof(buf),
+                     "Exit code %d usually means the command was "
+                     "terminated by signal %d: %s",
+                     exit_code, signum, note);
+            return strdup(buf);
+        }
+    }
+    return NULL;
+}
