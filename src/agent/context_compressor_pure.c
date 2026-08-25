@@ -2288,3 +2288,45 @@ void cc_split_user_originated_turn(const json_t *message,
     if (handoff) *out_handoff = handoff;
     *out_live = candidate;
 }
+
+/* ── synthetic-row detection + recovery footer ─────────────────────────── */
+
+/* PoP: _synthetic_user_row @ agent/context_compressor.py
+ * True for scaffolding user rows carrying no real user words. */
+bool cc_synthetic_user_row(const json_t *content)
+{
+    if (!content || content->type != JSON_STRING || !content->str_val)
+        return true;
+    const char *s = content->str_val;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    if (!*s) return true;
+    static const char *const prefixes[] = {
+        "[System:", "[CONTEXT", "[PRIOR CONTEXT", "[IMPORTANT: Background",
+        "[Your active task list", "[Planning state preserved",
+        "[ASYNC DELEGATION", "[OUT-OF-BAND", "Cronjob Response:", NULL,
+    };
+    for (int k = 0; prefixes[k]; k++)
+        if (strncmp(s, prefixes[k], strlen(prefixes[k])) == 0) return true;
+    return false;
+}
+
+#define CC_LEAN_RECOVERY_HEADING "## Context Recovery"
+
+/* PoP: _build_recovery_footer @ agent/context_compressor.py
+ * Deterministic pointer to the compacted region in session history.
+ * Empty when session_id is empty. malloc'd; caller frees. */
+char *cc_build_recovery_footer(const char *session_id, long region_len)
+{
+    if (!session_id || !*session_id) return strdup("");
+    char buf[1024];
+    snprintf(buf, sizeof(buf),
+             "\n\n" CC_LEAN_RECOVERY_HEADING "\n"
+             "The %ld compacted message(s) remain fully preserved in "
+             "session history. If you need any detail this summary does not carry "
+             "(exact command output, file contents, error text, earlier "
+             "reasoning), recover it with: "
+             "session_search(query='<keywords>', session_id='%s') — "
+             "do not guess at lost specifics when you can look them up.",
+             region_len, session_id);
+    return strdup(buf);
+}
