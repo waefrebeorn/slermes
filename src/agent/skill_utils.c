@@ -900,3 +900,82 @@ json_t *iter_project_skill_files(const char *project_dir) {
     json_free(all);
     return out;
 }
+
+/* ── org-mirror + qualified-name helpers (battleground 40/44 closure) ──── */
+
+#define ORG_MIRROR_DIR_NAME "_org"
+
+/* PoP: is_org_mirror_path @ agent/skill_utils.py:is_org_mirror_path
+ * True when path is inside the org mirror ("_org/") under skills_dir.
+ * Pure string-prefix form: skills_dir + "/_org[/...]" (both paths already
+ * canonicalized by callers). */
+bool skill_utils_is_org_mirror_path(const char *path, const char *skills_dir)
+{
+    if (!path || !skills_dir) return false;
+    size_t sd = strlen(skills_dir);
+    while (sd > 1 && skills_dir[sd - 1] == '/') sd--;
+    if (strncmp(path, skills_dir, sd) != 0) return false;
+    const char *rest = path + sd;
+    /* must be directly under skills_dir */
+    if (*rest != '/') return false;
+    rest++;
+    return strncmp(rest, ORG_MIRROR_DIR_NAME "/", 5) == 0 ||
+           strcmp(rest, ORG_MIRROR_DIR_NAME) == 0;
+}
+
+/* PoP: org_id_of_path @ agent/skill_utils.py:org_id_of_path
+ * The "<org_id>" segment for a path under "_org/<org_id>/...", or NULL. */
+char *skill_utils_org_id_of_path(const char *path, const char *skills_dir)
+{
+    if (!path || !skills_dir) return NULL;
+    size_t sd = strlen(skills_dir);
+    while (sd > 1 && skills_dir[sd - 1] == '/') sd--;
+    if (strncmp(path, skills_dir, sd) != 0) return NULL;
+    const char *rest = path + sd;
+    if (*rest != '/') return NULL;
+    rest++;
+    size_t pfx = sizeof(ORG_MIRROR_DIR_NAME); /* "_org" + NUL = 5 */
+    if (strncmp(rest, ORG_MIRROR_DIR_NAME "/", pfx) != 0) return NULL;
+    const char *id = rest + pfx - 1; /* at '/' after _org? no — after "_org/" */
+    if (*id == '\0' || strchr(id, '/')) {
+        /* org id runs to the next slash or end */
+        const char *slash = strchr(id, '/');
+        size_t len = slash ? (size_t)(slash - id) : strlen(id);
+        if (len == 0) return NULL;
+        return strndup(id, len);
+    }
+    const char *slash = strchr(id, '/');
+    size_t len = slash ? (size_t)(slash - id) : strlen(id);
+    return len ? strndup(id, len) : NULL;
+}
+
+/* PoP: parse_qualified_name @ agent/skill_utils.py:parse_qualified_name
+ * Split "namespace:skill-name" into (namespace, bare_name). namespace is
+ * NULL when there is no ':'. Caller frees both. */
+void skill_utils_parse_qualified_name(const char *name,
+                                      char **namespace_out,
+                                      char **bare_out)
+{
+    if (!name) name = "";
+    const char *colon = strchr(name, ':');
+    if (!colon) {
+        *namespace_out = NULL;
+        *bare_out = strdup(name);
+        return;
+    }
+    *namespace_out = strndup(name, (size_t)(colon - name));
+    *bare_out = strdup(colon + 1);
+}
+
+/* PoP: is_valid_namespace @ agent/skill_utils.py:is_valid_namespace
+ * [a-zA-Z0-9_-]+ (the LIVE _NAMESPACE_RE). */
+bool skill_utils_is_valid_namespace(const char *candidate)
+{
+    if (!candidate || !*candidate) return false;
+    for (const char *p = candidate; *p; p++) {
+        if (!((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') ||
+              (*p >= '0' && *p <= '9') || *p == '_' || *p == '-'))
+            return false;
+    }
+    return true;
+}
