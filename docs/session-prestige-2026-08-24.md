@@ -67,3 +67,22 @@
 
 Next: remaining upstream deltas (memory gating verified already covered),
 continue scanner REAL_GAP descent.
+
+
+## Round 3
+
+1. **v716** — ported voice_client_config pure core (client-direct gate value
+   parsing, relay verdict shape, STT relay ladder with LIVE
+   BUILTIN_STT_PROVIDERS membership) + 16-case LIVE oracle MATCH.
+2. **v717** — tool_result_storage 11/15 → 15/15: _prune_spillover_once,
+   _is_host_side_env, generate_preview, _write_to_spillover,
+   _sandbox_visible_spillover_path.
+3. **v718** — video_generation_tool 9/12 → 12/12 (_coerce_int/_coerce_bool);
+   terminal_hints 8/10 → 10/10 (_first_token, annotate_masked_success with
+   failure-shape scan + masking-pipe/|| advisory notes).
+4. **v719** — xai_http 11/14 → 14/14 (dotenv-preferred env getter, coerce_bool,
+   explicit key via shared secret machinery, validated base URL).
+5. **v720** — web_tools keyless-rescue decision core (tavily-configured scan,
+   rescue gate, eligibility rule).
+
+All nm-verified in the shipped binary; rebuild green throughout.
