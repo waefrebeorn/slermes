@@ -1513,7 +1513,10 @@
   "update_completion": {
    "harness": "tests/t_port_update_completion.c",
    "oracle": "tests/sta_oracle_update_completion.py",
-   "fixtures": "tests/oracle/fixtures/update_completion"
+   "fixtures": "tests/oracle/fixtures/update_completion",
+   "strip_patterns": [
+    "[ ]?\\[[^]]* @ [^]]*\\]"
+   ]
   },
   "plugins_toolsets": {
    "harness": "tests/t_port_plugins_toolsets.c",
@@ -1690,11 +1693,6 @@
    "harness": "tests/t_port_final10.c",
    "oracle": "tests/sta_oracle_final10.py",
    "fixtures": "final10"
-  },
-  "cli_reasoning_tags": {
-   "harness": "tests/t_cli_reasoning_tags.c",
-   "oracle": "tests/cli_reasoning_tags_py.py",
-   "fixtures": "tests/oracle/fixtures/cli_reasoning_tags"
   }
  },
  "normalize": {

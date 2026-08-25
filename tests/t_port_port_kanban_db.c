@@ -1,7 +1,7 @@
 /* AUTO-GENERATED integration oracle harness for port_kanban_db (gen_integration_oracle.py). */
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "port_kanban_db.c"
+#include "../../src/hermes_cli/kanban_db.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

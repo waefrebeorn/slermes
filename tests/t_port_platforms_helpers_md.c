@@ -129,8 +129,13 @@ int main(int argc, char **argv)
         }
         else if (strcmp(op, "split_text_fence_aware") == 0) {
             size_t limit = (size_t)json_get_num(c, "limit", 50);
-            int pref = (int)json_get_num(c, "prefer_paragraphs", 1);
-            int bal = (int)json_get_num(c, "balance_fences", 0);
+            /* JSON false → json_get_num returns the DEFAULT (memory note:
+             * booleans are not numbers), so read bools via bool accessors. */
+            json_t *pv = json_obj_get(c, "prefer_paragraphs");
+            int pref = (pv && pv->type == JSON_BOOL) ? pv->bool_val
+                     : (int)json_get_num(c, "prefer_paragraphs", 1);
+            json_t *bv = json_obj_get(c, "balance_fences");
+            int bal = (bv && bv->type == JSON_BOOL) ? bv->bool_val : 0;
             char **result = helpers_md_split_text_fence_aware(val, limit, pref, bal);
             print_strlist(result);
             printf("\n");

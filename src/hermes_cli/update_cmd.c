@@ -4594,7 +4594,7 @@ void upd_print_update_completion(const char *message) {
             char *argv_sha[] = { (char*)"git", (char*)"rev-parse", (char*)"--short=8", (char*)"HEAD", NULL };
             char *sha = upd_git_stdout(repo, argv_sha);
             if (sha) {
-                snprintf(suffix, sizeof(suffix), " Â· %s @ %s", branch, sha);
+                snprintf(suffix, sizeof(suffix), " [%s @ %s]", branch, sha);
                 free(sha);
             }
             free(branch);

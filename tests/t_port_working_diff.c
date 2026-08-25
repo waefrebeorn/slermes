@@ -8,7 +8,7 @@
  * success/error/empty/stat/diff/untracked — mirroring the Python oracle's
  * output shape so the runner diff is byte-identical.
  */
-#include "tools/port_working_diff.h"
+#include "working_diff.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

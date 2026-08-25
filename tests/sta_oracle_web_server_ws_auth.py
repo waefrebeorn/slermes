@@ -16,6 +16,7 @@ WANT_FUNCS = {
     "_ws_host_origin_is_allowed", "_ws_request_reason",
     "_ws_request_is_allowed", "_ws_auth_mode", "_ws_auth_reason",
     "_ws_auth_ok", "_has_valid_query_token", "_is_accepted_host",
+    "_host_header_hostname",
 }
 WANT_CONSTS = {"_LOOPBACK_HOSTS", "_LOOPBACK_HOST_VALUES",
                "_QUERY_TOKEN_API_PATHS"}
