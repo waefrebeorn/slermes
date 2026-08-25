@@ -119,3 +119,15 @@ All nm-verified in the shipped binary; rebuild green throughout.
 - **v728** — vision_helpers crop-region validate/clamp (pure core of
   _crop_image_region): malformed/inverted/zero-area regions rejected with
   an error naming the actual dimensions.
+
+
+## Round 7
+
+- **v730** — skill_utils: is_org_mirror_path / org_id_of_path (_org mirror),
+  parse_qualified_name (namespace:skill split), is_valid_namespace
+  ([a-zA-Z0-9_-]+). Module → 44/44.
+- Audit: secret_sources base/registry and subagent_lifecycle battleground
+  "gaps" are name-mapping noise — every function already ships
+  (secret_registry_register/get/list, secret_set/reset/get_source_environment,
+  scrub_ansi, is_valid_env_name, apply_all). Scanner name-matcher needs a
+  mapping table pass.
