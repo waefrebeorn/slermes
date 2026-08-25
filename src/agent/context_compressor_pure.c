@@ -1987,3 +1987,84 @@ json_t *cc_handoff_only_content(const json_t *content)
     /* LIVE keeps the original content in that layout — pass through. */
     return json_copy(content);
 }
+
+/* PoP: retryable_user_text @ agent/context_compressor.py:retryable_user_text
+ * Lossless retry text or fail-closed error. Media/unknown parts and
+ * annotated text parts are rejected (no attachment replay protocol).
+ * Returns malloc'd text, or NULL with err filled. Caller frees. */
+char *cc_retryable_user_text(const json_t *content, char *err, size_t errsz)
+{
+    char *text = NULL;
+    if (!content) {
+        snprintf(err, errsz, "retry does not support non-text content");
+        return NULL;
+    }
+    if (content->type == JSON_STRING && content->str_val) {
+        text = strdup(content->str_val);
+    } else if (content->type == JSON_ARRAY) {
+        size_t cap = 64, off = 0;
+        text = malloc(cap);
+        if (!text) { snprintf(err, errsz, "oom"); return NULL; }
+        text[0] = '\0';
+        for (size_t k = 0; k < json_len(content); k++) {
+            json_t *part = json_get(content, k);
+            if (part && part->type == JSON_STRING && part->str_val) {
+                size_t pl = strlen(part->str_val);
+                while (off + pl + 1 > cap) { cap *= 2; text = realloc(text, cap); }
+                memcpy(text + off, part->str_val, pl); off += pl; text[off] = '\0';
+                continue;
+            }
+            if (!part || part->type != JSON_OBJECT) {
+                free(text);
+                snprintf(err, errsz, "retry does not support non-text content");
+                return NULL;
+            }
+            const char *ptype = json_get_str(part, "type", NULL);
+            bool ok_type = ptype && (strcmp(ptype, "text") == 0 ||
+                                     strcmp(ptype, "input_text") == 0 ||
+                                     strcmp(ptype, "output_text") == 0);
+            if (!ok_type) {
+                free(text);
+                snprintf(err, errsz,
+                         "retry does not support media or unknown content parts");
+                return NULL;
+            }
+            /* reject annotated parts: keys beyond {type,text} */
+            int extra = 0;
+            for (size_t fk = 0; fk < part->c.count; fk++) {
+                const char *mk = part->c.keys ? part->c.keys[fk] : NULL;
+                if (mk && strcmp(mk, "type") != 0 && strcmp(mk, "text") != 0)
+                    extra++;
+            }
+            if (extra) {
+                free(text);
+                snprintf(err, errsz,
+                         "retry cannot losslessly flatten annotated text parts");
+                return NULL;
+            }
+            const char *ptext = json_get_str(part, "text", NULL);
+            if (!ptext) {
+                free(text);
+                snprintf(err, errsz, "retry text parts must contain text");
+                return NULL;
+            }
+            size_t pl = strlen(ptext);
+            while (off + pl + 1 > cap) { cap *= 2; text = realloc(text, cap); }
+            memcpy(text + off, ptext, pl); off += pl; text[off] = '\0';
+        }
+    } else {
+        snprintf(err, errsz, "retry does not support non-text content");
+        return NULL;
+    }
+
+    if (!text) return NULL;
+    /* blank check */
+    const char *s = text;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    if (!*s) {
+        free(text);
+        snprintf(err, errsz, "retry found no text to send");
+        return NULL;
+    }
+    return text;
+}
