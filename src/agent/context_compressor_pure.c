@@ -2411,3 +2411,52 @@ char *cc_lean_recovery_stub(const char *tool_name, long content_len,
              session_id && *session_id ? "')" : "");
     return strdup(buf);
 }
+
+/* ── user-turn view projections ────────────────────────────────────────── */
+
+/* PoP: user_originated_turn_view @ agent/context_compressor.py
+ * The live human-authored projection of a user row, or NULL. Caller frees. */
+json_t *cc_user_originated_turn_view(const json_t *message)
+{
+    json_t *handoff = NULL, *live = NULL;
+    cc_split_user_originated_turn(message, &handoff, &live);
+    if (handoff) json_free(handoff);
+    return live; /* may be NULL */
+}
+
+/* PoP: history_before_user_originated_turn @ agent/context_compressor.py
+ * Rewind prefix + canonical live view for the row at index. Returns a
+ * malloc'd 2-element JSON array [prefix_array, live_view], or NULL with
+ * err filled on out-of-range / non-user-originated rows. */
+json_t *cc_history_before_user_originated_turn(json_t *messages, long index,
+                                               char *err, size_t errsz)
+{
+    if (!messages || messages->type != JSON_ARRAY ||
+        index < 0 || (size_t)index >= json_len(messages)) {
+        snprintf(err, errsz, "user turn index is outside the transcript");
+        return NULL;
+    }
+    json_t *selected = json_get(messages, (size_t)index);
+    json_t *handoff = NULL, *live = NULL;
+    cc_split_user_originated_turn(selected, &handoff, &live);
+    if (!live) {
+        if (handoff) json_free(handoff);
+        snprintf(err, errsz, "selected row is not a user-originated turn");
+        return NULL;
+    }
+    json_t *prefix = json_new_array();
+    if (!prefix) { json_free(handoff); json_free(live); return NULL; }
+    for (long k = 0; k < index; k++)
+        json_append(prefix, json_copy(json_get(messages, (size_t)k)));
+    if (handoff)
+        json_append(prefix, handoff); /* owns */
+    else {
+        /* keep array shape consistent even without a scaffold */
+    }
+
+    json_t *pair = json_new_array();
+    if (!pair) { json_free(prefix); json_free(live); return NULL; }
+    json_append(pair, prefix);
+    json_append(pair, live);
+    return pair;
+}
