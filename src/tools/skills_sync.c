@@ -1066,6 +1066,15 @@ json_t *sync_skills(bool quiet)
             }
         }
         if (is_suppressed) {
+            /* LIVE: essential skills survive suppression —
+             * "suppressed and not in _essential_names()" gates the skip. */
+            /* LIVE ESSENTIAL_SKILLS = frozenset({"hermes-agent"}) */
+            bool is_essential = strcmp(skill_name, "hermes-agent") == 0;
+            if (is_essential) {
+                is_suppressed = false;
+            }
+        }
+        if (is_suppressed) {
             json_array_append(suppressed_skipped, json_string(skill_name));
             continue;
         }
