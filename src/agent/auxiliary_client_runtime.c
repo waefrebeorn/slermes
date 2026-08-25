@@ -975,3 +975,111 @@ json_t *aux__call_fallback_candidate_async(llm_config_t *fb_cfg,
                                              messages, message_count,
                                              effective_timeout);
 }
+
+/* ── routing predicates (auxiliary_client gap closure) ─────────────────── */
+
+/* PoP: _task_prefers_fast_model @ agent/auxiliary_client.py
+ * Eligible tasks (_FAST_MODEL_TASKS = {"title_generation"}) may opt into
+ * fast-model routing via prefer_fast_model. */
+bool aux_task_prefers_fast_model(const char *task, const json_t *task_config)
+{
+    if (!task || strcmp(task, "title_generation") != 0) return false;
+    if (!task_config) return false;
+    json_t *v = json_obj_get(task_config, "prefer_fast_model");
+    if (!v) return false; /* default=False */
+    if (v->type == JSON_BOOL) return v->bool_val;
+    if (v->type == JSON_STRING && v->str_val)
+        return !(strcasecmp(v->str_val,"0")==0||strcasecmp(v->str_val,"false")==0||
+                 strcasecmp(v->str_val,"no")==0||strcasecmp(v->str_val,"off")==0);
+    return false;
+}
+
+/* PoP: _is_official_codex_base_url @ agent/auxiliary_client.py
+ * OpenAI's Codex endpoint only — custom proxies must NOT match:
+ * https://chatgpt.com[:443]/backend-api/codex[/...]. */
+bool aux_is_official_codex_base_url(const char *base_url)
+{
+    if (!base_url) return false;
+    if (strncmp(base_url, "https://", 8) != 0) return false;
+    const char *host_start = base_url + 8;
+    /* hostname runs to '/', ':' or end */
+    const char *hend = host_start;
+    while (*hend && *hend != '/' && *hend != ':') hend++;
+    if ((size_t)(hend - host_start) != strlen("chatgpt.com") ||
+        strncmp(host_start, "chatgpt.com", strlen("chatgpt.com")) != 0)
+        return false;
+    /* port: only absent or :443 */
+    if (*hend == ':') {
+        if (strncmp(hend, ":443/", 5) != 0 && strcmp(hend, ":443") != 0)
+            return false;
+        while (*hend && *hend != '/') hend++;
+    }
+    /* path == /backend-api/codex or prefix /backend-api/codex/ */
+    const char *path = hend;
+    size_t plen = strlen("/backend-api/codex");
+    if (!(strncmp(path, "/backend-api/codex", plen) == 0 &&
+          (path[plen] == '\0' || path[plen] == '/')))
+        return false;
+    return true;
+}
+
+/* PoP: _is_dual_surface_anthropic_host @ agent/auxiliary_client.py
+ * Known dual-surface (MiniMax-family) hosts. */
+bool aux_is_dual_surface_anthropic_host(const char *url)
+{
+    static const char *const SUFFIXES[] = {
+        "minimax.io", "minimax.chat", "minimaxi.com", NULL,
+    };
+    static const char *const PREFIXES[] = { "api.minimax.", NULL };
+    if (!url) return false;
+    /* extract hostname: after scheme://, to next '/' or ':' */
+    const char *hs = strstr(url, "://");
+    hs = hs ? hs + 3 : url;
+    const char *he = hs;
+    while (*he && *he != '/' && *he != ':') he++;
+    size_t hlen = (size_t)(he - hs);
+
+    for (int k = 0; SUFFIXES[k]; k++) {
+        size_t sl = strlen(SUFFIXES[k]);
+        if (hlen == sl && strncasecmp(hs, SUFFIXES[k], sl) == 0) return true;
+        if (hlen > sl + 1 && hs[hlen - sl - 1] == '.' &&
+            strncasecmp(hs + hlen - sl, SUFFIXES[k], sl) == 0)
+            return true;
+    }
+    for (int k = 0; PREFIXES[k]; k++)
+        if (hlen > strlen(PREFIXES[k]) &&
+            strncasecmp(hs, PREFIXES[k], strlen(PREFIXES[k])) == 0)
+            return true;
+    return false;
+}
+
+/* PoP: _is_structured_output_rejection @ agent/auxiliary_client.py
+ * Provider 400s rejecting the structured-output field on either wire.
+ * status_code must be NULL/400/422; the vLLM grammar-backend and bedrock-
+ * mantle Extra-inputs cases map to one retry-without-field predicate. */
+bool aux_is_structured_output_rejection(long status_code,
+                                        bool has_status,
+                                        const char *error_text)
+{
+    if (has_status && status_code != 400 && status_code != 422)
+        return false;
+    if (!error_text) return false;
+    size_t n = strlen(error_text);
+    char *low = malloc(n + 1);
+    if (!low) return false;
+    for (size_t k = 0; k < n; k++)
+        low[k] = (char)((error_text[k] >= 'A' && error_text[k] <= 'Z')
+                            ? error_text[k] + 32 : error_text[k]);
+    low[n] = '\0';
+    bool hit = false;
+    if (strstr(low, "guided_grammar") || strstr(low, "xgrammar") ||
+        strstr(low, "compile_grammar_error"))
+        hit = true;
+    else if (strstr(low, "extra inputs are not permitted") &&
+             (strstr(low, "response_format") || strstr(low, "output_config")))
+        hit = true;
+    else if (strstr(low, "response_format") && strstr(low, "unavailable"))
+        hit = true;
+    free(low);
+    return hit;
+}
