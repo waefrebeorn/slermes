@@ -1083,3 +1083,105 @@ bool aux_is_structured_output_rejection(long status_code,
     free(low);
     return hit;
 }
+
+/* ── response-format translation + retry kwargs (gap closure) ──────────── */
+
+/* PoP: _translate_anthropic_response_format @ agent/auxiliary_client.py
+ * Merge an OpenAI response format into Anthropic output_config.format.
+ * json_schema passes its schema through; json_object maps to a schema-less
+ * {"type":"object"} (Anthropic has no schema-less JSON mode). Mutates
+ * anthropic_kwargs in place. */
+void aux_translate_anthropic_response_format(json_t *anthropic_kwargs,
+                                             const json_t *response_format)
+{
+    if (!anthropic_kwargs || !response_format ||
+        response_format->type != JSON_OBJECT)
+        return;
+    const char *format_type = json_get_str(response_format, "type", NULL);
+
+    json_t *native = NULL;
+    if (format_type && strcmp(format_type, "json_schema") == 0) {
+        json_t *js = json_obj_get(response_format, "json_schema");
+        if (!js || js->type != JSON_OBJECT || !json_obj_get(js, "schema"))
+            return;
+        native = json_object();
+        if (!native) return;
+        json_set(native, "type", json_string("json_schema"));
+        json_set(native, "schema", json_copy(json_obj_get(js, "schema")));
+    } else if (format_type && strcmp(format_type, "json_object") == 0) {
+        native = json_object();
+        if (!native) return;
+        json_set(native, "type", json_string("json_schema"));
+        json_t *schema = json_object();
+        json_set(schema, "type", json_string("object"));
+        json_set(native, "schema", schema);
+    } else {
+        return;
+    }
+
+    json_t *output_config = json_obj_get(anthropic_kwargs, "output_config");
+    if (!output_config || output_config->type != JSON_OBJECT) {
+        output_config = json_object();
+        if (!output_config) { json_free(native); return; }
+        json_set(anthropic_kwargs, "output_config", output_config);
+    }
+    json_set(output_config, "format", native);
+}
+
+/* PoP: _without_structured_output_format @ agent/auxiliary_client.py
+ * Copy kwargs without any response_format request field (top-level and
+ * extra_body entry). Returns NULL when nothing changed so call sites do
+ * not retry an unmodified request. Caller frees non-NULL. */
+json_t *aux_without_structured_output_format(const json_t *kwargs)
+{
+    if (!kwargs) return NULL;
+    bool changed = false;
+    bool had_top = false, had_extra = false;
+
+    json_t *top_rf = json_obj_get(kwargs, "response_format");
+    if (top_rf) { changed = true; had_top = true; }
+
+    json_t *extra_body = json_obj_get(kwargs, "extra_body");
+    if (extra_body && extra_body->type == JSON_OBJECT &&
+        json_obj_get(extra_body, "response_format")) {
+        changed = true; had_extra = true;
+    }
+    if (!changed) return NULL;
+
+    json_t *retry = json_object();
+    if (!retry) return NULL;
+    for (size_t k = 0; k < kwargs->c.count; k++) {
+        const char *key = kwargs->c.keys ? kwargs->c.keys[k] : NULL;
+        if (!key || strcmp(key, "response_format") == 0) continue;
+        json_set(retry, key, json_copy(kwargs->c.items[k]));
+    }
+    if (had_extra) {
+        const json_t *eb = extra_body;
+        json_t *remaining = json_object();
+        if (remaining) {
+            for (size_t k = 0; k < eb->c.count; k++) {
+                const char *key = eb->c.keys ? eb->c.keys[k] : NULL;
+                if (!key || strcmp(key, "response_format") == 0) continue;
+                json_set(remaining, key, json_copy(eb->c.items[k]));
+            }
+            if (json_len(remaining) > 0)
+                json_set(retry, "extra_body", remaining);
+            else
+                json_free(remaining);
+        }
+    }
+    return retry;
+}
+
+/* PoP: _record_route_info @ agent/auxiliary_client.py
+ * Expose the concrete route selected for one auxiliary call. Mutates the
+ * route_info dict in place when non-NULL. */
+void aux_record_route_info(json_t *route_info, const char *provider,
+                           const char *model)
+{
+    if (!route_info) return;
+    json_set(route_info, "provider",
+             json_string(provider && *provider ? provider : "auto"));
+    json_set(route_info, "model",
+             json_string(model && *model ? model : "default"));
+}
