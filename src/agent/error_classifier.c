@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "libjson/json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -448,4 +449,82 @@ int agent_error_classifier_u_extract_error_code(const char *arg) {
     if (!state) { printf("\n"); return 0; }
     printf("%s\n", tab ? tab + 1 : "");
     return 0;
+}
+
+/* ── billing ambiguity + usage-limit transient signals (gap closure) ───── */
+
+/* PoP: _UNVERIFIED_BILLING_PATTERNS @ agent/error_classifier.py */
+static const char *const UNVERIFIED_BILLING_PATTERNS[] = {
+    "out of extra usage", NULL,
+};
+
+/* PoP: _billing_ambiguity_context @ agent/error_classifier.py
+ * error_context marking a billing verdict as unverified. Returns true and
+ * fills the two flags when a pattern matches (LIVE returns {} otherwise). */
+bool ecl_billing_ambiguity_context(const char *error_msg,
+                                   bool *unverified, bool *possible_content_filter)
+{
+    if (!error_msg) return false;
+    for (int k = 0; UNVERIFIED_BILLING_PATTERNS[k]; k++)
+        if (strstr(error_msg, UNVERIFIED_BILLING_PATTERNS[k])) {
+            if (unverified) *unverified = true;
+            if (possible_content_filter) *possible_content_filter = true;
+            return true;
+        }
+    return false;
+}
+
+static const char *const USAGE_LIMIT_TRANSIENT_SIGNALS[] = {
+    "try again", "retry", "resets at", "reset in", "resets in",
+    "reset after", "available in", "wait", "requests remaining",
+    "periodic", "window", "per minute", "per second", NULL,
+};
+
+/* PoP: _has_usage_limit_transient_signal @ agent/error_classifier.py
+ * True when the usage-limit response identifies a reset window: message
+ * patterns, payload/body error-node reset fields, or Retry-After headers
+ * (case-insensitive per LIVE's dual-case header probes). */
+bool ecl_has_usage_limit_transient_signal(const char *error_msg,
+                                          const json_t *body,
+                                          const char *const *header_names,
+                                          const char *const *header_values,
+                                          size_t n_headers)
+{
+    if (error_msg) {
+        for (int k = 0; USAGE_LIMIT_TRANSIENT_SIGNALS[k]; k++)
+            if (strstr(error_msg, USAGE_LIMIT_TRANSIENT_SIGNALS[k]))
+                return true;
+    }
+
+    static const char *const RESET_FIELDS[] = {
+        "resets_in_seconds", "resets_at", "reset_at", "retry_after", NULL,
+    };
+    /* payloads = [body] + body["error"] when that node is an object */
+    const json_t *payloads[2] = { body, NULL };
+    int n_payloads = body ? 1 : 0;
+    if (body && body->type == JSON_OBJECT) {
+        json_t *err_node = json_obj_get(body, "error");
+        if (err_node && err_node->type == JSON_OBJECT)
+            payloads[n_payloads++] = err_node;
+    }
+    for (int pi = 0; pi < n_payloads; pi++) {
+        const json_t *payload = payloads[pi];
+        if (!payload || payload->type != JSON_OBJECT) continue;
+        for (int f = 0; RESET_FIELDS[f]; f++) {
+            json_t *v = json_obj_get(payload, RESET_FIELDS[f]);
+            if (v && v->type != JSON_NULL &&
+                !(v->type == JSON_STRING && !v->str_val))
+                return true;
+        }
+    }
+
+    for (size_t h = 0; h < n_headers; h++) {
+        if (!header_names || !header_names[h]) continue;
+        if (strcasecmp(header_names[h], "retry-after") == 0 ||
+            strcasecmp(header_names[h], "x-ratelimit-reset") == 0) {
+            if (header_values && header_values[h] && header_values[h][0])
+                return true;
+        }
+    }
+    return false;
 }
