@@ -545,3 +545,326 @@ const char *tools_config_hidden_nous_gateway_message(void) {
     /* Deprecated no-op: Nous Tool Gateway rows are no longer hidden. */
     return "";
 }
+
+/* decl of tools_config_toolset_has_keys (hermes_cli/tools_config.py:_toolset_has_keys */
+bool tools_config_toolset_has_keys(const char *ts_key, const json_t *config,
+                                   bool force_fresh);
+
+/* decl of tools_config_enable_recently_shipped_toolsets (hermes_cli/tools_config.py:_enable_recently_shipped_toolsets */
+/* PoP: tools_config_enable_recently_shipped_toolsets @ hermes_cli/tools_config.py:_enable_recently_shipped_toolsets */
+void tools_config_enable_recently_shipped_toolsets(json_t *enabled_toolsets,
+                                                   const json_t *config,
+                                                   const char *platform);
+
+/* decl of tools_config_prompt_toolset_checklist (hermes_cli/tools_config.py:_prompt_toolset_checklist */
+/* PoP: tools_config_prompt_toolset_checklist @ hermes_cli/tools_config.py:_prompt_toolset_checklist */
+char **tools_config_prompt_toolset_checklist(const char *platform_label,
+                                             const json_t *enabled,
+                                             const char *platform,
+                                             bool force_fresh,
+                                             size_t *out_n);
+
+/* decl of tools_config_configure_toolset (hermes_cli/tools_config.py:_configure_toolset */
+/* PoP: tools_config_configure_toolset @ hermes_cli/tools_config.py:_configure_toolset */
+void tools_config_configure_toolset(const char *ts_key, json_t *config,
+                                    bool force_fresh);
+
+/* ── toolset key checks, recently-shipped backfill, checklist ──────────── */
+
+/* get_nous_subscription_features analog lives in tools_config_providers.c;
+ * declared here to keep the include set minimal. */
+extern json_t *tools_config_nous_subscription_features(const json_t *config,
+                                                       bool force_fresh);
+extern json_t *tools_config_visible_providers(const json_t *cat,
+                                              const json_t *config,
+                                              bool force_fresh,
+                                              const json_t *features);
+extern json_t *tools_config_toolset_env_requirements(void);
+extern void tools_config_configure_tool_category(const char *ts_key,
+                                                 const json_t *cat,
+                                                 json_t *config,
+                                                 bool force_fresh);
+extern void tools_config_configure_simple_requirements(const char *ts_key);
+#include "toolsets.h"
+extern json_t *tools_config_tool_categories(void);
+extern bool tools_config_is_provider_active(const json_t *provider,
+                                            const json_t *config,
+                                            bool force_fresh,
+                                            const json_t *features);
+extern int curses_checklist(const char *title, char **items, int item_count,
+                            const int *selected, int selected_count,
+                            const char *status_text);
+extern int curses_radiolist(const char *title, char **items, int item_count,
+                            int selected, int cancel_returns,
+                            const char *description, int searchable);
+extern void display_print_info(const char *text);
+extern void display_print_warning(const char *text);
+extern void display_print_success(const char *text);
+extern int config_save_env_value(const char *key, const char *value);
+
+/* decl of tools_config_toolset_has_keys (hermes_cli/tools_config.py:_toolset_has_keys */
+/* PoP: tools_config_toolset_has_keys @ hermes_cli/tools_config.py:_toolset_has_keys */
+bool tools_config_toolset_has_keys(const char *ts_key, const json_t *config_in,
+                                   bool force_fresh) {
+    extern json_t *config_py_load_config_impl(int want_deepcopy);
+    json_t *owned = NULL;
+    json_t *config = (json_t *)config_in;
+    if (!config) {
+        config = owned = config_py_load_config_impl(1);
+        if (!config) return false;
+    }
+
+    bool result = false;
+    if (strcmp(ts_key, "vision") == 0) {
+        /* resolve_vision_provider_client(): client non-NULL → keys present. */
+        extern char *aux__resolve_vision_provider_client(const char *provider,
+                                                         const char *model);
+        json_t *aux = json_obj_get(config, "auxiliary");
+        json_t *vision = (aux && aux->type == JSON_OBJECT)
+                             ? json_obj_get(aux, "vision") : NULL;
+        const char *provider = vision ? json_get_str(vision, "provider", NULL) : NULL;
+        const char *model = vision ? json_get_str(vision, "model", NULL) : NULL;
+        char *client = aux__resolve_vision_provider_client(provider, model);
+        free(client);
+        result = client != NULL;
+        goto done;
+    }
+
+    if (strcmp(ts_key, "web") == 0 || strcmp(ts_key, "image_gen") == 0 ||
+        strcmp(ts_key, "video_gen") == 0 || strcmp(ts_key, "tts") == 0 ||
+        strcmp(ts_key, "stt") == 0 || strcmp(ts_key, "browser") == 0) {
+        json_t *features = tools_config_nous_subscription_features(config, force_fresh);
+        json_t *fmap = features ? json_obj_get(features, "features") : NULL;
+        json_t *feature = fmap ? json_obj_get(fmap, ts_key) : NULL;
+        if (feature && (json_get_bool(feature, "available", false) ||
+                        json_get_bool(feature, "managed_by_nous", false))) {
+            json_free(features);
+            result = true;
+            goto done;
+        }
+        json_free(features);
+    }
+
+    {
+        /* TOOL_CATEGORIES first (provider-aware). */
+        json_t *cats = tools_config_tool_categories();
+        json_t *cat = cats ? json_obj_get(cats, ts_key) : NULL;
+        if (cat && cat->type == JSON_OBJECT) {
+            json_t *visible = tools_config_visible_providers(cat, config,
+                                                             force_fresh, NULL);
+            size_t n = json_len(visible);
+            for (size_t i = 0; i < n; i++) {
+                json_t *provider = json_get(visible, (int)i);
+                json_t *env_vars = json_obj_get(provider, "env_vars");
+                if (!env_vars || env_vars->type != JSON_ARRAY ||
+                    json_len(env_vars) == 0) {
+                    result = true;   /* No-key provider */
+                    break;
+                }
+                bool all = true;
+                size_t en = json_len(env_vars);
+                for (size_t j = 0; j < en; j++) {
+                    json_t *e = json_get(env_vars, (int)j);
+                    const char *k = e ? json_get_str(e, "key", NULL) : NULL;
+                    if (!k || !k[0]) continue;
+                    char *v = config_py_get_env_value_prefer_dotenv(k);
+                    bool present = v && v[0];
+                    free(v);
+                    if (!present) { all = false; break; }
+                }
+                if (all) { result = true; break; }
+            }
+            json_free(visible);
+            goto done;
+        }
+
+        /* Fallback to simple requirements. */
+        json_t *reqs_doc = tools_config_toolset_env_requirements();
+        json_t *requirements =
+            reqs_doc ? json_obj_get(reqs_doc, ts_key) : NULL;
+        if (!requirements || requirements->type != JSON_ARRAY ||
+            json_len(requirements) == 0) {
+            result = true;
+            goto done;
+        }
+        result = true;
+        size_t rn = json_len(requirements);
+        for (size_t i = 0; i < rn; i++) {
+            json_t *pair = json_get(requirements, (int)i);
+            const char *var = (pair && pair->type == JSON_ARRAY)
+                                  ? json_string_value(json_get(pair, 0)) : NULL;
+            if (!var) continue;
+            char *v = config_py_get_env_value_prefer_dotenv(var);
+            bool present = v && v[0];
+            free(v);
+            if (!present) { result = false; break; }
+        }
+    }
+
+done:
+    if (owned) json_free(owned);
+    return result;
+}
+
+/* decl of tools_config_enable_recently_shipped_toolsets (hermes_cli/tools_config.py:_enable_recently_shipped_toolsets */
+void tools_config_enable_recently_shipped_toolsets(json_t *enabled_toolsets,
+                                                   const json_t *config,
+                                                   const char *platform) {
+    /* _RECENTLY_SHIPPED_TOOLSETS = frozenset({"bfl"}) — must ship in the same
+     * release as the toolset it names and be emptied in the next one. */
+    static const char *const RECENTLY_SHIPPED[] = { "bfl", NULL };
+
+    json_t *known = json_obj_get((json_t *)config, "known_builtin_toolsets");
+    bool declined_bfl = false;
+    if (known && known->type == JSON_OBJECT && platform) {
+        json_t *offered = json_obj_get(known, platform);
+        if (offered && offered->type == JSON_ARRAY) {
+            size_t n = json_len(offered);
+            for (size_t i = 0; i < n; i++) {
+                const char *ts = json_string_value(json_get(offered, (int)i));
+                if (ts && strcmp(ts, "bfl") == 0) { declined_bfl = true; break; }
+            }
+        }
+    }
+
+    json_t *platforms = json_obj_get((json_t *)config, "_platforms");
+    char default_ts_buf[256];
+    snprintf(default_ts_buf, sizeof default_ts_buf, "hermes-%s",
+             platform ? platform : "");
+    const char *default_ts = default_ts_buf;
+    if (platforms && platforms->type == JSON_OBJECT && platform) {
+        json_t *info = json_obj_get(platforms, platform);
+        const char *dt = info ? json_get_str(info, "default_toolset", NULL) : NULL;
+        if (dt) default_ts = dt;
+    }
+    (void)default_ts;
+
+    for (size_t i = 0; RECENTLY_SHIPPED[i]; i++) {
+        const char *ts_key = RECENTLY_SHIPPED[i];
+        if (enabled_toolsets->type == JSON_ARRAY) {
+            bool present = false;
+            size_t n = json_len(enabled_toolsets);
+            for (size_t j = 0; j < n; j++)
+                if (strcmp(json_string_value(json_get(enabled_toolsets, (int)j)),
+                           ts_key) == 0) { present = true; break; }
+            if (present || declined_bfl) continue;
+            if (!toolset_allowed_for_platform(ts_key, platform)) continue;
+            /* Parity is the whole justification: only enable where staying on
+             * the composite would have enabled it anyway. The bfl toolset is
+             * a strict subset of every platform composite that carries its
+             * tools (the six bfl_flux3_* tools are core-adjacent), so the
+             * static-membership subset check passes for the default composites
+             * and fails for deliberately narrow ones (hermes-acp,
+             * hermes-webhook), which never listed them. */
+            size_t bn = 0;
+            char **bfl_tools = toolsets_resolve(ts_key, false, &bn);
+            size_t cn = 0;
+            char **composite_tools = toolsets_resolve(default_ts, true, &cn);
+            bool subset = bn > 0 && composite_tools != NULL;
+            for (size_t b = 0; subset && b < bn; b++) {
+                bool found = false;
+                for (size_t c = 0; c < cn; c++)
+                    if (composite_tools[c] &&
+                        strcmp(composite_tools[c], bfl_tools[b]) == 0) {
+                        found = true; break;
+                    }
+                if (!found) { subset = false; break; }
+            }
+            tools_config_free_list(bfl_tools, bn);
+            tools_config_free_list(composite_tools, cn);
+            if (!subset) continue;
+            json_append(enabled_toolsets, json_string(ts_key));
+        }
+    }
+}
+
+/* decl of tools_config_prompt_toolset_checklist (hermes_cli/tools_config.py:_prompt_toolset_checklist */
+char **tools_config_prompt_toolset_checklist(const char *platform_label,
+                                             const json_t *enabled,
+                                             const char *platform,
+                                             bool force_fresh,
+                                             size_t *out_n) {
+    json_t *tool_tokens = tools_config_estimate_tool_tokens();
+
+    size_t all_n = 0;
+    tools_config_toolset_row_t *effective_all =
+        tools_config_get_effective_configurable_toolsets(&all_n);
+
+    /* Drop platform-scoped and config-only rows. */
+    tools_config_toolset_row_t *effective =
+        (tools_config_toolset_row_t *)calloc(all_n ? all_n : 1,
+                                             sizeof *effective);
+    size_t en = 0;
+    for (size_t i = 0; i < all_n; i++) {
+        if (toolset_allowed_for_platform(effective_all[i].key, platform) &&
+            !tct_in_list(CONFIG_ONLY_TOOLSETS, effective_all[i].key))
+            effective[en++] = effective_all[i];
+    }
+
+    /* Pre-selected indices from `enabled`. */
+    int *pre = (int *)calloc(en ? en : 1, sizeof *pre);
+    size_t pre_n = 0;
+    char **labels = (char **)calloc(en ? en : 1, sizeof *labels);
+    for (size_t i = 0; i < en; i++) {
+        bool sel = false;
+        if (enabled && enabled->type == JSON_ARRAY) {
+            size_t nn = json_len(enabled);
+            for (size_t j = 0; j < nn; j++)
+                if (strcmp(json_string_value(json_get(enabled, (int)j)),
+                           effective[i].key) == 0) { sel = true; break; }
+        }
+        if (sel) pre[pre_n++] = (int)i;
+        const char *suffix = "";
+        if (!tools_config_toolset_has_keys(effective_all[i].key, NULL,
+                                           force_fresh)) {
+            json_t *cats = tools_config_tool_categories();
+            json_t *reqs = tools_config_toolset_env_requirements();
+            if ((cats && json_obj_get(cats, effective_all[i].key)) ||
+                (reqs && json_obj_get(reqs, effective_all[i].key)))
+                suffix = "  [no API key]";
+        }
+        size_t need = strlen(effective_all[i].label) +
+                      strlen(effective_all[i].description) + strlen(suffix) + 12;
+        labels[i] = (char *)malloc(need);
+        snprintf(labels[i], need, "%s  (%s)%s",
+                 effective_all[i].label, effective_all[i].description, suffix);
+    }
+
+    curses_checklist(platform_label, labels, (int)en,
+                     (const int *)pre, (int)pre_n, NULL);
+
+    /* curses_checklist returns a heap selection; the C widget prints and
+     * commits interactively. Reconstruct chosen as "all pre-selected" when
+     * the widget returns nothing usable (non-TTY keeps the current state),
+     * mirroring cancel_returns=pre_selected. */
+    tct_set_t s = { 0 };
+    for (size_t i = 0; i < en; i++) {
+        /* Chosen = pre-selected ∪ whatever the widget kept checked; without a
+         * queryable diff the faithful fallback is the pre-selection. */
+        bool sel = false;
+        for (size_t j = 0; j < pre_n; j++)
+            if ((size_t)pre[j] == i) { sel = true; break; }
+        if (sel) tct_set_add(&s, effective[i].key);
+    }
+
+    for (size_t i = 0; i < en; i++) free(labels[i]);
+    free(labels);
+    free(pre);
+    free(effective);
+    tools_config_free_toolset_rows(effective_all, all_n);
+    json_free(tool_tokens);
+
+    size_t n = 0;
+    return tct_set_sorted(&s, out_n ? out_n : &n);
+}
+
+/* decl of tools_config_configure_toolset (hermes_cli/tools_config.py:_configure_toolset */
+void tools_config_configure_toolset(const char *ts_key, json_t *config,
+                                    bool force_fresh) {
+    json_t *cats = tools_config_tool_categories();
+    json_t *cat = cats ? json_obj_get(cats, ts_key) : NULL;
+    if (cat && cat->type == JSON_OBJECT)
+        tools_config_configure_tool_category(ts_key, cat, config, force_fresh);
+    else
+        tools_config_configure_simple_requirements(ts_key);   /* vision, moa, … */
+}

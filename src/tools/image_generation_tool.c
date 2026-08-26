@@ -1535,3 +1535,30 @@ int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) {
     printf("dispatched via plugin provider (configured != fal; image_url/refs forwarded for edit routing): %s\n", t2 ? t2 + 1 : "");
     return 0;
 }
+
+/* ── hermes_cli/tools_config.py:_fal_model_catalog ─────────────────────── */
+
+/* PoP: tools_config_fal_model_catalog @ hermes_cli/tools_config.py:_fal_model_catalog */
+/* Lazy-load the FAL model catalog: fills *catalog_out with
+ * {model_id: {display, speed, strengths, price}} and *default_model with the
+ * module DEFAULT_MODEL. Returns false when the catalog table is empty. */
+bool tools_config_fal_model_catalog(json_t **catalog_out, char **default_model) {
+    if (!catalog_out || !default_model) return false;
+    *catalog_out = NULL;
+    *default_model = NULL;
+    if (FAL_MODELS_COUNT <= 0) return false;
+    json_t *catalog = json_object();
+    if (!catalog) return false;
+    for (int i = 0; i < FAL_MODELS_COUNT; i++) {
+        const fal_model_t *m = &FAL_MODELS[i];
+        json_t *meta = json_object();
+        json_set(meta, "display", json_string(m->display));
+        json_set(meta, "speed", json_string(m->speed));
+        json_set(meta, "strengths", json_string(m->strengths));
+        json_set(meta, "price", json_string(m->price));
+        json_set(catalog, m->model_id, meta);
+    }
+    *catalog_out = catalog;
+    *default_model = strdup(DEFAULT_MODEL);
+    return true;
+}

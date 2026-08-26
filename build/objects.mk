@@ -412,4 +412,6 @@ PHASE3_OBJ = $(PHASE2_OBJ) $(TOOLS_OBJ)
 PHASE4_OBJ = $(PHASE3_OBJ) $(GATEWAY_OBJ)
 PHASE5_OBJ = $(PHASE4_OBJ) $(CRON_OBJ) $(AGENT_PORT_REGEN) $(TOOLS_PORT_REGEN) $(GATEWAY_PORT_REGEN) src/hermes_cli/turn_summary_cli.o \
  src/hermes_cli/plugins_core.o \
- src/hermes_cli/tools_config_cua.o src/hermes_cli/tools_config_toolsets.o
+ src/hermes_cli/tools_config_cua.o src/hermes_cli/tools_config_toolsets.o \
+ src/hermes_cli/tools_config_install.o src/hermes_cli/tools_config_providers.o \
+ src/hermes_cli/tools_config_reconfig.o

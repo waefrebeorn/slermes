@@ -94,6 +94,28 @@ bool tools_config_homeassistant_credentials_present(void);
  * Deprecated no-op: Nous Tool Gateway rows are never hidden. Always "". */
 const char *tools_config_hidden_nous_gateway_message(void);
 
+/* PoP: tools_config_toolset_has_keys @ hermes_cli/tools_config.py:_toolset_has_keys
+ * True when the toolset's required API keys are configured (config NULL loads
+ * from disk; force_fresh bypasses the portal cache). */
+bool tools_config_toolset_has_keys(const char *ts_key, const json_t *config,
+                                   bool force_fresh);
+
+/* PoP: tools_config_enable_recently_shipped_toolsets @ hermes_cli/tools_config.py:_enable_recently_shipped_toolsets */
+void tools_config_enable_recently_shipped_toolsets(json_t *enabled_toolsets,
+                                                   const json_t *config,
+                                                   const char *platform);
+
+/* PoP: tools_config_prompt_toolset_checklist @ hermes_cli/tools_config.py:_prompt_toolset_checklist */
+char **tools_config_prompt_toolset_checklist(const char *platform_label,
+                                             const json_t *enabled,
+                                             const char *platform,
+                                             bool force_fresh,
+                                             size_t *out_n);
+
+/* PoP: tools_config_configure_toolset @ hermes_cli/tools_config.py:_configure_toolset */
+void tools_config_configure_toolset(const char *ts_key, json_t *config,
+                                    bool force_fresh);
+
 /* PoP: tools_config_get_plugin_toolset_keys @ hermes_cli/tools_config.py:_get_plugin_toolset_keys
  * Plugin-provided toolset keys (non-blocking). Sorted unique. */
 char **tools_config_get_plugin_toolset_keys(size_t *out_n);
