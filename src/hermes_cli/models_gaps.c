@@ -29,8 +29,7 @@
 #include <pthread.h>
 #include <sys/stat.h>
 
-/* Exported from src/hermes_cli/moa_pure_helpers.c
- * (PoP: silent_default_for_provider @ hermes_cli/models.py:get_preferred_silent_default_model) */
+/* Exported from src/hermes_cli/moa_pure_helpers.c (its PoP lives there). */
 extern const char *silent_default_for_provider(const char *provider);
 
 /* ── small string helpers ──────────────────────────────────────────────── */
