@@ -660,3 +660,763 @@ int relay_adapter_minted_here(const char *prompt_id, const char *owner_nonce) {
     /* No dot segment — treat as ours (pre-upgrade prompt) */
     return 1;
 }
+
+/* ════════════════════════════════════════════════════════════════════
+ * Gap closure wave: live cards / draft-seal coordination, dedupe,
+ * routing warm-up, format hints, auto-thread wait, prompt lifecycle.
+ * (gateway/relay/adapter.py REAL_GAPs — see PoP lines per function.)
+ * ════════════════════════════════════════════════════════════════════ */
+
+#define RLA_DRAFT_STATE_CAP 512          /* adapter.py RelayAdapter._DRAFT_STATE_CAP */
+#define RLA_RESOLVED_PROMPT_MEMORY 256   /* adapter.py _RESOLVED_PROMPT_MEMORY */
+
+/* forward decls within this gap wave (defined further below) */
+char *relay_adapter_with_format_hints_for_chat(const char *chat_id, const char *metadata_json);
+
+/* JSON-string escape into a malloc'd buffer (content frames must stay valid JSON). */
+static char *rla_json_escape(const char *s) {
+    if (!s) s = "";
+    size_t cap = strlen(s) * 6 + 3;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    size_t o = 0;
+    for (const unsigned char *p = (const unsigned char *)s; *p && o + 7 < cap; p++) {
+        if (*p == '"' || *p == 0x5c) { out[o++] = 0x5c; out[o++] = (char)*p; }
+        else if (*p == 0x0a) { out[o++] = 0x5c; out[o++] = 'n'; }
+        else if (*p == 0x0d) { out[o++] = 0x5c; out[o++] = 'r'; }
+        else if (*p == 0x09) { out[o++] = 0x5c; out[o++] = 't'; }
+        else if (*p < 0x20) { o += (size_t)snprintf(out + o, cap - o, "\\u%04x", *p); }
+        else out[o++] = (char)*p;
+    }
+    out[o] = '\0';
+    return out;
+}
+
+/* metadata JSON string lookup → malloc'd value or NULL (absent/empty). */
+static char *rla_md_get(const char *metadata_json, const char *key) {
+    if (!metadata_json || !key[0]) return NULL;
+    json_t *o = json_parse(metadata_json, NULL);
+    if (!o) return NULL;
+    json_t *v = json_obj_get(o, key);
+    char *out = NULL;
+    if (v && v->type == JSON_STRING && v->str_val[0]) out = strdup(v->str_val);
+    else if (v && v->type == JSON_NUMBER) {
+        if (asprintf(&out, "%lld", (long long)v->num_val) < 0) out = NULL;
+    }
+    json_free(o);
+    return out;
+}
+
+static void rla_lower_buf(const char *src, char *dst, size_t n) {
+    size_t i = 0;
+    for (; src && src[i] && i + 1 < n; i++) dst[i] = (char)tolower((unsigned char)src[i]);
+    dst[i] = '\0';
+}
+
+/* Local supported-op probe over a descriptor JSON "supported_ops" array.
+ * (relay_adapter_ops.c keeps its own copy static — no cross-TU coupling.) */
+static bool rla_descriptor_supports_op(const char *descriptor_json, const char *op) {
+    if (!descriptor_json || !op) return false;
+    json_t *o = json_parse(descriptor_json, NULL);
+    if (!o) return false;
+    bool found = false;
+    json_t *ops = json_obj_get(o, "supported_ops");
+    if (ops && ops->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(ops); i++) {
+            json_t *e = json_get(ops, i);
+            if (e && e->type == JSON_STRING && strcmp(e->str_val, op) == 0) { found = true; break; }
+        }
+    }
+    json_free(o);
+    return found;
+}
+
+/* ── stream_is_message_for_chat ─────────────────────────────────────── */
+/* PoP: relay_adapter_stream_is_message_for_chat @ gateway/relay/adapter.py:stream_is_message_for_chat */
+bool relay_adapter_stream_is_message_for_chat(const char *chat_id) {
+    /* Python: str(self._descriptor_for_chat(str(chat_id)).platform or
+     * "").lower() == "slack" — resolve through the chat's own negotiated
+     * descriptor; platform-name inference is deliberate for now. The C
+     * chat-state registry records each chat's platform from inbound. */
+    if (!chat_id) return false;
+    pthread_mutex_lock(&g_chat_lock);
+    relay_chat_state_t *st = chat_state_locked(chat_id, 0);
+    bool is_slack = false;
+    if (st && st->platform[0]) {
+        char lc[64];
+        rla_lower_buf(st->platform, lc, sizeof(lc));
+        is_slack = (strcmp(lc, "slack") == 0);
+    }
+    pthread_mutex_unlock(&g_chat_lock);
+    return is_slack;
+}
+
+/* ── supports_native_task_cards / native_task_cards_enabled ─────────── */
+/* PoP: relay_adapter_supports_native_task_cards @ gateway/relay/adapter.py:supports_native_task_cards */
+bool relay_adapter_supports_native_task_cards(const char *descriptor_json) {
+    /* Python: "task_card" in (self.descriptor.supported_ops or ()) —
+     * explicit advertisement required, no fail-open. */
+    return rla_descriptor_supports_op(descriptor_json, "task_card");
+}
+
+/* PoP: relay_adapter_native_task_cards_enabled @ gateway/relay/adapter.py:native_task_cards_enabled */
+bool relay_adapter_native_task_cards_enabled(const char *descriptor_json) {
+    /* Python: alias the TurnRunner card lane calls by THIS name; without
+     * it the lane silently stays text-mode even though the connector
+     * advertises task_card. */
+    return relay_adapter_supports_native_task_cards(descriptor_json);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Draft/seal coordination state (_open_draft_by_chat /
+ * _sealed_draft_by_chat), FIFO-bounded like the Python dicts.
+ * ════════════════════════════════════════════════════════════════════ */
+
+typedef struct {
+    char key[512];
+    long long draft_id;
+} rla_draft_entry_t;
+
+static rla_draft_entry_t g_open_drafts[RLA_DRAFT_STATE_CAP + 1];
+static size_t g_open_draft_len = 0;
+static rla_draft_entry_t g_sealed_drafts[RLA_DRAFT_STATE_CAP + 1];
+static size_t g_sealed_draft_len = 0;
+static pthread_mutex_t g_draft_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* forward decl within this gap wave (definition follows) */
+static void relay_adapter_evict_oldest(rla_draft_entry_t *d, size_t *len);
+
+/* ── _evict_oldest ──────────────────────────────────────────────────── */
+/* PoP: relay_adapter_evict_oldest @ gateway/relay/adapter.py:_evict_oldest */
+static void relay_adapter_evict_oldest(rla_draft_entry_t *d, size_t *len) {
+    /* Python: while len(d) > cls._DRAFT_STATE_CAP: d.pop(next(iter(d))) —
+     * FIFO-bound in place (insertion order == array order here). */
+    while (*len > RLA_DRAFT_STATE_CAP) {
+        memmove(&d[0], &d[1], (*len - 1) * sizeof(rla_draft_entry_t));
+        (*len)--;
+    }
+}
+
+/* ── _draft_key ─────────────────────────────────────────────────────── */
+/* PoP: relay_adapter_draft_key @ gateway/relay/adapter.py:_draft_key */
+char *relay_adapter_draft_key(const char *chat_id, const char *metadata_json) {
+    /* Per-turn identity first (message_id / reply_to_message_id carry the
+     * triggering event id); thread anchor fallback; bare chat last resort. */
+    if (!chat_id) return NULL;
+    char *turn_id = rla_md_get(metadata_json, "message_id");
+    if (!turn_id) turn_id = rla_md_get(metadata_json, "reply_to_message_id");
+    if (turn_id) {
+        char *out = NULL;
+        if (asprintf(&out, "%s:turn:%s", chat_id, turn_id) < 0) out = NULL;
+        free(turn_id);
+        return out;
+    }
+    char *anchor = rla_md_get(metadata_json, "thread_ts");
+    if (!anchor) anchor = rla_md_get(metadata_json, "thread_id");
+    char *out = NULL;
+    if (asprintf(&out, "%s:%s", chat_id, anchor ? anchor : "") < 0) out = NULL;
+    free(anchor);
+    return out;
+}
+
+/* ── _card_key ──────────────────────────────────────────────────────── */
+/* PoP: relay_adapter_card_key @ gateway/relay/adapter.py:_card_key */
+char *relay_adapter_card_key(const char *reply_to, const char *metadata_json) {
+    /* Same precedence as _draft_key with reply_to winning and "root"
+     * last-resort so send AND stop derive one identity. */
+    char *anchor = NULL;
+    if (reply_to && reply_to[0]) anchor = strdup(reply_to);
+    if (!anchor) anchor = rla_md_get(metadata_json, "message_id");
+    if (!anchor) anchor = rla_md_get(metadata_json, "reply_to_message_id");
+    if (!anchor) anchor = rla_md_get(metadata_json, "thread_ts");
+    if (!anchor) anchor = rla_md_get(metadata_json, "thread_id");
+    char *out = NULL;
+    if (asprintf(&out, "turn:%s", anchor ? anchor : "root") < 0) out = NULL;
+    free(anchor);
+    return out;
+}
+
+/* ── _match_open_draft ──────────────────────────────────────────────── */
+/* PoP: relay_adapter_match_open_draft @ gateway/relay/adapter.py:_match_open_draft */
+char *relay_adapter_match_open_draft(const char *chat_id, const char *metadata_json) {
+    /* Exact key match first. Callers WITHOUT a per-turn message id may
+     * absorb via the single-open-stream fallback; callers WITH one never
+     * fall back (their identity is authoritative — a mismatch means the
+     * stream belongs to someone else). */
+    if (!chat_id) return NULL;
+    pthread_mutex_lock(&g_draft_lock);
+    char *result = NULL;
+    char *key = relay_adapter_draft_key(chat_id, metadata_json);
+    for (size_t i = 0; i < g_open_draft_len; i++) {
+        if (key && strcmp(g_open_drafts[i].key, key) == 0) { result = strdup(key); break; }
+    }
+    free(key);
+    if (!result) {
+        bool has_turn_identity = false;
+        char *mid = rla_md_get(metadata_json, "message_id");
+        char *rid = rla_md_get(metadata_json, "reply_to_message_id");
+        if (mid || rid) has_turn_identity = true;
+        free(mid);
+        free(rid);
+        if (!has_turn_identity) {
+            size_t hits = 0;
+            const char *hit = NULL;
+            for (size_t i = 0; i < g_open_draft_len; i++) {
+                if (strncmp(g_open_drafts[i].key, chat_id, strlen(chat_id)) == 0 &&
+                    g_open_drafts[i].key[strlen(chat_id)] == ':') {
+                    hits++;
+                    hit = g_open_drafts[i].key;
+                }
+            }
+            if (hits == 1 && hit) {
+                fprintf(stderr,
+                        "INFO relay: absorbing identity-less send into the single "
+                        "open stream %s (single-open-stream fallback)\n", hit);
+                result = strdup(hit);
+            }
+        }
+    }
+    pthread_mutex_unlock(&g_draft_lock);
+    return result;  /* NULL when no open stream matches */
+}
+/* ── _seal_open_draft ───────────────────────────────────────────────── */
+/* PoP: relay_adapter_seal_open_draft @ gateway/relay/adapter.py:_seal_open_draft */
+char *relay_adapter_seal_open_draft(const char *chat_id, const char *content,
+                                    const char *metadata_json,
+                                    const char *draft_key_in) {
+    /* Convert the turn-final send into the sealing draft frame:
+     * pop the open entry, tombstone BEFORE the transport call, FIFO-evict,
+     * then send op=draft final=true. Ambiguous outcomes (exception OR
+     * ack-timeout-shaped result) retry the SAME idempotent frame once —
+     * the connector's sealed-key tombstone never opens a second stream. */
+    if (!chat_id || !content) return strdup("{\"success\": false, \"error\": \"bad args\"}");
+    extern char *relay_transport_dispatch_op(const char *op_frame_json);
+
+    pthread_mutex_lock(&g_draft_lock);
+    char *key = NULL;
+    long long draft_id = -1;
+    if (draft_key_in && draft_key_in[0]) key = strdup(draft_key_in);
+    else key = relay_adapter_draft_key(chat_id, metadata_json);
+    for (size_t i = 0; i < g_open_draft_len; i++) {
+        if (strcmp(g_open_drafts[i].key, key ? key : "") == 0) {
+            draft_id = g_open_drafts[i].draft_id;
+            memmove(&g_open_drafts[i], &g_open_drafts[i + 1],
+                    (g_open_draft_len - i - 1) * sizeof(rla_draft_entry_t));
+            g_open_draft_len--;
+            break;
+        }
+    }
+    if (draft_id < 0) { pthread_mutex_unlock(&g_draft_lock); free(key); return NULL; }
+    /* Tombstone BEFORE the transport call: whatever the ack says, this
+     * draft_id's stream must never be re-armed by a straggler frame. */
+    snprintf(g_sealed_drafts[g_sealed_draft_len].key,
+             sizeof(g_sealed_drafts[0].key), "%s", key);
+    g_sealed_drafts[g_sealed_draft_len].draft_id = draft_id;
+    g_sealed_draft_len++;
+    relay_adapter_evict_oldest(g_sealed_drafts, &g_sealed_draft_len);
+    pthread_mutex_unlock(&g_draft_lock);
+
+    char *escaped_content = rla_json_escape(content);
+    char *hints_meta = relay_adapter_with_format_hints_for_chat(chat_id, metadata_json);
+    char *frame = NULL;
+    if (asprintf(&frame,
+                 "{\"op\": \"draft\", \"chat_id\": \"%s\", \"draft_id\": %lld, "
+                 "\"content\": \"%s\", \"final\": true, \"metadata\": %s}",
+                 chat_id, draft_id,
+                 escaped_content ? escaped_content : "",
+                 hints_meta ? hints_meta : "{}") < 0) frame = NULL;
+    free(escaped_content);
+    free(hints_meta);
+    if (!frame) return strdup("{\"success\": false, \"error\": \"oom\"}");
+
+    bool ambiguous = false;
+    char *result_json = NULL;
+    for (int attempt = 0; attempt < 2; attempt++) {
+        free(result_json);
+        result_json = relay_transport_dispatch_op(frame);
+        if (!result_json) { ambiguous = true; continue; }
+        json_t *r = json_parse(result_json, NULL);
+        if (!r) { ambiguous = true; continue; }
+        json_t *amb = json_obj_get(r, "ambiguous");
+        if (amb && amb->type != JSON_NULL && ((amb->type == JSON_BOOL && amb->bool_val))) {
+            fprintf(stderr, "WARNING relay seal ack lost (ambiguous): transport ack timeout\n");
+            ambiguous = true;
+            json_free(r);
+            continue;
+        }
+        ambiguous = false;
+        json_free(r);
+        break;
+    }
+    free(frame);
+    if (ambiguous) {
+        free(result_json);
+        return strdup("{\"success\": false, \"error\": "
+                      "\"draft seal ambiguous after retry (transport ack lost)\"}");
+    }
+    return result_json ? result_json
+                       : strdup("{\"success\": false, \"error\": \"no transport\"}");
+}
+
+
+/* ── send_native_task_card_progress ─────────────────────────────────── */
+/* PoP: relay_adapter_send_native_task_card_progress @ gateway/relay/adapter.py:send_native_task_card_progress */
+char *relay_adapter_send_native_task_card_progress(
+        const char *descriptor_json, const char *chat_id, const char *tasks_json,
+        const char *reply_to, const char *metadata_json) {
+    /* Relay leg of the task-card lane: emit ONE card frame per turn.
+     * Progress is advisory: a transport drop degrades to a failed
+     * SendResult, never raises into the progress loop / turn cleanup. */
+    if (!relay_adapter_supports_native_task_cards(descriptor_json))
+        return strdup("{\"success\": false, \"error\": \"connector does not advertise task_card\"}");
+    extern char *relay_transport_dispatch_op(const char *op_frame_json);
+    char *card_id = relay_adapter_card_key(reply_to, metadata_json);
+    /* Slack card streams are thread replies: anchor on the triggering
+     * message when the runner gave us one and metadata has no thread_ts. */
+    json_t *meta = json_parse((metadata_json && metadata_json[0]) ? metadata_json : "{}", NULL);
+    if (!meta || meta->type != JSON_OBJECT) {
+        if (meta) json_free(meta);
+        meta = json_object();
+    }
+    if (reply_to && reply_to[0] && !json_obj_get(meta, "thread_ts"))
+        json_set(meta, "thread_ts", json_string(reply_to));
+    char *final_meta = json_dumps(meta, 0);
+    json_free(meta);
+    char *frame = NULL;
+    bool ok = asprintf(&frame,
+                       "{\"op\": \"task_card\", \"chat_id\": \"%s\", \"card_id\": \"%s\", "
+                       "\"chunks\": %s, \"metadata\": %s}",
+                       chat_id ? chat_id : "", card_id ? card_id : "turn:root",
+                       tasks_json ? tasks_json : "[]",
+                       final_meta ? final_meta : "{}") >= 0;
+    free(final_meta);
+    free(card_id);
+    if (!ok) return strdup("{\"success\": false, \"error\": \"oom\"}");
+    char *res = relay_transport_dispatch_op(frame);
+    free(frame);
+    if (!res)
+        return strdup("{\"success\": false, \"error\": \"task_card transport error: lost ack\"}");
+    json_t *r = json_parse(res, NULL);
+    free(res);
+    bool success = false;
+    if (r) {
+        json_t *s = json_obj_get(r, "success");
+        success = (s && s->type == JSON_BOOL && s->bool_val);
+        json_free(r);
+    }
+    return success ? strdup("{\"success\": true}")
+                   : strdup("{\"success\": false, \"error\": \"task_card failed\"}");
+}
+
+/* ── stop_native_task_card_progress ─────────────────────────────────── */
+/* PoP: relay_adapter_stop_native_task_card_progress @ gateway/relay/adapter.py:stop_native_task_card_progress */
+char *relay_adapter_stop_native_task_card_progress(
+        const char *descriptor_json, const char *chat_id,
+        const char *reply_to, const char *metadata_json) {
+    /* Seal the card stream at turn end (idempotent connector-side).
+     * Best-effort by contract: runs in the progress loop's finally block. */
+    if (!relay_adapter_supports_native_task_cards(descriptor_json))
+        return strdup("{\"success\": false, \"error\": \"connector does not advertise task_card\"}");
+    extern char *relay_transport_dispatch_op(const char *op_frame_json);
+    char *card_id = relay_adapter_card_key(reply_to, metadata_json);
+    char *frame = NULL;
+    bool ok = asprintf(&frame,
+                       "{\"op\": \"task_card_stop\", \"chat_id\": \"%s\", "
+                       "\"card_id\": \"%s\", \"metadata\": %s}",
+                       chat_id ? chat_id : "", card_id ? card_id : "turn:root",
+                       (metadata_json && metadata_json[0]) ? metadata_json : "{}") >= 0;
+    free(card_id);
+    if (!ok) return strdup("{\"success\": false, \"error\": \"oom\"}");
+    char *res = relay_transport_dispatch_op(frame);
+    free(frame);
+    if (!res)
+        return strdup("{\"success\": false, \"error\": \"task_card_stop transport error: lost ack\"}");
+    json_t *r = json_parse(res, NULL);
+    free(res);
+    bool success = false;
+    if (r) {
+        json_t *s = json_obj_get(r, "success");
+        success = (s && s->type == JSON_BOOL && s->bool_val);
+        json_free(r);
+    }
+    return strdup(success ? "{\"success\": true}" : "{\"success\": false}");
+}
+
+/* ── abandon_open_draft ─────────────────────────────────────────────── */
+/* PoP: relay_adapter_abandon_open_draft @ gateway/relay/adapter.py:abandon_open_draft */
+char *relay_adapter_abandon_open_draft(const char *chat_id, const char *content,
+                                       const char *metadata_json) {
+    /* Seal an orphaned stream when its turn dies: seal in place with the
+     * text already on screen so the seal adds nothing and claims nothing.
+     * Best-effort by contract: failure is reported, never raised. */
+    char *draft_key = relay_adapter_match_open_draft(chat_id, metadata_json);
+    if (!draft_key) return strdup("{\"success\": true}");  /* nothing armed — no-op */
+    char *res = relay_adapter_seal_open_draft(chat_id, content, metadata_json, draft_key);
+    free(draft_key);
+    if (!res)
+        return strdup("{\"success\": false, \"error\": \"abandon seal transport error: null\"}");
+    return res;
+}
+
+
+/* ── per-platform descriptor resolver (fail-closed) ─────────────────── */
+char *relay_transport_descriptor_for_platform(const char *platform_value) {
+    /* The negotiated per-platform descriptors live inside the WS
+     * transport's connection state (ws_transport.c has no singleton
+     * accessor), so without a live handle this resolves to a bare
+     * platform-tagged object — every capability bit reads false, which is
+     * the fail-closed posture (never stamp another platform's bit).
+     * Callers holding a transport descriptor pass it directly instead. */
+    json_t *o = json_object();
+    if (!o) return NULL;
+    if (!platform_value || !platform_value[0]) { json_free(o); return NULL; }
+    json_set(o, "platform", json_string(platform_value));
+    char *out = json_dumps(o, 0);
+    json_free(o);
+    return out;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Inbound identity / routing warm-up / per-platform capability
+ * ════════════════════════════════════════════════════════════════════ */
+
+extern bool gateway_config_platform_extra_bool(const char *platform, const char *key);
+
+/* ── _inbound_dedupe_key ────────────────────────────────────────────── */
+/* PoP: relay_adapter_inbound_dedupe_key @ gateway/relay/adapter.py:_inbound_dedupe_key */
+char *relay_adapter_inbound_dedupe_key(const char *platform, const char *chat_id,
+                                       const char *message_id) {
+    /* Stable replay identity: (platform, chat, platform message id).
+     * The platform joins the key because one adapter can front SEVERAL
+     * platforms over one relay socket — numeric ids must never collide.
+     * NULL when either component is missing: synthetic events never
+     * dedupe, fail-open by design (dropping a real user message is
+     * strictly worse than rerunning one). */
+    if (!message_id || !message_id[0] || !chat_id || !chat_id[0]) return NULL;
+    char *out = NULL;
+    if (asprintf(&out, "%s:%s:%s", platform ? platform : "", chat_id, message_id) < 0)
+        return NULL;
+    return out;
+}
+
+/* ── prime_routing_cache ────────────────────────────────────────────── */
+/* PoP: relay_adapter_prime_routing_cache @ gateway/relay/adapter.py:prime_routing_cache */
+void relay_adapter_prime_routing_cache(const char *event_json) {
+    /* Warm the per-chat egress routing caches from a SYNTHETIC event:
+     * a replayed completion turn reaches handle_message with cold caches,
+     * so its replies would egress without scope/user discriminators and
+     * be declined by the connector's fail-closed tenant guard. Feed it
+     * through the same capture used for real inbound. Never raises. */
+    if (!event_json) return;
+    json_t *o = json_parse(event_json, NULL);
+    if (!o) return;
+    json_t *src = json_obj_get(o, "source");
+    if (!src) { json_free(o); return; }
+    const char *chat_id = json_string_value_safe(json_obj_get(src, "chat_id"));
+    const char *platform = json_string_value_safe(json_obj_get(src, "platform"));
+    const char *thread_id = json_string_value_safe(json_obj_get(src, "thread_id"));
+    if (chat_id && chat_id[0])
+        relay_helper_record_chat(chat_id, platform, NULL,
+                                 thread_id ? thread_id : NULL);
+    json_free(o);
+}
+
+/* ── supports_inchannel_continuable_for_platform ────────────────────── */
+/* PoP: relay_adapter_supports_inchannel_continuable_for_platform @ gateway/relay/adapter.py:supports_inchannel_continuable_for_platform */
+bool relay_adapter_supports_inchannel_continuable_for_platform(
+        const char *platform_value, const char *per_platform_descriptor_json,
+        bool scalar_supports_inchannel_continuable) {
+    /* Resolve the platform's OWN negotiated descriptor; fall back to the
+     * scalar only when the per-platform descriptor is unavailable — on a
+     * multi-platform relay the scalar both leaks the primary's True onto
+     * platforms that never advertised it and suppresses a non-primary
+     * platform's advertised True. */
+    if (platform_value && platform_value[0] && per_platform_descriptor_json) {
+        json_t *d = json_parse(per_platform_descriptor_json, NULL);
+        if (d) {
+            json_t *bit = json_obj_get(d, "supports_inchannel_continuable");
+            bool v = (bit && bit->type == JSON_BOOL) ? bit->bool_val : false;
+            json_free(d);
+            return v;
+        }
+    }
+    return scalar_supports_inchannel_continuable;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * _format_hints / _with_format_hints_for_chat / _for_platform
+ * ════════════════════════════════════════════════════════════════════ */
+
+static bool rla_descriptor_supports_block_formatting(const char *descriptor_json) {
+    if (!descriptor_json) return false;
+    json_t *d = json_parse(descriptor_json, NULL);
+    if (!d) return false;
+    json_t *bit = json_obj_get(d, "supports_block_formatting");
+    bool v = (bit && bit->type == JSON_BOOL) ? bit->bool_val : false;
+    json_free(d);
+    return v;
+}
+
+/* ── _format_hints ──────────────────────────────────────────────────── */
+/* PoP: relay_adapter_format_hints @ gateway/relay/adapter.py:_format_hints */
+bool relay_adapter_format_hints(const char *descriptor_json, const char *platform,
+                                bool *rich_blocks_out, bool *markdown_blocks_out) {
+    /* Hints stamped ONLY when (a) the DESTINATION platform's descriptor
+     * advertises supports_block_formatting and (b) the operator enabled a
+     * knob under platforms.relay.extra.<platform>.* — both default OFF.
+     * Same seam and same _coerce_flag semantics as reply_in_thread. */
+    if (rich_blocks_out) *rich_blocks_out = false;
+    if (markdown_blocks_out) *markdown_blocks_out = false;
+    if (!rla_descriptor_supports_block_formatting(descriptor_json)) return false;
+    char plat_lc[64];
+    rla_lower_buf(platform ? platform : "", plat_lc, sizeof(plat_lc));
+    bool rich = gateway_config_platform_extra_bool(plat_lc, "rich_blocks");
+    bool md = gateway_config_platform_extra_bool(plat_lc, "markdown_blocks");
+    if (rich_blocks_out) *rich_blocks_out = rich;
+    if (markdown_blocks_out) *markdown_blocks_out = md;
+    return rich || md;
+}
+
+static char *rla_with_format_hints(const char *metadata_json, bool rich, bool md) {
+    /* merged.setdefault("format_hints", hints) — existing hints win. */
+    json_t *meta = json_parse((metadata_json && metadata_json[0]) ? metadata_json : "{}", NULL);
+    if (!meta || meta->type != JSON_OBJECT) {
+        if (meta) json_free(meta);
+        meta = json_object();
+    }
+    if (json_obj_get(meta, "format_hints")) {
+        char *existing = json_dumps(meta, 0);
+        json_free(meta);
+        return existing;
+    }
+    json_t *hints = json_object();
+    if (rich) json_set(hints, "rich_blocks", json_bool(true));
+    if (md) json_set(hints, "markdown_blocks", json_bool(true));
+    json_set(meta, "format_hints", hints);
+    char *out = json_dumps(meta, 0);
+    json_free(meta);
+    return out;
+}
+
+/* ── _with_format_hints_for_chat ────────────────────────────────────── */
+/* PoP: relay_adapter_with_format_hints_for_chat @ gateway/relay/adapter.py:_with_format_hints_for_chat */
+char *relay_adapter_with_format_hints_for_chat(const char *chat_id,
+                                               const char *metadata_json) {
+    /* Resolve the chat's platform from what we saw inbound (_platform_by_chat),
+     * falling back to the primary identity for chats we never saw inbound. */
+    extern char *relay_adapter_current_descriptor_json(void);
+    pthread_mutex_lock(&g_chat_lock);
+    relay_chat_state_t *st = chat_state_locked(chat_id, 0);
+    char platform[64] = "";
+    if (st) snprintf(platform, sizeof(platform), "%s", st->platform);
+    pthread_mutex_unlock(&g_chat_lock);
+    char *dj = relay_adapter_current_descriptor_json();
+    if (!platform[0] && dj) {
+        json_t *d = json_parse(dj, NULL);
+        if (d) {
+            const char *p = json_string_value_safe(json_obj_get(d, "platform"));
+            snprintf(platform, sizeof(platform), "%s", p ? p : "");
+            json_free(d);
+        }
+    }
+    bool rich = false, md = false;
+    bool any = relay_adapter_format_hints(dj, platform, &rich, &md);
+    free(dj);
+    if (!any)
+        return strdup((metadata_json && metadata_json[0]) ? metadata_json : "{}");
+    return rla_with_format_hints(metadata_json, rich, md);
+}
+
+/* ── _with_format_hints_for_platform ────────────────────────────────── */
+/* PoP: relay_adapter_with_format_hints_for_platform @ gateway/relay/adapter.py:_with_format_hints_for_platform */
+char *relay_adapter_with_format_hints_for_platform(const char *platform_value,
+                                                   const char *metadata_json,
+                                                   const char *primary_descriptor_json) {
+    /* send_for_platform lane (cron delivery): no inbound event to populate
+     * _platform_by_chat, so the destination platform is caller-supplied.
+     * Falls back to the scalar descriptor only when it IS that platform's
+     * (fail closed: never stamp from another platform's capability bit). */
+    const char *descriptor_json = NULL;
+    char *resolved = relay_transport_descriptor_for_platform(platform_value);
+    if (resolved) descriptor_json = resolved;
+    else if (primary_descriptor_json) {
+        json_t *d = json_parse(primary_descriptor_json, NULL);
+        if (d) {
+            const char *p = json_string_value_safe(json_obj_get(d, "platform"));
+            if (p && platform_value && strcmp(p, platform_value) == 0)
+                descriptor_json = primary_descriptor_json;
+            json_free(d);
+        }
+    }
+    bool rich = false, md = false;
+    bool any = relay_adapter_format_hints(descriptor_json, platform_value, &rich, &md);
+    free(resolved);
+    if (!any)
+        return strdup((metadata_json && metadata_json[0]) ? metadata_json : "{}");
+    return rla_with_format_hints(metadata_json, rich, md);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * wait_for_auto_thread_info / prompt-resolved FIFO / lifecycle acks
+ * ════════════════════════════════════════════════════════════════════ */
+
+static pthread_cond_t g_auto_thread_cond = PTHREAD_COND_INITIALIZER;
+
+/* Wake every auto-thread waiter when a chat gains an auto-thread
+ * (called by the send path once auto_thread info is recorded). */
+void relay_adapter_signal_auto_thread(const char *chat_id) {
+    (void)chat_id;
+    pthread_cond_broadcast(&g_auto_thread_cond);
+}
+
+/* ── wait_for_auto_thread_info ──────────────────────────────────────── */
+/* PoP: relay_adapter_wait_for_auto_thread_info @ gateway/relay/adapter.py:wait_for_auto_thread_info */
+bool relay_adapter_wait_for_auto_thread_info(const char *chat_id, double timeout_secs,
+                                             char *thread_id_out, size_t tid_sz,
+                                             char *name_out, size_t name_sz) {
+    /* auto_thread_info_for_chat, but willing to wait: answer as soon as
+     * the chat's next send installs an auto-thread instead of holding
+     * until timeout (only a backstop for a turn that never sends).
+     * Returns false on timeout. */
+    if (!chat_id) return false;
+    if (relay_helper_auto_thread_info_for_chat(chat_id, thread_id_out, tid_sz,
+                                               name_out, name_sz))
+        return true;
+
+    struct timespec deadline;
+    clock_gettime(CLOCK_REALTIME, &deadline);
+    time_t secs = (time_t)timeout_secs;
+    long nsec = (long)((timeout_secs - (double)secs) * 1e9);
+    deadline.tv_sec += secs;
+    deadline.tv_nsec += nsec;
+    if (deadline.tv_nsec >= 1000000000L) { deadline.tv_sec++; deadline.tv_nsec -= 1000000000L; }
+
+    bool arrived = false;
+    pthread_mutex_lock(&g_chat_lock);
+    for (;;) {
+        relay_chat_state_t *st = chat_state_locked(chat_id, 0);
+        if (st && st->auto_thread_id[0]) { arrived = true; break; }
+        struct timespec now;
+        clock_gettime(CLOCK_REALTIME, &now);
+        if (now.tv_sec > deadline.tv_sec ||
+            (now.tv_sec == deadline.tv_sec && now.tv_nsec >= deadline.tv_nsec))
+            break;  /* timed out */
+        struct timespec remain;
+        remain.tv_sec = deadline.tv_sec - now.tv_sec;
+        remain.tv_nsec = deadline.tv_nsec - now.tv_nsec;
+        if (remain.tv_nsec < 0) { remain.tv_sec--; remain.tv_nsec += 1000000000L; }
+        pthread_cond_timedwait(&g_auto_thread_cond, &g_chat_lock, &remain);
+    }
+    pthread_mutex_unlock(&g_chat_lock);
+    if (!arrived) return false;
+    return relay_helper_auto_thread_info_for_chat(
+        chat_id, thread_id_out, tid_sz, name_out, name_sz) != NULL;
+}
+
+/* ── _note_prompt_resolved ──────────────────────────────────────────── */
+typedef struct {
+    char prompt_id[256];
+    double resolved_at;
+} rla_resolved_prompt_t;
+
+static rla_resolved_prompt_t g_resolved_prompts[RLA_RESOLVED_PROMPT_MEMORY];
+static size_t g_resolved_prompt_len = 0;
+static pthread_mutex_t g_resolved_prompt_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* PoP: relay_adapter_note_prompt_resolved @ gateway/relay/adapter.py:_note_prompt_resolved */
+void relay_adapter_note_prompt_resolved(const char *prompt_id) {
+    /* Remember that this process already answered prompt_id. Bounded
+     * FIFO (popitem(last=False)): old ids drop rather than being retained
+     * for the process lifetime. */
+    if (!prompt_id) return;
+    pthread_mutex_lock(&g_resolved_prompt_lock);
+    if (g_resolved_prompt_len < RLA_RESOLVED_PROMPT_MEMORY) {
+        snprintf(g_resolved_prompts[g_resolved_prompt_len].prompt_id,
+                 sizeof(g_resolved_prompts[0].prompt_id), "%s", prompt_id);
+        g_resolved_prompts[g_resolved_prompt_len].resolved_at = (double)time(NULL);
+        g_resolved_prompt_len++;
+    } else {
+        memmove(&g_resolved_prompts[0], &g_resolved_prompts[1],
+                (RLA_RESOLVED_PROMPT_MEMORY - 1) * sizeof(rla_resolved_prompt_t));
+        snprintf(g_resolved_prompts[RLA_RESOLVED_PROMPT_MEMORY - 1].prompt_id,
+                 sizeof(g_resolved_prompts[0].prompt_id), "%s", prompt_id);
+        g_resolved_prompts[RLA_RESOLVED_PROMPT_MEMORY - 1].resolved_at = (double)time(NULL);
+    }
+    pthread_mutex_unlock(&g_resolved_prompt_lock);
+}
+
+/* ── _send_lifecycle_ack ────────────────────────────────────────────── */
+typedef struct {
+    char chat_id[256];
+    char text[4096];
+    char metadata_json[1024];
+} rla_ack_job_t;
+
+extern char *relay_transport_dispatch_op(const char *op_frame_json);
+
+static void *rla_lifecycle_ack_worker(void *arg) {
+    rla_ack_job_t *job = (rla_ack_job_t *)arg;
+    /* Acks are cosmetic by contract (the audit trail): failures logged at
+     * debug, never surfaced — an undelivered ack must never break the
+     * reader or the turn. Runs OFF the read loop (Python: background task
+     * named relay-lifecycle-ack) because send() blocks on an
+     * outbound_result future only the reader resolves — awaiting inline
+     * self-deadlocks the transport. */
+    char *frame = NULL;
+    if (asprintf(&frame,
+                 "{\"op\": \"send\", \"chat_id\": \"%s\", \"content\": \"%s\", "
+                 "\"metadata\": %s}",
+                 job->chat_id, job->text,
+                 (job->metadata_json[0]) ? job->metadata_json : "{}") >= 0) {
+        char *res = relay_transport_dispatch_op(frame);
+        free(res);
+        free(frame);
+    }
+    free(job);
+    return NULL;
+}
+
+/* PoP: relay_adapter_send_lifecycle_ack @ gateway/relay/adapter.py:_send_lifecycle_ack */
+int relay_adapter_send_lifecycle_ack(const char *chat_id, const char *text,
+                                     const char *metadata_json) {
+    /* Fire-and-forget a prompt-lifecycle ack from read-loop context:
+     * detached worker thread (task ref retained by detach). */
+    if (!chat_id || !text) return -1;
+    rla_ack_job_t *job = calloc(1, sizeof(*job));
+    if (!job) return -1;
+    snprintf(job->chat_id, sizeof(job->chat_id), "%s", chat_id);
+    snprintf(job->text, sizeof(job->text), "%s", text);
+    if (metadata_json)
+        snprintf(job->metadata_json, sizeof(job->metadata_json), "%s", metadata_json);
+    pthread_t th;
+    if (pthread_create(&th, NULL, rla_lifecycle_ack_worker, job) != 0) {
+        free(job);
+        return -1;
+    }
+    pthread_detach(th);
+    return 0;
+}
+
+/* ── _notify_prompt_expired ─────────────────────────────────────────── */
+/* PoP: relay_adapter_notify_prompt_expired @ gateway/relay/adapter.py:_notify_prompt_expired */
+int relay_adapter_notify_prompt_expired(const char *event_json) {
+    /* Tell the presser their prompt is no longer waiting. Only the OWNING
+     * gateway reaches this (siblings return earlier), so the user sees
+     * exactly one notice. Fire-and-forget via the lifecycle-ack path. */
+    if (!event_json) return -1;
+    json_t *o = json_parse(event_json, NULL);
+    if (!o) return -1;
+    json_t *src = json_obj_get(o, "source");
+    const char *chat_id = src ? json_string_value_safe(json_obj_get(src, "chat_id")) : NULL;
+    const char *thread_id = src ? json_string_value_safe(json_obj_get(src, "thread_id")) : NULL;
+    if (!chat_id || !chat_id[0]) { json_free(o); return 0; }
+    char *meta = relay_helper_prompt_reply_metadata(thread_id);
+    int rc = relay_adapter_send_lifecycle_ack(
+        chat_id,
+        "\xe2\x8c\x9b That prompt is no longer waiting for an answer. "
+        "Send your reply as a normal message.",
+        meta);
+    free(meta);
+    json_free(o);
+    return rc;
+}

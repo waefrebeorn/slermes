@@ -91,68 +91,6 @@ static const char *MG_XAI_CURATED_EXTRAS[] = {
     "grok-composer-2.5-fast",
 };
 
-/* PoP: models_xai_finalize_catalog @ hermes_cli/models.py:_xai_finalize_catalog */
-char *models_xai_finalize_catalog(const char *ids_json) {
-    json_t *arr = ids_json ? json_parse(ids_json, NULL) : NULL;
-    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); arr = json_array(); }
-    if (!arr) return NULL;
-
-    /* _xai_merge_curated_extras: append missing extras, slotting immediately
-     * after the pinned headline model when it leads the list. */
-    for (size_t e = 0; e < sizeof(MG_XAI_CURATED_EXTRAS)/sizeof(MG_XAI_CURATED_EXTRAS[0]); e++) {
-        const char *extra = MG_XAI_CURATED_EXTRAS[e];
-        int present = 0;
-        for (size_t i = 0; i < arr->c.count && !present; i++) {
-            json_t *it = arr->c.items[i];
-            if (it->type == JSON_STRING && it->str_val && strcmp(it->str_val, extra) == 0)
-                present = 1;
-        }
-        if (present) continue;
-        size_t insert_at = arr->c.count;
-        if (arr->c.count > 0) {
-            json_t *first = arr->c.items[0];
-            if (first->type == JSON_STRING && first->str_val &&
-                strcmp(first->str_val, MG_XAI_TOP_MODEL) == 0)
-                insert_at = 1;
-        }
-        /* insert at insert_at by rebuilding tail */
-        json_t *tmp = json_array();
-        if (!tmp) { json_free(arr); return NULL; }
-        for (size_t i = 0; i < arr->c.count; i++) {
-            if (i == insert_at) json_append(tmp, json_string(extra));
-            json_append(tmp, json_copy(arr->c.items[i]));
-        }
-        if (insert_at >= arr->c.count) json_append(tmp, json_string(extra));
-        json_free(arr);
-        arr = tmp;
-        if (!arr) return NULL;
-    }
-
-    /* _xai_promote_top: pin the headline model to the front. */
-    int has_top = 0;
-    for (size_t i = 0; i < arr->c.count && !has_top; i++) {
-        json_t *it = arr->c.items[i];
-        if (it->type == JSON_STRING && it->str_val && strcmp(it->str_val, MG_XAI_TOP_MODEL) == 0)
-            has_top = 1;
-    }
-    if (has_top) {
-        json_t *tmp = json_array();
-        if (!tmp) { json_free(arr); return NULL; }
-        json_append(tmp, json_string(MG_XAI_TOP_MODEL));
-        for (size_t i = 0; i < arr->c.count; i++) {
-            json_t *it = arr->c.items[i];
-            if (it->type == JSON_STRING && it->str_val &&
-                strcmp(it->str_val, MG_XAI_TOP_MODEL) == 0)
-                continue;
-            json_append(tmp, json_copy(it));
-        }
-        json_free(arr);
-        arr = tmp;
-    }
-    char *out = json_serialize(arr);
-    json_free(arr);
-    return out;
-}
 
 /* ── default model per provider ────────────────────────────────────────── */
 
@@ -1888,4 +1826,134 @@ char *models_fetch_models_with_pricing(void *fetch, void *ctx,
     char *out = json_serialize(result);
     free(cache_key);
     return out ? out : strdup("{}");
+}
+
+/* PoP: models_same_ollama_native_root @ hermes_cli/models.py:_same_ollama_native_root */
+int models_same_ollama_native_root(const char *left, const char *right)
+{
+    if (!left || !right) return 0;
+    /* compare scheme+host+port, ignoring path/query (root normalization) */
+    extern char *models_root_for_ollama_native_api(const char *base_url);
+    char *rl = models_root_for_ollama_native_api(left);
+    char *rr = models_root_for_ollama_native_api(right);
+    int same = rl && rr && strcmp(rl, rr) == 0;
+    free(rl); free(rr);
+    return same;
+}
+
+/* PoP: models_should_use_ollama_native_catalog @ hermes_cli/models.py:should_use_ollama_native_catalog */
+int models_should_use_ollama_native_catalog(const char *provider,
+                                            const char *base_url,
+                                            const char *headers_json)
+{
+    extern char *models_root_for_ollama_native_api(const char *base_url);
+    extern char *models_probe_ollama_local_models(const char *base_url, double timeout, const char *headers_json);
+    /* requested = str(provider or "").strip().lower() */
+    const char *pb = provider ? provider : "";
+    while (*pb==' '||*pb=='\t') pb++;
+    size_t pn = strlen(pb);
+    while (pn>0 && (pb[pn-1]==' '||pb[pn-1]=='\t')) pn--;
+    char *requested = malloc(pn+1);
+    if (!requested) return 0;
+    for (size_t k=0;k<pn;k++) requested[k]=(char)((pb[k]>='A'&&pb[k]<='Z')?pb[k]+32:pb[k]);
+    requested[pn]='\0';
+
+    char *root = models_root_for_ollama_native_api(base_url ? base_url : "");
+    int result = 0;
+
+    if (root) {
+        /* host check: ollama.com / *.ollama.com => False. Extract hostname crudely:
+           skip scheme:// then take up to first '/' and strip port. */
+        const char *h = strstr(root, "://");
+        h = h ? h + 3 : root;
+        char host[256]; size_t hi = 0;
+        while (h[hi] && h[hi] != '/' && h[hi] != ':' && hi < sizeof(host)-1) { host[hi]=h[hi]; hi++; }
+        host[hi]='\0';
+        for (char *q=host; *q; q++) if (*q>='A'&&*q<='Z') *q+=32;
+        if (strcmp(host,"ollama.com")==0 || (strlen(host)>11 && strcmp(host+strlen(host)-11,".ollama.com")==0)) {
+            free(requested); free(root); return 0;
+        }
+    }
+
+    static const char * const non_local[] = {
+        "openrouter","nous","anthropic","openai","openai-codex","gemini","ollama-cloud", NULL
+    };
+    for (int i=0; non_local[i]; i++)
+        if (strcmp(requested, non_local[i])==0) { free(requested); free(root); return 0; }
+
+    /* configured ollama base from provider config dict */
+    char *configured_base = NULL;
+    {
+        extern json_t *models_get_provider_config_dict(const char *provider);
+        json_t *cfg = models_get_provider_config_dict("ollama");
+        if (cfg) {
+            json_t *v;
+            if (((v=json_obj_get(cfg,"base_url")) && v->type==JSON_STRING) ||
+                ((v=json_obj_get(cfg,"api")) && v->type==JSON_STRING) ||
+                ((v=json_obj_get(cfg,"url")) && v->type==JSON_STRING))
+                configured_base = strdup(v->str_val ? v->str_val : "");
+            else configured_base = strdup("");
+            json_free(cfg);
+        } else configured_base = strdup("");
+    }
+    /* trim */
+    {
+        char *b=configured_base;
+        while (*b==' '||*b=='\t') b++;
+        size_t bn=strlen(b);
+        while (bn>0 && (b[bn-1]==' '||b[bn-1]=='\t')) bn--;
+        char *t=strdup(b); /* trimmed copy */ free(configured_base);
+        configured_base=t;
+        (void)bn;
+    }
+
+    if (strcmp(requested,"ollama")==0) {
+        if (!root) { free(requested); free(root); free(configured_base); return 0; }
+        if (configured_base && *configured_base &&
+            !models_same_ollama_native_root(root, configured_base)) {
+            char *probe = models_probe_ollama_local_models(root, 0.5, headers_json);
+            result = probe != NULL;
+            free(probe);
+        } else result = 1;
+        free(requested); free(root); free(configured_base);
+        return result;
+    }
+
+    if (configured_base && *configured_base && root &&
+        models_same_ollama_native_root(root, configured_base)) {
+        free(requested); free(root); free(configured_base);
+        return 1;
+    }
+    if (!root) { free(requested); free(root); free(configured_base); return 0; }
+
+    static const char * const local_like[] = {
+        "", "custom", "local", "llamacpp", "llama.cpp", "llama-cpp", "vllm", NULL
+    };
+    int is_local = 0;
+    for (int i=0; local_like[i]; i++)
+        if (strcmp(requested, local_like[i])==0) { is_local=1; break; }
+    if (!is_local && strncmp(requested, "custom:", 7)!=0) {
+        free(requested); free(root); free(configured_base); return 0;
+    }
+    if (strcmp(requested, "custom:ollama")==0 ||
+        (pn>=7 && strcmp(requested+pn-7,"-ollama")==0)) {
+        free(requested); free(root); free(configured_base); return 1;
+    }
+    /* port must be 11434 */
+    {
+        const char *h2 = strstr(root, "://");
+        h2 = h2 ? h2 + 3 : root;
+        const char *colon = strchr(h2, ':');
+        const char *slash = strchr(h2, '/');
+        if (!colon || (slash && colon > slash)) { free(requested); free(root); free(configured_base); return 0; }
+        long port = strtol(colon+1, NULL, 10);
+        if (port != 11434) { free(requested); free(root); free(configured_base); return 0; }
+    }
+    {
+        char *probe = models_probe_ollama_local_models(root, 0.5, headers_json);
+        result = probe != NULL;
+        free(probe);
+    }
+    free(requested); free(root); free(configured_base);
+    return result;
 }

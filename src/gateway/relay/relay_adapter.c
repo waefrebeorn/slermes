@@ -795,3 +795,16 @@ char *relay_transport_dispatch_op(const char *op_frame_json) {
     asprintf(&out, "{\"success\":true,\"message_id\":\"msg_%ld\"}", (long)time(NULL));
     return out;
 }
+
+/* ── negotiated primary descriptor as JSON (gap-wave accessor) ──────── */
+char *relay_adapter_current_descriptor_json(void) {
+    json_t *o = json_object();
+    if (!o) return NULL;
+    json_set(o, "max_message_length", json_number((double)current_descriptor.max_message_length));
+    json_set(o, "len_unit", json_string(current_descriptor.len_unit));
+    json_set(o, "markdown_dialect", json_string(current_descriptor.markdown_dialect));
+    json_set(o, "supports_draft_streaming", json_bool(current_descriptor.supports_draft_streaming));
+    char *out = json_dumps(o, 0);
+    json_free(o);
+    return out;
+}

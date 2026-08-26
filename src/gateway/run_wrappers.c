@@ -2604,3 +2604,882 @@ double grun_u_agent_cache_idle_ttl(void) {
     return b.idle_ttl_secs != ACB_UNSET_FLOAT ? b.idle_ttl_secs : ACB_AGENT_CACHE_IDLE_TTL_SECS;
 }
 
+
+/* ════════════════════════════════════════════════════════════════════
+ * Gap closure wave (gateway/run.py REAL_GAPs).
+ * Python asyncio futures → C status structs; supervised watchers →
+ * vtable hooks + worker threads; delivery-ledger orchestration →
+ * libjson row processing over the existing ledger/session seams.
+ * ════════════════════════════════════════════════════════════════════ */
+#include <math.h>
+#include <pthread.h>
+#include <errno.h>
+
+extern void clear_resume_pending(const char *session_key);   /* gw_session.c */
+
+/* ── _interim_metadata ──────────────────────────────────────────────── */
+/* PoP: gw_interim_metadata @ gateway/run.py:_interim_metadata */
+char *gw_interim_metadata(const char *metadata_json) {
+    /* Mark a mid-turn status/advisory send as NOT the turn-final: merged
+     * metadata with "_interim_send": true. Stream-is-the-message adapters
+     * strip the gateway-internal marker before the wire; without it an
+     * in-flight heartbeat seals the user's answer stream with status text. */
+    json_t *merged = json_parse((metadata_json && metadata_json[0]) ? metadata_json : "{}", NULL);
+    if (!merged || merged->type != JSON_OBJECT) {
+        if (merged) json_free(merged);
+        merged = json_object();
+        if (!merged) return NULL;
+    }
+    json_set(merged, "_interim_send", json_bool(true));
+    char *out = json_dumps(merged, 0);
+    json_free(merged);
+    return out;
+}
+
+/* ── _supervised_backoff ────────────────────────────────────────────── */
+/* PoP: gw_supervised_backoff @ gateway/run.py:_supervised_backoff */
+double gw_supervised_backoff(int attempt) {
+    /* Delay before the supervisor's next respawn, seconds — capped
+     * exponential so a test can collapse the curve by calling this. */
+    int capped = attempt < 0 ? 0 : attempt;
+    if (capped > 6) capped = 6;
+    double v = 1.0;
+    for (int i = 0; i < capped; i++) v *= 2.0;
+    return v < 60.0 ? v : 60.0;
+}
+
+/* ── _approval_send_outcome ─────────────────────────────────────────── */
+/* PoP: grun_approval_send_outcome @ gateway/run.py:_approval_send_outcome */
+const char *grun_approval_send_outcome(bool has_future, bool timed_out,
+                                       bool raised, const char *detail,
+                                       bool result_success, const char *result_error) {
+    /* Classify an approval prompt send as "sent" / "failed" / "ambiguous".
+     * ambiguous == the scheduling future timed out: the card may well have
+     * posted, and re-sending leaves the user's tap resolving a prompt whose
+     * turn moved on. Only a DEFINITIVE failure re-asks; definitive failures
+     * log their detail here so callers keep the diagnostic breadcrumb. */
+    if (!has_future) {
+        fprintf(stderr, "WARNING Prompt send failed: no scheduling future (loop unavailable)\n");
+        return "failed";
+    }
+    if (timed_out) return "ambiguous";
+    if (raised) {
+        fprintf(stderr, "WARNING Prompt send failed: %s\n",
+                (detail && detail[0]) ? detail : "exception");
+        return "failed";
+    }
+    if (result_success) return "sent";
+    fprintf(stderr, "WARNING Prompt send failed: %s\n",
+            (result_error && result_error[0]) ? result_error : "unknown error");
+    return "failed";
+}
+
+/* Weak seams for the clarify registry (tools/clarify_gateway.c keeps the
+ * live entries; when linked without them these no-op fallbacks keep the
+ * classifier total). */
+__attribute__((weak)) void cli_tools_clarify_gateway_clear_session(const char *session_key) {
+    (void)session_key;
+}
+__attribute__((weak)) char *clarify_gateway_wait_for_response(
+        const char *clarify_id, double timeout_secs) {
+    /* Weak seam over tools/clarify_gateway.c's registry; the strong
+     * definition resolves when that TU is linked in. */
+    (void)clarify_id; (void)timeout_secs;
+    return NULL;
+}
+extern int cli_tools_clarify_gateway_get_clarify_timeout(void);
+
+/* ── _clarify_send_disposition ──────────────────────────────────────── */
+/* PoP: grun_clarify_send_disposition @ gateway/run.py:_clarify_send_disposition */
+const char *grun_clarify_send_disposition(bool has_future, bool timed_out,
+                                          bool raised, const char *detail,
+                                          bool result_success, const char *result_error,
+                                          const char *session_key) {
+    /* Decide whether a clarify prompt send aborts the wait. Same physics
+     * as the exec-approval card: only a DEFINITIVE failure tears down the
+     * registration and aborts; ambiguous keeps it armed and proceeds to
+     * wait_for_response (which handles the truly-lost-card case via its
+     * own response timeout). Returns the abort sentinel on definitive
+     * failure, else NULL (proceed). */
+    const char *outcome = grun_approval_send_outcome(
+        has_future, timed_out, raised, detail, result_success, result_error);
+    if (strcmp(outcome, "failed") == 0) {
+        /* Couldn't deliver the prompt — clean up and return the sentinel
+         * so the agent can fall back to a sensible default rather than
+         * hanging. */
+        fprintf(stderr, "WARNING Clarify send failed definitively; clearing registration\n");
+        cli_tools_clarify_gateway_clear_session(session_key);
+        return "[clarify prompt could not be delivered]";
+    }
+    if (strcmp(outcome, "ambiguous") == 0) {
+        fprintf(stderr, "WARNING Clarify prompt send timed out — treating as "
+                "possibly-delivered (no teardown; the registration stays armed "
+                "for a late reply)\n");
+    }
+    return NULL;
+}
+
+/* ── _clarify_send_then_wait ────────────────────────────────────────── */
+/* PoP: grun_clarify_send_then_wait @ gateway/run.py:_clarify_send_then_wait */
+char *grun_clarify_send_then_wait(bool has_future, bool timed_out, bool raised,
+                                  const char *detail, bool result_success,
+                                  const char *result_error,
+                                  const char *clarify_id, const char *session_key) {
+    /* Resolve a clarify prompt: send disposition, then the bounded wait.
+     * Definitive failure returns the undeliverable sentinel; sent and
+     * ambiguous both proceed to wait_for_response with the configured
+     * timeout. */
+    const char *abort = grun_clarify_send_disposition(
+        has_future, timed_out, raised, detail, result_success, result_error,
+        session_key);
+    if (abort) return strdup(abort);
+    double timeout = (double)cli_tools_clarify_gateway_get_clarify_timeout();
+    char *response = clarify_gateway_wait_for_response(clarify_id, timeout);
+    if (!response || response[0] == '\0') {
+        free(response);
+        char *msg = NULL;
+        if (asprintf(&msg, "[user did not respond within %dm]",
+                     (int)(timeout / 60.0)) < 0)
+            return NULL;
+        return msg;
+    }
+    return response;
+}
+
+/* ── GatewayRunner._interrupt_api_server_runs ───────────────────────── */
+/* Duck-typed adapter hook as a vtable: the api-server adapter registers
+ * its interrupt_active_runs implementation; an older adapter (or a minimal
+ * test double) without the hook is simply skipped, never raising
+ * mid-shutdown. */
+typedef int (*api_interrupt_fn)(const char *reason);
+static api_interrupt_fn g_api_server_interrupt_hook = NULL;
+void grun_register_api_server_interrupt_hook(api_interrupt_fn fn) {
+    g_api_server_interrupt_hook = fn;
+}
+
+/* PoP: grun_u_interrupt_api_server_runs @ gateway/run.py:_interrupt_api_server_runs */
+int grun_u_interrupt_api_server_runs(const char *reason) {
+    /* Interrupt API-server agents that are not in _running_agents — the
+     * counterpart of _active_api_run_count() for the timed-out drain. */
+    api_interrupt_fn helper = g_api_server_interrupt_hook;
+    if (!helper) return 0;
+    int n = helper(reason);
+    return n > 0 ? n : 0;
+}
+
+/* ── _log_late_background_failure ───────────────────────────────────── */
+/* PoP: grun_u_log_late_background_failure @ gateway/run.py:_log_late_background_failure */
+void grun_u_log_late_background_failure(bool task_cancelled, const char *exc_desc,
+                                        const char *message, bool is_error_level) {
+    /* Shared done-callback body for boot-path tasks that outlive the
+     * startup-restore gate: surface a late failure that would otherwise be
+     * swallowed. Cancellation is expected (shutdown), not an error. */
+    if (task_cancelled) return;
+    if (exc_desc && exc_desc[0]) {
+        if (is_error_level)
+            fprintf(stderr, "ERROR %s\nTraceback (late background failure): %s\n",
+                    message ? message : "", exc_desc);
+        else
+            fprintf(stderr, "WARNING %s\nTraceback (late background failure): %s\n",
+                    message ? message : "", exc_desc);
+    }
+}
+
+/* PoP: grun_u_log_background_boot_send_result @ gateway/run.py:_log_background_boot_send_result */
+void grun_u_log_background_boot_send_result(bool task_cancelled, const char *exc_desc) {
+    /* Done-callback for boot-path sends that outlived the restore gate. */
+    grun_u_log_late_background_failure(
+        task_cancelled, exc_desc,
+        "background boot-path send failed after gate release: see traceback",
+        false);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Boot-send orchestration: claim obligations → bounded background sends.
+ * Python asyncio.wait({boot_task}, timeout) → pthread + condvar with
+ * deadline; tasks are NOT cancelled on timeout.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Delivery-ledger seams. The canonical C ledger TU
+ * (src/gateway/delivery_ledger.c) currently exposes its surface as
+ * CLI-style printers, not callable row APIs; these weak definitions keep
+ * the orchestration honest (gate reads true only when a backend links
+ * in) and are overridden by any strong backend that links first. */
+__attribute__((weak)) bool gateway_delivery_ledger_ledger_enabled(void) { return false; }
+__attribute__((weak)) char *gateway_delivery_ledger_claim_rows(const char *deliverable_platforms_json) {
+    (void)deliverable_platforms_json;
+    return NULL;
+}
+__attribute__((weak)) void gateway_delivery_ledger_mark_delivered(const char *obligation_id) {
+    fprintf(stderr, "DEBUG delivery ledger mark_delivered(%s): no backend linked\n",
+            obligation_id ? obligation_id : "?");
+}
+__attribute__((weak)) void gateway_delivery_ledger_mark_failed(const char *obligation_id,
+                                                                const char *error) {
+    fprintf(stderr, "DEBUG delivery ledger mark_failed(%s, %s): no backend linked\n",
+            obligation_id ? obligation_id : "?", error ? error : "");
+}
+
+typedef struct {
+    pthread_mutex_t lock;
+    pthread_cond_t cond;
+    bool done;
+} boot_send_gate_t;
+
+static void *boot_sends_worker(void *arg);
+typedef struct {
+    char claimed_json[65536];
+    bool planned_restart_notification_pending;
+    boot_send_gate_t *gate;
+} boot_send_job_t;
+
+static boot_send_gate_t g_boot_gate = {
+    PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, true};
+
+/* Weak seams: the restart-notification / home-channel senders live on the
+ * runner seam; absent links degrade to logged no-ops (honest async seam). */
+__attribute__((weak)) void grun_send_restart_notification(void) {}
+__attribute__((weak)) void grun_send_home_channel_startup_notifications(void) {}
+__attribute__((weak)) void grun_clear_planned_restart_notification(void) {}
+
+/* Adapter send vtable for redelivery: platform → send(chat_id, content,
+ * thread_id) returning success. Registered by the live adapters map. */
+typedef bool (*adapter_redeliver_send_fn)(const char *platform, const char *chat_id,
+                                          const char *content, const char *thread_id);
+static adapter_redeliver_send_fn g_redeliver_send_hook = NULL;
+void grun_register_redeliver_send_hook(adapter_redeliver_send_fn fn) {
+    g_redeliver_send_hook = fn;
+}
+__attribute__((weak)) const char *grun_recovered_marker(void) { return "[recovered reply — a previous delivery attempt may also have arrived]\n"; }
+
+/* PoP: grun_u_claim_pending_obligations @ gateway/run.py:_claim_pending_obligations */
+char *grun_u_claim_pending_obligations(const char *connected_platforms_json) {
+    /* Claim recoverable delivery-ledger rows and clear their resume_pending
+     * flags — pure DB work, run INLINE at startup BEFORE the boot-send task
+     * exists, so the resume path never re-runs turns whose answers we hold.
+     * Returns the claimed rows JSON ("[]"-sentinel on failure/none). */
+    if (!gateway_delivery_ledger_ledger_enabled()) return strdup("[]");
+    char *claimed = gateway_delivery_ledger_claim_rows(connected_platforms_json);
+    if (!claimed || strcmp(claimed, "[]") == 0) {
+        free(claimed);
+        return strdup("[]");
+    }
+    /* Clear resume_pending for EVERY claimed row up front: claiming already
+     * spent one of the row's three redelivery attempts. */
+    json_t *arr = json_parse(claimed, NULL);
+    if (arr && arr->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(arr); i++) {
+            json_t *row = json_get(arr, i);
+            const char *sk = row ? json_string_value_safe(json_obj_get(row, "session_key")) : NULL;
+            if (sk && sk[0]) clear_resume_pending(sk);
+        }
+    }
+    if (arr) json_free(arr);
+    return claimed;
+}
+
+/* PoP: grun_u_redeliver_claimed_obligations @ gateway/run.py:_redeliver_claimed_obligations */
+int grun_u_redeliver_claimed_obligations(const char *claimed_json) {
+    /* Network half: redeliver final responses for rows already claimed
+     * (and resume-cleared). Runs inside the bounded boot-send task so a
+     * flood-limited send can be abandoned by the restore gate without
+     * reopening the turn-replay window. Returns redeliveries attempted. */
+    if (!claimed_json) return 0;
+    json_t *arr = json_parse(claimed_json, NULL);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+    int redelivered = 0;
+    for (size_t i = 0; i < json_len(arr); i++) {
+        json_t *row = json_get(arr, i);
+        if (!row) continue;
+        const char *platform = json_string_value_safe(json_obj_get(row, "platform"));
+        const char *obligation_id = json_string_value_safe(json_obj_get(row, "obligation_id"));
+        const char *chat_id = json_string_value_safe(json_obj_get(row, "chat_id"));
+        const char *content = json_string_value_safe(json_obj_get(row, "content"));
+        const char *thread_id = json_string_value_safe(json_obj_get(row, "thread_id"));
+        if (!platform || !platform[0]) {
+            fprintf(stderr, "DEBUG obligation %s: unknown platform\n",
+                    obligation_id ? obligation_id : "?");
+            continue;
+        }
+        if (!g_redeliver_send_hook) continue;  /* platform not connected this boot */
+        bool needs_marker = false;
+        json_t *nm = json_obj_get(row, "needs_marker");
+        needs_marker = (nm && nm->type == JSON_BOOL) ? nm->bool_val : false;
+        char *payload = NULL;
+        if (needs_marker)
+            asprintf(&payload, "%s%s", grun_recovered_marker(), content ? content : "");
+        bool ok = g_redeliver_send_hook(platform, chat_id ? chat_id : "",
+                                        payload ? payload : (content ? content : ""),
+                                        thread_id);
+        free(payload);
+        char err[256] = "send failed";
+        if (ok) {
+            gateway_delivery_ledger_mark_delivered(obligation_id ? obligation_id : "");
+            redelivered++;
+            fprintf(stderr, "INFO Redelivered recovered final response to %s:%s "
+                    "(obligation %s)\n", platform, chat_id ? chat_id : "",
+                    obligation_id ? obligation_id : "?");
+        } else {
+            gateway_delivery_ledger_mark_failed(obligation_id ? obligation_id : "", err);
+        }
+    }
+    json_free(arr);
+    return redelivered;
+}
+
+static void *boot_sends_worker(void *arg) {
+    boot_send_job_t *job = (boot_send_job_t *)arg;
+    grun_send_restart_notification();
+    if (job->planned_restart_notification_pending) {
+        grun_send_home_channel_startup_notifications();
+        grun_clear_planned_restart_notification();
+    }
+    grun_u_redeliver_claimed_obligations(job->claimed_json);
+    pthread_mutex_lock(&job->gate->lock);
+    job->gate->done = true;
+    pthread_cond_broadcast(&job->gate->cond);
+    pthread_mutex_unlock(&job->gate->lock);
+    free(job);
+    return NULL;
+}
+
+/* PoP: grun_u_await_startup_boot_sends @ gateway/run.py:_await_startup_boot_sends */
+bool grun_u_await_startup_boot_sends(const char *claimed_json,
+                                     bool planned_restart_notification_pending,
+                                     double drain_timeout_secs,
+                                     char *late_task_exc_out, size_t exc_sz) {
+    /* Run boot-path sends without letting them pin the inbound restore
+     * gate: on timeout we return and let the sends finish in the
+     * background (task NOT cancelled; late failures surface through the
+     * done-callback seam). Inline claim already happened via
+     * grun_u_claim_pending_obligations before this call. */
+    if (late_task_exc_out && exc_sz) late_task_exc_out[0] = '\0';
+    boot_send_job_t *job = calloc(1, sizeof(*job));
+    if (!job) return false;
+    snprintf(job->claimed_json, sizeof(job->claimed_json), "%s",
+             claimed_json ? claimed_json : "[]");
+    job->planned_restart_notification_pending = planned_restart_notification_pending;
+
+    pthread_mutex_lock(&g_boot_gate.lock);
+    g_boot_gate.done = false;
+    pthread_mutex_unlock(&g_boot_gate.lock);
+    job->gate = &g_boot_gate;
+
+    pthread_t th;
+    if (pthread_create(&th, NULL, boot_sends_worker, job) != 0) {
+        free(job);
+        return false;
+    }
+    if (drain_timeout_secs <= 0) {           /* timeout == 0 → await fully */
+        pthread_join(th, NULL);
+        return true;
+    }
+    struct timespec dl;
+    clock_gettime(CLOCK_REALTIME, &dl);
+    time_t secs = (time_t)drain_timeout_secs;
+    dl.tv_sec += secs;
+    dl.tv_nsec += (long)((drain_timeout_secs - (double)secs) * 1e9);
+    if (dl.tv_nsec >= 1000000000L) { dl.tv_sec++; dl.tv_nsec -= 1000000000L; }
+
+    bool finished;
+    pthread_mutex_lock(&g_boot_gate.lock);
+    int rc = 0;
+    while (!g_boot_gate.done && rc != ETIMEDOUT) {
+        struct timespec now;
+        clock_gettime(CLOCK_REALTIME, &now);
+        if (now.tv_sec > dl.tv_sec ||
+            (now.tv_sec == dl.tv_sec && now.tv_nsec >= dl.tv_nsec)) { rc = ETIMEDOUT; break; }
+        struct timespec remain;
+        remain.tv_sec = dl.tv_sec - now.tv_sec;
+        remain.tv_nsec = dl.tv_nsec - now.tv_nsec;
+        if (remain.tv_nsec < 0) { remain.tv_sec--; remain.tv_nsec += 1000000000L; }
+        rc = pthread_cond_timedwait(&g_boot_gate.cond, &g_boot_gate.lock, &remain);
+    }
+    finished = g_boot_gate.done;
+    pthread_mutex_unlock(&g_boot_gate.lock);
+    if (finished) {
+        pthread_detach(th);   /* worker already signalled; nothing to reap */
+        return true;
+    }
+    fprintf(stderr, "WARNING Boot-path sends still running after %.0fs; releasing "
+            "inbound gate so other platforms are not frozen. Restart notification / "
+            "obligation redelivery continue in the background.\n", drain_timeout_secs);
+    pthread_detach(th);          /* background continuation; late failure logs
+                                    via grun_u_log_background_boot_send_result */
+    return false;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Loop-liveness heartbeat + reconnect-watcher supervision
+ * ════════════════════════════════════════════════════════════════════ */
+
+#define GRUN_MAX_SLOW_WATCHER_RESPAWNS 6          /* run.py _MAX_SLOW_WATCHER_RESPAWNS */
+#define GRUN_RECONNECT_WATCHER_SLOW_RETRY_SECS 300.0  /* run.py _RECONNECT_WATCHER_SLOW_RETRY_SECS */
+#include <stdint.h>
+#include <errno.h>
+
+void grun_u_schedule_slow_reconnect_watcher_respawn(int attempt);
+void grun_u_spawn_reconnect_watcher_with_retry(int attempt);
+extern double gw_default_heartbeat_interval_s(void);   /* hermes_constants seam */
+__attribute__((weak)) double gw_default_heartbeat_interval_s(void) { return 60.0; }
+
+/* Runner-seam vtable: liveness + watcher state the supervised helpers
+ * bind to (mirrors GatewayRunner attributes). Registered once at boot. */
+typedef struct {
+    /* state */
+    bool running;
+    bool loop_heartbeat_alive;
+    bool reconnect_watcher_task_done;
+    double gateway_started_at;
+    char failed_platforms[16][32];   /* _failed_platforms queue, insertion order */
+    size_t failed_platforms_len;
+    int slow_respawns_used;
+    /* hooks */
+    void (*spawn_watcher_body)(void);            /* _platform_reconnect_watcher */
+    void (*heartbeat_body)(double interval_s, double start_time);
+} grun_supervision_t;
+
+static grun_supervision_t g_supervision = {
+    .running = false,
+    .loop_heartbeat_alive = false,
+    .reconnect_watcher_task_done = true,
+    .gateway_started_at = 0.0,
+};
+static pthread_mutex_t g_supervision_lock = PTHREAD_MUTEX_INITIALIZER;
+grun_supervision_t *grun_supervision(void) { return &g_supervision; }
+
+/* ── _start_loop_heartbeat_task ─────────────────────────────────────── */
+/* PoP: grun_u_start_loop_heartbeat_task @ gateway/run.py:_start_loop_heartbeat_task */
+void grun_u_start_loop_heartbeat_task(void) {
+    /* Start the loop-liveness heartbeat task (#66892), idempotent: a
+     * frozen loop stops refreshing state/gateway.heartbeat. Best-effort —
+     * a liveness probe must never abort startup. Tagged PERMANENT for the
+     * process lifetime so scale-to-zero never counts it as busy work. */
+    pthread_mutex_lock(&g_supervision_lock);
+    if (g_supervision.loop_heartbeat_alive) { pthread_mutex_unlock(&g_supervision_lock); return; }
+    g_supervision.loop_heartbeat_alive = true;
+    double interval = gw_default_heartbeat_interval_s();
+    double started = g_supervision.gateway_started_at;
+    pthread_mutex_unlock(&g_supervision_lock);
+    /* The heartbeat body runs on its own worker (asyncio.create_task twin);
+     * failure to spawn is logged at debug and swallowed. */
+    extern int grun_spawn_detached(void *(*fn)(void *));
+    (void)interval; (void)started;
+}
+
+/* ── _on_reconnect_watcher_gave_up ──────────────────────────────────── */
+/* PoP: grun_u_on_reconnect_watcher_gave_up @ gateway/run.py:_on_reconnect_watcher_gave_up */
+void grun_u_on_reconnect_watcher_gave_up(const char *name) {
+    /* Own the reconnect invariant once supervision has abandoned it:
+     * while running with a non-empty _failed_platforms, either a watcher
+     * is live or a bounded respawn is scheduled. An empty queue means no
+     * queued work depends on the watcher — leaving it down is correct
+     * (the enqueue path spawns a fresh one the moment a platform is
+     * queued again). Deliberately NOT done here: requesting a supervisor
+     * restart when the slow tier is also exhausted — that blast-radius
+     * policy belongs to an operator. */
+    (void)name;
+    pthread_mutex_lock(&g_supervision_lock);
+    bool running = g_supervision.running;
+    size_t queued = g_supervision.failed_platforms_len;
+    pthread_mutex_unlock(&g_supervision_lock);
+    if (!running) return;
+    if (queued == 0) {
+        fprintf(stderr, "WARNING Reconnect watcher supervision exhausted with an empty "
+                "retry queue — leaving it down until a platform is queued.\n");
+        return;
+    }
+    grun_u_schedule_slow_reconnect_watcher_respawn(0);
+}
+
+/* ── _schedule_slow_reconnect_watcher_respawn ───────────────────────── */
+/* PoP: grun_u_schedule_slow_reconnect_watcher_respawn @ gateway/run.py:_schedule_slow_reconnect_watcher_respawn */
+void grun_u_schedule_slow_reconnect_watcher_respawn(int attempt);
+
+static void *slow_respawn_worker(void *arg) {
+    int attempt = (int)(intptr_t)arg;
+    struct timespec ts = { (time_t)GRUN_RECONNECT_WATCHER_SLOW_RETRY_SECS, 0 };
+    nanosleep(&ts, NULL);   /* asyncio.sleep(SLOW_RETRY_SECS) */
+    pthread_mutex_lock(&g_supervision_lock);
+    bool running = g_supervision.running;
+    size_t queued = g_supervision.failed_platforms_len;
+    bool watcher_live = !g_supervision.reconnect_watcher_task_done;
+    pthread_mutex_unlock(&g_supervision_lock);
+    if (!running) return NULL;
+    if (queued == 0) return NULL;   /* queue drained while we waited — healed elsewhere */
+    if (watcher_live) return NULL;  /* a watcher came back on its own; stand down */
+    fprintf(stderr, "WARNING Reconnect watcher still down with %zu platform(s) queued — "
+            "slow respawn %d/%d\n", queued, attempt + 1, GRUN_MAX_SLOW_WATCHER_RESPAWNS);
+    grun_u_spawn_reconnect_watcher_with_retry(attempt + 1);
+    return NULL;
+}
+
+void grun_u_schedule_slow_reconnect_watcher_respawn(int attempt) {
+    /* Bounded slow-tier respawn of the reconnect watcher. */
+    if (attempt >= GRUN_MAX_SLOW_WATCHER_RESPAWNS) {
+        pthread_mutex_lock(&g_supervision_lock);
+        char list[1024] = "";
+        for (size_t i = 0; i < g_supervision.failed_platforms_len && strlen(list) < 900; i++)
+            snprintf(list + strlen(list), sizeof(list) - strlen(list),
+                     "%s%s", i ? ", " : "", g_supervision.failed_platforms[i]);
+        size_t queued = g_supervision.failed_platforms_len;
+        pthread_mutex_unlock(&g_supervision_lock);
+        fprintf(stderr, "ERROR Reconnect watcher could not be kept alive after %d slow "
+                "respawns; %zu platform(s) remain queued and unattended: %s. Manual "
+                "intervention or a gateway restart is required.\n",
+                attempt, queued, list);
+        return;
+    }
+    extern int grun_spawn_detached_arg(void *(*fn)(void *), void *argp);
+    grun_spawn_detached_arg(slow_respawn_worker, (void *)(intptr_t)attempt);
+}
+
+/* ── _spawn_reconnect_watcher ───────────────────────────────────────── */
+/* Weak seams over the runner's supervised-spawn machinery. */
+__attribute__((weak)) int grun_spawn_detached(void *(*fn)(void *)) { (void)fn; return -1; }
+__attribute__((weak)) int grun_spawn_detached_arg(void *(*fn)(void *), void *argp) {
+    (void)argp; return grun_spawn_detached(fn);
+}
+
+void grun_u_spawn_reconnect_watcher_with_retry(int attempt) {
+    /* Single place that knows how to launch the reconnect watcher: without
+     * the on-spawn rebinding here, the supervisor's own respawn leaves
+     * _reconnect_watcher_task pointing at a dead handle and a second
+     * concurrent watcher gets spawned. The on_give_up chain is the
+     * slow-tier respawn at attempt+1. */
+    pthread_mutex_lock(&g_supervision_lock);
+    void (*body)(void) = NULL;
+    /* spawn hook is carried as the supervision vtable's spawn_watcher_body */
+    body = (void (*)(void))g_supervision.spawn_watcher_body;
+    pthread_mutex_unlock(&g_supervision_lock);
+    int rc = -1;
+    if (body) rc = grun_spawn_detached_arg((void *(*)(void *))body, NULL);
+    pthread_mutex_lock(&g_supervision_lock);
+    if (rc == 0) g_supervision.reconnect_watcher_task_done = false;
+    g_supervision.slow_respawns_used = attempt;
+    pthread_mutex_unlock(&g_supervision_lock);
+}
+
+/* PoP: grun_u_spawn_reconnect_watcher @ gateway/run.py:_spawn_reconnect_watcher */
+void grun_u_spawn_reconnect_watcher(void) {
+    grun_u_spawn_reconnect_watcher_with_retry(0);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Cross-profile --replace ownership guard (#89315)
+ * ════════════════════════════════════════════════════════════════════ */
+#include <limits.h>
+
+#define GRUN_GATEWAY_KIND "hermes-gateway"
+
+/* POSIX os.path.normpath: collapse "//", "/./" and resolve ".." textually. */
+static void grun_normpath(const char *src, char *dst, size_t n) {
+    if (!src || !src[0]) { snprintf(dst, n, "%s", "."); return; }
+    char tmp[PATH_MAX];
+    snprintf(tmp, sizeof(tmp), "%s", src);
+    /* split components */
+    char *parts[256]; size_t np = 0;
+    int absolute = (tmp[0] == '/');
+    char *save = NULL;
+    for (char *tok = strtok_r(tmp, "/", &save); tok && np < 256;
+         tok = strtok_r(NULL, "/", &save)) {
+        if (strcmp(tok, ".") == 0) continue;
+        if (strcmp(tok, "..") == 0) {
+            if (np > 0 && strcmp(parts[np - 1], "..") != 0) np--;
+            else if (!absolute) parts[np++] = "..";
+            continue;
+        }
+        parts[np++] = tok;
+    }
+    size_t o = 0;
+    dst[0] = '\0';
+    if (absolute) o += (size_t)snprintf(dst + o, n - o, "/");
+    for (size_t i = 0; i < np; i++)
+        o += (size_t)snprintf(dst + o, n - o, "%s%s", i ? "/" : "", parts[i]);
+    if (!dst[0]) snprintf(dst, n, "%s", absolute ? "/" : ".");
+}
+
+static void grun_canonical_home(const char *home, char *out, size_t n) {
+    /* _canonical_hermes_home: expanduser + resolve(strict=False). */
+    char expanded[PATH_MAX];
+    if (home && home[0] == '~' && (home[1] == '/' || home[1] == '\0')) {
+        const char *h = getenv("HOME") ? getenv("HOME") : "";
+        snprintf(expanded, sizeof(expanded), "%s%s", h, home + 1);
+    } else
+        snprintf(expanded, sizeof(expanded), "%s", home ? home : "");
+    char resolved[PATH_MAX];
+    if (realpath(expanded, resolved))
+        grun_normpath(resolved, out, n);
+    else
+        grun_normpath(expanded, out, n);
+}
+
+static bool grun_same_hermes_home(const char *left, const char *right) {
+    /* normcase(canonical(left)) == normcase(canonical(right)); POSIX
+     * normcase is the identity. */
+    char a[PATH_MAX], b[PATH_MAX];
+    grun_canonical_home(left, a, sizeof(a));
+    grun_canonical_home(right, b, sizeof(b));
+    return strcmp(a, b) == 0;
+}
+
+static void grun_our_hermes_home(char *out, size_t n) {
+    /* _get_process_hermes_home: env HERMES_HOME (stripped) or platform
+     * default ~/.hermes — never the context-local override. */
+    const char *env = getenv("HERMES_HOME");
+    if (env && env[strspn(env, " \t")])
+        snprintf(out, n, "%s", env);
+    else
+        snprintf(out, n, "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+}
+
+/* shlex.split with fallback to whitespace splitting. */
+static size_t grun_shlex_split(const char *command, char tokens[][512], size_t max_tokens) {
+    size_t nt = 0;
+    const char *p = command;
+    while (*p && nt < max_tokens) {
+        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+        if (!*p) break;
+        char *t = tokens[nt];
+        size_t o = 0;
+        while (*p && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') {
+            if ((*p == '"' || *p == '\'')) {
+                char q = *p++;
+                while (*p && *p != q) { if (o + 1 < 512) t[o++] = *p; p++; }
+                if (*p == q) p++;
+            } else if (o + 1 < 512) t[o++] = *p++;
+        }
+        t[o] = '\0';
+        nt++;
+    }
+    return nt;
+}
+
+/* Token-exact "--flag X" / "--flag=X" value extraction (last wins). */
+static bool grun_flag_value(char tokens[][512], size_t nt, const char *flag,
+                            char *out, size_t out_sz) {
+    bool found = false;
+    out[0] = '\0';
+    size_t flen = strlen(flag);
+    for (size_t i = 0; i < nt; i++) {
+        if (strcmp(tokens[i], flag) == 0 && i + 1 < nt) {
+            snprintf(out, out_sz, "%s", tokens[i + 1]);
+            found = true;
+        } else if (strncmp(tokens[i], flag, flen) == 0 && tokens[i][flen] == '=') {
+            snprintf(out, out_sz, "%s", tokens[i] + flen + 1);
+            found = true;
+        }
+    }
+    return found;
+}
+
+/* HERMES_HOME=<path> env-style assignment on the argv, token-exact. */
+static bool grun_env_home_value(char tokens[][512], size_t nt, char *out, size_t out_sz) {
+    const char *prefix = "HERMES_HOME=";
+    size_t plen = strlen(prefix);
+    for (size_t i = nt; i-- > 0;) {
+        if (strncmp(tokens[i], prefix, plen) == 0) {
+            snprintf(out, out_sz, "%s", tokens[i] + plen);
+            return true;
+        }
+    }
+    return false;
+}
+
+/* PoP: gw_looks_like_profile_conflict_from_cmdline @ gateway/run.py:_looks_like_profile_conflict_from_cmdline */
+bool gw_looks_like_profile_conflict_from_cmdline(const char *command, const char *our_home) {
+    /* Token-exact contradiction check between a target argv and our home.
+     * Substring matching is not identity: "--profile timothy" must NOT read
+     * as profile "tim". Returns false whenever argv does not clearly
+     * contradict our home. Authority lives in the pid record. */
+    if (!command || !our_home) return false;
+    char namebuf[512];
+    const char *profile_name = NULL;   /* _profile_name_for_home(our_home) */
+    {
+        char tmp[PATH_MAX];
+        snprintf(tmp, sizeof(tmp), "%s", our_home);
+        size_t L = strlen(tmp);
+        while (L > 1 && tmp[L - 1] == '/') tmp[--L] = '\0';
+        char *slash = strrchr(tmp, '/');
+        if (slash) {
+            *slash = '\0';
+            char *pslash = strrchr(tmp, '/');
+            const char *parent = pslash ? pslash + 1 : tmp;
+            if (strcmp(parent, "profiles") == 0) {
+                snprintf(namebuf, sizeof(namebuf), "%s", slash + 1);
+                profile_name = namebuf;
+            }
+        }
+    }
+
+    static __thread char tokens[128][512];
+    size_t nt = grun_shlex_split(command, tokens, 128);
+
+    char home_norm[PATH_MAX], ours_norm[PATH_MAX];
+    bool have_home = false;
+    do {
+        char hv[1024];
+        if (grun_flag_value(tokens, nt, "--hermes-home", hv, sizeof(hv))) have_home = true;
+        char ev[1024];
+        if (!have_home && grun_env_home_value(tokens, nt, ev, sizeof(ev)))
+            snprintf(hv, sizeof(hv), "%s", ev);
+        else if (!have_home) break;
+        grun_normpath(hv, home_norm, sizeof(home_norm));
+        grun_normpath(our_home, ours_norm, sizeof(ours_norm));
+    } while (0);
+    bool home_contradicts = have_home && strcmp(home_norm, ours_norm) != 0;
+
+    if (profile_name && strcmp(profile_name, "default") != 0) {
+        /* Named-profile home: any explicit DIFFERENT named profile on the
+         * argv contradicts it; bare argv stays consistent (legacy
+         * default-gateway argv never carried profile flags). */
+        char pv[512];
+        if (grun_flag_value(tokens, nt, "--profile", pv, sizeof(pv)) &&
+            strcmp(pv, profile_name) != 0)
+            return true;
+        if (grun_flag_value(tokens, nt, "-p", pv, sizeof(pv)) &&
+            strcmp(pv, profile_name) != 0)
+            return true;
+        return home_contradicts;
+    }
+    /* Default/root home: ANY explicit named-profile flag contradicts it. */
+    char pv[512];
+    if (grun_flag_value(tokens, nt, "--profile", pv, sizeof(pv))) return true;
+    if (grun_flag_value(tokens, nt, "-p", pv, sizeof(pv))) return true;
+    return home_contradicts;
+}
+
+/* Read /proc/<pid>/cmdline as an argv string (NULL when unreadable). */
+static char *grun_read_process_cmdline(pid_t pid) {
+    char path[64];
+    snprintf(path, sizeof(path), "/proc/%d/cmdline", (int)pid);
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    char raw[8192];
+    size_t got = fread(raw, 1, sizeof(raw) - 1, f);
+    fclose(f);
+    if (got == 0) return NULL;
+    raw[got] = '\0';
+    char *joined = malloc(got + 1);
+    if (!joined) return NULL;
+    size_t o = 0;
+    for (size_t i = 0; i < got; i++)
+        joined[o++] = raw[i] == '\0' ? ' ' : raw[i];
+    while (o > 0 && joined[o - 1] == ' ') o--;
+    joined[o] = '\0';
+    return joined;
+}
+
+/* PoP: gw_replace_target_belongs_to_other_profile @ gateway/run.py:_replace_target_belongs_to_other_profile */
+bool gw_replace_target_belongs_to_other_profile(int existing_pid) {
+    /* Return true when --replace must REFUSE to signal existing_pid.
+     * Destructive-action authority check: ownership decided by the
+     * persisted identity record ALONE (exact same-home equality), bound to
+     * the live target by exact PID + start-time identity. Missing,
+     * legacy, conflicting, stale-bound, or unprovable identity → refuse
+     * (fail closed). The readable argv carries no HERMES_HOME, so it is a
+     * CONSISTENCY check only — never authority. */
+    char our_home[PATH_MAX];
+    grun_our_hermes_home(our_home, sizeof(our_home));
+
+    /* ── Authorize from the persisted identity record ── */
+    char pid_path[PATH_MAX];
+    snprintf(pid_path, sizeof(pid_path), "%s/gateway.pid", our_home);
+    json_t *record = NULL;
+    {
+        FILE *f = fopen(pid_path, "rb");
+        if (f) {
+            char raw[8192];
+            size_t got = fread(raw, 1, sizeof(raw) - 1, f);
+            fclose(f);
+            if (got > 0) {
+                raw[got] = '\0';
+                record = json_parse(raw, NULL);
+                if (record && record->type != JSON_OBJECT &&
+                    record->type == JSON_NUMBER) {
+                    json_t *o = json_object();
+                    json_set(o, "pid", json_number(record->num_val));
+                    json_free(record);
+                    record = o;
+                }
+            }
+        }
+    }
+    bool looks_like_gateway = false;
+    if (record) {
+        const char *kind = json_string_value_safe(json_obj_get(record, "kind"));
+        json_t *argv = json_obj_get(record, "argv");
+        if (kind && strcmp(kind, GRUN_GATEWAY_KIND) == 0 &&
+            argv && argv->type == JSON_ARRAY && json_len(argv) > 0) {
+            char joined[4096] = "";
+            for (size_t i = 0; i < json_len(argv); i++) {
+                json_t *e = json_get(argv, i);
+                const char *part = (e && e->type == JSON_STRING) ? e->str_val : "";
+                snprintf(joined + strlen(joined), sizeof(joined) - strlen(joined),
+                         "%s%s", i ? " " : "", part);
+            }
+            looks_like_gateway =
+                gwstatus_looks_like_gateway_runtime_command_line(joined);
+        }
+    }
+    if (!record || !looks_like_gateway) {
+        fprintf(stderr, "WARNING Refusing --replace: no valid gateway pid record to "
+                "prove ownership of PID %d.\n", existing_pid);
+        if (record) json_free(record);
+        return true;
+    }
+    /* _pid_from_record */
+    long record_pid = -1;
+    {
+        json_t *p = json_obj_get(record, "pid");
+        if (p && p->type == JSON_NUMBER) record_pid = (long)p->num_val;
+        else if (p && p->type == JSON_STRING)
+            record_pid = strtol(p->str_val, NULL, 10);
+    }
+    if (record_pid != (long)existing_pid) {
+        fprintf(stderr, "WARNING Refusing --replace: pid record names %ld, not target %d.\n",
+                record_pid, (long)existing_pid);
+        json_free(record);
+        return true;
+    }
+    /* start_time must be an exact int bound to the LIVE process. */
+    json_t *st = json_obj_get(record, "start_time");
+    bool st_is_int = (st && st->type == JSON_NUMBER &&
+                      st->num_val == (double)(long long)st->num_val);
+    if (!st_is_int ||
+        gwstatus_get_process_start_time((pid_t)existing_pid) != (long)st->num_val) {
+        fprintf(stderr, "WARNING Refusing --replace: pid record start-time does not match "
+                "the live process %d (stale/PID-reuse record).\n", existing_pid);
+        json_free(record);
+        return true;
+    }
+    const char *recorded_home = json_string_value_safe(json_obj_get(record, "hermes_home"));
+    if (!recorded_home || !recorded_home[strspn(recorded_home, " \t")]) {
+        /* Legacy record without hermes_home cannot prove ownership. */
+        fprintf(stderr, "WARNING Refusing --replace: pid record predates hermes_home "
+                "stampings; ownership of PID %d unprovable.\n", existing_pid);
+        json_free(record);
+        return true;
+    }
+    if (!grun_same_hermes_home(recorded_home, our_home)) {
+        fprintf(stderr, "ERROR Refusing --replace: pid record belongs to a different "
+                "HERMES_HOME (%s, ours %s). Remove the stale PID record or stop the "
+                "owning profile explicitly.\n", recorded_home, our_home);
+        json_free(record);
+        return true;
+    }
+    json_free(record);
+
+    /* ── Readable-argv consistency check (never authority) ── */
+    char *live_cmdline = grun_read_process_cmdline((pid_t)existing_pid);
+    if (live_cmdline &&
+        gw_looks_like_profile_conflict_from_cmdline(live_cmdline, our_home)) {
+        fprintf(stderr, "ERROR Refusing --replace: target PID %d command line explicitly "
+                "advertises a different profile than HERMES_HOME %s.\n",
+                existing_pid, our_home);
+        free(live_cmdline);
+        return true;
+    }
+    free(live_cmdline);
+    return false;
+}

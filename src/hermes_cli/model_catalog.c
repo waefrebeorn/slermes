@@ -260,6 +260,13 @@ static const label_t PROVIDER_LABELS[] = {
     { "qwen-oauth", "Qwen (OAuth)" }, { "huggingface", "HuggingFace" },
 };
 
+#define N_PROVIDER_MODELS (int)(sizeof(PROVIDER_MODELS)/sizeof(PROVIDER_MODELS[0]))
+#define N_ALIASES (int)(sizeof(PROVIDER_ALIASES)/sizeof(PROVIDER_ALIASES[0]))
+#define N_GROUPS (int)(sizeof(PROVIDER_GROUPS)/sizeof(PROVIDER_GROUPS[0]))
+#define N_LABELS (int)(sizeof(PROVIDER_LABELS)/sizeof(PROVIDER_LABELS[0]))
+#define N_SILENT (int)(sizeof(SILENT_DEFAULTS)/sizeof(SILENT_DEFAULTS[0]))
+#define N_OR_CURATED (int)(sizeof(OPENROUTER_CURATED)/sizeof(OPENROUTER_CURATED[0]))
+
 int model_catalog_alias_count(void) { return N_ALIASES; }
 int model_catalog_alias_at(int idx, const char **alias, const char **canon) {
     if (idx < 0 || idx >= N_ALIASES) return 0;
@@ -268,11 +275,6 @@ int model_catalog_alias_at(int idx, const char **alias, const char **canon) {
     return 1;
 }
 
-#define N_PROVIDER_MODELS (int)(sizeof(PROVIDER_MODELS)/sizeof(PROVIDER_MODELS[0]))
-#define N_ALIASES (int)(sizeof(PROVIDER_ALIASES)/sizeof(PROVIDER_ALIASES[0]))
-#define N_GROUPS (int)(sizeof(PROVIDER_GROUPS)/sizeof(PROVIDER_GROUPS[0]))
-#define N_LABELS (int)(sizeof(PROVIDER_LABELS)/sizeof(PROVIDER_LABELS[0]))
-#define N_SILENT (int)(sizeof(SILENT_DEFAULTS)/sizeof(SILENT_DEFAULTS[0]))
 
 /* ── Helper: find provider entry ────────────────────────────────────── */
 
@@ -544,7 +546,6 @@ static const char *OPENROUTER_CURATED[] = {
     "tencent/hy3-preview:free", "nvidia/nemotron-3-super-120b-a12b:free",
     "nvidia/nemotron-3-ultra-550b-a55b:free", "inclusionai/ring-2.6-1t:free",
 };
-#define N_OR_CURATED (int)(sizeof(OPENROUTER_CURATED)/sizeof(OPENROUTER_CURATED[0]))
 
 /* PoP: model_find_openrouter_slug @ hermes_cli/models.py:_find_openrouter_slug */
 char *model_find_openrouter_slug(const char *model_name) {
