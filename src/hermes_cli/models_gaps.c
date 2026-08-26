@@ -14,6 +14,7 @@
 #include "port_auth_store.h"
 #include "port_models_net.h"
 #include "model_catalog.h"
+#include "port_models_helpers.h"
 #include "provider_meta.h"
 #include "hermes_core_types.h"
 
@@ -1171,4 +1172,591 @@ void models_warm_nous_reasoning_caps_async(void) {
     if (g_mg_nous_caps.warm_started || models_nous_caps_cached() != NULL) return;
     g_mg_nous_caps.warm_started = 1;
     models_warm_reasoning_caps_async(models_refresh_nous_reasoning_caps);
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Batch 4 — OpenRouter picker ids + ollama config/probing
+ * ════════════════════════════════════════════════════════════════════════ */
+
+#define MG_PREFERRED_SILENT_DEFAULT_MODEL "z-ai/glm-5.2"
+
+/* Fallback OpenRouter snapshot used when the live catalog is unavailable
+ * (models.py:OPENROUTER_MODELS). */
+static const char *const MG_OPENROUTER_MODELS[][2] = {
+    {"anthropic/claude-fable-5", ""}, {"anthropic/claude-opus-5", ""},
+    {"anthropic/claude-opus-5-fast", "2x price, higher output speed"},
+    {"anthropic/claude-opus-4.8", ""}, {"anthropic/claude-opus-4.8-fast", "2x price, higher output speed"},
+    {"anthropic/claude-sonnet-5", ""}, {"anthropic/claude-haiku-4.5", ""},
+    {"openai/gpt-5.6-sol", ""}, {"openai/gpt-5.6-sol-pro", ""}, {"openai/gpt-5.6-terra", ""},
+    {"openai/gpt-5.6-terra-pro", ""}, {"openai/gpt-5.6-luna", ""}, {"openai/gpt-5.6-luna-pro", ""},
+    {"openai/gpt-5.5", ""}, {"openai/gpt-5.5-pro", ""}, {"openai/gpt-5.4-mini", ""},
+    {"google/gemini-3.1-pro-preview", ""}, {"google/gemini-3.7-flash", ""},
+    {"x-ai/grok-4.6", ""}, {"deepseek/deepseek-v4-pro", ""},
+    {"deepseek/deepseek-v4-pro-0813", "dated snapshot of v4-pro"},
+    {"deepseek/deepseek-v4-flash", ""}, {"deepseek/deepseek-v4-flash-0731", "dated snapshot of v4-flash"},
+    {"qwen/qwen3.8-max", ""}, {"moonshotai/kimi-k3", "recommended"}, {"minimax/minimax-m3", ""},
+    {"z-ai/glm-5.3", ""}, {"z-ai/glm-5.2", "default"}, {"xiaomi/mimo-v2.5-pro", ""},
+    {"tencent/hy3", ""}, {"stepfun/step-3.7-flash", ""},
+    {"nvidia/nemotron-3-super-120b-a12b", ""}, {"meta/muse-spark-1.2", ""},
+    {"sakana/fugu-ultra", ""},
+    {"openrouter/pareto-code", "auto-routes to cheapest coder meeting openrouter.min_coding_score"},
+    {"stealth/ox-alpha", "free"}, {"openrouter/elephant-alpha", "free"},
+    {"z-ai/glm-5.2:free", "free"}, {"poolside/laguna-s-2.1:free", "free"},
+    {"poolside/laguna-xs-2.1:free", "free"},
+    {"nvidia/nemotron-3-super-120b-a12b:free", "free"},
+    {"nvidia/nemotron-3-ultra-550b-a55b:free", "free"},
+    {"nvidia/nemotron-3.5-lightning:free", "free"},
+};
+
+/* _openrouter_catalog_cache: list of (id, desc). */
+typedef struct mg_or_entry { char *id; char *desc; } mg_or_entry_t;
+static mg_or_entry_t *mg_or_catalog = NULL;
+static size_t mg_or_catalog_n = 0;
+
+/* _openrouter_model_supports_tools: permissive when supported_parameters is
+ * missing/malformed; only hide explicit lists omitting "tools". */
+static int mg_openrouter_supports_tools(const json_t *item) {
+    json_t *params = item ? json_obj_get(item, "supported_parameters") : NULL;
+    if (!params || params->type != JSON_ARRAY) return 1; /* unknown capability -> allow */
+    for (size_t i = 0; i < params->c.count; i++) {
+        json_t *e = params->c.items[i];
+        if (e->type == JSON_STRING && e->str_val && strcmp(e->str_val, "tools") == 0)
+            return 1;
+    }
+    return 0;
+}
+
+/* PoP: models_model_ids @ hermes_cli/models.py:model_ids */
+char *models_model_ids(int force_refresh) {
+    /* fetch_openrouter_models(force_refresh=force_refresh), then keep ids. */
+    static int seeded = 0;
+    if (!seeded) {
+        seeded = 1;
+        size_t n = sizeof(MG_OPENROUTER_MODELS)/sizeof(MG_OPENROUTER_MODELS[0]);
+        mg_or_catalog = calloc(n, sizeof(mg_or_entry_t));
+        if (mg_or_catalog) {
+            for (size_t i = 0; i < n; i++) {
+                mg_or_catalog[mg_or_catalog_n].id = strdup(MG_OPENROUTER_MODELS[i][0]);
+                mg_or_catalog[mg_or_catalog_n].desc = strdup(MG_OPENROUTER_MODELS[i][1]);
+                mg_or_catalog_n++;
+            }
+        }
+    }
+    if (!force_refresh && mg_or_catalog) {
+        /* return cached ids */
+        json_t *arr = json_array();
+        if (!arr) return NULL;
+        for (size_t i = 0; i < mg_or_catalog_n; i++)
+            json_append(arr, json_string(mg_or_catalog[i].id));
+        char *out = json_serialize(arr);
+        json_free(arr);
+        return out ? out : strdup("[]");
+    }
+
+    const char *silent_default = MG_PREFERRED_SILENT_DEFAULT_MODEL;
+
+    /* Live /v1/models refresh; on failure fall back to the cached list. */
+    char headers[128] = "{\"Accept\":\"application/json\"}";
+    char *body = NULL; size_t blen = 0;
+    int rc = models_live_http_fetch(MG_OPENROUTER_CATALOG_URL, headers, &body, &blen, NULL);
+    json_t *payload = NULL;
+    if (rc == 0 && body) payload = json_parse(body, NULL);
+    free(body);
+    if (!payload) {
+        json_t *arr = json_array();
+        if (!arr) return NULL;
+        for (size_t i = 0; i < mg_or_catalog_n; i++)
+            json_append(arr, json_string(mg_or_catalog[i].id));
+        char *out = json_serialize(arr);
+        json_free(arr);
+        return out ? out : strdup("[]");
+    }
+
+    json_t *live_items = json_obj_get(payload, "data");
+    if (!live_items || live_items->type != JSON_ARRAY) { json_free(payload);
+        json_t *arr = json_array(); if (!arr) return NULL;
+        for (size_t i = 0; i < mg_or_catalog_n; i++) json_append(arr, json_string(mg_or_catalog[i].id));
+        char *out = json_serialize(arr); json_free(arr); return out ? out : strdup("[]"); }
+
+    /* Free warm-up for the reasoning-caps cache: same payload, parsed once. */
+    json_t *seeded_caps = mg_fetch_caps_catalog(MG_OPENROUTER_CATALOG_URL, 8.0);
+    if (seeded_caps) json_free(seeded_caps);
+
+    /* curated list over preferred ids present in the live catalog */
+    typedef struct { char *id; char *desc; } entry_t;
+    entry_t *curated = calloc(mg_or_catalog_n ? mg_or_catalog_n : 1, sizeof(entry_t));
+    size_t n_curated = 0;
+    if (!curated) { json_free(payload); return NULL; }
+
+    for (size_t p = 0; p < mg_or_catalog_n; p++) {
+        const char *preferred_id = mg_or_catalog[p].id;
+        json_t *live_item = NULL;
+        for (size_t i = 0; i < live_items->c.count && !live_item; i++) {
+            json_t *item = live_items->c.items[i];
+            if (!item || item->type != JSON_OBJECT) continue;
+            const char *mid = json_get_str(item, "id", "");
+            if (*mid && strcmp(mid, preferred_id) == 0) live_item = item;
+        }
+        if (!live_item) continue;
+        if (!mg_openrouter_supports_tools(live_item)) continue;
+        char *desc;
+        if (strcmp(preferred_id, silent_default) == 0) {
+            desc = strdup("default");
+        } else {
+            json_t *pricing = json_obj_get(live_item, "pricing");
+            char *pj = pricing ? json_serialize(pricing) : NULL;
+            desc = strdup((pj && openrouter_model_is_free(pj)) ? "free" : "");
+            free(pj);
+        }
+        curated[n_curated].id = strdup(preferred_id);
+        curated[n_curated].desc = desc ? desc : strdup("");
+        n_curated++;
+    }
+    json_free(payload);
+
+    if (n_curated == 0) {
+        free(curated);
+        json_t *arr = json_array();
+        if (!arr) return NULL;
+        for (size_t i = 0; i < mg_or_catalog_n; i++) json_append(arr, json_string(mg_or_catalog[i].id));
+        char *out = json_serialize(arr); json_free(arr);
+        return out ? out : strdup("[]");
+    }
+
+    /* First entry without a description becomes "recommended". */
+    if (curated[0].desc && !*curated[0].desc) {
+        free(curated[0].desc);
+        curated[0].desc = strdup("recommended");
+    }
+
+    /* swap into module cache */
+    for (size_t i = 0; i < mg_or_catalog_n; i++) { free(mg_or_catalog[i].id); free(mg_or_catalog[i].desc); }
+    for (size_t i = 0; i < n_curated; i++) { mg_or_catalog[i].id = curated[i].id; mg_or_catalog[i].desc = curated[i].desc; }
+    mg_or_catalog_n = n_curated;
+    free(curated);
+
+    json_t *arr = json_array();
+    if (!arr) return NULL;
+    for (size_t i = 0; i < mg_or_catalog_n; i++) json_append(arr, json_string(mg_or_catalog[i].id));
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out ? out : strdup("[]");
+}
+
+/* ── ollama base URL / headers ─────────────────────────────────────────── */
+
+
+/* PoP: models_get_ollama_base_url @ hermes_cli/models.py:_get_ollama_base_url */
+char *models_get_ollama_base_url(void) {
+    json_t *provider_cfg = models_get_provider_config_dict("ollama");
+    const char *configured_raw =
+        json_get_str(provider_cfg, "base_url", "");
+    if (!*configured_raw) configured_raw = json_get_str(provider_cfg, "api", "");
+    if (!*configured_raw) configured_raw = json_get_str(provider_cfg, "url", "");
+    char *configured = mg_strip_dup(configured_raw);
+    json_free(provider_cfg);
+    if (configured && *configured)
+        return configured;
+
+    json_t *model_cfg = models_get_model_config_dict_simple();
+    const char *mp = json_get_str(model_cfg, "provider", "");
+    char model_provider[64] = "";
+    snprintf(model_provider, sizeof model_provider, "%.*s",
+             (int)(sizeof model_provider - 1),
+             (*mp ? mp : ""));
+    for (char *q = model_provider; *q; q++) *q = (char)tolower((unsigned char)*q);
+    char *model_base = mg_strip_dup(json_get_str(model_cfg, "base_url", ""));
+    json_free(model_cfg);
+
+    if (strcmp(model_provider, "ollama") == 0 && model_base && *model_base) {
+        free(configured);
+        return model_base;
+    }
+    if (strcmp(model_provider, "custom") == 0 && model_base && *model_base) {
+        /* Only reuse the active bare custom endpoint when it is actually
+         * Ollama-compatible (probe its /api/tags). */
+        if (models_should_use_ollama_native_catalog("custom", model_base, NULL)) {
+            free(configured);
+            return model_base;
+        }
+    }
+
+    const char *raw_host = getenv("OLLAMA_HOST");
+    char *env_host = mg_strip_dup(raw_host);
+    if (env_host && *env_host) {
+        if (env_host[0] == ':' && strncmp(env_host, "::", 2) != 0) {
+            char *joined = malloc(strlen(env_host) + strlen("127.0.0.1") + 1);
+            if (joined) { snprintf(joined, strlen(env_host) + 10, "127.0.0.1%s", env_host); free(env_host); env_host = joined; }
+        } else if (env_host[0] == '[' && env_host[strlen(env_host)-1] == ']') {
+            size_t n = strlen(env_host);
+            char *joined = malloc(n + 16);
+            if (joined) { snprintf(joined, n + 16, "%s:11434", env_host); free(env_host); env_host = joined; }
+        } else if (strstr(env_host, "://")) {
+            /* scheme://[user@]host[:port] — append :11434 when no port given. */
+            const char *host_start = strstr(env_host, "://") + 3;
+            const char *host_end = host_start + strcspn(host_start, "/?#");
+            /* trim userinfo */
+            const char *at = memchr(host_start, '@', (size_t)(host_end - host_start));
+            if (at) host_start = at + 1;
+            size_t hl = (size_t)(host_end - host_start);
+            char hostpart[512];
+            snprintf(hostpart, sizeof hostpart, "%.*s", (int)hl, host_start);
+            int has_port = strchr(hostpart, ':') != NULL ||
+                           (hostpart[0] == '[' && strchr(hostpart, ']') != NULL &&
+                            strchr(strchr(hostpart, ']'), ':') != NULL);
+            if (!has_port) {
+                size_t n = strlen(env_host);
+                char *joined = malloc(n + 16);
+                if (joined) {
+                    if (hostpart[0] == '[')
+                        snprintf(joined, n + 16, "%.*s:11434%s",
+                                 (int)(host_start - env_host) , env_host, host_end);
+                    else
+                        snprintf(joined, n + 16, "%.*s[%s]:11434%s",
+                                 (int)(host_start - env_host), env_host,
+                                 hostpart, host_end);
+                    free(env_host); env_host = joined;
+                }
+            }
+        } else if (strchr(env_host, ':') && env_host[0] != '[' ) {
+            /* bare IPv6 or host:port — leave as-is unless multiple colons */
+            int colons = 0;
+            for (const char *c = env_host; *c; c++) colons += (*c == ':');
+            if (colons > 1) {
+                size_t n = strlen(env_host);
+                char *joined = malloc(n + 16);
+                if (joined) { snprintf(joined, n + 16, "[%s]:11434", env_host); free(env_host); env_host = joined; }
+            }
+        } else if (!strchr(env_host, ':')) {
+            size_t n = strlen(env_host);
+            char *joined = malloc(n + 16);
+            if (joined) { snprintf(joined, n + 16, "%s:11434", env_host); free(env_host); env_host = joined; }
+        }
+        free(configured); free(model_base);
+        return env_host;
+    }
+    free(configured); free(model_base); free(env_host);
+    return strdup("http://localhost:11434");
+}
+
+/* PoP: models_get_ollama_request_headers @ hermes_cli/models.py:_get_ollama_request_headers */
+char *models_get_ollama_request_headers(void) {
+    json_t *entry = models_get_provider_config_dict("ollama");
+    json_t *raw = json_obj_get(entry, "extra_headers");
+    json_t *result = config_py_normalize_extra_headers(raw);
+
+    const char *api_key_raw = json_get_str(entry, "api_key", "");
+    char *api_key = mg_strip_dup(api_key_raw);
+    char keybuf[1024] = "";
+    if (api_key && *api_key) {
+        snprintf(keybuf, sizeof keybuf, "%s", api_key);
+    } else {
+        /* no direct key: fall back to key_env / api_key_env environment lookup */
+        const char *key_env = json_get_str(entry, "key_env", "");
+        if (!*key_env) key_env = json_get_str(entry, "api_key_env", "");
+        if (*key_env) {
+            char *sv = mg_strip_dup(getenv(key_env));
+            snprintf(keybuf, sizeof keybuf, "%s", sv ? sv : "");
+            free(sv);
+        }
+    }
+    free(api_key);
+    if (*keybuf) {
+        int has_auth = 0;
+        if (result && result->type == JSON_OBJECT) {
+            for (size_t i = 0; i < result->c.count && !has_auth; i++) {
+                const char *k = result->c.keys[i];
+                if (k && strcasecmp(k, "authorization") == 0) has_auth = 1;
+            }
+        }
+        if (!has_auth) {
+            char bearer[1152];
+            snprintf(bearer, sizeof bearer, "Bearer %s", keybuf);
+            json_set(result, "Authorization", json_string(bearer));
+        }
+    }
+    json_free(entry);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out ? out : strdup("{}");
+}
+
+/* PoP: models_get_ollama_native_headers @ hermes_cli/models.py:_get_ollama_native_headers */
+char *models_get_ollama_native_headers(const char *base_url, const char *api_key) {
+    json_t *entry = models_get_provider_config_dict("ollama");
+    const char *cb = json_get_str(entry, "base_url", "");
+    if (!*cb) cb = json_get_str(entry, "api", "");
+    if (!*cb) cb = json_get_str(entry, "url", "");
+    char *configured_base = mg_strip_dup(cb);
+    char *explicit_key = mg_strip_dup(api_key);
+    int configured_matches = 0;
+    if (configured_base && *configured_base && base_url && *base_url)
+        configured_matches = models_same_ollama_native_root(base_url, configured_base);
+    json_free(entry);
+    free(configured_base);
+
+    if (!configured_matches && !(explicit_key && *explicit_key)) {
+        free(explicit_key);
+        return strdup("{}");
+    }
+    char *headers = configured_matches ? models_get_ollama_request_headers() : strdup("{}");
+    if (explicit_key && *explicit_key) {
+        json_t *h = json_parse(headers, NULL);
+        if (h && h->type == JSON_OBJECT) {
+            /* drop any inherited Authorization variant first */
+            for (;;) {
+                int removed = 0;
+                for (size_t i = 0; i < h->c.count && !removed; i++) {
+                    const char *k = h->c.keys[i];
+                    if (k && strcasecmp(k, "authorization") == 0) { json_obj_del(h, k); removed = 1; }
+                }
+                if (!removed) break;
+            }
+            char bearer[1152];
+            snprintf(bearer, sizeof bearer, "Bearer %s", explicit_key);
+            json_set(h, "Authorization", json_string(bearer));
+        }
+        free(headers);
+        headers = h ? json_serialize(h) : strdup("{}");
+        if (h) json_free(h);
+    }
+    free(explicit_key);
+    return headers ? headers : strdup("{}");
+}
+
+
+/* ── ollama local-probe caches ─────────────────────────────────────────── */
+
+#define MG_OLLAMA_LOCAL_MODELS_CACHE_TTL 300.0   /* 5 minutes */
+#define MG_OLLAMA_LOCAL_PROBE_FAILURE_TTL 30
+#define MG_OLLAMA_LOCAL_CACHE_MAX_ENTRIES 256
+
+/* Cache selector used by models_remember_ollama_cache (mirrors the distinct
+ * Python dicts): 0 = models, 1 = reachable, 2 = failure timestamps. */
+typedef struct mg_oc_entry { char *key; void *value; double num; struct mg_oc_entry *next; } mg_oc_entry_t;
+static mg_oc_entry_t *mg_oc_models = NULL, *mg_oc_reachable = NULL, *mg_oc_failure = NULL;
+
+static size_t mg_oc_count(mg_oc_entry_t *head) {
+    size_t n = 0;
+    for (mg_oc_entry_t *e = head; e; e = e->next) n++;
+    return n;
+}
+
+static void mg_oc_pop(mg_oc_entry_t **head, const char *key) {
+    mg_oc_entry_t **pp = head;
+    while (*pp) {
+        if (strcmp((*pp)->key, key) == 0) {
+            mg_oc_entry_t *dead = *pp;
+            *pp = dead->next;
+            free(dead->key);
+            free(dead);
+            return;
+        }
+        pp = &(*pp)->next;
+    }
+}
+
+static void mg_oc_put(mg_oc_entry_t **head, const char *key, void *value, double num) {
+    for (mg_oc_entry_t *e = *head; e; e = e->next)
+        if (strcmp(e->key, key) == 0) { e->value = value; e->num = num; return; }
+    if (mg_oc_count(*head) >= MG_OLLAMA_LOCAL_CACHE_MAX_ENTRIES && *head) {
+        /* evict oldest (list tail = insertion order) */
+        mg_oc_entry_t **pp = head;
+        while ((*pp)->next) pp = &(*pp)->next;
+        mg_oc_entry_t *oldest = *pp;
+        char *base_key = NULL;
+        char *cut = strstr(oldest->key, "|timeout:");
+        if (cut) { *cut = '\0'; base_key = strdup(oldest->key); *cut = '|'; }
+        *pp = NULL;
+        free(oldest->key); free(oldest);
+        if (base_key) {
+            mg_oc_pop(&mg_oc_models, base_key);
+            mg_oc_pop(&mg_oc_reachable, base_key);
+            /* failure keys are "<key>|timeout:<t>" */
+            mg_oc_entry_t **pp2 = &mg_oc_failure;
+            while (*pp2) {
+                if (strcmp((*pp2)->key, base_key) == 0 ||
+                    (strncmp((*pp2)->key, base_key, strlen(base_key)) == 0 &&
+                     strncmp((*pp2)->key + strlen(base_key), "|timeout:", 9) == 0)) {
+                    mg_oc_entry_t *dead = *pp2;
+                    *pp2 = dead->next;
+                    free(dead->key); free(dead);
+                    continue;
+                }
+                pp2 = &(*pp2)->next;
+            }
+            free(base_key);
+        }
+    }
+    mg_oc_entry_t *e = calloc(1, sizeof(*e));
+    if (!e) return;
+    e->key = strdup(key);
+    e->value = value;
+    e->num = num;
+    e->next = *head;
+    *head = e;
+}
+
+/* PoP: models_evict_related_ollama_cache_entries @ hermes_cli/models.py:_evict_related_ollama_cache_entries */
+void models_evict_related_ollama_cache_entries(const char *key) {
+    if (!key) return;
+    mg_oc_pop(&mg_oc_models, key);
+    mg_oc_pop(&mg_oc_reachable, key);
+    char suffix[64];
+    snprintf(suffix, sizeof suffix, "%s|timeout:", key);
+    mg_oc_entry_t **pp = &mg_oc_failure;
+    while (*pp) {
+        if (strcmp((*pp)->key, key) == 0 || strncmp((*pp)->key, suffix, strlen(suffix)) == 0) {
+            mg_oc_entry_t *dead = *pp;
+            *pp = dead->next;
+            free(dead->key); free(dead);
+            continue;
+        }
+        pp = &(*pp)->next;
+    }
+}
+
+/* PoP: models_remember_ollama_cache @ hermes_cli/models.py:_remember_ollama_cache */
+void models_remember_ollama_cache(int cache_id, const char *key, const char *value_json) {
+    if (!key) return;
+    mg_oc_entry_t **head =
+        cache_id == 0 ? &mg_oc_models : cache_id == 1 ? &mg_oc_reachable : &mg_oc_failure;
+    void *value = NULL;
+    if (cache_id == 0 && value_json) value = json_parse(value_json, NULL);
+    if (mg_oc_count(*head) < MG_OLLAMA_LOCAL_CACHE_MAX_ENTRIES ||
+        (head != &mg_oc_models)) {
+        /* capacity check + eviction applies to the owning cache */
+        for (mg_oc_entry_t *e = *head; e; e = e->next)
+            if (strcmp(e->key, key) == 0) { e->num = mg_monotonic(); return; }
+        mg_oc_put(head, key, value, mg_monotonic());
+        return;
+    }
+    /* at capacity and key is new: evict the oldest entry's related set */
+    mg_oc_entry_t *tail = *head;
+    while (tail->next) tail = tail->next;
+    char *cut = strstr(tail->key, "|timeout:");
+    char *base_key = NULL;
+    if (cut) { size_t bl = (size_t)(cut - tail->key); base_key = malloc(bl + 1);
+               memcpy(base_key, tail->key, bl); base_key[bl] = '\0'; }
+    models_evict_related_ollama_cache_entries(base_key ? base_key : tail->key);
+    free(base_key);
+    mg_oc_put(head, key, value, mg_monotonic());
+}
+
+/* PoP: models_probe_ollama_local_models @ hermes_cli/models.py:probe_ollama_local_models */
+char *models_probe_ollama_local_models(const char *base_url, double timeout,
+                                       const char *headers_json) {
+    char *default_base = NULL;
+    if (!base_url || !*base_url) {
+        default_base = models_get_ollama_base_url();
+        base_url = default_base;
+    }
+    char *root = models_root_for_ollama_native_api(base_url);
+    free(default_base);
+    if (!root || !*root) { free(root); return NULL; }
+
+    char *cache_key = models_ollama_probe_cache_key(root, headers_json);
+    char failure_key[2048];
+    snprintf(failure_key, sizeof failure_key, "%s|timeout:%.3f", cache_key, timeout);
+
+    /* warm cache hit? */
+    for (mg_oc_entry_t *e = mg_oc_models; e; e = e->next) {
+        if (strcmp(e->key, cache_key) == 0) {
+            if (mg_monotonic() - e->num < MG_OLLAMA_LOCAL_MODELS_CACHE_TTL) {
+                json_t *arr = e->value;
+                char *out = arr ? json_serialize(arr) : NULL;
+                free(root); free(cache_key);
+                return out;
+            }
+        }
+    }
+    /* recent failure? */
+    for (mg_oc_entry_t *e = mg_oc_failure; e; e = e->next) {
+        if (strcmp(e->key, failure_key) == 0) {
+            if (mg_monotonic() - e->num < MG_OLLAMA_LOCAL_PROBE_FAILURE_TTL) {
+                free(root); free(cache_key);
+                return NULL;
+            }
+            mg_oc_pop(&mg_oc_failure, failure_key);
+        }
+    }
+
+    size_t urln = strlen(root) + strlen("/api/tags") + 1;
+    char *url = malloc(urln);
+    if (!url) { free(root); free(cache_key); return NULL; }
+    snprintf(url, urln, "%s/api/tags", root);
+
+    /* request headers: User-Agent plus any caller-supplied headers */
+    json_t *req_headers = json_object();
+    json_set(req_headers, "User-Agent", json_string(MG_HERMES_USER_AGENT));
+    if (headers_json && *headers_json) {
+        json_t *extra = json_parse(headers_json, NULL);
+        if (extra && extra->type == JSON_OBJECT) {
+            for (size_t i = 0; i < extra->c.count; i++)
+                json_set(req_headers, extra->c.keys[i], json_copy(extra->c.items[i]));
+        }
+        if (extra) json_free(extra);
+    }
+    char *hdrs = json_serialize(req_headers);
+    json_free(req_headers);
+
+    char *body = NULL; size_t blen = 0;
+    int rc = hdrs ? models_live_http_fetch(url, hdrs, &body, &blen, NULL) : -1;
+    free(hdrs); free(url);
+
+    json_t *payload = (rc == 0 && body) ? json_parse(body, NULL) : NULL;
+    free(body);
+    json_t *raw_models = (payload && payload->type == JSON_OBJECT)
+                             ? json_obj_get(payload, "models") : NULL;
+
+    if (!raw_models || raw_models->type != JSON_ARRAY) {
+        if (payload) json_free(payload);
+        models_remember_ollama_cache(1, cache_key, NULL);           /* reachable=false */
+        { char vbuf[64]; snprintf(vbuf, sizeof vbuf, "%.17g", mg_monotonic());
+          models_remember_ollama_cache(2, failure_key, vbuf); }     /* failure ts */
+        free(root); free(cache_key);
+        return NULL;
+    }
+
+    json_t *models = json_array();
+    int malformed = 0;
+    for (size_t i = 0; i < raw_models->c.count && !malformed; i++) {
+        json_t *item = raw_models->c.items[i];
+        const char *model_id = NULL;
+        if (item && item->type == JSON_OBJECT) {
+            model_id = json_get_str(item, "model", "");
+            if (!*model_id) model_id = json_get_str(item, "name", "");
+        } else {
+            malformed = 1;
+            break;
+        }
+        if (!model_id || !*model_id) continue;
+        int seen = 0;
+        for (size_t k = 0; k < models->c.count && !seen; k++) {
+            json_t *e2 = models->c.items[k];
+            if (e2->type == JSON_STRING && strcmp(e2->str_val, model_id) == 0) seen = 1;
+        }
+        if (!seen) json_append(models, json_string(model_id));
+    }
+    if (malformed || (raw_models->c.count > 0 && models->c.count == 0)) {
+        if (models) json_free(models);
+        if (payload) json_free(payload);
+        models_remember_ollama_cache(1, cache_key, NULL);
+        { char vbuf[64]; snprintf(vbuf, sizeof vbuf, "%.17g", mg_monotonic());
+          models_remember_ollama_cache(2, failure_key, vbuf); }
+        free(root); free(cache_key);
+        return NULL;
+    }
+    if (payload) json_free(payload);
+
+    /* success: remember reachable=true, clear failure, cache the list */
+    models_remember_ollama_cache(0, cache_key, json_serialize(models));
+    mg_oc_pop(&mg_oc_failure, failure_key);
+    mg_oc_put(&mg_oc_reachable, cache_key, NULL, 1.0);
+
+    char *out = json_serialize(models);
+    json_free(models);
+    free(root); free(cache_key);
+    return out ? out : strdup("[]");
 }
