@@ -895,3 +895,280 @@ char *models_list_available_providers_json(void) {
     json_free(result);
     return out;
 }
+
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Batch 3 — reasoning-capability caches (OpenRouter + Nous Portal)
+ * ════════════════════════════════════════════════════════════════════════ */
+
+#define MG_CAPS_DISK_TTL_SECONDS (24.0 * 3600.0)
+#define MG_CAPS_FAIL_TTL_SECONDS 60.0
+static const char MG_OPENROUTER_CATALOG_URL[] = "https://openrouter.ai/api/v1/models";
+static const char MG_HERMES_USER_AGENT[] = "hermes-cli/0.20.5-slermes";
+
+typedef struct {
+    json_t *cache;              /* serialized caps map (owned) or NULL */
+    double failed_at;           /* monotonic, -1 when none */
+    int disk_checked;
+    int warm_started;
+} mg_caps_state_t;
+static mg_caps_state_t g_mg_or_caps;
+static mg_caps_state_t g_mg_nous_caps;
+
+/* PoP: models_warm_reasoning_caps_async @ hermes_cli/models.py:_warm_reasoning_caps_async */
+static void *mg_thread_trampoline(void *fn) {
+    ((void (*)(void))(uintptr_t)fn)();
+    return NULL;
+}
+
+void models_warm_reasoning_caps_async(void (*refresh)(void)) {
+    /* Skipped under pytest: a mid-suite background fetch would make cache
+     * state, and therefore test behavior, timing-dependent. */
+    if (getenv("PYTEST_CURRENT_TEST")) return;
+    pthread_t thr;
+    if (pthread_create(&thr, NULL, mg_thread_trampoline, (void *)(uintptr_t)refresh) == 0)
+        pthread_detach(thr);
+}
+
+/* Disk mirror read for *url*: {"url": {"ts": ..., "caps": {...}}}. Returns a
+ * fresh json_t {"caps":..., "age": seconds} node (caller frees) or NULL. */
+static json_t *mg_caps_disk_read(const char *url, double *out_age) {
+    char *path = models_reasoning_caps_disk_path();
+    if (!path) return NULL;
+    char *err = NULL;
+    json_t *doc = json_parse_file(path, &err);
+    if (err) free(err);
+    free(path);
+    if (!doc || doc->type != JSON_OBJECT) { if (doc) json_free(doc); return NULL; }
+    json_t *entry = json_obj_get(doc, url);
+    json_t *caps = entry ? json_obj_get(entry, "caps") : NULL;
+    json_t *result = NULL;
+    if (entry && entry->type == JSON_OBJECT && caps && caps->type == JSON_OBJECT &&
+        caps->c.count > 0) {
+        json_t *ts = json_obj_get(entry, "ts");
+        double saved = (ts && ts->type == JSON_NUMBER) ? ts->num_val : 0.0;
+        double age = (double)time(NULL) - saved;
+        if (!(age >= 0.0)) age = MG_CAPS_DISK_TTL_SECONDS; /* bad ts -> stale */
+        result = json_object();
+        json_set(result, "caps", json_copy(caps));
+        json_set(result, "age", json_number(age));
+    }
+    json_free(doc);
+    if (result && out_age) {
+        json_t *ag = json_obj_get(result, "age");
+        *out_age = ag ? ag->num_val : MG_CAPS_DISK_TTL_SECONDS;
+    }
+    return result;
+}
+
+/* Merge url's caps map into the shared disk mirror atomically (best-effort). */
+static void mg_caps_disk_write(const char *url, const json_t *caps) {
+    char *path = models_reasoning_caps_disk_path();
+    if (!path || !url || !caps) { free(path); return; }
+    json_t *doc = json_parse_file(path, NULL);
+    if (!doc || doc->type != JSON_OBJECT) { if (doc) json_free(doc); doc = json_object(); }
+    if (!doc) { free(path); return; }
+    json_t *entry = json_object();
+    if (entry) {
+        json_set(entry, "ts", json_number((double)time(NULL)));
+        json_set(entry, "caps", json_copy(caps));
+        json_set(doc, url, entry);
+    }
+    char *ser = json_serialize(doc);
+    json_free(doc);
+    if (!ser) { free(path); return; }
+    size_t plen = strlen(path);
+    char dir[4096];
+    snprintf(dir, sizeof(dir), "%.*s", (int)(plen - strlen("/reasoning_caps.json")), path);
+    mkdir(dir, 0755); /* ignore EEXIST */
+    char *tmp = malloc(plen + 8);
+    int wrote = 0;
+    if (tmp) {
+        snprintf(tmp, plen + 8, "%s.tmp", path);
+        FILE *f = fopen(tmp, "w");
+        if (f) { fputs(ser, f); fclose(f);
+                 if (rename(tmp, path) == 0) wrote = 1; else unlink(tmp); }
+    }
+    if (!wrote) {
+        FILE *f2 = fopen(path, "w");
+        if (f2) { fputs(ser, f2); fclose(f2); }
+    }
+    free(tmp);
+    free(ser);
+    free(path);
+}
+
+/* PoP: models_hydrate_reasoning_caps_from_disk @ hermes_cli/models.py:_hydrate_reasoning_caps_from_disk */
+json_t *models_hydrate_reasoning_caps_from_disk(const char *url, void (*refresh)(void)) {
+    double age = 0.0;
+    json_t *disk = mg_caps_disk_read(url, &age);
+    if (!disk) return NULL;
+    json_t *caps = json_copy(json_obj_get(disk, "caps"));
+    json_free(disk);
+    if (!caps) return NULL;
+    /* A copy past its TTL is still returned — a stale verdict beats no
+       verdict — with a background refresh so the next run is current. */
+    if (age >= MG_CAPS_DISK_TTL_SECONDS)
+        models_warm_reasoning_caps_async(refresh);
+    return caps;
+}
+
+/* Fetch one OpenRouter-shaped /v1/models catalog -> per-model caps map.
+ * Returns a fresh json_t map, mirroring it to disk, or NULL. */
+static json_t *mg_fetch_caps_catalog(const char *url, double timeout) {
+    (void)timeout;
+    if (!url) return NULL;
+    char headers[256];
+    snprintf(headers, sizeof headers,
+             "{\"Accept\":\"application/json\",\"User-Agent\":\"%s\"}", MG_HERMES_USER_AGENT);
+    char *body = NULL; size_t blen = 0;
+    int rc = models_live_http_fetch(url, headers, &body, &blen, NULL);
+    if (rc != 0 || !body) { if (body) free(body); return NULL; }
+    json_t *payload = json_parse(body, NULL);
+    free(body);
+    if (!payload) return NULL;
+    json_t *data = (payload->type == JSON_OBJECT) ? json_obj_get(payload, "data") : NULL;
+    if (!data || data->type != JSON_ARRAY) { json_free(payload); return NULL; }
+
+    json_t *map = json_object();
+    if (!map) { json_free(payload); return NULL; }
+    for (size_t i = 0; i < data->c.count; i++) {
+        json_t *item = data->c.items[i];
+        if (!item || item->type != JSON_OBJECT) continue;
+        json_t *idn = json_obj_get(item, "id");
+        if (!idn || idn->type != JSON_STRING) continue;
+        char *mid = mg_strip_dup(idn->str_val);
+        if (!mid || !*mid) { free(mid); continue; }
+        /* parse_openrouter_reasoning_capabilities tri-state */
+        json_t *caps = NULL;
+        json_t *params = json_obj_get(item, "supported_parameters");
+        if (params && params->type == JSON_ARRAY) {
+            int has_reasoning = 0;
+            for (size_t j = 0; j < params->c.count && !has_reasoning; j++) {
+                json_t *e = params->c.items[j];
+                if (e->type == JSON_STRING && e->str_val && strcmp(e->str_val, "reasoning") == 0)
+                    has_reasoning = 1;
+            }
+            if (!has_reasoning) {
+                caps = json_object();
+                json_set(caps, "supports_reasoning", json_bool(false));
+            } else {
+                json_t *reasoning = json_obj_get(item, "reasoning");
+                int mandatory = 0;
+                json_t *efforts = NULL;
+                if (reasoning && reasoning->type == JSON_OBJECT) {
+                    json_t *mnd = json_obj_get(reasoning, "mandatory");
+                    mandatory = mnd && mnd->type == JSON_BOOL && mnd->bool_val;
+                    json_t *raw = json_obj_get(reasoning, "supported_efforts");
+                    if (raw && raw->type == JSON_ARRAY) {
+                        efforts = json_array();
+                        for (size_t j = 0; efforts && j < raw->c.count; j++) {
+                            json_t *e2 = raw->c.items[j];
+                            if (!e2 || e2->type != JSON_STRING || !e2->str_val) continue;
+                            char *s = mg_strip_dup(e2->str_val);
+                            if (!s || !*s) { free(s); continue; }
+                            for (char *pp = s; *pp; pp++) *pp = (char)tolower((unsigned char)*pp);
+                            int dup = 0;
+                            for (size_t k = 0; k < efforts->c.count && !dup; k++) {
+                                json_t *xx = efforts->c.items[k];
+                                if (xx->type == JSON_STRING && xx->str_val && strcmp(xx->str_val, s) == 0)
+                                    dup = 1;
+                            }
+                            if (!dup) json_append(efforts, json_string(s));
+                            free(s);
+                        }
+                    }
+                }
+                caps = json_object();
+                json_set(caps, "supports_reasoning", json_bool(true));
+                json_set(caps, "supported_efforts", efforts ? efforts : json_null());
+                json_set(caps, "mandatory", json_bool(mandatory ? true : false));
+            }
+        }
+        json_set(map, mid, caps); /* NULL value == unknown: stored as null */
+        free(mid);
+    }
+    json_free(payload);
+    if (map->c.count == 0) { json_free(map); return NULL; }
+    mg_caps_disk_write(url, map);
+    return map;
+}
+
+/* Shared fetch path with the 60-second failure backoff. */
+static json_t *mg_caps_fetch(mg_caps_state_t *st, const char *url, double timeout, int force) {
+    if (st->cache && !force) return st->cache;
+    if (st->failed_at >= 0 && (mg_monotonic() - st->failed_at) < MG_CAPS_FAIL_TTL_SECONDS)
+        return NULL;
+    json_t *map = mg_fetch_caps_catalog(url, timeout);
+    if (!map) { st->failed_at = mg_monotonic(); return NULL; }
+    if (st->cache) json_free(st->cache);
+    st->cache = map;
+    st->failed_at = -1;
+    return st->cache;
+}
+
+/* PoP: models_fetch_openrouter_reasoning_caps @ hermes_cli/models.py:_fetch_openrouter_reasoning_caps */
+json_t *models_fetch_openrouter_reasoning_caps(http_fetch_fn fetch, void *ctx, double timeout, int force) {
+    (void)fetch; (void)ctx; /* production transport is the live fetcher */
+    return mg_caps_fetch(&g_mg_or_caps, MG_OPENROUTER_CATALOG_URL, timeout, force);
+}
+
+/* PoP: models_refresh_openrouter_reasoning_caps @ hermes_cli/models.py:_refresh_openrouter_reasoning_caps */
+void models_refresh_openrouter_reasoning_caps(void) {
+    models_fetch_openrouter_reasoning_caps(NULL, NULL, 6.0, 1);
+}
+
+/* PoP: models_openrouter_caps_cached @ hermes_cli/models.py:_openrouter_caps_cached */
+json_t *models_openrouter_caps_cached(void) {
+    if (!g_mg_or_caps.cache && !g_mg_or_caps.disk_checked) {
+        g_mg_or_caps.disk_checked = 1;
+        g_mg_or_caps.cache = models_hydrate_reasoning_caps_from_disk(
+            MG_OPENROUTER_CATALOG_URL, models_refresh_openrouter_reasoning_caps);
+    }
+    return g_mg_or_caps.cache;
+}
+
+/* PoP: models_warm_openrouter_reasoning_caps_async @ hermes_cli/models.py:warm_openrouter_reasoning_caps_async */
+void models_warm_openrouter_reasoning_caps_async(void) {
+    if (g_mg_or_caps.warm_started || models_openrouter_caps_cached() != NULL) return;
+    g_mg_or_caps.warm_started = 1;
+    models_warm_reasoning_caps_async(models_refresh_openrouter_reasoning_caps);
+}
+
+/* PoP: models_fetch_nous_reasoning_caps @ hermes_cli/models.py:_fetch_nous_reasoning_caps */
+json_t *models_fetch_nous_reasoning_caps(http_fetch_fn fetch, void *ctx, double timeout, int force) {
+    (void)fetch; (void)ctx;
+    char *url = models_nous_catalog_url();
+    if (!url) return NULL;
+    json_t *out = mg_caps_fetch(&g_mg_nous_caps, url, timeout, force);
+    free(url);
+    return out;
+}
+
+/* PoP: models_refresh_nous_reasoning_caps @ hermes_cli/models.py:_refresh_nous_reasoning_caps */
+void models_refresh_nous_reasoning_caps(void) {
+    models_fetch_nous_reasoning_caps(NULL, NULL, 6.0, 1);
+}
+
+/* PoP: models_nous_caps_cached @ hermes_cli/models.py:_nous_caps_cached */
+json_t *models_nous_caps_cached(void) {
+    if (!g_mg_nous_caps.cache && !g_mg_nous_caps.disk_checked) {
+        /* One attempt per process: resolving the catalog URL may refresh a
+         * token over the network — too expensive for per-turn callers. */
+        g_mg_nous_caps.disk_checked = 1;
+        char *url = models_nous_catalog_url();
+        if (url) {
+            g_mg_nous_caps.cache = models_hydrate_reasoning_caps_from_disk(
+                url, models_refresh_nous_reasoning_caps);
+            free(url);
+        }
+    }
+    return g_mg_nous_caps.cache;
+}
+
+/* PoP: models_warm_nous_reasoning_caps_async @ hermes_cli/models.py:warm_nous_reasoning_caps_async */
+void models_warm_nous_reasoning_caps_async(void) {
+    if (g_mg_nous_caps.warm_started || models_nous_caps_cached() != NULL) return;
+    g_mg_nous_caps.warm_started = 1;
+    models_warm_reasoning_caps_async(models_refresh_nous_reasoning_caps);
+}
