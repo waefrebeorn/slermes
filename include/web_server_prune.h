@@ -66,4 +66,14 @@ int ws_prune_sessions(const char *db_path, bool has_older,
  * HTTP response object; on 400 returns {"status":400,"detail":...}. */
 json_t *ws_prune_endpoint(const char *db_path, const json_t *body);
 
+
+/* PoP: count_prune_matches / count_open_prune_matches @ hermes_state.py.
+ * Same filter surface as list_prune_candidates; the open variant inverts ONLY
+ * the ended_at safety guard (returns -1 if the guard is ever lost). */
+int count_prune_matches(const char *db_path, bool has_older,
+                        double older_than_days, const ws_prune_filters_t *f);
+int count_open_prune_matches(const char *db_path, bool has_older,
+                             double older_than_days,
+                             const ws_prune_filters_t *f);
+
 #endif /* WEB_SERVER_PRUNE_H */

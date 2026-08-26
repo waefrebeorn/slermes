@@ -454,3 +454,76 @@ json_t *ws_prune_endpoint(const char *db_path, const json_t *body) {
     json_set(out, "removed", json_number(removed < 0 ? 0 : removed));
     return out;
 }
+
+
+/* ── PoP: count_prune_matches @ hermes_state.py:count_prune_matches ── */
+int count_prune_matches(const char *db_path, bool has_older,
+                        double older_than_days, const ws_prune_filters_t *f) {
+    /* Count sessions a matching prune/archive would touch — same filter
+     * surface as list_prune_candidates (including the include_pinned
+     * tri-state), but returns only a count. */
+    ws_prune_filters_t eff = apply_default_cutoff(f, has_older,
+                                                  older_than_days);
+    where_t w;
+    build_where(&w, &eff);
+
+    sqlite3 *db = NULL;
+    if (sqlite3_open_v2(db_path, &db, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
+        if (db) sqlite3_close(db);
+        return 0;
+    }
+    char sql[6144];
+    snprintf(sql, sizeof(sql),
+             "SELECT COUNT(*) FROM sessions s WHERE %s", w.sql);
+    int count = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db, sql, -1, &st, NULL) == SQLITE_OK) {
+        bind_where(st, &w, 1);
+        if (sqlite3_step(st) == SQLITE_ROW)
+            count = sqlite3_column_int(st, 0);
+        sqlite3_finalize(st);
+    }
+    sqlite3_close(db);
+    return count;
+}
+
+/* ── PoP: count_open_prune_matches @ hermes_state.py:count_open_prune_matches ── */
+int count_open_prune_matches(const char *db_path, bool has_older,
+                             double older_than_days,
+                             const ws_prune_filters_t *f) {
+    /* Count open sessions EXCLUDED from a matching bulk prune: every normal
+     * filter applies but the ended_at safety guard is inverted. Visibility
+     * only — live sessions stay ineligible for destructive pruning. */
+    ws_prune_filters_t eff = apply_default_cutoff(f, has_older,
+                                                  older_than_days);
+    where_t w;
+    build_where(&w, &eff);
+    static const char ended_guard[] = "s.ended_at IS NOT NULL";
+    if (strncmp(w.sql, ended_guard, sizeof(ended_guard) - 1) != 0) {
+        /* Python raises RuntimeError("prune filter lost its ended-session
+         * safety guard") — the C caller treats this as an error count of -1. */
+        return -1;
+    }
+    char open_where[4096];
+    snprintf(open_where, sizeof(open_where), "s.ended_at IS NULL%s",
+             w.sql + (sizeof(ended_guard) - 1));
+
+    sqlite3 *db = NULL;
+    if (sqlite3_open_v2(db_path, &db, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
+        if (db) sqlite3_close(db);
+        return 0;
+    }
+    char sql[6144];
+    snprintf(sql, sizeof(sql),
+             "SELECT COUNT(*) FROM sessions s WHERE %s", open_where);
+    int count = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db, sql, -1, &st, NULL) == SQLITE_OK) {
+        bind_where(st, &w, 1);
+        if (sqlite3_step(st) == SQLITE_ROW)
+            count = sqlite3_column_int(st, 0);
+        sqlite3_finalize(st);
+    }
+    sqlite3_close(db);
+    return count;
+}

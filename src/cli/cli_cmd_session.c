@@ -1508,8 +1508,6 @@ void cmd_usage(const char *args, agent_state_t *state) {
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/colors.py:color */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/colors.py:should_use_color */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/inventory.py:load_picker_context */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban.py:build_parser */
-/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban.py:run_slash */
 /* PoP: cmd_kanban @ hermes_cli/kanban_db.py:* */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban_decompose.py:decompose_task */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */

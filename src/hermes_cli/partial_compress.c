@@ -134,8 +134,6 @@
 /* PoP: commands_resolve @ hermes_cli/colors.py:color */
 /* PoP: commands_resolve @ hermes_cli/colors.py:should_use_color */
 /* PoP: commands_resolve @ hermes_cli/inventory.py:load_picker_context */
-/* PoP: commands_resolve @ hermes_cli/kanban.py:build_parser */
-/* PoP: commands_resolve @ hermes_cli/kanban.py:run_slash */
 /* PoP: cmd_kanban @ hermes_cli/kanban_db.py:* */
 /* PoP: commands_resolve @ hermes_cli/kanban_decompose.py:decompose_task */
 /* PoP: commands_resolve @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */
