@@ -4,8 +4,32 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "antr_image_source_from_openai_url",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/anthropic_adapter_ports.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libdb",
+    "-I",
+    "lib/libhive"
+  ],
+  "extra_src": [
+    "src/agent/anthropic_adapter_ports.c",
+    "src/hermes_cli/anthropic_adapter.c",
+    "src/hermes_logging.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/auth.c",
+    "lib/libcrypto/crypto.c",
+    "lib/libbase64/base64.c",
+    "lib/libjson/json.c",
+    "tests/watercup/gates/anthropic_adapter_image_source/to_epoch_shim.c",
+    "src/agent/logger.c",
+    "lib/libcredentialfiles/credential_files.c",
+    "lib/libhive/hive.c"
+  ],
   "py_module": "agent/anthropic_adapter.py",
   "py_fn": "_image_source_from_openai_url",
   "inputs": [
@@ -18,5 +42,13 @@
     "data:image/jpeg,rawbytes",
     "data:nocomma"
   ],
-  "notes": "PORT FIX APPLIED: antr_image_source_from_openai_url previously defaulted media_type to image/png (LIVE: image/jpeg), accepted non-image mime parts, and fell back to a url-source when a data: URL had no comma (LIVE: base64 with empty payload); it now matches LIVE exactly, including whitespace strip. Value event carries the JSON dict with double quotes on both sides."
+  "notes": "PORT FIX APPLIED: antr_image_source_from_openai_url previously defaulted media_type to image/png (LIVE: image/jpeg), accepted non-image mime parts, and fell back to a url-source when a data: URL had no comma (LIVE: base64 with empty payload); it now matches LIVE exactly, including whitespace strip. Value event carries the JSON dict with double quotes on both sides.",
+  "ldlibs": [
+    "-lcrypto",
+    "-lssl"
+  ],
+  "ldflags": [
+    "-lcrypto",
+    "-lssl"
+  ]
 }

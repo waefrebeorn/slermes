@@ -28,8 +28,6 @@
 char *cc_sanitize_tool_pairs(const char *messages_json);
 
 /* stubs: helpers referenced by other fns in context_compressor_ports.c */
-void *cc_image_part_label(void) { return 0; }
-void *cc_redact_compaction_text(void) { return 0; }
 void *strip_think_blocks(void) { return 0; }
 
 static const char *stp_role(json_t *m) {

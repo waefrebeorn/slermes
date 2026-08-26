@@ -697,6 +697,14 @@ int cli_tui_input_modes_active(void)
     return g_tui_input_modes_active;
 }
 
+/* Clear-side setter used by _reset_terminal_input_modes_on_exit
+ * (cli_gaps_2026_08_25.c): Python clears _tui_input_modes_active so a
+ * re-armed cleanup never re-emits the reset codes. */
+void cli_mark_tui_input_modes_active_set(int v)
+{
+    g_tui_input_modes_active = v ? 1 : 0;
+}
+
 /* PoP: _path_is_within_root @ cli.py:_path_is_within_root */
 int cli_path_is_within_root(const char *path, const char *root)
 {

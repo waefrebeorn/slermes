@@ -332,6 +332,12 @@ void cc_budget_tail_token_budget_set(cc_compressor_budget_t *b, long value);
 long cc_budget_max_summary_tokens_get(cc_compressor_budget_t *b);
 void cc_budget_max_summary_tokens_set(cc_compressor_budget_t *b, long value);
 
+/* ── lean-suite additions (parity batch) ──────────────────────────────── */
+/* ContextCompressor._tool_call_id_variants — forwarder to the shared
+ * message_sanitization policy (arh_tool_call_id_variants). Fills out[]
+ * with malloc'd variant strings; returns the count. */
+int  cc_tool_call_id_variants(const json_t *tc, char **out, int out_max);
+
 #ifdef __cplusplus
 }
 #endif

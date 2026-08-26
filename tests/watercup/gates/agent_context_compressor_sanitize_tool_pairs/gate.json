@@ -7,11 +7,25 @@
   "cflags": [
     "-I/home/wubu/hermes-agent-dev/slermes/include",
     "-I/home/wubu/hermes-agent-dev/slermes/lib",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson"
+    "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson",
+    "-I",
+    "lib/libdb",
+    "-I",
+    "lib/libhive"
   ],
   "extra_src": [
+    "tests/watercup/gates/agent_context_compressor_sanitize_tool_pairs/shims.c",
     "src/agent/context_compressor_ports.c",
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/context_compressor_pure.c",
+    "src/hermes_logging.c",
+    "src/cli/paths.c",
+    "src/agent/logger.c",
+    "src/agent/redact.c",
+    "src/agent/sanitize.c",
+    "lib/libcredentialfiles/credential_files.c",
+    "lib/libhive/hive.c",
+    "lib/libregex/hermes_regex.c"
   ],
   "py_module": "agent/context_compressor.py",
   "py_fn": "_sanitize_tool_pairs",
@@ -28,5 +42,5 @@
     "[{\"role\":\"assistant\",\"content\":\"   \",\"tool_calls\":[{\"call_id\":\"w2\"}]},{\"role\":\"user\",\"content\":\"d\"}]",
     "[{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"call_id\":\"q1\"},{\"id\":\"alt1\"}]},{\"role\":\"tool\",\"tool_call_id\":\"other\",\"content\":\"r\"},{\"role\":\"user\",\"content\":\"e\"}]"
   ],
-  "notes": "FIXED REAL PORT STUB: src/agent/context_compressor_ports.c::cc_sanitize_tool_pairs was an identity passthrough; replaced with a real implementation of agent/context_compressor.py::_sanitize_tool_pairs (quiet_mode path): surviving assistant tool_call ids (call_id||id), tool-result id collection, orphaned-result removal, missing-result call stripping with trailing in-flight protection (walk back over trailing tool results) and '(tool call removed)' content blanking. Harness links the REAL port via extra_src (three unrelated helper symbols from context_compressor_pure.c stubbed in harness); branch ladder traced off the input in identical rung order on both sides; value event = canonical n/drop/strip + per-output-role encoding computed from input vs sanitized output. Known untested edge (input-shape avoided): non-string non-empty content on a fully-stripped assistant message — LIVE keeps it, C port's json_get_str-based blank check would replace it."
+  "notes": "FIXED REAL PORT STUB: src/agent/context_compressor_ports.c::cc_sanitize_tool_pairs was an identity passthrough; replaced with a real implementation of agent/context_compressor.py::_sanitize_tool_pairs (quiet_mode path): surviving assistant tool_call ids (call_id||id), tool-result id collection, orphaned-result removal, missing-result call stripping with trailing in-flight protection (walk back over trailing tool results) and '(tool call removed)' content blanking. Harness links the REAL port via extra_src (three unrelated helper symbols from context_compressor_pure.c stubbed in harness); branch ladder traced off the input in identical rung order on both sides; value event = canonical n/drop/strip + per-output-role encoding computed from input vs sanitized output. Known untested edge (input-shape avoided): non-string non-empty content on a fully-stripped assistant message \u2014 LIVE keeps it, C port's json_get_str-based blank check would replace it."
 }

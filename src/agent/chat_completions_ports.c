@@ -14,6 +14,7 @@
 #include "hermes_json.h"
 #include "crypto.h"
 #include "provider.h"
+#include "prompt_cache_scope.h"
 #include <limits.h>
 
 static char *lowerdup(const char *s) {
@@ -492,10 +493,7 @@ json_t *chat_completion_parse_provider_sse_events(const char *text)
 /* PoP: _prompt_cache_scope_for_agent @ agent/chat_completion_helpers.py
  * Guarded wrapper over resolve_prompt_cache_scope_safe (never-raising);
  * NULL/empty degrades callers to the physical session_id. */
-char *chat_completion_prompt_cache_scope_for_agent(void)
+char *chat_completion_prompt_cache_scope_for_agent(prompt_cache_scope_agent *agent)
 {
-    extern char *resolve_prompt_cache_scope_safe(void);
-    char *scope = resolve_prompt_cache_scope_safe();
-    if (scope && !*scope) { free(scope); return NULL; }
-    return scope;
+    return resolve_prompt_cache_scope_safe(agent);
 }

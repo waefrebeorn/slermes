@@ -17,6 +17,8 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#define _POSIX_C_SOURCE 200809L
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,6 +37,7 @@ typedef struct clarify_entry {
     int  choice_count;
     int is_active;
     int awaiting_text;
+    char response[1024];     /* resolved answer, kept for wait_for_response */
     struct clarify_entry *next;
 } clarify_entry_t;
 
@@ -68,6 +71,7 @@ int cli_tools_clarify_gateway_resolve_gateway_clarify(const char *clarify_id, co
     while (cur) {
         if (strcmp(cur->clarify_id, clarify_id) == 0 && cur->is_active) {
             cur->is_active = 0;
+            snprintf(cur->response, sizeof(cur->response), "%s", response);
             hermes_log(LOG_INFO, "clarify_gateway",
                        "resolve: clarified id=%.30s response=%.50s", clarify_id, response);
             return 1;
@@ -372,4 +376,28 @@ int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) {
     if (agent_v[0]) { printf("%s\n", agent_v); return 0; }
     printf("3600\n");
     return 0;
+}
+
+/* C analog of tools/clarify_gateway.py wait_for_response: block (bounded poll
+ * on the registry — the C port has no asyncio Event) until the entry for
+ * clarify_id is resolved or the timeout elapses. Returns a malloc'd copy of
+ * the response, or NULL on timeout / unknown id. Mirrors the Python contract
+ * used by gateway/run.py _clarify_send_then_wait. */
+char *clarify_gateway_wait_for_response(const char *clarify_id, double timeout_s) {
+    if (!clarify_id) return NULL;
+    double deadline = timeout_s;
+    if (deadline < 0.0) deadline = 0.0;
+    for (double waited = 0.0; waited <= deadline; waited += 0.1) {
+        clarify_entry_t *cur = g_entries;
+        while (cur) {
+            if (strcmp(cur->clarify_id, clarify_id) == 0 && !cur->is_active &&
+                cur->response[0]) {
+                return strdup(cur->response);
+            }
+            cur = cur->next;
+        }
+        struct timespec ts = { 0, 100 * 1000 * 1000 }; /* 100ms */
+        nanosleep(&ts, NULL);
+    }
+    return NULL;
 }

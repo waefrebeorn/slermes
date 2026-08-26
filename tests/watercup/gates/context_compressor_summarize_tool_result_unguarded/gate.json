@@ -8,7 +8,10 @@
     "tests/watercup/gates/context_compressor_summarize_tool_result_unguarded/shims.c",
     "src/agent/context_compressor_pure.c",
     "lib/libjson/json.c",
-    "lib/libregex/hermes_regex.c"
+    "lib/libregex/hermes_regex.c",
+    "src/agent/message_metadata.c",
+    "src/hermes_logging.c",
+    "src/agent/logger.c"
   ],
   "cflags": [
     "-I",

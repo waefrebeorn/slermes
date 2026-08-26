@@ -11,7 +11,13 @@
     "src/agent/context_compressor_pure.c",
     "lib/libjson/json.c",
     "lib/libregex/hermes_regex.c",
-    "src/agent/context.c"
+    "src/agent/context.c",
+    "src/agent/context_compressor_ports.c",
+    "src/agent/agent_message_sanitize.c",
+    "src/agent/message_metadata.c",
+    "src/agent/sanitize.c",
+    "src/hermes_logging.c",
+    "src/agent/logger.c"
   ],
   "cflags": [
     "-I/home/wubu/hermes-agent-dev/slermes/include",

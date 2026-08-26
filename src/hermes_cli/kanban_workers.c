@@ -2392,3 +2392,37 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
 }
 
 /* (end of part 2) */
+
+/* PoP: kdb_dispatch_result_json @ hermes_cli/kanban_db.py:_dispatch_result_to_dict
+ * Serialize one dispatch tick's result to a JSON object (caller frees the
+ * string). Mirrors the Python summary dict: counts + id vectors. */
+char *kdb_dispatch_result_json(const kdb_dispatch_result_t *r)
+{
+    if (!r) return strdup("{}");
+    json_t *o = json_new_object();
+    if (!o) return NULL;
+    json_object_set(o, "skipped_locked", json_number(r->skipped_locked));
+    json_object_set(o, "spawned_n", json_number(r->spawned_n));
+    static const char * const vec_names[] = {
+        "reclaimed", "stale", "crashed", "timed_out", "promoted", "spawned",
+        "skipped_unassigned", "skipped_nonspawnable", "auto_assigned_default",
+        "respawn_guarded", "auto_blocked", "rate_limited",
+        "skipped_per_profile_capped"
+    };
+    char **const vecs[] = {
+        &r->reclaimed[0], &r->stale[0], &r->crashed[0], &r->timed_out[0],
+        &r->promoted[0], &r->spawned[0], &r->skipped_unassigned[0],
+        &r->skipped_nonspawnable[0], &r->auto_assigned_default[0],
+        &r->respawn_guarded[0], &r->auto_blocked[0], &r->rate_limited[0],
+        &r->skipped_per_profile_capped[0]
+    };
+    for (size_t k = 0; k < sizeof(vec_names)/sizeof(vec_names[0]); k++) {
+        json_t *arr = json_array();
+        char **v = vecs[k];
+        if (v) for (size_t i = 0; v[i]; i++) json_append(arr, json_new_string(v[i]));
+        json_object_set(o, vec_names[k], arr);
+    }
+    char *out = json_serialize(o);
+    json_free(o);
+    return out;
+}

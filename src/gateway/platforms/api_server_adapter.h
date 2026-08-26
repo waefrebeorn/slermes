@@ -20,6 +20,9 @@
 #include <sqlite3.h>
 #include <pthread.h>
 #include "uuid.h"
+#include "browser_control_broker.h"
+#include "browser_control_artifacts.h"
+#include "hermes_state_db.h"
 
 /* Forward declarations for types defined in base.h */
 typedef struct {
@@ -381,6 +384,28 @@ struct api_server_adapter {
     /* Background sweep */
     pthread_t sweep_thread;
     volatile bool sweep_running;
+
+    /* ── Extended state (api_server_adapter_gaps.c) — mirrors the Python
+     * APIServerAdapter instance attributes used by the remaining methods ── */
+    int pending_agent_requests;            /* _pending_agent_requests */
+    int inflight_agent_runs;               /* _inflight_agent_runs */
+    json_t *model_routes;                  /* _model_routes (alias -> route) */
+    hermes_state_db_t *session_db_override;/* _session_db explicit override */
+    int session_db_async_started;          /* _ensure_session_db_async gate */
+    pthread_mutex_t session_db_cache_lock; /* _session_db_cache_lock */
+    bool session_db_cache_closed;          /* _session_db_cache_closed */
+#define APIS_MAX_CACHED_DBS 8
+    struct {
+        char home[512];
+        hermes_state_db_t *db;
+    } session_dbs[APIS_MAX_CACHED_DBS];    /* _session_dbs */
+    int session_db_count;
+    bcb_broker_t *browser_control_broker;  /* _browser_control_broker */
+    bca_store_t *artifact_stores[APIS_MAX_CACHED_DBS];   /* _browser_control_artifacts */
+    char artifact_profiles[APIS_MAX_CACHED_DBS][128];
+    bca_rate_limiter_t *artifact_limiter;  /* _browser_control_artifact_limiter */
+    void *shutdown_interruptible_agents[16]; /* _shutdown_interruptible_agents */
+    size_t shutdown_interruptible_count;
 };
 
 struct response_store {

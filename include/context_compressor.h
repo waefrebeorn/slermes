@@ -78,6 +78,27 @@ json_t *cc_build_micro_summary_prompt(const char *existing_summary,
 void cc_arm_init_summary(context_compressor_t *cc);
 void cc_emit_init_summary_once(context_compressor_t *cc);
 
+/* ── lean-mode stateful methods (parity batch) ─────────────────────────── */
+/* _record_structural_no_op: push the structural no-op backoff (now+300s,
+ * CLOCK_MONOTONIC seconds) without striking the breaker. */
+void cc_record_structural_no_op(double *structural_no_op_backoff_until,
+                                int quiet_mode, const char *reason);
+/* record_rejected_compaction: one ineffective strike; persist callback
+ * mirrors _record_ineffective_compression_verdict's persist-on-change. */
+void cc_record_rejected_compaction(int *ineffective_compression_count,
+                                   int quiet_mode,
+                                   void (*persist)(int count, void *ctx),
+                                   void *persist_ctx);
+/* _demote_stale_tail_tools: returns a NEW array (caller frees). */
+json_t *cc_demote_stale_tail_tools(json_t *messages, long tail_start,
+                                   const char *session_id, int quiet_mode);
+/* _build_chunk_digests: malloc'd digests section or "". */
+char *cc_build_chunk_digests(json_t *turns, json_t *pristine);
+/* _augment_summary_lean: malloc'd summary with deterministic sections. */
+char *cc_augment_summary_lean(const char *summary, json_t *turns_to_summarize,
+                              const char *tail_mode, const char *session_id,
+                              json_t *lean_pristine_tools);
+
 #ifdef __cplusplus
 }
 #endif

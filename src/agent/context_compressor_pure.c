@@ -1731,8 +1731,8 @@ json_t *cc_merge_adjacent_user_turns(const json_t *result) {
 #define CC_PRUNED_SKILL_RELOAD_NOTICE_HEADER \
     "[Skills pruned during compression — reload before acting on these tasks]"
 
-/* _looks_like_compaction_summary @ agent/context_compressor.py:
- * _looks_like_compaction_summary — only cap a standalone handoff summary. */
+/* PoP: cc_looks_like_compaction_summary @ agent/context_compressor.py:_looks_like_compaction_summary */
+ /* Only cap a standalone handoff summary. */
 static bool cc_looks_like_compaction_summary(const json_t *msg, const char *content)
 {
     size_t clen = strlen(content);
@@ -1761,8 +1761,8 @@ static bool cc_looks_like_compaction_summary(const json_t *msg, const char *cont
            strstr(head, "Conversation Summary") != NULL;
 }
 
-/* _salvage_reduce_todo_snapshot @ agent/context_compressor.py:
- * _salvage_reduce_todo_snapshot — last-resort shrink of the synthetic todo
+/* PoP: cc_salvage_reduce_todo_snapshot @ agent/context_compressor.py:_salvage_reduce_todo_snapshot */
+ /* Last-resort shrink of the synthetic todo
  * snapshot row (keep the coupled pruned-skill reload notice, else drop it). */
 static void cc_salvage_reduce_todo_snapshot(json_t *out)
 {
@@ -1930,8 +1930,8 @@ bool cc_is_compaction_summary_message(const json_t *message)
     return cc_is_context_summary_content(message);
 }
 
-/* PoP: _handoff_only_content @ agent/context_compressor.py
- * Project summary-bearing content to the synthetic handoff alone.
+/* PoP: _handoff_only_content @ agent/context_compressor.py:_handoff_only_content */
+ /* Project summary-bearing content to the synthetic handoff alone.
  * String case: after MERGED delimiter, up to and including SUMMARY_END_MARKER
  * when present; list case: first delimiter-bearing text part rewritten to the
  * summary suffix (later parts never retained). Returns a new json_t or NULL
@@ -1988,8 +1988,8 @@ json_t *cc_handoff_only_content(const json_t *content)
     return json_copy(content);
 }
 
-/* PoP: retryable_user_text @ agent/context_compressor.py:retryable_user_text
- * Lossless retry text or fail-closed error. Media/unknown parts and
+/* PoP: retryable_user_text @ agent/context_compressor.py:retryable_user_text */
+ /* Lossless retry text or fail-closed error. Media/unknown parts and
  * annotated text parts are rejected (no attachment replay protocol).
  * Returns malloc'd text, or NULL with err filled. Caller frees. */
 char *cc_retryable_user_text(const json_t *content, char *err, size_t errsz)
@@ -2072,10 +2072,10 @@ char *cc_retryable_user_text(const json_t *content, char *err, size_t errsz)
 /* ── tool-result image handling wrappers ───────────────────────────────── */
 
 extern int cc_is_image_part(const json_t *part);
-extern json_t *cc_strip_image_parts_from_parts(const json_t *parts);
+extern char *cc_strip_image_parts_from_parts(const char *parts_json);
 
-/* PoP: _tool_content_has_images @ agent/context_compressor.py
- * Handles the unwrapped OpenAI part lists and the native
+/* PoP: _tool_content_has_images @ agent/context_compressor.py:_tool_content_has_images */
+ /* Handles the unwrapped OpenAI part lists and the native
  * {_multimodal: true, content: [...]} envelope. */
 bool cc_tool_content_has_images(const json_t *content)
 {
@@ -2088,8 +2088,8 @@ bool cc_tool_content_has_images(const json_t *content)
     return cc_content_has_images(content);
 }
 
-/* PoP: _strip_images_from_tool_msg @ agent/context_compressor.py
- * Copy of a tool message with image payloads replaced; NULL when nothing
+/* PoP: _strip_images_from_tool_msg @ agent/context_compressor.py:_strip_images_from_tool_msg */
+ /* Copy of a tool message with image payloads replaced; NULL when nothing
  * strippable (caller leaves the message untouched). The returned copy
  * drops the stale api_content sidecar. */
 json_t *cc_strip_images_from_tool_msg(const json_t *msg)
@@ -2114,7 +2114,14 @@ json_t *cc_strip_images_from_tool_msg(const json_t *msg)
     }
 
     /* OpenAI-style part list */
-    json_t *stripped = cc_strip_image_parts_from_parts(content);
+    char *stripped_json = NULL;
+    if (content && content->type == JSON_ARRAY) {
+        char *cj = json_serialize(content);
+        if (cj) { stripped_json = cc_strip_image_parts_from_parts(cj); free(cj); }
+    }
+    if (!stripped_json) return NULL;
+    json_t *stripped = json_parse(stripped_json, NULL);
+    free(stripped_json);
     if (!stripped) return NULL;
     json_t *copy = json_copy(msg);
     if (!copy) { json_free(stripped); return NULL; }
@@ -2125,8 +2132,8 @@ json_t *cc_strip_images_from_tool_msg(const json_t *msg)
 
 /* ── digest filtering ──────────────────────────────────────────────────── */
 
-/* PoP: _LOW_SIGNAL_TOOL_RE @ agent/context_compressor.py
- * ^\{?\"?(?:output|status|success)\"?\s*[:=]?\s*\"?(?:|success|true|ok|0|\[])\"?\s*,?\s*
+/* PoP: _LOW_SIGNAL_TOOL_RE @ agent/context_compressor.py:_LOW_SIGNAL_TOOL_RE */
+ /* ^\{?\"?(?:output|status|success)\"?\s*[:=]?\s*\"?(?:|success|true|ok|0|\[])\"?\s*,?\s*
  * (?:\"exit_code\":\s*0)?\s*}?$  — bare-ack envelope detector. */
 static bool cc_low_signal_tool_match(const char *s)
 {
@@ -2171,8 +2178,8 @@ static bool cc_low_signal_tool_match(const char *s)
     return *p == '\0';
 }
 
-/* PoP: _digest_worthy @ agent/context_compressor.py:_digest_worthy
- * Filter no-signal rows from digest input. Assistant/user always pass;
+/* PoP: _digest_worthy @ agent/context_compressor.py:_digest_worthy */
+ /* Filter no-signal rows from digest input. Assistant/user always pass;
  * tool rows need >=80 chars and a non-low-signal head. */
 bool cc_digest_worthy(const char *role, const char *content)
 {
@@ -2195,8 +2202,8 @@ bool cc_digest_worthy(const char *role, const char *content)
 #define CC_SUMMARY_CARRIER_DURABLE_DISPLAY_METADATA_KEYS_SIZE 1
 static const char *const CC_DURABLE_DISPLAY_KEYS[] = {"reactions", NULL};
 
-/* PoP: split_user_originated_turn @ agent/context_compressor.py
- * Split a user row into hidden handoff scaffold + canonical live view.
+/* PoP: split_user_originated_turn @ agent/context_compressor.py:split_user_originated_turn */
+ /* Split a user row into hidden handoff scaffold + canonical live view.
  * out_handoff/out_live: set to the projected message or left NULL.
  * Returns nothing; callers pass &json_t* slots. */
 void cc_split_user_originated_turn(const json_t *message,
@@ -2291,8 +2298,8 @@ void cc_split_user_originated_turn(const json_t *message,
 
 /* ── synthetic-row detection + recovery footer ─────────────────────────── */
 
-/* PoP: _synthetic_user_row @ agent/context_compressor.py
- * True for scaffolding user rows carrying no real user words. */
+/* PoP: _synthetic_user_row @ agent/context_compressor.py:_synthetic_user_row */
+ /* True for scaffolding user rows carrying no real user words. */
 bool cc_synthetic_user_row(const json_t *content)
 {
     if (!content || content->type != JSON_STRING || !content->str_val)
@@ -2312,8 +2319,8 @@ bool cc_synthetic_user_row(const json_t *content)
 
 #define CC_LEAN_RECOVERY_HEADING "## Context Recovery"
 
-/* PoP: _build_recovery_footer @ agent/context_compressor.py
- * Deterministic pointer to the compacted region in session history.
+/* PoP: _build_recovery_footer @ agent/context_compressor.py:_build_recovery_footer */
+ /* Deterministic pointer to the compacted region in session history.
  * Empty when session_id is empty. malloc'd; caller frees. */
 char *cc_build_recovery_footer(const char *session_id, long region_len)
 {
@@ -2331,8 +2338,8 @@ char *cc_build_recovery_footer(const char *session_id, long region_len)
     return strdup(buf);
 }
 
-/* PoP: _serialize_turns_for_digest @ agent/context_compressor.py
- * "[role] content" lines for digest input; tool rows prefer the pristine
+/* PoP: _serialize_turns_for_digest @ agent/context_compressor.py:_serialize_turns_for_digest */
+ /* "[role] content" lines for digest input; tool rows prefer the pristine
  * snapshot when longer (phase-1 pruning stubs); no-signal rows filtered. */
 char *cc_serialize_turns_for_digest(json_t *turns, json_t *pristine)
 {
@@ -2374,8 +2381,8 @@ char *cc_serialize_turns_for_digest(json_t *turns, json_t *pristine)
 
 /* ── hygiene timeout + lean demotion stub ──────────────────────────────── */
 
-/* PoP: _is_hygiene_idle_timeout_error @ agent/context_compressor.py
- * True when the durable cooldown came from a hygiene watchdog timeout
+/* PoP: _is_hygiene_idle_timeout_error @ agent/context_compressor.py:_is_hygiene_idle_timeout_error */
+ /* True when the durable cooldown came from a hygiene watchdog timeout
  * (intentional for the pre-agent hygiene pass; must not block the
  * in-conversation compressor). */
 bool cc_is_hygiene_idle_timeout_error(const char *error)
@@ -2394,8 +2401,8 @@ bool cc_is_hygiene_idle_timeout_error(const char *error)
     return hit;
 }
 
-/* PoP: _lean_recovery_stub @ agent/context_compressor.py
- * One-line replacement for a demoted tail tool result. malloc'd; caller frees. */
+/* PoP: _lean_recovery_stub @ agent/context_compressor.py:_lean_recovery_stub */
+ /* One-line replacement for a demoted tail tool result. malloc'd; caller frees. */
 char *cc_lean_recovery_stub(const char *tool_name, long content_len,
                             const char *session_id)
 {
@@ -2414,8 +2421,8 @@ char *cc_lean_recovery_stub(const char *tool_name, long content_len,
 
 /* ── user-turn view projections ────────────────────────────────────────── */
 
-/* PoP: user_originated_turn_view @ agent/context_compressor.py
- * The live human-authored projection of a user row, or NULL. Caller frees. */
+/* PoP: user_originated_turn_view @ agent/context_compressor.py:user_originated_turn_view */
+ /* The live human-authored projection of a user row, or NULL. Caller frees. */
 json_t *cc_user_originated_turn_view(const json_t *message)
 {
     json_t *handoff = NULL, *live = NULL;
@@ -2424,8 +2431,8 @@ json_t *cc_user_originated_turn_view(const json_t *message)
     return live; /* may be NULL */
 }
 
-/* PoP: history_before_user_originated_turn @ agent/context_compressor.py
- * Rewind prefix + canonical live view for the row at index. Returns a
+/* PoP: history_before_user_originated_turn @ agent/context_compressor.py:history_before_user_originated_turn */
+ /* Rewind prefix + canonical live view for the row at index. Returns a
  * malloc'd 2-element JSON array [prefix_array, live_view], or NULL with
  * err filled on out-of-range / non-user-originated rows. */
 json_t *cc_history_before_user_originated_turn(json_t *messages, long index,
@@ -2465,8 +2472,8 @@ json_t *cc_history_before_user_originated_turn(json_t *messages, long index,
 
 #define CC_MAX_KEEP_TOOL_IMAGES 3
 
-/* PoP: _retire_stale_tool_result_images @ agent/context_compressor.py
- * Walks newest-first; keeps the most recent keep_newest image-bearing tool
+/* PoP: _retire_stale_tool_result_images @ agent/context_compressor.py:_retire_stale_tool_result_images */
+ /* Walks newest-first; keeps the most recent keep_newest image-bearing tool
  * messages intact and retires the rest via cc_strip_images_from_tool_msg.
  * Mutates the array in place; returns the number rewritten. */
 long cc_retire_stale_tool_result_images(json_t *result, long keep_newest)
@@ -2500,8 +2507,8 @@ long cc_retire_stale_tool_result_images(json_t *result, long keep_newest)
 extern bool cc_synthetic_user_row(const json_t *content);
 extern char *cc_content_text_for_contains(const json_t *content);
 
-/* PoP: _build_verbatim_user_section @ agent/context_compressor.py
- * Real user messages embedded verbatim, newest-first under a char budget;
+/* PoP: _build_verbatim_user_section @ agent/context_compressor.py:_build_verbatim_user_section */
+ /* Real user messages embedded verbatim, newest-first under a char budget;
  * straddler truncated rather than dropped. "" when no real user rows.
  * malloc'd; caller frees. */
 char *cc_build_verbatim_user_section(json_t *turns)
@@ -2600,8 +2607,8 @@ char *cc_build_verbatim_user_section(json_t *turns)
 
 extern int regex_findall(hregex_t *re, const char *str, char **out, int out_max);
 
-/* PoP: _build_anchor_index @ agent/context_compressor.py
- * Regex-harvest exact identifiers; per-category caps; most-frequent first,
+/* PoP: _build_anchor_index @ agent/context_compressor.py:_build_anchor_index */
+ /* Regex-harvest exact identifiers; per-category caps; most-frequent first,
  * ties by last-seen order. malloc'd; caller frees. */
 char *cc_build_anchor_index(json_t *turns)
 {
@@ -2786,4 +2793,19 @@ char *cc_build_anchor_index(json_t *turns)
     for (size_t k=0;k<n_sections;k++) free(sections[k]);
     free(sections);
     return out;
+}
+
+/* ── _tool_call_id_variants (batch gap) ────────────────────────────────── */
+
+/* PoP: cc_tool_call_id_variants @ agent/context_compressor.py:ContextCompressor._tool_call_id_variants */
+ /* Thin forwarder — the policy owner is
+ * agent.message_sanitization.tool_call_id_variants (ported as
+ * arh_tool_call_id_variants over call_id / id / response_item_id with
+ * composite bridge spellings), so the compressor's pairing tolerance can
+ * never drift from the pre-call sanitizer's. Fills out[] with malloc'd
+ * variant strings; returns the count. */
+int cc_tool_call_id_variants(const json_t *tc, char **out, int out_max)
+{
+    extern int arh_tool_call_id_variants(const json_t *tc, char **out, int out_max);
+    return arh_tool_call_id_variants(tc, out, out_max);
 }

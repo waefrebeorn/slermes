@@ -708,8 +708,8 @@ int _cmd_boards_create(kb_args_t *a) {
     printf("  DB path:      %s\n", meta ? json_get_str(meta, "db_path", "") : "");
     if (karg_bool(a, "switch")) {
         /* set_current_board writes the current-board pointer file */
-        extern int kbd_set_current_board(const char *board);
-        if (kbd_set_current_board(mslug) == 0)
+        extern int set_current_board(const char *board);
+        if (set_current_board(mslug) == 0)
             printf("  Switched to '%s'.\n", mslug);
         else
             printf("  Use `hermes kanban boards switch %s` to make it current.\n",
@@ -767,8 +767,8 @@ int _cmd_boards_switch(kb_args_t *a) {
         free(normed);
         return 1;
     }
-    extern int kbd_set_current_board(const char *board);
-    kbd_set_current_board(normed);
+    extern int set_current_board(const char *board);
+    set_current_board(normed);
     printf("Active board is now '%s'.\n", normed);
     free(normed);
     return 0;

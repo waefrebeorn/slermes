@@ -20,6 +20,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/file.h>
 #include <errno.h>
 
 #define ENTRY_DELIMITER "\n§\n"
@@ -36,6 +37,8 @@ struct memory_store_t {
     int    user_n;
     int    memory_char_limit;
     int    user_char_limit;
+    int    memory_enabled;        /* store flags (#target_enabled) */
+    int    user_profile_enabled;
     char  *snap_memory;   /* frozen at load */
     char  *snap_user;
     memory_threat_scanner_t scanner;
@@ -180,6 +183,8 @@ memory_store_t *memory_store_new(int memory_char_limit, int user_char_limit) {
     memory_store_t *s = calloc(1, sizeof(*s));
     s->memory_char_limit = memory_char_limit > 0 ? memory_char_limit : DEFAULT_MEMORY_LIMIT;
     s->user_char_limit    = user_char_limit    > 0 ? user_char_limit    : DEFAULT_USER_LIMIT;
+    s->memory_enabled = 1;
+    s->user_profile_enabled = 1;
     return s;
 }
 void memory_store_free(memory_store_t *s) {

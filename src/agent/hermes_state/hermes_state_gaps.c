@@ -98,7 +98,22 @@ static bool hs_contains_any_lower(const char *msg, const char *const *markers) {
 /* Minimal SHA-256 (FIPS 180-4) for the fingerprint/identity digests. */
 typedef struct { uint32_t h[8]; uint64_t len; unsigned char buf[64]; size_t n; } hs_sha256_t;
 static bool hs_hash_whole_file(hs_sha256_t *c, const char *path);
+static void hs_sha256_update(hs_sha256_t *c, const void *data, size_t n);
 static char *gaps_db_opens_cleanly(const char *db_path);
+
+static bool hs_hash_whole_file(hs_sha256_t *c, const char *path)
+{
+    if (!c || !path || !*path) return false;
+    FILE *f = fopen(path, "rb");
+    if (!f) return false;
+    unsigned char buf[8192];
+    size_t n;
+    while ((n = fread(buf, 1, sizeof(buf), f)) > 0)
+        hs_sha256_update(c, buf, n);
+    bool ok = !ferror(f);
+    fclose(f);
+    return ok;
+}
 static uint32_t hs_ror(uint32_t x, int r) { return (x >> r) | (x << (32 - r)); }
 static void hs_sha256_init(hs_sha256_t *c) {
     c->len = 0; c->n = 0;

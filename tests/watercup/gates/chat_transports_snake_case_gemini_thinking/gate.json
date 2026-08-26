@@ -14,6 +14,7 @@
   ],
   "extra_src": [
     "src/agent/chat_completions_ports.c",
+    "src/agent/prompt_cache_scope.c",
     "lib/libjson/json.c"
   ],
   "py_module": "agent/transports/chat_completions.py",
