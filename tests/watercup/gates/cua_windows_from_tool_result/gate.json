@@ -8,7 +8,9 @@
   "py_fn": "_windows_from_tool_result",
   "extra_src": [
     "src/tools/cua_backend_methods.c",
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "lib/libyaml/yaml.c",
+    "tests/watercup/gates/cua_windows_from_tool_result/shims.c"
   ],
   "cflags": [
     "-I",
@@ -16,7 +18,13 @@
     "-I",
     "include",
     "-I",
-    "lib/libjson"
+    "lib/libjson",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libyaml",
+    "-I",
+    "lib/libdb"
   ],
   "inputs": [
     "{\"structuredContent\": {\"windows\": [{\"title\": \"Term\"}]}}",

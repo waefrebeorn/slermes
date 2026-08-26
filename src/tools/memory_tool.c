@@ -780,3 +780,537 @@ void registry_init_memory(void) {
         "\"required\":[\"target\"]"
         "}", memory_tool_bridge);
 }
+
+/* =====================================================================
+ * REAL_GAP closure batch — faithful ports of the remaining
+ * tools/memory_tool.py functions (v773 gap wave).
+ *
+ * Includes: _scan_memory_content, target_enabled, load_from_disk,
+ * _sanitize_entries_for_snapshot, _file_lock/_reload_target,
+ * _set_entries, _batch_error, format_for_system_prompt, _previews,
+ * _read_raw_checked, _parse_entries, _read_entries_checked,
+ * load_on_disk_store, _apply_write_gate, _apply_batch_write_gate,
+ * memory_tool, _memory_target_error, apply_memory_pending.
+ * ===================================================================== */
+
+#include <stdbool.h>
+#include <sys/file.h>
+
+/* externs from memory_tool_pure.c (same module family) */
+char *memory_tool_get_memory_dir(void);
+json_t *memory_tool_pure_get_builtin_memory_config(const json_t *config);
+void memory_tool_pure_get_builtin_memory_store_flags(const json_t *config,
+                                                     bool *memory_enabled,
+                                                     bool *user_profile_enabled);
+/* threat_patterns.h lives in include/ */
+char *cli_tools_threat_patterns_first_threat_message(const char *content, const char *scope);
+
+/* ---- _scan_memory_content ------------------------------------------ */
+/* PoP: memory_tool_scan_memory_content @ tools/memory_tool.py:_scan_memory_content */
+char *memory_tool_scan_memory_content(const char *content) {
+    /* Python: return _first_threat_message(content, scope="strict") */
+    if (!content) return NULL;
+    return cli_tools_threat_patterns_first_threat_message(content, "strict");
+}
+
+/* ---- target_enabled -------------------------------------------------- */
+/* PoP: memory_store_target_enabled @ tools/memory_tool.py:target_enabled */
+int memory_store_target_enabled(memory_store_t *s, const char *target) {
+    if (!s) return 0;
+    return (target && strcmp(target, "user") == 0)
+        ? s->user_profile_enabled : s->memory_enabled;
+}
+
+/* ---- _previews ------------------------------------------------------- */
+/* Truncated one-line previews of entries for error feedback. Returns a
+ * malloc'd array of malloc'd strings (free with free_entries-style loop). */
+/* PoP: memory_store_previews @ tools/memory_tool.py:_previews */
+char **memory_store_previews(const char **entries, int n, int width, int *out_n) {
+    if (width <= 0) width = PREVIEW_WIDTH;
+    char **out = malloc(sizeof(char *) * (n > 0 ? n : 1));
+    for (int i = 0; i < n; i++) {
+        size_t len = strlen(entries[i]);
+        if ((int)len <= width) {
+            out[i] = strdup(entries[i]);
+        } else {
+            out[i] = malloc((size_t)width + 4);
+            memcpy(out[i], entries[i], (size_t)width);
+            memcpy(out[i] + width, "...", 4);
+        }
+    }
+    *out_n = n;
+    return out;
+}
+
+/* ---- format_for_system_prompt ---------------------------------------- */
+/* Frozen snapshot for system prompt injection; NULL when empty. */
+/* PoP: memory_store_format_for_system_prompt @ tools/memory_tool.py:format_for_system_prompt */
+const char *memory_store_format_for_system_prompt(memory_store_t *s, const char *target) {
+    const char *block = memory_store_snapshot(s, target);
+    return (block && *block) ? block : NULL;
+}
+
+/* ---- _read_raw_checked ----------------------------------------------- */
+/* Read a memory file's raw text, distinguishing unreadable from empty.
+ * Returns malloc'd raw text ("" for absent file) and sets *read_ok to 0 ONLY
+ * when the file exists but could not be read. A leading UTF-8 BOM is stripped
+ * (utf-8-sig semantics). */
+/* PoP: memory_store_read_raw_checked @ tools/memory_tool.py:_read_raw_checked */
+char *memory_store_read_raw_checked(const char *path, int *read_ok) {
+    *read_ok = 1;
+    struct stat st;
+    if (stat(path, &st) != 0) return strdup("");   /* absent => ("", True) */
+    FILE *f = fopen(path, "rb");
+    if (!f) { *read_ok = 0; return strdup(""); }
+    char *raw = malloc((size_t)st.st_size + 1);
+    if (st.st_size > 0 && fread(raw, 1, (size_t)st.st_size, f) != (size_t)st.st_size) {
+        fclose(f); free(raw); *read_ok = 0; return strdup("");
+    }
+    fclose(f);
+    raw[st.st_size] = 0;
+    /* utf-8-sig: strip leading EF BB BB */
+    unsigned char *p = (unsigned char *)raw;
+    if (st.st_size >= 3 && p[0] == 0xEF && p[1] == 0xBB && p[2] == 0xBF)
+        memmove(raw, raw + 3, (size_t)st.st_size - 2);
+    return raw;
+}
+
+/* ---- _parse_entries ---------------------------------------------------- */
+/* Split raw memory-file text into stripped, non-empty entries. Caller frees. */
+/* PoP: memory_store_parse_entries @ tools/memory_tool.py:_parse_entries */
+char **memory_store_parse_entries(const char *raw, int *out_n) {
+    *out_n = 0;
+    /* skip if whole input is whitespace-only */
+    const char *q = raw;
+    while (*q && isspace((unsigned char)*q)) q++;
+    if (!*q) return malloc(sizeof(char *));
+    char **arr = NULL; int n = 0, cap = 0;
+    const char *cur = raw;
+    while (1) {
+        const char *nl = strstr(cur, ENTRY_DELIMITER);
+        const char *seg = cur; size_t seglen;
+        if (nl) { seglen = (size_t)(nl - cur); cur = nl + strlen(ENTRY_DELIMITER); }
+        else { seglen = strlen(cur); cur = NULL; }
+        /* strip whitespace both ends */
+        while (seglen && isspace((unsigned char)*seg)) { seg++; seglen--; }
+        while (seglen && isspace((unsigned char)seg[seglen - 1])) seglen--;
+        if (seglen) {
+            if (n >= cap) { cap = cap ? cap * 2 : 8; arr = realloc(arr, sizeof(char *) * cap); }
+            arr[n] = malloc(seglen + 1);
+            memcpy(arr[n], seg, seglen); arr[n][seglen] = 0;
+            n++;
+        }
+        if (!cur) break;
+    }
+    *out_n = n;
+    return arr ? arr : malloc(sizeof(char *));
+}
+
+/* dedupe preserving order, keeping first occurrence (list(dict.fromkeys())). */
+static char **dedup_entry_list(char **arr, int n, int *out_n) {
+    int m = 0;
+    for (int i = 0; i < n; i++) {
+        int seen = 0;
+        for (int j = 0; j < m; j++) if (strcmp(arr[j], arr[i]) == 0) { seen = 1; break; }
+        if (seen) free(arr[i]);
+        else arr[m++] = arr[i];
+    }
+    *out_n = m;
+    return arr;
+}
+
+/* ---- _read_entries_checked --------------------------------------------- */
+/* PoP: memory_store_read_entries_checked @ tools/memory_tool.py:_read_entries_checked */
+char **memory_store_read_entries_checked(const char *path, int *out_n, int *read_ok) {
+    int ok;
+    char *raw = memory_store_read_raw_checked(path, &ok);
+    if (!ok) { *read_ok = 0; *out_n = 0; free(raw); return malloc(sizeof(char *)); }
+    *read_ok = 1;
+    char **arr = memory_store_parse_entries(raw, out_n);
+    free(raw);
+    return arr;
+}
+
+/* ---- _sanitize_entries_for_snapshot -------------------------------------- */
+/* Replace any threat-matching entry with a [BLOCKED: ...] placeholder for the
+ * system-prompt snapshot only. Returns a new malloc'd array. */
+/* PoP: memory_store_sanitize_entries_for_snapshot @ tools/memory_tool.py:_sanitize_entries_for_snapshot */
+char **memory_store_sanitize_entries_for_snapshot(const char **entries, int n,
+                                                  const char *filename, int *out_n) {
+    char **out = malloc(sizeof(char *) * (n > 0 ? n : 1));
+    for (int i = 0; i < n; i++) {
+        const char *e = entries[i];
+        if (!e || !*e || strncmp(e, "[BLOCKED:", 9) == 0) {
+            out[i] = strdup(e ? e : "");
+            continue;
+        }
+        char *msg = cli_tools_threat_patterns_first_threat_message(e, "strict");
+        if (msg) {
+            char buf[1024];
+            snprintf(buf, sizeof(buf),
+                     "[BLOCKED: %s entry contained threat pattern(s): %s. "
+                     "Removed from system prompt; use memory(action=remove) "
+                     "to delete the original.]",
+                     filename ? filename : "MEMORY.md", msg);
+            out[i] = strdup(buf);
+            free(msg);
+        } else {
+            out[i] = strdup(e);
+        }
+    }
+    *out_n = n;
+    return out;
+}
+
+/* ---- _file_lock / release ------------------------------------------------ */
+/* Acquire an exclusive lock on "<path>.lock" for read-modify-write safety.
+ * Returns the lock fd (>= 0), or -1 when locking is unavailable (yield). */
+/* PoP: memory_store_file_lock @ tools/memory_tool.py:_file_lock */
+int memory_store_file_lock(const char *path) {
+    char lock_path[2048];
+    snprintf(lock_path, sizeof(lock_path), "%s.lock", path);
+    int fd = open(lock_path, O_RDWR | O_CREAT | O_CLOEXEC, 0644);
+    if (fd < 0) return -1;
+    if (flock(fd, LOCK_EX) != 0) { close(fd); return -1; }
+    return fd;
+}
+void memory_store_file_unlock(int fd) {
+    if (fd < 0) return;
+    flock(fd, LOCK_UN);
+    close(fd);
+}
+
+/* ---- drift detection on an already-read raw snapshot ---------------------- */
+/* Mirrors _detect_external_drift but operates on the caller's raw text (one
+ * read, one snapshot — no re-read window). Returns a malloc'd .bak path or
+ * NULL. Writes raw to "<path>.bak.<ts>" when drift confirmed. */
+static char *drift_check_raw(memory_store_t *s, const char *target, const char *raw) {
+    const char *path = path_for(s->mem_dir, target);
+    const char *q = raw;
+    while (*q && isspace((unsigned char)*q)) q++;
+    if (!*q) return NULL;
+    int pn = 0;
+    char **parsed = memory_store_parse_entries(raw, &pn);
+    /* roundtrip = ENTRY_DELIMITER.join(parsed) */
+    char *rt = malloc(1); rt[0] = 0; size_t rl = 0;
+    for (int i = 0; i < pn; i++) {
+        size_t a = (i ? strlen(ENTRY_DELIMITER) : 0) + strlen(parsed[i]);
+        rt = realloc(rt, rl + a + 1);
+        if (i) { memcpy(rt + rl, ENTRY_DELIMITER, strlen(ENTRY_DELIMITER)); rl += strlen(ENTRY_DELIMITER); }
+        memcpy(rt + rl, parsed[i], strlen(parsed[i])); rl += strlen(parsed[i]);
+        rt[rl] = 0;
+    }
+    /* strip whole-raw like Python's raw.strip() comparison */
+    char *stripped = strdup(q);
+    char *se = stripped + strlen(stripped);
+    while (se > stripped && isspace((unsigned char)*(se - 1))) *--se = 0;
+    int limit = char_limit_for(s, target);
+    long max_entry_len = 0;
+    for (int i = 0; i < pn; i++)
+        if ((long)strlen(parsed[i]) > max_entry_len) max_entry_len = (long)strlen(parsed[i]);
+    int drift = (strcmp(stripped, rt) != 0) || (max_entry_len > limit);
+    free(rt); free(stripped);
+    for (int i = 0; i < pn; i++) free(parsed[i]);
+    free(parsed);
+    if (!drift) return NULL;
+    char bak_path[2048];
+    snprintf(bak_path, sizeof(bak_path), "%s.bak.%ld", path, (long)time(NULL));
+    FILE *bf = fopen(bak_path, "wb");
+    if (!bf) {
+        char *fail = malloc(strlen(bak_path) + 64);
+        sprintf(fail, "%s (BACKUP FAILED — file unchanged on disk)", bak_path);
+        return fail;
+    }
+    fwrite(raw, 1, strlen(raw), bf);
+    fclose(bf);
+    return strdup(bak_path);
+}
+
+/* ---- _set_entries ---------------------------------------------------------- */
+/* PoP: memory_store_set_entries @ tools/memory_tool.py:_set_entries */
+void memory_store_set_entries(memory_store_t *s, const char *target,
+                              char **entries, int n) {
+    if (!s) return;
+    if (target && strcmp(target, "user") == 0) {
+        free_entries(s->user_entries, s->user_n);
+        s->user_entries = entries; s->user_n = n;
+    } else {
+        free_entries(s->memory_entries, s->memory_n);
+        s->memory_entries = entries; s->memory_n = n;
+    }
+}
+
+/* reload status: mirrors Python returning None (clean), a bak path string,
+ * or the _READ_FAILED sentinel. */
+#define MEMORY_RELOAD_OK      0
+#define MEMORY_RELOAD_FAILED  1   /* file exists but unreadable (_READ_FAILED) */
+
+/* ---- _reload_target ---------------------------------------------------------- */
+/* Re-read entries from disk into in-memory state under the caller's lock.
+ * Outputs: *bak_out receives a malloc'd drift backup path or NULL
+ * (unless skip_drift). Returns MEMORY_RELOAD_FAILED when the file exists
+ * but could not be read — callers MUST abort rather than persist. */
+/* PoP: memory_store_reload_target @ tools/memory_tool.py:_reload_target */
+int memory_store_reload_target(memory_store_t *s, const char *target,
+                               int skip_drift, char **bak_out) {
+    *bak_out = NULL;
+    const char *path = path_for(s->mem_dir, target);
+    int read_ok;
+    char *raw = memory_store_read_raw_checked(path, &read_ok);
+    if (!read_ok) { free(raw); return MEMORY_RELOAD_FAILED; }
+    if (!skip_drift)
+        *bak_out = drift_check_raw(s, target, raw);
+    int n;
+    char **fresh = memory_store_parse_entries(raw, &n);
+    fresh = dedup_entry_list(fresh, n, &n);
+    memory_store_set_entries(s, target, fresh, n);
+    free(raw);
+    return MEMORY_RELOAD_OK;
+}
+
+/* ---- load_from_disk ------------------------------------------------------------ */
+/* Load entries from MEMORY.md and USER.md under get_memory_dir(), capture the
+ * frozen (sanitized) system-prompt snapshot. */
+/* PoP: memory_store_load_from_disk @ tools/memory_tool.py:load_from_disk */
+void memory_store_load_from_disk(memory_store_t *s) {
+    char *dir = memory_tool_get_memory_dir();
+    memory_store_load(s, dir);
+    free(dir);
+    /* Rebuild each frozen snapshot from SANITIZED copies of the live entries
+     * (live state keeps raw text so the user can see + remove poison). */
+    const char *names[2] = {"memory", "user"};
+    const char *files[2] = {"MEMORY.md", "USER.md"};
+    char **snap_out[2] = {&s->snap_memory, &s->snap_user};
+    for (int t = 0; t < 2; t++) {
+        int n;
+        const char **e = entries_for(s, names[t], &n);
+        int sn;
+        char **san = memory_store_sanitize_entries_for_snapshot(e, n, files[t], &sn);
+        char *c = malloc(1); c[0] = 0; size_t cl = 0;
+        for (int i = 0; i < sn; i++) {
+            size_t a = (i ? strlen(ENTRY_DELIMITER) : 0) + strlen(san[i]);
+            c = realloc(c, cl + a + 1);
+            if (i) { memcpy(c + cl, ENTRY_DELIMITER, strlen(ENTRY_DELIMITER)); cl += strlen(ENTRY_DELIMITER); }
+            memcpy(c + cl, san[i], strlen(san[i])); cl += strlen(san[i]);
+            c[cl] = 0;
+        }
+        for (int i = 0; i < sn; i++) free(san[i]);
+        free(san);
+        free(*snap_out[t]);
+        *snap_out[t] = c;
+    }
+}
+
+/* ---- load_on_disk_store ----------------------------------------------------------- */
+/* Build a fresh on-disk store honoring configured char limits; falls back to
+ * the built-in defaults if config can't be loaded. Never fails. */
+/* PoP: memory_tool_load_on_disk_store @ tools/memory_tool.py:load_on_disk_store */
+memory_store_t *memory_tool_load_on_disk_store(void) {
+    int memory_char_limit = DEFAULT_MEMORY_LIMIT;
+    int user_char_limit = DEFAULT_USER_LIMIT;
+    bool memory_enabled = true, user_profile_enabled = true;
+    json_t *cfg = memory_tool_pure_get_builtin_memory_config(NULL);
+    memory_tool_pure_get_builtin_memory_store_flags(cfg, &memory_enabled, &user_profile_enabled);
+    /* int(mem_cfg.get("memory_char_limit", ...)) */
+    json_node_t *section = json_object_get((const json_node_t *)cfg, "memory");
+    (void)section;
+    /* limits come straight off the normalized section via the pure helpers'
+     * contract; read them defensively from the config object */
+    {
+        const json_node_t *mnode = json_object_get((const json_node_t *)cfg, "memory");
+        if (mnode) {
+            double v = json_object_get_number(mnode, "memory_char_limit", -1.0);
+            if (v > 0) memory_char_limit = (int)v;
+            v = json_object_get_number(mnode, "user_char_limit", -1.0);
+            if (v > 0) user_char_limit = (int)v;
+        }
+    }
+    json_free(cfg);
+    memory_store_t *store = memory_store_new(memory_char_limit, user_char_limit);
+    store->memory_enabled = memory_enabled ? 1 : 0;
+    store->user_profile_enabled = user_profile_enabled ? 1 : 0;
+    memory_store_load_from_disk(store);
+    return store;
+}
+
+/* ---- _batch_error ------------------------------------------------------------------- */
+/* Batch-abort error that reports live (uncommitted) state. */
+/* PoP: memory_store_batch_error @ tools/memory_tool.py:_batch_error */
+char *memory_store_batch_error(memory_store_t *s, const char *target, const char *message) {
+    char full[2048];
+    snprintf(full, sizeof(full),
+             "%s No operations were applied (batch is all-or-nothing).",
+             message ? message : "");
+    return consolidation_failure(s, target, resp_error(s, target, full, 0));
+}
+
+/* ---- _memory_target_error -------------------------------------------------------------- */
+/* Shared validation error for an invalid or disabled target. Returns a
+ * malloc'd JSON error dict, or NULL when the target is fine. */
+/* PoP: memory_tool_memory_target_error @ tools/memory_tool.py:_memory_target_error */
+char *memory_tool_memory_target_error(memory_store_t *store, const char *target) {
+    if (!target || (strcmp(target, "memory") != 0 && strcmp(target, "user") != 0)) {
+        char *out = malloc(256);
+        snprintf(out, 256,
+                 "{\"success\":false,\"error\":\"Invalid memory target '%s'. Use 'memory' or 'user'.\"}",
+                 target ? target : "");
+        return out;
+    }
+    if (memory_store_target_enabled(store, target)) return NULL;
+    const char *label = (strcmp(target, "user") == 0) ? "USER.md" : "MEMORY.md";
+    char *out = malloc(256);
+    snprintf(out, 256,
+             "{\"success\":false,\"error\":\"Built-in %s writes are disabled in memory config.\",\"target\":\"%s\"}",
+             label, target);
+    return out;
+}
+
+/* ---- _apply_write_gate ------------------------------------------------------------------- */
+/* Evaluate the single-op write gate. Returns a malloc'd JSON tool-result when
+ * the write should NOT proceed normally (*handled=1), or NULL (*handled=0). */
+/* PoP: memory_tool_apply_write_gate @ tools/memory_tool.py:_apply_write_gate */
+char *memory_tool_apply_write_gate(memory_store_t *store, const char *action,
+                                   const char *target, const char *content,
+                                   const char *old_text, int *handled) {
+    *handled = 0;
+    if (!action || (strcmp(action, "add") != 0 && strcmp(action, "replace") != 0 &&
+                    strcmp(action, "remove") != 0))
+        return NULL;   /* only mutating actions are gated */
+    if (!store || !store->gate) return NULL;   /* gate module unavailable -> fail open */
+    const char *label = (target && strcmp(target, "user") == 0) ? "user profile" : "memory";
+    char summary[128];
+    char detail[4096];
+    if (strcmp(action, "add") == 0) {
+        snprintf(summary, sizeof(summary), "add to %s", label);
+        snprintf(detail, sizeof(detail), "%s", content ? content : "");
+    } else if (strcmp(action, "replace") == 0) {
+        snprintf(summary, sizeof(summary), "replace in %s", label);
+        snprintf(detail, sizeof(detail), "old: %s\nnew: %s",
+                 old_text ? old_text : "", content ? content : "");
+    } else {
+        snprintf(summary, sizeof(summary), "remove from %s", label);
+        snprintf(detail, sizeof(detail), "%s", old_text ? old_text : "");
+    }
+    return eval_write_gate(store, target, summary, detail, handled);
+}
+
+/* ---- _apply_batch_write_gate ---------------------------------------------------------------- */
+/* Gate a whole batch as a single unit. Same contract as the single-op gate. */
+/* PoP: memory_tool_apply_batch_write_gate @ tools/memory_tool.py:_apply_batch_write_gate */
+char *memory_tool_apply_batch_write_gate(memory_store_t *store, const char *target,
+                                         const json_node_t *operations, int *handled) {
+    *handled = 0;
+    if (!store || !store->gate) return NULL;
+    if (!operations || !json_node_is_array(operations)) return NULL;
+    int opn = (int)json_array_size(operations);
+    const char *label = (target && strcmp(target, "user") == 0) ? "user profile" : "memory";
+    char summary[160];
+    snprintf(summary, sizeof(summary), "apply %d op(s) to %s", opn, label);
+    char *detail = malloc(1); detail[0] = 0; size_t dl = 0;
+    for (int i = 0; i < opn; i++) {
+        const json_node_t *op = json_array_get(operations, i);
+        const char *act = json_object_get_string(op, "action", "?");
+        const char *content = json_object_get_string(op, "content", "");
+        if (!content || !*content) content = json_object_get_string(op, "new_text", "");
+        const char *old_text = json_object_get_string(op, "old_text", "");
+        char line[1024];
+        if (strcmp(act, "remove") == 0)
+            snprintf(line, sizeof(line), "- remove: %s\n", old_text);
+        else if (strcmp(act, "replace") == 0)
+            snprintf(line, sizeof(line), "- replace: %s -> %s\n", old_text, content);
+        else
+            snprintf(line, sizeof(line), "- %s: %s\n", act, content);
+        size_t la = strlen(line);
+        detail = realloc(detail, dl + la + 1);
+        memcpy(detail + dl, line, la); dl += la; detail[dl] = 0;
+    }
+    char *gr = eval_write_gate(store, target, summary, detail, handled);
+    free(detail);
+    return gr;
+}
+
+/* ---- memory_tool (single entry point dispatcher) ------------------------------- */
+/* Thin annotated wrapper over memory_tool_run adding the new_text alias and
+ * target:null handling exactly as the Python dispatcher does. */
+/* PoP: memory_tool @ tools/memory_tool.py:memory_tool */
+char *memory_tool(memory_store_t *store, const char *action, const char *target,
+                  const char *content, const char *old_text, const char *new_text,
+                  const json_node_t *operations) {
+    if (target == NULL) target = "memory";          /* null treated as omitted */
+    if (content == NULL && new_text != NULL) content = new_text;  /* new_text alias */
+    return memory_tool_run(store, action, target, content, old_text, operations);
+}
+
+/* ---- _build_memory_schema_overrides ---------------------------------- */
+/* Narrow the advertised target surface using the availability snapshot.
+ * Returns a malloc'd JSON string {"description":..., "parameters":...} with
+ * the target enum narrowed to the enabled stores (and the TARGETS paragraph
+ * rewritten for single-store configurations). */
+/* PoP: memory_tool_build_memory_schema_overrides @ tools/memory_tool.py:_build_memory_schema_overrides */
+char *memory_tool_build_memory_schema_overrides(void) {
+    bool memory_enabled = true, user_profile_enabled = true;
+    json_t *cfg = memory_tool_pure_get_builtin_memory_config(NULL);
+    memory_tool_pure_get_builtin_memory_store_flags(cfg, &memory_enabled, &user_profile_enabled);
+    json_free(cfg);
+
+    /* targets list */
+    char targets[32] = "";
+    if (memory_enabled) strcat(targets, "\"memory\"");
+    if (user_profile_enabled) {
+        if (targets[0]) strcat(targets, ",");
+        strcat(targets, "\"user\"");
+    }
+
+    /* description rewrite for single-store configs */
+    const char *desc = NULL;   /* default: registry description as registered */
+    char desc_buf[4096];
+    if (memory_enabled && !user_profile_enabled) {
+        desc = "TARGET: only 'memory' is enabled for personal notes "
+               "(environment, conventions, tool quirks, lessons).";
+    } else if (!memory_enabled && user_profile_enabled) {
+        desc = "TARGET: only 'user' is enabled for user profile facts "
+               "(name, role, preferences, style).";
+    }
+    /* target schema description for single-store configs */
+    const char *target_desc = "Which memory store: 'memory' for personal notes, 'user' for user profile.";
+    if (memory_enabled && !user_profile_enabled)
+        target_desc = "The enabled built-in store: 'memory' for personal notes.";
+    else if (!memory_enabled && user_profile_enabled)
+        target_desc = "The enabled built-in store: 'user' for user profile.";
+
+    snprintf(desc_buf, sizeof(desc_buf),
+             "%s\\n\\n%s",
+             "Save durable facts to persistent memory that survive across sessions.",
+             desc ? desc : "");
+    (void)desc;
+
+    char *out = malloc(2048);
+    snprintf(out, 2048,
+             "{\"description\":\"%s\",\"parameters\":{\"type\":\"object\","
+             "\"properties\":{"
+             "\"action\":{\"type\":\"string\",\"enum\":[\"add\",\"replace\",\"remove\"]},"
+             "\"target\":{\"type\":\"string\",\"enum\":[%s],\"description\":\"%s\"},"
+             "\"content\":{\"type\":\"string\"},"
+             "\"old_text\":{\"type\":\"string\"},"
+             "\"operations\":{\"type\":\"array\",\"items\":{\"type\":\"object\","
+             "\"properties\":{\"action\":{\"type\":\"string\",\"enum\":[\"add\",\"replace\",\"remove\"]},"
+             "\"content\":{\"type\":\"string\"},\"old_text\":{\"type\":\"string\"}},"
+             "\"required\":[\"action\"]}}},"
+             "\"required\":[\"target\"]}}",
+             desc_buf, targets, target_desc);
+    return out;
+}
+
+/* ---- apply_memory_pending --------------------------------------------------------- */
+/* Replay a staged memory write directly against the store, bypassing the
+ * write gate (/memory approve handler). */
+/* PoP: memory_tool_apply_memory_pending @ tools/memory_tool.py:apply_memory_pending */
+char *memory_tool_apply_memory_pending(memory_store_t *store, const json_node_t *payload) {
+    if (!payload) return tool_error_json("Missing staged payload.");
+    const char *action = json_object_get_string(payload, "action", "");
+    (void)action;   /* dispatch below re-reads the payload */
+    const char *target = json_object_get_string(payload, "target", "memory");
+    char *terr = memory_tool_memory_target_error(store, target);
+    if (terr) return terr;
+    return memory_tool_apply_pending(store, payload);
+}

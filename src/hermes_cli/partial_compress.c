@@ -271,9 +271,6 @@
 /* PoP: commands_resolve @ hermes_cli/cli_agent_setup_mixin.py:_resolve_turn_agent_config */
 /* PoP: commands_resolve @ hermes_cli/cli_output.py:prompt */
 /* PoP: commands_resolve @ hermes_cli/cli_output.py:prompt_yes_no */
-/* PoP: commands_resolve @ hermes_cli/curses_ui.py:curses_checklist */
-/* PoP: commands_resolve @ hermes_cli/curses_ui.py:curses_radiolist */
-/* PoP: commands_resolve @ hermes_cli/curses_ui.py:curses_single_select */
 /* PoP: commands_resolve @ hermes_cli/setup.py:setup_agent_settings */
 /* PoP: commands_resolve @ hermes_cli/setup.py:setup_gateway */
 /* PoP: commands_resolve @ hermes_cli/setup.py:setup_model_provider */

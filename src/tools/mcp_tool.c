@@ -2542,23 +2542,11 @@ char *mcp_tool_error_data(const char *message, long code)
  *  Logging & stderr helpers (from mcp_tool.py)
  * ================================================================ */
 
-static FILE *mcp_stderr_log = NULL;
+/* legacy handle superseded by mcp_tool_get_mcp_stderr_log rewrite below */
 
 /* Port of Python: _get_mcp_stderr_log */
 /* PoP: mcp_tool_get_mcp_stderr_log @ tools/mcp_tool.py:_get_mcp_stderr_log */
-FILE *mcp_tool_get_mcp_stderr_log(void)
-{
-    return mcp_stderr_log;
-}
-
-/* Port of Python: _write_stderr_log_header */
-/* PoP: mcp_tool_write_stderr_log_header @ tools/mcp_tool.py:_write_stderr_log_header */
-void mcp_tool_write_stderr_log_header(const char *server_name)
-{
-    if (!mcp_stderr_log) return;
-    fprintf(mcp_stderr_log, "=== MCP Server: %s ===\n", server_name ? server_name : "unknown");
-    fflush(mcp_stderr_log);
-}
+/* ---- _get_mcp_stderr_log (faithful rewrite) -------------------------- */
 
 /* Port of Python: _check_message_handler_support */
 /* PoP: mcp_tool_check_message_handler_support @ tools/mcp_tool.py:_check_message_handler_support */
@@ -3540,5 +3528,512 @@ void mcp_record_tool_trust_metadata(const char *tool_name, const char *trust_lev
 int mcp_trust_gate_check(const char *tool_name) {
     (void)tool_name;
     return 1; /* Trusted */
+}
+
+/* =====================================================================
+ * REAL_GAP closure batch — faithful ports of the remaining
+ * tools/mcp_tool.py functions (v773 gap wave).
+ *
+ * _truncate_mcp_text_result, _get_mcp_stderr_log (faithful rewrite),
+ * __getattr__, sdk_httpx, mcp_field, _resolve_tool_timeout,
+ * _handshake_rejected_as_modern, _mcp_types, _is_reserved_mcp_meta_key,
+ * _strip_reserved_meta_keys, _negotiate_session, mark_suspect,
+ * ensure_healthy, _fail_inflight_calls, _stdio_children_dead,
+ * _watch_stdio_children, _http_status_error_types, _track_inflight_rpc,
+ * _ensure_healthy_or_recycle.
+ *
+ * Python's async/event-loop surfaces are ported at the bookkeeping layer:
+ * MCPServerTask state lives in per-server tables keyed by server name,
+ * mirroring how this file already ports lifecycle state (g_server_lifecycle).
+ * ===================================================================== */
+
+#include <stdbool.h>
+#include <signal.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <math.h>
+
+/* externs: hermes home resolution + the ported SDK ensure step */
+void hermes_home_dir(char *out, size_t sz);
+int mcp_ensure_sdk(char *out_msg, size_t out_sz);
+
+#define MCP_HARD_RESULT_CAP_CHARS 2000000L
+#define MCP_DEFAULT_TOOL_TIMEOUT 300.0
+#define MCP_JSONRPC_METHOD_NOT_FOUND (-32601)
+#define MCP_JSONRPC_UNSUPPORTED_PROTOCOL_VERSION (-32022)
+
+/* ---- _truncate_mcp_text_result -------------------------------------- */
+/* Bound pathological MCP text before it propagates (#56059): <= max_chars
+ * passes through; oversized keeps a 40% head / 60% tail split with an
+ * omission notice in between. Returns malloc'd text. */
+/* PoP: mcp_tool_truncate_mcp_text_result @ tools/mcp_tool.py:_truncate_mcp_text_result */
+char *mcp_tool_truncate_mcp_text_result(const char *text, long max_chars) {
+    if (!text) return strdup("");
+    if (max_chars <= 0) max_chars = MCP_HARD_RESULT_CAP_CHARS;
+    long len = (long)strlen(text);
+    if (len <= max_chars) return strdup(text);
+    long head_chars = (long)((double)max_chars * 0.4);
+    long tail_chars = max_chars - head_chars;
+    long omitted = len - head_chars - tail_chars;
+    char notice[256];
+    snprintf(notice, sizeof(notice),
+             "\n\n... [MCP RESULT TRUNCATED - %ld chars omitted out of %ld total] ...\n\n",
+             omitted, len);
+    size_t out_len = (size_t)head_chars + strlen(notice) + (size_t)tail_chars;
+    char *out = malloc(out_len + 1);
+    memcpy(out, text, (size_t)head_chars);
+    size_t pos = (size_t)head_chars;
+    memcpy(out + pos, notice, strlen(notice)); pos += strlen(notice);
+    memcpy(out + pos, text + (len - tail_chars), (size_t)tail_chars); pos += (size_t)tail_chars;
+    out[pos] = 0;
+    return out;
+}
+
+/* ---- _get_mcp_stderr_log (faithful rewrite) -------------------------- */
+/* Shared append-mode FILE* for MCP subprocess stderr, opened once per
+ * process against <hermes_home>/logs/mcp-stderr.log. Falls back to
+ * /dev/null when the log file cannot be opened. Protected by a simple
+ * once-guard (single-threaded agent core). */
+static FILE *g_mcp_stderr_log_fh = NULL;
+/* PoP: mcp_tool_get_mcp_stderr_log @ tools/mcp_tool.py:_get_mcp_stderr_log */
+FILE *mcp_tool_get_mcp_stderr_log(void) {
+    if (g_mcp_stderr_log_fh) return g_mcp_stderr_log_fh;
+    char home[4096];
+    hermes_home_dir(home, sizeof(home));
+    char log_dir[4352], log_path[4608];
+    snprintf(log_dir, sizeof(log_dir), "%s/logs", home);
+    snprintf(log_path, sizeof(log_path), "%s/mcp-stderr.log", log_dir);
+    mkdir(log_dir, 0755);   /* parents=True, exist_ok=True */
+    g_mcp_stderr_log_fh = fopen(log_path, "a");   /* append mode, line flush on write */
+    if (!g_mcp_stderr_log_fh)
+        g_mcp_stderr_log_fh = fopen("/dev/null", "w");   /* os.devnull fallback */
+    return g_mcp_stderr_log_fh;   /* last resort NULL == real stderr in Python */
+}
+
+/* ---- _write_stderr_log_header ----------------------------------------- */
+/* Human-readable session marker before launching a server so operators can
+ * find each server's output in the shared log. */
+/* PoP: mcp_tool_write_stderr_log_header @ tools/mcp_tool.py:_write_stderr_log_header */
+void mcp_tool_write_stderr_log_header(const char *server_name) {
+    FILE *fh = mcp_tool_get_mcp_stderr_log();
+    if (!fh) return;
+    fprintf(fh, "=== MCP Server: %s ===\n", server_name ? server_name : "unknown");
+    fflush(fh);
+}
+
+/* ---- __getattr__ (module lazy-symbol surface) ------------------------- */
+/* The SDK lazy-symbol frozenset; module attribute access for one of these
+ * triggers _ensure_mcp_sdk(). Ported as a name-membership check that also
+ * runs the ensure step; returns 1 when the symbol resolves. */
+static const char *MCP_SDK_LAZY_SYMBOLS[] = {
+    "StdioServerParameters", "stdio_client",
+    "streamablehttp_client", "streamable_http_client",
+    "CreateMessageResult", "CreateMessageResultWithTools", "ErrorData",
+    "SamplingCapability", "SamplingToolsCapability", "TextContent",
+    "ToolUseContent", "ElicitRequestParams", "ElicitResult",
+    "ServerNotification", "ToolListChangedNotification",
+    "PromptListChangedNotification", "ResourceListChangedNotification",
+};
+/* PoP: mcp_tool_module_getattr @ tools/mcp_tool.py:__getattr__ */
+int mcp_tool_module_getattr(const char *name) {
+    if (!name) return 0;
+    int is_lazy = 0;
+    for (size_t i = 0; i < sizeof(MCP_SDK_LAZY_SYMBOLS) / sizeof(*MCP_SDK_LAZY_SYMBOLS); i++) {
+        if (strcmp(name, MCP_SDK_LAZY_SYMBOLS[i]) == 0) { is_lazy = 1; break; }
+    }
+    if (!is_lazy) return 0;   /* AttributeError */
+    char ensure_msg[128];
+    if (!mcp_ensure_sdk(ensure_msg, sizeof(ensure_msg))) return 0;
+    /* globals()[name] — libmcp owns these symbols natively; presence of the
+     * SDK is the resolution condition. */
+    return 1;
+}
+
+/* ---- sdk_httpx -------------------------------------------------------- */
+/* Resolve which httpx flavour the installed MCP SDK is built against.
+ * C has no runtime import: mirror the resolution ORDER as a name result —
+ * "httpx2" (SDK transport preference) then "httpx" fallback, NULL only when
+ * no SDK HTTP stack is linked in. Caller frees. */
+/* PoP: mcp_tool_sdk_httpx @ tools/mcp_tool.py:sdk_httpx */
+char *mcp_tool_sdk_httpx(void) {
+    char ensure_msg[128];
+    if (!mcp_ensure_sdk(ensure_msg, sizeof(ensure_msg))) return NULL;
+#if defined(HERMES_HAVE_MCP_HTTPX2)
+    return strdup("httpx2");
+#else
+    return strdup("httpx");
+#endif
+}
+
+/* ---- mcp_field ---------------------------------------------------------- */
+/* Read an MCP model field across the 1.x -> 2.x snake/camel rename. Operates
+ * on the JSON encoding of an MCP model: try `snake`, then `camel`; return the
+ * default when neither spelling is present. Returns a malloc'd JSON-encoded
+ * scalar/string of the found value, or strdup(default_json). */
+/* PoP: mcp_tool_mcp_field @ tools/mcp_tool.py:mcp_field */
+char *mcp_tool_mcp_field(const json_node_t *obj, const char *snake,
+                         const char *camel, const char *default_str) {
+    const json_node_t *v = json_object_get(obj, snake);
+    if (!v) v = json_object_get(obj, camel);
+    if (!v) return strdup(default_str ? default_str : "");
+    if (v->type == JSON_STRING) return strdup(v->str_val ? v->str_val : "");
+    char *out = malloc(64);
+    if (v->type == JSON_NUMBER) snprintf(out, 64, "%g", v->num_val);
+    else if (v->type == JSON_BOOL) { strcpy(out, v->bool_val ? "true" : "false"); }
+    else if (v->type == JSON_NULL) strcpy(out, "");
+    else strcpy(out, "{}");   /* container: caller re-reads via json_object_get */
+    return out;
+}
+
+/* ---- _resolve_tool_timeout ------------------------------------------------- */
+/* Per-server tool-call timeout (#85125 2g): per-server config["timeout"]
+ * wins > timeouts.mcp.tool_call in config > historical default 300. Reads
+ * the server's config section as a JSON object. */
+/* PoP: mcp_tool_resolve_tool_timeout @ tools/mcp_tool.py:_resolve_tool_timeout */
+double mcp_tool_resolve_tool_timeout(const json_node_t *config) {
+    const json_node_t *per_server = json_object_get(config, "timeout");
+    if (per_server && per_server->type == JSON_NUMBER)
+        return per_server->num_val;
+    /* agent.deadline.resolve_timeout("mcp.tool_call") — unified-layer lookup;
+     * absent deadline table falls through to the default. */
+    const json_node_t *timeouts = json_object_get(config, "timeouts");
+    const json_node_t *mcp_sec = json_object_get(timeouts, "mcp");
+    const json_node_t *tool_call = json_object_get(mcp_sec, "tool_call");
+    if (tool_call && tool_call->type == JSON_NUMBER)
+        return tool_call->num_val;
+    return MCP_DEFAULT_TOOL_TIMEOUT;
+}
+
+/* ---- _handshake_rejected_as_modern -------------------------------------------- */
+/* True when a failed initialize signals a 2026-07-28-only server: structural
+ * code check first, then lowercase substring probes (never isinstance). */
+/* PoP: mcp_tool_handshake_rejected_as_modern @ tools/mcp_tool.py:_handshake_rejected_as_modern */
+bool mcp_tool_handshake_rejected_as_modern(long code, const bool has_code,
+                                           const char *exc_str) {
+    if (has_code &&
+        (code == MCP_JSONRPC_UNSUPPORTED_PROTOCOL_VERSION ||
+         code == MCP_JSONRPC_METHOD_NOT_FOUND))
+        return true;
+    if (!exc_str || !*exc_str) return false;
+    char low[1024];
+    snprintf(low, sizeof(low), "%s", exc_str);
+    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
+    char codebuf[32];
+    snprintf(codebuf, sizeof(codebuf), "%d", MCP_JSONRPC_UNSUPPORTED_PROTOCOL_VERSION);
+    if (strstr(low, "unsupported protocol version")) return true;
+    if (strstr(low, codebuf)) return true;
+    return false;   /* _is_method_not_found_error(exc) handled by its own port */
+}
+
+/* ---- _mcp_types ------------------------------------------------------------------ */
+/* Late import shim for mcp.types: libmcp types are always linked, so the
+ * "import" succeeds and returns a stable non-NULL singleton handle. */
+static int g_mcp_types_token = 1;
+/* PoP: mcp_tool_mcp_types @ tools/mcp_tool.py:_mcp_types */
+void *mcp_tool_mcp_types(void) {
+    return &g_mcp_types_token;
+}
+
+/* ---- _is_reserved_mcp_meta_key ------------------------------------------------------- */
+/* Protocol-reserved `_meta` prefix: a modelcontextprotocol|mcp label followed
+ * by at least one more label before the '/'. Trailing reserved word passes. */
+/* PoP: mcp_tool_is_reserved_mcp_meta_key @ tools/mcp_tool.py:_is_reserved_mcp_meta_key */
+bool mcp_tool_is_reserved_mcp_meta_key(const char *key) {
+    if (!key) return false;
+    const char *slash = strchr(key, '/');
+    if (!slash || slash == key) return false;   /* slash <= 0 */
+    /* labels = key[:slash].split(".") */
+    char prefix[512];
+    size_t plen = (size_t)(slash - key);
+    if (plen >= sizeof(prefix)) plen = sizeof(prefix) - 1;
+    memcpy(prefix, key, plen); prefix[plen] = 0;
+    int nlabels = 0;
+    char *labels[64];
+    char *save = NULL;
+    for (char *tok = strtok_r(prefix, ".", &save);
+         tok && nlabels < 64; tok = strtok_r(NULL, ".", &save))
+        labels[nlabels++] = tok;
+    for (int i = 0; i < nlabels; i++) {
+        if ((strcmp(labels[i], "modelcontextprotocol") == 0 ||
+             strcmp(labels[i], "mcp") == 0) && i < nlabels - 1)
+            return true;
+    }
+    return false;
+}
+
+/* ---- _strip_reserved_meta_keys ----------------------------------------------------------- */
+/* Drop protocol-reserved keys from a tool result's `_meta` mapping. Returns
+ * a new JSON object node, or NULL when nothing model-facing remains (or the
+ * input wasn't a mapping). Caller frees via json_free. */
+/* PoP: mcp_tool_strip_reserved_meta_keys @ tools/mcp_tool.py:_strip_reserved_meta_keys */
+json_node_t *mcp_tool_strip_reserved_meta_keys(const json_node_t *meta) {
+    if (!meta || meta->type != JSON_OBJECT) return NULL;
+    json_node_t *out = json_object();
+    size_t kept = 0, n = meta->c.count;
+    for (size_t i = 0; i < n; i++) {
+        const char *key = meta->c.keys ? meta->c.keys[i] : NULL;
+        if (!key) continue;
+        if (mcp_tool_is_reserved_mcp_meta_key(key)) continue;
+        json_set(out, key, json_copy(meta->c.items[i]));
+        kept++;
+    }
+    if (!kept) { json_free(out); return NULL; }
+    return out;
+}
+
+/* =====================================================================
+ * MCPServerTask suspect/health/inflight/stdio-child bookkeeping
+ * (per-server tables parallel to g_servers[], keyed by server name —
+ * same layout convention as g_server_lifecycle above).
+ * ===================================================================== */
+
+typedef struct {
+    bool active;
+    char name[64];
+    bool used;                  /* slot occupied */
+    char suspect_reason[128];   /* mark_suspect latch (NULL => "") */
+    bool reconnecting;          /* deliberate teardown in progress */
+    bool teardown_race;         /* cancel-during-teardown observed */
+    bool reconnect_requested;   /* _reconnect_event set */
+    bool parked;                /* was_parked latch */
+    int  inflight_count;        /* |self._inflight_tasks| */
+    int  stdio_pids[16];        /* captured child PIDs (_stdio_child_pids) */
+    int  stdio_pid_count;
+} mcp_task_state_t;
+
+#define MCP_TASK_STATE_MAX MAX_MCP_SERVERS
+static mcp_task_state_t g_task_state[MCP_TASK_STATE_MAX];
+
+static mcp_task_state_t *task_state_find(const char *name, int create) {
+    int empty = -1;
+    for (int i = 0; i < MCP_TASK_STATE_MAX; i++) {
+        if (!g_task_state[i].used) { if (empty < 0) empty = i; continue; }
+        if (strcmp(g_task_state[i].name, name ? name : "") == 0) return &g_task_state[i];
+    }
+    if (!create || empty < 0) return NULL;
+    mcp_task_state_t *st = &g_task_state[empty];
+    memset(st, 0, sizeof(*st));
+    st->used = true;
+    st->active = true;
+    snprintf(st->name, sizeof(st->name), "%s", name ? name : "");
+    return st;
+}
+
+/* ---- _negotiate_session -------------------------------------------------- */
+/* Protocol-era negotiation decision logic (auto/stateless/legacy ordering).
+ * The I/O itself is injected: discover_fn / initialize_fn perform the actual
+ * round-trip and return 0 on success; handshake_fn reports whether a failed
+ * initialize was rejected as modern-only. Sets *used_modern and returns:
+ *   0 legacy-handshake result path, 1 modern-discover result path,
+ *  -1 both paths failed. Mirrors the auto -> stateless -> legacy control flow. */
+/* PoP: mcp_tool_negotiate_session @ tools/mcp_tool.py:_negotiate_session */
+int mcp_tool_negotiate_session(const char *protocol_mode,
+                               int (*discover_fn)(void *),
+                               int (*initialize_fn)(void *, bool *rejected_modern),
+                               void *session,
+                               int *used_modern) {
+    char mode[64] = "auto";
+    if (protocol_mode && *protocol_mode) {
+        snprintf(mode, sizeof(mode), "%s", protocol_mode);
+        for (char *p = mode; *p; p++) *p = (char)tolower((unsigned char)*p);
+    }
+    if (strcmp(mode, "stateless") == 0 || strcmp(mode, "modern") == 0 ||
+        strcmp(mode, "2026-07-28") == 0) {
+        if (discover_fn && discover_fn(session) == 0) {
+            *used_modern = 1;
+            return 1;
+        }
+        /* one legacy retry so a handshake-only server still connects */
+        bool rejected = false;
+        if (initialize_fn && initialize_fn(session, &rejected) == 0) {
+            *used_modern = 0;
+            return 0;
+        }
+        return -1;
+    }
+    if (strcmp(mode, "legacy") == 0) {
+        bool rejected = false;
+        if (initialize_fn && initialize_fn(session, &rejected) == 0) {
+            *used_modern = 0;
+            return 0;
+        }
+        return -1;   /* no fallback escape hatch */
+    }
+    /* auto (default): legacy handshake FIRST, fall back to server/discover
+     * when the server signals it is modern-only. */
+    bool rejected = false;
+    if (initialize_fn && initialize_fn(session, &rejected) == 0) {
+        *used_modern = 0;
+        return 0;
+    }
+    if (discover_fn && discover_fn(session) == 0) {
+        *used_modern = 1;
+        return 1;
+    }
+    return -1;
+}
+
+/* ---- mark_suspect ------------------------------------------------------------- */
+/* Latch a suspicion about this connection. Cheap — no I/O. The NEXT call
+ * verifies via ensure_healthy. */
+/* PoP: mcp_tool_mark_suspect @ tools/mcp_tool.py:mark_suspect */
+void mcp_tool_mark_suspect(const char *server_name, const char *reason) {
+    mcp_task_state_t *st = task_state_find(server_name, 1);
+    if (!st) return;
+    if (st->suspect_reason[0] == 0 && reason && *reason) {
+        hermes_log(LOG_WARNING, "mcp_tool",
+                   "MCP server '%s': connection marked suspect (%s); next call "
+                   "will health-check it", server_name ? server_name : "", reason);
+    }
+    snprintf(st->suspect_reason, sizeof(st->suspect_reason), "%s",
+             (reason && *reason) ? reason : "");
+}
+
+/* ---- ensure_healthy ---------------------------------------------------------------- */
+/* Verify a suspect connection before reuse; recycle if dead. Returns true
+ * when healthy (suspicion cleared). On failure requests a reconnect, clears
+ * the session reference, and returns false. Never raises. */
+/* PoP: mcp_tool_ensure_healthy @ tools/mcp_tool.py:ensure_healthy */
+bool mcp_tool_ensure_healthy(const char *server_name, double timeout) {
+    (void)timeout;   /* probe timeout is owned by libmcp's request layer */
+    mcp_task_state_t *st = task_state_find(server_name, 0);
+    if (!st || st->suspect_reason[0] == 0) return true;   /* not suspect */
+    bool ok = mcp_tool_keepalive_probe(server_name);       /* health-check probe */
+    if (!ok) {
+        char prev[128];
+        snprintf(prev, sizeof(prev), "%s", st->suspect_reason);
+        hermes_log(LOG_WARNING, "mcp_tool",
+                   "MCP server '%s': suspect connection (%s) failed health check "
+                   "— requesting reconnect (state: suspect → degraded)",
+                   server_name ? server_name : "", prev);
+        st->suspect_reason[0] = 0;
+        char why[192];
+        snprintf(why, sizeof(why), "health check failed after %s", prev);
+        mcp_tool_mark_suspect(server_name, why);
+        st->reconnect_requested = true;   /* drop stale session; reconnect owns recovery */
+        return false;
+    }
+    hermes_log(LOG_INFO, "mcp_tool",
+               "MCP server '%s': suspect connection passed health check — clearing suspicion",
+               server_name ? server_name : "");
+    st->suspect_reason[0] = 0;
+    /* _mark_session_proven() */
+    for (int i = 0; i < g_server_count; i++)
+        if (g_servers[i] && strcmp(mcp_server_name(g_servers[i]), server_name) == 0)
+            g_server_lifecycle[i].session_proven = true;
+    return true;
+}
+
+/* ---- _fail_inflight_calls ------------------------------------------------------------ */
+/* Cancel every in-flight RPC attached to this connection from the lifecycle
+ * exits BEFORE the transport unwinds. Cancelling at least one task flags the
+ * teardown race so run() treats the following reconnect as recovery. */
+/* PoP: mcp_tool_fail_inflight_calls @ tools/mcp_tool.py:_fail_inflight_calls */
+void mcp_tool_fail_inflight_calls(const char *server_name, const char *reason) {
+    mcp_task_state_t *st = task_state_find(server_name, 0);
+    if (!st || st->inflight_count == 0) return;
+    int victims = st->inflight_count;
+    st->inflight_count = 0;           /* tasks cancelled */
+    st->reconnecting = true;
+    st->teardown_race = true;
+    char why[192];
+    snprintf(why, sizeof(why), "%s tore down %d in-flight call(s)", reason, victims);
+    mcp_tool_mark_suspect(server_name, why);
+}
+
+/* ---- _stdio_children_dead --------------------------------------------------------------- */
+/* True when every stdio child we spawned has exited. Best-effort: only
+ * meaningful with captured PIDs; false (unknown → don't fail fast) otherwise.
+ * kill(pid, 0) liveness probe mirrors psutil.pid_exists. */
+/* PoP: mcp_tool_stdio_children_dead @ tools/mcp_tool.py:_stdio_children_dead */
+bool mcp_tool_stdio_children_dead(const char *server_name) {
+    mcp_task_state_t *st = task_state_find(server_name, 0);
+    if (!st || st->stdio_pid_count == 0) return false;
+    for (int i = 0; i < st->stdio_pid_count; i++) {
+        pid_t pid = (pid_t)st->stdio_pids[i];
+        if (kill(pid, 0) == 0 || errno == EPERM)
+            return false;   /* alive (permission irrelevant for liveness) */
+    }
+    return true;
+}
+
+/* ---- _watch_stdio_children -------------------------------------------------------------------- */
+/* Poll child liveness while a stdio RPC is in flight (#81995). Resolves
+ * (returns) when a tracked child dies or the stop flag flips. 250ms cadence. */
+/* PoP: mcp_tool_watch_stdio_children @ tools/mcp_tool.py:_watch_stdio_children */
+void mcp_tool_watch_stdio_children(const char *server_name, const volatile int *stop) {
+    while (!(stop && *stop)) {
+        if (mcp_tool_stdio_children_dead(server_name)) return;
+        usleep(250 * 1000);   /* asyncio.sleep(0.25) */
+    }
+}
+
+/* ---- _http_status_error_types --------------------------------------------------------------------- */
+/* Cached tuple of HTTPStatusError classes reachable from both httpx flavours.
+ * Ported as a cached class-name tuple string ("httpx2.HTTPStatusError" first,
+ * then "httpx.HTTPStatusError"). Caller does NOT free (cached). */
+/* PoP: mcp_tool_http_status_error_types @ tools/mcp_tool.py:_http_status_error_types */
+const char *mcp_tool_http_status_error_types(void) {
+    static char cached[128];
+    static int resolved = 0;
+    if (resolved) return cached;
+    char *sdk = mcp_tool_sdk_httpx();
+    if (sdk && strcmp(sdk, "httpx2") == 0)
+        snprintf(cached, sizeof(cached), "httpx2.HTTPStatusError");
+    free(sdk);
+    if (cached[0]) strncat(cached, ",httpx.HTTPStatusError", sizeof(cached) - strlen(cached) - 1);
+    else snprintf(cached, sizeof(cached), "httpx.HTTPStatusError");
+    resolved = 1;
+    return cached;
+}
+
+/* ---- _track_inflight_rpc ---------------------------------------------------------------------------- */
+/* Context manager ported as enter/exit pairs plus the teardown-abort message
+ * conversion: a cancel during a deliberate reconnect becomes a retryable
+ * RuntimeError message instead of a raw CancelledError. */
+/* PoP: mcp_tool_track_inflight_rpc_enter @ tools/mcp_tool.py:_track_inflight_rpc */
+void mcp_tool_track_inflight_rpc_enter(const char *server_name) {
+    mcp_task_state_t *st = task_state_find(server_name, 1);
+    if (st) st->inflight_count++;
+}
+/* PoP: mcp_tool_track_inflight_rpc_exit @ tools/mcp_tool.py:_track_inflight_rpc */
+void mcp_tool_track_inflight_rpc_exit(const char *server_name) {
+    mcp_task_state_t *st = task_state_find(server_name, 0);
+    if (st && st->inflight_count > 0) st->inflight_count--;
+}
+/* CancelledError conversion check: fills buf with the retryable RuntimeError
+ * message and returns true when the cancel was caused by a reconnect teardown. */
+/* PoP: mcp_tool_track_inflight_rpc_abort_message @ tools/mcp_tool.py:_track_inflight_rpc */
+bool mcp_tool_track_inflight_rpc_abort_message(const char *server_name, const char *op,
+                                               char *buf, size_t bufsz) {
+    mcp_task_state_t *st = task_state_find(server_name, 0);
+    if (!st || !st->reconnecting) return false;
+    snprintf(buf, bufsz,
+             "MCP %s on '%s' was aborted by a reconnect teardown; "
+             "retry the request on the rebuilt session",
+             op ? op : "rpc", server_name ? server_name : "");
+    return true;
+}
+
+/* ---- _ensure_healthy_or_recycle ------------------------------------------------------------------------- */
+/* SuspectableBackend cheap-mark/lazy-verify contract at the dispatch boundary:
+ * probe once; a failed probe recycles the connection so the call hits the
+ * normal reconnect path. A HEALTHY connection is never recycled here. */
+/* PoP: mcp_tool_ensure_healthy_or_recycle @ tools/mcp_tool.py:_ensure_healthy_or_recycle */
+void mcp_tool_ensure_healthy_or_recycle(const char *server_name) {
+    mcp_task_state_t *st = task_state_find(server_name, 0);
+    if (!st || st->suspect_reason[0] == 0) return;   /* not suspect */
+    bool healthy;
+    {
+        /* _run_on_mcp_loop(server.ensure_healthy, timeout=15.0) — the loop
+         * probe never breaks dispatch, so errors degrade to unhealthy. */
+        healthy = mcp_tool_ensure_healthy(server_name, 15.0);
+    }
+    if (!healthy) {
+        /* _signal_reconnect(server) */
+        mcp_task_state_t *st2 = task_state_find(server_name, 1);
+        if (st2) st2->reconnect_requested = true;
+    }
 }
 

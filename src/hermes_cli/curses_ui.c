@@ -511,3 +511,261 @@ int hermes_cli_curses_ui_u_numbered_fallback(const char *arg) {
     printf("  picked: %s\n", t3 ? t3 + 1 : "");
     return 0;
 }
+
+
+/* ==================================================================
+ *  REAL_GAP wave — hermes_cli/curses_ui.py
+ * ================================================================== */
+
+#include <stdbool.h>
+#include "curses_widget.h"
+
+/* ── MenuNavigationStart.should_replay ─────────────────────────────── */
+/* PoP: curses_ui_should_replay @ hermes_cli/curses_ui.py:should_replay */
+int curses_ui_should_replay(int has_replay_value)
+{
+    /* replay_value is not _NO_REPLAY */
+    return has_replay_value ? 1 : 0;
+}
+
+/* ── scoped menu navigation handler (ContextVar → explicit stack) ──── */
+typedef void (*curses_nav_handler_fn)(int event, const char *value);
+/* events mirror MenuNavigationEvent */
+#define CURSES_NAV_EV_BEGIN  0
+#define CURSES_NAV_EV_RESOLVE 1
+#define CURSES_NAV_EV_CANCEL 2
+#define CURSES_NAV_EV_BACK   3
+
+#define NAV_HANDLER_STACK_MAX 64
+static curses_nav_handler_fn g_nav_handler = NULL;
+static curses_nav_handler_fn g_nav_stack[NAV_HANDLER_STACK_MAX];
+
+/* PoP: curses_ui_set_menu_navigation_handler @ hermes_cli/curses_ui.py:set_menu_navigation_handler */
+/* Returns a token (previous depth + 1); pass it to reset. 0 on overflow. */
+int curses_ui_set_menu_navigation_handler(curses_nav_handler_fn handler)
+{
+    for (int i = 0; i < NAV_HANDLER_STACK_MAX; i++) {
+        if (g_nav_stack[i] == NULL) {
+            g_nav_stack[i] = g_nav_handler;
+            g_nav_handler = handler;
+            return i + 1;
+        }
+    }
+    return 0;
+}
+
+/* PoP: curses_ui_reset_menu_navigation_handler @ hermes_cli/curses_ui.py:reset_menu_navigation_handler */
+void curses_ui_reset_menu_navigation_handler(int token)
+{
+    if (token < 1 || token > NAV_HANDLER_STACK_MAX) return;
+    g_nav_handler = g_nav_stack[token - 1];
+    g_nav_stack[token - 1] = NULL;
+}
+
+/* PoP: curses_ui_cancel_scoped_navigation @ hermes_cli/curses_ui.py:_cancel_scoped_navigation */
+void curses_ui_cancel_scoped_navigation(void)
+{
+    if (g_nav_handler != NULL) g_nav_handler(CURSES_NAV_EV_CANCEL, NULL);
+}
+
+/* PoP: curses_ui_back_scoped_navigation @ hermes_cli/curses_ui.py:_back_scoped_navigation */
+void curses_ui_back_scoped_navigation(void)
+{
+    if (g_nav_handler != NULL) g_nav_handler(CURSES_NAV_EV_BACK, NULL);
+}
+
+/* Sentinel results returned by the C numbered-input path in place of
+ * Python's _NumberedNavigation enum members. */
+#define CURSES_NUMBERED_CANCEL "\x01__numbered_cancel__"
+#define CURSES_NUMBERED_BACK   "\x01__numbered_back__"
+
+/* PoP: curses_ui_read_numbered_input @ hermes_cli/curses_ui.py:_read_numbered_input */
+/* Reads one numbered fallback choice. Without an active scoped flow this is
+ * plain stdin input(); with one active, prompt_toolkit supplies Escape /
+ * Ctrl+C / Left bindings — the C fallback maps EOF and ^C to the cancel
+ * sentinel and reports back-navigation via the BACK sentinel so setup flows
+ * keep their key semantics without a toolkit dependency. */
+char *curses_ui_read_numbered_input(const char *prompt_text)
+{
+    fputs(prompt_text ? prompt_text : "", stdout);
+    fflush(stdout);
+    char buf[1024];
+    if (!fgets(buf, sizeof buf, stdin)) {
+        if (feof(stdin)) {
+            curses_ui_cancel_scoped_navigation();
+            return strdup(CURSES_NUMBERED_CANCEL);
+        }
+        curses_ui_cancel_scoped_navigation();
+        return strdup("");
+    }
+    size_t n = strlen(buf);
+    while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (g_nav_handler != NULL && strcmp(buf, "\x03") == 0) {   /* Ctrl+C */
+        curses_ui_cancel_scoped_navigation();
+        return strdup(CURSES_NUMBERED_CANCEL);
+    }
+    if (g_nav_handler != NULL && (strcmp(buf, "\x1b[D") == 0 || strcmp(buf, "b") == 0)) {
+        curses_ui_back_scoped_navigation();
+        return strdup(CURSES_NUMBERED_BACK);
+    }
+    return strdup(buf);
+}
+
+/* ── CSI-u / modifyOtherKeys decoding helpers ─────────────────────── */
+
+typedef struct {
+    int codepoint;
+    int modifier;    /* default 1 */
+    int event_type;  /* press/repeat/release, default 1 */
+} curses_enhanced_key_t;
+
+/* PoP: curses_ui_parse_int @ hermes_cli/curses_ui.py:_parse_int */
+int curses_ui_parse_int(const char *value, int default_value)
+{
+    if (!value || !*value) return default_value;
+    char *end = NULL;
+    long v = strtol(value, &end, 10);
+    if (end == value) return default_value;
+    return (int)v;
+}
+
+/* PoP: curses_ui_parse_csi_u_key @ hermes_cli/curses_ui.py:_parse_csi_u_key */
+int curses_ui_parse_csi_u_key(const char *raw, curses_enhanced_key_t *out)
+{
+    out->codepoint = 0; out->modifier = 1; out->event_type = 1;
+    if (!raw || !*raw) return 0;
+    char buf[128];
+    snprintf(buf, sizeof buf, "%s", raw);
+    char *parts[8];
+    int nparts = 0;
+    char *save = NULL;
+    for (char *tok = strtok_r(buf, ";", &save); tok && nparts < 8;
+         tok = strtok_r(NULL, ";", &save))
+        parts[nparts++] = tok;
+    if (nparts < 1) return 0;
+    {   char cp[64];
+        snprintf(cp, sizeof cp, "%s", parts[0]);
+        char *colon = strchr(cp, ':');
+        if (colon) *colon = '\0';
+        out->codepoint = curses_ui_parse_int(cp, 0);
+    }
+    if (!out->codepoint) return 0;
+    if (nparts > 1) {
+        char m[64], e[64] = "";
+        snprintf(m, sizeof m, "%s", parts[1]);
+        char *colon = strchr(m, ':');
+        if (colon) { snprintf(e, sizeof e, "%s", colon + 1); *colon = '\0'; }
+        out->modifier = curses_ui_parse_int(m, 1);
+        if (*e) out->event_type = curses_ui_parse_int(e, 1);
+    }
+    return 1;
+}
+
+/* PoP: curses_ui_parse_csi_numbers @ hermes_cli/curses_ui.py:_parse_csi_numbers */
+json_t *curses_ui_parse_csi_numbers(const char *raw)
+{
+    json_t *arr = json_array();
+    if (!raw) return arr;
+    char buf[256];
+    snprintf(buf, sizeof buf, "%s", raw);
+    char *save = NULL;
+    for (char *tok = strtok_r(buf, ";", &save); tok;
+         tok = strtok_r(NULL, ";", &save)) {
+        char part[64];
+        snprintf(part, sizeof part, "%s", tok);
+        char *colon = strchr(part, ':');
+        if (colon) *colon = '\0';
+        json_append(arr, json_number((double)curses_ui_parse_int(part, 0)));
+    }
+    return arr;
+}
+
+#define NAV_SELECT    "select"
+#define NAV_TOGGLE    "toggle"
+#define NAV_CANCEL    "cancel"
+#define NAV_INTERRUPT "interrupt"
+#define NAV_NONE      "none"
+
+/* PoP: curses_ui_enhanced_key_action @ hermes_cli/curses_ui.py:_enhanced_key_action */
+const char *curses_ui_enhanced_key_action(int codepoint, int modifier)
+{
+    if (codepoint == 10 || codepoint == 13) return NAV_SELECT;
+    if (codepoint == 27) return NAV_CANCEL;
+    if (codepoint == 32) return NAV_TOGGLE;
+    /* CSI-u encodes Ctrl+C as 'c'/'C' plus the Ctrl bit (bit 2 of
+     * modifier-1). Lock-state bits may be set too — inspect the bit. */
+    int has_ctrl = (((modifier < 1 ? 1 : modifier) - 1) & 4) != 0;
+    if (codepoint == 3 ||
+        ((codepoint == 'c' || codepoint == 'C') && has_ctrl))
+        return NAV_INTERRUPT;
+    return NAV_NONE;
+}
+
+/* PoP: curses_ui_read_csi_tail @ hermes_cli/curses_ui.py:_read_csi_tail */
+/* Reads CSI/SS3 parameter bytes through the final byte using getch_fn.
+ * Returns malloc'd raw string; *final_byte gets the terminator or -1. */
+char *curses_ui_read_csi_tail(int (*getch_fn)(void *ctx), void *ctx,
+                              int *final_byte)
+{
+    char raw[33];
+    size_t n = 0;
+    raw[0] = '\0';
+    if (final_byte) *final_byte = -1;
+    for (int i = 0; i < 32; i++) {
+        int value = getch_fn(ctx);
+        if (value == -1) return strdup(raw);
+        if (value >= 0x40 && value <= 0x7E) {
+            if (final_byte) *final_byte = value;
+            return strdup(raw);
+        }
+        if (value >= 0x20 && value <= 0x3F) {
+            if (n + 1 < sizeof raw) raw[n++] = (char)value, raw[n] = '\0';
+            continue;
+        }
+        return strdup(raw);
+    }
+    return strdup(raw);
+}
+
+/* ── curses menus over libcurses_widget ───────────────────────────── */
+
+/* PoP: curses_checklist @ hermes_cli/curses_ui.py:curses_checklist */
+cw_selection_t *curses_checklist(const char *title, char **items,
+                                 int item_count, const int *selected,
+                                 int selected_count, const char *status_text)
+{
+    int *sel = NULL;
+    if (selected && selected_count > 0) {
+        sel = malloc((size_t)selected_count * sizeof(int));
+        memcpy(sel, selected, (size_t)selected_count * sizeof(int));
+    }
+    cw_selection_t val = cw_checklist(title ? title : "", items, item_count,
+                                      sel, selected_count,
+                                      status_text ? status_text : NULL);
+    free(sel);
+    if (!val.indices) return NULL;
+    cw_selection_t *out = malloc(sizeof *out);
+    if (out) { out->indices = val.indices; out->count = val.count; out->capacity = val.capacity; }
+    return out;
+}
+
+/* PoP: curses_radiolist @ hermes_cli/curses_ui.py:curses_radiolist */
+int curses_radiolist(const char *title, char **items, int item_count,
+                     int selected, int cancel_returns,
+                     const char *description, int searchable)
+{
+    return cw_radiolist(title ? title : "", items, item_count, selected,
+                        cancel_returns, description, searchable ? true : false);
+}
+
+/* PoP: curses_single_select @ hermes_cli/curses_ui.py:curses_single_select */
+int curses_single_select(const char *title, char **items, int item_count,
+                         int default_index, const char *cancel_label,
+                         int searchable)
+{
+    /* Selecting the synthetic cancel row resolves to None (-1), mirroring
+     * the old post-loop >= cancel_idx guard. */
+    return cw_picker(title ? title : "", items, item_count, default_index,
+                     searchable ? true : false,
+                     cancel_label ? cancel_label : "Cancel");
+}

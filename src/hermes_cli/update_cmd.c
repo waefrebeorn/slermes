@@ -4864,8 +4864,8 @@ bool upd_editable_install_is_current(const char *cwd, const char *pre_pull_sha) 
 
 /* ── CalledProcessError helpers (v706w2 parity batch) ──────────────── */
 
-/* PoP: upd_called_process_error_cmd_parts @ hermes_cli/update_cmd.py:_called_process_error_cmd_parts
- * C model: the "command" is the argv string array captured at spawn time.
+/* PoP: upd_called_process_error_cmd_parts @ hermes_cli/update_cmd.py:_called_process_error_cmd_parts */
+/* C model: the "command" is the argv string array captured at spawn time.
  * Returns a malloc'd NULL-terminated copy of argv (caller frees each element
  * and the array); NULL when there is nothing to normalize. */
 char **upd_called_process_error_cmd_parts(char *const cmd[]) {
@@ -4931,8 +4931,8 @@ bool upd_called_process_error_is_python_dep_install(char *const cmd[]) {
     return has_install && (has_pip || exe_is_pip_family);
 }
 
-/* PoP: upd_format_update_failure_stage @ hermes_cli/update_cmd.py:_format_update_failure_stage
- * Name the update stage that actually failed — keyed on what the command
+/* PoP: upd_format_update_failure_stage @ hermes_cli/update_cmd.py:_format_update_failure_stage */
+/* Name the update stage that actually failed — keyed on what the command
  * was, not on exception type (#87304, #85840). */
 const char *upd_format_update_failure_stage(char *const cmd[]) {
     extern bool upd_called_process_error_is_python_dep_install(char *const cmd[]);
@@ -4961,8 +4961,8 @@ static bool upd_profile_id_valid(const char *name) {
     return true;
 }
 
-/* PoP: upd_migrate_sibling_profile_configs @ hermes_cli/update_cmd.py:_migrate_sibling_profile_configs
- * Migrate every sibling profile's config.yaml to the current version (#91277
+/* PoP: upd_migrate_sibling_profile_configs @ hermes_cli/update_cmd.py:_migrate_sibling_profile_configs */
+/* Migrate every sibling profile's config.yaml to the current version (#91277
  * phase 2): iterate the profiles root, skip the active home, run the quiet
  * non-interactive migration. Returns count migrated; *skipped* gets profiles
  * whose config needed no migration. */

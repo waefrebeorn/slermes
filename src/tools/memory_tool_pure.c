@@ -44,6 +44,7 @@ char *memory_tool_get_memory_dir(void) {
 }
 
 /* --- _drift_error ------------------------------------------------- */
+/* PoP: memory_tool_drift_error @ tools/memory_tool.py:_drift_error */
 char *memory_tool_drift_error(const char *path_name, const char *bak_path) {
     char *out = (char *)malloc(2048);
     const char *pname = path_name ? path_name : "";
@@ -65,6 +66,7 @@ char *memory_tool_drift_error(const char *path_name, const char *bak_path) {
 }
 
 /* --- _read_failed_error ------------------------------------------- */
+/* PoP: memory_tool_read_failed_error @ tools/memory_tool.py:_read_failed_error */
 char *memory_tool_read_failed_error(const char *path_name) {
     char *out = (char *)malloc(1024);
     const char *pname = path_name ? path_name : "";

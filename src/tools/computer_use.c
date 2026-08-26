@@ -45,7 +45,6 @@ typedef struct {
 
 static bool noop_is_available(void) { return true; }
 static bool noop_start(void) { return true; }
-/* PoP: noop_stop @ tools/computer_use/cua_backend.py:stop */
 /* PoP: noop_stop @ tools/computer_use/tool.py:stop */
 static void noop_stop(void) {}
 /* PoP: noop_capture @ tools/computer_use/cua_backend.py:capture */

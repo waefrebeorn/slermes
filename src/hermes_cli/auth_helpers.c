@@ -18,9 +18,15 @@ static const char *PLACEHOLDERS[] = {
 };
 
 /*
- * PoP: has_usable_secret @ hermes_cli/auth.py:has_usable_secret
+ * PoP: auth_has_usable_secret @ hermes_cli/auth.py:has_usable_secret
+ * auth_-prefixed alias (declared in include/auth_helpers.h) over the
+ * canonical has_usable_secret definition in auth.c.
  */
-bool has_usable_secret(const char *value, int min_length);
+bool auth_has_usable_secret(const char *value, int min_length)
+{
+    extern bool has_usable_secret(const char *value, int min_length);
+    return has_usable_secret(value, min_length);
+}
 
 /* ── kimi base url ── */
 /* PoP: auth_resolve_kimi_base_url @ hermes_cli/auth.py:_resolve_kimi_base_url */

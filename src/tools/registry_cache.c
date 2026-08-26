@@ -161,13 +161,48 @@ static bool scope_match(const char *a, const char *b) {
 
 /* ── check_fn_cache_scope ───────────────────────────────────────────── */
 /* PoP: check_fn_cache_scope @ tools/registry.py:check_fn_cache_scope */
-char *check_fn_cache_scope(void) { /* Python default is also a no-op */ 
-    /* is_multiplex_active is not wired in the C single-home agent; single-
-     * profile processes keep the historical process-wide cache (scope==NULL,
-     * cache ACTIVE — NOT a bypass).  Fail-closed bypass is the empty string
-     * (CHECK_FN_CACHE_BYPASS) and only arises when multiplex is active but
-     * the profile override can't be resolved — not reachable in single-home. */
-    return NULL;
+char *check_fn_cache_scope(void) {
+    /* Python: browser-control request identity (session id + principal +
+     * transport family) → BYPASS both cache layers. The C core reads the
+     * same session env vars directly from the process environment. */
+    const char *sid = getenv("HERMES_SESSION_ID");
+    const char *principal = getenv("HERMES_BROWSER_CONTROL_PRINCIPAL");
+    const char *transport = getenv("HERMES_BROWSER_CONTROL_TRANSPORT_FAMILY");
+    bool all_bound = true;
+    const char *trio[3] = { sid, principal, transport };
+    for (int i = 0; i < 3; i++) {
+        const char *v = trio[i] ? trio[i] : "";
+        /* str(value or "").strip() must be non-empty */
+        const char *p = v;
+        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+        if (!*p) { all_bound = false; break; }
+    }
+    if (all_bound) return strdup(CHECK_FN_CACHE_BYPASS);
+
+    /* Single-profile processes keep the historical process-wide cache. */
+    extern bool secret_scope_is_multiplex_active(void);
+    if (!secret_scope_is_multiplex_active()) return NULL;
+
+    /* A multiplex gateway installs a Hermes-home override for every profile
+     * turn; the canonical profile key is the resolved override path. */
+    const char *override = getenv("HERMES_HOME");
+    if (!override || !*override) return strdup(CHECK_FN_CACHE_BYPASS);
+    char expanded[4096];
+    if (override[0] == '~' && (override[1] == '/' || override[1] == '\0')) {
+        const char *home = getenv("HOME");
+        snprintf(expanded, sizeof expanded, "%s%s", home ? home : "",
+                 override + 1);
+    } else {
+        snprintf(expanded, sizeof expanded, "%s", override);
+    }
+    char resolved[4096];
+    /* Path(...).expanduser().resolve() — strict=False keeps nonexistent dirs */
+    if (!realpath(expanded, resolved)) {
+        /* resolve(strict=False) still normalises; fall back to the expanded
+         * path rather than failing closed on a not-yet-created profile dir. */
+        snprintf(resolved, sizeof resolved, "%s", expanded);
+    }
+    return strdup(resolved);
 }
 
 /* ── _prune_check_fn_caches ────────────────────────────────────────── */
@@ -239,10 +274,55 @@ bool get_cached_check_fn_result(void *fn, bool *hit, bool default_value) {
     return result;
 }
 
+/* ── no_cache_check_fn: mark a check as uncached ───────────────────── */
+/* PoP: no_cache_check_fn @ tools/registry.py:no_cache_check_fn */
+/* Marks a local, config-backed availability check as uncached. The C
+ * registry keys checks by function pointer, so marking is a set insert. */
+#define NO_CACHE_FNS_MAX 256
+static void *g_no_cache_fns[NO_CACHE_FNS_MAX];
+static size_t g_no_cache_count = 0;
+
+void no_cache_check_fn(void *fn) {
+    if (!fn) return;
+    for (size_t i = 0; i < g_no_cache_count; i++)
+        if (g_no_cache_fns[i] == fn) return;
+    if (g_no_cache_count < NO_CACHE_FNS_MAX)
+        g_no_cache_fns[g_no_cache_count++] = fn;
+}
+
+static bool fn_is_no_cache(void *fn) {
+    for (size_t i = 0; i < g_no_cache_count; i++)
+        if (g_no_cache_fns[i] == fn) return true;
+    return false;
+}
+
+/* ── _run_check_fn_uncached ────────────────────────────────────────── */
+/* PoP: run_check_fn_uncached @ tools/registry.py:_run_check_fn_uncached */
+bool run_check_fn_uncached(bool (*fn)(void), bool unresolved_scope) {
+    /* Python wraps bool(fn()) in try/except; a C probe signals failure by
+     * returning false with the probe absent (fn == NULL) playing the
+     * raised-exception role. */
+    if (!fn) {
+        hermes_log(LOG_WARNING, "registry",
+                   "check_fn %s raised%s; dependent tools will be unavailable this turn",
+                   "?", unresolved_scope ? " while profile cache scope was unresolved" : "");
+        return false;
+    }
+    bool value = fn();
+    if (!value) {
+        hermes_log(LOG_WARNING, "registry",
+                   "check_fn %s failed%s; dependent tools will be unavailable this turn",
+                   "?", unresolved_scope ? " while profile cache scope was unresolved" : "");
+    }
+    return value;
+}
+
 /* ── cache write + read-for-call path (used by _check_fn_cached parity) ─ */
 /* PoP: check_fn_cached @ tools/registry.py:_check_fn_cached */
 bool check_fn_cached(bool (*fn)(void)) {
     double now = cfn_now();
+    /* Python: `if fn in _NO_CACHE_CHECK_FNS: return _run_check_fn_uncached(fn)` */
+    if (fn_is_no_cache((void *)fn)) return run_check_fn_uncached(fn, false);
     char *scope = check_fn_cache_scope();
     /* BYPASS (empty string): probe without caching, swallow errors. */
     if (scope && *scope == '\0') {

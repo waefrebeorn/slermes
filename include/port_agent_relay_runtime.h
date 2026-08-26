@@ -137,6 +137,26 @@ typedef struct relay_backend {
 
     /* llm_stream_close(handle) — release backend stream resources. */
     void (*llm_stream_close)(void *ctx, void *handle);
+
+    /* ── optional hooks for the plugin-lifecycle surface (may be NULL) ── */
+
+    /* scope.get_handle() -> current top-of-stack ScopeHandle (#81601).
+     * NULL hook => no orphan drain during scope-handle close. */
+    relay_handle_t (*scope_get_handle)(void *ctx);
+
+    /* plugin.report() -> opaque activation token (non-NULL == active),
+     * NULL hook => report unavailable (Python's exception branch). */
+    void *(*plugin_report)(void *ctx);
+
+    /* plugin.clear_async() awaited -> true on success. */
+    bool (*plugin_clear)(void *ctx);
+
+    /* plugin.load_dynamic_plugin_activation_specs(config_path) ->
+     * malloc'd JSON array of spec ids (caller frees); NULL on failure. */
+    char *(*plugin_load_dynamic_specs)(void *ctx, const char *config_path);
+
+    /* activation.close() for a token returned by plugin_report. */
+    void (*activation_close)(void *ctx, void *activation);
 } relay_backend_t;
 
 /* Install the process-wide backend used by every runtime created afterwards
@@ -440,5 +460,103 @@ bool pop_relay_scope(const relay_backend_t *be, relay_handle_t handle,
  * relay_instrumentation_enabled — may this inherited turn create Relay
  * instrumentation? */
 bool relay_instrumentation_enabled(void);
+
+
+/* ── REAL_GAP closure batch ────────────────────────────────────────────── */
+
+typedef struct relay_op_lease    relay_op_lease_t;      /* RelayOperationLease */
+typedef struct rr_scope_op_executor rr_scope_op_executor_t;
+typedef struct rr_scope_op_job   rr_scope_op_job_t;
+
+/* PoP: _scope_op_executor @ agent/relay_runtime.py:_scope_op_executor */
+rr_scope_op_executor_t *relay_scope_op_executor(void);
+rr_scope_op_job_t *relay_scope_op_submit(rr_scope_op_executor_t *ex,
+                                         void *(*fn)(void *), void *arg);
+bool relay_scope_op_result(rr_scope_op_job_t *slot, double timeout_s,
+                           void **out_result);
+
+/* PoP: _run_bounded_on_exit_thread @ agent/relay_runtime.py:_run_bounded_on_exit_thread */
+bool relay_run_bounded_on_exit_thread(void *(*fn)(void *), void *arg,
+                                      double timeout_s, void **out_result);
+
+/* PoP: _segments_config @ agent/relay_runtime.py:_segments_config */
+void relay_segments_config(bool *out_on_compaction, long *out_max_turns);
+/* PoP: _reset_segments_config_for_tests @ agent/relay_runtime.py:_reset_segments_config_for_tests */
+void relay_reset_segments_config_for_tests(void);
+
+/* PoP: RelayRuntime._begin_operation @ agent/relay_runtime.py:_begin_operation */
+bool relay_runtime_begin_operation(relay_runtime_t *rt);
+/* PoP: RelayRuntime._end_operation @ agent/relay_runtime.py:_end_operation */
+void relay_runtime_end_operation(relay_runtime_t *rt);
+/* PoP: RelayRuntime.acquire_operation_lease @ agent/relay_runtime.py:acquire_operation_lease */
+relay_op_lease_t *relay_runtime_acquire_operation_lease(relay_runtime_t *rt);
+/* PoP: RelayOperationLease.release @ agent/relay_runtime.py:release */
+void relay_op_lease_release(relay_op_lease_t *lease);
+bool relay_op_lease_released(const relay_op_lease_t *lease);
+
+/* Process plugin-configuration manager (_ProcessRelayPluginConfiguration). */
+/* PoP: _ProcessRelayPluginConfiguration.acquire @ agent/relay_runtime.py:acquire */
+int  relay_plugin_configuration_acquire(const char *owner_id);
+/* PoP: _ProcessRelayPluginConfiguration._remember @ agent/relay_runtime.py:_remember */
+int  relay_plugin_configuration_remember(const char *owner_id, int state);
+/* PoP: _ProcessRelayPluginConfiguration.release @ agent/relay_runtime.py:release */
+void relay_plugin_configuration_release(const char *owner_id);
+/* PoP: _ProcessRelayPluginConfiguration.retry_pending_cleanup @ agent/relay_runtime.py:retry_pending_cleanup */
+void relay_plugin_configuration_retry_pending_cleanup(void);
+/* PoP: _ProcessRelayPluginConfiguration._clear_active @ agent/relay_runtime.py:_clear_active */
+bool relay_plugin_configuration_clear_active(void);
+
+/* Module-level plugin helpers. */
+/* PoP: _resolve_plugin_awaitable @ agent/relay_runtime.py:_resolve_plugin_awaitable */
+void *relay_resolve_plugin_awaitable(void *value);
+/* PoP: _flush_relay_subscribers @ agent/relay_runtime.py:_flush_relay_subscribers */
+bool relay_flush_relay_subscribers(void);
+/* PoP: _clear_relay_plugins @ agent/relay_runtime.py:_clear_relay_plugins */
+bool relay_clear_relay_plugins(void);
+
+typedef struct {
+    char   *config_json;
+    char  **dynamic_specs;
+    size_t  n_dynamic;
+} relay_plugin_inputs_t;
+void relay_plugin_inputs_free(relay_plugin_inputs_t *pi);
+/* PoP: _configured_plugin_inputs @ agent/relay_runtime.py:_configured_plugin_inputs */
+relay_plugin_inputs_t *relay_configured_plugin_inputs(bool *out_error);
+
+/* PoP: RelayRuntime.rotate_session_scope @ agent/relay_runtime.py:rotate_session_scope */
+void relay_runtime_rotate_session_scope(relay_runtime_t *rt,
+                                        relay_session_t *session,
+                                        const char *reason);
+/* PoP: RelayRuntime._run_in_session_untracked @ agent/relay_runtime.py:_run_in_session_untracked */
+bool relay_runtime_run_in_session_untracked(relay_runtime_t *rt,
+                                            relay_session_t *session,
+                                            relay_session_cb callback,
+                                            void *user, bool allow_closing,
+                                            double timeout_s, void **out_result);
+/* PoP: RelayRuntime._close_scope_handle @ agent/relay_runtime.py:_close_scope_handle */
+char *relay_runtime_close_scope_handle(relay_runtime_t *rt,
+                                       relay_session_t *session,
+                                       relay_handle_t handle,
+                                       const char *output_json,
+                                       bool allow_closing,
+                                       const char *failure_label,
+                                       int drain_limit,
+                                       bool operation_already_held);
+/* PoP: RelayRuntime._close_session @ agent/relay_runtime.py:_close_session */
+void relay_runtime_close_admitted_session(relay_runtime_t *rt,
+                                          const char *event_session_id);
+/* PoP: RelayRuntime._finish_shutdown @ agent/relay_runtime.py:_finish_shutdown */
+void relay_runtime_finish_shutdown(relay_runtime_t *rt);
+/* PoP: RelayRuntime._finish_shutdown_after_operations @ agent/relay_runtime.py:_finish_shutdown_after_operations */
+void relay_runtime_finish_shutdown_after_operations(relay_runtime_t *rt);
+
+/* PoP: RelaySessionCoordinator._consume_deferred_close @ agent/relay_runtime.py:_consume_deferred_close */
+void relay_coordinator_consume_deferred_close(relay_coordinator_t *co,
+                                              relay_lease_t *lease);
+/* PoP: RelaySessionCoordinator.notify_session_compacted @ agent/relay_runtime.py:notify_session_compacted */
+void relay_coordinator_notify_session_compacted(relay_coordinator_t *co,
+                                                const char *profile_key,
+                                                const char *session_id,
+                                                const char *old_session_id);
 
 #endif /* PORT_AGENT_RELAY_RUNTIME_H */

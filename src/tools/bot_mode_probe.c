@@ -176,6 +176,7 @@ const char *bot_mode_probe_resolve_home(const char *home, char *out, size_t n) {
 }
 
 /* --- Python _hermes_root / _profile_name -------------------------- */
+/* PoP: bmp_hermes_root @ tools/bot_mode_probe.py:_hermes_root */
 static void bmp_hermes_root(const char *home, char *out, size_t n) {
     char parent[4096];
     dir_name(home, parent, sizeof(parent));
@@ -188,6 +189,7 @@ static void bmp_hermes_root(const char *home, char *out, size_t n) {
     }
     out[n - 1] = '\0';
 }
+/* PoP: bmp_profile_name @ tools/bot_mode_probe.py:_profile_name */
 static void bmp_profile_name(const char *home, char *out, size_t n) {
     char parent[4096];
     dir_name(home, parent, sizeof(parent));
@@ -202,6 +204,7 @@ static void bmp_profile_name(const char *home, char *out, size_t n) {
 }
 
 /* --- _is_bot_managed ---------------------------------------------- */
+/* PoP: bmp_is_bot_managed @ tools/bot_mode_probe.py:_is_bot_managed */
 static int bmp_is_bot_managed(const char *profile_dir) {
     char meta[4608];
     path_join(meta, sizeof(meta), profile_dir, "profile.yaml");
@@ -235,6 +238,7 @@ static int bmp_roster_cmp(const void *a, const void *b) {
     const bmp_roster_entry *eb = (const bmp_roster_entry *)b;
     return strcmp(ea->name, eb->name);
 }
+/* PoP: bmp_roster @ tools/bot_mode_probe.py:_roster */
 static bmp_roster_entry *bmp_roster(const char *root, size_t *count) {
     bmp_roster_entry *arr = (bmp_roster_entry *)malloc(sizeof(bmp_roster_entry) * 8);
     size_t cap = 8, n = 0;
@@ -280,6 +284,7 @@ static void bmp_roster_free(bmp_roster_entry *arr, size_t count) {
 }
 
 /* --- _soul_has_protocol ------------------------------------------- */
+/* PoP: bmp_soul_has_protocol @ tools/bot_mode_probe.py:_soul_has_protocol */
 static int bmp_soul_has_protocol(const char *profile_dir) {
     char soul[4608];
     path_join(soul, sizeof(soul), profile_dir, "SOUL.md");
@@ -291,6 +296,7 @@ static int bmp_soul_has_protocol(const char *profile_dir) {
 }
 
 /* --- _handle ------------------------------------------------------ */
+/* PoP: bmp_handle @ tools/bot_mode_probe.py:_handle */
 static void bmp_handle(const char *name, char *out, size_t n) {
     if (strcmp(name, "default") == 0) snprintf(out, n, "hermes");
     else snprintf(out, n, "%s", name);
@@ -298,6 +304,7 @@ static void bmp_handle(const char *name, char *out, size_t n) {
 }
 
 /* --- _peers (bot_peers keys, non-empty, sorted) ------------------- */
+/* PoP: bmp_peers @ tools/bot_mode_probe.py:_peers */
 static char **bmp_peers(const char *root, size_t *count) {
     *count = 0;
     char cfg[4608];
@@ -351,6 +358,7 @@ void bot_mode_probe_peers_free(char **names, size_t count) {
 }
 
 /* --- _peer_paragraph ---------------------------------------------- */
+/* PoP: bmp_peer_paragraph @ tools/bot_mode_probe.py:_peer_paragraph */
 static void bmp_peer_paragraph(const char *root, bmp_sb *sb) {
     size_t pc = 0;
     char **peers = bmp_peers(root, &pc);
@@ -383,6 +391,11 @@ static void bmp_peer_paragraph(const char *root, bmp_sb *sb) {
 }
 
 /* --- _build_section ----------------------------------------------- */
+static char *bmp_build_section(const char *home); /* fwd */
+static void bmp_roster_lines(const char *root, const char *me, bmp_sb *sb);
+static void bmp_remote_paragraph(const char *root, bmp_sb *sb);
+
+/* PoP: bmp_build_section @ tools/bot_mode_probe.py:_build_section */
 static char *bmp_build_section(const char *home) {
     char root[4608];
     bmp_hermes_root(home, root, sizeof(root));
@@ -417,19 +430,13 @@ static char *bmp_build_section(const char *home) {
 
     bmp_sb teammates;
     sb_init(&teammates);
-    int first = 1;
-    for (size_t i = 0; i < rc; i++) {
-        if (strcmp(roster[i].name, me) == 0) continue;
-        if (!first) sb_append(&teammates, ", ");
-        first = 0;
-        sb_append_c(&teammates, '`');
-        sb_append(&teammates, roster[i].name);
-        sb_append_c(&teammates, '`');
-    }
-    if (first) sb_append(&teammates, "(none yet)");
-
+    /* Python: "\n".join(_roster_lines(root, me)) or "- (no teammates yet)" */
+    bmp_roster_lines(root, me, &teammates);
+    if (teammates.len == 0) sb_append(&teammates, "- (no teammates yet)");
+    /* Python also appends _remote_paragraph(root). */
     bmp_sb bs;
     sb_init(&bs);
+    bmp_remote_paragraph(root, &bs);
     sb_append_nl(&bs, BMP_PROTOCOL_HEADING);
     sb_append(&bs, "This install runs Bot Mode: each Hermes profile is an agent teammate with ");
     sb_append(&bs, "one canonical \"Bot Chat\" conversation. To message a teammate, run on the ");
@@ -514,6 +521,7 @@ const char *get_bot_mode_protocol_section(const char *home, int force_refresh) {
     return section;
 }
 
+/* PoP: bot_mode_probe_reset_cache_for_tests @ tools/bot_mode_probe.py:_reset_cache_for_tests */
 void bot_mode_probe_reset_cache_for_tests(void) {
     for (size_t i = 0; i < g_cache_n; i++) {
         free(g_cache[i].key);
@@ -788,4 +796,138 @@ int stored_bot_chat_prompt_needs_upgrade(const char *stored_prompt, const char *
     if (strstr(stored_prompt, BMP_PROTOCOL_HEADING) != NULL) return 0;
     const char *section = get_bot_mode_protocol_section(home, 0);
     return (section && section[0] != '\0') ? 1 : 0;
+}
+
+/* ==================================================================
+ *  REAL_GAP wave — _profile_role, _roster_lines, _remote_paragraph,
+ *  is_bot_mode_managed (tools/bot_mode_probe.py)
+ * ================================================================== */
+
+/* PoP: bmp_profile_role @ tools/bot_mode_probe.py:_profile_role */
+static void bmp_profile_role(const char *profile_dir, char *out, size_t n) {
+    out[0] = '\0';
+    char meta[4608];
+    path_join(meta, sizeof(meta), profile_dir, "profile.yaml");
+    if (!path_is_file(meta)) return;
+    char *raw = read_text(meta);
+    if (!raw) return;
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse(raw, &err);
+    if (err) free(err);
+    free(raw);
+    if (!doc) { return; }
+
+    /* parts = [title?, description?]; line = " — ".join(parts); collapse
+     * whitespace; cap at 160 chars. Bounded and single-line. Never raises. */
+    bmp_sb parts; sb_init(&parts);
+    const char *title = yaml_get_string(doc, "ui_meta.hermes-bots.title");
+    if (title && *title) {
+        sb_append(&parts, title);
+    }
+    const char *desc = yaml_get_string(doc, "description");
+    if (desc && *desc) {
+        if (parts.len) sb_append(&parts, " \xe2\x80\x94 ");
+        sb_append(&parts, desc);
+    }
+    /* collapse internal whitespace runs to single spaces */
+    size_t o = 0;
+    for (size_t i = 0; i < parts.len && i < 160 + 512; i++) {
+        unsigned char c = (unsigned char)parts.buf[i];
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+            if (o && out[o-1] != ' ') out[o++] = ' ';
+        } else if (o < n - 1) {
+            out[o++] = (char)c;
+        }
+        if (o >= 160 && o < n) break;
+    }
+    while (o > 0 && out[o-1] == ' ') o--;
+    out[o] = '\0';
+    sb_free(&parts);
+    yaml_free(doc);
+}
+
+/* --- roster lines: "- `@handle` — role" per teammate -------------- */
+/* PoP: bmp_roster_lines @ tools/bot_mode_probe.py:_roster_lines */
+static void bmp_roster_lines(const char *root, const char *me, bmp_sb *sb) {
+    size_t rc = 0;
+    bmp_roster_entry *roster = bmp_roster(root, &rc);
+    int first = 1;
+    for (size_t i = 0; i < rc; i++) {
+        if (strcmp(roster[i].name, me) == 0) continue;
+        char role[256];
+        bmp_profile_role(roster[i].dir, role, sizeof(role));
+        char handle[1024];
+        bmp_handle(roster[i].name, handle, sizeof(handle));
+        if (!first) sb_append_c(sb, '\n');
+        first = 0;
+        sb_append(sb, "- `@");
+        sb_append(sb, handle);
+        sb_append_c(sb, '`');
+        if (role[0]) {
+            sb_append(sb, " \xe2\x80\x94 ");
+            sb_append(sb, role);
+        }
+    }
+    bmp_roster_free(roster, rc);
+}
+
+/* --- remote paragraph (Desktop relay teammates) ------------------- */
+extern json_t *bot_relay_read_remote_roster(const char *root);
+extern json_t *remote_target_forms(const json_t *roster);
+
+/* PoP: bmp_remote_paragraph @ tools/bot_mode_probe.py:_remote_paragraph */
+static void bmp_remote_paragraph(const char *root, bmp_sb *sb) {
+    json_t *roster = bot_relay_read_remote_roster(root);
+    if (!roster || roster->type != JSON_ARRAY || json_len(roster) == 0) {
+        if (roster) json_free(roster);
+        return;
+    }
+    json_t *forms = remote_target_forms(roster);
+    sb_append(sb, "\n\nTeammates on OTHER connected machines (reachable through the "
+                  "Desktop relay \xe2\x80\x94 message them with message_agent exactly like local "
+                  "teammates; replies arrive as completion notifications the same way):\n");
+    size_t nr = json_len(roster);
+    for (size_t i = 0; i < nr; i++) {
+        json_t *row = json_get(roster, i);
+        json_t *form = forms ? json_get(forms, i) : NULL;
+        if (!row || row->type != JSON_OBJECT) continue;
+        const char *label = NULL, *cid = NULL, *title = NULL, *desc = NULL, *fstr = NULL;
+        json_t *v;
+        if ((v = json_obj_get(row, "connection_label")) && v->type == JSON_STRING) label = v->str_val;
+        if ((v = json_obj_get(row, "connection_id")) && v->type == JSON_STRING) cid = v->str_val;
+        if ((v = json_obj_get(row, "title")) && v->type == JSON_STRING) title = v->str_val;
+        if ((v = json_obj_get(row, "description")) && v->type == JSON_STRING) desc = v->str_val;
+        if (form && form->type == JSON_STRING) fstr = form->str_val;
+        const char *where = (label && *label) ? label : ((cid && *cid) ? cid : "");
+        if (i) sb_append_c(sb, '\n');
+        sb_append(sb, "- `@");
+        sb_append(sb, fstr ? fstr : "");
+        sb_append(sb, "` \xe2\x80\x94 on ");
+        sb_append(sb, where);
+        if ((title && *title) || (desc && *desc)) {
+            sb_append(sb, " \xe2\x80\x94 ");
+            int wrote = 0;
+            if (title && *title) { sb_append(sb, title); wrote = 1; }
+            if (desc && *desc) { if (wrote) sb_append(sb, " \xe2\x80\x94 "); sb_append(sb, desc); }
+        }
+    }
+    if (forms) json_free(forms);
+    json_free(roster);
+}
+
+/* --- is_bot_mode_managed ------------------------------------------ */
+/* PoP: bot_mode_probe_is_bot_mode_managed @ tools/bot_mode_probe.py:is_bot_mode_managed */
+bool bot_mode_probe_is_bot_mode_managed(const char *home) {
+    char resolved[4608];
+    bot_mode_probe_resolve_home(home, resolved, sizeof(resolved));
+    char root[4608];
+    bmp_hermes_root(resolved, root, sizeof(root));
+    size_t rc = 0;
+    bmp_roster_entry *roster = bmp_roster(root, &rc);
+    bool any = false;
+    for (size_t i = 0; i < rc; i++) {
+        if (bmp_is_bot_managed(roster[i].dir)) { any = true; break; }
+    }
+    bmp_roster_free(roster, rc);
+    return any;
 }

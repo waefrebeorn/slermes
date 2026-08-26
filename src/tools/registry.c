@@ -4,12 +4,10 @@
  * Agent loop calls registry to find + dispatch tools.
  *
  * Thread safety: all operations on g_registry are serialized via
- * g_registry_mutex. Functions that return a tool_t* pointer return
- * a reference into the array; callers must not hold the pointer
- * across a realloc (registration). The main dispatch path
- * (registry_dispatch) holds the mutex across the handler call
- * for full safety.
+ * g_registry_mutex.
  */
+
+#define _GNU_SOURCE
 
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
@@ -1778,4 +1776,320 @@ int tools_registry_check_tool_availability(const char *arg) {
     const char *t1 = strchr(arg, '\t');
     printf("%s\n%s\n", arg, t1 ? t1 + 1 : "");
     return 0;
+}
+
+/* ==================================================================
+ *  Profile-scoped registry surface (tools/registry.py REAL_GAP wave)
+ *  Backing state mirrors ToolRegistry._scoped_tools,
+ *  _plugin_override_policy and _plugin_module_scopes. The global C
+ *  tool table plays the role of Python's _tools (process-global);
+ *  the overlay map below holds per-profile plugin registrations.
+ * ================================================================== */
+
+#include <limits.h>
+#include <dlfcn.h>
+#include "hermes_logger.h"
+#include "port_web_server_paths.h"   /* get_hermes_home() */
+
+/* ── scoped tool overlay (Python _scoped_tools) ─────────────────────── */
+#define SCOPED_TOOLS_MAX 256
+typedef struct { char scope[512]; char name[128]; } reg_scoped_tool_t;
+static reg_scoped_tool_t g_scoped_tools[SCOPED_TOOLS_MAX];
+static size_t g_scoped_tools_count = 0;
+
+/* Register a plugin-owned tool into a profile overlay (host seam used by
+ * plugin loaders; kept public for parity with register(scope=...)). */
+void tools_registry_register_scoped_tool(const char *scope, const char *name) {
+    if (!name || !*name) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_scoped_tools_count; i++) {
+        if (strcmp(g_scoped_tools[i].scope, scope ? scope : "") == 0 &&
+            strcmp(g_scoped_tools[i].name, name) == 0) {
+            pthread_mutex_unlock(&g_registry_mutex);
+            return;
+        }
+    }
+    if (g_scoped_tools_count < SCOPED_TOOLS_MAX) {
+        reg_scoped_tool_t *e = &g_scoped_tools[g_scoped_tools_count++];
+        snprintf(e->scope, sizeof e->scope, "%s", scope ? scope : "");
+        snprintf(e->name, sizeof e->name, "%s", name);
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* ── plugin override policy + module scopes ─────────────────────────── */
+#define PLUGIN_POLICIES_MAX 128
+typedef struct {
+    char     scope[512];      /* "" models Python None */
+    char     ns[256];
+    int      allowed;
+    uint64_t generation;      /* object identity for CAS restore */
+} reg_policy_t;
+static reg_policy_t g_plugin_policies[PLUGIN_POLICIES_MAX];
+static size_t g_plugin_policies_count = 0;
+
+#define PLUGIN_MODULE_SCOPES_MAX 128
+typedef struct { char ns[256]; char scopes[8][512]; size_t nscopes; } reg_mod_scope_t;
+static reg_mod_scope_t g_plugin_module_scopes[PLUGIN_MODULE_SCOPES_MAX];
+static size_t g_plugin_module_scopes_count = 0;
+
+/* Record durable module→scope attribution (mirrors
+ * register_plugin_override_policy's setdefault(...).add(scope)). */
+static void mod_scope_add(const char *ns, const char *scope) {
+    reg_mod_scope_t *m = NULL;
+    for (size_t i = 0; i < g_plugin_module_scopes_count; i++) {
+        if (strcmp(g_plugin_module_scopes[i].ns, ns) == 0) { m = &g_plugin_module_scopes[i]; break; }
+    }
+    if (!m) {
+        if (g_plugin_module_scopes_count >= PLUGIN_MODULE_SCOPES_MAX) return;
+        m = &g_plugin_module_scopes[g_plugin_module_scopes_count++];
+        snprintf(m->ns, sizeof m->ns, "%s", ns);
+        m->nscopes = 0;
+    }
+    const char *key = scope ? scope : "";
+    for (size_t i = 0; i < m->nscopes; i++)
+        if (strcmp(m->scopes[i], key) == 0) return;
+    if (m->nscopes < 8) snprintf(m->scopes[m->nscopes++], sizeof m->scopes[0], "%s", key);
+}
+
+/* Real policy registration backing store — mirrors
+ * register_plugin_override_policy(module_namespace, allowed, scope). */
+uint64_t tools_registry_plugin_register_policy(const char *module_namespace,
+                                               int allowed, const char *scope) {
+    if (!module_namespace) return 0;
+    pthread_mutex_lock(&g_registry_mutex);
+    reg_policy_t *slot = NULL;
+    const char *skey = scope ? scope : "";
+    for (size_t i = 0; i < g_plugin_policies_count; i++) {
+        if (strcmp(g_plugin_policies[i].scope, skey) == 0 &&
+            strcmp(g_plugin_policies[i].ns, module_namespace) == 0) { slot = &g_plugin_policies[i]; break; }
+    }
+    if (!slot && g_plugin_policies_count < PLUGIN_POLICIES_MAX) {
+        slot = &g_plugin_policies[g_plugin_policies_count++];
+        snprintf(slot->scope, sizeof slot->scope, "%s", skey);
+        snprintf(slot->ns, sizeof slot->ns, "%s", module_namespace);
+        slot->generation = 0;
+    }
+    if (!slot) { pthread_mutex_unlock(&g_registry_mutex); return 0; }
+    static uint64_t next_gen = 1;
+    slot->allowed = allowed ? 1 : 0;
+    slot->generation = next_gen++;
+    mod_scope_add(module_namespace, scope);   /* durable attribution */
+    uint64_t gen = slot->generation;
+    pthread_mutex_unlock(&g_registry_mutex);
+    return gen;
+}
+
+/* PoP: tools_registry_current_scope_key @ tools/registry.py:current_scope_key */
+char *tools_registry_current_scope_key(void) {
+    /* hermes_home_key(): stable key for the active Hermes home/profile. */
+    const char *home = get_hermes_home();
+    if (!home || !*home) home = ".";
+    char resolved[PATH_MAX];
+    if (!realpath(home, resolved)) snprintf(resolved, sizeof resolved, "%s", home);
+    return strdup(resolved);
+}
+
+/* PoP: tools_registry_merged_tools @ tools/registry.py:_merged_tools */
+/* Global tools overlaid with one profile's plugin tools. Returns a
+ * malloc'd NULL-terminated array of malloc'd tool names. */
+char **tools_registry_merged_tools(const char *scope, size_t *out_n) {
+    char *active = NULL;
+    if (!scope || !*scope) active = tools_registry_current_scope_key();
+    const char *as = scope ? scope : active;
+    char **out = NULL;
+    size_t n = 0, cap = 0;
+    pthread_mutex_lock(&g_registry_mutex);
+    /* merged = dict(self._tools) */
+    for (size_t i = 0; i < registry_get_count(); i++) {
+        const char *nm = registry_get_name(i);
+        if (n + 2 > cap) { cap = cap ? cap * 2 : 16; out = realloc(out, cap * sizeof(char *)); }
+        if (out) out[n++] = strdup(nm ? nm : "");
+    }
+    /* merged.update(self._scoped_tools.get(active_scope, {})) — overlay wins */
+    for (size_t i = 0; i < g_scoped_tools_count; i++) {
+        if (strcmp(g_scoped_tools[i].scope, as ? as : "") != 0) continue;
+        bool dup = false;
+        for (size_t j = 0; j < n; j++)
+            if (strcmp(out[j], g_scoped_tools[i].name) == 0) { dup = true; break; }
+        if (!dup) {
+            if (n + 2 > cap) { cap = cap ? cap * 2 : 16; out = realloc(out, cap * sizeof(char *)); }
+            if (out) out[n++] = strdup(g_scoped_tools[i].name);
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    free(active);
+    if (out) out[n] = NULL;
+    if (out_n) *out_n = n;
+    return out;
+}
+
+void tools_registry_free_names(char **names) {
+    if (!names) return;
+    for (size_t i = 0; names[i]; i++) free(names[i]);
+    free(names);
+}
+
+/* PoP: tools_registry_get_all_entries @ tools/registry.py:get_all_entries */
+char **tools_registry_get_all_entries(size_t *out_n) {
+    /* Active profile's merged entries: _snapshot_entries() over _merged_tools(). */
+    return tools_registry_merged_tools(NULL, out_n);
+}
+
+/* PoP: tools_registry_snapshot_plugin_override_policy @ tools/registry.py:snapshot_plugin_override_policy */
+/* Returns the authorization generation for (scope, ns), or 0 when absent
+ * (Python None has no identity to compare in CAS restore). */
+uint64_t tools_registry_snapshot_plugin_override_policy(const char *module_namespace,
+                                                        const char *scope) {
+    const char *skey = scope ? scope : "";
+    pthread_mutex_lock(&g_registry_mutex);
+    uint64_t gen = 0;
+    for (size_t i = 0; i < g_plugin_policies_count; i++) {
+        if (strcmp(g_plugin_policies[i].scope, skey) == 0 &&
+            strcmp(g_plugin_policies[i].ns, module_namespace) == 0) { gen = g_plugin_policies[i].generation; break; }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return gen;
+}
+
+/* PoP: tools_registry_restore_plugin_override_policy @ tools/registry.py:restore_plugin_override_policy */
+/* CAS-restore: only applies when `current` is still the live generation.
+ * previous_gen == 0 models Python previous=None (policy removed). */
+bool tools_registry_restore_plugin_override_policy(const char *module_namespace,
+                                                   uint64_t current, uint64_t previous_gen,
+                                                   int previous_allowed, const char *scope) {
+    const char *skey = scope ? scope : "";
+    pthread_mutex_lock(&g_registry_mutex);
+    reg_policy_t *slot = NULL;
+    for (size_t i = 0; i < g_plugin_policies_count; i++) {
+        if (strcmp(g_plugin_policies[i].scope, skey) == 0 &&
+            strcmp(g_plugin_policies[i].ns, module_namespace) == 0) { slot = &g_plugin_policies[i]; break; }
+    }
+    if (!slot || slot->generation != current) {
+        pthread_mutex_unlock(&g_registry_mutex);
+        return false;
+    }
+    if (previous_gen == 0) {
+        /* pop(key, None): remove but keep module-scope attribution */
+        size_t j = (size_t)(slot - g_plugin_policies);
+        memmove(&g_plugin_policies[j], &g_plugin_policies[j + 1],
+                (g_plugin_policies_count - j - 1) * sizeof(reg_policy_t));
+        g_plugin_policies_count--;
+    } else {
+        slot->generation = previous_gen;
+        slot->allowed = previous_allowed ? 1 : 0;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return true;
+}
+
+/* PoP: tools_registry_plugin_override_allowed @ tools/registry.py:_plugin_override_allowed */
+bool tools_registry_plugin_override_allowed(const char *scope, const char *module_namespace) {
+    if (!module_namespace) return false;
+    const char *skey = scope ? scope : "";
+    pthread_mutex_lock(&g_registry_mutex);
+    const reg_policy_t *policy = NULL, *fallback = NULL;
+    for (size_t i = 0; i < g_plugin_policies_count; i++) {
+        if (strcmp(g_plugin_policies[i].ns, module_namespace) != 0) continue;
+        if (strcmp(g_plugin_policies[i].scope, skey) == 0) { policy = &g_plugin_policies[i]; break; }
+        if (g_plugin_policies[i].scope[0] == '\0') fallback = &g_plugin_policies[i];
+    }
+    bool ok = ((policy ? policy : fallback) != NULL) && (policy ? policy->allowed : fallback->allowed);
+    pthread_mutex_unlock(&g_registry_mutex);
+    return ok;
+}
+
+/* PoP: tools_registry_callable_module @ tools/registry.py:_callable_module */
+/* Resolve the defining "module" of a handler through wrappers/partials.
+ * C handlers are function pointers; the defining module is approximated by
+ * the containing binary/shared object via dladdr (the fixed-at-definition
+ * property Python relies on). Returns malloc'd string or NULL. */
+char *tools_registry_callable_module(void *handler) {
+    if (!handler) return NULL;
+    Dl_info info;
+    if (dladdr(handler, &info) && info.dli_fname) {
+        const char *base = strrchr(info.dli_fname, '/');
+        base = base ? base + 1 : info.dli_fname;
+        const char *dot = strrchr(base, '.');
+        size_t n = dot ? (size_t)(dot - base) : strlen(base);
+        char *out = malloc(n + 1);
+        if (out) { memcpy(out, base, n); out[n] = '\0'; }
+        return out;
+    }
+    return strdup("");
+}
+
+/* PoP: tools_registry_plugin_namespace_of_module @ tools/registry.py:_plugin_namespace_of_module */
+char *tools_registry_plugin_namespace_of_module(const char *module_namespace) {
+    if (!module_namespace || !*module_namespace) return NULL;
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *best = NULL;
+    size_t best_len = 0;
+    for (size_t i = 0; i < g_plugin_module_scopes_count; i++) {
+        const char *ns = g_plugin_module_scopes[i].ns;
+        size_t l = strlen(ns);
+        bool match = (strcmp(module_namespace, ns) == 0) ||
+                     (strncmp(module_namespace, ns, l) == 0 && module_namespace[l] == '.');
+        if (match && l >= best_len) { best = ns; best_len = l; }
+    }
+    if (best) { char *o = strdup(best); pthread_mutex_unlock(&g_registry_mutex); return o; }
+    pthread_mutex_unlock(&g_registry_mutex);
+    /* Defensive gate: a handler defined under hermes_plugins.* is plugin
+     * code even before its policy is recorded. */
+    if (strncmp(module_namespace, "hermes_plugins.", 15) == 0) {
+        const char *dot2 = strchr(module_namespace + 15, '.');
+        size_t n = dot2 ? (size_t)(dot2 - module_namespace) : strlen(module_namespace);
+        char *o = malloc(n + 1);
+        if (o) { memcpy(o, module_namespace, n); o[n] = '\0'; }
+        return o;
+    }
+    return NULL;
+}
+
+/* PoP: tools_registry_plugin_scope_of @ tools/registry.py:_plugin_scope_of */
+/* Returns the profile scope bound to a loaded plugin module (malloc'd),
+ * or NULL when unbound. The multi-profile PermissionError case logs and
+ * returns NULL (C has no exception channel here). */
+char *tools_registry_plugin_scope_of(const char *module_namespace) {
+    if (!module_namespace) return NULL;
+    pthread_mutex_lock(&g_registry_mutex);
+    reg_mod_scope_t *m = NULL;
+    for (size_t i = 0; i < g_plugin_module_scopes_count; i++) {
+        if (strcmp(g_plugin_module_scopes[i].ns, module_namespace) == 0) { m = &g_plugin_module_scopes[i]; break; }
+    }
+    if (!m || m->nscopes == 0) { pthread_mutex_unlock(&g_registry_mutex); return NULL; }
+    char *active = tools_registry_current_scope_key();
+    for (size_t i = 0; i < m->nscopes; i++) {
+        if (strcmp(m->scopes[i], active) == 0) {
+            pthread_mutex_unlock(&g_registry_mutex);
+            free(active);
+            return strdup(active);
+        }
+    }
+    char *only = (m->nscopes == 1) ? strdup(m->scopes[0]) : NULL;
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (!only) {
+        hermes_log(LOG_ERROR, "registry",
+                   "Plugin module '%s' is active in multiple profiles and cannot "
+                   "register outside one of those scopes.", module_namespace);
+    }
+    free(active);
+    return only;
+}
+
+/* PoP: tools_registry_plugin_scope_for_module @ tools/registry.py:plugin_scope_for_module */
+char *tools_registry_plugin_scope_for_module(const char *module_namespace) {
+    char *owner = tools_registry_plugin_namespace_of_module(module_namespace);
+    char *scope = tools_registry_plugin_scope_of(owner ? owner : module_namespace);
+    free(owner);
+    return scope;
+}
+
+/* PoP: tools_registry_plugin_scope_for_callable @ tools/registry.py:plugin_scope_for_callable */
+char *tools_registry_plugin_scope_for_callable(void *callback) {
+    char *mod = tools_registry_callable_module(callback);
+    if (!mod || !*mod) { free(mod); return NULL; }
+    char *scope = tools_registry_plugin_scope_for_module(mod);
+    free(mod);
+    return scope;
 }

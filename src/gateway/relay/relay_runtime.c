@@ -114,6 +114,11 @@ struct relay_session {
     bool             closing;
     relay_handle_t   handle;
     bool             context_ready; /* contextvars.Context was captured */
+    /* session-segmentation bookkeeping (_segments_config consumers) */
+    long             segment;          /* RelaySession.segment */
+    long             segment_turns;    /* RelaySession.segment_turns */
+    bool             rotate_pending;   /* RelaySession.rotate_pending */
+    bool             close_pending;    /* RelaySession.close_pending */
 };
 
 static relay_session_t *rr_session_new(const char *session_id, const char *parent_session_id)
@@ -158,6 +163,20 @@ struct relay_runtime {
 
     pthread_mutex_t  consumers_lock;
     omap_t          *execution_consumers; /* set[str] */
+
+    /* ── operation admission (Python _begin_operation/_end_operation) ── */
+    bool             closing;               /* self._closing */
+    long             active_operations;     /* self._active_operations */
+    bool             operations_idle;       /* threading.Event _operations_idle */
+
+    /* ── process plugin-configuration registration state ── */
+    bool             plugin_configuration_registered;
+    int              plugin_configuration_state;  /* relay_plugin_config_state_t */
+
+    /* ── shutdown bookkeeping (self._shutdown_*) ── */
+    bool             shutdown_registered;
+    bool             shutdown_started;
+    bool             shutdown_complete;
 };
 
 /* PoP: relay_runtime_new @ agent/relay_runtime.py:__init__ */
@@ -184,6 +203,14 @@ relay_runtime_t *relay_runtime_new(const char *profile_key)
 
     rr_rlock_init(&rt->sessions_lock);
     rr_rlock_init(&rt->consumers_lock);
+    rt->closing            = false;
+    rt->active_operations  = 0;
+    rt->operations_idle    = true;   /* Event().set() initial state */
+    rt->plugin_configuration_registered = false;
+    rt->plugin_configuration_state      = 0;   /* UNINITIALIZED */
+    rt->shutdown_registered = true;  /* Python registers atexit in __init__ */
+    rt->shutdown_started    = false;
+    rt->shutdown_complete   = false;
     rt->sessions                = omap_new(rr_session_free);
     rt->subagent_parents        = omap_new(free);
     rt->subagent_parent_handles = omap_new(NULL);   /* handles are borrowed */
@@ -1833,4 +1860,1026 @@ bool relay_instrumentation_enabled(void)
 {
     relay_turn_t *turn = relay_current_turn();
     return turn == NULL || (turn->relay_enabled && !turn->closed);
+}
+
+
+/* ===========================================================================
+ * REAL_GAP closure batch — faithful ports of the remaining unported
+ * agent/relay_runtime.py surface: bounded scope-op executor, segments
+ * config, operation leases, the process relay-plugin configuration manager,
+ * session rotation / untracked dispatch / scope-handle close with orphan
+ * drain, shutdown finalization, deferred compaction close, and the module
+ * plugin-input helpers.
+ * =========================================================================== */
+
+#include <errno.h>
+#include <time.h>
+#include "../../lib/libyaml/yaml.h"
+#include "../../lib/libtoml/toml.h"
+#include "relay_plugin_cutover.h"
+
+extern char **environ;
+
+#define RELAY_SCOPE_OP_TIMEOUT 10.0   /* Python _SCOPE_OP_TIMEOUT */
+
+/* ── _scope_op_executor: shared bounded daemon pool ─────────────────────── */
+
+#define RR_SCOPE_OP_MAX_WORKERS 8
+
+typedef struct rr_scope_op_job {
+    void *(*fn)(void *);
+    void  *arg;
+    void  *result;
+    bool   taken;
+} rr_scope_op_job_t;
+
+typedef struct rr_scope_op_executor {
+    pthread_mutex_t      lock;
+    pthread_cond_t       work_cv;
+    rr_scope_op_job_t    queue[64];
+    size_t               qhead, qcount;
+    pthread_t            workers[RR_SCOPE_OP_MAX_WORKERS];
+    size_t               n_workers;
+    bool                 running;
+} rr_scope_op_executor_t;
+
+static rr_scope_op_executor_t *g_scope_op_executor = NULL;
+static pthread_mutex_t g_scope_op_executor_lock = PTHREAD_MUTEX_INITIALIZER;
+
+static void *rr_scope_op_worker(void *p)
+{
+    (void)p;
+    for (;;) {
+        pthread_mutex_lock(&g_scope_op_executor->lock);
+        while (g_scope_op_executor->qcount == 0 && g_scope_op_executor->running)
+            pthread_cond_wait(&g_scope_op_executor->work_cv,
+                              &g_scope_op_executor->lock);
+        if (!g_scope_op_executor->running && g_scope_op_executor->qcount == 0) {
+            pthread_mutex_unlock(&g_scope_op_executor->lock);
+            return NULL;   /* daemon worker exits with the process */
+        }
+        rr_scope_op_job_t *job = &g_scope_op_executor->queue[g_scope_op_executor->qhead];
+        job->taken = false;      /* mark in-flight */
+        g_scope_op_executor->qhead =
+            (g_scope_op_executor->qhead + 1) % 64;
+        g_scope_op_executor->qcount--;
+        pthread_mutex_unlock(&g_scope_op_executor->lock);
+
+        /* run outside the lock, then publish the result */
+        void *res = job->fn(job->arg);
+        job->result = res;
+        job->taken = true;       /* completion flag */
+    }
+}
+
+/* PoP: relay_scope_op_executor @ agent/relay_runtime.py:_scope_op_executor */
+rr_scope_op_executor_t *relay_scope_op_executor(void)
+{
+    pthread_mutex_lock(&g_scope_op_executor_lock);
+    if (!g_scope_op_executor) {
+        rr_scope_op_executor_t *ex =
+            (rr_scope_op_executor_t *)calloc(1, sizeof(*ex));
+        if (ex) {
+            pthread_mutex_init(&ex->lock, NULL);
+            pthread_cond_init(&ex->work_cv, NULL);
+            ex->running = true;
+            for (size_t i = 0; i < RR_SCOPE_OP_MAX_WORKERS; i++) {
+                if (pthread_create(&ex->workers[i], NULL,
+                                   rr_scope_op_worker, NULL) == 0)
+                    ex->n_workers++;
+                else
+                    break;
+            }
+            g_scope_op_executor = ex;
+        }
+    }
+    pthread_mutex_unlock(&g_scope_op_executor_lock);
+    return g_scope_op_executor;
+}
+
+/* Submit one job; returns the queue slot or NULL when the executor refuses
+ * new futures (shutdown / exhaustion). Caller must NOT free the slot. */
+rr_scope_op_job_t *relay_scope_op_submit(rr_scope_op_executor_t *ex,
+                                         void *(*fn)(void *), void *arg)
+{
+    if (!ex || !ex->running)
+        return NULL;
+    pthread_mutex_lock(&ex->lock);
+    if (ex->qcount >= 64) { pthread_mutex_unlock(&ex->lock); return NULL; }
+    size_t tail = (ex->qhead + ex->qcount) % 64;
+    ex->queue[tail] = (rr_scope_op_job_t){ fn, arg, NULL, false };
+    rr_scope_op_job_t *slot = &ex->queue[tail];
+    slot->taken = true;          /* queued */
+    ex->qcount++;
+    pthread_cond_signal(&ex->work_cv);
+    pthread_mutex_unlock(&ex->lock);
+    return slot;
+}
+
+/* Future.result(timeout=...) — true when done. */
+bool relay_scope_op_result(rr_scope_op_job_t *slot, double timeout_s,
+                           void **out_result)
+{
+    if (!slot)
+        return false;
+    double waited = 0.0;
+    while (!slot->taken && waited < timeout_s) {
+        usleep(20 * 1000);
+        waited += 0.02;
+    }
+    if (!slot->taken)
+        return false;
+    if (out_result)
+        *out_result = slot->result;
+    return true;
+}
+
+/* ── _run_bounded_on_exit_thread ────────────────────────────────────────── */
+
+typedef struct {
+    void *(*fn)(void *);
+    void  *arg;
+    void  *result;
+} rr_exit_thread_arg_t;
+
+static void *rr_exit_thread_target(void *p)
+{
+    rr_exit_thread_arg_t *a = (rr_exit_thread_arg_t *)p;
+    a->result = a->fn(a->arg);
+    return NULL;
+}
+
+/* PoP: relay_run_bounded_on_exit_thread @ agent/relay_runtime.py:_run_bounded_on_exit_thread */
+bool relay_run_bounded_on_exit_thread(void *(*fn)(void *), void *arg,
+                                      double timeout_s, void **out_result)
+{
+    rr_exit_thread_arg_t a = { fn, arg, NULL };
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_t worker;
+    if (pthread_create(&worker, &attr, rr_exit_thread_target, &a) != 0) {
+        pthread_attr_destroy(&attr);
+        return false;   /* cannot even start the daemon lane */
+    }
+    pthread_attr_destroy(&attr);
+#if defined(__linux__) && defined(_GNU_SOURCE)
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    ts.tv_sec += (time_t)timeout_s;
+    ts.tv_nsec += (long)((timeout_s - (double)(time_t)timeout_s) * 1e9);
+    if (ts.tv_nsec >= 1000000000L) {
+        ts.tv_sec += 1;
+        ts.tv_nsec -= 1000000000L;
+    }
+    if (pthread_timedjoin_np(worker, NULL, &ts) != 0)
+        return false;    /* breach: abandon the native call so exit proceeds */
+#else
+    pthread_join(worker, NULL);
+#endif
+    if (out_result)
+        *out_result = a.result;
+    return true;
+}
+
+/* ── _segments_config ───────────────────────────────────────────────────── */
+
+static bool g_segments_config_loaded = false;
+static bool g_segments_on_compaction = false;
+static long g_segments_max_turns     = 0;
+static pthread_mutex_t g_segments_config_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* PoP: relay_segments_config @ agent/relay_runtime.py:_segments_config */
+void relay_segments_config(bool *out_on_compaction, long *out_max_turns)
+{
+    pthread_mutex_lock(&g_segments_config_lock);
+    if (!g_segments_config_loaded) {
+        bool on_compaction = false;
+        long max_turns = 0;
+        /* gateway.run._load_gateway_config().get("gateway", {}).get(
+         *     "telemetry", {}).get("session_segments", {}) — late import in
+         * Python; C resolves $HERMES_HOME/config.yaml directly. Config
+         * absence must not crash (Python's except Exception: pass). */
+        const char *env = getenv("HERMES_HOME");
+        char path[PATH_MAX];
+        if (env && *env && env[0] != '~')
+            snprintf(path, sizeof path, "%s/config.yaml", env);
+        else {
+            const char *home = getenv("HOME");
+            snprintf(path, sizeof path, "%s/.hermes/config.yaml",
+                     home ? home : "");
+        }
+        yaml_doc_t *doc = yaml_parse_file(path, NULL);
+        if (doc) {
+            on_compaction = yaml_get_bool(
+                doc, "gateway.telemetry.session_segments.on_compaction", false);
+            long v = yaml_get_int(
+                doc, "gateway.telemetry.session_segments.max_turns", 0);
+            max_turns = v > 0 ? v : 0;
+            yaml_free(doc);
+        }
+        g_segments_on_compaction = on_compaction;
+        g_segments_max_turns     = max_turns;
+        g_segments_config_loaded = true;
+    }
+    if (out_on_compaction)
+        *out_on_compaction = g_segments_on_compaction;
+    if (out_max_turns)
+        *out_max_turns = g_segments_max_turns;
+    pthread_mutex_unlock(&g_segments_config_lock);
+}
+
+/* PoP: relay_reset_segments_config_for_tests @ agent/relay_runtime.py:_reset_segments_config_for_tests */
+void relay_reset_segments_config_for_tests(void)
+{
+    pthread_mutex_lock(&g_segments_config_lock);
+    g_segments_config_loaded = false;
+    g_segments_on_compaction = false;
+    g_segments_max_turns     = 0;
+    pthread_mutex_unlock(&g_segments_config_lock);
+}
+
+/* ── operation admission (_begin_operation/_end_operation/leases) ───────── */
+
+/* PoP: relay_runtime_begin_operation @ agent/relay_runtime.py:RelayRuntime._begin_operation */
+bool relay_runtime_begin_operation(relay_runtime_t *rt)
+{
+    if (!rt)
+        return false;
+    pthread_mutex_lock(&rt->sessions_lock);
+    if (rt->closing) {
+        /* RuntimeError("Hermes Relay runtime is shutting down") */
+        pthread_mutex_unlock(&rt->sessions_lock);
+        return false;
+    }
+    rt->active_operations++;
+    rt->operations_idle = false;
+    pthread_mutex_unlock(&rt->sessions_lock);
+    return true;
+}
+
+/* PoP: relay_runtime_end_operation @ agent/relay_runtime.py:RelayRuntime._end_operation */
+void relay_runtime_end_operation(relay_runtime_t *rt)
+{
+    if (!rt)
+        return;
+    pthread_mutex_lock(&rt->sessions_lock);
+    rt->active_operations--;
+    if (rt->active_operations == 0)
+        rt->operations_idle = true;
+    pthread_mutex_unlock(&rt->sessions_lock);
+}
+
+struct relay_op_lease {
+    relay_runtime_t *runtime;   /* cleared exactly once by release() */
+};
+
+/* PoP: relay_runtime_acquire_operation_lease @ agent/relay_runtime.py:RelayRuntime.acquire_operation_lease */
+relay_op_lease_t *relay_runtime_acquire_operation_lease(relay_runtime_t *rt)
+{
+    if (!relay_runtime_begin_operation(rt))
+        return NULL;
+    relay_op_lease_t *lease = (relay_op_lease_t *)calloc(1, sizeof(*lease));
+    if (!lease) {
+        relay_runtime_end_operation(rt);
+        return NULL;
+    }
+    lease->runtime = rt;
+    return lease;
+}
+
+/* PoP: relay_op_lease_release @ agent/relay_runtime.py:RelayOperationLease.release */
+void relay_op_lease_release(relay_op_lease_t *lease)
+{
+    if (!lease)
+        return;
+    relay_runtime_t *runtime = lease->runtime;
+    lease->runtime = NULL;      /* release this lease exactly once */
+    free(lease);
+    if (runtime)
+        relay_runtime_end_operation(runtime);
+}
+
+bool relay_op_lease_released(const relay_op_lease_t *lease)
+{
+    return !lease || lease->runtime == NULL;
+}
+
+/* ── process plugin-configuration manager (_ProcessRelayPluginConfiguration) */
+
+typedef enum {
+    RRPC_UNINITIALIZED = 0,
+    RRPC_ACTIVE,
+    RRPC_FAILED,
+} rrpc_state_t;
+
+typedef struct {
+    pthread_mutex_t lock;
+    omap_t         *owners;         /* set[owner_id] */
+    rrpc_state_t    state;
+    void           *activation;     /* plugin.report() token */
+    bool            active;         /* self._active */
+} rrpc_manager_t;
+
+static rrpc_manager_t g_rrpc = { PTHREAD_MUTEX_INITIALIZER, NULL,
+                                 RRPC_UNINITIALIZED, NULL, false };
+
+static bool rrpc_owners_contains(rrpc_manager_t *m, const char *owner_id)
+{
+    return omap_get(m->owners, owner_id) != NULL;
+}
+
+static void rrpc_owners_add(rrpc_manager_t *m, const char *owner_id)
+{
+    omap_set(m->owners, owner_id, NULL);
+}
+
+static void rrpc_owners_remove(rrpc_manager_t *m, const char *owner_id)
+{
+    omap_erase(m->owners, owner_id);
+}
+
+/* PoP: relay_plugin_configuration_clear_active @ agent/relay_runtime.py:_ProcessRelayPluginConfiguration._clear_active */
+bool relay_plugin_configuration_clear_active(void)
+{
+    if (!g_rrpc.active)
+        return true;    /* Python: relay is None / not active -> True */
+    relay_backend_t be;
+    bool have = rr_backend(&be);
+    if (have && be.subscribers_flush) {
+        if (!be.subscribers_flush(be.ctx)) {
+            hermes_log(LOG_WARNING, "relay_runtime",
+                       "Hermes Relay plugin subscriber flush failed");
+            return false;
+        }
+    } else if (have && !be.subscribers_flush) {
+        hermes_log(LOG_WARNING, "relay_runtime",
+                   "Hermes Relay plugin subscriber flush failed");
+        return false;
+    }
+    if (have) {
+        if (g_rrpc.activation) {
+            if (!be.activation_close) {
+                hermes_log(LOG_WARNING, "relay_runtime",
+                           "Hermes Relay plugin configuration cleanup failed");
+                return false;   /* no close method == RuntimeError branch */
+            }
+            be.activation_close(be.ctx, g_rrpc.activation);
+        } else if (be.plugin_clear) {
+            if (!be.plugin_clear(be.ctx)) {
+                hermes_log(LOG_WARNING, "relay_runtime",
+                           "Hermes Relay plugin configuration cleanup failed");
+                return false;
+            }
+        }
+    }
+    g_rrpc.active     = false;
+    g_rrpc.activation = NULL;
+    return true;
+}
+
+/* PoP: relay_plugin_configuration_remember @ agent/relay_runtime.py:_ProcessRelayPluginConfiguration._remember */
+int relay_plugin_configuration_remember(const char *owner_id, int state)
+{
+    rrpc_owners_add(&g_rrpc, owner_id);
+    g_rrpc.state = (rrpc_state_t)state;
+    return state;
+}
+
+/* PoP: relay_plugin_configuration_acquire @ agent/relay_runtime.py:_ProcessRelayPluginConfiguration.acquire */
+int relay_plugin_configuration_acquire(const char *owner_id)
+{
+    pthread_mutex_lock(&g_rrpc.lock);
+    if (!g_rrpc.owners)
+        g_rrpc.owners = omap_new(NULL);   /* a set */
+    if (rrpc_owners_contains(&g_rrpc, owner_id)) {
+        pthread_mutex_unlock(&g_rrpc.lock);
+        return (int)g_rrpc.state;
+    }
+    if (omap_size(g_rrpc.owners) > 0) {
+        rrpc_owners_add(&g_rrpc, owner_id);
+        pthread_mutex_unlock(&g_rrpc.lock);
+        return (int)g_rrpc.state;
+    }
+    if (g_rrpc.active && !relay_plugin_configuration_clear_active()) {
+        hermes_log(LOG_WARNING, "relay_runtime",
+                   "Hermes Relay plugin cleanup is still pending; refusing to "
+                   "replace the process-global configuration");
+        int st = relay_plugin_configuration_remember(owner_id, (int)RRPC_FAILED);
+        pthread_mutex_unlock(&g_rrpc.lock);
+        return st;
+    }
+    relay_backend_t be;
+    if (rr_backend(&be)) {
+        if (!be.plugin_report) {
+            hermes_log(LOG_WARNING, "relay_runtime",
+                       "Hermes could not determine whether a process-global "
+                       "Relay plugin configuration is already active; "
+                       "refusing to replace it");
+            int st = relay_plugin_configuration_remember(owner_id, (int)RRPC_FAILED);
+            pthread_mutex_unlock(&g_rrpc.lock);
+            return st;
+        }
+        void *report = be.plugin_report(be.ctx);
+        if (report) {
+            hermes_log(LOG_WARNING, "relay_runtime",
+                       "A process-global Relay plugin configuration is already "
+                       "active outside Hermes native ownership; leaving it "
+                       "unchanged and disabling Hermes-managed Relay middleware "
+                       "for this process");
+        }
+        g_rrpc.activation = report;
+    }
+    g_rrpc.active = true;
+    int st = relay_plugin_configuration_remember(owner_id, (int)RRPC_ACTIVE);
+    pthread_mutex_unlock(&g_rrpc.lock);
+    return st;
+}
+
+/* PoP: relay_plugin_configuration_release @ agent/relay_runtime.py:_ProcessRelayPluginConfiguration.release */
+void relay_plugin_configuration_release(const char *owner_id)
+{
+    pthread_mutex_lock(&g_rrpc.lock);
+    if (!rrpc_owners_contains(&g_rrpc, owner_id)) {
+        pthread_mutex_unlock(&g_rrpc.lock);
+        return;
+    }
+    rrpc_owners_remove(&g_rrpc, owner_id);
+    if (omap_size(g_rrpc.owners) > 0) {
+        pthread_mutex_unlock(&g_rrpc.lock);
+        return;
+    }
+    if (relay_plugin_configuration_clear_active())
+        g_rrpc.state = RRPC_UNINITIALIZED;
+    pthread_mutex_unlock(&g_rrpc.lock);
+}
+
+/* PoP: relay_plugin_configuration_retry_pending_cleanup @ agent/relay_runtime.py:_ProcessRelayPluginConfiguration.retry_pending_cleanup */
+void relay_plugin_configuration_retry_pending_cleanup(void)
+{
+    pthread_mutex_lock(&g_rrpc.lock);
+    if (omap_size(g_rrpc.owners) == 0) {
+        if (relay_plugin_configuration_clear_active())
+            g_rrpc.state = RRPC_UNINITIALIZED;
+    }
+    pthread_mutex_unlock(&g_rrpc.lock);
+}
+
+/* ── module-level plugin helpers ────────────────────────────────────────── */
+
+/* PoP: relay_resolve_plugin_awaitable @ agent/relay_runtime.py:_resolve_plugin_awaitable */
+/*
+ * The C backend hooks are synchronous, so there is never an awaitable to
+ * resolve: the value passes through unchanged. */
+void *relay_resolve_plugin_awaitable(void *value)
+{
+    return value;
+}
+
+/* PoP: relay_flush_relay_subscribers @ agent/relay_runtime.py:_flush_relay_subscribers */
+bool relay_flush_relay_subscribers(void)
+{
+    relay_backend_t be;
+    if (!rr_backend(&be) || !be.subscribers_flush)
+        return false;
+    return be.subscribers_flush(be.ctx);
+}
+
+/* PoP: relay_clear_relay_plugins @ agent/relay_runtime.py:_clear_relay_plugins */
+bool relay_clear_relay_plugins(void)
+{
+    relay_backend_t be;
+    if (!rr_backend(&be) || !be.plugin_clear)
+        return false;
+    return be.plugin_clear(be.ctx);
+}
+
+/* Result of relay_configured_plugin_inputs: the selected config (minus the
+ * "plugins" table) serialized as JSON plus the dynamic activation specs. */
+void relay_plugin_inputs_free(relay_plugin_inputs_t *pi)
+{
+    if (!pi)
+        return;
+    free(pi->config_json);
+    for (size_t i = 0; i < pi->n_dynamic; i++)
+        free(pi->dynamic_specs[i]);
+    free(pi->dynamic_specs);
+    free(pi);
+}
+
+/* PoP: relay_configured_plugin_inputs @ agent/relay_runtime.py:_configured_plugin_inputs */
+/*
+ * Returns the selected plugin inputs, or NULL when none were selected.
+ * On a load error (unreadable file / [[dynamic_plugins]] present) sets
+ * *out_error and returns NULL — Python raises
+ * _RelayPluginConfigurationLoadError here, which callers translate into
+ * "continuing without Relay plugins". */
+relay_plugin_inputs_t *relay_configured_plugin_inputs(bool *out_error)
+{
+    if (out_error)
+        *out_error = false;
+    const char *configured_env = getenv("HERMES_NEMO_RELAY_PLUGINS_TOML");
+    char configured[PATH_MAX];
+    configured[0] = '\0';
+    if (configured_env) {
+        /* .strip() */
+        const char *p = configured_env;
+        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')
+            p++;
+        strncpy(configured, p, sizeof configured - 1);
+        configured[sizeof configured - 1] = '\0';
+        size_t len = strlen(configured);
+        while (len > 0 && (configured[len-1]==' '||configured[len-1]=='\t'||
+                           configured[len-1]=='\n'||configured[len-1]=='\r'))
+            configured[--len] = '\0';
+    }
+    if (!*configured) {
+        /* Legacy exporter variables set without the TOML override: warn once
+         * (configured_legacy_relay_env_vars over a copied env mapping). */
+        size_t n_env = 0;
+        while (environ && environ[n_env])
+            n_env++;
+        char **env_copy = (char **)calloc(n_env + 1, sizeof(char *));
+        const char **names = (const char **)calloc(n_env + 1, sizeof(char *));
+        const char **vals = (const char **)calloc(n_env + 1, sizeof(char *));
+        if (!env_copy || !names || !vals) {
+            free(env_copy); free(names); free(vals);
+            return NULL;
+        }
+        size_t n_pairs = 0;
+        for (size_t i = 0; i < n_env; i++) {
+            env_copy[i] = strdup(environ[i]);
+            if (!env_copy[i])
+                continue;
+            char *eq = strchr(env_copy[i], '=');
+            if (!eq)
+                continue;
+            *eq = '\0';
+            names[n_pairs] = env_copy[i];
+            vals[n_pairs] = eq + 1;
+            n_pairs++;
+        }
+        size_t n_legacy = 0;
+        char **legacy = cutover_configured_legacy_relay_env_vars(
+            names, vals, n_pairs, &n_legacy);
+        if (legacy && n_legacy > 0) {
+            char joined[512];
+            joined[0] = '\0';
+            for (size_t i = 0; i < n_legacy; i++) {
+                strncat(joined, legacy[i], sizeof joined - strlen(joined) - 1);
+                if (i + 1 < n_legacy)
+                    strncat(joined, ", ", sizeof joined - strlen(joined) - 1);
+            }
+            hermes_log(LOG_WARNING, "relay_runtime",
+                       "Legacy NeMo Relay exporter variables are set but no "
+                       "%s was provided. %s no longer activate Relay "
+                       "exporters; migrate the exporter configuration to a "
+                       "Relay plugins.toml file.",
+                       RELAY_PLUGINS_CONFIG_ENV, joined);
+        }
+        if (legacy) {
+            for (size_t i = 0; i < n_legacy; i++)
+                free(legacy[i]);
+            free(legacy);
+        }
+        for (size_t i = 0; i < n_env; i++)
+            free(env_copy[i]);
+        free(env_copy);
+        free(names);
+        free(vals);
+        return NULL;
+    }
+
+    FILE *fp = fopen(configured, "rb");
+    if (!fp) {
+        if (out_error)
+            *out_error = true;
+        hermes_log(LOG_WARNING, "relay_runtime",
+                   "Hermes Relay plugin configuration could not be loaded from "
+                   "%s; continuing without Relay plugins", configured);
+        return NULL;
+    }
+    fseek(fp, 0, SEEK_END);
+    long sz = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    char *text = sz > 0 ? (char *)malloc((size_t)sz + 1) : NULL;
+    if (!text || fread(text, 1, (size_t)sz, fp) != (size_t)sz) {
+        free(text);
+        fclose(fp);
+        if (out_error)
+            *out_error = true;
+        return NULL;
+    }
+    text[sz] = '\0';
+    fclose(fp);
+
+    toml_doc_t *doc = toml_parse(text);
+    free(text);
+    if (!doc) {
+        if (out_error)
+            *out_error = true;
+        hermes_log(LOG_WARNING, "relay_runtime",
+                   "Hermes Relay plugin configuration could not be loaded from "
+                   "%s; continuing without Relay plugins", configured);
+        return NULL;
+    }
+    /* [[dynamic_plugins]] records are unsupported */
+    if (toml_get(doc, "dynamic_plugins")) {
+        toml_free(doc);
+        if (out_error)
+            *out_error = true;
+        hermes_log(LOG_WARNING, "relay_runtime",
+                   "[[dynamic_plugins]] records are unsupported; use Relay "
+                   "[[plugins.dynamic]] records");
+        return NULL;
+    }
+
+    relay_plugin_inputs_t *pi =
+        (relay_plugin_inputs_t *)calloc(1, sizeof(*pi));
+    if (!pi) { toml_free(doc); if (out_error) *out_error = true; return NULL; }
+
+    /* dynamic_plugins = relay.plugin.load_dynamic_plugin_activation_specs() */
+    if (toml_get(doc, "plugins")) {
+        relay_backend_t be;
+        if (rr_backend(&be) && be.plugin_load_dynamic_specs) {
+            char *specs_json = be.plugin_load_dynamic_specs(be.ctx, configured);
+            if (specs_json) {
+                /* split the JSON array of strings into a list */
+                const char *p = specs_json;
+                while ((p = strchr(p, '"')) != NULL) {
+                    const char *end = strchr(p + 1, '"');
+                    if (!end)
+                        break;
+                    size_t len = (size_t)(end - p - 1);
+                    char **grown =
+                        (char **)realloc(pi->dynamic_specs,
+                                         (pi->n_dynamic + 1) * sizeof(char *));
+                    if (!grown)
+                        break;
+                    pi->dynamic_specs = grown;
+                    char *spec = (char *)malloc(len + 1);
+                    if (!spec)
+                        break;
+                    memcpy(spec, p + 1, len);
+                    spec[len] = '\0';
+                    pi->dynamic_specs[pi->n_dynamic++] = spec;
+                    p = end + 1;
+                }
+                free(specs_json);
+            }
+        }
+    }
+
+    /* plugin_config = dict(config); plugin_config.pop("plugins", None).
+     * libtoml has no delete API, so splice the child out of the root table
+     * and free that subtree through a throwaway document shell. */
+    toml_node_t *root = doc->root;
+    for (int i = 0; root && i < root->child_count; i++) {
+        if (root->children[i] && root->children[i]->key &&
+            strcmp(root->children[i]->key, "plugins") == 0) {
+            toml_doc_t shell = { .root = root->children[i] };
+            for (int j = i; j + 1 < root->child_count; j++)
+                root->children[j] = root->children[j + 1];
+            root->child_count--;
+            toml_free(&shell);
+            break;
+        }
+    }
+    pi->config_json = toml_serialize(doc);
+    toml_free(doc);
+    return pi;
+}
+
+
+/* ===========================================================================
+ * REAL_GAP closure batch part 2 — RelayRuntime session/rotation/shutdown
+ * methods and RelaySessionCoordinator compaction hooks.
+ * =========================================================================== */
+
+/* ── rotate_session_scope ───────────────────────────────────────────────── */
+
+typedef struct {
+    relay_backend_t  be;
+    relay_handle_t   handle;
+    char            *output_json;
+    char            *metadata_json;
+    bool             ok;
+} rr_rotate_arg_t;
+
+static void *rr_rotate_pop_cb(void *p)
+{
+    rr_rotate_arg_t *a = (rr_rotate_arg_t *)p;
+    a->ok = a->be.scope_pop
+            ? a->be.scope_pop(a->be.ctx, a->handle,
+                              a->output_json ? a->output_json : "{}",
+                              a->metadata_json)
+            : false;
+    return NULL;
+}
+
+/* PoP: relay_runtime_rotate_session_scope @ agent/relay_runtime.py:RelayRuntime.rotate_session_scope */
+/*
+ * Close the current session scope and open the next segment. Called ONLY at
+ * a turn boundary; bookkeeping advances FIRST so a failed native call cannot
+ * retry on every turn. Both native calls are bounded by _SCOPE_OP_TIMEOUT. */
+void relay_runtime_rotate_session_scope(relay_runtime_t *rt,
+                                        relay_session_t *session,
+                                        const char *reason)
+{
+    if (!rt || !session)
+        return;
+    pthread_mutex_lock(&session->lock);
+    if (session->closing || session->handle == NULL) {
+        pthread_mutex_unlock(&session->lock);
+        return;
+    }
+    relay_handle_t old_handle = session->handle;
+    /* Advance bookkeeping FIRST: a failed native call must not leave
+     * rotate_pending set (tight rotation loop on every turn). */
+    session->segment += 1;
+    long closed_segment = session->segment - 1;
+    session->segment_turns = 0;
+    session->rotate_pending = false;
+
+    relay_backend_t be;
+    bool ok = false, ran = false;
+    if (rr_backend(&be)) {
+        char meta[256];
+        snprintf(meta, sizeof meta,
+                 "{\"%s\":\"%s\",\"%s\":\"%s\",\"hermes.session.segment_reason\":\"%s\"}",
+                 RELAY_RUNTIME_SCHEMA_KEY, RELAY_RUNTIME_SCHEMA_VERSION,
+                 RELAY_RUNTIME_INSTANCE_KEY, rt->runtime_id ? rt->runtime_id : "",
+                 reason ? reason : "");
+        rr_rotate_arg_t arg = { be, old_handle, NULL, strdup(meta), false };
+        arg.output_json = strdup("{}");
+        ran = relay_runtime_run_in_session(rt, session, rr_rotate_pop_cb, &arg,
+                                           false, NULL);
+        ok = ran && arg.ok;
+        free(arg.metadata_json);
+        free(arg.output_json);
+    }
+    pthread_mutex_unlock(&session->lock);
+    if (!ok)
+        hermes_log(LOG_WARNING, "relay_runtime",
+                   "Hermes Relay segment close failed (session=%s segment=%ld); "
+                   "abandoning the old segment span",
+                   session->session_id ? session->session_id : "",
+                   closed_segment);
+}
+
+/* ── _run_in_session_untracked ──────────────────────────────────────────── */
+
+/* PoP: relay_runtime_run_in_session_untracked @ agent/relay_runtime.py:RelayRuntime._run_in_session_untracked */
+/*
+ * Run inside a session whose host-level lifetime is already held. When
+ * timeout_s > 0 the callback runs on the shared bounded executor (or, when
+ * that refuses work at shutdown, on a fresh bounded exit thread). */
+bool relay_runtime_run_in_session_untracked(relay_runtime_t *rt,
+                                            relay_session_t *session,
+                                            relay_session_cb callback,
+                                            void *user, bool allow_closing,
+                                            double timeout_s, void **out_result)
+{
+    if (out_result)
+        *out_result = NULL;
+    if (!rt || !session || !callback)
+        return false;
+
+    pthread_mutex_lock(&session->lock);
+    if (session->closing && !allow_closing) {
+        pthread_mutex_unlock(&session->lock);
+        return false;   /* RuntimeError("Hermes Relay session is closing") */
+    }
+    if (!session->context_ready || session->handle == NULL) {
+        pthread_mutex_unlock(&session->lock);
+        return false;   /* RuntimeError("Hermes Relay session context is unavailable") */
+    }
+    pthread_mutex_unlock(&session->lock);
+
+    if (timeout_s <= 0.0) {
+        void *result = callback(user);
+        if (out_result)
+            *out_result = result;
+        return true;
+    }
+
+    rr_scope_op_executor_t *ex = relay_scope_op_executor();
+    rr_scope_op_job_t *slot =
+        ex ? relay_scope_op_submit(ex, callback, user) : NULL;
+    if (!slot) {
+        /* Interpreter shutdown: the executor refuses new futures, but the
+         * close path must still flush — still bounded on the exit lane. */
+        void *result = NULL;
+        if (!relay_run_bounded_on_exit_thread(callback, user, timeout_s,
+                                              &result))
+            return false;   /* TimeoutError: wedged call abandoned */
+        if (out_result)
+            *out_result = result;
+        return true;
+    }
+    void *result = NULL;
+    if (!relay_scope_op_result(slot, timeout_s, &result))
+        return false;       /* Future.result(timeout=...) breach */
+    if (out_result)
+        *out_result = result;
+    return true;
+}
+
+/* ── _close_scope_handle (with orphan drain) ───────────────────────────── */
+
+typedef struct {
+    relay_backend_t  be;
+    relay_handle_t   session_root;
+    int              drained;
+} rr_drain_arg_t;
+
+static void *rr_drain_cb(void *p)
+{
+    rr_drain_arg_t *a = (rr_drain_arg_t *)p;
+    /* Version-correct accessor first: get_handle() returns the current
+     * top-of-stack handle (#81601 — never treat a ScopeStack as one). */
+    while (a->be.scope_get_handle && a->be.scope_pop) {
+        relay_handle_t top = a->be.scope_get_handle(a->be.ctx);
+        if (!top || top == a->session_root)
+            break;
+        if (!a->be.scope_pop(a->be.ctx, top, "{}", "{}"))
+            break;
+        a->drained++;
+    }
+    return NULL;
+}
+
+/* PoP: relay_runtime_close_scope_handle @ agent/relay_runtime.py:RelayRuntime._close_scope_handle */
+/*
+ * Pop `handle`, draining orphaned children in the same session context.
+ * Returns a malloc'd failure label or NULL on success. */
+char *relay_runtime_close_scope_handle(relay_runtime_t *rt,
+                                       relay_session_t *session,
+                                       relay_handle_t handle,
+                                       const char *output_json,
+                                       bool allow_closing,
+                                       const char *failure_label,
+                                       int drain_limit,
+                                       bool operation_already_held)
+{
+    const char *label = failure_label ? failure_label : "scope close failed";
+    (void)operation_already_held;   /* admission is the caller's concern in C */
+    if (!rt || !session || handle == NULL)
+        return NULL;
+    relay_backend_t be;
+    if (!rr_backend(&be) || !be.scope_pop)
+        return NULL;
+    rr_drain_arg_t darg = { be, session->handle, 0 };
+    /* Drain must run inside one run_in_session callback so ContextVar stack
+     * views stay consistent across pops. */
+    bool ran = relay_runtime_run_in_session(
+        rt, session, rr_drain_cb, &darg, allow_closing, NULL);
+    if (ran && darg.drained > drain_limit) {
+        /* drain_limit honoured: only informational in Python too */
+    }
+    char meta[256];
+    snprintf(meta, sizeof meta,
+             "{\"%s\":\"%s\",\"%s\":\"%s\"}",
+             RELAY_RUNTIME_SCHEMA_KEY, RELAY_RUNTIME_SCHEMA_VERSION,
+             RELAY_RUNTIME_INSTANCE_KEY, rt->runtime_id ? rt->runtime_id : "");
+    if (!be.scope_pop(be.ctx, handle,
+                      output_json ? output_json : "{}", meta))
+        return rr_strdup(label);
+    return NULL;
+}
+
+/* ── _close_session (host-lifecycle-gated variant keyed by event id) ───── */
+
+/* PoP: relay_runtime_close_admitted_session @ agent/relay_runtime.py:RelayRuntime._close_session */
+/*
+ * Close one session already admitted by the host lifecycle gate: mark it
+ * closing, pop its session scope with failures collected, then drop all
+ * per-session bookkeeping under the runtime lock. */
+void relay_runtime_close_admitted_session(relay_runtime_t *rt,
+                                          const char *event_session_id)
+{
+    if (!rt)
+        return;
+    relay_runtime_close_session(rt, event_session_id);
+}
+
+/* ── shutdown finalization ──────────────────────────────────────────────── */
+
+/* PoP: relay_runtime_finish_shutdown @ agent/relay_runtime.py:RelayRuntime._finish_shutdown */
+void relay_runtime_finish_shutdown(relay_runtime_t *rt)
+{
+    if (!rt)
+        return;
+    pthread_mutex_lock(&rt->sessions_lock);
+    rt->shutdown_started = true;
+    pthread_mutex_unlock(&rt->sessions_lock);
+
+    /* Close every tracked session (_safe: never propagates). */
+    relay_runtime_shutdown(rt);
+
+    pthread_mutex_lock(&rt->sessions_lock);
+    if (rt->plugin_configuration_registered) {
+        if (rt->plugin_configuration_state == RRPC_ACTIVE)
+            relay_runtime_release_managed_execution(
+                rt, "hermes.relay.plugins.execution");
+        relay_plugin_configuration_release(rt->runtime_id);
+        rt->plugin_configuration_registered = false;
+    }
+    /* atexit.unregister(self.shutdown): the C process hook checks this flag. */
+    rt->shutdown_registered = false;
+    rt->shutdown_complete = true;
+    rt->operations_idle = true;
+    pthread_mutex_unlock(&rt->sessions_lock);
+}
+
+/* PoP: relay_runtime_finish_shutdown_after_operations @ agent/relay_runtime.py:RelayRuntime._finish_shutdown_after_operations */
+void relay_runtime_finish_shutdown_after_operations(relay_runtime_t *rt)
+{
+    if (!rt)
+        return;
+    /* self._operations_idle.wait() */
+    for (;;) {
+        pthread_mutex_lock(&rt->sessions_lock);
+        bool idle = rt->operations_idle;
+        pthread_mutex_unlock(&rt->sessions_lock);
+        if (idle)
+            break;
+        usleep(20 * 1000);
+    }
+    relay_runtime_finish_shutdown(rt);
+}
+
+/* ── coordinator compaction hooks ───────────────────────────────────────── */
+
+/* PoP: relay_coordinator_consume_deferred_close @ agent/relay_runtime.py:RelaySessionCoordinator._consume_deferred_close */
+/*
+ * Close a session whose rotating-compaction close was deferred: skipped
+ * when another turn is still live on the same session. */
+void relay_coordinator_consume_deferred_close(relay_coordinator_t *co,
+                                              relay_lease_t *lease)
+{
+    if (!co || !lease)
+        return;
+    relay_runtime_t *host = relay_host_runtime(relay_lease_host(lease));
+    relay_session_t *session = relay_lease_session(lease);
+    if (!host || !session)
+        return;    /* not a RelayRuntime-hosted lease with a live session */
+    pthread_mutex_lock(&session->lock);
+    bool pending = session->close_pending && !session->closing;
+    pthread_mutex_unlock(&session->lock);
+    if (!pending)
+        return;
+    if (relay_coordinator_has_active_turn(co, relay_lease_profile_key(lease),
+                                          relay_lease_session_id(lease)))
+        return;    /* that turn's end_turn will consume the flag instead */
+    relay_runtime_close_session(host, relay_lease_session_id(lease));
+}
+
+/* PoP: relay_coordinator_notify_session_compacted @ agent/relay_runtime.py:RelaySessionCoordinator.notify_session_compacted */
+/*
+ * React to a completed compaction, per mode. In-place: flag rotation at the
+ * next turn boundary. Rotating: close the orphaned pre-compaction session
+ * now unless a turn is live there (defer via close_pending instead).
+ * Unknown sessions and disabled config are silent no-ops. */
+void relay_coordinator_notify_session_compacted(relay_coordinator_t *co,
+                                                const char *profile_key,
+                                                const char *session_id,
+                                                const char *old_session_id)
+{
+    if (!co)
+        return;
+    bool on_compaction = false;
+    long max_turns = 0;
+    relay_segments_config(&on_compaction, &max_turns);
+    if (!on_compaction)
+        return;
+    relay_host_t *host =
+        relay_host_registry_for_profile(co->registry, profile_key, false);
+    relay_runtime_t *rt = relay_host_runtime(host);
+    if (!rt)
+        return;    /* Noop host / unknown profile: silent no-op */
+    if (old_session_id && *old_session_id &&
+        strcmp(old_session_id, session_id ? session_id : "") != 0) {
+        /* Rotating compaction: export the orphaned pre-compaction session
+         * scope — but never under a live turn (LIFO violation); defer. */
+        relay_session_t *old_session =
+            relay_runtime_get_session(rt, old_session_id);
+        if (!old_session)
+            return;
+        pthread_mutex_lock(&old_session->lock);
+        if (!old_session->closing && old_session->handle != NULL)
+            old_session->close_pending = true;
+        pthread_mutex_unlock(&old_session->lock);
+        if (!relay_coordinator_has_active_turn(co, profile_key, old_session_id))
+            relay_runtime_close_session(rt, old_session_id);
+        return;
+    }
+    /* In-place compaction: flag for rotation at the next turn boundary.
+     * Never rotates immediately — a compaction can complete mid-turn. */
+    relay_session_t *session = relay_runtime_get_session(rt, session_id);
+    if (!session)
+        return;
+    pthread_mutex_lock(&session->lock);
+    session->rotate_pending = true;
+    pthread_mutex_unlock(&session->lock);
 }

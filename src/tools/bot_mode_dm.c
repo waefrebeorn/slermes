@@ -18,7 +18,13 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <sys/select.h>
 #include <sys/stat.h>
+#include "bot_relay.h"
 #include "hermes_json.h"
 #include "bot_mode_probe.h"
 #include "bot_mode_dm.h"
@@ -63,7 +69,8 @@ static int str_ieq(const char *a, const char *b)
     return *a == '\0' && *b == '\0';
 }
 
-/* _err: {"error": msg[, "teammates": [...]][, "peers": [...]]} malloc'd JSON */
+/* PoP: bmd_err @ tools/bot_mode_dm.py:_err */
+/* _err: {"error": msg, "reason": classify(msg)[, "teammates"][, "peers"]} */
 static char *bmd_err(const char *message,
                      char **roster, size_t rn,
                      char **peers, size_t pn)
@@ -71,6 +78,13 @@ static char *bmd_err(const char *message,
     json_t *o = json_object();
     if (!o) return strdup("{\"error\":\"alloc failed\"}");
     json_set(o, "error", json_string(message ? message : ""));
+    {   /* Python: payload["reason"] = classify_agent_error(message) */
+        extern void bot_failure_classify_agent_error(const char *, char *, size_t);
+        char reason[64];
+        bot_failure_classify_agent_error(message ? message : "", reason, sizeof reason);
+        if (reason[0]) json_set(o, "reason", json_string(reason));
+        else json_set(o, "reason", json_string(""));
+    }
     if (roster) {
         json_t *arr = json_array();
         for (size_t i = 0; i < rn; i++) json_append(arr, json_string(roster[i]));
@@ -686,4 +700,485 @@ done:
     free(payload);
     free(dm_file);
     return result;
+}
+
+
+/* ==================================================================
+ *  REAL_GAP wave — tools/bot_mode_dm.py: _peers, _try_relay_delivery,
+ *  _dm_dir, cleanup_bot_dm_cache, _sweep_stale_dm_files,
+ *  _unlink_dm_file, _delivery_lock, _run_delivery, _delivery_command,
+ *  _start_delivery, _delivery_main, _agent_home, _session_title
+ * ================================================================== */
+
+#define _DM_DIR_NAME "hermes-dm"
+#define _DM_STALE_SECONDS (24.0 * 60.0 * 60.0)
+
+extern char **bot_mode_probe_peers(const char *root, size_t *count);
+extern void bot_mode_probe_peers_free(char **names, size_t count);
+extern json_t *bot_relay_read_remote_roster(const char *root);
+extern json_t *resolve_remote_target(const char *raw_target, const json_t *roster);
+extern json_t *enqueue_envelope(const char *root, const json_t *target,
+                                const char *message, const char *sender_profile,
+                                const char *sender_handle, bot_relay_error_t *err);
+extern double turn_wait_seconds(void);
+extern int acquire_turn_lock(const char *root, const char *profile,
+                             double timeout_seconds, char *path_buf, size_t n);
+extern void release_turn_lock(int fd);
+
+/* PoP: bot_mode_dm_peers @ tools/bot_mode_dm.py:_peers */
+char **bot_mode_dm_peers(const char *root, size_t *count)
+{
+    /* Python delegates to tools.bot_mode_probe._peers. */
+    *count = 0;
+    if (!root) return NULL;
+    return bot_mode_probe_peers(root, count);
+}
+
+/* PoP: bot_mode_dm_dm_dir @ tools/bot_mode_dm.py:_dm_dir */
+int bot_mode_dm_dm_dir(char *out, size_t n)
+{
+    const char *tmp = getenv("TMPDIR");
+    if (!tmp || !*tmp) tmp = "/tmp";
+    uid_t uid = getuid();
+    char path[4096];
+    snprintf(path, sizeof path, "%s/%s-%lu", tmp, _DM_DIR_NAME, (unsigned long)uid);
+    if (mkdir(path, 0700) != 0 && errno != EEXIST) return -1;
+
+    /* Shared POSIX temp roots need a per-user directory. Fail closed on a
+     * pre-created non-directory, a symlink, or foreign ownership. */
+    struct stat info;
+    if (lstat(path, &info) != 0) return -1;
+    if (!S_ISDIR(info.st_mode)) {
+        fprintf(stderr, "DM temp path is not a directory: %s\n", path);
+        return -1;                              /* PermissionError */
+    }
+    if (info.st_uid != uid) {
+        fprintf(stderr, "DM temp directory is owned by another user: %s\n", path);
+        return -1;                              /* PermissionError */
+    }
+    if ((info.st_mode & 07777) != 0700) chmod(path, 0700);
+    snprintf(out, n, "%s", path);
+    return 0;
+}
+
+/* PoP: bot_mode_dm_unlink_dm_file @ tools/bot_mode_dm.py:_unlink_dm_file */
+void bot_mode_dm_unlink_dm_file(const char *path)
+{
+    if (path && *path) unlink(path);            /* OSError swallowed */
+}
+
+static void glob_unlink(const char *dir, const char *pattern_prefix,
+                        const char *pattern_suffix, double cutoff, int *removed)
+{
+    DIR *d = opendir(dir);
+    if (!d) return;
+    struct dirent *e;
+    while ((e = readdir(d)) != NULL) {
+        size_t plen = strlen(pattern_prefix), slen = strlen(pattern_suffix);
+        size_t elen = strlen(e->d_name);
+        if (elen < plen + slen) continue;
+        if (strncmp(e->d_name, pattern_prefix, plen) != 0) continue;
+        if (strcmp(e->d_name + elen - slen, pattern_suffix) != 0) continue;
+        char p[4096];
+        snprintf(p, sizeof p, "%s/%s", dir, e->d_name);
+        struct stat st;
+        if (stat(p, &st) != 0 || !S_ISREG(st.st_mode)) continue;
+        if ((double)st.st_mtime < cutoff) {
+            if (unlink(p) == 0) (*removed)++;
+        }
+    }
+    closedir(d);
+}
+
+/* PoP: cleanup_bot_dm_cache @ tools/bot_mode_dm.py:cleanup_bot_dm_cache */
+int cleanup_bot_dm_cache(double max_age_hours, double now)
+{
+    double nowv = (now > 0.0) ? now : (double)time(NULL);
+    double cutoff = nowv - max_age_hours * 3600.0;
+    int removed = 0;
+    const char *tmp = getenv("TMPDIR");
+    if (!tmp || !*tmp) tmp = "/tmp";
+    /* Include legacy temp-root locations so upgrades clean older files. */
+    glob_unlink(tmp, "hermes-dm-", ".txt", cutoff, &removed);
+    glob_unlink(tmp, "hermes-relay-dm-", ".txt", cutoff, &removed);
+    char dmdir[4096];
+    if (bot_mode_dm_dm_dir(dmdir, sizeof dmdir) == 0)
+        glob_unlink(dmdir, "", ".txt", cutoff, &removed);
+    return removed;
+}
+
+/* PoP: bot_mode_dm_sweep_stale_dm_files @ tools/bot_mode_dm.py:_sweep_stale_dm_files */
+void bot_mode_dm_sweep_stale_dm_files(double now)
+{
+    cleanup_bot_dm_cache(_DM_STALE_SECONDS / 3600.0, now);
+}
+
+/* PoP: bot_mode_dm_write_dm_file_swept @ tools/bot_mode_dm.py:_write_dm_file */
+char *bot_mode_dm_write_dm_file_swept(const char *content)
+{
+    bot_mode_dm_sweep_stale_dm_files(0.0);
+    return bot_mode_dm_write_dm_file(content);
+}
+
+/* PoP: bot_mode_dm_agent_home @ tools/bot_mode_dm.py:_agent_home */
+char *bot_mode_dm_agent_home(const bot_mode_dm_agent_vtab_t *agent)
+{
+    if (agent && agent->agent_home) {
+        char *h = agent->agent_home(agent->ctx);
+        if (h && *h) return h;
+        free(h);
+    }
+    const char *e = getenv("HERMES_HOME");
+    if (e && *e) return strdup(e);
+    const char *home = getenv("HOME");
+    size_t n = strlen(home ? home : "") + 16;
+    char *out = malloc(n);
+    if (out) snprintf(out, n, "%s/.hermes", home ? home : "");
+    return out;
+}
+
+/* PoP: bot_mode_dm_session_title @ tools/bot_mode_dm.py:_session_title */
+char *bot_mode_dm_session_title(const bot_mode_dm_agent_vtab_t *agent)
+{
+    if (agent && agent->session_title) {
+        char *t = agent->session_title(agent->ctx);
+        if (t && *t) { strip_inplace(t); return t; }
+        free(t);
+    }
+    return strdup("");
+}
+
+/* PoP: bot_mode_dm_delivery_lock @ tools/bot_mode_dm.py:_delivery_lock */
+int bot_mode_dm_delivery_lock(char *const *argv, int stdin_file)
+{
+    const char *a0 = (argv && argv[0]) ? argv[0] : "";
+    const char *cli = strrchr(a0, '/');
+    cli = cli ? cli + 1 : a0;
+    const char *bs = strrchr(cli, '\\');
+    cli = bs ? bs + 1 : cli;
+    if (stdin_file || !argv || !argv[1] || !argv[2]) return -1;
+    if (strcmp(cli, "hermes") != 0 && strcmp(cli, "hermes.exe") != 0) return -1;
+    if (strcmp(argv[1], "-p") != 0) return -1;
+
+    const char *env = getenv("HERMES_HOME");
+    char home[4096];
+    if (env && *env) snprintf(home, sizeof home, "%s", env);
+    else {
+        const char *h = getenv("HOME");
+        if (!h) return -1;
+        snprintf(home, sizeof home, "%s/.hermes", h);
+    }
+    char root[4096], lock_path[4352];
+    bot_mode_dm_hermes_root(home, root, sizeof root);
+    return acquire_turn_lock(root, argv[2], turn_wait_seconds(),
+                             lock_path, sizeof lock_path);
+}
+
+/* Run one transport and wait; captures output like subprocess.run. */
+static int bmd_run_capture(char *const *argv, int argc, const char *stdin_file,
+                           char **out_stdout, char **out_stderr)
+{
+    *out_stdout = NULL; *out_stderr = NULL;
+    int stdin_fh = -1;
+    if (stdin_file) {
+        stdin_fh = open(stdin_file, O_RDONLY);
+        if (stdin_fh < 0) return 127;
+    }
+    int out_p[2], err_p[2];
+    if (pipe(out_p) != 0) { if (stdin_fh >= 0) close(stdin_fh); return 127; }
+    if (pipe(err_p) != 0) {
+        close(out_p[0]); close(out_p[1]);
+        if (stdin_fh >= 0) close(stdin_fh);
+        return 127;
+    }
+
+    pid_t pid = fork();
+    if (pid < 0) {
+        close(out_p[0]); close(out_p[1]); close(err_p[0]); close(err_p[1]);
+        if (stdin_fh >= 0) close(stdin_fh);
+        return 127;
+    }
+    if (pid == 0) {
+        dup2(out_p[1], STDOUT_FILENO);
+        dup2(err_p[1], STDERR_FILENO);
+        close(out_p[0]); close(out_p[1]); close(err_p[0]); close(err_p[1]);
+        if (stdin_file) {
+            dup2(stdin_fh, STDIN_FILENO);
+            close(stdin_fh);
+        } else {
+            int devnull = open("/dev/null", O_RDONLY);
+            if (devnull >= 0) { dup2(devnull, STDIN_FILENO); close(devnull); }
+        }
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    close(out_p[1]); close(err_p[1]);
+    if (stdin_fh >= 0) close(stdin_fh);   /* held until transport exits */
+
+    size_t co = 0, capo = 4096, ce = 0, cape = 4096;
+    char *so = malloc(capo), *se = malloc(cape);
+    if (so) so[0] = '\0';
+    if (se) se[0] = '\0';
+    fd_set rf;
+    int maxfd = (out_p[0] > err_p[0] ? out_p[0] : err_p[0]) + 1;
+    for (;;) {
+        FD_ZERO(&rf);
+        FD_SET(out_p[0], &rf);
+        FD_SET(err_p[0], &rf);
+        if (select(maxfd, &rf, NULL, NULL, NULL) < 0) {
+            if (errno == EINTR) continue;
+            break;
+        }
+        char chunk[4096];
+        ssize_t r;
+        bool any = false;
+        if (FD_ISSET(out_p[0], &rf) && (r = read(out_p[0], chunk, sizeof chunk)) > 0) {
+            any = true;
+            if (so) {
+                if (co + (size_t)r + 1 > capo) { capo *= 2; so = realloc(so, capo); }
+                memcpy(so + co, chunk, (size_t)r); co += (size_t)r; so[co] = '\0';
+            }
+        }
+        if (FD_ISSET(err_p[0], &rf) && (r = read(err_p[0], chunk, sizeof chunk)) > 0) {
+            any = true;
+            if (se) {
+                if (ce + (size_t)r + 1 > cape) { cape *= 2; se = realloc(se, cape); }
+                memcpy(se + ce, chunk, (size_t)r); ce += (size_t)r; se[ce] = '\0';
+            }
+        }
+        if (!any) break;
+    }
+    close(out_p[0]); close(err_p[0]);
+    int status = 0;
+    waitpid(pid, &status, 0);
+    int rc = WIFEXITED(status) ? WEXITSTATUS(status) : 128 + WTERMSIG(status);
+    *out_stdout = so; *out_stderr = se;
+    return rc;
+}
+
+/* PoP: bot_mode_dm_run_delivery @ tools/bot_mode_dm.py:_run_delivery */
+int bot_mode_dm_run_delivery(char *const *argv, int argc, const char *dm_file,
+                             int stdin_file)
+{
+    char **full = NULL;
+    int extra = argc + 2;
+    int rc = 1;
+    char *so = NULL, *se = NULL;
+    int lock_fd = -1;
+
+    if (!stdin_file) {
+        full = malloc((size_t)extra * sizeof(char *));
+        if (!full) goto finish;
+        for (int i = 0; i < argc; i++) full[i] = argv[i];
+        full[argc] = strdup("--query-file");
+        full[argc + 1] = strdup(dm_file);
+        if (!full[argc] || !full[argc + 1]) goto finish;
+    }
+
+    lock_fd = bot_mode_dm_delivery_lock(argv, stdin_file);
+    if (stdin_file) {
+        rc = bmd_run_capture(argv, argc, dm_file, &so, &se);
+    } else {
+        rc = bmd_run_capture(full, argc + 2, NULL, &so, &se);
+        if (rc != 0) {
+            /* One policy-gated retry (#93091 item 5). Auth/quota/config
+             * failures never retry; context_overflow re-runs so the
+             * pre-API compaction pass can compact the transcript first. */
+            extern const char *bot_failure_retry_action(const char *);
+            extern void bot_failure_classify_agent_error(const char *, char *, size_t);
+            char detail[1024];
+            const char *src = (se && *se) ? se : ((so && *so) ? so : "");
+            size_t L = strlen(src);
+            if (L > 500) src += L - 500;
+            snprintf(detail, sizeof detail, "%s", src);
+            char reason[64];
+            bot_failure_classify_agent_error(detail, reason, sizeof reason);
+            const char *action = bot_failure_retry_action(reason);
+            if (action && strcmp(action, "none") != 0)
+                rc = bmd_run_capture(full, argc + 2, NULL, &so, &se);
+        }
+    }
+    /* Re-emit streams: stdout is the reply text carried back through the
+     * completion notification. */
+    if (so && *so) { fputs(so, stdout); fflush(stdout); }
+    if (se && *se) { fputs(se, stderr); fflush(stderr); }
+
+finish:
+    if (full) { free(full[argc]); free(full[argc + 1]); free(full); }
+    free(so);
+    free(se);
+    if (lock_fd >= 0) release_turn_lock(lock_fd);
+    bot_mode_dm_unlink_dm_file(dm_file);   /* finally: unlink in all paths */
+    return rc;
+}
+
+/* PoP: bot_mode_dm_delivery_command @ tools/bot_mode_dm.py:_delivery_command */
+char *bot_mode_dm_delivery_command(char *const *argv, int argc,
+                                   const char *dm_file, int stdin_file)
+{
+    char self[4096];
+    ssize_t k = readlink("/proc/self/exe", self, sizeof self - 1);
+    if (k <= 0) snprintf(self, sizeof self, "slermes");
+    else self[k] = '\0';
+
+    char *parts[72];
+    int np = 0;
+    parts[np++] = shlex_quote(self);
+    parts[np++] = strdup("--run-delivery");
+    parts[np++] = strdup(stdin_file ? "stdin" : "query-file");
+    parts[np++] = shlex_quote(dm_file);
+    for (int i = 0; i < argc && np < 70; i++) parts[np++] = shlex_quote(argv[i]);
+
+    size_t total = (size_t)np + 1;
+    for (int i = 0; i < np; i++) total += strlen(parts[i]) + 1;
+    char *cmd = malloc(total);
+    if (cmd) {
+        cmd[0] = '\0';
+        for (int i = 0; i < np; i++) {
+            strcat(cmd, parts[i]);
+            if (i + 1 < np) strcat(cmd, " ");
+        }
+    }
+    for (int i = 0; i < np; i++) free(parts[i]);
+    return cmd;
+}
+
+extern int bot_failure_is_auto_retryable(const char *reason);
+
+/* PoP: bot_mode_dm_try_relay_delivery @ tools/bot_mode_dm.py:_try_relay_delivery */
+char *bot_mode_dm_try_relay_delivery(const char *root, const char *raw_target,
+                                     const char *body, const char *me,
+                                     const char *sender_handle,
+                                     const char *task_id,
+                                     const bot_mode_dm_agent_vtab_t *agent)
+{
+    (void)agent;
+    json_t *roster = bot_relay_read_remote_roster(root);
+    if (!roster || roster->type != JSON_ARRAY || json_len(roster) == 0) {
+        if (roster) json_free(roster);
+        return NULL;
+    }
+    json_t *match = resolve_remote_target(raw_target, roster);
+    if (!match) { json_free(roster); return NULL; }
+    if (match->type == JSON_STRING && strcmp(match->str_val, "ambiguous") == 0) {
+        json_free(match);
+        json_free(roster);
+        char buf[2048];
+        snprintf(buf, sizeof buf,
+                 "'%s' exists on several connected machines — disambiguate "
+                 "with '<handle>@<connection>'.", raw_target);
+        return bmd_err(buf, NULL, 0, NULL, 0);
+    }
+    if (match->type != JSON_OBJECT) {
+        json_free(match);
+        json_free(roster);
+        return NULL;
+    }
+
+    char prefix[512];
+    snprintf(prefix, sizeof prefix, "Message from 🤖 %s (@%s): ",
+             sender_handle, sender_handle);
+    size_t mlen = strlen(prefix) + strlen(body) + 1;
+    char *msg = malloc(mlen);
+    if (!msg) { json_free(match); json_free(roster); return NULL; }
+    snprintf(msg, mlen, "%s%s", prefix, body);
+
+    bot_relay_error_t refused;
+    memset(&refused, 0, sizeof refused);
+    json_t *envelope = enqueue_envelope(root, match, msg, me, sender_handle, &refused);
+    free(msg);
+    if (!envelope) {
+        /* EnvelopeRefusedError → structured refusal ('runtime_offline') */
+        json_t *err = json_object();
+        json_set(err, "error", json_string(refused.message));
+        json_set(err, "reason", json_string(refused.reason));
+        char *out = json_serialize(err);
+        json_free(err);
+        json_free(match);
+        json_free(roster);
+        return out;
+    }
+
+    /* waiter command: poll the reply file then cat it — the completion
+     * notification wakes the sender like any local DM. */
+    const char *eid = "", *handle = "", *label_conn = "", *cid = "";
+    {   json_t *v = json_obj_get(envelope, "id"); if (v && v->type == JSON_STRING) eid = v->str_val; }
+    {   json_t *v = json_obj_get(match, "handle"); if (v && v->type == JSON_STRING) handle = v->str_val; }
+    {   json_t *v = json_obj_get(match, "connection_label"); if (v && v->type == JSON_STRING) label_conn = v->str_val; }
+    {   json_t *v = json_obj_get(match, "connection_id"); if (v && v->type == JSON_STRING) cid = v->str_val; }
+
+    char base[4096], rpath[4300];
+    extern const char *bot_relay_relay_root(const char *, char *, size_t);
+    char *command = NULL;
+    if (bot_relay_relay_root(root, base, sizeof base)) {
+        snprintf(rpath, sizeof rpath, "%s/replies/%s.json", base, eid);
+        char *qr = shlex_quote(rpath);
+        size_t clen = strlen("sh -c 'until [ -f  ]; do sleep 2; done; cat '") + 2 * strlen(qr) + 32;
+        command = malloc(clen);
+        if (command)
+            snprintf(command, clen,
+                     "sh -c 'until [ -f %s ]; do sleep 2; done; cat %s'", qr, qr);
+        free(qr);
+    }
+    json_free(envelope);
+    json_free(match);
+    json_free(roster);
+
+    char label[512];
+    snprintf(label, sizeof label, "@%s on %s",
+             handle, (label_conn && *label_conn) ? label_conn : cid);
+    return bmd_spawn_delivery(command ? command : "", label, task_id);
+}
+
+/* Spawn with ownership transfer bookkeeping (#_start_delivery contract):
+ * when the spawn ack carries a process id the runner owns the DM file;
+ * on failure the file is reclaimed here. */
+static char *bmd_spawn_transfer(const char *command, const char *label,
+                                const char *task_id, char *dm_file)
+{
+    char *raw = bmd_spawn_delivery(command, label, task_id);
+    bool transferred = false;
+    if (raw) {
+        char *err = NULL;
+        json_t *parsed = json_parse(raw, &err);
+        if (err) free(err);
+        if (parsed && parsed->type == JSON_OBJECT) {
+            json_t *pidn = json_obj_get(parsed, "process_id");
+            json_t *errn = json_obj_get(parsed, "error");
+            transferred = pidn != NULL && !(errn && errn->type == JSON_STRING && errn->str_val[0]);
+        }
+        if (parsed) json_free(parsed);
+    }
+    if (dm_file && !transferred)
+        bot_mode_dm_unlink_dm_file(dm_file);
+    return raw;
+}
+
+/* PoP: bot_mode_dm_start_delivery @ tools/bot_mode_dm.py:_start_delivery */
+char *bot_mode_dm_start_delivery(char *const *argv, int argc,
+                                 const char *content, const char *label,
+                                 int stdin_file, const char *task_id)
+{
+    char *dm_file = bot_mode_dm_write_dm_file_swept(content);
+    if (!dm_file) return bmd_err("alloc failed", NULL, 0, NULL, 0);
+    char *command = bot_mode_dm_delivery_command(argv, argc, dm_file, stdin_file);
+    if (!command) {
+        bot_mode_dm_unlink_dm_file(dm_file);
+        free(dm_file);
+        return bmd_err("alloc failed", NULL, 0, NULL, 0);
+    }
+    char *result = bmd_spawn_transfer(command, label, task_id, dm_file);
+    free(command);
+    free(dm_file);
+    return result;
+}
+
+/* PoP: bot_mode_dm_delivery_main @ tools/bot_mode_dm.py:_delivery_main */
+int bot_mode_dm_delivery_main(int argc, char **argv)
+{
+    if (argc < 3 || strcmp(argv[0], "--run-delivery") != 0) return 2;
+    int stdin_file = strcmp(argv[1], "stdin") == 0;
+    if (!stdin_file && strcmp(argv[1], "query-file") != 0) return 2;
+    const char *dm_file = argv[2];
+    return bot_mode_dm_run_delivery(argv + 3, argc - 3, dm_file, stdin_file);
 }
