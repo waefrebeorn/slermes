@@ -514,3 +514,384 @@ done:
     free(blob);
     return out;
 }
+
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Batch 2 — pricing cache, novita pricing, provider dispatch, listing
+ * ════════════════════════════════════════════════════════════════════════ */
+
+#include "auth_helpers.h"
+#include "port_models_py_helpers.h"
+
+/* Extern ports declared in port_models_pure.h but with injectable-transport
+ * signatures; re-declared here to avoid the conflicting novita prototype. */
+extern char *models_fetch_models_with_pricing(void *fetch, void *ctx,
+                                              const char *api_key, const char *base_url,
+                                              int force_refresh);
+extern char *fetch_ai_gateway_pricing(double timeout_sec, bool force_refresh); /* models_helpers.c */
+/* port_models_net.c */
+extern void models_resolve_nous_pricing_credentials(void *resolve, void *ctx,
+                                                    char **out_key, char **out_base);
+
+#define MG_FAILED_CATALOG_TTL_SECONDS 120.0
+
+typedef struct mg_price_entry {
+    char *key;
+    json_t *value;              /* owned */
+    double retry_after;         /* monotonic deadline, -1 when none */
+    struct mg_price_entry *next;
+} mg_price_entry_t;
+static mg_price_entry_t *mg_pricing_cache = NULL;
+
+static mg_price_entry_t *mg_price_find(const char *key) {
+    for (mg_price_entry_t *e = mg_pricing_cache; e; e = e->next)
+        if (strcmp(e->key, key) == 0) return e;
+    return NULL;
+}
+
+/* PoP: models_cached_catalog @ hermes_cli/models.py:_cached_catalog */
+json_t *models_cached_catalog(const char *cache_key) {
+    if (!cache_key) return NULL;
+    mg_price_entry_t *e = mg_price_find(cache_key);
+    if (!e) return NULL;
+    if (e->retry_after >= 0 && mg_monotonic() >= e->retry_after) {
+        /* expired failure marker: drop it and go fetch */
+        json_free(e->value);
+        free(e->key);
+        if (mg_pricing_cache == e) mg_pricing_cache = e->next;
+        else {
+            for (mg_price_entry_t *p = mg_pricing_cache; p; p = p->next)
+                if (p->next == e) { p->next = e->next; break; }
+        }
+        free(e);
+        return NULL;
+    }
+    return e->value;
+}
+
+/* PoP: models_cache_catalog @ hermes_cli/models.py:_cache_catalog */
+json_t *models_cache_catalog(const char *cache_key, json_t *result) {
+    if (!cache_key) return result;
+    mg_price_entry_t *e = mg_price_find(cache_key);
+    if (e) { json_free(e->value); e->value = result; }
+    else {
+        e = calloc(1, sizeof(*e));
+        if (!e) return result;
+        e->key = strdup(cache_key);
+        e->value = result;
+        e->next = mg_pricing_cache;
+        mg_pricing_cache = e;
+    }
+    /* An empty catalog gets an expiry so a dead gateway isn't remembered. */
+    e->retry_after = (result && result->type == JSON_OBJECT && result->c.count > 0)
+                         ? -1.0
+                         : mg_monotonic() + MG_FAILED_CATALOG_TTL_SECONDS;
+    return result;
+}
+
+/* PoP: models_fetch_novita_pricing @ hermes_cli/models.py:_fetch_novita_pricing */
+char *models_fetch_novita_pricing(int force_refresh) {
+    const char *raw_key = getenv("NOVITA_API_KEY");
+    char *api_key = mg_strip_dup(raw_key);
+    if (!api_key || !*api_key) { free(api_key); return strdup("{}"); }
+
+    const char *raw_base = getenv("NOVITA_BASE_URL");
+    char *base_url = (raw_base && *raw_base) ? mg_strip_dup(raw_base)
+                                             : strdup("https://api.novita.ai/openai/v1");
+    mg_rstrip_slashes(base_url);
+    const char *cache_key = base_url;
+
+    json_t *result = NULL;
+    if (!force_refresh) {
+        json_t *cached = models_cached_catalog(cache_key);
+        if (cached) {
+            char *out = json_serialize(cached);
+            free(api_key); free(base_url);
+            return out ? out : strdup("{}");
+        }
+    }
+
+    size_t urln = strlen(cache_key) + strlen("/models") + 1;
+    char *url = malloc(urln);
+    if (!url) { free(api_key); free(base_url); return strdup("{}"); }
+    snprintf(url, urln, "%s/models", cache_key);
+
+    size_t hn = strlen(api_key) + 64;
+    char *auth = malloc(hn);
+    char *headers = NULL;
+    if (auth) {
+        snprintf(auth, hn, "{\"Authorization\":\"Bearer %s\",\"Accept\":\"application/json\","
+                           "\"User-Agent\":\"hermes-cli/0.20.5-slermes\"}", api_key);
+        headers = auth;
+    }
+
+    char *body = NULL; size_t blen2 = 0;
+    int rc = headers ? models_live_http_fetch(url, headers, &body, &blen2, NULL) : -1;
+    free(auth); free(url);
+    if (rc != 0 || !body) {
+        free(body);
+        result = json_object();
+        models_cache_catalog(cache_key, result);
+        char *out = json_serialize(result);
+        free(api_key); free(base_url);
+        return out ? out : strdup("{}");
+    }
+    json_t *payload = json_parse(body, NULL);
+    free(body);
+    result = json_object();
+    if (payload) {
+        json_t *data = json_obj_get(payload, "data");
+        if (data && data->type == JSON_ARRAY) {
+            for (size_t i = 0; i < data->c.count; i++) {
+                json_t *item = data->c.items[i];
+                if (!item || item->type != JSON_OBJECT) continue;
+                json_t *mid = json_obj_get(item, "id");
+                if (!mid || mid->type != JSON_STRING || !mid->str_val) continue;
+                json_t *inp = json_obj_get(item, "input_token_price_per_m");
+                json_t *outp = json_obj_get(item, "output_token_price_per_m");
+                if ((!inp || inp->type != JSON_NUMBER) && (!outp || outp->type != JSON_NUMBER))
+                    continue;
+                double in_v = (inp && inp->type == JSON_NUMBER) ? inp->num_val : 0.0;
+                double out_v = (outp && outp->type == JSON_NUMBER) ? outp->num_val : 0.0;
+                /* Novita prices are USD per million tokens in 1e-4 units;
+                 * convert to per-token strings like Python's str(float(...)). */
+                char pin[64], pout[64];
+                snprintf(pin, sizeof pin, "%.17g", in_v / 10000.0 / 1000000.0);
+                snprintf(pout, sizeof pout, "%.17g", out_v / 10000.0 / 1000000.0);
+                json_t *row = json_object();
+                json_set(row, "prompt", json_string(pin));
+                json_set(row, "completion", json_string(pout));
+                json_set(result, mid->str_val, row);
+            }
+        }
+        json_free(payload);
+    }
+    models_cache_catalog(cache_key, result);
+    char *out = json_serialize(result);
+    free(api_key); free(base_url);
+    return out ? out : strdup("{}");
+}
+
+/* PoP: models_get_pricing_for_provider @ hermes_cli/models.py:get_pricing_for_provider */
+char *models_get_pricing_for_provider(const char *provider, int force_refresh) {
+    const char *normalized = normalize_provider(provider ? provider : "");
+    if (strcmp(normalized, "openrouter") == 0) {
+        char *key = models_resolve_openrouter_api_key();
+        char *out = models_fetch_models_with_pricing(NULL, NULL, key,
+                                                     "https://openrouter.ai/api",
+                                                     force_refresh);
+        free(key);
+        return out ? out : strdup("{}");
+    }
+    if (strcmp(normalized, "ai-gateway") == 0) {
+        char *out = fetch_ai_gateway_pricing(8.0, force_refresh != 0);
+        return out ? out : strdup("{}");
+    }
+    if (strcmp(normalized, "novita") == 0) {
+        return models_fetch_novita_pricing(force_refresh);
+    }
+    if (strcmp(normalized, "deepinfra") == 0) {
+        /* _fetch_deepinfra_pricing: chat-tagged catalog items -> picker
+         * pricing strings ($/MTok -> per-token), memoized in _pricing_cache. */
+        char *ck = NULL, *fu = NULL;
+        models_deepinfra_catalog_url(&ck, &fu);
+        if (!force_refresh && ck) {
+            json_t *cached = models_cached_catalog(ck);
+            if (cached) {
+                char *out = json_serialize(cached);
+                free(ck); free(fu);
+                return out ? out : strdup("{}");
+            }
+        }
+        json_t *catalog = models_fetch_deepinfra_catalog(NULL, NULL, force_refresh);
+        json_t *items = models_deepinfra_models_by_tag(catalog, "chat");
+        json_t *pricing = json_object();
+        if (items) {
+            for (size_t i = 0; i < items->c.count; i++) {
+                json_t *item = items->c.items[i];
+                if (!item || item->type != JSON_OBJECT) continue;
+                const char *mid = json_get_str(item, "id", "");
+                if (!*mid) continue;
+                json_t *metadata = json_obj_get(item, "metadata");
+                json_t *pricing_n = mg_is_obj(metadata) ? json_obj_get(metadata, "pricing") : NULL;
+                if (!mg_is_obj(pricing_n)) continue;
+                json_t *entry = json_object();
+                json_t *inp = json_obj_get(pricing_n, "input_tokens");
+                json_t *outp = json_obj_get(pricing_n, "output_tokens");
+                json_t *cache_read = json_obj_get(pricing_n, "cache_read_tokens");
+                char buf[64];
+                if (inp && inp->type == JSON_NUMBER) {
+                    snprintf(buf, sizeof buf, "%.17g", inp->num_val / 1000000.0);
+                    json_set(entry, "prompt", json_string(buf));
+                }
+                if (outp && outp->type == JSON_NUMBER) {
+                    snprintf(buf, sizeof buf, "%.17g", outp->num_val / 1000000.0);
+                    json_set(entry, "completion", json_string(buf));
+                }
+                if (cache_read && cache_read->type == JSON_NUMBER) {
+                    snprintf(buf, sizeof buf, "%.17g", cache_read->num_val / 1000000.0);
+                    json_set(entry, "input_cache_read", json_string(buf));
+                }
+                if (entry->c.count > 0) json_set(pricing, mid, entry);
+                else json_free(entry);
+            }
+            json_free(items);
+        }
+        if (catalog) json_free(catalog);
+        models_cache_catalog(ck ? ck : "", pricing);
+        char *out = json_serialize(pricing);
+        free(ck); free(fu);
+        return out ? out : strdup("{}");
+    }
+    if (strcmp(normalized, "fireworks") == 0) {
+        /* The ported helper mirrors _fireworks_pricing_from_models_dev,
+         * including its own _pricing_cache memoization. */
+        json_t *fw = models_fireworks_pricing_from_models_dev(force_refresh);
+        char *ser = fw ? json_serialize(fw) : NULL;
+        if (fw) json_free(fw);
+        return ser ? ser : strdup("{}");
+    }
+    if (strcmp(normalized, "nous") == 0) {
+        char *key = NULL, *base = NULL;
+        models_resolve_nous_pricing_credentials(NULL, NULL, &key, &base);
+        char *out = NULL;
+        if (base && *base)
+            out = models_fetch_models_with_pricing(NULL, NULL, key, base, force_refresh);
+        else
+            out = strdup("{}");
+        free(key); free(base);
+        return out ? out : strdup("{}");
+    }
+    return strdup("{}");
+}
+
+
+/* PoP: models_configured_custom_provider_ids_json @ hermes_cli/models.py:_configured_custom_provider_ids */
+static void mg_append_slug(json_t *arr, const char *name_or_key, int has_name) {
+    /* custom_provider_slug: "custom:" + strip().lower() with spaces -> '-'.
+     * Python slugifies (name or key) when name given, else name alone. */
+    const char *src = (name_or_key && *name_or_key) ? name_or_key : "";
+    char out[256];
+    size_t o = 0;
+    out[o++] = 'c'; out[o++] = 'u'; out[o++] = 's'; out[o++] = 't'; out[o++] = 'o'; out[o++] = 'm'; out[o++] = ':';
+    const char *p2 = src;
+    while (*p2 == ' ' || *p2 == '\t') p2++;
+    size_t n = strlen(p2);
+    while (n > 0 && (p2[n-1] == ' ' || p2[n-1] == '\t')) n--;
+    for (size_t i = 0; i < n && o < sizeof(out) - 1; i++) {
+        char c = p2[i];
+        if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+        if (c == ' ') c = '-';
+        out[o++] = c;
+    }
+    out[o] = '\0';
+    /* dedupe: skip an id already present */
+    for (size_t i = 0; i < arr->c.count; i++) {
+        json_t *e = arr->c.items[i];
+        if (e->type == JSON_STRING && e->str_val && strcmp(e->str_val, out) == 0)
+            return;
+    }
+    json_append(arr, json_string(out));
+}
+
+char *models_configured_custom_provider_ids_json(void) {
+    json_t *ids = json_array();
+    if (!ids) return NULL;
+    json_append(ids, json_string("custom"));
+    json_t *config = models_load_config();
+    if (config) {
+        json_t *providers = json_obj_get(config, "providers");
+        if (mg_is_obj(providers)) {
+            for (size_t i = 0; i < providers->c.count; i++) {
+                json_t *entry = providers->c.items[i];
+                const char *key = providers->c.keys[i];
+                if (!mg_is_obj(entry)) continue;
+                const char *name = json_get_str(entry, "name", "");
+                mg_append_slug(ids, *name ? name : key, 1);
+            }
+        }
+        json_t *legacy = json_obj_get(config, "custom_providers");
+        if (legacy && legacy->type == JSON_ARRAY) {
+            for (size_t i = 0; i < legacy->c.count; i++) {
+                json_t *entry = legacy->c.items[i];
+                if (!mg_is_obj(entry)) continue;
+                mg_append_slug(ids, json_get_str(entry, "name", ""), 0);
+            }
+        }
+        json_free(config);
+    }
+    char *out = json_serialize(ids);
+    json_free(ids);
+    return out;
+}
+
+/* PoP: models_list_available_providers_json @ hermes_cli/models.py:list_available_providers */
+char *models_list_available_providers_json(void) {
+    json_t *result = json_array();
+    if (!result) return NULL;
+
+    /* Derive display order from CANONICAL_PROVIDERS + "custom". */
+    int n_providers = model_catalog_provider_count();
+
+    /* Build reverse alias map once: canonical -> [aliases]. */
+    int n_aliases = model_catalog_alias_count();
+    json_t **alias_lists = calloc((size_t)(n_providers + 1), sizeof(json_t *));
+    for (int i = 0; i < n_aliases; i++) {
+        const char *alias = NULL, *canon = NULL;
+        if (!model_catalog_alias_at(i, &alias, &canon)) continue;
+        int slot = -1;
+        for (int pidx = 0; pidx < n_providers; pidx++) {
+            const char *pid = model_catalog_provider_at(pidx);
+            if (pid && strcmp(pid, canon) == 0) { slot = pidx; break; }
+        }
+        if (slot < 0) continue;
+        if (!alias_lists[slot]) alias_lists[slot] = json_array();
+        json_append(alias_lists[slot], json_string(alias));
+    }
+
+    for (int pidx = 0; pidx <= n_providers; pidx++) {
+        const char *pid;
+        if (pidx < n_providers) pid = model_catalog_provider_at(pidx);
+        else { static const char *custom_id = "custom"; pid = custom_id; }
+        if (!pid) continue;
+
+        char *label = provider_label(pid);
+
+        int has_creds = 0;
+        if (strcmp(pid, "custom") == 0) {
+            char *custom_base = models_get_custom_base_url();
+            has_creds = (custom_base && *custom_base);
+            free(custom_base);
+        } else if (strcmp(pid, "openrouter") == 0) {
+            const char *env_key = getenv("OPENROUTER_API_KEY");
+            has_creds = auth_has_usable_secret(env_key, 4);
+        } else {
+            /* get_auth_status derives from the provider's auth state. */
+            json_t *state = get_provider_auth_state(pid);
+            if (state) {
+                json_t *li = json_obj_get(state, "logged_in");
+                json_t *cfg = json_obj_get(state, "configured");
+                has_creds = (li && li->type == JSON_BOOL && li->bool_val) ||
+                            (cfg && cfg->type == JSON_BOOL && cfg->bool_val);
+                json_free(state);
+            }
+        }
+
+        json_t *row = json_object();
+        json_set(row, "id", json_string(pid));
+        json_set(row, "label", json_string(label ? label : pid));
+        if (alias_lists[pidx]) {
+            json_set(row, "aliases", alias_lists[pidx]);
+        } else {
+            json_set(row, "aliases", json_array());
+        }
+        json_set(row, "authenticated", json_bool(has_creds ? true : false));
+        json_append(result, row);
+        free(label);
+    }
+    free(alias_lists);
+
+    char *out = json_serialize(result);
+    json_free(result);
+    return out;
+}

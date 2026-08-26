@@ -46,6 +46,12 @@ const char *model_catalog_provider_at(int idx);
  * aggregators carry an explicit low-cost override. */
 const char *model_default_model_for_provider(const char *provider);
 
+/* Number of entries in the provider alias map (alias -> canonical). */
+int model_catalog_alias_count(void);
+
+/* Return the Nth alias mapping (static strings), or 0 if out of range. */
+int model_catalog_alias_at(int idx, const char **alias, const char **canon);
+
 /* Number of curated models for a provider. */
 int model_provider_model_count(const char *provider);
 

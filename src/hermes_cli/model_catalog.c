@@ -260,6 +260,14 @@ static const label_t PROVIDER_LABELS[] = {
     { "qwen-oauth", "Qwen (OAuth)" }, { "huggingface", "HuggingFace" },
 };
 
+int model_catalog_alias_count(void) { return N_ALIASES; }
+int model_catalog_alias_at(int idx, const char **alias, const char **canon) {
+    if (idx < 0 || idx >= N_ALIASES) return 0;
+    if (alias) *alias = PROVIDER_ALIASES[idx].alias;
+    if (canon) *canon = PROVIDER_ALIASES[idx].canon;
+    return 1;
+}
+
 #define N_PROVIDER_MODELS (int)(sizeof(PROVIDER_MODELS)/sizeof(PROVIDER_MODELS[0]))
 #define N_ALIASES (int)(sizeof(PROVIDER_ALIASES)/sizeof(PROVIDER_ALIASES[0]))
 #define N_GROUPS (int)(sizeof(PROVIDER_GROUPS)/sizeof(PROVIDER_GROUPS[0]))
