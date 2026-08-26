@@ -1760,3 +1760,133 @@ char *models_probe_ollama_local_models(const char *base_url, double timeout,
     free(root); free(cache_key);
     return out ? out : strdup("[]");
 }
+
+
+/* PoP: models_fetch_models_with_pricing @ hermes_cli/models.py:fetch_models_with_pricing */
+/* Declared (but never defined) in port_models_pure.h; the pricing dispatch
+ * above is its only caller. Injectable transport; NULL -> live fetcher. */
+char *models_fetch_models_with_pricing(void *fetch, void *ctx,
+                                       const char *api_key, const char *base_url,
+                                       int force_refresh) {
+    http_fetch_fn dofetch = fetch ? (http_fetch_fn)(uintptr_t)fetch : models_live_http_fetch;
+    char *cache_key = mg_strip_dup(base_url);
+    if (!cache_key || !*cache_key) { free(cache_key); cache_key = strdup("https://openrouter.ai/api"); }
+    mg_rstrip_slashes(cache_key);
+
+    if (!force_refresh) {
+        json_t *cached = models_cached_catalog(cache_key);
+        if (cached) {
+            char *out = json_serialize(cached);
+            free(cache_key);
+            return out ? out : strdup("{}");
+        }
+    }
+
+    size_t urln = strlen(cache_key) + strlen("/v1/models") + 1;
+    char *url = malloc(urln);
+    if (!url) { free(cache_key); return strdup("{}"); }
+    snprintf(url, urln, "%s/v1/models", cache_key);
+
+    json_t *hdrs = json_object();
+    json_set(hdrs, "Accept", json_string("application/json"));
+    json_set(hdrs, "User-Agent", json_string(MG_HERMES_USER_AGENT));
+    if (api_key && *api_key) {
+        char bearer[1152];
+        snprintf(bearer, sizeof bearer, "Bearer %s", api_key);
+        json_set(hdrs, "Authorization", json_string(bearer));
+    }
+    char *hj = json_serialize(hdrs);
+    json_free(hdrs);
+
+    char *body = NULL; size_t blen = 0;
+    int rc = hj ? dofetch(url, hj, &body, &blen, ctx) : -1;
+    free(hj); free(url);
+    if (rc != 0 || !body) {
+        free(body);
+        json_t *empty = json_object();
+        models_cache_catalog(cache_key, empty);
+        char *out = json_serialize(empty);
+        free(cache_key);
+        return out ? out : strdup("{}");
+    }
+
+    json_t *payload = json_parse(body, NULL);
+    free(body);
+    /* Same document the reasoning-capability fetch would pull — seed it. */
+    if (payload) {
+        json_t *seed_data = json_obj_get(payload, "data");
+        json_t *caps_map = NULL;
+        if (seed_data && seed_data->type == JSON_ARRAY) {
+            /* reuse the shared seeding path via a temp fetch-free mirror */
+            caps_map = json_object();
+            for (size_t i = 0; caps_map && i < seed_data->c.count; i++) {
+                json_t *item = seed_data->c.items[i];
+                if (!item || item->type != JSON_OBJECT) continue;
+                const char *mid0 = json_get_str(item, "id", "");
+                if (!*mid0) continue;
+                json_t *params = json_obj_get(item, "supported_parameters");
+                json_t *caps = NULL;
+                if (params && params->type == JSON_ARRAY) {
+                    int has_reasoning = 0;
+                    for (size_t j2 = 0; j2 < params->c.count && !has_reasoning; j2++) {
+                        json_t *e = params->c.items[j2];
+                        if (e->type == JSON_STRING && e->str_val && strcmp(e->str_val, "reasoning") == 0)
+                            has_reasoning = 1;
+                    }
+                    if (has_reasoning) {
+                        caps = json_object();
+                        json_set(caps, "supports_reasoning", json_bool(true));
+                        json_t *reasoning = json_obj_get(item, "reasoning");
+                        json_t *efforts = NULL;
+                        if (reasoning && reasoning->type == JSON_OBJECT) {
+                            json_t *raw = json_obj_get(reasoning, "supported_efforts");
+                            if (raw && raw->type == JSON_ARRAY) {
+                                efforts = json_copy(raw);
+                            }
+                            json_t *mnd = json_obj_get(reasoning, "mandatory");
+                            json_set(caps, "mandatory", json_bool(mnd && mnd->type == JSON_BOOL && mnd->bool_val ? true : false));
+                        } else {
+                            json_set(caps, "mandatory", json_bool(false));
+                        }
+                        json_set(caps, "supported_efforts", efforts ? efforts : json_null());
+                    } else {
+                        caps = json_object();
+                        json_set(caps, "supports_reasoning", json_bool(false));
+                    }
+                }
+                json_set(caps_map, mid0, caps);
+            }
+            if (caps_map->c.count > 0) mg_caps_disk_write(url, caps_map);
+            json_free(caps_map);
+        }
+    }
+
+    json_t *result = json_object();
+    if (payload) {
+        json_t *data = json_obj_get(payload, "data");
+        if (data && data->type == JSON_ARRAY) {
+            for (size_t i = 0; i < data->c.count; i++) {
+                json_t *item = data->c.items[i];
+                if (!item || item->type != JSON_OBJECT) continue;
+                const char *mid = json_get_str(item, "id", "");
+                json_t *pricing = json_obj_get(item, "pricing");
+                if (!*mid || !mg_is_obj(pricing)) continue;
+                json_t *entry = json_object();
+                json_set(entry, "prompt",
+                         json_string(json_get_str(pricing, "prompt", "")));
+                json_set(entry, "completion",
+                         json_string(json_get_str(pricing, "completion", "")));
+                const char *icr = json_get_str(pricing, "input_cache_read", "");
+                if (*icr) json_set(entry, "input_cache_read", json_string(icr));
+                const char *icw = json_get_str(pricing, "input_cache_write", "");
+                if (*icw) json_set(entry, "input_cache_write", json_string(icw));
+                json_set(result, mid, entry);
+            }
+        }
+        json_free(payload);
+    }
+    models_cache_catalog(cache_key, result);
+    char *out = json_serialize(result);
+    free(cache_key);
+    return out ? out : strdup("{}");
+}
