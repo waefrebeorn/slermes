@@ -99,6 +99,7 @@ PORT_OBJ = \
  src/hermes_cli/models_net.o src/hermes_cli/models_pure_impl.o \
  src/hermes_cli/models_pure.o \
  src/hermes_cli/models_validate.o \
+ src/hermes_cli/models_gaps.o \
  src/hermes_cli/status_helpers.o \
  src/hermes_cli/shared_metrics.o \
  \

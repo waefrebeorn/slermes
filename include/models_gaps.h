@@ -100,6 +100,24 @@ char *models_opencode_zen_free_runtime(const char *provider_id,
 char *models_load_ollama_cloud_cache(int ignore_ttl);       /* JSON obj or NULL */
 void models_save_ollama_cloud_cache(const char *models_json);
 
+/* ── batch-2 additions (pure + catalog resolution) ──────────────────────── */
+char *models_xai_finalize_catalog(const char *ids_json);    /* JSON array in/out */
+char *models_get_default_model_for_provider(const char *provider);
+
+/* ── reasoning-caps internals (thread-backed warmers + fetch) ───────────── */
+void models_warm_reasoning_caps_async(void (*refresh)(void));
+json_t *models_hydrate_reasoning_caps_from_disk(const char *url, void (*refresh)(void));
+json_t *models_fetch_reasoning_caps_catalog(http_fetch_fn fetch, void *ctx,
+                                            const char *url, double timeout);
+json_t *models_fetch_openrouter_reasoning_caps(http_fetch_fn fetch, void *ctx,
+                                               double timeout, int force);
+void models_refresh_openrouter_reasoning_caps(void);
+json_t *models_openrouter_caps_cached(void);
+json_t *models_fetch_nous_reasoning_caps(http_fetch_fn fetch, void *ctx,
+                                         double timeout, int force);
+void models_refresh_nous_reasoning_caps(void);
+json_t *models_nous_caps_cached(void);
+
 #ifdef __cplusplus
 }
 #endif
