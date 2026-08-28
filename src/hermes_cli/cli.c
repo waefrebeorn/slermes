@@ -9,7 +9,13 @@
 #include "registry.h"
 #include "cron_jobs.h"
 #include "slermes_home.h"
-#include "port_slash_commands.h" /* reasoning_parse_effort (hermes_constants.parse_reasoning_effort) */
+#include "port_slash_commands.h"
+#include "cli_wave4b.h"
+#include "cli_hermes_cli.h"
+#include "cli_helpers2.h"
+
+/* From plugins_wrappers.c — plugin command registry access. */
+extern json_t *plug_get_commands(void);
 #ifndef HERMES_PATH_MAX
 #define HERMES_PATH_MAX 4096
 #endif
@@ -19,6 +25,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+/* ── cli.py constants used by _enable_extended_enter_keys ────────────────── */
+/* _MODIFY_OTHER_KEYS_SEQ = "\x1b[>4;2m" — xterm modifyOtherKeys level 2. */
+static const char _MODIFY_OTHER_KEYS_SEQ[]  = "\x1b[>4;2m";
+/* _EXTENDED_ENTER_KEYS_SEQ = Kitty push + modifyOtherKeys (concatenation). */
+static const char _EXTENDED_ENTER_KEYS_SEQ[] = "\x1b[>1u\x1b[>4;2m";
 
 /* PoP: string @ cli.py:_print_nous_credits_block */
 /* PoP: string @ cli.py:_show_credits */
@@ -844,7 +856,91 @@ char *cli_cli_build_skill_invocation_message(const char *cmd_key,
     return msg;
 }
 
-/* Port of Python cli:_get_plugin_cmd_handler_names */
+/* PoP: _get_plugin_cmd_handler_names @ cli.py:_get_plugin_cmd_handler_names */
+/*
+ * Return plugin command names (without slash prefix) as a JSON array of
+ * strings. Delegates to the live plugin registry; empty array on any error
+ * (mirrors Python's except: return set()). Caller frees via json_free.
+ */
+json_t *cli_get_plugin_cmd_handler_names(void) {
+    json_t *arr = json_new_array();
+    if (!arr) return NULL;
+    json_t *cmds = plug_get_commands();  /* Python: get_plugin_commands() → dict */
+    if (!cmds || !json_is_object(cmds)) {
+        /* Python except clause: return set() → empty array. */
+        return arr;
+    }
+    /* Iterate dict keys via internal struct; each key is
+     * "plugin_name/command_name" → strip the slash prefix. */
+    size_t n = cmds->c.count;
+    for (size_t i = 0; i < n; i++) {
+        const char *key = cmds->c.keys[i];
+        if (!key) continue;
+        const char *slash = strrchr(key, '/');
+        const char *name = slash ? slash + 1 : key;
+        if (name && name[0]) json_append(arr, json_string(name));
+    }
+    if (cmds != arr) json_free(cmds);  /* plug_get_commands returns owned ref */
+    return arr;
+}
+
+/* PoP: cli_is_backslash_line_continuation @ cli.py:_is_backslash_line_continuation
+ * True when Enter should turn a trailing backslash into a newline.
+ * _BACKSLASH_LINE_CONTINUATION_RE = r"\\\\[ \\t]*$" — trailing backslash
+ * optionally followed by spaces/tabs then end-of-string. */
+bool cli_is_backslash_line_continuation(const char *text) {
+    if (!text) return false;
+    size_t len = strlen(text);
+    if (len == 0) return false;
+    /* Find the trailing backslash: scan backwards for '\\' followed only
+     * by spaces/tabs until end. */
+    for (size_t i = len; i > 0; i--) {
+        if (text[i - 1] == '\\') {
+            /* Check that everything between the backslash and end is
+             * spaces or tabs. */
+            bool ok = true;
+            for (size_t j = i; j < len; j++) {
+                char c = text[j];
+                if (c != ' ' && c != '\t') { ok = false; break; }
+            }
+            if (ok) return true;
+            break; /* first backslash from the right; if not valid, done */
+        }
+    }
+    return false;
+}
+
+/* PoP: cli_apply_backslash_line_continuation @ cli.py:_apply_backslash_line_continuation
+ * Replace a trailing backslash marker with an actual newline.
+ * _BACKSLASH_LINE_CONTINUATION_RE.sub("", text) + "\n" — strips the
+ * trailing backslash + blanks, appends newline. Malloc'd, caller frees. */
+char *cli_apply_backslash_line_continuation(const char *text) {
+    if (!text) text = "";
+    size_t len = strlen(text);
+    /* Find where the regex would match: trailing backslash + optional
+     * spaces/tabs. */
+    size_t cut_at = len;
+    for (size_t i = len; i > 0; i--) {
+        if (text[i - 1] == '\\') {
+            /* Verify trailing blanks after backslash. */
+            bool ok = true;
+            for (size_t j = i; j < len; j++) {
+                char c = text[j];
+                if (c != ' ' && c != '\t') { ok = false; break; }
+            }
+            if (ok) { cut_at = i - 1; break; }
+            break;
+        }
+    }
+    /* Build result: text[0..cut_at] + "\n" */
+    size_t new_len = cut_at + 1; /* +1 for '\n' */
+    char *result = malloc(new_len + 1);
+    if (!result) return NULL;
+    memcpy(result, text, cut_at);
+    result[cut_at] = '\n';
+    result[new_len] = '\0';
+    return result;
+}
 
 /* Port of Python cli:_parse_skills_argument */
 
@@ -1145,6 +1241,135 @@ char *cli_cli_build_skill_invocation_message(const char *cmd_key,
 
 /* Port of Python cli:_get_tui_prompt_symbols */
 
+/* PoP: cli_status_bar_visible_from_display_config @ cli.py:_status_bar_visible_from_display_config
+ * Return the initial classic-CLI status-bar visibility from display config.
+ * display.tui_statusbar / statusbar key; "0"/"false"/"hidden"/"no"/"off" all
+ * disable regardless of type. Mirrors Python's isinstance+get+strip+lower check. */
+bool cli_status_bar_visible_from_display_config(json_t *display_config) {
+    if (!display_config || !json_is_object(display_config)) return true;
+    json_t *sc = json_object_get(display_config, "statusbar");
+    if (!sc) sc = json_object_get(display_config, "tui_statusbar");
+    if (!sc) {
+        /* Python default: display_config.get("tui_statusbar", "top") → "top"
+         * which is a non-empty string → truthy → visible. */
+        return true;
+    }
+    if (json_is_string(sc)) {
+        const char *s = json_string_value(sc);
+        if (!s) return true;
+        /* Normalize: trim, lowercase. */
+        char buf[64];
+        size_t n = strlen(s);
+        if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+        memcpy(buf, s, n);
+        buf[n] = '\0';
+        for (size_t i = 0; i < n; i++) buf[i] = (char)tolower((unsigned char)buf[i]);
+        /* Trim leading whitespace. */
+        size_t start = 0;
+        while (start < n && (buf[start] == ' ' || buf[start] == '\t')) start++;
+        /* Trim trailing whitespace. */
+        size_t end = n;
+        while (end > start && (buf[end - 1] == ' ' || buf[end - 1] == '\t')) end--;
+        bool disabled = false;
+        if (end > start) {
+            char tmp[16];
+            size_t tn = end - start;
+            if (tn >= sizeof(tmp)) tn = sizeof(tmp) - 1;
+            memcpy(tmp, buf + start, tn);
+            tmp[tn] = '\0';
+            if (strcmp(tmp, "0") == 0 || strcmp(tmp, "false") == 0 ||
+                strcmp(tmp, "hidden") == 0 || strcmp(tmp, "no") == 0 ||
+                strcmp(tmp, "off") == 0)
+                disabled = true;
+        } else {
+            disabled = true; /* blank → disabled */
+        }
+        return !disabled;
+    }
+    if (json_is_bool(sc)) return json_bool_value(sc);
+    /* Numbers, null, arrays, objects → truthy (not False). */
+    return true;
+}
+
+/* PoP: cli_terminal_supports_extended_enter_keys @ cli.py:_terminal_supports_extended_enter_keys
+ * Allowlist check: WT_SESSION, iTerm.app, WezTerm, ghostty, vscode, kitty,
+ * xterm-ghostty, tmux. env=NULL means use real environ. */
+bool cli_terminal_supports_extended_enter_keys(void) {
+    const char *term_program = "";
+    const char *term = "";
+    const char *wt = "";
+    const char *kitty_wm = "";
+    const char *ghostty_res = "";
+    const char *ghostty_bin = "";
+
+    term_program = getenv("TERM_PROGRAM");
+    if (!term_program) term_program = "";
+    term = getenv("TERM");
+    if (!term) term = "";
+    wt = getenv("WT_SESSION");
+    if (!wt) wt = "";
+    kitty_wm = getenv("KITTY_WINDOW_ID");
+    if (!kitty_wm) kitty_wm = "";
+    ghostty_res = getenv("GHOSTTY_RESOURCES_DIR");
+    if (!ghostty_res) ghostty_res = "";
+    ghostty_bin = getenv("GHOSTTY_BIN_DIR");
+    if (!ghostty_bin) ghostty_bin = "";
+
+    if (wt[0]) return true;
+
+    if (strcmp(term_program, "iTerm.app") == 0 ||
+        strcmp(term_program, "WezTerm") == 0 ||
+        strcmp(term_program, "ghostty") == 0 ||
+        strcmp(term_program, "vscode") == 0)
+        return true;
+
+    if (kitty_wm[0] || strstr(term, "kitty")) return true;
+    if (strcmp(term, "xterm-ghostty") == 0) return true;
+
+    /* tmux detection: TERM starts with "tmux" or TERM_PROGRAM is "tmux". */
+    if (strncmp(term, "tmux", 4) == 0 ||
+        strcmp(term_program, "tmux") == 0)
+        return true;
+
+    return false;
+}
+
+/* PoP: cli_hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff
+ * Call the wrapped _output_screen_diff (orig_osd) with Hermes resize guards:
+ * inflate *previous_screen_height when the new screen is taller, and on a
+ * corrupt-previous-paint failure (mapped to a negative orig_osd return) retry
+ * once with previous_screen=NULL. */
+int cli_hermes_call_output_screen_diff(
+    cli_w4b_output_screen_diff_fn orig_osd, void *orig_osd_user,
+    void *app, void *output, cli_w4b_screen_t *screen, int current_pos,
+    int color_depth, cli_w4b_screen_t *previous_screen, const char *last_style,
+    bool is_done, bool full_screen, void *attrs_for_style_string,
+    void *style_string_has_style, cli_w4b_screen_t size, int previous_width) {
+    /* Guard 1: inflate previous_screen.height when new screen is taller. */
+    if (previous_screen && screen && previous_screen->height < screen->height) {
+        previous_screen->height = screen->height;
+    }
+    /* Guard 2: call orig_osd; on failure retry with previous_screen=NULL. */
+    int rc = orig_osd(
+        app, output, screen, current_pos, color_depth,
+        previous_screen, last_style,
+        is_done, full_screen,
+        attrs_for_style_string, style_string_has_style,
+        size, previous_width,
+        orig_osd_user);
+    if (rc < 0) {
+        /* Corrupt previous paint buffer — retry with NULL previous_screen. */
+        rc = orig_osd(
+            app, output, screen, current_pos, color_depth,
+            NULL, NULL,
+            is_done, full_screen,
+            attrs_for_style_string, style_string_has_style,
+            size, 0,
+            orig_osd_user);
+    }
+    return rc;
+}
+
 /* Port of Python cli:_audio_level_bar */
 
 /* Port of Python cli:_get_tui_prompt_fragments */
@@ -1157,11 +1382,37 @@ char *cli_cli_build_skill_invocation_message(const char *cmd_key,
 
 /* Port of Python cli:_get_extra_tui_widgets */
 
+/* PoP: _enable_extended_enter_keys @ cli.py:_enable_extended_enter_keys */
+bool _enable_extended_enter_keys(void *output,
+                                 void (*write_raw_fn)(void *, const char *),
+                                 void (*flush_fn)(void *)) {
+    if (!cli_terminal_supports_extended_enter_keys()) return false;
+
+    /* Ghostty exception: only modifyOtherKeys — see cli_is_ghostty_terminal(). */
+    const char *seq = cli_is_ghostty_terminal() ?
+        _MODIFY_OTHER_KEYS_SEQ : _EXTENDED_ENTER_KEYS_SEQ;
+
+    /* Path 1: output.write_raw + output.flush (prompt_toolkit App.output). */
+    if (output && write_raw_fn && flush_fn) {
+        write_raw_fn(output, seq);
+        flush_fn(output);
+        return true;
+    }
+
+    /* Path 2: sys.stdout + isatty() (no-app fallback). */
+    FILE *stream = stdout;
+    if (stream && isatty(fileno(stream))) {
+        fputs(seq, stream);
+        fflush(stream);
+        return true;
+    }
+
+    return false;
+}
+
 /* Port of Python cli:_register_extra_tui_keybindings */
 
 
 /* Port of Python cli:_build_tui_layout_children */
 
 /* Port of Python cli:run */
-
-/* Port of Python cli:_run_kanban_goal_loop_q */
