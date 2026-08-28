@@ -401,6 +401,7 @@ struct hcli {
     bool (*set_sudo_password_callback_fn)(hcli_t *);
     bool (*set_approval_callback_fn)(hcli_t *);
     bool (*set_secret_capture_callback_fn)(hcli_t *);
+    json_t *(*secret_capture_callback_fn)(hcli_t *, const char *, const char *, json_t *);
     bool (*set_computer_use_approval_cb_fn)(hcli_t *);
     /* tirith_security import surface — NULL = ImportError branch. */
     char *(*tirith_ensure_installed_fn)(int log_failures);
@@ -842,14 +843,7 @@ void hcli_stream_delta(hcli_t *self, const char *text);
 
 /* ══════════ Batch 6 (cli_gaps_2026_08_25 part 2) ═══════════════════════ */
 
-/* PoP: _hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff
- * Call prompt_toolkit's _output_screen_diff (orig_osd) with Hermes resize
- * guards: inflate *previous_screen_height when the new screen is taller, and
- * on a corrupt-previous-paint failure (Python AttributeError/TypeError,
- * mapped to a negative orig_osd return) retry once with previous_screen=NULL
- * so pt first-paints cleanly. args carries the non-previous_screen params.
- * Returns the final orig_osd result; *retried_first_paint (optional) reports
- * whether the recovery path ran. */
+/* PoP: _hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff */
 typedef struct cli_osd_args {
     void *app, *output, *screen, *current_pos, *last_style;
     void *attrs_for_style_string, *style_string_has_style, *size;

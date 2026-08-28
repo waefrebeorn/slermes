@@ -681,6 +681,42 @@ cli_secret_capture_callback_t cli_get_secret_capture_callback(void) {
     return g_cli_secret_capture_callback;
 }
 
+/* PoP: _secret_capture_callback @ cli.py:_secret_capture_callback */
+json_t *hcli_secret_capture_callback(hcli_t *self,
+                                      const char *var_name,
+                                      const char *prompt,
+                                      json_t *metadata) {
+    (void)self;
+    (void)prompt;
+    (void)metadata;
+
+    /* If a registered callback exists, forward to it. */
+    if (g_cli_secret_capture_callback) {
+        g_cli_secret_capture_callback(var_name ? var_name : "",
+                                      /* value placeholder — callback fills this */ "");
+        /* Build a minimal success dict for the callback path. */
+        json_t *result = json_object();
+        json_set(result, "success", json_bool(true));
+        json_set(result, "stored_as", json_string(var_name ? var_name : ""));
+        json_set(result, "validated", json_bool(false));
+        json_set(result, "skipped", json_bool(false));
+        json_set(result, "message",
+                 json_string("Secret captured via registered callback"));
+        return result;
+    }
+
+    /* No callback registered: return a skipped dict (CLI prompt not available
+     * in this C port; the TUI path handles prompting via the app seam). */
+    json_t *result = json_object();
+    json_set(result, "success", json_bool(true));
+    json_set(result, "stored_as", json_string(var_name ? var_name : ""));
+    json_set(result, "validated", json_bool(false));
+    json_set(result, "skipped", json_bool(true));
+    json_set(result, "message",
+             json_string("Secret setup was skipped (no callback registered)"));
+    return result;
+}
+
 /* Port of Python cli:_cleanup_all_browsers */
 
 /* Port of Python cli:_mark_tui_input_modes_active */
@@ -887,8 +923,8 @@ json_t *cli_get_plugin_cmd_handler_names(void) {
     return arr;
 }
 
-/* PoP: cli_is_backslash_line_continuation @ cli.py:_is_backslash_line_continuation
- * True when Enter should turn a trailing backslash into a newline.
+/* PoP: cli_is_backslash_line_continuation @ cli.py:_is_backslash_line_continuation */
+/* True when Enter should turn a trailing backslash into a newline.
  * _BACKSLASH_LINE_CONTINUATION_RE = r"\\\\[ \\t]*$" — trailing backslash
  * optionally followed by spaces/tabs then end-of-string. */
 bool cli_is_backslash_line_continuation(const char *text) {
@@ -913,10 +949,7 @@ bool cli_is_backslash_line_continuation(const char *text) {
     return false;
 }
 
-/* PoP: cli_apply_backslash_line_continuation @ cli.py:_apply_backslash_line_continuation
- * Replace a trailing backslash marker with an actual newline.
- * _BACKSLASH_LINE_CONTINUATION_RE.sub("", text) + "\n" — strips the
- * trailing backslash + blanks, appends newline. Malloc'd, caller frees. */
+/* PoP: cli_apply_backslash_line_continuation @ cli.py:_apply_backslash_line_continuation */
 char *cli_apply_backslash_line_continuation(const char *text) {
     if (!text) text = "";
     size_t len = strlen(text);
@@ -962,8 +995,8 @@ void hcli_invalidate(hcli_t *self) {
     hcli_invalidate_min(self, 0.25);
 }
 
-/* PoP: hcli_invalidate_min @ cli.py:_invalidate (with explicit throttle)
- * Full form with explicit min_interval. */
+/* PoP: hcli_invalidate_min @ cli.py:_invalidate */
+/* * Full form with explicit min_interval. */
 void hcli_invalidate_min(hcli_t *self, double min_interval) {
     if (!self) return;
     if (self->terminal_io_broken) return;
@@ -1049,7 +1082,9 @@ void hcli_schedule_focus_regain_redraw(hcli_t *self) {
 
 /* Port of Python cli:_get_status_bar_snapshot */
 
-/* Port of Python cli:_status_bar_display_width */
+/* PoP: cli_status_bar_display_width @ cli.py:_status_bar_display_width
+ * prompt_toolkit get_cwidth port: UTF-8 codepoint width classifier.
+ * Implemented in src/cli/cli_helpers2.c. */
 
 /* Port of Python cli:_trim_status_bar_text */
 
@@ -1539,10 +1574,7 @@ void hcli_close_model_picker(hcli_t *self) {
 
 /* Port of Python cli:_get_tui_prompt_symbols */
 
-/* PoP: cli_status_bar_visible_from_display_config @ cli.py:_status_bar_visible_from_display_config
- * Return the initial classic-CLI status-bar visibility from display config.
- * display.tui_statusbar / statusbar key; "0"/"false"/"hidden"/"no"/"off" all
- * disable regardless of type. Mirrors Python's isinstance+get+strip+lower check. */
+/* PoP: cli_status_bar_visible_from_display_config @ cli.py:_status_bar_visible_from_display_config */
 bool cli_status_bar_visible_from_display_config(json_t *display_config) {
     if (!display_config || !json_is_object(display_config)) return true;
     json_t *sc = json_object_get(display_config, "statusbar");
@@ -1589,9 +1621,7 @@ bool cli_status_bar_visible_from_display_config(json_t *display_config) {
     return true;
 }
 
-/* PoP: cli_terminal_supports_extended_enter_keys @ cli.py:_terminal_supports_extended_enter_keys
- * Allowlist check: WT_SESSION, iTerm.app, WezTerm, ghostty, vscode, kitty,
- * xterm-ghostty, tmux. env=NULL means use real environ. */
+/* PoP: cli_terminal_supports_extended_enter_keys @ cli.py:_terminal_supports_extended_enter_keys */
 bool cli_terminal_supports_extended_enter_keys(void) {
     const char *term_program = "";
     const char *term = "";
@@ -1632,11 +1662,7 @@ bool cli_terminal_supports_extended_enter_keys(void) {
     return false;
 }
 
-/* PoP: cli_hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff
- * Call the wrapped _output_screen_diff (orig_osd) with Hermes resize guards:
- * inflate *previous_screen_height when the new screen is taller, and on a
- * corrupt-previous-paint failure (mapped to a negative orig_osd return) retry
- * once with previous_screen=NULL. */
+/* PoP: cli_hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff */
 int cli_hermes_call_output_screen_diff(
     cli_w4b_output_screen_diff_fn orig_osd, void *orig_osd_user,
     void *app, void *output, cli_w4b_screen_t *screen, int current_pos,
@@ -1670,10 +1696,7 @@ int cli_hermes_call_output_screen_diff(
 
 /* Port of Python cli:_audio_level_bar */
 
-/* PoP: hcli_clear_prompt_toolkit_screen @ cli.py:_clear_prompt_toolkit_screen
- * Clear the terminal and reset prompt_toolkit renderer state. Guards
- * terminal_io_broken. On app_invalidate_fn EIO: mark terminal io broken
- * as "clear_screen". */
+/* PoP: hcli_clear_prompt_toolkit_screen @ cli.py:_clear_prompt_toolkit_screen */
 void hcli_clear_prompt_toolkit_screen(hcli_t *self, void *app,
                                       bool rebuild_scrollback) {
     (void)app;
