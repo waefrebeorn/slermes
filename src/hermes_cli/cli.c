@@ -25,6 +25,8 @@ extern json_t *plug_get_commands(void);
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
+#include <errno.h>
 
 /* ── cli.py constants used by _enable_extended_enter_keys ────────────────── */
 /* _MODIFY_OTHER_KEYS_SEQ = "\x1b[>4;2m" — xterm modifyOtherKeys level 2. */
@@ -950,15 +952,76 @@ char *cli_apply_backslash_line_continuation(const char *text) {
 
 /* Port of Python cli:_release_active_session */
 
-/* Port of Python cli:_invalidate */
+/* PoP: hcli_invalidate @ cli.py:_invalidate */
+/* Throttled UI repaint for high-frequency background updates. */
+/* Guards: terminal_io_broken, resize_recovery_pending. */
+/* Throttle: (now - last_invalidate) >= min_interval. */
+/* On app_invalidate_fn EIO: mark terminal io broken. */
+void hcli_invalidate(hcli_t *self) {
+    hcli_invalidate_min(self, 0.25);
+}
 
+/* PoP: hcli_invalidate_min @ cli.py:_invalidate (with explicit throttle)
+ * Full form with explicit min_interval. */
+void hcli_invalidate_min(hcli_t *self, double min_interval) {
+    if (!self) return;
+    if (self->terminal_io_broken) return;
+    if (self->resize_recovery_pending) return;
+
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    double now = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+
+    if (self->app_invalidate_fn && self->app &&
+        (now - self->last_invalidate) >= min_interval) {
+        self->last_invalidate = now;
+        self->app_invalidate_fn(self);
+        if (self->app_invalidate_errno == EIO) {
+            hcli_mark_terminal_io_broken(self, "invalidate");
+        }
+    }
+}
+
+/* PoP: hcli_mark_terminal_io_broken @ cli.py:_mark_terminal_io_broken */
+void hcli_mark_terminal_io_broken(hcli_t *self, const char *reason) {
+    if (!self) return;
+    if (self->terminal_io_broken) return;
+    self->terminal_io_broken = true;
+}
+/* Port of Python cli:_mark_terminal_io_broken */
+
+/* PoP: hcli_paint_now @ cli.py:_paint_now */
+/* Immediate, unthrottled repaint for user-blocking modal prompts. */
+/* Bypasses the _invalidate throttle and resize-recovery guard. */
+/* On app_invalidate_fn EIO: mark terminal io broken. */
+void hcli_paint_now(hcli_t *self) {
+    if (!self) return;
+    if (self->terminal_io_broken) return;
+    if (self->app_invalidate_fn && self->app) {
+        self->app_invalidate_fn(self);
+        if (self->app_invalidate_errno == EIO) {
+            hcli_mark_terminal_io_broken(self, "paint_now");
+        }
+    }
+}
 /* Port of Python cli:_paint_now */
 
-/* Port of Python cli:_force_full_redraw */
-
-/* Port of Python cli:_clear_prompt_toolkit_screen */
-
-/* Port of Python cli:_recover_after_resize */
+/* PoP: hcli_force_full_redraw @ cli.py:_force_full_redraw */
+void hcli_force_full_redraw(hcli_t *self) {
+    if (!self) return;
+    if (self->terminal_io_broken) return;
+    if (self->clear_prompt_toolkit_screen_fn && self->app) {
+        self->clear_prompt_toolkit_screen_fn(self, self->app, false);
+    }
+    if (self->terminal_io_broken) return;
+    if (self->replay_output_history_fn) self->replay_output_history_fn();
+    if (self->app_invalidate_fn && self->app) {
+        self->app_invalidate_fn(self);
+        if (self->app_invalidate_errno == EIO) {
+            hcli_mark_terminal_io_broken(self, "force_full_redraw");
+        }
+    }
+}
 
 /* Port of Python cli:_schedule_resize_recovery */
 
