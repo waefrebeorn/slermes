@@ -13,6 +13,7 @@
 #include "cli_wave4b.h"
 #include "cli_hermes_cli.h"
 #include "cli_helpers2.h"
+#include "hermes_gateway_config.h"
 
 /* From plugins_wrappers.c — plugin command registry access. */
 extern json_t *plug_get_commands(void);
@@ -1023,9 +1024,20 @@ void hcli_force_full_redraw(hcli_t *self) {
     }
 }
 
-/* Port of Python cli:_schedule_resize_recovery */
+/* PoP: hcli_schedule_focus_regain_redraw @ cli.py:_schedule_focus_regain_redraw */
+void hcli_schedule_focus_regain_redraw(hcli_t *self) {
+    if (!self) return;
+    if (self->terminal_io_broken) return;
+    struct timespec ts;
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0) return;
+    double now = ts.tv_sec + ts.tv_nsec / 1000000000.0;
+    double last = self->last_focus_regain_redraw;
+    if (now - last < 1.0) return;
+    self->last_focus_regain_redraw = now;
+    hcli_force_full_redraw(self);
+}
 
-/* Port of Python cli:_status_bar_context_style */
+/* Port of Python cli:_schedule_resize_recovery */
 
 /* Port of Python cli:_compression_count_style */
 
@@ -1087,10 +1099,6 @@ void hcli_force_full_redraw(hcli_t *self) {
 /* Port of Python cli:_print_user_message_preview */
 
 /* Port of Python cli:_stream_reasoning_delta */
-
-/* Port of Python cli:_close_reasoning_box */
-
-/* Port of Python cli:_stream_delta */
 
 /* Port of Python cli:_emit_stream_text */
 
@@ -1184,7 +1192,8 @@ void hcli_force_full_redraw(hcli_t *self) {
 
 /* Port of Python cli:_confirm_and_apply_model_switch_result */
 
-/* Port of Python cli:_close_model_picker */
+/* PoP: hcli_close_model_picker @ cli.py:_close_model_picker */
+void hcli_close_model_picker(hcli_t *self);
 
 /* Port of Python cli:_compute_model_picker_viewport */
 
@@ -1206,7 +1215,179 @@ void hcli_force_full_redraw(hcli_t *self) {
 
 /* Port of Python cli:_resolve_personality_prompt */
 
-/* Port of Python cli:_show_gateway_status */
+/* PoP: hcli_show_gateway_status @ cli.py:_show_gateway_status */
+void hcli_show_gateway_status(hcli_t *self) {
+    (void)self;
+    /* Print the panel header (matching Python exactly). */
+    if (self->console_print_fn) {
+        self->console_print_fn(self, "");
+        self->console_print_fn(self, "+------------------------------------------------------------+");
+        self->console_print_fn(self, "|               (✿◠‿◠) Gateway Status                |");
+        self->console_print_fn(self, "+------------------------------------------------------------+");
+        self->console_print_fn(self, "");
+    } else {
+        printf("\n");
+        printf("+------------------------------------------------------------+\n");
+        printf("|               (✿◠‿◠) Gateway Status                |\n");
+        printf("+------------------------------------------------------------+\n");
+        printf("\n");
+    }
+
+    /* Load gateway config using the slermes home directory as config source.
+     * gateway_config_load reads <config_dir>/config.yaml; NULL config_dir
+     * triggers the same error path as a missing/invalid config file. */
+    gateway_config_t cfg;
+    if (!gateway_config_load(slermes_home(), &cfg)) {
+        /* Error path — print exception message + configure instructions. */
+        const char *home = slermes_home();
+        if (self->console_print_fn) {
+            self->console_print_fn(self, "  Error loading gateway config: unable to load config");
+            self->console_print_fn(self, "");
+            self->console_print_fn(self, "  To configure the gateway:");
+            self->console_print_fn(self, "    1. Set environment variables:");
+            self->console_print_fn(self, "       TELEGRAM_BOT_TOKEN=your_token");
+            self->console_print_fn(self, "       DISCORD_BOT_TOKEN=your_token");
+            self->console_print_fn(self, "    2. Or configure settings in");
+            self->console_print_fn(self, "       ");
+            self->console_print_fn(self, home);
+            self->console_print_fn(self, "/config.yaml");
+            self->console_print_fn(self, "");
+        } else {
+            printf("  Error loading gateway config: unable to load config\n");
+            printf("\n");
+            printf("  To configure the gateway:\n");
+            printf("    1. Set environment variables:\n");
+            printf("       TELEGRAM_BOT_TOKEN=your_token\n");
+            printf("       DISCORD_BOT_TOKEN=your_token\n");
+            printf("    2. Or configure settings in %s/config.yaml\n", home);
+            printf("\n");
+        }
+        return;
+    }
+
+    /* Messaging Platform Configuration section. */
+    if (self->console_print_fn) {
+        self->console_print_fn(self, "  Messaging Platform Configuration:");
+    } else {
+        printf("  Messaging Platform Configuration:\n");
+    }
+
+    /* Platform status table. */
+    struct {
+        int platform;
+        const char *name;
+        const char *env_var;
+    } platform_status[] = {
+        { GW_PLATFORM_TELEGRAM, "Telegram", "TELEGRAM_BOT_TOKEN" },
+        { GW_PLATFORM_DISCORD,  "Discord",  "DISCORD_BOT_TOKEN" },
+        { GW_PLATFORM_SLACK,    "Slack",    "SLACK_BOT_TOKEN" },
+        { GW_PLATFORM_WHATSAPP, "WhatsApp", "WHATSAPP_ENABLED" },
+    };
+
+    for (size_t i = 0; i < sizeof(platform_status) / sizeof(platform_status[0]); i++) {
+        const gw_platform_config_t *pconfig =
+            (i < (size_t)cfg.platform_count) ? &cfg.platforms[i] : NULL;
+        const char *home_channel = NULL;
+        bool enabled = (pconfig && pconfig->enabled);
+
+        if (enabled && pconfig) {
+            /* gw_platform_config_t has home_channel.name directly. */
+            if (pconfig->has_home_channel && pconfig->home_channel.name[0]) {
+                home_channel = pconfig->home_channel.name;
+            }
+        }
+
+        char line[256];
+        if (enabled) {
+            const char *home_str = home_channel ? " → " : "";
+            snprintf(line, sizeof(line),
+                     "    ✓ %-12s Enabled%s",
+                     platform_status[i].name,
+                     home_str);
+            /* Append home channel name if present. */
+            if (home_channel) {
+                size_t pos = strlen(line);
+                size_t remain = sizeof(line) - pos - 1;
+                snprintf(line + pos, remain, "%s", home_channel);
+            }
+        } else {
+            snprintf(line, sizeof(line),
+                     "    ○ %-12s Not configured (%s)",
+                     platform_status[i].name,
+                     platform_status[i].env_var);
+        }
+
+        if (self->console_print_fn) {
+            self->console_print_fn(self, line);
+        } else {
+            printf("%s\n", line);
+        }
+    }
+
+    /* Session Reset Policy section. */
+    if (self->console_print_fn) {
+        self->console_print_fn(self, "");
+        self->console_print_fn(self, "  Session Reset Policy:");
+        {
+            const char *mode_str = "unknown";
+            switch (cfg.reset_policy.mode) {
+                case GW_RESET_MODE_DAILY: mode_str = "daily"; break;
+                case GW_RESET_MODE_IDLE:  mode_str = "idle";  break;
+                case GW_RESET_MODE_BOTH:  mode_str = "both";  break;
+                case GW_RESET_MODE_NONE:  mode_str = "none";  break;
+                default: break;
+            }
+            char buf[128];
+            snprintf(buf, sizeof(buf), "    Mode: %s", mode_str);
+            self->console_print_fn(self, buf);
+        }
+        {
+            char buf[128];
+            snprintf(buf, sizeof(buf), "    Daily reset at: %d:00", cfg.reset_policy.at_hour);
+            self->console_print_fn(self, buf);
+        }
+        {
+            char buf[128];
+            snprintf(buf, sizeof(buf), "    Idle timeout: %d minutes", cfg.reset_policy.idle_minutes);
+            self->console_print_fn(self, buf);
+        }
+        self->console_print_fn(self, "");
+        self->console_print_fn(self, "  To start the gateway:");
+        self->console_print_fn(self, "    python cli.py --gateway");
+        self->console_print_fn(self, "");
+        {
+            const char *home = slermes_home();
+            char buf[512];
+            snprintf(buf, sizeof(buf), "  Configuration file: %s/config.yaml", home);
+            self->console_print_fn(self, buf);
+        }
+        self->console_print_fn(self, "");
+    } else {
+        printf("\n");
+        printf("  Session Reset Policy:\n");
+        printf("\n");
+        {
+            const char *mode_str = "unknown";
+            switch (cfg.reset_policy.mode) {
+                case GW_RESET_MODE_DAILY: mode_str = "daily"; break;
+                case GW_RESET_MODE_IDLE:  mode_str = "idle";  break;
+                case GW_RESET_MODE_BOTH:  mode_str = "both";  break;
+                case GW_RESET_MODE_NONE:  mode_str = "none";  break;
+                default: break;
+            }
+            printf("    Mode: %s\n", mode_str);
+        }
+        printf("    Daily reset at: %d:00\n", cfg.reset_policy.at_hour);
+        printf("    Idle timeout: %d minutes\n", cfg.reset_policy.idle_minutes);
+        printf("\n");
+        printf("  To start the gateway:\n");
+        printf("    python cli.py --gateway\n");
+        printf("\n");
+        const char *home = slermes_home();
+        printf("  Configuration file: %s/config.yaml\n", home);
+        printf("\n");
+    }
+}
 
 /* Port of Python cli:process_command */
 
@@ -1284,15 +1465,69 @@ void hcli_force_full_redraw(hcli_t *self) {
 
 /* Port of Python cli:_handle_approval_selection */
 
-/* Port of Python cli:_get_approval_display_fragments */
+/* PoP: hcli_capture_modal_input_snapshot @ cli.py:_capture_modal_input_snapshot
+ * Save the composer draft (text + cursor) before a modal prompt opens, then
+ * clear the buffer. No-op when app is not wired (Python except path). */
+void hcli_capture_modal_input_snapshot(hcli_t *self) {
+    if (!self) return;
+    if (!self->app_get_buffer_text_fn || !self->app || self->modal_snapshot_valid) return;
+    char *text = self->app_get_buffer_text_fn(self);
+    int cursor = self->app_get_buffer_cursor_fn ? self->app_get_buffer_cursor_fn(self) : 0;
+    free(self->modal_snapshot_text);
+    self->modal_snapshot_text = text;
+    self->modal_snapshot_cursor = cursor;
+    self->modal_snapshot_valid = true;
+    /* Clear the composer buffer (Python: buf.reset()). */
+    if (self->app_set_buffer_text_fn) self->app_set_buffer_text_fn(self, "");
+    if (self->app_set_buffer_cursor_fn) self->app_set_buffer_cursor_fn(self, 0);
+}
 
-/* Port of Python cli:_secret_capture_callback */
+/* PoP: hcli_restore_modal_input_snapshot @ cli.py:_restore_modal_input_snapshot */
+void hcli_restore_modal_input_snapshot(hcli_t *self) {
+    if (!self) return;
+    if (!self->modal_snapshot_valid || !self->app) return;
+    if (self->app_set_buffer_text_fn) self->app_set_buffer_text_fn(self,
+        self->modal_snapshot_text ? self->modal_snapshot_text : "");
+    if (self->app_set_buffer_cursor_fn)
+        self->app_set_buffer_cursor_fn(self, self->modal_snapshot_cursor);
+    free(self->modal_snapshot_text);
+    self->modal_snapshot_text = NULL;
+    self->modal_snapshot_cursor = 0;
+    self->modal_snapshot_valid = false;
+}
+
+/* PoP: hcli_close_reasoning_box @ cli.py:_close_reasoning_box */
+void hcli_close_reasoning_box(hcli_t *self) {
+    if (!self) return;
+    free(self->reasoning_buf);
+    self->reasoning_buf = NULL;
+    self->reasoning_box_opened = false;
+    if (self->app_invalidate_fn && self->app) {
+        self->app_invalidate_fn(self);
+    }
+}
+
+/* PoP: hcli_close_command_palette @ cli.py:_close_command_palette */
+void hcli_close_command_palette(hcli_t *self) {
+    if (!self) return;
+    self->command_palette_open = false;
+    hcli_restore_modal_input_snapshot(self);
+    if (self->app_invalidate_fn && self->app) {
+        self->app_invalidate_fn(self);
+    }
+}
+
+/* PoP: hcli_close_model_picker @ cli.py:_close_model_picker */
+void hcli_close_model_picker(hcli_t *self) {
+    if (!self) return;
+    self->model_picker_open = false;
+    hcli_restore_modal_input_snapshot(self);
+    if (self->app_invalidate_fn && self->app) {
+        self->app_invalidate_fn(self);
+    }
+}
 
 /* Port of Python cli:_capture_modal_input_snapshot */
-
-/* Port of Python cli:_restore_modal_input_snapshot */
-
-/* Port of Python cli:_submit_secret_response */
 
 /* Port of Python cli:_cancel_secret_capture */
 
@@ -1435,6 +1670,28 @@ int cli_hermes_call_output_screen_diff(
 
 /* Port of Python cli:_audio_level_bar */
 
+/* PoP: hcli_clear_prompt_toolkit_screen @ cli.py:_clear_prompt_toolkit_screen
+ * Clear the terminal and reset prompt_toolkit renderer state. Guards
+ * terminal_io_broken. On app_invalidate_fn EIO: mark terminal io broken
+ * as "clear_screen". */
+void hcli_clear_prompt_toolkit_screen(hcli_t *self, void *app,
+                                      bool rebuild_scrollback) {
+    (void)app;
+    if (!self) return;
+    if (self->terminal_io_broken) return;
+    const hcli_pt_output_ops_t *ops = self->pt_ops;
+    if (!ops || !ops->renderer) return;
+    if (ops->reset_attributes && ops->output) ops->reset_attributes(ops->output);
+    if (ops->erase_screen && ops->output) ops->erase_screen(ops->output);
+    if (rebuild_scrollback && ops->write_raw && ops->output) {
+        const char *scrollback_clear = "\x1b[3J";
+        ops->write_raw(ops->output, scrollback_clear);
+    }
+    if (ops->cursor_goto && ops->output) ops->cursor_goto(ops->output, 0, 0);
+    if (ops->flush && ops->output) ops->flush(ops->output);
+    if (ops->renderer_reset && ops->renderer) ops->renderer_reset(ops->renderer);
+}
+
 /* Port of Python cli:_get_tui_prompt_fragments */
 
 /* Port of Python cli:_get_tui_prompt_text */
@@ -1451,7 +1708,7 @@ bool _enable_extended_enter_keys(void *output,
                                  void (*flush_fn)(void *)) {
     if (!cli_terminal_supports_extended_enter_keys()) return false;
 
-    /* Ghostty exception: only modifyOtherKeys — see cli_is_ghostty_terminal(). */
+    /* Ghostty gets modifyOtherKeys only — see cli_is_ghostty_terminal(). */
     const char *seq = cli_is_ghostty_terminal() ?
         _MODIFY_OTHER_KEYS_SEQ : _EXTENDED_ENTER_KEYS_SEQ;
 

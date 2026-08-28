@@ -14,6 +14,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <pthread.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -96,6 +97,23 @@ typedef struct {
     char *style;   /* e.g. "class:approval-border" */
     char *text;    /* fragment text including trailing newline where set */
 } hcli_fragment_t;
+
+/* ── Batch 6 (cli_gaps_2026_08_25 part 2): paint / resize / status bar ── */
+
+/* prompt_toolkit output/renderer operation seam used by
+ * hcli_clear_prompt_toolkit_screen (the C stand-in for app.renderer.output).
+ * All pointers may be NULL; a missing op is skipped exactly like Python's
+ * inner try/except blocks. */
+typedef struct hcli_pt_output_ops {
+    void *output;                                /* renderer.output */
+    void *renderer;
+    void (*reset_attributes)(void *output);
+    void (*erase_screen)(void *output);
+    void (*write_raw)(void *output, const char *s);
+    void (*cursor_goto)(void *output, int row, int col);
+    void (*flush)(void *output);
+    void (*renderer_reset)(void *renderer);      /* reset(leave_alt=false) */
+} hcli_pt_output_ops_t;
 
 struct hcli {
     /* Session persistence */
@@ -291,6 +309,142 @@ struct hcli {
     void  (*persist_prompt_summary_fn)(hcli_t *self, const char *icon,
                                        const char *title, const char *command,
                                        const char *outcome); /* _persist_prompt_summary */
+
+    /* ── Batch 6 (cli_gaps_2026_08_25 part 2): paint/resize/status state ── */
+    bool   terminal_io_broken;                  /* _terminal_io_broken */
+    double last_invalidate;                     /* _last_invalidate (monotonic) */
+    bool   resize_recovery_pending;             /* _resize_recovery_pending */
+    unsigned long resize_recovery_gen;          /* debounce token: identity of
+                                                 * the pending recovery timer */
+    unsigned long status_bar_unsuppress_gen_pending; /* pending unsuppress
+                                                      * timer token */
+    double last_focus_regain_redraw;            /* _last_focus_regain_redraw */
+    int    last_resize_width_seeded;            /* _install_resize_recovery ran */
+    const hcli_pt_output_ops_t *pt_ops;         /* renderer ops seam (may be NULL) */
+    void *app;                                 /* self._app */
+    /* app.invalidate() seam. The C application records failures by storing
+     * an errno value in app_invalidate_errno before returning (Python raises
+     * OSError); EIO maps to _mark_terminal_io_broken like #81521. */
+    void (*app_invalidate_fn)(hcli_t *self);
+    int    app_invalidate_errno;
+    /* Modal input snapshot seam: save/restore composer draft text + cursor
+     * (prompt_toolkit app.current_buffer.text / .cursor_position). Injected
+     * by the TUI shell when the full TUI is linked in. Each may be NULL. */
+    char *(*app_get_buffer_text_fn)(hcli_t *self);
+    int  (*app_get_buffer_cursor_fn)(hcli_t *self);
+    void (*app_set_buffer_text_fn)(hcli_t *self, const char *text);
+    void (*app_set_buffer_cursor_fn)(hcli_t *self, int cursor);
+    /* Stored snapshot for hcli_restore_modal_input_snapshot (cleared after
+     * restore). hcli_capture_modal_input_snapshot sets these; _restore clears. */
+    char *modal_snapshot_text;
+    int  modal_snapshot_cursor;
+    bool modal_snapshot_valid;
+    /* hermes_cli.active_sessions.try_acquire_active_session seam: returns a
+     * malloc'd refusal message (caller prints+frees) when the slot is taken
+     * and stores the lease on self->active_session_lease when claimed.
+     * *fail_open=true models the Python except path (claim vacuously). NULL
+     * on test stand-ins — same fail-open behavior applies. */
+    char *(*try_acquire_active_session_fn)(hcli_t *self, const char *surface,
+                                           bool *fail_open);
+    /* Pet reaction beat (_pet_flash / _on_reaction). */
+    char   pet_event[16];
+    double pet_event_until;
+    bool   pet_enabled;
+    char  *voice_record_key_display_cache;      /* _voice_record_key_display_cache */
+    /* Queued credit notices ((level,text) pairs for _flush_credit_notices). */
+    char **pending_notice_levels;
+    char **pending_notice_texts;
+    size_t pending_notice_count;
+    bool   status_bar_visible;                  /* self._status_bar_visible */
+    bool   model_picker_open;                   /* self._model_picker_state set */
+    bool   command_palette_open;                /* self._command_palette_state set */
+    void  *prompt_stash;                        /* prompt_stash_t* (_prompt_stash) */
+
+    /* ── Batch 6 part 2 (cli_gaps2 2026-08-26): streaming emitter / editor /
+     *           banner / resume restore / clipboard / termios recovery ────── */
+    bool   streaming_enabled;                   /* self.streaming_enabled */
+    char  *final_response_markdown;             /* "strip" | NULL (= render) */
+    char  *stream_buf;                          /* _stream_buf */
+    char **stream_table_rows;                   /* _stream_table_buf */
+    size_t stream_table_rows_len;
+    bool   in_stream_table;                     /* _in_stream_table */
+    char  *stream_text_ansi;                    /* _stream_text_ansi */
+    json_t *config;                             /* self.config (borrowed) */
+    bool   compact;                             /* self.compact */
+    bool   sudo_state;                          /* self._sudo_state truthy */
+    bool   clarify_state;                       /* self._clarify_state truthy */
+    void (*on_reasoning_fn)(hcli_t *, const char *text);  /* self._on_reasoning */
+    void (*enable_extended_enter_keys_fn)(hcli_t *, void *output);
+    int  (*agent_context_length_fn)(hcli_t *);  /* agent ctx length; <=0 unknown */
+    /* Prompt output seams (prompt_toolkit App.output). write_raw preferred,
+     * then write; each returns true when it handled the sequence. When both
+     * are NULL the sequence goes to stdout (the no-app path). */
+    bool (*output_write_raw_fn)(hcli_t *, const char *seq);
+    bool (*output_write_fn)(hcli_t *, const char *seq);
+    /* Console print seam (self._console_print rich markup). NULL = strip
+     * tags and print plain to stdout. */
+    void (*console_print_fn)(hcli_t *, const char *markup);
+    /* Skin engine seam (get_active_skin().get_branding/get_color). NULL =
+     * the Python except-branch defaults. */
+    const char *(*skin_get_branding_fn)(const char *key, const char *def);
+    const char *(*skin_get_color_fn)(const char *key, const char *def);
+    /* External-editor + submit pipeline seams (_open_external_editor). */
+    bool (*editor_open_fn)(hcli_t *, char **buffer_text);
+    bool (*handle_bang_shell_fn)(hcli_t *, const char *text);
+    bool (*process_command_fn)(hcli_t *, const char *text); /* false = exit */
+    bool (*looks_like_slash_command_fn)(const char *text);
+    void (*pending_input_put_fn)(hcli_t *, const char *text);
+    void (*interrupt_queue_put_fn)(hcli_t *, const char *text);
+    char  *busy_input_mode;                     /* "interrupt" | NULL/other */
+    bool   tool_callbacks_installed;            /* _tool_callbacks_installed */
+    /* Callback installers — NULL models a failed import (Python: pass). */
+    bool (*set_sudo_password_callback_fn)(hcli_t *);
+    bool (*set_approval_callback_fn)(hcli_t *);
+    bool (*set_secret_capture_callback_fn)(hcli_t *);
+    bool (*set_computer_use_approval_cb_fn)(hcli_t *);
+    /* tirith_security import surface — NULL = ImportError branch. */
+    char *(*tirith_ensure_installed_fn)(int log_failures);
+    bool (*tirith_platform_supported_fn)(void);
+    /* Vision analysis seam (tools.vision_tools.vision_analyze_tool). Returns
+     * malloc'd tool JSON result. NULL = import failed. */
+    char *(*vision_analyze_fn)(const char *image_url, const char *user_prompt);
+    /* hermes_cli.clipboard.save_clipboard_image(dest_png_path) seam. */
+    bool (*save_clipboard_image_fn)(const char *dest_png_path);
+    /* Resume panel renderer (Rich Console render at width). Malloc'd text. */
+    char *(*resume_panel_render_fn)(void *panel, int width);
+    /* Banner extras. */
+    char *(*compact_banner_fn)(void);           /* _build_compact_banner */
+    void (*show_status_fn)(hcli_t *);           /* _show_status */
+    void (*tool_availability_warnings_fn)(hcli_t *); /* direct/threaded call */
+    bool   defer_tool_warnings;                 /* _defer_tool_warnings */
+    char  *system_prompt;                       /* self.system_prompt */
+    char **preloaded_skills;                    /* self.preloaded_skills */
+    size_t preloaded_skills_len;
+    /* --skills preload join state (finalize_preloaded_skills). */
+    bool     preload_skills_finalized;
+    bool     preload_thread_valid;
+    pthread_t preload_thread;
+    char    *preload_skills_error;              /* non-NULL → raise equivalent */
+    char    *preload_skills_prompt;
+    char   **preload_loaded_skills; size_t preload_loaded_len;
+    char   **preload_missing_skills; size_t preload_missing_len;
+    /* Model switch persistence extras (_persist/_restore_session_model). */
+    char  *explicit_api_key;                    /* _explicit_api_key */
+    char  *explicit_base_url;                   /* _explicit_base_url */
+    void  *credential_pool;                     /* self._credential_pool */
+    char *(*resolve_runtime_provider_fn)(const char *requested);
+                                /* runtime_provider.resolve_runtime_provider —
+                                 * malloc'd JSON {api_key?,base_url?,api_mode?}
+                                 * or NULL on failure (not linked). */
+    bool (*agent_switch_model_fn)(hcli_t *, const char *model,
+                                  const char *provider, const char *api_key,
+                                  const char *base_url, const char *api_mode);
+    /* Attached images (_attached_images / _image_counter). */
+    char **attached_images; size_t attached_images_len;
+    int    image_counter;
+    /* Terminal input-mode recovery (_recover_terminal_input_modes). */
+    double last_input_mode_recovery;            /* monotonic seconds */
+    bool   input_mode_recovery_notice_shown;
 };
 
 /* ── Lifecycle ─────────────────────────────────────────────────────────── */
@@ -685,5 +839,164 @@ int hcli_spinner_widget_height(hcli_t *self, int width);
  * buffer with partial-tag holdback, routing inner content to the
  * reasoning display when show_reasoning is set. */
 void hcli_stream_delta(hcli_t *self, const char *text);
+
+/* ══════════ Batch 6 (cli_gaps_2026_08_25 part 2) ═══════════════════════ */
+
+/* PoP: _hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff
+ * Call prompt_toolkit's _output_screen_diff (orig_osd) with Hermes resize
+ * guards: inflate *previous_screen_height when the new screen is taller, and
+ * on a corrupt-previous-paint failure (Python AttributeError/TypeError,
+ * mapped to a negative orig_osd return) retry once with previous_screen=NULL
+ * so pt first-paints cleanly. args carries the non-previous_screen params.
+ * Returns the final orig_osd result; *retried_first_paint (optional) reports
+ * whether the recovery path ran. */
+typedef struct cli_osd_args {
+    void *app, *output, *screen, *current_pos, *last_style;
+    void *attrs_for_style_string, *style_string_has_style, *size;
+    int  color_depth;
+    bool is_done, full_screen;
+} cli_osd_args_t;
+int _hermes_call_output_screen_diff(
+    int (*orig_osd)(const cli_osd_args_t *args, void *previous_screen),
+    const cli_osd_args_t *args,
+    int screen_height,
+    int *previous_screen_height,   /* NULL = no previous screen */
+    bool *retried_first_paint);
+
+/* PoP: _terminal_supports_extended_enter_keys @ cli.py:_terminal_supports_extended_enter_keys
+ * Allowlist check against environ (env=NULL). */
+bool _terminal_supports_extended_enter_keys(void);
+
+/* PoP: _enable_extended_enter_keys @ cli.py:_enable_extended_enter_keys
+ * Push Kitty keyboard disambiguate + modifyOtherKeys=2 on allowlisted
+ * terminals (Ghostty gets modifyOtherKeys only). output/write_raw_fn/flush_fn
+ * model output.write_raw(); when output is NULL the raw stdout TTY path is
+ * used (stream.isatty() gate). */
+bool _enable_extended_enter_keys(void *output,
+                                 void (*write_raw_fn)(void *, const char *),
+                                 void (*flush_fn)(void *));
+
+/* PoP: _is_backslash_line_continuation @ cli.py:_is_backslash_line_continuation */
+bool _is_backslash_line_continuation(const char *text);
+
+/* PoP: _apply_backslash_line_continuation @ cli.py:_apply_backslash_line_continuation
+ * Replace a trailing "\" marker (plus trailing blanks) with a real newline.
+ * Malloc'd, caller frees. */
+char *_apply_backslash_line_continuation(const char *text);
+
+/* PoP: _status_bar_visible_from_display_config @ cli.py:_status_bar_visible_from_display_config
+ * display_config_json: JSON-encoded display config object (NULL/invalid → {}). */
+bool _status_bar_visible_from_display_config(const char *display_config_json);
+
+/* PoP: _get_plugin_cmd_handler_names @ cli.py:_get_plugin_cmd_handler_names
+ * Plugin command names (no slash prefix). Malloc'd array of malloc'd
+ * strings; caller frees each and the array. *out_len receives the count
+ * (0 on the Python except path — empty set). */
+char **_get_plugin_cmd_handler_names(size_t *out_len);
+
+/* PoP: hcli_close_reasoning_box @ cli.py:_close_reasoning_box
+ * Tear down the open reasoning box: clear the buffer, mark it closed,
+ * and repaint. */
+void hcli_close_reasoning_box(hcli_t *self);
+
+/* PoP: hcli_close_command_palette @ cli.py:_close_command_palette
+ * Close the /command palette modal: nil state, restore composer snapshot,
+ * repaint. */
+void hcli_close_command_palette(hcli_t *self);
+
+/* PoP: hcli_close_model_picker @ cli.py:_close_model_picker
+ * Close the /model picker modal: nil state, restore composer snapshot,
+ * repaint. */
+void hcli_close_model_picker(hcli_t *self);
+
+/* PoP: save_config_value @ cli.py:save_config_value
+ * Persist value_json at dotted key_path into HERMES_HOME/config.yaml via the
+ * comment-preserving atomic roundtrip update, chmod 0600, then run the cron
+ * drift warning. Returns true on success. */
+bool save_config_value(const char *key_path, const char *value_json);
+
+/* PoP: hcli_claim_active_session @ cli.py:_claim_active_session */
+bool hcli_claim_active_session(hcli_t *self, const char *surface, bool to_stderr);
+
+/* PoP: hcli_mark_terminal_io_broken @ cli.py:_mark_terminal_io_broken */
+void hcli_mark_terminal_io_broken(hcli_t *self, const char *reason);
+
+/* PoP: hcli_invalidate @ cli.py:_invalidate (default min_interval=0.25) */
+void hcli_invalidate(hcli_t *self);
+/* Full form with explicit throttle window. */
+void hcli_invalidate_min(hcli_t *self, double min_interval);
+
+/* PoP: hcli_paint_now @ cli.py:_paint_now */
+void hcli_paint_now(hcli_t *self);
+
+/* PoP: hcli_force_full_redraw @ cli.py:_force_full_redraw */
+void hcli_force_full_redraw(hcli_t *self);
+
+/* PoP: hcli_schedule_focus_regain_redraw @ cli.py:_schedule_focus_regain_redraw
+ * Rate-limited (1.0 s default) repaint after a terminal focus-in report
+ * (``CSI I``). Guards terminal_io_broken; delegates to
+ * hcli_force_full_redraw on the first signal past the throttle. */
+
+/* PoP: hcli_clear_prompt_toolkit_screen @ cli.py:_clear_prompt_toolkit_screen */
+void hcli_clear_prompt_toolkit_screen(hcli_t *self, void *app,
+                                      bool rebuild_scrollback);
+
+/* PoP: hcli_schedule_resize_recovery @ cli.py:_schedule_resize_recovery
+ * Debounced (0.12 s) SIGWINCH recovery; original_on_resize runs at fire time. */
+void hcli_schedule_resize_recovery(hcli_t *self, void *app,
+                                   void (*original_on_resize)(hcli_t *, void *));
+
+/* PoP: hcli_install_resize_recovery @ cli.py:_install_resize_recovery
+ * Seed the width baseline for width-change detection and arm recovery. The
+ * C shell routes SIGWINCH through hcli_schedule_resize_recovery after this. */
+void hcli_install_resize_recovery(hcli_t *self, void *app);
+
+/* PoP: hcli_use_minimal_tui_chrome @ cli.py:_use_minimal_tui_chrome
+ * width <= 0 auto-detects. */
+bool hcli_use_minimal_tui_chrome(hcli_t *self, int width);
+
+/* PoP: hcli_tui_input_rule_height @ cli.py:_tui_input_rule_height
+ * Returns -1 for an unknown position (the Python ValueError). */
+int hcli_tui_input_rule_height(hcli_t *self, const char *position, int width);
+
+/* PoP: hcli_render_spinner_text @ cli.py:_render_spinner_text
+ * Malloc'd live spinner/status text exactly as rendered in the TUI. */
+char *hcli_render_spinner_text(hcli_t *self);
+
+/* PoP: hcli_on_reaction @ cli.py:_on_reaction */
+void hcli_on_reaction(hcli_t *self, const char *kind);
+
+/* PoP: hcli_voice_record_key_label @ cli.py:_voice_record_key_label
+ * Cached push-to-talk label or "Ctrl+B". Malloc'd, caller frees. */
+char *hcli_voice_record_key_label(hcli_t *self);
+
+/* PoP: hcli_set_voice_record_key_cache @ cli.py:set_voice_record_key_cache */
+void hcli_set_voice_record_key_cache(hcli_t *self, const char *raw_key);
+
+/* PoP: hcli_get_voice_status_fragments @ cli.py:_get_voice_status_fragments
+ * Voice status bar fragments; width <= 0 auto-detects. Malloc'd fragment
+ * array (+*out_len), caller frees via hcli_fragments_free. */
+hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width,
+                                                 size_t *out_len);
+
+/* PoP: hcli_build_status_bar_text @ cli.py:_build_status_bar_text
+ * Compact one-line session status string for the TUI footer. Malloc'd. */
+char *hcli_build_status_bar_text(hcli_t *self, int width);
+
+/* PoP: hcli_get_status_bar_fragments @ cli.py:_get_status_bar_fragments
+ * Styled status-bar fragments (hidden while a picker/palette modal is open).
+ * Malloc'd fragment array (+*out_len), caller frees via hcli_fragments_free. */
+hcli_fragment_t *hcli_get_status_bar_fragments(hcli_t *self, size_t *out_len);
+
+/* PoP: hcli_on_thinking @ cli.py:_on_thinking */
+void hcli_on_thinking(hcli_t *self, const char *text);
+
+/* PoP: hcli_on_notice @ cli.py:_on_notice
+ * notice_json: {"text": "...", "level": "info|warn|error|success"}. Queues
+ * an out-of-band AgentNotice for rendering at the next clean boundary. */
+void hcli_on_notice(hcli_t *self, const char *notice_json);
+
+/* PoP: hcli_flush_credit_notices @ cli.py:_flush_credit_notices */
+void hcli_flush_credit_notices(hcli_t *self);
 
 #endif /* SLERMES_CLI_HERMES_CLI_H */
