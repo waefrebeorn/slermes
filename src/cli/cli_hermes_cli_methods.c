@@ -24,6 +24,12 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+#include "port_hermes_cli_heartbeat.h"
+#include "goal_contract.h"
+#include "loops_pure.h"
+#include "terminal_breadcrumbs_pure.h"
+#include <time.h>
+
 /* ── extern declarations for functions not yet in public headers ────────── */
 
 /* Declared in src/agent/context_breakdown.c (merged from gaps file). */
@@ -51,6 +57,9 @@ extern long long *hermes_state_get_active_message_ids(hermes_state_db_t *db,
 
 /* Declared in src/agent/hermes_state/hermes_state_misc.c. */
 extern char *hermes_state_sanitize_context(const char *text);
+extern int hermes_state_set_session_yolo(hermes_state_db_t *db,
+                                         const char *session_id,
+                                         bool enabled);
 
 /* Declared in src/agent/hermes_state/hermes_state_messages.c (orphan). */
 extern char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
@@ -87,6 +96,7 @@ static const size_t _EPH_N =
     sizeof(_EPHEMERAL_SCAFFOLDING_FLAGS) / sizeof(_EPHEMERAL_SCAFFOLDING_FLAGS[0]);
 
 /* — Faithful port of run_agent._is_ephemeral_scaffolding — */
+/* PoP: _is_ephemeral_scaffolding @ cli.py:_is_ephemeral_scaffolding */
 static bool is_ephemeral_scaffolding(const json_t *msg) {
     if (!msg || msg->type != JSON_OBJECT) return false;
     for (size_t i = 0; i < _EPH_N; i++) {
@@ -151,8 +161,8 @@ static json_t *_comparison_content(const json_t *message) {
     return projected;
 }
 
-/* ── PoP: _owns_process_notification @ cli.py:_owns_process_notification
- * Return whether this CLI session provably owns a delegation event.
+/* PoP: _owns_process_notification @ cli.py:_owns_process_notification */
+/* Return whether this CLI session provably owns a delegation event.
  * Faithful to Python: compare event session_key vs current session_id,
  * resolving via resume_session_id when the keys differ. Fail-closed. */
 bool hcli_owns_process_notification(hcli_t *self, const char *event_json) {
@@ -190,8 +200,8 @@ bool hcli_owns_process_notification(hcli_t *self, const char *event_json) {
     return false;
 }
 
-/* ── PoP: _get_loop_manager @ cli.py:_get_loop_manager ────────────────────
- * Return the LoopManager bound to the current session_id, cached on
+/* PoP: _get_loop_manager @ cli.py:_get_loop_manager */
+/* Return the LoopManager bound to the current session_id, cached on
  * self->loop_manager. A NULL-vtab => in-memory (DB-unavailable degradation,
  * matching Python's graceful fallback when SessionDB is None). */
 loop_manager_t *hcli_get_loop_manager(hcli_t *self) {
@@ -212,8 +222,8 @@ loop_manager_t *hcli_get_loop_manager(hcli_t *self) {
     return (loop_manager_t *)self->loop_manager;
 }
 
-/* ── PoP: _clear_persisted_context_for_model_switch @ cli.py:_clear_persisted_context_for_model_switch
- * Drop the global context_length pin when its configured owner changes.
+/* PoP: _clear_persisted_context_for_model_switch @ cli.py:_clear_persisted_context_for_model_switch */
+/* Drop the global context_length pin when its configured owner changes.
  * Faithful to Python: try the route-identity check, on ANY failure fall
  * back to clearing the pin (broad exception clause). */
 void hcli_clear_persisted_context_for_model_switch(hcli_t *self,
@@ -263,8 +273,8 @@ void hcli_clear_persisted_context_for_model_switch(hcli_t *self,
         config_py_save_value("model.context_length", json_new_null());
 }
 
-/* ── PoP: _show_context_breakdown @ cli.py:_show_context_breakdown
- * /context [all] — visual context-window usage breakdown.
+/* PoP: _show_context_breakdown @ cli.py:_show_context_breakdown */
+/* /context [all] — visual context-window usage breakdown.
  * Renders a 5×20 glyph grid + per-category table using the already-ported
  * context_breakdown render functions. */
 void hcli_show_context_breakdown(hcli_t *self, const char *cmd_original) {
@@ -346,8 +356,8 @@ void hcli_show_context_breakdown(hcli_t *self, const char *cmd_original) {
     context_breakdown_agent_destroy(cb_agent);
 }
 
-/* ── PoP: _usage_reset @ cli.py:_usage_reset
- * /usage reset [--force] — redeem one banked Codex reset credit.
+/* PoP: _usage_reset @ cli.py:_usage_reset */
+/* /usage reset [--force] — redeem one banked Codex reset credit.
  *
  * The Codex backend requires an HTTP client. The real implementation lives
  * in agent/account_usage.c but the network-layer port is a test harness.
@@ -378,8 +388,8 @@ void hcli_usage_reset(hcli_t *self, bool force) {
     free(arg);
 }
 
-/* ── PoP: _drain_process_notifications @ cli.py:_drain_process_notifications
- * Queue background notifications owned by this CLI session. Mirrors Python:
+/* PoP: _drain_process_notifications @ cli.py:_drain_process_notifications */
+/* Queue background notifications owned by this CLI session. Mirrors Python:
  * call drain_notifications with the session key, then for each returned event
  * claim it, push its synthetic_message into pending_input, then complete it.
  *
@@ -445,8 +455,8 @@ void hcli_drain_process_notifications(hcli_t *self, const char *consumer) {
     json_free(root);
 }
 
-/* ── PoP: _rewind_persisted_user_turn @ cli.py:_rewind_persisted_user_turn
- * Bind one warm user ordinal to a durable row and rewind it atomically.
+/* PoP: _rewind_persisted_user_turn @ cli.py:_rewind_persisted_user_turn */
+/* Bind one warm user ordinal to a durable row and rewind it atomically.
  * Faithful to Python: load the durable conversation, filter ephemeral
  * scaffolding, find user-originated turns in both warm + durable views,
  * verify they match, then rewind the session DB to the target row. */
@@ -563,4 +573,163 @@ int hcli_rewind_persisted_user_turn(hcli_t *self,
     free(active_ids);
 
     return result ? 0 : -10;
+}
+
+/* PoP: _write_terminal_breadcrumb @ cli.py:_write_terminal_breadcrumb */
+void hcli_write_terminal_breadcrumb(hcli_t *self) {
+    if (!self) return;
+    tbr_write_breadcrumb(self->session_id, NULL);
+}
+
+/* PoP: _persist_session_yolo @ cli.py:_persist_session_yolo */
+void hcli_persist_session_yolo(hcli_t *self, const char *session_key, bool enabled) {
+    if (!self || !session_key || !*session_key ||
+        strcmp(session_key, "default") == 0) return;
+    /* Best-effort: in-memory toggle is authoritative; persistence only
+     * affects future --resume. Swallow errors (matches Python's except:pass). */
+    if (self->persist_yolo) {
+        self->persist_yolo(self, session_key, enabled);
+    } else if (self->session_db) {
+        int rc = hermes_state_set_session_yolo(self->session_db, session_key, enabled);
+        (void)rc;
+    }
+}
+
+/* PoP: _get_heartbeat_manager @ cli.py:_get_heartbeat_manager */
+void *hcli_get_heartbeat_manager(hcli_t *self) {
+    if (!self) return NULL;
+    const char *sid = self->session_id ? self->session_id : "";
+    if (!*sid) return NULL;
+
+    /* Return cached manager if session_id matches. */
+    hb_manager_t *existing = (hb_manager_t *)self->heartbeat_manager;
+    if (existing && existing->session_id &&
+        strcmp(existing->session_id, sid) == 0) {
+        return existing;
+    }
+
+    /* Rebind lazily — mirrors Python's try/import + GracefulHeartbeatUnavailable. */
+    hb_manager_t *mgr = hb_manager_new(sid);
+    self->heartbeat_manager = mgr;
+    return mgr;
+}
+
+/* PoP: _get_goal_manager @ cli.py:_get_goal_manager */
+void *hcli_get_goal_manager(hcli_t *self) {
+    if (!self) return NULL;
+    const char *sid = self->session_id ? self->session_id : "";
+    if (!*sid) return NULL;
+
+    /* Return cached manager if session_id matches. */
+    goal_manager_t *existing = (goal_manager_t *)self->goal_manager;
+    if (existing && goal_manager_session_id(existing) &&
+        strcmp(goal_manager_session_id(existing), sid) == 0) {
+        return existing;
+    }
+
+    /* Load goals config for default_max_turns — mirrors Python's load_config()
+     * with a broad except → defaults to 20. */
+    int max_turns = 20;
+    if (self->config) {
+        json_t *goal_cfg = config_py_get_config_value(self->config, "goals", NULL);
+        if (goal_cfg) {
+            json_t *max_t = json_object_get(goal_cfg, "max_turns");
+            if (max_t && max_t->type == JSON_NUMBER) {
+                max_turns = (int)max_t->num_val;
+            }
+            json_free(goal_cfg);
+        }
+    }
+    if (max_turns <= 0) max_turns = 20;
+
+    goal_manager_t *mgr = goal_manager_new(sid, NULL, max_turns);
+    self->goal_manager = mgr;
+    return mgr;
+}
+
+/* PoP: _maybe_fire_loop_tick @ cli.py:_maybe_fire_loop_tick */
+void hcli_maybe_fire_loop_tick(hcli_t *self) {
+    if (!self) return;
+    /* Only runs while the agent is idle and nothing is queued. */
+    if (self->agent_running) return;
+    if (self->agent) return;
+
+    loop_manager_t *mgr = (loop_manager_t *)self->loop_manager;
+    if (!mgr) return;
+
+    double now = (double)time(NULL);
+    /* Throttle the deferred re-check (matches Python's _last_loop_tick_check). */
+    if (now - self->last_loop_tick_check < 2.0) return;
+    self->last_loop_tick_check = now;
+
+    if (!loops_manager_is_due(mgr, now)) return;
+
+    /* Real user input (or anything else queued) takes priority. */
+    if (self->pending_input_put_fn && self->pending_input_nonempty_fn) {
+        if (self->pending_input_nonempty_fn(self)) return;
+    }
+
+    /* An active goal that blocks also wins the idle boundary. */
+    const char *sid = loops_manager_session_id(mgr);
+    if (sid && loops_goal_blocks_loop_tick(sid)) return;
+
+    char *wakeup = loops_manager_fire_tick(mgr, now, 0.0);
+    if (!wakeup) return;
+
+    loop_state_t *state = loops_manager_state(mgr);
+    long tick_no = loops_state_ticks_fired(state);
+    (void)tick_no;  /* tick number available via state */
+
+    /* Inject the wakeup as a synthetic user turn via the pending_input seam. */
+    if (self->pending_input_put_fn) {
+        self->pending_input_put_fn(self, wakeup);
+    }
+    free(wakeup);
+}
+
+/* PoP: _maybe_complete_loop_tick_after_turn @ cli.py:_maybe_complete_loop_tick_after_turn */
+void hcli_maybe_complete_loop_tick_after_turn(hcli_t *self) {
+    if (!self) return;
+
+    loop_manager_t *mgr = (loop_manager_t *)self->loop_manager;
+    if (!mgr) return;
+
+    loop_state_t *state = loops_manager_state(mgr);
+    if (!state || !loops_state_awaiting_response(state)) return;
+
+    /* User-interrupted wakeup turn pauses the loop (recoverable via /loop resume). */
+    if (self->last_turn_interrupted) {
+        loops_manager_pause(mgr, "user-interrupted (Ctrl+C)");
+        return;
+    }
+
+    /* Extract last assistant response from conversation history. */
+    char *last_response = NULL;
+    if (self->history && self->history_len > 0) {
+        for (size_t i = self->history_len; i-- > 0;) {
+            hcli_msg_t *msg = &self->history[i];
+            if (msg && msg->role && strcmp(msg->role, "assistant") == 0) {
+                last_response = strdup(msg->content ? msg->content : "");
+                break;
+            }
+        }
+    }
+    if (!last_response) last_response = strdup("");
+
+    double now = (double)time(NULL);
+    char *decision_json = loops_manager_complete_tick(mgr, last_response, now, 0.0, 0.0);
+    free(last_response);
+
+    if (decision_json) {
+        json_t *dec = json_parse(decision_json, NULL);
+        if (dec) {
+            json_t *msg = json_object_get(dec, "message");
+            if (msg && msg->type == JSON_STRING && msg->str_val) {
+                /* Print the message — mirrors _cprint */
+                printf("  %s\n", msg->str_val);
+            }
+            json_free(dec);
+        }
+        free(decision_json);
+    }
 }

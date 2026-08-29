@@ -37,6 +37,12 @@ int loops_state_is_due(const loop_state_t *s, double now);
  * `now` injected for deterministic remaining-label computation. */
 char *loops_state_status_line(const loop_state_t *s, double now);
 
+/* PoP: awaiting_response @ hermes_cli/loops.py:LoopState.awaiting_response */
+bool loops_state_awaiting_response(const loop_state_t *s);
+
+/* PoP: ticks_fired @ hermes_cli/loops.py:LoopState.ticks_fired */
+long loops_state_ticks_fired(const loop_state_t *s);
+
 /* PoP: loops_digest_response @ hermes_cli/loops.py:_digest_response
  * Returns malloc'd lowercase SHA-256 hex digest (free with free()). */
 char *loops_digest_response(const char *response);

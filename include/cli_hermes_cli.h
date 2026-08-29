@@ -247,6 +247,9 @@ struct hcli {
     /* ── Batch 3: termios drift watchdog (_check_termios_drift) ─────────── */
     double last_termios_drift_check;            /* _last_termios_drift_check (monotonic) */
     bool   termios_drift_notice_shown;          /* _termios_drift_notice_shown */
+    /* Loop tick throttle (_maybe_fire_loop_tick). */
+    double last_loop_tick_check;                /* _last_loop_tick_check (monotonic) */
+    bool   last_turn_interrupted;               /* _last_turn_interrupted */
 
     /* Injectable probe for model_tools.check_tool_availability() — returns a
      * malloc'd JSON array of {name, tools[], missing_vars[]} rows for
@@ -448,6 +451,10 @@ struct hcli {
     bool   input_mode_recovery_notice_shown;
     /* Cached LoopManager (_get_loop_manager). Opaque: loops_pure.h. */
     void  *loop_manager;
+    /* Cached HeartbeatManager (_get_heartbeat_manager). Opaque: port_hermes_cli_heartbeat.h. */
+    void  *heartbeat_manager;
+    /* Cached GoalManager (_get_goal_manager). Opaque: goal_contract.h. */
+    void  *goal_manager;
 };
 
 /* ── Lifecycle ─────────────────────────────────────────────────────────── */
@@ -580,10 +587,26 @@ char *hcli_resolve_personality_prompt(const char *value_json);
  * continuations before comparing; missing/foreign keys fail closed. */
 bool hcli_owns_process_notification(hcli_t *self, const char *event_json);
 
-/* ── PoP: hcli_write_terminal_breadcrumb @ cli.py:_write_terminal_breadcrumb ─
- * Best-effort record of this terminal's live session id for bare `hermes -c`.
- * No-op without HERMES_TERMINAL_ID / terminal_continue disabled. */
+/* PoP: hcli_get_heartbeat_manager @ cli.py:_get_heartbeat_manager */
+void *hcli_get_heartbeat_manager(hcli_t *self);
+
+/* PoP: hcli_get_goal_manager @ cli.py:_get_goal_manager */
+void *hcli_get_goal_manager(hcli_t *self);
+
+/* PoP: hcli_write_terminal_breadcrumb @ cli.py:_write_terminal_breadcrumb */
 void hcli_write_terminal_breadcrumb(hcli_t *self);
+
+/* PoP: hcli_persist_session_yolo @ cli.py:_persist_session_yolo */
+void hcli_persist_session_yolo(hcli_t *self, const char *session_key, bool enabled);
+
+/* PoP: hcli_maybe_fire_loop_tick @ cli.py:_maybe_fire_loop_tick
+ * Idle hook: fire a due /loop wakeup only when idle (no agent running,
+ * no queued input, no active goal that blocks). NULL = no loop configured. */
+void hcli_maybe_fire_loop_tick(hcli_t *self);
+
+/* PoP: hcli_maybe_complete_loop_tick_after_turn @ cli.py:_maybe_complete_loop_tick_after_turn
+ * Completion hook: after a turn finishes, resolve the pending loop tick. */
+void hcli_maybe_complete_loop_tick_after_turn(hcli_t *self);
 
 /* ── YOLO bypass quartet (tools/approval session-keyed state) ───────────── */
 /* PoP: hcli_transfer_session_yolo @ cli.py:_transfer_session_yolo */
@@ -592,8 +615,6 @@ void hcli_transfer_session_yolo(hcli_t *self, const char *old_id, const char *ne
 bool hcli_is_session_yolo_active(hcli_t *self);
 /* PoP: hcli_toggle_yolo @ cli.py:_toggle_yolo */
 void hcli_toggle_yolo(hcli_t *self);
-/* ── PoP: hcli_persist_session_yolo @ cli.py:_persist_session_yolo */
-void hcli_persist_session_yolo(hcli_t *self, const char *session_key, bool enabled);
 
 /* ── Batch 0 continuation: status-bar / formatting surface ─────────────── */
 

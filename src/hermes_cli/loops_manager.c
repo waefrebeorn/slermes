@@ -118,6 +118,16 @@ struct loop_manager {
  * Persistence (SessionDB state_meta) — mirrors loops.py's meta layer.
  * ──────────────────────────────────────────────────────────────────── */
 
+/* PoP: ticks_fired @ hermes_cli/loops.py:LoopState.ticks_fired */
+long loops_state_ticks_fired(const loop_state_t *s) {
+    return s ? s->ticks_fired : 0;
+}
+
+/* PoP: awaiting_response @ hermes_cli/loops.py:LoopState.awaiting_response */
+bool loops_state_awaiting_response(const loop_state_t *s) {
+    return s ? s->awaiting_response : false;
+}
+
 /* PoP: loops_state_to_json @ hermes_cli/loops.py:LoopState.to_json */
 char *loops_state_to_json(const loop_state_t *s) {
     if (!s) return NULL;
