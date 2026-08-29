@@ -69,7 +69,7 @@ static bool h3_toolset_enabled(const hcli_t *self, const char *name)
     return found;
 }
 
-/* ── PoP: hcli_show_toolsets @ cli.py:HermesCLI.show_toolsets ──────────── */
+/* PoP: hcli_show_toolsets @ cli.py:HermesCLI.show_toolsets */
 void hcli_show_toolsets(hcli_t *self)
 {
     /* all_toolsets = get_all_toolsets() — names come sorted from
@@ -112,7 +112,7 @@ void hcli_show_toolsets(hcli_t *self)
     printf("\n");
 }
 
-/* ── PoP: hcli_handle_whoami_command @ cli.py:HermesCLI._handle_whoami_command ─*/
+/* PoP: hcli_handle_whoami_command @ cli.py:HermesCLI._handle_whoami_command */
 void hcli_handle_whoami_command(hcli_t *self)
 {
     (void)self;
@@ -138,7 +138,7 @@ void hcli_handle_whoami_command(hcli_t *self)
     printf("\n");
 }
 
-/* ── PoP: hcli_list_recent_sessions @ cli.py:HermesCLI._list_recent_sessions ──*/
+/* PoP: hcli_list_recent_sessions @ cli.py:HermesCLI._list_recent_sessions */
 char *hcli_list_recent_sessions(hcli_t *self, int limit)
 {
     if (!self || !self->session_db)
@@ -195,7 +195,7 @@ char *hcli_list_recent_sessions(hcli_t *self, int limit)
     return out;
 }
 
-/* ── PoP: hcli_discard_session_if_empty @ cli.py:HermesCLI._discard_session_if_empty ─*/
+/* PoP: hcli_discard_session_if_empty @ cli.py:HermesCLI._discard_session_if_empty */
 bool hcli_discard_session_if_empty(hcli_t *self, const char *session_id)
 {
     if (!self || !self->session_db || !session_id || !*session_id)
@@ -215,7 +215,7 @@ bool hcli_discard_session_if_empty(hcli_t *self, const char *session_id)
     return ok;
 }
 
-/* ── PoP: hcli_launch_session_boundary_memory_flush @ cli.py:_launch_session_boundary_memory_flush ─*/
+/* PoP: hcli_launch_session_boundary_memory_flush @ cli.py:_launch_session_boundary_memory_flush */
 bool hcli_launch_session_boundary_memory_flush(hcli_t *self,
                                                const hcli_msg_t *history_snapshot,
                                                size_t history_len,
@@ -243,7 +243,7 @@ bool hcli_launch_session_boundary_memory_flush(hcli_t *self,
     return true;
 }
 
-/* ── PoP: hcli_consume_pending_resume_selection @ cli.py:_consume_pending_resume_selection ─*/
+/* PoP: hcli_consume_pending_resume_selection @ cli.py:_consume_pending_resume_selection */
 int hcli_consume_pending_resume_selection(hcli_t *self, const char *text)
 {
     if (!self)
@@ -285,7 +285,7 @@ int hcli_consume_pending_resume_selection(hcli_t *self, const char *text)
     return HCLI_RESUME_DISPATCHED;
 }
 
-/* ── PoP: hcli_save_conversation @ cli.py:HermesCLI.save_conversation ──────*/
+/* PoP: hcli_save_conversation @ cli.py:HermesCLI.save_conversation */
 char *hcli_save_conversation(hcli_t *self, const char *cmd)
 {
     static const char *SAVE_USAGE =

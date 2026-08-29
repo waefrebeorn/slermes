@@ -461,7 +461,7 @@ struct hcli {
 hcli_t *hcli_new(void);
 void    hcli_free(hcli_t *self);
 
-/* ── PoP: _get_loop_manager @ cli.py:_get_loop_manager ────────────── */
+/* PoP: _get_loop_manager @ cli.py:_get_loop_manager */
 struct loop_manager;
 struct loop_manager *hcli_get_loop_manager(hcli_t *self);
 
@@ -473,11 +473,11 @@ void hcli_clear_persisted_context_for_model_switch(hcli_t *self,
                                                    const char *new_base_url,
                                                    const char *new_provider);
 
-/* ── PoP: _usage_reset @ cli.py:_usage_reset ──────────────────────────── */
+/* PoP: _usage_reset @ cli.py:_usage_reset */
 /* PoP: hcli_usage_reset @ cli.py:_usage_reset */
 void hcli_usage_reset(hcli_t *self, bool force);
 
-/* ── PoP: _show_context_breakdown @ cli.py:_show_context_breakdown ─────── */
+/* PoP: _show_context_breakdown @ cli.py:_show_context_breakdown */
 /* PoP: hcli_show_context_breakdown @ cli.py:_show_context_breakdown */
 void hcli_show_context_breakdown(hcli_t *self, const char *cmd_original);
 
@@ -485,10 +485,10 @@ void hcli_show_context_breakdown(hcli_t *self, const char *cmd_original);
 void hcli_history_clear(hcli_t *self);
 void hcli_history_append(hcli_t *self, const char *role, const char *content);
 
-/* ── PoP: hcli_show_toolsets @ cli.py:HermesCLI.show_toolsets ────────────── */
+/* PoP: hcli_show_toolsets @ cli.py:HermesCLI.show_toolsets */
 void hcli_show_toolsets(hcli_t *self);
 
-/* ── PoP: hcli_handle_whoami_command @ cli.py:HermesCLI._handle_whoami_command ─*/
+/* PoP: hcli_handle_whoami_command @ cli.py:HermesCLI._handle_whoami_command */
 void hcli_handle_whoami_command(hcli_t *self);
 
 /* ── PoP: hcli_list_recent_sessions @ cli.py:HermesCLI._list_recent_sessions ──
@@ -497,10 +497,10 @@ void hcli_handle_whoami_command(hcli_t *self);
  * tool excluded, current session excluded, unnamed included) or NULL. */
 char *hcli_list_recent_sessions(hcli_t *self, int limit);
 
-/* ── PoP: hcli_discard_session_if_empty @ cli.py:HermesCLI._discard_session_if_empty ─*/
+/* PoP: hcli_discard_session_if_empty @ cli.py:HermesCLI._discard_session_if_empty */
 bool hcli_discard_session_if_empty(hcli_t *self, const char *session_id);
 
-/* ── PoP: hcli_launch_session_boundary_memory_flush @ cli.py:_launch_session_boundary_memory_flush ─*/
+/* PoP: hcli_launch_session_boundary_memory_flush @ cli.py:_launch_session_boundary_memory_flush */
 bool hcli_launch_session_boundary_memory_flush(hcli_t *self,
                                                const hcli_msg_t *history_snapshot,
                                                size_t history_len,
@@ -515,7 +515,7 @@ bool hcli_launch_session_boundary_memory_flush(hcli_t *self,
 #define HCLI_RESUME_DISPATCHED     1
 #define HCLI_RESUME_OUT_OF_RANGE   2
 
-/* ── PoP: hcli_consume_pending_resume_selection @ cli.py:_consume_pending_resume_selection ─*/
+/* PoP: hcli_consume_pending_resume_selection @ cli.py:_consume_pending_resume_selection */
 int hcli_consume_pending_resume_selection(hcli_t *self, const char *text);
 
 /* ── PoP: hcli_save_conversation @ cli.py:HermesCLI.save_conversation ──────
@@ -530,7 +530,7 @@ char *hcli_save_conversation(hcli_t *self, const char *cmd);
  * to plain text. Malloc'd; caller frees. */
 char *hcli_undo_content_to_text(const char *content_json);
 
-/* ── PoP: hcli_prefill_input_buffer @ cli.py:HermesCLI._prefill_input_buffer ──*/
+/* PoP: hcli_prefill_input_buffer @ cli.py:HermesCLI._prefill_input_buffer */
 void hcli_prefill_input_buffer(hcli_t *self, const char *text);
 
 /* ── PoP: hcli_normalize_slash_confirm_choice @ cli.py:_normalize_slash_confirm_choice ─
@@ -556,9 +556,9 @@ void hcli_fragments_free(hcli_fragment_t *frags, size_t len);
  * order). Returns malloc'd array of owned entries + count. */
 hcli_palette_entry_t *hcli_command_palette_visible_entries(hcli_t *self, size_t *out_len);
 
-/* ── PoP: hcli_snapshot_model_runtime @ cli.py:_snapshot_model_runtime ──────*/
+/* PoP: hcli_snapshot_model_runtime @ cli.py:_snapshot_model_runtime */
 hcli_model_runtime_t *hcli_snapshot_model_runtime(hcli_t *self);
-/* ── PoP: hcli_restore_model_runtime_snapshot @ cli.py:_restore_model_runtime_snapshot ─*/
+/* PoP: hcli_restore_model_runtime_snapshot @ cli.py:_restore_model_runtime_snapshot */
 void hcli_restore_model_runtime_snapshot(hcli_t *self, const hcli_model_runtime_t *snap);
 void hcli_model_runtime_free(hcli_model_runtime_t *snap);
 
@@ -568,13 +568,13 @@ void hcli_model_runtime_free(hcli_model_runtime_t *snap);
 size_t *hcli_filter_model_picker_entries(char **entries, size_t n,
                                          const char *query, size_t *out_len);
 
-/* ── PoP: hcli_compute_model_picker_viewport @ cli.py:_compute_model_picker_viewport ─*/
+/* PoP: hcli_compute_model_picker_viewport @ cli.py:_compute_model_picker_viewport */
 void hcli_compute_model_picker_viewport(int selected, int scroll_offset, int n,
                                         int term_rows, int reserved_below,
                                         int panel_chrome, int min_visible,
                                         int *out_scroll_offset, int *out_visible);
 
-/* ── PoP: hcli_should_handle_model_command_inline @ cli.py:_should_handle_model_command_inline ─*/
+/* PoP: hcli_should_handle_model_command_inline @ cli.py:_should_handle_model_command_inline */
 bool hcli_should_handle_model_command_inline(const char *text);
 
 /* ── PoP: hcli_resolve_personality_prompt @ cli.py:_resolve_personality_prompt ─
