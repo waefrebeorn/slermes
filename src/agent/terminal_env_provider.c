@@ -133,12 +133,14 @@ void tep_probe_free(tep_probe_t *p)
 
 /* ── Dispatch helpers (inheritance semantics: slot ?: base default) ────── */
 
+/* PoP: tep_name @ agent/terminal_env_provider.py:name */
 const char *tep_name(terminal_env_provider_t *self)
 {
     /* Abstract method: NULL slot == NotImplementedError surface. */
     return (self && self->name) ? self->name(self) : NULL;
 }
 
+/* PoP: tep_display_name @ agent/terminal_env_provider.py:display_name */
 const char *tep_display_name(terminal_env_provider_t *self)
 {
     if (!self) return "";
@@ -146,6 +148,7 @@ const char *tep_display_name(terminal_env_provider_t *self)
                               : tep_default_display_name(self);
 }
 
+/* PoP: tep_description @ agent/terminal_env_provider.py:description */
 const char *tep_description(terminal_env_provider_t *self)
 {
     if (!self) return "";
@@ -161,6 +164,7 @@ bool tep_skip_container_guards(terminal_env_provider_t *self)
                : tep_default_skip_container_guards(self);
 }
 
+/* PoP: tep_cache_path_base @ agent/terminal_env_provider.py:cache_path_base */
 const char *tep_cache_path_base(terminal_env_provider_t *self)
 {
     /* Default None → NULL when no translation applies. */
@@ -168,6 +172,7 @@ const char *tep_cache_path_base(terminal_env_provider_t *self)
     return self->cache_path_base(self);
 }
 
+/* PoP: tep_strip_env_keys @ agent/terminal_env_provider.py:strip_env_keys */
 const char *const *tep_strip_env_keys(terminal_env_provider_t *self)
 {
     /* Default frozenset() → NULL (empty). */
@@ -175,6 +180,7 @@ const char *const *tep_strip_env_keys(terminal_env_provider_t *self)
     return self->strip_env_keys(self);
 }
 
+/* PoP: tep_env_description @ agent/terminal_env_provider.py:env_description */
 const char *tep_env_description(terminal_env_provider_t *self)
 {
     if (!self) return "";
@@ -182,6 +188,7 @@ const char *tep_env_description(terminal_env_provider_t *self)
                                  : tep_default_env_description(self);
 }
 
+/* PoP: tep_check_requirements @ agent/terminal_env_provider.py:check_requirements */
 bool tep_check_requirements(terminal_env_provider_t *self,
                             const json_t *config)
 {
@@ -191,6 +198,7 @@ bool tep_check_requirements(terminal_env_provider_t *self,
                : tep_default_check_requirements(self, config);
 }
 
+/* PoP: tep_probe @ agent/terminal_env_provider.py:probe */
 void tep_probe(terminal_env_provider_t *self, tep_probe_t *out)
 {
     if (!out) return;
@@ -203,12 +211,14 @@ void tep_probe(terminal_env_provider_t *self, tep_probe_t *out)
     tep_default_probe(self, out);
 }
 
+/* PoP: tep_doctor_checks @ agent/terminal_env_provider.py:doctor_checks */
 tep_doctor_row_t *tep_doctor_checks(terminal_env_provider_t *self)
 {
     if (self && self->doctor_checks) return self->doctor_checks(self);
     return tep_default_doctor_checks(self);
 }
 
+/* PoP: tep_create_environment @ agent/terminal_env_provider.py:create_environment */
 void *tep_create_environment(terminal_env_provider_t *self,
                              const tep_create_args_t *args)
 {
@@ -218,4 +228,23 @@ void *tep_create_environment(terminal_env_provider_t *self,
     if (args) safe = *args;
     if (!safe.task_id) safe.task_id = "default";
     return self->create_environment(self, &safe);
+}
+
+/* PoP: tep_setup_instructions @ agent/terminal_env_provider.py:setup_instructions */
+/* Returns a NULL-terminated array of instruction strings (default: empty/NULL).
+ * Mirrors Python's `return []`. Caller does not free (static empty array). */
+const char *const *tep_setup_instructions(terminal_env_provider_t *self)
+{
+    if (self && self->setup_instructions)
+        return self->setup_instructions(self);
+    return NULL;
+}
+
+/* PoP: tep_post_setup @ agent/terminal_env_provider.py:post_setup */
+/* Optional interactive setup hook (default: no-op). Mirrors Python's
+ * `pass` / empty body. */
+void tep_post_setup(terminal_env_provider_t *self)
+{
+    if (self && self->post_setup)
+        self->post_setup(self);
 }

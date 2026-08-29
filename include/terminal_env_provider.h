@@ -138,5 +138,7 @@ void tep_probe(terminal_env_provider_t *self, tep_probe_t *out);
 tep_doctor_row_t *tep_doctor_checks(terminal_env_provider_t *self);
 void *tep_create_environment(terminal_env_provider_t *self,
                              const tep_create_args_t *args);
+const char *const *tep_setup_instructions(terminal_env_provider_t *self);
+void tep_post_setup(terminal_env_provider_t *self);
 
 #endif /* HERMES_TERMINAL_ENV_PROVIDER_H */
