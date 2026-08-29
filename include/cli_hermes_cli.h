@@ -1045,8 +1045,7 @@ void hcli_set_voice_record_key_cache(hcli_t *self, const char *raw_key);
 hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width,
                                                  size_t *out_len);
 
-/* PoP: hcli_build_status_bar_text @ cli.py:_build_status_bar_text
- * Compact one-line session status string for the TUI footer. Malloc'd. */
+/* PoP: _build_status_bar_text @ cli.py:_build_status_bar_text */
 char *hcli_build_status_bar_text(hcli_t *self, int width);
 
 /* PoP: hcli_get_status_bar_fragments @ cli.py:_get_status_bar_fragments

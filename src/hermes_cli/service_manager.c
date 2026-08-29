@@ -119,6 +119,8 @@ void sm_get_service_manager(char *out, size_t out_sz) {
 #include <unistd.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
+/* Declared in src/hermes_cli/gateway_wrappers.c (no public header). */
+extern int cgw_systemd_restart(const char *arg);
 
 static char *xstrdup(const char *s) {
     if (!s) return NULL;
@@ -314,4 +316,14 @@ int hermes_cli_service_manager_u_supervised_pid(const char *arg) {
     if (strcmp(state, "ok") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
     printf("\n");
     return 0;
+}
+
+/* PoP: restart @ hermes_cli/service_manager.py:restart */
+int sm_restart(const char *name) {
+    (void)name;
+    char kind[32];
+    sm_detect_service_manager(kind, sizeof(kind));
+    if (strcmp(kind, "systemd") == 0)
+        return cgw_systemd_restart(NULL);
+    return 1;
 }
