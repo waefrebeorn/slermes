@@ -62,6 +62,10 @@ extern char *hermes_state_sanitize_context(const char *text);
 extern int hermes_state_set_session_yolo(hermes_state_db_t *db,
                                          const char *session_id,
                                          bool enabled);
+extern bool hermes_state_session_yolo_enabled(const char *session_meta_json);
+/* Declared in src/tools/approval_helpers2.c (no public header). */
+extern int  apr2_enable_session_yolo(const char *session_key);
+extern bool apr2_is_session_yolo_enabled(const char *session_key);
 
 /* Declared in src/tools/approval.c (in include/approval.h). */
 extern void approval_set_yolo(bool enabled);
@@ -1047,5 +1051,24 @@ void hcli_toggle_yolo(hcli_t *self) {
         approval_set_yolo(true);
         approval_set_current_session_key(sid);
         printf("  ⚡ YOLO mode ON — all dangerous commands auto-approved.\n");
+    }
+}
+
+/* PoP: _restore_session_yolo @ cli.py:_restore_session_yolo */
+void hcli_restore_session_yolo(hcli_t *self, const char *session_meta_json,
+                                bool quiet) {
+    if (!self) return;
+    if (is_yolo_mode_frozen()) return;
+    if (!hermes_state_session_yolo_enabled(session_meta_json)) return;
+
+    const char *sid = self->session_id ? self->session_id : "default";
+    if (apr2_is_session_yolo_enabled(sid)) return;
+
+    apr2_enable_session_yolo(sid);
+    const char *msg = "⚡ YOLO mode restored from session — all commands auto-approved. /yolo to turn off.";
+    if (quiet) {
+        fprintf(stderr, "%s\n", msg);
+    } else {
+        printf("  %s\n", msg);
     }
 }
