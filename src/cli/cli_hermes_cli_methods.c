@@ -30,6 +30,7 @@
 #include "terminal_breadcrumbs_pure.h"
 #include "port_tools_wake_word.h"
 #include "approval.h"
+#include "port_bang_shell_ports.h"
 /* Declared in src/hermes_cli/runtime_provider.c (no public header). */
 extern char *canonical_custom_identity(const char *base_url, const char *config_provider);
 #include <time.h>
@@ -1208,4 +1209,58 @@ void hcli_model_runtime_free(hcli_model_runtime_t *snap) {
     free(snap->api_mode);
     free(snap->agent_primary_runtime_json);
     free(snap);
+}
+
+/* PoP: handle_bang_shell @ cli.py:handle_bang_shell */
+bool hcli_handle_bang_shell(hcli_t *self, const char *text) {
+    if (!self || !text) return false;
+    if (!bang_shell_is_bang_command(text)) return false;
+    if (!bang_shell_enabled()) return false;
+
+    char *command = bang_shell_parse_bang_command(text);
+    if (!command || !*command) {
+        const char *hint = "  !<command> — run a shell command without sending it to the model.\n";
+        if (self->console_print_fn) self->console_print_fn(self, hint);
+        else printf("%s", hint);
+        free(command);
+        return true;
+    }
+
+    char *approval_json = bang_shell_check_approval(command);
+    if (approval_json) {
+        json_t *aj = json_parse(approval_json, NULL);
+        if (aj && aj->type == JSON_OBJECT) {
+            bool approved = json_get_bool(aj, "approved", false);
+            if (!approved) {
+                const char *msg = json_get_str(aj, "message", NULL);
+                if (self->console_print_fn) {
+                    char line[1024];
+                    snprintf(line, sizeof(line), "  %s\n", msg ? msg : "Command denied.");
+                    self->console_print_fn(self, line);
+                } else {
+                    printf("  %s\n", msg ? msg : "Command denied.");
+                }
+                json_free(aj);
+                free(approval_json);
+                free(command);
+                return true;
+            }
+        }
+        json_free(aj);
+        free(approval_json);
+    }
+
+    const char *cwd = bang_shell_resolve_cwd(self->session_id);
+    int exit_code = bang_shell_run_command(command, cwd, 30, NULL);
+    if (exit_code) {
+        char line[128];
+        snprintf(line, sizeof(line), "  ! exited %d\n", exit_code);
+        if (self->console_print_fn)
+            self->console_print_fn(self, line);
+        else
+            printf("%s", line);
+    }
+
+    free(command);
+    return true;
 }

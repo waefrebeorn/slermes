@@ -221,7 +221,7 @@ bool hcli_should_handle_background_command_inline(hcli_t *self);
 json_t * hcli_console_print(hcli_t *self);
 
 /* PoP: handle_bang_shell @ cli.py:handle_bang_shell */
-bool hcli_handle_bang_shell(hcli_t *self);
+bool hcli_handle_bang_shell(hcli_t *self, const char *text);
 
 /* PoP: start_heartbeat_watchdog @ cli.py:_start_heartbeat_watchdog */
 json_t * hcli_start_heartbeat_watchdog(hcli_t *self);

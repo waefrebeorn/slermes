@@ -768,6 +768,9 @@ void hcli_start_wake_watchdog(hcli_t *self);
 /* PoP: hcli_start_heartbeat_watchdog @ cli.py:_start_heartbeat_watchdog */
 void hcli_start_heartbeat_watchdog(hcli_t *self);
 
+/* PoP: handle_bang_shell @ cli.py:handle_bang_shell */
+bool hcli_handle_bang_shell(hcli_t *self, const char *text);
+
 /* ══════════ Batch 4 (approval + secret capture + exit summary) ═══════════ */
 
 /* PoP: hcli_computer_use_approval_callback @ cli.py:_computer_use_approval_callback
