@@ -274,6 +274,7 @@ src/hermes_cli/update_cmd_gaps.o \
 src/hermes_cli/gateway_gaps.o \
 src/hermes_cli/auth_gaps.o \
 src/hermes_cli/banner_gaps.o \
+src/hermes_cli/profile_gaps.o \
  src/hermes_cli/agent_import.o \
  src/gateway/api_server.o \
  src/gateway/base.o \
