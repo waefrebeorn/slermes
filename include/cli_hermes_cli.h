@@ -770,6 +770,8 @@ void hcli_start_heartbeat_watchdog(hcli_t *self);
 
 /* PoP: handle_bang_shell @ cli.py:handle_bang_shell */
 bool hcli_handle_bang_shell(hcli_t *self, const char *text);
+/* PoP: hcli_restore_session_model @ cli.py:_restore_session_model */
+void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool quiet);
 
 /* ══════════ Batch 4 (approval + secret capture + exit summary) ═══════════ */
 

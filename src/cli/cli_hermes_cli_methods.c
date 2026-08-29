@@ -79,6 +79,12 @@ extern bool approval_is_yolo_enabled(void);
 extern bool is_yolo_mode_frozen(void);
 /* From hermes.h umbrella or approval internals. */
 extern void approval_set_current_session_key(const char *key);
+extern char *resolve_runtime_provider(const char *requested,
+                                      const char *explicit_api_key,
+                                      const char *explicit_base_url,
+                                      const char *target_model);
+/* Declared in src/agent/hermes_state/hermes_state_gaps.c. */
+extern json_t *session_gateway_runtime(const json_t *session_meta);
 
 /* Declared in src/agent/hermes_state/hermes_state_messages.c (orphan). */
 extern char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
@@ -1263,4 +1269,82 @@ bool hcli_handle_bang_shell(hcli_t *self, const char *text) {
 
     free(command);
     return true;
+}
+
+/* PoP: _restore_session_model @ cli.py:_restore_session_model */
+void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool quiet) {
+    if (!self || !session_meta) return;
+    if (self->explicit_model_override) return;
+
+    const char *stored_model = json_get_str(session_meta, "model", NULL);
+    if (!stored_model || !*stored_model) return;
+
+    /* Read persisted gateway_runtime from session row. */
+    json_t *runtime = session_gateway_runtime(session_meta);
+    if (!runtime || runtime->type != JSON_OBJECT) {
+        if (runtime) json_free(runtime);
+        return;
+    }
+
+    const char *stored_provider = json_get_str(runtime, "provider", NULL);
+    const char *stored_base_url = json_get_str(runtime, "base_url", NULL);
+    const char *stored_api_mode = json_get_str(runtime, "api_mode", NULL);
+
+    /* Heal bare "custom" — recover canonical identity or drop provider. */
+    char *canon = NULL;
+    if (stored_provider && strcasecmp(stored_provider, "custom") == 0) {
+        canon = canonical_custom_identity(stored_base_url, NULL);
+        stored_provider = canon ? canon : NULL;
+    }
+
+    /* Resolve credentials for the stored provider (or ambient). */
+    char *resolved_json = resolve_runtime_provider(
+        stored_provider ? stored_provider : self->provider,
+        stored_provider ? NULL : self->explicit_api_key,
+        stored_base_url,
+        stored_model);
+
+    if (resolved_json) {
+        json_t *resolved = json_parse(resolved_json, NULL);
+        if (resolved && resolved->type == JSON_OBJECT) {
+            const char *r_provider = json_get_str(resolved, "provider", NULL);
+            const char *r_api_key  = json_get_str(resolved, "api_key", NULL);
+            const char *r_base_url = json_get_str(resolved, "base_url", NULL);
+            const char *r_api_mode = json_get_str(resolved, "api_mode", NULL);
+
+            if (r_provider) { free(self->provider); self->provider = strdup(r_provider); }
+            if (r_api_key)    { free(self->api_key); self->api_key = strdup(r_api_key); }
+            if (r_base_url)   { free(self->base_url); self->base_url = strdup(r_base_url); }
+            if (r_api_mode)   { free(self->api_mode); self->api_mode = strdup(r_api_mode); }
+            /* Always set the model. */
+            free(self->model); self->model = strdup(stored_model);
+        }
+        json_free(resolved);
+        free(resolved_json);
+    } else {
+        /* Resolution failed — keep ambient credentials, set model only. */
+        free(self->model); self->model = strdup(stored_model);
+        if (stored_provider) { free(self->provider); self->provider = strdup(stored_provider); }
+    }
+
+    free(canon);
+    json_free(runtime);
+
+    /* Announce. */
+    char msg[256];
+    if (stored_provider && stored_provider[0]) {
+        snprintf(msg, sizeof(msg), "Model restored from session: %s (%s)",
+                 stored_model, stored_provider);
+    } else {
+        snprintf(msg, sizeof(msg), "Model restored from session: %s", stored_model);
+    }
+    if (quiet) {
+        fprintf(stderr, "%s\n", msg);
+    } else {
+        if (self->console_print_fn) {
+            char dm[280];
+            snprintf(dm, sizeof(dm), "  %s\n", msg);
+            self->console_print_fn(self, dm);
+        }
+    }
 }
