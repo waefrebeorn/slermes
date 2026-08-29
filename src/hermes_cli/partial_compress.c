@@ -755,7 +755,7 @@ int hermes_cli_skills_hub_do_snapshot_import(const char *arg) {
 /* PoP: commands_resolve @ hermes_cli/skin_engine.py:load_skin */
 /* PoP: commands_resolve @ hermes_cli/skin_engine.py:set_active_skin */
 /* PoP: commands_resolve @ hermes_cli/status.py:check_mark */
-/* PoP: commands_resolve @ hermes_cli/status.py:redact_key */
+/* PoP: hermes_cli_status_redact_key @ hermes_cli/status.py:redact_key */
 /* PoP: commands_resolve @ hermes_cli/telegram_managed_bot.py:auto_setup_telegram_bot */
 /* PoP: commands_resolve @ hermes_cli/telegram_managed_bot.py:is_valid_telegram_bot_token */
 /* PoP: commands_resolve @ hermes_cli/tips.py:get_random_tip */

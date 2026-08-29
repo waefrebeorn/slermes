@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+/* Declared in src/agent/redact_ports.c. */
+extern char *red_mask_secret(const char *secret, long head, long tail);
 #include "port_hermes_cli_timefmt.h"
 #include "hermes_yaml.h"
 #include "port_hermes_cli_timefmt.h"  /* tf_relative_time */
@@ -180,3 +182,18 @@ void sta_effective_provider_label(char out[256])
 /* NOTE: sta_format_relative_ts is defined once above (lines 28-34, PoP
  * @ hermes_cli/status.py:_format_relative_ts). The duplicate definition
  * from the rebase merge (sibling commit) was removed here. */
+
+/* PoP: check_mark @ hermes_cli/status.py:check_mark */
+char *hermes_cli_status_check_mark(int ok) {
+    /* Python: if ok: return color("√", Colors.GREEN); return color("✗", Colors.RED) */
+    return ok ? strdup("\033[32m\u2713\033[0m") : strdup("\033[31m\u2717\033[0m");
+}
+
+/* PoP: redact_key @ hermes_cli/status.py:redact_key */
+char *hermes_cli_status_redact_key(const char *key) {
+    /* Thin wrapper over mask_secret. Preserves "(not set)" placeholder
+     * in dim color to match hermes config output. */
+    if (!key || !*key)
+        return strdup("\033[2m(not set)\033[0m");
+    return red_mask_secret(key, 6, 4);
+}
