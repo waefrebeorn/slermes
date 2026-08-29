@@ -670,6 +670,12 @@ char *cli_format_prompt_elapsed(bool has_start, double start_time,
 char *cli_format_idle_since(bool has_last_finished_at, double last_finished_at,
                             bool turn_live);
 
+/* PoP: hcli_status_bar_goal_segment @ cli.py:_status_bar_goal_segment
+ * Returns "⊙ goal 3/20" when goal is active, "" otherwise. Malloc'd. */
+char *hcli_status_bar_goal_segment(const json_t *snapshot);
+/* PoP: _build_status_bar_text @ cli.py:_build_status_bar_text */
+char *hcli_build_status_bar_text(hcli_t *self, int width);
+
 /* PoP: hcli_get_status_bar_session_title @ cli.py:_get_status_bar_session_title
  * pending_title short-circuit, 1.5s monotonic cache, then SessionDB lookup.
  * Malloc'd (possibly empty). */

@@ -1467,3 +1467,117 @@ hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width, size_t
     *out_len = 1;
     return frags;
 }
+
+
+/* PoP: hcli_status_bar_goal_segment @ cli.py:_status_bar_goal_segment */
+char *hcli_status_bar_goal_segment(const json_t *snapshot) {
+    if (!snapshot || snapshot->type != JSON_OBJECT) return strdup("");
+    bool goal_active = json_get_bool(snapshot, "goal_active", false);
+    if (!goal_active) return strdup("");
+    long used = (long)json_get_num(snapshot, "goal_turns_used", 0);
+    long max_turns = (long)json_get_num(snapshot, "goal_max_turns", 0);
+    if (max_turns > 0) {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "⊙ goal %ld/%ld", used, max_turns);
+        return strdup(buf);
+    }
+    return strdup("⊙ goal");
+}
+
+/* PoP: _build_status_bar_text @ cli.py:_build_status_bar_text */
+char *hcli_build_status_bar_text(hcli_t *self, int width) {
+    if (!self) return NULL;
+    json_t *snapshot = hcli_get_status_bar_snapshot(self);
+    if (!snapshot || snapshot->type != JSON_OBJECT) {
+        if (snapshot) json_free(snapshot);
+        return strdup("");
+    }
+    if (width <= 0) width = cli_get_tui_terminal_width();
+
+    const char *percent_str = json_get_str(snapshot, "percent", NULL);
+    const char *percent_label = percent_str ? percent_str : "--";
+    const char *duration_label = json_get_str(snapshot, "duration", NULL);
+    const char *battery_label = json_get_str(snapshot, "battery_label", NULL);
+    const char *focus_label = json_get_str(snapshot, "focus_label", NULL);
+    const char *session_title = json_get_str(snapshot, "session_title", NULL);
+    const char *model_short = json_get_str(snapshot, "model_short", NULL);
+
+    char battery_prefix[64] = "";
+    if (battery_label && *battery_label)
+        snprintf(battery_prefix, sizeof(battery_prefix), "%s │ ", battery_label);
+
+    bool yolo = hcli_is_session_yolo_active(self);
+    char *goal_seg = hcli_status_bar_goal_segment(snapshot);
+    int compressions = (int)json_get_num(snapshot, "compressions", 0);
+    int bg_tasks = (int)json_get_num(snapshot, "active_background_tasks", 0);
+    int bg_procs = (int)json_get_num(snapshot, "active_background_processes", 0);
+    int bg_subs = (int)json_get_num(snapshot, "active_background_subagents", 0);
+
+    char *result;
+    if (width < 52) {
+        char text[256];
+        snprintf(text, sizeof(text), "%s⚕ %s · %s",
+                 battery_prefix, model_short ? model_short : "?", duration_label ? duration_label : "");
+        if (goal_seg && goal_seg[0]) {
+            char tmp[512];
+            snprintf(tmp, sizeof(tmp), "%s · %s", text, goal_seg);
+            strncpy(text, tmp, sizeof(text)-1); text[sizeof(text)-1]='\0';
+        }
+        if (focus_label && *focus_label) {
+            char tmp[512];
+            snprintf(tmp, sizeof(tmp), "%s · %s", text, focus_label);
+            strncpy(text, tmp, sizeof(text)-1); text[sizeof(text)-1]='\0';
+        }
+        if (yolo) {
+            char tmp[512];
+            snprintf(tmp, sizeof(tmp), "%s · ⚠ YOLO", text);
+            strncpy(text, tmp, sizeof(text)-1); text[sizeof(text)-1]='\0';
+        }
+        result = cli_right_align_status_title(text, session_title, width);
+    } else {
+        /* width >= 52: multi-segment layout */
+        char parts[16][128];
+        int nparts = 0;
+        snprintf(parts[nparts++], 128, "⚕ %s", model_short ? model_short : "?");
+        if (battery_label && *battery_label) {
+            /* insert battery at front */
+            for (int i = nparts; i > 0; i--) strncpy(parts[i], parts[i-1], 127);
+            strncpy(parts[0], battery_label, 127);
+            nparts++;
+        }
+        snprintf(parts[nparts++], 128, "%s", percent_label);
+        if (compressions) snprintf(parts[nparts++], 128, "🗜️ %d", compressions);
+        if (bg_tasks) snprintf(parts[nparts++], 128, "▶ %d", bg_tasks);
+        if (bg_procs) snprintf(parts[nparts++], 128, "⚙ %d", bg_procs);
+        if (bg_subs) snprintf(parts[nparts++], 128, "⏱ %d", bg_subs);
+        const char *prompt_elapsed = json_get_str(snapshot, "prompt_elapsed", NULL);
+        if (prompt_elapsed && *prompt_elapsed) snprintf(parts[nparts++], 128, "%s", prompt_elapsed);
+        const char *idle_since = json_get_str(snapshot, "idle_since", NULL);
+        if (idle_since && *idle_since) snprintf(parts[nparts++], 128, "%s", idle_since);
+
+        char text[512] = "";
+        for (int i = 0; i < nparts; i++) {
+            if (i > 0) strncat(text, " │ ", sizeof(text) - strlen(text) - 1);
+            strncat(text, parts[i], sizeof(text) - strlen(text) - 1);
+        }
+        if (goal_seg && goal_seg[0]) {
+            char tmp[640];
+            snprintf(tmp, sizeof(tmp), "%s │ %s", text, goal_seg);
+            strncpy(text, tmp, sizeof(text)-1); text[sizeof(text)-1]='\0';
+        }
+        if (focus_label && *focus_label) {
+            char tmp[640];
+            snprintf(tmp, sizeof(tmp), "%s │ %s", text, focus_label);
+            strncpy(text, tmp, sizeof(text)-1); text[sizeof(text)-1]='\0';
+        }
+        if (yolo) {
+            char tmp[640];
+            snprintf(tmp, sizeof(tmp), "%s │ ⚠ YOLO", text);
+            strncpy(text, tmp, sizeof(text)-1); text[sizeof(text)-1]='\0';
+        }
+        result = cli_right_align_status_title(text, session_title, width);
+    }
+    free(goal_seg);
+    json_free(snapshot);
+    return result;
+}
