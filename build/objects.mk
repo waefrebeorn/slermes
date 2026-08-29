@@ -270,6 +270,7 @@ PORT_OBJ = \
  src/hermes_cli/web_update.o \
  src/hermes_cli/update_cmd.o \
 src/hermes_cli/update_cmd_more.o \
+src/hermes_cli/update_cmd_gaps.o \
  src/hermes_cli/agent_import.o \
  src/gateway/api_server.o \
  src/gateway/base.o \
