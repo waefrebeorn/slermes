@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-29T08:35:07Z from `live_parity_scan.json` by `make parity-walkway`. **942 REAL_GAP across 254 modules** (of 16,714 total functions).
+> Generated 2026-08-29T09:04:07Z from `live_parity_scan.json` by `make parity-walkway`. **954 REAL_GAP across 255 modules** (of 16,714 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -485,10 +485,9 @@
 
 - apply_media_policy_env (function)
 
-### gateway/pairing.py (3 gaps)
+### gateway/pairing.py (2 gaps)
 
 - _default_pairing_dir (function)
-- _iter_live_gateway_adapters (function)
 - _secure_write (function)
 
 ### gateway/platform_registry.py (8 gaps)
@@ -664,12 +663,20 @@
 - login_command (function)
 - logout_command (function)
 
-### hermes_cli/auth_commands.py (4 gaps)
+### hermes_cli/auth_commands.py (12 gaps)
 
 - _get_custom_provider_entries (function)
 - _configured_provider_entry (function)
 - _migrate_legacy_custom_pool_key (function)
 - _is_known_provider (function)
+- auth_add_command (function)
+- auth_list_command (function)
+- auth_remove_command (function)
+- auth_reset_command (function)
+- auth_status_command (function)
+- auth_logout_command (function)
+- auth_spotify_command (function)
+- auth_command (function)
 
 ### hermes_cli/azure_detect.py (2 gaps)
 
@@ -772,12 +779,11 @@
 - _personalities_from_cli_config (function)
 - SlashCommandCompleter.get_completions (method)
 
-### hermes_cli/config.py (8 gaps)
+### hermes_cli/config.py (7 gaps)
 
 - _canonical_api_mode (function)
 - _prompt_text (function)
 - resolve_ephemeral_system_prompt_from_config (function)
-- load_env (function)
 - _valid_cron_impact_job_id (function)
 - _cron_impact_job_name (function)
 - _unavailable_cron_model_impact (function)
@@ -937,10 +943,6 @@
 
 - compute_task_diagnostics (function)
 
-### hermes_cli/kanban_specify.py (1 gaps)
-
-- specify_task (function)
-
 ### hermes_cli/kanban_swarm.py (2 gaps)
 
 - _activate_root_inline (function)
@@ -968,12 +970,26 @@
 - install_entry (function)
 - uninstall_entry (function)
 
-### hermes_cli/mcp_config.py (4 gaps)
+### hermes_cli/mcp_config.py (7 gaps)
 
 - cmd_mcp_add (function)
+- cmd_mcp_remove (function)
 - cmd_mcp_list (function)
+- cmd_mcp_test (function)
+- cmd_mcp_login (function)
 - cmd_mcp_configure (function)
 - mcp_command (function)
+
+### hermes_cli/mcp_picker.py (3 gaps)
+
+- show_catalog (function)
+- run_picker (function)
+- install_by_name (function)
+
+### hermes_cli/mcp_startup.py (2 gaps)
+
+- start_background_mcp_discovery (function)
+- wait_for_mcp_discovery (function)
 
 ### hermes_cli/migrate.py (2 gaps)
 
@@ -1349,12 +1365,11 @@
 - _sidebar_profile_cache_put (function)
 - _sidebar_singleflight_cache (function)
 
-### hermes_cli/web_server.py (36 gaps)
+### hermes_cli/web_server.py (35 gaps)
 
 - _eager_reconcile_own_session_db (function)
 - should_require_dashboard_auth (function)
 - _host_header_hostname (function)
-- _fs_mime_type (function)
 - _fs_looks_binary (function)
 - _media_serve_roots (function)
 - _decode_data_url (function)
