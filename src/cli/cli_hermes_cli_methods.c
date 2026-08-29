@@ -1408,3 +1408,62 @@ void hcli_finalize_preloaded_skills(hcli_t *self) {
         fprintf(stderr, "Warning: some preloaded skills were unknown, skipping them.\n");
     }
 }
+
+/* PoP: _get_voice_status_fragments @ cli.py:_get_voice_status_fragments */
+hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width, size_t *out_len) {
+    if (!self || !out_len) { if (out_len) *out_len = 0; return NULL; }
+    *out_len = 0;
+
+    int w = width;
+    if (w <= 0) w = cli_get_tui_terminal_width();
+    bool compact = hcli_use_minimal_tui_chrome(self, w);
+    char *label = hcli_voice_record_key_label(self);
+
+    hcli_fragment_t *frags = NULL;
+    const char *style = NULL;
+    char *text = NULL;
+
+    if (self->voice_recording) {
+        style = "class:voice-status-recording";
+        if (compact) {
+            text = strdup(" ● REC ");
+        } else {
+            char buf[128];
+            snprintf(buf, sizeof(buf), " ● REC  %s to stop ", label ? label : "?");
+            text = strdup(buf);
+        }
+    } else if (self->voice_processing) {
+        style = "class:voice-status";
+        if (compact) {
+            text = strdup(" ◉ STT ");
+        } else {
+            text = strdup(" ◉ Transcribing... ");
+        }
+    } else {
+        style = "class:voice-status";
+        char tts_part[32] = "";
+        char cont_part[32] = "";
+        char label_part[32] = "";
+        if (self->voice_tts)        snprintf(tts_part,  sizeof(tts_part),  " | TTS on");
+        if (self->voice_continuous) snprintf(cont_part, sizeof(cont_part), " | Continuous");
+        if (label)                  snprintf(label_part, sizeof(label_part), "%s to record ", label);
+        char buf[160];
+        if (compact) {
+            snprintf(buf, sizeof(buf), " 🎤 %s ", label ? label : "?");
+        } else {
+            snprintf(buf, sizeof(buf), " 🎤 Voice mode%s%s%s  —  %s to record ",
+                     tts_part, cont_part, "", label);
+        }
+        text = strdup(buf);
+    }
+
+    free(label);
+
+    if (!text) return NULL;
+    frags = malloc(sizeof(hcli_fragment_t));
+    if (!frags) { free(text); return NULL; }
+    frags[0].style = strdup(style);
+    frags[0].text  = text;
+    *out_len = 1;
+    return frags;
+}

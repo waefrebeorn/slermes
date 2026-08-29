@@ -774,6 +774,8 @@ bool hcli_handle_bang_shell(hcli_t *self, const char *text);
 void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool quiet);
 /* PoP: finalize_preloaded_skills @ cli.py:HermesCLI.finalize_preloaded_skills */
 void hcli_finalize_preloaded_skills(hcli_t *self);
+/* PoP: _get_voice_status_fragments @ cli.py:_get_voice_status_fragments */
+hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width, size_t *out_len);
 
 /* ══════════ Batch 4 (approval + secret capture + exit summary) ═══════════ */
 
