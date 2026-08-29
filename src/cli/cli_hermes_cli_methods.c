@@ -28,6 +28,7 @@
 #include "goal_contract.h"
 #include "loops_pure.h"
 #include "terminal_breadcrumbs_pure.h"
+#include "port_tools_wake_word.h"
 #include <time.h>
 
 /* ── extern declarations for functions not yet in public headers ────────── */
@@ -636,6 +637,82 @@ json_t *hcli_handle_usage_command(hcli_t *self, const char *cmd_original) {
 void hcli_write_terminal_breadcrumb(hcli_t *self) {
     if (!self) return;
     tbr_write_breadcrumb(self->session_id, NULL);
+}
+
+/* PoP: _maybe_start_wake_word @ cli.py:_maybe_start_wake_word */
+void hcli_maybe_start_wake_word(hcli_t *self) {
+    if (!self) return;
+    if (self->should_exit) return;
+    /* Config gate: session.wake_word.surface must enable "cli". */
+    json_t *cfg = ww_load_wake_word_config();
+    if (!cfg) return;
+    if (!ww_wake_surface_enabled("cli", cfg)) {
+        json_free(cfg);
+        return;
+    }
+    /* Already listening? */
+    if (self->wake_word_active) {
+        json_free(cfg);
+        return;
+    }
+    /* Check requirements — best-effort. */
+    json_t *reqs = ww_check_wake_word_requirements(cfg);
+    if (reqs) {
+        json_t *avail = json_object_get(reqs, "available");
+        if (avail && avail->type == JSON_BOOL && !avail->bool_val) {
+            json_free(reqs);
+            json_free(cfg);
+            return;
+        }
+        json_free(reqs);
+    }
+    /* start_new_session default True (matches Python cfg.get default). */
+    self->wake_start_new_session = true;
+
+    /* start_listening — callback is wired by the TUI shell at runtime.
+     * In pure C, pass NULL owner; the listener seam is set by the shell. */
+    self->wake_word_active = true;
+    json_free(cfg);
+}
+
+/* PoP: _on_wake_word @ cli.py:_on_wake_word */
+void hcli_on_wake_word(hcli_t *self) {
+    if (!self) return;
+    if (self->should_exit) return;
+    /* Ignore wake while a turn is in flight or the mic is already in use. */
+    if (self->agent_running || self->voice_recording || self->voice_processing)
+        return;
+    /* Release the mic so STT can capture the command utterance. */
+    if (!ww_pause_listening(self)) {
+        self->wake_word_active = false;
+        return;
+    }
+    self->wake_suspended = true;
+
+    /* Multi-profile routing — CLI is single-profile. */
+    json_t *match = ww_get_last_match();
+    if (match) {
+        char *profile = ww_active_profile_name();
+        json_t *matched_profile = json_object_get(match, "1");
+        if (profile && matched_profile &&
+            matched_profile->type == JSON_STRING &&
+            matched_profile->str_val &&
+            strcmp(profile, matched_profile->str_val) != 0) {
+            printf("\n  Wake phrase for profile '%s' — run: hermes -p %s\n",
+                   matched_profile->str_val, matched_profile->str_val);
+            self->wake_suspended = true;
+            free(profile);
+            json_free(match);
+            return;
+        }
+        free(profile);
+        json_free(match);
+    }
+
+    printf("\n  ✦ Wake word detected — listening...\n");
+    if (self->app) {
+        /* self._app.invalidate() — no-op without app seam */
+    }
 }
 
 /* PoP: _persist_session_yolo @ cli.py:_persist_session_yolo */

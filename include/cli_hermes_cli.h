@@ -220,6 +220,7 @@ struct hcli {
     /* ── Batch 2: wake word ─────────────────────────────────────────────── */
     bool wake_word_active;                      /* _wake_word_active */
     bool wake_suspended;                        /* _wake_suspended */
+    bool wake_start_new_session;                /* _wake_start_new_session */
     bool wake_watchdog_started;                 /* _wake_watchdog_started */
 
     /* ── Batch 3: model identity / streaming state ──────────────────────── */
@@ -598,6 +599,12 @@ void hcli_write_terminal_breadcrumb(hcli_t *self);
 
 /* PoP: hcli_persist_session_yolo @ cli.py:_persist_session_yolo */
 void hcli_persist_session_yolo(hcli_t *self, const char *session_key, bool enabled);
+
+/* PoP: hcli_maybe_start_wake_word @ cli.py:_maybe_start_wake_word */
+void hcli_maybe_start_wake_word(hcli_t *self);
+
+/* PoP: hcli_on_wake_word @ cli.py:_on_wake_word */
+void hcli_on_wake_word(hcli_t *self);
 
 /* PoP: hcli_maybe_fire_loop_tick @ cli.py:_maybe_fire_loop_tick
  * Idle hook: fire a due /loop wakeup only when idle (no agent running,
