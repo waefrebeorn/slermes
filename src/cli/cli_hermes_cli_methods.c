@@ -29,6 +29,7 @@
 #include "loops_pure.h"
 #include "terminal_breadcrumbs_pure.h"
 #include "port_tools_wake_word.h"
+#include "approval.h"
 #include <time.h>
 
 /* ── extern declarations for functions not yet in public headers ────────── */
@@ -61,6 +62,13 @@ extern char *hermes_state_sanitize_context(const char *text);
 extern int hermes_state_set_session_yolo(hermes_state_db_t *db,
                                          const char *session_id,
                                          bool enabled);
+
+/* Declared in src/tools/approval.c (in include/approval.h). */
+extern void approval_set_yolo(bool enabled);
+extern bool approval_is_yolo_enabled(void);
+extern bool is_yolo_mode_frozen(void);
+/* From hermes.h umbrella or approval internals. */
+extern void approval_set_current_session_key(const char *key);
 
 /* Declared in src/agent/hermes_state/hermes_state_messages.c (orphan). */
 extern char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
@@ -729,6 +737,58 @@ void hcli_persist_session_yolo(hcli_t *self, const char *session_key, bool enabl
     }
 }
 
+/* PoP: _stop_wake_word_listener @ cli.py:_stop_wake_word_listener */
+void hcli_stop_wake_word_listener(hcli_t *self, bool announce) {
+    (void)announce;
+    if (!self) return;
+    self->wake_word_active = false;
+    self->wake_suspended = false;
+    ww_stop_listening(self);
+}
+
+/* PoP: _start_wake_watchdog @ cli.py:_start_wake_watchdog
+ * Daemon thread polls every 0.25s; after 3 consecutive idle polls (~0.75s),
+ * resume the paused detector. Thread exits when wake_word_active is cleared. */
+static void *wake_watchdog_fn(void *arg) {
+    hcli_t *self = (hcli_t *)arg;
+    int idle_polls = 0;
+    while (self->wake_word_active && !self->should_exit) {
+        struct timespec ts = {0, 250000000}; /* 0.25s */
+        nanosleep(&ts, NULL);
+        if (!self->wake_suspended) {
+            idle_polls = 0;
+            continue;
+        }
+        bool busy = self->agent_running ||
+                    self->voice_recording ||
+                    self->voice_processing ||
+                    (self->pending_input_put_fn != NULL);
+        if (busy) {
+            idle_polls = 0;
+            continue;
+        }
+        idle_polls++;
+        if (idle_polls >= 3) {
+            idle_polls = 0;
+            if (ww_resume_listening(self)) {
+                self->wake_suspended = false;
+            } else {
+                self->wake_word_active = false;
+            }
+        }
+    }
+    return NULL;
+}
+
+void hcli_start_wake_word_watchdog(hcli_t *self) {
+    if (!self) return;
+    if (self->wake_watchdog_started) return;
+    self->wake_watchdog_started = true;
+    pthread_t tid;
+    pthread_create(&tid, NULL, wake_watchdog_fn, self);
+    pthread_detach(tid);
+}
+
 /* PoP: _get_heartbeat_manager @ cli.py:_get_heartbeat_manager */
 void *hcli_get_heartbeat_manager(hcli_t *self) {
     if (!self) return NULL;
@@ -950,4 +1010,42 @@ json_t *hcli_show_wake_word_status(hcli_t *self) {
     }
 
     return json_new_null();
+}
+
+/* PoP: _transfer_session_yolo @ cli.py:_transfer_session_yolo */
+void hcli_transfer_session_yolo(hcli_t *self, const char *old_id,
+                                 const char *new_id) {
+    if (!self || !old_id || !new_id ||
+        strcmp(old_id, new_id) == 0) return;
+    if (is_yolo_mode_frozen()) return;
+    /* Python: disable_session_yolo(old) + enable_session_yolo(new).
+     * In C, the global yolo state is shared — set current session key
+     * to the new id (mirrors run_conversation binding session_id). */
+    approval_set_yolo(false);
+    approval_set_current_session_key(new_id);
+}
+
+/* PoP: _is_session_yolo_active @ cli.py:_is_session_yolo_active */
+bool hcli_is_session_yolo_active(hcli_t *self) {
+    (void)self;
+    /* Honors frozen --yolo flag first, then per-session approval set. */
+    if (is_yolo_mode_frozen()) return true;
+    if (approval_is_yolo_enabled()) return true;
+    return false;
+}
+
+/* PoP: _toggle_yolo @ cli.py:_toggle_yolo */
+void hcli_toggle_yolo(hcli_t *self) {
+    if (!self) return;
+    if (is_yolo_mode_frozen()) return;
+
+    const char *sid = self->session_id ? self->session_id : "default";
+    if (approval_is_yolo_enabled()) {
+        approval_set_yolo(false);
+        printf("  ⚡ YOLO mode OFF — dangerous commands will prompt.\n");
+    } else {
+        approval_set_yolo(true);
+        approval_set_current_session_key(sid);
+        printf("  ⚡ YOLO mode ON — all dangerous commands auto-approved.\n");
+    }
 }
