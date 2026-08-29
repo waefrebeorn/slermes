@@ -94,7 +94,8 @@ extern char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
 extern bool is_multimodal_tool_result(const json_t *value);
 extern char *multimodal_text_summary_from_json(const json_t *value);
 
-/* Declared in src/tools/process_registry.c. */
+/* Declared in src/hermes_cli/pet_input.c. */
+extern void cli__pet_flash(const char *state, double secs);
 extern char *drain_notifications(const char *session_key_filter,
                                  bool skip_poll_observed);
 
@@ -1683,4 +1684,14 @@ hcli_fragment_t *hcli_get_status_bar_fragments(hcli_t *self, size_t *out_len) {
     for (size_t i = 0; i < n; i++) result[i] = frags[i];
     *out_len = n;
     return result;
+}
+
+/* PoP: _on_reaction @ cli.py:_on_reaction */
+void hcli_on_reaction(hcli_t *self, const char *kind) {
+    (void)self;
+    if (!kind) return;
+    /* Python: if kind == "vibe": self._pet_flash("jump") */
+    if (strcmp(kind, "vibe") == 0) {
+        cli__pet_flash("jump", 3.0);
+    }
 }
