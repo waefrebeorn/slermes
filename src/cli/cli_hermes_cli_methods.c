@@ -1581,3 +1581,106 @@ char *hcli_build_status_bar_text(hcli_t *self, int width) {
     json_free(snapshot);
     return result;
 }
+
+/* PoP: _get_status_bar_fragments @ cli.py:_get_status_bar_fragments */
+hcli_fragment_t *hcli_get_status_bar_fragments(hcli_t *self, size_t *out_len) {
+    if (!out_len) return NULL;
+    *out_len = 0;
+    if (!self) return NULL;
+    if (!self->status_bar_visible) return NULL;
+    if (self->model_picker_open || self->command_palette_open) return NULL;
+
+    json_t *snapshot = hcli_get_status_bar_snapshot(self);
+    if (!snapshot || snapshot->type != JSON_OBJECT) {
+        if (snapshot) json_free(snapshot);
+        return NULL;
+    }
+    int width = cli_get_tui_terminal_width();
+    const char *duration = json_get_str(snapshot, "duration", "");
+    bool yolo = hcli_is_session_yolo_active(self);
+    char *goal_seg = hcli_status_bar_goal_segment(snapshot);
+    const char *battery_label = json_get_str(snapshot, "battery_label", "");
+    const char *focus = json_get_str(snapshot, "focus_label", "");
+    const char *model_short = json_get_str(snapshot, "model_short", "");
+    const char *batt_cat = json_get_str(snapshot, "battery_category", "dim");
+    const char *batt_style = cli_battery_status_style(batt_cat);
+
+#define ADD(s, t) do { if (n < 63) { frags[n].style = strdup(s); frags[n].text = strdup(t); n++; } } while(0)
+
+    hcli_fragment_t frags[64];
+    size_t n = 0;
+
+    if (width < 52) {
+        ADD("class:status-bar", "\xe2\x9a\x82 ");
+        ADD("class:status-bar-strong", model_short);
+        ADD("class:status-bar-dim", " \xc2\xb7 ");
+        ADD("class:status-bar-dim", duration);
+        if (goal_seg && goal_seg[0]) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            ADD("class:status-bar-strong", goal_seg);
+        }
+        if (focus && *focus) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            ADD("class:status-bar-strong", focus);
+        }
+        if (yolo) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            ADD("class:status-bar-yolo", "\xe2\x9a\xa0 YOLO");
+        }
+        ADD("class:status-bar", " ");
+    } else {
+        ADD("class:status-bar", "\xe2\x9a\x82 ");
+        ADD("class:status-bar-strong", model_short);
+        ADD("class:status-bar-dim", " \xc2\xb7 ");
+        double pct = json_get_num(snapshot, "context_percent", -1);
+        char pct_str[16];
+        if (pct < 0) snprintf(pct_str, sizeof(pct_str), "--");
+        else snprintf(pct_str, sizeof(pct_str), "%.0f%%", pct);
+        ADD(batt_style ? batt_style : "class:status-bar-dim", pct_str);
+
+        int compressions = (int)json_get_num(snapshot, "compressions", 0);
+        int bg_tasks = (int)json_get_num(snapshot, "active_background_tasks", 0);
+        int bg_procs = (int)json_get_num(snapshot, "active_background_processes", 0);
+
+        if (compressions) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            char tmp[32]; snprintf(tmp, sizeof(tmp), "\xf0\x9f\x97\xbc %d", compressions);
+            ADD(cli_compression_count_style(compressions), tmp);
+        }
+        if (bg_tasks) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            char tmp[32]; snprintf(tmp, sizeof(tmp), "\xe2\x96\xb6 %d", bg_tasks);
+            ADD("class:status-bar-strong", tmp);
+        }
+        if (bg_procs) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            char tmp[32]; snprintf(tmp, sizeof(tmp), "\xe2\x9a\x99 %d", bg_procs);
+            ADD("class:status-bar-strong", tmp);
+        }
+        if (goal_seg && goal_seg[0]) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            ADD("class:status-bar-strong", goal_seg);
+        }
+        ADD("class:status-bar-dim", " \xc2\xb7 ");
+        ADD("class:status-bar-dim", duration);
+        if (focus && *focus) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            ADD("class:status-bar-strong", focus);
+        }
+        if (yolo) {
+            ADD("class:status-bar-dim", " \xc2\xb7 ");
+            ADD("class:status-bar-yolo", "\xe2\x9a\xa0 YOLO");
+        }
+        ADD("class:status-bar", " ");
+    }
+#undef ADD
+
+    json_free(snapshot);
+    free(goal_seg);
+
+    hcli_fragment_t *result = malloc(n * sizeof(hcli_fragment_t));
+    if (!result) return NULL;
+    for (size_t i = 0; i < n; i++) result[i] = frags[i];
+    *out_len = n;
+    return result;
+}
