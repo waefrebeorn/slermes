@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-29T05:12:59Z from `live_parity_scan.json` by `make parity-walkway`. **963 REAL_GAP across 250 modules** (of 16,714 total functions).
+> Generated 2026-08-29T08:35:07Z from `live_parity_scan.json` by `make parity-walkway`. **942 REAL_GAP across 254 modules** (of 16,714 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -423,41 +423,24 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (38 gaps)
+### cli.py (21 gaps)
 
 - HermesCLI._install_resize_recovery (method)
-- HermesCLI._on_reaction (method)
-- HermesCLI._get_voice_status_fragments (method)
-- HermesCLI._build_status_bar_text (method)
-- HermesCLI._get_status_bar_fragments (method)
 - HermesCLI._install_tool_callbacks (method)
 - HermesCLI._show_browser_backend_notice (method)
-- HermesCLI.finalize_preloaded_skills (method)
-- HermesCLI._restore_session_yolo (method)
-- HermesCLI._persist_model_switch_to_session (method)
-- HermesCLI._restore_session_model (method)
 - HermesCLI._check_termios_drift (method)
 - HermesCLI._build_command_palette_entries (method)
 - HermesCLI._open_command_palette (method)
 - HermesCLI._command_palette_visible_entries (method)
 - HermesCLI._handle_command_palette_selection (method)
-- HermesCLI._snapshot_model_runtime (method)
-- HermesCLI._restore_model_runtime_snapshot (method)
 - HermesCLI._filter_model_picker_entries (method)
 - HermesCLI._confirm_and_apply_cli_model_switch (method)
-- HermesCLI._should_handle_background_command_inline (method)
-- HermesCLI.handle_bang_shell (method)
 - HermesCLI._start_heartbeat_watchdog (method)
 - HermesCLI._voice_restart_recording_async (method)
 - HermesCLI._voice_full_duplex_listener (method)
 - HermesCLI._voice_submit_barge_utterance (method)
 - HermesCLI._typed_voice_stop (method)
-- HermesCLI._maybe_start_wake_word (method)
-- HermesCLI._start_wake_word_listener (method)
-- HermesCLI._stop_wake_word_listener (method)
-- HermesCLI._on_wake_word (method)
 - HermesCLI._start_wake_watchdog (method)
-- HermesCLI._show_wake_word_status (method)
 - HermesCLI._clarify_batch_set_active (method)
 - HermesCLI._clarify_batch_lock (method)
 - HermesCLI._clarify_batch_enter (method)
@@ -705,7 +688,7 @@
 - restore_cron_jobs_all_profiles (function)
 - _prune_pre_update_backups (function)
 
-### hermes_cli/banner.py (10 gaps)
+### hermes_cli/banner.py (9 gaps)
 
 - cprint (function)
 - _github_compare_behind (function)
@@ -714,7 +697,6 @@
 - _check_via_local_git (function)
 - get_git_banner_state (function)
 - get_latest_release_tag (function)
-- format_banner_version_label (function)
 - prefetch_banner_data (function)
 - build_welcome_banner (function)
 
@@ -723,11 +705,14 @@
 - get_chrome_debug_candidates (function)
 - is_browser_debug_ready (function)
 
-### hermes_cli/build_info.py (3 gaps)
+### hermes_cli/build_info.py (2 gaps)
 
 - _resolve_git_head_sha (function)
 - get_code_identity (function)
-- get_build_sha (function)
+
+### hermes_cli/bundles.py (1 gaps)
+
+- bundles_command (function)
 
 ### hermes_cli/callbacks.py (3 gaps)
 
@@ -817,9 +802,10 @@
 - copilot_device_code_login (function)
 - get_copilot_api_token (function)
 
-### hermes_cli/cron.py (1 gaps)
+### hermes_cli/cron.py (2 gaps)
 
 - _builtin_gateway_liveness (function)
+- cron_command (function)
 
 ### hermes_cli/curator.py (4 gaps)
 
@@ -925,6 +911,10 @@
 - _anthropic_oauth_credentials_present (function)
 - _provider_is_keyless (function)
 
+### hermes_cli/kanban.py (1 gaps)
+
+- kanban_command (function)
+
 ### hermes_cli/kanban_db.py (11 gaps)
 
 - _kanban_observer_consumed (function)
@@ -978,11 +968,12 @@
 - install_entry (function)
 - uninstall_entry (function)
 
-### hermes_cli/mcp_config.py (3 gaps)
+### hermes_cli/mcp_config.py (4 gaps)
 
 - cmd_mcp_add (function)
 - cmd_mcp_list (function)
 - cmd_mcp_configure (function)
+- mcp_command (function)
 
 ### hermes_cli/migrate.py (2 gaps)
 
@@ -1009,12 +1000,10 @@
 - list_authenticated_providers (function)
 - list_picker_providers (function)
 
-### hermes_cli/models.py (22 gaps)
+### hermes_cli/models.py (20 gaps)
 
 - _fetch_reasoning_caps_catalog (function)
 - fetch_ollama_local_models (function)
-- detect_provider_for_model (function)
-- provider_label (function)
 - _resolve_copilot_catalog_api_key (function)
 - _merge_with_models_dev (function)
 - update_provider_cache_entry (function)
@@ -1104,6 +1093,10 @@
 - export_pack (function)
 - pack_command (function)
 
+### hermes_cli/plugins_cmd.py (1 gaps)
+
+- plugins_command (function)
+
 ### hermes_cli/portal_cli.py (2 gaps)
 
 - portal_command (function)
@@ -1137,10 +1130,9 @@
 
 - find_by_primary_path (function)
 
-### hermes_cli/providers.py (3 gaps)
+### hermes_cli/providers.py (2 gaps)
 
 - get_label (function)
-- is_aggregator (function)
 - resolve_provider_full (function)
 
 ### hermes_cli/psutil_android.py (1 gaps)
@@ -1174,13 +1166,11 @@
 
 - masked_secret_prompt (function)
 
-### hermes_cli/secrets_cli.py (5 gaps)
+### hermes_cli/secrets_cli.py (3 gaps)
 
 - _load_bw (function)
 - __getattr__ (function)
 - cmd_sync (function)
-- cmd_disable (function)
-- cmd_install (function)
 
 ### hermes_cli/security_audit.py (1 gaps)
 
@@ -1190,14 +1180,9 @@
 
 - register_send_subparser (function)
 
-### hermes_cli/service_manager.py (6 gaps)
+### hermes_cli/service_manager.py (1 gaps)
 
-- ServiceManager.restart (method)
-- SystemdServiceManager.restart (method)
-- LaunchdServiceManager.restart (method)
 - WindowsServiceManager.install (method)
-- WindowsServiceManager.restart (method)
-- S6ServiceManager.restart (method)
 
 ### hermes_cli/session_recovery.py (2 gaps)
 
@@ -1208,13 +1193,14 @@
 
 - _prune_never_active_keyed (function)
 
-### hermes_cli/setup.py (29 gaps)
+### hermes_cli/setup.py (31 gaps)
 
 - _handle_setup_menu_navigation (function)
 - _curses_prompt_choice (function)
 - _prompt_container_resources (function)
 - _prompt_vercel_sandbox_settings (function)
 - _read_nearest_vercel_project (function)
+- setup_model_provider (function)
 - _install_neutts_deps (function)
 - _install_kittentts_deps (function)
 - _run_xai_oauth_login_from_setup (function)
@@ -1222,6 +1208,7 @@
 - _setup_telegram_auto_result (function)
 - _setup_telegram_auto (function)
 - _prompt_telegram_bot_token (function)
+- setup_tools (function)
 - setup_telemetry (function)
 - _get_section_config_summary (function)
 - _skip_configured_section (function)
@@ -1250,10 +1237,6 @@
 ### hermes_cli/sqlite_safe_read.py (1 gaps)
 
 - _tracking_factory (function)
-
-### hermes_cli/status.py (1 gaps)
-
-- redact_key (function)
 
 ### hermes_cli/stderr_timestamp.py (4 gaps)
 
@@ -1287,6 +1270,10 @@
 ### hermes_cli/tips.py (1 gaps)
 
 - get_random_tip (function)
+
+### hermes_cli/tools_config.py (1 gaps)
+
+- tools_command (function)
 
 ### hermes_cli/uninstall.py (1 gaps)
 
@@ -1333,10 +1320,11 @@
 
 - _resolved_https_context (function)
 
-### hermes_cli/voice.py (3 gaps)
+### hermes_cli/voice.py (4 gaps)
 
 - start_recording (function)
 - start_continuous (function)
+- stop_continuous (function)
 - speak_text (function)
 
 ### hermes_cli/web_git.py (2 gaps)
@@ -1400,6 +1388,10 @@
 - _gateway_ws_ticket_from_subprotocol (function)
 - _port_bind_conflict (function)
 
+### hermes_cli/webhook.py (1 gaps)
+
+- webhook_command (function)
+
 ### hermes_cli/win_pty_bridge.py (2 gaps)
 
 - WinPtyBridge.pid (method)
@@ -1410,14 +1402,13 @@
 - find_retired_xai_refs (function)
 - apply_migration (function)
 
-### tools/approval.py (13 gaps)
+### tools/approval.py (12 gaps)
 
 - _is_single_query_approval_context (function)
 - _resolve_cli_approval_callback (function)
 - _should_fall_through_to_cli_approval (function)
 - _contains_shell_carrier (function)
 - _mask_quoted_prose (function)
-- _check_sudo_stdin_guard (function)
 - _is_shell_token_spliced_gateway_lifecycle (function)
 - _get_single_query_approval_mode (function)
 - get_plugin_manager (function)
