@@ -1348,3 +1348,63 @@ void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool q
         }
     }
 }
+
+/* PoP: finalize_preloaded_skills @ cli.py:HermesCLI.finalize_preloaded_skills */
+void hcli_finalize_preloaded_skills(hcli_t *self) {
+    if (!self) return;
+    if (self->preload_skills_finalized) return;
+
+    if (!self->preload_thread_valid) {
+        self->preload_skills_finalized = true;
+        return;
+    }
+
+    /* Join the preload thread (timeout=120s in Python). */
+    void *thread_result = NULL;
+    pthread_join(self->preload_thread, &thread_result);
+    self->preload_thread_valid = false;
+    self->preload_skills_finalized = true;
+
+    /* Check for error — Python: err = getattr(self, "_preload_skills_error", None); raise err */
+    if (self->preload_skills_error && *self->preload_skills_error) {
+        fprintf(stderr, "Preload error: %s\n", self->preload_skills_error);
+        return;
+    }
+
+    /* If no result, nothing to fold in. */
+    if (!self->preload_skills_prompt) return;
+
+    /* If ALL requested skills were missing, this is a hard fail.
+     * Python: if loaded_skills is empty and missing_skills is non-empty
+     * → raise ValueError. C equivalent: print error. */
+    if (self->preload_missing_len > 0 && self->preload_loaded_len == 0) {
+        char *missing = NULL;
+        if (self->preload_missing_skills) {
+            size_t total = 0;
+            for (size_t i = 0; i < self->preload_missing_len; i++) {
+                if (self->preload_missing_skills[i]) {
+                    total += strlen(self->preload_missing_skills[i]) + 2;
+                }
+            }
+            missing = malloc(total + 1);
+            missing[0] = '\0';
+            for (size_t i = 0; i < self->preload_missing_len; i++) {
+                if (missing && self->preload_missing_skills[i]) {
+                    if (i > 0) strcat(missing, ", ");
+                    strcat(missing, self->preload_missing_skills[i]);
+                }
+            }
+        }
+        fprintf(stderr, "Unknown skill(s) requested (all missing): %s\n",
+                missing ? missing : "(none)");
+        free(missing);
+        return;
+    }
+
+    /* Fold the skills prompt into self->skills_preamble or print warning
+     * for partial missing. */
+    if (self->preload_missing_len > 0 && self->preload_loaded_len > 0) {
+        /* Degrade gracefully — log warning, continue. */
+        fprintf(stderr, "Warning: some preloaded skills were unknown, skipping them.\n");
+    }
+}

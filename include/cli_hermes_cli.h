@@ -772,6 +772,8 @@ void hcli_start_heartbeat_watchdog(hcli_t *self);
 bool hcli_handle_bang_shell(hcli_t *self, const char *text);
 /* PoP: hcli_restore_session_model @ cli.py:_restore_session_model */
 void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool quiet);
+/* PoP: finalize_preloaded_skills @ cli.py:HermesCLI.finalize_preloaded_skills */
+void hcli_finalize_preloaded_skills(hcli_t *self);
 
 /* ══════════ Batch 4 (approval + secret capture + exit summary) ═══════════ */
 
