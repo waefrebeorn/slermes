@@ -49,16 +49,15 @@
    with the comment convention and shrink the list.
 3. Recursive gap loop continues: next REAL_GAP cluster from the scanner.
 
-
 ## Round 2 (recursive loop continues)
 
 1. Upstream quarry re-synced (+79 commits, behind=0). New upstream work triaged.
-2. **v711** — ported `agent/terminal_env_provider.py` TerminalEnvironmentProvider
+2. ed `agent/terminal_env_provider.py` TerminalEnvironmentProvider
    ABC (222-line new module) as a vtable with all base-class @property defaults;
    wired into AGENT_OBJ, 20 tep_* symbols in binary.
-3. **v712** — ported `_interleave_addrinfos` (RFC 8305 Happy Eyeballs prep,
+3. ed `_interleave_addrinfos` (RFC 8305 Happy Eyeballs prep,
    pure) + LIVE-Python oracle (5 cases MATCH).
-4. **v713** — ported `get_browser_snapshot_threshold` (browser.snapshot_threshold
+4. ed `get_browser_snapshot_threshold` (browser.snapshot_threshold
    config knob, clamped + cached + resettable).
 5. **v714** — signal standalone send enforces MAX_MESSAGE_LENGTH chunking
    (upstream 48f69e51d3/#67279/#57929).
@@ -68,10 +67,9 @@
 Next: remaining upstream deltas (memory gating verified already covered),
 continue scanner REAL_GAP descent.
 
-
 ## Round 3
 
-1. **v716** — ported voice_client_config pure core (client-direct gate value
+1. ed voice_client_config pure core (client-direct gate value
    parsing, relay verdict shape, STT relay ladder with LIVE
    BUILTIN_STT_PROVIDERS membership) + 16-case LIVE oracle MATCH.
 2. **v717** — tool_result_storage 11/15 → 15/15: _prune_spillover_once,
@@ -87,7 +85,6 @@ continue scanner REAL_GAP descent.
 
 All nm-verified in the shipped binary; rebuild green throughout.
 
-
 ## Round 4
 
 - **v721/v722** — ported the frozen plugin system-prompt sections machinery:
@@ -100,15 +97,13 @@ All nm-verified in the shipped binary; rebuild green throughout.
   moves from 8/16 toward full coverage of its pure surface.
 - Full rebuild green; plugin_prompt_sections oracle MATCH (6 cases).
 
-
 ## Round 5
 
 - **v724** — skills_sync: essential skills survive suppression (LIVE gate
-  `suppressed and not in _essential_names()` was skipping all suppressed).
-- **v725** — terminal_tool: ported _interpret_signal_exit with the LIVE
+  `suppressed and not in _essential_names` was skipping all suppressed).
+- ed _interpret_signal_exit with the LIVE
   _SIGNAL_EXIT_NOTES table (subprocess-negative definite, 128+signum hedged,
   SIGINT reserved). terminal_tool battleground module now 74/80.
-
 
 ## Round 6
 
@@ -119,7 +114,6 @@ All nm-verified in the shipped binary; rebuild green throughout.
 - **v728** — vision_helpers crop-region validate/clamp (pure core of
   _crop_image_region): malformed/inverted/zero-area regions rejected with
   an error naming the actual dimensions.
-
 
 ## Round 7
 
@@ -132,7 +126,6 @@ All nm-verified in the shipped binary; rebuild green throughout.
   scrub_ansi, is_valid_env_name, apply_all). Scanner name-matcher needs a
   mapping table pass.
 
-
 ## Round 8
 
 - **v732** — battleground scanner gained an explicit rename ALIAS_MAP keyed on
@@ -142,7 +135,6 @@ All nm-verified in the shipped binary; rebuild green throughout.
   skill/memory classification, emoji-stripped), enabled gate,
   _review_input_token_budget (600k default, <=0 unlimited). Module 8/23 → 15/23.
 - Scanner totals after alias map: PORTED 14,574 (87.2%), STUB 0.
-
 
 ## Round 9
 
@@ -158,7 +150,6 @@ All nm-verified in the shipped binary; rebuild green throughout.
   reusing existing cc_ image primitives. → 152/171.
 - **v739** — _digest_worthy with hand-rolled low-signal tool-ack matcher. → 153/171.
 
-
 ## Round 10
 
 - **v741** — context_compressor: split_user_originated_turn (handoff scaffold
@@ -172,7 +163,6 @@ All nm-verified in the shipped binary; rebuild green throughout.
 - Audit: cc_reinject_pruned_skill_markers was already faithfully ported in
   context.c (context_compressor__reinject...) — duplicate removed before it
   ever shipped. context_compressor module 147/171 → ~157/171.
-
 
 ## Round 11
 
@@ -188,14 +178,12 @@ All nm-verified in the shipped binary; rebuild green throughout.
 context_compressor: 147/171 → 170/171 (the one remaining entry is the
 context.c reinject port under its cc_ name). Module effectively CLOSED.
 
-
 ## Round 12
 
 - **v752** — auxiliary_client routing predicates: _task_prefers_fast_model,
   _is_official_codex_base_url, _is_dual_surface_anthropic_host,
   _is_structured_output_rejection (fail-closed status gate 400/422).
   auxiliary_client → 247/253.
-
 
 ## Round 13
 
@@ -206,7 +194,6 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
 - **v755** — agent_runtime_helpers: tool-call id variant expansion (shared
   policy owner, composite call|item spellings) and trailing_continue_intent
   stall-guard gate. Module → ~44/47.
-
 
 ## Round 14
 
@@ -219,13 +206,11 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
   context gates — delegated-child flag, non-dispatcher enter/exit, and the
   single identity predicate for HERMES_KANBAN_* gates.
 
-
 ## Round 15
 
 - **v761** — browser_registry CLOSED (8/8): snapshot_registration,
   registry_generation cache fingerprint, restore_registration (restore only
   when current still installed; generation bump under lock).
-
 
 ## Round 15 (continued)
 
@@ -234,13 +219,11 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
 - **v764** — file_safety CLOSED (20/20): write-approval path gates
   (~/.ssh/config — ProxyCommand/Match exec influence process execution).
 
-
 ## Round 16
 
 - **v766** — conversation_compression CLOSED: _strip_marker_for_comparison
   (#92231), _pruned_skill_reload_notice (canonical marker scan, cap 20),
   conversation_history_after_compression (legacy/in-place/abort baselines).
-
 
 ## Round 17
 
@@ -248,7 +231,6 @@ context.c reinject port under its cc_ name). Module effectively CLOSED.
   _without_structured_output_format, _record_route_info. Module → 250/253
   (remaining three are SDK-client-coupled: client construction, async close
   scheduling, codex header injection over the live SDK path).
-
 
 ## Round 18
 

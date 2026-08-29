@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-29T04:16:14Z from `live_parity_scan.json` by `make parity-walkway`. **983 REAL_GAP across 251 modules** (of 16,714 total functions).
+> Generated 2026-08-29T05:12:59Z from `live_parity_scan.json` by `make parity-walkway`. **963 REAL_GAP across 250 modules** (of 16,714 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -423,7 +423,7 @@
 - _keyless_preference (function)
 - _keyless_tier_enabled (function)
 
-### cli.py (54 gaps)
+### cli.py (38 gaps)
 
 - HermesCLI._install_resize_recovery (method)
 - HermesCLI._on_reaction (method)
@@ -437,9 +437,6 @@
 - HermesCLI._persist_model_switch_to_session (method)
 - HermesCLI._restore_session_model (method)
 - HermesCLI._check_termios_drift (method)
-- HermesCLI._handle_whoami_command (method)
-- HermesCLI._launch_session_boundary_memory_flush (method)
-- HermesCLI._rewind_persisted_user_turn (method)
 - HermesCLI._build_command_palette_entries (method)
 - HermesCLI._open_command_palette (method)
 - HermesCLI._command_palette_visible_entries (method)
@@ -447,23 +444,10 @@
 - HermesCLI._snapshot_model_runtime (method)
 - HermesCLI._restore_model_runtime_snapshot (method)
 - HermesCLI._filter_model_picker_entries (method)
-- HermesCLI._clear_persisted_context_for_model_switch (method)
 - HermesCLI._confirm_and_apply_cli_model_switch (method)
 - HermesCLI._should_handle_background_command_inline (method)
 - HermesCLI.handle_bang_shell (method)
-- HermesCLI._get_goal_manager (method)
-- HermesCLI._get_heartbeat_manager (method)
 - HermesCLI._start_heartbeat_watchdog (method)
-- HermesCLI._get_loop_manager (method)
-- HermesCLI._maybe_fire_loop_tick (method)
-- HermesCLI._maybe_complete_loop_tick_after_turn (method)
-- HermesCLI._owns_process_notification (method)
-- HermesCLI._drain_process_notifications (method)
-- HermesCLI._write_terminal_breadcrumb (method)
-- HermesCLI._persist_session_yolo (method)
-- HermesCLI._handle_usage_command (method)
-- HermesCLI._usage_reset (method)
-- HermesCLI._show_context_breakdown (method)
 - HermesCLI._voice_restart_recording_async (method)
 - HermesCLI._voice_full_duplex_listener (method)
 - HermesCLI._voice_submit_barge_utterance (method)
@@ -1295,11 +1279,8 @@
 - is_valid_telegram_bot_token (function)
 - auto_setup_telegram_bot (function)
 
-### hermes_cli/terminal_breadcrumbs.py (5 gaps)
+### hermes_cli/terminal_breadcrumbs.py (2 gaps)
 
-- get_terminal_id (function)
-- _prune_stale (function)
-- write_breadcrumb (function)
 - read_breadcrumb (function)
 - resolve_breadcrumb_session (function)
 
@@ -1428,10 +1409,6 @@
 
 - find_retired_xai_refs (function)
 - apply_migration (function)
-
-### hermes_state.py (1 gaps)
-
-- SessionDB.get_active_message_ids (method)
 
 ### tools/approval.py (13 gaps)
 
