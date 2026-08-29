@@ -326,7 +326,7 @@ json_t * hcli_handle_model_switch(hcli_t *self);
 json_t * hcli_confirm_and_apply_cli_model_switch(hcli_t *self);
 
 /* PoP: handle_usage_command @ cli.py:_handle_usage_command */
-json_t * hcli_handle_usage_command(hcli_t *self);
+json_t *hcli_handle_usage_command(hcli_t *self, const char *cmd_original);
 
 /* PoP: on_tool_gen_start @ cli.py:_on_tool_gen_start */
 json_t * hcli_on_tool_gen_start(hcli_t *self);

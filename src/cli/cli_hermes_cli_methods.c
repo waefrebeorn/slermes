@@ -575,6 +575,63 @@ int hcli_rewind_persisted_user_turn(hcli_t *self,
     return result ? 0 : -10;
 }
 
+/* PoP: _handle_usage_command @ cli.py:_handle_usage_command */
+json_t *hcli_handle_usage_command(hcli_t *self, const char *cmd_original) {
+    if (!self) return NULL;
+    if (!cmd_original || !*cmd_original) return NULL;
+
+    /* parts = cmd_original.split() */
+    /* args = [p.lower() for p in parts[1:]] */
+    char *cmd_copy = strdup(cmd_original);
+    if (!cmd_copy) return NULL;
+    /* skip first token (the command name) */
+    char *p = cmd_copy;
+    while (*p && *p != ' ') p++;
+    while (*p == ' ') p++;
+    /* p now points to args */
+    char *arg_copy = strdup(p);
+    free(cmd_copy);
+    /* lower() + check first token */
+    char *first = arg_copy;
+    while (*first && *first == ' ') first++;
+    /* extract first arg token */
+    char *first_end = first;
+    while (*first_end && *first_end != ' ' && *first_end != '\t') first_end++;
+    bool is_reset = (strncasecmp(first, "reset", first_end - first) == 0 &&
+                     first_end - first == 5);
+    bool has_args = (first_end > first);
+
+    if (is_reset) {
+        /* --force check */
+        bool force = false;
+        char *rest = first_end;
+        while (*rest) {
+            while (*rest == ' ') rest++;
+            if (strncasecmp(rest, "--force", 7) == 0) { force = true; break; }
+            while (*rest && *rest != ' ') rest++;
+        }
+        hcli_usage_reset(self, force);
+        free(arg_copy);
+        return json_new_null();
+    }
+
+    if (has_args) {
+        printf("  Unknown /usage subcommand: %s. Try /usage or /usage reset [--force].\n",
+               arg_copy);
+        free(arg_copy);
+        return json_new_null();
+    }
+
+    /* Bare /usage — delegate to show_usage seam if available. */
+    if (self->show_status_fn) {
+        self->show_status_fn(self);
+    }
+    /* TODO: hcli_show_usage() — complex: accesses agent rate limits, */
+    /* compressor state, session tokens. Requires agent seam + context_compressor. */
+    free(arg_copy);
+    return json_new_null();
+}
+
 /* PoP: _write_terminal_breadcrumb @ cli.py:_write_terminal_breadcrumb */
 void hcli_write_terminal_breadcrumb(hcli_t *self) {
     if (!self) return;
