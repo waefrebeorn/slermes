@@ -1962,3 +1962,316 @@ int kdb_count_running_tasks_other_boards(const char *board)
     json_free(boards);
     return total;
 }
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* RFC #58548 observer hooks + remaining parity closures               */
+/* ════════════════════════════════════════════════════════════════════ */
+
+#include "memory_status.h"        /* classify_pressure */
+#include "cli_gaps_2026_08_25.h"  /* _worktree_is_dirty / _worktree_has_unpushed_commits */
+
+/* Python: from hermes_cli.lifecycle import has_hook / invoke_hook */
+extern int hermes_cli_lifecycle_has_hook(const char *arg);
+extern int hermes_cli_lifecycle_invoke_hook(const char *arg);
+
+/* Hot-path short-circuit: whether any first-party observer or plugin
+ * consumes *event*. Best-effort — on failure treat as unconsumed.
+ *
+ * PoP: kdb_kanban_observer_consumed @ hermes_cli/kanban_db.py:_kanban_observer_consumed */
+int kdb_kanban_observer_consumed(const char *event)
+{
+    if (!event || !*event) return 0;
+    return hermes_cli_lifecycle_has_hook(event) != 0;
+}
+
+/* Fire "on_kanban_worker_spawned" for one dispatched spawn — AFTER the
+ * worker PID has been durably persisted. Fully best-effort.
+ *
+ * PoP: kdb_fire_worker_spawned_hook @ hermes_cli/kanban_db.py:_fire_worker_spawned_hook */
+void kdb_fire_worker_spawned_hook(sqlite3 *conn, const char *task_id,
+                                  const char *assignee,
+                                  const char *workspace_path, long pid,
+                                  const char *board)
+{
+    if (!kdb_kanban_observer_consumed("on_kanban_worker_spawned")) return;
+
+    char *eff_board = NULL;
+    if (!board) eff_board = get_current_board();
+    long run_id = conn && task_id ? kdb_current_run_id(conn, task_id) : 0;
+
+    char payload[1024];
+    snprintf(payload, sizeof(payload),
+             "{\"task_id\":\"%s\",\"board\":\"%s\",\"assignee\":\"%s\","
+             "\"run_id\":%ld,\"worker_pid\":%ld,\"workspace_path\":\"%s\"}",
+             task_id ? task_id : "",
+             board ? board : (eff_board ? eff_board : ""),
+             assignee ? assignee : "",
+             run_id,
+             pid > 0 ? pid : 0,
+             workspace_path ? workspace_path : "");
+    free(eff_board);
+
+    char arg[2048];
+    snprintf(arg, sizeof(arg), "on_kanban_worker_spawned\t%s", payload);
+    if (hermes_cli_lifecycle_invoke_hook(arg) != 0)
+        hermes_log(LOG_DEBUG, "port",
+                   "kanban worker spawned hook failed: task=%s",
+                   task_id ? task_id : "");
+}
+
+/* Fire "on_kanban_task_updated" for a committed task-row mutation. Call
+ * AFTER the write txn committed. Observer-only, fully best-effort.
+ *
+ * PoP: kdb_notify_task_updated @ hermes_cli/kanban_db.py:notify_task_updated */
+void kdb_notify_task_updated(sqlite3 *conn, const char *task_id,
+                             char **changed_fields, const char *board)
+{
+    if (!kdb_kanban_observer_consumed("on_kanban_task_updated")) return;
+
+    /* row = SELECT assignee, current_run_id FROM tasks WHERE id = ? */
+    const char *assignee = NULL;
+    long run_id = 0;
+    if (conn && task_id) {
+        sqlite3_stmt *st = NULL;
+        if (sqlite3_prepare_v2(conn,
+                "SELECT assignee, current_run_id FROM tasks WHERE id = ?",
+                -1, &st, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(st, 1, task_id, -1, SQLITE_TRANSIENT);
+            if (sqlite3_step(st) == SQLITE_ROW) {
+                assignee = (const char *)sqlite3_column_text(st, 0);
+                run_id = sqlite3_column_type(st, 1) == SQLITE_NULL
+                       ? 0 : sqlite3_column_int64(st, 1);
+            }
+            sqlite3_finalize(st);
+        }
+    }
+
+    char *eff_board = NULL;
+    if (!board) eff_board = get_current_board();
+
+    json_t *payload = json_object();
+    if (payload) {
+        if (task_id) json_set(payload, "task_id", json_string(task_id));
+        json_set(payload, "board", json_string(board ? board : (eff_board ? eff_board : "")));
+        json_set(payload, "assignee", json_string(assignee ? assignee : ""));
+        json_set(payload, "run_id", json_int(run_id));
+        json_t *fields = json_array();
+        if (fields && changed_fields)
+            for (size_t i = 0; changed_fields[i]; i++)
+                json_append(fields, json_string(changed_fields[i]));
+        if (fields) json_set(payload, "changed_fields", fields);
+    }
+    char *payload_json = payload ? json_serialize(payload) : NULL;
+
+    char arg[8192];
+    snprintf(arg, sizeof(arg), "on_kanban_task_updated\t%s",
+             payload_json ? payload_json : "{}");
+    if (hermes_cli_lifecycle_invoke_hook(arg) != 0)
+        hermes_log(LOG_DEBUG, "port", "kanban task updated hook failed");
+
+    free(payload_json);
+    if (payload) json_free(payload);
+    free(eff_board);
+}
+
+/* Return True for a TLS record header at data[offset:] (content type in
+ * {0x14..0x17}, version major 3, minor in {0..4}, 0 < length <= 18432).
+ *
+ * PoP: kdb_looks_like_tls_record_at @ hermes_cli/kanban_db.py:_looks_like_tls_record_at */
+int kdb_looks_like_tls_record_at(const unsigned char *data, size_t len,
+                                 size_t offset)
+{
+    if (!data || len < offset + 5) return 0;
+    unsigned char content_type = data[offset];
+    unsigned char major = data[offset + 1];
+    unsigned char minor = data[offset + 2];
+    unsigned int length = ((unsigned int)data[offset + 3] << 8)
+                        | (unsigned int)data[offset + 4];
+    return (content_type == 0x14 || content_type == 0x15 ||
+            content_type == 0x16 || content_type == 0x17)
+        && major == 0x03
+        && minor <= 0x04
+        && length > 0 && length <= 18432;
+}
+
+/* Whether an open connection actually sees the kanban schema ("tasks" is
+ * the sentinel). Cheap by design — runs on every steady-state connect.
+ *
+ * PoP: kdb_schema_is_present @ hermes_cli/kanban_db.py:_schema_is_present */
+int kdb_schema_is_present(sqlite3 *conn)
+{
+    if (!conn) return 0;
+    sqlite3_stmt *st = NULL;
+    int present = 0;
+    if (sqlite3_prepare_v2(conn,
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='tasks' LIMIT 1",
+            -1, &st, NULL) != SQLITE_OK)
+        return 0; /* unreadable schema table is not this guard's call */
+    if (sqlite3_step(st) == SQLITE_ROW) present = 1;
+    sqlite3_finalize(st);
+    return present;
+}
+
+/* Remove a finished task's linked git worktree when it holds no work.
+ * Mirrors cli._prune_stale_worktrees safety judgment: removal requires a
+ * clean working tree AND no unpushed commits; any doubt preserves it. The
+ * auto-generated wt/<task-id> branch is deleted with it; custom branches
+ * are kept. Best-effort — never blocks completion.
+ *
+ * PoP: kdb_cleanup_worktree_workspace @ hermes_cli/kanban_db.py:_cleanup_worktree_workspace */
+void kdb_cleanup_worktree_workspace(const char *task_id, const char *path,
+                                    const char *branch_name)
+{
+    if (!path || !*path) return;
+
+    struct stat sb;
+    if (stat(path, &sb) != 0 || !S_ISDIR(sb.st_mode)) return;
+
+    /* common = _git_common_dir(wp); must be a <repo>/.git directory */
+    const char *common_c = _git_common_dir(path);
+    if (!common_c) return;
+    char common[4096];
+    snprintf(common, sizeof(common), "%s", common_c);
+    free((void *)common_c);
+
+    size_t cl = strlen(common);
+    if (cl < 5 || strcmp(common + cl - 5, "/.git") != 0)
+        return; /* not a linked worktree of a normal repo — never guess */
+    char repo_root[4096];
+    snprintf(repo_root, sizeof(repo_root), "%.*s", (int)(cl - 5), common);
+
+    /* never remove the main checkout */
+    char resolved_wp[4096], resolved_root[4096];
+    if (!realpath(path, resolved_wp) || !realpath(repo_root, resolved_root))
+        return;
+    if (strcmp(resolved_wp, resolved_root) == 0) return;
+
+    /* safety predicates from the CLI startup pruner */
+    if (_worktree_is_dirty(path, 30) || _worktree_has_unpushed_commits(path, 30)) {
+        hermes_log(LOG_INFO, "port",
+                   "Preserving worktree for task %s: dirty or unpushed work at %s",
+                   task_id ? task_id : "", path);
+        return;
+    }
+
+    char cmd[9216];
+    snprintf(cmd, sizeof(cmd),
+             "git -C '%s' worktree remove '%s'", repo_root, path);
+    FILE *p = popen(cmd, "r");
+    int rc = p ? pclose(p) : -1;
+    if (rc != 0) {
+        hermes_log(LOG_WARNING, "port",
+                   "git worktree remove failed for task %s at %s (exit %d)",
+                   task_id ? task_id : "", path, rc);
+        return; /* fails safe — preserve */
+    }
+    hermes_log(LOG_DEBUG, "port", "Removed worktree workspace: %s", path);
+
+    /* delete the auto-generated wt/<task-id> branch; keep custom ones */
+    char branch[256] = {0};
+    if (branch_name && *branch_name) {
+        /* Python: branch = (branch_name or "").strip() */
+        const char *b = branch_name;
+        while (*b == ' ' || *b == '\t') b++;
+        snprintf(branch, sizeof(branch), "%s", b);
+        size_t bl = strlen(branch);
+        while (bl > 0 && (branch[bl-1] == ' ' || branch[bl-1] == '\t'))
+            branch[--bl] = '\0';
+    }
+    if (!branch[0]) {
+        if (!task_id) return;
+        snprintf(branch, sizeof(branch), "wt/%s", task_id);
+    }
+    if (strncmp(branch, "wt/", 3) == 0) {
+        snprintf(cmd, sizeof(cmd),
+                 "git -C '%s' branch -D '%s'", repo_root, branch);
+        p = popen(cmd, "r");
+        if (p) pclose(p);
+    }
+}
+
+/* Best-effort system memory snapshot (KiB values); {} when unknown.
+ * Delegates to gateway.lifecycle_ledger.sample_memory (pure /proc reads).
+ *
+ * PoP: kdb_system_memory_sample @ hermes_cli/kanban_db.py:_system_memory_sample */
+json_t *kdb_system_memory_sample(void)
+{
+    json_t *sample = llg_sample_memory();
+    if (!sample) sample = json_object();
+    return sample; /* never NULL, mirrors `sample_memory() or {}` */
+}
+
+/* Classify current system memory pressure: ok/elevated/critical/unknown.
+ * Reuses gateway.memory_status.classify_pressure so the dispatcher's idea
+ * of "critical" matches the dashboard banner. NULL/empty sample => unknown.
+ *
+ * PoP: kdb_memory_pressure_level @ hermes_cli/kanban_db.py:_memory_pressure_level */
+const char *kdb_memory_pressure_level(const json_t *sample)
+{
+    if (!sample || sample->type != JSON_OBJECT || sample->c.count == 0)
+        return "unknown";
+    json_t *avail = json_obj_get((json_t *)sample, "mem_available_kib");
+    json_t *total = json_obj_get((json_t *)sample, "mem_total_kib");
+    return classify_pressure(avail, total);
+}
+
+#define KANBAN_TERMINAL_TIMEOUT_GRACE_SECONDS_C 30
+
+/* Return a malloc'd worker-scoped TERMINAL_TIMEOUT override string when the
+ * existing timeout is below runtime - grace; NULL when no override needed.
+ *
+ * PoP: kdb_worker_terminal_timeout_env @ hermes_cli/kanban_db.py:_worker_terminal_timeout_env */
+char *kdb_worker_terminal_timeout_env(long max_runtime_seconds,
+                                      const char *current_timeout)
+{
+    if (max_runtime_seconds <= 0) return NULL;
+    long desired = max_runtime_seconds - KANBAN_TERMINAL_TIMEOUT_GRACE_SECONDS_C;
+    if (desired < 1) desired = 1; /* max(1, runtime - grace) */
+    long existing = 0;
+    if (current_timeout && *current_timeout) {
+        char *end = NULL;
+        long v = strtol(current_timeout, &end, 10);
+        if (end && *end == '\0') existing = v;
+        /* unparseable -> existing stays 0 (Python except-path) */
+    }
+    if (existing >= desired) return NULL;
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%ld", desired);
+    return strdup(buf);
+}
+
+/* Delete notify subscriptions whose task has sat in done untouched for
+ * longer than max_age_days. Age is measured from the most recent event
+ * (falling back to completed_at then created_at). max_age_days <= 0
+ * disables the sweep. Returns rows deleted (-1 on sqlite failure).
+ *
+ * PoP: kdb_purge_stale_done_notify_subs @ hermes_cli/kanban_db.py:purge_stale_done_notify_subs */
+long kdb_purge_stale_done_notify_subs(sqlite3 *conn, long max_age_days)
+{
+    if (!conn) return -1;
+    long days = max_age_days; /* int() of the argument */
+    if (days <= 0) return 0;
+    long cutoff = (long)time(NULL) - days * 86400;
+
+    if (kdb_write_begin(conn) != 0) return -1; /* with write_txn(conn): */
+    sqlite3_stmt *st = NULL;
+    long deleted = -1;
+    int rc = sqlite3_prepare_v2(conn,
+        "DELETE FROM kanban_notify_subs WHERE task_id IN ("
+        " SELECT t.id FROM tasks t"
+        " WHERE t.status = 'done'"
+        " AND COALESCE("
+        "  (SELECT MAX(e.created_at) FROM task_events e"
+        "   WHERE e.task_id = t.id),"
+        "  t.completed_at, t.created_at, 0"
+        " ) < ?)",
+        -1, &st, NULL);
+    if (rc == SQLITE_OK) {
+        sqlite3_bind_int64(st, 1, cutoff);
+        rc = sqlite3_step(st);
+        deleted = (rc == SQLITE_DONE) ? (long)sqlite3_changes(conn) : -1;
+    }
+    sqlite3_finalize(st);
+    kdb_write_end(conn, deleted >= 0);
+    return deleted;
+}

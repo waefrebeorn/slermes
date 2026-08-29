@@ -6,18 +6,18 @@
 > authoritative sentinel (do not hand-edit).
 
 <!-- PARITY:AUTO -->
-| PORTED  | 14,113 / 16,592 (85.1%) |
-| REAL_GAP| 2,385 (14.4%) — no N/A |
-|  ├ DA-4 annotation-only stubs | 434 (PoP comment, no C body) |
-|  └ Genuine gaps (no C at all) | 1,951 |
-| PARTIAL | 94 (0.6%) |
+| PORTED  | 15,758 / 16,714 (94.3%) |
+| REAL_GAP| 942 (5.6%) — no N/A |
+|  ├ DA-4 annotation-only stubs | 56 (PoP comment, no C body) |
+|  └ Genuine gaps (no C at all) | 886 |
+| PARTIAL | 14 (0.1%) |
 | BOOTLEG | 0 (recursive_false_gap_hunter.py) |
 
 **Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,852 ahead / 0 behind upstream/main (last merge 2026-08-19 (upstream fetched)). The repo is up to date with upstream.
+**Upstream sync checkpoint:** 2,037 ahead / 1,052 behind upstream/main (last merge 2026-08-23 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-24T08:38:02Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-29T08:35:07Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->
 
 **Rewriting from scratch in C is the point.** Stubs that just log+return NULL are REAL_GAP.

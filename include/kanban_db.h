@@ -654,6 +654,13 @@ char **kdb_detect_stale_running(sqlite3 *conn, int stale_timeout_seconds);
 /* Return a guard reason ("rate_limit_cooldown"|"blocker_auth"|"recent_success"|
  * "active_pr") if task_id must NOT be re-spawned this tick, else NULL. */
 char *kdb_check_respawn_guard(sqlite3 *conn, const char *task_id);
+/* Lane-aware variant: lane="review" skips the recent_success / active_pr
+ * rules (they are the inputs of a review handoff, not duplicate signals). */
+char *kdb_check_respawn_guard_lane(sqlite3 *conn, const char *task_id,
+                                   const char *lane);
+/* Fire "on_kanban_dispatch_tick" after one dispatcher tick (best-effort). */
+void kdb_fire_dispatch_tick_hook(const kdb_dispatch_result_t *result,
+                                 const char *board, int dry_run);
 
 /* Run one dispatcher tick under the board dispatch lock. Returns a malloc'd
  * result (caller frees). Dry-run reports would-be spawns without mutating. */
@@ -737,6 +744,36 @@ int  kdb_set_reasoning_effort(sqlite3 *conn, const char *task_id,
 /* Best-effort, gated reclaim of pre-tag worker rows in state.db. Never
  * raises; keeps an in-process dedupe set. */
 void kdb_retag_legacy_worker_sessions(const char *workspaces_root);
+
+/* ---- RFC #58548 observer hooks + parity closures (kanban_db.c) -------- */
+
+/* _kanban_observer_consumed — hot-path has_hook probe (best-effort). */
+int kdb_kanban_observer_consumed(const char *event);
+/* Fire on_kanban_worker_spawned after the worker PID is durably persisted. */
+void kdb_fire_worker_spawned_hook(sqlite3 *conn, const char *task_id,
+                                  const char *assignee,
+                                  const char *workspace_path, long pid,
+                                  const char *board);
+/* Fire on_kanban_task_updated for a committed task-row mutation. */
+void kdb_notify_task_updated(sqlite3 *conn, const char *task_id,
+                             char **changed_fields, const char *board);
+/* _looks_like_tls_record_at — TLS record header probe at data[offset:]. */
+int kdb_looks_like_tls_record_at(const unsigned char *data, size_t len,
+                                 size_t offset);
+/* _schema_is_present — "tasks" sentinel table lookup on an open conn. */
+int kdb_schema_is_present(sqlite3 *conn);
+/* _cleanup_worktree_workspace — safe worktree removal (best-effort). */
+void kdb_cleanup_worktree_workspace(const char *task_id, const char *path,
+                                    const char *branch_name);
+/* _system_memory_sample — /proc snapshot; {} when unknown. Caller frees. */
+json_t *kdb_system_memory_sample(void);
+/* _memory_pressure_level — ok/elevated/critical/unknown. */
+const char *kdb_memory_pressure_level(const json_t *sample);
+/* _worker_terminal_timeout_env — malloc'd override or NULL. Caller frees. */
+char *kdb_worker_terminal_timeout_env(long max_runtime_seconds,
+                                      const char *current_timeout);
+/* purge_stale_done_notify_subs — rows deleted, -1 on sqlite failure. */
+long kdb_purge_stale_done_notify_subs(sqlite3 *conn, long max_age_days);
 
 #ifdef __cplusplus
 }

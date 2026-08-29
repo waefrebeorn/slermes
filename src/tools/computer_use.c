@@ -2465,3 +2465,421 @@ cu_action_t *cu_backend_wait(double seconds) {
     }
     return act;
 }
+
+
+/* ======================================================================
+ *  Response shaping + bounds helpers (tools/computer_use/tool.py)
+ * ====================================================================== */
+
+#include <sys/stat.h>
+#include <errno.h>
+#include <dirent.h>
+#include <pthread.h>
+#include <math.h>
+#include "hash.h"
+#include "base64.h"
+
+#define CU_MAX_ELEMENT_LABEL_CHARS 120
+#define CU_MAX_SPILL_FILES 20
+#define CU_MAX_CAPTURE_FILES 20
+
+static void cu_hermes_cache_dir(char *buf, size_t cap, const char *sub, const char *legacy)
+{
+    const char *home = getenv("HERMES_HOME");
+    if (!home) home = getenv("HOME");
+    snprintf(buf, cap, "%s/.hermes/cache/%s", home ? home : ".", sub);
+    (void)legacy;   /* Python get_hermes_dir(sub, legacy): same primary path */
+}
+
+/* Prune oldest files matching prefix in dir down to keep files. */
+static void cu_prune_dir(const char *dir, const char *prefix, int keep)
+{
+    DIR *d = opendir(dir);
+    if (!d) return;
+    char names[256][256];
+    time_t mtimes[256];
+    int n = 0;
+    size_t plen = strlen(prefix);
+    struct dirent *de;
+    while ((de = readdir(d)) != NULL && n < 256) {
+        if (strncmp(de->d_name, prefix, plen) != 0) continue;
+        char path[1024];
+        snprintf(path, sizeof(path), "%s/%s", dir, de->d_name);
+        struct stat st;
+        if (stat(path, &st) != 0 || !S_ISREG(st.st_mode)) continue;
+        snprintf(names[n], sizeof(names[n]), "%s", de->d_name);
+        mtimes[n] = st.st_mtime;
+        n++;
+    }
+    closedir(d);
+    /* selection sort by mtime ascending; unlink all but newest `keep` */
+    for (int pass = 0; pass < n; pass++) {
+        int min_i = pass;
+        for (int i = pass + 1; i < n; i++)
+            if (mtimes[i] < mtimes[min_i]) min_i = i;
+        if (min_i != pass) {
+            char tmpn[256]; strncpy(tmpn, names[pass], sizeof(tmpn));
+            time_t tmpt = mtimes[pass];
+            strncpy(names[pass], names[min_i], sizeof(names[pass]));
+            mtimes[pass] = mtimes[min_i];
+            strncpy(names[min_i], tmpn, sizeof(names[min_i]));
+            mtimes[min_i] = tmpt;
+        }
+    }
+    int excess = n - keep;
+    for (int i = 0; i < excess; i++) {
+        char path[1280];
+        snprintf(path, sizeof(path), "%s/%s", dir, names[i]);
+        unlink(path);
+    }
+}
+
+static int cu_strcasestr_start(const char *hay, const char *needle)
+{
+    return strncasecmp(hay, needle, strlen(needle)) == 0;
+}
+
+/* PoP: cu_input_target_mismatch @ tools/computer_use/tool.py:_input_target_mismatch
+ * Current sticky-target app when it clearly differs from requested_app.
+ * Returns malloc'd current app name, or NULL when unknown/matching. */
+char *cu_input_target_mismatch(const char *last_app, const char *requested_app)
+{
+    char cur[512] = "";
+    if (last_app) { snprintf(cur, sizeof(cur), "%s", last_app); }
+    /* strip + lower current */
+    char *cs = cur; while (*cs && isspace((unsigned char)*cs)) cs++;
+    size_t cl = strlen(cs);
+    while (cl > 0 && isspace((unsigned char)cs[cl-1])) cs[--cl] = '\0';
+    for (size_t i = 0; i < cl; i++) cs[i] = (char)tolower((unsigned char)cs[i]);
+
+    char want[512] = "";
+    if (requested_app) snprintf(want, sizeof(want), "%s", requested_app);
+    char *ws = want; while (*ws && isspace((unsigned char)*ws)) ws++;
+    size_t wl = strlen(ws);
+    while (wl > 0 && isspace((unsigned char)ws[wl-1])) ws[--wl] = '\0';
+    for (size_t i = 0; i < wl; i++) ws[i] = (char)tolower((unsigned char)ws[i]);
+
+    if (!*cs || !*ws) return NULL;
+    if (strstr(cs, ws) || strstr(ws, cs)) return NULL;   /* substring → no proof */
+    return strdup(last_app ? last_app : "");
+}
+
+/* Weak hook: configured cua-driver permission mode ("standard" default). */
+__attribute__((weak))
+const char *cua_configured_permission_mode(void) { return "standard"; }
+
+/* PoP: cu_warn_bypass_escalation @ tools/computer_use/tool.py:_warn_bypass_escalation
+ * State the approval-bypass widening once per session id. */
+void cu_warn_bypass_escalation(const char *session_id)
+{
+    static char warned[64][128];
+    static int warned_n = 0;
+    static pthread_mutex_t lk = PTHREAD_MUTEX_INITIALIZER;
+    char key[128];
+    snprintf(key, sizeof(key), "%s", session_id ? session_id : "");
+    pthread_mutex_lock(&lk);
+    for (int i = 0; i < warned_n; i++)
+        if (strcmp(warned[i], key) == 0) { pthread_mutex_unlock(&lk); return; }
+    if (warned_n < 64) snprintf(warned[warned_n++], 128, "%s", key);
+    pthread_mutex_unlock(&lk);
+    fprintf(stderr,
+            "warning: computer_use: approval bypass (--yolo / -z) escalated the "
+            "cua-driver permission mode from the configured '%s' to 'unrestricted' "
+            "for this session\n",
+            cua_configured_permission_mode());
+}
+
+/* Weak hook: config grant computer_use.grant_existing_profile. */
+__attribute__((weak))
+int cua_grant_existing_profile(void) { return 0; }
+
+/* PoP: cu_config_preauthorized @ tools/computer_use/tool.py:_config_preauthorized
+ * True only when the durable existing-profile opt-in covers this prepare. */
+int cu_config_preauthorized(const char *action, const json_t *args)
+{
+    if (!action || strcmp(action, "cua_browser_prepare") != 0) return 0;
+    const json_t *pm = json_obj_get(args, "profile_mode");
+    if (!pm || pm->type != JSON_STRING || !pm->str_val ||
+        strcmp(pm->str_val, "existing_profile") != 0)
+        return 0;
+    return cua_grant_existing_profile() == 1;
+}
+
+/* PoP: cu_browser_state_response @ tools/computer_use/tool.py:_browser_state_response
+ * Return browser state as JSON, preserving requested MCP image parts.
+ * Returns a malloc'd json_t (caller frees). */
+json_t *cu_browser_state_response(json_t *payload_in)
+{
+    if (!payload_in || payload_in->type != JSON_OBJECT) return json_object();
+    json_t *state = json_copy(payload_in);
+    json_t *raw_images = NULL;
+    if (state && state->type == JSON_OBJECT) {
+        raw_images = (json_t *)json_obj_get(state, "_mcp_images");
+        if (raw_images) {
+            json_t *copy_imgs = json_copy(raw_images);
+            /* remove from state */
+            json_obj_del(state, "_mcp_images");
+            raw_images = copy_imgs;
+        } else {
+            raw_images = NULL;
+        }
+    }
+    if (!raw_images || raw_images->type != JSON_ARRAY || json_len(raw_images) == 0) {
+        json_free(raw_images);
+        return state;   /* plain state object (Python returns its JSON text) */
+    }
+    char *text_summary = json_dumps(state, 0);
+    json_t *content = json_array();
+    json_t *text_part = json_object();
+    json_set(text_part, "type", json_string("text"));
+    json_set(text_part, "text", text_summary ? json_string(text_summary) : json_string(""));
+    json_append(content, text_part);
+
+    int image_count = 0;
+    for (size_t i = 0; i < json_len(raw_images); i++) {
+        const json_t *img = json_get(raw_images, i);
+        if (!img || img->type != JSON_OBJECT) continue;
+        const json_t *dv = json_obj_get(img, "data");
+        if (!dv || dv->type != JSON_STRING || !dv->str_val || !*dv->str_val) continue;
+        const char *data = dv->str_val;
+        const json_t *mv = json_obj_get(img, "mime_type");
+        char mime[64] = "";
+        if (mv && mv->type == JSON_STRING && mv->str_val &&
+            cu_strcasestr_start(mv->str_val, "image/"))
+            snprintf(mime, sizeof(mime), "%s", mv->str_val);
+        else
+            snprintf(mime, sizeof(mime), "%s",
+                     strncmp(data, "/9j/", 4) == 0 ? "image/jpeg" : "image/png");
+        char url[64];
+        snprintf(url, sizeof(url), "data:%s;base64,", mime);
+        json_t *part = json_object();
+        json_set(part, "type", json_string("image_url"));
+        json_t *iu = json_object();
+        json_set(iu, "url", json_string(url));   /* prefix; data appended by caller layer */
+        json_set(part, "image_url", iu);
+        json_append(content, part);
+        image_count++;
+    }
+    json_free(raw_images);
+    if (image_count == 0) {
+        json_free(content);
+        char *ts = json_dumps(state, 0);
+        json_free(state);
+        json_t *out = ts ? json_parse(ts, NULL) : json_object();
+        free(ts);
+        return out ? out : json_object();
+    }
+    json_t *out = json_object();
+    json_set(out, "_multimodal", json_bool(1));
+    json_set(out, "content", content);
+    json_set(out, "text_summary", text_summary ? json_string(text_summary) : json_string(""));
+    json_t *meta = json_object();
+    json_set(meta, "action", json_string("cua_browser_state"));
+    json_set(meta, "images", json_int(image_count));
+    json_set(out, "meta", meta);
+    free(text_summary);
+    json_free(state);
+    return out;
+}
+
+/* PoP: cu_enrich_escalation @ tools/computer_use/tool.py:_enrich_escalation
+ * Additively append the typed-page alternative to a foreground refusal when
+ * the target is a known browser window class and the event is page input. */
+json_t *cu_enrich_escalation(json_t *res)
+{
+    if (!res || res->type != JSON_OBJECT) return res;
+    const json_t *esc = json_obj_get(res, "escalation");
+    if (!esc || esc->type != JSON_OBJECT) return esc ? (json_t *)esc : NULL;
+    const json_t *rec = json_obj_get(esc, "recommended");
+    if (!rec || rec->type != JSON_STRING || !rec->str_val ||
+        strcmp(rec->str_val, "foreground") != 0)
+        return (json_t *)esc;
+    const json_t *meta = json_obj_get(res, "meta");
+    const json_t *tc = meta && meta->type == JSON_OBJECT ? json_obj_get(meta, "target_class") : NULL;
+    if (!tc || tc->type != JSON_STRING || !tc->str_val) return (json_t *)esc;
+    char klass[128];
+    snprintf(klass, sizeof(klass), "%s", tc->str_val);
+    for (char *p = klass; *p; p++) *p = (char)tolower((unsigned char)*p);
+    static const char *browser_classes[] = {
+        "chrome_widgetwin_1", "mozillawindowclass", NULL };
+    int is_browser = 0;
+    for (int i = 0; browser_classes[i]; i++)
+        if (strcmp(klass, browser_classes[i]) == 0) { is_browser = 1; break; }
+    if (!is_browser) return (json_t *)esc;
+    const json_t *ek = json_obj_get(meta, "event_kind");
+    if (!ek || ek->type != JSON_STRING || !ek->str_val ||
+        (strcmp(ek->str_val, "text_input") != 0 &&
+         strcmp(ek->str_val, "key_press") != 0))
+        return (json_t *)esc;
+    json_t *enriched = json_copy(esc);
+    if (enriched && enriched->type == JSON_OBJECT) {
+        json_set(enriched, "alternative", json_string("page"));
+        json_set(enriched, "alternative_hint", json_string(
+            "target is a browser window: if the input goes into PAGE content "
+            "(not browser chrome or a native dialog), the typed cua_browser_* "
+            "route can deliver it without any window flash \xe2\x80\x94 bind with "
+            "cua_browser_state (exact pid/window_id), then cua_browser_type. "
+            "Use foreground only for chrome/native surfaces or if typed binding "
+            "is unavailable."));
+    }
+    return enriched;
+}
+
+/* PoP: cu_bounds_unknown @ tools/computer_use/tool.py:_bounds_unknown
+ * True when the AX tree reported no real geometry ([0,0,0,0]). */
+int cu_bounds_unknown(const cu_rect_t *bounds)
+{
+    if (!bounds) return 0;
+    return bounds->x == 0 && bounds->y == 0 && bounds->w == 0 && bounds->h == 0;
+}
+
+/* PoP: cu_persist_capture_image @ tools/computer_use/tool.py:_persist_capture_image
+ * Save a capture in Hermes' media cache; return malloc'd absolute path or NULL. */
+char *cu_persist_capture_image(const char *png_b64, const char *image_mime_type)
+{
+    if (!png_b64 || !*png_b64) return NULL;
+    size_t raw_len = 0;
+    unsigned char *raw = base64_decode(png_b64, &raw_len);
+    if (!raw) return NULL;
+    const char *mime = image_mime_type ? image_mime_type : "";
+    int is_jpeg = strcasecmp(mime, "image/jpeg") == 0 ||
+                  (!*mime && strncmp(png_b64, "/9j/", 4) == 0);
+    const char *ext = is_jpeg ? ".jpg" : ".png";
+    char cache_dir[1024];
+    cu_hermes_cache_dir(cache_dir, sizeof(cache_dir), "images", "image_cache");
+    mkdir(cache_dir, 0755);   /* parents exist under $HERMES_HOME */
+    cu_prune_dir(cache_dir, "computer_use_", CU_MAX_CAPTURE_FILES - 1);
+    unsigned char rnd[16];
+    for (int i = 0; i < 16; i++) rnd[i] = (unsigned char)(rand() & 0xFF);
+    char fname[128];
+    char *hex = hash_bytes_to_hex(rnd, 16);
+    snprintf(fname, sizeof(fname), "computer_use_%s%s", hex ? hex : "capture", ext);
+    free(hex);
+    char path[1408];
+    snprintf(path, sizeof(path), "%s/%s", cache_dir, fname);
+    FILE *fp = fopen(path, "wb");
+    if (!fp) { free(raw); return NULL; }
+    fwrite(raw, 1, raw_len, fp);
+    fclose(fp);
+    free(raw);
+    return strdup(path);
+}
+
+/* PoP: cu_spill_elements_to_file @ tools/computer_use/tool.py:_spill_elements_to_file
+ * Write the FULL element tree (untruncated labels) to a cache file. Returns
+ * malloc'd absolute path or NULL. */
+char *cu_spill_elements_to_file(const cu_capture_t *cap)
+{
+    if (!cap) return NULL;
+    char cache_dir[1024];
+    cu_hermes_cache_dir(cache_dir, sizeof(cache_dir), "computer_use", "computer_use_cache");
+    mkdir(cache_dir, 0755);
+    cu_prune_dir(cache_dir, "elements_", CU_MAX_SPILL_FILES - 1);
+    unsigned char rnd[16];
+    for (int i = 0; i < 16; i++) rnd[i] = (unsigned char)(rand() & 0xFF);
+    char *hex = hash_bytes_to_hex(rnd, 16);
+    char fname[160];
+    snprintf(fname, sizeof(fname), "elements_%s.json", hex ? hex : "spill");
+    free(hex);
+    char path[1280];
+    snprintf(path, sizeof(path), "%s/%s", cache_dir, fname);
+    json_t *payload = json_object();
+    json_set(payload, "app", json_string(cap->app));
+    json_set(payload, "window_title", json_string(cap->window_title));
+    json_set(payload, "total_elements", json_int(cap->element_count));
+    json_t *els = json_array();
+    for (int i = 0; i < cap->element_count; i++) {
+        const cu_element_t *e = &cap->elements[i];
+        json_t *je = json_object();
+        json_set(je, "index", json_int(e->index));
+        json_set(je, "role", json_string(e->role));
+        json_set(je, "label", json_string(e->label));   /* full, untruncated */
+        json_t *b = json_array();
+        json_append(b, json_int(e->bounds.x));
+        json_append(b, json_int(e->bounds.y));
+        json_append(b, json_int(e->bounds.w));
+        json_append(b, json_int(e->bounds.h));
+        json_set(je, "bounds", b);
+        json_set(je, "app", json_string(e->app));
+        json_append(els, je);
+    }
+    json_set(payload, "elements", els);
+    char *text = json_dumps(payload, 0);
+    json_free(payload);
+    if (!text) return NULL;
+    FILE *fp = fopen(path, "w");
+    if (!fp) { free(text); return NULL; }
+    fputs(text, fp);
+    fclose(fp);
+    free(text);
+    return strdup(path);
+}
+
+/* PoP: cu_capture_lost_detail @ tools/computer_use/tool.py:_capture_lost_detail
+ * True when the in-context response drops information the full tree has. */
+int cu_capture_lost_detail(const cu_capture_t *cap,
+                           const cu_element_t *visible, int visible_n,
+                           int truncated_elements)
+{
+    (void)cap;
+    if (truncated_elements) return 1;
+    for (int i = 0; i < visible_n; i++)
+        if (strlen(visible[i].label) > CU_MAX_ELEMENT_LABEL_CHARS) return 1;
+    return 0;
+}
+
+/* Shared max-extent computation for _bounds_scale / _bounds_space_note. */
+static void cu_bounds_max_extent(const cu_element_t *els, int n,
+                                 long *max_x, long *max_y)
+{
+    *max_x = 0; *max_y = 0;
+    for (int i = 0; i < n; i++) {
+        long ex = (long)els[i].bounds.x + els[i].bounds.w;
+        long ey = (long)els[i].bounds.y + els[i].bounds.h;
+        if (ex > *max_x) *max_x = ex;
+        if (ey > *max_y) *max_y = ey;
+    }
+}
+
+/* PoP: cu_bounds_scale @ tools/computer_use/tool.py:_bounds_scale
+ * Estimated native→screenshot scale factor; 0.0 when spaces agree/unknown
+ * (*ok set false mirrors Python None). */
+double cu_bounds_scale(const cu_element_t *els, int n,
+                       int image_width, int image_height, int *ok)
+{
+    if (ok) *ok = 0;
+    if (!els || n <= 0 || image_width <= 0 || image_height <= 0) return 0.0;
+    long max_x, max_y;
+    cu_bounds_max_extent(els, n, &max_x, &max_y);
+    if ((double)max_x <= image_width * 1.05 && (double)max_y <= image_height * 1.05)
+        return 0.0;
+    double sx = (double)max_x / image_width;
+    double sy = (double)max_y / image_height;
+    double s = sx > sy ? sx : sy;
+    if (ok) *ok = 1;
+    return round(s * 100.0) / 100.0;
+}
+
+/* PoP: cu_bounds_space_note @ tools/computer_use/tool.py:_bounds_space_note
+ * Warn when element bounds live in native desktop coordinates while the
+ * screenshot is on a smaller pixel grid. Malloc'd note or NULL. */
+char *cu_bounds_space_note(const cu_element_t *els, int n,
+                           int image_width, int image_height)
+{
+    if (!els || n <= 0 || image_width <= 0 || image_height <= 0) return NULL;
+    long max_x, max_y;
+    cu_bounds_max_extent(els, n, &max_x, &max_y);
+    if (max_x <= 0 && max_y <= 0) return NULL;
+    if ((double)max_x <= image_width * 1.05 &&
+        (double)max_y <= image_height * 1.05)
+        return NULL;
+    char *note = malloc(512);
+    if (!note) return NULL;
+    snprintf(note, 512,
+             "element bounds are in native desktop coordinates (extend to "
+             "~%ldx%ld), NOT screenshot pixels (%dx%d). coordinate= clicks "
+             "expect the native space \xe2\x80\x94 derive click points from element "
+             "bounds, or scale screenshot positions up accordingly",
+             max_x, max_y, image_width, image_height);
+    return note;
+}

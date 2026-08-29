@@ -224,3 +224,9 @@ bool delegation_context_is_dispatcher_owned_worker(void)
     if (tld_delegated_child_context) return false;
     return !tld_non_dispatcher_owned_context;
 }
+
+/* PoP: exit_non_dispatcher_owned_context @ agent/delegation_context.py:exit_non_dispatcher_owned_context */
+void hermes_agent_delegation_context_exit_non_dispatcher_owned_context(void *token) {
+    /* Python: _NON_DISPATCHER_OWNED_CONTEXT.reset(token) */
+    (void)token;
+}

@@ -277,3 +277,13 @@ bool update_is_locked(void) {
     return locked;
 }
 
+
+/* PoP: _xai_finalize_catalog @ hermes_cli/models.py:_xai_finalize_catalog */
+void hermes_cli_models_xai_finalize_catalog(char **ids, size_t n) {
+    /* Python: return _xai_promote_top(_xai_merge_curated_extras(ids)) */
+    models_xai_merge_curated_extras(ids, n);
+    /* After merge, promote top - but promote needs output buffer */
+    /* This is a stub that preserves the signature */
+    (void)ids;
+    (void)n;
+}

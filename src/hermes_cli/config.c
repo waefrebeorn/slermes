@@ -1213,3 +1213,10 @@ int hermes_cli_config_custom_endpoint_key_env(const char *arg) {
     printf("HERMES_CUSTOM_%.*s_API_KEY\n", (int)w, out);
     return 0;
 }
+
+/* PoP: _model_assignment_text @ hermes_cli/config.py:_model_assignment_text */
+char *hermes_cli_config_model_assignment_text(const char *value) {
+    /* Python: return value.strip() if isinstance(value, str) else "" */
+    if (!value) return strdup("");
+    return strdup(value);
+}

@@ -106,3 +106,18 @@ int hermes_cli__early_recovery_recover_if_needed(const char *arg) {
     printf("core packages repaired (lazy-refresh marker honored, never raises)%s\n", t2 && t2[1] == '1' ? " — refresh-only" : "");
     return 0;
 }
+
+/* PoP: _should_skip_external_secret_sources @ hermes_cli/_early_recovery.py:_should_skip_external_secret_sources */
+int hermes_cli_early_recovery_should_skip_external_secret_sources(void) {
+    /* Python: return _UPDATE_RETRY_RECOVERED */
+    extern int hermes_cli_early_recovery_get_update_retry_recovered(void);
+    return hermes_cli_early_recovery_get_update_retry_recovered();
+}
+
+/* PoP: _get_update_retry_recovered @ hermes_cli/_early_recovery.py:_UPDATE_RETRY_RECOVERED */
+/* Module-level boolean flag (default False). Set to True after deferred
+ * native install completes. Mirrors Python `_UPDATE_RETRY_RECOVERED`. */
+static int g_update_retry_recovered = 0;
+int hermes_cli_early_recovery_get_update_retry_recovered(void) {
+    return g_update_retry_recovered;
+}

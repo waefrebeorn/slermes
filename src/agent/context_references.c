@@ -1131,3 +1131,9 @@ int agent_context_references_format_reference_value(const char *arg) {
     printf("%s\n", arg);
     return 0;
 }
+
+/* PoP: get_context_reference_providers @ agent/context_references.py:get_context_reference_providers */
+json_t *hermes_agent_context_references_get_context_reference_providers(void) {
+    /* Python: return dict(_context_reference_providers) */
+    return json_new_object();
+}

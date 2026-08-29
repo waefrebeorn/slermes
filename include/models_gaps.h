@@ -92,7 +92,7 @@ char *models_cached_fetch_api_models(const char *api_key, const char *base_url,
 
 /* ── opencode zen free tier ─────────────────────────────────────────────── */
 int models_is_opencode_zen_free_model(const char *model_id);
-char *models_opencode_zen_free_headers(void);               /* malloc'd JSON obj */
+json_t *models_opencode_zen_free_headers(void);               /* malloc'd JSON obj */
 char *models_opencode_zen_free_runtime(const char *provider_id,
                                        const char *model_id); /* malloc'd JSON obj or NULL */
 

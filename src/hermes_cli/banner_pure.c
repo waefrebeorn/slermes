@@ -635,7 +635,7 @@ json_t *banner_get_available_skills(void) {
     return out;
 }
 
-/* PoP: get_build_sha @ hermes_cli/build_info.py:get_build_sha */
+/* PoP: build_info_get_build_sha @ hermes_cli/build_info.py:get_build_sha */
 char *build_info_get_build_sha(int short_len) {
     /* Read <repo>/.hermes_build_sha if present; fall back to env.
      * Python: Path(__file__).parent.parent / ".hermes_build_sha" */

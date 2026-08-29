@@ -84,7 +84,20 @@ int session_db_open(app_state_t *app) {
         fprintf(stderr, "Failed to open state.db: %s\n", sqlite3_errmsg(app->db));
         return -1;
     }
-    sqlite3_exec(app->db, "PRAGMA journal_mode=WAL; PRAGMA temp_store=memory;", NULL, NULL, NULL);
+    /* SQLite performance tuning PRAGMAs:
+     * - WAL mode: concurrent readers + sequential writers, no fsync on every write
+     * - synchronous=normal: balance safety vs throughput (WAL already fsyncs WAL)
+     * - cache_size=-20000: 20MB page cache (negative = KiB), keeps hot pages resident
+     * - mmap_size=268435456: 256MB memory-mapped I/O for read-heavy paths (session search)
+     * - temp_store=memory: temp tables/indexes in RAM, not disk
+     * All harmless on any SQLite version; ignored if compile options disable them. */
+    sqlite3_exec(app->db,
+        "PRAGMA journal_mode=WAL;"
+        "PRAGMA synchronous=normal;"
+        "PRAGMA cache_size=-20000;"
+        "PRAGMA mmap_size=268435456;"
+        "PRAGMA temp_store=memory;",
+        NULL, NULL, NULL);
     return 0;
 }
 

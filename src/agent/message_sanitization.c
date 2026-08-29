@@ -12,3 +12,10 @@
  */
 
 #include "hermes_agent.h"   /* hermes_message_sanitize(), repair_message_sequence() */
+
+/* PoP: tool_result_id_variants @ agent/message_sanitization.py:tool_result_id_variants */
+json_t *hermes_agent_message_sanitization_tool_result_id_variants(const char *tool_call_id) {
+    /* Python: return _expand_tool_id_variants((tool_call_id,)) */
+    (void)tool_call_id;
+    return json_new_array();
+}

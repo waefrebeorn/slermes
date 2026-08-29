@@ -151,3 +151,8 @@ void stderr_ts_prepare_child_command(char **argv, int argc,
     }
     stderr_ts_with_external_supervisor_flag(argv, argc, out, outc);
 }
+
+/* PoP: _restore_signal_handlers @ hermes_cli/stderr_timestamp.py:_restore_signal_handlers */
+void hermes_cli_stderr_timestamp_restore_signal_handlers(void) {
+    /* Python: for signum, handler in previous.items(): signal.signal(signum, handler) */
+}

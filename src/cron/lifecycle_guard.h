@@ -75,6 +75,37 @@ bool cron_lifecycle_contains_gateway_lifecycle_command_or_referenced_script(
     const char *command, const char *cwd,
     cron_lifecycle_read_remote_fn read_remote_script, void *read_ctx);
 
+/* ── Parity REAL_GAP closure batch (cron/lifecycle_guard.py) ───────── */
+
+/* PoP: _current_profile_name @ cron/lifecycle_guard.py:_current_profile_name */
+char *cron_lifecycle_current_profile_name(void);
+/* PoP: _named_profile_is_current @ cron/lifecycle_guard.py:_named_profile_is_current */
+bool cron_lifecycle_named_profile_is_current(const char *named);
+/* PoP: _contains_launchctl_gateway_lifecycle @ cron/lifecycle_guard.py:_contains_launchctl_gateway_lifecycle */
+bool cron_lifecycle_contains_launchctl_gateway_lifecycle(const char *normalized_text);
+/* PoP: _is_cloud_placeholder_path @ cron/lifecycle_guard.py:_is_cloud_placeholder_path */
+bool cron_lifecycle_is_cloud_placeholder_path(const char *path);
+/* PoP: _split_logical_lines @ cron/lifecycle_guard.py:_split_logical_lines */
+char **cron_lifecycle_split_logical_lines(const char *text);
+/* PoP: _executable_name @ cron/lifecycle_guard.py:_executable_name */
+char *cron_lifecycle_executable_name(const char *token);
+/* PoP: _peel_transparent_prefixes @ cron/lifecycle_guard.py:_peel_transparent_prefixes */
+size_t cron_lifecycle_peel_transparent_prefixes(char *const *segment, size_t index);
+/* PoP: _mask_data_sink_arguments @ cron/lifecycle_guard.py:_mask_data_sink_arguments */
+char *cron_lifecycle_mask_data_sink_arguments(const char *text);
+/* PoP: _lifecycle_command_scan_with_data_exemption @ cron/lifecycle_guard.py:_lifecycle_command_scan_with_data_exemption */
+bool cron_lifecycle_lifecycle_command_scan_with_data_exemption(const char *text);
+/* PoP: _direct_lifecycle_scan @ cron/lifecycle_guard.py:_direct_lifecycle_scan */
+bool cron_lifecycle_direct_lifecycle_scan(const char *command);
+/* PoP: _iter_option_values @ cron/lifecycle_guard.py:_iter_option_values */
+char **cron_lifecycle_iter_option_values(char *const *segment, size_t start,
+                                         const char *option);
+/* PoP: _references_at @ cron/lifecycle_guard.py:_references_at */
+char **cron_lifecycle_references_at(char *const *segment, size_t index,
+                                    const char *cwd);
+/* PoP: _has_binary_magic @ cron/lifecycle_guard.py:_has_binary_magic */
+bool cron_lifecycle_has_binary_magic(const unsigned char *data, size_t len);
+
 #ifdef __cplusplus
 }
 #endif

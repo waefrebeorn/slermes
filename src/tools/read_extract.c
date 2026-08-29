@@ -572,7 +572,6 @@ static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t
             const char *rp = rs;
             int row_count = 0;
             while (rp < re_ && row_count < RE_MAX_XLSX_ROWS_PER_SHEET) {
-                /* PoP: read_extract_source_text @ tools/read_extract.py:_sheet_rows */
                 if (*rp == '<' && rp[1] != '/' && re_xml_is_local(rp, "row")) {
                     const char *rte = rp + 1; while (rte < re_ && *rte != '>') rte++;
                     const char *rbody = rte + 1;

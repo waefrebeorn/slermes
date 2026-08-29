@@ -914,14 +914,24 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
     return result;
 }
 
+/* PoP: process_registry_kill @ tools/process_registry.py:ProcessRegistry.kill_process */
 char* process_registry_kill(const char *session_id, const char *source,
                             bool consume_output) {
     if (!source) source = "process.kill";
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
-    if (!s) return strdup("{\"status\":\"not_found\",\"error\":\"No such session\"}");
+    if (!s) {
+        char *nf = NULL;
+        asprintf(&nf, "{\"status\":\"not_found\",\"error\":\"No process with ID %s\"}",
+                 session_id ? session_id : "");
+        return nf ? nf : strdup("{\"status\":\"not_found\",\"error\":\"No process with ID\"}");
+    }
     pthread_mutex_lock(&s->lock);
     bool already_exited = !s->running;
+    bool has_systemd_unit = s->systemd_unit[0] != '\0';
+    char systemd_unit[128];
+    strncpy(systemd_unit, s->systemd_unit, sizeof(systemd_unit)-1);
+    systemd_unit[sizeof(systemd_unit)-1] = '\0';
     char cmd[4096]; strncpy(cmd, s->command, sizeof(cmd)-1); cmd[sizeof(cmd)-1]='\0';
     int exit_code = s->exit_code;
     char outbuf[2001];
@@ -930,6 +940,10 @@ char* process_registry_kill(const char *session_id, const char *source,
     else outbuf[0]='\0';
     pthread_mutex_unlock(&s->lock);
     if (already_exited) {
+        /* Even though the main process exited, a double-forked descendant
+         * may still be alive in the systemd scope (#70716) — stop the unit. */
+        if (has_systemd_unit)
+            process_registry_stop_systemd_unit(systemd_unit);
         if (consume_output) _mark_consumed(session_id);
         char *result = malloc(1024);
         snprintf(result, 1024,
@@ -961,6 +975,8 @@ char* process_registry_kill(const char *session_id, const char *source,
         }
     }
     if (killed) {
+        if (has_systemd_unit)
+            process_registry_stop_systemd_unit(systemd_unit);
         if (s->stdin_fd > 0) { close(s->stdin_fd); s->stdin_fd = -1; }
         if (consume_output) _mark_consumed(session_id);
         move_to_finished(s);
@@ -1781,6 +1797,7 @@ char* _redact_process_result(char *json_result) {
     return out;
 }
 
+/* PoP: process_registry_handle @ tools/process_registry.py:_handle_process */
 char* process_registry_handle(const char *action,
                               const char *session_id,
                               const char *data,
@@ -1971,4 +1988,386 @@ char *process_registry_wait_for_pending_completions(const char *task_id)
     char *out = json_serialize(result);
     json_free(result);
     return out ? out : strdup("{\"waited\":[],\"completed\":[],\"timed_out\":[]}");
+}
+
+/* ═══ Remaining tools/process_registry.py REAL_GAP closures ═══════════ */
+
+#include <ctype.h>
+
+/* time.monotonic() equivalent (seconds since an arbitrary fixed origin). */
+static double pr_monotonic_seconds(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+#define monotonic_seconds pr_monotonic_seconds
+
+
+/* fork/exec helper with timeout: runs argv, captures stderr tail.
+ * Returns 0 and sets *out_rc on completion; -1 on spawn failure.
+ * out_stderr (optional) receives a malloc'd stderr tail (may be ""). */
+static int _pr_run_argv(char *const argv[], int timeout_s,
+                        int *out_rc, char **out_stderr) {
+    *out_rc = -1;
+    if (out_stderr) *out_stderr = strdup("");
+    int errfd[2];
+    if (pipe(errfd) != 0) return -1;
+    pid_t pid = fork();
+    if (pid < 0) { close(errfd[0]); close(errfd[1]); return -1; }
+    if (pid == 0) {
+        /* child: stdin from /dev/null, stderr -> pipe */
+        int devnull = open("/dev/null", O_RDONLY);
+        if (devnull >= 0) { dup2(devnull, STDIN_FILENO); close(devnull); }
+        close(errfd[0]);
+        dup2(errfd[1], STDERR_FILENO);
+        close(errfd[1]);
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    close(errfd[1]);
+    /* bounded wait */
+    time_t start = time(NULL);
+    int status = 0, rc = -1;
+    for (;;) {
+        pid_t w = waitpid(pid, &status, WNOHANG);
+        if (w == pid) { rc = 0; break; }
+        if (w < 0 && errno == EINTR) continue;
+        if ((int)(time(NULL) - start) >= timeout_s) {
+            kill(pid, SIGKILL);
+            waitpid(pid, &status, 0);
+            break;
+        }
+        struct timespec ts = {0, 50 * 1000 * 1000};
+        nanosleep(&ts, NULL);
+    }
+    /* drain stderr tail (bounded) */
+    char tail[2048]; size_t got = 0;
+    ssize_t n;
+    while (got < sizeof(tail) - 1 &&
+           (n = read(errfd[0], tail + got, sizeof(tail) - 1 - got)) > 0)
+        got += (size_t)n;
+    tail[got] = '\0';
+    close(errfd[0]);
+    if (rc == 0) *out_rc = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+    if (out_stderr) { free(*out_stderr); *out_stderr = strdup(tail); }
+    return rc;
+}
+
+/* shutil.which equivalent over PATH. Caller frees; NULL if absent. */
+static char *_pr_which(const char *name) {
+    const char *path = getenv("PATH");
+    if (!path || !*path) path = "/usr/bin:/bin";
+    char *dup = strdup(path);
+    if (!dup) return NULL;
+    char *out = NULL;
+    char *save = NULL;
+    for (char *dir = strtok_r(dup, ":", &save); dir; dir = strtok_r(NULL, ":", &save)) {
+        char *cand = NULL;
+        if (asprintf(&cand, "%s/%s", dir, name) < 0) { cand = NULL; break; }
+        if (access(cand, X_OK) == 0) { out = cand; break; }
+        free(cand);
+    }
+    free(dup);
+    return out;
+}
+
+#define PR_MIN_WORKER_MEMORY_MAX_BYTES   (64L * 1024L * 1024L)
+#define PR_DEFAULT_WORKER_MEMORY_MAX_BYTES (1024L * 1024L * 1024L)
+#define PR_WORKER_MEMORY_MAX_CAP_BYTES   (4L * 1024L * 1024L * 1024L)
+
+/* PoP: process_registry_worker_memory_max_bytes @ tools/process_registry.py:_worker_memory_max_bytes */
+long process_registry_worker_memory_max_bytes(void) {
+    long override_bound = 0;
+    const char *override = getenv("TERMINAL_LOCAL_MEMORY_MAX_MB");
+    if (override && *override) {
+        char *end = NULL;
+        errno = 0;
+        long mb = strtol(override, &end, 10);
+        while (end && *end && isspace((unsigned char)*end)) end++;
+        if (errno == 0 && end && *end == '\0') {
+            long parsed = mb * 1024L * 1024L;
+            if (parsed >= PR_MIN_WORKER_MEMORY_MAX_BYTES) override_bound = parsed;
+        }
+        if (!override_bound)
+            hermes_log(LOG_WARNING, "process_registry",
+                       "Ignoring invalid TERMINAL_LOCAL_MEMORY_MAX_MB=%s; "
+                       "expected an integer representing at least %ld MiB",
+                       override, PR_MIN_WORKER_MEMORY_MAX_BYTES / (1024L * 1024L));
+    }
+
+    long candidates[8];
+    int n_candidates = 0;
+
+    /* cgroup v2 memory.max for this process's slice */
+    FILE *f = fopen("/proc/self/cgroup", "r");
+    if (f) {
+        char line[1024];
+        while (fgets(line, sizeof(line), f)) {
+            line[strcspn(line, "\n")] = '\0';
+            if (strncmp(line, "0::", 3) != 0) continue;
+            const char *relative = line + 3;
+            while (*relative == '/') relative++;
+            char *limit_path = NULL;
+            if (asprintf(&limit_path, "/sys/fs/cgroup/%s/memory.max", relative) < 0)
+                limit_path = NULL;
+            if (limit_path) {
+                FILE *lf = fopen(limit_path, "r");
+                if (lf) {
+                    char raw[128] = "";
+                    if (fgets(raw, sizeof(raw), lf)) {
+                        raw[strcspn(raw, "\n")] = '\0';
+                        /* Python raw_limit.strip().isdigit() */
+                        char *p = raw;
+                        while (*p == ' ') p++;
+                        char *e = p + strlen(p);
+                        while (e > p && e[-1] == ' ') e--;
+                        *e = '\0';
+                        int all_digits = (*p != '\0');
+                        for (char *d = p; *d; d++)
+                            if (!isdigit((unsigned char)*d)) { all_digits = 0; break; }
+                        if (all_digits) {
+                            errno = 0;
+                            long long cgroup_limit = strtoll(p, NULL, 10);
+                            if (errno == 0 && cgroup_limit >= PR_MIN_WORKER_MEMORY_MAX_BYTES &&
+                                n_candidates < 8)
+                                candidates[n_candidates++] = (long)cgroup_limit;
+                        }
+                    }
+                    fclose(lf);
+                }
+                free(limit_path);
+            }
+            break; /* Python breaks after the first 0:: line */
+        }
+        fclose(f);
+    }
+
+    /* half of physical RAM, clamped into [min, cap] */
+#ifdef _SC_PHYS_PAGES
+    errno = 0;
+    long pages = sysconf(_SC_PHYS_PAGES);
+    long page_sz = sysconf(_SC_PAGE_SIZE);
+    if (errno == 0 && pages > 0 && page_sz > 0) {
+        long long physical = (long long)pages * (long long)page_sz;
+        long bound = PR_WORKER_MEMORY_MAX_CAP_BYTES;
+        long long half = physical / 2;
+        if (half < PR_MIN_WORKER_MEMORY_MAX_BYTES) half = PR_MIN_WORKER_MEMORY_MAX_BYTES;
+        if ((long long)bound > half) bound = (long)half;
+        if (n_candidates < 8) candidates[n_candidates++] = bound;
+    }
+#endif
+
+    long safe_bound = PR_DEFAULT_WORKER_MEMORY_MAX_BYTES;
+    for (int i = 0; i < n_candidates; i++)
+        if (candidates[i] < safe_bound) safe_bound = candidates[i];
+    if (override_bound && override_bound < safe_bound) return override_bound;
+    return safe_bound;
+}
+
+/* PoP: process_registry_systemd_run_user_scope_available @ tools/process_registry.py:_systemd_run_user_scope_available */
+bool process_registry_systemd_run_user_scope_available(void) {
+    static pthread_mutex_t probe_lock = PTHREAD_MUTEX_INITIALIZER;
+    static int cached = -1;              /* -1 unknown, 1 yes, 0 no */
+    static double probed_at = 0.0;
+#define PR_SCOPE_FAILURE_TTL_SECONDS 60.0
+    double now = (double)monotonic_seconds();
+    bool fast = false;
+    pthread_mutex_lock(&probe_lock);
+    if (cached == 1) fast = true;
+    else if (cached == 0 && (now - probed_at) < PR_SCOPE_FAILURE_TTL_SECONDS) fast = true;
+    pthread_mutex_unlock(&probe_lock);
+    if (fast) return cached == 1;
+
+    pthread_mutex_lock(&probe_lock);
+    /* double-checked locking: a concurrent probe may have resolved it */
+    now = (double)monotonic_seconds();
+    if (cached == 1 || (cached == 0 && (now - probed_at) < PR_SCOPE_FAILURE_TTL_SECONDS)) {
+        bool known = (cached == 1);
+        pthread_mutex_unlock(&probe_lock);
+        return known;
+    }
+    bool available = false;
+#ifndef _WIN32
+    char *binary = _pr_which("systemd-run");
+    if (binary) {
+        char mem_prop[64];
+        snprintf(mem_prop, sizeof(mem_prop), "MemoryMax=%ld",
+                 process_registry_worker_memory_max_bytes());
+        char unit[96];
+        unsigned rnd = (unsigned)(getpid() ^ time(NULL));
+        snprintf(unit, sizeof(unit), "hermes-probe-scope-%d-%08x", (int)getpid(), rnd);
+        char *argv[] = {binary, "--user", "--scope", "--quiet",
+                        "--unit", unit, "--collect",
+                        "--property", (char *)"MemoryAccounting=yes",
+                        "--property", mem_prop,
+                        "--property", (char *)"OOMPolicy=kill",
+                        "--", (char *)"/bin/true", NULL};
+        int prc = -1; char *stderr_tail = NULL;
+        if (_pr_run_argv(argv, 3, &prc, &stderr_tail) == 0)
+            available = (prc == 0);
+        if (!available)
+            hermes_log(LOG_DEBUG, "process_registry",
+                       "systemd-run --user --scope probe failed (rc=%d): %s",
+                       prc, stderr_tail ? stderr_tail : "");
+        free(stderr_tail);
+        free(binary);
+    }
+#endif
+    cached = available ? 1 : 0;
+    probed_at = (double)monotonic_seconds();
+    pthread_mutex_unlock(&probe_lock);
+    return available;
+}
+
+/* PoP: process_registry_is_supervised_gateway_process @ tools/process_registry.py:_is_supervised_gateway_process */
+bool process_registry_is_supervised_gateway_process(void) {
+    const char *marker = getenv("_HERMES_GATEWAY");
+    if (!marker || strcmp(marker, "1") != 0) return false;
+    /* Supervisor markers (INVOCATION_ID / s6 / XPC / EXTERNAL) are inherited
+     * by every descendant — mirror is_gateway_supervisor_process(). */
+    bool supervised = false;
+    static const char *markers[] =
+        {"INVOCATION_ID", "S6_VERSION", "XPC_SERVICE_NAME", "HERMES_EXTERNAL", NULL};
+    for (int i = 0; markers[i]; i++) {
+        const char *v = getenv(markers[i]);
+        if (v && *v) { supervised = true; break; }
+    }
+    if (!supervised) return false;
+    /* This process must own the live gateway PID file. */
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    if (!home || !*home) return false;
+    char *pid_path = NULL;
+    if (asprintf(&pid_path, "%s/gateway.pid", home) < 0) return false;
+    pid_t running = gwstatus_get_running_pid(pid_path, false);
+    free(pid_path);
+    return running == getpid();
+}
+
+/* PoP: process_registry_stop_systemd_unit @ tools/process_registry.py:_stop_systemd_unit */
+bool process_registry_stop_systemd_unit(const char *unit_name) {
+    if (!unit_name || !*unit_name) return false;
+    char *binary = _pr_which("systemctl");
+    if (!binary) return false;
+    char *argv[] = {binary, "--user", (char *)"stop", (char *)unit_name, NULL};
+    int rc = -1; char *stderr_tail = NULL;
+    int err = _pr_run_argv(argv, 15, &rc, &stderr_tail);
+    free(binary);
+    if (err != 0) { free(stderr_tail); return false; }
+    if (rc != 0) {
+        /* lowercased substring scan of the stderr tail */
+        char low[2048];
+        snprintf(low, sizeof(low), "%s", stderr_tail ? stderr_tail : "");
+        for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
+        bool gone = strstr(low, "not loaded") || strstr(low, "not found") ||
+                    strstr(low, "does not exist");
+        if (!gone) {
+            hermes_log(LOG_DEBUG, "process_registry",
+                       "systemctl --user stop %s exited %d: %s",
+                       unit_name, rc, stderr_tail ? stderr_tail : "");
+            free(stderr_tail);
+            return false;
+        }
+        free(stderr_tail);
+        return true;
+    }
+    free(stderr_tail);
+    return true;
+}
+
+#define WATCH_LIFETIME_MAX_HITS 8
+
+/* PoP: process_registry_emit_lifetime_watch_disabled @ tools/process_registry.py:ProcessRegistry._emit_lifetime_watch_disabled */
+void process_registry_emit_lifetime_watch_disabled(ProcessSession *session) {
+    if (!session) return;
+    char *evt = NULL;
+    if (asprintf(&evt,
+        "{\"session_id\":\"%s\",\"session_key\":\"%s\",\"command\":\"%s\","
+        "\"type\":\"watch_disabled\",\"suppressed\":0,"
+        "\"platform\":\"%s\",\"chat_id\":\"%s\",\"user_id\":\"%s\","
+        "\"user_name\":\"%s\",\"thread_id\":\"%s\",\"message_id\":\"%s\","
+        "\"message\":\"Watch patterns disabled for process %s — reached the "
+        "lifetime cap of %d delivered matches. Falling back to "
+        "notify_on_complete semantics; you'll get exactly one notification "
+        "when the process exits.\"}",
+        session->id, session->session_key, session->command,
+        session->watcher_platform, session->watcher_chat_id,
+        session->watcher_user_id, session->watcher_user_name,
+        session->watcher_thread_id, session->watcher_message_id,
+        session->id, WATCH_LIFETIME_MAX_HITS) < 0)
+        return;
+    queue_completion_event(evt);
+    free(evt);
+}
+
+/* PoP: process_registry_oneshot_completion_wait_seconds @ tools/process_registry.py:ProcessRegistry._oneshot_completion_wait_seconds */
+double process_registry_oneshot_completion_wait_seconds(void) {
+    extern json_t *config_py_read_raw_config(void);
+    json_t *cfg = config_py_read_raw_config();
+    double val = -1.0;
+    if (cfg && cfg->type == JSON_OBJECT) {
+        json_t *term = json_obj_get(cfg, "terminal");
+        if (term && term->type == JSON_OBJECT) {
+            json_t *v = json_obj_get(term, "oneshot_completion_wait_seconds");
+            if (v && v->type == JSON_NUMBER) val = v->num_val;
+        }
+        json_free(cfg);
+    }
+    if (val < 0.0) val = 600.0;   /* DEFAULT_CONFIG fallback */
+    return val > 0.0 ? val : 0.0;
+}
+
+/* PoP: process_registry_resolve_prefix @ tools/process_registry.py:ProcessRegistry._resolve_prefix */
+ProcessSession *process_registry_resolve_prefix(const char *session_id) {
+    if (!session_id) return NULL;
+    const char *q = session_id;
+    while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+    if (!*q) return NULL;
+    char query[64];
+    if (strncmp(q, "proc_", 5) == 0)
+        snprintf(query, sizeof(query), "%s", q);
+    else
+        snprintf(query, sizeof(query), "proc_%s", q);
+    size_t suffix_len = strlen(query) - 5;
+    if (suffix_len < 4) return NULL;     /* ProcessRegistry._MIN_PREFIX_CHARS */
+    registry_init();
+    ProcessSession *match = NULL;
+    int matches = 0;
+    pthread_mutex_lock(&g_registry.lock);
+    for (int store = 0; store < 2 && matches <= 1; store++) {
+        int count = store == 0 ? g_registry.running_count : g_registry.finished_count;
+        ProcessSession **arr = store == 0 ? g_registry.running : g_registry.finished;
+        for (int i = 0; i < count; i++) {
+            if (strncmp(arr[i]->id, query, strlen(query)) == 0) {
+                matches++;
+                match = arr[i];
+                if (matches > 1) break;
+            }
+        }
+    }
+    pthread_mutex_unlock(&g_registry.lock);
+    return matches == 1 ? match : NULL;
+}
+
+/* PoP: process_registry_delegation_attribution_line @ tools/process_registry.py:_delegation_attribution_line */
+char *process_registry_delegation_attribution_line(const char *evt_json) {
+    if (!evt_json) return NULL;
+    char *err = NULL;
+    json_t *evt = json_parse(evt_json, &err);
+    if (err || !evt || evt->type != JSON_OBJECT) {
+        if (err) free(err);
+        if (evt) json_free(evt);
+        return NULL;
+    }
+    json_t *tid = json_obj_get(evt, "task_id");
+    const char *task_id = (tid && tid->type == JSON_STRING) ? tid->str_val : "";
+    if (strncmp(task_id, "sa-", 3) != 0) { json_free(evt); return NULL; }
+    json_free(evt);
+    /* The C port has no live subagent registry seam here yet; the Python
+     * code attributes generically when the registry entry has aged out —
+     * mirror that generic attribution. */
+    char *line = NULL;
+    if (asprintf(&line, "Started by subagent %s (delegate_task).", task_id) < 0)
+        return NULL;
+    return line;
 }

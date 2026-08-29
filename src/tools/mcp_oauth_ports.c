@@ -278,8 +278,7 @@ static void mcpo_token_dir(char *buf, size_t cap)
     snprintf(buf, cap, "%s/mcp-tokens", home ? home : ".");
 }
 
-/* PoP: mcpo_cimd_rejected_path @ tools/mcp_oauth.py:_cimd_rejected_path
- * HERMES_HOME/mcp-tokens/<safe>.cimd-off marker path. Malloc'd; caller frees. */
+/* PoP: mcpo_cimd_rejected_path @ tools/mcp_oauth.py:_cimd_rejected_path */
 char *mcpo_cimd_rejected_path(const char *server_name)
 {
     char dir[1024];
@@ -292,9 +291,10 @@ char *mcpo_cimd_rejected_path(const char *server_name)
     return out;
 }
 
-/* PoP: mcpo_mark_cimd_rejected @ tools/mcp_oauth.py:mark_cimd_rejected
+/* PoP: mcpo_mark_cimd_rejected @ tools/mcp_oauth.py:mark_cimd_rejected */
+/*
  * Record that this server refused our Client ID Metadata Document. Cleared
- * by remove(); non-fatal on failure. */
+ */
 void mcpo_mark_cimd_rejected(const char *server_name)
 {
     char *path = mcpo_cimd_rejected_path(server_name);
@@ -315,10 +315,11 @@ bool mcpo_cimd_rejected(const char *server_name)
     return exists;
 }
 
-/* PoP: mcpo_authorization_code_result @ tools/mcp_oauth.py:_authorization_code_result
+/* PoP: mcpo_authorization_code_result @ tools/mcp_oauth.py:_authorization_code_result */
+/*
  * Package redirect parameters in the shape the installed SDK expects.
  * The C core links the SDK's AuthorizationCodeResult shape statically, so
- * the model form is always produced; older tuple-only SDKs have no C build. */
+ */
 char *mcpo_authorization_code_result(const char *code, const char *state,
                                      const char *iss)
 {
@@ -332,20 +333,22 @@ char *mcpo_authorization_code_result(const char *code, const char *state,
     return s;
 }
 
-/* PoP: mcpo_get_hermes_oauth_provider_class @ tools/mcp_oauth.py:_get_hermes_oauth_provider_class
+/* PoP: mcpo_get_hermes_oauth_provider_class @ tools/mcp_oauth.py:_get_hermes_oauth_provider_class */
+/*
  * The Hermes OAuth provider class with pragmatic fixes (client_secret_post
  * coercion + token-endpoint User-Agent stamping). The C core links this
  * behavior statically into the token exchange/refresh paths, so the class
  * is always available once asked for: returns a non-NULL class token whose
- * presence gates the fixed behavior in the wire clients. */
+ */
 const char *mcpo_get_hermes_oauth_provider_class(void)
 {
     return "HermesOAuthClientProvider";
 }
 
-/* PoP: mcpo_is_valid_cimd_url @ tools/mcp_oauth.py:_is_valid_cimd_url
+/* PoP: mcpo_is_valid_cimd_url @ tools/mcp_oauth.py:_is_valid_cimd_url */
+/*
  * https scheme, non-root path, no userinfo/fragment, no dot segments —
- * draft section 3 plus the parts the SDK leaves to us (section 5). */
+ */
 bool mcpo_is_valid_cimd_url(const char *url)
 {
     if (!url || !*url) return false;
@@ -384,8 +387,7 @@ void mcpo_note_assigned_cimd_port(int port)
         mcpo_assigned_cimd_ports[mcpo_assigned_cimd_count++] = port;
 }
 
-/* PoP: mcpo_reserve_cimd_port @ tools/mcp_oauth.py:_reserve_cimd_port
- * Bind *port* on 127.0.0.1 and park the socket, or return false if taken. */
+/* PoP: mcpo_reserve_cimd_port @ tools/mcp_oauth.py:_reserve_cimd_port */
 bool mcpo_reserve_cimd_port(int port)
 {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -403,9 +405,10 @@ bool mcpo_reserve_cimd_port(int port)
     return true;
 }
 
-/* PoP: mcpo_pick_cimd_port @ tools/mcp_oauth.py:_pick_cimd_port
+/* PoP: mcpo_pick_cimd_port @ tools/mcp_oauth.py:_pick_cimd_port */
+/*
  * Reserve a pinned CIMD callback port; wrap the range rather than falling
- * back to DCR once every pinned port belongs to this process. -1 when none. */
+ */
 int mcpo_pick_cimd_port(void)
 {
     for (int i = 0; i < MCPO_CIMD_PORT_COUNT; i++) {
@@ -475,9 +478,10 @@ bool mcpo_has_cached_client_info(const char *server_name)
     return true;
 }
 
-/* PoP: mcpo_server_declined_cimd @ tools/mcp_oauth.py:_server_declined_cimd
+/* PoP: mcpo_server_declined_cimd @ tools/mcp_oauth.py:_server_declined_cimd */
+/*
  * True when cached authorization-server metadata shows the server does not
- * advertise client_id_metadata_document_supported. */
+ */
 bool mcpo_server_declined_cimd(const char *server_name)
 {
     if (!server_name || !*server_name) return false;
@@ -495,9 +499,10 @@ bool mcpo_server_declined_cimd(const char *server_name)
     return declined;
 }
 
-/* PoP: mcpo_maybe_use_cimd @ tools/mcp_oauth.py:_maybe_use_cimd
+/* PoP: mcpo_maybe_use_cimd @ tools/mcp_oauth.py:_maybe_use_cimd */
+/*
  * Return "<metadata_url>\t<port>" when the flow is CIMD-eligible, else NULL
- * (DCR remains correct in every early-return case). */
+ */
 char *mcpo_maybe_use_cimd(const json_t *cfg, const char *server_name)
 {
     if (!cfg || cfg->type != JSON_OBJECT) return NULL;
@@ -558,9 +563,10 @@ char *mcpo_maybe_use_cimd(const json_t *cfg, const char *server_name)
     return out;
 }
 
-/* PoP: mcpo_cimd_provider_kwargs @ tools/mcp_oauth.py:cimd_provider_kwargs
+/* PoP: mcpo_cimd_provider_kwargs @ tools/mcp_oauth.py:cimd_provider_kwargs */
+/*
  * {"client_metadata_url": url} when CIMD applies; {} on a DCR flow so the
- * argument is omitted entirely. */
+ */
 json_t *mcpo_cimd_provider_kwargs(const json_t *cfg)
 {
     json_t *out = json_object();
@@ -571,10 +577,11 @@ json_t *mcpo_cimd_provider_kwargs(const json_t *cfg)
     return out;
 }
 
-/* PoP: token_request_user_agent @ tools/mcp_oauth.py:token_request_user_agent
+/* PoP: token_request_user_agent @ tools/mcp_oauth.py:token_request_user_agent */
+/*
  * Configured oauth.user_agent for token-endpoint requests, or NULL. Anything
  * that is not a non-empty string is treated as unset so a blank header never
- * goes out. Applied ONLY to exchange/refresh requests. */
+ */
 char *token_request_user_agent(const json_t *cfg)
 {
     if (!cfg || cfg->type != JSON_OBJECT) return NULL;
@@ -592,11 +599,12 @@ char *token_request_user_agent(const json_t *cfg)
     return out;
 }
 
-/* PoP: mcpo_invalidate_tokens_on_client_change @ tools/mcp_oauth.py:_invalidate_tokens_on_client_change
+/* PoP: mcpo_invalidate_tokens_on_client_change @ tools/mcp_oauth.py:_invalidate_tokens_on_client_change */
+/*
  * Drop cached tokens when the configured OAuth client identity changes:
  * compares the on-disk client.json identity against the incoming config
  * identity BEFORE it overwrites, then unlinks tokens+meta (client.json kept
- * until the caller writes the new one). Matching identity → no-op. */
+ */
 void mcpo_invalidate_tokens_on_client_change(const char *server_name,
                                              const char *new_client_id,
                                              const char *new_client_secret)

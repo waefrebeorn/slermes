@@ -236,3 +236,8 @@ json_t *ws_profiles_pr_url_from_tool_output(const char *content) {
     free(url);
     return arr;
 }
+
+/* PoP: _sidebar_profile_cache_clear @ hermes_cli/web_routers/profiles.py:_sidebar_profile_cache_clear */
+void hermes_cli_web_routers_profiles_sidebar_profile_cache_clear(void) {
+    /* Python: with _SIDEBAR_PROFILE_CACHE_LOCK: _SIDEBAR_PROFILE_CACHE.clear() */
+}

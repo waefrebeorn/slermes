@@ -24,6 +24,7 @@ src/desktop_gui.o: src/desktop_gui.c include/gui_core.h
 # -I lib added so "libjson/..." and similar prefixed includes resolve
 # (consistent with the lib/%.o rule which uses $(LIB_INCS)).
 src/%.o: src/%.c
+	@echo "  CC      $<"
 	$(CC) $(CFLAGS) $(TUI_INC) -I include -I lib -c -o $@ $<
 
 # Pattern rule for .m files (Objective-C, macOS only)

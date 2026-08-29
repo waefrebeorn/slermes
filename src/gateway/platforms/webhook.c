@@ -1031,7 +1031,7 @@ typedef struct {
 
 static wh_rate_win_t g_wh_rates[32];
 static int           g_wh_rate_n = 0;
-static wh_delivery_t g_wh_seen[256];
+static hive_t *g_wh_seen = NULL;
 static int           g_wh_seen_n = 0;
 static wh_delivery_t g_wh_info[256];
 static int           g_wh_info_n = 0;
@@ -1064,33 +1064,76 @@ static bool wh_record_rate_limit_hit(const char *route_name, double now) {
 
 /* PoP: wh_record_delivery_id @ gateway/platforms/webhook.py:_record_delivery_id */
 static bool wh_record_delivery_id(const char *delivery_id, double now) {
-    for (int i = 0; i < g_wh_seen_n; i++) {
-        if (strcmp(g_wh_seen[i].id, delivery_id) == 0) {
-            if (now - g_wh_seen[i].at < WH_IDEMPOTENCY_TTL) return false;
-            memcpy(g_wh_seen[i].id, delivery_id, strlen(delivery_id) + 1);
-            g_wh_seen[i].at = now;
+    /* Ensure the hive is initialized. With block_cap=64, the first block's
+     * slots 0..63 have numerically equal handles to the legacy dense indices,
+     * so the public g_wh_seen_n count still works as before. */
+    if (!g_wh_seen) g_wh_seen = hive_new(64);
+    if (!g_wh_seen) return true; /* allocation failure: fail closed = skip dedup */
+
+    /* Look for an existing entry with the same delivery_id. */
+    hive_iter_t it;
+    hive_iter_begin(g_wh_seen, &it);
+    hive_handle_t hnd;
+    wh_delivery_t *entry;
+    while (hive_iter_next(g_wh_seen, &it, &hnd, (void **)&entry)) {
+        if (strcmp(entry->id, delivery_id) == 0) {
+            if (now - entry->at < WH_IDEMPOTENCY_TTL) return false;
+            /* Refresh the timestamp in place (stable pointer). */
+            memcpy(entry->id, delivery_id, strlen(delivery_id) + 1);
+            entry->at = now;
             return true;
         }
     }
-    if (g_wh_seen_n < 256) {
-        memcpy(g_wh_seen[g_wh_seen_n].id, delivery_id, strlen(delivery_id) + 1);
-        g_wh_seen[g_wh_seen_n].at = now;
-        g_wh_seen_n++;
-    }
+
+    /* New entry — heap-allocate so the hive stores a stable pointer. */
+    wh_delivery_t *nd = malloc(sizeof(*nd));
+    if (!nd) return true;
+    memcpy(nd->id, delivery_id, strlen(delivery_id) + 1);
+    nd->at = now;
+    bool ok = false;
+    hive_handle_t h = hive_insert(g_wh_seen, nd, &ok);
+    if (ok) g_wh_seen_n++;
+    else free(nd);
+    (void)h;
     return true;
 }
 
 /* PoP: wh_prune_seen_deliveries @ gateway/platforms/webhook.py:_prune_seen_deliveries */
 static void wh_prune_seen_deliveries(double now) {
     if (now < g_wh_next_prune) return;
-    int j = 0;
-    for (int i = 0; i < g_wh_seen_n; i++)
-        if (now - g_wh_seen[i].at < WH_IDEMPOTENCY_TTL) g_wh_seen[j++] = g_wh_seen[i];
-    g_wh_seen_n = j;
+    if (!g_wh_seen) return;
+    /* Iterate and free entries that have expired. hive_erase is safe during
+     * iteration because we get the handle from hive_iter_next and erase that
+     * specific handle. */
+    hive_iter_t it;
+    hive_iter_begin(g_wh_seen, &it);
+    hive_handle_t hnd;
+    wh_delivery_t *entry;
+    int kept = 0;
+    while (hive_iter_next(g_wh_seen, &it, &hnd, (void **)&entry)) {
+        if (now - entry->at < WH_IDEMPOTENCY_TTL) {
+            kept++;
+        } else {
+            /* Prune: remove from hive, free the heap entry. */
+            hive_erase(g_wh_seen, hnd);
+            free(entry);
+        }
+    }
+    /* hive_iter doesn't give us a live count; compute from kept survivors.
+     * Since prune is called periodically and the hive only loses entries,
+     * we can estimate g_wh_seen_n by counting live entries. */
+    g_wh_seen_n = 0;
+    hive_iter_begin(g_wh_seen, &it);
+    while (hive_iter_next(g_wh_seen, &it, NULL, NULL)) g_wh_seen_n++;
     g_wh_next_prune = now + 60.0;
 }
 
-/* PoP: wh_prune_delivery_info @ gateway/platforms/webhook.py:_prune_delivery_info */
+/* PoP: wh_prune_delivery_info @ gateway/platforms/webhook.py:_prune_delivery_info
+ * NOTE: g_wh_info is a bounded TTL cache that is never grown (g_wh_info_n only
+ * ever goes down via pruning). Per the landlocked-statices backlog, this is
+ * EXEMPT from hive conversion — it is a bounded, single-consumer, single-producer
+ * cache where the worst case is 256 × ~384B ≈ 96KB .bss. Converting would add
+ * heap allocation overhead with no benefit. Kept as static array. */
 static void wh_prune_delivery_info(double now) {
     int j = 0;
     for (int i = 0; i < g_wh_info_n; i++)

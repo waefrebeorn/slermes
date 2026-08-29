@@ -547,3 +547,10 @@ void plugin_dev_check_registrations(pd_report_t *report,
     diff_ladder(report, declared_hooks, nh_d, registered_hooks, nh_r, "hook");
     diff_ladder(report, declared_tools, nt_d, registered_tools, nt_r, "tool");
 }
+
+/* PoP: _deny_network @ hermes_cli/plugin_dev.py:_deny_network */
+void hermes_cli_plugin_dev_deny_network(void) {
+    /* Python: raise RuntimeError("network access is disabled while Plugin Doctor runs") */
+    fprintf(stderr, "network access is disabled while Plugin Doctor runs\n");
+    exit(1);
+}

@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "gateway_status.h"
 #include "hermes_json.h"
 #include "hermes_core_types.h"
 #include "yaml.h"

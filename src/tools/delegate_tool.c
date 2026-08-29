@@ -1150,3 +1150,617 @@ int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) {
     json_free(out);
     return 0;
 }
+
+
+/* ── subagent control plane (tools/delegate_tool.py) ─────────────── */
+
+#include <time.h>
+#include <ctype.h>
+
+#define DLG_RECENT_SUBAGENTS_CAP 200
+#define DLG_CONTROL_ACTIONS_N 3
+
+static dlg_subagent_rec_t *dlg_active_subagents = NULL;
+static size_t dlg_active_count = 0;
+static dlg_subagent_rec_t *dlg_recent_subagents = NULL;
+static size_t dlg_recent_count = 0;
+static pthread_mutex_t dlg_subagents_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* Free a record's strings + the record itself. */
+static void dlg_rec_free(dlg_subagent_rec_t *r)
+{
+    if (!r) return;
+    free(r->subagent_id); free(r->parent_id); free(r->goal);
+    free(r->model); free(r->status); free(r->delegation_id);
+    free(r->owner_agent_session_id); free(r->owner_session_id);
+    free(r);
+}
+
+static char *dlg_strdup_or_null(const char *s)
+{
+    return s ? strdup(s) : NULL;
+}
+
+/* _register_subagent: insert/replace into the live registry. */
+void dlg_register_subagent(dlg_subagent_rec_t *rec_in)
+{
+    if (!rec_in || !rec_in->subagent_id || !*rec_in->subagent_id) return;
+    dlg_subagent_rec_t *copy = calloc(1, sizeof(*copy));
+    if (!copy) return;
+    copy->subagent_id = strdup(rec_in->subagent_id);
+    copy->parent_id = dlg_strdup_or_null(rec_in->parent_id);
+    copy->goal = dlg_strdup_or_null(rec_in->goal);
+    copy->model = dlg_strdup_or_null(rec_in->model);
+    copy->status = dlg_strdup_or_null(rec_in->status);
+    copy->delegation_id = dlg_strdup_or_null(rec_in->delegation_id);
+    copy->owner_agent_session_id = dlg_strdup_or_null(rec_in->owner_agent_session_id);
+    copy->owner_session_id = dlg_strdup_or_null(rec_in->owner_session_id);
+    copy->agent = rec_in->agent;
+    copy->owner_transport = rec_in->owner_transport;
+    copy->owner_session_record = rec_in->owner_session_record;
+    copy->started_at = rec_in->started_at ? rec_in->started_at : time(NULL);
+    copy->accepting_steer = 1;   /* setdefault("accepting_steer", True) */
+    pthread_mutex_lock(&dlg_subagents_lock);
+    for (dlg_subagent_rec_t *r = dlg_active_subagents; r; r = r->next) {
+        if (strcmp(r->subagent_id, copy->subagent_id) == 0) {
+            /* replace in place, keep position */
+            copy->next = r->next;
+            copy->accepting_steer = r->accepting_steer;
+            *r = *copy;
+            pthread_mutex_unlock(&dlg_subagents_lock);
+            free(copy);
+            return;
+        }
+    }
+    copy->next = dlg_active_subagents;
+    dlg_active_subagents = copy;
+    dlg_active_count++;
+    pthread_mutex_unlock(&dlg_subagents_lock);
+}
+
+/* PoP: dlg_retain_recent_subagent @ tools/delegate_tool.py:_retain_recent_subagent */
+/* Keep a bounded attribution stub after a child finishes (lock held). */
+void dlg_retain_recent_subagent(const dlg_subagent_rec_t *record)
+{
+    if (!record || !record->subagent_id || !*record->subagent_id) return;
+    dlg_subagent_rec_t *stub = calloc(1, sizeof(*stub));
+    if (!stub) return;
+    stub->subagent_id = strdup(record->subagent_id);
+    stub->goal = dlg_strdup_or_null(record->goal);
+    stub->delegation_id = dlg_strdup_or_null(record->delegation_id);
+    stub->owner_agent_session_id = dlg_strdup_or_null(record->owner_agent_session_id);
+    /* dict insert-or-replace preserving original position */
+    dlg_subagent_rec_t **pp = &dlg_recent_subagents;
+    while (*pp) {
+        if ((*pp)->subagent_id && strcmp((*pp)->subagent_id, stub->subagent_id) == 0) {
+            dlg_subagent_rec_t *old = *pp;
+            stub->next = old->next;
+            *pp = stub;
+            dlg_rec_free(old);
+            return;
+        }
+        pp = &(*pp)->next;
+    }
+    stub->next = dlg_recent_subagents;
+    dlg_recent_subagents = stub;
+    dlg_recent_count++;
+    while (dlg_recent_count > DLG_RECENT_SUBAGENTS_CAP && dlg_recent_subagents) {
+        /* pop oldest (tail of insertion list) */
+        dlg_subagent_rec_t **tail = &dlg_recent_subagents;
+        while ((*tail)->next) tail = &(*tail)->next;
+        dlg_subagent_rec_t *old = *tail;
+        *tail = NULL;
+        dlg_rec_free(old);
+        dlg_recent_count--;
+    }
+}
+
+/* _unregister_subagent(agent identity check): pop from live, retain stub. */
+void dlg_unregister_subagent(const char *subagent_id, void *agent)
+{
+    if (!subagent_id) return;
+    pthread_mutex_lock(&dlg_subagents_lock);
+    dlg_subagent_rec_t **pp = &dlg_active_subagents;
+    while (*pp) {
+        dlg_subagent_rec_t *r = *pp;
+        if (strcmp(r->subagent_id, subagent_id) == 0 &&
+            (agent == NULL || r->agent == agent)) {
+            *pp = r->next;
+            dlg_active_count--;
+            dlg_retain_recent_subagent(r);
+            dlg_rec_free(r);
+            pthread_mutex_unlock(&dlg_subagents_lock);
+            return;
+        }
+        pp = &r->next;
+    }
+    pthread_mutex_unlock(&dlg_subagents_lock);
+}
+
+/* Weak runtime hooks — the C agent runtime overrides these strongly. */
+__attribute__((weak))
+int agent_steer(void *agent, const char *text) { (void)agent; (void)text; return 0; }
+__attribute__((weak))
+int agent_request_hard_interrupt(void *agent, const char *reason) { (void)agent; (void)reason; return 0; }
+__attribute__((weak))
+char *agent_drain_pending_steer(void *agent) { (void)agent; return NULL; }
+__attribute__((weak))
+void *agent_delegate_parent_ref(void *agent) { (void)agent; return NULL; }
+__attribute__((weak))
+char *session_db_resolve_resume_session_id(void *db, const char *sid) { (void)db; (void)sid; return NULL; }
+__attribute__((weak))
+void *agent_get_session_db(void *agent) { (void)agent; return NULL; }
+__attribute__((weak))
+const char *agent_get_live_transcript_path(void *agent) { (void)agent; return NULL; }
+
+/* PoP: dlg_get_subagent_attribution @ tools/delegate_tool.py:get_subagent_attribution */
+json_t *dlg_get_subagent_attribution(const char *task_id)
+{
+    if (!task_id || !*task_id) return NULL;
+    json_t *out = NULL;
+    pthread_mutex_lock(&dlg_subagents_lock);
+    for (dlg_subagent_rec_t *r = dlg_active_subagents; r; r = r->next) {
+        if (strcmp(r->subagent_id, task_id) == 0) {
+            out = json_object();
+            json_set(out, "subagent_id", json_string(task_id));
+            json_set(out, "goal", r->goal ? json_string(r->goal) : json_null());
+            json_set(out, "delegation_id",
+                     r->delegation_id ? json_string(r->delegation_id) : json_null());
+            break;
+        }
+    }
+    if (!out) {
+        for (dlg_subagent_rec_t *r = dlg_recent_subagents; r; r = r->next) {
+            if (strcmp(r->subagent_id, task_id) == 0) {
+                out = json_object();
+                json_set(out, "subagent_id", json_string(task_id));
+                json_set(out, "goal", r->goal ? json_string(r->goal) : json_null());
+                json_set(out, "delegation_id",
+                         r->delegation_id ? json_string(r->delegation_id) : json_null());
+                break;
+            }
+        }
+    }
+    pthread_mutex_unlock(&dlg_subagents_lock);
+    return out;
+}
+
+/* PoP: dlg_close_subagent_steering @ tools/delegate_tool.py:_close_subagent_steering */
+/*
+ *  Atomically close steer acceptance and drain its final durable artifact.
+ * Returns malloc'd pending-steer text (caller frees) or NULL. */
+char *dlg_close_subagent_steering(const char *subagent_id, void *agent)
+{
+    if (!subagent_id) return NULL;
+    pthread_mutex_lock(&dlg_subagents_lock);
+    for (dlg_subagent_rec_t *r = dlg_active_subagents; r; r = r->next) {
+        if (strcmp(r->subagent_id, subagent_id) != 0) continue;
+        if (r->agent != agent) {           /* exact identity required */
+            pthread_mutex_unlock(&dlg_subagents_lock);
+            return NULL;
+        }
+        r->accepting_steer = 0;
+        char *pending = agent_drain_pending_steer(agent);
+        pthread_mutex_unlock(&dlg_subagents_lock);
+        if (!pending) return NULL;
+        /* return pending iff it is a non-blank string */
+        const char *p = pending;
+        while (*p && isspace((unsigned char)*p)) p++;
+        if (!*p) { free(pending); return NULL; }
+        return pending;
+    }
+    pthread_mutex_unlock(&dlg_subagents_lock);
+    return NULL;
+}
+
+/* PoP: dlg_steer_subagent @ tools/delegate_tool.py:steer_subagent */
+int dlg_steer_subagent(const char *subagent_id, const char *text,
+                       const char *owner_session_id,
+                       void *owner_transport, void *owner_session_record)
+{
+    if (!text) return 0;
+    /* blank text never queues */
+    const char *q = text;
+    while (*q && isspace((unsigned char)*q)) q++;
+    if (!*q) return 0;
+    if (!subagent_id) return 0;
+    pthread_mutex_lock(&dlg_subagents_lock);
+    for (dlg_subagent_rec_t *r = dlg_active_subagents; r; r = r->next) {
+        if (strcmp(r->subagent_id, subagent_id) != 0) continue;
+        if (!r->accepting_steer) {
+            pthread_mutex_unlock(&dlg_subagents_lock);
+            return 0;
+        }
+        if (owner_session_id != NULL) {
+            int ok = r->owner_session_id && strcmp(r->owner_session_id, owner_session_id) == 0;
+            ok = ok && owner_transport != NULL && r->owner_transport == owner_transport;
+            ok = ok && owner_session_record != NULL &&
+                 r->owner_session_record == owner_session_record;
+            if (!ok) {
+                pthread_mutex_unlock(&dlg_subagents_lock);
+                return 0;
+            }
+        } else {
+            /* internal helper contract still requires an exact transport
+             * pair when the record carries one (gateway callers must pass
+             * authority); None preserves the in-process path. */
+        }
+        if (r->agent == NULL) {
+            pthread_mutex_unlock(&dlg_subagents_lock);
+            return 0;
+        }
+        int accepted = agent_steer(r->agent, text);
+        pthread_mutex_unlock(&dlg_subagents_lock);
+        return accepted != 0;
+    }
+    pthread_mutex_unlock(&dlg_subagents_lock);
+    return 0;
+}
+
+/* PoP: dlg_capture_gateway_steer_authority @ tools/delegate_tool.py:_capture_gateway_steer_authority */
+/*
+ *  In-process bridge to the TUI gateway's current session steer authority.
+ * Non-gateway hosts receive (NULL, NULL). */
+__attribute__((weak))
+void tui_gateway_current_session_steer_authority(const char *owner_session_id,
+                                                 void **transport_out,
+                                                 void **record_out)
+{
+    (void)owner_session_id;
+    if (transport_out) *transport_out = NULL;
+    if (record_out) *record_out = NULL;
+}
+
+void dlg_capture_gateway_steer_authority(const char *owner_session_id,
+                                         void **transport_out,
+                                         void **record_out)
+{
+    if (transport_out) *transport_out = NULL;
+    if (record_out) *record_out = NULL;
+    if (!owner_session_id || !*owner_session_id) return;
+    tui_gateway_current_session_steer_authority(owner_session_id,
+                                                transport_out, record_out);
+}
+
+/* PoP: dlg_is_descendant_of @ tools/delegate_tool.py:_is_descendant_of */
+int dlg_is_descendant_of(void *child_agent, void *parent_agent, int max_hops)
+{
+    if (!child_agent || !parent_agent) return 0;
+    if (max_hops <= 0) max_hops = 8;
+    void *cur = child_agent;
+    for (int i = 0; i < max_hops; i++) {
+        void *ancestor = agent_delegate_parent_ref(cur);
+        if (!ancestor) return 0;
+        if (ancestor == parent_agent) return 1;
+        cur = ancestor;
+    }
+    return 0;
+}
+
+/* PoP: dlg_resolve_session_lineage @ tools/delegate_tool.py:_resolve_session_lineage */
+/*
+ *  Resolve a session id to the tip of its compression lineage. Best-effort:
+ * returns the input unchanged when resolution fails. Malloc'd (caller frees). */
+char *dlg_resolve_session_lineage(const char *session_id, void *parent_agent)
+{
+    const char *sid = session_id ? session_id : "";
+    if (!*sid) return strdup("");
+    if (!parent_agent) return strdup(sid);
+    void *db = agent_get_session_db(parent_agent);
+    if (!db) return strdup(sid);
+    char *resolved = session_db_resolve_resume_session_id(db, sid);
+    if (resolved && *resolved) {
+        free(resolved);
+        return resolved;
+    }
+    free(resolved);
+    return strdup(sid);
+}
+
+/* PoP: dlg_owns_subagent_record @ tools/delegate_tool.py:_owns_subagent_record */
+int dlg_owns_subagent_record(const dlg_subagent_rec_t *record, void *parent_agent)
+{
+    if (!record || !parent_agent) return 0;
+    if (dlg_is_descendant_of(record->agent, parent_agent, 8)) return 1;
+    const char *owner_sid = record->owner_agent_session_id
+                                ? record->owner_agent_session_id : "";
+    if (!*owner_sid) return 0;
+    /* parent's durable session id comes through its own record field when
+     * available; the runtime hook supplies the live attribute otherwise. */
+    __attribute__((weak)) const char *agent_get_session_id(void *agent);
+    const char *psid_ext = agent_get_session_id(parent_agent);
+    const char *parent_sid = psid_ext ? psid_ext : "";
+    if (!*parent_sid) return 0;
+    if (strcmp(owner_sid, parent_sid) == 0) return 1;
+    /* Compression rotation on either side: compare lineage tips. */
+    char *own_tip = dlg_resolve_session_lineage(owner_sid, parent_agent);
+    char *par_tip = dlg_resolve_session_lineage(parent_sid, parent_agent);
+    int match = (strcmp(own_tip, parent_sid) == 0) || (strcmp(own_tip, par_tip) == 0);
+    free(own_tip); free(par_tip);
+    return match;
+}
+
+/* tool_error shape used by delegate_task responses. */
+static char *dlg_tool_error(const char *msg)
+{
+    json_t *o = json_object();
+    json_set(o, "error", json_string(msg ? msg : ""));
+    char *s = json_dumps(o, 0);
+    json_free(o);
+    return s;
+}
+
+/* PoP: dlg_handle_control_action @ tools/delegate_tool.py:_handle_control_action */
+/*
+ *  Synchronous list/steer/stop control plane scoped to the caller's spawn tree.
+ * Returns a malloc'd JSON response string (caller frees). */
+char *dlg_handle_control_action(const char *action, const char *subagent_id,
+                                const char *message, void *parent_agent)
+{
+    if (!action || !*action) return dlg_tool_error("action is required");
+    if (strcmp(action, "list") == 0) {
+        json_t *entries = json_array();
+        time_t now = time(NULL);
+        pthread_mutex_lock(&dlg_subagents_lock);
+        for (dlg_subagent_rec_t *r = dlg_active_subagents; r; r = r->next) {
+            if (!dlg_owns_subagent_record(r, parent_agent)) continue;
+            json_t *e = json_object();
+            json_set(e, "subagent_id", r->subagent_id ? json_string(r->subagent_id) : json_null());
+            json_set(e, "parent_id", r->parent_id ? json_string(r->parent_id) : json_null());
+            json_set(e, "goal", r->goal ? json_string(r->goal) : json_null());
+            json_set(e, "model", r->model ? json_string(r->model) : json_null());
+            json_set(e, "status", r->status ? json_string(r->status) : json_null());
+            if (r->started_at > 0)
+                json_set(e, "running_seconds",
+                         json_number(((double)now - r->started_at)));
+            else
+                json_set(e, "running_seconds", json_null());
+            json_set(e, "accepting_steer", json_bool(r->accepting_steer));
+            const char *lt = agent_get_live_transcript_path(r->agent);
+            json_set(e, "live_transcript", lt ? json_string(lt) : json_null());
+            json_append(entries, e);
+        }
+        pthread_mutex_unlock(&dlg_subagents_lock);
+        json_t *payload = json_object();
+        json_set(payload, "action", json_string("list"));
+        json_set(payload, "count", json_int(json_len(entries)));
+        json_set(payload, "subagents", entries);
+        if (json_len(entries) == 0)
+            json_set(payload, "note", json_string(
+                "No live subagents right now. Children that already finished "
+                "have delivered (or will deliver) their results as normal "
+                "completion messages \xe2\x80\x94 there is nothing to steer or stop."));
+        char *s = json_dumps(payload, 0);
+        json_free(payload);
+        return s;
+    }
+
+    /* steer / stop need a resolvable, owned target. */
+    const char *sid_raw = subagent_id ? subagent_id : "";
+    while (*sid_raw && isspace((unsigned char)*sid_raw)) sid_raw++;
+    char sid[256];
+    snprintf(sid, sizeof(sid), "%s", sid_raw);
+    /* trailing trim */
+    size_t sl = strlen(sid);
+    while (sl > 0 && isspace((unsigned char)sid[sl - 1])) sid[--sl] = '\0';
+    if (!sl)
+        return dlg_tool_error("action=... requires subagent_id (from the spawn "
+                              "dispatch response or action='list').");
+    pthread_mutex_lock(&dlg_subagents_lock);
+    dlg_subagent_rec_t *found = NULL;
+    for (dlg_subagent_rec_t *r = dlg_active_subagents; r; r = r->next)
+        if (strcmp(r->subagent_id, sid) == 0) { found = r; break; }
+    int owned = found && dlg_owns_subagent_record(found, parent_agent);
+    pthread_mutex_unlock(&dlg_subagents_lock);
+    if (!owned)
+        return dlg_tool_error("No live subagent with that id in this "
+                              "conversation's spawn tree. It may have already "
+                              "finished (its result arrives as a normal "
+                              "completion message). Use action='list' to see "
+                              "live children.");
+
+    if (strcmp(action, "stop") == 0) {
+        /* interrupt via the lifecycle hook on the live record's agent */
+        pthread_mutex_lock(&dlg_subagents_lock);
+        dlg_subagent_rec_t *r2 = NULL;
+        for (dlg_subagent_rec_t *r = dlg_active_subagents; r; r = r->next)
+            if (strcmp(r->subagent_id, sid) == 0) { r2 = r; break; }
+        void *ag = r2 ? r2->agent : NULL;
+        pthread_mutex_unlock(&dlg_subagents_lock);
+        if (ag) {
+            char reason[320];
+            snprintf(reason, sizeof(reason), "Interrupted via TUI (%s)", sid);
+            if (agent_request_hard_interrupt(ag, reason)) {
+                json_t *ok = json_object();
+                json_set(ok, "action", json_string("stop"));
+                json_set(ok, "subagent_id", json_string(sid));
+                json_set(ok, "status", json_string("interrupt_requested"));
+                json_set(ok, "note", json_string(
+                    "The subagent stops at its next iteration boundary "
+                    "(in-flight tool calls are asked to cancel). Its partial "
+                    "result still re-enters the conversation as a completion "
+                    "message \xe2\x80\x94 do not wait or poll."));
+                char *s = json_dumps(ok, 0);
+                json_free(ok);
+                return s;
+            }
+        }
+        return dlg_tool_error("Could not interrupt that subagent \xe2\x80\x94 it likely "
+                              "finished in the last moment. Its result arrives "
+                              "as a normal completion message.");
+    }
+
+    if (strcmp(action, "steer") == 0) {
+        const char *mraw = message ? message : "";
+        while (*mraw && isspace((unsigned char)*mraw)) mraw++;
+        size_t ml = strlen(mraw);
+        while (ml > 0 && isspace((unsigned char)mraw[ml - 1])) ml--;
+        if (!ml)
+            return dlg_tool_error("action='steer' requires a non-empty 'message' "
+                                  "describing the course correction.");
+        char *text = strndup(mraw, ml);
+        int queued = dlg_steer_subagent(sid, text, NULL, NULL, NULL);
+        free(text);
+        if (queued) {
+            json_t *ok = json_object();
+            json_set(ok, "action", json_string("steer"));
+            json_set(ok, "subagent_id", json_string(sid));
+            json_set(ok, "status", json_string("queued"));
+            json_set(ok, "note", json_string(
+                "The course correction is queued; the subagent sees it at its "
+                "next iteration boundary."));
+            char *s = json_dumps(ok, 0);
+            json_free(ok);
+            return s;
+        }
+        return dlg_tool_error("Could not queue steering \xe2\x80\x94 the subagent may no "
+                              "longer be accepting steer.");
+    }
+
+    return dlg_tool_error("Unknown action; expected 'list', 'steer', or 'stop'.");
+}
+
+/* PoP: dlg_get_worktree_isolation @ tools/delegate_tool.py:_get_worktree_isolation */
+/*
+ *  delegation.worktree_isolation config flag (bool, default false). */
+__attribute__((weak)) int hermes_config_delegation_flag(const char *key, int dflt)
+{
+    (void)key;
+    return dflt;
+}
+
+int dlg_get_worktree_isolation(void)
+{
+    return hermes_config_delegation_flag("worktree_isolation", 0) != 0;
+}
+
+/* Batch validation regexes (Python: _PLACEHOLDER_GOAL_RE / _TEMPLATE_MARKER_RE).
+ * Placeholder goal: ^(todo|task\s*\d+)$ case-insensitive on the normalized goal.
+ * Template marker: <Word Word...> or {Word Word...} with >=2 words separated
+ * by space/_/- . Implemented with hand-rolled scanning (faithful behavior). */
+static int dlg_match_placeholder_goal(const char *normalized)
+{
+    if (strcasecmp(normalized, "todo") == 0) return 1;
+    if (strncasecmp(normalized, "task", 4) == 0) {
+        const char *p = normalized + 4;
+        while (*p == ' ' || *p == '\t') p++;   /* \s+ */
+        if (!*p) return 0;
+        while (*p) { if (!isdigit((unsigned char)*p)) return 0; p++; }
+        return 1;
+    }
+    return 0;
+}
+
+/* Returns malloc'd matched marker text or NULL. */
+static char *dlg_search_template_marker(const char *goal)
+{
+    size_t n = strlen(goal);
+    for (size_t i = 0; i < n; i++) {
+        char open = goal[i];
+        char close;
+        if (open == '<') close = '>';
+        else if (open == '{') close = '}';
+        else continue;
+        /* first word must start with a letter */
+        size_t j = i + 1;
+        if (j >= n || !isalpha((unsigned char)goal[j])) continue;
+        size_t word_start = j;
+        int sep_seen = 0;
+        j++;
+        while (j < n && goal[j] != close) {
+            if (isalnum((unsigned char)goal[j])) { j++; continue; }
+            if ((goal[j] == ' ' || goal[j] == '_' || goal[j] == '-') &&
+                j + 1 < n && isalnum((unsigned char)goal[j + 1])) {
+                sep_seen = 1;
+                j += 2;
+                continue;
+            }
+            break;
+        }
+        if (j >= n || goal[j] != close) continue;
+        /* require at least one separator (i.e. 2+ words) after first word */
+        (void)word_start;
+        if (sep_seen) return strndup(goal + i, j - i + 1);
+    }
+    return NULL;
+}
+
+#define DLG_MIN_BATCH_GOAL_LEN 10
+
+/* PoP: dlg_validate_batch_tasks @ tools/delegate_tool.py:_validate_batch_tasks */
+/*
+ *  Validate a tasks=[...] batch. Returns malloc'd error string, or NULL when
+ * valid. tasks_json is a JSON array of objects each carrying a "goal". */
+char *dlg_validate_batch_tasks(const char *tasks_json)
+{
+    json_t *tasks = tasks_json ? json_parse(tasks_json, NULL) : NULL;
+    if (!tasks || tasks->type != JSON_ARRAY) {
+        json_free(tasks);
+        return strdup("Batch mode requires at least 2 tasks. For a single task, "
+                      "use the `goal` parameter instead of `tasks`: "
+                      "delegate_task(goal=\"...\", context=\"...\").");
+    }
+    size_t count = json_len(tasks);
+    if (count < 2) {
+        json_free(tasks);
+        return strdup("Batch mode requires at least 2 tasks. For a single task, "
+                      "use the `goal` parameter instead of `tasks`: "
+                      "delegate_task(goal=\"...\", context=\"...\").");
+    }
+    for (size_t i = 0; i < count; i++) {
+        const json_t *task = json_get(tasks, i);
+        const json_t *gv = json_obj_get(task, "goal");
+        const char *graw = (gv && gv->type == JSON_STRING && gv->str_val) ? gv->str_val : "";
+        char *goal = strdup(graw);
+        /* strip outer whitespace */
+        char *g = goal;
+        while (*g && isspace((unsigned char)*g)) g++;
+        size_t gl = strlen(g);
+        while (gl > 0 && isspace((unsigned char)g[gl - 1])) g[--gl] = '\0';
+
+        /* normalized = " ".join(goal.lower().split()) */
+        char *norm = malloc(gl + 1);
+        size_t w = 0;
+        int in_ws = 0;
+        for (size_t k = 0; k < gl; k++) {
+            unsigned char ch = (unsigned char)g[k];
+            if (isspace(ch)) { in_ws = 1; continue; }
+            if (in_ws && w) norm[w++] = ' ';
+            in_ws = 0;
+            norm[w++] = (char)tolower(ch);
+        }
+        norm[w] = '\0';
+
+        char *err = NULL;
+        if (dlg_match_placeholder_goal(norm)) {
+            err = malloc(200 + gl);
+            snprintf(err, 200 + gl,
+                     "Task %zu has a placeholder goal ('%s'). Replace it with a "
+                     "specific, self-contained description of what the subagent "
+                     "should accomplish.", i, g);
+        } else {
+            char *marker = dlg_search_template_marker(g);
+            if (marker) {
+                err = malloc(260 + gl + strlen(marker));
+                snprintf(err, 260 + gl + strlen(marker),
+                         "Task %zu goal contains an unexpanded template marker "
+                         "('%s'). Substitute the real value before calling "
+                         "delegate_task \xe2\x80\x94 subagents cannot resolve placeholders.",
+                         i, marker);
+                free(marker);
+            } else if (gl < DLG_MIN_BATCH_GOAL_LEN) {
+                err = malloc(240 + gl);
+                snprintf(err, 240 + gl,
+                         "Task %zu goal is too short ('%s'). Write a specific, "
+                         "self-contained goal of at least %d characters so the "
+                         "subagent knows exactly what to do.",
+                         i, g, DLG_MIN_BATCH_GOAL_LEN);
+            }
+        }
+        free(norm);
+        free(goal);
+        if (err) { json_free(tasks); return err; }
+    }
+    json_free(tasks);
+    return NULL;
+}

@@ -165,4 +165,21 @@ void cu_reset_global_backend(void);
 }
 #endif
 
+
+/* ── Response shaping + bounds helpers (tools/computer_use/tool.py) ──── */
+char *cu_input_target_mismatch(const char *last_app, const char *requested_app);
+void cu_warn_bypass_escalation(const char *session_id);
+int cu_config_preauthorized(const char *action, const json_t *args);
+json_t *cu_browser_state_response(json_t *payload_in);
+json_t *cu_enrich_escalation(json_t *res);
+int cu_bounds_unknown(const cu_rect_t *bounds);
+char *cu_persist_capture_image(const char *png_b64, const char *image_mime_type);
+char *cu_spill_elements_to_file(const cu_capture_t *cap);
+int cu_capture_lost_detail(const cu_capture_t *cap, const cu_element_t *visible,
+                           int visible_n, int truncated_elements);
+double cu_bounds_scale(const cu_element_t *els, int n, int image_width,
+                       int image_height, int *ok);
+char *cu_bounds_space_note(const cu_element_t *els, int n, int image_width,
+                           int image_height);
+
 #endif /* HERMES_COMPUTER_USE_H */

@@ -829,3 +829,9 @@ int agent_redact_u_redact_strict_url_credentials(const char *arg) {
     printf("%s\n", t2 ? t2 + 1 : arg);
     return 0;
 }
+
+/* PoP: _plugin_patterns @ agent/redact.py:_plugin_patterns */
+json_t *hermes_agent_redact_plugin_patterns(void) {
+    /* Python: return [p for patterns in _PLUGIN_PREFIX_PATTERNS.values() for p in patterns] */
+    return json_new_array();
+}

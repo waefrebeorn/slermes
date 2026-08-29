@@ -18,7 +18,8 @@
 #include <sys/stat.h>
 #include <ctype.h>
 #include <dirent.h>
-#include <dirent.h>
+#include <fcntl.h>
+#include <sys/wait.h>
 
 struct browser_tool_path {
     int unused;
@@ -141,3 +142,65 @@ char *browser_merge_browser_path(const char *existing_path)
     return result;
 }
 
+
+/* ── tools/browser_tool.py REAL_GAP closures (npx resolution) ────────── */
+
+/* shutil.which(name, path=...) equivalent. Caller frees; NULL if absent. */
+static char *bt_path_which(const char *name, const char *path_override) {
+    const char *path = (path_override && *path_override) ? path_override
+                                                         : getenv("PATH");
+    if (!path || !*path) path = "/usr/bin:/bin";
+    char *dup = strdup(path);
+    if (!dup) return NULL;
+    char *out = NULL;
+    char *save = NULL;
+    for (char *dir = strtok_r(dup, ":", &save); dir;
+         dir = strtok_r(NULL, ":", &save)) {
+        char *cand = NULL;
+        if (asprintf(&cand, "%s/%s", dir, name) < 0) { cand = NULL; break; }
+        if (access(cand, X_OK) == 0) { out = cand; break; }
+        free(cand);
+    }
+    free(dup);
+    return out;
+}
+
+/* node_tool_runnable: a candidate is trusted only when it executes. */
+static int bt_path_node_tool_runnable(const char *path) {
+    if (!path) return 0;
+    pid_t pid = fork();
+    if (pid < 0) return 0;
+    if (pid == 0) {
+        int devnull = open("/dev/null", O_WRONLY);
+        if (devnull >= 0) { dup2(devnull, STDOUT_FILENO); dup2(devnull, STDERR_FILENO); }
+        execl(path, path, "--version", (char *)NULL);
+        _exit(127);
+    }
+    int status = 0;
+    if (waitpid(pid, &status, 0) < 0) return 0;
+    return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+}
+
+/* PoP: browser_resolve_npx_bin @ tools/browser_tool.py:_resolve_npx_bin */
+char *browser_resolve_npx_bin(void) {
+    /* Resolve a runnable npx binary, preferring the Hermes-managed/Homebrew
+     * extended search over a bare ambient PATH lookup — every candidate is
+     * validated before being trusted so a broken system npx cannot shadow a
+     * healthy managed one. */
+    extern char *browser_merge_browser_path(const char *existing_path);
+    char *extended = browser_merge_browser_path("");
+    if (extended && *extended) {
+        char *extended_npx = bt_path_which("npx", extended);
+        if (extended_npx && bt_path_node_tool_runnable(extended_npx)) {
+            free(extended);
+            return extended_npx;
+        }
+        free(extended_npx);
+    }
+    free(extended);
+    char *npx = bt_path_which("npx", NULL);
+    if (npx && bt_path_node_tool_runnable(npx))
+        return npx;
+    free(npx);
+    return NULL;
+}

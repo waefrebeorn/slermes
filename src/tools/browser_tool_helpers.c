@@ -183,16 +183,49 @@ int browser__needs_lightpanda_fallback(const char *engine, const char *command, 
 
 /* Copy the fallback reason into a result dict's "fallback" field. Returns a
  * malloc'd annotated JSON string (or a copy of result_json when no reason). */
+/* PoP: browser__annotate_lightpanda_fallback @ tools/browser_tool.py:_annotate_lightpanda_fallback */
+/* Add a user-visible Chrome fallback warning to a browser command result.
+ * reason_json is embedded as the "reason"; result_json is a JSON object. */
 char *browser__annotate_lightpanda_fallback(const char *engine, const char *command, const char *result_json) {
     char *reason = browser__lightpanda_fallback_reason(engine, command, result_json);
     if (!reason) {
         return result_json ? strdup(result_json) : strdup("{}");
     }
+    char *warning = NULL;
+    asprintf(&warning,
+             "⚠ Lightpanda fallback: Chrome was used for this browser action. %s",
+             reason);
     json_t *r = result_json ? json_parse(result_json, NULL) : json_object();
-    if (!r) r = json_object();
-    json_set(r, "fallback", json_string(reason));
+    if (!r || r->type != JSON_OBJECT) {
+        if (r) json_free(r);
+        r = json_object();
+    }
+    json_t *fb_meta = json_object();
+    json_set(fb_meta, "from", json_string("lightpanda"));
+    json_set(fb_meta, "to", json_string("chrome"));
+    json_set(fb_meta, "reason", json_string(reason));
+    json_set(r, "fallback_warning", json_string(warning));
+    json_set(r, "browser_engine", json_string("chrome"));
+    json_set(r, "browser_engine_fallback", fb_meta);
+    /* mirror into data{} when it is an object (setdefault semantics) */
+    json_t *data = json_obj_get(r, "data");
+    if (data && data->type == JSON_OBJECT) {
+        if (!json_has(data, "fallback_warning"))
+            json_set(data, "fallback_warning", json_string(warning));
+        if (!json_has(data, "browser_engine"))
+            json_set(data, "browser_engine", json_string("chrome"));
+        if (!json_has(data, "browser_engine_fallback")) {
+            json_t *fb2 = json_object();
+            json_set(fb2, "from", json_string("lightpanda"));
+            json_set(fb2, "to", json_string("chrome"));
+            json_set(fb2, "reason", json_string(reason));
+            json_set(data, "browser_engine_fallback", fb2);
+        }
+        json_set(r, "data", data);
+    }
     char *out = json_serialize(r);
     json_free(r);
+    free(warning);
     free(reason);
     return out ? out : strdup("{}");
 }
@@ -531,4 +564,229 @@ void browser__stop_browser_cleanup_thread(void) {
     if (!g_bt_cleanup_running) return;
     g_bt_cleanup_running = 0;
     pthread_join(g_bt_cleanup_thread, NULL);
+}
+
+/* ═══ Remaining tools/browser_tool.py REAL_GAP closures ═══════════════ */
+
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <ctype.h>
+
+/* cross-module externs (browser_registry.c / browser_tool_env.c / _path.c) */
+extern long browser_registry_generation(void);
+extern char *browser_resolve_npx_bin(void);
+extern char *browser_build_browser_env(void);
+#include <dirent.h>
+#include "../../include/deadline.h"
+#include "../../include/browser_registry.h"
+
+/* PoP: browser__browser_registry_generation @ tools/browser_tool.py:_browser_registry_generation */
+void browser__browser_registry_generation(const char *scope, long *out_global, long *out_scoped) {
+    /* Cache fingerprint from agent.browser_registry. The C registry has a
+     * single global generation (no scoped maps), so both tuple members
+     * carry the same value — exact for the production registry. */
+    long gen = browser_registry_generation();
+    if (out_global) *out_global = gen;
+    if (out_scoped) *out_scoped = gen;
+    (void)scope;
+}
+
+/* PoP: browser__resolve_cloud_provider_uncached @ tools/browser_tool.py:_resolve_cloud_provider_uncached */
+char *browser__resolve_cloud_provider_uncached(void) {
+    /* Read config["browser"]["cloud_provider"] once and cache it for the
+     * process lifetime; "local"/"camofox" => NULL (built-in backends),
+     * "nous" routes to "browser-use". Unset falls back to browser-use when
+     * managed Nous credentials exist, else NULL (local mode). */
+    static int resolved = 0;
+    static char provider[32];
+    if (resolved) return provider[0] ? strdup(provider) : NULL;
+
+    hermes_config_t cfg; memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+    const char *cp = getenv("HERMES_BROWSER_CLOUD_PROVIDER");
+    char key[32] = "";
+    if (cp && *cp) {
+        snprintf(key, sizeof(key), "%s", cp);
+        for (char *p = key; *p; p++) *p = (char)tolower((unsigned char)*p);
+    }
+    if (strcmp(key, "local") == 0 || strcmp(key, "camofox") == 0) {
+        provider[0] = '\0';
+        resolved = 1;
+        return NULL;
+    }
+    if (strcmp(key, "nous") == 0)
+        snprintf(key, sizeof(key), "browser-use");
+    if (!key[0]) {
+        /* historic auto-detect order: Browser Use first (managed gateway or
+         * direct key), then Browserbase on direct credentials only. */
+        if (getenv("BROWSER_USE_API_KEY") || getenv("NOUS_BROWSER_USE"))
+            snprintf(key, sizeof(key), "browser-use");
+        else if (getenv("BROWSERBASE_API_KEY"))
+            snprintf(key, sizeof(key), "browserbase");
+    }
+    snprintf(provider, sizeof(provider), "%s", key);
+    resolved = 1;
+    return provider[0] ? strdup(provider) : NULL;
+}
+
+/* PoP: browser__is_npx_agent_browser_sentinel @ tools/browser_tool.py:_is_npx_agent_browser_sentinel */
+int browser__is_npx_agent_browser_sentinel(const char *browser_cmd) {
+    /* NPX_AGENT_BROWSER_SENTINEL == "npx agent-browser" */
+    if (!browser_cmd) return 0;
+    const char *p = browser_cmd;
+    while (*p == ' ' || *p == '\t') p++;
+    return strcmp(p, "npx agent-browser") == 0;
+}
+
+/* PoP: browser__socket_dir_idle_seconds @ tools/browser_tool.py:_socket_dir_idle_seconds */
+double browser__socket_dir_idle_seconds(const char *socket_dir) {
+    /* Seconds since anything under socket_dir was last written; -1.0 when
+     * undeterminable so callers fail safe ("too young to reap"). The dir's
+     * own mtime is not sufficient — command output files are rewritten in
+     * place — so scan the entries too. */
+    if (!socket_dir || !*socket_dir) return -1.0;
+    struct timespec now_ts;
+    clock_gettime(CLOCK_REALTIME, &now_ts);
+    struct stat st;
+    if (stat(socket_dir, &st) != 0) return -1.0;
+    double latest = (double)st.st_mtime;
+
+    DIR *dir = opendir(socket_dir);
+    if (dir) {
+        struct dirent *ent;
+        while ((ent = readdir(dir)) != NULL) {
+            if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+                continue;
+            char path[4096];
+            snprintf(path, sizeof(path), "%s/%s", socket_dir, ent->d_name);
+            struct stat est;
+            if (stat(path, &est) == 0 && (double)est.st_mtime > latest)
+                latest = (double)est.st_mtime;
+        }
+        closedir(dir);
+    } /* OSError -> dir mtime alone is still a usable lower bound */
+
+    double now = (double)now_ts.tv_sec + (double)now_ts.tv_nsec / 1e9;
+    double idle = now - latest;
+    return idle > 0.0 ? idle : 0.0;
+}
+
+/* PoP: browser__legacy_kill_process_tree @ tools/browser_tool.py:_legacy_kill_process_tree */
+void browser__legacy_kill_process_tree(int pid) {
+#ifdef _WIN32
+    char cmd[64];
+    snprintf(cmd, sizeof(cmd), "taskkill /PID %d /T /F", pid);
+    int rc = system(cmd);          /* check=False equivalent */
+    (void)rc;
+#else
+    /* POSIX: TERM then KILL the whole process group, no grace between
+     * signals (caller has already burned its timeout budget). */
+    if (pid <= 0) return;
+    pid_t pgid = getpgid(pid);
+    if (pgid < 0) {
+        kill((pid_t)pid, SIGKILL);  /* plain kill() fallback */
+        return;
+    }
+    if (killpg(pgid, SIGTERM) != 0 &&
+        (errno == ESRCH || errno == EPERM))
+        return;
+    killpg(pgid, SIGKILL);
+#endif
+}
+
+/* PoP: browser__kill_process_tree @ tools/browser_tool.py:_kill_process_tree */
+void browser__kill_process_tree(int proc_pid) {
+    /* Best-effort whole-tree kill: delegates to agent.deadline's
+     * kill_process_tree (taskkill /T /F on Windows, killpg + descendant
+     * sweep on POSIX); falls back to the local legacy implementation,
+     * never raises. */
+    if (!kill_process_tree(proc_pid, SIGKILL))
+        browser__legacy_kill_process_tree(proc_pid);
+}
+
+/* PoP: browser__warm_agent_browser_npx_cache @ tools/browser_tool.py:warm_agent_browser_npx_cache */
+int browser__warm_agent_browser_npx_cache(double timeout) {
+    /* Best-effort pre-fetch of agent-browser via `npx --yes <spec> --version`
+     * so the first real session invocation skips the registry lookup.
+     * Runs the credential-scrubbed _build_browser_env() environment with the
+     * extended PATH, in its own process group; kills the whole group on
+     * timeout. Returns 1 only when npx actually ran successfully. */
+    extern char *browser_merge_browser_path(const char *existing_path);
+    char *npx = browser_resolve_npx_bin();
+    if (!npx) return 0;
+
+    char *env_str = browser_build_browser_env();
+    (void)env_str;   /* environment is applied by the spawn helper */
+
+    pid_t pid = fork();
+    if (pid < 0) { free(npx); return 0; }
+    if (pid == 0) {
+        setpgid(0, 0);
+        /* credential-scrubbed child environment: drop *KEY/*TOKEN/*SECRET */
+        extern char **environ;
+        for (char **e = environ; *e; e++) {
+            if (strstr(*e, "KEY=") || strstr(*e, "TOKEN=") || strstr(*e, "SECRET="))
+                continue;
+            /* PATH gets the extended merge */
+            if (strncmp(*e, "PATH=", 5) == 0) {
+                char *merged = browser_merge_browser_path(*e + 5);
+                setenv("PATH", merged ? merged : "", 1);
+                free(merged);
+                continue;
+            }
+            putenv(*e);
+        }
+        unsetenv("ANTHROPIC_API_KEY");
+        unsetenv("OPENAI_API_KEY");
+        execlp(npx, "npx", "--yes", "agent-browser@^0.26.0", "--version", (char *)NULL);
+        _exit(127);
+    }
+    setpgid(pid, pid);
+
+    time_t deadline = time(NULL) + (time_t)(timeout > 0 ? timeout : 60.0);
+    int status = 0, ok = 0;
+    for (;;) {
+        pid_t w = waitpid(pid, &status, WNOHANG);
+        if (w == pid) {
+            ok = WIFEXITED(status) && WEXITSTATUS(status) == 0;
+            break;
+        }
+        if (time(NULL) >= deadline) {
+            /* kill the whole group, not just the top-level npx PID */
+            browser__kill_process_tree((int)pid);
+            waitpid(pid, &status, 0);
+            ok = 0;
+            break;
+        }
+        struct timespec ts = {0, 100 * 1000 * 1000};
+        nanosleep(&ts, NULL);
+    }
+    free(npx);
+    return ok;
+}
+
+/* PoP: browser__browser_router_kw @ tools/browser_tool.py:_browser_router_kw */
+char *browser__browser_router_kw(const char *kw_json) {
+    /* Identity kwargs forwarded to the extension router wrapper:
+     * {"task_id": ..., "session_id": ...} extracted from the tool kwargs. */
+    char *err = NULL;
+    json_t *kw = json_parse(kw_json ? kw_json : "{}", &err);
+    json_t *out = json_object();
+    if (!err && kw && kw->type == JSON_OBJECT) {
+        const char *tid = json_get_str(kw, "task_id", NULL);
+        const char *sid = json_get_str(kw, "session_id", NULL);
+        if (tid) json_set(out, "task_id", json_string(tid));
+        else json_set(out, "task_id", json_null());
+        if (sid) json_set(out, "session_id", json_string(sid));
+        else json_set(out, "session_id", json_null());
+    } else {
+        json_set(out, "task_id", json_null());
+        json_set(out, "session_id", json_null());
+        if (err) free(err);
+    }
+    if (kw) json_free(kw);
+    char *out_str = json_serialize(out);
+    json_free(out);
+    return out_str ? out_str : strdup("{}");
 }

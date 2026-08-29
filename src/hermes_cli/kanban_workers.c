@@ -30,6 +30,8 @@
 #include "kanban_db.h"
 #include "hermes_json.h"
 #include "hermes_regex.h"
+#include "profile_store.h"   /* profile_get_active_name */
+#include "hermes_logger.h"
 #include "agent_estop.h"   /* estop gate (gateway/kanban_watchers _kanban_dispatch_allowed) */
 
 #include <stdio.h>
@@ -357,23 +359,6 @@ int kdb_set_worker_pid(sqlite3 *conn, const char *task_id, pid_t pid)
 /* _worker_terminal_timeout_env                                       */
 /* ===================================================================== */
 /* Returns malloc'd string (caller frees) or NULL. */
-char *kdb_worker_terminal_timeout_env(long max_runtime_seconds,
-                                      const char *current_timeout)
-{
-    if (max_runtime_seconds <= 0) return NULL;
-    long desired = max_runtime_seconds - KB_TERMINAL_TIMEOUT_GRACE_SECONDS;
-    if (desired < 1) desired = 1;
-    long existing = 0;
-    if (current_timeout && current_timeout[0]) {
-        char *end = NULL;
-        long v = strtol(current_timeout, &end, 10);
-        if (end != current_timeout) existing = v;
-    }
-    if (existing >= desired) return NULL;
-    char *out = malloc(32);
-    snprintf(out, 32, "%ld", desired);
-    return out;
-}
 
 /* ===================================================================== */
 /* _execute_boundary_with_retry                                      */
@@ -1613,8 +1598,20 @@ char **kdb_detect_stale_running(sqlite3 *conn, int stale_timeout_seconds)
 /* check_respawn_guard                                                */
 /* ===================================================================== */
 
-/* Returns malloc'd reason string (caller frees) or NULL. */
+/* Returns malloc'd reason string (caller frees) or NULL.
+ * PoP: kdb_check_respawn_guard @ hermes_cli/kanban_db.py:check_respawn_guard */
 char *kdb_check_respawn_guard(sqlite3 *conn, const char *task_id)
+{
+    return kdb_check_respawn_guard_lane(conn, task_id, "ready");
+}
+
+/* Lane-aware core (Python's `lane` keyword: in the review lane the
+ * recent_success and active_pr rules are skipped — a recent completed run
+ * and a fresh PR URL comment are the canonical INPUTS to a review handoff,
+ * not duplicate-work signals).
+ * PoP: kdb_check_respawn_guard_lane @ hermes_cli/kanban_db.py:check_respawn_guard */
+char *kdb_check_respawn_guard_lane(sqlite3 *conn, const char *task_id,
+                                   const char *lane)
 {
     if (!conn || !task_id) return NULL;
     long now = kdb_now();
@@ -1667,23 +1664,50 @@ char *kdb_check_respawn_guard(sqlite3 *conn, const char *task_id)
         }
     }
 
-    /* 3. recent success */
-    long cutoff = now - 3600;
+    /* Review-lane spawns stop here: a recent completed run and a fresh PR
+     * URL comment are the canonical *inputs* to a review handoff (worker
+     * opened a PR, then requested review), not signals of duplicate work. */
+    if (lane && strcmp(lane, "review") == 0) return NULL;
+
+    /* 3. completed run within guard window — proof of recent success.
+     *    Exception: an explicit re-queue AFTER that success (status change,
+     *    promote, unblock, reclaim) is a deliberate "run it again" — honor
+     *    it instead of deferring. */
+    long cutoff = now - 3600; /* _RESPAWN_GUARD_SUCCESS_WINDOW */
     sqlite3_stmt *sr = NULL;
-    int recent = 0;
+    long completed_at = 0;
     if (sqlite3_prepare_v2(conn,
-            "SELECT id FROM task_runs "
-            "WHERE task_id = ? AND outcome = 'completed' AND ended_at >= ?",
+            "SELECT ended_at FROM task_runs "
+            "WHERE task_id = ? AND outcome = 'completed' AND ended_at >= ? "
+            "ORDER BY ended_at DESC LIMIT 1",
             -1, &sr, NULL) == SQLITE_OK) {
         sqlite3_bind_text(sr, 1, task_id, -1, SQLITE_TRANSIENT);
         sqlite3_bind_int64(sr, 2, cutoff);
-        if (sqlite3_step(sr) == SQLITE_ROW) recent = 1;
+        if (sqlite3_step(sr) == SQLITE_ROW)
+            completed_at = sqlite3_column_type(sr, 0) == SQLITE_NULL
+                         ? 0 : sqlite3_column_int64(sr, 0);
         sqlite3_finalize(sr);
     }
-    if (recent) return strdup("recent_success");
+    if (completed_at != 0) {
+        /* explicit re-queue after the completion? */
+        sqlite3_stmt *rq = NULL;
+        int requeued_after = 0;
+        if (sqlite3_prepare_v2(conn,
+                "SELECT 1 FROM task_events "
+                "WHERE task_id = ? AND created_at >= ? "
+                "AND kind IN ('status', 'promoted', 'unblocked', 'reclaimed') "
+                "LIMIT 1",
+                -1, &rq, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(rq, 1, task_id, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int64(rq, 2, completed_at);
+            if (sqlite3_step(rq) == SQLITE_ROW) requeued_after = 1;
+            sqlite3_finalize(rq);
+        }
+        if (!requeued_after) return strdup("recent_success");
+    }
 
-    /* 4. active PR in a recent comment */
-    long pr_cutoff = now - 86400;
+    /* 4. GitHub PR URL in a recent comment — prior worker already opened a PR. */
+    long pr_cutoff = now - 86400; /* _RESPAWN_GUARD_PR_WINDOW */
     sqlite3_stmt *cr = NULL;
     int pr = 0;
     hregex_t *prre = regex_compile("https?://github\\.com/[^/ ]+/[^/ ]+/pull/[0-9]+",
@@ -2425,4 +2449,90 @@ char *kdb_dispatch_result_json(const kdb_dispatch_result_t *r)
     char *out = json_serialize(o);
     json_free(o);
     return out;
+}
+
+/* ===================================================================== */
+/* dispatch-tick lifecycle hook (observer-only, fully best-effort)     */
+/* ===================================================================== */
+
+/* Python: from hermes_cli.lifecycle import has_hook / invoke_hook */
+extern int hermes_cli_lifecycle_has_hook(const char *arg);
+extern int hermes_cli_lifecycle_invoke_hook(const char *arg);
+
+static long kdb_hook_strv_len(char **v)
+{
+    long n = 0;
+    if (v) while (v[n]) n++;
+    return n;
+}
+
+/* Fire "on_kanban_dispatch_tick" after one dispatcher tick. Called strictly
+ * AFTER the dispatch lock has been released so a slow subscriber can never
+ * extend the single-writer critical section (PR #56066 re-port). Hot-path
+ * short-circuit: when nothing subscribes, skip payload assembly entirely.
+ * Observer-only and fully best-effort: any failure is swallowed.
+ *
+ * PoP: kdb_fire_dispatch_tick_hook @ hermes_cli/kanban_db.py:_fire_dispatch_tick_hook */
+void kdb_fire_dispatch_tick_hook(const kdb_dispatch_result_t *result,
+                                 const char *board, int dry_run)
+{
+    if (!result) return;
+    if (!hermes_cli_lifecycle_has_hook("on_kanban_dispatch_tick"))
+        return; /* nothing subscribes */
+
+    /* profile_name = get_active_profile_name() ("default" on any failure) */
+    char *pn = profile_get_active_name();
+    char profile_name[128] = "default";
+    if (pn && *pn) { snprintf(profile_name, sizeof(profile_name), "%s", pn); free(pn); }
+    else free(pn);
+
+    /* board fallback: current board, else None */
+    char effective_board[256] = {0};
+    if (!board) {
+        char *cur = get_current_board();
+        if (cur) {
+            snprintf(effective_board, sizeof(effective_board), "%s", cur);
+            free(cur);
+        }
+        board = effective_board[0] ? effective_board : NULL;
+    }
+
+    const char *outcome = "ok";
+    if (result->skipped_locked) {
+        outcome = "skipped_locked";
+    } else if (!result->spawned_n
+             && kdb_hook_strv_len(result->reclaimed) == 0
+             && kdb_hook_strv_len(result->promoted) == 0
+             && kdb_hook_strv_len(result->crashed) == 0
+             && kdb_hook_strv_len(result->stale) == 0
+             && kdb_hook_strv_len(result->timed_out) == 0
+             && kdb_hook_strv_len(result->auto_blocked) == 0
+             && kdb_hook_strv_len(result->rate_limited) == 0
+             && kdb_hook_strv_len(result->auto_assigned_default) == 0
+             && kdb_hook_strv_len(result->respawn_guarded) == 0
+             && kdb_hook_strv_len(result->skipped_per_profile_capped) == 0
+             && kdb_hook_strv_len(result->skipped_unassigned) == 0
+             && kdb_hook_strv_len(result->skipped_nonspawnable) == 0)
+        outcome = "idle";
+
+    json_t *payload = json_object();
+    if (payload) {
+        if (board) json_set(payload, "board", json_string(board));
+        json_set(payload, "profile_name", json_string(profile_name));
+        json_set(payload, "dry_run", json_bool(dry_run != 0));
+        json_set(payload, "outcome", json_string(outcome));
+    }
+    char *payload_json = payload ? json_serialize(payload) : NULL;
+
+    /* invoke_hook(event, **kwargs) — best effort; failures are logged at
+     * debug and swallowed so a misbehaving observer can never break the
+     * dispatch loop. */
+    char arg[8192];
+    snprintf(arg, sizeof(arg), "on_kanban_dispatch_tick\t%s",
+             payload_json ? payload_json : "{}");
+    if (hermes_cli_lifecycle_invoke_hook(arg) != 0)
+        hermes_log(LOG_DEBUG, "kanban", "kanban dispatch tick hook failed");
+
+    free(payload_json);
+    if (payload) json_free(payload);
 }

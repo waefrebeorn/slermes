@@ -9,6 +9,7 @@
  */
 #define _GNU_SOURCE
 
+#include "libjson/json.h"
 #include "models_gaps.h"
 #include "port_config_py_helpers.h"
 #include "port_auth_store.h"
@@ -841,6 +842,7 @@ char *models_list_available_providers_json(void) {
 
 #define MG_CAPS_DISK_TTL_SECONDS (24.0 * 3600.0)
 #define MG_CAPS_FAIL_TTL_SECONDS 60.0
+#define _OLLAMA_CLOUD_CACHE_TTL 3600  /* 1 hour — mirrors Python _OLLAMA_CLOUD_CACHE_TTL */
 static const char MG_OPENROUTER_CATALOG_URL[] = "https://openrouter.ai/api/v1/models";
 static const char MG_HERMES_USER_AGENT[] = "hermes-cli/0.20.5-slermes";
 
@@ -1956,4 +1958,286 @@ int models_should_use_ollama_native_catalog(const char *provider,
     }
     free(requested); free(root); free(configured_base);
     return result;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * New ports: easy standalone utility functions from hermes_cli/models.py
+ * (functions with no class state, no async, minimal dependencies)
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* ── _base_url_looks_like_anthropic_messages (line 3256) ────────────── */
+/* PoP: models_base_url_looks_like_anthropic_messages @ hermes_cli/models.py:_base_url_looks_like_anthropic_messages */
+int models_base_url_looks_like_anthropic_messages(const char *base_url) {
+    if (!base_url || !*base_url) return 0;
+    char *norm = strdup(base_url);
+    if (!norm) return 0;
+    size_t len = strlen(norm);
+    while (len > 0 && (norm[len-1] == ' ' || norm[len-1] == '\t' || norm[len-1] == '/'))
+        norm[--len] = '\0';
+    /* lowercase */
+    for (size_t i = 0; i < len; i++)
+        norm[i] = (char)tolower((unsigned char)norm[i]);
+
+    const char *path = strstr(norm, "://");
+    int result = 0;
+    if (path) {
+        path += 3;
+        const char *slash = strchr(path, '/');
+        if (slash) {
+            const char *p = slash;
+            size_t path_len = strlen(p);
+            while (path_len > 0 && p[path_len-1] == '/') path_len--;
+            if (path_len >= 9 && strncmp(p, "/anthropic", 10) == 0) result = 1;
+            else if (path_len >= 14 && strncmp(p, "/anthropic/v1", 14) == 0) result = 1;
+        }
+    }
+    free(norm);
+    return result;
+}
+
+/* ── _openrouter_variant_base (line 3341) ───────────────────────────── */
+/* PoP: models_openrouter_variant_base @ hermes_cli/models.py:_openrouter_variant_base */
+char *models_openrouter_variant_base(const char *model_id) {
+    if (!model_id || !*model_id) return NULL;
+    const char *last_colon = strrchr(model_id, ':');
+    if (!last_colon || last_colon == model_id) return NULL;
+    size_t base_len = (size_t)(last_colon - model_id);
+    const char *suffix = last_colon + 1;
+
+    static const char * const variant_suffixes[] = {
+        "nitro", "free", "instruct", "balance", "medium", "large",
+        "xhybrid", "64k", "128k", NULL
+    };
+    for (int i = 0; variant_suffixes[i]; i++) {
+        if (strcmp(suffix, variant_suffixes[i]) == 0) {
+            char *result = malloc(base_len + 1);
+            if (!result) return NULL;
+            memcpy(result, model_id, base_len);
+            result[base_len] = '\0';
+            return result;
+        }
+    }
+    return NULL;
+}
+
+/* ── _is_openai_fast_model (line 3617) ──────────────────────────────── */
+/* PoP: models_is_openai_fast_model @ hermes_cli/models.py:_is_openai_fast_model */
+int models_is_openai_fast_model(const char *model_id) {
+    if (!model_id || !*model_id) return 0;
+    /* strip vendor prefix: "openai/gpt-5" → "gpt-5" */
+    const char *slash = strchr(model_id, '/');
+    const char *bare = slash ? slash + 1 : model_id;
+    /* take part before ':' */
+    const char *colon = strchr(bare, ':');
+    size_t base_len = colon ? (size_t)(colon - bare) : strlen(bare);
+    char base[256];
+    if (base_len >= sizeof(base)) base_len = sizeof(base) - 1;
+    memcpy(base, bare, base_len);
+    base[base_len] = '\0';
+
+    /* exclude codex-series */
+    if (strstr(base, "codex")) return 0;
+
+    static const char * const fast_prefixes[] = {
+        "gpt-5", "gpt-4", "o1", "o3", "o4", NULL
+    };
+    for (int i = 0; fast_prefixes[i]; i++) {
+        if (strncmp(base, fast_prefixes[i], strlen(fast_prefixes[i])) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+/* ── resolve_fast_mode_overrides (line 3677) ────────────────────────── */
+/* PoP: models_resolve_fast_mode_overrides @ hermes_cli/models.py:resolve_fast_mode_overrides */
+json_t *models_resolve_fast_mode_overrides(const char *model_id) {
+    if (!model_id || !*model_id) return NULL;
+    if (!model_supports_fast_mode(model_id)) return NULL;
+
+    if (is_anthropic_fast_model(model_id)) {
+        json_t *obj = json_object();
+        if (obj) json_set(obj, "speed", json_string("fast"));
+        return obj;
+    }
+    json_t *obj = json_object();
+    if (obj) json_set(obj, "service_tier", json_string("priority"));
+    return obj;
+}
+
+/* ── _github_reasoning_efforts_for_model_id (line 5279) ─────────────── */
+/* PoP: models_github_reasoning_efforts_for_model_id @ hermes_cli/models.py:_github_reasoning_efforts_for_model_id */
+json_t *models_github_reasoning_efforts_for_model_id(const char *model_id) {
+    if (!model_id || !*model_id) return json_array();
+    char raw[512];
+    size_t len = strlen(model_id);
+    if (len >= sizeof(raw)) len = sizeof(raw) - 1;
+    memcpy(raw, model_id, len);
+    raw[len] = '\0';
+    for (size_t i = 0; i < len; i++) raw[i] = (char)tolower((unsigned char)raw[i]);
+
+    /* o1/o3/o4 series */
+    if (strncmp(raw, "openai/o1", 9) == 0 || strncmp(raw, "openai/o3", 9) == 0 ||
+        strncmp(raw, "openai/o4", 9) == 0 || strncmp(raw, "o1/", 3) == 0 ||
+        strncmp(raw, "o3/", 3) == 0 || strncmp(raw, "o4/", 3) == 0 ||
+        strcmp(raw, "o1") == 0 || strcmp(raw, "o3") == 0 || strcmp(raw, "o4") == 0) {
+        json_t *arr = json_array();
+        if (arr) {
+            json_append(arr, json_string("none"));
+            json_append(arr, json_string("minimal"));
+            json_append(arr, json_string("low"));
+            json_append(arr, json_string("medium"));
+            json_append(arr, json_string("high"));
+            json_append(arr, json_string("critical"));
+        }
+        return arr;
+    }
+
+    /* gpt-5 series */
+    if (strncmp(raw, "gpt-5", 5) == 0) {
+        json_t *arr = json_array();
+        if (arr) {
+            json_append(arr, json_string("none"));
+            json_append(arr, json_string("minimal"));
+            json_append(arr, json_string("low"));
+            json_append(arr, json_string("medium"));
+            json_append(arr, json_string("high"));
+        }
+        return arr;
+    }
+    return json_array();
+}
+
+/* ── opencode_provider_family (line 5385) ───────────────────────────── */
+/* PoP: models_opencode_provider_family @ hermes_cli/models.py:opencode_provider_family */
+char *models_opencode_provider_family(const char *provider_id) {
+    if (!provider_id || !*provider_id) return NULL;
+    char raw[512];
+    size_t len = strlen(provider_id);
+    if (len >= sizeof(raw)) len = sizeof(raw) - 1;
+    memcpy(raw, provider_id, len);
+    raw[len] = '\0';
+    for (size_t i = 0; i < len; i++) raw[i] = (char)tolower((unsigned char)raw[i]);
+
+    if (len == 0) return NULL;
+
+    /* canonical check */
+    const char *canonical = model_normalize_provider(provider_id);
+    if (strcmp(canonical, "opencode-zen") == 0 ||
+        strcmp(canonical, "opencode-go") == 0 ||
+        strcmp(canonical, "opencode-free") == 0) {
+        return strdup(canonical);
+    }
+
+    if (strncmp(raw, "opencode-free", 13) == 0)
+        return strdup("opencode-free");
+    if (strncmp(raw, "opencode-go", 11) == 0)
+        return strdup("opencode-go");
+    if (strncmp(raw, "opencode-zen", 12) == 0)
+        return strdup("opencode-zen");
+    return NULL;
+}
+
+/* ── is_opencode_zen_free_model (line 5446) ─────────────────────────── */
+/* PoP: models_is_opencode_zen_free_model @ hermes_cli/models.py:is_opencode_zen_free_model */
+int models_is_opencode_zen_free_model(const char *model_id) {
+    if (!model_id || !*model_id) return 0;
+    /* extract bare model after last '/' */
+    const char *last_slash = strrchr(model_id, '/');
+    const char *bare = last_slash ? last_slash + 1 : model_id;
+    size_t len = strlen(bare);
+    char lower[256];
+    if (len >= sizeof(lower)) len = sizeof(lower) - 1;
+    for (size_t i = 0; i < len; i++)
+        lower[i] = (char)tolower((unsigned char)bare[i]);
+    lower[len] = '\0';
+
+    if (len >= 5 && strcmp(lower + len - 5, "-free") == 0) return 1;
+
+    /* known unsuffixed free slugs */
+    if (strcmp(lower, "big-pickle") == 0) return 1;
+
+    return 0;
+}
+
+/* ── opencode_zen_free_headers (line 5461) ──────────────────────────── */
+/* PoP: models_opencode_zen_free_headers @ hermes_cli/models.py:opencode_zen_free_headers */
+json_t *models_opencode_zen_free_headers(void) {
+    json_t *headers = json_object();
+    if (!headers) return NULL;
+    json_set_hdr(headers, "Authorization", "");
+    json_set_hdr(headers, "HTTP-Referer", "https://hermes-agent.nousresearch.com");
+    json_set_hdr(headers, "X-Title", "Hermes Agent");
+    json_set_hdr(headers, "User-Agent", "HermesAgent/1.0");
+    return headers;
+}
+
+/* ── _load_ollama_cloud_cache (line 6212) ───────────────────────────── */
+/* PoP: models_load_ollama_cloud_cache @ hermes_cli/models.py:_load_ollama_cloud_cache */
+char *models_load_ollama_cloud_cache(int ignore_ttl) {
+    const char *cache_path = ollama_cloud_cache_path();
+    if (!cache_path || !*cache_path) return NULL;
+
+    char *data = NULL;
+    FILE *f = fopen(cache_path, "r");
+    if (f) {
+        fseek(f, 0, SEEK_END);
+        long fsize = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        if (fsize > 0 && fsize < 1024*1024) {
+            data = malloc((size_t)fsize + 1);
+            if (data) {
+                size_t rd = fread(data, 1, (size_t)fsize, f);
+                data[rd] = '\0';
+            }
+        }
+        fclose(f);
+    }
+    if (!data) return NULL;
+
+    json_t *parsed = json_parse(data, NULL);
+    free(data);
+    if (!parsed || parsed->type != JSON_OBJECT) {
+        if (parsed) json_free(parsed);
+        return NULL;
+    }
+
+    json_t *models = json_obj_get(parsed, "models");
+    if (!models || models->type != JSON_ARRAY || json_len(models) == 0) {
+        if (models) json_free(models);
+        json_free(parsed);
+        return NULL;
+    }
+
+    if (!ignore_ttl) {
+        json_t *cached_at = json_obj_get(parsed, "cached_at");
+        if (cached_at && cached_at->type == JSON_NUMBER) {
+            double at = cached_at->num_val;
+            if ((time(NULL) - (time_t)at) > _OLLAMA_CLOUD_CACHE_TTL) {
+                json_free(models);
+                json_free(parsed);
+                return NULL;
+            }
+        }
+    }
+    /* caller must free the returned JSON */
+    return json_serialize(parsed);
+}
+
+/* ── _save_ollama_cloud_cache (line 6239) ───────────────────────────── */
+/* PoP: models_save_ollama_cloud_cache @ hermes_cli/models.py:_save_ollama_cloud_cache */
+void models_save_ollama_cloud_cache(const char *models_json) {
+    const char *cache_path = ollama_cloud_cache_path();
+    if (!cache_path || !*cache_path || !models_json) return;
+
+    /* ensure parent dir exists */
+    char dir[1024];
+    strncpy(dir, cache_path, sizeof(dir) - 1);
+    dir[sizeof(dir) - 1] = '\0';
+    char *slash = strrchr(dir, '/');
+    if (slash) { *slash = '\0'; mkdir(dir, 0755); }
+
+    FILE *f = fopen(cache_path, "w");
+    if (!f) return;
+    fwrite(models_json, 1, strlen(models_json), f);
+    fclose(f);
 }

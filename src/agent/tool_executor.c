@@ -453,3 +453,11 @@ int agent_tool_executor_execute_tool_calls_segmented(const char *arg) {
     printf("executed %s segment(s) in order, single turn-end finalize (budget + steer)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — interrupt drained" : "");
     return 0;
 }
+
+/* PoP: _pairing_tool_call_id @ agent/tool_executor.py:_pairing_tool_call_id */
+char *hermes_agent_tool_executor_pairing_tool_call_id(json_t *tool_call) {
+    /* Python: return coalesce_tool_call_id(tool_call) */
+    extern const char *msg_sanitize_coalesce_tool_call_id(const json_t *);
+    const char *cid = msg_sanitize_coalesce_tool_call_id(tool_call);
+    return cid ? strdup(cid) : strdup("");
+}

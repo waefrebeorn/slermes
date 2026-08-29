@@ -64,4 +64,33 @@ char *dlg_run_child_lifecycle(int task_index, const char *goal,
                               const char *child_json,
                               const char *parent_session_id);
 
+
+/* ── subagent control plane (tools/delegate_tool.py) ─────────────── */
+typedef struct dlg_subagent_rec {
+    char *subagent_id; char *parent_id; char *goal; char *model;
+    char *status; char *delegation_id; char *owner_agent_session_id;
+    char *owner_session_id;
+    void *agent; void *owner_transport; void *owner_session_record;
+    double started_at; int accepting_steer;
+    struct dlg_subagent_rec *next;
+} dlg_subagent_rec_t;
+
+void dlg_register_subagent(dlg_subagent_rec_t *rec);
+void dlg_retain_recent_subagent(const dlg_subagent_rec_t *record);
+void dlg_unregister_subagent(const char *subagent_id, void *agent);
+json_t *dlg_get_subagent_attribution(const char *task_id);
+char *dlg_close_subagent_steering(const char *subagent_id, void *agent);
+int dlg_steer_subagent(const char *subagent_id, const char *text,
+                       const char *owner_session_id,
+                       void *owner_transport, void *owner_session_record);
+void dlg_capture_gateway_steer_authority(const char *owner_session_id,
+                                         void **transport_out, void **record_out);
+int dlg_is_descendant_of(void *child_agent, void *parent_agent, int max_hops);
+char *dlg_resolve_session_lineage(const char *session_id, void *parent_agent);
+int dlg_owns_subagent_record(const dlg_subagent_rec_t *record, void *parent_agent);
+char *dlg_handle_control_action(const char *action, const char *subagent_id,
+                                const char *message, void *parent_agent);
+int dlg_get_worktree_isolation(void);
+char *dlg_validate_batch_tasks(const char *tasks_json);
+
 #endif /* PORT_DELEGATE_TOOL_PORTS_H */

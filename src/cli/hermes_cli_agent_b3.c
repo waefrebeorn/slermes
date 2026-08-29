@@ -487,9 +487,9 @@ void hcli_flush_reasoning_preview(hcli_t *self, bool force)
 
 /* ── _format_submitted_user_message_preview helper ──────────────────────── */
 
-/* PoP: format_submitted_user_message_preview @ cli.py:_format_submitted_user_message_preview
- * Returns a malloc'd rich-markup string (caller frees). */
-static char *b3_format_user_preview(hcli_t *self, const char *user_input)
+/* PoP: b3_format_user_preview @ cli.py:HermesCLI._format_submitted_user_message_preview */
+/* Returns a malloc'd rich-markup string (caller frees). */
+char *b3_format_user_preview(hcli_t *self, const char *user_input)
 {
     char ts_suffix[128];
     ts_suffix[0] = '\0';
@@ -667,8 +667,8 @@ void hcli_stream_reasoning_delta(hcli_t *self, const char *text)
 static bool b3_prev_blocks_input_slot_init = false;
 static bool b3_prev_blocks_input;   /* previous_blocks_input saved across pair */
 
-/* PoP: hcli_busy_command @ cli.py:_busy_command
- * Enter part of the generator context manager; pair with
+/* PoP: hcli_busy_command @ cli.py:HermesCLI._busy_command */
+/* Enter part of the generator context manager; pair with
  * hcli_busy_command_end() in the caller's cleanup path (`finally`). */
 void hcli_busy_command(hcli_t *self, const char *status, bool blocks_input)
 {
@@ -683,7 +683,8 @@ void hcli_busy_command(hcli_t *self, const char *status, bool blocks_input)
     printf("\xe2\x8f\xb3 %s\n", status ? status : "");
 }
 
-/* PoP: hcli_busy_command_end @ cli.py:_busy_command (finally branch) */
+/* PoP: hcli_busy_command_end @ cli.py:HermesCLI._busy_command */
+/* finally branch of the generator context manager. */
 void hcli_busy_command_end(hcli_t *self)
 {
     if (!self || !b3_prev_blocks_input_slot_init) return;
@@ -697,9 +698,10 @@ void hcli_busy_command_end(hcli_t *self)
 
 /* ── paste-reference expansion (_expand_paste_references) ───────────────── */
 
+/* PoP: b3_expand_paste_references @ cli.py:HermesCLI._expand_paste_references */
 /* Expand "[Pasted text #N: M lines → path]" placeholders into file contents.
  * Returns malloc'd expanded text (caller frees). */
-static char *b3_expand_paste_references(const char *text)
+char *b3_expand_paste_references(const char *text)
 {
     static const char *marker = "[Pasted text #";
     if (!text || !strstr(text, marker))

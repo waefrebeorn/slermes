@@ -336,6 +336,15 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
             sqlite3_exec(h->db, "PRAGMA journal_mode=WAL;", NULL, NULL, NULL);
         }
     }
+    /* Performance tuning PRAGMAs (same set as session_db_open):
+     * cache_size, mmap_size, synchronous, temp_store.
+     * Applied AFTER journal_mode so WAL is already active. */
+    sqlite3_exec(h->db,
+        "PRAGMA synchronous=normal;"
+        "PRAGMA cache_size=-20000;"
+        "PRAGMA mmap_size=268435456;"
+        "PRAGMA temp_store=memory;",
+        NULL, NULL, NULL);
     char *err = NULL;
     if (sqlite3_exec(h->db, HERMES_STATE_SCHEMA_SQL, NULL, NULL, &err) != SQLITE_OK) {
         if (err) sqlite3_free(err);

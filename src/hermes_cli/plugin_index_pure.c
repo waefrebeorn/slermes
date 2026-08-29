@@ -290,3 +290,15 @@ char *pindex_search_index(const char *entries_json, const char *term, const char
     json_free(entries);
     return out;
 }
+
+/* PoP: _cache_path @ hermes_cli/plugin_index.py:_cache_path */
+char *hermes_cli_plugin_index_cache_path(void) {
+    /* Python: return get_hermes_home() / "cache" / "plugin_index.json" */
+    extern char *hermes_constants_get_hermes_home(void);
+    const char *home = hermes_constants_get_hermes_home();
+    size_t len = strlen(home) + 32;
+    char *buf = malloc(len);
+    if (!buf) return NULL;
+    snprintf(buf, len, "%s/cache/plugin_index.json", home);
+    return buf;
+}

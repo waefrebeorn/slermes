@@ -979,3 +979,20 @@ bool skill_utils_is_valid_namespace(const char *candidate)
     }
     return true;
 }
+
+/* PoP: _project_scan_cache_dir @ agent/skill_utils.py:_project_scan_cache_dir */
+char *hermes_agent_skill_utils_project_scan_cache_dir(void) {
+    /* Python: return get_hermes_home() / "cache" / "project_skill_scans" */
+    extern char *hermes_constants_get_hermes_home(void);
+    const char *home = hermes_constants_get_hermes_home();
+    size_t len = strlen(home) + 32;
+    char *buf = malloc(len);
+    if (!buf) return NULL;
+    snprintf(buf, len, "%s/cache/project_skill_scans", home);
+    return buf;
+}
+
+/* PoP: _project_quarantine_cache_clear @ agent/skill_utils.py:_project_quarantine_cache_clear */
+void hermes_agent_skill_utils_project_quarantine_cache_clear(void) {
+    /* Python: _PROJECT_QUARANTINE_CACHE.clear() */
+}

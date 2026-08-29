@@ -151,3 +151,12 @@ int hermes_cli_browser_connect_launch_chrome_debug(const char *arg) {
     printf("chrome debug launched (pid logged, stderr tail captured per attempt): %s\n", t2 ? t2 + 1 : "");
     return 0;
 }
+
+/* PoP: try_launch_chrome_debug @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
+int hermes_cli_browser_connect_try_launch_chrome_debug(int port, const char *system) {
+    /* Python: return launch_chrome_debug(port, system).launched */
+    /* The existing C function takes a single string arg; we encode port+system */
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%d:%s", port, system);
+    return hermes_cli_browser_connect_launch_chrome_debug(buf);
+}

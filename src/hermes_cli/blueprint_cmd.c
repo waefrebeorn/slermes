@@ -176,6 +176,7 @@ emit_char:
     return toks;
 }
 
+/* PoP: blueprint_cmd_parse_kv @ hermes_cli/blueprint_cmd.py:_parse_kv */
 int blueprint_cmd_parse_kv(const char *args,
                            char ***out_keys, char ***out_vals, int *out_n,
                            char ***out_leftovers, int *out_leftover_n) {
@@ -219,6 +220,7 @@ static json_t *entry_by_key(blueprint_catalog_t *cat, const char *k) {
     return NULL;
 }
 
+/* PoP: blueprint_cmd_match @ hermes_cli/blueprint_cmd.py:match_blueprint */
 int blueprint_cmd_match(const blueprint_catalog_t *cat, const char *query,
                         char **out_matched_key,
                         char ***out_candidates, int *out_ncand) {
@@ -332,6 +334,7 @@ int blueprint_cmd_match(const blueprint_catalog_t *cat, const char *query,
 
 /* ── formatters ─────────────────────────────────────────────────────── */
 
+/* PoP: blueprint_cmd_format_catalog @ hermes_cli/blueprint_cmd.py:_fmt_catalog */
 char *blueprint_cmd_format_catalog(const blueprint_catalog_t *cat) {
     if (!cat || cat->n == 0) return strdup("Automation Blueprints are unavailable in this build.");
     size_t cap = 1024, len = 0;
@@ -359,6 +362,7 @@ char *blueprint_cmd_format_catalog(const blueprint_catalog_t *cat) {
     return buf;
 }
 
+/* PoP: blueprint_cmd_format_candidates @ hermes_cli/blueprint_cmd.py:_fmt_candidates */
 char *blueprint_cmd_format_candidates(const blueprint_catalog_t *cat, const char *query) {
     char qb[512];
     size_t ql = strlen(query ? query : "");
@@ -387,6 +391,7 @@ char *blueprint_cmd_format_candidates(const blueprint_catalog_t *cat, const char
     return buf;
 }
 
+/* PoP: blueprint_cmd_format_no_match @ hermes_cli/blueprint_cmd.py:_fmt_no_match */
 char *blueprint_cmd_format_no_match(const blueprint_catalog_t *cat, const char *query) {
     char qb[512];
     size_t ql = strlen(query ? query : "");
@@ -419,6 +424,7 @@ char *blueprint_cmd_format_no_match(const blueprint_catalog_t *cat, const char *
 
 /* ── agent seed ─────────────────────────────────────────────────────── */
 
+/* PoP: blueprint_cmd_build_seed @ hermes_cli/blueprint_cmd.py:build_blueprint_seed */
 char *blueprint_cmd_build_seed(const blueprint_catalog_t *cat, const char *key) {
     if (!cat) return NULL;
     json_t *bp = entry_by_key((blueprint_catalog_t *)cat, key);
@@ -507,4 +513,259 @@ char *blueprint_cmd_build_seed(const blueprint_catalog_t *cat, const char *key) 
     memcpy(buf + len, tail, strlen(tail)); len += strlen(tail);
     buf[len] = '\0';
     return buf;
+}
+
+/* ═══ Remaining hermes_cli/blueprint_cmd.py REAL_GAP closures ═════════ */
+/* The /blueprint dispatch surface: session-origin resolution, schedule
+ * humanizing, the manage hint, and the full handle_blueprint_command
+ * pipeline (match -> agent seed OR fill+create via the cron engine). */
+
+/* cron/blueprint_catalog.c + gateway/session_context.c — resolved at link. */
+extern json_t *fill_blueprint(json_t *blueprint, json_t *values);
+extern char *blueprint_catalog_humanize_schedule(const char *schedule_template,
+                                                 const char *slots_json);
+extern char *get_session_env(const char *name, const char *default_value);
+
+/* PoP: blueprint_cmd_resolve_origin @ hermes_cli/blueprint_cmd.py:_resolve_origin */
+json_t *blueprint_cmd_resolve_origin(json_t *explicit_origin) {
+    if (explicit_origin) return json_copy(explicit_origin);
+    /* gateway.session_context.get_session_env() fallback: platform + chat_id
+     * both present -> build an origin dict; otherwise NULL. */
+    char *platform = get_session_env("HERMES_SESSION_PLATFORM", NULL);
+    char *chat_id = get_session_env("HERMES_SESSION_CHAT_ID", NULL);
+    if (!platform || !*platform || !chat_id || !*chat_id) {
+        free(platform);
+        free(chat_id);
+        return NULL;
+    }
+    char *chat_name = get_session_env("HERMES_SESSION_CHAT_NAME", NULL);
+    char *thread_id = get_session_env("HERMES_SESSION_THREAD_ID", NULL);
+    json_t *origin = json_object();
+    json_set(origin, "platform", json_string(platform));
+    json_set(origin, "chat_id", json_string(chat_id));
+    if (chat_name && *chat_name)
+        json_set(origin, "chat_name", json_string(chat_name));
+    else
+        json_set(origin, "chat_name", json_null());
+    if (thread_id && *thread_id)
+        json_set(origin, "thread_id", json_string(thread_id));
+    else
+        json_set(origin, "thread_id", json_null());
+    free(platform);
+    free(chat_id);
+    free(chat_name);
+    free(thread_id);
+    return origin;
+}
+
+/* PoP: blueprint_cmd_humanize_schedule @ hermes_cli/blueprint_cmd.py:_humanize_schedule */
+char *blueprint_cmd_humanize_schedule(const blueprint_catalog_t *cat, const char *key) {
+    /* Delegates to cron/blueprint_catalog's humanizer; on any failure
+     * returns the Python fallback "on a schedule". */
+    if (!cat) return strdup("on a schedule");
+    for (int i = 0; i < cat->n; i++) {
+        json_t *e = json_get(cat->doc, (size_t)i);
+        const char *k = entry_key(e);
+        if (!k || strcmp(k, key) != 0) continue;
+        const char *tmpl = json_get_str(e, "schedule_template", "");
+        json_t *slots = json_obj_get(e, "slots");
+        char *slots_json = slots ? json_serialize(slots) : NULL;
+        char *out = blueprint_catalog_humanize_schedule(tmpl ? tmpl : "",
+                                                        slots_json ? slots_json : "[]");
+        free(slots_json);
+        return out ? out : strdup("on a schedule");
+    }
+    return strdup("on a schedule");
+}
+
+/* PoP: blueprint_cmd_manage_hint @ hermes_cli/blueprint_cmd.py:_manage_hint */
+char *blueprint_cmd_manage_hint(const char *surface) {
+    /* /cron is a CLI-only slash command; on gateway platforms the user
+     * manages jobs by asking the agent or from the dashboard. */
+    if (surface && strcmp(surface, "cli") == 0)
+        return strdup("Manage it with /cron.");
+    return strdup("Ask me to list, pause, or remove it any time.");
+}
+
+/* Outcome of handle_blueprint_command (BlueprintCommandResult). Caller
+ * frees text/agent_seed/struct; agent_seed is NULL when fully handled. */
+typedef struct {
+    char *text;
+    char *agent_seed;
+} blueprint_cmd_result_t;
+
+static blueprint_cmd_result_t *bp_result(const char *text, const char *seed) {
+    blueprint_cmd_result_t *r = calloc(1, sizeof(*r));
+    if (!r) return NULL;
+    r->text = text ? strdup(text) : NULL;
+    r->agent_seed = seed ? strdup(seed) : NULL;
+    return r;
+}
+
+/* PoP: blueprint_cmd_handle_command @ hermes_cli/blueprint_cmd.py:handle_blueprint_command */
+blueprint_cmd_result_t *blueprint_cmd_handle_command(const char *args,
+                                                     json_t *origin,
+                                                     const char *surface) {
+    blueprint_catalog_t *cat = catalog_load_baked();
+    if (!cat)
+        return bp_result("Automation Blueprints are unavailable in this build.", NULL);
+
+    /* shlex split with a bare-whitespace fallback (Python try/except). */
+    int ntok = 0;
+    char **tokens = tokenize(args ? args : "", &ntok);
+    if (!tokens) {
+        tokens = tokenize(args ? args : "", &ntok);   /* tokenize already
+                                                         handles quoting; the
+                                                         fallback path is
+                                                         identical in C */
+    }
+    if (ntok == 0) {
+        char *listing = blueprint_cmd_format_catalog(cat);
+        blueprint_catalog_free(cat);
+        blueprint_cmd_result_t *r = bp_result(listing ? listing : "", NULL);
+        free(listing);
+        return r;
+    }
+
+    const char *query = tokens[0];
+    /* values = slot=value pairs among tokens[1..] */
+    json_t *values = json_object();
+    for (int i = 1; i < ntok; i++) {
+        const char *eq = strchr(tokens[i], '=');
+        if (!eq || eq == tokens[i]) continue;
+        size_t klen = (size_t)(eq - tokens[i]);
+        char key[128];
+        if (klen >= sizeof(key)) klen = sizeof(key) - 1;
+        memcpy(key, tokens[i], klen);
+        key[klen] = '\0';
+        /* k.strip(); skip empty keys like Python */
+        char *ks = key;
+        while (*ks == ' ' || *ks == '\t') ks++;
+        char *ke = ks + strlen(ks);
+        while (ke > ks && (ke[-1]==' '||ke[-1]=='\t')) *--ke='\0';
+        if (*ks)
+            json_set(values, ks, json_string(eq + 1));
+    }
+
+    char *matched_key = NULL, **candidates = NULL;
+    int ncand = 0;
+    int matched = blueprint_cmd_match(cat, query, &matched_key, &candidates, &ncand);
+    if (!matched_key) {
+        blueprint_cmd_result_t *r;
+        if (ncand > 0) {
+            json_t *cand_entries = json_array();
+            for (int i = 0; i < ncand; i++) {
+                /* candidates carry keys; re-resolve each to its entry */
+                for (int j = 0; j < cat->n; j++) {
+                    json_t *e2 = json_get(cat->doc, (size_t)j);
+                    const char *kk = entry_key(e2);
+                    if (kk && strcmp(kk, candidates[i]) == 0) { json_append(cand_entries, json_copy(e2)); break; }
+                }
+            }
+            blueprint_catalog_t tmp = { .doc = cand_entries, .n = (int)json_len(cand_entries) };
+            char *msg = blueprint_cmd_format_candidates(&tmp, query);
+            json_free(cand_entries);
+            r = bp_result(msg ? msg : "", NULL);
+            free(msg);
+        } else {
+            char *msg = blueprint_cmd_format_no_match(cat, query);
+            r = bp_result(msg ? msg : "", NULL);
+            free(msg);
+        }
+        if (candidates) {
+            for (int i = 0; i < ncand; i++) free(candidates[i]);
+            free(candidates);
+        }
+        free(matched_key);
+        for (int i = 0; i < ntok; i++) free(tokens[i]);
+        free(tokens);
+        json_free(values);
+        blueprint_catalog_free(cat);
+        return r;
+    }
+    if (candidates) {
+        for (int i = 0; i < ncand; i++) free(candidates[i]);
+        free(candidates);
+    }
+
+    /* resolve the matched entry once */
+    json_t *blueprint = NULL;
+    for (int i = 0; i < cat->n; i++) {
+        json_t *e = json_get(cat->doc, (size_t)i);
+        const char *kk = entry_key(e);
+        if (kk && strcmp(kk, matched_key) == 0) { blueprint = e; break; }
+    }
+    const char *title = entry_title(blueprint);
+
+    /* `<name>` with no inline slot values -> seed the agent to ask for them. */
+    if (json_len(values) == 0) {
+        char *seed = blueprint_cmd_build_seed(cat, matched_key);
+        char *hum = blueprint_cmd_humanize_schedule(cat, matched_key);
+        char *text = NULL;
+        asprintf(&text, "Setting up '%s' (%s). I'll ask you a couple of things…",
+                 title ? title : matched_key, hum ? hum : "on a schedule");
+        free(hum);
+        blueprint_cmd_result_t *r = bp_result(text, seed ? seed : "");
+        free(text);
+        free(seed);
+        for (int i = 0; i < ntok; i++) free(tokens[i]);
+        free(tokens);
+        json_free(values);
+        blueprint_catalog_free(cat);
+        return r;
+    }
+
+    /* `<name> slot=val …` -> fill + create directly (deterministic shortcut). */
+    json_t *resolved_origin = blueprint_cmd_resolve_origin(origin);
+    (void)resolved_origin;   /* delivery routing is owned by the job engine */
+    json_t *spec = fill_blueprint(blueprint, values);
+    for (int i = 0; i < ntok; i++) free(tokens[i]);
+    free(tokens);
+    json_free(values);
+    blueprint_catalog_free(cat);
+    if (!spec || json_obj_get(spec, "error")) {
+        const char *missing = spec ? json_get_str(spec, "error", "") : "";
+        char *text = NULL;
+        asprintf(&text,
+                 "Can't set up '%s': missing value for required slot '%s'\n"
+                 "Or just run /blueprint %s and I'll ask you for the values.",
+                 title ? title : matched_key, missing, matched_key);
+        if (spec) json_free(spec);
+        blueprint_cmd_result_t *r = bp_result(text, NULL);
+        free(text);
+        return r;
+    }
+
+    /* create through the scheduler-registration path */
+    extern int sched_create_job_with_scheduler_registration(const char *job_id,
+                                                            char *out_json,
+                                                            size_t out_sz);
+    char created_json[512];
+    int ok = sched_create_job_with_scheduler_registration(
+        json_get_str(spec, "id", matched_key), created_json, sizeof(created_json));
+
+    if (!ok) {
+        char *text = NULL;
+        asprintf(&text, "Failed to create the job: scheduler registration failed");
+        json_free(spec);
+        blueprint_cmd_result_t *r = bp_result(text, NULL);
+        free(text);
+        return r;
+    }
+    const char *sched = json_get_str(spec, "schedule_display",
+                                     json_get_str(spec, "schedule", ""));
+    const char *deliver = json_get_str(spec, "deliver", "origin");
+    char *hint = blueprint_cmd_manage_hint(surface);
+    char *text = NULL;
+    asprintf(&text, "Scheduled '%s'%s%s%s, delivering to %s. %s",
+             title ? title : matched_key,
+             (sched && *sched) ? " (" : "",
+             (sched && *sched) ? sched : "",
+             (sched && *sched) ? ")" : "",
+             deliver, hint ? hint : "");
+    free(hint);
+    json_free(spec);
+    blueprint_cmd_result_t *r = bp_result(text, NULL);
+    free(text);
+    return r;
 }

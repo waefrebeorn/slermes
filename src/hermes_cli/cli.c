@@ -15,6 +15,13 @@
 #include "cli_helpers2.h"
 #include "hermes_gateway_config.h"
 
+/* From browser_connect.c — Chrome debug launch. */
+extern int hermes_cli_browser_connect_try_launch_chrome_debug(int port, const char *system);
+
+/* From voice.c — voice record key formatting. */
+extern int cli_hermes_cli_voice_format_voice_record_key_for_status(
+    const char *raw, char *output, size_t output_size);
+
 /* From plugins_wrappers.c — plugin command registry access. */
 extern json_t *plug_get_commands(void);
 #ifndef HERMES_PATH_MAX
@@ -1090,38 +1097,215 @@ void hcli_schedule_focus_regain_redraw(hcli_t *self) {
 
 /* Port of Python cli:_get_tui_terminal_width */
 
-/* Port of Python cli:_use_minimal_tui_chrome */
+/* PoP: hcli_use_minimal_tui_chrome @ cli.py:_use_minimal_tui_chrome */
+bool hcli_use_minimal_tui_chrome(hcli_t *self, int width) {
+    (void)self;
+    if (width <= 0) {
+        width = cli_get_tui_terminal_width();
+    }
+    return width < 64;
+}
 
 /* Port of Python cli:_scrollback_box_width */
 
-/* Port of Python cli:_tui_input_rule_height */
+/* PoP: hcli_tui_input_rule_height @ cli.py:_tui_input_rule_height */
+int hcli_tui_input_rule_height(hcli_t *self, const char *position, int width) {
+    if (!self || !position) return -1;
+    if (strcmp(position, "top") != 0 && strcmp(position, "bottom") != 0)
+        return -1;
+    if (self->status_bar_suppressed_after_resize)
+        return 0;
+    if (strcmp(position, "top") == 0)
+        return 1;
+    return hcli_use_minimal_tui_chrome(self, width) ? 0 : 1;
+}
 
 /* Port of Python cli:_spinner_widget_height */
 
-/* Port of Python cli:_render_spinner_text */
+/* PoP: hcli_render_spinner_text @ cli.py:_render_spinner_text */
+char *hcli_render_spinner_text(hcli_t *self) {
+    if (!self) return NULL;
+    if (self->spinner_text && self->spinner_text[0])
+        return self->spinner_text;
+    if (self->tool_start_time > 0) {
+        struct timespec ts;
+        if (clock_gettime(CLOCK_MONOTONIC, &ts) == 0) {
+            double elapsed = ts.tv_sec + ts.tv_nsec / 1e9 - self->tool_start_time;
+            unsigned long secs = (unsigned long)elapsed;
+            if (secs >= 60) {
+                unsigned long m = secs / 60, s = secs % 60;
+                char *buf = malloc(16);
+                if (buf) snprintf(buf, 16, "%lu%02lu", m, s);
+                return buf;
+            }
+            char *buf = malloc(8);
+            if (buf) snprintf(buf, 8, "%lu", secs);
+            return buf;
+        }
+    }
+    return strdup("");
+}
 
-/* Port of Python cli:_voice_record_key_label */
+/* PoP: hcli_voice_record_key_label @ cli.py:_voice_record_key_label */
+char *hcli_voice_record_key_label(hcli_t *self) {
+    if (!self) return NULL;
+    if (self->voice_record_key_display_cache)
+        return self->voice_record_key_display_cache;
+    return strdup("Ctrl+B");
+}
 
-/* Port of Python cli:set_voice_record_key_cache */
+/* PoP: hcli_set_voice_record_key_cache @ cli.py:set_voice_record_key_cache */
+void hcli_set_voice_record_key_cache(hcli_t *self, const char *raw_key) {
+    if (!self) return;
+    if (raw_key) {
+        char buf[64];
+        if (cli_hermes_cli_voice_format_voice_record_key_for_status(raw_key, buf, sizeof(buf)) >= 0) {
+            free(self->voice_record_key_display_cache);
+            self->voice_record_key_display_cache = strdup(buf);
+            return;
+        }
+    }
+    free(self->voice_record_key_display_cache);
+    self->voice_record_key_display_cache = strdup("Ctrl+B");
+}
 
-/* Port of Python cli:_get_voice_status_fragments */
+/* PoP: hcli_get_voice_status_fragments @ cli.py:_get_voice_status_fragments */
+hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width, size_t *out_len);
 
-/* Port of Python cli:_build_status_bar_text */
+/* PoP: hcli_build_status_bar_text @ cli.py:_build_status_bar_text */
+char *hcli_build_status_bar_text(hcli_t *self, int width);
 
-/* Port of Python cli:_get_status_bar_fragments */
+/* PoP: hcli_get_status_bar_fragments @ cli.py:_get_status_bar_fragments */
+hcli_fragment_t *hcli_get_status_bar_fragments(hcli_t *self, size_t *out_len);
 
-/* Port of Python cli:_normalize_model_for_provider */
+/* PoP: hcli_slow_command_status @ cli.py:_slow_command_status */
+char *hcli_slow_command_status(hcli_t *self, const char *command) {
+    (void)self;
+    if (!command) return strdup("Processing command...");
+    char buf[256];
+    snprintf(buf, sizeof(buf), "%s", command);
+    /* lowercase for comparison */
+    for (char *p = buf; *p; p++) *p = tolower(*p);
+    /* strip leading/trailing whitespace */
+    char *start = buf;
+    while (*start == ' ') start++;
+    char *end = start + strlen(start) - 1;
+    while (end > start && *end == ' ') *end-- = '\0';
 
-/* Port of Python cli:_on_thinking */
+    if (strncmp(start, "/skills search", 13) == 0) return strdup("Searching skills...");
+    if (strncmp(start, "/skills browse", 14) == 0) return strdup("Loading skills...");
+    if (strncmp(start, "/skills inspect", 15) == 0) return strdup("Inspecting skill...");
+    if (strncmp(start, "/skills install", 15) == 0) return strdup("Installing skill...");
+    if (strncmp(start, "/skills", 7) == 0) return strdup("Processing skills command...");
+    if (strcmp(start, "/reload-mcp") == 0) return strdup("Reloading MCP servers...");
+    if (strcmp(start, "/reload-skills") == 0 || strcmp(start, "/reload_skills") == 0)
+        return strdup("Reloading skills...");
+    if (strncmp(start, "/browser", 8) == 0) return strdup("Configuring browser...");
+    return strdup("Processing command...");
+}
 
-/* Port of Python cli:_on_notice */
+/* PoP: hcli_command_spinner_frame @ cli.py:_command_spinner_frame */
+static const char *cmd_spinner_frames[10] = {
+    "\xe2\x8ebf", "\xe2\x8ec9", "\xe2\x8ecb", "\xe2\x8ece",
+    "\xe2\x8ecb", "\xe2\x8ecf", "\xe2\x8ec1", "\xe2\x8ecb",
+    "\xe2\x8ec7", "\xe2\x8ecf"
+};
+char *hcli_command_spinner_frame(void) {
+    struct timespec ts;
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0) return strdup("\xe2\x8ebf");
+    unsigned long frame_idx = (ts.tv_sec * 10 + ts.tv_nsec / 100000000) % 10;
+    return strdup(cmd_spinner_frames[frame_idx]);
+}
 
-/* Port of Python cli:_flush_credit_notices */
+/* PoP: hcli_try_launch_chrome_debug @ cli.py:_try_launch_chrome_debug */
+bool hcli_try_launch_chrome_debug(int port, const char *system) {
+    if (!system) return false;
+    return hermes_cli_browser_connect_try_launch_chrome_debug(port, system);
+}
 
-/* Port of Python cli:_on_notice_clear */
+/* PoP: hcli_on_thinking @ cli.py:_on_thinking */
+void hcli_on_thinking(hcli_t *self, const char *text) {
+    if (!self) return;
+    if (!text || !text[0]) {
+        /* _flush_reasoning_preview(force=True) — no-op in C port for now */
+    }
+    free(self->spinner_text);
+    self->spinner_text = text ? strdup(text) : strdup("");
+    self->tool_start_time = 0.0;
+    if (self->app_invalidate_fn)
+        self->app_invalidate_fn(self);
+}
+
+/* PoP: hcli_on_notice @ cli.py:_on_notice */
+void hcli_on_notice(hcli_t *self, const char *notice_json) {
+    if (!self || !notice_json) return;
+    /* Parse JSON to extract text and level.
+     * notice_json: {"text": "...", "level": "info|warn|error|success"} */
+    json_t *j = json_parse_yaml_real(notice_json);
+    if (!j) return;
+    json_t *text_j = json_obj_get(j, "text");
+    const char *text = text_j ? json_string_value(text_j) : NULL;
+    if (!text || !text[0]) {
+        if (j) json_free(j);
+        return;
+    }
+    json_t *level_j = json_obj_get(j, "level");
+    const char *level = level_j ? json_string_value(level_j) : "info";
+    json_free(j);
+
+    /* Append to pending notices */
+    size_t n = self->pending_notice_count;
+    self->pending_notice_levels = realloc(self->pending_notice_levels, (n + 1) * sizeof(char *));
+    self->pending_notice_texts = realloc(self->pending_notice_texts, (n + 1) * sizeof(char *));
+    self->pending_notice_levels[n] = strdup(level);
+    self->pending_notice_texts[n] = strdup(text);
+    self->pending_notice_count = n + 1;
+}
+
+/* PoP: hcli_flush_credit_notices @ cli.py:_flush_credit_notices */
+void hcli_flush_credit_notices(hcli_t *self) {
+    if (!self) return;
+    if (self->pending_notice_count == 0) return;
+    size_t n = self->pending_notice_count;
+    for (size_t i = 0; i < n; i++) {
+        const char *level = self->pending_notice_levels[i];
+        const char *text = self->pending_notice_texts[i];
+        const char *color = "\033[2m"; /* default dim */
+        if (strcmp(level, "error") == 0) color = "\033[31m";
+        else if (strcmp(level, "warn") == 0) color = "\033[33m";
+        else if (strcmp(level, "success") == 0) color = "\033[32m";
+        /* Print: color + "  " + text + reset */
+        printf("%s  %s\033[0m\n", color, text);
+    }
+    /* Clear pending */
+    for (size_t i = 0; i < n; i++) {
+        free(self->pending_notice_levels[i]);
+        free(self->pending_notice_texts[i]);
+    }
+    free(self->pending_notice_levels);
+    free(self->pending_notice_texts);
+    self->pending_notice_levels = NULL;
+    self->pending_notice_texts = NULL;
+    self->pending_notice_count = 0;
+}
+
+/* PoP: hcli_on_notice_clear @ cli.py:_on_notice_clear */
+void hcli_on_notice_clear(hcli_t *self, const char *key) {
+    (void)self;
+    (void)key;
+    /* No-op: Python version is a no-op for rendering. */
+}
 
 
-/* Port of Python cli:_current_reasoning_callback */
+/* PoP: hcli_current_reasoning_callback @ cli.py:_current_reasoning_callback */
+void *hcli_current_reasoning_callback(hcli_t *self) {
+    if (!self) return NULL;
+    if (self->show_reasoning && self->streaming_enabled)
+        return (void *)(intptr_t)(int)self->streaming_enabled;
+    if (self->verbose && !self->show_reasoning)
+        return (void *)(intptr_t)(int)self->verbose;
+    return NULL;
+}
 
 /* Port of Python cli:_emit_reasoning_preview */
 
@@ -1147,9 +1331,38 @@ void hcli_schedule_focus_regain_redraw(hcli_t *self) {
 
 /* Port of Python cli:_busy_command */
 
-/* Port of Python cli:_open_external_editor */
+/* PoP: hcli_open_external_editor @ cli.py:_open_external_editor */
+bool hcli_open_external_editor(hcli_t *self) {
+    if (!self) return false;
+    if (!self->app) {
+        if (self->console_print_fn)
+            self->console_print_fn(self, "External editor is only available inside the interactive CLI.");
+        return false;
+    }
+    if (self->command_running) {
+        if (self->console_print_fn)
+            self->console_print_fn(self, "Wait for the current command to finish before opening the editor.");
+        return false;
+    }
+    if (self->sudo_state || self->secret_state || self->approval_state) {
+        if (self->console_print_fn)
+            self->console_print_fn(self, "Finish the active prompt before opening the editor.");
+        return false;
+    }
+    /* Delegate to editor_open_fn seam (TUI shell provides the actual implementation) */
+    if (self->editor_open_fn)
+        return self->editor_open_fn(self, NULL);
+    return false;
+}
 
-/* Port of Python cli:_install_tool_callbacks */
+/* PoP: hcli_register_extra_tui_keybindings @ cli.py:_register_extra_tui_keybindings */
+void hcli_register_extra_tui_keybindings(hcli_t *self, void *kb, void *input_area) {
+    (void)self;
+    (void)kb;
+    (void)input_area;
+    /* No-op: Python version registers nothing by default.
+     * Wrapper CLIs override this to add keybindings. */
+}
 
 /* Port of Python cli:_ensure_tirith_security */
 
@@ -1425,10 +1638,6 @@ void hcli_show_gateway_status(hcli_t *self) {
 }
 
 /* Port of Python cli:process_command */
-
-/* Port of Python cli:_try_launch_chrome_debug */
-
-/* Port of Python cli:_get_goal_manager */
 
 /* Port of Python cli:_maybe_continue_goal_after_turn */
 

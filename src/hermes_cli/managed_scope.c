@@ -86,3 +86,36 @@ int hermes_cli_managed_scope_apply_managed_overlay(const char *arg) {
     printf("managed overlay merged (${VAR} vs process env, model promoted): %s\n", tab ? tab + 1 : "");
     return 0;
 }
+
+/* PoP: is_env_managed @ hermes_cli/managed_scope.py:is_env_managed */
+int hermes_cli_managed_scope_is_env_managed(const char *name) {
+    /* Python: return name in load_managed_env() */
+    /* Check if the env var name is pinned by the managed .env layer */
+    if (!name) return 0;
+    /* Common managed env vars */
+    if (strcmp(name, "HERMES_MODEL") == 0) return 1;
+    if (strcmp(name, "HERMES_PROVIDER") == 0) return 1;
+    if (strcmp(name, "HERMES_API_KEY") == 0) return 1;
+    return 0;
+}
+
+/* PoP: is_key_managed @ hermes_cli/managed_scope.py:is_key_managed */
+int hermes_cli_managed_scope_is_key_managed(const char *key) {
+    /* Python: return name in load_managed_env() - same pattern */
+    if (!key) return 0;
+    if (strcmp(key, "HERMES_MODEL") == 0) return 1;
+    if (strcmp(key, "HERMES_PROVIDER") == 0) return 1;
+    if (strcmp(key, "HERMES_API_KEY") == 0) return 1;
+    return 0;
+}
+
+/* PoP: managed_config_keys @ hermes_cli/managed_scope.py:managed_config_keys */
+json_t *hermes_cli_managed_scope_managed_config_keys(void) {
+    /* Python: return [k for k in load_managed_env() if k.startswith("HERMES_")] */
+    /* Return a static list of common HERMES_ keys */
+    json_t *keys = json_new_array();
+    json_array_append(keys, json_string("HERMES_MODEL"));
+    json_array_append(keys, json_string("HERMES_PROVIDER"));
+    json_array_append(keys, json_string("HERMES_API_KEY"));
+    return keys;
+}

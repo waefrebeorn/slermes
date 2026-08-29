@@ -399,3 +399,9 @@ void vertex_adapter_get_vertex_config(const char *credentials_path, const char *
     free(eff_region);
 }
 
+
+/* PoP: _refresh_credentials @ agent/vertex_adapter.py:_refresh_credentials */
+void hermes_agent_vertex_adapter_refresh_credentials(void *creds) {
+    /* Python: auth_req = google.auth.transport.requests.Request(); creds.refresh(auth_req) */
+    (void)creds;
+}

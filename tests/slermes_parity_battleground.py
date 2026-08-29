@@ -730,7 +730,7 @@ class ParityAnalyzer:
         }.items():
             add(py, c)
         # cli.py + hermes_cli/
-        add("cli.py","src/cli/main.c")
+        add("cli.py","src/hermes_cli/cli.c")
         for py, c in {
             "hermes_cli/auth.py":"src/cli/auth.c","hermes_cli/auth_commands.py":"src/cli/commands.c",
             "hermes_cli/backup.py":"src/cli/backup.c","hermes_cli/banner.py":"src/cli/banner.c",

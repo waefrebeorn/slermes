@@ -39,7 +39,7 @@ void banner_compute_git_banner_state(char *out_json, size_t out_sz);
 char *banner_resolve_repo_dir(void);
 char *banner_git_short_hash(const char *repo_dir, const char *rev);
 
-/* PoP: get_build_sha @ hermes_cli/build_info.py:get_build_sha */
+/* PoP: build_info_get_build_sha @ hermes_cli/build_info.py:get_build_sha */
 char *build_info_get_build_sha(int short_len);
 
 int  banner_check_for_updates(void);

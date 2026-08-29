@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cch_status_code_from_payload",
   "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/chat_completion_helpers_ports.c", "lib/libjson/json.c"],
+  "extra_src": ["src/agent/chat_completion_helpers_ports.c", "tests/watercup/gates/chat_helpers_status_code_from_payload/shim_streak.c", "lib/libjson/json.c"],
   "py_module": "agent/chat_completion_helpers.py",
   "py_fn": "_status_code_from_payload",
   "inputs": [

@@ -194,3 +194,10 @@ struct http_t *build_keepalive_http_client(const char *base_url,
     http_client_set_pool(h, 4, 60);
     return h;
 }
+
+/* PoP: _uses_codex_cloud_transport @ agent/process_bootstrap.py:_uses_codex_cloud_transport */
+int hermes_agent_process_bootstrap_uses_codex_cloud_transport(const char *base_url) {
+    /* Python: return base_url_hostname(base_url).lower() == "chatgpt.com" and "/backend-api/codex" in str(base_url).lower() */
+    if (!base_url) return 0;
+    return strcasestr(base_url, "chatgpt.com") != NULL && strcasestr(base_url, "/backend-api/codex") != NULL;
+}

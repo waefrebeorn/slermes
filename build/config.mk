@@ -80,10 +80,35 @@ HERMES_VERSION_STR := $(HERMES_VERSION)-slermes
 HERMES_RELEASE_DATE_STR := $(HERMES_RELEASE_DATE)
 DATADIR_STR := $(PREFIX)/share/slermes/docs
 
-CFLAGS = -O2 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include -I src -I src/cli -I src/hermes_cli -I src/cron -I src/gateway -I src/tools -I lib -I lib/libwubuoffice/src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
+CFLAGS = -O3 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include -I src -I src/cli -I src/hermes_cli -I src/cron -I src/gateway -I src/tools -I lib -I lib/libwubuoffice/src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
+# PGO (Profile-Guided Optimization) support — two-phase build for max runtime speed.
+# PGO typically yields 5-15% runtime speedup on C codebases (GCC docs: up to 2×).
+# Slermes is heavy on JSON + DB + string processing hot paths — good PGO candidates.
+# NOTE: Full PGO cycle requires 1500+ file rebuild (~3.5min) + representative workload.
+# For now, -O3 + LTO gives the most practical gains without PGO overhead.
+ifneq ($(PGO_INSTRUMENT),)
+  CFLAGS += -fprofile-generate
+endif
+ifneq ($(PGO_OPTIMIZE),)
+  CFLAGS += -fprofile-use -fprofile-correction
+endif
 CFLAGS += -DHERMES_VERSION=\"$(HERMES_VERSION_STR)\" -DHERMES_RELEASE_DATE=\"$(HERMES_RELEASE_DATE_STR)\" -DATADIR=\"$(DATADIR_STR)\"
 LDFLAGS = $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS)
 LIBS = -lm
+# LTO (Link-Time Optimization) — enabled for release builds:
+#   make LTO=1   → adds -flto to CFLAGS + LDFLAGS, enables cross-TU inlining,
+#                   dead-code elimination, and better code layout. Typically 2-5%
+#                   runtime speedup + 10-30% binary size reduction on C projects.
+#   GCC LTO caveat: sqlite3.o (10MB amalgamation) links slowly with LTO; the
+#   linker may need more memory. If LTO link fails, drop -flto for sqlite3.o.
+ifneq ($(LTO),)
+  CFLAGS += -flto
+  LDFLAGS += -flto
+endif
+# Strip binary by default (release). Debug builds disable: make STRIP=0
+ifeq ($(STRIP),1)
+  LDFLAGS += -s
+endif
 
 # Optional ncurses full-screen TUI (enabled when ncurses is available)
 TUI_INC = -I lib/libncurses/include

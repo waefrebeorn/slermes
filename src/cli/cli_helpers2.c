@@ -946,8 +946,8 @@ char *hcli_get_status_bar_session_title(hcli_t *self)
     return strdup(title);
 }
 
-/* PoP: cli_status_bar_display_width @ cli.py:_status_bar_display_width
- * prompt_toolkit get_cwidth port: decode UTF-8 codepoints and classify —
+/* PoP: cli_status_bar_display_width @ cli.py:_status_bar_display_width */
+/* prompt_toolkit get_cwidth port: decode UTF-8 codepoints and classify —
  * zero-width combining/variation selectors, wide East-Asian & emoji ranges,
  * everything else (including ambiguous-width glyphs like ─ ✓ ⏱) = 1. */
 static int h2_cp_width(unsigned long cp)

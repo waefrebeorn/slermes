@@ -260,4 +260,44 @@ bool cronjobs_heartbeat_fire_claim(const char *job_id,
 json_t *cronjobs_rearm_oneshot(const char *ref, const char *run_at,
                                char **err);
 
+/* ── Parity REAL_GAP closure batch (cron/jobs.py) ──────────────────── */
+
+/* PoP: _fire_job_lock @ cron/jobs.py:_fire_job_lock */
+int cronjobs_fire_job_lock(const char *job_id);
+void cronjobs_fire_job_lock_release(int fd);
+/* PoP: job_payload_is_empty @ cron/jobs.py:job_payload_is_empty */
+bool cronjobs_job_payload_is_empty(const json_t *job);
+/* PoP: _schedule_cadence_seconds @ cron/jobs.py:_schedule_cadence_seconds */
+bool cronjobs_schedule_cadence_seconds(const json_t *schedule, double *out_seconds);
+/* PoP: _job_is_stale_error_recurring @ cron/jobs.py:_job_is_stale_error_recurring */
+bool cronjobs_job_is_stale_error_recurring(json_t *job, const json_t *schedule,
+                                           time_t now);
+/* PoP: _record_persisted_error_recovery @ cron/jobs.py:_record_persisted_error_recovery */
+void cronjobs_record_persisted_error_recovery(const json_t *job,
+                                              const char *previous_next_run);
+/* PoP: _cron_next_run_matches_expr @ cron/jobs.py:_cron_next_run_matches_expr */
+bool cronjobs_cron_next_run_matches_expr(const json_t *schedule,
+                                         const char *next_run_iso);
+/* PoP: _normalize_reasoning_effort @ cron/jobs.py:_normalize_reasoning_effort */
+char *cronjobs_normalize_reasoning_effort(const char *value, char **err);
+/* PoP: _claim_is_live @ cron/jobs.py:_claim_is_live */
+bool cronjobs_claim_is_live(const json_t *claim, time_t now, double ttl_seconds);
+/* PoP: _mark_job_run_locked @ cron/jobs.py:_mark_job_run_locked */
+bool cronjobs_mark_job_run_locked(const char *job_id, bool success,
+                                  const char *error,
+                                  const char *delivery_error,
+                                  const char *status,
+                                  const char *expected_fire_owner);
+/* PoP: _write_missed_oneshot_diagnostic @ cron/jobs.py:_write_missed_oneshot_diagnostic */
+void cronjobs_write_missed_oneshot_diagnostic(const json_t *job,
+                                              const char *next_run);
+/* PoP: _claim_job_for_fire_locked @ cron/jobs.py:_claim_job_for_fire_locked */
+json_t *cronjobs_claim_job_for_fire_locked(const char *job_id,
+                                           int claim_ttl_seconds,
+                                           bool force, bool return_job,
+                                           bool *won);
+/* PoP: _heartbeat_fire_claim_locked @ cron/jobs.py:_heartbeat_fire_claim_locked */
+bool cronjobs_heartbeat_fire_claim_locked(const char *job_id,
+                                          const char *expected_owner);
+
 #endif /* CRON_JOBS_H */

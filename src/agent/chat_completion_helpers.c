@@ -682,3 +682,8 @@ int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) {
     printf("%s\n", t3 ? t3 + 1 : "stub");
     return 0;
 }
+
+/* Exported accessors over the static agent._consecutive_stale_streams
+ * mirror, for the stale-wait accounting closures in _ports.c. */
+long long cch_stale_streak_get(void) { return g_stale_streams; }
+void cch_stale_streak_bump(void) { g_stale_streams += 1; }

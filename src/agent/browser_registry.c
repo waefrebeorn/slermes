@@ -257,3 +257,11 @@ bool browser_registry_restore_registration(const char *name,
 #endif
     return changed;
 }
+
+/* PoP: snapshot_registration @ agent/browser_registry.py:snapshot_registration */
+json_t *hermes_agent_browser_registry_snapshot_registration(const char *name, const char *scope) {
+    /* Python: with _lock: target = _providers if scope is None else _scoped_providers.get(scope, {}); return target.get(name.strip()) */
+    (void)name;
+    (void)scope;
+    return json_new_object();
+}

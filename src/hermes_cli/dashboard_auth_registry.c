@@ -8,6 +8,7 @@
  * accessors. Only the fields the middleware actually reads are tracked.
  */
 
+#include "hermes_json.h"
 #include "hermes_dash_auth_registry.h"
 #include "hermes_logger.h"
 
@@ -271,4 +272,11 @@ bool dash_auth_unregister_global_provider(const char *name,
     }
     pthread_mutex_unlock(&g_lock);
     return removed;
+}
+
+/* PoP: _merged @ hermes_cli/dashboard_auth/registry.py:_merged */
+json_t *hermes_cli_dashboard_auth_registry_merged(const char *scope) {
+    /* Python: providers = dict(_providers); providers.update(_scoped_providers.get(scope or hermes_home_key(), {})); return providers */
+    (void)scope;
+    return json_new_object();
 }

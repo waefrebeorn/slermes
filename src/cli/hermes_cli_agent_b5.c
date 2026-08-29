@@ -473,7 +473,7 @@ json_t *hcli_get_status_bar_snapshot(hcli_t *self)
 
 /* ── hcli_spinner_widget_height ─────────────────────────────────────────── */
 
-extern bool hcli_use_minimal_tui_chrome(hcli_t *self) __attribute__((weak));
+extern bool hcli_use_minimal_tui_chrome(hcli_t *self, int width) __attribute__((weak));
 
 /* PoP: hcli_spinner_widget_height @ cli.py:_spinner_widget_height */
 int hcli_spinner_widget_height(hcli_t *self, int width)
@@ -484,7 +484,7 @@ int hcli_spinner_widget_height(hcli_t *self, int width)
     const char *spinner_line = self->spinner_text;
     if (!spinner_line || !*spinner_line)
         return 0;
-    if (hcli_use_minimal_tui_chrome && hcli_use_minimal_tui_chrome(self))
+    if (hcli_use_minimal_tui_chrome && hcli_use_minimal_tui_chrome(self, width))
         return 0;
     if (width <= 0)
         width = cli_get_tui_terminal_width();
@@ -508,16 +508,36 @@ static const char *const B5_CLOSE_TAGS[] = {
     "</THINKING>", "</thinking>", "</thought>"
 };
 
-static void b5_reset_stream_state(hcli_t *self)
+/* PoP: _reset_stream_state @ cli.py:HermesCLI._reset_stream_state */
+/* Reset streaming state before each agent invocation (full field list from
+ * cli.py:_reset_stream_state). */
+void _reset_stream_state(hcli_t *self)
 {
+    free(self->stream_buf);
+    self->stream_buf = NULL;
     self->stream_started = false;
     self->stream_box_opened = false;
-    self->in_reasoning_block = false;
-    self->stream_last_was_newline = true;
+    free(self->stream_text_ansi);
+    self->stream_text_ansi = NULL;
     free(self->stream_prefilt);
     self->stream_prefilt = NULL;
+    self->in_reasoning_block = false;
+    self->stream_last_was_newline = true;
+    self->reasoning_box_opened = false;
+    free(self->reasoning_buf);
+    self->reasoning_buf = NULL;
+    free(self->reasoning_preview_buf);
+    self->reasoning_preview_buf = NULL;
     free(self->deferred_content);
     self->deferred_content = NULL;
+    if (self->stream_table_rows) {
+        for (size_t i = 0; i < self->stream_table_rows_len; i++)
+            free(self->stream_table_rows[i]);
+        free(self->stream_table_rows);
+        self->stream_table_rows = NULL;
+        self->stream_table_rows_len = 0;
+    }
+    self->in_stream_table = false;
 }
 
 /* PoP: hcli_stream_delta @ cli.py:_stream_delta */
@@ -529,7 +549,7 @@ void hcli_stream_delta(hcli_t *self, const char *text)
     if (!text) {                 /* intermediate turn boundary */
         if (self->stream_flush_fn)
             self->stream_flush_fn(self);
-        b5_reset_stream_state(self);
+        _reset_stream_state(self);
         return;
     }
     if (!*text)

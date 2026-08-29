@@ -456,7 +456,7 @@ json_t *ws_prune_endpoint(const char *db_path, const json_t *body) {
 }
 
 
-/* ── PoP: count_prune_matches @ hermes_state.py:count_prune_matches ── */
+/* PoP: count_prune_matches @ hermes_state.py:count_prune_matches */
 int count_prune_matches(const char *db_path, bool has_older,
                         double older_than_days, const ws_prune_filters_t *f) {
     /* Count sessions a matching prune/archive would touch — same filter
@@ -487,7 +487,7 @@ int count_prune_matches(const char *db_path, bool has_older,
     return count;
 }
 
-/* ── PoP: count_open_prune_matches @ hermes_state.py:count_open_prune_matches ── */
+/* PoP: count_open_prune_matches @ hermes_state.py:count_open_prune_matches */
 int count_open_prune_matches(const char *db_path, bool has_older,
                              double older_than_days,
                              const ws_prune_filters_t *f) {

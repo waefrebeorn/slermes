@@ -997,13 +997,11 @@ static char *pairing_purge_allowlist_entries(const char *entries_csv,
     return out;
 }
 
-/* PoP: iter_live_gateway_adapters @ gateway/pairing.py:_iter_live_gateway_adapters */
-/* Gateway-only: yields adapters from the in-process GatewayRunner. In a library
- * build there is no runner, so this is a no-op (mirrors Python's try/except). */
 #ifdef HERMES_GATEWAY_RUNNING
 /* filled in by gateway/link layer when a runner is active */
 extern void **gateway_adapters_iter(int *out_count);
 #endif
+/* PoP: iter_live_gateway_adapters @ gateway/pairing.py:_iter_live_gateway_adapters */
 static void iter_live_gateway_adapters(const char *platform,
                                                void (*fn)(void *adapter, const char *platform),
                                                void *ctx) {

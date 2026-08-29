@@ -88,9 +88,31 @@ TMPH="$(pwd)/$BUILD_DIR/home_$NAME"
 # prints its compile command. Compile it explicitly here (with the same
 # include roots + version-macro fixes) so harness edits actually take effect
 # and the linked binary is never a stale object from a prior run.
+#
+# The extracted link line may reference .o files from lib/ that the main
+# build only creates as .a archives or that were cleaned. Pre-compile any
+# missing .o files so the harness link succeeds.
 mkdir -p "$BUILD_DIR/obj/tests"
+# Pre-compile any .o files referenced in the link line that don't exist on disk
+for obj in $LINKCMD; do
+    case "$obj" in
+        *.o)
+            if [ ! -f "$obj" ]; then
+                src="${obj%.o}.c"
+                if [ -f "$src" ]; then
+                    echo "Pre-compiling $obj from $src..." >&2
+                    gcc -c "$src" -o "$obj" \
+                        -I include $LIBINCS $SRCINCS \
+                        -D_XOPEN_SOURCE=700 -D_GNU_SOURCE \
+                        -DHERMES_VERSION=0 -DHERMES_RELEASE_DATE=0 \
+                        -DATADIR=""/share/slermes/docs"" 2>/dev/null || true
+                fi
+            fi
+            ;;
+    esac
+done
 COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o -I include $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
-COMPILE=$(echo "$COMPILE" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#g; s#-DHERMES_RELEASE_DATE=[^ ]*#-DHERMES_RELEASE_DATE=0#g; s#-DATADIR=[^ ]*#-DATADIR="/share/slermes/docs"#g')
+COMPILE=$(echo "$COMPILE" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#g; s#-DHERMES_RELEASE_DATE=[^ ]*#-DHERMES_RELEASE_DATE=0#g; s#-DATADIR=[^ ]*#-DATADIR="\/share\/slermes\/docs"#g')
 # Always rebuild the harness from the current object closure (never reuse a
 # stale binary from a prior run with a different object set).
 rm -f "$BUILD_DIR/tt_$NAME"
@@ -112,10 +134,13 @@ if [ ! -f "$BUILD_DIR/tt_$NAME" ]; then
   echo "LINK FAILED for $NAME:" >&2
   grep -iE 'error|undefined|multiple' /tmp/oracle_link.log | head -5 >&2
 fi
+# Remove any stale subprocess-style binary from prior runs so a failed
+# link cannot be masked by diffing an old binary (false-pass bug).
+rm -f "/tmp/t_port_$NAME"
 # Subprocess-style oracles exec a fixed /tmp/t_port_<name> binary (they
 # re-run the harness themselves and compare against live Python). Point
 # that path at the freshly-built harness so they see current code.
-ln -sfn "$(pwd)/$BUILD_DIR/tt_$NAME" "/tmp/t_port_$NAME" 2>/dev/null || true
+ln -sfn "$BUILD_DIR/tt_$NAME" "/tmp/t_port_$NAME" 2>/dev/null || true
 
 FAIL=0
 # Load normalize rules from registry.json (strip_patterns: regex on raw output;

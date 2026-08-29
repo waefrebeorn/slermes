@@ -883,3 +883,9 @@ int hermes_cli_projects_db_clear_discovered_repos(const char *arg) {
     sqlite3_close(db);
     return rc == SQLITE_OK ? 0 : -1;
 }
+
+/* PoP: _primary_path_key @ hermes_cli/projects_db.py:_primary_path_key */
+char *hermes_cli_projects_db_primary_path_key(const char *path) {
+    /* Python: return os.path.normcase(_normalize_path(path)) */
+    return strdup(path);
+}

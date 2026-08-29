@@ -9,7 +9,7 @@ import json, subprocess, sys
 sys.path.insert(0, "/home/wubu/hermes-agent-dev")
 import tools.image_generation_tool as igt
 
-proc = subprocess.run(["/tmp/t_port_image_gen_path"], capture_output=True, text=True)
+proc = subprocess.run(["/home/wubu/hermes-agent-dev/slermes/tests/oracle/build/tt_image_gen_path"], capture_output=True, text=True)
 if proc.returncode != 0:
     print("HARNESS CRASHED:", proc.stderr); sys.exit(2)
 

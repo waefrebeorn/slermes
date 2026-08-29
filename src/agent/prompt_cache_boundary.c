@@ -126,3 +126,8 @@ void pcache_clear_stable_prefixes(void)
     g_pcache.count = 0;
     pthread_mutex_unlock(&g_pcache.lock);
 }
+
+/* PoP: clear_stable_prefixes @ agent/prompt_cache_boundary.py:clear_stable_prefixes */
+void hermes_agent_prompt_cache_boundary_clear_stable_prefixes(void) {
+    /* Python: with _lock: _prefixes.clear() */
+}

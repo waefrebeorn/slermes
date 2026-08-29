@@ -718,7 +718,6 @@ bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
     }
 
     /* Apply env overrides */
-/* PoP: gateway_config_validate @ hermes_cli/config.py:load_env */
     hermes_config_load_env(&hcfg);
 
     memset(out_cfg, 0, sizeof(*out_cfg));

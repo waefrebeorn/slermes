@@ -450,7 +450,6 @@ ws_path_status_t ws_decode_data_url(const char *data_url,
 }
 
 /* ── ws_fs_mime_type ─────────────────────────────────────────────────────── */
-/* PoP: ws_fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type */
 /* Python: suffix-lowercased; if in `_FS_MIME_TYPES` return that;
  * else `mimetypes.guess_type(str(path))[0] or "application/octet-stream"`.
  * We mirror that exactly: first the hardcoded dashboard table, then a small
@@ -520,6 +519,7 @@ static const mime_pair_t k_mimetypes_fallback[] = {
     {".yml", "application/yaml"},
 };
 
+/* PoP: ws_fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type */
 const char *ws_fs_mime_type(const char *path) {
     if (!path) return "application/octet-stream";
     /* Get the suffix (last '.' from the last '/'). Python: path.suffix.lower(). */

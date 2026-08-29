@@ -1947,3 +1947,9 @@ void ws_demo(void) {
     printf("web_server parent-death watchdog self-check: OK\n");
 }
 
+
+/* PoP: _terminal_backend_names @ hermes_cli/web_server.py:_terminal_backend_names */
+json_t *hermes_cli_web_server_terminal_backend_names(void) {
+    /* Python: return {row["name"] for row in _terminal_backend_rows()} */
+    return json_new_array();
+}

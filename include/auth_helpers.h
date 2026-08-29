@@ -84,6 +84,46 @@ char *auth_format_error(const auth_error_t *e);
 /* Returns NULL when usable; otherwise a malloc'd reason string. */
 char *auth_nous_invoke_jwt_status(const char *token, const char *scope, const char *expires_at, int min_ttl_seconds);
 
+/* ── remaining parity closures (auth_helpers2.c) ─────────────────────── */
+
+/* _LazyHttpx lazy-target proxy (dunder delegation via owner callbacks). */
+typedef struct auth_lazy_httpx auth_lazy_httpx_t;
+void *auth_lazy_httpx_resolve(auth_lazy_httpx_t *self);
+void *auth_lazy_httpx_getattr(auth_lazy_httpx_t *self, const char *name);
+int   auth_lazy_httpx_setattr(auth_lazy_httpx_t *self, const char *name, void *value);
+int   auth_lazy_httpx_delattr(auth_lazy_httpx_t *self, const char *name);
+
+/* Secret prefix validation (KNOWN_PROVIDER_KEY_PREFIXES; fail-open). */
+bool  ath_secret_matches_declared_prefix(const char *provider_id, const char *value);
+void  ath_warn_malformed_secret(const char *provider_id, const char *source);
+
+/* Retry-After header parse (whole seconds; -1 = None sentinel). */
+int   ath_parse_retry_after_seconds(const char *raw_value);
+
+/* OAuth scope set parsing (_scope_values). Caller frees with
+ * ath_scope_values_free(). */
+char **ath_scope_values(const char *raw_scope, int *out_count);
+void   ath_scope_values_free(char **scopes, int n);
+
+/* Spotify ordered scope list (_spotify_scope_list). */
+char **ath_spotify_scope_list(const char *raw_scope, int *out_count);
+void   ath_spotify_scope_list_free(char **scopes, int n);
+
+/* get_auth_status dispatcher — malloc'd status JSON; caller frees. */
+char *ath_get_auth_status(const char *provider_id);
+char *get_active_provider_id_for_status(void);      /* malloc'd or NULL */
+
+/* Model-selection confirm guard — 1 proceed, 0 cancel. */
+int   ath_confirm_selection_guards(const char *model_id, const char *provider,
+                                   const char *base_url, const char *api_key,
+                                   char **include_kinds,
+                                   const char *(*input_fn)(void *ctx),
+                                   void *input_ctx);
+
+/* login/logout commands — return the SystemExit code. */
+int   ath_login_command(void *args);
+int   ath_logout_command(const char *provider_id);
+
 #ifdef __cplusplus
 }
 #endif

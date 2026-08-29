@@ -21,6 +21,7 @@
 #include <termios.h>
 #include <sys/stat.h>
 
+/* PoP: hermes_config_load_env @ hermes_cli/config.py:load_env */
 bool hermes_config_load_env(hermes_config_t *cfg) {
     /* Environment overrides for all config fields */
     const char *v;

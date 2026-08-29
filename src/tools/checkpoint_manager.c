@@ -1369,3 +1369,13 @@ int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
     printf("%d\n", any);
     return 0;
 }
+
+/* PoP: _ledger_path @ tools/checkpoint_manager.py:_ledger_path */
+char *hermes_tools_checkpoint_manager_ledger_path(const char *store, const char *dir_hash) {
+    /* Python: return store / _LEDGERS_DIRNAME / f"{dir_hash}.json" */
+    size_t len = strlen(store) + strlen(dir_hash) + 32;
+    char *buf = malloc(len);
+    if (!buf) return NULL;
+    snprintf(buf, len, "%s/ledgers/%s.json", store, dir_hash);
+    return buf;
+}

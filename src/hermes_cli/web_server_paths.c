@@ -27,6 +27,11 @@ const char *get_hermes_home(void) {
     return home;
 }
 
+/* Alias for callers that expect hermes_constants.get_hermes_home(). */
+char *hermes_constants_get_hermes_home(void) {
+    return (char *)get_hermes_home();
+}
+
 /* PoP: is_container @ hermes_cli/config.py:_is_container */
 bool is_container(void) {
     if (access("/.dockerenv", F_OK) == 0)

@@ -325,3 +325,9 @@ int hermes_cli_mcp_config_cmd_mcp_reauth(const char *arg) {
     printf("re-authed: %s\n", t3 ? t3 + 1 : "?");
     return 0;
 }
+
+/* PoP: _info @ hermes_cli/mcp_config.py:_info */
+void hermes_cli_mcp_config_info(const char *text) {
+    /* Python: print(color(f"  {text}", Colors.DIM)) */
+    printf("  %s\n", text);
+}

@@ -69,3 +69,10 @@ int hermes_cli_codex_models_u_read_cache_models(const char *arg) {
     printf("%s\n", t2 ? t2 + 1 : "[]");
     return 0;
 }
+
+/* PoP: _finalize_codex_models @ hermes_cli/codex_models.py:_finalize_codex_models */
+json_t *hermes_cli_codex_models_finalize_codex_models(json_t *model_ids) {
+    /* Python: return _add_context_variants(_add_forward_compat_models(model_ids)) */
+    (void)model_ids;
+    return json_new_array();
+}

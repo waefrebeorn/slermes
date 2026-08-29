@@ -11,6 +11,25 @@
 
 
 /* === dissolved from ports_wrappers.c === */
+/* PoP: hermes_cli_skills_hub_u_print_tier1_advisory @ hermes_cli/skills_hub.py:_print_tier1_advisory */
+int hermes_cli_skills_hub_u_print_tier1_advisory(const char *arg) {
+    /* Python: advisory Tier 1 scan, never blocks. Arg = "skill_dir\tstate\tresult".
+     * state: 0=skipped/disabled, 1=no_findings, 2=findings (secrets=red, else yellow). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 ? (t1[1] == '1' ? 1 : (t1[1] == '2' ? 2 : 0)) : 0;
+    if (state == 0) { printf("\n"); return 0; }
+    if (state == 1) { printf("[dim]%s[/]\n", t2 ? t2 + 1 : ""); return 0; }
+    const char *title = "SkillEvaluator Tier 1 (advisory)";
+    const char *style = t2 && t2[1] == 's' ? "red" : "yellow"; /* secrets vs normal */
+    printf("[%s]%s[/]\n", style, title); /* Panel border */
+    printf("%s\n", t2 ? t2 + 1 : "");
+    if (t2 && t2[1] == 's')
+        printf("[bold red]Possible credentials detected above.[/] Review the flagged lines before using this skill.\n");
+    return 0;
+}
+
 /* PoP: hermes_cli_skills_hub_u_display_source @ hermes_cli/skills_hub.py:_display_source */
 int hermes_cli_skills_hub_u_display_source(const char *arg) {
     /* Python: github -> provider label else source. Arg =

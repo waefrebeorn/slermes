@@ -50,6 +50,7 @@ struct ProcessSession {
     char cwd[512];                      /* working directory */
     char completion_reason[32];         /* exited|killed|lost|failed_start|already_exited */
     char termination_source[64];        /* process.kill|kill_all|backend_lost|failed_start */
+    char systemd_unit[128];             /* transient systemd-run --user --scope unit (#70716) */
     long host_start_time;               /* kernel start ticks - PID-reuse guard (0 = unset) */
     void *env_ref;                      /* reference to environment backend for non-local */
     char **output_lines;                /* drained reader output lines */
@@ -133,6 +134,17 @@ void process_registry_init(void);
 
 /* PoP: format_uptime_short @ tools/process_registry.py:format_uptime_short */
 void format_uptime_short(int seconds, char *buf, size_t buf_len);
+
+/* ── systemd cgroup isolation + gap closures (port of the remaining
+ *    tools/process_registry.py REAL_GAP functions) ────────────────────── */
+long process_registry_worker_memory_max_bytes(void);
+bool process_registry_systemd_run_user_scope_available(void);
+bool process_registry_is_supervised_gateway_process(void);
+bool process_registry_stop_systemd_unit(const char *unit_name);
+void process_registry_emit_lifetime_watch_disabled(ProcessSession *s);
+double process_registry_oneshot_completion_wait_seconds(void);
+ProcessSession *process_registry_resolve_prefix(const char *session_id);
+char *process_registry_delegation_attribution_line(const char *evt_json);
 
 /* PoP: spawn_local @ tools/process_registry.py:ProcessRegistry.spawn_local */
 ProcessSession* spawn_local(const char *command,

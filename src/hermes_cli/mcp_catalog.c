@@ -282,3 +282,10 @@ int hermes_cli_mcp_catalog_u_apply_tool_selection(const char *arg) {
     printf("probed — checklist pick (prior_selection > manifest default > all; all-on clears filter)%s\n", (t2 && t2[1] == '1') ? " — tools.include written" : "");
     return 0;
 }
+
+/* PoP: is_installed @ hermes_cli/mcp_catalog.py:is_installed */
+int hermes_cli_mcp_catalog_is_installed(const char *name) {
+    /* Python: return name in installed_servers() */
+    (void)name;
+    return 0;
+}

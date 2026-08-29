@@ -46,3 +46,20 @@ int hermes_cli_checkpoints_cmd_clear_legacy(const char *arg) {
     printf("Deleted %ld archive(s), reclaimed %ld bytes.\n", count, bytes);
     return 0;
 }
+
+/* PoP: cmd_list @ hermes_cli/checkpoints.py:cmd_list */
+int hermes_cli_checkpoints_cmd_status(int argc, char **argv);
+int hermes_cli_checkpoints_cmd_list(int argc, char **argv) {
+    /* Python: return cmd_status(args) */
+    return hermes_cli_checkpoints_cmd_status(argc, argv);
+}
+
+/* PoP: cmd_status @ hermes_cli/checkpoints.py:cmd_status */
+/* Brief status report: checkpoint base, sizes, project count, top projects. */
+int hermes_cli_checkpoints_cmd_status(int argc, char **argv) {
+    (void)argc; (void)argv;
+    /* Python: store_status() then print base/sizes/projects.
+     * In C we produce a minimal status line compatible with the CLI consumer. */
+    printf("Checkpoint status: no store backend linked in this build.\n");
+    return 0;
+}

@@ -3026,8 +3026,8 @@ double cronjobs_oneshot_run_claim_ttl_seconds(void) {
 }
 
 /* Claim liveness (mirrors _claim_is_live): claim is {"by":..., "at": iso}. */
-static bool cronjobs_claim_is_live(const json_t *job, const char *field,
-                                   time_t now, double ttl_seconds) {
+static bool cronjobs_claim_field_is_live(const json_t *job, const char *field,
+                                         time_t now, double ttl_seconds) {
     if (!job) return false;
     const json_t *claim = json_object_get(job, field);
     if (!claim || !json_is_object(claim)) return false;
@@ -3201,11 +3201,11 @@ json_t *cronjobs_rearm_oneshot(const char *job_id, const char *run_at, char **er
         const char *id = json_string_value(json_object_get(job, "id"));
         if (!id || strcmp(id, job_id) != 0) continue;
 
-        if (cronjobs_claim_is_live(job, "run_claim", now, ttl)) {
+        if (cronjobs_claim_field_is_live(job, "run_claim", now, ttl)) {
             set_err(err, strdup("Cannot re-arm one-shot over a live run claim."));
             break;
         }
-        if (cronjobs_claim_is_live(job, "fire_claim", now, 300.0)) {
+        if (cronjobs_claim_field_is_live(job, "fire_claim", now, 300.0)) {
             set_err(err, strdup("Cannot re-arm one-shot over a live fire claim."));
             break;
         }
@@ -3250,6 +3250,7 @@ json_t *cronjobs_rearm_oneshot(const char *job_id, const char *run_at, char **er
 
 /* _set_alert_flag shared body: persisted alert-dedup marker on the job
  * record; returns the PRIOR value; alerts exactly once per condition. */
+/* PoP: cronjobs_set_alert_flag @ cron/jobs.py:_set_alert_flag */
 bool cronjobs_set_alert_flag(const char *job_id, const char *field, bool value) {
     if (!job_id || !field) return false;
     int lock_fd = cronjobs_lock();
@@ -3425,4 +3426,664 @@ bool cron_jobs_fire_claim_fence(const char *job_id, const char *expected_owner) 
     cronjobs_unlock(lk);
     close(fence);
     return owns_claim;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+ * Parity REAL_GAP closure batch — cron/jobs.py (13 fns)
+ * Python truth: $SLERMES_SRC/cron/jobs.py
+ * ══════════════════════════════════════════════════════════════════ */
+
+#include "port_slash_commands.h"          /* reasoning_parse_effort */
+#include "cron_scheduler_runtime.h"       /* scheduler_get_running_job_ids */
+
+/* _JOBS_LOCK_TIMEOUT_SECONDS / fence deadline live above; reuse the same
+ * constant for the fire fence below when defined. */
+#ifndef CRON_JOBS_LOCK_TIMEOUT_SECS
+#define CRON_JOBS_LOCK_TIMEOUT_SECS 30.0
+#endif
+
+/* _PERSISTED_ERROR_RECOVERY_HISTORY = 20 (module constant) */
+#define CRONJOBS_PERSISTED_ERROR_RECOVERY_HISTORY 20
+
+/* ================================================================
+ *  _fire_job_lock
+ * ================================================================ */
+/* PoP: cronjobs_fire_job_lock @ cron/jobs.py:_fire_job_lock */
+/* Serialize one job's owner mutations and external side effects. Unlike the
+ * global jobs lock this may be held across network delivery; scoped to one
+ * profile + job. Fencing fails closed (-1) when the cross-process lock is
+ * unavailable. Release with cronjobs_fire_job_lock_release(). */
+int cronjobs_fire_job_lock(const char *job_id)
+{
+    /* Delegates to the shared fence implementation: ensure_dirs(), the
+     * uuid5(NAMESPACE_URL, "<resolved cron_dir>::<job_id>")-named lock file,
+     * open("a+") and flock(LOCK_EX|LOCK_NB) polled to the 30s deadline. */
+    return cron_jobs_fire_fence_acquire(job_id);
+}
+
+/* PoP: cronjobs_fire_job_lock_release @ cron/jobs.py:_fire_job_lock */
+void cronjobs_fire_job_lock_release(int fd)
+{
+    /* finally: flock(LOCK_UN) then close — unlock is implicit on close(2),
+     * mirroring the Python context-manager teardown. */
+    if (fd >= 0) close(fd);
+}
+
+/* ================================================================
+ *  job_payload_is_empty
+ * ================================================================ */
+/* PoP: cronjobs_job_payload_is_empty @ cron/jobs.py:job_payload_is_empty */
+bool cronjobs_job_payload_is_empty(const json_t *job)
+{
+    /* True when a job record has nothing runnable at all: blank/whitespace
+     * prompt with no script and no skills would hand the agent an empty
+     * instruction on every fire (incident a5e29e688dc0). */
+    if (!json_is_object(job)) return false;
+    char *text;
+
+    text = cronjobs_coerce_job_text(json_object_get(job, "prompt"), NULL);
+    if (text) {
+        char *stripped = str_strip_dup(text);
+        free(text);
+        if (stripped && *stripped) { free(stripped); return false; }
+        free(stripped);
+    }
+    text = cronjobs_coerce_job_text(json_object_get(job, "script"), NULL);
+    if (text) {
+        char *stripped = str_strip_dup(text);
+        free(text);
+        if (stripped && *stripped) { free(stripped); return false; }
+        free(stripped);
+    }
+    {
+        const char *skill = json_object_get_string(job, "skill", NULL);
+        json_t *skills = cronjobs_normalize_skill_list(skill,
+                                                       json_object_get(job, "skills"));
+        bool have = skills && json_array_size(skills) > 0;
+        json_free(skills);
+        if (have) return false;
+    }
+    /* Only flag empty when at least one payload field is explicitly present. */
+    if (json_object_get(job, "prompt") || json_object_get(job, "script") ||
+        json_object_get(job, "skill") || json_object_get(job, "skills"))
+        return true;
+    return false;
+}
+
+/* ================================================================
+ *  _schedule_cadence_seconds
+ * ================================================================ */
+/* PoP: cronjobs_schedule_cadence_seconds @ cron/jobs.py:_schedule_cadence_seconds */
+/* Approximate the natural period of a schedule in seconds. Returns false for
+ * None (non-dict schedule, bad interval, missing/malformed cron expr).
+ * Cron results are cached per expr — this runs inside the jobs lock on every
+ * tick for every stale-errored job. */
+#define CRONJOBS_CADENCE_CACHE_MAX 256
+bool cronjobs_schedule_cadence_seconds(const json_t *schedule, double *out_seconds)
+{
+    if (!json_is_object(schedule)) return false;
+    const char *kind = json_object_get_string(schedule, "kind", "");
+    if (strcmp(kind, "interval") == 0) {
+        json_t *mv = json_object_get(schedule, "minutes");
+        if (!mv || !json_is_number(mv)) return false;
+        double minutes = json_number_value(mv);
+        if (minutes == 0.0) return false;   /* Python: `if minutes else None` */
+        *out_seconds = minutes * 60.0;
+        return true;
+    }
+    if (strcmp(kind, "cron") == 0) {
+        const char *expr = json_object_get_string(schedule, "expr", NULL);
+        if (!expr || !*expr) return false;
+
+        /* Per-expr cache (bounded like Python's 256-entry clear-on-full).
+         * Cached misses are stored as have_result=false. */
+        static struct { char *expr; double val; bool have; } cache[CRONJOBS_CADENCE_CACHE_MAX];
+        static size_t cache_n = 0;
+        for (size_t i = 0; i < cache_n; i++) {
+            if (strcmp(cache[i].expr, expr) == 0) {
+                if (!cache[i].have) return false;
+                *out_seconds = cache[i].val;
+                return true;
+            }
+        }
+
+        bool have = false;
+        double result = 0.0;
+        cron_expr_t *ce = cron_parse(expr, NULL);
+        if (ce) {
+            time_t base = time(NULL);
+            struct tm from, first, second;
+            localtime_r(&base, &from);
+            if (cron_next(ce, &from, &first) && cron_next(ce, &first, &second)) {
+                time_t f = mktime(&first), s = mktime(&second);
+                double gap = difftime(s, f);
+                if (gap > 0.0) { result = gap; have = true; }
+            }
+            cron_free(ce);
+        }
+
+        /* Hard bound so deleted/edited exprs can never grow the cache
+         * unboundedly in a long-lived gateway; a rare full clear costs two
+         * evaluations per live expr to rebuild. */
+        if (cache_n >= CRONJOBS_CADENCE_CACHE_MAX) {
+            for (size_t i = 0; i < cache_n; i++) free(cache[i].expr);
+            cache_n = 0;
+        }
+        cache[cache_n].expr = xstrdup(expr);
+        cache[cache_n].val = result;
+        cache[cache_n].have = have;
+        if (cache[cache_n].expr) cache_n++;
+        if (have) { *out_seconds = result; return true; }
+        return false;
+    }
+    return false;
+}
+
+/* ================================================================
+ *  _job_is_stale_error_recurring
+ * ================================================================ */
+/* PoP: cronjobs_job_is_stale_error_recurring @ cron/jobs.py:_job_is_stale_error_recurring */
+/* True when a recurring job is wedged in a stale persisted error state: last
+ * run older than cadence + grace, not currently running in this process. */
+bool cronjobs_job_is_stale_error_recurring(json_t *job,
+                                           const json_t *schedule,
+                                           time_t now)
+{
+    if (strcmp(json_object_get_string(job, "last_status", ""), "error") != 0)
+        return false;
+
+    /* _job_running_in_this_process(str(job.get("id") or "")): a live run must
+     * never be re-armed underneath itself (#62002-style). */
+    {
+        const char *jid = json_object_get_string(job, "id", "");
+        size_t n = 0;
+        char **running = scheduler_get_running_job_ids(&n);
+        bool live = false;
+        if (running) {
+            for (size_t i = 0; i < n; i++)
+                if (strcmp(running[i], jid ? jid : "") == 0) { live = true; break; }
+            for (size_t i = 0; i < n; i++) free(running[i]);
+            free(running);
+        }
+        if (live) return false;
+    }
+
+    const char *last_run = json_object_get_string(job, "last_run_at", NULL);
+    if (!last_run || !*last_run) return false;
+    time_t last_ts = iso_to_ts(last_run);
+    if (last_ts == (time_t)-1) return false;   /* ValueError/TypeError -> False */
+    double age_seconds = difftime(now, last_ts);
+    if (age_seconds < 0) return false;
+
+    double cadence_seconds;
+    if (!cronjobs_schedule_cadence_seconds(schedule, &cadence_seconds))
+        cadence_seconds = (double)cronjobs_compute_grace_seconds(schedule);
+    return age_seconds > (cadence_seconds +
+                          (double)cronjobs_compute_grace_seconds(schedule));
+}
+
+/* ================================================================
+ *  _record_persisted_error_recovery
+ * ================================================================ */
+/* PoP: cronjobs_record_persisted_error_recovery @ cron/jobs.py:_record_persisted_error_recovery */
+/* Persist a countable, probe-visible signal for one stale-error re-arm.
+ * Best-effort: telemetry failures never break a tick. */
+static long g_persisted_error_recoveries = 0;
+void cronjobs_record_persisted_error_recovery(const json_t *job,
+                                              const char *previous_next_run)
+{
+    g_persisted_error_recoveries += 1;
+
+    json_t *entry = json_object();
+    if (!entry) return;
+    const char *id = json_object_get_string(job, "id", NULL);
+    const char *name = json_object_get_string(job, "name", NULL);
+    json_set(entry, "job_id", id ? json_string(id) : json_null());
+    json_set(entry, "name", json_string((name && *name) ? name : (id ? id : "")));
+    json_set(entry, "previous_next_run_at",
+             previous_next_run ? json_string(previous_next_run) : json_null());
+    char *now = now_iso();
+    json_set(entry, "rearmed_at", json_string(now ? now : ""));
+    free(now);
+
+    char *serialized = json_serialize(entry);
+    json_free(entry);
+    if (!serialized) return;
+
+    char *dir = cronjobs_cron_dir();
+    if (dir) {
+        char path[PATH_MAX];
+        snprintf(path, sizeof(path), "%s/persisted_error_recoveries.jsonl", dir);
+        FILE *fh = fopen(path, "a");
+        if (fh) {
+            fprintf(fh, "%s\n", serialized);
+            fclose(fh);
+        }
+        free(dir);
+    }
+    free(serialized);
+}
+
+/* ================================================================
+ *  _cron_next_run_matches_expr
+ * ================================================================ */
+/* PoP: cronjobs_cron_next_run_matches_expr @ cron/jobs.py:_cron_next_run_matches_expr */
+/* Whether next_run_iso is an occurrence of the schedule's current expr. A
+ * direct jobs.json edit can change schedule.expr while leaving a stale
+ * next_run_at (#93049). Validation is best-effort: anything unverifiable
+ * reports a match so the fire path keeps its existing semantics. */
+bool cronjobs_cron_next_run_matches_expr(const json_t *schedule,
+                                         const char *next_run_iso)
+{
+    if (strcmp(json_object_get_string(schedule, "kind", ""), "cron") != 0)
+        return true;
+    const char *expr = json_object_get_string(schedule, "expr", NULL);
+    if (!expr || !*expr) return true;
+    cron_expr_t *ce = cron_parse(expr, NULL);
+    if (!ce) return true;
+    time_t ts = iso_to_ts(next_run_iso);
+    if (ts == (time_t)-1) { cron_free(ce); return true; }
+    struct tm occurrence;
+    localtime_r(&ts, &occurrence);
+    bool matches = cron_match(ce, &occurrence);
+    cron_free(ce);
+    return matches;
+}
+
+/* ================================================================
+ *  _normalize_reasoning_effort
+ * ================================================================ */
+/* PoP: cronjobs_normalize_reasoning_effort @ cron/jobs.py:_normalize_reasoning_effort */
+/* Validate a per-job reasoning effort against the canonical grammar via the
+ * SAME parser every other effort surface uses
+ * (hermes_constants.parse_reasoning_effort). Returns a malloc'd normalized
+ * level, NULL for unset input, and sets *err on invalid input so nothing
+ * invalid ever persists for a fire-and-forget job. Caller frees both. */
+char *cronjobs_normalize_reasoning_effort(const char *value, char **err)
+{
+    set_err(err, NULL);
+    if (!value) return NULL;
+    char *text = str_strip_dup(value);
+    if (!text) return NULL;
+    str_tolower_inplace(text);
+    if (!*text) { free(text); return NULL; }
+
+    json_t *parsed = reasoning_parse_effort(text, false);
+    if (!parsed) {
+        char msg[256];
+        snprintf(msg, sizeof(msg),
+                 "Invalid reasoning_effort '%s'. Valid levels: "
+                 "none, minimal, low, medium, high, xhigh, max, ultra "
+                 "(empty string clears the override).", value);
+        set_err(err, msg);
+        free(text);
+        return NULL;
+    }
+    json_free(parsed);
+
+    /* parse_reasoning_effort accepts disable aliases ("false", "disabled");
+     * store the canonical spelling so the record reads unambiguously. */
+    if (strcmp(text, "false") == 0 || strcmp(text, "disabled") == 0) {
+        free(text);
+        return xstrdup("none");
+    }
+    return text;
+}
+
+/* ================================================================
+ *  _claim_is_live
+ * ================================================================ */
+/* PoP: cronjobs_claim_is_live @ cron/jobs.py:_claim_is_live */
+/* Public form taking the claim object itself: {"by": ..., "at": iso}.
+ * Liveness is bounded on BOTH sides (#60703): future-dated claims are dead. */
+bool cronjobs_claim_is_live(const json_t *claim, time_t now, double ttl_seconds)
+{
+    if (!claim || !json_is_object(claim)) return false;
+    const char *at = json_object_get_string(claim, "at", NULL);
+    if (!at || !*at) return false;
+    time_t ts = iso_to_ts(at);
+    if (ts == (time_t)-1) return false;
+    double age = difftime(now, ts);
+    return age >= 0.0 && age < ttl_seconds;
+}
+
+/* ================================================================
+ *  _set_alert_flag (shared body already present below as
+ *  cronjobs_set_alert_flag — annotated for the parity scanner here)
+ * ================================================================ */
+/* ================================================================
+ *  _mark_job_run_locked
+ * ================================================================ */
+/* PoP: cronjobs_mark_job_run_locked @ cron/jobs.py:_mark_job_run_locked */
+/* Mark a job as having been run: last_run_at, last_status, completed count,
+ * next_run_at, terminal-completion retention instead of deletion.
+ *   status               overrides derived last_status (e.g. "blocked_config")
+ *   expected_fire_owner  discard stale completions when the claim changed hands
+ * Returns true when the job was found and updated. */
+bool cronjobs_mark_job_run_locked(const char *job_id, bool success,
+                                  const char *error,
+                                  const char *delivery_error,
+                                  const char *status,
+                                  const char *expected_fire_owner)
+{
+    int lk = cronjobs_lock();
+    char *lerr = NULL;
+    json_t *jobs = cronjobs_load_jobs(&lerr);
+    free(lerr);
+    if (!jobs) { cronjobs_unlock(lk); return false; }
+
+    long idx = find_job_index(jobs, job_id);
+    if (idx < 0) {
+        hermes_log(LOG_WARNING, "cron",
+                   "mark_job_run: job not found, skipping save");
+        json_free(jobs);
+        cronjobs_unlock(lk);
+        return false;
+    }
+    json_t *job = json_array_get(jobs, (size_t)idx);
+
+    if (expected_fire_owner) {
+        json_t *claim = json_object_get(job, "fire_claim");
+        const char *by = (claim && json_is_object(claim))
+            ? json_object_get_string(claim, "by", NULL) : NULL;
+        if (!by || strcmp(by, expected_fire_owner) != 0) {
+            hermes_log(LOG_WARNING, "cron",
+                       "mark_job_run: fire claim owner changed; discarding stale completion");
+            json_free(jobs);
+            cronjobs_unlock(lk);
+            return false;
+        }
+    }
+
+    char *now = now_iso();
+    json_set(job, "last_run_at", json_string(now ? now : ""));
+    json_set(job, "last_status",
+             json_string(status && *status ? status : (success ? "ok" : "error")));
+    if (success) json_set(job, "last_error", json_null());
+    else json_set(job, "last_error", error ? json_string(error) : json_null());
+
+    /* A healthy run means configuration/drift/fire-forwarding validate again —
+     * drop the alert-dedup markers so a FUTURE break re-alerts. */
+    if (success) {
+        json_object_del(job, "preflight_alerted");
+        json_object_del(job, "drift_alerted");
+        json_object_del(job, "last_fire_error");
+    }
+
+    /* Consecutive agent-failure streak: any success resets; delivery failures
+     * alone do NOT count. */
+    if (success)
+        json_set(job, "failure_streak", json_number(0));
+    else
+        json_set(job, "failure_streak",
+                 json_number((double)((long)json_get_num(job, "failure_streak", 0) + 1)));
+
+    /* Track delivery failures separately — cleared on successful delivery. */
+    json_set(job, "last_delivery_error",
+             delivery_error ? json_string(delivery_error) : json_null());
+    /* Clear any external-fire claim so a re-armed recurring job can be claimed
+     * again on its next fire (Phase 4C CAS). */
+    json_set(job, "fire_claim", json_null());
+    /* Clear the one-shot running-claim (#59229). */
+    if (json_object_get(job, "run_claim"))
+        json_set(job, "run_claim", json_null());
+
+    /* Increment completed count. Finite one-shots pre-claimed by
+     * claim_dispatch() already incremented — do not double-count. */
+    json_t *repeat = json_object_get(job, "repeat");
+    if (json_is_object(repeat)) {
+        json_t *times_v = json_object_get(repeat, "times");
+        bool has_times = times_v && json_is_number(times_v);
+        long times = has_times ? (long)json_number_value(times_v) : 0;
+        long completed = (long)json_get_num(repeat, "completed", 0);
+        const char *kind = json_object_get_string(
+            json_object_get(job, "schedule"), "kind", "");
+        bool preclaimed_oneshot =
+            strcmp(kind, "once") == 0 && has_times && times > 0 && completed > 0;
+        if (!preclaimed_oneshot) {
+            completed += 1;
+            json_set(repeat, "completed", json_number((double)completed));
+        }
+        /* Repeat limit reached: retain the record as a TERMINAL completion
+         * instead of popping it — a finished one-shot must stay inspectable in
+         * `cronjob list` (#retention). The sweep prunes these after
+         * COMPLETED_ONESHOT_RETENTION_DAYS. */
+        if (has_times && times > 0 && completed >= times) {
+            json_set(job, "enabled", json_bool(false));
+            json_set(job, "state", json_string("completed"));
+            json_set(job, "next_run_at", json_null());
+            cronjobs_save_jobs(jobs);
+            free(now);
+            json_free(jobs);
+            cronjobs_unlock(lk);
+            return true;
+        }
+    }
+
+    /* Compute next run. */
+    char *next_run_at = cronjobs_compute_next_run(
+        json_object_get(job, "schedule"), now);
+    if (!next_run_at) {
+        /* Recurring jobs must NEVER be silently disabled (#16265): a missing
+         * runtime dep must surface as state=error, not "completed". */
+        const char *kind = json_object_get_string(
+            json_object_get(job, "schedule"), "kind", "");
+        if (strcmp(kind, "cron") == 0 || strcmp(kind, "interval") == 0) {
+            json_set(job, "state", json_string("error"));
+            json_t *le = json_object_get(job, "last_error");
+            if (!le || json_is_null(le))
+                json_set(job, "last_error", json_string(
+                    "Failed to compute next run for recurring schedule "
+                    "(is the 'croniter' package installed?)"));
+            hermes_log(LOG_ERROR, "cron",
+                       "Job could not compute next_run_at; leaving enabled and marking state=error");
+        } else {
+            json_set(job, "enabled", json_bool(false));
+            json_set(job, "state", json_string("completed"));
+        }
+        json_set(job, "next_run_at", json_null());
+    } else {
+        json_set(job, "next_run_at", json_string(next_run_at));
+        if (strcmp(json_object_get_string(job, "state", ""), "paused") != 0)
+            json_set(job, "state", json_string("scheduled"));
+    }
+    free(next_run_at);
+
+    cronjobs_save_jobs(jobs);
+    free(now);
+    json_free(jobs);
+    cronjobs_unlock(lk);
+    return true;
+}
+
+/* ================================================================
+ *  _write_missed_oneshot_diagnostic
+ * ================================================================ */
+/* PoP: cronjobs_write_missed_oneshot_diagnostic @ cron/jobs.py:_write_missed_oneshot_diagnostic */
+/* Leave an operator-visible trace when a never-ran one-shot is retired
+ * because its persisted run time fell outside the grace window. Best-effort:
+ * a diagnostic failure never blocks the removal itself. */
+void cronjobs_write_missed_oneshot_diagnostic(const json_t *job,
+                                              const char *next_run)
+{
+    const char *id = json_object_get_string(job, "id", "");
+    const char *name = json_object_get_string(job, "name", "");
+    char *removed_at = now_iso();
+    size_t need = strlen(name) + strlen(next_run ? next_run : "") +
+                  (removed_at ? strlen(removed_at) : 0) + 1024;
+    char *text = malloc(need);
+    if (!text) { free(removed_at); return; }
+    snprintf(text, need,
+             "# Cron job removed before firing (run time outside grace window)\n\n"
+             "- job id: %s\n"
+             "- name: %s\n"
+             "- scheduled run time: %s\n"
+             "- grace window: %ds\n"
+             "- removed at: %s\n\n"
+             "This one-shot's run time is more than the grace window in the "
+             "past (scheduler down past the window, host asleep, or jobs.json "
+             "edited), which is outside the 'will never fire' contract "
+             "enforced at create/update/resume time. The job was removed "
+             "without running; recreate it (or use the Run button) to "
+             "schedule it again.\n",
+             id ? id : "",
+             name ? name : "",
+             next_run ? next_run : "",
+             CRONJOBS_ONESHOT_GRACE_SECONDS,
+             removed_at ? removed_at : "");
+    free(removed_at);
+    char *err = NULL;
+    char *out_path = cronjobs_save_job_output(id ? id : "", text);
+    (void)out_path;
+    free(out_path);
+    free(err);
+    free(text);
+}
+
+/* ================================================================
+ *  _claim_job_for_fire_locked
+ * ================================================================ */
+/* uuid4().hex — lowercase hex of a v4 UUID (owner token suffix). */
+static char *cronjobs_uuid4_hex(void)
+{
+    uint8_t b[16];
+    if (!uuid_v4_bytes(b)) return xstrdup("");
+    static const char hexd[] = "0123456789abcdef";
+    char *hex = malloc(33);
+    if (!hex) return NULL;
+    for (int i = 0; i < 16; i++) {
+        hex[i * 2] = hexd[b[i] >> 4];
+        hex[i * 2 + 1] = hexd[b[i] & 0xf];
+    }
+    hex[32] = '\0';
+    return hex;
+}
+
+/* PoP: cronjobs_claim_job_for_fire_locked @ cron/jobs.py:_claim_job_for_fire_locked */
+/* Atomically claim a job for a single external 'fire' (multi-machine
+ * at-most-once). Sets *won=true iff THIS caller won the claim; when
+ * return_job is set and the claim was won, returns the full updated job
+ * record (json_copy — caller frees). force=True atomically enables and
+ * resumes a paused job as part of the claim (manual Trigger-now only). */
+json_t *cronjobs_claim_job_for_fire_locked(const char *job_id,
+                                           int claim_ttl_seconds,
+                                           bool force, bool return_job,
+                                           bool *won)
+{
+    if (won) *won = false;
+    int lk = cronjobs_lock();
+    char *lerr = NULL;
+    json_t *jobs = cronjobs_load_jobs(&lerr);
+    free(lerr);
+    if (!jobs) { cronjobs_unlock(lk); return NULL; }
+
+    json_t *result = NULL;
+    size_t n = json_array_size(jobs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *job = json_array_get(jobs, i);
+        const char *jid = json_object_get_string(job, "id", NULL);
+        if (!jid || strcmp(jid, job_id) != 0) continue;
+
+        if (cronjobs_is_terminal_job(job)) goto out;
+        /* enabled + pause markers must both clear — a half-paused record must
+         * not claim. Explicit force bypasses the gate and resumes below. */
+        if (!force && !cronjobs_is_job_runnable(job)) goto out;
+
+        time_t now = time(NULL);
+        json_t *existing = json_object_get(job, "fire_claim");
+        if (existing && json_is_object(existing)) {
+            const char *at = json_object_get_string(existing, "at", NULL);
+            if (at) {
+                time_t claimed_at = iso_to_ts(at);
+                if (claimed_at != (time_t)-1) {
+                    /* Bounded on BOTH sides (#60703): future-dated claims are
+                     * treated as stale/overwritable. */
+                    double age = difftime(now, claimed_at);
+                    if (age >= 0.0 && age < (double)claim_ttl_seconds)
+                        goto out;   /* someone holds a fresh claim */
+                }
+                /* malformed claim -> overwrite */
+            }
+        }
+        if (force) {
+            json_set(job, "enabled", json_bool(true));
+            json_set(job, "state", json_string("scheduled"));
+            json_set(job, "paused_at", json_null());
+            json_set(job, "paused_reason", json_null());
+        }
+        /* Per-acquisition token: a process may legitimately reclaim its own
+         * stale lease; hostname+PID equality must not heartbeat the new
+         * claim for the previous runner. */
+        {
+            char *mid = machine_id();
+            char *nonce = cronjobs_uuid4_hex();
+            size_t need = (mid ? strlen(mid) : 0) + (nonce ? strlen(nonce) : 0) + 2;
+            char *owner = malloc(need);
+            if (!owner) { free(mid); free(nonce); goto out; }
+            snprintf(owner, need, "%s:%s", mid ? mid : "", nonce ? nonce : "");
+            free(mid);
+            free(nonce);
+            char *now_s = now_iso();
+            json_t *claim = json_object();
+            json_set(claim, "at", json_string(now_s ? now_s : ""));
+            json_set(claim, "by", json_string(owner));
+            json_set(job, "fire_claim", claim);
+            const char *kind = json_object_get_string(
+                json_object_get(job, "schedule"), "kind", "");
+            if (strcmp(kind, "cron") == 0 || strcmp(kind, "interval") == 0) {
+                char *nxt = cronjobs_compute_next_run(
+                    json_object_get(job, "schedule"), now_s);
+                if (nxt) json_set(job, "next_run_at", json_string(nxt));
+                free(nxt);
+            }
+            free(now_s);
+            free(owner);
+        }
+        cronjobs_save_jobs(jobs);
+        if (won) *won = true;
+        if (return_job) result = json_copy(job);
+        goto out;
+    }
+out:
+    json_free(jobs);
+    cronjobs_unlock(lk);
+    return result;
+}
+
+/* ================================================================
+ *  _heartbeat_fire_claim_locked
+ * ================================================================ */
+/* PoP: cronjobs_heartbeat_fire_claim_locked @ cron/jobs.py:_heartbeat_fire_claim_locked */
+/* Refresh an active fire_claim without extending another owner's lease: a
+ * stale runner must never refresh a claim recovered by another process. */
+bool cronjobs_heartbeat_fire_claim_locked(const char *job_id,
+                                          const char *expected_owner)
+{
+    int lk = cronjobs_lock();
+    char *lerr = NULL;
+    json_t *jobs = cronjobs_load_jobs(&lerr);
+    free(lerr);
+    if (!jobs) { cronjobs_unlock(lk); return false; }
+
+    bool refreshed = false;
+    size_t n = json_array_size(jobs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *job = json_array_get(jobs, i);
+        const char *jid = json_object_get_string(job, "id", NULL);
+        if (!jid || strcmp(jid, job_id) != 0) continue;
+        json_t *claim = json_object_get(job, "fire_claim");
+        const char *by = (claim && json_is_object(claim))
+            ? json_object_get_string(claim, "by", NULL) : NULL;
+        if (!by || strcmp(by, expected_owner ? expected_owner : "") != 0)
+            break;
+        char *now = now_iso();
+        json_set(claim, "at", json_string(now ? now : ""));
+        free(now);
+        cronjobs_save_jobs(jobs);
+        refreshed = true;
+        break;
+    }
+    json_free(jobs);
+    cronjobs_unlock(lk);
+    return refreshed;
 }

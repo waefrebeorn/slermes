@@ -75,6 +75,12 @@ json_t *json_obj_get(const json_t *obj, const char *key);
 const char *json_get_str(const json_t *obj, const char *key, const char *def);
 double  json_get_num(const json_t *obj, const char *key, double def);
 bool    json_get_bool(const json_t *obj, const char *key, bool def);
+/* Set a string header/value on a JSON object (auto-wraps in json_string).
+ * Mirrors json_set(obj, key, json_string(val)) but allocates the string node. */
+static inline void json_set_hdr(json_t *obj, const char *key, const char *val) {
+    if (!obj || !key || !val) return;
+    json_set(obj, key, json_string(val));
+}
 
 /* Check if key exists in object */
 static inline bool json_has(const json_t *obj, const char *key) {

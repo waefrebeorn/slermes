@@ -45,3 +45,14 @@ int tools_binary_extensions_has_binary_extension(const char *arg) {
     printf("%d\n", hit);
     return 0;
 }
+
+/* PoP: is_pdf_path @ tools/binary_extensions.py:is_pdf_path */
+int tools_binary_extensions_is_pdf_path(const char *path) {
+    /* Python: return path.lower().endswith(".pdf") */
+    if (!path) return 0;
+    size_t len = strlen(path);
+    if (len < 4) return 0;
+    const char *ext = path + len - 4;
+    return (ext[0] == '.' && (ext[1] == 'p' || ext[1] == 'P') &&
+            (ext[2] == 'd' || ext[2] == 'D') && (ext[3] == 'f' || ext[3] == 'F'));
+}
