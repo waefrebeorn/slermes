@@ -115,6 +115,11 @@ def build_harness(gate_dir, g, force=False):
     cflags = g.get("cflags", [])
     cflags = [os.path.join(REPO, c) if not c.startswith("-") else c
               for c in cflags]
+    # Resolve combined -Ipath flags to absolute (REPO-relative) so they
+    # work regardless of the invoking CWD. E.g. "-Ilib/libhive" → "-I<REPO>/lib/libhive"
+    cflags = [c[:2] + os.path.join(REPO, c[2:])
+              if c.startswith("-I") and len(c) > 2 and not os.path.isabs(c[2:])
+              else c for c in cflags]
     extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
     libs = g.get("ldflags", [])
     cmd = ["cc", "-I", HERE] + cflags + [src] + extra + ["-o", out, "-lm"] + libs
@@ -126,7 +131,7 @@ def build_harness(gate_dir, g, force=False):
 
 def run_harness(out, g):
     args = [out, g["c_fn"]] + [str(x) for x in g["inputs"]]
-    r = subprocess.run(args, capture_output=True, text=True, timeout=60)
+    r = subprocess.run(args, capture_output=True, text=True, timeout=60, cwd=REPO)
     if r.returncode != 0:
         raise RuntimeError(
             "HARNESS CRASH for %s (exit %d): %s"

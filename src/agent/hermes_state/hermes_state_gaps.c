@@ -2354,18 +2354,18 @@ static bool hs_json_deep_equal(const json_t *a, const json_t *b) {
 }
 
 /* ── PoP: get_active_message_ids @ hermes_state.py:get_active_message_ids ── */
-long long *get_active_message_ids(hermes_state_db_t *self,
-                                  const char *session_id, int *out_n) {
+long long *hermes_state_get_active_message_ids(hermes_state_db_t *db,
+                                               const char *session_id, int *out_n) {
     /* Ordered physical ids pinned by rewind CAS checks: every ACTIVE row so
      * the caller snapshot matches rewind_to_message's transaction-local
      * comparison (projections omit harness rows; this must not). */
     *out_n = 0;
-    if (!self || !self->db || !session_id) return NULL;
+    if (!db || !db->db || !session_id) return NULL;
     sqlite3_stmt *st = NULL;
     long long *ids = NULL;
     int n = 0, cap = 32;
     ids = malloc(sizeof(long long) * (size_t)cap);
-    if (sqlite3_prepare_v2(self->db,
+    if (sqlite3_prepare_v2(db->db,
             "SELECT id FROM messages WHERE session_id = ? AND active = 1"
             " ORDER BY id",
             -1, &st, NULL) == SQLITE_OK) {

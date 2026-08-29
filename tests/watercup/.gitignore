@@ -1,0 +1,4 @@
+# Watercup generated shims and binaries
+**/shim_*.c
+**/shim_*.o
+build/

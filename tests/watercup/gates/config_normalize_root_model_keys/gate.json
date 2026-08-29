@@ -59,7 +59,8 @@
     "src/agent/agent_runtime_pure.c",
     "src/hermes_cli/moa_config.c",
     "src/cron/jobs.c",
-    "src/agent/monitoring/cron_health.c"
+    "src/agent/monitoring/cron_health.c",
+    "tests/watercup/gates/config_normalize_root_model_keys/shim_config.c"
   ],
   "inputs": [
     "{}",

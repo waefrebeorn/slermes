@@ -34,7 +34,7 @@ json_t *config_py_load_config_readonly(void){ return NULL; }
 json_t *config_normalize_max_turns(const json_t *config_in){ (void)config_in; return NULL; }
 
 static void run_one(const char *cfg_json) {
-    char err = 0;
+    const char *err = NULL;
     json_t *in = json_parse(cfg_json, &err);
     WCUP_BEGIN("normalize_root_model_keys");
     json_t *res = NULL;

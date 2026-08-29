@@ -133,6 +133,20 @@ char *hermes_state_get_messages_as_conversation(hermes_state_db_t *db,
                                                 const char *session_id,
                                                 bool include_inactive);
 
+/* PoP: get_active_message_ids @ hermes_state.py:get_active_message_ids
+ * Returns malloc'd array of active message row ids for the session.
+ * Caller frees. *out_n = count. */
+long long *hermes_state_get_active_message_ids(hermes_state_db_t *db,
+                                               const char *session_id,
+                                               int *out_n);
+
+/* PoP: rewind_to_message @ hermes_state.py:rewind_to_message
+ * Soft-delete all messages with id >= target (target becomes inactive too)
+ * for audit; returns a malloc'd result JSON. Caller frees. */
+char *hermes_state_rewind_to_message(hermes_state_db_t *db,
+                                     const char *session_id,
+                                     long long target_message_id);
+
 /* ── Token counters ────────────────────────────────────────────────────
  * PoP: update_token_counts @ hermes_state.py:update_token_counts
  * absolute=false -> increment; absolute=true -> set. Ensures the session row

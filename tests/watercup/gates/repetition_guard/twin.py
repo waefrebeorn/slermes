@@ -58,6 +58,11 @@ def _live(text):
 def _read(path_or_dash: str) -> str:
     if path_or_dash == "-":
         return sys.stdin.read()
+    # Resolve relative paths against REPO root (inputs are repo-relative)
+    if not os.path.isabs(path_or_dash):
+        candidate = os.path.join(SLERMES, path_or_dash)
+        if os.path.isfile(candidate):
+            path_or_dash = candidate
     with open(path_or_dash, "rb") as f:
         return f.read().decode("utf-8", "replace")
 

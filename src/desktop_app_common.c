@@ -38,6 +38,8 @@
 
 #include "desktop_app.h"
 #include "desktop_state.h"
+#include "hermes.h"
+#include "hive.h"
 #include "hermes_logger.h"
 #include "libhttp/http.h"
 #include "json.h"
@@ -1120,50 +1122,81 @@ bool desktop_get_default_project_dir(char *path, size_t size) {
 /* PoP: env_vars @ apps/desktop/src/app/settings/index.tsx */
 typedef struct {
     char key[256];
-    char *value;  /* heap-allocated (was char[1024] × 128 ≈ 160KB .bss) */
+    char *value;  /* heap-allocated */
 } env_entry_t;
 
-static env_entry_t g_env_vars[128];
+static hive_t *g_env_hive = NULL;
 static int g_env_count = 0;
+
+static hive_t *env_hive_ensure(void) {
+    if (!g_env_hive) {
+        g_env_hive = hive_new(HIVE_DEFAULT_BLOCK_CAP);
+    }
+    return g_env_hive;
+}
 
 bool desktop_env_set(const char *key, const char *value) {
     if (!key || !value) return false;
+    hive_t *h = env_hive_ensure();
+    if (!h) return false;
 
-    /* Update existing */
-    for (int i = 0; i < g_env_count; i++) {
-        if (strcmp(g_env_vars[i].key, key) == 0) {
-            free(g_env_vars[i].value);
-            g_env_vars[i].value = strdup(value);
+    /* Update existing — hive guarantees stable pointers across growth. */
+    hive_iter_t it;
+    hive_iter_begin(h, &it);
+    hive_handle_t hnd;
+    env_entry_t *entry;
+    while (hive_iter_next(h, &it, &hnd, (void **)&entry)) {
+        if (strcmp(entry->key, key) == 0) {
+            free(entry->value);
+            entry->value = strdup(value);
             return true;
         }
     }
 
-    if (g_env_count >= 128) return false;
-    strncpy(g_env_vars[g_env_count].key, key, 255);
-    g_env_vars[g_env_count].value = strdup(value);
+    /* Insert new — heap-allocate so the hive stores a stable pointer. */
+    bool ok = false;
+    env_entry_t *ne = malloc(sizeof(*ne));
+    if (!ne) return false;
+    strncpy(ne->key, key, sizeof(ne->key) - 1);
+    ne->key[sizeof(ne->key) - 1] = '\0';
+    ne->value = strdup(value);
+    if (!ne->value) { free(ne); return false; }
+    hive_handle_t nh = hive_insert(h, ne, &ok);
+    if (!ok) { free(ne->value); free(ne); return false; }
     g_env_count++;
+    (void)nh;
     return true;
 }
 
 const char *desktop_env_get(const char *key) {
     if (!key) return NULL;
-    for (int i = 0; i < g_env_count; i++) {
-        if (strcmp(g_env_vars[i].key, key) == 0)
-            return g_env_vars[i].value;
+    hive_t *h = g_env_hive;
+    if (!h) return NULL;
+    hive_iter_t it;
+    hive_iter_begin(h, &it);
+    hive_handle_t hnd;
+    env_entry_t *entry;
+    while (hive_iter_next(h, &it, &hnd, (void **)&entry)) {
+        if (strcmp(entry->key, key) == 0)
+            return entry->value;
     }
     return NULL;
 }
 
 bool desktop_env_delete(const char *key) {
     if (!key) return false;
-    for (int i = 0; i < g_env_count; i++) {
-        if (strcmp(g_env_vars[i].key, key) == 0) {
-            free(g_env_vars[i].value);
-            for (int j = i; j < g_env_count - 1; j++) {
-                g_env_vars[j] = g_env_vars[j + 1];
-                g_env_vars[j + 1].value = NULL;  /* ownership moved */
-            }
-            g_env_count--;
+    hive_t *h = g_env_hive;
+    if (!h) return false;
+    hive_iter_t it;
+    hive_iter_begin(h, &it);
+    hive_handle_t hnd;
+    env_entry_t *entry;
+    while (hive_iter_next(h, &it, &hnd, (void **)&entry)) {
+        if (strcmp(entry->key, key) == 0) {
+            free(entry->value);
+            bool erased = hive_erase(h, hnd);
+            free(entry);
+            if (erased) g_env_count--;
             return true;
         }
     }
@@ -1172,9 +1205,18 @@ bool desktop_env_delete(const char *key) {
 
 int desktop_env_list(char keys[][256], int max_count) {
     if (!keys || max_count <= 0) return 0;
-    int count = g_env_count < max_count ? g_env_count : max_count;
-    for (int i = 0; i < count; i++) {
-        strncpy(keys[i], g_env_vars[i].key, 255);
+    hive_t *h = g_env_hive;
+    if (!h) return 0;
+    int count = 0;
+    hive_iter_t it;
+    hive_iter_begin(h, &it);
+    hive_handle_t hnd;
+    env_entry_t *entry;
+    while (hive_iter_next(h, &it, &hnd, (void **)&entry)) {
+        if (count >= max_count) break;
+        strncpy(keys[count], entry->key, 255);
+        keys[count][255] = '\0';
+        count++;
     }
     return count;
 }

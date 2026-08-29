@@ -446,11 +446,33 @@ struct hcli {
     /* Terminal input-mode recovery (_recover_terminal_input_modes). */
     double last_input_mode_recovery;            /* monotonic seconds */
     bool   input_mode_recovery_notice_shown;
+    /* Cached LoopManager (_get_loop_manager). Opaque: loops_pure.h. */
+    void  *loop_manager;
 };
 
 /* ── Lifecycle ─────────────────────────────────────────────────────────── */
 hcli_t *hcli_new(void);
 void    hcli_free(hcli_t *self);
+
+/* ── PoP: _get_loop_manager @ cli.py:_get_loop_manager ────────────── */
+struct loop_manager;
+struct loop_manager *hcli_get_loop_manager(hcli_t *self);
+
+/* ── PoP: _clear_persisted_context_for_model_switch @ cli.py:_clear_persisted_context_for_model_switch ─
+ * Drop the model.context_length pin when its configured owner changes. */
+/* PoP: hcli_clear_persisted_context_for_model_switch @ cli.py:_clear_persisted_context_for_model_switch */
+void hcli_clear_persisted_context_for_model_switch(hcli_t *self,
+                                                   const char *new_model,
+                                                   const char *new_base_url,
+                                                   const char *new_provider);
+
+/* ── PoP: _usage_reset @ cli.py:_usage_reset ──────────────────────────── */
+/* PoP: hcli_usage_reset @ cli.py:_usage_reset */
+void hcli_usage_reset(hcli_t *self, bool force);
+
+/* ── PoP: _show_context_breakdown @ cli.py:_show_context_breakdown ─────── */
+/* PoP: hcli_show_context_breakdown @ cli.py:_show_context_breakdown */
+void hcli_show_context_breakdown(hcli_t *self, const char *cmd_original);
 
 /* History mutation helpers (own/dup semantics like the Python list). */
 void hcli_history_clear(hcli_t *self);
@@ -644,8 +666,7 @@ hcli_fragment_t *hcli_right_align_status_title_fragments(char **styles,
  * output), falling back to the shutil default of 80 columns. */
 int cli_get_tui_terminal_width(void);
 
-/* PoP: cli_scrollback_box_width @ cli.py:_scrollback_box_width
- * width <= 0 means auto-detect; floor of 32 columns. */
+/* PoP: cli_scrollback_box_width @ cli.py:_scrollback_box_width */
 int cli_scrollback_box_width(int width);
 
 
@@ -935,26 +956,20 @@ void hcli_force_full_redraw(hcli_t *self);
 void hcli_clear_prompt_toolkit_screen(hcli_t *self, void *app,
                                       bool rebuild_scrollback);
 
-/* PoP: hcli_schedule_resize_recovery @ cli.py:_schedule_resize_recovery
- * Debounced (0.12 s) SIGWINCH recovery; original_on_resize runs at fire time. */
+/* PoP: hcli_schedule_resize_recovery @ cli.py:_schedule_resize_recovery */
 void hcli_schedule_resize_recovery(hcli_t *self, void *app,
                                    void (*original_on_resize)(hcli_t *, void *));
 
-/* PoP: hcli_install_resize_recovery @ cli.py:_install_resize_recovery
- * Seed the width baseline for width-change detection and arm recovery. The
- * C shell routes SIGWINCH through hcli_schedule_resize_recovery after this. */
+/* PoP: hcli_install_resize_recovery @ cli.py:_install_resize_recovery */
 void hcli_install_resize_recovery(hcli_t *self, void *app);
 
-/* PoP: hcli_use_minimal_tui_chrome @ cli.py:_use_minimal_tui_chrome
- * width <= 0 auto-detects. */
+/* PoP: hcli_use_minimal_tui_chrome @ cli.py:_use_minimal_tui_chrome */
 bool hcli_use_minimal_tui_chrome(hcli_t *self, int width);
 
-/* PoP: hcli_tui_input_rule_height @ cli.py:_tui_input_rule_height
- * Returns -1 for an unknown position (the Python ValueError). */
+/* PoP: hcli_tui_input_rule_height @ cli.py:_tui_input_rule_height */
 int hcli_tui_input_rule_height(hcli_t *self, const char *position, int width);
 
-/* PoP: hcli_render_spinner_text @ cli.py:_render_spinner_text
- * Malloc'd live spinner/status text exactly as rendered in the TUI. */
+/* PoP: hcli_render_spinner_text @ cli.py:_render_spinner_text */
 char *hcli_render_spinner_text(hcli_t *self);
 
 /* PoP: hcli_on_reaction @ cli.py:_on_reaction */
@@ -992,5 +1007,26 @@ void hcli_on_notice(hcli_t *self, const char *notice_json);
 
 /* PoP: hcli_flush_credit_notices @ cli.py:_flush_credit_notices */
 void hcli_flush_credit_notices(hcli_t *self);
+
+/* PoP: hcli_on_notice_clear @ cli.py:_on_notice_clear */
+void hcli_on_notice_clear(hcli_t *self, const char *key);
+
+/* PoP: hcli_current_reasoning_callback @ cli.py:_current_reasoning_callback */
+void *hcli_current_reasoning_callback(hcli_t *self);
+
+/* PoP: hcli_slow_command_status @ cli.py:_slow_command_status */
+char *hcli_slow_command_status(hcli_t *self, const char *command);
+
+/* PoP: hcli_command_spinner_frame @ cli.py:_command_spinner_frame */
+char *hcli_command_spinner_frame(void);
+
+/* PoP: hcli_try_launch_chrome_debug @ cli.py:_try_launch_chrome_debug */
+bool hcli_try_launch_chrome_debug(int port, const char *system);
+
+/* PoP: hcli_open_external_editor @ cli.py:_open_external_editor */
+bool hcli_open_external_editor(hcli_t *self);
+
+/* PoP: hcli_register_extra_tui_keybindings @ cli.py:_register_extra_tui_keybindings */
+void hcli_register_extra_tui_keybindings(hcli_t *self, void *kb, void *input_area);
 
 #endif /* SLERMES_CLI_HERMES_CLI_H */
