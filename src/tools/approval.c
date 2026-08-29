@@ -1932,10 +1932,7 @@ char *approval__sudo_stdin_block_result(const char *description) {
 
 /* --- Command guards (simplified faithful core) --------------------------- */
 
-/* PoP: approval__check_sudo_stdin_guard @ tools/approval.py:_check_sudo_stdin_guard */
-/* Detect `sudo -S` (stdin password) without configured SUDO_PASSWORD.
- * Returns a malloc'd JSON result string or NULL when not blocked. */
-static const char *HARDLINE_PATTERNS[] = {
+static const char *HARDELINE_PATTERNS[] = {
     /* 0 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*rm[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(\"/(\\.|\\.|/)*(\\.|\\.|\\*)*\"|'/(\\.|\\.|/)*(\\.|\\.|\\*)*'|/(\\.|\\.|/)*(\\.|\\.|\\*)*([[:space:]]|[;`|&]|\\)|$)|/(\\.|\\.|/)*(\\.|\\.|\\*)*$|/ \\*([[:space:]]|[;`|&]|\\)|$)|/ \\*$)",
     /* 1 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*rm[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(\"/home([[:space:]]|[;`|&]|\\)|$)|'/home'([[:space:]]|[;`|&]|\\)|$)|/home([[:space:]]|[;`|&]|\\)|$)|/home$|\"/root([[:space:]]|[;`|&]|\\)|$)|'/root'([[:space:]]|[;`|&]|\\)|$)|/root([[:space:]]|[;`|&]|\\)|$)|/root$|\"/etc([[:space:]]|[;`|&]|\\)|$)|'/etc'([[:space:]]|[;`|&]|\\)|$)|/etc([[:space:]]|[;`|&]|\\)|$)|/etc$|\"/usr([[:space:]]|[;`|&]|\\)|$)|'/usr'([[:space:]]|[;`|&]|\\)|$)|/usr([[:space:]]|[;`|&]|\\)|$)|/usr$|\"/var([[:space:]]|[;`|&]|\\)|$)|'/var'([[:space:]]|[;`|&]|\\)|$)|/var([[:space:]]|[;`|&]|\\)|$)|/var$|\"/bin([[:space:]]|[;`|&]|\\)|$)|'/bin'([[:space:]]|[;`|&]|\\)|$)|/bin([[:space:]]|[;`|&]|\\)|$)|/bin$|\"/sbin([[:space:]]|[;`|&]|\\)|$)|'/sbin'([[:space:]]|[;`|&]|\\)|$)|/sbin([[:space:]]|[;`|&]|\\)|$)|/sbin$|\"/boot([[:space:]]|[;`|&]|\\)|$)|'/boot'([[:space:]]|[;`|&]|\\)|$)|/boot([[:space:]]|[;`|&]|\\)|$)|/boot$|\"/lib([[:space:]]|[;`|&]|\\)|$)|'/lib'([[:space:]]|[;`|&]|\\)|$)|/lib([[:space:]]|[;`|&]|\\)|$)|/lib$)",
     /* 2 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*rm[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(\"~([[:space:]]|[;`|&]|\\)|$)|'~([[:space:]]|[;`|&]|\\)|$)|~([[:space:]]|[;`|&]|\\)|$)|~$|\"[$][{]?HOME}?(/?|/[*])?\"([[:space:]]|[;`|&]|\\)|$)|'[$][{]?HOME}?(/?|/[*])?([[:space:]]|[;`|&]|\\)|$)|[$][{]?HOME}?(/?|/[*])?([[:space:]]|[;`|&]|\\)|$)|[$][{]?HOME}?(/?|/[*])?$)",
@@ -1951,8 +1948,8 @@ static const char *HARDLINE_PATTERNS[] = {
     NULL
 };
 
-
-char *approval__check_sudo_stdin_guard(const char *command) {
+/* PoP: approval_check_sudo_stdin_guard @ tools/approval.py:_check_sudo_stdin_guard */
+char *approval_check_sudo_stdin_guard(const char *command) {
     if (getenv("SUDO_PASSWORD")) return NULL;
     if (!command) return NULL;
     char *low = strdup(command);
@@ -1993,8 +1990,8 @@ char *approval_detect_hardline_command(const char *command) {
     static int compiled_count = -1;
     if (compiled_count < 0) {
         compiled_count = 0;
-        for (int i = 0; HARDLINE_PATTERNS[i] && compiled_count < 16; i++) {
-            compiled[compiled_count] = regex_compile(HARDLINE_PATTERNS[i], 1);
+        for (int i = 0; HARDELINE_PATTERNS[i] && compiled_count < 16; i++) {
+            compiled[compiled_count] = regex_compile(HARDELINE_PATTERNS[i], 1);
             if (compiled[compiled_count]) compiled_count++;
         }
     }
