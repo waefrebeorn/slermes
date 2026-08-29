@@ -798,6 +798,45 @@ void hcli_start_wake_word_watchdog(hcli_t *self) {
     pthread_detach(tid);
 }
 
+/* PoP: _start_heartbeat_watchdog @ cli.py:_start_heartbeat_watchdog
+ * Daemon thread polls every hb_POLL_SECONDS (5.0s); when idle and a
+ * heartbeat is due, inject the prompt into _pending_input. Idempotent. */
+static void *heartbeat_watchdog_fn(void *arg) {
+    hcli_t *self = (hcli_t *)arg;
+    while (self->wake_word_active && !self->should_exit) {
+        /* hb_POLL_SECONDS = 5.0 → 5s sleep */
+        struct timespec ts = {0, 5000000000};
+        nanosleep(&ts, NULL);
+        if (self->should_exit) break;
+        void *mgr = hcli_get_heartbeat_manager(self);
+        if (!mgr || !hb_manager_is_active(mgr)) continue;
+        bool busy = self->agent_running ||
+                    self->voice_recording ||
+                    self->voice_processing;
+        if (busy) continue;
+        /* Check pending input queue is empty — use the seam. */
+        if (self->pending_input_put_fn == NULL) continue; /* no way to check */
+        if (self->pending_input_nonempty_fn && self->pending_input_nonempty_fn(self))
+            continue;  /* not idle — pending input waiting */
+        char *prompt = hb_manager_due_prompt(mgr, (double)time(NULL));
+        if (prompt) {
+            self->pending_input_put_fn(self, prompt);
+            free(prompt);
+        }
+    }
+    self->heartbeat_watchdog_started = false;
+    return NULL;
+}
+
+void hcli_start_heartbeat_watchdog(hcli_t *self) {
+    if (!self) return;
+    if (self->heartbeat_watchdog_started) return;
+    self->heartbeat_watchdog_started = true;
+    pthread_t tid;
+    pthread_create(&tid, NULL, heartbeat_watchdog_fn, self);
+    pthread_detach(tid);
+}
+
 /* PoP: _get_heartbeat_manager @ cli.py:_get_heartbeat_manager */
 void *hcli_get_heartbeat_manager(hcli_t *self) {
     if (!self) return NULL;

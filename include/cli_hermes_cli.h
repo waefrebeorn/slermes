@@ -222,6 +222,7 @@ struct hcli {
     bool wake_suspended;                        /* _wake_suspended */
     bool wake_start_new_session;                /* _wake_start_new_session */
     bool wake_watchdog_started;                 /* _wake_watchdog_started */
+    bool heartbeat_watchdog_started;            /* _heartbeat_watchdog_started */
 
     /* ── Batch 3: model identity / streaming state ──────────────────────── */
     bool   model_is_default;                    /* _model_is_default */
@@ -763,6 +764,9 @@ void hcli_stop_wake_word_listener(hcli_t *self, bool announce);
 
 /* PoP: hcli_start_wake_watchdog @ cli.py:_start_wake_watchdog */
 void hcli_start_wake_watchdog(hcli_t *self);
+
+/* PoP: hcli_start_heartbeat_watchdog @ cli.py:_start_heartbeat_watchdog */
+void hcli_start_heartbeat_watchdog(hcli_t *self);
 
 /* ══════════ Batch 4 (approval + secret capture + exit summary) ═══════════ */
 
