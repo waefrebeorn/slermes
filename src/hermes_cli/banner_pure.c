@@ -634,3 +634,46 @@ json_t *banner_get_available_skills(void) {
     json_free(all);
     return out;
 }
+
+/* PoP: get_build_sha @ hermes_cli/build_info.py:get_build_sha */
+char *build_info_get_build_sha(int short_len) {
+    /* Read <repo>/.hermes_build_sha if present; fall back to env.
+     * Python: Path(__file__).parent.parent / ".hermes_build_sha" */
+    char path[PATH_MAX];
+    char *repo = banner_resolve_repo_dir();
+    char *sha = NULL;
+
+    if (repo) {
+        snprintf(path, sizeof(path), "%s/.hermes_build_sha", repo);
+        free(repo);
+        FILE *f = fopen(path, "r");
+        if (f) {
+            char buf[64] = {0};
+            if (fgets(buf, sizeof(buf), f)) {
+                /* strip trailing whitespace/newline */
+                size_t len = strlen(buf);
+                while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r' || buf[len-1] == ' '))
+                    buf[--len] = '\0';
+                if (len >= 7 && len <= 40)  /* plausible SHA length */
+                    sha = strdup(buf);
+            }
+            fclose(f);
+        }
+    }
+
+    /* Fall back to env var HERMES_BUILD_SHA (set by Dockerfile build-arg) */
+    if (!sha) {
+        const char *env_sha = getenv("HERMES_BUILD_SHA");
+        if (env_sha && env_sha[0])
+            sha = strdup(env_sha);
+    }
+
+    if (!sha) return NULL;
+
+    /* Truncate if requested: sha[:short_len] when short_len > 0 */
+    if (short_len > 0 && (size_t)short_len < strlen(sha)) {
+        sha[short_len] = '\0';
+    }
+
+    return sha;
+}

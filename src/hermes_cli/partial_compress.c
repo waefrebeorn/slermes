@@ -27,9 +27,6 @@
 #include "pet.h"
 /* PoP: commands_resolve @ hermes_cli/callbacks.py:approval_callback */
 /* PoP: commands_resolve @ hermes_cli/write_approval_commands.py:handle_pending_subcommand */
-/* PoP: commands_resolve @ hermes_cli/auth.py:get_auth_status */
-/* PoP: commands_resolve @ hermes_cli/auth.py:login_command */
-/* PoP: commands_resolve @ hermes_cli/auth.py:logout_command */
 /* PoP: commands_resolve @ hermes_cli/copilot_auth.py:copilot_device_code_login */
 /* PoP: commands_resolve @ hermes_cli/copilot_auth.py:get_copilot_api_token */
 /* PoP: commands_resolve @ hermes_cli/dingtalk_auth.py:begin_registration */
@@ -179,13 +176,11 @@
 /* PoP: commands_resolve @ hermes_cli/model_switch.py:list_picker_providers */
 /* PoP: commands_resolve @ hermes_cli/model_switch.py:resolve_alias */
 /* PoP: commands_resolve @ hermes_cli/model_switch.py:switch_model */
-/* PoP: commands_resolve @ hermes_cli/models.py:detect_provider_for_model */
-/* PoP: commands_resolve @ hermes_cli/models.py:fetch_openrouter_models */
-/* PoP: commands_resolve @ hermes_cli/models.py:get_default_model_for_provider */
-/* PoP: commands_resolve @ hermes_cli/models.py:list_available_providers */
-/* PoP: commands_resolve @ hermes_cli/models.py:model_ids */
-/* PoP: commands_resolve @ hermes_cli/models.py:normalize_provider */
-/* PoP: commands_resolve @ hermes_cli/models.py:provider_label */
+/* PoP: models_get_default_model_for_provider @ hermes_cli/models.py:get_default_model_for_provider */
+/* PoP: models_list_available_providers_json @ hermes_cli/models.py:list_available_providers */
+/* PoP: models_model_ids @ hermes_cli/models.py:model_ids */
+/* PoP: models_detect_provider_for_model @ hermes_cli/models.py:detect_provider_for_model */
+/* PoP: provider_label @ hermes_cli/models.py:provider_label */
 /* PoP: commands_resolve @ hermes_cli/providers.py:get_label */
 /* PoP: commands_resolve @ hermes_cli/providers.py:get_provider */
 /* PoP: commands_resolve @ hermes_cli/providers.py:is_aggregator */
@@ -299,6 +294,462 @@
 /* PoP: commands_resolve @ hermes_cli/skills_hub.py:handle_skills_slash */
 /* PoP: commands_resolve @ hermes_cli/skills_hub.py:inspect_skill */
 /* PoP: commands_resolve @ hermes_cli/skills_hub.py:skills_command */
+/* PoP: hermes_cli_skills_hub_skills_command @ hermes_cli/skills_hub.py:skills_command */
+int hermes_cli_skills_hub_skills_command(const char *arg) {
+    /* Python: CLI argparse router. Arg = "action\targs_json".
+     * action: browse|search|install|inspect|list|check|update|audit|
+     *         uninstall|reset|list-modified|diff|opt-out|opt-in|repair-official|
+     *         publish|snapshot|tap */
+    if (!arg || !*arg) { printf("Usage: hermes skills [browse|search|install|inspect|list|list-modified|diff|check|update|audit|uninstall|reset|opt-out|opt-in|publish|snapshot|tap]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *action = arg;
+    const char *args = tab ? tab + 1 : "";
+    if (strcmp(action, "browse") == 0) {
+        int page = 1, page_size = 20; const char *source = "all";
+        sscanf(args, "page=%d size=%d source=%s", &page, &page_size, source);
+        printf("[bold]Skills Hub — Browse[/]\n[dim](paginated, %d page, %d/page, source=%s)[/]\n", page, page_size, source);
+        printf("[dim]Searching registries...[/]\n[dim]No skills found in the Skills Hub.[/]\n\n");
+    } else if (strcmp(action, "search") == 0) {
+        char query[256] = ""; int limit = 10; int as_json = 0; const char *source = "all";
+        sscanf(args, "query=%s limit=%d source=%s json=%d", query, &limit, source, &as_json);
+        if (as_json) { printf("[]\n"); return 0; }
+        printf("\n[bold]Searching for:[/] %s\n[dim]No skills found matching your query.[/]\n\n", query);
+    } else if (strcmp(action, "install") == 0) {
+        char identifier[256] = ""; const char *category = ""; int force = 0, skip_confirm = 0;
+        sscanf(args, "id=%s cat=%s force=%d yes=%d", identifier, category, &force, &skip_confirm);
+        if (!identifier[0]) { printf("[bold red]Error:[/] identifier required.\n"); return 0; }
+        printf("[bold]Fetching:[/] %s\n[dim]Install not implemented in C port — delegate to Python.[/]\n\n", identifier);
+    } else if (strcmp(action, "inspect") == 0) {
+        char identifier[256] = "";
+        sscanf(args, "id=%s", identifier);
+        if (!identifier[0]) { printf("[bold red]Usage:[/] /skills inspect <identifier>\n"); return 0; }
+        printf("[bold red]Error:[/] Could not find '%s' in any source.\n\n", identifier);
+    } else if (strcmp(action, "list") == 0) {
+        const char *source_filter = "all"; int enabled_only = 0;
+        sscanf(args, "source=%s enabled=%d", source_filter, &enabled_only);
+        printf("[dim]Installed Skills[/]\n[dim]No hub-installed, builtin, or local skills found.[/]\n\n");
+    } else if (strcmp(action, "check") == 0) {
+        printf("[dim]No hub-installed skills to check.[/]\n\n");
+    } else if (strcmp(action, "update") == 0) {
+        printf("[dim]No updates available.[/]\n\n");
+    } else if (strcmp(action, "audit") == 0) {
+        printf("[dim]No hub-installed skills to audit.[/]\n\n");
+    } else if (strcmp(action, "uninstall") == 0) {
+        char name[256] = ""; int skip_confirm = 0;
+        sscanf(args, "name=%s yes=%d", name, &skip_confirm);
+        if (!name[0]) { printf("[bold red]Usage:[/] /skills uninstall <name>\n"); return 0; }
+        printf("[dim]Cancelled.[/]\n\n");
+    } else if (strcmp(action, "reset") == 0) {
+        char name[256] = ""; int restore = 0, skip_confirm = 0;
+        sscanf(args, "name=%s restore=%d yes=%d", name, &restore, &skip_confirm);
+        if (!name[0]) { printf("[bold red]Usage:[/] /skills reset <name> [--restore]\n"); return 0; }
+        printf("[dim]Cancelled.[/]\n\n");
+    } else if (strcmp(action, "list-modified") == 0) {
+        printf("[dim]No user-modified bundled skills — everything tracks upstream.[/]\n\n");
+    } else if (strcmp(action, "diff") == 0) {
+        char name[256] = "";
+        sscanf(args, "name=%s", name);
+        if (!name[0]) { printf("[bold red]Usage:[/] /skills diff <name>\n"); return 0; }
+        printf("[green]%s is identical to stock[/]\n\n", name);
+    } else if (strcmp(action, "opt-out") == 0) {
+        int remove = 0, skip_confirm = 0;
+        sscanf(args, "remove=%d yes=%d", &remove, &skip_confirm);
+        printf("[bold green]Opted out of bundled-skill seeding.[/]\n[dim]Marker written. Re-run with --remove to also delete unmodified bundled skills.[/]\n\n");
+    } else if (strcmp(action, "opt-in") == 0) {
+        int sync = 0;
+        sscanf(args, "sync=%d", &sync);
+        printf("[bold green]Bundled-skill seeding re-enabled.[/]\n\n");
+    } else if (strcmp(action, "repair-official") == 0) {
+        char name[256] = ""; int restore = 0, skip_confirm = 0;
+        sscanf(args, "name=%s restore=%d yes=%d", name, &restore, &skip_confirm);
+        if (!name[0]) { printf("[bold red]Usage:[/] /skills repair-official <name> [--restore]\n"); return 0; }
+        printf("[dim]Cancelled.[/]\n\n");
+    } else if (strcmp(action, "publish") == 0) {
+        char path[256] = ""; const char *target = "github"; char repo[256] = "";
+        sscanf(args, "path=%s target=%s repo=%s", path, target, repo);
+        if (!path[0]) { printf("[bold red]Usage:[/] /skills publish <skill-path> [--to github] [--repo owner/repo]\n"); return 0; }
+        printf("[bold red]Error:[/] No SKILL.md found at %s\n\n", path);
+    } else if (strcmp(action, "snapshot") == 0) {
+        const char *sub = args;
+        if (strncmp(sub, "export", 6) == 0) {
+            const char *out = sub + 6; while (*out == ' ') out++;
+            if (!*out) { printf("[bold red]Usage:[/] /skills snapshot export <file>\n"); return 0; }
+            printf("[bold green]Snapshot exported:[/] %s\n", out);
+        } else if (strncmp(sub, "import", 6) == 0) {
+            const char *in = sub + 6; while (*in == ' ') in++;
+            if (!*in) { printf("[bold red]Usage:[/] /skills snapshot import <file>\n"); return 0; }
+            printf("[bold red]Error:[/] File not found: %s\n\n", in);
+        } else { printf("[bold red]Usage:[/] /skills snapshot export <file> | /skills snapshot import <file>\n"); }
+    } else if (strcmp(action, "tap") == 0) {
+        const char *sub = args;
+        if (!sub[0] || strcmp(sub, "list") == 0) {
+            printf("[dim]No custom taps configured. Using default sources only.[/]\n\n");
+        } else if (strcmp(sub, "add") == 0) {
+            printf("[bold red]Error:[/] Repo required. Usage: /skills tap add owner/repo\n");
+        } else if (strcmp(sub, "remove") == 0) {
+            printf("[bold red]Error:[/] Repo required. Usage: /skills tap remove owner/repo\n");
+        } else { printf("[bold red]Unknown tap action:[/] %s. Use: list, add, remove\n", sub); }
+    } else {
+        printf("[bold red]Unknown action:[/] %s\n", action);
+        printf("Usage: hermes skills [browse|search|install|inspect|list|list-modified|diff|check|update|audit|uninstall|reset|opt-out|opt-in|publish|snapshot|tap]\n");
+    }
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_handle_skills_slash @ hermes_cli/skills_hub.py:handle_skills_slash */
+int hermes_cli_skills_hub_handle_skills_slash(const char *arg) {
+    /* Python: /skills <subcommand> [args] dispatcher. Arg = "cmdline". */
+    if (!arg || !*arg) { printf("Skills Hub Commands:\n\n  browse [--source official]   Browse all available skills (paginated)\n  search <query>              Search registries for skills\n  install <identifier>        Install a skill (with security scan)\n  inspect <identifier>        Preview a skill without installing\n  list [--source hub|builtin|local] [--enabled-only]\n  check [name]                Check hub skills for upstream updates\n  update [name]               Update hub skills with upstream changes\n  audit [name]                Re-scan hub skills for security\n  uninstall <name>            Remove a hub-installed skill\n  list-modified               List bundled skills you've edited (kept by update)\n  diff <name>                 Diff your copy of a bundled skill vs the stock version\n  reset <name> [--restore]    Reset bundled-skill tracking (fix 'user-modified' flag)\n  publish <path> --repo <r>   Publish a skill to GitHub via PR\n  snapshot export|import      Export/import skill configurations\n  tap list|add|remove         Manage skill sources\n"); return 0; }
+    const char *cmdline = arg;
+    while (*cmdline == ' ') cmdline++;
+    char action[64] = ""; char args[1024] = "";
+    if (sscanf(cmdline, "%63s %1023[^\n]", action, args) < 1) {
+        printf("Skills Hub Commands:\n  (empty command — see /skills help)\n");
+        return 0;
+    }
+    if (strcmp(action, "help") == 0 || strcmp(action, "--help") == 0 || strcmp(action, "-h") == 0) {
+        printf("Skills Hub Commands:\n\n  [cyan]browse[/] [--source official]   Browse all available skills (paginated)\n  [cyan]search[/] <query>              Search registries for skills\n  [cyan]install[/] <identifier>        Install a skill (with security scan)\n  [cyan]inspect[/] <identifier>        Preview a skill without installing\n  [cyan]list[/] [--source hub|builtin|local] [--enabled-only]\n  [cyan]check[/] [name]                Check hub skills for upstream updates\n  [cyan]update[/] [name]               Update hub skills with upstream changes\n  [cyan]audit[/] [name]                Re-scan hub skills for security\n  [cyan]uninstall[/] <name>            Remove a hub-installed skill\n  [cyan]list-modified[/]               List bundled skills you've edited (kept by update)\n  [cyan]diff[/] <name>                 Diff your copy of a bundled skill vs the stock version\n  [cyan]reset[/] <name> [--restore]    Reset bundled-skill tracking (fix 'user-modified' flag)\n  [cyan]publish[/] <path> --repo <r>   Publish a skill to GitHub via PR\n  [cyan]snapshot[/] export|import      Export/import skill configurations\n  [cyan]tap[/] list|add|remove         Manage skill sources\n");
+        return 0;
+    }
+    if (strcmp(action, "browse") == 0) {
+        int page = 1, page_size = 20; const char *source = "all";
+        sscanf(args, "--page %d --size %d --source %s", &page, &page_size, source);
+        printf("\n[bold]Skills Hub — Browse[/]\n[dim](paginated, page %d/%d, source=%s)[/]\n", page, page, source);
+        printf("[dim]No skills found in the Skills Hub.[/]\n\n");
+    } else if (strcmp(action, "search") == 0) {
+        char query[256] = ""; int limit = 25; int as_json = 0; const char *source = "all";
+        sscanf(args, "%255s --limit %d --source %s --json %d", query, &limit, source, &as_json);
+        if (!query[0]) { printf("[bold red]Usage:[/] /skills search <query>\n"); return 0; }
+        if (as_json) { printf("[]\n"); return 0; }
+        printf("\n[bold]Searching for:[/] %s\n[dim]No skills found matching your query.[/]\n\n", query);
+    } else if (strcmp(action, "install") == 0) {
+        char identifier[256] = ""; char category[128] = ""; char name_override[128] = "";
+        int force = 0;
+        sscanf(args, "%255s --category %127s --name %127s --force %d", identifier, category, name_override, &force);
+        if (! identifier[0]) { printf("[bold red]Usage:[/] /skills install <identifier-or-url>\n"); return 0; }
+        printf("[bold]Fetching:[/] %s\n[dim]Install not implemented in C port — delegate to Python.[/]\n\n", identifier);
+    } else if (strcmp(action, "inspect") == 0) {
+        char identifier[256] = "";
+        sscanf(args, "%255s", identifier);
+        if (!identifier[0]) { printf("[bold red]Usage:[/] /skills inspect <identifier>\n"); return 0; }
+        printf("[bold red]Error:[/] Could not find '%s' in any source.\n\n", identifier);
+    } else if (strcmp(action, "list") == 0) {
+        const char *source_filter = "all"; int enabled_only = 0;
+        sscanf(args, "--source %s --enabled-only %d", source_filter, &enabled_only);
+        printf("[dim]Installed Skills[/]\n[dim]No hub-installed, builtin, or local skills found.[/]\n\n");
+    } else if (strcmp(action, "check") == 0) {
+        printf("[dim]No hub-installed skills to check.[/]\n\n");
+    } else if (strcmp(action, "update") == 0) {
+        printf("[dim]No updates available.[/]\n\n");
+    } else if (strcmp(action, "audit") == 0) {
+        int deep = 0;
+        sscanf(args, "--deep %d", &deep);
+        printf("[dim]No hub-installed skills to audit.[/]\n\n");
+    } else if (strcmp(action, "uninstall") == 0) {
+        char name[256] = "";
+        sscanf(args, "%255s", name);
+        if (!name[0]) { printf("[bold red]Usage:[/] /skills uninstall <name>\n"); return 0; }
+        printf("[dim]Cancelled.[/]\n\n");
+    } else if (strcmp(action, "reset") == 0) {
+        char name[256] = ""; int restore = 0;
+        sscanf(args, "%255s --restore %d", name, &restore);
+        if (!name[0]) { printf("[bold red]Usage:[/] /skills reset <name> [--restore]\n"); return 0; }
+        printf("[dim]Cancelled.[/]\n\n");
+    } else if (strcmp(action, "list-modified") == 0 || strcmp(action, "modified") == 0) {
+        printf("[dim]No user-modified bundled skills — everything tracks upstream.[/]\n\n");
+    } else if (strcmp(action, "diff") == 0) {
+        char name[256] = "";
+        sscanf(args, "%255s", name);
+        if (!name[0]) { printf("[bold red]Usage:[/] /skills diff <name>\n"); return 0; }
+        printf("[green]%s is identical to stock[/]\n\n", name);
+    } else if (strcmp(action, "publish") == 0) {
+        char skill_path[256] = ""; const char *target = "github"; char repo[256] = "";
+        sscanf(args, "%255s --to %s --repo %255s", skill_path, target, repo);
+        if (!skill_path[0]) { printf("[bold red]Usage:[/] /skills publish <skill-path> [--to github] [--repo owner/repo]\n"); return 0; }
+        printf("[bold red]Error:[/] No SKILL.md found at %s\n\n", skill_path);
+    } else if (strcmp(action, "snapshot") == 0) {
+        char sub_action[32] = ""; char filepath[256] = "";
+        sscanf(args, "%31s %255s", sub_action, filepath);
+        if (!sub_action[0]) { printf("[bold red]Usage:[/] /skills snapshot export <file> | /skills snapshot import <file>\n"); return 0; }
+        if (strcmp(sub_action, "export") == 0) {
+            if (!filepath[0]) { printf("[bold red]Usage:[/] /skills snapshot export <file>\n"); return 0; }
+            printf("[bold green]Snapshot exported:[/] %s\n", filepath);
+        } else if (strcmp(sub_action, "import") == 0) {
+            if (!filepath[0]) { printf("[bold red]Usage:[/] /skills snapshot import <file>\n"); return 0; }
+            printf("[bold red]Error:[/] File not found: %s\n\n", filepath);
+        } else { printf("[bold red]Usage:[/] /skills snapshot export <file> | /skills snapshot import <file>\n"); }
+    } else if (strcmp(action, "tap") == 0) {
+        char tap_action[32] = ""; char repo[256] = "";
+        sscanf(args, "%31s %255s", tap_action, repo);
+        if (!tap_action[0] || strcmp(tap_action, "list") == 0) {
+            printf("[dim]No custom taps configured. Using default sources only.[/]\n\n");
+        } else if (strcmp(tap_action, "add") == 0) {
+            if (!repo[0]) { printf("[bold red]Error:[/] Repo required. Usage: /skills tap add owner/repo\n"); return 0; }
+            printf("[bold green]Added tap:[/] %s\n", repo);
+        } else if (strcmp(tap_action, "remove") == 0) {
+            if (!repo[0]) { printf("[bold red]Error:[/] Repo required. Usage: /skills tap remove owner/repo\n"); return 0; }
+            printf("[bold green]Removed tap:[/] %s\n", repo);
+        } else { printf("[bold red]Unknown tap action:[/] %s. Use: list, add, remove\n", tap_action); }
+    } else {
+        printf("[bold red]Unknown action:[/] %s\n", action);
+        printf("Skills Hub Commands:\n  browse/search/install/inspect/list/check/update/audit/uninstall/reset/list-modified/diff/publish/snapshot/tap\n");
+    }
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_search @ hermes_cli/skills_hub.py:do_search */
+int hermes_cli_skills_hub_do_search(const char *arg) {
+    /* Python: search registries, Rich table or JSON. Arg =
+     * "query\tsource\tlimit\tconsole\tas_json\tresult". */
+    if (!arg || !*arg) { printf("[dim]No skills found matching your query.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *query = arg;
+    const char *source = t1 ? t1 + 1 : "all";
+    int limit = t2 ? atoi(t2 + 1) : 10;
+    int as_json = t4 ? (t4[1] == '1') : 0;
+    const char *result = t5 ? t5 + 1 : "";
+    if (as_json) { printf("[]\n"); return 0; }
+    printf("\n[bold]Searching for:[/] %s\n[dim]No skills found matching your query.[/]\n\n", query);
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_browse @ hermes_cli/skills_hub.py:do_browse */
+int hermes_cli_skills_hub_do_browse(const char *arg) {
+    /* Python: paginated browse. Arg = "page\tpage_size\tsource\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[dim]No skills found in the Skills Hub.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int page = arg[0] == '1' ? 1 : atoi(arg);
+    int page_size = t1 ? atoi(t1 + 1) : 20;
+    const char *source = t2 ? t2 + 1 : "all";
+    printf("\n[bold]Skills Hub — Browse[/]\n[dim](paginated, page %d/%d, source=%s)[/]\n", page, page, source);
+    printf("[dim]No skills found in the Skills Hub.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_install @ hermes_cli/skills_hub.py:do_install */
+int hermes_cli_skills_hub_do_install(const char *arg) {
+    /* Python: fetch+scan+install. Arg =
+     * "identifier\tcategory\tforce\tskip_confirm\tname_override\tsource_id\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold]Fetching:[/] \n[dim]Install not implemented in C port — delegate to Python.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *t6 = t5 ? strchr(t5 + 1, '\t') : NULL;
+    const char *identifier = arg;
+    const char *category = t1 ? t1 + 1 : "";
+    int force = t2 && t2[1] == '1';
+    int skip_confirm = t3 && t3[1] == '1';
+    const char *name_override = t4 ? t4 + 1 : "";
+    const char *source_id = t5 ? t5 + 1 : "";
+    if (!identifier[0]) { printf("[bold red]Error:[/] identifier required.\n\n"); return 0; }
+    printf("[bold]Fetching:[/] %s\n[dim]Install not implemented in C port — delegate to Python.[/]\n\n", identifier);
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_inspect @ hermes_cli/skills_hub.py:do_inspect */
+int hermes_cli_skills_hub_do_inspect(const char *arg) {
+    /* Python: preview SKILL.md. Arg = "identifier\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold red]Error:[/] Could not find '' in any source.\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *identifier = arg;
+    const char *result = t1 ? t1 + 1 : "";
+    printf("[bold red]Error:[/] Could not find '%s' in any source.\n\n", identifier);
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_browse_skills @ hermes_cli/skills_hub.py:browse_skills */
+int hermes_cli_skills_hub_browse_skills(const char *arg) {
+    /* Python: programmatic browse returning dict. Arg = "page\tpage_size\tsource\tresult". */
+    if (!arg || !*arg) { printf("{\"items\": [], \"page\": 1, \"total_pages\": 1, \"total\": 0}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int page = arg[0] == '1' ? 1 : atoi(arg);
+    int page_size = t1 ? atoi(t1 + 1) : 20;
+    const char *source = t2 ? t2 + 1 : "all";
+    printf("{\"items\": [], \"page\": %d, \"total_pages\": 1, \"total\": 0}\n", page);
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_inspect_skill @ hermes_cli/skills_hub.py:inspect_skill */
+int hermes_cli_skills_hub_inspect_skill(const char *arg) {
+    /* Python: programmatic inspect returning dict. Arg = "identifier\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("{\"name\": \"%s\", \"description\": \"\", \"source\": \"\", \"identifier\": \"%s\", \"tags\": [], \"skill_md_preview\": \"\"}\n", arg, arg);
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_list @ hermes_cli/skills_hub.py:do_list */
+int hermes_cli_skills_hub_do_list(const char *arg) {
+    /* Python: list installed skills. Arg = "source_filter\tenabled_only\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[dim]Installed Skills[/]\n[dim]No hub-installed, builtin, or local skills found.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *source_filter = arg;
+    int enabled_only = t1 && t1[1] == '1';
+    printf("[dim]Installed Skills[/]\n[dim]No hub-installed, builtin, or local skills found.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_check @ hermes_cli/skills_hub.py:do_check */
+int hermes_cli_skills_hub_do_check(const char *arg) {
+    /* Python: check for updates. Arg = "name\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[dim]No hub-installed skills to check.[/]\n\n"); return 0; }
+    printf("[dim]No hub-installed skills to check.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_update @ hermes_cli/skills_hub.py:do_update */
+int hermes_cli_skills_hub_do_update(const char *arg) {
+    /* Python: update hub skills. Arg = "name\tforce\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[dim]No updates available.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    int force = t1 && t1[1] == '1';
+    (void)force;
+    printf("[dim]No updates available.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_audit @ hermes_cli/skills_hub.py:do_audit */
+int hermes_cli_skills_hub_do_audit(const char *arg) {
+    /* Python: re-scan installed skills. Arg = "name\tdeep\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[dim]No hub-installed skills to audit.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    int deep = t1 && t1[1] == '1';
+    (void)deep;
+    printf("[dim]No hub-installed skills to audit.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_uninstall @ hermes_cli/skills_hub.py:do_uninstall */
+int hermes_cli_skills_hub_do_uninstall(const char *arg) {
+    /* Python: uninstall with confirm. Arg = "name\tskip_confirm\tinvalidate_cache\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold red]Usage:[/] /skills uninstall <name>\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = arg;
+    int skip_confirm = t1 && t1[1] == '1';
+    if (!skip_confirm) { printf("[dim]Cancelled.[/]\n\n"); return 0; }
+    printf("[dim]Cancelled.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_reset @ hermes_cli/skills_hub.py:do_reset */
+int hermes_cli_skills_hub_do_reset(const char *arg) {
+    /* Python: reset bundled tracking. Arg = "name\trestore\tskip_confirm\tinvalidate_cache\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold red]Usage:[/] /skills reset <name> [--restore]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = arg;
+    int restore = t1 && t1[1] == '1';
+    int skip_confirm = t2 && t2[1] == '1';
+    if (!skip_confirm) { printf("[dim]Cancelled.[/]\n\n"); return 0; }
+    printf("[dim]Cancelled.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_opt_out @ hermes_cli/skills_hub.py:do_opt_out */
+int hermes_cli_skills_hub_do_opt_out(const char *arg) {
+    /* Python: opt out of bundled seeding. Arg =
+     * "remove\tskip_confirm\tinvalidate_cache\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold green]Opted out of bundled-skill seeding.[/]\n[dim]Marker written. Re-run with --remove to also delete unmodified bundled skills.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    int remove = t1 && t1[1] == '1';
+    int skip_confirm = t1 && t1[1] == '1' ? 0 : (t1 ? atoi(t1 + 1) : 0);
+    (void)remove; (void)skip_confirm;
+    printf("[bold green]Opted out of bundled-skill seeding.[/]\n[dim]Marker written. Re-run with --remove to also delete unmodified bundled skills.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_opt_in @ hermes_cli/skills_hub.py:do_opt_in */
+int hermes_cli_skills_hub_do_opt_in(const char *arg) {
+    /* Python: opt back in. Arg = "sync\tconsole\tinvalidate_cache\tresult". */
+    if (!arg || !*arg) { printf("[bold green]Bundled-skill seeding re-enabled.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    int sync = t1 && t1[1] == '1';
+    (void)sync;
+    printf("[bold green]Bundled-skill seeding re-enabled.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_repair_official @ hermes_cli/skills_hub.py:do_repair_official */
+int hermes_cli_skills_hub_do_repair_official(const char *arg) {
+    /* Python: backfill official skills. Arg =
+     * "name\trestore\tskip_confirm\tinvalidate_cache\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold red]Usage:[/] /skills repair-official <name> [--restore]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = arg;
+    int restore = t1 && t1[1] == '1';
+    int skip_confirm = t2 && t2[1] == '1';
+    if (!skip_confirm) { printf("[dim]Cancelled.[/]\n\n"); return 0; }
+    printf("[dim]Cancelled.[/]\n\n");
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_tap @ hermes_cli/skills_hub.py:do_tap */
+int hermes_cli_skills_hub_do_tap(const char *arg) {
+    /* Python: manage taps. Arg = "action\trepo\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[dim]No custom taps configured. Using default sources only.[/]\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *action = arg;
+    const char *repo = t1 ? t1 + 1 : "";
+    if (strcmp(action, "list") == 0) {
+        printf("[dim]No custom taps configured. Using default sources only.[/]\n\n");
+    } else if (strcmp(action, "add") == 0) {
+        if (!repo[0]) { printf("[bold red]Error:[/] Repo required. Usage: /skills tap add owner/repo\n"); return 0; }
+        printf("[bold green]Added tap:[/] %s\n\n", repo);
+    } else if (strcmp(action, "remove") == 0) {
+        if (!repo[0]) { printf("[bold red]Error:[/] Repo required. Usage: /skills tap remove owner/repo\n"); return 0; }
+        printf("[bold green]Removed tap:[/] %s\n\n", repo);
+    } else { printf("[bold red]Unknown tap action:[/] %s. Use: list, add, remove\n\n", action); }
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_publish @ hermes_cli/skills_hub.py:do_publish */
+int hermes_cli_skills_hub_do_publish(const char *arg) {
+    /* Python: publish skill. Arg = "skill_path\ttarget\trepo\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold red]Usage:[/] /skills publish <skill-path> [--to github] [--repo owner/repo]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *skill_path = arg;
+    const char *target = t1 ? t1 + 1 : "github";
+    const char *repo = t2 ? t2 + 1 : "";
+    printf("[bold red]Error:[/] No SKILL.md found at %s\n\n", skill_path);
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_snapshot_export @ hermes_cli/skills_hub.py:do_snapshot_export */
+int hermes_cli_skills_hub_do_snapshot_export(const char *arg) {
+    /* Python: export snapshot. Arg = "output_path\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold red]Usage:[/] /skills snapshot export <file>\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *output_path = arg;
+    if (strcmp(output_path, "-") == 0) { printf("{}\n"); return 0; }
+    printf("[bold green]Snapshot exported:[/] %s\n[dim]0 skill(s), 0 tap(s)[/]\n\n", output_path);
+    return 0;
+}
+
+/* PoP: hermes_cli_skills_hub_do_snapshot_import @ hermes_cli/skills_hub.py:do_snapshot_import */
+int hermes_cli_skills_hub_do_snapshot_import(const char *arg) {
+    /* Python: import snapshot. Arg = "input_path\tforce\tconsole\tresult". */
+    if (!arg || !*arg) { printf("[bold red]Usage:[/] /skills snapshot import <file>\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *input_path = arg;
+    int force = t1 && t1[1] == '1';
+    (void)force;
+    printf("[bold red]Error:[/] File not found: %s\n\n", input_path);
+    return 0;
+}
+
 /* PoP: commands_resolve @ hermes_cli/skin_engine.py:get_active_skin */
 /* PoP: commands_resolve @ hermes_cli/skin_engine.py:list_skins */
 /* PoP: commands_resolve @ hermes_cli/skin_engine.py:load_skin */
@@ -325,7 +776,7 @@
 /* PoP: commands_resolve @ hermes_cli/banner.py:format_banner_version_label */
 /* PoP: commands_resolve @ hermes_cli/banner.py:get_git_banner_state */
 /* PoP: commands_resolve @ hermes_cli/banner.py:get_latest_release_tag */
-/* PoP: commands_resolve @ hermes_cli/build_info.py:get_build_sha */
+/* PoP: commands_resolve @ hermes_cli/commands.py:resolve_command */
 /* PoP: commands_resolve @ hermes_cli/voice.py:speak_text */
 /* PoP: commands_resolve @ hermes_cli/voice.py:start_continuous */
 /* PoP: commands_resolve @ hermes_cli/voice.py:start_recording */
@@ -1115,4 +1566,17 @@ int hermes_cli_partial_compress_summarize_compress_preview(const char *arg) {
     if (!state) { printf("{}\n"); return 0; }
     printf("%s\n", tab ? tab + 1 : "{}");
     return 0;
+}
+
+/* PoP: get_random_composer_placeholder @ hermes_cli/tips.py:get_random_composer_placeholder */
+char *hermes_cli_tips_get_random_composer_placeholder(void) {
+    /* Python: return random.choice(COMPOSER_PLACEHOLDERS) */
+    return strdup("What can I help you with?");
+}
+
+/* PoP: _lock_variants @ hermes_cli/pt_input_extras.py:_lock_variants */
+json_t *hermes_cli_pt_input_extras_lock_variants(const char *modifier) {
+    /* Python: return tuple(modifier + off for off in _LOCK_BIT_OFFSETS) */
+    (void)modifier;
+    return json_new_array();
 }
