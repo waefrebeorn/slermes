@@ -30,6 +30,8 @@
 #include "terminal_breadcrumbs_pure.h"
 #include "port_tools_wake_word.h"
 #include "approval.h"
+/* Declared in src/hermes_cli/runtime_provider.c (no public header). */
+extern char *canonical_custom_identity(const char *base_url, const char *config_provider);
 #include <time.h>
 
 /* ── extern declarations for functions not yet in public headers ────────── */
@@ -62,6 +64,9 @@ extern char *hermes_state_sanitize_context(const char *text);
 extern int hermes_state_set_session_yolo(hermes_state_db_t *db,
                                          const char *session_id,
                                          bool enabled);
+extern void hermes_state_update_session_model(hermes_state_db_t *db,
+                                              const char *session_id,
+                                              const char *model);
 extern bool hermes_state_session_yolo_enabled(const char *session_meta_json);
 /* Declared in src/tools/approval_helpers2.c (no public header). */
 extern int  apr2_enable_session_yolo(const char *session_key);
@@ -1052,6 +1057,46 @@ void hcli_toggle_yolo(hcli_t *self) {
         approval_set_current_session_key(sid);
         printf("  ⚡ YOLO mode ON — all dangerous commands auto-approved.\n");
     }
+}
+
+/* PoP: _persist_model_switch_to_session @ cli.py:_persist_model_switch_to_session */
+void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result) {
+    if (!self || !self->session_db || !self->session_id ||
+        !result || result->type != JSON_OBJECT) return;
+
+    const char *sid = self->session_id;
+    const char *new_model = json_get_str(result, "new_model", NULL);
+    hermes_state_update_session_model(self->session_db, sid, new_model);
+
+    const char *provider = json_get_str(result, "target_provider", NULL);
+    const char *base_url = json_get_str(result, "base_url", NULL);
+    const char *api_mode = json_get_str(result, "api_mode", NULL);
+
+    /* Heal bare "custom" to canonical identity (or NULL to drop). */
+    char *canon = NULL;
+    if (provider && strcasecmp(provider, "custom") == 0) {
+        canon = canonical_custom_identity(base_url, NULL);
+        provider = canon ? canon : NULL;
+    }
+
+    /* Build the route blob: provider, base_url, api_mode — all or-None. */
+    json_t *route = json_new_object();
+    json_set(route, "provider", provider ? json_string(provider) : json_null());
+    json_set(route, "base_url", base_url ? json_string(base_url) : json_null());
+    json_set(route, "api_mode", api_mode ? json_string(api_mode) : json_null());
+
+    /* patch_session_model_config merges gateway_runtime + flat route keys. */
+    json_t *patch = json_new_object();
+    json_set(patch, "gateway_runtime", route);
+    json_set(patch, "provider", provider ? json_string(provider) : json_null());
+    json_set(patch, "base_url", base_url ? json_string(base_url) : json_null());
+    json_set(patch, "api_mode", api_mode ? json_string(api_mode) : json_null());
+
+    hermes_state_patch_session_model_config(self->session_db, sid, patch);
+
+    json_free(route);
+    json_free(patch);
+    free(canon);
 }
 
 /* PoP: _restore_session_yolo @ cli.py:_restore_session_yolo */

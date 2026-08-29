@@ -630,6 +630,8 @@ bool hcli_is_session_yolo_active(hcli_t *self);
 void hcli_toggle_yolo(hcli_t *self);
 /* PoP: hcli_restore_session_yolo @ cli.py:_restore_session_yolo */
 void hcli_restore_session_yolo(hcli_t *self, const char *session_meta_json, bool quiet);
+/* PoP: hcli_persist_model_switch_to_session @ cli.py:_persist_model_switch_to_session */
+void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result);
 
 /* ── Batch 0 continuation: status-bar / formatting surface ─────────────── */
 
