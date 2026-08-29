@@ -606,6 +606,12 @@ void hcli_maybe_start_wake_word(hcli_t *self);
 /* PoP: hcli_on_wake_word @ cli.py:_on_wake_word */
 void hcli_on_wake_word(hcli_t *self);
 
+/* PoP: hcli_start_wake_word_listener @ cli.py:_start_wake_word_listener */
+bool hcli_start_wake_word_listener(hcli_t *self, bool announce);
+
+/* PoP: hcli_show_wake_word_status @ cli.py:_show_wake_word_status */
+json_t *hcli_show_wake_word_status(hcli_t *self);
+
 /* PoP: hcli_maybe_fire_loop_tick @ cli.py:_maybe_fire_loop_tick
  * Idle hook: fire a due /loop wakeup only when idle (no agent running,
  * no queued input, no active goal that blocks). NULL = no loop configured. */

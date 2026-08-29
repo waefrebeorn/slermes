@@ -867,3 +867,87 @@ void hcli_maybe_complete_loop_tick_after_turn(hcli_t *self) {
         free(decision_json);
     }
 }
+
+/* PoP: _start_wake_word_listener @ cli.py:_start_wake_word_listener */
+bool hcli_start_wake_word_listener(hcli_t *self, bool announce) {
+    if (!self) return false;
+    if (self->wake_word_active && ww_owns_listener(self)) {
+        return true;
+    }
+    self->wake_word_active = false;
+
+    json_t *cfg = ww_load_wake_word_config();
+    if (!cfg) {
+        if (announce)
+            printf("  Wake word unavailable (no config)\n");
+        return false;
+    }
+
+    json_t *reqs = ww_check_wake_word_requirements(cfg);
+    if (reqs) {
+        json_t *avail = json_object_get(reqs, "available");
+        if (avail && avail->type == JSON_BOOL && !avail->bool_val) {
+            if (announce) {
+                printf("\n  Wake word requirements not met:\n");
+                json_t *hint = json_object_get(reqs, "hint");
+                if (hint && hint->type == JSON_STRING && hint->str_val)
+                    printf("  %s\n", hint->str_val);
+            }
+            json_free(reqs);
+            json_free(cfg);
+            return false;
+        }
+        self->wake_start_new_session = true;
+        json_free(reqs);
+    }
+
+    (void)announce;
+    self->wake_word_active = true;
+    json_free(cfg);
+    return true;
+}
+
+/* PoP: _show_wake_word_status @ cli.py:_show_wake_word_status */
+json_t *hcli_show_wake_word_status(hcli_t *self) {
+    if (!self) return NULL;
+
+    json_t *cfg = ww_load_wake_word_config();
+    json_t *reqs = cfg ? ww_check_wake_word_requirements(cfg) : NULL;
+    bool owned = ww_owns_listener(self);
+    bool listening = ww_is_listening();
+
+    const char *state = "OFF";
+    if (owned && listening) state = "LISTENING";
+    else if (owned) state = "PAUSED";
+
+    printf("\n  Wake Word Status\n");
+    printf("  State:       %s\n", state);
+
+    if (reqs) {
+        json_t *phrase = json_object_get(reqs, "phrase");
+        if (phrase && phrase->type == JSON_STRING && phrase->str_val)
+            printf("  Phrase:      \"%s\"\n", phrase->str_val);
+        json_t *provider = json_object_get(reqs, "provider");
+        if (provider && provider->type == JSON_STRING && provider->str_val)
+            printf("  Provider:    %s\n", provider->str_val);
+        json_free(reqs);
+    }
+
+    if (cfg) {
+        json_t *surface = json_object_get(cfg, "surface");
+        if (surface && surface->type == JSON_STRING && surface->str_val)
+            printf("  Surface:     %s\n", surface->str_val);
+        else
+            printf("  Surface:     auto\n");
+        json_t *sn = json_object_get(cfg, "start_new_session");
+        bool sns = true;
+        if (sn && sn->type == JSON_BOOL) sns = sn->bool_val;
+        printf("  New session: %s\n", sns ? "yes" : "no");
+        json_free(cfg);
+    } else {
+        printf("  Surface:     auto\n");
+        printf("  New session: yes\n");
+    }
+
+    return json_new_null();
+}
