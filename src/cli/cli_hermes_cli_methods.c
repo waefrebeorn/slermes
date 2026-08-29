@@ -1117,3 +1117,56 @@ void hcli_restore_session_yolo(hcli_t *self, const char *session_meta_json,
         printf("  %s\n", msg);
     }
 }
+
+/* PoP: _snapshot_model_runtime @ cli.py:_snapshot_model_runtime */
+hcli_model_runtime_t *hcli_snapshot_model_runtime(hcli_t *self) {
+    if (!self) return NULL;
+    hcli_model_runtime_t *snap = calloc(1, sizeof(hcli_model_runtime_t));
+    if (!snap) return NULL;
+    snap->model = strdup(self->model ? self->model : "");
+    snap->provider = strdup(self->provider ? self->provider : "");
+    snap->requested_provider = strdup(self->requested_provider ? self->requested_provider : "");
+    snap->explicit_api_key = self->explicit_api_key ? strdup(self->explicit_api_key) : NULL;
+    snap->explicit_base_url = self->explicit_base_url ? strdup(self->explicit_base_url) : NULL;
+    snap->api_key = strdup(self->api_key ? self->api_key : "");
+    snap->base_url = strdup(self->base_url ? self->base_url : "");
+    snap->api_mode = strdup(self->api_mode ? self->api_mode : "");
+
+    /* Deep-copy agent._primary_runtime JSON.
+     * In Python: copy.deepcopy(getattr(agent, "_primary_runtime", None)).
+     * self->agent is opaque (void *) in C — no direct field access.
+     * Caller (TUI shell) may set snap->agent_primary_runtime_json
+     * via a pre-serialized JSON string before handoff. NULL = no agent. */
+    /* snap->agent_primary_runtime_json left NULL by calloc */
+    return snap;
+}
+
+/* PoP: _restore_model_runtime_snapshot @ cli.py:_restore_model_runtime_snapshot */
+void hcli_restore_model_runtime_snapshot(hcli_t *self, const hcli_model_runtime_t *snap) {
+    if (!self || !snap) return;
+    free(self->model);             self->model = snap->model ? strdup(snap->model) : NULL;
+    free(self->provider);          self->provider = snap->provider ? strdup(snap->provider) : NULL;
+    free(self->requested_provider); self->requested_provider = snap->requested_provider ? strdup(snap->requested_provider) : NULL;
+    free(self->explicit_api_key);  self->explicit_api_key = snap->explicit_api_key ? strdup(snap->explicit_api_key) : NULL;
+    free(self->explicit_base_url); self->explicit_base_url = snap->explicit_base_url ? strdup(snap->explicit_base_url) : NULL;
+    free(self->api_key);           self->api_key = snap->api_key ? strdup(snap->api_key) : NULL;
+    free(self->base_url);          self->base_url = snap->base_url ? strdup(snap->base_url) : NULL;
+    free(self->api_mode);          self->api_mode = snap->api_mode ? strdup(snap->api_mode) : NULL;
+    /* agent_primary_runtime_json is set by TUI shell seam, not restored here
+     * (agent is opaque; Python setattr can't be done in C for private fields). */
+}
+
+/* PoP: hcli_model_runtime_free @ hermes_cli/runtime_provider.py:ModelRuntimeSnapshot */
+void hcli_model_runtime_free(hcli_model_runtime_t *snap) {
+    if (!snap) return;
+    free(snap->model);
+    free(snap->provider);
+    free(snap->requested_provider);
+    free(snap->explicit_api_key);
+    free(snap->explicit_base_url);
+    free(snap->api_key);
+    free(snap->base_url);
+    free(snap->api_mode);
+    free(snap->agent_primary_runtime_json);
+    free(snap);
+}
