@@ -195,7 +195,7 @@ static bool is_official_ssh_remote(const char *url) {
 
 /* ── _check_via_rev (banner._check_via_rev) ──────────────────────────── */
 
-static int check_via_rev(const char *local_rev) {
+int check_via_rev(const char *local_rev) {
     /* git ls-remote <upstream> refs/heads/main → compare to local_rev. */
     const char *args[] = { "ls-remote", UPSTREAM_REPO_URL, "refs/heads/main" };
     char *out = NULL;
@@ -214,7 +214,7 @@ static int check_via_rev(const char *local_rev) {
 
 /* ── _check_via_local_git (banner._check_via_local_git) ──────────────── */
 
-static int check_via_local_git(const char *repo_dir) {
+int check_via_local_git(const char *repo_dir) {
     /* origin_url = git remote get-url origin */
     const char *url_args[] = { "remote", "get-url", "origin" };
     char *origin_url = git_stdout(repo_dir, url_args, 3);

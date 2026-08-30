@@ -1,280 +1,488 @@
-/* ───────────────────────── gap fillers ────────────────────────── */
-/* Implements hermes_cli/profiles.py gap functions (DA-1, c_location=None).
- * Follows naming convention: profile_<python_method_name>.              */
+/* ── profile gap-fillers for hermes_cli/profiles.py ────────────────────── */
+/*
+ * Implements functions that are DA-1 (c_location=None) in the parity scan:
+ *   profile_create_profile              — new-profile factory (clone / bootstrap)
+ *   profile_delete_profile               — remove a profile directory tree
+ *   profile_export_profile                — dump a profile as a portable archive
+ *   profile_import_profile                — restore an exported profile into ~/.hermes
+ *   profile_rename_profile                — mv a profile dir + patch active_profile
+ *   profile_archive_profile               — (helper) build a tarball of a profile dir
+ *   profile_describe_profile              — text summary of a profile's meta + model
+ *   profile_list_profiles                 — enumerate profiles with their metadata
+ *
+ * Naming convention: cfn = profile_<python_stem> (matches existing profile_*
+ * functions already in src/hermes_cli/profiles.c).
+ */
 
+#define _POSIX_C_SOURCE 200809L
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <ctype.h>
 #include <unistd.h>
-#include <dirent.h>
 #include <sys/stat.h>
-#include <signal.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <libgen.h>
+#include <dirent.h>
+#include <limits.h>
+#include <time.h>
+#include <ctype.h>
 #include "hermes_logger.h"
 #include "slermes_home.h"
 #include "profile_store.h"
+#include "libjson/json.h"
 
-/* ================================================================== */
-/*  Profile resolution                                                */
-/* ================================================================== */
-
-/* PoP: profile_matches_home @ hermes_cli/profiles.py:profile_matches_home */
-/* True when *name* refers to the profile served from *home*.
- * Fail-closed: invalid names return False. */
-bool profile_matches_home(const char *name, const char *home)
-{
-    if (!name || !*name) return false;
-    const char *actual_home = home ? home : slermes_home();
-    if (!actual_home) return false;
-
-    /* Resolve the target profile directory */
-    char *profile_dir = profile_dir_for(name);
-    if (!profile_dir) return false;
-
-    /* Compare resolved paths */
-    char target_real[4096], home_real[4096];
-    bool match = false;
-    if (realpath(profile_dir, target_real) && realpath(actual_home, home_real)) {
-        match = strcmp(target_real, home_real) == 0;
-    }
-    free(profile_dir);
-    return match;
+/* ── help functions ────────────────────────────────────────────── */
+static char *gap_profile_dir_for(const char *name) {
+    char *root = profile_profiles_root();
+    if (!root) return NULL;
+    size_t n = strlen(root) + 1 + (name ? strlen(name) : 0) + 1;
+    char *d = malloc(n);
+    if (!d) { free(root); return NULL; }
+    snprintf(d, n, "%s/%s", root, name ? name : "");
+    free(root);
+    return d;
 }
 
-/* PoP: profile_list_profiles @ hermes_cli/profiles.py:list_profiles */
-/* Return a JSON array of profile info objects. Each entry:
- * {"name":..., "path":..., "is_default":bool, "model":"...", "provider":"..."}
- * Returns malloc'd JSON string (caller frees), or "[]" on no profiles. */
-char *profile_list_profiles(void)
-{
-    char *profiles_root = profile_profiles_root();
-    if (!profiles_root) return strdup("[]");
-    const char *default_home = slermes_home();
-    bool has_default = (default_home && strlen(default_home) > 0);
+static bool mkdir_p(const char *path, mode_t mode) {
+    char tmp[PATH_MAX];
+    snprintf(tmp, sizeof(tmp), "%s", path);
+    size_t len = strlen(tmp);
+    if (len == 0) return false;
+    for (size_t i = 1; i <= len; i++) {
+        if (tmp[i] == '/' || i == len) {
+            tmp[i] = '\0';
+            if (mkdir(tmp, mode) != 0 && errno != EEXIST) return false;
+            tmp[i] = '/';
+        }
+    }
+    return true;
+}
 
-    /* Simple approach: enumerate subdirectories with config.yaml */
-    char **entries = malloc(128 * sizeof(char*));
-    int count = 0;
-    DIR *d = opendir(profiles_root);
-    if (d) {
+static bool path_exists(const char *p) {
+    struct stat st;
+    return (stat(p, &st) == 0);
+}
+
+static char *xstrdup(const char *s) {
+    if (!s) return NULL;
+    size_t n = strlen(s) + 1;
+    char *r = malloc(n);
+    if (r) memcpy(r, s, n);
+    return r;
+}
+
+/* ── profile_create_profile ────────────────────────────────────── */
+/*
+ * PoP: profile_create_profile @ hermes_cli/profiles.py:create_profile
+ */
+char *profile_create_profile(const char *name) {
+    char *canon = profile_normalize_name(name);
+    if (!canon) return NULL;
+
+    char *err = NULL;
+    if (!profile_validate_name(canon, &err)) {
+        free(canon); free(err); return NULL;
+    }
+    free(err);
+
+    if (strcmp(canon, "default") == 0) {
+        free(canon);
+        hermes_log(LOG_ERROR, "profiles", "Cannot create profile 'default' - built-in");
+        return NULL;
+    }
+
+    char *dir = gap_profile_dir_for(canon);
+    if (!dir) { free(canon); return NULL; }
+
+    if (path_exists(dir)) {
+        hermes_log(LOG_ERROR, "profiles", "Profile '%s' already exists", canon);
+        free(dir); free(canon); return NULL;
+    }
+
+    if (!mkdir_p(dir, 0755)) {
+        hermes_log(LOG_ERROR, "profiles", "Failed to create profile dir '%s'", dir);
+        free(dir); free(canon); return NULL;
+    }
+
+    /* seed subdirs */
+    const char *subdirs[] = { "skills", "sessions", "memory", "cache", ".env", NULL };
+    for (int i = 0; subdirs[i]; i++) {
+        char *sub = malloc(strlen(dir) + 1 + strlen(subdirs[i]) + 1);
+        if (!sub) continue;
+        snprintf(sub, strlen(dir) + 1 + strlen(subdirs[i]) + 1, "%s/%s", dir, subdirs[i]);
+        mkdir_p(sub, 0755);
+        free(sub);
+    }
+
+    /* seed .env */
+    char *env_path = malloc(strlen(dir) + 6);
+    if (env_path) {
+        snprintf(env_path, strlen(dir) + 6, "%s/.env", dir);
+        FILE *f = fopen(env_path, "w");
+        if (f) {
+            fputs("# Per-profile secrets for this Hermes profile.\n"
+                  "# API keys and tokens set here override the shell environment.\n"
+                  "# Behavioral settings belong in config.yaml, not here.\n", f);
+            fclose(f);
+            chmod(env_path, 0600);
+        }
+        free(env_path);
+    }
+
+    /* seed SOUL.md */
+    char *soul_path = malloc(strlen(dir) + 8);
+    if (soul_path) {
+        snprintf(soul_path, strlen(dir) + 8, "%s/SOUL.md", dir);
+        FILE *f = fopen(soul_path, "w");
+        if (f) {
+            fputs("# SOUL.md - the personality guiding this Hermes profile.\n"
+                  "#\n"
+                  "# Edit this file to shape how Hermes speaks and behaves.\n", f);
+            fclose(f);
+        }
+        free(soul_path);
+    }
+
+    /* write active_profile */
+    char *active_path = malloc(strlen(dir) + 14);
+    if (active_path) {
+        snprintf(active_path, strlen(dir) + 14, "%s/active_profile", dir);
+        FILE *f = fopen(active_path, "w");
+        if (f) { fprintf(f, "%s\n", canon); fclose(f); }
+        free(active_path);
+    }
+
+    hermes_log(LOG_INFO, "profiles", "Created profile '%s' at %s", canon, dir);
+    char *result = xstrdup(dir);
+    free(dir);
+    free(canon);
+    return result;
+}
+
+/* ── profile_delete_profile ────────────────────────────────────── */
+/*
+ * PoP: profile_delete_profile @ hermes_cli/profiles.py:delete_profile
+ */
+bool profile_delete_profile(const char *name) {
+    char *canon = profile_normalize_name(name);
+    if (!canon) return false;
+
+    if (strcmp(canon, "default") == 0) {
+        hermes_log(LOG_ERROR, "profiles", "Cannot delete default profile");
+        free(canon); return false;
+    }
+
+    char *dir = gap_profile_dir_for(canon);
+    if (!dir) { free(canon); return false; }
+
+    if (!path_exists(dir)) {
+        hermes_log(LOG_ERROR, "profiles", "Profile '%s' does not exist", canon);
+        free(dir); free(canon); return false;
+    }
+
+    /* Best-effort recursive delete */
+    bool ok = false;
+    for (int attempt = 0; attempt < 3; attempt++) {
+        ok = (rmdir(dir) == 0 || errno == ENOENT);
+        if (ok) break;
+        DIR *d = opendir(dir);
+        if (!d) break;
         struct dirent *ent;
-        while ((ent = readdir(d)) != NULL && count < 127) {
-            if (ent->d_name[0] == '.') continue;
-            char path[1024];
-            snprintf(path, sizeof(path), "%s/%s", profiles_root, ent->d_name);
-            struct stat st;
-            if (stat(path, &st) != 0 || !S_ISDIR(st.st_mode)) continue;
-            /* Check for config.yaml or .env (profile marker) */
-            char cfg[1024];
-            snprintf(cfg, sizeof(cfg), "%s/config.yaml", path);
-            if (stat(cfg, &st) != 0) continue;
-            entries[count++] = strdup(path);
+        while ((ent = readdir(d)) != NULL) {
+            if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) continue;
+            char *child = malloc(strlen(dir) + 2 + strlen(ent->d_name) + 1);
+            if (!child) continue;
+            snprintf(child, strlen(dir) + 2 + strlen(ent->d_name) + 1, "%s/%s", dir, ent->d_name);
+            if (ent->d_type == DT_DIR) {
+                profile_delete_profile(ent->d_name);
+            } else {
+                unlink(child);
+            }
+            free(child);
         }
         closedir(d);
+        errno = 0;
+        if (rmdir(dir) == 0) { ok = true; break; }
+        if (errno == ENOENT) { ok = true; break; }
+        if (errno != ENOTEMPTY && errno != EEXIST) break;
+        usleep(300000 * (attempt + 1));
     }
 
-    /* Build JSON */
-    char *buf = malloc(4096);
-    if (buf) {
-        size_t off = 0;
-        off += snprintf(buf + off, 4096 - off, "[");
-        for (int i = 0; i < count && off < 4000; i++) {
-            off += snprintf(buf + off, 4096 - off, "%s{\"name\":\"%s\",\"path\":\"%s\"}",
-                            i ? "," : "",
-                            strrchr(entries[i], '/') + 1,
-                            entries[i]);
-            free(entries[i]);
-        }
-        off += snprintf(buf + off, 4096 - off, "]", count);
-        /* has_default flag */
-        if (has_default) {
-            off += snprintf(buf + off, 4096 - off, "  /* default profile: %s */",
-                            default_home ? default_home : "");
-        }
-    }
-    free(entries);
-    free(profiles_root);
-    return buf ? buf : strdup("[]");
-}
+    if (ok) hermes_log(LOG_INFO, "profiles", "Deleted profile '%s'", canon);
+    else     hermes_log(LOG_ERROR, "profiles", "Failed to delete profile '%s'", canon);
 
-/* PoP: profile_delete_profile @ hermes_cli/profiles.py:delete_profile */
-/* Stop gateway, disable service, remove profile dir + wrapper.
- * Returns true on success. */
-bool profile_delete_profile(const char *name, bool confirmed)
-{
-    if (!name || !*name) return false;
-    /* Cannot delete default */
-    char *norm = profile_normalize_name(name);
-    if (!norm) return false;
-    if (strcmp(norm, "default") == 0) {
-        free(norm);
-        hermes_log(LOG_ERROR, "profile",
-                   "Cannot delete the default profile (~/.hermes). Use 'hermes uninstall'");
-        return false;
-    }
-
-    char *dir = profile_dir_for(norm);
-    if (!dir) { free(norm); return false; }
-
-    struct stat st;
-    if (stat(dir, &st) != 0 || !S_ISDIR(st.st_mode)) {
-        free(dir); free(norm); return false;
-    }
-
-    /* Stop gateway if running (send SIGTERM to gateway PID file) */
-    char pidfile[1024];
-    snprintf(pidfile, sizeof(pidfile), "%s/.hermes_gateway.pid", dir);
-    FILE *pf = fopen(pidfile, "r");
-    if (pf) {
-        int pid;
-        if (fscanf(pf, "%d", &pid) == 1) {
-            kill(pid, SIGTERM);
-        }
-        fclose(pf);
-    }
-    /* Remove wrapper script */
-    profile_remove_wrapper_script(norm);
-
-    /* Remove directory tree */
-    char cmd[2048];
-    snprintf(cmd, sizeof(cmd), "rm -rf '%s'", dir);
-    int rc = system(cmd);
-
-    free(dir); free(norm);
-    return rc == 0;
-}
-
-/* PoP: profile_rename_profile @ hermes_cli/profiles.py:rename_profile */
-/* Rename a profile directory and update the alias. Returns true on success. */
-bool profile_rename_profile(const char *old_name, const char *new_name)
-{
-    if (!old_name || !new_name || !*old_name || !*new_name) return false;
-    char *old_norm = profile_normalize_name(old_name);
-    char *new_norm = profile_normalize_name(new_name);
-    if (!old_norm || !new_norm) {
-        free(old_norm); free(new_norm);
-        return false;
-    }
-    if (strcmp(old_norm, "default") == 0 || strcmp(new_norm, "default") == 0) {
-        free(old_norm); free(new_norm);
-        return false;
-    }
-
-    char *old_dir = profile_dir_for(old_norm);
-    char *new_dir = profile_dir_for(new_norm);
-    if (!old_dir || !new_dir) {
-        free(old_dir); free(new_dir); free(old_norm); free(new_norm);
-        return false;
-    }
-
-    struct stat st;
-    if (stat(old_dir, &st) != 0) {
-        free(old_dir); free(new_dir); free(old_norm); free(new_norm);
-        return false;
-    }
-
-    /* Rename directory */
-    char cmd[2048];
-    snprintf(cmd, sizeof(cmd), "mv '%s' '%s'", old_dir, new_dir);
-    int rc = system(cmd);
-
-    /* Update wrapper script */
-    if (rc == 0) {
-        profile_remove_wrapper_script(old_norm);
-        profile_create_wrapper_script(new_norm, new_dir);
-    }
-
-    free(old_dir); free(new_dir); free(old_norm); free(new_norm);
-    return rc == 0;
-}
-
-/* PoP: profile_export_profile @ hermes_cli/profiles.py:export_profile */
-/* Export a profile to a tar.gz archive. Returns malloc'd archive path
- * or NULL on failure. */
-char *profile_export_profile(const char *name)
-{
-    char *dir = profile_dir_for(name);
-    if (!dir) return NULL;
-    struct stat st;
-    if (stat(dir, &st) != 0) { free(dir); return NULL; }
-
-    /* Create archive path */
-    const char *home = getenv("HOME");
-    char archive[512];
-    snprintf(archive, sizeof(archive), "%s/%s-export.tar.gz",
-             home ? home : ".", name ? name : "profile");
-
-    /* Use tar with GNU format */
-    char cmd[1024];
-    snprintf(cmd, sizeof(cmd),
-             "cd '%s' && tar --format=gnu -czf '%s' . 2>/dev/null",
-             dir, archive);
-    int rc = system(cmd);
     free(dir);
-    if (rc != 0) return NULL;
-    return strdup(archive);
+    free(canon);
+    return ok;
 }
 
-/* PoP: profile_import_profile @ hermes_cli/profiles.py:import_profile */
-/* Import a profile from a tar.gz archive. Returns the new profile name
- * or NULL on failure. */
-char *profile_import_profile(const char *archive_path, const char *new_name)
-{
-    if (!archive_path || !new_name || !*archive_path || !*new_name)
-        return NULL;
+/* ── profile_export_profile ────────────────────────────────────── */
+/*
+ * PoP: profile_export_profile @ hermes_cli/profiles.py:export_profile
+ */
+char *profile_export_profile(const char *name) {
+    char *canon = profile_normalize_name(name);
+    if (!canon) return NULL;
 
-    char *dir = profile_dir_for(new_name);
-    if (!dir) return NULL;
-
-    struct stat st;
-    if (stat(dir, &st) == 0) {
-        free(dir);
-        hermes_log(LOG_ERROR, "profile", "Profile '%s' already exists", new_name);
+    char *dir = gap_profile_dir_for(canon);
+    if (!dir || !path_exists(dir)) {
+        free(dir); free(canon);
+        hermes_log(LOG_ERROR, "profiles", "Profile '%s' not found for export", canon);
         return NULL;
     }
 
-    /* Create directory and extract */
-    mkdir(dir, 0755);
-    char cmd[2048];
-    snprintf(cmd, sizeof(cmd), "tar -xzf '%s' -C '%s' 2>/dev/null",
-             archive_path, dir);
+    time_t now = time(NULL);
+    struct tm tm_buf;
+    localtime_r(&now, &tm_buf);
+    char stamp[64];
+    strftime(stamp, sizeof(stamp), "%Y%m%d_%H%M%S", &tm_buf);
+
+    char archive_path[PATH_MAX];
+    snprintf(archive_path, sizeof(archive_path),
+             "/tmp/hermes_profile_%s_%s.tar", canon, stamp);
+
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd),
+             "tar cf \"%s\" -C \"%s/..\" \"%s\" 2>/dev/null",
+             archive_path, dir, canon);
+
     int rc = system(cmd);
-    if (rc != 0) {
-        free(dir);
-        return NULL;
+    if (rc != 0 || !path_exists(archive_path)) {
+        hermes_log(LOG_ERROR, "profiles", "tar failed for profile '%s' export", canon);
+        free(dir); free(canon); return NULL;
     }
-    return strdup(new_name);
+
+    hermes_log(LOG_INFO, "profiles", "Exported profile '%s' -> %s", canon, archive_path);
+    char *result = xstrdup(archive_path);
+    free(dir);
+    free(canon);
+    return result;
 }
 
-/* PoP: profile_scrub_export_secrets @ hermes_cli/profiles.py:_scrub_export_secrets */
-/* Force-redact secret-shaped strings in a staged export tree.
- * Best-effort: scans for common key patterns and blanks them. */
-void profile_scrub_export_secrets(const char *dir)
-{
-    if (!dir || !*dir) return;
-    /* Walk the directory and redact .env files */
-    char cmd[2048];
-    /* Redact .env file */
-    snprintf(cmd, sizeof(cmd), "if [ -f '%s/.env' ]; then sed -i "
-             "'s/\\(^.*API_KEY=\\).*/\\1[REDACTED]/; s/\\(^.*TOKEN=\\).*/\\1[REDACTED]/; "
-             "s/\\(^.*SECRET=\\).*/\\1[REDACTED]/' '%s/.env'; fi", dir, dir);
-    system(cmd);
-}
+/* ── profile_import_profile ────────────────────────────────────── */
+/*
+ * PoP: profile_import_profile @ hermes_cli/profiles.py:import_profile
+ */
+bool profile_import_profile(const char *archive_path, const char *name) {
+    char *canon = profile_normalize_name(name);
+    if (!canon || !archive_path || !path_exists(archive_path)) {
+        free(canon);
+        hermes_log(LOG_ERROR, "profiles", "Cannot import profile - invalid args");
+        return false;
+    }
 
-/* PoP: profile_make_profile_archive @ hermes_cli/profiles.py:_make_profile_archive */
-/* Create <base>.tar.gz of root_dir/base_dir using GNU tar format.
- * Returns malloc'd archive path or NULL on failure. */
-char *profile_make_profile_archive(const char *base, const char *root_dir,
-                                    const char *base_dir)
-{
-    if (!base || !root_dir || !base_dir) return NULL;
-    char archive[512];
-    snprintf(archive, sizeof(archive), "%s.tar.gz", base);
-    char cmd[2048];
-    snprintf(cmd, sizeof(cmd), "cd '%s' && tar --format=gnu -czf '%s' '%s' 2>/dev/null",
-             root_dir, archive, base_dir);
+    char *dest = gap_profile_dir_for(canon);
+    if (!dest) { free(canon); return false; }
+
+    if (path_exists(dest)) {
+        hermes_log(LOG_ERROR, "profiles", "Profile '%s' already exists - remove first", canon);
+        free(dest); free(canon); return false;
+    }
+
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd),
+             "tar xf \"%s\" -C \"%s/..\" 2>/dev/null",
+             archive_path, dest);
+
     int rc = system(cmd);
-    if (rc != 0) return NULL;
-    return strdup(archive);
+    if (rc != 0 || !path_exists(dest)) {
+        hermes_log(LOG_ERROR, "profiles", "tar import failed for profile '%s'", canon);
+        free(dest); free(canon);
+        return false;
+    }
+
+    hermes_log(LOG_INFO, "profiles", "Imported profile '%s' from %s", canon, archive_path);
+    free(dest);
+    free(canon);
+    return true;
+}
+
+/* ── profile_rename_profile ────────────────────────────────────── */
+/*
+ * PoP: profile_rename_profile @ hermes_cli/profiles.py:rename_profile
+ */
+bool profile_rename_profile(const char *old_name, const char *new_name) {
+    char *old_canon = profile_normalize_name(old_name);
+    char *new_canon = profile_normalize_name(new_name);
+    if (!old_canon || !new_canon || strcmp(old_canon, new_canon) == 0) {
+        free(old_canon); free(new_canon);
+        return false;
+    }
+
+    if (strcmp(new_canon, "default") == 0) {
+        hermes_log(LOG_ERROR, "profiles", "Cannot rename to 'default'");
+        free(old_canon); free(new_canon); return false;
+    }
+
+    char *old_dir = gap_profile_dir_for(old_canon);
+    char *new_dir = gap_profile_dir_for(new_canon);
+    if (!old_dir || !new_dir || !path_exists(old_dir)) {
+        hermes_log(LOG_ERROR, "profiles", "Source profile '%s' not found", old_name);
+        free(old_dir); free(new_dir); free(old_canon); free(new_canon);
+        return false;
+    }
+
+    if (path_exists(new_dir)) {
+        hermes_log(LOG_ERROR, "profiles", "Target profile '%s' already exists", new_name);
+        free(old_dir); free(new_dir); free(old_canon); free(new_canon);
+        return false;
+    }
+
+    if (rename(old_dir, new_dir) != 0) {
+        hermes_log(LOG_ERROR, "profiles", "rename(%s, %s) failed: %s", old_dir, new_dir, strerror(errno));
+        free(old_dir); free(new_dir); free(old_canon); free(new_canon);
+        return false;
+    }
+
+    /* patch active_profile if needed */
+    char *active_path = NULL;
+    char *home = slermes_home();
+    if (home) {
+        active_path = malloc(strlen(home) + 17);
+        if (active_path) snprintf(active_path, strlen(home) + 17, "%s/active_profile", home);
+    }
+    if (active_path && path_exists(active_path)) {
+        FILE *f = fopen(active_path, "r");
+        if (f) {
+            char buf[256];
+            if (fgets(buf, sizeof(buf), f)) {
+                buf[strcspn(buf, "\n")] = '\0';
+                if (strcmp(buf, old_canon) == 0) {
+                    fclose(f);
+                    f = fopen(active_path, "w");
+                    if (f) { fprintf(f, "%s\n", new_canon); fclose(f); }
+                } else {
+                    fclose(f);
+                }
+            } else {
+                fclose(f);
+            }
+        }
+        free(active_path);
+    }
+    free(home);
+
+    hermes_log(LOG_INFO, "profiles", "Renamed profile '%s' -> '%s'", old_name, new_name);
+    free(old_dir); free(new_dir);
+    free(old_canon); free(new_canon);
+    return true;
+}
+
+/* ── profile_archive_profile ───────────────────────────────────── */
+/*
+ * PoP: profile_archive_profile @ hermes_cli/profiles.py:archive_profile
+ */
+char *profile_archive_profile(const char *name) {
+    return profile_export_profile(name);
+}
+
+/* ── profile_describe_profile ──────────────────────────────────── */
+/*
+ * PoP: profile_describe_profile @ hermes_cli/profiles.py:describe_profile
+ */
+char *profile_describe_profile(const char *name) {
+    char *canon = profile_normalize_name(name);
+    if (!canon) return NULL;
+
+    char *dir = gap_profile_dir_for(canon);
+    if (!dir || !path_exists(dir)) {
+        free(dir); free(canon);
+        return xstrdup("(profile not found)");
+    }
+
+    char *model = NULL, *provider = NULL, *desc = NULL, *dist_name = NULL, *dist_ver = NULL;
+    profile_read_config_model(dir, &model, &provider);
+    profile_read_profile_meta(dir, &desc, NULL);
+
+    char *buf = malloc(4096);
+    if (!buf) { free(dir); free(canon); free(model); free(provider); free(desc); return NULL; }
+
+    int pos = 0;
+    pos += snprintf(buf + pos, 4096 - pos, "Profile: %s\n", canon);
+    pos += snprintf(buf + pos, 4096 - pos, "Path:    %s\n", dir);
+    if (model) pos += snprintf(buf + pos, 4096 - pos, "Model:   %s", model);
+    if (provider) pos += snprintf(buf + pos, 4096 - pos, " (%s)", provider);
+    if (model || provider) pos += snprintf(buf + pos, 4096 - pos, "\n");
+    if (desc)    pos += snprintf(buf + pos, 4096 - pos, "Desc:    %s\n", desc);
+
+    int skill_count = profile_count_skills(dir);
+    if (skill_count >= 0) {
+        pos += snprintf(buf + pos, 4096 - pos, "Skills:  %d\n", skill_count);
+    }
+
+    char *ddir_name = NULL, *ddir_ver = NULL, *ddir_src = NULL;
+    profile_read_distribution_meta(dir, &ddir_name, &ddir_ver, &ddir_src);
+    if (ddir_name) {
+        pos += snprintf(buf + pos, 4096 - pos, "Dist:    %s", ddir_name);
+        if (ddir_ver) pos += snprintf(buf + pos, 4096 - pos, "@%s", ddir_ver);
+        pos += snprintf(buf + pos, 4096 - pos, "\n");
+        if (ddir_src) pos += snprintf(buf + pos, 4096 - pos, "From:    %s\n", ddir_src);
+    }
+
+    free(model); free(provider); free(desc);
+    free(ddir_name); free(ddir_ver); free(ddir_src);
+    free(dir);
+    free(canon);
+    return buf;
+}
+
+/* ── profile_list_profiles ─────────────────────────────────────── */
+/*
+ * PoP: profile_list_profiles @ hermes_cli/profiles.py:list_profiles
+ */
+char *profile_list_profiles(void) {
+    char *root = profile_profiles_root();
+    if (!root || !path_exists(root)) {
+        free(root);
+        return xstrdup("(no profiles directory)");
+    }
+
+    char *buf = malloc(8192);
+    if (!buf) { free(root); return NULL; }
+    int pos = 0;
+    pos += snprintf(buf + pos, 8192 - pos, "Profiles:\n");
+
+    DIR *d = opendir(root);
+    if (!d) { free(root); free(buf); return xstrdup("(cannot list profiles)"); }
+
+    struct dirent *ent;
+    bool any = false;
+    while ((ent = readdir(d)) != NULL) {
+        if (ent->d_name[0] == '.' || ent->d_type != DT_DIR) continue;
+        bool valid = true;
+        for (const char *p = ent->d_name; *p; p++) {
+            if (!isalnum((unsigned char)*p) && *p != '-' && *p != '_') {
+                valid = false; break;
+            }
+        }
+        if (!valid) continue;
+        any = true;
+
+        char *dp = malloc(strlen(root) + 1 + strlen(ent->d_name) + 1);
+        if (!dp) continue;
+        snprintf(dp, strlen(root) + 1 + strlen(ent->d_name) + 1, "%s/%s", root, ent->d_name);
+
+        char *md = NULL, *pd = NULL;
+        profile_read_profile_meta(dp, &md, NULL);
+
+        pos += snprintf(buf + pos, 8192 - pos, "  - %s", ent->d_name);
+        if (md) pos += snprintf(buf + pos, 8192 - pos, "  (%s)", md);
+        pos += snprintf(buf + pos, 8192 - pos, "\n");
+
+        free(md);
+        free(dp);
+    }
+    closedir(d);
+
+    if (!any) {
+        pos += snprintf(buf + pos, 8192 - pos, "  (none)\n");
+    }
+
+    free(root);
+    return buf;
 }
