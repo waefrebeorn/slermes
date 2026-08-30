@@ -15,6 +15,7 @@
  * workspace root is the nearest .git ancestor (matches resolve_workspace).
  *
  */
+#include "libpath/path.h"
 #include "lsp_common.h"
 #include "hermes_json.h"
 #include <stdlib.h>

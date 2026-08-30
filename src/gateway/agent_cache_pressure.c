@@ -119,7 +119,7 @@ long long acb_cgroup_limit_bytes(void) {
     return 0; /* None */
 }
 
-/* ── _total_memory_bytes() ── */
+/* PoP: _total_memory_bytes @ gateway/agent_cache_pressure.py:_total_memory_bytes */
 long long acb_total_memory_bytes(void) {
     long pages = sysconf(_SC_PHYS_PAGES);
     long page_sz = sysconf(_SC_PAGE_SIZE);

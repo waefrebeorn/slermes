@@ -244,10 +244,47 @@ char* _normalize_path(const char *path_value) {
     return realpath(path_value, NULL) ? : strdup(path_value);
 }
 
-/* PoP: _run_git_idx @ tools/checkpoint_manager.py:_migrate_legacy_store */
+/* PoP: _migrate_legacy_store @ tools/checkpoint_manager.py:_migrate_legacy_store */
 char* _migrate_legacy_store(const char *base) {
-    (void)base;
-    return NULL;
+    if (!base || !base[0]) return NULL;
+    struct stat st;
+    if (stat(base, &st) != 0 || !S_ISDIR(st.st_mode)) return NULL;
+    const char *reserved[] = {"store", ".last_prune", NULL};
+    const char *legacy_prefix = "legacy-";
+    char legacy_root[MAX_PATH] = {0};
+    int need_legacy = 0;
+    DIR *dir = opendir(base);
+    if (!dir) return NULL;
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        const char *name = entry->d_name;
+        if (!name || name[0] == '.') continue;
+        int is_reserved = 0;
+        for (int i = 0; reserved[i]; i++) {
+            if (strcmp(name, reserved[i]) == 0) { is_reserved = 1; break; }
+        }
+        if (is_reserved) continue;
+        if (strncmp(name, legacy_prefix, 7) == 0) continue;
+        if (!need_legacy) {
+            time_t now = time(NULL);
+            struct tm tm;
+            localtime_r(&now, &tm);
+            char stamp[32];
+            strftime(stamp, sizeof(stamp), "%Y%m%d-%H%M%S", &tm);
+            snprintf(legacy_root, sizeof(legacy_root), "%s/%s%s", base, legacy_prefix, stamp);
+            if (mkdir(legacy_root, 0755) != 0 && errno != EEXIST) {
+                closedir(dir);
+                return NULL;
+            }
+            need_legacy = 1;
+        }
+        char src_path[MAX_PATH], dst_path[MAX_PATH];
+        snprintf(src_path, sizeof(src_path), "%s/%s", base, name);
+        snprintf(dst_path, sizeof(dst_path), "%s/%s", legacy_root, name);
+        if (rename(src_path, dst_path) != 0) { /* best-effort */ }
+    }
+    closedir(dir);
+    return need_legacy ? strdup(legacy_root) : NULL;
 }
 
 /* PoP: _run_git @ tools/checkpoint_manager.py:_run_git */

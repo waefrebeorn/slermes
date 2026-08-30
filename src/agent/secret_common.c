@@ -588,5 +588,11 @@ void secret_reset_source_environment(secret_env_token_t *token)
 /* PoP: secret_get_source_environment @ agent/secret_sources/base.py:get_source_environment */
 char **secret_get_source_environment(void)
 {
-    return tl_source_environment ? tl_source_environment : environ;
+    /* Python: environ = _SOURCE_ENVIRONMENT.get(); return environ if environ
+     * is not None else os.environ.  The C thread-local IS the ContextVar
+     * equivalent — when never set via secret_set_source_environment(), it is
+     * NULL and we fall through to the process-wide environ, exactly matching
+     * the Python default of os.environ. */
+    if (!tl_source_environment) return environ;
+    return tl_source_environment;
 }

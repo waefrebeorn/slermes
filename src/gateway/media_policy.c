@@ -46,6 +46,7 @@ json_t *media_policy_load_gateway_cfg(json_t *config) {
     return gw;
 }
 
+/* PoP: apply_media_policy_env @ gateway/media_policy.py:apply_media_policy_env */
 void media_policy_apply_env(json_t *config) {
     /* Python wraps everything in try/except: a policy-bridge failure must
      * never break delivery. In C every access below is NULL-guarded. */
