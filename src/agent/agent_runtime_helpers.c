@@ -23,11 +23,12 @@
 #include "hermes_http.h"
 #include "hermes_logger.h"
 #include "hermes_agent.h"
+#include "hermes_json.h"
+#include "port_config_py_helpers.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <regex.h>
 
 /* ================================================================
  *  Connection pool socket iteration / cleanup
@@ -203,13 +204,190 @@ int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_agent_runtime_helpers_sync_credential_pool_entry_id @ agent/agent_runtime_helpers.py:sync_credential_pool_entry_id */
-int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) {
-    /* Python: rebind entry id or clear. Arg = "pool_bound\tentry_id". */
-    if (!arg || !*arg) { printf("entry id cleared\n"); return 0; }
-    const char *tab = strchr(arg, '\t');
-    int bound = arg[0] == '1';
-    if (!bound) { printf("entry id cleared (no pool)\n"); return 0; }
-    printf("entry id synced: %s\n", tab ? tab + 1 : "");
+/* PoP: agent_agent_runtime_helpers_trailing_continue_intent @ agent/agent_runtime_helpers.py:trailing_continue_intent */
+int agent_agent_runtime_helpers_trailing_continue_intent(const char *arg) {
+    // arg = "text"
+    if (!arg || !*arg) return 0;
+    const char *text = arg;
+    while (*text == ' ' || *text == '\t') text++;
+    size_t len = strlen(text);
+    while (len > 0 && (text[len-1] == ' ' || text[len-1] == '\t')) len--;
+    if (len == 0 || len > 600) return 0;
+    const char *tail = text + len;
+    size_t tail_len = len < 160 ? len : 160;
+    const char *seek = tail - tail_len;
+    while (*seek != '\0') seek++;
+    char buf[161];
+    size_t copy_len = tail - seek;
+    if (copy_len > 160) copy_len = 160;
+    memcpy(buf, seek, copy_len);
+    buf[copy_len] = '\0';
+    // Check for trailing intent patterns: "...", "will...", "let me...", etc.
+    if (strstr(buf, "...") || strstr(buf, "will ") || strstr(buf, "let me") ||
+        strstr(buf, "I'll") || strstr(buf, "gonna") || strstr(buf, "going to"))
+        return 1;
     return 0;
+}
+
+/* PoP: agent_agent_runtime_helpers_intent_ack_continuation_mode @ agent/agent_runtime_helpers.py:intent_ack_continuation_mode */
+int agent_agent_runtime_helpers_intent_ack_continuation_mode(const char *arg) {
+    // arg = "text"
+    if (!arg || !*arg) return 0;
+    const char *text = arg;
+    while (*text == ' ' || *text == '\t') text++;
+    size_t len = strlen(text);
+    while (len > 0 && (text[len-1] == ' ' || text[len-1] == '\t')) len--;
+    if (len == 0 || len > 600) return 0;
+    const char *tail = text + len;
+    size_t tail_len = len < 160 ? len : 160;
+    const char *seek = tail - tail_len;
+    while (*seek != '\0') seek++;
+    char buf[161];
+    size_t copy_len = tail - seek;
+    if (copy_len > 160) copy_len = 160;
+    memcpy(buf, seek, copy_len);
+    buf[copy_len] = '\0';
+    if (strstr(buf, "...") || strstr(buf, "will ") || strstr(buf, "let me") ||
+        strstr(buf, "I'll") || strstr(buf, "gonna") || strstr(buf, "going to"))
+        return 1;
+    return 0;
+}
+
+/* PoP: agent_agent_runtime_helpers_intent_ack_continuation_enabled @ agent/agent_runtime_helpers.py:intent_ack_continuation_enabled */
+int agent_agent_runtime_helpers_intent_ack_continuation_enabled(const char *arg) {
+    // arg = "enabled_flag" (1 or 0)
+    if (!arg || !*arg) return 0;
+    return arg[0] == '1' ? 1 : 0;
+}
+
+/* PoP: agent_agent_runtime_helpers_copy_reasoning_content_for_api @ agent/agent_runtime_helpers.py:copy_reasoning_content_for_api */
+int agent_agent_runtime_helpers_copy_reasoning_content_for_api(const char *arg) {
+    if (!arg || !*arg) return 0;
+    json_t *node = json_parse(arg, NULL);
+    if (!node) return 0;
+    char *out = json_serialize(node);
+    json_free(node);
+    if (out) { printf("%s\n", out); free(out); }
+    return 0;
+}
+
+/* PoP: agent_runtime_helpers_reapply_reasoning_echo_for_provider @ agent/agent_runtime_helpers.py:reapply_reasoning_echo_for_provider */
+int agent_runtime_helpers_reapply_reasoning_echo_for_provider(const char *arg) {
+    if (!arg || !*arg) return 0;
+    json_t *node = json_parse(arg, NULL);
+    if (!node) return 0;
+    char *out = json_serialize(node);
+    json_free(node);
+    if (out) { printf("%s\n", out); free(out); }
+    return 0;
+}
+
+/* ================================================================
+ *  Prompt caching config helpers
+ * ================================================================ */
+
+/* PoP: agent_agent_runtime_helpers_cache_ttl_means_disabled @ agent/agent_runtime_helpers.py:cache_ttl_means_disabled */
+bool agent_runtime_helpers_cache_ttl_means_disabled(const char *ttl) {
+    if (!ttl || !*ttl) return true;
+    if (strcmp(ttl, "5m") == 0 || strcmp(ttl, "1h") == 0) return false;
+    if (strcmp(ttl, "false") == 0 || strcmp(ttl, "off") == 0 ||
+        strcmp(ttl, "disabled") == 0 || strcmp(ttl, "no") == 0 ||
+        strcmp(ttl, "none") == 0 || strcmp(ttl, "False") == 0 ||
+        strcmp(ttl, "None") == 0)
+        return true;
+    return false;
+}
+
+/* PoP: agent_runtime_helpers__raw_cache_ttl_from_config @ agent/agent_runtime_helpers.py:_raw_cache_ttl_from_config */
+char *agent_runtime_helpers__raw_cache_ttl_from_config(void) {
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) return strdup("5m");
+    json_t *pc = json_object_get(cfg, "prompt_caching");
+    json_t *ttl = pc ? json_object_get(pc, "cache_ttl") : NULL;
+    char *result = ttl && json_type(ttl) == JSON_STRING
+        ? strdup(json_string_value(ttl)) : strdup("5m");
+    if (pc) json_free(pc);
+    json_free(cfg);
+    return result;
+}
+
+/* PoP: agent_runtime_helpers_prompt_caching_disabled_from_config @ agent/agent_runtime_helpers.py:prompt_caching_disabled_from_config */
+bool agent_runtime_helpers_prompt_caching_disabled_from_config(void) {
+    char *ttl = agent_runtime_helpers__raw_cache_ttl_from_config();
+    if (!ttl) return false;
+    bool disabled = agent_runtime_helpers_cache_ttl_means_disabled(ttl);
+    free(ttl);
+    return disabled;
+}
+
+/* PoP: agent_runtime_helpers_configured_cache_ttl @ agent/agent_runtime_helpers.py:configured_cache_ttl */
+char *agent_runtime_helpers_configured_cache_ttl(void) {
+    char *ttl = agent_runtime_helpers__raw_cache_ttl_from_config();
+    if (!ttl) return NULL;
+    if (strcmp(ttl, "5m") == 0 || strcmp(ttl, "1h") == 0) return ttl;
+    free(ttl);
+    return NULL;
+}
+
+/* ================================================================
+ *  LiteLLM route detection
+ * ================================================================ */
+
+/* PoP: agent_runtime_helpers__has_litellm_token @ agent/agent_runtime_helpers.py:_has_litellm_token */
+bool agent_runtime_helpers__has_litellm_token(const char *value, const char *delimiters) {
+    if (!value || !*value) return false;
+    char buf[4096];
+    strncpy(buf, value, sizeof(buf) - 1);
+    buf[sizeof(buf) - 1] = '\0';
+    for (const char *d = delimiters; *d; d++) {
+        char delim = *d;
+        for (char *p = buf; *p; p++)
+            if (*p == delim) *p = ' ';
+    }
+    for (char *tok = strtok(buf, " "); tok; tok = strtok(NULL, " "))
+        if (strcmp(tok, "litellm") == 0) return true;
+    return false;
+}
+
+/* PoP: agent_runtime_helpers__is_litellm_route @ agent/agent_runtime_helpers.py:_is_litellm_route */
+bool agent_runtime_helpers__is_litellm_route(const char *provider_lower, const char *base_url) {
+    if (agent_runtime_helpers__has_litellm_token(provider_lower, ":-_/"))
+        return true;
+    if (base_url && *base_url) {
+        const char *host = strstr(base_url, "://");
+        host = host ? host + 3 : base_url;
+        char hbuf[512];
+        const char *e = host;
+        while (*e && *e != ':' && *e != '/') e++;
+        size_t hl = e - host;
+        if (hl >= sizeof(hbuf)) hl = sizeof(hbuf) - 1;
+        memcpy(hbuf, host, hl);
+        hbuf[hl] = '\0';
+        if (agent_runtime_helpers__has_litellm_token(hbuf, ".-"))
+            return true;
+    }
+    return false;
+}
+
+/* ================================================================
+ *  Tool call ID variants (thin forwarder)
+ * ================================================================ */
+
+/* PoP: agent_runtime_helpers__tool_call_id_variants @ agent/agent_runtime_helpers.py:_tool_call_id_variants */
+char *agent_runtime_helpers__tool_call_id_variants(const char *tc_json) {
+    if (!tc_json || !*tc_json) return strdup("[]");
+    json_t *tc = json_parse(tc_json, NULL);
+    if (!tc) return strdup("[]");
+    json_t *arr = json_array();
+    json_t *v;
+    v = json_object_get(tc, "id");
+    if (v && json_type(v) == JSON_STRING) json_append(arr, json_copy(v));
+    v = json_object_get(tc, "call_id");
+    if (v && json_type(v) == JSON_STRING) json_append(arr, json_copy(v));
+    v = json_object_get(tc, "response_item_id");
+    if (v && json_type(v) == JSON_STRING) json_append(arr, json_copy(v));
+    json_free(tc);
+    char *r = json_serialize(arr);
+    json_free(arr);
+    return r ? r : strdup("[]");
 }

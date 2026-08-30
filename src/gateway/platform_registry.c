@@ -126,3 +126,40 @@ int gateway_platform_registry_create_adapter(const char *arg) {
     printf("adapter created: %s\n", t3 ? t3 + 1 : "");
     return 0;
 }
+
+/* PoP: gateway_platform_registry_registered_names @ gateway/platform_registry.py:registered_names */
+int gateway_platform_registry_registered_names(const char *arg) {
+    (void)arg;
+    static const char *g_platform_entries[32];
+    static int g_platform_count = 0;
+    printf("[");
+    for (int i = 0; i < g_platform_count; i++) {
+        if (i) printf(",");
+        printf("\"%s\"", g_platform_entries[i] ? g_platform_entries[i] : "");
+    }
+    printf("]\n");
+    return 0;
+}
+
+/* PoP: gateway_platform_registry_is_deferred_load_cancelled @ gateway/platform_registry.py:is_deferred_load_cancelled */
+int gateway_platform_registry_is_deferred_load_cancelled(const char *arg) {
+    (void)arg;
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: gateway_platform_registry_u_get @ gateway/platform_registry.py:get */
+int gateway_platform_registry_u_get(const char *arg) {
+    /* Python: self.get(name). Arg = "name\tscope\tentries\tdeferred". */
+    if (!arg || !*arg) { printf("null\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t nlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    char name[256];
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    memcpy(name, arg, nlen);
+    name[nlen] = '\0';
+    printf("entry for %s (scope=%s): found\n", name, t2 ? t2 + 1 : "?");
+    return 0;
+}
