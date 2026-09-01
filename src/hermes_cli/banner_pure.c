@@ -677,3 +677,103 @@ char *build_info_get_build_sha(int short_len) {
 
     return sha;
 }
+
+/* PoP: build_info_get_code_identity @ hermes_cli/build_info.py:get_code_identity */
+
+/* Forward declarations from banner_pure infrastructure */
+extern char *banner_resolve_repo_dir(void);
+extern char *build_info_get_build_sha(int short_len);
+
+static char *bi_resolve_git_head_sha(const char *repo_dir) {
+    if (!repo_dir) return NULL;
+    char *short8 = banner_git_short_hash_in(repo_dir, "HEAD");
+    if (short8 && *short8) return short8;
+    free(short8);
+    return NULL;
+}
+
+static char *bi_read_pyproject_version(const char *repo_dir) {
+    if (!repo_dir) return NULL;
+    char pyproj[PATH_MAX];
+    snprintf(pyproj, sizeof(pyproj), "%s/pyproject.toml", repo_dir);
+    FILE *f = fopen(pyproj, "r");
+    if (!f) return NULL;
+    char buf[4096];
+    size_t rd = fread(buf, 1, sizeof(buf) - 1, f);
+    fclose(f);
+    if (rd == 0) return NULL;
+    buf[rd] = '\0';
+    char *vp = strstr(buf, "version");
+    if (!vp) return NULL;
+    vp = strstr(vp, "\"");
+    if (!vp) return NULL;
+    vp++;
+    char *ve = strchr(vp, '"');
+    if (!ve) return NULL;
+    size_t vl = (size_t)(ve - vp);
+    char *ver = malloc(vl + 1);
+    if (!ver) return NULL;
+    memcpy(ver, vp, vl);
+    ver[vl] = '\0';
+    return ver;
+}
+
+json_t *build_info_get_code_identity(bool refresh) {
+    static json_t *cache = NULL;
+    if (cache && !refresh) return json_copy(cache);
+
+    json_t *out = json_object();
+    if (!out) return NULL;
+    json_set(out, "sha", json_null());
+    json_set(out, "short_sha", json_null());
+    json_set(out, "version", json_null());
+    json_set(out, "source", json_string("unknown"));
+
+    char *repo = banner_resolve_repo_dir();
+    char *sha = NULL;
+
+    if (repo) {
+        sha = bi_resolve_git_head_sha(repo);
+        if (sha && *sha) {
+            json_set(out, "sha", json_string(sha));
+            if (strlen(sha) >= 8) {
+                char short8[9];
+                snprintf(short8, sizeof(short8), "%.8s", sha);
+                json_set(out, "short_sha", json_string(short8));
+            }
+            json_set(out, "source", json_string("git"));
+        } else {
+            free(sha);
+            sha = NULL;
+        }
+        free(repo);
+    }
+
+    if (!json_is_string(json_object_get(out, "sha"))) {
+        sha = build_info_get_build_sha(0);
+        if (sha && *sha) {
+            json_set(out, "sha", json_string(sha));
+            if (strlen(sha) >= 8) {
+                char short8[9];
+                snprintf(short8, sizeof(short8), "%.8s", sha);
+                json_set(out, "short_sha", json_string(short8));
+            }
+            json_set(out, "source", json_string("build-file"));
+        } else {
+            free(sha);
+        }
+    }
+
+    char *ver = bi_read_pyproject_version(banner_resolve_repo_dir());
+    if (ver && *ver) {
+        json_set(out, "version", json_string(ver));
+        free(ver);
+    }
+
+    json_t *prev = cache;
+    cache = out;
+    if (prev) json_free(prev);
+
+    return json_copy(out);
+}
+

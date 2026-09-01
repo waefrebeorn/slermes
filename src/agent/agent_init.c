@@ -281,3 +281,36 @@ int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) {
     printf("notice marker recorded: %s\n", arg);
     return 0;
 }
+
+/* PoP: agent_agent_init_u_normalize_run_budget_seconds @ agent/agent_init.py:_normalize_run_budget_seconds */
+int agent_agent_init_u_normalize_run_budget_seconds(const char *arg) {
+    /* Python:
+     *   if value is None or isinstance(value, bool): return None
+     *   try: seconds = float(value)
+     *   except (TypeError, ValueError): return None
+     *   if seconds != seconds or seconds <= 0: return None  # NaN or non-positive
+     *   return seconds
+     * Arg = JSON-encoded value (string, number, bool, or "null").
+     * Prints float or "null" on stdout. */
+    if (!arg || !*arg || strcmp(arg, "null") == 0) {
+        printf("null\n"); return 0;
+    }
+    /* bool check: "true"/"false" */
+    if (strcmp(arg, "true") == 0 || strcmp(arg, "false") == 0) {
+        printf("null\n"); return 0;
+    }
+    char *endp = NULL;
+    double seconds = strtod(arg, &endp);
+    if (endp == arg || *endp != '\0') {
+        /* Not a pure number — could be a string that parses as float */
+        seconds = strtod(arg, &endp);
+        if (endp == arg || *endp != '\0') {
+            printf("null\n"); return 0;
+        }
+    }
+    if (seconds != seconds || seconds <= 0.0) {  /* NaN or non-positive */
+        printf("null\n"); return 0;
+    }
+    printf("%.17g\n", seconds);
+    return 0;
+}

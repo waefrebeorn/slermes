@@ -87,7 +87,7 @@ bool cron_lifecycle_contains_launchctl_gateway_lifecycle(const char *normalized_
 bool cron_lifecycle_is_cloud_placeholder_path(const char *path);
 /* PoP: _split_logical_lines @ cron/lifecycle_guard.py:_split_logical_lines */
 char **cron_lifecycle_split_logical_lines(const char *text);
-/* PoP: _executable_name @ cron/lifecycle_guard.py:_executable_name */
+/* PoP: cron_lifecycle_executable_name @ cron/lifecycle_guard.py:_executable_name */
 char *cron_lifecycle_executable_name(const char *token);
 /* PoP: _peel_transparent_prefixes @ cron/lifecycle_guard.py:_peel_transparent_prefixes */
 size_t cron_lifecycle_peel_transparent_prefixes(char *const *segment, size_t index);

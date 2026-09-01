@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <ctype.h>
 
 #include "hermes_json.h"
 #include "hermes_logger.h"
@@ -91,6 +92,28 @@ char *lde_quote_exec_arg(const char *arg) {
     *q++ = '"';
     *q = '\0';
     return out;
+}
+
+/* PoP: _needs_interpreter @ hermes_cli/linux_desktop_entry.py:_needs_interpreter */
+bool lde_needs_interpreter(const char *bin_path) {
+    if (!bin_path) return false;
+    FILE *fh = fopen(bin_path, "rb");
+    if (!fh) return false;
+    char head[256];
+    size_t rd = fread(head, 1, sizeof(head) - 1, fh);
+    fclose(fh);
+    if (rd == 0) return false;
+    head[rd] = '\0';
+    if (strncmp(head, "#!", 2) != 0) return false;
+    char shebang[256];
+    memcpy(shebang, head, rd);
+    shebang[rd] = '\0';
+    for (char *p = shebang; *p; p++) *p = (char)tolower((unsigned char)*p);
+    char *nl = strchr(shebang, '\n');
+    if (nl) *nl = '\0';
+    char *sp = strstr(shebang, "python");
+    if (!sp) return false;
+    return true;
 }
 
 /* PoP: lde_render_desktop_entry @ hermes_cli/linux_desktop_entry.py:render_desktop_entry */

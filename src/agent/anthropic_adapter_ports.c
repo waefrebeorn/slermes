@@ -867,12 +867,12 @@ bool aa_is_claude_model(const char *model)
     return hit;
 }
 
-/* PoP: _accepts_thinking_disable @ agent/anthropic_adapter.py
- * True when the model accepts an explicit thinking disable. Adaptive Claude
- * models default thinking ON, so omitting the parameter leaves it thinking;
- * reasoning-mandatory families (claude-fable) reject the disable outright.
- * Kimi/Moonshot endpoints speak adaptive but their disable contract is
- * omission — deliberately not sent a Claude-specific parameter. */
+/* PoP: aa_accepts_thinking_disable @ agent/anthropic_adapter.py:_accepts_thinking_disable */
+/* True when the model accepts an explicit thinking disable. Adaptive Claude */
+/* models default thinking ON, so omitting the parameter leaves it thinking; */
+/* reasoning-mandatory families (claude-fable) reject the disable outright. */
+/* Kimi/Moonshot endpoints speak adaptive but their disable contract is */
+/* omission — deliberately not sent a Claude-specific parameter. */
 bool aa_accepts_thinking_disable(const char *model)
 {
     extern int cli_agent_anthropic_adapter__supports_adaptive_thinking(

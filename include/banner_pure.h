@@ -6,6 +6,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "hermes_json.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +42,8 @@ char *banner_git_short_hash(const char *repo_dir, const char *rev);
 
 /* PoP: build_info_get_build_sha @ hermes_cli/build_info.py:get_build_sha */
 char *build_info_get_build_sha(int short_len);
+/* PoP: build_info_get_code_identity @ hermes_cli/build_info.py:get_code_identity */
+json_t *build_info_get_code_identity(bool refresh);
 
 int  banner_check_for_updates(void);
 void banner_prefetch_update_check(void);
