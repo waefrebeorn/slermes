@@ -24,6 +24,7 @@ HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plug
 
 HERMES_CLI_PORT_EXTRA_OBJ = \
  src/hermes_cli/tips.o \
+ src/hermes_cli/subcommands_parsers.o \
 
 PORT_OBJ = \
  src/hermes_cli/proxy_adapters_base.o \
