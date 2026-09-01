@@ -88,3 +88,30 @@ double hcli_goal__goal_judge_timeout(void) {
     }
     return 30.0;
 }
+
+/* PoP: hcli_goal__goal_judge_max_tokens @ hermes_cli/goals.py:_goal_judge_max_tokens */
+int hcli_goal__goal_judge_max_tokens(void) {
+    /* Python: resolve auxiliary.goal_judge.max_tokens, fallback DEFAULT_JUDGE_MAX_TOKENS (4096).
+     * Read-only config, identical pattern to _goal_judge_timeout. */
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg || cfg->type != JSON_OBJECT) {
+        return 4096;  /* DEFAULT_JUDGE_MAX_TOKENS */
+    }
+    json_t *aux = json_obj_get(cfg, "auxiliary");
+    if (!aux || aux->type != JSON_OBJECT) {
+        return 4096;
+    }
+    json_t *gj = json_obj_get(aux, "goal_judge");
+    if (!gj || gj->type != JSON_OBJECT) {
+        return 4096;
+    }
+    json_t *mv = json_obj_get(gj, "max_tokens");
+    if (!mv || mv->type != JSON_NUMBER) {
+        return 4096;
+    }
+    int value = (int)mv->num_val;
+    if (value > 0) {
+        return value;
+    }
+    return 4096;
+}
