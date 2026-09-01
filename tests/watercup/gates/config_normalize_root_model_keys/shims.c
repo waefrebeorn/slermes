@@ -18,6 +18,8 @@ void session_title_set(long sid, const char *t) { (void)sid; (void)t; }
 char *session_title_next_in_lineage(const char *t) { (void)t; return NULL; }
 const char *scheduler_plugin_env_var_lookup(const char *k) { (void)k; return NULL; }
 char *provider_derive_api_key_name(const char *p) { (void)p; return NULL; }
+char *profile_get_active_name(void) { return NULL; }
+json_t *reasoning_parse_effort(const char *effort, bool effort_is_bool_false) { (void)effort; (void)effort_is_bool_false; return NULL; }
 bool hermes_config_load_platforms(void *cfg) { (void)cfg; return false; }
 int aux__call_llm_impl(const char *a, const char *b, char **out) { (void)a; (void)b; (void)out; return -1; }
 bool hermes_config_load(void *cfg, const char *dir) { (void)cfg; (void)dir; return false; }
