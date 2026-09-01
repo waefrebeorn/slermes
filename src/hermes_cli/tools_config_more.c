@@ -13,3 +13,10 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+/* PoP: tcm_tools_command @ hermes_cli/tools_config.py:tools_command */
+void tcm_tools_command(void) {
+    /* Placeholder — full tools_command is ~625 lines of interactive platform menu
+     * with first_install flow. Stub for now so the build symbol exists. */
+    printf("tcm_tools_command: not yet implemented (tools_config.py:tools_command)\n");
+}

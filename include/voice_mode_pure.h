@@ -116,4 +116,7 @@ char *voice_full_duplex_listen(int (*should_stop)(void),
 /* PoP: _check_plugin_stt_provider @ tools/voice_mode.py:_check_plugin_stt_provider */
 bool voice_check_plugin_stt_provider(const char *provider);
 
-#endif /* VOICE_MODE_PURE_H */
+/* PoP: vmd_is_tts_echo @ tools/voice_mode.py:is_tts_echo */
+bool vmd_is_tts_echo(const char *transcript, const char *spoken_text, double threshold);
+
+#endif

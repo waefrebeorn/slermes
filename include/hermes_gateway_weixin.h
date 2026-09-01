@@ -33,4 +33,7 @@ void weixin_send_file(const char *chat_id, const char *file_url,
 char **weixin_split_text_for_weixin_delivery(const char *content, int max_length,
                                              bool split_per_line, int *out_count);
 
-#endif /* HERMES_GATEWAY_WEIXIN_H */
+/* PoP: wx_recycle_poll_session @ gateway/platforms/weixin.py:_recycle_poll_session */
+void wx_recycle_poll_session(void);
+
+#endif

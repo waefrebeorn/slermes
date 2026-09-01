@@ -150,6 +150,32 @@ static char *wx_api_post(const char *endpoint, const char *payload_json,
     return result;
 }
 
+/* ── Poll session recycle (gateway/platforms/weixin.py:_recycle_poll_session) */
+/* PoP: wx_recycle_poll_session @ gateway/platforms/weixin.py:_recycle_poll_session */
+void wx_recycle_poll_session(void) {
+    /* Python: async def _recycle_poll_session(self) -> None:
+     *   if not self._running or aiohttp is None: return
+     *   old = self._poll_session
+     *   self._poll_session = aiohttp.ClientSession(trust_env=True,
+     *       connector=_make_ssl_connector())
+     *   if old is not None and not old.closed:
+     *       try: await old.close()
+     *       except Exception: logger.debug(...)
+     *
+     * C equivalent: swap g_wx.http for a fresh http_t, close the old one.
+     * The poll thread (thread_weixin_poll) calls get_updates() which uses
+     * g_wx.http — swap-then-close mirrors the Python swap-then-close
+     * ordering so in-flight uses of the old session are unaffected. */
+    if (!g_wx.running) return;
+    http_t *old = g_wx.http;
+    /* Create fresh session (Python: aiohttp.ClientSession with ssl connector) */
+    g_wx.http = http_new(15);
+    if (old) {
+        /* Python: await old.close() — close the old session */
+        http_free(old);
+    }
+}
+
 /* ================================================================
  *  Context token store (file-based)
  * ================================================================ */

@@ -30,6 +30,8 @@ extern char *kanban_profile_author(void);
 extern long kanban_worker_run_id_for(const char *task_id);
 extern char *kanban_fmt_ts(long ts);
 extern long kanban_parse_duration(const char *value);
+extern int set_current_board(const char *board);
+extern int clear_current_board(void);
 
 static char *kx_strdup(const char *s) { return s ? strdup(s) : NULL; }
 
@@ -3897,4 +3899,134 @@ int _cmd_diagnostics(kb_args_t *a) {
     }
     json_free(out_rows);
     return 0;
+}
+
+/* PoP: cmk_kanban_command @ hermes_cli/kanban.py:kanban_command */
+int cmk_kanban_command(kb_args_t *args) {
+    const char *action = karg(args, "kanban_action");
+    if (!action || !action[0]) {
+        /* No subaction: print help. Python: parser.print_help() or print usage. */
+        printf("usage: hermes kanban <action> [options]\n"
+               "Run 'hermes kanban --help' for the full list of actions.\n");
+        return 0;
+    }
+
+    /* Fast-fail for delegated child CLI mutation contexts. */
+    if (_is_delegated_child_cli_mutation(args)) {
+        printf("kanban: delegate_task child contexts cannot mutate Kanban tasks via the CLI\n");
+        return 1;
+    }
+
+    /* Board-management commands operate on board metadata; ignore --board override. */
+    if (strcmp(action, "boards") == 0) {
+        return _dispatch_boards(args);
+    }
+
+    /* --board <slug> applies to every subcommand below via env-var pin. */
+    const char *board_override = karg(args, "board");
+    int board_scope_active = 0;
+    if (board_override && board_override[0]) {
+        int err = 0;
+        char *normed = _normalize_board_slug(board_override);
+        if (!normed) {
+            printf("kanban: invalid board slug\n");
+            return 2;
+        }
+        if (!normed[0]) {
+            printf("kanban: --board requires a slug\n");
+            free(normed);
+            return 2;
+        }
+        if (strcmp(normed, KB_DEFAULT_BOARD) != 0 && !kdb_board_exists(normed)) {
+            printf("kanban: board '%s' does not exist. "
+                   "Create it with `hermes kanban boards create %s`.\n", normed, normed);
+            free(normed);
+            return 1;
+        }
+        set_current_board(normed);   /* short-lived pin for this invocation */
+        board_scope_active = 1;
+        free(normed);
+    }
+
+    /* repair must dispatch BEFORE auto-init (corrupt DB raises on init). */
+    if (strcmp(action, "repair") == 0) {
+        int r = _cmd_repair(args);
+        if (board_scope_active) clear_current_board();
+        return r;
+    }
+
+    int rc = 0;
+    /* Auto-initialize the DB before dispatching (idempotent). */
+    {
+        sqlite3 *conn = kdb_connect(NULL);
+        if (conn) {
+            kdb_init_db(conn);
+            kdb_close(conn);
+        }
+    }
+
+    /* Dispatch table mirrors hermes_cli/kanban.py:kanban_command handlers dict.
+     * list→_cmd_show, stats→_cmd_diagnostics (Python aliases). */
+    {
+        int rc_local = 2;
+#define KB_MAP(name) do { if (strcmp(action, #name) == 0) { rc_local = _cmd_##name(args); } } while(0)
+#define KB_ALIAS(alias, target) do { if (strcmp(action, #alias) == 0) { rc_local = _cmd_##target(args); } } while(0)
+        KB_MAP(init);
+        KB_MAP(create);
+        KB_MAP(swarm);
+        KB_ALIAS(show, show);
+        KB_ALIAS(list, show);
+        KB_MAP(assign);
+        KB_MAP(set_model);
+        KB_MAP(reclaim);
+        KB_MAP(reassign);
+        KB_ALIAS(diagnostics, diagnostics);
+        KB_ALIAS(diag, diagnostics);
+        KB_MAP(link);
+        KB_MAP(unlink);
+        KB_MAP(claim);
+        KB_MAP(comment);
+        KB_MAP(attach);
+        KB_MAP(attachments);
+        KB_MAP(attach_rm);
+        KB_ALIAS(complete, complete);
+        KB_MAP(edit);
+        KB_MAP(block);
+        KB_MAP(schedule);
+        KB_MAP(unblock);
+        KB_MAP(request_review);
+        KB_MAP(request_changes);
+        KB_MAP(reopen_review);
+        KB_MAP(promote);
+        KB_MAP(archive);
+        KB_ALIAS(tail, tail);
+        KB_MAP(dispatch);
+        KB_MAP(daemon);
+        KB_MAP(watch);
+        KB_ALIAS(stats, diagnostics);
+        KB_MAP(log);
+        KB_MAP(runs);
+        KB_MAP(heartbeat);
+        KB_MAP(assignees);
+        KB_MAP(notify_subscribe);
+        KB_ALIAS(notify_list, notify_list);
+        KB_ALIAS(notify_unsubscribe, notify_unsubscribe);
+        KB_MAP(context);
+        KB_MAP(specify);
+        KB_MAP(decompose);
+        KB_MAP(gc);
+        KB_MAP(repair);
+#undef KB_MAP
+#undef KB_ALIAS
+        if (rc_local == 2) {
+            printf("kanban: unknown action '%s'\n", action);
+            rc = 2;
+            goto out;
+        }
+        rc = rc_local < 0 ? 0 : rc_local;
+    }
+
+out:
+    if (board_scope_active) clear_current_board();
+    return rc;
 }

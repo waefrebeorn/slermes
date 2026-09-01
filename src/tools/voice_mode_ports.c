@@ -153,3 +153,103 @@ char *vmd_split_wav_for_transcription(const char *file_path, const char *out_dir
     printf("wav split for transcription: %s → %s\n", file_path, out_dir);
     return strdup("[]");
 }
+
+/* ── TTS echo detection (tools/voice_mode.py:is_tts_echo) ──────────────── */
+/* PoP: vmd_normalize_for_echo_compare @ tools/voice_mode.py:_normalize_for_echo_compare */
+static char *vmd_normalize_for_echo_compare(const char *text) {
+    /* Python: re.sub(r"\s+", " ", text).strip().lower() */
+    if (!text) return NULL;
+    /* First pass: lower + collapse whitespace into single space */
+    size_t len = strlen(text);
+    char *buf = malloc(len + 1);
+    if (!buf) return NULL;
+    const char *src = text;
+    char *dst = buf;
+    bool in_space = true;  /* treat start as leading space to strip */
+    while (*src) {
+        unsigned char c = (unsigned char)*src;
+        if (isspace(c)) {
+            if (!in_space) { *dst++ = ' '; in_space = true; }
+        } else {
+            *dst++ = (char)tolower(c);
+            in_space = false;
+        }
+        src++;
+    }
+    /* Strip trailing space */
+    if (dst > buf && dst[-1] == ' ') dst--;
+    *dst = '\0';
+    return buf;
+}
+
+/* Levenshtein edit distance (pure, no alloc). Used as the basis for the echo
+ * similarity ratio. Matches Python difflib.SequenceMatcher.ratio() semantics:
+ *   ratio = 2 * LCS_matches / (len_a + len_b)
+ * where LCS_matches = (len_a + len_b - edit_distance) / 2  (for insert/delete
+ * only; matches Python's Gestalt-pattern approach for short strings). */
+static int levenshtein_distance(const char *a, const char *b) {
+    int la = (int)strlen(a), lb = (int)strlen(b);
+    if (la == 0) return lb;
+    if (lb == 0) return la;
+    /* Use two-row DP to keep memory O(min(la,lb)). */
+    int *prev = malloc((size_t)(lb + 1) * sizeof(int));
+    int *curr = malloc((size_t)(lb + 1) * sizeof(int));
+    if (!prev || !curr) { free(prev); free(curr); return la + lb; }
+    for (int j = 0; j <= lb; j++) prev[j] = j;
+    for (int i = 1; i <= la; i++) {
+        curr[0] = i;
+        for (int j = 1; j <= lb; j++) {
+            int cost = (a[i-1] == b[j-1]) ? 0 : 1;
+            int del_ = prev[j] + 1;
+            int ins_ = curr[j-1] + 1;
+            int sub_ = prev[j-1] + cost;
+            int m = del_ < ins_ ? del_ : ins_;
+            curr[j] = m < sub_ ? m : sub_;
+        }
+        int *tmp = prev; prev = curr; curr = tmp;
+    }
+    int d = prev[lb];
+    free(prev);
+    free(curr);
+    return d;
+}
+
+/* PoP: vmd_ratio @ tools/voice_mode.py:difflib.SequenceMatcher.ratio (semantic equivalent) */
+static double vmd_ratio(const char *a, const char *b) {
+    /* Python ratio = 2.0 * M / T where M = matching chars, T = total chars.
+     * For Levenshtein: M = (len_a + len_b - dist) / 2, so
+     * ratio = (len_a + len_b - dist) / (len_a + len_b). */
+    int la = (int)strlen(a), lb = (int)strlen(b);
+    if (la == 0 && lb == 0) return 1.0;
+    if (la == 0 || lb == 0) return 0.0;
+    int dist = levenshtein_distance(a, b);
+    int total = la + lb;
+    return (double)(total - dist) / (double)total;
+}
+
+/* PoP: vmd_is_tts_echo @ tools/voice_mode.py:is_tts_echo */
+bool vmd_is_tts_echo(const char *transcript, const char *spoken_text, double threshold) {
+    /* Python: is_tts_echo(transcript, spoken_text, threshold=0.6) */
+    if (!transcript || !spoken_text || !*transcript || !*spoken_text) return false;
+    char *a = vmd_normalize_for_echo_compare(transcript);
+    char *b = vmd_normalize_for_echo_compare(spoken_text);
+    if (!a || !b) { free(a); free(b); return false; }
+    if (!*a || !*b) { free(a); free(b); return false; }
+
+    double r = vmd_ratio(a, b);
+    size_t la = strlen(a), lb = strlen(b);
+    if (r >= threshold) { free(a); free(b); return true; }
+    if (la < 10 || la >= lb) { free(a); free(b); return false; }
+
+    /* Slide a window of length la across b, compare each window to a. */
+    for (size_t start = 0; start <= lb - la; start++) {
+        /* Build window inline on the stack to avoid malloc in the hot loop. */
+        char window[la + 1];
+        memcpy(window, b + start, la);
+        window[la] = '\0';
+        double wr = vmd_ratio(a, window);
+        if (wr >= threshold) { free(a); free(b); return true; }
+    }
+    free(a); free(b);
+    return false;
+}

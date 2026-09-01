@@ -698,3 +698,41 @@ int plugins_cmd_is_portable_plugin_dir(const char *dir_path) {
     if (f) { fclose(f); return 1; }
     return 0;
 }
+
+/* PoP: pcmd_plugins_command @ hermes_cli/plugins_cmd.py:plugins_command */
+int pcmd_plugins_command(const char *action, json_t *args) {
+    (void)args; /* TODO: wire sub-command args through json_t when needed */
+    if (!action) {
+        printf("[red]plugins_command: missing action\n");
+        return 1;
+    }
+    if (strcmp(action, "install") == 0) {
+        printf("[yellow]plugins_command: install not wired via json yet\n");
+    } else if (strcmp(action, "search") == 0) {
+        printf("[yellow]plugins_command: search not wired via json yet\n");
+    } else if (strcmp(action, "update") == 0) {
+        printf("[yellow]plugins_command: update not wired via json yet\n");
+    } else if (strcmp(action, "remove") == 0 || strcmp(action, "rm") == 0 || strcmp(action, "uninstall") == 0) {
+        printf("[yellow]plugins_command: remove not wired via json yet\n");
+    } else if (strcmp(action, "enable") == 0) {
+        printf("[yellow]plugins_command: enable not wired via json yet\n");
+    } else if (strcmp(action, "disable") == 0) {
+        printf("[yellow]plugins_command: disable not wired via json yet\n");
+    } else if (strcmp(action, "capabilities") == 0) {
+        printf("[yellow]plugins_command: capabilities not wired via json yet\n");
+    } else if (strcmp(action, "list") == 0 || strcmp(action, "ls") == 0) {
+        printf("[yellow]plugins_command: list not wired via json yet\n");
+    } else if (strcmp(action, "doctor") == 0) {
+        printf("[yellow]plugins_command: doctor not wired via json yet\n");
+    } else if (strcmp(action, "pack") == 0) {
+        printf("[yellow]plugins_command: pack not wired via json yet\n");
+    } else if (strcmp(action, "show") == 0 || strcmp(action, "info") == 0) {
+        printf("[yellow]plugins_command: show not wired via json yet\n");
+    } else if (strcmp(action, "toggle") == 0) {
+        printf("[yellow]plugins_command: toggle not wired via json yet\n");
+    } else {
+        printf("[red]Unknown plugins action: %s\n", action);
+        return 1;
+    }
+    return 0;
+}
