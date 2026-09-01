@@ -11,6 +11,7 @@
  *   scanner_available           -> skillevaluator_scanner_available
  *   tier1_advisory_enabled      -> skillevaluator_tier1_advisory_enabled
  *   run_tier1_scan              -> skillevaluator_run_tier1_scan
+ *   tier1_advisory_enabled      -> skillevaluator_tier1_advisory_enabled
  *
  * Side effects (PATH lookup, subprocess execution, config load) route through
  * injectable function pointers so hosts can substitute fakes; the defaults do
@@ -94,6 +95,7 @@ void skillevaluator_scan_report_free(skillevaluator_scan_report_t *r);
 
 /* scanner_available(): PATH search for SCANNER_BIN (injectable). */
 bool skillevaluator_scanner_available(void);
+bool skillevaluator_tier1_advisory_enabled(void);
 /* run_tier1_scan(skill_dir, timeout): full pipeline — availability gate,
  * temp output dir, scanner invocation, newest-report glob, JSON parse,
  * _parse_report reduction. Returns available=false report on any failure. */

@@ -16,9 +16,13 @@
  *   verification_stop_format_changed_paths    <- _format_changed_paths
  *   verification_stop_status_detail           <- _status_detail
  *   verification_stop_build_nudge             <- build_verify_on_stop_nudge
+ *
+ * Exported via implicit linkage from gateway/run.c (no separate header;
+ * this file is compiled directly into the gateway binary).
  */
 
 #include "hermes_json.h"
+#include "port_config_py_helpers.h"
 #include "coding_context.h"
 #include "verify_recipes.h"
 #include <stdio.h>

@@ -12,6 +12,7 @@
  * Side effects route through injectable hooks; defaults do the real work.
  */
 #include "skillevaluator_scan.h"
+#include "port_config_py_helpers.h"
 
 #include <dirent.h>
 #include <stdio.h>
@@ -518,4 +519,46 @@ done:
     }
     skillevaluator_scan_report_free(unavail);
     return ok;
+}
+
+/* PoP: skillevaluator_tier1_advisory_enabled @ tools/skillevaluator_scan.py:tier1_advisory_enabled */
+bool skillevaluator_tier1_advisory_enabled(void) {
+    /* Read skills.tier1_advisory from config (default True).
+     * On-by-default is safe: without the optional scanner binary on PATH
+     * the scan is a silent no-op. */
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg || cfg->type != JSON_OBJECT) {
+        if (cfg) json_free(cfg);
+        return true;
+    }
+    json_t *skills = json_object_get(cfg, "skills");
+    if (!skills || skills->type != JSON_OBJECT) {
+        json_free(cfg);
+        return true;
+    }
+    json_t *v = json_object_get(skills, "tier1_advisory");
+    bool result;
+    if (!v) {
+        result = true;
+    } else if (v->type == JSON_BOOL) {
+        result = v->bool_val;
+    } else if (v->type == JSON_STRING) {
+        const char *s = json_string_value(v);
+        if (!s) { json_free(cfg); return true; }
+        /* lowercase comparison without modifying original */
+        char low[64];
+        size_t n = 0;
+        for (const char *p = s; *p && n + 1 < sizeof(low); p++) {
+            char c = *p;
+            if (c >= 'A' && c <= 'Z') c += 32;
+            low[n++] = c;
+        }
+        low[n] = '\0';
+        result = (strcmp(low, "false") != 0 && strcmp(low, "0") != 0 &&
+                  strcmp(low, "no") != 0 && strcmp(low, "off") != 0);
+    } else {
+        result = true;
+    }
+    json_free(cfg);
+    return result;
 }
