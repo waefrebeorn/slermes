@@ -168,6 +168,11 @@ int gwstatus_write_runtime_status(const char *gateway_state,
  * or NULL if absent/unreadable. path may be NULL for the default file. */
 char *gwstatus_read_runtime_status(const char *path);
 
+/* Thin wrapper: calls build_info_get_code_identity, extracts code_sha + code_version.
+ * Never raises; degrades to absent fields on any failure (matches Python try/except).
+ * Caller retains ownership of `out`. */
+void gwstatus_get_code_identity_fields(json_t *out);
+
 /* ── Scope locks (per external identity, e.g. one bot token) ──────────── */
 
 /* Acquire a machine-local lock keyed by scope + identity. metadata_json may

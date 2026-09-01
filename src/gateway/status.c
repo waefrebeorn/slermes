@@ -14,6 +14,7 @@
 #include "gateway_status.h"
 #include "hermes_gateway_core.h"
 #include "slermes_home.h"
+#include "banner_pure.h"
 #include "json.h"
 #include "hash.h"
 
@@ -1129,6 +1130,24 @@ bool gwstatus_derive_gateway_drainable(bool gateway_running,
 
 /* PoP: build_runtime_status_record @ gateway/status.py:_build_runtime_status_record */
 /* Port of Python: _build_runtime_status_record — seed record when file absent. */
+extern json_t *build_info_get_code_identity(bool refresh);
+
+/* PoP: gwstatus_get_code_identity_fields @ gateway/status.py:_get_code_identity_fields */
+void gwstatus_get_code_identity_fields(json_t *out) {
+    if (!out) return;
+    json_t *id = build_info_get_code_identity(false);
+    if (id && json_is_object(id)) {
+        const json_t *sha = json_obj_get(id, "sha");
+        const json_t *ver = json_obj_get(id, "version");
+        json_set(out, "code_sha",     sha && json_is_string(sha) ? json_string(json_string_value(sha)) : json_null());
+        json_set(out, "code_version", ver && json_is_string(ver) ? json_string(json_string_value(ver)) : json_null());
+    } else {
+        json_set(out, "code_sha", json_null());
+        json_set(out, "code_version", json_null());
+    }
+    if (id) json_free(id);
+}
+
 static json_t *build_runtime_status_record(void) {
     json_t *o = build_pid_record();
     json_set(o, "gateway_state", json_string("starting"));
@@ -1138,6 +1157,8 @@ static json_t *build_runtime_status_record(void) {
     json_set(o, "platforms", json_object());
     char iso[64]; utc_now_iso(iso, sizeof(iso));
     json_set(o, "updated_at", json_string(iso));
+    /* Wire code identity fields (mirrors Python _get_code_identity_fields). */
+    gwstatus_get_code_identity_fields(o);
     return o;
 }
 
