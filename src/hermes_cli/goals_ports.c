@@ -10,6 +10,8 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "port_config_py_helpers.h"
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -58,4 +60,31 @@ char *gls_init(const char *session_id, long default_max_turns) {
     asprintf(&out, "{\"session_id\": \"%s\", \"default_max_turns\": %ld}",
              session_id ? session_id : "", default_max_turns);
     return out;
+}
+
+/* PoP: hcli_goal__goal_judge_timeout @ hermes_cli/goals.py:_goal_judge_timeout */
+double hcli_goal__goal_judge_timeout(void) {
+    /* Python: resolve auxiliary.goal_judge.timeout, fallback DEFAULT_JUDGE_TIMEOUT (30.0).
+     * Read-only config, same as _configured_mcp_result_size. */
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg || cfg->type != JSON_OBJECT) {
+        return 30.0;  /* DEFAULT_JUDGE_TIMEOUT */
+    }
+    json_t *aux = json_obj_get(cfg, "auxiliary");
+    if (!aux || aux->type != JSON_OBJECT) {
+        return 30.0;
+    }
+    json_t *gj = json_obj_get(aux, "goal_judge");
+    if (!gj || gj->type != JSON_OBJECT) {
+        return 30.0;
+    }
+    json_t *tv = json_obj_get(gj, "timeout");
+    if (!tv || tv->type != JSON_NUMBER) {
+        return 30.0;
+    }
+    double value = tv->num_val;
+    if (value > 0.0) {
+        return value;
+    }
+    return 30.0;
 }
