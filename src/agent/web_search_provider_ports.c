@@ -54,3 +54,15 @@ char *wsp_extract(const char *urls_json) {
     if (web_extract_tool) return web_extract_tool(urls_json);
     return strdup("{}");
 }
+
+/* PoP: wsp_is_keyless_available @ agent/web_search_provider.py:is_keyless_available */
+/*
+ * Return True when this provider can serve calls WITHOUT credentials.
+ * Default: False. The C provider registry doesn't yet carry a
+ * keyless-available callback, so we return false (matching Python ABC default).
+ * Providers that support keyless access should extend the struct.
+ */
+bool wsp_is_keyless_available(void) {
+    (void)web_search_get_active("search");
+    return false;
+}

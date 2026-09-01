@@ -288,3 +288,31 @@ char *skillstool_plugin_skill_linked_files(const char *skill_root) {
     json_free(result);
     return out;
 }
+
+/* PoP: skt_is_remote_env_backend @ tools/skills_tool.py:_is_remote_env_backend */
+/*
+ * Return True when the given backend is a built-in remote env backend
+ * (docker, singularity, modal, ssh, daytona, vercel_sandbox) or a plugin
+ * backend declaring is_remote via the terminal env registry.
+ * Matches Python _REMOTE_ENV_BACKENDS frozenset + provider_flag fallback.
+ * Arg: backend name (string, caller retains ownership).
+ * Returns: 1 = remote, 0 = local/not remote.
+ */
+int skt_is_remote_env_backend(const char *backend)
+{
+    if (!backend || !*backend) return 0;
+    /* Built-in remote backends (matches Python _REMOTE_ENV_BACKENDS) */
+    static const char *remote_backends[] = {
+        "docker", "singularity", "modal", "ssh",
+        "daytona", "vercel_sandbox", NULL
+    };
+    for (int i = 0; remote_backends[i]; i++) {
+        if (strcmp(backend, remote_backends[i]) == 0) return 1;
+    }
+    /* Not built-in; check if explicit "local" */
+    if (strcmp(backend, "local") == 0) return 0;
+    /* Plugin backend: the C terminal env registry doesn't carry
+     * provider_flag yet; return false (matching Python default). */
+    (void)backend;
+    return 0;
+}

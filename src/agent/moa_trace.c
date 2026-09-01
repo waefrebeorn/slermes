@@ -48,3 +48,30 @@ int agent_moa_trace_save_moa_turn(const char *arg) {
     printf("turn record appended to %s.jsonl (output_location=%s)\n", t2 ? t2 + 1 : "?", "inline_from_stream");
     return 0;
 }
+
+/* PoP: agent_moa_trace_u_slot_metrics @ agent/moa_trace.py:slot_metrics */
+/*
+ * Renders one reference's accounting for observability hooks.
+ * Same fields as _slot_trace minus input_messages, plus optional output.
+ * Arg = "label\tstate\toutput_json_or_empty".
+ * Prints the JSON dict to stdout (mirrors _slot_trace contract).
+ */
+int agent_moa_trace_u_slot_metrics(const char *arg) {
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    const char *label = arg;
+    const char *output_json = t2 ? t2 + 1 : NULL;
+    if (!state) { printf("{}\n"); return 0; }
+    /* Build JSON: {"label":"..."} + optional output */
+    json_t *j = json_object();
+    json_set(j, "label", json_string(label));
+    if (output_json && *output_json) {
+        json_set(j, "output", json_string(output_json));
+    }
+    char *s = json_dumps(j, 0);
+    if (s) { printf("%s\n", s); free(s); }
+    json_free(j);
+    return 0;
+}
