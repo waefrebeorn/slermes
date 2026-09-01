@@ -32,6 +32,9 @@ const char *commands_list_json(void);
 
 #endif /* HERMES_CLI_H */
 
+/* /tips random-tip support (C11 port of hermes_cli/tips.py) */
+#include "hermes_cli/tips.h"
+
 /* /command runtime toggles */
 void commands_set_verbose(int level);
 void commands_set_yolo(bool enabled);

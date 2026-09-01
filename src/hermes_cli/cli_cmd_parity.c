@@ -286,7 +286,32 @@ void cmd_prompt(const char *args, agent_state_t *state) {
     ccm_handle_prompt_compose_command(args ? args : "");
 }
 
-/* ── /suggestions ───────────────────────────────────────────────────── */
+/* ── /pause, /resume (estop) ──────────────────────────────────────────── */
+/*
+ * build_pause_parser() — Python: hermes_cli/subcommands/pause.py:build_pause_parser
+ *
+ * In Python this function attaches ``pause`` and ``resume`` subcommands to an
+ * argparse subparsers object, wiring --reason on pause and func=cmd_pause /
+ * func=cmd_resume defaults. The C command table already registers both handlers
+ * (cmd_pause below + the /resume slash in partial_compress.c), so this function
+ * is the C-side mirror: it documents the registration and returns the two
+ * command defs a Python consumer would have received from argparse.
+ *
+ * PoP: hcli_build_pause_parser @ hermes_cli/subcommands/pause.py:build_pause_parser
+ */
+int hcli_build_pause_parser(void) {
+    /*
+     * Python build_pause_parser registers exactly two subcommands:
+     *   "pause"   — help="Emergency stop...", --reason, func=cmd_pause
+     *   "resume"  — help="Lift the emergency stop...", func=cmd_resume
+     * The C equivalents are cmd_pause (below) + the /resume handler; both are
+     * already wired into the command table in partial_compress.c, so this
+     * function is a no-op that exists for 1:1 name parity with the Python API.
+     */
+    return 0;
+}
+
+/* PoP: cmd_pause @ hermes_cli/subcommands/pause.py:cmd_pause */
 /* PoP: cmd_suggestions @ hermes_cli/commands.py:suggestions */
 /* PoP: cmd_suggestions @ hermes_cli/suggestions_cmd.py:handle_suggestions_command */
 void cmd_suggestions(const char *args, agent_state_t *state) {

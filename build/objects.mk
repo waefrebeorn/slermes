@@ -23,6 +23,7 @@ HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plug
  src/tools/browser_extension_router.o src/tools/xai_video_tools.o src/tools/x_search_tool.o src/tools/tts_streaming.o src/tools/tirith_security.o src/tools/thread_context.o src/tools/project_tools.o src/tools/open_preview_tool.o src/tools/mcp_stdio_watchdog.o src/tools/mcp_dashboard_oauth.o src/tools/image_source.o src/tools/hook_output_spill.o src/tools/homeassistant_tool.o src/tools/focus_pane_tool.o src/tools/file_state.o src/tools/desktop_ui.o src/tools/delegation_live_log.o src/tools/daemon_pool.o \
 
 HERMES_CLI_PORT_EXTRA_OBJ = \
+ src/hermes_cli/tips.o \
 
 PORT_OBJ = \
  src/hermes_cli/proxy_adapters_base.o \
