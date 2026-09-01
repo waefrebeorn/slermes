@@ -17,6 +17,7 @@
 
 #include "hermes_json.h"
 #include "hermes_i18n.h"
+#include "hash.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -465,4 +466,56 @@ int envb_kill_process(pid_t pid) {
         }
     }
     return 0;
+}
+
+/* ==== sanitize_task_id_for_path ==== */
+/* PoP: envb_sanitize_task_id_for_path @ tools/environments/base.py:sanitize_task_id_for_path */
+/* [^A-Za-z0-9._-] → "_" */
+static bool c_unsafe_path_char(unsigned char c) {
+    if (c == '.' || c == '_' || c == '-') return false;
+    if (c >= '0' && c <= '9') return false;
+    if (c >= 'A' && c <= 'Z') return false;
+    if (c >= 'a' && c <= 'z') return false;
+    return true;
+}
+char *envb_sanitize_task_id_for_path(const char *task_id) {
+    const char *value = task_id ? task_id : "";
+    if (!value || !*value) return strdup("default");
+    size_t vlen = strlen(value);
+    char *cleaned = malloc(vlen + 1);
+    if (!cleaned) return strdup("default");
+    for (size_t i = 0; i < vlen; i++)
+        cleaned[i] = c_unsafe_path_char((unsigned char)value[i]) ? '_' : value[i];
+    cleaned[vlen] = '\0';
+    bool already_safe = (strcmp(cleaned, value) == 0);
+    if (already_safe && vlen <= 128 &&
+        strcmp(value, ".") != 0 && strcmp(value, "..") != 0 &&
+        value[vlen - 1] != '.' && value[vlen - 1] != ' ') {
+        free(cleaned);
+        return strdup(value);
+    }
+    char *hex = hash_sha256_hex((const unsigned char *)value, vlen);
+    if (!hex) { free(cleaned); return strdup("task-Unknown"); }
+    char digest[13];
+    memcpy(digest, hex, 12);
+    digest[12] = '\0';
+    free(hex);
+    size_t max_stem = 115;
+    size_t stem_len = vlen < max_stem ? vlen : max_stem;
+    char *stem = malloc(stem_len + 1);
+    if (!stem) { free(cleaned); return strdup("task-Unknown"); }
+    memcpy(stem, cleaned, stem_len);
+    stem[stem_len] = '\0';
+    while (stem_len > 0 && (stem[stem_len - 1] == '.' || stem[stem_len - 1] == '_'))
+        stem[--stem_len] = '\0';
+    size_t start = 0;
+    while (stem[start] == '.' || stem[start] == '_') start++;
+    if (start > 0) memmove(stem, stem + start, stem_len - start + 1);
+    const char *final_stem = stem && stem[0] ? stem : "task";
+    char *result = malloc(strlen(final_stem) + 1 + 12 + 1);
+    if (!result) { free(stem); free(cleaned); return strdup("task-Unknown"); }
+    sprintf(result, "%s-%s", final_stem, digest);
+    free(stem);
+    free(cleaned);
+    return result;
 }
