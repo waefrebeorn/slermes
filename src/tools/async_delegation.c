@@ -970,3 +970,26 @@ int async_delegation_children_activity_from_token(const char *token_json,
     json_free(t);
     return api;
 }
+
+/* PoP: ade_capture_routing_origin @ tools/async_delegation.py:_capture_routing_origin */
+int ade_capture_routing_origin(const char *arg)
+{
+    (void)arg;
+    json_t *origin = json_object();
+    const char *env_vars[] = {
+        "HERMES_SESSION_SCOPE_ID",
+        "HERMES_SESSION_USER_ID",
+        "HERMES_SESSION_USER_NAME",
+        NULL
+    };
+    const char *keys[] = { "scope_id", "user_id", "user_name", NULL };
+    for (int i = 0; env_vars[i]; i++) {
+        const char *val = getenv(env_vars[i]);
+        if (val && *val) json_set(origin, keys[i], json_string(val));
+    }
+    char *s = json_dumps(origin, 0);
+    if (s) { printf("%s\n", s); free(s); }
+    else { printf("{}\n"); }
+    json_free(origin);
+    return 0;
+}

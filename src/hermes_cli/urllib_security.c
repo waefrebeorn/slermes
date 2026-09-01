@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/stat.h>
+#include <limits.h>
 
 
 /* === dissolved from ports_wrappers.c === */
@@ -46,6 +48,39 @@ int hermes_cli_urllib_security_url_origin(const char *arg) {
     }
     if (port < 0) { printf("\n\n\n"); return 1; }
     printf("%s\n%s\n%ld\n", scheme, host, port);
+    return 0;
+}
+
+/* PoP: hermes_cli_urllib_security_u_resolved_https_context @ hermes_cli/urllib_security.py:_resolved_https_context */
+int hermes_cli_urllib_security_u_resolved_https_context(const char *arg)
+{
+    (void)arg;
+    const char *env_names[] = {
+        "HERMES_CA_BUNDLE", "SSL_CERT_FILE",
+        "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", NULL
+    };
+    for (int i = 0; env_names[i]; i++) {
+        const char *val = getenv(env_names[i]);
+        if (val && *val) {
+            char expanded[PATH_MAX];
+            if (val[0] == '~' && (val[1] == '/' || val[1] == '\0')) {
+                const char *home = getenv("HOME");
+                if (home && *home) {
+                    snprintf(expanded, sizeof(expanded), "%s%s", home, val + 1);
+                    val = expanded;
+                }
+            }
+            struct stat st;
+            if (stat(val, &st) == 0 && S_ISREG(st.st_mode)) {
+                printf("ca_bundle:%s\n", val);
+                return 0;
+            } else {
+                printf("ca_bundle_missing:%s\n", val);
+                return 0;
+            }
+        }
+    }
+    printf("\n");
     return 0;
 }
 

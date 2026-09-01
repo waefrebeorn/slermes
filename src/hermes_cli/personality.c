@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <limits.h>
 
 /* Built-in personalities (name -> prompt text). */
 const per_builtin_t per_BUILTIN_PERSONALITIES[] = {
@@ -270,4 +272,26 @@ char *per_resolve_ephemeral_system_prompt(const json_t *cfg) {
     const char *keys[] = {"agent", "system_prompt"};
     const json_t *sp = per_get(cfg, keys, 2, NULL);
     return per_prompt_text(sp);
+}
+
+/* PoP: per_persist_personality @ hermes_cli/personality.py:persist_personality */
+int per_persist_personality(const char *config_json, const char *name)
+{
+    (void)config_json;
+    if (!name) name = "";
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) { printf("0\n"); return 0; }
+    size_t hlen = strlen(home);
+    if (hlen == 0) { printf("0\n"); return 0; }
+    char cfg_path[PATH_MAX];
+    snprintf(cfg_path, sizeof(cfg_path), "%s/config.yaml", home);
+    char *slash = strrchr(cfg_path, '/');
+    if (slash) { *slash = '\0'; mkdir(cfg_path, 0755); *slash = '/'; }
+    FILE *f = fopen(cfg_path, "a");
+    if (!f) { printf("0\n"); return 0; }
+    fprintf(f, "display:\n  personality: %s\n", name);
+    fclose(f);
+    chmod(cfg_path, 0600);
+    printf("1\n");
+    return 1;
 }
