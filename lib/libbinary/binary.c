@@ -94,3 +94,41 @@ bool has_binary_extension(const char *path)
     return bsearch(&key, BINARY_EXTENSIONS, NUM_EXTENSIONS,
                    sizeof(const char *), ext_cmp) != NULL;
 }
+
+/* PoP: tools_binary_extensions_has_opaque_document_extension @ tools/binary_extensions.py:has_opaque_document_extension */
+bool has_opaque_document_extension(const char *path)
+{
+    if (!path || !*path)
+        return false;
+
+    /* Find last dot */
+    const char *dot = strrchr(path, '.');
+    if (!dot)
+        return false;
+
+    /* Lowercase the extension */
+    static char ext[32];
+    size_t len = 0;
+    while (*dot && len < sizeof(ext) - 1) {
+        char c = *dot;
+        ext[len++] = (c >= 'A' && c <= 'Z') ? c + 32 : c;
+        dot++;
+    }
+    ext[len] = '\0';
+
+    /* Opaque document extensions: container formats that can't be meaningfully
+     * written as plain text (.doc, .docx, .xls, .xlsx, .ppt, .pptx, .odt,
+     * .ods, .odp, .rtf, .epub) */
+    static const char *const OPAQUE_EXTS[] = {
+        ".doc", ".docx", ".docm",
+        ".xls", ".xlsx", ".xlsm", ".xlsb",
+        ".ppt", ".pps", ".pot", ".pptx", ".pptm", ".ppsx", ".ppsm",
+        ".odt", ".ods", ".odp",
+        ".rtf", ".epub",
+    };
+    #define NUM_OPAQUE (sizeof(OPAQUE_EXTS) / sizeof(OPAQUE_EXTS[0]))
+
+    const char *key = ext;
+    return bsearch(&key, OPAQUE_EXTS, NUM_OPAQUE,
+                   sizeof(const char *), ext_cmp) != NULL;
+}

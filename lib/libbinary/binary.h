@@ -25,6 +25,9 @@ extern "C" {
  */
 bool has_binary_extension(const char *path);
 
+/* PoP: tools_binary_extensions_has_opaque_document_extension @ tools/binary_extensions.py:has_opaque_document_extension */
+bool has_opaque_document_extension(const char *path);
+
 #ifdef __cplusplus
 }
 #endif
