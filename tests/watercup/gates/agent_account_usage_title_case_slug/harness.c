@@ -21,8 +21,7 @@ static void trace_one(const char *input) {
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s <string_or_NULL>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        const char *input = strcmp(argv[i], "NULL") == 0 ? NULL : argv[i];
-        trace_one(input);
+        trace_one(argv[i]);
     }
     return 0;
 }
