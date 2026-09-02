@@ -1,0 +1,36 @@
+{
+  "name": "agent_markdown_tables_looks_like_table_row",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "looks_like_table_row",
+  "py_module": "agent/markdown_tables.py",
+  "py_fn": "looks_like_table_row",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/agent"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/agent_markdown_tables_looks_like_table_row/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "| a | b | c |",
+    "hello",
+    "| only one pipe",
+    "|a|b",
+    "NULL",
+    "| a |",
+    "  | a | b |  ",
+    "|a|b|c|d"
+  ],
+  "notes": "True when row could plausibly be a markdown table row."
+}

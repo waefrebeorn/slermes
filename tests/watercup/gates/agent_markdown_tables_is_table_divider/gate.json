@@ -1,0 +1,38 @@
+{
+  "name": "agent_markdown_tables_is_table_divider",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_table_divider",
+  "py_module": "agent/markdown_tables.py",
+  "py_fn": "is_table_divider",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/agent"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/agent_markdown_tables_is_table_divider/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "| --- | --- |",
+    "| ---: | :--- |",
+    "| a | b |",
+    "hello world",
+    "|--",
+    "| - |",
+    "| :---: |",
+    "something",
+    "| - | - |",
+    "NULL"
+  ],
+  "notes": "True when row is a markdown table separator line."
+}

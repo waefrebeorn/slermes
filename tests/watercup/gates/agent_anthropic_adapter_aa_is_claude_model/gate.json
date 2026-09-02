@@ -1,0 +1,37 @@
+{
+  "name": "agent_anthropic_adapter_aa_is_claude_model",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "aa_is_claude_model",
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_is_claude_model",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/agent"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/agent_anthropic_adapter_aa_is_claude_model/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "claude-opus-4-6",
+    "claude-sonnet-5",
+    "claude-fable",
+    "gpt-4o",
+    "GPT-4",
+    "",
+    "NULL",
+    "CLAUDE-3",
+    "anthropic-claude-hybrid",
+    "claude"
+  ]
+}

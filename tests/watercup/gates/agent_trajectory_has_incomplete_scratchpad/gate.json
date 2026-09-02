@@ -1,0 +1,36 @@
+{
+  "name": "agent_trajectory_has_incomplete_scratchpad",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "has_incomplete_scratchpad",
+  "py_module": "agent/trajectory.py",
+  "py_fn": "has_incomplete_scratchpad",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/agent"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/agent_trajectory_has_incomplete_scratchpad/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "<REASONING_SCRATCHPAD>some text</REASONING_SCRATCHPAD>",
+    "<REASONING_SCRATCHPAD>some text",
+    "normal text",
+    "",
+    "NULL",
+    "<REASONING_SCRATCHPAD>",
+    "text<REASONING_SCRATCHPAD>more</REASONING_SCRATCHPAD>end",
+    "<REASONING_SCRATCHPAD>unclosed"
+  ],
+  "notes": "True when content has opening tag without closing tag."
+}

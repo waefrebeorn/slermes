@@ -1,0 +1,33 @@
+{
+  "name": "agent_account_usage_fmt_usd",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "account_usage_fmt_usd",
+  "py_module": "agent/account_usage.py",
+  "py_fn": "_fmt_usd",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/tools",
+    "-lm"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/agent_account_usage_fmt_usd/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "1234.56",
+    "0.0",
+    "-99.99",
+    "1000000",
+    "NULL"
+  ]
+}

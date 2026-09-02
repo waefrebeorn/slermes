@@ -1,0 +1,37 @@
+{
+  "name": "agent_anthropic_adapter_aa_accepts_thinking_disable",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "aa_accepts_thinking_disable",
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_accepts_thinking_disable",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/agent"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/agent_anthropic_adapter_aa_accepts_thinking_disable/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "claude-opus-4-6",
+    "claude-sonnet-5",
+    "claude-fable",
+    "claude-opus-4-8",
+    "claude-sonnet-4-6",
+    "gpt-4o",
+    "CLAUDE-3",
+    "claude",
+    "anthropic-claude-hybrid",
+    "NULL"
+  ]
+}

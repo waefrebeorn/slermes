@@ -1,0 +1,36 @@
+{
+  "name": "agent_context_compressor_name",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cc_name",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "name",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/agent",
+    "-I",
+    "src/hermes_cli"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/agent_context_compressor_name/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "ldflags": [
+    "-lpcre2-8",
+    "-lssl",
+    "-lcrypto",
+    "-lm"
+  ],
+  "inputs": [
+    "{}"
+  ]
+}

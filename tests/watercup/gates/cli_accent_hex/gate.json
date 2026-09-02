@@ -1,0 +1,28 @@
+{
+  "name": "cli_accent_hex",
+  "subsystem": "other",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cl2_accent_hex",
+  "py_module": "cli.py",
+  "py_fn": "_accent_hex",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/hermes_cli"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/cli_accent_hex/shims.c",
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "IGNORED"
+  ]
+}

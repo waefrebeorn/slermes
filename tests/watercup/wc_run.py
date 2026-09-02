@@ -183,7 +183,14 @@ def run_cup_gate(gd, g, verbose=False):
     out = build_harness(gd, g)
     c_cups = run_harness(out, g)
     twin = load_twin(g)
-    py_cups = twin.run(g["inputs"])
+    py_cups_raw = twin.run(g["inputs"])
+    # Normalize: if twin.run returns a single cup string (not a list), replicate it
+    if isinstance(py_cups_raw, str):
+        py_cups = [py_cups_raw] * len(g["inputs"])
+    elif isinstance(py_cups_raw, list):
+        py_cups = py_cups_raw
+    else:
+        py_cups = list(py_cups_raw)
 
     if len(c_cups) != len(py_cups):
         return 1, ["MISMATCH count: C=%d Py=%d  <<< harness/twin arity differs"
