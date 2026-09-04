@@ -1,4 +1,4 @@
-import { type RefObject, useLayoutEffect, useRef } from 'react'
+import { type RefObject, useLayoutEffect, useRef } from "react";
 
 /**
  * Observe element resizes. The callback receives the ResizeObserver entries
@@ -25,110 +25,110 @@ import { type RefObject, useLayoutEffect, useRef } from 'react'
  * this file. Batching collapses that to one callback per frame.
  */
 
-type Handler = (entries: readonly ResizeObserverEntry[]) => void
+type Handler = (entries: readonly ResizeObserverEntry[]) => void;
 
 /** Live target → handler routing for the shared observer. */
-const handlers = new WeakMap<Element, Set<Handler>>()
+const handlers = new WeakMap<Element, Set<Handler>>();
 
-let shared: null | ResizeObserver = null
+let shared: null | ResizeObserver = null;
 
 function sharedObserver(): null | ResizeObserver {
-  if (typeof ResizeObserver === 'undefined') {
-    return null
+  if (typeof ResizeObserver === "undefined") {
+    return null;
   }
 
   if (!shared) {
-    shared = new ResizeObserver(entries => {
+    shared = new ResizeObserver((entries) => {
       // Group this delivery's entries by handler so a caller observing several
       // elements is still invoked once, with all of its entries — the same
       // contract a private observer gave it.
-      const byHandler = new Map<Handler, ResizeObserverEntry[]>()
+      const byHandler = new Map<Handler, ResizeObserverEntry[]>();
 
       for (const entry of entries) {
-        const targets = handlers.get(entry.target)
+        const targets = handlers.get(entry.target);
 
         if (!targets) {
-          continue
+          continue;
         }
 
         for (const handler of targets) {
-          const list = byHandler.get(handler)
+          const list = byHandler.get(handler);
 
           if (list) {
-            list.push(entry)
+            list.push(entry);
           } else {
-            byHandler.set(handler, [entry])
+            byHandler.set(handler, [entry]);
           }
         }
       }
 
       for (const [handler, group] of byHandler) {
-        handler(group)
+        handler(group);
       }
-    })
+    });
   }
 
-  return shared
+  return shared;
 }
 
 export function useResizeObserver(
   onResize: (entries: readonly ResizeObserverEntry[]) => void,
   ...refs: readonly RefObject<Element | null>[]
 ) {
-  const refsRef = useRef(refs)
-  refsRef.current = refs
+  const refsRef = useRef(refs);
+  refsRef.current = refs;
 
   useLayoutEffect(() => {
-    const observer = sharedObserver()
+    const observer = sharedObserver();
 
     if (!observer) {
-      onResize([])
+      onResize([]);
 
-      return
+      return;
     }
 
-    const observed: Element[] = []
+    const observed: Element[] = [];
 
     for (const ref of refsRef.current) {
-      const element = ref.current
+      const element = ref.current;
 
       if (!element) {
-        continue
+        continue;
       }
 
-      const existing = handlers.get(element)
+      const existing = handlers.get(element);
 
       if (existing) {
-        existing.add(onResize)
+        existing.add(onResize);
       } else {
-        handlers.set(element, new Set([onResize]))
+        handlers.set(element, new Set([onResize]));
         // Only the first handler for an element needs to register it; the
         // observer fires once per element regardless of how many care.
-        observer.observe(element)
+        observer.observe(element);
       }
 
-      observed.push(element)
+      observed.push(element);
     }
 
     if (observed.length === 0) {
-      return
+      return;
     }
 
     return () => {
       for (const element of observed) {
-        const set = handlers.get(element)
+        const set = handlers.get(element);
 
         if (!set) {
-          continue
+          continue;
         }
 
-        set.delete(onResize)
+        set.delete(onResize);
 
         if (set.size === 0) {
-          handlers.delete(element)
-          observer.unobserve(element)
+          handlers.delete(element);
+          observer.unobserve(element);
         }
       }
-    }
-  }, [onResize])
+    };
+  }, [onResize]);
 }

@@ -1,4 +1,8 @@
-import { isCardTool, isFileEditTool, isSilentTool } from '@/lib/tool-render-class'
+import {
+  isCardTool,
+  isFileEditTool,
+  isSilentTool,
+} from "@/lib/tool-render-class";
 
 /**
  * Render cost of one message's content parts, in budget units.
@@ -28,17 +32,23 @@ import { isCardTool, isFileEditTool, isSilentTool } from '@/lib/tool-render-clas
  *     that was painting almost nothing: `messagePaintWeight`.
  */
 
-export const RENDER_WEIGHT_CHARS = 512
+export const RENDER_WEIGHT_CHARS = 512;
 
 // Stop traversing once a single message has enough text to consume a complete
 // DOM render page. Going further cannot change which whole turn crosses any
 // budget, and avoiding an unbounded walk matters for deeply nested tool
 // payloads.
-const MAX_MEASURED_MESSAGE_CHARS = 300 * RENDER_WEIGHT_CHARS
+const MAX_MEASURED_MESSAGE_CHARS = 300 * RENDER_WEIGHT_CHARS;
 
-const storeWeightCache = new WeakMap<object, number>()
-const paintWeightCache = new WeakMap<object, number>()
-const NON_RENDERED_CONTENT_FIELDS = new Set(['id', 'role', 'toolCallId', 'toolName', 'type'])
+const storeWeightCache = new WeakMap<object, number>();
+const paintWeightCache = new WeakMap<object, number>();
+const NON_RENDERED_CONTENT_FIELDS = new Set([
+  "id",
+  "role",
+  "toolCallId",
+  "toolName",
+  "type",
+]);
 
 /**
  * What a collapsed row costs the DOM: one line of scaffolding.
@@ -49,7 +59,7 @@ const NON_RENDERED_CONTENT_FIELDS = new Set(['id', 'role', 'toolCallId', 'toolNa
  * mounts collapsed, and history is exactly what "Show earlier" pages back
  * through.
  */
-const COLLAPSED_ROW_WEIGHT = 1
+const COLLAPSED_ROW_WEIGHT = 1;
 
 /**
  * What a fixed-size card costs the DOM.
@@ -60,10 +70,10 @@ const COLLAPSED_ROW_WEIGHT = 1
  * payload, so charging characters priced a single image at more than a whole
  * page of real turns.
  */
-const CARD_WEIGHT = 6
+const CARD_WEIGHT = 6;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
 /**
@@ -74,46 +84,49 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  * cannot walk past the ceiling one part at a time.
  */
 function payloadCharacters(roots: readonly unknown[], budget: number): number {
-  const seen = new WeakSet<object>()
-  const pending: unknown[] = [...roots]
-  let characters = 0
+  const seen = new WeakSet<object>();
+  const pending: unknown[] = [...roots];
+  let characters = 0;
 
   while (pending.length > 0 && characters < budget) {
-    const value = pending.pop()
+    const value = pending.pop();
 
-    if (typeof value === 'string') {
-      characters += Math.min(value.length, budget - characters)
+    if (typeof value === "string") {
+      characters += Math.min(value.length, budget - characters);
 
-      continue
+      continue;
     }
 
-    if (!value || typeof value !== 'object' || seen.has(value)) {
-      continue
+    if (!value || typeof value !== "object" || seen.has(value)) {
+      continue;
     }
 
-    seen.add(value)
+    seen.add(value);
 
     if (Array.isArray(value)) {
       for (const nested of value) {
-        pending.push(nested)
+        pending.push(nested);
       }
 
-      continue
+      continue;
     }
 
     for (const [key, nested] of Object.entries(value)) {
       if (!NON_RENDERED_CONTENT_FIELDS.has(key)) {
-        pending.push(nested)
+        pending.push(nested);
       }
     }
   }
 
-  return characters
+  return characters;
 }
 
 /** Payload price: one unit per part, plus one per 512 characters it carries. */
 function payloadWeight(parts: readonly unknown[], budget: number): number {
-  return parts.length + Math.ceil(payloadCharacters(parts, budget) / RENDER_WEIGHT_CHARS)
+  return (
+    parts.length +
+    Math.ceil(payloadCharacters(parts, budget) / RENDER_WEIGHT_CHARS)
+  );
 }
 
 /**
@@ -125,19 +138,22 @@ function payloadWeight(parts: readonly unknown[], budget: number): number {
  */
 export function messageStoreWeight(content: unknown): number {
   if (!Array.isArray(content)) {
-    return 1
+    return 1;
   }
 
-  const cached = storeWeightCache.get(content)
+  const cached = storeWeightCache.get(content);
 
   if (cached !== undefined) {
-    return cached
+    return cached;
   }
 
-  const weight = Math.max(1, payloadWeight(content, MAX_MEASURED_MESSAGE_CHARS))
-  storeWeightCache.set(content, weight)
+  const weight = Math.max(
+    1,
+    payloadWeight(content, MAX_MEASURED_MESSAGE_CHARS),
+  );
+  storeWeightCache.set(content, weight);
 
-  return weight
+  return weight;
 }
 
 /**
@@ -146,34 +162,37 @@ export function messageStoreWeight(content: unknown): number {
  * `measure` prices a payload against the message's shared character ceiling —
  * only the parts that actually paint their content spend from it.
  */
-function partPaintWeight(part: unknown, measure: (parts: readonly unknown[]) => number): number {
+function partPaintWeight(
+  part: unknown,
+  measure: (parts: readonly unknown[]) => number,
+): number {
   if (!isRecord(part)) {
-    return 1
+    return 1;
   }
 
   // A thought mounts its header; the reasoning text sits behind it.
-  if (part.type === 'reasoning') {
-    return COLLAPSED_ROW_WEIGHT
+  if (part.type === "reasoning") {
+    return COLLAPSED_ROW_WEIGHT;
   }
 
-  if (part.type !== 'tool-call') {
+  if (part.type !== "tool-call") {
     // Text is markdown the DOM really builds, so it keeps the payload price.
-    return measure([part])
+    return measure([part]);
   }
 
-  const toolName = typeof part.toolName === 'string' ? part.toolName : ''
+  const toolName = typeof part.toolName === "string" ? part.toolName : "";
 
   if (isSilentTool(toolName)) {
-    return 0
+    return 0;
   }
 
   if (!isCardTool(toolName)) {
-    return COLLAPSED_ROW_WEIGHT
+    return COLLAPSED_ROW_WEIGHT;
   }
 
   // A diff is the one card that scales: `FileDiffPanel` mounts a row per line,
   // and a big patch really is the expensive thing in the turn.
-  return isFileEditTool(toolName) ? measure([part]) : CARD_WEIGHT
+  return isFileEditTool(toolName) ? measure([part]) : CARD_WEIGHT;
 }
 
 /**
@@ -185,34 +204,34 @@ function partPaintWeight(part: unknown, measure: (parts: readonly unknown[]) => 
  */
 export function messagePaintWeight(content: unknown): number {
   if (!Array.isArray(content)) {
-    return 1
+    return 1;
   }
 
-  const cached = paintWeightCache.get(content)
+  const cached = paintWeightCache.get(content);
 
   if (cached !== undefined) {
-    return cached
+    return cached;
   }
 
   // One character ceiling for the whole message, not one per part — otherwise a
   // message of many huge parts walks past it one part at a time.
-  let remaining = MAX_MEASURED_MESSAGE_CHARS
+  let remaining = MAX_MEASURED_MESSAGE_CHARS;
 
   const measure = (parts: readonly unknown[]) => {
-    const characters = payloadCharacters(parts, remaining)
-    remaining -= characters
+    const characters = payloadCharacters(parts, remaining);
+    remaining -= characters;
 
-    return parts.length + Math.ceil(characters / RENDER_WEIGHT_CHARS)
-  }
+    return parts.length + Math.ceil(characters / RENDER_WEIGHT_CHARS);
+  };
 
-  let weight = 0
+  let weight = 0;
 
   for (const part of content) {
-    weight += partPaintWeight(part, measure)
+    weight += partPaintWeight(part, measure);
   }
 
-  weight = Math.max(1, weight)
-  paintWeightCache.set(content, weight)
+  weight = Math.max(1, weight);
+  paintWeightCache.set(content, weight);
 
-  return weight
+  return weight;
 }

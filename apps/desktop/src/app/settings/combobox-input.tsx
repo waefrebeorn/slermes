@@ -1,10 +1,19 @@
-import { useRef, useState } from 'react'
+import { useRef, useState } from "react";
 
-import { Codicon } from '@/components/ui/codicon'
-import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
-import { Input } from '@/components/ui/input'
-import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+import { Codicon } from "@/components/ui/codicon";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 /**
  * Free-input combobox for open-world fields (voice/model names): a plain
@@ -25,40 +34,43 @@ export function ComboboxInput({
   options,
   optionLabels,
   placeholder,
-  className
+  className,
 }: {
-  value: string
-  onChange: (value: string) => void
-  options: string[]
-  optionLabels?: Record<string, string>
-  placeholder?: string
-  className?: string
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  optionLabels?: Record<string, string>;
+  placeholder?: string;
+  className?: string;
 }) {
-  const [open, setOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [open, setOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const query = value.trim().toLowerCase()
-  const isExact = options.some(option => option.toLowerCase() === query)
+  const query = value.trim().toLowerCase();
+  const isExact = options.some((option) => option.toLowerCase() === query);
 
-  const visible = query && !isExact ? options.filter(option => option.toLowerCase().includes(query)) : options
+  const visible =
+    query && !isExact
+      ? options.filter((option) => option.toLowerCase().includes(query))
+      : options;
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverAnchor asChild>
-        <div className={cn('relative', className)}>
+        <div className={cn("relative", className)}>
           <Input
             className="w-full pr-7"
-            onChange={e => {
-              onChange(e.target.value)
+            onChange={(e) => {
+              onChange(e.target.value);
 
               if (!open) {
-                setOpen(true)
+                setOpen(true);
               }
             }}
             onFocus={() => setOpen(true)}
-            onKeyDown={e => {
-              if (e.key === 'Escape' || e.key === 'Enter' || e.key === 'Tab') {
-                setOpen(false)
+            onKeyDown={(e) => {
+              if (e.key === "Escape" || e.key === "Enter" || e.key === "Tab") {
+                setOpen(false);
               }
             }}
             placeholder={placeholder}
@@ -69,39 +81,44 @@ export function ComboboxInput({
             aria-label="Show options"
             className="absolute inset-y-0 right-1.5 flex items-center text-muted-foreground"
             onClick={() => {
-              setOpen(current => !current)
-              inputRef.current?.focus()
+              setOpen((current) => !current);
+              inputRef.current?.focus();
             }}
             tabIndex={-1}
             type="button"
           >
-            <Codicon name={open ? 'chevron-up' : 'chevron-down'} size="1rem" />
+            <Codicon name={open ? "chevron-up" : "chevron-down"} size="1rem" />
           </button>
         </div>
       </PopoverAnchor>
       <PopoverContent
         align="start"
         className="w-[var(--radix-popover-trigger-width)] p-0"
-        onOpenAutoFocus={e => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <Command shouldFilter={false}>
           <CommandList>
             {visible.length > 0 && (
               <CommandGroup>
-                {visible.map(option => (
+                {visible.map((option) => (
                   <CommandItem
                     key={option}
                     onSelect={() => {
-                      onChange(option)
-                      setOpen(false)
+                      onChange(option);
+                      setOpen(false);
                     }}
                     value={option}
                   >
                     <Codicon
-                      className={cn('mr-2 size-4', option === value ? 'opacity-100' : 'opacity-0')}
+                      className={cn(
+                        "mr-2 size-4",
+                        option === value ? "opacity-100" : "opacity-0",
+                      )}
                       name="check"
                     />
-                    <span className="truncate">{optionLabels?.[option] ?? option}</span>
+                    <span className="truncate">
+                      {optionLabels?.[option] ?? option}
+                    </span>
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -110,5 +127,5 @@ export function ComboboxInput({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -1,56 +1,63 @@
-import { atom, computed } from 'nanostores'
+import { atom, computed } from "nanostores";
 
-import { translateNow } from '@/i18n'
-import { stableArray } from '@/lib/stable-array'
-import { type TodoItem, type TodoStatus, todoTree } from '@/lib/todos'
+import { translateNow } from "@/i18n";
+import { stableArray } from "@/lib/stable-array";
+import { type TodoItem, type TodoStatus, todoTree } from "@/lib/todos";
 
-import { $gateway } from './gateway'
-import { $goalsBySession, type GoalStatus } from './goals'
-import { dispatchNativeNotification } from './native-notifications'
-import { notifyError } from './notifications'
-import { isSessionGone, isSessionGoneForBackgroundPolling, markSessionGone, noteRuntimeAlive } from './runtime-gone'
-import { $sessions, lineageAliases } from './session'
-import { ambientRequestFor } from './session-gone-latch'
-import { $sessionStates, requestForOwnedSession } from './session-states'
-import { $subagentsBySession, type SubagentProgress } from './subagents'
-import { $todosBySession } from './todos'
+import { $gateway } from "./gateway";
+import { $goalsBySession, type GoalStatus } from "./goals";
+import { dispatchNativeNotification } from "./native-notifications";
+import { notifyError } from "./notifications";
+import {
+  isSessionGone,
+  isSessionGoneForBackgroundPolling,
+  markSessionGone,
+  noteRuntimeAlive,
+} from "./runtime-gone";
+import { $sessions, lineageAliases } from "./session";
+import { ambientRequestFor } from "./session-gone-latch";
+import { $sessionStates, requestForOwnedSession } from "./session-states";
+import { $subagentsBySession, type SubagentProgress } from "./subagents";
+import { $todosBySession } from "./todos";
 
 export {
   isSessionGone,
   isSessionGoneForBackgroundPolling,
   markSessionGone,
-  resetBackgroundPollingGuard
-} from './runtime-gone'
+  resetBackgroundPollingGuard,
+} from "./runtime-gone";
 
 /** Composer status stack feed — merged todos, subagents, background per session. */
-export type StatusItemState = 'done' | 'failed' | 'running'
-export type StatusItemType = 'background' | 'goal' | 'subagent' | 'todo'
+export type StatusItemState = "done" | "failed" | "running";
+export type StatusItemType = "background" | "goal" | "subagent" | "todo";
 
 export interface ComposerStatusItem {
   /** background: non-zero exit shown inline when failed. */
-  exitCode?: number
+  exitCode?: number;
   /** subagent: active tool label shown on the right. */
-  currentTool?: string
+  currentTool?: string;
   /** todo: nesting depth (0 = top-level) for indented subtask rows. */
-  depth?: number
+  depth?: number;
   /** goal: active | paused | waiting | done. */
-  goalStatus?: GoalStatus
-  id: string
+  goalStatus?: GoalStatus;
+  id: string;
   /** background process: captured stdout/stderr tail for the inline viewer. */
-  output?: string
+  output?: string;
   /** subagent: its own stored session id — row click opens that session window
    *  (livestreamed by the gateway's child-session mirror). */
-  sessionId?: string
-  state: StatusItemState
-  title: string
+  sessionId?: string;
+  state: StatusItemState;
+  title: string;
   /** todo: the full four-state status driving the row's checkmark glyph. */
-  todoStatus?: TodoStatus
-  type: StatusItemType
+  todoStatus?: TodoStatus;
+  type: StatusItemType;
 }
 
 // Writable source for background work, synced from the gateway's process
 // registry (`terminal(background=true)` spawns) via `process.list`.
-export const $backgroundStatusBySession = atom<Record<string, ComposerStatusItem[]>>({})
+export const $backgroundStatusBySession = atom<
+  Record<string, ComposerStatusItem[]>
+>({});
 
 // Stored session ids that have at least one RUNNING background process. The
 // sidebar row reads this for a hollow dot — distinct from the filled dot of an
@@ -64,115 +71,126 @@ export const $backgroundStatusBySession = atom<Record<string, ComposerStatusItem
 // Perf: recomputes on every $sessionStates change (message deltas, tens/sec),
 // but the background-running set rarely moves. `stableArray` keeps the prior
 // reference when unchanged so rows reading this don't re-render per token.
-let backgroundRunningIds: readonly string[] = []
+let backgroundRunningIds: readonly string[] = [];
 export const $backgroundRunningSessionIds = computed(
   [$backgroundStatusBySession, $sessionStates, $sessions],
   (bg, states, sessions) => {
-    const ids = new Set<string>()
+    const ids = new Set<string>();
 
     for (const [runtimeId, items] of Object.entries(bg)) {
-      if (!items.some(i => i.state === 'running')) {
-        continue
+      if (!items.some((i) => i.state === "running")) {
+        continue;
       }
 
       // Same fresh-chat fallback as the working/attention projections: before a
       // conversation is persisted its runtime id is the id surfaces key on.
-      for (const alias of lineageAliases(states[runtimeId]?.storedSessionId ?? runtimeId, sessions)) {
-        ids.add(alias)
+      for (const alias of lineageAliases(
+        states[runtimeId]?.storedSessionId ?? runtimeId,
+        sessions,
+      )) {
+        ids.add(alias);
       }
     }
 
-    return (backgroundRunningIds = stableArray(backgroundRunningIds, [...ids]))
-  }
-)
+    return (backgroundRunningIds = stableArray(backgroundRunningIds, [...ids]));
+  },
+);
 
 // Rows the user X-ed away. The registry keeps finished processes around for a
 // while, so without this every refresh would resurrect a dismissed row.
-const dismissedBySession = new Map<string, Set<string>>()
+const dismissedBySession = new Map<string, Set<string>>();
 
 // Finished tasks self-clear so the stack only ever holds running work. Success
 // goes quick; failure lingers longer so its exit code stays readable (the output
 // also lives in the transcript). A manual X still drops either at once.
-const SUCCESS_LINGER_MS = 4_000
-const FAILURE_LINGER_MS = 12_000
-const autoClearTimers = new Map<string, Map<string, ReturnType<typeof setTimeout>>>()
+const SUCCESS_LINGER_MS = 4_000;
+const FAILURE_LINGER_MS = 12_000;
+const autoClearTimers = new Map<
+  string,
+  Map<string, ReturnType<typeof setTimeout>>
+>();
 
 function scheduleAutoDismiss(sid: string, id: string, delayMs: number) {
-  let timers = autoClearTimers.get(sid)
+  let timers = autoClearTimers.get(sid);
 
   if (timers?.has(id)) {
-    return
+    return;
   }
 
   if (!timers) {
-    timers = new Map()
-    autoClearTimers.set(sid, timers)
+    timers = new Map();
+    autoClearTimers.set(sid, timers);
   }
 
   timers.set(
     id,
     setTimeout(() => {
-      autoClearTimers.get(sid)?.delete(id)
-      dismissBackgroundProcess(sid, id)
-    }, delayMs)
-  )
+      autoClearTimers.get(sid)?.delete(id);
+      dismissBackgroundProcess(sid, id);
+    }, delayMs),
+  );
 }
 
 function cancelAutoDismiss(sid: string, id: string) {
-  const timers = autoClearTimers.get(sid)
+  const timers = autoClearTimers.get(sid);
 
   if (!timers) {
-    return
+    return;
   }
 
-  const timer = timers.get(id)
+  const timer = timers.get(id);
 
   if (timer !== undefined) {
-    clearTimeout(timer)
-    timers.delete(id)
+    clearTimeout(timer);
+    timers.delete(id);
   }
 }
 
 function cancelAllAutoDismiss(sid: string) {
-  const timers = autoClearTimers.get(sid)
+  const timers = autoClearTimers.get(sid);
 
   if (!timers) {
-    return
+    return;
   }
 
   for (const timer of timers.values()) {
-    clearTimeout(timer)
+    clearTimeout(timer);
   }
 
-  autoClearTimers.delete(sid)
+  autoClearTimers.delete(sid);
 }
 
 const subToItem = (s: SubagentProgress): ComposerStatusItem => ({
   currentTool: s.currentTool,
   id: s.id,
   sessionId: s.sessionId,
-  state: 'running',
+  state: "running",
   title: s.goal,
-  type: 'subagent'
-})
+  type: "subagent",
+});
 
 const todoToItem = (t: TodoItem, depth: number): ComposerStatusItem => ({
   depth,
   id: `todo:${t.id}`,
-  state: t.status === 'in_progress' ? 'running' : 'done',
+  state: t.status === "in_progress" ? "running" : "done",
   title: t.content,
   todoStatus: t.status,
-  type: 'todo'
-})
+  type: "todo",
+});
 
-const goalToItem = (goal: { detail?: string; status: GoalStatus; title: string }): ComposerStatusItem => ({
+const goalToItem = (goal: {
+  detail?: string;
+  status: GoalStatus;
+  title: string;
+}): ComposerStatusItem => ({
   currentTool: goal.detail,
   goalStatus: goal.status,
-  id: 'goal:standing',
-  state: goal.status === 'active' || goal.status === 'waiting' ? 'running' : 'done',
+  id: "goal:standing",
+  state:
+    goal.status === "active" || goal.status === "waiting" ? "running" : "done",
   title: goal.title,
-  type: 'goal'
-})
+  type: "goal",
+});
 
 // The single thing the stack reads: a typed, merged item list per session.
 //
@@ -195,123 +213,156 @@ const sameStatusItem = (a: ComposerStatusItem, b: ComposerStatusItem) =>
   a.goalStatus === b.goalStatus &&
   a.todoStatus === b.todoStatus &&
   a.depth === b.depth &&
-  a.sessionId === b.sessionId
+  a.sessionId === b.sessionId;
 
-const stabilizeItems = (prev: ComposerStatusItem[] | undefined, next: ComposerStatusItem[]): ComposerStatusItem[] => {
+const stabilizeItems = (
+  prev: ComposerStatusItem[] | undefined,
+  next: ComposerStatusItem[],
+): ComposerStatusItem[] => {
   if (!prev) {
-    return next
+    return next;
   }
 
-  const merged = next.map((item, i) => (prev[i] && sameStatusItem(prev[i], item) ? prev[i] : item))
+  const merged = next.map((item, i) =>
+    prev[i] && sameStatusItem(prev[i], item) ? prev[i] : item,
+  );
 
-  return merged.length === prev.length && merged.every((item, i) => item === prev[i]) ? prev : merged
-}
+  return merged.length === prev.length &&
+    merged.every((item, i) => item === prev[i])
+    ? prev
+    : merged;
+};
 
-let prevStatusItems: Record<string, ComposerStatusItem[]> = {}
+let prevStatusItems: Record<string, ComposerStatusItem[]> = {};
 
 export const $statusItemsBySession = computed(
-  [$goalsBySession, $subagentsBySession, $backgroundStatusBySession, $todosBySession],
+  [
+    $goalsBySession,
+    $subagentsBySession,
+    $backgroundStatusBySession,
+    $todosBySession,
+  ],
   (goals, subs, background, todos) => {
-    const out: Record<string, ComposerStatusItem[]> = {}
+    const out: Record<string, ComposerStatusItem[]> = {};
 
     const push = (sid: string, items: ComposerStatusItem[]) => {
       if (items.length > 0) {
-        out[sid] = out[sid] ? [...out[sid], ...items] : items
+        out[sid] = out[sid] ? [...out[sid], ...items] : items;
       }
-    }
+    };
 
     for (const [sid, list] of Object.entries(todos)) {
       push(
         sid,
-        todoTree(list).map(([t, depth]) => todoToItem(t, depth))
-      )
+        todoTree(list).map(([t, depth]) => todoToItem(t, depth)),
+      );
     }
 
     for (const [sid, goal] of Object.entries(goals)) {
-      push(sid, [goalToItem(goal)])
+      push(sid, [goalToItem(goal)]);
     }
 
     for (const [sid, list] of Object.entries(subs)) {
-      push(sid, list.filter(s => s.status === 'running' || s.status === 'queued').map(subToItem))
+      push(
+        sid,
+        list
+          .filter((s) => s.status === "running" || s.status === "queued")
+          .map(subToItem),
+      );
     }
 
     for (const [sid, list] of Object.entries(background)) {
-      push(sid, list)
+      push(sid, list);
     }
 
-    let unchanged = Object.keys(prevStatusItems).length === Object.keys(out).length
+    let unchanged =
+      Object.keys(prevStatusItems).length === Object.keys(out).length;
 
     for (const sid of Object.keys(out)) {
-      out[sid] = stabilizeItems(prevStatusItems[sid], out[sid]!)
-      unchanged &&= out[sid] === prevStatusItems[sid]
+      out[sid] = stabilizeItems(prevStatusItems[sid], out[sid]!);
+      unchanged &&= out[sid] === prevStatusItems[sid];
     }
 
-    return (prevStatusItems = unchanged ? prevStatusItems : out)
-  }
-)
+    return (prevStatusItems = unchanged ? prevStatusItems : out);
+  },
+);
 
 // Fixed render order for the groups in the stack (top → bottom, above queue).
-const TYPE_ORDER: readonly StatusItemType[] = ['goal', 'todo', 'subagent', 'background']
+const TYPE_ORDER: readonly StatusItemType[] = [
+  "goal",
+  "todo",
+  "subagent",
+  "background",
+];
 
 export interface StatusGroup {
-  items: ComposerStatusItem[]
-  type: StatusItemType
+  items: ComposerStatusItem[];
+  type: StatusItemType;
 }
 
-export function groupStatusItems(items: readonly ComposerStatusItem[]): StatusGroup[] {
-  const byType = new Map<StatusItemType, ComposerStatusItem[]>()
+export function groupStatusItems(
+  items: readonly ComposerStatusItem[],
+): StatusGroup[] {
+  const byType = new Map<StatusItemType, ComposerStatusItem[]>();
 
   for (const item of items) {
-    const list = byType.get(item.type)
+    const list = byType.get(item.type);
 
     if (list) {
-      list.push(item)
+      list.push(item);
     } else {
-      byType.set(item.type, [item])
+      byType.set(item.type, [item]);
     }
   }
 
-  return TYPE_ORDER.filter(type => byType.has(type)).map(type => ({ items: byType.get(type)!, type }))
+  return TYPE_ORDER.filter((type) => byType.has(type)).map((type) => ({
+    items: byType.get(type)!,
+    type,
+  }));
 }
 
 const writeBackground = (sid: string, items: ComposerStatusItem[]) => {
-  const current = $backgroundStatusBySession.get()
-  const next = { ...current }
+  const current = $backgroundStatusBySession.get();
+  const next = { ...current };
 
   if (items.length > 0) {
-    next[sid] = items
+    next[sid] = items;
   } else {
-    delete next[sid]
+    delete next[sid];
   }
 
-  $backgroundStatusBySession.set(next)
-}
+  $backgroundStatusBySession.set(next);
+};
 
 // `tui_gateway` process.list entry (tools/process_registry.list_sessions + output_tail).
 interface GatewayProcessEntry {
-  command?: string
-  exit_code?: number
-  output_tail?: string
-  session_id?: string
-  status?: string
+  command?: string;
+  exit_code?: number;
+  output_tail?: string;
+  session_id?: string;
+  status?: string;
 }
 
 const toBackgroundItem = (proc: GatewayProcessEntry): ComposerStatusItem => {
-  const exited = proc.status === 'exited'
-  const exitCode = typeof proc.exit_code === 'number' ? proc.exit_code : undefined
+  const exited = proc.status === "exited";
+  const exitCode =
+    typeof proc.exit_code === "number" ? proc.exit_code : undefined;
 
   return {
     exitCode,
-    id: proc.session_id ?? '',
+    id: proc.session_id ?? "",
     output: proc.output_tail || undefined,
-    state: exited ? (exitCode ? 'failed' : 'done') : 'running',
-    title: (proc.command ?? '').split('\n')[0]!.trim() || 'background process',
-    type: 'background'
-  }
-}
+    state: exited ? (exitCode ? "failed" : "done") : "running",
+    title: (proc.command ?? "").split("\n")[0]!.trim() || "background process",
+    type: "background",
+  };
+};
 
 const sameItem = (a: ComposerStatusItem, b: ComposerStatusItem) =>
-  a.state === b.state && a.title === b.title && a.output === b.output && a.exitCode === b.exitCode
+  a.state === b.state &&
+  a.title === b.title &&
+  a.output === b.output &&
+  a.exitCode === b.exitCode;
 
 /**
  * Layout-stable sync of the registry snapshot into the store: existing rows
@@ -319,51 +370,54 @@ const sameItem = (a: ComposerStatusItem, b: ComposerStatusItem) =>
  * processes append, dismissed ids stay gone, and unchanged rows keep their
  * object identity so memoised rows skip re-rendering.
  */
-export function reconcileBackgroundProcesses(sid: string, procs: GatewayProcessEntry[]) {
-  const dismissed = dismissedBySession.get(sid)
+export function reconcileBackgroundProcesses(
+  sid: string,
+  procs: GatewayProcessEntry[],
+) {
+  const dismissed = dismissedBySession.get(sid);
 
   const fresh = new Map(
     procs
-      .filter(proc => proc.session_id && !dismissed?.has(proc.session_id))
-      .map(proc => [proc.session_id!, toBackgroundItem(proc)])
-  )
+      .filter((proc) => proc.session_id && !dismissed?.has(proc.session_id))
+      .map((proc) => [proc.session_id!, toBackgroundItem(proc)]),
+  );
 
-  const prev = $backgroundStatusBySession.get()[sid] ?? []
+  const prev = $backgroundStatusBySession.get()[sid] ?? [];
 
   // running → exited since the last snapshot = a background process just finished.
-  const prevState = new Map(prev.map(item => [item.id, item.state]))
+  const prevState = new Map(prev.map((item) => [item.id, item.state]));
 
   for (const [id, item] of fresh) {
-    if (item.state !== 'running' && prevState.get(id) === 'running') {
+    if (item.state !== "running" && prevState.get(id) === "running") {
       dispatchNativeNotification({
         body: item.title,
-        kind: 'backgroundDone',
+        kind: "backgroundDone",
         sessionId: sid,
         title: translateNow(
-          item.state === 'failed'
-            ? 'notifications.native.backgroundFailedTitle'
-            : 'notifications.native.backgroundDoneTitle'
-        )
-      })
+          item.state === "failed"
+            ? "notifications.native.backgroundFailedTitle"
+            : "notifications.native.backgroundDoneTitle",
+        ),
+      });
     }
   }
 
-  const kept = prev.flatMap(old => {
-    const next = fresh.get(old.id)
-    fresh.delete(old.id)
+  const kept = prev.flatMap((old) => {
+    const next = fresh.get(old.id);
+    fresh.delete(old.id);
 
-    return next ? [sameItem(old, next) ? old : next] : []
-  })
+    return next ? [sameItem(old, next) ? old : next] : [];
+  });
 
-  const next = [...kept, ...fresh.values()]
+  const next = [...kept, ...fresh.values()];
 
   // Dismissals only need remembering while the registry still reports the id.
   if (dismissed) {
-    const reported = new Set(procs.map(proc => proc.session_id))
+    const reported = new Set(procs.map((proc) => proc.session_id));
 
     for (const id of dismissed) {
       if (!reported.has(id)) {
-        dismissed.delete(id)
+        dismissed.delete(id);
       }
     }
   }
@@ -372,54 +426,57 @@ export function reconcileBackgroundProcesses(sid: string, procs: GatewayProcessE
   // it for anything running again or gone from the snapshot.
   const finishedDelay = new Map(
     next
-      .filter(item => item.state !== 'running')
-      .map(item => [item.id, item.state === 'failed' ? FAILURE_LINGER_MS : SUCCESS_LINGER_MS])
-  )
+      .filter((item) => item.state !== "running")
+      .map((item) => [
+        item.id,
+        item.state === "failed" ? FAILURE_LINGER_MS : SUCCESS_LINGER_MS,
+      ]),
+  );
 
   for (const [id, delay] of finishedDelay) {
-    scheduleAutoDismiss(sid, id, delay)
+    scheduleAutoDismiss(sid, id, delay);
   }
 
   for (const id of [...(autoClearTimers.get(sid)?.keys() ?? [])]) {
     if (!finishedDelay.has(id)) {
-      cancelAutoDismiss(sid, id)
+      cancelAutoDismiss(sid, id);
     }
   }
 
-  if (next.length === prev.length && next.every((item, i) => item === prev[i])) {
-    return
+  if (
+    next.length === prev.length &&
+    next.every((item, i) => item === prev[i])
+  ) {
+    return;
   }
 
-  writeBackground(sid, next)
+  writeBackground(sid, next);
 }
 
 /** Pull the session's live process snapshot from the gateway. */
 export async function refreshBackgroundProcesses(sid: string): Promise<void> {
-  const gateway = $gateway.get()
+  const gateway = $gateway.get();
 
   if (!sid || !gateway || isSessionGone(sid)) {
-    return
+    return;
   }
 
   try {
-    const result = await requestForOwnedSession<{ processes?: GatewayProcessEntry[] }>(
-      sid,
-      ambientRequestFor(gateway),
-      'process.list',
-      { session_id: sid }
-    )
+    const result = await requestForOwnedSession<{
+      processes?: GatewayProcessEntry[];
+    }>(sid, ambientRequestFor(gateway), "process.list", { session_id: sid });
 
-    reconcileBackgroundProcesses(sid, result?.processes ?? [])
+    reconcileBackgroundProcesses(sid, result?.processes ?? []);
     // The binding answered, so it is healthy: refund the stored session's
     // recovery budget (a heal that stuck must not count against the next one).
-    noteRuntimeAlive(sid)
+    noteRuntimeAlive(sid);
   } catch (error) {
     // A gone session never comes back under this runtime id: stop polling it,
     // or the 5s timer hammers the gateway with 4001s for the window's lifetime.
     if (isSessionGoneForBackgroundPolling(error)) {
-      markSessionGone(sid)
+      markSessionGone(sid);
 
-      return
+      return;
     }
 
     // Transient socket loss — the next trigger (event or poll) retries.
@@ -428,54 +485,65 @@ export async function refreshBackgroundProcesses(sid: string): Promise<void> {
 
 /** X on a finished row: drop it now and keep it dropped across refreshes. */
 export function dismissBackgroundProcess(sid: string, id: string) {
-  cancelAutoDismiss(sid, id)
+  cancelAutoDismiss(sid, id);
 
-  const dismissed = dismissedBySession.get(sid) ?? new Set<string>()
-  dismissed.add(id)
-  dismissedBySession.set(sid, dismissed)
+  const dismissed = dismissedBySession.get(sid) ?? new Set<string>();
+  dismissed.add(id);
+  dismissedBySession.set(sid, dismissed);
 
-  const list = $backgroundStatusBySession.get()[sid] ?? []
+  const list = $backgroundStatusBySession.get()[sid] ?? [];
 
   writeBackground(
     sid,
-    list.filter(item => item.id !== id)
-  )
+    list.filter((item) => item.id !== id),
+  );
 }
 
 /** X on a running row: kill the process for real, THEN drop the row. Only drop
  *  on a confirmed kill — dismissing unconditionally (the old behavior) hid the
  *  row while the process lived on, stranding rogue tasks. On failure the row
  *  stays so the user can retry / see it didn't die. */
-export async function stopBackgroundProcess(sid: string, id: string): Promise<void> {
-  const gateway = $gateway.get()
+export async function stopBackgroundProcess(
+  sid: string,
+  id: string,
+): Promise<void> {
+  const gateway = $gateway.get();
 
   if (isSessionGone(sid)) {
     // The backend has already declared this runtime gone, so there is no
     // authoritative process left to kill through this session. Remove the
     // stale local row instead of leaving the Stop button permanently inert.
-    dismissBackgroundProcess(sid, id)
+    dismissBackgroundProcess(sid, id);
 
-    return
+    return;
   }
 
   if (!gateway) {
-    notifyError(new Error('Gateway is not connected'), 'Could not stop the process')
+    notifyError(
+      new Error("Gateway is not connected"),
+      "Could not stop the process",
+    );
 
-    return
+    return;
   }
 
   try {
-    await requestForOwnedSession(sid, ambientRequestFor(gateway), 'process.kill', { process_id: id, session_id: sid })
-    dismissBackgroundProcess(sid, id)
+    await requestForOwnedSession(
+      sid,
+      ambientRequestFor(gateway),
+      "process.kill",
+      { process_id: id, session_id: sid },
+    );
+    dismissBackgroundProcess(sid, id);
   } catch (err) {
     if (isSessionGoneForBackgroundPolling(err)) {
-      dismissBackgroundProcess(sid, id)
-      markSessionGone(sid)
+      dismissBackgroundProcess(sid, id);
+      markSessionGone(sid);
 
-      return
+      return;
     }
 
-    notifyError(err, 'Could not stop the process')
+    notifyError(err, "Could not stop the process");
   }
 }
 
@@ -488,32 +556,37 @@ export async function stopBackgroundProcess(sid: string, id: string): Promise<vo
  */
 export function resetSessionBackground(sid: string) {
   if (!sid) {
-    return
+    return;
   }
 
-  cancelAllAutoDismiss(sid)
+  cancelAllAutoDismiss(sid);
 
-  const gateway = $gateway.get()
-  const list = $backgroundStatusBySession.get()[sid] ?? []
-  const dismissed = dismissedBySession.get(sid) ?? new Set<string>()
+  const gateway = $gateway.get();
+  const list = $backgroundStatusBySession.get()[sid] ?? [];
+  const dismissed = dismissedBySession.get(sid) ?? new Set<string>();
 
   for (const item of list) {
-    dismissed.add(item.id)
+    dismissed.add(item.id);
 
-    if (item.state === 'running') {
+    if (item.state === "running") {
       if (gateway && !isSessionGone(sid)) {
-        void requestForOwnedSession(sid, ambientRequestFor(gateway), 'process.kill', {
-          process_id: item.id,
-          session_id: sid
-        }).catch(error => {
+        void requestForOwnedSession(
+          sid,
+          ambientRequestFor(gateway),
+          "process.kill",
+          {
+            process_id: item.id,
+            session_id: sid,
+          },
+        ).catch((error) => {
           if (isSessionGoneForBackgroundPolling(error)) {
-            markSessionGone(sid)
+            markSessionGone(sid);
           }
-        })
+        });
       }
     }
   }
 
-  dismissedBySession.set(sid, dismissed)
-  writeBackground(sid, [])
+  dismissedBySession.set(sid, dismissed);
+  writeBackground(sid, []);
 }

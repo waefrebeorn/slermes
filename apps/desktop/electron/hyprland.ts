@@ -17,14 +17,14 @@
 // `swaymsg -t get_tree`. That is a different shape (a tree, not a list) and is
 // deliberately not attempted here rather than shipped untested.
 
-import net from 'node:net'
+import net from "node:net";
 
-import type { EnumeratedWindow } from './window-below'
+import type { EnumeratedWindow } from "./window-below";
 
 // Hyprland evaluates this socket synchronously and freezes for a five-second
 // timeout on an unclosed connection, so every path below destroys the socket.
 // One request per tool call, never polled.
-const REQUEST_TIMEOUT_MS = 1000
+const REQUEST_TIMEOUT_MS = 1000;
 
 /**
  * Path to the running instance's command socket, or null when Hyprland is not
@@ -34,26 +34,31 @@ const REQUEST_TIMEOUT_MS = 1000
  * machine have two sockets. The `/run/user/<uid>` fallback mirrors Hyprland's
  * own client code for sessions that don't export `XDG_RUNTIME_DIR`.
  */
-export function hyprlandSocketPath(env: NodeJS.ProcessEnv, uid: number): null | string {
-  const signature = env.HYPRLAND_INSTANCE_SIGNATURE
+export function hyprlandSocketPath(
+  env: NodeJS.ProcessEnv,
+  uid: number,
+): null | string {
+  const signature = env.HYPRLAND_INSTANCE_SIGNATURE;
 
   if (!signature) {
-    return null
+    return null;
   }
 
-  const runtime = env.XDG_RUNTIME_DIR ? `${env.XDG_RUNTIME_DIR}/hypr` : `/run/user/${uid}/hypr`
+  const runtime = env.XDG_RUNTIME_DIR
+    ? `${env.XDG_RUNTIME_DIR}/hypr`
+    : `/run/user/${uid}/hypr`;
 
-  return `${runtime}/${signature}/.socket.sock`
+  return `${runtime}/${signature}/.socket.sock`;
 }
 
 interface HyprlandClient {
-  address?: string
-  at?: [number, number]
-  class?: string
-  pid?: number
-  size?: [number, number]
-  title?: string
-  workspace?: { id?: number }
+  address?: string;
+  at?: [number, number];
+  class?: string;
+  pid?: number;
+  size?: [number, number];
+  title?: string;
+  workspace?: { id?: number };
 }
 
 /**
@@ -84,69 +89,85 @@ interface HyprlandClient {
  *     can't find ourselves we keep everything, which is no worse than the X11
  *     path.
  */
-export function parseHyprlandClients(payload: string, selfPid: number): EnumeratedWindow[] {
-  let raw: unknown
+export function parseHyprlandClients(
+  payload: string,
+  selfPid: number,
+): EnumeratedWindow[] {
+  let raw: unknown;
 
   try {
-    raw = JSON.parse(payload)
+    raw = JSON.parse(payload);
   } catch {
-    return []
+    return [];
   }
 
   if (!Array.isArray(raw)) {
-    return []
+    return [];
   }
 
-  const clients = raw as Array<HyprlandClient & { focusHistoryID?: number }>
-  const ours = clients.find(c => c.pid === selfPid)
-  const workspace = ours?.workspace?.id
-  const visible = workspace === undefined ? clients : clients.filter(c => c.workspace?.id === workspace)
+  const clients = raw as Array<HyprlandClient & { focusHistoryID?: number }>;
+  const ours = clients.find((c) => c.pid === selfPid);
+  const workspace = ours?.workspace?.id;
+  const visible =
+    workspace === undefined
+      ? clients
+      : clients.filter((c) => c.workspace?.id === workspace);
 
   return visible
-    .filter(c => c.pid !== selfPid && (c.size?.[0] ?? 0) > 0 && (c.size?.[1] ?? 0) > 0)
-    .sort((a, b) => (a.focusHistoryID ?? Number.MAX_SAFE_INTEGER) - (b.focusHistoryID ?? Number.MAX_SAFE_INTEGER))
-    .map(c => ({
-      app: c.class ?? '',
+    .filter(
+      (c) =>
+        c.pid !== selfPid && (c.size?.[0] ?? 0) > 0 && (c.size?.[1] ?? 0) > 0,
+    )
+    .sort(
+      (a, b) =>
+        (a.focusHistoryID ?? Number.MAX_SAFE_INTEGER) -
+        (b.focusHistoryID ?? Number.MAX_SAFE_INTEGER),
+    )
+    .map((c) => ({
+      app: c.class ?? "",
       bounds: {
         x: c.at?.[0] ?? 0,
         y: c.at?.[1] ?? 0,
         width: c.size?.[0] ?? 0,
-        height: c.size?.[1] ?? 0
+        height: c.size?.[1] ?? 0,
       },
       // Addresses are pointers rendered as hex; they only travel back to the
       // model as an opaque handle, so a failed parse costs nothing.
-      id: Number.parseInt(c.address ?? '', 16) || 0,
+      id: Number.parseInt(c.address ?? "", 16) || 0,
       pid: c.pid ?? 0,
-      title: c.title ?? ''
-    }))
+      title: c.title ?? "",
+    }));
 }
 
 /** One request on the command socket, always closed, never left hanging. */
-export function hyprlandRequest(socketPath: string, command: string): Promise<null | string> {
-  return new Promise(resolve => {
-    let body = ''
-    let settled = false
+export function hyprlandRequest(
+  socketPath: string,
+  command: string,
+): Promise<null | string> {
+  return new Promise((resolve) => {
+    let body = "";
+    let settled = false;
 
-    const socket = net.createConnection(socketPath)
+    const socket = net.createConnection(socketPath);
 
     const finish = (result: null | string) => {
       if (settled) {
-        return
+        return;
       }
 
-      settled = true
-      socket.destroy()
-      resolve(result)
-    }
+      settled = true;
+      socket.destroy();
+      resolve(result);
+    };
 
-    socket.setTimeout(REQUEST_TIMEOUT_MS, () => finish(null))
-    socket.on('error', () => finish(null))
-    socket.on('connect', () => socket.write(command))
-    socket.on('data', chunk => {
-      body += chunk.toString('utf8')
-    })
-    socket.on('end', () => finish(body))
-  })
+    socket.setTimeout(REQUEST_TIMEOUT_MS, () => finish(null));
+    socket.on("error", () => finish(null));
+    socket.on("connect", () => socket.write(command));
+    socket.on("data", (chunk) => {
+      body += chunk.toString("utf8");
+    });
+    socket.on("end", () => finish(body));
+  });
 }
 
 /**
@@ -157,21 +178,21 @@ export function hyprlandRequest(socketPath: string, command: string): Promise<nu
 export async function readHyprlandWindows(
   selfPid: number,
   env: NodeJS.ProcessEnv = process.env,
-  uid: number = process.getuid?.() ?? 0
+  uid: number = process.getuid?.() ?? 0,
 ): Promise<EnumeratedWindow[] | null> {
-  const socketPath = hyprlandSocketPath(env, uid)
+  const socketPath = hyprlandSocketPath(env, uid);
 
   if (!socketPath) {
-    return null
+    return null;
   }
 
-  const payload = await hyprlandRequest(socketPath, 'j/clients')
+  const payload = await hyprlandRequest(socketPath, "j/clients");
 
   if (!payload) {
-    return null
+    return null;
   }
 
-  const windows = parseHyprlandClients(payload, selfPid)
+  const windows = parseHyprlandClients(payload, selfPid);
 
-  return windows.length > 0 ? windows : null
+  return windows.length > 0 ? windows : null;
 }

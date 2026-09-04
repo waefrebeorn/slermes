@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef } from "react";
 
 /**
  * One-shot enter animation via the Web Animations API.
@@ -22,66 +22,69 @@ import { useCallback, useRef } from 'react'
  * `enabled` is captured at mount-time only — flipping it later doesn't
  * suddenly play the animation on existing nodes.
  */
-const playedAnimationKeys = new Set<string>()
-const playedAnimationOrder: string[] = []
-const MAX_TRACKED_KEYS = 2048
+const playedAnimationKeys = new Set<string>();
+const playedAnimationOrder: string[] = [];
+const MAX_TRACKED_KEYS = 2048;
 
 function hasPlayedAnimation(key: string): boolean {
-  return playedAnimationKeys.has(key)
+  return playedAnimationKeys.has(key);
 }
 
 function rememberPlayedAnimation(key: string): void {
   if (playedAnimationKeys.has(key)) {
-    return
+    return;
   }
 
-  playedAnimationKeys.add(key)
-  playedAnimationOrder.push(key)
+  playedAnimationKeys.add(key);
+  playedAnimationOrder.push(key);
 
   if (playedAnimationOrder.length > MAX_TRACKED_KEYS) {
-    const evicted = playedAnimationOrder.shift()
+    const evicted = playedAnimationOrder.shift();
 
     if (evicted) {
-      playedAnimationKeys.delete(evicted)
+      playedAnimationKeys.delete(evicted);
     }
   }
 }
 
 function scheduleMicrotask(cb: () => void): void {
-  if (typeof queueMicrotask === 'function') {
-    queueMicrotask(cb)
+  if (typeof queueMicrotask === "function") {
+    queueMicrotask(cb);
 
-    return
+    return;
   }
 
-  void Promise.resolve().then(cb)
+  void Promise.resolve().then(cb);
 }
 
-export function useEnterAnimation(enabled: boolean, animationKey?: string): (el: HTMLElement | null) => void {
-  const enabledRef = useRef(enabled)
-  const keyRef = useRef(animationKey)
+export function useEnterAnimation(
+  enabled: boolean,
+  animationKey?: string,
+): (el: HTMLElement | null) => void {
+  const enabledRef = useRef(enabled);
+  const keyRef = useRef(animationKey);
 
-  enabledRef.current = enabled
-  keyRef.current = animationKey
+  enabledRef.current = enabled;
+  keyRef.current = animationKey;
 
   return useCallback((el: HTMLElement | null) => {
-    if (!el || !enabledRef.current || typeof window === 'undefined') {
-      return
+    if (!el || !enabledRef.current || typeof window === "undefined") {
+      return;
     }
 
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      return
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      return;
     }
 
-    const key = keyRef.current
+    const key = keyRef.current;
 
     if (key && hasPlayedAnimation(key)) {
-      return
+      return;
     }
 
     el.animate(
       [
-        { opacity: 0, transform: 'translateY(0.375rem)' },
+        { opacity: 0, transform: "translateY(0.375rem)" },
         // No `opacity` on the way out, deliberately. A filled animation holds
         // its final value in the animation origin of the cascade, which
         // outranks the stylesheet for as long as the element lives — naming 1
@@ -92,19 +95,19 @@ export function useEnterAnimation(enabled: boolean, animationKey?: string): (el:
         // past its one-shot key. Adjacent identical rows disagreed, and hover
         // couldn't lift the pinned ones. Left neutral, opacity rises to
         // whatever CSS says it should be and answers hover afterwards.
-        { transform: 'translateY(0)' }
+        { transform: "translateY(0)" },
       ],
-      { duration: 180, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' }
-    )
+      { duration: 180, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" },
+    );
 
     if (key) {
       // In React StrictMode the first mount can be immediately torn down.
       // Only persist "played" once the element survives to the microtask tick.
       scheduleMicrotask(() => {
         if (el.isConnected) {
-          rememberPlayedAnimation(key)
+          rememberPlayedAnimation(key);
         }
-      })
+      });
     }
-  }, [])
+  }, []);
 }

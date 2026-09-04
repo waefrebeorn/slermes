@@ -1,8 +1,8 @@
-import { useStore } from '@nanostores/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import { Codicon } from '@/components/ui/codicon'
+import { Button } from "@/components/ui/button";
+import { Codicon } from "@/components/ui/codicon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,56 +12,62 @@ import {
   dropdownMenuRow,
   DropdownMenuSearch,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import type { DesktopRegistryConnection } from '@/global'
-import { useI18n } from '@/i18n'
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import type { DesktopRegistryConnection } from "@/global";
+import { useI18n } from "@/i18n";
 import {
   CONNECTION_SEARCH_THRESHOLD,
   connectionMatchesQuery,
   connectionTooltip,
-  sortConnectionsForDisplay
-} from '@/lib/connection-display'
-import { triggerHaptic } from '@/lib/haptics'
-import { Loader2 } from '@/lib/icons'
-import { cn } from '@/lib/utils'
-import { $desktopBoot } from '@/store/boot'
+  sortConnectionsForDisplay,
+} from "@/lib/connection-display";
+import { triggerHaptic } from "@/lib/haptics";
+import { Loader2 } from "@/lib/icons";
+import { cn } from "@/lib/utils";
+import { $desktopBoot } from "@/store/boot";
 import {
   $activeConnectionId,
   $connectionsRegistry,
   $pendingConnectionId,
   initializeConnectionsRegistry,
   refreshConnectionsRegistry,
-  selectConnection
-} from '@/store/connections'
-import { closeFindBar } from '@/store/find-in-page'
-import { notifyError } from '@/store/notifications'
-import { isAuxiliaryWindow, isPeerInstanceWindow } from '@/store/windows'
+  selectConnection,
+} from "@/store/connections";
+import { closeFindBar } from "@/store/find-in-page";
+import { notifyError } from "@/store/notifications";
+import { isAuxiliaryWindow, isPeerInstanceWindow } from "@/store/windows";
 
-import { ConnectionGlyph } from './connection-glyph'
+import { ConnectionGlyph } from "./connection-glyph";
 
-export function ConnectionSwitcher({ compact = false, onConnect }: { compact?: boolean; onConnect: () => void }) {
-  const { t } = useI18n()
-  const registry = useStore($connectionsRegistry)
-  const activeConnectionId = useStore($activeConnectionId)
-  const boot = useStore($desktopBoot)
-  const pendingConnectionId = useStore($pendingConnectionId)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [menuOpen, setMenuOpen] = useState(false)
-  const connectionListRef = useRef<HTMLDivElement>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
+export function ConnectionSwitcher({
+  compact = false,
+  onConnect,
+}: {
+  compact?: boolean;
+  onConnect: () => void;
+}) {
+  const { t } = useI18n();
+  const registry = useStore($connectionsRegistry);
+  const activeConnectionId = useStore($activeConnectionId);
+  const boot = useStore($desktopBoot);
+  const pendingConnectionId = useStore($pendingConnectionId);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const connectionListRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    void refreshConnectionsRegistry().catch(() => undefined)
+    void refreshConnectionsRegistry().catch(() => undefined);
 
     // Registry events are local IPC notifications, not remote polling. They
     // keep a second Settings window or a removal/edit reflected here.
     const off = window.hermesDesktop?.connections?.onChanged?.(() => {
-      void refreshConnectionsRegistry().catch(() => undefined)
-    })
+      void refreshConnectionsRegistry().catch(() => undefined);
+    });
 
-    return off
-  }, [])
+    return off;
+  }, []);
 
   useEffect(() => {
     // The primary boot owns its initial config/session fetches. Restoring a
@@ -71,82 +77,102 @@ export function ConnectionSwitcher({ compact = false, onConnect }: { compact?: b
     // auxiliary windows already boot into their intended runtime; replaying the
     // primary window's app-launch preference would move them away from it.
     if (!boot.running && !isAuxiliaryWindow() && !isPeerInstanceWindow()) {
-      void initializeConnectionsRegistry().catch(() => undefined)
+      void initializeConnectionsRegistry().catch(() => undefined);
     }
-  }, [boot.running])
+  }, [boot.running]);
 
-  const connections = useMemo(() => sortConnectionsForDisplay(registry?.connections ?? []), [registry?.connections])
+  const connections = useMemo(
+    () => sortConnectionsForDisplay(registry?.connections ?? []),
+    [registry?.connections],
+  );
 
-  const activeConnection = connections.find(connection => connection.id === activeConnectionId)
-  const searchable = connections.length >= CONNECTION_SEARCH_THRESHOLD
+  const activeConnection = connections.find(
+    (connection) => connection.id === activeConnectionId,
+  );
+  const searchable = connections.length >= CONNECTION_SEARCH_THRESHOLD;
 
-  const kindLabels: Record<DesktopRegistryConnection['kind'], string> = {
+  const kindLabels: Record<DesktopRegistryConnection["kind"], string> = {
     cloud: t.settings.connections.kindCloud,
     local: t.settings.connections.kindLocal,
     remote: t.settings.connections.kindRemote,
-    ssh: t.settings.connections.kindSsh
-  }
+    ssh: t.settings.connections.kindSsh,
+  };
 
   const displayedConnections = searchable
-    ? connections.filter(connection => connectionMatchesQuery(connection, searchQuery, [kindLabels[connection.kind]]))
-    : connections
+    ? connections.filter((connection) =>
+        connectionMatchesQuery(connection, searchQuery, [
+          kindLabels[connection.kind],
+        ]),
+      )
+    : connections;
 
   useEffect(() => {
     if (!menuOpen || !searchable || searchQuery) {
-      return
+      return;
     }
 
-    connectionListRef.current?.querySelector('[aria-checked="true"]')?.scrollIntoView({ block: 'nearest' })
-  }, [activeConnectionId, menuOpen, searchQuery, searchable])
+    connectionListRef.current
+      ?.querySelector('[aria-checked="true"]')
+      ?.scrollIntoView({ block: "nearest" });
+  }, [activeConnectionId, menuOpen, searchQuery, searchable]);
 
   useEffect(() => {
     if (!menuOpen) {
-      return
+      return;
     }
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
-        return
+      if (event.key !== "Escape") {
+        return;
       }
 
-      event.preventDefault()
-      event.stopPropagation()
-      setMenuOpen(false)
-      setSearchQuery('')
-    }
+      event.preventDefault();
+      event.stopPropagation();
+      setMenuOpen(false);
+      setSearchQuery("");
+    };
 
-    window.addEventListener('keydown', closeOnEscape, { capture: true })
+    window.addEventListener("keydown", closeOnEscape, { capture: true });
 
-    return () => window.removeEventListener('keydown', closeOnEscape, { capture: true })
-  }, [menuOpen])
+    return () =>
+      window.removeEventListener("keydown", closeOnEscape, { capture: true });
+  }, [menuOpen]);
 
   if (connections.length <= 1) {
-    return null
+    return null;
   }
 
   const choose = (connectionId: string) => {
-    triggerHaptic('selection')
-    const connection = connections.find(candidate => candidate.id === connectionId)
+    triggerHaptic("selection");
+    const connection = connections.find(
+      (candidate) => candidate.id === connectionId,
+    );
 
-    void selectConnection(connectionId).catch(error =>
-      notifyError(error, t.profiles.switchConnectionFailed(connection?.label ?? connectionId))
-    )
-  }
+    void selectConnection(connectionId).catch((error) =>
+      notifyError(
+        error,
+        t.profiles.switchConnectionFailed(connection?.label ?? connectionId),
+      ),
+    );
+  };
 
   return (
     <div
       aria-busy={pendingConnectionId !== null}
       aria-label={t.settings.connections.title}
-      className={cn('min-w-20 shrink overflow-hidden', compact ? 'h-full max-w-40' : 'max-w-72')}
+      className={cn(
+        "min-w-20 shrink overflow-hidden",
+        compact ? "h-full max-w-40" : "max-w-72",
+      )}
       data-slot="connection-switcher"
       role="group"
     >
       <DropdownMenu
-        onOpenChange={open => {
-          setMenuOpen(open)
+        onOpenChange={(open) => {
+          setMenuOpen(open);
 
           if (!open) {
-            setSearchQuery('')
+            setSearchQuery("");
           }
         }}
         open={menuOpen}
@@ -161,18 +187,25 @@ export function ConnectionSwitcher({ compact = false, onConnect }: { compact?: b
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="start"
-          className={cn('min-w-52 max-w-72', searchable && 'w-72 overflow-hidden p-0')}
+          className={cn(
+            "min-w-52 max-w-72",
+            searchable && "w-72 overflow-hidden p-0",
+          )}
           collisionPadding={8}
-          onKeyDownCapture={event => {
-            if (searchable && (event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === 'f') {
-              event.preventDefault()
-              event.stopPropagation()
+          onKeyDownCapture={(event) => {
+            if (
+              searchable &&
+              (event.metaKey || event.ctrlKey) &&
+              event.key.toLocaleLowerCase() === "f"
+            ) {
+              event.preventDefault();
+              event.stopPropagation();
               // The app-level keybind sees the chord at window capture before
               // this portal and may open Find in page. This menu owns the chord
               // while it is open, so close that surface before focusing here.
-              closeFindBar()
-              searchInputRef.current?.focus()
-              searchInputRef.current?.select()
+              closeFindBar();
+              searchInputRef.current?.focus();
+              searchInputRef.current?.select();
             }
           }}
           side="top"
@@ -181,22 +214,25 @@ export function ConnectionSwitcher({ compact = false, onConnect }: { compact?: b
             <>
               <DropdownMenuSearch
                 className="[font-family:inherit] text-xs font-normal leading-4"
-                onKeyDown={event => {
-                  if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
-                    return
+                onKeyDown={(event) => {
+                  if (event.key !== "ArrowDown" && event.key !== "ArrowUp") {
+                    return;
                   }
 
-                  const results = connectionListRef.current?.querySelectorAll<HTMLElement>(
-                    '[role="menuitemradio"]:not([data-disabled])'
-                  )
+                  const results =
+                    connectionListRef.current?.querySelectorAll<HTMLElement>(
+                      '[role="menuitemradio"]:not([data-disabled])',
+                    );
 
                   const target =
-                    event.key === 'ArrowDown' ? results?.item(0) : results?.item((results?.length ?? 1) - 1)
+                    event.key === "ArrowDown"
+                      ? results?.item(0)
+                      : results?.item((results?.length ?? 1) - 1);
 
                   if (target) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    target.focus()
+                    event.preventDefault();
+                    event.stopPropagation();
+                    target.focus();
                   }
                 }}
                 onValueChange={setSearchQuery}
@@ -210,12 +246,12 @@ export function ConnectionSwitcher({ compact = false, onConnect }: { compact?: b
           <DropdownMenuRadioGroup
             className={
               searchable
-                ? 'dt-portal-scrollbar h-48 max-h-[calc(var(--radix-dropdown-menu-content-available-height)-4.5rem)] overflow-y-auto p-1'
+                ? "dt-portal-scrollbar h-48 max-h-[calc(var(--radix-dropdown-menu-content-available-height)-4.5rem)] overflow-y-auto p-1"
                 : undefined
             }
             onValueChange={choose}
             ref={connectionListRef}
-            value={activeConnectionId ?? ''}
+            value={activeConnectionId ?? ""}
           >
             {displayedConnections.length === 0 ? (
               <div
@@ -225,9 +261,9 @@ export function ConnectionSwitcher({ compact = false, onConnect }: { compact?: b
                 {t.settings.connections.noSearchResults}
               </div>
             ) : (
-              displayedConnections.map(connection => (
+              displayedConnections.map((connection) => (
                 <DropdownMenuRadioItem
-                  className={cn('min-w-0', searchable && dropdownMenuRow)}
+                  className={cn("min-w-0", searchable && dropdownMenuRow)}
                   key={connection.id}
                   value={connection.id}
                 >
@@ -236,21 +272,24 @@ export function ConnectionSwitcher({ compact = false, onConnect }: { compact?: b
               ))
             )}
           </DropdownMenuRadioGroup>
-          <DropdownMenuSeparator className={searchable ? 'm-0' : undefined} />
-          <DropdownMenuItem className={searchable ? dropdownMenuRow : undefined} onSelect={onConnect}>
+          <DropdownMenuSeparator className={searchable ? "m-0" : undefined} />
+          <DropdownMenuItem
+            className={searchable ? dropdownMenuRow : undefined}
+            onSelect={onConnect}
+          >
             <ManageGatewaysLabel label={t.profiles.connectGateway} />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  )
+  );
 }
 
 interface ConnectionMenuProps {
-  activeConnection?: DesktopRegistryConnection
-  compact: boolean
-  pending: boolean
-  title: string
+  activeConnection?: DesktopRegistryConnection;
+  compact: boolean;
+  pending: boolean;
+  title: string;
 }
 
 function ConnectionSwitcherTrigger({
@@ -259,31 +298,44 @@ function ConnectionSwitcherTrigger({
   pending,
   title,
   ...triggerProps
-}: ConnectionMenuProps & React.ComponentProps<'button'>) {
+}: ConnectionMenuProps & React.ComponentProps<"button">) {
   return (
     <Button
       {...triggerProps}
-      aria-label={activeConnection ? `${title}: ${activeConnection.label}` : title}
+      aria-label={
+        activeConnection ? `${title}: ${activeConnection.label}` : title
+      }
       className={cn(
-        'w-full min-w-0 justify-between overflow-hidden px-1 text-(--ui-text-secondary) data-[state=open]:bg-(--ui-control-active-background) data-[state=open]:text-foreground',
-        compact && 'h-full min-h-0 rounded-none px-1.5 text-[0.6875rem] font-normal',
-        triggerProps.className
+        "w-full min-w-0 justify-between overflow-hidden px-1 text-(--ui-text-secondary) data-[state=open]:bg-(--ui-control-active-background) data-[state=open]:text-foreground",
+        compact &&
+          "h-full min-h-0 rounded-none px-1.5 text-[0.6875rem] font-normal",
+        triggerProps.className,
       )}
       size="xs"
       type="button"
       variant="ghost"
     >
       <span className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
-        {pending && <Loader2 aria-hidden="true" className="size-3 shrink-0 animate-spin" />}
+        {pending && (
+          <Loader2
+            aria-hidden="true"
+            className="size-3 shrink-0 animate-spin"
+          />
+        )}
         {activeConnection ? (
           <ConnectionLabel connection={activeConnection} />
         ) : (
           <span className="truncate">{title}</span>
         )}
       </span>
-      <Codicon aria-hidden="true" className="shrink-0 opacity-60" name="chevron-down" size="0.875rem" />
+      <Codicon
+        aria-hidden="true"
+        className="shrink-0 opacity-60"
+        name="chevron-down"
+        size="0.875rem"
+      />
     </Button>
-  )
+  );
 }
 
 function ManageGatewaysLabel({ label }: { label: string }) {
@@ -292,14 +344,21 @@ function ManageGatewaysLabel({ label }: { label: string }) {
       <Codicon aria-hidden="true" name="settings-gear" size="0.875rem" />
       <span className="truncate">{label}</span>
     </span>
-  )
+  );
 }
 
-function ConnectionLabel({ connection }: { connection: DesktopRegistryConnection }) {
+function ConnectionLabel({
+  connection,
+}: {
+  connection: DesktopRegistryConnection;
+}) {
   return (
-    <span className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden" title={connectionTooltip(connection)}>
+    <span
+      className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden"
+      title={connectionTooltip(connection)}
+    >
       <ConnectionGlyph connection={connection} />
       <span className="truncate">{connection.label}</span>
     </span>
-  )
+  );
 }

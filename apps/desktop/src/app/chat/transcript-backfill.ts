@@ -15,16 +15,22 @@
  * drift on the next page.
  */
 
-import { getOlderSessionMessages } from '@/hermes'
-import { type ChatMessage, toChatMessages } from '@/lib/chat-messages'
-import { recordTranscriptBackfillPage, type TranscriptProfileScope, transcriptTailState } from '@/store/transcript-tail'
+import { getOlderSessionMessages } from "@/hermes";
+import { type ChatMessage, toChatMessages } from "@/lib/chat-messages";
+import {
+  recordTranscriptBackfillPage,
+  type TranscriptProfileScope,
+  transcriptTailState,
+} from "@/store/transcript-tail";
 
 /** Older rows likely exist beyond what the in-memory store holds. */
 export function transcriptBackfillAvailable(
   storedSessionId: null | string | undefined,
-  profile?: TranscriptProfileScope
+  profile?: TranscriptProfileScope,
 ): boolean {
-  return Boolean(transcriptTailState(storedSessionId, profile)?.possiblyTruncated)
+  return Boolean(
+    transcriptTailState(storedSessionId, profile)?.possiblyTruncated,
+  );
 }
 
 /**
@@ -33,34 +39,39 @@ export function transcriptBackfillAvailable(
  * Preserves reference identity when nothing changes: handing React a fresh
  * array of the same messages re-renders the runtime for nothing.
  */
-export function mergeOlderTranscriptPage(existing: ChatMessage[], olderPage: ChatMessage[]): ChatMessage[] {
+export function mergeOlderTranscriptPage(
+  existing: ChatMessage[],
+  olderPage: ChatMessage[],
+): ChatMessage[] {
   // Backfill only makes sense under an already-hydrated tail. An empty store
   // here means the session was swapped or wiped mid-fetch; prepending would
   // paint the older page as the whole conversation.
   if (existing.length === 0 || olderPage.length === 0) {
-    return existing
+    return existing;
   }
 
-  const existingRowIds = new Set<number>()
-  const existingIds = new Set<string>()
+  const existingRowIds = new Set<number>();
+  const existingIds = new Set<string>();
 
   for (const message of existing) {
     if (message.rowId !== undefined) {
-      existingRowIds.add(message.rowId)
+      existingRowIds.add(message.rowId);
     }
 
-    existingIds.add(message.id)
+    existingIds.add(message.id);
   }
 
   const fresh = olderPage.filter(
-    message => !(message.rowId !== undefined && existingRowIds.has(message.rowId)) && !existingIds.has(message.id)
-  )
+    (message) =>
+      !(message.rowId !== undefined && existingRowIds.has(message.rowId)) &&
+      !existingIds.has(message.id),
+  );
 
   if (fresh.length === 0) {
-    return existing
+    return existing;
   }
 
-  return [...fresh, ...existing]
+  return [...fresh, ...existing];
 }
 
 /**
@@ -72,49 +83,54 @@ export function mergeOlderTranscriptPage(existing: ChatMessage[], olderPage: Cha
  * When no anchor is found (compaction rewrite, different session), the
  * refreshed tail is authoritative — same behavior as before backfill existed.
  */
-export function graftRefreshedTailOntoBackfill(refreshedTail: ChatMessage[], previous: ChatMessage[]): ChatMessage[] {
+export function graftRefreshedTailOntoBackfill(
+  refreshedTail: ChatMessage[],
+  previous: ChatMessage[],
+): ChatMessage[] {
   if (refreshedTail.length === 0 || previous.length === 0) {
-    return refreshedTail
+    return refreshedTail;
   }
 
-  const first = refreshedTail[0]
+  const first = refreshedTail[0];
 
   const anchor = previous.findIndex(
-    message =>
-      (first.rowId !== undefined && message.rowId !== undefined && message.rowId === first.rowId) ||
-      message.id === first.id
-  )
+    (message) =>
+      (first.rowId !== undefined &&
+        message.rowId !== undefined &&
+        message.rowId === first.rowId) ||
+      message.id === first.id,
+  );
 
   if (anchor <= 0) {
-    return refreshedTail
+    return refreshedTail;
   }
 
-  return [...previous.slice(0, anchor), ...refreshedTail]
+  return [...previous.slice(0, anchor), ...refreshedTail];
 }
 
 export interface BackfillRequest {
   /** Durable stored session id — the tail bookkeeping key. */
-  storedSessionId: string
+  storedSessionId: string;
   /** Owner scope captured when the tail was hydrated. */
-  profile?: TranscriptProfileScope
+  profile?: TranscriptProfileScope;
   /** Stale-response guard: called after the fetch resolves; when it reports
    *  false (the user switched sessions mid-flight) the page is discarded and
    *  the bookkeeping is left untouched, mirroring the isCurrentResume()
    *  pattern in use-session-actions. */
-  isCurrent: () => boolean
+  isCurrent: () => boolean;
   /** Apply the converted older page to the session's message store. The
    *  callback owns WHERE the messages live (session-state cache vs the global
    *  draft atom) and must merge via `mergeOlderTranscriptPage`. */
-  applyOlderPage: (olderPage: ChatMessage[]) => void
+  applyOlderPage: (olderPage: ChatMessage[]) => void;
 }
 
 // One fetch per stored session at a time. Keyed by stored id (not runtime id)
 // so a mid-fetch runtime rebind cannot double-fetch the same page.
-const inflightByStoredSessionId = new Map<string, Promise<boolean>>()
+const inflightByStoredSessionId = new Map<string, Promise<boolean>>();
 
 /** Test-only: drop in-flight guards between cases. */
 export function _resetTranscriptBackfillForTests(): void {
-  inflightByStoredSessionId.clear()
+  inflightByStoredSessionId.clear();
 }
 
 /**
@@ -122,51 +138,57 @@ export function _resetTranscriptBackfillForTests(): void {
  * `applyOlderPage`. Resolves true when a page was applied. Concurrent calls
  * for the same session share one fetch.
  */
-export function backfillOlderTranscriptPage(request: BackfillRequest): Promise<boolean> {
-  const { profile, storedSessionId } = request
-  const inflightKey = JSON.stringify([profile || null, storedSessionId])
-  const inflight = inflightByStoredSessionId.get(inflightKey)
+export function backfillOlderTranscriptPage(
+  request: BackfillRequest,
+): Promise<boolean> {
+  const { profile, storedSessionId } = request;
+  const inflightKey = JSON.stringify([profile || null, storedSessionId]);
+  const inflight = inflightByStoredSessionId.get(inflightKey);
 
   if (inflight) {
-    return inflight
+    return inflight;
   }
 
   const run = (async () => {
-    const tail = transcriptTailState(storedSessionId, profile)
+    const tail = transcriptTailState(storedSessionId, profile);
 
     if (!tail?.possiblyTruncated) {
-      return false
+      return false;
     }
 
-    let page
+    let page;
 
     try {
-      page = await getOlderSessionMessages(storedSessionId, tail.profile, tail.nextOffset)
+      page = await getOlderSessionMessages(
+        storedSessionId,
+        tail.profile,
+        tail.nextOffset,
+      );
     } catch {
       // Non-fatal: the action stays available and the next click retries.
-      return false
+      return false;
     }
 
     // Session switched while the page was in flight: discard it entirely.
     // The bookkeeping stays untouched so a later re-visit (which re-records
     // the tail on hydration anyway) starts from consistent state.
     if (!request.isCurrent()) {
-      return false
+      return false;
     }
 
     // A response without pagination metadata is a legacy backend that ignored
     // the paging query and returned the FULL transcript one-shot. The merge
     // below prepends whatever prefix the store is missing, and the recorded
     // state marks the session fully loaded so the REST action retires.
-    recordTranscriptBackfillPage(storedSessionId, page, profile)
-    request.applyOlderPage(toChatMessages(page.messages))
+    recordTranscriptBackfillPage(storedSessionId, page, profile);
+    request.applyOlderPage(toChatMessages(page.messages));
 
-    return true
+    return true;
   })().finally(() => {
-    inflightByStoredSessionId.delete(inflightKey)
-  })
+    inflightByStoredSessionId.delete(inflightKey);
+  });
 
-  inflightByStoredSessionId.set(inflightKey, run)
+  inflightByStoredSessionId.set(inflightKey, run);
 
-  return run
+  return run;
 }

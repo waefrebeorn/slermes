@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 /**
  * KEYBOARD-FIRST OVERLAYS — the shared contract for anything you open with a
@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
  * user is using.
  */
 
-const RELEASE_EVENT = 'hermes:release-typing-focus'
+const RELEASE_EVENT = "hermes:release-typing-focus";
 
 /**
  * True while the pointer must be treated as absent.
@@ -30,22 +30,22 @@ const RELEASE_EVENT = 'hermes:release-typing-focus'
  * knowledge of whether a hotkey or a click opened it.
  */
 export function usePointerQuiet(): boolean {
-  const [quiet, setQuiet] = useState(true)
+  const [quiet, setQuiet] = useState(true);
 
   useEffect(() => {
-    const wake = () => setQuiet(false)
-    const options = { capture: true } as const
+    const wake = () => setQuiet(false);
+    const options = { capture: true } as const;
 
-    window.addEventListener('mousemove', wake, options)
-    window.addEventListener('wheel', wake, options)
+    window.addEventListener("mousemove", wake, options);
+    window.addEventListener("wheel", wake, options);
 
     return () => {
-      window.removeEventListener('mousemove', wake, options)
-      window.removeEventListener('wheel', wake, options)
-    }
-  }, [])
+      window.removeEventListener("mousemove", wake, options);
+      window.removeEventListener("wheel", wake, options);
+    };
+  }, []);
 
-  return quiet
+  return quiet;
 }
 
 /**
@@ -59,17 +59,17 @@ export function usePointerQuiet(): boolean {
  * stays ignorant of what "typing" means on any given surface.
  */
 export function releaseTypingFocus(): void {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent(RELEASE_EVENT))
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(RELEASE_EVENT));
   }
 }
 
 export function onReleaseTypingFocus(handler: () => void): () => void {
-  if (typeof window === 'undefined') {
-    return () => undefined
+  if (typeof window === "undefined") {
+    return () => undefined;
   }
 
-  window.addEventListener(RELEASE_EVENT, handler)
+  window.addEventListener(RELEASE_EVENT, handler);
 
-  return () => window.removeEventListener(RELEASE_EVENT, handler)
+  return () => window.removeEventListener(RELEASE_EVENT, handler);
 }

@@ -28,81 +28,86 @@
  */
 
 /** Why the port is closed, for a one-line log the developer can act on. */
-type ClosedReason = 'packaged' | 'no-dev-server' | 'opted-out' | 'invalid-port'
+type ClosedReason = "packaged" | "no-dev-server" | "opted-out" | "invalid-port";
 
-type DevCdpDecision = { port: number; reason: null } | { port: null; reason: ClosedReason }
+type DevCdpDecision =
+  { port: number; reason: null } | { port: null; reason: ClosedReason };
 
 type DevCdpInput = {
-  env: Record<string, string | undefined>
-  isPackaged: boolean
-  devServer: string | undefined
-}
+  env: Record<string, string | undefined>;
+  isPackaged: boolean;
+  devServer: string | undefined;
+};
 
 /** What every script under scripts/ already reaches for. */
-const DEFAULT_PORT = 9222
+const DEFAULT_PORT = 9222;
 
 // Below 1024 needs privileges on most platforms; 65535 is the ceiling.
-const MIN_PORT = 1024
-const MAX_PORT = 65535
+const MIN_PORT = 1024;
+const MAX_PORT = 65535;
 
-const OPT_OUT = new Set(['0', 'off', 'false', 'no'])
+const OPT_OUT = new Set(["0", "off", "false", "no"]);
 
 /**
  * Decide whether this run may expose a renderer debugging port, and on which
  * port. Pure: every input is passed in, so the gate is testable without an
  * Electron app or a real environment.
  */
-function resolveDevCdpPort({ env, isPackaged, devServer }: DevCdpInput): DevCdpDecision {
+function resolveDevCdpPort({
+  env,
+  isPackaged,
+  devServer,
+}: DevCdpInput): DevCdpDecision {
   // Packaged wins over everything. Checked first so no combination of
   // environment variables can talk a shipped build into opening the port.
   if (isPackaged) {
-    return { port: null, reason: 'packaged' }
+    return { port: null, reason: "packaged" };
   }
 
   // A dev server means a source-tree run (`npm run dev` / `hgui`).
   if (!devServer) {
-    return { port: null, reason: 'no-dev-server' }
+    return { port: null, reason: "no-dev-server" };
   }
 
-  const requested = (env.HERMES_DESKTOP_CDP_PORT ?? '').trim()
+  const requested = (env.HERMES_DESKTOP_CDP_PORT ?? "").trim();
 
   if (!requested) {
-    return { port: DEFAULT_PORT, reason: null }
+    return { port: DEFAULT_PORT, reason: null };
   }
 
   if (OPT_OUT.has(requested.toLowerCase())) {
-    return { port: null, reason: 'opted-out' }
+    return { port: null, reason: "opted-out" };
   }
 
-  const port = Number(requested)
+  const port = Number(requested);
 
   if (!Number.isInteger(port) || port < MIN_PORT || port > MAX_PORT) {
-    return { port: null, reason: 'invalid-port' }
+    return { port: null, reason: "invalid-port" };
   }
 
-  return { port, reason: null }
+  return { port, reason: null };
 }
 
 /** One-line explanation for a closed port, or null when it opened. */
 function describeDevCdpDecision(decision: DevCdpDecision): string | null {
   switch (decision.reason) {
     case null:
-      return null
+      return null;
 
-    case 'invalid-port':
-      return `HERMES_DESKTOP_CDP_PORT is not a valid port (expected an integer ${MIN_PORT}-${MAX_PORT}, or "off"); renderer debugging is disabled.`
+    case "invalid-port":
+      return `HERMES_DESKTOP_CDP_PORT is not a valid port (expected an integer ${MIN_PORT}-${MAX_PORT}, or "off"); renderer debugging is disabled.`;
 
-    case 'opted-out':
-      return 'renderer debugging disabled by HERMES_DESKTOP_CDP_PORT.'
+    case "opted-out":
+      return "renderer debugging disabled by HERMES_DESKTOP_CDP_PORT.";
 
     // Packaged and dist-run builds are closed by design — the common case, not
     // worth a line of startup noise.
-    case 'packaged':
+    case "packaged":
 
-    case 'no-dev-server':
-      return null
+    case "no-dev-server":
+      return null;
   }
 }
 
-export { DEFAULT_PORT, describeDevCdpDecision, resolveDevCdpPort }
-export type { DevCdpDecision }
+export { DEFAULT_PORT, describeDevCdpDecision, resolveDevCdpPort };
+export type { DevCdpDecision };

@@ -1,5 +1,5 @@
-import type { ChatMessage } from '@/lib/chat-messages'
-import { messageStoreWeight } from '@/lib/render-weight'
+import type { ChatMessage } from "@/lib/chat-messages";
+import { messageStoreWeight } from "@/lib/render-weight";
 
 /**
  * Bound what reaches assistant-ui at all.
@@ -26,20 +26,20 @@ import { messageStoreWeight } from '@/lib/render-weight'
  * — and the reported crash shape (~231K tokens ≈ 2,260 units) is windowed
  * rather than handed to the repository whole.
  */
-export const TRANSCRIPT_WINDOW_BUDGET = 1200
+export const TRANSCRIPT_WINDOW_BUDGET = 1200;
 
 /**
  * Floor on messages kept regardless of weight. A transcript of enormous turns
  * must still render the turn the user is having; without this a single
  * multi-megabyte tool result could window everything after it away.
  */
-export const TRANSCRIPT_WINDOW_MIN_MESSAGES = 30
+export const TRANSCRIPT_WINDOW_MIN_MESSAGES = 30;
 
 export interface TranscriptWindow {
   /** The tail assistant-ui is allowed to materialize. */
-  messages: ChatMessage[]
+  messages: ChatMessage[];
   /** Store holds older messages than this window. */
-  windowed: boolean
+  windowed: boolean;
 }
 
 /**
@@ -51,24 +51,27 @@ export interface TranscriptWindow {
  * precede them in the window — silently re-parenting a branch. Include the
  * whole group or none of it.
  */
-export function alignToBranchGroup(messages: readonly ChatMessage[], start: number): number {
+export function alignToBranchGroup(
+  messages: readonly ChatMessage[],
+  start: number,
+): number {
   if (start <= 0 || start >= messages.length) {
-    return Math.max(0, Math.min(start, messages.length))
+    return Math.max(0, Math.min(start, messages.length));
   }
 
-  const group = messages[start].branchGroupId
+  const group = messages[start].branchGroupId;
 
   if (!group) {
-    return start
+    return start;
   }
 
-  let aligned = start
+  let aligned = start;
 
   while (aligned > 0 && messages[aligned - 1].branchGroupId === group) {
-    aligned--
+    aligned--;
   }
 
-  return aligned
+  return aligned;
 }
 
 /**
@@ -77,34 +80,40 @@ export function alignToBranchGroup(messages: readonly ChatMessage[], start: numb
  * Walks newest-first accumulating weight until the budget is met, keeps at
  * least MIN messages, then aligns the cut off a branch-group boundary.
  */
-export function selectTranscriptWindow(messages: readonly ChatMessage[], pages = 1): TranscriptWindow {
-  const budget = TRANSCRIPT_WINDOW_BUDGET * Math.max(1, Math.floor(pages))
+export function selectTranscriptWindow(
+  messages: readonly ChatMessage[],
+  pages = 1,
+): TranscriptWindow {
+  const budget = TRANSCRIPT_WINDOW_BUDGET * Math.max(1, Math.floor(pages));
 
   if (messages.length === 0) {
-    return { messages: messages as ChatMessage[], windowed: false }
+    return { messages: messages as ChatMessage[], windowed: false };
   }
 
-  let start = messages.length
-  let weight = 0
+  let start = messages.length;
+  let weight = 0;
 
   for (let i = messages.length - 1; i >= 0; i--) {
-    weight += messageStoreWeight(messages[i].parts)
-    start = i
+    weight += messageStoreWeight(messages[i].parts);
+    start = i;
 
-    if (weight >= budget && messages.length - i >= TRANSCRIPT_WINDOW_MIN_MESSAGES) {
-      break
+    if (
+      weight >= budget &&
+      messages.length - i >= TRANSCRIPT_WINDOW_MIN_MESSAGES
+    ) {
+      break;
     }
   }
 
-  start = alignToBranchGroup(messages, start)
+  start = alignToBranchGroup(messages, start);
 
   if (start <= 0) {
     // Preserve reference identity when the whole transcript fits: handing React
     // a fresh array of the same messages re-renders the runtime for nothing.
-    return { messages: messages as ChatMessage[], windowed: false }
+    return { messages: messages as ChatMessage[], windowed: false };
   }
 
-  return { messages: messages.slice(start), windowed: true }
+  return { messages: messages.slice(start), windowed: true };
 }
 
 /**
@@ -112,13 +121,13 @@ export function selectTranscriptWindow(messages: readonly ChatMessage[], pages =
  * Half a page: each re-cut trims about this much, so streaming causes one
  * re-cut per ~half page of new content instead of one per flush.
  */
-export const TRANSCRIPT_WINDOW_SLACK = TRANSCRIPT_WINDOW_BUDGET / 2
+export const TRANSCRIPT_WINDOW_SLACK = TRANSCRIPT_WINDOW_BUDGET / 2;
 
 export interface TranscriptWindowState {
   /** Id of the window's first message; null while the transcript is uncut. */
-  anchorId: null | string
-  pages: number
-  window: TranscriptWindow
+  anchorId: null | string;
+  pages: number;
+  window: TranscriptWindow;
 }
 
 /**
@@ -141,38 +150,48 @@ export interface TranscriptWindowState {
 export function advanceTranscriptWindow(
   prev: null | TranscriptWindowState,
   messages: readonly ChatMessage[],
-  pages = 1
+  pages = 1,
 ): TranscriptWindowState {
-  const budget = TRANSCRIPT_WINDOW_BUDGET * Math.max(1, Math.floor(pages))
+  const budget = TRANSCRIPT_WINDOW_BUDGET * Math.max(1, Math.floor(pages));
 
   if (prev && prev.pages === pages && messages.length > 0) {
-    const start = prev.anchorId === null ? 0 : messages.findIndex(message => message.id === prev.anchorId)
+    const start =
+      prev.anchorId === null
+        ? 0
+        : messages.findIndex((message) => message.id === prev.anchorId);
 
     if (start !== -1) {
-      let weight = 0
+      let weight = 0;
 
       for (let i = messages.length - 1; i >= start; i--) {
-        weight += messageStoreWeight(messages[i].parts)
+        weight += messageStoreWeight(messages[i].parts);
       }
 
       if (weight <= budget + TRANSCRIPT_WINDOW_SLACK) {
         const window: TranscriptWindow =
           start === 0
-            ? { messages: messages as ChatMessage[], windowed: prev.anchorId !== null }
-            : { messages: messages.slice(start), windowed: true }
+            ? {
+                messages: messages as ChatMessage[],
+                windowed: prev.anchorId !== null,
+              }
+            : { messages: messages.slice(start), windowed: true };
 
-        return { anchorId: prev.anchorId, pages, window }
+        return { anchorId: prev.anchorId, pages, window };
       }
     }
   }
 
-  const window = selectTranscriptWindow(messages, pages)
+  const window = selectTranscriptWindow(messages, pages);
 
-  return { anchorId: window.windowed ? window.messages[0].id : null, pages, window }
+  return {
+    anchorId: window.windowed ? window.messages[0].id : null,
+    pages,
+    window,
+  };
 }
 
 /** How many sessions keep a sticky window before the oldest is evicted. */
-export const MAX_SESSION_WINDOWS = 12
+export const MAX_SESSION_WINDOWS = 12;
 
 /**
  * A window state plus the exact message array it was computed from.
@@ -183,8 +202,8 @@ export const MAX_SESSION_WINDOWS = 12
  * rebuilding (and every row from re-rendering) on a warm switch.
  */
 export interface SessionWindowMemo {
-  messages: readonly ChatMessage[]
-  state: TranscriptWindowState
+  messages: readonly ChatMessage[];
+  state: TranscriptWindowState;
 }
 
 /**
@@ -211,24 +230,24 @@ export function advanceSessionTranscriptWindow(
   memos: Map<string, SessionWindowMemo>,
   sessionKey: string,
   messages: readonly ChatMessage[],
-  pages = 1
+  pages = 1,
 ): TranscriptWindowState {
-  const memo = memos.get(sessionKey)
+  const memo = memos.get(sessionKey);
 
   // Warm re-visit with the identical transcript and page count: reuse the
   // cached state wholesale, preserving the windowed slice reference.
   if (memo && memo.messages === messages && memo.state.pages === pages) {
-    return memo.state
+    return memo.state;
   }
 
-  const state = advanceTranscriptWindow(memo?.state ?? null, messages, pages)
+  const state = advanceTranscriptWindow(memo?.state ?? null, messages, pages);
 
-  memos.set(sessionKey, { messages, state })
+  memos.set(sessionKey, { messages, state });
 
   if (memos.size > MAX_SESSION_WINDOWS) {
-    const oldest = memos.keys().next().value as string
-    memos.delete(oldest)
+    const oldest = memos.keys().next().value as string;
+    memos.delete(oldest);
   }
 
-  return state
+  return state;
 }

@@ -20,173 +20,199 @@
  * `host` surface instead.
  */
 
-import type { PluginContext } from '@hermes/plugin-sdk'
-import { vi } from 'vitest'
+import type { PluginContext } from "@hermes/plugin-sdk";
+import { vi } from "vitest";
 
 /** One message in a scripted session transcript, in the gateway's own shape. */
 export interface ScriptedMessage {
-  content: string
-  role: string
+  content: string;
+  role: string;
 }
 
 export interface ScriptedSession {
-  contracts?: { follow_profile_config: boolean; room_plumbing: boolean }
-  messages: ScriptedMessage[]
-  profile: string
-  runtime: string
-  stored: string
-  title: string
+  contracts?: { follow_profile_config: boolean; room_plumbing: boolean };
+  messages: ScriptedMessage[];
+  profile: string;
+  runtime: string;
+  stored: string;
+  title: string;
 }
 
 /** What the scripted member "said" this turn: one reply, or the whole tail of
  *  messages a real turn can append (a substantive answer plus a continuation
  *  nudge and its synthetic pass, #94376). */
-export type TurnReply = ScriptedMessage[] | string
+export type TurnReply = ScriptedMessage[] | string;
 
 export interface ScriptedTurn {
   /** 1-based index across every prompt.submit the gateway has seen. */
-  n: number
-  profile: string
-  prompt: string
-  session: ScriptedSession
+  n: number;
+  profile: string;
+  prompt: string;
+  session: ScriptedSession;
 }
 
-export type TurnScript = (turn: ScriptedTurn) => Promise<TurnReply> | TurnReply
+export type TurnScript = (turn: ScriptedTurn) => Promise<TurnReply> | TurnReply;
 
 /** Every prompt.submit the gateway received, with the session it landed on. */
 export interface PromptCall {
-  profile: string
-  prompt: string
-  runtime: string
-  stored: string
-  title: string
+  profile: string;
+  prompt: string;
+  runtime: string;
+  stored: string;
+  title: string;
 }
 
 /** Every attachment staging RPC, and how many submits preceded it. */
 export interface AttachCall {
-  data: string
-  filename: string
-  method: string
-  order: number
-  profile: null | string
-  runtime: string
+  data: string;
+  filename: string;
+  method: string;
+  order: number;
+  profile: null | string;
+  runtime: string;
 }
 
 export interface RpcCall {
-  method: string
-  params: Record<string, unknown>
+  method: string;
+  params: Record<string, unknown>;
   /** Socket refcount after this request released its own lease. */
-  refcountAfter: number
+  refcountAfter: number;
 }
 
 export interface GatewayOptions {
   /** Per profile: report inflight/running on its first N `session.resume`s. */
-  busyResumes?: Record<string, number>
+  busyResumes?: Record<string, number>;
   /** Per profile: carry `pending_approval` on its first `until` resumes. */
-  approvalUntil?: Record<string, { payload: Record<string, unknown>; until: number }>
+  approvalUntil?: Record<
+    string,
+    { payload: Record<string, unknown>; until: number }
+  >;
   /** Per profile: carry `pending_clarify` on its first `until` resumes. */
-  clarifyUntil?: Record<string, { payload: Record<string, unknown>; until: number }>
+  clarifyUntil?: Record<
+    string,
+    { payload: Record<string, unknown>; until: number }
+  >;
   /** Land a competing writer's `ui_meta` under `key` during the FIRST
    *  `profiles.configure`, then reject it as a CAS conflict — the race the
    *  sync worker's pull-merge-retry exists for. */
-  conflictOnce?: { key: string; value: unknown }
+  conflictOnce?: { key: string; value: unknown };
   /** Reject every prompt.submit with this — a fatal, non-recoverable failure. */
-  failEverySubmitWith?: unknown
+  failEverySubmitWith?: unknown;
   /** Reject only the FIRST prompt.submit — the 4001 reap the retry recovers. */
-  failFirstSubmitWith?: unknown
+  failFirstSubmitWith?: unknown;
   /** Fired on each post-submit poll, so a test can land a stop mid-turn. */
-  onResumePoll?: (polls: number) => void
+  onResumePoll?: (polls: number) => void;
   /** Report the member inflight for the first N post-submit polls. */
-  pollsBusy?: number
-  turn?: TurnScript
+  pollsBusy?: number;
+  turn?: TurnScript;
 }
 
 /** A gateway-shaped rejection: `.code` is what the engine branches on. */
 function gatewayError(message: string, code: number) {
-  return Object.assign(new Error(message), { code })
+  return Object.assign(new Error(message), { code });
 }
 
 export interface ScriptedGateway {
   /** Attachment staging RPCs, in order. */
-  attaches: AttachCall[]
+  attaches: AttachCall[];
   /** prompt.submit calls, in order. */
-  calls: PromptCall[]
+  calls: PromptCall[];
   /** Times the socket refcount fell to zero — each one reaps a runtime session. */
-  disposals: () => number
+  disposals: () => number;
   /** The mock `host` the `@hermes/plugin-sdk` mock should expose. */
-  host: Record<string, unknown>
+  host: Record<string, unknown>;
   /** Every RPC, for methods the typed recorders above don't cover. */
-  rpc: RpcCall[]
+  rpc: RpcCall[];
   /** Filter `rpc` by method. */
-  rpcFor: (method: string) => RpcCall[]
+  rpcFor: (method: string) => RpcCall[];
   /** Live socket refcount — zero between turns, never zero during one. */
-  refcount: () => number
+  refcount: () => number;
   /** Sessions by stored id, so a test can pre-seed a finished transcript. */
-  sessions: Map<string, ScriptedSession>
+  sessions: Map<string, ScriptedSession>;
   /** Plugin storage writes, by key. */
-  storage: Map<string, unknown>
+  storage: Map<string, unknown>;
   /** `retain`/`release`/method names in call order — the lease lifetime. */
-  timeline: string[]
+  timeline: string[];
   /** The default profile's `ui_meta`, as `profiles.list` reports it. */
-  uiMeta: Record<string, unknown>
+  uiMeta: Record<string, unknown>;
   /** CAS revisions for `uiMeta`, advanced by every applied configure. */
-  uiMetaRevisions: Record<string, number>
+  uiMetaRevisions: Record<string, number>;
 }
 
-export function createGroupGateway(options: GatewayOptions = {}): ScriptedGateway {
-  const { turn = () => '(pass)' } = options
-  const sessions = new Map<string, ScriptedSession>()
-  const runtimeToStored = new Map<string, string>()
-  const titleToStored = new Map<string, string>()
-  const resumesByProfile = new Map<string, number>()
-  const calls: PromptCall[] = []
-  const attaches: AttachCall[] = []
-  const rpc: RpcCall[] = []
-  const timeline: string[] = []
-  const storage = new Map<string, unknown>()
-  const uiMeta: Record<string, unknown> = {}
-  const uiMetaRevisions: Record<string, number> = {}
-  let sequence = 0
-  let submits = 0
-  let polls = 0
-  let refcount = 0
-  let disposals = 0
-  let conflicted = false
+export function createGroupGateway(
+  options: GatewayOptions = {},
+): ScriptedGateway {
+  const { turn = () => "(pass)" } = options;
+  const sessions = new Map<string, ScriptedSession>();
+  const runtimeToStored = new Map<string, string>();
+  const titleToStored = new Map<string, string>();
+  const resumesByProfile = new Map<string, number>();
+  const calls: PromptCall[] = [];
+  const attaches: AttachCall[] = [];
+  const rpc: RpcCall[] = [];
+  const timeline: string[] = [];
+  const storage = new Map<string, unknown>();
+  const uiMeta: Record<string, unknown> = {};
+  const uiMetaRevisions: Record<string, number> = {};
+  let sequence = 0;
+  let submits = 0;
+  let polls = 0;
+  let refcount = 0;
+  let disposals = 0;
+  let conflicted = false;
 
   const resolveSession = (profile: unknown, target: unknown) => {
-    const key = String(target ?? '')
+    const key = String(target ?? "");
 
     const stored =
-      runtimeToStored.get(key) || (sessions.has(key) ? key : titleToStored.get(`${String(profile)}::${key}`))
+      runtimeToStored.get(key) ||
+      (sessions.has(key)
+        ? key
+        : titleToStored.get(`${String(profile)}::${key}`));
 
-    return stored ? sessions.get(stored) || null : null
-  }
+    return stored ? sessions.get(stored) || null : null;
+  };
 
-  const handle = async (method: string, params: Record<string, unknown>): Promise<unknown> => {
-    if (method === 'profiles.list') {
+  const handle = async (
+    method: string,
+    params: Record<string, unknown>,
+  ): Promise<unknown> => {
+    if (method === "profiles.list") {
       return {
-        profiles: [{ name: 'default', ui_meta: { ...uiMeta }, ui_meta_revisions: { ...uiMetaRevisions } }]
-      }
+        profiles: [
+          {
+            name: "default",
+            ui_meta: { ...uiMeta },
+            ui_meta_revisions: { ...uiMetaRevisions },
+          },
+        ],
+      };
     }
 
-    if (method === 'profiles.configure') {
+    if (method === "profiles.configure") {
       if (options.conflictOnce && !conflicted) {
-        conflicted = true
-        const { key, value } = options.conflictOnce
-        uiMeta[key] = value
-        uiMetaRevisions[key] = (uiMetaRevisions[key] || 0) + 1
+        conflicted = true;
+        const { key, value } = options.conflictOnce;
+        uiMeta[key] = value;
+        uiMetaRevisions[key] = (uiMetaRevisions[key] || 0) + 1;
 
         return {
           applied: {
             ui_meta: false,
-            ui_meta_conflicts: { [key]: { actual: uiMetaRevisions[key], expected: uiMetaRevisions[key] - 1 } },
-            ui_meta_revisions: { ...uiMetaRevisions }
-          }
-        }
+            ui_meta_conflicts: {
+              [key]: {
+                actual: uiMetaRevisions[key],
+                expected: uiMetaRevisions[key] - 1,
+              },
+            },
+            ui_meta_revisions: { ...uiMetaRevisions },
+          },
+        };
       }
 
-      const expected = params.ui_meta_expected_revisions as Record<string, number> | undefined
-      const incoming = (params.ui_meta || {}) as Record<string, unknown>
+      const expected = params.ui_meta_expected_revisions as
+        Record<string, number> | undefined;
+      const incoming = (params.ui_meta || {}) as Record<string, unknown>;
 
       if (expected) {
         for (const key of Object.keys(incoming)) {
@@ -194,76 +220,94 @@ export function createGroupGateway(options: GatewayOptions = {}): ScriptedGatewa
             return {
               applied: {
                 ui_meta: false,
-                ui_meta_conflicts: { [key]: { actual: uiMetaRevisions[key] || 0, expected: expected[key] } }
-              }
-            }
+                ui_meta_conflicts: {
+                  [key]: {
+                    actual: uiMetaRevisions[key] || 0,
+                    expected: expected[key],
+                  },
+                },
+              },
+            };
           }
         }
       }
 
       for (const [key, value] of Object.entries(incoming)) {
         if (value === null) {
-          delete uiMeta[key]
+          delete uiMeta[key];
         } else {
-          uiMeta[key] = value
+          uiMeta[key] = value;
         }
 
-        uiMetaRevisions[key] = (uiMetaRevisions[key] || 0) + 1
+        uiMetaRevisions[key] = (uiMetaRevisions[key] || 0) + 1;
       }
 
-      return { applied: { ui_meta: true, ui_meta_revisions: { ...uiMetaRevisions } } }
+      return {
+        applied: { ui_meta: true, ui_meta_revisions: { ...uiMetaRevisions } },
+      };
     }
 
-    if (method === 'session.create') {
-      sequence += 1
-      const profile = String(params.profile ?? '')
-      const title = String(params.title ?? '')
+    if (method === "session.create") {
+      sequence += 1;
+      const profile = String(params.profile ?? "");
+      const title = String(params.title ?? "");
 
       const session: ScriptedSession = {
         contracts: {
           follow_profile_config: params.follow_profile_config === true,
-          room_plumbing: params.room_plumbing === true
+          room_plumbing: params.room_plumbing === true,
         },
         messages: [],
         profile,
         runtime: `rt-${profile}-${sequence}`,
         stored: `sid-${profile}-${sequence}`,
-        title
-      }
+        title,
+      };
 
-      sessions.set(session.stored, session)
-      runtimeToStored.set(session.runtime, session.stored)
-      titleToStored.set(`${profile}::${title}`, session.stored)
+      sessions.set(session.stored, session);
+      runtimeToStored.set(session.runtime, session.stored);
+      titleToStored.set(`${profile}::${title}`, session.stored);
 
-      return { message_count: 0, messages: [], session_id: session.runtime, stored_session_id: session.stored }
+      return {
+        message_count: 0,
+        messages: [],
+        session_id: session.runtime,
+        stored_session_id: session.stored,
+      };
     }
 
-    if (method === 'session.resume') {
-      const session = resolveSession(params.profile, params.session_id)
+    if (method === "session.resume") {
+      const session = resolveSession(params.profile, params.session_id);
 
       if (!session) {
-        throw gatewayError(`session not found: ${String(params.session_id)}`, 4007)
+        throw gatewayError(
+          `session not found: ${String(params.session_id)}`,
+          4007,
+        );
       }
 
       // Every resume mints a fresh runtime id; the stored id is the durable
       // identity. Old runtime ids stay resolvable so an in-flight turn that
       // still holds one is not spuriously reaped by the harness itself.
-      sequence += 1
-      session.runtime = `rt-${session.profile}-${sequence}`
-      runtimeToStored.set(session.runtime, session.stored)
+      sequence += 1;
+      session.runtime = `rt-${session.profile}-${sequence}`;
+      runtimeToStored.set(session.runtime, session.stored);
 
-      const seen = (resumesByProfile.get(session.profile) || 0) + 1
-      resumesByProfile.set(session.profile, seen)
-      let busy = Boolean(options.busyResumes?.[session.profile] && seen <= options.busyResumes[session.profile])
+      const seen = (resumesByProfile.get(session.profile) || 0) + 1;
+      resumesByProfile.set(session.profile, seen);
+      let busy = Boolean(
+        options.busyResumes?.[session.profile] &&
+        seen <= options.busyResumes[session.profile],
+      );
 
       if (session.messages.length > 0) {
-        polls += 1
-        busy = busy || Boolean(options.pollsBusy && polls <= options.pollsBusy)
-        options.onResumePoll?.(polls)
+        polls += 1;
+        busy = busy || Boolean(options.pollsBusy && polls <= options.pollsBusy);
+        options.onResumePoll?.(polls);
       }
 
-      const clarify = options.clarifyUntil?.[session.profile]
-      const approval = options.approvalUntil?.[session.profile]
+      const clarify = options.clarifyUntil?.[session.profile];
+      const approval = options.approvalUntil?.[session.profile];
 
       return {
         inflight: busy,
@@ -272,125 +316,154 @@ export function createGroupGateway(options: GatewayOptions = {}): ScriptedGatewa
         running: false,
         session_id: session.runtime,
         session_key: session.stored,
-        ...(clarify && seen <= clarify.until ? { pending_clarify: clarify.payload } : {}),
-        ...(approval && seen <= approval.until ? { pending_approval: approval.payload } : {})
-      }
+        ...(clarify && seen <= clarify.until
+          ? { pending_clarify: clarify.payload }
+          : {}),
+        ...(approval && seen <= approval.until
+          ? { pending_approval: approval.payload }
+          : {}),
+      };
     }
 
-    if (method === 'image.attach_bytes' || method === 'pdf.attach' || method === 'file.attach') {
-      const session = resolveSession(null, params.session_id)
+    if (
+      method === "image.attach_bytes" ||
+      method === "pdf.attach" ||
+      method === "file.attach"
+    ) {
+      const session = resolveSession(null, params.session_id);
 
       if (!session) {
-        throw gatewayError(`session-scoped RPC rejected: ${String(params.session_id)} not in memory`, 4001)
+        throw gatewayError(
+          `session-scoped RPC rejected: ${String(params.session_id)} not in memory`,
+          4001,
+        );
       }
 
       attaches.push({
-        data: String(params.content_base64 ?? params.data_url ?? ''),
-        filename: String(params.filename ?? params.name ?? ''),
+        data: String(params.content_base64 ?? params.data_url ?? ""),
+        filename: String(params.filename ?? params.name ?? ""),
         method,
         order: calls.length,
         profile: session.profile,
-        runtime: String(params.session_id ?? '')
-      })
+        runtime: String(params.session_id ?? ""),
+      });
 
-      return method === 'file.attach'
-        ? { attached: true, ref_text: `@file:attachments/${String(params.name ?? 'attachment')}` }
-        : { attached: true }
+      return method === "file.attach"
+        ? {
+            attached: true,
+            ref_text: `@file:attachments/${String(params.name ?? "attachment")}`,
+          }
+        : { attached: true };
     }
 
-    if (method === 'prompt.submit') {
-      submits += 1
+    if (method === "prompt.submit") {
+      submits += 1;
 
       if (options.failEverySubmitWith) {
-        throw options.failEverySubmitWith
+        throw options.failEverySubmitWith;
       }
 
       if (submits === 1 && options.failFirstSubmitWith) {
-        throw options.failFirstSubmitWith
+        throw options.failFirstSubmitWith;
       }
 
-      const session = resolveSession(null, params.session_id)
+      const session = resolveSession(null, params.session_id);
 
       if (!session) {
-        throw gatewayError(`session-scoped RPC rejected: ${String(params.session_id)} not in memory`, 4001)
+        throw gatewayError(
+          `session-scoped RPC rejected: ${String(params.session_id)} not in memory`,
+          4001,
+        );
       }
 
-      const prompt = String(params.text ?? '')
-      session.messages.push({ content: prompt, role: 'user' })
+      const prompt = String(params.text ?? "");
+      session.messages.push({ content: prompt, role: "user" });
       calls.push({
         profile: session.profile,
         prompt,
         runtime: session.runtime,
         stored: session.stored,
-        title: session.title
-      })
-      const reply = await turn({ n: calls.length, profile: session.profile, prompt, session })
+        title: session.title,
+      });
+      const reply = await turn({
+        n: calls.length,
+        profile: session.profile,
+        prompt,
+        session,
+      });
 
-      for (const message of typeof reply === 'string' ? [{ content: reply, role: 'assistant' }] : reply) {
-        session.messages.push(message)
+      for (const message of typeof reply === "string"
+        ? [{ content: reply, role: "assistant" }]
+        : reply) {
+        session.messages.push(message);
       }
 
-      return {}
+      return {};
     }
 
-    return {}
-  }
+    return {};
+  };
 
   const record = async (method: string, params: Record<string, unknown>) => {
     try {
-      return await handle(method, params)
+      return await handle(method, params);
     } finally {
-      rpc.push({ method, params, refcountAfter: refcount })
+      rpc.push({ method, params, refcountAfter: refcount });
     }
-  }
+  };
 
   const host: Record<string, unknown> = {
-    activeConnectionId: () => 'local',
+    activeConnectionId: () => "local",
     notify: vi.fn(),
     notifyError: vi.fn(),
-    request: async (method: string, params: Record<string, unknown> = {}) => record(method, params),
-    requestProfile: async (_route: unknown, method: string, params: Record<string, unknown> = {}) => {
-      refcount += 1
+    request: async (method: string, params: Record<string, unknown> = {}) =>
+      record(method, params),
+    requestProfile: async (
+      _route: unknown,
+      method: string,
+      params: Record<string, unknown> = {},
+    ) => {
+      refcount += 1;
 
       try {
-        return await handle(method, params)
+        return await handle(method, params);
       } finally {
-        refcount -= 1
+        refcount -= 1;
 
         if (refcount === 0) {
-          disposals += 1
+          disposals += 1;
         }
 
-        rpc.push({ method, params, refcountAfter: refcount })
-        timeline.push(method)
+        rpc.push({ method, params, refcountAfter: refcount });
+        timeline.push(method);
       }
     },
     retainProfile: async () => {
-      timeline.push('retain')
-      refcount += 1
-      let released = false
+      timeline.push("retain");
+      refcount += 1;
+      let released = false;
 
       return () => {
         if (released) {
-          return
+          return;
         }
 
-        released = true
-        timeline.push('release')
-        refcount -= 1
+        released = true;
+        timeline.push("release");
+        refcount -= 1;
 
         if (refcount === 0) {
-          disposals += 1
+          disposals += 1;
         }
-      }
+      };
     },
     setWorkspaceScope: vi.fn(),
     state: {
-      connectionId: { get: () => 'local', listen: () => () => undefined },
-      gateway: { get: () => 'open', listen: () => () => undefined },
-      profile: { get: () => 'default', listen: () => () => undefined }
-    }
-  }
+      connectionId: { get: () => "local", listen: () => () => undefined },
+      gateway: { get: () => "open", listen: () => () => undefined },
+      profile: { get: () => "default", listen: () => () => undefined },
+    },
+  };
 
   return {
     attaches,
@@ -399,13 +472,13 @@ export function createGroupGateway(options: GatewayOptions = {}): ScriptedGatewa
     host,
     refcount: () => refcount,
     rpc,
-    rpcFor: (method: string) => rpc.filter(entry => entry.method === method),
+    rpcFor: (method: string) => rpc.filter((entry) => entry.method === method),
     sessions,
     storage,
     timeline,
     uiMeta,
-    uiMetaRevisions
-  }
+    uiMetaRevisions,
+  };
 }
 
 /** The `@hermes/plugin-sdk` surface the group modules actually reach for.
@@ -413,7 +486,7 @@ export function createGroupGateway(options: GatewayOptions = {}): ScriptedGatewa
  *  it has to come from the CURRENT module generation, so this is built inside
  *  the `vi.mock` factory rather than hoisted alongside it. */
 export async function pluginSdkMock(host: Record<string, unknown>) {
-  const nanostores = await import('nanostores')
+  const nanostores = await import("nanostores");
 
   return {
     atom: nanostores.atom,
@@ -429,8 +502,8 @@ export async function pluginSdkMock(host: Record<string, unknown>) {
     Streamdown: undefined,
     queryClient: { invalidateQueries: () => undefined },
     useQuery: () => ({ data: [], isLoading: false }),
-    useValue: <T>(store: { get: () => T }) => store.get()
-  }
+    useValue: <T>(store: { get: () => T }) => store.get(),
+  };
 }
 
 /** Plugin storage backed by a plain map, for `setPluginCtx`. */
@@ -439,12 +512,12 @@ export function scriptedStorage(storage: Map<string, unknown>): PluginContext {
     storage: {
       get: async (key: string) => storage.get(key) ?? null,
       set: async (key: string, value: unknown) => {
-        storage.set(key, structuredClone(value))
-      }
-    }
+        storage.set(key, structuredClone(value));
+      },
+    },
     // The modules under test only ever reach for ctx.storage; the rest of the
     // host-supplied context has no bearing on room state.
-  } as unknown as PluginContext
+  } as unknown as PluginContext;
 }
 
 /** Run the room engine's timers inline.
@@ -454,12 +527,12 @@ export function scriptedStorage(storage: Map<string, unknown>): PluginContext {
  *  actually serve. Resolving immediately keeps the awaits (and therefore the
  *  interleaving the race contracts depend on) while removing the delay. */
 export function runTimersInline() {
-  vi.stubGlobal('setTimeout', (fn: () => void) => {
-    fn()
+  vi.stubGlobal("setTimeout", (fn: () => void) => {
+    fn();
 
-    return 0
-  })
-  vi.stubGlobal('clearTimeout', () => undefined)
+    return 0;
+  });
+  vi.stubGlobal("clearTimeout", () => undefined);
 }
 
 /** Run the engine's timers on the next macrotask instead of inline.
@@ -469,20 +542,20 @@ export function runTimersInline() {
  *  handle before it is written and the entry never clears. Deferring keeps
  *  that ordering intact while still ignoring the backoff delay. */
 export function deferTimers() {
-  vi.stubGlobal('setTimeout', (fn: () => void) => {
-    setImmediate(fn)
+  vi.stubGlobal("setTimeout", (fn: () => void) => {
+    setImmediate(fn);
 
-    return 1
-  })
-  vi.stubGlobal('clearTimeout', () => undefined)
+    return 1;
+  });
+  vi.stubGlobal("clearTimeout", () => undefined);
 }
 
 /** Let the room engine's async loop run to completion. */
 export async function drain(isRunning: () => boolean, limit = 400) {
   for (let i = 0; i < limit && isRunning(); i++) {
-    await new Promise(resolve => setImmediate(resolve))
+    await new Promise((resolve) => setImmediate(resolve));
   }
 
   // One more flush so the `finally` bookkeeping after the last await lands.
-  await new Promise(resolve => setImmediate(resolve))
+  await new Promise((resolve) => setImmediate(resolve));
 }

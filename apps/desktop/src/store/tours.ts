@@ -11,17 +11,17 @@
  * so the agent learns the tour didn't run and can say so in words instead.
  */
 
-import { Codecs, persistentAtom } from '@/lib/persisted'
-import { mirrorDisplayToggle } from '@/store/display-toggles'
+import { Codecs, persistentAtom } from "@/lib/persisted";
+import { mirrorDisplayToggle } from "@/store/display-toggles";
 
-const KEY = 'hermes.desktop.tours.v1'
+const KEY = "hermes.desktop.tours.v1";
 
-export const $toursEnabled = persistentAtom(KEY, true, Codecs.bool)
+export const $toursEnabled = persistentAtom(KEY, true, Codecs.bool);
 
 // Off has to reach the agent, not just the renderer: the `tour` tool leaves the
 // model's schema entirely rather than staying on offer and failing.
-mirrorDisplayToggle('display.in_app_tours', KEY, $toursEnabled)
+mirrorDisplayToggle("display.in_app_tours", KEY, $toursEnabled);
 
 export function setToursEnabled(enabled: boolean): void {
-  $toursEnabled.set(enabled)
+  $toursEnabled.set(enabled);
 }

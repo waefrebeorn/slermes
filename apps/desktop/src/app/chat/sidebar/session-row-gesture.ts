@@ -3,13 +3,14 @@
 // component) so the precedence — the part that's easy to get subtly wrong —
 // is unit-testable without rendering the whole sidebar.
 
-export type SessionRowClickAction = 'archive' | 'newTab' | 'newWindow' | 'pin' | 'resume'
+export type SessionRowClickAction =
+  "archive" | "newTab" | "newWindow" | "pin" | "resume";
 
 export interface SessionRowClickModifiers {
-  altKey: boolean
-  ctrlKey: boolean
-  metaKey: boolean
-  shiftKey: boolean
+  altKey: boolean;
+  ctrlKey: boolean;
+  metaKey: boolean;
+  shiftKey: boolean;
 }
 
 /**
@@ -26,25 +27,25 @@ export interface SessionRowClickModifiers {
  */
 export function resolveSessionRowClick(
   { altKey, ctrlKey, metaKey, shiftKey }: SessionRowClickModifiers,
-  opts: { canOpenWindow: boolean }
+  opts: { canOpenWindow: boolean },
 ): SessionRowClickAction {
-  const primaryModifier = metaKey || ctrlKey
+  const primaryModifier = metaKey || ctrlKey;
 
   if (altKey && shiftKey) {
-    return 'archive'
+    return "archive";
   }
 
   if (primaryModifier && shiftKey && opts.canOpenWindow) {
-    return 'newWindow'
+    return "newWindow";
   }
 
   if (primaryModifier) {
-    return 'newTab'
+    return "newTab";
   }
 
   if (shiftKey) {
-    return 'pin'
+    return "pin";
   }
 
-  return 'resume'
+  return "resume";
 }

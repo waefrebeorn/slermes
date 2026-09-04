@@ -3,12 +3,12 @@
 // here so they can be unit-tested with node --test (mirroring how the rest of
 // electron/*.ts splits testable logic out of the main.ts monolith).
 
-import { pathToFileURL } from 'node:url'
+import { pathToFileURL } from "node:url";
 
 // Secondary windows open at the minimum usable size — a compact side panel for
 // subagent watch / cmd-click session pop-out, not a second full desktop.
-const SESSION_WINDOW_MIN_WIDTH = 420
-const SESSION_WINDOW_MIN_HEIGHT = 620
+const SESSION_WINDOW_MIN_WIDTH = 420;
+const SESSION_WINDOW_MIN_HEIGHT = 620;
 
 // Shared webPreferences for every window that renders the chat transcript — the
 // primary window AND the secondary session windows. Keeping it in one place is
@@ -51,9 +51,9 @@ function chatWindowWebPreferences(preloadPath: string) {
     sandbox: true,
     nodeIntegration: false,
     devTools: true,
-    autoplayPolicy: 'no-user-gesture-required' as const,
-    focusOnNavigation: false
-  }
+    autoplayPolicy: "no-user-gesture-required" as const,
+    focusOnNavigation: false,
+  };
 }
 
 // Build the renderer URL for a secondary window. The renderer uses a
@@ -68,18 +68,21 @@ function chatWindowWebPreferences(preloadPath: string) {
 // HUD's buildHudWindowUrl): without it a pop-out/watch window adopts the
 // PRIMARY profile and resolves the session id against the wrong backend
 // (#82768, #61286). Absent → unchanged primary adoption.
-function buildSessionWindowUrl(sessionId: string, { devServer, profile, rendererIndexPath, watch }: any = {}) {
-  const profileKey = typeof profile === 'string' ? profile.trim() : ''
-  const query = `?win=secondary${watch ? '&watch=1' : ''}${profileKey ? `&profile=${encodeURIComponent(profileKey)}` : ''}`
-  const route = `#/${encodeURIComponent(sessionId)}`
+function buildSessionWindowUrl(
+  sessionId: string,
+  { devServer, profile, rendererIndexPath, watch }: any = {},
+) {
+  const profileKey = typeof profile === "string" ? profile.trim() : "";
+  const query = `?win=secondary${watch ? "&watch=1" : ""}${profileKey ? `&profile=${encodeURIComponent(profileKey)}` : ""}`;
+  const route = `#/${encodeURIComponent(sessionId)}`;
 
   if (devServer) {
-    const base = devServer.endsWith('/') ? devServer.slice(0, -1) : devServer
+    const base = devServer.endsWith("/") ? devServer.slice(0, -1) : devServer;
 
-    return `${base}/${query}${route}`
+    return `${base}/${query}${route}`;
   }
 
-  return `${pathToFileURL(rendererIndexPath).toString()}${query}${route}`
+  return `${pathToFileURL(rendererIndexPath).toString()}${query}${route}`;
 }
 
 // Full peer windows render the ordinary app shell, so they deliberately do
@@ -88,15 +91,15 @@ function buildSessionWindowUrl(sessionId: string, { devServer, profile, renderer
 // app window: app-launch source restoration belongs to the primary only, while
 // a peer keeps the already-running backend it joined during boot.
 function buildInstanceWindowUrl({ devServer, rendererIndexPath }: any = {}) {
-  const query = '?peer=1'
+  const query = "?peer=1";
 
   if (devServer) {
-    const base = devServer.endsWith('/') ? devServer.slice(0, -1) : devServer
+    const base = devServer.endsWith("/") ? devServer.slice(0, -1) : devServer;
 
-    return `${base}/${query}`
+    return `${base}/${query}`;
   }
 
-  return `${pathToFileURL(rendererIndexPath).toString()}${query}`
+  return `${pathToFileURL(rendererIndexPath).toString()}${query}`;
 }
 
 // Full "instance" windows (⌘⇧N / the "New Window" command) open a complete app
@@ -106,19 +109,22 @@ function buildInstanceWindowUrl({ devServer, rendererIndexPath }: any = {}) {
 // constructing the BrowserWindow) stays in main.ts. `base` is the source
 // window's current bounds, or null when there's no live source window — then the
 // persisted primary geometry (`fallback`) is used as-is.
-const INSTANCE_CASCADE_OFFSET = 32
+const INSTANCE_CASCADE_OFFSET = 32;
 
-function instanceWindowBounds(base: { x: number; y: number; width: number; height: number } | null, fallback: any) {
+function instanceWindowBounds(
+  base: { x: number; y: number; width: number; height: number } | null,
+  fallback: any,
+) {
   if (!base) {
-    return fallback
+    return fallback;
   }
 
   return {
     width: base.width,
     height: base.height,
     x: base.x + INSTANCE_CASCADE_OFFSET,
-    y: base.y + INSTANCE_CASCADE_OFFSET
-  }
+    y: base.y + INSTANCE_CASCADE_OFFSET,
+  };
 }
 
 // A small registry keyed by sessionId that guarantees one window per chat:
@@ -127,58 +133,61 @@ function instanceWindowBounds(base: { x: number; y: number; width: number; heigh
 // closes. The actual BrowserWindow construction is injected (the `factory`) so
 // this module stays free of Electron and is unit-testable.
 function createSessionWindowRegistry() {
-  const windows = new Map()
+  const windows = new Map();
 
   function openOrFocus(sessionId, factory) {
-    const key = typeof sessionId === 'string' ? sessionId.trim() : ''
+    const key = typeof sessionId === "string" ? sessionId.trim() : "";
 
     if (!key) {
-      return null
+      return null;
     }
 
-    const existing = windows.get(key)
+    const existing = windows.get(key);
 
     if (existing && !existing.isDestroyed()) {
       // Focus-or-create: never duplicate a window for the same chat.
-      if (typeof existing.isMinimized === 'function' && existing.isMinimized()) {
-        existing.restore?.()
+      if (
+        typeof existing.isMinimized === "function" &&
+        existing.isMinimized()
+      ) {
+        existing.restore?.();
       }
 
-      if (typeof existing.isVisible === 'function' && !existing.isVisible()) {
-        existing.show?.()
+      if (typeof existing.isVisible === "function" && !existing.isVisible()) {
+        existing.show?.();
       }
 
-      existing.focus?.()
+      existing.focus?.();
 
-      return existing
+      return existing;
     }
 
-    const win = factory(key)
+    const win = factory(key);
 
     if (!win) {
-      return null
+      return null;
     }
 
-    windows.set(key, win)
+    windows.set(key, win);
 
     // Self-cleanup on close so the registry never holds a destroyed window.
-    win.on?.('closed', () => {
+    win.on?.("closed", () => {
       if (windows.get(key) === win) {
-        windows.delete(key)
+        windows.delete(key);
       }
-    })
+    });
 
-    return win
+    return win;
   }
 
   return {
     openOrFocus,
-    get: key => windows.get(key),
-    has: key => windows.has(key),
+    get: (key) => windows.get(key),
+    has: (key) => windows.has(key),
     get size() {
-      return windows.size
-    }
-  }
+      return windows.size;
+    },
+  };
 }
 
 export {
@@ -188,5 +197,5 @@ export {
   createSessionWindowRegistry,
   instanceWindowBounds,
   SESSION_WINDOW_MIN_HEIGHT,
-  SESSION_WINDOW_MIN_WIDTH
-}
+  SESSION_WINDOW_MIN_WIDTH,
+};

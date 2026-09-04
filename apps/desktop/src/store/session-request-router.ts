@@ -1,6 +1,10 @@
-import { requestGatewayForAgent, requestGatewayForProfile, retainGatewayForSessionTurn } from '@/store/gateway'
+import {
+  requestGatewayForAgent,
+  requestGatewayForProfile,
+  retainGatewayForSessionTurn,
+} from "@/store/gateway";
 
-import { resetBackgroundPollingGuardAfterRebind } from './session-gone-latch'
+import { resetBackgroundPollingGuardAfterRebind } from "./session-gone-latch";
 
 /**
  * The ONE authoritative exact owner of a session: the registry connection whose
@@ -17,16 +21,16 @@ import { resetBackgroundPollingGuardAfterRebind } from './session-gone-latch'
  * registry entry that holds it.
  */
 export interface SessionOwnerRoute {
-  connectionId: string
-  mode?: 'local' | 'remote'
-  profile: string
-  targetProfile?: string
+  connectionId: string;
+  mode?: "local" | "remote";
+  profile: string;
+  targetProfile?: string;
 }
 
 /** @deprecated Alias kept for existing imports; new code names SessionOwnerRoute. */
-export type SessionProfileRoute = SessionOwnerRoute
+export type SessionProfileRoute = SessionOwnerRoute;
 
-export type SessionOwnerScope = undefined | null | string | SessionOwnerRoute
+export type SessionOwnerScope = undefined | null | string | SessionOwnerRoute;
 
 /** Exact owner reconstructed from a CONNECTION-TAGGED session row (the
  *  Electron unified-list splice tags foreign registry rows; an optimistic row
@@ -34,15 +38,21 @@ export type SessionOwnerScope = undefined | null | string | SessionOwnerRoute
  *  across refreshes). A row without a connection tag yields undefined — a bare
  *  profile is not an exact owner. */
 export function sessionOwnerRouteFromRow(
-  row: { connection_id?: null | string; profile?: null | string } | null | undefined
+  row:
+    | { connection_id?: null | string; profile?: null | string }
+    | null
+    | undefined,
 ): SessionOwnerRoute | undefined {
-  const connectionId = String(row?.connection_id ?? '').trim()
+  const connectionId = String(row?.connection_id ?? "").trim();
 
   if (!connectionId) {
-    return undefined
+    return undefined;
   }
 
-  return { connectionId, profile: String(row?.profile ?? '').trim() || 'default' }
+  return {
+    connectionId,
+    profile: String(row?.profile ?? "").trim() || "default",
+  };
 }
 
 // ── Session-scoped RPC routing (the #89206 class) ───────────────────────────
@@ -63,40 +73,54 @@ export function sessionOwnerRouteFromRow(
 // callers are expected to resolve the owner (cross-profile probe) before they
 // reach that case for a real session.
 
-const normKey = (profile: null | string | undefined): string => (profile ?? '').trim() || 'default'
+const normKey = (profile: null | string | undefined): string =>
+  (profile ?? "").trim() || "default";
 
-export const isSessionOwnerRoute = (owner: SessionOwnerScope): owner is SessionOwnerRoute =>
-  Boolean(owner && typeof owner === 'object' && 'connectionId' in owner)
+export const isSessionOwnerRoute = (
+  owner: SessionOwnerScope,
+): owner is SessionOwnerRoute =>
+  Boolean(owner && typeof owner === "object" && "connectionId" in owner);
 
-const isRoute = isSessionOwnerRoute
+const isRoute = isSessionOwnerRoute;
 
-function routeParams(route: SessionProfileRoute, params: Record<string, unknown>): Record<string, unknown> {
-  if (!route.targetProfile || !Object.prototype.hasOwnProperty.call(params, 'profile')) {
-    return params
+function routeParams(
+  route: SessionProfileRoute,
+  params: Record<string, unknown>,
+): Record<string, unknown> {
+  if (
+    !route.targetProfile ||
+    !Object.prototype.hasOwnProperty.call(params, "profile")
+  ) {
+    return params;
   }
 
-  return { ...params, profile: route.targetProfile }
+  return { ...params, profile: route.targetProfile };
 }
 
-function promptSessionId(method: string, params: Record<string, unknown>): string {
-  return method === 'prompt.submit' && typeof params.session_id === 'string' ? params.session_id.trim() : ''
+function promptSessionId(
+  method: string,
+  params: Record<string, unknown>,
+): string {
+  return method === "prompt.submit" && typeof params.session_id === "string"
+    ? params.session_id.trim()
+    : "";
 }
 
-const TERMINAL_TURN_ACK_STATUSES = new Set(['complete', 'completed', 'error'])
+const TERMINAL_TURN_ACK_STATUSES = new Set(["complete", "completed", "error"]);
 
 function turnKeepsRunning(result: unknown): boolean {
-  if (!result || typeof result !== 'object' || !('status' in result)) {
+  if (!result || typeof result !== "object" || !("status" in result)) {
     // Older gateways may ACK without the newer structured status. Retaining
     // until the terminal event is safer than recreating the client-gone cut.
-    return true
+    return true;
   }
 
-  const status = (result as { status?: unknown }).status
+  const status = (result as { status?: unknown }).status;
 
   // Queued, redirected and future status values are non-terminal by default.
   // Releasing only an explicit terminal ACK avoids recreating client_gone
   // when a gateway accepts a turn without calling it "streaming".
-  return typeof status !== 'string' || !TERMINAL_TURN_ACK_STATUSES.has(status)
+  return typeof status !== "string" || !TERMINAL_TURN_ACK_STATUSES.has(status);
 }
 
 async function withRoutedTurnLease<T>(
@@ -104,40 +128,44 @@ async function withRoutedTurnLease<T>(
   profile: string,
   method: string,
   params: Record<string, unknown>,
-  request: () => Promise<T>
+  request: () => Promise<T>,
 ): Promise<T> {
-  const sessionId = promptSessionId(method, params)
+  const sessionId = promptSessionId(method, params);
 
   if (!sessionId) {
-    return requestWithRebindGuard(method, params, request)
+    return requestWithRebindGuard(method, params, request);
   }
 
-  const release = await retainGatewayForSessionTurn(connectionId, profile, sessionId)
+  const release = await retainGatewayForSessionTurn(
+    connectionId,
+    profile,
+    sessionId,
+  );
 
   try {
-    const result = await request()
-    resetBackgroundPollingGuardAfterRebind(method, params, result)
+    const result = await request();
+    resetBackgroundPollingGuardAfterRebind(method, params, result);
 
     if (!turnKeepsRunning(result)) {
-      release()
+      release();
     }
 
-    return result
+    return result;
   } catch (error) {
-    release()
-    throw error
+    release();
+    throw error;
   }
 }
 
 async function requestWithRebindGuard<T>(
   method: string,
   params: Record<string, unknown>,
-  request: () => Promise<T>
+  request: () => Promise<T>,
 ): Promise<T> {
-  const result = await request()
-  resetBackgroundPollingGuardAfterRebind(method, params, result)
+  const result = await request();
+  resetBackgroundPollingGuardAfterRebind(method, params, result);
 
-  return result
+  return result;
 }
 
 /**
@@ -151,15 +179,17 @@ async function requestWithRebindGuard<T>(
  * presentation state, never a routing authority. Only a null/empty owner (a
  * fresh draft with no session, or global chrome) routes ambient.
  */
-export function sessionRpcNeedsProfileRoute(ownerProfile: SessionOwnerScope | undefined): boolean {
+export function sessionRpcNeedsProfileRoute(
+  ownerProfile: SessionOwnerScope | undefined,
+): boolean {
   if (isRoute(ownerProfile)) {
     // A descriptor is an immutable ownership claim. Even an explicitly local
     // route must not collapse to the ambient request: another connection can
     // expose the same profile name, and activation is UI state only.
-    return Boolean(ownerProfile.connectionId.trim())
+    return Boolean(ownerProfile.connectionId.trim());
   }
 
-  return ownerProfile != null && Boolean(String(ownerProfile).trim())
+  return ownerProfile != null && Boolean(String(ownerProfile).trim());
 }
 
 /**
@@ -174,29 +204,48 @@ export function requestForSessionProfile<T>(
     method: string,
     params?: Record<string, unknown>,
     timeoutMs?: number,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ) => Promise<R>,
   method: string,
   params: Record<string, unknown> = {},
   timeoutMs?: number,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<T> {
   if (isRoute(ownerProfile)) {
-    const connectionId = ownerProfile.connectionId.trim()
+    const connectionId = ownerProfile.connectionId.trim();
 
     if (!connectionId) {
-      return Promise.reject(new Error('Session owner route is missing connectionId'))
+      return Promise.reject(
+        new Error("Session owner route is missing connectionId"),
+      );
     }
 
-    const routedParams = routeParams(ownerProfile, params)
+    const routedParams = routeParams(ownerProfile, params);
 
-    const profile = normKey(ownerProfile.profile)
+    const profile = normKey(ownerProfile.profile);
 
-    return withRoutedTurnLease(connectionId, profile, method, routedParams, () =>
-      timeoutMs === undefined && signal === undefined
-        ? requestGatewayForAgent<T>(connectionId, profile, method, routedParams)
-        : requestGatewayForAgent<T>(connectionId, profile, method, routedParams, timeoutMs, signal)
-    )
+    return withRoutedTurnLease(
+      connectionId,
+      profile,
+      method,
+      routedParams,
+      () =>
+        timeoutMs === undefined && signal === undefined
+          ? requestGatewayForAgent<T>(
+              connectionId,
+              profile,
+              method,
+              routedParams,
+            )
+          : requestGatewayForAgent<T>(
+              connectionId,
+              profile,
+              method,
+              routedParams,
+              timeoutMs,
+              signal,
+            ),
+    );
   }
 
   if (!sessionRpcNeedsProfileRoute(ownerProfile)) {
@@ -207,19 +256,25 @@ export function requestForSessionProfile<T>(
     // for a deadline (the plugin host bridge in contrib/wiring is the only one
     // that does).
     if (signal !== undefined) {
-      return requestWithRebindGuard(method, params, () => ambientRequest<T>(method, params, timeoutMs, signal))
+      return requestWithRebindGuard(method, params, () =>
+        ambientRequest<T>(method, params, timeoutMs, signal),
+      );
     }
 
     if (timeoutMs !== undefined) {
-      return requestWithRebindGuard(method, params, () => ambientRequest<T>(method, params, timeoutMs))
+      return requestWithRebindGuard(method, params, () =>
+        ambientRequest<T>(method, params, timeoutMs),
+      );
     }
 
-    return requestWithRebindGuard(method, params, () => ambientRequest<T>(method, params))
+    return requestWithRebindGuard(method, params, () =>
+      ambientRequest<T>(method, params),
+    );
   }
 
-  const profile = normKey(ownerProfile)
+  const profile = normKey(ownerProfile);
 
   return withRoutedTurnLease(null, profile, method, params, () =>
-    requestGatewayForProfile<T>(profile, method, params, timeoutMs, signal)
-  )
+    requestGatewayForProfile<T>(profile, method, params, timeoutMs, signal),
+  );
 }

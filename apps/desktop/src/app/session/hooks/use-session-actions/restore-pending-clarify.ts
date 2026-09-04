@@ -1,18 +1,18 @@
-import type { GatewayEventPayload } from '@/lib/chat-messages'
+import type { GatewayEventPayload } from "@/lib/chat-messages";
 import {
   $clarifyRequests,
   type ClarifyRequest,
   clearClarifyRequest,
   normalizeChoices,
   normalizeQuestions,
-  setClarifyRequest
-} from '@/store/clarify'
-import type { SessionResumeResponse } from '@/types/hermes'
+  setClarifyRequest,
+} from "@/store/clarify";
+import type { SessionResumeResponse } from "@/types/hermes";
 
 export interface PendingClarifyResumeState {
-  authoritativeAbsent: boolean
-  cleared: ClarifyRequest | null
-  request: ClarifyRequest | null
+  authoritativeAbsent: boolean;
+  cleared: ClarifyRequest | null;
+  request: ClarifyRequest | null;
 }
 
 /**
@@ -30,44 +30,52 @@ export interface PendingClarifyResumeState {
  * is in flight is left alone.
  */
 export function restorePendingClarifyFromSnapshot(
-  response: Pick<SessionResumeResponse, 'pending_clarify'>,
+  response: Pick<SessionResumeResponse, "pending_clarify">,
   sessionId: string,
   resumeStartedAt: number,
-  requestIdAtStart?: string
+  requestIdAtStart?: string,
 ): PendingClarifyResumeState {
-  const pending = response.pending_clarify
+  const pending = response.pending_clarify;
 
-  if (!pending || typeof pending.request_id !== 'string') {
-    const current = $clarifyRequests.get()[sessionId]
+  if (!pending || typeof pending.request_id !== "string") {
+    const current = $clarifyRequests.get()[sessionId];
 
-    const existedAtStart = Boolean(current && requestIdAtStart && current.requestId === requestIdAtStart)
-    const definitelyOlder = Boolean(current?.receivedAt !== undefined && current.receivedAt < resumeStartedAt)
-    const legacyWithoutTime = Boolean(current && current.receivedAt === undefined && !requestIdAtStart)
+    const existedAtStart = Boolean(
+      current && requestIdAtStart && current.requestId === requestIdAtStart,
+    );
+    const definitelyOlder = Boolean(
+      current?.receivedAt !== undefined && current.receivedAt < resumeStartedAt,
+    );
+    const legacyWithoutTime = Boolean(
+      current && current.receivedAt === undefined && !requestIdAtStart,
+    );
 
     if (current && (existedAtStart || definitelyOlder || legacyWithoutTime)) {
-      clearClarifyRequest(current.requestId, sessionId)
+      clearClarifyRequest(current.requestId, sessionId);
 
-      return { authoritativeAbsent: true, cleared: current, request: null }
+      return { authoritativeAbsent: true, cleared: current, request: null };
     }
 
-    return { authoritativeAbsent: true, cleared: null, request: null }
+    return { authoritativeAbsent: true, cleared: null, request: null };
   }
 
-  const questions = normalizeQuestions(pending.questions)
-  const question = typeof pending.question === 'string' ? pending.question : ''
+  const questions = normalizeQuestions(pending.questions);
+  const question = typeof pending.question === "string" ? pending.question : "";
 
   if (!question && questions.length === 0) {
-    return { authoritativeAbsent: false, cleared: null, request: null }
+    return { authoritativeAbsent: false, cleared: null, request: null };
   }
 
-  const choices = normalizeChoices(pending.choices)
+  const choices = normalizeChoices(pending.choices);
 
   const lockedAnswers =
-    typeof pending.answers === 'object' && pending.answers !== null
+    typeof pending.answers === "object" && pending.answers !== null
       ? Object.fromEntries(
-          Object.entries(pending.answers).filter((entry): entry is [string, string] => typeof entry[1] === 'string')
+          Object.entries(pending.answers).filter(
+            (entry): entry is [string, string] => typeof entry[1] === "string",
+          ),
         )
-      : undefined
+      : undefined;
 
   const request: ClarifyRequest = {
     choices: choices.length > 0 ? choices : null,
@@ -77,29 +85,31 @@ export function restorePendingClarifyFromSnapshot(
     receivedAt: Date.now() / 1000,
     requestId: pending.request_id,
     sessionId,
-    ...(questions.length > 0 ? { questions } : {})
-  }
+    ...(questions.length > 0 ? { questions } : {}),
+  };
 
-  setClarifyRequest(request)
+  setClarifyRequest(request);
 
-  return { authoritativeAbsent: false, cleared: null, request }
+  return { authoritativeAbsent: false, cleared: null, request };
 }
 
-export function pendingClarifyToolPayload(request: ClarifyRequest): GatewayEventPayload {
+export function pendingClarifyToolPayload(
+  request: ClarifyRequest,
+): GatewayEventPayload {
   return {
     args: request.questions?.length
       ? {
-          questions: request.questions.map(question => ({
+          questions: request.questions.map((question) => ({
             choices: question.choices ?? undefined,
             multi_select: question.multiSelect || undefined,
-            question: question.question
-          }))
+            question: question.question,
+          })),
         }
       : {
           choices: request.choices ?? [],
           ...(request.multiSelect ? { multi_select: true } : {}),
-          question: request.question
+          question: request.question,
         },
-    tool_id: request.requestId
-  }
+    tool_id: request.requestId,
+  };
 }

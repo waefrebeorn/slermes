@@ -18,18 +18,25 @@
  * the stringified body.
  */
 
-import type { NamingKit } from './naming'
-import type { PreviewActBinding, PreviewElement, PreviewElementChange } from './types'
+import type { NamingKit } from "./naming";
+import type {
+  PreviewActBinding,
+  PreviewElement,
+  PreviewElementChange,
+} from "./types";
 
 export interface IdentityKit {
   /** How strongly a remembered element matches one just observed, 0 to 1. */
-  affinity(was: PreviewActBinding, now: PreviewActBinding): number
+  affinity(was: PreviewActBinding, now: PreviewActBinding): number;
   /** Do two labels share at least half their words? */
-  alike(a: string, b: string): boolean
+  alike(a: string, b: string): boolean;
   /** Mint a handle, disambiguating against the ones already minted. */
-  coin(coined: Record<string, number>, role: string, name: string): string
+  coin(coined: Record<string, number>, role: string, name: string): string;
   /** What moved on an element that kept its handle, or null if it held still. */
-  shifted(was: PreviewActBinding, entry: PreviewElement): null | PreviewElementChange
+  shifted(
+    was: PreviewActBinding,
+    entry: PreviewElement,
+  ): null | PreviewElementChange;
 }
 
 /** Build the identity helpers on top of a naming kit. */
@@ -37,45 +44,49 @@ export function identityKit(naming: NamingKit): IdentityKit {
   /** What moved on an element that kept its handle, or nothing if it held
    *  still. Field by field, so a status line ticking over costs the agent one
    *  short line instead of a re-run of everything already known about it. */
-  const shifted = (was: PreviewActBinding, entry: PreviewElement): null | PreviewElementChange => {
-    const off = !!entry.disabled
-    const value = entry.value || ''
+  const shifted = (
+    was: PreviewActBinding,
+    entry: PreviewElement,
+  ): null | PreviewElementChange => {
+    const off = !!entry.disabled;
+    const value = entry.value || "";
 
     if (was.label === entry.label && was.value === value && was.off === off) {
-      return null
+      return null;
     }
 
-    const moved: PreviewElementChange = { ref: was.ref }
+    const moved: PreviewElementChange = { ref: was.ref };
 
     if (was.label !== entry.label) {
-      moved.label = entry.label
+      moved.label = entry.label;
     }
 
     if (was.value !== value) {
-      moved.value = value
+      moved.value = value;
     }
 
     if (was.off !== off) {
-      moved.disabled = off
+      moved.disabled = off;
     }
 
-    return moved
-  }
+    return moved;
+  };
 
   /** Do two labels share at least half their words? Tolerates the count badge
    *  and the copy edit — "Inbox" against "Inbox (3)". */
   const alike = (a: string, b: string): boolean => {
     if (!a || !b) {
-      return false
+      return false;
     }
 
-    const one = a.toLowerCase().split(/\s+/).filter(Boolean)
-    const two = b.toLowerCase().split(/\s+/).filter(Boolean)
-    const both = one.filter(word => two.indexOf(word) !== -1).length
-    const all = one.length + two.filter(word => one.indexOf(word) === -1).length
+    const one = a.toLowerCase().split(/\s+/).filter(Boolean);
+    const two = b.toLowerCase().split(/\s+/).filter(Boolean);
+    const both = one.filter((word) => two.indexOf(word) !== -1).length;
+    const all =
+      one.length + two.filter((word) => one.indexOf(word) === -1).length;
 
-    return all > 0 && both / all >= 0.5
-  }
+    return all > 0 && both / all >= 0.5;
+  };
 
   /** How strongly a remembered element matches one just observed, 0 to 1.
    *
@@ -86,44 +97,48 @@ export function identityKit(naming: NamingKit): IdentityKit {
   const affinity = (was: PreviewActBinding, now: PreviewActBinding): number => {
     // A button is not a link, however alike the rest of it reads.
     if (was.role !== now.role) {
-      return 0
+      return 0;
     }
 
     // Two elements that BOTH carry a stable attribute and disagree are the page
     // telling us outright that they are different things.
     if (was.stable && now.stable) {
-      return was.stable === now.stable ? 1 : 0
+      return was.stable === now.stable ? 1 : 0;
     }
 
-    let score = 0
+    let score = 0;
 
     if (was.name && was.name === now.name) {
-      score += 0.6
+      score += 0.6;
     } else if (alike(was.name, now.name)) {
-      score += 0.4
+      score += 0.4;
     }
 
     if (was.path && was.path === now.path) {
-      score += 0.3
+      score += 0.3;
     }
 
-    return score
-  }
+    return score;
+  };
 
   /** Mint a handle. Legible on purpose: the agent reads `btn-sign-in` in a
    *  three-line delta on turn nine and knows what it is, where `@e42` would
    *  send it back to an inventory twenty thousand tokens ago. Suffixes are
    *  never rewound, so a retired handle's name is not later handed to a
    *  different element on the same page. */
-  const coin = (coined: Record<string, number>, role: string, name: string): string => {
-    const named = naming.slug(name)
-    const stem = naming.stemOf(role) + (named ? '-' + named : '')
-    const nth = coined[stem] || 0
+  const coin = (
+    coined: Record<string, number>,
+    role: string,
+    name: string,
+  ): string => {
+    const named = naming.slug(name);
+    const stem = naming.stemOf(role) + (named ? "-" + named : "");
+    const nth = coined[stem] || 0;
 
-    coined[stem] = nth + 1
+    coined[stem] = nth + 1;
 
-    return nth ? stem + '-' + nth : stem
-  }
+    return nth ? stem + "-" + nth : stem;
+  };
 
-  return { affinity, alike, coin, shifted }
+  return { affinity, alike, coin, shifted };
 }

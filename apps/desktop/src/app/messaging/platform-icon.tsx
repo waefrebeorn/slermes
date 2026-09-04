@@ -10,13 +10,13 @@ import {
   SiSignal,
   SiTelegram,
   SiWechat,
-  SiWhatsapp
-} from '@icons-pack/react-simple-icons'
-import type { ComponentPropsWithoutRef, ComponentType, SVGProps } from 'react'
-import { forwardRef, memo } from 'react'
+  SiWhatsapp,
+} from "@icons-pack/react-simple-icons";
+import type { ComponentPropsWithoutRef, ComponentType, SVGProps } from "react";
+import { forwardRef, memo } from "react";
 
-import { AvatarChip } from '@/components/ui/avatar-chip'
-import { Globe, Link as LinkIcon, MessageSquareText } from '@/lib/icons'
+import { AvatarChip } from "@/components/ui/avatar-chip";
+import { Globe, Link as LinkIcon, MessageSquareText } from "@/lib/icons";
 
 // ---------------------------------------------------------------------------
 // Photon brand icon — three diagonal rounded bars (the Photon logo mark).
@@ -27,11 +27,32 @@ import { Globe, Link as LinkIcon, MessageSquareText } from '@/lib/icons'
 function PhotonIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-      <rect height="10" rx="1.25" transform="rotate(15 14 7.5)" width="2.5" x="12.75" y="2.5" />
-      <rect height="10" rx="1.25" transform="rotate(15 8 13)" width="2.5" x="6.75" y="8" />
-      <rect height="10" rx="1.25" transform="rotate(15 16 18)" width="2.5" x="14.75" y="13" />
+      <rect
+        height="10"
+        rx="1.25"
+        transform="rotate(15 14 7.5)"
+        width="2.5"
+        x="12.75"
+        y="2.5"
+      />
+      <rect
+        height="10"
+        rx="1.25"
+        transform="rotate(15 8 13)"
+        width="2.5"
+        x="6.75"
+        y="8"
+      />
+      <rect
+        height="10"
+        rx="1.25"
+        transform="rotate(15 16 18)"
+        width="2.5"
+        x="14.75"
+        y="13"
+      />
     </svg>
-  )
+  );
 }
 
 // We render simpleicons.org brand glyphs for platforms whose owners publish a
@@ -42,39 +63,42 @@ function PhotonIcon(props: React.SVGProps<SVGSVGElement>) {
 // `iconColor` is the brand's hex from simpleicons.org so we can paint each
 // glyph in its native color on top of a soft tint. The fallback monogram uses
 // the same hex to keep visual consistency.
-type IconKind = 'brand' | 'generic'
+type IconKind = "brand" | "generic";
 
 interface PlatformIconSpec {
-  Icon?: ComponentType<SVGProps<SVGSVGElement>>
-  color: string
-  kind: IconKind
-  monogram?: string
+  Icon?: ComponentType<SVGProps<SVGSVGElement>>;
+  color: string;
+  kind: IconKind;
+  monogram?: string;
 }
 
 const PLATFORM_ICONS: Record<string, PlatformIconSpec> = {
-  telegram: { Icon: SiTelegram, color: '#26A5E4', kind: 'brand' },
-  discord: { Icon: SiDiscord, color: '#5865F2', kind: 'brand' },
+  telegram: { Icon: SiTelegram, color: "#26A5E4", kind: "brand" },
+  discord: { Icon: SiDiscord, color: "#5865F2", kind: "brand" },
   // Slack removed from Simple Icons by Salesforce request — letter monogram.
-  slack: { color: '#4A154B', kind: 'brand', monogram: 'S' },
-  mattermost: { Icon: SiMattermost, color: '#0058CC', kind: 'brand' },
-  matrix: { Icon: SiMatrix, color: '#000000', kind: 'brand' },
-  signal: { Icon: SiSignal, color: '#3A76F0', kind: 'brand' },
-  whatsapp: { Icon: SiWhatsapp, color: '#25D366', kind: 'brand' },
-  bluebubbles: { Icon: SiApple, color: '#0BD318', kind: 'brand' },
-  photon: { Icon: PhotonIcon, color: '#6366F1', kind: 'brand' },
-  homeassistant: { Icon: SiHomeassistant, color: '#18BCF2', kind: 'brand' },
-  email: { Icon: SiGmail, color: '#EA4335', kind: 'brand' },
-  sms: { Icon: MessageSquareText, color: '#F43F5E', kind: 'generic' },
-  webhook: { Icon: LinkIcon, color: '#71717A', kind: 'generic' },
-  api_server: { Icon: Globe, color: '#64748B', kind: 'generic' },
-  weixin: { Icon: SiWechat, color: '#07C160', kind: 'brand' },
-  qqbot: { Icon: SiQq, color: '#EB1923', kind: 'brand' },
-  yuanbao: { Icon: SiBilibili, color: '#FB7299', kind: 'brand' }
-}
+  slack: { color: "#4A154B", kind: "brand", monogram: "S" },
+  mattermost: { Icon: SiMattermost, color: "#0058CC", kind: "brand" },
+  matrix: { Icon: SiMatrix, color: "#000000", kind: "brand" },
+  signal: { Icon: SiSignal, color: "#3A76F0", kind: "brand" },
+  whatsapp: { Icon: SiWhatsapp, color: "#25D366", kind: "brand" },
+  bluebubbles: { Icon: SiApple, color: "#0BD318", kind: "brand" },
+  photon: { Icon: PhotonIcon, color: "#6366F1", kind: "brand" },
+  homeassistant: { Icon: SiHomeassistant, color: "#18BCF2", kind: "brand" },
+  email: { Icon: SiGmail, color: "#EA4335", kind: "brand" },
+  sms: { Icon: MessageSquareText, color: "#F43F5E", kind: "generic" },
+  webhook: { Icon: LinkIcon, color: "#71717A", kind: "generic" },
+  api_server: { Icon: Globe, color: "#64748B", kind: "generic" },
+  weixin: { Icon: SiWechat, color: "#07C160", kind: "brand" },
+  qqbot: { Icon: SiQq, color: "#EB1923", kind: "brand" },
+  yuanbao: { Icon: SiBilibili, color: "#FB7299", kind: "brand" },
+};
 
-interface PlatformAvatarProps extends Omit<ComponentPropsWithoutRef<'span'>, 'children'> {
-  platformId: string
-  platformName: string
+interface PlatformAvatarProps extends Omit<
+  ComponentPropsWithoutRef<"span">,
+  "children"
+> {
+  platformId: string;
+  platformName: string;
 }
 
 // forwardRef + spreading ...rest is required so a wrapping <Tip> (Radix
@@ -85,7 +109,7 @@ interface PlatformAvatarProps extends Omit<ComponentPropsWithoutRef<'span'>, 'ch
 export const PlatformAvatar = memo(
   forwardRef<HTMLSpanElement, PlatformAvatarProps>(function PlatformAvatar(
     { className, platformId, platformName, ...rest },
-    ref
+    ref,
   ) {
     return (
       <AvatarChip
@@ -96,6 +120,6 @@ export const PlatformAvatar = memo(
         ref={ref}
         {...rest}
       />
-    )
-  })
-)
+    );
+  }),
+);

@@ -9,34 +9,34 @@
  * a function of what it currently holds plus one deliberate choice.
  */
 
-import type { Contribution } from '@/contrib/types'
-import { effectiveTabStripMode } from '@/store/tabstrip-prefs'
+import type { Contribution } from "@/contrib/types";
+import { effectiveTabStripMode } from "@/store/tabstrip-prefs";
 
-import type { TabStripMode } from '../model'
+import type { TabStripMode } from "../model";
 
-import { paneChrome } from './track-model'
+import { paneChrome } from "./track-model";
 
 export interface StripPane {
   /** A tool panel (terminal / logs) that collapses rather than closes. */
-  collapsePane: boolean
+  collapsePane: boolean;
   /** Standing chrome (sessions / Bots) whose only handle is the strip:
    *  show/hide replaces Close, and the Show/Hide rows live on the strip. */
-  hideOnly?: boolean
+  hideOnly?: boolean;
   /** Contribution placement — `'main'` marks a docked tile (session, page,
    *  preview) as opposed to standing side chrome. */
-  placement?: string
+  placement?: string;
   /** Panes that never leave the tree (the workspace). */
-  uncloseable?: boolean
+  uncloseable?: boolean;
 }
 
 export interface StripZone {
   /** The ACTIVE pane declines to be tabbed (a full-page view). */
-  headerVeto?: boolean
+  headerVeto?: boolean;
   /** The zone's standing choice; undefined = auto. */
-  mode?: TabStripMode
+  mode?: TabStripMode;
   /** Panes currently rendered as chips — chrome-hidden and narrow-collapsed
    *  panes are already filtered out. */
-  shown: readonly StripPane[]
+  shown: readonly StripPane[];
 }
 
 /**
@@ -52,40 +52,40 @@ export interface StripZone {
  * produce. Hiding still works everywhere it cannot trap you.
  */
 function stranded(shown: readonly StripPane[]): boolean {
-  if (shown.some(pane => !pane.uncloseable && pane.placement === 'main')) {
-    return true
+  if (shown.some((pane) => !pane.uncloseable && pane.placement === "main")) {
+    return true;
   }
 
-  if (shown.some(pane => pane.hideOnly)) {
-    return true
+  if (shown.some((pane) => pane.hideOnly)) {
+    return true;
   }
 
-  return shown.length === 1 && shown[0].collapsePane
+  return shown.length === 1 && shown[0].collapsePane;
 }
 
 export function resolveTabStripVisible(zone: StripZone): boolean {
   if (zone.shown.length === 0) {
-    return false
+    return false;
   }
 
   // A page is not a tab-able surface. Contextual and self-lifting: the strip
   // returns with the chat, so it is resolved ahead of any stored choice and
   // never written down.
   if (zone.headerVeto) {
-    return false
+    return false;
   }
 
   if (stranded(zone.shown)) {
-    return true
+    return true;
   }
 
   if (zone.mode) {
-    return zone.mode === 'always'
+    return zone.mode === "always";
   }
 
   // Auto: a lone pane is not a "tab", so it goes without a strip; two or more
   // need one to switch between them.
-  return zone.shown.length > 1
+  return zone.shown.length > 1;
 }
 
 /**
@@ -96,26 +96,26 @@ export function resolveTabStripVisible(zone: StripZone): boolean {
  */
 export function tabStripVisibleForZone(zone: {
   /** The zone's ACTIVE pane. */
-  active: string
-  isCollapsePane: (id: string) => boolean
+  active: string;
+  isCollapsePane: (id: string) => boolean;
   /** The zone's own choice, before the app default applies. */
-  mode: TabStripMode | undefined
-  paneFor: (id: string) => Contribution | undefined
+  mode: TabStripMode | undefined;
+  paneFor: (id: string) => Contribution | undefined;
   /** Panes currently rendered as chips. */
-  shown: readonly string[]
+  shown: readonly string[];
 }): boolean {
   return resolveTabStripVisible({
     headerVeto: paneChrome(zone.paneFor(zone.active)).headerVeto,
     mode: effectiveTabStripMode(zone.mode),
-    shown: zone.shown.map(id => {
-      const chrome = paneChrome(zone.paneFor(id))
+    shown: zone.shown.map((id) => {
+      const chrome = paneChrome(zone.paneFor(id));
 
       return {
         collapsePane: zone.isCollapsePane(id),
         hideOnly: chrome.hideOnly,
         placement: chrome.placement,
-        uncloseable: chrome.uncloseable
-      }
-    })
-  })
+        uncloseable: chrome.uncloseable,
+      };
+    }),
+  });
 }

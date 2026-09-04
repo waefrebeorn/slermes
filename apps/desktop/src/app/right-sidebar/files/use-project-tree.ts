@@ -1,158 +1,185 @@
-import { useStore } from '@nanostores/react'
-import { atom } from 'nanostores'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useStore } from "@nanostores/react";
+import { atom } from "nanostores";
+import { useCallback, useEffect, useMemo } from "react";
 
-import { desktopFsCacheKey } from '@/lib/desktop-fs'
-import { $connection } from '@/store/session'
-import { $workspaceChangeTick, consumeWorkspaceChange } from '@/store/workspace-events'
+import { desktopFsCacheKey } from "@/lib/desktop-fs";
+import { $connection } from "@/store/session";
+import {
+  $workspaceChangeTick,
+  consumeWorkspaceChange,
+} from "@/store/workspace-events";
 
-import { clearProjectDirCache, type ProjectTreeEntry, readProjectDir } from './ipc'
+import {
+  clearProjectDirCache,
+  type ProjectTreeEntry,
+  readProjectDir,
+} from "./ipc";
 
 export interface TreeNode {
   /** Absolute filesystem path. Doubles as react-arborist node id. */
-  id: string
-  name: string
+  id: string;
+  name: string;
   /** Drives arborist's leaf-vs-expandable decision via childrenAccessor. */
-  isDirectory: boolean
+  isDirectory: boolean;
   /** `undefined` = directory, children not yet loaded. `[]` = loaded empty. */
-  children?: TreeNode[]
+  children?: TreeNode[];
   /** True while a readDir for this folder is in flight. */
-  loading?: boolean
+  loading?: boolean;
   /** Synthetic loading/error rows are not real filesystem entries. */
-  placeholder?: 'error' | 'loading'
+  placeholder?: "error" | "loading";
   /** Last error code from readDir (e.g. EACCES). Cleared on next successful load. */
-  error?: string
+  error?: string;
 }
 
-const PLACEHOLDER_ID = '__loading__'
-const ERROR_PLACEHOLDER_ID = '__error__'
+const PLACEHOLDER_ID = "__loading__";
+const ERROR_PLACEHOLDER_ID = "__error__";
 
 function makeNode(path: string, name: string, isDirectory: boolean): TreeNode {
-  return { id: path, isDirectory, name }
+  return { id: path, isDirectory, name };
 }
 
-function patchNode(nodes: TreeNode[] | undefined | null, id: string, patch: (n: TreeNode) => TreeNode): TreeNode[] {
+function patchNode(
+  nodes: TreeNode[] | undefined | null,
+  id: string,
+  patch: (n: TreeNode) => TreeNode,
+): TreeNode[] {
   if (!nodes) {
-    return []
+    return [];
   }
 
-  return nodes.map(n => {
+  return nodes.map((n) => {
     if (n.id === id) {
-      return patch(n)
+      return patch(n);
     }
 
     if (n.children && n.children.length > 0) {
-      return { ...n, children: patchNode(n.children, id, patch) }
+      return { ...n, children: patchNode(n.children, id, patch) };
     }
 
-    return n
-  })
+    return n;
+  });
 }
 
 function findNode(nodes: TreeNode[], id: string): null | TreeNode {
   for (const node of nodes) {
     if (node.id === id) {
-      return node
+      return node;
     }
 
     if (node.children?.length) {
-      const hit = findNode(node.children, id)
+      const hit = findNode(node.children, id);
 
       if (hit) {
-        return hit
+        return hit;
       }
     }
   }
 
-  return null
+  return null;
 }
 
 // Merge a freshly-read dir's entries into its existing children: keep surviving
 // nodes (subtrees intact), add new, drop deleted. Non-recursive — a grandchild
 // dir only re-reads when it's itself in the change set.
-function mergeChildren(existing: TreeNode[], entries: ProjectTreeEntry[]): TreeNode[] {
-  const byId = new Map(existing.filter(node => !node.placeholder).map(node => [node.id, node]))
+function mergeChildren(
+  existing: TreeNode[],
+  entries: ProjectTreeEntry[],
+): TreeNode[] {
+  const byId = new Map(
+    existing.filter((node) => !node.placeholder).map((node) => [node.id, node]),
+  );
 
-  return entries.map(entry => byId.get(entry.path) ?? makeNode(entry.path, entry.name, entry.isDirectory))
+  return entries.map(
+    (entry) =>
+      byId.get(entry.path) ??
+      makeNode(entry.path, entry.name, entry.isDirectory),
+  );
 }
 
 function placeholderChild(parentId: string): TreeNode {
-  return { id: `${parentId}::${PLACEHOLDER_ID}`, isDirectory: false, name: 'Loading…', placeholder: 'loading' }
+  return {
+    id: `${parentId}::${PLACEHOLDER_ID}`,
+    isDirectory: false,
+    name: "Loading…",
+    placeholder: "loading",
+  };
 }
 
 function errorChild(parentId: string, error: string | undefined): TreeNode {
   return {
     id: `${parentId}::${ERROR_PLACEHOLDER_ID}`,
     isDirectory: false,
-    name: `Unable to read (${error || 'read-error'})`,
-    placeholder: 'error'
-  }
+    name: `Unable to read (${error || "read-error"})`,
+    placeholder: "error",
+  };
 }
 
 function readError(cause: unknown): string {
-  return cause instanceof Error && cause.message ? cause.message : 'read-error'
+  return cause instanceof Error && cause.message ? cause.message : "read-error";
 }
 
 export interface UseProjectTreeResult {
   /** Bumped by collapseAll so callers can remount the tree fully collapsed. */
-  collapseNonce: number
-  data: TreeNode[]
+  collapseNonce: number;
+  data: TreeNode[];
   /** Directory actually displayed — differs from the requested cwd when the
    *  session's recorded cwd no longer exists and we fell back to the default
    *  workspace dir. */
-  effectiveCwd: string
-  openState: Record<string, boolean>
-  rootError: string | null
-  rootLoading: boolean
-  collapseAll: () => void
-  loadChildren: (id: string) => Promise<void>
-  refreshRoot: () => Promise<void>
-  setNodeOpen: (id: string, open: boolean) => void
+  effectiveCwd: string;
+  openState: Record<string, boolean>;
+  rootError: string | null;
+  rootLoading: boolean;
+  collapseAll: () => void;
+  loadChildren: (id: string) => Promise<void>;
+  refreshRoot: () => Promise<void>;
+  setNodeOpen: (id: string, open: boolean) => void;
 }
 
 interface ProjectTreeState {
-  collapseNonce: number
-  cwd: string
-  data: TreeNode[]
-  loaded: boolean
-  openState: Record<string, boolean>
-  requestId: number
+  collapseNonce: number;
+  cwd: string;
+  data: TreeNode[];
+  loaded: boolean;
+  openState: Record<string, boolean>;
+  requestId: number;
   /** Directory the displayed entries were read from ('' until first load). */
-  resolvedCwd: string
-  rootError: string | null
-  rootLoading: boolean
+  resolvedCwd: string;
+  rootError: string | null;
+  rootLoading: boolean;
 }
 
 const initialState: ProjectTreeState = {
   collapseNonce: 0,
-  cwd: '',
+  cwd: "",
   data: [],
   loaded: false,
   openState: {},
   requestId: 0,
-  resolvedCwd: '',
+  resolvedCwd: "",
   rootError: null,
-  rootLoading: false
-}
+  rootLoading: false,
+};
 
-const inflight = new Set<string>()
-const $projectTree = atom<ProjectTreeState>(initialState)
-let nextRootRequestId = 0
-let lastConnectionKey = ''
+const inflight = new Set<string>();
+const $projectTree = atom<ProjectTreeState>(initialState);
+let nextRootRequestId = 0;
+let lastConnectionKey = "";
 
 // While the root is errored (ENOENT during a session's cwd race, a folder that
 // reappears after a checkout, a remote that wasn't ready), keep retrying on a
 // slow cadence so the tree self-heals instead of staying "UNREADABLE" forever.
-const ROOT_ERROR_RETRY_MS = 3_000
+const ROOT_ERROR_RETRY_MS = 3_000;
 
-function setProjectTree(updater: (current: ProjectTreeState) => ProjectTreeState) {
-  $projectTree.set(updater($projectTree.get()))
+function setProjectTree(
+  updater: (current: ProjectTreeState) => ProjectTreeState,
+) {
+  $projectTree.set(updater($projectTree.get()));
 }
 
 function clearProjectTree() {
-  nextRootRequestId += 1
-  inflight.clear()
-  $projectTree.set({ ...initialState, requestId: nextRootRequestId })
+  nextRootRequestId += 1;
+  inflight.clear();
+  $projectTree.set({ ...initialState, requestId: nextRootRequestId });
 }
 
 /** Sessions record their launch cwd; deleted worktrees and remote-backend
@@ -160,23 +187,26 @@ function clearProjectTree() {
  *  than bricking the tree, display the sanitized workspace fallback (main
  *  prefers the configured default project dir). Local connections only —
  *  remote trees are read through the remote bridge. */
-async function fallbackRootFor(cwd: string, sourceIsRemote: boolean): Promise<string | null> {
+async function fallbackRootFor(
+  cwd: string,
+  sourceIsRemote: boolean,
+): Promise<string | null> {
   if (sourceIsRemote) {
-    return null
+    return null;
   }
 
-  const sanitize = window.hermesDesktop?.sanitizeWorkspaceCwd
+  const sanitize = window.hermesDesktop?.sanitizeWorkspaceCwd;
 
   if (!sanitize) {
-    return null
+    return null;
   }
 
   try {
-    const { cwd: fallback, sanitized } = await sanitize(cwd)
+    const { cwd: fallback, sanitized } = await sanitize(cwd);
 
-    return sanitized && fallback && fallback !== cwd ? fallback : null
+    return sanitized && fallback && fallback !== cwd ? fallback : null;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -185,27 +215,31 @@ async function loadRoot(
   {
     connectionKey = desktopFsCacheKey(),
     force = false,
-    reset = false
-  }: { connectionKey?: string; force?: boolean; reset?: boolean } = {}
+    reset = false,
+  }: { connectionKey?: string; force?: boolean; reset?: boolean } = {},
 ) {
   if (!cwd) {
-    clearProjectTree()
+    clearProjectTree();
 
-    return
+    return;
   }
 
-  const current = $projectTree.get()
+  const current = $projectTree.get();
 
-  if (!force && current.cwd === cwd && (current.loaded || current.rootLoading)) {
-    return
+  if (
+    !force &&
+    current.cwd === cwd &&
+    (current.loaded || current.rootLoading)
+  ) {
+    return;
   }
 
-  const requestId = nextRootRequestId + 1
-  nextRootRequestId = requestId
-  inflight.clear()
+  const requestId = nextRootRequestId + 1;
+  nextRootRequestId = requestId;
+  inflight.clear();
 
   if (force || current.cwd !== cwd) {
-    clearProjectDirCache(cwd)
+    clearProjectDirCache(cwd);
   }
 
   // Re-reading the SAME root — the error retry below, the refresh button, a
@@ -216,7 +250,7 @@ async function loadRoot(
   // `resolvedCwd` dropped back to the raw cwd and returned. Only a different
   // root (or a different backend, via `reset`) may clear, where the previous
   // project's tree would otherwise linger under the new one.
-  const keepVisible = current.cwd === cwd && !reset
+  const keepVisible = current.cwd === cwd && !reset;
 
   $projectTree.set({
     collapseNonce: current.collapseNonce,
@@ -225,56 +259,62 @@ async function loadRoot(
     loaded: false,
     openState: keepVisible ? current.openState : {},
     requestId,
-    resolvedCwd: keepVisible ? current.resolvedCwd : '',
+    resolvedCwd: keepVisible ? current.resolvedCwd : "",
     rootError: keepVisible ? current.rootError : null,
-    rootLoading: true
-  })
+    rootLoading: true,
+  });
 
-  const sourceIsRemote = $connection.get()?.mode === 'remote'
-  let resolvedCwd = cwd
-  let entries: ProjectTreeEntry[] = []
-  let error: string | undefined
+  const sourceIsRemote = $connection.get()?.mode === "remote";
+  let resolvedCwd = cwd;
+  let entries: ProjectTreeEntry[] = [];
+  let error: string | undefined;
 
   try {
-    ;({ entries, error } = await readProjectDir(cwd, cwd))
+    ({ entries, error } = await readProjectDir(cwd, cwd));
 
     if (error && desktopFsCacheKey() === connectionKey) {
-      const fallback = await fallbackRootFor(cwd, sourceIsRemote)
+      const fallback = await fallbackRootFor(cwd, sourceIsRemote);
 
       if (fallback) {
-        const retry = await readProjectDir(fallback, fallback)
+        const retry = await readProjectDir(fallback, fallback);
 
         if (!retry.error) {
-          resolvedCwd = fallback
-          entries = retry.entries
-          error = undefined
+          resolvedCwd = fallback;
+          entries = retry.entries;
+          error = undefined;
         }
       }
     }
   } catch (cause) {
-    error = readError(cause)
+    error = readError(cause);
   }
 
-  setProjectTree(latest => {
-    if (latest.cwd !== cwd || latest.requestId !== requestId || desktopFsCacheKey() !== connectionKey) {
-      return latest
+  setProjectTree((latest) => {
+    if (
+      latest.cwd !== cwd ||
+      latest.requestId !== requestId ||
+      desktopFsCacheKey() !== connectionKey
+    ) {
+      return latest;
     }
 
     return {
       ...latest,
-      data: error ? [] : entries.map(e => makeNode(e.path, e.name, e.isDirectory)),
+      data: error
+        ? []
+        : entries.map((e) => makeNode(e.path, e.name, e.isDirectory)),
       loaded: true,
       resolvedCwd,
       rootError: error || null,
-      rootLoading: false
-    }
-  })
+      rootLoading: false,
+    };
+  });
 }
 
 export function resetProjectTreeState() {
-  lastConnectionKey = ''
-  clearProjectTree()
-  clearProjectDirCache()
+  lastConnectionKey = "";
+  clearProjectTree();
+  clearProjectDirCache();
 }
 
 // Non-destructive live refresh as the agent edits: preserves expansion + loaded
@@ -286,84 +326,109 @@ export function resetProjectTreeState() {
 async function revalidateTree(
   cwd: string,
   change: { dirs: string[]; full: boolean },
-  connectionKey: string
+  connectionKey: string,
 ): Promise<void> {
-  const state = $projectTree.get()
+  const state = $projectTree.get();
 
-  if (!cwd || state.cwd !== cwd || !state.loaded || desktopFsCacheKey() !== connectionKey) {
-    return
+  if (
+    !cwd ||
+    state.cwd !== cwd ||
+    !state.loaded ||
+    desktopFsCacheKey() !== connectionKey
+  ) {
+    return;
   }
 
-  const rootPath = state.resolvedCwd || cwd
+  const rootPath = state.resolvedCwd || cwd;
 
   if (!change.full && change.dirs.length) {
     // Only re-read changed dirs that are actually loaded (root, or an expanded
     // folder); a change inside a collapsed/absent dir isn't visible → skip.
-    const targets = change.dirs.filter(dir => dir === rootPath || findNode(state.data, dir)?.children)
+    const targets = change.dirs.filter(
+      (dir) => dir === rootPath || findNode(state.data, dir)?.children,
+    );
 
     if (!targets.length) {
-      return
+      return;
     }
 
-    const reads = await Promise.all(targets.map(async dir => ({ dir, ...(await readProjectDir(dir, rootPath)) })))
+    const reads = await Promise.all(
+      targets.map(async (dir) => ({
+        dir,
+        ...(await readProjectDir(dir, rootPath)),
+      })),
+    );
 
-    setProjectTree(latest => {
-      if (latest.cwd !== cwd || !latest.loaded || desktopFsCacheKey() !== connectionKey) {
-        return latest
+    setProjectTree((latest) => {
+      if (
+        latest.cwd !== cwd ||
+        !latest.loaded ||
+        desktopFsCacheKey() !== connectionKey
+      ) {
+        return latest;
       }
 
-      let data = latest.data
+      let data = latest.data;
 
       for (const { dir, entries, error } of reads) {
         if (error) {
-          continue // keep last-known children on a transient read error
+          continue; // keep last-known children on a transient read error
         }
 
         data =
           dir === rootPath
             ? mergeChildren(data, entries)
-            : patchNode(data, dir, node =>
-                node.children ? { ...node, children: mergeChildren(node.children, entries) } : node
-              )
+            : patchNode(data, dir, (node) =>
+                node.children
+                  ? { ...node, children: mergeChildren(node.children, entries) }
+                  : node,
+              );
       }
 
-      return data === latest.data ? latest : { ...latest, data }
-    })
+      return data === latest.data ? latest : { ...latest, data };
+    });
 
-    return
+    return;
   }
 
   // Opaque fallback: reconcile every loaded dir. Siblings read concurrently
   // (Promise.all keeps order); loaded subfolders recurse.
-  const reconcile = async (dirPath: string, existing: TreeNode[]): Promise<TreeNode[]> => {
-    const { entries, error } = await readProjectDir(dirPath, rootPath)
+  const reconcile = async (
+    dirPath: string,
+    existing: TreeNode[],
+  ): Promise<TreeNode[]> => {
+    const { entries, error } = await readProjectDir(dirPath, rootPath);
 
     if (error) {
-      return existing
+      return existing;
     }
 
-    const byId = new Map(existing.filter(node => !node.placeholder).map(node => [node.id, node]))
+    const byId = new Map(
+      existing
+        .filter((node) => !node.placeholder)
+        .map((node) => [node.id, node]),
+    );
 
     return Promise.all(
-      entries.map(async entry => {
-        const prev = byId.get(entry.path)
+      entries.map(async (entry) => {
+        const prev = byId.get(entry.path);
 
         if (prev?.isDirectory && prev.children) {
-          return { ...prev, children: await reconcile(prev.id, prev.children) }
+          return { ...prev, children: await reconcile(prev.id, prev.children) };
         }
 
-        return prev ?? makeNode(entry.path, entry.name, entry.isDirectory)
-      })
-    )
-  }
+        return prev ?? makeNode(entry.path, entry.name, entry.isDirectory);
+      }),
+    );
+  };
 
-  const nextData = await reconcile(rootPath, state.data)
+  const nextData = await reconcile(rootPath, state.data);
 
-  setProjectTree(latest =>
+  setProjectTree((latest) =>
     latest.cwd === cwd && latest.loaded && desktopFsCacheKey() === connectionKey
       ? { ...latest, data: nextData }
-      : latest
-  )
+      : latest,
+  );
 }
 
 /**
@@ -374,174 +439,195 @@ async function revalidateTree(
  * whole tree (used after cwd change or manual refresh).
  */
 export function useProjectTree(cwd: string): UseProjectTreeResult {
-  const state = useStore($projectTree)
-  const connection = useStore($connection)
-  const workspaceTick = useStore($workspaceChangeTick)
-  const connectionKey = desktopFsCacheKey(connection)
+  const state = useStore($projectTree);
+  const connection = useStore($connection);
+  const workspaceTick = useStore($workspaceChangeTick);
+  const connectionKey = desktopFsCacheKey(connection);
 
-  const refreshRoot = useCallback(() => loadRoot(cwd, { connectionKey, force: true }), [connectionKey, cwd])
+  const refreshRoot = useCallback(
+    () => loadRoot(cwd, { connectionKey, force: true }),
+    [connectionKey, cwd],
+  );
 
   const setNodeOpen = useCallback(
     (id: string, open: boolean) => {
-      setProjectTree(current => {
+      setProjectTree((current) => {
         if (current.cwd !== cwd || current.openState[id] === open) {
-          return current
+          return current;
         }
 
         return {
           ...current,
           openState: {
             ...current.openState,
-            [id]: open
-          }
-        }
-      })
+            [id]: open,
+          },
+        };
+      });
     },
-    [cwd]
-  )
+    [cwd],
+  );
 
   // Clears the recorded open state and bumps the nonce; the tree is keyed on
   // the nonce so it remounts with everything collapsed (loaded children stay
   // cached in `data`, just hidden).
   const collapseAll = useCallback(() => {
-    setProjectTree(current => {
+    setProjectTree((current) => {
       if (current.cwd !== cwd) {
-        return current
+        return current;
       }
 
-      return { ...current, collapseNonce: current.collapseNonce + 1, openState: {} }
-    })
-  }, [cwd])
+      return {
+        ...current,
+        collapseNonce: current.collapseNonce + 1,
+        openState: {},
+      };
+    });
+  }, [cwd]);
 
   const loadChildren = useCallback(
     async (id: string) => {
-      const inflightKey = `${connectionKey}:${id}`
+      const inflightKey = `${connectionKey}:${id}`;
 
       if (!cwd || inflight.has(inflightKey)) {
-        return
+        return;
       }
 
-      inflight.add(inflightKey)
+      inflight.add(inflightKey);
 
-      setProjectTree(current => {
+      setProjectTree((current) => {
         if (current.cwd !== cwd || desktopFsCacheKey() !== connectionKey) {
-          return current
+          return current;
         }
 
         return {
           ...current,
-          data: patchNode(current.data, id, n => ({ ...n, loading: true, children: [placeholderChild(n.id)] }))
-        }
-      })
+          data: patchNode(current.data, id, (n) => ({
+            ...n,
+            loading: true,
+            children: [placeholderChild(n.id)],
+          })),
+        };
+      });
 
-      const rootPath = $projectTree.get().resolvedCwd || cwd
-      let entries: ProjectTreeEntry[] = []
-      let error: string | undefined
+      const rootPath = $projectTree.get().resolvedCwd || cwd;
+      let entries: ProjectTreeEntry[] = [];
+      let error: string | undefined;
 
       try {
-        ;({ entries, error } = await readProjectDir(id, rootPath))
+        ({ entries, error } = await readProjectDir(id, rootPath));
       } catch (cause) {
-        error = readError(cause)
+        error = readError(cause);
       } finally {
-        inflight.delete(inflightKey)
+        inflight.delete(inflightKey);
       }
 
-      setProjectTree(current => {
+      setProjectTree((current) => {
         if (current.cwd !== cwd || desktopFsCacheKey() !== connectionKey) {
-          return current
+          return current;
         }
 
         return {
           ...current,
-          data: patchNode(current.data, id, n => ({
+          data: patchNode(current.data, id, (n) => ({
             ...n,
             loading: false,
             error: error || undefined,
-            children: error ? [errorChild(n.id, error)] : entries.map(e => makeNode(e.path, e.name, e.isDirectory))
-          }))
-        }
-      })
+            children: error
+              ? [errorChild(n.id, error)]
+              : entries.map((e) => makeNode(e.path, e.name, e.isDirectory)),
+          })),
+        };
+      });
     },
-    [connectionKey, cwd]
-  )
+    [connectionKey, cwd],
+  );
 
   // Live, non-destructive refresh when the agent touches the tree (skip the
   // very first render: tick 0 is the initial value, not a real change).
   useEffect(() => {
     if (workspaceTick > 0) {
-      void revalidateTree(cwd, consumeWorkspaceChange(), connectionKey)
+      void revalidateTree(cwd, consumeWorkspaceChange(), connectionKey);
     }
-  }, [connectionKey, cwd, workspaceTick])
+  }, [connectionKey, cwd, workspaceTick]);
 
   useEffect(() => {
-    const connectionChanged = lastConnectionKey !== '' && lastConnectionKey !== connectionKey
-    lastConnectionKey = connectionKey
+    const connectionChanged =
+      lastConnectionKey !== "" && lastConnectionKey !== connectionKey;
+    lastConnectionKey = connectionKey;
 
     if (connectionChanged) {
-      clearProjectDirCache()
+      clearProjectDirCache();
       // Same path, different machine: what is on screen was read from the old
       // backend, so it has to go even though the cwd string is unchanged.
-      void loadRoot(cwd, { connectionKey, force: true, reset: true })
+      void loadRoot(cwd, { connectionKey, force: true, reset: true });
 
-      return
+      return;
     }
 
-    void loadRoot(cwd, { connectionKey })
-  }, [connectionKey, cwd])
+    void loadRoot(cwd, { connectionKey });
+  }, [connectionKey, cwd]);
 
   // Self-heal: an errored root re-probes every few seconds while the tree is
   // mounted. Each attempt bumps requestId, so a persistent error re-arms the
   // timer; a success clears rootError and stops it.
   useEffect(() => {
     if (!cwd || state.cwd !== cwd || !state.rootError) {
-      return
+      return;
     }
 
-    const timer = window.setTimeout(() => void loadRoot(cwd, { connectionKey, force: true }), ROOT_ERROR_RETRY_MS)
+    const timer = window.setTimeout(
+      () => void loadRoot(cwd, { connectionKey, force: true }),
+      ROOT_ERROR_RETRY_MS,
+    );
 
-    return () => window.clearTimeout(timer)
-  }, [connectionKey, cwd, state.cwd, state.requestId, state.rootError])
+    return () => window.clearTimeout(timer);
+  }, [connectionKey, cwd, state.cwd, state.requestId, state.rootError]);
 
   // While showing the fallback root, quietly re-probe the session's real cwd
   // (a worktree re-created, a checkout restored) and switch back when it
   // reappears. The probe never touches state, so there's no flicker.
-  const usingFallback = state.cwd === cwd && Boolean(state.resolvedCwd) && state.resolvedCwd !== cwd
+  const usingFallback =
+    state.cwd === cwd &&
+    Boolean(state.resolvedCwd) &&
+    state.resolvedCwd !== cwd;
 
   useEffect(() => {
     if (!cwd || !usingFallback) {
-      return
+      return;
     }
 
-    let cancelled = false
+    let cancelled = false;
 
     const timer = window.setInterval(() => {
       void readProjectDir(cwd, cwd)
         .then(({ error }) => {
           if (!cancelled && !error && desktopFsCacheKey() === connectionKey) {
-            void loadRoot(cwd, { connectionKey, force: true })
+            void loadRoot(cwd, { connectionKey, force: true });
           }
         })
-        .catch(() => undefined)
-    }, ROOT_ERROR_RETRY_MS)
+        .catch(() => undefined);
+    }, ROOT_ERROR_RETRY_MS);
 
     return () => {
-      cancelled = true
-      window.clearInterval(timer)
-    }
-  }, [connectionKey, cwd, usingFallback])
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [connectionKey, cwd, usingFallback]);
 
   return useMemo(
     () => ({
       collapseAll,
       collapseNonce: state.cwd === cwd ? state.collapseNonce : 0,
       data: state.cwd === cwd ? state.data : [],
-      effectiveCwd: state.cwd === cwd && state.resolvedCwd ? state.resolvedCwd : cwd,
+      effectiveCwd:
+        state.cwd === cwd && state.resolvedCwd ? state.resolvedCwd : cwd,
       loadChildren,
       openState: state.cwd === cwd ? state.openState : {},
       refreshRoot,
       rootError: state.cwd === cwd ? state.rootError : null,
       rootLoading: state.cwd === cwd ? state.rootLoading : Boolean(cwd),
-      setNodeOpen
+      setNodeOpen,
     }),
     [
       collapseAll,
@@ -555,7 +641,7 @@ export function useProjectTree(cwd: string): UseProjectTreeResult {
       state.openState,
       state.resolvedCwd,
       state.rootError,
-      state.rootLoading
-    ]
-  )
+      state.rootLoading,
+    ],
+  );
 }

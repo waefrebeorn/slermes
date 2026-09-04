@@ -1,20 +1,32 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { useI18n } from '@/i18n'
-import { prettyName } from '@/lib/text'
-import { cn } from '@/lib/utils'
-import type { ConfigFieldSchema } from '@/types/hermes'
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/i18n";
+import { prettyName } from "@/lib/text";
+import { cn } from "@/lib/utils";
+import type { ConfigFieldSchema } from "@/types/hermes";
 
-import { ComboboxInput } from './combobox-input'
-import { CONTROL_TEXT, EMPTY_SELECT_VALUE, FIELD_DESCRIPTIONS, FIELD_LABELS, FREE_INPUT_KEYS } from './constants'
-import { FallbackModelsField } from './fallback-models-field'
-import { fieldCopyForSchemaKey } from './field-copy'
-import { ListRow } from './primitives'
-import { SearchableSelect } from './searchable-select'
+import { ComboboxInput } from "./combobox-input";
+import {
+  CONTROL_TEXT,
+  EMPTY_SELECT_VALUE,
+  FIELD_DESCRIPTIONS,
+  FIELD_LABELS,
+  FREE_INPUT_KEYS,
+} from "./constants";
+import { FallbackModelsField } from "./fallback-models-field";
+import { fieldCopyForSchemaKey } from "./field-copy";
+import { ListRow } from "./primitives";
+import { SearchableSelect } from "./searchable-select";
 
 /**
  * One generic config row: label + description resolved from the i18n field
@@ -31,39 +43,41 @@ export function ConfigField({
   enumOptions,
   optionLabels,
   onChange,
-  descriptionExtra
+  descriptionExtra,
 }: {
-  schemaKey: string
-  schema: ConfigFieldSchema
-  value: unknown
-  enumOptions?: string[]
-  optionLabels?: Record<string, string>
-  onChange: (value: unknown) => void
-  descriptionExtra?: ReactNode
+  schemaKey: string;
+  schema: ConfigFieldSchema;
+  value: unknown;
+  enumOptions?: string[];
+  optionLabels?: Record<string, string>;
+  onChange: (value: unknown) => void;
+  descriptionExtra?: ReactNode;
 }) {
-  const { t } = useI18n()
-  const c = t.settings.config
+  const { t } = useI18n();
+  const c = t.settings.config;
 
   const label =
     fieldCopyForSchemaKey(t.settings.fieldLabels, schemaKey) ??
     fieldCopyForSchemaKey(FIELD_LABELS, schemaKey) ??
-    prettyName(schemaKey.split('.').pop() ?? schemaKey)
+    prettyName(schemaKey.split(".").pop() ?? schemaKey);
 
-  const normalize = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, '')
+  const normalize = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, "");
 
   const rawDescription = (
     fieldCopyForSchemaKey(t.settings.fieldDescriptions, schemaKey) ??
     fieldCopyForSchemaKey(FIELD_DESCRIPTIONS, schemaKey) ??
     schema.description ??
-    ''
-  ).trim()
+    ""
+  ).trim();
 
-  const normalizedDesc = normalize(rawDescription)
+  const normalizedDesc = normalize(rawDescription);
 
   const description =
-    rawDescription && normalizedDesc !== normalize(label) && normalizedDesc !== normalize(schemaKey)
+    rawDescription &&
+    normalizedDesc !== normalize(label) &&
+    normalizedDesc !== normalize(schemaKey)
       ? rawDescription
-      : undefined
+      : undefined;
 
   const descriptionNode: ReactNode = descriptionExtra ? (
     <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -72,31 +86,39 @@ export function ConfigField({
     </span>
   ) : (
     description
-  )
+  );
 
   // Every config row is addressable by its canonical schema key, so a tour can
   // point at one setting (`[data-tour="field-model"]`) without hunting through
   // the section for an nth-child path. See lib/tour.
   const row = (action: ReactNode, wide = false) => (
-    <ListRow action={action} data-tour={`field-${schemaKey}`} description={descriptionNode} title={label} wide={wide} />
-  )
+    <ListRow
+      action={action}
+      data-tour={`field-${schemaKey}`}
+      description={descriptionNode}
+      title={label}
+      wide={wide}
+    />
+  );
 
   // `fallback_providers` is a list of {provider, model} objects; the generic
   // `list` branch below would stringify them to "[object Object]". Render the
   // dedicated structured editor instead.
-  if (schemaKey === 'fallback_providers') {
-    return row(<FallbackModelsField onChange={onChange} value={value} />, true)
+  if (schemaKey === "fallback_providers") {
+    return row(<FallbackModelsField onChange={onChange} value={value} />, true);
   }
 
-  if (schema.type === 'boolean') {
+  if (schema.type === "boolean") {
     return row(
       <div className="flex items-center justify-end">
         <Switch checked={Boolean(value)} onCheckedChange={onChange} />
-      </div>
-    )
+      </div>,
+    );
   }
 
-  const selectOptions = enumOptions ?? (schema.type === 'select' ? (schema.options ?? []).map(String) : undefined)
+  const selectOptions =
+    enumOptions ??
+    (schema.type === "select" ? (schema.options ?? []).map(String) : undefined);
 
   // Large closed-world lists (e.g. ~590 IANA timezones) get a searchable
   // Popover + cmdk combobox instead of a closed Select dropdown.  The schema
@@ -107,12 +129,12 @@ export function ConfigField({
       <SearchableSelect
         clearLabel={schema.clearable ? c.systemDefault : undefined}
         emptyMessage={c.noResults}
-        onChange={next => onChange(next)}
-        options={selectOptions.filter(o => o !== '')}
+        onChange={(next) => onChange(next)}
+        options={selectOptions.filter((o) => o !== "")}
         placeholder={c.searchPlaceholder}
-        value={String(value ?? '')}
-      />
-    )
+        value={String(value ?? "")}
+      />,
+    );
   }
 
   // Voice/model name fields are open-world (custom voice IDs, cloned voices,
@@ -126,83 +148,91 @@ export function ConfigField({
         className={CONTROL_TEXT}
         onChange={onChange}
         optionLabels={optionLabels}
-        options={selectOptions.filter(o => o !== '')}
+        options={selectOptions.filter((o) => o !== "")}
         placeholder={c.notSet}
-        value={String(value ?? '')}
-      />
-    )
+        value={String(value ?? "")}
+      />,
+    );
   }
 
   if (selectOptions) {
     return row(
       <Select
-        onValueChange={next => onChange(next === EMPTY_SELECT_VALUE ? '' : next)}
-        value={String(value ?? '') || EMPTY_SELECT_VALUE}
+        onValueChange={(next) =>
+          onChange(next === EMPTY_SELECT_VALUE ? "" : next)
+        }
+        value={String(value ?? "") || EMPTY_SELECT_VALUE}
       >
         <SelectTrigger className={CONTROL_TEXT}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {selectOptions.map(option => (
-            <SelectItem key={option || EMPTY_SELECT_VALUE} value={option || EMPTY_SELECT_VALUE}>
+          {selectOptions.map((option) => (
+            <SelectItem
+              key={option || EMPTY_SELECT_VALUE}
+              value={option || EMPTY_SELECT_VALUE}
+            >
               {option
                 ? (optionLabels?.[option] ?? prettyName(option))
-                : schemaKey === 'display.personality'
+                : schemaKey === "display.personality"
                   ? c.none
-                  : schemaKey === 'memory.provider'
+                  : schemaKey === "memory.provider"
                     ? c.builtinOnly
                     : c.noneParen}
             </SelectItem>
           ))}
         </SelectContent>
-      </Select>
-    )
+      </Select>,
+    );
   }
 
-  if (schema.type === 'number') {
+  if (schema.type === "number") {
     return row(
       <Input
         className={CONTROL_TEXT}
-        onChange={e => {
-          const raw = e.target.value
-          const n = raw === '' ? 0 : Number(raw)
+        onChange={(e) => {
+          const raw = e.target.value;
+          const n = raw === "" ? 0 : Number(raw);
 
           if (!Number.isNaN(n)) {
-            onChange(n)
+            onChange(n);
           }
         }}
         placeholder={c.notSet}
         type="number"
-        value={value === undefined || value === null ? '' : String(value)}
-      />
-    )
+        value={value === undefined || value === null ? "" : String(value)}
+      />,
+    );
   }
 
-  if (schema.type === 'list') {
+  if (schema.type === "list") {
     return row(
       <Input
         className={CONTROL_TEXT}
-        onChange={e =>
+        onChange={(e) =>
           onChange(
             e.target.value
-              .split(',')
-              .map(s => s.trim())
-              .filter(Boolean)
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
           )
         }
         placeholder={c.commaSeparated}
-        value={Array.isArray(value) ? value.join(', ') : String(value ?? '')}
-      />
-    )
+        value={Array.isArray(value) ? value.join(", ") : String(value ?? "")}
+      />,
+    );
   }
 
-  if (typeof value === 'object' && value !== null) {
+  if (typeof value === "object" && value !== null) {
     return row(
       <Textarea
-        className={cn('min-h-28 resize-y bg-background font-mono', CONTROL_TEXT)}
-        onChange={e => {
+        className={cn(
+          "min-h-28 resize-y bg-background font-mono",
+          CONTROL_TEXT,
+        )}
+        onChange={(e) => {
           try {
-            onChange(JSON.parse(e.target.value))
+            onChange(JSON.parse(e.target.value));
           } catch {
             /* keep last valid */
           }
@@ -211,28 +241,28 @@ export function ConfigField({
         spellCheck={false}
         value={JSON.stringify(value, null, 2)}
       />,
-      true
-    )
+      true,
+    );
   }
 
-  const isLong = schema.type === 'text' || String(value ?? '').length > 100
+  const isLong = schema.type === "text" || String(value ?? "").length > 100;
 
   return row(
     isLong ? (
       <Textarea
-        className={cn('min-h-24 resize-y bg-background', CONTROL_TEXT)}
-        onChange={e => onChange(e.target.value)}
+        className={cn("min-h-24 resize-y bg-background", CONTROL_TEXT)}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={c.notSet}
-        value={String(value ?? '')}
+        value={String(value ?? "")}
       />
     ) : (
       <Input
         className={CONTROL_TEXT}
-        onChange={e => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={c.notSet}
-        value={String(value ?? '')}
+        value={String(value ?? "")}
       />
     ),
-    isLong
-  )
+    isLong,
+  );
 }

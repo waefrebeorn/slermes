@@ -18,33 +18,40 @@
  * Electron for the frame between issuing a search and the first match being
  * selected, so the ordinal is clamped into `[0, count]` rather than trusted.
  */
-export function formatMatchLabel(query: string, activeMatchOrdinal: number, matchCount: number): string {
+export function formatMatchLabel(
+  query: string,
+  activeMatchOrdinal: number,
+  matchCount: number,
+): string {
   if (!query) {
-    return ''
+    return "";
   }
 
-  const count = Number.isFinite(matchCount) && matchCount > 0 ? Math.floor(matchCount) : 0
+  const count =
+    Number.isFinite(matchCount) && matchCount > 0 ? Math.floor(matchCount) : 0;
 
   if (count === 0) {
-    return '0/0'
+    return "0/0";
   }
 
-  const raw = Number.isFinite(activeMatchOrdinal) ? Math.floor(activeMatchOrdinal) : 0
-  const ordinal = Math.min(Math.max(raw, 0), count)
+  const raw = Number.isFinite(activeMatchOrdinal)
+    ? Math.floor(activeMatchOrdinal)
+    : 0;
+  const ordinal = Math.min(Math.max(raw, 0), count);
 
-  return `${ordinal}/${count}`
+  return `${ordinal}/${count}`;
 }
 
 /** What a keypress means to an open find bar. `null` = not ours, let it through. */
-export type FindBarKeyAction = 'close' | 'next' | 'previous' | null
+export type FindBarKeyAction = "close" | "next" | "previous" | null;
 
 /** The subset of a keyboard event the matcher needs — works for DOM and React events. */
 export interface FindBarKeyEvent {
-  key: string
-  shiftKey?: boolean
-  metaKey?: boolean
-  ctrlKey?: boolean
-  altKey?: boolean
+  key: string;
+  shiftKey?: boolean;
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+  altKey?: boolean;
 }
 
 /**
@@ -62,28 +69,31 @@ export interface FindBarKeyEvent {
  * `Alt` is treated as disqualifying so ⌥⌘G and friends fall through to
  * whatever else may want them instead of being silently swallowed.
  */
-export function findBarKeyAction(event: FindBarKeyEvent, options: { inInput?: boolean } = {}): FindBarKeyAction {
+export function findBarKeyAction(
+  event: FindBarKeyEvent,
+  options: { inInput?: boolean } = {},
+): FindBarKeyAction {
   if (event.altKey) {
-    return null
+    return null;
   }
 
-  const mod = Boolean(event.metaKey || event.ctrlKey)
+  const mod = Boolean(event.metaKey || event.ctrlKey);
 
-  if (event.key === 'Escape') {
-    return mod ? null : 'close'
+  if (event.key === "Escape") {
+    return mod ? null : "close";
   }
 
   // `event.key` for the G key is 'g' unshifted and 'G' with Shift held, so
   // compare case-insensitively and read direction from `shiftKey` alone.
-  if (mod && event.key.toLowerCase() === 'g') {
-    return event.shiftKey ? 'previous' : 'next'
+  if (mod && event.key.toLowerCase() === "g") {
+    return event.shiftKey ? "previous" : "next";
   }
 
-  if (event.key === 'Enter' && !mod && options.inInput) {
-    return event.shiftKey ? 'previous' : 'next'
+  if (event.key === "Enter" && !mod && options.inInput) {
+    return event.shiftKey ? "previous" : "next";
   }
 
-  return null
+  return null;
 }
 
 /**
@@ -105,5 +115,5 @@ export function findBarKeyAction(event: FindBarKeyEvent, options: { inInput?: bo
  * invariant in apps/desktop/AGENTS.md.
  */
 export function findBarClaimsCombo(combo: string): boolean {
-  return combo === 'mod+g' || combo === 'mod+shift+g' || combo === 'escape'
+  return combo === "mod+g" || combo === "mod+shift+g" || combo === "escape";
 }

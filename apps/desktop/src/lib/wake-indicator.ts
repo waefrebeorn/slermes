@@ -1,55 +1,59 @@
-export type WakeIndicatorState = 'capturing' | 'detected' | 'hidden'
+export type WakeIndicatorState = "capturing" | "detected" | "hidden";
 
-export type WakeIndicatorVoiceStatus = 'idle' | 'listening' | 'speaking' | 'thinking' | 'transcribing'
+export type WakeIndicatorVoiceStatus =
+  "idle" | "listening" | "speaking" | "thinking" | "transcribing";
 
-let wakeStartedConversation = false
-let voiceConversationStarted = false
-let lastState: WakeIndicatorState = 'hidden'
+let wakeStartedConversation = false;
+let voiceConversationStarted = false;
+let lastState: WakeIndicatorState = "hidden";
 
 function pushState(state: WakeIndicatorState): void {
   if (state === lastState) {
-    return
+    return;
   }
 
-  lastState = state
-  window.hermesDesktop?.wakeIndicator?.setState(state)
+  lastState = state;
+  window.hermesDesktop?.wakeIndicator?.setState(state);
 }
 
 export function activateWakeIndicator(): void {
-  wakeStartedConversation = true
-  voiceConversationStarted = false
-  pushState('detected')
+  wakeStartedConversation = true;
+  voiceConversationStarted = false;
+  pushState("detected");
 }
 
-export function syncWakeIndicatorWithVoice(active: boolean, status: WakeIndicatorVoiceStatus): boolean {
+export function syncWakeIndicatorWithVoice(
+  active: boolean,
+  status: WakeIndicatorVoiceStatus,
+): boolean {
   if (!wakeStartedConversation) {
-    return false
+    return false;
   }
 
   if (!active && !voiceConversationStarted) {
-    return false
+    return false;
   }
 
   if (!active) {
-    wakeStartedConversation = false
-    voiceConversationStarted = false
-    pushState('hidden')
+    wakeStartedConversation = false;
+    voiceConversationStarted = false;
+    pushState("hidden");
 
-    return true
+    return true;
   }
 
-  voiceConversationStarted = true
-  pushState(status === 'listening' ? 'capturing' : 'detected')
+  voiceConversationStarted = true;
+  pushState(status === "listening" ? "capturing" : "detected");
 
-  return true
+  return true;
 }
 
 export function clearWakeIndicator(): void {
-  if (!wakeStartedConversation && lastState === 'hidden') {
-    return
+  if (!wakeStartedConversation && lastState === "hidden") {
+    return;
   }
 
-  wakeStartedConversation = false
-  voiceConversationStarted = false
-  pushState('hidden')
+  wakeStartedConversation = false;
+  voiceConversationStarted = false;
+  pushState("hidden");
 }

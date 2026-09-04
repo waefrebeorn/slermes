@@ -1,27 +1,27 @@
-import { createElement, type ReactNode } from 'react'
+import { createElement, type ReactNode } from "react";
 
-import { ErrorBoundary } from '@/components/error-boundary'
-import { Button } from '@/components/ui/button'
-import { Codicon } from '@/components/ui/codicon'
-import { ErrorState } from '@/components/ui/error-state'
-import { Tip } from '@/components/ui/tooltip'
+import { ErrorBoundary } from "@/components/error-boundary";
+import { Button } from "@/components/ui/button";
+import { Codicon } from "@/components/ui/codicon";
+import { ErrorState } from "@/components/ui/error-state";
+import { Tip } from "@/components/ui/tooltip";
 
 interface ContribBoundaryProps {
-  children: ReactNode
+  children: ReactNode;
   /** Contribution key, shown in the fallback + console tag. */
-  id: string
+  id: string;
   /** `chip` = inline bar item (tiny fallback); `pane` = zone body. */
-  variant?: 'chip' | 'pane'
+  variant?: "chip" | "pane";
 }
 
 interface ContribRenderProps {
-  render: () => ReactNode
+  render: () => ReactNode;
 }
 
 /** Mount a contribution callback as a component so its hooks and errors belong
  * to the contribution, not to whichever host surface happened to call it. */
 export function ContribRender({ render }: ContribRenderProps) {
-  return createElement(render)
+  return createElement(render);
 }
 
 /**
@@ -35,11 +35,15 @@ export function ContribRender({ render }: ContribRenderProps) {
  * as the React boundary and dialog errors) so a crashed contribution reads like
  * every other failure, not a raw stack dump.
  */
-export function ContribBoundary({ children, id, variant = 'pane' }: ContribBoundaryProps) {
+export function ContribBoundary({
+  children,
+  id,
+  variant = "pane",
+}: ContribBoundaryProps) {
   return (
     <ErrorBoundary
       fallback={({ error, reset }) =>
-        variant === 'chip' ? (
+        variant === "chip" ? (
           <Tip label={`${id}: ${error.message}`}>
             <button
               className="inline-flex items-center gap-1 rounded px-1.5 text-[0.6875rem] text-destructive transition-colors hover:bg-(--chrome-action-hover)"
@@ -52,8 +56,16 @@ export function ContribBoundary({ children, id, variant = 'pane' }: ContribBound
           </Tip>
         ) : (
           <div className="grid h-full place-items-center p-6">
-            <ErrorState description={error.message} title={`“${id}” failed to render`}>
-              <Button className="justify-self-center" onClick={reset} size="sm" variant="outline">
+            <ErrorState
+              description={error.message}
+              title={`“${id}” failed to render`}
+            >
+              <Button
+                className="justify-self-center"
+                onClick={reset}
+                size="sm"
+                variant="outline"
+              >
                 <Codicon name="refresh" size="0.8rem" />
                 Retry
               </Button>
@@ -65,5 +77,5 @@ export function ContribBoundary({ children, id, variant = 'pane' }: ContribBound
     >
       {children}
     </ErrorBoundary>
-  )
+  );
 }

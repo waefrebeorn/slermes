@@ -1,7 +1,13 @@
-import { requestComposerFocus, requestComposerInsert } from '@/app/chat/composer/focus'
-import { getGhAuthStatus } from '@/hermes'
-import { translateNow } from '@/i18n'
-import { type ComposerSuggestion, registerDraftProvider } from '@/store/composer-suggestions'
+import {
+  requestComposerFocus,
+  requestComposerInsert,
+} from "@/app/chat/composer/focus";
+import { getGhAuthStatus } from "@/hermes";
+import { translateNow } from "@/i18n";
+import {
+  type ComposerSuggestion,
+  registerDraftProvider,
+} from "@/store/composer-suggestions";
 
 /**
  * GitHub draft provider — the deliberate NON-MCP integration path.
@@ -26,91 +32,93 @@ import { type ComposerSuggestion, registerDraftProvider } from '@/store/composer
  * than nagging.
  */
 
-const AUTH_TTL_MS = 5 * 60_000
-const SKILL_NAME = 'github-auth'
+const AUTH_TTL_MS = 5 * 60_000;
+const SKILL_NAME = "github-auth";
 
-let needsSetup: boolean | null = null
-let checkedAt = 0
+let needsSetup: boolean | null = null;
+let checkedAt = 0;
 
 /** Drop the cached gh-auth probe (e.g. after the setup flow completes). */
 export function invalidateGithubSuggestionIndex(): void {
-  needsSetup = null
-  checkedAt = 0
+  needsSetup = null;
+  checkedAt = 0;
 }
 
 // Whole-word "github" mention or a pasted github.com link. Same completed-
 // word discipline as the MCP provider: a keyword still under the caret is a
 // word in progress, not intent — but a pasted host counts immediately.
-const KEYWORD_RE = /(?<![\p{L}\p{N}])github(?![\p{L}\p{N}])(?=[\s\S])/iu
-const HOST_RE = /https?:\/\/([^\s/,)\]}"'<>]*@)?([\w.-]*\.)?github\.com(?=[/\s:,)\]}"'<>]|$)/i
+const KEYWORD_RE = /(?<![\p{L}\p{N}])github(?![\p{L}\p{N}])(?=[\s\S])/iu;
+const HOST_RE =
+  /https?:\/\/([^\s/,)\]}"'<>]*@)?([\w.-]*\.)?github\.com(?=[/\s:,)\]}"'<>]|$)/i;
 
 /** Pure matcher, exported for tests. */
 export function githubHit(text: string): boolean {
   if (HOST_RE.test(text)) {
-    return true
+    return true;
   }
 
   // Keyword matching runs with URLs removed: "github" inside a pasted
   // lookalike domain (notgithub.com, github.com.evil.example) is the URL's
   // business, and the host matcher above already rejected it.
-  const withoutUrls = text.replace(/https?:\/\/[^\s]+/gi, ' ')
-  const match = KEYWORD_RE.exec(withoutUrls.toLowerCase())
+  const withoutUrls = text.replace(/https?:\/\/[^\s]+/gi, " ");
+  const match = KEYWORD_RE.exec(withoutUrls.toLowerCase());
 
   // Completed word: at least one character follows the mention.
-  return match !== null && match.index + 'github'.length < withoutUrls.length
+  return match !== null && match.index + "github".length < withoutUrls.length;
 }
 
 async function loadNeedsSetup(): Promise<boolean> {
   if (needsSetup !== null && Date.now() - checkedAt < AUTH_TTL_MS) {
-    return needsSetup
+    return needsSetup;
   }
 
-  const status = await getGhAuthStatus()
+  const status = await getGhAuthStatus();
 
-  needsSetup = !status.authenticated
-  checkedAt = Date.now()
+  needsSetup = !status.authenticated;
+  checkedAt = Date.now();
 
-  return needsSetup
+  return needsSetup;
 }
 
 function toSuggestion(): ComposerSuggestion {
-  const copy = (key: string, ...args: unknown[]) => translateNow(`composer.githubSuggestions.${key}`, ...args)
+  const copy = (key: string, ...args: unknown[]) =>
+    translateNow(`composer.githubSuggestions.${key}`, ...args);
 
   return {
-    brand: 'github',
-    doneLabel: copy('done'),
-    doneTip: copy('doneTip'),
+    brand: "github",
+    doneLabel: copy("done"),
+    doneTip: copy("doneTip"),
     id: SKILL_NAME,
     invoke: async () => {
       // Prefix, don't replace — and never send. The agent takes over when
       // the user sends: the github-auth skill installs gh if needed and
       // runs the device-code OAuth flow.
-      requestComposerInsert(`/${SKILL_NAME} `, { mode: 'prefix' })
-      requestComposerFocus()
+      requestComposerInsert(`/${SKILL_NAME} `, { mode: "prefix" });
+      requestComposerFocus();
     },
-    label: copy('label'),
-    provider: 'github',
-    tip: copy('tip'),
-    workingLabel: copy('label'),
-    workingTip: copy('tip')
-  }
+    label: copy("label"),
+    provider: "github",
+    tip: copy("tip"),
+    workingLabel: copy("label"),
+    workingTip: copy("tip"),
+  };
 }
 
-registerDraftProvider('github', async ({ text }) => {
-  const trimmed = text.trimStart()
+registerDraftProvider("github", async ({ text }) => {
+  const trimmed = text.trimStart();
 
   // Already a slash command (possibly ours from a previous click).
-  if (trimmed.startsWith('/')) {
-    return []
+  if (trimmed.startsWith("/")) {
+    return [];
   }
 
   if (!githubHit(text)) {
-    return []
+    return [];
   }
 
   if (!(await loadNeedsSetup())) {
-    return []
+    return [];
   }
 
-  return [toSuggestion()]
-})
+  return [toSuggestion()];
+});

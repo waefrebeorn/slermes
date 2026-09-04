@@ -1,25 +1,29 @@
-import { act, cleanup } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, cleanup } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { $petActivity, $petState, setPetActivity } from '@/store/pet'
-import type { RpcEvent } from '@/types/hermes'
+import { $petActivity, $petState, setPetActivity } from "@/store/pet";
+import type { RpcEvent } from "@/types/hermes";
 
-import { type MessageStreamHarness, renderMessageStream } from './test-harness'
+import { type MessageStreamHarness, renderMessageStream } from "./test-harness";
 
-const SID = 'session-1'
-const OTHER_SID = 'session-2'
+const SID = "session-1";
+const OTHER_SID = "session-2";
 
-let stream: MessageStreamHarness
+let stream: MessageStreamHarness;
 
 function mountStream() {
-  stream = renderMessageStream(SID)
+  stream = renderMessageStream(SID);
 }
 
-function emit(type: RpcEvent['type'], payload: RpcEvent['payload'] = {}, sessionId = SID) {
-  act(() => stream.handleEvent({ payload, session_id: sessionId, type }))
+function emit(
+  type: RpcEvent["type"],
+  payload: RpcEvent["payload"] = {},
+  sessionId = SID,
+) {
+  act(() => stream.handleEvent({ payload, session_id: sessionId, type }));
 }
 
-describe('pet tool-failure reaction', () => {
+describe("pet tool-failure reaction", () => {
   beforeEach(() => {
     setPetActivity({
       busy: false,
@@ -28,33 +32,41 @@ describe('pet tool-failure reaction', () => {
       reasoning: false,
       error: false,
       justCompleted: false,
-      celebrate: false
-    })
-  })
+      celebrate: false,
+    });
+  });
 
   afterEach(() => {
-    cleanup()
-    setPetActivity({ error: false, toolRunning: false })
-    vi.restoreAllMocks()
-  })
+    cleanup();
+    setPetActivity({ error: false, toolRunning: false });
+    vi.restoreAllMocks();
+  });
 
-  it('briefly shows failed when the active session has an isolated tool error', () => {
-    mountStream()
+  it("briefly shows failed when the active session has an isolated tool error", () => {
+    mountStream();
 
-    emit('tool.start', { name: 'terminal', tool_id: 'tool-1' })
-    emit('tool.complete', { name: 'terminal', tool_id: 'tool-1', error: 'exit code 1' })
+    emit("tool.start", { name: "terminal", tool_id: "tool-1" });
+    emit("tool.complete", {
+      name: "terminal",
+      tool_id: "tool-1",
+      error: "exit code 1",
+    });
 
-    expect($petActivity.get().error).toBe(true)
-    expect($petState.get()).toBe('failed')
-  })
+    expect($petActivity.get().error).toBe(true);
+    expect($petState.get()).toBe("failed");
+  });
 
-  it('does not show failed for a successful tool or a background-session failure', () => {
-    mountStream()
+  it("does not show failed for a successful tool or a background-session failure", () => {
+    mountStream();
 
-    emit('tool.complete', { name: 'terminal', tool_id: 'tool-1' })
-    expect($petActivity.get().error).toBe(false)
+    emit("tool.complete", { name: "terminal", tool_id: "tool-1" });
+    expect($petActivity.get().error).toBe(false);
 
-    emit('tool.complete', { name: 'terminal', tool_id: 'tool-2', error: 'exit code 1' }, OTHER_SID)
-    expect($petActivity.get().error).toBe(false)
-  })
-})
+    emit(
+      "tool.complete",
+      { name: "terminal", tool_id: "tool-2", error: "exit code 1" },
+      OTHER_SID,
+    );
+    expect($petActivity.get().error).toBe(false);
+  });
+});

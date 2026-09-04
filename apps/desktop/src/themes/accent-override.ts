@@ -13,12 +13,14 @@
  * theme the user picked later.
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { normalizeHex } from './color'
+import { normalizeHex } from "./color";
 
-export const $accentOverride = atom<null | string>(null)
+export const $accentOverride = atom<null | string>(null);
 
 export function setAccentOverride(color: null | string): void {
-  $accentOverride.set(color === null ? null : (normalizeHex(color) ?? $accentOverride.get()))
+  $accentOverride.set(
+    color === null ? null : (normalizeHex(color) ?? $accentOverride.get()),
+  );
 }

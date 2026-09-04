@@ -1,184 +1,222 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type * as clarifyStore from '@/store/clarify'
+import type * as clarifyStore from "@/store/clarify";
 
 const { setClarifyRequestMock, clearClarifyRequestMock } = vi.hoisted(() => ({
   clearClarifyRequestMock: vi.fn(),
-  setClarifyRequestMock: vi.fn()
-}))
+  setClarifyRequestMock: vi.fn(),
+}));
 
-vi.mock('@/store/clarify', async importOriginal => {
-  const actual = await importOriginal<typeof clarifyStore>()
+vi.mock("@/store/clarify", async (importOriginal) => {
+  const actual = await importOriginal<typeof clarifyStore>();
 
   return {
     ...actual,
     clearClarifyRequest: clearClarifyRequestMock,
-    setClarifyRequest: setClarifyRequestMock
-  }
-})
+    setClarifyRequest: setClarifyRequestMock,
+  };
+});
 
-import { $clarifyRequests } from '@/store/clarify'
+import { $clarifyRequests } from "@/store/clarify";
 
-import { pendingClarifyToolPayload, restorePendingClarifyFromSnapshot } from './restore-pending-clarify'
+import {
+  pendingClarifyToolPayload,
+  restorePendingClarifyFromSnapshot,
+} from "./restore-pending-clarify";
 
-const resumeStartedAt = 1_700_000_000
+const resumeStartedAt = 1_700_000_000;
 
-describe('restorePendingClarifyFromSnapshot', () => {
+describe("restorePendingClarifyFromSnapshot", () => {
   beforeEach(() => {
-    clearClarifyRequestMock.mockClear()
-    setClarifyRequestMock.mockClear()
-    $clarifyRequests.set({})
-  })
+    clearClarifyRequestMock.mockClear();
+    setClarifyRequestMock.mockClear();
+    $clarifyRequests.set({});
+  });
 
-  it('restores a batch clarify snapshot (questions, no top-level question)', () => {
+  it("restores a batch clarify snapshot (questions, no top-level question)", () => {
     const state = restorePendingClarifyFromSnapshot(
       {
         pending_clarify: {
-          request_id: 'rid1',
+          request_id: "rid1",
           questions: [
-            { choices: ['Yes', 'No'], multi_select: false, qid: 'q0', question: 'Proceed?' },
-            { qid: 'q1', question: 'Which region?' }
-          ]
-        }
+            {
+              choices: ["Yes", "No"],
+              multi_select: false,
+              qid: "q0",
+              question: "Proceed?",
+            },
+            { qid: "q1", question: "Which region?" },
+          ],
+        },
       },
-      'sess-1',
-      resumeStartedAt
-    )
+      "sess-1",
+      resumeStartedAt,
+    );
 
-    expect(state.request).not.toBeNull()
+    expect(state.request).not.toBeNull();
     expect(setClarifyRequestMock).toHaveBeenCalledWith(
       expect.objectContaining({
         multiSelect: false,
-        question: '',
-        requestId: 'rid1',
-        sessionId: 'sess-1',
+        question: "",
+        requestId: "rid1",
+        sessionId: "sess-1",
         questions: [
-          { choices: ['Yes', 'No'], multiSelect: false, qid: 'q0', question: 'Proceed?' },
-          { multiSelect: false, qid: 'q1', question: 'Which region?', choices: null }
-        ]
-      })
-    )
-  })
+          {
+            choices: ["Yes", "No"],
+            multiSelect: false,
+            qid: "q0",
+            question: "Proceed?",
+          },
+          {
+            multiSelect: false,
+            qid: "q1",
+            question: "Which region?",
+            choices: null,
+          },
+        ],
+      }),
+    );
+  });
 
-  it('carries server-locked answers into the replayed batch card', () => {
+  it("carries server-locked answers into the replayed batch card", () => {
     restorePendingClarifyFromSnapshot(
       {
         pending_clarify: {
-          answers: { q0: 'Yes', junk: 42 },
-          request_id: 'rid2',
-          questions: [{ qid: 'q0', question: 'Proceed?' }]
-        }
+          answers: { q0: "Yes", junk: 42 },
+          request_id: "rid2",
+          questions: [{ qid: "q0", question: "Proceed?" }],
+        },
       },
-      'sess-2',
-      resumeStartedAt
-    )
+      "sess-2",
+      resumeStartedAt,
+    );
 
     expect(setClarifyRequestMock).toHaveBeenCalledWith(
-      expect.objectContaining({ lockedAnswers: { q0: 'Yes' }, requestId: 'rid2' })
-    )
-  })
+      expect.objectContaining({
+        lockedAnswers: { q0: "Yes" },
+        requestId: "rid2",
+      }),
+    );
+  });
 
-  it('still restores the single-question form', () => {
+  it("still restores the single-question form", () => {
     const state = restorePendingClarifyFromSnapshot(
       {
         pending_clarify: {
-          choices: ['A', 'B'],
+          choices: ["A", "B"],
           multi_select: true,
-          question: 'Pick one',
-          request_id: 'rid3'
-        }
+          question: "Pick one",
+          request_id: "rid3",
+        },
       },
-      'sess-3',
-      resumeStartedAt
-    )
+      "sess-3",
+      resumeStartedAt,
+    );
 
-    expect(state.request).not.toBeNull()
+    expect(state.request).not.toBeNull();
     expect(setClarifyRequestMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        choices: ['A', 'B'],
+        choices: ["A", "B"],
         multiSelect: true,
-        question: 'Pick one',
-        requestId: 'rid3'
-      })
-    )
-  })
+        question: "Pick one",
+        requestId: "rid3",
+      }),
+    );
+  });
 
-  it('rejects a payload with neither form (no request restored)', () => {
+  it("rejects a payload with neither form (no request restored)", () => {
     const state = restorePendingClarifyFromSnapshot(
-      { pending_clarify: { request_id: 'rid4' } },
-      'sess-4',
-      resumeStartedAt
-    )
+      { pending_clarify: { request_id: "rid4" } },
+      "sess-4",
+      resumeStartedAt,
+    );
 
-    expect(state.request).toBeNull()
-    expect(setClarifyRequestMock).not.toHaveBeenCalled()
-  })
+    expect(state.request).toBeNull();
+    expect(setClarifyRequestMock).not.toHaveBeenCalled();
+  });
 
-  it('rejects a payload with no request id', () => {
+  it("rejects a payload with no request id", () => {
     const state = restorePendingClarifyFromSnapshot(
-      { pending_clarify: { question: 'Orphaned prompt' } },
-      'sess-5',
-      resumeStartedAt
-    )
+      { pending_clarify: { question: "Orphaned prompt" } },
+      "sess-5",
+      resumeStartedAt,
+    );
 
-    expect(state.request).toBeNull()
-    expect(state.authoritativeAbsent).toBe(true)
-    expect(setClarifyRequestMock).not.toHaveBeenCalled()
-  })
+    expect(state.request).toBeNull();
+    expect(state.authoritativeAbsent).toBe(true);
+    expect(setClarifyRequestMock).not.toHaveBeenCalled();
+  });
 
-  it('clears a stale local request when the snapshot has none, and leaves a newer in-flight one', () => {
+  it("clears a stale local request when the snapshot has none, and leaves a newer in-flight one", () => {
     $clarifyRequests.set({
-      'sess-6': {
+      "sess-6": {
         choices: null,
         multiSelect: false,
-        question: 'Old',
+        question: "Old",
         receivedAt: resumeStartedAt - 10,
-        requestId: 'old-rid',
-        sessionId: 'sess-6'
-      }
-    })
+        requestId: "old-rid",
+        sessionId: "sess-6",
+      },
+    });
 
-    const cleared = restorePendingClarifyFromSnapshot({}, 'sess-6', resumeStartedAt, 'old-rid')
+    const cleared = restorePendingClarifyFromSnapshot(
+      {},
+      "sess-6",
+      resumeStartedAt,
+      "old-rid",
+    );
 
-    expect(cleared.authoritativeAbsent).toBe(true)
-    expect(cleared.cleared?.requestId).toBe('old-rid')
-    expect(clearClarifyRequestMock).toHaveBeenCalledWith('old-rid', 'sess-6')
+    expect(cleared.authoritativeAbsent).toBe(true);
+    expect(cleared.cleared?.requestId).toBe("old-rid");
+    expect(clearClarifyRequestMock).toHaveBeenCalledWith("old-rid", "sess-6");
 
     $clarifyRequests.set({
-      'sess-6': {
+      "sess-6": {
         choices: null,
         multiSelect: false,
-        question: 'Newer',
+        question: "Newer",
         receivedAt: resumeStartedAt + 1,
-        requestId: 'new-rid',
-        sessionId: 'sess-6'
-      }
-    })
+        requestId: "new-rid",
+        sessionId: "sess-6",
+      },
+    });
 
-    const kept = restorePendingClarifyFromSnapshot({}, 'sess-6', resumeStartedAt, 'old-rid')
+    const kept = restorePendingClarifyFromSnapshot(
+      {},
+      "sess-6",
+      resumeStartedAt,
+      "old-rid",
+    );
 
-    expect(kept.cleared).toBeNull()
-    expect(kept.request).toBeNull()
-    expect(clearClarifyRequestMock).toHaveBeenCalledTimes(1)
-  })
-})
+    expect(kept.cleared).toBeNull();
+    expect(kept.request).toBeNull();
+    expect(clearClarifyRequestMock).toHaveBeenCalledTimes(1);
+  });
+});
 
-describe('pendingClarifyToolPayload', () => {
-  it('mirrors the batch wire shape for in-place re-arm', () => {
+describe("pendingClarifyToolPayload", () => {
+  it("mirrors the batch wire shape for in-place re-arm", () => {
     expect(
       pendingClarifyToolPayload({
         choices: null,
         multiSelect: false,
-        question: '',
-        questions: [{ choices: ['Yes', 'No'], multiSelect: false, qid: 'q0', question: 'Proceed?' }],
-        requestId: 'rid',
-        sessionId: 'sess'
-      })
+        question: "",
+        questions: [
+          {
+            choices: ["Yes", "No"],
+            multiSelect: false,
+            qid: "q0",
+            question: "Proceed?",
+          },
+        ],
+        requestId: "rid",
+        sessionId: "sess",
+      }),
     ).toEqual({
       args: {
-        questions: [{ choices: ['Yes', 'No'], question: 'Proceed?' }]
+        questions: [{ choices: ["Yes", "No"], question: "Proceed?" }],
       },
-      tool_id: 'rid'
-    })
-  })
-})
+      tool_id: "rid",
+    });
+  });
+});

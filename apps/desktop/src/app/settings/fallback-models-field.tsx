@@ -1,18 +1,24 @@
-import { useQuery } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { getGlobalModelOptions } from '@/hermes'
-import { useI18n } from '@/i18n'
-import { Plus, X } from '@/lib/icons'
-import { cn } from '@/lib/utils'
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getGlobalModelOptions } from "@/hermes";
+import { useI18n } from "@/i18n";
+import { Plus, X } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
-import { CONTROL_TEXT } from './constants'
+import { CONTROL_TEXT } from "./constants";
 
 interface FallbackEntry {
-  provider: string
-  model: string
+  provider: string;
+  model: string;
 }
 
 // Normalize the raw config value (`fallback_providers`: a list of
@@ -20,37 +26,44 @@ interface FallbackEntry {
 // entries ("provider/model") so the editor never crashes on odd data.
 function normalizeEntries(value: unknown): FallbackEntry[] {
   if (!Array.isArray(value)) {
-    return []
+    return [];
   }
 
-  return value.map(item => {
-    if (item && typeof item === 'object') {
-      const record = item as Record<string, unknown>
+  return value.map((item) => {
+    if (item && typeof item === "object") {
+      const record = item as Record<string, unknown>;
 
-      return { provider: String(record.provider ?? ''), model: String(record.model ?? '') }
+      return {
+        provider: String(record.provider ?? ""),
+        model: String(record.model ?? ""),
+      };
     }
 
-    if (typeof item === 'string') {
-      const slash = item.indexOf('/')
+    if (typeof item === "string") {
+      const slash = item.indexOf("/");
 
       return slash > 0
         ? { provider: item.slice(0, slash), model: item.slice(slash + 1) }
-        : { provider: '', model: item }
+        : { provider: "", model: item };
     }
 
-    return { provider: '', model: '' }
-  })
+    return { provider: "", model: "" };
+  });
 }
 
 function completeEntries(rows: FallbackEntry[]): FallbackEntry[] {
-  return rows.filter(entry => entry.provider && entry.model)
+  return rows.filter((entry) => entry.provider && entry.model);
 }
 
 function entriesEqual(a: FallbackEntry[], b: FallbackEntry[]): boolean {
   return (
     a.length === b.length &&
-    a.every((entry, index) => entry.provider === b[index]?.provider && entry.model === b[index]?.model)
-  )
+    a.every(
+      (entry, index) =>
+        entry.provider === b[index]?.provider &&
+        entry.model === b[index]?.model,
+    )
+  );
 }
 
 /**
@@ -66,82 +79,105 @@ function entriesEqual(a: FallbackEntry[], b: FallbackEntry[]): boolean {
  */
 export function FallbackModelsField({
   value,
-  onChange
+  onChange,
 }: {
-  value: unknown
-  onChange: (next: FallbackEntry[]) => void
+  value: unknown;
+  onChange: (next: FallbackEntry[]) => void;
 }) {
-  const { t } = useI18n()
-  const m = t.settings.model
+  const { t } = useI18n();
+  const m = t.settings.model;
 
   const modelOptions = useQuery({
-    queryKey: ['model-options', 'global'],
-    queryFn: () => getGlobalModelOptions()
-  })
+    queryKey: ["model-options", "global"],
+    queryFn: () => getGlobalModelOptions(),
+  });
 
-  const providers = (modelOptions.data?.providers ?? []).filter(provider => provider.slug)
+  const providers = (modelOptions.data?.providers ?? []).filter(
+    (provider) => provider.slug,
+  );
 
-  const [rows, setRows] = useState<FallbackEntry[]>(() => normalizeEntries(value))
+  const [rows, setRows] = useState<FallbackEntry[]>(() =>
+    normalizeEntries(value),
+  );
   // Last complete chain we emitted (or seeded). Autosave echoes the same
   // filtered list back through `value`; ignore that echo so draft rows stay.
-  const lastEmittedRef = useRef(normalizeEntries(value))
+  const lastEmittedRef = useRef(normalizeEntries(value));
 
   // Resync on real external changes (profile switch / config reload). Skip
   // when `value` is just our own commit echoing through the parent.
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    const persisted = normalizeEntries(value)
+    const persisted = normalizeEntries(value);
 
     if (entriesEqual(persisted, lastEmittedRef.current)) {
-      return
+      return;
     }
 
-    lastEmittedRef.current = persisted
-    setRows(persisted)
-  }, [value])
+    lastEmittedRef.current = persisted;
+    setRows(persisted);
+  }, [value]);
 
   const commit = (next: FallbackEntry[]) => {
-    const complete = completeEntries(next)
+    const complete = completeEntries(next);
 
-    setRows(next)
-    lastEmittedRef.current = complete
-    onChange(complete)
-  }
+    setRows(next);
+    lastEmittedRef.current = complete;
+    onChange(complete);
+  };
 
   const updateRow = (index: number, patch: Partial<FallbackEntry>) =>
-    commit(rows.map((entry, i) => (i === index ? { ...entry, ...patch } : entry)))
+    commit(
+      rows.map((entry, i) => (i === index ? { ...entry, ...patch } : entry)),
+    );
 
   return (
     <div className="grid w-full gap-1.5">
-      {rows.length === 0 && <p className="text-xs text-muted-foreground">{m.fallbackEmpty}</p>}
+      {rows.length === 0 && (
+        <p className="text-xs text-muted-foreground">{m.fallbackEmpty}</p>
+      )}
       {rows.map((entry, index) => {
-        const providerRow = providers.find(provider => provider.slug === entry.provider)
-        const catalog = providerRow?.models ?? []
+        const providerRow = providers.find(
+          (provider) => provider.slug === entry.provider,
+        );
+        const catalog = providerRow?.models ?? [];
         // Keep an out-of-catalog model selectable so an existing custom
         // provider/model renders instead of showing a blank box.
-        const modelItems = entry.model && !catalog.includes(entry.model) ? [entry.model, ...catalog] : catalog
+        const modelItems =
+          entry.model && !catalog.includes(entry.model)
+            ? [entry.model, ...catalog]
+            : catalog;
 
         return (
           <div className="flex flex-wrap items-center gap-2" key={index}>
-            <span className="w-4 shrink-0 text-center font-mono text-[0.7rem] text-muted-foreground">{index + 1}</span>
-            <Select onValueChange={provider => updateRow(index, { provider, model: '' })} value={entry.provider}>
-              <SelectTrigger className={cn('min-w-36', CONTROL_TEXT)}>
+            <span className="w-4 shrink-0 text-center font-mono text-[0.7rem] text-muted-foreground">
+              {index + 1}
+            </span>
+            <Select
+              onValueChange={(provider) =>
+                updateRow(index, { provider, model: "" })
+              }
+              value={entry.provider}
+            >
+              <SelectTrigger className={cn("min-w-36", CONTROL_TEXT)}>
                 <SelectValue placeholder={m.provider} />
               </SelectTrigger>
               <SelectContent>
-                {providers.map(provider => (
+                {providers.map((provider) => (
                   <SelectItem key={provider.slug} value={provider.slug}>
                     {provider.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Select onValueChange={model => updateRow(index, { model })} value={entry.model}>
-              <SelectTrigger className={cn('min-w-52 flex-1', CONTROL_TEXT)}>
+            <Select
+              onValueChange={(model) => updateRow(index, { model })}
+              value={entry.model}
+            >
+              <SelectTrigger className={cn("min-w-52 flex-1", CONTROL_TEXT)}>
                 <SelectValue placeholder={m.model} />
               </SelectTrigger>
               <SelectContent>
-                {modelItems.map(model => (
+                {modelItems.map((model) => (
                   <SelectItem key={model} value={model}>
                     {model}
                   </SelectItem>
@@ -157,14 +193,18 @@ export function FallbackModelsField({
               <X className="size-3.5" />
             </Button>
           </div>
-        )
+        );
       })}
       <div>
-        <Button onClick={() => commit([...rows, { provider: '', model: '' }])} size="sm" variant="textStrong">
+        <Button
+          onClick={() => commit([...rows, { provider: "", model: "" }])}
+          size="sm"
+          variant="textStrong"
+        >
           <Plus className="size-3.5" />
           {m.fallbackAdd}
         </Button>
       </div>
     </div>
-  )
+  );
 }

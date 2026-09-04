@@ -36,23 +36,23 @@
  *   <Streamdown plugins={{ math }} ... />
  */
 
-import type { Element, ElementContent, Parent, Root } from 'hast'
-import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic'
-import { toText } from 'hast-util-to-text'
-import katex from 'katex'
-import remarkMath from 'remark-math'
-import type { Pluggable } from 'unified'
-import { SKIP, visitParents } from 'unist-util-visit-parents'
-import type { VFile } from 'vfile'
+import type { Element, ElementContent, Parent, Root } from "hast";
+import { fromHtmlIsomorphic } from "hast-util-from-html-isomorphic";
+import { toText } from "hast-util-to-text";
+import katex from "katex";
+import remarkMath from "remark-math";
+import type { Pluggable } from "unified";
+import { SKIP, visitParents } from "unist-util-visit-parents";
+import type { VFile } from "vfile";
 
-import { LruCache } from '@/lib/lru-cache'
+import { LruCache } from "@/lib/lru-cache";
 
 interface KatexMemoOptions {
   /**
    * Color used for KaTeX errors when we fall back to the lenient parser.
    * Mirrors `@streamdown/math`'s default so the visual output is identical.
    */
-  errorColor?: string
+  errorColor?: string;
 }
 
 interface MathPluginConfig {
@@ -62,21 +62,21 @@ interface MathPluginConfig {
    * `$$x$$`. Models almost always emit the single-dollar form, so we
    * default it to true at the createMemoizedMathPlugin call site.
    */
-  singleDollarTextMath?: boolean
-  errorColor?: string
+  singleDollarTextMath?: boolean;
+  errorColor?: string;
 }
 
 /** Cached rendered hast — children to splice into the math node's parent. */
-type CachedRender = ElementContent[]
+type CachedRender = ElementContent[];
 
-const CACHE_LIMIT = 512
+const CACHE_LIMIT = 512;
 
-const cache = new LruCache<string, CachedRender>(CACHE_LIMIT)
+const cache = new LruCache<string, CachedRender>(CACHE_LIMIT);
 
 function cacheKey(displayMode: boolean, value: string): string {
   // `\u0001` is a control character that (a) won't appear in normal
   // markdown and (b) is a single byte so the join is cheap.
-  return `${displayMode ? 'd' : 'i'}\u0001${value}`
+  return `${displayMode ? "d" : "i"}\u0001${value}`;
 }
 
 /**
@@ -91,51 +91,51 @@ function renderMath(
   displayMode: boolean,
   errorColor: string,
   file: VFile,
-  element: Element
+  element: Element,
 ): ElementContent[] {
-  let html: string
+  let html: string;
 
   try {
-    html = katex.renderToString(value, { displayMode, throwOnError: true })
+    html = katex.renderToString(value, { displayMode, throwOnError: true });
   } catch (error) {
-    const cause = error as Error
+    const cause = error as Error;
 
-    file.message('Could not render math with KaTeX', {
+    file.message("Could not render math with KaTeX", {
       cause,
       place: element.position,
-      ruleId: cause.name?.toLowerCase() ?? 'katex',
-      source: 'rehype-katex-memo'
-    })
+      ruleId: cause.name?.toLowerCase() ?? "katex",
+      source: "rehype-katex-memo",
+    });
 
     try {
       html = katex.renderToString(value, {
         displayMode,
         errorColor,
-        strict: 'ignore',
-        throwOnError: false
-      })
+        strict: "ignore",
+        throwOnError: false,
+      });
     } catch {
       // Last-resort fallback — render the source text inside a styled span
       // so the user at least sees what was supposed to be there. Mirrors
       // rehype-katex's own escape hatch.
       return [
         {
-          type: 'element',
-          tagName: 'span',
+          type: "element",
+          tagName: "span",
           properties: {
-            className: ['katex-error'],
+            className: ["katex-error"],
             style: `color:${errorColor}`,
-            title: String(error)
+            title: String(error),
           },
-          children: [{ type: 'text', value }]
-        }
-      ]
+          children: [{ type: "text", value }],
+        },
+      ];
     }
   }
 
-  const fragment = fromHtmlIsomorphic(html, { fragment: true })
+  const fragment = fromHtmlIsomorphic(html, { fragment: true });
 
-  return fragment.children as ElementContent[]
+  return fragment.children as ElementContent[];
 }
 
 /**
@@ -144,50 +144,57 @@ function renderMath(
  * and an LRU.set on miss.
  */
 function createMemoizedRehypeKatex(options: KatexMemoOptions = {}): Pluggable {
-  const errorColor = options.errorColor ?? 'var(--color-muted-foreground)'
+  const errorColor = options.errorColor ?? "var(--color-muted-foreground)";
 
   return () =>
     function transform(tree: Root, file: VFile): undefined {
-      visitParents(tree, 'element', (element, parents) => {
-        const classes = Array.isArray(element.properties?.className) ? (element.properties.className as string[]) : []
+      visitParents(tree, "element", (element, parents) => {
+        const classes = Array.isArray(element.properties?.className)
+          ? (element.properties.className as string[])
+          : [];
 
         // Match the same class set rehype-katex looks for. `language-math`
         // is the markdown ` ```math ` form, `math-inline` is what
         // remark-math emits for `$x$`, `math-display` for `$$x$$`.
-        const languageMath = classes.includes('language-math')
-        const mathDisplay = classes.includes('math-display')
-        const mathInline = classes.includes('math-inline')
+        const languageMath = classes.includes("language-math");
+        const mathDisplay = classes.includes("math-display");
+        const mathInline = classes.includes("math-inline");
 
         if (!(languageMath || mathDisplay || mathInline)) {
-          return
+          return;
         }
 
-        let displayMode = mathDisplay
-        let scope: Element = element
-        let parent: Parent | undefined = parents[parents.length - 1]
+        let displayMode = mathDisplay;
+        let scope: Element = element;
+        let parent: Parent | undefined = parents[parents.length - 1];
 
         // For ` ```math ` the scope walks up to the wrapping <pre> and
         // we treat it as display math. Same logic rehype-katex uses.
-        if (languageMath && parent && parent.type === 'element' && (parent as Element).tagName === 'pre') {
-          scope = parent as Element
-          parent = parents[parents.length - 2]
-          displayMode = true
+        if (
+          languageMath &&
+          parent &&
+          parent.type === "element" &&
+          (parent as Element).tagName === "pre"
+        ) {
+          scope = parent as Element;
+          parent = parents[parents.length - 2];
+          displayMode = true;
         }
 
         // No parent means the math node is at the root — there's nothing
         // to splice into, so bail. This shouldn't happen for properly
         // nested markdown but is the same defensive guard rehype-katex has.
         if (!parent) {
-          return
+          return;
         }
 
-        const value = toText(scope, { whitespace: 'pre' })
-        const key = cacheKey(displayMode, value)
-        let cached = cache.get(key)
+        const value = toText(scope, { whitespace: "pre" });
+        const key = cacheKey(displayMode, value);
+        let cached = cache.get(key);
 
         if (!cached) {
-          cached = renderMath(value, displayMode, errorColor, file, scope)
-          cache.set(key, cached)
+          cached = renderMath(value, displayMode, errorColor, file, scope);
+          cache.set(key, cached);
         }
 
         // Splice CLONES of the cached children into the parent. Reusing
@@ -196,18 +203,18 @@ function createMemoizedRehypeKatex(options: KatexMemoOptions = {}): Pluggable {
         // breaking the next cache hit. structuredClone is ~100µs per
         // equation, well below the ~5–20ms katex.renderToString cost
         // we're avoiding.
-        const clonedChildren = cached.map(child => structuredClone(child))
-        const index = parent.children.indexOf(scope as ElementContent)
+        const clonedChildren = cached.map((child) => structuredClone(child));
+        const index = parent.children.indexOf(scope as ElementContent);
 
         if (index === -1) {
-          return
+          return;
         }
 
-        parent.children.splice(index, 1, ...clonedChildren)
+        parent.children.splice(index, 1, ...clonedChildren);
 
-        return SKIP
-      })
-    }
+        return SKIP;
+      });
+    };
 }
 
 /**
@@ -215,15 +222,20 @@ function createMemoizedRehypeKatex(options: KatexMemoOptions = {}): Pluggable {
  * wrapper. Drop-in for `@streamdown/math`'s `createMathPlugin`.
  */
 export function createMemoizedMathPlugin(config: MathPluginConfig = {}) {
-  const remarkPlugin: Pluggable = [remarkMath, { singleDollarTextMath: config.singleDollarTextMath ?? false }]
+  const remarkPlugin: Pluggable = [
+    remarkMath,
+    { singleDollarTextMath: config.singleDollarTextMath ?? false },
+  ];
 
-  const rehypePlugin = createMemoizedRehypeKatex({ errorColor: config.errorColor })
+  const rehypePlugin = createMemoizedRehypeKatex({
+    errorColor: config.errorColor,
+  });
 
   return {
-    name: 'katex' as const,
-    type: 'math' as const,
+    name: "katex" as const,
+    type: "math" as const,
     remarkPlugin,
     rehypePlugin,
-    getStyles: () => 'katex/dist/katex.min.css'
-  }
+    getStyles: () => "katex/dist/katex.min.css",
+  };
 }

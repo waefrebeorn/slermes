@@ -13,34 +13,42 @@
  */
 
 /** The first target that resolves to a visible, on-screen element. */
-export function resolveTipAnchor(doc: Document, targets: readonly string[]): HTMLElement | null {
+export function resolveTipAnchor(
+  doc: Document,
+  targets: readonly string[],
+): HTMLElement | null {
   for (const selector of targets) {
-    const element = doc.querySelector<HTMLElement>(selector)
+    const element = doc.querySelector<HTMLElement>(selector);
 
     if (element && isTipAnchorVisible(element)) {
-      return element
+      return element;
     }
   }
 
-  return null
+  return null;
 }
 
 function isTipAnchorVisible(element: HTMLElement): boolean {
-  if (element.closest('[data-pane-hidden]')) {
-    return false
+  if (element.closest("[data-pane-hidden]")) {
+    return false;
   }
 
-  const rect = element.getBoundingClientRect()
+  const rect = element.getBoundingClientRect();
 
   if (rect.width < 8 || rect.height < 8) {
-    return false
+    return false;
   }
 
-  const view = element.ownerDocument.defaultView
+  const view = element.ownerDocument.defaultView;
 
   if (!view) {
-    return true
+    return true;
   }
 
-  return rect.bottom > 0 && rect.top < view.innerHeight && rect.right > 0 && rect.left < view.innerWidth
+  return (
+    rect.bottom > 0 &&
+    rect.top < view.innerHeight &&
+    rect.right > 0 &&
+    rect.left < view.innerWidth
+  );
 }

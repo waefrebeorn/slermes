@@ -1,138 +1,146 @@
-import { profileNameFromPath } from './profile-delete-routing'
+import { profileNameFromPath } from "./profile-delete-routing";
 
 export interface ProfileRenameRequest {
-  body?: unknown
-  method?: unknown
-  path?: unknown
+  body?: unknown;
+  method?: unknown;
+  path?: unknown;
 }
 
 export interface ProfileRename {
-  newName: string
-  oldName: string
+  newName: string;
+  oldName: string;
 }
 
 export interface ProfileRenameLifecycleDeps {
-  isValidProfileName: (profile: string) => boolean
-  primaryProfileKey: () => string
-  reloadPrimaryWindow: () => void
-  restartPrimaryBackend: () => Promise<void>
-  teardownPoolBackendAndWait: (profile: string) => Promise<void>
-  teardownPrimaryBackendAndWait: () => Promise<void>
-  writeActiveDesktopProfile: (profile: string) => void
+  isValidProfileName: (profile: string) => boolean;
+  primaryProfileKey: () => string;
+  reloadPrimaryWindow: () => void;
+  restartPrimaryBackend: () => Promise<void>;
+  teardownPoolBackendAndWait: (profile: string) => Promise<void>;
+  teardownPrimaryBackendAndWait: () => Promise<void>;
+  writeActiveDesktopProfile: (profile: string) => void;
 }
 
 export interface ProfileRenameLifecycle {
-  complete: () => Promise<void>
-  kind: 'pool' | 'primary'
-  rename: ProfileRename
-  rollback: () => Promise<void>
-  routeProfile: null
+  complete: () => Promise<void>;
+  kind: "pool" | "primary";
+  rename: ProfileRename;
+  rollback: () => Promise<void>;
+  routeProfile: null;
 }
 
 function parseJsonBody(body: unknown): Record<string, unknown> {
-  if (body == null || body === '') {
-    return {}
+  if (body == null || body === "") {
+    return {};
   }
 
-  if (typeof body === 'object' && !Array.isArray(body)) {
-    return body as Record<string, unknown>
+  if (typeof body === "object" && !Array.isArray(body)) {
+    return body as Record<string, unknown>;
   }
 
   try {
-    const parsed = JSON.parse(String(body))
+    const parsed = JSON.parse(String(body));
 
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed
+      : {};
   } catch {
-    return {}
+    return {};
   }
 }
 
-export function profileRenameFromRequest(request: ProfileRenameRequest | null | undefined): ProfileRename | null {
-  if (!request || String(request.method || 'GET').toUpperCase() !== 'PATCH') {
-    return null
+export function profileRenameFromRequest(
+  request: ProfileRenameRequest | null | undefined,
+): ProfileRename | null {
+  if (!request || String(request.method || "GET").toUpperCase() !== "PATCH") {
+    return null;
   }
 
-  const oldName = profileNameFromPath(request.path)
+  const oldName = profileNameFromPath(request.path);
 
-  if (!oldName || oldName === 'default') {
-    return null
+  if (!oldName || oldName === "default") {
+    return null;
   }
 
-  const body = parseJsonBody(request.body)
+  const body = parseJsonBody(request.body);
 
-  const newName = String(body.new_name || '')
+  const newName = String(body.new_name || "")
     .trim()
-    .toLowerCase()
+    .toLowerCase();
 
-  if (!newName || newName === 'default') {
-    return null
+  if (!newName || newName === "default") {
+    return null;
   }
 
-  return { newName, oldName }
+  return { newName, oldName };
 }
 
 export async function prepareProfileRenameLifecycle(
   request: ProfileRenameRequest | null | undefined,
-  deps: ProfileRenameLifecycleDeps
+  deps: ProfileRenameLifecycleDeps,
 ): Promise<ProfileRenameLifecycle | null> {
-  const rename = profileRenameFromRequest(request)
+  const rename = profileRenameFromRequest(request);
 
-  if (!rename || !deps.isValidProfileName(rename.oldName) || !deps.isValidProfileName(rename.newName)) {
-    return null
+  if (
+    !rename ||
+    !deps.isValidProfileName(rename.oldName) ||
+    !deps.isValidProfileName(rename.newName)
+  ) {
+    return null;
   }
 
   if (rename.oldName !== deps.primaryProfileKey()) {
-    await deps.teardownPoolBackendAndWait(rename.oldName)
+    await deps.teardownPoolBackendAndWait(rename.oldName);
 
     return {
       complete: async () => {},
-      kind: 'pool',
+      kind: "pool",
       rename,
       rollback: async () => {},
-      routeProfile: null
-    }
+      routeProfile: null,
+    };
   }
 
   // Make `default` the temporary primary before stopping the old backend.
   // Concurrent primary requests then share the temporary connection instead
   // of respawning the old profile and recreating its directory mid-rename.
-  deps.writeActiveDesktopProfile('default')
+  deps.writeActiveDesktopProfile("default");
 
   try {
-    await deps.teardownPrimaryBackendAndWait()
+    await deps.teardownPrimaryBackendAndWait();
   } catch (error) {
-    deps.writeActiveDesktopProfile(rename.oldName)
+    deps.writeActiveDesktopProfile(rename.oldName);
 
     try {
-      await deps.restartPrimaryBackend()
+      await deps.restartPrimaryBackend();
     } catch {
       // Preserve the teardown error that prevented the rename from starting.
     }
 
-    throw error
+    throw error;
   }
 
   return {
     complete: async () => {
-      deps.writeActiveDesktopProfile(rename.newName)
+      deps.writeActiveDesktopProfile(rename.newName);
 
       try {
-        await deps.teardownPrimaryBackendAndWait()
+        await deps.teardownPrimaryBackendAndWait();
       } finally {
-        deps.reloadPrimaryWindow()
+        deps.reloadPrimaryWindow();
       }
     },
-    kind: 'primary',
+    kind: "primary",
     rename,
     rollback: async () => {
-      deps.writeActiveDesktopProfile(rename.oldName)
+      deps.writeActiveDesktopProfile(rename.oldName);
 
       try {
-        await deps.teardownPrimaryBackendAndWait()
+        await deps.teardownPrimaryBackendAndWait();
       } finally {
-        await deps.restartPrimaryBackend()
+        await deps.restartPrimaryBackend();
       }
     },
-    routeProfile: null
-  }
+    routeProfile: null,
+  };
 }

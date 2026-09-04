@@ -1,23 +1,23 @@
-import { spawn, type SpawnOptions } from 'node:child_process'
-import { statSync } from 'node:fs'
-import path from 'node:path'
+import { spawn, type SpawnOptions } from "node:child_process";
+import { statSync } from "node:fs";
+import path from "node:path";
 
-import { hiddenWindowsChildOptions } from './windows-child-options'
+import { hiddenWindowsChildOptions } from "./windows-child-options";
 
 export interface UpdaterChild {
-  pid?: number
-  unref: () => void
+  pid?: number;
+  unref: () => void;
 }
 
 export interface ResolveUpdateScriptHandoffDeps {
-  isWindows?: boolean
-  fileExists?: (candidate: string) => boolean
+  isWindows?: boolean;
+  fileExists?: (candidate: string) => boolean;
 }
 
 export interface UpdateScriptHandoff {
-  command: string
-  args: string[]
-  scriptPath: string
+  command: string;
+  args: string[];
+  scriptPath: string;
 }
 
 /**
@@ -39,33 +39,33 @@ export interface UpdateScriptHandoff {
  */
 export function resolveUpdateScriptHandoff(
   updateRoot: string,
-  deps: ResolveUpdateScriptHandoffDeps = {}
+  deps: ResolveUpdateScriptHandoffDeps = {},
 ): UpdateScriptHandoff | null {
-  const isWindows = deps.isWindows ?? process.platform === 'win32'
+  const isWindows = deps.isWindows ?? process.platform === "win32";
 
   if (!isWindows) {
-    return null
+    return null;
   }
 
-  const exists = deps.fileExists ?? stagedFileExists
+  const exists = deps.fileExists ?? stagedFileExists;
 
   // Current layout first, then the pre-reorg flat path — an updated asar can
   // meet a checkout from either side of the move (the checkout also ships a
   // forwarder at the legacy path for the inverse skew).
   for (const candidate of [
-    path.join(updateRoot, 'scripts', 'desktop-update', 'windows.ps1'),
-    path.join(updateRoot, 'scripts', 'desktop-update.ps1')
+    path.join(updateRoot, "scripts", "desktop-update", "windows.ps1"),
+    path.join(updateRoot, "scripts", "desktop-update.ps1"),
   ]) {
     if (exists(candidate)) {
       return {
-        command: 'powershell',
-        args: ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', candidate],
-        scriptPath: candidate
-      }
+        command: "powershell",
+        args: ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", candidate],
+        scriptPath: candidate,
+      };
     }
   }
 
-  return null
+  return null;
 }
 
 /**
@@ -82,26 +82,31 @@ export function resolveUpdateScriptHandoff(
  */
 export function resolvePosixScriptHandoff(
   updateRoot: string,
-  deps: ResolveUpdateScriptHandoffDeps = {}
+  deps: ResolveUpdateScriptHandoffDeps = {},
 ): UpdateScriptHandoff | null {
-  const isWindows = deps.isWindows ?? process.platform === 'win32'
+  const isWindows = deps.isWindows ?? process.platform === "win32";
 
   if (isWindows) {
-    return null
+    return null;
   }
 
-  const scriptPath = path.join(updateRoot, 'scripts', 'desktop-update', 'posix.sh')
-  const exists = deps.fileExists ?? stagedFileExists
+  const scriptPath = path.join(
+    updateRoot,
+    "scripts",
+    "desktop-update",
+    "posix.sh",
+  );
+  const exists = deps.fileExists ?? stagedFileExists;
 
   if (!exists(scriptPath)) {
-    return null
+    return null;
   }
 
   return {
-    command: '/bin/bash',
+    command: "/bin/bash",
     args: [scriptPath],
-    scriptPath
-  }
+    scriptPath,
+  };
 }
 
 /**
@@ -126,15 +131,25 @@ export function resolvePosixScriptHandoff(
  */
 export function wrapHandoffForDetachedConsole(
   handoff: UpdateScriptHandoff,
-  extraArgs: string[]
+  extraArgs: string[],
 ): {
-  command: string
-  args: string[]
+  command: string;
+  args: string[];
 } {
   return {
-    command: 'cmd.exe',
-    args: ['/d', '/s', '/c', 'start', '', '/min', handoff.command, ...handoff.args, ...extraArgs]
-  }
+    command: "cmd.exe",
+    args: [
+      "/d",
+      "/s",
+      "/c",
+      "start",
+      "",
+      "/min",
+      handoff.command,
+      ...handoff.args,
+      ...extraArgs,
+    ],
+  };
 }
 
 /**
@@ -145,53 +160,58 @@ export function wrapHandoffForDetachedConsole(
  * chrome-sandbox isn't setuid.
  */
 export const INTERNAL_ARG_PREFIXES = [
-  '--type=',
-  '--user-data-dir=',
-  '--enable-features=',
-  '--disable-features=',
-  '--field-trial-handle=',
-  '--enable-logging',
-  '--log-file=',
-  '--disable-gpu-sandbox',
-  '--lang=',
-  '--inspect',
-  '--remote-debugging-port='
-]
+  "--type=",
+  "--user-data-dir=",
+  "--enable-features=",
+  "--disable-features=",
+  "--field-trial-handle=",
+  "--enable-logging",
+  "--log-file=",
+  "--disable-gpu-sandbox",
+  "--lang=",
+  "--inspect",
+  "--remote-debugging-port=",
+];
 
 /** Filter Electron internals from process.argv.slice(1) so the relaunched
  * app replays only user/launcher intent (deep links, app flags). */
 export function collectRelaunchArgs(argv: unknown): string[] {
   if (!Array.isArray(argv)) {
-    return []
+    return [];
   }
 
   return argv.filter((arg): arg is string => {
-    if (typeof arg !== 'string' || arg.length === 0) {
-      return false
+    if (typeof arg !== "string" || arg.length === 0) {
+      return false;
     }
 
-    return !INTERNAL_ARG_PREFIXES.some(prefix =>
-      prefix.endsWith('=') ? arg.startsWith(prefix) : arg === prefix || arg.startsWith(prefix + '=')
-    )
-  })
+    return !INTERNAL_ARG_PREFIXES.some((prefix) =>
+      prefix.endsWith("=")
+        ? arg.startsWith(prefix)
+        : arg === prefix || arg.startsWith(prefix + "="),
+    );
+  });
 }
 
 /** True when the user has opted out of the SUID sandbox — the relaunch is
  * safe even if chrome-sandbox fails preflight (ported from update-relaunch.ts). */
-export function sandboxFallbackFromEnv(env: Record<string, string | undefined>, launchArgs: string[]): boolean {
-  const disable = String(env?.ELECTRON_DISABLE_SANDBOX || '').trim()
+export function sandboxFallbackFromEnv(
+  env: Record<string, string | undefined>,
+  launchArgs: string[],
+): boolean {
+  const disable = String(env?.ELECTRON_DISABLE_SANDBOX || "").trim();
 
-  if (disable === '1' || disable.toLowerCase() === 'true') {
-    return true
+  if (disable === "1" || disable.toLowerCase() === "true") {
+    return true;
   }
 
-  return Array.isArray(launchArgs) && launchArgs.includes('--no-sandbox')
+  return Array.isArray(launchArgs) && launchArgs.includes("--no-sandbox");
 }
 
 export interface ResolveStagedUpdaterBinaryDeps {
-  isWindows?: boolean
-  fileExists?: (candidate: string) => boolean
-  stagedMtimeMs?: (candidate: string) => number | null
+  isWindows?: boolean;
+  fileExists?: (candidate: string) => boolean;
+  stagedMtimeMs?: (candidate: string) => number | null;
 }
 
 /**
@@ -203,21 +223,21 @@ export interface ResolveStagedUpdaterBinaryDeps {
  * We compare against the start of 2026-07-31 UTC so the boundary is
  * unambiguous for binaries staged that same day.
  */
-export const MARKER_SELF_ADOPT_EPOCH_MS = Date.UTC(2026, 6, 31)
+export const MARKER_SELF_ADOPT_EPOCH_MS = Date.UTC(2026, 6, 31);
 
 function stagedFileExists(candidate: string): boolean {
   try {
-    return statSync(candidate).isFile()
+    return statSync(candidate).isFile();
   } catch {
-    return false
+    return false;
   }
 }
 
 function stagedFileMtimeMs(candidate: string): number | null {
   try {
-    return statSync(candidate).mtimeMs
+    return statSync(candidate).mtimeMs;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -246,18 +266,18 @@ function stagedFileMtimeMs(candidate: string): number | null {
  */
 export function resolveStagedUpdaterBinary(
   hermesHome: string,
-  deps: ResolveStagedUpdaterBinaryDeps = {}
+  deps: ResolveStagedUpdaterBinaryDeps = {},
 ): string | null {
-  const isWindows = deps.isWindows ?? process.platform === 'win32'
+  const isWindows = deps.isWindows ?? process.platform === "win32";
 
   if (!isWindows) {
-    return null
+    return null;
   }
 
-  const fileExists = deps.fileExists ?? stagedFileExists
-  const candidate = path.join(hermesHome, 'hermes-setup.exe')
+  const fileExists = deps.fileExists ?? stagedFileExists;
+  const candidate = path.join(hermesHome, "hermes-setup.exe");
 
-  return fileExists(candidate) ? candidate : null
+  return fileExists(candidate) ? candidate : null;
 }
 
 /**
@@ -284,16 +304,24 @@ export function resolveStagedUpdaterBinary(
  */
 export function stagedUpdaterSupportsPrewrittenMarker(
   candidate: string,
-  deps: ResolveStagedUpdaterBinaryDeps = {}
+  deps: ResolveStagedUpdaterBinaryDeps = {},
 ): boolean {
-  const mtimeMs = (deps.stagedMtimeMs ?? stagedFileMtimeMs)(candidate)
+  const mtimeMs = (deps.stagedMtimeMs ?? stagedFileMtimeMs)(candidate);
 
-  return typeof mtimeMs === 'number' && Number.isFinite(mtimeMs) && mtimeMs >= MARKER_SELF_ADOPT_EPOCH_MS
+  return (
+    typeof mtimeMs === "number" &&
+    Number.isFinite(mtimeMs) &&
+    mtimeMs >= MARKER_SELF_ADOPT_EPOCH_MS
+  );
 }
 
 export interface SpawnUpdaterProcessDeps {
-  isWindows?: boolean
-  spawnProcess?: (command: string, args: string[], options: SpawnOptions) => UpdaterChild
+  isWindows?: boolean;
+  spawnProcess?: (
+    command: string,
+    args: string[],
+    options: SpawnOptions,
+  ) => UpdaterChild;
 }
 
 /**
@@ -305,35 +333,38 @@ export function spawnUpdaterProcess(
   updater: string,
   updaterArgs: string[],
   options: SpawnOptions,
-  deps: SpawnUpdaterProcessDeps = {}
+  deps: SpawnUpdaterProcessDeps = {},
 ): UpdaterChild {
-  const isWindows = deps.isWindows ?? process.platform === 'win32'
-  const spawnOptions = hiddenWindowsChildOptions(options, isWindows) as SpawnOptions
+  const isWindows = deps.isWindows ?? process.platform === "win32";
+  const spawnOptions = hiddenWindowsChildOptions(
+    options,
+    isWindows,
+  ) as SpawnOptions;
 
   const child = deps.spawnProcess
     ? deps.spawnProcess(updater, updaterArgs, spawnOptions)
-    : spawn(updater, updaterArgs, spawnOptions)
+    : spawn(updater, updaterArgs, spawnOptions);
 
-  child.unref()
+  child.unref();
 
-  return child
+  return child;
 }
 
 export interface UpdaterHandoffOutcome {
-  ok: boolean
+  ok: boolean;
   /** Set when ok is false. */
-  reason?: 'spawn-error' | 'early-exit'
+  reason?: "spawn-error" | "early-exit";
   /** Human-readable detail for logs (never contains argv secrets). */
-  message?: string
+  message?: string;
   /** Exit code when the child exited inside the settle window. */
-  code?: number | null
+  code?: number | null;
   /** Signal when the child was killed inside the settle window. */
-  signal?: string | null
+  signal?: string | null;
 }
 
 export interface ObserveUpdaterHandoffDeps {
-  setTimeoutFn?: (callback: () => void, ms: number) => unknown
-  clearTimeoutFn?: (timer: unknown) => void
+  setTimeoutFn?: (callback: () => void, ms: number) => unknown;
+  clearTimeoutFn?: (timer: unknown) => void;
 }
 
 /**
@@ -359,76 +390,80 @@ export interface ObserveUpdaterHandoffDeps {
 export function observeUpdaterHandoff(
   child: UpdaterChild,
   settleMs: number,
-  deps: ObserveUpdaterHandoffDeps = {}
+  deps: ObserveUpdaterHandoffDeps = {},
 ): Promise<UpdaterHandoffOutcome> {
-  const setTimeoutFn = deps.setTimeoutFn ?? setTimeout
+  const setTimeoutFn = deps.setTimeoutFn ?? setTimeout;
 
   const clearTimeoutFn =
-    deps.clearTimeoutFn ?? ((timer: unknown) => clearTimeout(timer as ReturnType<typeof setTimeout>))
+    deps.clearTimeoutFn ??
+    ((timer: unknown) => clearTimeout(timer as ReturnType<typeof setTimeout>));
 
   const observable = child as UpdaterChild & {
-    once?: (event: string, listener: (...args: unknown[]) => void) => unknown
-    removeListener?: (event: string, listener: (...args: unknown[]) => void) => unknown
+    once?: (event: string, listener: (...args: unknown[]) => void) => unknown;
+    removeListener?: (
+      event: string,
+      listener: (...args: unknown[]) => void,
+    ) => unknown;
+  };
+
+  if (typeof observable.once !== "function") {
+    return new Promise((resolve) => {
+      setTimeoutFn(() => resolve({ ok: true }), settleMs);
+    });
   }
 
-  if (typeof observable.once !== 'function') {
-    return new Promise(resolve => {
-      setTimeoutFn(() => resolve({ ok: true }), settleMs)
-    })
-  }
-
-  return new Promise(resolve => {
-    let settled = false
+  return new Promise((resolve) => {
+    let settled = false;
 
     const finish = (outcome: UpdaterHandoffOutcome) => {
       if (settled) {
-        return
+        return;
       }
 
-      settled = true
-      clearTimeoutFn(timer)
-      observable.removeListener?.('error', onError)
-      observable.removeListener?.('exit', onExit)
-      resolve(outcome)
-    }
+      settled = true;
+      clearTimeoutFn(timer);
+      observable.removeListener?.("error", onError);
+      observable.removeListener?.("exit", onExit);
+      resolve(outcome);
+    };
 
     const onError = (...args: unknown[]) => {
-      const error = args[0] as (Error & { code?: string }) | undefined
+      const error = args[0] as (Error & { code?: string }) | undefined;
 
       finish({
         ok: false,
-        reason: 'spawn-error',
-        message: `updater spawn failed: ${error?.code || error?.message || 'unknown error'}`
-      })
-    }
+        reason: "spawn-error",
+        message: `updater spawn failed: ${error?.code || error?.message || "unknown error"}`,
+      });
+    };
 
     const onExit = (...args: unknown[]) => {
-      const code = args[0] as number | null
-      const signal = args[1] as string | null
+      const code = args[0] as number | null;
+      const signal = args[1] as string | null;
 
-      if (signal || (typeof code === 'number' && code !== 0)) {
+      if (signal || (typeof code === "number" && code !== 0)) {
         finish({
           ok: false,
-          reason: 'early-exit',
+          reason: "early-exit",
           message: signal
             ? `updater died from signal ${signal} before the settle window elapsed`
             : `updater exited ${code} before the settle window elapsed`,
           code: code ?? null,
-          signal: signal ?? null
-        })
+          signal: signal ?? null,
+        });
 
-        return
+        return;
       }
 
       // Clean exit 0 inside the window is expected for wrapper shapes
       // (cmd.exe `start` on Windows exits immediately after launching the
       // real script in its own console).
-      finish({ ok: true, code: code ?? 0, signal: null })
-    }
+      finish({ ok: true, code: code ?? 0, signal: null });
+    };
 
-    const timer = setTimeoutFn(() => finish({ ok: true }), settleMs)
+    const timer = setTimeoutFn(() => finish({ ok: true }), settleMs);
 
-    observable.once('error', onError)
-    observable.once('exit', onExit)
-  })
+    observable.once("error", onError);
+    observable.once("exit", onExit);
+  });
 }

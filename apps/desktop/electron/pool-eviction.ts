@@ -15,8 +15,8 @@
 // subject to the idle reaper, just not to the process cap.
 
 export interface PoolEvictionEntry {
-  lastActiveAt?: null | number
-  process?: unknown
+  lastActiveAt?: null | number;
+  process?: unknown;
 }
 
 /**
@@ -30,29 +30,29 @@ export function selectPoolEvictions<K>(
   entries: Iterable<[K, PoolEvictionEntry]>,
   keep: number,
   now: number,
-  freshMs: number
+  freshMs: number,
 ): K[] {
-  const spawned = [...entries].filter(([, entry]) => Boolean(entry.process))
+  const spawned = [...entries].filter(([, entry]) => Boolean(entry.process));
 
   if (spawned.length <= keep) {
-    return []
+    return [];
   }
 
   const evictable = spawned
     .filter(([, entry]) => now - (entry.lastActiveAt || 0) > freshMs)
-    .sort((a, b) => (a[1].lastActiveAt || 0) - (b[1].lastActiveAt || 0))
+    .sort((a, b) => (a[1].lastActiveAt || 0) - (b[1].lastActiveAt || 0));
 
-  let removable = spawned.length - Math.max(0, keep)
-  const evictions: K[] = []
+  let removable = spawned.length - Math.max(0, keep);
+  const evictions: K[] = [];
 
   for (const [key] of evictable) {
     if (removable <= 0) {
-      break
+      break;
     }
 
-    evictions.push(key)
-    removable -= 1
+    evictions.push(key);
+    removable -= 1;
   }
 
-  return evictions
+  return evictions;
 }

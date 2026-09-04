@@ -1,11 +1,11 @@
-import { act, cleanup, fireEvent, render } from '@testing-library/react'
-import { useRef, useState } from 'react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
+import { useRef, useState } from "react";
+import { afterEach, describe, expect, it } from "vitest";
 
 // No global setupFiles registers auto-cleanup, so unmount between tests —
 // otherwise a second render() leaks the first editor and getByTestId('editor')
 // matches multiple nodes.
-afterEach(cleanup)
+afterEach(cleanup);
 
 // Faithful mirror of index.tsx's composer text wiring for IME input, driven
 // through REAL DOM composition + input events on a contentEditable.
@@ -18,180 +18,190 @@ afterEach(cleanup)
 // state and `hasPayload` stayed false until an unrelated edit forced a sync.
 // The fix flushes the live DOM text in onCompositionEnd.
 function Harness({ onPayload }: { onPayload: (hasPayload: boolean) => void }) {
-  const editorRef = useRef<HTMLDivElement>(null)
-  const composingRef = useRef(false)
-  const draftRef = useRef('')
-  const [draft, setDraft] = useState('')
+  const editorRef = useRef<HTMLDivElement>(null);
+  const composingRef = useRef(false);
+  const draftRef = useRef("");
+  const [draft, setDraft] = useState("");
 
   const flushEditorToDraft = (editor: HTMLDivElement) => {
-    const next = editor.textContent ?? ''
+    const next = editor.textContent ?? "";
 
     if (next !== draftRef.current) {
-      draftRef.current = next
-      setDraft(next)
+      draftRef.current = next;
+      setDraft(next);
     }
-  }
+  };
 
-  onPayload(draft.trim().length > 0)
+  onPayload(draft.trim().length > 0);
 
   return (
     <div
       contentEditable
       data-testid="editor"
-      onCompositionEnd={event => {
-        composingRef.current = false
-        flushEditorToDraft(event.currentTarget)
+      onCompositionEnd={(event) => {
+        composingRef.current = false;
+        flushEditorToDraft(event.currentTarget);
       }}
       onCompositionStart={() => {
-        composingRef.current = true
+        composingRef.current = true;
       }}
-      onInput={event => {
+      onInput={(event) => {
         if (composingRef.current) {
-          return
+          return;
         }
 
-        flushEditorToDraft(event.currentTarget)
+        flushEditorToDraft(event.currentTarget);
       }}
       ref={editorRef}
       suppressContentEditableWarning
     />
-  )
+  );
 }
 
-describe('composer IME composition — send button visibility (#39614)', () => {
-  it('shows the send button after committing CJK text without a trailing edit', async () => {
-    let hasPayload = false
-    const { getByTestId } = render(<Harness onPayload={p => (hasPayload = p)} />)
-    const editor = getByTestId('editor')
+describe("composer IME composition — send button visibility (#39614)", () => {
+  it("shows the send button after committing CJK text without a trailing edit", async () => {
+    let hasPayload = false;
+    const { getByTestId } = render(
+      <Harness onPayload={(p) => (hasPayload = p)} />,
+    );
+    const editor = getByTestId("editor");
 
     // Compose "你好" the way a Windows Chinese IME does: compositionstart, then
     // input events carrying uncommitted preedit text, then compositionend with
     // the committed text already in the DOM — and crucially NO input event
     // afterwards.
     await act(async () => {
-      fireEvent.compositionStart(editor)
-      editor.textContent = '你'
-      fireEvent.input(editor)
-      editor.textContent = '你好'
-      fireEvent.input(editor)
-      fireEvent.compositionEnd(editor)
-    })
+      fireEvent.compositionStart(editor);
+      editor.textContent = "你";
+      fireEvent.input(editor);
+      editor.textContent = "你好";
+      fireEvent.input(editor);
+      fireEvent.compositionEnd(editor);
+    });
 
     // Before the fix this was false (button hidden) until a further edit.
-    expect(hasPayload).toBe(true)
-    expect(editor.textContent).toBe('你好')
-  })
+    expect(hasPayload).toBe(true);
+    expect(editor.textContent).toBe("你好");
+  });
 
-  it('also covers Japanese/Korean and any IME-composed script', async () => {
-    let hasPayload = false
-    const { getByTestId } = render(<Harness onPayload={p => (hasPayload = p)} />)
-    const editor = getByTestId('editor')
+  it("also covers Japanese/Korean and any IME-composed script", async () => {
+    let hasPayload = false;
+    const { getByTestId } = render(
+      <Harness onPayload={(p) => (hasPayload = p)} />,
+    );
+    const editor = getByTestId("editor");
 
-    for (const committed of ['こんにちは', '안녕하세요']) {
+    for (const committed of ["こんにちは", "안녕하세요"]) {
       await act(async () => {
-        fireEvent.compositionStart(editor)
-        editor.textContent = committed
-        fireEvent.input(editor)
-        fireEvent.compositionEnd(editor)
-      })
+        fireEvent.compositionStart(editor);
+        editor.textContent = committed;
+        fireEvent.input(editor);
+        fireEvent.compositionEnd(editor);
+      });
 
-      expect(hasPayload).toBe(true)
+      expect(hasPayload).toBe(true);
 
       // Clear for the next script.
       await act(async () => {
-        editor.textContent = ''
-        fireEvent.input(editor)
-      })
-      expect(hasPayload).toBe(false)
+        editor.textContent = "";
+        fireEvent.input(editor);
+      });
+      expect(hasPayload).toBe(false);
     }
-  })
+  });
 
-  it('blocks Enter with keyCode 229 even after compositionend (macOS Chinese IME)', async () => {
-    let submitCount = 0
-    let hasPayload = false
+  it("blocks Enter with keyCode 229 even after compositionend (macOS Chinese IME)", async () => {
+    let submitCount = 0;
+    let hasPayload = false;
 
-    function KeyDownHarness({ onPayload }: { onPayload: (hasPayload: boolean) => void }) {
-      const editorRef = useRef<HTMLDivElement>(null)
-      const composingRef = useRef(false)
-      const draftRef = useRef('')
-      const [draft, setDraft] = useState('')
+    function KeyDownHarness({
+      onPayload,
+    }: {
+      onPayload: (hasPayload: boolean) => void;
+    }) {
+      const editorRef = useRef<HTMLDivElement>(null);
+      const composingRef = useRef(false);
+      const draftRef = useRef("");
+      const [draft, setDraft] = useState("");
 
       const flushEditorToDraft = (editor: HTMLDivElement) => {
-        const next = editor.textContent ?? ''
+        const next = editor.textContent ?? "";
 
         if (next !== draftRef.current) {
-          draftRef.current = next
-          setDraft(next)
+          draftRef.current = next;
+          setDraft(next);
         }
-      }
+      };
 
-      onPayload(draft.trim().length > 0)
+      onPayload(draft.trim().length > 0);
 
       const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (composingRef.current || event.nativeEvent.isComposing) {
-          return
+          return;
         }
 
-        if (event.key === 'Enter' && event.keyCode === 229) {
-          return
+        if (event.key === "Enter" && event.keyCode === 229) {
+          return;
         }
 
-        if (event.key === 'Enter' && !event.shiftKey) {
-          event.preventDefault()
-          submitCount++
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          submitCount++;
         }
-      }
+      };
 
       return (
         <div
           contentEditable
           data-testid="editor"
-          onCompositionEnd={event => {
-            composingRef.current = false
-            flushEditorToDraft(event.currentTarget)
+          onCompositionEnd={(event) => {
+            composingRef.current = false;
+            flushEditorToDraft(event.currentTarget);
           }}
           onCompositionStart={() => {
-            composingRef.current = true
+            composingRef.current = true;
           }}
-          onInput={event => {
+          onInput={(event) => {
             if (composingRef.current) {
-              return
+              return;
             }
 
-            flushEditorToDraft(event.currentTarget)
+            flushEditorToDraft(event.currentTarget);
           }}
           onKeyDown={handleKeyDown}
           ref={editorRef}
           suppressContentEditableWarning
         />
-      )
+      );
     }
 
-    const { getByTestId } = render(<KeyDownHarness onPayload={p => (hasPayload = p)} />)
-    const editor = getByTestId('editor')
+    const { getByTestId } = render(
+      <KeyDownHarness onPayload={(p) => (hasPayload = p)} />,
+    );
+    const editor = getByTestId("editor");
 
     // Simulate macOS Chinese IME: compositionend fires, then Enter with keyCode 229.
     await act(async () => {
-      fireEvent.compositionStart(editor)
-      editor.textContent = '测试'
-      fireEvent.input(editor)
-      fireEvent.compositionEnd(editor)
-    })
+      fireEvent.compositionStart(editor);
+      editor.textContent = "测试";
+      fireEvent.input(editor);
+      fireEvent.compositionEnd(editor);
+    });
 
-    expect(hasPayload).toBe(true)
+    expect(hasPayload).toBe(true);
 
     // This Enter must NOT trigger submit.
     await act(async () => {
-      fireEvent.keyDown(editor, { key: 'Enter', keyCode: 229 })
-    })
+      fireEvent.keyDown(editor, { key: "Enter", keyCode: 229 });
+    });
 
-    expect(submitCount).toBe(0)
+    expect(submitCount).toBe(0);
 
     // A normal Enter afterwards should still submit.
     await act(async () => {
-      fireEvent.keyDown(editor, { key: 'Enter', keyCode: 13 })
-    })
+      fireEvent.keyDown(editor, { key: "Enter", keyCode: 13 });
+    });
 
-    expect(submitCount).toBe(1)
-  })
-})
+    expect(submitCount).toBe(1);
+  });
+});

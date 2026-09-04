@@ -27,32 +27,32 @@
 
 export interface ReleaseGateDeps {
   /** Probe the venv hermes.exe shim (real: O_RDWR open attempt). */
-  isShimLocked: () => boolean
+  isShimLocked: () => boolean;
   /** True while `pid` is still enumerable in the process table. */
-  isPidAlive: (pid: number) => boolean
+  isPidAlive: (pid: number) => boolean;
   /**
    * Re-collect PIDs that may have (re)spawned since the initial sweep —
    * the supervised primary backend and pool entries. Called every pass.
    */
-  collectStragglerPids: () => number[]
+  collectStragglerPids: () => number[];
   /** Tree-kill (real: taskkill /PID n /T /F). */
-  killProcessTree: (pid: number) => void
+  killProcessTree: (pid: number) => void;
   /** Async sleep; injectable so tests run on a fake clock. */
-  sleep: (ms: number) => Promise<void>
+  sleep: (ms: number) => Promise<void>;
   /** Monotonic-enough clock; injectable for tests. */
-  now: () => number
+  now: () => number;
   /** Log sink (real: rememberLog). */
-  log: (line: string) => void
+  log: (line: string) => void;
 }
 
 export interface ReleaseGateResult {
-  unlocked: boolean
+  unlocked: boolean;
   /** PIDs we signalled that were still enumerable when the gate resolved. */
-  lingeringPids: number[]
+  lingeringPids: number[];
 }
 
-export const RELEASE_GATE_DEADLINE_MS = 15000
-export const RELEASE_GATE_POLL_MS = 300
+export const RELEASE_GATE_DEADLINE_MS = 15000;
+export const RELEASE_GATE_POLL_MS = 300;
 
 /**
  * Wait until the install is genuinely releasable: shim unlocked AND every
@@ -66,19 +66,23 @@ export async function waitForBackendRelease(
   initialPids: number[],
   deps: ReleaseGateDeps,
   tag: string,
-  deadlineMs: number = RELEASE_GATE_DEADLINE_MS
+  deadlineMs: number = RELEASE_GATE_DEADLINE_MS,
 ): Promise<ReleaseGateResult> {
-  const killedPids = new Set<number>(initialPids.filter(pid => Number.isInteger(pid) && pid > 0))
+  const killedPids = new Set<number>(
+    initialPids.filter((pid) => Number.isInteger(pid) && pid > 0),
+  );
 
-  const deadline = deps.now() + deadlineMs
+  const deadline = deps.now() + deadlineMs;
 
   while (deps.now() < deadline) {
-    const lingering = [...killedPids].filter(pid => deps.isPidAlive(pid))
+    const lingering = [...killedPids].filter((pid) => deps.isPidAlive(pid));
 
     if (!deps.isShimLocked() && lingering.length === 0) {
-      deps.log(`[${tag}] venv shim unlocked and ${killedPids.size} signalled backend PID(s) exited; safe to proceed`)
+      deps.log(
+        `[${tag}] venv shim unlocked and ${killedPids.size} signalled backend PID(s) exited; safe to proceed`,
+      );
 
-      return { unlocked: true, lingeringPids: [] }
+      return { unlocked: true, lingeringPids: [] };
     }
 
     // A supervised backend can respawn between kill and check (grandchildren,
@@ -86,29 +90,29 @@ export async function waitForBackendRelease(
     // instead of trusting the initial sweep.
     for (const pid of deps.collectStragglerPids()) {
       if (Number.isInteger(pid) && pid > 0) {
-        killedPids.add(pid)
-        deps.killProcessTree(pid)
+        killedPids.add(pid);
+        deps.killProcessTree(pid);
       }
     }
 
-    await deps.sleep(RELEASE_GATE_POLL_MS)
+    await deps.sleep(RELEASE_GATE_POLL_MS);
   }
 
   // Deadline reached. Keep the pre-#74805 success criterion — an unlocked
   // shim — rather than inventing a new failure mode for PIDs that linger
   // past the deadline; the venv-blocker re-scan downstream covers that
   // residue (and a REAL foreign holder still fails the shim probe).
-  const lingering = [...killedPids].filter(pid => deps.isPidAlive(pid))
+  const lingering = [...killedPids].filter((pid) => deps.isPidAlive(pid));
 
   if (!deps.isShimLocked()) {
     deps.log(
-      `[${tag}] proceeding after deadline: venv shim unlocked, but ${lingering.length} signalled PID(s) still enumerable`
-    )
+      `[${tag}] proceeding after deadline: venv shim unlocked, but ${lingering.length} signalled PID(s) still enumerable`,
+    );
 
-    return { unlocked: true, lingeringPids: lingering }
+    return { unlocked: true, lingeringPids: lingering };
   }
 
-  return { unlocked: false, lingeringPids: lingering }
+  return { unlocked: false, lingeringPids: lingering };
 }
 
 /**
@@ -118,10 +122,10 @@ export async function waitForBackendRelease(
  */
 export function isPidAliveWindows(pid: number): boolean {
   try {
-    process.kill(pid, 0)
+    process.kill(pid, 0);
 
-    return true
+    return true;
   } catch (err: any) {
-    return Boolean(err) && err.code === 'EPERM'
+    return Boolean(err) && err.code === "EPERM";
   }
 }

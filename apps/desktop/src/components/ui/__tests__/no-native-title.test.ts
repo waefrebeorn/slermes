@@ -1,7 +1,7 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join, resolve } from "node:path";
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from "vitest";
 
 // Static-analysis guard: no <button> or <Button> element in the desktop renderer
 // may use the native HTML `title=` attribute. Native tooltips are unstyled,
@@ -14,57 +14,59 @@ import { describe, expect, it } from 'vitest'
 
 // Recursively walk a directory and collect all .tsx file paths.
 function collectTsxFiles(dir: string): string[] {
-  const results: string[] = []
+  const results: string[] = [];
 
   for (const entry of readdirSync(dir)) {
     // Skip node_modules, dist, and __tests__ (this file itself)
-    if (entry === 'node_modules' || entry === 'dist' || entry === '__tests__') {
-      continue
+    if (entry === "node_modules" || entry === "dist" || entry === "__tests__") {
+      continue;
     }
 
-    const fullPath = join(dir, entry)
-    const stat = statSync(fullPath)
+    const fullPath = join(dir, entry);
+    const stat = statSync(fullPath);
 
     if (stat.isDirectory()) {
-      results.push(...collectTsxFiles(fullPath))
-    } else if (entry.endsWith('.tsx')) {
-      results.push(fullPath)
+      results.push(...collectTsxFiles(fullPath));
+    } else if (entry.endsWith(".tsx")) {
+      results.push(fullPath);
     }
   }
 
-  return results
+  return results;
 }
 
-describe('no native title= on button elements', () => {
+describe("no native title= on button elements", () => {
   // Scan every .tsx file under src/ for <button or <Button opening tags that
   // also carry a title= attribute (anywhere in the opening tag, which may span
   // multiple lines).
-  it('uses <Tip> instead of native title= on all button elements', () => {
-    const violations: string[] = []
-    const srcDir = resolve(__dirname, '../..')
+  it("uses <Tip> instead of native title= on all button elements", () => {
+    const violations: string[] = [];
+    const srcDir = resolve(__dirname, "../..");
 
     for (const filePath of collectTsxFiles(srcDir)) {
-      const content = readFileSync(filePath, 'utf-8')
-      const relativePath = filePath.replace(srcDir + '/', '')
+      const content = readFileSync(filePath, "utf-8");
+      const relativePath = filePath.replace(srcDir + "/", "");
 
       // Match <Button ...> or <button ...> opening tags (may span multiple lines).
       // We use a non-greedy match up to the closing > — this won't perfectly
       // handle every edge case (e.g. > inside a string literal), but it's good
       // enough for a lint-style guard.
-      const tagPattern = /<(Button|button)\b([^>]*?)>/gsu
-      let match: RegExpExecArray | null
+      const tagPattern = /<(Button|button)\b([^>]*?)>/gsu;
+      let match: RegExpExecArray | null;
 
       while ((match = tagPattern.exec(content)) !== null) {
-        const tagName = match[1]
-        const attrs = match[2]
+        const tagName = match[1];
+        const attrs = match[2];
 
         if (/\btitle=/.test(attrs)) {
-          const lineNum = content.slice(0, match.index).split('\n').length
-          violations.push(`${relativePath}:${lineNum} <${tagName}> has title= — use <Tip>`)
+          const lineNum = content.slice(0, match.index).split("\n").length;
+          violations.push(
+            `${relativePath}:${lineNum} <${tagName}> has title= — use <Tip>`,
+          );
         }
       }
     }
 
-    expect(violations, violations.join('\n')).toEqual([])
-  })
-})
+    expect(violations, violations.join("\n")).toEqual([]);
+  });
+});

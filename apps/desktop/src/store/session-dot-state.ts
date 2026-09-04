@@ -23,21 +23,29 @@
  * surface). The write side of the persisted flag lives in session-unread.ts.
  */
 
-import { computed } from 'nanostores'
+import { computed } from "nanostores";
 
-import { stableArray, stableRecord } from '@/lib/stable-array'
+import { stableArray, stableRecord } from "@/lib/stable-array";
 
-import { $backgroundRunningSessionIds } from './composer-status'
-import { $messagingSessions, $sessions, $unreadFinishedSessionIds, lineageAliases } from './session'
+import { $backgroundRunningSessionIds } from "./composer-status";
+import {
+  $messagingSessions,
+  $sessions,
+  $unreadFinishedSessionIds,
+  lineageAliases,
+} from "./session";
 import {
   $attentionSessionIds,
   $draftSessionIds,
   $sessionStates,
   $stalledSessionIds,
-  $workingSessionIds
-} from './session-states'
-import { $unreadWriteGuard, UNREAD_WRITE_GUARD_MS } from './session-unread-remote'
-import { $subagentsBySession, activeSubagentCount } from './subagents'
+  $workingSessionIds,
+} from "./session-states";
+import {
+  $unreadWriteGuard,
+  UNREAD_WRITE_GUARD_MS,
+} from "./session-unread-remote";
+import { $subagentsBySession, activeSubagentCount } from "./subagents";
 
 // Sessions parked in async delegation: the parent turn has ended (busy=false —
 // delegate_task(background=true) returns its handle the moment the children
@@ -47,57 +55,73 @@ import { $subagentsBySession, activeSubagentCount } from './subagents'
 // bridge and fresh-chat fallback as $backgroundRunningSessionIds:
 // $subagentsBySession is keyed by runtime id, surfaces key on stored ids, and
 // lineageAliases covers whichever tip of the conversation a surface holds.
-let delegatingIds: readonly string[] = []
+let delegatingIds: readonly string[] = [];
 export const $delegatingSessionIds = computed(
   [$subagentsBySession, $sessionStates, $sessions],
   (bySession, states, sessions) => {
-    const ids = new Set<string>()
+    const ids = new Set<string>();
 
     for (const [runtimeId, items] of Object.entries(bySession)) {
       if (activeSubagentCount(items) === 0) {
-        continue
+        continue;
       }
 
-      for (const alias of lineageAliases(states[runtimeId]?.storedSessionId ?? runtimeId, sessions)) {
-        ids.add(alias)
+      for (const alias of lineageAliases(
+        states[runtimeId]?.storedSessionId ?? runtimeId,
+        sessions,
+      )) {
+        ids.add(alias);
       }
     }
 
-    return (delegatingIds = stableArray(delegatingIds, [...ids]))
-  }
-)
+    return (delegatingIds = stableArray(delegatingIds, [...ids]));
+  },
+);
 
-export type SessionDotState = 'background' | 'draft' | 'idle' | 'needs-input' | 'stalled' | 'unread' | 'working'
+export type SessionDotState =
+  | "background"
+  | "draft"
+  | "idle"
+  | "needs-input"
+  | "stalled"
+  | "unread"
+  | "working";
 
 /** The sidebar row's arc. A quiet turn is still authoritatively running, so
  *  `stalled` keeps it; a blocking prompt drops it, because the amber dot is the
  *  louder cue and two treatments at once fight each other. */
-export const showsRunningArc = (state: SessionDotState): boolean => state === 'stalled' || state === 'working'
+export const showsRunningArc = (state: SessionDotState): boolean =>
+  state === "stalled" || state === "working";
 
 /** Whether this turn is the session's own, live: brighter title, and the row's
  *  age yields to the actions menu. Wider than the arc — a turn waiting on an
  *  answer has not ended. */
-export const hasLiveTurn = (state: SessionDotState): boolean => showsRunningArc(state) || state === 'needs-input'
+export const hasLiveTurn = (state: SessionDotState): boolean =>
+  showsRunningArc(state) || state === "needs-input";
 
 /** The buckets the sidebar's status filter and ordering work in. `stalled` and
  *  `background` fold into the state a user would name them. */
-export type SessionStatusBucket = 'draft' | 'idle' | 'needs-input' | 'unread' | 'working'
+export type SessionStatusBucket =
+  "draft" | "idle" | "needs-input" | "unread" | "working";
 
-export const sessionStatusBucket = (state: SessionDotState = 'idle'): SessionStatusBucket =>
-  state === 'stalled' || state === 'background' ? 'working' : state
+export const sessionStatusBucket = (
+  state: SessionDotState = "idle",
+): SessionStatusBucket =>
+  state === "stalled" || state === "background" ? "working" : state;
 
 const STATUS_RANK: Record<SessionStatusBucket, number> = {
-  'needs-input': 0,
+  "needs-input": 0,
   working: 1,
   unread: 2,
   draft: 3,
-  idle: 4
-}
+  idle: 4,
+};
 
 /** Loudest first — what ordering by status sorts on. */
-export const sessionStatusRank = (state?: SessionDotState): number => STATUS_RANK[sessionStatusBucket(state)]
+export const sessionStatusRank = (state?: SessionDotState): number =>
+  STATUS_RANK[sessionStatusBucket(state)];
 
-let dotStates: Readonly<Record<string, SessionDotState>> = {}
+let dotStates: Readonly<Record<string, SessionDotState>> = {};
 
 export const $sessionDotStateById = computed(
   [
@@ -109,18 +133,28 @@ export const $sessionDotStateById = computed(
     $unreadFinishedSessionIds,
     $draftSessionIds,
     $sessions,
-    $unreadWriteGuard
+    $unreadWriteGuard,
   ],
-  (attention, working, stalled, background, delegating, unread, draft, sessions, unreadWriteGuard) => {
-    const next: Record<string, SessionDotState> = {}
+  (
+    attention,
+    working,
+    stalled,
+    background,
+    delegating,
+    unread,
+    draft,
+    sessions,
+    unreadWriteGuard,
+  ) => {
+    const next: Record<string, SessionDotState> = {};
 
     const claim = (ids: readonly string[], state: SessionDotState) => {
       for (const id of ids) {
         for (const alias of lineageAliases(id, sessions)) {
-          next[alias] = state
+          next[alias] = state;
         }
       }
-    }
+    };
 
     // Weakest claim first — each pass overwrites the one above it, so the order
     // below IS the priority order. A blocking prompt outranks everything: it is
@@ -128,8 +162,8 @@ export const $sessionDotStateById = computed(
     //
     // Draft is weakest of all: it says only "no turn has happened here yet", so
     // the first thing that does happen speaks over it.
-    claim(draft, 'draft')
-    claim(unread, 'unread')
+    claim(draft, "draft");
+    claim(unread, "unread");
 
     // Persisted read state (backend watermark): a row marked unread keeps the
     // same emerald dot a background finish would paint, and survives
@@ -137,33 +171,33 @@ export const $sessionDotStateById = computed(
     // something here you haven't opened". A list page that predates one of
     // our own writes is fenced out by the write guard: keep OUR value until a
     // page confirms it or the guard expires.
-    const persistedUnread: string[] = []
+    const persistedUnread: string[] = [];
 
     for (const s of sessions) {
-      const entry = unreadWriteGuard.get(s.id)
+      const entry = unreadWriteGuard.get(s.id);
 
       if (entry && Date.now() - entry.at < UNREAD_WRITE_GUARD_MS) {
         if (entry.value) {
-          persistedUnread.push(s.id)
+          persistedUnread.push(s.id);
         }
 
-        continue
+        continue;
       }
 
       if (s.unread === true) {
-        persistedUnread.push(s.id)
+        persistedUnread.push(s.id);
       }
     }
 
-    claim(persistedUnread, 'unread')
+    claim(persistedUnread, "unread");
 
-    claim(background, 'background')
+    claim(background, "background");
     // Async delegation: the parent turn has ended but its subagents are still
     // running, so the session's work continues in child sessions. Same visual
     // claim as background processes — and it yields to `working` below the
     // moment the parent turn itself is live (synchronous orchestrator children).
-    claim(delegating, 'background')
-    claim(working, 'working')
+    claim(delegating, "background");
+    claim(working, "working");
 
     // Stalled REFINES working rather than rivalling it — the turn is still
     // authoritatively running, it has just gone quiet — so it only downgrades a
@@ -171,17 +205,17 @@ export const $sessionDotStateById = computed(
     // on some paths; without this it could invent a running session.
     for (const id of stalled) {
       for (const alias of lineageAliases(id, sessions)) {
-        if (next[alias] === 'working') {
-          next[alias] = 'stalled'
+        if (next[alias] === "working") {
+          next[alias] = "stalled";
         }
       }
     }
 
-    claim(attention, 'needs-input')
+    claim(attention, "needs-input");
 
-    return (dotStates = stableRecord(dotStates, next))
-  }
-)
+    return (dotStates = stableRecord(dotStates, next));
+  },
+);
 
 /** Listed, non-archived rows whose resolved status is unread. Alias keys in
  *  `$sessionDotStateById` are ignored unless they are themselves a listed row. */
@@ -189,17 +223,17 @@ export function unreadSessionCount(
   byId: Readonly<Record<string, SessionDotState>>,
   ...lists: Array<readonly { archived?: boolean; id: string }[]>
 ): number {
-  let n = 0
+  let n = 0;
 
   for (const rows of lists) {
     for (const row of rows) {
-      if (!row.archived && byId[row.id] === 'unread') {
-        n++
+      if (!row.archived && byId[row.id] === "unread") {
+        n++;
       }
     }
   }
 
-  return n
+  return n;
 }
 
 /** The titlebar badge. Cron sessions are deliberately EXCLUDED: cron runs
@@ -209,5 +243,5 @@ export function unreadSessionCount(
  *  "mark all as read" still acks them (ackAllSessionsRead iterates cron rows). */
 export const $unreadSessionCount = computed(
   [$sessionDotStateById, $sessions, $messagingSessions],
-  (byId, sessions, messaging) => unreadSessionCount(byId, sessions, messaging)
-)
+  (byId, sessions, messaging) => unreadSessionCount(byId, sessions, messaging),
+);

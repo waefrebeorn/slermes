@@ -48,8 +48,8 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-  useValue
-} from '@hermes/plugin-sdk'
+  useValue,
+} from "@hermes/plugin-sdk";
 import {
   type CSSProperties,
   type DragEvent as ReactDragEvent,
@@ -57,8 +57,8 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState
-} from 'react'
+  useState,
+} from "react";
 
 import {
   $boardSlug,
@@ -75,13 +75,23 @@ import {
   fetchBoards,
   fetchProfiles,
   patchTask,
-  PROFILES_KEY
-} from './api'
-import { BoardSwitcher } from './board-switcher'
-import { TaskDrawer } from './drawer'
-import { EMPTY_OVERRIDE, ModelOverrideField, overrideCreateFields, type TaskModelOverride } from './model-override'
-import { OrchestrationPanel } from './orchestration'
-import { columnMeta, type KanbanBoard, type KanbanTask, type TaskEstimate } from './types'
+  PROFILES_KEY,
+} from "./api";
+import { BoardSwitcher } from "./board-switcher";
+import { TaskDrawer } from "./drawer";
+import {
+  EMPTY_OVERRIDE,
+  ModelOverrideField,
+  overrideCreateFields,
+  type TaskModelOverride,
+} from "./model-override";
+import { OrchestrationPanel } from "./orchestration";
+import {
+  columnMeta,
+  type KanbanBoard,
+  type KanbanTask,
+  type TaskEstimate,
+} from "./types";
 import {
   $newTaskLane,
   ago,
@@ -98,39 +108,51 @@ import {
   shortId,
   useDefaultAssignee,
   useKanban,
-  useOrchestration
-} from './ui'
+  useOrchestration,
+} from "./ui";
 
 // ── optimistic board edits (reconciled by the follow-up refresh) ─────────────
 
-function moveCard(board: KanbanBoard, id: string, toStatus: string): KanbanBoard {
-  let moved: KanbanTask | undefined
+function moveCard(
+  board: KanbanBoard,
+  id: string,
+  toStatus: string,
+): KanbanBoard {
+  let moved: KanbanTask | undefined;
 
-  const columns = board.columns.map(col => ({
+  const columns = board.columns.map((col) => ({
     ...col,
-    tasks: col.tasks.filter(task => {
+    tasks: col.tasks.filter((task) => {
       if (task.id !== id) {
-        return true
+        return true;
       }
 
-      moved = { ...task, status: toStatus }
+      moved = { ...task, status: toStatus };
 
-      return false
-    })
-  }))
+      return false;
+    }),
+  }));
 
   if (!moved) {
-    return board
+    return board;
   }
 
   return {
     ...board,
-    columns: columns.map(col => (col.name === toStatus ? { ...col, tasks: [moved!, ...col.tasks] } : col))
-  }
+    columns: columns.map((col) =>
+      col.name === toStatus ? { ...col, tasks: [moved!, ...col.tasks] } : col,
+    ),
+  };
 }
 
 function removeCard(board: KanbanBoard, id: string): KanbanBoard {
-  return { ...board, columns: board.columns.map(col => ({ ...col, tasks: col.tasks.filter(t => t.id !== id) })) }
+  return {
+    ...board,
+    columns: board.columns.map((col) => ({
+      ...col,
+      tasks: col.tasks.filter((t) => t.id !== id),
+    })),
+  };
 }
 
 // ── card ─────────────────────────────────────────────────────────────────────
@@ -141,46 +163,57 @@ function Meta({ children, icon }: { children: ReactNode; icon: string }) {
       <Codicon name={icon} size="0.7rem" />
       {children}
     </span>
-  )
+  );
 }
 
 function CardFooter({ arc, task }: { arc: ArcState | null; task: KanbanTask }) {
-  const k = useKanban()
-  const created = ago(task.created_at)
-  const links = task.link_counts ? task.link_counts.parents + task.link_counts.children : 0
-  const fallback = useDefaultAssignee()
-  const orchestrator = useOrchestration()?.resolved_orchestrator_profile ?? ''
+  const k = useKanban();
+  const created = ago(task.created_at);
+  const links = task.link_counts
+    ? task.link_counts.parents + task.link_counts.children
+    : 0;
+  const fallback = useDefaultAssignee();
+  const orchestrator = useOrchestration()?.resolved_orchestrator_profile ?? "";
   // Ready + no assignee: with a configured default assignee the dispatcher
   // auto-assigns on its next tick (#27145) — say THAT, not "won't run". Only
   // a board with no fallback has the genuine silent failure.
-  const unassignedReady = task.status === 'ready' && !task.assignee
+  const unassignedReady = task.status === "ready" && !task.assignee;
 
   // The agent on the hook for a queued card: the explicit assignee, else the
   // auto-default (ready), else the specifier that rewrites triage cards.
-  const attached = task.assignee || (task.status === 'ready' ? fallback : task.status === 'triage' ? orchestrator : '')
+  const attached =
+    task.assignee ||
+    (task.status === "ready"
+      ? fallback
+      : task.status === "triage"
+        ? orchestrator
+        : "");
 
-  const meta = columnMeta(task.status)
+  const meta = columnMeta(task.status);
 
   return (
     <div className="flex items-center gap-2 whitespace-nowrap text-[0.625rem] text-(--ui-text-tertiary)">
-      {arc === 'queued' && attached ? (
+      {arc === "queued" && attached ? (
         // WHO is coming for the card. The arc only animates once the agent is
         // actually working; while queued, the named chip carries "attached".
         <Tip
           label={
-            task.status === 'review'
+            task.status === "review"
               ? k.reviewChecking
               : task.assignee
                 ? k.attachedTip(attached)
-                : task.status === 'triage'
+                : task.status === "triage"
                   ? k.orchestratorTip(attached)
                   : k.autoAssignTip(attached)
           }
         >
-          <span className="inline-flex min-w-0 cursor-help items-center gap-1 font-medium" style={{ color: meta.tone }}>
+          <span
+            className="inline-flex min-w-0 cursor-help items-center gap-1 font-medium"
+            style={{ color: meta.tone }}
+          >
             <Avatar name={attached} size="1.125rem" />
             <span className="truncate">
-              {!task.assignee && '→ '}
+              {!task.assignee && "→ "}
               {attached}
             </span>
           </span>
@@ -188,16 +221,18 @@ function CardFooter({ arc, task }: { arc: ArcState | null; task: KanbanTask }) {
       ) : task.assignee ? (
         <Avatar name={task.assignee} size="1.125rem" />
       ) : null}
-      {arc === 'running' && (
+      {arc === "running" && (
         <Tip label={k.arcRunning}>
           <span className="shrink-0 cursor-help">
             <RunClock task={task} />
           </span>
         </Tip>
       )}
-      {arc === 'stale' && (
+      {arc === "stale" && (
         <Tip label={k.arcStale}>
-          <span className="shrink-0 cursor-help font-medium text-amber-500">{k.noHeartbeat}</span>
+          <span className="shrink-0 cursor-help font-medium text-amber-500">
+            {k.noHeartbeat}
+          </span>
         </Tip>
       )}
       {unassignedReady && !fallback && (
@@ -209,7 +244,7 @@ function CardFooter({ arc, task }: { arc: ArcState | null; task: KanbanTask }) {
         </Tip>
       )}
       <div className="ml-auto flex min-w-0 shrink items-center gap-2">
-        {typeof task.priority === 'number' && task.priority > 0 && (
+        {typeof task.priority === "number" && task.priority > 0 && (
           <span className="inline-flex items-center gap-0.5 text-amber-500">
             <Codicon name="arrow-up" size="0.7rem" />
             {task.priority}
@@ -220,7 +255,9 @@ function CardFooter({ arc, task }: { arc: ArcState | null; task: KanbanTask }) {
             {task.progress.done}/{task.progress.total}
           </Meta>
         )}
-        {Boolean(task.comment_count) && <Meta icon="comment">{task.comment_count}</Meta>}
+        {Boolean(task.comment_count) && (
+          <Meta icon="comment">{task.comment_count}</Meta>
+        )}
         {links > 0 && <Meta icon="references">{links}</Meta>}
         {task.warnings && task.warnings.count > 0 && (
           <span className="inline-flex items-center gap-0.5 text-destructive">
@@ -231,10 +268,12 @@ function CardFooter({ arc, task }: { arc: ArcState | null; task: KanbanTask }) {
         {created && !task.assignee && !unassignedReady ? (
           <span className="text-(--ui-text-quaternary)">{created}</span>
         ) : null}
-        <span className="min-w-0 truncate font-mono text-(--ui-text-quaternary)">{shortId(task.id)}</span>
+        <span className="min-w-0 truncate font-mono text-(--ui-text-quaternary)">
+          {shortId(task.id)}
+        </span>
       </div>
     </div>
-  )
+  );
 }
 
 function Card({
@@ -244,61 +283,83 @@ function Card({
   onOpen,
   onToggleSelect,
   selected,
-  task
+  task,
 }: {
-  columns: string[]
-  onDelete: (id: string) => void
-  onMove: (id: string, status: string) => void
-  onOpen: (id: string) => void
-  onToggleSelect: (id: string) => void
-  selected: boolean
-  task: KanbanTask
+  columns: string[];
+  onDelete: (id: string) => void;
+  onMove: (id: string, status: string) => void;
+  onOpen: (id: string) => void;
+  onToggleSelect: (id: string) => void;
+  selected: boolean;
+  task: KanbanTask;
 }) {
-  const k = useKanban()
-  const [dragging, setDragging] = useState(false)
-  const meta = columnMeta(task.status)
-  const summary = task.latest_summary || task.body
-  const fallback = useDefaultAssignee()
-  const arc = arcState(task, fallback)
+  const k = useKanban();
+  const [dragging, setDragging] = useState(false);
+  const meta = columnMeta(task.status);
+  const summary = task.latest_summary || task.body;
+  const fallback = useDefaultAssignee();
+  const arc = arcState(task, fallback);
 
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
         <div
           className={cn(
-            'group relative flex cursor-grab flex-col gap-2 rounded-md border border-(--ui-stroke-tertiary) border-l-2 bg-(--ui-bg-elevated) p-2.5',
+            "group relative flex cursor-grab flex-col gap-2 rounded-md border border-(--ui-stroke-tertiary) border-l-2 bg-(--ui-bg-elevated) p-2.5",
             // Hover matches the provider-picker rows: a quiet primary fill;
             // selected = the theme's focus color (same as a focused input).
-            'transition-colors hover:bg-primary/[0.06] active:cursor-grabbing',
-            selected && 'border-(--dt-composer-ring) bg-[color-mix(in_srgb,var(--dt-composer-ring)_7%,transparent)]',
-            dragging && 'opacity-40'
+            "transition-colors hover:bg-primary/[0.06] active:cursor-grabbing",
+            selected &&
+              "border-(--dt-composer-ring) bg-[color-mix(in_srgb,var(--dt-composer-ring)_7%,transparent)]",
+            dragging && "opacity-40",
           )}
           draggable
-          onClick={event => (event.metaKey || event.ctrlKey ? onToggleSelect(task.id) : onOpen(task.id))}
+          onClick={(event) =>
+            event.metaKey || event.ctrlKey
+              ? onToggleSelect(task.id)
+              : onOpen(task.id)
+          }
           onDragEnd={() => setDragging(false)}
-          onDragStart={event => {
-            event.dataTransfer.setData('text/plain', task.id)
-            event.dataTransfer.effectAllowed = 'move'
+          onDragStart={(event) => {
+            event.dataTransfer.setData("text/plain", task.id);
+            event.dataTransfer.effectAllowed = "move";
             // Snapshot the drag image before dimming the source, so the ghost
             // stays a solid card (dimming first would bake 40% into it).
-            event.dataTransfer.setDragImage(event.currentTarget, event.nativeEvent.offsetX, event.nativeEvent.offsetY)
-            setDragging(true)
+            event.dataTransfer.setDragImage(
+              event.currentTarget,
+              event.nativeEvent.offsetX,
+              event.nativeEvent.offsetY,
+            );
+            setDragging(true);
           }}
-          style={{ '--kanban-tone': meta.tone, borderLeftColor: meta.tone } as CSSProperties}
+          style={
+            {
+              "--kanban-tone": meta.tone,
+              borderLeftColor: meta.tone,
+            } as CSSProperties
+          }
         >
           {/* Machine-activity arc: animates ONLY while an agent is actually on
               the card (claimed + working; amber when the heartbeat is gone).
               Queued attachment is the footer's named-agent chip — a moving
               border on an idle card would lie. Hidden during drag/selection
               so those states stay legible. */}
-          {(arc === 'running' || arc === 'stale') && !dragging && !selected && (
-            <span aria-hidden className={cn('kanban-arc', arc === 'stale' && 'kanban-arc--stale')} />
+          {(arc === "running" || arc === "stale") && !dragging && !selected && (
+            <span
+              aria-hidden
+              className={cn(
+                "kanban-arc",
+                arc === "stale" && "kanban-arc--stale",
+              )}
+            />
           )}
           <span className="line-clamp-2 text-[0.8125rem] font-medium leading-snug text-foreground">
             {task.title || task.id}
           </span>
           {summary && (
-            <span className="line-clamp-2 text-[0.6875rem] leading-snug text-(--ui-text-tertiary)">{summary}</span>
+            <span className="line-clamp-2 text-[0.6875rem] leading-snug text-(--ui-text-tertiary)">
+              {summary}
+            </span>
           )}
           <CardFooter arc={arc} task={task} />
         </div>
@@ -309,26 +370,32 @@ function Card({
           {k.open}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => onToggleSelect(task.id)}>
-          <Codicon name={selected ? 'close' : 'check-all'} size="0.85rem" />
-          {selected ? k.deselect : k.select(formatModifierToken('mod'))}
+          <Codicon name={selected ? "close" : "check-all"} size="0.85rem" />
+          {selected ? k.deselect : k.select(formatModifierToken("mod"))}
         </ContextMenuItem>
         <ContextMenuSeparator />
         {columns
-          .filter(name => name !== task.status && !isLockedTarget(name))
-          .map(name => (
+          .filter((name) => name !== task.status && !isLockedTarget(name))
+          .map((name) => (
             <ContextMenuItem key={name} onSelect={() => onMove(task.id, name)}>
-              <span className="size-2 rounded-full" style={{ backgroundColor: columnMeta(name).tone }} />
+              <span
+                className="size-2 rounded-full"
+                style={{ backgroundColor: columnMeta(name).tone }}
+              />
               {k.moveTo(columnLabel(k, name))}
             </ContextMenuItem>
           ))}
         <ContextMenuSeparator />
-        <ContextMenuItem onSelect={() => onDelete(task.id)} variant="destructive">
+        <ContextMenuItem
+          onSelect={() => onDelete(task.id)}
+          variant="destructive"
+        >
           <Codicon name="trash" size="0.85rem" />
           {k.delete}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-  )
+  );
 }
 
 // ── column ───────────────────────────────────────────────────────────────────
@@ -344,43 +411,43 @@ function Column({
   onOpen,
   onToggle,
   onToggleSelect,
-  selected
+  selected,
 }: {
-  collapsed: boolean
-  column: { name: string; tasks: KanbanTask[] }
-  columns: string[]
-  onAdd: (status: string) => void
-  onDelete: (id: string) => void
-  onDropTask: (id: string, status: string) => void
-  onMove: (id: string, status: string) => void
-  onOpen: (id: string) => void
-  onToggle: () => void
-  onToggleSelect: (id: string) => void
-  selected: ReadonlySet<string>
+  collapsed: boolean;
+  column: { name: string; tasks: KanbanTask[] };
+  columns: string[];
+  onAdd: (status: string) => void;
+  onDelete: (id: string) => void;
+  onDropTask: (id: string, status: string) => void;
+  onMove: (id: string, status: string) => void;
+  onOpen: (id: string) => void;
+  onToggle: () => void;
+  onToggleSelect: (id: string) => void;
+  selected: ReadonlySet<string>;
 }) {
-  const k = useKanban()
-  const [over, setOver] = useState(false)
-  const meta = columnMeta(column.name)
-  const label = columnLabel(k, column.name)
-  const locked = isLockedTarget(column.name)
-  const byProfile = useValue($lanesByProfile)
+  const k = useKanban();
+  const [over, setOver] = useState(false);
+  const meta = columnMeta(column.name);
+  const label = columnLabel(k, column.name);
+  const locked = isLockedTarget(column.name);
+  const byProfile = useValue($lanesByProfile);
 
   // The dashboard's "lanes by profile": sub-group Running by assignee so a
   // fleet's in-flight work reads per-worker. Null = flat (off, or trivial).
   const lanes = useMemo(() => {
-    if (!byProfile || column.name !== 'running' || column.tasks.length === 0) {
-      return null
+    if (!byProfile || column.name !== "running" || column.tasks.length === 0) {
+      return null;
     }
 
-    const groups = new Map<string, KanbanTask[]>()
+    const groups = new Map<string, KanbanTask[]>();
 
     for (const task of column.tasks) {
-      const key = task.assignee || UNASSIGNED_LANE
-      groups.set(key, [...(groups.get(key) ?? []), task])
+      const key = task.assignee || UNASSIGNED_LANE;
+      groups.set(key, [...(groups.get(key) ?? []), task]);
     }
 
-    return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b))
-  }, [byProfile, column])
+    return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+  }, [byProfile, column]);
 
   const dragHandlers = {
     onDragLeave: () => setOver(false),
@@ -388,27 +455,30 @@ function Column({
       // Locked lanes don't preventDefault → the OS shows the no-drop cursor
       // and the drop event never fires. The lane is honest about itself.
       if (locked) {
-        event.dataTransfer.dropEffect = 'none'
+        event.dataTransfer.dropEffect = "none";
 
-        return
+        return;
       }
 
-      event.preventDefault()
-      event.dataTransfer.dropEffect = 'move'
-      setOver(true)
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      setOver(true);
     },
     onDrop: (event: ReactDragEvent<HTMLElement>) => {
-      event.preventDefault()
-      setOver(false)
-      const id = event.dataTransfer.getData('text/plain')
+      event.preventDefault();
+      setOver(false);
+      const id = event.dataTransfer.getData("text/plain");
 
       if (id) {
-        onDropTask(id, column.name)
+        onDropTask(id, column.name);
       }
-    }
-  }
+    },
+  };
 
-  const wash = over && !locked ? 'bg-(--ui-bg-quinary)' : 'bg-[color-mix(in_srgb,var(--ui-bg-quinary)_50%,transparent)]'
+  const wash =
+    over && !locked
+      ? "bg-(--ui-bg-quinary)"
+      : "bg-[color-mix(in_srgb,var(--ui-bg-quinary)_50%,transparent)]";
 
   // Collapsed = a thin vertical rail: dot, sideways label, count. Still a live
   // drop target (drop straight onto the rail); click expands. The dot sits in
@@ -420,38 +490,51 @@ function Column({
         {...dragHandlers}
         aria-label={k.expand(label)}
         className={cn(
-          'flex h-full w-8 shrink-0 flex-col items-center gap-1.5 rounded-lg p-2 transition-colors hover:bg-(--ui-bg-quinary)',
-          wash
+          "flex h-full w-8 shrink-0 flex-col items-center gap-1.5 rounded-lg p-2 transition-colors hover:bg-(--ui-bg-quinary)",
+          wash,
         )}
         onClick={onToggle}
         type="button"
       >
         <span className="grid h-5 shrink-0 place-items-center">
-          <span className="size-1.5 rounded-full" style={{ backgroundColor: meta.tone }} />
+          <span
+            className="size-1.5 rounded-full"
+            style={{ backgroundColor: meta.tone }}
+          />
         </span>
         <span className="text-[0.6875rem] font-medium uppercase tracking-wide text-(--ui-text-tertiary) [writing-mode:vertical-rl]">
           {label}
         </span>
         {column.tasks.length > 0 && (
-          <span className="text-[0.625rem] tabular-nums text-(--ui-text-quaternary)">{column.tasks.length}</span>
+          <span className="text-[0.625rem] tabular-nums text-(--ui-text-quaternary)">
+            {column.tasks.length}
+          </span>
         )}
       </button>
-    )
+    );
   }
 
   return (
     <div
       {...dragHandlers}
-      className={cn('group/col flex h-full w-64 shrink-0 flex-col rounded-lg p-2 transition-colors', wash)}
+      className={cn(
+        "group/col flex h-full w-64 shrink-0 flex-col rounded-lg p-2 transition-colors",
+        wash,
+      )}
     >
       <header className="mb-1.5 flex h-5 items-center gap-1.5 px-1">
-        <span className="size-1.5 rounded-full" style={{ backgroundColor: meta.tone }} />
+        <span
+          className="size-1.5 rounded-full"
+          style={{ backgroundColor: meta.tone }}
+        />
         <Tip label={columnHelp(k, column.name)}>
           <span className="cursor-help text-[0.6875rem] font-medium uppercase tracking-wide text-(--ui-text-tertiary)">
             {label}
           </span>
         </Tip>
-        <span className="text-[0.625rem] tabular-nums text-(--ui-text-quaternary)">{column.tasks.length}</span>
+        <span className="text-[0.625rem] tabular-nums text-(--ui-text-quaternary)">
+          {column.tasks.length}
+        </span>
         <button
           aria-label={k.collapse(label)}
           className="ml-auto grid size-5 place-items-center rounded text-(--ui-text-tertiary) opacity-0 transition-opacity hover:bg-(--chrome-action-hover) hover:text-foreground focus-visible:opacity-100 group-hover/col:opacity-100"
@@ -466,11 +549,13 @@ function Column({
           ? lanes.map(([assignee, tasks]) => (
               <div className="flex flex-col gap-2" key={assignee}>
                 <div className="flex items-center gap-1.5 px-1 pt-1 text-[0.625rem] text-(--ui-text-quaternary)">
-                  {assignee !== UNASSIGNED_LANE && <Avatar name={assignee} size="0.875rem" />}
+                  {assignee !== UNASSIGNED_LANE && (
+                    <Avatar name={assignee} size="0.875rem" />
+                  )}
                   {assignee}
                   <span className="tabular-nums">{tasks.length}</span>
                 </div>
-                {tasks.map(task => (
+                {tasks.map((task) => (
                   <Card
                     columns={columns}
                     key={task.id}
@@ -484,7 +569,7 @@ function Column({
                 ))}
               </div>
             ))
-          : column.tasks.map(task => (
+          : column.tasks.map((task) => (
               <Card
                 columns={columns}
                 key={task.id}
@@ -516,14 +601,14 @@ function Column({
         )}
       </div>
     </div>
-  )
+  );
 }
 
 // ── dialogs ──────────────────────────────────────────────────────────────────
 
-const NO_PARENT = '__none__'
-const PARKED = '__parked__'
-const WORKSPACE_KINDS = ['scratch', 'worktree', 'dir'] as const
+const NO_PARENT = "__none__";
+const PARKED = "__parked__";
+const WORKSPACE_KINDS = ["scratch", "worktree", "dir"] as const;
 
 function Field({ children, label }: { children: ReactNode; label: string }) {
   return (
@@ -531,103 +616,118 @@ function Field({ children, label }: { children: ReactNode; label: string }) {
       <span className={FIELD_LABEL}>{label}</span>
       {children}
     </label>
-  )
+  );
 }
 
 function NewTaskDialog({
   onClose,
   parents,
-  target
+  target,
 }: {
-  onClose: () => void
-  parents: Array<{ id: string; title: string }>
-  target: null | string
+  onClose: () => void;
+  parents: Array<{ id: string; title: string }>;
+  target: null | string;
 }) {
-  const k = useKanban()
-  const qc = useQueryClient()
-  const { data: roster } = useQuery({ queryKey: PROFILES_KEY, queryFn: fetchProfiles, staleTime: 60_000 })
+  const k = useKanban();
+  const qc = useQueryClient();
+  const { data: roster } = useQuery({
+    queryKey: PROFILES_KEY,
+    queryFn: fetchProfiles,
+    staleTime: 60_000,
+  });
   // Title-only creates must RUN: "auto" resolves to the orchestration default
   // (ultimately the active profile), applied at create time. Never silently
   // unassigned — parking a card is the explicit choice, not the default.
-  const resolvedDefault = useOrchestration()?.resolved_default_assignee || 'default'
+  const resolvedDefault =
+    useOrchestration()?.resolved_default_assignee || "default";
 
   // Board-level workspace default: a task inherits the current board's
   // configured project dir (scratch when unset, worktree in a git repo, else
   // dir) unless the operator overrides it below. Set the board default in the
   // board switcher's "Board settings…".
-  const selectedSlug = useValue($boardSlug)
-  const { data: boards } = useQuery({ queryKey: BOARDS_KEY, queryFn: fetchBoards, staleTime: 30_000 })
-  const currentBoard = boards?.boards.find(b => b.slug === (selectedSlug || boards.current))
-  const boardDefaultKind = currentBoard?.default_workspace_kind || 'scratch'
-  const boardDefaultDir = currentBoard?.default_workdir || ''
+  const selectedSlug = useValue($boardSlug);
+  const { data: boards } = useQuery({
+    queryKey: BOARDS_KEY,
+    queryFn: fetchBoards,
+    staleTime: 30_000,
+  });
+  const currentBoard = boards?.boards.find(
+    (b) => b.slug === (selectedSlug || boards.current),
+  );
+  const boardDefaultKind = currentBoard?.default_workspace_kind || "scratch";
+  const boardDefaultDir = currentBoard?.default_workdir || "";
 
-  const isTriage = target === 'triage'
-  const [title, setTitle] = useState('')
-  const [bodyText, setBodyText] = useState('')
-  const [assignee, setAssignee] = useState('')
-  const [priority, setPriority] = useState('0')
-  const [skills, setSkills] = useState('')
-  const [workspaceKind, setWorkspaceKind] = useState<string>(boardDefaultKind)
+  const isTriage = target === "triage";
+  const [title, setTitle] = useState("");
+  const [bodyText, setBodyText] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [priority, setPriority] = useState("0");
+  const [skills, setSkills] = useState("");
+  const [workspaceKind, setWorkspaceKind] = useState<string>(boardDefaultKind);
   // Empty = inherit the board's default project dir (backend resolves it);
   // a path here overrides just this task. Only meaningful for dir/worktree.
-  const [workspacePath, setWorkspacePath] = useState('')
-  const [parent, setParent] = useState('')
-  const [modelOverride, setModelOverride] = useState<TaskModelOverride>(EMPTY_OVERRIDE)
-  const [goalMode, setGoalMode] = useState(false)
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<null | string>(null)
-  const [estimate, setEstimate] = useState<null | TaskEstimate>(null)
+  const [workspacePath, setWorkspacePath] = useState("");
+  const [parent, setParent] = useState("");
+  const [modelOverride, setModelOverride] =
+    useState<TaskModelOverride>(EMPTY_OVERRIDE);
+  const [goalMode, setGoalMode] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<null | string>(null);
+  const [estimate, setEstimate] = useState<null | TaskEstimate>(null);
 
   // Rough effort estimate from the typed title/body (before the task exists),
   // via the auto-routed auxiliary model. Makes a model call — explicit action.
   const estMut = useMutation({
     mutationFn: () => estimateNew(title.trim(), bodyText.trim()),
-    onError: err => host.notify({ kind: 'error', message: errText(err) }),
-    onSuccess: r => {
+    onError: (err) => host.notify({ kind: "error", message: errText(err) }),
+    onSuccess: (r) => {
       if (r.ok) {
-        setEstimate(r)
+        setEstimate(r);
       } else {
-        host.notify({ kind: 'warning', message: r.reason || k.couldNotEstimate })
+        host.notify({
+          kind: "warning",
+          message: r.reason || k.couldNotEstimate,
+        });
       }
-    }
-  })
+    },
+  });
 
   // Reset per open — the dialog is externally controlled (open = target set),
   // so onOpenChange(true) never fires; key the reset off `target` (and the
   // resolved board default, which may arrive after the first open).
   useEffect(() => {
     if (target) {
-      setTitle('')
-      setBodyText('')
-      setAssignee('')
-      setPriority('0')
-      setSkills('')
-      setWorkspaceKind(boardDefaultKind)
-      setWorkspacePath('')
-      setParent('')
-      setModelOverride(EMPTY_OVERRIDE)
-      setGoalMode(false)
-      setError(null)
-      setBusy(false)
-      setEstimate(null)
+      setTitle("");
+      setBodyText("");
+      setAssignee("");
+      setPriority("0");
+      setSkills("");
+      setWorkspaceKind(boardDefaultKind);
+      setWorkspacePath("");
+      setParent("");
+      setModelOverride(EMPTY_OVERRIDE);
+      setGoalMode(false);
+      setError(null);
+      setBusy(false);
+      setEstimate(null);
     }
-  }, [target, boardDefaultKind])
+  }, [target, boardDefaultKind]);
 
   const submit = async () => {
-    const trimmed = title.trim()
+    const trimmed = title.trim();
 
     if (!trimmed || !target || busy) {
-      return
+      return;
     }
 
-    setBusy(true)
-    setError(null)
+    setBusy(true);
+    setError(null);
 
     try {
       const skillList = skills
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean)
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
 
       // create() derives status (triage flag → 'triage', else 'ready'); move to
       // the requested column when they differ, so a per-column add lands right.
@@ -643,29 +743,32 @@ function NewTaskDialog({
         workspace_kind: workspaceKind,
         ...overrideCreateFields(modelOverride),
         // Empty → backend inherits the board's default project dir.
-        workspace_path: workspaceKind !== 'scratch' && workspacePath.trim() ? workspacePath.trim() : undefined
-      })
+        workspace_path:
+          workspaceKind !== "scratch" && workspacePath.trim()
+            ? workspacePath.trim()
+            : undefined,
+      });
 
       if (task && task.status !== target) {
-        await patchTask(task.id, { status: target })
+        await patchTask(task.id, { status: target });
       }
 
       // Dispatcher-presence warning ("this ready task will sit idle") — not an
       // error, but the user should know.
       if (warning) {
-        host.notify({ kind: 'warning', message: warning })
+        host.notify({ kind: "warning", message: warning });
       }
 
-      await qc.invalidateQueries({ queryKey: ['kanban', 'board'] })
-      onClose()
+      await qc.invalidateQueries({ queryKey: ["kanban", "board"] });
+      onClose();
     } catch (err) {
-      setError(errText(err))
-      setBusy(false)
+      setError(errText(err));
+      setBusy(false);
     }
-  }
+  };
 
   return (
-    <Dialog onOpenChange={open => !open && onClose()} open={Boolean(target)}>
+    <Dialog onOpenChange={(open) => !open && onClose()} open={Boolean(target)}>
       {/* `overflow-visible`: DialogContent publishes ITSELF as the portal
           container for popovers opened inside it (dialog-portal-context), and
           its default `overflow-y-auto` then crops them at the dialog's edge —
@@ -676,31 +779,39 @@ function NewTaskDialog({
           becomes a no-op and can go. */}
       <DialogContent className="w-[min(42rem,94vw)] max-w-none overflow-visible">
         <DialogHeader>
-          <DialogTitle>{target ? k.newTaskIn(columnLabel(k, target)) : k.newTask}</DialogTitle>
+          <DialogTitle>
+            {target ? k.newTaskIn(columnLabel(k, target)) : k.newTask}
+          </DialogTitle>
         </DialogHeader>
         <div className="flex max-h-[min(72vh,44rem)] flex-col gap-3 overflow-y-auto pr-0.5">
           <Input
             autoFocus
-            onChange={event => setTitle(event.target.value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                event.preventDefault()
-                void submit()
+            onChange={(event) => setTitle(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                void submit();
               }
             }}
-            placeholder={isTriage ? k.titlePlaceholderTriage : k.titlePlaceholder}
+            placeholder={
+              isTriage ? k.titlePlaceholderTriage : k.titlePlaceholder
+            }
             value={title}
           />
           <Textarea
             className="min-h-20"
-            onChange={event => setBodyText(event.target.value)}
+            onChange={(event) => setBodyText(event.target.value)}
             placeholder={k.descPlaceholder}
             value={bodyText}
           />
 
           <div className="grid grid-cols-2 gap-3">
             <Field label={k.priority}>
-              <Input onChange={event => setPriority(event.target.value)} type="number" value={priority} />
+              <Input
+                onChange={(event) => setPriority(event.target.value)}
+                type="number"
+                value={priority}
+              />
             </Field>
             <Field label={k.workspace}>
               <Select onValueChange={setWorkspaceKind} value={workspaceKind}>
@@ -708,10 +819,10 @@ function NewTaskDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {WORKSPACE_KINDS.map(kind => (
+                  {WORKSPACE_KINDS.map((kind) => (
                     <SelectItem key={kind} value={kind}>
                       {kind}
-                      {kind === boardDefaultKind ? k.boardDefaultSuffix : ''}
+                      {kind === boardDefaultKind ? k.boardDefaultSuffix : ""}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -719,29 +830,36 @@ function NewTaskDialog({
             </Field>
           </div>
 
-          {workspaceKind !== 'scratch' && (
+          {workspaceKind !== "scratch" && (
             <Field label={k.workspaceOverride}>
               <Input
-                onChange={event => setWorkspacePath(event.target.value)}
+                onChange={(event) => setWorkspacePath(event.target.value)}
                 placeholder={boardDefaultDir || k.workspaceInherit}
                 value={workspacePath}
               />
               <span className="text-[0.625rem] text-(--ui-text-quaternary)">
-                {boardDefaultDir ? k.workspaceInheritDir(boardDefaultDir) : k.workspaceInheritGeneric}
+                {boardDefaultDir
+                  ? k.workspaceInheritDir(boardDefaultDir)
+                  : k.workspaceInheritGeneric}
               </span>
             </Field>
           )}
 
           <Field label={k.assignee}>
-            <Select onValueChange={v => setAssignee(v === NO_PARENT ? '' : v)} value={assignee || NO_PARENT}>
+            <Select
+              onValueChange={(v) => setAssignee(v === NO_PARENT ? "" : v)}
+              value={assignee || NO_PARENT}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={NO_PARENT}>{k.defaultOption(resolvedDefault)}</SelectItem>
+                <SelectItem value={NO_PARENT}>
+                  {k.defaultOption(resolvedDefault)}
+                </SelectItem>
                 {(roster?.profiles ?? [])
-                  .filter(profile => profile.name !== resolvedDefault)
-                  .map(profile => (
+                  .filter((profile) => profile.name !== resolvedDefault)
+                  .map((profile) => (
                     <SelectItem key={profile.name} value={profile.name}>
                       {profile.name}
                     </SelectItem>
@@ -752,23 +870,35 @@ function NewTaskDialog({
           </Field>
 
           <Field label={k.skills}>
-            <Input onChange={event => setSkills(event.target.value)} placeholder={k.skillsPlaceholder} value={skills} />
+            <Input
+              onChange={(event) => setSkills(event.target.value)}
+              placeholder={k.skillsPlaceholder}
+              value={skills}
+            />
           </Field>
 
           <Field label={k.model}>
-            <ModelOverrideField onChange={setModelOverride} value={modelOverride} />
-            <span className="text-[0.625rem] text-(--ui-text-quaternary)">{k.modelHint}</span>
+            <ModelOverrideField
+              onChange={setModelOverride}
+              value={modelOverride}
+            />
+            <span className="text-[0.625rem] text-(--ui-text-quaternary)">
+              {k.modelHint}
+            </span>
           </Field>
 
           {parents.length > 0 && (
             <Field label={k.parent}>
-              <Select onValueChange={v => setParent(v === NO_PARENT ? '' : v)} value={parent || NO_PARENT}>
+              <Select
+                onValueChange={(v) => setParent(v === NO_PARENT ? "" : v)}
+                value={parent || NO_PARENT}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={NO_PARENT}>{k.noParent}</SelectItem>
-                  {parents.map(option => (
+                  {parents.map((option) => (
                     <SelectItem key={option.id} value={option.id}>
                       {option.title || option.id}
                     </SelectItem>
@@ -779,11 +909,18 @@ function NewTaskDialog({
           )}
 
           <label className="flex cursor-pointer items-center gap-2 text-[0.75rem] text-(--ui-text-secondary)">
-            <Switch aria-label={k.goalMode} checked={goalMode} onCheckedChange={setGoalMode} size="xs" />
+            <Switch
+              aria-label={k.goalMode}
+              checked={goalMode}
+              onCheckedChange={setGoalMode}
+              size="xs"
+            />
             {k.goalMode}
           </label>
 
-          {error && <span className="text-[0.75rem] text-destructive">{error}</span>}
+          {error && (
+            <span className="text-[0.75rem] text-destructive">{error}</span>
+          )}
         </div>
         <DialogFooter>
           <div className="mr-auto flex items-center gap-1 text-[0.75rem] text-(--ui-text-tertiary)">
@@ -792,7 +929,9 @@ function NewTaskDialog({
                 <Tip label={estimate.rationale || k.roughEstimate}>
                   <span className="font-medium tabular-nums text-(--ui-text-secondary)">
                     ~{compactNumber(estimate.est_tokens)} {k.tokUnit}
-                    {estimate.complexity ? ` · ${k.complexity[estimate.complexity] ?? estimate.complexity}` : ''}
+                    {estimate.complexity
+                      ? ` · ${k.complexity[estimate.complexity] ?? estimate.complexity}`
+                      : ""}
                   </span>
                 </Tip>
                 <Tip label={k.reEstimate}>
@@ -803,7 +942,11 @@ function NewTaskDialog({
                     size="icon-xs"
                     variant="ghost"
                   >
-                    <Codicon name="refresh" size="0.7rem" spinning={estMut.isPending} />
+                    <Codicon
+                      name="refresh"
+                      size="0.7rem"
+                      spinning={estMut.isPending}
+                    />
                   </Button>
                 </Tip>
               </>
@@ -816,7 +959,7 @@ function NewTaskDialog({
                   variant="ghost"
                 >
                   <Codicon
-                    name={estMut.isPending ? 'loading' : 'dashboard'}
+                    name={estMut.isPending ? "loading" : "dashboard"}
                     size="0.75rem"
                     spinning={estMut.isPending}
                   />
@@ -828,13 +971,16 @@ function NewTaskDialog({
           <Button onClick={onClose} variant="text">
             {k.cancel}
           </Button>
-          <Button disabled={!title.trim() || busy} onClick={() => void submit()}>
+          <Button
+            disabled={!title.trim() || busy}
+            onClick={() => void submit()}
+          >
             {busy ? k.creating : k.createTask}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 // ── intro ────────────────────────────────────────────────────────────────────
@@ -842,11 +988,11 @@ function NewTaskDialog({
 // One-time explainer for the board's core gotcha: this is a dispatcher queue,
 // not a todo list. Dismissal persists via plugin storage.
 function Intro() {
-  const k = useKanban()
-  const dismissed = useValue($introDismissed)
+  const k = useKanban();
+  const dismissed = useValue($introDismissed);
 
   if (dismissed) {
-    return null
+    return null;
   }
 
   return (
@@ -855,14 +1001,18 @@ function Intro() {
       data-selectable-text="true"
     >
       <p className="min-w-0">{k.introBody}</p>
-      <Button onClick={() => $introDismissed.set(true)} size="inline" variant="textStrong">
+      <Button
+        onClick={() => $introDismissed.set(true)}
+        size="inline"
+        variant="textStrong"
+      >
         {k.introGotIt}
       </Button>
     </div>
-  )
+  );
 }
 
-const UNASSIGNED_LANE = 'unassigned'
+const UNASSIGNED_LANE = "unassigned";
 
 // ── filter kebab ─────────────────────────────────────────────────────────────
 
@@ -873,28 +1023,31 @@ function FilterMenu({
   onArchived,
   onAssignee,
   onTenant,
-  tenant
+  tenant,
 }: {
-  archived: boolean
-  assignee: string
-  board: KanbanBoard
-  onArchived: (v: boolean) => void
-  onAssignee: (v: string) => void
-  onTenant: (v: string) => void
-  tenant: string
+  archived: boolean;
+  assignee: string;
+  board: KanbanBoard;
+  onArchived: (v: boolean) => void;
+  onAssignee: (v: string) => void;
+  onTenant: (v: string) => void;
+  tenant: string;
 }) {
-  const k = useKanban()
-  const active = Boolean(assignee || tenant || archived)
-  const lanesByProfile = useValue($lanesByProfile)
+  const k = useKanban();
+  const active = Boolean(assignee || tenant || archived);
+  const lanesByProfile = useValue($lanesByProfile);
 
-  const check = (on: boolean) => (on ? <Codicon className="ml-auto" name="check" size="0.8rem" /> : null)
+  const check = (on: boolean) =>
+    on ? <Codicon className="ml-auto" name="check" size="0.8rem" /> : null;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           aria-label={k.filters}
-          className={cn(active && 'bg-(--ui-control-active-background) text-foreground')}
+          className={cn(
+            active && "bg-(--ui-control-active-background) text-foreground",
+          )}
           size="icon-xs"
           variant="ghost"
         >
@@ -902,11 +1055,11 @@ function FilterMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuItem onSelect={() => onAssignee('')}>
+        <DropdownMenuItem onSelect={() => onAssignee("")}>
           {k.allProfiles}
           {check(!assignee)}
         </DropdownMenuItem>
-        {board.assignees.map(name => (
+        {board.assignees.map((name) => (
           <DropdownMenuItem key={name} onSelect={() => onAssignee(name)}>
             <Avatar name={name} size="0.875rem" />
             {name}
@@ -916,11 +1069,11 @@ function FilterMenu({
         {board.tenants.length > 0 && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => onTenant('')}>
+            <DropdownMenuItem onSelect={() => onTenant("")}>
               {k.allTenants}
               {check(!tenant)}
             </DropdownMenuItem>
-            {board.tenants.map(name => (
+            {board.tenants.map((name) => (
               <DropdownMenuItem key={name} onSelect={() => onTenant(name)}>
                 {name}
                 {check(tenant === name)}
@@ -939,7 +1092,7 @@ function FilterMenu({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 // ── selection bar ────────────────────────────────────────────────────────────
@@ -955,63 +1108,79 @@ function SelectionBar({
   columns,
   onClear,
   onDone,
-  selected
+  selected,
 }: {
-  columns: string[]
-  onClear: () => void
-  onDone: (failed: string[]) => void
-  selected: ReadonlySet<string>
+  columns: string[];
+  onClear: () => void;
+  onDone: (failed: string[]) => void;
+  selected: ReadonlySet<string>;
 }) {
-  const k = useKanban()
-  const qc = useQueryClient()
-  const { data: roster } = useQuery({ queryKey: PROFILES_KEY, queryFn: fetchProfiles, staleTime: 60_000 })
+  const k = useKanban();
+  const qc = useQueryClient();
+  const { data: roster } = useQuery({
+    queryKey: PROFILES_KEY,
+    queryFn: fetchProfiles,
+    staleTime: 60_000,
+  });
 
   const finish = (failed: Array<{ error?: string; id: string }>) => {
-    void qc.invalidateQueries({ queryKey: ['kanban', 'board'] })
+    void qc.invalidateQueries({ queryKey: ["kanban", "board"] });
 
     if (failed.length > 0) {
       host.notify({
-        kind: 'warning',
-        message: k.bulkFailed(failed.length, selected.size, failed[0].error ?? k.refused)
-      })
+        kind: "warning",
+        message: k.bulkFailed(
+          failed.length,
+          selected.size,
+          failed[0].error ?? k.refused,
+        ),
+      });
     }
 
-    onDone(failed.map(f => f.id))
-  }
+    onDone(failed.map((f) => f.id));
+  };
 
   const bulk = useMutation({
-    mutationFn: (patch: Record<string, unknown>) => bulkTasks([...selected], patch),
-    onError: err => host.notify({ kind: 'error', message: errText(err) }),
-    onSuccess: data => finish(data.results.filter(r => !r.ok))
-  })
+    mutationFn: (patch: Record<string, unknown>) =>
+      bulkTasks([...selected], patch),
+    onError: (err) => host.notify({ kind: "error", message: errText(err) }),
+    onSuccess: (data) => finish(data.results.filter((r) => !r.ok)),
+  });
 
   // No bulk-delete on the backend — fan out per id, same partial-failure story.
   const bulkDelete = useMutation({
     mutationFn: async () => {
-      const ids = [...selected]
-      const settled = await Promise.allSettled(ids.map(id => deleteTask(id)))
+      const ids = [...selected];
+      const settled = await Promise.allSettled(ids.map((id) => deleteTask(id)));
 
       return ids.flatMap((id, i) => {
-        const result = settled[i]
+        const result = settled[i];
 
-        return result.status === 'rejected' ? [{ error: errText(result.reason), id }] : []
-      })
+        return result.status === "rejected"
+          ? [{ error: errText(result.reason), id }]
+          : [];
+      });
     },
-    onSuccess: finish
-  })
+    onSuccess: finish,
+  });
 
-  const busy = bulk.isPending || bulkDelete.isPending
+  const busy = bulk.isPending || bulkDelete.isPending;
   // One menu at a time — controlled, so a click on the second trigger can
   // never race Radix's dismiss layer into two open menus.
-  const [menu, setMenu] = useState<'assign' | 'move' | null>(null)
+  const [menu, setMenu] = useState<"assign" | "move" | null>(null);
 
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center px-4">
       {/* Flat overlay: stroke + elevated surface do the separating, no shadow. */}
       <div className="pointer-events-auto flex items-center gap-1 rounded-lg border border-(--ui-stroke-secondary) bg-(--ui-bg-elevated) py-1 pr-1 pl-3">
-        <span className="mr-1 text-xs tabular-nums text-(--ui-text-secondary)">{k.nSelected(selected.size)}</span>
+        <span className="mr-1 text-xs tabular-nums text-(--ui-text-secondary)">
+          {k.nSelected(selected.size)}
+        </span>
 
-        <DropdownMenu onOpenChange={open => setMenu(open ? 'move' : null)} open={menu === 'move'}>
+        <DropdownMenu
+          onOpenChange={(open) => setMenu(open ? "move" : null)}
+          open={menu === "move"}
+        >
           <DropdownMenuTrigger asChild>
             <Button disabled={busy} size="xs" variant="ghost">
               {k.moveToShort}
@@ -1020,17 +1189,26 @@ function SelectionBar({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center">
             {columns
-              .filter(name => !isLockedTarget(name))
-              .map(name => (
-                <DropdownMenuItem key={name} onSelect={() => bulk.mutate({ status: name })}>
-                  <span className="size-2 rounded-full" style={{ backgroundColor: columnMeta(name).tone }} />
+              .filter((name) => !isLockedTarget(name))
+              .map((name) => (
+                <DropdownMenuItem
+                  key={name}
+                  onSelect={() => bulk.mutate({ status: name })}
+                >
+                  <span
+                    className="size-2 rounded-full"
+                    style={{ backgroundColor: columnMeta(name).tone }}
+                  />
                   {columnLabel(k, name)}
                 </DropdownMenuItem>
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <DropdownMenu onOpenChange={open => setMenu(open ? 'assign' : null)} open={menu === 'assign'}>
+        <DropdownMenu
+          onOpenChange={(open) => setMenu(open ? "assign" : null)}
+          open={menu === "assign"}
+        >
           <DropdownMenuTrigger asChild>
             <Button disabled={busy} size="xs" variant="ghost">
               {k.assign}
@@ -1038,23 +1216,34 @@ function SelectionBar({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center">
-            {(roster?.profiles ?? []).map(profile => (
+            {(roster?.profiles ?? []).map((profile) => (
               <DropdownMenuItem
                 key={profile.name}
-                onSelect={() => bulk.mutate({ assignee: profile.name, reclaim_first: true })}
+                onSelect={() =>
+                  bulk.mutate({ assignee: profile.name, reclaim_first: true })
+                }
               >
                 <Avatar name={profile.name} size="0.875rem" />
                 {profile.name}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => bulk.mutate({ assignee: '', reclaim_first: true })}>
+            <DropdownMenuItem
+              onSelect={() =>
+                bulk.mutate({ assignee: "", reclaim_first: true })
+              }
+            >
               {k.unassignAction}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button disabled={busy} onClick={() => bulk.mutate({ archive: true })} size="xs" variant="ghost">
+        <Button
+          disabled={busy}
+          onClick={() => bulk.mutate({ archive: true })}
+          size="xs"
+          variant="ghost"
+        >
           {k.archive}
         </Button>
         <Button
@@ -1068,198 +1257,228 @@ function SelectionBar({
         </Button>
 
         <Tip label={k.clearSelection}>
-          <Button aria-label={k.clearSelection} onClick={onClear} size="icon-xs" variant="ghost">
+          <Button
+            aria-label={k.clearSelection}
+            onClick={onClear}
+            size="icon-xs"
+            variant="ghost"
+          >
             <Codicon name="close" size="0.8rem" />
           </Button>
         </Tip>
       </div>
     </div>
-  )
+  );
 }
 
 // ── page ─────────────────────────────────────────────────────────────────────
 
 export function KanbanBoardPage() {
-  const k = useKanban()
-  const qc = useQueryClient()
-  const slug = useValue($boardSlug)
-  const [archived, setArchived] = useState(false)
+  const k = useKanban();
+  const qc = useQueryClient();
+  const slug = useValue($boardSlug);
+  const [archived, setArchived] = useState(false);
 
   // Live updates ride the events socket (bindApi); this interval is only the
   // slow heartbeat for socketless paths (OAuth remotes, dropped connections).
   const { data: board, error } = useQuery({
     queryFn: () => fetchBoard(archived),
     queryKey: boardKey(slug, archived),
-    refetchInterval: 60_000
-  })
+    refetchInterval: 60_000,
+  });
 
-  const [openId, setOpenId] = useState<null | string>(null)
-  const [addStatus, setAddStatus] = useState<null | string>(null)
-  const [settingsOpen, setSettingsOpen] = useState(false)
-  const [search, setSearch] = useState('')
-  const [tenant, setTenant] = useState('')
-  const [assignee, setAssignee] = useState('')
-  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set())
+  const [openId, setOpenId] = useState<null | string>(null);
+  const [addStatus, setAddStatus] = useState<null | string>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [tenant, setTenant] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
 
   // A new-task request raised from outside the page (⌘⌥N, the palette row).
   // The command navigates here and parks the lane; the page picks it up on
   // arrival — whether it was already mounted or is mounting for the first
   // time — then clears it so a later remount can't reopen the dialog.
-  const requestedLane = useValue($newTaskLane)
+  const requestedLane = useValue($newTaskLane);
 
   useEffect(() => {
     if (requestedLane === null) {
-      return
+      return;
     }
 
-    setAddStatus(requestedLane)
-    $newTaskLane.set(null)
-  }, [requestedLane])
+    setAddStatus(requestedLane);
+    $newTaskLane.set(null);
+  }, [requestedLane]);
 
   const toggleSelect = (id: string) => {
-    setSelected(prev => {
-      const next = new Set(prev)
+    setSelected((prev) => {
+      const next = new Set(prev);
 
       if (!next.delete(id)) {
-        next.add(id)
+        next.add(id);
       }
 
-      return next
-    })
-  }
+      return next;
+    });
+  };
 
   // Prune ids that left the board (completed elsewhere, deleted, filtered by
   // a board switch) so the bar's count never lies about what a bulk op hits.
   useEffect(() => {
     if (!board) {
-      return
+      return;
     }
 
-    const alive = new Set(board.columns.flatMap(col => col.tasks.map(task => task.id)))
+    const alive = new Set(
+      board.columns.flatMap((col) => col.tasks.map((task) => task.id)),
+    );
 
-    setSelected(prev => {
-      const kept = [...prev].filter(id => alive.has(id))
+    setSelected((prev) => {
+      const kept = [...prev].filter((id) => alive.has(id));
 
-      return kept.length === prev.size ? prev : new Set(kept)
-    })
-  }, [board])
+      return kept.length === prev.size ? prev : new Set(kept);
+    });
+  }, [board]);
 
   useEffect(() => {
     if (selected.size === 0) {
-      return
+      return;
     }
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setSelected(new Set())
+      if (event.key === "Escape") {
+        setSelected(new Set());
       }
-    }
+    };
 
-    window.addEventListener('keydown', onKey)
+    window.addEventListener("keydown", onKey);
 
-    return () => window.removeEventListener('keydown', onKey)
-  }, [selected.size])
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selected.size]);
 
-  const columnNames = board?.columns.map(col => col.name) ?? []
+  const columnNames = board?.columns.map((col) => col.name) ?? [];
 
   const parentOptions = useMemo(
-    () => board?.columns.flatMap(col => col.tasks).map(task => ({ id: task.id, title: task.title })) ?? [],
-    [board]
-  )
+    () =>
+      board?.columns
+        .flatMap((col) => col.tasks)
+        .map((task) => ({ id: task.id, title: task.title })) ?? [],
+    [board],
+  );
 
   // Client-side filters, mirroring the dashboard (search over title/body/id).
   const filtered = useMemo(() => {
     if (!board) {
-      return null
+      return null;
     }
 
-    const q = search.trim().toLowerCase()
+    const q = search.trim().toLowerCase();
 
     const keep = (task: KanbanTask) =>
-      (!q || `${task.title} ${task.body ?? ''} ${task.id}`.toLowerCase().includes(q)) &&
+      (!q ||
+        `${task.title} ${task.body ?? ""} ${task.id}`
+          .toLowerCase()
+          .includes(q)) &&
       (!tenant || task.tenant === tenant) &&
-      (!assignee || task.assignee === assignee)
+      (!assignee || task.assignee === assignee);
 
-    return { ...board, columns: board.columns.map(col => ({ ...col, tasks: col.tasks.filter(keep) })) }
-  }, [board, search, tenant, assignee])
+    return {
+      ...board,
+      columns: board.columns.map((col) => ({
+        ...col,
+        tasks: col.tasks.filter(keep),
+      })),
+    };
+  }, [board, search, tenant, assignee]);
 
-  const total = filtered?.columns.reduce((sum, col) => sum + col.tasks.length, 0) ?? 0
+  const total =
+    filtered?.columns.reduce((sum, col) => sum + col.tasks.length, 0) ?? 0;
 
   const moveMut = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) => patchTask(id, { status }),
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      patchTask(id, { status }),
     onMutate: async ({ id, status }) => {
-      await qc.cancelQueries({ queryKey: boardKey(slug, archived) })
-      const previous = qc.getQueryData<KanbanBoard>(boardKey(slug, archived))
+      await qc.cancelQueries({ queryKey: boardKey(slug, archived) });
+      const previous = qc.getQueryData<KanbanBoard>(boardKey(slug, archived));
 
       if (previous) {
-        qc.setQueryData(boardKey(slug, archived), moveCard(previous, id, status))
+        qc.setQueryData(
+          boardKey(slug, archived),
+          moveCard(previous, id, status),
+        );
       }
 
-      return { previous }
+      return { previous };
     },
     onError: (err, _vars, context) => {
       if (context?.previous) {
-        qc.setQueryData(boardKey(slug, archived), context.previous)
+        qc.setQueryData(boardKey(slug, archived), context.previous);
       }
 
-      host.notify({ kind: 'error', message: errText(err) })
+      host.notify({ kind: "error", message: errText(err) });
     },
     onSettled: (_data, _err, vars) => {
-      void qc.invalidateQueries({ queryKey: ['kanban', 'board'] })
-      void qc.invalidateQueries({ queryKey: ['kanban', 'task', slug, vars.id] })
-    }
-  })
+      void qc.invalidateQueries({ queryKey: ["kanban", "board"] });
+      void qc.invalidateQueries({
+        queryKey: ["kanban", "task", slug, vars.id],
+      });
+    },
+  });
 
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteTask(id),
-    onMutate: async id => {
-      await qc.cancelQueries({ queryKey: boardKey(slug, archived) })
-      const previous = qc.getQueryData<KanbanBoard>(boardKey(slug, archived))
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: boardKey(slug, archived) });
+      const previous = qc.getQueryData<KanbanBoard>(boardKey(slug, archived));
 
       if (previous) {
-        qc.setQueryData(boardKey(slug, archived), removeCard(previous, id))
+        qc.setQueryData(boardKey(slug, archived), removeCard(previous, id));
       }
 
-      return { previous }
+      return { previous };
     },
     onError: (err, _id, context) => {
       if (context?.previous) {
-        qc.setQueryData(boardKey(slug, archived), context.previous)
+        qc.setQueryData(boardKey(slug, archived), context.previous);
       }
 
-      host.notify({ kind: 'error', message: errText(err) })
+      host.notify({ kind: "error", message: errText(err) });
     },
-    onSettled: () => void qc.invalidateQueries({ queryKey: ['kanban', 'board'] })
-  })
+    onSettled: () =>
+      void qc.invalidateQueries({ queryKey: ["kanban", "board"] }),
+  });
 
   const onMove = (id: string, status: string) => {
-    const task = board?.columns.flatMap(col => col.tasks).find(candidate => candidate.id === id)
+    const task = board?.columns
+      .flatMap((col) => col.tasks)
+      .find((candidate) => candidate.id === id);
 
     if (!task || task.status === status) {
-      return
+      return;
     }
 
     if (isLockedTarget(status)) {
-      host.notify({ kind: 'info', message: lockedReason(k, status) })
+      host.notify({ kind: "info", message: lockedReason(k, status) });
 
-      return
+      return;
     }
 
-    moveMut.mutate({ id, status })
-  }
+    moveMut.mutate({ id, status });
+  };
 
-  const errorMessage = error ? errText(error) : null
+  const errorMessage = error ? errText(error) : null;
 
   // Grab-to-scrub the lane strip (shared primitive, same as the dashboard's pan).
-  const lanesRef = useRef<HTMLDivElement>(null)
-  const { grabbing, onMouseDown } = useGrabScroll(lanesRef)
+  const lanesRef = useRef<HTMLDivElement>(null);
+  const { grabbing, onMouseDown } = useGrabScroll(lanesRef);
 
   // Lane collapse: auto (empty → rail) unless the user overrode it. The map
   // stores only deviations from auto, so it stays tiny and self-heals. On a
   // board with no work at all, auto is disabled — a wall of rails teaches
   // nothing, so a fresh board shows its full structure instead.
-  const laneOverrides = useValue($collapsedLanes)
-  const boardHasWork = (board?.columns.reduce((sum, col) => sum + col.tasks.length, 0) ?? 0) > 0
+  const laneOverrides = useValue($collapsedLanes);
+  const boardHasWork =
+    (board?.columns.reduce((sum, col) => sum + col.tasks.length, 0) ?? 0) > 0;
 
   // An override only lives for the lane's current empty/non-empty phase: when
   // emptiness flips (last card dragged out, first card dropped in) the stale
@@ -1272,53 +1491,61 @@ export function KanbanBoardPage() {
   // moved) costs no extra render, and nothing lags a render behind the value
   // it mirrors.
   const lanePhase = filtered
-    ? filtered.columns.map(col => `${col.name}:${col.tasks.length === 0 ? 'empty' : 'full'}`).join('|')
-    : null
+    ? filtered.columns
+        .map(
+          (col) => `${col.name}:${col.tasks.length === 0 ? "empty" : "full"}`,
+        )
+        .join("|")
+    : null;
 
-  const [prevLanePhase, setPrevLanePhase] = useState<null | string>(null)
+  const [prevLanePhase, setPrevLanePhase] = useState<null | string>(null);
 
   useEffect(() => {
     if (lanePhase === null || lanePhase === prevLanePhase) {
-      return
+      return;
     }
 
-    setPrevLanePhase(lanePhase)
+    setPrevLanePhase(lanePhase);
 
     if (prevLanePhase === null) {
-      return
+      return;
     }
 
-    const before = new Map(prevLanePhase.split('|').map(entry => entry.split(':') as [string, string]))
-    const overrides = { ...$collapsedLanes.get() }
-    let changed = false
+    const before = new Map(
+      prevLanePhase
+        .split("|")
+        .map((entry) => entry.split(":") as [string, string]),
+    );
+    const overrides = { ...$collapsedLanes.get() };
+    let changed = false;
 
-    for (const entry of lanePhase.split('|')) {
-      const [name, phase] = entry.split(':')
-      const was = before.get(name)
+    for (const entry of lanePhase.split("|")) {
+      const [name, phase] = entry.split(":");
+      const was = before.get(name);
 
       if (was !== undefined && was !== phase && name in overrides) {
-        delete overrides[name]
-        changed = true
+        delete overrides[name];
+        changed = true;
       }
     }
 
     if (changed) {
-      $collapsedLanes.set(overrides)
+      $collapsedLanes.set(overrides);
     }
-  }, [lanePhase, prevLanePhase])
+  }, [lanePhase, prevLanePhase]);
 
   const toggleLane = (name: string, auto: boolean) => {
-    const overrides = { ...laneOverrides }
-    const next = !(overrides[name] ?? auto)
+    const overrides = { ...laneOverrides };
+    const next = !(overrides[name] ?? auto);
 
     if (next === auto) {
-      delete overrides[name]
+      delete overrides[name];
     } else {
-      overrides[name] = next
+      overrides[name] = next;
     }
 
-    $collapsedLanes.set(overrides)
-  }
+    $collapsedLanes.set(overrides);
+  };
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-(--ui-surface-background)">
@@ -1343,12 +1570,20 @@ export function KanbanBoardPage() {
             tenant={tenant}
           />
         )}
-        <SearchField aria-label={k.filterCards} onChange={setSearch} placeholder={k.filterCards} value={search} />
+        <SearchField
+          aria-label={k.filterCards}
+          onChange={setSearch}
+          placeholder={k.filterCards}
+          value={search}
+        />
         <div className="ml-auto flex items-center gap-1">
           <Tip label={k.orchestrationSettings}>
             <Button
               aria-label={k.orchestrationSettings}
-              className={cn(settingsOpen && 'bg-(--ui-control-active-background) text-foreground')}
+              className={cn(
+                settingsOpen &&
+                  "bg-(--ui-control-active-background) text-foreground",
+              )}
               onClick={() => setSettingsOpen(!settingsOpen)}
               size="icon-xs"
               variant="ghost"
@@ -1356,7 +1591,7 @@ export function KanbanBoardPage() {
               <Codicon name="organization" size="0.85rem" />
             </Button>
           </Tip>
-          <Button onClick={() => setAddStatus('triage')} size="sm">
+          <Button onClick={() => setAddStatus("triage")} size="sm">
             <Codicon name="add" size="0.8rem" />
             {k.newTask}
           </Button>
@@ -1378,9 +1613,20 @@ export function KanbanBoardPage() {
       ) : total === 0 ? (
         <div className="grid flex-1 place-items-center px-4 text-center">
           <div className="flex flex-col items-center gap-2">
-            <Codicon className="text-(--ui-text-quaternary)" name="project" size="1.25rem" />
-            <p className="text-xs text-(--ui-text-tertiary)">{search || tenant || assignee ? k.noMatch : k.noTasks}</p>
-            <Button className="mt-0.5" onClick={() => setAddStatus('triage')} size="sm" variant="outline">
+            <Codicon
+              className="text-(--ui-text-quaternary)"
+              name="project"
+              size="1.25rem"
+            />
+            <p className="text-xs text-(--ui-text-tertiary)">
+              {search || tenant || assignee ? k.noMatch : k.noTasks}
+            </p>
+            <Button
+              className="mt-0.5"
+              onClick={() => setAddStatus("triage")}
+              size="sm"
+              variant="outline"
+            >
               <Codicon name="add" size="0.75rem" />
               {k.newTask}
             </Button>
@@ -1388,12 +1634,15 @@ export function KanbanBoardPage() {
         </div>
       ) : (
         <div
-          className={cn('flex flex-1 gap-2 overflow-x-auto px-4 pt-1 pb-3', grabbing && 'cursor-grabbing')}
+          className={cn(
+            "flex flex-1 gap-2 overflow-x-auto px-4 pt-1 pb-3",
+            grabbing && "cursor-grabbing",
+          )}
           onMouseDown={onMouseDown}
           ref={lanesRef}
         >
-          {filtered.columns.map(col => {
-            const auto = boardHasWork && col.tasks.length === 0
+          {filtered.columns.map((col) => {
+            const auto = boardHasWork && col.tasks.length === 0;
 
             return (
               <Column
@@ -1402,7 +1651,7 @@ export function KanbanBoardPage() {
                 columns={columnNames}
                 key={col.name}
                 onAdd={setAddStatus}
-                onDelete={id => deleteMut.mutate(id)}
+                onDelete={(id) => deleteMut.mutate(id)}
                 onDropTask={onMove}
                 onMove={onMove}
                 onOpen={setOpenId}
@@ -1410,7 +1659,7 @@ export function KanbanBoardPage() {
                 onToggleSelect={toggleSelect}
                 selected={selected}
               />
-            )
+            );
           })}
         </div>
       )}
@@ -1419,13 +1668,22 @@ export function KanbanBoardPage() {
         <SelectionBar
           columns={columnNames}
           onClear={() => setSelected(new Set())}
-          onDone={failed => setSelected(new Set(failed))}
+          onDone={(failed) => setSelected(new Set(failed))}
           selected={selected}
         />
       )}
 
-      <NewTaskDialog onClose={() => setAddStatus(null)} parents={parentOptions} target={addStatus} />
-      <TaskDrawer columns={columnNames} id={openId} onClose={() => setOpenId(null)} onOpen={setOpenId} />
+      <NewTaskDialog
+        onClose={() => setAddStatus(null)}
+        parents={parentOptions}
+        target={addStatus}
+      />
+      <TaskDrawer
+        columns={columnNames}
+        id={openId}
+        onClose={() => setOpenId(null)}
+        onOpen={setOpenId}
+      />
     </div>
-  )
+  );
 }

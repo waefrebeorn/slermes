@@ -1,7 +1,7 @@
-import fs from 'node:fs'
-import path from 'node:path'
+import fs from "node:fs";
+import path from "node:path";
 
-import { nativeImage } from 'electron'
+import { nativeImage } from "electron";
 
 /**
  * Validate that a candidate app-icon file exists and decodes as an image.
@@ -23,22 +23,22 @@ import { nativeImage } from 'electron'
  * mode, so callers can inject a probe matching their environment; the shipped
  * probe decodes eagerly and treats a thrown error OR an empty image as invalid.
  */
-export type IconProbe = (filePath: string) => boolean
+export type IconProbe = (filePath: string) => boolean;
 
 /** Eager-decoding default probe: the file must decode to a non-empty image. */
 export function decodingFileProbe(filePath: string): boolean {
   try {
     if (!fs.statSync(filePath).isFile()) {
-      return false
+      return false;
     }
   } catch {
-    return false
+    return false;
   }
 
   try {
-    return !nativeImage.createFromPath(filePath).isEmpty()
+    return !nativeImage.createFromPath(filePath).isEmpty();
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -51,15 +51,15 @@ export function decodingFileProbe(filePath: string): boolean {
  */
 export function resolveAppIcon(
   candidates: readonly string[],
-  probe: IconProbe = decodingFileProbe
+  probe: IconProbe = decodingFileProbe,
 ): string | undefined {
   for (const candidate of candidates) {
     if (probe(candidate)) {
-      return candidate
+      return candidate;
     }
   }
 
-  return undefined
+  return undefined;
 }
 
 /**
@@ -69,17 +69,22 @@ export function resolveAppIcon(
  * `app.asar.unpacked` for builds that leave assets outside the archive.
  */
 export function appIconCandidates(opts: {
-  isWindows: boolean
-  appRoot: string
-  resourcesPath?: string
-  unpackedPathFor: (p: string) => string
+  isWindows: boolean;
+  appRoot: string;
+  resourcesPath?: string;
+  unpackedPathFor: (p: string) => string;
 }): string[] {
-  const { isWindows, appRoot, resourcesPath, unpackedPathFor } = opts
+  const { isWindows, appRoot, resourcesPath, unpackedPathFor } = opts;
 
   return [
-    ...(isWindows ? [path.join(resourcesPath ?? '', 'icon.ico'), path.join(appRoot, 'assets', 'icon.ico')] : []),
-    path.join(appRoot, 'public', 'apple-touch-icon.png'),
-    path.join(appRoot, 'dist', 'apple-touch-icon.png'),
-    path.join(unpackedPathFor(appRoot), 'dist', 'apple-touch-icon.png')
-  ]
+    ...(isWindows
+      ? [
+          path.join(resourcesPath ?? "", "icon.ico"),
+          path.join(appRoot, "assets", "icon.ico"),
+        ]
+      : []),
+    path.join(appRoot, "public", "apple-touch-icon.png"),
+    path.join(appRoot, "dist", "apple-touch-icon.png"),
+    path.join(unpackedPathFor(appRoot), "dist", "apple-touch-icon.png"),
+  ];
 }

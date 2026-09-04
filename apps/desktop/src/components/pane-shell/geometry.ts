@@ -11,34 +11,39 @@
  * threading rects through React.
  */
 
-import { type RefObject, useLayoutEffect, useState, useSyncExternalStore } from 'react'
+import {
+  type RefObject,
+  useLayoutEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
-import { $layoutTree } from '@/components/pane-shell/tree/store'
-import { $connection } from '@/store/session'
+import { $layoutTree } from "@/components/pane-shell/tree/store";
+import { $connection } from "@/store/session";
 
 // ---------------------------------------------------------------------------
 // Rects
 // ---------------------------------------------------------------------------
 
 export interface Rect {
-  x: number
-  y: number
-  width: number
-  height: number
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 /** AABB intersection. Returns null when the rects don't overlap. */
 export function intersect(a: Rect, b: Rect): Rect | null {
-  const x = Math.max(a.x, b.x)
-  const y = Math.max(a.y, b.y)
-  const right = Math.min(a.x + a.width, b.x + b.width)
-  const bottom = Math.min(a.y + a.height, b.y + b.height)
+  const x = Math.max(a.x, b.x);
+  const y = Math.max(a.y, b.y);
+  const right = Math.min(a.x + a.width, b.x + b.width);
+  const bottom = Math.min(a.y + a.height, b.y + b.height);
 
   if (right <= x || bottom <= y) {
-    return null
+    return null;
   }
 
-  return { x, y, width: right - x, height: bottom - y }
+  return { x, y, width: right - x, height: bottom - y };
 }
 
 // ---------------------------------------------------------------------------
@@ -46,15 +51,15 @@ export function intersect(a: Rect, b: Rect): Rect | null {
 // ---------------------------------------------------------------------------
 
 /** Height of the band the native controls live in. */
-const CONTROLS_BAND_HEIGHT = 34
+const CONTROLS_BAND_HEIGHT = 34;
 /** Width of the macOS traffic-light cluster measured from the buttons' x. */
-const MACOS_LIGHTS_WIDTH = 58
-const MACOS_FALLBACK_BUTTON_X = 24
+const MACOS_LIGHTS_WIDTH = 58;
+const MACOS_FALLBACK_BUTTON_X = 24;
 
 interface ConnectionLike {
-  windowButtonPosition?: { x: number; y: number } | null
-  nativeOverlayWidth?: number | null
-  isFullscreen?: boolean | null
+  windowButtonPosition?: { x: number; y: number } | null;
+  nativeOverlayWidth?: number | null;
+  isFullscreen?: boolean | null;
 }
 
 /**
@@ -62,80 +67,101 @@ interface ConnectionLike {
  * is nothing to dodge (fullscreen, plain browser, secondary windows with
  * hidden controls).
  */
-export function windowControlsRect(connection: ConnectionLike | null, viewportWidth: number): Rect | null {
-  const inElectron = typeof window !== 'undefined' && 'hermesDesktop' in window
+export function windowControlsRect(
+  connection: ConnectionLike | null,
+  viewportWidth: number,
+): Rect | null {
+  const inElectron = typeof window !== "undefined" && "hermesDesktop" in window;
 
   if (!inElectron) {
-    return null
+    return null;
   }
 
   if (connection?.isFullscreen) {
-    return null
+    return null;
   }
 
   // Windows / WSLg: native overlay on the top-right.
-  const overlayWidth = connection?.nativeOverlayWidth ?? 0
+  const overlayWidth = connection?.nativeOverlayWidth ?? 0;
 
   if (overlayWidth > 0) {
-    return { x: viewportWidth - overlayWidth, y: 0, width: overlayWidth, height: CONTROLS_BAND_HEIGHT }
+    return {
+      x: viewportWidth - overlayWidth,
+      y: 0,
+      width: overlayWidth,
+      height: CONTROLS_BAND_HEIGHT,
+    };
   }
 
   // macOS: traffic lights on the top-left. windowButtonPosition === null means
   // the platform has no left-side controls at all (Windows/Linux w/o overlay).
-  const pos = connection?.windowButtonPosition
+  const pos = connection?.windowButtonPosition;
 
   if (pos === null) {
-    return null
+    return null;
   }
 
-  const isMac = typeof navigator !== 'undefined' && /mac/i.test(navigator.platform)
+  const isMac =
+    typeof navigator !== "undefined" && /mac/i.test(navigator.platform);
 
   if (!pos && !isMac) {
-    return null
+    return null;
   }
 
-  const x = pos?.x ?? MACOS_FALLBACK_BUTTON_X
+  const x = pos?.x ?? MACOS_FALLBACK_BUTTON_X;
 
-  return { x: 0, y: 0, width: x + MACOS_LIGHTS_WIDTH, height: CONTROLS_BAND_HEIGHT }
+  return {
+    x: 0,
+    y: 0,
+    width: x + MACOS_LIGHTS_WIDTH,
+    height: CONTROLS_BAND_HEIGHT,
+  };
 }
 
 // ---------------------------------------------------------------------------
 // Live hook
 // ---------------------------------------------------------------------------
 
-let cachedRect: Rect | null = null
-let cachedKey = ''
+let cachedRect: Rect | null = null;
+let cachedKey = "";
 
 function rectKey(r: Rect | null) {
-  return r ? `${r.x},${r.y},${r.width},${r.height}` : ''
+  return r ? `${r.x},${r.y},${r.width},${r.height}` : "";
 }
 
 function readControlsRect(): Rect | null {
-  const next = windowControlsRect($connection.get(), typeof window === 'undefined' ? 0 : window.innerWidth)
-  const key = rectKey(next)
+  const next = windowControlsRect(
+    $connection.get(),
+    typeof window === "undefined" ? 0 : window.innerWidth,
+  );
+  const key = rectKey(next);
 
   // Referentially stable snapshot for useSyncExternalStore.
   if (key !== cachedKey) {
-    cachedKey = key
-    cachedRect = next
+    cachedKey = key;
+    cachedRect = next;
   }
 
-  return cachedRect
+  return cachedRect;
 }
 
 function subscribeControlsRect(cb: () => void) {
-  const unsubConnection = $connection.subscribe(() => cb())
-  window.addEventListener('resize', cb)
+  const unsubConnection = $connection.subscribe(() => cb());
+  window.addEventListener("resize", cb);
 
   return () => {
-    unsubConnection()
-    window.removeEventListener('resize', cb)
-  }
+    unsubConnection();
+    window.removeEventListener("resize", cb);
+  };
 }
 
 /** Reactive native window-controls rect (connection + viewport aware). */
 export function useWindowControlsRect(): Rect | null {
-  return useSyncExternalStore(subscribeControlsRect, readControlsRect, () => null)
+  return useSyncExternalStore(
+    subscribeControlsRect,
+    readControlsRect,
+    () => null,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -144,14 +170,16 @@ export function useWindowControlsRect(): Rect | null {
 
 function sameRect(a: Rect | null, b: Rect | null) {
   if (a === b) {
-    return true
+    return true;
   }
 
   if (!a || !b) {
-    return false
+    return false;
   }
 
-  return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height
+  return (
+    a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -166,22 +194,22 @@ function sameRect(a: Rect | null, b: Rect | null) {
 // session): drag frames of ~68ms with style+layout=67ms and no script ≥5ms;
 // suppressing the writes recovered 14fps → 51fps. The vars only align titlebar
 // chrome — republishing once on release is visually identical.
-let sashDragDepth = 0
-let onSashDragEnd: null | (() => void) = null
+let sashDragDepth = 0;
+let onSashDragEnd: null | (() => void) = null;
 
 export function beginSashDrag() {
-  sashDragDepth += 1
+  sashDragDepth += 1;
 }
 
 export function endSashDrag() {
-  sashDragDepth = Math.max(0, sashDragDepth - 1)
+  sashDragDepth = Math.max(0, sashDragDepth - 1);
 
   if (sashDragDepth === 0) {
-    onSashDragEnd?.()
+    onSashDragEnd?.();
   }
 }
 
-const sashDragging = () => sashDragDepth > 0
+const sashDragging = () => sashDragDepth > 0;
 
 /**
  * Publish the workspace zone's viewport edges as root CSS vars:
@@ -194,72 +222,74 @@ const sashDragging = () => sashDragDepth > 0
  * geometry. Call once from the tree root; returns the disposer.
  */
 export function publishWorkspaceGeometry(): () => void {
-  const root = document.documentElement
-  let el: HTMLElement | null = null
-  let lastLeft = NaN
-  let lastRight = NaN
+  const root = document.documentElement;
+  let el: HTMLElement | null = null;
+  let lastLeft = NaN;
+  let lastRight = NaN;
 
-  const ro = new ResizeObserver(() => measure())
+  const ro = new ResizeObserver(() => measure());
 
   const measure = () => {
     // DEFER during a sash drag (see beginSashDrag above) — republished once on
     // release via the onSashDragEnd hook registered below.
     if (sashDragging()) {
-      return
+      return;
     }
 
-    const next = document.querySelector<HTMLElement>('[data-session-anchor="workspace"]')
+    const next = document.querySelector<HTMLElement>(
+      '[data-session-anchor="workspace"]',
+    );
 
     if (next !== el) {
       if (el) {
-        ro.unobserve(el)
+        ro.unobserve(el);
       }
 
-      el = next
+      el = next;
 
       if (el) {
-        ro.observe(el)
+        ro.observe(el);
       }
     }
 
     if (!el) {
-      return
+      return;
     }
 
-    const r = el.getBoundingClientRect()
-    const left = Math.round(r.left)
-    const right = Math.round(window.innerWidth - r.right)
+    const r = el.getBoundingClientRect();
+    const left = Math.round(r.left);
+    const right = Math.round(window.innerWidth - r.right);
 
     // Skip unchanged writes: a sash drag fires the RO every frame, and each
     // :root custom-property set dirties style for everything that reads them.
     if (left !== lastLeft) {
-      lastLeft = left
-      root.style.setProperty('--workspace-left', `${left}px`)
+      lastLeft = left;
+      root.style.setProperty("--workspace-left", `${left}px`);
     }
 
     if (right !== lastRight) {
-      lastRight = right
-      root.style.setProperty('--workspace-right', `${right}px`)
+      lastRight = right;
+      root.style.setProperty("--workspace-right", `${right}px`);
     }
-  }
+  };
 
   // Tree mutations move zones without resizing them (⌘\ flip) — re-measure a
   // frame later, after the DOM committed. RO covers width changes (sash drags,
   // side collapses); window resize covers the rest.
-  const unsubTree = $layoutTree.listen(() => requestAnimationFrame(measure))
+  const unsubTree = $layoutTree.listen(() => requestAnimationFrame(measure));
   // Drag released → publish the final geometry the deferral above skipped.
-  onSashDragEnd = () => requestAnimationFrame(measure)
-  window.addEventListener('resize', measure)
-  measure()
+  onSashDragEnd = () => requestAnimationFrame(measure);
+  window.addEventListener("resize", measure);
+  measure();
 
   return () => {
-    unsubTree()
-    onSashDragEnd = null
-    window.removeEventListener('resize', measure)
-    ro.disconnect()
-    root.style.removeProperty('--workspace-left')
-    root.style.removeProperty('--workspace-right')
-  }
+    unsubTree();
+    onSashDragEnd = null;
+    window.removeEventListener("resize", measure);
+    ro.disconnect();
+    root.style.removeProperty("--workspace-left");
+    root.style.removeProperty("--workspace-right");
+  };
 }
 
 /**
@@ -268,41 +298,56 @@ export function publishWorkspaceGeometry(): () => void {
  * the consumer can reserve the space and paint a drag strip without knowing
  * anything about platform, fullscreen state, or layout position.
  */
-export function useWindowControlsOverlap(ref: RefObject<HTMLElement | null>, enabled = true): Rect | null {
-  const controls = useWindowControlsRect()
-  const [overlap, setOverlap] = useState<Rect | null>(null)
+export function useWindowControlsOverlap(
+  ref: RefObject<HTMLElement | null>,
+  enabled = true,
+): Rect | null {
+  const controls = useWindowControlsRect();
+  const [overlap, setOverlap] = useState<Rect | null>(null);
 
   useLayoutEffect(() => {
-    const el = ref.current
+    const el = ref.current;
 
     if (!enabled || !controls || !el) {
-      setOverlap(null)
+      setOverlap(null);
 
-      return
+      return;
     }
 
     const update = () => {
-      const r = el.getBoundingClientRect()
-      const hit = intersect(controls, { x: r.x, y: r.y, width: r.width, height: r.height })
-      const local = hit ? { x: hit.x - r.x, y: hit.y - r.y, width: hit.width, height: hit.height } : null
+      const r = el.getBoundingClientRect();
+      const hit = intersect(controls, {
+        x: r.x,
+        y: r.y,
+        width: r.width,
+        height: r.height,
+      });
+      const local = hit
+        ? {
+            x: hit.x - r.x,
+            y: hit.y - r.y,
+            width: hit.width,
+            height: hit.height,
+          }
+        : null;
 
-      setOverlap(prev => (sameRect(prev, local) ? prev : local))
-    }
+      setOverlap((prev) => (sameRect(prev, local) ? prev : local));
+    };
 
-    update()
+    update();
 
     // Size changes fire the observer; cross-window moves fire `resize`. A pane
     // shifted only by a sibling's resize re-measures on its own grid reflow
     // (its track width changes), so this covers the shell's real cases.
-    const ro = new ResizeObserver(update)
-    ro.observe(el)
-    window.addEventListener('resize', update)
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener("resize", update);
 
     return () => {
-      ro.disconnect()
-      window.removeEventListener('resize', update)
-    }
-  }, [controls, enabled, ref])
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [controls, enabled, ref]);
 
-  return overlap
+  return overlap;
 }

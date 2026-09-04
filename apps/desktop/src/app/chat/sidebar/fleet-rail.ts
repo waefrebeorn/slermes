@@ -1,40 +1,47 @@
-import type { DesktopAgentRoster, DesktopConnectionKind, DesktopRegistryConnection } from '@/global'
-import { sortConnectionsForDisplay } from '@/lib/connection-display'
+import type {
+  DesktopAgentRoster,
+  DesktopConnectionKind,
+  DesktopRegistryConnection,
+} from "@/global";
+import { sortConnectionsForDisplay } from "@/lib/connection-display";
 
 // Pure grouping for the fleet profile rail: which gateways sit "at rest"
 // beside the active one, and which agents each of them carries. Kept free of
 // React and stores so the ordering/collapse rules are unit-testable.
 
 export interface FleetAgent {
-  connectionId: string
-  connectionKind: DesktopConnectionKind
-  connectionLabel: string
+  connectionId: string;
+  connectionKind: DesktopConnectionKind;
+  connectionLabel: string;
   /** Profile name as the owning gateway knows it. */
-  profile: string
+  profile: string;
   /** Pre-computed @name-device mention handle from the roster. */
-  handle: string
-  isDefault: boolean
+  handle: string;
+  isDefault: boolean;
 }
 
 export interface FleetGroup {
-  connectionId: string
-  kind: DesktopConnectionKind
-  label: string
-  reachable: boolean
+  connectionId: string;
+  kind: DesktopConnectionKind;
+  label: string;
+  reachable: boolean;
   /** The gateway's default profile — every Hermes home has one, so a group
    *  always carries it even before the roster has been enumerated. */
-  defaultAgent: FleetAgent
+  defaultAgent: FleetAgent;
   /** Named (non-default) profiles, alphabetical for a stable strip. */
-  named: FleetAgent[]
+  named: FleetAgent[];
 }
 
-export const DEFAULT_PROFILE = 'default'
+export const DEFAULT_PROFILE = "default";
 
 export function fleetRouteKey(connectionId: string, profile: string): string {
-  return `${connectionId}::${profile}`
+  return `${connectionId}::${profile}`;
 }
 
-const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+const collator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: "base",
+});
 
 /**
  * Groups for every registered gateway EXCEPT the active one, in the same order
@@ -51,24 +58,28 @@ const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'bas
 export function buildRestGroups({
   activeConnectionId,
   connections,
-  roster
+  roster,
 }: {
-  activeConnectionId: null | string
-  connections: readonly DesktopRegistryConnection[]
-  roster: DesktopAgentRoster | null
+  activeConnectionId: null | string;
+  connections: readonly DesktopRegistryConnection[];
+  roster: DesktopAgentRoster | null;
 }): FleetGroup[] {
-  const groups: FleetGroup[] = []
+  const groups: FleetGroup[] = [];
 
   for (const connection of sortConnectionsForDisplay(connections)) {
     if (connection.id === activeConnectionId) {
-      continue
+      continue;
     }
 
-    const source = roster?.sources.find(candidate => candidate.connectionId === connection.id)
-    const rows = roster?.agents.filter(agent => agent.connectionId === connection.id) ?? []
+    const source = roster?.sources.find(
+      (candidate) => candidate.connectionId === connection.id,
+    );
+    const rows =
+      roster?.agents.filter((agent) => agent.connectionId === connection.id) ??
+      [];
 
     if (roster && !source && rows.length === 0) {
-      continue
+      continue;
     }
 
     const toAgent = (profile: string, handle?: string): FleetAgent => ({
@@ -77,15 +88,15 @@ export function buildRestGroups({
       connectionLabel: connection.label,
       profile,
       handle: handle ?? profile,
-      isDefault: profile === DEFAULT_PROFILE
-    })
+      isDefault: profile === DEFAULT_PROFILE,
+    });
 
-    const defaultRow = rows.find(row => row.profile === DEFAULT_PROFILE)
+    const defaultRow = rows.find((row) => row.profile === DEFAULT_PROFILE);
 
     const named = rows
-      .filter(row => row.profile !== DEFAULT_PROFILE)
-      .map(row => toAgent(row.profile, row.handle))
-      .sort((left, right) => collator.compare(left.profile, right.profile))
+      .filter((row) => row.profile !== DEFAULT_PROFILE)
+      .map((row) => toAgent(row.profile, row.handle))
+      .sort((left, right) => collator.compare(left.profile, right.profile));
 
     groups.push({
       connectionId: connection.id,
@@ -93,14 +104,14 @@ export function buildRestGroups({
       label: connection.label,
       reachable: source?.reachable ?? true,
       defaultAgent: toAgent(DEFAULT_PROFILE, defaultRow?.handle),
-      named
-    })
+      named,
+    });
   }
 
-  return groups
+  return groups;
 }
 
 /** Every square on the rest side, for the condensed-menu threshold. */
 export function countRestAgents(groups: readonly FleetGroup[]): number {
-  return groups.reduce((total, group) => total + 1 + group.named.length, 0)
+  return groups.reduce((total, group) => total + 1 + group.named.length, 0);
 }

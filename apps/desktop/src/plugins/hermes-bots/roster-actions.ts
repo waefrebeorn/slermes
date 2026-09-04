@@ -8,36 +8,68 @@
  * them can own an action the others call without importing a sibling surface.
  */
 
-import { ackStoredSessionId, atom, haptic, host, markSessionUnreadFinished } from '@hermes/plugin-sdk'
+import {
+  ackStoredSessionId,
+  atom,
+  haptic,
+  host,
+  markSessionUnreadFinished,
+} from "@hermes/plugin-sdk";
 
-import { $openBotChat, $selectedBot, rosterWatermarks, saveSelectedRosterBot } from './bot-state'
-import { CANONICAL_CHAT_TITLE, notifyBotOpenFailure, openBotCanonicalChat, prepareBotSource } from './canonical-chat'
-import { $botMeta, botActivitySession, botRosterKey, botSelectionKey, newBotChat } from './data'
-import { $groupChats, $groupChatWorkspace } from './group-chat'
-import { openGroupChat } from './group-chat-view'
-import { liveGroupChatNames } from './group-membership'
-import { closeGroupChatMainTab } from './group-panes'
-import { displayName } from './labels'
-import { botRosterMeta, botWorkspaceOwnerKey, setBotsWorkspaceOwner } from './routing'
-import { botCanonicalSessionId } from './row-helpers'
-import { bumpBotOpenGeneration, getBotOpenGeneration, getPluginCtx } from './shared'
-import type { RosterRow } from './types'
+import {
+  $openBotChat,
+  $selectedBot,
+  rosterWatermarks,
+  saveSelectedRosterBot,
+} from "./bot-state";
+import {
+  CANONICAL_CHAT_TITLE,
+  notifyBotOpenFailure,
+  openBotCanonicalChat,
+  prepareBotSource,
+} from "./canonical-chat";
+import {
+  $botMeta,
+  botActivitySession,
+  botRosterKey,
+  botSelectionKey,
+  newBotChat,
+} from "./data";
+import { $groupChats, $groupChatWorkspace } from "./group-chat";
+import { openGroupChat } from "./group-chat-view";
+import { liveGroupChatNames } from "./group-membership";
+import { closeGroupChatMainTab } from "./group-panes";
+import { displayName } from "./labels";
+import {
+  botRosterMeta,
+  botWorkspaceOwnerKey,
+  setBotsWorkspaceOwner,
+} from "./routing";
+import { botCanonicalSessionId } from "./row-helpers";
+import {
+  bumpBotOpenGeneration,
+  getBotOpenGeneration,
+  getPluginCtx,
+} from "./shared";
+import type { RosterRow } from "./types";
 
 // last_active watermark per source-qualified bot, seeded on first poll so a
 // fresh mount doesn't mark ancient history unread.
-let watermarksSeeded = false
+let watermarksSeeded = false;
 
 /** User pref: toast on every new bot activity. Default OFF — a busy roster
  *  (cron runs, bot-to-bot chatter) turns the toasts into a firehose, and the
  *  unread badge already carries the signal. Persisted via ctx.storage. */
-export const $activityToasts = atom(false)
+export const $activityToasts = atom(false);
 
 /** Flip the activity-toast pref and persist it. */
 export function setActivityToasts(enabled: boolean) {
-  $activityToasts.set(enabled)
+  $activityToasts.set(enabled);
 
   try {
-    Promise.resolve(getPluginCtx()?.storage?.set?.('activity-toasts', enabled)).catch(() => undefined)
+    Promise.resolve(
+      getPluginCtx()?.storage?.set?.("activity-toasts", enabled),
+    ).catch(() => undefined);
   } catch {
     /* storage unavailable — pref holds for this window only */
   }
@@ -54,55 +86,57 @@ export function setActivityToasts(enabled: boolean) {
  *  own unread watermark iterates, and deliveries from the CLI, cron, another
  *  bot, or another machine never touch this window's live turn edge either. */
 export function trackInboundActivity(roster: RosterRow[]) {
-  const seeding = !watermarksSeeded
-  watermarksSeeded = true
+  const seeding = !watermarksSeeded;
+  watermarksSeeded = true;
 
   for (const bot of roster) {
-    const key = botSelectionKey(bot)
-    const activity = botActivitySession(bot)
-    const ts = activity?.last_active || 0
-    const prev = rosterWatermarks.get(key) || 0
-    rosterWatermarks.set(key, Math.max(prev, ts))
+    const key = botSelectionKey(bot);
+    const activity = botActivitySession(bot);
+    const ts = activity?.last_active || 0;
+    const prev = rosterWatermarks.get(key) || 0;
+    rosterWatermarks.set(key, Math.max(prev, ts));
 
     if (seeding || ts <= prev) {
-      continue
+      continue;
     }
 
     // Activity in the exact bot owner the user is currently looking at is
     // already visible — never badge the open chat or its same-named twin.
     if ($selectedBot.get() === key) {
-      refreshOpenBotChat(bot)
+      refreshOpenBotChat(bot);
 
-      continue
+      continue;
     }
 
     // Straight into core's unread store, keyed by the same canonical id the
     // row's SessionStatusDot reads — a parallel map here would be a second
     // badge that drifts from the dot.
-    const canonicalSessionId = botCanonicalSessionId(bot)
+    const canonicalSessionId = botCanonicalSessionId(bot);
 
     if (canonicalSessionId) {
-      markSessionUnreadFinished(canonicalSessionId, bot.name)
+      markSessionUnreadFinished(canonicalSessionId, bot.name);
     }
 
     // Roster-hidden bots stay quiet: the mark above accumulates silently
     // (unhiding reveals the dot) but a hidden bot never toasts.
     if (botRosterMeta(bot, $botMeta.get())?.hidden) {
-      continue
+      continue;
     }
 
     // Toasts are opt-in: the unread mark is recorded above regardless, but the
     // per-message notification fires only when the user enabled it.
     if ($activityToasts.get()) {
-      const meta = botRosterMeta(bot, $botMeta.get())
-      const label = displayName(bot, meta)
-      const preview = (activity?.preview || '').trim()
-      const inbound = /^Message from/i.test(preview)
+      const meta = botRosterMeta(bot, $botMeta.get());
+      const label = displayName(bot, meta);
+      const preview = (activity?.preview || "").trim();
+      const inbound = /^Message from/i.test(preview);
       host.notify({
-        kind: 'info',
-        title: inbound ? `\uD83E\uDD16 New message for ${label}` : `${label} has new activity`,
-        message: preview.slice(0, 140) || 'Open the chat to see it.'
-      })
+        kind: "info",
+        title: inbound
+          ? `\uD83E\uDD16 New message for ${label}`
+          : `${label} has new activity`,
+        message: preview.slice(0, 140) || "Open the chat to see it.",
+      });
     }
   }
 }
@@ -117,17 +151,25 @@ export function trackInboundActivity(roster: RosterRow[]) {
  *  yanked away by background activity — and never mid-turn, when the
  *  activity is the turn itself, already streaming. */
 function refreshOpenBotChat(bot: RosterRow) {
-  const canonicalIds = [bot.canonical_session?.id, bot.canonical_session?.resolved_id].filter(Boolean).map(String)
-  const focused = String(host.state.focusedStoredSessionId?.get?.() || '')
+  const canonicalIds = [
+    bot.canonical_session?.id,
+    bot.canonical_session?.resolved_id,
+  ]
+    .filter(Boolean)
+    .map(String);
+  const focused = String(host.state.focusedStoredSessionId?.get?.() || "");
 
   if (!focused || !canonicalIds.includes(focused) || host.state.busy.get()) {
-    return
+    return;
   }
 
-  const generation = getBotOpenGeneration()
-  void openBotCanonicalChat(bot, () => generation === getBotOpenGeneration()).catch(() => {
+  const generation = getBotOpenGeneration();
+  void openBotCanonicalChat(
+    bot,
+    () => generation === getBotOpenGeneration(),
+  ).catch(() => {
     /* the next click or reclaim event re-resolves it */
-  })
+  });
 }
 
 /** Front the bot's canonical Bot Chat when it is ALREADY open as a tab —
@@ -145,31 +187,42 @@ function refreshOpenBotChat(bot: RosterRow) {
  *  click aimed at the bot. Canonical-titled tiles at a foreign id are stale
  *  (hermes-agent#90102) and are discarded. Without `canonical_session` (older
  *  gateway) nothing can be verified, so nothing is fronted. */
-function focusExistingBotTab(bot: RosterRow): null | { registryId: string; storedSessionId: string } {
-  if (typeof host.focusOpenWorkspaceSession !== 'function') {
-    return null
+function focusExistingBotTab(
+  bot: RosterRow,
+): null | { registryId: string; storedSessionId: string } {
+  if (typeof host.focusOpenWorkspaceSession !== "function") {
+    return null;
   }
 
-  const canonical = bot?.canonical_session
-  const canonicalIds = [canonical?.id, canonical?.resolved_id].filter(Boolean).map(String)
+  const canonical = bot?.canonical_session;
+  const canonicalIds = [canonical?.id, canonical?.resolved_id]
+    .filter(Boolean)
+    .map(String);
 
   if (canonicalIds.length === 0) {
-    return null
+    return null;
   }
 
-  const isStaleTile = (tile: { storedSessionId: string; workspaceTabTitle?: string }) =>
-    typeof tile.workspaceTabTitle === 'string' &&
+  const isStaleTile = (tile: {
+    storedSessionId: string;
+    workspaceTabTitle?: string;
+  }) =>
+    typeof tile.workspaceTabTitle === "string" &&
     tile.workspaceTabTitle === CANONICAL_CHAT_TITLE &&
-    !canonicalIds.includes(String(tile.storedSessionId))
+    !canonicalIds.includes(String(tile.storedSessionId));
 
   try {
-    const focused = host.focusOpenWorkspaceSession(botWorkspaceOwnerKey(bot), isStaleTile, canonicalIds)
+    const focused = host.focusOpenWorkspaceSession(
+      botWorkspaceOwnerKey(bot),
+      isStaleTile,
+      canonicalIds,
+    );
 
-    return typeof focused === 'string' && focused
+    return typeof focused === "string" && focused
       ? { registryId: String(canonical!.id), storedSessionId: focused }
-      : null
+      : null;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -185,66 +238,72 @@ function focusExistingBotTab(bot: RosterRow): null | { registryId: string; store
  *  remembers only this transient opened-view observation; it never stores or
  *  resolves a canonical-chat id. */
 export async function openRosterBot(bot: RosterRow): Promise<boolean> {
-  const generation = bumpBotOpenGeneration()
-  const key = botRosterKey(bot)
-  const meta = botRosterMeta(bot, $botMeta.get())
+  const generation = bumpBotOpenGeneration();
+  const key = botRosterKey(bot);
+  const meta = botRosterMeta(bot, $botMeta.get());
   // Keep the currently visible group as a fallback until this explicit action
   // has actually fronted a new owner; a failed open must not steal the center
   // from a group the user was reading.
-  const previousGroup = $groupChatWorkspace.get()
+  const previousGroup = $groupChatWorkspace.get();
 
   const previousGroupRef = previousGroup
     ? {
         group: previousGroup,
-        roomId: String($groupChats.get()[previousGroup]?.roomId || '')
+        roomId: String($groupChats.get()[previousGroup]?.roomId || ""),
       }
-    : null
+    : null;
 
-  haptic('tap')
-  saveSelectedRosterBot(bot)
-  setBotsWorkspaceOwner(botWorkspaceOwnerKey(bot), bot)
-  const dismissedGroup = dismissGroupChatForBotOpen()
+  haptic("tap");
+  saveSelectedRosterBot(bot);
+  setBotsWorkspaceOwner(botWorkspaceOwnerKey(bot), bot);
+  const dismissedGroup = dismissGroupChatForBotOpen();
 
   if (!dismissedGroup) {
-    $groupChatWorkspace.set(null)
+    $groupChatWorkspace.set(null);
   }
 
   const restorePreviousGroup = () => {
     if (!previousGroupRef || $groupChatWorkspace.get()) {
-      return
+      return;
     }
 
-    const restoreRef = dismissedGroup || previousGroupRef
-    const rooms = $groupChats.get()
+    const restoreRef = dismissedGroup || previousGroupRef;
+    const rooms = $groupChats.get();
 
     const currentGroup = restoreRef.roomId
       ? Object.keys(rooms).find(
-          name => !rooms[name]?.tombstone && String(rooms[name]?.roomId || '') === restoreRef.roomId
+          (name) =>
+            !rooms[name]?.tombstone &&
+            String(rooms[name]?.roomId || "") === restoreRef.roomId,
         )
       : liveGroupChatNames().includes(restoreRef.group)
         ? restoreRef.group
-        : null
+        : null;
 
     if (!currentGroup) {
-      return
+      return;
     }
 
-    openGroupChat(currentGroup)
-  }
+    openGroupChat(currentGroup);
+  };
 
   // The persisted half of clear-on-open. The transient dot is retired by
   // core's own selection path once the chat lands; this retires the marker,
   // which the selection listener alone would file against the wrong profile —
   // a bot open deliberately leaves the gateway on the launch profile.
-  ackStoredSessionId(botCanonicalSessionId(bot), bot.name)
+  ackStoredSessionId(botCanonicalSessionId(bot), bot.name);
 
-  const fronted = focusExistingBotTab(bot)
+  const fronted = focusExistingBotTab(bot);
 
   if (fronted) {
     // The canonical chat is on screen: no source activation, no registry
     // round-trip. Both identities are recorded so the reclaim listener and
     // the roster-activity refresh treat it exactly like a registry open.
-    $openBotChat.set({ key, openedRegistryId: fronted.registryId, openedSessionId: fronted.storedSessionId })
+    $openBotChat.set({
+      key,
+      openedRegistryId: fronted.registryId,
+      openedSessionId: fronted.storedSessionId,
+    });
 
     // Fronting is presentation-only: the pane keeps whatever transcript it
     // last painted, which can predate rows the bot wrote while the user was
@@ -252,34 +311,41 @@ export async function openRosterBot(bot: RosterRow): Promise<boolean> {
     // message_agent). Force a registry open so forceResume re-pulls the
     // latest transcript instead of leaving a stale snapshot until the next
     // user turn (#99393 class; #95600 only covered the not-yet-open path).
-    refreshOpenBotChat(bot)
+    refreshOpenBotChat(bot);
 
-    return true
+    return true;
   }
 
   try {
     // Activation selects this row's source only. Canonical identity is resolved
     // after that by the owner profile's "Bot Chat" title registry.
-    await prepareBotSource(bot)
+    await prepareBotSource(bot);
   } catch (error) {
     if (generation === getBotOpenGeneration()) {
-      $openBotChat.set(null)
-      restorePreviousGroup()
-      notifyBotOpenFailure(error, bot, `Could not reach ${bot.connectionLabel || 'the gateway'}`)
+      $openBotChat.set(null);
+      restorePreviousGroup();
+      notifyBotOpenFailure(
+        error,
+        bot,
+        `Could not reach ${bot.connectionLabel || "the gateway"}`,
+      );
     }
 
-    return false
+    return false;
   }
 
   if (generation !== getBotOpenGeneration()) {
-    return false
+    return false;
   }
 
   try {
-    const opened = await openBotCanonicalChat(bot, () => generation === getBotOpenGeneration())
+    const opened = await openBotCanonicalChat(
+      bot,
+      () => generation === getBotOpenGeneration(),
+    );
 
     if (generation !== getBotOpenGeneration()) {
-      return false
+      return false;
     }
 
     if (opened) {
@@ -293,54 +359,61 @@ export async function openRosterBot(bot: RosterRow): Promise<boolean> {
       $openBotChat.set({
         key,
         openedRegistryId: opened.registryId,
-        openedSessionId: opened.openedId
-      })
+        openedSessionId: opened.openedId,
+      });
 
-      return true
+      return true;
     }
   } catch (error) {
     if (generation === getBotOpenGeneration()) {
-      $openBotChat.set(null)
-      restorePreviousGroup()
-      notifyBotOpenFailure(error, bot, `Could not open ${displayName(bot, meta)}'s chat — try again`)
+      $openBotChat.set(null);
+      restorePreviousGroup();
+      notifyBotOpenFailure(
+        error,
+        bot,
+        `Could not open ${displayName(bot, meta)}'s chat — try again`,
+      );
     }
 
-    return false
+    return false;
   }
 
   // An older Desktop without the profile-scoped draft API has no safe fallback:
   // do not navigate the current workspace or create a draft on the wrong owner.
-  if (typeof host.newChat !== 'function') {
-    $openBotChat.set(null)
-    restorePreviousGroup()
+  if (typeof host.newChat !== "function") {
+    $openBotChat.set(null);
+    restorePreviousGroup();
 
-    return false
+    return false;
   }
 
   $openBotChat.set({
     key,
-    openedRegistryId: ''
-  })
-  newBotChat(bot)
+    openedRegistryId: "",
+  });
+  newBotChat(bot);
 
-  return true
+  return true;
 }
 
 /** Bot-open handoff: capture the selected group and retire its registered
  * main tab (or clear the in-panel selection) before async source prep /
  * canonical open. */
-function dismissGroupChatForBotOpen(): null | { group: string; roomId: string } {
-  const group = $groupChatWorkspace.get()
+function dismissGroupChatForBotOpen(): null | {
+  group: string;
+  roomId: string;
+} {
+  const group = $groupChatWorkspace.get();
 
   if (!group) {
-    return null
+    return null;
   }
 
-  const roomId = String($groupChats.get()[group]?.roomId || '')
-  closeGroupChatMainTab(group)
+  const roomId = String($groupChats.get()[group]?.roomId || "");
+  closeGroupChatMainTab(group);
 
   return {
     group,
-    roomId
-  }
+    roomId,
+  };
 }

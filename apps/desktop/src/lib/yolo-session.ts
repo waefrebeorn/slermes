@@ -1,7 +1,10 @@
-import { $gateway } from '@/store/gateway'
-import { $activeSessionId, setYoloActive } from '@/store/session'
+import { $gateway } from "@/store/gateway";
+import { $activeSessionId, setYoloActive } from "@/store/session";
 
-export type GatewayRequester = <T = unknown>(method: string, params?: Record<string, unknown>) => Promise<T>
+export type GatewayRequester = <T = unknown>(
+  method: string,
+  params?: Record<string, unknown>,
+) => Promise<T>;
 
 /**
  * Toggle per-session YOLO (approval bypass) via gateway `config.set` — the same
@@ -11,19 +14,19 @@ export type GatewayRequester = <T = unknown>(method: string, params?: Record<str
 export async function setSessionYolo(
   requestGateway: GatewayRequester,
   sessionId: string,
-  enabled: boolean
+  enabled: boolean,
 ): Promise<boolean> {
-  const result = await requestGateway<{ value?: string }>('config.set', {
-    key: 'yolo',
+  const result = await requestGateway<{ value?: string }>("config.set", {
+    key: "yolo",
     session_id: sessionId,
-    value: enabled ? '1' : '0'
-  })
+    value: enabled ? "1" : "0",
+  });
 
-  const active = result?.value === '1'
+  const active = result?.value === "1";
 
-  setYoloActive(active)
+  setYoloActive(active);
 
-  return active
+  return active;
 }
 
 /**
@@ -33,18 +36,21 @@ export async function setSessionYolo(
  * the CLI, the TUI, and cron — and it survives restarts. Triggered by
  * Shift+clicking the status-bar zap.
  */
-export async function setGlobalYolo(requestGateway: GatewayRequester, enabled: boolean): Promise<boolean> {
-  const result = await requestGateway<{ value?: string }>('config.set', {
-    key: 'yolo',
-    scope: 'global',
-    value: enabled ? '1' : '0'
-  })
+export async function setGlobalYolo(
+  requestGateway: GatewayRequester,
+  enabled: boolean,
+): Promise<boolean> {
+  const result = await requestGateway<{ value?: string }>("config.set", {
+    key: "yolo",
+    scope: "global",
+    value: enabled ? "1" : "0",
+  });
 
-  const active = result?.value === '1'
+  const active = result?.value === "1";
 
-  setYoloActive(active)
+  setYoloActive(active);
 
-  return active
+  return active;
 }
 
 /**
@@ -58,19 +64,23 @@ export async function setGlobalYolo(requestGateway: GatewayRequester, enabled: b
  * `/yolo` in a fresh draft does.
  */
 export async function setYoloEnabled(enabled: boolean): Promise<boolean> {
-  const sessionId = $activeSessionId.get()
+  const sessionId = $activeSessionId.get();
 
   if (!sessionId) {
-    setYoloActive(enabled)
+    setYoloActive(enabled);
 
-    return enabled
+    return enabled;
   }
 
-  const gateway = $gateway.get()
+  const gateway = $gateway.get();
 
   if (!gateway) {
-    throw new Error('Hermes gateway unavailable')
+    throw new Error("Hermes gateway unavailable");
   }
 
-  return setSessionYolo((method, params) => gateway.request(method, params), sessionId, enabled)
+  return setSessionYolo(
+    (method, params) => gateway.request(method, params),
+    sessionId,
+    enabled,
+  );
 }

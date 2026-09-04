@@ -1,4 +1,4 @@
-import type { SessionInfo } from '@/types/hermes'
+import type { SessionInfo } from "@/types/hermes";
 
 /**
  * THE canonical write path for tagging backend-returned session rows with the
@@ -19,34 +19,38 @@ import type { SessionInfo } from '@/types/hermes'
  */
 export function stampRowsWithOwningConnection(
   sessions: SessionInfo[],
-  connectionId: null | string | undefined
+  connectionId: null | string | undefined,
 ): SessionInfo[] {
-  const owner = String(connectionId ?? '').trim()
+  const owner = String(connectionId ?? "").trim();
 
-  if (!owner || owner === 'local') {
-    return sessions
+  if (!owner || owner === "local") {
+    return sessions;
   }
 
-  return sessions.map(session => (session.connection_id?.trim() ? session : { ...session, connection_id: owner }))
+  return sessions.map((session) =>
+    session.connection_id?.trim()
+      ? session
+      : { ...session, connection_id: owner },
+  );
 }
 
 /** A durable backfill target: which backend store to stamp, expressed in the
  *  same scope vocabulary every session API call uses. `connectionId === null`
  *  means the primary/local backend's own store. */
 export interface LegacyOwnerBackfillScope {
-  connectionId: null | string
-  profile: null | string
+  connectionId: null | string;
+  profile: null | string;
 }
 
 export interface LegacyOwnerBackfillTopology {
   /** Registry topology present (published registry, or the modern bridge). */
-  hasRegistryTopology: boolean
+  hasRegistryTopology: boolean;
   /** Non-local registered connection ids from the registry snapshot. */
-  registryConnectionIds: string[]
+  registryConnectionIds: string[];
   /** The source that served this page of rows: a registered connection id,
    *  `'local'`/`null` for the primary pool, `undefined` when the caller
    *  cannot name the serving source at all. */
-  servingConnectionId: null | string | undefined
+  servingConnectionId: null | string | undefined;
 }
 
 /**
@@ -69,30 +73,36 @@ export interface LegacyOwnerBackfillTopology {
  *    backend could own the store (multi-candidate — never guess).
  */
 export function resolveLegacyOwnerBackfillScope(
-  topology: LegacyOwnerBackfillTopology
+  topology: LegacyOwnerBackfillTopology,
 ): LegacyOwnerBackfillScope | null {
   if (!topology.hasRegistryTopology) {
-    return null
+    return null;
   }
 
-  const serving = topology.servingConnectionId
+  const serving = topology.servingConnectionId;
 
-  if (serving === null || serving?.trim() === 'local') {
+  if (serving === null || serving?.trim() === "local") {
     // Primary pool rows live in the primary's own per-profile store — a
     // single known owner, stamped as that store's own serving profile.
-    return { connectionId: null, profile: null }
+    return { connectionId: null, profile: null };
   }
 
-  const servingId = serving?.trim() ?? ''
-  const registered = topology.registryConnectionIds.map(id => id.trim()).filter(id => id && id !== 'local')
+  const servingId = serving?.trim() ?? "";
+  const registered = topology.registryConnectionIds
+    .map((id) => id.trim())
+    .filter((id) => id && id !== "local");
 
   if (servingId) {
     // The backend that served the rows owns them. Only a REGISTERED source
     // is a durable owner; an unknown source id cannot be trusted to survive.
-    return registered.includes(servingId) ? { connectionId: servingId, profile: null } : null
+    return registered.includes(servingId)
+      ? { connectionId: servingId, profile: null }
+      : null;
   }
 
   // Serving source unknown: single-match only when exactly one registered
   // backend exists. Two or more candidates would make the stamp a guess.
-  return registered.length === 1 ? { connectionId: registered[0], profile: null } : null
+  return registered.length === 1
+    ? { connectionId: registered[0], profile: null }
+    : null;
 }

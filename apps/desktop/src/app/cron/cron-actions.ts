@@ -1,84 +1,97 @@
-import { type CronJob, getApiRequestConnection, getCronJobs, triggerCronJob } from '@/hermes'
+import {
+  type CronJob,
+  getApiRequestConnection,
+  getCronJobs,
+  triggerCronJob,
+} from "@/hermes";
 import {
   beginCronJobsAction,
   beginCronJobsRequest,
   commitCronJobsRequest,
   type CronJobsRequest,
   isCronJobsRequestCurrent,
-  isCronJobsScopeCurrent
-} from '@/store/cron'
+  isCronJobsScopeCurrent,
+} from "@/store/cron";
 
 export interface CronTriggerRefreshResult {
-  jobs: CronJob[] | null
-  refreshError: unknown | null
-  stale: boolean
+  jobs: CronJob[] | null;
+  refreshError: unknown | null;
+  stale: boolean;
 }
 
 export interface CronMutationRefreshResult<T> extends CronTriggerRefreshResult {
-  value: T | null
+  value: T | null;
 }
 
 function cronRequestScope(profile: string): string {
-  return `${getApiRequestConnection() ?? ''}\u0000${profile}`
+  return `${getApiRequestConnection() ?? ""}\u0000${profile}`;
 }
 
-async function refreshForGeneration(profile: string, request: CronJobsRequest): Promise<CronTriggerRefreshResult> {
+async function refreshForGeneration(
+  profile: string,
+  request: CronJobsRequest,
+): Promise<CronTriggerRefreshResult> {
   try {
-    const jobs = await getCronJobs(profile)
+    const jobs = await getCronJobs(profile);
 
     if (!commitCronJobsRequest(request, jobs)) {
-      return { jobs: null, refreshError: null, stale: true }
+      return { jobs: null, refreshError: null, stale: true };
     }
 
-    return { jobs, refreshError: null, stale: false }
+    return { jobs, refreshError: null, stale: false };
   } catch (refreshError) {
     if (!isCronJobsRequestCurrent(request)) {
-      return { jobs: null, refreshError: null, stale: true }
+      return { jobs: null, refreshError: null, stale: true };
     }
 
-    return { jobs: null, refreshError, stale: false }
+    return { jobs: null, refreshError, stale: false };
   }
 }
 
-export function refreshCronJobs(profile: string): Promise<CronTriggerRefreshResult> {
-  return refreshForGeneration(profile, beginCronJobsRequest(cronRequestScope(profile)))
+export function refreshCronJobs(
+  profile: string,
+): Promise<CronTriggerRefreshResult> {
+  return refreshForGeneration(
+    profile,
+    beginCronJobsRequest(cronRequestScope(profile)),
+  );
 }
 
 export async function mutateAndRefreshCronJobs<T>(
   profile: string,
-  mutate: () => Promise<T>
+  mutate: () => Promise<T>,
 ): Promise<CronMutationRefreshResult<T>> {
-  const scopeToken = beginCronJobsAction(cronRequestScope(profile))
-  let value: T
+  const scopeToken = beginCronJobsAction(cronRequestScope(profile));
+  let value: T;
 
   try {
-    value = await mutate()
+    value = await mutate();
   } catch (mutationError) {
     if (!isCronJobsScopeCurrent(scopeToken)) {
-      return { jobs: null, refreshError: null, stale: true, value: null }
+      return { jobs: null, refreshError: null, stale: true, value: null };
     }
 
-    throw mutationError
+    throw mutationError;
   }
 
   if (!isCronJobsScopeCurrent(scopeToken)) {
-    return { jobs: null, refreshError: null, stale: true, value: null }
+    return { jobs: null, refreshError: null, stale: true, value: null };
   }
 
-  const refreshed = await refreshCronJobs(profile)
+  const refreshed = await refreshCronJobs(profile);
 
   if (!isCronJobsScopeCurrent(scopeToken)) {
-    return { jobs: null, refreshError: null, stale: true, value: null }
+    return { jobs: null, refreshError: null, stale: true, value: null };
   }
 
   // A newer request in the same scope may supersede this refresh after the
   // mutation itself has already succeeded. Preserve the mutation result so
   // callers can settle dialogs/toasts without publishing the older snapshot.
   if (refreshed.stale) {
-    return { jobs: null, refreshError: null, stale: false, value }
+    return { jobs: null, refreshError: null, stale: false, value };
   }
 
-  return { ...refreshed, value }
+  return { ...refreshed, value };
 }
 
 /**
@@ -89,9 +102,12 @@ export async function mutateAndRefreshCronJobs<T>(
  */
 export async function triggerAndRefreshCronJobs(
   jobId: string,
-  profile: 'all' | string
+  profile: "all" | string,
 ): Promise<CronTriggerRefreshResult> {
-  const { value: _value, ...result } = await mutateAndRefreshCronJobs(profile, () => triggerCronJob(jobId))
+  const { value: _value, ...result } = await mutateAndRefreshCronJobs(
+    profile,
+    () => triggerCronJob(jobId),
+  );
 
-  return result
+  return result;
 }

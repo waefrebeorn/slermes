@@ -1,62 +1,66 @@
 export interface TerminalExitPayload {
-  code: number | null
-  signal: string | null
+  code: number | null;
+  signal: string | null;
 }
 
 interface TerminalOutputGateOptions {
-  onExitFlushed: () => void
-  sendData: (data: string) => void
-  sendExit: (payload: TerminalExitPayload) => void
+  onExitFlushed: () => void;
+  sendData: (data: string) => void;
+  sendExit: (payload: TerminalExitPayload) => void;
 }
 
-const MAX_PENDING_OUTPUT = 1024 * 1024
+const MAX_PENDING_OUTPUT = 1024 * 1024;
 
-export function createTerminalOutputGate({ onExitFlushed, sendData, sendExit }: TerminalOutputGateOptions) {
-  let attached = false
-  let pendingData = ''
-  let pendingExit: TerminalExitPayload | null = null
+export function createTerminalOutputGate({
+  onExitFlushed,
+  sendData,
+  sendExit,
+}: TerminalOutputGateOptions) {
+  let attached = false;
+  let pendingData = "";
+  let pendingExit: TerminalExitPayload | null = null;
 
   const flushExit = (payload: TerminalExitPayload) => {
-    sendExit(payload)
-    onExitFlushed()
-  }
+    sendExit(payload);
+    onExitFlushed();
+  };
 
   return {
     attach(): void {
       if (attached) {
-        return
+        return;
       }
 
-      attached = true
+      attached = true;
 
       if (pendingData) {
-        sendData(pendingData)
-        pendingData = ''
+        sendData(pendingData);
+        pendingData = "";
       }
 
       if (pendingExit) {
-        const payload = pendingExit
-        pendingExit = null
-        flushExit(payload)
+        const payload = pendingExit;
+        pendingExit = null;
+        flushExit(payload);
       }
     },
     data(chunk: string): void {
       if (attached) {
-        sendData(chunk)
+        sendData(chunk);
 
-        return
+        return;
       }
 
-      pendingData = `${pendingData}${chunk}`.slice(-MAX_PENDING_OUTPUT)
+      pendingData = `${pendingData}${chunk}`.slice(-MAX_PENDING_OUTPUT);
     },
     exit(payload: TerminalExitPayload): void {
       if (attached) {
-        flushExit(payload)
+        flushExit(payload);
 
-        return
+        return;
       }
 
-      pendingExit = payload
-    }
-  }
+      pendingExit = payload;
+    },
+  };
 }

@@ -1,53 +1,67 @@
-import { useAuiState } from '@assistant-ui/react'
-import { type RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { useAuiState } from "@assistant-ui/react";
+import {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   chatSurfaceRoot,
   clearSurfaceVar,
   COMPOSER_HEIGHT_VAR,
   COMPOSER_SURFACE_HEIGHT_VAR,
-  setSurfaceVar
-} from '@/app/chat/surface-vars'
-import { useResizeObserver } from '@/hooks/use-resize-observer'
+  setSurfaceVar,
+} from "@/app/chat/surface-vars";
+import { useResizeObserver } from "@/hooks/use-resize-observer";
 
 import {
   COMPOSER_COMPACT_PILL_PX,
   COMPOSER_FOLD_VOICE_PX,
   COMPOSER_MINIMAL_PX,
   COMPOSER_SINGLE_LINE_MAX_PX,
-  COMPOSER_STACK_BREAKPOINT_PX
-} from '../composer-utils'
+  COMPOSER_STACK_BREAKPOINT_PX,
+} from "../composer-utils";
 
 interface UseComposerMetricsArgs {
-  composerDockRef: RefObject<HTMLDivElement | null>
-  composerRef: RefObject<HTMLFormElement | null>
-  composerSurfaceRef: RefObject<HTMLDivElement | null>
-  editorRef: RefObject<HTMLDivElement | null>
-  poppedOut: boolean
+  composerDockRef: RefObject<HTMLDivElement | null>;
+  composerRef: RefObject<HTMLFormElement | null>;
+  composerSurfaceRef: RefObject<HTMLDivElement | null>;
+  editorRef: RefObject<HTMLDivElement | null>;
+  poppedOut: boolean;
 }
 
 /** Every width-driven collapse stage, resolved from the composer's own width. */
 export interface ComposerFit {
-  compactPill: boolean
-  foldVoice: boolean
-  minimal: boolean
-  tight: boolean
+  compactPill: boolean;
+  foldVoice: boolean;
+  minimal: boolean;
+  tight: boolean;
 }
 
-const ROOMY: ComposerFit = { compactPill: false, foldVoice: false, minimal: false, tight: false }
+const ROOMY: ComposerFit = {
+  compactPill: false,
+  foldVoice: false,
+  minimal: false,
+  tight: false,
+};
 
 const fitForWidth = (width: number): ComposerFit => ({
   compactPill: width < COMPOSER_COMPACT_PILL_PX,
   foldVoice: width < COMPOSER_FOLD_VOICE_PX,
   minimal: width < COMPOSER_MINIMAL_PX,
-  tight: width < COMPOSER_STACK_BREAKPOINT_PX
-})
+  tight: width < COMPOSER_STACK_BREAKPOINT_PX,
+});
 
 const sameFit = (a: ComposerFit, b: ComposerFit) =>
-  a.compactPill === b.compactPill && a.foldVoice === b.foldVoice && a.minimal === b.minimal && a.tight === b.tight
+  a.compactPill === b.compactPill &&
+  a.foldVoice === b.foldVoice &&
+  a.minimal === b.minimal &&
+  a.tight === b.tight;
 
 interface UseComposerMetricsResult extends ComposerFit {
-  stacked: boolean
+  stacked: boolean;
 }
 
 /**
@@ -62,16 +76,18 @@ export function useComposerMetrics({
   composerRef,
   composerSurfaceRef,
   editorRef,
-  poppedOut
+  poppedOut,
 }: UseComposerMetricsArgs): UseComposerMetricsResult {
-  const [expanded, setExpanded] = useState(false)
-  const [fit, setFit] = useState<ComposerFit>(ROOMY)
+  const [expanded, setExpanded] = useState(false);
+  const [fit, setFit] = useState<ComposerFit>(ROOMY);
 
   // Edge signals, not the live text: these only re-render when emptiness / the
   // presence of a non-trailing newline actually flips, so typing within a line
   // costs nothing here.
-  const isEmpty = useAuiState(s => s.composer.text.length === 0)
-  const hasHardNewline = useAuiState(s => s.composer.text.trimEnd().includes('\n'))
+  const isEmpty = useAuiState((s) => s.composer.text.length === 0);
+  const hasHardNewline = useAuiState((s) =>
+    s.composer.text.trimEnd().includes("\n"),
+  );
 
   // Expansion (input on its own full-width row, controls below) is driven by
   // the editor's *actual* rendered height via the ResizeObserver in
@@ -82,22 +98,22 @@ export function useComposerMetrics({
   // draft (collapse back). We never read scrollHeight per keystroke.
   useEffect(() => {
     if (isEmpty) {
-      setExpanded(false)
+      setExpanded(false);
 
-      return
+      return;
     }
 
     if (expanded) {
-      return
+      return;
     }
 
     // Only a non-trailing newline forces an immediate expand. A trailing newline
     // (or phantom \n from contenteditable junk) is left to the ResizeObserver,
     // which expands only when the editor's real height actually grows.
     if (hasHardNewline) {
-      setExpanded(true)
+      setExpanded(true);
     }
-  }, [expanded, hasHardNewline, isEmpty])
+  }, [expanded, hasHardNewline, isEmpty]);
 
   // Bucket measured heights so we only invalidate the global CSS var when
   // the size crosses a meaningful threshold. Without bucketing, the editor
@@ -106,23 +122,23 @@ export function useComposerMetrics({
   // recalculate-style pass. With an 8px bucket, the invalidation rate drops
   // ~8× and small char-by-char typing produces no style invalidation at all
   // until a wrap or row change actually happens.
-  const lastBucketedHeightRef = useRef(0)
-  const lastBucketedSurfaceHeightRef = useRef(0)
-  const lastFitRef = useRef(ROOMY)
+  const lastBucketedHeightRef = useRef(0);
+  const lastBucketedSurfaceHeightRef = useRef(0);
+  const lastFitRef = useRef(ROOMY);
   // Mirrored into a ref so `syncComposerMetrics` stays referentially stable —
   // it's the shared ResizeObserver's handler, and a new identity every render
   // would re-register the observation.
-  const poppedOutRef = useRef(poppedOut)
-  poppedOutRef.current = poppedOut
+  const poppedOutRef = useRef(poppedOut);
+  poppedOutRef.current = poppedOut;
 
   const syncComposerMetrics = useCallback(() => {
-    const composer = composerRef.current
+    const composer = composerRef.current;
     // The dock is the full docked footprint — strips, status stack, composer —
     // so it, not the composer alone, is what the thread has to clear.
-    const dock = composerDockRef.current
+    const dock = composerDockRef.current;
 
     if (!composer || !dock) {
-      return
+      return;
     }
 
     // Floating composer is out of the thread's flow — it must not reserve any
@@ -131,24 +147,25 @@ export function useComposerMetrics({
     // own state: pop-out is per layout zone, so a float in the left split must
     // not zero the right split's clearance.
     if (poppedOutRef.current) {
-      lastBucketedHeightRef.current = 0
-      lastBucketedSurfaceHeightRef.current = 0
-      setSurfaceVar(composer, COMPOSER_HEIGHT_VAR, '0px')
-      setSurfaceVar(composer, COMPOSER_SURFACE_HEIGHT_VAR, '0px')
+      lastBucketedHeightRef.current = 0;
+      lastBucketedSurfaceHeightRef.current = 0;
+      setSurfaceVar(composer, COMPOSER_HEIGHT_VAR, "0px");
+      setSurfaceVar(composer, COMPOSER_SURFACE_HEIGHT_VAR, "0px");
 
-      return
+      return;
     }
 
-    const { height } = dock.getBoundingClientRect()
-    const { width } = composer.getBoundingClientRect()
-    const surfaceHeight = composerSurfaceRef.current?.getBoundingClientRect().height
+    const { height } = dock.getBoundingClientRect();
+    const { width } = composer.getBoundingClientRect();
+    const surfaceHeight =
+      composerSurfaceRef.current?.getBoundingClientRect().height;
 
     if (width > 0) {
-      const nextFit = fitForWidth(width)
+      const nextFit = fitForWidth(width);
 
       if (!sameFit(nextFit, lastFitRef.current)) {
-        lastFitRef.current = nextFit
-        setFit(nextFit)
+        lastFitRef.current = nextFit;
+        setFit(nextFit);
       }
     }
 
@@ -158,52 +175,58 @@ export function useComposerMetrics({
     // min-height + padding); a second line clears ~36px. We only ever expand
     // here — collapse is handled by the emptied-draft effect to avoid
     // oscillating across the wrap boundary as the input switches widths.
-    const editor = editorRef.current
+    const editor = editorRef.current;
 
     if (editor && editor.scrollHeight > COMPOSER_SINGLE_LINE_MAX_PX) {
-      setExpanded(true)
+      setExpanded(true);
     }
 
     if (height > 0) {
-      const bucket = Math.round(height / 8) * 8
+      const bucket = Math.round(height / 8) * 8;
 
       if (bucket !== lastBucketedHeightRef.current) {
-        lastBucketedHeightRef.current = bucket
-        setSurfaceVar(composer, COMPOSER_HEIGHT_VAR, `${bucket}px`)
+        lastBucketedHeightRef.current = bucket;
+        setSurfaceVar(composer, COMPOSER_HEIGHT_VAR, `${bucket}px`);
       }
     }
 
     if (surfaceHeight && surfaceHeight > 0) {
-      const bucket = Math.round(surfaceHeight / 8) * 8
+      const bucket = Math.round(surfaceHeight / 8) * 8;
 
       if (bucket !== lastBucketedSurfaceHeightRef.current) {
-        lastBucketedSurfaceHeightRef.current = bucket
-        setSurfaceVar(composer, COMPOSER_SURFACE_HEIGHT_VAR, `${bucket}px`)
+        lastBucketedSurfaceHeightRef.current = bucket;
+        setSurfaceVar(composer, COMPOSER_SURFACE_HEIGHT_VAR, `${bucket}px`);
       }
     }
-  }, [composerDockRef, composerRef, composerSurfaceRef, editorRef])
+  }, [composerDockRef, composerRef, composerSurfaceRef, editorRef]);
 
-  useResizeObserver(syncComposerMetrics, composerDockRef, composerRef, composerSurfaceRef, editorRef)
+  useResizeObserver(
+    syncComposerMetrics,
+    composerDockRef,
+    composerRef,
+    composerSurfaceRef,
+    editorRef,
+  );
 
   // Toggling pop-out changes whether the composer reserves thread clearance.
   // The ResizeObserver may not fire (the box can keep the same box size), so
   // re-sync explicitly: docked republishes the measured height, floating zeroes
   // it so the thread reclaims the bottom space.
   useEffect(() => {
-    syncComposerMetrics()
-  }, [poppedOut, syncComposerMetrics])
+    syncComposerMetrics();
+  }, [poppedOut, syncComposerMetrics]);
 
   useEffect(() => {
     // Resolve the owning surface while the composer is still attached; the
     // unmount cleanup runs after React detached the node, where closest() can
     // no longer find [data-chat-surface].
-    const root = chatSurfaceRoot(composerRef.current)
+    const root = chatSurfaceRoot(composerRef.current);
 
     return () => {
-      clearSurfaceVar(root, COMPOSER_HEIGHT_VAR)
-      clearSurfaceVar(root, COMPOSER_SURFACE_HEIGHT_VAR)
-    }
-  }, [composerRef])
+      clearSurfaceVar(root, COMPOSER_HEIGHT_VAR);
+      clearSurfaceVar(root, COMPOSER_SURFACE_HEIGHT_VAR);
+    };
+  }, [composerRef]);
 
   // Every decision comes from the composer's OWN measured width, never the
   // viewport's. There used to be a `(max-width: 30rem)` media query in here as
@@ -223,6 +246,6 @@ export function useComposerMetrics({
     foldVoice: fit.foldVoice || fit.minimal,
     minimal: fit.minimal,
     stacked: expanded || fit.tight,
-    tight: fit.tight
-  }
+    tight: fit.tight,
+  };
 }

@@ -7,40 +7,42 @@ import type {
   WebhookCreatePayload,
   WebhookCreateResponse,
   WebhookEnableResponse,
-  WebhooksResponse
-} from '@/types/hermes'
+  WebhooksResponse,
+} from "@/types/hermes";
 
-import { hermesApi, profileScoped } from './client'
+import { hermesApi, profileScoped } from "./client";
 
-export function getMessagingPlatforms(profile?: null | string): Promise<MessagingPlatformsResponse> {
+export function getMessagingPlatforms(
+  profile?: null | string,
+): Promise<MessagingPlatformsResponse> {
   return hermesApi<MessagingPlatformsResponse>({
     ...profileScoped(profile),
-    path: '/api/messaging/platforms'
-  })
+    path: "/api/messaging/platforms",
+  });
 }
 
 export function updateMessagingPlatform(
   platformId: string,
   body: MessagingPlatformUpdate,
-  profile?: null | string
+  profile?: null | string,
 ): Promise<{ ok: boolean; platform: string }> {
   return hermesApi<{ ok: boolean; platform: string }>({
     ...profileScoped(profile),
     path: `/api/messaging/platforms/${encodeURIComponent(platformId)}`,
-    method: 'PUT',
-    body
-  })
+    method: "PUT",
+    body,
+  });
 }
 
 export function testMessagingPlatform(
   platformId: string,
-  profile?: null | string
+  profile?: null | string,
 ): Promise<MessagingPlatformTestResponse> {
   return hermesApi<MessagingPlatformTestResponse>({
     ...profileScoped(profile),
     path: `/api/messaging/platforms/${encodeURIComponent(platformId)}/test`,
-    method: 'POST'
-  })
+    method: "POST",
+  });
 }
 
 // -- Pairing (who may DM the bot) --------------------------------------------
@@ -53,32 +55,36 @@ export function testMessagingPlatform(
 export function getPairing(profile?: null | string): Promise<PairingResponse> {
   return hermesApi<PairingResponse>({
     ...profileScoped(profile),
-    path: '/api/pairing'
-  })
+    path: "/api/pairing",
+  });
 }
 
 export function approvePairing(
   platform: string,
   requestId: string,
-  profile?: null | string
+  profile?: null | string,
 ): Promise<{ ok: boolean; user: PairingUser }> {
   return hermesApi<{ ok: boolean; user: PairingUser }>({
     ...profileScoped(profile),
-    path: '/api/pairing/approve',
-    method: 'POST',
+    path: "/api/pairing/approve",
+    method: "POST",
     // These endpoints read the profile off the body, not the query string —
     // `profileScoped()` alone would approve into the wrong profile's store.
-    body: { platform, request_id: requestId, ...profileScoped(profile) }
-  })
+    body: { platform, request_id: requestId, ...profileScoped(profile) },
+  });
 }
 
-export function revokePairing(platform: string, userId: string, profile?: null | string): Promise<{ ok: boolean }> {
+export function revokePairing(
+  platform: string,
+  userId: string,
+  profile?: null | string,
+): Promise<{ ok: boolean }> {
   return hermesApi<{ ok: boolean }>({
     ...profileScoped(profile),
-    path: '/api/pairing/revoke',
-    method: 'POST',
-    body: { platform, user_id: userId, ...profileScoped(profile) }
-  })
+    path: "/api/pairing/revoke",
+    method: "POST",
+    body: { platform, user_id: userId, ...profileScoped(profile) },
+  });
 }
 
 // -- Webhooks (subscription CRUD) --------------------------------------------
@@ -89,43 +95,45 @@ export function revokePairing(platform: string, userId: string, profile?: null |
 export function getWebhooks(): Promise<WebhooksResponse> {
   return hermesApi<WebhooksResponse>({
     ...profileScoped(),
-    path: '/api/webhooks'
-  })
+    path: "/api/webhooks",
+  });
 }
 
 export function enableWebhooks(): Promise<WebhookEnableResponse> {
   return hermesApi<WebhookEnableResponse>({
     ...profileScoped(),
-    path: '/api/webhooks/enable',
-    method: 'POST'
-  })
+    path: "/api/webhooks/enable",
+    method: "POST",
+  });
 }
 
-export function createWebhook(body: WebhookCreatePayload): Promise<WebhookCreateResponse> {
+export function createWebhook(
+  body: WebhookCreatePayload,
+): Promise<WebhookCreateResponse> {
   return hermesApi<WebhookCreateResponse>({
     ...profileScoped(),
-    path: '/api/webhooks',
-    method: 'POST',
-    body
-  })
+    path: "/api/webhooks",
+    method: "POST",
+    body,
+  });
 }
 
 export function deleteWebhook(name: string): Promise<{ ok: boolean }> {
   return hermesApi<{ ok: boolean }>({
     ...profileScoped(),
     path: `/api/webhooks/${encodeURIComponent(name)}`,
-    method: 'DELETE'
-  })
+    method: "DELETE",
+  });
 }
 
 export function setWebhookEnabled(
   name: string,
-  enabled: boolean
+  enabled: boolean,
 ): Promise<{ enabled: boolean; name: string; ok: boolean }> {
   return hermesApi<{ enabled: boolean; name: string; ok: boolean }>({
     ...profileScoped(),
     path: `/api/webhooks/${encodeURIComponent(name)}/enabled`,
-    method: 'PUT',
-    body: { enabled }
-  })
+    method: "PUT",
+    body: { enabled },
+  });
 }

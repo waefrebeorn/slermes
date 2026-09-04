@@ -11,19 +11,19 @@
  * to poke the overlay the last action left behind. See preview-nudge.ts.
  */
 
-import { $busy } from '@/store/session'
+import { $busy } from "@/store/session";
 
-import { nudgeOverlay } from './preview-nudge'
+import { nudgeOverlay } from "./preview-nudge";
 
 // Module-level, matching how review.ts and coding-status.ts watch this edge. It
 // is inert without a live pane, so there is nothing to mount or tear down.
-let running = $busy.get()
+let running = $busy.get();
 
-$busy.subscribe(busy => {
+$busy.subscribe((busy) => {
   if (busy === running) {
-    return
+    return;
   }
 
-  running = busy
-  nudgeOverlay(busy ? 'think' : 'rest')
-})
+  running = busy;
+  nudgeOverlay(busy ? "think" : "rest");
+});

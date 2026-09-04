@@ -27,20 +27,20 @@
  *   than a constant someone picked.
  */
 
-import type { ComposerReadyAnnotation } from './pack'
+import type { ComposerReadyAnnotation } from "./pack";
 
 export interface AnnotateGroup {
   /** Shared ancestor prefix, or '' for the group that has no element. */
-  key: string
-  items: ComposerReadyAnnotation[]
+  key: string;
+  items: ComposerReadyAnnotation[];
   /** Short human label for the shared region, e.g. `section.hero`. */
-  label: string
+  label: string;
 }
 
-const SEP = '>'
+const SEP = ">";
 
 function segments(selector: string): string[] {
-  return selector.split(SEP).filter(Boolean)
+  return selector.split(SEP).filter(Boolean);
 }
 
 /**
@@ -48,13 +48,13 @@ function segments(selector: string): string[] {
  * dropping to nothing would collide with the unanchored group's empty key.
  */
 function ancestorPath(selector: string): string[] {
-  const parts = segments(selector)
+  const parts = segments(selector);
 
-  return parts.length > 1 ? parts.slice(0, -1) : parts
+  return parts.length > 1 ? parts.slice(0, -1) : parts;
 }
 
 function prefixAt(parts: string[], depth: number): string {
-  return parts.slice(0, depth).join(SEP)
+  return parts.slice(0, depth).join(SEP);
 }
 
 /**
@@ -65,50 +65,53 @@ function prefixAt(parts: string[], depth: number): string {
  * belongs to one group.
  */
 export function annotateSplitDepth(selectors: readonly string[]): number {
-  const parts = selectors.map(ancestorPath)
+  const parts = selectors.map(ancestorPath);
 
   if (parts.length < 2) {
-    return parts[0]?.length ? 1 : 0
+    return parts[0]?.length ? 1 : 0;
   }
 
-  const shortest = Math.min(...parts.map(list => list.length))
+  const shortest = Math.min(...parts.map((list) => list.length));
 
   for (let depth = 1; depth <= shortest; depth++) {
-    const seen = new Set(parts.map(list => prefixAt(list, depth)))
+    const seen = new Set(parts.map((list) => prefixAt(list, depth)));
 
     if (seen.size > 1) {
-      return depth
+      return depth;
     }
   }
 
   // Every path shares the whole of the shortest one: the shorter paths are
   // ancestors of the longer ones, so one segment deeper is where they part.
-  return parts.some(list => list.length > shortest) ? shortest + 1 : shortest
+  return parts.some((list) => list.length > shortest) ? shortest + 1 : shortest;
 }
 
 function labelFor(key: string): string {
-  const parts = segments(key)
+  const parts = segments(key);
 
-  return parts[parts.length - 1] || ''
+  return parts[parts.length - 1] || "";
 }
 
-function bucket(items: readonly ComposerReadyAnnotation[], depth: number): AnnotateGroup[] {
-  const byKey = new Map<string, AnnotateGroup>()
+function bucket(
+  items: readonly ComposerReadyAnnotation[],
+  depth: number,
+): AnnotateGroup[] {
+  const byKey = new Map<string, AnnotateGroup>();
 
   for (const item of items) {
-    const key = prefixAt(ancestorPath(item.identity?.selector || ''), depth)
-    const group = byKey.get(key)
+    const key = prefixAt(ancestorPath(item.identity?.selector || ""), depth);
+    const group = byKey.get(key);
 
     if (group) {
-      group.items.push(item)
+      group.items.push(item);
 
-      continue
+      continue;
     }
 
-    byKey.set(key, { items: [item], key, label: labelFor(key) })
+    byKey.set(key, { items: [item], key, label: labelFor(key) });
   }
 
-  return Array.from(byKey.values())
+  return Array.from(byKey.values());
 }
 
 /**
@@ -124,28 +127,28 @@ function bucket(items: readonly ComposerReadyAnnotation[], depth: number): Annot
  * shrinks the largest group or finds it indivisible, so this terminates.
  */
 function refine(groups: AnnotateGroup[], total: number): AnnotateGroup[] {
-  const ceiling = Math.max(2, Math.ceil(total / 3))
-  let current = groups
+  const ceiling = Math.max(2, Math.ceil(total / 3));
+  let current = groups;
 
   for (let pass = 0; pass < total; pass++) {
-    const target = current.find(group => group.items.length > ceiling)
+    const target = current.find((group) => group.items.length > ceiling);
 
     if (!target) {
-      break
+      break;
     }
 
-    const selectors = target.items.map(item => item.identity?.selector || '')
-    const deeper = annotateSplitDepth(selectors)
-    const split = bucket(target.items, deeper)
+    const selectors = target.items.map((item) => item.identity?.selector || "");
+    const deeper = annotateSplitDepth(selectors);
+    const split = bucket(target.items, deeper);
 
     if (split.length < 2) {
-      break
+      break;
     }
 
-    current = current.flatMap(group => (group === target ? split : [group]))
+    current = current.flatMap((group) => (group === target ? split : [group]));
   }
 
-  return current
+  return current;
 }
 
 /**
@@ -156,15 +159,19 @@ function refine(groups: AnnotateGroup[], total: number): AnnotateGroup[] {
  * subtree. Group order follows first appearance, so numbering still reads in
  * the order the user clicked.
  */
-export function groupAnnotations(items: readonly ComposerReadyAnnotation[]): AnnotateGroup[] {
-  const placed = items.filter(item => item.identity?.selector)
-  const loose = items.filter(item => !item.identity?.selector)
-  const depth = annotateSplitDepth(placed.map(item => item.identity?.selector || ''))
-  const groups = refine(bucket(placed, depth), placed.length)
+export function groupAnnotations(
+  items: readonly ComposerReadyAnnotation[],
+): AnnotateGroup[] {
+  const placed = items.filter((item) => item.identity?.selector);
+  const loose = items.filter((item) => !item.identity?.selector);
+  const depth = annotateSplitDepth(
+    placed.map((item) => item.identity?.selector || ""),
+  );
+  const groups = refine(bucket(placed, depth), placed.length);
 
   if (loose.length) {
-    groups.push({ items: [...loose], key: '', label: '' })
+    groups.push({ items: [...loose], key: "", label: "" });
   }
 
-  return groups
+  return groups;
 }

@@ -1,130 +1,135 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from "react";
 
 import {
   normalizeTerminalFontFamily,
   resolveTerminalFontFamily,
   setTerminalFontFamilyFromConfig,
-  TERMINAL_FONT_SUGGESTIONS
-} from '@/app/right-sidebar/terminal/terminal-font'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { saveHermesConfig } from '@/hermes'
-import { useI18n } from '@/i18n'
-import { notifyError } from '@/store/notifications'
-import type { HermesConfigRecord } from '@/types/hermes'
+  TERMINAL_FONT_SUGGESTIONS,
+} from "@/app/right-sidebar/terminal/terminal-font";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { saveHermesConfig } from "@/hermes";
+import { useI18n } from "@/i18n";
+import { notifyError } from "@/store/notifications";
+import type { HermesConfigRecord } from "@/types/hermes";
 
-import { setHermesConfigCache, useHermesConfigRecord } from '../hooks/use-config-record'
-import { useOnProfileSwitch } from '../hooks/use-on-profile-switch'
+import {
+  setHermesConfigCache,
+  useHermesConfigRecord,
+} from "../hooks/use-config-record";
+import { useOnProfileSwitch } from "../hooks/use-on-profile-switch";
 
-import { getNested, setNested } from './helpers'
-import { ListRow } from './primitives'
+import { getNested, setNested } from "./helpers";
+import { ListRow } from "./primitives";
 
-const AUTOSAVE_DELAY_MS = 550
+const AUTOSAVE_DELAY_MS = 550;
 
 function fontFamilyFromConfig(config: HermesConfigRecord): string {
-  return normalizeTerminalFontFamily(getNested(config, 'terminal.font_family'))
+  return normalizeTerminalFontFamily(getNested(config, "terminal.font_family"));
 }
 
 export function TerminalFontSetting() {
-  const { t } = useI18n()
-  const copy = t.settings.appearance
-  const { data: loadedConfig } = useHermesConfigRecord()
+  const { t } = useI18n();
+  const copy = t.settings.appearance;
+  const { data: loadedConfig } = useHermesConfigRecord();
   // draft === null ⇔ unseeded: nothing painted yet for this profile. The
   // profile-switch handler resets it to null and records the config object
   // it was looking at (`staleConfig`) — the seed effect refuses to re-seed
   // from that same object, so the previous profile's cached record can't
   // repopulate the field; the next profile's fetch (a new object) seeds it.
   // `draft` itself is the seed marker (no ref mirroring, per the lint rule).
-  const [draft, setDraft] = useState<string | null>(null)
-  const [staleConfig, setStaleConfig] = useState<HermesConfigRecord | null>(null)
-  const [saveVersion, setSaveVersion] = useState(0)
-  const saveVersionRef = useRef(0)
+  const [draft, setDraft] = useState<string | null>(null);
+  const [staleConfig, setStaleConfig] = useState<HermesConfigRecord | null>(
+    null,
+  );
+  const [saveVersion, setSaveVersion] = useState(0);
+  const saveVersionRef = useRef(0);
 
   // Lexically outside every useEffect so async save callbacks can cancel the
   // in-flight version without assigning to a ref inside an effect body.
   const cancelPendingSave = () => {
-    saveVersionRef.current = 0
-  }
+    saveVersionRef.current = 0;
+  };
 
   useEffect(() => {
     if (!loadedConfig || draft !== null || loadedConfig === staleConfig) {
-      return
+      return;
     }
 
-    const value = fontFamilyFromConfig(loadedConfig)
-    setDraft(value)
-    setTerminalFontFamilyFromConfig(value)
-  }, [draft, loadedConfig, staleConfig])
+    const value = fontFamilyFromConfig(loadedConfig);
+    setDraft(value);
+    setTerminalFontFamilyFromConfig(value);
+  }, [draft, loadedConfig, staleConfig]);
 
   useOnProfileSwitch(() => {
-    saveVersionRef.current += 1
-    setDraft(null)
-    setStaleConfig(loadedConfig ?? null)
-    setSaveVersion(0)
+    saveVersionRef.current += 1;
+    setDraft(null);
+    setStaleConfig(loadedConfig ?? null);
+    setSaveVersion(0);
     // Do not show the previous profile's font while the new profile loads.
-    setTerminalFontFamilyFromConfig('')
-  })
+    setTerminalFontFamilyFromConfig("");
+  });
 
   useEffect(() => {
     if (draft === null || saveVersion === 0 || !loadedConfig) {
-      return
+      return;
     }
 
-    const version = saveVersion
-    const value = normalizeTerminalFontFamily(draft)
+    const version = saveVersion;
+    const value = normalizeTerminalFontFamily(draft);
 
     // Already persisted (or a cache refresh confirmed it) — nothing to save.
     // This also terminates the effect re-run after a successful save updates
     // the shared config cache.
     if (value === fontFamilyFromConfig(loadedConfig)) {
-      return
+      return;
     }
 
     // The last successfully saved value IS what the shared config cache
     // holds — successful saves write it back via setHermesConfigCache, so
     // rollback re-derives from there instead of mirroring into a ref.
-    const rollback = fontFamilyFromConfig(loadedConfig)
+    const rollback = fontFamilyFromConfig(loadedConfig);
 
     const timeout = window.setTimeout(() => {
-      const next = setNested(loadedConfig, 'terminal.font_family', value)
+      const next = setNested(loadedConfig, "terminal.font_family", value);
 
       void saveHermesConfig(next)
-        .then(result => {
+        .then((result) => {
           if (!result.ok) {
-            throw new Error(t.settings.config.autosaveFailed)
+            throw new Error(t.settings.config.autosaveFailed);
           }
 
           if (saveVersionRef.current !== version) {
-            return
+            return;
           }
 
-          setHermesConfigCache(next)
+          setHermesConfigCache(next);
         })
-        .catch(error => {
+        .catch((error) => {
           if (saveVersionRef.current !== version) {
-            return
+            return;
           }
 
-          cancelPendingSave()
-          setSaveVersion(0)
-          setDraft(rollback)
-          setTerminalFontFamilyFromConfig(rollback)
-          notifyError(error, t.settings.config.autosaveFailed)
-        })
-    }, AUTOSAVE_DELAY_MS)
+          cancelPendingSave();
+          setSaveVersion(0);
+          setDraft(rollback);
+          setTerminalFontFamilyFromConfig(rollback);
+          notifyError(error, t.settings.config.autosaveFailed);
+        });
+    }, AUTOSAVE_DELAY_MS);
 
-    return () => window.clearTimeout(timeout)
-  }, [draft, loadedConfig, saveVersion, t.settings.config.autosaveFailed])
+    return () => window.clearTimeout(timeout);
+  }, [draft, loadedConfig, saveVersion, t.settings.config.autosaveFailed]);
 
   const update = (value: string) => {
-    saveVersionRef.current += 1
-    setDraft(value)
-    setSaveVersion(saveVersionRef.current)
-    setTerminalFontFamilyFromConfig(value)
-  }
+    saveVersionRef.current += 1;
+    setDraft(value);
+    setSaveVersion(saveVersionRef.current);
+    setTerminalFontFamilyFromConfig(value);
+  };
 
-  const value = draft ?? ''
-  const previewFontFamily = resolveTerminalFontFamily(value)
+  const value = draft ?? "";
+  const previewFontFamily = resolveTerminalFontFamily(value);
 
   return (
     <ListRow
@@ -136,16 +141,21 @@ export function TerminalFontSetting() {
               className="flex-1"
               disabled={draft === null}
               list="hermes-terminal-font-families"
-              onChange={event => update(event.target.value)}
+              onChange={(event) => update(event.target.value)}
               placeholder={copy.terminalFontPlaceholder}
               value={value}
             />
-            <Button disabled={!value || draft === null} onClick={() => update('')} size="inline" variant="text">
+            <Button
+              disabled={!value || draft === null}
+              onClick={() => update("")}
+              size="inline"
+              variant="text"
+            >
               {copy.terminalFontReset}
             </Button>
           </div>
           <datalist id="hermes-terminal-font-families">
-            {TERMINAL_FONT_SUGGESTIONS.map(font => (
+            {TERMINAL_FONT_SUGGESTIONS.map((font) => (
               <option key={font} value={font} />
             ))}
           </datalist>
@@ -165,5 +175,5 @@ export function TerminalFontSetting() {
       title={copy.terminalFontTitle}
       wide
     />
-  )
+  );
 }

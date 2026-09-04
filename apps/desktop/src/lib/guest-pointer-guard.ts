@@ -7,7 +7,7 @@
  * `guest-pointer-lock` rule in styles.css) so the window-level pointermove /
  * pointerup listeners keep receiving the gesture.
  */
-let depth = 0
+let depth = 0;
 
 /** Suppress pointer events on webview/iframe guests until released. Depth-
  *  counted so overlapping gestures compose; the returned release is
@@ -15,22 +15,22 @@ let depth = 0
  *  lostpointercapture). */
 export function guardGuestPointers(): () => void {
   if (depth === 0) {
-    document.body.classList.add('guest-pointer-lock')
+    document.body.classList.add("guest-pointer-lock");
   }
 
-  depth += 1
-  let released = false
+  depth += 1;
+  let released = false;
 
   return () => {
     if (released) {
-      return
+      return;
     }
 
-    released = true
-    depth -= 1
+    released = true;
+    depth -= 1;
 
     if (depth === 0) {
-      document.body.classList.remove('guest-pointer-lock')
+      document.body.classList.remove("guest-pointer-lock");
     }
-  }
+  };
 }

@@ -27,35 +27,40 @@
  * Pure so it is testable without booting Electron.
  */
 
-import { isFallbackCommit } from './bundle-skew'
+import { isFallbackCommit } from "./bundle-skew";
 
 export interface BundleSwapStamp {
   /** write-build-stamp.mjs build timestamp — differs on every rebuild. */
-  builtAt?: null | string
-  commit: string
+  builtAt?: null | string;
+  commit: string;
   /** write-build-stamp.mjs source tag — 'fallback' means the commit is fake. */
-  source?: null | string
+  source?: null | string;
 }
 
 /** True only on positive proof that the bundle on disk is not the running one. */
-export function detectBundleSwap(running: BundleSwapStamp | null, onDisk: BundleSwapStamp | null): boolean {
+export function detectBundleSwap(
+  running: BundleSwapStamp | null,
+  onDisk: BundleSwapStamp | null,
+): boolean {
   if (!running?.commit || !onDisk?.commit) {
-    return false
+    return false;
   }
 
-  if (running.source === 'fallback' || isFallbackCommit(running.commit)) {
-    return false
+  if (running.source === "fallback" || isFallbackCommit(running.commit)) {
+    return false;
   }
 
-  if (onDisk.source === 'fallback' || isFallbackCommit(onDisk.commit)) {
-    return false
+  if (onDisk.source === "fallback" || isFallbackCommit(onDisk.commit)) {
+    return false;
   }
 
   if (running.commit !== onDisk.commit) {
-    return true
+    return true;
   }
 
   // Same commit: only a builtAt PRESENT ON BOTH sides can prove a rebuild —
   // a missing timestamp (older stamp schema) proves nothing.
-  return Boolean(running.builtAt && onDisk.builtAt && running.builtAt !== onDisk.builtAt)
+  return Boolean(
+    running.builtAt && onDisk.builtAt && running.builtAt !== onDisk.builtAt,
+  );
 }

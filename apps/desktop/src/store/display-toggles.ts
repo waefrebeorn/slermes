@@ -22,47 +22,54 @@
  * server, which is a worse failure than the one being fixed.
  */
 
-import type { ReadableAtom } from 'nanostores'
+import type { ReadableAtom } from "nanostores";
 
-import { readKey } from '@/lib/storage'
-import { $gateway, activeGateway } from '@/store/gateway'
+import { readKey } from "@/lib/storage";
+import { $gateway, activeGateway } from "@/store/gateway";
 
 interface Mirror {
-  configKey: string
-  read: () => boolean
-  storageKey: string
+  configKey: string;
+  read: () => boolean;
+  storageKey: string;
 }
 
-const mirrors: Mirror[] = []
+const mirrors: Mirror[] = [];
 
 function push(mirror: Mirror): void {
   void activeGateway()
-    ?.request('config.set', { key: mirror.configKey, value: mirror.read() ? 'true' : 'false' })
+    ?.request("config.set", {
+      key: mirror.configKey,
+      value: mirror.read() ? "true" : "false",
+    })
     .catch(() => {
       // Not connected, or a gateway too old to know the key. The next toggle
       // and the next connection both try again.
-    })
+    });
 }
 
 /** Keep `display.<configKey>` on the live gateway in step with a renderer atom. */
-export function mirrorDisplayToggle(configKey: string, storageKey: string, $enabled: ReadableAtom<boolean>): void {
-  if (typeof window === 'undefined') {
-    return
+export function mirrorDisplayToggle(
+  configKey: string,
+  storageKey: string,
+  $enabled: ReadableAtom<boolean>,
+): void {
+  if (typeof window === "undefined") {
+    return;
   }
 
-  const mirror: Mirror = { configKey, read: () => $enabled.get(), storageKey }
+  const mirror: Mirror = { configKey, read: () => $enabled.get(), storageKey };
 
-  mirrors.push(mirror)
+  mirrors.push(mirror);
   // listen, not subscribe: fire on CHANGE only. Module init must not write.
-  $enabled.listen(() => push(mirror))
+  $enabled.listen(() => push(mirror));
 }
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   $gateway.listen(() => {
     for (const mirror of mirrors) {
       if (readKey(mirror.storageKey) !== null) {
-        push(mirror)
+        push(mirror);
       }
     }
-  })
+  });
 }

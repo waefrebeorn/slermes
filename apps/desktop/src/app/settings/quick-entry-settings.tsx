@@ -1,17 +1,17 @@
-import { useStore } from '@nanostores/react'
-import { useEffect, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useEffect, useState } from "react";
 
-import { Input } from '@/components/ui/input'
-import { useI18n } from '@/i18n'
+import { Input } from "@/components/ui/input";
+import { useI18n } from "@/i18n";
 import {
   $quickEntry,
   canUseQuickEntry,
   loadQuickEntrySettings,
   QUICK_ENTRY_DEFAULT_SHORTCUT,
-  saveQuickEntrySettings
-} from '@/store/quick-entry'
+  saveQuickEntrySettings,
+} from "@/store/quick-entry";
 
-import { ListRow, ToggleRow } from './primitives'
+import { ListRow, ToggleRow } from "./primitives";
 
 /**
  * Quick Entry — the global-hotkey mini composer's settings rows.
@@ -22,40 +22,40 @@ import { ListRow, ToggleRow } from './primitives'
  * with `error: 'taken'` and says so, right under the field.
  */
 export function QuickEntrySettings() {
-  const { t } = useI18n()
-  const q = t.settings.quickEntry
-  const state = useStore($quickEntry)
+  const { t } = useI18n();
+  const q = t.settings.quickEntry;
+  const state = useStore($quickEntry);
   // The field is a local draft: the accelerator is only committed on blur/Enter,
   // so a half-typed chord ("Alt+") never tears down the live registration.
-  const [draft, setDraft] = useState<null | string>(null)
+  const [draft, setDraft] = useState<null | string>(null);
 
   useEffect(() => {
-    void loadQuickEntrySettings()
-  }, [])
+    void loadQuickEntrySettings();
+  }, []);
 
   if (!canUseQuickEntry()) {
-    return null
+    return null;
   }
 
   const commit = () => {
-    const next = (draft ?? '').trim()
-    setDraft(null)
+    const next = (draft ?? "").trim();
+    setDraft(null);
 
     if (next && next !== state.shortcut) {
-      void saveQuickEntrySettings({ shortcut: next })
+      void saveQuickEntrySettings({ shortcut: next });
     }
-  }
+  };
 
   const status =
     state.registered === null
       ? null
-      : state.error === 'taken'
+      : state.error === "taken"
         ? q.takenBy
-        : state.error === 'invalid'
+        : state.error === "invalid"
           ? q.invalidShortcut
           : state.enabled && state.registered
             ? q.active
-            : null
+            : null;
 
   return (
     <>
@@ -63,7 +63,7 @@ export function QuickEntrySettings() {
         checked={state.enabled}
         description={q.enabledDesc}
         label={q.enabledTitle}
-        onChange={enabled => void saveQuickEntrySettings({ enabled })}
+        onChange={(enabled) => void saveQuickEntrySettings({ enabled })}
       />
       <ListRow
         action={
@@ -71,11 +71,11 @@ export function QuickEntrySettings() {
             aria-label={q.shortcutTitle}
             disabled={!state.enabled}
             onBlur={commit}
-            onChange={event => setDraft(event.target.value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                event.preventDefault()
-                commit()
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                commit();
               }
             }}
             placeholder={QUICK_ENTRY_DEFAULT_SHORTCUT}
@@ -87,8 +87,8 @@ export function QuickEntrySettings() {
             <div
               className={
                 state.error
-                  ? 'mt-1 text-[length:var(--conversation-caption-font-size)] text-amber-500/90'
-                  : 'mt-1 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)'
+                  ? "mt-1 text-[length:var(--conversation-caption-font-size)] text-amber-500/90"
+                  : "mt-1 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)"
               }
             >
               {status}
@@ -99,5 +99,5 @@ export function QuickEntrySettings() {
         title={q.shortcutTitle}
       />
     </>
-  )
+  );
 }

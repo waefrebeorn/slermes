@@ -1,24 +1,27 @@
-export type PaneLifecycle = 'visible' | 'hot-hidden' | 'parked'
+export type PaneLifecycle = "visible" | "hot-hidden" | "parked";
 
-export const DEFAULT_HOT_HIDDEN_PANE_CAP = 2
+export const DEFAULT_HOT_HIDDEN_PANE_CAP = 2;
 
 interface PaneLifecycleEntry {
-  lifecycle: PaneLifecycle
-  lastVisible: number
+  lifecycle: PaneLifecycle;
+  lastVisible: number;
 }
 
 export interface PaneLifecycleState {
-  clock: number
-  entries: Record<string, PaneLifecycleEntry>
+  clock: number;
+  entries: Record<string, PaneLifecycleEntry>;
 }
 
-export const emptyPaneLifecycleState = (): PaneLifecycleState => ({ clock: 0, entries: {} })
+export const emptyPaneLifecycleState = (): PaneLifecycleState => ({
+  clock: 0,
+  entries: {},
+});
 
 interface ReconcilePaneLifecycleOptions {
-  activeId: string
-  hotHiddenCap?: number
-  keepAlive?: (id: string) => boolean
-  paneIds: readonly string[]
+  activeId: string;
+  hotHiddenCap?: number;
+  keepAlive?: (id: string) => boolean;
+  paneIds: readonly string[];
 }
 
 /**
@@ -35,42 +38,44 @@ export function reconcilePaneLifecycle(
     activeId,
     hotHiddenCap = DEFAULT_HOT_HIDDEN_PANE_CAP,
     keepAlive = () => false,
-    paneIds
-  }: ReconcilePaneLifecycleOptions
+    paneIds,
+  }: ReconcilePaneLifecycleOptions,
 ): PaneLifecycleState {
-  const present = new Set(paneIds)
-  const entries: Record<string, PaneLifecycleEntry> = {}
-  let clock = previous.clock
+  const present = new Set(paneIds);
+  const entries: Record<string, PaneLifecycleEntry> = {};
+  let clock = previous.clock;
 
   for (const id of paneIds) {
-    const prior = previous.entries[id]
+    const prior = previous.entries[id];
 
     if (prior) {
-      entries[id] = { ...prior, lifecycle: 'parked' }
+      entries[id] = { ...prior, lifecycle: "parked" };
     }
   }
 
   if (present.has(activeId)) {
-    const prior = previous.entries[activeId]
+    const prior = previous.entries[activeId];
 
-    if (!prior || prior.lifecycle !== 'visible') {
-      clock += 1
+    if (!prior || prior.lifecycle !== "visible") {
+      clock += 1;
     }
 
-    entries[activeId] = { lifecycle: 'visible', lastVisible: clock }
+    entries[activeId] = { lifecycle: "visible", lastVisible: clock };
   }
 
   const inactive = paneIds
-    .filter(id => id !== activeId && entries[id])
-    .sort((a, b) => entries[b].lastVisible - entries[a].lastVisible)
+    .filter((id) => id !== activeId && entries[id])
+    .sort((a, b) => entries[b].lastVisible - entries[a].lastVisible);
 
   for (const id of inactive.filter(keepAlive)) {
-    entries[id] = { ...entries[id], lifecycle: 'hot-hidden' }
+    entries[id] = { ...entries[id], lifecycle: "hot-hidden" };
   }
 
-  for (const id of inactive.filter(id => !keepAlive(id)).slice(0, Math.max(0, hotHiddenCap))) {
-    entries[id] = { ...entries[id], lifecycle: 'hot-hidden' }
+  for (const id of inactive
+    .filter((id) => !keepAlive(id))
+    .slice(0, Math.max(0, hotHiddenCap))) {
+    entries[id] = { ...entries[id], lifecycle: "hot-hidden" };
   }
 
-  return { clock, entries }
+  return { clock, entries };
 }

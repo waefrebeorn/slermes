@@ -1,12 +1,20 @@
-import { type RefObject, useCallback, useEffect, useMemo } from 'react'
+import { type RefObject, useCallback, useEffect, useMemo } from "react";
 
-import { caretOffsetInEditor, composerPlainText, placeCaretAtOffset, renderComposerContents } from '../rich-editor'
-import { type ComposerSnapshot, createComposerUndoHistory } from '../undo-history'
+import {
+  caretOffsetInEditor,
+  composerPlainText,
+  placeCaretAtOffset,
+  renderComposerContents,
+} from "../rich-editor";
+import {
+  type ComposerSnapshot,
+  createComposerUndoHistory,
+} from "../undo-history";
 
 interface UseComposerUndoArgs {
-  editorRef: RefObject<HTMLDivElement | null>
+  editorRef: RefObject<HTMLDivElement | null>;
   /** Push a restored snapshot back into draftRef + composer state. */
-  syncDraftFromEditor: () => string
+  syncDraftFromEditor: () => string;
 }
 
 /**
@@ -18,46 +26,52 @@ interface UseComposerUndoArgs {
  * We own the stack outright rather than half of it: every edit path records the
  * pre-edit state here, and the editor claims ⌘Z / ⌘⇧Z itself.
  */
-export function useComposerUndo({ editorRef, syncDraftFromEditor }: UseComposerUndoArgs) {
-  const history = useMemo(() => createComposerUndoHistory(), [])
+export function useComposerUndo({
+  editorRef,
+  syncDraftFromEditor,
+}: UseComposerUndoArgs) {
+  const history = useMemo(() => createComposerUndoHistory(), []);
 
   const snapshot = useCallback((): ComposerSnapshot => {
-    const editor = editorRef.current
+    const editor = editorRef.current;
 
     if (!editor) {
-      return { caret: 0, text: '' }
+      return { caret: 0, text: "" };
     }
 
-    return { caret: caretOffsetInEditor(editor), text: composerPlainText(editor) }
-  }, [editorRef])
+    return {
+      caret: caretOffsetInEditor(editor),
+      text: composerPlainText(editor),
+    };
+  }, [editorRef]);
 
   /** Bank the current state before mutating the editor. `coalesce` marks a
    *  keystroke, so a run of typing collapses into one undo step. */
   const recordUndoPoint = useCallback(
     (options?: { coalesce?: boolean }) => {
       if (editorRef.current) {
-        history.record(snapshot(), options)
+        history.record(snapshot(), options);
       }
     },
-    [editorRef, history, snapshot]
-  )
+    [editorRef, history, snapshot],
+  );
 
   const applySnapshot = useCallback(
     (next: ComposerSnapshot | null) => {
-      const editor = editorRef.current
+      const editor = editorRef.current;
 
       if (!next || !editor) {
-        return false
+        return false;
       }
 
-      renderComposerContents(editor, next.text)
-      placeCaretAtOffset(editor, next.caret)
-      syncDraftFromEditor()
+      renderComposerContents(editor, next.text);
+      placeCaretAtOffset(editor, next.caret);
+      syncDraftFromEditor();
 
-      return true
+      return true;
     },
-    [editorRef, syncDraftFromEditor]
-  )
+    [editorRef, syncDraftFromEditor],
+  );
 
   /** Run a conditional edit, banking its pre-edit state only if it actually
    *  ran. The snapshot has to be taken first (the edit destroys the state we'd
@@ -65,24 +79,30 @@ export function useComposerUndo({ editorRef, syncDraftFromEditor }: UseComposerU
    *  every Backspace that falls through to the native path. */
   const withUndoPoint = useCallback(
     (edit: () => boolean) => {
-      const before = snapshot()
-      const ran = edit()
+      const before = snapshot();
+      const ran = edit();
 
       if (ran) {
-        history.record(before)
+        history.record(before);
       }
 
-      return ran
+      return ran;
     },
-    [history, snapshot]
-  )
+    [history, snapshot],
+  );
 
-  const undo = useCallback(() => applySnapshot(history.undo(snapshot())), [applySnapshot, history, snapshot])
-  const redo = useCallback(() => applySnapshot(history.redo(snapshot())), [applySnapshot, history, snapshot])
+  const undo = useCallback(
+    () => applySnapshot(history.undo(snapshot())),
+    [applySnapshot, history, snapshot],
+  );
+  const redo = useCallback(
+    () => applySnapshot(history.redo(snapshot())),
+    [applySnapshot, history, snapshot],
+  );
 
   // A session/draft swap makes prior history meaningless — undoing into another
   // conversation's text is worse than having no history at all.
-  const resetUndoHistory = useCallback(() => history.reset(), [history])
+  const resetUndoHistory = useCallback(() => history.reset(), [history]);
 
   // Electron's Edit menu ships `{ role: 'undo' }`, whose accelerator the macOS
   // menu bar consumes before the web contents sees the keystroke (the same
@@ -91,29 +111,30 @@ export function useComposerUndo({ editorRef, syncDraftFromEditor }: UseComposerU
   // the composer holds focus, so the menu item and the keystroke agree.
   useEffect(() => {
     const onBeforeInput = (event: Event) => {
-      const inputType = (event as InputEvent).inputType
+      const inputType = (event as InputEvent).inputType;
 
-      if (inputType !== 'historyUndo' && inputType !== 'historyRedo') {
-        return
+      if (inputType !== "historyUndo" && inputType !== "historyRedo") {
+        return;
       }
 
       if (document.activeElement !== editorRef.current) {
-        return
+        return;
       }
 
-      event.preventDefault()
+      event.preventDefault();
 
-      if (inputType === 'historyUndo') {
-        undo()
+      if (inputType === "historyUndo") {
+        undo();
       } else {
-        redo()
+        redo();
       }
-    }
+    };
 
-    document.addEventListener('beforeinput', onBeforeInput, true)
+    document.addEventListener("beforeinput", onBeforeInput, true);
 
-    return () => document.removeEventListener('beforeinput', onBeforeInput, true)
-  }, [editorRef, redo, undo])
+    return () =>
+      document.removeEventListener("beforeinput", onBeforeInput, true);
+  }, [editorRef, redo, undo]);
 
-  return { recordUndoPoint, redo, resetUndoHistory, undo, withUndoPoint }
+  return { recordUndoPoint, redo, resetUndoHistory, undo, withUndoPoint };
 }

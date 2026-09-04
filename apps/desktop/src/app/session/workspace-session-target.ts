@@ -1,22 +1,31 @@
-import type { MutableRefObject } from 'react'
+import type { MutableRefObject } from "react";
 
-import { pinNewChatProfile } from '@/store/profile'
-import { followActiveSessionCwd, projectProfile, resolveNewSessionCwd } from '@/store/projects'
+import { pinNewChatProfile } from "@/store/profile";
+import {
+  followActiveSessionCwd,
+  projectProfile,
+  resolveNewSessionCwd,
+} from "@/store/projects";
 import {
   $newChatWorkspaceTargetGeneration,
   type NewChatWorkspaceTarget,
   setCurrentBranch,
   setCurrentCwd,
-  setNewChatWorkspaceTarget
-} from '@/store/session'
+  setNewChatWorkspaceTarget,
+} from "@/store/session";
 
 interface WorkspaceSessionOptions {
-  activeSessionIdRef: MutableRefObject<string | null>
-  followActiveSessionCwd?: (cwd: string) => void | Promise<void>
-  onExplicitWorkspace?: (cwd: string) => void
-  path: null | string
-  requestGateway: <T>(method: string, params?: Record<string, unknown>) => Promise<T>
-  startFreshSessionDraft: (options?: { workspaceTarget: NewChatWorkspaceTarget }) => void
+  activeSessionIdRef: MutableRefObject<string | null>;
+  followActiveSessionCwd?: (cwd: string) => void | Promise<void>;
+  onExplicitWorkspace?: (cwd: string) => void;
+  path: null | string;
+  requestGateway: <T>(
+    method: string,
+    params?: Record<string, unknown>,
+  ) => Promise<T>;
+  startFreshSessionDraft: (options?: {
+    workspaceTarget: NewChatWorkspaceTarget;
+  }) => void;
 }
 
 export function startWorkspaceSession({
@@ -25,16 +34,16 @@ export function startWorkspaceSession({
   onExplicitWorkspace,
   path,
   requestGateway,
-  startFreshSessionDraft
+  startFreshSessionDraft,
 }: WorkspaceSessionOptions): void {
   // The project tree is rendered under one profile; the "+" belongs to it.
   // Pin that intent now — otherwise desktopSessionCreateParams falls back to
   // $activeGatewayProfile, which a still-settling profile swap can move
   // between this click and Send (#79005). All-profiles view has no owner.
-  const profile = projectProfile()
+  const profile = projectProfile();
 
   if (profile) {
-    pinNewChatProfile(profile)
+    pinNewChatProfile(profile);
   }
 
   // Home's "+" passes path=null on purpose ("no folder"). That must stay
@@ -42,45 +51,54 @@ export function startWorkspaceSession({
   // return a default/remembered project folder and re-attach the last repo
   // (digitwo: New session in Home still shows `main`).
   if (path === null) {
-    startFreshSessionDraft({ workspaceTarget: null })
+    startFreshSessionDraft({ workspaceTarget: null });
 
-    return
+    return;
   }
 
   // A worktree lane carries its own path. Empty string (legacy/path-less trunk)
   // can fall back to the active project's root, but null was handled above.
-  const explicitTarget = path.trim()
-  const target = explicitTarget || resolveNewSessionCwd()
+  const explicitTarget = path.trim();
+  const target = explicitTarget || resolveNewSessionCwd();
 
-  startFreshSessionDraft(target ? { workspaceTarget: target } : undefined)
+  startFreshSessionDraft(target ? { workspaceTarget: target } : undefined);
 
   if (!target) {
-    return
+    return;
   }
 
-  const workspaceGeneration = $newChatWorkspaceTargetGeneration.get()
+  const workspaceGeneration = $newChatWorkspaceTargetGeneration.get();
 
-  setCurrentCwd(target)
-  void requestGateway<{ branch?: string; cwd?: string }>('config.get', { key: 'project', cwd: target })
-    .then(info => {
-      if ($newChatWorkspaceTargetGeneration.get() !== workspaceGeneration || activeSessionIdRef.current) {
-        return
+  setCurrentCwd(target);
+  void requestGateway<{ branch?: string; cwd?: string }>("config.get", {
+    key: "project",
+    cwd: target,
+  })
+    .then((info) => {
+      if (
+        $newChatWorkspaceTargetGeneration.get() !== workspaceGeneration ||
+        activeSessionIdRef.current
+      ) {
+        return;
       }
 
-      const resolved = info.cwd || target
+      const resolved = info.cwd || target;
 
-      setCurrentCwd(resolved)
-      setNewChatWorkspaceTarget(resolved)
-      setCurrentBranch(info.branch || '')
+      setCurrentCwd(resolved);
+      setNewChatWorkspaceTarget(resolved);
+      setCurrentBranch(info.branch || "");
 
       if (explicitTarget) {
-        onExplicitWorkspace?.(resolved)
-        void followCwd(resolved)
+        onExplicitWorkspace?.(resolved);
+        void followCwd(resolved);
       }
     })
     .catch(() => {
-      if ($newChatWorkspaceTargetGeneration.get() === workspaceGeneration && !activeSessionIdRef.current) {
-        setCurrentBranch('')
+      if (
+        $newChatWorkspaceTargetGeneration.get() === workspaceGeneration &&
+        !activeSessionIdRef.current
+      ) {
+        setCurrentBranch("");
       }
-    })
+    });
 }

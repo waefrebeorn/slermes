@@ -1,19 +1,19 @@
-import type * as React from 'react'
+import type * as React from "react";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { useI18n } from '@/i18n'
-import { Globe } from '@/lib/icons'
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useI18n } from "@/i18n";
+import { Globe } from "@/lib/icons";
 
-const URL_HINT = /^https?:\/\//i
+const URL_HINT = /^https?:\/\//i;
 
 export function UrlDialog({
   inputRef,
@@ -21,19 +21,19 @@ export function UrlDialog({
   onOpenChange,
   onSubmit,
   open,
-  value
+  value,
 }: {
-  inputRef: React.RefObject<HTMLInputElement | null>
-  onChange: (value: string) => void
-  onOpenChange: (open: boolean) => void
-  onSubmit: () => void
-  open: boolean
-  value: string
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  onChange: (value: string) => void;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: () => void;
+  open: boolean;
+  value: string;
 }) {
-  const { t } = useI18n()
-  const c = t.composer
-  const trimmed = value.trim()
-  const looksLikeUrl = trimmed.length > 0 && URL_HINT.test(trimmed)
+  const { t } = useI18n();
+  const c = t.composer;
+  const trimmed = value.trim();
+  const looksLikeUrl = trimmed.length > 0 && URL_HINT.test(trimmed);
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
@@ -44,9 +44,9 @@ export function UrlDialog({
         </DialogHeader>
         <form
           className="grid gap-4"
-          onSubmit={e => {
-            e.preventDefault()
-            onSubmit()
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
           }}
         >
           <div className="grid gap-1.5">
@@ -54,7 +54,7 @@ export function UrlDialog({
               autoComplete="off"
               autoCorrect="off"
               inputMode="url"
-              onChange={e => onChange(e.target.value)}
+              onChange={(e) => onChange(e.target.value)}
               placeholder={c.urlPlaceholder}
               ref={inputRef}
               spellCheck={false}
@@ -68,7 +68,11 @@ export function UrlDialog({
             )}
           </div>
           <DialogFooter>
-            <Button onClick={() => onOpenChange(false)} type="button" variant="ghost">
+            <Button
+              onClick={() => onOpenChange(false)}
+              type="button"
+              variant="ghost"
+            >
               {t.common.cancel}
             </Button>
             <Button disabled={!looksLikeUrl} type="submit">
@@ -78,5 +82,5 @@ export function UrlDialog({
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

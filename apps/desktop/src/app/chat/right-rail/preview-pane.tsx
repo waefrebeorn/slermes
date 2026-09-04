@@ -1,20 +1,27 @@
 // Side-effect import: watches the turn edge so the overlay keeps a pulse while
 // the model reasons. Lives here because the pane is what makes it reachable.
-import './preview-mind'
+import "./preview-mind";
 
-import { useStore } from '@nanostores/react'
-import type { PointerEvent as ReactPointerEvent } from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import type { PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { requestComposerAttachImages, requestComposerFocus, requestComposerInsert } from '@/app/chat/composer/focus'
-import { openGuestContextMenu } from '@/app/context-menu/store'
-import { PanelEmpty } from '@/app/overlays/panel'
-import { Tip } from '@/components/ui/tooltip'
-import { type Translations, useI18n } from '@/i18n'
-import { isDesktopFsRemoteMode } from '@/lib/desktop-fs'
-import { guardGuestPointers } from '@/lib/guest-pointer-guard'
-import { openPreviewTargetInBrowser, remoteHtmlPreviewDocument } from '@/lib/local-preview'
-import { isRemoteGateway } from '@/lib/media'
+import {
+  requestComposerAttachImages,
+  requestComposerFocus,
+  requestComposerInsert,
+} from "@/app/chat/composer/focus";
+import { openGuestContextMenu } from "@/app/context-menu/store";
+import { PanelEmpty } from "@/app/overlays/panel";
+import { Tip } from "@/components/ui/tooltip";
+import { type Translations, useI18n } from "@/i18n";
+import { isDesktopFsRemoteMode } from "@/lib/desktop-fs";
+import { guardGuestPointers } from "@/lib/guest-pointer-guard";
+import {
+  openPreviewTargetInBrowser,
+  remoteHtmlPreviewDocument,
+} from "@/lib/local-preview";
+import { isRemoteGateway } from "@/lib/media";
 import {
   addAnnotatePin,
   beginAnnotateMode,
@@ -23,12 +30,12 @@ import {
   emptyAnnotateSession,
   emptyAnnotateStack,
   endAnnotateMode,
-  flushAnnotateStack
-} from '@/lib/preview-annotate'
-import { reachablePreviewUrl } from '@/lib/preview-reach'
-import { rafCoalesce } from '@/lib/raf-coalesce'
-import { cn } from '@/lib/utils'
-import { notify, notifyError } from '@/store/notifications'
+  flushAnnotateStack,
+} from "@/lib/preview-annotate";
+import { reachablePreviewUrl } from "@/lib/preview-reach";
+import { rafCoalesce } from "@/lib/raf-coalesce";
+import { cn } from "@/lib/utils";
+import { notify, notifyError } from "@/store/notifications";
 import {
   $browserPages,
   $previewServerRestart,
@@ -36,12 +43,15 @@ import {
   failPreviewServerRestart,
   noteBrowserPage,
   popOutBrowserTab,
-  type PreviewTarget
-} from '@/store/preview'
-import { $selectedStoredSessionId } from '@/store/session'
-import { canOpenBrowserWindow, isBrowserWindow } from '@/store/windows'
+  type PreviewTarget,
+} from "@/store/preview";
+import { $selectedStoredSessionId } from "@/store/session";
+import { canOpenBrowserWindow, isBrowserWindow } from "@/store/windows";
 
-import { placeAnnotateCard, PreviewAnnotateCard } from './preview-annotate-card'
+import {
+  placeAnnotateCard,
+  PreviewAnnotateCard,
+} from "./preview-annotate-card";
 import {
   bindPreviewExecuteJavaScript,
   captureAnnotateCrop,
@@ -51,119 +61,133 @@ import {
   showAnnotateDraft,
   syncAnnotatePins,
   teardownAnnotateOverlay,
-  waitAnnotateEvent
-} from './preview-annotate-host'
-import { ArtifactPreview } from './preview-artifact'
-import { PreviewBrowserBar } from './preview-browser-bar'
+  waitAnnotateEvent,
+} from "./preview-annotate-host";
+import { ArtifactPreview } from "./preview-artifact";
+import { PreviewBrowserBar } from "./preview-browser-bar";
 import {
   clampConsoleHeight,
   compactUrl,
   formatLogLine,
   isNearConsoleBottom,
-  PreviewConsolePanel
-} from './preview-console'
-import { type ConsoleEntry } from './preview-console-state'
-import { previewConsoleState } from './preview-console-store'
-import { LocalFilePreview, PreviewEmptyState } from './preview-file'
-import { type PreviewInputEvent, registerPreviewInput } from './preview-input'
-import { PREVIEW_BROWSER_ATTR, registerPreviewNav } from './preview-nav'
-import { registerPreviewPageReader } from './preview-reader'
-import { registerPreviewScriptRunner } from './preview-script-runner'
-import { RealProfileConsentDialog } from './real-profile-consent-dialog'
+  PreviewConsolePanel,
+} from "./preview-console";
+import { type ConsoleEntry } from "./preview-console-state";
+import { previewConsoleState } from "./preview-console-store";
+import { LocalFilePreview, PreviewEmptyState } from "./preview-file";
+import { type PreviewInputEvent, registerPreviewInput } from "./preview-input";
+import { PREVIEW_BROWSER_ATTR, registerPreviewNav } from "./preview-nav";
+import { registerPreviewPageReader } from "./preview-reader";
+import { registerPreviewScriptRunner } from "./preview-script-runner";
+import { RealProfileConsentDialog } from "./real-profile-consent-dialog";
 
 type PreviewWebview = HTMLElement & {
-  canGoBack?: () => boolean
-  canGoForward?: () => boolean
-  closeDevTools?: () => void
-  copy?: () => void
-  cut?: () => void
-  executeJavaScript?: (code: string) => Promise<unknown>
-  getTitle?: () => string
-  getURL?: () => string
-  getWebContentsId?: () => number
-  goBack?: () => void
-  goForward?: () => void
-  inspectElement?: (x: number, y: number) => void
-  isDevToolsOpened?: () => boolean
-  loadURL?: (url: string) => Promise<void>
-  openDevTools?: () => void
-  paste?: () => void
-  reload?: () => void
-  reloadIgnoringCache?: () => void
-  replaceMisspelling?: (word: string) => void
-  selectAll?: () => void
-  sendInputEvent?: (event: PreviewInputEvent) => void
-}
+  canGoBack?: () => boolean;
+  canGoForward?: () => boolean;
+  closeDevTools?: () => void;
+  copy?: () => void;
+  cut?: () => void;
+  executeJavaScript?: (code: string) => Promise<unknown>;
+  getTitle?: () => string;
+  getURL?: () => string;
+  getWebContentsId?: () => number;
+  goBack?: () => void;
+  goForward?: () => void;
+  inspectElement?: (x: number, y: number) => void;
+  isDevToolsOpened?: () => boolean;
+  loadURL?: (url: string) => Promise<void>;
+  openDevTools?: () => void;
+  paste?: () => void;
+  reload?: () => void;
+  reloadIgnoringCache?: () => void;
+  replaceMisspelling?: (word: string) => void;
+  selectAll?: () => void;
+  sendInputEvent?: (event: PreviewInputEvent) => void;
+};
 
 /** Electron throws if getURL/getTitle run before attach + dom-ready, or after
  *  the guest has been removed. Optional chaining does not help — the method
  *  exists, it just refuses. */
-function guestPage(webview: PreviewWebview | null | undefined, fallbackUrl = ''): { title: string; url: string } {
+function guestPage(
+  webview: PreviewWebview | null | undefined,
+  fallbackUrl = "",
+): { title: string; url: string } {
   try {
     return {
-      title: webview?.getTitle?.() ?? '',
-      url: webview?.getURL?.() || fallbackUrl
-    }
+      title: webview?.getTitle?.() ?? "",
+      url: webview?.getURL?.() || fallbackUrl,
+    };
   } catch {
-    return { title: '', url: fallbackUrl }
+    return { title: "", url: fallbackUrl };
   }
 }
 
 /** The raw Chromium params riding the webview tag's `context-menu` event. */
 interface GuestContextMenuParams {
-  dictionarySuggestions?: string[]
+  dictionarySuggestions?: string[];
   editFlags?: {
-    canCopy?: boolean
-    canCut?: boolean
-    canPaste?: boolean
-    canSelectAll?: boolean
-  }
-  hasImageContents?: boolean
-  isEditable?: boolean
-  linkURL?: string
-  misspelledWord?: string
-  selectionText?: string
-  srcURL?: string
-  x: number
-  y: number
+    canCopy?: boolean;
+    canCut?: boolean;
+    canPaste?: boolean;
+    canSelectAll?: boolean;
+  };
+  hasImageContents?: boolean;
+  isEditable?: boolean;
+  linkURL?: string;
+  misspelledWord?: string;
+  selectionText?: string;
+  srcURL?: string;
+  x: number;
+  y: number;
 }
 
 interface PreviewPaneProps {
-  embedded?: boolean
-  onRestartServer?: (url: string, context?: string) => Promise<string>
-  reloadRequest?: number
+  embedded?: boolean;
+  onRestartServer?: (url: string, context?: string) => Promise<string>;
+  reloadRequest?: number;
   /** The preview tab this pane renders. Keys the per-tab console store the
    *  browser bar's console toggle and the console panel both read. */
-  tabId?: string
-  target: PreviewTarget
+  tabId?: string;
+  target: PreviewTarget;
 }
 
 interface PreviewLoadErrorState {
-  code?: number
-  description: string
-  url: string
+  code?: number;
+  description: string;
+  url: string;
 }
 
-const FILE_RELOAD_DEBOUNCE_MS = 200
-const SERVER_RESTART_TIMEOUT_MS = 45_000
+const FILE_RELOAD_DEBOUNCE_MS = 200;
+const SERVER_RESTART_TIMEOUT_MS = 45_000;
 
-function loadErrorTitle(error: PreviewLoadErrorState, copy: Translations['preview']['web']): string {
-  const description = error.description.toLowerCase()
+function loadErrorTitle(
+  error: PreviewLoadErrorState,
+  copy: Translations["preview"]["web"],
+): string {
+  const description = error.description.toLowerCase();
 
-  if (description.includes('module script') || description.includes('mime type')) {
-    return copy.appFailedToBoot
+  if (
+    description.includes("module script") ||
+    description.includes("mime type")
+  ) {
+    return copy.appFailedToBoot;
   }
 
-  if (description.includes('connection') || description.includes('refused') || description.includes('not found')) {
-    return copy.serverNotFound
+  if (
+    description.includes("connection") ||
+    description.includes("refused") ||
+    description.includes("not found")
+  ) {
+    return copy.serverNotFound;
   }
 
-  return copy.failedToLoad
+  return copy.failedToLoad;
 }
 
 /** Loopback hosts — the address family that means "this machine", and so the
  *  one family whose meaning changes with WHICH machine is running the page. */
-const LOOPBACK_HOST_RE = /^(localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0|\[?::1\]?)$/i
+const LOOPBACK_HOST_RE =
+  /^(localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0|\[?::1\]?)$/i;
 
 /**
  * True when this address can't mean what the agent meant.
@@ -175,20 +199,23 @@ const LOOPBACK_HOST_RE = /^(localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0|\[?::1\]?)$
  */
 function isRemoteLoopbackUrl(url: string): boolean {
   if (!isRemoteGateway()) {
-    return false
+    return false;
   }
 
   try {
-    return LOOPBACK_HOST_RE.test(new URL(url).hostname)
+    return LOOPBACK_HOST_RE.test(new URL(url).hostname);
   } catch {
-    return false
+    return false;
   }
 }
 
 function isModuleMimeError(message: string): boolean {
-  const lower = message.toLowerCase()
+  const lower = message.toLowerCase();
 
-  return lower.includes('failed to load module script') && lower.includes('mime type')
+  return (
+    lower.includes("failed to load module script") &&
+    lower.includes("mime type")
+  );
 }
 
 function PreviewLoadError({
@@ -196,16 +223,16 @@ function PreviewLoadError({
   error,
   onRestartServer,
   onRetry,
-  restarting
+  restarting,
 }: {
-  consoleHeight?: number
-  error: PreviewLoadErrorState
-  onRestartServer?: () => void
-  onRetry: () => void
-  restarting?: boolean
+  consoleHeight?: number;
+  error: PreviewLoadErrorState;
+  onRestartServer?: () => void;
+  onRetry: () => void;
+  restarting?: boolean;
 }) {
-  const { t } = useI18n()
-  const copy = t.preview.web
+  const { t } = useI18n();
+  const copy = t.preview.web;
 
   return (
     <PreviewEmptyState
@@ -214,17 +241,21 @@ function PreviewLoadError({
           <a
             className="pointer-events-auto block font-mono text-muted-foreground/90 underline decoration-current/20 underline-offset-4 transition-colors hover:text-foreground"
             href={error.url}
-            onClick={event => {
-              event.preventDefault()
-              void window.hermesDesktop?.openExternal(error.url)
+            onClick={(event) => {
+              event.preventDefault();
+              void window.hermesDesktop?.openExternal(error.url);
             }}
           >
             {compactUrl(error.url)}
-            {error.code ? ` (${error.code})` : ''}
+            {error.code ? ` (${error.code})` : ""}
           </a>
-          <div className="mt-1 text-[0.6875rem] text-muted-foreground/70">{error.description}</div>
+          <div className="mt-1 text-[0.6875rem] text-muted-foreground/70">
+            {error.description}
+          </div>
           {isRemoteLoopbackUrl(error.url) && (
-            <div className="mt-2 text-[0.6875rem] leading-relaxed text-muted-foreground/70">{copy.remoteLoopback}</div>
+            <div className="mt-2 text-[0.6875rem] leading-relaxed text-muted-foreground/70">
+              {copy.remoteLoopback}
+            </div>
           )}
         </>
       }
@@ -235,515 +266,587 @@ function PreviewLoadError({
           ? {
               disabled: restarting,
               label: restarting ? copy.restarting : copy.askRestart,
-              onClick: onRestartServer
+              onClick: onRestartServer,
             }
           : undefined
       }
       title={loadErrorTitle(error, copy)}
     />
-  )
+  );
 }
 
-export function PreviewPane({ embedded = false, onRestartServer, reloadRequest = 0, tabId, target }: PreviewPaneProps) {
-  const { t } = useI18n()
-  const copy = t.preview.web
+export function PreviewPane({
+  embedded = false,
+  onRestartServer,
+  reloadRequest = 0,
+  tabId,
+  target,
+}: PreviewPaneProps) {
+  const { t } = useI18n();
+  const copy = t.preview.web;
   // The console store belongs to the TAB, not this render: the toggles live on
   // the tab and must read the same logs this pane appends to.
-  const consoleState = previewConsoleState(tabId ?? target.url)
-  const consoleBodyRef = useRef<HTMLDivElement | null>(null)
-  const consoleShouldStickRef = useRef(true)
-  const hostRef = useRef<HTMLDivElement | null>(null)
-  const lastReloadRequestRef = useRef(reloadRequest)
-  const lastRestartEventRef = useRef('')
-  const previewContentRef = useRef<HTMLDivElement | null>(null)
-  const webviewRef = useRef<PreviewWebview | null>(null)
-  const previewServerRestart = useStore($previewServerRestart)
-  const consoleHeight = useStore(consoleState.$height)
-  const consoleOpen = useStore(consoleState.$open)
-  const selectedStoredSessionId = useStore($selectedStoredSessionId)
-  const [currentUrl, setCurrentUrl] = useState(target.url)
-  const liveUrlRef = useRef(currentUrl)
-  liveUrlRef.current = currentUrl
-  const [devtoolsOpen, setDevtoolsOpen] = useState(false)
-  const [history, setHistory] = useState({ back: false, forward: false })
-  const [loading, setLoading] = useState(true)
-  const [loadError, setLoadError] = useState<PreviewLoadErrorState | null>(null)
-  const [localReloadKey, setLocalReloadKey] = useState(0)
-  const [annotate, setAnnotate] = useState(emptyAnnotateSession)
-  const [draftNote, setDraftNote] = useState('')
-  const annotateRef = useRef(annotate)
-  const annotateLoopRef = useRef(0)
-  const annotateConversationRef = useRef(selectedStoredSessionId)
-  annotateRef.current = annotate
+  const consoleState = previewConsoleState(tabId ?? target.url);
+  const consoleBodyRef = useRef<HTMLDivElement | null>(null);
+  const consoleShouldStickRef = useRef(true);
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const lastReloadRequestRef = useRef(reloadRequest);
+  const lastRestartEventRef = useRef("");
+  const previewContentRef = useRef<HTMLDivElement | null>(null);
+  const webviewRef = useRef<PreviewWebview | null>(null);
+  const previewServerRestart = useStore($previewServerRestart);
+  const consoleHeight = useStore(consoleState.$height);
+  const consoleOpen = useStore(consoleState.$open);
+  const selectedStoredSessionId = useStore($selectedStoredSessionId);
+  const [currentUrl, setCurrentUrl] = useState(target.url);
+  const liveUrlRef = useRef(currentUrl);
+  liveUrlRef.current = currentUrl;
+  const [devtoolsOpen, setDevtoolsOpen] = useState(false);
+  const [history, setHistory] = useState({ back: false, forward: false });
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<PreviewLoadErrorState | null>(
+    null,
+  );
+  const [localReloadKey, setLocalReloadKey] = useState(0);
+  const [annotate, setAnnotate] = useState(emptyAnnotateSession);
+  const [draftNote, setDraftNote] = useState("");
+  const annotateRef = useRef(annotate);
+  const annotateLoopRef = useRef(0);
+  const annotateConversationRef = useRef(selectedStoredSessionId);
+  annotateRef.current = annotate;
 
   // Artifacts have no URL to load — they render from the registry, never in a
   // webview.
   const isWebPreview =
-    target.kind !== 'artifact' &&
-    (target.kind === 'url' || (target.previewKind === 'html' && target.renderMode !== 'source'))
+    target.kind !== "artifact" &&
+    (target.kind === "url" ||
+      (target.previewKind === "html" && target.renderMode !== "source"));
 
   const isRemoteHtmlTarget =
-    target.kind === 'file' && target.previewKind === 'html' && Boolean(target.dataUrl || target.transient)
+    target.kind === "file" &&
+    target.previewKind === "html" &&
+    Boolean(target.dataUrl || target.transient);
 
   // Hand the live address to storage when this guest is about to go away
   // (pop-out, dock-back, tab close). The other renderer builds from
   // `target.url`; without this it would reopen the tab's original page.
   useEffect(() => {
-    if (target.kind !== 'url' || !tabId) {
-      return
+    if (target.kind !== "url" || !tabId) {
+      return;
     }
 
     const persist = () => {
-      const page = $browserPages.get()[tabId]
-      commitBrowserTabLocation(tabId, page?.url || liveUrlRef.current, page?.title)
-    }
+      const page = $browserPages.get()[tabId];
+      commitBrowserTabLocation(
+        tabId,
+        page?.url || liveUrlRef.current,
+        page?.title,
+      );
+    };
 
-    window.addEventListener('pagehide', persist)
+    window.addEventListener("pagehide", persist);
 
     return () => {
-      window.removeEventListener('pagehide', persist)
-      persist()
-    }
-  }, [tabId, target.kind])
+      window.removeEventListener("pagehide", persist);
+      persist();
+    };
+  }, [tabId, target.kind]);
 
-  const isRemoteHtml = isRemoteHtmlTarget && target.renderMode !== 'source' && Boolean(target.dataUrl)
+  const isRemoteHtml =
+    isRemoteHtmlTarget &&
+    target.renderMode !== "source" &&
+    Boolean(target.dataUrl);
 
   const remoteHtmlDocument = useMemo(
     () => (isRemoteHtml ? remoteHtmlPreviewDocument(target.dataUrl!) : null),
-    [isRemoteHtml, target.dataUrl]
-  )
+    [isRemoteHtml, target.dataUrl],
+  );
 
-  const currentLabel = compactUrl(currentUrl)
+  const currentLabel = compactUrl(currentUrl);
 
   // Nothing loaded: no address yet, or the blank page itself. A webview on
   // `about:blank` paints a white void that reads as broken next to the app's
   // dark chrome, so the pane says what it is instead.
-  const isBlankPage = isWebPreview && !isRemoteHtml && (!currentUrl || /^about:blank\/?$/i.test(currentUrl))
+  const isBlankPage =
+    isWebPreview &&
+    !isRemoteHtml &&
+    (!currentUrl || /^about:blank\/?$/i.test(currentUrl));
 
   const previewLabel =
-    target.label && target.label.replace(/\/$/, '') !== currentLabel.replace(/\/$/, '') ? target.label : currentLabel
+    target.label &&
+    target.label.replace(/\/$/, "") !== currentLabel.replace(/\/$/, "")
+      ? target.label
+      : currentLabel;
 
   const restartingServer =
-    previewServerRestart?.status === 'running' &&
-    (previewServerRestart.url === target.url || previewServerRestart.url === currentUrl)
+    previewServerRestart?.status === "running" &&
+    (previewServerRestart.url === target.url ||
+      previewServerRestart.url === currentUrl);
 
   const startConsoleResize = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      event.preventDefault()
+      event.preventDefault();
 
-      const handle = event.currentTarget
-      const pointerId = event.pointerId
-      const startY = event.clientY
-      const startHeight = consoleHeight
-      const previousCursor = document.body.style.cursor
-      const previousUserSelect = document.body.style.userSelect
-      let active = true
+      const handle = event.currentTarget;
+      const pointerId = event.pointerId;
+      const startY = event.clientY;
+      const startHeight = consoleHeight;
+      const previousCursor = document.body.style.cursor;
+      const previousUserSelect = document.body.style.userSelect;
+      let active = true;
 
-      handle.setPointerCapture?.(pointerId)
+      handle.setPointerCapture?.(pointerId);
 
-      document.body.style.cursor = 'row-resize'
-      document.body.style.userSelect = 'none'
+      document.body.style.cursor = "row-resize";
+      document.body.style.userSelect = "none";
       // The webview above the console must not swallow the gesture.
-      const releaseGuests = guardGuestPointers()
+      const releaseGuests = guardGuestPointers();
 
       // pointermove outpaces 60fps and each setHeight reflows the webview +
       // console split, so coalesce to one apply per frame (commits on cleanup).
-      const resize = rafCoalesce((height: number) => consoleState.setHeight(height))
+      const resize = rafCoalesce((height: number) =>
+        consoleState.setHeight(height),
+      );
 
       const handleMove = (moveEvent: PointerEvent) => {
         if (!active) {
-          return
+          return;
         }
 
-        resize.push(clampConsoleHeight(startHeight + startY - moveEvent.clientY))
-      }
+        resize.push(
+          clampConsoleHeight(startHeight + startY - moveEvent.clientY),
+        );
+      };
 
       const cleanup = () => {
         if (!active) {
-          return
+          return;
         }
 
-        active = false
-        resize.finish()
-        releaseGuests()
-        document.body.style.cursor = previousCursor
-        document.body.style.userSelect = previousUserSelect
-        handle.releasePointerCapture?.(pointerId)
-        window.removeEventListener('pointermove', handleMove, true)
-        window.removeEventListener('pointerup', cleanup, true)
-        window.removeEventListener('pointercancel', cleanup, true)
-        window.removeEventListener('blur', cleanup)
-        handle.removeEventListener('lostpointercapture', cleanup)
-      }
+        active = false;
+        resize.finish();
+        releaseGuests();
+        document.body.style.cursor = previousCursor;
+        document.body.style.userSelect = previousUserSelect;
+        handle.releasePointerCapture?.(pointerId);
+        window.removeEventListener("pointermove", handleMove, true);
+        window.removeEventListener("pointerup", cleanup, true);
+        window.removeEventListener("pointercancel", cleanup, true);
+        window.removeEventListener("blur", cleanup);
+        handle.removeEventListener("lostpointercapture", cleanup);
+      };
 
-      window.addEventListener('pointermove', handleMove, true)
-      window.addEventListener('pointerup', cleanup, true)
-      window.addEventListener('pointercancel', cleanup, true)
-      window.addEventListener('blur', cleanup)
-      handle.addEventListener('lostpointercapture', cleanup)
+      window.addEventListener("pointermove", handleMove, true);
+      window.addEventListener("pointerup", cleanup, true);
+      window.addEventListener("pointercancel", cleanup, true);
+      window.addEventListener("blur", cleanup);
+      handle.addEventListener("lostpointercapture", cleanup);
     },
-    [consoleHeight, consoleState]
-  )
+    [consoleHeight, consoleState],
+  );
 
   const reloadPreview = useCallback(() => {
-    setLoadError(null)
+    setLoadError(null);
 
     if (!isWebPreview) {
-      setLocalReloadKey(key => key + 1)
+      setLocalReloadKey((key) => key + 1);
 
-      return
+      return;
     }
 
     if (webviewRef.current?.reloadIgnoringCache) {
-      webviewRef.current.reloadIgnoringCache()
+      webviewRef.current.reloadIgnoringCache();
     } else {
-      webviewRef.current?.reload?.()
+      webviewRef.current?.reload?.();
     }
-  }, [isWebPreview])
+  }, [isWebPreview]);
 
   const annotateGuest = useCallback((): null | PreviewAnnotateGuest => {
-    const webview = webviewRef.current
+    const webview = webviewRef.current;
 
     if (!webview?.executeJavaScript) {
-      return null
+      return null;
     }
 
     return {
-      capture: async rect => {
-        const webContentsId = webview.getWebContentsId?.()
+      capture: async (rect) => {
+        const webContentsId = webview.getWebContentsId?.();
 
-        if (typeof webContentsId !== 'number') {
-          throw new Error('preview guest has no webContents')
+        if (typeof webContentsId !== "number") {
+          throw new Error("preview guest has no webContents");
         }
 
         const viewport = (await bindPreviewExecuteJavaScript(webview)(
-          '({ width: window.innerWidth, height: window.innerHeight })'
-        )) as { height: number; width: number }
+          "({ width: window.innerWidth, height: window.innerHeight })",
+        )) as { height: number; width: number };
 
-        const dataUrl = await window.hermesDesktop.capturePreview?.({ rect, viewport, webContentsId })
+        const dataUrl = await window.hermesDesktop.capturePreview?.({
+          rect,
+          viewport,
+          webContentsId,
+        });
 
         if (!dataUrl) {
-          throw new Error('preview capture is unavailable')
+          throw new Error("preview capture is unavailable");
         }
 
-        return dataUrl
+        return dataUrl;
       },
-      executeJavaScript: bindPreviewExecuteJavaScript(webview)
-    }
-  }, [])
+      executeJavaScript: bindPreviewExecuteJavaScript(webview),
+    };
+  }, []);
 
   const stopAnnotate = useCallback(async () => {
-    annotateLoopRef.current += 1
-    const guest = annotateGuest()
+    annotateLoopRef.current += 1;
+    const guest = annotateGuest();
 
     if (guest) {
-      await teardownAnnotateOverlay(guest).catch(() => undefined)
+      await teardownAnnotateOverlay(guest).catch(() => undefined);
     }
 
-    setDraftNote('')
-    setAnnotate(endAnnotateMode)
-  }, [annotateGuest])
+    setDraftNote("");
+    setAnnotate(endAnnotateMode);
+  }, [annotateGuest]);
 
   // Not an atom mirror: the ref records the last conversation the annotate
   // stack was reset for, so the reset runs once per switch. Extracted into a
   // callback so the effect body carries no `.current` writes (lint contract).
   const resetAnnotateForConversation = useCallback(
     (sessionId: typeof selectedStoredSessionId) => {
-      annotateConversationRef.current = sessionId
-      annotateLoopRef.current += 1
-      setDraftNote('')
-      setAnnotate(emptyAnnotateSession())
+      annotateConversationRef.current = sessionId;
+      annotateLoopRef.current += 1;
+      setDraftNote("");
+      setAnnotate(emptyAnnotateSession());
 
-      const guest = annotateGuest()
+      const guest = annotateGuest();
 
       if (guest) {
-        void teardownAnnotateOverlay(guest).catch(() => undefined)
+        void teardownAnnotateOverlay(guest).catch(() => undefined);
       }
     },
-    [annotateGuest]
-  )
+    [annotateGuest],
+  );
 
   useEffect(() => {
     if (annotateConversationRef.current !== selectedStoredSessionId) {
-      resetAnnotateForConversation(selectedStoredSessionId)
+      resetAnnotateForConversation(selectedStoredSessionId);
     }
-  }, [resetAnnotateForConversation, selectedStoredSessionId])
+  }, [resetAnnotateForConversation, selectedStoredSessionId]);
 
   const saveAnnotateDraft = useCallback(async () => {
-    const session = annotateRef.current
+    const session = annotateRef.current;
 
     if (!session.draft) {
-      return
+      return;
     }
 
-    const draft = { ...session.draft, note: draftNote.trim() }
-    const guest = annotateGuest()
+    const draft = { ...session.draft, note: draftNote.trim() };
+    const guest = annotateGuest();
 
-    const stack = addAnnotatePin(session.stack, draft)
-    setAnnotate({ ...session, draft: null, stack })
-    setDraftNote('')
+    const stack = addAnnotatePin(session.stack, draft);
+    setAnnotate({ ...session, draft: null, stack });
+    setDraftNote("");
 
     if (guest) {
       await syncAnnotatePins(
         guest,
-        stack.pins.map(pin => ({
+        stack.pins.map((pin) => ({
           kind: pin.kind,
           number: pin.number,
           rect: pin.rect,
-          selector: pin.identity?.selector
-        }))
-      ).catch(() => undefined)
-      await hideAnnotateDraft(guest).catch(() => undefined)
+          selector: pin.identity?.selector,
+        })),
+      ).catch(() => undefined);
+      await hideAnnotateDraft(guest).catch(() => undefined);
     }
-  }, [annotateGuest, draftNote])
+  }, [annotateGuest, draftNote]);
 
   const cancelAnnotateDraft = useCallback(async () => {
-    setDraftNote('')
-    setAnnotate(session => ({ ...session, draft: null }))
+    setDraftNote("");
+    setAnnotate((session) => ({ ...session, draft: null }));
 
-    const guest = annotateGuest()
+    const guest = annotateGuest();
 
     if (guest) {
-      await hideAnnotateDraft(guest).catch(() => undefined)
+      await hideAnnotateDraft(guest).catch(() => undefined);
     }
-  }, [annotateGuest])
+  }, [annotateGuest]);
 
   const flushComments = useCallback(async () => {
-    const pins = annotateRef.current.stack.pins
+    const pins = annotateRef.current.stack.pins;
 
     if (!pins.length) {
-      return
+      return;
     }
 
-    const guest = annotateGuest()
+    const guest = annotateGuest();
 
     await flushAnnotateStack(
       pins,
       {
-        attachImage: blob => {
-          requestComposerAttachImages([blob])
+        attachImage: (blob) => {
+          requestComposerAttachImages([blob]);
         },
-        insertText: text => requestComposerInsert(text, { mode: 'block' })
+        insertText: (text) => requestComposerInsert(text, { mode: "block" }),
       },
-      currentUrl
-    )
-    requestComposerFocus()
-    setAnnotate(session => ({ ...session, draft: null, stack: clearAnnotatePins(session.stack) }))
-    setDraftNote('')
+      currentUrl,
+    );
+    requestComposerFocus();
+    setAnnotate((session) => ({
+      ...session,
+      draft: null,
+      stack: clearAnnotatePins(session.stack),
+    }));
+    setDraftNote("");
 
     if (guest) {
-      await hideAnnotateDraft(guest).catch(() => undefined)
-      await syncAnnotatePins(guest, []).catch(() => undefined)
+      await hideAnnotateDraft(guest).catch(() => undefined);
+      await syncAnnotatePins(guest, []).catch(() => undefined);
     }
-  }, [annotateGuest, currentUrl])
+  }, [annotateGuest, currentUrl]);
 
   const startAnnotate = useCallback(async () => {
-    const guest = annotateGuest()
+    const guest = annotateGuest();
 
     if (!guest) {
-      notify({ kind: 'warning', title: copy.annotate, message: copy.annotateNeedPage })
+      notify({
+        kind: "warning",
+        title: copy.annotate,
+        message: copy.annotateNeedPage,
+      });
 
-      return
+      return;
     }
 
-    const generation = ++annotateLoopRef.current
-    setAnnotate(beginAnnotateMode)
+    const generation = ++annotateLoopRef.current;
+    setAnnotate(beginAnnotateMode);
 
     try {
-      await installAnnotateOverlay(guest)
+      await installAnnotateOverlay(guest);
       await syncAnnotatePins(
         guest,
-        annotateRef.current.stack.pins.map(pin => ({
+        annotateRef.current.stack.pins.map((pin) => ({
           kind: pin.kind,
           number: pin.number,
           rect: pin.rect,
-          selector: pin.identity?.selector
-        }))
-      )
+          selector: pin.identity?.selector,
+        })),
+      );
     } catch (error) {
-      setAnnotate(endAnnotateMode)
-      notifyError(error, copy.annotateFailed)
+      setAnnotate(endAnnotateMode);
+      notifyError(error, copy.annotateFailed);
 
-      return
+      return;
     }
 
     while (annotateLoopRef.current === generation) {
-      let event
+      let event;
 
       try {
-        event = await waitAnnotateEvent(guest)
+        event = await waitAnnotateEvent(guest);
       } catch {
-        break
+        break;
       }
 
       if (annotateLoopRef.current !== generation) {
-        break
+        break;
       }
 
-      if (event.type === 'end') {
-        await stopAnnotate()
+      if (event.type === "end") {
+        await stopAnnotate();
 
-        break
+        break;
       }
 
-      if (event.type === 'reposition') {
-        setAnnotate(session =>
-          session.draft ? { ...session, draft: { ...session.draft, rect: event.rect } } : session
-        )
+      if (event.type === "reposition") {
+        setAnnotate((session) =>
+          session.draft
+            ? { ...session, draft: { ...session.draft, rect: event.rect } }
+            : session,
+        );
 
-        continue
+        continue;
       }
 
-      const page = guestPage(webviewRef.current, liveUrlRef.current)
-      const nextNumber = annotateRef.current.stack.nextNumber
-      await showAnnotateDraft(guest, event.rect, nextNumber).catch(() => undefined)
+      const page = guestPage(webviewRef.current, liveUrlRef.current);
+      const nextNumber = annotateRef.current.stack.nextNumber;
+      await showAnnotateDraft(guest, event.rect, nextNumber).catch(
+        () => undefined,
+      );
 
-      let imageDataUrl = ''
+      let imageDataUrl = "";
 
       try {
-        imageDataUrl = await captureAnnotateCrop(guest, event.rect)
+        imageDataUrl = await captureAnnotateCrop(guest, event.rect);
       } catch {
-        imageDataUrl = ''
+        imageDataUrl = "";
       }
 
       const draft = {
         imageDataUrl,
-        identity: event.type === 'pick-element' ? compactIdentity(event.identity) : undefined,
-        kind: event.type === 'pick-element' ? ('element' as const) : ('area' as const),
-        note: '',
+        identity:
+          event.type === "pick-element"
+            ? compactIdentity(event.identity)
+            : undefined,
+        kind:
+          event.type === "pick-element"
+            ? ("element" as const)
+            : ("area" as const),
+        note: "",
         pageTitle: page.title,
         pageUrl: page.url,
-        rect: event.rect
-      }
+        rect: event.rect,
+      };
 
-      setDraftNote('')
-      setAnnotate(session => ({ ...session, draft }))
+      setDraftNote("");
+      setAnnotate((session) => ({ ...session, draft }));
     }
-  }, [annotateGuest, copy.annotate, copy.annotateFailed, copy.annotateNeedPage, stopAnnotate])
+  }, [
+    annotateGuest,
+    copy.annotate,
+    copy.annotateFailed,
+    copy.annotateNeedPage,
+    stopAnnotate,
+  ]);
 
   const toggleAnnotate = useCallback(() => {
     if (annotateRef.current.mode) {
-      void stopAnnotate()
+      void stopAnnotate();
     } else {
-      void startAnnotate()
+      void startAnnotate();
     }
-  }, [startAnnotate, stopAnnotate])
+  }, [startAnnotate, stopAnnotate]);
 
   const appendConsoleEntry = useCallback(
-    (entry: Omit<ConsoleEntry, 'id'>) => {
-      consoleShouldStickRef.current = isNearConsoleBottom(consoleBodyRef.current)
-      consoleState.append(entry)
+    (entry: Omit<ConsoleEntry, "id">) => {
+      consoleShouldStickRef.current = isNearConsoleBottom(
+        consoleBodyRef.current,
+      );
+      consoleState.append(entry);
     },
-    [consoleState]
-  )
+    [consoleState],
+  );
 
   const restartServer = useCallback(async () => {
     if (!onRestartServer) {
-      return
+      return;
     }
 
     // Auto-open the preview console so the user can see progress events
     // streaming back from the background agent. Without this, clicking
     // "Ask Hermes to restart the server" looked like it did nothing —
     // the work was happening, but in a collapsed pane.
-    consoleState.setOpen(true)
+    consoleState.setOpen(true);
 
     try {
-      const context = consoleState.$logs.get().slice(-12).map(formatLogLine).join('\n')
-      const taskId = await onRestartServer(currentUrl, context || undefined)
+      const context = consoleState.$logs
+        .get()
+        .slice(-12)
+        .map(formatLogLine)
+        .join("\n");
+      const taskId = await onRestartServer(currentUrl, context || undefined);
 
       appendConsoleEntry({
         level: 1,
-        message: copy.lookingRestart(taskId)
-      })
+        message: copy.lookingRestart(taskId),
+      });
 
       notify({
-        kind: 'info',
+        kind: "info",
         title: copy.restartingTitle,
         message: copy.restartingMessage,
-        durationMs: 4000
-      })
+        durationMs: 4000,
+      });
     } catch (error) {
       appendConsoleEntry({
         level: 2,
-        message: copy.startRestartFailed(error instanceof Error ? error.message : String(error))
-      })
-      notifyError(error, copy.restartFailed)
+        message: copy.startRestartFailed(
+          error instanceof Error ? error.message : String(error),
+        ),
+      });
+      notifyError(error, copy.restartFailed);
     }
-  }, [appendConsoleEntry, consoleState, copy, currentUrl, onRestartServer])
+  }, [appendConsoleEntry, consoleState, copy, currentUrl, onRestartServer]);
 
   const toggleDevTools = useCallback(() => {
-    const webview = webviewRef.current
+    const webview = webviewRef.current;
 
     if (!webview?.openDevTools) {
-      return
+      return;
     }
 
     if (webview.isDevToolsOpened?.()) {
-      webview.closeDevTools?.()
+      webview.closeDevTools?.();
 
-      return
+      return;
     }
 
-    webview.openDevTools()
-  }, [])
+    webview.openDevTools();
+  }, []);
 
   const navigateTo = useCallback(
     (url: string) => {
-      setLoadError(null)
+      setLoadError(null);
       // The reach probe below is a round-trip of its own, and `did-start-loading`
       // can't fire until it resolves — so own the loading state from the moment
       // we accept the address, or the bar sits idle over a request in flight.
-      setLoading(true)
+      setLoading(true);
       // Typed addresses get the same loopback reach as agent-opened ones — on a
       // remote gateway `localhost:5173` is usually the dev server the user is
       // there to look at, not something on their own laptop.
       void reachablePreviewUrl(url)
-        .then(reached =>
+        .then((reached) =>
           // loadURL, not a `src` swap: `src` only reloads when the value CHANGES,
           // so re-entering the address you're already on would do nothing. A
           // rejected load is a real navigation failure the user has to see —
           // `did-fail-load` doesn't fire for every rejection (a bad scheme
           // rejects outright).
-          webviewRef.current?.loadURL?.(reached)
+          webviewRef.current?.loadURL?.(reached),
         )
         .catch((error: unknown) => {
           setLoadError({
-            description: error instanceof Error ? error.message : copy.unreachableDescription,
-            url
-          })
-          setLoading(false)
-        })
+            description:
+              error instanceof Error
+                ? error.message
+                : copy.unreachableDescription,
+            url,
+          });
+          setLoading(false);
+        });
     },
-    [copy.unreachableDescription]
-  )
+    [copy.unreachableDescription],
+  );
 
   const goBack = useCallback(() => {
-    const webview = webviewRef.current
+    const webview = webviewRef.current;
 
     if (webview?.canGoBack?.()) {
-      webview.goBack?.()
+      webview.goBack?.();
     }
-  }, [])
+  }, []);
 
   const goForward = useCallback(() => {
-    const webview = webviewRef.current
+    const webview = webviewRef.current;
 
     if (webview?.canGoForward?.()) {
-      webview.goForward?.()
+      webview.goForward?.();
     }
-  }, [])
+  }, []);
 
   // Gestures that land on the app's chrome (⌘R from the address bar, a mouse
   // button over the frame). A gesture made INSIDE the page is answered by main
   // against the focused guest — this renderer can't see into a webview.
   useEffect(() => {
     if (!isWebPreview || isRemoteHtml || !tabId) {
-      return
+      return;
     }
 
-    return registerPreviewNav(tabId, { back: goBack, forward: goForward, reload: reloadPreview })
-  }, [goBack, goForward, isRemoteHtml, isWebPreview, reloadPreview, tabId])
+    return registerPreviewNav(tabId, {
+      back: goBack,
+      forward: goForward,
+      reload: reloadPreview,
+    });
+  }, [goBack, goForward, isRemoteHtml, isWebPreview, reloadPreview, tabId]);
 
   // Publish the PAGE reader for this tab (the read_preview tool): extract the
   // rendered page's title + visible text from the webview. innerText (not
@@ -751,43 +854,45 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
   // what the user actually sees.
   useEffect(() => {
     if (!isWebPreview || !tabId) {
-      return
+      return;
     }
 
     return registerPreviewPageReader(tabId, async () => {
-      const webview = webviewRef.current
+      const webview = webviewRef.current;
 
       if (!webview?.executeJavaScript) {
-        throw new Error('preview webview is not ready')
+        throw new Error("preview webview is not ready");
       }
 
-      const text = await webview.executeJavaScript('document.body ? document.body.innerText : ""')
+      const text = await webview.executeJavaScript(
+        'document.body ? document.body.innerText : ""',
+      );
 
       return {
-        text: typeof text === 'string' ? text : '',
-        ...guestPage(webview)
-      }
-    })
-  }, [isWebPreview, tabId])
+        text: typeof text === "string" ? text : "",
+        ...guestPage(webview),
+      };
+    });
+  }, [isWebPreview, tabId]);
 
   // Publish the SCRIPT runner for this tab: the one channel into the guest
   // page, shared by the tour tool (injected driver.js walkthroughs) and the
   // drive_preview tool (clicking, typing, scrolling the page the user sees).
   useEffect(() => {
     if (!isWebPreview || !tabId) {
-      return
+      return;
     }
 
-    return registerPreviewScriptRunner(tabId, async code => {
-      const webview = webviewRef.current
+    return registerPreviewScriptRunner(tabId, async (code) => {
+      const webview = webviewRef.current;
 
       if (!webview?.executeJavaScript) {
-        throw new Error('preview webview is not ready')
+        throw new Error("preview webview is not ready");
       }
 
-      return webview.executeJavaScript(code)
-    })
-  }, [isWebPreview, tabId])
+      return webview.executeJavaScript(code);
+    });
+  }, [isWebPreview, tabId]);
 
   // Publish the INPUT channel for this tab. Same idea as the script runner, but
   // it carries real Chromium input rather than script — the agent's clicks and
@@ -795,341 +900,371 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
   // exactly as it would under a human hand.
   useEffect(() => {
     if (!isWebPreview || isRemoteHtml || !tabId) {
-      return
+      return;
     }
 
     return registerPreviewInput(tabId, {
       focus: () => webviewRef.current?.focus?.(),
-      send: event => {
-        const webview = webviewRef.current
+      send: (event) => {
+        const webview = webviewRef.current;
 
         // Never optional-chain this call away: a missing method would make every
         // agent click a silent no-op that still reports success, because the
         // overlay and the read-back both run on the separate script channel.
-        if (typeof webview?.sendInputEvent !== 'function') {
-          throw new Error('preview webview cannot take input events')
+        if (typeof webview?.sendInputEvent !== "function") {
+          throw new Error("preview webview cannot take input events");
         }
 
-        webview.sendInputEvent(event)
-      }
-    })
-  }, [isRemoteHtml, isWebPreview, tabId])
+        webview.sendInputEvent(event);
+      },
+    });
+  }, [isRemoteHtml, isWebPreview, tabId]);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
     if (!consoleOpen) {
-      return
+      return;
     }
 
-    consoleShouldStickRef.current = true
+    consoleShouldStickRef.current = true;
 
     const handle = window.requestAnimationFrame(() => {
-      const consoleBody = consoleBodyRef.current
-      consoleBody?.scrollTo({ top: consoleBody.scrollHeight })
-    })
+      const consoleBody = consoleBodyRef.current;
+      consoleBody?.scrollTo({ top: consoleBody.scrollHeight });
+    });
 
-    return () => window.cancelAnimationFrame(handle)
-  }, [consoleOpen])
+    return () => window.cancelAnimationFrame(handle);
+  }, [consoleOpen]);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
     if (
       !previewServerRestart ||
       !previewServerRestart.message ||
-      (previewServerRestart.url !== target.url && previewServerRestart.url !== currentUrl)
+      (previewServerRestart.url !== target.url &&
+        previewServerRestart.url !== currentUrl)
     ) {
-      return
+      return;
     }
 
-    const eventKey = `${previewServerRestart.taskId}:${previewServerRestart.status}:${previewServerRestart.message || ''}`
+    const eventKey = `${previewServerRestart.taskId}:${previewServerRestart.status}:${previewServerRestart.message || ""}`;
 
     if (eventKey === lastRestartEventRef.current) {
-      return
+      return;
     }
 
-    lastRestartEventRef.current = eventKey
+    lastRestartEventRef.current = eventKey;
     appendConsoleEntry({
-      level: previewServerRestart.status === 'error' ? 2 : 1,
+      level: previewServerRestart.status === "error" ? 2 : 1,
       message:
-        previewServerRestart.status === 'running'
+        previewServerRestart.status === "running"
           ? previewServerRestart.message
-          : previewServerRestart.status === 'complete'
+          : previewServerRestart.status === "complete"
             ? copy.finishedRestarting(previewServerRestart.message)
-            : copy.failedRestarting(previewServerRestart.message || copy.unknownError)
-    })
+            : copy.failedRestarting(
+                previewServerRestart.message || copy.unknownError,
+              ),
+    });
 
-    if (previewServerRestart.status === 'complete') {
-      reloadPreview()
+    if (previewServerRestart.status === "complete") {
+      reloadPreview();
       notify({
-        kind: 'success',
+        kind: "success",
         title: copy.restartedTitle,
-        message: previewServerRestart.message?.slice(0, 160) || copy.reloadingNow,
-        durationMs: 3500
-      })
-    } else if (previewServerRestart.status === 'error') {
+        message:
+          previewServerRestart.message?.slice(0, 160) || copy.reloadingNow,
+        durationMs: 3500,
+      });
+    } else if (previewServerRestart.status === "error") {
       notify({
-        kind: 'warning',
+        kind: "warning",
         title: copy.restartFailedTitle,
-        message: previewServerRestart.message?.slice(0, 200) || copy.restartFailedMessage,
-        durationMs: 6000
-      })
+        message:
+          previewServerRestart.message?.slice(0, 200) ||
+          copy.restartFailedMessage,
+        durationMs: 6000,
+      });
     }
-  }, [appendConsoleEntry, copy, currentUrl, previewServerRestart, reloadPreview, target.url])
+  }, [
+    appendConsoleEntry,
+    copy,
+    currentUrl,
+    previewServerRestart,
+    reloadPreview,
+    target.url,
+  ]);
 
   useEffect(() => {
     if (!restartingServer || !previewServerRestart) {
-      return
+      return;
     }
 
-    const taskId = previewServerRestart.taskId
+    const taskId = previewServerRestart.taskId;
 
     const timer = window.setTimeout(() => {
-      failPreviewServerRestart(taskId, copy.stillWorking)
-    }, SERVER_RESTART_TIMEOUT_MS)
+      failPreviewServerRestart(taskId, copy.stillWorking);
+    }, SERVER_RESTART_TIMEOUT_MS);
 
-    return () => window.clearTimeout(timer)
-  }, [copy.stillWorking, previewServerRestart, restartingServer])
+    return () => window.clearTimeout(timer);
+  }, [copy.stillWorking, previewServerRestart, restartingServer]);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
     if (reloadRequest === lastReloadRequestRef.current) {
-      return
+      return;
     }
 
-    lastReloadRequestRef.current = reloadRequest
+    lastReloadRequestRef.current = reloadRequest;
 
-    if (target.kind !== 'url') {
-      return
+    if (target.kind !== "url") {
+      return;
     }
 
     appendConsoleEntry({
       level: 1,
-      message: copy.workspaceReloading
-    })
-    reloadPreview()
-  }, [appendConsoleEntry, copy.workspaceReloading, reloadPreview, reloadRequest, target.kind])
+      message: copy.workspaceReloading,
+    });
+    reloadPreview();
+  }, [
+    appendConsoleEntry,
+    copy.workspaceReloading,
+    reloadPreview,
+    reloadRequest,
+    target.kind,
+  ]);
 
   useEffect(() => {
     if (
-      target.kind !== 'file' ||
+      target.kind !== "file" ||
       isDesktopFsRemoteMode() ||
       !window.hermesDesktop?.watchPreviewFile ||
       !window.hermesDesktop?.onPreviewFileChanged
     ) {
-      return
+      return;
     }
 
-    let active = true
-    let pendingReloadCount = 0
-    let pendingReloadUrl = ''
-    let reloadTimer: ReturnType<typeof setTimeout> | null = null
-    let watchId = ''
+    let active = true;
+    let pendingReloadCount = 0;
+    let pendingReloadUrl = "";
+    let reloadTimer: ReturnType<typeof setTimeout> | null = null;
+    let watchId = "";
 
     const flushReload = () => {
       if (!active || pendingReloadCount === 0) {
-        return
+        return;
       }
 
-      const changedCount = pendingReloadCount
-      const changedUrl = pendingReloadUrl
+      const changedCount = pendingReloadCount;
+      const changedUrl = pendingReloadUrl;
 
-      pendingReloadCount = 0
-      pendingReloadUrl = ''
+      pendingReloadCount = 0;
+      pendingReloadUrl = "";
 
       appendConsoleEntry({
         level: 1,
         message:
           changedCount === 1
             ? copy.fileChanged(compactUrl(changedUrl))
-            : copy.filesChanged(changedCount, compactUrl(changedUrl))
-      })
+            : copy.filesChanged(changedCount, compactUrl(changedUrl)),
+      });
 
-      reloadPreview()
-    }
+      reloadPreview();
+    };
 
-    const unsubscribe = window.hermesDesktop.onPreviewFileChanged(payload => {
+    const unsubscribe = window.hermesDesktop.onPreviewFileChanged((payload) => {
       if (!active || payload.id !== watchId) {
-        return
+        return;
       }
 
-      pendingReloadCount += 1
-      pendingReloadUrl = payload.url
+      pendingReloadCount += 1;
+      pendingReloadUrl = payload.url;
 
       if (reloadTimer) {
-        clearTimeout(reloadTimer)
+        clearTimeout(reloadTimer);
       }
 
       reloadTimer = setTimeout(() => {
-        reloadTimer = null
-        flushReload()
-      }, FILE_RELOAD_DEBOUNCE_MS)
-    })
+        reloadTimer = null;
+        flushReload();
+      }, FILE_RELOAD_DEBOUNCE_MS);
+    });
 
     void window.hermesDesktop
       .watchPreviewFile(target.url)
-      .then(watch => {
+      .then((watch) => {
         if (!active) {
-          void window.hermesDesktop?.stopPreviewFileWatch?.(watch.id)
+          void window.hermesDesktop?.stopPreviewFileWatch?.(watch.id);
 
-          return
+          return;
         }
 
-        watchId = watch.id
+        watchId = watch.id;
       })
-      .catch(error => {
+      .catch((error) => {
         appendConsoleEntry({
           level: 2,
-          message: copy.watchFailed(error instanceof Error ? error.message : String(error))
-        })
-      })
+          message: copy.watchFailed(
+            error instanceof Error ? error.message : String(error),
+          ),
+        });
+      });
 
     return () => {
-      active = false
-      unsubscribe()
+      active = false;
+      unsubscribe();
 
       if (reloadTimer) {
-        clearTimeout(reloadTimer)
+        clearTimeout(reloadTimer);
       }
 
       if (watchId) {
-        void window.hermesDesktop?.stopPreviewFileWatch?.(watchId)
+        void window.hermesDesktop?.stopPreviewFileWatch?.(watchId);
       }
-    }
-  }, [appendConsoleEntry, copy, reloadPreview, target.kind, target.url])
+    };
+  }, [appendConsoleEntry, copy, reloadPreview, target.kind, target.url]);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    const host = hostRef.current
+    const host = hostRef.current;
 
     if (!host) {
-      return
+      return;
     }
 
-    host.replaceChildren()
-    webviewRef.current = null
-    setCurrentUrl(target.url)
-    setDevtoolsOpen(false)
-    setHistory({ back: false, forward: false })
-    setLoadError(null)
-    consoleState.reset()
-    setLoading(true)
+    host.replaceChildren();
+    webviewRef.current = null;
+    setCurrentUrl(target.url);
+    setDevtoolsOpen(false);
+    setHistory({ back: false, forward: false });
+    setLoadError(null);
+    consoleState.reset();
+    setLoading(true);
 
     if (!isWebPreview || isRemoteHtml) {
-      setLoading(false)
+      setLoading(false);
 
-      return
+      return;
     }
 
-    const webview = document.createElement('webview') as PreviewWebview
-    webview.className = 'flex h-full w-full flex-1 bg-transparent'
-    webview.setAttribute('partition', 'persist:hermes-preview')
-    webview.setAttribute('src', target.url)
-    webview.setAttribute('webpreferences', 'contextIsolation=yes,nodeIntegration=no,sandbox=yes')
+    const webview = document.createElement("webview") as PreviewWebview;
+    webview.className = "flex h-full w-full flex-1 bg-transparent";
+    webview.setAttribute("partition", "persist:hermes-preview");
+    webview.setAttribute("src", target.url);
+    webview.setAttribute(
+      "webpreferences",
+      "contextIsolation=yes,nodeIntegration=no,sandbox=yes",
+    );
 
     const onConsole = (event: Event) => {
       const detail = event as Event & {
-        level?: number
-        line?: number
-        message?: string
-        sourceId?: string
-      }
+        level?: number;
+        line?: number;
+        message?: string;
+        sourceId?: string;
+      };
 
-      const message = detail.message || ''
+      const message = detail.message || "";
 
       appendConsoleEntry({
         level: detail.level ?? 0,
         line: detail.line,
         message,
-        source: detail.sourceId
-      })
+        source: detail.sourceId,
+      });
 
       if ((detail.level ?? 0) >= 3 && isModuleMimeError(message)) {
         setLoadError({
           description: copy.moduleMimeDescription,
-          url: guestPage(webview, target.url).url
-        })
-        setLoading(false)
+          url: guestPage(webview, target.url).url,
+        });
+        setLoading(false);
       }
-    }
+    };
 
     const syncHistory = () => {
       try {
-        setHistory({ back: webview.canGoBack?.() ?? false, forward: webview.canGoForward?.() ?? false })
+        setHistory({
+          back: webview.canGoBack?.() ?? false,
+          forward: webview.canGoForward?.() ?? false,
+        });
       } catch {
         // Same attach / dom-ready rule as getURL.
       }
-    }
+    };
 
     // Tell the strip what this Browser is showing, so its tab renames itself
     // like a tab anywhere else. Deliberately NOT written back into the tab's
     // target: the guest is built from `target.url`, so that would rebuild the
     // webview mid-navigation and throw away the history.
     const notePage = () => {
-      if (target.kind !== 'url' || !tabId) {
-        return
+      if (target.kind !== "url" || !tabId) {
+        return;
       }
 
-      noteBrowserPage(tabId, guestPage(webview, target.url))
-    }
+      noteBrowserPage(tabId, guestPage(webview, target.url));
+    };
 
     const onNavigate = (event: Event) => {
-      const detail = event as Event & { url?: string }
+      const detail = event as Event & { url?: string };
 
       if (detail.url) {
-        setLoadError(null)
-        setCurrentUrl(detail.url)
+        setLoadError(null);
+        setCurrentUrl(detail.url);
       }
 
-      notePage()
+      notePage();
 
       // Ask the webview rather than counting navigations: the guest page can
       // move itself (redirects, history.pushState, a link into a new document),
       // so it is the only thing that knows what its history holds. Wired to
       // `did-navigate-in-page` too, or SPA route changes never update it.
-      syncHistory()
-    }
+      syncHistory();
+    };
 
     const onFail = (event: Event) => {
       const detail = event as Event & {
-        errorCode?: number
-        errorDescription?: string
-        validatedURL?: string
-      }
+        errorCode?: number;
+        errorDescription?: string;
+        validatedURL?: string;
+      };
 
-      const errorCode = detail.errorCode
+      const errorCode = detail.errorCode;
 
       if (errorCode === -3) {
-        return
+        return;
       }
 
       appendConsoleEntry({
         level: 3,
-        message: copy.loadFailedConsole(errorCode, detail.errorDescription || detail.validatedURL || copy.unknownError)
-      })
+        message: copy.loadFailedConsole(
+          errorCode,
+          detail.errorDescription || detail.validatedURL || copy.unknownError,
+        ),
+      });
       setLoadError({
         code: errorCode,
         description: detail.errorDescription || copy.unreachableDescription,
-        url: detail.validatedURL || guestPage(webview, target.url).url
-      })
-      setLoading(false)
-    }
+        url: detail.validatedURL || guestPage(webview, target.url).url,
+      });
+      setLoading(false);
+    };
 
-    const onStart = () => setLoading(true)
+    const onStart = () => setLoading(true);
 
     const onStop = () => {
-      setLoading(false)
+      setLoading(false);
       // A load that ends without a `did-navigate` (an in-place reload, a
       // cancelled navigation) still settles the history — resync so the
       // buttons can't be left stale.
-      syncHistory()
-      notePage()
-    }
+      syncHistory();
+      notePage();
+    };
 
     // The WEBVIEW is the source of truth for DevTools, not our click handler:
     // closing the DevTools window itself fires devtools-closed with no click,
     // and the glyph was left stuck "on" when we tracked it locally.
-    const onDevToolsOpened = () => setDevtoolsOpen(true)
-    const onDevToolsClosed = () => setDevtoolsOpen(false)
+    const onDevToolsOpened = () => setDevtoolsOpen(true);
+    const onDevToolsClosed = () => setDevtoolsOpen(false);
 
     // Right-clicks INSIDE the guest page. The tag surfaces Chromium's full
     // context-menu params (link, image, editable, selection, spellcheck), so
@@ -1144,28 +1279,30 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
     // coordinates; adding the webview rect on top double-counted the offset
     // and dropped the menu far right+below the click.
     const onGuestContextMenu = (event: Event) => {
-      const detail = event as Event & { params?: GuestContextMenuParams }
-      const params = detail.params
+      const detail = event as Event & { params?: GuestContextMenuParams };
+      const params = detail.params;
 
       if (!params) {
-        return
+        return;
       }
 
-      const zoom = window.hermesDesktop?.zoom?.factor?.() || 1
+      const zoom = window.hermesDesktop?.zoom?.factor?.() || 1;
       // Window CSS point of the click (the menu anchors here).
-      const windowX = params.x / zoom
-      const windowY = params.y / zoom
+      const windowX = params.x / zoom;
+      const windowY = params.y / zoom;
       // Guest CSS point (inspectElement wants coordinates INSIDE the page):
       // subtract the webview's own offset from the window point.
-      const rect = webview.getBoundingClientRect()
-      const guestX = Math.max(0, Math.round(windowX - rect.left))
-      const guestY = Math.max(0, Math.round(windowY - rect.top))
+      const rect = webview.getBoundingClientRect();
+      const guestX = Math.max(0, Math.round(windowX - rect.left));
+      const guestY = Math.max(0, Math.round(windowY - rect.top));
 
       openGuestContextMenu(
         windowX,
         windowY,
         {
-          dictionarySuggestions: Array.isArray(params.dictionarySuggestions) ? params.dictionarySuggestions : [],
+          dictionarySuggestions: Array.isArray(params.dictionarySuggestions)
+            ? params.dictionarySuggestions
+            : [],
           // Chromium's availability verdict for the edit verbs. Absent only
           // if a future Electron drops it — then everything stays enabled,
           // which is the pre-editFlags behavior, not a lockout.
@@ -1173,21 +1310,24 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
             canCopy: params.editFlags?.canCopy ?? true,
             canCut: params.editFlags?.canCut ?? true,
             canPaste: params.editFlags?.canPaste ?? true,
-            canSelectAll: params.editFlags?.canSelectAll ?? true
+            canSelectAll: params.editFlags?.canSelectAll ?? true,
           },
           hasImageContents: Boolean(params.hasImageContents),
           isEditable: Boolean(params.isEditable),
-          linkURL: params.linkURL || '',
-          misspelledWord: params.misspelledWord || '',
-          selectionText: params.selectionText || '',
-          srcURL: params.srcURL || ''
+          linkURL: params.linkURL || "",
+          misspelledWord: params.misspelledWord || "",
+          selectionText: params.selectionText || "",
+          srcURL: params.srcURL || "",
         },
         {
           addToDictionary: (word: string) => {
-            const webContentsId = webview.getWebContentsId?.()
+            const webContentsId = webview.getWebContentsId?.();
 
-            if (typeof webContentsId === 'number') {
-              void window.hermesDesktop?.contextMenuGuestAddWord?.({ webContentsId, word })
+            if (typeof webContentsId === "number") {
+              void window.hermesDesktop?.contextMenuGuestAddWord?.({
+                webContentsId,
+                word,
+              });
             }
           },
           copyImage: () => void window.hermesDesktop?.contextMenuCopyImage?.(),
@@ -1195,47 +1335,61 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
           // menu click just parked focus on the HOST body — measured live:
           // selectAll() with host focus selected the address bar + chat
           // instead of the page. Focus the webview first, every verb.
-          editCommand: (command: 'copy' | 'cut' | 'paste' | 'selectAll') => {
-            webview.focus()
-            webview[command]?.()
+          editCommand: (command: "copy" | "cut" | "paste" | "selectAll") => {
+            webview.focus();
+            webview[command]?.();
           },
           inspectElement: () => webview.inspectElement?.(guestX, guestY),
-          replaceMisspelling: (word: string) => webview.replaceMisspelling?.(word)
-        }
-      )
-    }
+          replaceMisspelling: (word: string) =>
+            webview.replaceMisspelling?.(word),
+        },
+      );
+    };
 
-    webview.addEventListener('console-message', onConsole)
-    webview.addEventListener('context-menu', onGuestContextMenu)
-    webview.addEventListener('devtools-closed', onDevToolsClosed)
-    webview.addEventListener('devtools-opened', onDevToolsOpened)
-    webview.addEventListener('did-fail-load', onFail)
-    webview.addEventListener('did-navigate', onNavigate)
-    webview.addEventListener('did-navigate-in-page', onNavigate)
-    webview.addEventListener('did-start-loading', onStart)
-    webview.addEventListener('did-stop-loading', onStop)
+    webview.addEventListener("console-message", onConsole);
+    webview.addEventListener("context-menu", onGuestContextMenu);
+    webview.addEventListener("devtools-closed", onDevToolsClosed);
+    webview.addEventListener("devtools-opened", onDevToolsOpened);
+    webview.addEventListener("did-fail-load", onFail);
+    webview.addEventListener("did-navigate", onNavigate);
+    webview.addEventListener("did-navigate-in-page", onNavigate);
+    webview.addEventListener("did-start-loading", onStart);
+    webview.addEventListener("did-stop-loading", onStop);
     // SPAs title themselves long after the load settles, and a route change
     // renames the page without navigating at all.
-    webview.addEventListener('page-title-updated', notePage)
-    host.appendChild(webview)
-    webviewRef.current = webview
+    webview.addEventListener("page-title-updated", notePage);
+    host.appendChild(webview);
+    webviewRef.current = webview;
 
     return () => {
-      annotateLoopRef.current += 1
-      webview.removeEventListener('console-message', onConsole)
-      webview.removeEventListener('context-menu', onGuestContextMenu)
-      webview.removeEventListener('devtools-closed', onDevToolsClosed)
-      webview.removeEventListener('devtools-opened', onDevToolsOpened)
-      webview.removeEventListener('did-fail-load', onFail)
-      webview.removeEventListener('did-navigate', onNavigate)
-      webview.removeEventListener('did-navigate-in-page', onNavigate)
-      webview.removeEventListener('did-start-loading', onStart)
-      webview.removeEventListener('did-stop-loading', onStop)
-      webview.removeEventListener('page-title-updated', notePage)
-      webview.remove()
-      setAnnotate(session => (session.mode ? { ...endAnnotateMode(session), stack: emptyAnnotateStack() } : session))
-    }
-  }, [appendConsoleEntry, consoleState, copy, isRemoteHtml, isWebPreview, tabId, target.kind, target.url])
+      annotateLoopRef.current += 1;
+      webview.removeEventListener("console-message", onConsole);
+      webview.removeEventListener("context-menu", onGuestContextMenu);
+      webview.removeEventListener("devtools-closed", onDevToolsClosed);
+      webview.removeEventListener("devtools-opened", onDevToolsOpened);
+      webview.removeEventListener("did-fail-load", onFail);
+      webview.removeEventListener("did-navigate", onNavigate);
+      webview.removeEventListener("did-navigate-in-page", onNavigate);
+      webview.removeEventListener("did-start-loading", onStart);
+      webview.removeEventListener("did-stop-loading", onStop);
+      webview.removeEventListener("page-title-updated", notePage);
+      webview.remove();
+      setAnnotate((session) =>
+        session.mode
+          ? { ...endAnnotateMode(session), stack: emptyAnnotateStack() }
+          : session,
+      );
+    };
+  }, [
+    appendConsoleEntry,
+    consoleState,
+    copy,
+    isRemoteHtml,
+    isWebPreview,
+    tabId,
+    target.kind,
+    target.url,
+  ]);
 
   return (
     <aside
@@ -1244,20 +1398,22 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
       // renderer as a normal mouse event inside the app's own chrome (the
       // guest page gets its own via `app-command` in main), and unhandled they
       // walk the HOST document's history.
-      onMouseDown={event => {
+      onMouseDown={(event) => {
         if (event.button !== 3 && event.button !== 4) {
-          return
+          return;
         }
 
-        event.preventDefault()
+        event.preventDefault();
 
         if (event.button === 3) {
-          goBack()
+          goBack();
         } else {
-          goForward()
+          goForward();
         }
       }}
-      {...(isWebPreview && !isRemoteHtml && tabId ? { [PREVIEW_BROWSER_ATTR]: tabId } : {})}
+      {...(isWebPreview && !isRemoteHtml && tabId
+        ? { [PREVIEW_BROWSER_ATTR]: tabId }
+        : {})}
     >
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {!embedded && (
@@ -1267,14 +1423,16 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
                 <a
                   className="pointer-events-auto inline max-w-full truncate text-left text-xs font-medium text-foreground underline-offset-4 decoration-current/20 transition-colors hover:text-primary hover:underline"
                   href={isRemoteHtmlTarget ? undefined : currentUrl}
-                  onClick={event => {
+                  onClick={(event) => {
                     if (isRemoteHtmlTarget) {
-                      event.preventDefault()
-                      void openPreviewTargetInBrowser(target).catch(error => notifyError(error, t.preview.unavailable))
+                      event.preventDefault();
+                      void openPreviewTargetInBrowser(target).catch((error) =>
+                        notifyError(error, t.preview.unavailable),
+                      );
                     }
                   }}
                   rel="noreferrer"
-                  target={isRemoteHtmlTarget ? undefined : '_blank'}
+                  target={isRemoteHtmlTarget ? undefined : "_blank"}
                 >
                   {previewLabel || copy.fallbackTitle}
                 </a>
@@ -1303,11 +1461,13 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
             }
             onPopIn={isBrowserWindow() ? () => window.close() : undefined}
             onPopOut={
-              isBrowserWindow() || !tabId || !canOpenBrowserWindow() ? undefined : () => popOutBrowserTab(tabId)
+              isBrowserWindow() || !tabId || !canOpenBrowserWindow()
+                ? undefined
+                : () => popOutBrowserTab(tabId)
             }
             onReload={reloadPreview}
             onToggleAnnotate={toggleAnnotate}
-            onToggleConsole={() => consoleState.setOpen(open => !open)}
+            onToggleConsole={() => consoleState.setOpen((open) => !open)}
             onToggleDevTools={toggleDevTools}
             url={currentUrl}
           />
@@ -1315,7 +1475,9 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
 
         {/* First-open real-profile consent offer — Browser tabs only (URL
             vessels the user browses with), never file/HTML previews. */}
-        {target.kind === 'url' && tabId && <RealProfileConsentDialog tabId={tabId} />}
+        {target.kind === "url" && tabId && (
+          <RealProfileConsentDialog tabId={tabId} />
+        )}
 
         <div
           className="pointer-events-auto relative min-h-0 flex-1 overflow-hidden bg-transparent"
@@ -1323,8 +1485,9 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
         >
           <div
             className={cn(
-              'absolute inset-0 flex bg-transparent',
-              (isRemoteHtml || !isWebPreview || loadError) && 'pointer-events-none opacity-0'
+              "absolute inset-0 flex bg-transparent",
+              (isRemoteHtml || !isWebPreview || loadError) &&
+                "pointer-events-none opacity-0",
             )}
             ref={hostRef}
           />
@@ -1333,12 +1496,12 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
               className="absolute inset-0 size-full border-0 bg-white"
               referrerPolicy="no-referrer"
               sandbox=""
-              srcDoc={remoteHtmlDocument || ''}
+              srcDoc={remoteHtmlDocument || ""}
               title={target.label || copy.fallbackTitle}
             />
           )}
           {!isWebPreview &&
-            (target.kind === 'artifact' ? (
+            (target.kind === "artifact" ? (
               <ArtifactPreview target={target} />
             ) : (
               <LocalFilePreview reloadKey={localReloadKey} target={target} />
@@ -1352,7 +1515,11 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
             <PreviewLoadError
               consoleHeight={consoleOpen ? consoleHeight : 0}
               error={loadError}
-              onRestartServer={target.kind === 'url' && onRestartServer ? () => void restartServer() : undefined}
+              onRestartServer={
+                target.kind === "url" && onRestartServer
+                  ? () => void restartServer()
+                  : undefined
+              }
               onRetry={reloadPreview}
               restarting={restartingServer}
             />
@@ -1363,7 +1530,7 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
               {...placeAnnotateCard({
                 paneHeight: previewContentRef.current?.clientHeight || 360,
                 paneWidth: previewContentRef.current?.clientWidth || 360,
-                rect: annotate.draft.rect
+                rect: annotate.draft.rect,
               })}
               note={draftNote}
               number={annotate.stack.nextNumber}
@@ -1387,5 +1554,5 @@ export function PreviewPane({ embedded = false, onRestartServer, reloadRequest =
         </div>
       </div>
     </aside>
-  )
+  );
 }

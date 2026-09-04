@@ -24,22 +24,22 @@
 
 export interface RendererLoadErrorDetails {
   /** Chromium error code, e.g. -6 (ERR_FILE_NOT_FOUND) or its name. */
-  errorCode?: number | string | undefined
+  errorCode?: number | string | undefined;
   /** Human description of the failure, e.g. the renderer bundle is torn. */
-  errorDescription?: string
+  errorDescription?: string;
   /** The URL that failed to load, when known. */
-  url?: string
+  url?: string;
   /** Module files index.html declares but that are missing on disk. */
-  missingAssets?: string[]
+  missingAssets?: string[];
   /** Repair command hint, e.g. `hermes desktop --force-build`. */
-  repairHint?: string
+  repairHint?: string;
   /**
    * URL to navigate to when the user clicks Reload. On a data: page
    * `location.reload()` would just re-render the error page, so recovery
    * must target the real renderer URL. Omitted → the button reloads in
    * place (harmless: the caller's load-failure policy re-surfaces).
    */
-  reloadUrl?: string
+  reloadUrl?: string;
 }
 
 /**
@@ -51,46 +51,48 @@ export interface RendererLoadErrorDetails {
  */
 function escapeInlineScriptJson(value: string): string {
   return value
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026')
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029')
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
 }
 
 function reloadButtonJs(details: RendererLoadErrorDetails): string {
   const target = details.reloadUrl
     ? `location.replace(${escapeInlineScriptJson(JSON.stringify(details.reloadUrl))})`
-    : 'location.reload()'
+    : "location.reload()";
 
   return (
     '<button id="reload" type="button">Reload</button>\n' +
     `  <script>document.getElementById("reload").addEventListener("click", () => ${target})</script>`
-  )
+  );
 }
 
 function escapeHtml(value: unknown): string {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function missingAssetsList(missingAssets?: string[]): string {
-  const assets = (missingAssets ?? []).slice(0, 5)
+  const assets = (missingAssets ?? []).slice(0, 5);
 
   if (assets.length === 0) {
-    return ''
+    return "";
   }
 
-  const items = assets.map(asset => `<li><code>${escapeHtml(asset)}</code></li>`).join('')
+  const items = assets
+    .map((asset) => `<li><code>${escapeHtml(asset)}</code></li>`)
+    .join("");
 
   return (
     `<p>The renderer bundle is missing ${missingAssets!.length} module file(s) ` +
     `(first ${assets.length} shown) — the last update replaced the app while ` +
     `its files were locked.</p><ul>${items}</ul>`
-  )
+  );
 }
 
 /**
@@ -98,14 +100,24 @@ function missingAssetsList(missingAssets?: string[]): string {
  * stylesheets, no images, no fetch — a data: URL must render from a blank
  * origin with zero network access.
  */
-export function buildRendererLoadErrorPage(details: RendererLoadErrorDetails = {}): string {
+export function buildRendererLoadErrorPage(
+  details: RendererLoadErrorDetails = {},
+): string {
   const code =
-    details.errorCode === undefined || details.errorCode === null ? '' : ` (${escapeHtml(details.errorCode)})`
+    details.errorCode === undefined || details.errorCode === null
+      ? ""
+      : ` (${escapeHtml(details.errorCode)})`;
 
-  const title = 'Hermes couldn\u2019t start the desktop UI'
-  const description = escapeHtml(details.errorDescription || 'The desktop renderer failed to load.')
-  const url = details.url ? `<p><code>${escapeHtml(details.url)}</code></p>` : ''
-  const repair = details.repairHint ? `<p>Repair with: <code>hermes desktop --force-build</code></p>` : ''
+  const title = "Hermes couldn\u2019t start the desktop UI";
+  const description = escapeHtml(
+    details.errorDescription || "The desktop renderer failed to load.",
+  );
+  const url = details.url
+    ? `<p><code>${escapeHtml(details.url)}</code></p>`
+    : "";
+  const repair = details.repairHint
+    ? `<p>Repair with: <code>hermes desktop --force-build</code></p>`
+    : "";
 
   return `<!doctype html>
 <html lang="en">
@@ -168,15 +180,15 @@ export function buildRendererLoadErrorPage(details: RendererLoadErrorDetails = {
   ${reloadButtonJs(details)}
 </main>
 </body>
-</html>`
+</html>`;
 }
 
 /** Minimal structural surface of BrowserWindow used here. */
 export interface LoadErrorWindowLike {
-  loadURL: (url: string) => Promise<unknown>
+  loadURL: (url: string) => Promise<unknown>;
 }
 
-const DATA_URL_PREFIX = 'data:text/html;charset=utf-8,'
+const DATA_URL_PREFIX = "data:text/html;charset=utf-8,";
 
 /**
  * Load the visible error page into a window, replacing the white screen.
@@ -185,12 +197,12 @@ const DATA_URL_PREFIX = 'data:text/html;charset=utf-8,'
  */
 export async function loadRendererLoadErrorPage(
   win: LoadErrorWindowLike,
-  details: RendererLoadErrorDetails = {}
+  details: RendererLoadErrorDetails = {},
 ): Promise<void> {
-  const url = `${DATA_URL_PREFIX}${encodeURIComponent(buildRendererLoadErrorPage(details))}`
+  const url = `${DATA_URL_PREFIX}${encodeURIComponent(buildRendererLoadErrorPage(details))}`;
 
   try {
-    await win.loadURL(url)
+    await win.loadURL(url);
   } catch {
     // The white screen is strictly better than an unhandled rejection here;
     // the log line from the caller still tells the story.

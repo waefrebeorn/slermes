@@ -1,69 +1,83 @@
-import { useStore } from '@nanostores/react'
-import { useEffect, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useEffect, useRef, useState } from "react";
 
-import { useSessionView } from '@/app/chat/session-view'
-import { useI18n } from '@/i18n'
-import { Download, MonitorPlay } from '@/lib/icons'
-import { normalizeOrLocalPreviewTarget } from '@/lib/local-preview'
-import { downloadGatewayMediaFile } from '@/lib/media'
-import { previewName } from '@/lib/preview-targets'
-import { notifyError } from '@/store/notifications'
-import { $previewTabSources, closePreviewForSource, openPreview, type PreviewRecordSource } from '@/store/preview'
+import { useSessionView } from "@/app/chat/session-view";
+import { useI18n } from "@/i18n";
+import { Download, MonitorPlay } from "@/lib/icons";
+import { normalizeOrLocalPreviewTarget } from "@/lib/local-preview";
+import { downloadGatewayMediaFile } from "@/lib/media";
+import { previewName } from "@/lib/preview-targets";
+import { notifyError } from "@/store/notifications";
+import {
+  $previewTabSources,
+  closePreviewForSource,
+  openPreview,
+  type PreviewRecordSource,
+} from "@/store/preview";
 
-export function PreviewAttachment({ source = 'manual', target }: { source?: PreviewRecordSource; target: string }) {
-  const { t } = useI18n()
+export function PreviewAttachment({
+  source = "manual",
+  target,
+}: {
+  source?: PreviewRecordSource;
+  target: string;
+}) {
+  const { t } = useI18n();
   // This link lives in one session's transcript; resolve it against THAT
   // session's cwd, not the primary chat's.
-  const cwd = useStore(useSessionView().$cwd)
-  const openSources = useStore($previewTabSources)
-  const [opening, setOpening] = useState(false)
-  const [downloading, setDownloading] = useState(false)
-  const [downloaded, setDownloaded] = useState(false)
-  const cwdRef = useRef(cwd)
-  const mountedRef = useRef(false)
-  const requestTokenRef = useRef(0)
-  const targetRef = useRef(target)
-  const name = previewName(target)
-  const isActive = openSources.includes(target)
+  const cwd = useStore(useSessionView().$cwd);
+  const openSources = useStore($previewTabSources);
+  const [opening, setOpening] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+  const cwdRef = useRef(cwd);
+  const mountedRef = useRef(false);
+  const requestTokenRef = useRef(0);
+  const targetRef = useRef(target);
+  const name = previewName(target);
+  const isActive = openSources.includes(target);
 
-  cwdRef.current = cwd
-  targetRef.current = target
+  cwdRef.current = cwd;
+  targetRef.current = target;
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    mountedRef.current = true
+    mountedRef.current = true;
 
     return () => {
-      mountedRef.current = false
-      requestTokenRef.current += 1
-    }
-  }, [])
+      mountedRef.current = false;
+      requestTokenRef.current += 1;
+    };
+  }, []);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    requestTokenRef.current += 1
-    setOpening(false)
-  }, [cwd, target])
+    requestTokenRef.current += 1;
+    setOpening(false);
+  }, [cwd, target]);
 
   async function togglePreview() {
     if (opening) {
-      return
+      return;
     }
 
     if (isActive) {
-      closePreviewForSource(target)
+      closePreviewForSource(target);
 
-      return
+      return;
     }
 
-    const requestToken = ++requestTokenRef.current
-    const requestTarget = target
-    const requestCwd = cwd
+    const requestToken = ++requestTokenRef.current;
+    const requestTarget = target;
+    const requestCwd = cwd;
 
-    setOpening(true)
+    setOpening(true);
 
     try {
-      const preview = await normalizeOrLocalPreviewTarget(requestTarget, requestCwd || undefined)
+      const preview = await normalizeOrLocalPreviewTarget(
+        requestTarget,
+        requestCwd || undefined,
+      );
 
       if (
         !mountedRef.current ||
@@ -71,14 +85,14 @@ export function PreviewAttachment({ source = 'manual', target }: { source?: Prev
         targetRef.current !== requestTarget ||
         cwdRef.current !== requestCwd
       ) {
-        return
+        return;
       }
 
       if (!preview) {
-        throw new Error(`Could not open preview target: ${requestTarget}`)
+        throw new Error(`Could not open preview target: ${requestTarget}`);
       }
 
-      openPreview(preview, source)
+      openPreview(preview, source);
     } catch (error) {
       if (
         !mountedRef.current ||
@@ -86,41 +100,41 @@ export function PreviewAttachment({ source = 'manual', target }: { source?: Prev
         targetRef.current !== requestTarget ||
         cwdRef.current !== requestCwd
       ) {
-        return
+        return;
       }
 
-      notifyError(error, t.preview.unavailable)
+      notifyError(error, t.preview.unavailable);
     } finally {
       if (mountedRef.current && requestTokenRef.current === requestToken) {
-        setOpening(false)
+        setOpening(false);
       }
     }
   }
 
   async function downloadFile() {
     if (downloading) {
-      return
+      return;
     }
 
-    setDownloading(true)
+    setDownloading(true);
 
     try {
       // Works in both modes: the Electron main process fetches the bytes
       // through the session's backend connection (local gateway or remote)
       // and prompts for a save location.
-      const result = await downloadGatewayMediaFile(target)
+      const result = await downloadGatewayMediaFile(target);
 
       if (mountedRef.current && result.saved) {
-        setDownloaded(true)
-        setTimeout(() => mountedRef.current && setDownloaded(false), 2000)
+        setDownloaded(true);
+        setTimeout(() => mountedRef.current && setDownloaded(false), 2000);
       }
     } catch (error) {
       if (mountedRef.current) {
-        notifyError(error, t.fileMenu.downloadFailed)
+        notifyError(error, t.fileMenu.downloadFailed);
       }
     } finally {
       if (mountedRef.current) {
-        setDownloading(false)
+        setDownloading(false);
       }
     }
   }
@@ -130,7 +144,10 @@ export function PreviewAttachment({ source = 'manual', target }: { source?: Prev
       <span className="grid size-6 shrink-0 place-items-center rounded-md bg-muted/55 text-muted-foreground/85">
         <MonitorPlay className="size-3.5" />
       </span>
-      <span className="min-w-0 flex-1 truncate text-[0.78rem] font-medium text-foreground/90" title={target}>
+      <span
+        className="min-w-0 flex-1 truncate text-[0.78rem] font-medium text-foreground/90"
+        title={target}
+      >
         {name}
       </span>
       <button
@@ -150,8 +167,12 @@ export function PreviewAttachment({ source = 'manual', target }: { source?: Prev
         onClick={() => void togglePreview()}
         type="button"
       >
-        {opening ? t.preview.opening : isActive ? t.preview.hide : t.preview.openPreview}
+        {opening
+          ? t.preview.opening
+          : isActive
+            ? t.preview.hide
+            : t.preview.openPreview}
       </button>
     </div>
-  )
+  );
 }

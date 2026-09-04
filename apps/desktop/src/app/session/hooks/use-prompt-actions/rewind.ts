@@ -9,17 +9,17 @@
  * — so each caller keeps its own state-write + error-handling wiring.
  */
 
-import type { AppendMessage, ThreadMessage } from '@assistant-ui/react'
+import type { AppendMessage, ThreadMessage } from "@assistant-ui/react";
 
-import type { ClientSessionState } from '@/app/types'
-import { PROMPT_SUBMIT_REQUEST_TIMEOUT_MS } from '@/hermes'
+import type { ClientSessionState } from "@/app/types";
+import { PROMPT_SUBMIT_REQUEST_TIMEOUT_MS } from "@/hermes";
 import {
   branchGroupForUser,
   type ChatMessage,
   chatMessageText,
   completeOpenTimelineParts,
-  textPart
-} from '@/lib/chat-messages'
+  textPart,
+} from "@/lib/chat-messages";
 
 import {
   appendText,
@@ -29,10 +29,14 @@ import {
   visibleUserMessageIndices,
   visibleUserOrdinal,
   withSessionBusyRetry,
-  withSessionNotFoundResume
-} from './utils'
+  withSessionNotFoundResume,
+} from "./utils";
 
-type RequestGateway = <T = unknown>(method: string, params?: Record<string, unknown>, timeoutMs?: number) => Promise<T>
+type RequestGateway = <T = unknown>(
+  method: string,
+  params?: Record<string, unknown>,
+  timeoutMs?: number,
+) => Promise<T>;
 
 /**
  * Post-rewrite durable identity information from a truncating `prompt.submit`.
@@ -41,42 +45,47 @@ type RequestGateway = <T = unknown>(method: string, params?: Record<string, unkn
  * `replace_messages` re-inserts the kept prefix as NEW SQLite rows, so every
  * cached rowId is stale the moment the rewind lands.
  */
-export type SurvivorUserRowIds = readonly (null | number)[] | Map<number, null | number>
+export type SurvivorUserRowIds =
+  readonly (null | number)[] | Map<number, null | number>;
 
 interface PromptSubmitResult {
-  status?: string
-  survivor_user_row_ids?: unknown
-  survivor_row_id_map?: unknown
+  status?: string;
+  survivor_user_row_ids?: unknown;
+  survivor_row_id_map?: unknown;
 }
 
-export function survivorRowIdsFrom(result: PromptSubmitResult | undefined): SurvivorUserRowIds | undefined {
-  const rawMap = result?.survivor_row_id_map
+export function survivorRowIdsFrom(
+  result: PromptSubmitResult | undefined,
+): SurvivorUserRowIds | undefined {
+  const rawMap = result?.survivor_row_id_map;
 
-  if (rawMap && typeof rawMap === 'object' && !Array.isArray(rawMap)) {
-    const parsed = new Map<number, null | number>()
+  if (rawMap && typeof rawMap === "object" && !Array.isArray(rawMap)) {
+    const parsed = new Map<number, null | number>();
 
     for (const [oldId, newId] of Object.entries(rawMap)) {
-      const previous = Number(oldId)
+      const previous = Number(oldId);
 
       if (Number.isInteger(previous)) {
         if (newId === null) {
-          parsed.set(previous, null)
-        } else if (typeof newId === 'number' && Number.isInteger(newId)) {
-          parsed.set(previous, newId)
+          parsed.set(previous, null);
+        } else if (typeof newId === "number" && Number.isInteger(newId)) {
+          parsed.set(previous, newId);
         }
       }
     }
 
-    return parsed
+    return parsed;
   }
 
-  const raw = result?.survivor_user_row_ids
+  const raw = result?.survivor_user_row_ids;
 
   if (!Array.isArray(raw)) {
-    return undefined
+    return undefined;
   }
 
-  return raw.map(entry => (typeof entry === 'number' && Number.isInteger(entry) ? entry : null))
+  return raw.map((entry) =>
+    typeof entry === "number" && Number.isInteger(entry) ? entry : null,
+  );
 }
 
 /**
@@ -87,58 +96,68 @@ export function survivorRowIdsFrom(result: PromptSubmitResult | undefined): Surv
  * exist yet — and `null` entries get their cached rowId cleared instead: a
  * stale id now addresses an archived row and would be refused with 4018.
  */
-export function rebindSurvivorRowIds(messages: ChatMessage[], survivorRowIds: SurvivorUserRowIds): ChatMessage[] {
+export function rebindSurvivorRowIds(
+  messages: ChatMessage[],
+  survivorRowIds: SurvivorUserRowIds,
+): ChatMessage[] {
   if (survivorRowIds instanceof Map) {
-    return messages.map(message => {
+    return messages.map((message) => {
       if (message.rowId === undefined) {
-        return message
+        return message;
       }
 
       if (!survivorRowIds.has(message.rowId)) {
         // Requested rows outside the active tip (compacted/ancestor history)
         // were not rewritten and keep their durable identity.
-        return message
+        return message;
       }
 
-      const next = survivorRowIds.get(message.rowId)
+      const next = survivorRowIds.get(message.rowId);
 
       return next === null || next === undefined
         ? { ...message, rowId: undefined }
         : message.rowId === next
           ? message
-          : { ...message, rowId: next }
-    })
+          : { ...message, rowId: next };
+    });
   }
 
   // Same ordinal space as the truncate math: visible AND persisted (failed
   // turns never reached the gateway, so they hold no survivor slot).
-  const indices = new Set(visibleUserMessageIndices(messages))
-  let ordinal = 0
+  const indices = new Set(visibleUserMessageIndices(messages));
+  let ordinal = 0;
 
   return messages.map((message, index) => {
     if (!indices.has(index)) {
-      return message
+      return message;
     }
 
-    const next = ordinal < survivorRowIds.length ? survivorRowIds[ordinal] : null
-    ordinal += 1
+    const next =
+      ordinal < survivorRowIds.length ? survivorRowIds[ordinal] : null;
+    ordinal += 1;
 
-    if (typeof next === 'number') {
-      return message.rowId === next ? message : { ...message, rowId: next }
+    if (typeof next === "number") {
+      return message.rowId === next ? message : { ...message, rowId: next };
     }
 
-    return message.rowId === undefined ? message : { ...message, rowId: undefined }
-  })
+    return message.rowId === undefined
+      ? message
+      : { ...message, rowId: undefined };
+  });
 }
 
-export function durableRowIdsForRebind(messages: readonly ChatMessage[]): number[] {
+export function durableRowIdsForRebind(
+  messages: readonly ChatMessage[],
+): number[] {
   return [
     ...new Set(
-      messages.flatMap(message =>
-        typeof message.rowId === 'number' && Number.isInteger(message.rowId) ? [message.rowId] : []
-      )
-    )
-  ]
+      messages.flatMap((message) =>
+        typeof message.rowId === "number" && Number.isInteger(message.rowId)
+          ? [message.rowId]
+          : [],
+      ),
+    ),
+  ];
 }
 
 /**
@@ -148,12 +167,12 @@ export function durableRowIdsForRebind(messages: readonly ChatMessage[]): number
  */
 export function isSyntheticRendererId(messageId: string | undefined): boolean {
   return (
-    typeof messageId === 'string' &&
-    (messageId.startsWith('user-') ||
-      messageId.startsWith('assistant-') ||
-      messageId.includes('-synthetic-') ||
+    typeof messageId === "string" &&
+    (messageId.startsWith("user-") ||
+      messageId.startsWith("assistant-") ||
+      messageId.includes("-synthetic-") ||
       /^\d+-\d+-(user|assistant|tools)\b/.test(messageId))
-  )
+  );
 }
 
 /**
@@ -167,16 +186,22 @@ export function isSyntheticRendererId(messageId: string | undefined): boolean {
 export function truncateSubmitParams(
   truncateOrdinal: number | undefined,
   truncateMessageId?: string,
-  truncateRowId?: number
+  truncateRowId?: number,
 ): Record<string, unknown> {
-  const hasOrdinal = typeof truncateOrdinal === 'number' && Number.isInteger(truncateOrdinal) && truncateOrdinal >= 0
-  const hasRowId = typeof truncateRowId === 'number' && Number.isInteger(truncateRowId)
+  const hasOrdinal =
+    typeof truncateOrdinal === "number" &&
+    Number.isInteger(truncateOrdinal) &&
+    truncateOrdinal >= 0;
+  const hasRowId =
+    typeof truncateRowId === "number" && Number.isInteger(truncateRowId);
 
   const hasMessageId =
-    typeof truncateMessageId === 'string' && truncateMessageId.length > 0 && !isSyntheticRendererId(truncateMessageId)
+    typeof truncateMessageId === "string" &&
+    truncateMessageId.length > 0 &&
+    !isSyntheticRendererId(truncateMessageId);
 
   if (!hasOrdinal && !hasMessageId && !hasRowId) {
-    return {}
+    return {};
   }
 
   return {
@@ -184,15 +209,15 @@ export function truncateSubmitParams(
     ...(hasOrdinal ? { truncate_before_user_ordinal: truncateOrdinal } : {}),
     ...(hasMessageId ? { truncate_before_message_id: truncateMessageId } : {}),
     ...(hasRowId ? { truncate_before_row_id: truncateRowId } : {}),
-    ...(truncateOrdinal === 0 ? { confirm_empty_truncate: true } : {})
-  }
+    ...(truncateOrdinal === 0 ? { confirm_empty_truncate: true } : {}),
+  };
 }
 
 interface DurableHistoryMessage {
-  display_kind?: string
-  role?: string
-  row_id?: unknown
-  text?: string
+  display_kind?: string;
+  role?: string;
+  row_id?: unknown;
+  text?: string;
 }
 
 /**
@@ -212,45 +237,58 @@ export async function resolveDurableRowId(
   requestGateway: RequestGateway,
   sessionId: string,
   sourceText: string,
-  expectedOrdinal: number | undefined
+  expectedOrdinal: number | undefined,
 ): Promise<number | undefined> {
-  const wanted = sourceText.trim()
+  const wanted = sourceText.trim();
 
   if (!wanted) {
-    return undefined
+    return undefined;
   }
 
-  let messages: DurableHistoryMessage[]
+  let messages: DurableHistoryMessage[];
 
   try {
-    const result = await requestGateway<{ messages?: unknown }>('session.history', { session_id: sessionId })
+    const result = await requestGateway<{ messages?: unknown }>(
+      "session.history",
+      { session_id: sessionId },
+    );
 
-    messages = Array.isArray(result?.messages) ? (result.messages as DurableHistoryMessage[]) : []
+    messages = Array.isArray(result?.messages)
+      ? (result.messages as DurableHistoryMessage[])
+      : [];
   } catch {
-    return undefined
+    return undefined;
   }
 
   const durableUsers = messages.filter(
-    message =>
-      message.role === 'user' &&
+    (message) =>
+      message.role === "user" &&
       !message.display_kind &&
-      typeof message.row_id === 'number' &&
-      Number.isInteger(message.row_id)
-  )
+      typeof message.row_id === "number" &&
+      Number.isInteger(message.row_id),
+  );
 
-  const matches = durableUsers.filter(message => (message.text ?? '').trim() === wanted)
+  const matches = durableUsers.filter(
+    (message) => (message.text ?? "").trim() === wanted,
+  );
 
   if (matches.length === 1) {
-    return matches[0].row_id as number
+    return matches[0].row_id as number;
   }
 
-  if (matches.length > 1 && typeof expectedOrdinal === 'number' && expectedOrdinal >= durableUsers.length - 1) {
-    const last = matches[matches.length - 1]
+  if (
+    matches.length > 1 &&
+    typeof expectedOrdinal === "number" &&
+    expectedOrdinal >= durableUsers.length - 1
+  ) {
+    const last = matches[matches.length - 1];
 
-    return durableUsers[durableUsers.length - 1] === last ? (last.row_id as number) : undefined
+    return durableUsers[durableUsers.length - 1] === last
+      ? (last.row_id as number)
+      : undefined;
   }
 
-  return undefined
+  return undefined;
 }
 
 /**
@@ -270,14 +308,17 @@ export async function runRewindSubmit(
   truncateOrdinal: number | undefined,
   truncateMessageId: string | undefined,
   interruptFirst: boolean,
-  recovery?: { storedSessionId?: null | string; onSessionRecovered?: (sessionId: string) => void },
+  recovery?: {
+    storedSessionId?: null | string;
+    onSessionRecovered?: (sessionId: string) => void;
+  },
   truncateRowId?: number,
   sourceText?: string,
-  rebindRowIds?: readonly number[]
+  rebindRowIds?: readonly number[],
 ): Promise<SurvivorUserRowIds | undefined> {
   // Recovery may rebind the live id mid-flight; interrupt/submit must both
   // follow it rather than pinning the dead one.
-  let liveSessionId = sessionId
+  let liveSessionId = sessionId;
 
   // A truncation without a durable address is the #87059 shape: the gateway
   // fails it closed (4004) for any persisted session, so sending it can only
@@ -285,28 +326,32 @@ export async function runRewindSubmit(
   // usually exists — the bubble just never learned its id, e.g. edit after an
   // interrupted turn). When resolution fails too, degrade to a PLAIN resubmit:
   // append the corrected text without dropping anything, never guess a cut.
-  let resolvedRowId = truncateRowId
-  let resolvedOrdinal = truncateOrdinal
-  let resolvedMessageId = truncateMessageId
+  let resolvedRowId = truncateRowId;
+  let resolvedOrdinal = truncateOrdinal;
+  let resolvedMessageId = truncateMessageId;
 
   const wantsTruncation =
-    typeof truncateOrdinal === 'number' ||
-    typeof truncateRowId === 'number' ||
-    (typeof truncateMessageId === 'string' && truncateMessageId.length > 0 && !isSyntheticRendererId(truncateMessageId))
+    typeof truncateOrdinal === "number" ||
+    typeof truncateRowId === "number" ||
+    (typeof truncateMessageId === "string" &&
+      truncateMessageId.length > 0 &&
+      !isSyntheticRendererId(truncateMessageId));
 
   const hasDurableAddress =
-    typeof truncateRowId === 'number' ||
-    (typeof truncateMessageId === 'string' && truncateMessageId.length > 0 && !isSyntheticRendererId(truncateMessageId))
+    typeof truncateRowId === "number" ||
+    (typeof truncateMessageId === "string" &&
+      truncateMessageId.length > 0 &&
+      !isSyntheticRendererId(truncateMessageId));
 
   if (wantsTruncation && hasDurableAddress) {
     // A durable row or platform-message id is globally stable, while the
     // rendered ordinal can be relative to a paged transcript tail. Do not
     // cross-check those different spaces; the gateway still validates the
     // durable address against its full transcript.
-    resolvedOrdinal = undefined
+    resolvedOrdinal = undefined;
 
-    if (typeof resolvedRowId === 'number' && Number.isInteger(resolvedRowId)) {
-      resolvedMessageId = undefined
+    if (typeof resolvedRowId === "number" && Number.isInteger(resolvedRowId)) {
+      resolvedMessageId = undefined;
     }
   }
 
@@ -314,46 +359,60 @@ export async function runRewindSubmit(
     resolvedRowId =
       sourceText === undefined
         ? undefined
-        : await resolveDurableRowId(requestGateway, liveSessionId, sourceText, truncateOrdinal)
+        : await resolveDurableRowId(
+            requestGateway,
+            liveSessionId,
+            sourceText,
+            truncateOrdinal,
+          );
 
     // Either way the client-side ordinal is untrustworthy here (its space can
     // diverge from the gateway's — the #87059 root). Resolved: the row id alone
     // is the address; sending the divergent ordinal too would trip the
     // gateway's 4030 cross-check. Unresolved: plain resubmit, no truncation.
-    resolvedOrdinal = undefined
-    resolvedMessageId = undefined
+    resolvedOrdinal = undefined;
+    resolvedMessageId = undefined;
   }
 
   const interrupt = async () => {
     try {
-      await requestGateway('session.interrupt', { session_id: liveSessionId })
+      await requestGateway("session.interrupt", { session_id: liveSessionId });
     } catch {
       // Best-effort. The submit path still gates on the gateway state.
     }
-  }
+  };
 
   const submitFor = (targetId: string) =>
     requestGateway<PromptSubmitResult>(
-      'prompt.submit',
+      "prompt.submit",
       {
         session_id: targetId,
         text,
-        ...truncateSubmitParams(resolvedOrdinal, resolvedMessageId, resolvedRowId),
+        ...truncateSubmitParams(
+          resolvedOrdinal,
+          resolvedMessageId,
+          resolvedRowId,
+        ),
         // A first-turn rewind resolves to an empty transcript, which the
         // gateway additionally gates behind confirm_empty_truncate. In
         // resolved-row-id mode the tail-local ordinal was dropped (see
         // above). The durable target is authoritative, so explicitly allow a
         // first-active-tip cut; the gateway ignores this when the prefix is
         // non-empty.
-        ...(resolvedOrdinal === undefined && (resolvedRowId !== undefined || truncateOrdinal === 0)
+        ...(resolvedOrdinal === undefined &&
+        (resolvedRowId !== undefined || truncateOrdinal === 0)
           ? { confirm_empty_truncate: true }
           : {}),
         ...(rebindRowIds?.length
-          ? { rebind_survivor_row_ids: [...new Set(rebindRowIds.filter(Number.isInteger))] }
-          : {})
+          ? {
+              rebind_survivor_row_ids: [
+                ...new Set(rebindRowIds.filter(Number.isInteger)),
+              ],
+            }
+          : {}),
       },
-      PROMPT_SUBMIT_REQUEST_TIMEOUT_MS
-    )
+      PROMPT_SUBMIT_REQUEST_TIMEOUT_MS,
+    );
 
   const submit = async () => {
     const { result, sessionId: usedId } = await withSessionNotFoundResume(
@@ -362,32 +421,32 @@ export async function runRewindSubmit(
       submitFor,
       {
         requestGateway,
-        onRecovered: recoveredId => {
-          liveSessionId = recoveredId
-          recovery?.onSessionRecovered?.(recoveredId)
-        }
-      }
-    )
+        onRecovered: (recoveredId) => {
+          liveSessionId = recoveredId;
+          recovery?.onSessionRecovered?.(recoveredId);
+        },
+      },
+    );
 
-    liveSessionId = usedId
+    liveSessionId = usedId;
 
-    return survivorRowIdsFrom(result)
-  }
+    return survivorRowIdsFrom(result);
+  };
 
   if (interruptFirst) {
-    await interrupt()
+    await interrupt();
   }
 
   try {
-    return await submit()
+    return await submit();
   } catch (err) {
     if (!isSessionBusyError(err)) {
-      throw err
+      throw err;
     }
 
-    await interrupt()
+    await interrupt();
 
-    return await withSessionBusyRetry(submit)
+    return await withSessionBusyRetry(submit);
   }
 }
 
@@ -395,27 +454,27 @@ export async function runRewindSubmit(
 export function finalizeInterruptedMessages(
   messages: ChatMessage[],
   streamId?: null | string,
-  occurredAt = Date.now() / 1000
+  occurredAt = Date.now() / 1000,
 ): ChatMessage[] {
   return messages
     .filter(
-      message =>
+      (message) =>
         !(
           (message.pending || message.id === streamId) &&
           message.parts.length === 0 &&
           !chatMessageText(message).trim()
-        )
+        ),
     )
-    .map(message =>
+    .map((message) =>
       message.pending || message.id === streamId
         ? {
             ...message,
             completedAt: occurredAt,
             parts: completeOpenTimelineParts(message.parts, occurredAt),
-            pending: false
+            pending: false,
           }
-        : message
-    )
+        : message,
+    );
 }
 
 /**
@@ -432,23 +491,32 @@ export function finalizeInterruptedMessages(
  * stream id was missing or stale (#83151).
  */
 export function appendMidTurnUserMessage<
-  State extends { interimBoundaryPending: boolean; messages: ChatMessage[]; streamId: null | string }
+  State extends {
+    interimBoundaryPending: boolean;
+    messages: ChatMessage[];
+    streamId: null | string;
+  },
 >(state: State, message: ChatMessage): State {
-  const liveId = state.streamId
-  const sealed = finalizeInterruptedMessages(state.messages, liveId)
-  const sealedLiveKept = liveId !== null && sealed.some(row => row.id === liveId)
+  const liveId = state.streamId;
+  const sealed = finalizeInterruptedMessages(state.messages, liveId);
+  const sealedLiveKept =
+    liveId !== null && sealed.some((row) => row.id === liveId);
 
   const messages = [
-    ...(sealedLiveKept ? sealed.map(row => (row.id === liveId ? { ...row, interim: true } : row)) : sealed),
-    message
-  ]
+    ...(sealedLiveKept
+      ? sealed.map((row) =>
+          row.id === liveId ? { ...row, interim: true } : row,
+        )
+      : sealed),
+    message,
+  ];
 
   return {
     ...state,
     messages,
     streamId: null,
-    interimBoundaryPending: state.interimBoundaryPending || sealedLiveKept
-  }
+    interimBoundaryPending: state.interimBoundaryPending || sealedLiveKept,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -456,59 +524,76 @@ export function appendMidTurnUserMessage<
 // ---------------------------------------------------------------------------
 
 export interface ReloadPlan {
-  branchGroupId: string
+  branchGroupId: string;
   /** Original persisted text of the turn — the durable-row-id content key. */
-  sourceText: string
-  text: string
-  truncateOrdinal: number | undefined
-  truncateMessageId?: string
-  truncateRowId?: number
-  userIndex: number
+  sourceText: string;
+  text: string;
+  truncateOrdinal: number | undefined;
+  truncateMessageId?: string;
+  truncateRowId?: number;
+  userIndex: number;
 }
 
 /** The user turn to re-run for a reload from `parentId` (or the last turn). */
-export function planReload(messages: ChatMessage[], parentId: null | string): null | ReloadPlan {
-  const parentIndex = parentId ? messages.findIndex(m => m.id === parentId) : messages.length - 1
+export function planReload(
+  messages: ChatMessage[],
+  parentId: null | string,
+): null | ReloadPlan {
+  const parentIndex = parentId
+    ? messages.findIndex((m) => m.id === parentId)
+    : messages.length - 1;
 
   const userBack =
-    parentIndex >= 0 ? [...messages.slice(0, parentIndex + 1)].reverse().findIndex(m => m.role === 'user') : -1
+    parentIndex >= 0
+      ? [...messages.slice(0, parentIndex + 1)]
+          .reverse()
+          .findIndex((m) => m.role === "user")
+      : -1;
 
   if (userBack < 0) {
-    return null
+    return null;
   }
 
-  const userIndex = parentIndex - userBack
-  const userMessage = messages[userIndex]
-  const text = userMessage ? chatMessageText(userMessage).trim() : ''
+  const userIndex = parentIndex - userBack;
+  const userMessage = messages[userIndex];
+  const text = userMessage ? chatMessageText(userMessage).trim() : "";
 
   if (!userMessage || !text) {
-    return null
+    return null;
   }
 
   const targetAssistant =
-    parentId && messages[parentIndex]?.role === 'assistant'
+    parentId && messages[parentIndex]?.role === "assistant"
       ? messages[parentIndex]
-      : messages.slice(userIndex + 1).find(m => m.role === 'assistant')
+      : messages.slice(userIndex + 1).find((m) => m.role === "assistant");
 
   // Failed turn: the user msg never reached the gateway, so any truncation
   // address would mis-aim (#86573/#86623) — resubmit plainly instead.
-  const isFailedTurn = isFailedUserTurn(messages, userIndex)
+  const isFailedTurn = isFailedUserTurn(messages, userIndex);
 
   return {
-    branchGroupId: targetAssistant?.branchGroupId ?? branchGroupForUser(userMessage),
+    branchGroupId:
+      targetAssistant?.branchGroupId ?? branchGroupForUser(userMessage),
     sourceText: text,
     text,
-    truncateOrdinal: isFailedTurn ? undefined : visibleUserOrdinal(messages, userIndex),
+    truncateOrdinal: isFailedTurn
+      ? undefined
+      : visibleUserOrdinal(messages, userIndex),
     truncateMessageId: isFailedTurn ? undefined : userMessage.id,
     truncateRowId: isFailedTurn ? undefined : userMessage.rowId,
-    userIndex
-  }
+    userIndex,
+  };
 }
 
 /** Optimistic reload state: keep the user turn, hide the branch's assistants. */
-export function applyReloadOptimistic(state: ClientSessionState, plan: ReloadPlan): ClientSessionState {
-  const nextUserIndex = state.messages.findIndex((m, i) => i > plan.userIndex && m.role === 'user')
-  const end = nextUserIndex < 0 ? state.messages.length : nextUserIndex
+export function applyReloadOptimistic(
+  state: ClientSessionState,
+  plan: ReloadPlan,
+): ClientSessionState {
+  const nextUserIndex = state.messages.findIndex(
+    (m, i) => i > plan.userIndex && m.role === "user",
+  );
+  const end = nextUserIndex < 0 ? state.messages.length : nextUserIndex;
 
   return {
     ...state,
@@ -519,7 +604,11 @@ export function applyReloadOptimistic(state: ClientSessionState, plan: ReloadPla
       ...state.messages.slice(0, plan.userIndex + 1),
       ...state.messages
         .slice(plan.userIndex + 1, end)
-        .map(m => (m.role === 'assistant' ? { ...m, branchGroupId: plan.branchGroupId, hidden: true } : m))
+        .map((m) =>
+          m.role === "assistant"
+            ? { ...m, branchGroupId: plan.branchGroupId, hidden: true }
+            : m,
+        ),
     ],
     pendingBranchGroup: plan.branchGroupId,
     sawAssistantPayload: false,
@@ -528,8 +617,8 @@ export function applyReloadOptimistic(state: ClientSessionState, plan: ReloadPla
     // with no clock is settled by the first running=false heartbeat, so a
     // regenerate racing a heartbeat would lose its spinner mid-flight.
     turnLive: false,
-    turnStartedAt: Date.now()
-  }
+    turnStartedAt: Date.now(),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -537,51 +626,57 @@ export function applyReloadOptimistic(state: ClientSessionState, plan: ReloadPla
 // ---------------------------------------------------------------------------
 
 export interface RestoreTarget {
-  text?: string
-  userOrdinal?: null | number
+  text?: string;
+  userOrdinal?: null | number;
 }
 
 export interface RestorePlan {
-  sourceIndex: number
+  sourceIndex: number;
   /** Original persisted text of the turn — the durable-row-id content key. */
-  sourceText: string
-  text: string
-  truncateOrdinal: number | undefined
-  truncateMessageId?: string
-  truncateRowId?: number
+  sourceText: string;
+  text: string;
+  truncateOrdinal: number | undefined;
+  truncateMessageId?: string;
+  truncateRowId?: number;
 }
 
 /** Resolve the user turn to rewind to; throws with a user-facing reason. */
-export function planRestore(messages: ChatMessage[], messageId: string, target?: RestoreTarget): RestorePlan {
-  const idIndex = messages.findIndex(m => m.id === messageId && m.role === 'user')
+export function planRestore(
+  messages: ChatMessage[],
+  messageId: string,
+  target?: RestoreTarget,
+): RestorePlan {
+  const idIndex = messages.findIndex(
+    (m) => m.id === messageId && m.role === "user",
+  );
 
   const fallbackIndex =
     target?.userOrdinal === null || target?.userOrdinal === undefined
       ? -1
-      : visibleUserIndexAtOrdinal(messages, target.userOrdinal)
+      : visibleUserIndexAtOrdinal(messages, target.userOrdinal);
 
-  const sourceIndex = idIndex >= 0 ? idIndex : fallbackIndex
-  const source = messages[sourceIndex]
+  const sourceIndex = idIndex >= 0 ? idIndex : fallbackIndex;
+  const source = messages[sourceIndex];
 
-  if (!source || source.role !== 'user') {
-    throw new Error('Could not find the message to restore.')
+  if (!source || source.role !== "user") {
+    throw new Error("Could not find the message to restore.");
   }
 
-  const sourceText = chatMessageText(source).trim()
-  const text = (sourceText || target?.text?.trim() || '').trim()
+  const sourceText = chatMessageText(source).trim();
+  const text = (sourceText || target?.text?.trim() || "").trim();
 
   if (!text) {
-    throw new Error('Cannot restore an empty message.')
+    throw new Error("Cannot restore an empty message.");
   }
 
   // Failed turn: the target user msg never reached the gateway, so any
   // truncation address would mis-aim (#86573/#86623) — resubmit plainly.
-  const isFailedTurn = isFailedUserTurn(messages, sourceIndex)
+  const isFailedTurn = isFailedUserTurn(messages, sourceIndex);
 
   const truncateOrdinal =
     target?.userOrdinal === null || target?.userOrdinal === undefined
       ? visibleUserOrdinal(messages, sourceIndex)
-      : target.userOrdinal
+      : target.userOrdinal;
 
   return {
     sourceIndex,
@@ -589,8 +684,8 @@ export function planRestore(messages: ChatMessage[], messageId: string, target?:
     text,
     truncateOrdinal: isFailedTurn ? undefined : truncateOrdinal,
     truncateMessageId: isFailedTurn ? undefined : source.id,
-    truncateRowId: isFailedTurn ? undefined : source.rowId
-  }
+    truncateRowId: isFailedTurn ? undefined : source.rowId,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -598,36 +693,43 @@ export function planRestore(messages: ChatMessage[], messageId: string, target?:
 // ---------------------------------------------------------------------------
 
 export interface EditPlan {
-  editedMessage: ChatMessage
-  isFailedTurn: boolean
-  sourceIndex: number
+  editedMessage: ChatMessage;
+  isFailedTurn: boolean;
+  sourceIndex: number;
   /** Original persisted text of the edited turn — the durable-row-id content key. */
-  sourceText: string
-  text: string
-  truncateOrdinal: number | undefined
-  truncateMessageId?: string
-  truncateRowId?: number
+  sourceText: string;
+  text: string;
+  truncateOrdinal: number | undefined;
+  truncateMessageId?: string;
+  truncateRowId?: number;
 }
 
 /** Resolve the edited user turn, or null when nothing changed / invalid. */
-export function planEdit(messages: ChatMessage[], edited: AppendMessage): EditPlan | null {
-  const sourceId = edited.sourceId || edited.parentId
-  const text = appendText(edited)
+export function planEdit(
+  messages: ChatMessage[],
+  edited: AppendMessage,
+): EditPlan | null {
+  const sourceId = edited.sourceId || edited.parentId;
+  const text = appendText(edited);
 
-  if (!sourceId || !text || edited.role !== 'user') {
-    return null
+  if (!sourceId || !text || edited.role !== "user") {
+    return null;
   }
 
-  const sourceIndex = messages.findIndex(m => m.id === sourceId)
-  const source = messages[sourceIndex]
+  const sourceIndex = messages.findIndex((m) => m.id === sourceId);
+  const source = messages[sourceIndex];
 
-  if (!source || source.role !== 'user' || chatMessageText(source).trim() === text) {
-    return null
+  if (
+    !source ||
+    source.role !== "user" ||
+    chatMessageText(source).trim() === text
+  ) {
+    return null;
   }
 
   // Failed turn: the optimistic user msg never reached the gateway, so a
   // truncate-by-ordinal would 422 — resubmit plainly instead.
-  const isFailedTurn = isFailedUserTurn(messages, sourceIndex)
+  const isFailedTurn = isFailedUserTurn(messages, sourceIndex);
 
   return {
     editedMessage: { ...source, parts: [textPart(text)] },
@@ -635,10 +737,12 @@ export function planEdit(messages: ChatMessage[], edited: AppendMessage): EditPl
     sourceIndex,
     sourceText: chatMessageText(source).trim(),
     text,
-    truncateOrdinal: isFailedTurn ? undefined : visibleUserOrdinal(messages, sourceIndex),
+    truncateOrdinal: isFailedTurn
+      ? undefined
+      : visibleUserOrdinal(messages, sourceIndex),
     truncateMessageId: isFailedTurn ? undefined : source.id,
-    truncateRowId: isFailedTurn ? undefined : source.rowId
-  }
+    truncateRowId: isFailedTurn ? undefined : source.rowId,
+  };
 }
 
 /** Optimistic rewind-to state for restore/edit: drop everything after the
@@ -646,7 +750,7 @@ export function planEdit(messages: ChatMessage[], edited: AppendMessage): EditPl
 export function applyRewindOptimistic(
   state: ClientSessionState,
   sourceIndex: number,
-  editedMessage?: ChatMessage
+  editedMessage?: ChatMessage,
 ): ClientSessionState {
   return {
     ...state,
@@ -661,8 +765,8 @@ export function applyRewindOptimistic(
     // Same as applyReloadOptimistic: seed the clock so the no-payload settle
     // gate holds through the submit round trip but never latches (#86795).
     turnLive: false,
-    turnStartedAt: Date.now()
-  }
+    turnStartedAt: Date.now(),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -670,25 +774,28 @@ export function applyRewindOptimistic(
 // ---------------------------------------------------------------------------
 
 /** Sync each assistant branch message's `hidden` to what the thread renders. */
-export function applyBranchVisibility(state: ClientSessionState, next: readonly ThreadMessage[]): ClientSessionState {
-  const visibleIds = new Set(next.map(m => m.id))
-  let changed = false
+export function applyBranchVisibility(
+  state: ClientSessionState,
+  next: readonly ThreadMessage[],
+): ClientSessionState {
+  const visibleIds = new Set(next.map((m) => m.id));
+  let changed = false;
 
-  const messages = state.messages.map(message => {
-    if (message.role !== 'assistant' || !message.branchGroupId) {
-      return message
+  const messages = state.messages.map((message) => {
+    if (message.role !== "assistant" || !message.branchGroupId) {
+      return message;
     }
 
-    const hidden = !visibleIds.has(message.id)
+    const hidden = !visibleIds.has(message.id);
 
     if (message.hidden === hidden) {
-      return message
+      return message;
     }
 
-    changed = true
+    changed = true;
 
-    return { ...message, hidden }
-  })
+    return { ...message, hidden };
+  });
 
-  return changed ? { ...state, messages } : state
+  return changed ? { ...state, messages } : state;
 }

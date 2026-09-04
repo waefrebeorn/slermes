@@ -1,6 +1,6 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties } from "react";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 /**
  * The oversized display lettering of an empty chat — the Collapse face that
@@ -14,32 +14,32 @@ import { cn } from '@/lib/utils'
  */
 export function Wordmark({
   className,
-  fitMin = '2.75rem',
+  fitMin = "2.75rem",
   text,
-  width = 'calc(100% - 1rem)'
+  width = "calc(100% - 1rem)",
 }: {
-  className?: string
+  className?: string;
   /** Floor for the fitted font size, as a CSS length. */
-  fitMin?: string
-  text: string
+  fitMin?: string;
+  text: string;
   /** How much of the column the lettering spans. `.fit-text` sizes to fill
    *  this, so a short word set at full width comes out enormous — a name gets
    *  less room than a twelve-character wordmark. */
-  width?: string
+  width?: string;
 }) {
   return (
     <p
       aria-label={text}
       className={cn(
-        'wordmark fit-text mx-auto text-midground mix-blend-plus-lighter dark:text-foreground/90',
-        className
+        "wordmark fit-text mx-auto text-midground mix-blend-plus-lighter dark:text-foreground/90",
+        className,
       )}
-      style={{ '--fit-min': fitMin, width } as CSSProperties}
+      style={{ "--fit-min": fitMin, width } as CSSProperties}
     >
       <span>
         <span>{text}</span>
       </span>
       <span aria-hidden="true">{text}</span>
     </p>
-  )
+  );
 }

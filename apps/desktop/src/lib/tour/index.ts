@@ -20,8 +20,8 @@
  * first and flags every selector as stable or positional).
  */
 
-export { collectTourTargets, type TourTarget } from './collect-targets'
-export type { TourAction, TourHost, TourResult, TourStep } from './engine'
+export { collectTourTargets, type TourTarget } from "./collect-targets";
+export type { TourAction, TourHost, TourResult, TourStep } from "./engine";
 export {
   isTourActive,
   listTourTargets,
@@ -31,5 +31,5 @@ export {
   showTourStep,
   startTour,
   stopTour,
-  type TourSurface
-} from './run-tour'
+  type TourSurface,
+} from "./run-tour";

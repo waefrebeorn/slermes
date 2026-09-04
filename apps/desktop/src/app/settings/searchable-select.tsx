@@ -1,10 +1,21 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from "react";
 
-import { Codicon } from '@/components/ui/codicon'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { controlVariants } from '@/components/ui/control'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+import { Codicon } from "@/components/ui/codicon";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { controlVariants } from "@/components/ui/control";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 /**
  * cmdk filter score for one option. Case-insensitive substring match, with
@@ -13,19 +24,19 @@ import { cn } from '@/lib/utils'
  * Exported for tests.
  */
 export function rankSearchOption(option: string, search: string): number {
-  const lower = search.toLowerCase()
-  const itemLower = option.toLowerCase()
-  const slash = itemLower.lastIndexOf('/')
+  const lower = search.toLowerCase();
+  const itemLower = option.toLowerCase();
+  const slash = itemLower.lastIndexOf("/");
 
   if (slash !== -1 && itemLower.slice(slash + 1).includes(lower)) {
-    return 2
+    return 2;
   }
 
   if (itemLower.includes(lower)) {
-    return 1
+    return 1;
   }
 
-  return 0
+  return 0;
 }
 
 /**
@@ -42,31 +53,32 @@ export function SearchableSelect({
   value,
   onChange,
   options,
-  placeholder = 'Search…',
-  emptyMessage = 'No results found.',
-  clearLabel
+  placeholder = "Search…",
+  emptyMessage = "No results found.",
+  clearLabel,
 }: {
-  value: string
-  onChange: (value: string) => void
-  options: string[]
-  placeholder?: string
-  emptyMessage?: string
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  placeholder?: string;
+  emptyMessage?: string;
   /** When set, prepends a "clear" item that sets the value to ''.
    *  Matches the existing <Select> pattern of EMPTY_SELECT_VALUE + "(none)". */
-  clearLabel?: string
+  clearLabel?: string;
 }) {
-  const [open, setOpen] = useState(false)
-  const triggerRef = useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const handleSelect = useCallback(
     (selected: string) => {
-      onChange(selected)
-      setOpen(false)
+      onChange(selected);
+      setOpen(false);
     },
-    [onChange]
-  )
+    [onChange],
+  );
 
-  const displayValue = value !== '' && value !== undefined ? value : placeholder
+  const displayValue =
+    value !== "" && value !== undefined ? value : placeholder;
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
@@ -76,8 +88,8 @@ export function SearchableSelect({
           aria-haspopup="listbox"
           className={cn(
             controlVariants(),
-            'flex items-center justify-between gap-2 whitespace-nowrap',
-            !value && 'text-muted-foreground'
+            "flex items-center justify-between gap-2 whitespace-nowrap",
+            !value && "text-muted-foreground",
           )}
           data-slot="searchable-select-trigger"
           ref={triggerRef}
@@ -85,24 +97,50 @@ export function SearchableSelect({
           type="button"
         >
           <span className="truncate">{displayValue}</span>
-          <Codicon className="shrink-0 opacity-60" name={open ? 'chevron-up' : 'chevron-down'} size="1rem" />
+          <Codicon
+            className="shrink-0 opacity-60"
+            name={open ? "chevron-up" : "chevron-down"}
+            size="1rem"
+          />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] p-0">
+      <PopoverContent
+        align="start"
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+      >
         <Command filter={rankSearchOption}>
           <CommandInput autoFocus placeholder={placeholder} />
           <CommandList>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
               {clearLabel && (
-                <CommandItem onSelect={() => handleSelect('')} value={clearLabel}>
-                  <Codicon className={cn('mr-2 size-4', value === '' ? 'opacity-100' : 'opacity-0')} name="check" />
+                <CommandItem
+                  onSelect={() => handleSelect("")}
+                  value={clearLabel}
+                >
+                  <Codicon
+                    className={cn(
+                      "mr-2 size-4",
+                      value === "" ? "opacity-100" : "opacity-0",
+                    )}
+                    name="check"
+                  />
                   {clearLabel}
                 </CommandItem>
               )}
-              {options.map(option => (
-                <CommandItem key={option} onSelect={() => handleSelect(option)} value={option}>
-                  <Codicon className={cn('mr-2 size-4', option === value ? 'opacity-100' : 'opacity-0')} name="check" />
+              {options.map((option) => (
+                <CommandItem
+                  key={option}
+                  onSelect={() => handleSelect(option)}
+                  value={option}
+                >
+                  <Codicon
+                    className={cn(
+                      "mr-2 size-4",
+                      option === value ? "opacity-100" : "opacity-0",
+                    )}
+                    name="check"
+                  />
                   {option}
                 </CommandItem>
               ))}
@@ -111,5 +149,5 @@ export function SearchableSelect({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

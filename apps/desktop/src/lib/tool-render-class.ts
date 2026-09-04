@@ -8,11 +8,11 @@
  * rather than inside either one.
  */
 
-const FILE_EDIT_TOOL_NAMES = new Set(['edit_file', 'patch', 'write_file'])
+const FILE_EDIT_TOOL_NAMES = new Set(["edit_file", "patch", "write_file"]);
 
 /** Renders a diff — the deliverable of the turn, and the one card whose cost scales. */
 export function isFileEditTool(toolName: string): boolean {
-  return FILE_EDIT_TOOL_NAMES.has(toolName)
+  return FILE_EDIT_TOOL_NAMES.has(toolName);
 }
 
 // Tools that draw their own surface and must never be folded into a run's
@@ -29,18 +29,23 @@ export function isFileEditTool(toolName: string): boolean {
 //
 // Everything else is ephemeral activity — reads, searches, commands — which is
 // what a run summarizes and what the live ticker cycles through.
-const CARD_TOOL_NAMES = new Set(['clarify', 'delegate_task', 'image_generate', 'setup_mcp'])
+const CARD_TOOL_NAMES = new Set([
+  "clarify",
+  "delegate_task",
+  "image_generate",
+  "setup_mcp",
+]);
 
 export function isCardTool(toolName: string): boolean {
-  return CARD_TOOL_NAMES.has(toolName) || isFileEditTool(toolName)
+  return CARD_TOOL_NAMES.has(toolName) || isFileEditTool(toolName);
 }
 
 // Activity tools that render nothing at all: `todo` parts are hoisted to a
 // dedicated panel above the message content, and a reaction's UI is the emoji
 // landing on the bubble. Both still render when they FAIL, which is a bounded
 // error row either way.
-const SILENT_TOOL_NAMES = new Set(['react_to_message', 'todo'])
+const SILENT_TOOL_NAMES = new Set(["react_to_message", "todo"]);
 
 export function isSilentTool(toolName: string): boolean {
-  return SILENT_TOOL_NAMES.has(toolName)
+  return SILENT_TOOL_NAMES.has(toolName);
 }

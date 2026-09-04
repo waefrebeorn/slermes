@@ -5,7 +5,7 @@
  * React/Electron controller module.
  */
 
-import type { SessionOwnerRoute } from '@/store/session-request-router'
+import type { SessionOwnerRoute } from "@/store/session-request-router";
 
 /**
  * Resolve a runtime session id back to its stored id by reverse-scanning the
@@ -13,14 +13,17 @@ import type { SessionOwnerRoute } from '@/store/session-request-router'
  * `storedSessionIdForRuntime` uses. Returns undefined when the id isn't a known
  * runtime id, so the caller can treat it as already a stored id.
  */
-export function findStoredIdForRuntimeId(bindings: Map<string, string>, runtimeId: string): string | undefined {
+export function findStoredIdForRuntimeId(
+  bindings: Map<string, string>,
+  runtimeId: string,
+): string | undefined {
   for (const [storedId, mapped] of bindings) {
     if (mapped === runtimeId) {
-      return storedId
+      return storedId;
     }
   }
 
-  return undefined
+  return undefined;
 }
 
 /**
@@ -37,24 +40,29 @@ export function findStoredIdForRuntimeId(bindings: Map<string, string>, runtimeI
  * then selected tile.
  */
 export function resolveRoutingSessionId(args: {
-  paramSessionId: string | undefined
-  storedIdForRuntime: (runtimeId: string) => string | undefined
-  focusedStoredSessionId: null | string
-  selectedStoredSessionId: null | string
+  paramSessionId: string | undefined;
+  storedIdForRuntime: (runtimeId: string) => string | undefined;
+  focusedStoredSessionId: null | string;
+  selectedStoredSessionId: null | string;
 }): null | string {
-  const { focusedStoredSessionId, paramSessionId, selectedStoredSessionId, storedIdForRuntime } = args
+  const {
+    focusedStoredSessionId,
+    paramSessionId,
+    selectedStoredSessionId,
+    storedIdForRuntime,
+  } = args;
 
   if (paramSessionId) {
-    return storedIdForRuntime(paramSessionId) ?? paramSessionId
+    return storedIdForRuntime(paramSessionId) ?? paramSessionId;
   }
 
-  return focusedStoredSessionId ?? selectedStoredSessionId
+  return focusedStoredSessionId ?? selectedStoredSessionId;
 }
 
 /** The owner shapes the ladder below can return: an exact route (connection +
  *  profile), a bare profile name, or undefined (unknown — probe, never
  *  "active"). The type-only import keeps this module runtime-import-free. */
-export type SessionRpcOwnerRoute = SessionOwnerRoute
+export type SessionRpcOwnerRoute = SessionOwnerRoute;
 
 /**
  * The SYNC owner a session-scoped RPC routes to, resolved in this order:
@@ -81,22 +89,33 @@ export type SessionRpcOwnerRoute = SessionOwnerRoute
  * on the transient hint alone (bounded, evictable, gone after a relaunch).
  */
 export function resolveSessionRpcOwner(args: {
-  routingSessionId: null | string
-  tileOwnerRoute: (storedSessionId: string) => SessionRpcOwnerRoute | undefined
-  sessionOwnerHint: (storedSessionId: string) => SessionRpcOwnerRoute | undefined
-  sessionRowOwner: (storedSessionId: string) => null | SessionRpcOwnerRoute | string | undefined
+  routingSessionId: null | string;
+  tileOwnerRoute: (storedSessionId: string) => SessionRpcOwnerRoute | undefined;
+  sessionOwnerHint: (
+    storedSessionId: string,
+  ) => SessionRpcOwnerRoute | undefined;
+  sessionRowOwner: (
+    storedSessionId: string,
+  ) => null | SessionRpcOwnerRoute | string | undefined;
 }): SessionRpcOwnerRoute | string | undefined {
-  const { routingSessionId, sessionOwnerHint, sessionRowOwner, tileOwnerRoute } = args
+  const {
+    routingSessionId,
+    sessionOwnerHint,
+    sessionRowOwner,
+    tileOwnerRoute,
+  } = args;
 
   if (!routingSessionId) {
-    return undefined
+    return undefined;
   }
 
-  const fromRow = sessionRowOwner(routingSessionId)
+  const fromRow = sessionRowOwner(routingSessionId);
 
   return (
     tileOwnerRoute(routingSessionId) ??
     sessionOwnerHint(routingSessionId) ??
-    (typeof fromRow === 'string' ? fromRow.trim() || undefined : (fromRow ?? undefined))
-  )
+    (typeof fromRow === "string"
+      ? fromRow.trim() || undefined
+      : (fromRow ?? undefined))
+  );
 }

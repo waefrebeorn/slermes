@@ -1,9 +1,9 @@
 export interface PrimaryConnectionRehomeOptions {
-  clearLocalBootstrapFailure: () => void
-  mode: string
-  notifyConnectionApplied: () => void
-  resumeFirstRunRemote: () => boolean
-  teardownPrimaryBackend: (options: { soft: boolean }) => Promise<void>
+  clearLocalBootstrapFailure: () => void;
+  mode: string;
+  notifyConnectionApplied: () => void;
+  resumeFirstRunRemote: () => boolean;
+  teardownPrimaryBackend: (options: { soft: boolean }) => Promise<void>;
 }
 
 // Production seam shared by the connection-config IPC handler and the
@@ -15,21 +15,23 @@ export async function rehomePrimaryConnection({
   mode,
   notifyConnectionApplied,
   resumeFirstRunRemote,
-  teardownPrimaryBackend
-}: PrimaryConnectionRehomeOptions): Promise<{ resumedFirstRunRemote: boolean }> {
-  let resumedFirstRunRemote = false
+  teardownPrimaryBackend,
+}: PrimaryConnectionRehomeOptions): Promise<{
+  resumedFirstRunRemote: boolean;
+}> {
+  let resumedFirstRunRemote = false;
 
-  if (mode === 'remote') {
-    resumedFirstRunRemote = resumeFirstRunRemote()
-    clearLocalBootstrapFailure()
+  if (mode === "remote") {
+    resumedFirstRunRemote = resumeFirstRunRemote();
+    clearLocalBootstrapFailure();
   }
 
   if (resumedFirstRunRemote) {
-    return { resumedFirstRunRemote: true }
+    return { resumedFirstRunRemote: true };
   }
 
-  await teardownPrimaryBackend({ soft: true })
-  notifyConnectionApplied()
+  await teardownPrimaryBackend({ soft: true });
+  notifyConnectionApplied();
 
-  return { resumedFirstRunRemote: false }
+  return { resumedFirstRunRemote: false };
 }

@@ -47,7 +47,7 @@
  * pin that contract at the one seam that got it wrong.
  */
 export function resolveJsonBody<T>(body: T): T {
-  return body
+  return body;
 }
 
 /**
@@ -55,11 +55,15 @@ export function resolveJsonBody<T>(body: T): T {
  * is whether a native bearer token is stored; `hasCookieSession` is whether a
  * live AT-or-RT cookie exists in the OAuth partition. Either suffices.
  */
-export function oauthSessionIsLive(hasNativeToken: boolean, hasCookieSession: boolean): boolean {
-  return hasNativeToken || hasCookieSession
+export function oauthSessionIsLive(
+  hasNativeToken: boolean,
+  hasCookieSession: boolean,
+): boolean {
+  return hasNativeToken || hasCookieSession;
 }
 
-export type OauthRestAuth = { kind: 'bearer'; token: string } | { kind: 'cookie' }
+export type OauthRestAuth =
+  { kind: "bearer"; token: string } | { kind: "cookie" };
 
 /**
  * Decide how an oauth-mode REST request authenticates: prefer the native
@@ -68,15 +72,18 @@ export type OauthRestAuth = { kind: 'bearer'; token: string } | { kind: 'cookie'
  * result of ensureNativeAccessToken (null/empty when there is no native
  * session or the refresh terminally failed).
  */
-export function resolveOauthRestAuth(nativeAccessToken: string | null | undefined): OauthRestAuth {
+export function resolveOauthRestAuth(
+  nativeAccessToken: string | null | undefined,
+): OauthRestAuth {
   if (nativeAccessToken) {
-    return { kind: 'bearer', token: nativeAccessToken }
+    return { kind: "bearer", token: nativeAccessToken };
   }
 
-  return { kind: 'cookie' }
+  return { kind: "cookie" };
 }
 
-export type ReadinessProbeAuth = OauthRestAuth | { kind: 'token'; token: string | null } | { kind: 'public' }
+export type ReadinessProbeAuth =
+  OauthRestAuth | { kind: "token"; token: string | null } | { kind: "public" };
 
 /**
  * Decide how the boot readiness probe authenticates.
@@ -98,20 +105,21 @@ export type ReadinessProbeAuth = OauthRestAuth | { kind: 'token'; token: string 
 export function resolveReadinessProbeAuth(
   authMode: string | null | undefined,
   nativeAccessToken?: string | null,
-  connectionToken?: string | null
+  connectionToken?: string | null,
 ): ReadinessProbeAuth {
-  if (authMode === 'oauth') {
-    return resolveOauthRestAuth(nativeAccessToken)
+  if (authMode === "oauth") {
+    return resolveOauthRestAuth(nativeAccessToken);
   }
 
-  if (authMode === 'token') {
-    return { kind: 'token', token: connectionToken ?? null }
+  if (authMode === "token") {
+    return { kind: "token", token: connectionToken ?? null };
   }
 
-  return { kind: 'public' }
+  return { kind: "public" };
 }
 
-export type GatedDownloadAuth = OauthRestAuth | { kind: 'token'; token: string | null }
+export type GatedDownloadAuth =
+  OauthRestAuth | { kind: "token"; token: string | null };
 
 /**
  * Decide how a gated file download authenticates.
@@ -124,76 +132,80 @@ export type GatedDownloadAuth = OauthRestAuth | { kind: 'token'; token: string |
 export function resolveGatedDownloadAuth(
   authMode: string | null | undefined,
   nativeAccessToken?: string | null,
-  connectionToken?: string | null
+  connectionToken?: string | null,
 ): GatedDownloadAuth {
-  if (authMode === 'oauth') {
-    return resolveOauthRestAuth(nativeAccessToken)
+  if (authMode === "oauth") {
+    return resolveOauthRestAuth(nativeAccessToken);
   }
 
-  return { kind: 'token', token: connectionToken ?? null }
+  return { kind: "token", token: connectionToken ?? null };
 }
 
 export interface AdvertisedAuthProvider {
-  name?: string
-  supportsPassword?: boolean
+  name?: string;
+  supportsPassword?: boolean;
 }
 
 /** Dashboard `basic` auth is username/password; `/api/status` often lists it as a bare string. */
-const PASSWORD_PROVIDER_NAMES = new Set(['basic'])
+const PASSWORD_PROVIDER_NAMES = new Set(["basic"]);
 
 const OAUTH_NOT_SIGNED_IN_MESSAGE =
-  'Remote Hermes gateway uses OAuth, but you are not signed in. ' +
-  'Open Settings → Gateway and click "Sign in", or switch back to Local.'
+  "Remote Hermes gateway uses OAuth, but you are not signed in. " +
+  'Open Settings → Gateway and click "Sign in", or switch back to Local.';
 
 const OAUTH_SESSION_EXPIRED_MESSAGE =
-  'Your remote gateway session has expired. Open Settings → Gateway and click "Sign in" again.'
+  'Your remote gateway session has expired. Open Settings → Gateway and click "Sign in" again.';
 
 /**
  * Normalize `/api/auth/providers` objects *or* `/api/status` `auth_providers`
  * string names into the shape `oauthGuardMayHardFail` understands.
  */
-export function normalizeAdvertisedAuthProviders(providers: unknown): AdvertisedAuthProvider[] {
+export function normalizeAdvertisedAuthProviders(
+  providers: unknown,
+): AdvertisedAuthProvider[] {
   if (!Array.isArray(providers)) {
-    return []
+    return [];
   }
 
-  const out: AdvertisedAuthProvider[] = []
+  const out: AdvertisedAuthProvider[] = [];
 
   for (const provider of providers) {
-    if (typeof provider === 'string') {
-      const name = provider.trim()
+    if (typeof provider === "string") {
+      const name = provider.trim();
 
       if (!name) {
-        continue
+        continue;
       }
 
-      out.push({ name, supportsPassword: PASSWORD_PROVIDER_NAMES.has(name) })
+      out.push({ name, supportsPassword: PASSWORD_PROVIDER_NAMES.has(name) });
 
-      continue
+      continue;
     }
 
-    if (!provider || typeof provider !== 'object') {
-      continue
+    if (!provider || typeof provider !== "object") {
+      continue;
     }
 
-    const raw = provider as AdvertisedAuthProvider & { supports_password?: boolean }
-    const name = typeof raw.name === 'string' ? raw.name.trim() : ''
+    const raw = provider as AdvertisedAuthProvider & {
+      supports_password?: boolean;
+    };
+    const name = typeof raw.name === "string" ? raw.name.trim() : "";
 
     if (!name) {
-      continue
+      continue;
     }
 
     const supportsPassword =
-      typeof raw.supportsPassword === 'boolean'
+      typeof raw.supportsPassword === "boolean"
         ? raw.supportsPassword
-        : typeof raw.supports_password === 'boolean'
+        : typeof raw.supports_password === "boolean"
           ? raw.supports_password
-          : PASSWORD_PROVIDER_NAMES.has(name)
+          : PASSWORD_PROVIDER_NAMES.has(name);
 
-    out.push({ name, supportsPassword })
+    out.push({ name, supportsPassword });
   }
 
-  return out
+  return out;
 }
 
 /**
@@ -202,8 +214,12 @@ export function normalizeAdvertisedAuthProviders(providers: unknown): Advertised
  * an unreadable keychain otherwise look like a live oauth session and the
  * ticket mint 401s — that must send the user to Sign in, not "expired".
  */
-export function oauthTicketFailureAuthMessage(hasDecryptableNativeSession: boolean): string {
-  return hasDecryptableNativeSession ? OAUTH_SESSION_EXPIRED_MESSAGE : OAUTH_NOT_SIGNED_IN_MESSAGE
+export function oauthTicketFailureAuthMessage(
+  hasDecryptableNativeSession: boolean,
+): string {
+  return hasDecryptableNativeSession
+    ? OAUTH_SESSION_EXPIRED_MESSAGE
+    : OAUTH_NOT_SIGNED_IN_MESSAGE;
 }
 
 /**
@@ -225,11 +241,11 @@ export function oauthTicketFailureAuthMessage(hasDecryptableNativeSession: boole
  * `/api/auth/providers` are unaffected.
  */
 export function oauthGuardMayHardFail(providers: unknown): boolean {
-  const named = normalizeAdvertisedAuthProviders(providers)
+  const named = normalizeAdvertisedAuthProviders(providers);
 
   if (named.length === 0) {
-    return true
+    return true;
   }
 
-  return !named.every(provider => provider.supportsPassword)
+  return !named.every((provider) => provider.supportsPassword);
 }

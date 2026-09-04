@@ -15,13 +15,17 @@
  * the boot path.
  */
 
-import driverCss from 'driver.js/dist/driver.css?raw'
-import driverIife from 'driver.js/dist/driver.js.iife.js?raw'
+import driverCss from "driver.js/dist/driver.css?raw";
+import driverIife from "driver.js/dist/driver.js.iife.js?raw";
 
-import { collectTourTargets } from '@/lib/tour/collect-targets'
-import { runTourEngine, type TourAction, type TourResult } from '@/lib/tour/engine'
+import { collectTourTargets } from "@/lib/tour/collect-targets";
+import {
+  runTourEngine,
+  type TourAction,
+  type TourResult,
+} from "@/lib/tour/engine";
 
-import { activePreviewScriptRunner } from './preview-script-runner'
+import { activePreviewScriptRunner } from "./preview-script-runner";
 
 /** Build the idempotent inject-and-run script for one tour action. */
 function buildTourScript(action: TourAction): string {
@@ -46,22 +50,28 @@ function buildTourScript(action: TourAction): string {
     w.__hermesTourCollect,
     document
   ));
-})()`
+})()`;
 }
 
 /** Run one tour action in the ACTIVE preview tab's page. */
 export async function runPreviewTour(action: TourAction): Promise<TourResult> {
-  const run = activePreviewScriptRunner()
+  const run = activePreviewScriptRunner();
 
   if (!run) {
-    return { error: 'No live page is open in the preview pane — open one first.', success: false }
+    return {
+      error: "No live page is open in the preview pane — open one first.",
+      success: false,
+    };
   }
 
-  const raw = await run(buildTourScript(action))
+  const raw = await run(buildTourScript(action));
 
-  if (typeof raw !== 'string' || !raw) {
-    return { error: 'The page did not answer the tour action.', success: false }
+  if (typeof raw !== "string" || !raw) {
+    return {
+      error: "The page did not answer the tour action.",
+      success: false,
+    };
   }
 
-  return JSON.parse(raw) as TourResult
+  return JSON.parse(raw) as TourResult;
 }

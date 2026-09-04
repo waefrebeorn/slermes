@@ -53,12 +53,12 @@
  *   the renderer-side walker is the only path that satisfies the issue.
  */
 
-import { queryVisible } from '@/components/pane-shell/pane-visibility'
+import { queryVisible } from "@/components/pane-shell/pane-visibility";
 
-const SCOPE_SELECTOR = '[data-chat-surface]'
-const HIGHLIGHT_CLASS = 'find-hit'
-const ACTIVE_ATTR = 'data-find-active'
-const ROOT_ATTR = 'data-find-root'
+const SCOPE_SELECTOR = "[data-chat-surface]";
+const HIGHLIGHT_CLASS = "find-hit";
+const ACTIVE_ATTR = "data-find-active";
+const ROOT_ATTR = "data-find-root";
 
 // ── Re-render watch ─────────────────────────────────────────────────────────
 // The transcript is React-owned and re-renders under us (streaming markdown,
@@ -71,13 +71,13 @@ const ROOT_ATTR = 'data-find-root'
 // so we take one more look afterwards instead of recursing infinitely. All
 // observer work is coalesced to a single microtask so a burst of mutations
 // (one streaming delta) lands as one re-apply.
-let observer: MutationObserver | null = null
-let scopeRoot: HTMLElement | null = null
-let activeQuery = ''
-let lastActiveOrdinal = 0
-let applying = false
-let pending = false
-let scheduled = false
+let observer: MutationObserver | null = null;
+let scopeRoot: HTMLElement | null = null;
+let activeQuery = "";
+let lastActiveOrdinal = 0;
+let applying = false;
+let pending = false;
+let scheduled = false;
 
 /**
  * The element the open FindBar should search. Captured at bar-open time and
@@ -88,34 +88,34 @@ let scheduled = false
  * route-change cleanup in FindBar closes the bar first).
  */
 export function resolveCurrentFindScope(): HTMLElement | null {
-  return queryVisible<HTMLElement>(SCOPE_SELECTOR)
+  return queryVisible<HTMLElement>(SCOPE_SELECTOR);
 }
 
 /** Capture the current view as the find scope. Called when the bar opens. */
 export function captureFindScope(): HTMLElement | null {
-  const root = resolveCurrentFindScope()
+  const root = resolveCurrentFindScope();
 
   if (root) {
-    root.setAttribute(ROOT_ATTR, '')
+    root.setAttribute(ROOT_ATTR, "");
   }
 
-  resetScopeState()
-  scopeRoot = root
+  resetScopeState();
+  scopeRoot = root;
 
-  return root
+  return root;
 }
 
 /** Forget a past scope: stop watching it and drop any queued re-apply. Called
  *  whenever the bar re-opens or closes so state never leaks across searches. */
 function resetScopeState(): void {
-  observer?.disconnect()
-  observer = null
-  scopeRoot = null
-  activeQuery = ''
-  lastActiveOrdinal = 0
-  applying = false
-  pending = false
-  scheduled = false
+  observer?.disconnect();
+  observer = null;
+  scopeRoot = null;
+  activeQuery = "";
+  lastActiveOrdinal = 0;
+  applying = false;
+  pending = false;
+  scheduled = false;
 }
 
 /**
@@ -128,23 +128,23 @@ function resetScopeState(): void {
  * actually reading (#81726).
  */
 export function currentFindScope(): HTMLElement | null {
-  const roots = document.querySelectorAll<HTMLElement>(`[${ROOT_ATTR}]`)
+  const roots = document.querySelectorAll<HTMLElement>(`[${ROOT_ATTR}]`);
 
   for (const root of roots) {
     if (!isElementInHiddenPane(root)) {
-      return root
+      return root;
     }
   }
 
   if (roots.length === 0) {
     // No captured scope — the bar was never opened, or releaseFindScope
     // already tore it down. Nothing to re-target to.
-    return null
+    return null;
   }
 
   // Every marked root is hidden — the captured surface lost a tab flip while
   // the bar stayed open. Move the scope to the now-foreground surface.
-  return retargetFindScope(roots)
+  return retargetFindScope(roots);
 }
 
 /**
@@ -157,35 +157,35 @@ export function currentFindScope(): HTMLElement | null {
  * qualifies as a view).
  */
 function retargetFindScope(roots: NodeListOf<HTMLElement>): HTMLElement | null {
-  const foreground = resolveCurrentFindScope()
+  const foreground = resolveCurrentFindScope();
 
   if (!foreground) {
-    return null
+    return null;
   }
 
   for (const root of roots) {
     if (root === foreground) {
-      continue
+      continue;
     }
 
-    clearHighlights(root)
-    root.removeAttribute(ROOT_ATTR)
+    clearHighlights(root);
+    root.removeAttribute(ROOT_ATTR);
   }
 
   // The re-render watcher is still observing the OLD root; detach it so the
   // next performScopedFind re-attaches to the new scope (ensureObserver only
   // trusts an observer whose root matches scopeRoot).
-  stopObserver()
-  scopeRoot = foreground
-  foreground.setAttribute(ROOT_ATTR, '')
+  stopObserver();
+  scopeRoot = foreground;
+  foreground.setAttribute(ROOT_ATTR, "");
 
-  return foreground
+  return foreground;
 }
 
 /** Same predicate pane-visibility exposes, kept local so this module is
  *  independently testable without an import cycle in the renderer. */
 function isElementInHiddenPane(element: Element): boolean {
-  return Boolean(element.closest('[data-pane-hidden]'))
+  return Boolean(element.closest("[data-pane-hidden]"));
 }
 
 /**
@@ -205,148 +205,148 @@ function isElementInHiddenPane(element: Element): boolean {
  * layout rather than the (now detached) original.
  */
 function highlightMatches(root: Element, query: string): HTMLElement[] {
-  const marks: HTMLElement[] = []
-  const lowerQuery = query.toLowerCase()
+  const marks: HTMLElement[] = [];
+  const lowerQuery = query.toLowerCase();
 
   if (!lowerQuery) {
-    return marks
+    return marks;
   }
 
-  let current: Node | null = root.firstChild
-  let textNode: Text | null = null
+  let current: Node | null = root.firstChild;
+  let textNode: Text | null = null;
 
   // Outer loop: walk element children until we have a text node to search.
   while (current) {
     if (current.nodeType === Node.TEXT_NODE) {
-      textNode = current as Text
+      textNode = current as Text;
     } else if (current.nodeType === Node.ELEMENT_NODE) {
-      const el = current as Element
+      const el = current as Element;
 
       // Skip elements we never want to search into. The walker is
       // deliberately flat (no recursion); a nested <p> in a <section>
       // becomes a fresh descendant scan via the recursive call below.
       if (shouldSkipElement(el)) {
-        current = el.nextSibling
+        current = el.nextSibling;
 
-        continue
+        continue;
       }
 
       // Recurse into the element's descendants.
-      const inner = highlightMatches(el, query)
+      const inner = highlightMatches(el, query);
 
-      marks.push(...inner)
-      current = el.nextSibling
+      marks.push(...inner);
+      current = el.nextSibling;
 
-      continue
+      continue;
     } else {
-      current = current.nextSibling
+      current = current.nextSibling;
 
-      continue
+      continue;
     }
 
     if (!textNode || !textNode.parentNode) {
-      current = textNode?.nextSibling ?? null
+      current = textNode?.nextSibling ?? null;
 
-      continue
+      continue;
     }
 
     // Search within this text node. Splits may invalidate `textNode`'s
     // identity, so we re-read it from the parent each iteration.
-    let nodeValue = textNode.nodeValue ?? ''
+    let nodeValue = textNode.nodeValue ?? "";
     // Capture the text node's own next sibling BEFORE any replaceChild:
     // once the original node is detached, `.nextSibling` reads null and
     // the outer walker would stop, skipping every following sibling
     // subtree (`<div>needle<span>needle</span></div>` searching "needle"
     // matched only the first). `continueFrom` is the sibling AFTER this
     // text node — for a fully-consumed match, the walker resumes there.
-    const continueFrom = textNode.nextSibling
+    const continueFrom = textNode.nextSibling;
 
     while (true) {
-      const lower = nodeValue.toLowerCase()
-      const idx = lower.indexOf(lowerQuery)
+      const lower = nodeValue.toLowerCase();
+      const idx = lower.indexOf(lowerQuery);
 
       if (idx === -1) {
-        break
+        break;
       }
 
-      const before = nodeValue.slice(0, idx)
-      const matchText = nodeValue.slice(idx, idx + lowerQuery.length)
-      const after = nodeValue.slice(idx + lowerQuery.length)
-      const parent = textNode.parentNode
+      const before = nodeValue.slice(0, idx);
+      const matchText = nodeValue.slice(idx, idx + lowerQuery.length);
+      const after = nodeValue.slice(idx + lowerQuery.length);
+      const parent = textNode.parentNode;
 
       if (!parent) {
-        break
+        break;
       }
 
-      const fragment = document.createDocumentFragment()
+      const fragment = document.createDocumentFragment();
 
       if (before) {
-        fragment.appendChild(document.createTextNode(before))
+        fragment.appendChild(document.createTextNode(before));
       }
 
-      const mark = document.createElement('mark')
+      const mark = document.createElement("mark");
 
-      mark.className = HIGHLIGHT_CLASS
-      mark.textContent = matchText
-      fragment.appendChild(mark)
+      mark.className = HIGHLIGHT_CLASS;
+      mark.textContent = matchText;
+      fragment.appendChild(mark);
 
       // Capture the after-sibling BEFORE replaceChild — replaceChild moves
       // the fragment's children into the parent and empties the fragment,
       // so looking at `fragment.lastChild` afterwards would point at a
       // detached `<mark>` (or null if `before` was empty).
-      const afterNode = after ? document.createTextNode(after) : null
+      const afterNode = after ? document.createTextNode(after) : null;
 
       if (afterNode) {
-        fragment.appendChild(afterNode)
+        fragment.appendChild(afterNode);
       }
 
-      parent.replaceChild(fragment, textNode)
+      parent.replaceChild(fragment, textNode);
 
-      marks.push(mark)
+      marks.push(mark);
 
       if (!afterNode) {
         // Whole text node consumed — nothing left to scan in this region.
-        textNode = null
+        textNode = null;
 
-        break
+        break;
       }
 
-      textNode = afterNode
-      nodeValue = afterNode.nodeValue ?? ''
+      textNode = afterNode;
+      nodeValue = afterNode.nodeValue ?? "";
     }
 
     if (textNode) {
-      current = textNode.nextSibling
+      current = textNode.nextSibling;
     } else {
       // The whole text node was consumed by matches — `textNode` was
       // detached by replaceChild so its own `.nextSibling` is null. Resume
       // the outer walker from the parent's next sibling (captured before
       // the first replaceChild), so the sibling subtree is still searched.
-      current = continueFrom
+      current = continueFrom;
     }
   }
 
-  return marks
+  return marks;
 }
 
 /** Elements we never want to descend into during a search. Mirrors the
  *  filter the TreeWalker applied in the original design. */
 function shouldSkipElement(el: Element): boolean {
-  const tag = el.tagName
+  const tag = el.tagName;
 
-  if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') {
-    return true
+  if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT") {
+    return true;
   }
 
   if (el.closest(`mark.${HIGHLIGHT_CLASS}`)) {
-    return true
+    return true;
   }
 
   if (el.closest('[role="search"]')) {
-    return true
+    return true;
   }
 
-  return false
+  return false;
 }
 
 /**
@@ -358,82 +358,84 @@ function shouldSkipElement(el: Element): boolean {
  * unwrapped, and stepping on that set would never highlight them.
  */
 function hasUnmarkedMatch(root: Element, query: string): boolean {
-  const lowerQuery = query.toLowerCase()
+  const lowerQuery = query.toLowerCase();
 
   if (!lowerQuery) {
-    return false
+    return false;
   }
 
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
 
   while (walker.nextNode()) {
-    const node = walker.currentNode as Text
-    const parent = node.parentElement
+    const node = walker.currentNode as Text;
+    const parent = node.parentElement;
 
     if (parent && shouldSkipElement(parent)) {
-      continue
+      continue;
     }
 
     if (node.nodeValue?.toLowerCase().includes(lowerQuery)) {
-      return true
+      return true;
     }
   }
 
-  return false
+  return false;
 }
 
 /** Remove every find-hit mark we previously added, restoring original text. */
 function clearHighlights(root: Element): void {
-  const marks = root.querySelectorAll<HTMLElement>(`mark.${HIGHLIGHT_CLASS}`)
+  const marks = root.querySelectorAll<HTMLElement>(`mark.${HIGHLIGHT_CLASS}`);
 
   for (const mark of marks) {
-    const parent = mark.parentNode
+    const parent = mark.parentNode;
 
     if (!parent) {
-      continue
+      continue;
     }
 
     while (mark.firstChild) {
-      parent.insertBefore(mark.firstChild, mark)
+      parent.insertBefore(mark.firstChild, mark);
     }
 
-    parent.removeChild(mark)
-    parent.normalize()
+    parent.removeChild(mark);
+    parent.normalize();
   }
 }
 
 /** Mark one element as the active match and scroll it into view. */
 function setActiveMark(mark: HTMLElement | null): void {
-  document.querySelectorAll(`mark[${ACTIVE_ATTR}]`).forEach(el => el.removeAttribute(ACTIVE_ATTR))
+  document
+    .querySelectorAll(`mark[${ACTIVE_ATTR}]`)
+    .forEach((el) => el.removeAttribute(ACTIVE_ATTR));
 
   if (!mark) {
-    return
+    return;
   }
 
-  mark.setAttribute(ACTIVE_ATTR, '')
+  mark.setAttribute(ACTIVE_ATTR, "");
 
   // Block: 'nearest' so a match already on screen doesn't twitch, but a
   // match below the fold scrolls into view instead of silently landing off-
   // screen. Inline: 'nearest' for the same reason. Guarded: jsdom does not
   // implement scrollIntoView, and the bar still needs to highlight even
   // when the renderer side has no layout (tests, headless boot, …).
-  if (typeof mark.scrollIntoView === 'function') {
-    mark.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  if (typeof mark.scrollIntoView === "function") {
+    mark.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
 }
 
 /** Result of a find / step — the same shape the bar already shows. */
 export interface ScopedFindResult {
-  count: number
-  activeOrdinal: number
+  count: number;
+  activeOrdinal: number;
 }
 
 export interface ScopedFindOptions {
-  forward: boolean
-  findNext: boolean
+  forward: boolean;
+  findNext: boolean;
 }
 
-const DEFAULT_RESULT: ScopedFindResult = { count: 0, activeOrdinal: 0 }
+const DEFAULT_RESULT: ScopedFindResult = { count: 0, activeOrdinal: 0 };
 
 /**
  * Run a scoped find against `root`. When `findNext` is true, advance / step
@@ -444,19 +446,25 @@ const DEFAULT_RESULT: ScopedFindResult = { count: 0, activeOrdinal: 0 }
  * plain object instead of pushing into the store keeps this helper testable
  * without a nanostores harness — the store wires it up.
  */
-export function performScopedFind(root: Element, query: string, options: ScopedFindOptions): ScopedFindResult {
+export function performScopedFind(
+  root: Element,
+  query: string,
+  options: ScopedFindOptions,
+): ScopedFindResult {
   if (!query) {
-    clearHighlights(root)
-    setActiveMark(null)
+    clearHighlights(root);
+    setActiveMark(null);
     // No query, no marks to maintain — stop watching and forget the query.
-    activeQuery = ''
-    lastActiveOrdinal = 0
-    stopObserver()
+    activeQuery = "";
+    lastActiveOrdinal = 0;
+    stopObserver();
 
-    return DEFAULT_RESULT
+    return DEFAULT_RESULT;
   }
 
-  const existingMarks = [...root.querySelectorAll<HTMLElement>(`mark.${HIGHLIGHT_CLASS}`)]
+  const existingMarks = [
+    ...root.querySelectorAll<HTMLElement>(`mark.${HIGHLIGHT_CLASS}`),
+  ];
 
   // The marks store the ORIGINAL-CASE source slice (`highlightMatches`
   // writes `mark.textContent = matchText`), so byte-equality against the
@@ -474,63 +482,67 @@ export function performScopedFind(root: Element, query: string, options: ScopedF
   const sameQuery =
     options.findNext &&
     existingMarks.length > 0 &&
-    existingMarks.every(mark => mark.textContent.toLowerCase() === query.toLowerCase()) &&
-    !hasUnmarkedMatch(root, query)
+    existingMarks.every(
+      (mark) => mark.textContent.toLowerCase() === query.toLowerCase(),
+    ) &&
+    !hasUnmarkedMatch(root, query);
 
-  let marks = existingMarks
+  let marks = existingMarks;
 
   if (!sameQuery) {
     // Mutate under the re-entrancy guard so the re-render watcher doesn't
     // fire on the marks WE are replacing (it has nothing to repair yet).
-    applying = true
+    applying = true;
 
     try {
-      clearHighlights(root)
-      marks = highlightMatches(root, query)
+      clearHighlights(root);
+      marks = highlightMatches(root, query);
     } finally {
-      applying = false
+      applying = false;
     }
   }
 
   if (marks.length === 0) {
-    setActiveMark(null)
+    setActiveMark(null);
     // A query that matches nothing has nothing to maintain.
-    activeQuery = ''
-    lastActiveOrdinal = 0
-    stopObserver()
+    activeQuery = "";
+    lastActiveOrdinal = 0;
+    stopObserver();
 
-    return DEFAULT_RESULT
+    return DEFAULT_RESULT;
   }
 
-  const previousActive = root.querySelector<HTMLElement>(`mark[${ACTIVE_ATTR}]`)
-  let nextIndex = 0
+  const previousActive = root.querySelector<HTMLElement>(
+    `mark[${ACTIVE_ATTR}]`,
+  );
+  let nextIndex = 0;
 
   if (previousActive) {
-    const previousIndex = marks.indexOf(previousActive)
+    const previousIndex = marks.indexOf(previousActive);
 
     if (previousIndex !== -1) {
       nextIndex = options.forward
         ? (previousIndex + 1) % marks.length
-        : (previousIndex - 1 + marks.length) % marks.length
+        : (previousIndex - 1 + marks.length) % marks.length;
     }
   } else if (!options.forward) {
     // Entering find mode backwards (Shift+Enter on first press): land on the
     // last match, matching browser convention.
-    nextIndex = marks.length - 1
+    nextIndex = marks.length - 1;
   }
 
-  setActiveMark(marks[nextIndex] ?? null)
+  setActiveMark(marks[nextIndex] ?? null);
 
   // A live search must survive React re-rendering the transcript under us.
   // Remember the query + active position and start watching the scope; the
   // observer re-wraps when a render detaches our marks and re-activates the
   // same ordinal so the user's place doesn't reset to match #1 on the next
   // streamed token.
-  activeQuery = query
-  lastActiveOrdinal = nextIndex + 1
-  ensureObserver(root)
+  activeQuery = query;
+  lastActiveOrdinal = nextIndex + 1;
+  ensureObserver(root);
 
-  return { count: marks.length, activeOrdinal: nextIndex + 1 }
+  return { count: marks.length, activeOrdinal: nextIndex + 1 };
 }
 
 // ── Re-apply on React re-render ─────────────────────────────────────────────
@@ -540,17 +552,17 @@ export function performScopedFind(root: Element, query: string, options: ScopedF
  */
 function ensureObserver(root: Element): void {
   if (observer && scopeRoot === root) {
-    return
+    return;
   }
 
-  stopObserver()
-  observer = new MutationObserver(() => scheduleReapply())
-  observer.observe(root, { childList: true, subtree: true })
+  stopObserver();
+  observer = new MutationObserver(() => scheduleReapply());
+  observer.observe(root, { childList: true, subtree: true });
 }
 
 function stopObserver(): void {
-  observer?.disconnect()
-  observer = null
+  observer?.disconnect();
+  observer = null;
 }
 
 /**
@@ -562,32 +574,32 @@ function scheduleReapply(): void {
   if (applying) {
     // A mutation landed while we were mutating the tree. We'll look again
     // once this apply finishes rather than recursing now.
-    pending = true
+    pending = true;
 
-    return
+    return;
   }
 
   if (scheduled || !scopeRoot || !activeQuery) {
-    return
+    return;
   }
 
-  scheduled = true
+  scheduled = true;
 
   queueMicrotask(() => {
-    scheduled = false
+    scheduled = false;
 
     if (applying || !scopeRoot || !activeQuery) {
-      return
+      return;
     }
 
     // Nothing to repair: every occurrence is still wrapped (React only
     // touched a region that doesn't match the query).
     if (!hasUnmarkedMatch(scopeRoot, activeQuery)) {
-      return
+      return;
     }
 
-    reapplying(scopeRoot)
-  })
+    reapplying(scopeRoot);
+  });
 }
 
 /**
@@ -597,43 +609,43 @@ function scheduleReapply(): void {
  * mutation that arrived during the apply.
  */
 function reapplying(root: HTMLElement): void {
-  const restoreOrdinal = lastActiveOrdinal
+  const restoreOrdinal = lastActiveOrdinal;
 
-  applying = true
+  applying = true;
 
   try {
-    clearHighlights(root)
-    const marks = highlightMatches(root, activeQuery)
+    clearHighlights(root);
+    const marks = highlightMatches(root, activeQuery);
 
     if (marks.length === 0) {
-      return
+      return;
     }
 
     // Re-activate the same ordinal the user last stood on, clamped to the
     // re-wrapped set, so a mid-stream re-render doesn't bounce their place
     // back to match #1.
-    const nextIndex = Math.min(restoreOrdinal - 1, marks.length - 1)
-    setActiveMark(marks[nextIndex] ?? null)
-    lastActiveOrdinal = nextIndex + 1
+    const nextIndex = Math.min(restoreOrdinal - 1, marks.length - 1);
+    setActiveMark(marks[nextIndex] ?? null);
+    lastActiveOrdinal = nextIndex + 1;
   } finally {
-    applying = false
+    applying = false;
   }
 
   if (pending) {
-    pending = false
-    scheduleReapply()
+    pending = false;
+    scheduleReapply();
   }
 }
 
 /** Tear down highlights and the scope marker — called when the bar closes. */
 export function releaseFindScope(): void {
-  const roots = document.querySelectorAll<HTMLElement>(`[${ROOT_ATTR}]`)
+  const roots = document.querySelectorAll<HTMLElement>(`[${ROOT_ATTR}]`);
 
   for (const root of roots) {
-    clearHighlights(root)
-    root.removeAttribute(ROOT_ATTR)
+    clearHighlights(root);
+    root.removeAttribute(ROOT_ATTR);
   }
 
-  setActiveMark(null)
-  resetScopeState()
+  setActiveMark(null);
+  resetScopeState();
 }

@@ -1,11 +1,11 @@
-import { NEW_SESSION_TITLE } from '@/lib/chat-runtime'
-import { useStoreSelector } from '@/lib/use-session-slice'
-import { $draftTitles, draftTitleIn } from '@/store/composer'
+import { NEW_SESSION_TITLE } from "@/lib/chat-runtime";
+import { useStoreSelector } from "@/lib/use-session-slice";
+import { $draftTitles, draftTitleIn } from "@/store/composer";
 
 export interface SessionDraftTitleProps {
   /** The draft's composer key — a tile's stored session id, or null for the
    *  new chat that has no session yet. */
-  scope: null | string
+  scope: null | string;
 }
 
 /**
@@ -21,5 +21,8 @@ export interface SessionDraftTitleProps {
  * reads the same as one never typed into.
  */
 export function SessionDraftTitle({ scope }: SessionDraftTitleProps) {
-  return useStoreSelector($draftTitles, titles => draftTitleIn(titles, scope)) || NEW_SESSION_TITLE
+  return (
+    useStoreSelector($draftTitles, (titles) => draftTitleIn(titles, scope)) ||
+    NEW_SESSION_TITLE
+  );
 }

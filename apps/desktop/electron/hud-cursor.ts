@@ -18,15 +18,15 @@
  */
 
 interface Point {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 
 interface Bounds {
-  x: number
-  y: number
-  width: number
-  height: number
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 /**
@@ -49,17 +49,21 @@ interface Bounds {
  * window back to the app underneath instead of leaving it solid on a stale
  * point.
  */
-export function cursorPointInWindow(cursor: Point, bounds: Bounds, zoomFactor: number): Point | null {
-  const dx = cursor.x - bounds.x
-  const dy = cursor.y - bounds.y
+export function cursorPointInWindow(
+  cursor: Point,
+  bounds: Bounds,
+  zoomFactor: number,
+): Point | null {
+  const dx = cursor.x - bounds.x;
+  const dy = cursor.y - bounds.y;
 
   if (dx < 0 || dy < 0 || dx >= bounds.width || dy >= bounds.height) {
-    return null
+    return null;
   }
 
   // A zero or bogus factor would divide the point into infinity; treat anything
   // non-positive as unzoomed rather than poisoning the hit test.
-  const scale = Number.isFinite(zoomFactor) && zoomFactor > 0 ? zoomFactor : 1
+  const scale = Number.isFinite(zoomFactor) && zoomFactor > 0 ? zoomFactor : 1;
 
-  return { x: dx / scale, y: dy / scale }
+  return { x: dx / scale, y: dy / scale };
 }

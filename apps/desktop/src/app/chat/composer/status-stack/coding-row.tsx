@@ -1,48 +1,62 @@
-import { useStore } from '@nanostores/react'
-import { memo, useEffect } from 'react'
+import { useStore } from "@nanostores/react";
+import { memo, useEffect } from "react";
 
-import { PrTag } from '@/app/chat/pr-tag'
-import { StatusRow } from '@/components/chat/status-row'
+import { PrTag } from "@/app/chat/pr-tag";
+import { StatusRow } from "@/components/chat/status-row";
 import {
   type ActionItemSpec,
   ActionsContextMenu,
   ActionsMenu,
   type MenuKit,
-  renderActionItem
-} from '@/components/ui/actions-menu'
-import { Button } from '@/components/ui/button'
-import { Codicon } from '@/components/ui/codicon'
-import { CopyButton } from '@/components/ui/copy-button'
-import { DiffCount } from '@/components/ui/diff-count'
-import type { HermesGitBranch } from '@/global'
-import { useI18n } from '@/i18n'
-import { displayPath } from '@/lib/display-path'
-import { openWorktreeDialog, registerRepoStatusCwd, repoStatusForCwd, repoWorktreesForCwd } from '@/store/coding-status'
-import { notifyError } from '@/store/notifications'
-import { $pullRequestsByBranch, branchPrKey, refreshPullRequests } from '@/store/pull-requests'
+  renderActionItem,
+} from "@/components/ui/actions-menu";
+import { Button } from "@/components/ui/button";
+import { Codicon } from "@/components/ui/codicon";
+import { CopyButton } from "@/components/ui/copy-button";
+import { DiffCount } from "@/components/ui/diff-count";
+import type { HermesGitBranch } from "@/global";
+import { useI18n } from "@/i18n";
+import { displayPath } from "@/lib/display-path";
+import {
+  openWorktreeDialog,
+  registerRepoStatusCwd,
+  repoStatusForCwd,
+  repoWorktreesForCwd,
+} from "@/store/coding-status";
+import { notifyError } from "@/store/notifications";
+import {
+  $pullRequestsByBranch,
+  branchPrKey,
+  refreshPullRequests,
+} from "@/store/pull-requests";
 
 // Tiny uppercase section header, matching the composer "+" menu's labels.
-const MENU_SECTION = 'text-[0.625rem] font-semibold uppercase tracking-wider text-(--ui-text-tertiary)'
+const MENU_SECTION =
+  "text-[0.625rem] font-semibold uppercase tracking-wider text-(--ui-text-tertiary)";
 
 interface CodingStatusRowProps {
   /** Branch the current draft off into a fresh worktree + session, based on
    *  `base` (a branch name; omitted = current HEAD). The composer owns the
    *  draft, so it supplies the orchestration; the row just collects the new
    *  branch name + base. Omitted (e.g. remote backend) hides the affordance. */
-  onBranchOff?: (branch: string, base?: string) => Promise<void>
+  onBranchOff?: (branch: string, base?: string) => Promise<void>;
   /** Check an existing branch out into a fresh worktree + session (no new
    *  branch). Drives the dialog's "convert a branch" picker. */
-  onConvertBranch?: (branch: string, path?: null | string, isDefault?: boolean) => Promise<void>
+  onConvertBranch?: (
+    branch: string,
+    path?: null | string,
+    isDefault?: boolean,
+  ) => Promise<void>;
   /** List the repo's local branches for the "convert a branch" picker. */
-  onListBranches?: () => Promise<HermesGitBranch[]>
+  onListBranches?: () => Promise<HermesGitBranch[]>;
   /** Open the review pane (changed files + diffs). */
-  onOpen?: () => void
+  onOpen?: () => void;
   /** Jump into an existing worktree (open a fresh session anchored there). */
-  onOpenWorktree?: (path: string) => void
+  onOpenWorktree?: (path: string) => void;
   /** Switch the current repo checkout to another branch. */
-  onSwitchBranch?: (branch: string) => Promise<void>
+  onSwitchBranch?: (branch: string) => Promise<void>;
   /** Repo root path for the worktree dialog. */
-  repoPath?: null | string
+  repoPath?: null | string;
 }
 
 /**
@@ -59,51 +73,52 @@ export const CodingStatusRow = memo(function CodingStatusRow({
   onOpen,
   onOpenWorktree,
   onSwitchBranch,
-  repoPath
+  repoPath,
 }: CodingStatusRowProps) {
-  const { t } = useI18n()
-  const s = t.statusStack.coding
-  const p = t.sidebar.projects
-  const fileMenu = t.fileMenu
-  const resolvedRepoPath = repoPath?.trim() || undefined
+  const { t } = useI18n();
+  const s = t.statusStack.coding;
+  const p = t.sidebar.projects;
+  const fileMenu = t.fileMenu;
+  const resolvedRepoPath = repoPath?.trim() || undefined;
   // This surface's OWN worktree, always — never the primary's. The row used to
   // fall back to the global `$repoStatus` for a blank repoPath, which painted
   // the main pane's branch/± onto a tile whose cwd hadn't resolved yet. That
   // fallback bought nothing (the primary's computed is keyed to `$currentCwd`,
   // which is blank in exactly the same case) and cost a wrong-tree rail.
-  const status = useStore(repoStatusForCwd(resolvedRepoPath))
-  const worktrees = useStore(repoWorktreesForCwd(resolvedRepoPath))
+  const status = useStore(repoStatusForCwd(resolvedRepoPath));
+  const worktrees = useStore(repoWorktreesForCwd(resolvedRepoPath));
 
   // While mounted, keep this worktree in the coding-status refresh set so the
   // turn-settle / tool-complete / focus edges re-probe it too (tiles otherwise
   // only refreshed when the MAIN cwd probe happened to cover them).
-  useEffect(() => registerRepoStatusCwd(resolvedRepoPath), [resolvedRepoPath])
+  useEffect(() => registerRepoStatusCwd(resolvedRepoPath), [resolvedRepoPath]);
 
   // The branch's PR, so the rail links to it instead of leaving you to go find
   // it. One `gh` lookup for this one branch, TTL-cached in the store and shared
   // with the sidebar's badges.
-  const prBranch = status?.detached ? null : status?.branch || null
+  const prBranch = status?.detached ? null : status?.branch || null;
 
   useEffect(() => {
     if (resolvedRepoPath && prBranch) {
-      void refreshPullRequests({ [resolvedRepoPath]: [prBranch] })
+      void refreshPullRequests({ [resolvedRepoPath]: [prBranch] });
     }
-  }, [resolvedRepoPath, prBranch])
+  }, [resolvedRepoPath, prBranch]);
 
-  const pr =
-    useStore($pullRequestsByBranch)[resolvedRepoPath && prBranch ? branchPrKey(resolvedRepoPath, prBranch) : '']
+  const pr = useStore($pullRequestsByBranch)[
+    resolvedRepoPath && prBranch ? branchPrKey(resolvedRepoPath, prBranch) : ""
+  ];
 
   const switchToBranch = async (branch: string) => {
     if (!onSwitchBranch) {
-      return
+      return;
     }
 
     try {
-      await onSwitchBranch(branch)
+      await onSwitchBranch(branch);
     } catch (err) {
-      notifyError(err, s.switchFailed(branch))
+      notifyError(err, s.switchFailed(branch));
     }
-  }
+  };
 
   // useKeybinds now handles the ⌘⇧B hotkey globally, through
   // openWorktreeDialog. One dialog is mounted in the sidebar, so N mounted
@@ -111,98 +126,114 @@ export const CodingStatusRow = memo(function CodingStatusRow({
   // publish the intent. They pin the repo of THIS rail, so the kebab of a tile
   // targets the worktree of that tile.
   const startBranch = (base: string | undefined) => {
-    void openWorktreeDialog({ base, repoPath: resolvedRepoPath })
-  }
+    void openWorktreeDialog({ base, repoPath: resolvedRepoPath });
+  };
 
   if (!status) {
-    return null
+    return null;
   }
 
-  const branchLabel = status.detached ? s.detached : status.branch || s.noBranch
+  const branchLabel = status.detached
+    ? s.detached
+    : status.branch || s.noBranch;
   // The kebab offers branching off the trunk and/or the current branch. The
   // worktree-add bases the new branch on `base` (a branch name; undefined =
   // current HEAD). We dedupe so "on main" shows a single trunk entry, and fall
   // back to a plain off-HEAD branch when no trunk is detected.
-  const current = status.detached ? null : status.branch
-  const branchTargets: { base: string | undefined; label: string }[] = []
+  const current = status.detached ? null : status.branch;
+  const branchTargets: { base: string | undefined; label: string }[] = [];
 
   // Current branch first (the 99% "branch off where I am"), then the trunk just
   // below it ("New branch from main"), deduped when they're the same.
   if (current) {
-    branchTargets.push({ base: current, label: s.branchOffFrom(current) })
+    branchTargets.push({ base: current, label: s.branchOffFrom(current) });
   }
 
   if (status.defaultBranch && status.defaultBranch !== current) {
-    branchTargets.push({ base: status.defaultBranch, label: s.branchOffFrom(status.defaultBranch) })
+    branchTargets.push({
+      base: status.defaultBranch,
+      label: s.branchOffFrom(status.defaultBranch),
+    });
   }
 
   if (branchTargets.length === 0) {
-    branchTargets.push({ base: undefined, label: s.newBranch })
+    branchTargets.push({ base: undefined, label: s.newBranch });
   }
 
   const switchTarget =
-    onSwitchBranch && current && status.defaultBranch && status.defaultBranch !== current ? status.defaultBranch : null
+    onSwitchBranch &&
+    current &&
+    status.defaultBranch &&
+    status.defaultBranch !== current
+      ? status.defaultBranch
+      : null;
 
   // Other worktrees to jump into — everything except the one we're already in
   // (matched by its checked-out branch) and the bare/main placeholder entry.
   const otherWorktrees = onOpenWorktree
-    ? worktrees.filter(w => w.path && !w.detached && w.branch && w.branch !== current)
-    : []
+    ? worktrees.filter(
+        (w) => w.path && !w.detached && w.branch && w.branch !== current,
+      )
+    : [];
 
-  const hasLineDelta = status.added > 0 || status.removed > 0
+  const hasLineDelta = status.added > 0 || status.removed > 0;
   // Untracked files carry no line delta vs HEAD, so surface them as a count when
   // they're the only change (otherwise +/- tells the story).
-  const untrackedOnly = !hasLineDelta && status.untracked > 0
+  const untrackedOnly = !hasLineDelta && status.untracked > 0;
 
   // The branch actions, rendered identically by the kebab dropdown and the
   // row's right-click menu so the two never drift. `onBranchOff` gates the
   // whole menu (omitted = remote backend), matching the kebab.
   const renderBranchItems = (kit: MenuKit) => {
-    const branchItems: ActionItemSpec[] = branchTargets.map(target => ({
-      key: target.base ?? '__head__',
+    const branchItems: ActionItemSpec[] = branchTargets.map((target) => ({
+      key: target.base ?? "__head__",
       label: <span className="truncate">{target.label}</span>,
-      onSelect: () => startBranch(target.base)
-    }))
+      onSelect: () => startBranch(target.base),
+    }));
 
-    const worktreeItems: ActionItemSpec[] = otherWorktrees.map(worktree => ({
+    const worktreeItems: ActionItemSpec[] = otherWorktrees.map((worktree) => ({
       key: worktree.path,
       label: <span className="truncate">{worktree.branch}</span>,
-      onSelect: () => onOpenWorktree?.(worktree.path)
-    }))
+      onSelect: () => onOpenWorktree?.(worktree.path),
+    }));
 
     return (
       <>
         <kit.Label className={MENU_SECTION}>{s.newBranch}</kit.Label>
-        {branchItems.map(item => renderActionItem(kit, item))}
+        {branchItems.map((item) => renderActionItem(kit, item))}
         {switchTarget &&
           renderActionItem(kit, {
-            key: '__switch__',
+            key: "__switch__",
             label: <span className="truncate">{s.switchTo(switchTarget)}</span>,
-            onSelect: () => void switchToBranch(switchTarget)
+            onSelect: () => void switchToBranch(switchTarget),
           })}
         <kit.Separator />
         <kit.Label className={MENU_SECTION}>{s.worktrees}</kit.Label>
-        {worktreeItems.map(item => renderActionItem(kit, item))}
+        {worktreeItems.map((item) => renderActionItem(kit, item))}
         {/* Create a fresh worktree off the current HEAD (the generic "spin up a
             worktree here", mirroring the sidebar's + button). */}
         {renderActionItem(kit, {
-          key: '__start__',
+          key: "__start__",
           label: <span className="truncate">{p.startWork}</span>,
-          onSelect: () => startBranch(undefined)
+          onSelect: () => startBranch(undefined),
         })}
         {onConvertBranch &&
           renderActionItem(kit, {
-            key: '__convert__',
+            key: "__convert__",
             label: <span className="truncate">{p.convertBranch}</span>,
-            onSelect: () => startBranch(undefined)
+            onSelect: () => startBranch(undefined),
           })}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
-      <ActionsContextMenu contentClassName="w-60" disabled={!onBranchOff} items={renderBranchItems}>
+      <ActionsContextMenu
+        contentClassName="w-60"
+        disabled={!onBranchOff}
+        items={renderBranchItems}
+      >
         <StatusRow
           // The base "where am I working" strip is part of the composer surface
           // itself, so it inherits the composer's width and clipped top radius.
@@ -214,8 +245,16 @@ export const CodingStatusRow = memo(function CodingStatusRow({
           // It's a button (not the whole row) so the glyph opens the review pane
           // while the strip around it stays inert; size-3.5 fills the slot exactly.
           leading={
-            <button className="flex size-3.5 items-center justify-center" onClick={onOpen} type="button">
-              <Codicon className="text-(--ui-green)" name="git-branch" size="0.8rem" />
+            <button
+              className="flex size-3.5 items-center justify-center"
+              onClick={onOpen}
+              type="button"
+            >
+              <Codicon
+                className="text-(--ui-green)"
+                name="git-branch"
+                size="0.8rem"
+              />
             </button>
           }
         >
@@ -229,7 +268,10 @@ export const CodingStatusRow = memo(function CodingStatusRow({
                 so the button lays out nothing of its own: the label stays the
                 same flex child it always was, and the hit area is the text. */}
             <button className="contents" onClick={onOpen} type="button">
-              <span className="min-w-0 truncate text-xs font-normal text-muted-foreground/92" title={branchLabel}>
+              <span
+                className="min-w-0 truncate text-xs font-normal text-muted-foreground/92"
+                title={branchLabel}
+              >
                 {branchLabel}
               </span>
             </button>
@@ -291,18 +333,27 @@ export const CodingStatusRow = memo(function CodingStatusRow({
           {/* The counts describe what's in the review pane, so clicking them
               opens it. `contents` again: the two spans stay direct flex children
               of the row, keeping their gap and `ml-auto` behaviour untouched. */}
-          {(status.ahead > 0 || status.behind > 0 || hasLineDelta || untrackedOnly) && (
+          {(status.ahead > 0 ||
+            status.behind > 0 ||
+            hasLineDelta ||
+            untrackedOnly) && (
             <button className="contents" onClick={onOpen} type="button">
               {(status.ahead > 0 || status.behind > 0) && (
                 <span className="ml-auto flex shrink-0 items-center gap-1.5 text-[0.68rem] leading-4 text-muted-foreground/75 tabular-nums">
                   {status.ahead > 0 && (
-                    <span className="flex items-center gap-0.5" title={s.ahead(status.ahead)}>
+                    <span
+                      className="flex items-center gap-0.5"
+                      title={s.ahead(status.ahead)}
+                    >
                       <span aria-hidden>↑</span>
                       {status.ahead}
                     </span>
                   )}
                   {status.behind > 0 && (
-                    <span className="flex items-center gap-0.5" title={s.behind(status.behind)}>
+                    <span
+                      className="flex items-center gap-0.5"
+                      title={s.behind(status.behind)}
+                    >
                       <span aria-hidden>↓</span>
                       {status.behind}
                     </span>
@@ -313,12 +364,12 @@ export const CodingStatusRow = memo(function CodingStatusRow({
               {hasLineDelta ? (
                 <DiffCount
                   added={status.added}
-                  className={`text-[0.72rem] leading-4 ${status.ahead === 0 && status.behind === 0 ? 'ml-auto' : ''}`}
+                  className={`text-[0.72rem] leading-4 ${status.ahead === 0 && status.behind === 0 ? "ml-auto" : ""}`}
                   removed={status.removed}
                 />
               ) : untrackedOnly ? (
                 <span
-                  className={`shrink-0 text-[0.72rem] leading-4 text-amber-500/90 ${status.ahead === 0 && status.behind === 0 ? 'ml-auto' : ''}`}
+                  className={`shrink-0 text-[0.72rem] leading-4 text-amber-500/90 ${status.ahead === 0 && status.behind === 0 ? "ml-auto" : ""}`}
                 >
                   {s.changed(status.untracked)}
                 </span>
@@ -328,5 +379,5 @@ export const CodingStatusRow = memo(function CodingStatusRow({
         </StatusRow>
       </ActionsContextMenu>
     </>
-  )
-})
+  );
+});

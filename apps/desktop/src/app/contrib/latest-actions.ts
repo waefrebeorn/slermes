@@ -1,4 +1,4 @@
-import type { ChatActions, SidebarActions } from './types'
+import type { ChatActions, SidebarActions } from "./types";
 
 /**
  * Surfaces receive one stable `actions` object whose fields are mutated by the
@@ -18,14 +18,14 @@ import type { ChatActions, SidebarActions } from './types'
  * latest value inside the wrapper for the stale-closure fix.
  */
 function latestOptional<A extends unknown[], R>(
-  read: () => ((...args: A) => R) | undefined
+  read: () => ((...args: A) => R) | undefined,
 ): ((...args: A) => R) | undefined {
   // Presence is sampled from the object identity the surface currently holds.
   // The controller mutates fields in place rather than swapping a handler
   // between defined and undefined, so presence is stable for a given actions
   // object while the *closure* is what churns — which is exactly what the
   // indirection below re-reads.
-  return read() ? (...args: A) => read()!(...args) : undefined
+  return read() ? (...args: A) => read()!(...args) : undefined;
 }
 
 export function latestChatActions(actions: ChatActions): ChatActions {
@@ -36,7 +36,8 @@ export function latestChatActions(actions: ChatActions): ChatActions {
     onAttachImageBlob: (...args) => actions.onAttachImageBlob(...args),
     onBranchInNewChat: latestOptional(() => actions.onBranchInNewChat),
     onCancel: (...args) => actions.onCancel(...args),
-    onDeleteSelectedSession: (...args) => actions.onDeleteSelectedSession(...args),
+    onDeleteSelectedSession: (...args) =>
+      actions.onDeleteSelectedSession(...args),
     onDismissError: latestOptional(() => actions.onDismissError),
     onEdit: (...args) => actions.onEdit(...args),
     onPasteClipboardImage: (...args) => actions.onPasteClipboardImage(...args),
@@ -49,10 +50,11 @@ export function latestChatActions(actions: ChatActions): ChatActions {
     onRetryResume: (...args) => actions.onRetryResume(...args),
     onSteer: (...args) => actions.onSteer(...args),
     onSubmit: (...args) => actions.onSubmit(...args),
-    onThreadMessagesChange: (...args) => actions.onThreadMessagesChange(...args),
+    onThreadMessagesChange: (...args) =>
+      actions.onThreadMessagesChange(...args),
     onToggleSelectedPin: (...args) => actions.onToggleSelectedPin(...args),
-    onTranscribeAudio: latestOptional(() => actions.onTranscribeAudio)
-  }
+    onTranscribeAudio: latestOptional(() => actions.onTranscribeAudio),
+  };
 }
 
 export function latestSidebarActions(actions: SidebarActions): SidebarActions {
@@ -64,9 +66,10 @@ export function latestSidebarActions(actions: SidebarActions): SidebarActions {
     onLoadMoreSessions: (...args) => actions.onLoadMoreSessions(...args),
     onManageCronJob: (...args) => actions.onManageCronJob(...args),
     onNavigate: (...args) => actions.onNavigate(...args),
-    onNewSessionInWorkspace: (...args) => actions.onNewSessionInWorkspace(...args),
+    onNewSessionInWorkspace: (...args) =>
+      actions.onNewSessionInWorkspace(...args),
     onNewSessionSplit: (...args) => actions.onNewSessionSplit(...args),
     onResumeSession: (...args) => actions.onResumeSession(...args),
-    onTriggerCronJob: (...args) => actions.onTriggerCronJob(...args)
-  }
+    onTriggerCronJob: (...args) => actions.onTriggerCronJob(...args),
+  };
 }

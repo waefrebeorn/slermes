@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from "react";
 
-import { useI18n } from '@/i18n'
-import { resetBrowseState } from '@/store/composer-input-history'
+import { useI18n } from "@/i18n";
+import { resetBrowseState } from "@/store/composer-input-history";
 
-import { pickPlaceholder } from '../composer-utils'
+import { pickPlaceholder } from "../composer-utils";
 
 interface UseComposerPlaceholderOptions {
-  disabled: boolean
-  reconnecting: boolean
-  sessionId: null | string | undefined
+  disabled: boolean;
+  reconnecting: boolean;
+  sessionId: null | string | undefined;
 }
 
 /**
@@ -18,35 +18,43 @@ interface UseComposerPlaceholderOptions {
  * keeps its starter so the text doesn't flip mid-stream. While the transport is
  * down, it swaps to a reconnecting / starting message instead.
  */
-export function useComposerPlaceholder({ disabled, reconnecting, sessionId }: UseComposerPlaceholderOptions): string {
-  const { t } = useI18n()
-  const newSessionPlaceholders = t.composer.newSessionPlaceholders
-  const followUpPlaceholders = t.composer.followUpPlaceholders
+export function useComposerPlaceholder({
+  disabled,
+  reconnecting,
+  sessionId,
+}: UseComposerPlaceholderOptions): string {
+  const { t } = useI18n();
+  const newSessionPlaceholders = t.composer.newSessionPlaceholders;
+  const followUpPlaceholders = t.composer.followUpPlaceholders;
 
   const [restingPlaceholder, setRestingPlaceholder] = useState(() =>
-    pickPlaceholder(sessionId ? followUpPlaceholders : newSessionPlaceholders)
-  )
+    pickPlaceholder(sessionId ? followUpPlaceholders : newSessionPlaceholders),
+  );
 
-  const prevSessionIdRef = useRef(sessionId)
+  const prevSessionIdRef = useRef(sessionId);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    const prev = prevSessionIdRef.current
-    prevSessionIdRef.current = sessionId
+    const prev = prevSessionIdRef.current;
+    prevSessionIdRef.current = sessionId;
 
     if (prev === sessionId) {
-      return
+      return;
     }
 
     // null → id: the new session we're already in just got persisted. Keep the
     // starter we showed instead of swapping to a follow-up under the user.
     if (prev == null && sessionId) {
-      return
+      return;
     }
 
-    resetBrowseState(prev)
-    setRestingPlaceholder(pickPlaceholder(sessionId ? followUpPlaceholders : newSessionPlaceholders))
-  }, [followUpPlaceholders, newSessionPlaceholders, sessionId])
+    resetBrowseState(prev);
+    setRestingPlaceholder(
+      pickPlaceholder(
+        sessionId ? followUpPlaceholders : newSessionPlaceholders,
+      ),
+    );
+  }, [followUpPlaceholders, newSessionPlaceholders, sessionId]);
 
   // When the transport is disabled it's because the gateway isn't open.
   // Distinguish a cold start ("Starting Hermes...") from a dropped connection
@@ -57,5 +65,5 @@ export function useComposerPlaceholder({ disabled, reconnecting, sessionId }: Us
     ? reconnecting
       ? t.composer.placeholderReconnecting
       : t.composer.placeholderStarting
-    : restingPlaceholder
+    : restingPlaceholder;
 }

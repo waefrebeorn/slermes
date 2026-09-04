@@ -1,6 +1,10 @@
-import { execFile } from 'node:child_process'
+import { execFile } from "node:child_process";
 
-import { appendUniquePathEntries, delimiterForPlatform, pathEnvKey } from './backend-env'
+import {
+  appendUniquePathEntries,
+  delimiterForPlatform,
+  pathEnvKey,
+} from "./backend-env";
 
 // Login-shell PATH resolution for GUI launches.
 //
@@ -24,156 +28,171 @@ import { appendUniquePathEntries, delimiterForPlatform, pathEnvKey } from './bac
 // Every attempt is bounded by a timeout, stdin is closed immediately, and any
 // failure leaves PATH untouched.
 
-const PATH_START = '__HERMES_LOGIN_PATH_START__'
-const PATH_END = '__HERMES_LOGIN_PATH_END__'
-const PROBE_COMMAND = "printf '%s' \"" + PATH_START + '${PATH}' + PATH_END + '"'
-const ATTEMPT_TIMEOUT_MS = 5000
+const PATH_START = "__HERMES_LOGIN_PATH_START__";
+const PATH_END = "__HERMES_LOGIN_PATH_END__";
+const PROBE_COMMAND =
+  "printf '%s' \"" + PATH_START + "${PATH}" + PATH_END + '"';
+const ATTEMPT_TIMEOUT_MS = 5000;
 
-function loginShellExecutable(env: any = process.env, platform = process.platform) {
-  const shell = typeof env?.SHELL === 'string' ? env.SHELL.trim() : ''
+function loginShellExecutable(
+  env: any = process.env,
+  platform = process.platform,
+) {
+  const shell = typeof env?.SHELL === "string" ? env.SHELL.trim() : "";
 
   if (shell) {
-    return shell
+    return shell;
   }
 
   // macOS Catalina+ defaults to zsh; most Linux distros default to bash.
-  return platform === 'darwin' ? '/bin/zsh' : '/bin/bash'
+  return platform === "darwin" ? "/bin/zsh" : "/bin/bash";
 }
 
 // Extract $PATH from between the sentinel markers. Uses the LAST start marker
 // so a profile that echoes the environment (or the command line itself) can't
 // poison the capture with an earlier partial match.
 function extractSentinelPath(stdout) {
-  const text = String(stdout || '')
-  const start = text.lastIndexOf(PATH_START)
+  const text = String(stdout || "");
+  const start = text.lastIndexOf(PATH_START);
 
   if (start === -1) {
-    return null
+    return null;
   }
 
-  const valueStart = start + PATH_START.length
-  const end = text.indexOf(PATH_END, valueStart)
+  const valueStart = start + PATH_START.length;
+  const end = text.indexOf(PATH_END, valueStart);
 
   if (end === -1) {
-    return null
+    return null;
   }
 
-  return text.slice(valueStart, end).trim() || null
+  return text.slice(valueStart, end).trim() || null;
 }
 
 // Login-shell entries first (Homebrew/version-manager dirs win), then any
 // current-only entries appended, duplicates and empties dropped.
-function mergeLoginShellPath(loginPath, currentPath, { delimiter = ':' }: any = {}) {
-  return appendUniquePathEntries([loginPath, currentPath], { delimiter })
+function mergeLoginShellPath(
+  loginPath,
+  currentPath,
+  { delimiter = ":" }: any = {},
+) {
+  return appendUniquePathEntries([loginPath, currentPath], { delimiter });
 }
 
 function runProbe(shell, flags, execFileFn, timeoutMs): Promise<string | null> {
-  return new Promise(resolve => {
-    let settled = false
+  return new Promise((resolve) => {
+    let settled = false;
 
-    const finish = value => {
+    const finish = (value) => {
       if (!settled) {
-        settled = true
-        resolve(value)
+        settled = true;
+        resolve(value);
       }
-    }
+    };
 
     try {
       const child = execFileFn(
         shell,
         [...flags, PROBE_COMMAND],
-        { encoding: 'utf8', timeout: timeoutMs, windowsHide: true },
+        { encoding: "utf8", timeout: timeoutMs, windowsHide: true },
         (_error, stdout) => {
           // A profile script may exit nonzero after the sentinel already
           // printed — trust the sentinel, not the exit code.
-          finish(extractSentinelPath(stdout))
-        }
-      )
+          finish(extractSentinelPath(stdout));
+        },
+      );
 
       // Interactive shells with a broken rc can block reading stdin.
-      child?.stdin?.end?.()
+      child?.stdin?.end?.();
     } catch {
-      finish(null)
+      finish(null);
     }
-  })
+  });
 }
 
 async function captureLoginShellPath({
   env = process.env,
   platform = process.platform,
   execFileFn = execFile,
-  timeoutMs = ATTEMPT_TIMEOUT_MS
+  timeoutMs = ATTEMPT_TIMEOUT_MS,
 }: any = {}) {
-  if (platform === 'win32') {
+  if (platform === "win32") {
     // GUI apps on Windows inherit the user PATH from the registry env block;
     // the launchd-minimal-PATH problem is POSIX-only.
-    return null
+    return null;
   }
 
-  const shell = loginShellExecutable(env, platform)
+  const shell = loginShellExecutable(env, platform);
 
   // -l sources ~/.zprofile / ~/.profile (where `brew shellenv` lives); -i
   // sources ~/.zshrc / ~/.bashrc (where nvm/pyenv-style managers live). Some
   // shells swallow combined -ilc with a non-tty stdin (macOS system bash 3.2
   // — see tests/tools/test_find_shell.py), so fall back to a plain login
   // shell before giving up.
-  for (const flags of [['-ilc'], ['-lc']]) {
-    const captured = await runProbe(shell, flags, execFileFn, timeoutMs)
+  for (const flags of [["-ilc"], ["-lc"]]) {
+    const captured = await runProbe(shell, flags, execFileFn, timeoutMs);
 
     if (captured) {
-      return captured
+      return captured;
     }
   }
 
-  return null
+  return null;
 }
 
 async function applyLoginShellPath({
   env = process.env,
   platform = process.platform,
   execFileFn = execFile,
-  timeoutMs = ATTEMPT_TIMEOUT_MS
+  timeoutMs = ATTEMPT_TIMEOUT_MS,
 }: any = {}) {
-  if (platform === 'win32') {
-    return { applied: false, reason: 'win32' }
+  if (platform === "win32") {
+    return { applied: false, reason: "win32" };
   }
 
-  const loginPath = await captureLoginShellPath({ env, platform, execFileFn, timeoutMs })
+  const loginPath = await captureLoginShellPath({
+    env,
+    platform,
+    execFileFn,
+    timeoutMs,
+  });
 
   if (!loginPath) {
-    return { applied: false, reason: 'unresolved' }
+    return { applied: false, reason: "unresolved" };
   }
 
-  const key = pathEnvKey(env, platform)
-  const delimiter = delimiterForPlatform(platform)
-  const merged = mergeLoginShellPath(loginPath, env?.[key] || '', { delimiter })
+  const key = pathEnvKey(env, platform);
+  const delimiter = delimiterForPlatform(platform);
+  const merged = mergeLoginShellPath(loginPath, env?.[key] || "", {
+    delimiter,
+  });
 
   if (!merged || merged === env?.[key]) {
-    return { applied: false, reason: 'unchanged', path: merged }
+    return { applied: false, reason: "unchanged", path: merged };
   }
 
-  env[key] = merged
+  env[key] = merged;
 
-  return { applied: true, path: merged }
+  return { applied: true, path: merged };
 }
 
 // Single-flight: the warmup at app start and the await before the backend
 // spawn share one resolution. Never rejects.
-let _ensurePromise: Promise<any> | null = null
+let _ensurePromise: Promise<any> | null = null;
 
 function ensureLoginShellPath(options: any = {}) {
   if (!_ensurePromise) {
-    _ensurePromise = applyLoginShellPath(options).catch(error => ({
+    _ensurePromise = applyLoginShellPath(options).catch((error) => ({
       applied: false,
-      reason: String(error?.message || error)
-    }))
+      reason: String(error?.message || error),
+    }));
   }
 
-  return _ensurePromise
+  return _ensurePromise;
 }
 
 function resetLoginShellPathForTests() {
-  _ensurePromise = null
+  _ensurePromise = null;
 }
 
 export {
@@ -183,5 +202,5 @@ export {
   extractSentinelPath,
   loginShellExecutable,
   mergeLoginShellPath,
-  resetLoginShellPathForTests
-}
+  resetLoginShellPathForTests,
+};

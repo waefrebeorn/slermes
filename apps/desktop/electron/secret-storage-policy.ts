@@ -32,16 +32,16 @@
 
 export interface SecretStoragePolicy {
   /** Keychain-backed encryption enabled (explicit user opt-in). */
-  on: boolean
+  on: boolean;
   /** One-shot legacy-blob migration already attempted. */
-  migrated: boolean
+  migrated: boolean;
 }
 
-export const SECRET_STORAGE_POLICY_FILE = 'secure-token-storage.json'
+export const SECRET_STORAGE_POLICY_FILE = "secure-token-storage.json";
 
 export interface SecretStoragePolicyIo {
-  readText: () => string
-  writeText: (text: string) => void
+  readText: () => string;
+  writeText: (text: string) => void;
 }
 
 /**
@@ -51,28 +51,38 @@ export interface SecretStoragePolicyIo {
  * value must not silently enable keychain prompts (mirrors the
  * allowPlainText coercion rule in hardening.ts).
  */
-export function readSecretStoragePolicy(io: SecretStoragePolicyIo): SecretStoragePolicy {
+export function readSecretStoragePolicy(
+  io: SecretStoragePolicyIo,
+): SecretStoragePolicy {
   try {
-    const parsed = JSON.parse(io.readText())
+    const parsed = JSON.parse(io.readText());
 
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      return { on: parsed.on === true, migrated: parsed.migrated === true }
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return { on: parsed.on === true, migrated: parsed.migrated === true };
     }
   } catch {
     // fall through to default
   }
 
-  return { on: false, migrated: false }
+  return { on: false, migrated: false };
 }
 
-export function writeSecretStoragePolicy(policy: SecretStoragePolicy, io: SecretStoragePolicyIo): void {
-  io.writeText(JSON.stringify({ on: policy.on === true, migrated: policy.migrated === true }))
+export function writeSecretStoragePolicy(
+  policy: SecretStoragePolicy,
+  io: SecretStoragePolicyIo,
+): void {
+  io.writeText(
+    JSON.stringify({
+      on: policy.on === true,
+      migrated: policy.migrated === true,
+    }),
+  );
 }
 
 /** One stored secret blob as it appears on disk. */
 interface StoredSecret {
-  encoding?: string
-  value?: string
+  encoding?: string;
+  value?: string;
 }
 
 /**
@@ -88,15 +98,19 @@ interface StoredSecret {
  */
 export function classifyStoredSecret(
   secret: StoredSecret | null | undefined,
-  policy: SecretStoragePolicy
-): 'keep' | 'migrate' | 'drop' {
-  if (!secret || typeof secret !== 'object' || secret.encoding !== 'safeStorage') {
-    return 'keep'
+  policy: SecretStoragePolicy,
+): "keep" | "migrate" | "drop" {
+  if (
+    !secret ||
+    typeof secret !== "object" ||
+    secret.encoding !== "safeStorage"
+  ) {
+    return "keep";
   }
 
   if (policy.on) {
-    return 'keep'
+    return "keep";
   }
 
-  return policy.migrated ? 'drop' : 'migrate'
+  return policy.migrated ? "drop" : "migrate";
 }

@@ -6,7 +6,7 @@
  * in plugin.tsx drives these against the live atom.
  */
 
-import type { GroupChat, GroupMember } from './types'
+import type { GroupChat, GroupMember } from "./types";
 
 // ── deleted-connection roster hygiene (#93492 root cause) ───────────────────
 // Deleting a cloud/remote connection used to leave every persisted group-chat
@@ -21,22 +21,30 @@ import type { GroupChat, GroupMember } from './types'
 
 /** Keep the member's identity; mark it so botSourceStatus reads
  *  'Gateway removed' and no render-path route lookup can throw on it. */
-export function markOrphanedGroupMemberDescriptor(member: GroupMember): GroupMember {
+export function markOrphanedGroupMemberDescriptor(
+  member: GroupMember,
+): GroupMember {
   return {
     ...member,
     sourceMissing: true,
-    sourceReachable: false
-  }
+    sourceReachable: false,
+  };
 }
 
-export function groupMemberReferencesConnection(member: GroupMember, connectionId: string) {
-  const id = String(connectionId || '').trim()
+export function groupMemberReferencesConnection(
+  member: GroupMember,
+  connectionId: string,
+) {
+  const id = String(connectionId || "").trim();
 
   if (!id) {
-    return false
+    return false;
   }
 
-  return String(member?.connectionId || '').trim() === id || String(member?.route?.connectionId || '').trim() === id
+  return (
+    String(member?.connectionId || "").trim() === id ||
+    String(member?.route?.connectionId || "").trim() === id
+  );
 }
 
 /** Hydrate-time pass for rows orphaned BEFORE this build (the poisoned rows
@@ -50,51 +58,58 @@ export function groupMemberReferencesConnection(member: GroupMember, connectionI
  *  Pure on the rooms map; returns { rooms, changed }. */
 export function annotateOrphanedGroupChatMembers(
   rooms: Record<string, GroupChat>,
-  liveConnectionIds: ReadonlySet<string> | null = null
+  liveConnectionIds: ReadonlySet<string> | null = null,
 ) {
   // Duck-typed, not instanceof: callers (and vm-based tests) may hand a Set
   // constructed in another realm.
-  const live = liveConnectionIds && typeof liveConnectionIds.has === 'function' ? liveConnectionIds : null
-  const next: Record<string, GroupChat> = {}
-  let changed = false
+  const live =
+    liveConnectionIds && typeof liveConnectionIds.has === "function"
+      ? liveConnectionIds
+      : null;
+  const next: Record<string, GroupChat> = {};
+  let changed = false;
 
   for (const [name, room] of Object.entries(rooms || {})) {
-    const members = Array.isArray(room?.members) ? room.members : []
+    const members = Array.isArray(room?.members) ? room.members : [];
 
     const orphaned = (member: GroupMember) => {
       if (!member || member.sourceMissing) {
-        return false
+        return false;
       }
 
       if (!member.sourceScoped && !member.remoteSource) {
-        return false
+        return false;
       }
 
-      const id = String(member.route?.connectionId || member.connectionId || '').trim()
+      const id = String(
+        member.route?.connectionId || member.connectionId || "",
+      ).trim();
 
       if (!id) {
         // Route unresolvable: this is the row shape that threw on render.
-        return true
+        return true;
       }
 
-      return live ? !live.has(id) : false
-    }
+      return live ? !live.has(id) : false;
+    };
 
     if (!members.some(orphaned)) {
-      next[name] = room
+      next[name] = room;
 
-      continue
+      continue;
     }
 
-    changed = true
+    changed = true;
     next[name] = {
       ...room,
-      members: members.map(member => (orphaned(member) ? markOrphanedGroupMemberDescriptor(member) : member))
-    }
+      members: members.map((member) =>
+        orphaned(member) ? markOrphanedGroupMemberDescriptor(member) : member,
+      ),
+    };
   }
 
   return {
     rooms: next,
-    changed
-  }
+    changed,
+  };
 }

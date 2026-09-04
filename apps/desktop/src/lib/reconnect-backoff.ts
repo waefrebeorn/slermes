@@ -14,13 +14,13 @@
 
 export interface ReconnectBackoffOptions {
   /** Ceiling on the exponential delay before jitter is applied, in ms. */
-  capMs?: number
+  capMs?: number;
   /** Delay for the first retry (attempt 0) before jitter is applied, in ms. */
-  baseDelayMs?: number
+  baseDelayMs?: number;
 }
 
-const DEFAULT_BASE_DELAY_MS = 300
-const DEFAULT_CAP_MS = 15_000
+const DEFAULT_BASE_DELAY_MS = 300;
+const DEFAULT_CAP_MS = 15_000;
 
 /**
  * Delay before reconnect attempt number `attempt` (0-indexed: the first
@@ -31,15 +31,18 @@ const DEFAULT_CAP_MS = 15_000
  * the variant with the best-documented storm-avoidance behavior and no
  * accumulated-delay state to track between calls.
  */
-export function reconnectBackoffDelayMs(attempt: number, options: ReconnectBackoffOptions = {}): number {
-  const baseDelayMs = options.baseDelayMs ?? DEFAULT_BASE_DELAY_MS
-  const capMs = options.capMs ?? DEFAULT_CAP_MS
-  const safeAttempt = Math.max(0, attempt)
+export function reconnectBackoffDelayMs(
+  attempt: number,
+  options: ReconnectBackoffOptions = {},
+): number {
+  const baseDelayMs = options.baseDelayMs ?? DEFAULT_BASE_DELAY_MS;
+  const capMs = options.capMs ?? DEFAULT_CAP_MS;
+  const safeAttempt = Math.max(0, attempt);
 
   // 2 ** attempt overflows to Infinity long before it matters (attempt would
   // need to be ~1024), and Math.min against a finite cap keeps the ceiling
   // sane regardless, so no extra clamping is needed here.
-  const ceiling = Math.min(capMs, baseDelayMs * 2 ** safeAttempt)
+  const ceiling = Math.min(capMs, baseDelayMs * 2 ** safeAttempt);
 
-  return Math.random() * ceiling
+  return Math.random() * ceiling;
 }

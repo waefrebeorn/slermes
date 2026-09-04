@@ -1,96 +1,139 @@
-import { useStore } from '@nanostores/react'
-import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 
-import { useElapsedSeconds } from '@/components/chat/activity-timer'
-import { ActivityTimerText } from '@/components/chat/activity-timer-text'
-import { usePaneVisible } from '@/components/pane-shell/pane-visibility'
-import { Codicon } from '@/components/ui/codicon'
-import { FadeText } from '@/components/ui/fade-text'
-import { GlyphSpinner } from '@/components/ui/glyph-spinner'
-import { type Translations, useI18n } from '@/i18n'
-import { compactNumber } from '@/lib/format'
-import { AlertCircle, CheckCircle2 } from '@/lib/icons'
-import { useEnterAnimation } from '@/lib/use-enter-animation'
-import { cn } from '@/lib/utils'
+import { useElapsedSeconds } from "@/components/chat/activity-timer";
+import { ActivityTimerText } from "@/components/chat/activity-timer-text";
+import { usePaneVisible } from "@/components/pane-shell/pane-visibility";
+import { Codicon } from "@/components/ui/codicon";
+import { FadeText } from "@/components/ui/fade-text";
+import { GlyphSpinner } from "@/components/ui/glyph-spinner";
+import { type Translations, useI18n } from "@/i18n";
+import { compactNumber } from "@/lib/format";
+import { AlertCircle, CheckCircle2 } from "@/lib/icons";
+import { useEnterAnimation } from "@/lib/use-enter-animation";
+import { cn } from "@/lib/utils";
 import {
   $subagentsBySession,
   allSubagents,
   buildSubagentTree,
   type SubagentNode,
   type SubagentStatus,
-  type SubagentStreamEntry
-} from '@/store/subagents'
+  type SubagentStreamEntry,
+} from "@/store/subagents";
 
-import { Panel, PanelEmpty, PanelHeader } from '../overlays/panel'
+import { Panel, PanelEmpty, PanelHeader } from "../overlays/panel";
 
 // Mirrors statusGlyph() in tool-fallback.tsx so subagent rows speak the
 // same visual vocabulary as the chat tool blocks.
-function statusGlyph(status: SubagentStatus, a: Translations['agents']): ReactNode {
-  if (status === 'running' || status === 'queued') {
+function statusGlyph(
+  status: SubagentStatus,
+  a: Translations["agents"],
+): ReactNode {
+  if (status === "running" || status === "queued") {
     return (
       <GlyphSpinner
         ariaLabel={a.running}
         className="size-3.5 shrink-0 text-[0.95rem] text-muted-foreground/80"
         spinner="breathe"
       />
-    )
+    );
   }
 
-  if (status === 'failed' || status === 'interrupted') {
-    return <AlertCircle aria-label={a.failed} className="size-3.5 shrink-0 text-destructive" />
+  if (status === "failed" || status === "interrupted") {
+    return (
+      <AlertCircle
+        aria-label={a.failed}
+        className="size-3.5 shrink-0 text-destructive"
+      />
+    );
   }
 
-  return <CheckCircle2 aria-label={a.done} className="size-3.5 shrink-0 text-emerald-600/85 dark:text-emerald-400/85" />
+  return (
+    <CheckCircle2
+      aria-label={a.done}
+      className="size-3.5 shrink-0 text-emerald-600/85 dark:text-emerald-400/85"
+    />
+  );
 }
 
-const STREAM_TONE: Record<SubagentStreamEntry['kind'], string> = {
-  progress: 'text-muted-foreground/75',
-  summary: 'text-foreground/85',
-  thinking: 'text-muted-foreground/80',
-  tool: 'text-foreground/85'
-}
+const STREAM_TONE: Record<SubagentStreamEntry["kind"], string> = {
+  progress: "text-muted-foreground/75",
+  summary: "text-foreground/85",
+  thinking: "text-muted-foreground/80",
+  tool: "text-foreground/85",
+};
 
 function streamGlyph(entry: SubagentStreamEntry): ReactNode {
   if (entry.isError) {
-    return <AlertCircle aria-hidden className="mt-0.5 size-3 shrink-0 text-destructive" />
-  }
-
-  if (entry.kind === 'tool') {
-    return <span aria-hidden className="mt-0.5 size-1.5 shrink-0 rounded-full bg-foreground/55" />
-  }
-
-  if (entry.kind === 'summary') {
-    return <CheckCircle2 aria-hidden className="mt-0.5 size-3 shrink-0 text-emerald-600/85 dark:text-emerald-400/85" />
-  }
-
-  if (entry.kind === 'thinking') {
     return (
-      <span aria-hidden className="font-mono text-[0.7rem] leading-none text-muted-foreground/70">
+      <AlertCircle
+        aria-hidden
+        className="mt-0.5 size-3 shrink-0 text-destructive"
+      />
+    );
+  }
+
+  if (entry.kind === "tool") {
+    return (
+      <span
+        aria-hidden
+        className="mt-0.5 size-1.5 shrink-0 rounded-full bg-foreground/55"
+      />
+    );
+  }
+
+  if (entry.kind === "summary") {
+    return (
+      <CheckCircle2
+        aria-hidden
+        className="mt-0.5 size-3 shrink-0 text-emerald-600/85 dark:text-emerald-400/85"
+      />
+    );
+  }
+
+  if (entry.kind === "thinking") {
+    return (
+      <span
+        aria-hidden
+        className="font-mono text-[0.7rem] leading-none text-muted-foreground/70"
+      >
         …
       </span>
-    )
+    );
   }
 
-  return <span aria-hidden className="mt-0.5 size-1 shrink-0 rounded-full bg-muted-foreground/55" />
+  return (
+    <span
+      aria-hidden
+      className="mt-0.5 size-1 shrink-0 rounded-full bg-muted-foreground/55"
+    />
+  );
 }
 
 interface AgentsViewProps {
-  onClose: () => void
+  onClose: () => void;
 }
 
 export function AgentsView({ onClose }: AgentsViewProps) {
-  const { t } = useI18n()
-  const subagentsBySession = useStore($subagentsBySession)
+  const { t } = useI18n();
+  const subagentsBySession = useStore($subagentsBySession);
 
   // Aggregate every session, matching the status-bar indicator — a subagent
   // running in a background session must still be visible here, or the two
   // desync ("Agents N running" vs an empty tree).
-  const tree = useMemo(() => buildSubagentTree(allSubagents(subagentsBySession)), [subagentsBySession])
+  const tree = useMemo(
+    () => buildSubagentTree(allSubagents(subagentsBySession)),
+    [subagentsBySession],
+  );
 
   return (
     <Panel closeLabel={t.agents.close} onClose={onClose}>
       {tree.length === 0 ? (
-        <PanelEmpty description={t.agents.emptyDesc} icon="hubot" title={t.agents.emptyTitle} />
+        <PanelEmpty
+          description={t.agents.emptyDesc}
+          icon="hubot"
+          title={t.agents.emptyTitle}
+        />
       ) : (
         <>
           <PanelHeader subtitle={t.agents.subtitle} title={t.agents.title} />
@@ -98,215 +141,291 @@ export function AgentsView({ onClose }: AgentsViewProps) {
         </>
       )}
     </Panel>
-  )
+  );
 }
 
-const fmtDuration = (seconds: number | undefined, a: Translations['agents']) => {
+const fmtDuration = (
+  seconds: number | undefined,
+  a: Translations["agents"],
+) => {
   if (!seconds || seconds <= 0) {
-    return ''
+    return "";
   }
 
   if (seconds < 60) {
-    return a.durationSeconds(seconds.toFixed(1))
+    return a.durationSeconds(seconds.toFixed(1));
   }
 
-  const m = Math.floor(seconds / 60)
-  const s = Math.round(seconds % 60)
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
 
-  return a.durationMinutes(m, s)
-}
+  return a.durationMinutes(m, s);
+};
 
-const fmtTokens = (value: number | undefined, a: Translations['agents']) =>
-  value ? a.tokens(compactNumber(value)) : ''
+const fmtTokens = (value: number | undefined, a: Translations["agents"]) =>
+  value ? a.tokens(compactNumber(value)) : "";
 
 // Distinct contract from coarseElapsed: rounds to the second (this ticks live),
 // and hours are unbounded ("25h", never "1d"). Kept local on purpose.
-const fmtAge = (updatedAt: number, nowMs: number, a: Translations['agents']) => {
-  const s = Math.max(0, Math.round((nowMs - updatedAt) / 1000))
+const fmtAge = (
+  updatedAt: number,
+  nowMs: number,
+  a: Translations["agents"],
+) => {
+  const s = Math.max(0, Math.round((nowMs - updatedAt) / 1000));
 
   if (s < 2) {
-    return a.ageNow
+    return a.ageNow;
   }
 
   if (s < 60) {
-    return a.ageSeconds(s)
+    return a.ageSeconds(s);
   }
 
-  const m = Math.floor(s / 60)
+  const m = Math.floor(s / 60);
 
-  return m < 60 ? a.ageMinutes(m) : a.ageHours(Math.floor(m / 60))
-}
+  return m < 60 ? a.ageMinutes(m) : a.ageHours(Math.floor(m / 60));
+};
 
 const flatten = (nodes: readonly SubagentNode[]): SubagentNode[] =>
-  nodes.flatMap(node => [node, ...flatten(node.children)])
+  nodes.flatMap((node) => [node, ...flatten(node.children)]);
 
 interface RootGroup {
-  id: string
-  delegationIndex: number
-  nodes: SubagentNode[]
-  taskCount: number
+  id: string;
+  delegationIndex: number;
+  nodes: SubagentNode[];
+  taskCount: number;
 }
 
 function groupDelegations(roots: readonly SubagentNode[]): RootGroup[] {
-  const groups: RootGroup[] = []
-  let n = 0
+  const groups: RootGroup[] = [];
+  let n = 0;
 
   for (const node of roots) {
     // Exact grouping when the backend tags workers with their batch id —
     // concurrent or nested fan-outs of the same shape must not merge.
     if (node.delegationId) {
-      const byId = groups.find(g => g.id === `delegation:${node.delegationId}`)
+      const byId = groups.find(
+        (g) => g.id === `delegation:${node.delegationId}`,
+      );
 
       if (byId) {
-        byId.nodes.push(node)
+        byId.nodes.push(node);
 
-        continue
+        continue;
       }
 
-      n += 1
+      n += 1;
       groups.push({
         id: `delegation:${node.delegationId}`,
         delegationIndex: n,
         nodes: [node],
-        taskCount: node.taskCount
-      })
+        taskCount: node.taskCount,
+      });
 
-      continue
+      continue;
     }
 
     // Older backends (no delegation_id): heuristic grouping by shape + time.
-    const prev = groups.at(-1)
-    const prevTail = prev?.nodes.at(-1)
-    const closeInTime = prevTail ? Math.abs(node.startedAt - prevTail.startedAt) <= 5_000 : false
+    const prev = groups.at(-1);
+    const prevTail = prev?.nodes.at(-1);
+    const closeInTime = prevTail
+      ? Math.abs(node.startedAt - prevTail.startedAt) <= 5_000
+      : false;
 
     const sameShape =
-      prev && !prev.id.startsWith('delegation:') && node.taskCount > 1 && prev.taskCount === node.taskCount
+      prev &&
+      !prev.id.startsWith("delegation:") &&
+      node.taskCount > 1 &&
+      prev.taskCount === node.taskCount;
 
-    const uniqueStep = prev ? !prev.nodes.some(item => item.taskIndex === node.taskIndex) : false
+    const uniqueStep = prev
+      ? !prev.nodes.some((item) => item.taskIndex === node.taskIndex)
+      : false;
 
     if (prev && sameShape && closeInTime && uniqueStep) {
-      prev.nodes.push(node)
+      prev.nodes.push(node);
 
-      continue
+      continue;
     }
 
     if (node.taskCount > 1) {
-      n += 1
-      groups.push({ id: `delegation-${n}`, delegationIndex: n, nodes: [node], taskCount: node.taskCount })
+      n += 1;
+      groups.push({
+        id: `delegation-${n}`,
+        delegationIndex: n,
+        nodes: [node],
+        taskCount: node.taskCount,
+      });
 
-      continue
+      continue;
     }
 
-    groups.push({ id: node.id, delegationIndex: 0, nodes: [node], taskCount: node.taskCount })
+    groups.push({
+      id: node.id,
+      delegationIndex: 0,
+      nodes: [node],
+      taskCount: node.taskCount,
+    });
   }
 
-  return groups
+  return groups;
 }
 
 function SubagentTree({ tree }: { tree: SubagentNode[] }) {
-  const { t } = useI18n()
-  const flat = useMemo(() => flatten(tree), [tree])
-  const groups = useMemo(() => groupDelegations(tree), [tree])
-  const [nowMs, setNowMs] = useState(() => Date.now())
+  const { t } = useI18n();
+  const flat = useMemo(() => flatten(tree), [tree]);
+  const groups = useMemo(() => groupDelegations(tree), [tree]);
+  const [nowMs, setNowMs] = useState(() => Date.now());
 
-  const active = flat.filter(n => n.status === 'running' || n.status === 'queued').length
-  const failed = flat.filter(n => n.status === 'failed' || n.status === 'interrupted').length
-  const tools = flat.reduce((sum, n) => sum + (n.toolCount ?? 0), 0)
-  const files = flat.reduce((sum, n) => sum + n.filesRead.length + n.filesWritten.length, 0)
-  const tokens = flat.reduce((sum, n) => sum + (n.inputTokens ?? 0) + (n.outputTokens ?? 0), 0)
-  const cost = flat.reduce((sum, n) => sum + (n.costUsd ?? 0), 0)
+  const active = flat.filter(
+    (n) => n.status === "running" || n.status === "queued",
+  ).length;
+  const failed = flat.filter(
+    (n) => n.status === "failed" || n.status === "interrupted",
+  ).length;
+  const tools = flat.reduce((sum, n) => sum + (n.toolCount ?? 0), 0);
+  const files = flat.reduce(
+    (sum, n) => sum + n.filesRead.length + n.filesWritten.length,
+    0,
+  );
+  const tokens = flat.reduce(
+    (sum, n) => sum + (n.inputTokens ?? 0) + (n.outputTokens ?? 0),
+    0,
+  );
+  const cost = flat.reduce((sum, n) => sum + (n.costUsd ?? 0), 0);
 
-  const visible = usePaneVisible()
+  const visible = usePaneVisible();
 
   useEffect(() => {
-    if (active <= 0 || !visible || typeof window === 'undefined') {
-      return
+    if (active <= 0 || !visible || typeof window === "undefined") {
+      return;
     }
 
-    const id = window.setInterval(() => setNowMs(Date.now()), 500)
+    const id = window.setInterval(() => setNowMs(Date.now()), 500);
 
-    return () => window.clearInterval(id)
-  }, [active, visible])
+    return () => window.clearInterval(id);
+  }, [active, visible]);
 
   if (tree.length === 0) {
     return (
       <div className="grid place-items-center gap-3 py-12 text-center">
-        <Codicon className="text-muted-foreground/60" name="hubot" size="1.5rem" />
-        <p className="text-sm font-medium text-foreground/90">{t.agents.emptyTitle}</p>
-        <p className="max-w-md text-xs leading-relaxed text-muted-foreground/75">{t.agents.emptyDesc}</p>
+        <Codicon
+          className="text-muted-foreground/60"
+          name="hubot"
+          size="1.5rem"
+        />
+        <p className="text-sm font-medium text-foreground/90">
+          {t.agents.emptyTitle}
+        </p>
+        <p className="max-w-md text-xs leading-relaxed text-muted-foreground/75">
+          {t.agents.emptyDesc}
+        </p>
       </div>
-    )
+    );
   }
 
   const summary = [
     t.agents.agentsCount(flat.length),
-    active > 0 ? t.agents.activeCount(active) : '',
-    failed > 0 ? t.agents.failedCount(failed) : '',
-    tools > 0 ? t.agents.toolsCount(tools) : '',
-    files > 0 ? t.agents.filesCount(files) : '',
-    tokens > 0 ? fmtTokens(tokens, t.agents) : '',
-    cost > 0 ? `$${cost.toFixed(2)}` : ''
-  ].filter(Boolean)
+    active > 0 ? t.agents.activeCount(active) : "",
+    failed > 0 ? t.agents.failedCount(failed) : "",
+    tools > 0 ? t.agents.toolsCount(tools) : "",
+    files > 0 ? t.agents.filesCount(files) : "",
+    tokens > 0 ? fmtTokens(tokens, t.agents) : "",
+    cost > 0 ? `$${cost.toFixed(2)}` : "",
+  ].filter(Boolean);
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-hidden">
-      <p className="shrink-0 text-[0.7rem] text-muted-foreground/70">{summary.join(' · ')}</p>
+      <p className="shrink-0 text-[0.7rem] text-muted-foreground/70">
+        {summary.join(" · ")}
+      </p>
       <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pr-1">
         <div className="flex min-w-0 flex-col gap-6">
-          {groups.map(group => (
+          {groups.map((group) => (
             <DelegationGroup group={group} key={group.id} nowMs={nowMs} />
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-function DelegationGroup({ group, nowMs }: { group: RootGroup; nowMs: number }) {
-  const { t } = useI18n()
+function DelegationGroup({
+  group,
+  nowMs,
+}: {
+  group: RootGroup;
+  nowMs: number;
+}) {
+  const { t } = useI18n();
 
   if (group.nodes.length === 1 && group.taskCount <= 1) {
-    return <SubagentRow node={group.nodes[0]!} nowMs={nowMs} />
+    return <SubagentRow node={group.nodes[0]!} nowMs={nowMs} />;
   }
 
-  const activeWorkers = group.nodes.filter(n => n.status === 'running' || n.status === 'queued').length
+  const activeWorkers = group.nodes.filter(
+    (n) => n.status === "running" || n.status === "queued",
+  ).length;
 
   return (
     <section className="grid min-w-0 gap-3">
       <p className="text-[0.66rem] font-medium uppercase tracking-wider text-muted-foreground/70">
-        {group.delegationIndex > 0 ? t.agents.delegation(group.delegationIndex) : ''}{' '}
-        <span className="text-muted-foreground/50">·</span> {t.agents.workers(group.nodes.length)}
-        {activeWorkers > 0 ? <span className="text-primary/85"> · {t.agents.workersActive(activeWorkers)}</span> : null}
+        {group.delegationIndex > 0
+          ? t.agents.delegation(group.delegationIndex)
+          : ""}{" "}
+        <span className="text-muted-foreground/50">·</span>{" "}
+        {t.agents.workers(group.nodes.length)}
+        {activeWorkers > 0 ? (
+          <span className="text-primary/85">
+            {" "}
+            · {t.agents.workersActive(activeWorkers)}
+          </span>
+        ) : null}
       </p>
       <div className="grid min-w-0 gap-4">
-        {group.nodes.map(node => (
+        {group.nodes.map((node) => (
           <SubagentRow key={node.id} node={node} nowMs={nowMs} />
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 function StreamLine({
   active,
   entry,
   parentRunning,
-  rowKey
+  rowKey,
 }: {
-  active: boolean
-  entry: SubagentStreamEntry
-  parentRunning: boolean
-  rowKey: string
+  active: boolean;
+  entry: SubagentStreamEntry;
+  parentRunning: boolean;
+  rowKey: string;
 }) {
-  const { t } = useI18n()
-  const enterRef = useEnterAnimation(parentRunning, `subagent-stream:${rowKey}`)
-  const isMono = entry.kind === 'tool'
-  const tone = entry.isError ? 'text-destructive' : STREAM_TONE[entry.kind]
+  const { t } = useI18n();
+  const enterRef = useEnterAnimation(
+    parentRunning,
+    `subagent-stream:${rowKey}`,
+  );
+  const isMono = entry.kind === "tool";
+  const tone = entry.isError ? "text-destructive" : STREAM_TONE[entry.kind];
 
   return (
-    <div className="flex min-w-0 items-baseline gap-2 text-[0.72rem] leading-relaxed" ref={enterRef}>
-      <span className="flex h-[0.95rem] shrink-0 items-center">{streamGlyph(entry)}</span>
-      <span className={cn('min-w-0 flex-1 wrap-anywhere', tone, isMono && 'font-mono text-[0.69rem]')}>
+    <div
+      className="flex min-w-0 items-baseline gap-2 text-[0.72rem] leading-relaxed"
+      ref={enterRef}
+    >
+      <span className="flex h-[0.95rem] shrink-0 items-center">
+        {streamGlyph(entry)}
+      </span>
+      <span
+        className={cn(
+          "min-w-0 flex-1 wrap-anywhere",
+          tone,
+          isMono && "font-mono text-[0.69rem]",
+        )}
+      >
         {entry.text}
         {active ? (
           <GlyphSpinner
@@ -317,62 +436,86 @@ function StreamLine({
         ) : null}
       </span>
     </div>
-  )
+  );
 }
 
-function SubagentRow({ node, depth = 0, nowMs }: { node: SubagentNode; depth?: number; nowMs: number }) {
-  const { t } = useI18n()
-  const running = node.status === 'running' || node.status === 'queued'
-  const elapsed = useElapsedSeconds(running, `subagent:${node.id}`)
+function SubagentRow({
+  node,
+  depth = 0,
+  nowMs,
+}: {
+  node: SubagentNode;
+  depth?: number;
+  nowMs: number;
+}) {
+  const { t } = useI18n();
+  const running = node.status === "running" || node.status === "queued";
+  const elapsed = useElapsedSeconds(running, `subagent:${node.id}`);
 
   const durationSeconds =
-    typeof node.durationSeconds === 'number' ? Math.max(0, Math.round(node.durationSeconds)) : elapsed
+    typeof node.durationSeconds === "number"
+      ? Math.max(0, Math.round(node.durationSeconds))
+      : elapsed;
 
-  const [open, setOpen] = useState(() => running || depth < 2)
-  const enterRef = useEnterAnimation(true, `subagent-row:${node.id}`)
+  const [open, setOpen] = useState(() => running || depth < 2);
+  const enterRef = useEnterAnimation(true, `subagent-row:${node.id}`);
 
   useEffect(() => {
     if (running) {
-      setOpen(true)
+      setOpen(true);
     }
-  }, [running])
+  }, [running]);
 
-  const visibleRows = open ? node.stream.slice(-10) : node.stream.slice(-2)
-  const fileLines = [...node.filesWritten.map(p => `+ ${p}`), ...node.filesRead.map(p => `· ${p}`)]
+  const visibleRows = open ? node.stream.slice(-10) : node.stream.slice(-2);
+  const fileLines = [
+    ...node.filesWritten.map((p) => `+ ${p}`),
+    ...node.filesRead.map((p) => `· ${p}`),
+  ];
 
   const subtitle = [
     node.model,
     fmtDuration(durationSeconds, t.agents),
-    node.toolCount ? t.agents.toolsCount(node.toolCount) : '',
+    node.toolCount ? t.agents.toolsCount(node.toolCount) : "",
     fmtTokens((node.inputTokens ?? 0) + (node.outputTokens ?? 0), t.agents),
-    t.agents.updatedAgo(fmtAge(node.updatedAt, nowMs, t.agents))
-  ].filter(Boolean)
+    t.agents.updatedAgo(fmtAge(node.updatedAt, nowMs, t.agents)),
+  ].filter(Boolean);
 
   return (
-    <div className={cn('grid min-w-0 max-w-full gap-2', depth > 0 && 'pl-4')} data-slot="tool-block" ref={enterRef}>
+    <div
+      className={cn("grid min-w-0 max-w-full gap-2", depth > 0 && "pl-4")}
+      data-slot="tool-block"
+      ref={enterRef}
+    >
       <button
         aria-expanded={open}
         className="group flex w-full min-w-0 items-start gap-2.5 text-left"
-        onClick={() => setOpen(v => !v)}
+        onClick={() => setOpen((v) => !v)}
         type="button"
       >
-        <span className="mt-0.5 flex h-[1.1rem] shrink-0 items-center">{statusGlyph(node.status, t.agents)}</span>
+        <span className="mt-0.5 flex h-[1.1rem] shrink-0 items-center">
+          {statusGlyph(node.status, t.agents)}
+        </span>
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span
             className={cn(
-              'wrap-anywhere text-[0.82rem] font-medium leading-[1.1rem] text-foreground/90 transition-colors group-hover:text-foreground',
-              running && 'shimmer text-foreground/65'
+              "wrap-anywhere text-[0.82rem] font-medium leading-[1.1rem] text-foreground/90 transition-colors group-hover:text-foreground",
+              running && "shimmer text-foreground/65",
             )}
           >
             {node.goal}
           </span>
           {subtitle.length > 0 ? (
             <FadeText className="text-[0.66rem] leading-[1.05rem] text-muted-foreground/65">
-              {subtitle.join(' · ')}
+              {subtitle.join(" · ")}
             </FadeText>
           ) : null}
         </span>
-        {running ? <ActivityTimerText className="mt-1 shrink-0 text-[0.6rem]" seconds={durationSeconds} /> : null}
+        {running ? (
+          <ActivityTimerText
+            className="mt-1 shrink-0 text-[0.6rem]"
+            seconds={durationSeconds}
+          />
+        ) : null}
       </button>
 
       {visibleRows.length > 0 ? (
@@ -394,8 +537,11 @@ function SubagentRow({ node, depth = 0, nowMs }: { node: SubagentNode; depth?: n
           <p className="text-[0.58rem] font-medium tracking-wider text-muted-foreground/60 uppercase">
             {t.agents.files}
           </p>
-          {fileLines.slice(0, 8).map(line => (
-            <p className="wrap-break-word font-mono text-[0.67rem] leading-relaxed text-muted-foreground/80" key={line}>
+          {fileLines.slice(0, 8).map((line) => (
+            <p
+              className="wrap-break-word font-mono text-[0.67rem] leading-relaxed text-muted-foreground/80"
+              key={line}
+            >
               {line}
             </p>
           ))}
@@ -409,11 +555,16 @@ function SubagentRow({ node, depth = 0, nowMs }: { node: SubagentNode; depth?: n
 
       {node.children.length > 0 ? (
         <div className="grid min-w-0 gap-3 pl-6">
-          {node.children.map(child => (
-            <SubagentRow depth={depth + 1} key={child.id} node={child} nowMs={nowMs} />
+          {node.children.map((child) => (
+            <SubagentRow
+              depth={depth + 1}
+              key={child.id}
+              node={child}
+              nowMs={nowMs}
+            />
           ))}
         </div>
       ) : null}
     </div>
-  )
+  );
 }

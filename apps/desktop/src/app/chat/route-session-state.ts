@@ -1,5 +1,5 @@
-import { sessionMatchesStoredId } from '@/store/session'
-import type { SessionInfo } from '@/types/hermes'
+import { sessionMatchesStoredId } from "@/store/session";
+import type { SessionInfo } from "@/types/hermes";
 
 /**
  * Whether the route points at a different conversation than the selected view.
@@ -14,17 +14,19 @@ import type { SessionInfo } from '@/types/hermes'
 export function isRouteSessionMismatch(
   routedSessionId: null | string,
   selectedSessionId: null | string,
-  sessions: readonly Pick<SessionInfo, '_lineage_root_id' | 'id'>[]
+  sessions: readonly Pick<SessionInfo, "_lineage_root_id" | "id">[],
 ): boolean {
   if (!routedSessionId || routedSessionId === selectedSessionId) {
-    return false
+    return false;
   }
 
   if (!selectedSessionId) {
-    return true
+    return true;
   }
 
   return !sessions.some(
-    session => sessionMatchesStoredId(session, routedSessionId) && sessionMatchesStoredId(session, selectedSessionId)
-  )
+    (session) =>
+      sessionMatchesStoredId(session, routedSessionId) &&
+      sessionMatchesStoredId(session, selectedSessionId),
+  );
 }

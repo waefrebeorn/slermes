@@ -18,16 +18,21 @@
 // Dev-only; the whole debug/ graph is aliased out of production builds.
 
 interface Sample {
-  kind: string
-  ms: number
-  frames: number
-  fps: number
-  p95: number
-  worst: number
-  slow33: number
-  commits: number
-  top: Array<{ name: string; renders: number; wasted: number; totalMs: number }>
-  longFrames: LongFrame[]
+  kind: string;
+  ms: number;
+  frames: number;
+  fps: number;
+  p95: number;
+  worst: number;
+  slow33: number;
+  commits: number;
+  top: Array<{
+    name: string;
+    renders: number;
+    wasted: number;
+    totalMs: number;
+  }>;
+  longFrames: LongFrame[];
 }
 
 /** One Long Animation Frame, attributed. `styleMs` is the engine's style+layout
@@ -36,112 +41,117 @@ interface Sample {
  *  no React in it, and only LoAF says whether that was layout, a ResizeObserver
  *  callback loop, or some timer. */
 interface LongFrame {
-  ms: number
-  styleMs: number
-  blockingMs: number
-  scripts: Array<{ invoker: string; ms: number; src: string }>
+  ms: number;
+  styleMs: number;
+  blockingMs: number;
+  scripts: Array<{ invoker: string; ms: number; src: string }>;
 }
 
 const RESIZE_SELECTOR =
-  '[role="separator"], [data-slot="pane-resize-handle"], [class*="cursor-col-resize"], [class*="cursor-row-resize"]'
+  '[role="separator"], [data-slot="pane-resize-handle"], [class*="cursor-col-resize"], [class*="cursor-row-resize"]';
 
-const TYPING_SELECTOR = '[contenteditable="true"], textarea, input[type="text"]'
+const TYPING_SELECTOR =
+  '[contenteditable="true"], textarea, input[type="text"]';
 
 // A gesture is "over" once this long passes with no further input events.
-const IDLE_END_MS = 350
+const IDLE_END_MS = 350;
 // Don't report trivial blips (a click, a single keypress).
-const MIN_FRAMES = 6
+const MIN_FRAMES = 6;
 
-let watching = false
+let watching = false;
 
 let active: null | {
-  kind: string
-  startedAt: number
-  frames: number[]
-  last: number
-  raf: number
-  endTimer: ReturnType<typeof setTimeout> | null
-} = null
+  kind: string;
+  startedAt: number;
+  frames: number[];
+  last: number;
+  raf: number;
+  endTimer: ReturnType<typeof setTimeout> | null;
+} = null;
 
-let lastReport: null | Sample = null
+let lastReport: null | Sample = null;
 
 // Long Animation Frames observed while a gesture is active. LoAF entries name
 // the scripts inside each long frame and split out style/layout time — the
 // half of a frame the render counter cannot see.
-let longFrames: LongFrame[] = []
+let longFrames: LongFrame[] = [];
 
 const loafObserver =
-  typeof PerformanceObserver !== 'undefined' &&
-  PerformanceObserver.supportedEntryTypes?.includes('long-animation-frame')
-    ? new PerformanceObserver(list => {
+  typeof PerformanceObserver !== "undefined" &&
+  PerformanceObserver.supportedEntryTypes?.includes("long-animation-frame")
+    ? new PerformanceObserver((list) => {
         if (!active) {
-          return
+          return;
         }
 
         for (const entry of list.getEntries()) {
           const e = entry as PerformanceEntry & {
-            blockingDuration?: number
-            styleAndLayoutStart?: number
-            renderStart?: number
+            blockingDuration?: number;
+            styleAndLayoutStart?: number;
+            renderStart?: number;
             scripts?: Array<{
-              duration: number
-              invoker?: string
-              invokerType?: string
-              sourceURL?: string
-              sourceFunctionName?: string
-            }>
-          }
+              duration: number;
+              invoker?: string;
+              invokerType?: string;
+              sourceURL?: string;
+              sourceFunctionName?: string;
+            }>;
+          };
 
           longFrames.push({
             blockingMs: Math.round(e.blockingDuration ?? 0),
             ms: Math.round(e.duration),
             scripts: (e.scripts ?? [])
-              .filter(s => s.duration >= 5)
-              .map(s => ({
-                invoker: `${s.invokerType ?? ''}:${s.invoker ?? s.sourceFunctionName ?? '?'}`,
+              .filter((s) => s.duration >= 5)
+              .map((s) => ({
+                invoker: `${s.invokerType ?? ""}:${s.invoker ?? s.sourceFunctionName ?? "?"}`,
                 ms: Math.round(s.duration),
-                src: (s.sourceURL ?? '').split('/').pop() ?? ''
+                src: (s.sourceURL ?? "").split("/").pop() ?? "",
               })),
             // styleAndLayoutStart -> frame end is the engine's style+layout tail.
-            styleMs: e.styleAndLayoutStart ? Math.round(e.startTime + e.duration - e.styleAndLayoutStart) : 0
-          })
+            styleMs: e.styleAndLayoutStart
+              ? Math.round(e.startTime + e.duration - e.styleAndLayoutStart)
+              : 0,
+          });
         }
       })
-    : null
+    : null;
 
 const pct = (sorted: number[], p: number) =>
-  sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] : 0
+  sorted.length
+    ? sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))]
+    : 0;
 
 function finish() {
   if (!active) {
-    return
+    return;
   }
 
-  const { kind, startedAt, frames, raf } = active
-  active = null
-  cancelAnimationFrame(raf)
-  loafObserver?.disconnect()
-  const capturedLongFrames = longFrames
-  longFrames = []
+  const { kind, startedAt, frames, raf } = active;
+  active = null;
+  cancelAnimationFrame(raf);
+  loafObserver?.disconnect();
+  const capturedLongFrames = longFrames;
+  longFrames = [];
 
-  const counter = window.__RENDER_COUNTS__
-  const commits = counter?.commits() ?? 0
+  const counter = window.__RENDER_COUNTS__;
+  const commits = counter?.commits() ?? 0;
 
-  const top = (counter?.report(12) ?? []).map(r => ({
+  const top = (counter?.report(12) ?? []).map((r) => ({
     name: r.name,
     renders: r.renders,
     wasted: r.wasted,
-    totalMs: r.totalMs
-  }))
+    totalMs: r.totalMs,
+  }));
 
-  counter?.stop()
+  counter?.stop();
 
   if (frames.length < MIN_FRAMES) {
-    return
+    return;
   }
 
-  const total = frames.reduce((a, b) => a + b, 0)
-  const sorted = [...frames].sort((a, b) => a - b)
+  const total = frames.reduce((a, b) => a + b, 0);
+  const sorted = [...frames].sort((a, b) => a - b);
 
   const report: Sample = {
     commits,
@@ -151,31 +161,35 @@ function finish() {
     longFrames: capturedLongFrames,
     ms: Math.round(performance.now() - startedAt),
     p95: Math.round(pct(sorted, 0.95) * 10) / 10,
-    slow33: frames.filter(f => f > 33).length,
+    slow33: frames.filter((f) => f > 33).length,
     top,
-    worst: Math.round(sorted[sorted.length - 1] * 10) / 10
-  }
+    worst: Math.round(sorted[sorted.length - 1] * 10) / 10,
+  };
 
-  lastReport = report
+  lastReport = report;
 
   const headline =
     `%c${kind}%c  ${report.fps}fps  ·  ${report.frames} frames in ${report.ms}ms  ·  ` +
-    `p95 ${report.p95}ms  worst ${report.worst}ms  ·  ${report.slow33} slow  ·  ${commits} commits`
+    `p95 ${report.p95}ms  worst ${report.worst}ms  ·  ${report.slow33} slow  ·  ${commits} commits`;
 
   console.log(
     headline,
-    `background:${report.fps < 45 ? '#c0392b' : '#27ae60'};color:#fff;padding:1px 6px;border-radius:3px`,
-    'color:inherit'
-  )
+    `background:${report.fps < 45 ? "#c0392b" : "#27ae60"};color:#fff;padding:1px 6px;border-radius:3px`,
+    "color:inherit",
+  );
 
   if (top.length) {
-    console.table(top)
+    console.table(top);
   }
 
   // The frame-engine side: what each long frame actually spent its time on.
   for (const lf of capturedLongFrames.slice(0, 8)) {
-    const scripts = lf.scripts.map(s => `${s.invoker}@${s.src} ${s.ms}ms`).join('  |  ') || '(no script ≥5ms)'
-    console.log(`  ⏱ longframe ${lf.ms}ms  style+layout ${lf.styleMs}ms  block ${lf.blockingMs}ms  →  ${scripts}`)
+    const scripts =
+      lf.scripts.map((s) => `${s.invoker}@${s.src} ${s.ms}ms`).join("  |  ") ||
+      "(no script ≥5ms)";
+    console.log(
+      `  ⏱ longframe ${lf.ms}ms  style+layout ${lf.styleMs}ms  block ${lf.blockingMs}ms  →  ${scripts}`,
+    );
   }
 }
 
@@ -183,124 +197,131 @@ function begin(kind: string) {
   if (active) {
     // Same gesture continuing — just push the end deadline out.
     if (active.endTimer) {
-      clearTimeout(active.endTimer)
+      clearTimeout(active.endTimer);
     }
 
-    active.endTimer = setTimeout(finish, IDLE_END_MS)
+    active.endTimer = setTimeout(finish, IDLE_END_MS);
 
-    return
+    return;
   }
 
-  window.__RENDER_COUNTS__?.start()
+  window.__RENDER_COUNTS__?.start();
 
   try {
     // Buffered so a long frame already in flight when the gesture starts is
     // still attributed to it.
-    loafObserver?.observe({ buffered: true, type: 'long-animation-frame' })
+    loafObserver?.observe({ buffered: true, type: "long-animation-frame" });
   } catch {
     // Older runtime without LoAF — headline still works, attribution is empty.
   }
 
-  const now = performance.now()
+  const now = performance.now();
 
   const state = {
-    endTimer: setTimeout(finish, IDLE_END_MS) as ReturnType<typeof setTimeout> | null,
+    endTimer: setTimeout(finish, IDLE_END_MS) as ReturnType<
+      typeof setTimeout
+    > | null,
     frames: [] as number[],
     kind,
     last: now,
     raf: 0,
-    startedAt: now
-  }
+    startedAt: now,
+  };
 
   const tick = () => {
     if (active !== state) {
-      return
+      return;
     }
 
-    const t = performance.now()
-    state.frames.push(t - state.last)
-    state.last = t
-    state.raf = requestAnimationFrame(tick)
-  }
+    const t = performance.now();
+    state.frames.push(t - state.last);
+    state.last = t;
+    state.raf = requestAnimationFrame(tick);
+  };
 
-  active = state
-  state.raf = requestAnimationFrame(tick)
+  active = state;
+  state.raf = requestAnimationFrame(tick);
 }
 
 function onPointerDown(event: PointerEvent) {
-  const target = event.target as Element | null
+  const target = event.target as Element | null;
 
   if (target?.closest?.(RESIZE_SELECTOR)) {
-    begin('resize')
+    begin("resize");
   }
 }
 
 function onPointerMove() {
-  if (active?.kind === 'resize') {
-    begin('resize')
+  if (active?.kind === "resize") {
+    begin("resize");
   }
 }
 
 function onKeyDown(event: KeyboardEvent) {
-  const target = event.target as Element | null
+  const target = event.target as Element | null;
 
   // Ignore pure modifiers and navigation — we want real text entry.
-  if (event.key.length !== 1 && event.key !== 'Backspace') {
-    return
+  if (event.key.length !== 1 && event.key !== "Backspace") {
+    return;
   }
 
   if (target?.closest?.(TYPING_SELECTOR)) {
-    begin('typing')
+    begin("typing");
   }
 }
 
 function on() {
   if (watching) {
-    return 'already watching'
+    return "already watching";
   }
 
-  watching = true
-  window.addEventListener('pointerdown', onPointerDown, true)
-  window.addEventListener('pointermove', onPointerMove, true)
-  window.addEventListener('keydown', onKeyDown, true)
+  watching = true;
+  window.addEventListener("pointerdown", onPointerDown, true);
+  window.addEventListener("pointermove", onPointerMove, true);
+  window.addEventListener("keydown", onKeyDown, true);
 
   console.log(
-    '%cperf-live%c armed — resize a pane or type in the composer; a report prints when you stop.',
-    'background:#5a7db0;color:#fff;padding:1px 6px;border-radius:3px',
-    'color:inherit'
-  )
+    "%cperf-live%c armed — resize a pane or type in the composer; a report prints when you stop.",
+    "background:#5a7db0;color:#fff;padding:1px 6px;border-radius:3px",
+    "color:inherit",
+  );
 
-  return 'watching'
+  return "watching";
 }
 
 function off() {
-  watching = false
-  window.removeEventListener('pointerdown', onPointerDown, true)
-  window.removeEventListener('pointermove', onPointerMove, true)
-  window.removeEventListener('keydown', onKeyDown, true)
-  finish()
+  watching = false;
+  window.removeEventListener("pointerdown", onPointerDown, true);
+  window.removeEventListener("pointermove", onPointerMove, true);
+  window.removeEventListener("keydown", onKeyDown, true);
+  finish();
 
-  return 'stopped'
+  return "stopped";
 }
 
 declare global {
   interface Window {
     __PERF_LIVE__?: {
-      on: () => string
-      off: () => string
-      last: () => null | Sample
-      watching: () => boolean
-    }
+      on: () => string;
+      off: () => string;
+      last: () => null | Sample;
+      watching: () => boolean;
+    };
   }
 }
 
-if (typeof window !== 'undefined' && !window.__PERF_LIVE__) {
-  window.__PERF_LIVE__ = { last: () => lastReport, off, on, watching: () => watching }
+if (typeof window !== "undefined" && !window.__PERF_LIVE__) {
+  window.__PERF_LIVE__ = {
+    last: () => lastReport,
+    off,
+    on,
+    watching: () => watching,
+  };
 
   // Opt in for a whole session with ?perflive=1 so a reload keeps measuring.
-  if (new URLSearchParams(window.location.search).get('perflive') === '1') {
-    on()
+  if (new URLSearchParams(window.location.search).get("perflive") === "1") {
+    on();
   }
 }
 
-export {}
+export {};

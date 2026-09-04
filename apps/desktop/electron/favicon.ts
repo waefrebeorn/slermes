@@ -22,31 +22,33 @@
  */
 
 export interface IconCandidate {
-  url: string
+  url: string;
   /** Rough pixel edge, or a synthetic rank for scalable/unsized marks. */
-  score: number
+  score: number;
 }
 
 export interface FaviconIo {
   /** Page/manifest text, or '' when it can't be read. */
-  fetchText: (url: string) => Promise<string>
+  fetchText: (url: string) => Promise<string>;
   /** Image bytes plus the server's content type, or null on any refusal. */
-  fetchImage: (url: string) => Promise<null | { bytes: Uint8Array; mime: string }>
+  fetchImage: (
+    url: string,
+  ) => Promise<null | { bytes: Uint8Array; mime: string }>;
 }
 
 /** Scalable beats every raster size; below it, bigger wins up to a point. */
-const SCORE_SVG = 1024
+const SCORE_SVG = 1024;
 /** `sizes="any"` — usually an SVG or a multi-res ICO. */
-const SCORE_ANY = 512
+const SCORE_ANY = 512;
 /** Apple's spec size, which is what unsized apple-touch links almost always are. */
-const SCORE_APPLE_TOUCH = 180
+const SCORE_APPLE_TOUCH = 180;
 /** A declared icon with no size at all still beats a guessed path. */
-const SCORE_UNSIZED = 96
+const SCORE_UNSIZED = 96;
 /** Guessed well-known paths, tried only after everything declared. */
-const SCORE_GUESS = 48
+const SCORE_GUESS = 48;
 
 /** Past this the file is a download, not an icon. */
-const SCORE_CEILING = 512
+const SCORE_CEILING = 512;
 
 /**
  * A host worth asking for an icon.
@@ -56,220 +58,256 @@ const SCORE_CEILING = 512
  * a private hostname from being handed to that service.
  */
 export function isPublicHttpUrl(raw: string): boolean {
-  let url: URL
+  let url: URL;
 
   try {
-    url = new URL(raw)
+    url = new URL(raw);
   } catch {
-    return false
+    return false;
   }
 
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-    return false
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return false;
   }
 
-  const host = url.hostname.toLowerCase()
+  const host = url.hostname.toLowerCase();
 
   return !(
-    host === 'localhost' ||
-    host === '::1' ||
-    host.endsWith('.local') ||
-    host.endsWith('.internal') ||
-    !host.includes('.') ||
+    host === "localhost" ||
+    host === "::1" ||
+    host.endsWith(".local") ||
+    host.endsWith(".internal") ||
+    !host.includes(".") ||
     /^127\./.test(host) ||
     /^10\./.test(host) ||
     /^192\.168\./.test(host) ||
     /^169\.254\./.test(host) ||
     /^172\.(1[6-9]|2\d|3[01])\./.test(host)
-  )
+  );
 }
 
 const absolute = (href: string, base: string): string => {
   try {
-    const url = new URL(href.trim(), base)
+    const url = new URL(href.trim(), base);
 
-    return url.protocol === 'http:' || url.protocol === 'https:' ? url.toString() : ''
+    return url.protocol === "http:" || url.protocol === "https:"
+      ? url.toString()
+      : "";
   } catch {
-    return ''
+    return "";
   }
-}
+};
 
 /** "180x180 32x32" → 180. Takes the largest declared square edge. */
 export function largestDeclaredSize(sizes: string): number {
-  let best = 0
+  let best = 0;
 
   for (const token of sizes.toLowerCase().split(/\s+/)) {
-    if (token === 'any') {
-      best = Math.max(best, SCORE_ANY)
+    if (token === "any") {
+      best = Math.max(best, SCORE_ANY);
 
-      continue
+      continue;
     }
 
-    const edge = Number(token.split('x')[0])
+    const edge = Number(token.split("x")[0]);
 
     if (Number.isFinite(edge)) {
-      best = Math.max(best, edge)
+      best = Math.max(best, edge);
     }
   }
 
-  return best
+  return best;
 }
 
 const attr = (tag: string, name: string): string =>
   tag
-    .match(new RegExp(`\\b${name}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s"'>]+))`, 'i'))
+    .match(
+      new RegExp(`\\b${name}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s"'>]+))`, "i"),
+    )
     ?.slice(2)
-    .find(Boolean) ?? ''
+    .find(Boolean) ?? "";
 
 const scoreFor = (rel: string, type: string, sizes: string): number => {
-  if (type.includes('svg') || rel.includes('mask-icon')) {
-    return SCORE_SVG
+  if (type.includes("svg") || rel.includes("mask-icon")) {
+    return SCORE_SVG;
   }
 
-  const declared = largestDeclaredSize(sizes)
+  const declared = largestDeclaredSize(sizes);
 
   if (declared > 0) {
-    return Math.min(declared, SCORE_CEILING)
+    return Math.min(declared, SCORE_CEILING);
   }
 
-  return rel.includes('apple-touch-icon') ? SCORE_APPLE_TOUCH : SCORE_UNSIZED
-}
+  return rel.includes("apple-touch-icon") ? SCORE_APPLE_TOUCH : SCORE_UNSIZED;
+};
 
 /** Every icon the page declares, absolute and ranked. */
-export function iconCandidatesFromHtml(html: string, pageUrl: string): IconCandidate[] {
-  const base = absolute(attr(html.match(/<base\b[^>]*>/i)?.[0] ?? '', 'href'), pageUrl) || pageUrl
-  const candidates: IconCandidate[] = []
+export function iconCandidatesFromHtml(
+  html: string,
+  pageUrl: string,
+): IconCandidate[] {
+  const base =
+    absolute(attr(html.match(/<base\b[^>]*>/i)?.[0] ?? "", "href"), pageUrl) ||
+    pageUrl;
+  const candidates: IconCandidate[] = [];
 
   for (const tag of html.match(/<link\b[^>]*>/gi) ?? []) {
-    const rel = attr(tag, 'rel').toLowerCase()
+    const rel = attr(tag, "rel").toLowerCase();
 
-    if (!/\b(icon|shortcut icon|apple-touch-icon|apple-touch-icon-precomposed|fluid-icon|mask-icon)\b/.test(rel)) {
-      continue
+    if (
+      !/\b(icon|shortcut icon|apple-touch-icon|apple-touch-icon-precomposed|fluid-icon|mask-icon)\b/.test(
+        rel,
+      )
+    ) {
+      continue;
     }
 
-    const url = absolute(attr(tag, 'href'), base)
+    const url = absolute(attr(tag, "href"), base);
 
     if (url) {
-      candidates.push({ score: scoreFor(rel, attr(tag, 'type').toLowerCase(), attr(tag, 'sizes')), url })
+      candidates.push({
+        score: scoreFor(
+          rel,
+          attr(tag, "type").toLowerCase(),
+          attr(tag, "sizes"),
+        ),
+        url,
+      });
     }
   }
 
-  return candidates
+  return candidates;
 }
 
 /** The page's web app manifest, if it links one. */
 export function manifestUrlFromHtml(html: string, pageUrl: string): string {
   for (const tag of html.match(/<link\b[^>]*>/gi) ?? []) {
-    if (/\bmanifest\b/i.test(attr(tag, 'rel'))) {
-      return absolute(attr(tag, 'href'), pageUrl)
+    if (/\bmanifest\b/i.test(attr(tag, "rel"))) {
+      return absolute(attr(tag, "href"), pageUrl);
     }
   }
 
-  return ''
+  return "";
 }
 
 /** PWA manifests carry the best assets a site has — 192px and 512px marks
  *  designed to stand alone on a home screen, which is exactly our use. */
-export function iconCandidatesFromManifest(raw: string, manifestUrl: string): IconCandidate[] {
-  let parsed: unknown
+export function iconCandidatesFromManifest(
+  raw: string,
+  manifestUrl: string,
+): IconCandidate[] {
+  let parsed: unknown;
 
   try {
-    parsed = JSON.parse(raw)
+    parsed = JSON.parse(raw);
   } catch {
-    return []
+    return [];
   }
 
-  const icons = (parsed as { icons?: unknown })?.icons
+  const icons = (parsed as { icons?: unknown })?.icons;
 
   if (!Array.isArray(icons)) {
-    return []
+    return [];
   }
 
-  const candidates: IconCandidate[] = []
+  const candidates: IconCandidate[] = [];
 
   for (const icon of icons) {
-    const src = typeof icon?.src === 'string' ? absolute(icon.src, manifestUrl) : ''
+    const src =
+      typeof icon?.src === "string" ? absolute(icon.src, manifestUrl) : "";
 
     if (!src) {
-      continue
+      continue;
     }
 
-    const type = typeof icon?.type === 'string' ? icon.type.toLowerCase() : ''
-    const sizes = typeof icon?.sizes === 'string' ? icon.sizes : ''
+    const type = typeof icon?.type === "string" ? icon.type.toLowerCase() : "";
+    const sizes = typeof icon?.sizes === "string" ? icon.sizes : "";
 
-    candidates.push({ score: scoreFor('', type, sizes), url: src })
+    candidates.push({ score: scoreFor("", type, sizes), url: src });
   }
 
-  return candidates
+  return candidates;
 }
 
 /** The well-known paths, on the origin and on its apex — vendors routinely
  *  serve icons from `example.com` and nothing from `api.example.com`. */
 export function fallbackIconCandidates(pageUrl: string): IconCandidate[] {
-  let url: URL
+  let url: URL;
 
   try {
-    url = new URL(pageUrl)
+    url = new URL(pageUrl);
   } catch {
-    return []
+    return [];
   }
 
-  const labels = url.hostname.split('.')
-  const apex = labels.length > 2 ? `${url.protocol}//${labels.slice(-2).join('.')}` : url.origin
-  const origins = [...new Set([url.origin, apex])]
+  const labels = url.hostname.split(".");
+  const apex =
+    labels.length > 2
+      ? `${url.protocol}//${labels.slice(-2).join(".")}`
+      : url.origin;
+  const origins = [...new Set([url.origin, apex])];
 
-  return origins.flatMap(origin => [
+  return origins.flatMap((origin) => [
     { score: SCORE_GUESS + 2, url: `${origin}/apple-touch-icon.png` },
-    { score: SCORE_GUESS + 1, url: `${origin}/apple-touch-icon-precomposed.png` },
+    {
+      score: SCORE_GUESS + 1,
+      url: `${origin}/apple-touch-icon-precomposed.png`,
+    },
     { score: SCORE_GUESS, url: `${origin}/favicon.ico` },
-    { score: SCORE_GUESS - 1, url: `${origin}/favicon.png` }
-  ])
+    { score: SCORE_GUESS - 1, url: `${origin}/favicon.png` },
+  ]);
 }
 
 /** Highest-ranked first, one entry per URL, capped so a page declaring
  *  twenty icons can't turn one card into twenty requests. */
-export function rankCandidates(candidates: IconCandidate[], limit = 6): IconCandidate[] {
-  const best = new Map<string, number>()
+export function rankCandidates(
+  candidates: IconCandidate[],
+  limit = 6,
+): IconCandidate[] {
+  const best = new Map<string, number>();
 
   for (const candidate of candidates) {
-    best.set(candidate.url, Math.max(best.get(candidate.url) ?? 0, candidate.score))
+    best.set(
+      candidate.url,
+      Math.max(best.get(candidate.url) ?? 0, candidate.score),
+    );
   }
 
   return [...best.entries()]
     .map(([url, score]) => ({ score, url }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
+    .slice(0, limit);
 }
 
 /** Magic bytes, because plenty of servers hand back an icon as
  *  `application/octet-stream` — and an HTML error page as `image/png`. */
 export function sniffImageMime(bytes: Uint8Array): string {
   const at = (offset: number, ...signature: number[]) =>
-    signature.every((byte, index) => bytes[offset + index] === byte)
+    signature.every((byte, index) => bytes[offset + index] === byte);
 
   if (at(0, 0x89, 0x50, 0x4e, 0x47)) {
-    return 'image/png'
+    return "image/png";
   }
 
   if (at(0, 0xff, 0xd8, 0xff)) {
-    return 'image/jpeg'
+    return "image/jpeg";
   }
 
   if (at(0, 0x47, 0x49, 0x46, 0x38)) {
-    return 'image/gif'
+    return "image/gif";
   }
 
   if (at(0, 0x00, 0x00, 0x01, 0x00)) {
-    return 'image/x-icon'
+    return "image/x-icon";
   }
 
   if (at(0, 0x52, 0x49, 0x46, 0x46) && at(8, 0x57, 0x45, 0x42, 0x50)) {
-    return 'image/webp'
+    return "image/webp";
   }
 
-  const head = new TextDecoder().decode(bytes.subarray(0, 1024)).toLowerCase()
+  const head = new TextDecoder().decode(bytes.subarray(0, 1024)).toLowerCase();
 
-  return head.includes('<svg') ? 'image/svg+xml' : ''
+  return head.includes("<svg") ? "image/svg+xml" : "";
 }
 
 /**
@@ -281,18 +319,20 @@ export function sniffImageMime(bytes: Uint8Array): string {
  */
 export function imageMime(declared: string, bytes: Uint8Array): string {
   if (bytes.length < 48) {
-    return ''
+    return "";
   }
 
-  const sniffed = sniffImageMime(bytes)
+  const sniffed = sniffImageMime(bytes);
 
   // An SVG that opens with a license comment long enough to push `<svg` past
   // the sniff window is still an SVG if the server said so.
-  return sniffed || (declared.toLowerCase().includes('svg') ? 'image/svg+xml' : '')
+  return (
+    sniffed || (declared.toLowerCase().includes("svg") ? "image/svg+xml" : "")
+  );
 }
 
 export const toDataUrl = (mime: string, bytes: Uint8Array): string =>
-  `data:${mime};base64,${Buffer.from(bytes).toString('base64')}`
+  `data:${mime};base64,${Buffer.from(bytes).toString("base64")}`;
 
 /**
  * Walk the ladder and return the first real image, as a data URL.
@@ -301,47 +341,50 @@ export const toDataUrl = (mime: string, bytes: Uint8Array): string =>
  * network trip, the icon survives a site going down, and one cached string
  * covers every surface showing that connector.
  */
-export async function resolveFavicon(pageUrl: string, io: FaviconIo): Promise<string> {
+export async function resolveFavicon(
+  pageUrl: string,
+  io: FaviconIo,
+): Promise<string> {
   if (!isPublicHttpUrl(pageUrl)) {
-    return ''
+    return "";
   }
 
-  const candidates: IconCandidate[] = []
-  const html = await io.fetchText(pageUrl).catch(() => '')
+  const candidates: IconCandidate[] = [];
+  const html = await io.fetchText(pageUrl).catch(() => "");
 
   if (html) {
-    candidates.push(...iconCandidatesFromHtml(html, pageUrl))
+    candidates.push(...iconCandidatesFromHtml(html, pageUrl));
 
-    const manifestUrl = manifestUrlFromHtml(html, pageUrl)
+    const manifestUrl = manifestUrlFromHtml(html, pageUrl);
 
     if (manifestUrl) {
-      const manifest = await io.fetchText(manifestUrl).catch(() => '')
+      const manifest = await io.fetchText(manifestUrl).catch(() => "");
 
       if (manifest) {
-        candidates.push(...iconCandidatesFromManifest(manifest, manifestUrl))
+        candidates.push(...iconCandidatesFromManifest(manifest, manifestUrl));
       }
     }
   }
 
-  candidates.push(...fallbackIconCandidates(pageUrl))
+  candidates.push(...fallbackIconCandidates(pageUrl));
 
   // Only the site's own marks. A third-party icon service would answer for
   // the hosts that serve nothing readable, but asking it means naming a
   // connector's host to someone else — so a site that won't show us its icon
   // simply keeps its monogram.
   for (const candidate of rankCandidates(candidates)) {
-    const image = await io.fetchImage(candidate.url).catch(() => null)
+    const image = await io.fetchImage(candidate.url).catch(() => null);
 
     if (!image) {
-      continue
+      continue;
     }
 
-    const mime = imageMime(image.mime, image.bytes)
+    const mime = imageMime(image.mime, image.bytes);
 
     if (mime) {
-      return toDataUrl(mime, image.bytes)
+      return toDataUrl(mime, image.bytes);
     }
   }
 
-  return ''
+  return "";
 }

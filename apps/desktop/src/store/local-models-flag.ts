@@ -1,4 +1,4 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
 /**
  * Launch-flag gate for every local-models surface in the GUI.
@@ -12,5 +12,6 @@ import { atom } from 'nanostores'
  * it outside tests.
  */
 export const $localModelsEnabled = atom<boolean>(
-  typeof window !== 'undefined' && window.hermesDesktop?.localModelsEnabled === true
-)
+  typeof window !== "undefined" &&
+    window.hermesDesktop?.localModelsEnabled === true,
+);

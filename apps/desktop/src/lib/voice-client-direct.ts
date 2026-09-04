@@ -1,5 +1,9 @@
-import { profileScoped } from '@/api/client'
-import { getApiRequestConnection, getApiRequestProfile, hermesApi } from '@/hermes'
+import { profileScoped } from "@/api/client";
+import {
+  getApiRequestConnection,
+  getApiRequestProfile,
+  hermesApi,
+} from "@/hermes";
 
 /**
  * Client-direct voice: call the active profile's STT/TTS providers straight
@@ -20,34 +24,34 @@ import { getApiRequestConnection, getApiRequestProfile, hermesApi } from '@/herm
  */
 
 export interface DirectSttConfig {
-  mode: 'direct'
-  wire: 'elevenlabs-stt' | 'openai-multipart' | 'xai-stt'
-  provider: string
-  base_url: string
-  api_key: string
-  model: null | string
-  language: null | string
+  mode: "direct";
+  wire: "elevenlabs-stt" | "openai-multipart" | "xai-stt";
+  provider: string;
+  base_url: string;
+  api_key: string;
+  model: null | string;
+  language: null | string;
 }
 
 export interface DirectTtsConfig {
-  mode: 'direct'
-  wire: 'elevenlabs-tts' | 'openai-speech'
-  provider: string
-  base_url: string
-  api_key: string
-  model: null | string
-  voice: null | string
-  speed: null | number
+  mode: "direct";
+  wire: "elevenlabs-tts" | "openai-speech";
+  provider: string;
+  base_url: string;
+  api_key: string;
+  model: null | string;
+  voice: null | string;
+  speed: null | number;
 }
 
 interface RelayConfig {
-  mode: 'relay'
-  reason?: string
+  mode: "relay";
+  reason?: string;
 }
 
 export interface VoiceClientConfig {
-  stt: DirectSttConfig | RelayConfig
-  tts: DirectTtsConfig | RelayConfig
+  stt: DirectSttConfig | RelayConfig;
+  tts: DirectTtsConfig | RelayConfig;
 }
 
 // ---------------------------------------------------------------------------
@@ -56,30 +60,34 @@ export interface VoiceClientConfig {
 // on the gateway propagates within a minute without a per-utterance fetch.
 // ---------------------------------------------------------------------------
 
-const CONFIG_TTL_MS = 60_000
+const CONFIG_TTL_MS = 60_000;
 
-let cached: { key: string; at: number; config: VoiceClientConfig } | null = null
-let inflight: { key: string; promise: Promise<null | VoiceClientConfig> } | null = null
+let cached: { key: string; at: number; config: VoiceClientConfig } | null =
+  null;
+let inflight: {
+  key: string;
+  promise: Promise<null | VoiceClientConfig>;
+} | null = null;
 
 function scopeKey(): string {
-  return `${getApiRequestConnection() ?? 'local'}::${getApiRequestProfile() ?? 'default'}`
+  return `${getApiRequestConnection() ?? "local"}::${getApiRequestProfile() ?? "default"}`;
 }
 
 /** Drop cached credentials (used by tests; scope changes rotate the key). */
 export function clearVoiceClientConfigCache(): void {
-  cached = null
-  inflight = null
+  cached = null;
+  inflight = null;
 }
 
 export async function fetchVoiceClientConfig(): Promise<null | VoiceClientConfig> {
-  const key = scopeKey()
+  const key = scopeKey();
 
   if (cached && cached.key === key && Date.now() - cached.at < CONFIG_TTL_MS) {
-    return cached.config
+    return cached.config;
   }
 
   if (inflight && inflight.key === key) {
-    return inflight.promise
+    return inflight.promise;
   }
 
   const promise = (async () => {
@@ -89,28 +97,31 @@ export async function fetchVoiceClientConfig(): Promise<null | VoiceClientConfig
       // config comes from the backend the user is actually talking to.
       const response = await hermesApi<{ ok: boolean } & VoiceClientConfig>({
         ...profileScoped(),
-        path: '/api/audio/voice-config'
-      })
+        path: "/api/audio/voice-config",
+      });
 
       if (!response?.ok || !response.stt || !response.tts) {
-        return null
+        return null;
       }
 
-      const config: VoiceClientConfig = { stt: response.stt, tts: response.tts }
-      cached = { key, at: Date.now(), config }
+      const config: VoiceClientConfig = {
+        stt: response.stt,
+        tts: response.tts,
+      };
+      cached = { key, at: Date.now(), config };
 
-      return config
+      return config;
     } catch {
       // Older backend without the endpoint / transient failure → relay.
-      return null
+      return null;
     } finally {
-      inflight = null
+      inflight = null;
     }
-  })()
+  })();
 
-  inflight = { key, promise }
+  inflight = { key, promise };
 
-  return promise
+  return promise;
 }
 
 // ---------------------------------------------------------------------------
@@ -118,26 +129,28 @@ export async function fetchVoiceClientConfig(): Promise<null | VoiceClientConfig
 // ---------------------------------------------------------------------------
 
 function sttFileName(audio: Blob): string {
-  const subtype = (audio.type.split(';')[0].split('/')[1] || 'webm').toLowerCase()
+  const subtype = (
+    audio.type.split(";")[0].split("/")[1] || "webm"
+  ).toLowerCase();
 
-  return `recording.${subtype === 'mpeg' ? 'mp3' : subtype}`
+  return `recording.${subtype === "mpeg" ? "mp3" : subtype}`;
 }
 
 async function providerErrorText(response: Response): Promise<string> {
-  const body = await response.text().catch(() => '')
+  const body = await response.text().catch(() => "");
 
   try {
-    const parsed = JSON.parse(body)
-    const detail = parsed?.error?.message ?? parsed?.detail ?? parsed?.error
+    const parsed = JSON.parse(body);
+    const detail = parsed?.error?.message ?? parsed?.detail ?? parsed?.error;
 
-    if (typeof detail === 'string' && detail) {
-      return detail
+    if (typeof detail === "string" && detail) {
+      return detail;
     }
   } catch {
     // fall through to raw body
   }
 
-  return body.slice(0, 300)
+  return body.slice(0, 300);
 }
 
 /**
@@ -149,25 +162,25 @@ async function providerErrorText(response: Response): Promise<string> {
  * composer is the dictation regression (plain speech becomes raw JSON).
  */
 export function transcriptFromOpenAiMultipartBody(body: string): string {
-  const trimmed = String(body || '').trim()
+  const trimmed = String(body || "").trim();
 
   if (!trimmed) {
-    return ''
+    return "";
   }
 
-  if (trimmed.startsWith('{')) {
+  if (trimmed.startsWith("{")) {
     try {
-      const parsed = JSON.parse(trimmed) as { text?: unknown }
+      const parsed = JSON.parse(trimmed) as { text?: unknown };
 
-      if (typeof parsed?.text === 'string') {
-        return parsed.text.trim()
+      if (typeof parsed?.text === "string") {
+        return parsed.text.trim();
       }
     } catch {
       // Not JSON — treat the body as the transcript.
     }
   }
 
-  return trimmed
+  return trimmed;
 }
 
 /**
@@ -177,93 +190,107 @@ export function transcriptFromOpenAiMultipartBody(body: string): string {
  * re-running the same request through the gateway would just fail again
  * slower and hide the real error.
  */
-export async function transcribeAudioClientDirect(audio: Blob): Promise<null | string> {
-  const config = await fetchVoiceClientConfig()
-  const stt = config?.stt
+export async function transcribeAudioClientDirect(
+  audio: Blob,
+): Promise<null | string> {
+  const config = await fetchVoiceClientConfig();
+  const stt = config?.stt;
 
-  if (!stt || stt.mode !== 'direct') {
-    return null
+  if (!stt || stt.mode !== "direct") {
+    return null;
   }
 
-  if (stt.wire === 'openai-multipart') {
-    const form = new FormData()
-    form.set('file', audio, sttFileName(audio))
+  if (stt.wire === "openai-multipart") {
+    const form = new FormData();
+    form.set("file", audio, sttFileName(audio));
 
     if (stt.model) {
-      form.set('model', stt.model)
+      form.set("model", stt.model);
     }
 
-    form.set('response_format', 'text')
+    form.set("response_format", "text");
 
     if (stt.language) {
-      form.set('language', stt.language)
+      form.set("language", stt.language);
     }
 
-    const response = await fetch(`${stt.base_url.replace(/\/+$/, '')}/audio/transcriptions`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${stt.api_key}` },
-      body: form
-    })
+    const response = await fetch(
+      `${stt.base_url.replace(/\/+$/, "")}/audio/transcriptions`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${stt.api_key}` },
+        body: form,
+      },
+    );
 
     if (!response.ok) {
-      throw new Error(`${stt.provider} STT error (HTTP ${response.status}): ${await providerErrorText(response)}`)
+      throw new Error(
+        `${stt.provider} STT error (HTTP ${response.status}): ${await providerErrorText(response)}`,
+      );
     }
 
-    return transcriptFromOpenAiMultipartBody(await response.text())
+    return transcriptFromOpenAiMultipartBody(await response.text());
   }
 
-  if (stt.wire === 'xai-stt') {
-    const form = new FormData()
-    form.set('file', audio, sttFileName(audio))
-    form.set('format', 'true')
+  if (stt.wire === "xai-stt") {
+    const form = new FormData();
+    form.set("file", audio, sttFileName(audio));
+    form.set("format", "true");
 
     if (stt.language) {
-      form.set('language', stt.language)
+      form.set("language", stt.language);
     }
 
-    const response = await fetch(`${stt.base_url.replace(/\/+$/, '')}/stt`, {
-      method: 'POST',
+    const response = await fetch(`${stt.base_url.replace(/\/+$/, "")}/stt`, {
+      method: "POST",
       headers: { Authorization: `Bearer ${stt.api_key}` },
-      body: form
-    })
+      body: form,
+    });
 
     if (!response.ok) {
-      throw new Error(`xAI STT error (HTTP ${response.status}): ${await providerErrorText(response)}`)
+      throw new Error(
+        `xAI STT error (HTTP ${response.status}): ${await providerErrorText(response)}`,
+      );
     }
 
-    const result = (await response.json()) as { text?: string }
+    const result = (await response.json()) as { text?: string };
 
-    return (result.text || '').trim()
+    return (result.text || "").trim();
   }
 
-  if (stt.wire === 'elevenlabs-stt') {
-    const form = new FormData()
-    form.set('file', audio, sttFileName(audio))
+  if (stt.wire === "elevenlabs-stt") {
+    const form = new FormData();
+    form.set("file", audio, sttFileName(audio));
 
     if (stt.model) {
-      form.set('model_id', stt.model)
+      form.set("model_id", stt.model);
     }
 
     if (stt.language) {
-      form.set('language_code', stt.language)
+      form.set("language_code", stt.language);
     }
 
-    const response = await fetch(`${stt.base_url.replace(/\/+$/, '')}/speech-to-text`, {
-      method: 'POST',
-      headers: { 'xi-api-key': stt.api_key },
-      body: form
-    })
+    const response = await fetch(
+      `${stt.base_url.replace(/\/+$/, "")}/speech-to-text`,
+      {
+        method: "POST",
+        headers: { "xi-api-key": stt.api_key },
+        body: form,
+      },
+    );
 
     if (!response.ok) {
-      throw new Error(`ElevenLabs STT error (HTTP ${response.status}): ${await providerErrorText(response)}`)
+      throw new Error(
+        `ElevenLabs STT error (HTTP ${response.status}): ${await providerErrorText(response)}`,
+      );
     }
 
-    const result = (await response.json()) as { text?: string }
+    const result = (await response.json()) as { text?: string };
 
-    return (result.text || '').trim()
+    return (result.text || "").trim();
   }
 
-  return null
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -273,63 +300,73 @@ export async function transcribeAudioClientDirect(audio: Blob): Promise<null | s
 
 /** Resolve the profile's TTS config when it is client-callable, else null. */
 export async function directTtsConfig(): Promise<DirectTtsConfig | null> {
-  const config = await fetchVoiceClientConfig()
+  const config = await fetchVoiceClientConfig();
 
-  return config?.tts && config.tts.mode === 'direct' ? config.tts : null
+  return config?.tts && config.tts.mode === "direct" ? config.tts : null;
 }
 
 /** Synthesize one text segment to audio bytes (mp3). Throws on provider rejection. */
-export async function synthesizeSpeechClientDirect(tts: DirectTtsConfig, text: string): Promise<ArrayBuffer> {
-  if (tts.wire === 'openai-speech') {
+export async function synthesizeSpeechClientDirect(
+  tts: DirectTtsConfig,
+  text: string,
+): Promise<ArrayBuffer> {
+  if (tts.wire === "openai-speech") {
     const body: Record<string, unknown> = {
       model: tts.model,
       voice: tts.voice,
       input: text,
-      response_format: 'mp3'
-    }
+      response_format: "mp3",
+    };
 
     if (tts.speed && tts.speed !== 1) {
-      body.speed = tts.speed
+      body.speed = tts.speed;
     }
 
-    const response = await fetch(`${tts.base_url.replace(/\/+$/, '')}/audio/speech`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${tts.api_key}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
-
-    if (!response.ok) {
-      throw new Error(`${tts.provider} TTS error (HTTP ${response.status}): ${await providerErrorText(response)}`)
-    }
-
-    return response.arrayBuffer()
-  }
-
-  if (tts.wire === 'elevenlabs-tts') {
     const response = await fetch(
-      `${tts.base_url.replace(/\/+$/, '')}/text-to-speech/${encodeURIComponent(tts.voice || '')}`,
+      `${tts.base_url.replace(/\/+$/, "")}/audio/speech`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'xi-api-key': tts.api_key,
-          'Content-Type': 'application/json',
-          Accept: 'audio/mpeg'
+          Authorization: `Bearer ${tts.api_key}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text, model_id: tts.model })
-      }
-    )
+        body: JSON.stringify(body),
+      },
+    );
 
     if (!response.ok) {
-      throw new Error(`ElevenLabs TTS error (HTTP ${response.status}): ${await providerErrorText(response)}`)
+      throw new Error(
+        `${tts.provider} TTS error (HTTP ${response.status}): ${await providerErrorText(response)}`,
+      );
     }
 
-    return response.arrayBuffer()
+    return response.arrayBuffer();
   }
 
-  throw new Error(`Unknown TTS wire: ${(tts as { wire?: string }).wire}`)
+  if (tts.wire === "elevenlabs-tts") {
+    const response = await fetch(
+      `${tts.base_url.replace(/\/+$/, "")}/text-to-speech/${encodeURIComponent(tts.voice || "")}`,
+      {
+        method: "POST",
+        headers: {
+          "xi-api-key": tts.api_key,
+          "Content-Type": "application/json",
+          Accept: "audio/mpeg",
+        },
+        body: JSON.stringify({ text, model_id: tts.model }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `ElevenLabs TTS error (HTTP ${response.status}): ${await providerErrorText(response)}`,
+      );
+    }
+
+    return response.arrayBuffer();
+  }
+
+  throw new Error(`Unknown TTS wire: ${(tts as { wire?: string }).wire}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -338,43 +375,46 @@ export async function synthesizeSpeechClientDirect(tts: DirectTtsConfig, text: s
 // the incomplete tail, flush everything on finish.
 // ---------------------------------------------------------------------------
 
-const SENTENCE_BOUNDARY_RE = /[.!?…。！？]+["'”’)\]]*\s+/g
-const MIN_SENTENCE_CHARS = 24
+const SENTENCE_BOUNDARY_RE = /[.!?…。！？]+["'”’)\]]*\s+/g;
+const MIN_SENTENCE_CHARS = 24;
 
-export function cutSentences(buffer: string, flush: boolean): { sentences: string[]; rest: string } {
-  const sentences: string[] = []
-  let rest = buffer
-  let start = 0
+export function cutSentences(
+  buffer: string,
+  flush: boolean,
+): { sentences: string[]; rest: string } {
+  const sentences: string[] = [];
+  let rest = buffer;
+  let start = 0;
 
-  SENTENCE_BOUNDARY_RE.lastIndex = 0
+  SENTENCE_BOUNDARY_RE.lastIndex = 0;
 
-  let match = SENTENCE_BOUNDARY_RE.exec(buffer)
+  let match = SENTENCE_BOUNDARY_RE.exec(buffer);
 
   while (match) {
-    const end = match.index + match[0].length
-    const candidate = buffer.slice(start, end).trim()
+    const end = match.index + match[0].length;
+    const candidate = buffer.slice(start, end).trim();
 
     // Too-short fragments ("e.g. ", "1. ") stay buffered so we don't fire a
     // provider call per abbreviation — unless a later boundary extends them.
     if (candidate.length >= MIN_SENTENCE_CHARS) {
-      sentences.push(candidate)
-      start = end
+      sentences.push(candidate);
+      start = end;
     }
 
-    match = SENTENCE_BOUNDARY_RE.exec(buffer)
+    match = SENTENCE_BOUNDARY_RE.exec(buffer);
   }
 
-  rest = buffer.slice(start)
+  rest = buffer.slice(start);
 
   if (flush) {
-    const tail = rest.trim()
+    const tail = rest.trim();
 
     if (tail) {
-      sentences.push(tail)
+      sentences.push(tail);
     }
 
-    rest = ''
+    rest = "";
   }
 
-  return { sentences, rest }
+  return { sentences, rest };
 }

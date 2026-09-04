@@ -11,10 +11,16 @@
  */
 
 /** Ordinal case-insensitive prefix check for Windows paths. */
-export function hasWindowsPathPrefix(exePath: string, venvScriptsDir: string): boolean {
-  const prefix = `${venvScriptsDir}\\`
+export function hasWindowsPathPrefix(
+  exePath: string,
+  venvScriptsDir: string,
+): boolean {
+  const prefix = `${venvScriptsDir}\\`;
 
-  return exePath.length >= prefix.length && exePath.slice(0, prefix.length).toLowerCase() === prefix.toLowerCase()
+  return (
+    exePath.length >= prefix.length &&
+    exePath.slice(0, prefix.length).toLowerCase() === prefix.toLowerCase()
+  );
 }
 
 /**
@@ -26,11 +32,14 @@ export function hasWindowsPathPrefix(exePath: string, venvScriptsDir: string): b
 export function isHermesOwnedVenvDaemon(
   exePath: string | null | undefined,
   cmdline: string | null | undefined,
-  venvScriptsDir: string
+  venvScriptsDir: string,
 ): boolean {
   if (!exePath || !cmdline) {
-    return false
+    return false;
   }
 
-  return hasWindowsPathPrefix(exePath, venvScriptsDir) && /hindsight_api\.main/i.test(cmdline)
+  return (
+    hasWindowsPathPrefix(exePath, venvScriptsDir) &&
+    /hindsight_api\.main/i.test(cmdline)
+  );
 }

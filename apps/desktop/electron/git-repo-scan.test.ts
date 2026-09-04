@@ -1,137 +1,177 @@
-import fs from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { normalizeRepoScanPath, repoScanPathIsWithin, scanGitRepos } from './git-repo-scan'
+import {
+  normalizeRepoScanPath,
+  repoScanPathIsWithin,
+  scanGitRepos,
+} from "./git-repo-scan";
 
-const tempDirs: string[] = []
+const tempDirs: string[] = [];
 
 function tempDir(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hermes-repo-scan-'))
-  tempDirs.push(dir)
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "hermes-repo-scan-"));
+  tempDirs.push(dir);
 
-  return dir
+  return dir;
 }
 
 function makeRepo(root: string, valid = true): void {
-  fs.mkdirSync(path.join(root, '.git'), { recursive: true })
+  fs.mkdirSync(path.join(root, ".git"), { recursive: true });
 
   if (valid) {
-    fs.writeFileSync(path.join(root, '.git', 'HEAD'), 'ref: refs/heads/main\n')
+    fs.writeFileSync(path.join(root, ".git", "HEAD"), "ref: refs/heads/main\n");
   }
 }
 
 function makeRepoAt(root: string, ...segments: string[]): string {
-  const repo = path.join(root, ...segments)
-  makeRepo(repo)
+  const repo = path.join(root, ...segments);
+  makeRepo(repo);
 
-  return repo
+  return repo;
 }
 
 function foundRoots(results: { root: string }[]): string[] {
-  return results.map(entry => entry.root).sort()
+  return results.map((entry) => entry.root).sort();
 }
 
 afterEach(() => {
-  vi.restoreAllMocks()
+  vi.restoreAllMocks();
 
   for (const dir of tempDirs.splice(0)) {
-    fs.rmSync(dir, { force: true, recursive: true })
+    fs.rmSync(dir, { force: true, recursive: true });
   }
-})
+});
 
-describe('scanGitRepos', () => {
-  it('does not read the filesystem when discovery is disabled', async () => {
-    const read = vi.spyOn(fs.promises, 'readdir')
+describe("scanGitRepos", () => {
+  it("does not read the filesystem when discovery is disabled", async () => {
+    const read = vi.spyOn(fs.promises, "readdir");
 
-    await expect(scanGitRepos([], { enabled: false })).resolves.toEqual([])
-    expect(read).not.toHaveBeenCalled()
-  })
+    await expect(scanGitRepos([], { enabled: false })).resolves.toEqual([]);
+    expect(read).not.toHaveBeenCalled();
+  });
 
-  it('scans only configured roots and excludes complete subtrees', async () => {
-    const root = tempDir()
-    const included = path.join(root, 'included')
-    const excluded = path.join(root, 'excluded')
-    const invalid = path.join(root, 'invalid')
-    makeRepo(included)
-    makeRepo(excluded)
-    makeRepo(invalid, false)
+  it("scans only configured roots and excludes complete subtrees", async () => {
+    const root = tempDir();
+    const included = path.join(root, "included");
+    const excluded = path.join(root, "excluded");
+    const invalid = path.join(root, "invalid");
+    makeRepo(included);
+    makeRepo(excluded);
+    makeRepo(invalid, false);
 
-    await expect(scanGitRepos([root], { enabled: true, excludePaths: [excluded], maxDepth: 2 })).resolves.toEqual([
-      { label: 'included', root: included }
-    ])
-  })
+    await expect(
+      scanGitRepos([root], {
+        enabled: true,
+        excludePaths: [excluded],
+        maxDepth: 2,
+      }),
+    ).resolves.toEqual([{ label: "included", root: included }]);
+  });
 
-  it('deduplicates overlapping roots', async () => {
-    const root = tempDir()
-    const repo = path.join(root, 'repo')
-    makeRepo(repo)
+  it("deduplicates overlapping roots", async () => {
+    const root = tempDir();
+    const repo = path.join(root, "repo");
+    makeRepo(repo);
 
-    const result = await scanGitRepos([root, repo], { enabled: true })
-    expect(result).toEqual([{ label: 'repo', root: repo }])
-  })
-})
+    const result = await scanGitRepos([root, repo], { enabled: true });
+    expect(result).toEqual([{ label: "repo", root: repo }]);
+  });
+});
 
-describe('macOS TCC-protected media exclusions (issue #57611 salvage)', () => {
-  it('finds a normal repo but skips root-level media folders on darwin', async () => {
-    const root = tempDir()
-    const dev = makeRepoAt(root, 'dev', 'proj')
-    makeRepoAt(root, 'Pictures', 'wallpapers')
-    makeRepoAt(root, 'Music', 'samples')
-    makeRepoAt(root, 'Movies', 'clips')
-    makeRepoAt(root, 'Public', 'shared')
+describe("macOS TCC-protected media exclusions (issue #57611 salvage)", () => {
+  it("finds a normal repo but skips root-level media folders on darwin", async () => {
+    const root = tempDir();
+    const dev = makeRepoAt(root, "dev", "proj");
+    makeRepoAt(root, "Pictures", "wallpapers");
+    makeRepoAt(root, "Music", "samples");
+    makeRepoAt(root, "Movies", "clips");
+    makeRepoAt(root, "Public", "shared");
 
-    expect(foundRoots(await scanGitRepos([root], { enabled: true, platform: 'darwin' }))).toEqual([dev])
-  })
+    expect(
+      foundRoots(
+        await scanGitRepos([root], { enabled: true, platform: "darwin" }),
+      ),
+    ).toEqual([dev]);
+  });
 
-  it('still scans a media-named directory below the search root on darwin', async () => {
-    const root = tempDir()
-    const nested = makeRepoAt(root, 'dev', 'Music', 'app')
+  it("still scans a media-named directory below the search root on darwin", async () => {
+    const root = tempDir();
+    const nested = makeRepoAt(root, "dev", "Music", "app");
 
-    expect(foundRoots(await scanGitRepos([root], { enabled: true, platform: 'darwin' }))).toEqual([nested])
-  })
+    expect(
+      foundRoots(
+        await scanGitRepos([root], { enabled: true, platform: "darwin" }),
+      ),
+    ).toEqual([nested]);
+  });
 
-  it('skips Apple media-library packages at any depth on darwin', async () => {
-    const root = tempDir()
-    const keeper = makeRepoAt(root, 'code', 'site')
-    makeRepoAt(root, 'code', 'Photos Library.photoslibrary', 'inner')
-    makeRepoAt(root, 'backups', 'Music Library.MUSICLIBRARY', 'inner')
-    makeRepoAt(root, 'backups', 'TV Library.tvlibrary', 'inner')
-    makeRepoAt(root, 'backups', 'Old.aplibrary', 'inner')
+  it("skips Apple media-library packages at any depth on darwin", async () => {
+    const root = tempDir();
+    const keeper = makeRepoAt(root, "code", "site");
+    makeRepoAt(root, "code", "Photos Library.photoslibrary", "inner");
+    makeRepoAt(root, "backups", "Music Library.MUSICLIBRARY", "inner");
+    makeRepoAt(root, "backups", "TV Library.tvlibrary", "inner");
+    makeRepoAt(root, "backups", "Old.aplibrary", "inner");
 
-    expect(foundRoots(await scanGitRepos([root], { enabled: true, platform: 'darwin' }))).toEqual([keeper])
-  })
+    expect(
+      foundRoots(
+        await scanGitRepos([root], { enabled: true, platform: "darwin" }),
+      ),
+    ).toEqual([keeper]);
+  });
 
-  it('walks an explicitly passed media root on darwin', async () => {
-    const root = tempDir()
-    const musicRoot = path.join(root, 'Music')
-    const repo = makeRepoAt(musicRoot, 'samples')
+  it("walks an explicitly passed media root on darwin", async () => {
+    const root = tempDir();
+    const musicRoot = path.join(root, "Music");
+    const repo = makeRepoAt(musicRoot, "samples");
 
-    expect(foundRoots(await scanGitRepos([musicRoot], { enabled: true, platform: 'darwin' }))).toEqual([repo])
-  })
+    expect(
+      foundRoots(
+        await scanGitRepos([musicRoot], { enabled: true, platform: "darwin" }),
+      ),
+    ).toEqual([repo]);
+  });
 
-  it('does not exclude media-named folders on linux', async () => {
-    const root = tempDir()
-    const dev = makeRepoAt(root, 'dev', 'proj')
-    const music = makeRepoAt(root, 'Music', 'samples')
+  it("does not exclude media-named folders on linux", async () => {
+    const root = tempDir();
+    const dev = makeRepoAt(root, "dev", "proj");
+    const music = makeRepoAt(root, "Music", "samples");
 
-    expect(foundRoots(await scanGitRepos([root], { enabled: true, platform: 'linux' }))).toEqual([dev, music].sort())
-  })
-})
+    expect(
+      foundRoots(
+        await scanGitRepos([root], { enabled: true, platform: "linux" }),
+      ),
+    ).toEqual([dev, music].sort());
+  });
+});
 
-describe('repository scan path normalization', () => {
-  it('expands tilde and resolves relative paths from home', () => {
-    expect(normalizeRepoScanPath('~/src', { homeDir: '/Users/rudi', platform: 'darwin' })?.value).toBe(
-      '/Users/rudi/src'
-    )
-    expect(normalizeRepoScanPath('src', { homeDir: '/Users/rudi', platform: 'linux' })?.value).toBe('/Users/rudi/src')
-  })
+describe("repository scan path normalization", () => {
+  it("expands tilde and resolves relative paths from home", () => {
+    expect(
+      normalizeRepoScanPath("~/src", {
+        homeDir: "/Users/rudi",
+        platform: "darwin",
+      })?.value,
+    ).toBe("/Users/rudi/src");
+    expect(
+      normalizeRepoScanPath("src", {
+        homeDir: "/Users/rudi",
+        platform: "linux",
+      })?.value,
+    ).toBe("/Users/rudi/src");
+  });
 
-  it('uses segment-aware, case-insensitive containment on Windows', () => {
-    const options = { homeDir: 'C:\\Users\\Rudi', platform: 'win32' as const }
-    expect(repoScanPathIsWithin('c:\\SRC\\Fever\\repo', 'C:\\src\\fever', options)).toBe(true)
-    expect(repoScanPathIsWithin('C:\\src\\feverish', 'C:\\src\\fever', options)).toBe(false)
-  })
-})
+  it("uses segment-aware, case-insensitive containment on Windows", () => {
+    const options = { homeDir: "C:\\Users\\Rudi", platform: "win32" as const };
+    expect(
+      repoScanPathIsWithin("c:\\SRC\\Fever\\repo", "C:\\src\\fever", options),
+    ).toBe(true);
+    expect(
+      repoScanPathIsWithin("C:\\src\\feverish", "C:\\src\\fever", options),
+    ).toBe(false);
+  });
+});

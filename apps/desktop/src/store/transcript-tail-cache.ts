@@ -1,5 +1,5 @@
-import type { ChatMessage } from '@/lib/chat-messages'
-import { withUniqueToolCallIdsWithinMessage } from '@/lib/chat-messages'
+import type { ChatMessage } from "@/lib/chat-messages";
+import { withUniqueToolCallIdsWithinMessage } from "@/lib/chat-messages";
 
 // ── Durable transcript-tail cache (#89206 "feels instant" layer) ────────────
 // The in-memory warm cache (sessionStateByRuntimeIdRef) makes same-window
@@ -28,12 +28,12 @@ import { withUniqueToolCallIdsWithinMessage } from '@/lib/chat-messages'
 //     bare-id keys) carry no owner and are unreachable by construction —
 //     they are swept once per window so a stale tail can never paint again.
 
-const PREFIX = 'hermes.transcript-tail.v2:'
-const LEGACY_ROOT = 'hermes.transcript-tail.v1'
-const INDEX_KEY = 'hermes.transcript-tail.v2-index'
-const TAIL_MESSAGES = 40
-const MAX_ENTRY_BYTES = 256 * 1024
-const MAX_ENTRIES = 50
+const PREFIX = "hermes.transcript-tail.v2:";
+const LEGACY_ROOT = "hermes.transcript-tail.v1";
+const INDEX_KEY = "hermes.transcript-tail.v2-index";
+const TAIL_MESSAGES = 40;
+const MAX_ENTRY_BYTES = 256 * 1024;
+const MAX_ENTRIES = 50;
 
 /** Owning scope of an entry — same shape the REST layer threads through
  *  `getLatestSessionMessages(id, scope)` and the in-memory twin stores in
@@ -42,44 +42,44 @@ export type TranscriptTailScope =
   | null
   | string
   | {
-      connectionId?: null | string
-      profile?: null | string
-    }
+      connectionId?: null | string;
+      profile?: null | string;
+    };
 
 interface CacheEntry {
-  messages: ChatMessage[]
-  savedAt: number
+  messages: ChatMessage[];
+  savedAt: number;
 }
 
-let legacyPurged = false
+let legacyPurged = false;
 
 /** One-time sweep of pre-scoping v1 entries (#94828): a bare-id key cannot
  *  be attributed to a profile, so it must never paint again. Best effort —
  *  worst case a stale entry lingers unread until quota eviction. */
 function purgeLegacyV1(store: Storage): void {
   if (legacyPurged) {
-    return
+    return;
   }
 
   try {
-    const doomed: string[] = []
+    const doomed: string[] = [];
 
     for (let index = 0; index < store.length; index += 1) {
-      const key = store.key(index)
+      const key = store.key(index);
 
       if (key && key.startsWith(LEGACY_ROOT)) {
-        doomed.push(key)
+        doomed.push(key);
       }
     }
 
     for (const key of doomed) {
-      store.removeItem(key)
+      store.removeItem(key);
     }
 
     // Only latch on a completed sweep: a mid-sweep throw retries on the next
     // storage() touch instead of leaving a partial purge latched for the
     // window's lifetime.
-    legacyPurged = true
+    legacyPurged = true;
   } catch {
     // best effort
   }
@@ -87,75 +87,84 @@ function purgeLegacyV1(store: Storage): void {
 
 function storage(): Storage | null {
   try {
-    const store = window.localStorage
+    const store = window.localStorage;
 
-    purgeLegacyV1(store)
+    purgeLegacyV1(store);
 
-    return store
+    return store;
   } catch {
-    return null
+    return null;
   }
 }
 
-function normalizedScope(scope?: TranscriptTailScope): { connectionId: string; profile: string } | null {
-  if (typeof scope === 'string') {
-    return { connectionId: '', profile: scope.trim() || 'default' }
+function normalizedScope(
+  scope?: TranscriptTailScope,
+): { connectionId: string; profile: string } | null {
+  if (typeof scope === "string") {
+    return { connectionId: "", profile: scope.trim() || "default" };
   }
 
   if (!scope) {
-    return null
+    return null;
   }
 
   return {
-    connectionId: String(scope.connectionId ?? '').trim(),
-    profile: String(scope.profile ?? '').trim() || 'default'
-  }
+    connectionId: String(scope.connectionId ?? "").trim(),
+    profile: String(scope.profile ?? "").trim() || "default",
+  };
 }
 
 /** Index identity of an entry: the bare stored id (legacy/unscoped callers)
  *  or the JSON [connectionId, profile, storedId] composite. */
-function entrySuffix(storedSessionId: string, scope?: TranscriptTailScope): string {
-  const scoped = normalizedScope(scope)
+function entrySuffix(
+  storedSessionId: string,
+  scope?: TranscriptTailScope,
+): string {
+  const scoped = normalizedScope(scope);
 
-  return scoped ? JSON.stringify([scoped.connectionId, scoped.profile, storedSessionId]) : storedSessionId
+  return scoped
+    ? JSON.stringify([scoped.connectionId, scoped.profile, storedSessionId])
+    : storedSessionId;
 }
 
 function readIndex(store: Storage): string[] {
   try {
-    const raw = store.getItem(INDEX_KEY)
-    const parsed = raw ? JSON.parse(raw) : []
+    const raw = store.getItem(INDEX_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
 
-    return Array.isArray(parsed) ? parsed.filter(id => typeof id === 'string') : []
+    return Array.isArray(parsed)
+      ? parsed.filter((id) => typeof id === "string")
+      : [];
   } catch {
-    return []
+    return [];
   }
 }
 
 function writeIndex(store: Storage, ids: string[]): void {
   try {
-    store.setItem(INDEX_KEY, JSON.stringify(ids))
+    store.setItem(INDEX_KEY, JSON.stringify(ids));
   } catch {
     // Quota — drop the index; entries become orphaned and are rewritten lazily.
   }
 }
 
 function touchIndex(store: Storage, suffix: string): void {
-  const ids = readIndex(store).filter(id => id !== suffix)
-  ids.push(suffix)
+  const ids = readIndex(store).filter((id) => id !== suffix);
+  ids.push(suffix);
 
   while (ids.length > MAX_ENTRIES) {
-    const evicted = ids.shift()
+    const evicted = ids.shift();
 
     if (evicted) {
       try {
-        store.removeItem(PREFIX + evicted)
+        store.removeItem(PREFIX + evicted);
       } catch {
         // best effort
       }
     }
   }
 
-  writeIndex(store, ids)
+  writeIndex(store, ids);
 }
 
 /** Persist the tail of a session's transcript. No-op on empty/oversized.
@@ -164,52 +173,58 @@ function touchIndex(store: Storage, suffix: string): void {
 export function saveTranscriptTail(
   storedSessionId: string,
   messages: ChatMessage[],
-  scope?: TranscriptTailScope
+  scope?: TranscriptTailScope,
 ): void {
-  const id = (storedSessionId ?? '').trim()
-  const store = storage()
+  const id = (storedSessionId ?? "").trim();
+  const store = storage();
 
   if (!store || !id || !Array.isArray(messages) || messages.length === 0) {
-    return
+    return;
   }
 
-  const entry: CacheEntry = { messages: messages.slice(-TAIL_MESSAGES), savedAt: Date.now() }
+  const entry: CacheEntry = {
+    messages: messages.slice(-TAIL_MESSAGES),
+    savedAt: Date.now(),
+  };
 
-  let serialized: string
+  let serialized: string;
 
   try {
-    serialized = JSON.stringify(entry)
+    serialized = JSON.stringify(entry);
   } catch {
-    return // non-serializable parts (live handles) — skip, never throw
+    return; // non-serializable parts (live handles) — skip, never throw
   }
 
   if (serialized.length > MAX_ENTRY_BYTES) {
     // Retry with a shorter tail before giving up; a session dominated by a
     // few huge tool results still caches its recent turns.
-    const shorter: CacheEntry = { messages: messages.slice(-8), savedAt: entry.savedAt }
+    const shorter: CacheEntry = {
+      messages: messages.slice(-8),
+      savedAt: entry.savedAt,
+    };
 
     try {
-      serialized = JSON.stringify(shorter)
+      serialized = JSON.stringify(shorter);
     } catch {
-      return
+      return;
     }
 
     if (serialized.length > MAX_ENTRY_BYTES) {
-      return
+      return;
     }
   }
 
-  const suffix = entrySuffix(id, scope)
+  const suffix = entrySuffix(id, scope);
 
   try {
-    store.setItem(PREFIX + suffix, serialized)
-    touchIndex(store, suffix)
+    store.setItem(PREFIX + suffix, serialized);
+    touchIndex(store, suffix);
   } catch {
     // Quota exceeded — evict everything and retry once (small cache >> stale cache).
     try {
-      clearTranscriptTails()
-      store.setItem(PREFIX + suffix, serialized)
-      touchIndex(store, suffix)
+      clearTranscriptTails();
+      store.setItem(PREFIX + suffix, serialized);
+      touchIndex(store, suffix);
     } catch {
       // Storage genuinely unavailable; instant paint just won't happen.
     }
@@ -218,31 +233,38 @@ export function saveTranscriptTail(
 
 /** Cached tail for a stored session, or null. Corrupt entries self-evict.
  *  Only entries saved under the SAME owning scope are returned (#94828). */
-export function loadTranscriptTail(storedSessionId: string, scope?: TranscriptTailScope): ChatMessage[] | null {
-  const id = (storedSessionId ?? '').trim()
-  const store = storage()
+export function loadTranscriptTail(
+  storedSessionId: string,
+  scope?: TranscriptTailScope,
+): ChatMessage[] | null {
+  const id = (storedSessionId ?? "").trim();
+  const store = storage();
 
   if (!store || !id) {
-    return null
+    return null;
   }
 
-  let raw: null | string = null
+  let raw: null | string = null;
 
   try {
-    raw = store.getItem(PREFIX + entrySuffix(id, scope))
+    raw = store.getItem(PREFIX + entrySuffix(id, scope));
   } catch {
-    return null
+    return null;
   }
 
   if (!raw) {
-    return null
+    return null;
   }
 
   try {
-    const parsed = JSON.parse(raw) as CacheEntry
+    const parsed = JSON.parse(raw) as CacheEntry;
 
-    if (!parsed || !Array.isArray(parsed.messages) || parsed.messages.length === 0) {
-      throw new Error('empty')
+    if (
+      !parsed ||
+      !Array.isArray(parsed.messages) ||
+      parsed.messages.length === 0
+    ) {
+      throw new Error("empty");
     }
 
     // Repair, don't just trust: a tail persisted by an older build (or by a
@@ -251,37 +273,40 @@ export function loadTranscriptTail(storedSessionId: string, scope?: TranscriptTa
     // poisoned entry is re-read identically on every launch — the "one pane
     // permanently broken" shape of #87857. Renaming at read keeps already-
     // affected installs from crash-looping forever on upgraded builds.
-    return parsed.messages.map(withUniqueToolCallIdsWithinMessage)
+    return parsed.messages.map(withUniqueToolCallIdsWithinMessage);
   } catch {
     try {
-      store.removeItem(PREFIX + entrySuffix(id, scope))
+      store.removeItem(PREFIX + entrySuffix(id, scope));
     } catch {
       // best effort
     }
 
-    return null
+    return null;
   }
 }
 
 /** Drop one session's cached tail (session deleted / cache poisoned). With a
  *  scope, only that scope's entry is dropped — other backends' tails for the
  *  same stored id stay intact. */
-export function dropTranscriptTail(storedSessionId: string, scope?: TranscriptTailScope): void {
-  const id = (storedSessionId ?? '').trim()
-  const store = storage()
+export function dropTranscriptTail(
+  storedSessionId: string,
+  scope?: TranscriptTailScope,
+): void {
+  const id = (storedSessionId ?? "").trim();
+  const store = storage();
 
   if (!store || !id) {
-    return
+    return;
   }
 
   try {
-    const suffix = entrySuffix(id, scope)
+    const suffix = entrySuffix(id, scope);
 
-    store.removeItem(PREFIX + suffix)
+    store.removeItem(PREFIX + suffix);
     writeIndex(
       store,
-      readIndex(store).filter(entry => entry !== suffix)
-    )
+      readIndex(store).filter((entry) => entry !== suffix),
+    );
   } catch {
     // best effort
   }
@@ -295,42 +320,42 @@ export function dropTranscriptTail(storedSessionId: string, scope?: TranscriptTa
  *  all scopes is safe there — but never on the failed-resume path, where a
  *  same-id twin in another profile must keep its own tail. */
 export function dropTranscriptTailEverywhere(storedSessionId: string): void {
-  const id = (storedSessionId ?? '').trim()
-  const store = storage()
+  const id = (storedSessionId ?? "").trim();
+  const store = storage();
 
   if (!store || !id) {
-    return
+    return;
   }
 
   try {
     const namesId = (entry: string): boolean => {
       if (entry === id) {
-        return true
+        return true;
       }
 
-      if (!entry.startsWith('[')) {
-        return false
+      if (!entry.startsWith("[")) {
+        return false;
       }
 
       try {
-        const parsed = JSON.parse(entry)
+        const parsed = JSON.parse(entry);
 
-        return Array.isArray(parsed) && parsed[2] === id
+        return Array.isArray(parsed) && parsed[2] === id;
       } catch {
-        return false
+        return false;
       }
-    }
+    };
 
-    const index = readIndex(store)
+    const index = readIndex(store);
 
     for (const entry of index.filter(namesId)) {
-      store.removeItem(PREFIX + entry)
+      store.removeItem(PREFIX + entry);
     }
 
     writeIndex(
       store,
-      index.filter(entry => !namesId(entry))
-    )
+      index.filter((entry) => !namesId(entry)),
+    );
   } catch {
     // best effort
   }
@@ -338,22 +363,22 @@ export function dropTranscriptTailEverywhere(storedSessionId: string): void {
 
 /** Wipe the whole cache (connection/mode re-home, quota recovery). */
 export function clearTranscriptTails(): void {
-  const store = storage()
+  const store = storage();
 
   if (!store) {
-    return
+    return;
   }
 
   for (const id of readIndex(store)) {
     try {
-      store.removeItem(PREFIX + id)
+      store.removeItem(PREFIX + id);
     } catch {
       // best effort
     }
   }
 
   try {
-    store.removeItem(INDEX_KEY)
+    store.removeItem(INDEX_KEY);
   } catch {
     // best effort
   }

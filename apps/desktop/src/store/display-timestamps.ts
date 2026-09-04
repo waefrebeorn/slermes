@@ -11,10 +11,10 @@
  * gated — they add no visual noise until the user asks for them.
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-export const $displayTimestamps = atom<boolean>(false)
+export const $displayTimestamps = atom<boolean>(false);
 
 export function setDisplayTimestampsFromConfig(value: unknown): void {
-  $displayTimestamps.set(value === true || value === 'true' || value === 1)
+  $displayTimestamps.set(value === true || value === "true" || value === 1);
 }

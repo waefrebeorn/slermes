@@ -3,7 +3,7 @@
  * surfaces it as an ambient pill, and orchestrates the apply flow.
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
 import type {
   DesktopUpdateApplyOptions,
@@ -12,84 +12,91 @@ import type {
   DesktopUpdateProgress,
   DesktopUpdateStage,
   DesktopUpdateStatus,
-  DesktopVersionInfo
-} from '@/global'
-import { checkHermesUpdate, getActionStatus, updateHermes } from '@/hermes'
-import { translateNow } from '@/i18n'
-import { persistString, storedString } from '@/lib/storage'
-import { $connectionsRegistry, refreshConnectionsRegistry } from '@/store/connections'
-import { reconnectGateway } from '@/store/gateway-reconnect'
-import { dismissNotification, notify } from '@/store/notifications'
-import { $connection } from '@/store/session'
-import type { BackendUpdateCheckResponse } from '@/types/hermes'
+  DesktopVersionInfo,
+} from "@/global";
+import { checkHermesUpdate, getActionStatus, updateHermes } from "@/hermes";
+import { translateNow } from "@/i18n";
+import { persistString, storedString } from "@/lib/storage";
+import {
+  $connectionsRegistry,
+  refreshConnectionsRegistry,
+} from "@/store/connections";
+import { reconnectGateway } from "@/store/gateway-reconnect";
+import { dismissNotification, notify } from "@/store/notifications";
+import { $connection } from "@/store/session";
+import type { BackendUpdateCheckResponse } from "@/types/hermes";
 
 export interface UpdateApplyState {
-  applying: boolean
-  stage: DesktopUpdateStage
-  message: string
-  percent: number | null
-  error: string | null
+  applying: boolean;
+  stage: DesktopUpdateStage;
+  message: string;
+  percent: number | null;
+  error: string | null;
   /** When the stage is 'manual': the exact command the user should run
    *  (CLI install with no staged updater). */
-  command: string | null
+  command: string | null;
   /** Structured update blockers used by the safe close-and-update confirmation. */
-  blockers?: readonly DesktopUpdateBlocker[] | null
-  log: readonly { stage: DesktopUpdateStage; message: string; at: number }[]
+  blockers?: readonly DesktopUpdateBlocker[] | null;
+  log: readonly { stage: DesktopUpdateStage; message: string; at: number }[];
 }
 
 const IDLE: UpdateApplyState = {
   applying: false,
-  stage: 'idle',
-  message: '',
+  stage: "idle",
+  message: "",
   percent: null,
   error: null,
   command: null,
-  log: []
-}
+  log: [],
+};
 
-export const $desktopVersion = atom<DesktopVersionInfo | null>(null)
-export const $updateApply = atom<UpdateApplyState>(IDLE)
-export const $updateChecking = atom<boolean>(false)
-export const $updateOverlayOpen = atom<boolean>(false)
-export const $updateStatus = atom<DesktopUpdateStatus | null>(null)
+export const $desktopVersion = atom<DesktopVersionInfo | null>(null);
+export const $updateApply = atom<UpdateApplyState>(IDLE);
+export const $updateChecking = atom<boolean>(false);
+export const $updateOverlayOpen = atom<boolean>(false);
+export const $updateStatus = atom<DesktopUpdateStatus | null>(null);
 
 // Client and backend are independently updatable; each keeps its own state.
-export const $backendUpdateStatus = atom<DesktopUpdateStatus | null>(null)
-export const $backendUpdateApply = atom<UpdateApplyState>(IDLE)
-export const $backendUpdateChecking = atom<boolean>(false)
+export const $backendUpdateStatus = atom<DesktopUpdateStatus | null>(null);
+export const $backendUpdateApply = atom<UpdateApplyState>(IDLE);
+export const $backendUpdateChecking = atom<boolean>(false);
 
-export type UpdateTarget = 'client' | 'backend'
-export const $updateOverlayTarget = atom<UpdateTarget>('client')
+export type UpdateTarget = "client" | "backend";
+export const $updateOverlayTarget = atom<UpdateTarget>("client");
 
-export const setUpdateOverlayOpen = (open: boolean) => $updateOverlayOpen.set(open)
+export const setUpdateOverlayOpen = (open: boolean) =>
+  $updateOverlayOpen.set(open);
 
 export const openUpdateOverlayFor = (target: UpdateTarget) => {
-  $updateOverlayTarget.set(target)
-  $updateOverlayOpen.set(true)
-  void (target === 'backend' ? checkBackendUpdates() : checkUpdates())
-}
+  $updateOverlayTarget.set(target);
+  $updateOverlayOpen.set(true);
+  void (target === "backend" ? checkBackendUpdates() : checkUpdates());
+};
 
 export const resetUpdateApplyState = () => {
-  $updateApply.set(IDLE)
-  $backendUpdateApply.set(IDLE)
-}
+  $updateApply.set(IDLE);
+  $backendUpdateApply.set(IDLE);
+};
 
-const UPDATE_TOAST_ID = 'desktop-update-available'
+const UPDATE_TOAST_ID = "desktop-update-available";
 // Time-based snooze instead of per-sha dismissal: this repo lands ~100 commits
 // a day, so a "don't show this exact sha again" guard re-popped the toast on
 // every new commit. We instead suppress the toast for a cooldown window that
 // (re)starts whenever the user closes it.
-const UPDATE_TOAST_SNOOZE_KEY = 'hermes:update-toast-snooze-until'
-const UPDATE_TOAST_COOLDOWN_MS = 24 * 60 * 60 * 1000
+const UPDATE_TOAST_SNOOZE_KEY = "hermes:update-toast-snooze-until";
+const UPDATE_TOAST_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 function snoozeUpdateToast(): void {
-  persistString(UPDATE_TOAST_SNOOZE_KEY, String(Date.now() + UPDATE_TOAST_COOLDOWN_MS))
+  persistString(
+    UPDATE_TOAST_SNOOZE_KEY,
+    String(Date.now() + UPDATE_TOAST_COOLDOWN_MS),
+  );
 }
 
 function isUpdateToastSnoozed(): boolean {
-  const until = Number(storedString(UPDATE_TOAST_SNOOZE_KEY) || 0)
+  const until = Number(storedString(UPDATE_TOAST_SNOOZE_KEY) || 0);
 
-  return Number.isFinite(until) && Date.now() < until
+  return Number.isFinite(until) && Date.now() < until;
 }
 
 // Must match tui_gateway's DESKTOP_BACKEND_CONTRACT that this build was written
@@ -101,42 +108,49 @@ function isUpdateToastSnoozed(): boolean {
 // v5: requires raised WebSocket frame size for large one-shot file.attach.
 // v6: requires key-addressed plugins.manage rows (keyless rows render
 //     read-only in Settings → Plugins).
-const REQUIRED_BACKEND_CONTRACT = 6
-const SKEW_TOAST_ID = 'backend-contract-skew'
+const REQUIRED_BACKEND_CONTRACT = 6;
+const SKEW_TOAST_ID = "backend-contract-skew";
 // The contract check runs on every session.resume (applyRuntimeInfo), so
 // without a snooze the warning re-popped on every thread the user opened, even
 // right after they closed it. Mirror the update toast: persist a cooldown when
 // the user dismisses it. It still reminds again after the window if the backend
 // is still behind, and clears immediately once the backend catches up.
-const SKEW_TOAST_SNOOZE_KEY = 'hermes:backend-skew-toast-snooze-until'
-const SKEW_TOAST_COOLDOWN_MS = 24 * 60 * 60 * 1000
+const SKEW_TOAST_SNOOZE_KEY = "hermes:backend-skew-toast-snooze-until";
+const SKEW_TOAST_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 function snoozeSkewToast(): void {
-  persistString(SKEW_TOAST_SNOOZE_KEY, String(Date.now() + SKEW_TOAST_COOLDOWN_MS))
+  persistString(
+    SKEW_TOAST_SNOOZE_KEY,
+    String(Date.now() + SKEW_TOAST_COOLDOWN_MS),
+  );
 }
 
 function isSkewToastSnoozed(): boolean {
-  const until = Number(storedString(SKEW_TOAST_SNOOZE_KEY) || 0)
+  const until = Number(storedString(SKEW_TOAST_SNOOZE_KEY) || 0);
 
-  return Number.isFinite(until) && Date.now() < until
+  return Number.isFinite(until) && Date.now() < until;
 }
 
-const INSTALL_METHOD_TOAST_ID = 'install-method-not-supported'
+const INSTALL_METHOD_TOAST_ID = "install-method-not-supported";
 // Same time-based snooze pattern as the update/skew toasts: the warning is
 // re-derived from every session.info (session.create/resume/activate all
 // route through applyRuntimeInfo), so without a snooze it would re-pop on
 // every session switch even right after the user dismissed it.
-const INSTALL_METHOD_TOAST_SNOOZE_KEY = 'hermes:install-method-toast-snooze-until'
-const INSTALL_METHOD_TOAST_COOLDOWN_MS = 24 * 60 * 60 * 1000
+const INSTALL_METHOD_TOAST_SNOOZE_KEY =
+  "hermes:install-method-toast-snooze-until";
+const INSTALL_METHOD_TOAST_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 function snoozeInstallMethodToast(): void {
-  persistString(INSTALL_METHOD_TOAST_SNOOZE_KEY, String(Date.now() + INSTALL_METHOD_TOAST_COOLDOWN_MS))
+  persistString(
+    INSTALL_METHOD_TOAST_SNOOZE_KEY,
+    String(Date.now() + INSTALL_METHOD_TOAST_COOLDOWN_MS),
+  );
 }
 
 function isInstallMethodToastSnoozed(): boolean {
-  const until = Number(storedString(INSTALL_METHOD_TOAST_SNOOZE_KEY) || 0)
+  const until = Number(storedString(INSTALL_METHOD_TOAST_SNOOZE_KEY) || 0);
 
-  return Number.isFinite(until) && Date.now() < until
+  return Number.isFinite(until) && Date.now() < until;
 }
 
 /**
@@ -150,54 +164,54 @@ function isInstallMethodToastSnoozed(): boolean {
  */
 export function reportBackendContract(contract: number | undefined): void {
   if ((contract ?? 0) >= REQUIRED_BACKEND_CONTRACT) {
-    dismissNotification(SKEW_TOAST_ID)
+    dismissNotification(SKEW_TOAST_ID);
     // Backend caught up — forget any prior snooze so a future regression warns
     // immediately rather than staying silent for the rest of the window.
-    persistString(SKEW_TOAST_SNOOZE_KEY, null)
+    persistString(SKEW_TOAST_SNOOZE_KEY, null);
 
-    return
+    return;
   }
 
   if (isSkewToastSnoozed()) {
-    return
+    return;
   }
 
   notify({
     action: {
-      label: translateNow('notifications.updateHermes'),
+      label: translateNow("notifications.updateHermes"),
       onClick: () => {
-        snoozeSkewToast()
-        void applyBackendUpdate()
-      }
+        snoozeSkewToast();
+        void applyBackendUpdate();
+      },
     },
     durationMs: 0,
     id: SKEW_TOAST_ID,
-    kind: 'warning',
-    message: translateNow('notifications.backendOutOfDateMessage'),
+    kind: "warning",
+    message: translateNow("notifications.backendOutOfDateMessage"),
     onDismiss: () => snoozeSkewToast(),
-    title: translateNow('notifications.backendOutOfDateTitle')
-  })
+    title: translateNow("notifications.backendOutOfDateTitle"),
+  });
 }
 
 export function reportInstallMethodWarning(message: string | undefined): void {
   if (!message) {
-    dismissNotification(INSTALL_METHOD_TOAST_ID)
+    dismissNotification(INSTALL_METHOD_TOAST_ID);
 
-    return
+    return;
   }
 
   if (isInstallMethodToastSnoozed()) {
-    return
+    return;
   }
 
   notify({
     durationMs: 0,
     id: INSTALL_METHOD_TOAST_ID,
-    kind: 'warning',
+    kind: "warning",
     message,
     onDismiss: () => snoozeInstallMethodToast(),
-    title: translateNow('notifications.installMethodUnsupportedTitle')
-  })
+    title: translateNow("notifications.installMethodUnsupportedTitle"),
+  });
 }
 
 /**
@@ -210,53 +224,61 @@ export function reportInstallMethodWarning(message: string | undefined): void {
  * target switcher, so a client-status toast that opened the backend overlay
  * showed the user a machine they weren't told about, with no way back.
  */
-export function maybeNotifyUpdateAvailable(status: DesktopUpdateStatus | null, target: UpdateTarget = 'client') {
-  if (!status || status.supported === false || status.error || !status.targetSha) {
-    return
+export function maybeNotifyUpdateAvailable(
+  status: DesktopUpdateStatus | null,
+  target: UpdateTarget = "client",
+) {
+  if (
+    !status ||
+    status.supported === false ||
+    status.error ||
+    !status.targetSha
+  ) {
+    return;
   }
 
-  const behind = typeof status.behind === 'number' ? status.behind : null
+  const behind = typeof status.behind === "number" ? status.behind : null;
 
   // behind === null means "update available, exact count unknown" (shallow
   // clone). That still deserves the toast — just with count-free copy.
   if ((behind ?? 0) <= 0 && !status.updateAvailable) {
-    return
+    return;
   }
 
   if (isUpdateToastSnoozed()) {
-    return
+    return;
   }
 
   if ($updateApply.get().applying) {
-    return
+    return;
   }
 
   notify({
     action: {
-      label: translateNow('notifications.seeWhatsNew'),
+      label: translateNow("notifications.seeWhatsNew"),
       onClick: () => {
-        snoozeUpdateToast()
-        openUpdateOverlayFor(target)
-      }
+        snoozeUpdateToast();
+        openUpdateOverlayFor(target);
+      },
     },
     durationMs: 0,
-    icon: 'gift',
+    icon: "gift",
     id: UPDATE_TOAST_ID,
-    kind: 'info',
+    kind: "info",
     message:
       behind !== null && behind > 0
-        ? translateNow('notifications.updateReadyMessage', behind)
-        : translateNow('notifications.updateReadyMessageUnknown'),
+        ? translateNow("notifications.updateReadyMessage", behind)
+        : translateNow("notifications.updateReadyMessageUnknown"),
     onDismiss: () => snoozeUpdateToast(),
-    title: translateNow('notifications.updateReadyTitle')
-  })
+    title: translateNow("notifications.updateReadyTitle"),
+  });
 }
 
 /** The target a generic, surface-less update command acts on: the machine the
  *  user is connected to. Surfaces that display one target's status must pass
  *  that target explicitly instead of inheriting this. */
 function activeUpdateTarget(): UpdateTarget {
-  return isRemoteMode() ? 'backend' : 'client'
+  return isRemoteMode() ? "backend" : "client";
 }
 
 /**
@@ -268,8 +290,10 @@ function activeUpdateTarget(): UpdateTarget {
  * updating *this app*, so in remote mode it checked the wrong machine and the
  * Mac client silently drifted behind (#70266).
  */
-export function openUpdatesWindow(target: UpdateTarget = activeUpdateTarget()): void {
-  openUpdateOverlayFor(target)
+export function openUpdatesWindow(
+  target: UpdateTarget = activeUpdateTarget(),
+): void {
+  openUpdateOverlayFor(target);
 }
 
 /**
@@ -289,16 +313,16 @@ export function openUpdatesWindow(target: UpdateTarget = activeUpdateTarget()): 
  */
 export function startActiveUpdate(target?: UpdateTarget): void {
   if (!target && hasMultipleUpdateTargets()) {
-    $updateOverlayOpen.set(true)
-    void applyEverythingUpdate()
+    $updateOverlayOpen.set(true);
+    void applyEverythingUpdate();
 
-    return
+    return;
   }
 
-  const effective = target ?? activeUpdateTarget()
-  $updateOverlayTarget.set(effective)
-  $updateOverlayOpen.set(true)
-  void (effective === 'backend' ? applyBackendUpdate() : applyUpdates())
+  const effective = target ?? activeUpdateTarget();
+  $updateOverlayTarget.set(effective);
+  $updateOverlayOpen.set(true);
+  void (effective === "backend" ? applyBackendUpdate() : applyUpdates());
 }
 
 /**
@@ -311,32 +335,33 @@ export function startActiveUpdate(target?: UpdateTarget): void {
  */
 export function requestActiveUpdate(): void {
   if (hasMultipleUpdateTargets()) {
-    const clientStatus = $updateStatus.get()
-    const backendStatus = $backendUpdateStatus.get()
+    const clientStatus = $updateStatus.get();
+    const backendStatus = $backendUpdateStatus.get();
 
     const anyBehind =
       (clientStatus?.behind ?? 0) > 0 ||
       clientStatus?.updateAvailable ||
       (backendStatus?.behind ?? 0) > 0 ||
-      backendStatus?.updateAvailable
+      backendStatus?.updateAvailable;
 
     if (anyBehind) {
-      startActiveUpdate()
+      startActiveUpdate();
 
-      return
+      return;
     }
   }
 
-  const target = activeUpdateTarget()
-  const status = target === 'backend' ? $backendUpdateStatus.get() : $updateStatus.get()
+  const target = activeUpdateTarget();
+  const status =
+    target === "backend" ? $backendUpdateStatus.get() : $updateStatus.get();
 
   if ((status?.behind ?? 0) > 0 || status?.updateAvailable) {
-    startActiveUpdate(target)
+    startActiveUpdate(target);
 
-    return
+    return;
   }
 
-  openUpdateOverlayFor(target)
+  openUpdateOverlayFor(target);
 }
 
 /** Re-read the running app's version from the Electron main process and
@@ -345,8 +370,8 @@ export function requestActiveUpdate(): void {
  *  stays in sync with the just-installed binary instead of frozen at the
  *  value captured at first-load. */
 export async function refreshDesktopVersion(): Promise<DesktopVersionInfo | null> {
-  if (typeof window === 'undefined') {
-    return null
+  if (typeof window === "undefined") {
+    return null;
   }
 
   // Best-effort UI sync: callers (checkUpdates, startUpdatePoller, window
@@ -355,24 +380,24 @@ export async function refreshDesktopVersion(): Promise<DesktopVersionInfo | null
   // mid-reload, or the bridge not yet ready on first paint) would surface
   // as an unhandled promise rejection in the renderer. Swallow it.
   try {
-    const next = await window.hermesDesktop?.getVersion?.()
+    const next = await window.hermesDesktop?.getVersion?.();
 
     if (next) {
-      $desktopVersion.set(next)
+      $desktopVersion.set(next);
     }
 
-    return next ?? null
+    return next ?? null;
   } catch {
-    return null
+    return null;
   }
 }
 
 function isRemoteMode(): boolean {
-  return $connection.get()?.mode === 'remote'
+  return $connection.get()?.mode === "remote";
 }
 
 function mapBackendCheck(res: BackendUpdateCheckResponse): DesktopUpdateStatus {
-  const behind = res.behind ?? 0
+  const behind = res.behind ?? 0;
 
   return {
     supported: res.can_apply,
@@ -380,88 +405,101 @@ function mapBackendCheck(res: BackendUpdateCheckResponse): DesktopUpdateStatus {
     updateAvailable: res.update_available,
     behind: behind > 0 ? behind : 0,
     currentVersion: res.current_version,
-    targetSha: res.update_available ? `backend:${res.current_version}` : undefined,
+    targetSha: res.update_available
+      ? `backend:${res.current_version}`
+      : undefined,
     commits: res.commits,
-    fetchedAt: Date.now()
-  }
+    fetchedAt: Date.now(),
+  };
 }
 
 export async function checkBackendUpdates(): Promise<DesktopUpdateStatus | null> {
   if (!isRemoteMode() || $backendUpdateChecking.get()) {
-    return $backendUpdateStatus.get()
+    return $backendUpdateStatus.get();
   }
 
-  $backendUpdateChecking.set(true)
+  $backendUpdateChecking.set(true);
 
   try {
-    const status = mapBackendCheck(await checkHermesUpdate(true))
-    $backendUpdateStatus.set(status)
-    maybeNotifyUpdateAvailable(status, 'backend')
+    const status = mapBackendCheck(await checkHermesUpdate(true));
+    $backendUpdateStatus.set(status);
+    maybeNotifyUpdateAvailable(status, "backend");
 
-    return status
+    return status;
   } catch (error) {
     const fallback: DesktopUpdateStatus = {
       supported: $backendUpdateStatus.get()?.supported ?? true,
-      error: 'check-failed',
+      error: "check-failed",
       message: error instanceof Error ? error.message : String(error),
-      fetchedAt: Date.now()
-    }
+      fetchedAt: Date.now(),
+    };
 
-    $backendUpdateStatus.set(fallback)
+    $backendUpdateStatus.set(fallback);
 
-    return fallback
+    return fallback;
   } finally {
-    $backendUpdateChecking.set(false)
+    $backendUpdateChecking.set(false);
   }
 }
 
 export async function checkUpdates(): Promise<DesktopUpdateStatus | null> {
-  const bridge = window.hermesDesktop?.updates
+  const bridge = window.hermesDesktop?.updates;
 
   if (!bridge || $updateChecking.get()) {
-    return $updateStatus.get()
+    return $updateStatus.get();
   }
 
-  $updateChecking.set(true)
+  $updateChecking.set(true);
 
   try {
-    const status = await bridge.check()
-    $updateStatus.set(status)
-    maybeNotifyUpdateAvailable(status, 'client')
-    void refreshDesktopVersion()
+    const status = await bridge.check();
+    $updateStatus.set(status);
+    maybeNotifyUpdateAvailable(status, "client");
+    void refreshDesktopVersion();
 
-    return status
+    return status;
   } catch (error) {
-    const previous = $updateStatus.get()
+    const previous = $updateStatus.get();
 
     const fallback: DesktopUpdateStatus = {
       supported: previous?.supported ?? true,
       branch: previous?.branch,
-      error: 'check-failed',
+      error: "check-failed",
       message: error instanceof Error ? error.message : String(error),
-      fetchedAt: Date.now()
-    }
+      fetchedAt: Date.now(),
+    };
 
-    $updateStatus.set(fallback)
+    $updateStatus.set(fallback);
 
-    return fallback
+    return fallback;
   } finally {
-    $updateChecking.set(false)
+    $updateChecking.set(false);
   }
 }
 
-export async function applyUpdates(opts: DesktopUpdateApplyOptions = {}): Promise<DesktopUpdateApplyResult> {
-  const bridge = window.hermesDesktop?.updates
+export async function applyUpdates(
+  opts: DesktopUpdateApplyOptions = {},
+): Promise<DesktopUpdateApplyResult> {
+  const bridge = window.hermesDesktop?.updates;
 
   if (!bridge) {
-    return { ok: false, error: 'unavailable', message: 'Desktop bridge unavailable.' }
+    return {
+      ok: false,
+      error: "unavailable",
+      message: "Desktop bridge unavailable.",
+    };
   }
 
-  dismissNotification(UPDATE_TOAST_ID)
-  $updateApply.set({ ...IDLE, applying: true, stage: 'prepare', message: 'Starting update…' })
+  dismissNotification(UPDATE_TOAST_ID);
+  $updateApply.set({
+    ...IDLE,
+    applying: true,
+    stage: "prepare",
+    message: "Starting update…",
+  });
 
   try {
-    const result = await bridge.apply(opts)
+    const result = await bridge.apply(opts);
 
     // CLI install with no staged updater: not an error — the user just runs
     // `hermes update` themselves. Land on a dedicated manual state so the
@@ -470,12 +508,12 @@ export async function applyUpdates(opts: DesktopUpdateApplyOptions = {}): Promis
       $updateApply.set({
         ...IDLE,
         applying: false,
-        stage: 'manual',
-        message: result.command ?? 'hermes update',
-        command: result.command ?? 'hermes update'
-      })
+        stage: "manual",
+        message: result.command ?? "hermes update",
+        command: result.command ?? "hermes update",
+      });
 
-      return result
+      return result;
     }
 
     // A detached relauncher took over (macOS bundle swap / Linux re-exec): the
@@ -494,11 +532,11 @@ export async function applyUpdates(opts: DesktopUpdateApplyOptions = {}): Promis
       $updateApply.set({
         ...IDLE,
         applying: false,
-        stage: 'guiSkew',
-        message: result.message ?? translateNow('updates.guiSkewBody')
-      })
+        stage: "guiSkew",
+        message: result.message ?? translateNow("updates.guiSkewBody"),
+      });
 
-      return result
+      return result;
     }
 
     // Backend updated but the app couldn't auto-relaunch (e.g. the rebuilt
@@ -508,11 +546,11 @@ export async function applyUpdates(opts: DesktopUpdateApplyOptions = {}): Promis
       $updateApply.set({
         ...IDLE,
         applying: false,
-        stage: 'manual',
-        message: result.message ?? translateNow('updates.manualPickedUp')
-      })
+        stage: "manual",
+        message: result.message ?? translateNow("updates.manualPickedUp"),
+      });
 
-      return result
+      return result;
     }
 
     if (!result?.handedOff) {
@@ -520,49 +558,55 @@ export async function applyUpdates(opts: DesktopUpdateApplyOptions = {}): Promis
         // Updated, but couldn't relaunch in place (AppImage / dev run). Dismiss
         // the overlay and let the user know the new version loads next launch
         // rather than stranding them on an un-closeable spinner.
-        setUpdateOverlayOpen(false)
-        resetUpdateApplyState()
+        setUpdateOverlayOpen(false);
+        resetUpdateApplyState();
         notify({
           durationMs: 8000,
           id: UPDATE_TOAST_ID,
-          kind: 'success',
-          message: translateNow('updates.manualPickedUp'),
+          kind: "success",
+          message: translateNow("updates.manualPickedUp"),
           // No action button here, but it's still update-lifecycle news — keep
           // it with the other update toasts instead of the ambient bottom-right
           // stack.
-          placement: 'default',
-          title: translateNow('updates.allSetTitle')
-        })
+          placement: "default",
+          title: translateNow("updates.allSetTitle"),
+        });
       } else {
         $updateApply.set({
           ...$updateApply.get(),
           applying: false,
-          stage: 'error',
-          error: result?.error ?? 'apply-failed',
-          message: result?.message ?? translateNow('updates.errorBody'),
-          blockers: result?.blockers ?? null
-        })
+          stage: "error",
+          error: result?.error ?? "apply-failed",
+          message: result?.message ?? translateNow("updates.errorBody"),
+          blockers: result?.blockers ?? null,
+        });
       }
     }
 
-    return result
+    return result;
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    $updateApply.set({ ...$updateApply.get(), applying: false, stage: 'error', error: 'apply-failed', message })
+    const message = error instanceof Error ? error.message : String(error);
+    $updateApply.set({
+      ...$updateApply.get(),
+      applying: false,
+      stage: "error",
+      error: "apply-failed",
+      message,
+    });
 
-    return { ok: false, error: 'apply-failed', message }
+    return { ok: false, error: "apply-failed", message };
   }
 }
 
-const BACKEND_ACTION_POLL_MS = 1500
-const BACKEND_ACTION_MAX_MS = 6 * 60 * 1000
-const BACKEND_RETURN_MAX_MS = 4 * 60 * 1000
+const BACKEND_ACTION_POLL_MS = 1500;
+const BACKEND_ACTION_MAX_MS = 6 * 60 * 1000;
+const BACKEND_RETURN_MAX_MS = 4 * 60 * 1000;
 
 function finishBackendApply(returned: boolean): DesktopUpdateApplyResult {
   if (returned) {
-    $backendUpdateApply.set(IDLE)
-    setUpdateOverlayOpen(false)
-    void checkBackendUpdates()
+    $backendUpdateApply.set(IDLE);
+    setUpdateOverlayOpen(false);
+    void checkBackendUpdates();
     // The update restarted the gateway process, which strands this window's
     // WebSocket: over SSH/tailscale tunnels the old TCP connection often dies
     // without a close event, so connectionState still reads 'open' while every
@@ -570,53 +614,64 @@ function finishBackendApply(returned: boolean): DesktopUpdateApplyResult {
     // reconnect handler (forceReconnectNow), which retires the half-open
     // socket and re-dials with a fresh ticket. Best-effort: local installs
     // whose socket survived treat it as a cheap probe.
-    void reconnectGateway().catch(() => undefined)
+    void reconnectGateway().catch(() => undefined);
     // The backend caught up, but the CLIENT may still be behind — the exact
     // gap that strands remote-mode users on an old GUI forever (every update
     // affordance in remote mode targets the backend, so nothing ever told
     // them the app itself was stale). Nudge with a one-click client update.
-    void maybeNudgeClientAfterBackendUpdate()
+    void maybeNudgeClientAfterBackendUpdate();
 
-    return { ok: true, message: 'Backend update applied.' }
+    return { ok: true, message: "Backend update applied." };
   }
 
   $backendUpdateApply.set({
     ...$backendUpdateApply.get(),
     applying: false,
-    stage: 'error',
-    error: 'apply-failed',
-    message: translateNow('updates.applyStatus.noReturn')
-  })
+    stage: "error",
+    error: "apply-failed",
+    message: translateNow("updates.applyStatus.noReturn"),
+  });
 
-  return { ok: false, error: 'apply-failed', message: 'Backend did not come back online.' }
+  return {
+    ok: false,
+    error: "apply-failed",
+    message: "Backend did not come back online.",
+  };
 }
 
-function ingestBackendActionStatus(status: Awaited<ReturnType<typeof getActionStatus>>): void {
-  const current = $backendUpdateApply.get()
+function ingestBackendActionStatus(
+  status: Awaited<ReturnType<typeof getActionStatus>>,
+): void {
+  const current = $backendUpdateApply.get();
 
   const log = status.lines
-    .filter(line => line.trim().length > 0)
-    .map(line => ({ at: Date.now(), message: line, stage: current.stage }))
-    .slice(-50)
+    .filter((line) => line.trim().length > 0)
+    .map((line) => ({ at: Date.now(), message: line, stage: current.stage }))
+    .slice(-50);
 
-  const latest = log.at(-1)?.message
+  const latest = log.at(-1)?.message;
 
   if (log.length === 0 && !latest) {
-    return
+    return;
   }
 
   $backendUpdateApply.set({
     ...current,
     log,
-    message: latest ?? current.message
-  })
+    message: latest ?? current.message,
+  });
 }
 
 function completedAfterRestart(
   status: Awaited<ReturnType<typeof getActionStatus>>,
-  actionId: string | undefined
+  actionId: string | undefined,
 ): boolean {
-  return !!actionId && status.lines.some(line => line === `=== hermes-update completed ${actionId} ===`)
+  return (
+    !!actionId &&
+    status.lines.some(
+      (line) => line === `=== hermes-update completed ${actionId} ===`,
+    )
+  );
 }
 
 /** Whether the durable update receipt attached to the status proves the
@@ -624,180 +679,220 @@ function completedAfterRestart(
  *  run started at-or-after we kicked the update off counts — an older
  *  receipt describes a previous update, and a still-running one proves
  *  nothing yet. The 60s slack absorbs client/backend clock skew. */
-function receiptProvesOutcome(status: Awaited<ReturnType<typeof getActionStatus>>, applyStartedAtMs: number): boolean {
-  const receipt = status.receipt
+function receiptProvesOutcome(
+  status: Awaited<ReturnType<typeof getActionStatus>>,
+  applyStartedAtMs: number,
+): boolean {
+  const receipt = status.receipt;
 
   if (!receipt || !receipt.finished_at || !receipt.started_at) {
-    return false
+    return false;
   }
 
-  if (receipt.outcome !== 'success' && receipt.outcome !== 'partial' && receipt.outcome !== 'failed') {
-    return false
+  if (
+    receipt.outcome !== "success" &&
+    receipt.outcome !== "partial" &&
+    receipt.outcome !== "failed"
+  ) {
+    return false;
   }
 
-  const startedMs = Date.parse(receipt.started_at)
+  const startedMs = Date.parse(receipt.started_at);
 
-  return Number.isFinite(startedMs) && startedMs >= applyStartedAtMs - 60_000
+  return Number.isFinite(startedMs) && startedMs >= applyStartedAtMs - 60_000;
 }
 
 function legacyBackendReachedTarget(
   status: BackendUpdateCheckResponse,
   targetSha: string | undefined,
-  previousVersion: string | undefined
+  previousVersion: string | undefined,
 ): boolean {
   if (status.behind === 0) {
-    return true
+    return true;
   }
 
   if (previousVersion && status.current_version !== previousVersion) {
-    return true
+    return true;
   }
 
-  return !!targetSha && !!status.commits?.length && !status.commits.some(commit => commit.sha === targetSha)
+  return (
+    !!targetSha &&
+    !!status.commits?.length &&
+    !status.commits.some((commit) => commit.sha === targetSha)
+  );
 }
 
-let backendUpdateInFlight: Promise<DesktopUpdateApplyResult> | null = null
+let backendUpdateInFlight: Promise<DesktopUpdateApplyResult> | null = null;
 
 async function runBackendUpdate(): Promise<DesktopUpdateApplyResult> {
-  dismissNotification(UPDATE_TOAST_ID)
+  dismissNotification(UPDATE_TOAST_ID);
   $backendUpdateApply.set({
     ...IDLE,
     applying: true,
-    stage: 'prepare',
-    message: translateNow('updates.applyStatus.preparing')
-  })
+    stage: "prepare",
+    message: translateNow("updates.applyStatus.preparing"),
+  });
 
   try {
-    const previousStatus = $backendUpdateStatus.get()
-    const requestedTargetSha = previousStatus?.commits?.at(0)?.sha
+    const previousStatus = $backendUpdateStatus.get();
+    const requestedTargetSha = previousStatus?.commits?.at(0)?.sha;
 
-    const previousVersion = previousStatus?.targetSha?.startsWith('backend:')
-      ? previousStatus.targetSha.slice('backend:'.length)
-      : undefined
+    const previousVersion = previousStatus?.targetSha?.startsWith("backend:")
+      ? previousStatus.targetSha.slice("backend:".length)
+      : undefined;
 
-    const started = await updateHermes()
-    const applyStartedAtMs = Date.now()
+    const started = await updateHermes();
+    const applyStartedAtMs = Date.now();
 
     if (!started.ok) {
-      const message = (started as { message?: string }).message || translateNow('updates.applyStatus.notAvailable')
-      const command = (started as { update_command?: string }).update_command || 'hermes update'
-      $backendUpdateApply.set({ ...IDLE, applying: false, stage: 'manual', message, command })
+      const message =
+        (started as { message?: string }).message ||
+        translateNow("updates.applyStatus.notAvailable");
+      const command =
+        (started as { update_command?: string }).update_command ||
+        "hermes update";
+      $backendUpdateApply.set({
+        ...IDLE,
+        applying: false,
+        stage: "manual",
+        message,
+        command,
+      });
 
-      return { ok: false, error: 'manual', manual: true, message, command }
+      return { ok: false, error: "manual", manual: true, message, command };
     }
 
     $backendUpdateApply.set({
       ...IDLE,
       applying: true,
-      stage: 'pull',
-      message: translateNow('updates.applyStatus.pulling')
-    })
+      stage: "pull",
+      message: translateNow("updates.applyStatus.pulling"),
+    });
 
-    let last: Awaited<ReturnType<typeof getActionStatus>> | null = null
+    let last: Awaited<ReturnType<typeof getActionStatus>> | null = null;
     // Backups, dependency repair, and builds can legitimately take several
     // minutes. Keep the generous cap only as a guard against a stuck action.
-    const actionDeadline = Date.now() + BACKEND_ACTION_MAX_MS
-    let deadline = actionDeadline
-    let reconnecting = false
+    const actionDeadline = Date.now() + BACKEND_ACTION_MAX_MS;
+    let deadline = actionDeadline;
+    let reconnecting = false;
 
     while (Date.now() < deadline) {
-      await new Promise(resolve => globalThis.setTimeout(resolve, BACKEND_ACTION_POLL_MS))
+      await new Promise((resolve) =>
+        globalThis.setTimeout(resolve, BACKEND_ACTION_POLL_MS),
+      );
 
       try {
-        last = await getActionStatus(started.name, 2000)
-        ingestBackendActionStatus(last)
+        last = await getActionStatus(started.name, 2000);
+        ingestBackendActionStatus(last);
       } catch {
         if (!reconnecting) {
-          reconnecting = true
-          deadline = Date.now() + BACKEND_RETURN_MAX_MS
+          reconnecting = true;
+          deadline = Date.now() + BACKEND_RETURN_MAX_MS;
           $backendUpdateApply.set({
             ...$backendUpdateApply.get(),
             applying: true,
-            stage: 'restart',
-            message: translateNow('updates.applyStatus.restarting')
-          })
+            stage: "restart",
+            message: translateNow("updates.applyStatus.restarting"),
+          });
         }
 
-        continue
+        continue;
       }
 
       if (last.running) {
         if (reconnecting) {
-          reconnecting = false
-          deadline = actionDeadline
+          reconnecting = false;
+          deadline = actionDeadline;
           $backendUpdateApply.set({
             ...$backendUpdateApply.get(),
             applying: true,
-            stage: 'pull',
-            message: translateNow('updates.applyStatus.pulling')
-          })
+            stage: "pull",
+            message: translateNow("updates.applyStatus.pulling"),
+          });
         }
 
-        continue
+        continue;
       }
 
-      if (last.exit_code === 0 || (last.exit_code === null && completedAfterRestart(last, started.action_id))) {
-        return finishBackendApply(true)
+      if (
+        last.exit_code === 0 ||
+        (last.exit_code === null &&
+          completedAfterRestart(last, started.action_id))
+      ) {
+        return finishBackendApply(true);
       }
 
       // #91277 bullet 3: the backend now attaches the durable update
       // receipt to the status. A receipt whose run STARTED after we kicked
       // this update off is authoritative — read its outcome instead of
       // inferring from log markers or timing out across the restart gap.
-      if (last.exit_code === null && receiptProvesOutcome(last, applyStartedAtMs)) {
-        return finishBackendApply(last.receipt!.outcome === 'success')
+      if (
+        last.exit_code === null &&
+        receiptProvesOutcome(last, applyStartedAtMs)
+      ) {
+        return finishBackendApply(last.receipt!.outcome === "success");
       }
 
       if (!started.action_id && last.exit_code === null) {
         try {
-          const status = await checkHermesUpdate(true)
+          const status = await checkHermesUpdate(true);
 
-          if (legacyBackendReachedTarget(status, requestedTargetSha, previousVersion)) {
-            return finishBackendApply(true)
+          if (
+            legacyBackendReachedTarget(
+              status,
+              requestedTargetSha,
+              previousVersion,
+            )
+          ) {
+            return finishBackendApply(true);
           }
         } catch {
-          continue
+          continue;
         }
       }
 
       if (last.exit_code !== null) {
-        break
+        break;
       }
     }
 
     $backendUpdateApply.set({
       ...$backendUpdateApply.get(),
       applying: false,
-      stage: 'error',
-      error: 'apply-failed',
-      message: translateNow('updates.applyStatus.failed')
-    })
+      stage: "error",
+      error: "apply-failed",
+      message: translateNow("updates.applyStatus.failed"),
+    });
 
-    return { ok: false, error: 'apply-failed', message: 'Backend update failed.' }
+    return {
+      ok: false,
+      error: "apply-failed",
+      message: "Backend update failed.",
+    };
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
+    const message = error instanceof Error ? error.message : String(error);
     $backendUpdateApply.set({
       ...$backendUpdateApply.get(),
       applying: false,
-      stage: 'error',
-      error: 'apply-failed',
-      message
-    })
+      stage: "error",
+      error: "apply-failed",
+      message,
+    });
 
-    return { ok: false, error: 'apply-failed', message }
+    return { ok: false, error: "apply-failed", message };
   }
 }
 
 export function applyBackendUpdate(): Promise<DesktopUpdateApplyResult> {
   if (backendUpdateInFlight) {
-    return backendUpdateInFlight
+    return backendUpdateInFlight;
   }
 
   backendUpdateInFlight = runBackendUpdate().finally(() => {
-    backendUpdateInFlight = null
-  })
+    backendUpdateInFlight = null;
+  });
 
-  return backendUpdateInFlight
+  return backendUpdateInFlight;
 }
 
 // ── Update everything: the client + every registered backend in one action ──
@@ -813,76 +908,85 @@ export function applyBackendUpdate(): Promise<DesktopUpdateApplyResult> {
 //   3. The local client LAST — its apply relaunches or hands off the app, so
 //      it must not preempt the dispatches above.
 
-const CLIENT_BEHIND_TOAST_ID = 'client-update-after-backend'
+const CLIENT_BEHIND_TOAST_ID = "client-update-after-backend";
 
 /** After a successful backend update, tell the user when the desktop app
  *  itself is still behind, with a one-click client update. Silent when the
  *  client is current, so aligned installs never see it. */
 async function maybeNudgeClientAfterBackendUpdate(): Promise<void> {
-  if (typeof window === 'undefined') {
-    return
+  if (typeof window === "undefined") {
+    return;
   }
 
-  const status = (await checkUpdates().catch(() => null)) ?? $updateStatus.get()
+  const status =
+    (await checkUpdates().catch(() => null)) ?? $updateStatus.get();
 
-  if (!status || status.error || (!status.updateAvailable && (status.behind ?? 0) <= 0)) {
-    return
+  if (
+    !status ||
+    status.error ||
+    (!status.updateAvailable && (status.behind ?? 0) <= 0)
+  ) {
+    return;
   }
 
   notify({
     action: {
-      label: translateNow('updates.clientAlsoBehindAction'),
+      label: translateNow("updates.clientAlsoBehindAction"),
       onClick: () => {
-        dismissNotification(CLIENT_BEHIND_TOAST_ID)
-        $updateOverlayTarget.set('client')
-        $updateOverlayOpen.set(true)
-        void applyUpdates()
-      }
+        dismissNotification(CLIENT_BEHIND_TOAST_ID);
+        $updateOverlayTarget.set("client");
+        $updateOverlayOpen.set(true);
+        void applyUpdates();
+      },
     },
     durationMs: 0,
     id: CLIENT_BEHIND_TOAST_ID,
-    kind: 'warning',
-    message: translateNow('updates.clientAlsoBehindMessage'),
-    title: translateNow('updates.clientAlsoBehindTitle')
-  })
+    kind: "warning",
+    message: translateNow("updates.clientAlsoBehindMessage"),
+    title: translateNow("updates.clientAlsoBehindTitle"),
+  });
 }
 
 export interface UpdateEverythingState {
-  running: boolean
+  running: boolean;
 }
 
-export const $updateEverything = atom<UpdateEverythingState>({ running: false })
+export const $updateEverything = atom<UpdateEverythingState>({
+  running: false,
+});
 
 /** True when this install has more than one update target — a remote-mode
  *  window (backend + client) or a multi-connection registry. Gates the
  *  "Update everything" affordance so single-machine installs keep the
  *  one-button experience. */
 export function hasMultipleUpdateTargets(): boolean {
-  return isRemoteMode() || ($connectionsRegistry.get()?.connections.length ?? 0) > 1
+  return (
+    isRemoteMode() || ($connectionsRegistry.get()?.connections.length ?? 0) > 1
+  );
 }
 
-let updateEverythingInFlight: Promise<void> | null = null
+let updateEverythingInFlight: Promise<void> | null = null;
 
 export function applyEverythingUpdate(): Promise<void> {
   if (updateEverythingInFlight) {
-    return updateEverythingInFlight
+    return updateEverythingInFlight;
   }
 
   updateEverythingInFlight = runEverythingUpdate().finally(() => {
-    updateEverythingInFlight = null
-  })
+    updateEverythingInFlight = null;
+  });
 
-  return updateEverythingInFlight
+  return updateEverythingInFlight;
 }
 
 async function runEverythingUpdate(): Promise<void> {
-  $updateEverything.set({ running: true })
+  $updateEverything.set({ running: true });
 
   // Snapshot the client status before any leg runs: the backend leg's own
   // post-update nudge re-checks the client and overwrites `$updateStatus`,
   // including with an error row when the bridge is unreachable. Step 3 needs a
   // pre-flow value to fall back on when its own live check can't answer.
-  const cachedClientStatus = $updateStatus.get()
+  const cachedClientStatus = $updateStatus.get();
 
   try {
     // 1. Active backend first (remote mode), with the detailed overlay flow.
@@ -890,51 +994,69 @@ async function runEverythingUpdate(): Promise<void> {
     //    continues regardless of the outcome: one unreachable backend must
     //    not strand the other machines or the client.
     if (isRemoteMode()) {
-      $updateOverlayTarget.set('backend')
+      $updateOverlayTarget.set("backend");
 
-      await applyBackendUpdate().catch(() => null)
+      await applyBackendUpdate().catch(() => null);
     }
 
     // 2. Fan out to every OTHER eligible registered connection. The active
     //    backend was just updated (excluded), and the local runtime updates
     //    with the client in step 3 (excluded). No registry/bridge → skip.
-    const bridge = window.hermesDesktop?.connections
-    const registry = $connectionsRegistry.get() ?? (await refreshConnectionsRegistry().catch(() => null))
-    const excludeIds = ['local']
-    const activeConnectionId = $connection.get()?.connectionId
+    const bridge = window.hermesDesktop?.connections;
+    const registry =
+      $connectionsRegistry.get() ??
+      (await refreshConnectionsRegistry().catch(() => null));
+    const excludeIds = ["local"];
+    const activeConnectionId = $connection.get()?.connectionId;
 
-    if (isRemoteMode() && activeConnectionId && !excludeIds.includes(activeConnectionId)) {
-      excludeIds.push(activeConnectionId)
+    if (
+      isRemoteMode() &&
+      activeConnectionId &&
+      !excludeIds.includes(activeConnectionId)
+    ) {
+      excludeIds.push(activeConnectionId);
     }
 
-    const remaining = (registry?.connections ?? []).filter(connection => !excludeIds.includes(connection.id))
+    const remaining = (registry?.connections ?? []).filter(
+      (connection) => !excludeIds.includes(connection.id),
+    );
 
     if (bridge?.updateAll && remaining.length > 0) {
       try {
-        const { results } = await bridge.updateAll({ excludeIds })
+        const { results } = await bridge.updateAll({ excludeIds });
 
         for (const row of results) {
           if (row.ok) {
-            notify({ title: row.label, message: row.detail || translateNow('updates.everythingDispatched') })
+            notify({
+              title: row.label,
+              message:
+                row.detail || translateNow("updates.everythingDispatched"),
+            });
           } else if (row.skipped) {
             notify({
               title: row.label,
-              message: row.detail || row.reason || translateNow('updates.everythingSkipped')
-            })
+              message:
+                row.detail ||
+                row.reason ||
+                translateNow("updates.everythingSkipped"),
+            });
           } else {
             notify({
-              kind: 'warning',
+              kind: "warning",
               title: row.label,
-              message: row.error || row.detail || translateNow('updates.everythingRowFailed')
-            })
+              message:
+                row.error ||
+                row.detail ||
+                translateNow("updates.everythingRowFailed"),
+            });
           }
         }
       } catch (error) {
         notify({
-          kind: 'warning',
-          title: translateNow('updates.everythingFanoutFailedTitle'),
-          message: error instanceof Error ? error.message : String(error)
-        })
+          kind: "warning",
+          title: translateNow("updates.everythingFanoutFailedTitle"),
+          message: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
@@ -946,28 +1068,33 @@ async function runEverythingUpdate(): Promise<void> {
     //    leave the app stale — the exact failure this flow exists to prevent.
     //    `checkUpdates()` resolves with an error-status rather than rejecting,
     //    so fall back to the pre-flow snapshot when the live check can't answer.
-    const freshClientStatus = await checkUpdates().catch(() => null)
-    const clientStatus = freshClientStatus?.error ? cachedClientStatus : (freshClientStatus ?? cachedClientStatus)
+    const freshClientStatus = await checkUpdates().catch(() => null);
+    const clientStatus = freshClientStatus?.error
+      ? cachedClientStatus
+      : (freshClientStatus ?? cachedClientStatus);
 
     if ((clientStatus?.behind ?? 0) > 0 || clientStatus?.updateAvailable) {
-      $updateOverlayTarget.set('client')
-      $updateOverlayOpen.set(true)
-      await applyUpdates()
+      $updateOverlayTarget.set("client");
+      $updateOverlayOpen.set(true);
+      await applyUpdates();
     }
   } finally {
-    $updateEverything.set({ running: false })
+    $updateEverything.set({ running: false });
   }
 }
 
 function ingestProgress(payload: DesktopUpdateProgress): void {
-  const current = $updateApply.get()
-  const log = [...current.log, { stage: payload.stage, message: payload.message, at: payload.at }].slice(-50)
+  const current = $updateApply.get();
+  const log = [
+    ...current.log,
+    { stage: payload.stage, message: payload.message, at: payload.at },
+  ].slice(-50);
 
   const terminal =
-    payload.stage === 'error' ||
-    payload.stage === 'restart' ||
-    payload.stage === 'manual' ||
-    payload.stage === 'guiSkew'
+    payload.stage === "error" ||
+    payload.stage === "restart" ||
+    payload.stage === "manual" ||
+    payload.stage === "guiSkew";
 
   $updateApply.set({
     applying: !terminal,
@@ -978,82 +1105,82 @@ function ingestProgress(payload: DesktopUpdateProgress): void {
     percent: payload.percent ?? current.percent,
     error: payload.error,
     // 'manual' carries the command to run in its message field.
-    command: payload.stage === 'manual' ? payload.message : current.command,
-    log
-  })
+    command: payload.stage === "manual" ? payload.message : current.command,
+    log,
+  });
 }
 
-let pollerStarted = false
-let backgroundTimer: ReturnType<typeof setInterval> | null = null
-let lastFocusAt = 0
-let connectionUnsub: (() => void) | null = null
-let lastConnectionMode: string | undefined
+let pollerStarted = false;
+let backgroundTimer: ReturnType<typeof setInterval> | null = null;
+let lastFocusAt = 0;
+let connectionUnsub: (() => void) | null = null;
+let lastConnectionMode: string | undefined;
 
 /** Wire up background polling + progress streaming. Idempotent. */
 export function startUpdatePoller(): void {
-  if (pollerStarted || typeof window === 'undefined') {
-    return
+  if (pollerStarted || typeof window === "undefined") {
+    return;
   }
 
-  const bridge = window.hermesDesktop?.updates
+  const bridge = window.hermesDesktop?.updates;
 
   if (!bridge) {
-    return
+    return;
   }
 
-  pollerStarted = true
-  void checkUpdates()
-  void checkBackendUpdates()
-  void refreshDesktopVersion()
-  bridge.onProgress(ingestProgress)
+  pollerStarted = true;
+  void checkUpdates();
+  void checkBackendUpdates();
+  void refreshDesktopVersion();
+  bridge.onProgress(ingestProgress);
 
   // The poller starts at mount, before the gateway connects — so the first
   // backend check above sees mode≠remote and no-ops. Re-check once the
   // connection resolves to remote.
-  connectionUnsub = $connection.subscribe(conn => {
+  connectionUnsub = $connection.subscribe((conn) => {
     if (conn?.mode === lastConnectionMode) {
-      return
+      return;
     }
 
-    lastConnectionMode = conn?.mode
+    lastConnectionMode = conn?.mode;
 
-    if (conn?.mode === 'remote') {
-      void checkBackendUpdates()
+    if (conn?.mode === "remote") {
+      void checkBackendUpdates();
     }
-  })
+  });
 
-  window.addEventListener('focus', onFocus)
+  window.addEventListener("focus", onFocus);
   backgroundTimer = setInterval(
     () => {
-      void checkUpdates()
-      void checkBackendUpdates()
+      void checkUpdates();
+      void checkBackendUpdates();
     },
-    30 * 60 * 1000
-  )
+    30 * 60 * 1000,
+  );
 }
 
 export function stopUpdatePoller(): void {
   if (backgroundTimer !== null) {
-    clearInterval(backgroundTimer)
-    backgroundTimer = null
+    clearInterval(backgroundTimer);
+    backgroundTimer = null;
   }
 
-  connectionUnsub?.()
-  connectionUnsub = null
-  lastConnectionMode = undefined
-  window.removeEventListener('focus', onFocus)
-  pollerStarted = false
+  connectionUnsub?.();
+  connectionUnsub = null;
+  lastConnectionMode = undefined;
+  window.removeEventListener("focus", onFocus);
+  pollerStarted = false;
 }
 
 function onFocus() {
-  const now = Date.now()
+  const now = Date.now();
 
   if (now - lastFocusAt < 5 * 60 * 1000) {
-    return
+    return;
   }
 
-  lastFocusAt = now
-  void checkUpdates()
-  void checkBackendUpdates()
-  void refreshDesktopVersion()
+  lastFocusAt = now;
+  void checkUpdates();
+  void checkBackendUpdates();
+  void refreshDesktopVersion();
 }

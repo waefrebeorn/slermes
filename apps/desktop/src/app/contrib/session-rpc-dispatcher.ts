@@ -31,75 +31,121 @@
  * exception: the legacy single-backend Desktop, where ambient IS the owner).
  * Only a request with NO session at all falls to the ambient socket.
  */
-import type { MutableRefObject } from 'react'
+import type { MutableRefObject } from "react";
 
-import { resolveSessionOwner } from '@/app/session/hooks/use-session-actions/utils'
-import type { ClientSessionState } from '@/app/types'
-import { isSessionGoneForBackgroundPolling } from '@/store/runtime-gone'
-import { getSessionOwnerHint, knownSessionOwner, ownerLookupSessionRows, requestSessionResume } from '@/store/session'
-import { assertSessionOwnerResolved } from '@/store/session-owner-resolution'
-import { requestForSessionProfile, type SessionOwnerScope } from '@/store/session-request-router'
-import { $focusedStoredSessionId, sessionTileOwnerRoute, storedSessionIdForRuntimeId } from '@/store/session-states'
+import { resolveSessionOwner } from "@/app/session/hooks/use-session-actions/utils";
+import type { ClientSessionState } from "@/app/types";
+import { isSessionGoneForBackgroundPolling } from "@/store/runtime-gone";
+import {
+  getSessionOwnerHint,
+  knownSessionOwner,
+  ownerLookupSessionRows,
+  requestSessionResume,
+} from "@/store/session";
+import { assertSessionOwnerResolved } from "@/store/session-owner-resolution";
+import {
+  requestForSessionProfile,
+  type SessionOwnerScope,
+} from "@/store/session-request-router";
+import {
+  $focusedStoredSessionId,
+  sessionTileOwnerRoute,
+  storedSessionIdForRuntimeId,
+} from "@/store/session-states";
 
-import { findStoredIdForRuntimeId, resolveRoutingSessionId, resolveSessionRpcOwner } from './wiring-routing'
+import {
+  findStoredIdForRuntimeId,
+  resolveRoutingSessionId,
+  resolveSessionRpcOwner,
+} from "./wiring-routing";
 
 export type AmbientGatewayRequest = <T>(
   method: string,
   params?: Record<string, unknown>,
   timeoutMs?: number,
-  signal?: AbortSignal
-) => Promise<T>
+  signal?: AbortSignal,
+) => Promise<T>;
 
 export interface SessionRpcDispatcherDeps {
-  ambientRequest: AmbientGatewayRequest
-  runtimeIdByStoredSessionIdRef: MutableRefObject<Map<string, string>>
-  selectedStoredSessionIdRef: MutableRefObject<null | string>
-  sessionStateByRuntimeIdRef: MutableRefObject<Map<string, ClientSessionState>>
+  ambientRequest: AmbientGatewayRequest;
+  runtimeIdByStoredSessionIdRef: MutableRefObject<Map<string, string>>;
+  selectedStoredSessionIdRef: MutableRefObject<null | string>;
+  sessionStateByRuntimeIdRef: MutableRefObject<Map<string, ClientSessionState>>;
 }
 
-export function createSessionRpcDispatcher(deps: SessionRpcDispatcherDeps): AmbientGatewayRequest {
-  const { ambientRequest, runtimeIdByStoredSessionIdRef, selectedStoredSessionIdRef, sessionStateByRuntimeIdRef } = deps
+export function createSessionRpcDispatcher(
+  deps: SessionRpcDispatcherDeps,
+): AmbientGatewayRequest {
+  const {
+    ambientRequest,
+    runtimeIdByStoredSessionIdRef,
+    selectedStoredSessionIdRef,
+    sessionStateByRuntimeIdRef,
+  } = deps;
 
-  return async <T>(method: string, params?: Record<string, unknown>, timeoutMs?: number, signal?: AbortSignal) => {
-    const paramSessionId = typeof params?.session_id === 'string' && params.session_id ? params.session_id : undefined
+  return async <T>(
+    method: string,
+    params?: Record<string, unknown>,
+    timeoutMs?: number,
+    signal?: AbortSignal,
+  ) => {
+    const paramSessionId =
+      typeof params?.session_id === "string" && params.session_id
+        ? params.session_id
+        : undefined;
 
     const routingSessionId = resolveRoutingSessionId({
       focusedStoredSessionId: $focusedStoredSessionId.get(),
       paramSessionId,
       selectedStoredSessionId: selectedStoredSessionIdRef.current,
-      storedIdForRuntime: runtimeId =>
+      storedIdForRuntime: (runtimeId) =>
         sessionStateByRuntimeIdRef.current.get(runtimeId)?.storedSessionId ??
-        findStoredIdForRuntimeId(runtimeIdByStoredSessionIdRef.current, runtimeId) ??
+        findStoredIdForRuntimeId(
+          runtimeIdByStoredSessionIdRef.current,
+          runtimeId,
+        ) ??
         storedSessionIdForRuntimeId(runtimeId) ??
-        undefined
-    })
+        undefined,
+    });
 
     let owner: SessionOwnerScope = resolveSessionRpcOwner({
       routingSessionId,
-      sessionOwnerHint: storedSessionId => getSessionOwnerHint(storedSessionId),
-      sessionRowOwner: storedSessionId => knownSessionOwner(ownerLookupSessionRows(), storedSessionId),
-      tileOwnerRoute: sessionTileOwnerRoute
-    })
+      sessionOwnerHint: (storedSessionId) =>
+        getSessionOwnerHint(storedSessionId),
+      sessionRowOwner: (storedSessionId) =>
+        knownSessionOwner(ownerLookupSessionRows(), storedSessionId),
+      tileOwnerRoute: sessionTileOwnerRoute,
+    });
 
     if (!owner && routingSessionId) {
       // Unknown owner for a REAL session: probe across profiles (REST, not the
       // gateway socket, so no recursion) rather than defaulting to active. A
       // hit stamps ownership on the row (exact when the row came back
       // connection-tagged); a miss leaves owner undefined.
-      const probed = await resolveSessionOwner(routingSessionId)
+      const probed = await resolveSessionOwner(routingSessionId);
 
       if (probed) {
-        owner = probed
+        owner = probed;
       }
     }
 
     // A request that names a session but whose owner nobody can name must not
     // ride the ambient socket: that turns missing metadata into a misleading
     // backend "session not found" on a backend that never held the runtime.
-    assertSessionOwnerResolved(owner, { method, sessionId: paramSessionId ? routingSessionId : null })
+    assertSessionOwnerResolved(owner, {
+      method,
+      sessionId: paramSessionId ? routingSessionId : null,
+    });
 
     try {
-      return await requestForSessionProfile<T>(owner, ambientRequest, method, params ?? {}, timeoutMs, signal)
+      return await requestForSessionProfile<T>(
+        owner,
+        ambientRequest,
+        method,
+        params ?? {},
+        timeoutMs,
+        signal,
+      );
     } catch (error) {
       // A missed session.reclaimed leaves later RPCs answering 4001 against a
       // still-resumable stored row. Prompt actions already retry their own
@@ -109,17 +155,20 @@ export function createSessionRpcDispatcher(deps: SessionRpcDispatcherDeps): Ambi
       // A session the user just deleted is filtered by requestSessionResume,
       // which drops resume requests for a removal-pending id.
       if (
-        method !== 'session.resume' &&
-        method !== 'session.activate' &&
+        method !== "session.resume" &&
+        method !== "session.activate" &&
         paramSessionId &&
         routingSessionId &&
         routingSessionId === selectedStoredSessionIdRef.current &&
         isSessionGoneForBackgroundPolling(error)
       ) {
-        requestSessionResume(routingSessionId, typeof owner === 'object' && owner ? owner : undefined)
+        requestSessionResume(
+          routingSessionId,
+          typeof owner === "object" && owner ? owner : undefined,
+        );
       }
 
-      throw error
+      throw error;
     }
-  }
+  };
 }

@@ -1,68 +1,74 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-export const DEFAULT_TERMINAL_FONT_FAMILY = "'JetBrains Mono', 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace"
+export const DEFAULT_TERMINAL_FONT_FAMILY =
+  "'JetBrains Mono', 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace";
 
 export const TERMINAL_FONT_SUGGESTIONS = [
-  'MesloLGS NF',
-  'JetBrainsMono Nerd Font',
-  'CaskaydiaCove Nerd Font',
-  'FiraCode Nerd Font',
-  'Hack Nerd Font',
-  'SauceCodePro Nerd Font',
-  'JetBrains Mono',
-  'SF Mono',
-  'Menlo',
-  'Cascadia Code'
-] as const
+  "MesloLGS NF",
+  "JetBrainsMono Nerd Font",
+  "CaskaydiaCove Nerd Font",
+  "FiraCode Nerd Font",
+  "Hack Nerd Font",
+  "SauceCodePro Nerd Font",
+  "JetBrains Mono",
+  "SF Mono",
+  "Menlo",
+  "Cascadia Code",
+] as const;
 
 /** The profile-backed value as written in config.yaml. Empty means bundled default. */
-export const $terminalFontFamily = atom('')
+export const $terminalFontFamily = atom("");
 
 export function normalizeTerminalFontFamily(value: unknown): string {
-  return typeof value === 'string' ? value.trim() : ''
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function quoteSingleFamily(value: string): string {
-  return `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
+  return `'${value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
 }
 
 /** Accept a friendly single family name or an authored CSS font stack. */
 export function resolveTerminalFontFamily(value: unknown): string {
-  const configured = normalizeTerminalFontFamily(value)
+  const configured = normalizeTerminalFontFamily(value);
 
   if (!configured) {
-    return DEFAULT_TERMINAL_FONT_FAMILY
+    return DEFAULT_TERMINAL_FONT_FAMILY;
   }
 
-  const preferred = configured.includes(',') || /['"]/.test(configured) ? configured : quoteSingleFamily(configured)
+  const preferred =
+    configured.includes(",") || /['"]/.test(configured)
+      ? configured
+      : quoteSingleFamily(configured);
 
-  return `${preferred}, ${DEFAULT_TERMINAL_FONT_FAMILY}`
+  return `${preferred}, ${DEFAULT_TERMINAL_FONT_FAMILY}`;
 }
 
 export function setTerminalFontFamilyFromConfig(value: unknown): void {
-  $terminalFontFamily.set(normalizeTerminalFontFamily(value))
+  $terminalFontFamily.set(normalizeTerminalFontFamily(value));
 }
 
-type FontFaceLoader = Pick<FontFaceSet, 'load'>
+type FontFaceLoader = Pick<FontFaceSet, "load">;
 
 function browserFontSet(): FontFaceLoader | undefined {
-  return typeof document === 'undefined' ? undefined : document.fonts
+  return typeof document === "undefined" ? undefined : document.fonts;
 }
 
 /** Warm every face xterm uses before WebGL builds its glyph texture atlas. */
 export async function warmTerminalFontFamily(
   fontFamily: string,
-  fontSet: FontFaceLoader | undefined = browserFontSet()
+  fontSet: FontFaceLoader | undefined = browserFontSet(),
 ): Promise<void> {
   if (!fontSet?.load) {
-    return
+    return;
   }
 
   await Promise.allSettled(
-    ['400', '700', 'italic 400'].map(descriptor =>
-      Promise.resolve().then(() => fontSet.load(`${descriptor} 11px ${fontFamily}`))
-    )
-  )
+    ["400", "700", "italic 400"].map((descriptor) =>
+      Promise.resolve().then(() =>
+        fontSet.load(`${descriptor} 11px ${fontFamily}`),
+      ),
+    ),
+  );
 }
 
 /**
@@ -73,42 +79,42 @@ export async function warmTerminalFontFamily(
 export async function prepareTerminalFontFamily(
   getLatest: () => string,
   isCurrent: () => boolean,
-  warm: (fontFamily: string) => Promise<void> = warmTerminalFontFamily
+  warm: (fontFamily: string) => Promise<void> = warmTerminalFontFamily,
 ): Promise<string | null> {
-  let candidate = getLatest()
+  let candidate = getLatest();
 
   while (isCurrent()) {
-    await warm(candidate)
+    await warm(candidate);
 
     if (!isCurrent()) {
-      return null
+      return null;
     }
 
-    const latest = getLatest()
+    const latest = getLatest();
 
     if (latest === candidate) {
-      return candidate
+      return candidate;
     }
 
-    candidate = latest
+    candidate = latest;
   }
 
-  return null
+  return null;
 }
 
 export interface TerminalFontTarget {
-  options: { fontFamily?: string }
-  rows: number
-  refresh: (start: number, end: number) => void
+  options: { fontFamily?: string };
+  rows: number;
+  refresh: (start: number, end: number) => void;
 }
 
 interface ApplyTerminalFontOptions {
-  clearTextureAtlas: () => void
-  fit: () => void
-  fontFamily: string
-  isCurrent: () => boolean
-  term: TerminalFontTarget
-  warm?: (fontFamily: string) => Promise<void>
+  clearTextureAtlas: () => void;
+  fit: () => void;
+  fontFamily: string;
+  isCurrent: () => boolean;
+  term: TerminalFontTarget;
+  warm?: (fontFamily: string) => Promise<void>;
 }
 
 /** Apply a live font change without recreating the xterm instance or its PTY. */
@@ -118,21 +124,21 @@ export async function applyTerminalFontFamily({
   fontFamily,
   isCurrent,
   term,
-  warm = warmTerminalFontFamily
+  warm = warmTerminalFontFamily,
 }: ApplyTerminalFontOptions): Promise<boolean> {
-  await warm(fontFamily)
+  await warm(fontFamily);
 
   if (!isCurrent()) {
-    return false
+    return false;
   }
 
-  term.options.fontFamily = fontFamily
-  fit()
-  clearTextureAtlas()
+  term.options.fontFamily = fontFamily;
+  fit();
+  clearTextureAtlas();
 
   if (term.rows > 0) {
-    term.refresh(0, term.rows - 1)
+    term.refresh(0, term.rows - 1);
   }
 
-  return true
+  return true;
 }

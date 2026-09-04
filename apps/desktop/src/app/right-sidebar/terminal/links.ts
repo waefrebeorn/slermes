@@ -1,9 +1,9 @@
-import { WebLinksAddon } from '@xterm/addon-web-links'
-import type { ILinkHandler } from '@xterm/xterm'
+import { WebLinksAddon } from "@xterm/addon-web-links";
+import type { ILinkHandler } from "@xterm/xterm";
 
-import { openLink } from '@/lib/external-link'
+import { openLink } from "@/lib/external-link";
 
-import { isMacPlatform } from './selection'
+import { isMacPlatform } from "./selection";
 
 // Both of xterm's link paths — the web-links addon (URLs it finds in the
 // buffer) and the core OSC 8 provider (hyperlinks a CLI emits explicitly) —
@@ -18,10 +18,10 @@ import { isMacPlatform } from './selection'
 // a misclick on a URL can't launch a browser mid-sentence. ⌥ stays out of it:
 // that's the force-selection drag over mouse-mode TUIs.
 export function isTerminalLinkActivation(
-  event: Pick<MouseEvent, 'ctrlKey' | 'metaKey'>,
-  isMac = isMacPlatform()
+  event: Pick<MouseEvent, "ctrlKey" | "metaKey">,
+  isMac = isMacPlatform(),
 ): boolean {
-  return isMac ? event.metaKey : event.ctrlKey
+  return isMac ? event.metaKey : event.ctrlKey;
 }
 
 // The terminal spends the ⌘/Ctrl modifier on activation itself, so it has no
@@ -31,10 +31,10 @@ export function isTerminalLinkActivation(
 // selection back from a plain click.
 const activate = (event: MouseEvent, uri: string) => {
   if (isTerminalLinkActivation(event)) {
-    openLink(uri, { native: event.shiftKey })
+    openLink(uri, { native: event.shiftKey });
   }
-}
+};
 
-export const terminalLinkHandler: ILinkHandler = { activate }
+export const terminalLinkHandler: ILinkHandler = { activate };
 
-export const terminalWebLinksAddon = () => new WebLinksAddon(activate)
+export const terminalWebLinksAddon = () => new WebLinksAddon(activate);

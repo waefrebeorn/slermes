@@ -1,33 +1,42 @@
-import { useStore } from '@nanostores/react'
-import type { ReactNode } from 'react'
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import { useStore } from "@nanostores/react";
+import type { ReactNode } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
-import { terminalMenuHandleFor } from '@/app/right-sidebar/terminal/terminal-context-menu'
-import { toggleTargetZoneTabStrip } from '@/components/pane-shell/tree/store'
-import { Codicon } from '@/components/ui/codicon'
-import { HERMES_CONTEXT_MENU_TRIGGER_ATTR } from '@/components/ui/context-menu'
-import { writeClipboardText } from '@/components/ui/copy-button'
+import { terminalMenuHandleFor } from "@/app/right-sidebar/terminal/terminal-context-menu";
+import { toggleTargetZoneTabStrip } from "@/components/pane-shell/tree/store";
+import { Codicon } from "@/components/ui/codicon";
+import { HERMES_CONTEXT_MENU_TRIGGER_ATTR } from "@/components/ui/context-menu";
+import { writeClipboardText } from "@/components/ui/copy-button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { type Translations, useI18n } from '@/i18n'
-import { hostPathLabel, hudForcesNativeLinks, normalizeExternalUrl, openExternalLink } from '@/lib/external-link'
-import { formatCombo } from '@/lib/keybinds/combo'
-import { isRemoteGateway } from '@/lib/media'
-import { reachablePreviewUrl } from '@/lib/preview-reach'
-import { openCommandPalette } from '@/store/command-palette'
-import { openPreview } from '@/store/preview'
-import { toggleStatusbarVisible } from '@/store/statusbar-prefs'
-import { requestActiveUpdate } from '@/store/updates'
-import { canOpenNewWindow, openNewWindow } from '@/store/windows'
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { type Translations, useI18n } from "@/i18n";
+import {
+  hostPathLabel,
+  hudForcesNativeLinks,
+  normalizeExternalUrl,
+  openExternalLink,
+} from "@/lib/external-link";
+import { formatCombo } from "@/lib/keybinds/combo";
+import { isRemoteGateway } from "@/lib/media";
+import { reachablePreviewUrl } from "@/lib/preview-reach";
+import { openCommandPalette } from "@/store/command-palette";
+import { openPreview } from "@/store/preview";
+import { toggleStatusbarVisible } from "@/store/statusbar-prefs";
+import { requestActiveUpdate } from "@/store/updates";
+import { canOpenNewWindow, openNewWindow } from "@/store/windows";
 
-import { navigateToWorkspacePage, NEW_CHAT_ROUTE, SETTINGS_ROUTE } from '../routes'
+import {
+  navigateToWorkspacePage,
+  NEW_CHAT_ROUTE,
+  SETTINGS_ROUTE,
+} from "../routes";
 
 import {
   $contextMenu,
@@ -35,33 +44,33 @@ import {
   closeContextMenu,
   type OpenContextMenu,
   openDomContextMenu,
-  openTerminalContextMenu
-} from './store'
-import { isWebUrl, resolveDomTarget } from './target'
+  openTerminalContextMenu,
+} from "./store";
+import { isWebUrl, resolveDomTarget } from "./target";
 
 /** Marks a surface that owns PLAIN right-clicks itself (the user-message
  *  reaction bubble). Owned targets inside it — links, images, editables,
  *  selections — still get the app menu. */
-export const CONTEXT_MENU_SKIP_ATTR = 'data-context-menu-skip'
+export const CONTEXT_MENU_SKIP_ATTR = "data-context-menu-skip";
 
-const LOOPBACK_HOST_RE = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[?::1\]?)$/i
+const LOOPBACK_HOST_RE = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[?::1\]?)$/i;
 
 // Accelerators shown beside the edit verbs. Display only — Chromium's
 // before-input-event handling already executes the chords; the menu just
 // advertises them the way the native menu did. `formatCombo` renders
 // mod as ⌘ on macOS and Ctrl elsewhere.
 const EDIT_SHORTCUTS = {
-  copy: formatCombo('mod+c'),
-  cut: formatCombo('mod+x'),
-  paste: formatCombo('mod+v'),
-  selectAll: formatCombo('mod+a')
-} as const
+  copy: formatCombo("mod+c"),
+  cut: formatCombo("mod+x"),
+  paste: formatCombo("mod+v"),
+  selectAll: formatCombo("mod+a"),
+} as const;
 
 function isLoopbackUrl(url: string): boolean {
   try {
-    return LOOPBACK_HOST_RE.test(new URL(url).hostname)
+    return LOOPBACK_HOST_RE.test(new URL(url).hostname);
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -73,31 +82,36 @@ function Item({
   icon,
   label,
   onSelect,
-  shortcut
+  shortcut,
 }: {
-  disabled?: boolean
-  icon?: string
-  label: string
-  onSelect: () => void
-  shortcut?: string
+  disabled?: boolean;
+  icon?: string;
+  label: string;
+  onSelect: () => void;
+  shortcut?: string;
 }) {
   return (
     <DropdownMenuItem disabled={disabled} onSelect={onSelect}>
       {icon ? <Codicon name={icon} size="0.875rem" /> : null}
       <span>{label}</span>
-      {shortcut ? <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut> : null}
+      {shortcut ? (
+        <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut>
+      ) : null}
     </DropdownMenuItem>
-  )
+  );
 }
 
 type ShellVerbs = {
-  navigate: ReturnType<typeof useNavigate>
-  t: Translations
-}
+  navigate: ReturnType<typeof useNavigate>;
+  t: Translations;
+};
 
-function terminalSections(open: Extract<OpenContextMenu, { kind: 'terminal' }>, t: Translations): ReactNode[][] {
-  const { terminal } = open
-  const selection = terminal.getSelection()
+function terminalSections(
+  open: Extract<OpenContextMenu, { kind: "terminal" }>,
+  t: Translations,
+): ReactNode[][] {
+  const { terminal } = open;
+  const selection = terminal.getSelection();
 
   return [
     [
@@ -116,7 +130,9 @@ function terminalSections(open: Extract<OpenContextMenu, { kind: 'terminal' }>, 
           key="terminal-paste"
           label={t.contextMenu.edit.paste}
           onSelect={() =>
-            void window.hermesDesktop?.readClipboard().then(text => (text ? terminal.paste?.(text) : undefined))
+            void window.hermesDesktop
+              ?.readClipboard()
+              .then((text) => (text ? terminal.paste?.(text) : undefined))
           }
         />
       ) : null,
@@ -125,20 +141,24 @@ function terminalSections(open: Extract<OpenContextMenu, { kind: 'terminal' }>, 
         key="terminal-select-all"
         label={t.contextMenu.edit.selectAll}
         onSelect={() => terminal.selectAll()}
-      />
-    ].filter(Boolean)
-  ]
+      />,
+    ].filter(Boolean),
+  ];
 }
 
-function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Translations): ReactNode[][] {
-  const copy = t.contextMenu
-  const { spellcheck, target } = open
-  const sections: ReactNode[][] = []
-  const linkUrl = target.linkUrl ? normalizeExternalUrl(target.linkUrl) : ''
-  const linkIsWeb = isWebUrl(linkUrl)
-  const imageIsWeb = isWebUrl(target.imageUrl)
-  const openInApp = !hudForcesNativeLinks()
-  const showResolvedCopy = linkIsWeb && isRemoteGateway() && isLoopbackUrl(linkUrl)
+function domSections(
+  open: Extract<OpenContextMenu, { kind: "dom" }>,
+  t: Translations,
+): ReactNode[][] {
+  const copy = t.contextMenu;
+  const { spellcheck, target } = open;
+  const sections: ReactNode[][] = [];
+  const linkUrl = target.linkUrl ? normalizeExternalUrl(target.linkUrl) : "";
+  const linkIsWeb = isWebUrl(linkUrl);
+  const imageIsWeb = isWebUrl(target.imageUrl);
+  const openInApp = !hudForcesNativeLinks();
+  const showResolvedCopy =
+    linkIsWeb && isRemoteGateway() && isLoopbackUrl(linkUrl);
 
   // The edit verbs and spell-check actions act on the sender's FOCUSED
   // element in main. Focus cannot be restored while the menu is open: the
@@ -147,18 +167,20 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
   // WHOLE transcript instead of the field. Close the menu first, then focus
   // and dispatch on the next frame — after the trap is unmounted.
   const withEditableFocus = (action: () => void) => {
-    const editable = target.editable
+    const editable = target.editable;
 
-    closeContextMenu()
+    closeContextMenu();
     requestAnimationFrame(() => {
-      editable?.focus()
-      action()
-    })
-  }
+      editable?.focus();
+      action();
+    });
+  };
 
-  const editableCommand = (command: 'copy' | 'cut' | 'paste') => {
-    withEditableFocus(() => void window.hermesDesktop?.contextMenuEdit?.(command))
-  }
+  const editableCommand = (command: "copy" | "cut" | "paste") => {
+    withEditableFocus(
+      () => void window.hermesDesktop?.contextMenuEdit?.(command),
+    );
+  };
 
   // Select all runs entirely in the renderer, scoped to the editable itself.
   // Main's selectAll acts on whatever the FOCUSED FRAME considers "all" and
@@ -167,30 +189,38 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
   // transcript. A renderer range cannot escape the field.
   const selectAllInEditable = () => {
     withEditableFocus(() => {
-      const editable = target.editable
+      const editable = target.editable;
 
-      if (editable instanceof HTMLInputElement || editable instanceof HTMLTextAreaElement) {
-        editable.select()
+      if (
+        editable instanceof HTMLInputElement ||
+        editable instanceof HTMLTextAreaElement
+      ) {
+        editable.select();
 
-        return
+        return;
       }
 
       if (editable) {
-        const range = document.createRange()
+        const range = document.createRange();
 
-        range.selectNodeContents(editable)
+        range.selectNodeContents(editable);
 
-        const selection = window.getSelection()
+        const selection = window.getSelection();
 
-        selection?.removeAllRanges()
-        selection?.addRange(range)
+        selection?.removeAllRanges();
+        selection?.addRange(range);
       }
-    })
-  }
+    });
+  };
 
-  const spellcheckAction = (action: { kind: 'add' | 'replace'; word: string }) => {
-    withEditableFocus(() => void window.hermesDesktop?.contextMenuSpellcheck?.(action))
-  }
+  const spellcheckAction = (action: {
+    kind: "add" | "replace";
+    word: string;
+  }) => {
+    withEditableFocus(
+      () => void window.hermesDesktop?.contextMenuSpellcheck?.(action),
+    );
+  };
 
   if (linkUrl) {
     sections.push(
@@ -202,8 +232,13 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
             label={copy.link.openInApp}
             onSelect={() =>
               openPreview(
-                { kind: 'url', label: hostPathLabel(linkUrl), source: linkUrl, url: linkUrl },
-                'explicit-link'
+                {
+                  kind: "url",
+                  label: hostPathLabel(linkUrl),
+                  source: linkUrl,
+                  url: linkUrl,
+                },
+                "explicit-link",
               )
             }
           />
@@ -225,11 +260,13 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
             icon="copy"
             key="link-copy-resolved"
             label={copy.link.copyResolvedUrl}
-            onSelect={() => void reachablePreviewUrl(linkUrl).then(writeClipboardText)}
+            onSelect={() =>
+              void reachablePreviewUrl(linkUrl).then(writeClipboardText)
+            }
           />
-        ) : null
-      ].filter(Boolean)
-    )
+        ) : null,
+      ].filter(Boolean),
+    );
   }
 
   if (target.onImage) {
@@ -242,8 +279,13 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
             label={copy.link.openInApp}
             onSelect={() =>
               openPreview(
-                { kind: 'url', label: hostPathLabel(target.imageUrl), source: target.imageUrl, url: target.imageUrl },
-                'explicit-link'
+                {
+                  kind: "url",
+                  label: hostPathLabel(target.imageUrl),
+                  source: target.imageUrl,
+                  url: target.imageUrl,
+                },
+                "explicit-link",
               )
             }
           />
@@ -275,11 +317,13 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
             icon="save"
             key="image-save"
             label={copy.image.saveImageAs}
-            onSelect={() => void window.hermesDesktop?.saveImageFromUrl?.(target.imageUrl)}
+            onSelect={() =>
+              void window.hermesDesktop?.saveImageFromUrl?.(target.imageUrl)
+            }
           />
-        ) : null
-      ].filter(Boolean)
-    )
+        ) : null,
+      ].filter(Boolean),
+    );
   }
 
   if (target.editable) {
@@ -287,21 +331,25 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
       sections.push([
         ...spellcheck.suggestions
           .slice(0, 5)
-          .map(suggestion => (
+          .map((suggestion) => (
             <Item
               icon="edit"
               key={`spell-${suggestion}`}
               label={suggestion}
-              onSelect={() => spellcheckAction({ kind: 'replace', word: suggestion })}
+              onSelect={() =>
+                spellcheckAction({ kind: "replace", word: suggestion })
+              }
             />
           )),
         <Item
           icon="book"
           key="spell-add"
           label={copy.edit.addToDictionary}
-          onSelect={() => spellcheckAction({ kind: 'add', word: spellcheck.misspelledWord })}
-        />
-      ])
+          onSelect={() =>
+            spellcheckAction({ kind: "add", word: spellcheck.misspelledWord })
+          }
+        />,
+      ]);
     }
 
     // Verb availability mirrors the native menu: cut/copy act on the
@@ -316,40 +364,43 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
     // Windows even when that path succeeds (#91553). Pasting with an
     // empty clipboard is a harmless no-op, so the item fails open.
     const formField =
-      target.editable instanceof HTMLInputElement || target.editable instanceof HTMLTextAreaElement
+      target.editable instanceof HTMLInputElement ||
+      target.editable instanceof HTMLTextAreaElement
         ? target.editable
-        : null
+        : null;
 
-    const fieldText = formField ? formField.value : (target.editable?.textContent ?? '')
+    const fieldText = formField
+      ? formField.value
+      : (target.editable?.textContent ?? "");
 
-    const hasFieldText = fieldText.length > 0
+    const hasFieldText = fieldText.length > 0;
 
     const canCutCopy = formField
       ? (formField.selectionStart ?? 0) !== (formField.selectionEnd ?? 0)
-      : target.selectionText.length > 0
+      : target.selectionText.length > 0;
 
     sections.push([
       <Item
         disabled={!canCutCopy}
         key="edit-cut"
         label={copy.edit.cut}
-        onSelect={() => editableCommand('cut')}
+        onSelect={() => editableCommand("cut")}
         shortcut={EDIT_SHORTCUTS.cut}
       />,
       <Item
         disabled={!canCutCopy}
         key="edit-copy"
         label={t.common.copy}
-        onSelect={() => editableCommand('copy')}
+        onSelect={() => editableCommand("copy")}
         shortcut={EDIT_SHORTCUTS.copy}
       />,
       <Item
         key="edit-paste"
         label={copy.edit.paste}
-        onSelect={() => editableCommand('paste')}
+        onSelect={() => editableCommand("paste")}
         shortcut={EDIT_SHORTCUTS.paste}
-      />
-    ])
+      />,
+    ]);
     sections.push([
       <Item
         disabled={!hasFieldText}
@@ -357,8 +408,8 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
         label={copy.edit.selectAll}
         onSelect={selectAllInEditable}
         shortcut={EDIT_SHORTCUTS.selectAll}
-      />
-    ])
+      />,
+    ]);
   } else if (target.selectionText) {
     sections.push([
       <Item
@@ -366,31 +417,34 @@ function domSections(open: Extract<OpenContextMenu, { kind: 'dom' }>, t: Transla
         key="selection-copy"
         label={t.common.copy}
         onSelect={() => void writeClipboardText(target.selectionText)}
-      />
-    ])
+      />,
+    ]);
   }
 
-  return sections
+  return sections;
 }
 
 /** The guest (in-app browser) menu: link/image/selection/editable sections
  *  from the Chromium params, plus select all for the page, closed by
  *  Inspect element. The page-level verbs (copy URL, open externally,
  *  console) live on the browser bar, not here. */
-function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Translations): ReactNode[][] {
-  const copy = t.contextMenu
-  const { guest, params } = open
-  const sections: ReactNode[][] = []
-  const linkUrl = params.linkURL
-  const imageUrl = params.srcURL
-  const openInApp = !hudForcesNativeLinks()
+function guestSections(
+  open: Extract<OpenContextMenu, { kind: "guest" }>,
+  t: Translations,
+): ReactNode[][] {
+  const copy = t.contextMenu;
+  const { guest, params } = open;
+  const sections: ReactNode[][] = [];
+  const linkUrl = params.linkURL;
+  const imageUrl = params.srcURL;
+  const openInApp = !hudForcesNativeLinks();
 
   // Same trap-timing rule as the dom side: dispatch AFTER the menu closes,
   // so the webview's focus() is not stolen back by the radix content.
-  const guestEdit = (command: 'copy' | 'cut' | 'paste' | 'selectAll') => {
-    closeContextMenu()
-    requestAnimationFrame(() => guest.editCommand(command))
-  }
+  const guestEdit = (command: "copy" | "cut" | "paste" | "selectAll") => {
+    closeContextMenu();
+    requestAnimationFrame(() => guest.editCommand(command));
+  };
 
   if (linkUrl) {
     sections.push(
@@ -402,8 +456,13 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
             label={copy.link.openInApp}
             onSelect={() =>
               openPreview(
-                { kind: 'url', label: hostPathLabel(linkUrl), source: linkUrl, url: linkUrl },
-                'explicit-link'
+                {
+                  kind: "url",
+                  label: hostPathLabel(linkUrl),
+                  source: linkUrl,
+                  url: linkUrl,
+                },
+                "explicit-link",
               )
             }
           />
@@ -419,9 +478,9 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
           key="guest-link-copy"
           label={copy.link.copyUrl}
           onSelect={() => void writeClipboardText(linkUrl)}
-        />
-      ].filter(Boolean)
-    )
+        />,
+      ].filter(Boolean),
+    );
   }
 
   if (params.hasImageContents || imageUrl) {
@@ -436,7 +495,12 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
           />
         ) : null,
         params.hasImageContents ? (
-          <Item icon="file-media" key="guest-image-copy" label={copy.image.copyImage} onSelect={guest.copyImage} />
+          <Item
+            icon="file-media"
+            key="guest-image-copy"
+            label={copy.image.copyImage}
+            onSelect={guest.copyImage}
+          />
         ) : null,
         imageUrl ? (
           <Item
@@ -451,11 +515,13 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
             icon="save"
             key="guest-image-save"
             label={copy.image.saveImageAs}
-            onSelect={() => void window.hermesDesktop?.saveImageFromUrl?.(imageUrl)}
+            onSelect={() =>
+              void window.hermesDesktop?.saveImageFromUrl?.(imageUrl)
+            }
           />
-        ) : null
-      ].filter(Boolean)
-    )
+        ) : null,
+      ].filter(Boolean),
+    );
   }
 
   if (params.isEditable) {
@@ -463,7 +529,7 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
       sections.push([
         ...params.dictionarySuggestions
           .slice(0, 5)
-          .map(suggestion => (
+          .map((suggestion) => (
             <Item
               icon="edit"
               key={`guest-spell-${suggestion}`}
@@ -476,8 +542,8 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
           key="guest-spell-add"
           label={copy.edit.addToDictionary}
           onSelect={() => guest.addToDictionary(params.misspelledWord)}
-        />
-      ])
+        />,
+      ]);
     }
 
     // Chromium's editFlags gate the verbs — the same availability verdict
@@ -488,37 +554,42 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
         disabled={!params.editFlags.canCut}
         key="guest-edit-cut"
         label={copy.edit.cut}
-        onSelect={() => guestEdit('cut')}
+        onSelect={() => guestEdit("cut")}
         shortcut={EDIT_SHORTCUTS.cut}
       />,
       <Item
         disabled={!params.editFlags.canCopy}
         key="guest-edit-copy"
         label={t.common.copy}
-        onSelect={() => guestEdit('copy')}
+        onSelect={() => guestEdit("copy")}
         shortcut={EDIT_SHORTCUTS.copy}
       />,
       <Item
         disabled={!params.editFlags.canPaste}
         key="guest-edit-paste"
         label={copy.edit.paste}
-        onSelect={() => guestEdit('paste')}
+        onSelect={() => guestEdit("paste")}
         shortcut={EDIT_SHORTCUTS.paste}
-      />
-    ])
+      />,
+    ]);
     sections.push([
       <Item
         disabled={!params.editFlags.canSelectAll}
         key="guest-edit-select-all"
         label={copy.edit.selectAll}
-        onSelect={() => guestEdit('selectAll')}
+        onSelect={() => guestEdit("selectAll")}
         shortcut={EDIT_SHORTCUTS.selectAll}
-      />
-    ])
+      />,
+    ]);
   } else if (params.selectionText.trim()) {
     sections.push([
-      <Item icon="copy" key="guest-selection-copy" label={t.common.copy} onSelect={() => guestEdit('copy')} />
-    ])
+      <Item
+        icon="copy"
+        key="guest-selection-copy"
+        label={t.common.copy}
+        onSelect={() => guestEdit("copy")}
+      />,
+    ]);
   }
 
   // Text tool for the page itself: select all works everywhere Chromium
@@ -530,20 +601,25 @@ function guestSections(open: Extract<OpenContextMenu, { kind: 'guest' }>, t: Tra
         disabled={!params.editFlags.canSelectAll}
         key="guest-select-all"
         label={copy.edit.selectAll}
-        onSelect={() => guestEdit('selectAll')}
+        onSelect={() => guestEdit("selectAll")}
         shortcut={EDIT_SHORTCUTS.selectAll}
-      />
-    ])
+      />,
+    ]);
   }
 
   // Inspect element closes every guest menu — the one page tool that earns
   // its place on any click. The other page verbs (copy URL, open
   // externally, console) live on the browser bar only.
   sections.push([
-    <Item icon="inspect" key="guest-inspect" label={copy.page.inspectElement} onSelect={guest.inspectElement} />
-  ])
+    <Item
+      icon="inspect"
+      key="guest-inspect"
+      label={copy.page.inspectElement}
+      onSelect={guest.inspectElement}
+    />,
+  ]);
 
-  return sections
+  return sections;
 }
 
 /** Bare right-click on app chrome: the window verbs (the old shell fallback). */
@@ -560,17 +636,22 @@ function shellSections({ navigate, t }: ShellVerbs): ReactNode[][] {
         <Item
           icon="multiple-windows"
           key="shell-new-window"
-          label={t.keybinds.actions['session.newWindow']}
+          label={t.keybinds.actions["session.newWindow"]}
           onSelect={() => void openNewWindow()}
         />
       ) : null,
-      <Item icon="search" key="shell-palette" label={t.commandCenter.paletteTitle} onSelect={openCommandPalette} />
+      <Item
+        icon="search"
+        key="shell-palette"
+        label={t.commandCenter.paletteTitle}
+        onSelect={openCommandPalette}
+      />,
     ].filter(Boolean),
     [
       <Item
         icon="layout-statusbar"
         key="shell-statusbar"
-        label={t.keybinds.actions['view.toggleStatusbar']}
+        label={t.keybinds.actions["view.toggleStatusbar"]}
         onSelect={toggleStatusbarVisible}
       />,
       // The pointer-only way back to a hidden tab strip: right-clicking the
@@ -579,7 +660,7 @@ function shellSections({ navigate, t }: ShellVerbs): ReactNode[][] {
       <Item
         icon="layout-menubar"
         key="shell-tabstrip"
-        label={t.keybinds.actions['view.toggleTabStrip']}
+        label={t.keybinds.actions["view.toggleTabStrip"]}
         onSelect={() => void toggleTargetZoneTabStrip()}
       />,
       <Item
@@ -587,7 +668,7 @@ function shellSections({ navigate, t }: ShellVerbs): ReactNode[][] {
         key="shell-settings"
         label={t.commandCenter.settings}
         onSelect={() => navigateToWorkspacePage(navigate, SETTINGS_ROUTE)}
-      />
+      />,
     ],
     [
       <Item
@@ -595,9 +676,9 @@ function shellSections({ navigate, t }: ShellVerbs): ReactNode[][] {
         key="shell-update"
         label={t.commandCenter.updateHermes}
         onSelect={requestActiveUpdate}
-      />
-    ]
-  ]
+      />,
+    ],
+  ];
 }
 
 /**
@@ -613,9 +694,9 @@ function shellSections({ navigate, t }: ShellVerbs): ReactNode[][] {
  * come from the locale files like every other surface.
  */
 export function AppContextMenu() {
-  const { t } = useI18n()
-  const navigate = useNavigate()
-  const open = useStore($contextMenu)
+  const { t } = useI18n();
+  const navigate = useNavigate();
+  const open = useStore($contextMenu);
 
   useEffect(() => {
     // stopPropagation beats other renderer handlers; preventDefault is never
@@ -623,66 +704,80 @@ export function AppContextMenu() {
     // spellcheck + image-coordinate source) only for unprevented gestures —
     // and with no Menu.popup anywhere, "default" means no menu at all.
     const onContextMenu = (event: MouseEvent) => {
-      const element = event.target instanceof Element ? event.target : null
+      const element = event.target instanceof Element ? event.target : null;
 
       // Surfaces with their own Radix context menu keep the whole gesture.
       // Guard the dedicated marker first: Radix `asChild` Slot merges
       // `mergeProps(slotProps, childProps)` so the child's `data-slot` wins
       // (status bar footer is `data-slot="statusbar"`). The marker is stamped
       // after `{...props}` on ContextMenuTrigger and is not overwritten.
-      if (element?.closest(`[${HERMES_CONTEXT_MENU_TRIGGER_ATTR}], [data-slot="context-menu-trigger"]`)) {
-        return
+      if (
+        element?.closest(
+          `[${HERMES_CONTEXT_MENU_TRIGGER_ATTR}], [data-slot="context-menu-trigger"]`,
+        )
+      ) {
+        return;
       }
 
       // A terminal's canvas has no DOM to resolve; its registered handle
       // carries the xterm selection and paste path instead.
-      const terminal = terminalMenuHandleFor(element)
+      const terminal = terminalMenuHandleFor(element);
 
       if (terminal) {
-        event.stopPropagation()
-        openTerminalContextMenu(event.clientX, event.clientY, terminal)
+        event.stopPropagation();
+        openTerminalContextMenu(event.clientX, event.clientY, terminal);
 
-        return
+        return;
       }
 
-      const target = resolveDomTarget(element)
-      const owned = Boolean(target.linkUrl || target.onImage || target.editable || target.selectionText)
+      const target = resolveDomTarget(element);
+      const owned = Boolean(
+        target.linkUrl ||
+        target.onImage ||
+        target.editable ||
+        target.selectionText,
+      );
 
       // The reaction bubble owns bare right-clicks; a link inside it still
       // opens the link menu.
       if (!owned && element?.closest(`[${CONTEXT_MENU_SKIP_ATTR}]`)) {
-        return
+        return;
       }
 
-      event.stopPropagation()
-      openDomContextMenu(event.clientX, event.clientY, target)
-    }
+      event.stopPropagation();
+      openDomContextMenu(event.clientX, event.clientY, target);
+    };
 
-    window.addEventListener('contextmenu', onContextMenu, true)
+    window.addEventListener("contextmenu", onContextMenu, true);
 
-    return () => window.removeEventListener('contextmenu', onContextMenu, true)
-  }, [])
+    return () => window.removeEventListener("contextmenu", onContextMenu, true);
+  }, []);
 
   // Spell-check facts arrive from main after the menu opens (Chromium reports
   // them on its own context-menu event); attach them to the open menu.
-  useEffect(() => window.hermesDesktop?.onContextMenuSpellcheck?.(augmentSpellcheck), [])
+  useEffect(
+    () => window.hermesDesktop?.onContextMenuSpellcheck?.(augmentSpellcheck),
+    [],
+  );
 
   if (!open) {
-    return null
+    return null;
   }
 
   const sections =
-    open.kind === 'terminal'
+    open.kind === "terminal"
       ? terminalSections(open, t)
-      : open.kind === 'guest'
+      : open.kind === "guest"
         ? guestSections(open, t)
-        : (list => (list.length ? list : shellSections({ navigate, t })))(domSections(open, t))
+        : ((list) => (list.length ? list : shellSections({ navigate, t })))(
+            domSections(open, t),
+          );
 
   return (
     <DropdownMenu
-      onOpenChange={openState => {
+      onOpenChange={(openState) => {
         if (!openState) {
-          closeContextMenu()
+          closeContextMenu();
         }
       }}
       open
@@ -690,13 +785,18 @@ export function AppContextMenu() {
       <DropdownMenuTrigger asChild>
         {/* A zero-size anchor at the click point: the menu positions against
             it exactly like a real trigger. */}
-        <span aria-hidden style={{ left: open.x, position: 'fixed', top: open.y }} />
+        <span
+          aria-hidden
+          style={{ left: open.x, position: "fixed", top: open.y }}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
         className="w-56"
-        onCloseAutoFocus={event => event.preventDefault()}
-        portalContainer={open.kind === 'dom' ? open.target.dialogPortalContainer : undefined}
+        onCloseAutoFocus={(event) => event.preventDefault()}
+        portalContainer={
+          open.kind === "dom" ? open.target.dialogPortalContainer : undefined
+        }
         side="bottom"
       >
         {sections.map((section, index) => (
@@ -708,5 +808,5 @@ export function AppContextMenu() {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

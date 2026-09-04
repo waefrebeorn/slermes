@@ -16,18 +16,18 @@
  */
 
 interface ConsoleMessageDetails {
-  level: number
-  message: string
-  sourceUrl: string
-  lineNumber: number
+  level: number;
+  message: string;
+  sourceUrl: string;
+  lineNumber: number;
 }
 
 interface WebContentsLike {
-  on(event: 'console-message', listener: (...args: unknown[]) => void): unknown
+  on(event: "console-message", listener: (...args: unknown[]) => void): unknown;
 }
 
 interface WindowLike {
-  webContents: WebContentsLike
+  webContents: WebContentsLike;
 }
 
 /** Normalize Electron's two `console-message` signatures into one line, or
@@ -39,34 +39,49 @@ export function formatRendererConsoleLine(
   detailsOrLevel: unknown,
   message?: unknown,
   line?: unknown,
-  sourceId?: unknown
+  sourceId?: unknown,
 ): string | null {
   const details =
-    detailsOrLevel && typeof detailsOrLevel === 'object' ? (detailsOrLevel as ConsoleMessageDetails) : null
+    detailsOrLevel && typeof detailsOrLevel === "object"
+      ? (detailsOrLevel as ConsoleMessageDetails)
+      : null;
 
-  const level = details ? details.level : detailsOrLevel
+  const level = details ? details.level : detailsOrLevel;
 
   if (level !== 3) {
-    return null
+    return null;
   }
 
-  const text = details ? details.message : message
-  const src = details ? details.sourceUrl : sourceId
-  const lineNo = details ? details.lineNumber : line
+  const text = details ? details.message : message;
+  const src = details ? details.sourceUrl : sourceId;
+  const lineNo = details ? details.lineNumber : line;
 
-  return `[renderer console:${label}] ${String(text)} (${String(src)}:${String(lineNo)})`
+  return `[renderer console:${label}] ${String(text)} (${String(src)}:${String(lineNo)})`;
 }
 
 /** Attach the error-level console hook to a renderer window. `log` is the
  *  desktop.log sink (rememberLog in main.ts). */
-export function attachRendererConsoleCapture(win: WindowLike, label: string, log: (line: string) => void): void {
-  win.webContents.on('console-message', (_event, detailsOrLevel, message, line, sourceId) => {
-    const formatted = formatRendererConsoleLine(label, detailsOrLevel, message, line, sourceId)
+export function attachRendererConsoleCapture(
+  win: WindowLike,
+  label: string,
+  log: (line: string) => void,
+): void {
+  win.webContents.on(
+    "console-message",
+    (_event, detailsOrLevel, message, line, sourceId) => {
+      const formatted = formatRendererConsoleLine(
+        label,
+        detailsOrLevel,
+        message,
+        line,
+        sourceId,
+      );
 
-    if (formatted !== null) {
-      log(formatted)
-    }
-  })
+      if (formatted !== null) {
+        log(formatted);
+      }
+    },
+  );
 }
 
 /** Format a renderer error-boundary report (hermes:logs:renderer-error IPC)
@@ -78,15 +93,16 @@ export function formatRendererBoundaryReport(
   label: unknown,
   boundary: unknown,
   message: unknown,
-  componentStack: unknown
+  componentStack: unknown,
 ): string {
-  const clamp = (value: unknown, max: number): string => String(value ?? '').slice(0, max)
+  const clamp = (value: unknown, max: number): string =>
+    String(value ?? "").slice(0, max);
 
-  const head = `[renderer crash:${clamp(label, 64) || 'unknown'}] [error-boundary:${clamp(boundary, 64) || 'unknown'}] ${
-    clamp(message, 2000) || '(no message)'
-  }`
+  const head = `[renderer crash:${clamp(label, 64) || "unknown"}] [error-boundary:${clamp(boundary, 64) || "unknown"}] ${
+    clamp(message, 2000) || "(no message)"
+  }`;
 
-  const stack = clamp(componentStack, 4000).trim()
+  const stack = clamp(componentStack, 4000).trim();
 
-  return stack ? `${head}\n${stack}` : head
+  return stack ? `${head}\n${stack}` : head;
 }

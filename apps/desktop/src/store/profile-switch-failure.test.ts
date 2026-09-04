@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Profile-door activation failure surfacing (#81094): when a secondary's
 // socket cannot be opened, ensureGatewayForProfile must rethrow (after
@@ -8,75 +8,86 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 // anyway, silently routing messages to the primary socket.
 
 const gatewayMocks = vi.hoisted(() => {
-  const instances: { close: ReturnType<typeof vi.fn>; connectionState: string }[] = []
+  const instances: {
+    close: ReturnType<typeof vi.fn>;
+    connectionState: string;
+  }[] = [];
 
   return {
     connect: vi.fn(async (_wsUrl: string): Promise<void> => undefined),
-    instances
-  }
-})
+    instances,
+  };
+});
 
-vi.mock('@/hermes', () => ({
+vi.mock("@/hermes", () => ({
   setApiRequestProfile: vi.fn(),
   getProfiles: vi.fn(async () => ({ profiles: [] })),
   HermesGateway: class {
-    connectionState = 'closed'
+    connectionState = "closed";
     close = vi.fn(() => {
-      this.connectionState = 'closed'
-    })
+      this.connectionState = "closed";
+    });
     connect = async (wsUrl: string): Promise<void> => {
-      await gatewayMocks.connect(wsUrl)
-      this.connectionState = 'open'
-    }
-    onEvent = vi.fn(() => () => {})
-    onState = vi.fn(() => () => {})
+      await gatewayMocks.connect(wsUrl);
+      this.connectionState = "open";
+    };
+    onEvent = vi.fn(() => () => {});
+    onState = vi.fn(() => () => {});
     constructor() {
-      gatewayMocks.instances.push(this as never)
+      gatewayMocks.instances.push(this as never);
     }
-  }
-}))
-vi.mock('@/store/session', () => ({
+  },
+}));
+vi.mock("@/store/session", () => ({
   setConnection: vi.fn(),
-  setGatewayState: vi.fn()
-}))
-vi.mock('@/store/notify-baseline', () => ({ markNativeNotifyBaseline: vi.fn() }))
-vi.mock('@/lib/query-client', () => ({ invalidateProfileScopedQueries: vi.fn() }))
+  setGatewayState: vi.fn(),
+}));
+vi.mock("@/store/notify-baseline", () => ({
+  markNativeNotifyBaseline: vi.fn(),
+}));
+vi.mock("@/lib/query-client", () => ({
+  invalidateProfileScopedQueries: vi.fn(),
+}));
 
-const { ensureGatewayProfile } = await import('./profile')
+const { ensureGatewayProfile } = await import("./profile");
 
 function installDesktop(stub: Record<string, unknown>): void {
-  ;(window as unknown as { hermesDesktop: unknown }).hermesDesktop = stub
+  (window as unknown as { hermesDesktop: unknown }).hermesDesktop = stub;
 }
 
 function descriptorFor(profile: string) {
   return {
-    authMode: 'token',
+    authMode: "token",
     baseUrl: `https://${profile}.invalid`,
-    mode: 'local',
+    mode: "local",
     profile,
-    token: 'fake-test-token',
-    wsUrl: `wss://${profile}.invalid/ws`
-  }
+    token: "fake-test-token",
+    wsUrl: `wss://${profile}.invalid/ws`,
+  };
 }
 
 beforeEach(() => {
-  gatewayMocks.instances.length = 0
-})
+  gatewayMocks.instances.length = 0;
+});
 
 afterEach(() => {
-  vi.clearAllMocks()
-  vi.useRealTimers()
-  delete (window as unknown as { hermesDesktop?: unknown }).hermesDesktop
-})
+  vi.clearAllMocks();
+  vi.useRealTimers();
+  delete (window as unknown as { hermesDesktop?: unknown }).hermesDesktop;
+});
 
-describe('ensureGatewayProfile — switch failure surfaces instead of silent fallback (#81094)', () => {
-  it('rejects when the target backend cannot be dialed, instead of resolving silently', async () => {
-    const getConnection = vi.fn(async ({ profile }: { profile: string }) => descriptorFor(profile))
-    installDesktop({ getConnection })
+describe("ensureGatewayProfile — switch failure surfaces instead of silent fallback (#81094)", () => {
+  it("rejects when the target backend cannot be dialed, instead of resolving silently", async () => {
+    const getConnection = vi.fn(async ({ profile }: { profile: string }) =>
+      descriptorFor(profile),
+    );
+    installDesktop({ getConnection });
 
     // The secondary dial fails at connect(): the whole switch must reject.
-    gatewayMocks.connect.mockRejectedValue(new Error('backend unreachable'))
+    gatewayMocks.connect.mockRejectedValue(new Error("backend unreachable"));
 
-    await expect(ensureGatewayProfile('work')).rejects.toThrow('backend unreachable')
-  })
-})
+    await expect(ensureGatewayProfile("work")).rejects.toThrow(
+      "backend unreachable",
+    );
+  });
+});

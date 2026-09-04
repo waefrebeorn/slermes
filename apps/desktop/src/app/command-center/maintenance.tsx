@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from "react";
 
-import { PageLoader } from '@/components/page-loader'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { PageLoader } from "@/components/page-loader";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   type ActionResponse,
   type CuratorStatusResponse,
@@ -17,33 +17,33 @@ import {
   runDebugShare,
   runDoctor,
   runSecurityAudit,
-  setCuratorPaused
-} from '@/hermes'
-import { useI18n } from '@/i18n'
-import { AlertCircle } from '@/lib/icons'
-import { cn } from '@/lib/utils'
-import { upsertDesktopActionTask } from '@/store/activity'
-import { confirm } from '@/store/confirm'
-import { notify, notifyError } from '@/store/notifications'
-import type { ActionStatusResponse } from '@/types/hermes'
+  setCuratorPaused,
+} from "@/hermes";
+import { useI18n } from "@/i18n";
+import { AlertCircle } from "@/lib/icons";
+import { cn } from "@/lib/utils";
+import { upsertDesktopActionTask } from "@/store/activity";
+import { confirm } from "@/store/confirm";
+import { notify, notifyError } from "@/store/notifications";
+import type { ActionStatusResponse } from "@/types/hermes";
 
-const ACTION_POLL_MS = 1200
-const ACTION_POLL_LIMIT = 240 // ~5 minutes of polling before giving up.
+const ACTION_POLL_MS = 1200;
+const ACTION_POLL_LIMIT = 240; // ~5 minutes of polling before giving up.
 
 function formatBytes(size: number): string {
   if (size <= 0) {
-    return ''
+    return "";
   }
 
   if (size >= 1024 * 1024) {
-    return `${(size / (1024 * 1024)).toFixed(1)} MB`
+    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
   }
 
   if (size >= 1024) {
-    return `${(size / 1024).toFixed(1)} KB`
+    return `${(size / 1024).toFixed(1)} KB`;
   }
 
-  return `${size} B`
+  return `${size} B`;
 }
 
 /** Maintenance panel — desktop parity for `hermes doctor` / `security audit` /
@@ -51,143 +51,155 @@ function formatBytes(size: number): string {
  *  ops section). Spawn-based actions tail their logs inline via the shared
  *  /api/actions status endpoint. */
 export function MaintenancePanel() {
-  const { t } = useI18n()
-  const mm = t.commandCenter.maintenance
+  const { t } = useI18n();
+  const mm = t.commandCenter.maintenance;
 
-  const [actionName, setActionName] = useState<null | string>(null)
-  const [actionStatus, setActionStatus] = useState<ActionStatusResponse | null>(null)
-  const [curator, setCurator] = useState<CuratorStatusResponse | null>(null)
-  const [curatorBusy, setCuratorBusy] = useState(false)
-  const [memory, setMemory] = useState<MemoryStatusResponse | null>(null)
-  const [memoryBusy, setMemoryBusy] = useState(false)
-  const [share, setShare] = useState<DebugShareResponse | null>(null)
-  const [sharing, setSharing] = useState(false)
-  const [error, setError] = useState('')
+  const [actionName, setActionName] = useState<null | string>(null);
+  const [actionStatus, setActionStatus] = useState<ActionStatusResponse | null>(
+    null,
+  );
+  const [curator, setCurator] = useState<CuratorStatusResponse | null>(null);
+  const [curatorBusy, setCuratorBusy] = useState(false);
+  const [memory, setMemory] = useState<MemoryStatusResponse | null>(null);
+  const [memoryBusy, setMemoryBusy] = useState(false);
+  const [share, setShare] = useState<DebugShareResponse | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     getCuratorStatus()
-      .then(next => !cancelled && setCurator(next))
-      .catch(() => {})
+      .then((next) => !cancelled && setCurator(next))
+      .catch(() => {});
     getMemoryStatus()
-      .then(next => !cancelled && setMemory(next))
-      .catch(() => {})
+      .then((next) => !cancelled && setMemory(next))
+      .catch(() => {});
 
-    return () => void (cancelled = true)
-  }, [])
+    return () => void (cancelled = true);
+  }, []);
 
   // Tail the most recently launched spawn action.
   useEffect(() => {
     if (!actionName) {
-      return
+      return;
     }
 
-    let cancelled = false
-    let polls = 0
-    let timer: null | number = null
+    let cancelled = false;
+    let polls = 0;
+    let timer: null | number = null;
 
     const poll = async () => {
       try {
-        const status = await getActionStatus(actionName, 200)
+        const status = await getActionStatus(actionName, 200);
 
         if (cancelled) {
-          return
+          return;
         }
 
-        setActionStatus(status)
-        upsertDesktopActionTask(status)
-        polls += 1
+        setActionStatus(status);
+        upsertDesktopActionTask(status);
+        polls += 1;
 
         if (status.running && polls < ACTION_POLL_LIMIT) {
-          timer = window.setTimeout(() => void poll(), ACTION_POLL_MS)
+          timer = window.setTimeout(() => void poll(), ACTION_POLL_MS);
         }
       } catch {
         // Status endpoint hiccup — stop tailing; the activity rail still has the task.
       }
-    }
+    };
 
-    void poll()
+    void poll();
 
     return () => {
-      cancelled = true
+      cancelled = true;
 
       if (timer !== null) {
-        window.clearTimeout(timer)
+        window.clearTimeout(timer);
       }
-    }
-  }, [actionName])
+    };
+  }, [actionName]);
 
   const launch = useCallback(
     async (label: string, start: () => Promise<ActionResponse>) => {
-      setError('')
+      setError("");
 
       try {
-        const started = await start()
-        setActionStatus(null)
-        setActionName(started.name)
-        notify({ kind: 'success', title: mm.actionStarted(label), message: '' })
+        const started = await start();
+        setActionStatus(null);
+        setActionName(started.name);
+        notify({
+          kind: "success",
+          title: mm.actionStarted(label),
+          message: "",
+        });
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err))
-        notifyError(err, mm.actionFailed(label))
+        setError(err instanceof Error ? err.message : String(err));
+        notifyError(err, mm.actionFailed(label));
       }
     },
-    [mm]
-  )
+    [mm],
+  );
 
   const shareDebug = useCallback(async () => {
-    setSharing(true)
-    setShare(null)
-    setError('')
+    setSharing(true);
+    setShare(null);
+    setError("");
 
     try {
-      setShare(await runDebugShare())
+      setShare(await runDebugShare());
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
-      notifyError(err, mm.debugShareFailed)
+      setError(err instanceof Error ? err.message : String(err));
+      notifyError(err, mm.debugShareFailed);
     } finally {
-      setSharing(false)
+      setSharing(false);
     }
-  }, [mm])
+  }, [mm]);
 
   const toggleCurator = useCallback(async () => {
     if (!curator) {
-      return
+      return;
     }
 
-    setCuratorBusy(true)
+    setCuratorBusy(true);
 
     try {
-      const next = !curator.paused
-      await setCuratorPaused(next)
-      setCurator({ ...curator, paused: next })
+      const next = !curator.paused;
+      await setCuratorPaused(next);
+      setCurator({ ...curator, paused: next });
     } catch (err) {
-      notifyError(err, mm.actionFailed(mm.curator))
+      notifyError(err, mm.actionFailed(mm.curator));
     } finally {
-      setCuratorBusy(false)
+      setCuratorBusy(false);
     }
-  }, [curator, mm])
+  }, [curator, mm]);
 
   const doResetMemory = useCallback(
-    async (target: 'all' | 'memory' | 'user', label: string) => {
-      if (!(await confirm({ destructive: true, title: mm.resetConfirm(label) }))) {
-        return
+    async (target: "all" | "memory" | "user", label: string) => {
+      if (
+        !(await confirm({ destructive: true, title: mm.resetConfirm(label) }))
+      ) {
+        return;
       }
 
-      setMemoryBusy(true)
+      setMemoryBusy(true);
 
       try {
-        const result = await resetMemory(target)
-        notify({ kind: 'success', title: mm.resetDone(result.deleted.join(', ') || label), message: '' })
-        setMemory(await getMemoryStatus())
+        const result = await resetMemory(target);
+        notify({
+          kind: "success",
+          title: mm.resetDone(result.deleted.join(", ") || label),
+          message: "",
+        });
+        setMemory(await getMemoryStatus());
       } catch (err) {
-        notifyError(err, mm.resetFailed)
+        notifyError(err, mm.resetFailed);
       } finally {
-        setMemoryBusy(false)
+        setMemoryBusy(false);
       }
     },
-    [mm]
-  )
+    [mm],
+  );
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto pb-2">
@@ -231,14 +243,21 @@ export function MaintenancePanel() {
               {mm.debugShareLinks}
             </div>
             {Object.entries(share.urls).map(([key, url]) => (
-              <div className="flex items-center justify-between gap-2 py-1" key={key}>
+              <div
+                className="flex items-center justify-between gap-2 py-1"
+                key={key}
+              >
                 <span className="min-w-0 truncate font-mono text-[0.7rem]">
                   {key}: {url}
                 </span>
                 <Button
                   onClick={() => {
-                    void window.hermesDesktop.writeClipboard(url)
-                    notify({ durationMs: 1500, kind: 'success', message: mm.linkCopied })
+                    void window.hermesDesktop.writeClipboard(url);
+                    notify({
+                      durationMs: 1500,
+                      kind: "success",
+                      message: mm.linkCopied,
+                    });
                   }}
                   size="xs"
                   variant="text"
@@ -254,13 +273,17 @@ export function MaintenancePanel() {
           <div className="mt-2">
             <div className="mb-1.5 flex items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               {mm.viewLog}
-              {actionStatus.running && <span className="normal-case tracking-normal">{mm.running}</span>}
+              {actionStatus.running && (
+                <span className="normal-case tracking-normal">
+                  {mm.running}
+                </span>
+              )}
             </div>
             <pre
               className="max-h-48 overflow-auto whitespace-pre-wrap wrap-break-word rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) p-3 font-mono text-[0.65rem] leading-relaxed text-(--ui-text-tertiary)"
               data-selectable-text="true"
             >
-              {actionStatus.lines.join('\n')}
+              {actionStatus.lines.join("\n")}
             </pre>
           </div>
         )}
@@ -274,28 +297,41 @@ export function MaintenancePanel() {
           <div className="flex items-center justify-between gap-3 py-2">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[length:var(--conversation-text-font-size)] font-medium">{mm.curator}</span>
+                <span className="text-[length:var(--conversation-text-font-size)] font-medium">
+                  {mm.curator}
+                </span>
                 <Badge
                   className={cn(
                     !curator.enabled
-                      ? 'bg-(--ui-bg-quinary) text-(--ui-text-tertiary)'
+                      ? "bg-(--ui-bg-quinary) text-(--ui-text-tertiary)"
                       : curator.paused
-                        ? 'bg-amber-500/15 text-amber-400'
-                        : 'bg-emerald-500/15 text-emerald-400'
+                        ? "bg-amber-500/15 text-amber-400"
+                        : "bg-emerald-500/15 text-emerald-400",
                   )}
                 >
-                  {!curator.enabled ? mm.curatorDisabled : curator.paused ? mm.curatorPaused : mm.curatorActive}
+                  {!curator.enabled
+                    ? mm.curatorDisabled
+                    : curator.paused
+                      ? mm.curatorPaused
+                      : mm.curatorActive}
                 </Badge>
               </div>
               <div className="mt-0.5 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)">
                 {mm.curatorDesc}
-                {' · '}
-                {curator.last_run_at ? mm.curatorLastRun(curator.last_run_at) : mm.curatorNeverRan}
+                {" · "}
+                {curator.last_run_at
+                  ? mm.curatorLastRun(curator.last_run_at)
+                  : mm.curatorNeverRan}
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
               {curator.enabled && (
-                <Button disabled={curatorBusy} onClick={() => void toggleCurator()} size="xs" variant="text">
+                <Button
+                  disabled={curatorBusy}
+                  onClick={() => void toggleCurator()}
+                  size="xs"
+                  variant="text"
+                >
                   {curator.paused ? mm.resume : mm.pause}
                 </Button>
               )}
@@ -320,30 +356,38 @@ export function MaintenancePanel() {
           <div>
             <div className="py-1 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)">
               {mm.memoryDataDesc}
-              {' · '}
+              {" · "}
               {mm.memoryProvider(memory.active || mm.builtinMemory)}
             </div>
             <MemoryFileRow
               busy={memoryBusy}
               label={mm.memoryFile}
-              onReset={() => void doResetMemory('memory', mm.memoryFile)}
+              onReset={() => void doResetMemory("memory", mm.memoryFile)}
               resetLabel={mm.resetMemory}
               size={memory.builtin_files.memory}
-              sizeLabel={memory.builtin_files.memory > 0 ? formatBytes(memory.builtin_files.memory) : mm.empty}
+              sizeLabel={
+                memory.builtin_files.memory > 0
+                  ? formatBytes(memory.builtin_files.memory)
+                  : mm.empty
+              }
             />
             <MemoryFileRow
               busy={memoryBusy}
               label={mm.userFile}
-              onReset={() => void doResetMemory('user', mm.userFile)}
+              onReset={() => void doResetMemory("user", mm.userFile)}
               resetLabel={mm.resetUser}
               size={memory.builtin_files.user}
-              sizeLabel={memory.builtin_files.user > 0 ? formatBytes(memory.builtin_files.user) : mm.empty}
+              sizeLabel={
+                memory.builtin_files.user > 0
+                  ? formatBytes(memory.builtin_files.user)
+                  : mm.empty
+              }
             />
           </div>
         )}
       </section>
     </div>
-  )
+  );
 }
 
 function SectionLabel({ children }: { children: string }) {
@@ -351,33 +395,40 @@ function SectionLabel({ children }: { children: string }) {
     <div className="mb-1.5 text-[0.625rem] font-medium uppercase tracking-[0.08em] text-(--ui-text-tertiary)">
       {children}
     </div>
-  )
+  );
 }
 
 function OpRow({
   description,
   disabled,
   label,
-  onRun
+  onRun,
 }: {
-  description: string
-  disabled?: boolean
-  label: string
-  onRun: () => void
+  description: string;
+  disabled?: boolean;
+  label: string;
+  onRun: () => void;
 }) {
   return (
     <div className="flex items-center justify-between gap-3 py-2">
       <div className="min-w-0">
-        <div className="text-[length:var(--conversation-text-font-size)] font-medium">{label}</div>
+        <div className="text-[length:var(--conversation-text-font-size)] font-medium">
+          {label}
+        </div>
         <div className="mt-0.5 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)">
           {description}
         </div>
       </div>
-      <Button disabled={disabled} onClick={onRun} size="xs" variant="textStrong">
+      <Button
+        disabled={disabled}
+        onClick={onRun}
+        size="xs"
+        variant="textStrong"
+      >
         {label}
       </Button>
     </div>
-  )
+  );
 }
 
 function MemoryFileRow({
@@ -386,19 +437,21 @@ function MemoryFileRow({
   onReset,
   resetLabel,
   size,
-  sizeLabel
+  sizeLabel,
 }: {
-  busy: boolean
-  label: string
-  onReset: () => void
-  resetLabel: string
-  size: number
-  sizeLabel: string
+  busy: boolean;
+  label: string;
+  onReset: () => void;
+  resetLabel: string;
+  size: number;
+  sizeLabel: string;
 }) {
   return (
     <div className="flex items-center justify-between gap-3 py-2">
       <div className="min-w-0">
-        <span className="text-[length:var(--conversation-text-font-size)] font-medium">{label}</span>
+        <span className="text-[length:var(--conversation-text-font-size)] font-medium">
+          {label}
+        </span>
         <span className="ml-2 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)">
           {sizeLabel}
         </span>
@@ -413,5 +466,5 @@ function MemoryFileRow({
         {resetLabel}
       </Button>
     </div>
-  )
+  );
 }

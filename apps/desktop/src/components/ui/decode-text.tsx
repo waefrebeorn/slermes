@@ -1,7 +1,7 @@
-import { type ComponentProps, useEffect, useState } from 'react'
+import { type ComponentProps, useEffect, useState } from "react";
 
-import { prefersReducedMotion } from '@/hooks/use-media-query'
-import { cn } from '@/lib/utils'
+import { prefersReducedMotion } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 
 /**
  * DecodeText — the "CONNECTING" scramble-decode effect as a reusable
@@ -20,27 +20,34 @@ import { cn } from '@/lib/utils'
  * boot overlay (--theme-primary) and quiet surfaces (--ui-text-quaternary).
  */
 
-export const DECODE_SCRAMBLE_CHARS = '/\\|-_=+<>~:*'
-const TICK_MS = 45
-const HOLD_TICKS = 16
+export const DECODE_SCRAMBLE_CHARS = "/\\|-_=+<>~:*";
+const TICK_MS = 45;
+const HOLD_TICKS = 16;
 
 function scrambled(tail: string, resolvedCount: number): string {
   return Array.from(tail, (ch, i) =>
-    ch === ' ' || i < resolvedCount ? ch : DECODE_SCRAMBLE_CHARS[(Math.random() * DECODE_SCRAMBLE_CHARS.length) | 0]
-  ).join('')
+    ch === " " || i < resolvedCount
+      ? ch
+      : DECODE_SCRAMBLE_CHARS[
+          (Math.random() * DECODE_SCRAMBLE_CHARS.length) | 0
+        ],
+  ).join("");
 }
 
-export interface DecodeTextProps extends Omit<ComponentProps<'span'>, 'prefix'> {
-  text: string
+export interface DecodeTextProps extends Omit<
+  ComponentProps<"span">,
+  "prefix"
+> {
+  text: string;
   /** Leading character count that stays legible at all times. */
-  prefix?: number
+  prefix?: number;
   /** Run the decode. When false, renders the plain resolved text (used to
    *  freeze the word during exit choreography). */
-  active?: boolean
+  active?: boolean;
   /** Replay after the hold, or resolve once and stop. */
-  loop?: boolean
+  loop?: boolean;
   /** Blinking dither-cursor square after the text. */
-  cursor?: boolean
+  cursor?: boolean;
 }
 
 export function DecodeText({
@@ -52,72 +59,78 @@ export function DecodeText({
   text,
   ...props
 }: DecodeTextProps) {
-  const staticPrefix = text.slice(0, prefix)
-  const tailText = text.slice(prefix)
-  const [tail, setTail] = useState(tailText)
+  const staticPrefix = text.slice(0, prefix);
+  const tailText = text.slice(prefix);
+  const [tail, setTail] = useState(tailText);
 
   useEffect(() => {
     if (!active) {
-      setTail(tailText)
+      setTail(tailText);
 
-      return
+      return;
     }
 
     // Under reduced motion, skip the scramble interval and render the fully
     // resolved text immediately. The cursor blink (CSS animation) is also
     // killed by the blanket reduced-motion CSS rule.
     if (prefersReducedMotion()) {
-      setTail(tailText)
+      setTail(tailText);
 
-      return
+      return;
     }
 
-    let resolved = 0
-    let hold = 0
+    let resolved = 0;
+    let hold = 0;
 
     const id = window.setInterval(() => {
       if (resolved >= tailText.length) {
-        hold += 1
+        hold += 1;
 
         if (hold > HOLD_TICKS) {
           if (loop) {
-            resolved = 0
-            hold = 0
+            resolved = 0;
+            hold = 0;
           } else {
-            window.clearInterval(id)
+            window.clearInterval(id);
           }
         }
 
-        setTail(tailText)
+        setTail(tailText);
 
-        return
+        return;
       }
 
-      resolved += 0.5
-      setTail(scrambled(tailText, Math.floor(resolved)))
-    }, TICK_MS)
+      resolved += 0.5;
+      setTail(scrambled(tailText, Math.floor(resolved)));
+    }, TICK_MS);
 
-    return () => window.clearInterval(id)
-  }, [active, loop, tailText])
+    return () => window.clearInterval(id);
+  }, [active, loop, tailText]);
 
   return (
     <span
       className={cn(
-        'inline-flex items-center font-mono text-[0.64rem] font-semibold uppercase tracking-[0.4em] tabular-nums',
-        className
+        "inline-flex items-center font-mono text-[0.64rem] font-semibold uppercase tracking-[0.4em] tabular-nums",
+        className,
       )}
       {...props}
     >
-      {cursor && <style>{'@keyframes decode-cursor { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }'}</style>}
+      {cursor && (
+        <style>
+          {
+            "@keyframes decode-cursor { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }"
+          }
+        </style>
+      )}
       {staticPrefix}
       {tail}
       {cursor && (
         <span
           aria-hidden="true"
           className="dither ml-0.5 inline-block size-2 shrink-0 -translate-y-px rounded-[1px]"
-          style={{ animation: 'decode-cursor 1s step-end infinite' }}
+          style={{ animation: "decode-cursor 1s step-end infinite" }}
         />
       )}
     </span>
-  )
+  );
 }

@@ -26,16 +26,27 @@
  * for observable state changes, not for object-identity churn of the adapter
  * literal — the render loop is impossible once no-op swaps are silent.
  */
-import { fromThreadMessageLike, getAutoStatus } from '@assistant-ui/core/internal'
-import type { ExportedMessageRepository, ExternalStoreAdapter, ThreadMessage } from '@assistant-ui/react'
-import { describe, expect, it } from 'vitest'
+import {
+  fromThreadMessageLike,
+  getAutoStatus,
+} from "@assistant-ui/core/internal";
+import type {
+  ExportedMessageRepository,
+  ExternalStoreAdapter,
+  ThreadMessage,
+} from "@assistant-ui/react";
+import { describe, expect, it } from "vitest";
 
-import { IncrementalExternalStoreRuntimeCore } from './incremental-external-store-runtime'
+import { IncrementalExternalStoreRuntimeCore } from "./incremental-external-store-runtime";
 
-const STATUS = getAutoStatus(false, false, false, false, undefined)
+const STATUS = getAutoStatus(false, false, false, false, undefined);
 
 function message(id: string, text: string): ThreadMessage {
-  return fromThreadMessageLike({ role: 'assistant', content: [{ type: 'text', text }] }, id, STATUS)
+  return fromThreadMessageLike(
+    { role: "assistant", content: [{ type: "text", text }] },
+    id,
+    STATUS,
+  );
 }
 
 function repositoryOf(messages: ThreadMessage[]): ExportedMessageRepository {
@@ -43,12 +54,15 @@ function repositoryOf(messages: ThreadMessage[]): ExportedMessageRepository {
     headId: messages.at(-1)?.id ?? null,
     messages: messages.map((item, index) => ({
       message: item,
-      parentId: index === 0 ? null : messages[index - 1].id
-    }))
-  }
+      parentId: index === 0 ? null : messages[index - 1].id,
+    })),
+  };
 }
 
-function adapterWith(messageRepository: ExportedMessageRepository, extra: Partial<ExternalStoreAdapter> = {}) {
+function adapterWith(
+  messageRepository: ExportedMessageRepository,
+  extra: Partial<ExternalStoreAdapter> = {},
+) {
   // Deliberately a fresh object each call — mirrors the inline literal in
   // ChatRuntimeBoundary (src/app/chat/index.tsx) whose closures (onNew,
   // onCancel, ...) are re-created per render.
@@ -58,113 +72,115 @@ function adapterWith(messageRepository: ExportedMessageRepository, extra: Partia
     setMessages: () => {},
     onNew: async () => {},
     onCancel: async () => {},
-    ...extra
-  } as ExternalStoreAdapter
+    ...extra,
+  } as ExternalStoreAdapter;
 }
 
-describe('IncrementalExternalStoreThreadRuntimeCore adapter swap notifications', () => {
-  it('does NOT notify subscribers when a new adapter object carries identical state (render-loop guard)', () => {
-    const repo = repositoryOf([message('a', 'one'), message('b', 'two')])
-    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo))
-    const thread = core.threads.getMainThreadRuntimeCore()
+describe("IncrementalExternalStoreThreadRuntimeCore adapter swap notifications", () => {
+  it("does NOT notify subscribers when a new adapter object carries identical state (render-loop guard)", () => {
+    const repo = repositoryOf([message("a", "one"), message("b", "two")]);
+    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo));
+    const thread = core.threads.getMainThreadRuntimeCore();
 
-    let notifications = 0
+    let notifications = 0;
     thread.subscribe(() => {
-      notifications += 1
-    })
+      notifications += 1;
+    });
 
     // Simulate 5 renders of ChatRuntimeBoundary: each passes a NEW adapter
     // literal with the SAME messageRepository identity and same isRunning.
     for (let render = 0; render < 5; render += 1) {
-      core.setAdapter(adapterWith(repo))
+      core.setAdapter(adapterWith(repo));
     }
 
     // The live bug: this was 5 — one notify per render, each notify able to
     // schedule the next render. Silent no-op swaps break the feedback loop.
-    expect(notifications).toBe(0)
-  })
+    expect(notifications).toBe(0);
+  });
 
-  it('still notifies when the message repository actually changes', () => {
-    const repo = repositoryOf([message('a', 'one')])
-    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo))
-    const thread = core.threads.getMainThreadRuntimeCore()
+  it("still notifies when the message repository actually changes", () => {
+    const repo = repositoryOf([message("a", "one")]);
+    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo));
+    const thread = core.threads.getMainThreadRuntimeCore();
 
-    let notifications = 0
+    let notifications = 0;
     thread.subscribe(() => {
-      notifications += 1
-    })
+      notifications += 1;
+    });
 
-    const grown = repositoryOf([message('a', 'one'), message('b', 'two')])
-    core.setAdapter(adapterWith(grown))
+    const grown = repositoryOf([message("a", "one"), message("b", "two")]);
+    core.setAdapter(adapterWith(grown));
 
-    expect(notifications).toBeGreaterThan(0)
-  })
+    expect(notifications).toBeGreaterThan(0);
+  });
 
-  it('still notifies on an isRunning flip (turn start/stop must reach the thread UI)', () => {
-    const repo = repositoryOf([message('a', 'one')])
-    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo))
-    const thread = core.threads.getMainThreadRuntimeCore()
+  it("still notifies on an isRunning flip (turn start/stop must reach the thread UI)", () => {
+    const repo = repositoryOf([message("a", "one")]);
+    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo));
+    const thread = core.threads.getMainThreadRuntimeCore();
 
-    let notifications = 0
+    let notifications = 0;
     thread.subscribe(() => {
-      notifications += 1
-    })
+      notifications += 1;
+    });
 
-    core.setAdapter(adapterWith(repo, { isRunning: true }))
+    core.setAdapter(adapterWith(repo, { isRunning: true }));
 
-    expect(notifications).toBeGreaterThan(0)
-  })
+    expect(notifications).toBeGreaterThan(0);
+  });
 
-  it('still notifies on an isDisabled flip even when transcript and run state are unchanged', () => {
-    const repo = repositoryOf([message('a', 'one')])
-    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo))
-    const thread = core.threads.getMainThreadRuntimeCore()
+  it("still notifies on an isDisabled flip even when transcript and run state are unchanged", () => {
+    const repo = repositoryOf([message("a", "one")]);
+    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo));
+    const thread = core.threads.getMainThreadRuntimeCore();
 
-    let notifications = 0
+    let notifications = 0;
     thread.subscribe(() => {
-      notifications += 1
-    })
+      notifications += 1;
+    });
 
-    core.setAdapter(adapterWith(repo, { isDisabled: true }))
+    core.setAdapter(adapterWith(repo, { isDisabled: true }));
 
-    expect(notifications).toBeGreaterThan(0)
+    expect(notifications).toBeGreaterThan(0);
 
     // And flipping back also notifies — but an unchanged repeat stays silent.
-    const beforeFlipBack = notifications
-    core.setAdapter(adapterWith(repo, { isDisabled: false }))
+    const beforeFlipBack = notifications;
+    core.setAdapter(adapterWith(repo, { isDisabled: false }));
 
-    expect(notifications).toBeGreaterThan(beforeFlipBack)
+    expect(notifications).toBeGreaterThan(beforeFlipBack);
 
-    const afterFlipBack = notifications
+    const afterFlipBack = notifications;
 
-    core.setAdapter(adapterWith(repo, { isDisabled: false }))
+    core.setAdapter(adapterWith(repo, { isDisabled: false }));
 
-    expect(notifications).toBe(afterFlipBack)
-  })
+    expect(notifications).toBe(afterFlipBack);
+  });
 
-  it('a subscriber that swaps a fresh-but-identical adapter on every notify must not recurse unboundedly', () => {
+  it("a subscriber that swaps a fresh-but-identical adapter on every notify must not recurse unboundedly", () => {
     // Direct simulation of the feedback loop: the subscriber plays the role of
     // React re-rendering ChatRuntimeBoundary (new literal -> setAdapter). With
     // the bug, every setAdapter notifies, the subscriber re-enters setAdapter,
     // and only the depth guard stops it. Fixed behavior: the first no-op swap
     // is silent, so the subscriber never fires and depth stays 0.
-    const repo = repositoryOf([message('a', 'one')])
-    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo))
-    const thread = core.threads.getMainThreadRuntimeCore()
+    const repo = repositoryOf([message("a", "one")]);
+    const core = new IncrementalExternalStoreRuntimeCore(adapterWith(repo));
+    const thread = core.threads.getMainThreadRuntimeCore();
 
-    let depth = 0
+    let depth = 0;
     thread.subscribe(() => {
-      depth += 1
+      depth += 1;
 
       if (depth > 25) {
-        throw new Error('Maximum update depth exceeded (simulated): adapter no-op swaps are notifying subscribers')
+        throw new Error(
+          "Maximum update depth exceeded (simulated): adapter no-op swaps are notifying subscribers",
+        );
       }
 
-      core.setAdapter(adapterWith(repo))
-    })
+      core.setAdapter(adapterWith(repo));
+    });
 
-    core.setAdapter(adapterWith(repo))
+    core.setAdapter(adapterWith(repo));
 
-    expect(depth).toBe(0)
-  })
-})
+    expect(depth).toBe(0);
+  });
+});

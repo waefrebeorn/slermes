@@ -13,13 +13,16 @@
  * `session_id`); joiners receive whatever the winning call returns.
  */
 
-const _inFlightResumeByStoredSessionId = new Map<string, Promise<unknown>>()
+const _inFlightResumeByStoredSessionId = new Map<string, Promise<unknown>>();
 
-export function singleFlightSessionResume<T>(storedSessionId: string, run: () => Promise<T>): Promise<T> {
-  const existing = _inFlightResumeByStoredSessionId.get(storedSessionId)
+export function singleFlightSessionResume<T>(
+  storedSessionId: string,
+  run: () => Promise<T>,
+): Promise<T> {
+  const existing = _inFlightResumeByStoredSessionId.get(storedSessionId);
 
   if (existing) {
-    return existing as Promise<T>
+    return existing as Promise<T>;
   }
 
   // Promise.resolve().then(run) tolerates run() being synchronous, returning a
@@ -29,13 +32,13 @@ export function singleFlightSessionResume<T>(storedSessionId: string, run: () =>
     .then(run)
     .finally(() => {
       if (_inFlightResumeByStoredSessionId.get(storedSessionId) === flight) {
-        _inFlightResumeByStoredSessionId.delete(storedSessionId)
+        _inFlightResumeByStoredSessionId.delete(storedSessionId);
       }
-    })
+    });
 
-  _inFlightResumeByStoredSessionId.set(storedSessionId, flight)
+  _inFlightResumeByStoredSessionId.set(storedSessionId, flight);
 
-  return flight
+  return flight;
 }
 
 /**
@@ -49,11 +52,14 @@ export function singleFlightSessionResume<T>(storedSessionId: string, run: () =>
  * onRecovered/onRuntimeRecovered) is wrong — the user is elsewhere — record it
  * here so the next resume-shaped action reuses it instead of re-minting.
  */
-const _recoveredRuntimeByStoredSessionId = new Map<string, string>()
+const _recoveredRuntimeByStoredSessionId = new Map<string, string>();
 
-export function registerRecoveredRuntime(storedSessionId: string, runtimeId: string): void {
+export function registerRecoveredRuntime(
+  storedSessionId: string,
+  runtimeId: string,
+): void {
   if (storedSessionId && runtimeId) {
-    _recoveredRuntimeByStoredSessionId.set(storedSessionId, runtimeId)
+    _recoveredRuntimeByStoredSessionId.set(storedSessionId, runtimeId);
   }
 }
 
@@ -63,20 +69,23 @@ export function registerRecoveredRuntime(storedSessionId: string, runtimeId: str
  * bounded retry, never a loop. `deadRuntimeId` skips (and drops) the entry
  * when the caller already knows that exact runtime is dead.
  */
-export function takeRecoveredRuntime(storedSessionId: string, deadRuntimeId?: null | string): string | undefined {
-  const cached = _recoveredRuntimeByStoredSessionId.get(storedSessionId)
+export function takeRecoveredRuntime(
+  storedSessionId: string,
+  deadRuntimeId?: null | string,
+): string | undefined {
+  const cached = _recoveredRuntimeByStoredSessionId.get(storedSessionId);
 
   if (cached === undefined) {
-    return undefined
+    return undefined;
   }
 
-  _recoveredRuntimeByStoredSessionId.delete(storedSessionId)
+  _recoveredRuntimeByStoredSessionId.delete(storedSessionId);
 
-  return deadRuntimeId && cached === deadRuntimeId ? undefined : cached
+  return deadRuntimeId && cached === deadRuntimeId ? undefined : cached;
 }
 
 /** Test seam: reset all module-level single-flight/recovery state. */
 export function clearSingleFlightSessionResumeState(): void {
-  _inFlightResumeByStoredSessionId.clear()
-  _recoveredRuntimeByStoredSessionId.clear()
+  _inFlightResumeByStoredSessionId.clear();
+  _recoveredRuntimeByStoredSessionId.clear();
 }

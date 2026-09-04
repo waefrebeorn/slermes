@@ -1,7 +1,11 @@
-import { type ToolCallMessagePartProps } from '@assistant-ui/react'
-import { type FC, useEffect, useState } from 'react'
+import { type ToolCallMessagePartProps } from "@assistant-ui/react";
+import { type FC, useEffect, useState } from "react";
 
-import { AGENT_MESSAGE_RE, agentAvatarCache, resolveAgentAvatar } from '@/components/assistant-ui/thread/user-message'
+import {
+  AGENT_MESSAGE_RE,
+  agentAvatarCache,
+  resolveAgentAvatar,
+} from "@/components/assistant-ui/thread/user-message";
 
 // Sender-side inter-agent delivery: `hermes -p <agent> chat … -q "Message
 // from 🤖 <sender>…"` run through the terminal tool IS the messaging
@@ -11,36 +15,40 @@ import { AGENT_MESSAGE_RE, agentAvatarCache, resolveAgentAvatar } from '@/compon
 // quiet run returns the recipient's reply, "Message from X" — the same
 // compact event notices the receiving chat shows.
 const DELIVERY_COMMAND_RE =
-  /(?:^|[;&|]\s*|\bhermes\s+)-p\s+("?)([a-z0-9][a-z0-9_-]{0,63})\1\s+chat\b[\s\S]*?-q\s+["']Message from/iu
+  /(?:^|[;&|]\s*|\bhermes\s+)-p\s+("?)([a-z0-9][a-z0-9_-]{0,63})\1\s+chat\b[\s\S]*?-q\s+["']Message from/iu;
 
 export function deliveryTargetFromCommand(command: string): null | string {
-  const match = DELIVERY_COMMAND_RE.exec(command)
+  const match = DELIVERY_COMMAND_RE.exec(command);
 
-  return match ? match[2].toLowerCase() : null
+  return match ? match[2].toLowerCase() : null;
 }
 
 /** Extract the recipient's reply text from the terminal result payload. */
 export function replyTextFromResult(result: unknown): string {
-  const container = (result ?? {}) as { content?: unknown; output?: unknown }
-  let raw = ''
+  const container = (result ?? {}) as { content?: unknown; output?: unknown };
+  let raw = "";
 
-  if (typeof result === 'string') {
-    raw = result
-  } else if (typeof container.output === 'string') {
-    raw = container.output
+  if (typeof result === "string") {
+    raw = result;
+  } else if (typeof container.output === "string") {
+    raw = container.output;
   } else if (Array.isArray(container.content)) {
     raw = container.content
-      .map(entry => (typeof (entry as { text?: unknown })?.text === 'string' ? (entry as { text: string }).text : ''))
-      .join('\n')
+      .map((entry) =>
+        typeof (entry as { text?: unknown })?.text === "string"
+          ? (entry as { text: string }).text
+          : "",
+      )
+      .join("\n");
   }
 
   // Terminal results may be JSON-wrapped: {"output": "...", "exit_code": 0}
-  if (raw.trimStart().startsWith('{')) {
+  if (raw.trimStart().startsWith("{")) {
     try {
-      const parsed = JSON.parse(raw) as { output?: unknown }
+      const parsed = JSON.parse(raw) as { output?: unknown };
 
-      if (typeof parsed.output === 'string') {
-        raw = parsed.output
+      if (typeof parsed.output === "string") {
+        raw = parsed.output;
       }
     } catch {
       /* not JSON — use as-is */
@@ -49,56 +57,64 @@ export function replyTextFromResult(result: unknown): string {
 
   // Drop session_id bookkeeping lines; what remains is the reply.
   return raw
-    .split('\n')
-    .filter(line => !/^session_id:\s/.test(line.trim()))
-    .join('\n')
-    .trim()
+    .split("\n")
+    .filter((line) => !/^session_id:\s/.test(line.trim()))
+    .join("\n")
+    .trim();
 }
 
 const NOTICE_CLASS =
-  'flex max-w-[min(86%,44rem)] flex-col gap-0.5 self-center px-2 py-0.5 text-[0.6875rem] leading-5 text-muted-foreground/60'
+  "flex max-w-[min(86%,44rem)] flex-col gap-0.5 self-center px-2 py-0.5 text-[0.6875rem] leading-5 text-muted-foreground/60";
 
 const AgentGlyph: FC<{ handle: string }> = ({ handle }) => {
-  const [avatar, setAvatar] = useState<null | string>(() => agentAvatarCache.get(handle.toLowerCase()) ?? null)
+  const [avatar, setAvatar] = useState<null | string>(
+    () => agentAvatarCache.get(handle.toLowerCase()) ?? null,
+  );
 
   useEffect(() => {
-    let live = true
+    let live = true;
 
-    void resolveAgentAvatar(handle).then(url => {
+    void resolveAgentAvatar(handle).then((url) => {
       if (live && url) {
-        setAvatar(url)
+        setAvatar(url);
       }
-    })
+    });
 
     return () => {
-      live = false
-    }
-  }, [handle])
+      live = false;
+    };
+  }, [handle]);
 
   return avatar ? (
-    <img alt="" aria-hidden className="size-4 shrink-0 rounded-full object-cover" src={avatar} />
+    <img
+      alt=""
+      aria-hidden
+      className="size-4 shrink-0 rounded-full object-cover"
+      src={avatar}
+    />
   ) : (
     <span aria-hidden className="text-[0.8125rem] leading-none">
       🤖
     </span>
-  )
-}
+  );
+};
 
 /** "Messaged X" (+ "Message from X" once the reply lands) for a delivery
  *  command run via the terminal tool. Returns null when the command is not
  *  a delivery — caller falls through to the normal terminal row. */
-export const AgentDeliveryNotice: FC<ToolCallMessagePartProps> = props => {
-  const command = typeof props.args?.command === 'string' ? props.args.command : ''
-  const target = deliveryTargetFromCommand(command)
+export const AgentDeliveryNotice: FC<ToolCallMessagePartProps> = (props) => {
+  const command =
+    typeof props.args?.command === "string" ? props.args.command : "";
+  const target = deliveryTargetFromCommand(command);
 
   if (!target || props.isError) {
-    return null
+    return null;
   }
 
-  const pending = props.result === undefined
-  const reply = pending ? '' : replyTextFromResult(props.result)
+  const pending = props.result === undefined;
+  const reply = pending ? "" : replyTextFromResult(props.result);
   // Strip a leading agent-message prefix if the recipient echoed one back.
-  const replyBody = AGENT_MESSAGE_RE.exec(reply)?.[4] ?? reply
+  const replyBody = AGENT_MESSAGE_RE.exec(reply)?.[4] ?? reply;
 
   return (
     <div className="flex w-full min-w-0 flex-col items-stretch gap-0.5">
@@ -106,8 +122,8 @@ export const AgentDeliveryNotice: FC<ToolCallMessagePartProps> = props => {
         <span className="flex items-center justify-center gap-1.5">
           <AgentGlyph handle={target} />
           <span className="wrap-anywhere">
-            {pending ? 'Messaging' : 'Messaged'} {target}
-            {pending ? '…' : ''}
+            {pending ? "Messaging" : "Messaged"} {target}
+            {pending ? "…" : ""}
           </span>
         </span>
       </div>
@@ -128,5 +144,5 @@ export const AgentDeliveryNotice: FC<ToolCallMessagePartProps> = props => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};

@@ -6,26 +6,35 @@
  * that compositor's dialect; `promoteHudOverlay` is the one call site.
  */
 
-import { promoteHudOnHyprland } from './hud-hyprland'
+import { promoteHudOnHyprland } from "./hud-hyprland";
 
 export interface HudElectronOverlayWindow {
-  setAlwaysOnTop(flag: boolean, level?: string): void
+  setAlwaysOnTop(flag: boolean, level?: string): void;
   setVisibleOnAllWorkspaces?(
     visible: boolean,
-    options?: { skipTransformProcessType?: boolean; visibleOnFullScreen?: boolean }
-  ): void
+    options?: {
+      skipTransformProcessType?: boolean;
+      visibleOnFullScreen?: boolean;
+    },
+  ): void;
 }
 
 /** Chrome Electron itself can honour. Compositor IPC is `promoteHudOverlay`. */
-export function applyHudElectronOverlay(win: HudElectronOverlayWindow, platform: string): void {
-  win.setAlwaysOnTop(true, platform === 'darwin' ? 'floating' : 'screen-saver')
+export function applyHudElectronOverlay(
+  win: HudElectronOverlayWindow,
+  platform: string,
+): void {
+  win.setAlwaysOnTop(true, platform === "darwin" ? "floating" : "screen-saver");
 
-  if (platform !== 'darwin') {
-    return
+  if (platform !== "darwin") {
+    return;
   }
 
   try {
-    win.setVisibleOnAllWorkspaces?.(true, { visibleOnFullScreen: true, skipTransformProcessType: true })
+    win.setVisibleOnAllWorkspaces?.(true, {
+      visibleOnFullScreen: true,
+      skipTransformProcessType: true,
+    });
   } catch {
     // Not supported everywhere — best effort.
   }
@@ -36,6 +45,8 @@ export function applyHudElectronOverlay(win: HudElectronOverlayWindow, platform:
  * first adapter (float + pin). Sway/niri hang off this same function later.
  * Returns true when an adapter applied; false is "nothing to do / not that WM".
  */
-export async function promoteHudOverlay(options: { title: string }): Promise<boolean> {
-  return promoteHudOnHyprland(options)
+export async function promoteHudOverlay(options: {
+  title: string;
+}): Promise<boolean> {
+  return promoteHudOnHyprland(options);
 }

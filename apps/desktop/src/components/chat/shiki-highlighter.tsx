@@ -1,19 +1,22 @@
-'use client'
+"use client";
 
-import type { SyntaxHighlighterProps } from '@assistant-ui/react-streamdown'
-import { type FC, lazy, Suspense, useMemo } from 'react'
+import type { SyntaxHighlighterProps } from "@assistant-ui/react-streamdown";
+import { type FC, lazy, Suspense, useMemo } from "react";
 
-import { CodeCard, CodeCardBody } from '@/components/chat/code-card'
-import { ExpandableBlock } from '@/components/chat/expandable-block'
+import { CodeCard, CodeCardBody } from "@/components/chat/code-card";
+import { ExpandableBlock } from "@/components/chat/expandable-block";
 // Theme constants live in shiki-config (dependency-free) so the lazy shiki
 // chunk can import them without pulling this module into the shiki bundle.
-import { SHIKI_COLOR_REPLACEMENTS } from '@/components/chat/shiki-config'
-import { CopyButton } from '@/components/ui/copy-button'
-import { useI18n } from '@/i18n'
-import { isLikelyProseCodeBlock } from '@/lib/markdown-code'
+import { SHIKI_COLOR_REPLACEMENTS } from "@/components/chat/shiki-config";
+import { CopyButton } from "@/components/ui/copy-button";
+import { useI18n } from "@/i18n";
+import { isLikelyProseCodeBlock } from "@/lib/markdown-code";
 
-import type { CachedShikiBlockProps } from './shiki-block'
-export { SHIKI_COLOR_REPLACEMENTS, SHIKI_THEME } from '@/components/chat/shiki-config'
+import type { CachedShikiBlockProps } from "./shiki-block";
+export {
+  SHIKI_COLOR_REPLACEMENTS,
+  SHIKI_THEME,
+} from "@/components/chat/shiki-config";
 
 /**
  * Streamdown's code adapter renders header + body as inline siblings, so we
@@ -28,13 +31,13 @@ export { SHIKI_COLOR_REPLACEMENTS, SHIKI_THEME } from '@/components/chat/shiki-c
  * warm-session switches never re-tokenize unchanged blocks (#95595).
  */
 interface HermesSyntaxHighlighterProps extends SyntaxHighlighterProps {
-  defer?: boolean
+  defer?: boolean;
 }
 
-const MAX_HIGHLIGHT_CHARS = 150_000
-const MAX_HIGHLIGHT_LINES = 3_000
-const CHUNK_LINES = 200
-const EST_LINE_PX = 16
+const MAX_HIGHLIGHT_CHARS = 150_000;
+const MAX_HIGHLIGHT_LINES = 3_000;
+const CHUNK_LINES = 200;
+const EST_LINE_PX = 16;
 
 // shiki (and through it the multi-MB grammar/theme/wasm bundle) is the
 // heaviest dependency in the renderer. `shiki-block.tsx` is its only static
@@ -42,63 +45,73 @@ const EST_LINE_PX = 16
 // entry chunk — it loads on the first highlighted code block, not at boot.
 // The lazy module is cache-aware (#95595): unchanged blocks paint from a
 // content-keyed cache instead of re-tokenizing on every mount.
-const ShikiBlock = lazy(() => import('./shiki-block'))
+const ShikiBlock = lazy(() => import("./shiki-block"));
 
 /** Suspends on first use and renders the code as plain preformatted text
  *  until the shiki chunk arrives. Highlighted output is cached by
  *  (theme, language, code), so revisits never re-tokenize (#95595). */
-export const LazyShiki: FC<CachedShikiBlockProps> = ({ language, code, theme, colorReplacements }) => (
+export const LazyShiki: FC<CachedShikiBlockProps> = ({
+  language,
+  code,
+  theme,
+  colorReplacements,
+}) => (
   <Suspense fallback={<PlainCode code={code} />}>
-    <ShikiBlock code={code} colorReplacements={colorReplacements} language={language} theme={theme} />
+    <ShikiBlock
+      code={code}
+      colorReplacements={colorReplacements}
+      language={language}
+      theme={theme}
+    />
   </Suspense>
-)
+);
 
 export function exceedsHighlightBudget(code: string): boolean {
   if (code.length > MAX_HIGHLIGHT_CHARS) {
-    return true
+    return true;
   }
 
-  let lines = 1
-  let idx = code.indexOf('\n')
+  let lines = 1;
+  let idx = code.indexOf("\n");
 
   while (idx !== -1) {
     if ((lines += 1) > MAX_HIGHLIGHT_LINES) {
-      return true
+      return true;
     }
 
-    idx = code.indexOf('\n', idx + 1)
+    idx = code.indexOf("\n", idx + 1);
   }
 
-  return false
+  return false;
 }
 
 interface CodeChunk {
-  text: string
-  lines: number
+  text: string;
+  lines: number;
 }
 
 export function chunkByLines(code: string, perChunk: number): CodeChunk[] {
-  const lines = code.split('\n')
+  const lines = code.split("\n");
 
   if (lines.length <= perChunk) {
-    return [{ text: code, lines: lines.length }]
+    return [{ text: code, lines: lines.length }];
   }
 
-  const chunks: CodeChunk[] = []
+  const chunks: CodeChunk[] = [];
 
   for (let i = 0; i < lines.length; i += perChunk) {
-    const slice = lines.slice(i, i + perChunk)
-    chunks.push({ text: slice.join('\n'), lines: slice.length })
+    const slice = lines.slice(i, i + perChunk);
+    chunks.push({ text: slice.join("\n"), lines: slice.length });
   }
 
-  return chunks
+  return chunks;
 }
 
 const PlainCode: FC<{ code: string }> = ({ code }) => {
-  const chunks = useMemo(() => chunkByLines(code, CHUNK_LINES), [code])
+  const chunks = useMemo(() => chunkByLines(code, CHUNK_LINES), [code]);
 
   if (chunks.length === 1) {
-    return <code className="block whitespace-pre">{code}</code>
+    return <code className="block whitespace-pre">{code}</code>;
   }
 
   return (
@@ -107,38 +120,44 @@ const PlainCode: FC<{ code: string }> = ({ code }) => {
         <code
           className="block whitespace-pre [content-visibility:auto]"
           key={index}
-          style={{ containIntrinsicSize: `auto ${chunk.lines * EST_LINE_PX}px` }}
+          style={{
+            containIntrinsicSize: `auto ${chunk.lines * EST_LINE_PX}px`,
+          }}
         >
           {chunk.text}
         </code>
       ))}
     </>
-  )
-}
+  );
+};
 
 export const SyntaxHighlighter: FC<HermesSyntaxHighlighterProps> = ({
   components: { Pre },
   language,
   code,
-  defer = false
+  defer = false,
 }) => {
-  const { t } = useI18n()
-  const trimmed = (code ?? '').replace(/^\n+/, '').trimEnd()
+  const { t } = useI18n();
+  const trimmed = (code ?? "").replace(/^\n+/, "").trimEnd();
 
   // Streaming may hand us empty/incomplete fences — render nothing rather
   // than a transient empty card.
   if (!trimmed.trim()) {
-    return null
+    return null;
   }
 
   if (isLikelyProseCodeBlock(language, trimmed)) {
-    return <div className="aui-prose-fence whitespace-pre-wrap wrap-anywhere text-foreground">{trimmed}</div>
+    return (
+      <div className="aui-prose-fence whitespace-pre-wrap wrap-anywhere text-foreground">
+        {trimmed}
+      </div>
+    );
   }
 
-  const plain = defer || exceedsHighlightBudget(trimmed)
+  const plain = defer || exceedsHighlightBudget(trimmed);
 
   return (
-    <CodeCard data-streaming={defer ? 'true' : undefined}>
+    <CodeCard data-streaming={defer ? "true" : undefined}>
       <CopyButton
         appearance="inline"
         className="absolute right-1.5 top-1.5 z-10 h-5 gap-0 rounded-md px-1 opacity-0 transition-opacity group-hover/code:opacity-100 focus-visible:opacity-100"
@@ -153,11 +172,15 @@ export const SyntaxHighlighter: FC<HermesSyntaxHighlighterProps> = ({
             {plain ? (
               <PlainCode code={trimmed} />
             ) : (
-              <LazyShiki code={trimmed} colorReplacements={SHIKI_COLOR_REPLACEMENTS} language={language || 'text'} />
+              <LazyShiki
+                code={trimmed}
+                colorReplacements={SHIKI_COLOR_REPLACEMENTS}
+                language={language || "text"}
+              />
             )}
           </Pre>
         </ExpandableBlock>
       </CodeCardBody>
     </CodeCard>
-  )
-}
+  );
+};

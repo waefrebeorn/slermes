@@ -27,19 +27,19 @@
 
 /** Argv for resuming a session in the TUI, profile-pinned when we know it. */
 export function tuiResumeArgs(sessionId: string, profile?: string): string[] {
-  const head = profile ? ['--profile', profile] : []
+  const head = profile ? ["--profile", profile] : [];
 
-  return [...head, '--tui', '--resume', sessionId]
+  return [...head, "--tui", "--resume", sessionId];
 }
 
 /** Single-quote a value for /bin/sh (the POSIX launcher script). */
 export function posixQuote(value: string): string {
-  return `'${String(value ?? '').replaceAll("'", `'\\''`)}'`
+  return `'${String(value ?? "").replaceAll("'", `'\\''`)}'`;
 }
 
 /** Quote a value for a cmd.exe script line. */
 export function windowsQuote(value: string): string {
-  return `"${String(value ?? '').replaceAll('"', '""')}"`
+  return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
 
 /**
@@ -52,89 +52,99 @@ export function windowsQuote(value: string): string {
  */
 export function terminalScriptEnv(
   backendEnv: Record<string, string | undefined> = {},
-  hermesHome?: string
+  hermesHome?: string,
 ): Record<string, string> {
-  const out: Record<string, string> = {}
+  const out: Record<string, string> = {};
 
   for (const [key, value] of Object.entries(backendEnv)) {
-    if (key.toUpperCase() === 'PATH' || value === undefined || value === '') {
-      continue
+    if (key.toUpperCase() === "PATH" || value === undefined || value === "") {
+      continue;
     }
 
-    out[key] = value
+    out[key] = value;
   }
 
   if (hermesHome) {
-    out.HERMES_HOME = hermesHome
+    out.HERMES_HOME = hermesHome;
   }
 
-  return out
+  return out;
 }
 
 export interface TerminalScriptSpec {
-  command: string
-  args: string[]
-  cwd: string
-  env?: Record<string, string>
-  platform?: NodeJS.Platform
+  command: string;
+  args: string[];
+  cwd: string;
+  env?: Record<string, string>;
+  platform?: NodeJS.Platform;
 }
 
 /**
  * The launcher script contents. `exec` on POSIX so the terminal window belongs
  * to the TUI itself rather than an idle shell wrapping it.
  */
-export function buildTerminalScript({ command, args, cwd, env = {}, platform = process.platform }: TerminalScriptSpec) {
-  const entries = Object.entries(env)
+export function buildTerminalScript({
+  command,
+  args,
+  cwd,
+  env = {},
+  platform = process.platform,
+}: TerminalScriptSpec) {
+  const entries = Object.entries(env);
 
-  if (platform === 'win32') {
+  if (platform === "win32") {
     return [
-      '@echo off',
+      "@echo off",
       `cd /d ${windowsQuote(cwd)}`,
-      ...entries.map(([key, value]) => `set ${windowsQuote(`${key}=${value}`)}`),
-      [command, ...args].map(windowsQuote).join(' '),
-      ''
-    ].join('\r\n')
+      ...entries.map(
+        ([key, value]) => `set ${windowsQuote(`${key}=${value}`)}`,
+      ),
+      [command, ...args].map(windowsQuote).join(" "),
+      "",
+    ].join("\r\n");
   }
 
   return [
-    '#!/bin/sh',
+    "#!/bin/sh",
     `cd ${posixQuote(cwd)} || exit 1`,
     ...entries.map(([key, value]) => `export ${key}=${posixQuote(value)}`),
-    `exec ${[command, ...args].map(posixQuote).join(' ')}`,
-    ''
-  ].join('\n')
+    `exec ${[command, ...args].map(posixQuote).join(" ")}`,
+    "",
+  ].join("\n");
 }
 
-export function terminalScriptExtension(platform: NodeJS.Platform = process.platform): string {
-  if (platform === 'win32') {
-    return '.cmd'
+export function terminalScriptExtension(
+  platform: NodeJS.Platform = process.platform,
+): string {
+  if (platform === "win32") {
+    return ".cmd";
   }
 
   // `.command` is the UTI macOS binds to a terminal app; on Linux the
   // extension is cosmetic (we always name the interpreter explicitly).
-  return platform === 'darwin' ? '.command' : '.sh'
+  return platform === "darwin" ? ".command" : ".sh";
 }
 
 // Linux emulators in resolution order, with the flag that precedes a program
 // to run. `x-terminal-emulator` is Debian/Ubuntu's alternatives symlink to the
 // user's chosen terminal, so it leads; the rest are the common concretes.
 const LINUX_TERMINALS: Array<{ command: string; flag: string }> = [
-  { command: 'x-terminal-emulator', flag: '-e' },
-  { command: 'gnome-terminal', flag: '--' },
-  { command: 'konsole', flag: '-e' },
-  { command: 'xfce4-terminal', flag: '-x' },
-  { command: 'tilix', flag: '-e' },
-  { command: 'kitty', flag: '' },
-  { command: 'alacritty', flag: '-e' },
-  { command: 'wezterm', flag: '-e' },
-  { command: 'foot', flag: '' },
-  { command: 'xterm', flag: '-e' }
-]
+  { command: "x-terminal-emulator", flag: "-e" },
+  { command: "gnome-terminal", flag: "--" },
+  { command: "konsole", flag: "-e" },
+  { command: "xfce4-terminal", flag: "-x" },
+  { command: "tilix", flag: "-e" },
+  { command: "kitty", flag: "" },
+  { command: "alacritty", flag: "-e" },
+  { command: "wezterm", flag: "-e" },
+  { command: "foot", flag: "" },
+  { command: "xterm", flag: "-e" },
+];
 
 export interface TerminalLaunchOptions {
-  scriptPath: string
-  findOnPath: (command: string) => null | string
-  platform?: NodeJS.Platform
+  scriptPath: string;
+  findOnPath: (command: string) => null | string;
+  platform?: NodeJS.Platform;
 }
 
 /**
@@ -144,30 +154,36 @@ export interface TerminalLaunchOptions {
 export function resolveTerminalLaunch({
   scriptPath,
   findOnPath,
-  platform = process.platform
+  platform = process.platform,
 }: TerminalLaunchOptions): { command: string; args: string[] } | null {
-  if (platform === 'darwin') {
+  if (platform === "darwin") {
     // No `-a`: LaunchServices picks the user's handler for shell scripts.
-    return { command: 'open', args: [scriptPath] }
+    return { command: "open", args: [scriptPath] };
   }
 
-  if (platform === 'win32') {
-    const windowsTerminal = findOnPath('wt.exe')
+  if (platform === "win32") {
+    const windowsTerminal = findOnPath("wt.exe");
 
     if (windowsTerminal) {
-      return { command: windowsTerminal, args: ['cmd.exe', '/k', scriptPath] }
+      return { command: windowsTerminal, args: ["cmd.exe", "/k", scriptPath] };
     }
 
-    return { command: 'cmd.exe', args: ['/c', 'start', '', 'cmd.exe', '/k', scriptPath] }
+    return {
+      command: "cmd.exe",
+      args: ["/c", "start", "", "cmd.exe", "/k", scriptPath],
+    };
   }
 
   for (const { command, flag } of LINUX_TERMINALS) {
-    const resolved = findOnPath(command)
+    const resolved = findOnPath(command);
 
     if (resolved) {
-      return { command: resolved, args: [...(flag ? [flag] : []), '/bin/sh', scriptPath] }
+      return {
+        command: resolved,
+        args: [...(flag ? [flag] : []), "/bin/sh", scriptPath],
+      };
     }
   }
 
-  return null
+  return null;
 }

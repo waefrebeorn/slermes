@@ -1,15 +1,20 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
-import { ActionsContextMenu, ActionsMenu, type MenuKit, renderActionItem } from '@/components/ui/actions-menu'
-import { Button } from '@/components/ui/button'
-import { Codicon } from '@/components/ui/codicon'
-import { RowButton } from '@/components/ui/row-button'
-import { SearchField } from '@/components/ui/search-field'
-import { Tip } from '@/components/ui/tooltip'
-import { translateNow } from '@/i18n'
-import { cn } from '@/lib/utils'
+import {
+  ActionsContextMenu,
+  ActionsMenu,
+  type MenuKit,
+  renderActionItem,
+} from "@/components/ui/actions-menu";
+import { Button } from "@/components/ui/button";
+import { Codicon } from "@/components/ui/codicon";
+import { RowButton } from "@/components/ui/row-button";
+import { SearchField } from "@/components/ui/search-field";
+import { Tip } from "@/components/ui/tooltip";
+import { translateNow } from "@/i18n";
+import { cn } from "@/lib/utils";
 
-import { OVERLAY_TOP_CLEARANCE, OverlayView } from './overlay-view'
+import { OVERLAY_TOP_CLEARANCE, OverlayView } from "./overlay-view";
 
 // Overlay "panel" primitive — the centered, capped card + framed chrome lifted
 // straight from the trace / agents overlay so every non-settings overlay (cron,
@@ -29,40 +34,44 @@ import { OVERLAY_TOP_CLEARANCE, OverlayView } from './overlay-view'
 // Single-column views drop their content straight after the header.
 
 interface PanelProps {
-  children: ReactNode
+  children: ReactNode;
   // Root layout override (the card already fills the equidistant inset).
-  className?: string
-  closeLabel?: string
-  contentClassName?: string
-  onClose: () => void
+  className?: string;
+  closeLabel?: string;
+  contentClassName?: string;
+  onClose: () => void;
 }
 
 export function Panel({
   children,
   className,
-  closeLabel = translateNow('common.close'),
+  closeLabel = translateNow("common.close"),
   contentClassName,
-  onClose
+  onClose,
 }: PanelProps) {
   return (
     <OverlayView
       closeLabel={closeLabel}
       // Header title rides up next to the floating close button — see
       // OVERLAY_TOP_CLEARANCE, the shared clearance every overlay column uses.
-      contentClassName={cn('flex h-full min-h-0 flex-col px-4 pb-4 sm:px-5', OVERLAY_TOP_CLEARANCE, contentClassName)}
+      contentClassName={cn(
+        "flex h-full min-h-0 flex-col px-4 pb-4 sm:px-5",
+        OVERLAY_TOP_CLEARANCE,
+        contentClassName,
+      )}
       onClose={onClose}
-      rootClassName={cn('flex h-full w-full flex-col', className)}
+      rootClassName={cn("flex h-full w-full flex-col", className)}
     >
       {children}
     </OverlayView>
-  )
+  );
 }
 
 interface PanelHeaderProps {
   // Right-aligned controls (search, "+ New", segmented control, …).
-  actions?: ReactNode
-  subtitle?: ReactNode
-  title: ReactNode
+  actions?: ReactNode;
+  subtitle?: ReactNode;
+  title: ReactNode;
 }
 
 export function PanelHeader({ actions, subtitle, title }: PanelHeaderProps) {
@@ -71,43 +80,60 @@ export function PanelHeader({ actions, subtitle, title }: PanelHeaderProps) {
     // layout space, so header actions would otherwise slide right up against it.
     // Reserve clearance (button footprint from the card edge + a small gap) on
     // the right whenever actions are present.
-    <header className={cn('mb-3 flex shrink-0 items-start justify-between gap-3', actions ? 'pr-8' : undefined)}>
+    <header
+      className={cn(
+        "mb-3 flex shrink-0 items-start justify-between gap-3",
+        actions ? "pr-8" : undefined,
+      )}
+    >
       <div className="min-w-0">
         <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-        {subtitle ? <p className="truncate text-xs text-muted-foreground/80">{subtitle}</p> : null}
+        {subtitle ? (
+          <p className="truncate text-xs text-muted-foreground/80">
+            {subtitle}
+          </p>
+        ) : null}
       </div>
-      {actions ? <div className="flex shrink-0 items-center gap-1.5">{actions}</div> : null}
+      {actions ? (
+        <div className="flex shrink-0 items-center gap-1.5">{actions}</div>
+      ) : null}
     </header>
-  )
+  );
 }
 
-export function PanelBody({ children, className }: { children: ReactNode; className?: string }) {
+export function PanelBody({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <div
       className={cn(
         // Side-by-side master/detail on a wide card; once it narrows (same
         // threshold the other overlays collapse at) stack the list above the
         // detail so the detail keeps full width instead of being squished.
-        'flex min-h-0 flex-1 flex-col gap-4 overflow-hidden min-[47.5rem]:flex-row min-[47.5rem]:gap-5',
-        className
+        "flex min-h-0 flex-1 flex-col gap-4 overflow-hidden min-[47.5rem]:flex-row min-[47.5rem]:gap-5",
+        className,
       )}
     >
       {children}
     </div>
-  )
+  );
 }
 
 interface PanelListProps {
-  children: ReactNode
-  className?: string
+  children: ReactNode;
+  className?: string;
   // Pass an onSearchChange to bake a full-bleed filter field in above the items
   // (pinned; the rows scroll under it). Controlled via searchValue.
-  onSearchChange?: (value: string) => void
-  searchLabel?: string
-  searchPlaceholder?: string
+  onSearchChange?: (value: string) => void;
+  searchLabel?: string;
+  searchPlaceholder?: string;
   /** Data-derived rotating placeholder nudges (see SearchField.hints). */
-  searchHints?: string[]
-  searchValue?: string
+  searchHints?: string[];
+  searchValue?: string;
 }
 
 // Left master list. Dense + borderless, like the trace waterfall's label tree:
@@ -120,47 +146,54 @@ export function PanelList({
   searchLabel,
   searchPlaceholder,
   searchHints,
-  searchValue
+  searchValue,
 }: PanelListProps) {
   return (
     // Full-width and height-capped when stacked (narrow); a fixed 13rem rail
     // beside the detail when wide.
-    <div className={cn('flex w-full shrink-0 flex-col max-[47.5rem]:max-h-[40%] min-[47.5rem]:w-52', className)}>
+    <div
+      className={cn(
+        "flex w-full shrink-0 flex-col max-[47.5rem]:max-h-[40%] min-[47.5rem]:w-52",
+        className,
+      )}
+    >
       {onSearchChange ? (
         <SearchField
-          aria-label={searchLabel ?? searchPlaceholder ?? ''}
+          aria-label={searchLabel ?? searchPlaceholder ?? ""}
           containerClassName="mb-1 w-full shrink-0"
           hints={searchHints}
           onChange={onSearchChange}
-          placeholder={searchPlaceholder ?? ''}
-          value={searchValue ?? ''}
+          placeholder={searchPlaceholder ?? ""}
+          value={searchValue ?? ""}
         />
       ) : null}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">{children}</div>
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+        {children}
+      </div>
     </div>
-  )
+  );
 }
 
 interface PanelListRowProps {
-  active: boolean
+  active: boolean;
   // Leading status dot color class (e.g. 'bg-emerald-500'); omit for none.
-  dotClassName?: string
+  dotClassName?: string;
   // Leading codicon glyph name (used when there's no lead/dot).
-  icon?: string
+  icon?: string;
   // Custom leading element (colored swatch, avatar, …). Wins over dot/icon.
-  lead?: ReactNode
+  lead?: ReactNode;
   // Per-row actions. Pass `menuItems` to get BOTH the hover kebab and a matching
   // right-click menu from one array (preferred). `menu` takes a raw node for the
   // rare custom trigger; it gets no right-click parity.
-  menu?: ReactNode
-  menuItems?: PanelMenuItem[]
+  menu?: ReactNode;
+  menuItems?: PanelMenuItem[];
   // aria/tooltip label for the kebab + right-click menu built from `menuItems`.
-  menuLabel?: string
+  menuLabel?: string;
   // Short always-visible trailing meta (a tag/time, like the trace label's duration).
-  meta?: ReactNode
-  onSelect: () => void
-  rowKey?: string
-  title: ReactNode
+  meta?: ReactNode;
+  onSelect: () => void;
+  rowKey?: string;
+  title: ReactNode;
 }
 
 // A row is a container (not a <button>) so it can host both the select target
@@ -178,13 +211,15 @@ export function PanelListRow({
   meta,
   onSelect,
   rowKey,
-  title
+  title,
 }: PanelListRowProps) {
   const row = (
     <div
       className={cn(
-        'group/row row-hover relative flex h-7 w-full items-center rounded-md text-[0.78rem] hover:text-foreground',
-        active ? 'bg-(--ui-row-active-background) text-foreground' : 'text-(--ui-text-secondary)'
+        "group/row row-hover relative flex h-7 w-full items-center rounded-md text-[0.78rem] hover:text-foreground",
+        active
+          ? "bg-(--ui-row-active-background) text-foreground"
+          : "text-(--ui-text-secondary)",
       )}
       data-panel-row={rowKey}
     >
@@ -194,13 +229,26 @@ export function PanelListRow({
       >
         {lead ??
           (dotClassName ? (
-            <span aria-hidden="true" className={cn('size-1.5 shrink-0 rounded-full', dotClassName)} />
+            <span
+              aria-hidden="true"
+              className={cn("size-1.5 shrink-0 rounded-full", dotClassName)}
+            />
           ) : icon ? (
-            <Codicon className="shrink-0 text-muted-foreground/55" name={icon} size="0.85rem" />
+            <Codicon
+              className="shrink-0 text-muted-foreground/55"
+              name={icon}
+              size="0.85rem"
+            />
           ) : null)}
-        <span className="min-w-0 flex-1 truncate font-medium text-foreground/85">{title}</span>
+        <span className="min-w-0 flex-1 truncate font-medium text-foreground/85">
+          {title}
+        </span>
       </RowButton>
-      {meta ? <span className="shrink-0 pr-2 text-[0.62rem] tabular-nums text-muted-foreground/45">{meta}</span> : null}
+      {meta ? (
+        <span className="shrink-0 pr-2 text-[0.62rem] tabular-nums text-muted-foreground/45">
+          {meta}
+        </span>
+      ) : null}
       {menuItems ? (
         <div className="shrink-0 pr-1">
           <PanelRowMenu items={menuItems} label={menuLabel} />
@@ -209,7 +257,7 @@ export function PanelListRow({
         <div className="shrink-0 pr-1">{menu}</div>
       ) : null}
     </div>
-  )
+  );
 
   // Right-click parity: same items as the kebab. `disabled` (no actionable
   // items) renders the row bare.
@@ -224,44 +272,54 @@ export function PanelListRow({
     </ActionsContextMenu>
   ) : (
     row
-  )
+  );
 }
 
 export interface PanelMenuItem {
-  disabled?: boolean
-  icon?: string
-  label: string
-  onSelect: () => void
-  tone?: 'danger' | 'default'
+  disabled?: boolean;
+  icon?: string;
+  label: string;
+  onSelect: () => void;
+  tone?: "danger" | "default";
 }
 
 // Bridge PanelMenuItem[] → the shared actions-menu render fn, so a panel row's
 // kebab and its right-click menu render from one source.
 function renderPanelMenuItems(items: PanelMenuItem[]) {
   return (kit: MenuKit) =>
-    items.map(item =>
+    items.map((item) =>
       renderActionItem(kit, {
         disabled: item.disabled,
         icon: item.icon,
         key: item.label,
         label: item.label,
         onSelect: item.onSelect,
-        variant: item.tone === 'danger' ? 'destructive' : 'default'
-      })
-    )
+        variant: item.tone === "danger" ? "destructive" : "default",
+      }),
+    );
 }
 
 // Per-row "⋮" actions menu — mirrors the sidebar session row's settled pattern
 // (size-5 ghost trigger + kebab-vertical codicon + w-40 content). Hidden until
 // the row is hovered/focused (or the menu is open). Returns null with no items
 // (e.g. the default profile, which can't be renamed/deleted).
-export function PanelRowMenu({ items, label = 'Actions' }: { items: PanelMenuItem[]; label?: string }) {
+export function PanelRowMenu({
+  items,
+  label = "Actions",
+}: {
+  items: PanelMenuItem[];
+  label?: string;
+}) {
   if (items.length === 0) {
-    return null
+    return null;
   }
 
   return (
-    <ActionsMenu ariaLabel={label} contentClassName="w-40" items={renderPanelMenuItems(items)}>
+    <ActionsMenu
+      ariaLabel={label}
+      contentClassName="w-40"
+      items={renderPanelMenuItems(items)}
+    >
       <Button
         aria-label={label}
         className="size-5 rounded-[4px] bg-transparent text-(--ui-text-tertiary) opacity-0 transition-colors duration-100 hover:bg-(--ui-control-active-background) hover:text-foreground focus-visible:opacity-100 focus-visible:ring-0 group-hover/row:opacity-100 data-[state=open]:bg-(--ui-control-active-background) data-[state=open]:text-foreground data-[state=open]:opacity-100 [&_svg]:size-3.5!"
@@ -271,116 +329,179 @@ export function PanelRowMenu({ items, label = 'Actions' }: { items: PanelMenuIte
         <Codicon name="kebab-vertical" size="0.875rem" />
       </Button>
     </ActionsMenu>
-  )
+  );
 }
 
 // Scrolling detail region. Fills the column (no right rail here, unlike the
 // trace inspector), so the content stretches the full available width.
-export function PanelDetail({ children, className }: { children: ReactNode; className?: string }) {
+export function PanelDetail({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={cn('min-h-0 flex-1 overflow-y-auto overscroll-contain', className)}>
+    <div
+      className={cn(
+        "min-h-0 flex-1 overflow-y-auto overscroll-contain",
+        className,
+      )}
+    >
       <div className="space-y-4 pb-6 pl-1 pr-2">{children}</div>
     </div>
-  )
+  );
 }
 
 interface PanelEmptyProps {
-  action?: ReactNode
-  description?: ReactNode
+  action?: ReactNode;
+  description?: ReactNode;
   // Codicon glyph name (e.g. 'hubot', 'warning', 'loading~spin').
-  icon?: string
-  title?: ReactNode
+  icon?: string;
+  title?: ReactNode;
 }
 
-export function PanelEmpty({ action, description, icon = 'inbox', title }: PanelEmptyProps) {
+export function PanelEmpty({
+  action,
+  description,
+  icon = "inbox",
+  title,
+}: PanelEmptyProps) {
   return (
     <div className="grid flex-1 place-items-center px-6 py-10 text-center">
       <div className="flex flex-col items-center gap-2">
-        <Codicon className="text-muted-foreground/50" name={icon} size="1.25rem" />
-        {title ? <p className="text-sm font-medium text-foreground/90">{title}</p> : null}
+        <Codicon
+          className="text-muted-foreground/50"
+          name={icon}
+          size="1.25rem"
+        />
+        {title ? (
+          <p className="text-sm font-medium text-foreground/90">{title}</p>
+        ) : null}
         {description ? (
-          <p className="max-w-sm text-xs leading-relaxed text-muted-foreground/70">{description}</p>
+          <p className="max-w-sm text-xs leading-relaxed text-muted-foreground/70">
+            {description}
+          </p>
         ) : null}
         {action ? <div className="mt-2">{action}</div> : null}
       </div>
     </div>
-  )
+  );
 }
 
-export function PanelSectionLabel({ children, className }: { children: ReactNode; className?: string }) {
+export function PanelSectionLabel({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={cn('text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground/50', className)}>
+    <div
+      className={cn(
+        "text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground/50",
+        className,
+      )}
+    >
       {children}
     </div>
-  )
+  );
 }
 
 // Inspector-style key/value grid (mirrors the trace span inspector's <dl>).
 export interface PanelMetaRow {
-  label: ReactNode
-  value: ReactNode
+  label: ReactNode;
+  value: ReactNode;
 }
 
-export function PanelMeta({ className, rows }: { className?: string; rows: PanelMetaRow[] }) {
+export function PanelMeta({
+  className,
+  rows,
+}: {
+  className?: string;
+  rows: PanelMetaRow[];
+}) {
   return (
-    <dl className={cn('grid grid-cols-[5rem_1fr] gap-x-2 gap-y-1 text-[0.7rem]', className)}>
+    <dl
+      className={cn(
+        "grid grid-cols-[5rem_1fr] gap-x-2 gap-y-1 text-[0.7rem]",
+        className,
+      )}
+    >
       {rows.map((row, i) => (
-        <div className="contents" key={typeof row.label === 'string' ? row.label : i}>
+        <div
+          className="contents"
+          key={typeof row.label === "string" ? row.label : i}
+        >
           <dt className="truncate text-muted-foreground/55">{row.label}</dt>
-          <dd className="min-w-0 break-words text-foreground/85">{row.value}</dd>
+          <dd className="min-w-0 break-words text-foreground/85">
+            {row.value}
+          </dd>
         </div>
       ))}
     </dl>
-  )
+  );
 }
 
 // Monospace content block (job prompt, etc.) — mirrors the inspector's
 // input/output <pre> blocks: subtle bg, no border.
-export function PanelBlock({ children, className }: { children: ReactNode; className?: string }) {
+export function PanelBlock({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <pre
       className={cn(
-        'max-h-48 overflow-auto whitespace-pre-wrap break-words rounded bg-foreground/5 p-2.5 text-[0.68rem] leading-relaxed text-foreground/80',
-        className
+        "max-h-48 overflow-auto whitespace-pre-wrap break-words rounded bg-foreground/5 p-2.5 text-[0.68rem] leading-relaxed text-foreground/80",
+        className,
       )}
     >
       {children}
     </pre>
-  )
+  );
 }
 
-export type PanelPillTone = 'bad' | 'good' | 'muted' | 'warn'
+export type PanelPillTone = "bad" | "good" | "muted" | "warn";
 
 const PILL_TONE: Record<PanelPillTone, string> = {
-  bad: 'bg-destructive/10 text-destructive',
-  good: 'bg-primary/10 text-primary',
-  muted: 'bg-foreground/10 text-muted-foreground',
-  warn: 'bg-amber-500/10 text-amber-600 dark:text-amber-300'
-}
+  bad: "bg-destructive/10 text-destructive",
+  good: "bg-primary/10 text-primary",
+  muted: "bg-foreground/10 text-muted-foreground",
+  warn: "bg-amber-500/10 text-amber-600 dark:text-amber-300",
+};
 
-export function PanelPill({ children, tone = 'muted' }: { children: ReactNode; tone?: PanelPillTone }) {
+export function PanelPill({
+  children,
+  tone = "muted",
+}: {
+  children: ReactNode;
+  tone?: PanelPillTone;
+}) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-1.5 py-0.5 text-[0.62rem] font-medium capitalize',
-        PILL_TONE[tone]
+        "inline-flex items-center rounded-full px-1.5 py-0.5 text-[0.62rem] font-medium capitalize",
+        PILL_TONE[tone],
       )}
     >
       {children}
     </span>
-  )
+  );
 }
 
 // Self-describing centered "+" that sits as the LAST item in a PanelList. The
 // label rides aria/title only — no visible text.
 export function PanelAddButton({
-  icon = 'add',
+  icon = "add",
   label,
-  onClick
+  onClick,
 }: {
-  icon?: string
-  label: string
-  onClick: () => void
+  icon?: string;
+  label: string;
+  onClick: () => void;
 }) {
   return (
     <Tip label={label}>
@@ -394,7 +515,7 @@ export function PanelAddButton({
         <Codicon name={icon} size="0.875rem" />
       </Button>
     </Tip>
-  )
+  );
 }
 
 // Visible action for a detail header (cron pause/resume/trigger, …). Ghost by
@@ -404,27 +525,28 @@ export function PanelAction({
   disabled,
   icon,
   onClick,
-  primary
+  primary,
 }: {
-  children: ReactNode
-  disabled?: boolean
-  icon: string
-  onClick: () => void
-  primary?: boolean
+  children: ReactNode;
+  disabled?: boolean;
+  icon: string;
+  onClick: () => void;
+  primary?: boolean;
 }) {
   return (
     <Button
       className={cn(
-        'gap-1.5',
-        !primary && 'text-muted-foreground hover:bg-(--ui-row-hover-background) hover:text-foreground'
+        "gap-1.5",
+        !primary &&
+          "text-muted-foreground hover:bg-(--ui-row-hover-background) hover:text-foreground",
       )}
       disabled={disabled}
       onClick={onClick}
       size="sm"
-      variant={primary ? 'default' : 'ghost'}
+      variant={primary ? "default" : "ghost"}
     >
       <Codicon name={icon} size="0.875rem" />
       {children}
     </Button>
-  )
+  );
 }

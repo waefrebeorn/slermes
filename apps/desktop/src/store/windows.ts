@@ -1,57 +1,59 @@
-import { notifyError } from './notifications'
+import { notifyError } from "./notifications";
 
 // Window flag set by the Electron main process when it opens a standalone
 // session window (see electron/main.ts buildSessionWindowUrl). It rides in the
 // query string BEFORE the HashRouter '#', so we read it from location.search,
 // never from the router. A "secondary" window renders a single chat without the
 // global session sidebar or the install / onboarding overlays.
-const SECONDARY_WINDOW_FLAG = 'secondary'
+const SECONDARY_WINDOW_FLAG = "secondary";
 
-let secondaryWindowCache: boolean | null = null
+let secondaryWindowCache: boolean | null = null;
 
 export function isSecondaryWindow(): boolean {
   if (secondaryWindowCache !== null) {
-    return secondaryWindowCache
+    return secondaryWindowCache;
   }
 
-  let result = false
+  let result = false;
 
   try {
-    result = new URLSearchParams(window.location.search).get('win') === SECONDARY_WINDOW_FLAG
+    result =
+      new URLSearchParams(window.location.search).get("win") ===
+      SECONDARY_WINDOW_FLAG;
   } catch {
-    result = false
+    result = false;
   }
 
-  secondaryWindowCache = result
+  secondaryWindowCache = result;
 
-  return result
+  return result;
 }
 
-let watchWindowCache: boolean | null = null
+let watchWindowCache: boolean | null = null;
 
 // A "hud" window is HUD mode: the chrome-free floating chat. Unlike the pet
 // overlay / quick entry it is a FULL app renderer with its own gateway — the
 // flag only tells the shell to render the slim floating layout (composer +
 // scrollback) instead of the pane tree, so the composer it shows is the real
 // one. Read from location.search for the same reason as the flag above.
-let hudWindowCache: boolean | null = null
+let hudWindowCache: boolean | null = null;
 
 export function isHudWindow(): boolean {
   if (hudWindowCache !== null) {
-    return hudWindowCache
+    return hudWindowCache;
   }
 
-  let result = false
+  let result = false;
 
   try {
-    result = new URLSearchParams(window.location.search).get('win') === 'hud'
+    result = new URLSearchParams(window.location.search).get("win") === "hud";
   } catch {
-    result = false
+    result = false;
   }
 
-  hudWindowCache = result
+  hudWindowCache = result;
 
-  return result
+  return result;
 }
 
 // A "watch" window spectates a session that is being driven elsewhere (a
@@ -60,50 +62,53 @@ export function isHudWindow(): boolean {
 // cheap even while the backend is busy running the delegation.
 export function isWatchWindow(): boolean {
   if (watchWindowCache !== null) {
-    return watchWindowCache
+    return watchWindowCache;
   }
 
-  let result = false
+  let result = false;
 
   try {
-    result = new URLSearchParams(window.location.search).get('watch') === '1'
+    result = new URLSearchParams(window.location.search).get("watch") === "1";
   } catch {
-    result = false
+    result = false;
   }
 
-  watchWindowCache = result
+  watchWindowCache = result;
 
-  return result
+  return result;
 }
 
 // A "browser" window is a popped-out in-app Browser: the same webview +
 // address bar as the docked tab, in its own OS window. The tab id rides
 // `?tab=` next to `win=browser` (before the hash, same contract as secondary).
-let browserWindowCache: boolean | null = null
+let browserWindowCache: boolean | null = null;
 
 export function isBrowserWindow(): boolean {
   if (browserWindowCache !== null) {
-    return browserWindowCache
+    return browserWindowCache;
   }
 
-  let result = false
+  let result = false;
 
   try {
-    result = new URLSearchParams(window.location.search).get('win') === 'browser'
+    result =
+      new URLSearchParams(window.location.search).get("win") === "browser";
   } catch {
-    result = false
+    result = false;
   }
 
-  browserWindowCache = result
+  browserWindowCache = result;
 
-  return result
+  return result;
 }
 
 export function windowBrowserTabId(): null | string {
   try {
-    return new URLSearchParams(window.location.search).get('tab')?.trim() || null
+    return (
+      new URLSearchParams(window.location.search).get("tab")?.trim() || null
+    );
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -111,17 +116,20 @@ export function windowBrowserTabId(): null | string {
 // session window, the HUD, or a popped-out Browser. Single-claim channels
 // (the quick-entry capture bridge, the pet overlay control bridge) and the
 // install/onboarding overlays belong to the primary alone.
-export const isAuxiliaryWindow = (): boolean => isSecondaryWindow() || isHudWindow() || isBrowserWindow()
+export const isAuxiliaryWindow = (): boolean =>
+  isSecondaryWindow() || isHudWindow() || isBrowserWindow();
 
 // A full peer window renders the ordinary app shell against the backend that
 // Electron already has running. It is not an auxiliary/specialized renderer,
 // but it must not replay the primary window's app-launch source restoration
 // after boot and silently re-home itself to another registered gateway.
-export function isPeerInstanceWindow(search = typeof window === 'undefined' ? '' : window.location.search): boolean {
+export function isPeerInstanceWindow(
+  search = typeof window === "undefined" ? "" : window.location.search,
+): boolean {
   try {
-    return new URLSearchParams(search).get('peer') === '1'
+    return new URLSearchParams(search).get("peer") === "1";
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -135,54 +143,71 @@ export function isPeerInstanceWindow(search = typeof window === 'undefined' ? ''
 // keeps it honest under test.
 export function windowProfileOverride(): null | string {
   try {
-    return new URLSearchParams(window.location.search).get('profile')?.trim() || null
+    return (
+      new URLSearchParams(window.location.search).get("profile")?.trim() || null
+    );
   } catch {
-    return null
+    return null;
   }
 }
 
 // True when running inside the Electron desktop shell (the preload bridge is
 // present). The "open in new window" affordance is desktop-only.
 export function canOpenSessionWindow(): boolean {
-  return typeof window !== 'undefined' && typeof window.hermesDesktop?.openSessionWindow === 'function'
+  return (
+    typeof window !== "undefined" &&
+    typeof window.hermesDesktop?.openSessionWindow === "function"
+  );
 }
 
 // True when the shell can open a full peer app window (⌘⇧N / "New Window").
 export function canOpenNewWindow(): boolean {
-  return typeof window !== 'undefined' && typeof window.hermesDesktop?.openWindow === 'function'
+  return (
+    typeof window !== "undefined" &&
+    typeof window.hermesDesktop?.openWindow === "function"
+  );
 }
 
 // True when the shell can pop the in-app Browser into its own OS window.
 export function canOpenBrowserWindow(): boolean {
-  return typeof window !== 'undefined' && typeof window.hermesDesktop?.openBrowserWindow === 'function'
+  return (
+    typeof window !== "undefined" &&
+    typeof window.hermesDesktop?.openBrowserWindow === "function"
+  );
 }
 
 // True when the shell can hand a session to the user's own terminal emulator.
 // Desktop-only, and a REMOTE connection is excluded by the caller: the terminal
 // we'd open is on this machine, but the session lives on the remote host.
 export function canOpenSessionInTerminal(): boolean {
-  return typeof window !== 'undefined' && typeof window.hermesDesktop?.openSessionInTerminal === 'function'
+  return (
+    typeof window !== "undefined" &&
+    typeof window.hermesDesktop?.openSessionInTerminal === "function"
+  );
 }
 
-type WindowOpenResult = { ok: boolean; error?: string } | undefined
+type WindowOpenResult = { ok: boolean; error?: string } | undefined;
 
 // Run a window-open bridge call, surfacing any failure as a toast. Shared by the
 // session pop-out and the new-window opener.
-async function runWindowOpen(call: () => Promise<WindowOpenResult>, failMessage: string): Promise<boolean> {
+async function runWindowOpen(
+  call: () => Promise<WindowOpenResult>,
+  failMessage: string,
+): Promise<boolean> {
   try {
-    const result = await call()
+    const result = await call();
 
     if (!result?.ok) {
-      notifyError(new Error(result?.error || 'unknown error'), failMessage)
+      notifyError(new Error(result?.error || "unknown error"), failMessage);
 
-      return false
+      return false;
     }
 
-    return true
+    return true;
   } catch (err) {
-    notifyError(err, failMessage)
+    notifyError(err, failMessage);
 
-    return false
+    return false;
   }
 }
 
@@ -194,44 +219,60 @@ async function runWindowOpen(call: () => Promise<WindowOpenResult>, failMessage:
 // #82285): the session's stamped owner wins, and an unstamped/uncached id —
 // a brand-new subagent child — inherits the profile the user is looking at
 // (#82768, #61286).
-export async function openSessionInNewWindow(sessionId: string, opts?: { watch?: boolean }): Promise<void> {
+export async function openSessionInNewWindow(
+  sessionId: string,
+  opts?: { watch?: boolean },
+): Promise<void> {
   if (!sessionId || !canOpenSessionWindow()) {
-    return
+    return;
   }
 
   // Lazy imports: `./profile` subscribes to the API client on load, so a
   // static import here would drag it into every page that opens windows.
-  const [{ $activeGatewayProfile, normalizeProfileKey }, { $sessions, rememberedSessionProfile }] = await Promise.all([
-    import('./profile'),
-    import('./session')
-  ])
+  const [
+    { $activeGatewayProfile, normalizeProfileKey },
+    { $sessions, rememberedSessionProfile },
+  ] = await Promise.all([import("./profile"), import("./session")]);
 
-  const profile = normalizeProfileKey(rememberedSessionProfile($sessions.get(), sessionId, $activeGatewayProfile.get()))
+  const profile = normalizeProfileKey(
+    rememberedSessionProfile(
+      $sessions.get(),
+      sessionId,
+      $activeGatewayProfile.get(),
+    ),
+  );
 
   await runWindowOpen(
-    () => window.hermesDesktop.openSessionWindow(sessionId, { ...opts, profile }),
-    'Could not open chat in a new window'
-  )
+    () =>
+      window.hermesDesktop.openSessionWindow(sessionId, { ...opts, profile }),
+    "Could not open chat in a new window",
+  );
 }
 
 // Open a new full-chrome app window — a peer instance of the primary that
 // renders the complete app against the shared backend. No-ops outside Electron.
 export async function openNewWindow(): Promise<void> {
   if (!canOpenNewWindow()) {
-    return
+    return;
   }
 
-  await runWindowOpen(() => window.hermesDesktop.openWindow(), 'Could not open a new window')
+  await runWindowOpen(
+    () => window.hermesDesktop.openWindow(),
+    "Could not open a new window",
+  );
 }
 
 /** Pop the in-app Browser into its own OS window. Returns whether the
  *  window opened so the caller can dock the tab again on failure. */
 export async function openBrowserInNewWindow(tabId: string): Promise<boolean> {
   if (!tabId || !canOpenBrowserWindow()) {
-    return false
+    return false;
   }
 
-  return runWindowOpen(() => window.hermesDesktop.openBrowserWindow(tabId), 'Could not pop out browser')
+  return runWindowOpen(
+    () => window.hermesDesktop.openBrowserWindow(tabId),
+    "Could not pop out browser",
+  );
 }
 
 // Resume a session in the user's own terminal emulator, running the TUI there.
@@ -239,14 +280,14 @@ export async function openBrowserInNewWindow(tabId: string): Promise<boolean> {
 // to the profile that owns the session. No-ops gracefully outside Electron.
 export async function openSessionInTerminal(
   sessionId: string,
-  opts?: { cwd?: string; profile?: string }
+  opts?: { cwd?: string; profile?: string },
 ): Promise<void> {
   if (!sessionId || !canOpenSessionInTerminal()) {
-    return
+    return;
   }
 
   await runWindowOpen(
     () => window.hermesDesktop.openSessionInTerminal(sessionId, opts),
-    'Could not open chat in a terminal'
-  )
+    "Could not open chat in a terminal",
+  );
 }

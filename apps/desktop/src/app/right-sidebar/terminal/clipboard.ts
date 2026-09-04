@@ -12,38 +12,50 @@
 // selected — the "intelligent Ctrl-C" of Windows Terminal and Tabby. With no
 // selection Ctrl+C stays SIGINT, so interrupting a process never breaks.
 
-export type TerminalClipboardIntent = 'copy' | 'paste' | null
+export type TerminalClipboardIntent = "copy" | "paste" | null;
 
 export function terminalClipboardIntent(
   event: KeyboardEvent,
-  { hasSelection, isMac }: { hasSelection: boolean; isMac: boolean }
+  { hasSelection, isMac }: { hasSelection: boolean; isMac: boolean },
 ): TerminalClipboardIntent {
-  if (event.type !== 'keydown' || event.altKey) {
-    return null
+  if (event.type !== "keydown" || event.altKey) {
+    return null;
   }
 
-  const key = event.key.toLowerCase()
+  const key = event.key.toLowerCase();
 
   if (isMac) {
     if (!event.metaKey || event.ctrlKey || event.shiftKey) {
-      return null
+      return null;
     }
 
     // ⌘C with nothing selected falls through to the shell (⌘ isn't a terminal
     // modifier, so it's a no-op there rather than a lost keystroke).
-    return key === 'c' ? (hasSelection ? 'copy' : null) : key === 'v' ? 'paste' : null
+    return key === "c"
+      ? hasSelection
+        ? "copy"
+        : null
+      : key === "v"
+        ? "paste"
+        : null;
   }
 
   if (!event.ctrlKey || event.metaKey) {
-    return null
+    return null;
   }
 
   if (event.shiftKey) {
-    return key === 'c' ? (hasSelection ? 'copy' : null) : key === 'v' ? 'paste' : null
+    return key === "c"
+      ? hasSelection
+        ? "copy"
+        : null
+      : key === "v"
+        ? "paste"
+        : null;
   }
 
   // Bare Ctrl+C: copy only when there's a selection to copy, else SIGINT.
-  return key === 'c' && hasSelection ? 'copy' : null
+  return key === "c" && hasSelection ? "copy" : null;
 }
 
 // Hand the terminal's selection to the OS by mirroring it into xterm's hidden
@@ -58,31 +70,37 @@ export function terminalClipboardIntent(
 // selected in chat. The terminal's own ⌘C key handler still copies via
 // writeClipboardText when focus is on the canvas path.
 export function mirrorSelection(host: HTMLElement, text: string) {
-  const textarea = host.querySelector<HTMLTextAreaElement>('.xterm-helper-textarea')
+  const textarea = host.querySelector<HTMLTextAreaElement>(
+    ".xterm-helper-textarea",
+  );
 
   if (!textarea) {
-    return
+    return;
   }
 
   if (!text) {
-    textarea.value = ''
+    textarea.value = "";
 
-    return
+    return;
   }
 
-  textarea.value = text
+  textarea.value = text;
 
   if (!host.contains(document.activeElement)) {
-    return
+    return;
   }
 
-  const live = window.getSelection()
+  const live = window.getSelection();
 
-  const foreign = live && !live.isCollapsed && live.anchorNode != null && !host.contains(live.anchorNode)
+  const foreign =
+    live &&
+    !live.isCollapsed &&
+    live.anchorNode != null &&
+    !host.contains(live.anchorNode);
 
   if (foreign) {
-    return
+    return;
   }
 
-  textarea.select()
+  textarea.select();
 }

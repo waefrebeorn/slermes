@@ -1,38 +1,49 @@
-import { atom, computed, type ReadableAtom } from 'nanostores'
+import { atom, computed, type ReadableAtom } from "nanostores";
 
-import { persistBoolean, storedBoolean } from '@/lib/storage'
+import { persistBoolean, storedBoolean } from "@/lib/storage";
 
-export type ToolViewMode = 'product' | 'technical'
+export type ToolViewMode = "product" | "technical";
 
-type ToolDisclosureStates = Record<string, boolean>
+type ToolDisclosureStates = Record<string, boolean>;
 
-const TOOL_VIEW_TECHNICAL_STORAGE_KEY = 'hermes.desktop.toolView.technical'
-const TOOL_DISCLOSURE_STORAGE_KEY = 'hermes.desktop.toolDisclosure.v1'
-const MAX_DISCLOSURE_STATES = 240
+const TOOL_VIEW_TECHNICAL_STORAGE_KEY = "hermes.desktop.toolView.technical";
+const TOOL_DISCLOSURE_STORAGE_KEY = "hermes.desktop.toolDisclosure.v1";
+const MAX_DISCLOSURE_STATES = 240;
 
 export const $toolViewMode = atom<ToolViewMode>(
-  storedBoolean(TOOL_VIEW_TECHNICAL_STORAGE_KEY, false) ? 'technical' : 'product'
-)
-export const $toolDisclosureStates = atom<ToolDisclosureStates>(loadToolDisclosureStates())
-const disclosureOpenCache = new Map<string, ReadableAtom<boolean | undefined>>()
-const anyDisclosureOpenCache = new Map<string, ReadableAtom<boolean>>()
+  storedBoolean(TOOL_VIEW_TECHNICAL_STORAGE_KEY, false)
+    ? "technical"
+    : "product",
+);
+export const $toolDisclosureStates = atom<ToolDisclosureStates>(
+  loadToolDisclosureStates(),
+);
+const disclosureOpenCache = new Map<
+  string,
+  ReadableAtom<boolean | undefined>
+>();
+const anyDisclosureOpenCache = new Map<string, ReadableAtom<boolean>>();
 
-$toolViewMode.subscribe(mode => persistBoolean(TOOL_VIEW_TECHNICAL_STORAGE_KEY, mode === 'technical'))
-$toolDisclosureStates.subscribe(persistToolDisclosureStates)
+$toolViewMode.subscribe((mode) =>
+  persistBoolean(TOOL_VIEW_TECHNICAL_STORAGE_KEY, mode === "technical"),
+);
+$toolDisclosureStates.subscribe(persistToolDisclosureStates);
 
 export function setToolViewMode(mode: ToolViewMode) {
-  $toolViewMode.set(mode)
+  $toolViewMode.set(mode);
 }
 
-export function $toolDisclosureOpen(id: string): ReadableAtom<boolean | undefined> {
-  let cached = disclosureOpenCache.get(id)
+export function $toolDisclosureOpen(
+  id: string,
+): ReadableAtom<boolean | undefined> {
+  let cached = disclosureOpenCache.get(id);
 
   if (!cached) {
-    cached = computed($toolDisclosureStates, states => states[id])
-    disclosureOpenCache.set(id, cached)
+    cached = computed($toolDisclosureStates, (states) => states[id]);
+    disclosureOpenCache.set(id, cached);
   }
 
-  return cached
+  return cached;
 }
 
 /**
@@ -41,55 +52,65 @@ export function $toolDisclosureOpen(id: string): ReadableAtom<boolean | undefine
  * Computed rather than reading the whole map so a toggle anywhere in the
  * transcript only re-renders the runs whose own answer changed.
  */
-export function $anyToolDisclosureOpen(ids: readonly string[]): ReadableAtom<boolean> {
-  const key = ids.join('|')
-  let cached = anyDisclosureOpenCache.get(key)
+export function $anyToolDisclosureOpen(
+  ids: readonly string[],
+): ReadableAtom<boolean> {
+  const key = ids.join("|");
+  let cached = anyDisclosureOpenCache.get(key);
 
   if (!cached) {
-    cached = computed($toolDisclosureStates, states => ids.some(id => Boolean(states[id])))
-    anyDisclosureOpenCache.set(key, cached)
+    cached = computed($toolDisclosureStates, (states) =>
+      ids.some((id) => Boolean(states[id])),
+    );
+    anyDisclosureOpenCache.set(key, cached);
   }
 
-  return cached
+  return cached;
 }
 
 function loadToolDisclosureStates(): ToolDisclosureStates {
-  if (typeof window === 'undefined') {
-    return {}
+  if (typeof window === "undefined") {
+    return {};
   }
 
   try {
-    const raw = window.localStorage.getItem(TOOL_DISCLOSURE_STORAGE_KEY)
+    const raw = window.localStorage.getItem(TOOL_DISCLOSURE_STORAGE_KEY);
 
     if (!raw) {
-      return {}
+      return {};
     }
 
-    const parsed = JSON.parse(raw) as unknown
+    const parsed = JSON.parse(raw) as unknown;
 
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      return {}
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return {};
     }
 
     return Object.fromEntries(
       Object.entries(parsed as Record<string, unknown>)
-        .filter((entry): entry is [string, boolean] => typeof entry[0] === 'string' && typeof entry[1] === 'boolean')
-        .slice(-MAX_DISCLOSURE_STATES)
-    )
+        .filter(
+          (entry): entry is [string, boolean] =>
+            typeof entry[0] === "string" && typeof entry[1] === "boolean",
+        )
+        .slice(-MAX_DISCLOSURE_STATES),
+    );
   } catch {
-    return {}
+    return {};
   }
 }
 
 function persistToolDisclosureStates(states: ToolDisclosureStates) {
-  if (typeof window === 'undefined') {
-    return
+  if (typeof window === "undefined") {
+    return;
   }
 
   try {
-    const entries = Object.entries(states).slice(-MAX_DISCLOSURE_STATES)
+    const entries = Object.entries(states).slice(-MAX_DISCLOSURE_STATES);
 
-    window.localStorage.setItem(TOOL_DISCLOSURE_STORAGE_KEY, JSON.stringify(Object.fromEntries(entries)))
+    window.localStorage.setItem(
+      TOOL_DISCLOSURE_STORAGE_KEY,
+      JSON.stringify(Object.fromEntries(entries)),
+    );
   } catch {
     // Tool disclosure is a local UI preference; ignore storage failures.
   }
@@ -97,14 +118,14 @@ function persistToolDisclosureStates(states: ToolDisclosureStates) {
 
 export function setToolDisclosureOpen(id: string, open: boolean) {
   if (!id) {
-    return
+    return;
   }
 
-  const current = $toolDisclosureStates.get()
+  const current = $toolDisclosureStates.get();
 
   if (current[id] === open) {
-    return
+    return;
   }
 
-  $toolDisclosureStates.set({ ...current, [id]: open })
+  $toolDisclosureStates.set({ ...current, [id]: open });
 }

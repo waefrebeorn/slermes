@@ -11,20 +11,20 @@
 // Lives in its own leaf module so `store/gateway` (which marks the baseline)
 // and `store/native-notifications` (which reads it) don't import each other.
 
-const SEED_QUIET_MS = 4000
+const SEED_QUIET_MS = 4000;
 
-let quietUntil = 0
+let quietUntil = 0;
 
 /** Called on every gateway `open`. Opens the quiet window. */
 export function markNativeNotifyBaseline(): void {
-  quietUntil = Date.now() + SEED_QUIET_MS
+  quietUntil = Date.now() + SEED_QUIET_MS;
 }
 
 /** True while replayed post-connect state should not raise an OS notification. */
 export function withinNativeNotifyBaseline(): boolean {
-  return Date.now() < quietUntil
+  return Date.now() < quietUntil;
 }
 
 export function __resetNativeNotifyBaselineForTests(): void {
-  quietUntil = 0
+  quietUntil = 0;
 }

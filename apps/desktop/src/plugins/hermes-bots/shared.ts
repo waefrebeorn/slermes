@@ -8,31 +8,31 @@
  * `setPluginCtx`, and every reader goes through `getPluginCtx()`.
  */
 
-import type { PluginContext } from '@hermes/plugin-sdk'
+import type { PluginContext } from "@hermes/plugin-sdk";
 
-export const ID = 'hermes-bots'
+export const ID = "hermes-bots";
 
 /** Captured in register() so components can reach plugin storage. */
-let pluginCtx: PluginContext | null = null
+let pluginCtx: PluginContext | null = null;
 
 export function getPluginCtx(): PluginContext | null {
-  return pluginCtx
+  return pluginCtx;
 }
 
 export function setPluginCtx(ctx: PluginContext | null) {
-  pluginCtx = ctx
+  pluginCtx = ctx;
 }
 
 /** Monotonic open generation. A bot open and a group open supersede each
  *  other, so both bump it and both compare against it — and they no longer
  *  live in the same module. */
-let botOpenGeneration = 0
+let botOpenGeneration = 0;
 
 export function getBotOpenGeneration() {
-  return botOpenGeneration
+  return botOpenGeneration;
 }
 
 /** Invalidate every in-flight open; returns the generation that now owns it. */
 export function bumpBotOpenGeneration() {
-  return ++botOpenGeneration
+  return ++botOpenGeneration;
 }

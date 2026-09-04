@@ -8,14 +8,20 @@
  * with.
  */
 
-import * as sdk from '@hermes/plugin-sdk'
-import { host } from '@hermes/plugin-sdk'
+import * as sdk from "@hermes/plugin-sdk";
+import { host } from "@hermes/plugin-sdk";
 
-import { $botMeta, botMetaKey, botOwner, persistBotMetaSnapshot } from './data'
-import { backendTargetProfile, botConnectionRoute, botRosterMeta, botWorkspaceOwnerKey, requestForBot } from './routing'
-import type { RpcErrorLike } from './routing'
-import { getPluginCtx } from './shared'
-import type { BotMeta, CanonicalSession, RosterRow } from './types'
+import { $botMeta, botMetaKey, botOwner, persistBotMetaSnapshot } from "./data";
+import {
+  backendTargetProfile,
+  botConnectionRoute,
+  botRosterMeta,
+  botWorkspaceOwnerKey,
+  requestForBot,
+} from "./routing";
+import type { RpcErrorLike } from "./routing";
+import { getPluginCtx } from "./shared";
+import type { BotMeta, CanonicalSession, RosterRow } from "./types";
 
 // ── canonical bot chat ───────────────────────────────────────────────────────
 // Each bot has ONE forever chat, identified by NAME, never by pointer: the
@@ -30,22 +36,22 @@ import type { BotMeta, CanonicalSession, RosterRow } from './types'
 interface CanonicalCreation {
   /** Null only between the holder literal and the assignment two statements
    *  later; a flight is published to the map already carrying its promise. */
-  run: null | Promise<null | string>
+  run: null | Promise<null | string>;
 }
 
 // In-flight creations, keyed by bot name — double-clicking a row must not
 // mint two canonical chats.
-const canonicalCreations = new Map<string, CanonicalCreation>()
+const canonicalCreations = new Map<string, CanonicalCreation>();
 
 /** Upper bound for per-profile session.list scans (hide sweep, canonical-chat
  *  adoption, stored-session lookups). */
-export const PROFILE_SESSION_LIST_LIMIT = 200
+export const PROFILE_SESSION_LIST_LIMIT = 200;
 
 /** The one canonical title. (profile, CANONICAL_CHAT_TITLE) IS the bot's
  *  forever-chat identity — see the header above. Exported for the roster
  *  click path's tile-staleness probe (hermes-agent#90102), which must
  *  recognize canonical-titled tabs without restating the literal. */
-export const CANONICAL_CHAT_TITLE = 'Bot Chat'
+export const CANONICAL_CHAT_TITLE = "Bot Chat";
 
 /** A `session.list` row as the registry lookup reads it. CanonicalSession
  *  models the roster's `canonical_session` field, which carries no
@@ -53,7 +59,7 @@ export const CANONICAL_CHAT_TITLE = 'Bot Chat'
  *  read through an aliased guard, which TS only narrows for immutable
  *  properties. */
 interface CanonicalChatRow extends CanonicalSession {
-  readonly message_count?: number
+  readonly message_count?: number;
 }
 
 /** Is the chat on screen the given bot's forever-chat?
@@ -67,37 +73,45 @@ interface CanonicalChatRow extends CanonicalSession {
  *  matches neither, which is how the `/new` guard that calls this went dead. */
 export function isCanonicalChatOnScreen(
   bot: null | RosterRow | undefined,
-  storedSessionId: null | string | undefined
+  storedSessionId: null | string | undefined,
 ): boolean {
-  const canonical = bot?.canonical_session
+  const canonical = bot?.canonical_session;
 
   if (!storedSessionId || !canonical) {
-    return false
+    return false;
   }
 
-  return [canonical.id, canonical.resolved_id].filter(Boolean).map(String).includes(String(storedSessionId))
+  return [canonical.id, canonical.resolved_id]
+    .filter(Boolean)
+    .map(String)
+    .includes(String(storedSessionId));
 }
 
 async function openStoredBotChat(
   owner: RosterRow | string,
   storedId: string,
-  summary: CanonicalChatRow
+  summary: CanonicalChatRow,
 ): Promise<string> {
-  if (!storedId || typeof host.openSession !== 'function') {
-    throw new Error('This Hermes Desktop version cannot open stored sessions')
+  if (!storedId || typeof host.openSession !== "function") {
+    throw new Error("This Hermes Desktop version cannot open stored sessions");
   }
 
-  const { bot, name, route } = botOwner(owner)
-  const ownerKey = botWorkspaceOwnerKey(bot)
-  const hasAuthoritativeCount = typeof summary?.message_count === 'number' && Number.isFinite(summary.message_count)
-  const expectHistory = hasAuthoritativeCount ? summary.message_count > 0 : true
+  const { bot, name, route } = botOwner(owner);
+  const ownerKey = botWorkspaceOwnerKey(bot);
+  const hasAuthoritativeCount =
+    typeof summary?.message_count === "number" &&
+    Number.isFinite(summary.message_count);
+  const expectHistory = hasAuthoritativeCount
+    ? summary.message_count > 0
+    : true;
 
   // Current SDKs export the Bot-specific budget. The fallback preserves
   // compatibility with older hosts and isolated plugin test harnesses.
   const hydrationTimeoutMs =
-    typeof sdk !== 'undefined' && Number.isFinite(sdk.BOT_CHAT_SESSION_HYDRATION_TIMEOUT_MS)
+    typeof sdk !== "undefined" &&
+    Number.isFinite(sdk.BOT_CHAT_SESSION_HYDRATION_TIMEOUT_MS)
       ? sdk.BOT_CHAT_SESSION_HYDRATION_TIMEOUT_MS
-      : 60_000
+      : 60_000;
 
   // A profile backend that just woke up can lose the hydration-timeout race
   // even though the session is fine (hermes-agent#89617) — clicking Retry
@@ -115,7 +129,7 @@ async function openStoredBotChat(
   await host.openSession(storedId, {
     ...(route
       ? {
-          route
+          route,
         }
       : {}),
     profile: name,
@@ -126,50 +140,59 @@ async function openStoredBotChat(
     // already-open tile first, so Bot tabs survive owner lifecycles (#a81854a2,
     // the reason this stopped being `main`); it just loads into main instead of
     // minting a second tab when there is nothing to front.
-    intent: 'in-place',
+    intent: "in-place",
     awaitHydration: true,
     expectHistory,
     forceResume: true,
     hydrationTimeoutMs,
     keepAllProfilesScope: true,
-    workspaceMode: 'bots',
+    workspaceMode: "bots",
     workspaceOwnerKey: ownerKey,
     retryHydrationTimeoutOnce: true,
-    tabTitle: CANONICAL_CHAT_TITLE
-  })
+    tabTitle: CANONICAL_CHAT_TITLE,
+  });
 
-  return storedId
+  return storedId;
 }
 
 /** True when a session summary IS the canonical registry row. root_title is
  *  the durable lineage-root title reported by exact-lookup gateways; plain
  *  title covers windowed listings. */
 function isCanonicalBotChatHistory(history: CanonicalChatRow) {
-  const rootTitle = String(history?.root_title || '').trim()
-  const title = String(history?.title || '').trim()
+  const rootTitle = String(history?.root_title || "").trim();
+  const title = String(history?.title || "").trim();
 
-  return rootTitle === CANONICAL_CHAT_TITLE || (!rootTitle && title === CANONICAL_CHAT_TITLE)
+  return (
+    rootTitle === CANONICAL_CHAT_TITLE ||
+    (!rootTitle && title === CANONICAL_CHAT_TITLE)
+  );
 }
 
 function botModeGatewayNeedsUpdate(error: unknown) {
-  const message = String((error as RpcErrorLike)?.message || error || '')
+  const message = String((error as RpcErrorLike)?.message || error || "");
 
-  return /(?:method not found|no handler for|unknown method|unsupported rpc)/i.test(message)
+  return /(?:method not found|no handler for|unknown method|unsupported rpc)/i.test(
+    message,
+  );
 }
 
-export function notifyBotOpenFailure(error: unknown, bot: RosterRow, fallbackMessage: string) {
+export function notifyBotOpenFailure(
+  error: unknown,
+  bot: RosterRow,
+  fallbackMessage: string,
+) {
   if (botModeGatewayNeedsUpdate(error)) {
-    const gateway = bot.connectionLabel || bot.connectionId || 'this gateway'
+    const gateway = bot.connectionLabel || bot.connectionId || "this gateway";
     host.notify?.({
-      kind: 'error',
-      title: 'Update this gateway to use Bot Mode',
-      message: `Update ${gateway}, then try again.`
-    })
+      kind: "error",
+      title: "Update this gateway to use Bot Mode",
+      message: `Update ${gateway}, then try again.`,
+    });
 
-    return
+    return;
   }
 
-  host.notifyError?.(error, fallbackMessage)
+  host.notifyError?.(error, fallbackMessage);
 }
 
 /** THE identity lookup: the profile's session titled exactly "Bot Chat",
@@ -181,8 +204,10 @@ export function notifyBotOpenFailure(error: unknown, bot: RosterRow, fallbackMes
  *  (canonical chats are always hidden). Remote bots route via requestForBot
  *  on the immutable captured owner — activation is a UI concern and never
  *  authorizes this RPC. */
-async function findExistingCanonicalChat(owner: RosterRow | string): Promise<CanonicalChatRow | null> {
-  const { bot, name, route } = botOwner(owner)
+async function findExistingCanonicalChat(
+  owner: RosterRow | string,
+): Promise<CanonicalChatRow | null> {
+  const { bot, name, route } = botOwner(owner);
   // FAIL CLOSED. A failed registry lookup MUST NOT read as "no Bot Chat
   // exists" — that is the one remaining way to fork a bot's forever chat.
   // The failure lives exactly in the post-update window: the desktop
@@ -194,29 +219,38 @@ async function findExistingCanonicalChat(owner: RosterRow | string): Promise<Can
   // update". Cross-connection lookups fail MORE often (network), so this
   // matters doubly for remote bots. Both open paths catch and toast "try
   // again", which is the correct outcome: retry, never mint.
-  let res: { sessions?: CanonicalChatRow[] }
+  let res: { sessions?: CanonicalChatRow[] };
 
   try {
-    res = await requestForBot<{ sessions?: CanonicalChatRow[] }>(bot, 'session.list', {
-      profile: backendTargetProfile(route, name),
-      title: CANONICAL_CHAT_TITLE,
-      limit: PROFILE_SESSION_LIST_LIMIT,
-      include_hidden: true
-    })
+    res = await requestForBot<{ sessions?: CanonicalChatRow[] }>(
+      bot,
+      "session.list",
+      {
+        profile: backendTargetProfile(route, name),
+        title: CANONICAL_CHAT_TITLE,
+        limit: PROFILE_SESSION_LIST_LIMIT,
+        include_hidden: true,
+      },
+    );
   } catch (error) {
     // Plugin tests and host bridges can return Error-like values from another
     // JS realm, where `instanceof Error` is false. Preserve the provider/RPC
     // message so update-required classification and diagnostics still work.
-    const message = typeof (error as RpcErrorLike)?.message === 'string' ? (error as { message: string }).message : ''
-    const detail = message ? ` (${message})` : ''
-    throw new Error(`Could not check ${name}'s Bot Chat registry${detail} — not starting a new chat`)
+    const message =
+      typeof (error as RpcErrorLike)?.message === "string"
+        ? (error as { message: string }).message
+        : "";
+    const detail = message ? ` (${message})` : "";
+    throw new Error(
+      `Could not check ${name}'s Bot Chat registry${detail} — not starting a new chat`,
+    );
   }
 
-  const rows = res?.sessions ?? []
-  const match = rows.find(row => isCanonicalBotChatHistory(row))
+  const rows = res?.sessions ?? [];
+  const match = rows.find((row) => isCanonicalBotChatHistory(row));
 
   if (match) {
-    return match
+    return match;
   }
 
   // A zero-row result is NOT the same as a thrown error, but it is just as
@@ -228,15 +262,17 @@ async function findExistingCanonicalChat(owner: RosterRow | string): Promise<Can
   // an empty lookup is unconfirmed absence, not confirmed absence, so fail
   // closed the same way a thrown RPC error already does instead of minting.
   if (bot?.canonical_session?.id) {
-    throw new Error(`Could not confirm ${name}'s Bot Chat registry — not starting a new chat`)
+    throw new Error(
+      `Could not confirm ${name}'s Bot Chat registry — not starting a new chat`,
+    );
   }
 
-  return null
+  return null;
 }
 
 interface CreateCanonicalChatOptions {
-  kickoff?: boolean
-  openingStillCurrent?: (() => boolean) | null
+  kickoff?: boolean;
+  openingStillCurrent?: (() => boolean) | null;
 }
 
 /** The self-introduction a brand-new bot is born with (#91827).
@@ -253,7 +289,9 @@ interface CreateCanonicalChatOptions {
  *  documented in AGENTS.md ("kicked off with the bot's intro"); what this
  *  narrows is who has to read it in English. */
 function kickoffText(): string {
-  return getPluginCtx()?.i18n?.t('bot.kickoff') ?? 'Hey, tell me about yourself!'
+  return (
+    getPluginCtx()?.i18n?.t("bot.kickoff") ?? "Hey, tell me about yourself!"
+  );
 }
 
 /** Create the bot's ONE forever chat: a real session titled "Bot Chat".
@@ -289,10 +327,13 @@ function kickoffText(): string {
  *  rail in a bot chat until the next click re-opened it scoped. */
 export function createCanonicalChat(
   owner: RosterRow | string,
-  { kickoff = false, openingStillCurrent = null }: CreateCanonicalChatOptions = {}
+  {
+    kickoff = false,
+    openingStillCurrent = null,
+  }: CreateCanonicalChatOptions = {},
 ): Promise<null | string> {
-  const { bot, name, key, route } = botOwner(owner)
-  const inflight = canonicalCreations.get(key)
+  const { bot, name, key, route } = botOwner(owner);
+  const inflight = canonicalCreations.get(key);
 
   // Every open of a just-minted row is the same call — adopting a concurrent
   // flight's result, the retry after a failed eager title, the retry after the
@@ -301,51 +342,62 @@ export function createCanonicalChat(
     host.openSession!(sid, {
       ...(route
         ? {
-            route
+            route,
           }
         : {}),
       profile: name,
-      intent: 'main',
+      intent: "main",
       keepAllProfilesScope: route ? true : false,
-      workspaceMode: 'bots',
+      workspaceMode: "bots",
       workspaceOwnerKey: botWorkspaceOwnerKey(bot),
-      tabTitle: CANONICAL_CHAT_TITLE
-    })
+      tabTitle: CANONICAL_CHAT_TITLE,
+    });
 
   if (inflight) {
     if (!openingStillCurrent) {
-      return inflight.run!
+      return inflight.run!;
     }
 
-    return inflight.run!.then(async sid => {
-      if (sid && openingStillCurrent() && typeof host.openSession === 'function') {
-        await openFreshCanonical(sid)
+    return inflight.run!.then(async (sid) => {
+      if (
+        sid &&
+        openingStillCurrent() &&
+        typeof host.openSession === "function"
+      ) {
+        await openFreshCanonical(sid);
       }
 
-      return sid
-    })
+      return sid;
+    });
   }
 
   const flight: CanonicalCreation = {
-    run: null
-  }
+    run: null,
+  };
 
-  const canNavigate = () => !openingStillCurrent || openingStillCurrent()
+  const canNavigate = () => !openingStillCurrent || openingStillCurrent();
 
   const run = (async () => {
-    const existing = await findExistingCanonicalChat(owner)
+    const existing = await findExistingCanonicalChat(owner);
 
     if (existing?.id) {
-      if (typeof host.openSession === 'function' && canNavigate()) {
+      if (typeof host.openSession === "function" && canNavigate()) {
         // The exact-lookup gateway reports the compression-lineage tip as
         // resolved_id; open the tip, the registry row stays the identity.
-        await openStoredBotChat(owner, existing.resolved_id || existing.id, existing)
+        await openStoredBotChat(
+          owner,
+          existing.resolved_id || existing.id,
+          existing,
+        );
       }
 
-      return existing.id
+      return existing.id;
     }
 
-    const res = await requestForBot<{ session_id?: string; stored_session_id?: string }>(bot, 'session.create', {
+    const res = await requestForBot<{
+      session_id?: string;
+      stored_session_id?: string;
+    }>(bot, "session.create", {
       profile: backendTargetProfile(route, name),
       title: CANONICAL_CHAT_TITLE,
       // Always born hidden from the global sidebar — Bot Mode sessions are
@@ -359,11 +411,11 @@ export function createCanonicalChat(
       // on a stale/dead provider after a profile switch. Older gateways
       // ignore the unknown param; the server's exact-title backfill then
       // covers the legacy path.
-      follow_profile_config: true
-    })
+      follow_profile_config: true,
+    });
 
-    const sid = res?.stored_session_id
-    const runtime = res?.session_id
+    const sid = res?.stored_session_id;
+    const runtime = res?.session_id;
 
     // session.create is intentionally lazy: its stored row does not exist until
     // the first prompt. Mounting `sid` immediately therefore emits a noisy REST
@@ -375,15 +427,15 @@ export function createCanonicalChat(
     // before either the open or kickoff, closing both the 404 race and the
     // untitled window. Older gateways may not support the eager write; retain
     // the kickoff-and-retry fallback below.
-    let titled = false
+    let titled = false;
 
     if (runtime) {
       try {
-        await requestForBot(bot, 'session.title', {
+        await requestForBot(bot, "session.title", {
           session_id: runtime,
-          title: CANONICAL_CHAT_TITLE
-        })
-        titled = true
+          title: CANONICAL_CHAT_TITLE,
+        });
+        titled = true;
       } catch (error) {
         // ADOPT-BEFORE-MINT: a title-uniqueness rejection is not an old
         // gateway — it means another writer took the canonical title between
@@ -393,19 +445,25 @@ export function createCanonicalChat(
         // forever chat. Re-consult the registry and adopt the winner; the
         // stray lazy session holds zero messages and is simply abandoned
         // (the gateway prunes it).
-        if (/already in use/i.test(String((error as RpcErrorLike)?.message || ''))) {
-          const winner = await findExistingCanonicalChat(owner)
+        if (
+          /already in use/i.test(String((error as RpcErrorLike)?.message || ""))
+        ) {
+          const winner = await findExistingCanonicalChat(owner);
 
           if (winner?.id) {
             // Adopting the winner settles IDENTITY, which is always correct to
             // return. Navigating to it is not: this path can land a full
             // round-trip after the user clicked another bot, and every sibling
             // open here is staleness-probed for exactly that reason.
-            if (typeof host.openSession === 'function' && canNavigate()) {
-              await openStoredBotChat(owner, winner.resolved_id || winner.id, winner)
+            if (typeof host.openSession === "function" && canNavigate()) {
+              await openStoredBotChat(
+                owner,
+                winner.resolved_id || winner.id,
+                winner,
+              );
             }
 
-            return winner.id
+            return winner.id;
           }
         }
         /* compatibility fallback: prompt.submit will persist the lazy row */
@@ -414,12 +472,12 @@ export function createCanonicalChat(
 
     // Mount the session view FIRST, then send the kickoff — submitting into
     // an unmounted session left the intro reply invisible until reopen.
-    let opened = false
+    let opened = false;
 
-    if (sid && typeof host.openSession === 'function' && canNavigate()) {
+    if (sid && typeof host.openSession === "function" && canNavigate()) {
       try {
-        await openFreshCanonical(sid)
-        opened = true
+        await openFreshCanonical(sid);
+        opened = true;
       } catch {
         // The stored row may not exist until the kickoff persists it. Retry
         // after prompt.submit below instead of leaving the chat off-screen.
@@ -432,46 +490,56 @@ export function createCanonicalChat(
       // prunes the zero-message lazy session, so without some first prompt
       // the chat never survives its own creation. A titled row needs neither:
       // the user speaks first.
-      const submitIntro = kickoff || !titled
+      const submitIntro = kickoff || !titled;
 
       if (submitIntro) {
-        await new Promise(resolve => window.setTimeout(resolve, 400))
+        await new Promise((resolve) => window.setTimeout(resolve, 400));
 
         try {
-          await requestForBot(bot, 'prompt.submit', {
+          await requestForBot(bot, "prompt.submit", {
             session_id: runtime,
-            text: kickoffText()
-          })
+            text: kickoffText(),
+          });
 
-          if (!opened && sid && typeof host.openSession === 'function' && canNavigate()) {
-            await openFreshCanonical(sid)
+          if (
+            !opened &&
+            sid &&
+            typeof host.openSession === "function" &&
+            canNavigate()
+          ) {
+            await openFreshCanonical(sid);
           }
         } catch {
           // The chat already exists under the canonical title — the next click
           // finds it by name instead of making a second Bot Chat.
         }
-      } else if (!opened && sid && typeof host.openSession === 'function' && canNavigate()) {
+      } else if (
+        !opened &&
+        sid &&
+        typeof host.openSession === "function" &&
+        canNavigate()
+      ) {
         // No intro turn: still finish mounting the chat when the first open
         // raced the (now titled) row.
         try {
-          await openFreshCanonical(sid)
+          await openFreshCanonical(sid);
         } catch {
           /* row is titled and persistent — the next click opens it by name */
         }
       }
     }
 
-    return sid || null
+    return sid || null;
   })().finally(() => {
     if (canonicalCreations.get(key) === flight) {
-      canonicalCreations.delete(key)
+      canonicalCreations.delete(key);
     }
-  })
+  });
 
-  flight.run = run
-  canonicalCreations.set(key, flight)
+  flight.run = run;
+  canonicalCreations.set(key, flight);
 
-  return run
+  return run;
 }
 
 /** Open the bot's ONE forever chat and return the opened registry id.
@@ -484,17 +552,17 @@ export function createCanonicalChat(
  *  bot's chat opens without re-homing Desktop's chrome. */
 export async function openBotCanonicalChat(
   owner: RosterRow | string,
-  openingStillCurrent: (() => boolean) | null = null
+  openingStillCurrent: (() => boolean) | null = null,
 ): Promise<{ openedId: string; registryId: string } | null> {
-  const existing = await findExistingCanonicalChat(owner)
+  const existing = await findExistingCanonicalChat(owner);
 
-  if (existing?.id && typeof host.openSession === 'function') {
+  if (existing?.id && typeof host.openSession === "function") {
     if (openingStillCurrent && !openingStillCurrent()) {
-      return null
+      return null;
     }
 
-    const openedId = existing.resolved_id || existing.id
-    await openStoredBotChat(owner, openedId, existing)
+    const openedId = existing.resolved_id || existing.id;
+    await openStoredBotChat(owner, openedId, existing);
 
     // Both identities matter downstream: the durable registry row names the
     // chat; the resolved lineage tip is what actually takes session focus.
@@ -502,76 +570,76 @@ export async function openBotCanonicalChat(
     // compressed Bot Chat for a stale open (first click bounced to the home).
     return {
       registryId: String(existing.id),
-      openedId: String(openedId)
-    }
+      openedId: String(openedId),
+    };
   }
 
   const created = await createCanonicalChat(owner, {
-    openingStillCurrent
-  })
+    openingStillCurrent,
+  });
 
   return created
     ? {
         registryId: String(created),
-        openedId: String(created)
+        openedId: String(created),
       }
-    : null
+    : null;
 }
 
 export async function prepareBotSource(bot: RosterRow) {
   if (!bot.sourceScoped) {
-    return
+    return;
   }
 
   // Cross-connection RPCs ride the immutable captured route (requestForBot →
   // host.requestProfile) — Desktop's active connection does not move, and
   // activation is a UI concern that never authorizes the calls. All this
   // gate does is refuse when the desktop predates routed profile requests.
-  const route = botConnectionRoute(bot)
+  const route = botConnectionRoute(bot);
 
-  if (route && typeof host.requestProfile !== 'function') {
+  if (route && typeof host.requestProfile !== "function") {
     throw new Error(
-      getPluginCtx()?.i18n?.t('bot.remoteConnectionsUnsupported') ??
-        'Update Hermes Desktop to chat with bots on other connections.'
-    )
+      getPluginCtx()?.i18n?.t("bot.remoteConnectionsUnsupported") ??
+        "Update Hermes Desktop to chat with bots on other connections.",
+    );
   }
 
-  if (!route && typeof host.ensureAgent === 'function') {
+  if (!route && typeof host.ensureAgent === "function") {
     // Source-annotated row on the ACTIVE connection (no captured route):
     // legacy activation path, unchanged. An absent connectionId is fine —
     // ensureGatewayAgent normalizes it with `(connectionId ?? '').trim() || null`.
-    await host.ensureAgent(bot.connectionId, bot.name)
+    await host.ensureAgent(bot.connectionId, bot.name);
   }
 }
 
 export async function ensureBotMetadata(bot: RosterRow): Promise<BotMeta> {
   if (!bot?.sourceScoped) {
-    return botRosterMeta(bot, $botMeta.get()) || {}
+    return botRosterMeta(bot, $botMeta.get()) || {};
   }
 
-  const route = botConnectionRoute(bot)
-  const backendProfile = backendTargetProfile(route, bot.name)
+  const route = botConnectionRoute(bot);
+  const backendProfile = backendTargetProfile(route, bot.name);
 
-  const result = await requestForBot<{ profiles?: Array<Pick<RosterRow, 'name' | 'ui_meta'>> }>(
-    bot,
-    'profiles.list',
-    {}
-  )
+  const result = await requestForBot<{
+    profiles?: Array<Pick<RosterRow, "name" | "ui_meta">>;
+  }>(bot, "profiles.list", {});
 
-  const row = (result?.profiles || []).find(profile => profile?.name === backendProfile)
-  const server = row?.ui_meta?.['hermes-bots']
+  const row = (result?.profiles || []).find(
+    (profile) => profile?.name === backendProfile,
+  );
+  const server = row?.ui_meta?.["hermes-bots"];
 
-  if (server && typeof server === 'object') {
-    const key = botMetaKey(bot)
+  if (server && typeof server === "object") {
+    const key = botMetaKey(bot);
     $botMeta.set({
       ...$botMeta.get(),
       [key]: {
         ...($botMeta.get()[key] || {}),
-        ...server
-      }
-    })
-    persistBotMetaSnapshot($botMeta.get(), true)
+        ...server,
+      },
+    });
+    persistBotMetaSnapshot($botMeta.get(), true);
   }
 
-  return botRosterMeta(bot, $botMeta.get()) || {}
+  return botRosterMeta(bot, $botMeta.get()) || {};
 }

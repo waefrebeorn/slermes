@@ -1,25 +1,29 @@
-import { useStore } from '@nanostores/react'
-import { useEffect, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useEffect, useState } from "react";
 
-import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { $confirmRequest, type PendingConfirm, settleConfirm } from '@/store/confirm'
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  $confirmRequest,
+  type PendingConfirm,
+  settleConfirm,
+} from "@/store/confirm";
 
 // The one mount point for `confirm()` from @/store/confirm. Mounted once at the
 // shell, the way NotificationStack backs notify().
 export function ConfirmHost() {
-  const request = useStore($confirmRequest)
+  const request = useStore($confirmRequest);
   // The atom clears the moment the question is answered, but Radix still has a
   // close animation to play — hold the copy so the dialog doesn't blank mid-fade.
-  const [shown, setShown] = useState<null | PendingConfirm>(request)
+  const [shown, setShown] = useState<null | PendingConfirm>(request);
 
   useEffect(() => {
     if (request) {
-      setShown(request)
+      setShown(request);
     }
-  }, [request])
+  }, [request]);
 
   if (!shown) {
-    return null
+    return null;
   }
 
   return (
@@ -36,5 +40,5 @@ export function ConfirmHost() {
       open={request !== null}
       title={shown.title}
     />
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { isRemoteGateway } from '@/lib/media'
+import { isRemoteGateway } from "@/lib/media";
 
 /**
  * Make a URL loadable from THIS machine before the pane tries it.
@@ -14,13 +14,13 @@ import { isRemoteGateway } from '@/lib/media'
  */
 export async function reachablePreviewUrl(url: string): Promise<string> {
   if (!url || !isRemoteGateway()) {
-    return url
+    return url;
   }
 
   try {
-    return (await window.hermesDesktop?.reachPreviewUrl?.(url)) || url
+    return (await window.hermesDesktop?.reachPreviewUrl?.(url)) || url;
   } catch {
     // An older Electron main has no such handler; the URL is no worse for it.
-    return url
+    return url;
   }
 }

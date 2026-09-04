@@ -1,10 +1,10 @@
-import { type RefObject, useEffect } from 'react'
+import { type RefObject, useEffect } from "react";
 
 /** The caret is in the composer — see the `:has()` rules in styles.css. */
-const TYPING_SELECTOR = '[data-slot="composer-rich-input"]:focus'
+const TYPING_SELECTOR = '[data-slot="composer-rich-input"]:focus';
 
 /** An open completion list owns the surface; the band falls back behind it. */
-const DRAWER_SELECTOR = '[data-slot="composer-completion-drawer"]'
+const DRAWER_SELECTOR = '[data-slot="composer-completion-drawer"]';
 
 /**
  * Native frost behind the band.
@@ -60,69 +60,74 @@ const DRAWER_SELECTOR = '[data-slot="composer-completion-drawer"]'
  * that answer lives in main (`hudFrostFor`) next to the state it reads. This
  * hook reports what the band is doing; it does not decide the material.
  */
-export function useHudGlass(rootRef: RefObject<HTMLElement | null>, backing: boolean): void {
+export function useHudGlass(
+  rootRef: RefObject<HTMLElement | null>,
+  backing: boolean,
+): void {
   useEffect(() => {
-    const root = rootRef.current
-    const setFrost = window.hermesDesktop?.hud?.setFrost
+    const root = rootRef.current;
+    const setFrost = window.hermesDesktop?.hud?.setFrost;
 
     if (!root || !setFrost) {
-      return
+      return;
     }
 
-    let on: boolean | null = null
+    let on: boolean | null = null;
 
     const apply = () => {
       const next =
-        backing && root.querySelector(DRAWER_SELECTOR) === null && root.querySelector(TYPING_SELECTOR) !== null
+        backing &&
+        root.querySelector(DRAWER_SELECTOR) === null &&
+        root.querySelector(TYPING_SELECTOR) !== null;
 
       if (on !== next) {
-        on = next
-        void setFrost(next)
+        on = next;
+        void setFrost(next);
       }
-    }
+    };
 
     // The drawer mounts and unmounts without any focus change, so neither
     // focusin/focusout nor a re-render is guaranteed to follow it. Coalesced
     // to a frame: this observes the whole shell, and a streaming reply mutates
     // the transcript tens of times a second — the drawer's state cannot change
     // more than once per paint, so re-deciding per mutation is pure churn.
-    let frame: null | number = null
+    let frame: null | number = null;
 
     const schedule = () => {
       if (frame === null) {
         frame = requestAnimationFrame(() => {
-          frame = null
-          apply()
-        })
+          frame = null;
+          apply();
+        });
       }
-    }
+    };
 
-    const observer = new MutationObserver(schedule)
+    const observer = new MutationObserver(schedule);
 
-    observer.observe(root, { childList: true, subtree: true })
+    observer.observe(root, { childList: true, subtree: true });
 
-    apply()
-    root.addEventListener('focusin', apply)
-    root.addEventListener('focusout', apply)
+    apply();
+    root.addEventListener("focusin", apply);
+    root.addEventListener("focusout", apply);
     // Clicking away to another APP fires no focusout — the composer stays
     // document.activeElement — but `:focus` stops matching, so the scrim goes
     // and the frost would be left behind as a bare slab. Deferred a frame so
     // the query runs after the deactivation has landed.
-    window.addEventListener('blur', schedule)
-    window.addEventListener('focus', schedule)
+    window.addEventListener("blur", schedule);
+    window.addEventListener("focus", schedule);
 
     return () => {
-      void setFrost(false)
-      observer.disconnect()
+      void setFrost(false);
+      observer.disconnect();
 
       if (frame !== null) {
-        cancelAnimationFrame(frame)
+        cancelAnimationFrame(frame);
       }
 
-      root.removeEventListener('focusin', apply)
-      root.removeEventListener('focusout', apply)
-      window.removeEventListener('blur', schedule)
-      window.removeEventListener('focus', schedule)
-    }
-  }, [backing, rootRef])
+      root.removeEventListener("focusin", apply);
+      root.removeEventListener("focusout", apply);
+      window.removeEventListener("blur", schedule);
+      window.removeEventListener("focus", schedule);
+    };
+  }, [backing, rootRef]);
 }

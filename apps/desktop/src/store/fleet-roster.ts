@@ -1,6 +1,6 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import type { DesktopAgentRoster } from '@/global'
+import type { DesktopAgentRoster } from "@/global";
 
 // The union agent roster — every profile on every registered gateway — as
 // Electron enumerates it over REST/SSH (`hermes:agents:roster`). Bot Mode and
@@ -8,48 +8,57 @@ import type { DesktopAgentRoster } from '@/global'
 // is its third consumer. Fetched on demand only (mount / focus / registry
 // change), never on a timer: the multi-connection docs rule out periodic
 // fleet polling from the sidebar.
-export const $fleetRoster = atom<DesktopAgentRoster | null>(null)
+export const $fleetRoster = atom<DesktopAgentRoster | null>(null);
 
-const FLEET_ROSTER_STALE_MS = 60_000
+const FLEET_ROSTER_STALE_MS = 60_000;
 
-let fetchedAt = 0
-let inflight: null | Promise<void> = null
+let fetchedAt = 0;
+let inflight: null | Promise<void> = null;
 
-export async function refreshFleetRoster(options: { force?: boolean } = {}): Promise<void> {
-  const bridge = window.hermesDesktop?.getAgentRoster
+export async function refreshFleetRoster(
+  options: { force?: boolean } = {},
+): Promise<void> {
+  const bridge = window.hermesDesktop?.getAgentRoster;
 
   if (!bridge) {
-    return
+    return;
   }
 
-  if (!options.force && $fleetRoster.get() && Date.now() - fetchedAt < FLEET_ROSTER_STALE_MS) {
-    return
+  if (
+    !options.force &&
+    $fleetRoster.get() &&
+    Date.now() - fetchedAt < FLEET_ROSTER_STALE_MS
+  ) {
+    return;
   }
 
   if (inflight) {
-    return inflight
+    return inflight;
   }
 
   inflight = bridge()
-    .then(roster => {
-      $fleetRoster.set(roster)
-      fetchedAt = Date.now()
+    .then((roster) => {
+      $fleetRoster.set(roster);
+      fetchedAt = Date.now();
     })
     .catch((error: unknown) => {
       // A failed enumeration keeps the last roster: the rail should not lose
       // a machine's squares because one refresh hit a sleeping box.
-      console.warn('[fleet-roster] enumeration failed; keeping the previous roster', error)
+      console.warn(
+        "[fleet-roster] enumeration failed; keeping the previous roster",
+        error,
+      );
     })
     .finally(() => {
-      inflight = null
-    })
+      inflight = null;
+    });
 
-  return inflight
+  return inflight;
 }
 
 /** @internal */
 export function _resetFleetRosterForTests(): void {
-  $fleetRoster.set(null)
-  fetchedAt = 0
-  inflight = null
+  $fleetRoster.set(null);
+  fetchedAt = 0;
+  inflight = null;
 }

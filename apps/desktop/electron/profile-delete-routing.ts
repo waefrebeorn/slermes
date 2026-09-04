@@ -11,70 +11,74 @@
 
 /** Parse a profile name from an `/api/profiles/<name>` request path. */
 export function profileNameFromPath(path: unknown): string | null {
-  const match = String(path || '').match(/^\/api\/profiles\/([^/?#]+)(?:[?#].*)?$/)
+  const match = String(path || "").match(
+    /^\/api\/profiles\/([^/?#]+)(?:[?#].*)?$/,
+  );
 
   if (!match) {
-    return null
+    return null;
   }
 
-  let raw = ''
+  let raw = "";
 
   try {
-    raw = decodeURIComponent(match[1])
+    raw = decodeURIComponent(match[1]);
   } catch {
-    return null
+    return null;
   }
 
-  const name = raw.trim()
+  const name = raw.trim();
 
   if (!name) {
-    return null
+    return null;
   }
 
-  if (name.toLowerCase() === 'default') {
-    return 'default'
+  if (name.toLowerCase() === "default") {
+    return "default";
   }
 
-  return name.toLowerCase()
+  return name.toLowerCase();
 }
 
 /** Parse a `hermes:api` request into the profile name a DELETE targets. */
 export function profileNameFromDeleteRequest(request) {
-  if (!request || String(request.method || 'GET').toUpperCase() !== 'DELETE') {
-    return null
+  if (!request || String(request.method || "GET").toUpperCase() !== "DELETE") {
+    return null;
   }
 
-  return profileNameFromPath(request.path)
+  return profileNameFromPath(request.path);
 }
 
-export type ProfileDeleteAction = 'noop' | 'teardown-primary' | 'teardown-pool'
+export type ProfileDeleteAction = "noop" | "teardown-primary" | "teardown-pool";
 
 export interface ProfileDeleteDecision {
-  action: ProfileDeleteAction
-  profile: string | null
+  action: ProfileDeleteAction;
+  profile: string | null;
 }
 
 export interface ProfileDeleteDecisionDeps {
-  isDefaultProfile: (profile: string) => boolean
-  isValidProfileName: (profile: string) => boolean
-  primaryProfileKey: () => string
+  isDefaultProfile: (profile: string) => boolean;
+  isValidProfileName: (profile: string) => boolean;
+  primaryProfileKey: () => string;
 }
 
 export interface ConnectionScopedProfileDeleteRequest {
-  connectionId?: unknown
-  method?: unknown
-  path?: unknown
-  profile?: unknown
+  connectionId?: unknown;
+  method?: unknown;
+  path?: unknown;
+  profile?: unknown;
 }
 
 export interface ConnectionScopedProfileDeleteDeps<T> {
-  acquire: (profile: string) => () => void
-  connectionKind: (connectionId: string) => string
-  dispatch: (routeProfile: null) => Promise<T>
-  isDefaultProfile: (profile: string) => boolean
-  isValidProfileName: (profile: string) => boolean
-  prepareLocal: (request: ConnectionScopedProfileDeleteRequest) => Promise<void>
-  teardownConnection: (connectionId: string, profile: string) => Promise<void>
+  acquire: (profile: string) => () => void;
+  connectionKind: (connectionId: string) => string;
+  dispatch: (routeProfile: null) => Promise<T>;
+  isDefaultProfile: (profile: string) => boolean;
+  isValidProfileName: (profile: string) => boolean;
+  prepareLocal: (
+    request: ConnectionScopedProfileDeleteRequest,
+  ) => Promise<void>;
+  teardownConnection: (connectionId: string, profile: string) => Promise<void>;
 }
 
 /**
@@ -86,36 +90,39 @@ export interface ConnectionScopedProfileDeleteDeps<T> {
  */
 export async function dispatchConnectionScopedProfileDelete<T>(
   request: ConnectionScopedProfileDeleteRequest,
-  deps: ConnectionScopedProfileDeleteDeps<T>
+  deps: ConnectionScopedProfileDeleteDeps<T>,
 ): Promise<T> {
-  const targetProfile = profileNameFromDeleteRequest(request)
-  const logicalProfile = String(request.profile ?? '').trim() || targetProfile || ''
-  const connectionId = String(request.connectionId ?? '').trim()
+  const targetProfile = profileNameFromDeleteRequest(request);
+  const logicalProfile =
+    String(request.profile ?? "").trim() || targetProfile || "";
+  const connectionId = String(request.connectionId ?? "").trim();
 
   if (!targetProfile || !connectionId) {
-    throw new Error('Connection-scoped profile deletion requires a connection and profile.')
+    throw new Error(
+      "Connection-scoped profile deletion requires a connection and profile.",
+    );
   }
 
   if (deps.isDefaultProfile(targetProfile)) {
-    throw new Error('The default profile cannot be deleted.')
+    throw new Error("The default profile cannot be deleted.");
   }
 
   if (!deps.isValidProfileName(targetProfile)) {
-    throw new Error(`Invalid profile name: ${targetProfile}`)
+    throw new Error(`Invalid profile name: ${targetProfile}`);
   }
 
-  const release = deps.acquire(targetProfile)
+  const release = deps.acquire(targetProfile);
 
   try {
-    if (deps.connectionKind(connectionId) === 'local') {
-      await deps.prepareLocal(request)
+    if (deps.connectionKind(connectionId) === "local") {
+      await deps.prepareLocal(request);
     } else {
-      await deps.teardownConnection(connectionId, logicalProfile)
+      await deps.teardownConnection(connectionId, logicalProfile);
     }
 
-    return await deps.dispatch(null)
+    return await deps.dispatch(null);
   } finally {
-    release()
+    release();
   }
 }
 
@@ -129,49 +136,49 @@ export async function dispatchConnectionScopedProfileDelete<T>(
  * blocked until the last request releases its lease.
  */
 export class ProfileDeletionGate {
-  readonly #active = new Map<string, number>()
+  readonly #active = new Map<string, number>();
 
   acquire(profile: unknown): () => void {
-    const key = String(profile ?? '')
+    const key = String(profile ?? "")
       .trim()
-      .toLowerCase()
+      .toLowerCase();
 
     if (!key) {
-      return () => undefined
+      return () => undefined;
     }
 
-    this.#active.set(key, (this.#active.get(key) ?? 0) + 1)
-    let released = false
+    this.#active.set(key, (this.#active.get(key) ?? 0) + 1);
+    let released = false;
 
     return () => {
       if (released) {
-        return
+        return;
       }
 
-      released = true
-      const remaining = (this.#active.get(key) ?? 1) - 1
+      released = true;
+      const remaining = (this.#active.get(key) ?? 1) - 1;
 
       if (remaining > 0) {
-        this.#active.set(key, remaining)
+        this.#active.set(key, remaining);
       } else {
-        this.#active.delete(key)
+        this.#active.delete(key);
       }
-    }
+    };
   }
 
   blocks(profile: unknown): boolean {
-    const key = String(profile ?? '')
+    const key = String(profile ?? "")
       .trim()
-      .toLowerCase()
+      .toLowerCase();
 
-    return Boolean(key && this.#active.has(key))
+    return Boolean(key && this.#active.has(key));
   }
 
   assertCanStart(profile: unknown): void {
-    const key = String(profile ?? '').trim()
+    const key = String(profile ?? "").trim();
 
     if (this.blocks(key)) {
-      throw new Error(`Profile "${key}" is being deleted.`)
+      throw new Error(`Profile "${key}" is being deleted.`);
     }
   }
 }
@@ -184,16 +191,16 @@ export class ProfileDeletionGate {
 export function assertLocalProfileCanStart(
   profile: unknown,
   gate: ProfileDeletionGate,
-  profileDirectoryExists: (profile: string) => boolean
+  profileDirectoryExists: (profile: string) => boolean,
 ): void {
-  const key = String(profile ?? '')
+  const key = String(profile ?? "")
     .trim()
-    .toLowerCase()
+    .toLowerCase();
 
-  gate.assertCanStart(key)
+  gate.assertCanStart(key);
 
-  if (key && key !== 'default' && !profileDirectoryExists(key)) {
-    throw new Error(`Profile "${key}" no longer exists.`)
+  if (key && key !== "default" && !profileDirectoryExists(key)) {
+    throw new Error(`Profile "${key}" no longer exists.`);
   }
 }
 
@@ -203,11 +210,11 @@ export function assertLocalProfileCanStart(
  * same on-disk profile and must be stopped before deleting it.
  */
 export function localProfilePoolKeys(profile: unknown): string[] {
-  const key = String(profile ?? '')
+  const key = String(profile ?? "")
     .trim()
-    .toLowerCase()
+    .toLowerCase();
 
-  return key ? [key, `conn:local::${key}`] : []
+  return key ? [key, `conn:local::${key}`] : [];
 }
 
 /**
@@ -219,17 +226,21 @@ export function localProfilePoolKeys(profile: unknown): string[] {
  */
 export function decideProfileDeleteAction(
   profile: string | null,
-  deps: ProfileDeleteDecisionDeps
+  deps: ProfileDeleteDecisionDeps,
 ): ProfileDeleteDecision {
-  if (!profile || deps.isDefaultProfile(profile) || !deps.isValidProfileName(profile)) {
-    return { action: 'noop', profile: null }
+  if (
+    !profile ||
+    deps.isDefaultProfile(profile) ||
+    !deps.isValidProfileName(profile)
+  ) {
+    return { action: "noop", profile: null };
   }
 
   if (profile === deps.primaryProfileKey()) {
-    return { action: 'teardown-primary', profile }
+    return { action: "teardown-primary", profile };
   }
 
-  return { action: 'teardown-pool', profile }
+  return { action: "teardown-pool", profile };
 }
 
 /**
@@ -240,7 +251,7 @@ export function decideProfileDeleteAction(
  */
 export function resolveRouteProfile(
   tornDownProfile: string | null,
-  profile: string | null | undefined
+  profile: string | null | undefined,
 ): string | null | undefined {
-  return tornDownProfile ? null : profile
+  return tornDownProfile ? null : profile;
 }

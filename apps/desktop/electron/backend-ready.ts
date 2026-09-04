@@ -1,9 +1,9 @@
-import fs from 'node:fs'
+import fs from "node:fs";
 
 // `hermes serve` announces HERMES_BACKEND_READY; the legacy `hermes dashboard`
 // backend announces HERMES_DASHBOARD_READY. Accept either so the desktop spawn
 // works against both the headless backend and old/dashboard runtimes.
-const _READY_RE = /^HERMES_(?:BACKEND|DASHBOARD)_READY port=(\d+)/m
+const _READY_RE = /^HERMES_(?:BACKEND|DASHBOARD)_READY port=(\d+)/m;
 
 // The announcement clock starts the instant the backend process is spawned —
 // before uvicorn binds its socket. On a cold install the child must first
@@ -13,10 +13,10 @@ const _READY_RE = /^HERMES_(?:BACKEND|DASHBOARD)_READY port=(\d+)/m
 // 45s deadline kills a *healthy but still-starting* backend and respawns it,
 // piling up orphaned processes (issue #50209). A roomier default absorbs the
 // cold-start cost; a warm start still announces in well under a second.
-const DEFAULT_PORT_ANNOUNCE_TIMEOUT_MS = 90_000
+const DEFAULT_PORT_ANNOUNCE_TIMEOUT_MS = 90_000;
 // Never trust a deadline tighter than the warm-start path needs; floor at 45s
 // (the historical default) so a malformed override can't reintroduce the loop.
-const MIN_PORT_ANNOUNCE_TIMEOUT_MS = 45_000
+const MIN_PORT_ANNOUNCE_TIMEOUT_MS = 45_000;
 
 /**
  * Resolve the port-announcement deadline. Honors the
@@ -25,13 +25,13 @@ const MIN_PORT_ANNOUNCE_TIMEOUT_MS = 45_000
  * to a sane floor so a bad value can't make boot flakier than the default.
  */
 function resolvePortAnnounceTimeoutMs(env = process.env) {
-  const parsed = Number(env.HERMES_DESKTOP_PORT_ANNOUNCE_TIMEOUT_MS)
+  const parsed = Number(env.HERMES_DESKTOP_PORT_ANNOUNCE_TIMEOUT_MS);
 
   if (Number.isFinite(parsed) && parsed > 0) {
-    return Math.max(MIN_PORT_ANNOUNCE_TIMEOUT_MS, Math.round(parsed))
+    return Math.max(MIN_PORT_ANNOUNCE_TIMEOUT_MS, Math.round(parsed));
   }
 
-  return DEFAULT_PORT_ANNOUNCE_TIMEOUT_MS
+  return DEFAULT_PORT_ANNOUNCE_TIMEOUT_MS;
 }
 
 /**
@@ -54,8 +54,8 @@ function resolvePortAnnounceTimeoutMs(env = process.env) {
 function waitForDashboardPort(
   child,
   timeoutMs = resolvePortAnnounceTimeoutMs(),
-  describeOutputTail = () => '',
-  bufferedOutput: () => string = () => ''
+  describeOutputTail = () => "",
+  bufferedOutput: () => string = () => "",
 ) {
   return new Promise((resolve, reject) => {
     // Seed the line buffer with any output the spawn-time tail already
@@ -66,85 +66,93 @@ function waitForDashboardPort(
     // replayed to late listeners — the wait then times out at 90s and a
     // healthy backend is killed. Scanning the tail's buffer (and seeding any
     // trailing partial line) makes the listener-attach ordering irrelevant.
-    let buf = ''
-    let done = false
+    let buf = "";
+    let done = false;
 
     function cleanup() {
       if (done) {
-        return
+        return;
       }
 
-      done = true
-      clearTimeout(timer)
-      child.stdout.off('data', onData)
-      child.off('exit', onExit)
-      child.off('error', onError)
+      done = true;
+      clearTimeout(timer);
+      child.stdout.off("data", onData);
+      child.off("exit", onExit);
+      child.off("error", onError);
     }
 
     function onData(chunk) {
-      buf += chunk.toString()
-      let nl
+      buf += chunk.toString();
+      let nl;
 
-      while ((nl = buf.indexOf('\n')) !== -1) {
-        const line = buf.slice(0, nl)
-        buf = buf.slice(nl + 1)
-        const m = line.match(_READY_RE)
+      while ((nl = buf.indexOf("\n")) !== -1) {
+        const line = buf.slice(0, nl);
+        buf = buf.slice(nl + 1);
+        const m = line.match(_READY_RE);
 
         if (m) {
-          cleanup()
-          resolve(parseInt(m[1], 10))
+          cleanup();
+          resolve(parseInt(m[1], 10));
 
-          return
+          return;
         }
       }
     }
 
     function onExit(code, signal) {
-      cleanup()
-      reject(new Error(`Hermes backend: exited before port announcement (${signal || code})${describeOutputTail()}`))
+      cleanup();
+      reject(
+        new Error(
+          `Hermes backend: exited before port announcement (${signal || code})${describeOutputTail()}`,
+        ),
+      );
     }
 
     function onError(err) {
-      cleanup()
-      reject(err)
+      cleanup();
+      reject(err);
     }
 
     const timer = setTimeout(() => {
-      cleanup()
-      reject(new Error(`Timed out waiting for Hermes backend port announcement (${timeoutMs}ms)`))
-    }, timeoutMs)
+      cleanup();
+      reject(
+        new Error(
+          `Timed out waiting for Hermes backend port announcement (${timeoutMs}ms)`,
+        ),
+      );
+    }, timeoutMs);
 
-    child.stdout.on('data', onData)
-    child.on('exit', onExit)
-    child.on('error', onError)
+    child.stdout.on("data", onData);
+    child.on("exit", onExit);
+    child.on("error", onError);
 
     // Listener is live — now recover a sentinel that was already flushed and
     // consumed before this promise existed. The snapshot is taken AFTER the
     // listener attaches, so no chunk can fall between snapshot and listener.
     if (!done) {
-      const alreadyBuffered = bufferedOutput()
-      const m = alreadyBuffered ? alreadyBuffered.match(_READY_RE) : null
+      const alreadyBuffered = bufferedOutput();
+      const m = alreadyBuffered ? alreadyBuffered.match(_READY_RE) : null;
 
       if (m) {
-        cleanup()
-        resolve(parseInt(m[1], 10))
+        cleanup();
+        resolve(parseInt(m[1], 10));
       }
     }
-  })
+  });
 }
 
 function readDashboardReadyFile(readyFile: fs.PathOrFileDescriptor) {
   if (!readyFile) {
-    return null
+    return null;
   }
 
   try {
-    const parsed = JSON.parse(fs.readFileSync(readyFile, 'utf8'))
-    const port = Number(parsed?.port)
+    const parsed = JSON.parse(fs.readFileSync(readyFile, "utf8"));
+    const port = Number(parsed?.port);
 
-    return Number.isInteger(port) && port > 0 ? port : null
+    return Number.isInteger(port) && port > 0 ? port : null;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -152,62 +160,70 @@ function waitForDashboardReadyFile(
   readyFile,
   child,
   timeoutMs = resolvePortAnnounceTimeoutMs(),
-  describeOutputTail = () => ''
+  describeOutputTail = () => "",
 ) {
   return new Promise((resolve, reject) => {
-    let done = false
-    let interval = null
+    let done = false;
+    let interval = null;
 
     function cleanup() {
       if (done) {
-        return
+        return;
       }
 
-      done = true
-      clearTimeout(timer)
+      done = true;
+      clearTimeout(timer);
 
       if (interval) {
-        clearInterval(interval)
+        clearInterval(interval);
       }
 
-      child.off('exit', onExit)
-      child.off('error', onError)
+      child.off("exit", onExit);
+      child.off("error", onError);
     }
 
     function check() {
-      const port = readDashboardReadyFile(readyFile)
+      const port = readDashboardReadyFile(readyFile);
 
       if (port) {
-        cleanup()
-        resolve(port)
+        cleanup();
+        resolve(port);
       }
     }
 
     function onExit(code, signal) {
-      cleanup()
-      reject(new Error(`Hermes backend: exited before port announcement (${signal || code})${describeOutputTail()}`))
+      cleanup();
+      reject(
+        new Error(
+          `Hermes backend: exited before port announcement (${signal || code})${describeOutputTail()}`,
+        ),
+      );
     }
 
     function onError(err) {
-      cleanup()
-      reject(err)
+      cleanup();
+      reject(err);
     }
 
     const timer = setTimeout(() => {
-      cleanup()
-      reject(new Error(`Timed out waiting for Hermes backend port announcement (${timeoutMs}ms)`))
-    }, timeoutMs)
+      cleanup();
+      reject(
+        new Error(
+          `Timed out waiting for Hermes backend port announcement (${timeoutMs}ms)`,
+        ),
+      );
+    }, timeoutMs);
 
-    child.on('exit', onExit)
-    child.on('error', onError)
-    interval = setInterval(check, 50)
+    child.on("exit", onExit);
+    child.on("error", onError);
+    interval = setInterval(check, 50);
 
-    if (typeof interval.unref === 'function') {
-      interval.unref()
+    if (typeof interval.unref === "function") {
+      interval.unref();
     }
 
-    check()
-  })
+    check();
+  });
 }
 
 function waitForDashboardPortAnnouncement(
@@ -220,21 +236,31 @@ function waitForDashboardPortAnnouncement(
      * boot-progress IPC) can never lose the announcement: flowing-mode
      * stdout never replays chunks to late listeners.
      */
-    bufferedOutput?: () => string
+    bufferedOutput?: () => string;
     /** Returns a formatted stdout/stderr tail suffix for exit errors (#93608). */
-    describeOutputTail?: () => string
-    readyFile?: fs.PathOrFileDescriptor | null
-    timeoutMs?: number
-  } = {}
+    describeOutputTail?: () => string;
+    readyFile?: fs.PathOrFileDescriptor | null;
+    timeoutMs?: number;
+  } = {},
 ) {
-  const timeoutMs = options.timeoutMs ?? resolvePortAnnounceTimeoutMs()
-  const describeOutputTail = options.describeOutputTail ?? (() => '')
+  const timeoutMs = options.timeoutMs ?? resolvePortAnnounceTimeoutMs();
+  const describeOutputTail = options.describeOutputTail ?? (() => "");
 
   if (options.readyFile) {
-    return waitForDashboardReadyFile(options.readyFile, child, timeoutMs, describeOutputTail)
+    return waitForDashboardReadyFile(
+      options.readyFile,
+      child,
+      timeoutMs,
+      describeOutputTail,
+    );
   }
 
-  return waitForDashboardPort(child, timeoutMs, describeOutputTail, options.bufferedOutput ?? (() => ''))
+  return waitForDashboardPort(
+    child,
+    timeoutMs,
+    describeOutputTail,
+    options.bufferedOutput ?? (() => ""),
+  );
 }
 
 export {
@@ -244,5 +270,5 @@ export {
   resolvePortAnnounceTimeoutMs,
   waitForDashboardPort,
   waitForDashboardPortAnnouncement,
-  waitForDashboardReadyFile
-}
+  waitForDashboardReadyFile,
+};

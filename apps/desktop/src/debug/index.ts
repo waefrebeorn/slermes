@@ -24,13 +24,13 @@
 // The `wasted` column in each is the fix list: components that re-rendered
 // with no changed input, and stores that published a value equal to the last.
 
-import './render-counter'
+import "./render-counter";
 // Live interaction profiler — arms on real resize/typing so we can measure the
 // app under REAL sessions instead of a synthetic scenario's toy transcripts.
 // window.__PERF_LIVE__.on() in the console, then just use the app.
-import './perf-live'
-import './right-pane-probe'
+import "./perf-live";
+import "./right-pane-probe";
 
-import { watchSessionAtoms } from './watched-atoms'
+import { watchSessionAtoms } from "./watched-atoms";
 
-watchSessionAtoms()
+watchSessionAtoms();

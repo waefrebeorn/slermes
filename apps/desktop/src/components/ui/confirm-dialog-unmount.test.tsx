@@ -1,18 +1,24 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, expect, test, vi } from 'vitest'
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, expect, test, vi } from "vitest";
 
-import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-afterEach(cleanup)
+afterEach(cleanup);
 
-vi.mock('@/i18n', () => ({
+vi.mock("@/i18n", () => ({
   useI18n: () => ({
     t: {
-      common: { cancel: 'Cancel', confirm: 'Confirm', delete: 'Delete', done: 'Done', loading: 'Working' },
-      errors: { genericFailure: 'Something failed' }
-    }
-  })
-}))
+      common: {
+        cancel: "Cancel",
+        confirm: "Confirm",
+        delete: "Delete",
+        done: "Done",
+        loading: "Working",
+      },
+      errors: { genericFailure: "Something failed" },
+    },
+  }),
+}));
 
 // ConfirmDialog schedules window.setTimeout(onClose, 600) after a successful
 // confirm. The timer had no cleanup, so an unmount inside that window left it
@@ -29,29 +35,37 @@ vi.mock('@/i18n', () => ({
 //
 // This test confirms, unmounts inside the 600ms window, and then lets the
 // timer come due on the dead tree.
-test('the close timer does not fire after unmount', async () => {
-  vi.useFakeTimers()
-  const onClose = vi.fn()
-  const onConfirm = vi.fn()
+test("the close timer does not fire after unmount", async () => {
+  vi.useFakeTimers();
+  const onClose = vi.fn();
+  const onConfirm = vi.fn();
 
-  render(<ConfirmDialog confirmLabel="Delete" onClose={onClose} onConfirm={onConfirm} open title="Delete session" />)
+  render(
+    <ConfirmDialog
+      confirmLabel="Delete"
+      onClose={onClose}
+      onConfirm={onConfirm}
+      open
+      title="Delete session"
+    />,
+  );
 
-  fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+  fireEvent.click(screen.getByRole("button", { name: "Delete" }));
 
   // Not waitFor: it polls on real timers, and the fake timers of this test
   // never let it advance. onConfirm runs synchronously inside the click, and
   // one microtask turn is enough for the await in run() to settle and reach
   // the setTimeout.
-  await Promise.resolve()
-  await Promise.resolve()
-  expect(onConfirm).toHaveBeenCalled()
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(onConfirm).toHaveBeenCalled();
 
   // Unmount while the close timer is still pending.
-  cleanup()
+  cleanup();
 
   // Let the timer come due on the unmounted tree.
-  vi.advanceTimersByTime(1000)
+  vi.advanceTimersByTime(1000);
 
-  expect(onClose).not.toHaveBeenCalled()
-  vi.useRealTimers()
-})
+  expect(onClose).not.toHaveBeenCalled();
+  vi.useRealTimers();
+});

@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
-import { refreshActiveProfile } from '@/store/profile'
+import { refreshActiveProfile } from "@/store/profile";
 
 /**
  * Re-pull the running profile + list on mount, and again whenever the window
@@ -17,22 +17,22 @@ import { refreshActiveProfile } from '@/store/profile'
  */
 export function useProfileRailRefreshOnActive(): void {
   useEffect(() => {
-    void refreshActiveProfile()
+    void refreshActiveProfile();
 
     const onActive = () => {
-      if (document.visibilityState === 'hidden') {
-        return
+      if (document.visibilityState === "hidden") {
+        return;
       }
 
-      void refreshActiveProfile()
-    }
+      void refreshActiveProfile();
+    };
 
-    window.addEventListener('focus', onActive)
-    document.addEventListener('visibilitychange', onActive)
+    window.addEventListener("focus", onActive);
+    document.addEventListener("visibilitychange", onActive);
 
     return () => {
-      window.removeEventListener('focus', onActive)
-      document.removeEventListener('visibilitychange', onActive)
-    }
-  }, [])
+      window.removeEventListener("focus", onActive);
+      document.removeEventListener("visibilitychange", onActive);
+    };
+  }, []);
 }

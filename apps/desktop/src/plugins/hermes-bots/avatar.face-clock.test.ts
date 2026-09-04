@@ -13,12 +13,14 @@
  * fallback is what every un-upgraded install runs.
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { budgetedLoopMock } = vi.hoisted(() => ({ budgetedLoopMock: { impl: undefined as unknown } }))
+const { budgetedLoopMock } = vi.hoisted(() => ({
+  budgetedLoopMock: { impl: undefined as unknown },
+}));
 
-vi.mock('@hermes/plugin-sdk', async () => {
-  const { atom } = await import('nanostores')
+vi.mock("@hermes/plugin-sdk", async () => {
+  const { atom } = await import("nanostores");
 
   return {
     atom,
@@ -26,290 +28,293 @@ vi.mock('@hermes/plugin-sdk', async () => {
     // A live binding on the real SDK; the getter lets one test file cover both
     // the budgeted-loop path and the older hand-rolled one.
     get createBudgetedLoop() {
-      return budgetedLoopMock.impl
+      return budgetedLoopMock.impl;
     },
-    host: { state: { connectionId: { get: () => 'local' } } },
-    profileColor: () => '#8b5cf6',
+    host: { state: { connectionId: { get: () => "local" } } },
+    profileColor: () => "#8b5cf6",
     PROFILE_SWATCHES: [],
     queryClient: undefined,
     useQuery: vi.fn(),
-    useValue: vi.fn()
-  }
-})
+    useValue: vi.fn(),
+  };
+});
 
-vi.mock('./shared', () => ({ getPluginCtx: () => null, ID: 'hermes-bots' }))
+vi.mock("./shared", () => ({ getPluginCtx: () => null, ID: "hermes-bots" }));
 
 interface ObserverEntry {
-  isIntersecting: boolean
-  target: Element
+  isIntersecting: boolean;
+  target: Element;
 }
 
 /** The live fake observer, so a test can drive visibility changes. */
-let observer: FakeIntersectionObserver | null = null
+let observer: FakeIntersectionObserver | null = null;
 
 class FakeIntersectionObserver {
-  callback: (entries: ObserverEntry[]) => void
-  disconnected = false
-  observed = new Set<Element>()
+  callback: (entries: ObserverEntry[]) => void;
+  disconnected = false;
+  observed = new Set<Element>();
 
   constructor(callback: (entries: ObserverEntry[]) => void) {
-    this.callback = callback
-    observer = this
+    this.callback = callback;
+    observer = this;
   }
 
   disconnect() {
-    this.disconnected = true
-    this.observed.clear()
+    this.disconnected = true;
+    this.observed.clear();
   }
 
   emit(entries: ObserverEntry[]) {
-    this.callback(entries)
+    this.callback(entries);
   }
 
   observe(element: Element) {
-    this.observed.add(element)
+    this.observed.add(element);
   }
 
   unobserve(element: Element) {
-    this.observed.delete(element)
+    this.observed.delete(element);
   }
 }
 
-let frames = new Map<number, (now: number) => void>()
-let frameSeq = 0
-let now = 0
+let frames = new Map<number, (now: number) => void>();
+let frameSeq = 0;
+let now = 0;
 
 /** Run every frame scheduled so far and advance the clock. */
 function pump(advance = 100) {
-  now += advance
+  now += advance;
 
-  const pending = [...frames.values()]
+  const pending = [...frames.values()];
 
-  frames.clear()
+  frames.clear();
 
   for (const frame of pending) {
-    frame(now)
+    frame(now);
   }
 }
 
 function mountFace() {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
-  svg.setAttribute('data-hb-math', '1')
-  document.body.append(svg)
+  svg.setAttribute("data-hb-math", "1");
+  document.body.append(svg);
 
-  return svg
+  return svg;
 }
 
 async function loadClock() {
-  vi.resetModules()
+  vi.resetModules();
 
-  return import('./avatar')
+  return import("./avatar");
 }
 
 beforeEach(() => {
-  frames = new Map()
-  frameSeq = 0
-  now = 0
-  observer = null
-  budgetedLoopMock.impl = undefined
-  document.body.innerHTML = ''
-  delete window.__hbFaceClock
-  vi.stubGlobal('IntersectionObserver', FakeIntersectionObserver)
+  frames = new Map();
+  frameSeq = 0;
+  now = 0;
+  observer = null;
+  budgetedLoopMock.impl = undefined;
+  document.body.innerHTML = "";
+  delete window.__hbFaceClock;
+  vi.stubGlobal("IntersectionObserver", FakeIntersectionObserver);
 
   window.requestAnimationFrame = (callback: FrameRequestCallback) => {
-    frameSeq += 1
-    frames.set(frameSeq, callback)
+    frameSeq += 1;
+    frames.set(frameSeq, callback);
 
-    return frameSeq
-  }
+    return frameSeq;
+  };
 
   window.cancelAnimationFrame = (id: number) => {
-    frames.delete(id)
-  }
-})
+    frames.delete(id);
+  };
+});
 
 afterEach(() => {
-  window.__hbFaceClock?.stop()
-  vi.unstubAllGlobals()
-})
+  window.__hbFaceClock?.stop();
+  vi.unstubAllGlobals();
+});
 
-describe('the hand-rolled rAF path (older shells)', () => {
-  it('parks itself when no faces are mounted', async () => {
-    const { startFaceClock } = await loadClock()
+describe("the hand-rolled rAF path (older shells)", () => {
+  it("parks itself when no faces are mounted", async () => {
+    const { startFaceClock } = await loadClock();
 
-    startFaceClock()
-    expect(frames.size).toBe(1)
+    startFaceClock();
+    expect(frames.size).toBe(1);
 
-    pump()
-    expect(frames.size).toBe(0)
-  })
+    pump();
+    expect(frames.size).toBe(0);
+  });
 
-  it('wakes a parked clock when a face mounts', async () => {
-    const { startFaceClock } = await loadClock()
+  it("wakes a parked clock when a face mounts", async () => {
+    const { startFaceClock } = await loadClock();
 
-    startFaceClock()
-    pump()
-    expect(frames.size).toBe(0)
+    startFaceClock();
+    pump();
+    expect(frames.size).toBe(0);
 
-    mountFace()
+    mountFace();
     // The BotFace render path — re-entry is the wake signal.
-    startFaceClock()
-    expect(frames.size).toBe(1)
-  })
+    startFaceClock();
+    expect(frames.size).toBe(1);
+  });
 
-  it('parks when every face scrolls out and the observer wakes it back', async () => {
-    const { startFaceClock } = await loadClock()
-    const face = mountFace()
+  it("parks when every face scrolls out and the observer wakes it back", async () => {
+    const { startFaceClock } = await loadClock();
+    const face = mountFace();
 
-    startFaceClock()
-    pump()
+    startFaceClock();
+    pump();
     // Observed but not yet intersecting: nothing visible, so park.
-    expect(frames.size).toBe(0)
+    expect(frames.size).toBe(0);
 
-    observer!.emit([{ isIntersecting: true, target: face }])
-    expect(frames.size).toBe(1)
+    observer!.emit([{ isIntersecting: true, target: face }]);
+    expect(frames.size).toBe(1);
 
-    pump()
-    expect(frames.size).toBe(1)
+    pump();
+    expect(frames.size).toBe(1);
 
-    observer!.emit([{ isIntersecting: false, target: face }])
-    pump()
-    pump()
-    expect(frames.size).toBe(0)
-  })
+    observer!.emit([{ isIntersecting: false, target: face }]);
+    pump();
+    pump();
+    expect(frames.size).toBe(0);
+  });
 
-  it('stops cleanly and can be restarted', async () => {
-    const { startFaceClock, stopFaceClock } = await loadClock()
-    const face = mountFace()
+  it("stops cleanly and can be restarted", async () => {
+    const { startFaceClock, stopFaceClock } = await loadClock();
+    const face = mountFace();
 
-    startFaceClock()
-    observer!.emit([{ isIntersecting: true, target: face }])
-    pump()
-    expect(frames.size).toBe(1)
+    startFaceClock();
+    observer!.emit([{ isIntersecting: true, target: face }]);
+    pump();
+    expect(frames.size).toBe(1);
 
-    const first = observer!
+    const first = observer!;
 
-    stopFaceClock()
-    expect(frames.size).toBe(0)
-    expect(first.disconnected).toBe(true)
-    expect(window.__hbFaceClock).toBeUndefined()
+    stopFaceClock();
+    expect(frames.size).toBe(0);
+    expect(first.disconnected).toBe(true);
+    expect(window.__hbFaceClock).toBeUndefined();
 
     // A fresh start after teardown re-initializes rather than hitting a dead
     // handle left on `window`.
-    startFaceClock()
-    expect(frames.size).toBe(1)
-  })
+    startFaceClock();
+    expect(frames.size).toBe(1);
+  });
 
-  it('stops the whole-document walk when a face unmounts', async () => {
-    const { startFaceClock } = await loadClock()
-    const face = mountFace()
+  it("stops the whole-document walk when a face unmounts", async () => {
+    const { startFaceClock } = await loadClock();
+    const face = mountFace();
 
-    startFaceClock()
-    observer!.emit([{ isIntersecting: true, target: face }])
-    pump()
+    startFaceClock();
+    observer!.emit([{ isIntersecting: true, target: face }]);
+    pump();
 
-    face.remove()
+    face.remove();
     // The 1Hz rescan drops the node from both caches and parks the clock.
-    pump(1500)
-    pump()
+    pump(1500);
+    pump();
 
-    expect(observer!.observed.has(face)).toBe(false)
-    expect(frames.size).toBe(0)
-  })
-})
+    expect(observer!.observed.has(face)).toBe(false);
+    expect(frames.size).toBe(0);
+  });
+});
 
-describe('the SDK budgeted-loop path', () => {
+describe("the SDK budgeted-loop path", () => {
   interface CapturedLoop {
-    draw: (now: number) => void
-    idleWhen: () => boolean
+    draw: (now: number) => void;
+    idleWhen: () => boolean;
   }
 
   function captureLoop() {
-    const captured: Partial<CapturedLoop> = {}
-    const calls = { created: 0, dispose: 0, fps: 0, wake: 0 }
+    const captured: Partial<CapturedLoop> = {};
+    const calls = { created: 0, dispose: 0, fps: 0, wake: 0 };
 
-    budgetedLoopMock.impl = (draw: (now: number) => void, options: { fps: number; idleWhen: () => boolean }) => {
-      calls.created += 1
-      calls.fps = options.fps
-      captured.draw = draw
-      captured.idleWhen = options.idleWhen
+    budgetedLoopMock.impl = (
+      draw: (now: number) => void,
+      options: { fps: number; idleWhen: () => boolean },
+    ) => {
+      calls.created += 1;
+      calls.fps = options.fps;
+      captured.draw = draw;
+      captured.idleWhen = options.idleWhen;
 
       return {
         dispose: () => {
-          calls.dispose += 1
+          calls.dispose += 1;
         },
         isDormant: () => false,
         wake: () => {
-          calls.wake += 1
-        }
-      }
-    }
+          calls.wake += 1;
+        },
+      };
+    };
 
-    return { calls, captured }
+    return { calls, captured };
   }
 
-  it('hands the paint to the SDK loop and schedules no rAF of its own', async () => {
-    const { calls } = captureLoop()
-    const { startFaceClock } = await loadClock()
+  it("hands the paint to the SDK loop and schedules no rAF of its own", async () => {
+    const { calls } = captureLoop();
+    const { startFaceClock } = await loadClock();
 
-    mountFace()
-    startFaceClock()
+    mountFace();
+    startFaceClock();
 
-    expect(calls.fps).toBe(15)
-    expect(frames.size).toBe(0)
-  })
+    expect(calls.fps).toBe(15);
+    expect(frames.size).toBe(0);
+  });
 
-  it('reports idleness from visible-face state and wakes on visibility', async () => {
-    const { calls, captured } = captureLoop()
-    const { startFaceClock } = await loadClock()
-    const face = mountFace()
+  it("reports idleness from visible-face state and wakes on visibility", async () => {
+    const { calls, captured } = captureLoop();
+    const { startFaceClock } = await loadClock();
+    const face = mountFace();
 
-    startFaceClock()
+    startFaceClock();
 
     // The first draw performs the initial scan + observation.
-    captured.draw!(1000)
-    expect(captured.idleWhen!()).toBe(true)
+    captured.draw!(1000);
+    expect(captured.idleWhen!()).toBe(true);
 
-    observer!.emit([{ isIntersecting: true, target: face }])
-    expect(captured.idleWhen!()).toBe(false)
-    expect(calls.wake).toBeGreaterThanOrEqual(1)
+    observer!.emit([{ isIntersecting: true, target: face }]);
+    expect(captured.idleWhen!()).toBe(false);
+    expect(calls.wake).toBeGreaterThanOrEqual(1);
 
     // Re-entry (a BotFace mount) wakes rather than re-initializing.
-    startFaceClock()
-    expect(calls.wake).toBeGreaterThanOrEqual(2)
-  })
+    startFaceClock();
+    expect(calls.wake).toBeGreaterThanOrEqual(2);
+  });
 
-  it('disposes the loop and drops the window handle on stop', async () => {
-    const { calls } = captureLoop()
-    const { startFaceClock, stopFaceClock } = await loadClock()
+  it("disposes the loop and drops the window handle on stop", async () => {
+    const { calls } = captureLoop();
+    const { startFaceClock, stopFaceClock } = await loadClock();
 
-    mountFace()
-    startFaceClock()
+    mountFace();
+    startFaceClock();
 
-    const live = observer!
+    const live = observer!;
 
-    stopFaceClock()
+    stopFaceClock();
 
-    expect(calls.dispose).toBe(1)
-    expect(live.disconnected).toBe(true)
-    expect(window.__hbFaceClock).toBeUndefined()
-  })
+    expect(calls.dispose).toBe(1);
+    expect(live.disconnected).toBe(true);
+    expect(window.__hbFaceClock).toBeUndefined();
+  });
 
-  it('keeps a single clock across plugin loads', async () => {
+  it("keeps a single clock across plugin loads", async () => {
     // Parked on `window` so a second load adopts the running clock instead of
     // starting a rival loop.
-    const { calls } = captureLoop()
-    const first = await loadClock()
+    const { calls } = captureLoop();
+    const first = await loadClock();
 
-    mountFace()
-    first.startFaceClock()
+    mountFace();
+    first.startFaceClock();
 
-    const second = await loadClock()
+    const second = await loadClock();
 
-    second.startFaceClock()
+    second.startFaceClock();
 
-    expect(calls.created).toBe(1)
-    expect(calls.wake).toBeGreaterThanOrEqual(1)
-  })
-})
+    expect(calls.created).toBe(1);
+    expect(calls.wake).toBeGreaterThanOrEqual(1);
+  });
+});

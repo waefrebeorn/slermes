@@ -1,16 +1,18 @@
-import './glyph-spinner.css'
+import "./glyph-spinner.css";
 
-import type { CSSProperties } from 'react'
-import spinners, { type BrailleSpinnerName as SpinnerName } from 'unicode-animations'
+import type { CSSProperties } from "react";
+import spinners, {
+  type BrailleSpinnerName as SpinnerName,
+} from "unicode-animations";
 
-import { usePaneVisible } from '@/components/pane-shell/pane-visibility'
-import { cn } from '@/lib/utils'
+import { usePaneVisible } from "@/components/pane-shell/pane-visibility";
+import { cn } from "@/lib/utils";
 
-export type { SpinnerName }
+export type { SpinnerName };
 
 interface NormalisedSpinner {
-  frames: readonly string[]
-  interval: number
+  frames: readonly string[];
+  interval: number;
 }
 
 /**
@@ -21,35 +23,35 @@ interface NormalisedSpinner {
  * to the braille defaults at runtime.
  */
 export type GlyphSpinnerVars = CSSProperties & {
-  '--glyph-spinner-duration': string
-  '--glyph-spinner-frames': number
-}
+  "--glyph-spinner-duration": string;
+  "--glyph-spinner-frames": number;
+};
 
 // Some spinners ship multi-character frames. Pull the first cell so each
 // frame fits in one monospace box — matches how the TUI uses them.
 const FRAMES_BY_NAME: Record<SpinnerName, NormalisedSpinner> = (() => {
-  const out = {} as Record<SpinnerName, NormalisedSpinner>
+  const out = {} as Record<SpinnerName, NormalisedSpinner>;
 
   for (const name of Object.keys(spinners) as SpinnerName[]) {
-    const raw = spinners[name]
+    const raw = spinners[name];
 
     out[name] = {
-      frames: raw.frames.map(frame => [...frame][0] ?? '⠀'),
-      interval: raw.interval
-    }
+      frames: raw.frames.map((frame) => [...frame][0] ?? "⠀"),
+      interval: raw.interval,
+    };
   }
 
-  return out
-})()
+  return out;
+})();
 
 interface GlyphSpinnerProps {
-  ariaLabel?: string
-  className?: string
+  ariaLabel?: string;
+  className?: string;
   /** Freeze the animation while the spinner stays mounted — for a caller that
    *  keeps it in the tree through a fade-out and does not want it animating
    *  once it is no longer the thing being waited on. */
-  paused?: boolean
-  spinner?: SpinnerName
+  paused?: boolean;
+  spinner?: SpinnerName;
 }
 
 /**
@@ -70,12 +72,12 @@ interface GlyphSpinnerProps {
  * to centre the single glyph.
  */
 export function GlyphSpinner({
-  ariaLabel = 'Loading',
+  ariaLabel = "Loading",
   className,
   paused = false,
-  spinner = 'braille'
+  spinner = "braille",
 }: GlyphSpinnerProps) {
-  const spin = FRAMES_BY_NAME[spinner] ?? FRAMES_BY_NAME.braille!
+  const spin = FRAMES_BY_NAME[spinner] ?? FRAMES_BY_NAME.braille!;
   // Pause when this surface is a hidden (kept-alive) tab: N mounted tabs each
   // animating burns CPU for pixels nobody can see. Window blur / minimize /
   // document-hidden are handled globally instead, by the
@@ -85,24 +87,31 @@ export function GlyphSpinner({
   // Note that only the primary window arms that attribute: a spinner mounted
   // in an overlay / quick / wake window keeps animating while its window is
   // blurred, exactly as the other decorative animations there do.
-  const visible = usePaneVisible()
+  const visible = usePaneVisible();
 
   const vars: GlyphSpinnerVars = {
-    '--glyph-spinner-duration': `${spin.frames.length * spin.interval}ms`,
-    '--glyph-spinner-frames': spin.frames.length
-  }
+    "--glyph-spinner-duration": `${spin.frames.length * spin.interval}ms`,
+    "--glyph-spinner-frames": spin.frames.length,
+  };
 
   return (
     <span
       aria-label={ariaLabel}
-      className={cn('inline-flex items-center justify-center font-mono leading-none tabular-nums', className)}
+      className={cn(
+        "inline-flex items-center justify-center font-mono leading-none tabular-nums",
+        className,
+      )}
       role="status"
     >
       {/* Hidden from assistive tech: the accessible name is the label above.
           The frames are decorative, and this is a live region — the old
           implementation rewrote its text ~12x/second, which would announce a
           new glyph on every tick. */}
-      <span aria-hidden="true" className="glyph-spinner" data-paused={paused || !visible ? 'true' : undefined}>
+      <span
+        aria-hidden="true"
+        className="glyph-spinner"
+        data-paused={paused || !visible ? "true" : undefined}
+      >
         <span className="glyph-spinner__strip" style={vars}>
           {spin.frames.map((frame, index) => (
             <span className="glyph-spinner__frame" key={`${index}:${frame}`}>
@@ -112,5 +121,5 @@ export function GlyphSpinner({
         </span>
       </span>
     </span>
-  )
+  );
 }

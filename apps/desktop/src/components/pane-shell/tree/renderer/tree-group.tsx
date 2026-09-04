@@ -9,13 +9,28 @@
  * contextual zone menu (tab close verbs + header/minimize toggles).
  */
 
-import { useStore } from '@nanostores/react'
-import { type CSSProperties, Fragment, type ReactNode, type RefObject, useEffect, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import {
+  type CSSProperties,
+  Fragment,
+  type ReactNode,
+  type RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { ActionsContextMenu, type MenuKit, renderActionItem } from '@/components/ui/actions-menu'
-import { Codicon } from '@/components/ui/codicon'
-import { DecodeText } from '@/components/ui/decode-text'
-import { DROP_SHEET_BLUR_CLASS, DROP_SHEET_CLASS } from '@/components/ui/drop-affordance'
+import {
+  ActionsContextMenu,
+  type MenuKit,
+  renderActionItem,
+} from "@/components/ui/actions-menu";
+import { Codicon } from "@/components/ui/codicon";
+import { DecodeText } from "@/components/ui/decode-text";
+import {
+  DROP_SHEET_BLUR_CLASS,
+  DROP_SHEET_CLASS,
+} from "@/components/ui/drop-affordance";
 import {
   PANE_TAB_STRIP_LINE_LEFT,
   PANE_TAB_STRIP_LINE_RIGHT,
@@ -23,27 +38,35 @@ import {
   PaneTab,
   paneTabCloseItems,
   PaneTabLabel,
-  PaneTabStrip
-} from '@/components/ui/pane-tab'
-import { ContribBoundary, ContribRender } from '@/contrib/react/boundary'
-import { useContributions } from '@/contrib/react/use-contributions'
-import { useI18n } from '@/i18n'
-import { useKeybindHint } from '@/lib/keybinds/use-keybind-hint'
-import { cn } from '@/lib/utils'
-import { closeAllOpenSessionTiles } from '@/store/session-states'
+  PaneTabStrip,
+} from "@/components/ui/pane-tab";
+import { ContribBoundary, ContribRender } from "@/contrib/react/boundary";
+import { useContributions } from "@/contrib/react/use-contributions";
+import { useI18n } from "@/i18n";
+import { useKeybindHint } from "@/lib/keybinds/use-keybind-hint";
+import { cn } from "@/lib/utils";
+import { closeAllOpenSessionTiles } from "@/store/session-states";
 
-import { $layoutEditMode } from '../../edit-mode'
-import { useWindowControlsOverlap } from '../../geometry'
-import { emptyPaneLifecycleState, reconcilePaneLifecycle } from '../../pane-lifecycle'
-import { hiddenPaneProps, PaneGroupContext, PaneLifecycleContext, PaneVisibleContext } from '../../pane-visibility'
+import { $layoutEditMode } from "../../edit-mode";
+import { useWindowControlsOverlap } from "../../geometry";
+import {
+  emptyPaneLifecycleState,
+  reconcilePaneLifecycle,
+} from "../../pane-lifecycle";
+import {
+  hiddenPaneProps,
+  PaneGroupContext,
+  PaneLifecycleContext,
+  PaneVisibleContext,
+} from "../../pane-visibility";
 import {
   $workspaceMode,
   $workspaceOwnerKey,
   rememberActivePane,
   resolveRememberedActivePane,
-  workspaceScopeKey
-} from '../../workspace-scope'
-import type { DropPosition, GroupNode } from '../model'
+  workspaceScopeKey,
+} from "../../workspace-scope";
+import type { DropPosition, GroupNode } from "../model";
 import {
   $dropHint,
   $hiddenTreePanes,
@@ -69,21 +92,21 @@ import {
   setStripTabHidden,
   setTreeGroupMinimized,
   setTreeGroupTabStrip,
-  treeTabCloseTargets
-} from '../store'
+  treeTabCloseTargets,
+} from "../store";
 import {
   $tabSelection,
   clearTabSelection,
   isToggleSelectClick,
   selectionFor,
   selectTabRange,
-  toggleTabSelected
-} from '../tab-selection'
+  toggleTabSelected,
+} from "../tab-selection";
 
-import { startPaneDrag } from './drag-session'
-import { tabStripVisibleForZone } from './strip-visibility'
-import { useActiveTabVisible } from './tab-strip-scroll'
-import { paneChrome } from './track-model'
+import { startPaneDrag } from "./drag-session";
+import { tabStripVisibleForZone } from "./strip-visibility";
+import { useActiveTabVisible } from "./tab-strip-scroll";
+import { paneChrome } from "./track-model";
 
 /** Right-click zone menu: the tab verbs (close this / others / to the right /
  *  all) plus the strip's own chrome toggles. Same items and icons as a session
@@ -98,138 +121,148 @@ function ZoneMenu({
   nodeId,
   stripVisible,
   tabMenuPrefix,
-  targetPane
+  targetPane,
 }: {
-  children: ReactNode
+  children: ReactNode;
   /** The pane the menu closes (the right-clicked chip / the active pane);
    *  undefined = not closable (the main zone). */
-  closable?: () => string | undefined
+  closable?: () => string | undefined;
   /** False for the zone hosting the uncloseable workspace — collapsing the
    *  MAIN pane strands the app behind a strip. */
-  minimizable?: boolean
-  minimized?: boolean
-  nodeId: string
+  minimizable?: boolean;
+  minimized?: boolean;
+  nodeId: string;
   /** Whether the strip is on screen — the Hide/Show row toggles against what
    *  the user can see, not against the stored mode (a zone on auto has none). */
-  stripVisible?: boolean
+  stripVisible?: boolean;
   /** Domain verbs for the right-clicked pane, resolved when the menu opens. */
-  tabMenuPrefix?: (kit: MenuKit) => ReactNode
+  tabMenuPrefix?: (kit: MenuKit) => ReactNode;
   /** The right-clicked chip (else the active pane) — what the close-others /
    *  to-the-right / all verbs measure from. Called when the menu RENDERS, not
    *  on every zone re-render: resolving the siblings reads the layout tree,
    *  and subscribing every zone to it made a sash drag re-render every
    *  mounted pane. */
-  targetPane: () => string
+  targetPane: () => string;
 }) {
-  const { t } = useI18n()
+  const { t } = useI18n();
   // Hiding the strip takes this menu with it, so the row that hides it is the
   // last place to say how to get it back — the status bar's hide row does the
   // same for the same reason.
-  const toggleHint = useKeybindHint('view.toggleTabStrip')
+  const toggleHint = useKeybindHint("view.toggleTabStrip");
 
   // Resolved at render: the menu mounts on open, after the right-click set
   // menuPane — so an uncloseable target hides Close instead of offering a
   // dead action, and the counts describe the chip actually clicked.
   const items = (kit: MenuKit) => {
-    const paneId = closable?.()
-    const targetId = targetPane()
+    const paneId = closable?.();
+    const targetId = targetPane();
 
-    const prefix = tabMenuPrefix?.(kit)
+    const prefix = tabMenuPrefix?.(kit);
 
     return (
       <>
         {prefix}
         {prefix ? <kit.Separator /> : null}
         {renderActionItem(kit, {
-          icon: 'refresh',
+          icon: "refresh",
           label: t.zones.reload,
-          onSelect: () => reloadTreePane(targetId)
+          onSelect: () => reloadTreePane(targetId),
         })}
         <kit.Separator />
         {paneTabCloseItems(kit, {
           counts: treeTabCloseTargets(targetId),
-          onClose: paneId !== undefined ? () => closeTabPane(paneId) : undefined,
+          onClose:
+            paneId !== undefined ? () => closeTabPane(paneId) : undefined,
           onCloseAll: () => {
             // Persist-close session tiles first so Bot Mode cannot
             // rehydrate them from the shared tile bucket (#94137).
-            closeAllOpenSessionTiles(targetId)
-            closeAllTreeTabs(targetId)
+            closeAllOpenSessionTiles(targetId);
+            closeAllTreeTabs(targetId);
           },
           onCloseOthers: () => closeOtherTreeTabs(targetId),
-          onCloseToRight: () => closeTreeTabsToRight(targetId)
+          onCloseToRight: () => closeTreeTabsToRight(targetId),
         })}
         {(() => {
           // Show/hide rows for the zone's hide-only chrome tabs (sessions /
           // Bots) — their Close replacement. Resolved when the menu OPENS,
           // same no-subscription contract as the close-verb counts above.
-          const hideOnly = hideOnlyZoneTabs(nodeId)
+          const hideOnly = hideOnlyZoneTabs(nodeId);
 
           if (hideOnly.length === 0) {
-            return null
+            return null;
           }
 
           return (
             <>
               <kit.Separator />
-              {hideOnly.map(tab =>
+              {hideOnly.map((tab) =>
                 renderActionItem(kit, {
-                  icon: tab.hidden ? 'eye' : 'eye-closed',
+                  icon: tab.hidden ? "eye" : "eye-closed",
                   key: `strip-tab-${tab.id}`,
-                  label: tab.hidden ? t.zones.showStripTab(tab.title) : t.zones.hideStripTab(tab.title),
-                  onSelect: () => setStripTabHidden(tab.id, !tab.hidden)
-                })
+                  label: tab.hidden
+                    ? t.zones.showStripTab(tab.title)
+                    : t.zones.hideStripTab(tab.title),
+                  onSelect: () => setStripTabHidden(tab.id, !tab.hidden),
+                }),
               )}
             </>
-          )
+          );
         })()}
         <kit.Separator />
         {renderActionItem(kit, {
-          icon: stripVisible ? 'eye-closed' : 'eye',
-          key: 'zone-tabstrip',
+          icon: stripVisible ? "eye-closed" : "eye",
+          key: "zone-tabstrip",
           label: (
             <>
               {/* The hint's `ml-auto` makes the label the row's flexible part,
                   so without this it breaks mid-phrase before the menu widens. */}
-              <span className="whitespace-nowrap">{stripVisible ? t.zones.hideTabStrip : t.zones.showTabStrip}</span>
-              {toggleHint && <span className="ml-auto pl-2 text-(--ui-text-quaternary)">{toggleHint}</span>}
+              <span className="whitespace-nowrap">
+                {stripVisible ? t.zones.hideTabStrip : t.zones.showTabStrip}
+              </span>
+              {toggleHint && (
+                <span className="ml-auto pl-2 text-(--ui-text-quaternary)">
+                  {toggleHint}
+                </span>
+              )}
             </>
           ),
-          onSelect: () => setTreeGroupTabStrip(nodeId, stripVisible ? 'never' : 'always')
+          onSelect: () =>
+            setTreeGroupTabStrip(nodeId, stripVisible ? "never" : "always"),
         })}
         {minimizable &&
           renderActionItem(kit, {
             // Same action-direction contract as the strip button below: the
             // icon points where the zone will GO (restore opens upward).
-            icon: minimized ? 'chevron-up' : 'chevron-down',
+            icon: minimized ? "chevron-up" : "chevron-down",
             label: minimized ? t.zones.restore : t.zones.minimize,
-            onSelect: () => setTreeGroupMinimized(nodeId, !minimized)
+            onSelect: () => setTreeGroupMinimized(nodeId, !minimized),
           })}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <ActionsContextMenu contentClassName="w-40" items={items}>
       {children}
     </ActionsContextMenu>
-  )
+  );
 }
 
 export function TreeGroup({
   node,
   parentAxis,
-  railSide = 'left'
+  railSide = "left",
 }: {
-  node: GroupNode
-  parentAxis?: 'column' | 'row'
-  railSide?: 'left' | 'right'
+  node: GroupNode;
+  parentAxis?: "column" | "row";
+  railSide?: "left" | "right";
 }) {
-  const { t } = useI18n()
-  const ref = useRef<HTMLDivElement>(null)
-  const stripRef = useRef<HTMLDivElement>(null)
+  const { t } = useI18n();
+  const ref = useRef<HTMLDivElement>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
   // The scrolling tab list inside the header (the strip also holds the
   // minimize chevron, which must not scroll away).
-  const tabsRef = useRef<HTMLDivElement>(null)
+  const tabsRef = useRef<HTMLDivElement>(null);
   // The chip under the last right-click — the pane the zone menu's Split
   // actions carry into the new zone (header background = the active pane).
   // STATE, not a ref: the menu items (incl. Close's visibility) are JSX
@@ -237,29 +270,29 @@ export function TreeGroup({
   // doesn't re-render, so the menu showed the PREVIOUS target's items (Close
   // missing on an inactive tile tab whose zone-active was the uncloseable
   // workspace).
-  const [menuPane, setMenuPane] = useState<string | undefined>(undefined)
-  const panes = useContributions('panes')
+  const [menuPane, setMenuPane] = useState<string | undefined>(undefined);
+  const panes = useContributions("panes");
   // Coarse drag flag only (set once at drag start/end). The per-frame drop
   // HINT lives in ZoneDropOverlay so a moving pointer re-renders the tiny
   // overlay, not every zone's header/body (and not the menuDirections walk).
-  const dragging = useStore($treeDragging)
-  const editMode = useStore($layoutEditMode)
-  const wcOverlap = useWindowControlsOverlap(ref, true)
+  const dragging = useStore($treeDragging);
+  const editMode = useStore($layoutEditMode);
+  const wcOverlap = useWindowControlsOverlap(ref, true);
 
-  const hiddenPanes = useStore($hiddenTreePanes)
-  const narrow = useStore($narrowViewport)
-  const workspaceMode = useStore($workspaceMode)
-  const workspaceOwnerKey = useStore($workspaceOwnerKey)
-  const newSessionTabAction = useStore($newSessionTabAction)
-  const panesWithCloser = useStore($panesWithCloser)
+  const hiddenPanes = useStore($hiddenTreePanes);
+  const narrow = useStore($narrowViewport);
+  const workspaceMode = useStore($workspaceMode);
+  const workspaceOwnerKey = useStore($workspaceOwnerKey);
+  const newSessionTabAction = useStore($newSessionTabAction);
+  const panesWithCloser = useStore($panesWithCloser);
   // Multi-tab selection (⌥/Ctrl-click, Shift-click) — null for every zone but
   // the one holding it, so this subscription is quiet during normal use.
-  const tabSelection = useStore($tabSelection)
+  const tabSelection = useStore($tabSelection);
   // Reload epochs: only an explicit tab-menu Reload writes here, so this
   // subscription costs nothing on a normal render.
-  const paneEpochs = useStore($treePaneEpochs)
+  const paneEpochs = useStore($treePaneEpochs);
 
-  const paneFor = (id: string) => panes.find(p => p.id === id)
+  const paneFor = (id: string) => panes.find((p) => p.id === id);
 
   // Unregistered (plugin not loaded), chrome-toggled-off, and narrow-collapsed
   // panes drop out of the header; the active pane falls back to the first
@@ -267,17 +300,19 @@ export function TreeGroup({
   // Edit mode forces toggle-hidden panes visible so they can be rearranged
   // (mirrors tree-split's paneGone) — restores itself on exit.
   const paneShown = (id: string) =>
-    Boolean(paneFor(id)) && (editMode || !hiddenPanes.has(id)) && !(narrow && paneChrome(paneFor(id)).collapsible)
+    Boolean(paneFor(id)) &&
+    (editMode || !hiddenPanes.has(id)) &&
+    !(narrow && paneChrome(paneFor(id)).collapsible);
 
-  const shown = node.panes.filter(paneShown)
-  const memoryKey = workspaceScopeKey(workspaceMode, workspaceOwnerKey)
+  const shown = node.panes.filter(paneShown);
+  const memoryKey = workspaceScopeKey(workspaceMode, workspaceOwnerKey);
 
   const activeId = shown.includes(node.active)
     ? node.active
-    : (resolveRememberedActivePane(memoryKey, shown) ?? shown[0] ?? '')
+    : (resolveRememberedActivePane(memoryKey, shown) ?? shown[0] ?? "");
 
-  const active = paneFor(activeId)
-  const isEmpty = shown.length === 0
+  const active = paneFor(activeId);
+  const isEmpty = shown.length === 0;
 
   // What the strip's "+" makes. The pane you are LOOKING AT answers first (a
   // Browser tab makes another Browser, even stacked into the chat strip), then
@@ -285,10 +320,10 @@ export function TreeGroup({
   // can mint its own kind — that last rung is what keeps the button from
   // blinking out when you click a file tab sitting beside a Browser.
   const ownNewTab = (id: string) => {
-    const mint = paneChrome(paneFor(id)).newTab
+    const mint = paneChrome(paneFor(id)).newTab;
 
-    return mint ? { label: t.zones.newTab, onSelect: mint } : null
-  }
+    return mint ? { label: t.zones.newTab, onSelect: mint } : null;
+  };
 
   const newTab =
     ownNewTab(activeId) ??
@@ -296,13 +331,13 @@ export function TreeGroup({
       ? { label: t.zones.newSessionTab, onSelect: newSessionTabAction }
       : null) ??
     shown.map(ownNewTab).find(Boolean) ??
-    null
+    null;
 
   useEffect(() => {
     if (activeId) {
-      rememberActivePane(memoryKey, activeId)
+      rememberActivePane(memoryKey, activeId);
     }
-  }, [activeId, memoryKey])
+  }, [activeId, memoryKey]);
 
   // BOUNDED KEEP-ALIVE: the active pane is visible, a small per-zone LRU stays
   // hot-hidden, and older panes park (unmount). This preserves fast tab
@@ -310,18 +345,20 @@ export function TreeGroup({
   // ever visited. Stateful resources can opt out of parking (the terminal keeps
   // its PTY alive while hidden). Lazy remains deliberate: restored background
   // tabs have no lifecycle entry and do not mount until first activation.
-  const lifecycleRef = useRef(emptyPaneLifecycleState())
+  const lifecycleRef = useRef(emptyPaneLifecycleState());
 
   if (!node.minimized && !isEmpty) {
     lifecycleRef.current = reconcilePaneLifecycle(lifecycleRef.current, {
       activeId,
-      keepAlive: id => Boolean(paneChrome(paneFor(id)).lifecycleKeepAlive),
-      paneIds: shown
-    })
+      keepAlive: (id) => Boolean(paneChrome(paneFor(id)).lifecycleKeepAlive),
+      paneIds: shown,
+    });
   }
 
-  const paneLifecycle = lifecycleRef.current.entries
-  const keptPanes = shown.filter(id => paneLifecycle[id] && paneLifecycle[id].lifecycle !== 'parked')
+  const paneLifecycle = lifecycleRef.current.entries;
+  const keptPanes = shown.filter(
+    (id) => paneLifecycle[id] && paneLifecycle[id].lifecycle !== "parked",
+  );
 
   // ONE header style: the app's compact pane-header. Whether this zone shows
   // it is the resolver's call, not this component's — see strip-visibility.ts
@@ -332,8 +369,8 @@ export function TreeGroup({
     isCollapsePane,
     mode: node.tabStrip,
     paneFor,
-    shown
-  })
+    shown,
+  });
 
   // A group collapses ALONG its parent split's axis. In a row that means the
   // WIDTH collapses — a full-width horizontal header would strand a tall
@@ -345,9 +382,14 @@ export function TreeGroup({
   // even when minimized — the user can still switch (and restore) without
   // expanding first. The vertical rail is only for a lone pane, where it
   // still renders that pane's tab as the restore handle.
-  const verticalCollapse = Boolean(node.minimized) && parentAxis === 'row' && !isEmpty && shown.length <= 1
+  const verticalCollapse =
+    Boolean(node.minimized) &&
+    parentAxis === "row" &&
+    !isEmpty &&
+    shown.length <= 1;
   // A minimized group IS its header, so it shows one regardless.
-  const headerVisible = !isEmpty && !verticalCollapse && (Boolean(node.minimized) || stripVisible)
+  const headerVisible =
+    !isEmpty && !verticalCollapse && (Boolean(node.minimized) || stripVisible);
 
   // Keep the activated tab — and, on the last one, the trailing "+" — inside
   // the strip's scroll window. Opening a tab past the right edge otherwise
@@ -355,8 +397,8 @@ export function TreeGroup({
   useActiveTabVisible(tabsRef, activeId, {
     enabled: headerVisible,
     last: shown[shown.length - 1] === activeId,
-    tabCount: shown.length
-  })
+    tabCount: shown.length,
+  });
 
   // Zone-menu close targets read the layout tree, but this component must NOT
   // subscribe to it: `useStore($layoutTree)` here wires every zone — and
@@ -366,25 +408,25 @@ export function TreeGroup({
   // (measured: TreeGroup 180 renders cascading into ChatView/Thread/TileChat
   // at ~4.5s each, holding the drag at ~3fps). The menu's items are resolved
   // when it OPENS, so they read the tree with `.get()` at that moment instead.
-  const targetPane = () => menuPane ?? activeId
+  const targetPane = () => menuPane ?? activeId;
 
   // Close targets the right-clicked chip (falling back to the active pane);
   // panes that declare `uncloseable` (the main workspace) or `hideOnly`
   // (sessions / Bots — show/hide replaces Close) are exempt.
   const closable = () => {
-    const paneId = targetPane()
-    const chrome = paneChrome(paneFor(paneId))
+    const paneId = targetPane();
+    const chrome = paneChrome(paneFor(paneId));
 
-    return chrome.uncloseable || chrome.hideOnly ? undefined : paneId
-  }
+    return chrome.uncloseable || chrome.hideOnly ? undefined : paneId;
+  };
 
   // The zone hosting the uncloseable workspace never minimizes — collapsing
   // MAIN strands the whole app behind a strip.
-  const minimizable = !shown.some(id => paneChrome(paneFor(id)).uncloseable)
+  const minimizable = !shown.some((id) => paneChrome(paneFor(id)).uncloseable);
 
   // Middle-click / ⌘-click on a tab: one routing for every tab kind, the same
   // one the zone menu's Close and ⌘W use.
-  const closeTab = (paneId: string) => closeTabPane(paneId)
+  const closeTab = (paneId: string) => closeTabPane(paneId);
 
   // A pane whose store owns Close keeps the gesture even when the pane itself
   // is uncloseable — the workspace tab empties to a fresh draft rather than
@@ -392,16 +434,21 @@ export function TreeGroup({
   // close gesture: its tabs are shown/hidden (zone menu, ⌘K), never closed —
   // an accidental ✕ on standing chrome removed Bot Mode until the next launch.
   const closeableTab = (paneId: string) =>
-    !paneChrome(paneFor(paneId)).hideOnly && (!paneChrome(paneFor(paneId)).uncloseable || panesWithCloser.has(paneId))
+    !paneChrome(paneFor(paneId)).hideOnly &&
+    (!paneChrome(paneFor(paneId)).uncloseable || panesWithCloser.has(paneId));
 
   // A pane's own live label when it has one, else its registered string.
-  const tabLabel = (paneId: string) => paneChrome(paneFor(paneId)).tabTitle?.() ?? paneFor(paneId)?.title ?? paneId
+  const tabLabel = (paneId: string) =>
+    paneChrome(paneFor(paneId)).tabTitle?.() ??
+    paneFor(paneId)?.title ??
+    paneId;
 
   // Collapse/restore a tool panel (or plain minimize elsewhere) — the header
   // chevron, routed so ⌃`/the titlebar toggle stay truthful. The strip itself
   // does not collapse: a tap on the header of a lone docked tile used to fold
   // the zone and take the tab with it.
-  const toggleCollapse = () => (node.minimized ? restoreTreePane(activeId) : collapseTreePane(activeId))
+  const toggleCollapse = () =>
+    node.minimized ? restoreTreePane(activeId) : collapseTreePane(activeId);
 
   // Same menu on the header strip and the edit veil — one prop bag.
   const zoneMenu = {
@@ -410,9 +457,10 @@ export function TreeGroup({
     minimized: node.minimized,
     nodeId: node.id,
     stripVisible,
-    tabMenuPrefix: (kit: MenuKit) => paneChrome(paneFor(targetPane())).tabMenuPrefix?.(kit),
-    targetPane
-  }
+    tabMenuPrefix: (kit: MenuKit) =>
+      paneChrome(paneFor(targetPane())).tabMenuPrefix?.(kit),
+    targetPane,
+  };
 
   return (
     <div
@@ -426,17 +474,28 @@ export function TreeGroup({
       // every one of them — otherwise a right-click off the strip reused the
       // PREVIOUS target, and landing on the uncloseable workspace dropped
       // Close from the menu for a pane that closes fine.
-      onContextMenu={e => {
-        setMenuPane((e.target as HTMLElement).closest('[data-tree-tab]')?.getAttribute('data-tree-tab') ?? undefined)
+      onContextMenu={(e) => {
+        setMenuPane(
+          (e.target as HTMLElement)
+            .closest("[data-tree-tab]")
+            ?.getAttribute("data-tree-tab") ?? undefined,
+        );
       }}
       ref={ref}
-      style={wcOverlap ? { paddingTop: wcOverlap.y + wcOverlap.height } : undefined}
+      style={
+        wcOverlap ? { paddingTop: wcOverlap.y + wcOverlap.height } : undefined
+      }
     >
       {wcOverlap && (
         <div
           aria-hidden="true"
           className="pointer-events-none absolute z-10 [-webkit-app-region:drag]"
-          style={{ height: wcOverlap.height, left: wcOverlap.x, top: wcOverlap.y, width: wcOverlap.width }}
+          style={{
+            height: wcOverlap.height,
+            left: wcOverlap.x,
+            top: wcOverlap.y,
+            width: wcOverlap.width,
+          }}
         />
       )}
 
@@ -447,9 +506,11 @@ export function TreeGroup({
         <ZoneMenu {...zoneMenu}>
           <div
             className={cn(
-              'flex h-full min-h-7 w-7 min-w-7 shrink-0 cursor-pointer select-none flex-col items-stretch bg-(--ui-sidebar-surface-background)',
+              "flex h-full min-h-7 w-7 min-w-7 shrink-0 cursor-pointer select-none flex-col items-stretch bg-(--ui-sidebar-surface-background)",
               // Strip line faces the content the zone collapsed away from.
-              railSide === 'right' ? PANE_TAB_STRIP_LINE_LEFT : PANE_TAB_STRIP_LINE_RIGHT
+              railSide === "right"
+                ? PANE_TAB_STRIP_LINE_LEFT
+                : PANE_TAB_STRIP_LINE_RIGHT,
             )}
             onClick={() => restoreTreePane(activeId)}
             title={t.zones.restore}
@@ -458,8 +519,8 @@ export function TreeGroup({
               className="flex min-h-0 flex-col overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               role="tablist"
             >
-              {shown.map(paneId => {
-                const closeable = closeableTab(paneId)
+              {shown.map((paneId) => {
+                const closeable = closeableTab(paneId);
 
                 return (
                   <PaneTab
@@ -468,9 +529,9 @@ export function TreeGroup({
                     aria-selected={paneId === activeId}
                     data-tree-tab={paneId}
                     key={paneId}
-                    onClick={event => {
-                      event.stopPropagation()
-                      restoreTreePane(paneId)
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      restoreTreePane(paneId);
                     }}
                     onClose={closeable ? () => closeTab(paneId) : undefined}
                     role="tab"
@@ -479,7 +540,7 @@ export function TreeGroup({
                   >
                     <PaneTabLabel>{tabLabel(paneId)}</PaneTabLabel>
                   </PaneTab>
-                )
+                );
               })}
             </div>
           </div>
@@ -493,7 +554,7 @@ export function TreeGroup({
             // data-zone-tabstrip: a drop over here STACKS (drag-session reads it).
             data-zone-tabstrip={node.id}
             listRef={tabsRef}
-            onPointerDown={e =>
+            onPointerDown={(e) =>
               // Drag still moves the pane. Tapping the strip never collapses:
               // the chevron is the collapse affordance. Overloading the header
               // (and, in a lone-tab zone, the tab sitting in it) made a click
@@ -505,34 +566,41 @@ export function TreeGroup({
                 e,
                 node.minimized ? () => restoreTreePane(activeId) : undefined,
                 undefined,
-                active?.title ?? activeId
+                active?.title ?? activeId,
               )
             }
             ref={stripRef}
-            style={{ cursor: 'grab' }}
+            style={{ cursor: "grab" }}
             trailing={
               <>
                 {minimizable && (
                   <button
-                    aria-label={node.minimized ? t.zones.restore : t.zones.minimize}
+                    aria-label={
+                      node.minimized ? t.zones.restore : t.zones.minimize
+                    }
                     className="mx-1 grid size-5 shrink-0 place-items-center self-center rounded-md text-(--ui-text-tertiary) opacity-0 transition-opacity hover:bg-(--ui-control-hover-background) hover:text-foreground focus-visible:opacity-100 group-hover/pane-header:opacity-100"
                     onClick={toggleCollapse}
-                    onPointerDown={e => e.stopPropagation()}
+                    onPointerDown={(e) => e.stopPropagation()}
                     type="button"
                   >
-                    <Codicon name={node.minimized ? 'chevron-up' : 'chevron-down'} size="0.75rem" />
+                    <Codicon
+                      name={node.minimized ? "chevron-up" : "chevron-down"}
+                      size="0.75rem"
+                    />
                   </button>
                 )}
                 <StripDropCaret groupId={node.id} stripRef={stripRef} />
               </>
             }
           >
-            {shown.map(paneId => {
-              const isActive = paneId === activeId && !node.minimized
-              const chrome = paneChrome(paneFor(paneId))
-              const closeable = closeableTab(paneId)
-              const title = paneFor(paneId)?.title ?? paneId
-              const isSelected = tabSelection?.groupId === node.id && tabSelection.ids.has(paneId)
+            {shown.map((paneId) => {
+              const isActive = paneId === activeId && !node.minimized;
+              const chrome = paneChrome(paneFor(paneId));
+              const closeable = closeableTab(paneId);
+              const title = paneFor(paneId)?.title ?? paneId;
+              const isSelected =
+                tabSelection?.groupId === node.id &&
+                tabSelection.ids.has(paneId);
 
               const tab = (
                 <PaneTab
@@ -541,7 +609,7 @@ export function TreeGroup({
                   data-tree-tab={paneId}
                   key={paneId}
                   onClose={closeable ? () => closeTab(paneId) : undefined}
-                  onPointerDown={e => {
+                  onPointerDown={(e) => {
                     // Chrome's tab-selection grammar, ahead of activate/drag:
                     // Shift-click ranges from the anchor, ⌥-click (Ctrl-click
                     // off-Mac) toggles. Neither activates nor starts a drag —
@@ -549,19 +617,19 @@ export function TreeGroup({
                     // (PaneTab claims it first) and ⌃-click stays the macOS
                     // context menu.
                     if (e.button === 0 && e.shiftKey) {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      selectTabRange(node.id, shown, paneId, activeId)
+                      e.preventDefault();
+                      e.stopPropagation();
+                      selectTabRange(node.id, shown, paneId, activeId);
 
-                      return
+                      return;
                     }
 
                     if (isToggleSelectClick(e)) {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      toggleTabSelected(node.id, paneId, activeId)
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleTabSelected(node.id, paneId, activeId);
 
-                      return
+                      return;
                     }
 
                     // Tabs ACTIVATE (restoring a collapsed group). Minimize
@@ -570,41 +638,43 @@ export function TreeGroup({
                     // click also collapses any multi-tab selection back to the
                     // one tab (Chrome semantics).
                     const onTap = () => {
-                      clearTabSelection()
+                      clearTabSelection();
 
                       if (node.minimized) {
-                        restoreTreePane(paneId)
+                        restoreTreePane(paneId);
                       }
 
-                      activateTreePane(node.id, paneId)
-                    }
+                      activateTreePane(node.id, paneId);
+                    };
 
                     // Claim the press so the STRIP's own pane-drag handler
                     // (parent onPointerDown) can't also fire. startPaneDrag
                     // does this internally; the session drag (shared with
                     // sidebar rows) doesn't, so do it here for both paths.
                     if (e.button === 0) {
-                      e.preventDefault()
-                      e.stopPropagation()
+                      e.preventDefault();
+                      e.stopPropagation();
                     }
 
                     // Dragging a SELECTED tab carries the whole selection as
                     // one block through the generic pane move — a multi-tab
                     // drag outranks the pane's own tab drag (the session drop
                     // language is single-session).
-                    const dragSelection = selectionFor(node.id, shown, paneId)
+                    const dragSelection = selectionFor(node.id, shown, paneId);
 
                     if (dragSelection) {
                       startPaneDrag(
                         paneId,
                         e,
                         onTap,
-                        stripRef.current ? { groupId: node.id, strip: stripRef.current } : undefined,
+                        stripRef.current
+                          ? { groupId: node.id, strip: stripRef.current }
+                          : undefined,
                         t.zones.tabCount(dragSelection.length),
-                        dragSelection
-                      )
+                        dragSelection,
+                      );
 
-                      return
+                      return;
                     }
 
                     // A pane may own its tab drag (a session tab speaks the
@@ -616,25 +686,33 @@ export function TreeGroup({
                         paneId,
                         e,
                         onTap,
-                        stripRef.current ? { groupId: node.id, strip: stripRef.current } : undefined,
-                        title
-                      )
+                        stripRef.current
+                          ? { groupId: node.id, strip: stripRef.current }
+                          : undefined,
+                        title,
+                      );
                     }
                   }}
                   role="tab"
                   selected={isSelected}
-                  style={{ cursor: 'grab' }}
+                  style={{ cursor: "grab" }}
                 >
                   {chrome.tabLead ? (
-                    <span className="ml-2 -mr-1 flex shrink-0 items-center">{chrome.tabLead()}</span>
+                    <span className="ml-2 -mr-1 flex shrink-0 items-center">
+                      {chrome.tabLead()}
+                    </span>
                   ) : null}
                   <PaneTabLabel>{tabLabel(paneId)}</PaneTabLabel>
                 </PaneTab>
-              )
+              );
 
               // A pane may wrap ITS tab in a domain menu (session verbs on a
               // tile tab); the wrapper needs the key since it's the root.
-              return <Fragment key={paneId}>{chrome.tabWrap ? chrome.tabWrap(tab) : tab}</Fragment>
+              return (
+                <Fragment key={paneId}>
+                  {chrome.tabWrap ? chrome.tabWrap(tab) : tab}
+                </Fragment>
+              );
             })}
 
             {/* Plain "+" after the last tab — it mints another tab of the kind
@@ -674,17 +752,25 @@ export function TreeGroup({
           {isEmpty ? (
             <div className="grid h-full place-items-center">
               {/* Same decode primitive as the CONNECTING boot overlay. */}
-              <DecodeText className="text-(--ui-text-quaternary)" cursor prefix={1} text="HERMES" />
+              <DecodeText
+                className="text-(--ui-text-quaternary)"
+                cursor
+                prefix={1}
+                text="HERMES"
+              />
             </div>
           ) : (
-            keptPanes.map(paneId => {
-              const pane = paneFor(paneId)
-              const isActive = paneId === activeId
+            keptPanes.map((paneId) => {
+              const pane = paneFor(paneId);
+              const isActive = paneId === activeId;
 
               return (
                 <div
                   aria-hidden={!isActive || undefined}
-                  className={cn('absolute inset-0 overflow-auto', !isActive && 'pointer-events-none invisible')}
+                  className={cn(
+                    "absolute inset-0 overflow-auto",
+                    !isActive && "pointer-events-none invisible",
+                  )}
                   key={paneId}
                   {...hiddenPaneProps(!isActive)}
                 >
@@ -697,9 +783,14 @@ export function TreeGroup({
                     // Reload remounts the contribution (effects re-run, state
                     // resets) while the layer — and every other tab — stays.
                     <PaneGroupContext.Provider value={node.id}>
-                      <PaneLifecycleContext.Provider value={paneLifecycle[paneId]?.lifecycle ?? 'visible'}>
+                      <PaneLifecycleContext.Provider
+                        value={paneLifecycle[paneId]?.lifecycle ?? "visible"}
+                      >
                         <PaneVisibleContext.Provider value={isActive}>
-                          <ContribBoundary id={pane.id} key={paneEpochs[paneId] ?? 0}>
+                          <ContribBoundary
+                            id={pane.id}
+                            key={paneEpochs[paneId] ?? 0}
+                          >
                             <ContribRender render={pane.render} />
                           </ContribBoundary>
                         </PaneVisibleContext.Provider>
@@ -713,7 +804,7 @@ export function TreeGroup({
                     )
                   )}
                 </div>
-              )
+              );
             })
           )}
         </div>
@@ -732,17 +823,28 @@ export function TreeGroup({
             // barely-tinted wash; the light blur reads as "edit mode" the same
             // way the zone editor's backdrop does.
             className="absolute inset-x-0 bottom-0 z-50 flex cursor-grab items-center justify-center outline-1 -outline-offset-2 outline-dashed backdrop-blur-[2px]"
-            onPointerDown={e => startPaneDrag(activeId, e, undefined, undefined, active?.title ?? activeId)}
+            onPointerDown={(e) =>
+              startPaneDrag(
+                activeId,
+                e,
+                undefined,
+                undefined,
+                active?.title ?? activeId,
+              )
+            }
             style={{
               top: headerVisible ? 28 : 0,
               background:
-                'color-mix(in srgb, var(--ui-accent) 6%, color-mix(in srgb, var(--ui-bg-chrome) 55%, transparent))',
-              outlineColor: 'color-mix(in srgb, var(--ui-accent) 55%, transparent)'
+                "color-mix(in srgb, var(--ui-accent) 6%, color-mix(in srgb, var(--ui-bg-chrome) 55%, transparent))",
+              outlineColor:
+                "color-mix(in srgb, var(--ui-accent) 55%, transparent)",
             }}
           >
             <span className="flex max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-(--ui-stroke-secondary) bg-popover px-2 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-(--ui-text-secondary)">
               <Codicon className="shrink-0" name="gripper" size="0.8125rem" />
-              <span className="min-w-0 truncate">{active?.title ?? activeId}</span>
+              <span className="min-w-0 truncate">
+                {active?.title ?? activeId}
+              </span>
             </span>
           </div>
         </ZoneMenu>
@@ -752,7 +854,7 @@ export function TreeGroup({
           hint re-renders only this (tiny) node, not the whole zone. */}
       <ZoneDropOverlay node={node} />
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -766,26 +868,35 @@ export function TreeGroup({
  * #FFF on dark. Split out so per-pointermove `$dropHint` churn re-renders
  * only this node (same isolation contract as ZoneDropOverlay).
  */
-function StripDropCaret({ groupId, stripRef }: { groupId: string; stripRef: RefObject<HTMLDivElement | null> }) {
-  const hint = useStore($dropHint)
-  const strip = stripRef.current
-  const stack = hint?.groupId === groupId ? hint.stack : undefined
+function StripDropCaret({
+  groupId,
+  stripRef,
+}: {
+  groupId: string;
+  stripRef: RefObject<HTMLDivElement | null>;
+}) {
+  const hint = useStore($dropHint);
+  const strip = stripRef.current;
+  const stack = hint?.groupId === groupId ? hint.stack : undefined;
 
   if (stack === undefined || !strip) {
-    return null
+    return null;
   }
 
   // Slot x: the before-tab's left edge, or the last tab's right edge.
-  const tabs = [...strip.querySelectorAll<HTMLElement>('[data-tree-tab]')]
-  const target = stack.before ? tabs.find(el => el.dataset.treeTab === stack.before) : tabs.at(-1)
+  const tabs = [...strip.querySelectorAll<HTMLElement>("[data-tree-tab]")];
+  const target = stack.before
+    ? tabs.find((el) => el.dataset.treeTab === stack.before)
+    : tabs.at(-1);
 
   if (!target) {
-    return null
+    return null;
   }
 
-  const stripRect = strip.getBoundingClientRect()
-  const targetRect = target.getBoundingClientRect()
-  const x = (stack.before ? targetRect.left : targetRect.right) - stripRect.left
+  const stripRect = strip.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const x =
+    (stack.before ? targetRect.left : targetRect.right) - stripRect.left;
 
   // A short centered tick (~60% of the tab), not a full-height wall — reads
   // as an insertion point between labels, browser-tab style.
@@ -796,10 +907,10 @@ function StripDropCaret({ groupId, stripRef }: { groupId: string; stripRef: RefO
       style={{
         height: targetRect.height * 0.6,
         left: x,
-        top: targetRect.top - stripRect.top + targetRect.height * 0.2
+        top: targetRect.top - stripRect.top + targetRect.height * 0.2,
       }}
     />
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -809,21 +920,36 @@ function StripDropCaret({ groupId, stripRef }: { groupId: string; stripRef: RefO
 /** Overlay entry fade. FancyZones ships 200ms (FADE_IN_DURATION_MILLIS in
  *  zones-engine); on a drag that starts under the cursor that ramp reads as
  *  lag, so the sheets snap in far faster — same softening, instant feel. */
-const OVERLAY_FADE_MS = 80
+const OVERLAY_FADE_MS = 80;
 
 /** Sheet inset from the zone edge (px). */
-const REGION_PAD = 6
+const REGION_PAD = 6;
 
 /** The sheet's box per drop position — longhand insets so CSS transitions can
  *  interpolate the px↔% change: the target GLIDES between the full zone and
  *  the hovered half instead of snapping (VS Code dock preview). */
 const REGION: Record<DropPosition, CSSProperties> = {
-  bottom: { bottom: REGION_PAD, left: REGION_PAD, right: REGION_PAD, top: '50%' },
-  center: { bottom: REGION_PAD, left: REGION_PAD, right: REGION_PAD, top: REGION_PAD },
-  left: { bottom: REGION_PAD, left: REGION_PAD, right: '50%', top: REGION_PAD },
-  right: { bottom: REGION_PAD, left: '50%', right: REGION_PAD, top: REGION_PAD },
-  top: { bottom: '50%', left: REGION_PAD, right: REGION_PAD, top: REGION_PAD }
-}
+  bottom: {
+    bottom: REGION_PAD,
+    left: REGION_PAD,
+    right: REGION_PAD,
+    top: "50%",
+  },
+  center: {
+    bottom: REGION_PAD,
+    left: REGION_PAD,
+    right: REGION_PAD,
+    top: REGION_PAD,
+  },
+  left: { bottom: REGION_PAD, left: REGION_PAD, right: "50%", top: REGION_PAD },
+  right: {
+    bottom: REGION_PAD,
+    left: "50%",
+    right: REGION_PAD,
+    top: REGION_PAD,
+  },
+  top: { bottom: "50%", left: REGION_PAD, right: REGION_PAD, top: REGION_PAD },
+};
 
 /**
  * The FancyZones drop overlay for one zone. Split out of TreeGroup so the
@@ -835,11 +961,11 @@ const REGION: Record<DropPosition, CSSProperties> = {
  * accent-lit over the target, morphing to the hovered half for an edge split.
  */
 function ZoneDropOverlay({ node }: { node: GroupNode }) {
-  const dragging = useStore($treeDragging)
-  const hint = useStore($dropHint)
+  const dragging = useStore($treeDragging);
+  const hint = useStore($dropHint);
 
   if (dragging === null) {
-    return null
+    return null;
   }
 
   // A session drag (sidebar row) reuses this exact overlay — over ANY zone
@@ -850,37 +976,37 @@ function ZoneDropOverlay({ node }: { node: GroupNode }) {
   // than painting an idle outline the drop would only refuse. Same test
   // `tileZoneHost` (session-drag.ts) resolves the drop with, so what lights
   // up and what commits cannot disagree.
-  const sessionDrag = dragging === SESSION_TILE_DRAG
-  const chatZone = node.panes.some(isSessionStripPane)
+  const sessionDrag = dragging === SESSION_TILE_DRAG;
+  const chatZone = node.panes.some(isSessionStripPane);
 
   if (sessionDrag && !chatZone && !node.panes.some(isMainStripPane)) {
-    return null
+    return null;
   }
 
-  const isDragSource = node.panes.includes(dragging)
+  const isDragSource = node.panes.includes(dragging);
 
   // The source zone, when it holds only the dragged pane, has nothing to drop.
   if (isDragSource && node.panes.length === 1) {
-    return null
+    return null;
   }
 
-  const primary = hint?.groupId === node.id
+  const primary = hint?.groupId === node.id;
 
   // Hovering the target's TAB STRIP: the insertion caret (StripDropCaret)
   // owns the affordance — the zone sheet stands down so the two never stack.
   if (primary && hint?.stack !== undefined) {
-    return null
+    return null;
   }
 
-  const active = hint?.groupIds?.includes(node.id) ?? false
-  const multi = (hint?.groupIds?.length ?? 0) > 1
+  const active = hint?.groupIds?.includes(node.id) ?? false;
+  const multi = (hint?.groupIds?.length ?? 0) > 1;
   // Sub-positions only exist for a single-zone target (a Shift-span merges).
-  const pos = primary && !multi ? (hint?.pos ?? 'center') : 'center'
+  const pos = primary && !multi ? (hint?.pos ?? "center") : "center";
   // Session drag over a CHAT zone's CENTER: the "link to chat" overlay inside
   // the surface (ChatDropOverlay — the same sheet) owns that region; this sheet
   // fades out so the two never stack. A non-chat zone's center has no chat to
   // link, so it shows the normal stack sheet. Edges act like a tab.
-  const centerLink = sessionDrag && primary && pos === 'center' && chatZone
+  const centerLink = sessionDrag && primary && pos === "center" && chatZone;
 
   return (
     <div
@@ -894,21 +1020,21 @@ function ZoneDropOverlay({ node }: { node: GroupNode }) {
           // backdrop-filter, and a blur interpolating while the insets glide
           // re-blurs half a zone every frame — the single most expensive
           // paint in the whole drag.
-          'absolute transition-[top,right,bottom,left,background-color,border-color,opacity] duration-150 ease-out',
+          "absolute transition-[top,right,bottom,left,background-color,border-color,opacity] duration-150 ease-out",
           // Blur only the live target — idle outlines must not fog the app.
           active && !centerLink && DROP_SHEET_BLUR_CLASS,
-          centerLink && 'opacity-0'
+          centerLink && "opacity-0",
         )}
         style={{
           ...REGION[pos],
           // Accent over a card wash so the fill dims content on dark themes
           // (a bare accent alpha disappears there).
           background: active
-            ? 'color-mix(in srgb, var(--ui-accent) 18%, color-mix(in srgb, var(--dt-card) 55%, transparent))'
-            : 'color-mix(in srgb, var(--ui-accent) 5%, color-mix(in srgb, var(--dt-card) 25%, transparent))',
-          borderColor: `color-mix(in srgb, var(--ui-accent) ${active ? 75 : 28}%, transparent)`
+            ? "color-mix(in srgb, var(--ui-accent) 18%, color-mix(in srgb, var(--dt-card) 55%, transparent))"
+            : "color-mix(in srgb, var(--ui-accent) 5%, color-mix(in srgb, var(--dt-card) 25%, transparent))",
+          borderColor: `color-mix(in srgb, var(--ui-accent) ${active ? 75 : 28}%, transparent)`,
         }}
       />
     </div>
-  )
+  );
 }

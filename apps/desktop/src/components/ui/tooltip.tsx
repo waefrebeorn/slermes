@@ -1,25 +1,25 @@
-import { Tooltip as TooltipPrimitive } from 'radix-ui'
-import * as React from 'react'
+import { Tooltip as TooltipPrimitive } from "radix-ui";
+import * as React from "react";
 
-import { useI18n } from '@/i18n'
-import { type InputModality, lastInputModality } from '@/lib/input-modality'
-import { useKeybindHint } from '@/lib/keybinds/use-keybind-hint'
-import { cn } from '@/lib/utils'
+import { useI18n } from "@/i18n";
+import { type InputModality, lastInputModality } from "@/lib/input-modality";
+import { useKeybindHint } from "@/lib/keybinds/use-keybind-hint";
+import { cn } from "@/lib/utils";
 
 /** Default hover-open delay for `Tip`. Below 150ms a passing cursor still
  *  opens the tip; above 250ms an intentional hover feels broken. Call sites
  *  that need an instant tip pass `delayDuration={0}`. */
-const TIP_DELAY_MS = 200
+const TIP_DELAY_MS = 200;
 
 /** After a tip closes, this window stays warm: the next trigger opens
  *  instantly (Radix `skipDelayDuration`). Long enough to cover the move
  *  between adjacent chrome, short enough that a hover a second later waits
  *  again. */
-const TIP_SKIP_DELAY_MS = 300
+const TIP_SKIP_DELAY_MS = 300;
 
 /** True inside `RootTooltipProvider`. `Tip` uses this to decide whether it
  *  needs to supply its own provider — see the note on `Tip`. */
-const HasTooltipProvider = React.createContext(false)
+const HasTooltipProvider = React.createContext(false);
 
 function TooltipProvider({
   delayDuration = 0,
@@ -43,11 +43,13 @@ function TooltipProvider({
       skipDelayDuration={skipDelayDuration}
       {...props}
     />
-  )
+  );
 }
 
-function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
-  return <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+function Tooltip({
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+  return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
 }
 
 // Radix opens a tooltip on ANY trigger focus (its pointer-down guard only
@@ -65,32 +67,35 @@ function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root
 // the last real interaction, which a mouse pick reports as `pointer`.
 export function suppressNonKeyboardFocusOpen(
   event: React.FocusEvent<HTMLElement>,
-  modality: InputModality = lastInputModality()
+  modality: InputModality = lastInputModality(),
 ): void {
-  let keyboardFocus = modality === 'keyboard'
+  let keyboardFocus = modality === "keyboard";
 
   try {
-    keyboardFocus &&= event.currentTarget.matches(':focus-visible')
+    keyboardFocus &&= event.currentTarget.matches(":focus-visible");
   } catch {
     // Selector unsupported (older jsdom) — fall back to the modality alone.
   }
 
   if (!keyboardFocus) {
-    event.preventDefault()
+    event.preventDefault();
   }
 }
 
-function TooltipTrigger({ onFocus, ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+function TooltipTrigger({
+  onFocus,
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   return (
     <TooltipPrimitive.Trigger
       data-slot="tooltip-trigger"
-      onFocus={event => {
-        onFocus?.(event)
-        suppressNonKeyboardFocusOpen(event)
+      onFocus={(event) => {
+        onFocus?.(event);
+        suppressNonKeyboardFocusOpen(event);
       }}
       {...props}
     />
-  )
+  );
 }
 
 function TooltipContent({
@@ -109,7 +114,10 @@ function TooltipContent({
         // elapses the chip appears at once.
         // pointer-events-none: the tip must never steal hover/clicks from the
         // chrome underneath (titlebar tools, adjacent tabs, etc.).
-        className={cn('pointer-events-none z-(--z-over-modal) w-fit max-w-64 select-none', className)}
+        className={cn(
+          "pointer-events-none z-(--z-over-modal) w-fit max-w-64 select-none",
+          className,
+        )}
         data-slot="tooltip-content"
         sideOffset={sideOffset}
         {...props}
@@ -126,13 +134,16 @@ function TooltipContent({
         </span>
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
-  )
+  );
 }
 
-interface TipProps extends Omit<React.ComponentProps<typeof TooltipPrimitive.Content>, 'content'> {
-  label: React.ReactNode
-  children: React.ReactNode
-  delayDuration?: number
+interface TipProps extends Omit<
+  React.ComponentProps<typeof TooltipPrimitive.Content>,
+  "content"
+> {
+  label: React.ReactNode;
+  children: React.ReactNode;
+  delayDuration?: number;
 }
 
 // Drop-in replacement for native `title=`: wrap any single element. Instant,
@@ -154,16 +165,21 @@ interface TipProps extends Omit<React.ComponentProps<typeof TooltipPrimitive.Con
 // tried and reverted. `asChild` puts `data-slot="tooltip-trigger"` on the
 // child element itself, so arming REPLACES that node — which broke 18 tests
 // encoding that contract, and risks focus/ref identity at every call site.
-function Tip({ label, children, delayDuration = TIP_DELAY_MS, ...props }: TipProps) {
+function Tip({
+  label,
+  children,
+  delayDuration = TIP_DELAY_MS,
+  ...props
+}: TipProps) {
   // A component rendered in isolation (every unit test, and any surface
   // mounted outside the app root) has no provider above it, and Radix throws
   // "`Tooltip` must be used within `TooltipProvider`". Fall back to a local
   // one there. Inside the app this is always false, so the common path is a
   // bare Tooltip and the ~107 providers collapse to one.
-  const provided = React.useContext(HasTooltipProvider)
+  const provided = React.useContext(HasTooltipProvider);
 
   if (!label) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   const tip = (
@@ -171,16 +187,20 @@ function Tip({ label, children, delayDuration = TIP_DELAY_MS, ...props }: TipPro
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent {...props}>{label}</TooltipContent>
     </Tooltip>
-  )
+  );
 
-  return provided ? tip : <TooltipProvider delayDuration={delayDuration}>{tip}</TooltipProvider>
+  return provided ? (
+    tip
+  ) : (
+    <TooltipProvider delayDuration={delayDuration}>{tip}</TooltipProvider>
+  );
 }
 
 /** Hover-open delay for `OverflowTip`. Longer than `TIP_DELAY_MS`: the trigger
  *  is a row's own content (not a control), so the tip should only appear on a
  *  deliberate, lingering hover — a cursor travelling the list must not pop a
  *  trail of titles. */
-const OVERFLOW_TIP_DELAY_MS = 600
+const OVERFLOW_TIP_DELAY_MS = 600;
 
 /**
  * A `Tip` that only opens when the trigger's content is actually truncated
@@ -193,48 +213,56 @@ const OVERFLOW_TIP_DELAY_MS = 600
  * Measurement happens on the CHILD element (`asChild` puts the trigger props on
  * it), so wrap the element that carries the truncation/overflow styling.
  */
-function OverflowTip({ label, children, delayDuration = OVERFLOW_TIP_DELAY_MS, ...props }: TipProps) {
-  const provided = React.useContext(HasTooltipProvider)
-  const [open, setOpen] = React.useState(false)
-  const timer = React.useRef<number | undefined>(undefined)
+function OverflowTip({
+  label,
+  children,
+  delayDuration = OVERFLOW_TIP_DELAY_MS,
+  ...props
+}: TipProps) {
+  const provided = React.useContext(HasTooltipProvider);
+  const [open, setOpen] = React.useState(false);
+  const timer = React.useRef<number | undefined>(undefined);
 
   const cancel = React.useCallback(() => {
     if (timer.current !== undefined) {
-      window.clearTimeout(timer.current)
-      timer.current = undefined
+      window.clearTimeout(timer.current);
+      timer.current = undefined;
     }
-  }, [])
+  }, []);
 
   // A row unmounting mid-hover (list refresh, filter) must not fire a stale
   // timer into a torn-down tooltip.
-  React.useEffect(() => cancel, [cancel])
+  React.useEffect(() => cancel, [cancel]);
 
   if (!label) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   const close = () => {
-    cancel()
-    setOpen(false)
-  }
+    cancel();
+    setOpen(false);
+  };
 
   const tip = (
     // Controlled: only closes are honored from Radix (Escape, pointer-down
     // grace); opens are ours, gated on the measured overflow below.
-    <Tooltip onOpenChange={next => !next && close()} open={open}>
+    <Tooltip onOpenChange={(next) => !next && close()} open={open}>
       <TooltipTrigger
         asChild
         // Clicking the row means the user is acting on it, not reading the tip.
         onPointerDown={close}
-        onPointerEnter={event => {
-          const el = event.currentTarget
+        onPointerEnter={(event) => {
+          const el = event.currentTarget;
 
-          cancel()
+          cancel();
 
           // Same 2px slack the sidebar marquee uses: sub-pixel rounding can
           // report a 1px "overflow" on a title that fully fits.
           if (el.scrollWidth - el.clientWidth > 2) {
-            timer.current = window.setTimeout(() => setOpen(true), delayDuration)
+            timer.current = window.setTimeout(
+              () => setOpen(true),
+              delayDuration,
+            );
           }
         }}
         onPointerLeave={close}
@@ -243,9 +271,13 @@ function OverflowTip({ label, children, delayDuration = OVERFLOW_TIP_DELAY_MS, .
       </TooltipTrigger>
       <TooltipContent {...props}>{label}</TooltipContent>
     </Tooltip>
-  )
+  );
 
-  return provided ? tip : <TooltipProvider delayDuration={delayDuration}>{tip}</TooltipProvider>
+  return provided ? (
+    tip
+  ) : (
+    <TooltipProvider delayDuration={delayDuration}>{tip}</TooltipProvider>
+  );
 }
 
 /** The app's single tooltip provider. Mounted once at the root so every
@@ -257,12 +289,12 @@ function RootTooltipProvider({ children }: { children: React.ReactNode }) {
         {children}
       </TooltipProvider>
     </HasTooltipProvider>
-  )
+  );
 }
 
 interface TipHintLabelProps {
-  text: string
-  hint?: string
+  text: string;
+  hint?: string;
 }
 
 /** Tooltip label with an optional trailing hotkey hint. Uses `inline-flex` so it
@@ -270,7 +302,7 @@ interface TipHintLabelProps {
  *  flex/gap span at the call site (see #62022). */
 function TipHintLabel({ text, hint }: TipHintLabelProps) {
   if (!hint) {
-    return <>{text}</>
+    return <>{text}</>;
   }
 
   return (
@@ -278,26 +310,26 @@ function TipHintLabel({ text, hint }: TipHintLabelProps) {
       <span>{text}</span>
       <span className="opacity-55">{hint}</span>
     </span>
-  )
+  );
 }
 
 interface TipKeybindLabelProps {
   /** Keybind action id — pulls the label from i18n AND the combo from the store. */
-  actionId: string
+  actionId: string;
   /** Override the i18n label (for context-dependent text like "Show"/"Hide"). */
-  text?: string
+  text?: string;
 }
 
 /** TipHintLabel that auto-reads both its label and keybind from the action
  *  registry. Pass only `actionId` for the common case; pass `text` to override
  *  when the button's tooltip is context-dependent. */
 function TipKeybindLabel({ actionId, text }: TipKeybindLabelProps) {
-  const { t } = useI18n()
-  const hint = useKeybindHint(actionId)
+  const { t } = useI18n();
+  const hint = useKeybindHint(actionId);
 
-  const label = text ?? t.keybinds.actions[actionId] ?? actionId
+  const label = text ?? t.keybinds.actions[actionId] ?? actionId;
 
-  return <TipHintLabel hint={hint ?? undefined} text={label} />
+  return <TipHintLabel hint={hint ?? undefined} text={label} />;
 }
 
 export {
@@ -309,5 +341,5 @@ export {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger
-}
+  TooltipTrigger,
+};

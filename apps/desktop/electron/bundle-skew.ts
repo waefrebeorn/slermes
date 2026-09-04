@@ -42,22 +42,22 @@
  */
 
 export interface BundleSkewStamp {
-  commit: string
+  commit: string;
   /** write-build-stamp.mjs source tag — 'fallback' means the commit is fake. */
-  source?: null | string
+  source?: null | string;
 }
 
 export interface BundleSkewResult {
   /** Runtime-path commits between the build stamp and HEAD (null = unknowable). */
-  desktopCommitsBehind: null | number
+  desktopCommitsBehind: null | number;
   /** True only on positive proof that the renderer predates desktop changes in the tree. */
-  outOfSync: boolean
+  outOfSync: boolean;
 }
 
 export type RunGit = (
   args: string[],
-  options: { cwd: string }
-) => Promise<{ code: number; stderr: string; stdout: string }>
+  options: { cwd: string },
+) => Promise<{ code: number; stderr: string; stdout: string }>;
 
 /**
  * The apps/desktop paths that actually reach the user: renderer sources,
@@ -67,29 +67,36 @@ export type RunGit = (
  * to them is not a torn install in any way the user can see.
  */
 export const RUNTIME_PATHS = [
-  'apps/desktop/src',
-  'apps/desktop/electron',
-  'apps/desktop/index.html',
-  'apps/desktop/public',
-  'apps/desktop/assets',
-  'apps/desktop/package.json',
-  'apps/desktop/vite.config.ts'
-] as const
+  "apps/desktop/src",
+  "apps/desktop/electron",
+  "apps/desktop/index.html",
+  "apps/desktop/public",
+  "apps/desktop/assets",
+  "apps/desktop/package.json",
+  "apps/desktop/vite.config.ts",
+] as const;
 
-const NOT_STALE: BundleSkewResult = { desktopCommitsBehind: null, outOfSync: false }
+const NOT_STALE: BundleSkewResult = {
+  desktopCommitsBehind: null,
+  outOfSync: false,
+};
 
 /** Matches write-build-stamp.mjs's all-zero placeholder for non-git builds. */
 export function isFallbackCommit(commit: string): boolean {
-  return /^0{7,40}$/.test(commit)
+  return /^0{7,40}$/.test(commit);
 }
 
 export async function detectBundleSkew(
   stamp: BundleSkewStamp | null,
   runGit: RunGit,
-  repoRoot: string
+  repoRoot: string,
 ): Promise<BundleSkewResult> {
-  if (!stamp?.commit || stamp.source === 'fallback' || isFallbackCommit(stamp.commit)) {
-    return NOT_STALE
+  if (
+    !stamp?.commit ||
+    stamp.source === "fallback" ||
+    isFallbackCommit(stamp.commit)
+  ) {
+    return NOT_STALE;
   }
 
   try {
@@ -104,30 +111,39 @@ export async function detectBundleSkew(
     // would be told "app build out of date" backwards. Ancestry is what makes
     // this a proof that the renderer PREDATES the tree, which is the claim the
     // warning actually makes.
-    const ancestry = await runGit(['merge-base', '--is-ancestor', stamp.commit, 'HEAD'], {
-      cwd: repoRoot
-    })
+    const ancestry = await runGit(
+      ["merge-base", "--is-ancestor", stamp.commit, "HEAD"],
+      {
+        cwd: repoRoot,
+      },
+    );
 
     if (ancestry.code !== 0) {
-      return NOT_STALE
+      return NOT_STALE;
     }
 
-    const result = await runGit(['rev-list', '--count', `${stamp.commit}..HEAD`, '--', ...RUNTIME_PATHS], {
-      cwd: repoRoot
-    })
+    const result = await runGit(
+      ["rev-list", "--count", `${stamp.commit}..HEAD`, "--", ...RUNTIME_PATHS],
+      {
+        cwd: repoRoot,
+      },
+    );
 
     if (result.code !== 0) {
-      return NOT_STALE
+      return NOT_STALE;
     }
 
-    const count = Number.parseInt(result.stdout.trim(), 10)
+    const count = Number.parseInt(result.stdout.trim(), 10);
 
     if (!Number.isFinite(count) || count <= 0) {
-      return { desktopCommitsBehind: Number.isFinite(count) ? count : null, outOfSync: false }
+      return {
+        desktopCommitsBehind: Number.isFinite(count) ? count : null,
+        outOfSync: false,
+      };
     }
 
-    return { desktopCommitsBehind: count, outOfSync: true }
+    return { desktopCommitsBehind: count, outOfSync: true };
   } catch {
-    return NOT_STALE
+    return NOT_STALE;
   }
 }

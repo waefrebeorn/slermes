@@ -11,12 +11,15 @@
  */
 
 export const isMacPlatform = (): boolean =>
-  typeof navigator !== 'undefined' && /mac/i.test(navigator.platform || navigator.userAgent || '')
+  typeof navigator !== "undefined" &&
+  /mac/i.test(navigator.platform || navigator.userAgent || "");
 
 // Not `/win/i` — that matches the substring inside `darwin`, which is jsdom's
 // default userAgent. Win32 / Windows NT are the real tokens.
 export const isWindowsPlatform = (): boolean =>
-  typeof navigator !== 'undefined' && /win32|windows/i.test(navigator.platform || navigator.userAgent || '')
+  typeof navigator !== "undefined" &&
+  /win32|windows/i.test(navigator.platform || navigator.userAgent || "");
 
 export const isLinuxPlatform = (): boolean =>
-  typeof navigator !== 'undefined' && /linux/i.test(navigator.platform || navigator.userAgent || '')
+  typeof navigator !== "undefined" &&
+  /linux/i.test(navigator.platform || navigator.userAgent || "");

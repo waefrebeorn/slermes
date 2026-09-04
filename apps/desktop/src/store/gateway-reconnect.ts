@@ -1,34 +1,36 @@
-type GatewayReconnectHandler = () => Promise<void> | void
+type GatewayReconnectHandler = () => Promise<void> | void;
 
-let activeHandler: GatewayReconnectHandler | null = null
-let inFlight: Promise<void> | null = null
+let activeHandler: GatewayReconnectHandler | null = null;
+let inFlight: Promise<void> | null = null;
 
-export function registerGatewayReconnect(handler: GatewayReconnectHandler): () => void {
-  activeHandler = handler
+export function registerGatewayReconnect(
+  handler: GatewayReconnectHandler,
+): () => void {
+  activeHandler = handler;
 
   return () => {
     if (activeHandler === handler) {
-      activeHandler = null
+      activeHandler = null;
     }
-  }
+  };
 }
 
 export function reconnectGateway(): Promise<void> {
   if (inFlight) {
-    return inFlight
+    return inFlight;
   }
 
-  const handler = activeHandler
+  const handler = activeHandler;
 
   if (!handler) {
-    return Promise.reject(new Error('Gateway reconnect is unavailable'))
+    return Promise.reject(new Error("Gateway reconnect is unavailable"));
   }
 
   inFlight = Promise.resolve()
     .then(handler)
     .finally(() => {
-      inFlight = null
-    })
+      inFlight = null;
+    });
 
-  return inFlight
+  return inFlight;
 }

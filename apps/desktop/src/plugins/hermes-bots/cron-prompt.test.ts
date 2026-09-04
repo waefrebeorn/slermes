@@ -11,82 +11,125 @@
  * recognized and paused.
  */
 
-import { spawnSync } from 'node:child_process'
+import { spawnSync } from "node:child_process";
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from "vitest";
 
-import { isLegacyDelegatedRoutine, normalizedProfileName, routineInputError, routinePrompt } from './cron'
+import {
+  isLegacyDelegatedRoutine,
+  normalizedProfileName,
+  routineInputError,
+  routinePrompt,
+} from "./cron";
 
 /** Run the delegation command under a `hermes` stub that prints its argv, so
  *  the assertion is what the SHELL passed — not what the string looks like. */
 function argvOf(prompt: string): string[] {
-  const command = prompt.slice(prompt.indexOf('hermes '), prompt.lastIndexOf('\n\nIf the command'))
-  const result = spawnSync('sh', ['-c', `hermes() { printf '%s\\037' "$@"; }\n${command}`], { encoding: 'utf8' })
+  const command = prompt.slice(
+    prompt.indexOf("hermes "),
+    prompt.lastIndexOf("\n\nIf the command"),
+  );
+  const result = spawnSync(
+    "sh",
+    ["-c", `hermes() { printf '%s\\037' "$@"; }\n${command}`],
+    { encoding: "utf8" },
+  );
 
-  expect(result.status, result.stderr).toBe(0)
+  expect(result.status, result.stderr).toBe(0);
 
-  return result.stdout.split('\u001f').slice(0, -1)
+  return result.stdout.split("\u001f").slice(0, -1);
 }
 
-describe('direct vs delegated execution', () => {
-  it('runs the bare instruction when the routine owns the active profile', () => {
-    expect(normalizedProfileName(' Default ')).toBe('default')
-    expect(routinePrompt('default', 'Health', 'Collect status', ' DEFAULT ')).toBe('Collect status')
-  })
+describe("direct vs delegated execution", () => {
+  it("runs the bare instruction when the routine owns the active profile", () => {
+    expect(normalizedProfileName(" Default ")).toBe("default");
+    expect(
+      routinePrompt("default", "Health", "Collect status", " DEFAULT "),
+    ).toBe("Collect status");
+  });
 
-  it('keeps the delegation wrapper for a different active profile', () => {
-    const prompt = routinePrompt('research', 'Digest', 'Summarize findings', 'default')
+  it("keeps the delegation wrapper for a different active profile", () => {
+    const prompt = routinePrompt(
+      "research",
+      "Digest",
+      "Summarize findings",
+      "default",
+    );
 
-    expect(prompt).toMatch(/hermes -p 'research' chat/)
-    expect(prompt).toMatch(/\[Scheduled routine\] Summarize findings/)
-  })
+    expect(prompt).toMatch(/hermes -p 'research' chat/);
+    expect(prompt).toMatch(/\[Scheduled routine\] Summarize findings/);
+  });
 
-  it('never re-wraps a direct prompt', () => {
-    const instruction = 'Keep "quoted" output intact'
+  it("never re-wraps a direct prompt", () => {
+    const instruction = 'Keep "quoted" output intact';
 
-    expect(routinePrompt('ops', 'Check', instruction, 'ops')).toBe(instruction)
-  })
-})
+    expect(routinePrompt("ops", "Check", instruction, "ops")).toBe(instruction);
+  });
+});
 
-describe('delegated arguments stay literal shell values', () => {
-  it('passes substitutions, backticks and quotes through as text', () => {
-    const title = "Audit $(printf TITLE_EXPANDED) `printf TITLE_TICK` 'quoted'"
-    const instruction = "Line one $(printf TASK_EXPANDED) `printf TASK_TICK`\nLine two 'quoted'"
-
-    expect(argvOf(routinePrompt('research', title, instruction, 'default'))).toEqual([
-      '-p',
-      'research',
-      'chat',
-      '-c',
-      `Routine: ${title}`,
-      '-q',
-      `[Scheduled routine] ${instruction}`
-    ])
-  })
-
-  it('a recreated routine is no longer recognized as the unsafe legacy shape', () => {
-    // The v2 marker is what tells the loader this prompt was composed with
-    // quoting, so it must NOT be swept into the security pause.
-    const recreated = routinePrompt('research', 'Audit', 'Inspect', 'default')
+describe("delegated arguments stay literal shell values", () => {
+  it("passes substitutions, backticks and quotes through as text", () => {
+    const title = "Audit $(printf TITLE_EXPANDED) `printf TITLE_TICK` 'quoted'";
+    const instruction =
+      "Line one $(printf TASK_EXPANDED) `printf TASK_TICK`\nLine two 'quoted'";
 
     expect(
-      isLegacyDelegatedRoutine({ job_id: 'x', name: '[bot:research] Audit', prompt_preview: recreated.slice(0, 100) })
-    ).toBe(false)
-  })
+      argvOf(routinePrompt("research", title, instruction, "default")),
+    ).toEqual([
+      "-p",
+      "research",
+      "chat",
+      "-c",
+      `Routine: ${title}`,
+      "-q",
+      `[Scheduled routine] ${instruction}`,
+    ]);
+  });
 
-  it('recognizes a persisted pre-hardening prompt', () => {
-    const legacy = 'You are running the scheduled routine "Audit" for agent \'research\'.'
+  it("a recreated routine is no longer recognized as the unsafe legacy shape", () => {
+    // The v2 marker is what tells the loader this prompt was composed with
+    // quoting, so it must NOT be swept into the security pause.
+    const recreated = routinePrompt("research", "Audit", "Inspect", "default");
 
-    expect(isLegacyDelegatedRoutine({ job_id: 'x', name: '[bot:research] Audit', prompt_preview: legacy })).toBe(true)
+    expect(
+      isLegacyDelegatedRoutine({
+        job_id: "x",
+        name: "[bot:research] Audit",
+        prompt_preview: recreated.slice(0, 100),
+      }),
+    ).toBe(false);
+  });
+
+  it("recognizes a persisted pre-hardening prompt", () => {
+    const legacy =
+      "You are running the scheduled routine \"Audit\" for agent 'research'.";
+
+    expect(
+      isLegacyDelegatedRoutine({
+        job_id: "x",
+        name: "[bot:research] Audit",
+        prompt_preview: legacy,
+      }),
+    ).toBe(true);
     // Untagged jobs are not Bot Mode's to pause, whatever their prompt says.
-    expect(isLegacyDelegatedRoutine({ job_id: 'x', name: 'Audit', prompt_preview: legacy })).toBe(false)
-  })
-})
+    expect(
+      isLegacyDelegatedRoutine({
+        job_id: "x",
+        name: "Audit",
+        prompt_preview: legacy,
+      }),
+    ).toBe(false);
+  });
+});
 
-describe('input the gateway cannot store', () => {
-  it('rejects NUL before cron creation, naming the offending field', () => {
-    expect(routineInputError('Normal title', 'Normal instruction')).toBeNull()
-    expect(routineInputError('Bad\0title', 'Normal instruction')).toMatch(/NUL.*U\+0000/)
-    expect(routineInputError('Normal title', 'Bad\0instruction')).toMatch(/NUL.*U\+0000/)
-  })
-})
+describe("input the gateway cannot store", () => {
+  it("rejects NUL before cron creation, naming the offending field", () => {
+    expect(routineInputError("Normal title", "Normal instruction")).toBeNull();
+    expect(routineInputError("Bad\0title", "Normal instruction")).toMatch(
+      /NUL.*U\+0000/,
+    );
+    expect(routineInputError("Normal title", "Bad\0instruction")).toMatch(
+      /NUL.*U\+0000/,
+    );
+  });
+});

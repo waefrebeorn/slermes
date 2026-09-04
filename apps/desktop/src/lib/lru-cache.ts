@@ -9,59 +9,59 @@
  * and belongs in a plain `Map`.
  */
 export class LruCache<K, V> {
-  private readonly entries = new Map<K, V>()
-  private readonly max: number
+  private readonly entries = new Map<K, V>();
+  private readonly max: number;
 
   constructor(max: number) {
-    this.max = max
+    this.max = max;
   }
 
   get size(): number {
-    return this.entries.size
+    return this.entries.size;
   }
 
   /** Read and mark most-recently-used. */
   get(key: K): undefined | V {
-    const value = this.entries.get(key)
+    const value = this.entries.get(key);
 
     if (value === undefined) {
-      return undefined
+      return undefined;
     }
 
     // Map iterates in insertion order, so re-inserting moves the entry to the
     // tail and leaves the least recently used one at the head.
-    this.entries.delete(key)
-    this.entries.set(key, value)
+    this.entries.delete(key);
+    this.entries.set(key, value);
 
-    return value
+    return value;
   }
 
   /** Membership WITHOUT touching recency — for the `has` / `set` / `get`
    *  populate-on-miss shape, where the `get` does the touching. */
   has(key: K): boolean {
-    return this.entries.has(key)
+    return this.entries.has(key);
   }
 
   /** Write, evicting the least recently used entry once the cache is full. */
   set(key: K, value: V): void {
     if (this.entries.has(key)) {
-      this.entries.delete(key)
+      this.entries.delete(key);
     } else if (this.entries.size >= this.max) {
-      const oldest = this.entries.keys().next().value
+      const oldest = this.entries.keys().next().value;
 
       if (oldest !== undefined) {
-        this.entries.delete(oldest)
+        this.entries.delete(oldest);
       }
     }
 
-    this.entries.set(key, value)
+    this.entries.set(key, value);
   }
 
   delete(key: K): boolean {
-    return this.entries.delete(key)
+    return this.entries.delete(key);
   }
 
   keys(): IterableIterator<K> {
-    return this.entries.keys()
+    return this.entries.keys();
   }
 }

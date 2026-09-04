@@ -1,8 +1,14 @@
-import { useStore } from '@nanostores/react'
-import { type MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import {
+  type MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { useI18n } from '@/i18n'
-import { resetBrowseState } from '@/store/composer-input-history'
+import { useI18n } from "@/i18n";
+import { resetBrowseState } from "@/store/composer-input-history";
 import {
   $parkedQueueSessions,
   $queuedPromptsBySession,
@@ -10,24 +16,27 @@ import {
   MAX_AUTO_DRAIN_ATTEMPTS,
   type QueuedPromptEntry,
   removeQueuedPrompt,
-  shouldAutoDrain
-} from '@/store/composer-queue'
-import { notify } from '@/store/notifications'
-import { $sessions, idsShareLineage } from '@/store/session'
-import { $workingSessionIds } from '@/store/session-states'
+  shouldAutoDrain,
+} from "@/store/composer-queue";
+import { notify } from "@/store/notifications";
+import { $sessions, idsShareLineage } from "@/store/session";
+import { $workingSessionIds } from "@/store/session-states";
 
-import type { SubmitTextOptions } from './use-prompt-actions/utils'
+import type { SubmitTextOptions } from "./use-prompt-actions/utils";
 
-type SubmitQueuedPrompt = (text: string, options?: SubmitTextOptions) => Promise<boolean> | boolean
+type SubmitQueuedPrompt = (
+  text: string,
+  options?: SubmitTextOptions,
+) => Promise<boolean> | boolean;
 
 interface BackgroundQueueDrainOptions {
-  enabled: boolean
-  runtimeIdByStoredSessionIdRef: MutableRefObject<Map<string, string>>
-  selectedStoredSessionId: string | null
-  submitText: SubmitQueuedPrompt
+  enabled: boolean;
+  runtimeIdByStoredSessionIdRef: MutableRefObject<Map<string, string>>;
+  selectedStoredSessionId: string | null;
+  submitText: SubmitQueuedPrompt;
 }
 
-const BACKGROUND_DRAIN_RETRY_MS = 750
+const BACKGROUND_DRAIN_RETRY_MS = 750;
 
 /**
  * Drain queued prompts for sessions that are not currently rendered by ChatBar.
@@ -41,131 +50,141 @@ export function useBackgroundQueueDrain({
   enabled,
   runtimeIdByStoredSessionIdRef,
   selectedStoredSessionId,
-  submitText
+  submitText,
 }: BackgroundQueueDrainOptions) {
-  const { t } = useI18n()
-  const queuedPromptsBySession = useStore($queuedPromptsBySession)
-  const parkedQueueSessions = useStore($parkedQueueSessions)
-  const workingSessionIds = useStore($workingSessionIds)
-  const submitTextRef = useRef(submitText)
-  const drainingSessionIdsRef = useRef(new Set<string>())
-  const drainFailuresRef = useRef(new Map<string, number>())
-  const retryTimersRef = useRef<number[]>([])
-  const [retryTick, setRetryTick] = useState(0)
+  const { t } = useI18n();
+  const queuedPromptsBySession = useStore($queuedPromptsBySession);
+  const parkedQueueSessions = useStore($parkedQueueSessions);
+  const workingSessionIds = useStore($workingSessionIds);
+  const submitTextRef = useRef(submitText);
+  const drainingSessionIdsRef = useRef(new Set<string>());
+  const drainFailuresRef = useRef(new Map<string, number>());
+  const retryTimersRef = useRef<number[]>([]);
+  const [retryTick, setRetryTick] = useState(0);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    submitTextRef.current = submitText
-  }, [submitText])
+    submitTextRef.current = submitText;
+  }, [submitText]);
 
   const scheduleRetry = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return
+    if (typeof window === "undefined") {
+      return;
     }
 
     const timer = window.setTimeout(() => {
-      retryTimersRef.current = retryTimersRef.current.filter(id => id !== timer)
-      setRetryTick(tick => tick + 1)
-    }, BACKGROUND_DRAIN_RETRY_MS)
+      retryTimersRef.current = retryTimersRef.current.filter(
+        (id) => id !== timer,
+      );
+      setRetryTick((tick) => tick + 1);
+    }, BACKGROUND_DRAIN_RETRY_MS);
 
-    retryTimersRef.current.push(timer)
-  }, [])
+    retryTimersRef.current.push(timer);
+  }, []);
 
   useEffect(
     () => () => {
       for (const timer of retryTimersRef.current) {
-        window.clearTimeout(timer)
+        window.clearTimeout(timer);
       }
 
-      retryTimersRef.current = []
+      retryTimersRef.current = [];
     },
-    []
-  )
+    [],
+  );
 
   const drainSessionQueue = useCallback(
     (sessionKey: string, entry: QueuedPromptEntry) => {
       if (drainingSessionIdsRef.current.has(sessionKey)) {
-        return
+        return;
       }
 
-      drainingSessionIdsRef.current.add(sessionKey)
+      drainingSessionIdsRef.current.add(sessionKey);
 
       const onFail = () => {
-        const failures = (drainFailuresRef.current.get(entry.id) ?? 0) + 1
-        drainFailuresRef.current.set(entry.id, failures)
+        const failures = (drainFailuresRef.current.get(entry.id) ?? 0) + 1;
+        drainFailuresRef.current.set(entry.id, failures);
 
         if (failures >= MAX_AUTO_DRAIN_ATTEMPTS) {
           notify({
             id: `composer-background-queue-stuck-${sessionKey}`,
-            kind: 'error',
+            kind: "error",
             title: t.composer.queueStuckTitle,
-            message: t.composer.queueStuckBody
-          })
+            message: t.composer.queueStuckBody,
+          });
 
-          return
+          return;
         }
 
-        scheduleRetry()
-      }
+        scheduleRetry();
+      };
 
       void Promise.resolve()
         .then(async () => {
-          const liveEntry = getQueuedPrompts(sessionKey).find(candidate => candidate.id === entry.id)
+          const liveEntry = getQueuedPrompts(sessionKey).find(
+            (candidate) => candidate.id === entry.id,
+          );
 
           if (!liveEntry) {
-            return true
+            return true;
           }
 
-          const runtimeSessionId = runtimeIdByStoredSessionIdRef.current.get(sessionKey) ?? null
+          const runtimeSessionId =
+            runtimeIdByStoredSessionIdRef.current.get(sessionKey) ?? null;
 
           const accepted = await Promise.resolve(
             submitTextRef.current(liveEntry.text, {
               attachments: liveEntry.attachments,
               fromQueue: true,
               sessionId: runtimeSessionId,
-              storedSessionId: sessionKey
-            })
-          )
+              storedSessionId: sessionKey,
+            }),
+          );
 
           if (accepted === false) {
-            return false
+            return false;
           }
 
-          drainFailuresRef.current.delete(liveEntry.id)
-          removeQueuedPrompt(sessionKey, liveEntry.id)
-          resetBrowseState(runtimeSessionId)
+          drainFailuresRef.current.delete(liveEntry.id);
+          removeQueuedPrompt(sessionKey, liveEntry.id);
+          resetBrowseState(runtimeSessionId);
 
-          return true
+          return true;
         })
-        .then(accepted => {
+        .then((accepted) => {
           if (!accepted) {
-            onFail()
+            onFail();
           }
         })
         .catch(onFail)
         .finally(() => {
-          drainingSessionIdsRef.current.delete(sessionKey)
-        })
+          drainingSessionIdsRef.current.delete(sessionKey);
+        });
     },
-    [runtimeIdByStoredSessionIdRef, scheduleRetry, t]
-  )
+    [runtimeIdByStoredSessionIdRef, scheduleRetry, t],
+  );
 
   useEffect(() => {
     if (!enabled) {
-      return
+      return;
     }
 
     // Queue keys prefer the lineage root (resolveComposerSessionKey) while
     // $workingSessionIds / selection may hold the compression tip. Strict
     // equality then mis-classifies a busy or selected chat as idle/offscreen.
-    const sessions = $sessions.get()
-    const working = [...workingSessionIds]
+    const sessions = $sessions.get();
+    const working = [...workingSessionIds];
 
-    for (const [sessionKey, entries] of Object.entries(queuedPromptsBySession)) {
+    for (const [sessionKey, entries] of Object.entries(
+      queuedPromptsBySession,
+    )) {
       const isSelected =
-        Boolean(selectedStoredSessionId) && idsShareLineage(sessionKey, selectedStoredSessionId!, sessions)
+        Boolean(selectedStoredSessionId) &&
+        idsShareLineage(sessionKey, selectedStoredSessionId!, sessions);
 
-      const isBusy = working.some(workingId => idsShareLineage(sessionKey, workingId, sessions))
+      const isBusy = working.some((workingId) =>
+        idsShareLineage(sessionKey, workingId, sessions),
+      );
 
       if (
         isSelected ||
@@ -173,19 +192,22 @@ export function useBackgroundQueueDrain({
         !shouldAutoDrain({
           isBusy,
           parked: Boolean(parkedQueueSessions[sessionKey]),
-          queueLength: entries.length
+          queueLength: entries.length,
         })
       ) {
-        continue
+        continue;
       }
 
-      const entry = entries[0]
+      const entry = entries[0];
 
-      if (!entry || (drainFailuresRef.current.get(entry.id) ?? 0) >= MAX_AUTO_DRAIN_ATTEMPTS) {
-        continue
+      if (
+        !entry ||
+        (drainFailuresRef.current.get(entry.id) ?? 0) >= MAX_AUTO_DRAIN_ATTEMPTS
+      ) {
+        continue;
       }
 
-      drainSessionQueue(sessionKey, entry)
+      drainSessionQueue(sessionKey, entry);
     }
   }, [
     drainSessionQueue,
@@ -194,6 +216,6 @@ export function useBackgroundQueueDrain({
     queuedPromptsBySession,
     retryTick,
     selectedStoredSessionId,
-    workingSessionIds
-  ])
+    workingSessionIds,
+  ]);
 }

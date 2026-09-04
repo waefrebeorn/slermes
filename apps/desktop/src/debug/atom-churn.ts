@@ -13,80 +13,97 @@
 // time, because `onNotify` fires even when a store has zero subscribers — a
 // raw notify count over-reports. `notifies x listeners` is the real fan-out.
 
-import { onNotify, type Store } from 'nanostores'
+import { onNotify, type Store } from "nanostores";
 
 export interface AtomChurn {
   /** Times the store notified its listeners. */
-  notifies: number
+  notifies: number;
   /**
    * ...of those, how many pushed a value deep-equal to the previous one.
    * Pure waste: every subscriber re-rendered and nothing actually changed.
    */
-  wasted: number
+  wasted: number;
   /** Peak listener count seen at notify time (`store.lc`). */
-  peakListeners: number
+  peakListeners: number;
   /** Sum of listeners across notifications — the true re-render fan-out. */
-  fanout: number
+  fanout: number;
 }
 
-const churn = new Map<string, AtomChurn>()
-const unsubscribes: Array<() => void> = []
-let recording = false
+const churn = new Map<string, AtomChurn>();
+const unsubscribes: Array<() => void> = [];
+let recording = false;
 
-const blank = (): AtomChurn => ({ fanout: 0, notifies: 0, peakListeners: 0, wasted: 0 })
+const blank = (): AtomChurn => ({
+  fanout: 0,
+  notifies: 0,
+  peakListeners: 0,
+  wasted: 0,
+});
 
 /** Structural equality, depth-capped so a long transcript array doesn't make
  *  the instrumentation itself the bottleneck. Beyond the cap we compare by
  *  reference, which under-reports waste rather than inventing it. */
 function equal(a: unknown, b: unknown, depth = 0): boolean {
   if (Object.is(a, b)) {
-    return true
+    return true;
   }
 
-  if (depth > 3 || typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
-    return false
+  if (
+    depth > 3 ||
+    typeof a !== "object" ||
+    typeof b !== "object" ||
+    a === null ||
+    b === null
+  ) {
+    return false;
   }
 
   if (Array.isArray(a) !== Array.isArray(b)) {
-    return false
+    return false;
   }
 
-  const ka = Object.keys(a as object)
-  const kb = Object.keys(b as object)
+  const ka = Object.keys(a as object);
+  const kb = Object.keys(b as object);
 
   if (ka.length !== kb.length) {
-    return false
+    return false;
   }
 
-  return ka.every(k => equal((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k], depth + 1))
+  return ka.every((k) =>
+    equal(
+      (a as Record<string, unknown>)[k],
+      (b as Record<string, unknown>)[k],
+      depth + 1,
+    ),
+  );
 }
 
 /** Watch one store. Call at module scope for each atom you want attributed. */
 export function watchAtom(name: string, store: Store) {
   const off = onNotify(store, ({ oldValue }) => {
     if (!recording) {
-      return
+      return;
     }
 
-    const entry = churn.get(name) ?? blank()
+    const entry = churn.get(name) ?? blank();
     // `lc` is nanostores' listener count — see node_modules/nanostores/atom/index.js.
-    const listeners = (store as unknown as { lc?: number }).lc ?? 0
-    const next = (store as unknown as { value?: unknown }).value
+    const listeners = (store as unknown as { lc?: number }).lc ?? 0;
+    const next = (store as unknown as { value?: unknown }).value;
 
-    entry.notifies += 1
-    entry.fanout += listeners
-    entry.peakListeners = Math.max(entry.peakListeners, listeners)
+    entry.notifies += 1;
+    entry.fanout += listeners;
+    entry.peakListeners = Math.max(entry.peakListeners, listeners);
 
     if (equal(oldValue, next)) {
-      entry.wasted += 1
+      entry.wasted += 1;
     }
 
-    churn.set(name, entry)
-  })
+    churn.set(name, entry);
+  });
 
-  unsubscribes.push(off)
+  unsubscribes.push(off);
 
-  return off
+  return off;
 }
 
 /** Rows sorted by wasted notifications, then fan-out — the fix list, in order. */
@@ -94,39 +111,39 @@ function report(limit = 40) {
   return [...churn.entries()]
     .map(([name, c]) => ({ name, ...c }))
     .sort((a, b) => b.wasted - a.wasted || b.fanout - a.fanout)
-    .slice(0, limit)
+    .slice(0, limit);
 }
 
 declare global {
   interface Window {
     __ATOM_CHURN__?: {
-      churn: Map<string, AtomChurn>
-      clear: () => void
-      start: () => void
-      stop: () => void
-      recording: () => boolean
-      report: (limit?: number) => Array<AtomChurn & { name: string }>
-      get: (name: string) => AtomChurn | undefined
+      churn: Map<string, AtomChurn>;
+      clear: () => void;
+      start: () => void;
+      stop: () => void;
+      recording: () => boolean;
+      report: (limit?: number) => Array<AtomChurn & { name: string }>;
+      get: (name: string) => AtomChurn | undefined;
       /** Names of every watched store, whether or not it has notified. */
-      watched: () => string[]
-    }
+      watched: () => string[];
+    };
   }
 }
 
-if (typeof window !== 'undefined' && !window.__ATOM_CHURN__) {
+if (typeof window !== "undefined" && !window.__ATOM_CHURN__) {
   window.__ATOM_CHURN__ = {
     churn,
     clear: () => churn.clear(),
-    get: name => churn.get(name),
+    get: (name) => churn.get(name),
     recording: () => recording,
     report,
     start: () => {
-      churn.clear()
-      recording = true
+      churn.clear();
+      recording = true;
     },
     stop: () => {
-      recording = false
+      recording = false;
     },
-    watched: () => [...churn.keys()]
-  }
+    watched: () => [...churn.keys()],
+  };
 }

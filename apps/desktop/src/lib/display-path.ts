@@ -13,57 +13,62 @@
 
 export interface DisplayPathOptions {
   /** Explicit home directory to collapse (local machine home, remote $HOME). */
-  home?: null | string
+  home?: null | string;
 }
 
 /** Normalize separators and drop a trailing slash (except root / drive root). */
 export function normalizeDisplayPath(raw: string): string {
-  let path = (raw || '').trim().replace(/\\/g, '/')
+  let path = (raw || "").trim().replace(/\\/g, "/");
 
   if (!path) {
-    return ''
+    return "";
   }
 
   // Collapse repeated slashes, but keep a leading UNC `//server/...` pair.
-  if (path.startsWith('//')) {
-    path = `//${path.slice(2).replace(/\/{2,}/g, '/')}`
+  if (path.startsWith("//")) {
+    path = `//${path.slice(2).replace(/\/{2,}/g, "/")}`;
   } else {
-    path = path.replace(/\/{2,}/g, '/')
+    path = path.replace(/\/{2,}/g, "/");
   }
 
   // Drop trailing slash except bare `/` or `C:/`.
-  if (path.length > 1 && path.endsWith('/') && !/^[A-Za-z]:\/$/.test(path)) {
-    path = path.replace(/\/+$/, '')
+  if (path.length > 1 && path.endsWith("/") && !/^[A-Za-z]:\/$/.test(path)) {
+    path = path.replace(/\/+$/, "");
   }
 
-  return path
+  return path;
 }
 
 function normalizeHome(home: string): string {
-  const normalized = normalizeDisplayPath(home)
+  const normalized = normalizeDisplayPath(home);
 
   if (!normalized) {
-    return ''
+    return "";
   }
 
   // Home itself should not keep a trailing slash for prefix checks.
-  return normalized.replace(/\/+$/, '')
+  return normalized.replace(/\/+$/, "");
 }
 
-function startsWithHome(path: string, home: string, caseInsensitive: boolean): boolean {
+function startsWithHome(
+  path: string,
+  home: string,
+  caseInsensitive: boolean,
+): boolean {
   if (!home) {
-    return false
+    return false;
   }
 
   if (path === home) {
-    return true
+    return true;
   }
 
-  const prefix = `${home}/`
+  const prefix = `${home}/`;
 
   return caseInsensitive
-    ? path.toLowerCase().startsWith(prefix.toLowerCase()) || path.toLowerCase() === home.toLowerCase()
-    : path.startsWith(prefix) || path === home
+    ? path.toLowerCase().startsWith(prefix.toLowerCase()) ||
+        path.toLowerCase() === home.toLowerCase()
+    : path.startsWith(prefix) || path === home;
 }
 
 /**
@@ -72,27 +77,27 @@ function startsWithHome(path: string, home: string, caseInsensitive: boolean): b
  */
 function inferredHomePrefix(path: string): string {
   // macOS: /Users/name[/...]
-  let match = path.match(/^(\/Users\/[^/]+)(?:\/|$)/)
+  let match = path.match(/^(\/Users\/[^/]+)(?:\/|$)/);
 
   if (match) {
-    return match[1]
+    return match[1];
   }
 
   // Linux (and most UNIX): /home/name[/...]
-  match = path.match(/^(\/home\/[^/]+)(?:\/|$)/)
+  match = path.match(/^(\/home\/[^/]+)(?:\/|$)/);
 
   if (match) {
-    return match[1]
+    return match[1];
   }
 
   // Windows user profile: C:/Users/name[/...] (also works after \ → /)
-  match = path.match(/^([A-Za-z]:\/Users\/[^/]+)(?:\/|$)/)
+  match = path.match(/^([A-Za-z]:\/Users\/[^/]+)(?:\/|$)/);
 
   if (match) {
-    return match[1]
+    return match[1];
   }
 
-  return ''
+  return "";
 }
 
 /**
@@ -104,54 +109,58 @@ function inferredHomePrefix(path: string): string {
  *   /var/log                          →  /var/log
  *   already/relative                  →  already/relative
  */
-export function displayPath(raw: null | string | undefined, options: DisplayPathOptions = {}): string {
-  const path = normalizeDisplayPath(raw || '')
+export function displayPath(
+  raw: null | string | undefined,
+  options: DisplayPathOptions = {},
+): string {
+  const path = normalizeDisplayPath(raw || "");
 
   if (!path) {
-    return ''
+    return "";
   }
 
   // Already tildified — normalize only.
-  if (path === '~' || path.startsWith('~/')) {
-    return path
+  if (path === "~" || path.startsWith("~/")) {
+    return path;
   }
 
-  const explicitHome = options.home ? normalizeHome(options.home) : ''
+  const explicitHome = options.home ? normalizeHome(options.home) : "";
   // Windows paths are case-insensitive; POSIX paths with an explicit home keep
   // case-sensitive matching (Linux). Heuristic homes on mac/win ignore case.
-  const home = explicitHome || inferredHomePrefix(path)
+  const home = explicitHome || inferredHomePrefix(path);
 
   if (!home) {
-    return path
+    return path;
   }
 
-  const caseInsensitive = !explicitHome || /^[A-Za-z]:\//.test(home) || home.startsWith('/Users/')
+  const caseInsensitive =
+    !explicitHome || /^[A-Za-z]:\//.test(home) || home.startsWith("/Users/");
 
   if (!startsWithHome(path, home, caseInsensitive)) {
-    return path
+    return path;
   }
 
   if (path.length === home.length) {
-    return '~'
+    return "~";
   }
 
-  return `~${path.slice(home.length)}`
+  return `~${path.slice(home.length)}`;
 }
 
 /** Last path segment for compact labels (statusbar leaf, settings rows). */
 export function pathLeaf(raw: null | string | undefined): string {
-  const path = normalizeDisplayPath(raw || '')
+  const path = normalizeDisplayPath(raw || "");
 
-  if (!path || path === '/' || path === '~') {
-    return path
+  if (!path || path === "/" || path === "~") {
+    return path;
   }
 
   // `C:/` drive root
   if (/^[A-Za-z]:\/$/.test(path) || /^[A-Za-z]:$/.test(path)) {
-    return path.endsWith('/') ? path : `${path}/`
+    return path.endsWith("/") ? path : `${path}/`;
   }
 
-  const leaf = path.split('/').filter(Boolean).pop()
+  const leaf = path.split("/").filter(Boolean).pop();
 
-  return leaf || path
+  return leaf || path;
 }

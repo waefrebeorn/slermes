@@ -1,17 +1,23 @@
-import { useStore } from '@nanostores/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import { Codicon } from '@/components/ui/codicon'
-import { Input } from '@/components/ui/input'
-import { Progress } from '@/components/ui/progress'
-import { getGlobalModelOptions } from '@/hermes'
-import { useI18n } from '@/i18n'
-import { Check, ChevronDown, ChevronLeft, KeyRound, Loader2 } from '@/lib/icons'
-import { isProviderSetupErrorMessage } from '@/lib/provider-setup-errors'
-import { cn } from '@/lib/utils'
-import { $desktopBoot, type DesktopBootState } from '@/store/boot'
-import { $localModelsEnabled } from '@/store/local-models-flag'
+import { Button } from "@/components/ui/button";
+import { Codicon } from "@/components/ui/codicon";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { getGlobalModelOptions } from "@/hermes";
+import { useI18n } from "@/i18n";
+import {
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  KeyRound,
+  Loader2,
+} from "@/lib/icons";
+import { isProviderSetupErrorMessage } from "@/lib/provider-setup-errors";
+import { cn } from "@/lib/utils";
+import { $desktopBoot, type DesktopBootState } from "@/store/boot";
+import { $localModelsEnabled } from "@/store/local-models-flag";
 import {
   $desktopOnboarding,
   clearPendingProviderOAuth,
@@ -25,19 +31,19 @@ import {
   refreshOnboarding,
   saveOnboardingApiKey,
   setOnboardingMode,
-  startProviderOAuth
-} from '@/store/onboarding'
-import type { ModelOptionProvider, OAuthProvider } from '@/types/hermes'
+  startProviderOAuth,
+} from "@/store/onboarding";
+import type { ModelOptionProvider, OAuthProvider } from "@/types/hermes";
 
-import { DocsLink, FlowPanel, Status } from './flow'
+import { DocsLink, FlowPanel, Status } from "./flow";
 import {
   FeaturedProviderRow,
   FireworksProviderRow,
   LocalModelsProviderRow,
   OpenRouterProviderRow,
   ProviderRow,
-  sortProviders
-} from './providers'
+  sortProviders,
+} from "./providers";
 
 export {
   FeaturedProviderRow,
@@ -47,67 +53,68 @@ export {
   OpenRouterProviderRow,
   ProviderRow,
   providerTitle,
-  sortProviders
-} from './providers'
+  sortProviders,
+} from "./providers";
 
 interface DesktopOnboardingOverlayProps {
-  enabled: boolean
-  onCompleted?: () => void
-  profile: string
-  requestGateway: OnboardingContext['requestGateway']
+  enabled: boolean;
+  onCompleted?: () => void;
+  profile: string;
+  requestGateway: OnboardingContext["requestGateway"];
 }
 
 export interface ApiKeyOption {
-  description?: string
-  docsUrl: string
-  envKey: string
-  id: string
-  name: string
-  placeholder?: string
-  short?: string
+  description?: string;
+  docsUrl: string;
+  envKey: string;
+  id: string;
+  name: string;
+  placeholder?: string;
+  short?: string;
 }
 
 // Curated order mirrors CANONICAL_PROVIDERS: Fireworks sits #2 overall (after
 // Nous Portal OAuth), ahead of OpenRouter and the rest of the key catalog.
 const API_KEY_OPTIONS: ApiKeyOption[] = [
   {
-    id: 'fireworks',
-    name: 'Fireworks AI',
-    envKey: 'FIREWORKS_API_KEY',
-    docsUrl: 'https://app.fireworks.ai/settings/users/api-keys'
+    id: "fireworks",
+    name: "Fireworks AI",
+    envKey: "FIREWORKS_API_KEY",
+    docsUrl: "https://app.fireworks.ai/settings/users/api-keys",
   },
   {
-    id: 'openrouter',
-    name: 'OpenRouter',
-    envKey: 'OPENROUTER_API_KEY',
-    docsUrl: 'https://openrouter.ai/keys'
+    id: "openrouter",
+    name: "OpenRouter",
+    envKey: "OPENROUTER_API_KEY",
+    docsUrl: "https://openrouter.ai/keys",
   },
   {
-    id: 'openai',
-    name: 'OpenAI',
-    envKey: 'OPENAI_API_KEY',
-    docsUrl: 'https://platform.openai.com/api-keys'
+    id: "openai",
+    name: "OpenAI",
+    envKey: "OPENAI_API_KEY",
+    docsUrl: "https://platform.openai.com/api-keys",
   },
   {
-    id: 'gemini',
-    name: 'Google Gemini',
-    envKey: 'GEMINI_API_KEY',
-    docsUrl: 'https://aistudio.google.com/app/apikey'
+    id: "gemini",
+    name: "Google Gemini",
+    envKey: "GEMINI_API_KEY",
+    docsUrl: "https://aistudio.google.com/app/apikey",
   },
   {
-    id: 'xai',
-    name: 'xAI Grok',
-    envKey: 'XAI_API_KEY',
-    docsUrl: 'https://console.x.ai/'
+    id: "xai",
+    name: "xAI Grok",
+    envKey: "XAI_API_KEY",
+    docsUrl: "https://console.x.ai/",
   },
   {
-    id: 'local',
-    name: 'Local / custom endpoint',
-    envKey: 'OPENAI_BASE_URL',
-    docsUrl: 'https://github.com/NousResearch/hermes-agent#bring-your-own-endpoint',
-    placeholder: 'http://127.0.0.1:8000/v1'
-  }
-]
+    id: "local",
+    name: "Local / custom endpoint",
+    envKey: "OPENAI_BASE_URL",
+    docsUrl:
+      "https://github.com/NousResearch/hermes-agent#bring-your-own-endpoint",
+    placeholder: "http://127.0.0.1:8000/v1",
+  },
+];
 
 // Build the FULL API-key provider catalog from the backend model options so the
 // onboarding / Providers key form lists every `api_key` provider `hermes model`
@@ -117,151 +124,169 @@ const API_KEY_OPTIONS: ApiKeyOption[] = [
 // OAuth / external providers are intentionally excluded here — they go through
 // the OAuth picker / sign-in flow, not a pasted key.
 function useApiKeyCatalog(): ApiKeyOption[] {
-  const [rows, setRows] = useState<ModelOptionProvider[]>([])
+  const [rows, setRows] = useState<ModelOptionProvider[]>([]);
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     // Best-effort — on failure the curated defaults still render. Wrapped in
     // Promise.resolve().then so a synchronous throw (e.g. no desktop bridge in
     // tests) is funneled into the same .catch instead of escaping.
     void Promise.resolve()
-      .then(() => getGlobalModelOptions({ includeUnconfigured: true, explicitOnly: false }))
-      .then(res => {
+      .then(() =>
+        getGlobalModelOptions({
+          includeUnconfigured: true,
+          explicitOnly: false,
+        }),
+      )
+      .then((res) => {
         if (!cancelled) {
-          setRows(res.providers ?? [])
+          setRows(res.providers ?? []);
         }
       })
       .catch(() => {
         // Ignore — fall back to the curated API_KEY_OPTIONS only.
-      })
+      });
 
     return () => {
-      cancelled = true
-    }
-  }, [])
+      cancelled = true;
+    };
+  }, []);
 
   return useMemo(() => {
-    const curatedByEnv = new Map(API_KEY_OPTIONS.map(o => [o.envKey, o]))
-    const derived: ApiKeyOption[] = []
-    const seenEnv = new Set<string>(API_KEY_OPTIONS.map(o => o.envKey))
+    const curatedByEnv = new Map(API_KEY_OPTIONS.map((o) => [o.envKey, o]));
+    const derived: ApiKeyOption[] = [];
+    const seenEnv = new Set<string>(API_KEY_OPTIONS.map((o) => o.envKey));
 
     for (const row of rows) {
       // Only api_key providers can be activated with a pasted key. Skip OAuth /
       // external / managed flows and anything missing an env var to write to.
-      if (row.auth_type && row.auth_type !== 'api_key') {
-        continue
+      if (row.auth_type && row.auth_type !== "api_key") {
+        continue;
       }
 
-      const envKey = row.key_env
+      const envKey = row.key_env;
 
       if (!envKey || seenEnv.has(envKey)) {
-        continue
+        continue;
       }
 
-      seenEnv.add(envKey)
+      seenEnv.add(envKey);
       derived.push({
         id: row.slug,
         name: row.name,
         envKey,
         description: `Direct API access to ${row.name}.`,
-        docsUrl: ''
-      })
+        docsUrl: "",
+      });
     }
 
     // Curated first (recommended order), then the rest alphabetically so the
     // long tail is scannable.
-    derived.sort((a, b) => a.name.localeCompare(b.name))
+    derived.sort((a, b) => a.name.localeCompare(b.name));
 
-    return [...API_KEY_OPTIONS.filter(o => curatedByEnv.has(o.envKey)), ...derived]
-  }, [rows])
+    return [
+      ...API_KEY_OPTIONS.filter((o) => curatedByEnv.has(o.envKey)),
+      ...derived,
+    ];
+  }, [rows]);
 }
 
 // Exit choreography, mirroring the gateway "connecting" overlay's timing:
 // text-out (360ms: CONNECTED fades down, rest scrambles+fades) → hold (300ms)
 // → surface-out (520ms, held back by [transition-delay:660ms]). Finalize after.
-const ONBOARDING_EXIT_MS = 1180
+const ONBOARDING_EXIT_MS = 1180;
 
 export function DesktopOnboardingOverlay({
   enabled,
   onCompleted,
   profile,
-  requestGateway
+  requestGateway,
 }: DesktopOnboardingOverlayProps) {
-  const { t } = useI18n()
-  const onboarding = useStore($desktopOnboarding)
-  const boot = useStore($desktopBoot)
-  const ctxRef = useRef<OnboardingContext>({ requestGateway, onCompleted, profile })
-  ctxRef.current = { requestGateway, onCompleted, profile }
+  const { t } = useI18n();
+  const onboarding = useStore($desktopOnboarding);
+  const boot = useStore($desktopBoot);
+  const ctxRef = useRef<OnboardingContext>({
+    requestGateway,
+    onCompleted,
+    profile,
+  });
+  ctxRef.current = { requestGateway, onCompleted, profile };
 
   const ctx = useMemo<OnboardingContext>(
     () => ({
       requestGateway: (...args) => ctxRef.current.requestGateway(...args),
       onCompleted: () => ctxRef.current.onCompleted?.(),
       get profile() {
-        return ctxRef.current.profile
-      }
+        return ctxRef.current.profile;
+      },
     }),
-    []
-  )
+    [],
+  );
 
   // Cinematic exit on "Begin": dissolve the panel + overlay (revealing the chat
   // behind), THEN finalize so the unmount lands after the fade — mirrors the
   // connecting overlay's exit choreography instead of cutting instantly.
-  const [leaving, setLeaving] = useState(false)
+  const [leaving, setLeaving] = useState(false);
 
   const finalizeOnboarding = () => {
     if (leaving) {
-      return
+      return;
     }
 
-    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
     if (reduce) {
-      confirmOnboardingModel(ctx)
+      confirmOnboardingModel(ctx);
 
-      return
+      return;
     }
 
-    setLeaving(true)
-    window.setTimeout(() => confirmOnboardingModel(ctx), ONBOARDING_EXIT_MS)
-  }
+    setLeaving(true);
+    window.setTimeout(() => confirmOnboardingModel(ctx), ONBOARDING_EXIT_MS);
+  };
 
   useEffect(() => {
     if (enabled || onboarding.requested) {
-      void refreshOnboarding(ctx)
+      void refreshOnboarding(ctx);
     }
-  }, [ctx, enabled, onboarding.requested])
+  }, [ctx, enabled, onboarding.requested]);
 
   // When the Providers settings page asked to connect a specific provider, the
   // store stashed its id. Once the provider list has loaded and we're back at
   // an idle picker, launch that exact OAuth flow so the user lands directly in
   // sign-in instead of the picker they just came from.
   useEffect(() => {
-    if (!onboarding.manual || onboarding.providers === null || onboarding.flow.status !== 'idle') {
-      return
+    if (
+      !onboarding.manual ||
+      onboarding.providers === null ||
+      onboarding.flow.status !== "idle"
+    ) {
+      return;
     }
 
-    const pendingId = peekPendingProviderOAuth()
+    const pendingId = peekPendingProviderOAuth();
 
     if (!pendingId) {
-      return
+      return;
     }
 
-    const provider = onboarding.providers.find(p => p.id === pendingId)
+    const provider = onboarding.providers.find((p) => p.id === pendingId);
 
     if (provider) {
       // Only clear once we've committed to launching it, so a failed/empty
       // provider fetch doesn't silently drop the hand-off.
-      clearPendingProviderOAuth()
-      void startProviderOAuth(provider, ctx)
+      clearPendingProviderOAuth();
+      void startProviderOAuth(provider, ctx);
     } else if (onboarding.providers.length > 0) {
       // The list loaded but the id isn't a real provider — drop the stale
       // hand-off. An empty list means the fetch isn't ready yet, so keep it
       // and let a later refresh retry.
-      clearPendingProviderOAuth()
+      clearPendingProviderOAuth();
     }
-  }, [ctx, onboarding.flow.status, onboarding.manual, onboarding.providers])
+  }, [ctx, onboarding.flow.status, onboarding.manual, onboarding.providers]);
 
   // Mount from frame 1 so we replace the boot overlay seamlessly. The
   // configured field stays null until the runtime check resolves; only then
@@ -269,21 +294,21 @@ export function DesktopOnboardingOverlay({
   // EXCEPTION: manual mode (user opened the selector from a working app to
   // add/switch a provider) shows the overlay regardless of configured state.
   if (onboarding.configured === true && !onboarding.manual) {
-    return null
+    return null;
   }
 
   // The user chose "I'll choose a provider later" on first run. Stay out of the
   // way on every subsequent launch — they re-enter via Settings → Providers
   // (manual mode), which sets manual=true and bypasses this gate.
   if (onboarding.firstRunSkipped && !onboarding.manual) {
-    return null
+    return null;
   }
 
-  const { flow } = onboarding
+  const { flow } = onboarding;
   // Show the launch reason only when it's a meaningful, caller-supplied prompt —
   // suppress the generic defaults (useless noise) and provider-setup errors
   // (those are surfaced by FlowPanel, not as a banner).
-  const rawReason = onboarding.reason?.trim() || null
+  const rawReason = onboarding.reason?.trim() || null;
 
   const reason =
     rawReason &&
@@ -291,25 +316,26 @@ export function DesktopOnboardingOverlay({
     rawReason !== DEFAULT_ONBOARDING_REASON &&
     rawReason !== DEFAULT_MANUAL_ONBOARDING_REASON
       ? rawReason
-      : null
+      : null;
 
   // In manual mode the app is already configured, so the flow is "ready"
   // immediately — no runtime gate needed. Otherwise wait for the readiness
   // check (configured === false) before showing the picker.
-  const ready = onboarding.manual || (enabled && onboarding.configured === false)
-  const showPicker = flow.status === 'idle' || flow.status === 'success'
+  const ready =
+    onboarding.manual || (enabled && onboarding.configured === false);
+  const showPicker = flow.status === "idle" || flow.status === "success";
   // The final "you're in" screen drops the card chrome and floats centered on
   // the surface — same bare, cinematic treatment as the connecting overlay.
-  const bare = ready && !showPicker && flow.status === 'confirming_model'
+  const bare = ready && !showPicker && flow.status === "confirming_model";
 
   return (
     <div
       className={cn(
-        'fixed inset-0 z-(--z-onboarding) flex items-center justify-center bg-(--ui-chat-surface-background) p-6 transition-opacity duration-[520ms] ease-out',
+        "fixed inset-0 z-(--z-onboarding) flex items-center justify-center bg-(--ui-chat-surface-background) p-6 transition-opacity duration-[520ms] ease-out",
         // On the bare confirm screen, hold the surface (text-out + hold) so the
         // per-element exit plays before it dissolves.
-        bare && leaving ? '[transition-delay:660ms]' : '',
-        leaving ? 'pointer-events-none opacity-0' : 'opacity-100'
+        bare && leaving ? "[transition-delay:660ms]" : "",
+        leaving ? "pointer-events-none opacity-0" : "opacity-100",
       )}
       // Masks the whole app until onboarding finishes — must stay filled under
       // window glass or the shell shows through. Contract:
@@ -318,15 +344,15 @@ export function DesktopOnboardingOverlay({
     >
       <div
         className={cn(
-          'relative w-full max-w-[45rem] transition-all duration-500 ease-out',
+          "relative w-full max-w-[45rem] transition-all duration-500 ease-out",
           bare
-            ? ''
-            : 'overflow-hidden rounded-xl border border-(--stroke-nous) bg-(--ui-chat-bubble-background) shadow-nous',
+            ? ""
+            : "overflow-hidden rounded-xl border border-(--stroke-nous) bg-(--ui-chat-bubble-background) shadow-nous",
           // Bare confirm screen orchestrates its own per-element exit; the
           // carded states use the simple lift/blur dissolve.
           leaving && !bare
-            ? '-translate-y-1 scale-[0.985] opacity-0 blur-[2px]'
-            : 'translate-y-0 scale-100 opacity-100 blur-0'
+            ? "-translate-y-1 scale-[0.985] opacity-0 blur-[2px]"
+            : "translate-y-0 scale-100 opacity-100 blur-0",
         )}
       >
         {showPicker || !ready ? <Header /> : null}
@@ -347,7 +373,12 @@ export function DesktopOnboardingOverlay({
             showPicker ? (
               <Picker ctx={ctx} />
             ) : (
-              <FlowPanel ctx={ctx} flow={flow} leaving={leaving} onBegin={finalizeOnboarding} />
+              <FlowPanel
+                ctx={ctx}
+                flow={flow}
+                leaving={leaving}
+                onBegin={finalizeOnboarding}
+              />
             )
           ) : (
             <Preparing boot={boot} />
@@ -355,7 +386,7 @@ export function DesktopOnboardingOverlay({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // The launch reason is a prompt ("why am I seeing this"), not an error. Only
@@ -366,14 +397,14 @@ function ReasonNotice({ reason }: { reason: string }) {
     <div className="rounded-2xl border border-(--ui-stroke-tertiary) bg-(--ui-bg-tertiary)/40 px-4 py-3 text-sm text-muted-foreground">
       {reason}
     </div>
-  )
+  );
 }
 
 function Preparing({ boot }: { boot: DesktopBootState }) {
-  const { t } = useI18n()
-  const progress = Math.max(2, Math.min(100, Math.round(boot.progress)))
-  const hasError = Boolean(boot.error)
-  const installing = boot.phase.startsWith('runtime.')
+  const { t } = useI18n();
+  const progress = Math.max(2, Math.min(100, Math.round(boot.progress)));
+  const hasError = Boolean(boot.error);
+  const installing = boot.phase.startsWith("runtime.");
 
   return (
     <div className="grid gap-3" role="status">
@@ -381,7 +412,9 @@ function Preparing({ boot }: { boot: DesktopBootState }) {
         {installing ? t.onboarding.preparingInstall : t.onboarding.starting}
       </p>
       <Progress
-        aria-label={installing ? t.onboarding.preparingInstall : t.onboarding.starting}
+        aria-label={
+          installing ? t.onboarding.preparingInstall : t.onboarding.starting
+        }
         destructive={hasError}
         size="lg"
         value={progress / 100}
@@ -390,72 +423,86 @@ function Preparing({ boot }: { boot: DesktopBootState }) {
         <span className="truncate">{boot.message}</span>
         <span>{progress}%</span>
       </div>
-      {hasError ? <p className="text-xs text-destructive">{boot.error}</p> : null}
+      {hasError ? (
+        <p className="text-xs text-destructive">{boot.error}</p>
+      ) : null}
     </div>
-  )
+  );
 }
 
 function Header() {
-  const { t } = useI18n()
+  const { t } = useI18n();
 
   return (
     <div className="bg-(--ui-chat-bubble-background) px-5 pt-5 pb-1">
-      <h2 className="text-[0.9375rem] font-semibold tracking-tight">{t.onboarding.headerTitle}</h2>
-      <p className="mt-1 max-w-xl text-[0.8125rem] leading-5 text-(--ui-text-tertiary)">{t.onboarding.headerDesc}</p>
+      <h2 className="text-[0.9375rem] font-semibold tracking-tight">
+        {t.onboarding.headerTitle}
+      </h2>
+      <p className="mt-1 max-w-xl text-[0.8125rem] leading-5 text-(--ui-text-tertiary)">
+        {t.onboarding.headerDesc}
+      </p>
     </div>
-  )
+  );
 }
 
-export const FEATURED_ID = 'nous'
-const SHOW_ALL_KEY = 'hermes-onboarding-show-all-v1'
+export const FEATURED_ID = "nous";
+const SHOW_ALL_KEY = "hermes-onboarding-show-all-v1";
 
 const readShowAll = () => {
   try {
-    return window.localStorage.getItem(SHOW_ALL_KEY) === '1'
+    return window.localStorage.getItem(SHOW_ALL_KEY) === "1";
   } catch {
-    return false
+    return false;
   }
-}
+};
 
 const persistShowAll = (value: boolean) => {
   try {
-    window.localStorage.setItem(SHOW_ALL_KEY, value ? '1' : '0')
+    window.localStorage.setItem(SHOW_ALL_KEY, value ? "1" : "0");
   } catch {
     // localStorage unavailable — degrade silently.
   }
 
-  return value
-}
+  return value;
+};
 
 export function Picker({ ctx }: { ctx: OnboardingContext }) {
-  const { t } = useI18n()
-  const { localEndpoint, manual, mode, providers } = useStore($desktopOnboarding)
-  const [showAll, setShowAll] = useState(readShowAll)
+  const { t } = useI18n();
+  const { localEndpoint, manual, mode, providers } =
+    useStore($desktopOnboarding);
+  const [showAll, setShowAll] = useState(readShowAll);
   // Which key-form option to preselect when we flip to 'apikey' mode. The
   // OpenRouter row selects its key; the generic link lands on the first option.
-  const [apiKeyInitialEnv, setApiKeyInitialEnv] = useState<string | undefined>(undefined)
+  const [apiKeyInitialEnv, setApiKeyInitialEnv] = useState<string | undefined>(
+    undefined,
+  );
 
   const openKeyForm = (envKey?: string) => {
-    setApiKeyInitialEnv(envKey)
-    setOnboardingMode('apikey')
-  }
+    setApiKeyInitialEnv(envKey);
+    setOnboardingMode("apikey");
+  };
 
-  const ordered = useMemo(() => (providers ? sortProviders(providers) : []), [providers])
-  const hasOauth = ordered.length > 0
-  const apiKeyOptions = useApiKeyCatalog()
+  const ordered = useMemo(
+    () => (providers ? sortProviders(providers) : []),
+    [providers],
+  );
+  const hasOauth = ordered.length > 0;
+  const apiKeyOptions = useApiKeyCatalog();
 
   // localEndpoint forces the key form regardless of `mode` (which a manual
   // provider refresh may flip back to 'oauth'); it preselects the local option
   // and hides the "back to sign in" link since the user came specifically to
   // configure a custom endpoint.
-  if (localEndpoint || mode === 'apikey' || !hasOauth) {
+  if (localEndpoint || mode === "apikey" || !hasOauth) {
     return (
       <div className="grid gap-3">
         <ApiKeyForm
           canGoBack={hasOauth && !localEndpoint}
-          initialEnvKey={localEndpoint ? 'OPENAI_BASE_URL' : apiKeyInitialEnv}
-          onBack={() => setOnboardingMode('oauth')}
-          onSave={(envKey, value, name, apiKey) => saveOnboardingApiKey(envKey, value, name, ctx, apiKey)}
+          initialEnvKey={localEndpoint ? "OPENAI_BASE_URL" : apiKeyInitialEnv}
+          onBack={() => setOnboardingMode("oauth")}
+          onSave={(envKey, value, name, apiKey) =>
+            saveOnboardingApiKey(envKey, value, name, ctx, apiKey)
+          }
           options={apiKeyOptions}
         />
         {manual ? null : (
@@ -464,22 +511,22 @@ export function Picker({ ctx }: { ctx: OnboardingContext }) {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   if (providers === null) {
-    return <Status>{t.onboarding.lookingUpProviders}</Status>
+    return <Status>{t.onboarding.lookingUpProviders}</Status>;
   }
 
-  const select = (p: OAuthProvider) => void startProviderOAuth(p, ctx)
-  const featured = ordered.find(p => p.id === FEATURED_ID) ?? null
-  const rest = featured ? ordered.filter(p => p.id !== FEATURED_ID) : ordered
+  const select = (p: OAuthProvider) => void startProviderOAuth(p, ctx);
+  const featured = ordered.find((p) => p.id === FEATURED_ID) ?? null;
+  const rest = featured ? ordered.filter((p) => p.id !== FEATURED_ID) : ordered;
   // Collapse the secondary providers behind a disclosure whenever Nous Portal
   // is present to anchor the choice — otherwise show the full list. The
   // Fireworks/OpenRouter key rows always live behind the disclosure, so the
   // toggle is warranted even when there are no other OAuth providers.
-  const collapsible = Boolean(featured)
-  const showRest = !collapsible || showAll
+  const collapsible = Boolean(featured);
+  const showRest = !collapsible || showAll;
 
   // "Run models locally" leaves the picker for Settings -> Providers ->
   // Local Models, where install/download live. First-run: persist the skip
@@ -488,31 +535,39 @@ export function Picker({ ctx }: { ctx: OnboardingContext }) {
   // router-independent (it renders outside the route tree on first run).
   const openLocalModels = () => {
     if (manual) {
-      closeManualOnboarding()
+      closeManualOnboarding();
     } else {
-      dismissFirstRunOnboarding()
+      dismissFirstRunOnboarding();
     }
 
-    window.location.hash = '#/settings?tab=providers&pview=local'
-  }
+    window.location.hash = "#/settings?tab=providers&pview=local";
+  };
 
   return (
     <div className="grid gap-2">
       <div className="grid max-h-[60dvh] gap-2 overflow-y-auto p-1">
-        {featured ? <FeaturedProviderRow onSelect={select} provider={featured} /> : null}
+        {featured ? (
+          <FeaturedProviderRow onSelect={select} provider={featured} />
+        ) : null}
         {/* The no-account path: everything runs on this machine. Shipped
             behind the --local launch flag. (Fireworks moved into the
             expanded list on main.) */}
-        {$localModelsEnabled.get() ? <LocalModelsProviderRow onClick={openLocalModels} /> : null}
+        {$localModelsEnabled.get() ? (
+          <LocalModelsProviderRow onClick={openLocalModels} />
+        ) : null}
         {showRest ? (
           <>
             {/* Fireworks leads the expanded list, matching CANONICAL_PROVIDERS
                 (Nous → Fireworks), but stays hidden until the user opens it. */}
-            <FireworksProviderRow onClick={() => openKeyForm('FIREWORKS_API_KEY')} />
-            {rest.map(p => (
+            <FireworksProviderRow
+              onClick={() => openKeyForm("FIREWORKS_API_KEY")}
+            />
+            {rest.map((p) => (
               <ProviderRow key={p.id} onSelect={select} provider={p} />
             ))}
-            <OpenRouterProviderRow onClick={() => openKeyForm('OPENROUTER_API_KEY')} />
+            <OpenRouterProviderRow
+              onClick={() => openKeyForm("OPENROUTER_API_KEY")}
+            />
           </>
         ) : null}
       </div>
@@ -525,7 +580,9 @@ export function Picker({ ctx }: { ctx: OnboardingContext }) {
           variant="text"
         >
           {showAll ? t.onboarding.collapse : t.onboarding.otherProviders}
-          <ChevronDown className={cn('size-3.5 transition', showAll && 'rotate-180')} />
+          <ChevronDown
+            className={cn("size-3.5 transition", showAll && "rotate-180")}
+          />
         </Button>
       ) : null}
       <div className="flex items-center justify-between gap-3 pt-1">
@@ -533,25 +590,37 @@ export function Picker({ ctx }: { ctx: OnboardingContext }) {
             In manual mode the overlay already has a close affordance, so the
             "choose later" escape would be redundant — hide it. */}
         {manual ? <span /> : <ChooseLaterLink />}
-        <Button className="-mr-2 font-medium" onClick={() => openKeyForm()} size="xs" type="button" variant="text">
+        <Button
+          className="-mr-2 font-medium"
+          onClick={() => openKeyForm()}
+          size="xs"
+          type="button"
+          variant="text"
+        >
           {t.onboarding.haveApiKey}
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 // "I'll choose a provider later" — dismisses the first-run picker and persists
 // the skip so it never re-nags. The user connects a provider any time from
 // Settings → Providers. Rendered only on the unconfigured first-run flow.
 function ChooseLaterLink() {
-  const { t } = useI18n()
+  const { t } = useI18n();
 
   return (
-    <Button className="font-medium" onClick={() => dismissFirstRunOnboarding()} size="xs" type="button" variant="text">
+    <Button
+      className="font-medium"
+      onClick={() => dismissFirstRunOnboarding()}
+      size="xs"
+      type="button"
+      variant="text"
+    >
       {t.onboarding.chooseLater}
     </Button>
-  )
+  );
 }
 
 // Presentational two-column key picker. Onboarding feeds it its curated
@@ -567,101 +636,126 @@ export function ApiKeyForm({
   onClear,
   onSave,
   options = API_KEY_OPTIONS,
-  redactedValue
+  redactedValue,
 }: {
-  canGoBack: boolean
+  canGoBack: boolean;
   /** Preselect a specific option by env key (e.g. 'OPENAI_BASE_URL' to land on
    *  the local / custom endpoint form). Falls back to the first option. */
-  initialEnvKey?: string
-  isSet?: (envKey: string) => boolean
-  onBack: () => void
-  onClear?: (envKey: string) => void
-  onSave: (envKey: string, value: string, name: string, apiKey?: string) => Promise<{ message?: string; ok: boolean }>
-  options?: ApiKeyOption[]
-  redactedValue?: (envKey: string) => null | string | undefined
+  initialEnvKey?: string;
+  isSet?: (envKey: string) => boolean;
+  onBack: () => void;
+  onClear?: (envKey: string) => void;
+  onSave: (
+    envKey: string,
+    value: string,
+    name: string,
+    apiKey?: string,
+  ) => Promise<{ message?: string; ok: boolean }>;
+  options?: ApiKeyOption[];
+  redactedValue?: (envKey: string) => null | string | undefined;
 }) {
-  const { t } = useI18n()
+  const { t } = useI18n();
 
-  const [option, setOption] = useState<ApiKeyOption>(() => options.find(o => o.envKey === initialEnvKey) ?? options[0])
+  const [option, setOption] = useState<ApiKeyOption>(
+    () => options.find((o) => o.envKey === initialEnvKey) ?? options[0],
+  );
 
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState("");
   // Optional endpoint API key, only used by the local / custom endpoint option
   // (whose `value` is the base URL). Cleared whenever the option changes.
-  const [localKey, setLocalKey] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<null | string>(null)
+  const [localKey, setLocalKey] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<null | string>(null);
   // `options` can change at runtime when callers filter the catalog (e.g. the
   // Providers page wiring its search into this grid). Keep the selection valid
   // by snapping back to the first remaining option when the current one drops.
   useEffect(() => {
-    if (options.length > 0 && !options.some(o => o.envKey === option.envKey)) {
-      setOption(options[0])
-      setValue('')
-      setLocalKey('')
-      setError(null)
+    if (
+      options.length > 0 &&
+      !options.some((o) => o.envKey === option.envKey)
+    ) {
+      setOption(options[0]);
+      setValue("");
+      setLocalKey("");
+      setError(null);
     }
-  }, [option.envKey, options])
+  }, [option.envKey, options]);
   // The catalog grid can be tall, leaving the entry field far below the fold.
   // On selection we scroll the field into view and focus it so it's always
   // obvious where to paste next.
-  const entryRef = useRef<HTMLDivElement>(null)
+  const entryRef = useRef<HTMLDivElement>(null);
 
   const pick = (o: ApiKeyOption) => {
-    setOption(o)
-    setValue('')
-    setLocalKey('')
-    setError(null)
+    setOption(o);
+    setValue("");
+    setLocalKey("");
+    setError(null);
     requestAnimationFrame(() => {
-      entryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      entryRef.current?.querySelector('input')?.focus()
-    })
-  }
+      entryRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      entryRef.current?.querySelector("input")?.focus();
+    });
+  };
 
-  const isLocal = option.envKey === 'OPENAI_BASE_URL'
-  const alreadySet = isSet?.(option.envKey) ?? false
+  const isLocal = option.envKey === "OPENAI_BASE_URL";
+  const alreadySet = isSet?.(option.envKey) ?? false;
   // When set, surface the backend's redacted value (e.g. "sk-12…wxyz") as the
   // placeholder so users can eyeball that the right key is in place.
-  const currentRedacted = alreadySet ? (redactedValue?.(option.envKey) ?? null) : null
+  const currentRedacted = alreadySet
+    ? (redactedValue?.(option.envKey) ?? null)
+    : null;
   // Only require a non-empty value — no length/format validation, so a short
   // or unusual key can't block the user from continuing.
-  const canSave = value.trim().length >= 1
-  const optionCopy = t.onboarding.apiKeyOptions[option.id]
-  const optionDescription = optionCopy?.description ?? option.description
+  const canSave = value.trim().length >= 1;
+  const optionCopy = t.onboarding.apiKeyOptions[option.id];
+  const optionDescription = optionCopy?.description ?? option.description;
 
   const submit = async () => {
     if (!canSave || saving) {
-      return
+      return;
     }
 
-    setSaving(true)
-    setError(null)
-    const result = await onSave(option.envKey, value, option.name, isLocal ? localKey : undefined)
+    setSaving(true);
+    setError(null);
+    const result = await onSave(
+      option.envKey,
+      value,
+      option.name,
+      isLocal ? localKey : undefined,
+    );
 
     if (result.ok) {
-      setValue('')
-      setLocalKey('')
+      setValue("");
+      setLocalKey("");
     } else {
-      setError(result.message ?? t.onboarding.couldNotSave)
+      setError(result.message ?? t.onboarding.couldNotSave);
     }
 
-    setSaving(false)
-  }
+    setSaving(false);
+  };
 
   return (
     <div className="grid gap-4">
       {canGoBack ? (
-        <Button className="-mt-1 self-start font-medium" onClick={onBack} size="xs" type="button" variant="text">
+        <Button
+          className="-mt-1 self-start font-medium"
+          onClick={onBack}
+          size="xs"
+          type="button"
+          variant="text"
+        >
           <ChevronLeft className="size-3" />
           {t.onboarding.backToSignIn}
         </Button>
       ) : null}
 
       <div className="grid max-h-[42dvh] gap-2 overflow-y-auto p-1 sm:grid-cols-2">
-        {options.map(o => (
+        {options.map((o) => (
           <button
             className={cn(
-              'rounded-2xl border bg-background/60 p-3 text-left transition hover:bg-accent/50',
-              option.envKey === o.envKey ? 'border-primary ring-2 ring-primary/20' : 'border-transparent'
+              "rounded-2xl border bg-background/60 p-3 text-left transition hover:bg-accent/50",
+              option.envKey === o.envKey
+                ? "border-primary ring-2 ring-primary/20"
+                : "border-transparent",
             )}
             key={o.envKey}
             onClick={() => pick(o)}
@@ -669,10 +763,14 @@ export function ApiKeyForm({
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-medium">{o.name}</span>
-              {isSet?.(o.envKey) ? <Check className="size-3.5 text-muted-foreground" /> : null}
+              {isSet?.(o.envKey) ? (
+                <Check className="size-3.5 text-muted-foreground" />
+              ) : null}
             </div>
             {(t.onboarding.apiKeyOptions[o.id]?.short ?? o.short) ? (
-              <p className="mt-1 text-xs text-muted-foreground">{t.onboarding.apiKeyOptions[o.id]?.short ?? o.short}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t.onboarding.apiKeyOptions[o.id]?.short ?? o.short}
+              </p>
             ) : null}
           </button>
         ))}
@@ -680,28 +778,38 @@ export function ApiKeyForm({
 
       <div className="grid scroll-mt-4 gap-2" ref={entryRef}>
         <div className="flex items-center justify-between gap-3">
-          <p className="text-sm leading-6 text-muted-foreground">{optionDescription}</p>
-          {option.docsUrl ? <DocsLink href={option.docsUrl}>{t.onboarding.getKey}</DocsLink> : null}
+          <p className="text-sm leading-6 text-muted-foreground">
+            {optionDescription}
+          </p>
+          {option.docsUrl ? (
+            <DocsLink href={option.docsUrl}>{t.onboarding.getKey}</DocsLink>
+          ) : null}
         </div>
         <Input
           autoComplete="off"
           autoFocus
           className="font-mono"
-          onChange={e => setValue(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && !e.nativeEvent.isComposing && void submit()}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) =>
+            e.key === "Enter" && !e.nativeEvent.isComposing && void submit()
+          }
           placeholder={
             currentRedacted ??
-            (alreadySet ? t.onboarding.replaceCurrent : option.placeholder || t.onboarding.pasteApiKey)
+            (alreadySet
+              ? t.onboarding.replaceCurrent
+              : option.placeholder || t.onboarding.pasteApiKey)
           }
-          type={isLocal ? 'text' : 'password'}
+          type={isLocal ? "text" : "password"}
           value={value}
         />
         {isLocal ? (
           <Input
             autoComplete="off"
             className="font-mono"
-            onChange={e => setLocalKey(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && !e.nativeEvent.isComposing && void submit()}
+            onChange={(e) => setLocalKey(e.target.value)}
+            onKeyDown={(e) =>
+              e.key === "Enter" && !e.nativeEvent.isComposing && void submit()
+            }
             placeholder={t.onboarding.localApiKeyPlaceholder}
             type="password"
             value={localKey}
@@ -713,16 +821,24 @@ export function ApiKeyForm({
       <div className="flex items-center justify-between gap-3">
         <div>
           {alreadySet && onClear ? (
-            <Button onClick={() => onClear(option.envKey)} size="sm" variant="ghost">
+            <Button
+              onClick={() => onClear(option.envKey)}
+              size="sm"
+              variant="ghost"
+            >
               {t.common.remove}
             </Button>
           ) : null}
         </div>
         <Button disabled={!canSave || saving} onClick={() => void submit()}>
           {saving ? <Loader2 className="animate-spin" /> : <KeyRound />}
-          {saving ? t.onboarding.connecting : alreadySet ? t.onboarding.update : t.common.connect}
+          {saving
+            ? t.onboarding.connecting
+            : alreadySet
+              ? t.onboarding.update
+              : t.common.connect}
         </Button>
       </div>
     </div>
-  )
+  );
 }

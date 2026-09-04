@@ -22,9 +22,9 @@
 
 export interface TipRotationState {
   /** The tip shown most recently, retired or not. Where the next walk starts. */
-  lastShownId: null | string
+  lastShownId: null | string;
   /** Hard-closed tip ids. */
-  retired: readonly string[]
+  retired: readonly string[];
 }
 
 /**
@@ -37,18 +37,19 @@ export interface TipRotationState {
 export function nextTip(
   order: readonly string[],
   available: readonly string[],
-  state: TipRotationState
+  state: TipRotationState,
 ): null | string {
   // An unknown or absent last tip starts the walk at the top of the catalog.
-  const start = state.lastShownId == null ? -1 : order.indexOf(state.lastShownId)
+  const start =
+    state.lastShownId == null ? -1 : order.indexOf(state.lastShownId);
 
   for (let step = 1; step <= order.length; step += 1) {
-    const id = order[(start + step + order.length) % order.length]
+    const id = order[(start + step + order.length) % order.length];
 
     if (available.includes(id) && !state.retired.includes(id)) {
-      return id
+      return id;
     }
   }
 
-  return null
+  return null;
 }

@@ -5,4 +5,4 @@
 // Keep this file free of imports. It exists precisely so the production
 // bundle contains nothing from `debug/`.
 
-export {}
+export {};

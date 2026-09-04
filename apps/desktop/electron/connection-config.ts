@@ -34,8 +34,16 @@
 //     (POST /api/auth/ws-ticket), so the session is still LIVE even with no
 //     AT cookie. A liveness check that looked only at the AT cookie would
 //     force a needless full re-login every ~15 min — hence cookiesHaveLiveSession.
-const AT_COOKIE_VARIANTS = ['__Host-hermes_session_at', '__Secure-hermes_session_at', 'hermes_session_at']
-const RT_COOKIE_VARIANTS = ['__Host-hermes_session_rt', '__Secure-hermes_session_rt', 'hermes_session_rt']
+const AT_COOKIE_VARIANTS = [
+  "__Host-hermes_session_at",
+  "__Secure-hermes_session_at",
+  "hermes_session_at",
+];
+const RT_COOKIE_VARIANTS = [
+  "__Host-hermes_session_rt",
+  "__Secure-hermes_session_rt",
+  "hermes_session_rt",
+];
 
 // The Nous portal (NAS) does NOT use Hermes gateway session cookies — it is a
 // Privy-authed Next.js app. NAS `auth()` (src/server/auth/session.ts) reads the
@@ -45,12 +53,12 @@ const RT_COOKIE_VARIANTS = ['__Host-hermes_session_rt', '__Secure-hermes_session
 // cookies above. `privy-token` is the access token (the required signal);
 // variants cover the secured-prefix forms and the older `privy-session` name.
 const PRIVY_SESSION_COOKIE_VARIANTS = [
-  '__Host-privy-token',
-  '__Secure-privy-token',
-  'privy-token',
-  'privy-session',
-  'privy-refresh-token'
-]
+  "__Host-privy-token",
+  "__Secure-privy-token",
+  "privy-token",
+  "privy-session",
+  "privy-refresh-token",
+];
 
 // The short-lived Privy ACCESS token only — the credential `/api/agents`
 // actually validates. `privy-session` / `privy-refresh-token` are long-lived
@@ -58,16 +66,26 @@ const PRIVY_SESSION_COOKIE_VARIANTS = [
 // no interactive login needed), but discovery still 401s until a fresh
 // `privy-token` is minted. Distinguishing the two is what lets a cold start
 // silently renew instead of demanding a re-login (#73495).
-const PRIVY_ACCESS_COOKIE_VARIANTS = ['__Host-privy-token', '__Secure-privy-token', 'privy-token']
+const PRIVY_ACCESS_COOKIE_VARIANTS = [
+  "__Host-privy-token",
+  "__Secure-privy-token",
+  "privy-token",
+];
 // Keep this aligned with hermes_cli.profiles.validate_profile_name(). `default`
 // is the built-in root alias; these names cannot be created as profiles.
-const RESERVED_REMOTE_PROFILES = new Set(['hermes', 'test', 'tmp', 'root', 'sudo'])
+const RESERVED_REMOTE_PROFILES = new Set([
+  "hermes",
+  "test",
+  "tmp",
+  "root",
+  "sudo",
+]);
 
 function normalizeRemoteBaseUrl(rawUrl) {
-  let value = String(rawUrl || '').trim()
+  let value = String(rawUrl || "").trim();
 
   if (!value) {
-    throw new Error('Remote gateway URL is required.')
+    throw new Error("Remote gateway URL is required.");
   }
 
   // Users routinely paste scheme-less "host:port" (a Tailscale IP, a LAN
@@ -77,61 +95,69 @@ function normalizeRemoteBaseUrl(rawUrl) {
   // `scheme://` prefix opts out, so explicit non-http schemes (ftp://,
   // file://) still reach the protocol check below and get rejected.
   if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) {
-    value = `http://${value}`
+    value = `http://${value}`;
   }
 
-  let parsed
+  let parsed;
 
   try {
-    parsed = new URL(value)
+    parsed = new URL(value);
   } catch (error) {
-    throw new Error(`Remote gateway URL is not valid: ${error.message}`)
+    throw new Error(`Remote gateway URL is not valid: ${error.message}`);
   }
 
-  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    throw new Error(`Remote gateway URL must be http:// or https://, got ${parsed.protocol}`)
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error(
+      `Remote gateway URL must be http:// or https://, got ${parsed.protocol}`,
+    );
   }
 
-  parsed.hash = ''
-  parsed.search = ''
-  parsed.pathname = parsed.pathname.replace(/\/+$/, '')
+  parsed.hash = "";
+  parsed.search = "";
+  parsed.pathname = parsed.pathname.replace(/\/+$/, "");
 
-  return parsed.toString().replace(/\/+$/, '')
+  return parsed.toString().replace(/\/+$/, "");
 }
 
 function buildGatewayWsUrl(baseUrl, token) {
-  const parsed = new URL(baseUrl)
-  const wsScheme = parsed.protocol === 'https:' ? 'wss' : 'ws'
-  const prefix = parsed.pathname.replace(/\/+$/, '')
+  const parsed = new URL(baseUrl);
+  const wsScheme = parsed.protocol === "https:" ? "wss" : "ws";
+  const prefix = parsed.pathname.replace(/\/+$/, "");
 
-  return `${wsScheme}://${parsed.host}${prefix}/api/ws?token=${encodeURIComponent(token)}`
+  return `${wsScheme}://${parsed.host}${prefix}/api/ws?token=${encodeURIComponent(token)}`;
 }
 
 function buildGatewayWsUrlWithTicket(baseUrl, ticket) {
-  const parsed = new URL(baseUrl)
-  const wsScheme = parsed.protocol === 'https:' ? 'wss' : 'ws'
-  const prefix = parsed.pathname.replace(/\/+$/, '')
+  const parsed = new URL(baseUrl);
+  const wsScheme = parsed.protocol === "https:" ? "wss" : "ws";
+  const prefix = parsed.pathname.replace(/\/+$/, "");
 
-  return `${wsScheme}://${parsed.host}${prefix}/api/ws?ticket=${encodeURIComponent(ticket)}`
+  return `${wsScheme}://${parsed.host}${prefix}/api/ws?ticket=${encodeURIComponent(ticket)}`;
 }
 
 /** True only when a gateway explicitly rejected the current OAuth session. */
 function isGatewayAuthRejection(error) {
-  if (error && typeof error === 'object' && (error as any).needsOauthLogin === true) {
-    return true
+  if (
+    error &&
+    typeof error === "object" &&
+    (error as any).needsOauthLogin === true
+  ) {
+    return true;
   }
 
-  const statusCode = Number(error && typeof error === 'object' ? (error as any).statusCode : NaN)
+  const statusCode = Number(
+    error && typeof error === "object" ? (error as any).statusCode : NaN,
+  );
 
-  return statusCode === 401 || statusCode === 403
+  return statusCode === 401 || statusCode === 403;
 }
 
 function gatewayTicketFailure(error, authMessage, transportMessage) {
-  const needsOauthLogin = isGatewayAuthRejection(error)
-  const err = new Error(needsOauthLogin ? authMessage : transportMessage)
+  const needsOauthLogin = isGatewayAuthRejection(error);
+  const err = new Error(needsOauthLogin ? authMessage : transportMessage);
 
   if (needsOauthLogin) {
-    ;(err as any).needsOauthLogin = true
+    (err as any).needsOauthLogin = true;
   }
 
   // Preserve structured HTTP context when the source error carried an integer
@@ -140,15 +166,17 @@ function gatewayTicketFailure(error, authMessage, transportMessage) {
   // the renderer overlay depend on it surviving the ticket-error wrapper. Auth
   // semantics are unchanged: 401/403 route to reauth, 5xx stays a transport
   // failure, everything else keeps current behavior.
-  const sourceStatus = Number(error && typeof error === 'object' ? (error as any).statusCode : NaN)
+  const sourceStatus = Number(
+    error && typeof error === "object" ? (error as any).statusCode : NaN,
+  );
 
   if (Number.isInteger(sourceStatus)) {
-    ;(err as any).statusCode = sourceStatus
+    (err as any).statusCode = sourceStatus;
   }
 
-  err.cause = error
+  err.cause = error;
 
-  return err
+  return err;
 }
 
 /**
@@ -157,47 +185,57 @@ function gatewayTicketFailure(error, authMessage, transportMessage) {
  * just hammers a dead session. Transport/server failures retry with short delays.
  */
 async function withTransientRetries(run, options: any = {}) {
-  const attempts = Number.isInteger(options.attempts) && options.attempts > 0 ? options.attempts : 3
-  const delaysMs = Array.isArray(options.delaysMs) && options.delaysMs.length > 0 ? options.delaysMs : [250, 750]
+  const attempts =
+    Number.isInteger(options.attempts) && options.attempts > 0
+      ? options.attempts
+      : 3;
+  const delaysMs =
+    Array.isArray(options.delaysMs) && options.delaysMs.length > 0
+      ? options.delaysMs
+      : [250, 750];
 
   const sleep =
-    typeof options.sleep === 'function'
+    typeof options.sleep === "function"
       ? options.sleep
-      : (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+      : (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const isRetryable =
-    typeof options.isRetryable === 'function' ? options.isRetryable : (error: unknown) => !isGatewayAuthRejection(error)
+    typeof options.isRetryable === "function"
+      ? options.isRetryable
+      : (error: unknown) => !isGatewayAuthRejection(error);
 
-  let lastError: unknown
+  let lastError: unknown;
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
-      return await run()
+      return await run();
     } catch (error) {
-      lastError = error
+      lastError = error;
 
       if (!isRetryable(error) || attempt >= attempts - 1) {
-        throw error
+        throw error;
       }
 
-      const delay = delaysMs[Math.min(attempt, delaysMs.length - 1)]
-      await sleep(delay)
+      const delay = delaysMs[Math.min(attempt, delaysMs.length - 1)];
+      await sleep(delay);
     }
   }
 
-  throw lastError
+  throw lastError;
 }
 
 /** Serialize a fresh-WS-URL attempt across Electron's IPC boundary. */
 async function gatewayWsUrlIpcResult(resolveWsUrl: () => Promise<string>) {
   try {
-    return { ok: true as const, wsUrl: await resolveWsUrl() }
+    return { ok: true as const, wsUrl: await resolveWsUrl() };
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : String(error),
-      ...(isGatewayAuthRejection(error) ? { needsOauthLogin: true as const } : {}),
-      ok: false as const
-    }
+      ...(isGatewayAuthRejection(error)
+        ? { needsOauthLogin: true as const }
+        : {}),
+      ok: false as const,
+    };
   }
 }
 
@@ -227,142 +265,167 @@ async function gatewayWsUrlIpcResult(resolveWsUrl: () => Promise<string>) {
  * @returns {Promise<string|null>}
  */
 async function resolveTestWsUrl(baseUrl, authMode, token, deps: any = {}) {
-  if (authMode === 'oauth') {
-    const mintTicket = deps.mintTicket
+  if (authMode === "oauth") {
+    const mintTicket = deps.mintTicket;
 
-    if (typeof mintTicket !== 'function') {
-      throw new Error('resolveTestWsUrl: a mintTicket function is required in OAuth mode.')
+    if (typeof mintTicket !== "function") {
+      throw new Error(
+        "resolveTestWsUrl: a mintTicket function is required in OAuth mode.",
+      );
     }
 
-    let ticket
+    let ticket;
 
     try {
-      ticket = await mintTicket(baseUrl)
+      ticket = await mintTicket(baseUrl);
     } catch (error) {
       throw gatewayTicketFailure(
         error,
-        'Reached the gateway over HTTP, but the OAuth session was rejected while minting a WebSocket ticket. ' +
-          'Open Settings → Gateway and sign in again.',
-        'Reached the gateway over HTTP, but could not mint a WebSocket ticket. Check the remote gateway connection and try again.'
-      )
+        "Reached the gateway over HTTP, but the OAuth session was rejected while minting a WebSocket ticket. " +
+          "Open Settings → Gateway and sign in again.",
+        "Reached the gateway over HTTP, but could not mint a WebSocket ticket. Check the remote gateway connection and try again.",
+      );
     }
 
-    return buildGatewayWsUrlWithTicket(baseUrl, ticket)
+    return buildGatewayWsUrlWithTicket(baseUrl, ticket);
   }
 
   if (!token) {
-    return null
+    return null;
   }
 
-  return buildGatewayWsUrl(baseUrl, token)
+  return buildGatewayWsUrl(baseUrl, token);
 }
 
 // Normalize a profile name to a connection scope key, or null for the global
 // (default) connection. Shared by the resolver and the IPC layer.
 function connectionScopeKey(profile) {
-  return String(profile ?? '').trim() || null
+  return String(profile ?? "").trim() || null;
 }
 
 /** Which Hermes profile the remote SSH dashboard should actually run as.
  *  Registry pool keys (`conn:mac-mini::default`) are desktop routing labels —
  *  they must never be sent to the remote as a profile name. `default` and
  *  empty mean the remote root home. */
-function resolveRemoteSshDashboardProfile(configuredRemoteProfile, poolOrProfileKey) {
-  const configured = String(configuredRemoteProfile || '').trim()
+function resolveRemoteSshDashboardProfile(
+  configuredRemoteProfile,
+  poolOrProfileKey,
+) {
+  const configured = String(configuredRemoteProfile || "").trim();
 
-  if (configured && configured !== 'default') {
-    return configured
+  if (configured && configured !== "default") {
+    return configured;
   }
 
-  const key = String(poolOrProfileKey || '').trim()
-  const requested = key.startsWith('conn:') ? key.split('::').pop() || '' : key
+  const key = String(poolOrProfileKey || "").trim();
+  const requested = key.startsWith("conn:") ? key.split("::").pop() || "" : key;
 
-  if (!requested || requested === 'default') {
-    return ''
+  if (!requested || requested === "default") {
+    return "";
   }
 
-  return requested
+  return requested;
 }
 
 // Coerce a remote auth mode to one of the two supported values ('token' default).
 function normAuthMode(mode) {
-  return mode === 'oauth' ? 'oauth' : 'token'
+  return mode === "oauth" ? "oauth" : "token";
 }
 
-const REMOTE_HEADER_NAME_RE = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/
+const REMOTE_HEADER_NAME_RE = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;
 
 const FORBIDDEN_REMOTE_HEADER_NAMES = new Set([
-  'authorization',
-  'connection',
-  'content-length',
-  'content-type',
-  'cookie',
-  'host',
-  'origin',
-  'referer',
-  'te',
-  'trailer',
-  'transfer-encoding',
-  'upgrade',
-  'x-hermes-session-token'
-])
+  "authorization",
+  "connection",
+  "content-length",
+  "content-type",
+  "cookie",
+  "host",
+  "origin",
+  "referer",
+  "te",
+  "trailer",
+  "transfer-encoding",
+  "upgrade",
+  "x-hermes-session-token",
+]);
 
 function normalizeRemoteHeaders(raw) {
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
-    return {}
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return {};
   }
 
-  const out = {}
+  const out = {};
 
   for (const [name, secret] of Object.entries(raw)) {
-    const headerName = String(name || '').trim()
-    const lower = headerName.toLowerCase()
+    const headerName = String(name || "").trim();
+    const lower = headerName.toLowerCase();
 
-    if (!headerName || !REMOTE_HEADER_NAME_RE.test(headerName) || FORBIDDEN_REMOTE_HEADER_NAMES.has(lower)) {
-      continue
+    if (
+      !headerName ||
+      !REMOTE_HEADER_NAME_RE.test(headerName) ||
+      FORBIDDEN_REMOTE_HEADER_NAMES.has(lower)
+    ) {
+      continue;
     }
 
-    if (typeof secret === 'string') {
-      const value = secret.trim()
+    if (typeof secret === "string") {
+      const value = secret.trim();
 
       if (value) {
-        out[headerName] = { encoding: 'plain', value }
+        out[headerName] = { encoding: "plain", value };
       }
 
-      continue
+      continue;
     }
 
-    if (secret && typeof secret === 'object') {
-      const encoding = String((secret as any).encoding || '')
-      const value = String((secret as any).value || '')
+    if (secret && typeof secret === "object") {
+      const encoding = String((secret as any).encoding || "");
+      const value = String((secret as any).value || "");
 
-      if (value && (encoding === 'safeStorage' || encoding === 'plain' || !encoding)) {
-        out[headerName] = { encoding: encoding || 'plain', value }
+      if (
+        value &&
+        (encoding === "safeStorage" || encoding === "plain" || !encoding)
+      ) {
+        out[headerName] = { encoding: encoding || "plain", value };
       }
     }
   }
 
-  return out
+  return out;
 }
 
 function remoteRequestMatchesBaseUrl(requestUrl, baseUrl) {
   try {
-    const request = new URL(requestUrl)
-    const base = new URL(baseUrl)
-    const basePath = base.pathname.replace(/\/+$/, '')
+    const request = new URL(requestUrl);
+    const base = new URL(baseUrl);
+    const basePath = base.pathname.replace(/\/+$/, "");
 
     const requestProtocol =
-      request.protocol === 'ws:' ? 'http:' : request.protocol === 'wss:' ? 'https:' : request.protocol
+      request.protocol === "ws:"
+        ? "http:"
+        : request.protocol === "wss:"
+          ? "https:"
+          : request.protocol;
 
-    const baseProtocol = base.protocol === 'ws:' ? 'http:' : base.protocol === 'wss:' ? 'https:' : base.protocol
+    const baseProtocol =
+      base.protocol === "ws:"
+        ? "http:"
+        : base.protocol === "wss:"
+          ? "https:"
+          : base.protocol;
 
     if (requestProtocol !== baseProtocol || request.host !== base.host) {
-      return false
+      return false;
     }
 
-    return !basePath || request.pathname === basePath || request.pathname.startsWith(`${basePath}/`)
+    return (
+      !basePath ||
+      request.pathname === basePath ||
+      request.pathname.startsWith(`${basePath}/`)
+    );
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -374,140 +437,149 @@ function remoteRequestMatchesBaseUrl(requestUrl, baseUrl) {
 // show) and config persistence (remembering the provenance). Centralized here
 // so no resolution site forgets the third arm.
 function modeIsRemoteLike(mode) {
-  return mode === 'remote' || mode === 'cloud'
+  return mode === "remote" || mode === "cloud";
 }
 
 function normalizeSshConfig(entry) {
-  if (!entry || typeof entry !== 'object' || entry.mode !== 'ssh') {
-    return null
+  if (!entry || typeof entry !== "object" || entry.mode !== "ssh") {
+    return null;
   }
 
-  let host = String(entry.host || '').trim()
+  let host = String(entry.host || "").trim();
 
   // Tolerate a pasted command: "ssh root@box" → "root@box".
-  host = host.replace(/^ssh\s+/i, '').trim()
+  host = host.replace(/^ssh\s+/i, "").trim();
 
   if (!host) {
-    return null
+    return null;
   }
 
-  let parsedUser
-  let parsedPort
-  const at = host.indexOf('@')
+  let parsedUser;
+  let parsedPort;
+  const at = host.indexOf("@");
 
   if (at > 0) {
-    parsedUser = host.slice(0, at)
-    host = host.slice(at + 1)
+    parsedUser = host.slice(0, at);
+    host = host.slice(at + 1);
   }
 
-  const bracketed = /^\[([^\]]+)](?::(\d+))?$/.exec(host)
+  const bracketed = /^\[([^\]]+)](?::(\d+))?$/.exec(host);
 
   if (bracketed) {
-    host = bracketed[1]
+    host = bracketed[1];
 
     if (bracketed[2]) {
-      parsedPort = Number(bracketed[2])
+      parsedPort = Number(bracketed[2]);
     }
   } else if ((host.match(/:/g) || []).length === 1) {
-    const [name, rawPort] = host.split(':')
+    const [name, rawPort] = host.split(":");
 
     if (/^\d+$/.test(rawPort)) {
-      host = name
-      parsedPort = Number(rawPort)
+      host = name;
+      parsedPort = Number(rawPort);
     }
   }
 
   if (!host) {
-    return null
+    return null;
   }
 
-  const out: any = { mode: 'ssh', host }
-  const user = String(entry.user || '').trim() || parsedUser || ''
+  const out: any = { mode: "ssh", host };
+  const user = String(entry.user || "").trim() || parsedUser || "";
 
   if (user) {
-    out.user = user
+    out.user = user;
   }
 
-  const rawExplicitPort = String(entry.port ?? '').trim()
-  const explicitPort = /^\d+$/.test(rawExplicitPort) ? Number(rawExplicitPort) : null
-  const port = explicitPort ?? parsedPort
+  const rawExplicitPort = String(entry.port ?? "").trim();
+  const explicitPort = /^\d+$/.test(rawExplicitPort)
+    ? Number(rawExplicitPort)
+    : null;
+  const port = explicitPort ?? parsedPort;
 
   if (Number.isInteger(port) && port > 0 && port <= 65535 && port !== 22) {
-    out.port = port
+    out.port = port;
   }
 
-  const keyPath = String(entry.keyPath || '').trim()
+  const keyPath = String(entry.keyPath || "").trim();
 
   if (keyPath) {
-    out.keyPath = keyPath
+    out.keyPath = keyPath;
   }
 
-  const remoteHermesPath = String(entry.remoteHermesPath || '').trim()
+  const remoteHermesPath = String(entry.remoteHermesPath || "").trim();
 
   if (remoteHermesPath) {
-    out.remoteHermesPath = remoteHermesPath
+    out.remoteHermesPath = remoteHermesPath;
   }
 
   // A Desktop profile can be a local routing label rather than the profile
   // name used by the remote Hermes installation. Preserve an explicit mapping
   // when it is a valid Hermes profile identifier; otherwise fall back to the
   // historical same-name behavior in the caller.
-  const remoteProfile = String(entry.remoteProfile || '').trim()
+  const remoteProfile = String(entry.remoteProfile || "").trim();
 
-  if (/^[a-z0-9][a-z0-9_-]{0,63}$/.test(remoteProfile) && !RESERVED_REMOTE_PROFILES.has(remoteProfile)) {
-    out.remoteProfile = remoteProfile
+  if (
+    /^[a-z0-9][a-z0-9_-]{0,63}$/.test(remoteProfile) &&
+    !RESERVED_REMOTE_PROFILES.has(remoteProfile)
+  ) {
+    out.remoteProfile = remoteProfile;
   }
 
-  return out
+  return out;
 }
 
 function profileSshOverride(config, profile) {
-  const key = connectionScopeKey(profile)
-  const entry = key ? config?.profiles?.[key] : null
+  const key = connectionScopeKey(profile);
+  const entry = key ? config?.profiles?.[key] : null;
 
-  return normalizeSshConfig(entry)
+  return normalizeSshConfig(entry);
 }
 
 function savedProfileSsh(config, profile) {
-  const key = connectionScopeKey(profile)
-  const entry = key ? config?.profiles?.[key] : null
+  const key = connectionScopeKey(profile);
+  const entry = key ? config?.profiles?.[key] : null;
 
-  if (!entry || entry.mode !== 'local') {
-    return null
+  if (!entry || entry.mode !== "local") {
+    return null;
   }
 
-  return normalizeSshConfig(entry.savedSsh)
+  return normalizeSshConfig(entry.savedSsh);
 }
 
 function profileHasRemoteConnection(config, profile) {
-  return Boolean(profileRemoteOverride(config, profile) || profileSshOverride(config, profile))
+  return Boolean(
+    profileRemoteOverride(config, profile) ||
+    profileSshOverride(config, profile),
+  );
 }
 
 function localProfileEntry(existing) {
-  const ssh = normalizeSshConfig(existing) || normalizeSshConfig(existing?.savedSsh)
+  const ssh =
+    normalizeSshConfig(existing) || normalizeSshConfig(existing?.savedSsh);
 
-  return ssh ? { mode: 'local', savedSsh: ssh } : null
+  return ssh ? { mode: "local", savedSsh: ssh } : null;
 }
 
 function hostLabelFromBaseUrl(baseUrl) {
-  const raw = String(baseUrl || '').trim()
+  const raw = String(baseUrl || "").trim();
 
   if (!raw) {
-    return null
+    return null;
   }
 
   try {
-    const parsed = new URL(raw)
+    const parsed = new URL(raw);
 
     if (!parsed.hostname) {
-      return null
+      return null;
     }
 
-    return parsed.port && parsed.port !== '80' && parsed.port !== '443'
+    return parsed.port && parsed.port !== "80" && parsed.port !== "443"
       ? `${parsed.hostname}:${parsed.port}`
-      : parsed.hostname
+      : parsed.hostname;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -521,109 +593,109 @@ function hostLabelFromBaseUrl(baseUrl) {
  * them. Returns `{ url, authMode, token, headers } | null`.
  */
 function profileRemoteOverride(config, profile) {
-  const key = connectionScopeKey(profile)
-  const entry = key ? config?.profiles?.[key] : null
+  const key = connectionScopeKey(profile);
+  const entry = key ? config?.profiles?.[key] : null;
 
-  if (!entry || typeof entry !== 'object' || !modeIsRemoteLike(entry.mode)) {
-    return null
+  if (!entry || typeof entry !== "object" || !modeIsRemoteLike(entry.mode)) {
+    return null;
   }
 
-  const url = String(entry.url || '').trim()
+  const url = String(entry.url || "").trim();
 
   if (!url) {
-    return null
+    return null;
   }
 
-  const headers = normalizeRemoteHeaders(entry.headers)
+  const headers = normalizeRemoteHeaders(entry.headers);
 
   return {
     url,
     authMode: normAuthMode(entry.authMode),
     token: entry.token,
-    ...(Object.keys(headers).length > 0 ? { headers } : {})
-  }
+    ...(Object.keys(headers).length > 0 ? { headers } : {}),
+  };
 }
 
 export interface ProfileRouteOptions {
   /** Profile name on a separately-scoped backend when it differs from the
    * desktop's local routing label (managed SSH `remoteProfile`). */
-  backendProfile?: null | string
-  globalRemote?: boolean
-  primaryProfile?: null | string
-  profileRemoteOverride?: boolean
+  backendProfile?: null | string;
+  globalRemote?: boolean;
+  primaryProfile?: null | string;
+  profileRemoteOverride?: boolean;
   /** The primary profile's own backend resolves to a remote host. */
-  primaryRemoteActive?: boolean
+  primaryRemoteActive?: boolean;
   /** A stored per-profile entry exists for this profile (local or remote). */
-  ownEntry?: boolean
-  requestMethod?: null | string
-  requestPath?: null | string
+  ownEntry?: boolean;
+  requestMethod?: null | string;
+  requestPath?: null | string;
 }
 
 export interface ProfileBackendRoute {
   /** Which backend serves this profile: the window backend, or a pooled one. */
-  backend: 'pool' | 'primary'
+  backend: "pool" | "primary";
   /**
    * Profile to tag on the returned descriptor when the backend is shared and
    * therefore not itself scoped to that profile. Null when the backend already
    * belongs to the profile.
    */
-  descriptorProfile: null | string
+  descriptorProfile: null | string;
   /** Whether REST paths on this route must carry `?profile=` to be scoped. */
-  scopePath: boolean
+  scopePath: boolean;
 }
 
 const LOCAL_PRIMARY_SCOPED_ROUTES = new Set([
-  'GET /api/config',
-  'PUT /api/config',
-  'GET /api/config/raw',
-  'PUT /api/config/raw',
-  'GET /api/config/schema',
-  'DELETE /api/env',
-  'GET /api/env',
-  'PUT /api/env',
-  'POST /api/env/reveal',
-  'GET /api/model/auxiliary',
-  'GET /api/model/info',
-  'GET /api/model/moa',
-  'PUT /api/model/moa',
-  'GET /api/model/options',
-  'POST /api/model/set',
-  'GET /api/skills',
-  'GET /api/skills/content',
-  'PUT /api/skills/toggle',
-  'POST /api/skills/hub/install',
-  'GET /api/skills/hub/official',
-  'GET /api/skills/hub/preview',
-  'GET /api/skills/hub/scan',
-  'GET /api/skills/hub/search',
-  'GET /api/skills/hub/sources',
-  'POST /api/skills/hub/uninstall',
-  'POST /api/skills/hub/update',
+  "GET /api/config",
+  "PUT /api/config",
+  "GET /api/config/raw",
+  "PUT /api/config/raw",
+  "GET /api/config/schema",
+  "DELETE /api/env",
+  "GET /api/env",
+  "PUT /api/env",
+  "POST /api/env/reveal",
+  "GET /api/model/auxiliary",
+  "GET /api/model/info",
+  "GET /api/model/moa",
+  "PUT /api/model/moa",
+  "GET /api/model/options",
+  "POST /api/model/set",
+  "GET /api/skills",
+  "GET /api/skills/content",
+  "PUT /api/skills/toggle",
+  "POST /api/skills/hub/install",
+  "GET /api/skills/hub/official",
+  "GET /api/skills/hub/preview",
+  "GET /api/skills/hub/scan",
+  "GET /api/skills/hub/search",
+  "GET /api/skills/hub/sources",
+  "POST /api/skills/hub/uninstall",
+  "POST /api/skills/hub/update",
   // Spawns a background action polled via /api/actions/{name}/status — must
   // live on the SAME backend as that poll family (below), or the poll asks a
   // backend that never registered the dynamic action name and 404s.
-  'POST /api/mcp/catalog/install'
-])
+  "POST /api/mcp/catalog/install",
+]);
 
 function localPrimaryRequestScope(opts: ProfileRouteOptions): boolean | null {
-  const rawPath = String(opts.requestPath || '')
+  const rawPath = String(opts.requestPath || "");
 
   if (!rawPath) {
-    return null
+    return null;
   }
 
-  let pathname
+  let pathname;
 
   try {
-    pathname = new URL(rawPath, 'https://example.invalid').pathname
+    pathname = new URL(rawPath, "https://example.invalid").pathname;
   } catch {
-    return null
+    return null;
   }
 
-  const method = String(opts.requestMethod || 'GET').toUpperCase()
+  const method = String(opts.requestMethod || "GET").toUpperCase();
 
   if (LOCAL_PRIMARY_SCOPED_ROUTES.has(`${method} ${pathname}`)) {
-    return true
+    return true;
   }
 
   // Action-status polls MUST land on the same backend as the endpoints that
@@ -632,22 +704,22 @@ function localPrimaryRequestScope(opts: ProfileRouteOptions): boolean | null {
   // process's memory. Every action-spawning route above scopes to the
   // primary, so the poll family follows — a pooled-backend poll 404s with
   // "Unknown action" even though the install itself succeeded (#89xxx).
-  if (pathname.startsWith('/api/actions/')) {
-    return true
+  if (pathname.startsWith("/api/actions/")) {
+    return true;
   }
 
   // Every current /api/tools handler accepts `profile`; every /api/profiles
   // handler either aggregates profiles or names its target in the path/body.
   // These are the only whole families safe to route through the primary.
-  if (pathname === '/api/tools' || pathname.startsWith('/api/tools/')) {
-    return true
+  if (pathname === "/api/tools" || pathname.startsWith("/api/tools/")) {
+    return true;
   }
 
-  if (pathname === '/api/profiles' || pathname.startsWith('/api/profiles/')) {
-    return false
+  if (pathname === "/api/profiles" || pathname.startsWith("/api/profiles/")) {
+    return false;
   }
 
-  return null
+  return null;
 }
 
 /**
@@ -672,12 +744,15 @@ function localPrimaryRequestScope(opts: ProfileRouteOptions): boolean | null {
  * re-derived part of this table, which is how case 3 ended up registering
  * reapable pool entries for backends it never owned.
  */
-function resolveProfileBackendRoute(profile, opts: ProfileRouteOptions = {}): ProfileBackendRoute {
-  const scopedProfile = connectionScopeKey(profile)
-  const primaryProfile = connectionScopeKey(opts.primaryProfile) || 'default'
+function resolveProfileBackendRoute(
+  profile,
+  opts: ProfileRouteOptions = {},
+): ProfileBackendRoute {
+  const scopedProfile = connectionScopeKey(profile);
+  const primaryProfile = connectionScopeKey(opts.primaryProfile) || "default";
 
   if (!scopedProfile) {
-    return { backend: 'primary', descriptorProfile: null, scopePath: false }
+    return { backend: "primary", descriptorProfile: null, scopePath: false };
   }
 
   if (scopedProfile === primaryProfile) {
@@ -686,16 +761,24 @@ function resolveProfileBackendRoute(profile, opts: ProfileRouteOptions = {}): Pr
     // the wire: the dashboard's process HERMES_HOME can belong to a different
     // launch profile, so a bare request silently reads that profile instead.
     return opts.globalRemote
-      ? { backend: 'primary', descriptorProfile: scopedProfile, scopePath: true }
-      : { backend: 'primary', descriptorProfile: null, scopePath: false }
+      ? {
+          backend: "primary",
+          descriptorProfile: scopedProfile,
+          scopePath: true,
+        }
+      : { backend: "primary", descriptorProfile: null, scopePath: false };
   }
 
   if (opts.profileRemoteOverride) {
-    return { backend: 'pool', descriptorProfile: null, scopePath: false }
+    return { backend: "pool", descriptorProfile: null, scopePath: false };
   }
 
   if (opts.globalRemote) {
-    return { backend: 'primary', descriptorProfile: scopedProfile, scopePath: true }
+    return {
+      backend: "primary",
+      descriptorProfile: scopedProfile,
+      scopePath: true,
+    };
   }
 
   if (opts.primaryRemoteActive) {
@@ -704,25 +787,29 @@ function resolveProfileBackendRoute(profile, opts: ProfileRouteOptions = {}): Pr
       // override or env) and this sub-profile has no stored entry of its own.
       // Route through that gateway with profile scoping instead of spawning a
       // fresh local backend that shares nothing but the name (#88296).
-      return { backend: 'primary', descriptorProfile: scopedProfile, scopePath: true }
+      return {
+        backend: "primary",
+        descriptorProfile: scopedProfile,
+        scopePath: true,
+      };
     }
 
     // A stored local profile must not be redirected into the remote primary,
     // even when its REST endpoint supports profile scoping.
-    return { backend: 'pool', descriptorProfile: null, scopePath: false }
+    return { backend: "pool", descriptorProfile: null, scopePath: false };
   }
 
-  const localScope = localPrimaryRequestScope(opts)
+  const localScope = localPrimaryRequestScope(opts);
 
   if (localScope !== null) {
     return {
-      backend: 'primary',
+      backend: "primary",
       descriptorProfile: localScope ? scopedProfile : null,
-      scopePath: localScope
-    }
+      scopePath: localScope,
+    };
   }
 
-  return { backend: 'pool', descriptorProfile: null, scopePath: false }
+  return { backend: "pool", descriptorProfile: null, scopePath: false };
 }
 
 /**
@@ -734,18 +821,26 @@ function resolveProfileBackendRoute(profile, opts: ProfileRouteOptions = {}): Pr
  * explicit `?profile=mara`; translate only that self-scope. Cross-profile
  * selectors such as `all` or another concrete profile retain their meaning.
  */
-function pathWithGlobalRemoteProfile(path, profile, opts: ProfileRouteOptions = {}) {
-  const translated = translateSelfProfileQuery(path, profile, opts.backendProfile)
+function pathWithGlobalRemoteProfile(
+  path,
+  profile,
+  opts: ProfileRouteOptions = {},
+) {
+  const translated = translateSelfProfileQuery(
+    path,
+    profile,
+    opts.backendProfile,
+  );
 
   if (translated !== path) {
-    return translated
+    return translated;
   }
 
   if (!resolveProfileBackendRoute(profile, opts).scopePath) {
-    return path
+    return path;
   }
 
-  return pathWithProfileScope(path, profile)
+  return pathWithProfileScope(path, profile);
 }
 
 /** Extra profile-valued query keys, beyond `profile`, that name the same
@@ -753,8 +848,8 @@ function pathWithGlobalRemoteProfile(path, profile, opts: ProfileRouteOptions = 
  *  behind `recents_profile` instead of `profile`, so an SSH alias rewrite
  *  that only looks at `?profile=` leaves those reads on the remote default. */
 const SELF_PROFILE_QUERY_KEYS_BY_PATH: Record<string, string[]> = {
-  '/api/profiles/sessions/sidebar': ['recents_profile']
-}
+  "/api/profiles/sessions/sidebar": ["recents_profile"],
+};
 
 /**
  * Translate an explicit self-profile query from a Desktop routing alias to the
@@ -767,44 +862,47 @@ const SELF_PROFILE_QUERY_KEYS_BY_PATH: Record<string, string[]> = {
  * remote profile, not the alias.
  */
 function translateSelfProfileQuery(path, profile, backendProfile) {
-  const scopedProfile = connectionScopeKey(profile)
-  const backend = connectionScopeKey(backendProfile)
+  const scopedProfile = connectionScopeKey(profile);
+  const backend = connectionScopeKey(backendProfile);
 
   if (!scopedProfile || !backend || backend === scopedProfile) {
-    return path
+    return path;
   }
 
-  const rawPath = String(path || '')
+  const rawPath = String(path || "");
 
   if (!rawPath) {
-    return path
+    return path;
   }
 
-  let parsed
+  let parsed;
 
   try {
-    parsed = new URL(rawPath, 'http://hermes.local')
+    parsed = new URL(rawPath, "http://hermes.local");
   } catch {
-    return path
+    return path;
   }
 
-  const profileQueryKeys = ['profile', ...(SELF_PROFILE_QUERY_KEYS_BY_PATH[parsed.pathname] || [])]
-  let changed = false
+  const profileQueryKeys = [
+    "profile",
+    ...(SELF_PROFILE_QUERY_KEYS_BY_PATH[parsed.pathname] || []),
+  ];
+  let changed = false;
 
   for (const key of profileQueryKeys) {
     if (connectionScopeKey(parsed.searchParams.get(key)) !== scopedProfile) {
-      continue
+      continue;
     }
 
-    parsed.searchParams.set(key, backend)
-    changed = true
+    parsed.searchParams.set(key, backend);
+    changed = true;
   }
 
   if (!changed) {
-    return path
+    return path;
   }
 
-  return `${parsed.pathname}${parsed.search}${parsed.hash}`
+  return `${parsed.pathname}${parsed.search}${parsed.hash}`;
 }
 
 /**
@@ -814,38 +912,38 @@ function translateSelfProfileQuery(path, profile, backendProfile) {
  * `?profile=` already on the path wins; an empty profile is a no-op.
  */
 function pathWithProfileScope(path, profile) {
-  const scopedProfile = connectionScopeKey(profile)
+  const scopedProfile = connectionScopeKey(profile);
 
   if (!scopedProfile) {
-    return path
+    return path;
   }
 
-  const rawPath = String(path || '')
+  const rawPath = String(path || "");
 
   if (!rawPath) {
-    return path
+    return path;
   }
 
-  let parsed
+  let parsed;
 
   try {
-    parsed = new URL(rawPath, 'http://hermes.local')
+    parsed = new URL(rawPath, "http://hermes.local");
   } catch {
-    return path
+    return path;
   }
 
-  if (parsed.searchParams.has('profile')) {
-    return path
+  if (parsed.searchParams.has("profile")) {
+    return path;
   }
 
-  parsed.searchParams.set('profile', scopedProfile)
+  parsed.searchParams.set("profile", scopedProfile);
 
-  return `${parsed.pathname}${parsed.search}${parsed.hash}`
+  return `${parsed.pathname}${parsed.search}${parsed.hash}`;
 }
 
 export interface RegistryBackendRequestScope {
-  remoteProfile?: null | string
-  sharedRemote?: boolean
+  remoteProfile?: null | string;
+  sharedRemote?: boolean;
 }
 
 /**
@@ -854,10 +952,14 @@ export interface RegistryBackendRequestScope {
  * isolated SSH backends already own one profile but may translate a Desktop
  * alias in an existing self-profile filter.
  */
-function pathForRegistryBackendRequest(path, profile, backend: RegistryBackendRequestScope) {
+function pathForRegistryBackendRequest(
+  path,
+  profile,
+  backend: RegistryBackendRequestScope,
+) {
   return backend.sharedRemote
     ? pathWithProfileScope(path, profile)
-    : translateSelfProfileQuery(path, profile, backend.remoteProfile)
+    : translateSelfProfileQuery(path, profile, backend.remoteProfile);
 }
 
 /**
@@ -868,20 +970,23 @@ function pathForRegistryBackendRequest(path, profile, backend: RegistryBackendRe
  * byte-identical v1 route.
  */
 function apiRequestRegistryConnectionId(request): null | string {
-  const raw = request && typeof request === 'object' ? (request as { connectionId?: unknown }).connectionId : ''
-  const id = String(raw ?? '').trim()
+  const raw =
+    request && typeof request === "object"
+      ? (request as { connectionId?: unknown }).connectionId
+      : "";
+  const id = String(raw ?? "").trim();
 
   if (!id) {
-    return null
+    return null;
   }
 
-  return id
+  return id;
 }
 
 export interface ProfileApiRequestRoute {
   /** Profile passed to ensureBackend; null selects the primary backend. */
-  backendProfile: null | string
-  requestPath: string
+  backendProfile: null | string;
+  requestPath: string;
 }
 
 /**
@@ -889,26 +994,34 @@ export interface ProfileApiRequestRoute {
  * routing table: which backend serves the request, and whether its URL needs a
  * profile query scope.
  */
-function resolveProfileApiRequest(profile, path, opts: ProfileRouteOptions = {}): ProfileApiRequestRoute {
-  const scopedProfile = connectionScopeKey(profile)
-  const requestPath = String(path || '')
-  const routeOpts = { ...opts, requestPath }
-  const route = resolveProfileBackendRoute(scopedProfile, routeOpts)
+function resolveProfileApiRequest(
+  profile,
+  path,
+  opts: ProfileRouteOptions = {},
+): ProfileApiRequestRoute {
+  const scopedProfile = connectionScopeKey(profile);
+  const requestPath = String(path || "");
+  const routeOpts = { ...opts, requestPath };
+  const route = resolveProfileBackendRoute(scopedProfile, routeOpts);
 
   return {
-    backendProfile: route.backend === 'pool' ? scopedProfile : null,
-    requestPath: pathWithGlobalRemoteProfile(requestPath, scopedProfile, routeOpts)
-  }
+    backendProfile: route.backend === "pool" ? scopedProfile : null,
+    requestPath: pathWithGlobalRemoteProfile(
+      requestPath,
+      scopedProfile,
+      routeOpts,
+    ),
+  };
 }
 
 function tokenPreview(value) {
-  const raw = String(value || '')
+  const raw = String(value || "");
 
   if (!raw) {
-    return null
+    return null;
   }
 
-  return raw.length <= 8 ? 'set' : `...${raw.slice(-6)}`
+  return raw.length <= 8 ? "set" : `...${raw.slice(-6)}`;
 }
 
 /**
@@ -917,7 +1030,7 @@ function tokenPreview(value) {
  * Returns 'oauth' | 'token'.
  */
 function authModeFromStatus(statusBody) {
-  return statusBody && statusBody.auth_required ? 'oauth' : 'token'
+  return statusBody && statusBody.auth_required ? "oauth" : "token";
 }
 
 /**
@@ -926,19 +1039,19 @@ function authModeFromStatus(statusBody) {
  * Returns 'oauth' | 'token'.
  */
 function resolveAuthMode(inputAuthMode, existingAuthMode) {
-  if (inputAuthMode === 'oauth') {
-    return 'oauth'
+  if (inputAuthMode === "oauth") {
+    return "oauth";
   }
 
-  if (inputAuthMode === 'token') {
-    return 'token'
+  if (inputAuthMode === "token") {
+    return "token";
   }
 
-  if (existingAuthMode === 'oauth') {
-    return 'oauth'
+  if (existingAuthMode === "oauth") {
+    return "oauth";
   }
 
-  return 'token'
+  return "token";
 }
 
 /**
@@ -954,10 +1067,12 @@ function resolveAuthMode(inputAuthMode, existingAuthMode) {
  */
 function cookiesHaveSession(cookies) {
   if (!Array.isArray(cookies)) {
-    return false
+    return false;
   }
 
-  return cookies.some(c => c && AT_COOKIE_VARIANTS.includes(c.name) && c.value)
+  return cookies.some(
+    (c) => c && AT_COOKIE_VARIANTS.includes(c.name) && c.value,
+  );
 }
 
 /**
@@ -975,10 +1090,16 @@ function cookiesHaveSession(cookies) {
  */
 function cookiesHaveLiveSession(cookies) {
   if (!Array.isArray(cookies)) {
-    return false
+    return false;
   }
 
-  return cookies.some(c => c && c.value && (AT_COOKIE_VARIANTS.includes(c.name) || RT_COOKIE_VARIANTS.includes(c.name)))
+  return cookies.some(
+    (c) =>
+      c &&
+      c.value &&
+      (AT_COOKIE_VARIANTS.includes(c.name) ||
+        RT_COOKIE_VARIANTS.includes(c.name)),
+  );
 }
 
 /**
@@ -991,10 +1112,12 @@ function cookiesHaveLiveSession(cookies) {
  */
 function cookiesHavePrivySession(cookies) {
   if (!Array.isArray(cookies)) {
-    return false
+    return false;
   }
 
-  return cookies.some(c => c && c.value && PRIVY_SESSION_COOKIE_VARIANTS.includes(c.name))
+  return cookies.some(
+    (c) => c && c.value && PRIVY_SESSION_COOKIE_VARIANTS.includes(c.name),
+  );
 }
 
 /**
@@ -1007,10 +1130,12 @@ function cookiesHavePrivySession(cookies) {
  */
 function cookiesHavePrivyAccessToken(cookies) {
   if (!Array.isArray(cookies)) {
-    return false
+    return false;
   }
 
-  return cookies.some(c => c && c.value && PRIVY_ACCESS_COOKIE_VARIANTS.includes(c.name))
+  return cookies.some(
+    (c) => c && c.value && PRIVY_ACCESS_COOKIE_VARIANTS.includes(c.name),
+  );
 }
 
 export {
@@ -1052,5 +1177,5 @@ export {
   savedProfileSsh,
   tokenPreview,
   translateSelfProfileQuery,
-  withTransientRetries
-}
+  withTransientRetries,
+};

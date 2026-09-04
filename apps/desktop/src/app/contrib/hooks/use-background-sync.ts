@@ -1,15 +1,23 @@
-import { useStore } from '@nanostores/react'
-import { type MutableRefObject, useCallback, useEffect, useRef } from 'react'
+import { useStore } from "@nanostores/react";
+import { type MutableRefObject, useCallback, useEffect, useRef } from "react";
 
-import { graftRefreshedTailOntoBackfill } from '@/app/chat/transcript-backfill'
-import { getLatestSessionMessages, type ProfileScope } from '@/hermes'
-import { preserveLocalAssistantErrors, sealOpenToolParts, toChatMessages } from '@/lib/chat-messages'
-import { createClientSessionState } from '@/lib/chat-runtime'
-import { sessionMessagesSignature } from '@/lib/session-signatures'
-import { $changeEventsAvailable, $cronChangeTick, $sessionsChangeTick } from '@/store/live-sync'
-import { $onBattery, batteryPollInterval } from '@/store/power'
-import { refreshActiveProfile } from '@/store/profile'
-import { refreshProjectTree } from '@/store/projects'
+import { graftRefreshedTailOntoBackfill } from "@/app/chat/transcript-backfill";
+import { getLatestSessionMessages, type ProfileScope } from "@/hermes";
+import {
+  preserveLocalAssistantErrors,
+  sealOpenToolParts,
+  toChatMessages,
+} from "@/lib/chat-messages";
+import { createClientSessionState } from "@/lib/chat-runtime";
+import { sessionMessagesSignature } from "@/lib/session-signatures";
+import {
+  $changeEventsAvailable,
+  $cronChangeTick,
+  $sessionsChangeTick,
+} from "@/store/live-sync";
+import { $onBattery, batteryPollInterval } from "@/store/power";
+import { refreshActiveProfile } from "@/store/profile";
+import { refreshProjectTree } from "@/store/projects";
 import {
   $activeSessionId,
   $busy,
@@ -18,66 +26,82 @@ import {
   getSessionOwnerHint,
   ownerLookupSessionRows,
   sessionMatchesStoredId,
-  setCurrentCwd
-} from '@/store/session'
-import type { SessionProfileRoute } from '@/store/session-request-router'
+  setCurrentCwd,
+} from "@/store/session";
+import type { SessionProfileRoute } from "@/store/session-request-router";
 import {
   $sessionStates,
   $sessionTiles,
   publishSessionState,
   SESSION_WATCHDOG_TIMEOUT_MS,
-  setSessionStalled
-} from '@/store/session-states'
+  setSessionStalled,
+} from "@/store/session-states";
 
-import type { ClientSessionState } from '../../types'
-import type { GatewayRequester } from '../types'
+import type { ClientSessionState } from "../../types";
+import type { GatewayRequester } from "../types";
 
 interface ActiveTranscriptSession {
-  ownerRoute?: SessionProfileRoute
-  profile?: string | null
+  ownerRoute?: SessionProfileRoute;
+  profile?: string | null;
 }
 
 /** Resolve an active transcript from visible rows or its unique hidden owner. */
-export function resolveActiveTranscriptSession(storedSessionId: string): ActiveTranscriptSession | undefined {
-  const visible = ownerLookupSessionRows().find(session => sessionMatchesStoredId(session, storedSessionId))
+export function resolveActiveTranscriptSession(
+  storedSessionId: string,
+): ActiveTranscriptSession | undefined {
+  const visible = ownerLookupSessionRows().find((session) =>
+    sessionMatchesStoredId(session, storedSessionId),
+  );
 
   if (visible) {
-    return { profile: visible.profile }
+    return { profile: visible.profile };
   }
 
-  const ownerRoute = getSessionOwnerHint(storedSessionId)
+  const ownerRoute = getSessionOwnerHint(storedSessionId);
 
-  return ownerRoute ? { ownerRoute, profile: ownerRoute.profile } : undefined
+  return ownerRoute ? { ownerRoute, profile: ownerRoute.profile } : undefined;
 }
 
 export interface ActiveTranscriptRefreshDeps {
-  activeSessionIdRef: MutableRefObject<string | null>
-  busyRef: MutableRefObject<boolean>
-  requestSequenceRef: MutableRefObject<number>
-  selectedStoredSessionIdRef: MutableRefObject<string | null>
-  resolveSession: (storedSessionId: string) => ActiveTranscriptSession | null | undefined
-  signatureRef: MutableRefObject<Map<string, string>>
+  activeSessionIdRef: MutableRefObject<string | null>;
+  busyRef: MutableRefObject<boolean>;
+  requestSequenceRef: MutableRefObject<number>;
+  selectedStoredSessionIdRef: MutableRefObject<string | null>;
+  resolveSession: (
+    storedSessionId: string,
+  ) => ActiveTranscriptSession | null | undefined;
+  signatureRef: MutableRefObject<Map<string, string>>;
   updateSessionState: (
     sessionId: string,
     updater: (state: ClientSessionState) => ClientSessionState,
-    storedSessionId?: string | null
-  ) => ClientSessionState
+    storedSessionId?: string | null,
+  ) => ClientSessionState;
 }
 
 function tileRuntimeOwnsLiveState(runtimeId: string): boolean {
-  const state = $sessionStates.get()[runtimeId]
+  const state = $sessionStates.get()[runtimeId];
 
-  return Boolean(state && (state.busy || state.awaitingResponse || state.needsInput || state.turnLive))
+  return Boolean(
+    state &&
+    (state.busy ||
+      state.awaitingResponse ||
+      state.needsInput ||
+      state.turnLive),
+  );
 }
 
-type TileTranscriptTarget = { ownerRoute?: SessionProfileRoute; storedSessionId: string; runtimeId?: string }
+type TileTranscriptTarget = {
+  ownerRoute?: SessionProfileRoute;
+  storedSessionId: string;
+  runtimeId?: string;
+};
 
 /** Signature key per tile — carries the owner route so two connections/profiles
  *  sharing a stored id (or a tile re-homed to another owner) never alias. */
 function tileTranscriptSignatureKey(tile: TileTranscriptTarget): string {
-  const route = tile.ownerRoute
+  const route = tile.ownerRoute;
 
-  return `tile:${route ? `${route.connectionId}:${route.targetProfile ?? route.profile}:` : ''}${tile.storedSessionId}`
+  return `tile:${route ? `${route.connectionId}:${route.targetProfile ?? route.profile}:` : ""}${tile.storedSessionId}`;
 }
 
 /**
@@ -100,52 +124,66 @@ export async function reconcileTileTranscripts({
   requestSequenceRef,
   signatureRef,
   updateSessionState,
-  tiles: tilesOverride
+  tiles: tilesOverride,
 }: {
-  requestSequenceRef: MutableRefObject<number>
-  signatureRef: MutableRefObject<Map<string, string>>
-  tiles?: TileTranscriptTarget[]
+  requestSequenceRef: MutableRefObject<number>;
+  signatureRef: MutableRefObject<Map<string, string>>;
+  tiles?: TileTranscriptTarget[];
   updateSessionState: (
     sessionId: string,
     updater: (state: ClientSessionState) => ClientSessionState,
-    storedSessionId?: string | null
-  ) => ClientSessionState
+    storedSessionId?: string | null,
+  ) => ClientSessionState;
 }): Promise<void> {
-  const tiles = tilesOverride ?? $sessionTiles.get()
-  const openSignatureKeys = new Set(tiles.map(tileTranscriptSignatureKey))
+  const tiles = tilesOverride ?? $sessionTiles.get();
+  const openSignatureKeys = new Set(tiles.map(tileTranscriptSignatureKey));
 
   for (const signatureKey of signatureRef.current.keys()) {
     if (!openSignatureKeys.has(signatureKey)) {
-      signatureRef.current.delete(signatureKey)
+      signatureRef.current.delete(signatureKey);
     }
   }
 
   for (const tile of tiles) {
-    const storedSessionId = tile.storedSessionId
-    const runtimeSessionId = tile.runtimeId
+    const storedSessionId = tile.storedSessionId;
+    const runtimeSessionId = tile.runtimeId;
 
     if (!runtimeSessionId) {
       // Resume not yet bound — the tile's own stream owns the view.
-      continue
+      continue;
     }
 
-    if (!storedSessionId || !runtimeSessionId || tileRuntimeOwnsLiveState(runtimeSessionId)) {
-      continue
+    if (
+      !storedSessionId ||
+      !runtimeSessionId ||
+      tileRuntimeOwnsLiveState(runtimeSessionId)
+    ) {
+      continue;
     }
 
     if ($activeSessionId.get() === runtimeSessionId) {
       // The main pane reconcile already owns this surface.
-      continue
+      continue;
     }
 
-    const requestId = ++requestSequenceRef.current
+    const requestId = ++requestSequenceRef.current;
 
     // With a tiles override (test path), the live $sessionTiles check can't
     // see the synthetic tile — treat override tiles as present.
     const tileStillPresent = () =>
       tilesOverride
-        ? tilesOverride.some(t => t.storedSessionId === storedSessionId && t.runtimeId === runtimeSessionId)
-        : $sessionTiles.get().some(t => t.storedSessionId === storedSessionId && t.runtimeId === runtimeSessionId)
+        ? tilesOverride.some(
+            (t) =>
+              t.storedSessionId === storedSessionId &&
+              t.runtimeId === runtimeSessionId,
+          )
+        : $sessionTiles
+            .get()
+            .some(
+              (t) =>
+                t.storedSessionId === storedSessionId &&
+                t.runtimeId === runtimeSessionId,
+            );
 
     // Bot tiles are pinned to an exact owner (connection + target profile);
     // read from that backend, not whichever profile is foreground. Tiles
@@ -153,14 +191,17 @@ export async function reconcileTileTranscripts({
     const profileScope: ProfileScope = tile.ownerRoute
       ? {
           connectionId: tile.ownerRoute.connectionId,
-          profile: tile.ownerRoute.targetProfile ?? tile.ownerRoute.profile
+          profile: tile.ownerRoute.targetProfile ?? tile.ownerRoute.profile,
         }
-      : undefined
+      : undefined;
 
-    const signatureKey = tileTranscriptSignatureKey(tile)
+    const signatureKey = tileTranscriptSignatureKey(tile);
 
     try {
-      const latest = await getLatestSessionMessages(storedSessionId, profileScope)
+      const latest = await getLatestSessionMessages(
+        storedSessionId,
+        profileScope,
+      );
 
       if (
         requestId !== requestSequenceRef.current ||
@@ -170,31 +211,31 @@ export async function reconcileTileTranscripts({
         // Tile closed or superseded mid-read — discard AND prune its
         // signature so the map doesn't grow one entry per ever-opened tile
         // for the app's lifetime (#94255 review point 3).
-        signatureRef.current.delete(signatureKey)
+        signatureRef.current.delete(signatureKey);
 
-        continue
+        continue;
       }
 
-      const signature = sessionMessagesSignature(latest.messages)
+      const signature = sessionMessagesSignature(latest.messages);
 
       if (signatureRef.current.get(signatureKey) === signature) {
-        continue
+        continue;
       }
 
-      signatureRef.current.set(signatureKey, signature)
-      const messages = toChatMessages(latest.messages)
+      signatureRef.current.set(signatureKey, signature);
+      const messages = toChatMessages(latest.messages);
 
       updateSessionState(
         runtimeSessionId,
-        state => ({
+        (state) => ({
           ...state,
           messages: preserveLocalAssistantErrors(
             graftRefreshedTailOntoBackfill(messages, state.messages),
-            state.messages
-          )
+            state.messages,
+          ),
         }),
-        storedSessionId
-      )
+        storedSessionId,
+      );
     } catch {
       // Non-fatal: the next change event retries.
     }
@@ -209,33 +250,36 @@ export async function reconcileActiveTranscript({
   resolveSession,
   selectedStoredSessionIdRef,
   signatureRef,
-  updateSessionState
+  updateSessionState,
 }: ActiveTranscriptRefreshDeps): Promise<void> {
-  const storedSessionId = selectedStoredSessionIdRef.current
-  const runtimeSessionId = activeSessionIdRef.current
+  const storedSessionId = selectedStoredSessionIdRef.current;
+  const runtimeSessionId = activeSessionIdRef.current;
 
   if (!storedSessionId || !runtimeSessionId || busyRef.current) {
-    return
+    return;
   }
 
-  const stored = resolveSession(storedSessionId)
+  const stored = resolveSession(storedSessionId);
 
   if (!stored) {
-    return
+    return;
   }
 
-  const requestId = requestSequenceRef.current + 1
-  requestSequenceRef.current = requestId
+  const requestId = requestSequenceRef.current + 1;
+  requestSequenceRef.current = requestId;
 
   try {
     const profileScope: ProfileScope = stored.ownerRoute
       ? {
           connectionId: stored.ownerRoute.connectionId,
-          profile: stored.ownerRoute.targetProfile ?? stored.ownerRoute.profile
+          profile: stored.ownerRoute.targetProfile ?? stored.ownerRoute.profile,
         }
-      : stored.profile
+      : stored.profile;
 
-    const latest = await getLatestSessionMessages(storedSessionId, profileScope)
+    const latest = await getLatestSessionMessages(
+      storedSessionId,
+      profileScope,
+    );
 
     if (
       requestId !== requestSequenceRef.current ||
@@ -243,39 +287,42 @@ export async function reconcileActiveTranscript({
       selectedStoredSessionIdRef.current !== storedSessionId ||
       activeSessionIdRef.current !== runtimeSessionId
     ) {
-      return
+      return;
     }
 
     const signatureKey = stored.ownerRoute
       ? JSON.stringify([
           stored.ownerRoute.connectionId,
           stored.ownerRoute.profile,
-          stored.ownerRoute.targetProfile ?? '',
-          stored.ownerRoute.mode ?? '',
-          storedSessionId
+          stored.ownerRoute.targetProfile ?? "",
+          stored.ownerRoute.mode ?? "",
+          storedSessionId,
         ])
-      : `${stored.profile ?? 'default'}:${storedSessionId}`
+      : `${stored.profile ?? "default"}:${storedSessionId}`;
 
-    const signature = sessionMessagesSignature(latest.messages)
+    const signature = sessionMessagesSignature(latest.messages);
 
     if (signatureRef.current.get(signatureKey) === signature) {
-      return
+      return;
     }
 
-    signatureRef.current.set(signatureKey, signature)
-    const messages = toChatMessages(latest.messages)
+    signatureRef.current.set(signatureKey, signature);
+    const messages = toChatMessages(latest.messages);
 
     updateSessionState(
       runtimeSessionId,
-      state => ({
+      (state) => ({
         ...state,
         // The refresh re-reads only the newest tail page; graft it onto any
         // older pages "Show earlier" already backfilled instead of clobbering
         // them (see transcript-backfill).
-        messages: preserveLocalAssistantErrors(graftRefreshedTailOntoBackfill(messages, state.messages), state.messages)
+        messages: preserveLocalAssistantErrors(
+          graftRefreshedTailOntoBackfill(messages, state.messages),
+          state.messages,
+        ),
       }),
-      storedSessionId
-    )
+      storedSessionId,
+    );
   } catch {
     // Non-fatal: the next change event or manual resume can hydrate the view.
   }
@@ -287,27 +334,27 @@ export async function reconcileActiveTranscript({
 // `cron.changed` / `sessions.changed` when those on-disk writes land, so the
 // timers below become slow safety-net backstops; against an older backend
 // (no `change_events` on gateway.ready) they stay at the legacy cadence.
-const CRON_POLL_INTERVAL_MS = 30_000
-const CRON_BACKSTOP_INTERVAL_MS = 5 * 60_000
-const MESSAGING_POLL_INTERVAL_MS = 10_000
-const ACTIVE_MESSAGING_SESSION_POLL_INTERVAL_MS = 5_000
-const ACTIVE_MESSAGING_SESSION_BACKSTOP_INTERVAL_MS = 30_000
+const CRON_POLL_INTERVAL_MS = 30_000;
+const CRON_BACKSTOP_INTERVAL_MS = 5 * 60_000;
+const MESSAGING_POLL_INTERVAL_MS = 10_000;
+const ACTIVE_MESSAGING_SESSION_POLL_INTERVAL_MS = 5_000;
+const ACTIVE_MESSAGING_SESSION_BACKSTOP_INTERVAL_MS = 30_000;
 // Match the TUI's live-session refresh cadence. Auto-compression can rotate a
 // stored session id while its turn keeps running; until the next snapshot the
 // sidebar row points at the new id while the renderer still knows the old one.
 // A 15s cadence made that healthy transition look finished long enough to be
 // alarming (and clicking the row appeared to "fix" it by touching the live
 // session). This snapshot is small and already polled at 1.5s by the TUI.
-const LIVE_SESSION_STATUS_POLL_INTERVAL_MS = 1_500
+const LIVE_SESSION_STATUS_POLL_INTERVAL_MS = 1_500;
 // With change events the snapshot re-pulls on every sessions.changed tick, so
 // the interval only covers the degraded-socket edge the stream can't replay
 // (see rehydrateLiveSessionStatuses) — 30s is plenty for that.
-const LIVE_SESSION_STATUS_BACKSTOP_INTERVAL_MS = 30_000
+const LIVE_SESSION_STATUS_BACKSTOP_INTERVAL_MS = 30_000;
 // Coalesce tick-driven sidebar list refreshes: sessions.changed fires (floored
 // to 2s server-side) on every state.db write during a streaming turn, and the
 // full list refresh is heavier than the active_list snapshot. Trailing-edge
 // scheduled, so the burst's last write always lands.
-const SESSIONS_LIST_TICK_GAP_MS = 10_000
+const SESSIONS_LIST_TICK_GAP_MS = 10_000;
 // A typing burst keeps the composer's contentEditable input handling on the
 // same renderer main thread as the list refresh above (#95033): with a large
 // session store, one refresh pass can block keystroke echo long enough that
@@ -317,51 +364,51 @@ const SESSIONS_LIST_TICK_GAP_MS = 10_000
 // accepted; the lighter polls (active_list snapshot, cron, transcript
 // backstops) keep their cadence because they carry liveness, not the heavy
 // list reconciliation.
-const TYPING_BURST_QUIET_MS = 1_500
+const TYPING_BURST_QUIET_MS = 1_500;
 
 interface LiveSessionStatusItem {
-  id?: string
-  last_active?: number
-  session_key?: string
-  status?: 'idle' | 'starting' | 'waiting' | 'working'
+  id?: string;
+  last_active?: number;
+  session_key?: string;
+  status?: "idle" | "starting" | "waiting" | "working";
 }
 
 interface LiveSessionStatusResponse {
-  sessions?: LiveSessionStatusItem[]
+  sessions?: LiveSessionStatusItem[];
 }
 
 // Runtime ids this poll has seen live, per gateway profile. A profile only
 // ever reaps what its OWN snapshot previously reported: background profiles are
 // served by different gateways and never appear in this profile's active_list,
 // so an unscoped reap would dark out every other profile's running rows.
-const liveRuntimeIdsByProfile = new Map<string, Set<string>>()
+const liveRuntimeIdsByProfile = new Map<string, Set<string>>();
 
 // Renderer-wide keyboard warmth, tracked at module scope like the live-runtime
 // bookkeeping above: any keydown anywhere in the window marks activity, and a
 // burst stays warm for TYPING_BURST_QUIET_MS after the last key. IME
 // composition still emits keydown (keyCode 229), so one listener covers both.
-let lastRendererInputAt = 0
+let lastRendererInputAt = 0;
 
 /** Record renderer-wide keyboard activity (wired to a capture-phase window
  *  keydown listener by useBackgroundSync). */
 export function noteRendererKeyboardActivity(nowMs = Date.now()): void {
-  lastRendererInputAt = nowMs
+  lastRendererInputAt = nowMs;
 }
 
 /** True while a typing burst is still warm enough to hold the heavy list
  *  refresh (see TYPING_BURST_QUIET_MS). */
 export function isTypingBurstActive(nowMs = Date.now()): boolean {
-  return nowMs - lastRendererInputAt < TYPING_BURST_QUIET_MS
+  return nowMs - lastRendererInputAt < TYPING_BURST_QUIET_MS;
 }
 
 function remainingTypingQuietMs(nowMs: number): number {
-  return Math.max(0, TYPING_BURST_QUIET_MS - (nowMs - lastRendererInputAt))
+  return Math.max(0, TYPING_BURST_QUIET_MS - (nowMs - lastRendererInputAt));
 }
 
 /** Forget keyboard history — test isolation only (mirrors
  *  resetLiveRuntimeTracking). */
 export function resetTypingActivityTracking(): void {
-  lastRendererInputAt = 0
+  lastRendererInputAt = 0;
 }
 
 /** Restore sidebar liveness after a renderer/backend reconnect. Stream events
@@ -378,23 +425,23 @@ export function resetTypingActivityTracking(): void {
 export function rehydrateLiveSessionStatuses(
   response: LiveSessionStatusResponse,
   nowMs = Date.now(),
-  profileKey = 'default'
+  profileKey = "default",
 ): void {
-  const seen = new Set<string>()
+  const seen = new Set<string>();
 
   for (const session of response.sessions ?? []) {
-    const runtimeSessionId = session.id?.trim()
-    const storedSessionId = session.session_key?.trim()
-    const needsInput = session.status === 'waiting'
-    const working = session.status === 'working' || needsInput
+    const runtimeSessionId = session.id?.trim();
+    const storedSessionId = session.session_key?.trim();
+    const needsInput = session.status === "waiting";
+    const working = session.status === "working" || needsInput;
 
     if (!runtimeSessionId || !storedSessionId) {
-      continue
+      continue;
     }
 
-    seen.add(runtimeSessionId)
+    seen.add(runtimeSessionId);
 
-    const existing = $sessionStates.get()[runtimeSessionId]
+    const existing = $sessionStates.get()[runtimeSessionId];
 
     // A turn we just submitted is not yet running as far as the backend is
     // concerned, so the snapshot honestly reports it idle — but the local
@@ -402,7 +449,9 @@ export function rehydrateLiveSessionStatuses(
     // information. The stream path refuses to clear busy in exactly this window
     // (`awaitingResponse && !sawAssistantPayload`); without the same refusal
     // here a poll lands between submit and first token and darkens the row.
-    const busy = working || Boolean(existing?.awaitingResponse && !existing.sawAssistantPayload)
+    const busy =
+      working ||
+      Boolean(existing?.awaitingResponse && !existing.sawAssistantPayload);
 
     // Avoid re-arming the watchdog on every poll. Publish only when the
     // authoritative live snapshot differs from the renderer mirror; normal
@@ -417,25 +466,25 @@ export function rehydrateLiveSessionStatuses(
         ...(existing ?? createClientSessionState(storedSessionId)),
         busy,
         needsInput,
-        storedSessionId
-      })
+        storedSessionId,
+      });
     }
 
     if (!working) {
-      setSessionStalled(storedSessionId, false)
+      setSessionStalled(storedSessionId, false);
 
-      continue
+      continue;
     }
 
-    const lastActiveMs = Number(session.last_active) * 1000
+    const lastActiveMs = Number(session.last_active) * 1000;
 
     const isQuiet =
-      session.status === 'working' &&
+      session.status === "working" &&
       Number.isFinite(lastActiveMs) &&
       lastActiveMs > 0 &&
-      nowMs - lastActiveMs >= SESSION_WATCHDOG_TIMEOUT_MS
+      nowMs - lastActiveMs >= SESSION_WATCHDOG_TIMEOUT_MS;
 
-    setSessionStalled(storedSessionId, isQuiet)
+    setSessionStalled(storedSessionId, isQuiet);
   }
 
   // A runtime this profile's snapshot reported live LAST poll but not this one
@@ -444,17 +493,21 @@ export function rehydrateLiveSessionStatuses(
   // path so the busy→idle transition fires — that edge is what clears the
   // spinner AND marks the row unread ("your turn"). Only ids this profile
   // previously saw are eligible, so another profile's live rows are untouched.
-  const previouslyLive = liveRuntimeIdsByProfile.get(profileKey)
+  const previouslyLive = liveRuntimeIdsByProfile.get(profileKey);
 
   if (previouslyLive) {
     for (const runtimeSessionId of previouslyLive) {
       if (seen.has(runtimeSessionId)) {
-        continue
+        continue;
       }
 
-      const existing = $sessionStates.get()[runtimeSessionId]
+      const existing = $sessionStates.get()[runtimeSessionId];
 
-      if (existing?.busy || existing?.needsInput || existing?.awaitingResponse) {
+      if (
+        existing?.busy ||
+        existing?.needsInput ||
+        existing?.awaitingResponse
+      ) {
         publishSessionState(runtimeSessionId, {
           ...existing,
           awaitingResponse: false,
@@ -467,42 +520,42 @@ export function rehydrateLiveSessionStatuses(
           // `tool.complete` would otherwise leave a spinning tool row in an
           // idle session. Seal open tool parts the same way the settle path
           // does, so the transcript matches the state.
-          messages: sealOpenToolParts(existing.messages)
-        })
+          messages: sealOpenToolParts(existing.messages),
+        });
       }
     }
   }
 
-  liveRuntimeIdsByProfile.set(profileKey, seen)
+  liveRuntimeIdsByProfile.set(profileKey, seen);
 }
 
 /** Forget every profile's live-runtime bookkeeping. A gateway wipe already
  *  drops the session states these ids point at, so a carried-over set would
  *  only reap runtimes that no longer exist. */
 export function resetLiveRuntimeTracking(): void {
-  liveRuntimeIdsByProfile.clear()
+  liveRuntimeIdsByProfile.clear();
 }
 
 interface BackgroundSyncParams {
-  activeConnectionId: null | string
-  activeGatewayProfile: string
-  activeIsMessaging: boolean
-  activeSessionId: null | string
-  activeStoredSessionId: null | string
-  freshDraftReady: boolean
-  gatewayState: string
-  refreshActiveTranscript: () => Promise<unknown> | unknown
-  refreshCronJobs: () => Promise<unknown> | unknown
-  refreshCurrentModel: (force?: boolean) => Promise<unknown> | unknown
-  refreshHermesConfig: () => Promise<unknown> | unknown
-  refreshMessagingSessions: () => Promise<unknown> | unknown
-  refreshSessions: () => Promise<unknown> | unknown
-  requestGateway: GatewayRequester
+  activeConnectionId: null | string;
+  activeGatewayProfile: string;
+  activeIsMessaging: boolean;
+  activeSessionId: null | string;
+  activeStoredSessionId: null | string;
+  freshDraftReady: boolean;
+  gatewayState: string;
+  refreshActiveTranscript: () => Promise<unknown> | unknown;
+  refreshCronJobs: () => Promise<unknown> | unknown;
+  refreshCurrentModel: (force?: boolean) => Promise<unknown> | unknown;
+  refreshHermesConfig: () => Promise<unknown> | unknown;
+  refreshMessagingSessions: () => Promise<unknown> | unknown;
+  refreshSessions: () => Promise<unknown> | unknown;
+  requestGateway: GatewayRequester;
   updateSessionState: (
     sessionId: string,
     updater: (state: ClientSessionState) => ClientSessionState,
-    storedSessionId?: string | null
-  ) => ClientSessionState
+    storedSessionId?: string | null,
+  ) => ClientSessionState;
 }
 
 /** Poll a callback while the tab is visible, on `intervalMs`; re-checks on tab
@@ -512,12 +565,12 @@ interface BackgroundSyncParams {
  *  inside an effect. */
 export function windowIsActivelyViewed({
   focused,
-  visibilityState
+  visibilityState,
 }: {
-  focused: boolean
-  visibilityState: DocumentVisibilityState
+  focused: boolean;
+  visibilityState: DocumentVisibilityState;
 }): boolean {
-  return visibilityState === 'visible' && focused
+  return visibilityState === "visible" && focused;
 }
 
 function visiblePoll(intervalMs: number, tick: () => void): () => void {
@@ -527,27 +580,38 @@ function visiblePoll(intervalMs: number, tick: () => void): () => void {
     // safety-net gateway poll alive while the user was in another app. These
     // are stale-data backstops, not the live event path, so pause them until
     // the window is actually being viewed and catch up immediately on focus.
-    if (windowIsActivelyViewed({ focused: document.hasFocus(), visibilityState: document.visibilityState })) {
-      tick()
+    if (
+      windowIsActivelyViewed({
+        focused: document.hasFocus(),
+        visibilityState: document.visibilityState,
+      })
+    ) {
+      tick();
     }
-  }
+  };
 
-  let intervalId = window.setInterval(run, batteryPollInterval(intervalMs, $onBattery.get()))
+  let intervalId = window.setInterval(
+    run,
+    batteryPollInterval(intervalMs, $onBattery.get()),
+  );
 
-  const unsubscribeBattery = $onBattery.listen(onBattery => {
-    window.clearInterval(intervalId)
-    intervalId = window.setInterval(run, batteryPollInterval(intervalMs, onBattery))
-  })
+  const unsubscribeBattery = $onBattery.listen((onBattery) => {
+    window.clearInterval(intervalId);
+    intervalId = window.setInterval(
+      run,
+      batteryPollInterval(intervalMs, onBattery),
+    );
+  });
 
-  document.addEventListener('visibilitychange', run)
-  window.addEventListener('focus', run)
+  document.addEventListener("visibilitychange", run);
+  window.addEventListener("focus", run);
 
   return () => {
-    unsubscribeBattery()
-    window.clearInterval(intervalId)
-    document.removeEventListener('visibilitychange', run)
-    window.removeEventListener('focus', run)
-  }
+    unsubscribeBattery();
+    window.clearInterval(intervalId);
+    document.removeEventListener("visibilitychange", run);
+    window.removeEventListener("focus", run);
+  };
 }
 
 /**
@@ -571,50 +635,53 @@ export function useBackgroundSync({
   refreshMessagingSessions,
   refreshSessions,
   requestGateway,
-  updateSessionState
+  updateSessionState,
 }: BackgroundSyncParams): void {
-  const changeEventsAvailable = useStore($changeEventsAvailable)
-  const cronChangeTick = useStore($cronChangeTick)
-  const sessionsChangeTick = useStore($sessionsChangeTick)
-  const activeTranscriptBusy = useStore($busy)
-  const activeTranscriptRefreshPendingRef = useRef<string | null>(null)
+  const changeEventsAvailable = useStore($changeEventsAvailable);
+  const cronChangeTick = useStore($cronChangeTick);
+  const sessionsChangeTick = useStore($sessionsChangeTick);
+  const activeTranscriptBusy = useStore($busy);
+  const activeTranscriptRefreshPendingRef = useRef<string | null>(null);
   // Tile reconcile state (#93942 slice 1): shared sequence guard + per-tile
   // transcript signatures, so no-change ticks and closed tiles cost nothing.
-  const tileRequestSequenceRef = useRef(0)
-  const tileSignatureRef = useRef(new Map<string, string>())
+  const tileRequestSequenceRef = useRef(0);
+  const tileSignatureRef = useRef(new Map<string, string>());
   // Tile reconciliation reads each runtime's live state directly from
   // $sessionStates; the primary chat's $busy atom has no authority over tiles.
 
   const requestActiveTranscriptRefresh = useCallback(
     (preservePending: boolean) => {
       if (!activeStoredSessionId || !activeSessionId) {
-        return
+        return;
       }
 
-      const storedSessionId = activeStoredSessionId
-      const runtimeSessionId = activeSessionId
-      const sessionKey = `${storedSessionId}:${runtimeSessionId}`
+      const storedSessionId = activeStoredSessionId;
+      const runtimeSessionId = activeSessionId;
+      const sessionKey = `${storedSessionId}:${runtimeSessionId}`;
 
       if (preservePending) {
-        activeTranscriptRefreshPendingRef.current = sessionKey
+        activeTranscriptRefreshPendingRef.current = sessionKey;
       }
 
       if ($busy.get()) {
-        return
+        return;
       }
 
-      if (preservePending && activeTranscriptRefreshPendingRef.current === sessionKey) {
-        activeTranscriptRefreshPendingRef.current = null
+      if (
+        preservePending &&
+        activeTranscriptRefreshPendingRef.current === sessionKey
+      ) {
+        activeTranscriptRefreshPendingRef.current = null;
       }
 
-      let sawBusyDuringRead = false
+      let sawBusyDuringRead = false;
 
-      const unsubscribeBusy = $busy.listen(busy => {
-        sawBusyDuringRead ||= busy
-      })
+      const unsubscribeBusy = $busy.listen((busy) => {
+        sawBusyDuringRead ||= busy;
+      });
 
       void Promise.resolve(refreshActiveTranscript()).finally(() => {
-        unsubscribeBusy()
+        unsubscribeBusy();
 
         // If streaming began while the read was in flight, reconciliation was
         // discarded and the external event still needs one idle retry.
@@ -624,38 +691,48 @@ export function useBackgroundSync({
           $activeSessionId.get() === runtimeSessionId &&
           $selectedStoredSessionId.get() === storedSessionId
         ) {
-          activeTranscriptRefreshPendingRef.current = sessionKey
+          activeTranscriptRefreshPendingRef.current = sessionKey;
         }
-      })
+      });
     },
-    [activeSessionId, activeStoredSessionId, refreshActiveTranscript]
-  )
+    [activeSessionId, activeStoredSessionId, refreshActiveTranscript],
+  );
 
   useEffect(() => {
-    if (gatewayState !== 'open') {
-      return
+    if (gatewayState !== "open") {
+      return;
     }
 
-    void refreshCurrentModel()
-    void refreshActiveProfile()
-    void refreshSessions()
+    void refreshCurrentModel();
+    void refreshActiveProfile();
+    void refreshSessions();
 
     // A RELATIVE workspace cwd (config `terminal.cwd: .`) renders as "." in the
     // file tree header — resolve it to the backend's absolute path once.
     // Session runtime info still overrides later, and never while a session is
     // active.
-    const cwd = $currentCwd.get().trim()
+    const cwd = $currentCwd.get().trim();
 
     if (!$activeSessionId.get() && cwd && !/^(\/|[A-Za-z]:[\\/])/.test(cwd)) {
-      void requestGateway<{ cwd?: string }>('config.get', { key: 'project', cwd })
-        .then(info => {
+      void requestGateway<{ cwd?: string }>("config.get", {
+        key: "project",
+        cwd,
+      })
+        .then((info) => {
           if (info.cwd && !$activeSessionId.get()) {
-            setCurrentCwd(info.cwd)
+            setCurrentCwd(info.cwd);
           }
         })
-        .catch(() => undefined)
+        .catch(() => undefined);
     }
-  }, [activeConnectionId, activeGatewayProfile, gatewayState, refreshCurrentModel, refreshSessions, requestGateway])
+  }, [
+    activeConnectionId,
+    activeGatewayProfile,
+    gatewayState,
+    refreshCurrentModel,
+    refreshSessions,
+    requestGateway,
+  ]);
 
   // Reconnect backstop (#94779): turns that finished while the socket was
   // down never replay their sessions.changed tick, so the open transcript
@@ -664,11 +741,16 @@ export function useBackgroundSync({
   // connection, not the session, so a plain session switch adds no read;
   // messaging transcripts already refresh on open in their own effect below.
   useEffect(() => {
-    if (gatewayState === 'open' && !activeIsMessaging && activeSessionId && activeStoredSessionId) {
-      requestActiveTranscriptRefresh(true)
+    if (
+      gatewayState === "open" &&
+      !activeIsMessaging &&
+      activeSessionId &&
+      activeStoredSessionId
+    ) {
+      requestActiveTranscriptRefresh(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- connect-scoped: session deps would fire on every switch
-  }, [activeConnectionId, activeGatewayProfile, gatewayState])
+  }, [activeConnectionId, activeGatewayProfile, gatewayState]);
 
   // A reconnect loses renderer-only working/attention atoms while the backend
   // keeps the actual turns alive. Re-seed from the gateway's in-memory session
@@ -676,48 +758,63 @@ export function useBackgroundSync({
   // slow visible poll remains as the backstop for the degraded-socket edge the
   // stream cannot replay (legacy cadence against older backends).
   useEffect(() => {
-    if (gatewayState !== 'open') {
-      return
+    if (gatewayState !== "open") {
+      return;
     }
 
-    let cancelled = false
-    let inFlight = false
+    let cancelled = false;
+    let inFlight = false;
 
     const refreshLiveStatuses = async () => {
       if (inFlight) {
-        return
+        return;
       }
 
-      inFlight = true
+      inFlight = true;
 
       try {
-        const response = await requestGateway<LiveSessionStatusResponse>('session.active_list', {})
+        const response = await requestGateway<LiveSessionStatusResponse>(
+          "session.active_list",
+          {},
+        );
 
         if (!cancelled) {
-          rehydrateLiveSessionStatuses(response, Date.now(), activeGatewayProfile)
+          rehydrateLiveSessionStatuses(
+            response,
+            Date.now(),
+            activeGatewayProfile,
+          );
         }
       } catch {
         // Older gateways may not expose session.active_list. Live stream events
         // still work as before; leave the current sidebar state untouched.
       } finally {
-        inFlight = false
+        inFlight = false;
       }
-    }
+    };
 
     const dispose = visiblePoll(
-      changeEventsAvailable ? LIVE_SESSION_STATUS_BACKSTOP_INTERVAL_MS : LIVE_SESSION_STATUS_POLL_INTERVAL_MS,
-      () => void refreshLiveStatuses()
-    )
+      changeEventsAvailable
+        ? LIVE_SESSION_STATUS_BACKSTOP_INTERVAL_MS
+        : LIVE_SESSION_STATUS_POLL_INTERVAL_MS,
+      () => void refreshLiveStatuses(),
+    );
 
-    void refreshLiveStatuses()
+    void refreshLiveStatuses();
 
     return () => {
-      cancelled = true
-      dispose()
-    }
+      cancelled = true;
+      dispose();
+    };
     // sessionsChangeTick: each sessions.changed broadcast re-seeds immediately
     // via the effect re-run (already coalesced to 2s server-side).
-  }, [activeGatewayProfile, changeEventsAvailable, gatewayState, requestGateway, sessionsChangeTick])
+  }, [
+    activeGatewayProfile,
+    changeEventsAvailable,
+    gatewayState,
+    requestGateway,
+    sessionsChangeTick,
+  ]);
 
   // sessions.changed also means the *stored* list may have new rows (a cron
   // run's session, an inbound messaging turn creating a thread). The full list
@@ -725,24 +822,24 @@ export function useBackgroundSync({
   // instead of firing per tick. Direct atom subscription: the throttle state
   // lives in the effect closure, not in refs synced from renders.
   useEffect(() => {
-    if (gatewayState !== 'open' || !changeEventsAvailable) {
-      return
+    if (gatewayState !== "open" || !changeEventsAvailable) {
+      return;
     }
 
-    let lastRunAt = 0
-    let timer: null | number = null
-    let typingDeferTimer: null | number = null
+    let lastRunAt = 0;
+    let timer: null | number = null;
+    let typingDeferTimer: null | number = null;
 
     const run = () => {
-      lastRunAt = Date.now()
-      void refreshSessions()
-      void refreshMessagingSessions()
+      lastRunAt = Date.now();
+      void refreshSessions();
+      void refreshMessagingSessions();
       // The project tree is a grouping of the same stored rows, so a session
       // created/deleted/renamed/re-homed outside this window goes stale in the
       // Projects sidebar without this (#100354). refreshProjectTree() keeps the
       // cached tree on failure, so a not-yet-ready backend costs nothing.
-      void refreshProjectTree()
-      requestActiveTranscriptRefresh(true)
+      void refreshProjectTree();
+      requestActiveTranscriptRefresh(true);
       // Bot canonical chats live in workspace tiles, never in the main-pane
       // selection — without this they never see background deliveries
       // (#93942 scenario A). Signature-gated per tile, so no-change ticks
@@ -750,9 +847,9 @@ export function useBackgroundSync({
       void reconcileTileTranscripts({
         requestSequenceRef: tileRequestSequenceRef,
         signatureRef: tileSignatureRef,
-        updateSessionState
-      })
-    }
+        updateSessionState,
+      });
+    };
 
     // Hold the coalesced pass while a typing burst is warm (#95033) so the
     // heavy list work never lands under keystrokes. One timer services every
@@ -761,152 +858,175 @@ export function useBackgroundSync({
     // extends lastRendererInputAt, and the firing callback re-arms if still
     // warm. There is no starvation cap: a continuous burst keeps holding.
     const runWhenKeyboardQuiet = () => {
-      const now = Date.now()
+      const now = Date.now();
 
       if (!isTypingBurstActive(now)) {
         if (typingDeferTimer !== null) {
-          window.clearTimeout(typingDeferTimer)
-          typingDeferTimer = null
+          window.clearTimeout(typingDeferTimer);
+          typingDeferTimer = null;
         }
 
-        run()
+        run();
 
-        return
+        return;
       }
 
       if (typingDeferTimer === null) {
         typingDeferTimer = window.setTimeout(() => {
-          typingDeferTimer = null
-          runWhenKeyboardQuiet()
-        }, remainingTypingQuietMs(now))
+          typingDeferTimer = null;
+          runWhenKeyboardQuiet();
+        }, remainingTypingQuietMs(now));
       }
-    }
+    };
 
     const unsubscribe = $sessionsChangeTick.listen(() => {
-      const since = Date.now() - lastRunAt
+      const since = Date.now() - lastRunAt;
 
       if (since >= SESSIONS_LIST_TICK_GAP_MS) {
-        runWhenKeyboardQuiet()
+        runWhenKeyboardQuiet();
       } else if (typingDeferTimer === null && timer === null) {
         // Within the gap a pass is already scheduled — trailing timer or a
         // typing deferral. Arming another one here would stack extra passes.
         timer = window.setTimeout(() => {
-          timer = null
-          runWhenKeyboardQuiet()
-        }, SESSIONS_LIST_TICK_GAP_MS - since)
+          timer = null;
+          runWhenKeyboardQuiet();
+        }, SESSIONS_LIST_TICK_GAP_MS - since);
       }
-    })
+    });
 
     return () => {
-      unsubscribe()
+      unsubscribe();
 
       if (timer !== null) {
-        window.clearTimeout(timer)
+        window.clearTimeout(timer);
       }
 
       if (typingDeferTimer !== null) {
-        window.clearTimeout(typingDeferTimer)
+        window.clearTimeout(typingDeferTimer);
       }
-    }
+    };
   }, [
     changeEventsAvailable,
     gatewayState,
     refreshMessagingSessions,
     refreshSessions,
     requestActiveTranscriptRefresh,
-    updateSessionState
-  ])
+    updateSessionState,
+  ]);
 
   // Keyboard warmth for the deferral above: capture phase on window. Any
   // keydown in this renderer (composer, modal, settings) counts — conservative
   // on purpose. Pure timestamp write, no React state.
   useEffect(() => {
-    const markInput = (): void => noteRendererKeyboardActivity()
+    const markInput = (): void => noteRendererKeyboardActivity();
 
-    window.addEventListener('keydown', markInput, true)
+    window.addEventListener("keydown", markInput, true);
 
     return () => {
-      window.removeEventListener('keydown', markInput, true)
-    }
-  }, [])
+      window.removeEventListener("keydown", markInput, true);
+    };
+  }, []);
 
   // Keep the cron-jobs section live without a user action (scheduler ticks in
   // the background). cron.changed (jobs.json moved: CRUD or a scheduler tick's
   // bookkeeping) drives the refresh; the visible poll is the backstop.
   useEffect(() => {
-    if (gatewayState !== 'open') {
-      return
+    if (gatewayState !== "open") {
+      return;
     }
 
     if (cronChangeTick > 0) {
-      void refreshCronJobs()
+      void refreshCronJobs();
     }
 
     return visiblePoll(
       changeEventsAvailable ? CRON_BACKSTOP_INTERVAL_MS : CRON_POLL_INTERVAL_MS,
-      () => void refreshCronJobs()
-    )
-  }, [changeEventsAvailable, cronChangeTick, gatewayState, refreshCronJobs])
+      () => void refreshCronJobs(),
+    );
+  }, [changeEventsAvailable, cronChangeTick, gatewayState, refreshCronJobs]);
 
   // A busy transition only consumes a pending sessions.changed refresh. It
   // never creates one, so an ordinary local turn going busy -> idle does not
   // add a REST read. The event itself is coalesced by the list throttle above.
   useEffect(() => {
     if (
-      gatewayState !== 'open' ||
+      gatewayState !== "open" ||
       activeTranscriptBusy ||
       !activeSessionId ||
       !activeStoredSessionId ||
-      activeTranscriptRefreshPendingRef.current !== `${activeStoredSessionId}:${activeSessionId}`
+      activeTranscriptRefreshPendingRef.current !==
+        `${activeStoredSessionId}:${activeSessionId}`
     ) {
-      return
+      return;
     }
 
-    requestActiveTranscriptRefresh(true)
-  }, [activeSessionId, activeStoredSessionId, activeTranscriptBusy, gatewayState, requestActiveTranscriptRefresh])
+    requestActiveTranscriptRefresh(true);
+  }, [
+    activeSessionId,
+    activeStoredSessionId,
+    activeTranscriptBusy,
+    gatewayState,
+    requestActiveTranscriptRefresh,
+  ]);
 
   // Preserve the pre-existing messaging behavior: refresh once when a
   // messaging transcript opens, then keep its visibility backstop. Desktop
   // sessions never enter this effect and therefore gain no periodic timer.
   useEffect(() => {
-    if (gatewayState !== 'open' || !activeIsMessaging || !activeSessionId || !activeStoredSessionId) {
-      return
+    if (
+      gatewayState !== "open" ||
+      !activeIsMessaging ||
+      !activeSessionId ||
+      !activeStoredSessionId
+    ) {
+      return;
     }
 
-    const runScheduledRefresh = () => requestActiveTranscriptRefresh(false)
+    const runScheduledRefresh = () => requestActiveTranscriptRefresh(false);
 
-    runScheduledRefresh()
+    runScheduledRefresh();
 
     return visiblePoll(
-      changeEventsAvailable ? ACTIVE_MESSAGING_SESSION_BACKSTOP_INTERVAL_MS : ACTIVE_MESSAGING_SESSION_POLL_INTERVAL_MS,
-      runScheduledRefresh
-    )
+      changeEventsAvailable
+        ? ACTIVE_MESSAGING_SESSION_BACKSTOP_INTERVAL_MS
+        : ACTIVE_MESSAGING_SESSION_POLL_INTERVAL_MS,
+      runScheduledRefresh,
+    );
   }, [
     activeIsMessaging,
     activeSessionId,
     activeStoredSessionId,
     changeEventsAvailable,
     gatewayState,
-    requestActiveTranscriptRefresh
-  ])
+    requestActiveTranscriptRefresh,
+  ]);
 
   // Messaging session lists against an older backend: no sessions.changed, so
   // keep the legacy visible poll. (Event-capable backends fold this into the
   // trailing sessions.changed refresh above.)
   useEffect(() => {
-    if (gatewayState !== 'open' || changeEventsAvailable) {
-      return
+    if (gatewayState !== "open" || changeEventsAvailable) {
+      return;
     }
 
-    return visiblePoll(MESSAGING_POLL_INTERVAL_MS, () => void refreshMessagingSessions())
-  }, [changeEventsAvailable, gatewayState, refreshMessagingSessions])
+    return visiblePoll(
+      MESSAGING_POLL_INTERVAL_MS,
+      () => void refreshMessagingSessions(),
+    );
+  }, [changeEventsAvailable, gatewayState, refreshMessagingSessions]);
 
   // A fresh new-session draft (gateway open, no active session) re-pulls the
   // model + config so the composer pill reflects the profile default.
   useEffect(() => {
-    if (gatewayState === 'open' && !activeSessionId && freshDraftReady) {
-      void refreshCurrentModel()
-      void refreshHermesConfig()
+    if (gatewayState === "open" && !activeSessionId && freshDraftReady) {
+      void refreshCurrentModel();
+      void refreshHermesConfig();
     }
-  }, [activeSessionId, freshDraftReady, gatewayState, refreshCurrentModel, refreshHermesConfig])
+  }, [
+    activeSessionId,
+    freshDraftReady,
+    gatewayState,
+    refreshCurrentModel,
+    refreshHermesConfig,
+  ]);
 }

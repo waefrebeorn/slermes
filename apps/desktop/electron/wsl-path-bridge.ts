@@ -1,5 +1,5 @@
-import { execFileSync } from 'node:child_process'
-import fs from 'node:fs'
+import { execFileSync } from "node:child_process";
+import fs from "node:fs";
 
 // Bridges WSL/POSIX paths into forms the *Windows host* can open, for the case
 // where the desktop UI runs on Windows and the gateway runs inside WSL (remote
@@ -8,13 +8,13 @@ import fs from 'node:fs'
 // receives → POSIX) is handled once, gateway-side, in
 // hermes_constants.translate_cwd_for_wsl_backend, so it stays picker-agnostic.
 
-const IS_WINDOWS = process.platform === 'win32'
-const WIN_DRIVE_RE = /^([A-Za-z]):[\\/]/
+const IS_WINDOWS = process.platform === "win32";
+const WIN_DRIVE_RE = /^([A-Za-z]):[\\/]/;
 // `/mnt/c` and `/mnt/c/...` (drvfs default automount root).
-const WSL_MOUNT_RE = /^\/mnt\/([a-z])(?:\/(.*))?$/i
+const WSL_MOUNT_RE = /^\/mnt\/([a-z])(?:\/(.*))?$/i;
 
-let cachedDistro: null | string = null
-let cachedUncBase: null | string = null
+let cachedDistro: null | string = null;
+let cachedUncBase: null | string = null;
 
 /**
  * WSL path eligibility belongs to the backend profile that produced the path.
@@ -23,33 +23,39 @@ let cachedUncBase: null | string = null
  * them. Unknown profiles retain the historical local default until Electron
  * resolves and records their actual backend mode.
  */
-const DEFAULT_WSL_BRIDGE_PROFILE = 'default'
-const wslBridgeProfiles = new Map<string, boolean>()
-let activeWslBridgeProfile = DEFAULT_WSL_BRIDGE_PROFILE
+const DEFAULT_WSL_BRIDGE_PROFILE = "default";
+const wslBridgeProfiles = new Map<string, boolean>();
+let activeWslBridgeProfile = DEFAULT_WSL_BRIDGE_PROFILE;
 
 function normalizeWslBridgeProfile(profile?: null | string): string {
-  return String(profile || '').trim() || DEFAULT_WSL_BRIDGE_PROFILE
+  return String(profile || "").trim() || DEFAULT_WSL_BRIDGE_PROFILE;
 }
 
 /** Select the profile used by legacy callers that cannot pass one explicitly. */
 export function setActiveGatewayProfile(profile?: null | string): void {
-  activeWslBridgeProfile = normalizeWslBridgeProfile(profile)
+  activeWslBridgeProfile = normalizeWslBridgeProfile(profile);
 }
 
 /** Record whether paths returned by one profile belong to this host's WSL. */
-export function setWslBridgeProfileState(profile: null | string, active: boolean): void {
-  wslBridgeProfiles.set(normalizeWslBridgeProfile(profile), Boolean(active))
+export function setWslBridgeProfileState(
+  profile: null | string,
+  active: boolean,
+): void {
+  wslBridgeProfiles.set(normalizeWslBridgeProfile(profile), Boolean(active));
 }
 
 /** Backward-compatible toggle: update only the current fallback profile. */
 export function setWslBridgeActive(active: boolean): void {
-  setWslBridgeProfileState(activeWslBridgeProfile, active)
+  setWslBridgeProfileState(activeWslBridgeProfile, active);
 }
 
 export function isWslBridgeActive(profile?: null | string): boolean {
-  const key = profile == null ? activeWslBridgeProfile : normalizeWslBridgeProfile(profile)
+  const key =
+    profile == null
+      ? activeWslBridgeProfile
+      : normalizeWslBridgeProfile(profile);
 
-  return wslBridgeProfiles.get(key) ?? true
+  return wslBridgeProfiles.get(key) ?? true;
 }
 
 /**
@@ -62,70 +68,70 @@ export function isWslBridgeActive(profile?: null | string): boolean {
  */
 export function parseDefaultDistro(raw: string): null | string {
   return (
-    String(raw || '')
-      .replace(/\0/g, '')
+    String(raw || "")
+      .replace(/\0/g, "")
       .split(/\r?\n/)
-      .map(line => line.replace(/^\*?\s*/, '').trim())
+      .map((line) => line.replace(/^\*?\s*/, "").trim())
       .find(Boolean) || null
-  )
+  );
 }
 
 /** Default WSL distro name (cached). Falls back to `Ubuntu`. */
 export function resolveDefaultWslDistro(): string {
   if (cachedDistro) {
-    return cachedDistro
+    return cachedDistro;
   }
 
   if (!IS_WINDOWS) {
-    cachedDistro = 'Ubuntu'
+    cachedDistro = "Ubuntu";
 
-    return cachedDistro
+    return cachedDistro;
   }
 
   try {
-    const out = execFileSync('wsl.exe', ['-l', '-q'], {
-      encoding: 'utf8',
-      env: { ...process.env, WSL_UTF8: '1' },
+    const out = execFileSync("wsl.exe", ["-l", "-q"], {
+      encoding: "utf8",
+      env: { ...process.env, WSL_UTF8: "1" },
       // On WSL-less machines wsl.exe prints "The Windows Subsystem for Linux
       // is not installed..." to stderr; stderr is inherited by default, so
       // that banner leaks into whatever console the app is attached to
       // (visible e.g. during the update hand-off). Discard it. (#80184)
-      stdio: ['ignore', 'pipe', 'ignore'],
+      stdio: ["ignore", "pipe", "ignore"],
       timeout: 2000,
-      windowsHide: true
-    })
+      windowsHide: true,
+    });
 
-    cachedDistro = parseDefaultDistro(out) || 'Ubuntu'
+    cachedDistro = parseDefaultDistro(out) || "Ubuntu";
   } catch {
-    cachedDistro = 'Ubuntu'
+    cachedDistro = "Ubuntu";
   }
 
-  return cachedDistro
+  return cachedDistro;
 }
 
 // `\\wsl.localhost\<distro>` (Win11 / Win10 >= 21364) with a `\\wsl$\<distro>`
 // fallback for older builds. Probed once; defaults to wsl.localhost.
 function wslUncBase(distro: string): string {
   if (cachedUncBase) {
-    return cachedUncBase
+    return cachedUncBase;
   }
 
-  const modern = `\\\\wsl.localhost\\${distro}`
-  const legacy = `\\\\wsl$\\${distro}`
+  const modern = `\\\\wsl.localhost\\${distro}`;
+  const legacy = `\\\\wsl$\\${distro}`;
 
   try {
     if (!fs.existsSync(modern) && fs.existsSync(legacy)) {
-      cachedUncBase = legacy
+      cachedUncBase = legacy;
 
-      return cachedUncBase
+      return cachedUncBase;
     }
   } catch {
     // Network-path probe failed — prefer the modern form.
   }
 
-  cachedUncBase = modern
+  cachedUncBase = modern;
 
-  return cachedUncBase
+  return cachedUncBase;
 }
 
 /**
@@ -133,64 +139,73 @@ function wslUncBase(distro: string): string {
  * (drvfs mount), any other absolute POSIX path → `\\wsl.localhost\<distro>\...`.
  * Non-absolute or already-Windows paths pass through.
  */
-export function wslPosixToWindowsAccessible(posixPath: string, distro: string = resolveDefaultWslDistro()): string {
-  const value = String(posixPath || '').trim()
-  const normalized = value.replace(/\\/g, '/')
+export function wslPosixToWindowsAccessible(
+  posixPath: string,
+  distro: string = resolveDefaultWslDistro(),
+): string {
+  const value = String(posixPath || "").trim();
+  const normalized = value.replace(/\\/g, "/");
 
-  if (!normalized.startsWith('/')) {
-    return value
+  if (!normalized.startsWith("/")) {
+    return value;
   }
 
-  const mount = normalized.match(WSL_MOUNT_RE)
+  const mount = normalized.match(WSL_MOUNT_RE);
 
   if (mount) {
-    const tail = (mount[2] || '').replace(/\//g, '\\')
+    const tail = (mount[2] || "").replace(/\//g, "\\");
 
-    return tail ? `${mount[1].toUpperCase()}:\\${tail}` : `${mount[1].toUpperCase()}:\\`
+    return tail
+      ? `${mount[1].toUpperCase()}:\\${tail}`
+      : `${mount[1].toUpperCase()}:\\`;
   }
 
-  const relative = normalized.replace(/^\/+/, '').replace(/\//g, '\\')
+  const relative = normalized.replace(/^\/+/, "").replace(/\//g, "\\");
 
-  return `${wslUncBase(distro)}\\${relative}`
+  return `${wslUncBase(distro)}\\${relative}`;
 }
 
 /** Native folder dialog `defaultPath`: open a WSL cwd in the Windows picker. */
 export function resolvePickerDefaultPath(
   defaultPath: string | undefined,
   distro?: string,
-  profile?: null | string
+  profile?: null | string,
 ): string | undefined {
   if (!defaultPath) {
-    return undefined
+    return undefined;
   }
 
   // Remote-gateway POSIX paths can't be opened via wsl.exe — no-op the bridge
   // so the native dialog gets the raw path (it falls back gracefully) instead
   // of triggering a wsl.exe spawn / install prompt. (#66433)
   if (!isWslBridgeActive(profile)) {
-    return defaultPath
+    return defaultPath;
   }
 
-  const value = String(defaultPath).trim()
+  const value = String(defaultPath).trim();
 
-  return value.startsWith('/') && !WIN_DRIVE_RE.test(value)
+  return value.startsWith("/") && !WIN_DRIVE_RE.test(value)
     ? wslPosixToWindowsAccessible(value, distro ?? resolveDefaultWslDistro())
-    : defaultPath
+    : defaultPath;
 }
 
 /** fs read path: on Windows, make a WSL cwd readable via its UNC / drive form. */
-export function resolveLocalReadPath(dirPath: string, distro?: string, profile?: null | string): string {
-  const value = String(dirPath || '').trim()
+export function resolveLocalReadPath(
+  dirPath: string,
+  distro?: string,
+  profile?: null | string,
+): string {
+  const value = String(dirPath || "").trim();
 
   // In remote-gateway mode the POSIX paths belong to a host the Windows
   // desktop cannot open locally — skip the WSL bridge entirely (no distro
   // probe, no wsl.exe) so the file panel never spawns the install prompt on
   // WSL-less machines. (#66433)
   if (!isWslBridgeActive(profile)) {
-    return value
+    return value;
   }
 
-  return IS_WINDOWS && value.startsWith('/') && !WIN_DRIVE_RE.test(value)
+  return IS_WINDOWS && value.startsWith("/") && !WIN_DRIVE_RE.test(value)
     ? wslPosixToWindowsAccessible(value, distro ?? resolveDefaultWslDistro())
-    : value
+    : value;
 }

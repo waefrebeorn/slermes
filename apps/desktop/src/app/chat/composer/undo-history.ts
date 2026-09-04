@@ -19,108 +19,134 @@
  */
 
 export interface ComposerSnapshot {
-  caret: number
-  text: string
+  caret: number;
+  text: string;
 }
 
 /** Consecutive typing inside this window collapses into one undo entry, so ⌘Z
  *  steps back by a burst the way a native editor does — not one character. */
-const COALESCE_WINDOW_MS = 600
+const COALESCE_WINDOW_MS = 600;
 
-const DEFAULT_LIMIT = 200
+const DEFAULT_LIMIT = 200;
 
 export interface ComposerUndoHistory {
   /** Drop all history and start over from `snapshot`'s state (session swap). */
-  reset: () => void
+  reset: () => void;
   /** Redo one step. `current` is the live state, banked for a subsequent undo. */
-  redo: (current: ComposerSnapshot) => ComposerSnapshot | null
+  redo: (current: ComposerSnapshot) => ComposerSnapshot | null;
   /** Bank the state that existed *before* an edit. `coalesce` merges this into
    *  the previous entry when it lands inside the typing window. */
-  record: (previous: ComposerSnapshot, options?: { coalesce?: boolean }) => void
+  record: (
+    previous: ComposerSnapshot,
+    options?: { coalesce?: boolean },
+  ) => void;
   /** Undo one step. `current` is the live state, banked for a subsequent redo. */
-  undo: (current: ComposerSnapshot) => ComposerSnapshot | null
+  undo: (current: ComposerSnapshot) => ComposerSnapshot | null;
 }
 
 export function createComposerUndoHistory(
   limit = DEFAULT_LIMIT,
-  now: () => number = () => Date.now()
+  now: () => number = () => Date.now(),
 ): ComposerUndoHistory {
-  let past: ComposerSnapshot[] = []
-  let future: ComposerSnapshot[] = []
-  let lastRecordedAt = 0
-  let lastWasCoalescable = false
+  let past: ComposerSnapshot[] = [];
+  let future: ComposerSnapshot[] = [];
+  let lastRecordedAt = 0;
+  let lastWasCoalescable = false;
 
-  const record: ComposerUndoHistory['record'] = (previous, options) => {
-    const coalesce = options?.coalesce ?? false
-    const at = now()
-    const merges = coalesce && lastWasCoalescable && past.length > 0 && at - lastRecordedAt < COALESCE_WINDOW_MS
+  const record: ComposerUndoHistory["record"] = (previous, options) => {
+    const coalesce = options?.coalesce ?? false;
+    const at = now();
+    const merges =
+      coalesce &&
+      lastWasCoalescable &&
+      past.length > 0 &&
+      at - lastRecordedAt < COALESCE_WINDOW_MS;
 
-    lastRecordedAt = at
-    lastWasCoalescable = coalesce
+    lastRecordedAt = at;
+    lastWasCoalescable = coalesce;
     // A fresh edit invalidates anything the user had redone past.
-    future = []
+    future = [];
 
     // Merging keeps the OLDER snapshot — the entry already holds the state from
     // the start of the burst, which is what ⌘Z should step back to.
     if (merges) {
-      return
+      return;
     }
 
     // A no-op edit (same text) would make ⌘Z look broken for one press.
     if (past[past.length - 1]?.text === previous.text) {
-      return
+      return;
     }
 
-    past.push(previous)
+    past.push(previous);
 
     if (past.length > limit) {
-      past = past.slice(past.length - limit)
+      past = past.slice(past.length - limit);
     }
-  }
+  };
 
-  const step = (from: ComposerSnapshot[], to: ComposerSnapshot[], current: ComposerSnapshot) => {
-    const next = from.pop()
+  const step = (
+    from: ComposerSnapshot[],
+    to: ComposerSnapshot[],
+    current: ComposerSnapshot,
+  ) => {
+    const next = from.pop();
 
     if (!next) {
-      return null
+      return null;
     }
 
-    to.push(current)
+    to.push(current);
     // Any traversal ends the typing burst, so the next keystroke opens a new entry.
-    lastWasCoalescable = false
+    lastWasCoalescable = false;
 
-    return next
-  }
+    return next;
+  };
 
   return {
     record,
-    redo: current => step(future, past, current),
+    redo: (current) => step(future, past, current),
     reset: () => {
-      past = []
-      future = []
-      lastRecordedAt = 0
-      lastWasCoalescable = false
+      past = [];
+      future = [];
+      lastRecordedAt = 0;
+      lastWasCoalescable = false;
     },
-    undo: current => step(past, future, current)
-  }
+    undo: (current) => step(past, future, current),
+  };
 }
 
 /** True for the keystroke that means "undo" (⌘Z / Ctrl+Z, without Shift). */
-export function isUndoShortcut(event: Pick<KeyboardEvent, 'altKey' | 'ctrlKey' | 'key' | 'metaKey' | 'shiftKey'>) {
-  return (event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === 'z'
+export function isUndoShortcut(
+  event: Pick<
+    KeyboardEvent,
+    "altKey" | "ctrlKey" | "key" | "metaKey" | "shiftKey"
+  >,
+) {
+  return (
+    (event.metaKey || event.ctrlKey) &&
+    !event.altKey &&
+    !event.shiftKey &&
+    event.key.toLowerCase() === "z"
+  );
 }
 
 /** True for "redo" — ⌘⇧Z everywhere, plus Ctrl+Y on Windows/Linux. */
-export function isRedoShortcut(event: Pick<KeyboardEvent, 'altKey' | 'ctrlKey' | 'key' | 'metaKey' | 'shiftKey'>) {
+export function isRedoShortcut(
+  event: Pick<
+    KeyboardEvent,
+    "altKey" | "ctrlKey" | "key" | "metaKey" | "shiftKey"
+  >,
+) {
   if (event.altKey) {
-    return false
+    return false;
   }
 
-  const key = event.key.toLowerCase()
+  const key = event.key.toLowerCase();
 
-  if ((event.metaKey || event.ctrlKey) && event.shiftKey && key === 'z') {
-    return true
+  if ((event.metaKey || event.ctrlKey) && event.shiftKey && key === "z") {
+    return true;
   }
 
-  return event.ctrlKey && !event.metaKey && !event.shiftKey && key === 'y'
+  return event.ctrlKey && !event.metaKey && !event.shiftKey && key === "y";
 }

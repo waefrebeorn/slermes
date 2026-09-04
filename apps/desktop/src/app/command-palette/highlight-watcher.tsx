@@ -7,25 +7,25 @@
  * which works in both modes, and reports each highlight change.
  */
 
-import { useCommandState } from 'cmdk'
-import { useEffect, useRef } from 'react'
+import { useCommandState } from "cmdk";
+import { useEffect, useRef } from "react";
 
 interface HighlightWatcherProps {
   /** Receives the cmdk value of each newly highlighted row. */
-  onValue: (value: string) => void
+  onValue: (value: string) => void;
 }
 
 export function HighlightWatcher({ onValue }: HighlightWatcherProps): null {
-  const value = useCommandState(state => state.value)
+  const value = useCommandState((state) => state.value);
 
   // Pin the callback so the effect fires on highlight changes only. The
   // parent passes a fresh closure on every render.
-  const onValueRef = useRef(onValue)
-  onValueRef.current = onValue
+  const onValueRef = useRef(onValue);
+  onValueRef.current = onValue;
 
   useEffect(() => {
-    onValueRef.current(value)
-  }, [value])
+    onValueRef.current(value);
+  }, [value]);
 
-  return null
+  return null;
 }

@@ -1,39 +1,39 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from "react";
 
-import { useViewedInterval } from '@/hooks/use-viewed-interval'
+import { useViewedInterval } from "@/hooks/use-viewed-interval";
 
 // Module-level registry so timers survive component unmount/remount (e.g.
 // when a tool row scrolls out and back). Keyed by caller-supplied timerKey;
 // anonymous timers (no key) start fresh each mount.
-const startedAtByKey = new Map<string, number>()
+const startedAtByKey = new Map<string, number>();
 
 // Durations of things that have already finished, kept beside the origins that
 // measured them. See `useMeasuredDuration`.
-const durationByKey = new Map<string, number>()
+const durationByKey = new Map<string, number>();
 
 function startedAt(key?: string): number {
   if (!key) {
-    return Date.now()
+    return Date.now();
   }
 
-  const existing = startedAtByKey.get(key)
+  const existing = startedAtByKey.get(key);
 
   if (existing !== undefined) {
-    return existing
+    return existing;
   }
 
-  const now = Date.now()
-  startedAtByKey.set(key, now)
+  const now = Date.now();
+  startedAtByKey.set(key, now);
 
-  return now
+  return now;
 }
 
 export function formatElapsed(seconds: number): string {
   if (seconds < 60) {
-    return `${seconds}s`
+    return `${seconds}s`;
   }
 
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
 /**
@@ -45,32 +45,43 @@ export function formatElapsed(seconds: number): string {
  * isn't the mount — otherwise an anonymous timer reports the component's age,
  * which is only the same number by accident.
  */
-export function useElapsedSeconds(active = true, timerKey?: string, since?: number): number {
-  const start = useRef(since ?? startedAt(timerKey))
-  const lastKey = useRef(timerKey)
-  const [elapsed, setElapsed] = useState(() => Math.max(0, Math.floor((Date.now() - start.current) / 1000)))
+export function useElapsedSeconds(
+  active = true,
+  timerKey?: string,
+  since?: number,
+): number {
+  const start = useRef(since ?? startedAt(timerKey));
+  const lastKey = useRef(timerKey);
+  const [elapsed, setElapsed] = useState(() =>
+    Math.max(0, Math.floor((Date.now() - start.current) / 1000)),
+  );
 
   if (lastKey.current !== timerKey) {
-    start.current = since ?? startedAt(timerKey)
-    lastKey.current = timerKey
+    start.current = since ?? startedAt(timerKey);
+    lastKey.current = timerKey;
   }
 
   // eslint-disable-next-line no-restricted-syntax -- timer origin is imperative state, not an atom mirror
   useEffect(() => {
     if (since !== undefined) {
-      start.current = since
+      start.current = since;
     } else if (timerKey) {
-      start.current = startedAt(timerKey)
+      start.current = startedAt(timerKey);
     }
 
     if (active) {
-      setElapsed(Math.max(0, Math.floor((Date.now() - start.current) / 1000)))
+      setElapsed(Math.max(0, Math.floor((Date.now() - start.current) / 1000)));
     }
-  }, [active, since, timerKey])
+  }, [active, since, timerKey]);
 
-  useViewedInterval(() => setElapsed(Math.max(0, Math.floor((Date.now() - start.current) / 1000))), 1000, active)
+  useViewedInterval(
+    () =>
+      setElapsed(Math.max(0, Math.floor((Date.now() - start.current) / 1000))),
+    1000,
+    active,
+  );
 
-  return elapsed
+  return elapsed;
 }
 
 /**
@@ -89,27 +100,35 @@ export function useElapsedSeconds(active = true, timerKey?: string, since?: numb
  * session, or reasoning that arrived already complete — has no duration and
  * says so, rather than reporting a timer that never ran.
  */
-export function useMeasuredDuration(active: boolean, timerKey: string): null | number {
-  const elapsed = useElapsedSeconds(active, timerKey)
-  const [watching, setWatching] = useState(false)
-  const [measured, setMeasured] = useState<null | number>(() => durationByKey.get(timerKey) ?? null)
+export function useMeasuredDuration(
+  active: boolean,
+  timerKey: string,
+): null | number {
+  const elapsed = useElapsedSeconds(active, timerKey);
+  const [watching, setWatching] = useState(false);
+  const [measured, setMeasured] = useState<null | number>(
+    () => durationByKey.get(timerKey) ?? null,
+  );
 
   useEffect(() => {
     if (active) {
-      setWatching(true)
+      setWatching(true);
     } else if (watching) {
-      const finalElapsed = Math.max(elapsed, Math.floor((Date.now() - startedAt(timerKey)) / 1000))
+      const finalElapsed = Math.max(
+        elapsed,
+        Math.floor((Date.now() - startedAt(timerKey)) / 1000),
+      );
 
-      setWatching(false)
-      durationByKey.set(timerKey, finalElapsed)
-      setMeasured(finalElapsed)
+      setWatching(false);
+      durationByKey.set(timerKey, finalElapsed);
+      setMeasured(finalElapsed);
     }
-  }, [active, elapsed, timerKey, watching])
+  }, [active, elapsed, timerKey, watching]);
 
-  return measured
+  return measured;
 }
 
 export function __resetElapsedTimerRegistryForTests() {
-  startedAtByKey.clear()
-  durationByKey.clear()
+  startedAtByKey.clear();
+  durationByKey.clear();
 }

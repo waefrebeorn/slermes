@@ -14,6 +14,6 @@
 // `dev-only.noop.ts` whenever the build isn't serving dev, so neither bippy
 // nor the counters reach a shipped renderer.
 
-import './index'
+import "./index";
 
-export {}
+export {};

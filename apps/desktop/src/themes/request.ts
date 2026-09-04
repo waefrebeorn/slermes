@@ -10,8 +10,8 @@
  * exactly like a manual pick — one policy, one owner.
  */
 
-import { $pendingSkinApply } from './backend-sync'
-import { resolveTheme } from './user-themes'
+import { $pendingSkinApply } from "./backend-sync";
+import { resolveTheme } from "./user-themes";
 
 /**
  * Ask for a theme switch from outside React. Returns whether the name resolved.
@@ -25,10 +25,10 @@ import { resolveTheme } from './user-themes'
  */
 export function requestTheme(name: string): boolean {
   if (!resolveTheme(name)) {
-    return false
+    return false;
   }
 
-  $pendingSkinApply.set(name)
+  $pendingSkinApply.set(name);
 
-  return true
+  return true;
 }

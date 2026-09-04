@@ -33,108 +33,110 @@
  * ```
  */
 
-import { createRendererLoopPauseController } from '@/lib/renderer-loop-pause'
+import { createRendererLoopPauseController } from "@/lib/renderer-loop-pause";
 
 export interface BudgetedLoopOptions {
   /** Paint budget in frames per second. Default 15 — visually smooth for
    *  decorative/avatar-scale animation at a quarter of display cadence. */
-  fps?: number
+  fps?: number;
   /** Return true when there is nothing worth animating (no visible targets,
    *  animation finished). Checked after every draw; when true the loop parks
    *  until `wake()`. Omit for loops that should run whenever observable. */
-  idleWhen?: () => boolean
+  idleWhen?: () => boolean;
   /** Forwarded to the pause controller. Default true (pause on blur). */
-  pauseWhenUnfocused?: boolean
+  pauseWhenUnfocused?: boolean;
 }
 
 export interface BudgetedLoop {
   /** Cancel everything and detach listeners. Idempotent; wake() after this is
    *  a no-op. Call from effect cleanup or the plugin disposer. */
-  dispose: () => void
+  dispose: () => void;
   /** True while parked by `idleWhen` (diagnostics/tests). */
-  isDormant: () => boolean
+  isDormant: () => boolean;
   /** Resume a loop parked by `idleWhen` (e.g. a target mounted or scrolled
    *  into view). Safe to call redundantly; no-op while running or disposed. */
-  wake: () => void
+  wake: () => void;
 }
 
 export function createBudgetedLoop(
   draw: (now: number) => void,
-  { fps = 15, idleWhen, pauseWhenUnfocused = true }: BudgetedLoopOptions = {}
+  { fps = 15, idleWhen, pauseWhenUnfocused = true }: BudgetedLoopOptions = {},
 ): BudgetedLoop {
-  const frameInterval = 1000 / fps
-  let frame = 0
-  let lastDraw = -Infinity
-  let dormant = false
-  let disposed = false
+  const frameInterval = 1000 / fps;
+  let frame = 0;
+  let lastDraw = -Infinity;
+  let dormant = false;
+  let disposed = false;
 
   const cancelFrame = () => {
     if (frame !== 0) {
-      window.cancelAnimationFrame(frame)
-      frame = 0
+      window.cancelAnimationFrame(frame);
+      frame = 0;
     }
-  }
+  };
 
   const scheduleFrame = () => {
     if (disposed || dormant || pauseController.isPaused() || frame !== 0) {
-      return
+      return;
     }
 
-    frame = window.requestAnimationFrame(tick)
-  }
+    frame = window.requestAnimationFrame(tick);
+  };
 
   const tick = (now: number) => {
-    frame = 0
+    frame = 0;
 
     if (disposed || pauseController.isPaused()) {
-      return
+      return;
     }
 
     if (now - lastDraw >= frameInterval) {
-      draw(now)
-      lastDraw = now
+      draw(now);
+      lastDraw = now;
     }
 
     // Idle dormancy: nothing to animate -> park with zero pending work.
     // The owner wakes us when a target (re)appears.
     if (idleWhen?.()) {
-      dormant = true
+      dormant = true;
 
-      return
+      return;
     }
 
-    scheduleFrame()
-  }
+    scheduleFrame();
+  };
 
   const handlePauseChange = () => {
-    cancelFrame()
-    scheduleFrame()
-  }
+    cancelFrame();
+    scheduleFrame();
+  };
 
-  const pauseController = createRendererLoopPauseController(handlePauseChange, { pauseWhenUnfocused })
+  const pauseController = createRendererLoopPauseController(handlePauseChange, {
+    pauseWhenUnfocused,
+  });
 
   const wake = () => {
     if (disposed || !dormant) {
-      return
+      return;
     }
 
-    dormant = false
-    scheduleFrame()
-  }
+    dormant = false;
+    scheduleFrame();
+  };
 
-  scheduleFrame()
+  scheduleFrame();
 
   return {
     dispose: () => {
       if (disposed) {
-        return
+        return;
       }
 
-      disposed = true
-      cancelFrame()
-      pauseController.dispose()
+      disposed = true;
+      cancelFrame();
+      pauseController.dispose();
     },
     isDormant: () => dormant,
-    wake
-  }
+    wake,
+  };
 }

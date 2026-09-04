@@ -8,19 +8,19 @@
  * the other direction.
  */
 
-import { type RefObject, useLayoutEffect } from 'react'
+import { type RefObject, useLayoutEffect } from "react";
 
 export interface TabStripGeometry {
   /** Visible width of the strip. */
-  clientWidth: number
+  clientWidth: number;
   /** Active tab is the LAST one, so reveal the trailing "+" along with it. */
-  last: boolean
-  scrollLeft: number
+  last: boolean;
+  scrollLeft: number;
   /** Full scroll content: every tab plus the trailing "+". */
-  scrollWidth: number
+  scrollWidth: number;
   /** Active tab's edges, measured from the start of the scroll content. */
-  tabEnd: number
-  tabStart: number
+  tabEnd: number;
+  tabStart: number;
 }
 
 /** Where the strip should be scrolled to for the active tab to be in view —
@@ -31,25 +31,25 @@ export function tabStripScrollLeft({
   scrollLeft,
   scrollWidth,
   tabEnd,
-  tabStart
+  tabStart,
 }: TabStripGeometry): number {
-  const max = Math.max(0, scrollWidth - clientWidth)
+  const max = Math.max(0, scrollWidth - clientWidth);
 
   // The last tab scrolls to the very end rather than to its own edge: the "+"
   // lives after it in the same scroll content and has to come along.
   if (last) {
-    return max
+    return max;
   }
 
   if (tabStart < scrollLeft) {
-    return Math.min(tabStart, max)
+    return Math.min(tabStart, max);
   }
 
   if (tabEnd > scrollLeft + clientWidth) {
-    return Math.min(tabEnd - clientWidth, max)
+    return Math.min(tabEnd - clientWidth, max);
   }
 
-  return Math.min(scrollLeft, max)
+  return Math.min(scrollLeft, max);
 }
 
 /** Scroll `activeId`'s tab into view whenever the activation or the tab set
@@ -57,29 +57,35 @@ export function tabStripScrollLeft({
 export function useActiveTabVisible(
   scrollerRef: RefObject<HTMLDivElement | null>,
   activeId: string,
-  { enabled, last, tabCount }: { enabled: boolean; last: boolean; tabCount: number }
+  {
+    enabled,
+    last,
+    tabCount,
+  }: { enabled: boolean; last: boolean; tabCount: number },
 ): void {
   // Layout effect: the scroll write lands in the same frame as the tab's
   // insertion, so a new tab never paints off-screen first.
   useLayoutEffect(() => {
-    const scroller = scrollerRef.current
+    const scroller = scrollerRef.current;
 
     if (!enabled || !scroller) {
-      return
+      return;
     }
 
-    const tab = scroller.querySelector<HTMLElement>(`[data-tree-tab="${CSS.escape(activeId)}"]`)
+    const tab = scroller.querySelector<HTMLElement>(
+      `[data-tree-tab="${CSS.escape(activeId)}"]`,
+    );
 
     if (!tab) {
-      return
+      return;
     }
 
     // Rects, not offsetLeft: the tab's offsetParent is the header strip (the
     // scroller itself isn't positioned), so offsets would be measured against
     // the wrong origin.
-    const view = scroller.getBoundingClientRect()
-    const rect = tab.getBoundingClientRect()
-    const tabStart = rect.left - view.left + scroller.scrollLeft
+    const view = scroller.getBoundingClientRect();
+    const rect = tab.getBoundingClientRect();
+    const tabStart = rect.left - view.left + scroller.scrollLeft;
 
     const next = tabStripScrollLeft({
       clientWidth: scroller.clientWidth,
@@ -87,11 +93,11 @@ export function useActiveTabVisible(
       scrollLeft: scroller.scrollLeft,
       scrollWidth: scroller.scrollWidth,
       tabEnd: tabStart + rect.width,
-      tabStart
-    })
+      tabStart,
+    });
 
     if (next !== scroller.scrollLeft) {
-      scroller.scrollLeft = next
+      scroller.scrollLeft = next;
     }
-  }, [activeId, enabled, last, scrollerRef, tabCount])
+  }, [activeId, enabled, last, scrollerRef, tabCount]);
 }

@@ -1,8 +1,8 @@
-import { act, cleanup, fireEvent, render } from '@testing-library/react'
-import { useRef } from 'react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
+import { useRef } from "react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-afterEach(cleanup)
+afterEach(cleanup);
 
 // Faithful mirror of index.tsx's IME wiring: the composition guard at the top
 // of handleEditorKeyDown (self-heal + swallow), the compositionstart/end
@@ -16,28 +16,34 @@ afterEach(cleanup)
 // reaches the gateway". The fix trusts Chromium's per-keydown isComposing flag
 // to clear a stale ref, and clears it on blur (a composition never survives
 // focus loss).
-function Harness({ onSubmit, wedgeComposing }: { onSubmit: (text: string) => void; wedgeComposing?: boolean }) {
-  const editorRef = useRef<HTMLDivElement>(null)
-  const composingRef = useRef(Boolean(wedgeComposing))
+function Harness({
+  onSubmit,
+  wedgeComposing,
+}: {
+  onSubmit: (text: string) => void;
+  wedgeComposing?: boolean;
+}) {
+  const editorRef = useRef<HTMLDivElement>(null);
+  const composingRef = useRef(Boolean(wedgeComposing));
 
   const submitDraft = () => {
-    onSubmit(editorRef.current?.textContent ?? '')
-  }
+    onSubmit(editorRef.current?.textContent ?? "");
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (composingRef.current && !event.nativeEvent.isComposing) {
-      composingRef.current = false
+      composingRef.current = false;
     }
 
     if (composingRef.current || event.nativeEvent.isComposing) {
-      return
+      return;
     }
 
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault()
-      submitDraft()
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      submitDraft();
     }
-  }
+  };
 
   return (
     <div>
@@ -45,13 +51,13 @@ function Harness({ onSubmit, wedgeComposing }: { onSubmit: (text: string) => voi
         contentEditable
         data-testid="editor"
         onBlur={() => {
-          composingRef.current = false
+          composingRef.current = false;
         }}
         onCompositionEnd={() => {
-          composingRef.current = false
+          composingRef.current = false;
         }}
         onCompositionStart={() => {
-          composingRef.current = true
+          composingRef.current = true;
         }}
         onKeyDown={handleKeyDown}
         ref={editorRef}
@@ -62,68 +68,70 @@ function Harness({ onSubmit, wedgeComposing }: { onSubmit: (text: string) => voi
         onClick={() => {
           // Mirrors the form onSubmit guard in index.tsx.
           if (composingRef.current) {
-            return
+            return;
           }
 
-          submitDraft()
+          submitDraft();
         }}
         type="button"
       />
     </div>
-  )
+  );
 }
 
-describe('composer Enter — stale IME composition flag recovery (#44135)', () => {
-  it('sends on Enter despite a wedged composing flag when the native event says not composing', async () => {
-    const onSubmit = vi.fn()
-    const { getByTestId } = render(<Harness onSubmit={onSubmit} wedgeComposing />)
-    const editor = getByTestId('editor')
+describe("composer Enter — stale IME composition flag recovery (#44135)", () => {
+  it("sends on Enter despite a wedged composing flag when the native event says not composing", async () => {
+    const onSubmit = vi.fn();
+    const { getByTestId } = render(
+      <Harness onSubmit={onSubmit} wedgeComposing />,
+    );
+    const editor = getByTestId("editor");
 
     await act(async () => {
-      editor.textContent = 'hello after wedge'
-      fireEvent.keyDown(editor, { key: 'Enter', isComposing: false })
-    })
+      editor.textContent = "hello after wedge";
+      fireEvent.keyDown(editor, { key: "Enter", isComposing: false });
+    });
 
-    expect(onSubmit).toHaveBeenCalledWith('hello after wedge')
-  })
+    expect(onSubmit).toHaveBeenCalledWith("hello after wedge");
+  });
 
-  it('still swallows Enter during a genuine composition (isComposing keydown)', async () => {
-    const onSubmit = vi.fn()
-    const { getByTestId } = render(<Harness onSubmit={onSubmit} />)
-    const editor = getByTestId('editor')
+  it("still swallows Enter during a genuine composition (isComposing keydown)", async () => {
+    const onSubmit = vi.fn();
+    const { getByTestId } = render(<Harness onSubmit={onSubmit} />);
+    const editor = getByTestId("editor");
 
     await act(async () => {
-      fireEvent.compositionStart(editor)
-      editor.textContent = '你好'
+      fireEvent.compositionStart(editor);
+      editor.textContent = "你好";
       // The Enter that confirms the preedit: Chromium stamps isComposing=true.
-      fireEvent.keyDown(editor, { key: 'Enter', isComposing: true })
-    })
+      fireEvent.keyDown(editor, { key: "Enter", isComposing: true });
+    });
 
-    expect(onSubmit).not.toHaveBeenCalled()
+    expect(onSubmit).not.toHaveBeenCalled();
 
     // After compositionend, the next Enter sends normally.
     await act(async () => {
-      fireEvent.compositionEnd(editor)
-      fireEvent.keyDown(editor, { key: 'Enter', isComposing: false })
-    })
+      fireEvent.compositionEnd(editor);
+      fireEvent.keyDown(editor, { key: "Enter", isComposing: false });
+    });
 
-    expect(onSubmit).toHaveBeenCalledWith('你好')
-  })
+    expect(onSubmit).toHaveBeenCalledWith("你好");
+  });
 
-  it('unblocks the Send button after blur even when compositionend was missed', async () => {
-    const onSubmit = vi.fn()
-    const { getByTestId } = render(<Harness onSubmit={onSubmit} />)
-    const editor = getByTestId('editor')
+  it("unblocks the Send button after blur even when compositionend was missed", async () => {
+    const onSubmit = vi.fn();
+    const { getByTestId } = render(<Harness onSubmit={onSubmit} />);
+    const editor = getByTestId("editor");
 
     await act(async () => {
-      fireEvent.compositionStart(editor)
-      editor.textContent = '发送'
+      fireEvent.compositionStart(editor);
+      editor.textContent = "发送";
       // compositionend never fires (the wedge) — the user mouses to Send,
       // blurring the editor.
-      fireEvent.blur(editor)
-      fireEvent.click(getByTestId('send'))
-    })
+      fireEvent.blur(editor);
+      fireEvent.click(getByTestId("send"));
+    });
 
-    expect(onSubmit).toHaveBeenCalledWith('发送')
-  })
-})
+    expect(onSubmit).toHaveBeenCalledWith("发送");
+  });
+});

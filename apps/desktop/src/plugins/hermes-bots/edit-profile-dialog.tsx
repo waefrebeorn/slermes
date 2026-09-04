@@ -17,38 +17,46 @@ import {
   queryClient,
   Textarea,
   useI18n,
-  useValue
-} from '@hermes/plugin-sdk'
-import { useState } from 'react'
+  useValue,
+} from "@hermes/plugin-sdk";
+import { useState } from "react";
 
-import { avatarColor, botAppearance, BotFace } from './avatar'
-import { AvatarPicker } from './avatar-picker'
-import { $botMeta, botSelectionKey, ROSTER_KEY, saveBotMeta } from './data'
-import { labeled } from './dialog-parts'
-import { useBots } from './i18n'
-import { displayName } from './labels'
-import { AdvancedProfileConfig, applyAdvancedConfig, emptyAdvancedState } from './profile-config'
-import { botRosterMeta, requestForBot } from './routing'
-import type { AvatarAppearance, RosterRow } from './types'
+import { avatarColor, botAppearance, BotFace } from "./avatar";
+import { AvatarPicker } from "./avatar-picker";
+import { $botMeta, botSelectionKey, ROSTER_KEY, saveBotMeta } from "./data";
+import { labeled } from "./dialog-parts";
+import { useBots } from "./i18n";
+import { displayName } from "./labels";
+import {
+  AdvancedProfileConfig,
+  applyAdvancedConfig,
+  emptyAdvancedState,
+} from "./profile-config";
+import { botRosterMeta, requestForBot } from "./routing";
+import type { AvatarAppearance, RosterRow } from "./types";
 
 // ── edit profile dialog ──────────────────────────────────────────────────────
 
 /** AvatarAppearance, minus the `image` guarantee — the dialog's no-bot fallback
  *  literal doesn't supply one. See the TODO in EditProfileDialog. */
-interface EditProfileAppearance extends Omit<AvatarAppearance, 'image'> {
-  image?: null | string
+interface EditProfileAppearance extends Omit<AvatarAppearance, "image"> {
+  image?: null | string;
 }
 interface EditProfileDialogProps {
-  bot: null | RosterRow
-  onClose: () => void
-  open: boolean
+  bot: null | RosterRow;
+  onClose: () => void;
+  open: boolean;
 }
 
-export function EditProfileDialog({ bot, open, onClose }: EditProfileDialogProps) {
-  const { t } = useI18n()
-  const b = useBots()
-  const metaAll = useValue($botMeta)
-  const meta = bot ? botRosterMeta(bot, metaAll) : null
+export function EditProfileDialog({
+  bot,
+  open,
+  onClose,
+}: EditProfileDialogProps) {
+  const { t } = useI18n();
+  const b = useBots();
+  const metaAll = useValue($botMeta);
+  const meta = bot ? botRosterMeta(bot, metaAll) : null;
 
   // TODO(bot-mode-types): the no-bot fallback omits `image`, which the state
   // seeding below reads — `appearance.image` is undefined on that branch, so
@@ -58,136 +66,145 @@ export function EditProfileDialog({ bot, open, onClose }: EditProfileDialogProps
   const appearance: EditProfileAppearance = bot
     ? botAppearance(bot.name, meta)
     : {
-        shape: 'circle',
-        color: null
-      }
+        shape: "circle",
+        color: null,
+      };
 
-  const [shape, setShape] = useState(appearance.shape)
-  const [color, setColor] = useState<null | string>(appearance.color)
-  const [image, setImage] = useState<null | string>(appearance.image ?? null)
-  const [title, setTitle] = useState(meta?.title || '')
-  const [description, setDescription] = useState(bot?.description || '')
-  const [busy, setBusy] = useState(false)
-  const [advanced, setAdvanced] = useState(false)
-  const [adv, setAdv] = useState(emptyAdvancedState())
+  const [shape, setShape] = useState(appearance.shape);
+  const [color, setColor] = useState<null | string>(appearance.color);
+  const [image, setImage] = useState<null | string>(appearance.image ?? null);
+  const [title, setTitle] = useState(meta?.title || "");
+  const [description, setDescription] = useState(bot?.description || "");
+  const [busy, setBusy] = useState(false);
+  const [advanced, setAdvanced] = useState(false);
+  const [adv, setAdv] = useState(emptyAdvancedState());
 
   // Re-seed local state each time a different bot opens the dialog.
-  const [seedKey, setSeedKey] = useState<null | string>(null)
-  const currentKey = bot ? `${botSelectionKey(bot)}:${open}` : null
+  const [seedKey, setSeedKey] = useState<null | string>(null);
+  const currentKey = bot ? `${botSelectionKey(bot)}:${open}` : null;
 
   if (currentKey !== seedKey) {
-    setSeedKey(currentKey)
+    setSeedKey(currentKey);
 
     if (bot && open) {
-      setShape(appearance.shape)
-      setColor(appearance.color)
-      setImage(appearance.image ?? null)
-      setTitle(meta?.title || '')
-      setDescription(bot.description || '')
-      setBusy(false)
-      setAdvanced(false)
-      setAdv(emptyAdvancedState())
+      setShape(appearance.shape);
+      setColor(appearance.color);
+      setImage(appearance.image ?? null);
+      setTitle(meta?.title || "");
+      setDescription(bot.description || "");
+      setBusy(false);
+      setAdvanced(false);
+      setAdv(emptyAdvancedState());
     }
   }
 
   if (!bot) {
-    return null
+    return null;
   }
 
   const submit = async () => {
     if (busy) {
-      return
+      return;
     }
 
-    setBusy(true)
-    let advancedFailed = false
+    setBusy(true);
+    let advancedFailed = false;
 
     const persistence = await saveBotMeta(bot, {
       shape,
       color: color ?? undefined,
       image,
-      imageKind: image ? 'photo' : 'shape',
+      imageKind: image ? "photo" : "shape",
       title: title.trim(),
-      custom: true
-    })
+      custom: true,
+    });
 
     // Only an explicit remote failure is an error — 'unsupported' is the
     // documented older-gateway fallback (local wins, silently), and toasting
     // it would flag every save on every legacy setup forever.
-    const lookFailed = persistence.serverOutcome === 'failed'
+    const lookFailed = persistence.serverOutcome === "failed";
 
     if (lookFailed) {
       host.notify({
-        kind: 'error',
-        message: b.avatar.savedLocally
-      })
+        kind: "error",
+        message: b.avatar.savedLocally,
+      });
     }
 
-    if (persistence.serverOutcome === 'persisted') {
+    if (persistence.serverOutcome === "persisted") {
       queryClient.invalidateQueries({
-        queryKey: ROSTER_KEY
-      })
+        queryKey: ROSTER_KEY,
+      });
     }
 
-    const desc = description.trim()
+    const desc = description.trim();
 
-    if (desc !== (bot.description || '').trim()) {
+    if (desc !== (bot.description || "").trim()) {
       try {
-        await requestForBot(bot, 'cli.exec', {
-          argv: ['profile', 'describe', bot.name, '--text', desc]
-        })
+        await requestForBot(bot, "cli.exec", {
+          argv: ["profile", "describe", bot.name, "--text", desc],
+        });
         queryClient.invalidateQueries({
-          queryKey: ROSTER_KEY
-        })
+          queryKey: ROSTER_KEY,
+        });
       } catch (err) {
-        host.notifyError(err, b.avatar.savedLocallyDescriptionFailed)
+        host.notifyError(err, b.avatar.savedLocallyDescriptionFailed);
       }
     }
 
-    if (adv.loaded && (adv.dirtyModel || adv.dirtySoul || adv.dirtySkills || adv.dirtyToolsets || adv.dirtyMcp)) {
+    if (
+      adv.loaded &&
+      (adv.dirtyModel ||
+        adv.dirtySoul ||
+        adv.dirtySkills ||
+        adv.dirtyToolsets ||
+        adv.dirtyMcp)
+    ) {
       try {
-        const res = await applyAdvancedConfig(bot, adv)
-        const failed = Object.entries(res?.applied || {}).filter(([, ok]) => !ok)
+        const res = await applyAdvancedConfig(bot, adv);
+        const failed = Object.entries(res?.applied || {}).filter(
+          ([, ok]) => !ok,
+        );
 
         if (failed.length) {
-          advancedFailed = true
+          advancedFailed = true;
           host.notify({
-            kind: 'error',
-            message: `Some sections failed: ${failed.map(([k]) => k).join(', ')}`
-          })
+            kind: "error",
+            message: `Some sections failed: ${failed.map(([k]) => k).join(", ")}`,
+          });
         }
       } catch (err) {
-        advancedFailed = true
-        host.notifyError(err, b.bot.advancedFailed)
+        advancedFailed = true;
+        host.notifyError(err, b.bot.advancedFailed);
       }
     }
 
     if (!advancedFailed && !lookFailed) {
       host.notify({
-        kind: 'success',
+        kind: "success",
         message: `${displayName(bot, {
-          title
-        })} updated`
-      })
+          title,
+        })} updated`,
+      });
     }
 
-    setBusy(false)
-    onClose()
-  }
+    setBusy(false);
+    onClose();
+  };
 
   return (
-    <Dialog onOpenChange={value => !value && !busy && onClose()} open={open}>
+    <Dialog onOpenChange={(value) => !value && !busy && onClose()} open={open}>
       <DialogContent
-        className={advanced ? 'max-w-3xl' : 'max-w-sm'} // Same resizable-window treatment as the create dialog.
+        className={advanced ? "max-w-3xl" : "max-w-sm"} // Same resizable-window treatment as the create dialog.
         style={
           advanced
             ? {
-                resize: 'both',
-                overflow: 'auto',
+                resize: "both",
+                overflow: "auto",
                 minWidth: 420,
                 minHeight: 360,
-                maxWidth: '95vw',
-                maxHeight: '90vh'
+                maxWidth: "95vw",
+                maxHeight: "90vh",
               }
             : undefined
         }
@@ -198,14 +215,20 @@ export function EditProfileDialog({ bot, open, onClose }: EditProfileDialogProps
         </DialogHeader>
         <div className="grid gap-4">
           <div className="flex justify-center py-1">
-            <BotFace color={avatarColor(color, bot.name)} image={image} name={bot.name} shape={shape} size={64} />
+            <BotFace
+              color={avatarColor(color, bot.name)}
+              image={image}
+              name={bot.name}
+              shape={shape}
+              size={64}
+            />
           </div>
           <AvatarPicker
             color={color}
             generateSeed={{
               name: bot.name,
               title,
-              description
+              description,
             }}
             image={image}
             onColor={setColor}
@@ -214,25 +237,25 @@ export function EditProfileDialog({ bot, open, onClose }: EditProfileDialogProps
             shape={shape}
           />
           {labeled(
-            'Title',
+            "Title",
             <Input
-              onChange={event => setTitle(event.target.value)}
+              onChange={(event) => setTitle(event.target.value)}
               placeholder={displayName(bot, null)}
               value={title}
-            />
+            />,
           )}
           {labeled(
-            'Description',
+            "Description",
             <Textarea
               className="min-h-16"
-              onChange={event => setDescription(event.target.value)}
+              onChange={(event) => setDescription(event.target.value)}
               placeholder={b.bot.helpPromptPlaceholder}
               value={description}
-            />
+            />,
           )}
           <Button
             className="flex items-center gap-1 text-xs font-medium text-(--ui-text-tertiary) hover:text-(--ui-text-secondary)"
-            onClick={() => setAdvanced(v => !v)}
+            onClick={() => setAdvanced((v) => !v)}
             size="inline"
             variant="text"
           >
@@ -255,5 +278,5 @@ export function EditProfileDialog({ bot, open, onClose }: EditProfileDialogProps
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

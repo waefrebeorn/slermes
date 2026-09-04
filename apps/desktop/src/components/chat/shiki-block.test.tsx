@@ -1,5 +1,5 @@
-import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * Perf regression guard for #95595: switching to a warm session remounts the
@@ -12,111 +12,133 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
  */
 const { codeToHtml } = vi.hoisted(() => ({
   codeToHtml: vi.fn((code: string) => {
-    const escaped = String(code).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    const escaped = String(code)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
 
-    return `<pre class="shiki"><code>${escaped}</code></pre>`
-  })
-}))
+    return `<pre class="shiki"><code>${escaped}</code></pre>`;
+  }),
+}));
 
-vi.mock('shiki', () => ({
-  bundledLanguages: { typescript: 'typescript-loader', text: 'text-loader' },
+vi.mock("shiki", () => ({
+  bundledLanguages: { typescript: "typescript-loader", text: "text-loader" },
   getSingletonHighlighter: vi.fn(async () => ({
     codeToHtml: (code: string) => codeToHtml(code),
-    getLoadedLanguages: () => ['text', 'typescript'],
-    loadLanguage: vi.fn(async () => undefined)
-  }))
-}))
+    getLoadedLanguages: () => ["text", "typescript"],
+    loadLanguage: vi.fn(async () => undefined),
+  })),
+}));
 
-vi.mock('shiki/engine/oniguruma', () => ({
-  createOnigurumaEngine: vi.fn(() => ({}) as never)
-}))
+vi.mock("shiki/engine/oniguruma", () => ({
+  createOnigurumaEngine: vi.fn(() => ({}) as never),
+}));
 
-import CachedShikiBlock from '@/components/chat/shiki-block'
-import { highlightCache } from '@/components/chat/shiki-highlight-cache'
+import CachedShikiBlock from "@/components/chat/shiki-block";
+import { highlightCache } from "@/components/chat/shiki-highlight-cache";
 
-const TS_BLOCK = { language: 'typescript', code: 'const answer: number = 42\n' }
+const TS_BLOCK = {
+  language: "typescript",
+  code: "const answer: number = 42\n",
+};
 
 async function waitForHighlighted(): Promise<void> {
-  await screen.findByTestId('shiki-container', undefined, { timeout: 2_000 })
+  await screen.findByTestId("shiki-container", undefined, { timeout: 2_000 });
 }
 
 beforeEach(() => {
-  codeToHtml.mockClear()
-  highlightCache.clear()
-})
+  codeToHtml.mockClear();
+  highlightCache.clear();
+});
 
 afterEach(() => {
-  cleanup()
-})
+  cleanup();
+});
 
-describe('CachedShikiBlock (warm-switch perf guard)', () => {
-  it('highlights on first mount and reuses the cached HTML on remount', async () => {
-    const { unmount } = render(<CachedShikiBlock {...TS_BLOCK} />)
-    await waitForHighlighted()
+describe("CachedShikiBlock (warm-switch perf guard)", () => {
+  it("highlights on first mount and reuses the cached HTML on remount", async () => {
+    const { unmount } = render(<CachedShikiBlock {...TS_BLOCK} />);
+    await waitForHighlighted();
 
-    expect(codeToHtml).toHaveBeenCalledTimes(1)
-    expect(screen.getByTestId('shiki-container').innerHTML).toContain('const answer')
+    expect(codeToHtml).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("shiki-container").innerHTML).toContain(
+      "const answer",
+    );
 
     // Warm session switch: the row unmounts and the SAME block mounts again.
-    unmount()
-    render(<CachedShikiBlock {...TS_BLOCK} />)
-    await waitForHighlighted()
+    unmount();
+    render(<CachedShikiBlock {...TS_BLOCK} />);
+    await waitForHighlighted();
 
     // The guard: remounting an unchanged block must NOT re-tokenize.
-    expect(codeToHtml).toHaveBeenCalledTimes(1)
-  })
+    expect(codeToHtml).toHaveBeenCalledTimes(1);
+  });
 
-  it('re-highlights a block whose code changed (cache miss)', async () => {
-    const { unmount } = render(<CachedShikiBlock {...TS_BLOCK} />)
-    await waitForHighlighted()
+  it("re-highlights a block whose code changed (cache miss)", async () => {
+    const { unmount } = render(<CachedShikiBlock {...TS_BLOCK} />);
+    await waitForHighlighted();
 
-    unmount()
-    render(<CachedShikiBlock code="const other = true\n" language="typescript" />)
-    await waitForHighlighted()
+    unmount();
+    render(
+      <CachedShikiBlock code="const other = true\n" language="typescript" />,
+    );
+    await waitForHighlighted();
 
-    expect(codeToHtml).toHaveBeenCalledTimes(2)
-  })
+    expect(codeToHtml).toHaveBeenCalledTimes(2);
+  });
 
-  it('keeps blocks independent: N blocks highlight N times across two mounts', async () => {
+  it("keeps blocks independent: N blocks highlight N times across two mounts", async () => {
     const { unmount } = render(
       <>
         <CachedShikiBlock {...TS_BLOCK} />
-        <CachedShikiBlock code="function two(): void {}\n" language="typescript" />
-      </>
-    )
+        <CachedShikiBlock
+          code="function two(): void {}\n"
+          language="typescript"
+        />
+      </>,
+    );
 
-    await screen.findAllByTestId('shiki-container', undefined, { timeout: 2_000 })
+    await screen.findAllByTestId("shiki-container", undefined, {
+      timeout: 2_000,
+    });
 
-    expect(codeToHtml).toHaveBeenCalledTimes(2)
+    expect(codeToHtml).toHaveBeenCalledTimes(2);
 
-    unmount()
+    unmount();
     render(
       <>
         <CachedShikiBlock {...TS_BLOCK} />
-        <CachedShikiBlock code="function two(): void {}\n" language="typescript" />
-      </>
-    )
-    await screen.findAllByTestId('shiki-container', undefined, { timeout: 2_000 })
+        <CachedShikiBlock
+          code="function two(): void {}\n"
+          language="typescript"
+        />
+      </>,
+    );
+    await screen.findAllByTestId("shiki-container", undefined, {
+      timeout: 2_000,
+    });
 
     // Two mounts of the same two blocks: exactly two tokenizations total.
-    expect(codeToHtml).toHaveBeenCalledTimes(2)
-  })
+    expect(codeToHtml).toHaveBeenCalledTimes(2);
+  });
 
-  it('does not cache a failed highlight, so a retry can succeed', async () => {
-    codeToHtml.mockRejectedValueOnce(new Error('boom'))
+  it("does not cache a failed highlight, so a retry can succeed", async () => {
+    codeToHtml.mockRejectedValueOnce(new Error("boom"));
 
-    const { unmount } = render(<CachedShikiBlock {...TS_BLOCK} />)
-    await waitForHighlighted()
+    const { unmount } = render(<CachedShikiBlock {...TS_BLOCK} />);
+    await waitForHighlighted();
 
     // The failure degrades to escaped plain text (and is NOT cached).
-    expect(screen.getByTestId('shiki-container').innerHTML).toContain('const answer')
-    expect(codeToHtml).toHaveBeenCalledTimes(1)
+    expect(screen.getByTestId("shiki-container").innerHTML).toContain(
+      "const answer",
+    );
+    expect(codeToHtml).toHaveBeenCalledTimes(1);
 
-    unmount()
-    render(<CachedShikiBlock {...TS_BLOCK} />)
-    await waitForHighlighted()
+    unmount();
+    render(<CachedShikiBlock {...TS_BLOCK} />);
+    await waitForHighlighted();
 
     // Second mount tries the highlighter again instead of serving stale HTML.
-    expect(codeToHtml).toHaveBeenCalledTimes(2)
-  })
-})
+    expect(codeToHtml).toHaveBeenCalledTimes(2);
+  });
+});

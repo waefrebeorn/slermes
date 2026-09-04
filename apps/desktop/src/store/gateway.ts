@@ -1,12 +1,17 @@
-import { type ConnectionState, type GatewayEvent, registryBackendScopeKey, resolveGatewayWsUrl } from '@hermes/shared'
-import { atom } from 'nanostores'
+import {
+  type ConnectionState,
+  type GatewayEvent,
+  registryBackendScopeKey,
+  resolveGatewayWsUrl,
+} from "@hermes/shared";
+import { atom } from "nanostores";
 
-import type { HermesConnection } from '@/global'
-import { HermesGateway, setApiRequestConnection } from '@/hermes'
-import { reconnectBackoffDelayMs } from '@/lib/reconnect-backoff'
-import { RECONNECT_ATTEMPT_TIMEOUT_MS, withTimeout } from '@/lib/with-timeout'
-import { markNativeNotifyBaseline } from '@/store/notify-baseline'
-import { setConnection, setGatewayState } from '@/store/session'
+import type { HermesConnection } from "@/global";
+import { HermesGateway, setApiRequestConnection } from "@/hermes";
+import { reconnectBackoffDelayMs } from "@/lib/reconnect-backoff";
+import { RECONNECT_ATTEMPT_TIMEOUT_MS, withTimeout } from "@/lib/with-timeout";
+import { markNativeNotifyBaseline } from "@/store/notify-baseline";
+import { setConnection, setGatewayState } from "@/store/session";
 
 // ── Multi-profile gateway routing ──────────────────────────────────────────
 // Concurrent sessions across profiles need concurrent sockets: the renderer's
@@ -18,20 +23,25 @@ import { setConnection, setGatewayState } from '@/store/session'
 // handleGatewayEvent, so background sessions keep painting. Single-profile users
 // only ever have the primary, so their path is byte-for-byte unchanged.
 
-const normKey = (profile: string | null | undefined): string => (profile ?? '').trim() || 'default'
+const normKey = (profile: string | null | undefined): string =>
+  (profile ?? "").trim() || "default";
 
 // Read connection state through a call so TS control-flow analysis doesn't
 // narrow the getter to a constant across guards (it genuinely changes).
-const isOpen = (gateway: HermesGateway | null): boolean => gateway?.connectionState === 'open'
+const isOpen = (gateway: HermesGateway | null): boolean =>
+  gateway?.connectionState === "open";
 
 interface RegistryConfig {
   /** Electron's published descriptor is authoritative for a primary gateway's
    * registry identity. Kept as a getter so gateway.ts does not own or duplicate
    * the connection store. */
-  activeConnectionId?: () => null | string
-  onEvent: (event: GatewayEvent) => void
-  onActiveConnectionInvalidated?: (fallbackProfile: string, activationEpoch: number) => void
-  onActiveConnectionChanged?: (connection: HermesConnection) => void
+  activeConnectionId?: () => null | string;
+  onEvent: (event: GatewayEvent) => void;
+  onActiveConnectionInvalidated?: (
+    fallbackProfile: string,
+    activationEpoch: number,
+  ) => void;
+  onActiveConnectionChanged?: (connection: HermesConnection) => void;
   /**
    * Fires whenever applyActive() moves the active route to a (possibly
    * different) profile — including registry-internal eviction fallbacks
@@ -40,7 +50,7 @@ interface RegistryConfig {
    * published profile can never diverge from the socket actually selected
    * (#89206: the stale-profile split-brain that stranded bot wake-ups).
    */
-  onActiveRouteChanged?: (profile: string) => void
+  onActiveRouteChanged?: (profile: string) => void;
   /**
    * Scopes a FOREGROUND surface is bound to right now — every mounted
    * session tile's owner and the primary thread's (foregroundSessionScopes in
@@ -53,29 +63,29 @@ interface RegistryConfig {
    * loop with no terminal state. Read at decision time, never cached: it
    * follows the tile set, so closing the tile releases the socket.
    */
-  foregroundScopes?: () => ReadonlySet<string>
+  foregroundScopes?: () => ReadonlySet<string>;
 }
 
 // ── Secondary (pool) backends ──────────────────────────────────────────────
 interface Secondary {
   /** Scope key from registryBackendScopeKey(connectionId, profile). */
-  scope: string
-  profile: string
+  scope: string;
+  profile: string;
   /** Registry connection serving this socket; null = the local/legacy path. */
-  connectionId: null | string
-  connection: HermesConnection | null
-  gateway: HermesGateway
+  connectionId: null | string;
+  connection: HermesConnection | null;
+  gateway: HermesGateway;
   /** True after this entry completed at least one socket connection. */
-  openedOnce: boolean
-  activeRequests: number
-  connectPromise: Promise<void> | null
-  offEvent: () => void
-  offState: () => void
-  reconnectTimer: ReturnType<typeof setTimeout> | null
-  reconnectAttempt: number
-  reconnecting: boolean
+  openedOnce: boolean;
+  activeRequests: number;
+  connectPromise: Promise<void> | null;
+  offEvent: () => void;
+  offState: () => void;
+  reconnectTimer: ReturnType<typeof setTimeout> | null;
+  reconnectAttempt: number;
+  reconnecting: boolean;
   /** A material connection edit is waiting for live owners to drain. */
-  pendingConnectionRedial: boolean
+  pendingConnectionRedial: boolean;
   /**
    * True when a foreground/prewarmed consumer owns this entry beyond one RPC.
    * Guards ONLY the dispose-at-refcount-0 paths (request/relay leases), never
@@ -86,7 +96,7 @@ interface Secondary {
    * primary thread) is represented in the pruner's keep-set instead — see
    * foregroundSessionScopes in store/session-states (#93892).
    */
-  retained: boolean
+  retained: boolean;
   /**
    * Bot-relay retainers pinning this socket open across drain ticks (#93594).
    * The relay's drain loop RPCs every registered connection on an interval;
@@ -96,10 +106,10 @@ interface Secondary {
    * `retained` flag. Only non-local registry routes are ever counted here —
    * see retainGatewayForRelay.
    */
-  relayRetainCount: number
+  relayRetainCount: number;
   // While true the entry auto-reconnects on drop; pruning flips it off so a
   // deliberate close doesn't trigger the backoff loop.
-  wantOpen: boolean
+  wantOpen: boolean;
   /**
    * Epoch-ms deadline while an activation (prepare/ensure) is mid-dial. The
    * live-work pruner must not dispose an entry the user is switching to: a
@@ -109,13 +119,13 @@ interface Secondary {
    * profile clicks in #89622. Cleared when the activation settles; bounded so
    * an orphaned lease self-heals.
    */
-  activationLeaseUntil: number
+  activationLeaseUntil: number;
 }
 
 // How long a mid-dial activation holds its prune lease: covers a cold pool
 // backend spawn + socket connect with margin, while still letting a leaked
 // lease expire quickly enough for the reaper to reclaim the entry.
-const ACTIVATION_LEASE_MS = 30_000
+const ACTIVATION_LEASE_MS = 30_000;
 
 // ── HMR-stable module state ─────────────────────────────────────────────────
 // All mutable singletons (live sockets, active-profile routing, the event
@@ -129,33 +139,33 @@ const ACTIVATION_LEASE_MS = 30_000
 // import.meta.hot, and a fresh page realm starts with an empty container, so the
 // runtime behavior is identical to plain module state.
 interface GatewayRegistryState {
-  config: RegistryConfig | null
-  primaryGateway: HermesGateway | null
+  config: RegistryConfig | null;
+  primaryGateway: HermesGateway | null;
   /** Registry source currently served by primaryGateway, when known. */
-  primaryConnectionId: null | string
-  primaryProfile: string
-  activeKey: string
-  activationEpoch: number
-  secondaries: Map<string, Secondary>
+  primaryConnectionId: null | string;
+  primaryProfile: string;
+  activeKey: string;
+  activationEpoch: number;
+  secondaries: Map<string, Secondary>;
   /** Scopes that opened in this renderer generation, even if later pruned. */
-  openedSecondaryScopes?: Set<string>
+  openedSecondaryScopes?: Set<string>;
   /** Routed prompt sockets held until their terminal turn event arrives. */
-  turnLeases: Map<string, () => void>
+  turnLeases: Map<string, () => void>;
   /** Debounced releases so an immediate chained turn can reuse its lease. */
-  turnLeaseReleaseTimers: Map<string, ReturnType<typeof setTimeout>>
-  $gateway: ReturnType<typeof atom<HermesGateway | null>>
-  $activeProfile: ReturnType<typeof atom<string>>
+  turnLeaseReleaseTimers: Map<string, ReturnType<typeof setTimeout>>;
+  $gateway: ReturnType<typeof atom<HermesGateway | null>>;
+  $activeProfile: ReturnType<typeof atom<string>>;
 }
 
-const STATE_KEY = Symbol.for('hermes.desktop.gatewayRegistryState')
+const STATE_KEY = Symbol.for("hermes.desktop.gatewayRegistryState");
 
 function createRegistryState(): GatewayRegistryState {
   return {
     config: null,
     primaryGateway: null,
     primaryConnectionId: null,
-    primaryProfile: 'default',
-    activeKey: 'default',
+    primaryProfile: "default",
+    activeKey: "default",
     activationEpoch: 0,
     secondaries: new Map<string, Secondary>(),
     openedSecondaryScopes: new Set<string>(),
@@ -171,8 +181,8 @@ function createRegistryState(): GatewayRegistryState {
     // the split-brain where an eviction re-pointed activeKey at the primary
     // while the profile atom kept naming the evicted bot routed every
     // "loki" session.resume to the default backend (#89206 wake failures).
-    $activeProfile: atom<string>('default')
-  }
+    $activeProfile: atom<string>("default"),
+  };
 }
 
 // Dev only: park the singletons on globalThis so an HMR re-eval of this module
@@ -184,29 +194,32 @@ function createRegistryState(): GatewayRegistryState {
 // shape and lifetime are identical either way.
 function gatewayState(): GatewayRegistryState {
   if (import.meta.hot) {
-    const store = globalThis as unknown as { [STATE_KEY]?: GatewayRegistryState }
-    store[STATE_KEY] ??= createRegistryState()
+    const store = globalThis as unknown as {
+      [STATE_KEY]?: GatewayRegistryState;
+    };
+    store[STATE_KEY] ??= createRegistryState();
 
     // Existing dev-HMR containers predate whole-turn leases.
-    store[STATE_KEY].turnLeases ??= new Map()
-    store[STATE_KEY].turnLeaseReleaseTimers ??= new Map()
+    store[STATE_KEY].turnLeases ??= new Map();
+    store[STATE_KEY].turnLeaseReleaseTimers ??= new Map();
 
-    return store[STATE_KEY]
+    return store[STATE_KEY];
   }
 
-  return createRegistryState()
+  return createRegistryState();
 }
 
-const g = gatewayState()
+const g = gatewayState();
 
 // Dev HMR can hand a newer module an older state-container shape. Keep the
 // generation ledger lazy so an already-open socket still survives the update.
-const openedSecondaryScopes = (): Set<string> => (g.openedSecondaryScopes ??= new Set<string>())
+const openedSecondaryScopes = (): Set<string> =>
+  (g.openedSecondaryScopes ??= new Set<string>());
 
 // Re-exported as a stable binding: the atom instance lives in `g`, so every hot
 // reload of this module hands back the SAME atom subscribers are already wired
 // to. (A fresh `atom()` per reload would orphan existing subscriptions.)
-export const $gateway = g.$gateway
+export const $gateway = g.$gateway;
 
 // The profile the ACTIVE gateway is actually routed to. Registry-owned: the
 // only writer is applyActive(), which sets it in the same synchronous step
@@ -214,15 +227,15 @@ export const $gateway = g.$gateway
 // activeGateway() always gets a matching (profile, socket) pair. Renderer
 // surfaces (store/profile.ts's $activeGatewayProfile) mirror this atom
 // instead of writing their own copy.
-export const $activeGatewayRoute = g.$activeProfile
+export const $activeGatewayRoute = g.$activeProfile;
 
 /** Bare profile name the active gateway serves (never a composite scope). */
 export function activeGatewayProfileKey(): string {
-  return g.$activeProfile.get()
+  return g.$activeProfile.get();
 }
 
 export function configureGatewayRegistry(cfg: RegistryConfig): void {
-  g.config = cfg
+  g.config = cfg;
 }
 
 /**
@@ -233,14 +246,17 @@ export function configureGatewayRegistry(cfg: RegistryConfig): void {
  * registry is configured.
  */
 export function emitLocalGatewayEvent(event: GatewayEvent): void {
-  g.config?.onEvent(event)
+  g.config?.onEvent(event);
 }
 
-export function setPrimaryGateway(gateway: HermesGateway | null, profile = 'default'): void {
-  const next = normKey(profile)
+export function setPrimaryGateway(
+  gateway: HermesGateway | null,
+  profile = "default",
+): void {
+  const next = normKey(profile);
 
   if (g.primaryGateway !== gateway) {
-    g.primaryConnectionId = null
+    g.primaryConnectionId = null;
   }
 
   // Route identity is exact-scope, never bare-name (#93892 follow-up): when
@@ -250,18 +266,20 @@ export function setPrimaryGateway(gateway: HermesGateway | null, profile = 'defa
   // spare in pruneSecondaryGateways — a remote tile keep-set of composite
   // scopes then appears to "pin" that unrelated local socket forever.
   if (g.activeKey === g.primaryProfile) {
-    g.activeKey = next
+    g.activeKey = next;
   }
 
-  g.primaryGateway = gateway
-  g.primaryProfile = next
+  g.primaryGateway = gateway;
+  g.primaryProfile = next;
 
   if (g.activeKey === g.primaryProfile) {
-    setApiRequestConnection(g.primaryConnectionId)
+    setApiRequestConnection(g.primaryConnectionId);
   }
 }
 
-export function setPrimaryGatewayConnectionId(connectionId: null | string | undefined): void {
+export function setPrimaryGatewayConnectionId(
+  connectionId: null | string | undefined,
+): void {
   // Hardening for #95628: while the active route is a secondary scope, the
   // window is looking at a NON-primary socket — any connection id flowing
   // through presentation-layer code at that moment describes the secondary,
@@ -270,30 +288,35 @@ export function setPrimaryGatewayConnectionId(connectionId: null | string | unde
   // the wrong backend. The primary's own identity is (re)published by its
   // boot/reconnect path, which runs with the primary route active.
   if (!isActivePrimary()) {
-    return
+    return;
   }
 
-  g.primaryConnectionId = (connectionId ?? '').trim() || null
+  g.primaryConnectionId = (connectionId ?? "").trim() || null;
 
   if (g.activeKey === g.primaryProfile) {
-    setApiRequestConnection(g.primaryConnectionId)
+    setApiRequestConnection(g.primaryConnectionId);
   }
 }
 
 /** Publish the registry source owned by the window primary socket. */
-export function setPrimaryGatewayConnection(connection: Pick<HermesConnection, 'connectionId'> | null): void {
-  setPrimaryGatewayConnectionId(connection?.connectionId)
+export function setPrimaryGatewayConnection(
+  connection: Pick<HermesConnection, "connectionId"> | null,
+): void {
+  setPrimaryGatewayConnectionId(connection?.connectionId);
 }
 
-function isPrimaryRegistryRoute(connectionId: null | string, profile: string): boolean {
-  const id = String(connectionId ?? '').trim()
+function isPrimaryRegistryRoute(
+  connectionId: null | string,
+  profile: string,
+): boolean {
+  const id = String(connectionId ?? "").trim();
 
   return (
     normKey(profile) === g.primaryProfile &&
     Boolean(id) &&
     Boolean(g.primaryConnectionId) &&
     id === g.primaryConnectionId
-  )
+  );
 }
 
 /** True when `connectionId` is the window's already-attached source AND that
@@ -302,38 +325,45 @@ function isPrimaryRegistryRoute(connectionId: null | string, profile: string): b
  *  dials a second WebSocket at the same Tailscale URL, which accept/closes in
  *  ~30ms (`messages=1`) and never runs `session.create` (#96493). Isolated
  *  SSH/pooled backends (`sharedRemote: false`) still get their own secondary. */
-async function isAttachedSharedRemote(connectionId: null | string, profile: string): Promise<boolean> {
-  const id = String(connectionId ?? '').trim()
-  const key = normKey(profile)
+async function isAttachedSharedRemote(
+  connectionId: null | string,
+  profile: string,
+): Promise<boolean> {
+  const id = String(connectionId ?? "").trim();
+  const key = normKey(profile);
 
   if (!id || !g.primaryConnectionId || id !== g.primaryConnectionId) {
-    return false
+    return false;
   }
 
   if (isPrimaryRegistryRoute(id, key)) {
-    return false
+    return false;
   }
 
-  const desktop = window.hermesDesktop
+  const desktop = window.hermesDesktop;
 
   if (!desktop?.getConnectionFor) {
-    return false
+    return false;
   }
 
   try {
     const conn = await withTimeout(
       desktop.getConnectionFor({ connectionId: id, profile: key }),
       RECONNECT_ATTEMPT_TIMEOUT_MS,
-      `Timed out resolving shared-remote route for "${key}"`
-    )
+      `Timed out resolving shared-remote route for "${key}"`,
+    );
 
-    return Boolean(conn && typeof conn === 'object' && (conn as { sharedRemote?: boolean }).sharedRemote === true)
+    return Boolean(
+      conn &&
+      typeof conn === "object" &&
+      (conn as { sharedRemote?: boolean }).sharedRemote === true,
+    );
   } catch {
     // Probe failed. A secondary at this already-attached source is the #96493
     // ghost WebSocket (accept/close, messages=1). Prefer the primary until a
     // later probe can prove isolation (`sharedRemote: false`). Isolated SSH
     // still dials its own socket when getConnectionFor succeeds.
-    return true
+    return true;
   }
 }
 
@@ -341,31 +371,31 @@ async function requestOnPrimaryGateway<T>(
   method: string,
   params: Record<string, unknown>,
   timeoutMs?: number,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<T> {
-  const gateway = g.primaryGateway
+  const gateway = g.primaryGateway;
 
   if (!gateway || !isOpen(gateway)) {
-    throw new Error('Hermes gateway unavailable')
+    throw new Error("Hermes gateway unavailable");
   }
 
   return timeoutMs === undefined && signal === undefined
     ? gateway.request<T>(method, params)
-    : gateway.request<T>(method, params, timeoutMs, signal)
+    : gateway.request<T>(method, params, timeoutMs, signal);
 }
 
 export function isActivePrimary(): boolean {
-  return g.activeKey === g.primaryProfile
+  return g.activeKey === g.primaryProfile;
 }
 
 /** Changes on every active route selection, including same-profile source swaps. */
 export function gatewayActivationEpoch(): number {
-  return Number.isFinite(g.activationEpoch) ? g.activationEpoch : 0
+  return Number.isFinite(g.activationEpoch) ? g.activationEpoch : 0;
 }
 
 export function activeGateway(): HermesGateway | null {
   if (g.activeKey === g.primaryProfile) {
-    return g.primaryGateway
+    return g.primaryGateway;
   }
 
   // A named scope resolves to ITS socket or nothing. Falling back to the
@@ -373,7 +403,7 @@ export function activeGateway(): HermesGateway | null {
   // requests) to the WRONG backend whenever the scope's entry is gone —
   // teardown sites keep the invariant "activeKey always resolves" by
   // re-pointing the active key at the primary when they evict it.
-  return g.secondaries.get(g.activeKey)?.gateway ?? null
+  return g.secondaries.get(g.activeKey)?.gateway ?? null;
 }
 
 /**
@@ -388,10 +418,13 @@ export function activeGateway(): HermesGateway | null {
  */
 export function activeGatewayConnectionId(): null | string {
   if (g.activeKey === g.primaryProfile) {
-    return g.primaryConnectionId ?? (g.config?.activeConnectionId?.()?.trim() || null)
+    return (
+      g.primaryConnectionId ??
+      (g.config?.activeConnectionId?.()?.trim() || null)
+    );
   }
 
-  return g.secondaries.get(g.activeKey)?.connectionId ?? null
+  return g.secondaries.get(g.activeKey)?.connectionId ?? null;
 }
 
 /**
@@ -401,15 +434,15 @@ export function activeGatewayConnectionId(): null | string {
  * NOT the restarted backend and keep their bindings; everything else re-resumes.
  */
 export function liveSecondaryConnectionIds(): Set<string> {
-  const live = new Set<string>()
+  const live = new Set<string>();
 
   for (const entry of g.secondaries.values()) {
     if (entry.connectionId && isOpen(entry.gateway)) {
-      live.add(entry.connectionId)
+      live.add(entry.connectionId);
     }
   }
 
-  return live
+  return live;
 }
 
 // Mirror a backend's connection state into the global composer state, but only
@@ -419,44 +452,44 @@ export function liveSecondaryConnectionIds(): Set<string> {
 function reportGatewayState(profile: string, state: ConnectionState): void {
   // Any socket opening replays parked prompts; hold OS notifications so a
   // launch/reconnect doesn't alert about state that already existed.
-  if (state === 'open') {
-    markNativeNotifyBaseline()
+  if (state === "open") {
+    markNativeNotifyBaseline();
   }
 
   if (normKey(profile) === g.activeKey) {
-    setGatewayState(state)
+    setGatewayState(state);
   }
 }
 
 export function reportPrimaryGatewayState(state: ConnectionState): void {
-  reportGatewayState(g.primaryProfile, state)
+  reportGatewayState(g.primaryProfile, state);
 }
 
 function setActive(profile: string): void {
-  const activationEpoch = beginGatewayActivation()
-  applyActive(profile, activationEpoch)
+  const activationEpoch = beginGatewayActivation();
+  applyActive(profile, activationEpoch);
 }
 
 function beginGatewayActivation(): number {
-  g.activationEpoch = gatewayActivationEpoch() + 1
+  g.activationEpoch = gatewayActivationEpoch() + 1;
 
-  return g.activationEpoch
+  return g.activationEpoch;
 }
 
 function applyActive(profile: string, activationEpoch: number): boolean {
   if (gatewayActivationEpoch() !== activationEpoch) {
-    return false
+    return false;
   }
 
-  g.activeKey = normKey(profile)
-  const gateway = activeGateway()
-  g.$gateway.set(gateway)
-  setGatewayState(gateway?.connectionState ?? 'closed')
+  g.activeKey = normKey(profile);
+  const gateway = activeGateway();
+  g.$gateway.set(gateway);
+  setGatewayState(gateway?.connectionState ?? "closed");
   // Push the active scope's registry connection into the hermes module (null
   // for the local pool) so connection-building WS calls (pluginSocket) resolve
   // through the same source of truth every activation path maintains here —
   // registry-agent activations included, not just profile switches.
-  setApiRequestConnection(activeGatewayConnectionId())
+  setApiRequestConnection(activeGatewayConnectionId());
 
   // Publish the BARE profile this route serves, in the same synchronous step
   // as the socket selection. activeKey may be a composite registry scope
@@ -466,40 +499,42 @@ function applyActive(profile: string, activationEpoch: number): boolean {
   // fallback path funnels through applyActive, so the published profile can
   // never linger on a backend that is no longer selected (#89206).
   const routeProfile =
-    g.activeKey === g.primaryProfile ? g.primaryProfile : (g.secondaries.get(g.activeKey)?.profile ?? g.primaryProfile)
+    g.activeKey === g.primaryProfile
+      ? g.primaryProfile
+      : (g.secondaries.get(g.activeKey)?.profile ?? g.primaryProfile);
 
-  g.$activeProfile.set(routeProfile)
-  g.config?.onActiveRouteChanged?.(routeProfile)
+  g.$activeProfile.set(routeProfile);
+  g.config?.onActiveRouteChanged?.(routeProfile);
 
-  return true
+  return true;
 }
 
 function publishActiveConnection(connection: HermesConnection): void {
   if (g.config?.onActiveConnectionChanged) {
-    g.config.onActiveConnectionChanged(connection)
+    g.config.onActiveConnectionChanged(connection);
   } else {
-    setConnection(connection)
+    setConnection(connection);
   }
 }
 
 function clearTimer(entry: Secondary): void {
   if (entry.reconnectTimer !== null) {
-    clearTimeout(entry.reconnectTimer)
-    entry.reconnectTimer = null
+    clearTimeout(entry.reconnectTimer);
+    entry.reconnectTimer = null;
   }
 }
 
 async function openSecondary(entry: Secondary): Promise<void> {
-  const desktop = window.hermesDesktop
+  const desktop = window.hermesDesktop;
 
   if (!desktop) {
-    return
+    return;
   }
 
   if (entry.connectPromise) {
-    await entry.connectPromise
+    await entry.connectPromise;
 
-    return
+    return;
   }
 
   const pending = (async () => {
@@ -513,19 +548,24 @@ async function openSecondary(entry: Secondary): Promise<void> {
     // Dynamic import keeps the existing session-states → gateway module cycle
     // open. Awaiting it is intentional: correctness at the generation boundary
     // outranks the single local-module microtask this adds to a reconnect.
-    const openedScopes = openedSecondaryScopes()
-    const reopening = entry.openedOnce || entry.connection !== null || openedScopes.has(entry.scope)
-    let reconcileBusyAfterOpen: null | (() => void) = null
+    const openedScopes = openedSecondaryScopes();
+    const reopening =
+      entry.openedOnce ||
+      entry.connection !== null ||
+      openedScopes.has(entry.scope);
+    let reconcileBusyAfterOpen: null | (() => void) = null;
 
     if (reopening) {
       try {
-        const { reconcileBusyStatesOnReconnect, resetTileRuntimeBindings } = await import('@/store/session-states')
+        const { reconcileBusyStatesOnReconnect, resetTileRuntimeBindings } =
+          await import("@/store/session-states");
 
         resetTileRuntimeBindings({
-          connectionId: entry.connectionId || 'local',
-          profile: entry.profile
-        })
-        reconcileBusyAfterOpen = () => reconcileBusyStatesOnReconnect(entry.scope)
+          connectionId: entry.connectionId || "local",
+          profile: entry.profile,
+        });
+        reconcileBusyAfterOpen = () =>
+          reconcileBusyStatesOnReconnect(entry.scope);
       } catch {
         // Best effort for partial test/HMR graphs. Production always loads the
         // real store; a failed import must not make the transport unrecoverable.
@@ -543,104 +583,113 @@ async function openSecondary(entry: Secondary): Promise<void> {
     const conn =
       entry.connectionId && desktop.getConnectionFor
         ? await withTimeout(
-            desktop.getConnectionFor({ connectionId: entry.connectionId, profile: entry.profile }),
+            desktop.getConnectionFor({
+              connectionId: entry.connectionId,
+              profile: entry.profile,
+            }),
             RECONNECT_ATTEMPT_TIMEOUT_MS,
-            `Timed out connecting to profile "${entry.profile}"`
+            `Timed out connecting to profile "${entry.profile}"`,
           )
         : await withTimeout(
             desktop.getConnection(entry.profile),
             RECONNECT_ATTEMPT_TIMEOUT_MS,
-            `Timed out connecting to profile "${entry.profile}"`
-          )
+            `Timed out connecting to profile "${entry.profile}"`,
+          );
 
-    entry.connection = conn
+    entry.connection = conn;
 
     const wsDeps =
       entry.connectionId && desktop.getGatewayWsUrlFor
         ? {
             getGatewayWsUrl: () =>
-              desktop.getGatewayWsUrlFor!({ connectionId: entry.connectionId, profile: entry.profile })
+              desktop.getGatewayWsUrlFor!({
+                connectionId: entry.connectionId,
+                profile: entry.profile,
+              }),
           }
         : entry.connectionId
           ? {}
-          : desktop
+          : desktop;
 
     const wsUrl = await withTimeout(
       resolveGatewayWsUrl(wsDeps, conn),
       RECONNECT_ATTEMPT_TIMEOUT_MS,
-      `Timed out re-minting the gateway WebSocket URL for profile "${entry.profile}"`
-    )
+      `Timed out re-minting the gateway WebSocket URL for profile "${entry.profile}"`,
+    );
 
     try {
-      await entry.gateway.connect(wsUrl)
+      await entry.gateway.connect(wsUrl);
     } catch (error) {
       // Log the dial target for support, but RETHROW THE ORIGINAL ERROR —
       // reconnectSecondary classifies failures by message ("No connection
       // with id", "no longer exists") to fail-stop permanent conditions, and
       // wrapping here would break that. Callers decide surfacing (#81094).
-      console.error(`[gateway] dial failed for scope="${entry.scope}" profile="${entry.profile}":`, error)
-      throw error
+      console.error(
+        `[gateway] dial failed for scope="${entry.scope}" profile="${entry.profile}":`,
+        error,
+      );
+      throw error;
     }
 
-    entry.openedOnce = true
-    openedScopes.add(entry.scope)
+    entry.openedOnce = true;
+    openedScopes.add(entry.scope);
 
     try {
-      reconcileBusyAfterOpen?.()
+      reconcileBusyAfterOpen?.();
     } catch {
       // The socket is already open. A best-effort UI-state reconcile must not
       // turn that successful transport recovery into a reported dial failure.
     }
 
     if (!entry.wantOpen) {
-      entry.gateway.close()
+      entry.gateway.close();
 
-      return
+      return;
     }
 
     if (g.activeKey === entry.scope) {
-      publishActiveConnection(conn)
+      publishActiveConnection(conn);
     }
 
-    void desktop.touchBackend?.(entry.scope).catch(() => undefined)
-  })()
+    void desktop.touchBackend?.(entry.scope).catch(() => undefined);
+  })();
 
-  entry.connectPromise = pending
+  entry.connectPromise = pending;
 
   try {
-    await pending
+    await pending;
   } finally {
     if (entry.connectPromise === pending) {
-      entry.connectPromise = null
+      entry.connectPromise = null;
     }
   }
 }
 
 function scheduleReconnect(entry: Secondary): void {
   if (entry.reconnecting || entry.reconnectTimer !== null || !entry.wantOpen) {
-    return
+    return;
   }
 
   // Full-jitter exponential backoff — same shape (and same reason: avoid a
   // reconnect storm against a restarting gateway) as the primary's.
-  const delay = reconnectBackoffDelayMs(entry.reconnectAttempt)
-  entry.reconnectAttempt += 1
+  const delay = reconnectBackoffDelayMs(entry.reconnectAttempt);
+  entry.reconnectAttempt += 1;
   entry.reconnectTimer = setTimeout(() => {
-    entry.reconnectTimer = null
-    void reconnectSecondary(entry)
-  }, delay)
+    entry.reconnectTimer = null;
+    void reconnectSecondary(entry);
+  }, delay);
 }
 
 async function reconnectSecondary(entry: Secondary): Promise<void> {
   if (entry.reconnecting || !entry.wantOpen || isOpen(entry.gateway)) {
-    return
+    return;
   }
 
-  entry.reconnecting = true
+  entry.reconnecting = true;
 
   try {
-    await openSecondary(entry)
-    entry.reconnectAttempt = 0
+    await openSecondary(entry);
+    entry.reconnectAttempt = 0;
   } catch (error) {
     // The registry no longer knows this connection (removed while we were
     // backing off), or Electron's deletion guard reports the profile itself
@@ -648,24 +697,27 @@ async function reconnectSecondary(entry: Secondary): Promise<void> {
     // forever can never succeed and hammers the spawn guard every backoff
     // tick (#88769). Fail-stop: dispose the entry and evict it instead of an
     // infinite 15s-cap retry loop.
-    if ((entry.connectionId && isMissingConnectionError(error)) || isMissingProfileError(error)) {
-      entry.reconnecting = false
-      disposeSecondary(entry)
+    if (
+      (entry.connectionId && isMissingConnectionError(error)) ||
+      isMissingProfileError(error)
+    ) {
+      entry.reconnecting = false;
+      disposeSecondary(entry);
 
       if (g.secondaries.get(entry.scope) === entry) {
-        g.secondaries.delete(entry.scope)
+        g.secondaries.delete(entry.scope);
       }
 
-      restoreActiveToPrimaryIfEvicted()
+      restoreActiveToPrimaryIfEvicted();
 
-      return
+      return;
     }
     // Other transport failure → fall through to the backoff below.
   } finally {
-    entry.reconnecting = false
+    entry.reconnecting = false;
 
     if (entry.wantOpen && !isOpen(entry.gateway)) {
-      scheduleReconnect(entry)
+      scheduleReconnect(entry);
     }
   }
 }
@@ -674,9 +726,9 @@ async function reconnectSecondary(entry: Secondary): Promise<void> {
 // the registry entry is gone. That is a permanent condition for the scoped
 // socket, unlike transient transport errors.
 function isMissingConnectionError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error ?? '')
+  const message = error instanceof Error ? error.message : String(error ?? "");
 
-  return message.includes('No connection with id')
+  return message.includes("No connection with id");
 }
 
 // Electron's spawn guard (assertLocalProfileCanStart) rejects with these when
@@ -684,14 +736,19 @@ function isMissingConnectionError(error: unknown): boolean {
 // renderer socket that condition is permanent: the backend it reconnects to
 // can never come back, and every retry hammers the guard (#88769).
 function isMissingProfileError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error ?? '')
+  const message = error instanceof Error ? error.message : String(error ?? "");
 
-  return message.includes('no longer exists') || message.includes('is being deleted')
+  return (
+    message.includes("no longer exists") || message.includes("is being deleted")
+  );
 }
 
-function createSecondary(profile: string, connectionId: null | string = null): Secondary {
-  const gateway = new HermesGateway()
-  const scope = registryBackendScopeKey(connectionId, profile)
+function createSecondary(
+  profile: string,
+  connectionId: null | string = null,
+): Secondary {
+  const gateway = new HermesGateway();
+  const scope = registryBackendScopeKey(connectionId, profile);
 
   const entry: Secondary = {
     scope,
@@ -711,36 +768,40 @@ function createSecondary(profile: string, connectionId: null | string = null): S
     retained: false,
     relayRetainCount: 0,
     wantOpen: true,
-    activationLeaseUntil: 0
-  }
+    activationLeaseUntil: 0,
+  };
 
   // Events keep carrying the bare profile — session routing is profile-keyed
   // everywhere. connectionId rides along for surfaces that need the source.
-  entry.offEvent = gateway.onEvent(event => {
-    g.config?.onEvent({ ...event, profile, ...(connectionId ? { connectionId } : {}) })
-    releaseTerminalTurnLease(entry.scope, event)
-  })
-  entry.offState = gateway.onState(state => {
-    reportGatewayState(scope, state)
+  entry.offEvent = gateway.onEvent((event) => {
+    g.config?.onEvent({
+      ...event,
+      profile,
+      ...(connectionId ? { connectionId } : {}),
+    });
+    releaseTerminalTurnLease(entry.scope, event);
+  });
+  entry.offState = gateway.onState((state) => {
+    reportGatewayState(scope, state);
 
-    if (state === 'open') {
-      entry.reconnectAttempt = 0
-      clearTimer(entry)
-    } else if (state === 'closed' || state === 'error') {
+    if (state === "open") {
+      entry.reconnectAttempt = 0;
+      clearTimer(entry);
+    } else if (state === "closed" || state === "error") {
       // A dead socket cannot emit the terminal event that normally releases
       // its turn lease. Drop the orphaned lease before deciding whether this
       // route is still retained/active enough to reconnect.
-      releaseTurnLeasesForScope(scope)
+      releaseTurnLeasesForScope(scope);
 
       if (entry.wantOpen) {
-        scheduleReconnect(entry)
+        scheduleReconnect(entry);
       }
     }
-  })
+  });
 
-  g.secondaries.set(scope, entry)
+  g.secondaries.set(scope, entry);
 
-  return entry
+  return entry;
 }
 
 // True when `profile`'s backend route resolves to the SHARED primary backend
@@ -753,10 +814,10 @@ function createSecondary(profile: string, connectionId: null | string = null): S
 // poisons the active gateway with "not connected" even though the primary is
 // open right next to it.
 async function sharedPrimaryRoute(profile: string): Promise<boolean> {
-  const desktop = window.hermesDesktop
+  const desktop = window.hermesDesktop;
 
   if (!desktop) {
-    return false
+    return false;
   }
 
   try {
@@ -767,12 +828,16 @@ async function sharedPrimaryRoute(profile: string): Promise<boolean> {
     const conn = await withTimeout(
       desktop.getConnection(profile),
       RECONNECT_ATTEMPT_TIMEOUT_MS,
-      `Timed out resolving the shared-primary route for profile "${profile}"`
-    )
+      `Timed out resolving the shared-primary route for profile "${profile}"`,
+    );
 
-    return Boolean(conn && typeof conn === 'object' && (conn as { sharedPrimary?: boolean }).sharedPrimary === true)
+    return Boolean(
+      conn &&
+      typeof conn === "object" &&
+      (conn as { sharedPrimary?: boolean }).sharedPrimary === true,
+    );
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -781,46 +846,61 @@ async function sharedPrimaryRoute(profile: string): Promise<boolean> {
 // request-scope flag; dedicated local/remote profiles use their pooled socket.
 async function gatewayForProfile(
   profile: string,
-  leaseRequest = false
-): Promise<{ gateway: HermesGateway | null; key: string; release: () => void; scopeProfile: boolean }> {
-  const key = normKey(profile)
-  const noRelease = () => undefined
+  leaseRequest = false,
+): Promise<{
+  gateway: HermesGateway | null;
+  key: string;
+  release: () => void;
+  scopeProfile: boolean;
+}> {
+  const key = normKey(profile);
+  const noRelease = () => undefined;
 
   if (key === g.primaryProfile) {
-    return { gateway: g.primaryGateway, key, release: noRelease, scopeProfile: false }
+    return {
+      gateway: g.primaryGateway,
+      key,
+      release: noRelease,
+      scopeProfile: false,
+    };
   }
 
   if (await sharedPrimaryRoute(key)) {
-    return { gateway: g.primaryGateway, key, release: noRelease, scopeProfile: true }
+    return {
+      gateway: g.primaryGateway,
+      key,
+      release: noRelease,
+      scopeProfile: true,
+    };
   }
 
-  const entry = g.secondaries.get(key) ?? createSecondary(key)
+  const entry = g.secondaries.get(key) ?? createSecondary(key);
 
   // Existing dev-HMR entries predate the request lease/ownership fields.
   if (!Number.isFinite(entry.activeRequests)) {
-    entry.activeRequests = 0
+    entry.activeRequests = 0;
   }
 
-  if (typeof entry.retained !== 'boolean') {
-    entry.retained = true
+  if (typeof entry.retained !== "boolean") {
+    entry.retained = true;
   }
 
   if (!leaseRequest) {
-    entry.retained = true
+    entry.retained = true;
   }
 
-  entry.wantOpen = true
+  entry.wantOpen = true;
 
   if (leaseRequest) {
-    entry.activeRequests += 1
+    entry.activeRequests += 1;
   }
 
-  let released = false
+  let released = false;
 
   const release = () => {
     if (!released && leaseRequest) {
-      released = true
-      entry.activeRequests = Math.max(0, entry.activeRequests - 1)
+      released = true;
+      entry.activeRequests = Math.max(0, entry.activeRequests - 1);
 
       if (
         entry.activeRequests === 0 &&
@@ -829,25 +909,25 @@ async function gatewayForProfile(
         !foregroundPinned(entry) &&
         g.activeKey !== entry.scope
       ) {
-        disposeSecondary(entry)
+        disposeSecondary(entry);
 
         if (g.secondaries.get(entry.scope) === entry) {
-          g.secondaries.delete(entry.scope)
+          g.secondaries.delete(entry.scope);
         }
       }
     }
-  }
+  };
 
   try {
     if (!isOpen(entry.gateway)) {
-      await openSecondary(entry)
+      await openSecondary(entry);
     }
   } catch (error) {
-    release()
-    throw error
+    release();
+    throw error;
   }
 
-  return { gateway: entry.gateway, key, release, scopeProfile: false }
+  return { gateway: entry.gateway, key, release, scopeProfile: false };
 }
 
 /**
@@ -860,25 +940,27 @@ export async function requestGatewayForProfile<T>(
   method: string,
   params: Record<string, unknown> = {},
   timeoutMs?: number,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<T> {
-  const route = await gatewayForProfile(profile, true)
+  const route = await gatewayForProfile(profile, true);
 
   try {
     if (!route.gateway) {
-      throw new Error(`Hermes gateway unavailable for profile "${route.key}"`)
+      throw new Error(`Hermes gateway unavailable for profile "${route.key}"`);
     }
 
-    const routedParams = route.scopeProfile ? { ...params, profile: route.key } : params
+    const routedParams = route.scopeProfile
+      ? { ...params, profile: route.key }
+      : params;
 
     // Same arity contract as the ambient path in session-request-router: only
     // pass the deadline args through when the caller set them, so a plain
     // profile-routed RPC keeps its two-argument call shape.
     return await (timeoutMs === undefined && signal === undefined
       ? route.gateway.request<T>(method, routedParams)
-      : route.gateway.request<T>(method, routedParams, timeoutMs, signal))
+      : route.gateway.request<T>(method, routedParams, timeoutMs, signal));
   } finally {
-    route.release()
+    route.release();
   }
 }
 
@@ -894,13 +976,13 @@ export async function requestGatewayForAgent<T>(
   method: string,
   params: Record<string, unknown> = {},
   timeoutMs?: number,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<T> {
-  const key = normKey(profile)
-  const scope = registryBackendScopeKey(connectionId, key)
+  const key = normKey(profile);
+  const scope = registryBackendScopeKey(connectionId, key);
 
   if (scope === key) {
-    return requestGatewayForProfile<T>(key, method, params, timeoutMs, signal)
+    return requestGatewayForProfile<T>(key, method, params, timeoutMs, signal);
   }
 
   // A primary remote selected from the connection registry carries its source
@@ -912,41 +994,48 @@ export async function requestGatewayForAgent<T>(
   // Require both owner identities to agree before collapsing the route; a
   // different source or profile must retain its isolated secondary.
   if (isPrimaryRegistryRoute(connectionId, key)) {
-    return requestGatewayForProfile<T>(key, method, params, timeoutMs, signal)
+    return requestGatewayForProfile<T>(key, method, params, timeoutMs, signal);
   }
 
   if (await isAttachedSharedRemote(connectionId, key)) {
-    return requestOnPrimaryGateway<T>(method, { ...params, profile: key }, timeoutMs, signal)
+    return requestOnPrimaryGateway<T>(
+      method,
+      { ...params, profile: key },
+      timeoutMs,
+      signal,
+    );
   }
 
   if (!window.hermesDesktop?.getConnectionFor) {
-    throw new Error('This Desktop build cannot dial registry connections. Update Hermes Desktop.')
+    throw new Error(
+      "This Desktop build cannot dial registry connections. Update Hermes Desktop.",
+    );
   }
 
-  const entry = g.secondaries.get(scope) ?? createSecondary(key, connectionId)
+  const entry = g.secondaries.get(scope) ?? createSecondary(key, connectionId);
 
   // Existing dev-HMR entries predate request leases/ownership.
   if (!Number.isFinite(entry.activeRequests)) {
-    entry.activeRequests = 0
+    entry.activeRequests = 0;
   }
 
-  if (typeof entry.retained !== 'boolean') {
-    entry.retained = true
+  if (typeof entry.retained !== "boolean") {
+    entry.retained = true;
   }
 
-  entry.wantOpen = true
-  entry.activeRequests += 1
+  entry.wantOpen = true;
+  entry.activeRequests += 1;
 
   try {
     if (!isOpen(entry.gateway)) {
-      await openSecondary(entry)
+      await openSecondary(entry);
     }
 
     return await (timeoutMs === undefined && signal === undefined
       ? entry.gateway.request<T>(method, params)
-      : entry.gateway.request<T>(method, params, timeoutMs, signal))
+      : entry.gateway.request<T>(method, params, timeoutMs, signal));
   } finally {
-    entry.activeRequests = Math.max(0, entry.activeRequests - 1)
+    entry.activeRequests = Math.max(0, entry.activeRequests - 1);
 
     if (
       !drainPendingConnectionRedial(entry) &&
@@ -956,10 +1045,10 @@ export async function requestGatewayForAgent<T>(
       !foregroundPinned(entry) &&
       g.activeKey !== entry.scope
     ) {
-      disposeSecondary(entry)
+      disposeSecondary(entry);
 
       if (g.secondaries.get(entry.scope) === entry) {
-        g.secondaries.delete(entry.scope)
+        g.secondaries.delete(entry.scope);
       }
     }
   }
@@ -982,19 +1071,22 @@ export async function requestGatewayForAgent<T>(
  * the same key language pruneSecondaryGateways' keep-set speaks.
  */
 function foregroundPinned(entry: Secondary): boolean {
-  const scopes = g.config?.foregroundScopes?.()
+  const scopes = g.config?.foregroundScopes?.();
 
   if (!scopes) {
-    return false
+    return false;
   }
 
-  return scopes.has(entry.scope) || (!entry.connectionId && scopes.has(entry.profile))
+  return (
+    scopes.has(entry.scope) ||
+    (!entry.connectionId && scopes.has(entry.profile))
+  );
 }
 
 /** True when the bot relay currently pins this entry open. Number guard:
  *  dev-HMR entries predate the field. */
 function relayRetained(entry: Secondary): boolean {
-  return Number.isFinite(entry.relayRetainCount) && entry.relayRetainCount > 0
+  return Number.isFinite(entry.relayRetainCount) && entry.relayRetainCount > 0;
 }
 
 /**
@@ -1010,21 +1102,21 @@ function drainPendingConnectionRedial(entry: Secondary): boolean {
     foregroundPinned(entry) ||
     g.secondaries.get(entry.scope) !== entry
   ) {
-    return false
+    return false;
   }
 
-  entry.pendingConnectionRedial = false
-  const wasActive = g.activeKey === entry.scope
-  disposeSecondary(entry)
-  g.secondaries.delete(entry.scope)
+  entry.pendingConnectionRedial = false;
+  const wasActive = g.activeKey === entry.scope;
+  disposeSecondary(entry);
+  g.secondaries.delete(entry.scope);
 
   const reopen = wasActive
     ? ensureGatewayForAgent(entry.connectionId, entry.profile)
-    : openGatewayForAgent(entry.connectionId, entry.profile)
+    : openGatewayForAgent(entry.connectionId, entry.profile);
 
-  void reopen.catch(() => undefined)
+  void reopen.catch(() => undefined);
 
-  return true
+  return true;
 }
 
 /**
@@ -1037,33 +1129,36 @@ function drainPendingConnectionRedial(entry: Secondary): boolean {
  * either the primary socket (no churn) or a short-lived local dial — never
  * the remote reconnect flood this retention exists to stop.
  */
-export function retainGatewayForRelay(connectionId: null | string, profile: string): () => void {
-  const key = normKey(profile)
-  const connection = String(connectionId ?? '').trim()
+export function retainGatewayForRelay(
+  connectionId: null | string,
+  profile: string,
+): () => void {
+  const key = normKey(profile);
+  const connection = String(connectionId ?? "").trim();
 
-  if (!connection || connection === 'local') {
-    return () => undefined
+  if (!connection || connection === "local") {
+    return () => undefined;
   }
 
-  const scope = registryBackendScopeKey(connection, key)
-  const entry = g.secondaries.get(scope) ?? createSecondary(key, connection)
+  const scope = registryBackendScopeKey(connection, key);
+  const entry = g.secondaries.get(scope) ?? createSecondary(key, connection);
 
   if (!Number.isFinite(entry.relayRetainCount)) {
-    entry.relayRetainCount = 0
+    entry.relayRetainCount = 0;
   }
 
-  entry.relayRetainCount += 1
-  entry.wantOpen = true
+  entry.relayRetainCount += 1;
+  entry.wantOpen = true;
 
-  let released = false
+  let released = false;
 
   return () => {
     if (released) {
-      return
+      return;
     }
 
-    released = true
-    entry.relayRetainCount = Math.max(0, (entry.relayRetainCount || 0) - 1)
+    released = true;
+    entry.relayRetainCount = Math.max(0, (entry.relayRetainCount || 0) - 1);
 
     if (
       !drainPendingConnectionRedial(entry) &&
@@ -1074,10 +1169,10 @@ export function retainGatewayForRelay(connectionId: null | string, profile: stri
       g.activeKey !== entry.scope &&
       g.secondaries.get(entry.scope) === entry
     ) {
-      disposeSecondary(entry)
-      g.secondaries.delete(entry.scope)
+      disposeSecondary(entry);
+      g.secondaries.delete(entry.scope);
     }
-  }
+  };
 }
 
 /**
@@ -1091,55 +1186,61 @@ export function retainGatewayForRelay(connectionId: null | string, profile: stri
  * `finally`; the refcount keeps the socket (and the session it minted) alive
  * for the whole sequence. Primary/shared-primary routes return a no-op release.
  */
-export async function retainGatewayForAgent(connectionId: null | string, profile: string): Promise<() => void> {
-  const key = normKey(profile)
-  const scope = registryBackendScopeKey(connectionId, key)
+export async function retainGatewayForAgent(
+  connectionId: null | string,
+  profile: string,
+): Promise<() => void> {
+  const key = normKey(profile);
+  const scope = registryBackendScopeKey(connectionId, key);
 
   if (scope === key) {
     // Plain-profile route: gatewayForProfile's request lease IS the retain —
     // hold it until the caller releases.
-    const route = await gatewayForProfile(key, true)
+    const route = await gatewayForProfile(key, true);
 
-    return route.release
+    return route.release;
   }
 
-  if (isPrimaryRegistryRoute(connectionId, key) || (await isAttachedSharedRemote(connectionId, key))) {
+  if (
+    isPrimaryRegistryRoute(connectionId, key) ||
+    (await isAttachedSharedRemote(connectionId, key))
+  ) {
     // Primary socket stays open for the window lifetime — no secondary to hold.
-    return () => undefined
+    return () => undefined;
   }
 
   if (!window.hermesDesktop?.getConnectionFor) {
     // No registry dialing in this build — nothing to hold; the request path
     // will throw its own actionable error.
-    return () => undefined
+    return () => undefined;
   }
 
-  const entry = g.secondaries.get(scope) ?? createSecondary(key, connectionId)
+  const entry = g.secondaries.get(scope) ?? createSecondary(key, connectionId);
 
   // Existing dev-HMR entries predate request leases/ownership.
   if (!Number.isFinite(entry.activeRequests)) {
-    entry.activeRequests = 0
+    entry.activeRequests = 0;
   }
 
-  if (typeof entry.retained !== 'boolean') {
-    entry.retained = true
+  if (typeof entry.retained !== "boolean") {
+    entry.retained = true;
   }
 
-  entry.wantOpen = true
-  entry.activeRequests += 1
+  entry.wantOpen = true;
+  entry.activeRequests += 1;
 
-  let released = false
+  let released = false;
 
   const release = () => {
     if (released) {
-      return
+      return;
     }
 
-    released = true
-    entry.activeRequests = Math.max(0, entry.activeRequests - 1)
+    released = true;
+    entry.activeRequests = Math.max(0, entry.activeRequests - 1);
 
     if (drainPendingConnectionRedial(entry)) {
-      return
+      return;
     }
 
     if (
@@ -1149,51 +1250,52 @@ export async function retainGatewayForAgent(connectionId: null | string, profile
       !foregroundPinned(entry) &&
       g.activeKey !== entry.scope
     ) {
-      disposeSecondary(entry)
+      disposeSecondary(entry);
 
       if (g.secondaries.get(entry.scope) === entry) {
-        g.secondaries.delete(entry.scope)
+        g.secondaries.delete(entry.scope);
       }
     }
-  }
+  };
 
   try {
     if (!isOpen(entry.gateway)) {
-      await openSecondary(entry)
+      await openSecondary(entry);
     }
   } catch (error) {
-    release()
-    throw error
+    release();
+    throw error;
   }
 
-  return release
+  return release;
 }
 
-const turnLeaseKey = (scope: string, sessionId: string): string => `${scope}\u0000${sessionId}`
-const TURN_LEASE_SETTLE_DELAY_MS = 500
+const turnLeaseKey = (scope: string, sessionId: string): string =>
+  `${scope}\u0000${sessionId}`;
+const TURN_LEASE_SETTLE_DELAY_MS = 500;
 
 function cancelTurnLeaseRelease(key: string): void {
-  const timer = g.turnLeaseReleaseTimers.get(key)
+  const timer = g.turnLeaseReleaseTimers.get(key);
 
   if (timer !== undefined) {
-    clearTimeout(timer)
-    g.turnLeaseReleaseTimers.delete(key)
+    clearTimeout(timer);
+    g.turnLeaseReleaseTimers.delete(key);
   }
 }
 
 function releaseTurnLeasesForScope(scope: string): void {
-  const prefix = `${scope}\u0000`
+  const prefix = `${scope}\u0000`;
 
   for (const [key, timer] of [...g.turnLeaseReleaseTimers]) {
     if (key.startsWith(prefix)) {
-      clearTimeout(timer)
-      g.turnLeaseReleaseTimers.delete(key)
+      clearTimeout(timer);
+      g.turnLeaseReleaseTimers.delete(key);
     }
   }
 
   for (const [key, release] of [...g.turnLeases]) {
     if (key.startsWith(prefix)) {
-      release()
+      release();
     }
   }
 }
@@ -1210,87 +1312,91 @@ function releaseTurnLeasesForScope(scope: string): void {
 export async function retainGatewayForSessionTurn(
   connectionId: null | string,
   profile: string,
-  sessionId: string
+  sessionId: string,
 ): Promise<() => void> {
   // Primary events do not flow through a Secondary's terminal-event listener.
   // Registering a no-op lease here would leave a phantom key that can suppress
   // the real hold if this route is later re-homed as a secondary.
   if (isPrimaryRegistryRoute(connectionId, normKey(profile))) {
-    return () => undefined
+    return () => undefined;
   }
 
-  const scope = registryBackendScopeKey(connectionId, normKey(profile))
-  const key = turnLeaseKey(scope, sessionId)
+  const scope = registryBackendScopeKey(connectionId, normKey(profile));
+  const key = turnLeaseKey(scope, sessionId);
 
-  cancelTurnLeaseRelease(key)
+  cancelTurnLeaseRelease(key);
 
   // A busy-session redirect/queue can submit again while the original turn is
   // still retained. The existing lease owns that turn; the extra submit must
   // not replace or release it. The no-op means "another caller owns the
   // shared lease", not "this caller acquired a separately releasable lease".
   if (g.turnLeases.has(key)) {
-    return () => undefined
+    return () => undefined;
   }
 
-  const releaseRoute = await retainGatewayForAgent(connectionId, profile)
-  let released = false
+  const releaseRoute = await retainGatewayForAgent(connectionId, profile);
+  let released = false;
 
   const release = () => {
     if (released) {
-      return
+      return;
     }
 
-    released = true
+    released = true;
 
     if (g.turnLeases.get(key) === release) {
-      g.turnLeases.delete(key)
+      g.turnLeases.delete(key);
     }
 
-    cancelTurnLeaseRelease(key)
-    releaseRoute()
-  }
+    cancelTurnLeaseRelease(key);
+    releaseRoute();
+  };
 
-  g.turnLeases.set(key, release)
+  g.turnLeases.set(key, release);
 
-  return release
+  return release;
 }
 
 function releaseTerminalTurnLease(scope: string, event: GatewayEvent): void {
-  const sessionId = String(event.session_id || '').trim()
+  const sessionId = String(event.session_id || "").trim();
 
   if (!sessionId) {
-    return
+    return;
   }
 
-  const key = turnLeaseKey(scope, sessionId)
+  const key = turnLeaseKey(scope, sessionId);
 
-  if (event.type === 'message.start') {
+  if (event.type === "message.start") {
     // The gateway emits settled session.info before immediately chaining a
     // queued/goal follow-up. Keep the same route alive for that next turn.
-    cancelTurnLeaseRelease(key)
+    cancelTurnLeaseRelease(key);
 
-    return
+    return;
   }
 
-  if (event.type === 'session.reclaimed') {
-    g.turnLeases.get(key)?.()
+  if (event.type === "session.reclaimed") {
+    g.turnLeases.get(key)?.();
 
-    return
+    return;
   }
 
-  const payload = event.payload as Record<string, unknown> | undefined
+  const payload = event.payload as Record<string, unknown> | undefined;
 
-  if (event.type === 'session.info' && payload?.running === false && !g.turnLeaseReleaseTimers.has(key)) {
+  if (
+    event.type === "session.info" &&
+    payload?.running === false &&
+    !g.turnLeaseReleaseTimers.has(key)
+  ) {
     // session.info(false) is the authoritative settled edge, but auto-followup
     // emits message.start immediately after it. A short debounce lets that
     // frame cancel release while still reclaiming ordinary completed turns.
     g.turnLeaseReleaseTimers.set(
       key,
       setTimeout(() => {
-        g.turnLeaseReleaseTimers.delete(key)
-        g.turnLeases.get(key)?.()
-      }, TURN_LEASE_SETTLE_DELAY_MS)
-    )
+        g.turnLeaseReleaseTimers.delete(key);
+        g.turnLeases.get(key)?.();
+      }, TURN_LEASE_SETTLE_DELAY_MS),
+    );
   }
 }
 
@@ -1301,7 +1407,7 @@ function releaseTerminalTurnLease(scope: string, event: GatewayEvent): void {
 // backend must not start a background retry loop — the real switch owns retry
 // and error UX. An already-open (or primary) profile is a no-op.
 export async function openGatewayForProfile(profile: string): Promise<void> {
-  await gatewayForProfile(profile)
+  await gatewayForProfile(profile);
 }
 
 // ── Connection-scoped agents (multi-source roster) ─────────────────────────
@@ -1321,110 +1427,121 @@ export async function openGatewayForProfile(profile: string): Promise<void> {
 export async function openGatewayForAgent(
   connectionId: null | string,
   profile: string,
-  { activationLease = false }: { activationLease?: boolean } = {}
+  { activationLease = false }: { activationLease?: boolean } = {},
 ): Promise<void> {
-  const scope = registryBackendScopeKey(connectionId, profile)
+  const scope = registryBackendScopeKey(connectionId, profile);
 
-  if (scope === normKey(profile) || isPrimaryRegistryRoute(connectionId, profile)) {
-    return openGatewayForProfile(profile)
+  if (
+    scope === normKey(profile) ||
+    isPrimaryRegistryRoute(connectionId, profile)
+  ) {
+    return openGatewayForProfile(profile);
   }
 
   if (await isAttachedSharedRemote(connectionId, profile)) {
     if (!isOpen(g.primaryGateway)) {
-      throw new Error('Hermes gateway unavailable')
+      throw new Error("Hermes gateway unavailable");
     }
 
-    return
+    return;
   }
 
   if (!window.hermesDesktop?.getConnectionFor) {
-    throw new Error('This Desktop build cannot dial registry connections. Update Hermes Desktop.')
+    throw new Error(
+      "This Desktop build cannot dial registry connections. Update Hermes Desktop.",
+    );
   }
 
-  const entry = g.secondaries.get(scope) ?? createSecondary(profile, connectionId)
-  entry.retained = true
-  entry.wantOpen = true
+  const entry =
+    g.secondaries.get(scope) ?? createSecondary(profile, connectionId);
+  entry.retained = true;
+  entry.wantOpen = true;
 
   if (activationLease) {
     // Stays held after a successful open: the activation that follows releases
     // it (applyActive path), and one that never comes lets it expire.
-    entry.activationLeaseUntil = Date.now() + ACTIVATION_LEASE_MS
+    entry.activationLeaseUntil = Date.now() + ACTIVATION_LEASE_MS;
   }
 
   if (isOpen(entry.gateway)) {
-    return
+    return;
   }
 
   try {
-    await openSecondary(entry)
+    await openSecondary(entry);
   } catch (error) {
     if (activationLease) {
-      entry.activationLeaseUntil = 0
+      entry.activationLeaseUntil = 0;
     }
 
-    throw error
+    throw error;
   }
 }
 
 export async function ensureGatewayForAgent(
   connectionId: null | string,
   profile: string,
-  { signal }: { signal?: AbortSignal } = {}
+  { signal }: { signal?: AbortSignal } = {},
 ): Promise<boolean> {
-  const scope = registryBackendScopeKey(connectionId, profile)
+  const scope = registryBackendScopeKey(connectionId, profile);
 
-  if (scope === normKey(profile) || isPrimaryRegistryRoute(connectionId, profile)) {
+  if (
+    scope === normKey(profile) ||
+    isPrimaryRegistryRoute(connectionId, profile)
+  ) {
     if (signal?.aborted) {
-      return false
+      return false;
     }
 
-    await ensureGatewayForProfile(profile)
+    await ensureGatewayForProfile(profile);
 
-    return !signal?.aborted
+    return !signal?.aborted;
   }
 
   if (await isAttachedSharedRemote(connectionId, profile)) {
-    return Boolean(isOpen(g.primaryGateway) && !signal?.aborted)
+    return Boolean(isOpen(g.primaryGateway) && !signal?.aborted);
   }
 
   if (!window.hermesDesktop?.getConnectionFor) {
-    throw new Error('This Desktop build cannot dial registry connections. Update Hermes Desktop.')
+    throw new Error(
+      "This Desktop build cannot dial registry connections. Update Hermes Desktop.",
+    );
   }
 
-  const activationEpoch = beginGatewayActivation()
+  const activationEpoch = beginGatewayActivation();
 
-  let entry = g.secondaries.get(scope)
+  let entry = g.secondaries.get(scope);
 
   if (!entry) {
-    entry = createSecondary(profile, connectionId)
+    entry = createSecondary(profile, connectionId);
   }
 
-  entry.retained = true
-  entry.wantOpen = true
+  entry.retained = true;
+  entry.wantOpen = true;
   // Lease the entry against the live-work pruner for the whole dial: the
   // switch target is not yet active and has no live sessions, so a prune
   // recompute firing mid-spawn would otherwise dispose it and this
   // activation would fail (#89622).
-  entry.activationLeaseUntil = Date.now() + ACTIVATION_LEASE_MS
+  entry.activationLeaseUntil = Date.now() + ACTIVATION_LEASE_MS;
 
   if (!isOpen(entry.gateway)) {
-    clearTimer(entry)
-    entry.reconnectAttempt = 0
+    clearTimer(entry);
+    entry.reconnectAttempt = 0;
 
     try {
-      await openSecondary(entry)
+      await openSecondary(entry);
     } catch {
-      scheduleReconnect(entry)
+      scheduleReconnect(entry);
     }
   }
 
   // The activation is settling either way — release the prune lease.
-  entry.activationLeaseUntil = 0
+  entry.activationLeaseUntil = 0;
 
   // A timed-out owner may leave the dial running, but it no longer has the
   // right to move the foreground route when that work eventually settles.
   if (signal?.aborted) {
-    return false
+    return false;
   }
 
   // A source edit/remove may dispose this entry while its dial is still in
@@ -1439,25 +1556,25 @@ export async function ensureGatewayForAgent(
     g.secondaries.get(scope) === entry &&
     Boolean(entry.connection) &&
     isOpen(entry.gateway) &&
-    applyActive(scope, activationEpoch)
+    applyActive(scope, activationEpoch);
 
   if (activated && entry.connection) {
-    publishActiveConnection(entry.connection)
+    publishActiveConnection(entry.connection);
   }
 
-  return activated
+  return activated;
 }
 
 // Make `profile` the active gateway, lazily opening its socket if needed. The
 // primary is a no-op fast path. Background sockets are never closed here.
 export async function ensureGatewayForProfile(profile: string): Promise<void> {
-  const key = normKey(profile)
-  const activationEpoch = beginGatewayActivation()
+  const key = normKey(profile);
+  const activationEpoch = beginGatewayActivation();
 
   if (key === g.primaryProfile) {
-    applyActive(key, activationEpoch)
+    applyActive(key, activationEpoch);
 
-    return
+    return;
   }
 
   // Global-remote share (routing case 3): one remote host serves every
@@ -1466,30 +1583,30 @@ export async function ensureGatewayForProfile(profile: string): Promise<void> {
   // descriptor — $activeGatewayProfile still moves to `key`, so request
   // scoping and profile-aware surfaces behave identically.
   if (await sharedPrimaryRoute(key)) {
-    applyActive(g.primaryProfile, activationEpoch)
+    applyActive(g.primaryProfile, activationEpoch);
 
-    return
+    return;
   }
 
-  let entry = g.secondaries.get(key)
+  let entry = g.secondaries.get(key);
 
   if (!entry) {
-    entry = createSecondary(key)
+    entry = createSecondary(key);
   }
 
-  entry.retained = true
-  entry.wantOpen = true
+  entry.retained = true;
+  entry.wantOpen = true;
   // Lease the entry against the live-work pruner for the whole dial — the
   // profile-door twin of the agent path's lease above (#89622).
-  entry.activationLeaseUntil = Date.now() + ACTIVATION_LEASE_MS
+  entry.activationLeaseUntil = Date.now() + ACTIVATION_LEASE_MS;
 
   try {
     if (!isOpen(entry.gateway)) {
-      clearTimer(entry)
-      entry.reconnectAttempt = 0
+      clearTimer(entry);
+      entry.reconnectAttempt = 0;
 
       try {
-        await openSecondary(entry)
+        await openSecondary(entry);
       } catch (error) {
         // #81094: a failed secondary dial must NOT fall through to setActive()
         // with a closed socket — that silently routes the user's messages to the
@@ -1498,13 +1615,13 @@ export async function ensureGatewayForProfile(profile: string): Promise<void> {
         // but RE-THROW so the profile-door caller surfaces the failure and skips
         // the activation. The agent-door twin (ensureGatewayForAgent) keeps its
         // boolean contract and is guarded by the activeGateway() null invariant.
-        scheduleReconnect(entry)
-        throw error
+        scheduleReconnect(entry);
+        throw error;
       }
     }
   } finally {
     // The activation is settling either way — release the prune lease.
-    entry.activationLeaseUntil = 0
+    entry.activationLeaseUntil = 0;
   }
 
   // Only publish when the WebSocket actually reached open -- entry.connection
@@ -1517,7 +1634,7 @@ export async function ensureGatewayForProfile(profile: string): Promise<void> {
     applyActive(key, activationEpoch) &&
     entry.connection
   ) {
-    publishActiveConnection(entry.connection)
+    publishActiveConnection(entry.connection);
   }
 }
 
@@ -1525,17 +1642,17 @@ export async function ensureGatewayForProfile(profile: string): Promise<void> {
 // reconnects are owned by use-gateway-boot, so we only drive secondaries here.
 export async function ensureActiveGatewayOpen(): Promise<HermesGateway | null> {
   if (g.activeKey === g.primaryProfile) {
-    return g.primaryGateway
+    return g.primaryGateway;
   }
 
-  const entry = g.secondaries.get(g.activeKey)
+  const entry = g.secondaries.get(g.activeKey);
 
   if (!entry) {
-    return null
+    return null;
   }
 
   if (!isOpen(entry.gateway)) {
-    await reconnectSecondary(entry)
+    await reconnectSecondary(entry);
   }
 
   if (!isOpen(entry.gateway)) {
@@ -1544,43 +1661,49 @@ export async function ensureActiveGatewayOpen(): Promise<HermesGateway | null> {
     // "Hermes gateway is not connected" on the Sessions `+` action (#88880).
     // Wait a bounded beat for the in-flight activation instead of erroring;
     // a genuinely dead gateway still returns null when the window closes.
-    const deadline = Date.now() + ACTIVE_GATEWAY_OPEN_WAIT_MS
+    const deadline = Date.now() + ACTIVE_GATEWAY_OPEN_WAIT_MS;
 
-    while (Date.now() < deadline && entry.wantOpen && g.secondaries.get(g.activeKey) === entry) {
+    while (
+      Date.now() < deadline &&
+      entry.wantOpen &&
+      g.secondaries.get(g.activeKey) === entry
+    ) {
       if (isOpen(entry.gateway)) {
-        break
+        break;
       }
 
-      await new Promise(resolve => setTimeout(resolve, 250))
+      await new Promise((resolve) => setTimeout(resolve, 250));
     }
   }
 
-  return isOpen(entry.gateway) ? entry.gateway : null
+  return isOpen(entry.gateway) ? entry.gateway : null;
 }
 
 // How long ensureActiveGatewayOpen waits out an in-flight secondary
 // activation before reporting the gateway as unavailable.
-const ACTIVE_GATEWAY_OPEN_WAIT_MS = 8_000
+const ACTIVE_GATEWAY_OPEN_WAIT_MS = 8_000;
 
 // Recovery signal: nudge every live secondary back open. Power-resume/network
 // signals can force sockets that still report open to retire before redialing.
-export function reconnectSecondaryGateways({ forceOpenSockets = false }: { forceOpenSockets?: boolean } = {}): void {
+export function reconnectSecondaryGateways({
+  forceOpenSockets = false,
+}: { forceOpenSockets?: boolean } = {}): void {
   for (const entry of g.secondaries.values()) {
     if (!entry.wantOpen) {
-      continue
+      continue;
     }
 
     if (isOpen(entry.gateway)) {
       if (!forceOpenSockets) {
-        continue
+        continue;
       }
 
-      entry.gateway.close()
+      entry.gateway.close();
     }
 
-    entry.reconnectAttempt = 0
-    clearTimer(entry)
-    void reconnectSecondary(entry)
+    entry.reconnectAttempt = 0;
+    clearTimer(entry);
+    void reconnectSecondary(entry);
   }
 }
 
@@ -1591,25 +1714,25 @@ export function reconnectSecondaryGateways({ forceOpenSockets = false }: { force
 // (the #91545 evict/respawn cascade). The active gateway's backend is
 // primary-routed and never counts toward the pool cap.
 export function openSecondaryCount(): number {
-  let count = 0
+  let count = 0;
 
   for (const entry of g.secondaries.values()) {
     if (isOpen(entry.gateway)) {
-      count += 1
+      count += 1;
     }
   }
 
-  return count
+  return count;
 }
 
 // Keep the idle reaper from killing a backend we still need: ping every live
 // secondary. The active one is pinged separately (touchActiveGatewayBackend).
 export function touchSecondaryGateways(): void {
-  const desktop = window.hermesDesktop
+  const desktop = window.hermesDesktop;
 
   for (const entry of g.secondaries.values()) {
     if (entry.wantOpen) {
-      void desktop?.touchBackend?.(entry.scope).catch(() => undefined)
+      void desktop?.touchBackend?.(entry.scope).catch(() => undefined);
     }
   }
 }
@@ -1617,11 +1740,11 @@ export function touchSecondaryGateways(): void {
 // Tear a secondary down: stop its reconnect loop, detach listeners, close the
 // socket. Caller handles removal from the map.
 function disposeSecondary(entry: Secondary): void {
-  entry.wantOpen = false
-  clearTimer(entry)
-  entry.offEvent()
-  entry.offState()
-  entry.gateway.close()
+  entry.wantOpen = false;
+  clearTimer(entry);
+  entry.offEvent();
+  entry.offState();
+  entry.gateway.close();
 }
 
 // Invariant restore for every eviction path: if the active key names a
@@ -1632,7 +1755,7 @@ function disposeSecondary(entry: Secondary): void {
 // evicted registry scope and every call silently hit the primary backend.
 function restoreActiveToPrimaryIfEvicted(): void {
   if (g.activeKey !== g.primaryProfile && !g.secondaries.has(g.activeKey)) {
-    setActive(g.primaryProfile)
+    setActive(g.primaryProfile);
   }
 }
 
@@ -1655,11 +1778,11 @@ function restoreActiveToPrimaryIfEvicted(): void {
 // pin. `entry.retained` is deliberately NOT consulted here (see the field's
 // doc).
 export function pruneSecondaryGateways(keep: Set<string>): void {
-  const now = Date.now()
+  const now = Date.now();
 
   for (const [key, entry] of [...g.secondaries]) {
     if (drainPendingConnectionRedial(entry)) {
-      continue
+      continue;
     }
 
     if (
@@ -1678,42 +1801,45 @@ export function pruneSecondaryGateways(keep: Set<string>): void {
       // during its cold spawn disposed the entry and the click died silently
       // (#89622). Number guard: dev-HMR entries predate the field. Bounded:
       // an orphaned lease expires on its own.
-      (Number.isFinite(entry.activationLeaseUntil) && entry.activationLeaseUntil > now)
+      (Number.isFinite(entry.activationLeaseUntil) &&
+        entry.activationLeaseUntil > now)
     ) {
-      continue
+      continue;
     }
 
     // The route is no longer live work. Release turn leases first so their
     // counted request holds cannot outlive a disposed route or leave a stale
     // release closure attached to a later same-key socket.
-    releaseTurnLeasesForScope(key)
+    releaseTurnLeasesForScope(key);
 
     if (g.secondaries.get(key) !== entry) {
-      continue
+      continue;
     }
 
     if (entry.activeRequests > 0) {
-      continue
+      continue;
     }
 
-    disposeSecondary(entry)
-    g.secondaries.delete(key)
+    disposeSecondary(entry);
+    g.secondaries.delete(key);
   }
 
-  restoreActiveToPrimaryIfEvicted()
+  restoreActiveToPrimaryIfEvicted();
 }
 
-function closeSecondariesWhere(shouldClose: (entry: Secondary) => boolean): void {
+function closeSecondariesWhere(
+  shouldClose: (entry: Secondary) => boolean,
+): void {
   for (const [scope, entry] of [...g.secondaries]) {
     if (!shouldClose(entry)) {
-      continue
+      continue;
     }
 
-    disposeSecondary(entry)
-    g.secondaries.delete(scope)
+    disposeSecondary(entry);
+    g.secondaries.delete(scope);
   }
 
-  restoreActiveToPrimaryIfEvicted()
+  restoreActiveToPrimaryIfEvicted();
 }
 
 function isLegacySecondary(entry: Secondary): boolean {
@@ -1722,7 +1848,7 @@ function isLegacySecondary(entry: Secondary): boolean {
   // old profile-only pool; the loose null check also retires HMR entries from
   // builds that predate the field instead of leaving an old legacy socket
   // behind during a mode apply.
-  return entry.connectionId == null
+  return entry.connectionId == null;
 }
 
 /**
@@ -1735,7 +1861,7 @@ function isLegacySecondary(entry: Secondary): boolean {
  * retired because their endpoint is derived from the v1 config being changed.
  */
 export function closeLegacySecondaryGateways(): void {
-  closeSecondariesWhere(isLegacySecondary)
+  closeSecondariesWhere(isLegacySecondary);
 }
 
 export function closeSecondaryGateways(): void {
@@ -1743,19 +1869,19 @@ export function closeSecondaryGateways(): void {
   // renderer-generation ledger; the predicate close leaves live sources'
   // leases alone (their sockets stay open).
   for (const timer of g.turnLeaseReleaseTimers.values()) {
-    clearTimeout(timer)
+    clearTimeout(timer);
   }
 
-  g.turnLeaseReleaseTimers.clear()
+  g.turnLeaseReleaseTimers.clear();
 
   for (const release of [...g.turnLeases.values()]) {
-    release()
+    release();
   }
 
-  g.turnLeases.clear()
+  g.turnLeases.clear();
 
-  closeSecondariesWhere(() => true)
-  openedSecondaryScopes().clear()
+  closeSecondariesWhere(() => true);
+  openedSecondaryScopes().clear();
 }
 
 // A local profile can have two renderer-owned sockets: the legacy bare
@@ -1766,32 +1892,35 @@ export function closeSecondaryGateways(): void {
 // before the DELETE request while preserving same-named agents on remote,
 // cloud, or SSH connections.
 export function retireLocalProfileGateways(profile: string): void {
-  const name = String(profile || '').trim()
+  const name = String(profile || "").trim();
 
   if (!name) {
-    return
+    return;
   }
 
-  const key = normKey(name)
-  const scopes = new Set([key, registryBackendScopeKey('local', key)])
-  let activeInvalidated = false
+  const key = normKey(name);
+  const scopes = new Set([key, registryBackendScopeKey("local", key)]);
+  let activeInvalidated = false;
 
   for (const scope of scopes) {
-    const entry = g.secondaries.get(scope)
+    const entry = g.secondaries.get(scope);
 
     if (!entry) {
-      continue
+      continue;
     }
 
-    activeInvalidated ||= scope === g.activeKey
-    disposeSecondary(entry)
-    g.secondaries.delete(scope)
+    activeInvalidated ||= scope === g.activeKey;
+    disposeSecondary(entry);
+    g.secondaries.delete(scope);
   }
 
-  restoreActiveToPrimaryIfEvicted()
+  restoreActiveToPrimaryIfEvicted();
 
   if (activeInvalidated) {
-    g.config?.onActiveConnectionInvalidated?.(g.primaryProfile, gatewayActivationEpoch())
+    g.config?.onActiveConnectionInvalidated?.(
+      g.primaryProfile,
+      gatewayActivationEpoch(),
+    );
   }
 }
 
@@ -1802,43 +1931,54 @@ export function retireLocalProfileGateways(profile: string): void {
 // fresh sockets target the NEW endpoint, but request/relay leases and mounted
 // foreground runtimes keep their old socket until they drain; the active scope
 // re-activates when its replacement is safe to publish.
-export function disposeSecondariesForConnection(connectionId: string, opts: { redial?: boolean } = {}): void {
-  const id = String(connectionId || '').trim()
-  let activeInvalidated = false
+export function disposeSecondariesForConnection(
+  connectionId: string,
+  opts: { redial?: boolean } = {},
+): void {
+  const id = String(connectionId || "").trim();
+  let activeInvalidated = false;
 
   if (!id) {
-    return
+    return;
   }
 
   for (const [key, entry] of [...g.secondaries]) {
     if (entry.connectionId !== id) {
-      continue
+      continue;
     }
 
-    const wasActive = key === g.activeKey
-    activeInvalidated ||= wasActive
+    const wasActive = key === g.activeKey;
+    activeInvalidated ||= wasActive;
 
-    if (opts.redial && (entry.activeRequests > 0 || relayRetained(entry) || foregroundPinned(entry))) {
-      entry.pendingConnectionRedial = true
+    if (
+      opts.redial &&
+      (entry.activeRequests > 0 ||
+        relayRetained(entry) ||
+        foregroundPinned(entry))
+    ) {
+      entry.pendingConnectionRedial = true;
 
-      continue
+      continue;
     }
 
-    disposeSecondary(entry)
-    g.secondaries.delete(key)
+    disposeSecondary(entry);
+    g.secondaries.delete(key);
 
     if (opts.redial) {
       const reopen = wasActive
         ? ensureGatewayForAgent(entry.connectionId, entry.profile)
-        : openGatewayForAgent(entry.connectionId, entry.profile)
+        : openGatewayForAgent(entry.connectionId, entry.profile);
 
-      void reopen.catch(() => undefined)
+      void reopen.catch(() => undefined);
     }
   }
 
   if (activeInvalidated && !opts.redial) {
-    setActive(g.primaryProfile)
-    g.config?.onActiveConnectionInvalidated?.(g.primaryProfile, gatewayActivationEpoch())
+    setActive(g.primaryProfile);
+    g.config?.onActiveConnectionInvalidated?.(
+      g.primaryProfile,
+      gatewayActivationEpoch(),
+    );
   }
 }
 
@@ -1846,5 +1986,5 @@ export function disposeSecondariesForConnection(connectionId: string, opts: { re
 // in-place hot update instead of a full page reload — the live sockets in `g`
 // survive the swap. Dev-only: production strips import.meta.hot.
 if (import.meta.hot) {
-  import.meta.hot.accept()
+  import.meta.hot.accept();
 }

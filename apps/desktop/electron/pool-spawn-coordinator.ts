@@ -1,23 +1,23 @@
-export type ReleaseLocalBackendSlot = () => void
+export type ReleaseLocalBackendSlot = () => void;
 
 export type LocalBackendSpawnRequest = {
-  acquired: Promise<ReleaseLocalBackendSlot>
-  cancel: () => boolean
-}
+  acquired: Promise<ReleaseLocalBackendSlot>;
+  cancel: () => boolean;
+};
 
 type Waiter = {
-  key: string
-  resolve: (release: ReleaseLocalBackendSlot) => void
-  reject: (error: Error) => void
-  timer: ReturnType<typeof setTimeout> | null
-}
+  key: string;
+  resolve: (release: ReleaseLocalBackendSlot) => void;
+  reject: (error: Error) => void;
+  timer: ReturnType<typeof setTimeout> | null;
+};
 
 export async function releaseLocalBackendSlotAfterExit(
   release: ReleaseLocalBackendSlot,
-  waitForExit: () => Promise<void>
+  waitForExit: () => Promise<void>,
 ): Promise<void> {
-  await waitForExit()
-  release()
+  await waitForExit();
+  release();
 }
 
 /**
@@ -27,24 +27,26 @@ export async function releaseLocalBackendSlotAfterExit(
  * the child exits or the start fails. Remote descriptors never call request().
  */
 export class LocalBackendSpawnCoordinator {
-  #limit: number
-  #active = 0
-  #queue: Waiter[] = []
+  #limit: number;
+  #active = 0;
+  #queue: Waiter[] = [];
 
   constructor(limit: number) {
     if (!Number.isInteger(limit) || limit < 1) {
-      throw new RangeError('Local backend spawn limit must be a positive integer.')
+      throw new RangeError(
+        "Local backend spawn limit must be a positive integer.",
+      );
     }
 
-    this.#limit = limit
+    this.#limit = limit;
   }
 
   get activeCount(): number {
-    return this.#active
+    return this.#active;
   }
 
   get limit(): number {
-    return this.#limit
+    return this.#limit;
   }
 
   /**
@@ -55,99 +57,116 @@ export class LocalBackendSpawnCoordinator {
    */
   setLimit(limit: number): void {
     if (!Number.isInteger(limit) || limit < 1) {
-      throw new RangeError('Local backend spawn limit must be a positive integer.')
+      throw new RangeError(
+        "Local backend spawn limit must be a positive integer.",
+      );
     }
 
-    this.#limit = limit
-    this.#drain()
+    this.#limit = limit;
+    this.#drain();
   }
 
   get queuedCount(): number {
-    return this.#queue.length
+    return this.#queue.length;
   }
 
-  request(key: string, options: { timeoutMs?: number } = {}): LocalBackendSpawnRequest {
-    if (options.timeoutMs !== undefined && (!Number.isFinite(options.timeoutMs) || options.timeoutMs < 1)) {
-      throw new RangeError('Local backend spawn timeout must be a positive number.')
+  request(
+    key: string,
+    options: { timeoutMs?: number } = {},
+  ): LocalBackendSpawnRequest {
+    if (
+      options.timeoutMs !== undefined &&
+      (!Number.isFinite(options.timeoutMs) || options.timeoutMs < 1)
+    ) {
+      throw new RangeError(
+        "Local backend spawn timeout must be a positive number.",
+      );
     }
 
     if (this.#active < this.#limit) {
       return {
         acquired: Promise.resolve(this.#grant()),
-        cancel: () => false
-      }
+        cancel: () => false,
+      };
     }
 
-    let waiter!: Waiter
+    let waiter!: Waiter;
 
     const acquired = new Promise<ReleaseLocalBackendSlot>((resolve, reject) => {
-      waiter = { key, resolve, reject, timer: null }
-      this.#queue.push(waiter)
+      waiter = { key, resolve, reject, timer: null };
+      this.#queue.push(waiter);
 
       if (options.timeoutMs !== undefined) {
         waiter.timer = setTimeout(() => {
           this.#rejectWaiter(
             waiter,
-            new Error(`Local backend start for "${key}" timed out while waiting for a free slot.`)
-          )
-        }, options.timeoutMs)
-        waiter.timer.unref?.()
+            new Error(
+              `Local backend start for "${key}" timed out while waiting for a free slot.`,
+            ),
+          );
+        }, options.timeoutMs);
+        waiter.timer.unref?.();
       }
-    })
+    });
 
     return {
       acquired,
       cancel: () =>
-        this.#rejectWaiter(waiter, new Error(`Local backend start for "${key}" was cancelled while queued.`))
-    }
+        this.#rejectWaiter(
+          waiter,
+          new Error(
+            `Local backend start for "${key}" was cancelled while queued.`,
+          ),
+        ),
+    };
   }
 
   acquire(key: string): Promise<ReleaseLocalBackendSlot> {
-    return this.request(key).acquired
+    return this.request(key).acquired;
   }
 
   #rejectWaiter(waiter: Waiter, error: Error): boolean {
-    const index = this.#queue.indexOf(waiter)
+    const index = this.#queue.indexOf(waiter);
 
     if (index === -1) {
-      return false
+      return false;
     }
 
-    this.#queue.splice(index, 1)
-    this.#clearTimer(waiter)
-    waiter.reject(error)
+    this.#queue.splice(index, 1);
+    this.#clearTimer(waiter);
+    waiter.reject(error);
 
-    return true
+    return true;
   }
 
   #clearTimer(waiter: Waiter): void {
     if (waiter.timer) {
-      clearTimeout(waiter.timer)
-      waiter.timer = null
+      clearTimeout(waiter.timer);
+      waiter.timer = null;
     }
   }
 
   #grant(): ReleaseLocalBackendSlot {
-    this.#active += 1
-    let released = false
+    this.#active += 1;
+    let released = false;
 
     return () => {
       if (released) {
-        return
+        return;
       }
 
-      released = true
-      this.#active -= 1
-      this.#drain()
-    }
+      released = true;
+      this.#active -= 1;
+      this.#drain();
+    };
   }
 
   /** Hand free slots to queued waiters while under the (possibly lowered) cap. */
   #drain(): void {
     while (this.#active < this.#limit && this.#queue.length > 0) {
-      const next = this.#queue.shift()!
-      this.#clearTimer(next)
-      next.resolve(this.#grant())
+      const next = this.#queue.shift()!;
+      this.#clearTimer(next);
+      next.resolve(this.#grant());
     }
   }
 }

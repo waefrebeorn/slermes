@@ -21,78 +21,89 @@
  * because eligibility is a fact about the backend's machine.
  */
 
-import { getLocalCatalog, getLocalModelsStatus } from '@/hermes'
-import type { Translations } from '@/i18n/types'
-import { LOCAL_SETUP_TIP_ID, localSetupDue, localSetupEligible } from '@/lib/tips/local-cta'
-import { $localModelsEnabled } from '@/store/local-models-flag'
-import { $connection } from '@/store/session'
-import { $retiredTips, $tipShownAt, dismissTip, showTip } from '@/store/tips'
+import { getLocalCatalog, getLocalModelsStatus } from "@/hermes";
+import type { Translations } from "@/i18n/types";
+import {
+  LOCAL_SETUP_TIP_ID,
+  localSetupDue,
+  localSetupEligible,
+} from "@/lib/tips/local-cta";
+import { $localModelsEnabled } from "@/store/local-models-flag";
+import { $connection } from "@/store/session";
+import { $retiredTips, $tipShownAt, dismissTip, showTip } from "@/store/tips";
 
 /** The pill the bubble points at — the same handle the rotation's
  *  model-switch tip uses, so the two can never drift to different anchors. */
-const MODEL_PILL_TARGETS = ['[data-tour="model-pill"]'] as const
+const MODEL_PILL_TARGETS = ['[data-tour="model-pill"]'] as const;
 
-let eligibilityCache: { eligible: boolean } | null = null
-let eligibilityInFlight = false
-let boundToConnection = false
+let eligibilityCache: { eligible: boolean } | null = null;
+let eligibilityInFlight = false;
+let boundToConnection = false;
 
 /** Reset the session cache — tests only. */
 export function resetLocalSetupOfferCache(): void {
-  eligibilityCache = null
-  eligibilityInFlight = false
+  eligibilityCache = null;
+  eligibilityInFlight = false;
 }
 
 /**
  * Offer the campaign the current quiet moment. True = it put its bubble up
  * and the moment is spent; false = the rotation's walk may have it.
  */
-export function offerLocalSetupTip(copy: Translations['tips'], openLocalModels: () => void): boolean {
+export function offerLocalSetupTip(
+  copy: Translations["tips"],
+  openLocalModels: () => void,
+): boolean {
   // Local models ship behind the --local launch flag; without it there is
   // no Local Models pane for the button to open, so the campaign never runs
   // (and never spends a status/catalog read).
   if (!$localModelsEnabled.get()) {
-    return false
+    return false;
   }
 
   if ($retiredTips.get().includes(LOCAL_SETUP_TIP_ID)) {
-    return false
+    return false;
   }
 
   if (!localSetupDue(Date.now(), $tipShownAt.get()[LOCAL_SETUP_TIP_ID])) {
-    return false
+    return false;
   }
 
   // Local backends only: on a remote connection (cloud resolves to remote)
   // the models would run on the far machine, and "stays on your computer"
   // would be promising someone else's computer. Checked before the cache so
   // a re-home mid-session can't serve a stale yes.
-  if (($connection.get()?.mode ?? null) !== 'local') {
-    return false
+  if (($connection.get()?.mode ?? null) !== "local") {
+    return false;
   }
 
   if (!boundToConnection) {
-    boundToConnection = true
-    $connection.listen(() => resetLocalSetupOfferCache())
+    boundToConnection = true;
+    $connection.listen(() => resetLocalSetupOfferCache());
   }
 
   if (!eligibilityCache) {
     if (!eligibilityInFlight) {
-      eligibilityInFlight = true
+      eligibilityInFlight = true;
 
       void Promise.all([getLocalModelsStatus(), getLocalCatalog()])
         .then(([status, catalog]) => {
           eligibilityCache = {
-            eligible: localSetupEligible($connection.get()?.mode ?? null, status, catalog.models)
-          }
+            eligible: localSetupEligible(
+              $connection.get()?.mode ?? null,
+              status,
+              catalog.models,
+            ),
+          };
         })
         .catch(() => {
           // No backend answer, no campaign this session. The next launch —
           // or the next connection — asks again.
-          eligibilityCache = { eligible: false }
+          eligibilityCache = { eligible: false };
         })
         .finally(() => {
-          eligibilityInFlight = false
-        })
+          eligibilityInFlight = false;
+        });
     }
 
     // Hold the moment while the read flies: nothing shows and no cooldown
@@ -100,27 +111,27 @@ export function offerLocalSetupTip(copy: Translations['tips'], openLocalModels: 
     // the rotation instead would put a walk tip up first and park the
     // campaign behind the six-hour cooldown — the exact inversion of the
     // priority. Costs an ineligible machine one 30s tick, once per session.
-    return true
+    return true;
   }
 
   if (!eligibilityCache.eligible) {
-    return false
+    return false;
   }
 
   showTip({
     action: {
-      label: copy.items['local-setup'].action,
+      label: copy.items["local-setup"].action,
       onSelect: () => {
-        dismissTip()
-        openLocalModels()
-      }
+        dismissTip();
+        openLocalModels();
+      },
     },
-    side: 'top',
+    side: "top",
     targets: MODEL_PILL_TARGETS,
-    text: copy.items['local-setup'].text,
+    text: copy.items["local-setup"].text,
     tipId: LOCAL_SETUP_TIP_ID,
-    title: copy.items['local-setup'].title
-  })
+    title: copy.items["local-setup"].title,
+  });
 
-  return true
+  return true;
 }

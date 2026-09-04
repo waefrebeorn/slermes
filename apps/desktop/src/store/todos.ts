@@ -1,11 +1,11 @@
-import { atom, computed } from 'nanostores'
+import { atom, computed } from "nanostores";
 
-import { keyedTimeouts } from '@/lib/keyed-timeouts'
-import { stableRecord } from '@/lib/stable-array'
-import { parseTodoRevision, parseTodos, type TodoItem } from '@/lib/todos'
+import { keyedTimeouts } from "@/lib/keyed-timeouts";
+import { stableRecord } from "@/lib/stable-array";
+import { parseTodoRevision, parseTodos, type TodoItem } from "@/lib/todos";
 
-import { $sessions, lineageAliases } from './session'
-import { $sessionStates } from './session-states'
+import { $sessions, lineageAliases } from "./session";
+import { $sessionStates } from "./session-states";
 
 /**
  * Live todo list per runtime session, rendered by the composer status stack
@@ -16,13 +16,13 @@ import { $sessionStates } from './session-states'
  *   still in flight, so reopening an old chat doesn't pin its finished plan
  *   above the composer forever.
  */
-export const $todosBySession = atom<Record<string, TodoItem[]>>({})
-export const $todoRevisionsBySession = atom<Record<string, number>>({})
+export const $todosBySession = atom<Record<string, TodoItem[]>>({});
+export const $todoRevisionsBySession = atom<Record<string, number>>({});
 
 export const todoListActive = (todos: readonly TodoItem[]) =>
-  todos.some(t => t.status === 'pending' || t.status === 'in_progress')
+  todos.some((t) => t.status === "pending" || t.status === "in_progress");
 
-let todoProgress: Readonly<Record<string, string>> = {}
+let todoProgress: Readonly<Record<string, string>> = {};
 
 /** Live "X/Y" per STORED session id, for the sidebar's inbox cards. The live
  *  map keys on runtime ids; this projects through the same storedSessionId +
@@ -33,25 +33,28 @@ let todoProgress: Readonly<Record<string, string>> = {}
 export const $todoProgressBySession = computed(
   [$todosBySession, $sessionStates, $sessions],
   (todosMap, states, sessions) => {
-    const next: Record<string, string> = {}
+    const next: Record<string, string> = {};
 
     for (const [runtimeId, todos] of Object.entries(todosMap)) {
-      const counted = todos.filter(t => t.status !== 'cancelled')
+      const counted = todos.filter((t) => t.status !== "cancelled");
 
       if (counted.length === 0) {
-        continue
+        continue;
       }
 
-      const progress = `${counted.filter(t => t.status === 'completed').length}/${counted.length}`
+      const progress = `${counted.filter((t) => t.status === "completed").length}/${counted.length}`;
 
-      for (const alias of lineageAliases(states[runtimeId]?.storedSessionId ?? runtimeId, sessions)) {
-        next[alias] = progress
+      for (const alias of lineageAliases(
+        states[runtimeId]?.storedSessionId ?? runtimeId,
+        sessions,
+      )) {
+        next[alias] = progress;
       }
     }
 
-    return (todoProgress = stableRecord(todoProgress, next))
-  }
-)
+    return (todoProgress = stableRecord(todoProgress, next));
+  },
+);
 
 // Decide which todo list to restore when rehydrating a session from stored
 // history. Rehydration runs *after* a turn completes, so an active list (last
@@ -60,76 +63,84 @@ export const $todoProgressBySession = computed(
 // clear and, because it's read back from history, resurrect on restart). Only
 // a finished list is restored, so its short linger shows the last checkmark.
 // Returns null when there's nothing to restore (caller should clear).
-export function todosForHydration(todos: readonly TodoItem[] | null): TodoItem[] | null {
-  return todos && !todoListActive(todos) ? [...todos] : null
+export function todosForHydration(
+  todos: readonly TodoItem[] | null,
+): TodoItem[] | null {
+  return todos && !todoListActive(todos) ? [...todos] : null;
 }
 
 // Once a list finishes (every item completed/cancelled), the final state
 // lingers just long enough to see the last checkmark land, then the group
 // drops out of the stack on its own.
-const FINISHED_LINGER_MS = 4_000
-const clearTimers = keyedTimeouts()
+const FINISHED_LINGER_MS = 4_000;
+const clearTimers = keyedTimeouts();
 
 function acceptRevision(sid: string, revision?: null | number): boolean {
-  const revisions = $todoRevisionsBySession.get()
-  const current = revisions[sid]
+  const revisions = $todoRevisionsBySession.get();
+  const current = revisions[sid];
 
   // tool.start has no revision. Apply the merge locally and leave the
   // watermark alone so a later todo.updated / tool.complete can still win.
   if (revision == null) {
-    return true
+    return true;
   }
 
   if (current != null && revision < current) {
-    return false
+    return false;
   }
 
   if (current !== revision) {
-    $todoRevisionsBySession.set({ ...revisions, [sid]: revision })
+    $todoRevisionsBySession.set({ ...revisions, [sid]: revision });
   }
 
-  return true
+  return true;
 }
 
-export function setSessionTodos(sid: string, todos: TodoItem[], revision?: null | number) {
+export function setSessionTodos(
+  sid: string,
+  todos: TodoItem[],
+  revision?: null | number,
+) {
   if (!sid) {
-    return
+    return;
   }
 
   if (!acceptRevision(sid, revision)) {
-    return
+    return;
   }
 
-  clearTimers.cancel(sid)
-  $todosBySession.set({ ...$todosBySession.get(), [sid]: todos })
+  clearTimers.cancel(sid);
+  $todosBySession.set({ ...$todosBySession.get(), [sid]: todos });
 
   if (!todoListActive(todos)) {
-    clearTimers.schedule(sid, FINISHED_LINGER_MS, () => dropSessionTodos(sid, false))
+    clearTimers.schedule(sid, FINISHED_LINGER_MS, () =>
+      dropSessionTodos(sid, false),
+    );
   }
 }
 
 function dropSessionTodos(sid: string, forgetRevision: boolean) {
-  clearTimers.cancel(sid)
+  clearTimers.cancel(sid);
 
-  const map = $todosBySession.get()
+  const map = $todosBySession.get();
 
   if (sid in map) {
-    const { [sid]: _drop, ...rest } = map
-    $todosBySession.set(rest)
+    const { [sid]: _drop, ...rest } = map;
+    $todosBySession.set(rest);
   }
 
   if (forgetRevision) {
-    const revisions = $todoRevisionsBySession.get()
+    const revisions = $todoRevisionsBySession.get();
 
     if (sid in revisions) {
-      const { [sid]: _drop, ...rest } = revisions
-      $todoRevisionsBySession.set(rest)
+      const { [sid]: _drop, ...rest } = revisions;
+      $todoRevisionsBySession.set(rest);
     }
   }
 }
 
 export function clearSessionTodos(sid: string) {
-  dropSessionTodos(sid, true)
+  dropSessionTodos(sid, true);
 }
 
 // Drop a still-active todo list (any pending/in_progress item) — used at turn
@@ -138,39 +149,43 @@ export function clearSessionTodos(sid: string) {
 // composer forever. A finished list is left untouched so its short linger
 // still shows the last checkmark landing.
 export function clearActiveSessionTodos(sid: string) {
-  const todos = $todosBySession.get()[sid]
+  const todos = $todosBySession.get()[sid];
 
   if (!todos || !todoListActive(todos)) {
-    return
+    return;
   }
 
-  dropSessionTodos(sid, false)
+  dropSessionTodos(sid, false);
 }
 
 /** Apply a session.resume/activate or todo.updated full snapshot. Idle
  * sessions keep the existing stale-active guard; running sessions restore the
  * active plan because the backend has proved that turn is still live. */
-export function restoreSessionTodosFromSnapshot(sid: string, snapshot: unknown, running: boolean) {
-  const todos = parseTodos(snapshot)
+export function restoreSessionTodosFromSnapshot(
+  sid: string,
+  snapshot: unknown,
+  running: boolean,
+) {
+  const todos = parseTodos(snapshot);
 
   if (!sid || todos === null) {
-    return
+    return;
   }
 
-  const revision = parseTodoRevision(snapshot)
+  const revision = parseTodoRevision(snapshot);
 
   // An unused store serializes as {todos: [], revision: 0}. That is not a
   // real snapshot. Applying it would stamp watermark 0 and leave an empty
   // list in the map.
   if (todos.length === 0 && (revision == null || revision === 0)) {
-    return
+    return;
   }
 
-  const visible = running ? todos : todosForHydration(todos)
+  const visible = running ? todos : todosForHydration(todos);
 
   if (visible !== null) {
-    setSessionTodos(sid, visible, revision)
+    setSessionTodos(sid, visible, revision);
   } else if (acceptRevision(sid, revision)) {
-    dropSessionTodos(sid, false)
+    dropSessionTodos(sid, false);
   }
 }

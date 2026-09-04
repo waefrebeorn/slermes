@@ -15,21 +15,21 @@
 
 export interface PoolLimits {
   /** Max concurrently spawned non-primary profile backends. */
-  maxBackends: number
+  maxBackends: number;
   /** Idle lifetime of an unused pool backend, in milliseconds. */
-  idleMs: number
+  idleMs: number;
 }
 
 export const POOL_LIMITS_DEFAULTS: PoolLimits = {
   maxBackends: 3,
-  idleMs: 10 * 60_000
-}
+  idleMs: 10 * 60_000,
+};
 
 /** Hard floors — match the clamps the env-var path always applied. */
 export const POOL_LIMITS_MIN: PoolLimits = {
   maxBackends: 1,
-  idleMs: 60_000
-}
+  idleMs: 60_000,
+};
 
 /** Shared bounds for both pool knobs — imported by the Settings UI so the
  *  advertised input ranges can never drift from what main actually clamps
@@ -38,44 +38,56 @@ export const POOL_LIMITS_MIN: PoolLimits = {
 export const POOL_LIMITS_BOUNDS = {
   maxBackendsMax: 64,
   /** 7 days, matching the UI's suggestion ceiling. */
-  idleMsMax: 7 * 24 * 60 * 60_000
-} as const
+  idleMsMax: 7 * 24 * 60 * 60_000,
+} as const;
 
-const MAX_BACKENDS_CEILING = POOL_LIMITS_BOUNDS.maxBackendsMax
-const IDLE_MS_CEILING = POOL_LIMITS_BOUNDS.idleMsMax
+const MAX_BACKENDS_CEILING = POOL_LIMITS_BOUNDS.maxBackendsMax;
+const IDLE_MS_CEILING = POOL_LIMITS_BOUNDS.idleMsMax;
 
 /** Clamp a raw partial to the floors/ceilings; missing keys fall to defaults. */
 export function clampPoolLimits(raw: Partial<PoolLimits>): PoolLimits {
   const maxBackends = Number.isFinite(raw.maxBackends)
-    ? Math.min(MAX_BACKENDS_CEILING, Math.max(POOL_LIMITS_MIN.maxBackends, Math.floor(Number(raw.maxBackends))))
-    : POOL_LIMITS_DEFAULTS.maxBackends
+    ? Math.min(
+        MAX_BACKENDS_CEILING,
+        Math.max(
+          POOL_LIMITS_MIN.maxBackends,
+          Math.floor(Number(raw.maxBackends)),
+        ),
+      )
+    : POOL_LIMITS_DEFAULTS.maxBackends;
 
   const idleMs = Number.isFinite(raw.idleMs)
-    ? Math.min(IDLE_MS_CEILING, Math.max(POOL_LIMITS_MIN.idleMs, Math.floor(Number(raw.idleMs))))
-    : POOL_LIMITS_DEFAULTS.idleMs
+    ? Math.min(
+        IDLE_MS_CEILING,
+        Math.max(POOL_LIMITS_MIN.idleMs, Math.floor(Number(raw.idleMs))),
+      )
+    : POOL_LIMITS_DEFAULTS.idleMs;
 
-  return { maxBackends, idleMs }
+  return { maxBackends, idleMs };
 }
 
 function clampLimits(raw: Partial<PoolLimits>): PoolLimits {
-  return clampPoolLimits(raw)
+  return clampPoolLimits(raw);
 }
 
 /** Parse + clamp a persisted JSON blob; anything unreadable falls back to
  *  defaults so a corrupted file can never wedge the pool. */
 export function parsePoolLimits(json: string | null | undefined): PoolLimits {
   if (!json) {
-    return { ...POOL_LIMITS_DEFAULTS }
+    return { ...POOL_LIMITS_DEFAULTS };
   }
 
   try {
-    const parsed = JSON.parse(json)
+    const parsed = JSON.parse(json);
 
     return clampLimits({
-      maxBackends: typeof parsed?.maxBackends === 'number' ? parsed.maxBackends : undefined,
-      idleMs: typeof parsed?.idleMs === 'number' ? parsed.idleMs : undefined
-    })
+      maxBackends:
+        typeof parsed?.maxBackends === "number"
+          ? parsed.maxBackends
+          : undefined,
+      idleMs: typeof parsed?.idleMs === "number" ? parsed.idleMs : undefined,
+    });
   } catch {
-    return { ...POOL_LIMITS_DEFAULTS }
+    return { ...POOL_LIMITS_DEFAULTS };
   }
 }

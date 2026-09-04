@@ -10,23 +10,27 @@
  * (a reaction you set before turning it off shouldn't vanish from history).
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { persistString, storedString } from '@/lib/storage'
-import { mirrorDisplayToggle } from '@/store/display-toggles'
+import { persistString, storedString } from "@/lib/storage";
+import { mirrorDisplayToggle } from "@/store/display-toggles";
 
-const KEY = 'hermes.desktop.reactions.v1'
+const KEY = "hermes.desktop.reactions.v1";
 
-export const $reactionsEnabled = atom<boolean>(typeof window === 'undefined' ? false : storedString(KEY) === 'on')
+export const $reactionsEnabled = atom<boolean>(
+  typeof window === "undefined" ? false : storedString(KEY) === "on",
+);
 
 export function setReactionsEnabled(enabled: boolean): void {
-  $reactionsEnabled.set(enabled)
+  $reactionsEnabled.set(enabled);
 }
 
-if (typeof window !== 'undefined') {
-  $reactionsEnabled.listen(enabled => persistString(KEY, enabled ? 'on' : 'off'))
+if (typeof window !== "undefined") {
+  $reactionsEnabled.listen((enabled) =>
+    persistString(KEY, enabled ? "on" : "off"),
+  );
 }
 
 // The backend gates the agent's react_to_message tool and the model-context
 // annotation on display.message_reactions, so this toggle is the one lever.
-mirrorDisplayToggle('display.message_reactions', KEY, $reactionsEnabled)
+mirrorDisplayToggle("display.message_reactions", KEY, $reactionsEnabled);

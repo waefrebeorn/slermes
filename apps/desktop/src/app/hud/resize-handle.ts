@@ -1,38 +1,61 @@
-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 /** Clamp to the same mins the window was created with (spawnHudWindow). */
-const HUD_MIN_WIDTH = 380
-const HUD_MIN_HEIGHT = 160
+const HUD_MIN_WIDTH = 380;
+const HUD_MIN_HEIGHT = 160;
 
-export const HUD_RESIZE_DIRECTIONS = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'] as const
+export const HUD_RESIZE_DIRECTIONS = [
+  "n",
+  "ne",
+  "e",
+  "se",
+  "s",
+  "sw",
+  "w",
+  "nw",
+] as const;
 
-export type HudResizeDirection = (typeof HUD_RESIZE_DIRECTIONS)[number]
+export type HudResizeDirection = (typeof HUD_RESIZE_DIRECTIONS)[number];
 
-const HUD_WAYLAND_RESIZE_DIRECTIONS = ['e', 'se', 's'] as const satisfies readonly HudResizeDirection[]
+const HUD_WAYLAND_RESIZE_DIRECTIONS = [
+  "e",
+  "se",
+  "s",
+] as const satisfies readonly HudResizeDirection[];
 
 /** Edges the HUD can honestly resize. Native Wayland cannot change a
  *  top-level's global x/y, so only edges that keep the existing origin. */
-export function hudResizeDirections(clientPlacement: boolean): readonly HudResizeDirection[] {
-  return clientPlacement ? HUD_RESIZE_DIRECTIONS : HUD_WAYLAND_RESIZE_DIRECTIONS
+export function hudResizeDirections(
+  clientPlacement: boolean,
+): readonly HudResizeDirection[] {
+  return clientPlacement
+    ? HUD_RESIZE_DIRECTIONS
+    : HUD_WAYLAND_RESIZE_DIRECTIONS;
 }
 
 export interface HudResizeBounds {
-  height: number
-  width: number
-  x: number
-  y: number
+  height: number;
+  width: number;
+  x: number;
+  y: number;
 }
 
 interface ResizeState {
-  direction: HudResizeDirection
-  startX: number
-  startY: number
-  originX: number
-  originY: number
-  originW: number
-  originH: number
-  pointerId: number
-  target: HTMLElement
+  direction: HudResizeDirection;
+  startX: number;
+  startY: number;
+  originX: number;
+  originY: number;
+  originW: number;
+  originH: number;
+  pointerId: number;
+  target: HTMLElement;
 }
 
 /** Resize one or two anchored edges while preserving every opposite edge. */
@@ -40,38 +63,38 @@ export function hudResizeBounds(
   origin: HudResizeBounds,
   direction: HudResizeDirection,
   dx: number,
-  dy: number
+  dy: number,
 ): HudResizeBounds {
-  const right = origin.x + origin.width
-  const bottom = origin.y + origin.height
-  const west = direction.includes('w')
-  const east = direction.includes('e')
-  const north = direction.includes('n')
-  const south = direction.includes('s')
+  const right = origin.x + origin.width;
+  const bottom = origin.y + origin.height;
+  const west = direction.includes("w");
+  const east = direction.includes("e");
+  const north = direction.includes("n");
+  const south = direction.includes("s");
 
   const width = west
     ? Math.max(HUD_MIN_WIDTH, origin.width - dx)
     : east
       ? Math.max(HUD_MIN_WIDTH, origin.width + dx)
-      : origin.width
+      : origin.width;
 
   const height = north
     ? Math.max(HUD_MIN_HEIGHT, origin.height - dy)
     : south
       ? Math.max(HUD_MIN_HEIGHT, origin.height + dy)
-      : origin.height
+      : origin.height;
 
   return {
     x: west ? right - width : origin.x,
     y: north ? bottom - height : origin.y,
     width,
-    height
-  }
+    height,
+  };
 }
 
 function capturePointer(state: ResizeState): void {
   try {
-    state.target.setPointerCapture?.(state.pointerId)
+    state.target.setPointerCapture?.(state.pointerId);
   } catch {
     // Window capture-phase listeners below keep the in-window gesture alive.
   }
@@ -80,7 +103,7 @@ function capturePointer(state: ResizeState): void {
 function releasePointer(state: ResizeState): void {
   try {
     if (state.target.hasPointerCapture?.(state.pointerId)) {
-      state.target.releasePointerCapture?.(state.pointerId)
+      state.target.releasePointerCapture?.(state.pointerId);
     }
   } catch {
     // Pointer cancellation may invalidate the id before cleanup.
@@ -102,92 +125,103 @@ function releasePointer(state: ResizeState): void {
  * and size, so they cannot be trusted mid-resize.
  */
 export function useHudResizeHandle(): {
-  resizing: boolean
-  onPointerDown: (event: ReactPointerEvent<HTMLElement>, direction: HudResizeDirection) => void
+  resizing: boolean;
+  onPointerDown: (
+    event: ReactPointerEvent<HTMLElement>,
+    direction: HudResizeDirection,
+  ) => void;
 } {
-  const [resizing, setResizing] = useState(false)
-  const stateRef = useRef<ResizeState | null>(null)
+  const [resizing, setResizing] = useState(false);
+  const stateRef = useRef<ResizeState | null>(null);
 
   const reset = useCallback(() => {
-    const state = stateRef.current
+    const state = stateRef.current;
 
     if (state) {
-      releasePointer(state)
+      releasePointer(state);
     }
 
-    stateRef.current = null
-    setResizing(false)
-  }, [])
+    stateRef.current = null;
+    setResizing(false);
+  }, []);
 
-  const onPointerDown = useCallback((event: ReactPointerEvent<HTMLElement>, direction: HudResizeDirection) => {
-    if (event.button !== 0) {
-      return
-    }
+  const onPointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLElement>, direction: HudResizeDirection) => {
+      if (event.button !== 0) {
+        return;
+      }
 
-    stateRef.current = {
-      direction,
-      startX: event.screenX,
-      startY: event.screenY,
-      originX: window.screenX,
-      originY: window.screenY,
-      originW: window.outerWidth,
-      originH: window.outerHeight,
-      pointerId: event.pointerId,
-      target: event.currentTarget
-    }
+      stateRef.current = {
+        direction,
+        startX: event.screenX,
+        startY: event.screenY,
+        originX: window.screenX,
+        originY: window.screenY,
+        originW: window.outerWidth,
+        originH: window.outerHeight,
+        pointerId: event.pointerId,
+        target: event.currentTarget,
+      };
 
-    setResizing(true)
-    capturePointer(stateRef.current)
-    event.preventDefault()
-    event.stopPropagation()
-  }, [])
+      setResizing(true);
+      capturePointer(stateRef.current);
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    [],
+  );
 
   useEffect(() => {
     const onMove = (event: PointerEvent) => {
-      const state = stateRef.current
+      const state = stateRef.current;
 
       if (!state || event.pointerId !== state.pointerId) {
-        return
+        return;
       }
 
-      event.preventDefault()
+      event.preventDefault();
 
-      const dx = event.screenX - state.startX
-      const dy = event.screenY - state.startY
+      const dx = event.screenX - state.startX;
+      const dy = event.screenY - state.startY;
 
       window.hermesDesktop?.hud?.setBounds?.(
         hudResizeBounds(
-          { x: state.originX, y: state.originY, width: state.originW, height: state.originH },
+          {
+            x: state.originX,
+            y: state.originY,
+            width: state.originW,
+            height: state.originH,
+          },
           state.direction,
           dx,
-          dy
-        )
-      )
-    }
+          dy,
+        ),
+      );
+    };
 
     const onUp = (event: PointerEvent) => {
-      const state = stateRef.current
+      const state = stateRef.current;
 
       if (!state || event.pointerId !== state.pointerId) {
-        return
+        return;
       }
 
-      reset()
-    }
+      reset();
+    };
 
-    window.addEventListener('pointermove', onMove, true)
-    window.addEventListener('pointerup', onUp, true)
-    window.addEventListener('pointercancel', onUp, true)
+    window.addEventListener("pointermove", onMove, true);
+    window.addEventListener("pointerup", onUp, true);
+    window.addEventListener("pointercancel", onUp, true);
 
     return () => {
-      window.removeEventListener('pointermove', onMove, true)
-      window.removeEventListener('pointerup', onUp, true)
-      window.removeEventListener('pointercancel', onUp, true)
-    }
-  }, [reset])
+      window.removeEventListener("pointermove", onMove, true);
+      window.removeEventListener("pointerup", onUp, true);
+      window.removeEventListener("pointercancel", onUp, true);
+    };
+  }, [reset]);
 
   // A resize interrupted by an unmount must not leave the state dangling.
-  useEffect(() => reset, [reset])
+  useEffect(() => reset, [reset]);
 
-  return { resizing, onPointerDown }
+  return { resizing, onPointerDown };
 }

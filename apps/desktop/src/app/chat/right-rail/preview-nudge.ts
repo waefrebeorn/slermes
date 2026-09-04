@@ -14,16 +14,16 @@
  * never touched would be a lie about what it did.
  */
 
-import type { WatchStage } from '@/lib/preview-act/watch-in-page'
+import type { WatchStage } from "@/lib/preview-act/watch-in-page";
 
-import { activePreviewScriptRunner } from './preview-script-runner'
+import { activePreviewScriptRunner } from "./preview-script-runner";
 
 /** Run one stage against the active pane's overlay, if it has one. */
 export function nudgeOverlay(stage: WatchStage): void {
-  const run = activePreviewScriptRunner()
+  const run = activePreviewScriptRunner();
 
   if (!run) {
-    return
+    return;
   }
 
   void run(`(function () {
@@ -34,5 +34,5 @@ export function nudgeOverlay(stage: WatchStage): void {
   return 'ok';
 })()`).catch(() => {
     // The page navigated out from under us. The next action re-injects.
-  })
+  });
 }

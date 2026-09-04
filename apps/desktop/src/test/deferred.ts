@@ -4,13 +4,13 @@
  *  proving a second call is coalesced or ignored, ordering two resolutions —
  *  and then release it on their own schedule. */
 export function deferred<T = void>() {
-  let resolve!: (value: PromiseLike<T> | T) => void
-  let reject!: (reason?: unknown) => void
+  let resolve!: (value: PromiseLike<T> | T) => void;
+  let reject!: (reason?: unknown) => void;
 
   const promise = new Promise<T>((done, fail) => {
-    resolve = done
-    reject = fail
-  })
+    resolve = done;
+    reject = fail;
+  });
 
-  return { promise, reject, resolve }
+  return { promise, reject, resolve };
 }

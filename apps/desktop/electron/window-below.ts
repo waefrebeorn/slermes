@@ -12,37 +12,37 @@
 // permission; we pass titles through only when that permission is ALREADY
 // granted and never trigger the prompt for it.
 
-import fs from 'node:fs'
-import path from 'node:path'
-import { pathToFileURL } from 'node:url'
+import fs from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 
-import { app } from 'electron'
+import { app } from "electron";
 
-import { readHyprlandWindows } from './hyprland'
+import { readHyprlandWindows } from "./hyprland";
 
 export interface EnumeratedWindow {
-  app: string
-  bounds: { x: number; y: number; width: number; height: number }
-  id: number
-  pid: number
-  title: string
+  app: string;
+  bounds: { x: number; y: number; width: number; height: number };
+  id: number;
+  pid: number;
+  title: string;
 }
 
 export interface WindowBelowResult {
-  frontmost: { app: string; title: string } | null
-  note?: string
-  platform: string
+  frontmost: { app: string; title: string } | null;
+  note?: string;
+  platform: string;
   window: {
-    app: string
-    bounds: { x: number; y: number; width: number; height: number }
-    id: number
-    title: string
-  } | null
+    app: string;
+    bounds: { x: number; y: number; width: number; height: number };
+    id: number;
+    title: string;
+  } | null;
 }
 
 export interface WindowBelowUnavailable {
-  error: string
-  platform: string
+  error: string;
+  platform: string;
 }
 
 /**
@@ -66,9 +66,15 @@ export interface WindowBelowUnavailable {
  * spawn, or the OS answered with nothing — three failures with three different
  * fixes, all collapsed into one sentence.
  */
-export function enumerationFailureNote(platform: string, env: NodeJS.ProcessEnv, detail?: string): string {
-  if (platform !== 'linux') {
-    return detail ? `Could not enumerate windows: ${detail}` : 'Could not enumerate windows on this system.'
+export function enumerationFailureNote(
+  platform: string,
+  env: NodeJS.ProcessEnv,
+  detail?: string,
+): string {
+  if (platform !== "linux") {
+    return detail
+      ? `Could not enumerate windows: ${detail}`
+      : "Could not enumerate windows on this system.";
   }
 
   // Hyprland is asked over its own IPC, so reaching here means the socket
@@ -76,30 +82,38 @@ export function enumerationFailureNote(platform: string, env: NodeJS.ProcessEnv,
   // abandon Wayland, would send them in exactly the wrong direction.
   if (env.HYPRLAND_INSTANCE_SIGNATURE) {
     return (
-      'Could not enumerate windows: Hyprland did not answer on its IPC socket. ' +
-      'Check that `hyprctl clients` works from the same session Hermes is ' +
-      'running in.'
-    )
+      "Could not enumerate windows: Hyprland did not answer on its IPC socket. " +
+      "Check that `hyprctl clients` works from the same session Hermes is " +
+      "running in."
+    );
   }
 
-  const wayland = env.XDG_SESSION_TYPE === 'wayland' || (Boolean(env.WAYLAND_DISPLAY) && !env.DISPLAY)
+  const wayland =
+    env.XDG_SESSION_TYPE === "wayland" ||
+    (Boolean(env.WAYLAND_DISPLAY) && !env.DISPLAY);
 
   if (wayland) {
     return (
-      'Could not enumerate windows: this is a Wayland session, and Wayland does ' +
-      'not let an application see other applications\u2019 windows. Log in to an ' +
-      'X11/Xorg session, or run Hermes under XWayland with DISPLAY set.'
-    )
+      "Could not enumerate windows: this is a Wayland session, and Wayland does " +
+      "not let an application see other applications\u2019 windows. Log in to an " +
+      "X11/Xorg session, or run Hermes under XWayland with DISPLAY set."
+    );
   }
 
   return (
-    'Could not enumerate windows: this needs the xprop and xwininfo commands ' +
-    '(the x11-utils package on Debian/Ubuntu, xorg-x11-utils on Fedora).'
-  )
+    "Could not enumerate windows: this needs the xprop and xwininfo commands " +
+    "(the x11-utils package on Debian/Ubuntu, xorg-x11-utils on Fedora)."
+  );
 }
 
-const overlaps = (a: EnumeratedWindow['bounds'], b: EnumeratedWindow['bounds']): boolean =>
-  a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+const overlaps = (
+  a: EnumeratedWindow["bounds"],
+  b: EnumeratedWindow["bounds"],
+): boolean =>
+  a.x < b.x + b.width &&
+  b.x < a.x + a.width &&
+  a.y < b.y + b.height &&
+  b.y < a.y + a.height;
 
 /**
  * Pick the window directly underneath ours from a front-to-back window list.
@@ -113,42 +127,50 @@ const overlaps = (a: EnumeratedWindow['bounds'], b: EnumeratedWindow['bounds']):
 export function pickWindowBelow(
   windows: EnumeratedWindow[],
   selfPid: number,
-  selfBounds: EnumeratedWindow['bounds']
+  selfBounds: EnumeratedWindow["bounds"],
 ): { below: EnumeratedWindow | null; frontmost: EnumeratedWindow | null } {
-  const others = windows.filter(w => w.pid !== selfPid)
-  const frontmost = others[0] ?? null
+  const others = windows.filter((w) => w.pid !== selfPid);
+  const frontmost = others[0] ?? null;
 
-  const selfIndex = windows.findIndex(w => w.pid === selfPid)
-  const behind = selfIndex === -1 ? others : windows.slice(selfIndex + 1)
-  const below = behind.find(w => w.pid !== selfPid && overlaps(w.bounds, selfBounds)) ?? null
+  const selfIndex = windows.findIndex((w) => w.pid === selfPid);
+  const behind = selfIndex === -1 ? others : windows.slice(selfIndex + 1);
+  const below =
+    behind.find((w) => w.pid !== selfPid && overlaps(w.bounds, selfBounds)) ??
+    null;
 
-  return { below, frontmost }
+  return { below, frontmost };
 }
 
 type GetWindowsModule = {
-  openWindows: (options?: { accessibilityPermission?: boolean; screenRecordingPermission?: boolean }) => Promise<
+  openWindows: (options?: {
+    accessibilityPermission?: boolean;
+    screenRecordingPermission?: boolean;
+  }) => Promise<
     Array<{
-      bounds?: { height?: number; width?: number; x?: number; y?: number }
-      id?: number
-      owner?: { name?: string; processId?: number }
-      title?: string
+      bounds?: { height?: number; width?: number; x?: number; y?: number };
+      id?: number;
+      owner?: { name?: string; processId?: number };
+      title?: string;
     }>
-  >
-}
+  >;
+};
 
 /** Enumeration couldn't run at all, and why. Distinct from an empty list,
  *  which is a real answer meaning "nothing else is on screen". */
 export interface EnumerationFailure {
-  reason: string
+  reason: string;
 }
 
-export const enumerationFailed = <T>(result: EnumerationFailure | T): result is EnumerationFailure =>
-  typeof result === 'object' && result !== null && 'reason' in result
+export const enumerationFailed = <T>(
+  result: EnumerationFailure | T,
+): result is EnumerationFailure =>
+  typeof result === "object" && result !== null && "reason" in result;
 
 const describeError = (error: unknown): string =>
-  error instanceof Error ? error.message : String(error ?? 'unknown error')
+  error instanceof Error ? error.message : String(error ?? "unknown error");
 
-let getWindowsModule: Promise<GetWindowsModule | EnumerationFailure> | null = null
+let getWindowsModule: Promise<GetWindowsModule | EnumerationFailure> | null =
+  null;
 
 const loadGetWindows = (): Promise<GetWindowsModule | EnumerationFailure> => {
   // get-windows is an optionalDependency: `npm ci` can skip it when its native
@@ -169,30 +191,36 @@ const loadGetWindows = (): Promise<GetWindowsModule | EnumerationFailure> => {
   // scripts/stage-native-deps.mjs writes a staged lib/windows.js that requires
   // the binding directly, so it is the more reliable of the two everywhere.
   getWindowsModule ??= (async () => {
-    const staged = path.join(app.getAppPath(), 'dist', 'node_modules', 'get-windows', 'index.js')
-    let stagedError = 'not staged in this build'
+    const staged = path.join(
+      app.getAppPath(),
+      "dist",
+      "node_modules",
+      "get-windows",
+      "index.js",
+    );
+    let stagedError = "not staged in this build";
 
     if (fs.existsSync(staged)) {
       try {
-        return (await import(pathToFileURL(staged).href)) as GetWindowsModule
+        return (await import(pathToFileURL(staged).href)) as GetWindowsModule;
       } catch (error) {
-        stagedError = describeError(error)
+        stagedError = describeError(error);
       }
     }
 
     try {
-      return (await import('get-windows')) as GetWindowsModule
+      return (await import("get-windows")) as GetWindowsModule;
     } catch (error) {
       return {
         reason:
-          'the get-windows module could not be loaded ' +
-          `(staged copy: ${stagedError}; node_modules copy: ${describeError(error)})`
-      }
+          "the get-windows module could not be loaded " +
+          `(staged copy: ${stagedError}; node_modules copy: ${describeError(error)})`,
+      };
     }
-  })()
+  })();
 
-  return getWindowsModule
-}
+  return getWindowsModule;
+};
 
 /**
  * Every window `get-windows` can see, front-to-back, or why it could not look.
@@ -203,30 +231,35 @@ const loadGetWindows = (): Promise<GetWindowsModule | EnumerationFailure> => {
  * something that isn't a list — each say so, because they have three different
  * fixes and the caller has no other way to tell them apart.
  */
-async function enumerateViaGetWindows(titlesAvailable: boolean): Promise<EnumeratedWindow[] | EnumerationFailure> {
-  const getWindows = await loadGetWindows()
+async function enumerateViaGetWindows(
+  titlesAvailable: boolean,
+): Promise<EnumeratedWindow[] | EnumerationFailure> {
+  const getWindows = await loadGetWindows();
 
   if (enumerationFailed(getWindows)) {
-    return getWindows
+    return getWindows;
   }
 
-  let raw
+  let raw;
 
   try {
     raw = await getWindows.openWindows(
-      process.platform === 'darwin'
-        ? { accessibilityPermission: false, screenRecordingPermission: titlesAvailable }
-        : undefined
-    )
+      process.platform === "darwin"
+        ? {
+            accessibilityPermission: false,
+            screenRecordingPermission: titlesAvailable,
+          }
+        : undefined,
+    );
   } catch (error) {
     // On macOS this is the helper binary failing to spawn — a missing or
     // non-executable `main`, or the OS refusing to run it — which is invisible
     // from the outside and used to surface as the generic note.
-    return { reason: `the window enumerator failed: ${describeError(error)}` }
+    return { reason: `the window enumerator failed: ${describeError(error)}` };
   }
 
   if (!Array.isArray(raw)) {
-    return { reason: 'the window enumerator returned no window list' }
+    return { reason: "the window enumerator returned no window list" };
   }
 
   // get-windows documents openWindows() as front-to-back, and macOS/Windows
@@ -234,20 +267,20 @@ async function enumerateViaGetWindows(titlesAvailable: boolean): Promise<Enumera
   // iterates `_NET_CLIENT_LIST_STACKING` in raw xprop order, which EWMH
   // defines as bottom-to-top — so the Linux list arrives back-to-front and
   // must be reversed to match. (Verified against get-windows 9.3.0.)
-  const ordered = process.platform === 'linux' ? [...raw].reverse() : raw
+  const ordered = process.platform === "linux" ? [...raw].reverse() : raw;
 
-  return ordered.map(w => ({
-    app: w.owner?.name ?? '',
+  return ordered.map((w) => ({
+    app: w.owner?.name ?? "",
     bounds: {
       x: w.bounds?.x ?? 0,
       y: w.bounds?.y ?? 0,
       width: w.bounds?.width ?? 0,
-      height: w.bounds?.height ?? 0
+      height: w.bounds?.height ?? 0,
     },
     id: w.id ?? 0,
     pid: w.owner?.processId ?? 0,
-    title: w.title ?? ''
-  }))
+    title: w.title ?? "",
+  }));
 }
 
 /**
@@ -261,38 +294,54 @@ async function enumerateViaGetWindows(titlesAvailable: boolean): Promise<Enumera
  */
 export async function enumerateWindowsFrontToBack(
   selfPid: number,
-  titlesAvailable: boolean
+  titlesAvailable: boolean,
 ): Promise<EnumeratedWindow[] | EnumerationFailure> {
-  return (await readHyprlandWindows(selfPid)) ?? (await enumerateViaGetWindows(titlesAvailable))
+  return (
+    (await readHyprlandWindows(selfPid)) ??
+    (await enumerateViaGetWindows(titlesAvailable))
+  );
 }
 
 export async function readWindowBelow(
   selfPid: number,
-  selfBounds: EnumeratedWindow['bounds'],
-  titlesAvailable: boolean
+  selfBounds: EnumeratedWindow["bounds"],
+  titlesAvailable: boolean,
 ): Promise<WindowBelowResult | WindowBelowUnavailable> {
-  const windows = await enumerateWindowsFrontToBack(selfPid, titlesAvailable)
+  const windows = await enumerateWindowsFrontToBack(selfPid, titlesAvailable);
 
   if (enumerationFailed(windows)) {
     return {
-      error: enumerationFailureNote(process.platform, process.env, windows.reason),
-      platform: process.platform
-    }
+      error: enumerationFailureNote(
+        process.platform,
+        process.env,
+        windows.reason,
+      ),
+      platform: process.platform,
+    };
   }
 
-  const { below, frontmost } = pickWindowBelow(windows, selfPid, selfBounds)
+  const { below, frontmost } = pickWindowBelow(windows, selfPid, selfBounds);
 
   const result: WindowBelowResult = {
-    frontmost: frontmost ? { app: frontmost.app, title: frontmost.title } : null,
+    frontmost: frontmost
+      ? { app: frontmost.app, title: frontmost.title }
+      : null,
     platform: process.platform,
-    window: below ? { app: below.app, bounds: below.bounds, id: below.id, title: below.title } : null
-  }
+    window: below
+      ? {
+          app: below.app,
+          bounds: below.bounds,
+          id: below.id,
+          title: below.title,
+        }
+      : null,
+  };
 
-  if (process.platform === 'darwin' && !titlesAvailable) {
+  if (process.platform === "darwin" && !titlesAvailable) {
     result.note =
-      'Window titles are hidden: macOS reveals other apps\u2019 titles only with the ' +
-      'Screen Recording permission, which Hermes does not request for this.'
+      "Window titles are hidden: macOS reveals other apps\u2019 titles only with the " +
+      "Screen Recording permission, which Hermes does not request for this.";
   }
 
-  return result
+  return result;
 }

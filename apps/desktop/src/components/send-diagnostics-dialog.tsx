@@ -8,61 +8,76 @@
 //   uploading — spinner while the backend collects, redacts and uploads.
 //   done      — the private view link (copyable) + where to pick up the
 //               discussion: GitHub Issues · Nous Portal Support · Discord.
-import { useStore } from '@nanostores/react'
+import { useStore } from "@nanostores/react";
 
-import { Button } from '@/components/ui/button'
-import { CopyButton } from '@/components/ui/copy-button'
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-import { useI18n } from '@/i18n'
-import { ExternalLink as ExternalLinkAnchor, openExternalLink } from '@/lib/external-link'
-import { ExternalLink, Loader2Icon, Lock } from '@/lib/icons'
-import { $sendDiagnostics, confirmSendDiagnostics, dismissSendDiagnostics } from '@/store/send-diagnostics'
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useI18n } from "@/i18n";
+import {
+  ExternalLink as ExternalLinkAnchor,
+  openExternalLink,
+} from "@/lib/external-link";
+import { ExternalLink, Loader2Icon, Lock } from "@/lib/icons";
+import {
+  $sendDiagnostics,
+  confirmSendDiagnostics,
+  dismissSendDiagnostics,
+} from "@/store/send-diagnostics";
 
 const SUPPORT_LINKS = [
-  { key: 'github', url: 'https://github.com/NousResearch/hermes-agent/issues' },
-  { key: 'portal', url: 'https://portal.nousresearch.com/help' },
-  { key: 'discord', url: 'https://discord.gg/NousResearch' }
-] as const
+  { key: "github", url: "https://github.com/NousResearch/hermes-agent/issues" },
+  { key: "portal", url: "https://portal.nousresearch.com/help" },
+  { key: "discord", url: "https://discord.gg/NousResearch" },
+] as const;
 
 export function SendDiagnosticsHost() {
-  const { t } = useI18n()
-  const copy = t.sendDiagnostics
-  const state = useStore($sendDiagnostics)
+  const { t } = useI18n();
+  const copy = t.sendDiagnostics;
+  const state = useStore($sendDiagnostics);
 
   if (!state) {
-    return null
+    return null;
   }
 
-  const busy = state.phase === 'uploading'
+  const busy = state.phase === "uploading";
 
   return (
     // Dismissal is allowed in EVERY phase, including mid-upload: the store's
     // generation guard makes a dismissed upload's completion a no-op, so Esc/
     // backdrop/Cancel are always an immediate way out (cancellation of the
     // in-flight request itself stays best-effort).
-    <Dialog onOpenChange={open => (!open ? dismissSendDiagnostics() : undefined)} open>
+    <Dialog
+      onOpenChange={(open) => (!open ? dismissSendDiagnostics() : undefined)}
+      open
+    >
       <DialogContent className="max-w-[30rem]">
-        {state.phase === 'consent' || state.phase === 'uploading' ? (
+        {state.phase === "consent" || state.phase === "uploading" ? (
           <>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Lock className="size-4 text-(--ui-text-tertiary)" />
                 {copy.title}
               </DialogTitle>
-              <DialogDescription className="whitespace-pre-line text-left">{copy.privacyNotice}</DialogDescription>
+              <DialogDescription className="whitespace-pre-line text-left">
+                {copy.privacyNotice}
+              </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <Button onClick={dismissSendDiagnostics} variant="ghost">
                 {copy.cancel}
               </Button>
-              <Button disabled={busy} onClick={() => void confirmSendDiagnostics()}>
+              <Button
+                disabled={busy}
+                onClick={() => void confirmSendDiagnostics()}
+              >
                 {busy ? (
                   <span className="flex items-center gap-1.5">
                     <Loader2Icon className="size-3.5 animate-spin" />
@@ -74,13 +89,13 @@ export function SendDiagnosticsHost() {
               </Button>
             </DialogFooter>
           </>
-        ) : state.phase === 'error' ? (
+        ) : state.phase === "error" ? (
           <>
             <DialogHeader>
               <DialogTitle>{copy.failedTitle}</DialogTitle>
               <DialogDescription className="text-left">
                 {state.error}
-                {'\n'}
+                {"\n"}
                 {copy.failedHint}
               </DialogDescription>
             </DialogHeader>
@@ -94,7 +109,9 @@ export function SendDiagnosticsHost() {
           <>
             <DialogHeader>
               <DialogTitle>{copy.doneTitle}</DialogTitle>
-              <DialogDescription className="text-left">{copy.doneDescription}</DialogDescription>
+              <DialogDescription className="text-left">
+                {copy.doneDescription}
+              </DialogDescription>
             </DialogHeader>
             {(state.result?.viewUrl || state.result?.uploadId) && (
               <div
@@ -119,21 +136,28 @@ export function SendDiagnosticsHost() {
                   </ExternalLinkAnchor>
                 ) : (
                   <code className="min-w-0 flex-1 truncate text-[0.78rem] text-(--ui-text-secondary)">
-                    {copy.uploadIdFallback(state.result.uploadId ?? '')}
+                    {copy.uploadIdFallback(state.result.uploadId ?? "")}
                   </code>
                 )}
                 <CopyButton
                   appearance="inline"
                   className="shrink-0"
                   label={copy.copyLink}
-                  text={state.result.viewUrl ?? state.result.uploadId ?? ''}
+                  text={state.result.viewUrl ?? state.result.uploadId ?? ""}
                 />
               </div>
             )}
-            <div className="text-[0.8rem] text-(--ui-text-secondary)">{copy.handoffLead}</div>
+            <div className="text-[0.8rem] text-(--ui-text-secondary)">
+              {copy.handoffLead}
+            </div>
             <div className="flex flex-wrap gap-1.5">
-              {SUPPORT_LINKS.map(link => (
-                <Button key={link.key} onClick={() => openExternalLink(link.url)} size="sm" variant="outline">
+              {SUPPORT_LINKS.map((link) => (
+                <Button
+                  key={link.key}
+                  onClick={() => openExternalLink(link.url)}
+                  size="sm"
+                  variant="outline"
+                >
                   <ExternalLink className="size-3" />
                   {copy.links[link.key]}
                 </Button>
@@ -148,5 +172,5 @@ export function SendDiagnosticsHost() {
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -1,55 +1,59 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { deriveDraftTitle } from '@/lib/draft-title'
-import { triggerHaptic } from '@/lib/haptics'
+import { deriveDraftTitle } from "@/lib/draft-title";
+import { triggerHaptic } from "@/lib/haptics";
 
 export interface ComposerAttachment {
-  id: string
+  id: string;
   /** Renderer-lifetime identity for one attachment occurrence. Unlike `id`,
    * which is content/path-derived, this survives draft cloning but changes
    * when the user removes and re-adds the same attachment. */
-  occurrenceId?: string
-  kind: 'file' | 'folder' | 'image' | 'review' | 'terminal' | 'url'
-  label: string
-  detail?: string
-  refText?: string
+  occurrenceId?: string;
+  kind: "file" | "folder" | "image" | "review" | "terminal" | "url";
+  label: string;
+  detail?: string;
+  refText?: string;
   /** Legacy/on-demand full source. New local image chips omit this and read
    * `path` only when the lightbox opens, avoiding retained multi-MB base64. */
-  previewUrl?: string
+  previewUrl?: string;
   /** Downscaled data URL for the attachment card and optimistic bubble only. */
-  thumbnailUrl?: string
-  path?: string
-  attachedSessionId?: string
+  thumbnailUrl?: string;
+  path?: string;
+  attachedSessionId?: string;
   /** Set while the file/image bytes are being staged into the session
    * workspace (remote upload or local stage), and 'error' if that failed.
    * Drives the spinner / error state on the composer attachment card. */
-  uploadState?: 'uploading' | 'error'
+  uploadState?: "uploading" | "error";
 }
 
-export type ComposerAttachmentPatch = Partial<Omit<ComposerAttachment, 'id' | 'occurrenceId'>>
+export type ComposerAttachmentPatch = Partial<
+  Omit<ComposerAttachment, "id" | "occurrenceId">
+>;
 
-export const $composerDraft = atom('')
-export const $composerAttachments = atom<ComposerAttachment[]>([])
-export const $composerTerminalSelections = atom<Record<string, string>>({})
+export const $composerDraft = atom("");
+export const $composerAttachments = atom<ComposerAttachment[]>([]);
+export const $composerTerminalSelections = atom<Record<string, string>>({});
 
 // Latched because opening a fresh session may remount the main composer before
 // it can start voice. Session-tile composers deliberately never consume this.
-export const $voiceConversationStartRequest = atom(0)
-let nextVoiceStartRequest = 0
-let handledVoiceStartRequest = 0
-export const createComposerAttachmentOccurrenceId = (): string => crypto.randomUUID()
+export const $voiceConversationStartRequest = atom(0);
+let nextVoiceStartRequest = 0;
+let handledVoiceStartRequest = 0;
+export const createComposerAttachmentOccurrenceId = (): string =>
+  crypto.randomUUID();
 
-export const requestVoiceConversationStart = (): void => $voiceConversationStartRequest.set(++nextVoiceStartRequest)
+export const requestVoiceConversationStart = (): void =>
+  $voiceConversationStartRequest.set(++nextVoiceStartRequest);
 
 export const takeVoiceConversationStart = (current: number): boolean => {
   if (current <= handledVoiceStartRequest) {
-    return false
+    return false;
   }
 
-  handledVoiceStartRequest = current
+  handledVoiceStartRequest = current;
 
-  return true
-}
+  return true;
+};
 
 // ---------------------------------------------------------------------------
 // Composer scopes — one live attachment set PER MOUNTED COMPOSER. The main
@@ -60,154 +64,177 @@ export const takeVoiceConversationStart = (current: number): boolean => {
 // ---------------------------------------------------------------------------
 
 export interface ComposerAttachmentScope {
-  $attachments: ReturnType<typeof atom<ComposerAttachment[]>>
-  add(attachment: ComposerAttachment): void
-  clear(): void
-  remove(id: string): ComposerAttachment | null
-  removeOccurrences(attachments: readonly ComposerAttachment[]): void
-  setUploadState(id: string, uploadState?: ComposerAttachment['uploadState']): void
-  update(attachment: ComposerAttachment): boolean
-  updateIfCurrent(expected: ComposerAttachment, patch: ComposerAttachmentPatch): boolean
+  $attachments: ReturnType<typeof atom<ComposerAttachment[]>>;
+  add(attachment: ComposerAttachment): void;
+  clear(): void;
+  remove(id: string): ComposerAttachment | null;
+  removeOccurrences(attachments: readonly ComposerAttachment[]): void;
+  setUploadState(
+    id: string,
+    uploadState?: ComposerAttachment["uploadState"],
+  ): void;
+  update(attachment: ComposerAttachment): boolean;
+  updateIfCurrent(
+    expected: ComposerAttachment,
+    patch: ComposerAttachmentPatch,
+  ): boolean;
 }
 
-function attachmentOccurrenceIndex(attachments: ComposerAttachment[], expected: ComposerAttachment): number {
-  return attachments.findIndex(item =>
+function attachmentOccurrenceIndex(
+  attachments: ComposerAttachment[],
+  expected: ComposerAttachment,
+): number {
+  return attachments.findIndex((item) =>
     expected.occurrenceId === undefined
       ? item === expected
-      : item.id === expected.id && item.occurrenceId === expected.occurrenceId
-  )
+      : item.id === expected.id && item.occurrenceId === expected.occurrenceId,
+  );
 }
 
-export function createComposerAttachmentScope($attachments = atom<ComposerAttachment[]>([])): ComposerAttachmentScope {
+export function createComposerAttachmentScope(
+  $attachments = atom<ComposerAttachment[]>([]),
+): ComposerAttachmentScope {
   return {
     $attachments,
     add(attachment) {
-      const previous = $attachments.get()
-      const next = upsertAttachment(previous, attachment)
-      $attachments.set(next)
+      const previous = $attachments.get();
+      const next = upsertAttachment(previous, attachment);
+      $attachments.set(next);
 
-      if (next.length > previous.length && attachment.kind !== 'url') {
-        triggerHaptic('selection')
+      if (next.length > previous.length && attachment.kind !== "url") {
+        triggerHaptic("selection");
       }
     },
     clear() {
-      $attachments.set([])
+      $attachments.set([]);
     },
     remove(id) {
-      const current = $attachments.get()
-      const removed = current.find(attachment => attachment.id === id) || null
-      $attachments.set(current.filter(attachment => attachment.id !== id))
+      const current = $attachments.get();
+      const removed =
+        current.find((attachment) => attachment.id === id) || null;
+      $attachments.set(current.filter((attachment) => attachment.id !== id));
 
-      return removed
+      return removed;
     },
     removeOccurrences(attachments) {
-      const current = $attachments.get()
+      const current = $attachments.get();
 
       const submittedOccurrences = new Set(
         attachments
-          .filter(attachment => attachment.occurrenceId !== undefined)
-          .map(attachment => `${attachment.id}\u0000${attachment.occurrenceId}`)
-      )
+          .filter((attachment) => attachment.occurrenceId !== undefined)
+          .map(
+            (attachment) => `${attachment.id}\u0000${attachment.occurrenceId}`,
+          ),
+      );
 
-      const submittedLegacy = new Set(attachments.filter(attachment => attachment.occurrenceId === undefined))
+      const submittedLegacy = new Set(
+        attachments.filter(
+          (attachment) => attachment.occurrenceId === undefined,
+        ),
+      );
 
-      const next = current.filter(attachment =>
+      const next = current.filter((attachment) =>
         attachment.occurrenceId === undefined
           ? !submittedLegacy.has(attachment)
-          : !submittedOccurrences.has(`${attachment.id}\u0000${attachment.occurrenceId}`)
-      )
+          : !submittedOccurrences.has(
+              `${attachment.id}\u0000${attachment.occurrenceId}`,
+            ),
+      );
 
       // Preserve clear()'s notification semantics even when no captured
       // occurrence remains. Some composer consumers settle local state on the
       // successful-submit store emission.
-      $attachments.set(next)
+      $attachments.set(next);
     },
     setUploadState(id, uploadState) {
-      const current = $attachments.get()
-      const index = current.findIndex(attachment => attachment.id === id)
+      const current = $attachments.get();
+      const index = current.findIndex((attachment) => attachment.id === id);
 
       if (index < 0) {
-        return
+        return;
       }
 
-      const next = [...current]
-      next[index] = { ...next[index]!, uploadState }
-      $attachments.set(next)
+      const next = [...current];
+      next[index] = { ...next[index]!, uploadState };
+      $attachments.set(next);
     },
     update(attachment) {
-      const current = $attachments.get()
-      const index = current.findIndex(item => item.id === attachment.id)
+      const current = $attachments.get();
+      const index = current.findIndex((item) => item.id === attachment.id);
 
       if (index < 0) {
-        return false
+        return false;
       }
 
-      const next = [...current]
-      next[index] = attachment
-      $attachments.set(next)
+      const next = [...current];
+      next[index] = attachment;
+      $attachments.set(next);
 
-      return true
+      return true;
     },
     updateIfCurrent(expected, patch) {
-      const current = $attachments.get()
-      const index = attachmentOccurrenceIndex(current, expected)
+      const current = $attachments.get();
+      const index = attachmentOccurrenceIndex(current, expected);
 
       if (index < 0) {
-        return false
+        return false;
       }
 
-      const next = [...current]
-      next[index] = { ...next[index]!, ...patch }
-      $attachments.set(next)
+      const next = [...current];
+      next[index] = { ...next[index]!, ...patch };
+      $attachments.set(next);
 
-      return true
-    }
-  }
+      return true;
+    },
+  };
 }
 
 /** The main chat's scope — the module-level atom, so every existing
  *  `$composerAttachments` reader/writer IS this scope. */
-export const mainComposerScope = createComposerAttachmentScope($composerAttachments)
+export const mainComposerScope =
+  createComposerAttachmentScope($composerAttachments);
 
 // Per-thread draft stash for the decoupled composer. Session lifecycle never
 // touches this — only ChatBar's scope swap reads/writes it. Text mirrors to
 // localStorage; attachments are memory-only (blobs, upload state).
-export const SESSION_DRAFTS_STORAGE_KEY = 'hermes:composer-drafts:v3'
+export const SESSION_DRAFTS_STORAGE_KEY = "hermes:composer-drafts:v3";
 
-const NEW_SESSION_DRAFT_KEY = '__new__'
-const MAX_PERSISTED_DRAFTS = 50
-const EMPTY_SESSION_DRAFT: SessionDraft = { attachments: [], text: '' }
+const NEW_SESSION_DRAFT_KEY = "__new__";
+const MAX_PERSISTED_DRAFTS = 50;
+const EMPTY_SESSION_DRAFT: SessionDraft = { attachments: [], text: "" };
 
 export interface SessionDraft {
-  attachments: ComposerAttachment[]
-  text: string
+  attachments: ComposerAttachment[];
+  text: string;
 }
 
-const draftKey = (scope: string | null | undefined) => scope?.trim() || NEW_SESSION_DRAFT_KEY
+const draftKey = (scope: string | null | undefined) =>
+  scope?.trim() || NEW_SESSION_DRAFT_KEY;
 
 const cloneDraft = (draft: SessionDraft): SessionDraft => ({
-  attachments: draft.attachments.map(attachment => ({ ...attachment })),
-  text: draft.text
-})
+  attachments: draft.attachments.map((attachment) => ({ ...attachment })),
+  text: draft.text,
+});
 
 function loadPersistedDraftTexts(): [string, SessionDraft][] {
   try {
-    const raw = window.localStorage.getItem(SESSION_DRAFTS_STORAGE_KEY)
+    const raw = window.localStorage.getItem(SESSION_DRAFTS_STORAGE_KEY);
 
     if (!raw) {
-      return []
+      return [];
     }
 
-    return Object.entries(JSON.parse(raw) as Record<string, string>).map(([key, text]) => [
-      key,
-      { attachments: [], text }
-    ])
+    return Object.entries(JSON.parse(raw) as Record<string, string>).map(
+      ([key, text]) => [key, { attachments: [], text }],
+    );
   } catch {
-    return []
+    return [];
   }
 }
 
-const draftsBySession = new Map<string, SessionDraft>(loadPersistedDraftTexts())
+const draftsBySession = new Map<string, SessionDraft>(
+  loadPersistedDraftTexts(),
+);
 
 /**
  * Patch one asynchronous attachment occurrence wherever the main composer owns
@@ -218,24 +245,24 @@ const draftsBySession = new Map<string, SessionDraft>(loadPersistedDraftTexts())
  */
 export function patchMainComposerAttachmentOccurrence(
   expected: ComposerAttachment,
-  patch: ComposerAttachmentPatch
+  patch: ComposerAttachmentPatch,
 ): boolean {
-  let updated = mainComposerScope.updateIfCurrent(expected, patch)
+  let updated = mainComposerScope.updateIfCurrent(expected, patch);
 
   for (const [key, draft] of draftsBySession) {
-    const index = attachmentOccurrenceIndex(draft.attachments, expected)
+    const index = attachmentOccurrenceIndex(draft.attachments, expected);
 
     if (index < 0) {
-      continue
+      continue;
     }
 
-    const attachments = [...draft.attachments]
-    attachments[index] = { ...attachments[index]!, ...patch }
-    draftsBySession.set(key, { ...draft, attachments })
-    updated = true
+    const attachments = [...draft.attachments];
+    attachments[index] = { ...attachments[index]!, ...patch };
+    draftsBySession.set(key, { ...draft, attachments });
+    updated = true;
   }
 
-  return updated
+  return updated;
 }
 
 /**
@@ -253,33 +280,38 @@ export function patchMainComposerAttachmentOccurrence(
  */
 export const $draftTitles = atom<Record<string, string>>(
   Object.fromEntries(
-    [...draftsBySession].map(([key, draft]) => [key, deriveDraftTitle(draft.text)]).filter(([, title]) => title)
-  )
-)
+    [...draftsBySession]
+      .map(([key, draft]) => [key, deriveDraftTitle(draft.text)])
+      .filter(([, title]) => title),
+  ),
+);
 
 /** Read one draft's title out of the map — for a `useStoreSelector`, so a tab
  *  repaints on its OWN rename rather than on every draft's. */
-export const draftTitleIn = (titles: Record<string, string>, scope: string | null | undefined): string =>
-  titles[draftKey(scope)] ?? ''
+export const draftTitleIn = (
+  titles: Record<string, string>,
+  scope: string | null | undefined,
+): string => titles[draftKey(scope)] ?? "";
 
-export const draftTitleFor = (scope: string | null | undefined): string => draftTitleIn($draftTitles.get(), scope)
+export const draftTitleFor = (scope: string | null | undefined): string =>
+  draftTitleIn($draftTitles.get(), scope);
 
 function publishDraftTitle(key: string, title: string): void {
-  const current = $draftTitles.get()
+  const current = $draftTitles.get();
 
-  if ((current[key] ?? '') === title) {
-    return
+  if ((current[key] ?? "") === title) {
+    return;
   }
 
-  const next = { ...current }
+  const next = { ...current };
 
   if (title) {
-    next[key] = title
+    next[key] = title;
   } else {
-    delete next[key]
+    delete next[key];
   }
 
-  $draftTitles.set(next)
+  $draftTitles.set(next);
 }
 
 /**
@@ -295,31 +327,34 @@ function publishDraftTitle(key: string, title: string): void {
  * that the incoming text-only snapshot can't know about.
  */
 export function reloadPersistedDrafts(): void {
-  const incoming = new Map(loadPersistedDraftTexts())
+  const incoming = new Map(loadPersistedDraftTexts());
 
   for (const [key, draft] of incoming) {
-    const local = draftsBySession.get(key)
-    draftsBySession.set(key, local?.attachments.length ? { ...local, text: draft.text } : draft)
-    publishDraftTitle(key, deriveDraftTitle(draft.text))
+    const local = draftsBySession.get(key);
+    draftsBySession.set(
+      key,
+      local?.attachments.length ? { ...local, text: draft.text } : draft,
+    );
+    publishDraftTitle(key, deriveDraftTitle(draft.text));
   }
 
   // A key that vanished from storage was cleared (sent) in the other window.
   for (const key of [...draftsBySession.keys()]) {
     if (!incoming.has(key)) {
-      draftsBySession.delete(key)
-      publishDraftTitle(key, '')
+      draftsBySession.delete(key);
+      publishDraftTitle(key, "");
     }
   }
 }
 
 // localStorage `storage` events fire across Electron BrowserWindows of the
 // same origin, so the other window's write is the sync signal.
-if (typeof window !== 'undefined') {
-  window.addEventListener('storage', event => {
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
     if (event.key === SESSION_DRAFTS_STORAGE_KEY) {
-      reloadPersistedDrafts()
+      reloadPersistedDrafts();
     }
-  })
+  });
 }
 
 /**
@@ -336,30 +371,40 @@ if (typeof window !== 'undefined') {
  * Dispatched synchronously, unlike the focus bus: the flush must complete
  * before the HUD window is created.
  */
-const DRAFT_SYNC_EVENT = 'hermes:composer-draft-sync'
+const DRAFT_SYNC_EVENT = "hermes:composer-draft-sync";
 
-export type ComposerDraftSyncMode = 'flush' | 'reload'
+export type ComposerDraftSyncMode = "flush" | "reload";
 
 interface ComposerDraftSyncDetail {
-  mode: ComposerDraftSyncMode
-  target: string
+  mode: ComposerDraftSyncMode;
+  target: string;
 }
 
-export function requestComposerDraftSync(mode: ComposerDraftSyncMode, target = 'main'): void {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent<ComposerDraftSyncDetail>(DRAFT_SYNC_EVENT, { detail: { mode, target } }))
+export function requestComposerDraftSync(
+  mode: ComposerDraftSyncMode,
+  target = "main",
+): void {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent<ComposerDraftSyncDetail>(DRAFT_SYNC_EVENT, {
+        detail: { mode, target },
+      }),
+    );
   }
 }
 
-export function onComposerDraftSyncRequest(handler: (detail: ComposerDraftSyncDetail) => void): () => void {
-  if (typeof window === 'undefined') {
-    return () => undefined
+export function onComposerDraftSyncRequest(
+  handler: (detail: ComposerDraftSyncDetail) => void,
+): () => void {
+  if (typeof window === "undefined") {
+    return () => undefined;
   }
 
-  const listener = (event: Event) => handler((event as CustomEvent<ComposerDraftSyncDetail>).detail)
-  window.addEventListener(DRAFT_SYNC_EVENT, listener)
+  const listener = (event: Event) =>
+    handler((event as CustomEvent<ComposerDraftSyncDetail>).detail);
+  window.addEventListener(DRAFT_SYNC_EVENT, listener);
 
-  return () => window.removeEventListener(DRAFT_SYNC_EVENT, listener)
+  return () => window.removeEventListener(DRAFT_SYNC_EVENT, listener);
 }
 
 function persistDraftTexts() {
@@ -367,39 +412,49 @@ function persistDraftTexts() {
     const entries = [...draftsBySession]
       .filter(([, draft]) => draft.text)
       .slice(-MAX_PERSISTED_DRAFTS)
-      .map(([key, draft]) => [key, draft.text] as const)
+      .map(([key, draft]) => [key, draft.text] as const);
 
     if (entries.length === 0) {
-      window.localStorage.removeItem(SESSION_DRAFTS_STORAGE_KEY)
+      window.localStorage.removeItem(SESSION_DRAFTS_STORAGE_KEY);
     } else {
-      window.localStorage.setItem(SESSION_DRAFTS_STORAGE_KEY, JSON.stringify(Object.fromEntries(entries)))
+      window.localStorage.setItem(
+        SESSION_DRAFTS_STORAGE_KEY,
+        JSON.stringify(Object.fromEntries(entries)),
+      );
     }
   } catch {
     // Best-effort only — quota/private-mode must never break typing.
   }
 }
 
-export function stashSessionDraft(scope: string | null | undefined, text: string, attachments: ComposerAttachment[]) {
-  const key = draftKey(scope)
+export function stashSessionDraft(
+  scope: string | null | undefined,
+  text: string,
+  attachments: ComposerAttachment[],
+) {
+  const key = draftKey(scope);
 
   // Delete-then-set keeps MRU order for MAX_PERSISTED_DRAFTS eviction.
-  draftsBySession.delete(key)
+  draftsBySession.delete(key);
 
   if (text.trim() || attachments.length > 0) {
-    draftsBySession.set(key, cloneDraft({ attachments, text }))
+    draftsBySession.set(key, cloneDraft({ attachments, text }));
   }
 
-  persistDraftTexts()
-  publishDraftTitle(key, deriveDraftTitle(text))
+  persistDraftTexts();
+  publishDraftTitle(key, deriveDraftTitle(text));
 }
 
-export function takeSessionDraft(scope: string | null | undefined): SessionDraft {
-  const stashed = draftsBySession.get(draftKey(scope))
+export function takeSessionDraft(
+  scope: string | null | undefined,
+): SessionDraft {
+  const stashed = draftsBySession.get(draftKey(scope));
 
-  return stashed ? cloneDraft(stashed) : EMPTY_SESSION_DRAFT
+  return stashed ? cloneDraft(stashed) : EMPTY_SESSION_DRAFT;
 }
 
-export const clearSessionDraft = (scope: string | null | undefined) => stashSessionDraft(scope, '', [])
+export const clearSessionDraft = (scope: string | null | undefined) =>
+  stashSessionDraft(scope, "", []);
 
 /**
  * Move a stashed composer draft from one session key onto another.
@@ -410,189 +465,203 @@ export const clearSessionDraft = (scope: string | null | undefined) => stashSess
  * keys resolve, differ, and the source has content. Does not overwrite a
  * non-empty destination draft.
  */
-export function migrateSessionDraft(fromKey: string | null | undefined, toKey: string | null | undefined): boolean {
-  const from = draftKey(fromKey)
-  const to = draftKey(toKey)
+export function migrateSessionDraft(
+  fromKey: string | null | undefined,
+  toKey: string | null | undefined,
+): boolean {
+  const from = draftKey(fromKey);
+  const to = draftKey(toKey);
 
   if (!fromKey || !toKey || from === to) {
-    return false
+    return false;
   }
 
-  const source = draftsBySession.get(from)
+  const source = draftsBySession.get(from);
 
   if (!source || (!source.text.trim() && source.attachments.length === 0)) {
-    return false
+    return false;
   }
 
-  const dest = draftsBySession.get(to)
+  const dest = draftsBySession.get(to);
 
   if (dest && (dest.text.trim() || dest.attachments.length > 0)) {
-    return false
+    return false;
   }
 
-  stashSessionDraft(toKey, source.text, source.attachments)
-  clearSessionDraft(fromKey)
+  stashSessionDraft(toKey, source.text, source.attachments);
+  clearSessionDraft(fromKey);
 
-  return true
+  return true;
 }
 
 export function setComposerDraft(value: string) {
-  $composerDraft.set(value)
+  $composerDraft.set(value);
 }
 
 export function appendComposerDraft(value: string) {
-  const text = value.trim()
+  const text = value.trim();
 
   if (!text) {
-    return
+    return;
   }
 
-  const current = $composerDraft.get()
-  const separator = current && !current.endsWith('\n') ? '\n\n' : ''
+  const current = $composerDraft.get();
+  const separator = current && !current.endsWith("\n") ? "\n\n" : "";
 
-  $composerDraft.set(`${current}${separator}${text}`)
+  $composerDraft.set(`${current}${separator}${text}`);
 }
 
 export function appendComposerInline(value: string) {
-  const text = value.trim()
+  const text = value.trim();
 
   if (!text) {
-    return
+    return;
   }
 
-  const current = $composerDraft.get().trimEnd()
-  const separator = current ? ' ' : ''
+  const current = $composerDraft.get().trimEnd();
+  const separator = current ? " " : "";
 
-  $composerDraft.set(`${current}${separator}${text}`)
+  $composerDraft.set(`${current}${separator}${text}`);
 }
 
 export function clearComposerDraft() {
-  $composerDraft.set('')
+  $composerDraft.set("");
 }
 
 // Main-scope conveniences — the names the app has always used.
-export const addComposerAttachment = (attachment: ComposerAttachment) => mainComposerScope.add(attachment)
-export const removeComposerAttachment = (id: string) => mainComposerScope.remove(id)
+export const addComposerAttachment = (attachment: ComposerAttachment) =>
+  mainComposerScope.add(attachment);
+export const removeComposerAttachment = (id: string) =>
+  mainComposerScope.remove(id);
 
 /** Replace an existing attachment in place by id. No-op (returns false) when the
  * id is gone — e.g. the user removed the chip while an eager upload was still in
  * flight, so a late success must NOT resurrect it. Use this instead of
  * addComposerAttachment for async results that may land after a removal. */
-export const updateComposerAttachment = (attachment: ComposerAttachment) => mainComposerScope.update(attachment)
+export const updateComposerAttachment = (attachment: ComposerAttachment) =>
+  mainComposerScope.update(attachment);
 
-export const clearComposerAttachments = () => mainComposerScope.clear()
+export const clearComposerAttachments = () => mainComposerScope.clear();
 
 /** Update only the upload state of an existing attachment (no-op if it's gone,
  * e.g. the user removed it mid-upload). Pass `undefined` to clear it. */
-export const setComposerAttachmentUploadState = (id: string, uploadState?: ComposerAttachment['uploadState']) =>
-  mainComposerScope.setUploadState(id, uploadState)
+export const setComposerAttachmentUploadState = (
+  id: string,
+  uploadState?: ComposerAttachment["uploadState"],
+) => mainComposerScope.setUploadState(id, uploadState);
 
-const TERMINAL_REF_RE = /@terminal:(`[^`\n]+`|"[^"\n]+"|'[^'\n]+'|\S+)/g
+const TERMINAL_REF_RE = /@terminal:(`[^`\n]+`|"[^"\n]+"|'[^'\n]+'|\S+)/g;
 
 function unquoteRefValue(raw: string) {
-  const head = raw[0]
-  const tail = raw[raw.length - 1]
-  const quoted = (head === '`' && tail === '`') || (head === '"' && tail === '"') || (head === "'" && tail === "'")
+  const head = raw[0];
+  const tail = raw[raw.length - 1];
+  const quoted =
+    (head === "`" && tail === "`") ||
+    (head === '"' && tail === '"') ||
+    (head === "'" && tail === "'");
 
-  return (quoted ? raw.slice(1, -1) : raw).replace(/[,.;!?]+$/, '').trim()
+  return (quoted ? raw.slice(1, -1) : raw).replace(/[,.;!?]+$/, "").trim();
 }
 
 function terminalLabelsFromDraft(draft: string) {
-  const labels: string[] = []
-  const seen = new Set<string>()
+  const labels: string[] = [];
+  const seen = new Set<string>();
 
   for (const match of draft.matchAll(TERMINAL_REF_RE)) {
-    const label = unquoteRefValue(match[1] || '')
+    const label = unquoteRefValue(match[1] || "");
 
     if (!label || seen.has(label)) {
-      continue
+      continue;
     }
 
-    seen.add(label)
-    labels.push(label)
+    seen.add(label);
+    labels.push(label);
   }
 
-  return labels
+  return labels;
 }
 
 export function setComposerTerminalSelection(label: string, text: string) {
-  const nextLabel = label.trim()
-  const nextText = text.trim()
+  const nextLabel = label.trim();
+  const nextText = text.trim();
 
   if (!nextLabel || !nextText) {
-    return
+    return;
   }
 
-  const current = $composerTerminalSelections.get()
+  const current = $composerTerminalSelections.get();
 
   if (current[nextLabel] === nextText) {
-    return
+    return;
   }
 
   $composerTerminalSelections.set({
     ...current,
-    [nextLabel]: nextText
-  })
+    [nextLabel]: nextText,
+  });
 }
 
 export function reconcileComposerTerminalSelections(draft: string) {
-  const current = $composerTerminalSelections.get()
-  const labels = new Set(terminalLabelsFromDraft(draft))
-  let changed = false
-  const next: Record<string, string> = {}
+  const current = $composerTerminalSelections.get();
+  const labels = new Set(terminalLabelsFromDraft(draft));
+  let changed = false;
+  const next: Record<string, string> = {};
 
   for (const [label, text] of Object.entries(current)) {
     if (!labels.has(label)) {
-      changed = true
+      changed = true;
 
-      continue
+      continue;
     }
 
-    next[label] = text
+    next[label] = text;
   }
 
   if (changed) {
-    $composerTerminalSelections.set(next)
+    $composerTerminalSelections.set(next);
   }
 }
 
 export function terminalContextBlocksFromDraft(draft: string) {
-  const labels = terminalLabelsFromDraft(draft)
+  const labels = terminalLabelsFromDraft(draft);
 
   if (labels.length === 0) {
-    return []
+    return [];
   }
 
-  const selections = $composerTerminalSelections.get()
+  const selections = $composerTerminalSelections.get();
 
-  return labels.flatMap(label => {
-    const text = selections[label]?.trim()
+  return labels.flatMap((label) => {
+    const text = selections[label]?.trim();
 
     if (!text) {
-      return []
+      return [];
     }
 
-    return `\`\`\`terminal\n${text}\n\`\`\``
-  })
+    return `\`\`\`terminal\n${text}\n\`\`\``;
+  });
 }
 
 export function clearComposerTerminalSelections() {
   if (Object.keys($composerTerminalSelections.get()).length === 0) {
-    return
+    return;
   }
 
-  $composerTerminalSelections.set({})
+  $composerTerminalSelections.set({});
 }
 
-function upsertAttachment(attachments: ComposerAttachment[], attachment: ComposerAttachment) {
-  const index = attachments.findIndex(item => item.id === attachment.id)
+function upsertAttachment(
+  attachments: ComposerAttachment[],
+  attachment: ComposerAttachment,
+) {
+  const index = attachments.findIndex((item) => item.id === attachment.id);
 
   if (index < 0) {
-    return [...attachments, attachment]
+    return [...attachments, attachment];
   }
 
-  const next = [...attachments]
-  next[index] = attachment
+  const next = [...attachments];
+  next[index] = attachment;
 
-  return next
+  return next;
 }

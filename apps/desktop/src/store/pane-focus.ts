@@ -1,35 +1,41 @@
-import { setTerminalTakeover } from '@/app/right-sidebar/store'
-import { isLayoutNode, type LayoutNode } from '@/components/pane-shell/tree/model'
-import { applyLayoutPreset, LAYOUTS_AREA } from '@/components/pane-shell/tree/presets'
-import { revealTreePane } from '@/components/pane-shell/tree/store'
-import { registry } from '@/contrib/registry'
+import { setTerminalTakeover } from "@/app/right-sidebar/store";
+import {
+  isLayoutNode,
+  type LayoutNode,
+} from "@/components/pane-shell/tree/model";
+import {
+  applyLayoutPreset,
+  LAYOUTS_AREA,
+} from "@/components/pane-shell/tree/presets";
+import { revealTreePane } from "@/components/pane-shell/tree/store";
+import { registry } from "@/contrib/registry";
 
-import { setFileBrowserOpen, setSidebarOpen } from './layout'
-import { openReview } from './review'
+import { setFileBrowserOpen, setSidebarOpen } from "./layout";
+import { openReview } from "./review";
 
 // Explicit-request pane reveals, keyed to the backend `focus_pane` tool. Each
 // entry drives the pane's own reveal path (some are toggle-bound) so a revealed
 // pane matches a user-driven open. files/review are workspace-gated — a no-op
 // without a project cwd, which is the honest behavior.
 const PANE_REVEALERS: Record<string, () => void> = {
-  chat: () => revealTreePane('workspace'),
+  chat: () => revealTreePane("workspace"),
   files: () => setFileBrowserOpen(true),
   review: () => openReview(),
   sessions: () => setSidebarOpen(true),
-  terminal: () => setTerminalTakeover(true)
-}
+  terminal: () => setTerminalTakeover(true),
+};
 
 /** Reveal a desktop pane by name. Returns false for an unknown pane. */
 export function revealDesktopPane(pane: string): boolean {
-  const reveal = PANE_REVEALERS[pane]
+  const reveal = PANE_REVEALERS[pane];
 
   if (!reveal) {
-    return false
+    return false;
   }
 
-  reveal()
+  reveal();
 
-  return true
+  return true;
 }
 
 /** Apply a layout preset by id, resolved against the layouts contribution
@@ -39,18 +45,20 @@ export function revealDesktopPane(pane: string): boolean {
  *  an unknown id. */
 export function applyDesktopLayoutPreset(preset: string): boolean {
   if (!preset) {
-    return false
+    return false;
   }
 
   const entry = registry
     .getArea(LAYOUTS_AREA)
-    .find(candidate => candidate.id === preset && isLayoutNode(candidate.data))
+    .find(
+      (candidate) => candidate.id === preset && isLayoutNode(candidate.data),
+    );
 
   if (!entry) {
-    return false
+    return false;
   }
 
-  applyLayoutPreset(entry.id, entry.data as LayoutNode)
+  applyLayoutPreset(entry.id, entry.data as LayoutNode);
 
-  return true
+  return true;
 }

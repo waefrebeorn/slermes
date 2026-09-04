@@ -1,72 +1,81 @@
-export const HUD_WIDTH = 620
-export const HUD_HEIGHT = 320
-export const HUD_BOTTOM_MARGIN = 72
+export const HUD_WIDTH = 620;
+export const HUD_HEIGHT = 320;
+export const HUD_BOTTOM_MARGIN = 72;
 
 export interface HudWorkArea {
-  height: number
-  width: number
-  x: number
-  y: number
+  height: number;
+  width: number;
+  x: number;
+  y: number;
 }
 
 /** Display-aware default bounds used to spawn and recover the HUD layout. */
 export function defaultHudBounds(area?: HudWorkArea): {
-  height: number
-  width: number
-  x?: number
-  y?: number
+  height: number;
+  width: number;
+  x?: number;
+  y?: number;
 } {
   if (!area) {
-    return { width: HUD_WIDTH, height: HUD_HEIGHT, x: undefined, y: undefined }
+    return { width: HUD_WIDTH, height: HUD_HEIGHT, x: undefined, y: undefined };
   }
 
-  const width = Math.min(HUD_WIDTH, area.width)
-  const height = Math.min(HUD_HEIGHT, area.height)
+  const width = Math.min(HUD_WIDTH, area.width);
+  const height = Math.min(HUD_HEIGHT, area.height);
 
   return {
     width,
     height,
     x: Math.round(area.x + (area.width - width) / 2),
-    y: Math.round(Math.max(area.y, area.y + area.height - height - HUD_BOTTOM_MARGIN))
-  }
+    y: Math.round(
+      Math.max(area.y, area.y + area.height - height - HUD_BOTTOM_MARGIN),
+    ),
+  };
 }
 
 export interface HudBoundsWindow {
-  isDestroyed(): boolean
-  isResizable(): boolean
-  setBounds(bounds: { height: number; width: number; x?: number; y?: number }): void
-  setResizable(resizable: boolean): void
+  isDestroyed(): boolean;
+  isResizable(): boolean;
+  setBounds(bounds: {
+    height: number;
+    width: number;
+    x?: number;
+    y?: number;
+  }): void;
+  setResizable(resizable: boolean): void;
 }
 
 export interface HudResizeBounds {
-  height: number
-  width: number
-  x: number
-  y: number
+  height: number;
+  width: number;
+  x: number;
+  y: number;
 }
 
 /** Validate renderer-provided resize geometry before it reaches native APIs. */
-export function normalizeHudResizeBounds(value: unknown): HudResizeBounds | null {
-  if (!value || typeof value !== 'object') {
-    return null
+export function normalizeHudResizeBounds(
+  value: unknown,
+): HudResizeBounds | null {
+  if (!value || typeof value !== "object") {
+    return null;
   }
 
-  const candidate = value as Partial<Record<keyof HudResizeBounds, unknown>>
-  const x = Number(candidate.x)
-  const y = Number(candidate.y)
-  const width = Number(candidate.width)
-  const height = Number(candidate.height)
+  const candidate = value as Partial<Record<keyof HudResizeBounds, unknown>>;
+  const x = Number(candidate.x);
+  const y = Number(candidate.y);
+  const width = Number(candidate.width);
+  const height = Number(candidate.height);
 
   if (![x, y, width, height].every(Number.isFinite)) {
-    return null
+    return null;
   }
 
   return {
     x: Math.round(x),
     y: Math.round(y),
     width: Math.max(380, Math.round(width)),
-    height: Math.max(160, Math.round(height))
-  }
+    height: Math.max(160, Math.round(height)),
+  };
 }
 
 /**
@@ -81,25 +90,25 @@ export function normalizeHudResizeBounds(value: unknown): HudResizeBounds | null
  */
 export function applyHudResetBounds(
   win: HudBoundsWindow,
-  bounds: { height: number; width: number; x?: number; y?: number }
+  bounds: { height: number; width: number; x?: number; y?: number },
 ): boolean {
   try {
-    const wasResizable = win.isResizable()
+    const wasResizable = win.isResizable();
 
     if (!wasResizable) {
-      win.setResizable(true)
+      win.setResizable(true);
     }
 
     try {
-      win.setBounds(bounds)
+      win.setBounds(bounds);
     } finally {
       if (!wasResizable && !win.isDestroyed()) {
-        win.setResizable(false)
+        win.setResizable(false);
       }
     }
 
-    return true
+    return true;
   } catch {
-    return false
+    return false;
   }
 }

@@ -3,52 +3,58 @@
 // that GlyphSpinner was rewritten to remove. It now renders GlyphSpinner, so
 // what needs pinning is that no timer comes back, that the label still survives
 // the fade-out, and that the spinner stops animating once the swap is done.
-import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ChatSwapOverlay } from './chat-swap-overlay'
+import { ChatSwapOverlay } from "./chat-swap-overlay";
 
 afterEach(() => {
-  cleanup()
-})
+  cleanup();
+});
 
-describe('ChatSwapOverlay', () => {
+describe("ChatSwapOverlay", () => {
   beforeEach(() => {
-    vi.useFakeTimers()
-  })
+    vi.useFakeTimers();
+  });
 
   afterEach(() => {
-    vi.clearAllTimers()
-    vi.useRealTimers()
-  })
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
 
-  it('animates the glyph without any timer', () => {
-    const { container } = render(<ChatSwapOverlay profile="turqoise" />)
+  it("animates the glyph without any timer", () => {
+    const { container } = render(<ChatSwapOverlay profile="turqoise" />);
 
-    expect(container.querySelector('.glyph-spinner__strip')).toBeTruthy()
-    expect(vi.getTimerCount()).toBe(0)
+    expect(container.querySelector(".glyph-spinner__strip")).toBeTruthy();
+    expect(vi.getTimerCount()).toBe(0);
 
-    vi.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(5_000);
 
-    expect(vi.getTimerCount()).toBe(0)
-  })
+    expect(vi.getTimerCount()).toBe(0);
+  });
 
-  it('names the waking profile', () => {
-    render(<ChatSwapOverlay profile="turqoise" />)
+  it("names the waking profile", () => {
+    render(<ChatSwapOverlay profile="turqoise" />);
 
-    expect(screen.getByText(/turqoise/)).toBeTruthy()
-  })
+    expect(screen.getByText(/turqoise/)).toBeTruthy();
+  });
 
-  it('keeps the last profile name through the fade-out, with the glyph frozen', () => {
-    const { container, rerender } = render(<ChatSwapOverlay profile="turqoise" />)
+  it("keeps the last profile name through the fade-out, with the glyph frozen", () => {
+    const { container, rerender } = render(
+      <ChatSwapOverlay profile="turqoise" />,
+    );
 
-    expect(container.querySelector('.glyph-spinner')?.hasAttribute('data-paused')).toBe(false)
+    expect(
+      container.querySelector(".glyph-spinner")?.hasAttribute("data-paused"),
+    ).toBe(false);
 
-    rerender(<ChatSwapOverlay profile={null} />)
+    rerender(<ChatSwapOverlay profile={null} />);
 
     // Label held so the overlay doesn't blank while it fades.
-    expect(screen.getByText(/turqoise/)).toBeTruthy()
+    expect(screen.getByText(/turqoise/)).toBeTruthy();
     // ...and the spinner stops, the way clearing the interval used to stop it.
-    expect(container.querySelector('.glyph-spinner')?.getAttribute('data-paused')).toBe('true')
-  })
-})
+    expect(
+      container.querySelector(".glyph-spinner")?.getAttribute("data-paused"),
+    ).toBe("true");
+  });
+});

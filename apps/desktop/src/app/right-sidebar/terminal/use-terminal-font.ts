@@ -1,15 +1,19 @@
-import { useStore } from '@nanostores/react'
-import type { WebglAddon } from '@xterm/addon-webgl'
-import type { Terminal } from '@xterm/xterm'
-import { useEffect, useRef } from 'react'
-import type { RefObject } from 'react'
+import { useStore } from "@nanostores/react";
+import type { WebglAddon } from "@xterm/addon-webgl";
+import type { Terminal } from "@xterm/xterm";
+import { useEffect, useRef } from "react";
+import type { RefObject } from "react";
 
-import { $terminalFontFamily, applyTerminalFontFamily, resolveTerminalFontFamily } from './terminal-font'
+import {
+  $terminalFontFamily,
+  applyTerminalFontFamily,
+  resolveTerminalFontFamily,
+} from "./terminal-font";
 
 interface TerminalFontControllerOptions {
-  fitRef: RefObject<((visible: boolean) => void) | null>
-  termRef: RefObject<Terminal | null>
-  webglRef: RefObject<WebglAddon | null>
+  fitRef: RefObject<((visible: boolean) => void) | null>;
+  termRef: RefObject<Terminal | null>;
+  webglRef: RefObject<WebglAddon | null>;
 }
 
 /**
@@ -17,37 +21,45 @@ interface TerminalFontControllerOptions {
  * flips mountedRef only after term.open(); before then, its mount path reads
  * latestFontFamilyRef and warms the newest value itself.
  */
-export function useTerminalFontController({ fitRef, termRef, webglRef }: TerminalFontControllerOptions) {
-  const configured = useStore($terminalFontFamily)
-  const fontFamily = resolveTerminalFontFamily(configured)
-  const latestFontFamilyRef = useRef(fontFamily)
-  const mountedRef = useRef(false)
-  const generationRef = useRef(0)
+export function useTerminalFontController({
+  fitRef,
+  termRef,
+  webglRef,
+}: TerminalFontControllerOptions) {
+  const configured = useStore($terminalFontFamily);
+  const fontFamily = resolveTerminalFontFamily(configured);
+  const latestFontFamilyRef = useRef(fontFamily);
+  const mountedRef = useRef(false);
+  const generationRef = useRef(0);
 
-  latestFontFamilyRef.current = fontFamily
+  latestFontFamilyRef.current = fontFamily;
 
   useEffect(() => {
-    const term = termRef.current
+    const term = termRef.current;
 
-    if (!mountedRef.current || !term || term.options.fontFamily === fontFamily) {
-      return
+    if (
+      !mountedRef.current ||
+      !term ||
+      term.options.fontFamily === fontFamily
+    ) {
+      return;
     }
 
-    const generation = ++generationRef.current
-    let cancelled = false
+    const generation = ++generationRef.current;
+    let cancelled = false;
 
     void applyTerminalFontFamily({
       clearTextureAtlas: () => webglRef.current?.clearTextureAtlas(),
       fit: () => fitRef.current?.(true),
       fontFamily,
       isCurrent: () => !cancelled && generationRef.current === generation,
-      term
-    })
+      term,
+    });
 
     return () => {
-      cancelled = true
-    }
-  }, [fitRef, fontFamily, termRef, webglRef])
+      cancelled = true;
+    };
+  }, [fitRef, fontFamily, termRef, webglRef]);
 
-  return { latestFontFamilyRef, mountedRef }
+  return { latestFontFamilyRef, mountedRef };
 }

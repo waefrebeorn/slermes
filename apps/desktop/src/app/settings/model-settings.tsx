@@ -1,10 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Switch } from '@/components/ui/switch'
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import {
   getAuxiliaryModels,
   getGlobalModelInfo,
@@ -14,31 +20,42 @@ import {
   saveHermesConfig,
   saveMoaModels,
   setEnvVar,
-  setModelAssignment
-} from '@/hermes'
+  setModelAssignment,
+} from "@/hermes";
 import type {
   AuxiliaryModelsResponse,
   MoaConfigResponse,
   MoaModelSlot,
   ModelOptionProvider,
-  StaleAuxAssignment
-} from '@/hermes'
-import { useI18n } from '@/i18n'
-import { isCodeSkewRestartRequired } from '@/lib/code-skew-error'
-import { AlertTriangle, Cpu, Loader2 } from '@/lib/icons'
-import { DEFAULT_REASONING_EFFORT, REASONING_EFFORT_VALUES } from '@/lib/reasoning-effort'
-import { cn } from '@/lib/utils'
-import { setMainModelAssignment } from '@/store/cron-model-impact'
-import { notifyError, readableError } from '@/store/notifications'
-import { startManualLocalEndpoint, startManualOnboarding, startManualProviderOAuth } from '@/store/onboarding'
+  StaleAuxAssignment,
+} from "@/hermes";
+import { useI18n } from "@/i18n";
+import { isCodeSkewRestartRequired } from "@/lib/code-skew-error";
+import { AlertTriangle, Cpu, Loader2 } from "@/lib/icons";
+import {
+  DEFAULT_REASONING_EFFORT,
+  REASONING_EFFORT_VALUES,
+} from "@/lib/reasoning-effort";
+import { cn } from "@/lib/utils";
+import { setMainModelAssignment } from "@/store/cron-model-impact";
+import { notifyError, readableError } from "@/store/notifications";
+import {
+  startManualLocalEndpoint,
+  startManualOnboarding,
+  startManualProviderOAuth,
+} from "@/store/onboarding";
 
-import { hermesConfigCacheWriter, invalidateHermesConfig, useHermesConfigRecord } from '../hooks/use-config-record'
-import { useOnProfileSwitch } from '../hooks/use-on-profile-switch'
+import {
+  hermesConfigCacheWriter,
+  invalidateHermesConfig,
+  useHermesConfigRecord,
+} from "../hooks/use-config-record";
+import { useOnProfileSwitch } from "../hooks/use-on-profile-switch";
 
-import { CONTROL_TEXT } from './constants'
-import { getNested, setNested } from './helpers'
-import { ListRow, Pill, SectionHeading } from './primitives'
-import { useDeepLinkHighlight } from './use-deep-link-highlight'
+import { CONTROL_TEXT } from "./constants";
+import { getNested, setNested } from "./helpers";
+import { ListRow, Pill, SectionHeading } from "./primitives";
+import { useDeepLinkHighlight } from "./use-deep-link-highlight";
 
 // Skeleton mirror of the Model settings DOM so the page keeps its shape while
 // the provider/model catalog loads, instead of collapsing to a centered
@@ -66,7 +83,7 @@ export function ModelSettingsSkeleton() {
           <Skeleton className="h-4 w-36" />
         </div>
         <div className="grid gap-1">
-          {[0, 1, 2, 3].map(row => (
+          {[0, 1, 2, 3].map((row) => (
             <div
               className="grid gap-3 py-3 @2xl:grid-cols-[minmax(0,1fr)_minmax(15rem,22rem)] @2xl:items-center"
               key={row}
@@ -81,56 +98,62 @@ export function ModelSettingsSkeleton() {
         </div>
       </section>
     </div>
-  )
+  );
 }
 
 // agent.service_tier stores "fast"/"priority"/"on" for fast; anything else is
 // normal (mirrors tui_gateway _load_service_tier).
 const isFastTier = (tier: unknown): boolean =>
-  ['fast', 'priority', 'on'].includes(
-    String(tier ?? '')
+  ["fast", "priority", "on"].includes(
+    String(tier ?? "")
       .trim()
-      .toLowerCase()
-  )
+      .toLowerCase(),
+  );
 
 // A provider row is "ready" to pick a model from when it reports models. The
 // backend now surfaces the full `hermes model` universe (every canonical
 // provider), so unconfigured providers come back with `authenticated:false`
 // and an empty `models` list — those need a setup step before a model exists.
 function isProviderReady(p?: ModelOptionProvider): boolean {
-  return !!p && (p.authenticated !== false || (p.models?.length ?? 0) > 0)
+  return !!p && (p.authenticated !== false || (p.models?.length ?? 0) > 0);
 }
 
 // Mirrors `_AUX_TASK_SLOTS` in hermes_cli/web_server.py. Friendly labels and
 // hints make the assignments readable; raw task keys (vision, mcp, …) are
 // opaque to most users.
 interface AuxTaskMeta {
-  key: string
+  key: string;
 }
 
 const AUX_TASKS: readonly AuxTaskMeta[] = [
-  { key: 'vision' },
-  { key: 'compression' },
-  { key: 'skills_hub' },
-  { key: 'approval' },
-  { key: 'mcp' },
-  { key: 'title_generation' },
-  { key: 'review' },
-  { key: 'curator' }
-]
+  { key: "vision" },
+  { key: "compression" },
+  { key: "skills_hub" },
+  { key: "approval" },
+  { key: "mcp" },
+  { key: "title_generation" },
+  { key: "review" },
+  { key: "curator" },
+];
 
-const NO_PROVIDERS: readonly ModelOptionProvider[] = [{ name: '—', slug: '', models: [] }]
+const NO_PROVIDERS: readonly ModelOptionProvider[] = [
+  { name: "—", slug: "", models: [] },
+];
 
 // Radix <Select> renders a blank trigger when `value` matches no <SelectItem>.
 // A custom model (e.g. one added via config that isn't in the provider's
 // curated list) would vanish — surface the active value so it stays selectable.
-export const withActive = (models: readonly string[], active: string): readonly string[] =>
-  active && !models.includes(active) ? [active, ...models] : models
+export const withActive = (
+  models: readonly string[],
+  active: string,
+): readonly string[] =>
+  active && !models.includes(active) ? [active, ...models] : models;
 
 // A slot is complete when both halves are chosen. Changing a slot's provider
 // intentionally clears its model (see updateMoaSlot), so every provider change
 // passes through an incomplete state while the user picks the new model.
-export const moaSlotComplete = (slot: MoaModelSlot): boolean => !!(slot.provider.trim() && slot.model.trim())
+export const moaSlotComplete = (slot: MoaModelSlot): boolean =>
+  !!(slot.provider.trim() && slot.model.trim());
 
 // True when every slot in every preset is fully specified — the only state
 // that is safe to persist. The backend rejects configs with half-filled slots
@@ -139,254 +162,306 @@ export const moaSlotComplete = (slot: MoaModelSlot): boolean => !!(slot.provider
 // than trying to "repair" the payload.
 export const moaConfigComplete = (config: MoaConfigResponse): boolean =>
   Object.values(config.presets).every(
-    preset =>
+    (preset) =>
       preset.reference_models.length > 0 &&
       preset.reference_models.every(moaSlotComplete) &&
-      moaSlotComplete(preset.aggregator)
-  )
+      moaSlotComplete(preset.aggregator),
+  );
 
 interface StaleAuxWarningProps {
-  applying: boolean
-  onReset: () => void
-  slots: readonly StaleAuxAssignment[]
-  taskLabel: (key: string) => string
+  applying: boolean;
+  onReset: () => void;
+  slots: readonly StaleAuxAssignment[];
+  taskLabel: (key: string) => string;
 }
 
 // Shared notice: auxiliary tasks still pinned to a provider that isn't the
 // current main. Surfaces the silent credit-burn path (e.g. aux pinned to a
 // $0-balance provider after switching main away from it) and offers the
 // existing one-click reset rather than auto-clearing legitimate pins.
-function StaleAuxWarning({ applying, onReset, slots, taskLabel }: StaleAuxWarningProps) {
+function StaleAuxWarning({
+  applying,
+  onReset,
+  slots,
+  taskLabel,
+}: StaleAuxWarningProps) {
   if (!slots.length) {
-    return null
+    return null;
   }
 
-  const provider = slots[0].provider
-  const allSameProvider = slots.every(slot => slot.provider === provider)
-  const names = slots.map(slot => taskLabel(slot.task)).join(', ')
+  const provider = slots[0].provider;
+  const allSameProvider = slots.every((slot) => slot.provider === provider);
+  const names = slots.map((slot) => taskLabel(slot.task)).join(", ");
 
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
       <AlertTriangle className="size-3.5 shrink-0" />
       <span className="grow">
-        {slots.length} auxiliary task{slots.length === 1 ? '' : 's'} ({names}) still run on{' '}
-        <span className="font-mono">{allSameProvider ? provider : 'other providers'}</span>, not your main model.
+        {slots.length} auxiliary task{slots.length === 1 ? "" : "s"} ({names})
+        still run on{" "}
+        <span className="font-mono">
+          {allSameProvider ? provider : "other providers"}
+        </span>
+        , not your main model.
       </span>
-      <Button disabled={applying} onClick={onReset} size="sm" variant="textStrong">
+      <Button
+        disabled={applying}
+        onClick={onReset}
+        size="sm"
+        variant="textStrong"
+      >
         Reset all to main
       </Button>
     </div>
-  )
+  );
 }
 
 interface ModelSettingsProps {
   /** Notified after the main model is applied, so live UI stores can sync. */
-  onMainModelChanged?: (provider: string, model: string) => void
+  onMainModelChanged?: (provider: string, model: string) => void;
   /** Shared settings "Applies to" scope: a concrete profile to edit instead of
    *  the app's active one, or undefined to follow the active profile (default).
    *  Request-shaped on purpose — the API helpers treat `null` as "deliberately
    *  target the primary/default backend", so this prop never carries null. */
-  scopeProfile?: string
+  scopeProfile?: string;
 }
 
-export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSettingsProps) {
-  const { t } = useI18n()
-  const m = t.settings.model
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [skewRestart, setSkewRestart] = useState(false)
-  const [restartingBackend, setRestartingBackend] = useState(false)
-  const [mainModel, setMainModel] = useState<{ model: string; provider: string } | null>(null)
-  const [providers, setProviders] = useState<ModelOptionProvider[]>([])
-  const [selectedProvider, setSelectedProvider] = useState('')
-  const [selectedModel, setSelectedModel] = useState('')
-  const [auxiliary, setAuxiliary] = useState<AuxiliaryModelsResponse | null>(null)
-  const [moa, setMoa] = useState<MoaConfigResponse | null>(null)
-  const [selectedMoaPreset, setSelectedMoaPreset] = useState('')
-  const [newMoaPresetName, setNewMoaPresetName] = useState('')
+export function ModelSettings({
+  onMainModelChanged,
+  scopeProfile,
+}: ModelSettingsProps) {
+  const { t } = useI18n();
+  const m = t.settings.model;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [skewRestart, setSkewRestart] = useState(false);
+  const [restartingBackend, setRestartingBackend] = useState(false);
+  const [mainModel, setMainModel] = useState<{
+    model: string;
+    provider: string;
+  } | null>(null);
+  const [providers, setProviders] = useState<ModelOptionProvider[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [auxiliary, setAuxiliary] = useState<AuxiliaryModelsResponse | null>(
+    null,
+  );
+  const [moa, setMoa] = useState<MoaConfigResponse | null>(null);
+  const [selectedMoaPreset, setSelectedMoaPreset] = useState("");
+  const [newMoaPresetName, setNewMoaPresetName] = useState("");
   // agent.* defaults round-trip through the shared config cache (read → write
   // back the whole record), so a save here shows in the MCP/model surfaces.
-  const { data: config } = useHermesConfigRecord(scopeProfile)
-  const setConfig = useMemo(() => hermesConfigCacheWriter(scopeProfile), [scopeProfile])
-  const [applying, setApplying] = useState(false)
-  const [editingAuxTask, setEditingAuxTask] = useState<null | string>(null)
-  const [auxDraft, setAuxDraft] = useState<{ model: string; provider: string }>({ model: '', provider: '' })
+  const { data: config } = useHermesConfigRecord(scopeProfile);
+  const setConfig = useMemo(
+    () => hermesConfigCacheWriter(scopeProfile),
+    [scopeProfile],
+  );
+  const [applying, setApplying] = useState(false);
+  const [editingAuxTask, setEditingAuxTask] = useState<null | string>(null);
+  const [auxDraft, setAuxDraft] = useState<{ model: string; provider: string }>(
+    { model: "", provider: "" },
+  );
   // Aux slots reported stale by the backend immediately after a main-model
   // switch (provider differs from the new main). Cleared on next switch/reset.
-  const [switchStaleAux, setSwitchStaleAux] = useState<StaleAuxAssignment[]>([])
+  const [switchStaleAux, setSwitchStaleAux] = useState<StaleAuxAssignment[]>(
+    [],
+  );
   // Inline API-key entry for picking an unconfigured `api_key` provider in
   // place — mirrors the onboarding ApiKeyForm but scoped to the model picker.
-  const [apiKeyDraft, setApiKeyDraft] = useState('')
-  const [activating, setActivating] = useState(false)
+  const [apiKeyDraft, setApiKeyDraft] = useState("");
+  const [activating, setActivating] = useState(false);
 
   // Deep link from the vision Capabilities detail (?tab=config:model&aux=vision):
   // scroll the auxiliary task row into view and flash it once the list loads.
   useDeepLinkHighlight({
-    elementId: task => `aux-task-${task}`,
-    param: 'aux',
-    ready: task => AUX_TASKS.some(meta => meta.key === task)
-  })
+    elementId: (task) => `aux-task-${task}`,
+    param: "aux",
+    ready: (task) => AUX_TASKS.some((meta) => meta.key === task),
+  });
 
   // Every profile-scoped async here captures this and bails before writing back,
   // so a request in flight when the user switches profiles can't paint profile
   // A's models/providers into profile B (or fire onMainModelChanged for A).
-  const profileEpoch = useRef(0)
+  const profileEpoch = useRef(0);
 
   const setCaughtError = useCallback(
     (err: unknown, fallback: string) => {
-      const skew = isCodeSkewRestartRequired(err)
-      setSkewRestart(skew)
-      setError(skew ? m.restartRequired : readableError(err, fallback).message)
+      const skew = isCodeSkewRestartRequired(err);
+      setSkewRestart(skew);
+      setError(skew ? m.restartRequired : readableError(err, fallback).message);
     },
-    [m.restartRequired]
-  )
+    [m.restartRequired],
+  );
 
   const refresh = useCallback(
-    async ({ replaceSelection = false }: { replaceSelection?: boolean } = {}) => {
-      const epoch = profileEpoch.current
-      setLoading(true)
-      setError('')
-      setSkewRestart(false)
+    async ({
+      replaceSelection = false,
+    }: { replaceSelection?: boolean } = {}) => {
+      const epoch = profileEpoch.current;
+      setLoading(true);
+      setError("");
+      setSkewRestart(false);
 
       try {
-        const [modelInfo, modelOptions, auxiliaryModels, moaModels] = await Promise.all([
-          getGlobalModelInfo(scopeProfile),
-          getGlobalModelOptions(undefined, scopeProfile),
-          getAuxiliaryModels(scopeProfile),
-          getMoaModels(scopeProfile).catch(() => null)
-        ])
+        const [modelInfo, modelOptions, auxiliaryModels, moaModels] =
+          await Promise.all([
+            getGlobalModelInfo(scopeProfile),
+            getGlobalModelOptions(undefined, scopeProfile),
+            getAuxiliaryModels(scopeProfile),
+            getMoaModels(scopeProfile).catch(() => null),
+          ]);
 
         if (profileEpoch.current !== epoch) {
-          return
+          return;
         }
 
-        setMainModel({ model: modelInfo.model, provider: modelInfo.provider })
-        setProviders(modelOptions.providers || [])
+        setMainModel({ model: modelInfo.model, provider: modelInfo.provider });
+        setProviders(modelOptions.providers || []);
 
         if (replaceSelection) {
-          setSelectedProvider(modelInfo.provider)
-          setSelectedModel(modelInfo.model)
+          setSelectedProvider(modelInfo.provider);
+          setSelectedModel(modelInfo.model);
         } else {
-          setSelectedProvider(prev => prev || modelInfo.provider)
-          setSelectedModel(prev => prev || modelInfo.model)
+          setSelectedProvider((prev) => prev || modelInfo.provider);
+          setSelectedModel((prev) => prev || modelInfo.model);
         }
 
-        setAuxiliary(auxiliaryModels)
-        setMoa(moaModels)
+        setAuxiliary(auxiliaryModels);
+        setMoa(moaModels);
 
         if (moaModels) {
-          setSelectedMoaPreset(prev => (prev && moaModels.presets[prev] ? prev : moaModels.default_preset))
+          setSelectedMoaPreset((prev) =>
+            prev && moaModels.presets[prev] ? prev : moaModels.default_preset,
+          );
         }
 
         // The config record loads via its own shared query; a model switch can
         // change it server-side (aux slots), so nudge that cache to refetch.
-        void invalidateHermesConfig(scopeProfile)
+        void invalidateHermesConfig(scopeProfile);
       } catch (err) {
         if (profileEpoch.current === epoch) {
-          setCaughtError(err, m.loadFailed)
+          setCaughtError(err, m.loadFailed);
         }
       } finally {
         if (profileEpoch.current === epoch) {
-          setLoading(false)
+          setLoading(false);
         }
       }
     },
-    [m.loadFailed, scopeProfile, setCaughtError]
-  )
+    [m.loadFailed, scopeProfile, setCaughtError],
+  );
 
   useEffect(() => {
-    void refresh()
-  }, [refresh])
+    void refresh();
+  }, [refresh]);
 
   // A profile switch swaps the backend under the mounted panel — reload for the
   // new profile (bumping the epoch first so any in-flight A request is discarded).
   useOnProfileSwitch(() => {
-    profileEpoch.current += 1
+    profileEpoch.current += 1;
     // The panel stays mounted across profile switches, so clear the previous
     // profile's draft selection before loading the new profile's source of
     // truth. Ordinary same-profile refreshes still preserve in-progress edits.
-    setSelectedProvider('')
-    setSelectedModel('')
-    setApiKeyDraft('')
-    void refresh({ replaceSelection: true })
-  })
+    setSelectedProvider("");
+    setSelectedModel("");
+    setApiKeyDraft("");
+    void refresh({ replaceSelection: true });
+  });
 
-  const providerOptions = providers.length ? providers : NO_PROVIDERS
+  const providerOptions = providers.length ? providers : NO_PROVIDERS;
 
   // Radix renders a blank trigger when the controlled value has no matching
   // item. Keep a missing saved provider visible in the main selector while
   // leaving it out of the real inventory used for readiness/setup metadata.
   const mainProviderOptions = useMemo(
     () =>
-      selectedProvider && !providers.some(provider => provider.slug === selectedProvider)
-        ? [{ name: selectedProvider, slug: selectedProvider, models: [] }, ...providers]
+      selectedProvider &&
+      !providers.some((provider) => provider.slug === selectedProvider)
+        ? [
+            { name: selectedProvider, slug: selectedProvider, models: [] },
+            ...providers,
+          ]
         : providerOptions,
-    [providerOptions, providers, selectedProvider]
-  )
+    [providerOptions, providers, selectedProvider],
+  );
 
   // MoA reference/aggregator slots must never be the moa virtual provider —
   // that would create a recursive MoA tree (the backend rejects it on save).
   // Hide it from the slot selectors so it isn't offered as a dead choice.
-  const moaSlotProviderOptions = providerOptions.filter(provider => (provider.slug || '').toLowerCase() !== 'moa')
+  const moaSlotProviderOptions = providerOptions.filter(
+    (provider) => (provider.slug || "").toLowerCase() !== "moa",
+  );
 
   const selectedProviderRow = useMemo(
-    () => providers.find(provider => provider.slug === selectedProvider),
-    [providers, selectedProvider]
-  )
+    () => providers.find((provider) => provider.slug === selectedProvider),
+    [providers, selectedProvider],
+  );
 
-  const selectedProviderModels = selectedProviderRow?.models ?? []
+  const selectedProviderModels = selectedProviderRow?.models ?? [];
 
   // An unconfigured provider was picked: no credentials yet, so there are no
   // models to choose. `api_key` providers can be activated inline (paste key);
   // OAuth / external flows hand off to the onboarding sign-in.
-  const needsSetup = !!selectedProvider && !isProviderReady(selectedProviderRow)
-  const setupIsApiKey = needsSetup && selectedProviderRow?.auth_type === 'api_key' && !!selectedProviderRow?.key_env
+  const needsSetup =
+    !!selectedProvider && !isProviderReady(selectedProviderRow);
+  const setupIsApiKey =
+    needsSetup &&
+    selectedProviderRow?.auth_type === "api_key" &&
+    !!selectedProviderRow?.key_env;
 
   // Clear any half-typed key when switching provider so it can't leak across.
   useEffect(() => {
-    setApiKeyDraft('')
-  }, [selectedProvider])
+    setApiKeyDraft("");
+  }, [selectedProvider]);
 
   const auxDraftProviderModels = useMemo(
-    () => providers.find(provider => provider.slug === auxDraft.provider)?.models ?? [],
-    [auxDraft.provider, providers]
-  )
+    () =>
+      providers.find((provider) => provider.slug === auxDraft.provider)
+        ?.models ?? [],
+    [auxDraft.provider, providers],
+  );
 
   const modelsForProvider = useCallback(
-    (provider: string) => providers.find(row => row.slug === provider)?.models ?? [],
-    [providers]
-  )
+    (provider: string) =>
+      providers.find((row) => row.slug === provider)?.models ?? [],
+    [providers],
+  );
 
   const currentMoaPreset = useMemo(() => {
     if (!moa) {
-      return null
+      return null;
     }
 
-    return moa.presets[selectedMoaPreset] || moa.presets[moa.default_preset] || Object.values(moa.presets)[0] || null
-  }, [moa, selectedMoaPreset])
+    return (
+      moa.presets[selectedMoaPreset] ||
+      moa.presets[moa.default_preset] ||
+      Object.values(moa.presets)[0] ||
+      null
+    );
+  }, [moa, selectedMoaPreset]);
 
   // Mirror of `moa` so inline edits compute the next state purely (outside the
   // setState updater) and hand it straight to the debounced autosave.
-  const moaRef = useRef<MoaConfigResponse | null>(null)
+  const moaRef = useRef<MoaConfigResponse | null>(null);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    moaRef.current = moa
-  }, [moa])
+    moaRef.current = moa;
+  }, [moa]);
 
-  const moaSaveTimer = useRef<number | null>(null)
+  const moaSaveTimer = useRef<number | null>(null);
 
   useEffect(
     () => () => {
       if (moaSaveTimer.current) {
-        window.clearTimeout(moaSaveTimer.current)
+        window.clearTimeout(moaSaveTimer.current);
       }
     },
-    []
-  )
+    [],
+  );
 
   // Guard against stale save responses overwriting newer state.
-  const moaSaveGeneration = useRef(0)
+  const moaSaveGeneration = useRef(0);
 
   // Quiet debounced persist for inline MoA edits — mirrors the config page's
   // autosave so slot/aggregator tweaks save themselves, matching the
@@ -401,215 +476,242 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
   const scheduleMoaSave = useCallback(
     (next: MoaConfigResponse) => {
       if (moaSaveTimer.current) {
-        window.clearTimeout(moaSaveTimer.current)
-        moaSaveTimer.current = null
+        window.clearTimeout(moaSaveTimer.current);
+        moaSaveTimer.current = null;
       }
 
-      const generation = moaSaveGeneration.current + 1
-      moaSaveGeneration.current = generation
+      const generation = moaSaveGeneration.current + 1;
+      moaSaveGeneration.current = generation;
 
       if (!moaConfigComplete(next)) {
-        return
+        return;
       }
 
       moaSaveTimer.current = window.setTimeout(() => {
         void saveMoaModels(next, scopeProfile)
-          .then(saved => {
+          .then((saved) => {
             if (moaSaveGeneration.current === generation) {
-              setMoa(saved)
+              setMoa(saved);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             if (moaSaveGeneration.current === generation) {
-              setCaughtError(err, m.loadFailed)
+              setCaughtError(err, m.loadFailed);
             }
-          })
-      }, 600)
+          });
+      }, 600);
     },
-    [m.loadFailed, scopeProfile, setCaughtError]
-  )
+    [m.loadFailed, scopeProfile, setCaughtError],
+  );
 
   const updateMoaPreset = useCallback(
-    (updater: (preset: NonNullable<typeof currentMoaPreset>) => NonNullable<typeof currentMoaPreset>) => {
-      const prev = moaRef.current
+    (
+      updater: (
+        preset: NonNullable<typeof currentMoaPreset>,
+      ) => NonNullable<typeof currentMoaPreset>,
+    ) => {
+      const prev = moaRef.current;
 
       if (!prev || !selectedMoaPreset || !prev.presets[selectedMoaPreset]) {
-        return
+        return;
       }
 
       const next: MoaConfigResponse = {
         ...prev,
         presets: {
           ...prev.presets,
-          [selectedMoaPreset]: updater(prev.presets[selectedMoaPreset])
-        }
+          [selectedMoaPreset]: updater(prev.presets[selectedMoaPreset]),
+        },
+      };
+
+      moaRef.current = next;
+      setMoa(next);
+      scheduleMoaSave(next);
+    },
+    [scheduleMoaSave, selectedMoaPreset],
+  );
+
+  const updateMoaSlot = useCallback(
+    (slot: MoaModelSlot, patch: Partial<MoaModelSlot>): MoaModelSlot => {
+      const next = { ...slot, ...patch };
+
+      // Picking a new provider invalidates the model choice (models are
+      // per-provider). A same-provider update must not wipe the model — Radix
+      // filters same-value changes, but programmatic callers may not.
+      if (patch.provider && patch.provider !== slot.provider) {
+        next.model = "";
       }
 
-      moaRef.current = next
-      setMoa(next)
-      scheduleMoaSave(next)
+      return next;
     },
-    [scheduleMoaSave, selectedMoaPreset]
-  )
-
-  const updateMoaSlot = useCallback((slot: MoaModelSlot, patch: Partial<MoaModelSlot>): MoaModelSlot => {
-    const next = { ...slot, ...patch }
-
-    // Picking a new provider invalidates the model choice (models are
-    // per-provider). A same-provider update must not wipe the model — Radix
-    // filters same-value changes, but programmatic callers may not.
-    if (patch.provider && patch.provider !== slot.provider) {
-      next.model = ''
-    }
-
-    return next
-  }, [])
+    [],
+  );
 
   const saveMoa = useCallback(
     async (next: MoaConfigResponse) => {
-      const epoch = profileEpoch.current
+      const epoch = profileEpoch.current;
 
       // Explicit preset ops (set default / add / delete) supersede any pending
       // debounced slot autosave — cancel it and invalidate in-flight responses
       // so the two writers can't race each other's state.
       if (moaSaveTimer.current) {
-        window.clearTimeout(moaSaveTimer.current)
-        moaSaveTimer.current = null
+        window.clearTimeout(moaSaveTimer.current);
+        moaSaveTimer.current = null;
       }
 
-      moaSaveGeneration.current += 1
-      setApplying(true)
-      setError('')
+      moaSaveGeneration.current += 1;
+      setApplying(true);
+      setError("");
 
       try {
-        const saved = await saveMoaModels(next, scopeProfile)
+        const saved = await saveMoaModels(next, scopeProfile);
 
         if (profileEpoch.current !== epoch) {
-          return
+          return;
         }
 
-        setMoa(saved)
+        setMoa(saved);
       } catch (err) {
-        setCaughtError(err, m.loadFailed)
+        setCaughtError(err, m.loadFailed);
       } finally {
-        setApplying(false)
+        setApplying(false);
       }
     },
-    [m.loadFailed, scopeProfile, setCaughtError]
-  )
+    [m.loadFailed, scopeProfile, setCaughtError],
+  );
 
-  const auxiliaryTaskLabel = useCallback((key: string) => m.tasks[key]?.label ?? key, [m.tasks])
+  const auxiliaryTaskLabel = useCallback(
+    (key: string) => m.tasks[key]?.label ?? key,
+    [m.tasks],
+  );
 
   // Persistent mismatch: any aux slot pinned to a provider different from the
   // current main, regardless of whether the user just switched. Catches the
   // "I pinned aux months ago and forgot, now it bills a dead provider" case.
   const persistentStaleAux = useMemo<StaleAuxAssignment[]>(() => {
-    const mainProvider = (mainModel?.provider ?? '').toLowerCase()
+    const mainProvider = (mainModel?.provider ?? "").toLowerCase();
 
     if (!mainProvider || !auxiliary) {
-      return []
+      return [];
     }
 
     return auxiliary.tasks
-      .filter(entry => {
-        const p = (entry.provider ?? '').toLowerCase()
+      .filter((entry) => {
+        const p = (entry.provider ?? "").toLowerCase();
 
-        return p && p !== 'auto' && p !== mainProvider
+        return p && p !== "auto" && p !== mainProvider;
       })
-      .map(entry => ({ task: entry.task, provider: entry.provider, model: entry.model }))
-  }, [auxiliary, mainModel])
+      .map((entry) => ({
+        task: entry.task,
+        provider: entry.provider,
+        model: entry.model,
+      }));
+  }, [auxiliary, mainModel]);
 
   // Capabilities of the APPLIED main model — gates the profile-default
   // reasoning/speed controls the same way the composer picker gates per-model
   // edits (reasoning defaults on, fast defaults off when unreported).
   const mainCaps = useMemo(() => {
-    const row = providers.find(provider => provider.slug === mainModel?.provider)
+    const row = providers.find(
+      (provider) => provider.slug === mainModel?.provider,
+    );
 
-    return mainModel ? row?.capabilities?.[mainModel.model] : undefined
-  }, [providers, mainModel])
+    return mainModel ? row?.capabilities?.[mainModel.model] : undefined;
+  }, [providers, mainModel]);
 
-  const reasoningSupported = mainCaps?.reasoning ?? true
-  const fastSupported = mainCaps?.fast ?? false
+  const reasoningSupported = mainCaps?.reasoning ?? true;
+  const fastSupported = mainCaps?.fast ?? false;
 
   // Hand-written `reasoning_effort: false`/`off` reaches us as boolean false
   // ("false" once stringified) — show it as Off, not an empty select.
-  const rawEffort = String(getNested(config ?? {}, 'agent.reasoning_effort') ?? '')
+  const rawEffort = String(
+    getNested(config ?? {}, "agent.reasoning_effort") ?? "",
+  )
     .trim()
-    .toLowerCase()
+    .toLowerCase();
 
-  const effortValue = rawEffort === 'false' || rawEffort === 'disabled' ? 'none' : rawEffort || DEFAULT_REASONING_EFFORT
+  const effortValue =
+    rawEffort === "false" || rawEffort === "disabled"
+      ? "none"
+      : rawEffort || DEFAULT_REASONING_EFFORT;
 
-  const fastOn = isFastTier(getNested(config ?? {}, 'agent.service_tier'))
+  const fastOn = isFastTier(getNested(config ?? {}, "agent.service_tier"));
 
   // Persist a single agent.* default by round-tripping the whole config record
   // (PUT /api/config replaces it) — optimistic, with rollback on failure.
   const writeAgentDefault = useCallback(
     async (key: string, value: string) => {
       if (!config) {
-        return
+        return;
       }
 
-      const prev = config
-      const next = setNested(config, key, value)
-      setConfig(next)
+      const prev = config;
+      const next = setNested(config, key, value);
+      setConfig(next);
 
       try {
-        await saveHermesConfig(next, scopeProfile)
+        await saveHermesConfig(next, scopeProfile);
       } catch (err) {
-        setConfig(prev)
-        notifyError(err, m.defaultsFailed)
+        setConfig(prev);
+        notifyError(err, m.defaultsFailed);
       }
     },
-    [config, m.defaultsFailed, scopeProfile, setConfig]
-  )
+    [config, m.defaultsFailed, scopeProfile, setConfig],
+  );
 
   // Paste an API key for the selected `api_key` provider, persist it, then
   // refresh so the now-authenticated provider's models populate. Auto-selects
   // the recommended default model so the user can Apply in one more click.
   const activateApiKeyProvider = useCallback(async () => {
-    const keyEnv = selectedProviderRow?.key_env
-    const slug = selectedProviderRow?.slug
+    const keyEnv = selectedProviderRow?.key_env;
+    const slug = selectedProviderRow?.slug;
 
     if (!keyEnv || !slug || !apiKeyDraft.trim()) {
-      return
+      return;
     }
 
-    const epoch = profileEpoch.current
-    setActivating(true)
-    setError('')
+    const epoch = profileEpoch.current;
+    setActivating(true);
+    setError("");
 
     try {
-      await setEnvVar(keyEnv, apiKeyDraft.trim(), scopeProfile)
-      setApiKeyDraft('')
+      await setEnvVar(keyEnv, apiKeyDraft.trim(), scopeProfile);
+      setApiKeyDraft("");
 
       // Pick a sensible default for the freshly-activated provider (mirrors
       // `hermes model` curation). Best-effort — fall through to the refreshed
       // model list if it fails.
-      let nextModel = ''
+      let nextModel = "";
 
       try {
-        const rec = await getRecommendedDefaultModel(slug, scopeProfile)
-        nextModel = rec.model || ''
+        const rec = await getRecommendedDefaultModel(slug, scopeProfile);
+        nextModel = rec.model || "";
       } catch {
-        nextModel = ''
+        nextModel = "";
       }
 
-      const options = await getGlobalModelOptions(undefined, scopeProfile)
+      const options = await getGlobalModelOptions(undefined, scopeProfile);
 
       if (profileEpoch.current !== epoch) {
-        return
+        return;
       }
 
-      setProviders(options.providers || [])
-      const refreshedRow = options.providers?.find(p => p.slug === slug)
-      const fallbackModel = refreshedRow?.models?.[0] ?? ''
-      setSelectedModel(nextModel || fallbackModel)
+      setProviders(options.providers || []);
+      const refreshedRow = options.providers?.find((p) => p.slug === slug);
+      const fallbackModel = refreshedRow?.models?.[0] ?? "";
+      setSelectedModel(nextModel || fallbackModel);
     } catch (err) {
-      setCaughtError(err, m.loadFailed)
+      setCaughtError(err, m.loadFailed);
     } finally {
-      setActivating(false)
+      setActivating(false);
     }
-  }, [apiKeyDraft, m.loadFailed, scopeProfile, selectedProviderRow, setCaughtError])
+  }, [
+    apiKeyDraft,
+    m.loadFailed,
+    scopeProfile,
+    selectedProviderRow,
+    setCaughtError,
+  ]);
 
   // OAuth / external providers can't be activated with a pasted key — hand off
   // to the shared onboarding flow scoped to this provider's real sign-in. The
@@ -617,65 +719,71 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
   // local-endpoint form (URL + optional API key) instead of being dead-ended
   // on the OAuth picker (the original "booted back to the first screen" loop).
   const startProviderSetup = useCallback(() => {
-    const rowSlug = selectedProviderRow?.slug.trim() ?? ''
-    const slug = rowSlug || selectedProvider.trim()
+    const rowSlug = selectedProviderRow?.slug.trim() ?? "";
+    const slug = rowSlug || selectedProvider.trim();
 
     if (!slug) {
-      return
+      return;
     }
 
-    const lower = slug.toLowerCase()
+    const lower = slug.toLowerCase();
 
-    if (lower === 'custom' || lower === 'local' || lower.startsWith('custom:')) {
-      startManualLocalEndpoint()
+    if (
+      lower === "custom" ||
+      lower === "local" ||
+      lower.startsWith("custom:")
+    ) {
+      startManualLocalEndpoint();
     } else if (rowSlug) {
-      startManualProviderOAuth(rowSlug)
+      startManualProviderOAuth(rowSlug);
     } else {
       // An absent row has no trustworthy auth metadata. Open the generic
       // provider picker instead of deep-linking an unknown or stale slug.
-      startManualOnboarding()
+      startManualOnboarding();
     }
-  }, [selectedProvider, selectedProviderRow])
+  }, [selectedProvider, selectedProviderRow]);
 
   const applyMainModel = useCallback(async () => {
     if (!selectedProvider || !selectedModel) {
-      return
+      return;
     }
 
-    const epoch = profileEpoch.current
-    setApplying(true)
-    setError('')
+    const epoch = profileEpoch.current;
+    setApplying(true);
+    setError("");
 
     try {
       const result = await setMainModelAssignment(
         {
           model: selectedModel,
           provider: selectedProvider,
-          ...(selectedProviderRow?.api_url ? { base_url: selectedProviderRow.api_url } : {})
+          ...(selectedProviderRow?.api_url
+            ? { base_url: selectedProviderRow.api_url }
+            : {}),
         },
-        scopeProfile
-      )
+        scopeProfile,
+      );
 
       if (profileEpoch.current !== epoch) {
-        return
+        return;
       }
 
-      const provider = result.provider || selectedProvider
-      const model = result.model || selectedModel
-      setMainModel({ provider, model })
-      setSwitchStaleAux(result.stale_aux ?? [])
+      const provider = result.provider || selectedProvider;
+      const model = result.model || selectedModel;
+      setMainModel({ provider, model });
+      setSwitchStaleAux(result.stale_aux ?? []);
 
       // Live UI stores mirror the ACTIVE profile's model; a scoped apply
       // changed a different profile and must not repaint them.
       if (scopeProfile == null) {
-        onMainModelChanged?.(provider, model)
+        onMainModelChanged?.(provider, model);
       }
 
-      await refresh()
+      await refresh();
     } catch (err) {
-      setCaughtError(err, m.loadFailed)
+      setCaughtError(err, m.loadFailed);
     } finally {
-      setApplying(false)
+      setApplying(false);
     }
   }, [
     m.loadFailed,
@@ -685,8 +793,8 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
     selectedModel,
     selectedProvider,
     selectedProviderRow,
-    setCaughtError
-  ])
+    setCaughtError,
+  ]);
 
   // Sibling of the applyMainModel endpoint passthrough (#65254): auxiliary
   // assignments targeting a user-defined provider must carry that provider's
@@ -695,132 +803,148 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
   // main endpoint.
   const endpointForProvider = useCallback(
     (provider: string) => {
-      const row = providers.find(entry => entry.slug === provider)
+      const row = providers.find((entry) => entry.slug === provider);
 
-      return row?.api_url ? { base_url: row.api_url } : {}
+      return row?.api_url ? { base_url: row.api_url } : {};
     },
-    [providers]
-  )
+    [providers],
+  );
 
   const setAuxiliaryToMain = useCallback(
     async (task: string) => {
       if (!mainModel) {
-        return
+        return;
       }
 
-      setApplying(true)
-      setError('')
+      setApplying(true);
+      setError("");
 
       try {
         await setModelAssignment(
           {
             model: mainModel.model,
             provider: mainModel.provider,
-            scope: 'auxiliary',
+            scope: "auxiliary",
             task,
-            ...endpointForProvider(mainModel.provider)
+            ...endpointForProvider(mainModel.provider),
           },
-          scopeProfile
-        )
-        await refresh()
+          scopeProfile,
+        );
+        await refresh();
       } catch (err) {
-        setCaughtError(err, m.loadFailed)
+        setCaughtError(err, m.loadFailed);
       } finally {
-        setApplying(false)
+        setApplying(false);
       }
     },
-    [endpointForProvider, m.loadFailed, mainModel, refresh, scopeProfile, setCaughtError]
-  )
+    [
+      endpointForProvider,
+      m.loadFailed,
+      mainModel,
+      refresh,
+      scopeProfile,
+      setCaughtError,
+    ],
+  );
 
   const applyAuxiliaryDraft = useCallback(
     async (task: string) => {
       if (!auxDraft.provider || !auxDraft.model) {
-        return
+        return;
       }
 
-      setApplying(true)
-      setError('')
+      setApplying(true);
+      setError("");
 
       try {
         await setModelAssignment(
           {
             model: auxDraft.model,
             provider: auxDraft.provider,
-            scope: 'auxiliary',
+            scope: "auxiliary",
             task,
-            ...endpointForProvider(auxDraft.provider)
+            ...endpointForProvider(auxDraft.provider),
           },
-          scopeProfile
-        )
-        setEditingAuxTask(null)
-        await refresh()
+          scopeProfile,
+        );
+        setEditingAuxTask(null);
+        await refresh();
       } catch (err) {
-        setCaughtError(err, m.loadFailed)
+        setCaughtError(err, m.loadFailed);
       } finally {
-        setApplying(false)
+        setApplying(false);
       }
     },
-    [auxDraft, endpointForProvider, m.loadFailed, refresh, scopeProfile, setCaughtError]
-  )
+    [
+      auxDraft,
+      endpointForProvider,
+      m.loadFailed,
+      refresh,
+      scopeProfile,
+      setCaughtError,
+    ],
+  );
 
   const beginAuxiliaryEdit = useCallback(
     (task: string) => {
-      const current = auxiliary?.tasks.find(entry => entry.task === task)
+      const current = auxiliary?.tasks.find((entry) => entry.task === task);
 
       const initialProvider =
-        current?.provider && current.provider !== 'auto' ? current.provider : (mainModel?.provider ?? '')
+        current?.provider && current.provider !== "auto"
+          ? current.provider
+          : (mainModel?.provider ?? "");
 
-      const initialModel = current?.model || mainModel?.model || ''
-      setAuxDraft({ provider: initialProvider, model: initialModel })
-      setEditingAuxTask(task)
+      const initialModel = current?.model || mainModel?.model || "";
+      setAuxDraft({ provider: initialProvider, model: initialModel });
+      setEditingAuxTask(task);
     },
-    [auxiliary, mainModel]
-  )
+    [auxiliary, mainModel],
+  );
 
   const resetAuxiliaryModels = useCallback(async () => {
     if (!mainModel) {
-      return
+      return;
     }
 
-    setApplying(true)
-    setError('')
+    setApplying(true);
+    setError("");
 
     try {
       await setModelAssignment(
         {
           model: mainModel.model,
           provider: mainModel.provider,
-          scope: 'auxiliary',
-          task: '__reset__'
+          scope: "auxiliary",
+          task: "__reset__",
         },
-        scopeProfile
-      )
-      setSwitchStaleAux([])
-      await refresh()
+        scopeProfile,
+      );
+      setSwitchStaleAux([]);
+      await refresh();
     } catch (err) {
-      setCaughtError(err, m.loadFailed)
+      setCaughtError(err, m.loadFailed);
     } finally {
-      setApplying(false)
+      setApplying(false);
     }
-  }, [m.loadFailed, mainModel, refresh, scopeProfile, setCaughtError])
+  }, [m.loadFailed, mainModel, refresh, scopeProfile, setCaughtError]);
 
   const recycleStaleBackend = useCallback(async () => {
-    setRestartingBackend(true)
-    setError('')
-    setSkewRestart(false)
+    setRestartingBackend(true);
+    setError("");
+    setSkewRestart(false);
 
     try {
-      await window.hermesDesktop?.recycleBackend?.(scopeProfile)
-      await refresh({ replaceSelection: true })
+      await window.hermesDesktop?.recycleBackend?.(scopeProfile);
+      await refresh({ replaceSelection: true });
     } catch (err) {
-      setCaughtError(err, m.restartFailed)
+      setCaughtError(err, m.restartFailed);
     } finally {
-      setRestartingBackend(false)
+      setRestartingBackend(false);
     }
-  }, [m.restartFailed, refresh, scopeProfile, setCaughtError])
+  }, [m.restartFailed, refresh, scopeProfile, setCaughtError]);
 
   if (loading && !mainModel) {
-    return <ModelSettingsSkeleton />
+    return <ModelSettingsSkeleton />;
   }
 
   return (
@@ -829,12 +953,15 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
         <p className="mb-3 text-xs text-muted-foreground">{m.appliesDesc}</p>
         <div className="flex flex-wrap items-center gap-2">
           <Select onValueChange={setSelectedProvider} value={selectedProvider}>
-            <SelectTrigger className={cn('min-w-40', CONTROL_TEXT)}>
+            <SelectTrigger className={cn("min-w-40", CONTROL_TEXT)}>
               <SelectValue placeholder={m.provider} />
             </SelectTrigger>
             <SelectContent>
-              {mainProviderOptions.map(provider => (
-                <SelectItem key={provider.slug || 'none'} value={provider.slug || 'none'}>
+              {mainProviderOptions.map((provider) => (
+                <SelectItem
+                  key={provider.slug || "none"}
+                  value={provider.slug || "none"}
+                >
                   {provider.name}
                 </SelectItem>
               ))}
@@ -845,14 +972,14 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               <>
                 <Input
                   autoComplete="off"
-                  className={cn('min-w-60 flex-1', CONTROL_TEXT)}
-                  onChange={event => setApiKeyDraft(event.target.value)}
-                  onKeyDown={event => {
-                    if (event.key === 'Enter') {
-                      void activateApiKeyProvider()
+                  className={cn("min-w-60 flex-1", CONTROL_TEXT)}
+                  onChange={(event) => setApiKeyDraft(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      void activateApiKeyProvider();
                     }
                   }}
-                  placeholder={`Paste ${selectedProviderRow?.key_env ?? 'API key'}`}
+                  placeholder={`Paste ${selectedProviderRow?.key_env ?? "API key"}`}
                   type="password"
                   value={apiKeyDraft}
                 />
@@ -862,26 +989,32 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                   size="sm"
                 >
                   {activating && <Loader2 className="size-3.5 animate-spin" />}
-                  {activating ? 'Activating...' : 'Activate'}
+                  {activating ? "Activating..." : "Activate"}
                 </Button>
               </>
             ) : (
-              <Button onClick={startProviderSetup} size="sm" variant="textStrong">
-                Set up {selectedProviderRow?.name ?? 'provider'}
+              <Button
+                onClick={startProviderSetup}
+                size="sm"
+                variant="textStrong"
+              >
+                Set up {selectedProviderRow?.name ?? "provider"}
               </Button>
             )
           ) : (
             <>
               <Select onValueChange={setSelectedModel} value={selectedModel}>
-                <SelectTrigger className={cn('min-w-60', CONTROL_TEXT)}>
+                <SelectTrigger className={cn("min-w-60", CONTROL_TEXT)}>
                   <SelectValue placeholder={m.model} />
                 </SelectTrigger>
                 <SelectContent>
-                  {withActive(selectedProviderModels, selectedModel).map(model => (
-                    <SelectItem key={model} value={model}>
-                      {model}
-                    </SelectItem>
-                  ))}
+                  {withActive(selectedProviderModels, selectedModel).map(
+                    (model) => (
+                      <SelectItem key={model} value={model}>
+                        {model}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
               <Button
@@ -897,28 +1030,34 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
         </div>
         {needsSetup && !setupIsApiKey && selectedProviderRow && (
           <p className="mt-2 text-xs text-muted-foreground">
-            {selectedProviderRow?.auth_type === 'api_key'
+            {selectedProviderRow?.auth_type === "api_key"
               ? `${selectedProviderRow?.name} needs an API key — set it up to choose a model.`
               : `${selectedProviderRow?.name} signs in through your browser — Hermes runs the flow for you.`}
           </p>
         )}
         {config && mainModel && (reasoningSupported || fastSupported) && (
           <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <span className="text-xs text-muted-foreground">{m.defaultsLabel}</span>
+            <span className="text-xs text-muted-foreground">
+              {m.defaultsLabel}
+            </span>
             {reasoningSupported && (
               <div className="flex items-center gap-2 text-xs">
                 {m.reasoning}
                 <Select
-                  onValueChange={value => void writeAgentDefault('agent.reasoning_effort', value)}
+                  onValueChange={(value) =>
+                    void writeAgentDefault("agent.reasoning_effort", value)
+                  }
                   value={effortValue}
                 >
-                  <SelectTrigger className={cn('min-w-28', CONTROL_TEXT)}>
+                  <SelectTrigger className={cn("min-w-28", CONTROL_TEXT)}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {REASONING_EFFORT_VALUES.map(value => (
+                    {REASONING_EFFORT_VALUES.map((value) => (
                       <SelectItem key={value} value={value}>
-                        {value === 'none' ? m.reasoningOff : t.shell.modelOptions[value]}
+                        {value === "none"
+                          ? m.reasoningOff
+                          : t.shell.modelOptions[value]}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -930,7 +1069,12 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                 {t.shell.modelOptions.fast}
                 <Switch
                   checked={fastOn}
-                  onCheckedChange={checked => void writeAgentDefault('agent.service_tier', checked ? 'fast' : 'normal')}
+                  onCheckedChange={(checked) =>
+                    void writeAgentDefault(
+                      "agent.service_tier",
+                      checked ? "fast" : "normal",
+                    )
+                  }
                   size="xs"
                 />
               </label>
@@ -947,7 +1091,9 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                 size="sm"
                 variant="textStrong"
               >
-                {restartingBackend && <Loader2 className="size-3.5 animate-spin" />}
+                {restartingBackend && (
+                  <Loader2 className="size-3.5 animate-spin" />
+                )}
                 {restartingBackend ? m.restartingBackend : m.restartBackend}
               </Button>
             )}
@@ -989,14 +1135,24 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
           </div>
         )}
         <div className="grid gap-1">
-          {AUX_TASKS.map(meta => {
-            const copy = m.tasks[meta.key] ?? { label: meta.key, hint: meta.key }
-            const current = auxiliary?.tasks.find(entry => entry.task === meta.key)
-            const isAuto = !current || !current.provider || current.provider === 'auto'
-            const isEditing = editingAuxTask === meta.key
+          {AUX_TASKS.map((meta) => {
+            const copy = m.tasks[meta.key] ?? {
+              label: meta.key,
+              hint: meta.key,
+            };
+            const current = auxiliary?.tasks.find(
+              (entry) => entry.task === meta.key,
+            );
+            const isAuto =
+              !current || !current.provider || current.provider === "auto";
+            const isEditing = editingAuxTask === meta.key;
 
             return (
-              <div className="scroll-mt-6 rounded-lg" id={`aux-task-${meta.key}`} key={meta.key}>
+              <div
+                className="scroll-mt-6 rounded-lg"
+                id={`aux-task-${meta.key}`}
+                key={meta.key}
+              >
                 <ListRow
                   action={
                     !isEditing && (
@@ -1024,29 +1180,47 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                     isEditing && (
                       <div className="mt-2 flex flex-wrap items-center gap-2 pt-1">
                         <Select
-                          onValueChange={value => setAuxDraft(prev => ({ ...prev, provider: value, model: '' }))}
+                          onValueChange={(value) =>
+                            setAuxDraft((prev) => ({
+                              ...prev,
+                              provider: value,
+                              model: "",
+                            }))
+                          }
                           value={auxDraft.provider}
                         >
-                          <SelectTrigger className={cn('min-w-32', CONTROL_TEXT)}>
+                          <SelectTrigger
+                            className={cn("min-w-32", CONTROL_TEXT)}
+                          >
                             <SelectValue placeholder={m.provider} />
                           </SelectTrigger>
                           <SelectContent>
-                            {providerOptions.map(provider => (
-                              <SelectItem key={provider.slug || 'none'} value={provider.slug || 'none'}>
+                            {providerOptions.map((provider) => (
+                              <SelectItem
+                                key={provider.slug || "none"}
+                                value={provider.slug || "none"}
+                              >
                                 {provider.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                         <Select
-                          onValueChange={value => setAuxDraft(prev => ({ ...prev, model: value }))}
+                          onValueChange={(value) =>
+                            setAuxDraft((prev) => ({ ...prev, model: value }))
+                          }
                           value={auxDraft.model}
                         >
-                          <SelectTrigger className={cn('min-w-48', CONTROL_TEXT)}>
+                          <SelectTrigger
+                            className={cn("min-w-48", CONTROL_TEXT)}
+                          >
                             <SelectValue placeholder={m.model} />
                           </SelectTrigger>
                           <SelectContent>
-                            {withActive(auxDraftProviderModels, auxDraft.model).map(model => (
+                            {withActive(
+                              auxDraftProviderModels,
+                              auxDraft.model,
+                            ).map((model) => (
                               <SelectItem key={model} value={model}>
                                 {model}
                               </SelectItem>
@@ -1054,13 +1228,19 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                           </SelectContent>
                         </Select>
                         <Button
-                          disabled={!auxDraft.provider || !auxDraft.model || applying}
+                          disabled={
+                            !auxDraft.provider || !auxDraft.model || applying
+                          }
                           onClick={() => void applyAuxiliaryDraft(meta.key)}
                           size="sm"
                         >
                           {applying ? m.applying : t.common.apply}
                         </Button>
-                        <Button onClick={() => setEditingAuxTask(null)} size="sm" variant="ghost">
+                        <Button
+                          onClick={() => setEditingAuxTask(null)}
+                          size="sm"
+                          variant="ghost"
+                        >
                           {t.common.cancel}
                         </Button>
                       </div>
@@ -1068,7 +1248,9 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                   }
                   description={
                     <span className="font-mono text-[0.68rem]">
-                      {isAuto ? m.autoUseMain : `${current.provider} · ${current.model || m.providerDefault}`}
+                      {isAuto
+                        ? m.autoUseMain
+                        : `${current.provider} · ${current.model || m.providerDefault}`}
                     </span>
                   }
                   title={
@@ -1079,7 +1261,7 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                   }
                 />
               </div>
-            )
+            );
           })}
         </div>
       </section>
@@ -1087,16 +1269,19 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
         <section>
           <SectionHeading icon={Cpu} title="Mixture of Agents" />
           <p className="mb-2 text-xs text-muted-foreground">
-            Configure named presets that appear as models under the Mixture of Agents provider. The aggregator is the
-            acting model.
+            Configure named presets that appear as models under the Mixture of
+            Agents provider. The aggregator is the acting model.
           </p>
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <Select onValueChange={setSelectedMoaPreset} value={selectedMoaPreset || moa.default_preset}>
-              <SelectTrigger className={cn('min-w-40', CONTROL_TEXT)}>
+            <Select
+              onValueChange={setSelectedMoaPreset}
+              value={selectedMoaPreset || moa.default_preset}
+            >
+              <SelectTrigger className={cn("min-w-40", CONTROL_TEXT)}>
                 <SelectValue placeholder="Preset" />
               </SelectTrigger>
               <SelectContent>
-                {Object.keys(moa.presets).map(name => (
+                {Object.keys(moa.presets).map((name) => (
                   <SelectItem key={name} value={name}>
                     {name}
                   </SelectItem>
@@ -1108,7 +1293,9 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               <Switch
                 checked={currentMoaPreset.enabled !== false}
                 disabled={applying}
-                onCheckedChange={checked => updateMoaPreset(prev => ({ ...prev, enabled: checked }))}
+                onCheckedChange={(checked) =>
+                  updateMoaPreset((prev) => ({ ...prev, enabled: checked }))
+                }
                 size="xs"
               />
             </label>
@@ -1117,10 +1304,10 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               onClick={() => {
                 const next: MoaConfigResponse = {
                   ...moa,
-                  default_preset: selectedMoaPreset || moa.default_preset
-                }
+                  default_preset: selectedMoaPreset || moa.default_preset,
+                };
 
-                void saveMoa(next)
+                void saveMoa(next);
               }}
               size="sm"
               variant="text"
@@ -1131,22 +1318,32 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               disabled={Object.keys(moa.presets).length <= 1 || applying}
               onClick={() => {
                 if (Object.keys(moa.presets).length <= 1) {
-                  return
+                  return;
                 }
 
-                const presets = { ...moa.presets }
-                delete presets[selectedMoaPreset]
-                const fallback = Object.keys(presets)[0]
+                const presets = { ...moa.presets };
+                delete presets[selectedMoaPreset];
+                const fallback = Object.keys(presets)[0];
 
                 const next: MoaConfigResponse = {
                   ...moa,
                   presets,
-                  default_preset: moa.default_preset === selectedMoaPreset ? fallback : moa.default_preset,
-                  active_preset: moa.active_preset === selectedMoaPreset ? '' : moa.active_preset
-                }
+                  default_preset:
+                    moa.default_preset === selectedMoaPreset
+                      ? fallback
+                      : moa.default_preset,
+                  active_preset:
+                    moa.active_preset === selectedMoaPreset
+                      ? ""
+                      : moa.active_preset,
+                };
 
-                setSelectedMoaPreset(Object.keys(moa.presets).find(name => name !== selectedMoaPreset) || '')
-                void saveMoa(next)
+                setSelectedMoaPreset(
+                  Object.keys(moa.presets).find(
+                    (name) => name !== selectedMoaPreset,
+                  ) || "",
+                );
+                void saveMoa(next);
               }}
               size="sm"
               variant="ghost"
@@ -1154,27 +1351,34 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               Delete
             </Button>
             <Input
-              className={cn('w-40', CONTROL_TEXT)}
-              onChange={event => setNewMoaPresetName(event.target.value)}
+              className={cn("w-40", CONTROL_TEXT)}
+              onChange={(event) => setNewMoaPresetName(event.target.value)}
               placeholder="new preset"
               value={newMoaPresetName}
             />
             <Button
-              disabled={!newMoaPresetName.trim() || !!moa.presets[newMoaPresetName.trim()] || applying}
+              disabled={
+                !newMoaPresetName.trim() ||
+                !!moa.presets[newMoaPresetName.trim()] ||
+                applying
+              }
               onClick={() => {
-                const name = newMoaPresetName.trim()
+                const name = newMoaPresetName.trim();
 
                 const next: MoaConfigResponse = {
                   ...moa,
                   presets: {
                     ...moa.presets,
-                    [name]: { ...currentMoaPreset, reference_models: [...currentMoaPreset.reference_models] }
-                  }
-                }
+                    [name]: {
+                      ...currentMoaPreset,
+                      reference_models: [...currentMoaPreset.reference_models],
+                    },
+                  },
+                };
 
-                setSelectedMoaPreset(name)
-                setNewMoaPresetName('')
-                void saveMoa(next)
+                setSelectedMoaPreset(name);
+                setNewMoaPresetName("");
+                void saveMoa(next);
               }}
               size="sm"
               variant="textStrong"
@@ -1190,15 +1394,15 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               <ListRow
                 action={
                   <Switch
-                    aria-label={`${slot.enabled !== false ? 'Disable' : 'Enable'} reference ${index + 1}`}
+                    aria-label={`${slot.enabled !== false ? "Disable" : "Enable"} reference ${index + 1}`}
                     checked={slot.enabled !== false}
                     disabled={applying}
-                    onCheckedChange={checked =>
-                      updateMoaPreset(prev => ({
+                    onCheckedChange={(checked) =>
+                      updateMoaPreset((prev) => ({
                         ...prev,
                         reference_models: prev.reference_models.map((s, i) =>
-                          i === index ? { ...s, enabled: checked === true } : s
-                        )
+                          i === index ? { ...s, enabled: checked === true } : s,
+                        ),
                       }))
                     }
                   />
@@ -1206,50 +1410,59 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                 below={
                   <div className="mt-2 flex flex-wrap items-center gap-2 pt-1">
                     <Select
-                      onValueChange={value =>
-                        updateMoaPreset(prev => ({
+                      onValueChange={(value) =>
+                        updateMoaPreset((prev) => ({
                           ...prev,
                           reference_models: prev.reference_models.map((s, i) =>
-                            i === index ? updateMoaSlot(s, { provider: value }) : s
-                          )
+                            i === index
+                              ? updateMoaSlot(s, { provider: value })
+                              : s,
+                          ),
                         }))
                       }
                       value={slot.provider}
                     >
-                      <SelectTrigger className={cn('min-w-32', CONTROL_TEXT)}>
+                      <SelectTrigger className={cn("min-w-32", CONTROL_TEXT)}>
                         <SelectValue placeholder={m.provider} />
                       </SelectTrigger>
                       <SelectContent>
                         {withActive(
-                          moaSlotProviderOptions.map(p => p.slug || 'none'),
-                          slot.provider
-                        ).map(slug => {
-                          const provider = moaSlotProviderOptions.find(p => (p.slug || 'none') === slug)
+                          moaSlotProviderOptions.map((p) => p.slug || "none"),
+                          slot.provider,
+                        ).map((slug) => {
+                          const provider = moaSlotProviderOptions.find(
+                            (p) => (p.slug || "none") === slug,
+                          );
 
                           return (
                             <SelectItem key={slug} value={slug}>
                               {provider?.name || slug}
                             </SelectItem>
-                          )
+                          );
                         })}
                       </SelectContent>
                     </Select>
                     <Select
-                      onValueChange={value =>
-                        updateMoaPreset(prev => ({
+                      onValueChange={(value) =>
+                        updateMoaPreset((prev) => ({
                           ...prev,
                           reference_models: prev.reference_models.map((s, i) =>
-                            i === index ? updateMoaSlot(s, { model: value }) : s
-                          )
+                            i === index
+                              ? updateMoaSlot(s, { model: value })
+                              : s,
+                          ),
                         }))
                       }
                       value={slot.model}
                     >
-                      <SelectTrigger className={cn('min-w-48', CONTROL_TEXT)}>
+                      <SelectTrigger className={cn("min-w-48", CONTROL_TEXT)}>
                         <SelectValue placeholder={m.model} />
                       </SelectTrigger>
                       <SelectContent>
-                        {withActive(modelsForProvider(slot.provider), slot.model).map(model => (
+                        {withActive(
+                          modelsForProvider(slot.provider),
+                          slot.model,
+                        ).map((model) => (
                           <SelectItem key={model} value={model}>
                             {model}
                           </SelectItem>
@@ -1257,11 +1470,16 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                       </SelectContent>
                     </Select>
                     <Button
-                      disabled={currentMoaPreset.reference_models.length <= 1 || applying}
+                      disabled={
+                        currentMoaPreset.reference_models.length <= 1 ||
+                        applying
+                      }
                       onClick={() =>
-                        updateMoaPreset(prev => ({
+                        updateMoaPreset((prev) => ({
                           ...prev,
-                          reference_models: prev.reference_models.filter((_, i) => i !== index)
+                          reference_models: prev.reference_models.filter(
+                            (_, i) => i !== index,
+                          ),
                         }))
                       }
                       size="sm"
@@ -1271,7 +1489,7 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
                     </Button>
                   </div>
                 }
-                className={cn(slot.enabled === false && 'opacity-60')}
+                className={cn(slot.enabled === false && "opacity-60")}
                 description={
                   <span className="font-mono text-[0.68rem]">
                     {slot.provider} · {slot.model || m.model}
@@ -1284,9 +1502,12 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
             <Button
               disabled={applying}
               onClick={() =>
-                updateMoaPreset(prev => ({
+                updateMoaPreset((prev) => ({
                   ...prev,
-                  reference_models: [...prev.reference_models, { ...prev.aggregator, enabled: true }]
+                  reference_models: [
+                    ...prev.reference_models,
+                    { ...prev.aggregator, enabled: true },
+                  ],
                 }))
               }
               size="sm"
@@ -1298,49 +1519,55 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               below={
                 <div className="mt-2 flex flex-wrap items-center gap-2 pt-1">
                   <Select
-                    onValueChange={value =>
-                      updateMoaPreset(prev => ({
+                    onValueChange={(value) =>
+                      updateMoaPreset((prev) => ({
                         ...prev,
-                        aggregator: updateMoaSlot(prev.aggregator, { provider: value })
+                        aggregator: updateMoaSlot(prev.aggregator, {
+                          provider: value,
+                        }),
                       }))
                     }
                     value={currentMoaPreset.aggregator.provider}
                   >
-                    <SelectTrigger className={cn('min-w-32', CONTROL_TEXT)}>
+                    <SelectTrigger className={cn("min-w-32", CONTROL_TEXT)}>
                       <SelectValue placeholder={m.provider} />
                     </SelectTrigger>
                     <SelectContent>
                       {withActive(
-                        moaSlotProviderOptions.map(p => p.slug || 'none'),
-                        currentMoaPreset.aggregator.provider
-                      ).map(slug => {
-                        const provider = moaSlotProviderOptions.find(p => (p.slug || 'none') === slug)
+                        moaSlotProviderOptions.map((p) => p.slug || "none"),
+                        currentMoaPreset.aggregator.provider,
+                      ).map((slug) => {
+                        const provider = moaSlotProviderOptions.find(
+                          (p) => (p.slug || "none") === slug,
+                        );
 
                         return (
                           <SelectItem key={slug} value={slug}>
                             {provider?.name || slug}
                           </SelectItem>
-                        )
+                        );
                       })}
                     </SelectContent>
                   </Select>
                   <Select
-                    onValueChange={value =>
-                      updateMoaPreset(prev => ({
+                    onValueChange={(value) =>
+                      updateMoaPreset((prev) => ({
                         ...prev,
-                        aggregator: updateMoaSlot(prev.aggregator, { model: value })
+                        aggregator: updateMoaSlot(prev.aggregator, {
+                          model: value,
+                        }),
                       }))
                     }
                     value={currentMoaPreset.aggregator.model}
                   >
-                    <SelectTrigger className={cn('min-w-48', CONTROL_TEXT)}>
+                    <SelectTrigger className={cn("min-w-48", CONTROL_TEXT)}>
                       <SelectValue placeholder={m.model} />
                     </SelectTrigger>
                     <SelectContent>
                       {withActive(
                         modelsForProvider(currentMoaPreset.aggregator.provider),
-                        currentMoaPreset.aggregator.model
-                      ).map(model => (
+                        currentMoaPreset.aggregator.model,
+                      ).map((model) => (
                         <SelectItem key={model} value={model}>
                           {model}
                         </SelectItem>
@@ -1351,7 +1578,8 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
               }
               description={
                 <span className="font-mono text-[0.68rem]">
-                  {currentMoaPreset.aggregator.provider} · {currentMoaPreset.aggregator.model}
+                  {currentMoaPreset.aggregator.provider} ·{" "}
+                  {currentMoaPreset.aggregator.model}
                 </span>
               }
               title="Aggregator"
@@ -1360,5 +1588,5 @@ export function ModelSettings({ onMainModelChanged, scopeProfile }: ModelSetting
         </section>
       )}
     </div>
-  )
+  );
 }

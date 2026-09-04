@@ -7,12 +7,17 @@ import {
   ANNOTATE_CROP_PAD,
   annotateInPageSource,
   type AnnotatePageEvent,
-  type AnnotatePinChrome
-} from '@/lib/preview-annotate'
+  type AnnotatePinChrome,
+} from "@/lib/preview-annotate";
 
 export interface PreviewAnnotateGuest {
-  capture?: (rect: { height: number; width: number; x: number; y: number }) => Promise<string>
-  executeJavaScript: (code: string) => Promise<unknown>
+  capture?: (rect: {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+  }) => Promise<string>;
+  executeJavaScript: (code: string) => Promise<unknown>;
 }
 
 /**
@@ -21,23 +26,28 @@ export interface PreviewAnnotateGuest {
  * "Cannot read properties of undefined (reading 'getWebContentsId')".
  */
 export function bindPreviewExecuteJavaScript(webview: {
-  executeJavaScript?: (code: string) => Promise<unknown>
+  executeJavaScript?: (code: string) => Promise<unknown>;
 }): (code: string) => Promise<unknown> {
-  return code => {
-    if (typeof webview.executeJavaScript !== 'function') {
-      return Promise.reject(new Error('preview webview is not ready'))
+  return (code) => {
+    if (typeof webview.executeJavaScript !== "function") {
+      return Promise.reject(new Error("preview webview is not ready"));
     }
 
-    return webview.executeJavaScript(code)
-  }
+    return webview.executeJavaScript(code);
+  };
 }
 
-const padRect = (rect: { height: number; width: number; x: number; y: number }) => ({
+const padRect = (rect: {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+}) => ({
   height: rect.height + ANNOTATE_CROP_PAD * 2,
   width: rect.width + ANNOTATE_CROP_PAD * 2,
   x: Math.max(0, rect.x - ANNOTATE_CROP_PAD),
-  y: Math.max(0, rect.y - ANNOTATE_CROP_PAD)
-})
+  y: Math.max(0, rect.y - ANNOTATE_CROP_PAD),
+});
 
 /**
  * Build the guest install script by concatenation, never a template literal.
@@ -47,14 +57,22 @@ const padRect = (rect: { height: number; width: number; x: number; y: number }) 
  * like a dead button.
  */
 export function overlayInstallScript(source: string): string {
-  return '(function(){var api=' + source + ';window.__hermesAnnotate=api;api.install();})()'
+  return (
+    "(function(){var api=" +
+    source +
+    ";window.__hermesAnnotate=api;api.install();})()"
+  );
 }
 
-export async function installAnnotateOverlay(guest: PreviewAnnotateGuest): Promise<void> {
-  await guest.executeJavaScript(overlayInstallScript(annotateInPageSource()))
+export async function installAnnotateOverlay(
+  guest: PreviewAnnotateGuest,
+): Promise<void> {
+  await guest.executeJavaScript(overlayInstallScript(annotateInPageSource()));
 }
 
-export async function teardownAnnotateOverlay(guest: PreviewAnnotateGuest): Promise<void> {
+export async function teardownAnnotateOverlay(
+  guest: PreviewAnnotateGuest,
+): Promise<void> {
   await guest.executeJavaScript(`
     (function () {
       if (window.__hermesAnnotate && window.__hermesAnnotate.teardown) {
@@ -62,43 +80,53 @@ export async function teardownAnnotateOverlay(guest: PreviewAnnotateGuest): Prom
       }
       window.__hermesAnnotate = null;
     })()
-  `)
+  `);
 }
 
-export async function waitAnnotateEvent(guest: PreviewAnnotateGuest): Promise<AnnotatePageEvent> {
+export async function waitAnnotateEvent(
+  guest: PreviewAnnotateGuest,
+): Promise<AnnotatePageEvent> {
   const event = await guest.executeJavaScript(`
     window.__hermesAnnotate ? window.__hermesAnnotate.wait() : Promise.resolve({ type: 'end' })
-  `)
+  `);
 
-  return event as AnnotatePageEvent
+  return event as AnnotatePageEvent;
 }
 
-export async function syncAnnotatePins(guest: PreviewAnnotateGuest, pins: AnnotatePinChrome[]): Promise<void> {
+export async function syncAnnotatePins(
+  guest: PreviewAnnotateGuest,
+  pins: AnnotatePinChrome[],
+): Promise<void> {
   await guest.executeJavaScript(`
     window.__hermesAnnotate && window.__hermesAnnotate.showPins(${JSON.stringify(pins)})
-  `)
+  `);
 }
 
 export async function showAnnotateDraft(
   guest: PreviewAnnotateGuest,
-  rect: AnnotatePinChrome['rect'],
-  number: number
+  rect: AnnotatePinChrome["rect"],
+  number: number,
 ): Promise<void> {
   await guest.executeJavaScript(`
     window.__hermesAnnotate && window.__hermesAnnotate.showDraft(${JSON.stringify(rect)}, ${number})
-  `)
+  `);
 }
 
-export async function hideAnnotateDraft(guest: PreviewAnnotateGuest): Promise<void> {
+export async function hideAnnotateDraft(
+  guest: PreviewAnnotateGuest,
+): Promise<void> {
   await guest.executeJavaScript(`
     window.__hermesAnnotate && window.__hermesAnnotate.hideDraft()
-  `)
+  `);
 }
 
 /** Guest calls are best-effort dressing: never let one fail the capture. */
-async function tryGuest(guest: PreviewAnnotateGuest, code: string): Promise<void> {
+async function tryGuest(
+  guest: PreviewAnnotateGuest,
+  code: string,
+): Promise<void> {
   try {
-    await guest.executeJavaScript(code)
+    await guest.executeJavaScript(code);
   } catch {
     // The overlay may be mid-teardown or the guest gone. Shoot anyway.
   }
@@ -106,21 +134,27 @@ async function tryGuest(guest: PreviewAnnotateGuest, code: string): Promise<void
 
 export async function captureAnnotateCrop(
   guest: PreviewAnnotateGuest,
-  rect: AnnotatePinChrome['rect']
+  rect: AnnotatePinChrome["rect"],
 ): Promise<string> {
   if (!guest.capture) {
-    throw new Error('preview capture is unavailable')
+    throw new Error("preview capture is unavailable");
   }
 
   // Bracket the shot: the overlay hides saved pins and waits for a paint, so
   // the crop carries this comment's marker and no neighbour's. `endCapture`
   // runs even when the capture throws, or one failed crop leaves every saved
   // pin invisible on the page.
-  await tryGuest(guest, 'window.__hermesAnnotate ? window.__hermesAnnotate.beginCapture() : null')
+  await tryGuest(
+    guest,
+    "window.__hermesAnnotate ? window.__hermesAnnotate.beginCapture() : null",
+  );
 
   try {
-    return await guest.capture(padRect(rect))
+    return await guest.capture(padRect(rect));
   } finally {
-    await tryGuest(guest, 'window.__hermesAnnotate && window.__hermesAnnotate.endCapture()')
+    await tryGuest(
+      guest,
+      "window.__hermesAnnotate && window.__hermesAnnotate.endCapture()",
+    );
   }
 }

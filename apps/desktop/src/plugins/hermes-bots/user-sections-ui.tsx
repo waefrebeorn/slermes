@@ -28,70 +28,84 @@ import {
   DropdownMenuTrigger,
   Input,
   useI18n,
-  useValue
-} from '@hermes/plugin-sdk'
-import { type DragEvent, type ReactNode, useEffect, useRef, useState } from 'react'
+  useValue,
+} from "@hermes/plugin-sdk";
+import {
+  type DragEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { useBots } from './i18n'
-import { RosterSectionHeader } from './roster-sections'
-import { $draggingBot, BOT_DRAG_MIME } from './user-sections'
+import { useBots } from "./i18n";
+import { RosterSectionHeader } from "./roster-sections";
+import { $draggingBot, BOT_DRAG_MIME } from "./user-sections";
 
 // ── name dialog ──────────────────────────────────────────────────────────────
 
 interface SectionNameDialogProps {
   /** Blank for New section, the current name for Rename. */
-  initialName: string
-  mode: 'create' | 'rename'
-  onOpenChange: (open: boolean) => void
-  onSubmit: (name: string) => void
-  open: boolean
+  initialName: string;
+  mode: "create" | "rename";
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (name: string) => void;
+  open: boolean;
 }
 
 /** One small dialog for both creating and renaming a section — the app renames
  *  sessions through the same Dialog + Input + Cancel/Save shape, so a section
  *  rename feels like every other rename. */
-export function SectionNameDialog({ initialName, mode, onOpenChange, onSubmit, open }: SectionNameDialogProps) {
-  const { t } = useI18n()
-  const b = useBots()
-  const [value, setValue] = useState(initialName)
-  const inputRef = useRef<HTMLInputElement>(null)
+export function SectionNameDialog({
+  initialName,
+  mode,
+  onOpenChange,
+  onSubmit,
+  open,
+}: SectionNameDialogProps) {
+  const { t } = useI18n();
+  const b = useBots();
+  const [value, setValue] = useState(initialName);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) {
-      setValue(initialName)
-      window.setTimeout(() => inputRef.current?.select(), 0)
+      setValue(initialName);
+      window.setTimeout(() => inputRef.current?.select(), 0);
     }
-  }, [initialName, open])
+  }, [initialName, open]);
 
   const submit = () => {
-    const next = value.trim()
+    const next = value.trim();
 
     if (!next) {
-      return
+      return;
     }
 
-    onOpenChange(false)
+    onOpenChange(false);
 
-    if (mode === 'create' || next !== initialName.trim()) {
-      onSubmit(next)
+    if (mode === "create" || next !== initialName.trim()) {
+      onSubmit(next);
     }
-  }
+  };
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>{mode === 'create' ? b.sections.newTitle : b.sections.renameTitle}</DialogTitle>
+          <DialogTitle>
+            {mode === "create" ? b.sections.newTitle : b.sections.renameTitle}
+          </DialogTitle>
         </DialogHeader>
         <Input
           aria-label={b.sections.nameLabel}
           autoFocus
           maxLength={40}
-          onChange={event => setValue(event.target.value)}
-          onKeyDown={event => {
-            if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
-              event.preventDefault()
-              submit()
+          onChange={(event) => setValue(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+              event.preventDefault();
+              submit();
             }
           }}
           placeholder={b.sections.namePlaceholder}
@@ -99,32 +113,36 @@ export function SectionNameDialog({ initialName, mode, onOpenChange, onSubmit, o
           value={value}
         />
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)} type="button" variant="ghost">
+          <Button
+            onClick={() => onOpenChange(false)}
+            type="button"
+            variant="ghost"
+          >
             {t.common.cancel}
           </Button>
           <Button disabled={!value.trim()} onClick={submit} type="button">
-            {mode === 'create' ? b.sections.create : t.common.save}
+            {mode === "create" ? b.sections.create : t.common.save}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 // ── heading ──────────────────────────────────────────────────────────────────
 
 interface UserSectionHeaderProps {
-  canMoveDown: boolean
-  canMoveUp: boolean
-  collapsed: boolean
-  count: number
+  canMoveDown: boolean;
+  canMoveUp: boolean;
+  collapsed: boolean;
+  count: number;
   /** null for Unassigned, which has no record and therefore no menu. */
-  id: null | string
-  name: string
-  onDelete: () => void
-  onMove: (delta: number) => void
-  onRename: () => void
-  onToggle: () => void
+  id: null | string;
+  name: string;
+  onDelete: () => void;
+  onMove: (delta: number) => void;
+  onRename: () => void;
+  onToggle: () => void;
 }
 
 export function UserSectionHeader({
@@ -137,10 +155,10 @@ export function UserSectionHeader({
   onDelete,
   onMove,
   onRename,
-  onToggle
+  onToggle,
 }: UserSectionHeaderProps) {
-  const b = useBots()
-  const { t } = useI18n()
+  const b = useBots();
+  const { t } = useI18n();
 
   // Unassigned has no record to rename, reorder or delete — it is whatever is
   // left over — so it gets the plain heading rather than a menu of disabled
@@ -154,17 +172,27 @@ export function UserSectionHeader({
         label={b.sections.unassigned}
         onToggle={onToggle}
       />
-    )
+    );
   }
 
   // RIGHT-CLICK IS THE SAME MENU. The ⋯ button only appears on hover and is a
   // small target; right-clicking the heading is what people actually try
   // first. Both drive the identical actions, so neither can drift.
   const items = [
-    { icon: 'edit', label: b.sections.rename, onSelect: onRename },
-    { disabled: !canMoveUp, icon: 'arrow-up', label: b.sections.moveUp, onSelect: () => onMove(-1) },
-    { disabled: !canMoveDown, icon: 'arrow-down', label: b.sections.moveDown, onSelect: () => onMove(1) }
-  ]
+    { icon: "edit", label: b.sections.rename, onSelect: onRename },
+    {
+      disabled: !canMoveUp,
+      icon: "arrow-up",
+      label: b.sections.moveUp,
+      onSelect: () => onMove(-1),
+    },
+    {
+      disabled: !canMoveDown,
+      icon: "arrow-down",
+      label: b.sections.moveDown,
+      onSelect: () => onMove(1),
+    },
+  ];
 
   const action = (
     <DropdownMenu>
@@ -178,8 +206,12 @@ export function UserSectionHeader({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {items.map(item => (
-          <DropdownMenuItem disabled={item.disabled} key={item.label} onSelect={item.onSelect}>
+        {items.map((item) => (
+          <DropdownMenuItem
+            disabled={item.disabled}
+            key={item.label}
+            onSelect={item.onSelect}
+          >
             <Codicon className="mr-1.5" name={item.icon} />
             {item.label}
           </DropdownMenuItem>
@@ -191,7 +223,7 @@ export function UserSectionHeader({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 
   return (
     <ContextMenu>
@@ -210,8 +242,12 @@ export function UserSectionHeader({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        {items.map(item => (
-          <ContextMenuItem disabled={item.disabled} key={item.label} onSelect={item.onSelect}>
+        {items.map((item) => (
+          <ContextMenuItem
+            disabled={item.disabled}
+            key={item.label}
+            onSelect={item.onSelect}
+          >
             {item.label}
           </ContextMenuItem>
         ))}
@@ -221,7 +257,7 @@ export function UserSectionHeader({
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-  )
+  );
 }
 
 // ── drop zone ────────────────────────────────────────────────────────────────
@@ -229,44 +265,49 @@ export function UserSectionHeader({
 /** While a bot is in flight, Escape cancels the gesture. Mount once in the
  *  roster pane. */
 export function useEscapeCancelsBotDrag(): void {
-  const dragging = useValue($draggingBot)
+  const dragging = useValue($draggingBot);
 
   useEffect(() => {
     if (!dragging) {
-      return
+      return;
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        $draggingBot.set(null)
+      if (event.key === "Escape") {
+        $draggingBot.set(null);
       }
-    }
+    };
 
-    window.addEventListener('keydown', onKeyDown, true)
+    window.addEventListener("keydown", onKeyDown, true);
 
-    return () => window.removeEventListener('keydown', onKeyDown, true)
-  }, [dragging])
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, [dragging]);
 }
 
 interface SectionDropZoneProps {
-  children: ReactNode
+  children: ReactNode;
   /** Whether the dragged bot is already filed here — then the zone is not a
    *  target, and the OS shows the no-drop cursor instead of a highlight that
    *  promises a move that would change nothing. */
-  isSource: boolean
+  isSource: boolean;
   /** Drawn inside a gateway bucket: indented under a hairline rail so the
    *  two heading levels read as parent and child. */
-  nested?: boolean
-  onDropBot: (rosterKey: string) => void
+  nested?: boolean;
+  onDropBot: (rosterKey: string) => void;
 }
 
 /** A section block as a drop target: the whole block (heading + rows, or the
  *  empty placeholder) lights up while a bot is over it. */
-export function SectionDropZone({ children, isSource, nested, onDropBot }: SectionDropZoneProps) {
-  const dragging = useValue($draggingBot)
-  const [over, setOver] = useState(false)
-  const armed = Boolean(dragging) && !isSource
-  const lit = armed && over
+export function SectionDropZone({
+  children,
+  isSource,
+  nested,
+  onDropBot,
+}: SectionDropZoneProps) {
+  const dragging = useValue($draggingBot);
+  const [over, setOver] = useState(false);
+  const armed = Boolean(dragging) && !isSource;
+  const lit = armed && over;
 
   // Escape cancels the gesture: the in-flight key is cleared (see the
   // keydown hook in the roster pane), so every zone disarms at once and a
@@ -274,71 +315,72 @@ export function SectionDropZone({ children, isSource, nested, onDropBot }: Secti
   // starts clean.
   useEffect(() => {
     if (!dragging) {
-      setOver(false)
+      setOver(false);
     }
-  }, [dragging])
+  }, [dragging]);
 
-  const accepts = (event: DragEvent) => armed && event.dataTransfer.types.includes(BOT_DRAG_MIME)
+  const accepts = (event: DragEvent) =>
+    armed && event.dataTransfer.types.includes(BOT_DRAG_MIME);
 
   return (
     <div
       className={cn(
-        'relative min-w-0 rounded-md transition-[background-color,box-shadow] duration-100',
-        nested && 'ml-2.5 border-l border-(--ui-stroke-tertiary) pl-1',
+        "relative min-w-0 rounded-md transition-[background-color,box-shadow] duration-100",
+        nested && "ml-2.5 border-l border-(--ui-stroke-tertiary) pl-1",
         // While a drag is live, every valid target gets a faint outline so the
         // user can see where a drop is allowed before hovering one.
-        armed && 'ring-1 ring-inset ring-(--ui-stroke-secondary)',
-        lit && 'bg-(--ui-accent)/10 ring-(--ui-accent)'
+        armed && "ring-1 ring-inset ring-(--ui-stroke-secondary)",
+        lit && "bg-(--ui-accent)/10 ring-(--ui-accent)",
       )}
-      data-drop-over={lit ? 'true' : undefined}
+      data-drop-over={lit ? "true" : undefined}
       data-slot="bots-section"
-      onDragEnter={event => {
+      onDragEnter={(event) => {
         if (accepts(event)) {
-          event.preventDefault()
-          setOver(true)
+          event.preventDefault();
+          setOver(true);
         }
       }}
-      onDragLeave={event => {
+      onDragLeave={(event) => {
         // Only clear when the pointer leaves the BLOCK, not when it crosses
         // between the rows inside it — dragleave fires on every child
         // boundary, which otherwise strobes the highlight.
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setOver(false)
+          setOver(false);
         }
       }}
-      onDragOver={event => {
+      onDragOver={(event) => {
         if (!accepts(event)) {
-          return
+          return;
         }
 
         // preventDefault is what MAKES this a drop target — without it the
         // browser refuses the drop and the cursor stays "no entry".
-        event.preventDefault()
-        event.dataTransfer.dropEffect = 'move'
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
 
         if (!over) {
-          setOver(true)
+          setOver(true);
         }
       }}
-      onDrop={event => {
-        setOver(false)
+      onDrop={(event) => {
+        setOver(false);
         // The dropped row remounts under its new section, so its own dragend
         // never reaches the new node — clear the in-flight state here or the
         // row stays faded after a successful drop.
-        $draggingBot.set(null)
+        $draggingBot.set(null);
 
-        const key = event.dataTransfer.getData(BOT_DRAG_MIME)
+        const key = event.dataTransfer.getData(BOT_DRAG_MIME);
 
         // No in-flight key means the user pressed Escape mid-drag: refuse.
         if (!key || !dragging || isSource) {
-          return
+          return;
         }
 
-        event.preventDefault()
-        onDropBot(key)
+        event.preventDefault();
+        onDropBot(key);
       }}
     >
       {children}
     </div>
-  )
+  );
 }

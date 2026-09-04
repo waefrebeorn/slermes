@@ -1,12 +1,12 @@
-import { Codicon } from '@/components/ui/codicon'
-import { GlyphSpinner } from '@/components/ui/glyph-spinner'
-import { Tip } from '@/components/ui/tooltip'
-import { useI18n } from '@/i18n'
+import { Codicon } from "@/components/ui/codicon";
+import { GlyphSpinner } from "@/components/ui/glyph-spinner";
+import { Tip } from "@/components/ui/tooltip";
+import { useI18n } from "@/i18n";
 
 interface SidebarLoadMoreRowProps {
-  step: number
-  onClick: () => void
-  loading?: boolean
+  step: number;
+  onClick: () => void;
+  loading?: boolean;
 }
 
 // Compact "load more" affordance shared by recents, messaging, and cron. Kept
@@ -14,9 +14,17 @@ interface SidebarLoadMoreRowProps {
 // so pagination reads as one interaction everywhere. It hangs off the list
 // instead of sitting in a row, so it repeats the row's trailing inset
 // (SidebarRowShell's `pr-2`) to stay on the edge the rows stop at.
-export function SidebarLoadMoreRow({ step, onClick, loading = false }: SidebarLoadMoreRowProps) {
-  const { t } = useI18n()
-  const label = loading ? t.sidebar.loading : step > 0 ? t.sidebar.loadCount(step) : t.sidebar.loadMore
+export function SidebarLoadMoreRow({
+  step,
+  onClick,
+  loading = false,
+}: SidebarLoadMoreRowProps) {
+  const { t } = useI18n();
+  const label = loading
+    ? t.sidebar.loading
+    : step > 0
+      ? t.sidebar.loadCount(step)
+      : t.sidebar.loadMore;
 
   return (
     <Tip label={label}>
@@ -34,5 +42,5 @@ export function SidebarLoadMoreRow({ step, onClick, loading = false }: SidebarLo
         )}
       </button>
     </Tip>
-  )
+  );
 }

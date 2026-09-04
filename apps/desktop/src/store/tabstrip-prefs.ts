@@ -1,15 +1,15 @@
-import type { TabStripMode } from '@/components/pane-shell/tree/model'
-import { type Codec, persistentAtom } from '@/lib/persisted'
+import type { TabStripMode } from "@/components/pane-shell/tree/model";
+import { type Codec, persistentAtom } from "@/lib/persisted";
 
-const TAB_STRIP_DEFAULT_STORAGE_KEY = 'hermes.desktop.tabStripDefault'
+const TAB_STRIP_DEFAULT_STORAGE_KEY = "hermes.desktop.tabStripDefault";
 
 /** What a zone does when it has made no choice of its own. */
-export type TabStripDefault = 'auto' | TabStripMode
+export type TabStripDefault = "auto" | TabStripMode;
 
 const codec: Codec<TabStripDefault> = {
-  decode: raw => (raw === 'always' || raw === 'never' ? raw : 'auto'),
-  encode: value => (value === 'auto' ? null : value)
-}
+  decode: (raw) => (raw === "always" || raw === "never" ? raw : "auto"),
+  encode: (value) => (value === "auto" ? null : value),
+};
 
 /**
  * The app-wide answer for zones on auto, VS Code's `workbench.editor.showTabs`
@@ -20,19 +20,25 @@ const codec: Codec<TabStripDefault> = {
  * A zone that states its own preference still wins — this is the fallback, not
  * an override — and neither value can strand a pane (see resolveTabStripVisible).
  */
-export const $tabStripDefault = persistentAtom<TabStripDefault>(TAB_STRIP_DEFAULT_STORAGE_KEY, 'auto', codec)
+export const $tabStripDefault = persistentAtom<TabStripDefault>(
+  TAB_STRIP_DEFAULT_STORAGE_KEY,
+  "auto",
+  codec,
+);
 
 export function setTabStripDefault(value: TabStripDefault) {
-  $tabStripDefault.set(value)
+  $tabStripDefault.set(value);
 }
 
 /** The mode a zone resolves against: its own choice, else the app default. */
-export function effectiveTabStripMode(zoneMode: TabStripMode | undefined): TabStripMode | undefined {
+export function effectiveTabStripMode(
+  zoneMode: TabStripMode | undefined,
+): TabStripMode | undefined {
   if (zoneMode) {
-    return zoneMode
+    return zoneMode;
   }
 
-  const fallback = $tabStripDefault.get()
+  const fallback = $tabStripDefault.get();
 
-  return fallback === 'auto' ? undefined : fallback
+  return fallback === "auto" ? undefined : fallback;
 }

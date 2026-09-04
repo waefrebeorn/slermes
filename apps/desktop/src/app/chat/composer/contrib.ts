@@ -20,47 +20,49 @@
  * draft, pass it through, or cancel the send by returning null.
  */
 
-import { useMemo } from 'react'
+import { useMemo } from "react";
 
-import { useContributions } from '@/contrib/react/use-contributions'
-import { registry } from '@/contrib/registry'
-import type { TodoItem } from '@/lib/todos'
-import type { ComposerAttachment } from '@/store/composer'
-import type { ComposerAction } from '@/store/composer-actions'
+import { useContributions } from "@/contrib/react/use-contributions";
+import { registry } from "@/contrib/registry";
+import type { TodoItem } from "@/lib/todos";
+import type { ComposerAttachment } from "@/store/composer";
+import type { ComposerAction } from "@/store/composer-actions";
 
 export const COMPOSER_AREAS = {
-  top: 'composer.top',
-  bottom: 'composer.bottom',
-  underside: 'composer.underside',
-  leading: 'composer.leading',
-  actions: 'composer.actions',
-  middleware: 'composer.middleware',
-  attachments: 'composer.attachments',
-  microActions: 'composer.microActions',
-  atCompletions: 'composer.atCompletions'
-} as const
+  top: "composer.top",
+  bottom: "composer.bottom",
+  underside: "composer.underside",
+  leading: "composer.leading",
+  actions: "composer.actions",
+  middleware: "composer.middleware",
+  attachments: "composer.attachments",
+  microActions: "composer.microActions",
+  atCompletions: "composer.atCompletions",
+} as const;
 
 export interface ComposerDraft {
-  text: string
-  attachments?: ComposerAttachment[]
+  text: string;
+  attachments?: ComposerAttachment[];
 }
 
 /** Payload of a `composer.middleware` data contribution. */
 export interface ComposerMiddleware {
   /** Rewrite (return a draft), pass through (same draft), or cancel (null). */
-  handler: (draft: ComposerDraft) => ComposerDraft | null | Promise<ComposerDraft | null>
+  handler: (
+    draft: ComposerDraft,
+  ) => ComposerDraft | null | Promise<ComposerDraft | null>;
 }
 
 /** One row a `composer.atCompletions` source offers for the current query. */
 export interface ComposerAtCompletionItem {
   /** Text inserted into the draft when picked (e.g. `@researcher`). */
-  insert: string
+  insert: string;
   /** Row label; defaults to `insert`. */
-  display?: string
+  display?: string;
   /** Secondary line (e.g. "Bot · Homelab"). */
-  meta?: string
+  meta?: string;
   /** Icon slug understood by the completion popover; defaults to 'simple'. */
-  icon?: string
+  icon?: string;
 }
 
 /** Payload of a `composer.atCompletions` data contribution — an extra source
@@ -69,20 +71,20 @@ export interface ComposerAtCompletionItem {
  *  fast and synchronous-ish (called per keystroke after the debounce); slow
  *  lookups belong behind the source's own cache. */
 export interface ComposerAtCompletionSource {
-  provide: (query: string) => ComposerAtCompletionItem[]
+  provide: (query: string) => ComposerAtCompletionItem[];
 }
 
 export interface ComposerAttachmentContext {
-  insertText: (text: string) => void
+  insertText: (text: string) => void;
 }
 
 /** Payload of a `composer.attachments` data contribution — an entry in the
  *  composer's "+" attach menu. */
 export interface ComposerAttachmentProvider {
-  label: string
+  label: string;
   /** Codicon name for the menu row. Defaults to `plug`. */
-  icon?: string
-  run: (ctx: ComposerAttachmentContext) => void | Promise<void>
+  icon?: string;
+  run: (ctx: ComposerAttachmentContext) => void | Promise<void>;
 }
 
 /**
@@ -91,37 +93,44 @@ export interface ComposerAttachmentProvider {
  * and cancels the send. A throwing handler is treated as pass-through so a
  * broken plugin can't eat messages.
  */
-export async function runComposerMiddleware(draft: ComposerDraft): Promise<ComposerDraft | null> {
-  let current = draft
+export async function runComposerMiddleware(
+  draft: ComposerDraft,
+): Promise<ComposerDraft | null> {
+  let current = draft;
 
   for (const contribution of registry.getArea(COMPOSER_AREAS.middleware)) {
-    const middleware = contribution.data as ComposerMiddleware | undefined
+    const middleware = contribution.data as ComposerMiddleware | undefined;
 
     if (!middleware?.handler) {
-      continue
+      continue;
     }
 
     try {
-      const next = await middleware.handler(current)
+      const next = await middleware.handler(current);
 
       if (next === null) {
-        return null
+        return null;
       }
 
-      current = next
+      current = next;
     } catch {
       // Pass-through: a faulty middleware must never swallow the message.
     }
   }
 
-  return current
+  return current;
 }
 
 /** Attach-menu entries contributed by plugins/core, with stable render keys. */
-export function useComposerAttachmentProviders(): Array<ComposerAttachmentProvider & { key: string }> {
+export function useComposerAttachmentProviders(): Array<
+  ComposerAttachmentProvider & { key: string }
+> {
   return useContributions(COMPOSER_AREAS.attachments)
-    .map(c => ({ key: `${c.source ?? 'core'}:${c.id}`, ...(c.data as ComposerAttachmentProvider) }))
-    .filter(p => Boolean(p.label && p.run))
+    .map((c) => ({
+      key: `${c.source ?? "core"}:${c.id}`,
+      ...(c.data as ComposerAttachmentProvider),
+    }))
+    .filter((p) => Boolean(p.label && p.run));
 }
 
 /**
@@ -135,27 +144,30 @@ export function useComposerAttachmentProviders(): Array<ComposerAttachmentProvid
  * registry deliberately doesn't offer.
  */
 export interface ComposerMicroActionProvider {
-  resolve: (ctx: ComposerMicroActionContext) => ComposerAction[]
+  resolve: (ctx: ComposerMicroActionContext) => ComposerAction[];
 }
 
 /** What a micro-action provider gets to branch on. Deliberately small: every
  *  field here is a standing compatibility promise to the plugins using it. */
 export interface ComposerMicroActionContext {
   /** A turn is currently running in this session. */
-  busy: boolean
-  sessionId: string
+  busy: boolean;
+  sessionId: string;
   /** Live todo list for the session (empty when there is none). */
-  todos: readonly TodoItem[]
+  todos: readonly TodoItem[];
 }
 
 /** Micro-action providers, memoised against the registry's own stable
  *  snapshot — the strip re-resolves on every composer render, so a fresh array
  *  here would defeat that. */
 export function useComposerMicroActionProviders(): ComposerMicroActionProvider[] {
-  const contributions = useContributions(COMPOSER_AREAS.microActions)
+  const contributions = useContributions(COMPOSER_AREAS.microActions);
 
   return useMemo(
-    () => contributions.map(c => c.data as ComposerMicroActionProvider).filter(p => typeof p?.resolve === 'function'),
-    [contributions]
-  )
+    () =>
+      contributions
+        .map((c) => c.data as ComposerMicroActionProvider)
+        .filter((p) => typeof p?.resolve === "function"),
+    [contributions],
+  );
 }

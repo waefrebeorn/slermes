@@ -17,12 +17,12 @@
  * throw on every launch, which surfaced as "signed out after restart" (#73271).
  */
 
-import { type NativeTokenSet, parseStoredTokenSet } from './native-oauth'
+import { type NativeTokenSet, parseStoredTokenSet } from "./native-oauth";
 
 /** One encrypted blob as written per gateway base URL. */
 export interface StoredTokenSecret {
-  encoding?: string
-  value?: string
+  encoding?: string;
+  value?: string;
 }
 
 /**
@@ -37,14 +37,14 @@ export interface NativeTokenStoreIo {
    * A `null` return is treated as the same authoritative failure: the caller
    * throws rather than persisting an empty entry over good tokens.
    */
-  encrypt: (plaintext: string) => StoredTokenSecret | null
+  encrypt: (plaintext: string) => StoredTokenSecret | null;
   /** Decrypt a stored payload; returns '' when it cannot be read. */
-  decrypt: (secret: any) => string
+  decrypt: (secret: any) => string;
   /** Raw store-file text. Throws when the file is absent — treated as empty. */
-  readStoreText: () => string
+  readStoreText: () => string;
   /** Persist the store-file text (main.ts writes mode 0600 under userData). */
-  writeStoreText: (text: string) => void
-  rememberLog?: (message: string) => void
+  writeStoreText: (text: string) => void;
+  rememberLog?: (message: string) => void;
 }
 
 /**
@@ -58,11 +58,13 @@ export interface NativeTokenStoreIo {
  */
 function readStore(io: NativeTokenStoreIo): Record<string, any> {
   try {
-    const parsed = JSON.parse(io.readStoreText())
+    const parsed = JSON.parse(io.readStoreText());
 
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed
+      : {};
   } catch {
-    return {}
+    return {};
   }
 }
 
@@ -79,15 +81,15 @@ function readStore(io: NativeTokenStoreIo): Record<string, any> {
  */
 function redactGatewayUrl(baseUrl: string): string {
   try {
-    const parsed = new URL(baseUrl)
+    const parsed = new URL(baseUrl);
 
-    parsed.username = ''
-    parsed.password = ''
+    parsed.username = "";
+    parsed.password = "";
 
     // `host` already carries a non-default port.
-    return `${parsed.protocol}//${parsed.host}${parsed.pathname}`
+    return `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
   } catch {
-    return '<invalid gateway URL>'
+    return "<invalid gateway URL>";
   }
 }
 
@@ -95,35 +97,41 @@ function redactGatewayUrl(baseUrl: string): string {
  * Write (or, with `tokens === null`, drop) one gateway's token set, merging
  * into whatever other gateways are already stored.
  */
-export function persistNativeTokenSet(baseUrl: string, tokens: NativeTokenSet | null, io: NativeTokenStoreIo): void {
-  const store = readStore(io)
+export function persistNativeTokenSet(
+  baseUrl: string,
+  tokens: NativeTokenSet | null,
+  io: NativeTokenStoreIo,
+): void {
+  const store = readStore(io);
 
   if (tokens) {
     // Encrypt the whole set as one blob so the refresh token never lands in
     // plaintext on disk. Deliberately outside the try below: an unusable
     // keychain is an authoritative write failure and must surface to the
     // caller, not be logged away as if the tokens were saved.
-    const secret = io.encrypt(JSON.stringify(tokens))
+    const secret = io.encrypt(JSON.stringify(tokens));
 
     if (!secret) {
       // A null blob is the same failure as a throw, only quieter. Storing it
       // would replace a good entry with nothing: the write would report
       // success, the next launch would show signed out, and the refresh token
       // would be unrecoverable. Fail before touching the store.
-      throw new Error('Secure token storage returned no encrypted payload; refusing to overwrite stored native tokens.')
+      throw new Error(
+        "Secure token storage returned no encrypted payload; refusing to overwrite stored native tokens.",
+      );
     }
 
-    store[baseUrl] = secret
+    store[baseUrl] = secret;
   } else {
-    delete store[baseUrl]
+    delete store[baseUrl];
   }
 
   try {
-    io.writeStoreText(JSON.stringify(store))
+    io.writeStoreText(JSON.stringify(store));
   } catch (error) {
-    const detail = error instanceof Error ? error.message : String(error)
+    const detail = error instanceof Error ? error.message : String(error);
 
-    io.rememberLog?.(`[native-oauth] failed to persist tokens: ${detail}`)
+    io.rememberLog?.(`[native-oauth] failed to persist tokens: ${detail}`);
   }
 }
 
@@ -132,34 +140,39 @@ export function persistNativeTokenSet(baseUrl: string, tokens: NativeTokenSet | 
  * null when nothing is stored, when the blob cannot be decrypted, or when it
  * does not parse — never a partially-populated set.
  */
-export function loadNativeTokenSet(baseUrl: string, io: NativeTokenStoreIo): NativeTokenSet | null {
+export function loadNativeTokenSet(
+  baseUrl: string,
+  io: NativeTokenStoreIo,
+): NativeTokenSet | null {
   // The UNREDACTED url is the store key — redaction is for logs only.
-  const secret = readStore(io)[baseUrl]
+  const secret = readStore(io)[baseUrl];
 
   if (!secret) {
-    return null
+    return null;
   }
 
   try {
-    const plaintext = io.decrypt(secret)
+    const plaintext = io.decrypt(secret);
 
     if (!plaintext) {
       // A keychain that is merely locked/unavailable right now must not cost
       // the user their refresh token — leave the entry for the next attempt.
       io.rememberLog?.(
-        `[native-oauth] failed to decrypt stored tokens for ${redactGatewayUrl(baseUrl)}; keeping stored entry for retry`
-      )
+        `[native-oauth] failed to decrypt stored tokens for ${redactGatewayUrl(baseUrl)}; keeping stored entry for retry`,
+      );
 
-      return null
+      return null;
     }
 
     // Stored blobs are normalized camelCase sets, never raw gateway responses.
-    return parseStoredTokenSet(JSON.parse(plaintext))
+    return parseStoredTokenSet(JSON.parse(plaintext));
   } catch (error) {
-    const detail = error instanceof Error ? error.message : String(error)
+    const detail = error instanceof Error ? error.message : String(error);
 
-    io.rememberLog?.(`[native-oauth] failed to load stored tokens for ${redactGatewayUrl(baseUrl)}: ${detail}`)
+    io.rememberLog?.(
+      `[native-oauth] failed to load stored tokens for ${redactGatewayUrl(baseUrl)}: ${detail}`,
+    );
 
-    return null
+    return null;
   }
 }

@@ -1,34 +1,37 @@
-import { useStore } from '@nanostores/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useCallback, useEffect, useState } from "react";
 
-import { readUseRealProfile } from '@/app/settings/browser-real-profile-panel'
-import { Button } from '@/components/ui/button'
+import { readUseRealProfile } from "@/app/settings/browser-real-profile-panel";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-import { saveHermesConfigRecord } from '@/hermes'
-import { useI18n } from '@/i18n'
-import { Check, Globe } from '@/lib/icons'
-import { notify, notifyError } from '@/store/notifications'
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { saveHermesConfigRecord } from "@/hermes";
+import { useI18n } from "@/i18n";
+import { Check, Globe } from "@/lib/icons";
+import { notify, notifyError } from "@/store/notifications";
 import {
   $realProfilePromptClaim,
   $realProfilePromptDismissed,
   $realProfilePromptMuted,
   claimRealProfilePrompt,
-  releaseRealProfilePrompt
-} from '@/store/real-profile-consent'
+  releaseRealProfilePrompt,
+} from "@/store/real-profile-consent";
 
-import { hermesConfigCacheWriter, useHermesConfigRecord } from '../../hooks/use-config-record'
+import {
+  hermesConfigCacheWriter,
+  useHermesConfigRecord,
+} from "../../hooks/use-config-record";
 
 interface RealProfileConsentDialogProps {
   /** The Browser tab this pane renders — used only to claim the prompt so
    *  several mounted Browser panes never stack duplicate dialogs. */
-  tabId: string
+  tabId: string;
 }
 
 /**
@@ -43,68 +46,81 @@ interface RealProfileConsentDialogProps {
  * again" persists the opt-out across launches. Turning the toggle off later
  * does NOT resurrect the prompt inside the same run.
  */
-export function RealProfileConsentDialog({ tabId }: RealProfileConsentDialogProps) {
-  const { t } = useI18n()
-  const copy = t.settings.toolsets.browserRealProfile
-  const prompt = copy.prompt
-  const dismissed = useStore($realProfilePromptDismissed)
-  const muted = useStore($realProfilePromptMuted)
-  const claim = useStore($realProfilePromptClaim)
-  const { data: config } = useHermesConfigRecord()
-  const setConfig = hermesConfigCacheWriter()
-  const [busy, setBusy] = useState(false)
+export function RealProfileConsentDialog({
+  tabId,
+}: RealProfileConsentDialogProps) {
+  const { t } = useI18n();
+  const copy = t.settings.toolsets.browserRealProfile;
+  const prompt = copy.prompt;
+  const dismissed = useStore($realProfilePromptDismissed);
+  const muted = useStore($realProfilePromptMuted);
+  const claim = useStore($realProfilePromptClaim);
+  const { data: config } = useHermesConfigRecord();
+  const setConfig = hermesConfigCacheWriter();
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    claimRealProfilePrompt(tabId)
+    claimRealProfilePrompt(tabId);
 
-    return () => releaseRealProfilePrompt(tabId)
-  }, [tabId])
+    return () => releaseRealProfilePrompt(tabId);
+  }, [tabId]);
 
-  const enabled = readUseRealProfile(config)
+  const enabled = readUseRealProfile(config);
 
   const enable = useCallback(async () => {
     if (!config || busy) {
-      return
+      return;
     }
 
     const browser =
-      config.browser && typeof config.browser === 'object' && !Array.isArray(config.browser)
+      config.browser &&
+      typeof config.browser === "object" &&
+      !Array.isArray(config.browser)
         ? (config.browser as Record<string, unknown>)
-        : {}
+        : {};
 
-    const next = { ...config, browser: { ...browser, use_real_profile: true } }
+    const next = { ...config, browser: { ...browser, use_real_profile: true } };
 
-    setBusy(true)
-    setConfig(next)
+    setBusy(true);
+    setConfig(next);
 
     try {
-      await saveHermesConfigRecord(next)
-      notify({ kind: 'info', title: copy.enabledTitle, message: copy.enabledMessage })
+      await saveHermesConfigRecord(next);
+      notify({
+        kind: "info",
+        title: copy.enabledTitle,
+        message: copy.enabledMessage,
+      });
     } catch (err) {
-      setConfig(config)
-      notifyError(err, copy.failedSave)
+      setConfig(config);
+      notifyError(err, copy.failedSave);
     } finally {
-      setBusy(false)
+      setBusy(false);
     }
-  }, [busy, config, copy, setConfig])
+  }, [busy, config, copy, setConfig]);
 
   // Config not loaded yet, feature already on, opted out, or another pane
   // owns the prompt — render nothing. `enabled` flipping true after a
   // successful save is also what closes the dialog.
-  const open = Boolean(config) && !enabled && !dismissed && !muted && claim === tabId
+  const open =
+    Boolean(config) && !enabled && !dismissed && !muted && claim === tabId;
 
   if (!open) {
-    return null
+    return null;
   }
 
-  const bullets = [prompt.bulletSnapshot, prompt.bulletLiveProfile, prompt.bulletLocal]
+  const bullets = [
+    prompt.bulletSnapshot,
+    prompt.bulletLiveProfile,
+    prompt.bulletLocal,
+  ];
 
   return (
     <Dialog
-      onOpenChange={value => {
+      onOpenChange={(value) => {
         // Esc / backdrop are a soft "Not now": mute for this run.
         if (!value && !busy) {
-          $realProfilePromptMuted.set(true)
+          $realProfilePromptMuted.set(true);
         }
       }}
       open
@@ -116,7 +132,7 @@ export function RealProfileConsentDialog({ tabId }: RealProfileConsentDialogProp
         </DialogHeader>
 
         <ul className="grid gap-2 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-secondary)">
-          {bullets.map(bullet => (
+          {bullets.map((bullet) => (
             <li className="flex items-start gap-2" key={bullet}>
               <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
               <span>{bullet}</span>
@@ -134,7 +150,12 @@ export function RealProfileConsentDialog({ tabId }: RealProfileConsentDialogProp
             {prompt.dontShowAgain}
           </button>
           <div className="flex gap-2">
-            <Button disabled={busy} onClick={() => $realProfilePromptMuted.set(true)} type="button" variant="ghost">
+            <Button
+              disabled={busy}
+              onClick={() => $realProfilePromptMuted.set(true)}
+              type="button"
+              variant="ghost"
+            >
               {prompt.notNow}
             </Button>
             <Button disabled={busy} onClick={() => void enable()} type="button">
@@ -144,5 +165,5 @@ export function RealProfileConsentDialog({ tabId }: RealProfileConsentDialogProp
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

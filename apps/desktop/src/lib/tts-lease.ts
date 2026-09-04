@@ -1,4 +1,4 @@
-import { setTtsLease } from '@/hermes'
+import { setTtsLease } from "@/hermes";
 
 // The desktop's speech-output toggles — "Read replies aloud" and voice
 // conversation mode — are the user telling us TTS is about to be needed (or no
@@ -16,13 +16,13 @@ import { setTtsLease } from '@/hermes'
 // window A ending its conversation must not release the engine window B is
 // still speaking through. Read-aloud mirrors one config key shared by every
 // window, so it deliberately uses one shared lease name.
-const RENDERER_ID = Math.random().toString(36).slice(2, 10)
+const RENDERER_ID = Math.random().toString(36).slice(2, 10);
 
-export const READ_ALOUD_LEASE = 'desktop:read-aloud'
-export const CONVERSATION_LEASE = `desktop:conversation:${RENDERER_ID}`
+export const READ_ALOUD_LEASE = "desktop:read-aloud";
+export const CONVERSATION_LEASE = `desktop:conversation:${RENDERER_ID}`;
 
-const sent = new Map<string, boolean>()
-const inFlight = new Map<string, Promise<void>>()
+const sent = new Map<string, boolean>();
+const inFlight = new Map<string, Promise<void>>();
 
 /**
  * Bring the backend's view of `lease` in line with `active`. Idempotent: a
@@ -31,46 +31,46 @@ const inFlight = new Map<string, Promise<void>>()
  * churn the backend on app start.
  */
 export function syncTtsLease(lease: string, active: boolean): Promise<void> {
-  const last = sent.get(lease)
+  const last = sent.get(lease);
 
   if (last === active || (last === undefined && !active)) {
-    return inFlight.get(lease) ?? Promise.resolve()
+    return inFlight.get(lease) ?? Promise.resolve();
   }
 
-  sent.set(lease, active)
+  sent.set(lease, active);
 
-  const previous = inFlight.get(lease) ?? Promise.resolve()
+  const previous = inFlight.get(lease) ?? Promise.resolve();
 
   const next = previous
     .then(async () => {
       // Latest intent wins: if the toggle flipped again while we were queued,
       // the newer call sends its own state and this one has nothing to say.
       if (sent.get(lease) !== active) {
-        return
+        return;
       }
 
-      await setTtsLease(lease, active)
+      await setTtsLease(lease, active);
     })
     .catch(() => {
       // Backend not up yet / older backend without the endpoint / warm-up
       // failure: forget what we "sent" so the next flip retries honestly.
       if (sent.get(lease) === active) {
-        sent.delete(lease)
+        sent.delete(lease);
       }
     })
     .finally(() => {
       if (inFlight.get(lease) === next) {
-        inFlight.delete(lease)
+        inFlight.delete(lease);
       }
-    })
+    });
 
-  inFlight.set(lease, next)
+  inFlight.set(lease, next);
 
-  return next
+  return next;
 }
 
 /** Test seam — forget every sent state. */
 export function resetTtsLeasesForTests() {
-  sent.clear()
-  inFlight.clear()
+  sent.clear();
+  inFlight.clear();
 }

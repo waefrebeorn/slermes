@@ -21,54 +21,59 @@
 /** How long after the last turn ends before throttling is restored. Covers the
  * stream queue's final coalesced flush and the settle writes that trail a
  * turn's completion, so re-throttling never strands a visible delta. */
-const RETHROTTLE_DELAY_MS = 5_000
+const RETHROTTLE_DELAY_MS = 5_000;
 
 export interface ThrottleWindowLike {
-  isDestroyed(): boolean
+  isDestroyed(): boolean;
   webContents?: {
-    isDestroyed(): boolean
-    setBackgroundThrottling(allowed: boolean): void
-  } | null
+    isDestroyed(): boolean;
+    setBackgroundThrottling(allowed: boolean): void;
+  } | null;
 }
 
 interface TimersLike {
-  clearTimeout(handle: unknown): void
-  setTimeout(fn: () => void, ms: number): unknown
+  clearTimeout(handle: unknown): void;
+  setTimeout(fn: () => void, ms: number): unknown;
 }
 
 export interface StreamThrottle {
   /** True while windows are currently unthrottled (streaming or trailing). */
-  isUnthrottled(): boolean
+  isUnthrottled(): boolean;
   /** Track a chat window; applies the current state immediately and stops
    * tracking on close. */
-  register(win: ThrottleWindowLike & { on?: (event: string, fn: () => void) => void }): void
+  register(
+    win: ThrottleWindowLike & { on?: (event: string, fn: () => void) => void },
+  ): void;
   /** Report whether any turn is in flight across all renderers. */
-  update(busy: boolean): void
+  update(busy: boolean): void;
 }
 
 export function createStreamThrottle(
-  timers: TimersLike = { clearTimeout: handle => clearTimeout(handle as never), setTimeout },
-  delayMs: number = RETHROTTLE_DELAY_MS
+  timers: TimersLike = {
+    clearTimeout: (handle) => clearTimeout(handle as never),
+    setTimeout,
+  },
+  delayMs: number = RETHROTTLE_DELAY_MS,
 ): StreamThrottle {
-  const windows = new Set<ThrottleWindowLike>()
-  let unthrottled = false
-  let trailing: unknown = null
+  const windows = new Set<ThrottleWindowLike>();
+  let unthrottled = false;
+  let trailing: unknown = null;
 
   function apply(win: ThrottleWindowLike) {
     if (win.isDestroyed()) {
-      windows.delete(win)
+      windows.delete(win);
 
-      return
+      return;
     }
 
-    const contents = win.webContents
+    const contents = win.webContents;
 
     if (!contents || contents.isDestroyed()) {
-      return
+      return;
     }
 
     try {
-      contents.setBackgroundThrottling(!unthrottled)
+      contents.setBackgroundThrottling(!unthrottled);
     } catch {
       // A window mid-teardown can throw; it's about to leave the set anyway.
     }
@@ -76,7 +81,7 @@ export function createStreamThrottle(
 
   function applyAll() {
     for (const win of windows) {
-      apply(win)
+      apply(win);
     }
   }
 
@@ -84,36 +89,36 @@ export function createStreamThrottle(
     isUnthrottled: () => unthrottled,
 
     register(win) {
-      windows.add(win)
-      win.on?.('closed', () => windows.delete(win))
-      apply(win)
+      windows.add(win);
+      win.on?.("closed", () => windows.delete(win));
+      apply(win);
     },
 
     update(busy) {
       if (busy) {
         if (trailing !== null) {
-          timers.clearTimeout(trailing)
-          trailing = null
+          timers.clearTimeout(trailing);
+          trailing = null;
         }
 
         if (!unthrottled) {
-          unthrottled = true
-          applyAll()
+          unthrottled = true;
+          applyAll();
         }
 
-        return
+        return;
       }
 
       if (!unthrottled || trailing !== null) {
-        return
+        return;
       }
 
       // Trailing edge: keep full cadence briefly so the final flush paints.
       trailing = timers.setTimeout(() => {
-        trailing = null
-        unthrottled = false
-        applyAll()
-      }, delayMs)
-    }
-  }
+        trailing = null;
+        unthrottled = false;
+        applyAll();
+      }, delayMs);
+    },
+  };
 }

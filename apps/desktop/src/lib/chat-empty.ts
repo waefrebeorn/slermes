@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
 /**
  * CHAT EMPTY STATE — the blank transcript as a contribution area.
@@ -19,12 +19,12 @@ import type { ReactNode } from 'react'
  * suppress the plugin that actually owns the chat.
  */
 
-export const CHAT_EMPTY_AREA = 'chat.empty'
+export const CHAT_EMPTY_AREA = "chat.empty";
 
 /** Props handed to a chat-empty contribution's `render`. */
 export interface ChatEmptyProps {
   /** The live session whose transcript is empty. */
-  sessionId: string
+  sessionId: string;
 }
 
 /** Payload of a `chat.empty` contribution's `data`. */
@@ -34,5 +34,5 @@ export interface ChatEmptyContribution {
    *  contribution error boundary, so it can subscribe to its own stores and
    *  appear once they load — the roster a bot chat needs arrives after the
    *  transcript does. A throw degrades to an inline error, not a dead chat. */
-  render: (props: ChatEmptyProps) => ReactNode
+  render: (props: ChatEmptyProps) => ReactNode;
 }

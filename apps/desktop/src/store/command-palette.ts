@@ -1,30 +1,30 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { releaseTypingFocus } from '@/components/ui/keyboard-first'
+import { releaseTypingFocus } from "@/components/ui/keyboard-first";
 
 /** Whether the global command palette (Cmd/Ctrl+K) is currently open. */
-export const $commandPaletteOpen = atom(false)
+export const $commandPaletteOpen = atom(false);
 
 /** Optional nested page to open when the palette next opens (e.g. `pets`). */
-export const $commandPalettePage = atom<string | null>(null)
+export const $commandPalettePage = atom<string | null>(null);
 
 /** Optional search text to prefill when the palette next opens (type-to-search
  *  from a surface: the keystroke that opened the palette must not be lost). */
-export const $commandPaletteSeed = atom<string | null>(null)
+export const $commandPaletteSeed = atom<string | null>(null);
 
 export function openCommandPalette(): void {
-  $commandPaletteOpen.set(true)
+  $commandPaletteOpen.set(true);
 }
 
 /** Open the palette directly on a nested page (`theme`, `pets`, …). */
 export function openCommandPalettePage(page: string, seed?: string): void {
-  $commandPalettePage.set(page)
+  $commandPalettePage.set(page);
 
   if (seed) {
-    $commandPaletteSeed.set(seed)
+    $commandPaletteSeed.set(seed);
   }
 
-  $commandPaletteOpen.set(true)
+  $commandPaletteOpen.set(true);
 }
 
 // Closing hands the keyboard back to the composer — a hotkey-opened overlay
@@ -32,28 +32,28 @@ export function openCommandPalettePage(page: string, seed?: string): void {
 // Skipped when the palette action itself moved focus (navigating to a route,
 // opening a dialog): those surfaces claim focus after this runs.
 function setOpen(open: boolean): void {
-  const wasOpen = $commandPaletteOpen.get()
+  const wasOpen = $commandPaletteOpen.get();
 
-  $commandPaletteOpen.set(open)
+  $commandPaletteOpen.set(open);
 
   if (!open) {
-    $commandPalettePage.set(null)
-    $commandPaletteSeed.set(null)
+    $commandPalettePage.set(null);
+    $commandPaletteSeed.set(null);
 
     if (wasOpen) {
-      releaseTypingFocus()
+      releaseTypingFocus();
     }
   }
 }
 
 export function closeCommandPalette(): void {
-  setOpen(false)
+  setOpen(false);
 }
 
 export function setCommandPaletteOpen(open: boolean): void {
-  setOpen(open)
+  setOpen(open);
 }
 
 export function toggleCommandPalette(): void {
-  setOpen(!$commandPaletteOpen.get())
+  setOpen(!$commandPaletteOpen.get());
 }

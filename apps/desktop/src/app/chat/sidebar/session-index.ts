@@ -1,4 +1,4 @@
-import type { SessionInfo } from '@/types/hermes'
+import type { SessionInfo } from "@/types/hermes";
 
 /**
  * Index sessions by every id a pin might be stored under.
@@ -17,19 +17,23 @@ import type { SessionInfo } from '@/types/hermes'
 export function buildSessionByAnyId(
   visibleSessions: SessionInfo[],
   cronSessions: SessionInfo[],
-  messagingSessions: SessionInfo[]
+  messagingSessions: SessionInfo[],
 ): Map<string, SessionInfo> {
-  const map = new Map<string, SessionInfo>()
+  const map = new Map<string, SessionInfo>();
 
-  for (const session of [...cronSessions, ...messagingSessions, ...visibleSessions]) {
-    map.set(session.id, session)
+  for (const session of [
+    ...cronSessions,
+    ...messagingSessions,
+    ...visibleSessions,
+  ]) {
+    map.set(session.id, session);
 
     if (session._lineage_root_id && !map.has(session._lineage_root_id)) {
-      map.set(session._lineage_root_id, session)
+      map.set(session._lineage_root_id, session);
     }
   }
 
-  return map
+  return map;
 }
 
 /**
@@ -59,37 +63,38 @@ export function resolvePinnedSessions(
   pinnedSessionIds: readonly string[],
   sessionByAnyId: Map<string, SessionInfo>,
   allSessions: readonly SessionInfo[],
-  unconfirmedPinWrites: ReadonlySet<string>
+  unconfirmedPinWrites: ReadonlySet<string>,
 ): SessionInfo[] {
-  const seen = new Set<string>()
-  const out: SessionInfo[] = []
+  const seen = new Set<string>();
+  const out: SessionInfo[] = [];
 
   for (const pinId of pinnedSessionIds) {
-    const session = sessionByAnyId.get(pinId)
+    const session = sessionByAnyId.get(pinId);
 
     if (session && !seen.has(session.id)) {
-      seen.add(session.id)
-      out.push(session)
+      seen.add(session.id);
+      out.push(session);
     }
   }
 
   for (const session of allSessions) {
     if (session.pinned !== true || seen.has(session.id)) {
-      continue
+      continue;
     }
 
     // A pin write of ours the row predates — under either identity, since the
     // fence is keyed on the durable id and the row may surface as its tip.
     if (
       unconfirmedPinWrites.has(session.id) ||
-      (session._lineage_root_id != null && unconfirmedPinWrites.has(session._lineage_root_id))
+      (session._lineage_root_id != null &&
+        unconfirmedPinWrites.has(session._lineage_root_id))
     ) {
-      continue
+      continue;
     }
 
-    seen.add(session.id)
-    out.push(session)
+    seen.add(session.id);
+    out.push(session);
   }
 
-  return out
+  return out;
 }

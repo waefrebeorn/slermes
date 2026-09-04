@@ -1,14 +1,16 @@
-import type { StatusbarMenuItem } from '@/app/shell/statusbar-controls'
+import type { StatusbarMenuItem } from "@/app/shell/statusbar-controls";
 
-const LOG_TAIL = 5
+const LOG_TAIL = 5;
 
 interface RpcEventLike {
-  payload?: unknown
-  type?: string
+  payload?: unknown;
+  type?: string;
 }
 
 function asRecord(payload: unknown): Record<string, unknown> {
-  return payload && typeof payload === 'object' ? (payload as Record<string, unknown>) : {}
+  return payload && typeof payload === "object"
+    ? (payload as Record<string, unknown>)
+    : {};
 }
 
 /**
@@ -23,28 +25,28 @@ function asRecord(payload: unknown): Record<string, unknown> {
  * the newly focused chat. Exported so the event handler can tell which events
  * are pin-eligible when deciding whether an unpinned straggler is legitimate. */
 export const UNSCOPED_STREAM_EVENT_TYPES = new Set([
-  'approval.request',
-  'browser.progress',
-  'clarify.request',
-  'error',
-  'mcp.setup.request',
-  'message.complete',
-  'message.delta',
-  'message.interim',
-  'message.start',
-  'reasoning.available',
-  'reasoning.delta',
-  'secret.request',
-  'status.update',
-  'sudo.request',
-  'thinking.delta',
-  'tool.complete',
-  'tool.generating',
-  'tool.progress',
-  'tool.start'
-])
+  "approval.request",
+  "browser.progress",
+  "clarify.request",
+  "error",
+  "mcp.setup.request",
+  "message.complete",
+  "message.delta",
+  "message.interim",
+  "message.start",
+  "reasoning.available",
+  "reasoning.delta",
+  "secret.request",
+  "status.update",
+  "sudo.request",
+  "thinking.delta",
+  "tool.complete",
+  "tool.generating",
+  "tool.progress",
+  "tool.start",
+]);
 
-const UNSCOPED_STREAM_END_EVENT_TYPES = new Set(['error', 'message.complete'])
+const UNSCOPED_STREAM_END_EVENT_TYPES = new Set(["error", "message.complete"]);
 
 /**
  * Whether an unscoped event (no `session_id`) must be dropped rather than
@@ -58,26 +60,28 @@ const UNSCOPED_STREAM_END_EVENT_TYPES = new Set(['error', 'message.complete'])
  * focused turn". #42178 dropped those too, which silently swallowed the live
  * answer; it then reappeared only after a transcript refetch (manual refresh).
  */
-export function gatewayEventRequiresSessionId(eventType: string | undefined): boolean {
-  return eventType?.startsWith('subagent.') ?? false
+export function gatewayEventRequiresSessionId(
+  eventType: string | undefined,
+): boolean {
+  return eventType?.startsWith("subagent.") ?? false;
 }
 
 export interface GatewayEventSessionRouteInput {
-  activeSessionId: null | string
-  eventType: string | undefined
-  explicitSessionId: string
-  unscopedStreamSessionId: null | string
+  activeSessionId: null | string;
+  eventType: string | undefined;
+  explicitSessionId: string;
+  unscopedStreamSessionId: null | string;
 }
 
 export interface GatewayEventSessionRoute {
-  drop: boolean
-  nextUnscopedStreamSessionId: null | string
+  drop: boolean;
+  nextUnscopedStreamSessionId: null | string;
   /** True when the event was attributed via the pinned stream session rather
    *  than the active-session fallback. The caller uses this to drop late
    *  stragglers: an unpinned stream event landing on a session that has no
    *  live turn belongs to a turn that already ended elsewhere. */
-  pinned: boolean
-  sessionId: null | string
+  pinned: boolean;
+  sessionId: null | string;
 }
 
 /** Which session (if any) to re-pull `approval.pending` for after `eventType`.
@@ -93,21 +97,21 @@ export function approvalReplaySessionId(
   eventType: string | undefined,
   activeSessionId: null | string,
   routedSessionId: null | string,
-  options?: { explicit?: boolean; isGone?: (sessionId: string) => boolean }
+  options?: { explicit?: boolean; isGone?: (sessionId: string) => boolean },
 ): null | string {
-  let target: null | string = null
+  let target: null | string = null;
 
-  if (eventType === 'gateway.ready') {
-    target = activeSessionId
-  } else if (eventType === 'session.info') {
-    target = routedSessionId
+  if (eventType === "gateway.ready") {
+    target = activeSessionId;
+  } else if (eventType === "session.info") {
+    target = routedSessionId;
   }
 
   if (target && !options?.explicit && options?.isGone?.(target)) {
-    return null
+    return null;
   }
 
-  return target
+  return target;
 }
 
 /**
@@ -121,20 +125,22 @@ export function resolveGatewayEventSessionId({
   activeSessionId,
   eventType,
   explicitSessionId,
-  unscopedStreamSessionId
+  unscopedStreamSessionId,
 }: GatewayEventSessionRouteInput): GatewayEventSessionRoute {
   if (explicitSessionId) {
     const nextUnscopedStreamSessionId =
-      eventType && UNSCOPED_STREAM_END_EVENT_TYPES.has(eventType) && explicitSessionId === unscopedStreamSessionId
+      eventType &&
+      UNSCOPED_STREAM_END_EVENT_TYPES.has(eventType) &&
+      explicitSessionId === unscopedStreamSessionId
         ? null
-        : unscopedStreamSessionId
+        : unscopedStreamSessionId;
 
     return {
       drop: false,
       nextUnscopedStreamSessionId,
       pinned: true,
-      sessionId: explicitSessionId
-    }
+      sessionId: explicitSessionId,
+    };
   }
 
   if (gatewayEventRequiresSessionId(eventType)) {
@@ -142,61 +148,68 @@ export function resolveGatewayEventSessionId({
       drop: true,
       nextUnscopedStreamSessionId: unscopedStreamSessionId,
       pinned: false,
-      sessionId: null
-    }
+      sessionId: null,
+    };
   }
 
-  const streamEvent = eventType ? UNSCOPED_STREAM_EVENT_TYPES.has(eventType) : false
+  const streamEvent = eventType
+    ? UNSCOPED_STREAM_EVENT_TYPES.has(eventType)
+    : false;
 
   const sessionId =
-    eventType === 'message.start'
+    eventType === "message.start"
       ? activeSessionId
       : streamEvent
         ? unscopedStreamSessionId || activeSessionId
-        : activeSessionId
+        : activeSessionId;
 
-  let nextUnscopedStreamSessionId = unscopedStreamSessionId
+  let nextUnscopedStreamSessionId = unscopedStreamSessionId;
 
-  if (eventType === 'message.start' && activeSessionId) {
-    nextUnscopedStreamSessionId = activeSessionId
+  if (eventType === "message.start" && activeSessionId) {
+    nextUnscopedStreamSessionId = activeSessionId;
   } else if (eventType && UNSCOPED_STREAM_END_EVENT_TYPES.has(eventType)) {
-    nextUnscopedStreamSessionId = null
+    nextUnscopedStreamSessionId = null;
   }
 
   return {
     drop: false,
     nextUnscopedStreamSessionId,
-    pinned: streamEvent && eventType !== 'message.start' && Boolean(unscopedStreamSessionId),
-    sessionId
-  }
+    pinned:
+      streamEvent &&
+      eventType !== "message.start" &&
+      Boolean(unscopedStreamSessionId),
+    sessionId,
+  };
 }
 
 export function gatewayEventCompletedFileDiff(event: RpcEventLike): boolean {
-  if (event.type !== 'tool.complete') {
-    return false
+  if (event.type !== "tool.complete") {
+    return false;
   }
 
-  const diff = asRecord(event.payload).inline_diff
+  const diff = asRecord(event.payload).inline_diff;
 
-  return typeof diff === 'string' && diff.trim().length > 0
+  return typeof diff === "string" && diff.trim().length > 0;
 }
 
-export function buildGatewayLogItems(lines: readonly string[]): readonly StatusbarMenuItem[] {
+export function buildGatewayLogItems(
+  lines: readonly string[],
+): readonly StatusbarMenuItem[] {
   if (lines.length === 0) {
     return [
       {
-        className: 'text-muted-foreground',
+        className: "text-muted-foreground",
         disabled: true,
-        id: 'gateway-log-empty',
-        label: 'No recent gateway log lines'
-      }
-    ]
+        id: "gateway-log-empty",
+        label: "No recent gateway log lines",
+      },
+    ];
   }
 
   return lines.slice(-LOG_TAIL).map((line, index) => ({
-    className: 'font-mono text-[0.68rem] text-muted-foreground',
+    className: "font-mono text-[0.68rem] text-muted-foreground",
     disabled: true,
     id: `gateway-log:${index}`,
-    label: line.trim().slice(0, 120) || '(blank log line)'
-  }))
+    label: line.trim().slice(0, 120) || "(blank log line)",
+  }));
 }

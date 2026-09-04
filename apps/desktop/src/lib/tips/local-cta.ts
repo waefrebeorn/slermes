@@ -15,14 +15,14 @@
  * model name is a button" every time both are true.
  */
 
-import type { LocalCatalogModel, LocalModelsStatus } from '@/types/hermes'
+import type { LocalCatalogModel, LocalModelsStatus } from "@/types/hermes";
 
 /** Retirement/shown-at ledger id. Not a `TipId` — the rotation never walks it. */
-export const LOCAL_SETUP_TIP_ID = 'local-setup'
+export const LOCAL_SETUP_TIP_ID = "local-setup";
 
 /** A CTA ignored (timed out) may return, but on a much longer clock than the
  *  rotation's: it is the same message twice, not a tour moving on. */
-export const LOCAL_SETUP_RESHOW_MS = 7 * 24 * 60 * 60_000
+export const LOCAL_SETUP_RESHOW_MS = 7 * 24 * 60 * 60_000;
 
 /**
  * Machines qualify when the catalog has a model that FITS (the backend's
@@ -37,19 +37,22 @@ export const LOCAL_SETUP_RESHOW_MS = 7 * 24 * 60 * 60_000
 export function localSetupEligible(
   connectionMode: null | string,
   status: LocalModelsStatus | null,
-  catalog: readonly LocalCatalogModel[] | null
+  catalog: readonly LocalCatalogModel[] | null,
 ): boolean {
-  if (connectionMode !== 'local' || !status || !catalog) {
-    return false
+  if (connectionMode !== "local" || !status || !catalog) {
+    return false;
   }
 
-  const needsSetup = !status.runtime_installed || status.models.length === 0
+  const needsSetup = !status.runtime_installed || status.models.length === 0;
 
-  return needsSetup && catalog.some(model => model.fits)
+  return needsSetup && catalog.some((model) => model.fits);
 }
 
 /** Due = never shown, or shown long enough ago that repeating it reads as a
  *  reminder rather than a nag. Retirement is the caller's ledger, not ours. */
-export function localSetupDue(now: number, shownAt: number | undefined): boolean {
-  return shownAt === undefined || now - shownAt >= LOCAL_SETUP_RESHOW_MS
+export function localSetupDue(
+  now: number,
+  shownAt: number | undefined,
+): boolean {
+  return shownAt === undefined || now - shownAt >= LOCAL_SETUP_RESHOW_MS;
 }

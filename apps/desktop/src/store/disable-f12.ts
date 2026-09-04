@@ -6,21 +6,23 @@
  * Mirrors the toggle to the main process via IPC.
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { persistBoolean, storedBoolean } from '@/lib/storage'
+import { persistBoolean, storedBoolean } from "@/lib/storage";
 
-const KEY = 'hermes.desktop.disableF12.v1'
+const KEY = "hermes.desktop.disableF12.v1";
 
-export const $disableF12 = atom<boolean>(typeof window === 'undefined' ? false : storedBoolean(KEY, false))
+export const $disableF12 = atom<boolean>(
+  typeof window === "undefined" ? false : storedBoolean(KEY, false),
+);
 
 export function setDisableF12(on: boolean): void {
-  $disableF12.set(on)
+  $disableF12.set(on);
 }
 
-if (typeof window !== 'undefined') {
-  $disableF12.subscribe(on => {
-    persistBoolean(KEY, on)
-    window.hermesDesktop?.setDisableF12?.(on)
-  })
+if (typeof window !== "undefined") {
+  $disableF12.subscribe((on) => {
+    persistBoolean(KEY, on);
+    window.hermesDesktop?.setDisableF12?.(on);
+  });
 }

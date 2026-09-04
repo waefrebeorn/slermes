@@ -6,60 +6,75 @@
 // every fs/path concern is funnelled through the injected `MigrationDeps` bag.
 // Tests inject synthetic fs maps; production wires real fs/path.
 
-import type { Dirent } from 'node:fs'
+import type { Dirent } from "node:fs";
 
 // Floor for the size dimension of the hybrid score. A 100-byte file (effectively
 // empty) and a 1 KiB file score the same on the size axis — both are too small to
 // be the user's primary workspace on their own.
-export const PROFILE_SCORE_MIN_SIZE_BYTES = 1024
+export const PROFILE_SCORE_MIN_SIZE_BYTES = 1024;
 
 export interface MigrationDeps {
-  legacyActivePath: string
+  legacyActivePath: string;
   /** Default profile home (`~/.hermes`). Default's state.db and gateway.pid live here. */
-  hermesHome: string
+  hermesHome: string;
   /** Named-profile root (`~/.hermes/profiles`). Does not contain `default`. */
-  profilesRoot: string
-  existsSync: (path: string) => boolean
-  readFileSync: (path: string, encoding: 'utf8') => string
-  statSync: (path: string) => { size: number; mtimeMs: number }
-  readdirSync: (path: string, options?: { withFileTypes?: boolean }) => Dirent[]
-  isHermesProcess: (pid: number) => boolean
-  now: () => number
-  writeJson: (path: string, payload: MigrationDecision) => void
-  isValidProfileName: (name: string) => boolean
+  profilesRoot: string;
+  existsSync: (path: string) => boolean;
+  readFileSync: (path: string, encoding: "utf8") => string;
+  statSync: (path: string) => { size: number; mtimeMs: number };
+  readdirSync: (
+    path: string,
+    options?: { withFileTypes?: boolean },
+  ) => Dirent[];
+  isHermesProcess: (pid: number) => boolean;
+  now: () => number;
+  writeJson: (path: string, payload: MigrationDecision) => void;
+  isValidProfileName: (name: string) => boolean;
 }
 
 export interface MigrationDecision {
-  profile: string | null
+  profile: string | null;
   /** True when chosen from the state.db heuristic (auto-detected), undefined when explicit. */
-  _migrated?: boolean
+  _migrated?: boolean;
 }
 
 /**
  * Production layout: default IS `hermesHome`; named profiles are children of
  * `profilesRoot`. There is no `profiles/default` directory on a normal install.
  */
-export function profileStateDbPath(name: string, hermesHome: string, profilesRoot: string): string {
-  return name === 'default' ? `${hermesHome}/state.db` : `${profilesRoot}/${name}/state.db`
+export function profileStateDbPath(
+  name: string,
+  hermesHome: string,
+  profilesRoot: string,
+): string {
+  return name === "default"
+    ? `${hermesHome}/state.db`
+    : `${profilesRoot}/${name}/state.db`;
 }
 
-export function profileGatewayPidPath(name: string, hermesHome: string, profilesRoot: string): string {
-  return name === 'default' ? `${hermesHome}/gateway.pid` : `${profilesRoot}/${name}/gateway.pid`
+export function profileGatewayPidPath(
+  name: string,
+  hermesHome: string,
+  profilesRoot: string,
+): string {
+  return name === "default"
+    ? `${hermesHome}/gateway.pid`
+    : `${profilesRoot}/${name}/gateway.pid`;
 }
 
 function resolveHermesHome(profilesRoot: string, hermesHome?: string): string {
   if (hermesHome) {
-    return hermesHome
+    return hermesHome;
   }
 
   // Tests that predate hermesHome pass only profilesRoot.
-  for (const suffix of ['/profiles', '\\profiles']) {
+  for (const suffix of ["/profiles", "\\profiles"]) {
     if (profilesRoot.endsWith(suffix)) {
-      return profilesRoot.slice(0, -suffix.length)
+      return profilesRoot.slice(0, -suffix.length);
     }
   }
 
-  return profilesRoot
+  return profilesRoot;
 }
 
 /**
@@ -72,28 +87,28 @@ function resolveHermesHome(profilesRoot: string, hermesHome?: string): string {
  */
 export function readLegacyActiveProfile(
   legacyActivePath: string,
-  readFile: MigrationDeps['readFileSync'],
-  isValid: MigrationDeps['isValidProfileName']
+  readFile: MigrationDeps["readFileSync"],
+  isValid: MigrationDeps["isValidProfileName"],
 ): string | null | undefined {
-  let raw: string
+  let raw: string;
 
   try {
-    raw = readFile(legacyActivePath, 'utf8')
+    raw = readFile(legacyActivePath, "utf8");
   } catch {
-    return null
+    return null;
   }
 
-  const name = raw.trim()
+  const name = raw.trim();
 
   if (!name) {
-    return null
+    return null;
   }
 
-  if (name === 'default') {
-    return undefined
+  if (name === "default") {
+    return undefined;
   }
 
-  return isValid(name) ? name : undefined
+  return isValid(name) ? name : undefined;
 }
 
 /**
@@ -107,38 +122,41 @@ export function readLegacyActiveProfile(
 export function findRunningGatewayProfiles(
   profilesRoot: string,
   allProfiles: string[],
-  deps: Pick<MigrationDeps, 'existsSync' | 'readFileSync' | 'isHermesProcess'> & { hermesHome?: string }
+  deps: Pick<
+    MigrationDeps,
+    "existsSync" | "readFileSync" | "isHermesProcess"
+  > & { hermesHome?: string },
 ): string[] {
-  const hermesHome = resolveHermesHome(profilesRoot, deps.hermesHome)
-  const running: string[] = []
+  const hermesHome = resolveHermesHome(profilesRoot, deps.hermesHome);
+  const running: string[] = [];
 
   for (const name of allProfiles) {
-    const pidFile = profileGatewayPidPath(name, hermesHome, profilesRoot)
+    const pidFile = profileGatewayPidPath(name, hermesHome, profilesRoot);
 
     if (!deps.existsSync(pidFile)) {
-      continue
+      continue;
     }
 
-    let parsed: { pid?: unknown } | null = null
+    let parsed: { pid?: unknown } | null = null;
 
     try {
-      parsed = JSON.parse(deps.readFileSync(pidFile, 'utf8'))
+      parsed = JSON.parse(deps.readFileSync(pidFile, "utf8"));
     } catch {
-      continue
+      continue;
     }
 
-    const pid = Number(parsed?.pid)
+    const pid = Number(parsed?.pid);
 
     if (!Number.isInteger(pid) || pid < 1) {
-      continue
+      continue;
     }
 
     if (deps.isHermesProcess(pid)) {
-      running.push(name)
+      running.push(name);
     }
   }
 
-  return running
+  return running;
 }
 
 /**
@@ -148,20 +166,27 @@ export function findRunningGatewayProfiles(
  * slightly newer mtime. Floors the recency weight at 0.1 so a profile touched
  * years ago but never deleted still scores > 0 if its DB is large.
  */
-export function scoreStateDb(dbPath: string, now: number, stat: MigrationDeps['statSync']): number | null {
-  let s: { size: number; mtimeMs: number }
+export function scoreStateDb(
+  dbPath: string,
+  now: number,
+  stat: MigrationDeps["statSync"],
+): number | null {
+  let s: { size: number; mtimeMs: number };
 
   try {
-    s = stat(dbPath)
+    s = stat(dbPath);
   } catch {
-    return null
+    return null;
   }
 
-  const daysSinceModified = Math.max(0, (now - s.mtimeMs) / (1000 * 60 * 60 * 24))
-  const recencyWeight = Math.max(0.1, 30 - daysSinceModified)
-  const sizeWeight = Math.log10(Math.max(PROFILE_SCORE_MIN_SIZE_BYTES, s.size))
+  const daysSinceModified = Math.max(
+    0,
+    (now - s.mtimeMs) / (1000 * 60 * 60 * 24),
+  );
+  const recencyWeight = Math.max(0.1, 30 - daysSinceModified);
+  const sizeWeight = Math.log10(Math.max(PROFILE_SCORE_MIN_SIZE_BYTES, s.size));
 
-  return recencyWeight * sizeWeight
+  return recencyWeight * sizeWeight;
 }
 
 /**
@@ -176,37 +201,39 @@ export function decideMigration(
   running: string[],
   candidates: string[],
   deps: MigrationDeps,
-  score: (dbPath: string) => number | null
+  score: (dbPath: string) => number | null,
 ): MigrationDecision | null {
   if (legacyActive) {
-    return { profile: legacyActive }
+    return { profile: legacyActive };
   }
 
   if (running.length === 1) {
-    return { profile: running[0] }
+    return { profile: running[0] };
   }
 
-  let best: string | null = null
-  let maxScore = -Infinity
+  let best: string | null = null;
+  let maxScore = -Infinity;
 
   for (const name of candidates) {
-    const s = score(profileStateDbPath(name, deps.hermesHome, deps.profilesRoot))
+    const s = score(
+      profileStateDbPath(name, deps.hermesHome, deps.profilesRoot),
+    );
 
     if (s == null) {
-      continue
+      continue;
     }
 
     if (s > maxScore) {
-      maxScore = s
-      best = name
+      maxScore = s;
+      best = name;
     }
   }
 
-  if (!best || best === 'default') {
-    return null
+  if (!best || best === "default") {
+    return null;
   }
 
-  return { profile: best, _migrated: true }
+  return { profile: best, _migrated: true };
 }
 
 /**
@@ -215,22 +242,26 @@ export function decideMigration(
  * child of this folder — see `withDefaultCandidate`.
  */
 export function listProfileDirs(deps: MigrationDeps): string[] {
-  let entries: Dirent[]
+  let entries: Dirent[];
 
   try {
-    entries = deps.readdirSync(deps.profilesRoot, { withFileTypes: true })
+    entries = deps.readdirSync(deps.profilesRoot, { withFileTypes: true });
   } catch {
-    return []
+    return [];
   }
 
   return entries
-    .filter(e => e.isDirectory() && (e.name === 'default' || deps.isValidProfileName(e.name)))
-    .map(e => e.name)
+    .filter(
+      (e) =>
+        e.isDirectory() &&
+        (e.name === "default" || deps.isValidProfileName(e.name)),
+    )
+    .map((e) => e.name);
 }
 
 /** Default is always a candidate; it is `$HERMES_HOME`, not `$HERMES_HOME/profiles/default`. */
 export function withDefaultCandidate(named: string[]): string[] {
-  return ['default', ...named.filter(name => name !== 'default')]
+  return ["default", ...named.filter((name) => name !== "default")];
 }
 
 /**
@@ -240,27 +271,27 @@ export function withDefaultCandidate(named: string[]): string[] {
  */
 export function readExistingPreference(
   desktopProfileConfigPath: string,
-  readFile: MigrationDeps['readFileSync']
+  readFile: MigrationDeps["readFileSync"],
 ): { profile: string | null; migrated: boolean } | null {
-  let parsed: unknown
+  let parsed: unknown;
 
   try {
-    parsed = JSON.parse(readFile(desktopProfileConfigPath, 'utf8'))
+    parsed = JSON.parse(readFile(desktopProfileConfigPath, "utf8"));
   } catch {
-    return null
+    return null;
   }
 
-  if (!parsed || typeof parsed !== 'object') {
-    return null
+  if (!parsed || typeof parsed !== "object") {
+    return null;
   }
 
-  const rec = parsed as { profile?: unknown; _migrated?: unknown }
-  const raw = typeof rec.profile === 'string' ? rec.profile.trim() : ''
+  const rec = parsed as { profile?: unknown; _migrated?: unknown };
+  const raw = typeof rec.profile === "string" ? rec.profile.trim() : "";
 
   return {
     profile: raw || null,
-    migrated: rec._migrated === true
-  }
+    migrated: rec._migrated === true,
+  };
 }
 
 /**
@@ -269,43 +300,58 @@ export function readExistingPreference(
  * heuristic would now pick default, write `{ profile: null }` so Desktop drops
  * `--profile` instead of pinning `default`.
  */
-export function migrateActiveProfileIfMissing(desktopProfileConfigPath: string, deps: MigrationDeps): boolean {
+export function migrateActiveProfileIfMissing(
+  desktopProfileConfigPath: string,
+  deps: MigrationDeps,
+): boolean {
   const existing = deps.existsSync(desktopProfileConfigPath)
     ? readExistingPreference(desktopProfileConfigPath, deps.readFileSync)
-    : null
+    : null;
 
   if (existing && !existing.migrated) {
-    return false
+    return false;
   }
 
-  const legacyActive = readLegacyActiveProfile(deps.legacyActivePath, deps.readFileSync, deps.isValidProfileName)
+  const legacyActive = readLegacyActiveProfile(
+    deps.legacyActivePath,
+    deps.readFileSync,
+    deps.isValidProfileName,
+  );
 
-  const allProfiles = withDefaultCandidate(listProfileDirs(deps))
-  const running = findRunningGatewayProfiles(deps.profilesRoot, allProfiles, deps)
-  const candidates = running.length > 1 ? running : allProfiles
+  const allProfiles = withDefaultCandidate(listProfileDirs(deps));
+  const running = findRunningGatewayProfiles(
+    deps.profilesRoot,
+    allProfiles,
+    deps,
+  );
+  const candidates = running.length > 1 ? running : allProfiles;
 
-  const decision = decideMigration(legacyActive, running, candidates, deps, dbPath =>
-    scoreStateDb(dbPath, deps.now(), deps.statSync)
-  )
+  const decision = decideMigration(
+    legacyActive,
+    running,
+    candidates,
+    deps,
+    (dbPath) => scoreStateDb(dbPath, deps.now(), deps.statSync),
+  );
 
   // Same as the heuristic rung: pinning `default` into active-profile.json
   // launches `hermes --profile default` and is worse than writing nothing
   // (legacy sticky / implicit default). Covers a lone default gateway.pid.
-  if (!decision || decision.profile === 'default') {
+  if (!decision || decision.profile === "default") {
     if (existing?.migrated) {
-      deps.writeJson(desktopProfileConfigPath, { profile: null })
+      deps.writeJson(desktopProfileConfigPath, { profile: null });
 
-      return true
+      return true;
     }
 
-    return false
+    return false;
   }
 
   if (existing?.migrated && existing.profile === decision.profile) {
-    return false
+    return false;
   }
 
-  deps.writeJson(desktopProfileConfigPath, decision)
+  deps.writeJson(desktopProfileConfigPath, decision);
 
-  return true
+  return true;
 }

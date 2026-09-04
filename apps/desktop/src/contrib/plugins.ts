@@ -13,32 +13,37 @@
  *    — the agent's/user's doors, watched + hot-reloaded by the runtime loader.
  */
 
-import { createPluginContext, type HermesPlugin } from './plugin'
-import { pluginActive, publishPlugin } from './plugins-store'
-import { watchRuntimePlugins } from './runtime-loader'
+import { createPluginContext, type HermesPlugin } from "./plugin";
+import { pluginActive, publishPlugin } from "./plugins-store";
+import { watchRuntimePlugins } from "./runtime-loader";
 
-const modules = import.meta.glob<{ default: HermesPlugin }>('../plugins/*/plugin.{js,ts,tsx}', { eager: true })
+const modules = import.meta.glob<{ default: HermesPlugin }>(
+  "../plugins/*/plugin.{js,ts,tsx}",
+  { eager: true },
+);
 
 // One-shot init guard. Contributions themselves register by id (re-registering
 // is idempotent), but the disk-door watcher setup below (watchRuntimePlugins)
 // must NOT run twice — so discovery is guarded to a single pass, not re-run on
 // HMR.
-let loaded = false
+let loaded = false;
 
 export function discoverBundledPlugins(): void {
   if (loaded) {
-    return
+    return;
   }
 
-  loaded = true
+  loaded = true;
 
   for (const [path, mod] of Object.entries(modules)) {
-    const plugin = mod.default
+    const plugin = mod.default;
 
-    if (!plugin?.id || typeof plugin.register !== 'function') {
-      console.warn(`[plugins] ${path} has no valid default HermesPlugin export — skipped`)
+    if (!plugin?.id || typeof plugin.register !== "function") {
+      console.warn(
+        `[plugins] ${path} has no valid default HermesPlugin export — skipped`,
+      );
 
-      continue
+      continue;
     }
 
     // Same inventory + live-toggle contract as runtime plugins: each bundled
@@ -48,37 +53,43 @@ export function discoverBundledPlugins(): void {
       id: plugin.id,
       name: plugin.name ?? plugin.id,
       description: plugin.description,
-      kind: 'bundled' as const
-    }
+      kind: "bundled" as const,
+    };
 
-    let disposers: (() => void)[] = []
+    let disposers: (() => void)[] = [];
 
     const activate = () => {
-      disposers.forEach(dispose => dispose())
-      disposers = []
+      disposers.forEach((dispose) => dispose());
+      disposers = [];
 
       try {
-        plugin.register(createPluginContext(plugin.id, dispose => disposers.push(dispose)))
-        publishPlugin({ ...record, status: 'loaded' })
+        plugin.register(
+          createPluginContext(plugin.id, (dispose) => disposers.push(dispose)),
+        );
+        publishPlugin({ ...record, status: "loaded" });
       } catch (error) {
-        console.error(`[plugins] ${plugin.id} failed to register`, error)
-        publishPlugin({ ...record, status: 'error', error: error instanceof Error ? error.message : String(error) })
+        console.error(`[plugins] ${plugin.id} failed to register`, error);
+        publishPlugin({
+          ...record,
+          status: "error",
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
-    }
+    };
 
     const deactivate = () => {
-      disposers.forEach(dispose => dispose())
-      disposers = []
-    }
+      disposers.forEach((dispose) => dispose());
+      disposers = [];
+    };
 
-    publishPlugin({ ...record, status: 'disabled' }, { activate, deactivate })
+    publishPlugin({ ...record, status: "disabled" }, { activate, deactivate });
 
     if (pluginActive(plugin.id, plugin.defaultEnabled ?? true)) {
-      activate()
+      activate();
     }
   }
 
   // The SELF-MAINTAINING disk door (fs-watched hot reloads, slow folder
   // reconciliation) — the runtime loader pipeline's real, shipping consumer.
-  watchRuntimePlugins()
+  watchRuntimePlugins();
 }

@@ -13,57 +13,57 @@
  * left pointing at empty screen.
  */
 
-import './tips.css'
+import "./tips.css";
 
-import { useStore } from '@nanostores/react'
-import { useEffect, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useEffect, useState } from "react";
 
-import { useI18n } from '@/i18n'
-import { resolveTipAnchor } from '@/lib/tips/anchor'
-import { $activeTip, dismissTip, retireActiveTip } from '@/store/tips'
+import { useI18n } from "@/i18n";
+import { resolveTipAnchor } from "@/lib/tips/anchor";
+import { $activeTip, dismissTip, retireActiveTip } from "@/store/tips";
 
-import { TipBubble } from './tip-bubble'
-import { useTipRotation } from './use-tip-rotation'
+import { TipBubble } from "./tip-bubble";
+import { useTipRotation } from "./use-tip-rotation";
 
 /** How long a tip stays before it steps aside for the rotation. */
-const LINGER_MS = 22_000
-const ANCHOR_POLL_MS = 1_000
+const LINGER_MS = 22_000;
+const ANCHOR_POLL_MS = 1_000;
 
 export function TipHost() {
-  const { t } = useI18n()
-  const tip = useStore($activeTip)
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+  const { t } = useI18n();
+  const tip = useStore($activeTip);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
-  useTipRotation(t.tips)
+  useTipRotation(t.tips);
 
   useEffect(() => {
     if (!tip) {
-      setAnchor(null)
+      setAnchor(null);
 
-      return
+      return;
     }
 
     const sync = () => {
-      const found = resolveTipAnchor(document, tip.targets)
+      const found = resolveTipAnchor(document, tip.targets);
 
       if (found) {
-        setAnchor(previous => (previous === found ? previous : found))
+        setAnchor((previous) => (previous === found ? previous : found));
       } else {
         // Whatever it was about is gone; so is the reason to point at it.
-        dismissTip()
+        dismissTip();
       }
-    }
+    };
 
-    sync()
+    sync();
 
-    const poll = window.setInterval(sync, ANCHOR_POLL_MS)
-    const linger = window.setTimeout(dismissTip, LINGER_MS)
+    const poll = window.setInterval(sync, ANCHOR_POLL_MS);
+    const linger = window.setTimeout(dismissTip, LINGER_MS);
 
     return () => {
-      window.clearInterval(poll)
-      window.clearTimeout(linger)
-    }
-  }, [tip])
+      window.clearInterval(poll);
+      window.clearTimeout(linger);
+    };
+  }, [tip]);
 
   // Mark the subject for as long as the arrow is on it.
   //
@@ -82,18 +82,20 @@ export function TipHost() {
   // never heard of still gets marked.
   useEffect(() => {
     if (!anchor) {
-      return
+      return;
     }
 
-    const marked = anchor.hasAttribute('data-tip-arrow-only') ? (anchor.closest('[data-tip-region]') ?? anchor) : anchor
+    const marked = anchor.hasAttribute("data-tip-arrow-only")
+      ? (anchor.closest("[data-tip-region]") ?? anchor)
+      : anchor;
 
-    marked.setAttribute('data-tip-target', '')
+    marked.setAttribute("data-tip-target", "");
 
-    return () => marked.removeAttribute('data-tip-target')
-  }, [anchor])
+    return () => marked.removeAttribute("data-tip-target");
+  }, [anchor]);
 
   if (!tip || !anchor) {
-    return null
+    return null;
   }
 
   return (
@@ -106,5 +108,5 @@ export function TipHost() {
       text={tip.text}
       title={tip.title}
     />
-  )
+  );
 }

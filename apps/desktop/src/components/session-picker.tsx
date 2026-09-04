@@ -1,20 +1,27 @@
-import { useQuery } from '@tanstack/react-query'
-import { Dialog as DialogPrimitive } from 'radix-ui'
-import { useEffect, useMemo, useState } from 'react'
+import { useQuery } from "@tanstack/react-query";
+import { Dialog as DialogPrimitive } from "radix-ui";
+import { useEffect, useMemo, useState } from "react";
 
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { listAllProfileSessions } from '@/hermes'
-import { useI18n } from '@/i18n'
-import { sessionTitle } from '@/lib/chat-runtime'
-import { Check, MessageCircle } from '@/lib/icons'
-import { cn } from '@/lib/utils'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { listAllProfileSessions } from "@/hermes";
+import { useI18n } from "@/i18n";
+import { sessionTitle } from "@/lib/chat-runtime";
+import { Check, MessageCircle } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 interface SessionPickerDialogProps {
   /** Stored id of the session currently open, so it can be flagged in the list. */
-  activeStoredSessionId?: string | null
-  onOpenChange: (open: boolean) => void
-  onResume: (storedSessionId: string) => void
-  open: boolean
+  activeStoredSessionId?: string | null;
+  onOpenChange: (open: boolean) => void;
+  onResume: (storedSessionId: string) => void;
+  open: boolean;
 }
 
 /**
@@ -24,23 +31,31 @@ interface SessionPickerDialogProps {
  * sessions only, so `/resume` feels first-class instead of falling through to
  * the headless slash worker (which can't render the picker).
  */
-export function SessionPickerDialog({ activeStoredSessionId, onOpenChange, onResume, open }: SessionPickerDialogProps) {
-  const { t } = useI18n()
-  const [search, setSearch] = useState('')
+export function SessionPickerDialog({
+  activeStoredSessionId,
+  onOpenChange,
+  onResume,
+  open,
+}: SessionPickerDialogProps) {
+  const { t } = useI18n();
+  const [search, setSearch] = useState("");
 
   const sessionsQuery = useQuery({
     enabled: open,
-    queryFn: () => listAllProfileSessions(200, 1, 'exclude'),
-    queryKey: ['session-picker', 'sessions']
-  })
+    queryFn: () => listAllProfileSessions(200, 1, "exclude"),
+    queryKey: ["session-picker", "sessions"],
+  });
 
   useEffect(() => {
     if (!open) {
-      setSearch('')
+      setSearch("");
     }
-  }, [open])
+  }, [open]);
 
-  const sessions = useMemo(() => sessionsQuery.data?.sessions ?? [], [sessionsQuery.data])
+  const sessions = useMemo(
+    () => sessionsQuery.data?.sessions ?? [],
+    [sessionsQuery.data],
+  );
 
   return (
     <DialogPrimitive.Root onOpenChange={onOpenChange} open={open}>
@@ -50,42 +65,52 @@ export function SessionPickerDialog({ activeStoredSessionId, onOpenChange, onRes
           aria-describedby={undefined}
           className="fixed left-1/2 top-[14vh] z-(--z-over-modal-content) w-[min(40rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-xl border border-(--ui-stroke-secondary) bg-(--ui-chat-bubble-background) shadow-lg duration-150 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-2 data-[state=open]:zoom-in-95"
         >
-          <DialogPrimitive.Title className="sr-only">{t.commandCenter.sections.sessions}</DialogPrimitive.Title>
+          <DialogPrimitive.Title className="sr-only">
+            {t.commandCenter.sections.sessions}
+          </DialogPrimitive.Title>
           <Command className="bg-transparent" loop>
-            <CommandInput onValueChange={setSearch} placeholder={t.commandCenter.searchPlaceholder} value={search} />
+            <CommandInput
+              onValueChange={setSearch}
+              placeholder={t.commandCenter.searchPlaceholder}
+              value={search}
+            />
             <CommandList className="max-h-[min(24rem,60vh)]">
               <CommandEmpty>{t.commandCenter.noResults}</CommandEmpty>
               <CommandGroup
                 className="**:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider **:[[cmdk-group-heading]]:text-[0.6875rem] **:[[cmdk-group-heading]]:text-muted-foreground/70"
                 heading={t.commandCenter.sections.sessions}
               >
-                {sessions.map(session => {
-                  const title = sessionTitle(session)
-                  const preview = session.preview?.trim()
+                {sessions.map((session) => {
+                  const title = sessionTitle(session);
+                  const preview = session.preview?.trim();
 
                   return (
                     <CommandItem
                       className="gap-2.5"
                       key={session.id}
                       onSelect={() => {
-                        onResume(session.id)
-                        onOpenChange(false)
+                        onResume(session.id);
+                        onOpenChange(false);
                       }}
-                      value={`${title} ${preview ?? ''} ${session.id}`}
+                      value={`${title} ${preview ?? ""} ${session.id}`}
                     >
                       <MessageCircle className="size-4 shrink-0 text-muted-foreground" />
                       <span className="flex min-w-0 flex-col leading-snug">
                         <span className="truncate">{title}</span>
-                        {preview ? <span className="truncate text-xs text-muted-foreground/70">{preview}</span> : null}
+                        {preview ? (
+                          <span className="truncate text-xs text-muted-foreground/70">
+                            {preview}
+                          </span>
+                        ) : null}
                       </span>
                       <Check
                         className={cn(
-                          'ml-auto size-4 shrink-0 text-foreground',
-                          session.id !== activeStoredSessionId && 'invisible'
+                          "ml-auto size-4 shrink-0 text-foreground",
+                          session.id !== activeStoredSessionId && "invisible",
                         )}
                       />
                     </CommandItem>
-                  )
+                  );
                 })}
               </CommandGroup>
             </CommandList>
@@ -93,5 +118,5 @@ export function SessionPickerDialog({ activeStoredSessionId, onOpenChange, onRes
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
-  )
+  );
 }

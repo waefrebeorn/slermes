@@ -40,18 +40,18 @@
 export type RepairDecision =
   | {
       /** Run the installer (recreate venv). Caller bypasses the active runtime. */
-      hardReinstall: true
+      hardReinstall: true;
       /** Human-readable rationale for the desktop log. */
-      reason: string
+      reason: string;
       /** 1-indexed repair attempt number for diagnostics. */
-      attempt: number
+      attempt: number;
     }
   | {
       /** Skip the installer; restart the existing backend only. */
-      hardReinstall: false
-      reason: string
-      attempt: number
-    }
+      hardReinstall: false;
+      reason: string;
+      attempt: number;
+    };
 
 export type RepairDecisionInput = {
   /**
@@ -59,14 +59,14 @@ export type RepairDecisionInput = {
    * failure episode. The first repair is `attempt === 1`; a successful
    * boot resets the counter (see `main.ts`'s bootstrap completion path).
    */
-  attempt: number
+  attempt: number;
   /**
    * Soft-restart budget before escalation to a hard reinstall. Defaults
    * to 3: three "just restart" attempts, then a real reinstall. Bounded
    * so a corrupt install still gets fixed; high enough that a GIL
    * stall no longer loops the user into a 30-minute reinstall cycle.
    */
-  maxSoftAttempts?: number
+  maxSoftAttempts?: number;
   /**
    * Whether the live backend process (the one we are about to tear down
    * to honour the repair request) still looks alive. A process whose
@@ -74,8 +74,8 @@ export type RepairDecisionInput = {
    * a process with both null is either still running or stalled — and a
    * stall is exactly the case the soft-restart path is for.
    */
-  primaryBackendAlive: boolean
-}
+  primaryBackendAlive: boolean;
+};
 
 /**
  * Decide the next repair action.
@@ -94,18 +94,21 @@ export type RepairDecisionInput = {
  * keeps respawning a child but never announces READY still escalates
  * after `maxSoftAttempts` cycles.
  */
-export function decideBootstrapRepair(input: RepairDecisionInput): RepairDecision {
-  const maxSoftAttempts = input.maxSoftAttempts ?? 3
-  const attempt = Math.max(1, Math.floor(input.attempt))
-  const alive = Boolean(input.primaryBackendAlive)
+export function decideBootstrapRepair(
+  input: RepairDecisionInput,
+): RepairDecision {
+  const maxSoftAttempts = input.maxSoftAttempts ?? 3;
+  const attempt = Math.max(1, Math.floor(input.attempt));
+  const alive = Boolean(input.primaryBackendAlive);
 
   if (attempt > maxSoftAttempts) {
     return {
       hardReinstall: true,
       attempt,
       reason:
-        `repair attempt ${attempt} exceeds soft-restart budget ` + `(${maxSoftAttempts}); escalating to hard reinstall`
-    }
+        `repair attempt ${attempt} exceeds soft-restart budget ` +
+        `(${maxSoftAttempts}); escalating to hard reinstall`,
+    };
   }
 
   return {
@@ -116,6 +119,6 @@ export function decideBootstrapRepair(input: RepairDecisionInput): RepairDecisio
         `still alive (likely transient stall, see #74874); restarting only, ` +
         `skipping installer`
       : `repair attempt ${attempt}/${maxSoftAttempts}: primary backend process ` +
-        `has exited; restarting before escalating to reinstall`
-  }
+        `has exited; restarting before escalating to reinstall`,
+  };
 }

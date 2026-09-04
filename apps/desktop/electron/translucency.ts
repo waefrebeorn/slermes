@@ -11,7 +11,11 @@
  * then fail to bundle.
  */
 
-import { glassActive, type TranslucencyState, windowOpacityFor } from '../../shared/src/translucency'
+import {
+  glassActive,
+  type TranslucencyState,
+  windowOpacityFor,
+} from "../../shared/src/translucency";
 
 export {
   backgroundMaterialFor,
@@ -46,8 +50,8 @@ export {
   windowOpacityFor,
   WINDOWS_BACKGROUND_MATERIALS,
   WINDOWS_GLASS_MIN_BUILD,
-  type WindowsBackgroundMaterial
-} from '../../shared/src/translucency'
+  type WindowsBackgroundMaterial,
+} from "../../shared/src/translucency";
 
 /**
  * BrowserWindow constructor options for a chat window's backing, given the
@@ -69,8 +73,11 @@ export {
  * seconds of a fresh process were lost, including from 'ready-to-show' and
  * 'did-finish-load' — so creation must not rely on a post-creation fixup.
  */
-export function windowBackingOptions(state: TranslucencyState, themedColor: string): { backgroundColor?: string } {
-  return glassActive(state) ? {} : { backgroundColor: themedColor }
+export function windowBackingOptions(
+  state: TranslucencyState,
+  themedColor: string,
+): { backgroundColor?: string } {
+  return glassActive(state) ? {} : { backgroundColor: themedColor };
 }
 
 /**
@@ -97,15 +104,17 @@ export function windowBackingOptions(state: TranslucencyState, themedColor: stri
  * then returns to glass still wants a restart.
  */
 export function opacityNeedsSetting(next: number, current = 1): boolean {
-  return next < 1 || current < 1
+  return next < 1 || current < 1;
 }
 
 /**
  * BrowserWindow constructor options for a chat window's native opacity. Empty
  * unless the state actually asks the window to fade — see opacityNeedsSetting.
  */
-export function windowOpacityOptions(state: TranslucencyState): { opacity?: number } {
-  const opacity = windowOpacityFor(state)
+export function windowOpacityOptions(state: TranslucencyState): {
+  opacity?: number;
+} {
+  const opacity = windowOpacityFor(state);
 
-  return opacityNeedsSetting(opacity) ? { opacity } : {}
+  return opacityNeedsSetting(opacity) ? { opacity } : {};
 }

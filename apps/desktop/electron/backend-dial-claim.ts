@@ -18,41 +18,41 @@
  * the next reconnect attempt runs fresh (fail closed, not latched).
  */
 export class BackendDialClaims {
-  readonly #inflightByKey = new Map<string, Promise<unknown>>()
+  readonly #inflightByKey = new Map<string, Promise<unknown>>();
 
   /** Whether a dial for this key is currently in flight (test/diagnostic seam). */
   inFlight(key: string): boolean {
-    return this.#inflightByKey.has(key)
+    return this.#inflightByKey.has(key);
   }
 
   run<T>(key: string, dial: () => Promise<T> | T): Promise<T> {
-    const existing = this.#inflightByKey.get(key) as Promise<T> | undefined
+    const existing = this.#inflightByKey.get(key) as Promise<T> | undefined;
 
     if (existing) {
-      return existing
+      return existing;
     }
 
     // Start the dial eagerly so the first caller's spawn is already in flight
     // when a concurrent caller arrives; a synchronously-throwing dial is
     // converted into a rejection of THIS claim so it cannot bypass the seam.
-    let pending: Promise<T>
+    let pending: Promise<T>;
 
     try {
-      pending = Promise.resolve(dial())
+      pending = Promise.resolve(dial());
     } catch (error) {
-      pending = Promise.reject(error)
+      pending = Promise.reject(error);
     }
 
     const release = () => {
       if (this.#inflightByKey.get(key) === pending) {
-        this.#inflightByKey.delete(key)
+        this.#inflightByKey.delete(key);
       }
-    }
+    };
 
-    this.#inflightByKey.set(key, pending)
+    this.#inflightByKey.set(key, pending);
     // Release on both outcomes without creating an unhandled rejected branch.
-    void pending.then(release, release)
+    void pending.then(release, release);
 
-    return pending
+    return pending;
   }
 }

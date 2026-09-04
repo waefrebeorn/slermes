@@ -1,7 +1,7 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { applyReaction } from '@/store/reactions'
-import type { MessageReaction } from '@/types/hermes'
+import { applyReaction } from "@/store/reactions";
+import type { MessageReaction } from "@/types/hermes";
 
 /**
  * Reactions the user has set in THIS window, keyed by renderer message id.
@@ -12,7 +12,7 @@ import type { MessageReaction } from '@/types/hermes'
  * reactions) still arrive through `metadata.custom.reactions`; this layer sits
  * on top of it so the interaction never waits on the backend to feel alive.
  */
-export const $localReactions = atom<Record<string, MessageReaction[]>>({})
+export const $localReactions = atom<Record<string, MessageReaction[]>>({});
 
 /**
  * Agent reactions announced live (`message.reaction` events), keyed by the
@@ -23,14 +23,17 @@ export const $localReactions = atom<Record<string, MessageReaction[]>>({})
  * carry a reaction written to the DB mid-turn — this overlay outlives that
  * clobber and a real reload hydrates the same reaction from disk.
  */
-export const $agentReactions = atom<Record<number, MessageReaction[]>>({})
+export const $agentReactions = atom<Record<number, MessageReaction[]>>({});
 
 /** Record an agent reaction painted from a live gateway event. */
-export function recordAgentReaction(rowId: number, reactions: MessageReaction[]): void {
+export function recordAgentReaction(
+  rowId: number,
+  reactions: MessageReaction[],
+): void {
   $agentReactions.set({
     ...$agentReactions.get(),
-    [rowId]: reactions.filter(reaction => reaction.author === 'agent')
-  })
+    [rowId]: reactions.filter((reaction) => reaction.author === "agent"),
+  });
 }
 
 /**
@@ -44,24 +47,29 @@ export function recordAgentReaction(rowId: number, reactions: MessageReaction[])
 export function mergeReactions(
   persisted: MessageReaction[] | undefined,
   local: MessageReaction[] | undefined,
-  agentLive?: MessageReaction[]
+  agentLive?: MessageReaction[],
 ): MessageReaction[] {
-  const persistedList = persisted ?? []
+  const persistedList = persisted ?? [];
 
   const userSide = local
-    ? local.filter(reaction => reaction.author === 'user')
-    : persistedList.filter(reaction => reaction.author === 'user')
+    ? local.filter((reaction) => reaction.author === "user")
+    : persistedList.filter((reaction) => reaction.author === "user");
 
-  const agentSide = agentLive ?? persistedList.filter(reaction => reaction.author === 'agent')
+  const agentSide =
+    agentLive ??
+    persistedList.filter((reaction) => reaction.author === "agent");
 
-  return [...userSide, ...agentSide]
+  return [...userSide, ...agentSide];
 }
 
 /** Toggle the user's reaction on a message — instant, local, no round-trip. */
-export function setLocalReaction(messageId: string, emoji: null | string): MessageReaction[] {
-  const next = applyReaction($localReactions.get()[messageId], emoji, 'user')
+export function setLocalReaction(
+  messageId: string,
+  emoji: null | string,
+): MessageReaction[] {
+  const next = applyReaction($localReactions.get()[messageId], emoji, "user");
 
-  $localReactions.set({ ...$localReactions.get(), [messageId]: next })
+  $localReactions.set({ ...$localReactions.get(), [messageId]: next });
 
-  return next
+  return next;
 }

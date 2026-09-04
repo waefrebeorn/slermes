@@ -17,23 +17,32 @@
  * exit reason reaches desktop.log and the boot UI).
  */
 
-import { execFile } from 'node:child_process'
-import fs from 'node:fs'
+import { execFile } from "node:child_process";
+import fs from "node:fs";
 
-import { electronProcessStartMarker } from './parent-process-identity'
-import { isPidAlive } from './update-marker'
-import { hiddenWindowsChildOptions } from './windows-child-options'
+import { electronProcessStartMarker } from "./parent-process-identity";
+import { isPidAlive } from "./update-marker";
+import { hiddenWindowsChildOptions } from "./windows-child-options";
 
-export function execText(command: string, args: string[], { timeout = 3000 } = {}): Promise<string> {
+export function execText(
+  command: string,
+  args: string[],
+  { timeout = 3000 } = {},
+): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    execFile(command, args, hiddenWindowsChildOptions({ encoding: 'utf8', timeout }), (error, stdout) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(String(stdout || '').trim())
-      }
-    })
-  })
+    execFile(
+      command,
+      args,
+      hiddenWindowsChildOptions({ encoding: "utf8", timeout }),
+      (error, stdout) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(String(stdout || "").trim());
+        }
+      },
+    );
+  });
 }
 
 /**
@@ -47,7 +56,7 @@ export function execText(command: string, args: string[], { timeout = 3000 } = {
  * warm probe; a timeout degrades to "unknown" and the record is preserved for
  * the next launch instead of blocking boot.
  */
-export const REAP_PROBE_TIMEOUT_MS = 5_000
+export const REAP_PROBE_TIMEOUT_MS = 5_000;
 
 /**
  * Cross-platform process start marker: a value that changes when a PID is
@@ -55,85 +64,100 @@ export const REAP_PROBE_TIMEOUT_MS = 5_000
  * Throws when the probe fails — callers decide what a failure means (see
  * `claimDecision` / `probeStartMarker`).
  */
-export async function processStartMarker(pid: number, timeoutMs: number = 30_000): Promise<string> {
+export async function processStartMarker(
+  pid: number,
+  timeoutMs: number = 30_000,
+): Promise<string> {
   // Cheap native dead-PID gate. Windows Get-Process / macOS `ps -p` exit 1
   // on a missing PID (not ESRCH), so the identity matchers used to keep the
   // orphan and re-probe it every launch (#92875). ESRCH is the code those
   // catch blocks already map to "gone". Alive or uninspectable (EPERM) PIDs
   // still fall through to the platform probe.
   if (!isPidAlive(pid)) {
-    throw Object.assign(new Error(`PID ${pid} no longer exists`), { code: 'ESRCH' })
+    throw Object.assign(new Error(`PID ${pid} no longer exists`), {
+      code: "ESRCH",
+    });
   }
 
-  if (process.platform === 'linux') {
-    const stat = await fs.promises.readFile(`/proc/${pid}/stat`, 'utf8')
+  if (process.platform === "linux") {
+    const stat = await fs.promises.readFile(`/proc/${pid}/stat`, "utf8");
 
     const fields = stat
-      .slice(stat.lastIndexOf(')') + 1)
+      .slice(stat.lastIndexOf(")") + 1)
       .trim()
-      .split(/\s+/)
+      .split(/\s+/);
 
-    if (!/^\d+$/.test(fields[19] || '')) {
-      throw new Error(`Invalid /proc start marker for PID ${pid}`)
+    if (!/^\d+$/.test(fields[19] || "")) {
+      throw new Error(`Invalid /proc start marker for PID ${pid}`);
     }
 
-    return `linux:${fields[19]}`
+    return `linux:${fields[19]}`;
   }
 
-  if (process.platform === 'win32') {
+  if (process.platform === "win32") {
     const electronMarker =
-      pid === process.pid ? electronProcessStartMarker(pid, process.pid, process.getCreationTime?.()) : null
+      pid === process.pid
+        ? electronProcessStartMarker(
+            pid,
+            process.pid,
+            process.getCreationTime?.(),
+          )
+        : null;
 
     if (electronMarker) {
-      return electronMarker
+      return electronMarker;
     }
 
     const ticks = await execText(
-      'powershell.exe',
+      "powershell.exe",
       [
-        '-NoProfile',
-        '-NonInteractive',
-        '-Command',
-        `$p = Get-Process -Id ${pid} -ErrorAction Stop; $p.StartTime.ToUniversalTime().Ticks`
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        `$p = Get-Process -Id ${pid} -ErrorAction Stop; $p.StartTime.ToUniversalTime().Ticks`,
       ],
       // PowerShell 5.1 cold starts routinely exceed the default 3s execText
       // budget (2.4-8s observed in #87169); give the marker probe headroom.
       // The claim path keeps this 30s budget; the orphan-reap path passes
       // REAP_PROBE_TIMEOUT_MS so a slow probe cannot stall boot.
-      { timeout: timeoutMs }
-    )
+      { timeout: timeoutMs },
+    );
 
     if (!/^\d+$/.test(ticks)) {
-      throw new Error(`Invalid Windows start marker for PID ${pid}`)
+      throw new Error(`Invalid Windows start marker for PID ${pid}`);
     }
 
-    return `win:${ticks}`
+    return `win:${ticks}`;
   }
 
-  const started = await execText('ps', ['-p', String(pid), '-o', 'lstart='])
+  const started = await execText("ps", ["-p", String(pid), "-o", "lstart="]);
 
   if (!started) {
-    throw new Error(`Missing process start marker for PID ${pid}`)
+    throw new Error(`Missing process start marker for PID ${pid}`);
   }
 
-  return `ps:${started}`
+  return `ps:${started}`;
 }
 
-export type StartMarkerProbe = { ok: true; startMarker: string } | { ok: false; reason: string }
+export type StartMarkerProbe =
+  { ok: true; startMarker: string } | { ok: false; reason: string };
 
 /** Run the marker probe, converting a throw into a value the pure decision can consume. */
 export async function probeStartMarker(
   pid: number,
-  probe: (pid: number) => Promise<string> = processStartMarker
+  probe: (pid: number) => Promise<string> = processStartMarker,
 ): Promise<StartMarkerProbe> {
   try {
-    return { ok: true, startMarker: await probe(pid) }
+    return { ok: true, startMarker: await probe(pid) };
   } catch (error) {
-    return { ok: false, reason: error instanceof Error ? error.message : String(error) }
+    return {
+      ok: false,
+      reason: error instanceof Error ? error.message : String(error),
+    };
   }
 }
 
-const PID_ONLY_MARKER_PREFIX = 'pid-only:'
+const PID_ONLY_MARKER_PREFIX = "pid-only:";
 
 /**
  * Degraded identity marker recorded when the start-marker probe failed but
@@ -142,15 +166,20 @@ const PID_ONLY_MARKER_PREFIX = 'pid-only:'
  * liveness — plus the command-line check layered on top — can be verified.
  */
 export function pidOnlyStartMarker(pid: number): string {
-  return `${PID_ONLY_MARKER_PREFIX}${pid}`
+  return `${PID_ONLY_MARKER_PREFIX}${pid}`;
 }
 
 export function isPidOnlyStartMarker(startMarker: unknown): boolean {
-  return typeof startMarker === 'string' && startMarker.startsWith(PID_ONLY_MARKER_PREFIX)
+  return (
+    typeof startMarker === "string" &&
+    startMarker.startsWith(PID_ONLY_MARKER_PREFIX)
+  );
 }
 
 export type ClaimDecision =
-  { action: 'claim'; startMarker: string } | { action: 'degrade'; reason: string } | { action: 'fail'; reason: string }
+  | { action: "claim"; startMarker: string }
+  | { action: "degrade"; reason: string }
+  | { action: "fail"; reason: string };
 
 /**
  * Pure claim policy for a freshly spawned backend child:
@@ -161,30 +190,39 @@ export type ClaimDecision =
  * - probe failed, child DEAD   → fail closed; the child's death is the real
  *                                story and the caller attaches its stderr tail.
  */
-export function claimDecision(childAlive: boolean, probe: StartMarkerProbe): ClaimDecision {
+export function claimDecision(
+  childAlive: boolean,
+  probe: StartMarkerProbe,
+): ClaimDecision {
   if (probe.ok === true) {
-    return { action: 'claim', startMarker: probe.startMarker }
+    return { action: "claim", startMarker: probe.startMarker };
   }
 
-  const { reason } = probe
+  const { reason } = probe;
 
-  return childAlive ? { action: 'degrade', reason } : { action: 'fail', reason }
+  return childAlive
+    ? { action: "degrade", reason }
+    : { action: "fail", reason };
 }
 
 export interface BackendOutputTail {
   /** Attach stdout/stderr data listeners to a just-spawned child. */
   attach(child: {
-    stdout?: { on: (event: 'data', listener: (chunk: unknown) => void) => unknown } | null
-    stderr?: { on: (event: 'data', listener: (chunk: unknown) => void) => unknown } | null
-  }): void
-  append(chunk: unknown): void
+    stdout?: {
+      on: (event: "data", listener: (chunk: unknown) => void) => unknown;
+    } | null;
+    stderr?: {
+      on: (event: "data", listener: (chunk: unknown) => void) => unknown;
+    } | null;
+  }): void;
+  append(chunk: unknown): void;
   /** The buffered tail (most recent `limit` characters), or ''. */
-  text(): string
+  text(): string;
   /** Human-readable suffix for error messages, or '' when nothing buffered. */
-  describe(): string
+  describe(): string;
 }
 
-export const DEFAULT_OUTPUT_TAIL_LIMIT = 8192
+export const DEFAULT_OUTPUT_TAIL_LIMIT = 8192;
 
 /**
  * Ring-buffered tail of a child's combined stdout+stderr, attached at SPAWN
@@ -192,30 +230,32 @@ export const DEFAULT_OUTPUT_TAIL_LIMIT = 8192
  * stderr (traceback, missing module, bad config) survives into the ownership
  * error and the before-ready exit messages instead of a bare exit code.
  */
-export function createBackendOutputTail(limit: number = DEFAULT_OUTPUT_TAIL_LIMIT): BackendOutputTail {
-  let buffer = ''
+export function createBackendOutputTail(
+  limit: number = DEFAULT_OUTPUT_TAIL_LIMIT,
+): BackendOutputTail {
+  let buffer = "";
 
   const append = (chunk: unknown) => {
-    buffer += String(chunk)
+    buffer += String(chunk);
 
     if (buffer.length > limit) {
-      buffer = buffer.slice(buffer.length - limit)
+      buffer = buffer.slice(buffer.length - limit);
     }
-  }
+  };
 
   return {
     append,
     attach(child) {
-      child.stdout?.on('data', append)
-      child.stderr?.on('data', append)
+      child.stdout?.on("data", append);
+      child.stderr?.on("data", append);
     },
     text() {
-      return buffer
+      return buffer;
     },
     describe() {
-      const text = buffer.trim()
+      const text = buffer.trim();
 
-      return text ? `\nRecent backend output:\n${text}` : ''
-    }
-  }
+      return text ? `\nRecent backend output:\n${text}` : "";
+    },
+  };
 }

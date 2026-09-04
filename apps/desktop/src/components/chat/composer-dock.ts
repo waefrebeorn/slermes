@@ -1,27 +1,30 @@
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 /**
  * The composer surface and the status/queue stack paint ONE shared
  * `--composer-fill` var. The state ladder (rest / scrolled) lives in styles.css
  * on `[data-slot='composer-root']`, so the layers can never disagree.
  */
-export const composerFill = 'bg-(--composer-fill)'
+export const composerFill = "bg-(--composer-fill)";
 
 /** Backdrop treatment for the composer input surface. Harmless when the fill
  *  goes opaque (drawer open) — nothing shows through to blur. */
 export const composerSurfaceGlass = cn(
-  'backdrop-blur-[0.75rem] backdrop-saturate-[1.12] [-webkit-backdrop-filter:blur(0.75rem)_saturate(1.12)]',
-  'transition-[background-color] duration-150 ease-out'
-)
+  "backdrop-blur-[0.75rem] backdrop-saturate-[1.12] [-webkit-backdrop-filter:blur(0.75rem)_saturate(1.12)]",
+  "transition-[background-color] duration-150 ease-out",
+);
 
-const composerDockEdge = (edge: 'bottom' | 'top') =>
-  cn('border border-border/65', edge === 'top' ? 'rounded-t-2xl border-b-0' : 'rounded-b-2xl border-t-0')
+const composerDockEdge = (edge: "bottom" | "top") =>
+  cn(
+    "border border-border/65",
+    edge === "top" ? "rounded-t-2xl border-b-0" : "rounded-b-2xl border-t-0",
+  );
 
 /** Glassy docked card — the status stack / queue. Paints the SAME
  *  `--composer-fill` as the surface, so rest / scrolled / focused / drawer-open
  *  all match the composer by construction. */
-export const composerDockCard = (edge: 'bottom' | 'top' = 'top') =>
-  cn(composerDockEdge(edge), composerFill, composerSurfaceGlass)
+export const composerDockCard = (edge: "bottom" | "top" = "top") =>
+  cn(composerDockEdge(edge), composerFill, composerSurfaceGlass);
 
 /** Floating composer panel skin — the `/`·`@`·`?` completion drawer and the
  *  attach (`+`) menu. Glassy translucent card, hairline border, full radius,
@@ -29,10 +32,10 @@ export const composerDockCard = (edge: 'bottom' | 'top' = 'top') =>
  *  so it renders identically whether mounted inside the composer or portaled out
  *  of it. Visual skin only — consumers add their own size/position/padding. */
 export const composerPanelCard = cn(
-  'rounded-2xl border border-border/65 shadow-nous text-[length:var(--conversation-tool-font-size)]',
-  'bg-[color-mix(in_srgb,var(--dt-card)_72%,transparent)]',
-  composerSurfaceGlass
-)
+  "rounded-2xl border border-border/65 shadow-nous text-[length:var(--conversation-tool-font-size)]",
+  "bg-[color-mix(in_srgb,var(--dt-card)_72%,transparent)]",
+  composerSurfaceGlass,
+);
 
 /**
  * A quiet control floating over composer content — the micro-action pills above
@@ -45,11 +48,11 @@ export const composerPanelCard = cn(
  * state.
  */
 export const composerFloatingPill = cn(
-  'inline-flex h-(--composer-control-size) shrink-0 cursor-pointer items-center gap-1.5 rounded-full px-2.5',
-  'border border-border/65 bg-(--composer-fill) backdrop-blur-[0.75rem] [-webkit-backdrop-filter:blur(0.75rem)]',
-  'text-xs font-normal text-(--ui-text-secondary) transition-colors',
-  'hover:bg-(--chrome-action-hover) hover:text-foreground'
-)
+  "inline-flex h-(--composer-control-size) shrink-0 cursor-pointer items-center gap-1.5 rounded-full px-2.5",
+  "border border-border/65 bg-(--composer-fill) backdrop-blur-[0.75rem] [-webkit-backdrop-filter:blur(0.75rem)]",
+  "text-xs font-normal text-(--ui-text-secondary) transition-colors",
+  "hover:bg-(--chrome-action-hover) hover:text-foreground",
+);
 
 /**
  * Shared grid for the chrome-free floating strips that bracket the composer —
@@ -67,4 +70,4 @@ export const composerFloatingPill = cn(
  * site; the horizontal inset matches the composer's 5px grab margin so the
  * strips line up with the surface rather than the margin's outer edge.
  */
-export const composerFloatingStrip = 'flex flex-wrap items-center gap-1.5'
+export const composerFloatingStrip = "flex flex-wrap items-center gap-1.5";

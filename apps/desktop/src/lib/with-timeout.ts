@@ -6,26 +6,26 @@
  * backend is not coming and the caller should fail instead of hanging.
  * Reconnect-class awaits against an already-spawned backend use the shorter
  * RECONNECT_ATTEMPT_TIMEOUT_MS below instead. */
-export const BACKEND_BOOT_WAIT_TIMEOUT_MS = 45_000
+export const BACKEND_BOOT_WAIT_TIMEOUT_MS = 45_000;
 
 // desktop.getConnection() / getConnectionFor() / revalidateConnection() /
 // resolveGatewayWsUrl() are IPC round-trips into the main process with no
 // timeout of their own (#93454). A wedged main-process round-trip (e.g. a
 // stuck revalidation after a liveness-probe trip) otherwise hangs an awaiting
 // caller forever. Every caller of these bounds them with this shared budget.
-export const RECONNECT_ATTEMPT_TIMEOUT_MS = 20_000
+export const RECONNECT_ATTEMPT_TIMEOUT_MS = 20_000;
 
 /** Rejection raised by withTimeout. The bounded work is NOT cancelled — the
  * caller decides what a straggler that settles later means. */
 export class TimeoutError extends Error {
   constructor(message: string) {
-    super(message)
-    this.name = 'TimeoutError'
+    super(message);
+    this.name = "TimeoutError";
   }
 }
 
 export function isTimeoutError(error: unknown): error is TimeoutError {
-  return error instanceof TimeoutError
+  return error instanceof TimeoutError;
 }
 
 /** Settle with `promise`, or reject with a TimeoutError after `ms`.
@@ -36,32 +36,32 @@ export function withTimeout<T>(
   promise: Promise<T>,
   ms: number,
   message: string,
-  onTimeout?: (error: TimeoutError) => void
+  onTimeout?: (error: TimeoutError) => void,
 ): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => {
-      const error = new TimeoutError(message)
+      const error = new TimeoutError(message);
 
       try {
-        onTimeout?.(error)
+        onTimeout?.(error);
       } catch (onTimeoutError) {
-        reject(onTimeoutError)
+        reject(onTimeoutError);
 
-        return
+        return;
       }
 
-      reject(error)
-    }, ms)
+      reject(error);
+    }, ms);
 
     Promise.resolve(promise).then(
-      value => {
-        clearTimeout(timer)
-        resolve(value)
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
       },
-      err => {
-        clearTimeout(timer)
-        reject(err)
-      }
-    )
-  })
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
 }

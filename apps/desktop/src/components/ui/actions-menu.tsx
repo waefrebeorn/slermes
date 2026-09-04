@@ -1,6 +1,6 @@
-import type * as React from 'react'
+import type * as React from "react";
 
-import { Codicon } from '@/components/ui/codicon'
+import { Codicon } from "@/components/ui/codicon";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -10,8 +10,8 @@ import {
   ContextMenuSub,
   ContextMenuSubContent,
   ContextMenuSubTrigger,
-  ContextMenuTrigger
-} from '@/components/ui/context-menu'
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,8 +21,8 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // One place to define a set of actions and get BOTH a kebab dropdown and a
 // matching right-click context menu — so a row's ⋯ menu and its right-click menu
@@ -35,14 +35,14 @@ import {
 
 /** A menu flavour (dropdown / context) — the item + separator + submenu parts. */
 export interface MenuKit {
-  Item: typeof DropdownMenuItem | typeof ContextMenuItem
-  Label: typeof DropdownMenuLabel | typeof ContextMenuLabel
-  Separator: typeof DropdownMenuSeparator | typeof ContextMenuSeparator
-  Sub: typeof DropdownMenuSub | typeof ContextMenuSub
-  SubTrigger: typeof DropdownMenuSubTrigger | typeof ContextMenuSubTrigger
-  SubContent: typeof DropdownMenuSubContent | typeof ContextMenuSubContent
+  Item: typeof DropdownMenuItem | typeof ContextMenuItem;
+  Label: typeof DropdownMenuLabel | typeof ContextMenuLabel;
+  Separator: typeof DropdownMenuSeparator | typeof ContextMenuSeparator;
+  Sub: typeof DropdownMenuSub | typeof ContextMenuSub;
+  SubTrigger: typeof DropdownMenuSubTrigger | typeof ContextMenuSubTrigger;
+  SubContent: typeof DropdownMenuSubContent | typeof ContextMenuSubContent;
   /** `CopyButton`'s `appearance` for this flavour — pass to a menu-item copy. */
-  copyAppearance: 'context-menu-item' | 'menu-item'
+  copyAppearance: "context-menu-item" | "menu-item";
 }
 
 export const DROPDOWN_KIT: MenuKit = {
@@ -52,8 +52,8 @@ export const DROPDOWN_KIT: MenuKit = {
   Sub: DropdownMenuSub,
   SubContent: DropdownMenuSubContent,
   SubTrigger: DropdownMenuSubTrigger,
-  copyAppearance: 'menu-item'
-}
+  copyAppearance: "menu-item",
+};
 
 export const CONTEXT_KIT: MenuKit = {
   Item: ContextMenuItem,
@@ -62,53 +62,62 @@ export const CONTEXT_KIT: MenuKit = {
   Sub: ContextMenuSub,
   SubContent: ContextMenuSubContent,
   SubTrigger: ContextMenuSubTrigger,
-  copyAppearance: 'context-menu-item'
-}
+  copyAppearance: "context-menu-item",
+};
 
 /** A single action row. Provide `icon` (codicon name) or `iconNode` (any node). */
 export interface ActionItemSpec {
-  className?: string
-  disabled?: boolean
-  icon?: string
-  iconNode?: React.ReactNode
+  className?: string;
+  disabled?: boolean;
+  icon?: string;
+  iconNode?: React.ReactNode;
   /** Stable key; defaults to `label` when it's a string. */
-  key?: string
-  label: React.ReactNode
-  onSelect: (event: Event) => void
-  variant?: 'default' | 'destructive'
+  key?: string;
+  label: React.ReactNode;
+  onSelect: (event: Event) => void;
+  variant?: "default" | "destructive";
 }
 
 /** Render one `ActionItemSpec` with the given kit's Item component. */
 export function renderActionItem(
   kit: MenuKit,
-  { className, disabled, icon, iconNode, key, label, onSelect, variant }: ActionItemSpec
+  {
+    className,
+    disabled,
+    icon,
+    iconNode,
+    key,
+    label,
+    onSelect,
+    variant,
+  }: ActionItemSpec,
 ) {
   return (
     <kit.Item
       className={className}
       disabled={disabled}
-      key={key ?? (typeof label === 'string' ? label : undefined)}
+      key={key ?? (typeof label === "string" ? label : undefined)}
       onSelect={onSelect}
       variant={variant}
     >
       {iconNode ?? (icon ? <Codicon name={icon} size="0.875rem" /> : null)}
-      {typeof label === 'string' ? <span>{label}</span> : label}
+      {typeof label === "string" ? <span>{label}</span> : label}
     </kit.Item>
-  )
+  );
 }
 
 interface ActionsMenuProps extends Pick<
   React.ComponentProps<typeof DropdownMenuContent>,
-  'align' | 'side' | 'sideOffset' | 'onCloseAutoFocus'
+  "align" | "side" | "sideOffset" | "onCloseAutoFocus"
 > {
   /** The trigger (a kebab button). Wrapped in `DropdownMenuTrigger asChild`. */
-  children: React.ReactNode
+  children: React.ReactNode;
   /** The action rows, rendered with `DROPDOWN_KIT`. Share this with `ActionsContextMenu`. */
-  items: (kit: MenuKit) => React.ReactNode
-  ariaLabel?: string
-  contentClassName?: string
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  items: (kit: MenuKit) => React.ReactNode;
+  ariaLabel?: string;
+  contentClassName?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 /**
@@ -117,7 +126,7 @@ interface ActionsMenuProps extends Pick<
  * trigger — `aria-label` on the button is enough (see DESIGN.md).
  */
 export function ActionsMenu({
-  align = 'end',
+  align = "end",
   ariaLabel,
   children,
   contentClassName,
@@ -126,7 +135,7 @@ export function ActionsMenu({
   onOpenChange,
   open,
   side,
-  sideOffset = 6
+  sideOffset = 6,
 }: ActionsMenuProps) {
   return (
     <DropdownMenu onOpenChange={onOpenChange} open={open}>
@@ -142,19 +151,19 @@ export function ActionsMenu({
         {items(DROPDOWN_KIT)}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 interface ActionsContextMenuProps {
   /** The area that receives right-click. Wrapped in `ContextMenuTrigger asChild`. */
-  children: React.ReactNode
+  children: React.ReactNode;
   /** The action rows, rendered with `CONTEXT_KIT`. Share this with `ActionsMenu`. */
-  items: (kit: MenuKit) => React.ReactNode
-  ariaLabel?: string
-  contentClassName?: string
+  items: (kit: MenuKit) => React.ReactNode;
+  ariaLabel?: string;
+  contentClassName?: string;
   /** Skip the wrapper (render children bare) — e.g. nothing is actionable yet. */
-  disabled?: boolean
-  onCloseAutoFocus?: (event: Event) => void
+  disabled?: boolean;
+  onCloseAutoFocus?: (event: Event) => void;
 }
 
 /**
@@ -167,18 +176,22 @@ export function ActionsContextMenu({
   contentClassName,
   disabled,
   items,
-  onCloseAutoFocus
+  onCloseAutoFocus,
 }: ActionsContextMenuProps) {
   if (disabled) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent aria-label={ariaLabel} className={contentClassName} onCloseAutoFocus={onCloseAutoFocus}>
+      <ContextMenuContent
+        aria-label={ariaLabel}
+        className={contentClassName}
+        onCloseAutoFocus={onCloseAutoFocus}
+      >
         {items(CONTEXT_KIT)}
       </ContextMenuContent>
     </ContextMenu>
-  )
+  );
 }

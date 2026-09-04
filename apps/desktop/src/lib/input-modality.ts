@@ -9,18 +9,24 @@
  *  ourselves and use it to qualify `:focus-visible`.
  */
 
-export type InputModality = 'keyboard' | 'pointer'
+export type InputModality = "keyboard" | "pointer";
 
-let modality: InputModality = 'keyboard'
+let modality: InputModality = "keyboard";
 
 /** Capture-phase so a `stopPropagation` deeper in the tree can't blind us. */
-if (typeof document !== 'undefined') {
-  document.addEventListener('pointerdown', () => (modality = 'pointer'), { capture: true, passive: true })
-  document.addEventListener('keydown', () => (modality = 'keyboard'), { capture: true, passive: true })
+if (typeof document !== "undefined") {
+  document.addEventListener("pointerdown", () => (modality = "pointer"), {
+    capture: true,
+    passive: true,
+  });
+  document.addEventListener("keydown", () => (modality = "keyboard"), {
+    capture: true,
+    passive: true,
+  });
 }
 
 /** The device behind the last pointerdown/keydown. Defaults to `keyboard` so a
  *  surface that has seen no input yet keeps the accessible behavior. */
 export function lastInputModality(): InputModality {
-  return modality
+  return modality;
 }

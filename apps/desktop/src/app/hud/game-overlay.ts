@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 /**
  * Whether a fullscreen app (a game) is under the HUD.
@@ -15,13 +15,15 @@ import { useEffect, useState } from 'react'
  * a chat log you look back at during a lull is useless if it erases itself.
  */
 export function useHudGameOverlay(): boolean {
-  const [active, setActive] = useState(false)
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
-    const off = window.hermesDesktop?.hud?.onGameOverlay?.(state => setActive(state.active))
+    const off = window.hermesDesktop?.hud?.onGameOverlay?.((state) =>
+      setActive(state.active),
+    );
 
-    return () => off?.()
-  }, [])
+    return () => off?.();
+  }, []);
 
-  return active
+  return active;
 }

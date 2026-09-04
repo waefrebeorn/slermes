@@ -14,29 +14,37 @@
  *   - `window` (⇧⌘-click) — pop into its own window; falls back to `tab` when
  *     the bridge has no session-window support.
  */
-import type { WorkspaceMode } from '@/contrib/types'
-import { $activeSessionId, $selectedStoredSessionId, markSessionRead } from '@/store/session'
-import type { SessionProfileRoute } from '@/store/session-request-router'
+import type { WorkspaceMode } from "@/contrib/types";
+import {
+  $activeSessionId,
+  $selectedStoredSessionId,
+  markSessionRead,
+} from "@/store/session";
+import type { SessionProfileRoute } from "@/store/session-request-router";
 import {
   focusedSessionNeedsRoute,
   focusOpenSession,
   openSessionTile,
   reuseBlankDraftTile,
-  setSessionTileWorkspaceScope
-} from '@/store/session-states'
-import { canOpenSessionWindow, openSessionInNewWindow } from '@/store/windows'
+  setSessionTileWorkspaceScope,
+} from "@/store/session-states";
+import { canOpenSessionWindow, openSessionInNewWindow } from "@/store/windows";
 
-import { $workspaceIsPage, sessionRoute } from './routes'
+import { $workspaceIsPage, sessionRoute } from "./routes";
 
-export type OpenSessionIntent = 'in-place' | 'main' | 'stack' | 'tab' | 'window'
+export type OpenSessionIntent =
+  "in-place" | "main" | "stack" | "tab" | "window";
 
-export type OpenSessionNavigate = (to: string, options?: { replace?: boolean }) => void
+export type OpenSessionNavigate = (
+  to: string,
+  options?: { replace?: boolean },
+) => void;
 
 export interface OpenSessionWorkspaceScope {
-  ownerRoute?: SessionProfileRoute
-  workspaceMode: WorkspaceMode
-  workspaceOwnerKey?: string
-  workspaceTabTitle?: string
+  ownerRoute?: SessionProfileRoute;
+  workspaceMode: WorkspaceMode;
+  workspaceOwnerKey?: string;
+  workspaceTabTitle?: string;
 }
 
 /**
@@ -47,8 +55,11 @@ export interface OpenSessionWorkspaceScope {
  * is what lets the sidebar "+" and a `stack` open take the cheaper main path
  * instead of stacking a tab nobody asked for.
  */
-export function mainChatOccupied(activeSessionId: null | string, selectedStoredSessionId: null | string): boolean {
-  return Boolean(activeSessionId || selectedStoredSessionId)
+export function mainChatOccupied(
+  activeSessionId: null | string,
+  selectedStoredSessionId: null | string,
+): boolean {
+  return Boolean(activeSessionId || selectedStoredSessionId);
 }
 
 /** Read modifiers the way session rows do — meta OR ctrl for tab, +shift for
@@ -56,23 +67,23 @@ export function mainChatOccupied(activeSessionId: null | string, selectedStoredS
  *  sidebar spends main (`in-place`), a palette-style open doesn't (`stack`). */
 export function openSessionIntentFromModifiers(
   event?: null | { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean },
-  base: OpenSessionIntent = 'in-place'
+  base: OpenSessionIntent = "in-place",
 ): OpenSessionIntent {
   if (!event) {
-    return base
+    return base;
   }
 
-  const mod = Boolean(event.metaKey || event.ctrlKey)
+  const mod = Boolean(event.metaKey || event.ctrlKey);
 
   if (mod && event.shiftKey) {
-    return 'window'
+    return "window";
   }
 
   if (mod) {
-    return 'tab'
+    return "tab";
   }
 
-  return base
+  return base;
 }
 
 /**
@@ -82,62 +93,66 @@ export function openSessionIntentFromModifiers(
 export function openSession(
   storedSessionId: string,
   navigate: OpenSessionNavigate,
-  intent: OpenSessionIntent = 'in-place',
-  workspaceScope: OpenSessionWorkspaceScope = { workspaceMode: 'sessions' }
+  intent: OpenSessionIntent = "in-place",
+  workspaceScope: OpenSessionWorkspaceScope = { workspaceMode: "sessions" },
 ): void {
   if (!storedSessionId) {
-    return
+    return;
   }
 
   // Any explicit open/focus means the user has seen the finished-turn marker.
   // Must run BEFORE the focus short-circuits below: clicking a session that is
   // already on screen (open tile, or the main session) would otherwise return
   // at focusOpenSession and never clear its unread dot.
-  markSessionRead(storedSessionId)
-  setSessionTileWorkspaceScope(storedSessionId, workspaceScope)
-  const botWorkspaceScope = workspaceScope.workspaceMode === 'bots' ? workspaceScope : undefined
+  markSessionRead(storedSessionId);
+  setSessionTileWorkspaceScope(storedSessionId, workspaceScope);
+  const botWorkspaceScope =
+    workspaceScope.workspaceMode === "bots" ? workspaceScope : undefined;
 
-  let resolved: OpenSessionIntent = intent
+  let resolved: OpenSessionIntent = intent;
 
-  if (resolved === 'window') {
+  if (resolved === "window") {
     if (canOpenSessionWindow()) {
-      void openSessionInNewWindow(storedSessionId)
+      void openSessionInNewWindow(storedSessionId);
 
-      return
+      return;
     }
 
     // No pop-out support → treat like a new tab.
-    resolved = 'tab'
+    resolved = "tab";
   }
 
-  if (resolved === 'main') {
+  if (resolved === "main") {
     // Canonical relationship chats explicitly own the main workspace. Route
     // even when the session is already open as a tile; resumeSession removes
     // that redundant tile when the main surface binds.
-    navigate(sessionRoute(storedSessionId))
+    navigate(sessionRoute(storedSessionId));
 
-    return
+    return;
   }
 
   // A `stack` open arrives from outside the workspace, so unlike a sidebar
   // click it can't assume main is spendable: it behaves like `tab`, except main
   // IS fair game while it's only a blank draft, and an already-open blank draft
   // tab is spent before a new one is stacked.
-  let spendBlankDraft = false
+  let spendBlankDraft = false;
 
-  if (resolved === 'stack') {
-    spendBlankDraft = mainChatOccupied($activeSessionId.get(), $selectedStoredSessionId.get())
-    resolved = spendBlankDraft ? 'tab' : 'in-place'
+  if (resolved === "stack") {
+    spendBlankDraft = mainChatOccupied(
+      $activeSessionId.get(),
+      $selectedStoredSessionId.get(),
+    );
+    resolved = spendBlankDraft ? "tab" : "in-place";
   }
 
-  if (resolved === 'tab') {
+  if (resolved === "tab") {
     // Already on screen? Front it. openSessionTile would no-op on main without
     // focusing, or try to relocate an existing tile — neither is right for a
     // soft "open beside" link.
-    const focused = focusOpenSession(storedSessionId, workspaceScope)
+    const focused = focusOpenSession(storedSessionId, workspaceScope);
 
     if (focused) {
-      return
+      return;
     }
 
     // Nothing to jump to, but an open tab may still be an empty "New session" —
@@ -149,23 +164,34 @@ export function openSession(
         ? reuseBlankDraftTile(storedSessionId, botWorkspaceScope)
         : reuseBlankDraftTile(storedSessionId))
     ) {
-      return
+      return;
     }
 
     if (botWorkspaceScope) {
-      openSessionTile(storedSessionId, 'center', undefined, undefined, botWorkspaceScope)
+      openSessionTile(
+        storedSessionId,
+        "center",
+        undefined,
+        undefined,
+        botWorkspaceScope,
+      );
     } else {
-      openSessionTile(storedSessionId, 'center')
+      openSessionTile(storedSessionId, "center");
     }
 
-    return
+    return;
   }
 
   // Already on screen (open tile, or the main session)? Jump to its tab;
   // otherwise load it into main. From a full page (artifacts, skills, …) a
   // `'main'` hit still has to route back: fronting the workspace tab alone
   // leaves the page showing.
-  if (focusedSessionNeedsRoute(focusOpenSession(storedSessionId, workspaceScope), $workspaceIsPage.get())) {
-    navigate(sessionRoute(storedSessionId))
+  if (
+    focusedSessionNeedsRoute(
+      focusOpenSession(storedSessionId, workspaceScope),
+      $workspaceIsPage.get(),
+    )
+  ) {
+    navigate(sessionRoute(storedSessionId));
   }
 }

@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
-import { refreshFleetRoster } from '@/store/fleet-roster'
+import { refreshFleetRoster } from "@/store/fleet-roster";
 
 /**
  * Keep the fleet roster fresh for the profile rail while more than one
@@ -12,27 +12,29 @@ import { refreshFleetRoster } from '@/store/fleet-roster'
 export function useFleetRoster(enabled: boolean): void {
   useEffect(() => {
     if (!enabled) {
-      return
+      return;
     }
 
-    void refreshFleetRoster()
+    void refreshFleetRoster();
 
-    const onFocus = () => void refreshFleetRoster()
+    const onFocus = () => void refreshFleetRoster();
 
     const onVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        void refreshFleetRoster()
+      if (document.visibilityState === "visible") {
+        void refreshFleetRoster();
       }
-    }
+    };
 
-    window.addEventListener('focus', onFocus)
-    document.addEventListener('visibilitychange', onVisibility)
-    const offRegistry = window.hermesDesktop?.connections?.onChanged?.(() => void refreshFleetRoster({ force: true }))
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+    const offRegistry = window.hermesDesktop?.connections?.onChanged?.(
+      () => void refreshFleetRoster({ force: true }),
+    );
 
     return () => {
-      window.removeEventListener('focus', onFocus)
-      document.removeEventListener('visibilitychange', onVisibility)
-      offRegistry?.()
-    }
-  }, [enabled])
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+      offRegistry?.();
+    };
+  }, [enabled]);
 }

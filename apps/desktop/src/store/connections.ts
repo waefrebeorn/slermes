@@ -1,15 +1,19 @@
-import { atom, computed } from 'nanostores'
+import { atom, computed } from "nanostores";
 
-import type { DesktopConnectionsRegistry } from '@/global'
-import { persistStringRecord, storedStringRecord } from '@/lib/storage'
-import { BACKEND_BOOT_WAIT_TIMEOUT_MS, isTimeoutError, withTimeout } from '@/lib/with-timeout'
-import { $connectionsRegistry } from '@/store/connection-registry-state'
+import type { DesktopConnectionsRegistry } from "@/global";
+import { persistStringRecord, storedStringRecord } from "@/lib/storage";
+import {
+  BACKEND_BOOT_WAIT_TIMEOUT_MS,
+  isTimeoutError,
+  withTimeout,
+} from "@/lib/with-timeout";
+import { $connectionsRegistry } from "@/store/connection-registry-state";
 import {
   beginGatewaySwitch,
   endGatewaySwitch,
   type GatewaySwitchToken,
-  recoverActiveSourceAfterFailedGatewaySwitch
-} from '@/store/gateway-switch'
+  recoverActiveSourceAfterFailedGatewaySwitch,
+} from "@/store/gateway-switch";
 import {
   $activeGatewayProfile,
   $newChatProfile,
@@ -19,46 +23,53 @@ import {
   normalizeProfileKey,
   openGatewayAgent,
   refreshActiveProfile,
-  requestFreshSession
-} from '@/store/profile'
-import { $connection } from '@/store/session'
+  requestFreshSession,
+} from "@/store/profile";
+import { $connection } from "@/store/session";
 
-const LAST_PROFILE_STORAGE_KEY = 'hermes.desktop.lastProfileByConnection'
+const LAST_PROFILE_STORAGE_KEY = "hermes.desktop.lastProfileByConnection";
 
 // Every await of a source switch is bounded. A wedged spawn, ticket mint,
 // handshake or IPC (the #93454 class) must surface as a failed click — not a
 // spinner that also swallows every later click on the same source, and never
 // a barrier left up or a wipe left unpainted.
-const SWITCH_DIAL_TIMEOUT_MS = 20_000
-const SWITCH_COMMIT_TIMEOUT_MS = 20_000
-const SWITCH_REMEMBER_TIMEOUT_MS = 5_000
+const SWITCH_DIAL_TIMEOUT_MS = 20_000;
+const SWITCH_COMMIT_TIMEOUT_MS = 20_000;
+const SWITCH_REMEMBER_TIMEOUT_MS = 5_000;
 // Matches the primary spawn budget: a healthy cold boot publishes well within
 // this; anything longer means the primary is not coming and the registry
 // restore should stop waiting for it. Shared constant so the boot-class
 // budgets can't drift apart (see with-timeout.ts).
-const BOOT_DESCRIPTOR_WAIT_TIMEOUT_MS = BACKEND_BOOT_WAIT_TIMEOUT_MS
+const BOOT_DESCRIPTOR_WAIT_TIMEOUT_MS = BACKEND_BOOT_WAIT_TIMEOUT_MS;
 
-export { $connectionsRegistry } from '@/store/connection-registry-state'
+export { $connectionsRegistry } from "@/store/connection-registry-state";
 
 // Use only the resolved descriptor identity Electron publishes. `primary`
 // means the registry default, not necessarily the source this window is using;
 // guessing it here would paint the wrong source as active for an unmatched v1
 // route or while a legacy main is still resolving the descriptor.
-export const $activeConnectionId = computed($connection, connection => connection?.connectionId ?? null)
+export const $activeConnectionId = computed(
+  $connection,
+  (connection) => connection?.connectionId ?? null,
+);
 
 export const $hasMultipleConnections = computed(
   $connectionsRegistry,
-  registry => (registry?.connections.length ?? 0) > 1
-)
+  (registry) => (registry?.connections.length ?? 0) > 1,
+);
 
-const $lastProfileByConnection = atom<Record<string, string>>(storedStringRecord(LAST_PROFILE_STORAGE_KEY))
-let pendingTarget: null | string = null
-let restoreAttempted = false
-let switchRevision = 0
+const $lastProfileByConnection = atom<Record<string, string>>(
+  storedStringRecord(LAST_PROFILE_STORAGE_KEY),
+);
+let pendingTarget: null | string = null;
+let restoreAttempted = false;
+let switchRevision = 0;
 
-export const $pendingConnectionId = atom<null | string>(null)
+export const $pendingConnectionId = atom<null | string>(null);
 
-$lastProfileByConnection.subscribe(value => persistStringRecord(LAST_PROFILE_STORAGE_KEY, value))
+$lastProfileByConnection.subscribe((value) =>
+  persistStringRecord(LAST_PROFILE_STORAGE_KEY, value),
+);
 
 const $activeConnectionProfile = computed(
   [$activeConnectionId, $activeGatewayProfile, $connection],
@@ -66,73 +77,80 @@ const $activeConnectionProfile = computed(
     connectionId,
     descriptorProfile: normalizeProfileKey(connection?.profile),
     profile: normalizeProfileKey(profile),
-    registryScoped: connection?.registryScoped === true
-  })
-)
+    registryScoped: connection?.registryScoped === true,
+  }),
+);
 
 // Remember one profile per source, so switching machines is a re-home rather
 // than a reset to `default`. The map is local UI preference only; Electron
 // remains the authority for the connection registry and all secrets.
-$activeConnectionProfile.subscribe(({ connectionId, descriptorProfile, profile, registryScoped }) => {
-  // A migrated v1 per-profile remote may expose a client-side alias such as
-  // "work" while the registered source's actual profile is "default". Only
-  // remember a source/profile pair after Electron confirms that exact v2
-  // descriptor. This also rejects the brief startup window where the profile
-  // atom still carries the previous app run's alias.
-  if (
-    !connectionId ||
-    !registryScoped ||
-    descriptorProfile !== profile ||
-    $lastProfileByConnection.get()[connectionId] === profile
-  ) {
-    return
-  }
+$activeConnectionProfile.subscribe(
+  ({ connectionId, descriptorProfile, profile, registryScoped }) => {
+    // A migrated v1 per-profile remote may expose a client-side alias such as
+    // "work" while the registered source's actual profile is "default". Only
+    // remember a source/profile pair after Electron confirms that exact v2
+    // descriptor. This also rejects the brief startup window where the profile
+    // atom still carries the previous app run's alias.
+    if (
+      !connectionId ||
+      !registryScoped ||
+      descriptorProfile !== profile ||
+      $lastProfileByConnection.get()[connectionId] === profile
+    ) {
+      return;
+    }
 
-  $lastProfileByConnection.set({ ...$lastProfileByConnection.get(), [connectionId]: profile })
-})
+    $lastProfileByConnection.set({
+      ...$lastProfileByConnection.get(),
+      [connectionId]: profile,
+    });
+  },
+);
 
 /** @internal Reset module-owned preferences and switch coordination for tests. */
 export function _resetConnectionsForTests(): void {
-  $lastProfileByConnection.set({})
-  pendingTarget = null
-  restoreAttempted = false
-  switchRevision = 0
-  $pendingConnectionId.set(null)
+  $lastProfileByConnection.set({});
+  pendingTarget = null;
+  restoreAttempted = false;
+  switchRevision = 0;
+  $pendingConnectionId.set(null);
 }
 
-export function setConnectionsRegistry(registry: DesktopConnectionsRegistry): void {
-  $connectionsRegistry.set(registry)
+export function setConnectionsRegistry(
+  registry: DesktopConnectionsRegistry,
+): void {
+  $connectionsRegistry.set(registry);
 }
 
 /** Refresh the renderer cache from Electron's local registry. No backend is contacted. */
 export async function refreshConnectionsRegistry(): Promise<DesktopConnectionsRegistry | null> {
-  const bridge = window.hermesDesktop?.connections
+  const bridge = window.hermesDesktop?.connections;
 
   if (!bridge) {
-    return null
+    return null;
   }
 
-  const registry = await bridge.list()
-  setConnectionsRegistry(registry)
+  const registry = await bridge.list();
+  setConnectionsRegistry(registry);
 
-  return registry
+  return registry;
 }
 
 async function rememberConnection(connectionId: string): Promise<void> {
-  const setLastUsed = window.hermesDesktop?.connections?.setLastUsed
+  const setLastUsed = window.hermesDesktop?.connections?.setLastUsed;
 
   if (!setLastUsed) {
-    return
+    return;
   }
 
   try {
     const result = await withTimeout(
       setLastUsed(connectionId),
       SWITCH_REMEMBER_TIMEOUT_MS,
-      'Timed out remembering the last-used connection'
-    )
+      "Timed out remembering the last-used connection",
+    );
 
-    setConnectionsRegistry(result.registry)
+    setConnectionsRegistry(result.registry);
   } catch {
     // The source is already usable. A read-only/full userData directory (or
     // a stalled IPC) must not turn a successful backend switch into a false
@@ -154,33 +172,33 @@ async function rememberConnection(connectionId: string): Promise<void> {
  */
 function waitForInitialConnection(): Promise<void> {
   if ($connection.get()) {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
-  let unlisten: (() => void) | undefined
+  let unlisten: (() => void) | undefined;
 
-  const published = new Promise<void>(resolve => {
-    unlisten = $connection.listen(connection => {
+  const published = new Promise<void>((resolve) => {
+    unlisten = $connection.listen((connection) => {
       if (!connection) {
-        return
+        return;
       }
 
-      unlisten?.()
-      resolve()
-    })
-  })
+      unlisten?.();
+      resolve();
+    });
+  });
 
   return withTimeout(
     published,
     BOOT_DESCRIPTOR_WAIT_TIMEOUT_MS,
-    'Timed out waiting for the primary connection descriptor'
-  ).catch(error => {
-    unlisten?.()
+    "Timed out waiting for the primary connection descriptor",
+  ).catch((error) => {
+    unlisten?.();
 
     if (!isTimeoutError(error)) {
-      throw error
+      throw error;
     }
-  })
+  });
 }
 
 /**
@@ -189,21 +207,21 @@ function waitForInitialConnection(): Promise<void> {
  * in another window never changes the active workspace.
  */
 export async function initializeConnectionsRegistry(): Promise<DesktopConnectionsRegistry | null> {
-  const registry = await refreshConnectionsRegistry()
+  const registry = await refreshConnectionsRegistry();
 
   if (!registry || restoreAttempted) {
-    return registry
+    return registry;
   }
 
-  restoreAttempted = true
-  await waitForInitialConnection()
+  restoreAttempted = true;
+  await waitForInitialConnection();
 
   // The user got there first: a source they picked while boot was settling
   // (statusbar switcher, fleet profile rail) is not drift to "restore" over.
   // The launch preference only decides where a window lands when nobody has
   // said otherwise yet.
   if (switchRevision > 0 || pendingTarget !== null) {
-    return registry
+    return registry;
   }
 
   // Residual drift: a window can be live on a source the registry cannot name
@@ -214,26 +232,29 @@ export async function initializeConnectionsRegistry(): Promise<DesktopConnection
   // re-homing the user onto a different backend seconds after boot. The
   // registry has no claim on a source it does not know; leave the live one be.
   if ($connection.get() && $activeConnectionId.get() === null) {
-    return registry
+    return registry;
   }
 
-  const lastUsed = registry.connections.some(connection => connection.id === registry.lastUsed)
+  const lastUsed = registry.connections.some(
+    (connection) => connection.id === registry.lastUsed,
+  )
     ? registry.lastUsed
-    : registry.primary
+    : registry.primary;
 
-  const preferredId = registry.launchMode === 'last-used' ? lastUsed : registry.primary
+  const preferredId =
+    registry.launchMode === "last-used" ? lastUsed : registry.primary;
 
   if (!preferredId) {
-    return registry
+    return registry;
   }
 
   if ($activeConnectionId.get() === preferredId) {
-    await rememberConnection(preferredId)
+    await rememberConnection(preferredId);
   } else {
-    await selectConnection(preferredId)
+    await selectConnection(preferredId);
   }
 
-  return $connectionsRegistry.get() ?? registry
+  return $connectionsRegistry.get() ?? registry;
 }
 
 /**
@@ -263,75 +284,89 @@ export async function initializeConnectionsRegistry(): Promise<DesktopConnection
 export interface SelectConnectionOptions {
   /** Land on this profile of the target source instead of the one last used
    *  there. The fleet profile rail passes the exact square the user clicked. */
-  profile?: null | string
+  profile?: null | string;
 }
 
-export async function selectConnection(connectionId: string, options: SelectConnectionOptions = {}): Promise<void> {
-  const registry = $connectionsRegistry.get()
-  const targetConnection = registry?.connections.find(connection => connection.id === connectionId)
+export async function selectConnection(
+  connectionId: string,
+  options: SelectConnectionOptions = {},
+): Promise<void> {
+  const registry = $connectionsRegistry.get();
+  const targetConnection = registry?.connections.find(
+    (connection) => connection.id === connectionId,
+  );
 
   if (!registry || !targetConnection) {
-    return
+    return;
   }
 
   // A user-initiated source switch collapses "All profiles" browse mode: the
   // picker is a concrete-source action. The silent boot-time restore (below,
   // from initializeConnectionsRegistry) is not — it must leave the persisted
   // browse-mode preference alone so it survives restart (#93197).
-  const restoreOnBoot = pendingTarget === null && $activeConnectionId.get() === null
+  const restoreOnBoot =
+    pendingTarget === null && $activeConnectionId.get() === null;
 
-  const currentConnectionId = $activeConnectionId.get()
-  const currentProfile = normalizeProfileKey($activeGatewayProfile.get())
-  const explicitProfile = String(options.profile ?? '').trim()
+  const currentConnectionId = $activeConnectionId.get();
+  const currentProfile = normalizeProfileKey($activeGatewayProfile.get());
+  const explicitProfile = String(options.profile ?? "").trim();
 
   const targetProfile = normalizeProfileKey(
-    explicitProfile || ($lastProfileByConnection.get()[connectionId] ?? 'default')
-  )
+    explicitProfile ||
+      ($lastProfileByConnection.get()[connectionId] ?? "default"),
+  );
 
-  const targetKey = `${connectionId}::${targetProfile}`
+  const targetKey = `${connectionId}::${targetProfile}`;
 
   const targetIsActive = () => {
-    const active = $connection.get()
+    const active = $connection.get();
 
-    return active?.connectionId === connectionId && normalizeProfileKey(active.profile) === targetProfile
-  }
+    return (
+      active?.connectionId === connectionId &&
+      normalizeProfileKey(active.profile) === targetProfile
+    );
+  };
 
   if (pendingTarget === targetKey) {
-    return
+    return;
   }
 
   const switching =
     pendingTarget !== null ||
     $showAllProfiles.get() ||
     currentConnectionId !== connectionId ||
-    currentProfile !== targetProfile
+    currentProfile !== targetProfile;
 
   if (!switching) {
-    await rememberConnection(connectionId)
+    await rememberConnection(connectionId);
 
-    return
+    return;
   }
 
-  if (pendingTarget === null && currentConnectionId === connectionId && currentProfile === targetProfile) {
-    $showAllProfiles.set(false)
-    $newChatProfile.set(targetProfile)
+  if (
+    pendingTarget === null &&
+    currentConnectionId === connectionId &&
+    currentProfile === targetProfile
+  ) {
+    $showAllProfiles.set(false);
+    $newChatProfile.set(targetProfile);
     // A connection switch is a new-chat intent on THAT source: keep the
     // registry identity with the profile so the next create names local::x /
     // <source>::x exactly, never a bare profile string.
-    captureNewChatSource()
-    requestFreshSession()
-    await rememberConnection(connectionId)
+    captureNewChatSource();
+    requestFreshSession();
+    await rememberConnection(connectionId);
 
-    return
+    return;
   }
 
-  const revision = ++switchRevision
-  pendingTarget = targetKey
-  $pendingConnectionId.set(connectionId)
+  const revision = ++switchRevision;
+  pendingTarget = targetKey;
+  $pendingConnectionId.set(connectionId);
   // Set by the commit hook once THIS switch has wiped — i.e. it owns the
   // barrier and, if the commit then fails, owes the still-active source a
   // repaint. Null while queued, or if it stepped aside before its turn.
-  let token = null as GatewaySwitchToken | null
+  let token = null as GatewaySwitchToken | null;
 
   try {
     // Phase 1 — open the target's socket; the active route is untouched.
@@ -340,14 +375,14 @@ export async function selectConnection(connectionId: string, options: SelectConn
     await withTimeout(
       openGatewayAgent(connectionId, targetProfile),
       SWITCH_DIAL_TIMEOUT_MS,
-      `Timed out connecting to "${targetConnection.label}".`
-    )
+      `Timed out connecting to "${targetConnection.label}".`,
+    );
 
     // A newer click owns the switch from here on. The superseded dial never
     // activates, so the user doesn't flip through it on the way to the source
     // they picked last; its socket stays warm for that click or idles out.
     if (revision !== switchRevision) {
-      return
+      return;
     }
 
     // Phase 2 — commit. The hook runs inside the activation's serialized
@@ -355,12 +390,12 @@ export async function selectConnection(connectionId: string, options: SelectConn
     // backend's bindings, then publish, with nothing in between. A click that
     // superseded this switch while it was queued makes the hook decline —
     // neither wipe nor activation — so the user never flips through it.
-    const activationController = new AbortController()
-    let markActivationStarted: () => void = () => undefined
+    const activationController = new AbortController();
+    let markActivationStarted: () => void = () => undefined;
 
-    const activationStarted = new Promise<void>(resolve => {
-      markActivationStarted = resolve
-    })
+    const activationStarted = new Promise<void>((resolve) => {
+      markActivationStarted = resolve;
+    });
 
     try {
       try {
@@ -368,57 +403,59 @@ export async function selectConnection(connectionId: string, options: SelectConn
           signal: activationController.signal,
           beforeActivate: () => {
             if (revision !== switchRevision) {
-              return false
+              return false;
             }
 
-            token = beginGatewaySwitch()
-            markActivationStarted()
+            token = beginGatewaySwitch();
+            markActivationStarted();
 
-            return true
-          }
-        })
+            return true;
+          },
+        });
 
         const timedActivation = activationStarted.then(() =>
           withTimeout(
             activation,
             SWITCH_COMMIT_TIMEOUT_MS,
             `Timed out activating "${targetConnection.label}".`,
-            error => {
+            (error) => {
               // withTimeout does not cancel its input. Every timed-out owner
               // loses future activation/publication rights, even when low-level
               // activation already published the target and the commit remains
               // fail-open. The shared activation signal suppresses any trailing
               // descriptor/profile publication when stale work later settles.
-              activationController.abort(error)
-            }
-          )
-        )
+              activationController.abort(error);
+            },
+          ),
+        );
 
         // Queue time belongs to the profile-store mutex. Start the bounded
         // commit window only once beforeActivate grants this request its turn.
-        await Promise.race([activation, timedActivation])
+        await Promise.race([activation, timedActivation]);
       } catch (error) {
         // The socket is activated and its descriptor published synchronously;
         // only best-effort descriptor resync trails it. A commit that timed out
         // AFTER the new source became active has landed, so keep it fail-open;
         // the timeout signal still revokes all trailing publication rights.
         if (!isTimeoutError(error) || !targetIsActive()) {
-          throw error
+          throw error;
         }
       }
 
       if (revision !== switchRevision) {
-        return
+        return;
       }
 
       if (!targetIsActive()) {
-        throw new Error(`Connection "${targetConnection.label}" did not become active.`)
+        throw new Error(
+          `Connection "${targetConnection.label}" did not become active.`,
+        );
       }
     } finally {
       // Lower the barrier the moment the commit settles — before the
       // bookkeeping awaits below — but only if this switch still owns it.
       if (token !== null) {
-        endGatewaySwitch(token)
+        endGatewaySwitch(token);
       }
     }
 
@@ -426,16 +463,16 @@ export async function selectConnection(connectionId: string, options: SelectConn
     // already makes the latest source win; this guard also prevents an older
     // request from repainting its profile list after that newer activation.
     if (revision === switchRevision) {
-      await rememberConnection(connectionId)
+      await rememberConnection(connectionId);
 
       if (!restoreOnBoot) {
-        $showAllProfiles.set(false)
+        $showAllProfiles.set(false);
       }
 
-      $newChatProfile.set(targetProfile)
-      captureNewChatSource()
-      requestFreshSession()
-      await refreshActiveProfile()
+      $newChatProfile.set(targetProfile);
+      captureNewChatSource();
+      requestFreshSession();
+      await refreshActiveProfile();
     }
   } catch (error) {
     if (revision === switchRevision) {
@@ -444,16 +481,16 @@ export async function selectConnection(connectionId: string, options: SelectConn
         // source is still the active one, and nothing reactive re-pulls its
         // lists (no scope moved): repaint it and land on a fresh draft there,
         // matching what a failed Settings apply leaves behind.
-        recoverActiveSourceAfterFailedGatewaySwitch(token)
-        requestFreshSession()
+        recoverActiveSourceAfterFailedGatewaySwitch(token);
+        requestFreshSession();
       }
 
-      throw error
+      throw error;
     }
   } finally {
     if (revision === switchRevision) {
-      pendingTarget = null
-      $pendingConnectionId.set(null)
+      pendingTarget = null;
+      $pendingConnectionId.set(null);
     }
   }
 }

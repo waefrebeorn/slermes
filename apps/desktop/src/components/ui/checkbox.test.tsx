@@ -1,7 +1,7 @@
-import { cleanup, render } from '@testing-library/react'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { cleanup, render } from "@testing-library/react";
+import { afterEach, beforeAll, describe, expect, it } from "vitest";
 
-import { Checkbox } from './checkbox'
+import { Checkbox } from "./checkbox";
 
 /**
  * The indicator stacks both glyphs and hides one with a utility class, so the
@@ -13,7 +13,7 @@ import { Checkbox } from './checkbox'
  * is flattened to the equivalent descendant selector because jsdom does not
  * implement CSS nesting.
  */
-const CODICON_CSS = `.codicon[class*='codicon-'] { display: inline-block; }`
+const CODICON_CSS = `.codicon[class*='codicon-'] { display: inline-block; }`;
 
 const TAILWIND_CSS = `
   .hidden\\! { display: none !important; }
@@ -23,40 +23,42 @@ const TAILWIND_CSS = `
   :where(.group)[data-state="indeterminate"] .group-data-\\[state\\=indeterminate\\]\\:block\\! {
     display: block !important;
   }
-`
+`;
 
 function shownGlyphs(container: HTMLElement) {
-  return [...container.querySelectorAll<HTMLElement>('.codicon')]
-    .filter(glyph => getComputedStyle(glyph).display !== 'none')
-    .map(glyph => (glyph.classList.contains('codicon-check') ? 'check' : 'dash'))
+  return [...container.querySelectorAll<HTMLElement>(".codicon")]
+    .filter((glyph) => getComputedStyle(glyph).display !== "none")
+    .map((glyph) =>
+      glyph.classList.contains("codicon-check") ? "check" : "dash",
+    );
 }
 
 beforeAll(() => {
   // eslint-disable-next-line no-restricted-globals -- the cascade is the assertion; it needs a real stylesheet
-  const style = document.createElement('style')
-  style.textContent = `${CODICON_CSS}\n${TAILWIND_CSS}`
+  const style = document.createElement("style");
+  style.textContent = `${CODICON_CSS}\n${TAILWIND_CSS}`;
   // eslint-disable-next-line no-restricted-globals -- see above
-  document.head.append(style)
-})
+  document.head.append(style);
+});
 
-afterEach(cleanup)
+afterEach(cleanup);
 
-describe('Checkbox', () => {
-  it('paints the check alone when checked', () => {
-    const { container } = render(<Checkbox checked />)
+describe("Checkbox", () => {
+  it("paints the check alone when checked", () => {
+    const { container } = render(<Checkbox checked />);
 
-    expect(shownGlyphs(container)).toEqual(['check'])
-  })
+    expect(shownGlyphs(container)).toEqual(["check"]);
+  });
 
-  it('paints the dash alone when indeterminate', () => {
-    const { container } = render(<Checkbox checked="indeterminate" />)
+  it("paints the dash alone when indeterminate", () => {
+    const { container } = render(<Checkbox checked="indeterminate" />);
 
-    expect(shownGlyphs(container)).toEqual(['dash'])
-  })
+    expect(shownGlyphs(container)).toEqual(["dash"]);
+  });
 
-  it('paints no glyph when unchecked', () => {
-    const { container } = render(<Checkbox checked={false} />)
+  it("paints no glyph when unchecked", () => {
+    const { container } = render(<Checkbox checked={false} />);
 
-    expect(shownGlyphs(container)).toEqual([])
-  })
-})
+    expect(shownGlyphs(container)).toEqual([]);
+  });
+});

@@ -3,15 +3,15 @@
  * only when the rows/transcript actually changed.
  */
 
-import type { SessionInfo, SessionMessage } from '@/hermes'
+import type { SessionInfo, SessionMessage } from "@/hermes";
 
 export function sameCronSignature(a: SessionInfo[], b: SessionInfo[]): boolean {
   if (a.length !== b.length) {
-    return false
+    return false;
   }
 
   return a.every((session, i) => {
-    const other = b[i]
+    const other = b[i];
 
     return (
       other != null &&
@@ -31,31 +31,36 @@ export function sameCronSignature(a: SessionInfo[], b: SessionInfo[]): boolean {
       // fields above again, which is exactly when a pin gets toggled (#76919).
       session.pinned === other.pinned &&
       session.archived === other.archived
-    )
-  })
+    );
+  });
 }
 
 // FNV-1a over role/timestamp/content.
 function hashString(hash: number, value: string): number {
-  let next = hash
+  let next = hash;
 
   for (let i = 0; i < value.length; i++) {
-    next ^= value.charCodeAt(i)
-    next = Math.imul(next, 16777619)
+    next ^= value.charCodeAt(i);
+    next = Math.imul(next, 16777619);
   }
 
-  return next >>> 0
+  return next >>> 0;
 }
 
 /** Transcript fingerprint for the active-messaging-session poll. */
 export function sessionMessagesSignature(messages: SessionMessage[]): string {
-  let hash = 2166136261
+  let hash = 2166136261;
 
   for (const m of messages) {
-    hash = hashString(hash, m.role)
-    hash = hashString(hash, String(m.timestamp ?? ''))
-    hash = hashString(hash, typeof m.content === 'string' ? m.content : (JSON.stringify(m.content) ?? ''))
+    hash = hashString(hash, m.role);
+    hash = hashString(hash, String(m.timestamp ?? ""));
+    hash = hashString(
+      hash,
+      typeof m.content === "string"
+        ? m.content
+        : (JSON.stringify(m.content) ?? ""),
+    );
   }
 
-  return `${messages.length}:${hash}`
+  return `${messages.length}:${hash}`;
 }

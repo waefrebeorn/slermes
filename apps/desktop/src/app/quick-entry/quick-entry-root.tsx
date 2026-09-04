@@ -1,10 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-import { ErrorBoundary } from '@/components/error-boundary'
-import { ThemeProvider } from '@/themes/context'
+import { ErrorBoundary } from "@/components/error-boundary";
+import { ThemeProvider } from "@/themes/context";
 
-import { QuickEntryApp } from './quick-entry-app'
+import { QuickEntryApp } from "./quick-entry-app";
 
 /**
  * Boot the Quick Entry window. Loaded by the same bundle as the main app but via
@@ -16,14 +16,14 @@ import { QuickEntryApp } from './quick-entry-app'
  * so force the host layers see-through (same trick as the pet overlay).
  */
 export function mountQuickEntry(): void {
-  const style = document.createElement('style')
-  style.textContent = 'html,body,#root{background:transparent !important;}'
-  document.head.appendChild(style)
+  const style = document.createElement("style");
+  style.textContent = "html,body,#root{background:transparent !important;}";
+  document.head.appendChild(style);
 
-  const root = document.getElementById('root')
+  const root = document.getElementById("root");
 
   if (!root) {
-    return
+    return;
   }
 
   createRoot(root).render(
@@ -33,6 +33,6 @@ export function mountQuickEntry(): void {
           <QuickEntryApp />
         </ThemeProvider>
       </ErrorBoundary>
-    </StrictMode>
-  )
+    </StrictMode>,
+  );
 }

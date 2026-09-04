@@ -6,23 +6,27 @@
  * keys (dialogs, menus, terminal, …) are left alone.
  */
 
-import { $workspaceIsPage } from '@/app/routes'
-import { queryAllVisible } from '@/components/pane-shell/pane-visibility'
-import { $activeTreeGroup, $hoveredTreeGroup } from '@/components/pane-shell/tree/store'
-import { switcherActive } from '@/store/session-switcher'
+import { $workspaceIsPage } from "@/app/routes";
+import { queryAllVisible } from "@/components/pane-shell/pane-visibility";
+import {
+  $activeTreeGroup,
+  $hoveredTreeGroup,
+} from "@/components/pane-shell/tree/store";
+import { switcherActive } from "@/store/session-switcher";
 
-import { isEditableTarget, isFocusWithin } from './combo'
+import { isEditableTarget, isFocusWithin } from "./combo";
 
 /** `composer.focus` defaults that need the surface/target gate. */
-export const isComposerFocusSoftCombo = (combo: string) => combo === '/' || combo === 'enter'
+export const isComposerFocusSoftCombo = (combo: string) =>
+  combo === "/" || combo === "enter";
 
 const ENTER_ACTIVATES = [
-  'a[href]',
-  'button',
-  'summary',
-  'input',
-  'textarea',
-  'select',
+  "a[href]",
+  "button",
+  "summary",
+  "input",
+  "textarea",
+  "select",
   '[contenteditable=""]',
   '[contenteditable="true"]',
   '[role="button"]',
@@ -36,21 +40,21 @@ const ENTER_ACTIVATES = [
   '[role="radio"]',
   '[role="switch"]',
   '[role="tab"]',
-  '[role="treeitem"]'
-].join(',')
+  '[role="treeitem"]',
+].join(",");
 
 // Overlays that cover the whole window (portaled to the body, or the overlay
 // shell itself) — one anywhere means the composer is behind it.
 const BLOCKING_OVERLAY =
-  '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[data-radix-popper-content-wrapper],[data-overlay-surface]'
+  '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[data-radix-popper-content-wrapper],[data-overlay-surface]';
 
 // Blockers that live INSIDE a chat surface. Inactive tabs stay mounted, so this
 // one has to be visible-scoped: a clarify card waiting in a background thread
 // must not take the foreground composer's letter keys.
-const BLOCKING_IN_SURFACE = '[data-clarify-choices]'
+const BLOCKING_IN_SURFACE = "[data-clarify-choices]";
 
 /** The layout-tree zone a pane is rendered in — see `tree/renderer/tree-group`. */
-const TREE_GROUP = '[data-tree-group]'
+const TREE_GROUP = "[data-tree-group]";
 
 /**
  * THE live clarify card — the single card whose shortcuts are armed right now.
@@ -76,29 +80,39 @@ const TREE_GROUP = '[data-tree-group]'
  * which is a worse regression than the single-card behaviour it replaces.
  */
 export const visibleClarifyCard = (): HTMLElement | null => {
-  const cards = queryAllVisible<HTMLElement>(BLOCKING_IN_SURFACE)
+  const cards = queryAllVisible<HTMLElement>(BLOCKING_IN_SURFACE);
 
   // Overwhelmingly the common case — nothing to disambiguate, no store read.
   if (cards.length < 2) {
-    return cards[0] ?? null
+    return cards[0] ?? null;
   }
 
   for (const zone of [$hoveredTreeGroup.get(), $activeTreeGroup.get()]) {
-    const card = zone ? cards.find(el => el.closest<HTMLElement>(TREE_GROUP)?.dataset.treeGroup === zone) : undefined
+    const card = zone
+      ? cards.find(
+          (el) =>
+            el.closest<HTMLElement>(TREE_GROUP)?.dataset.treeGroup === zone,
+        )
+      : undefined;
 
     if (card) {
-      return card
+      return card;
     }
   }
 
-  return cards[0]
-}
+  return cards[0];
+};
 
 /** True when the focused control would normally handle Enter itself. */
 export function isActivateOnEnterTarget(target: EventTarget | null): boolean {
-  const el = target as HTMLElement | null
+  const el = target as HTMLElement | null;
 
-  return Boolean(el && el !== document.body && el !== document.documentElement && el.closest(ENTER_ACTIVATES))
+  return Boolean(
+    el &&
+    el !== document.body &&
+    el !== document.documentElement &&
+    el.closest(ENTER_ACTIVATES),
+  );
 }
 
 /**
@@ -116,32 +130,36 @@ export function isActivateOnEnterTarget(target: EventTarget | null): boolean {
  * with no store coupling.
  */
 export function clarifyCardOwnsKey(event: KeyboardEvent): boolean {
-  const card = visibleClarifyCard()
+  const card = visibleClarifyCard();
 
   if (!card) {
-    return false
+    return false;
   }
 
-  if (event.key === 'Enter') {
-    return true
+  if (event.key === "Enter") {
+    return true;
   }
 
   // "Other" is the row past the last choice, hence the +1.
-  const rows = Number(card.getAttribute('data-clarify-choices')) + 1
+  const rows = Number(card.getAttribute("data-clarify-choices")) + 1;
 
   if (!Number.isFinite(rows)) {
-    return false
+    return false;
   }
 
-  const key = event.key.toLowerCase()
+  const key = event.key.toLowerCase();
 
   if (key.length !== 1) {
-    return false
+    return false;
   }
 
-  const index = /^[1-9]$/.test(key) ? Number(key) - 1 : key >= 'a' && key <= 'z' ? key.charCodeAt(0) - 97 : -1
+  const index = /^[1-9]$/.test(key)
+    ? Number(key) - 1
+    : key >= "a" && key <= "z"
+      ? key.charCodeAt(0) - 97
+      : -1;
 
-  return index >= 0 && index < rows
+  return index >= 0 && index < rows;
 }
 
 /**
@@ -155,28 +173,37 @@ export function composerFocusBlockedBySurface(): boolean {
   return (
     switcherActive() ||
     $workspaceIsPage.get() ||
-    isFocusWithin('[data-terminal]') ||
+    isFocusWithin("[data-terminal]") ||
     Boolean(document.querySelector(BLOCKING_OVERLAY))
-  )
+  );
 }
 
 /** Printable `event.key` for type-to-focus, or null (modifiers / non-printables / IME). */
 export function typeToFocusChar(event: KeyboardEvent): string | null {
-  if (event.defaultPrevented || event.isComposing || event.metaKey || event.ctrlKey || event.altKey) {
-    return null
+  if (
+    event.defaultPrevented ||
+    event.isComposing ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.altKey
+  ) {
+    return null;
   }
 
   // Length 1 ⇒ letter/digit/punct/space; Enter/Tab/Arrows/Dead/F-keys are longer.
-  return event.key.length === 1 ? event.key : null
+  return event.key.length === 1 ? event.key : null;
 }
 
 /**
  * Whether soft focus / type-to-focus may run.
  * `combo` is `/` | `enter` | `'type'` (unbound printable); other chords pass.
  */
-export function composerFocusKeysAllowed(event: KeyboardEvent, combo: string): boolean {
-  if (combo !== 'type' && !isComposerFocusSoftCombo(combo)) {
-    return true
+export function composerFocusKeysAllowed(
+  event: KeyboardEvent,
+  combo: string,
+): boolean {
+  if (combo !== "type" && !isComposerFocusSoftCombo(combo)) {
+    return true;
   }
 
   if (
@@ -186,8 +213,8 @@ export function composerFocusKeysAllowed(event: KeyboardEvent, combo: string): b
     composerFocusBlockedBySurface() ||
     clarifyCardOwnsKey(event)
   ) {
-    return false
+    return false;
   }
 
-  return !(combo === 'enter' && isActivateOnEnterTarget(event.target))
+  return !(combo === "enter" && isActivateOnEnterTarget(event.target));
 }

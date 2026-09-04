@@ -1,14 +1,20 @@
-import { type ReactNode, useCallback, useLayoutEffect, useRef, useState } from 'react'
+import {
+  type ReactNode,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { useResizeObserver } from '@/hooks/use-resize-observer'
-import { cn } from '@/lib/utils'
+import { useResizeObserver } from "@/hooks/use-resize-observer";
+import { cn } from "@/lib/utils";
 
 /** How much of a clipped edge the gradient eats. */
-const FADE = '1.25rem'
+const FADE = "1.25rem";
 
 export interface FadeEdges {
-  above: boolean
-  below: boolean
+  above: boolean;
+  below: boolean;
 }
 
 /**
@@ -17,21 +23,23 @@ export interface FadeEdges {
  */
 export function edgeMask({ above, below }: FadeEdges): string | undefined {
   if (!above && !below) {
-    return undefined
+    return undefined;
   }
 
-  const top = above ? `transparent, black ${FADE}` : 'black'
-  const bottom = below ? `black calc(100% - ${FADE}), transparent` : 'black'
+  const top = above ? `transparent, black ${FADE}` : "black";
+  const bottom = below ? `black calc(100% - ${FADE}), transparent` : "black";
 
-  return `linear-gradient(to bottom, ${top}, ${bottom})`
+  return `linear-gradient(to bottom, ${top}, ${bottom})`;
 }
 
 /** Which edges of a scroller currently have content clipped behind them. */
-export function scrollEdges(el: Pick<HTMLElement, 'clientHeight' | 'scrollHeight' | 'scrollTop'>): FadeEdges {
+export function scrollEdges(
+  el: Pick<HTMLElement, "clientHeight" | "scrollHeight" | "scrollTop">,
+): FadeEdges {
   return {
     above: el.scrollTop > 1,
-    below: el.scrollTop + el.clientHeight < el.scrollHeight - 1
-  }
+    below: el.scrollTop + el.clientHeight < el.scrollHeight - 1,
+  };
 }
 
 /**
@@ -55,48 +63,54 @@ export function FadeScroll({
   children,
   className,
   deps,
-  maxHeight = '9rem'
+  maxHeight = "9rem",
 }: {
-  children: ReactNode
-  className?: string
-  deps?: unknown
-  maxHeight?: string
+  children: ReactNode;
+  className?: string;
+  deps?: unknown;
+  maxHeight?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [edges, setEdges] = useState({ above: false, below: false })
+  const ref = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ above: false, below: false });
 
   const measure = useCallback(() => {
-    const el = ref.current
+    const el = ref.current;
 
     if (!el) {
-      return
+      return;
     }
 
-    const next = scrollEdges(el)
+    const next = scrollEdges(el);
 
-    setEdges(prev => (prev.above === next.above && prev.below === next.below ? prev : next))
-  }, [])
+    setEdges((prev) =>
+      prev.above === next.above && prev.below === next.below ? prev : next,
+    );
+  }, []);
 
   useLayoutEffect(() => {
     if (deps !== undefined && ref.current) {
-      ref.current.scrollTop = ref.current.scrollHeight
+      ref.current.scrollTop = ref.current.scrollHeight;
     }
 
-    measure()
-  }, [deps, measure])
+    measure();
+  }, [deps, measure]);
 
-  useResizeObserver(measure, ref)
+  useResizeObserver(measure, ref);
 
-  const mask = edgeMask(edges)
+  const mask = edgeMask(edges);
 
   return (
     <div
-      className={cn('overflow-y-auto overscroll-contain', className)}
+      className={cn("overflow-y-auto overscroll-contain", className)}
       onScroll={measure}
       ref={ref}
-      style={mask ? { maskImage: mask, maxHeight, WebkitMaskImage: mask } : { maxHeight }}
+      style={
+        mask
+          ? { maskImage: mask, maxHeight, WebkitMaskImage: mask }
+          : { maxHeight }
+      }
     >
       {children}
     </div>
-  )
+  );
 }

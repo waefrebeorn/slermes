@@ -1,16 +1,16 @@
-import { useStore } from '@nanostores/react'
-import type * as React from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import type * as React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { PageLoader } from '@/components/page-loader'
-import { StatusDot, type StatusTone } from '@/components/status-dot'
-import { Button } from '@/components/ui/button'
-import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { DisclosureCaret } from '@/components/ui/disclosure-caret'
-import { ErrorBanner } from '@/components/ui/error-state'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import { Tip } from '@/components/ui/tooltip'
+import { PageLoader } from "@/components/page-loader";
+import { StatusDot, type StatusTone } from "@/components/status-dot";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { DisclosureCaret } from "@/components/ui/disclosure-caret";
+import { ErrorBanner } from "@/components/ui/error-state";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Tip } from "@/components/ui/tooltip";
 import {
   approvePairing,
   getMessagingPlatforms,
@@ -19,82 +19,88 @@ import {
   type MessagingPlatformInfo,
   type PairingUser,
   revokePairing,
-  updateMessagingPlatform
-} from '@/hermes'
-import { type Translations, useI18n } from '@/i18n'
-import { openExternalLink } from '@/lib/external-link'
-import { ExternalLink, Save, Trash2 } from '@/lib/icons'
-import { normalize } from '@/lib/text'
-import { cn } from '@/lib/utils'
-import { $changeEventsAvailable, $pairingChangeTick, $platformsChangeTick } from '@/store/live-sync'
-import { notify, notifyError } from '@/store/notifications'
-import { $settingsRequestProfile } from '@/store/settings-scope'
-import { runGatewayRestart } from '@/store/system-actions'
+  updateMessagingPlatform,
+} from "@/hermes";
+import { type Translations, useI18n } from "@/i18n";
+import { openExternalLink } from "@/lib/external-link";
+import { ExternalLink, Save, Trash2 } from "@/lib/icons";
+import { normalize } from "@/lib/text";
+import { cn } from "@/lib/utils";
+import {
+  $changeEventsAvailable,
+  $pairingChangeTick,
+  $platformsChangeTick,
+} from "@/store/live-sync";
+import { notify, notifyError } from "@/store/notifications";
+import { $settingsRequestProfile } from "@/store/settings-scope";
+import { runGatewayRestart } from "@/store/system-actions";
 
-import { useRefreshHotkey } from '../hooks/use-refresh-hotkey'
-import { useRouteEnumParam } from '../hooks/use-route-enum-param'
-import { DetailColumn, ListColumn, MasterDetail } from '../master-detail'
-import { PageSearchShell } from '../page-search-shell'
-import { CREDENTIAL_CONTROL_CLASS } from '../settings/credential-key-ui'
-import { ListRow } from '../settings/primitives'
-import { SettingsProfileScope } from '../settings/profile-scope'
-import type { SetStatusbarItemGroup } from '../shell/statusbar-controls'
+import { useRefreshHotkey } from "../hooks/use-refresh-hotkey";
+import { useRouteEnumParam } from "../hooks/use-route-enum-param";
+import { DetailColumn, ListColumn, MasterDetail } from "../master-detail";
+import { PageSearchShell } from "../page-search-shell";
+import { CREDENTIAL_CONTROL_CLASS } from "../settings/credential-key-ui";
+import { ListRow } from "../settings/primitives";
+import { SettingsProfileScope } from "../settings/profile-scope";
+import type { SetStatusbarItemGroup } from "../shell/statusbar-controls";
 
-import { PlatformAvatar } from './platform-icon'
+import { PlatformAvatar } from "./platform-icon";
 
-interface MessagingViewProps extends React.ComponentProps<'section'> {
-  setStatusbarItemGroup?: SetStatusbarItemGroup
+interface MessagingViewProps extends React.ComponentProps<"section"> {
+  setStatusbarItemGroup?: SetStatusbarItemGroup;
 }
 
-type EditMap = Record<string, Record<string, string>>
+type EditMap = Record<string, Record<string, string>>;
 
 const PILL_TONE: Record<StatusTone, string> = {
-  good: 'bg-primary/10 text-primary',
-  muted: 'bg-muted text-muted-foreground',
-  warn: 'bg-amber-500/10 text-amber-600 dark:text-amber-300',
-  bad: 'bg-destructive/10 text-destructive'
-}
+  good: "bg-primary/10 text-primary",
+  muted: "bg-muted text-muted-foreground",
+  warn: "bg-amber-500/10 text-amber-600 dark:text-amber-300",
+  bad: "bg-destructive/10 text-destructive",
+};
 
-const stateLabel = (state: null | string | undefined, m: Translations['messaging']) =>
-  state ? m.states[state] || state.replace(/_/g, ' ') : m.unknown
+const stateLabel = (
+  state: null | string | undefined,
+  m: Translations["messaging"],
+) => (state ? m.states[state] || state.replace(/_/g, " ") : m.unknown);
 
 function stateTone({ enabled, state }: MessagingPlatformInfo): StatusTone {
   if (!enabled) {
-    return 'muted'
+    return "muted";
   }
 
-  if (state === 'connected') {
-    return 'good'
+  if (state === "connected") {
+    return "good";
   }
 
-  if (state === 'fatal' || state === 'startup_failed') {
-    return 'bad'
+  if (state === "fatal" || state === "startup_failed") {
+    return "bad";
   }
 
-  return 'warn'
+  return "warn";
 }
 
 const trimEdits = (edits: Record<string, string>): Record<string, string> =>
   Object.fromEntries(
     Object.entries(edits)
       .map(([k, v]) => [k, v.trim()])
-      .filter(([, v]) => v)
-  )
+      .filter(([, v]) => v),
+  );
 
 /** Stable row identity: a user id is only unique within its platform. */
-const pairingKey = (user: PairingUser) => `${user.platform}:${user.user_id}`
+const pairingKey = (user: PairingUser) => `${user.platform}:${user.user_id}`;
 
-const pairingLabel = (user: PairingUser) => user.user_name || user.user_id
+const pairingLabel = (user: PairingUser) => user.user_name || user.user_id;
 
 /** Group pairing rows by platform id so a detail pane can slice its own. */
 function byPlatform(rows: PairingUser[]): Record<string, PairingUser[]> {
-  const grouped: Record<string, PairingUser[]> = {}
+  const grouped: Record<string, PairingUser[]> = {};
 
   for (const row of rows) {
-    ;(grouped[row.platform] ||= []).push(row)
+    (grouped[row.platform] ||= []).push(row);
   }
 
-  return grouped
+  return grouped;
 }
 
 const FIELD_COPY: Record<string, { advanced?: boolean }> = {
@@ -110,66 +116,84 @@ const FIELD_COPY: Record<string, { advanced?: boolean }> = {
   QQBOT_HOME_CHANNEL: { advanced: true },
   QQBOT_HOME_CHANNEL_NAME: { advanced: true },
   WHATSAPP_ENABLED: { advanced: true },
-  WHATSAPP_MODE: { advanced: true }
-}
+  WHATSAPP_MODE: { advanced: true },
+};
 
-function fieldCopy(field: MessagingEnvVarInfo, m: Translations['messaging']) {
-  const copy = FIELD_COPY[field.key] || {}
-  const localized = m.fieldCopy[field.key] || {}
+function fieldCopy(field: MessagingEnvVarInfo, m: Translations["messaging"]) {
+  const copy = FIELD_COPY[field.key] || {};
+  const localized = m.fieldCopy[field.key] || {};
 
   return {
     label: localized.label || field.prompt || field.key,
     help: localized.help || field.description,
     placeholder: localized.placeholder || field.prompt,
-    advanced: Boolean(copy.advanced || field.advanced)
-  }
+    advanced: Boolean(copy.advanced || field.advanced),
+  };
 }
 
-export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...props }: MessagingViewProps) {
-  const { t } = useI18n()
-  const m = t.messaging
+export function MessagingView({
+  setStatusbarItemGroup: _setStatusbarItemGroup,
+  ...props
+}: MessagingViewProps) {
+  const { t } = useI18n();
+  const m = t.messaging;
   // Shared settings "Applies to" scope, request-shaped (undefined → follow
   // the active profile; the API helpers treat null as "target primary").
-  const scopeProfile = useStore($settingsRequestProfile)
+  const scopeProfile = useStore($settingsRequestProfile);
   // Both save/toggle toasts offer the same one-click restart.
-  const restartGatewayAction = { label: t.commandCenter.restartGateway, onClick: () => void runGatewayRestart() }
-  const [platforms, setPlatforms] = useState<MessagingPlatformInfo[] | null>(null)
+  const restartGatewayAction = {
+    label: t.commandCenter.restartGateway,
+    onClick: () => void runGatewayRestart(),
+  };
+  const [platforms, setPlatforms] = useState<MessagingPlatformInfo[] | null>(
+    null,
+  );
 
-  const [pairing, setPairing] = useState<{ approved: PairingUser[]; pending: PairingUser[] }>({
+  const [pairing, setPairing] = useState<{
+    approved: PairingUser[];
+    pending: PairingUser[];
+  }>({
     approved: [],
-    pending: []
-  })
+    pending: [],
+  });
 
-  const [approving, setApproving] = useState<null | string>(null)
-  const [pendingRevoke, setPendingRevoke] = useState<null | PairingUser>(null)
-  const [edits, setEdits] = useState<EditMap>({})
-  const [query, setQuery] = useState('')
-  const [refreshing, setRefreshing] = useState(false)
-  const [saving, setSaving] = useState<string | null>(null)
-  const platformIds = useMemo(() => platforms?.map(p => p.id) ?? [], [platforms])
-  const [selectedId, setSelectedId] = useRouteEnumParam('platform', platformIds, platformIds[0] ?? '')
+  const [approving, setApproving] = useState<null | string>(null);
+  const [pendingRevoke, setPendingRevoke] = useState<null | PairingUser>(null);
+  const [edits, setEdits] = useState<EditMap>({});
+  const [query, setQuery] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const [saving, setSaving] = useState<string | null>(null);
+  const platformIds = useMemo(
+    () => platforms?.map((p) => p.id) ?? [],
+    [platforms],
+  );
+  const [selectedId, setSelectedId] = useRouteEnumParam(
+    "platform",
+    platformIds,
+    platformIds[0] ?? "",
+  );
 
   const refreshPlatforms = useCallback(
     async (silent = false) => {
       if (!silent) {
-        setRefreshing(true)
+        setRefreshing(true);
       }
 
       try {
-        const result = await getMessagingPlatforms(scopeProfile)
-        setPlatforms(result.platforms)
+        const result = await getMessagingPlatforms(scopeProfile);
+        setPlatforms(result.platforms);
       } catch (err) {
         if (!silent) {
-          notifyError(err, m.loadFailed)
+          notifyError(err, m.loadFailed);
         }
       } finally {
         if (!silent) {
-          setRefreshing(false)
+          setRefreshing(false);
         }
       }
     },
-    [m, scopeProfile]
-  )
+    [m, scopeProfile],
+  );
 
   // Pairing has its own signal. platforms.changed tracks connect/disconnect
   // health via gateway_state.json, which a new pairing request never moves —
@@ -178,195 +202,229 @@ export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
   // should show no rows, not an error banner over a working page.
   const refreshPairing = useCallback(async () => {
     try {
-      const result = await getPairing(scopeProfile)
-      setPairing({ approved: result.approved ?? [], pending: result.pending ?? [] })
+      const result = await getPairing(scopeProfile);
+      setPairing({
+        approved: result.approved ?? [],
+        pending: result.pending ?? [],
+      });
     } catch {
       // Leave the last known rows in place rather than blanking them.
     }
-  }, [scopeProfile])
+  }, [scopeProfile]);
 
   const refreshAll = useCallback(
     async (silent = false) => {
-      await Promise.all([refreshPlatforms(silent), refreshPairing()])
+      await Promise.all([refreshPlatforms(silent), refreshPairing()]);
     },
-    [refreshPairing, refreshPlatforms]
-  )
+    [refreshPairing, refreshPlatforms],
+  );
 
-  useRefreshHotkey(() => void refreshAll())
+  useRefreshHotkey(() => void refreshAll());
 
   useEffect(() => {
-    void refreshAll()
-  }, [refreshAll])
+    void refreshAll();
+  }, [refreshAll]);
 
   // Scope switch: the mounted list still shows the PREVIOUS profile's
   // platforms/pairing while the new fetch is in flight — blank it so stale
   // rows can't be toggled against the wrong backend.
-  const scopeSeenRef = useRef(scopeProfile)
+  const scopeSeenRef = useRef(scopeProfile);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (scope-change guard)
   useEffect(() => {
     if (scopeSeenRef.current === scopeProfile) {
-      return
+      return;
     }
 
-    scopeSeenRef.current = scopeProfile
-    setPlatforms(null)
-    setPairing({ approved: [], pending: [] })
-    setEdits({})
-  }, [scopeProfile])
+    scopeSeenRef.current = scopeProfile;
+    setPlatforms(null);
+    setPairing({ approved: [], pending: [] });
+    setEdits({});
+  }, [scopeProfile]);
 
-  const changeEventsAvailable = useStore($changeEventsAvailable)
-  const platformsChangeTick = useStore($platformsChangeTick)
-  const pairingChangeTick = useStore($pairingChangeTick)
+  const changeEventsAvailable = useStore($changeEventsAvailable);
+  const platformsChangeTick = useStore($platformsChangeTick);
+  const pairingChangeTick = useStore($pairingChangeTick);
 
   // A new pending request (or a grant from another surface) moves the pairing
   // store on disk; the change watcher turns that into pairing.changed.
   useEffect(() => {
     if (!changeEventsAvailable || pairingChangeTick === 0 || document.hidden) {
-      return
+      return;
     }
 
-    void refreshPairing()
-  }, [changeEventsAvailable, pairingChangeTick, refreshPairing])
+    void refreshPairing();
+  }, [changeEventsAvailable, pairingChangeTick, refreshPairing]);
 
   // Connection status updates without a manual "check" click. platforms.changed
   // (the gateway persisting connect/disconnect/health to gateway_state.json)
   // drives the refresh on event-capable backends — no timer; older backends
   // keep the legacy visible-tab poll.
   useEffect(() => {
-    if (!changeEventsAvailable || platformsChangeTick === 0 || document.hidden) {
-      return
+    if (
+      !changeEventsAvailable ||
+      platformsChangeTick === 0 ||
+      document.hidden
+    ) {
+      return;
     }
 
-    void refreshPlatforms(true)
-  }, [changeEventsAvailable, platformsChangeTick, refreshPlatforms])
+    void refreshPlatforms(true);
+  }, [changeEventsAvailable, platformsChangeTick, refreshPlatforms]);
 
   useEffect(() => {
     if (changeEventsAvailable) {
-      return
+      return;
     }
 
-    let cancelled = false
+    let cancelled = false;
 
     function tick() {
       if (cancelled || document.hidden) {
-        return
+        return;
       }
 
-      void refreshAll(true)
+      void refreshAll(true);
     }
 
-    const id = window.setInterval(tick, 6000)
+    const id = window.setInterval(tick, 6000);
 
     return () => {
-      cancelled = true
-      window.clearInterval(id)
-    }
-  }, [changeEventsAvailable, refreshAll])
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [changeEventsAvailable, refreshAll]);
 
   const selected = useMemo(() => {
     if (!platforms) {
-      return null
+      return null;
     }
 
-    return platforms.find(platform => platform.id === selectedId) || platforms[0] || null
-  }, [platforms, selectedId])
+    return (
+      platforms.find((platform) => platform.id === selectedId) ||
+      platforms[0] ||
+      null
+    );
+  }, [platforms, selectedId]);
 
-  const pendingByPlatform = useMemo(() => byPlatform(pairing.pending), [pairing.pending])
-  const approvedByPlatform = useMemo(() => byPlatform(pairing.approved), [pairing.approved])
+  const pendingByPlatform = useMemo(
+    () => byPlatform(pairing.pending),
+    [pairing.pending],
+  );
+  const approvedByPlatform = useMemo(
+    () => byPlatform(pairing.approved),
+    [pairing.approved],
+  );
 
   const visiblePlatforms = useMemo(() => {
     if (!platforms) {
-      return []
+      return [];
     }
 
-    const q = normalize(query)
+    const q = normalize(query);
 
     if (!q) {
-      return platforms
+      return platforms;
     }
 
-    return platforms.filter(platform =>
+    return platforms.filter((platform) =>
       [platform.id, platform.name, platform.description, platform.state]
         .filter(Boolean)
-        .some(value => String(value).toLowerCase().includes(q))
-    )
-  }, [platforms, query])
+        .some((value) => String(value).toLowerCase().includes(q)),
+    );
+  }, [platforms, query]);
 
-  async function handleToggle(platform: MessagingPlatformInfo, enabled: boolean) {
-    setSaving(`enabled:${platform.id}`)
+  async function handleToggle(
+    platform: MessagingPlatformInfo,
+    enabled: boolean,
+  ) {
+    setSaving(`enabled:${platform.id}`);
 
     try {
-      await updateMessagingPlatform(platform.id, { enabled }, scopeProfile)
+      await updateMessagingPlatform(platform.id, { enabled }, scopeProfile);
       setPlatforms(
-        current =>
-          current?.map(row =>
+        (current) =>
+          current?.map((row) =>
             row.id === platform.id
               ? {
                   ...row,
                   enabled,
-                  state: enabled ? (row.configured ? 'pending_restart' : 'not_configured') : 'disabled'
+                  state: enabled
+                    ? row.configured
+                      ? "pending_restart"
+                      : "not_configured"
+                    : "disabled",
                 }
-              : row
-          ) ?? current
-      )
+              : row,
+          ) ?? current,
+      );
       notify({
-        kind: 'success',
-        title: enabled ? m.platformEnabled(platform.name) : m.platformDisabled(platform.name),
+        kind: "success",
+        title: enabled
+          ? m.platformEnabled(platform.name)
+          : m.platformDisabled(platform.name),
         message: m.restartToApply,
-        action: restartGatewayAction
-      })
+        action: restartGatewayAction,
+      });
     } catch (err) {
-      notifyError(err, m.failedUpdate(platform.name))
+      notifyError(err, m.failedUpdate(platform.name));
     } finally {
-      setSaving(null)
+      setSaving(null);
     }
   }
 
   async function handleSave(platform: MessagingPlatformInfo) {
-    const env = trimEdits(edits[platform.id] || {})
+    const env = trimEdits(edits[platform.id] || {});
 
     if (Object.keys(env).length === 0) {
-      return
+      return;
     }
 
-    setSaving(`env:${platform.id}`)
+    setSaving(`env:${platform.id}`);
 
     try {
-      await updateMessagingPlatform(platform.id, { env }, scopeProfile)
-      setEdits(current => ({ ...current, [platform.id]: {} }))
-      await refreshPlatforms()
+      await updateMessagingPlatform(platform.id, { env }, scopeProfile);
+      setEdits((current) => ({ ...current, [platform.id]: {} }));
+      await refreshPlatforms();
       notify({
-        kind: 'success',
+        kind: "success",
         title: m.setupSaved(platform.name),
         message: m.restartToReconnect,
-        action: restartGatewayAction
-      })
+        action: restartGatewayAction,
+      });
     } catch (err) {
-      notifyError(err, m.failedSave(platform.name))
+      notifyError(err, m.failedSave(platform.name));
     } finally {
-      setSaving(null)
+      setSaving(null);
     }
   }
 
   async function handleClear(platform: MessagingPlatformInfo, key: string) {
-    setSaving(`clear:${key}`)
+    setSaving(`clear:${key}`);
 
     try {
-      await updateMessagingPlatform(platform.id, { clear_env: [key] }, scopeProfile)
-      setEdits(current => ({
+      await updateMessagingPlatform(
+        platform.id,
+        { clear_env: [key] },
+        scopeProfile,
+      );
+      setEdits((current) => ({
         ...current,
         [platform.id]: {
           ...(current[platform.id] || {}),
-          [key]: ''
-        }
-      }))
-      await refreshPlatforms()
-      notify({ kind: 'success', title: m.keyCleared(key), message: m.setupUpdated(platform.name) })
+          [key]: "",
+        },
+      }));
+      await refreshPlatforms();
+      notify({
+        kind: "success",
+        title: m.keyCleared(key),
+        message: m.setupUpdated(platform.name),
+      });
     } catch (err) {
-      notifyError(err, m.failedClear(key))
+      notifyError(err, m.failedClear(key));
     } finally {
-      setSaving(null)
+      setSaving(null);
     }
   }
 
@@ -375,49 +433,60 @@ export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
   // snapshot so the row never silently disappears on an error.
   async function handleApprove(user: PairingUser) {
     if (!user.request_id) {
-      return
+      return;
     }
 
-    const key = pairingKey(user)
-    const snapshot = pairing
-    setApproving(key)
-    setPairing(current => ({
+    const key = pairingKey(user);
+    const snapshot = pairing;
+    setApproving(key);
+    setPairing((current) => ({
       approved: current.approved,
-      pending: current.pending.filter(row => pairingKey(row) !== key)
-    }))
+      pending: current.pending.filter((row) => pairingKey(row) !== key),
+    }));
 
     try {
-      await approvePairing(user.platform, user.request_id, scopeProfile)
-      notify({ kind: 'success', title: m.approvedUser(pairingLabel(user)), message: m.approvedHint })
-      await refreshPairing()
+      await approvePairing(user.platform, user.request_id, scopeProfile);
+      notify({
+        kind: "success",
+        title: m.approvedUser(pairingLabel(user)),
+        message: m.approvedHint,
+      });
+      await refreshPairing();
     } catch (err) {
-      setPairing(snapshot)
+      setPairing(snapshot);
       // 429 is the code path's brute-force lockout — a distinct condition the
       // operator can only wait out, so it gets its own message.
-      const lockedOut = err instanceof Error && err.message.includes('429')
-      notifyError(err, lockedOut ? m.pairingLockedOut : m.failedApprove(pairingLabel(user)))
+      const lockedOut = err instanceof Error && err.message.includes("429");
+      notifyError(
+        err,
+        lockedOut ? m.pairingLockedOut : m.failedApprove(pairingLabel(user)),
+      );
     } finally {
-      setApproving(null)
+      setApproving(null);
     }
   }
 
   // ConfirmDialog owns the pending → done → close beat and shows an inline
   // error when onConfirm throws, so this rethrows instead of swallowing.
   async function handleRevoke(user: PairingUser) {
-    const key = pairingKey(user)
-    const snapshot = pairing
-    setPairing(current => ({
-      approved: current.approved.filter(row => pairingKey(row) !== key),
-      pending: current.pending
-    }))
+    const key = pairingKey(user);
+    const snapshot = pairing;
+    setPairing((current) => ({
+      approved: current.approved.filter((row) => pairingKey(row) !== key),
+      pending: current.pending,
+    }));
 
     try {
-      await revokePairing(user.platform, user.user_id, scopeProfile)
-      notify({ kind: 'success', title: m.revokedUser(pairingLabel(user)), message: user.platform })
-      await refreshPairing()
+      await revokePairing(user.platform, user.user_id, scopeProfile);
+      notify({
+        kind: "success",
+        title: m.revokedUser(pairingLabel(user)),
+        message: user.platform,
+      });
+      await refreshPairing();
     } catch (err) {
-      setPairing(snapshot)
-      throw err
+      setPairing(snapshot);
+      throw err;
     }
   }
 
@@ -426,7 +495,9 @@ export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
       {...props}
       onSearchChange={setQuery}
       searchHidden={(platforms?.length ?? 0) === 0}
-      searchHints={platforms?.slice(0, 5).map(platform => t.common.tryHint(platform.name.toLowerCase()))}
+      searchHints={platforms
+        ?.slice(0, 5)
+        .map((platform) => t.common.tryHint(platform.name.toLowerCase()))}
       searchPlaceholder={m.search}
       searchValue={query}
     >
@@ -441,12 +512,14 @@ export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
             <MasterDetail>
               <ListColumn>
                 <ul className="space-y-1">
-                  {visiblePlatforms.map(platform => (
+                  {visiblePlatforms.map((platform) => (
                     <li key={platform.id}>
                       <PlatformRow
                         active={selected?.id === platform.id}
                         onSelect={() => setSelectedId(platform.id)}
-                        pendingCount={pendingByPlatform[platform.id]?.length ?? 0}
+                        pendingCount={
+                          pendingByPlatform[platform.id]?.length ?? 0
+                        }
                         platform={platform}
                       />
                     </li>
@@ -458,9 +531,14 @@ export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
                 actionBar={
                   selected && (
                     <PlatformActionBar
-                      hasEdits={Object.keys(trimEdits(edits[selected.id] || {})).length > 0}
+                      hasEdits={
+                        Object.keys(trimEdits(edits[selected.id] || {}))
+                          .length > 0
+                      }
                       onSave={() => void handleSave(selected)}
-                      onToggle={enabled => void handleToggle(selected, enabled)}
+                      onToggle={(enabled) =>
+                        void handleToggle(selected, enabled)
+                      }
                       platform={selected}
                       saving={saving}
                     />
@@ -472,15 +550,15 @@ export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
                     approved={approvedByPlatform[selected.id] ?? []}
                     approving={approving}
                     edits={edits[selected.id] || {}}
-                    onApprove={user => void handleApprove(user)}
-                    onClear={key => void handleClear(selected, key)}
+                    onApprove={(user) => void handleApprove(user)}
+                    onClear={(key) => void handleClear(selected, key)}
                     onEdit={(key, value) =>
-                      setEdits(current => ({
+                      setEdits((current) => ({
                         ...current,
                         [selected.id]: {
                           ...(current[selected.id] || {}),
-                          [key]: value
-                        }
+                          [key]: value,
+                        },
                       }))
                     }
                     onRevoke={setPendingRevoke}
@@ -499,42 +577,50 @@ export function MessagingView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
         busyLabel={m.revoking}
         cancelLabel={t.common.cancel}
         confirmLabel={m.revoke}
-        description={pendingRevoke ? m.revokeDesc(pairingLabel(pendingRevoke)) : null}
+        description={
+          pendingRevoke ? m.revokeDesc(pairingLabel(pendingRevoke)) : null
+        }
         destructive
         onClose={() => setPendingRevoke(null)}
-        onConfirm={() => (pendingRevoke ? handleRevoke(pendingRevoke) : undefined)}
+        onConfirm={() =>
+          pendingRevoke ? handleRevoke(pendingRevoke) : undefined
+        }
         open={Boolean(pendingRevoke)}
         title={m.revokeTitle}
       />
     </PageSearchShell>
-  )
+  );
 }
 
 function PlatformRow({
   active,
   onSelect,
   pendingCount,
-  platform
+  platform,
 }: {
-  active: boolean
-  onSelect: () => void
-  pendingCount: number
-  platform: MessagingPlatformInfo
+  active: boolean;
+  onSelect: () => void;
+  pendingCount: number;
+  platform: MessagingPlatformInfo;
 }) {
-  const { t } = useI18n()
+  const { t } = useI18n();
 
   return (
     <button
       className={cn(
-        'row-hover flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:text-foreground',
-        active ? 'bg-(--ui-row-active-background) text-foreground' : 'text-(--ui-text-secondary)'
+        "row-hover flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:text-foreground",
+        active
+          ? "bg-(--ui-row-active-background) text-foreground"
+          : "text-(--ui-text-secondary)",
       )}
       onClick={onSelect}
       type="button"
     >
       <PlatformAvatar platformId={platform.id} platformName={platform.name} />
       <span className="flex min-w-0 flex-1 items-center justify-between gap-2">
-        <span className="truncate text-[length:var(--conversation-text-font-size)] font-normal">{platform.name}</span>
+        <span className="truncate text-[length:var(--conversation-text-font-size)] font-normal">
+          {platform.name}
+        </span>
         <span className="flex shrink-0 items-center gap-1.5">
           {/* Someone is waiting to be let in — the only way this page tells
               you so before you open the platform. */}
@@ -542,8 +628,8 @@ function PlatformRow({
             <span
               aria-label={t.messaging.pendingAria(pendingCount)}
               className={cn(
-                'inline-flex min-w-4 items-center justify-center rounded-full px-1 text-[0.66rem] font-medium tabular-nums',
-                PILL_TONE.warn
+                "inline-flex min-w-4 items-center justify-center rounded-full px-1 text-[0.66rem] font-medium tabular-nums",
+                PILL_TONE.warn,
               )}
             >
               {pendingCount}
@@ -553,7 +639,7 @@ function PlatformRow({
         </span>
       </span>
     </button>
-  )
+  );
 }
 
 function PlatformDetail({
@@ -566,27 +652,31 @@ function PlatformDetail({
   onRevoke,
   pending,
   platform,
-  saving
+  saving,
 }: {
-  approved: PairingUser[]
-  approving: null | string
-  edits: Record<string, string>
-  onApprove: (user: PairingUser) => void
-  onClear: (key: string) => void
-  onEdit: (key: string, value: string) => void
-  onRevoke: (user: PairingUser) => void
-  pending: PairingUser[]
-  platform: MessagingPlatformInfo
-  saving: string | null
+  approved: PairingUser[];
+  approving: null | string;
+  edits: Record<string, string>;
+  onApprove: (user: PairingUser) => void;
+  onClear: (key: string) => void;
+  onEdit: (key: string, value: string) => void;
+  onRevoke: (user: PairingUser) => void;
+  pending: PairingUser[];
+  platform: MessagingPlatformInfo;
+  saving: string | null;
 }) {
-  const { t } = useI18n()
-  const m = t.messaging
-  const [showAdvanced, setShowAdvanced] = useState(false)
+  const { t } = useI18n();
+  const m = t.messaging;
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const requiredFields = platform.env_vars.filter(field => field.required)
-  const optionalFields = platform.env_vars.filter(field => !field.required && !fieldCopy(field, m).advanced)
-  const advancedFields = platform.env_vars.filter(field => !field.required && fieldCopy(field, m).advanced)
-  const hiddenCount = advancedFields.length
+  const requiredFields = platform.env_vars.filter((field) => field.required);
+  const optionalFields = platform.env_vars.filter(
+    (field) => !field.required && !fieldCopy(field, m).advanced,
+  );
+  const advancedFields = platform.env_vars.filter(
+    (field) => !field.required && fieldCopy(field, m).advanced,
+  );
+  const hiddenCount = advancedFields.length;
 
   return (
     <>
@@ -594,11 +684,19 @@ function PlatformDetail({
         <PlatformAvatar platformId={platform.id} platformName={platform.name} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="min-w-0 truncate text-[0.9375rem] font-semibold tracking-tight">{platform.name}</h3>
-            <StatePill tone={stateTone(platform)}>{stateLabel(platform.state, m)}</StatePill>
+            <h3 className="min-w-0 truncate text-[0.9375rem] font-semibold tracking-tight">
+              {platform.name}
+            </h3>
+            <StatePill tone={stateTone(platform)}>
+              {stateLabel(platform.state, m)}
+            </StatePill>
             {/* Resting states earn no pill — only actionable ones. */}
-            {!platform.configured && <SetupPill active={false}>{m.needsSetup}</SetupPill>}
-            {!platform.gateway_running && <SetupPill active={false}>{m.gatewayStopped}</SetupPill>}
+            {!platform.configured && (
+              <SetupPill active={false}>{m.needsSetup}</SetupPill>
+            )}
+            {!platform.gateway_running && (
+              <SetupPill active={false}>{m.gatewayStopped}</SetupPill>
+            )}
           </div>
           <p className="mt-1 text-[length:var(--conversation-caption-font-size)] leading-(--conversation-caption-line-height) text-(--ui-text-tertiary)">
             {platform.description}
@@ -607,7 +705,9 @@ function PlatformDetail({
         </div>
       </header>
 
-      {platform.error_message && <ErrorBanner>{platform.error_message}</ErrorBanner>}
+      {platform.error_message && (
+        <ErrorBanner>{platform.error_message}</ErrorBanner>
+      )}
 
       {/* Pending pairing requests. Rendered only when someone is actually
           waiting — an empty-state card here would be permanent chrome on a
@@ -616,9 +716,12 @@ function PlatformDetail({
         <section>
           <SectionTitle>{m.pendingRequests(pending.length)}</SectionTitle>
           <div className="mt-1 grid gap-1">
-            {pending.map(user => {
-              const busy = approving === pairingKey(user)
-              const waited = typeof user.age_minutes === 'number' ? m.waitingSince(user.age_minutes) : null
+            {pending.map((user) => {
+              const busy = approving === pairingKey(user);
+              const waited =
+                typeof user.age_minutes === "number"
+                  ? m.waitingSince(user.age_minutes)
+                  : null;
 
               return (
                 <ListRow
@@ -634,11 +737,13 @@ function PlatformDetail({
                   }
                   // An unnamed requester is only a user id — showing it as
                   // both title and description just repeats itself.
-                  description={[user.user_name ? user.user_id : null, waited].filter(Boolean).join(' · ')}
+                  description={[user.user_name ? user.user_id : null, waited]
+                    .filter(Boolean)
+                    .join(" · ")}
                   key={pairingKey(user)}
                   title={pairingLabel(user)}
                 />
-              )
+              );
             })}
           </div>
         </section>
@@ -648,7 +753,7 @@ function PlatformDetail({
         <section>
           <SectionTitle>{m.approvedUsers(approved.length)}</SectionTitle>
           <div className="mt-1 grid gap-1">
-            {approved.map(user => (
+            {approved.map((user) => (
               <ListRow
                 action={
                   <Button
@@ -679,7 +784,7 @@ function PlatformDetail({
             <Button asChild size="sm" variant="textStrong">
               <a
                 href={platform.docs_url}
-                onClick={event => {
+                onClick={(event) => {
                   // Route through the validated external opener instead of
                   // letting Electron resolve the anchor. A packaged build's
                   // empty/relative href resolves to the app's own
@@ -687,8 +792,8 @@ function PlatformDetail({
                   // open ("file not found"). Plugin platforms (Teams, etc.)
                   // ship no docs_url, so this guard + handler keeps the
                   // button from ever pointing at a local bundle path.
-                  event.preventDefault()
-                  openExternalLink(platform.docs_url)
+                  event.preventDefault();
+                  openExternalLink(platform.docs_url);
                 }}
                 rel="noreferrer"
                 target="_blank"
@@ -705,7 +810,7 @@ function PlatformDetail({
         <SectionTitle>{m.required}</SectionTitle>
         <div className="mt-3 grid gap-1">
           {requiredFields.length > 0 ? (
-            requiredFields.map(field => (
+            requiredFields.map((field) => (
               <MessagingField
                 edits={edits}
                 field={field}
@@ -727,7 +832,7 @@ function PlatformDetail({
         <section>
           <SectionTitle>{m.recommended}</SectionTitle>
           <div className="mt-3 grid gap-1">
-            {optionalFields.map(field => (
+            {optionalFields.map((field) => (
               <MessagingField
                 edits={edits}
                 field={field}
@@ -745,7 +850,7 @@ function PlatformDetail({
         <section>
           <button
             className="flex w-full items-center justify-between gap-2 py-0.5 text-left text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
-            onClick={() => setShowAdvanced(value => !value)}
+            onClick={() => setShowAdvanced((value) => !value)}
             type="button"
           >
             <span>{m.advanced(hiddenCount)}</span>
@@ -753,7 +858,7 @@ function PlatformDetail({
           </button>
           {showAdvanced && (
             <div className="mt-3 grid gap-1">
-              {advancedFields.map(field => (
+              {advancedFields.map((field) => (
                 <MessagingField
                   edits={edits}
                   field={field}
@@ -768,7 +873,7 @@ function PlatformDetail({
         </section>
       )}
     </>
-  )
+  );
 }
 
 function PlatformActionBar({
@@ -776,22 +881,26 @@ function PlatformActionBar({
   onSave,
   onToggle,
   platform,
-  saving
+  saving,
 }: {
-  hasEdits: boolean
-  onSave: () => void
-  onToggle: (enabled: boolean) => void
-  platform: MessagingPlatformInfo
-  saving: string | null
+  hasEdits: boolean;
+  onSave: () => void;
+  onToggle: (enabled: boolean) => void;
+  platform: MessagingPlatformInfo;
+  saving: string | null;
 }) {
-  const { t } = useI18n()
-  const m = t.messaging
-  const isSavingEnv = saving === `env:${platform.id}`
+  const { t } = useI18n();
+  const m = t.messaging;
+  const isSavingEnv = saving === `env:${platform.id}`;
 
   return (
     <>
       <Switch
-        aria-label={platform.enabled ? m.disableAria(platform.name) : m.enableAria(platform.name)}
+        aria-label={
+          platform.enabled
+            ? m.disableAria(platform.name)
+            : m.enableAria(platform.name)
+        }
         checked={platform.enabled}
         disabled={saving === `enabled:${platform.id}`}
         onCheckedChange={onToggle}
@@ -799,73 +908,85 @@ function PlatformActionBar({
       />
 
       <div className="ml-auto flex items-center gap-2">
-        {hasEdits && <span className="text-xs text-muted-foreground">{m.unsavedChanges}</span>}
+        {hasEdits && (
+          <span className="text-xs text-muted-foreground">
+            {m.unsavedChanges}
+          </span>
+        )}
         <Button disabled={!hasEdits || isSavingEnv} onClick={onSave} size="sm">
           <Save />
           {isSavingEnv ? m.saving : m.saveChanges}
         </Button>
       </div>
     </>
-  )
+  );
 }
 
 const PLATFORM_INTRO: Record<string, string> = {
   telegram:
-    'In Telegram, talk to @BotFather, run /newbot, and copy the token it gives you. Then grab your numeric user ID from @userinfobot.',
+    "In Telegram, talk to @BotFather, run /newbot, and copy the token it gives you. Then grab your numeric user ID from @userinfobot.",
   discord:
-    'Open the Discord Developer Portal, create an application, add a Bot, then copy its token. Invite the bot to your server with the right scopes.',
+    "Open the Discord Developer Portal, create an application, add a Bot, then copy its token. Invite the bot to your server with the right scopes.",
   slack:
-    'Create a Slack app, enable Socket Mode, install it to your workspace, then copy the bot token and app-level token.',
+    "Create a Slack app, enable Socket Mode, install it to your workspace, then copy the bot token and app-level token.",
   mattermost:
-    'On your Mattermost server, create a bot account or personal access token, then paste the server URL and token here.',
-  matrix: 'Sign in to your homeserver with the bot account, then copy the access token, user ID, and homeserver URL.',
+    "On your Mattermost server, create a bot account or personal access token, then paste the server URL and token here.",
+  matrix:
+    "Sign in to your homeserver with the bot account, then copy the access token, user ID, and homeserver URL.",
   signal:
-    'Run a signal-cli REST bridge somewhere reachable, then point Hermes at the URL and the registered phone number.',
+    "Run a signal-cli REST bridge somewhere reachable, then point Hermes at the URL and the registered phone number.",
   whatsapp:
-    'Start the WhatsApp bridge that ships with Hermes, scan the QR code on first run, then enable the platform.',
+    "Start the WhatsApp bridge that ships with Hermes, scan the QR code on first run, then enable the platform.",
   bluebubbles:
-    'Run BlueBubbles Server on a Mac with iMessage, expose its API, then point Hermes at the URL with the server password.',
+    "Run BlueBubbles Server on a Mac with iMessage, expose its API, then point Hermes at the URL with the server password.",
   homeassistant:
-    'In Home Assistant, open your profile and create a long-lived access token. Paste it here along with your HA URL.',
+    "In Home Assistant, open your profile and create a long-lived access token. Paste it here along with your HA URL.",
   email:
-    'Use a dedicated mailbox. For Gmail/Workspace, create an app password and use imap.gmail.com / smtp.gmail.com.',
-  sms: 'Get your Twilio Account SID and Auth Token from the Twilio console, plus a phone number that can send SMS.',
-  dingtalk: 'Create a DingTalk app in the developer console, then copy the Client ID (App key) and Client Secret here.',
+    "Use a dedicated mailbox. For Gmail/Workspace, create an app password and use imap.gmail.com / smtp.gmail.com.",
+  sms: "Get your Twilio Account SID and Auth Token from the Twilio console, plus a phone number that can send SMS.",
+  dingtalk:
+    "Create a DingTalk app in the developer console, then copy the Client ID (App key) and Client Secret here.",
   feishu:
-    'Create a Feishu / Lark app, configure the bot capability, and copy the App ID, App secret, and event encryption keys.',
+    "Create a Feishu / Lark app, configure the bot capability, and copy the App ID, App secret, and event encryption keys.",
   wecom:
-    'Add a group robot in WeCom and copy its webhook key as WECOM_BOT_ID. Send-only — use the WeCom (app) option for two-way.',
+    "Add a group robot in WeCom and copy its webhook key as WECOM_BOT_ID. Send-only — use the WeCom (app) option for two-way.",
   wecom_callback:
-    'Set up a WeCom self-built app, expose its callback URL, and provide the corp ID, secret, agent ID, and AES key.',
+    "Set up a WeCom self-built app, expose its callback URL, and provide the corp ID, secret, agent ID, and AES key.",
   weixin:
     "Run `hermes gateway setup`, select Weixin, then scan and confirm the QR code with a personal WeChat account. Hermes connects through Tencent's iLink Bot API and saves the credentials.",
-  qqbot: 'Register an app on the QQ Open Platform (q.qq.com) and copy the App ID and Client Secret.',
+  qqbot:
+    "Register an app on the QQ Open Platform (q.qq.com) and copy the App ID and Client Secret.",
   api_server:
-    'Expose Hermes as an OpenAI-compatible API. Set an auth key, then point Open WebUI / LobeChat / etc. at the host:port.',
+    "Expose Hermes as an OpenAI-compatible API. Set an auth key, then point Open WebUI / LobeChat / etc. at the host:port.",
   webhook:
-    'Run an HTTP server that other tools (GitHub, GitLab, custom apps) can POST to. Use the secret to verify signatures.'
-}
+    "Run an HTTP server that other tools (GitHub, GitLab, custom apps) can POST to. Use the secret to verify signatures.",
+};
 
-const introCopy = (platform: MessagingPlatformInfo, m: Translations['messaging']) =>
-  m.platformIntro[platform.id] || PLATFORM_INTRO[platform.id] || platform.description
+const introCopy = (
+  platform: MessagingPlatformInfo,
+  m: Translations["messaging"],
+) =>
+  m.platformIntro[platform.id] ||
+  PLATFORM_INTRO[platform.id] ||
+  platform.description;
 
 function MessagingField({
   edits,
   field,
   onClear,
   onEdit,
-  saving
+  saving,
 }: {
-  edits: Record<string, string>
-  field: MessagingEnvVarInfo
-  onClear: (key: string) => void
-  onEdit: (key: string, value: string) => void
-  saving: string | null
+  edits: Record<string, string>;
+  field: MessagingEnvVarInfo;
+  onClear: (key: string) => void;
+  onEdit: (key: string, value: string) => void;
+  saving: string | null;
 }) {
-  const { t } = useI18n()
-  const m = t.messaging
-  const copy = fieldCopy(field, m)
-  const fieldId = `messaging-field-${field.key}`
+  const { t } = useI18n();
+  const m = t.messaging;
+  const copy = fieldCopy(field, m);
+  const fieldId = `messaging-field-${field.key}`;
 
   return (
     <ListRow
@@ -874,10 +995,14 @@ function MessagingField({
           <Input
             className={CREDENTIAL_CONTROL_CLASS}
             id={fieldId}
-            onChange={event => onEdit(field.key, event.target.value)}
-            placeholder={field.is_set ? field.redacted_value || m.replaceValue : copy.placeholder}
-            type={field.is_password ? 'password' : 'text'}
-            value={edits[field.key] || ''}
+            onChange={(event) => onEdit(field.key, event.target.value)}
+            placeholder={
+              field.is_set
+                ? field.redacted_value || m.replaceValue
+                : copy.placeholder
+            }
+            type={field.is_password ? "password" : "text"}
+            value={edits[field.key] || ""}
           />
           {field.url && (
             <Tip label={m.openDocs}>
@@ -906,57 +1031,73 @@ function MessagingField({
       title={
         <span className="flex flex-wrap items-center gap-2">
           <label htmlFor={fieldId}>{copy.label}</label>
-          {field.is_set && <span className="text-[0.66rem] font-medium text-primary">{m.saved}</span>}
+          {field.is_set && (
+            <span className="text-[0.66rem] font-medium text-primary">
+              {m.saved}
+            </span>
+          )}
         </span>
       }
     />
-  )
+  );
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h4 className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{children}</h4>
+  return (
+    <h4 className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+      {children}
+    </h4>
+  );
 }
 
 function PlatformHint({ platform }: { platform: MessagingPlatformInfo }) {
-  const { t } = useI18n()
+  const { t } = useI18n();
 
-  if (!platform.enabled || platform.state === 'connected') {
-    return null
+  if (!platform.enabled || platform.state === "connected") {
+    return null;
   }
 
   const hint =
-    platform.state === 'pending_restart'
+    platform.state === "pending_restart"
       ? t.messaging.hintPendingRestart
       : platform.gateway_running
         ? null
-        : t.messaging.hintGatewayStopped
+        : t.messaging.hintGatewayStopped;
 
-  return hint ? <p className="mt-2 text-xs leading-5 text-muted-foreground">{hint}</p> : null
+  return hint ? (
+    <p className="mt-2 text-xs leading-5 text-muted-foreground">{hint}</p>
+  ) : null;
 }
 
 function StatePill({ children, tone }: { children: string; tone: StatusTone }) {
   return (
     <span
       className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-[0.66rem] font-medium',
-        PILL_TONE[tone]
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-[0.66rem] font-medium",
+        PILL_TONE[tone],
       )}
     >
       <StatusDot tone={tone} />
       {children}
     </span>
-  )
+  );
 }
 
-function SetupPill({ active, children }: { active: boolean; children: string }) {
+function SetupPill({
+  active,
+  children,
+}: {
+  active: boolean;
+  children: string;
+}) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-2 py-0.5 text-[0.66rem] font-medium',
-        PILL_TONE[active ? 'good' : 'muted']
+        "inline-flex items-center rounded-full px-2 py-0.5 text-[0.66rem] font-medium",
+        PILL_TONE[active ? "good" : "muted"],
       )}
     >
       {children}
     </span>
-  )
+  );
 }

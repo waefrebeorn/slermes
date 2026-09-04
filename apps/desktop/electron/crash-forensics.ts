@@ -10,29 +10,32 @@
  */
 
 export interface CrashForensicsTarget {
-  on: (event: 'uncaughtException' | 'unhandledRejection', listener: (value: unknown) => void) => unknown
+  on: (
+    event: "uncaughtException" | "unhandledRejection",
+    listener: (value: unknown) => void,
+  ) => unknown;
 }
 
 export interface CrashForensicsOptions {
-  flush: () => void
-  log: (message: string) => void
-  target?: CrashForensicsTarget
+  flush: () => void;
+  log: (message: string) => void;
+  target?: CrashForensicsTarget;
 }
 
 /** Render a thrown value for the log, preferring a stack over a bare message. */
 export function describeCrashReason(reason: unknown): string {
   if (reason instanceof Error) {
-    return reason.stack || reason.message || reason.name || 'Error'
+    return reason.stack || reason.message || reason.name || "Error";
   }
 
-  if (typeof reason === 'string') {
-    return reason
+  if (typeof reason === "string") {
+    return reason;
   }
 
   try {
-    return JSON.stringify(reason) ?? String(reason)
+    return JSON.stringify(reason) ?? String(reason);
   } catch {
-    return String(reason)
+    return String(reason);
   }
 }
 
@@ -40,12 +43,16 @@ export function describeCrashReason(reason: unknown): string {
  * Record main-process faults to desktop.log and flush synchronously, since a
  * fault that does prove fatal leaves no chance for the batched async flush.
  */
-export function installCrashForensics({ flush, log, target = process }: CrashForensicsOptions): void {
+export function installCrashForensics({
+  flush,
+  log,
+  target = process,
+}: CrashForensicsOptions): void {
   const record = (label: string) => (reason: unknown) => {
-    log(`[main] ${label}: ${describeCrashReason(reason)}`)
-    flush()
-  }
+    log(`[main] ${label}: ${describeCrashReason(reason)}`);
+    flush();
+  };
 
-  target.on('uncaughtException', record('Uncaught exception'))
-  target.on('unhandledRejection', record('Unhandled rejection'))
+  target.on("uncaughtException", record("Uncaught exception"));
+  target.on("unhandledRejection", record("Unhandled rejection"));
 }

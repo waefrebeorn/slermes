@@ -23,64 +23,64 @@
  */
 
 export interface PoolStopEntry {
-  process?: unknown
+  process?: unknown;
 }
 
 export interface PoolStopperDeps {
   /** The live backend pool. Entries are evicted synchronously on stop. */
-  pool: Map<string, PoolStopEntry>
+  pool: Map<string, PoolStopEntry>;
   /** Signal the child (tree/group kill per platform). Synchronous. */
-  stopChild: (child: unknown) => void
+  stopChild: (child: unknown) => void;
   /** Bounded wait: resolves when the child exits, escalating to SIGKILL. */
-  waitForExit: (child: unknown) => Promise<void>
+  waitForExit: (child: unknown) => Promise<void>;
 }
 
 export interface PoolStopper {
   /** The in-flight stop for a key, if any — await before respawning it. */
-  inFlight: (key: string) => Promise<void> | undefined
+  inFlight: (key: string) => Promise<void> | undefined;
   /** Stop one pooled backend; concurrent calls share the same promise. */
-  stop: (key: string) => Promise<void>
+  stop: (key: string) => Promise<void>;
   /** Stop every pooled backend currently in the pool. */
-  stopAll: () => Promise<void>
+  stopAll: () => Promise<void>;
 }
 
 export function createPoolStopper(deps: PoolStopperDeps): PoolStopper {
-  const stops = new Map<string, Promise<void>>()
+  const stops = new Map<string, Promise<void>>();
 
   function stop(key: string): Promise<void> {
-    const inFlight = stops.get(key)
+    const inFlight = stops.get(key);
 
     if (inFlight) {
-      return inFlight
+      return inFlight;
     }
 
-    const entry = deps.pool.get(key)
+    const entry = deps.pool.get(key);
 
     if (!entry) {
-      return Promise.resolve()
+      return Promise.resolve();
     }
 
     // Evict now: routing must not hand out a dying backend. The stop promise
     // below retains the process handle until the bounded exit completes.
-    deps.pool.delete(key)
+    deps.pool.delete(key);
 
     const stopping = (async () => {
-      deps.stopChild(entry.process)
-      await deps.waitForExit(entry.process)
+      deps.stopChild(entry.process);
+      await deps.waitForExit(entry.process);
     })().finally(() => {
-      stops.delete(key)
-    })
+      stops.delete(key);
+    });
 
-    stops.set(key, stopping)
+    stops.set(key, stopping);
 
-    return stopping
+    return stopping;
   }
 
   return {
-    inFlight: key => stops.get(key),
+    inFlight: (key) => stops.get(key),
     stop,
     stopAll: async () => {
-      await Promise.all([...deps.pool.keys()].map(stop))
-    }
-  }
+      await Promise.all([...deps.pool.keys()].map(stop));
+    },
+  };
 }

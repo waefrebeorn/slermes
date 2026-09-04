@@ -1,21 +1,21 @@
-import { useStore } from '@nanostores/react'
-import type * as React from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import type * as React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { CodeEditor } from '@/components/chat/code-editor'
-import { PageLoader } from '@/components/page-loader'
-import { Button } from '@/components/ui/button'
-import { ProfileGlyph } from '@/components/ui/profile-glyph'
-import { getProfileSoul, type ProfileInfo, updateProfileSoul } from '@/hermes'
-import { useI18n } from '@/i18n'
-import { displayPath } from '@/lib/display-path'
-import { AlertTriangle, Save } from '@/lib/icons'
-import { resolveProfileColor } from '@/lib/profile-color'
-import { normalize } from '@/lib/text'
-import { notify, notifyError } from '@/store/notifications'
-import { $profileColors, profileLabel, refreshProfiles } from '@/store/profile'
+import { CodeEditor } from "@/components/chat/code-editor";
+import { PageLoader } from "@/components/page-loader";
+import { Button } from "@/components/ui/button";
+import { ProfileGlyph } from "@/components/ui/profile-glyph";
+import { getProfileSoul, type ProfileInfo, updateProfileSoul } from "@/hermes";
+import { useI18n } from "@/i18n";
+import { displayPath } from "@/lib/display-path";
+import { AlertTriangle, Save } from "@/lib/icons";
+import { resolveProfileColor } from "@/lib/profile-color";
+import { normalize } from "@/lib/text";
+import { notify, notifyError } from "@/store/notifications";
+import { $profileColors, profileLabel, refreshProfiles } from "@/store/profile";
 
-import { useRefreshHotkey } from '../hooks/use-refresh-hotkey'
+import { useRefreshHotkey } from "../hooks/use-refresh-hotkey";
 import {
   Panel,
   PanelAddButton,
@@ -28,79 +28,81 @@ import {
   type PanelMenuItem,
   PanelMeta,
   PanelPill,
-  PanelSectionLabel
-} from '../overlays/panel'
+  PanelSectionLabel,
+} from "../overlays/panel";
 
-import { CreateProfileDialog } from './create-profile-dialog'
-import { DeleteProfileDialog } from './delete-profile-dialog'
-import { RenameProfileDialog } from './rename-profile-dialog'
+import { CreateProfileDialog } from "./create-profile-dialog";
+import { DeleteProfileDialog } from "./delete-profile-dialog";
+import { RenameProfileDialog } from "./rename-profile-dialog";
 
 interface ProfilesViewProps {
-  onClose: () => void
+  onClose: () => void;
 }
 
 export function ProfilesView({ onClose }: ProfilesViewProps) {
-  const { t } = useI18n()
-  const p = t.profiles
-  const [profiles, setProfiles] = useState<null | ProfileInfo[]>(null)
-  const [selectedName, setSelectedName] = useState<null | string>(null)
-  const [query, setQuery] = useState('')
-  const [createOpen, setCreateOpen] = useState(false)
-  const [pendingRename, setPendingRename] = useState<null | ProfileInfo>(null)
-  const [pendingDelete, setPendingDelete] = useState<null | ProfileInfo>(null)
+  const { t } = useI18n();
+  const p = t.profiles;
+  const [profiles, setProfiles] = useState<null | ProfileInfo[]>(null);
+  const [selectedName, setSelectedName] = useState<null | string>(null);
+  const [query, setQuery] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [pendingRename, setPendingRename] = useState<null | ProfileInfo>(null);
+  const [pendingDelete, setPendingDelete] = useState<null | ProfileInfo>(null);
 
   const refresh = useCallback(async () => {
     try {
-      const list = await refreshProfiles()
-      setProfiles(list)
-      setSelectedName(current => {
-        if (current && list.some(p => p.name === current)) {
-          return current
+      const list = await refreshProfiles();
+      setProfiles(list);
+      setSelectedName((current) => {
+        if (current && list.some((p) => p.name === current)) {
+          return current;
         }
 
-        return list.find(p => p.is_default)?.name ?? list[0]?.name ?? null
-      })
+        return list.find((p) => p.is_default)?.name ?? list[0]?.name ?? null;
+      });
     } catch (err) {
-      notifyError(err, p.failedLoad)
+      notifyError(err, p.failedLoad);
     }
-  }, [p])
+  }, [p]);
 
-  useRefreshHotkey(refresh)
+  useRefreshHotkey(refresh);
 
   useEffect(() => {
-    void refresh()
-  }, [refresh])
+    void refresh();
+  }, [refresh]);
 
   const selected = useMemo(() => {
     if (!profiles) {
-      return null
+      return null;
     }
 
-    return profiles.find(p => p.name === selectedName) ?? profiles[0] ?? null
-  }, [profiles, selectedName])
+    return profiles.find((p) => p.name === selectedName) ?? profiles[0] ?? null;
+  }, [profiles, selectedName]);
 
   const visibleProfiles = useMemo(() => {
-    const q = normalize(query)
+    const q = normalize(query);
 
     if (!profiles || !q) {
-      return profiles ?? []
+      return profiles ?? [];
     }
 
     return profiles.filter(
-      profile => profile.name.toLowerCase().includes(q) || (profile.model ?? '').toLowerCase().includes(q)
-    )
-  }, [profiles, query])
+      (profile) =>
+        profile.name.toLowerCase().includes(q) ||
+        (profile.model ?? "").toLowerCase().includes(q),
+    );
+  }, [profiles, query]);
 
   // The shared Create/Rename dialogs own the createProfile / renameProfile /
   // updateProfileSoul calls; the panel just selects the resulting profile and
   // re-pulls the list.
   const selectAndRefresh = useCallback(
     async (name: string) => {
-      setSelectedName(name)
-      await refresh()
+      setSelectedName(name);
+      await refresh();
     },
-    [refresh]
-  )
+    [refresh],
+  );
 
   return (
     <Panel closeLabel={p.close} onClose={onClose}>
@@ -127,7 +129,7 @@ export function ProfilesView({ onClose }: ProfilesViewProps) {
               searchPlaceholder={p.search}
               searchValue={query}
             >
-              {visibleProfiles.map(profile => (
+              {visibleProfiles.map((profile) => (
                 <ProfileRow
                   active={selected?.name === profile.name}
                   key={profile.name}
@@ -135,22 +137,35 @@ export function ProfilesView({ onClose }: ProfilesViewProps) {
                     profile.is_default
                       ? // Renaming the default profile sets a presentation-only
                         // display name (the canonical id stays "default").
-                        [{ icon: 'edit', label: p.renameMenu, onSelect: () => setPendingRename(profile) }]
-                      : [
-                          { icon: 'edit', label: p.renameMenu, onSelect: () => setPendingRename(profile) },
+                        [
                           {
-                            icon: 'trash',
+                            icon: "edit",
+                            label: p.renameMenu,
+                            onSelect: () => setPendingRename(profile),
+                          },
+                        ]
+                      : [
+                          {
+                            icon: "edit",
+                            label: p.renameMenu,
+                            onSelect: () => setPendingRename(profile),
+                          },
+                          {
+                            icon: "trash",
                             label: t.common.delete,
                             onSelect: () => setPendingDelete(profile),
-                            tone: 'danger'
-                          }
+                            tone: "danger",
+                          },
                         ]
                   }
                   onSelect={() => setSelectedName(profile.name)}
                   profile={profile}
                 />
               ))}
-              <PanelAddButton label={p.newProfile} onClick={() => setCreateOpen(true)} />
+              <PanelAddButton
+                label={p.newProfile}
+                onClick={() => setCreateOpen(true)}
+              />
             </PanelList>
 
             {selected ? (
@@ -163,7 +178,7 @@ export function ProfilesView({ onClose }: ProfilesViewProps) {
       )}
 
       <RenameProfileDialog
-        currentName={pendingRename?.name ?? ''}
+        currentName={pendingRename?.name ?? ""}
         isDefault={pendingRename?.is_default ?? false}
         onClose={() => setPendingRename(null)}
         onRenamed={selectAndRefresh}
@@ -180,28 +195,28 @@ export function ProfilesView({ onClose }: ProfilesViewProps) {
       <DeleteProfileDialog
         onClose={() => setPendingDelete(null)}
         onDeleted={async () => {
-          setSelectedName(null)
-          await refresh()
+          setSelectedName(null);
+          await refresh();
         }}
         open={pendingDelete !== null}
         profile={pendingDelete}
       />
     </Panel>
-  )
+  );
 }
 
 function ProfileRow({
   active,
   menuItems,
   onSelect,
-  profile
+  profile,
 }: {
-  active: boolean
-  menuItems: PanelMenuItem[]
-  onSelect: () => void
-  profile: ProfileInfo
+  active: boolean;
+  menuItems: PanelMenuItem[];
+  onSelect: () => void;
+  profile: ProfileInfo;
 }) {
-  const colors = useStore($profileColors)
+  const colors = useStore($profileColors);
 
   return (
     <PanelListRow
@@ -220,20 +235,24 @@ function ProfileRow({
       rowKey={profile.name}
       title={profileLabel(profile)}
     />
-  )
+  );
 }
 
 function ProfileDetail({ profile }: { profile: ProfileInfo }) {
-  const { t } = useI18n()
-  const p = t.profiles
+  const { t } = useI18n();
+  const p = t.profiles;
 
   return (
     <PanelDetail>
       <header className="space-y-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-[0.95rem] font-semibold tracking-tight text-foreground">{profileLabel(profile)}</h3>
-            {profile.is_default && <PanelPill tone="good">{p.defaultBadge}</PanelPill>}
+            <h3 className="text-[0.95rem] font-semibold tracking-tight text-foreground">
+              {profileLabel(profile)}
+            </h3>
+            {profile.is_default && (
+              <PanelPill tone="good">{p.defaultBadge}</PanelPill>
+            )}
             {profile.has_env && <PanelPill tone="muted">.env</PanelPill>}
           </div>
           <p
@@ -251,74 +270,79 @@ function ProfileDetail({ profile }: { profile: ProfileInfo }) {
               value: profile.model ? (
                 <span className="font-mono">
                   {profile.model}
-                  {profile.provider ? <span className="text-muted-foreground/55"> · {profile.provider}</span> : null}
+                  {profile.provider ? (
+                    <span className="text-muted-foreground/55">
+                      {" "}
+                      · {profile.provider}
+                    </span>
+                  ) : null}
                 </span>
               ) : (
                 <span className="text-muted-foreground/55">{p.notSet}</span>
-              )
+              ),
             },
-            { label: p.skillsLabel, value: profile.skill_count }
+            { label: p.skillsLabel, value: profile.skill_count },
           ]}
         />
       </header>
 
       <SoulEditor profileName={profile.name} />
     </PanelDetail>
-  )
+  );
 }
 
 function SoulEditor({ profileName }: { profileName: string }) {
-  const { t } = useI18n()
-  const p = t.profiles
-  const [content, setContent] = useState('')
-  const [original, setOriginal] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<null | string>(null)
-  const requestRef = useRef<string>(profileName)
+  const { t } = useI18n();
+  const p = t.profiles;
+  const [content, setContent] = useState("");
+  const [original, setOriginal] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<null | string>(null);
+  const requestRef = useRef<string>(profileName);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    requestRef.current = profileName
-    setLoading(true)
-    setError(null)
-    setContent('')
-    setOriginal('')
+    requestRef.current = profileName;
+    setLoading(true);
+    setError(null);
+    setContent("");
+    setOriginal("");
 
     void (async () => {
       try {
-        const soul = await getProfileSoul(profileName)
+        const soul = await getProfileSoul(profileName);
 
         if (requestRef.current === profileName) {
-          setContent(soul.content)
-          setOriginal(soul.content)
+          setContent(soul.content);
+          setOriginal(soul.content);
         }
       } catch (err) {
         if (requestRef.current === profileName) {
-          setError(err instanceof Error ? err.message : p.failedLoadSoul)
+          setError(err instanceof Error ? err.message : p.failedLoadSoul);
         }
       } finally {
         if (requestRef.current === profileName) {
-          setLoading(false)
+          setLoading(false);
         }
       }
-    })()
-  }, [p, profileName])
+    })();
+  }, [p, profileName]);
 
-  const dirty = content !== original
+  const dirty = content !== original;
 
   async function handleSave() {
-    setSaving(true)
-    setError(null)
+    setSaving(true);
+    setError(null);
 
     try {
-      await updateProfileSoul(profileName, content)
-      setOriginal(content)
-      notify({ kind: 'success', title: p.soulSaved, message: profileName })
+      await updateProfileSoul(profileName, content);
+      setOriginal(content);
+      notify({ kind: "success", title: p.soulSaved, message: profileName });
     } catch (err) {
-      setError(err instanceof Error ? err.message : p.failedSaveSoul)
+      setError(err instanceof Error ? err.message : p.failedSaveSoul);
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
   }
 
@@ -326,10 +350,16 @@ function SoulEditor({ profileName }: { profileName: string }) {
     <section className="space-y-2">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div>
-          <PanelSectionLabel className="text-[0.7rem] tracking-[0.14em]">SOUL.md</PanelSectionLabel>
+          <PanelSectionLabel className="text-[0.7rem] tracking-[0.14em]">
+            SOUL.md
+          </PanelSectionLabel>
           <p className="text-xs text-muted-foreground">{p.soulDesc}</p>
         </div>
-        {dirty && <span className="text-[0.65rem] text-muted-foreground">{p.unsavedChanges}</span>}
+        {dirty && (
+          <span className="text-[0.65rem] text-muted-foreground">
+            {p.unsavedChanges}
+          </span>
+        )}
       </div>
 
       {loading ? (
@@ -355,11 +385,15 @@ function SoulEditor({ profileName }: { profileName: string }) {
       )}
 
       <div className="flex justify-end">
-        <Button disabled={!dirty || saving || loading} onClick={() => void handleSave()} size="sm">
+        <Button
+          disabled={!dirty || saving || loading}
+          onClick={() => void handleSave()}
+          size="sm"
+        >
           <Save />
           {saving ? p.saving : p.saveSoul}
         </Button>
       </div>
     </section>
-  )
+  );
 }

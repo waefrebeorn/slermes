@@ -4,11 +4,11 @@
  *  live selection, and jsdom starts with none — without this they see a caret
  *  at offset 0 and take the wrong branch. */
 export function placeCaretAtEnd(editor: HTMLElement) {
-  const range = document.createRange()
-  const selection = window.getSelection()!
+  const range = document.createRange();
+  const selection = window.getSelection()!;
 
-  range.selectNodeContents(editor)
-  range.collapse(false)
-  selection.removeAllRanges()
-  selection.addRange(range)
+  range.selectNodeContents(editor);
+  range.collapse(false);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }

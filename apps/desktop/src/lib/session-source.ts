@@ -1,88 +1,98 @@
-import { normalize } from '@/lib/text'
+import { normalize } from "@/lib/text";
 
 const SOURCE_LABELS: Record<string, string> = {
-  api_server: 'API',
-  bluebubbles: 'iMessage',
-  cli: 'CLI',
-  codex: 'Codex',
-  desktop: 'Desktop',
-  discord: 'Discord',
-  email: 'Email',
-  gateway: 'Gateway',
-  kanban: 'Kanban',
-  local: 'Local',
-  matrix: 'Matrix',
-  mattermost: 'Mattermost',
-  photon: 'Photon',
-  qqbot: 'QQ',
-  signal: 'Signal',
-  slack: 'Slack',
-  sms: 'SMS',
-  telegram: 'Telegram',
-  tui: 'TUI',
-  webhook: 'Webhook',
-  weixin: 'WeChat',
-  whatsapp: 'WhatsApp',
-  yuanbao: 'Yuanbao'
-}
+  api_server: "API",
+  bluebubbles: "iMessage",
+  cli: "CLI",
+  codex: "Codex",
+  desktop: "Desktop",
+  discord: "Discord",
+  email: "Email",
+  gateway: "Gateway",
+  kanban: "Kanban",
+  local: "Local",
+  matrix: "Matrix",
+  mattermost: "Mattermost",
+  photon: "Photon",
+  qqbot: "QQ",
+  signal: "Signal",
+  slack: "Slack",
+  sms: "SMS",
+  telegram: "Telegram",
+  tui: "TUI",
+  webhook: "Webhook",
+  weixin: "WeChat",
+  whatsapp: "WhatsApp",
+  yuanbao: "Yuanbao",
+};
 
 const SOURCE_ALIASES: Record<string, string[]> = {
-  bluebubbles: ['apple messages', 'imessage'],
-  photon: ['imessage', 'messages'],
-  cli: ['terminal'],
-  desktop: ['app', 'gui'],
-  local: ['machine'],
-  qqbot: ['qq'],
-  telegram: ['tg'],
-  tui: ['terminal'],
-  weixin: ['wechat'],
-  whatsapp: ['wa']
-}
+  bluebubbles: ["apple messages", "imessage"],
+  photon: ["imessage", "messages"],
+  cli: ["terminal"],
+  desktop: ["app", "gui"],
+  local: ["machine"],
+  qqbot: ["qq"],
+  telegram: ["tg"],
+  tui: ["terminal"],
+  weixin: ["wechat"],
+  whatsapp: ["wa"],
+};
 
 // Sources that run on the local machine rather than an external messaging
 // platform. A handoff *from* one of these isn't a platform origin worth a badge.
 // Exported so the recents fetch can keep these in the main list while the
 // messaging fetch excludes them.
-export const LOCAL_SESSION_SOURCE_IDS = ['cli', 'codex', 'desktop', 'gateway', 'kanban', 'local', 'tui']
-const LOCAL_SOURCE_IDS = new Set(LOCAL_SESSION_SOURCE_IDS)
+export const LOCAL_SESSION_SOURCE_IDS = [
+  "cli",
+  "codex",
+  "desktop",
+  "gateway",
+  "kanban",
+  "local",
+  "tui",
+];
+const LOCAL_SOURCE_IDS = new Set(LOCAL_SESSION_SOURCE_IDS);
 
 // External messaging platforms that each get their own self-managed sidebar
 // section (fetched separately from local recents). Mirrors the gateway platform
 // adapters; keep in sync with PLATFORM_ICONS in app/messaging/platform-icon.tsx.
 export const MESSAGING_SESSION_SOURCE_IDS = [
-  'telegram',
-  'discord',
-  'slack',
-  'mattermost',
-  'matrix',
-  'signal',
-  'whatsapp',
-  'bluebubbles',
-  'photon',
-  'homeassistant',
-  'email',
-  'sms',
-  'webhook',
-  'api_server',
-  'weixin',
-  'wecom',
-  'qqbot',
-  'yuanbao',
-  'dingtalk',
-  'feishu'
-]
-const MESSAGING_SOURCE_IDS = new Set(MESSAGING_SESSION_SOURCE_IDS)
+  "telegram",
+  "discord",
+  "slack",
+  "mattermost",
+  "matrix",
+  "signal",
+  "whatsapp",
+  "bluebubbles",
+  "photon",
+  "homeassistant",
+  "email",
+  "sms",
+  "webhook",
+  "api_server",
+  "weixin",
+  "wecom",
+  "qqbot",
+  "yuanbao",
+  "dingtalk",
+  "feishu",
+];
+const MESSAGING_SOURCE_IDS = new Set(MESSAGING_SESSION_SOURCE_IDS);
 
 /** True when a source id is an external messaging platform (gets its own
  *  sidebar section) rather than a local/CLI/desktop session. */
 export function isMessagingSource(source: null | string | undefined): boolean {
-  const id = normalizeSessionSource(source)
+  const id = normalizeSessionSource(source);
 
-  return id != null && MESSAGING_SOURCE_IDS.has(id)
+  return id != null && MESSAGING_SOURCE_IDS.has(id);
 }
 
-export function normalizeSessionSource(source: null | string | undefined): string | null {
-  return normalize(source) || null
+export function normalizeSessionSource(
+  source: null | string | undefined,
+): string | null {
+  return normalize(source) || null;
 }
 
 /**
@@ -93,38 +103,45 @@ export function normalizeSessionSource(source: null | string | undefined): strin
  */
 export function handoffOriginSource(
   handoffState: null | string | undefined,
-  handoffPlatform: null | string | undefined
+  handoffPlatform: null | string | undefined,
 ): string | null {
-  if (handoffState !== 'completed') {
-    return null
+  if (handoffState !== "completed") {
+    return null;
   }
 
-  const id = normalizeSessionSource(handoffPlatform)
+  const id = normalizeSessionSource(handoffPlatform);
 
   if (!id || LOCAL_SOURCE_IDS.has(id)) {
-    return null
+    return null;
   }
 
-  return id
+  return id;
 }
 
-export function sessionSourceLabel(source: null | string | undefined): string | null {
-  const id = normalizeSessionSource(source)
+export function sessionSourceLabel(
+  source: null | string | undefined,
+): string | null {
+  const id = normalizeSessionSource(source);
 
   if (!id) {
-    return null
+    return null;
   }
 
-  return SOURCE_LABELS[id] || id.replace(/[_-]+/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
+  return (
+    SOURCE_LABELS[id] ||
+    id.replace(/[_-]+/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
+  );
 }
 
-export function sessionSourceSearchTerms(source: null | string | undefined): string[] {
-  const id = normalizeSessionSource(source)
-  const label = sessionSourceLabel(id)
+export function sessionSourceSearchTerms(
+  source: null | string | undefined,
+): string[] {
+  const id = normalizeSessionSource(source);
+  const label = sessionSourceLabel(id);
 
   if (!id) {
-    return []
+    return [];
   }
 
-  return [id, label ?? '', ...(SOURCE_ALIASES[id] ?? [])].filter(Boolean)
+  return [id, label ?? "", ...(SOURCE_ALIASES[id] ?? [])].filter(Boolean);
 }

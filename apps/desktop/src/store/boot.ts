@@ -1,60 +1,62 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import type { DesktopBootProgress } from '@/global'
-import { translateNow } from '@/i18n'
+import type { DesktopBootProgress } from "@/global";
+import { translateNow } from "@/i18n";
 
 export interface DesktopBootState extends DesktopBootProgress {
-  visible: boolean
+  visible: boolean;
 }
 
 const INITIAL_BOOT_STATE: DesktopBootState = {
   error: null,
   fakeMode: false,
-  message: translateNow('boot.steps.startingHermesDesktop'),
-  phase: 'renderer.init',
+  message: translateNow("boot.steps.startingHermesDesktop"),
+  phase: "renderer.init",
   progress: 2,
   running: true,
   timestamp: Date.now(),
-  visible: true
-}
+  visible: true,
+};
 
-export const $desktopBoot = atom<DesktopBootState>(INITIAL_BOOT_STATE)
+export const $desktopBoot = atom<DesktopBootState>(INITIAL_BOOT_STATE);
 
 function clampProgress(value: number) {
   if (!Number.isFinite(value)) {
-    return 0
+    return 0;
   }
 
-  return Math.max(0, Math.min(100, Math.round(value)))
+  return Math.max(0, Math.min(100, Math.round(value)));
 }
 
 export function applyDesktopBootProgress(progress: DesktopBootProgress) {
-  const current = $desktopBoot.get()
-  const nextProgress = clampProgress(progress.progress)
-  const mergedProgress = progress.running ? Math.max(current.progress, nextProgress) : nextProgress
+  const current = $desktopBoot.get();
+  const nextProgress = clampProgress(progress.progress);
+  const mergedProgress = progress.running
+    ? Math.max(current.progress, nextProgress)
+    : nextProgress;
 
   // Don't let a late progress event (error: null) clobber a previously-set
   // boot failure — failDesktopBoot is terminal for this boot cycle.
-  const error = progress.error ?? (current.running ? null : current.error)
+  const error = progress.error ?? (current.running ? null : current.error);
 
   $desktopBoot.set({
     ...current,
     ...progress,
     error,
     progress: mergedProgress,
-    visible: progress.running || mergedProgress < 100 || Boolean(error)
-  })
+    visible: progress.running || mergedProgress < 100 || Boolean(error),
+  });
 }
 
 export function setDesktopBootStep(step: {
-  phase: string
-  message: string
-  progress: number
-  running?: boolean
-  fakeMode?: boolean
-  error?: string | null
+  phase: string;
+  message: string;
+  progress: number;
+  running?: boolean;
+  fakeMode?: boolean;
+  error?: string | null;
 }) {
-  const current = $desktopBoot.get()
+  const current = $desktopBoot.get();
   applyDesktopBootProgress({
     error: step.error ?? null,
     fakeMode: step.fakeMode ?? current.fakeMode,
@@ -62,8 +64,8 @@ export function setDesktopBootStep(step: {
     phase: step.phase,
     progress: step.progress,
     running: step.running ?? true,
-    timestamp: Date.now()
-  })
+    timestamp: Date.now(),
+  });
 }
 
 /**
@@ -75,42 +77,42 @@ export function setDesktopBootStep(step: {
  * bounded retries are exhausted.
  */
 export function resumeDesktopBootForRetry(message: string) {
-  const current = $desktopBoot.get()
+  const current = $desktopBoot.get();
   $desktopBoot.set({
     ...current,
     error: null,
     message,
-    phase: 'renderer.boot.retry',
+    phase: "renderer.boot.retry",
     running: true,
     timestamp: Date.now(),
-    visible: true
-  })
+    visible: true,
+  });
 }
 
-export function completeDesktopBoot(message = translateNow('boot.ready')) {
-  const current = $desktopBoot.get()
+export function completeDesktopBoot(message = translateNow("boot.ready")) {
+  const current = $desktopBoot.get();
   $desktopBoot.set({
     ...current,
     error: null,
     message,
-    phase: 'renderer.ready',
+    phase: "renderer.ready",
     progress: 100,
     running: false,
     timestamp: Date.now(),
-    visible: false
-  })
+    visible: false,
+  });
 }
 
 export function failDesktopBoot(message: string) {
-  const current = $desktopBoot.get()
+  const current = $desktopBoot.get();
   $desktopBoot.set({
     ...current,
     error: message,
-    message: translateNow('boot.desktopBootFailedWithMessage', message),
-    phase: 'renderer.error',
+    message: translateNow("boot.desktopBootFailedWithMessage", message),
+    phase: "renderer.error",
     progress: clampProgress(current.progress),
     running: false,
     timestamp: Date.now(),
-    visible: true
-  })
+    visible: true,
+  });
 }

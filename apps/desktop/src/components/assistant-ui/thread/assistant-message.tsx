@@ -4,34 +4,40 @@ import {
   ErrorPrimitive,
   MessagePrimitive,
   useAuiState,
-  useMessageRuntime
-} from '@assistant-ui/react'
-import { useStore } from '@nanostores/react'
-import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react'
-import { useInRouterContext, useNavigate } from 'react-router'
+  useMessageRuntime,
+} from "@assistant-ui/react";
+import { useStore } from "@nanostores/react";
+import { type FC, type ReactNode, useCallback, useMemo, useState } from "react";
+import { useInRouterContext, useNavigate } from "react-router";
 
-import { useSessionView } from '@/app/chat/session-view'
-import { SETTINGS_ROUTE } from '@/app/routes'
-import { ChangedFilesCard } from '@/components/assistant-ui/thread/changed-files-card'
+import { useSessionView } from "@/app/chat/session-view";
+import { SETTINGS_ROUTE } from "@/app/routes";
+import { ChangedFilesCard } from "@/components/assistant-ui/thread/changed-files-card";
 import {
   contentHasVisibleText,
   messageContentText,
-  pickPrimaryPreviewTarget
-} from '@/components/assistant-ui/thread/content'
-import { MESSAGE_PARTS_COMPONENTS } from '@/components/assistant-ui/thread/message-parts'
-import { ReactionPicker } from '@/components/assistant-ui/thread/message-reactions'
-import { ResponseLoadingIndicator, TurnActivityIndicator } from '@/components/assistant-ui/thread/status'
-import { MessageTimelineTimestamp } from '@/components/assistant-ui/thread/timeline-timestamp'
-import { useMessageReactions, useTapbackDoubleClick } from '@/components/assistant-ui/thread/use-message-reactions'
-import { AGENT_MESSAGE_RE } from '@/components/assistant-ui/thread/user-message'
-import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
-import { formatElapsed } from '@/components/chat/activity-timer'
-import { PreviewAttachment } from '@/components/chat/preview-attachment'
-import { Codicon } from '@/components/ui/codicon'
-import { CopyButton } from '@/components/ui/copy-button'
-import { useI18n } from '@/i18n'
-import { type ErrorSurface, formatErrorDiagnostics } from '@/lib/error-surface'
-import { triggerHaptic } from '@/lib/haptics'
+  pickPrimaryPreviewTarget,
+} from "@/components/assistant-ui/thread/content";
+import { MESSAGE_PARTS_COMPONENTS } from "@/components/assistant-ui/thread/message-parts";
+import { ReactionPicker } from "@/components/assistant-ui/thread/message-reactions";
+import {
+  ResponseLoadingIndicator,
+  TurnActivityIndicator,
+} from "@/components/assistant-ui/thread/status";
+import { MessageTimelineTimestamp } from "@/components/assistant-ui/thread/timeline-timestamp";
+import {
+  useMessageReactions,
+  useTapbackDoubleClick,
+} from "@/components/assistant-ui/thread/use-message-reactions";
+import { AGENT_MESSAGE_RE } from "@/components/assistant-ui/thread/user-message";
+import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
+import { formatElapsed } from "@/components/chat/activity-timer";
+import { PreviewAttachment } from "@/components/chat/preview-attachment";
+import { Codicon } from "@/components/ui/codicon";
+import { CopyButton } from "@/components/ui/copy-button";
+import { useI18n } from "@/i18n";
+import { type ErrorSurface, formatErrorDiagnostics } from "@/lib/error-surface";
+import { triggerHaptic } from "@/lib/haptics";
 import {
   AudioLines,
   GitForkIcon,
@@ -40,21 +46,21 @@ import {
   SmilePlusIcon,
   Upload,
   VolumeXIcon,
-  XIcon
-} from '@/lib/icons'
-import { extractPreviewTargets } from '@/lib/preview-targets'
-import { markAssistantIdSpoken } from '@/lib/spoken-reply'
-import { useEnterAnimation } from '@/lib/use-enter-animation'
-import { cn } from '@/lib/utils'
-import { playSpeechText, stopVoicePlayback } from '@/lib/voice-playback'
-import { notifyError } from '@/store/notifications'
-import { requestSendDiagnostics } from '@/store/send-diagnostics'
-import { $connection, $currentModel } from '@/store/session'
-import { $voicePlayback } from '@/store/voice-playback'
+  XIcon,
+} from "@/lib/icons";
+import { extractPreviewTargets } from "@/lib/preview-targets";
+import { markAssistantIdSpoken } from "@/lib/spoken-reply";
+import { useEnterAnimation } from "@/lib/use-enter-animation";
+import { cn } from "@/lib/utils";
+import { playSpeechText, stopVoicePlayback } from "@/lib/voice-playback";
+import { notifyError } from "@/store/notifications";
+import { requestSendDiagnostics } from "@/store/send-diagnostics";
+import { $connection, $currentModel } from "@/store/session";
+import { $voicePlayback } from "@/store/voice-playback";
 
 // Stable empty identity for the settled-parts selector — a fresh [] per render
 // would re-derive the changed-files card on every message re-render.
-const EMPTY_PARTS: readonly unknown[] = []
+const EMPTY_PARTS: readonly unknown[] = [];
 
 // PERF: hoisted to module scope so the element OBJECT is identical on every
 // render of every assistant message. React bails out of re-rendering a child
@@ -62,57 +68,61 @@ const EMPTY_PARTS: readonly unknown[] = []
 // (pending -> complete and back, N rows per stream flush) can no longer
 // descend into the parts subtree at all. Its props were already the module
 // constant MESSAGE_PARTS_COMPONENTS, so nothing per-message is captured here.
-const MESSAGE_PARTS = <MessagePrimitive.Parts components={MESSAGE_PARTS_COMPONENTS} />
+const MESSAGE_PARTS = (
+  <MessagePrimitive.Parts components={MESSAGE_PARTS_COMPONENTS} />
+);
 
 interface MessageActionProps {
-  messageId: string
+  messageId: string;
   /** Lazy accessor — reads the live message text at action time. Passing the
    *  text itself as a prop forces the whole footer to re-render on every
    *  streaming delta flush (the text changes ~30×/s), which profiling showed
    *  was a large slice of per-token script time on long transcripts. */
-  getMessageText: () => string
-  onBranchInNewChat?: (messageId: string) => void
+  getMessageText: () => string;
+  onBranchInNewChat?: (messageId: string) => void;
 }
 
 interface AssistantMessageProps {
-  onBranchInNewChat?: (messageId: string) => void
-  onDismissError?: (messageId: string) => void
+  onBranchInNewChat?: (messageId: string) => void;
+  onDismissError?: (messageId: string) => void;
 }
 
-export const AssistantMessage: FC<AssistantMessageProps> = props => {
+export const AssistantMessage: FC<AssistantMessageProps> = (props) => {
   // A reply to an inter-agent delivery is part of that exchange, not part of
   // the human conversation — collapse it under a compact notice ("Reply to
   // <sender>", expandable), mirroring the sender-side notice the previous
   // user message already renders as. Grok-bots parity: the transcript shows
   // events; the texts are one click away. Detection: the immediately
   // preceding user message matches AGENT_MESSAGE_RE.
-  const interAgentSender = useAuiState(s => {
-    const messages = s.thread.messages
+  const interAgentSender = useAuiState((s) => {
+    const messages = s.thread.messages;
 
     for (let i = messages.length - 1; i >= 0; i--) {
       if (messages[i].id !== s.message.id) {
-        continue
+        continue;
       }
 
       for (let j = i - 1; j >= 0; j--) {
-        const prev = messages[j] as { content?: unknown; role?: string }
+        const prev = messages[j] as { content?: unknown; role?: string };
 
-        if (prev.role === 'assistant') {
-          return null
+        if (prev.role === "assistant") {
+          return null;
         }
 
-        if (prev.role === 'user') {
-          const match = AGENT_MESSAGE_RE.exec(messageContentText(prev.content as never).trim())
+        if (prev.role === "user") {
+          const match = AGENT_MESSAGE_RE.exec(
+            messageContentText(prev.content as never).trim(),
+          );
 
-          return match ? (match[1] || match[3] || 'agent').trim() : null
+          return match ? (match[1] || match[3] || "agent").trim() : null;
         }
       }
 
-      return null
+      return null;
     }
 
-    return null
-  })
+    return null;
+  });
 
   // The collapse gate below needs the LIVE running status, but only an
   // inter-agent reply can ever be collapsed. Dispatching on that first keeps
@@ -122,15 +132,19 @@ export const AssistantMessage: FC<AssistantMessageProps> = props => {
     <InterAgentAssistantMessage {...props} sender={interAgentSender} />
   ) : (
     <AssistantMessageBody {...props} />
-  )
-}
+  );
+};
 
 /** The compact stand-in a settled inter-agent reply collapses to (Grok-bots
  *  parity — the transcript shows the event; the text is one click away). */
 const InterAgentCollapsedNotice: FC<{ sender: string }> = ({ sender }) => (
   <div className="flex max-w-[min(86%,44rem)] flex-col gap-0.5 self-center px-2 py-0.5 text-[0.6875rem] leading-5 text-muted-foreground/60">
     <span className="flex items-center justify-center gap-1.5">
-      <Codicon className="shrink-0 text-muted-foreground/55" name="arrow-small-right" size="0.8125rem" />
+      <Codicon
+        className="shrink-0 text-muted-foreground/55"
+        name="arrow-small-right"
+        size="0.8125rem"
+      />
       <span className="wrap-anywhere">Replied to {sender}</span>
     </span>
     <details className="self-center">
@@ -142,7 +156,7 @@ const InterAgentCollapsedNotice: FC<{ sender: string }> = ({ sender }) => (
       </div>
     </details>
   </div>
-)
+);
 
 /**
  * An assistant reply that answers an inter-agent delivery. Owns the only
@@ -159,25 +173,27 @@ const InterAgentCollapsedNotice: FC<{ sender: string }> = ({ sender }) => (
  * jump the transcript under the reader. One component, one root, children
  * vary: settling is now a prop change React applies in place.
  */
-const InterAgentAssistantMessage: FC<AssistantMessageProps & { sender: string }> = ({ sender, ...props }) => {
-  const isRunning = useAuiState(s => s.message.status?.type === 'running')
+const InterAgentAssistantMessage: FC<
+  AssistantMessageProps & { sender: string }
+> = ({ sender, ...props }) => {
+  const isRunning = useAuiState((s) => s.message.status?.type === "running");
 
   return (
     <AssistantMessageBody
       {...props}
-      collapsedNotice={isRunning ? null : <InterAgentCollapsedNotice sender={sender} />}
+      collapsedNotice={
+        isRunning ? null : <InterAgentCollapsedNotice sender={sender} />
+      }
     />
-  )
-}
+  );
+};
 
-const AssistantMessageBody: FC<AssistantMessageProps & { collapsedNotice?: null | ReactNode }> = ({
-  collapsedNotice = null,
-  onBranchInNewChat,
-  onDismissError
-}) => {
-  const messageId = useAuiState(s => s.message.id)
-  const messageRuntime = useMessageRuntime()
-  const { t } = useI18n()
+const AssistantMessageBody: FC<
+  AssistantMessageProps & { collapsedNotice?: null | ReactNode }
+> = ({ collapsedNotice = null, onBranchInNewChat, onDismissError }) => {
+  const messageId = useAuiState((s) => s.message.id);
+  const messageRuntime = useMessageRuntime();
+  const { t } = useI18n();
 
   // PERF: this component must NOT subscribe to the streaming text, and no
   // longer subscribes to the streaming STATUS either. Every selector here
@@ -185,17 +201,26 @@ const AssistantMessageBody: FC<AssistantMessageProps & { collapsedNotice?: null 
   // (booleans, '' while running), so the 30 Hz delta stream only re-renders
   // the markdown part and the tiny status leaves — not the footer, the
   // preview block, or this root.
-  const hasVisibleText = useAuiState(s => contentHasVisibleText(s.message.content))
+  const hasVisibleText = useAuiState((s) =>
+    contentHasVisibleText(s.message.content),
+  );
   // Sealed mid-turn commentary keeps its text but not the footer, so a
   // tool-heavy turn doesn't grow a copy/refresh bar per paragraph (see
   // ChatMessage.interim).
-  const isInterim = useAuiState(s => s.message.metadata?.custom?.interim === true)
+  const isInterim = useAuiState(
+    (s) => s.message.metadata?.custom?.interim === true,
+  );
 
   // Whole-turn wall-clock seconds (set once at completion — referentially
   // stable across the 30 Hz delta stream, so this adds no per-token renders).
-  const turnDurationS = useAuiState(s => s.message.metadata?.custom?.durationS as number | undefined)
+  const turnDurationS = useAuiState(
+    (s) => s.message.metadata?.custom?.durationS as number | undefined,
+  );
 
-  const getMessageText = useCallback(() => messageContentText(messageRuntime.getState().content), [messageRuntime])
+  const getMessageText = useCallback(
+    () => messageContentText(messageRuntime.getState().content),
+    [messageRuntime],
+  );
 
   // useEnterAnimation consults `enabled` ONLY when its callback ref fires,
   // i.e. at mount: the hook parks the value in a ref and returns a
@@ -205,18 +230,23 @@ const AssistantMessageBody: FC<AssistantMessageProps & { collapsedNotice?: null 
   // subscription here would re-render this root on every pending flip to feed
   // a value the hook already ignores. Capture it once, off the runtime, with
   // no subscription at all.
-  const [initiallyRunning] = useState(() => messageRuntime.getState().status?.type === 'running')
-  const enterRef = useEnterAnimation(initiallyRunning, `assistant-message:${messageId}`)
+  const [initiallyRunning] = useState(
+    () => messageRuntime.getState().status?.type === "running",
+  );
+  const enterRef = useEnterAnimation(
+    initiallyRunning,
+    `assistant-message:${messageId}`,
+  );
 
   // Double-click the reply to heart it (iMessage). Undefined while reactions
   // are off, so the root carries no listener at all.
-  const onDoubleClick = useTapbackDoubleClick(messageId, 'assistant')
+  const onDoubleClick = useTapbackDoubleClick(messageId, "assistant");
 
   return (
     <MessagePrimitive.Root
       className={cn(
-        'group flex w-full min-w-0 max-w-full flex-col gap-0 self-start overflow-hidden',
-        collapsedNotice && 'pb-(--conversation-turn-gap)'
+        "group flex w-full min-w-0 max-w-full flex-col gap-0 self-start overflow-hidden",
+        collapsedNotice && "pb-(--conversation-turn-gap)",
       )}
       data-role="assistant"
       data-slot="aui_assistant-message-root"
@@ -261,7 +291,10 @@ const AssistantMessageBody: FC<AssistantMessageProps & { collapsedNotice?: null 
               </ErrorPrimitive.Root>
             </MessagePrimitive.Error>
           </div>
-          <MessageTimelineTimestamp className="px-(--message-text-indent) pt-0.5" suppressIfDuplicatePart />
+          <MessageTimelineTimestamp
+            className="px-(--message-text-indent) pt-0.5"
+            suppressIfDuplicatePart
+          />
           {hasVisibleText && !isInterim && (
             <AssistantFooter
               durationS={turnDurationS}
@@ -277,8 +310,8 @@ const AssistantMessageBody: FC<AssistantMessageProps & { collapsedNotice?: null 
         </>
       )}
     </MessagePrimitive.Root>
-  )
-}
+  );
+};
 
 /**
  * PERF leaf: the only subscriber to this message's streaming status inside the
@@ -312,20 +345,27 @@ const AssistantStatusSlot: FC = () => {
   // reading them separately just multiplies the wake-ups for a single logical
   // change. The selector collapses them to one stable string, which bails out
   // on every flush that does not actually change what this slot renders.
-  const slot = useAuiState(s => {
+  const slot = useAuiState((s) => {
     if (s.thread.messages[s.thread.messages.length - 1]?.id !== s.message.id) {
-      return 'none'
+      return "none";
     }
 
-    return s.message.status?.type === 'running' && s.message.content.length === 0 ? 'placeholder' : 'activity'
-  })
+    return s.message.status?.type === "running" &&
+      s.message.content.length === 0
+      ? "placeholder"
+      : "activity";
+  });
 
-  if (slot === 'none') {
-    return null
+  if (slot === "none") {
+    return null;
   }
 
-  return slot === 'placeholder' ? <ResponseLoadingIndicator /> : <TurnActivityIndicator />
-}
+  return slot === "placeholder" ? (
+    <ResponseLoadingIndicator />
+  ) : (
+    <TurnActivityIndicator />
+  );
+};
 
 /**
  * PERF leaf: owns the settled-text selector that feeds the link previews.
@@ -349,30 +389,36 @@ const AssistantStatusSlot: FC = () => {
  * of its own, so unlike StreamingMarker this needs no placement care.
  */
 const AssistantPreviewEmbeds: FC = () => {
-  const completedText = useAuiState(s =>
-    s.message.status?.type === 'running' ? '' : messageContentText(s.message.content)
-  )
+  const completedText = useAuiState((s) =>
+    s.message.status?.type === "running"
+      ? ""
+      : messageContentText(s.message.content),
+  );
 
   const previewTargets = useMemo(() => {
     if (!completedText || !/(https?:\/\/|file:\/\/)/i.test(completedText)) {
-      return []
+      return [];
     }
 
-    return pickPrimaryPreviewTarget(extractPreviewTargets(completedText))
-  }, [completedText])
+    return pickPrimaryPreviewTarget(extractPreviewTargets(completedText));
+  }, [completedText]);
 
   if (previewTargets.length === 0) {
-    return null
+    return null;
   }
 
   return (
     <div className="mt-3 flex flex-wrap gap-2">
-      {previewTargets.map(target => (
-        <PreviewAttachment key={target} source="explicit-link" target={target} />
+      {previewTargets.map((target) => (
+        <PreviewAttachment
+          key={target}
+          source="explicit-link"
+          target={target}
+        />
       ))}
     </div>
-  )
-}
+  );
+};
 
 /**
  * PERF leaf: owns the `settledParts` selector so the tail's settle stops
@@ -393,14 +439,17 @@ const AssistantPreviewEmbeds: FC = () => {
  * retires it — the working tree it describes is already history by then.
  */
 const SettledChangedFiles: FC = () => {
-  const settledParts = useAuiState(s => {
-    const isLastMessage = s.thread.messages[s.thread.messages.length - 1]?.id === s.message.id
+  const settledParts = useAuiState((s) => {
+    const isLastMessage =
+      s.thread.messages[s.thread.messages.length - 1]?.id === s.message.id;
 
-    return s.message.status?.type === 'running' || !isLastMessage ? EMPTY_PARTS : s.message.parts
-  })
+    return s.message.status?.type === "running" || !isLastMessage
+      ? EMPTY_PARTS
+      : s.message.parts;
+  });
 
-  return <ChangedFilesCard parts={settledParts} />
-}
+  return <ChangedFilesCard parts={settledParts} />;
+};
 
 /**
  * Carries the streaming flag that used to sit on the message root as
@@ -441,17 +490,17 @@ const SettledChangedFiles: FC = () => {
  * attribute, so the repro's row accounting is unchanged.
  */
 const StreamingMarker: FC = () => {
-  const isRunning = useAuiState(s => s.message.status?.type === 'running')
+  const isRunning = useAuiState((s) => s.message.status?.type === "running");
 
   return (
     <span
       aria-hidden="true"
       className="hidden"
-      data-message-streaming={isRunning ? 'true' : undefined}
+      data-message-streaming={isRunning ? "true" : undefined}
       data-slot="aui_message-streaming-marker"
     />
-  )
-}
+  );
+};
 
 // ── Layered error card pieces ────────────────────────────────────────────
 //
@@ -463,108 +512,141 @@ const StreamingMarker: FC = () => {
 // regresses on version skew.
 
 const ErrorLayerLabel: FC = () => {
-  const { t } = useI18n()
-  const surface = useAuiState(s => s.message.metadata?.custom?.errorSurface as ErrorSurface | undefined)
+  const { t } = useI18n();
+  const surface = useAuiState(
+    (s) => s.message.metadata?.custom?.errorSurface as ErrorSurface | undefined,
+  );
 
-  const labels = t.assistant.thread.errorLayers
-  const label = (surface && labels[surface.layer]) || labels.generic
+  const labels = t.assistant.thread.errorLayers;
+  const label = (surface && labels[surface.layer]) || labels.generic;
 
-  return <div className="font-medium">{label}</div>
-}
+  return <div className="font-medium">{label}</div>;
+};
 
 // Isolated because useNavigate() THROWS outside a <Router> (bare test
 // harnesses, embedded panes render threads router-free). The parent gates
 // this child's mount on useInRouterContext(), which is safe anywhere.
 const SwitchProviderAction: FC<{ label: string }> = ({ label }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <button className="aui-error-action" onClick={() => navigate(`${SETTINGS_ROUTE}?tab=config:model`)} type="button">
+    <button
+      className="aui-error-action"
+      onClick={() => navigate(`${SETTINGS_ROUTE}?tab=config:model`)}
+      type="button"
+    >
       {label}
     </button>
-  )
-}
+  );
+};
 
 const ErrorRecoveryActions: FC = () => {
-  const { t } = useI18n()
-  const copy = t.assistant.thread
-  const surface = useAuiState(s => s.message.metadata?.custom?.errorSurface as ErrorSurface | undefined)
+  const { t } = useI18n();
+  const copy = t.assistant.thread;
+  const surface = useAuiState(
+    (s) => s.message.metadata?.custom?.errorSurface as ErrorSurface | undefined,
+  );
 
-  const errorText = useAuiState(s => {
-    const status = s.message.status as { error?: unknown; type?: string } | undefined
+  const errorText = useAuiState((s) => {
+    const status = s.message.status as
+      { error?: unknown; type?: string } | undefined;
 
-    return status?.type === 'incomplete' && typeof status.error === 'string' ? status.error : ''
-  })
+    return status?.type === "incomplete" && typeof status.error === "string"
+      ? status.error
+      : "";
+  });
 
   // useNavigate() would throw here when no Router is above us; the deep-link
   // child mounts only when one is (see SwitchProviderAction).
-  const inRouter = useInRouterContext()
-  const model = useStore($currentModel)
-  const connection = useStore($connection)
+  const inRouter = useInRouterContext();
+  const model = useStore($currentModel);
+  const connection = useStore($connection);
 
   // Open Logs reveals the LOCAL Electron profile's HERMES_HOME/logs. On a
   // remote/cloud connection the failed turn's gateway+agent logs live on the
   // remote box — the local folder only holds Desktop-side transport logs, so
   // the label says "Open Desktop logs" there instead of implying it opens the
   // runtime's logs.
-  const remoteConnection = connection?.mode === 'remote'
+  const remoteConnection = connection?.mode === "remote";
 
   // Retry = assistant-ui reload (same wiring as the footer's refresh action):
   // re-runs the failed turn's prompt in place. Suppressed when the classifier
   // says the failure is deterministic (retrying reproduces it).
-  const retryable = !surface || surface.retryable
+  const retryable = !surface || surface.retryable;
 
   // Switch Provider deep-links Settings → Models for the layers where the fix
   // is provider/endpoint/auth config, not a retry.
-  const showSwitchProvider = surface != null && ['auth', 'billing', 'endpoint', 'provider'].includes(surface.layer)
+  const showSwitchProvider =
+    surface != null &&
+    ["auth", "billing", "endpoint", "provider"].includes(surface.layer);
 
   const openLogs = useCallback(async () => {
     try {
-      const root = await window.hermesDesktop?.logsRoot?.()
+      const root = await window.hermesDesktop?.logsRoot?.();
 
       if (!root) {
-        notifyError(new Error('logs root unavailable'), copy.errorOpenLogsFailed)
+        notifyError(
+          new Error("logs root unavailable"),
+          copy.errorOpenLogsFailed,
+        );
 
-        return
+        return;
       }
 
-      const result = await window.hermesDesktop?.openDir?.(root)
+      const result = await window.hermesDesktop?.openDir?.(root);
 
       if (result && !result.ok) {
-        notifyError(new Error(result.error || 'open failed'), copy.errorOpenLogsFailed)
+        notifyError(
+          new Error(result.error || "open failed"),
+          copy.errorOpenLogsFailed,
+        );
       }
     } catch (error) {
-      notifyError(error, copy.errorOpenLogsFailed)
+      notifyError(error, copy.errorOpenLogsFailed);
     }
-  }, [copy.errorOpenLogsFailed])
+  }, [copy.errorOpenLogsFailed]);
 
   const diagnosticsText = useCallback(
     () =>
       formatErrorDiagnostics({
         errorText,
         model: model || undefined,
-        surface
+        surface,
       }),
-    [errorText, model, surface]
-  )
+    [errorText, model, surface],
+  );
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       {retryable && (
         <ActionBarPrimitive.Reload asChild>
-          <button className="aui-error-action" onClick={() => triggerHaptic('submit')} type="button">
+          <button
+            className="aui-error-action"
+            onClick={() => triggerHaptic("submit")}
+            type="button"
+          >
             <RefreshCwIcon className="size-3" />
             {copy.errorRetry}
           </button>
         </ActionBarPrimitive.Reload>
       )}
-      {showSwitchProvider && inRouter && <SwitchProviderAction label={copy.errorSwitchProvider} />}
+      {showSwitchProvider && inRouter && (
+        <SwitchProviderAction label={copy.errorSwitchProvider} />
+      )}
       {window.hermesDesktop?.logsRoot && (
-        <button className="aui-error-action" onClick={() => void openLogs()} type="button">
+        <button
+          className="aui-error-action"
+          onClick={() => void openLogs()}
+          type="button"
+        >
           {remoteConnection ? copy.errorOpenDesktopLogs : copy.errorOpenLogs}
         </button>
       )}
-      <button className="aui-error-action" onClick={() => requestSendDiagnostics(diagnosticsText())} type="button">
+      <button
+        className="aui-error-action"
+        onClick={() => requestSendDiagnostics(diagnosticsText())}
+        type="button"
+      >
         <Upload className="size-3" />
         {copy.errorSendDiagnostics}
       </button>
@@ -575,28 +657,32 @@ const ErrorRecoveryActions: FC = () => {
         text={diagnosticsText}
       />
     </div>
-  )
-}
+  );
+};
 
 const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
   durationS,
   messageId,
   getMessageText,
-  onBranchInNewChat
+  onBranchInNewChat,
 }) => {
-  const { t } = useI18n()
-  const copy = t.assistant.thread
+  const { t } = useI18n();
+  const copy = t.assistant.thread;
 
-  const [pickerOpen, setPickerOpen] = useState(false)
-  const { enabled: reactionsEnabled, react, reactions: shownReactions } = useMessageReactions(messageId, 'assistant')
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const {
+    enabled: reactionsEnabled,
+    react,
+    reactions: shownReactions,
+  } = useMessageReactions(messageId, "assistant");
 
   const pickEmoji = useCallback(
     (emoji: null | string) => {
-      setPickerOpen(false)
-      react(emoji)
+      setPickerOpen(false);
+      react(emoji);
     },
-    [react]
-  )
+    [react],
+  );
 
   return (
     <div className="relative flex w-full shrink-0 items-center justify-end gap-1.5">
@@ -618,25 +704,33 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
           // invisible by default (opacity-0 + pointer-events-none, reveals on
           // hover), so keeping it mounted reserves stable layout height with
           // no visual change during streaming.
-          'relative flex flex-row items-center justify-end gap-1.5 py-1.5 opacity-0 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 focus-within:pointer-events-auto focus-within:opacity-100'
+          "relative flex flex-row items-center justify-end gap-1.5 py-1.5 opacity-0 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 focus-within:pointer-events-auto focus-within:opacity-100"
         }
         data-slot="aui_msg-actions"
       >
         {onBranchInNewChat && (
           <TooltipIconButton
             onClick={() => {
-              triggerHaptic('selection')
-              onBranchInNewChat(messageId)
+              triggerHaptic("selection");
+              onBranchInNewChat(messageId);
             }}
             tooltip={copy.branchNewChat}
           >
             <GitForkIcon className="size-3.5" />
           </TooltipIconButton>
         )}
-        <CopyButton appearance="icon" buttonSize="icon" label={copy.copy} text={getMessageText} />
+        <CopyButton
+          appearance="icon"
+          buttonSize="icon"
+          label={copy.copy}
+          text={getMessageText}
+        />
         <ReadAloudButton getText={getMessageText} messageId={messageId} />
         <ActionBarPrimitive.Reload asChild>
-          <TooltipIconButton onClick={() => triggerHaptic('submit')} tooltip={copy.refresh}>
+          <TooltipIconButton
+            onClick={() => triggerHaptic("submit")}
+            tooltip={copy.refresh}
+          >
             <RefreshCwIcon className="size-3.5" />
           </TooltipIconButton>
         </ActionBarPrimitive.Reload>
@@ -654,19 +748,28 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
           onOpenChange={setPickerOpen}
           onSelect={pickEmoji}
           open={pickerOpen}
-          selected={shownReactions.find(reaction => reaction.author === 'user')?.emoji}
+          selected={
+            shownReactions.find((reaction) => reaction.author === "user")?.emoji
+          }
         >
           <TooltipIconButton
             data-reacted={shownReactions.length > 0 || undefined}
             data-slot="aui_msg-reactions"
-            data-state={pickerOpen ? 'open' : undefined}
-            onClick={reactionsEnabled ? () => setPickerOpen(open => !open) : undefined}
+            data-state={pickerOpen ? "open" : undefined}
+            onClick={
+              reactionsEnabled
+                ? () => setPickerOpen((open) => !open)
+                : undefined
+            }
             tooltip={copy.react}
           >
             {shownReactions.length > 0 ? (
               <span className="flex items-center gap-0.5 text-[0.8125rem] leading-none">
-                {shownReactions.map(reaction => (
-                  <span className="reaction-pop" key={`${reaction.author}-${reaction.emoji}`}>
+                {shownReactions.map((reaction) => (
+                  <span
+                    className="reaction-pop"
+                    key={`${reaction.author}-${reaction.emoji}`}
+                  >
                     {reaction.emoji}
                   </span>
                 ))}
@@ -678,55 +781,72 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
         </ReactionPicker>
       )}
     </div>
-  )
-}
+  );
+};
 
-const ReadAloudButton: FC<{ getText: () => string; messageId: string }> = ({ getText, messageId }) => {
-  const { t } = useI18n()
-  const copy = t.assistant.thread
-  const voicePlayback = useStore($voicePlayback)
-  const view = useSessionView()
-  const sessionId = useStore(view.$runtimeId)
+const ReadAloudButton: FC<{ getText: () => string; messageId: string }> = ({
+  getText,
+  messageId,
+}) => {
+  const { t } = useI18n();
+  const copy = t.assistant.thread;
+  const voicePlayback = useStore($voicePlayback);
+  const view = useSessionView();
+  const sessionId = useStore(view.$runtimeId);
 
   const readAloudStatus =
-    voicePlayback.source === 'read-aloud' && voicePlayback.messageId === messageId ? voicePlayback.status : 'idle'
+    voicePlayback.source === "read-aloud" &&
+    voicePlayback.messageId === messageId
+      ? voicePlayback.status
+      : "idle";
 
-  const isPreparing = readAloudStatus === 'preparing'
-  const isSpeaking = readAloudStatus === 'speaking'
-  const anyPlaybackActive = voicePlayback.status !== 'idle'
-  const Icon = isPreparing ? Loader2Icon : isSpeaking ? VolumeXIcon : AudioLines
-  const tooltip = isPreparing ? copy.preparingAudio : isSpeaking ? copy.stopReading : copy.readAloud
+  const isPreparing = readAloudStatus === "preparing";
+  const isSpeaking = readAloudStatus === "speaking";
+  const anyPlaybackActive = voicePlayback.status !== "idle";
+  const Icon = isPreparing
+    ? Loader2Icon
+    : isSpeaking
+      ? VolumeXIcon
+      : AudioLines;
+  const tooltip = isPreparing
+    ? copy.preparingAudio
+    : isSpeaking
+      ? copy.stopReading
+      : copy.readAloud;
 
   const read = useCallback(async () => {
-    const text = getText()
+    const text = getText();
 
-    if (!text || $voicePlayback.get().status !== 'idle') {
-      return
+    if (!text || $voicePlayback.get().status !== "idle") {
+      return;
     }
 
     try {
-      await playSpeechText(text, { messageId, source: 'read-aloud' })
-      markAssistantIdSpoken(sessionId, view.$messages.get(), messageId)
+      await playSpeechText(text, { messageId, source: "read-aloud" });
+      markAssistantIdSpoken(sessionId, view.$messages.get(), messageId);
     } catch (error) {
-      notifyError(error, copy.readAloudFailed)
+      notifyError(error, copy.readAloudFailed);
     }
-  }, [copy.readAloudFailed, getText, messageId, sessionId, view.$messages])
+  }, [copy.readAloudFailed, getText, messageId, sessionId, view.$messages]);
 
   return (
     <TooltipIconButton
       disabled={isPreparing || (!isSpeaking && anyPlaybackActive)}
       onClick={() => {
-        triggerHaptic('selection')
-        void (isSpeaking ? stopVoicePlayback() : read())
+        triggerHaptic("selection");
+        void (isSpeaking ? stopVoicePlayback() : read());
       }}
       tooltip={tooltip}
     >
-      <Icon className={cn('size-3.5', isPreparing && 'animate-spin')} />
+      <Icon className={cn("size-3.5", isPreparing && "animate-spin")} />
     </TooltipIconButton>
-  )
-}
+  );
+};
 
-const AssistantFooter: FC<MessageActionProps & { durationS?: number }> = ({ durationS, ...props }) => {
+const AssistantFooter: FC<MessageActionProps & { durationS?: number }> = ({
+  durationS,
+  ...props
+}) => {
   return (
     <div className="flex min-h-6 flex-col items-end gap-1 pr-(--message-text-indent) pl-(--message-text-indent)">
       <BranchPickerPrimitive.Root
@@ -745,5 +865,5 @@ const AssistantFooter: FC<MessageActionProps & { durationS?: number }> = ({ dura
       </BranchPickerPrimitive.Root>
       <AssistantActionBar durationS={durationS} {...props} />
     </div>
-  )
-}
+  );
+};

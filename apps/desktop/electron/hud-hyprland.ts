@@ -14,27 +14,30 @@
  * trying; we probe once and cache it.
  */
 
-import { hyprlandRequest, hyprlandSocketPath } from './hyprland'
+import { hyprlandRequest, hyprlandSocketPath } from "./hyprland";
 
-export type HyprlandDispatchReply = 'ok' | 'wrong-syntax' | 'failed'
+export type HyprlandDispatchReply = "ok" | "wrong-syntax" | "failed";
 
 export type HudHyprlandClient = {
-  address: string
-  floating: boolean
-  pinned: boolean
-}
+  address: string;
+  floating: boolean;
+  pinned: boolean;
+};
 
-type HyprlandDispatchSyntax = 'legacy' | 'lua'
+type HyprlandDispatchSyntax = "legacy" | "lua";
 
-export type HyprlandRequestFn = (socketPath: string, command: string) => Promise<null | string>
+export type HyprlandRequestFn = (
+  socketPath: string,
+  command: string,
+) => Promise<null | string>;
 
-const DEFAULT_ATTEMPTS = 8
-const DEFAULT_DELAY_MS = 50
+const DEFAULT_ATTEMPTS = 8;
+const DEFAULT_DELAY_MS = 50;
 
-let cachedSyntax: null | HyprlandDispatchSyntax = null
+let cachedSyntax: null | HyprlandDispatchSyntax = null;
 
 export function resetHyprlandDispatchSyntax(): void {
-  cachedSyntax = null
+  cachedSyntax = null;
 }
 
 /**
@@ -45,106 +48,124 @@ export function resetHyprlandDispatchSyntax(): void {
  * Reply strings are what Hyprland 0.54 (hyprlang) and 0.56 (Lua config) actually
  * write; they are the probe, not a guess.
  */
-export function classifyHyprlandDispatchReply(reply: string): HyprlandDispatchReply {
-  const text = reply.trim()
+export function classifyHyprlandDispatchReply(
+  reply: string,
+): HyprlandDispatchReply {
+  const text = reply.trim();
 
-  if (text === 'ok') {
-    return 'ok'
+  if (text === "ok") {
+    return "ok";
   }
 
-  if (text.startsWith('Invalid dispatcher') || text.startsWith('error:')) {
-    return 'wrong-syntax'
+  if (text.startsWith("Invalid dispatcher") || text.startsWith("error:")) {
+    return "wrong-syntax";
   }
 
-  return 'failed'
+  return "failed";
 }
 
 function windowAddress(raw: string): string {
-  return raw.startsWith('0x') || raw.startsWith('0X') ? raw : `0x${raw}`
+  return raw.startsWith("0x") || raw.startsWith("0X") ? raw : `0x${raw}`;
 }
 
 /** First mapped client whose title is exactly the HUD's. */
-export function parseHudHyprlandClient(payload: string, title: string): HudHyprlandClient | null {
-  let raw: unknown
+export function parseHudHyprlandClient(
+  payload: string,
+  title: string,
+): HudHyprlandClient | null {
+  let raw: unknown;
 
   try {
-    raw = JSON.parse(payload)
+    raw = JSON.parse(payload);
   } catch {
-    return null
+    return null;
   }
 
   if (!Array.isArray(raw)) {
-    return null
+    return null;
   }
 
   for (const entry of raw) {
-    if (!entry || typeof entry !== 'object') {
-      continue
+    if (!entry || typeof entry !== "object") {
+      continue;
     }
 
-    const client = entry as { address?: unknown; floating?: unknown; pinned?: unknown; title?: unknown }
+    const client = entry as {
+      address?: unknown;
+      floating?: unknown;
+      pinned?: unknown;
+      title?: unknown;
+    };
 
-    if (client.title !== title || typeof client.address !== 'string' || client.address.length === 0) {
-      continue
+    if (
+      client.title !== title ||
+      typeof client.address !== "string" ||
+      client.address.length === 0
+    ) {
+      continue;
     }
 
     return {
       address: windowAddress(client.address),
       floating: client.floating === true,
-      pinned: client.pinned === true
-    }
+      pinned: client.pinned === true,
+    };
   }
 
-  return null
+  return null;
 }
 
-export function hudOverlayCommands(address: string, action: 'float' | 'pin'): { legacy: string; lua: string } {
-  const selector = `address:${address}`
+export function hudOverlayCommands(
+  address: string,
+  action: "float" | "pin",
+): { legacy: string; lua: string } {
+  const selector = `address:${address}`;
 
-  if (action === 'float') {
+  if (action === "float") {
     return {
       legacy: `dispatch setfloating ${selector}`,
-      lua: `dispatch hl.dsp.window.float({ action = "enable", window = "${selector}" })`
-    }
+      lua: `dispatch hl.dsp.window.float({ action = "enable", window = "${selector}" })`,
+    };
   }
 
   return {
     legacy: `dispatch pin ${selector}`,
-    lua: `dispatch hl.dsp.window.pin({ action = "enable", window = "${selector}" })`
-  }
+    lua: `dispatch hl.dsp.window.pin({ action = "enable", window = "${selector}" })`,
+  };
 }
 
 async function dispatchWithFallback(
   request: HyprlandRequestFn,
   socketPath: string,
-  pair: { legacy: string; lua: string }
+  pair: { legacy: string; lua: string },
 ): Promise<HyprlandDispatchReply> {
-  const order: HyprlandDispatchSyntax[] = cachedSyntax === 'lua' ? ['lua', 'legacy'] : ['legacy', 'lua']
+  const order: HyprlandDispatchSyntax[] =
+    cachedSyntax === "lua" ? ["lua", "legacy"] : ["legacy", "lua"];
 
   for (const syntax of order) {
-    const command = syntax === 'legacy' ? pair.legacy : pair.lua
-    const reply = await request(socketPath, command)
+    const command = syntax === "legacy" ? pair.legacy : pair.lua;
+    const reply = await request(socketPath, command);
 
     if (reply == null) {
-      return 'failed'
+      return "failed";
     }
 
-    const kind = classifyHyprlandDispatchReply(reply)
+    const kind = classifyHyprlandDispatchReply(reply);
 
-    if (kind === 'wrong-syntax') {
-      continue
+    if (kind === "wrong-syntax") {
+      continue;
     }
 
-    cachedSyntax = syntax
+    cachedSyntax = syntax;
 
-    return kind
+    return kind;
   }
 
-  return 'wrong-syntax'
+  return "wrong-syntax";
 }
 
 async function defaultSleep(ms: number): Promise<void> {
-  await new Promise(resolve => setTimeout(resolve, ms))
+  await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -153,62 +174,70 @@ async function defaultSleep(ms: number): Promise<void> {
  * lag the first frame.
  */
 export async function promoteHudOnHyprland(options: {
-  title: string
-  attempts?: number
-  delayMs?: number
-  env?: NodeJS.ProcessEnv
-  request?: HyprlandRequestFn
-  sleep?: (ms: number) => Promise<void>
-  uid?: number
+  title: string;
+  attempts?: number;
+  delayMs?: number;
+  env?: NodeJS.ProcessEnv;
+  request?: HyprlandRequestFn;
+  sleep?: (ms: number) => Promise<void>;
+  uid?: number;
 }): Promise<boolean> {
-  const env = options.env ?? process.env
-  const uid = options.uid ?? process.getuid?.() ?? 0
-  const socketPath = hyprlandSocketPath(env, uid)
+  const env = options.env ?? process.env;
+  const uid = options.uid ?? process.getuid?.() ?? 0;
+  const socketPath = hyprlandSocketPath(env, uid);
 
   if (!socketPath) {
-    return false
+    return false;
   }
 
-  const request = options.request ?? hyprlandRequest
-  const sleep = options.sleep ?? defaultSleep
-  const attempts = options.attempts ?? DEFAULT_ATTEMPTS
-  const delayMs = options.delayMs ?? DEFAULT_DELAY_MS
+  const request = options.request ?? hyprlandRequest;
+  const sleep = options.sleep ?? defaultSleep;
+  const attempts = options.attempts ?? DEFAULT_ATTEMPTS;
+  const delayMs = options.delayMs ?? DEFAULT_DELAY_MS;
 
   for (let attempt = 0; attempt < attempts; attempt++) {
     if (attempt > 0 && delayMs > 0) {
-      await sleep(delayMs)
+      await sleep(delayMs);
     }
 
-    const payload = await request(socketPath, 'j/clients')
+    const payload = await request(socketPath, "j/clients");
 
     if (!payload) {
-      continue
+      continue;
     }
 
-    const client = parseHudHyprlandClient(payload, options.title)
+    const client = parseHudHyprlandClient(payload, options.title);
 
     if (!client) {
-      continue
+      continue;
     }
 
     if (!client.floating) {
-      const floated = await dispatchWithFallback(request, socketPath, hudOverlayCommands(client.address, 'float'))
+      const floated = await dispatchWithFallback(
+        request,
+        socketPath,
+        hudOverlayCommands(client.address, "float"),
+      );
 
-      if (floated !== 'ok') {
-        continue
+      if (floated !== "ok") {
+        continue;
       }
     }
 
     if (!client.pinned) {
-      const pinned = await dispatchWithFallback(request, socketPath, hudOverlayCommands(client.address, 'pin'))
+      const pinned = await dispatchWithFallback(
+        request,
+        socketPath,
+        hudOverlayCommands(client.address, "pin"),
+      );
 
-      if (pinned !== 'ok') {
-        continue
+      if (pinned !== "ok") {
+        continue;
       }
     }
 
-    return true
+    return true;
   }
 
-  return false
+  return false;
 }

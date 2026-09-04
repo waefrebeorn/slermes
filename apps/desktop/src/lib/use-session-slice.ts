@@ -1,13 +1,13 @@
-import { useCallback, useRef, useSyncExternalStore } from 'react'
+import { useCallback, useRef, useSyncExternalStore } from "react";
 
 interface SliceStore<T> {
-  get(): Record<string, T[] | undefined>
-  listen(listener: () => void): () => void
+  get(): Record<string, T[] | undefined>;
+  listen(listener: () => void): () => void;
 }
 
 // Stable empty result so an absent key never yields a fresh array (which would
 // defeat the snapshot bail-out and re-render on every store write).
-const EMPTY: readonly never[] = []
+const EMPTY: readonly never[] = [];
 
 /**
  * Subscribe to ONE session's slice of a `Record<sessionId, T[]>` nanostore,
@@ -23,16 +23,22 @@ const EMPTY: readonly never[] = []
  * that rebuilds the whole map churns every slice — use a presence/edge selector
  * there instead.
  */
-export function useSessionSlice<T>(store: SliceStore<T>, key: string | null): T[] {
+export function useSessionSlice<T>(
+  store: SliceStore<T>,
+  key: string | null,
+): T[] {
   return useSyncExternalStore(
-    onChange => store.listen(onChange),
-    () => (key ? (store.get()[key] ?? (EMPTY as unknown as T[])) : (EMPTY as unknown as T[]))
-  )
+    (onChange) => store.listen(onChange),
+    () =>
+      key
+        ? (store.get()[key] ?? (EMPTY as unknown as T[]))
+        : (EMPTY as unknown as T[]),
+  );
 }
 
 interface ReadableStore<T> {
-  get(): T
-  listen(listener: () => void): () => void
+  get(): T;
+  listen(listener: () => void): () => void;
 }
 
 /**
@@ -50,16 +56,22 @@ interface ReadableStore<T> {
  * a fresh object or array defeats the bail-out and reintroduces the churn this
  * exists to remove — derive one scalar per call instead.
  */
-export function useStoreSelector<T, S>(store: ReadableStore<T>, select: (value: T) => S): S {
+export function useStoreSelector<T, S>(
+  store: ReadableStore<T>,
+  select: (value: T) => S,
+): S {
   // `select` is read through a ref so an inline arrow at the call site doesn't
   // resubscribe on every render; useSyncExternalStore re-reads the snapshot on
   // each render anyway, so the latest selector is always applied.
-  const selectRef = useRef(select)
-  selectRef.current = select
+  const selectRef = useRef(select);
+  selectRef.current = select;
 
-  const subscribe = useCallback((onChange: () => void) => store.listen(onChange), [store])
+  const subscribe = useCallback(
+    (onChange: () => void) => store.listen(onChange),
+    [store],
+  );
 
-  return useSyncExternalStore(subscribe, () => selectRef.current(store.get()))
+  return useSyncExternalStore(subscribe, () => selectRef.current(store.get()));
 }
 
 /**
@@ -71,32 +83,38 @@ export function useStoreSelector<T, S>(store: ReadableStore<T>, select: (value: 
  * happens to churn on its own, then silently goes stale when it doesn't. If a
  * selector reads it, list it.
  */
-export function useStoresSelector<S>(stores: readonly ReadableStore<unknown>[], select: () => S): S {
-  const selectRef = useRef(select)
-  selectRef.current = select
+export function useStoresSelector<S>(
+  stores: readonly ReadableStore<unknown>[],
+  select: () => S,
+): S {
+  const selectRef = useRef(select);
+  selectRef.current = select;
 
   // Hold the array identity steady: call sites pass an inline literal of
   // module-level singletons, so only a genuine store swap should resubscribe.
-  const storesRef = useRef(stores)
+  const storesRef = useRef(stores);
 
-  if (storesRef.current.length !== stores.length || storesRef.current.some((store, i) => store !== stores[i])) {
-    storesRef.current = stores
+  if (
+    storesRef.current.length !== stores.length ||
+    storesRef.current.some((store, i) => store !== stores[i])
+  ) {
+    storesRef.current = stores;
   }
 
-  const stable = storesRef.current
+  const stable = storesRef.current;
 
   const subscribe = useCallback(
     (onChange: () => void) => {
-      const stops = stable.map(store => store.listen(onChange))
+      const stops = stable.map((store) => store.listen(onChange));
 
       return () => {
         for (const stop of stops) {
-          stop()
+          stop();
         }
-      }
+      };
     },
-    [stable]
-  )
+    [stable],
+  );
 
-  return useSyncExternalStore(subscribe, () => selectRef.current())
+  return useSyncExternalStore(subscribe, () => selectRef.current());
 }

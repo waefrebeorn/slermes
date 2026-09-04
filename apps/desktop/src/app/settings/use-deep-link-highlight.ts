@@ -1,12 +1,12 @@
-import { useEffect } from 'react'
-import { useSearchParams } from 'react-router'
+import { useEffect } from "react";
+import { useSearchParams } from "react-router";
 
 interface DeepLinkHighlightOptions {
-  param: string
-  ready: (target: string) => boolean
-  elementId: (target: string) => string
-  onResolve?: (target: string) => void
-  block?: ScrollLogicalPosition
+  param: string;
+  ready: (target: string) => boolean;
+  elementId: (target: string) => string;
+  onResolve?: (target: string) => void;
+  block?: ScrollLogicalPosition;
 }
 
 // react-router's useSearchParams throws with no router context. Inside Settings
@@ -17,9 +17,9 @@ interface DeepLinkHighlightOptions {
 // try/catch never changes the hook count between renders (rules-of-hooks safe).
 function useOptionalSearchParams(): ReturnType<typeof useSearchParams> {
   try {
-    return useSearchParams()
+    return useSearchParams();
   } catch {
-    return [new URLSearchParams(), () => undefined]
+    return [new URLSearchParams(), () => undefined];
   }
 }
 
@@ -32,69 +32,72 @@ export function useDeepLinkHighlight({
   ready,
   elementId,
   onResolve,
-  block = 'center'
+  block = "center",
 }: DeepLinkHighlightOptions): null | string {
-  const [searchParams, setSearchParams] = useOptionalSearchParams()
-  const target = searchParams.get(param)
+  const [searchParams, setSearchParams] = useOptionalSearchParams();
+  const target = searchParams.get(param);
 
   useEffect(() => {
     if (!target || !ready(target)) {
-      return
+      return;
     }
 
-    onResolve?.(target)
+    onResolve?.(target);
 
-    let cancelled = false
-    let timer = 0
+    let cancelled = false;
+    let timer = 0;
 
     // onResolve may flip view state that mounts the row a few frames later, so
     // poll briefly for it and only drop the param AFTER a successful scroll —
     // deleting up front would lose the deep link when the target mounts late.
-    let attempts = 0
+    let attempts = 0;
 
     const attempt = () => {
       if (cancelled) {
-        return
+        return;
       }
 
-      const element = document.getElementById(elementId(target))
+      const element = document.getElementById(elementId(target));
 
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block })
+        element.scrollIntoView({ behavior: "smooth", block });
 
-        if (!element.hasAttribute('tabindex')) {
-          element.tabIndex = -1
+        if (!element.hasAttribute("tabindex")) {
+          element.tabIndex = -1;
         }
 
-        element.focus({ preventScroll: true })
-        element.classList.add('setting-field-highlight')
-        window.setTimeout(() => element.classList.remove('setting-field-highlight'), 1600)
+        element.focus({ preventScroll: true });
+        element.classList.add("setting-field-highlight");
+        window.setTimeout(
+          () => element.classList.remove("setting-field-highlight"),
+          1600,
+        );
 
         setSearchParams(
-          previous => {
-            const next = new URLSearchParams(previous)
-            next.delete(param)
+          (previous) => {
+            const next = new URLSearchParams(previous);
+            next.delete(param);
 
-            return next
+            return next;
           },
-          { replace: true }
-        )
+          { replace: true },
+        );
 
-        return
+        return;
       }
 
       if (attempts++ < 20) {
-        timer = window.setTimeout(attempt, 80)
+        timer = window.setTimeout(attempt, 80);
       }
-    }
+    };
 
-    timer = window.setTimeout(attempt, 80)
+    timer = window.setTimeout(attempt, 80);
 
     return () => {
-      cancelled = true
-      window.clearTimeout(timer)
-    }
-  }, [block, elementId, onResolve, param, ready, setSearchParams, target])
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [block, elementId, onResolve, param, ready, setSearchParams, target]);
 
-  return target
+  return target;
 }

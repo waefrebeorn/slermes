@@ -14,26 +14,26 @@
  * of it surviving the window.
  */
 
-import { atom, batch } from 'nanostores'
+import { atom, batch } from "nanostores";
 
-import type { WorkspaceMode } from '../../contrib/types'
+import type { WorkspaceMode } from "../../contrib/types";
 
 /** Re-exported so workspace consumers can import it from here. */
-export type { WorkspaceMode } from '../../contrib/types'
+export type { WorkspaceMode } from "../../contrib/types";
 
 /** Default workspace mode when the host has not switched surfaces. */
-export const $workspaceMode = atom<WorkspaceMode>('sessions')
+export const $workspaceMode = atom<WorkspaceMode>("sessions");
 
 /** Default workspace owner key: none (unscoped / global ownership). */
-export const $workspaceOwnerKey = atom<string | null>(null)
+export const $workspaceOwnerKey = atom<string | null>(null);
 
 /** Exact route for a fresh session in the current workspace. Kept structural
  *  here so the generic pane shell does not depend on profile/gateway stores. */
 export interface WorkspaceSessionRoute {
-  connectionId: string
-  mode?: 'local' | 'remote'
-  profile: string
-  targetProfile?: string
+  connectionId: string;
+  mode?: "local" | "remote";
+  profile: string;
+  targetProfile?: string;
 }
 
 /** Where the shared `+` / session.newTab command should aim in this workspace.
@@ -41,20 +41,25 @@ export interface WorkspaceSessionRoute {
  *  orphaned roster row) — it never disables the `+`, which falls back to an
  *  ordinary session: bot chats and session tabs share the one main strip. */
 export type WorkspaceNewSessionTarget =
-  { kind: 'blocked'; message: string } | { kind: 'route'; route: WorkspaceSessionRoute }
+  | { kind: "blocked"; message: string }
+  | { kind: "route"; route: WorkspaceSessionRoute };
 
 /** Sessions uses its established ambient behavior (`null`). */
-export const $workspaceNewSessionTarget = atom<WorkspaceNewSessionTarget | null>(null)
+export const $workspaceNewSessionTarget =
+  atom<WorkspaceNewSessionTarget | null>(null);
 
 /** Display name per exact owner key, published by the workspace that owns the
  *  key (Bot Mode: the roster's display name). Presentation only — never a
  *  session title, which for a canonical Bot Chat is an identity the backend
  *  resolves by name and must stay exactly as stored. */
-export const $workspaceOwnerLabels = atom<Readonly<Record<string, string>>>({})
+export const $workspaceOwnerLabels = atom<Readonly<Record<string, string>>>({});
 
 export function setWorkspaceOwnerLabel(ownerKey: string, label: string): void {
   if ($workspaceOwnerLabels.get()[ownerKey] !== label) {
-    $workspaceOwnerLabels.set({ ...$workspaceOwnerLabels.get(), [ownerKey]: label })
+    $workspaceOwnerLabels.set({
+      ...$workspaceOwnerLabels.get(),
+      [ownerKey]: label,
+    });
   }
 }
 
@@ -64,43 +69,59 @@ export function setWorkspaceOwnerLabel(ownerKey: string, label: string): void {
  *  (#99152). Any other title (a `+` side thread, a Sessions tab) is untouched. */
 export function workspaceOwnerTitle(
   title: string,
-  scope: { workspaceMode?: WorkspaceMode; workspaceOwnerKey?: string; workspaceTabTitle?: string } | undefined
+  scope:
+    | {
+        workspaceMode?: WorkspaceMode;
+        workspaceOwnerKey?: string;
+        workspaceTabTitle?: string;
+      }
+    | undefined,
 ): string {
-  if (scope?.workspaceMode !== 'bots' || !scope.workspaceOwnerKey || title !== scope.workspaceTabTitle) {
-    return title
+  if (
+    scope?.workspaceMode !== "bots" ||
+    !scope.workspaceOwnerKey ||
+    title !== scope.workspaceTabTitle
+  ) {
+    return title;
   }
 
-  return $workspaceOwnerLabels.get()[scope.workspaceOwnerKey] ?? title
+  return $workspaceOwnerLabels.get()[scope.workspaceOwnerKey] ?? title;
 }
 
 /** One key for window-local active-pane memory. Owner keys stay opaque. */
-export function workspaceScopeKey(mode: WorkspaceMode, ownerKey: string | null): string {
-  return mode === 'sessions' ? 'sessions' : `bots:${ownerKey ?? ''}`
+export function workspaceScopeKey(
+  mode: WorkspaceMode,
+  ownerKey: string | null,
+): string {
+  return mode === "sessions" ? "sessions" : `bots:${ownerKey ?? ""}`;
 }
 
-function sameNewSessionTarget(a: WorkspaceNewSessionTarget | null, b: WorkspaceNewSessionTarget | null): boolean {
+function sameNewSessionTarget(
+  a: WorkspaceNewSessionTarget | null,
+  b: WorkspaceNewSessionTarget | null,
+): boolean {
   if (a === b) {
-    return true
+    return true;
   }
 
   if (!a || !b || a.kind !== b.kind) {
-    return false
+    return false;
   }
 
-  if (a.kind === 'blocked' && b.kind === 'blocked') {
-    return a.message === b.message
+  if (a.kind === "blocked" && b.kind === "blocked") {
+    return a.message === b.message;
   }
 
-  if (a.kind === 'route' && b.kind === 'route') {
+  if (a.kind === "route" && b.kind === "route") {
     return (
       a.route.connectionId === b.route.connectionId &&
       a.route.mode === b.route.mode &&
       a.route.profile === b.route.profile &&
       a.route.targetProfile === b.route.targetProfile
-    )
+    );
   }
 
-  return false
+  return false;
 }
 
 /** Publish one coherent surface and creation scope without an intermediate
@@ -109,26 +130,26 @@ function sameNewSessionTarget(a: WorkspaceNewSessionTarget | null, b: WorkspaceN
 export function setWorkspaceScope(
   mode: WorkspaceMode,
   ownerKey: string | null = null,
-  newSessionTarget: WorkspaceNewSessionTarget | null = null
+  newSessionTarget: WorkspaceNewSessionTarget | null = null,
 ): boolean {
-  const nextOwnerKey = mode === 'bots' ? ownerKey : null
-  const nextNewSessionTarget = mode === 'bots' ? newSessionTarget : null
+  const nextOwnerKey = mode === "bots" ? ownerKey : null;
+  const nextNewSessionTarget = mode === "bots" ? newSessionTarget : null;
 
   if (
     $workspaceMode.get() === mode &&
     $workspaceOwnerKey.get() === nextOwnerKey &&
     sameNewSessionTarget($workspaceNewSessionTarget.get(), nextNewSessionTarget)
   ) {
-    return false
+    return false;
   }
 
   batch(() => {
-    $workspaceMode.set(mode)
-    $workspaceOwnerKey.set(nextOwnerKey)
-    $workspaceNewSessionTarget.set(nextNewSessionTarget)
-  })
+    $workspaceMode.set(mode);
+    $workspaceOwnerKey.set(nextOwnerKey);
+    $workspaceNewSessionTarget.set(nextNewSessionTarget);
+  });
 
-  return true
+  return true;
 }
 
 /**
@@ -136,11 +157,11 @@ export function setWorkspaceScope(
  * Keys are opaque exact strings; similar-looking keys never collide because
  * nothing here parses them.
  */
-const rememberedActivePanes = new Map<string, string>()
+const rememberedActivePanes = new Map<string, string>();
 
 /** Remember which pane was active for an exact owner key. */
 export function rememberActivePane(ownerKey: string, paneId: string): void {
-  rememberedActivePanes.set(ownerKey, paneId)
+  rememberedActivePanes.set(ownerKey, paneId);
 }
 
 /**
@@ -148,31 +169,34 @@ export function rememberActivePane(ownerKey: string, paneId: string): void {
  * panes. A remembered pane that has since been removed must not restore: the
  * fallback is the first eligible pane, or null when none are eligible.
  */
-export function resolveRememberedActivePane(ownerKey: string, eligiblePaneIds: readonly string[]): string | null {
-  const remembered = rememberedActivePanes.get(ownerKey)
+export function resolveRememberedActivePane(
+  ownerKey: string,
+  eligiblePaneIds: readonly string[],
+): string | null {
+  const remembered = rememberedActivePanes.get(ownerKey);
 
   if (remembered != null && eligiblePaneIds.includes(remembered)) {
-    return remembered
+    return remembered;
   }
 
-  return eligiblePaneIds[0] ?? null
+  return eligiblePaneIds[0] ?? null;
 }
 
 /** Forget the remembered pane for one owner key. */
 export function forgetActivePane(ownerKey: string): void {
-  rememberedActivePanes.delete(ownerKey)
+  rememberedActivePanes.delete(ownerKey);
 }
 
 /** Forget a pane removed from the layout, regardless of which owners used it. */
 export function forgetRememberedPane(paneId: string): void {
   for (const [ownerKey, rememberedPaneId] of rememberedActivePanes) {
     if (rememberedPaneId === paneId) {
-      rememberedActivePanes.delete(ownerKey)
+      rememberedActivePanes.delete(ownerKey);
     }
   }
 }
 
 /** Test-only: clear all remembered panes. */
 export function resetRememberedActivePanes(): void {
-  rememberedActivePanes.clear()
+  rememberedActivePanes.clear();
 }

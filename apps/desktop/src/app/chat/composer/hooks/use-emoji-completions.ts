@@ -1,6 +1,10 @@
-import { useCallback } from 'react'
+import { useCallback } from "react";
 
-import { type CompletionEntry, type CompletionPayload, useLiveCompletionAdapter } from './use-live-completion-adapter'
+import {
+  type CompletionEntry,
+  type CompletionPayload,
+  useLiveCompletionAdapter,
+} from "./use-live-completion-adapter";
 
 /**
  * `:shortcode:` completions for the composers, Slack-style (`:joy` → 😂).
@@ -18,105 +22,116 @@ import { type CompletionEntry, type CompletionPayload, useLiveCompletionAdapter 
  */
 
 interface EmojiEntry {
-  emoji: string
+  emoji: string;
   /** Primary shortcode, e.g. "joy". */
-  code: string
+  code: string;
   /** Every shortcode, tag, and label that should match a search. */
-  haystack: string[]
+  haystack: string[];
 }
 
-let indexPromise: Promise<EmojiEntry[]> | null = null
-let indexLoaded = false
+let indexPromise: Promise<EmojiEntry[]> | null = null;
+let indexLoaded = false;
 
 async function loadIndex(): Promise<EmojiEntry[]> {
   const [dataRes, codesRes] = await Promise.all([
-    fetch('./emojibase/en/data.json'),
-    fetch('./emojibase/en/shortcodes/emojibase.json')
-  ])
+    fetch("./emojibase/en/data.json"),
+    fetch("./emojibase/en/shortcodes/emojibase.json"),
+  ]);
 
-  const data: { emoji: string; hexcode: string; label: string; tags?: string[] }[] = await dataRes.json()
-  const codes: Record<string, string | string[]> = await codesRes.json()
-  const entries: EmojiEntry[] = []
+  const data: {
+    emoji: string;
+    hexcode: string;
+    label: string;
+    tags?: string[];
+  }[] = await dataRes.json();
+  const codes: Record<string, string | string[]> = await codesRes.json();
+  const entries: EmojiEntry[] = [];
 
   for (const item of data) {
-    const raw = codes[item.hexcode]
+    const raw = codes[item.hexcode];
 
     if (!raw) {
-      continue
+      continue;
     }
 
-    const shortcodes = Array.isArray(raw) ? raw : [raw]
+    const shortcodes = Array.isArray(raw) ? raw : [raw];
 
     entries.push({
       emoji: item.emoji,
       code: shortcodes[0],
-      haystack: [...shortcodes, ...(item.tags ?? []), item.label.toLowerCase()]
-    })
+      haystack: [...shortcodes, ...(item.tags ?? []), item.label.toLowerCase()],
+    });
   }
 
-  indexLoaded = true
+  indexLoaded = true;
 
-  return entries
+  return entries;
 }
 
 /** Prefix matches on shortcodes rank first, then tag/label substring hits. */
 async function searchEmoji(query: string, limit = 8): Promise<EmojiEntry[]> {
-  const index = await (indexPromise ??= loadIndex())
-  const q = query.toLowerCase()
-  const prefix: EmojiEntry[] = []
-  const loose: EmojiEntry[] = []
+  const index = await (indexPromise ??= loadIndex());
+  const q = query.toLowerCase();
+  const prefix: EmojiEntry[] = [];
+  const loose: EmojiEntry[] = [];
 
   for (const entry of index) {
-    if (entry.code.startsWith(q) || entry.haystack.some(h => h.startsWith(q))) {
-      prefix.push(entry)
-    } else if (entry.haystack.some(h => h.includes(q))) {
-      loose.push(entry)
+    if (
+      entry.code.startsWith(q) ||
+      entry.haystack.some((h) => h.startsWith(q))
+    ) {
+      prefix.push(entry);
+    } else if (entry.haystack.some((h) => h.includes(q))) {
+      loose.push(entry);
     }
 
     if (prefix.length >= limit) {
-      break
+      break;
     }
   }
 
-  return [...prefix, ...loose].slice(0, limit)
+  return [...prefix, ...loose].slice(0, limit);
 }
 
 export function useEmojiCompletions() {
-  const fetcher = useCallback(async (query: string): Promise<CompletionPayload> => {
-    const entries = await searchEmoji(query)
+  const fetcher = useCallback(
+    async (query: string): Promise<CompletionPayload> => {
+      const entries = await searchEmoji(query);
 
-    return {
-      query,
-      items: entries.map(entry => ({
-        text: entry.emoji,
-        display: `${entry.emoji}  :${entry.code}:`,
-        meta: ''
-      }))
-    }
-  }, [])
+      return {
+        query,
+        items: entries.map((entry) => ({
+          text: entry.emoji,
+          display: `${entry.emoji}  :${entry.code}:`,
+          meta: "",
+        })),
+      };
+    },
+    [],
+  );
 
   const toItem = useCallback(
     (entry: CompletionEntry, index: number) => ({
       id: `${entry.text}|${index}`,
-      type: 'emoji',
-      label: typeof entry.display === 'string' ? entry.display : entry.text,
+      type: "emoji",
+      label: typeof entry.display === "string" ? entry.display : entry.text,
       metadata: {
-        display: typeof entry.display === 'string' ? entry.display : entry.text,
+        display: typeof entry.display === "string" ? entry.display : entry.text,
         // The formatter's serialize() returns rawText verbatim → the emoji
         // character lands as plain inline text, no chip.
         rawText: entry.text,
-        meta: '',
-        group: '',
-        action: ''
-      }
+        meta: "",
+        group: "",
+        action: "",
+      },
     }),
-    []
-  )
+    [],
+  );
 
   return useLiveCompletionAdapter({
     enabled: true,
     fetcher,
     isCached: () => indexLoaded,
-    toItem
-  })
+    toItem,
+  });
 }

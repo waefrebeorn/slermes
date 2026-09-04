@@ -1,29 +1,32 @@
-import { useStore } from '@nanostores/react'
+import { useStore } from "@nanostores/react";
 
-import { ModelVisibilityDialog } from '@/components/model-visibility-dialog'
-import type { HermesGateway } from '@/hermes'
-import { $modelVisibilityOpen, setModelVisibilityOpen } from '@/store/model-visibility'
-import { $activeSessionId, $gatewayState } from '@/store/session'
+import { ModelVisibilityDialog } from "@/components/model-visibility-dialog";
+import type { HermesGateway } from "@/hermes";
+import {
+  $modelVisibilityOpen,
+  setModelVisibilityOpen,
+} from "@/store/model-visibility";
+import { $activeSessionId, $gatewayState } from "@/store/session";
 
 interface ModelVisibilityOverlayProps {
-  gateway?: HermesGateway
-  onOpenProviders: () => void
-  ownerConnectionId?: string
-  profile: string
+  gateway?: HermesGateway;
+  onOpenProviders: () => void;
+  ownerConnectionId?: string;
+  profile: string;
 }
 
 export function ModelVisibilityOverlay({
   gateway,
   onOpenProviders,
   ownerConnectionId,
-  profile
+  profile,
 }: ModelVisibilityOverlayProps) {
-  const activeSessionId = useStore($activeSessionId)
-  const gatewayOpen = useStore($gatewayState) === 'open'
-  const open = useStore($modelVisibilityOpen)
+  const activeSessionId = useStore($activeSessionId);
+  const gatewayOpen = useStore($gatewayState) === "open";
+  const open = useStore($modelVisibilityOpen);
 
   if (!gatewayOpen) {
-    return null
+    return null;
   }
 
   return (
@@ -36,5 +39,5 @@ export function ModelVisibilityOverlay({
       profile={profile}
       sessionId={activeSessionId}
     />
-  )
+  );
 }

@@ -1,110 +1,134 @@
-import { useStore } from '@nanostores/react'
-import type { CSSProperties, MutableRefObject, PointerEvent as ReactPointerEvent, RefObject } from 'react'
-import { useEffect, useMemo, useRef } from 'react'
+import { useStore } from "@nanostores/react";
+import type {
+  CSSProperties,
+  MutableRefObject,
+  PointerEvent as ReactPointerEvent,
+  RefObject,
+} from "react";
+import { useEffect, useMemo, useRef } from "react";
 
-import { requestComposerInsert } from '@/app/chat/composer/focus'
-import { CopyButton } from '@/components/ui/copy-button'
-import { Tip } from '@/components/ui/tooltip'
-import { useI18n } from '@/i18n'
-import { PanelBottom, Send, Trash2 } from '@/lib/icons'
-import { cn } from '@/lib/utils'
-import { notify } from '@/store/notifications'
+import { requestComposerInsert } from "@/app/chat/composer/focus";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Tip } from "@/components/ui/tooltip";
+import { useI18n } from "@/i18n";
+import { PanelBottom, Send, Trash2 } from "@/lib/icons";
+import { cn } from "@/lib/utils";
+import { notify } from "@/store/notifications";
 
-import type { ConsoleEntry, PreviewConsoleState } from './preview-console-state'
+import type {
+  ConsoleEntry,
+  PreviewConsoleState,
+} from "./preview-console-state";
 
 const consoleLevelLabel: Record<number, string> = {
-  0: 'log',
-  1: 'info',
-  2: 'warn',
-  3: 'error'
-}
+  0: "log",
+  1: "info",
+  2: "warn",
+  3: "error",
+};
 
 const consoleLevelClass: Record<number, string> = {
-  0: 'text-foreground',
-  1: 'text-sky-700 dark:text-sky-300',
-  2: 'text-amber-700 dark:text-amber-300',
-  3: 'text-destructive'
-}
+  0: "text-foreground",
+  1: "text-sky-700 dark:text-sky-300",
+  2: "text-amber-700 dark:text-amber-300",
+  3: "text-destructive",
+};
 
-const CONSOLE_BOTTOM_THRESHOLD = 24
-const CONSOLE_HEADER_HEIGHT = 32
+const CONSOLE_BOTTOM_THRESHOLD = 24;
+const CONSOLE_HEADER_HEIGHT = 32;
 
 export function compactUrl(value: string): string {
   try {
-    const url = new URL(value)
+    const url = new URL(value);
 
-    if (url.protocol === 'file:') {
-      return decodeURIComponent(url.pathname)
+    if (url.protocol === "file:") {
+      return decodeURIComponent(url.pathname);
     }
 
-    return `${url.host}${url.pathname}${url.search}`
+    return `${url.host}${url.pathname}${url.search}`;
   } catch {
-    return value
+    return value;
   }
 }
 
 export function formatLogLine(log: ConsoleEntry): string {
-  const head = `[${consoleLevelLabel[log.level] || 'log'}]`
-  const tail = log.source ? ` (${compactUrl(log.source)}${log.line ? `:${log.line}` : ''})` : ''
+  const head = `[${consoleLevelLabel[log.level] || "log"}]`;
+  const tail = log.source
+    ? ` (${compactUrl(log.source)}${log.line ? `:${log.line}` : ""})`
+    : "";
 
-  return `${head} ${log.message}${tail}`.trim()
+  return `${head} ${log.message}${tail}`.trim();
 }
 
 export function formatConsoleEntries(entries: ConsoleEntry[]): string {
-  return entries.map(formatLogLine).join('\n')
+  return entries.map(formatLogLine).join("\n");
 }
 
 export function isNearConsoleBottom(element: HTMLDivElement | null): boolean {
   if (!element) {
-    return true
+    return true;
   }
 
-  return element.scrollHeight - element.scrollTop - element.clientHeight <= CONSOLE_BOTTOM_THRESHOLD
+  return (
+    element.scrollHeight - element.scrollTop - element.clientHeight <=
+    CONSOLE_BOTTOM_THRESHOLD
+  );
 }
 
 export function clampConsoleHeight(value: number): number {
-  return Math.max(value, CONSOLE_HEADER_HEIGHT)
+  return Math.max(value, CONSOLE_HEADER_HEIGHT);
 }
 
 interface ConsoleRowProps {
-  copyText: string
-  log: ConsoleEntry
-  onSend: () => void
-  onToggleSelect: () => void
-  selected: boolean
+  copyText: string;
+  log: ConsoleEntry;
+  onSend: () => void;
+  onToggleSelect: () => void;
+  selected: boolean;
 }
 
-function ConsoleRow({ copyText, log, onSend, onToggleSelect, selected }: ConsoleRowProps) {
-  const { t } = useI18n()
-  const copy = t.preview.console
+function ConsoleRow({
+  copyText,
+  log,
+  onSend,
+  onToggleSelect,
+  selected,
+}: ConsoleRowProps) {
+  const { t } = useI18n();
+  const copy = t.preview.console;
 
   return (
     <div
       className={cn(
-        'group/row grid grid-cols-[3.25rem_minmax(0,1fr)_auto] items-start gap-2 rounded-md border border-transparent px-1 py-1 transition-colors hover:bg-accent/40',
-        selected && 'border-border/60 bg-accent/40'
+        "group/row grid grid-cols-[3.25rem_minmax(0,1fr)_auto] items-start gap-2 rounded-md border border-transparent px-1 py-1 transition-colors hover:bg-accent/40",
+        selected && "border-border/60 bg-accent/40",
       )}
     >
       <Tip label={selected ? copy.deselect : copy.select}>
         <button
           className={cn(
-            'mt-0.5 text-left uppercase opacity-70 transition-colors hover:opacity-100',
-            consoleLevelClass[log.level] ?? consoleLevelClass[0]
+            "mt-0.5 text-left uppercase opacity-70 transition-colors hover:opacity-100",
+            consoleLevelClass[log.level] ?? consoleLevelClass[0],
           )}
           onClick={onToggleSelect}
           type="button"
         >
-          {consoleLevelLabel[log.level] || 'log'}
+          {consoleLevelLabel[log.level] || "log"}
         </button>
       </Tip>
       <div className="min-w-0" data-selectable-text="true">
-        <span className={cn('block wrap-break-word', consoleLevelClass[log.level] ?? consoleLevelClass[0])}>
+        <span
+          className={cn(
+            "block wrap-break-word",
+            consoleLevelClass[log.level] ?? consoleLevelClass[0],
+          )}
+        >
           {log.message}
         </span>
         {log.source && (
           <span className="block truncate text-muted-foreground/60">
             {compactUrl(log.source)}
-            {log.line ? `:${log.line}` : ''}
+            {log.line ? `:${log.line}` : ""}
           </span>
         )}
       </div>
@@ -129,76 +153,86 @@ function ConsoleRow({ copyText, log, onSend, onToggleSelect, selected }: Console
         </Tip>
       </span>
     </div>
-  )
+  );
 }
 
 interface PreviewConsolePanelProps {
-  consoleBodyRef: RefObject<HTMLDivElement | null>
-  consoleShouldStickRef: MutableRefObject<boolean>
-  consoleState: PreviewConsoleState
-  startConsoleResize: (event: ReactPointerEvent<HTMLDivElement>) => void
+  consoleBodyRef: RefObject<HTMLDivElement | null>;
+  consoleShouldStickRef: MutableRefObject<boolean>;
+  consoleState: PreviewConsoleState;
+  startConsoleResize: (event: ReactPointerEvent<HTMLDivElement>) => void;
 }
 
 export function PreviewConsolePanel({
   consoleBodyRef,
   consoleShouldStickRef,
   consoleState,
-  startConsoleResize
+  startConsoleResize,
 }: PreviewConsolePanelProps) {
-  const { t } = useI18n()
-  const copy = t.preview.console
-  const consoleHeight = useStore(consoleState.$height)
-  const logs = useStore(consoleState.$logs)
-  const selectedLogIds = useStore(consoleState.$selectedLogIds)
-  const visibleSelection = useMemo(() => logs.filter(log => selectedLogIds.has(log.id)), [logs, selectedLogIds])
-  const sendableLogs = visibleSelection.length > 0 ? visibleSelection : logs
-  const stickScrollRafRef = useRef<number | null>(null)
+  const { t } = useI18n();
+  const copy = t.preview.console;
+  const consoleHeight = useStore(consoleState.$height);
+  const logs = useStore(consoleState.$logs);
+  const selectedLogIds = useStore(consoleState.$selectedLogIds);
+  const visibleSelection = useMemo(
+    () => logs.filter((log) => selectedLogIds.has(log.id)),
+    [logs, selectedLogIds],
+  );
+  const sendableLogs = visibleSelection.length > 0 ? visibleSelection : logs;
+  const stickScrollRafRef = useRef<number | null>(null);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
     if (!consoleShouldStickRef.current) {
-      return
+      return;
     }
 
     if (stickScrollRafRef.current !== null) {
-      window.cancelAnimationFrame(stickScrollRafRef.current)
-      stickScrollRafRef.current = null
+      window.cancelAnimationFrame(stickScrollRafRef.current);
+      stickScrollRafRef.current = null;
     }
 
     stickScrollRafRef.current = window.requestAnimationFrame(() => {
-      stickScrollRafRef.current = null
-      const consoleBody = consoleBodyRef.current
-      consoleBody?.scrollTo({ top: consoleBody.scrollHeight })
-    })
+      stickScrollRafRef.current = null;
+      const consoleBody = consoleBodyRef.current;
+      consoleBody?.scrollTo({ top: consoleBody.scrollHeight });
+    });
 
     return () => {
       if (stickScrollRafRef.current !== null) {
-        window.cancelAnimationFrame(stickScrollRafRef.current)
-        stickScrollRafRef.current = null
+        window.cancelAnimationFrame(stickScrollRafRef.current);
+        stickScrollRafRef.current = null;
       }
-    }
-  }, [consoleBodyRef, consoleHeight, consoleShouldStickRef, logs])
+    };
+  }, [consoleBodyRef, consoleHeight, consoleShouldStickRef, logs]);
 
   function sendLogsToComposer(entries: ConsoleEntry[]) {
     if (!entries.length) {
-      return
+      return;
     }
 
-    const block = [copy.promptHeader, '```', ...entries.map(formatLogLine), '```'].join('\n')
+    const block = [
+      copy.promptHeader,
+      "```",
+      ...entries.map(formatLogLine),
+      "```",
+    ].join("\n");
 
-    requestComposerInsert(block, { mode: 'block', target: 'main' })
-    consoleState.clearSelection()
+    requestComposerInsert(block, { mode: "block", target: "main" });
+    consoleState.clearSelection();
     notify({
-      kind: 'success',
+      kind: "success",
       title: copy.sentTitle,
-      message: copy.sentMessage(entries.length)
-    })
+      message: copy.sentMessage(entries.length),
+    });
   }
 
   return (
     <div
       className="pointer-events-auto absolute inset-x-0 bottom-0 z-20 flex h-(--preview-console-height) min-h-8 flex-col overflow-hidden border-t border-border/60 bg-background"
-      style={{ '--preview-console-height': `${consoleHeight}px` } as CSSProperties}
+      style={
+        { "--preview-console-height": `${consoleHeight}px` } as CSSProperties
+      }
     >
       <div
         aria-label={copy.resize}
@@ -235,7 +269,9 @@ export function PreviewConsolePanel({
             disabled={sendableLogs.length === 0}
             errorMessage={copy.copyFailed}
             iconClassName="size-3"
-            label={visibleSelection.length > 0 ? copy.copySelected : copy.copyAll}
+            label={
+              visibleSelection.length > 0 ? copy.copySelected : copy.copyAll
+            }
             text={() => formatConsoleEntries(sendableLogs)}
           >
             {copy.copy}
@@ -256,8 +292,8 @@ export function PreviewConsolePanel({
         ref={consoleBodyRef}
       >
         {logs.length > 0 ? (
-          logs.map(log => {
-            const selected = selectedLogIds.has(log.id)
+          logs.map((log) => {
+            const selected = selectedLogIds.has(log.id);
 
             return (
               <ConsoleRow
@@ -268,12 +304,12 @@ export function PreviewConsolePanel({
                 onToggleSelect={() => consoleState.toggleSelection(log.id)}
                 selected={selected}
               />
-            )
+            );
           })
         ) : (
           <div className="py-2 text-muted-foreground/70">{copy.empty}</div>
         )}
       </div>
     </div>
-  )
+  );
 }

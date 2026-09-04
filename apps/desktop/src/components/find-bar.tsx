@@ -1,12 +1,12 @@
-import { useStore } from '@nanostores/react'
-import { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router'
+import { useStore } from "@nanostores/react";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router";
 
-import { appViewForPath, isOverlayView } from '@/app/routes'
-import { Tip } from '@/components/ui/tooltip'
-import { useI18n } from '@/i18n'
-import { findBarKeyAction, formatMatchLabel } from '@/lib/find-in-page'
-import { cn } from '@/lib/utils'
+import { appViewForPath, isOverlayView } from "@/app/routes";
+import { Tip } from "@/components/ui/tooltip";
+import { useI18n } from "@/i18n";
+import { findBarKeyAction, formatMatchLabel } from "@/lib/find-in-page";
+import { cn } from "@/lib/utils";
 import {
   $findInPage,
   closeFindBar,
@@ -14,8 +14,8 @@ import {
   findPrevious,
   initFindInPageListener,
   initOpenFindBarListener,
-  setFindQuery
-} from '@/store/find-in-page'
+  setFindQuery,
+} from "@/store/find-in-page";
 
 /**
  * Find-in-page overlay (⌘F).
@@ -35,13 +35,13 @@ import {
  * accelerator set is testable without a DOM.
  */
 export function FindBar() {
-  const { t } = useI18n()
-  const { active, query, matchOrdinal, matchCount } = useStore($findInPage)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const nativeSearchRequestRef = useRef(0)
-  const [localQuery, setLocalQuery] = useState('')
-  const [filesPaneRight, setFilesPaneRight] = useState<number | null>(null)
-  const { pathname } = useLocation()
+  const { t } = useI18n();
+  const { active, query, matchOrdinal, matchCount } = useStore($findInPage);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const nativeSearchRequestRef = useRef(0);
+  const [localQuery, setLocalQuery] = useState("");
+  const [filesPaneRight, setFilesPaneRight] = useState<number | null>(null);
+  const { pathname } = useLocation();
 
   // Navigating away (opening another session, a settings page, …) closes the
   // bar and clears the native highlight. Electron's findInPage selection is
@@ -52,23 +52,23 @@ export function FindBar() {
   // (session/profile switches that remount the shell) gets the same teardown.
   // closeFindBar is idempotent, so a closed bar never re-enters the bridge.
   useEffect(() => {
-    void pathname
+    void pathname;
 
-    return () => closeFindBar()
-  }, [pathname])
+    return () => closeFindBar();
+  }, [pathname]);
 
   // Focus input when find bar opens.
   useEffect(() => {
     if (active) {
-      setLocalQuery('')
+      setLocalQuery("");
       // Small delay so the DOM paints the input before we focus.
-      const id = requestAnimationFrame(() => inputRef.current?.focus())
+      const id = requestAnimationFrame(() => inputRef.current?.focus());
 
-      return () => cancelAnimationFrame(id)
+      return () => cancelAnimationFrame(id);
     }
 
-    return undefined
-  }, [active])
+    return undefined;
+  }, [active]);
 
   // The files pane (right sidebar, `aside[aria-label="Right sidebar"]`) is a
   // floating right rail. The find bar is `fixed right-4` by default, which
@@ -84,128 +84,131 @@ export function FindBar() {
   // one rAF-batched measure; everything tears down when the bar closes.
   useEffect(() => {
     if (!active) {
-      setFilesPaneRight(null)
+      setFilesPaneRight(null);
 
-      return undefined
+      return undefined;
     }
 
-    let rafId: null | number = null
-    let observedAside: Element | null = null
+    let rafId: null | number = null;
+    let observedAside: Element | null = null;
 
-    const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => scheduleMeasure())
+    const resizeObserver =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(() => scheduleMeasure());
 
     const measure = () => {
-      rafId = null
-      const aside = document.querySelector('aside[aria-label="Right sidebar"]')
+      rafId = null;
+      const aside = document.querySelector('aside[aria-label="Right sidebar"]');
 
       // The aside can be replaced wholesale (pane closed and reopened, panes
       // flipped) — retarget the ResizeObserver whenever its identity changes.
       if (aside !== observedAside) {
         if (observedAside) {
-          resizeObserver?.unobserve(observedAside)
+          resizeObserver?.unobserve(observedAside);
         }
 
         if (aside) {
-          resizeObserver?.observe(aside)
+          resizeObserver?.observe(aside);
         }
 
-        observedAside = aside
+        observedAside = aside;
       }
 
-      const rect = aside?.getBoundingClientRect()
+      const rect = aside?.getBoundingClientRect();
 
       if (rect && rect.width > 0 && rect.left < window.innerWidth) {
-        setFilesPaneRight(window.innerWidth - rect.left)
+        setFilesPaneRight(window.innerWidth - rect.left);
       } else {
-        setFilesPaneRight(null)
+        setFilesPaneRight(null);
       }
-    }
+    };
 
     const scheduleMeasure = () => {
-      rafId ??= requestAnimationFrame(measure)
-    }
+      rafId ??= requestAnimationFrame(measure);
+    };
 
     // Catches the pane opening/closing while the bar is up. Scoped to
     // childList mutations only (no attributes/characterData), and the bar is
     // a transient overlay, so the observer lives only for the find session.
-    const mutationObserver = new MutationObserver(scheduleMeasure)
-    mutationObserver.observe(document.body, { childList: true, subtree: true })
+    const mutationObserver = new MutationObserver(scheduleMeasure);
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
 
-    measure()
-    window.addEventListener('resize', scheduleMeasure)
+    measure();
+    window.addEventListener("resize", scheduleMeasure);
 
     return () => {
-      window.removeEventListener('resize', scheduleMeasure)
-      mutationObserver.disconnect()
-      resizeObserver?.disconnect()
+      window.removeEventListener("resize", scheduleMeasure);
+      mutationObserver.disconnect();
+      resizeObserver?.disconnect();
 
       if (rafId != null) {
-        cancelAnimationFrame(rafId)
+        cancelAnimationFrame(rafId);
       }
-    }
-  }, [active, pathname])
+    };
+  }, [active, pathname]);
 
   // Subscribe to found-in-page results from the main process. Refcounted in
   // the store, so a remount (connection re-home) can't stack listeners; the
   // subscription is deliberately mount-scoped and NOT tied to `active` —
   // results for an in-flight search must still land if the bar just closed.
-  useEffect(() => initFindInPageListener(), [])
+  useEffect(() => initFindInPageListener(), []);
 
   // Mirror the find-results listener for the main-process Ctrl/Cmd+F
   // forward — on Pop!_OS / GNOME the GTK compositor grabs the chord at
   // the windowing layer (#81727).
-  useEffect(() => initOpenFindBarListener(), [])
+  useEffect(() => initOpenFindBarListener(), []);
 
   // Debounce search — fire findInPage 200ms after the user stops typing.
   useEffect(() => {
-    const requestId = ++nativeSearchRequestRef.current
-    const input = inputRef.current
+    const requestId = ++nativeSearchRequestRef.current;
+    const input = inputRef.current;
 
     if (!active || !localQuery) {
       if (input?.inert) {
-        input.inert = false
+        input.inert = false;
       }
 
-      return undefined
+      return undefined;
     }
 
     const id = setTimeout(() => {
       if (!input) {
-        void setFindQuery(localQuery)
+        void setFindQuery(localQuery);
 
-        return
+        return;
       }
 
-      const hadFocus = document.activeElement === input
-      const selectionStart = input.selectionStart
-      const selectionEnd = input.selectionEnd
+      const hadFocus = document.activeElement === input;
+      const selectionStart = input.selectionStart;
+      const selectionEnd = input.selectionEnd;
 
       // The HTML inert contract excludes this truthful search control from
       // find-in-page. Keep it inert until the IPC reply confirms Electron has
       // started the request, then restore focus and selection.
-      input.inert = true
+      input.inert = true;
 
       void setFindQuery(localQuery).finally(() => {
         if (nativeSearchRequestRef.current !== requestId) {
-          return
+          return;
         }
 
-        input.inert = false
+        input.inert = false;
 
         if (hadFocus && input.isConnected) {
-          input.focus({ preventScroll: true })
+          input.focus({ preventScroll: true });
 
           if (selectionStart !== null && selectionEnd !== null) {
-            input.setSelectionRange(selectionStart, selectionEnd)
+            input.setSelectionRange(selectionStart, selectionEnd);
           }
         }
-      })
-    }, 200)
+      });
+    }, 200);
 
     // Cleanup covers every exit: another keystroke, the bar closing, and
     // unmount. Nothing can fire a find after the bar is gone.
-    return () => clearTimeout(id)
-  }, [active, localQuery])
+    return () => clearTimeout(id);
+  }, [active, localQuery]);
 
   // Global accelerators while the bar is open: Escape closes, ⌘G / ⌘⇧G step.
   // Capture-phase so they win regardless of which element inside the shell
@@ -216,69 +219,73 @@ export function FindBar() {
   // bar hands ⌘G straight back to the review pane.
   useEffect(() => {
     if (!active) {
-      return undefined
+      return undefined;
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      const action = findBarKeyAction(event)
+      const action = findBarKeyAction(event);
 
       if (!action) {
-        return
+        return;
       }
 
-      event.preventDefault()
-      event.stopPropagation()
+      event.preventDefault();
+      event.stopPropagation();
 
-      if (action === 'close') {
-        closeFindBar()
-      } else if (action === 'next') {
-        findNext()
+      if (action === "close") {
+        closeFindBar();
+      } else if (action === "next") {
+        findNext();
       } else {
-        findPrevious()
+        findPrevious();
       }
-    }
+    };
 
-    window.addEventListener('keydown', onKeyDown, { capture: true })
+    window.addEventListener("keydown", onKeyDown, { capture: true });
 
-    return () => window.removeEventListener('keydown', onKeyDown, { capture: true })
-  }, [active])
+    return () =>
+      window.removeEventListener("keydown", onKeyDown, { capture: true });
+  }, [active]);
 
   if (!active || isOverlayView(appViewForPath(pathname))) {
-    return null
+    return null;
   }
 
   const onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    setLocalQuery(value)
+    const value = event.target.value;
+    setLocalQuery(value);
 
     // Empty query: clear highlights immediately rather than after the debounce.
     if (!value) {
-      void setFindQuery('')
+      void setFindQuery("");
     }
-  }
+  };
 
   // Enter / ⇧Enter step while focus is in the input. Escape and ⌘G are handled
   // by the window listener above, so they are intentionally not duplicated
   // here — `inInput` only unlocks the bare-Enter family.
   const onKeyDown = (event: React.KeyboardEvent) => {
-    const action = findBarKeyAction(event, { inInput: true })
+    const action = findBarKeyAction(event, { inInput: true });
 
-    if (action !== 'next' && action !== 'previous') {
-      return
+    if (action !== "next" && action !== "previous") {
+      return;
     }
 
-    event.preventDefault()
+    event.preventDefault();
 
-    if (action === 'next') {
-      findNext()
+    if (action === "next") {
+      findNext();
     } else {
-      findPrevious()
+      findPrevious();
     }
-  }
+  };
 
-  const matchLabel = formatMatchLabel(query, matchOrdinal, matchCount)
+  const matchLabel = formatMatchLabel(query, matchOrdinal, matchCount);
 
-  const barStyle = filesPaneRight != null ? { right: `calc(${filesPaneRight}px + 0.75rem)` } : undefined
+  const barStyle =
+    filesPaneRight != null
+      ? { right: `calc(${filesPaneRight}px + 0.75rem)` }
+      : undefined;
 
   return (
     <div
@@ -289,26 +296,29 @@ export function FindBar() {
         // floating-hud.ts / notifications.tsx) — a 0px fallback parks the bar
         // inside the titlebar strip, underneath the native min/max/close
         // window-controls overlay on Windows/Linux.
-        'pointer-events-auto fixed right-4 top-[calc(var(--titlebar-height,34px)+0.5rem)] z-50',
-        'flex items-center gap-2 rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-surface-background) px-2 py-1.5 shadow-md'
+        "pointer-events-auto fixed right-4 top-[calc(var(--titlebar-height,34px)+0.5rem)] z-50",
+        "flex items-center gap-2 rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-surface-background) px-2 py-1.5 shadow-md",
       )}
       role="search"
       style={barStyle}
     >
       <input
-        aria-label={t.keybinds.actions['view.findInPage'] ?? 'Find in page'}
+        aria-label={t.keybinds.actions["view.findInPage"] ?? "Find in page"}
         autoComplete="off"
         className="h-6 w-40 bg-transparent text-xs text-(--ui-text-primary) outline-none placeholder:text-(--ui-text-tertiary)"
         onChange={onInput}
         onKeyDown={onKeyDown}
-        placeholder={t.keybinds.actions['view.findInPage'] ?? 'Find in page'}
+        placeholder={t.keybinds.actions["view.findInPage"] ?? "Find in page"}
         ref={inputRef}
         type="search"
         value={localQuery}
       />
 
       {matchLabel && (
-        <span aria-live="polite" className="min-w-[3rem] text-center text-[0.6875rem] text-(--ui-text-tertiary)">
+        <span
+          aria-live="polite"
+          className="min-w-[3rem] text-center text-[0.6875rem] text-(--ui-text-tertiary)"
+        >
           {matchLabel}
         </span>
       )}
@@ -321,7 +331,12 @@ export function FindBar() {
           type="button"
         >
           <svg height="14" viewBox="0 0 16 16" width="14">
-            <path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <path
+              d="M4 10l4-4 4 4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
           </svg>
         </button>
       </Tip>
@@ -334,7 +349,12 @@ export function FindBar() {
           type="button"
         >
           <svg height="14" viewBox="0 0 16 16" width="14">
-            <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <path
+              d="M4 6l4 4 4-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
           </svg>
         </button>
       </Tip>
@@ -346,9 +366,13 @@ export function FindBar() {
         type="button"
       >
         <svg height="12" viewBox="0 0 12 12" width="12">
-          <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.5" />
+          <path
+            d="M1 1l10 10M11 1L1 11"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
         </svg>
       </button>
     </div>
-  )
+  );
 }

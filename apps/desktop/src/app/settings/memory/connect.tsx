@@ -1,146 +1,165 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import { getMemoryProviderOAuthStatus, startMemoryProviderOAuth } from '@/hermes'
-import { Check, ExternalLink, Loader2 } from '@/lib/icons'
-import { notifyError } from '@/store/notifications'
-import type { MemoryProviderOAuthStatus } from '@/types/hermes'
+import { Button } from "@/components/ui/button";
+import {
+  getMemoryProviderOAuthStatus,
+  startMemoryProviderOAuth,
+} from "@/hermes";
+import { Check, ExternalLink, Loader2 } from "@/lib/icons";
+import { notifyError } from "@/store/notifications";
+import type { MemoryProviderOAuthStatus } from "@/types/hermes";
 
-const POLL_MS = 1500
-const POLL_TIMEOUT_MS = 120_000
+const POLL_MS = 1500;
+const POLL_TIMEOUT_MS = 120_000;
 
 // Small connect affordance rendered under the provider dropdown. Capability is
 // backend-driven: the status route 404s for providers without an oauth_flow
 // module, so non-OAuth providers render nothing.
-export function MemoryConnect({ profile, provider }: { profile?: string; provider: string }) {
-  const [capable, setCapable] = useState<'no' | 'unknown' | 'yes'>('unknown')
-  const [connected, setConnected] = useState(false)
-  const [auth, setAuth] = useState<MemoryProviderOAuthStatus['auth']>(null)
-  const [phase, setPhase] = useState<'error' | 'idle' | 'pending'>('idle')
-  const [detail, setDetail] = useState('')
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null)
-  const deadline = useRef(0)
+export function MemoryConnect({
+  profile,
+  provider,
+}: {
+  profile?: string;
+  provider: string;
+}) {
+  const [capable, setCapable] = useState<"no" | "unknown" | "yes">("unknown");
+  const [connected, setConnected] = useState(false);
+  const [auth, setAuth] = useState<MemoryProviderOAuthStatus["auth"]>(null);
+  const [phase, setPhase] = useState<"error" | "idle" | "pending">("idle");
+  const [detail, setDetail] = useState("");
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const deadline = useRef(0);
 
   const stop = useCallback(() => {
     if (timer.current !== null) {
-      clearInterval(timer.current)
-      timer.current = null
+      clearInterval(timer.current);
+      timer.current = null;
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    let active = true
-    setCapable('unknown')
+    let active = true;
+    setCapable("unknown");
     getMemoryProviderOAuthStatus(provider, profile)
-      .then(s => {
+      .then((s) => {
         if (!active) {
-          return
+          return;
         }
 
-        setCapable('yes')
-        setConnected(s.connected)
-        setAuth(s.auth)
+        setCapable("yes");
+        setConnected(s.connected);
+        setAuth(s.auth);
       })
       .catch(() => {
         if (active) {
-          setCapable('no')
+          setCapable("no");
         }
-      })
+      });
 
     return () => {
-      active = false
-      stop()
-    }
-  }, [profile, provider, stop])
+      active = false;
+      stop();
+    };
+  }, [profile, provider, stop]);
 
   // An error message isn't sticky — it clears back to the steady state
   // (Connect link, plus the connected badge if a credential is stored).
   useEffect(() => {
-    if (phase !== 'error') {
-      return
+    if (phase !== "error") {
+      return;
     }
 
     const t = setTimeout(() => {
-      setPhase('idle')
-      setDetail('')
-    }, 6000)
+      setPhase("idle");
+      setDetail("");
+    }, 6000);
 
-    return () => clearTimeout(t)
-  }, [phase])
+    return () => clearTimeout(t);
+  }, [phase]);
 
   const connect = useCallback(async () => {
-    setPhase('pending')
+    setPhase("pending");
 
     try {
-      await startMemoryProviderOAuth(provider, profile)
+      await startMemoryProviderOAuth(provider, profile);
     } catch (err) {
-      setPhase('error')
-      setDetail('Could not start the connection.')
-      notifyError(err, 'Failed to start connection')
+      setPhase("error");
+      setDetail("Could not start the connection.");
+      notifyError(err, "Failed to start connection");
 
-      return
+      return;
     }
 
-    deadline.current = Date.now() + POLL_TIMEOUT_MS
-    stop()
+    deadline.current = Date.now() + POLL_TIMEOUT_MS;
+    stop();
     timer.current = setInterval(() => {
       void (async () => {
         try {
-          const next = await getMemoryProviderOAuthStatus(provider, profile)
+          const next = await getMemoryProviderOAuthStatus(provider, profile);
 
-          if (next.state === 'pending') {
+          if (next.state === "pending") {
             if (Date.now() > deadline.current) {
-              stop()
-              setPhase('error')
-              setDetail('Timed out — try again.')
+              stop();
+              setPhase("error");
+              setDetail("Timed out — try again.");
             }
 
-            return
+            return;
           }
 
-          stop()
-          setConnected(next.connected)
-          setAuth(next.auth)
+          stop();
+          setConnected(next.connected);
+          setAuth(next.auth);
 
-          if (next.state === 'error') {
-            setPhase('error')
-            setDetail(next.detail || 'Connection failed.')
+          if (next.state === "error") {
+            setPhase("error");
+            setDetail(next.detail || "Connection failed.");
           } else {
-            setPhase('idle')
+            setPhase("idle");
           }
         } catch {
           // Transient poll failure — keep trying until the deadline.
         }
-      })()
-    }, POLL_MS)
-  }, [profile, provider, stop])
+      })();
+    }, POLL_MS);
+  }, [profile, provider, stop]);
 
   const cancel = useCallback(() => {
-    stop()
-    setPhase('idle')
-  }, [stop])
+    stop();
+    setPhase("idle");
+  }, [stop]);
 
-  if (capable !== 'yes') {
-    return null
+  if (capable !== "yes") {
+    return null;
   }
 
-  const connectLabel = connected ? (auth === 'apikey' ? 'Connect via OAuth' : 'Reconnect') : 'Connect'
+  const connectLabel = connected
+    ? auth === "apikey"
+      ? "Connect via OAuth"
+      : "Reconnect"
+    : "Connect";
 
   return (
     <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-      {phase === 'idle' && connected && (
+      {phase === "idle" && connected && (
         <span className="inline-flex items-center gap-1 text-muted-foreground">
           <Check className="size-3" />
-          {auth === 'apikey' ? 'api key set' : 'oauth set'}
+          {auth === "apikey" ? "api key set" : "oauth set"}
         </span>
       )}
-      {phase === 'pending' ? (
+      {phase === "pending" ? (
         <>
           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
             <Loader2 className="size-3 animate-spin" />
             Waiting for browser consent…
           </span>
-          <Button className="h-auto p-0 text-xs" onClick={cancel} size="sm" type="button" variant="link">
+          <Button
+            className="h-auto p-0 text-xs"
+            onClick={cancel}
+            size="sm"
+            type="button"
+            variant="link"
+          >
             Cancel
           </Button>
         </>
@@ -156,7 +175,9 @@ export function MemoryConnect({ profile, provider }: { profile?: string; provide
           {connectLabel}
         </Button>
       )}
-      {phase === 'error' && detail && <span className="text-destructive">{detail}</span>}
+      {phase === "error" && detail && (
+        <span className="text-destructive">{detail}</span>
+      )}
     </span>
-  )
+  );
 }

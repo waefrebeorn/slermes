@@ -34,12 +34,12 @@ import {
   normalizeHex,
   type Oklch,
   oklchToHex,
-  readableOn
-} from './color'
-import type { DesktopTheme, DesktopThemeColors } from './types'
+  readableOn,
+} from "./color";
+import type { DesktopTheme, DesktopThemeColors } from "./types";
 
 /** Small uppercase sidebar labels paint in the accent, so it must clear AA. */
-const ACCENT_MIN_CONTRAST = 4.5
+const ACCENT_MIN_CONTRAST = 4.5;
 
 /**
  * How far a slot's hue may sit from the primary and still count as the same
@@ -47,13 +47,18 @@ const ACCENT_MIN_CONTRAST = 4.5
  * 286° against a 293° primary), narrow enough that a second, deliberately
  * different accent is left alone.
  */
-const ACCENT_HUE_TOLERANCE = 25
+const ACCENT_HUE_TOLERANCE = 25;
 
 /** Below this chroma a colour is a grey and its hue is noise. */
-const ACCENT_MIN_CHROMA = 0.03
+const ACCENT_MIN_CHROMA = 0.03;
 
 /** Slots that carry the accent itself, rather than a surface mixed from it. */
-const ACCENT_SEED_KEYS = ['primary', 'ring', 'midground', 'composerRing'] as const
+const ACCENT_SEED_KEYS = [
+  "primary",
+  "ring",
+  "midground",
+  "composerRing",
+] as const;
 
 /**
  * Slots mixed from the seed, as ratios per mode — the converter's own numbers.
@@ -62,8 +67,8 @@ const ACCENT_SEED_KEYS = ['primary', 'ring', 'midground', 'composerRing'] as con
 const ACCENT_MIX = {
   accent: { light: 0.88, dark: 0.82 },
   secondary: { light: 0.86, dark: 0.72 },
-  userBubble: { light: 0.12, dark: 0.18 }
-} as const
+  userBubble: { light: 0.12, dark: 0.18 },
+} as const;
 
 /**
  * Whether a slot belongs to the accent family, and so should follow a re-seed.
@@ -81,51 +86,65 @@ const ACCENT_MIX = {
  */
 function tracksAccent(slot: Oklch, primary: Oklch): boolean {
   if (slot.c < ACCENT_MIN_CHROMA) {
-    return primary.c < ACCENT_MIN_CHROMA
+    return primary.c < ACCENT_MIN_CHROMA;
   }
 
-  return Math.abs(hueDelta(primary.h, slot.h)) <= ACCENT_HUE_TOLERANCE
+  return Math.abs(hueDelta(primary.h, slot.h)) <= ACCENT_HUE_TOLERANCE;
 }
 
 /** Re-derive the accent family of one palette around `seed`. */
-function retintColors(colors: DesktopThemeColors, seed: string, isDark: boolean): DesktopThemeColors {
-  const next: DesktopThemeColors = { ...colors }
-  const pick = (spec: { dark: number; light: number }) => (isDark ? spec.dark : spec.light)
-  const primary = hexToOklch(colors.primary)
-  const seedLch = hexToOklch(seed)
+function retintColors(
+  colors: DesktopThemeColors,
+  seed: string,
+  isDark: boolean,
+): DesktopThemeColors {
+  const next: DesktopThemeColors = { ...colors };
+  const pick = (spec: { dark: number; light: number }) =>
+    isDark ? spec.dark : spec.light;
+  const primary = hexToOklch(colors.primary);
+  const seedLch = hexToOklch(seed);
 
   for (const key of ACCENT_SEED_KEYS) {
-    const slot = colors[key]
-    const lch = slot ? hexToOklch(slot) : null
+    const slot = colors[key];
+    const lch = slot ? hexToOklch(slot) : null;
 
     if (!lch || !primary || !seedLch || !tracksAccent(lch, primary)) {
-      continue
+      continue;
     }
 
     // Take the seed's hue but keep the slot's OWN lightness and chroma, so a
     // theme that deliberately runs a deeper ring than its primary keeps that
     // relationship instead of being flattened onto one colour.
-    next[key] = slot === colors.primary ? seed : oklchToHex({ ...lch, h: seedLch.h })
+    next[key] =
+      slot === colors.primary ? seed : oklchToHex({ ...lch, h: seedLch.h });
   }
 
   // OKLab, not sRGB: blending a saturated blue toward white in gamma space
   // drifts it ~8° violet, which is exactly how a clean blue accent produced a
   // lavender selection row. See mixOklab.
-  next.accent = mixOklab(seed, colors.background, pick(ACCENT_MIX.accent))
-  next.secondary = mixOklab(seed, colors.background, pick(ACCENT_MIX.secondary))
-  next.userBubble = mixOklab(colors.card, seed, pick(ACCENT_MIX.userBubble))
+  next.accent = mixOklab(seed, colors.background, pick(ACCENT_MIX.accent));
+  next.secondary = mixOklab(
+    seed,
+    colors.background,
+    pick(ACCENT_MIX.secondary),
+  );
+  next.userBubble = mixOklab(colors.card, seed, pick(ACCENT_MIX.userBubble));
 
   // Foregrounds that sit ON the accent have to be re-picked: a new seed can
   // cross the light/dark readability boundary.
-  next.primaryForeground = readableOn(seed)
-  next.midgroundForeground = readableOn(seed)
+  next.primaryForeground = readableOn(seed);
+  next.midgroundForeground = readableOn(seed);
 
-  return next
+  return next;
 }
 
 /** The seed a palette should use, adapted to stay legible on its own sidebar. */
 function seedFor(colors: DesktopThemeColors, seed: string): string {
-  return ensureContrastOklch(seed, colors.sidebarBackground ?? colors.background, ACCENT_MIN_CONTRAST)
+  return ensureContrastOklch(
+    seed,
+    colors.sidebarBackground ?? colors.background,
+    ACCENT_MIN_CONTRAST,
+  );
 }
 
 /**
@@ -142,17 +161,20 @@ function seedFor(colors: DesktopThemeColors, seed: string): string {
  * `#368548` instead of `#4f9e5e`, a visibly duller dark accent.
  */
 function carryToDark(theme: DesktopTheme, seed: string): string {
-  const light = hexToOklch(theme.colors.primary)
-  const dark = theme.darkColors ? hexToOklch(theme.darkColors.primary) : null
-  const picked = hexToOklch(seed)
+  const light = hexToOklch(theme.colors.primary);
+  const dark = theme.darkColors ? hexToOklch(theme.darkColors.primary) : null;
+  const picked = hexToOklch(seed);
 
   if (!light || !dark || !picked) {
-    return seed
+    return seed;
   }
 
-  const shifted = oklchToHex({ ...picked, l: Math.min(1, Math.max(0, picked.l + (dark.l - light.l))) })
+  const shifted = oklchToHex({
+    ...picked,
+    l: Math.min(1, Math.max(0, picked.l + (dark.l - light.l))),
+  });
 
-  return shifted
+  return shifted;
 }
 
 /**
@@ -164,10 +186,10 @@ function carryToDark(theme: DesktopTheme, seed: string): string {
  * callers are often wiring this straight to a text input.
  */
 export function retintTheme(theme: DesktopTheme, color: string): DesktopTheme {
-  const seed = normalizeHex(color)
+  const seed = normalizeHex(color);
 
   if (!seed) {
-    return theme
+    return theme;
   }
 
   // Re-seeding with the theme's own accent must return the theme untouched.
@@ -175,31 +197,36 @@ export function retintTheme(theme: DesktopTheme, color: string): DesktopTheme {
   // two off (#4f9e5e → #509e5f) — invisible, but it would mean "no change"
   // wasn't actually no change.
   if (seed.toLowerCase() === theme.colors.primary.toLowerCase()) {
-    return theme
+    return theme;
   }
 
-  const light = seedFor(theme.colors, seed)
+  const light = seedFor(theme.colors, seed);
 
   const retinted: DesktopTheme = {
     ...theme,
-    colors: theme.colors.primary === light ? theme.colors : retintColors(theme.colors, light, false)
-  }
+    colors:
+      theme.colors.primary === light
+        ? theme.colors
+        : retintColors(theme.colors, light, false),
+  };
 
   if (theme.darkColors) {
     // Carry by the theme's own light→dark offset first, THEN clamp — so the
     // author's intent leads and contrast is only a floor, never the target.
-    const dark = seedFor(theme.darkColors, carryToDark(theme, seed))
+    const dark = seedFor(theme.darkColors, carryToDark(theme, seed));
 
     retinted.darkColors =
-      theme.darkColors.primary === dark ? theme.darkColors : retintColors(theme.darkColors, dark, true)
+      theme.darkColors.primary === dark
+        ? theme.darkColors
+        : retintColors(theme.darkColors, dark, true);
   }
 
-  return retinted
+  return retinted;
 }
 
 /** The theme's current accent hue in degrees. */
 export function themeHue(theme: DesktopTheme): number {
-  const lch = hexToOklch(theme.colors.primary)
+  const lch = hexToOklch(theme.colors.primary);
 
-  return lch ? Math.round(lch.h) : 0
+  return lch ? Math.round(lch.h) : 0;
 }

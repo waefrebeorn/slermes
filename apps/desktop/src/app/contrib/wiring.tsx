@@ -8,46 +8,68 @@
  * context; registered panes render `<WiredPane part="…"/>` to consume them.
  */
 
-import { useStore } from '@nanostores/react'
-import { useQueryClient } from '@tanstack/react-query'
-import { type CSSProperties, lazy, type ReactNode, Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useStore } from "@nanostores/react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  type CSSProperties,
+  lazy,
+  type ReactNode,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import { useLocation, useNavigate } from "react-router";
 
-import { graftRefreshedTailOntoBackfill } from '@/app/chat/transcript-backfill'
-import { formatRefValue } from '@/components/assistant-ui/directive-text'
-import { BootFailureOverlay } from '@/components/boot-failure-overlay'
-import { ConfirmHost } from '@/components/confirm-host'
-import { DesktopInstallOverlay } from '@/components/desktop-install-overlay'
-import { FindBar } from '@/components/find-bar'
-import { GatewayConnectingOverlay } from '@/components/gateway-connecting-overlay'
-import { NotificationStack } from '@/components/notifications'
-import { DesktopOnboardingOverlay } from '@/components/onboarding'
-import { $newSessionTabAction, registerPaneCloser } from '@/components/pane-shell/tree/store'
+import { graftRefreshedTailOntoBackfill } from "@/app/chat/transcript-backfill";
+import { formatRefValue } from "@/components/assistant-ui/directive-text";
+import { BootFailureOverlay } from "@/components/boot-failure-overlay";
+import { ConfirmHost } from "@/components/confirm-host";
+import { DesktopInstallOverlay } from "@/components/desktop-install-overlay";
+import { FindBar } from "@/components/find-bar";
+import { GatewayConnectingOverlay } from "@/components/gateway-connecting-overlay";
+import { NotificationStack } from "@/components/notifications";
+import { DesktopOnboardingOverlay } from "@/components/onboarding";
+import {
+  $newSessionTabAction,
+  registerPaneCloser,
+} from "@/components/pane-shell/tree/store";
 import {
   $workspaceMode,
   $workspaceNewSessionTarget,
   $workspaceOwnerKey,
-  setWorkspaceScope
-} from '@/components/pane-shell/workspace-scope'
-import { FloatingPet } from '@/components/pet/floating-pet'
-import { RemoteDisplayBanner } from '@/components/remote-display-banner'
-import { SendDiagnosticsHost } from '@/components/send-diagnostics-dialog'
-import { TipHost } from '@/components/tips'
-import { emitGatewayEvent } from '@/contrib/events'
-import { getLatestSessionMessages } from '@/hermes'
-import { type ChatMessage, chatMessageText, preserveLocalAssistantErrors, toChatMessages } from '@/lib/chat-messages'
-import { isMessagingSource } from '@/lib/session-source'
-import { latestSessionTodos } from '@/lib/todos'
-import { activateWakeIndicator } from '@/lib/wake-indicator'
-import { playWakeSound } from '@/lib/wake-sound'
-import { $billingSettingsRequest } from '@/store/billing-block'
-import { $desktopBoot } from '@/store/boot'
-import { requestVoiceConversationStart } from '@/store/composer'
-import { $activeConnectionId } from '@/store/connections'
-import { $cronReviewRequest, setCronFocusJobId } from '@/store/cron'
-import { $pinnedSessionIds, pinSession, restoreWorktree, unpinSession } from '@/store/layout'
-import { notifyError } from '@/store/notifications'
-import { $previewTarget } from '@/store/preview'
+  setWorkspaceScope,
+} from "@/components/pane-shell/workspace-scope";
+import { FloatingPet } from "@/components/pet/floating-pet";
+import { RemoteDisplayBanner } from "@/components/remote-display-banner";
+import { SendDiagnosticsHost } from "@/components/send-diagnostics-dialog";
+import { TipHost } from "@/components/tips";
+import { emitGatewayEvent } from "@/contrib/events";
+import { getLatestSessionMessages } from "@/hermes";
+import {
+  type ChatMessage,
+  chatMessageText,
+  preserveLocalAssistantErrors,
+  toChatMessages,
+} from "@/lib/chat-messages";
+import { isMessagingSource } from "@/lib/session-source";
+import { latestSessionTodos } from "@/lib/todos";
+import { activateWakeIndicator } from "@/lib/wake-indicator";
+import { playWakeSound } from "@/lib/wake-sound";
+import { $billingSettingsRequest } from "@/store/billing-block";
+import { $desktopBoot } from "@/store/boot";
+import { requestVoiceConversationStart } from "@/store/composer";
+import { $activeConnectionId } from "@/store/connections";
+import { $cronReviewRequest, setCronFocusJobId } from "@/store/cron";
+import {
+  $pinnedSessionIds,
+  pinSession,
+  restoreWorktree,
+  unpinSession,
+} from "@/store/layout";
+import { notifyError } from "@/store/notifications";
+import { $previewTarget } from "@/store/preview";
 import {
   $activeGatewayProfile,
   $freshSessionRequest,
@@ -56,9 +78,12 @@ import {
   ensureGatewayProfile,
   newSessionInProfile,
   normalizeProfileKey,
-  refreshActiveProfile
-} from '@/store/profile'
-import { $startWorkSessionRequest, followActiveSessionCwd } from '@/store/projects'
+  refreshActiveProfile,
+} from "@/store/profile";
+import {
+  $startWorkSessionRequest,
+  followActiveSessionCwd,
+} from "@/store/projects";
 import {
   $activeSessionId,
   $connection,
@@ -79,182 +104,212 @@ import {
   sessionPinId,
   setAwaitingResponse,
   setBusy,
-  setMessages
-} from '@/store/session'
-import { clearSessionTodos, setSessionTodos, todosForHydration } from '@/store/todos'
-import { armWakeWord, stopClientCapture } from '@/store/wake-word'
-import { isAuxiliaryWindow, isBrowserWindow, isHudWindow } from '@/store/windows'
-import { useSkinCommand } from '@/themes/use-skin-command'
+  setMessages,
+} from "@/store/session";
+import {
+  clearSessionTodos,
+  setSessionTodos,
+  todosForHydration,
+} from "@/store/todos";
+import { armWakeWord, stopClientCapture } from "@/store/wake-word";
+import {
+  isAuxiliaryWindow,
+  isBrowserWindow,
+  isHudWindow,
+} from "@/store/windows";
+import { useSkinCommand } from "@/themes/use-skin-command";
 
-import { closeWorkspaceTab } from '../chat/close-tab'
-import { requestComposerInsert } from '../chat/composer/focus'
-import { useComposerActions } from '../chat/hooks/use-composer-actions'
-import { CommandPalette } from '../command-palette'
-import { triggerAndRefreshCronJobs } from '../cron/cron-actions'
-import { useGatewayBoot } from '../gateway/hooks/use-gateway-boot'
-import { useGatewayRequest } from '../gateway/hooks/use-gateway-request'
-import { useHermesConfigRecord } from '../hooks/use-config-record'
-import { useKeybinds } from '../hooks/use-keybinds'
-import { useHudHandoff } from '../hud/handoff'
-import { ModelPickerOverlay } from '../model-picker-overlay'
-import { ModelVisibilityOverlay } from '../model-visibility-overlay'
-import { mainChatOccupied, openSession } from '../open-session'
-import { PetGenerateOverlay } from '../pet-generate/pet-generate-overlay'
-import { FileActionDialogs } from '../right-sidebar/file-actions'
-import { RemoteFolderPicker } from '../right-sidebar/files/remote-picker'
-import { resetProjectTreeState } from '../right-sidebar/files/use-project-tree'
-import { PersistentTerminal } from '../right-sidebar/terminal/persistent'
-import { closeAllTerminals } from '../right-sidebar/terminal/terminals'
+import { closeWorkspaceTab } from "../chat/close-tab";
+import { requestComposerInsert } from "../chat/composer/focus";
+import { useComposerActions } from "../chat/hooks/use-composer-actions";
+import { CommandPalette } from "../command-palette";
+import { triggerAndRefreshCronJobs } from "../cron/cron-actions";
+import { useGatewayBoot } from "../gateway/hooks/use-gateway-boot";
+import { useGatewayRequest } from "../gateway/hooks/use-gateway-request";
+import { useHermesConfigRecord } from "../hooks/use-config-record";
+import { useKeybinds } from "../hooks/use-keybinds";
+import { useHudHandoff } from "../hud/handoff";
+import { ModelPickerOverlay } from "../model-picker-overlay";
+import { ModelVisibilityOverlay } from "../model-visibility-overlay";
+import { mainChatOccupied, openSession } from "../open-session";
+import { PetGenerateOverlay } from "../pet-generate/pet-generate-overlay";
+import { FileActionDialogs } from "../right-sidebar/file-actions";
+import { RemoteFolderPicker } from "../right-sidebar/files/remote-picker";
+import { resetProjectTreeState } from "../right-sidebar/files/use-project-tree";
+import { PersistentTerminal } from "../right-sidebar/terminal/persistent";
+import { closeAllTerminals } from "../right-sidebar/terminal/terminals";
 import {
   CRON_ROUTE,
   navigateToWorkspacePage,
   routeSessionId,
   sessionRoute,
   SETTINGS_ROUTE,
-  syncWorkspaceRoute
-} from '../routes'
-import { SessionPickerOverlay } from '../session-picker-overlay'
-import { SessionSwitcher } from '../session-switcher'
-import { useBackgroundQueueDrain } from '../session/hooks/use-background-queue-drain'
-import { useContextSuggestions } from '../session/hooks/use-context-suggestions'
-import { useCwdActions } from '../session/hooks/use-cwd-actions'
-import { useHermesConfig } from '../session/hooks/use-hermes-config'
-import { useMessageStream } from '../session/hooks/use-message-stream'
-import { useModelControls } from '../session/hooks/use-model-controls'
-import { usePreviewRouting } from '../session/hooks/use-preview-routing'
-import { usePromptActions } from '../session/hooks/use-prompt-actions'
-import { useRouteResume } from '../session/hooks/use-route-resume'
-import { useSessionActions } from '../session/hooks/use-session-actions'
-import { useSessionListActions } from '../session/hooks/use-session-list-actions'
-import { useSessionStateCache } from '../session/hooks/use-session-state-cache'
-import { startWorkspaceSession } from '../session/workspace-session-target'
-import { PluginInstallModal } from '../settings/plugin-install-modal'
-import { useOverlayRouting } from '../shell/hooks/use-overlay-routing'
-import { useWindowControlsOverlayWidth } from '../shell/hooks/use-window-controls-overlay-width'
+  syncWorkspaceRoute,
+} from "../routes";
+import { SessionPickerOverlay } from "../session-picker-overlay";
+import { SessionSwitcher } from "../session-switcher";
+import { useBackgroundQueueDrain } from "../session/hooks/use-background-queue-drain";
+import { useContextSuggestions } from "../session/hooks/use-context-suggestions";
+import { useCwdActions } from "../session/hooks/use-cwd-actions";
+import { useHermesConfig } from "../session/hooks/use-hermes-config";
+import { useMessageStream } from "../session/hooks/use-message-stream";
+import { useModelControls } from "../session/hooks/use-model-controls";
+import { usePreviewRouting } from "../session/hooks/use-preview-routing";
+import { usePromptActions } from "../session/hooks/use-prompt-actions";
+import { useRouteResume } from "../session/hooks/use-route-resume";
+import { useSessionActions } from "../session/hooks/use-session-actions";
+import { useSessionListActions } from "../session/hooks/use-session-list-actions";
+import { useSessionStateCache } from "../session/hooks/use-session-state-cache";
+import { startWorkspaceSession } from "../session/workspace-session-target";
+import { PluginInstallModal } from "../settings/plugin-install-modal";
+import { useOverlayRouting } from "../shell/hooks/use-overlay-routing";
+import { useWindowControlsOverlayWidth } from "../shell/hooks/use-window-controls-overlay-width";
 import {
   titlebarControlsPosition,
   titlebarControlsYNudge,
   titlebarToolsRightCss,
-  titlebarToolsWidthCss
-} from '../shell/titlebar'
-import { TitlebarControls } from '../shell/titlebar-controls'
-import { UpdatesOverlay } from '../updates-overlay'
+  titlebarToolsWidthCss,
+} from "../shell/titlebar";
+import { TitlebarControls } from "../shell/titlebar-controls";
+import { UpdatesOverlay } from "../updates-overlay";
 
-import { ContribWiringContext } from './context'
+import { ContribWiringContext } from "./context";
 import {
   reconcileActiveTranscript,
   resolveActiveTranscriptSession,
-  useBackgroundSync
-} from './hooks/use-background-sync'
-import { useDesktopIntegrations } from './hooks/use-desktop-integrations'
-import { usePetBridge } from './hooks/use-pet-bridge'
-import { useQuickEntryBridge } from './hooks/use-quick-entry-bridge'
-import { useSessionTileDelegate } from './hooks/use-session-tile-delegate'
-import { McpInstallDeepLinkDialog } from './mcp-install-deeplink-dialog'
-import { $restartPreviewServer, useTitlebarToolContributions } from './panes'
-import { createSessionRpcDispatcher } from './session-rpc-dispatcher'
-import { ChatRoutesSurface, SidebarSurface, StatusbarSurface, TerminalSurface } from './surfaces'
-import type { WiringActions, WiringApi } from './types'
+  useBackgroundSync,
+} from "./hooks/use-background-sync";
+import { useDesktopIntegrations } from "./hooks/use-desktop-integrations";
+import { usePetBridge } from "./hooks/use-pet-bridge";
+import { useQuickEntryBridge } from "./hooks/use-quick-entry-bridge";
+import { useSessionTileDelegate } from "./hooks/use-session-tile-delegate";
+import { McpInstallDeepLinkDialog } from "./mcp-install-deeplink-dialog";
+import { $restartPreviewServer, useTitlebarToolContributions } from "./panes";
+import { createSessionRpcDispatcher } from "./session-rpc-dispatcher";
+import {
+  ChatRoutesSurface,
+  SidebarSurface,
+  StatusbarSurface,
+  TerminalSurface,
+} from "./surfaces";
+import type { WiringActions, WiringApi } from "./types";
 
 // Overlay views the controller mounts over the shell — lazy, load on demand.
 // The workspace-route full-page views (skills/messaging/artifacts) are the
 // ChatRoutesSurface's and live in ./surfaces.
-const AgentsView = lazy(async () => ({ default: (await import('../agents')).AgentsView }))
-const CommandCenterView = lazy(async () => ({ default: (await import('../command-center')).CommandCenterView }))
-const CronView = lazy(async () => ({ default: (await import('../cron')).CronView }))
-const WebhooksView = lazy(async () => ({ default: (await import('../webhooks')).WebhooksView }))
-const ProfilesView = lazy(async () => ({ default: (await import('../profiles')).ProfilesView }))
-const SettingsView = lazy(async () => ({ default: (await import('../settings')).SettingsView }))
-const StarmapView = lazy(async () => ({ default: (await import('../starmap')).StarmapView }))
+const AgentsView = lazy(async () => ({
+  default: (await import("../agents")).AgentsView,
+}));
+const CommandCenterView = lazy(async () => ({
+  default: (await import("../command-center")).CommandCenterView,
+}));
+const CronView = lazy(async () => ({
+  default: (await import("../cron")).CronView,
+}));
+const WebhooksView = lazy(async () => ({
+  default: (await import("../webhooks")).WebhooksView,
+}));
+const ProfilesView = lazy(async () => ({
+  default: (await import("../profiles")).ProfilesView,
+}));
+const SettingsView = lazy(async () => ({
+  default: (await import("../settings")).SettingsView,
+}));
+const StarmapView = lazy(async () => ({
+  default: (await import("../starmap")).StarmapView,
+}));
 
 // Surfaces (the four wired panes), the render context + WiredPane, and the
 // WiringActions/WiringApi contracts all live in sibling modules — this file is
 // the controller that assembles them.
-export { WiredPane } from './context'
+export { WiredPane } from "./context";
 
 export function ContribWiring({ children }: { children: ReactNode }) {
-  const queryClient = useQueryClient()
-  const location = useLocation()
-  const navigate = useNavigate()
+  const queryClient = useQueryClient();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const busyRef = useRef(false)
-  const creatingSessionRef = useRef(false)
+  const busyRef = useRef(false);
+  const creatingSessionRef = useRef(false);
   // Billing recovery routes to Settings → Billing from surfaces without router
   // context (the sticky toast). The shell owns `navigate`, so it consumes the
   // intent counter here; the ref skips the initial mount value.
-  const billingSettingsSeenRef = useRef(0)
-  const cronReviewSeenRef = useRef(0)
-  const activeTranscriptSignatureRef = useRef(new Map<string, string>())
-  const activeTranscriptRequestSequenceRef = useRef(0)
+  const billingSettingsSeenRef = useRef(0);
+  const cronReviewSeenRef = useRef(0);
+  const activeTranscriptSignatureRef = useRef(new Map<string, string>());
+  const activeTranscriptRequestSequenceRef = useRef(0);
   // Stable identity for the whole callback surface (see WiringActions). Mutated
   // in place each render so memoized surfaces never re-render on churn.
-  const actionsRef = useRef<WiringActions | null>(null)
+  const actionsRef = useRef<WiringActions | null>(null);
 
-  const gatewayState = useStore($gatewayState)
-  const activeSessionId = useStore($activeSessionId)
-  const billingSettingsRequest = useStore($billingSettingsRequest)
-  const cronReviewRequest = useStore($cronReviewRequest)
-  const currentCwd = useStore($currentCwd)
+  const gatewayState = useStore($gatewayState);
+  const activeSessionId = useStore($activeSessionId);
+  const billingSettingsRequest = useStore($billingSettingsRequest);
+  const cronReviewRequest = useStore($cronReviewRequest);
+  const currentCwd = useStore($currentCwd);
 
   // eslint-disable-next-line no-restricted-syntax -- one-shot request-seen sentinel, not an atom mirror
   useEffect(() => {
     if (billingSettingsRequest === billingSettingsSeenRef.current) {
-      return
+      return;
     }
 
-    billingSettingsSeenRef.current = billingSettingsRequest
+    billingSettingsSeenRef.current = billingSettingsRequest;
 
     if (billingSettingsRequest > 0) {
-      navigate(`${SETTINGS_ROUTE}?tab=billing`)
+      navigate(`${SETTINGS_ROUTE}?tab=billing`);
     }
-  }, [billingSettingsRequest, navigate])
+  }, [billingSettingsRequest, navigate]);
 
   // eslint-disable-next-line no-restricted-syntax -- one-shot request-seen sentinel, not an atom mirror
   useEffect(() => {
     if (cronReviewRequest === cronReviewSeenRef.current) {
-      return
+      return;
     }
 
-    cronReviewSeenRef.current = cronReviewRequest
+    cronReviewSeenRef.current = cronReviewRequest;
 
     if (cronReviewRequest > 0) {
-      navigate(CRON_ROUTE)
+      navigate(CRON_ROUTE);
     }
-  }, [cronReviewRequest, navigate])
-  const freshDraftReady = useStore($freshDraftReady)
-  const resumeFailedSessionId = useStore($resumeFailedSessionId)
-  const resumeExhaustedSessionId = useStore($resumeExhaustedSessionId)
-  const sessionResumeRequest = useStore($sessionResumeRequest)
-  const selectedStoredSessionId = useStore($selectedStoredSessionId)
-  const messagingSessions = useStore($messagingSessions)
-  const sessions = useStore($sessions)
-  const activeConnectionId = useStore($activeConnectionId)
-  const activeGatewayProfile = useStore($activeGatewayProfile)
-  const profileScope = useStore($profileScope)
-  const boot = useStore($desktopBoot)
+  }, [cronReviewRequest, navigate]);
+  const freshDraftReady = useStore($freshDraftReady);
+  const resumeFailedSessionId = useStore($resumeFailedSessionId);
+  const resumeExhaustedSessionId = useStore($resumeExhaustedSessionId);
+  const sessionResumeRequest = useStore($sessionResumeRequest);
+  const selectedStoredSessionId = useStore($selectedStoredSessionId);
+  const messagingSessions = useStore($messagingSessions);
+  const sessions = useStore($sessions);
+  const activeConnectionId = useStore($activeConnectionId);
+  const activeGatewayProfile = useStore($activeGatewayProfile);
+  const profileScope = useStore($profileScope);
+  const boot = useStore($desktopBoot);
 
-  const routedSessionId = routeSessionId(location.pathname)
-  const routedSessionIdRef = useRef(routedSessionId)
+  const routedSessionId = routeSessionId(location.pathname);
+  const routedSessionIdRef = useRef(routedSessionId);
 
-  routedSessionIdRef.current = routedSessionId
-  const routeToken = `${location.pathname}:${location.search}:${location.hash}`
-  const routeTokenRef = useRef(routeToken)
-  routeTokenRef.current = routeToken
-  const getRouteToken = useCallback(() => routeTokenRef.current, [])
+  routedSessionIdRef.current = routedSessionId;
+  const routeToken = `${location.pathname}:${location.search}:${location.hash}`;
+  const routeTokenRef = useRef(routeToken);
+  routeTokenRef.current = routeToken;
+  const getRouteToken = useCallback(() => routeTokenRef.current, []);
 
-  const getRoutedStoredSessionId = useCallback(() => routedSessionIdRef.current, [])
+  const getRoutedStoredSessionId = useCallback(
+    () => routedSessionIdRef.current,
+    [],
+  );
 
   const clearRoutedSessionIntent = useCallback(() => {
-    routedSessionIdRef.current = null
-  }, [])
+    routedSessionIdRef.current = null;
+  }, []);
 
   // Point the workspace at the route: the pane contribution re-registers
   // headerVeto from $workspaceIsPage (so the main zone's tab bar stands down
   // on pages), and a page route fronts the pane so it can't stay stuck behind
   // a focused session tile.
   useEffect(() => {
-    syncWorkspaceRoute(location.pathname)
-  }, [location.pathname])
+    syncWorkspaceRoute(location.pathname);
+  }, [location.pathname]);
 
   const {
     agentsOpen,
@@ -272,8 +327,8 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     settingsOpen,
     starmapOpen,
     toggleCommandCenter,
-    webhooksOpen
-  } = useOverlayRouting()
+    webhooksOpen,
+  } = useOverlayRouting();
 
   const {
     activeSessionIdRef,
@@ -285,17 +340,22 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     selectedStoredSessionIdRef,
     sessionStateByRuntimeIdRef,
     syncSessionStateToView,
-    updateSessionState
+    updateSessionState,
   } = useSessionStateCache({
     activeSessionId,
     busyRef,
     selectedStoredSessionId,
     setAwaitingResponse,
     setBusy,
-    setMessages
-  })
+    setMessages,
+  });
 
-  const { connectionRef, gateway, gatewayRef, requestGateway: ambientRequestGateway } = useGatewayRequest()
+  const {
+    connectionRef,
+    gateway,
+    gatewayRef,
+    requestGateway: ambientRequestGateway,
+  } = useGatewayRequest();
 
   // When chrome stays on the launch backend (Bot Mode / all-profiles
   // navigation), session-owned RPCs still have to hit the session's backend.
@@ -308,73 +368,89 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         ambientRequest: ambientRequestGateway,
         runtimeIdByStoredSessionIdRef,
         selectedStoredSessionIdRef,
-        sessionStateByRuntimeIdRef
+        sessionStateByRuntimeIdRef,
       }),
-    [ambientRequestGateway, runtimeIdByStoredSessionIdRef, selectedStoredSessionIdRef, sessionStateByRuntimeIdRef]
-  )
+    [
+      ambientRequestGateway,
+      runtimeIdByStoredSessionIdRef,
+      selectedStoredSessionIdRef,
+      sessionStateByRuntimeIdRef,
+    ],
+  );
 
-  const { loadMoreMessagingForPlatform, loadMoreSessions, refreshCronJobs, refreshMessagingSessions, refreshSessions } =
-    useSessionListActions({ profileScope })
+  const {
+    loadMoreMessagingForPlatform,
+    loadMoreSessions,
+    refreshCronJobs,
+    refreshMessagingSessions,
+    refreshSessions,
+  } = useSessionListActions({ profileScope });
 
   const updateActiveSessionRuntimeInfo = useCallback(
     (info: { branch?: string; cwd?: string }) => {
-      const sessionId = activeSessionIdRef.current
+      const sessionId = activeSessionIdRef.current;
 
       if (!sessionId) {
-        return
+        return;
       }
 
-      updateSessionState(sessionId, state => ({
+      updateSessionState(sessionId, (state) => ({
         ...state,
         branch: info.branch ?? state.branch,
-        cwd: info.cwd ?? state.cwd
-      }))
+        cwd: info.cwd ?? state.cwd,
+      }));
     },
-    [activeSessionIdRef, updateSessionState]
-  )
+    [activeSessionIdRef, updateSessionState],
+  );
 
   const { refreshProjectBranch } = useCwdActions({
     activeSessionIdRef,
     onSessionRuntimeInfo: updateActiveSessionRuntimeInfo,
-    requestGateway
-  })
+    requestGateway,
+  });
 
-  const { refreshHermesConfig, sttEnabled, voiceMaxRecordingSeconds } = useHermesConfig({ activeSessionIdRef })
+  const { refreshHermesConfig, sttEnabled, voiceMaxRecordingSeconds } =
+    useHermesConfig({ activeSessionIdRef });
 
-  const { applySavedMainModel, refreshCurrentModel, selectModel } = useModelControls({
-    cacheOwnerConnectionId: activeConnectionId || undefined,
-    cacheProfile: activeGatewayProfile,
-    queryClient,
-    requestGateway
-  })
+  const { applySavedMainModel, refreshCurrentModel, selectModel } =
+    useModelControls({
+      cacheOwnerConnectionId: activeConnectionId || undefined,
+      cacheProfile: activeGatewayProfile,
+      queryClient,
+      requestGateway,
+    });
 
-  const openProviderSettings = useCallback(() => navigate(`${SETTINGS_ROUTE}?tab=providers`), [navigate])
+  const openProviderSettings = useCallback(
+    () => navigate(`${SETTINGS_ROUTE}?tab=providers`),
+    [navigate],
+  );
 
   // Palette "Keyboard shortcuts" entry dispatches a custom event (contributions
   // don't have router access); listen and navigate to the settings keybinds tab.
   useEffect(() => {
-    const onOpenKeybinds = () => navigate(`${SETTINGS_ROUTE}?tab=keybinds`)
-    window.addEventListener('hermes:open-keybinds', onOpenKeybinds)
+    const onOpenKeybinds = () => navigate(`${SETTINGS_ROUTE}?tab=keybinds`);
+    window.addEventListener("hermes:open-keybinds", onOpenKeybinds);
 
-    return () => window.removeEventListener('hermes:open-keybinds', onOpenKeybinds)
-  }, [navigate])
+    return () =>
+      window.removeEventListener("hermes:open-keybinds", onOpenKeybinds);
+  }, [navigate]);
 
   // Dev-only: install the credit-notice demo trigger (Ctrl+Shift+C / ⌘K palette
   // / window.__creditsDemo). Dynamic import inside the DEV guard so the module
   // is dropped from production builds.
   useEffect(() => {
     if (!import.meta.env.DEV) {
-      return
+      return;
     }
 
-    let dispose: (() => void) | undefined
+    let dispose: (() => void) | undefined;
 
-    void import('./dev/credits-notice-demo').then(m => {
-      dispose = m.installCreditsNoticeDemo()
-    })
+    void import("./dev/credits-notice-demo").then((m) => {
+      dispose = m.installCreditsNoticeDemo();
+    });
 
-    return () => dispose?.()
-  }, [])
+    return () => dispose?.();
+  }, []);
 
   // Post-turn rehydrate from stored history (same behavior as DesktopController,
   // including finished-todos restoration).
@@ -382,52 +458,59 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     async (
       attempts = 1,
       storedSessionId = selectedStoredSessionIdRef.current,
-      runtimeSessionId = activeSessionIdRef.current
+      runtimeSessionId = activeSessionIdRef.current,
     ) => {
       if (!storedSessionId || !runtimeSessionId) {
-        return
+        return;
       }
 
-      const storedProfile = $sessions.get().find(session => sessionMatchesStoredId(session, storedSessionId))?.profile
+      const storedProfile = $sessions
+        .get()
+        .find((session) =>
+          sessionMatchesStoredId(session, storedSessionId),
+        )?.profile;
 
       for (let index = 0; index < Math.max(1, attempts); index += 1) {
         try {
-          const latest = await getLatestSessionMessages(storedSessionId, storedProfile)
-          const messages = toChatMessages(latest.messages)
+          const latest = await getLatestSessionMessages(
+            storedSessionId,
+            storedProfile,
+          );
+          const messages = toChatMessages(latest.messages);
           updateSessionState(
             runtimeSessionId,
-            state => ({
+            (state) => ({
               ...state,
               // Post-turn rehydrate reads only the newest tail page — graft it
               // onto any backfilled older pages instead of dropping them.
               messages: preserveLocalAssistantErrors(
                 graftRefreshedTailOntoBackfill(messages, state.messages),
-                state.messages
-              )
+                state.messages,
+              ),
             }),
-            storedSessionId
-          )
+            storedSessionId,
+          );
 
-          const restored = todosForHydration(latestSessionTodos(messages))
+          const restored = todosForHydration(latestSessionTodos(messages));
 
           if (restored) {
-            setSessionTodos(runtimeSessionId, restored)
+            setSessionTodos(runtimeSessionId, restored);
           } else {
-            clearSessionTodos(runtimeSessionId)
+            clearSessionTodos(runtimeSessionId);
           }
 
-          return
+          return;
         } catch {
           // Best-effort fallback when live stream payloads are empty.
         }
 
         if (index < attempts - 1) {
-          await new Promise(resolve => window.setTimeout(resolve, 250))
+          await new Promise((resolve) => window.setTimeout(resolve, 250));
         }
       }
     },
-    [activeSessionIdRef, selectedStoredSessionIdRef, updateSessionState]
-  )
+    [activeSessionIdRef, selectedStoredSessionIdRef, updateSessionState],
+  );
 
   // Refresh any active transcript changed by another process. Signature-gated
   // so a no-change event does not churn the thread.
@@ -440,10 +523,15 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         resolveSession: resolveActiveTranscriptSession,
         selectedStoredSessionIdRef,
         signatureRef: activeTranscriptSignatureRef,
-        updateSessionState
+        updateSessionState,
       }),
-    [activeSessionIdRef, busyRef, selectedStoredSessionIdRef, updateSessionState]
-  )
+    [
+      activeSessionIdRef,
+      busyRef,
+      selectedStoredSessionIdRef,
+      updateSessionState,
+    ],
+  );
 
   const { handleGatewayEvent } = useMessageStream({
     activeGatewayProfile,
@@ -453,17 +541,19 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     refreshHermesConfig,
     refreshSessions,
     sessionStateByRuntimeIdRef,
-    updateSessionState
-  })
+    updateSessionState,
+  });
 
   // Agent-driven preview routing (agent opens a URL/file -> the preview rail
   // follows) + the preview server restart handler, layered over the base
   // gateway event stream exactly like DesktopController.
-  const { handleDesktopGatewayEvent, restartPreviewServer } = usePreviewRouting({
-    baseHandleGatewayEvent: handleGatewayEvent,
-    currentCwd,
-    requestGateway
-  })
+  const { handleDesktopGatewayEvent, restartPreviewServer } = usePreviewRouting(
+    {
+      baseHandleGatewayEvent: handleGatewayEvent,
+      currentCwd,
+      requestGateway,
+    },
+  );
 
   // Composer @-mention context suggestions (files/dirs under the cwd).
   useContextSuggestions({
@@ -471,16 +561,16 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     activeSessionIdRef,
     currentCwd,
     gatewayState,
-    requestGateway
-  })
+    requestGateway,
+  });
 
   // Expose the restart handler to the preview pane contribution (module
   // boundary crossed via atom — contrib-panes can't import this file).
   useEffect(() => {
-    $restartPreviewServer.set(restartPreviewServer)
+    $restartPreviewServer.set(restartPreviewServer);
 
-    return () => $restartPreviewServer.set(null)
-  }, [restartPreviewServer])
+    return () => $restartPreviewServer.set(null);
+  }, [restartPreviewServer]);
 
   const {
     archiveSession,
@@ -491,7 +581,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     removeSession,
     resumeSession,
     selectSidebarItem,
-    startFreshSessionDraft
+    startFreshSessionDraft,
   } = useSessionActions({
     activeSessionId,
     activeSessionIdRef,
@@ -510,46 +600,46 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     selectedStoredSessionIdRef,
     sessionStateByRuntimeIdRef,
     syncSessionStateToView,
-    updateSessionState
-  })
+    updateSessionState,
+  });
 
   // A profile switch/create drops to a fresh new-session draft so the
   // previously open session doesn't bleed across contexts. Skip initial value.
-  const freshSessionRequest = useStore($freshSessionRequest)
-  const lastFreshRef = useRef(freshSessionRequest)
+  const freshSessionRequest = useStore($freshSessionRequest);
+  const lastFreshRef = useRef(freshSessionRequest);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
     if (freshSessionRequest === lastFreshRef.current) {
-      return
+      return;
     }
 
-    lastFreshRef.current = freshSessionRequest
-    startFreshSessionDraft()
-  }, [freshSessionRequest, startFreshSessionDraft])
+    lastFreshRef.current = freshSessionRequest;
+    startFreshSessionDraft();
+  }, [freshSessionRequest, startFreshSessionDraft]);
 
   // Swapping the live gateway to another source or profile must re-pull that
   // source's model/config/profile state. Two sources commonly both expose a
   // `default` profile, so profile alone is not a sufficient identity.
-  const gatewayScope = `${activeConnectionId ?? ''}\0${activeGatewayProfile}`
-  const lastGatewayScopeRef = useRef(gatewayScope)
+  const gatewayScope = `${activeConnectionId ?? ""}\0${activeGatewayProfile}`;
+  const lastGatewayScopeRef = useRef(gatewayScope);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
     if (gatewayScope === lastGatewayScopeRef.current) {
-      return
+      return;
     }
 
-    lastGatewayScopeRef.current = gatewayScope
+    lastGatewayScopeRef.current = gatewayScope;
     // Force: the new source/profile pair has its own defaults, so reseed the
     // selector even if the composer already shows values from the previous
     // backend. These refreshes carry intent tokens so an in-flight picker
     // click still wins.
-    void refreshCurrentModel(true)
-    void refreshHermesConfig(true)
-    void refreshActiveProfile()
-    resetProjectTreeState()
-  }, [gatewayScope, refreshCurrentModel, refreshHermesConfig])
+    void refreshCurrentModel(true);
+    void refreshHermesConfig(true);
+    void refreshActiveProfile();
+    resetProjectTreeState();
+  }, [gatewayScope, refreshCurrentModel, refreshHermesConfig]);
 
   // New session anchored to a workspace. Seeds cwd + branch from the clicked
   // workspace; an explicit worktree path also drills the sidebar into that
@@ -561,12 +651,18 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // prefills the MAIN composer right after, so it has to own that surface.
   const startSessionInWorkspace = useCallback(
     (path: null | string, options?: { openTab?: boolean }) => {
-      setWorkspaceScope('sessions')
+      setWorkspaceScope("sessions");
 
-      if (options?.openTab && mainChatOccupied(activeSessionIdRef.current, $selectedStoredSessionId.get())) {
-        void openNewSessionTile('center', { cwd: path, listed: false })
+      if (
+        options?.openTab &&
+        mainChatOccupied(
+          activeSessionIdRef.current,
+          $selectedStoredSessionId.get(),
+        )
+      ) {
+        void openNewSessionTile("center", { cwd: path, listed: false });
 
-        return
+        return;
       }
 
       startWorkspaceSession({
@@ -575,47 +671,61 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         onExplicitWorkspace: restoreWorktree,
         path,
         requestGateway,
-        startFreshSessionDraft
-      })
+        startFreshSessionDraft,
+      });
     },
-    [activeSessionIdRef, openNewSessionTile, requestGateway, startFreshSessionDraft]
-  )
+    [
+      activeSessionIdRef,
+      openNewSessionTile,
+      requestGateway,
+      startFreshSessionDraft,
+    ],
+  );
 
   // Composer "branch off into a new worktree": open a fresh session anchored
   // to the just-created tree, then prefill the task that kicked it off.
-  const startWorkSessionRequest = useStore($startWorkSessionRequest)
-  const lastStartWorkTokenRef = useRef(startWorkSessionRequest?.token ?? 0)
+  const startWorkSessionRequest = useStore($startWorkSessionRequest);
+  const lastStartWorkTokenRef = useRef(startWorkSessionRequest?.token ?? 0);
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    if (!startWorkSessionRequest || startWorkSessionRequest.token === lastStartWorkTokenRef.current) {
-      return
+    if (
+      !startWorkSessionRequest ||
+      startWorkSessionRequest.token === lastStartWorkTokenRef.current
+    ) {
+      return;
     }
 
-    lastStartWorkTokenRef.current = startWorkSessionRequest.token
-    startSessionInWorkspace(startWorkSessionRequest.path, { openTab: startWorkSessionRequest.openTab })
+    lastStartWorkTokenRef.current = startWorkSessionRequest.token;
+    startSessionInWorkspace(startWorkSessionRequest.path, {
+      openTab: startWorkSessionRequest.openTab,
+    });
 
     if (startWorkSessionRequest.draft) {
-      requestComposerInsert(startWorkSessionRequest.draft, { target: 'main' })
+      requestComposerInsert(startWorkSessionRequest.draft, { target: "main" });
     }
-  }, [startSessionInWorkspace, startWorkSessionRequest])
+  }, [startSessionInWorkspace, startWorkSessionRequest]);
 
-  const composer = useComposerActions({ activeSessionId, currentCwd, requestGateway })
+  const composer = useComposerActions({
+    activeSessionId,
+    currentCwd,
+    requestGateway,
+  });
 
   const branchInNewChat = useCallback(
     async (messageId?: string) => {
-      const branched = await branchCurrentSession(messageId)
+      const branched = await branchCurrentSession(messageId);
 
       if (branched) {
-        await refreshSessions().catch(() => undefined)
+        await refreshSessions().catch(() => undefined);
       }
 
-      return branched
+      return branched;
     },
-    [branchCurrentSession, refreshSessions]
-  )
+    [branchCurrentSession, refreshSessions],
+  );
 
-  const handleSkinCommand = useSkinCommand()
+  const handleSkinCommand = useSkinCommand();
 
   const {
     cancelRun,
@@ -626,7 +736,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     restoreToMessage,
     steerPrompt,
     submitText,
-    transcribeVoiceAudio
+    transcribeVoiceAudio,
   } = usePromptActions({
     activeSessionId,
     activeSessionIdRef,
@@ -645,17 +755,17 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     selectedStoredSessionIdRef,
     startFreshSessionDraft,
     sttEnabled,
-    updateSessionState
-  })
+    updateSessionState,
+  });
 
   // Runs outside the selected ChatBar so queues belonging to background
   // sessions continue once those sessions are idle.
   useBackgroundQueueDrain({
-    enabled: gatewayState === 'open',
+    enabled: gatewayState === "open",
     runtimeIdByStoredSessionIdRef,
     selectedStoredSessionId,
-    submitText
-  })
+    submitText,
+  });
 
   // Session-tile delegate (resume/submit/interrupt/slash + the session verbs
   // the tile TAB menu needs, without touching the primary view).
@@ -667,19 +777,19 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     requestGateway,
     runtimeIdByStoredSessionIdRef,
     sessionStateByRuntimeIdRef,
-    updateSessionState
-  })
+    updateSessionState,
+  });
 
   // The popped-out pet overlay's bridge back into the app.
-  usePetBridge({ requestGateway, resumeSession, submitText })
+  usePetBridge({ requestGateway, resumeSession, submitText });
 
   // The global-hotkey Quick Entry window's bridge: its captured text rides the
   // SAME submit machinery the normal composer uses (current chat / picked
   // session / new session), and it hears gateway truth from this window.
-  useQuickEntryBridge({ startFreshSessionDraft, submitText })
+  useQuickEntryBridge({ startFreshSessionDraft, submitText });
 
   // Leaving HUD mode hands this window the session back (see hud/handoff).
-  useHudHandoff({ navigate, resumeSession })
+  useHudHandoff({ navigate, resumeSession });
 
   // Clear a failed turn's red error banner. Errors are renderer-local (never
   // persisted): a bare error placeholder is dropped entirely; a partial-output
@@ -688,36 +798,39 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // re-grafts any still-errored view message on the next session.info flush.
   const dismissError = useCallback(
     (messageId: string) => {
-      const runtimeSessionId = activeSessionIdRef.current
+      const runtimeSessionId = activeSessionIdRef.current;
 
       if (!runtimeSessionId) {
-        return
+        return;
       }
 
       const clearErrorIn = (messages: ChatMessage[]): ChatMessage[] =>
-        messages.flatMap(message => {
+        messages.flatMap((message) => {
           if (message.id !== messageId || !message.error) {
-            return [message]
+            return [message];
           }
 
-          if (!chatMessageText(message).trim() && !message.parts.some(part => part.type !== 'text')) {
-            return []
+          if (
+            !chatMessageText(message).trim() &&
+            !message.parts.some((part) => part.type !== "text")
+          ) {
+            return [];
           }
 
-          return [{ ...message, error: undefined, pending: false }]
-        })
+          return [{ ...message, error: undefined, pending: false }];
+        });
 
       // View first: the cache update below triggers a re-sync that reads
       // $messages as the error-preservation baseline.
-      setMessages(clearErrorIn($messages.get()))
+      setMessages(clearErrorIn($messages.get()));
 
-      updateSessionState(runtimeSessionId, state => ({
+      updateSessionState(runtimeSessionId, (state) => ({
         ...state,
-        messages: clearErrorIn(state.messages)
-      }))
+        messages: clearErrorIn(state.messages),
+      }));
     },
-    [activeSessionIdRef, updateSessionState]
-  )
+    [activeSessionIdRef, updateSessionState],
+  );
 
   useRouteResume({
     activeSessionId,
@@ -735,86 +848,99 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     runtimeIdByStoredSessionIdRef,
     selectedStoredSessionId,
     selectedStoredSessionIdRef,
-    startFreshSessionDraft
-  })
+    startFreshSessionDraft,
+  });
 
   // Plugins hear the stream FIRST (isolated fan-out in contrib/events), then
   // the app dispatches as before — a plugin listener can't affect app flow.
   const handleGatewayEventWithPlugins = useCallback(
     (event: Parameters<typeof handleDesktopGatewayEvent>[0]) => {
-      emitGatewayEvent(event)
+      emitGatewayEvent(event);
 
-      if (event.type === 'wake.detected') {
-        const payload = event.payload as { profile?: null | string; start_new_session?: boolean } | undefined
+      if (event.type === "wake.detected") {
+        const payload = event.payload as
+          { profile?: null | string; start_new_session?: boolean } | undefined;
 
         // Free the Mac mic so voice conversation can open getUserMedia.
         // Server already pauses the detector lease; this stops client PCM feed.
-        stopClientCapture()
+        stopClientCapture();
 
         // Audible confirmation that the wake registered, before voice capture
         // starts. Gated by the shared sound-mute toggle.
-        playWakeSound()
-        activateWakeIndicator()
+        playWakeSound();
+        activateWakeIndicator();
 
         // Multi-profile routing: a wake phrase enrolled by another profile
         // re-homes the gateway to that profile first (live swap — same path
         // as clicking it in the profile rail), then opens the fresh session
         // and starts voice there.
-        const targetProfile = payload?.profile?.trim()
-        const activeProfile = normalizeProfileKey($activeGatewayProfile.get())
+        const targetProfile = payload?.profile?.trim();
+        const activeProfile = normalizeProfileKey($activeGatewayProfile.get());
 
-        if (targetProfile && normalizeProfileKey(targetProfile) !== activeProfile) {
+        if (
+          targetProfile &&
+          normalizeProfileKey(targetProfile) !== activeProfile
+        ) {
           if (payload?.start_new_session !== false) {
-            newSessionInProfile(targetProfile)
+            newSessionInProfile(targetProfile);
           } else {
-            void ensureGatewayProfile(normalizeProfileKey(targetProfile)).catch((error: unknown) => {
-              // #81094: the voice-path switch must surface its failure too.
-              notifyError(error, `Failed to switch to profile "${normalizeProfileKey(targetProfile)}"`)
-            })
+            void ensureGatewayProfile(normalizeProfileKey(targetProfile)).catch(
+              (error: unknown) => {
+                // #81094: the voice-path switch must surface its failure too.
+                notifyError(
+                  error,
+                  `Failed to switch to profile "${normalizeProfileKey(targetProfile)}"`,
+                );
+              },
+            );
           }
         } else if (payload?.start_new_session !== false) {
-          startFreshSessionDraft()
+          startFreshSessionDraft();
         }
 
-        requestVoiceConversationStart()
+        requestVoiceConversationStart();
 
-        return
+        return;
       }
 
-      handleDesktopGatewayEvent(event)
+      handleDesktopGatewayEvent(event);
     },
-    [handleDesktopGatewayEvent, startFreshSessionDraft]
-  )
+    [handleDesktopGatewayEvent, startFreshSessionDraft],
+  );
 
   useGatewayBoot({
     beforeConnectionSwitch: () => {
-      startFreshSessionDraft({ preserveRoute: true, workspaceTarget: null })
-      resetOverlayReturnRoute()
-      resetProjectTreeState()
-      closeAllTerminals()
+      startFreshSessionDraft({ preserveRoute: true, workspaceTarget: null });
+      resetOverlayReturnRoute();
+      resetProjectTreeState();
+      closeAllTerminals();
     },
     handleGatewayEvent: handleGatewayEventWithPlugins,
-    onConnectionReady: c => {
-      connectionRef.current = c
+    onConnectionReady: (c) => {
+      connectionRef.current = c;
     },
-    onGatewayReady: g => {
-      gatewayRef.current = g
+    onGatewayReady: (g) => {
+      gatewayRef.current = g;
     },
     refreshHermesConfig,
-    refreshSessions
-  })
+    refreshSessions,
+  });
 
   useEffect(() => {
-    if (gatewayState === 'open') {
+    if (gatewayState === "open") {
       // Status-then-arm, syncing $wakeWord so the composer toggle reflects the
       // same listener this auto-arm claims.
-      void armWakeWord(requestGateway)
+      void armWakeWord(requestGateway);
     }
-  }, [gatewayState, requestGateway])
+  }, [gatewayState, requestGateway]);
 
   const activeIsMessaging =
     !!selectedStoredSessionId &&
-    isMessagingSource(messagingSessions.find(s => sessionMatchesStoredId(s, selectedStoredSessionId))?.source)
+    isMessagingSource(
+      messagingSessions.find((s) =>
+        sessionMatchesStoredId(s, selectedStoredSessionId),
+      )?.source,
+    );
 
   // sessions.changed refreshes every open transcript; only messaging retains
   // the periodic safety-net it already had before this fix.
@@ -835,22 +961,25 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     refreshMessagingSessions,
     refreshSessions,
     requestGateway,
-    updateSessionState
-  })
+    updateSessionState,
+  });
 
   // Electron-main / OS / cross-window integrations: update polling, ⌘W close,
   // deep links, native-notification nav, preview-shortcut enablement,
   // remembered-session restore, and cross-window session-list sync.
-  const previewTarget = useStore($previewTarget)
+  const previewTarget = useStore($previewTarget);
 
   // display.resume_last_session gates the cold-start restore. `undefined` while
   // the record is still loading holds the restore latch open; a failed fetch
   // falls back to the historical behavior (resume).
-  const configRecord = useHermesConfigRecord()
+  const configRecord = useHermesConfigRecord();
 
   const resumeLastSession = configRecord.isPending
     ? undefined
-    : (configRecord.data?.display as { resume_last_session?: unknown } | undefined)?.resume_last_session !== false
+    : (
+        configRecord.data?.display as
+          { resume_last_session?: unknown } | undefined
+      )?.resume_last_session !== false;
 
   useDesktopIntegrations({
     activeProfile: normalizeProfileKey(activeGatewayProfile),
@@ -858,33 +987,35 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     hasPreview: Boolean(previewTarget),
     locationPathname: location.pathname,
     navigate,
-    profileReady: boot.phase === 'renderer.ready',
+    profileReady: boot.phase === "renderer.ready",
     refreshSessions,
     resumeLastSession,
     resumeExhaustedSessionId,
     routedSessionId,
     runtimeIdByStoredSessionId: runtimeIdByStoredSessionIdRef,
-    sessions
-  })
+    sessions,
+  });
 
   // Pin/unpin the selected session (statusbar keybind + chat header) — pinned
   // on the durable lineage-root id so it survives auto-compression.
   const toggleSelectedPin = useCallback(() => {
-    const sessionId = $selectedStoredSessionId.get()
+    const sessionId = $selectedStoredSessionId.get();
 
     if (!sessionId) {
-      return
+      return;
     }
 
-    const session = $sessions.get().find(s => sessionMatchesStoredId(s, sessionId))
-    const pinId = session ? sessionPinId(session) : sessionId
+    const session = $sessions
+      .get()
+      .find((s) => sessionMatchesStoredId(s, sessionId));
+    const pinId = session ? sessionPinId(session) : sessionId;
 
     if ($pinnedSessionIds.get().includes(pinId)) {
-      unpinSession(pinId)
+      unpinSession(pinId);
     } else {
-      pinSession(pinId)
+      pinSession(pinId);
     }
-  }, [])
+  }, []);
 
   // The tab-strip "+" and ⌘T share one action: open a new session as its own
   // tab (stacked into the workspace zone) WITHOUT polluting the session list.
@@ -899,36 +1030,40 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // carries plain session tabs alongside bot chats, so a "+" there must never
   // be dead just because the sidebar's current selection has nowhere to route.
   const openNewSessionTab = useCallback(() => {
-    const workspaceOwnerKey = $workspaceOwnerKey.get()
-    const workspaceNewSessionTarget = $workspaceNewSessionTarget.get()
+    const workspaceOwnerKey = $workspaceOwnerKey.get();
+    const workspaceNewSessionTarget = $workspaceNewSessionTarget.get();
 
-    if ($workspaceMode.get() === 'bots' && workspaceNewSessionTarget?.kind === 'route' && workspaceOwnerKey) {
-      void openNewSessionTile('center', {
+    if (
+      $workspaceMode.get() === "bots" &&
+      workspaceNewSessionTarget?.kind === "route" &&
+      workspaceOwnerKey
+    ) {
+      void openNewSessionTile("center", {
         listed: false,
         route: workspaceNewSessionTarget.route,
         workspaceScope: {
           ownerRoute: workspaceNewSessionTarget.route,
-          workspaceMode: 'bots',
-          workspaceOwnerKey
-        }
-      })
+          workspaceMode: "bots",
+          workspaceOwnerKey,
+        },
+      });
 
-      return
+      return;
     }
 
-    void openNewSessionTile('center', { listed: false })
-  }, [openNewSessionTile])
+    void openNewSessionTile("center", { listed: false });
+  }, [openNewSessionTile]);
 
   // Archive the selected session (rebindable `session.archive` hotkey).
   const archiveSelectedSession = useCallback(() => {
-    const sessionId = $selectedStoredSessionId.get()
+    const sessionId = $selectedStoredSessionId.get();
 
     if (!sessionId) {
-      return
+      return;
     }
 
-    void archiveSession(sessionId)
-  }, [archiveSession])
+    void archiveSession(sessionId);
+  }, [archiveSession]);
 
   // Single global listener for every rebindable hotkey plus the on-screen
   // keybind editor's capture mode (same as DesktopController).
@@ -937,16 +1072,16 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     openNewSessionTab,
     startFreshSession: startFreshSessionDraft,
     toggleCommandCenter,
-    toggleSelectedPin
-  })
+    toggleSelectedPin,
+  });
 
   // Register the tab-strip "+" action (the generic renderer stays
   // session-agnostic; null until wired hides the glyph).
   useEffect(() => {
-    $newSessionTabAction.set(openNewSessionTab)
+    $newSessionTabAction.set(openNewSessionTab);
 
-    return () => $newSessionTabAction.set(null)
-  }, [openNewSessionTab])
+    return () => $newSessionTabAction.set(null);
+  }, [openNewSessionTab]);
 
   // The MAIN tab's Close. The workspace pane can't leave the tree, so its
   // closer empties it instead: the next stacked session shifts in, else main
@@ -954,10 +1089,13 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // close GESTURE (⌘-click / middle-click) — the strip reads the closer, not
   // the `uncloseable` flag, so the pane stays undismissable either way.
   useEffect(() => {
-    registerPaneCloser('workspace', () => void closeWorkspaceTab(id => navigate(sessionRoute(id))))
+    registerPaneCloser(
+      "workspace",
+      () => void closeWorkspaceTab((id) => navigate(sessionRoute(id))),
+    );
 
-    return () => registerPaneCloser('workspace')
-  }, [navigate])
+    return () => registerPaneCloser("workspace");
+  }, [navigate]);
 
   // The controller's entire callback surface, gathered into the stable
   // `actions` bag. `nextActions` is TS-checked against WiringActions each
@@ -966,39 +1104,41 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // while every handler still closes over the latest values.
   const nextActions: WiringActions = {
     onAddContextRef: composer.addContextRefAttachment,
-    onAddUrl: url => composer.addContextRefAttachment(`@url:${formatRefValue(url)}`, url),
-    onArchiveSession: sessionId => void archiveSession(sessionId),
+    onAddUrl: (url) =>
+      composer.addContextRefAttachment(`@url:${formatRefValue(url)}`, url),
+    onArchiveSession: (sessionId) => void archiveSession(sessionId),
     onAttachDroppedItems: composer.attachDroppedItems,
     onAttachImageBlob: composer.attachImageBlob,
     onAttachPrCommentUrl: composer.attachPrCommentUrl,
-    onBranchInNewChat: messageId => void branchInNewChat(messageId),
-    onBranchSession: sessionId => void branchStoredSession(sessionId),
+    onBranchInNewChat: (messageId) => void branchInNewChat(messageId),
+    onBranchSession: (sessionId) => void branchStoredSession(sessionId),
     onCancel: cancelRun,
     onDeleteSelectedSession: () => {
-      const id = $selectedStoredSessionId.get()
+      const id = $selectedStoredSessionId.get();
 
       if (id) {
-        void removeSession(id)
+        void removeSession(id);
       }
     },
-    onDeleteSession: sessionId => void removeSession(sessionId),
+    onDeleteSession: (sessionId) => void removeSession(sessionId),
     onDismissError: dismissError,
     onEdit: editMessage,
     onLoadMoreMessaging: loadMoreMessagingForPlatform,
     onLoadMoreSessions: loadMoreSessions,
-    onManageCronJob: jobId => {
-      setCronFocusJobId(jobId)
-      navigate(CRON_ROUTE)
+    onManageCronJob: (jobId) => {
+      setCronFocusJobId(jobId);
+      navigate(CRON_ROUTE);
     },
     onNavigate: selectSidebarItem,
-    onNewSessionInWorkspace: path => startSessionInWorkspace(path, { openTab: true }),
-    onNewSessionSplit: dir => void openNewSessionTile(dir),
-    onPasteClipboardImage: opts => composer.pasteClipboardImage(opts),
-    onPickFiles: () => void composer.pickContextPaths('file'),
-    onPickFolders: () => void composer.pickContextPaths('folder'),
+    onNewSessionInWorkspace: (path) =>
+      startSessionInWorkspace(path, { openTab: true }),
+    onNewSessionSplit: (dir) => void openNewSessionTile(dir),
+    onPasteClipboardImage: (opts) => composer.pasteClipboardImage(opts),
+    onPickFiles: () => void composer.pickContextPaths("file"),
+    onPickFolders: () => void composer.pickContextPaths("folder"),
     onPickImages: () => void composer.pickImages(),
     onReload: reloadFromMessage,
-    onRemoveAttachment: id => void composer.removeAttachment(id),
+    onRemoveAttachment: (id) => void composer.removeAttachment(id),
     onRestoreToMessage: restoreToMessage,
     // Already on screen (open tile, or the main session)? Jump to its tab;
     // otherwise load it into main. Same door every other session link uses.
@@ -1012,25 +1152,28 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     // incorrectly persisted those rows as `local`, which made a remote session
     // click switch to the Mac backend and fail with "session not found".
     onResumeSession: (sessionId, session) => {
-      const ownerRoute = sessionOwnerRouteFromRow(session)
+      const ownerRoute = sessionOwnerRouteFromRow(session);
 
       if (ownerRoute) {
-        requestSessionResume(sessionId, ownerRoute)
+        requestSessionResume(sessionId, ownerRoute);
       } else {
-        forgetSessionOwnerHintsForSession(sessionId)
-        requestSessionResume(sessionId)
+        forgetSessionOwnerHintsForSession(sessionId);
+        requestSessionResume(sessionId);
       }
 
-      openSession(sessionId, navigate)
+      openSession(sessionId, navigate);
     },
-    onRetryResume: sessionId => void resumeSession(sessionId, true),
+    onRetryResume: (sessionId) => void resumeSession(sessionId, true),
     onSteer: steerPrompt,
     onSubmit: submitText,
     onThreadMessagesChange: handleThreadMessagesChange,
     onToggleSelectedPin: toggleSelectedPin,
     onTranscribeAudio: transcribeVoiceAudio,
-    onTriggerCronJob: jobId =>
-      triggerAndRefreshCronJobs(jobId, profileScope === ALL_PROFILES ? 'all' : profileScope)
+    onTriggerCronJob: (jobId) =>
+      triggerAndRefreshCronJobs(
+        jobId,
+        profileScope === ALL_PROFILES ? "all" : profileScope,
+      )
         .then(() => undefined)
         .catch(() => undefined),
     getGateway: () => gatewayRef.current,
@@ -1038,16 +1181,16 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     openCommandCenterSection,
     requestGateway,
     selectModel,
-    toggleCommandCenter
-  }
+    toggleCommandCenter,
+  };
 
   if (actionsRef.current) {
-    Object.assign(actionsRef.current, nextActions)
+    Object.assign(actionsRef.current, nextActions);
   } else {
-    actionsRef.current = nextActions
+    actionsRef.current = nextActions;
   }
 
-  const actions = actionsRef.current
+  const actions = actionsRef.current;
 
   // Each pane node is memoized on ONLY the reactive inputs it truly consumes;
   // everything else reaches its surface through `actions` (stable) or the
@@ -1056,10 +1199,10 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // bails on that pane subtree — panes render independently of one another.
   const sidebarNode = useMemo(
     () => <SidebarSurface actions={actions} currentView={currentView} />,
-    [actions, currentView]
-  )
+    [actions, currentView],
+  );
 
-  const terminalNode = useMemo(() => <TerminalSurface />, [])
+  const terminalNode = useMemo(() => <TerminalSurface />, []);
 
   const statusbarNode = useMemo(
     () => (
@@ -1070,46 +1213,58 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         commandCenterOpen={commandCenterOpen}
       />
     ),
-    [actions, agentsOpen, chatOpen, commandCenterOpen]
-  )
+    [actions, agentsOpen, chatOpen, commandCenterOpen],
+  );
 
   // The voice cap changes only on config load; the gateway instance + all
   // chat reactivity are subscribed inside ChatRoutesSurface / ChatView.
   const chatRoutesNode = useMemo(
-    () => <ChatRoutesSurface actions={actions} maxVoiceRecordingSeconds={voiceMaxRecordingSeconds} />,
-    [actions, voiceMaxRecordingSeconds]
-  )
+    () => (
+      <ChatRoutesSurface
+        actions={actions}
+        maxVoiceRecordingSeconds={voiceMaxRecordingSeconds}
+      />
+    ),
+    [actions, voiceMaxRecordingSeconds],
+  );
 
   const api = useMemo<WiringApi>(
     () => ({
       chatRoutes: chatRoutesNode,
       sidebar: sidebarNode,
       statusbar: statusbarNode,
-      terminal: terminalNode
+      terminal: terminalNode,
     }),
-    [chatRoutesNode, sidebarNode, statusbarNode, terminalNode]
-  )
+    [chatRoutesNode, sidebarNode, statusbarNode, terminalNode],
+  );
 
   // The REAL titlebar tool clusters (sidebar/flip toggles, haptics, keybinds,
   // settings gear) — fixed chrome positioned via the same CSS vars AppShell
   // sets, computed here from the live connection. Page-registered tools
   // (preview's monitor/devtools cluster, …) arrive as registry contributions.
-  const leftTitlebarTools = useTitlebarToolContributions('left')
-  const rightTitlebarTools = useTitlebarToolContributions('right')
-  const connection = useStore($connection)
-  const controlsPos = titlebarControlsPosition(connection?.windowButtonPosition, Boolean(connection?.isFullscreen))
+  const leftTitlebarTools = useTitlebarToolContributions("left");
+  const rightTitlebarTools = useTitlebarToolContributions("right");
+  const connection = useStore($connection);
+  const controlsPos = titlebarControlsPosition(
+    connection?.windowButtonPosition,
+    Boolean(connection?.isFullscreen),
+  );
   // Windows/WSLg reserve native min/max/close on the right (AppShell parity:
   // prefer the live WCO measurement, fall back to the static reservation).
-  const measuredOverlayWidth = useWindowControlsOverlayWidth()
-  const nativeOverlayWidth = measuredOverlayWidth ?? connection?.nativeOverlayWidth ?? 0
+  const measuredOverlayWidth = useWindowControlsOverlayWidth();
+  const nativeOverlayWidth =
+    measuredOverlayWidth ?? connection?.nativeOverlayWidth ?? 0;
 
   const titlebarChrome = {
     darwinMajor: connection?.darwinMajor ?? 0,
     isFullscreen: Boolean(connection?.isFullscreen),
-    windowButtonPosition: connection?.windowButtonPosition
-  }
+    windowButtonPosition: connection?.windowButtonPosition,
+  };
 
-  const titlebarToolsRight = titlebarToolsRightCss(nativeOverlayWidth, titlebarChrome)
+  const titlebarToolsRight = titlebarToolsRightCss(
+    nativeOverlayWidth,
+    titlebarChrome,
+  );
   // Pane-registered tools (preview's monitor/devtools cluster) anchor flush
   // against the static system cluster — in the tree layout the titlebar band
   // sits ABOVE the grid, so AppShell's pane-width anchoring doesn't apply.
@@ -1118,12 +1273,16 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // right-sidebar toggle (see titlebar-controls.tsx). A shared width that
   // under-counts leaves the find bar, the titlebar header padding, and the
   // pane-cluster anchor overlapping the fifth button.
-  const SYSTEM_TOOL_COUNT = 5
-  const paneToolCount = rightTitlebarTools.filter(tool => !tool.hidden).length
-  const systemToolsWidth = titlebarToolsWidthCss(SYSTEM_TOOL_COUNT)
+  const SYSTEM_TOOL_COUNT = 5;
+  const paneToolCount = rightTitlebarTools.filter(
+    (tool) => !tool.hidden,
+  ).length;
+  const systemToolsWidth = titlebarToolsWidthCss(SYSTEM_TOOL_COUNT);
 
   const titlebarToolsWidth =
-    paneToolCount > 0 ? `calc(${systemToolsWidth} + ${titlebarToolsWidthCss(paneToolCount)})` : systemToolsWidth
+    paneToolCount > 0
+      ? `calc(${systemToolsWidth} + ${titlebarToolsWidthCss(paneToolCount)})`
+      : systemToolsWidth;
 
   return (
     <ContribWiringContext.Provider value={api}>
@@ -1131,12 +1290,13 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         className="contents"
         style={
           {
-            '--titlebar-controls-left': `${controlsPos.left}px`,
-            '--titlebar-controls-top': `${controlsPos.top}px`,
-            '--titlebar-controls-y-nudge': titlebarControlsYNudge(titlebarChrome),
-            '--titlebar-tools-right': titlebarToolsRight,
-            '--titlebar-tools-width': titlebarToolsWidth,
-            '--shell-preview-toolbar-gap': systemToolsWidth
+            "--titlebar-controls-left": `${controlsPos.left}px`,
+            "--titlebar-controls-top": `${controlsPos.top}px`,
+            "--titlebar-controls-y-nudge":
+              titlebarControlsYNudge(titlebarChrome),
+            "--titlebar-tools-right": titlebarToolsRight,
+            "--titlebar-tools-width": titlebarToolsWidth,
+            "--shell-preview-toolbar-gap": systemToolsWidth,
           } as CSSProperties
         }
       >
@@ -1158,11 +1318,11 @@ export function ContribWiring({ children }: { children: ReactNode }) {
       {!isAuxiliaryWindow() && <DesktopInstallOverlay />}
       {!isAuxiliaryWindow() && (
         <DesktopOnboardingOverlay
-          enabled={gatewayState === 'open'}
+          enabled={gatewayState === "open"}
           onCompleted={() => {
-            void refreshHermesConfig()
-            void refreshCurrentModel()
-            void queryClient.invalidateQueries({ queryKey: ['model-options'] })
+            void refreshHermesConfig();
+            void refreshCurrentModel();
+            void queryClient.invalidateQueries({ queryKey: ["model-options"] });
           }}
           profile={activeGatewayProfile}
           requestGateway={requestGateway}
@@ -1175,7 +1335,9 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         profile={activeGatewayProfile}
         requestGateway={requestGateway}
       />
-      <SessionPickerOverlay onResume={sessionId => openSession(sessionId, navigate)} />
+      <SessionPickerOverlay
+        onResume={(sessionId) => openSession(sessionId, navigate)}
+      />
       <ModelVisibilityOverlay
         gateway={gateway || undefined}
         onOpenProviders={openProviderSettings}
@@ -1200,14 +1362,18 @@ export function ContribWiring({ children }: { children: ReactNode }) {
             gateway={gateway}
             onClose={closeOverlayToPreviousRoute}
             onConfigSaved={() => {
-              void refreshHermesConfig()
-              void refreshCurrentModel()
-              void queryClient.invalidateQueries({ queryKey: ['model-options'] })
+              void refreshHermesConfig();
+              void refreshCurrentModel();
+              void queryClient.invalidateQueries({
+                queryKey: ["model-options"],
+              });
             }}
             onMainModelChanged={(provider, model) => {
-              applySavedMainModel(provider, model)
-              void refreshCurrentModel()
-              void queryClient.invalidateQueries({ queryKey: ['model-options'] })
+              applySavedMainModel(provider, model);
+              void refreshCurrentModel();
+              void queryClient.invalidateQueries({
+                queryKey: ["model-options"],
+              });
             }}
           />
         </Suspense>
@@ -1219,8 +1385,8 @@ export function ContribWiring({ children }: { children: ReactNode }) {
             initialSection={commandCenterInitialSection}
             onClose={closeOverlayToPreviousRoute}
             onDeleteSession={removeSession}
-            onNavigateRoute={path => navigateToWorkspacePage(navigate, path)}
-            onOpenSession={sessionId => openSession(sessionId, navigate)}
+            onNavigateRoute={(path) => navigateToWorkspacePage(navigate, path)}
+            onOpenSession={(sessionId) => openSession(sessionId, navigate)}
           />
         </Suspense>
       )}
@@ -1235,7 +1401,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         <Suspense fallback={null}>
           <CronView
             onClose={closeOverlayToPreviousRoute}
-            onOpenSession={sessionId => openSession(sessionId, navigate)}
+            onOpenSession={(sessionId) => openSession(sessionId, navigate)}
           />
         </Suspense>
       )}
@@ -1280,8 +1446,10 @@ export function ContribWiring({ children }: { children: ReactNode }) {
       {/* Single persistent xterm host chasing the terminal pane's slot rect.
           The HUD has no terminal pane, so it has nothing to chase. */}
       {!isHudWindow() && !isBrowserWindow() && (
-        <PersistentTerminal onAddSelectionToChat={composer.addTerminalSelectionAttachment} />
+        <PersistentTerminal
+          onAddSelectionToChat={composer.addTerminalSelectionAttachment}
+        />
       )}
     </ContribWiringContext.Provider>
-  )
+  );
 }

@@ -15,27 +15,35 @@
 // Canonical stop commands. Kept short and unambiguous; each must be the entire
 // spoken utterance to match.
 const STOP_PHRASES: readonly string[] = [
-  'stop',
-  'stop listening',
-  'stop it',
-  'stop please',
-  'please stop',
-  'stop stop',
-  'that is all',
+  "stop",
+  "stop listening",
+  "stop it",
+  "stop please",
+  "please stop",
+  "stop stop",
+  "that is all",
   "that's all",
-  'never mind',
-  'nevermind',
-  'end conversation',
-  'end the conversation',
-  'goodbye',
-  'good bye',
-  'bye',
-  'cancel'
-]
+  "never mind",
+  "nevermind",
+  "end conversation",
+  "end the conversation",
+  "goodbye",
+  "good bye",
+  "bye",
+  "cancel",
+];
 
 // Optional address prefixes so "hermes stop" / "ok stop" / "hey hermes, stop"
 // still count. Stripped before matching the core phrase.
-const ADDRESS_PREFIXES: readonly string[] = ['hey hermes', 'hey hermes,', 'hermes', 'hermes,', 'ok', 'okay', 'hey']
+const ADDRESS_PREFIXES: readonly string[] = [
+  "hey hermes",
+  "hey hermes,",
+  "hermes",
+  "hermes,",
+  "ok",
+  "okay",
+  "hey",
+];
 
 // Normalise: lowercase, strip surrounding punctuation/whitespace, collapse
 // internal runs of spaces. Trailing punctuation (".", "!", "…") is common in
@@ -43,24 +51,24 @@ const ADDRESS_PREFIXES: readonly string[] = ['hey hermes', 'hey hermes,', 'herme
 function normalize(text: string): string {
   return text
     .toLowerCase()
-    .replace(/[.,!?;:…]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
+    .replace(/[.,!?;:…]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function stripAddress(text: string): string {
   for (const prefix of ADDRESS_PREFIXES) {
     if (text === prefix) {
       // Bare address ("hermes") is not a stop command on its own.
-      continue
+      continue;
     }
 
     if (text.startsWith(`${prefix} `)) {
-      return text.slice(prefix.length + 1).trim()
+      return text.slice(prefix.length + 1).trim();
     }
   }
 
-  return text
+  return text;
 }
 
 /**
@@ -70,27 +78,27 @@ function stripAddress(text: string): string {
  */
 export function isVoiceStopCommand(transcript: string): boolean {
   if (!transcript) {
-    return false
+    return false;
   }
 
-  const normalized = normalize(transcript)
+  const normalized = normalize(transcript);
 
   if (!normalized) {
-    return false
+    return false;
   }
 
   // Match with the address prefix stripped, and also as-is (so a bare "stop"
   // with no prefix still matches, and "please stop" — where "please" isn't a
   // prefix — matches directly).
-  const candidates = new Set([normalized, stripAddress(normalized)])
+  const candidates = new Set([normalized, stripAddress(normalized)]);
 
   for (const candidate of candidates) {
     if (STOP_PHRASES.includes(candidate)) {
-      return true
+      return true;
     }
   }
 
-  return false
+  return false;
 }
 
 /**
@@ -100,6 +108,12 @@ export function isVoiceStopCommand(transcript: string): boolean {
  * never intercepted. Outside a voice conversation typed text always passes
  * through unchanged.
  */
-export function interceptsTypedVoiceStop(conversationActive: boolean, text: string, attachmentCount = 0): boolean {
-  return conversationActive && attachmentCount === 0 && isVoiceStopCommand(text)
+export function interceptsTypedVoiceStop(
+  conversationActive: boolean,
+  text: string,
+  attachmentCount = 0,
+): boolean {
+  return (
+    conversationActive && attachmentCount === 0 && isVoiceStopCommand(text)
+  );
 }

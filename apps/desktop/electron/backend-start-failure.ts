@@ -27,7 +27,7 @@ export interface BackendStartFailureContext {
    * True when the boot that just failed was resolving/dialing a REMOTE (or
    * cloud) primary backend rather than spawning a local child.
    */
-  attemptedRemote: boolean
+  attemptedRemote: boolean;
 }
 
 /**
@@ -36,18 +36,20 @@ export interface BackendStartFailureContext {
  * failures (they are transient and must stay retryable so recovery paths work
  * without an app restart).
  */
-export function shouldLatchBackendStartFailure(context: BackendStartFailureContext): boolean {
-  return !context.attemptedRemote
+export function shouldLatchBackendStartFailure(
+  context: BackendStartFailureContext,
+): boolean {
+  return !context.attemptedRemote;
 }
 
 export interface RemoteReauthFailureContext {
   /** True when the boot that just failed was dialing a REMOTE (or cloud) backend. */
-  attemptedRemote: boolean
+  attemptedRemote: boolean;
   /**
    * True when the failure was a CONFIRMED auth rejection (a credentialed
    * probe got 401/403), not a transient connectivity fault.
    */
-  isReauth: boolean
+  isReauth: boolean;
 }
 
 /**
@@ -67,25 +69,27 @@ export interface RemoteReauthFailureContext {
  * and clickable. Cleared on every recovery path (reset, repair, apply-config,
  * and a confirmed sign-in) so a fresh session boots normally.
  */
-export function shouldLatchRemoteReauthFailure(context: RemoteReauthFailureContext): boolean {
-  return context.attemptedRemote && context.isReauth
+export function shouldLatchRemoteReauthFailure(
+  context: RemoteReauthFailureContext,
+): boolean {
+  return context.attemptedRemote && context.isReauth;
 }
 
 export interface RemoteBootRetryContext {
   /** True when the boot that just failed was dialing a REMOTE (or cloud/SSH) backend. */
-  attemptedRemote: boolean
+  attemptedRemote: boolean;
   /**
    * True when the failure was a CONFIRMED auth rejection (401/403), which can
    * never self-heal without the user signing in again.
    */
-  isReauth: boolean
+  isReauth: boolean;
   /**
    * True when SSH refused to connect because the host's key CHANGED
    * (StrictHostKeyChecking fails closed). Retrying cannot succeed until the
    * user verifies the change and removes the stale known_hosts entry, so this
    * is terminal like a reauth rejection — not connectivity.
    */
-  isHostKeyChanged?: boolean
+  isHostKeyChanged?: boolean;
 }
 
 /**
@@ -96,15 +100,17 @@ export interface RemoteBootRetryContext {
  * reinstalled VPS (Aug 2026 bundle) because this was classified as transient.
  */
 export function isHostKeyChangedBootFailure(error: unknown): boolean {
-  if ((error as { kind?: string } | null | undefined)?.kind === 'host-key-changed') {
-    return true
+  if (
+    (error as { kind?: string } | null | undefined)?.kind === "host-key-changed"
+  ) {
+    return true;
   }
 
-  const message = error instanceof Error ? error.message : String(error ?? '')
+  const message = error instanceof Error ? error.message : String(error ?? "");
 
   return /REMOTE HOST IDENTIFICATION HAS CHANGED|Host key verification failed|host key for .+ has CHANGED/i.test(
-    message
-  )
+    message,
+  );
 }
 
 /**
@@ -115,8 +121,10 @@ export function isHostKeyChangedBootFailure(error: unknown): boolean {
  * by the existing reset/repair/apply-config paths once the user has run
  * `ssh-keygen -R <host>`.
  */
-export function shouldLatchHostKeyChangedFailure(context: RemoteBootRetryContext): boolean {
-  return context.attemptedRemote && context.isHostKeyChanged === true
+export function shouldLatchHostKeyChangedFailure(
+  context: RemoteBootRetryContext,
+): boolean {
+  return context.attemptedRemote && context.isHostKeyChanged === true;
 }
 
 /**
@@ -135,6 +143,12 @@ export function shouldLatchHostKeyChangedFailure(context: RemoteBootRetryContext
  * stay out of the retry path; everything else remote is connectivity and
  * should retry.
  */
-export function isRetryableRemoteBootFailure(context: RemoteBootRetryContext): boolean {
-  return context.attemptedRemote && !context.isReauth && context.isHostKeyChanged !== true
+export function isRetryableRemoteBootFailure(
+  context: RemoteBootRetryContext,
+): boolean {
+  return (
+    context.attemptedRemote &&
+    !context.isReauth &&
+    context.isHostKeyChanged !== true
+  );
 }

@@ -1,48 +1,50 @@
-import type { HermesReviewFile } from '@/global'
+import type { HermesReviewFile } from "@/global";
 
 // A node in the review changed-files tree. Directories aggregate their
 // descendants' +/- so a collapsed folder still shows its total churn (Codex's
 // folder hierarchy view).
 export interface ReviewTreeNode {
-  id: string
-  name: string
-  isDir: boolean
-  added: number
-  removed: number
+  id: string;
+  name: string;
+  isDir: boolean;
+  added: number;
+  removed: number;
   /** For a flat-list file row: the parent dir (relative), shown dimmed. */
-  dir?: string
-  file?: HermesReviewFile
-  children?: ReviewTreeNode[]
+  dir?: string;
+  file?: HermesReviewFile;
+  children?: ReviewTreeNode[];
 }
 
 // Flat changed-file list (VS Code's default SCM "List" view): one row per file,
 // filename + a dimmed parent-dir path, sorted by path. No folder nodes.
-export function buildReviewFlatList(files: HermesReviewFile[]): ReviewTreeNode[] {
+export function buildReviewFlatList(
+  files: HermesReviewFile[],
+): ReviewTreeNode[] {
   return [...files]
     .sort((a, b) => a.path.localeCompare(b.path))
-    .map(file => {
-      const segments = file.path.split('/').filter(Boolean)
-      const name = segments.pop() ?? file.path
+    .map((file) => {
+      const segments = file.path.split("/").filter(Boolean);
+      const name = segments.pop() ?? file.path;
 
       return {
         id: file.path,
         name,
-        dir: segments.join('/'),
+        dir: segments.join("/"),
         isDir: false,
         added: file.added,
         removed: file.removed,
-        file
-      }
-    })
+        file,
+      };
+    });
 }
 
 interface MutableDir {
-  id: string
-  name: string
-  added: number
-  removed: number
-  dirs: Map<string, MutableDir>
-  files: ReviewTreeNode[]
+  id: string;
+  name: string;
+  added: number;
+  removed: number;
+  dirs: Map<string, MutableDir>;
+  files: ReviewTreeNode[];
 }
 
 const makeDir = (id: string, name: string): MutableDir => ({
@@ -51,37 +53,40 @@ const makeDir = (id: string, name: string): MutableDir => ({
   added: 0,
   removed: 0,
   dirs: new Map(),
-  files: []
-})
+  files: [],
+});
 
 // Build a folder hierarchy from the flat changed-file list. With `compact`,
 // single-child directory chains collapse into one row (`a/b/c`), the way VS Code
 // and Codex render sparse trees.
-export function buildReviewTree(files: HermesReviewFile[], compact = true): ReviewTreeNode[] {
-  const root = makeDir('', '')
+export function buildReviewTree(
+  files: HermesReviewFile[],
+  compact = true,
+): ReviewTreeNode[] {
+  const root = makeDir("", "");
 
   for (const file of files) {
-    const segments = file.path.split('/').filter(Boolean)
-    const fileName = segments.pop() ?? file.path
-    let dir = root
+    const segments = file.path.split("/").filter(Boolean);
+    const fileName = segments.pop() ?? file.path;
+    let dir = root;
 
-    dir.added += file.added
-    dir.removed += file.removed
+    dir.added += file.added;
+    dir.removed += file.removed;
 
-    let prefix = ''
+    let prefix = "";
 
     for (const segment of segments) {
-      prefix = prefix ? `${prefix}/${segment}` : segment
-      let child = dir.dirs.get(segment)
+      prefix = prefix ? `${prefix}/${segment}` : segment;
+      let child = dir.dirs.get(segment);
 
       if (!child) {
-        child = makeDir(prefix, segment)
-        dir.dirs.set(segment, child)
+        child = makeDir(prefix, segment);
+        dir.dirs.set(segment, child);
       }
 
-      child.added += file.added
-      child.removed += file.removed
-      dir = child
+      child.added += file.added;
+      child.removed += file.removed;
+      dir = child;
     }
 
     dir.files.push({
@@ -90,46 +95,52 @@ export function buildReviewTree(files: HermesReviewFile[], compact = true): Revi
       isDir: false,
       added: file.added,
       removed: file.removed,
-      file
-    })
+      file,
+    });
   }
 
   const finalize = (dir: MutableDir): ReviewTreeNode[] => {
     const dirNodes: ReviewTreeNode[] = [...dir.dirs.values()]
       .sort((a, b) => a.name.localeCompare(b.name))
-      .map(child => {
+      .map((child) => {
         let node: ReviewTreeNode = {
           id: child.id,
           name: child.name,
           isDir: true,
           added: child.added,
           removed: child.removed,
-          children: finalize(child)
-        }
+          children: finalize(child),
+        };
 
         // Compact a chain: a folder whose only child is one folder merges into
         // `parent/child` so deep sparse paths read on one row.
-        while (compact && node.children?.length === 1 && node.children[0].isDir) {
-          const only = node.children[0]
-          node = { ...only, name: `${node.name}/${only.name}` }
+        while (
+          compact &&
+          node.children?.length === 1 &&
+          node.children[0].isDir
+        ) {
+          const only = node.children[0];
+          node = { ...only, name: `${node.name}/${only.name}` };
         }
 
-        return node
-      })
+        return node;
+      });
 
-    const fileNodes = [...dir.files].sort((a, b) => a.name.localeCompare(b.name))
+    const fileNodes = [...dir.files].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
 
-    return [...dirNodes, ...fileNodes]
-  }
+    return [...dirNodes, ...fileNodes];
+  };
 
-  return finalize(root)
+  return finalize(root);
 }
 
 // A row in the virtualized review list: the node plus the indentation depth it
 // renders at (directory nesting level).
 export interface ReviewFlatRow {
-  node: ReviewTreeNode
-  depth: number
+  node: ReviewTreeNode;
+  depth: number;
 }
 
 // Total node count including every descendant — the cheap upper bound used to
@@ -137,17 +148,17 @@ export interface ReviewFlatRow {
 // thousands of untracked files is one top-level node but must still count as
 // heavy.
 export function countAllNodes(nodes: ReviewTreeNode[]): number {
-  let total = 0
+  let total = 0;
 
   for (const node of nodes) {
-    total += 1
+    total += 1;
 
     if (node.children) {
-      total += countAllNodes(node.children)
+      total += countAllNodes(node.children);
     }
   }
 
-  return total
+  return total;
 }
 
 // Flatten the tree into the rows currently visible: a directory contributes
@@ -159,15 +170,15 @@ export function flattenReviewRows(
   nodes: ReviewTreeNode[],
   isOpen: (id: string) => boolean,
   depth = 0,
-  rows: ReviewFlatRow[] = []
+  rows: ReviewFlatRow[] = [],
 ): ReviewFlatRow[] {
   for (const node of nodes) {
-    rows.push({ depth, node })
+    rows.push({ depth, node });
 
     if (node.isDir && node.children && isOpen(node.id)) {
-      flattenReviewRows(node.children, isOpen, depth + 1, rows)
+      flattenReviewRows(node.children, isOpen, depth + 1, rows);
     }
   }
 
-  return rows
+  return rows;
 }

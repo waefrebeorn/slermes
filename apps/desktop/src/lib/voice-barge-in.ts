@@ -19,308 +19,336 @@
 // - Detection is a windowed majority (>=80% of the last SUSTAINED_MS above
 //   trigger) so intra-word energy dips don't reset progress.
 
-const CALIBRATION_MS = 400
-const SUSTAINED_MS = 300
-const SUSTAINED_MAJORITY = 0.8
-const MIN_TRIGGER_LEVEL = 0.075 // matches the voice loop's silenceLevel
-const FLOOR_MULTIPLIER = 3.5
+const CALIBRATION_MS = 400;
+const SUSTAINED_MS = 300;
+const SUSTAINED_MAJORITY = 0.8;
+const MIN_TRIGGER_LEVEL = 0.075; // matches the voice loop's silenceLevel
+const FLOOR_MULTIPLIER = 3.5;
 // Playback clamps, scaled from the Python constants (int16 RMS 1500 / 4000
 // ≈ byte-domain level 0.14 / 0.37 with the /42 normalization below).
-const PLAYBACK_MIN_TRIGGER_LEVEL = 0.14
-const TRIGGER_CEILING_LEVEL = 0.37
-const PLAYBACK_GRACE_MS = 500
-const PLAYBACK_GAP_FOR_GRACE_MS = 1_000
-const FLOOR_SAMPLE_CAP = 200 // ~3s of quiet-phase levels at rAF cadence
-const PRE_ROLL_RESTART_MS = 5_000 // cap pre-roll: restart the recorder while quiet
-const UTTERANCE_SILENCE_MS = 1_250 // matches the voice loop's silenceMs
-const UTTERANCE_MAX_MS = 30_000
+const PLAYBACK_MIN_TRIGGER_LEVEL = 0.14;
+const TRIGGER_CEILING_LEVEL = 0.37;
+const PLAYBACK_GRACE_MS = 500;
+const PLAYBACK_GAP_FOR_GRACE_MS = 1_000;
+const FLOOR_SAMPLE_CAP = 200; // ~3s of quiet-phase levels at rAF cadence
+const PRE_ROLL_RESTART_MS = 5_000; // cap pre-roll: restart the recorder while quiet
+const UTTERANCE_SILENCE_MS = 1_250; // matches the voice loop's silenceMs
+const UTTERANCE_MAX_MS = 30_000;
 
 export interface BargeMonitorCallbacks {
   /** Sustained speech detected — cut playback / interrupt the turn now. */
-  onSpeech: () => void
+  onSpeech: () => void;
   /**
    * The interrupting utterance, complete from its first syllable (pre-roll
    * included), delivered once the user goes quiet. `null` when capture was
    * unavailable — fall back to normal listening.
    */
-  onUtterance?: (audio: Blob | null) => void
+  onUtterance?: (audio: Blob | null) => void;
   /**
    * Is TTS audio flowing RIGHT NOW? Drives the phase-aware trigger. Omitted
    * (legacy playback-only callers) means "always playing", which preserves
    * the old behavior of a monitor opened at playback start.
    */
-  isPlaying?: () => boolean
+  isPlaying?: () => boolean;
 }
 
-export function monitorSpeechDuringPlayback(callbacks: BargeMonitorCallbacks): () => void {
-  let disposed = false
-  let stream: MediaStream | null = null
-  let context: AudioContext | null = null
-  let frame: number | null = null
-  let recorder: MediaRecorder | null = null
-  let chunks: Blob[] = []
-  let mimeType = ''
+export function monitorSpeechDuringPlayback(
+  callbacks: BargeMonitorCallbacks,
+): () => void {
+  let disposed = false;
+  let stream: MediaStream | null = null;
+  let context: AudioContext | null = null;
+  let frame: number | null = null;
+  let recorder: MediaRecorder | null = null;
+  let chunks: Blob[] = [];
+  let mimeType = "";
 
   const cleanup = () => {
-    disposed = true
+    disposed = true;
 
     if (frame !== null) {
-      window.cancelAnimationFrame(frame)
-      frame = null
+      window.cancelAnimationFrame(frame);
+      frame = null;
     }
 
-    if (recorder && recorder.state !== 'inactive') {
-      recorder.ondataavailable = null
-      recorder.onstop = null
+    if (recorder && recorder.state !== "inactive") {
+      recorder.ondataavailable = null;
+      recorder.onstop = null;
 
       try {
-        recorder.stop()
+        recorder.stop();
       } catch {
         // already stopped
       }
     }
 
-    recorder = null
-    chunks = []
-    void context?.close().catch(() => undefined)
-    context = null
-    stream?.getTracks().forEach(track => track.stop())
-    stream = null
-  }
+    recorder = null;
+    chunks = [];
+    void context?.close().catch(() => undefined);
+    context = null;
+    stream?.getTracks().forEach((track) => track.stop());
+    stream = null;
+  };
 
   const startSegment = () => {
-    if (!stream || typeof MediaRecorder === 'undefined') {
-      return
+    if (!stream || typeof MediaRecorder === "undefined") {
+      return;
     }
 
     mimeType =
-      ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'].find(type =>
-        MediaRecorder.isTypeSupported(type)
-      ) ?? ''
+      [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/mp4",
+        "audio/ogg;codecs=opus",
+      ].find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
 
     try {
-      recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined)
+      recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
     } catch {
-      recorder = null
+      recorder = null;
 
-      return
+      return;
     }
 
-    chunks = []
+    chunks = [];
 
-    recorder.ondataavailable = event => {
+    recorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
-        chunks.push(event.data)
+        chunks.push(event.data);
       }
-    }
+    };
 
-    recorder.start(250)
-  }
+    recorder.start(250);
+  };
 
   /** Restart the recorder to drop stale pre-roll — only valid while quiet. */
   const rotateSegment = () => {
-    if (!recorder || recorder.state === 'inactive') {
-      return
+    if (!recorder || recorder.state === "inactive") {
+      return;
     }
 
-    recorder.ondataavailable = null
-    recorder.onstop = null
+    recorder.ondataavailable = null;
+    recorder.onstop = null;
 
     try {
-      recorder.stop()
+      recorder.stop();
     } catch {
       // already stopped
     }
 
-    startSegment()
-  }
+    startSegment();
+  };
 
   const finishCapture = () => {
-    const active = recorder
-    const type = active?.mimeType || mimeType || 'audio/webm'
+    const active = recorder;
+    const type = active?.mimeType || mimeType || "audio/webm";
 
-    if (!active || active.state === 'inactive') {
-      cleanup()
-      callbacks.onUtterance?.(chunks.length ? new Blob(chunks, { type }) : null)
+    if (!active || active.state === "inactive") {
+      cleanup();
+      callbacks.onUtterance?.(
+        chunks.length ? new Blob(chunks, { type }) : null,
+      );
 
-      return
+      return;
     }
 
     active.onstop = () => {
-      const audio = chunks.length ? new Blob(chunks, { type }) : null
+      const audio = chunks.length ? new Blob(chunks, { type }) : null;
 
-      cleanup()
-      callbacks.onUtterance?.(audio)
-    }
+      cleanup();
+      callbacks.onUtterance?.(audio);
+    };
 
-    active.stop()
-  }
+    active.stop();
+  };
   void (async () => {
     try {
       stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true }
-      })
+        audio: { echoCancellation: true, noiseSuppression: true },
+      });
 
       if (disposed) {
-        cleanup()
+        cleanup();
 
-        return
+        return;
       }
 
-      startSegment()
+      startSegment();
 
-      context = new AudioContext()
-      const analyser = context.createAnalyser()
-      analyser.fftSize = 256
-      context.createMediaStreamSource(stream).connect(analyser)
+      context = new AudioContext();
+      const analyser = context.createAnalyser();
+      analyser.fftSize = 256;
+      context.createMediaStreamSource(stream).connect(analyser);
 
-      const data = new Uint8Array(analyser.fftSize)
-      const floorSamples: number[] = []
-      const recentAbove: { above: boolean; at: number }[] = []
-      let calibratedSince: number | null = null
-      let floorLocked = false
-      let quietFloor = 0
-      let segmentStartedAt = Date.now()
-      let wasPlaying = false
-      let playbackSeen = false
-      let lastPlayingAt = 0
-      let graceUntil = 0
-      let tripped = false
-      let trippedAt = 0
-      let quietSince: number | null = null
+      const data = new Uint8Array(analyser.fftSize);
+      const floorSamples: number[] = [];
+      const recentAbove: { above: boolean; at: number }[] = [];
+      let calibratedSince: number | null = null;
+      let floorLocked = false;
+      let quietFloor = 0;
+      let segmentStartedAt = Date.now();
+      let wasPlaying = false;
+      let playbackSeen = false;
+      let lastPlayingAt = 0;
+      let graceUntil = 0;
+      let tripped = false;
+      let trippedAt = 0;
+      let quietSince: number | null = null;
 
       const pushFloorSample = (level: number) => {
-        floorSamples.push(level)
+        floorSamples.push(level);
 
         if (floorSamples.length > FLOOR_SAMPLE_CAP) {
-          floorSamples.shift()
+          floorSamples.shift();
         }
 
-        quietFloor = [...floorSamples].sort((a, b) => a - b)[floorSamples.length >> 1] ?? 0
-      }
+        quietFloor =
+          [...floorSamples].sort((a, b) => a - b)[floorSamples.length >> 1] ??
+          0;
+      };
 
       const tick = () => {
         if (disposed) {
-          return
+          return;
         }
 
-        analyser.getByteTimeDomainData(data)
+        analyser.getByteTimeDomainData(data);
 
-        let sum = 0
+        let sum = 0;
 
         for (const value of data) {
-          const centered = value - 128
-          sum += centered * centered
+          const centered = value - 128;
+          sum += centered * centered;
         }
 
-        const level = Math.min(1, Math.sqrt(sum / data.length) / 42)
-        const now = Date.now()
-        const playing = callbacks.isPlaying ? callbacks.isPlaying() : true
+        const level = Math.min(1, Math.sqrt(sum / data.length) / 42);
+        const now = Date.now();
+        const playing = callbacks.isPlaying ? callbacks.isPlaying() : true;
 
         if (!tripped) {
           // Quiet-floor calibration: quiet-phase samples only. The floor is
           // HELD while audio plays — never recalibrated against speaker bleed.
           if (!floorLocked) {
             if (!playing) {
-              calibratedSince ??= now
-              pushFloorSample(level)
+              calibratedSince ??= now;
+              pushFloorSample(level);
             }
 
-            if (playing || (calibratedSince !== null && now - calibratedSince >= CALIBRATION_MS)) {
-              floorLocked = true
+            if (
+              playing ||
+              (calibratedSince !== null &&
+                now - calibratedSince >= CALIBRATION_MS)
+            ) {
+              floorLocked = true;
             }
           }
 
           // Grace only when playback starts after a real gap, so flapping of
           // the playing flag between sentences can't chain grace windows.
           if (playing && !wasPlaying) {
-            if (!playbackSeen || now - lastPlayingAt >= PLAYBACK_GAP_FOR_GRACE_MS) {
-              graceUntil = now + PLAYBACK_GRACE_MS
+            if (
+              !playbackSeen ||
+              now - lastPlayingAt >= PLAYBACK_GAP_FOR_GRACE_MS
+            ) {
+              graceUntil = now + PLAYBACK_GRACE_MS;
             }
 
-            playbackSeen = true
+            playbackSeen = true;
           }
 
-          wasPlaying = playing
+          wasPlaying = playing;
 
           if (playing) {
-            lastPlayingAt = now
+            lastPlayingAt = now;
           }
 
           // Phase-aware trigger: quiet baseline x multiplier; playback clamps
           // it up (bleed alone can't trip) but a ceiling keeps speech
           // reachable even over loud playback.
-          let trigger = Math.max(MIN_TRIGGER_LEVEL, quietFloor * FLOOR_MULTIPLIER)
+          let trigger = Math.max(
+            MIN_TRIGGER_LEVEL,
+            quietFloor * FLOOR_MULTIPLIER,
+          );
 
           if (playing) {
-            trigger = Math.min(Math.max(trigger, PLAYBACK_MIN_TRIGGER_LEVEL), TRIGGER_CEILING_LEVEL)
+            trigger = Math.min(
+              Math.max(trigger, PLAYBACK_MIN_TRIGGER_LEVEL),
+              TRIGGER_CEILING_LEVEL,
+            );
           }
 
           // Track ambient drift while quiet and below trigger.
           if (floorLocked && !playing && level < trigger) {
-            pushFloorSample(level)
+            pushFloorSample(level);
           }
 
-          const above = floorLocked && level >= trigger && now >= graceUntil
+          const above = floorLocked && level >= trigger && now >= graceUntil;
 
-          recentAbove.push({ above, at: now })
+          recentAbove.push({ above, at: now });
 
           while (recentAbove.length && now - recentAbove[0].at > SUSTAINED_MS) {
-            recentAbove.shift()
+            recentAbove.shift();
           }
 
-          const aboveCount = recentAbove.reduce((count, sample) => count + (sample.above ? 1 : 0), 0)
-          const spanMs = recentAbove.length ? now - recentAbove[0].at : 0
+          const aboveCount = recentAbove.reduce(
+            (count, sample) => count + (sample.above ? 1 : 0),
+            0,
+          );
+          const spanMs = recentAbove.length ? now - recentAbove[0].at : 0;
 
           if (
             above &&
             spanMs >= SUSTAINED_MS * SUSTAINED_MAJORITY &&
             aboveCount >= recentAbove.length * SUSTAINED_MAJORITY
           ) {
-            tripped = true
-            trippedAt = now
-            quietSince = null
-            callbacks.onSpeech()
+            tripped = true;
+            trippedAt = now;
+            quietSince = null;
+            callbacks.onSpeech();
 
             if (!callbacks.onUtterance || !recorder) {
-              cleanup()
-              callbacks.onUtterance?.(null)
+              cleanup();
+              callbacks.onUtterance?.(null);
 
-              return
+              return;
             }
           } else if (!above) {
             // Bound the pre-roll while quiet so the utterance blob doesn't
             // accumulate the whole turn (rotating mid-speech would lose the
             // onset — the whole point).
             if (now - segmentStartedAt >= PRE_ROLL_RESTART_MS) {
-              rotateSegment()
-              segmentStartedAt = now
+              rotateSegment();
+              segmentStartedAt = now;
             }
           }
         } else {
           // Tripped: keep recording until the user goes quiet (endpoint).
           // Playback/generation was already cut, so silence-vs-speech works.
           if (level >= MIN_TRIGGER_LEVEL) {
-            quietSince = null
+            quietSince = null;
           } else {
-            quietSince ??= now
+            quietSince ??= now;
           }
 
-          if ((quietSince && now - quietSince >= UTTERANCE_SILENCE_MS) || now - trippedAt >= UTTERANCE_MAX_MS) {
-            finishCapture()
+          if (
+            (quietSince && now - quietSince >= UTTERANCE_SILENCE_MS) ||
+            now - trippedAt >= UTTERANCE_MAX_MS
+          ) {
+            finishCapture();
 
-            return
+            return;
           }
         }
 
-        frame = window.requestAnimationFrame(tick)
-      }
+        frame = window.requestAnimationFrame(tick);
+      };
 
-      tick()
+      tick();
     } catch {
-      cleanup()
+      cleanup();
     }
-  })()
+  })();
 
-  return cleanup
+  return cleanup;
 }

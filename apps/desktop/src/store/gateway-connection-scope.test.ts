@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Cross-connection event/prune scoping: every registered source exposes a
 // 'default' profile (the roster force-unshifts it), so any consumer keyed by
@@ -13,31 +13,33 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const gatewayMocks = vi.hoisted(() => ({
   closed: [] as string[],
-  setConnection: vi.fn()
-}))
+  setConnection: vi.fn(),
+}));
 
-vi.mock('@/hermes', () => ({
+vi.mock("@/hermes", () => ({
   setApiRequestConnection: vi.fn(),
   HermesGateway: class {
-    connectionState = 'closed'
-    wsUrl = ''
+    connectionState = "closed";
+    wsUrl = "";
     connect = async (wsUrl: string): Promise<void> => {
-      this.wsUrl = wsUrl
-      this.connectionState = 'open'
-    }
+      this.wsUrl = wsUrl;
+      this.connectionState = "open";
+    };
     close = (): void => {
-      gatewayMocks.closed.push(this.wsUrl)
-      this.connectionState = 'closed'
-    }
-    onEvent = vi.fn(() => () => {})
-    onState = vi.fn(() => () => {})
-  }
-}))
-vi.mock('@/store/session', () => ({
+      gatewayMocks.closed.push(this.wsUrl);
+      this.connectionState = "closed";
+    };
+    onEvent = vi.fn(() => () => {});
+    onState = vi.fn(() => () => {});
+  },
+}));
+vi.mock("@/store/session", () => ({
   setConnection: gatewayMocks.setConnection,
-  setGatewayState: vi.fn()
-}))
-vi.mock('@/store/notify-baseline', () => ({ markNativeNotifyBaseline: vi.fn() }))
+  setGatewayState: vi.fn(),
+}));
+vi.mock("@/store/notify-baseline", () => ({
+  markNativeNotifyBaseline: vi.fn(),
+}));
 
 const {
   activeGatewayConnectionId,
@@ -49,162 +51,179 @@ const {
   openGatewayForAgent,
   pruneSecondaryGateways,
   setPrimaryGateway,
-  setPrimaryGatewayConnectionId
-} = await import('./gateway')
+  setPrimaryGatewayConnectionId,
+} = await import("./gateway");
 
-const { setApiRequestConnection } = await import('@/hermes')
+const { setApiRequestConnection } = await import("@/hermes");
 
 function installDesktop(): void {
-  ;(window as unknown as { hermesDesktop: unknown }).hermesDesktop = {
+  (window as unknown as { hermesDesktop: unknown }).hermesDesktop = {
     getConnection: vi.fn(async () => ({
-      authMode: 'token',
-      profile: 'default',
-      token: 't',
-      wsUrl: 'wss://local.invalid/api/ws?token=t'
+      authMode: "token",
+      profile: "default",
+      token: "t",
+      wsUrl: "wss://local.invalid/api/ws?token=t",
     })),
-    getConnectionFor: vi.fn(async ({ connectionId, profile }: { connectionId: string; profile: string }) => ({
-      authMode: 'token',
-      connectionId,
-      profile,
-      token: 't',
-      wsUrl: `wss://${connectionId}.invalid/api/ws?profile=${profile}`
-    })),
-    getGatewayWsUrlFor: vi.fn(
-      async ({ connectionId, profile }: { connectionId: string; profile: string }) =>
-        `wss://${connectionId}.invalid/api/ws?profile=${profile}`
+    getConnectionFor: vi.fn(
+      async ({
+        connectionId,
+        profile,
+      }: {
+        connectionId: string;
+        profile: string;
+      }) => ({
+        authMode: "token",
+        connectionId,
+        profile,
+        token: "t",
+        wsUrl: `wss://${connectionId}.invalid/api/ws?profile=${profile}`,
+      }),
     ),
-    touchBackend: vi.fn(async () => undefined)
-  }
+    getGatewayWsUrlFor: vi.fn(
+      async ({
+        connectionId,
+        profile,
+      }: {
+        connectionId: string;
+        profile: string;
+      }) => `wss://${connectionId}.invalid/api/ws?profile=${profile}`,
+    ),
+    touchBackend: vi.fn(async () => undefined),
+  };
 }
 
 beforeEach(() => {
-  installDesktop()
-  configureGatewayRegistry({ onEvent: vi.fn() })
-  setPrimaryGateway({ connectionState: 'open' } as never, 'default')
-  gatewayMocks.closed = []
-})
+  installDesktop();
+  configureGatewayRegistry({ onEvent: vi.fn() });
+  setPrimaryGateway({ connectionState: "open" } as never, "default");
+  gatewayMocks.closed = [];
+});
 
 afterEach(() => {
-  closeSecondaryGateways()
-  vi.clearAllMocks()
-  delete (window as unknown as { hermesDesktop?: unknown }).hermesDesktop
-})
+  closeSecondaryGateways();
+  vi.clearAllMocks();
+  delete (window as unknown as { hermesDesktop?: unknown }).hermesDesktop;
+});
 
-describe('primary gateway registry scope', () => {
-  it('publishes a registered primary connection id for ambient API/WebSocket helpers', () => {
-    setPrimaryGateway({ connectionState: 'open' } as never, 'default')
-    setPrimaryGatewayConnectionId(' homelab-ssh ')
+describe("primary gateway registry scope", () => {
+  it("publishes a registered primary connection id for ambient API/WebSocket helpers", () => {
+    setPrimaryGateway({ connectionState: "open" } as never, "default");
+    setPrimaryGatewayConnectionId(" homelab-ssh ");
 
-    expect(activeGatewayConnectionId()).toBe('homelab-ssh')
-    expect(setApiRequestConnection).toHaveBeenLastCalledWith('homelab-ssh')
-  })
+    expect(activeGatewayConnectionId()).toBe("homelab-ssh");
+    expect(setApiRequestConnection).toHaveBeenLastCalledWith("homelab-ssh");
+  });
 
-  it('clears primary connection scope when the primary becomes legacy/local again', () => {
-    setPrimaryGateway({ connectionState: 'open' } as never, 'default')
-    setPrimaryGatewayConnectionId('homelab-ssh')
-    setPrimaryGateway({ connectionState: 'open' } as never, 'default')
+  it("clears primary connection scope when the primary becomes legacy/local again", () => {
+    setPrimaryGateway({ connectionState: "open" } as never, "default");
+    setPrimaryGatewayConnectionId("homelab-ssh");
+    setPrimaryGateway({ connectionState: "open" } as never, "default");
 
-    expect(activeGatewayConnectionId()).toBeNull()
-    expect(setApiRequestConnection).toHaveBeenLastCalledWith(null)
-  })
+    expect(activeGatewayConnectionId()).toBeNull();
+    expect(setApiRequestConnection).toHaveBeenLastCalledWith(null);
+  });
 
-  it('ignores primary connection-id writes while a secondary registry scope is active (#95628 hardening)', async () => {
-    setPrimaryGateway({ connectionState: 'open' } as never, 'default')
-    setPrimaryGatewayConnectionId('primary-vps')
+  it("ignores primary connection-id writes while a secondary registry scope is active (#95628 hardening)", async () => {
+    setPrimaryGateway({ connectionState: "open" } as never, "default");
+    setPrimaryGatewayConnectionId("primary-vps");
 
     // Foreground Gateway B's composite scope (connectionId 'homelab').
-    await expect(ensureGatewayForAgent('homelab', 'default')).resolves.toBe(true)
+    await expect(ensureGatewayForAgent("homelab", "default")).resolves.toBe(
+      true,
+    );
 
     // Presentation-layer write while the secondary is foregrounded: the id
     // describes the secondary, not the primary. It must be dropped — accepting
     // it relabels the primary socket and poisons ambient routing.
-    setPrimaryGatewayConnectionId('homelab')
+    setPrimaryGatewayConnectionId("homelab");
 
     // Back on the primary route, its registry identity is intact.
-    await ensureGatewayForProfile('default')
+    await ensureGatewayForProfile("default");
 
-    expect(activeGatewayConnectionId()).toBe('primary-vps')
-    expect(setApiRequestConnection).toHaveBeenLastCalledWith('primary-vps')
-  })
-})
+    expect(activeGatewayConnectionId()).toBe("primary-vps");
+    expect(setApiRequestConnection).toHaveBeenLastCalledWith("primary-vps");
+  });
+});
 
-describe('pruneSecondaryGateways with registry-scoped entries', () => {
-  it('keeps the previous source socket open when Sessions switches backends', async () => {
-    await ensureGatewayForAgent('work', 'default')
-    await ensureGatewayForAgent('homelab', 'default')
+describe("pruneSecondaryGateways with registry-scoped entries", () => {
+  it("keeps the previous source socket open when Sessions switches backends", async () => {
+    await ensureGatewayForAgent("work", "default");
+    await ensureGatewayForAgent("homelab", "default");
 
     // Source switching only changes the foreground route. Retaining the first
     // socket lets its live turn continue and keeps receiving completion events.
-    expect(gatewayMocks.closed).toEqual([])
-  })
+    expect(gatewayMocks.closed).toEqual([]);
+  });
 
   it("does not keep a registry socket alive off another source's same-named profile", async () => {
     // Gateway B's 'default' — the roster row (connectionId 'homelab', profile
     // 'default'). The keep-set carries the bare 'default' profile because the
     // LOCAL source has live work; that must not pin homelab's socket.
-    await openGatewayForAgent('homelab', 'default')
+    await openGatewayForAgent("homelab", "default");
 
-    pruneSecondaryGateways(new Set(['default']))
+    pruneSecondaryGateways(new Set(["default"]));
 
-    expect(gatewayMocks.closed).toEqual(['wss://homelab.invalid/api/ws?profile=default'])
-  })
+    expect(gatewayMocks.closed).toEqual([
+      "wss://homelab.invalid/api/ws?profile=default",
+    ]);
+  });
 
-  it('a switch-phase dial (activationLease) survives a live-work recompute until its activation lands', async () => {
+  it("a switch-phase dial (activationLease) survives a live-work recompute until its activation lands", async () => {
     // Phase one of the Sessions-switcher source switch: the target is opened
     // but not yet active and has no live work of its own. Another source's
     // streaming turn recomputes the keep-set mid-dial — that must not dispose
     // the socket the switch is about to activate (#89622 via #93937).
-    await openGatewayForAgent('homelab', 'default', { activationLease: true })
+    await openGatewayForAgent("homelab", "default", { activationLease: true });
 
-    pruneSecondaryGateways(new Set(['default']))
+    pruneSecondaryGateways(new Set(["default"]));
 
-    expect(gatewayMocks.closed).toEqual([])
-  })
+    expect(gatewayMocks.closed).toEqual([]);
+  });
 
-  it('keeps a registry socket whose composite scope has live work', async () => {
-    await openGatewayForAgent('homelab', 'default')
+  it("keeps a registry socket whose composite scope has live work", async () => {
+    await openGatewayForAgent("homelab", "default");
 
-    pruneSecondaryGateways(new Set(['conn:homelab::default']))
+    pruneSecondaryGateways(new Set(["conn:homelab::default"]));
 
-    expect(gatewayMocks.closed).toEqual([])
-  })
+    expect(gatewayMocks.closed).toEqual([]);
+  });
 
-  it('still keeps a local (profile-keyed) secondary via its bare profile name', async () => {
-    await openGatewayForAgent(null, 'research')
+  it("still keeps a local (profile-keyed) secondary via its bare profile name", async () => {
+    await openGatewayForAgent(null, "research");
 
-    pruneSecondaryGateways(new Set(['research']))
+    pruneSecondaryGateways(new Set(["research"]));
 
-    expect(gatewayMocks.closed).toEqual([])
+    expect(gatewayMocks.closed).toEqual([]);
 
-    pruneSecondaryGateways(new Set())
+    pruneSecondaryGateways(new Set());
 
-    expect(gatewayMocks.closed).toHaveLength(1)
-  })
+    expect(gatewayMocks.closed).toHaveLength(1);
+  });
 
-  it('does not let a remote tile keep-set pin a local same-named secondary', async () => {
+  it("does not let a remote tile keep-set pin a local same-named secondary", async () => {
     // Chrome is on another profile so 'default' is a real secondary, not the
     // spared active key. A homelab bot tile keep-set must keep only the
     // composite scope — the local 'default' socket still idles out.
-    setPrimaryGateway({ connectionState: 'open' } as never, 'research')
-    await openGatewayForAgent(null, 'default')
-    await openGatewayForAgent('homelab', 'default')
+    setPrimaryGateway({ connectionState: "open" } as never, "research");
+    await openGatewayForAgent(null, "default");
+    await openGatewayForAgent("homelab", "default");
 
-    pruneSecondaryGateways(new Set(['conn:homelab::default']))
+    pruneSecondaryGateways(new Set(["conn:homelab::default"]));
 
-    expect(gatewayMocks.closed).toEqual(['wss://local.invalid/api/ws?token=t'])
-  })
+    expect(gatewayMocks.closed).toEqual(["wss://local.invalid/api/ws?token=t"]);
+  });
 
-  it('does not classify an explicit local registry source as legacy', async () => {
-    await openGatewayForAgent(null, 'writer')
-    await openGatewayForAgent('local', 'writer')
+  it("does not classify an explicit local registry source as legacy", async () => {
+    await openGatewayForAgent(null, "writer");
+    await openGatewayForAgent("local", "writer");
 
-    expect(gatewayMocks.closed).toEqual([])
+    expect(gatewayMocks.closed).toEqual([]);
 
-    closeLegacySecondaryGateways()
+    closeLegacySecondaryGateways();
 
     // The bare profile socket follows the v1 mode configuration and is
     // retired. The explicit `local` registry socket is a v2 source and must
     // survive the mode apply just like a registered remote source.
-    expect(gatewayMocks.closed).toEqual(['wss://local.invalid/api/ws?token=t'])
-  })
-})
+    expect(gatewayMocks.closed).toEqual(["wss://local.invalid/api/ws?token=t"]);
+  });
+});

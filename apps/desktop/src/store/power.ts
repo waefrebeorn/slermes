@@ -11,20 +11,23 @@
  * store/active-work).
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-export const $onBattery = atom<boolean>(false)
+export const $onBattery = atom<boolean>(false);
 
 /** Multiply a backstop poll interval by this on battery. */
-export const BATTERY_POLL_MULTIPLIER = 4
+export const BATTERY_POLL_MULTIPLIER = 4;
 
-export function batteryPollInterval(intervalMs: number, onBattery: boolean): number {
-  return onBattery ? intervalMs * BATTERY_POLL_MULTIPLIER : intervalMs
+export function batteryPollInterval(
+  intervalMs: number,
+  onBattery: boolean,
+): number {
+  return onBattery ? intervalMs * BATTERY_POLL_MULTIPLIER : intervalMs;
 }
 
-if (typeof window !== 'undefined') {
-  const desktop = window.hermesDesktop
+if (typeof window !== "undefined") {
+  const desktop = window.hermesDesktop;
 
-  void desktop?.getOnBattery?.().then(onBattery => $onBattery.set(onBattery))
-  desktop?.onBatteryChanged?.(onBattery => $onBattery.set(onBattery))
+  void desktop?.getOnBattery?.().then((onBattery) => $onBattery.set(onBattery));
+  desktop?.onBatteryChanged?.((onBattery) => $onBattery.set(onBattery));
 }

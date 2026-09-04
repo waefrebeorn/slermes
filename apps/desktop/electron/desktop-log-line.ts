@@ -14,6 +14,9 @@
  * `stamp` defaults to now; callers that batch multiple lines (a single
  * stdout chunk) pass one shared stamp so the group reads as one event.
  */
-export function formatDesktopLogLine(text: string, stamp = new Date().toISOString()): string {
-  return `[${stamp}] [hermes] ${text}`
+export function formatDesktopLogLine(
+  text: string,
+  stamp = new Date().toISOString(),
+): string {
+  return `[${stamp}] [hermes] ${text}`;
 }

@@ -1,6 +1,6 @@
-import { ThreadPrimitive, useAuiEvent, useAuiState } from '@assistant-ui/react'
-import { useStore } from '@nanostores/react'
-import { atom } from 'nanostores'
+import { ThreadPrimitive, useAuiEvent, useAuiState } from "@assistant-ui/react";
+import { useStore } from "@nanostores/react";
+import { atom } from "nanostores";
 import {
   type ComponentProps,
   type CSSProperties,
@@ -13,32 +13,40 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
-} from 'react'
-import { type GetTargetScrollTop, useStickToBottom } from 'use-stick-to-bottom'
+  useState,
+} from "react";
+import { type GetTargetScrollTop, useStickToBottom } from "use-stick-to-bottom";
 
-import { usePaneLifecycle, usePaneVisible } from '@/components/pane-shell/pane-visibility'
-import { useI18n } from '@/i18n'
-import { messagePaintWeight } from '@/lib/render-weight'
-import { cn } from '@/lib/utils'
+import {
+  usePaneLifecycle,
+  usePaneVisible,
+} from "@/components/pane-shell/pane-visibility";
+import { useI18n } from "@/i18n";
+import { messagePaintWeight } from "@/lib/render-weight";
+import { cn } from "@/lib/utils";
 import {
   onScrollToBottomRequest,
   onThreadEditClose,
   onThreadEditOpen,
   publishThreadAtBottom,
-  resetPublishedThreadScroll
-} from '@/store/thread-scroll'
-import { isSecondaryWindow } from '@/store/windows'
+  resetPublishedThreadScroll,
+} from "@/store/thread-scroll";
+import { isSecondaryWindow } from "@/store/windows";
 
-import { MessageRenderBoundary } from '../message-render-boundary'
+import { MessageRenderBoundary } from "../message-render-boundary";
 
-import { resolveShowEarlierAction, useTranscriptWindow } from './transcript-window'
+import {
+  resolveShowEarlierAction,
+  useTranscriptWindow,
+} from "./transcript-window";
 
-type ThreadMessageComponents = ComponentProps<typeof ThreadPrimitive.MessageByIndex>['components']
+type ThreadMessageComponents = ComponentProps<
+  typeof ThreadPrimitive.MessageByIndex
+>["components"];
 
 export type MessageGroup = { id: string; weight: number } & (
-  { index: number; kind: 'standalone' } | { indices: number[]; kind: 'turn' }
-)
+  { index: number; kind: "standalone" } | { indices: number[]; kind: "turn" }
+);
 
 // DOM is bounded by a render-cost budget, not a message/turn count. The
 // currency is `messagePaintWeight`: what a turn actually MOUNTS, which is what
@@ -63,7 +71,7 @@ export type MessageGroup = { id: string; weight: number } & (
 // What the DOM can hold is bounded above by the store window regardless
 // (TRANSCRIPT_WINDOW_BUDGET), so this cannot admit more than one window's
 // content.
-const RENDER_BUDGET = 600
+const RENDER_BUDGET = 600;
 // Every mounted transcript list registers here (see the mount effect). The
 // budget above is sized for ONE full-height pane; a grid split shows several
 // panes at once, each a fraction of the screen — yet each was still mounting
@@ -76,14 +84,14 @@ const RENDER_BUDGET = 600
 // (MIN_VISIBLE_GROUPS still floors the turn count regardless of weight).
 // Panes that already backfilled keep their mounted content when the count
 // changes — the share only caps where NEW backfills stop.
-const $mountedTranscriptPanes = atom(0)
+const $mountedTranscriptPanes = atom(0);
 // Never offer "Show earlier" over fewer turns than this, however heavy they
 // are. A weight-only cut on a session of enormous turns put the button two
 // turns from the bottom, where it reads as broken rather than as paging — the
 // user has not been given enough transcript to have gone looking for more. The
 // store window caps what the DOM can reach at all, so a floor here stays
 // bounded.
-const MIN_VISIBLE_GROUPS = 8
+const MIN_VISIBLE_GROUPS = 8;
 // On session switch, paint a small budget first (enough for the bottom turn(s)
 // the user actually sees after scroll-to-bottom), then bump to the full budget
 // in a requestAnimationFrame — defers the heavy markdown+syntax-highlight render
@@ -95,115 +103,142 @@ const MIN_VISIBLE_GROUPS = 8
 // 1-2 normal turns ≈ 10-20 units; the transition backfill below fills the rest
 // interruptibly, so the only thing a smaller budget changes is how much work
 // blocks the click-to-paint path.
-const FIRST_PAINT_BUDGET = 20
+const FIRST_PAINT_BUDGET = 20;
 // A hot-hidden transcript is retained for instant tab return, but keeping its
 // full scrollback mounted defeats the bounded pane cache. Preserve only the
 // live tail while hidden; revealing it resumes stepped backfill.
-export const HIDDEN_TRANSCRIPT_RENDER_BUDGET = 40
+export const HIDDEN_TRANSCRIPT_RENDER_BUDGET = 40;
 
-export const transcriptPaneBudget = (mountedPanes: number, hidden: boolean): number =>
+export const transcriptPaneBudget = (
+  mountedPanes: number,
+  hidden: boolean,
+): number =>
   hidden
     ? HIDDEN_TRANSCRIPT_RENDER_BUDGET
-    : Math.max(Math.ceil(RENDER_BUDGET / Math.max(1, mountedPanes)), RENDER_BUDGET / 4)
+    : Math.max(
+        Math.ceil(RENDER_BUDGET / Math.max(1, mountedPanes)),
+        RENDER_BUDGET / 4,
+      );
 
 // "Show earlier" raises renderBudget ABOVE paneBudget (one pane page per click).
 // The render-phase cap must only snap a hot-hidden pane down to its retention
 // budget — a visible pane's growth has to survive the next render or the click
 // is a no-op. Parked panes are unmounted, so they never hit this path.
-export const shouldClampTranscriptBudget = (hidden: boolean, renderBudget: number, paneBudget: number): boolean =>
-  hidden && renderBudget > paneBudget
+export const shouldClampTranscriptBudget = (
+  hidden: boolean,
+  renderBudget: number,
+  paneBudget: number,
+): boolean => hidden && renderBudget > paneBudget;
 // Units the backfill adds per committed step (see the backfill effect). A
 // 60-unit step produced ~10 visible prepend frames after FIRST_PAINT_BUDGET
 // retune (#83681). 290 fills a 600-unit page in two interruptible commits —
 // still well under the measured 780ms single-jump freeze.
-const BACKFILL_STEP = 290
+const BACKFILL_STEP = 290;
 
 export const transcriptBackfillFrameCount = (
   firstPaint = FIRST_PAINT_BUDGET,
   step = BACKFILL_STEP,
-  budget = RENDER_BUDGET
-): number => Math.ceil(Math.max(0, budget - firstPaint) / step)
+  budget = RENDER_BUDGET,
+): number => Math.ceil(Math.max(0, budget - firstPaint) / step);
 
 // Browsers may quantize a requested scrollTop to a nearby device-pixel
 // boundary. use-stick-to-bottom otherwise compares the lower actual value to
 // the integer target forever, re-requesting the same instant scroll every
 // frame. Treat a subpixel remainder as achieved; larger gaps still follow new
 // streamed content normally.
-const SCROLL_TARGET_EPSILON_PX = 0.5
+const SCROLL_TARGET_EPSILON_PX = 0.5;
 
-export const resolveThreadScrollTarget: GetTargetScrollTop = (targetScrollTop, { scrollElement }) => {
-  const currentScrollTop = scrollElement.scrollTop
-  const remaining = targetScrollTop - currentScrollTop
+export const resolveThreadScrollTarget: GetTargetScrollTop = (
+  targetScrollTop,
+  { scrollElement },
+) => {
+  const currentScrollTop = scrollElement.scrollTop;
+  const remaining = targetScrollTop - currentScrollTop;
 
-  return remaining >= 0 && remaining <= SCROLL_TARGET_EPSILON_PX ? currentScrollTop : targetScrollTop
-}
+  return remaining >= 0 && remaining <= SCROLL_TARGET_EPSILON_PX
+    ? currentScrollTop
+    : targetScrollTop;
+};
 
 /** Near-bottom slack for a run-start snap. Wider than the subpixel epsilon
  *  use-stick-to-bottom uses for resize follow — a follow-up sent a line or two
  *  off the bottom should still track, but a reader in history must not yank. */
-export const RUN_START_SNAP_THRESHOLD_PX = 64
+export const RUN_START_SNAP_THRESHOLD_PX = 64;
 
-export function shouldSnapOnRunStart(remainingPx: number, thresholdPx = RUN_START_SNAP_THRESHOLD_PX): boolean {
-  return remainingPx < thresholdPx
+export function shouldSnapOnRunStart(
+  remainingPx: number,
+  thresholdPx = RUN_START_SNAP_THRESHOLD_PX,
+): boolean {
+  return remainingPx < thresholdPx;
 }
 
 // True when the pin-to-bottom settle should re-arm. A same-session refresh
 // (transcript briefly emptied and repopulated under the same key) must keep
 // the reader's position; only a session switch or a cold-load arrival re-pins.
-export function shouldRePinOnTranscriptReload(opts: { sessionSwitched: boolean; settledNonEmpty: boolean }): boolean {
-  return opts.sessionSwitched || !opts.settledNonEmpty
+export function shouldRePinOnTranscriptReload(opts: {
+  sessionSwitched: boolean;
+  settledNonEmpty: boolean;
+}): boolean {
+  return opts.sessionSwitched || !opts.settledNonEmpty;
 }
 
-export function subscribeToThreadForeground(shouldReanchor: () => boolean, onReanchor: () => void): () => void {
-  let frameId: number | null = null
-  let framePending = false
+export function subscribeToThreadForeground(
+  shouldReanchor: () => boolean,
+  onReanchor: () => void,
+): () => void {
+  let frameId: number | null = null;
+  let framePending = false;
 
   const onForeground = () => {
-    if (framePending || document.visibilityState !== 'visible' || !shouldReanchor()) {
-      return
+    if (
+      framePending ||
+      document.visibilityState !== "visible" ||
+      !shouldReanchor()
+    ) {
+      return;
     }
 
-    framePending = true
+    framePending = true;
 
     const scheduledId = requestAnimationFrame(() => {
-      frameId = null
-      framePending = false
+      frameId = null;
+      framePending = false;
 
-      if (document.visibilityState === 'visible' && shouldReanchor()) {
-        onReanchor()
+      if (document.visibilityState === "visible" && shouldReanchor()) {
+        onReanchor();
       }
-    })
+    });
 
     // Browser callbacks are asynchronous; the guard also keeps synchronous
     // requestAnimationFrame test doubles from leaving a completed frame pending.
     if (framePending) {
-      frameId = scheduledId
+      frameId = scheduledId;
     }
-  }
+  };
 
-  document.addEventListener('visibilitychange', onForeground)
-  window.addEventListener('focus', onForeground)
+  document.addEventListener("visibilitychange", onForeground);
+  window.addEventListener("focus", onForeground);
 
   return () => {
-    document.removeEventListener('visibilitychange', onForeground)
-    window.removeEventListener('focus', onForeground)
+    document.removeEventListener("visibilitychange", onForeground);
+    window.removeEventListener("focus", onForeground);
 
     if (frameId !== null) {
-      cancelAnimationFrame(frameId)
+      cancelAnimationFrame(frameId);
     }
 
-    frameId = null
-    framePending = false
-  }
+    frameId = null;
+    framePending = false;
+  };
 }
 
 interface ThreadMessageListProps {
-  clampToComposer: boolean
-  components: ThreadMessageComponents
-  emptyPlaceholder?: ReactNode
-  loadingIndicator?: ReactNode
-  sessionId?: string | null
-  sessionKey?: string | null
+  clampToComposer: boolean;
+  components: ThreadMessageComponents;
+  emptyPlaceholder?: ReactNode;
+  loadingIndicator?: ReactNode;
+  sessionId?: string | null;
+  sessionKey?: string | null;
 }
 
 // Group each user message with the assistant turn(s) that follow it so the
@@ -211,56 +246,65 @@ interface ThreadMessageListProps {
 // turn (see StickyHumanMessageContainer in thread.tsx).
 export function buildGroups(signature: string): MessageGroup[] {
   if (!signature) {
-    return []
+    return [];
   }
 
-  const messages = signature.split('\n').map(row => {
-    const [index, id, role, weight] = row.split(':')
+  const messages = signature.split("\n").map((row) => {
+    const [index, id, role, weight] = row.split(":");
 
-    return { id, index: Number(index), role, weight: Number(weight) || 1 }
-  })
+    return { id, index: Number(index), role, weight: Number(weight) || 1 };
+  });
 
-  const groups: MessageGroup[] = []
+  const groups: MessageGroup[] = [];
 
   for (let i = 0; i < messages.length; i++) {
-    const message = messages[i]
+    const message = messages[i];
 
-    if (message.role !== 'user') {
-      groups.push({ id: message.id, index: message.index, kind: 'standalone', weight: message.weight })
+    if (message.role !== "user") {
+      groups.push({
+        id: message.id,
+        index: message.index,
+        kind: "standalone",
+        weight: message.weight,
+      });
 
-      continue
+      continue;
     }
 
-    const indices = [message.index]
-    let weight = message.weight
+    const indices = [message.index];
+    let weight = message.weight;
 
-    while (i + 1 < messages.length && messages[i + 1].role !== 'user') {
-      weight += messages[++i].weight
-      indices.push(messages[i].index)
+    while (i + 1 < messages.length && messages[i + 1].role !== "user") {
+      weight += messages[++i].weight;
+      indices.push(messages[i].index);
     }
 
-    groups.push({ id: message.id, indices, kind: 'turn', weight })
+    groups.push({ id: message.id, indices, kind: "turn", weight });
   }
 
-  return groups
+  return groups;
 }
 
 // Walk turns newest-first, summing their render weights until the budget is met;
 // everything before the first kept turn is hidden. `minVisible` turns are kept
 // regardless of weight. Returns the index of that first visible group.
-export function firstVisibleGroupIndex(groups: readonly MessageGroup[], budget: number, minVisible = 0): number {
-  let firstVisible = groups.length
+export function firstVisibleGroupIndex(
+  groups: readonly MessageGroup[],
+  budget: number,
+  minVisible = 0,
+): number {
+  let firstVisible = groups.length;
 
   for (let i = groups.length - 1, weight = 0; i >= 0; i--) {
-    weight += groups[i].weight
-    firstVisible = i
+    weight += groups[i].weight;
+    firstVisible = i;
 
     if (weight >= budget) {
-      break
+      break;
     }
   }
 
-  return Math.min(firstVisible, Math.max(0, groups.length - minVisible))
+  return Math.min(firstVisible, Math.max(0, groups.length - minVisible));
 }
 
 // content-visibility:auto skips off-screen turns for perf, but with
@@ -289,15 +333,15 @@ export function firstVisibleGroupIndex(groups: readonly MessageGroup[], budget: 
 // 40 units ≈ the 1-2 turns a viewport shows after scroll-to-bottom (the same
 // reasoning as FIRST_PAINT_BUDGET=20, doubled so a turn that grows mid-stream
 // doesn't fall out of the tail as it settles).
-export const LIVE_TAIL_PARTS = 40
+export const LIVE_TAIL_PARTS = 40;
 // Floor: always exempt at least this many turns regardless of weight, so a
 // transcript of very heavy turns still keeps the streaming one unvirtualized.
-export const LIVE_TAIL_MIN_GROUPS = 2
+export const LIVE_TAIL_MIN_GROUPS = 2;
 // Ceiling: never exempt more than this many turns, however light they are. On a
 // long transcript of tiny turns a weight-only budget would walk back further
 // than the old turn-count tail did and virtualize LESS — this keeps the new
 // policy a strict improvement on every shape.
-export const LIVE_TAIL_MAX_GROUPS = 6
+export const LIVE_TAIL_MAX_GROUPS = 6;
 
 /**
  * Index of the newest group that still virtualizes — everything at or after it
@@ -309,34 +353,34 @@ export function liveTailStart(
   groups: readonly MessageGroup[],
   tailWeight = LIVE_TAIL_PARTS,
   minGroups = LIVE_TAIL_MIN_GROUPS,
-  maxGroups = LIVE_TAIL_MAX_GROUPS
+  maxGroups = LIVE_TAIL_MAX_GROUPS,
 ): number {
-  let weight = 0
-  let start = groups.length
+  let weight = 0;
+  let start = groups.length;
 
   for (let i = groups.length - 1; i >= 0; i--) {
-    weight += groups[i]?.weight ?? 1
-    start = i
+    weight += groups[i]?.weight ?? 1;
+    start = i;
 
     if (weight > tailWeight) {
-      break
+      break;
     }
   }
 
   // Clamp the tail to [minGroups, maxGroups] turns: the floor keeps the live
   // turn rendered when turns are huge, the ceiling stops a tail of tiny turns
   // from sprawling past what the old turn-count policy rendered.
-  const floor = Math.max(0, groups.length - minGroups)
-  const ceiling = Math.max(0, groups.length - maxGroups)
+  const floor = Math.max(0, groups.length - minGroups);
+  const ceiling = Math.max(0, groups.length - maxGroups);
 
-  return Math.min(floor, Math.max(ceiling, start))
+  return Math.min(floor, Math.max(ceiling, start));
 }
 
 interface TurnRowProps {
-  components: ThreadMessageComponents
-  group: MessageGroup
-  resetKey: string
-  virtualized: boolean
+  components: ThreadMessageComponents;
+  group: MessageGroup;
+  resetKey: string;
+  virtualized: boolean;
 }
 
 // One turn (or standalone message) of the transcript. memo() is the point:
@@ -361,31 +405,44 @@ interface TurnRowProps {
 // The live tail (newest turns) is exempt: virtualizing a turn whose final
 // size hasn't been remembered yet snaps it to a stale height when it scrolls
 // off, drifting stick-to-bottom up over old turns. See liveTailStart.
-const TurnRow = memo(function TurnRow({ components, group, resetKey, virtualized }: TurnRowProps) {
+const TurnRow = memo(function TurnRow({
+  components,
+  group,
+  resetKey,
+  virtualized,
+}: TurnRowProps) {
   return (
     <div
       className={cn(
-        'flex min-w-0 flex-col gap-(--conversation-turn-gap) pb-(--conversation-turn-gap)',
-        virtualized && '[contain-intrinsic-size:auto_37.5rem] [content-visibility:auto]'
+        "flex min-w-0 flex-col gap-(--conversation-turn-gap) pb-(--conversation-turn-gap)",
+        virtualized &&
+          "[contain-intrinsic-size:auto_37.5rem] [content-visibility:auto]",
       )}
     >
       <MessageRenderBoundary resetKey={resetKey}>
-        {group.kind === 'turn' ? (
+        {group.kind === "turn" ? (
           <div
             className="composer-human-ai-pair-container relative flex min-w-0 flex-col gap-(--conversation-turn-gap)"
             data-slot="aui_turn-pair"
           >
-            {group.indices.map(index => (
-              <ThreadPrimitive.MessageByIndex components={components} index={index} key={index} />
+            {group.indices.map((index) => (
+              <ThreadPrimitive.MessageByIndex
+                components={components}
+                index={index}
+                key={index}
+              />
             ))}
           </div>
         ) : (
-          <ThreadPrimitive.MessageByIndex components={components} index={group.index} />
+          <ThreadPrimitive.MessageByIndex
+            components={components}
+            index={group.index}
+          />
         )}
       </MessageRenderBoundary>
     </div>
-  )
-})
+  );
+});
 
 const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   clampToComposer,
@@ -393,7 +450,7 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   emptyPlaceholder,
   loadingIndicator,
   sessionId = null,
-  sessionKey
+  sessionKey,
 }) => {
   // TWO signatures, deliberately split. The STRUCTURAL one (ids/roles/count)
   // changes only when messages are added/removed/swapped — it keys the error
@@ -403,48 +460,59 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   // new resetKey per appended part, which reconciled every turn's subtree on
   // every tick (measured: 540 wasted Block renders per explain() sample with
   // two threads streaming).
-  const structuralSignature = useAuiState(s =>
-    s.thread.messages.map((message, index) => `${index}:${message.id}:${message.role}`).join('\n')
-  )
+  const structuralSignature = useAuiState((s) =>
+    s.thread.messages
+      .map((message, index) => `${index}:${message.id}:${message.role}`)
+      .join("\n"),
+  );
 
-  const weightSignature = useAuiState(s =>
-    s.thread.messages.map(message => messagePaintWeight(message.content)).join(',')
-  )
+  const weightSignature = useAuiState((s) =>
+    s.thread.messages
+      .map((message) => messagePaintWeight(message.content))
+      .join(","),
+  );
 
-  const { t } = useI18n()
+  const { t } = useI18n();
   // Row structure is memoized on the STRUCTURAL signature only, so streaming
   // part-appends can't churn group identity (that would defeat the rows memo
   // below on every tick). Weights are folded in separately for the budget.
-  const groups = useMemo(() => buildGroups(structuralSignature), [structuralSignature])
-  const renderEmpty = groups.length === 0 && Boolean(emptyPlaceholder)
+  const groups = useMemo(
+    () => buildGroups(structuralSignature),
+    [structuralSignature],
+  );
+  const renderEmpty = groups.length === 0 && Boolean(emptyPlaceholder);
 
   // use-stick-to-bottom owns scrollTop (single writer): follow while locked,
   // escape on user scroll-up, re-lock at bottom. Snap instantly, not spring — a
   // spring can't tell live-token growth from a session-switch bulk relayout, and
   // chasing the latter reads as the view scrolling to random spots before
   // settling. Its refs hang off our own DOM so the sticky human bubbles survive.
-  const { scrollRef, contentRef, isAtBottom, scrollToBottom, stopScroll } = useStickToBottom({
-    initial: 'instant',
-    resize: 'instant',
-    targetScrollTop: resolveThreadScrollTarget
-  })
+  const { scrollRef, contentRef, isAtBottom, scrollToBottom, stopScroll } =
+    useStickToBottom({
+      initial: "instant",
+      resize: "instant",
+      targetScrollTop: resolveThreadScrollTarget,
+    });
 
-  const { olderAvailable, expandWindow } = useTranscriptWindow()
+  const { olderAvailable, expandWindow } = useTranscriptWindow();
 
   useEffect(() => {
-    $mountedTranscriptPanes.set($mountedTranscriptPanes.get() + 1)
+    $mountedTranscriptPanes.set($mountedTranscriptPanes.get() + 1);
 
-    return () => $mountedTranscriptPanes.set($mountedTranscriptPanes.get() - 1)
-  }, [])
+    return () => $mountedTranscriptPanes.set($mountedTranscriptPanes.get() - 1);
+  }, []);
 
-  const mountedPanes = useStore($mountedTranscriptPanes)
-  const paneLifecycle = usePaneLifecycle()
-  const paneVisible = usePaneVisible()
+  const mountedPanes = useStore($mountedTranscriptPanes);
+  const paneLifecycle = usePaneLifecycle();
+  const paneVisible = usePaneVisible();
   // Hidden panes retain only a live-tail budget. Visible panes share the normal
   // screen budget; a reveal backfills older rows in bounded transition steps.
-  const paneBudget = transcriptPaneBudget(mountedPanes, paneLifecycle === 'hot-hidden')
+  const paneBudget = transcriptPaneBudget(
+    mountedPanes,
+    paneLifecycle === "hot-hidden",
+  );
 
-  const [renderBudget, setRenderBudget] = useState(FIRST_PAINT_BUDGET)
+  const [renderBudget, setRenderBudget] = useState(FIRST_PAINT_BUDGET);
 
   // Cut the budget during RENDER, not in the post-commit layout effect. An
   // effect-time cut is too late: React would first build the whole tree with
@@ -458,51 +526,58 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   // branch), while a COLD switch changes sessionKey with an empty transcript
   // and the prefetched messages land hundreds of ms later under the SAME key
   // (the empty→non-empty branch).
-  const hasGroups = groups.length > 0
-  const [budgetSessionKey, setBudgetSessionKey] = useState(sessionKey)
-  const [hadGroups, setHadGroups] = useState(hasGroups)
+  const hasGroups = groups.length > 0;
+  const [budgetSessionKey, setBudgetSessionKey] = useState(sessionKey);
+  const [hadGroups, setHadGroups] = useState(hasGroups);
 
   if (budgetSessionKey !== sessionKey) {
-    setBudgetSessionKey(sessionKey)
-    setHadGroups(hasGroups)
-    setRenderBudget(FIRST_PAINT_BUDGET)
-  } else if (shouldClampTranscriptBudget(paneLifecycle === 'hot-hidden', renderBudget, paneBudget)) {
+    setBudgetSessionKey(sessionKey);
+    setHadGroups(hasGroups);
+    setRenderBudget(FIRST_PAINT_BUDGET);
+  } else if (
+    shouldClampTranscriptBudget(
+      paneLifecycle === "hot-hidden",
+      renderBudget,
+      paneBudget,
+    )
+  ) {
     // Apply the hidden budget during render so React never first commits the
     // stale full transcript after this pane moves to the background.
-    setRenderBudget(paneBudget)
+    setRenderBudget(paneBudget);
   } else if (hadGroups !== hasGroups) {
-    setHadGroups(hasGroups)
+    setHadGroups(hasGroups);
 
     if (hasGroups) {
-      setRenderBudget(FIRST_PAINT_BUDGET)
+      setRenderBudget(FIRST_PAINT_BUDGET);
     }
   }
 
   // Where to land after a prepend, in distance-from-bottom (survives the
   // height change). Shared by "Show earlier" and the budget backfill below.
-  const restoreFromBottomRef = useRef<number | null>(null)
+  const restoreFromBottomRef = useRef<number | null>(null);
   // False from a session switch until the settle loop below parks the
   // transcript at its true bottom. While false, scrollTop is a way-point of a
   // load in progress, not a reading position anyone chose — never anchor to it.
-  const loadSettledRef = useRef(false)
+  const loadSettledRef = useRef(false);
   // Session the settle loop last armed for, so a re-arm within the same load
   // is distinguishable from a switch to a different transcript.
-  const settleKeyRef = useRef(sessionKey)
+  const settleKeyRef = useRef(sessionKey);
   // True once the CURRENT session has settled with a non-empty transcript.
   // A same-session refresh must keep the reader's position; only a switch or
   // a cold-load arrival re-arms. Reset on switch so a mid-settle key change
   // cannot inherit the outgoing session's settled flag.
-  const settledNonEmptyRef = useRef(false)
+  const settledNonEmptyRef = useRef(false);
 
   // Record where the view should land once a prepend has grown the content,
   // measured from the BOTTOM so the added height doesn't invalidate it. Only a
   // settled load has an offset the user chose; mid-load the answer is simply
   // the bottom.
   const anchorBeforePrepend = useCallback(() => {
-    const el = scrollRef.current
+    const el = scrollRef.current;
 
-    restoreFromBottomRef.current = el && loadSettledRef.current ? el.scrollHeight - el.scrollTop : 0
-  }, [scrollRef])
+    restoreFromBottomRef.current =
+      el && loadSettledRef.current ? el.scrollHeight - el.scrollTop : 0;
+  }, [scrollRef]);
 
   // Backfill from FIRST_PAINT_BUDGET to the full budget after the small
   // commit painted — as a TRANSITION, so the heavy markdown + syntax
@@ -521,7 +596,7 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   // re-arms off the committed budget, so steps pace one per frame.
   useEffect(() => {
     if (renderBudget >= paneBudget) {
-      return
+      return;
     }
 
     const rafId = requestAnimationFrame(() => {
@@ -531,31 +606,35 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
       // stranded near the TOP until use-stick-to-bottom's ResizeObserver
       // catches up a frame or two later (measured: an 11.5k px jump showing
       // ~160ms of unrelated old turns, on every session load).
-      anchorBeforePrepend()
+      anchorBeforePrepend();
 
       // Functional max, not a plain set: an urgent "Show earlier" click can
       // land between scheduling and committing this transition, and a plain
       // set would rebase over it and shrink the budget back down.
-      startTransition(() => setRenderBudget(budget => Math.max(budget, Math.min(budget + BACKFILL_STEP, paneBudget))))
-    })
+      startTransition(() =>
+        setRenderBudget((budget) =>
+          Math.max(budget, Math.min(budget + BACKFILL_STEP, paneBudget)),
+        ),
+      );
+    });
 
-    return () => cancelAnimationFrame(rafId)
-  }, [anchorBeforePrepend, paneBudget, renderBudget])
+    return () => cancelAnimationFrame(rafId);
+  }, [anchorBeforePrepend, paneBudget, renderBudget]);
 
   // Weights (part count + visible character cost) fold into the BUDGET only.
   // Group identity stays structural, so a streaming append re-runs this cheap
   // sum — not the row JSX. Settled content hits messagePaintWeight's WeakMap.
   const weightedGroups = useMemo(() => {
-    const weights = weightSignature.split(',').map(w => Number(w) || 1)
+    const weights = weightSignature.split(",").map((w) => Number(w) || 1);
 
-    return groups.map(group => ({
+    return groups.map((group) => ({
       ...group,
       weight:
-        group.kind === 'turn'
+        group.kind === "turn"
           ? group.indices.reduce((sum, index) => sum + (weights[index] ?? 1), 0)
-          : (weights[group.index] ?? 1)
-    }))
-  }, [groups, weightSignature])
+          : (weights[group.index] ?? 1),
+    }));
+  }, [groups, weightSignature]);
 
   // The turn floor applies to a real page only. During the first-paint budget
   // the point is a small synchronous commit; forcing 8 turns into it would put
@@ -564,8 +643,8 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   const hiddenCount = firstVisibleGroupIndex(
     weightedGroups,
     renderBudget,
-    renderBudget >= paneBudget ? MIN_VISIBLE_GROUPS : 0
-  )
+    renderBudget >= paneBudget ? MIN_VISIBLE_GROUPS : 0,
+  );
 
   // Memoized for IDENTITY, not to save the slice: `rows` below keys off this
   // array, and an inline slice handed it a fresh array every render — so the
@@ -573,37 +652,52 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   // streamed token rebuilt every visible row's JSX and re-rendered the whole
   // mounted transcript. Under the budget the raw `groups` identity made the
   // memo hold; heavy sessions lost it exactly when they could least afford to.
-  const visibleGroups = useMemo(() => (hiddenCount > 0 ? groups.slice(hiddenCount) : groups), [groups, hiddenCount])
+  const visibleGroups = useMemo(
+    () => (hiddenCount > 0 ? groups.slice(hiddenCount) : groups),
+    [groups, hiddenCount],
+  );
 
   // Where the always-rendered live tail begins. Derived from the WEIGHTED
   // groups (render cost, not turns) so the tail is a viewport's worth of content —
   // see liveTailStart. Computed once here rather than per row.
   const tailStart = useMemo(
-    () => liveTailStart(hiddenCount > 0 ? weightedGroups.slice(hiddenCount) : weightedGroups),
-    [weightedGroups, hiddenCount]
-  )
+    () =>
+      liveTailStart(
+        hiddenCount > 0 ? weightedGroups.slice(hiddenCount) : weightedGroups,
+      ),
+    [weightedGroups, hiddenCount],
+  );
 
   // Secondary windows (new-session scratch, subagent watch, cmd-click pop-out)
   // hide the titlebar tool cluster + session header, but the OS traffic lights
   // still sit in the top-left, so reserve the titlebar gap above the transcript.
-  const secondaryWindow = isSecondaryWindow()
+  const secondaryWindow = isSecondaryWindow();
   // NB: CSS calc() requires whitespace around the +/- operator. This string is
   // assigned verbatim to the --sticky-human-top inline style below (it does not
   // go through Tailwind, which would auto-space it), so the spaces are load-
   // bearing — without them the declaration is invalid, gets dropped, and the
   // sticky user bubble falls back to its ~4px default and slides under the OS
   // traffic lights.
-  const secondaryTitlebarGap = 'calc(var(--titlebar-height) + 0.75rem)'
+  const secondaryTitlebarGap = "calc(var(--titlebar-height) + 0.75rem)";
 
   const threadContentTopPad = secondaryWindow
-    ? 'pt-[calc(var(--titlebar-height)+0.75rem)]'
-    : 'pt-[calc(var(--titlebar-height)-0.5rem)]'
+    ? "pt-[calc(var(--titlebar-height)+0.75rem)]"
+    : "pt-[calc(var(--titlebar-height)-0.5rem)]";
 
-  useEffect(() => publishThreadAtBottom(isAtBottom, { paneVisible }), [isAtBottom, paneVisible])
-  useEffect(() => () => resetPublishedThreadScroll({ paneVisible }), [paneVisible])
+  useEffect(
+    () => publishThreadAtBottom(isAtBottom, { paneVisible }),
+    [isAtBottom, paneVisible],
+  );
+  useEffect(
+    () => () => resetPublishedThreadScroll({ paneVisible }),
+    [paneVisible],
+  );
 
   // Floating jump button (outside this subtree) → return to the bottom.
-  useEffect(() => onScrollToBottomRequest(() => void scrollToBottom(), sessionId), [scrollToBottom, sessionId])
+  useEffect(
+    () => onScrollToBottomRequest(() => void scrollToBottom(), sessionId),
+    [scrollToBottom, sessionId],
+  );
 
   // Waking from display: hidden (HUD mode hides the main window; OS hide does
   // the same to any window): rAF and ResizeObserver may have been frozen, so
@@ -618,40 +712,43 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
     () =>
       subscribeToThreadForeground(
         () => isAtBottom,
-        () => void scrollToBottom()
+        () => void scrollToBottom(),
       ),
-    [isAtBottom, scrollToBottom]
-  )
+    [isAtBottom, scrollToBottom],
+  );
 
   const endEditHold = useCallback(() => {
-    scrollRef.current?.removeAttribute('data-editing')
-  }, [scrollRef])
+    scrollRef.current?.removeAttribute("data-editing");
+  }, [scrollRef]);
 
   // Inline edit grows a sticky bubble. Escape before focus/layout so the
   // resize-follow can't snap scrollTop; native anchoring holds the viewport.
   const beginEditHold = useCallback(() => {
-    const el = scrollRef.current
+    const el = scrollRef.current;
 
     if (!el) {
-      return
+      return;
     }
 
-    endEditHold()
-    stopScroll()
-    el.setAttribute('data-editing', 'true')
-  }, [endEditHold, scrollRef, stopScroll])
+    endEditHold();
+    stopScroll();
+    el.setAttribute("data-editing", "true");
+  }, [endEditHold, scrollRef, stopScroll]);
 
-  useEffect(() => onThreadEditOpen(beginEditHold), [beginEditHold])
-  useEffect(() => onThreadEditClose(endEditHold), [endEditHold])
-  useEffect(() => () => endEditHold(), [endEditHold])
+  useEffect(() => onThreadEditOpen(beginEditHold), [beginEditHold]);
+  useEffect(() => onThreadEditClose(endEditHold), [endEditHold]);
+  useEffect(() => () => endEditHold(), [endEditHold]);
   // New run → snap to the latest turn only when already near the bottom.
-  useAuiEvent('thread.runStart', () => {
-    const el = scrollRef.current
+  useAuiEvent("thread.runStart", () => {
+    const el = scrollRef.current;
 
-    if (el && shouldSnapOnRunStart(el.scrollHeight - el.scrollTop - el.clientHeight)) {
-      scrollToBottom()
+    if (
+      el &&
+      shouldSnapOnRunStart(el.scrollHeight - el.scrollTop - el.clientHeight)
+    ) {
+      scrollToBottom();
     }
-  })
+  });
 
   // Reset the cap and pin to bottom on mount + every session switch (messages
   // swap in place on a long-lived runtime, so sessionKey is the only signal).
@@ -670,72 +767,77 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   // transcript that actually arrived; being a boolean, it cannot re-fire on a
   // streaming append.
   useLayoutEffect(() => {
-    const el = scrollRef.current
+    const el = scrollRef.current;
 
     if (!el) {
-      return
+      return;
     }
 
-    const sessionSwitched = settleKeyRef.current !== sessionKey
+    const sessionSwitched = settleKeyRef.current !== sessionKey;
 
     if (sessionSwitched) {
-      settledNonEmptyRef.current = false
+      settledNonEmptyRef.current = false;
     }
 
     // Same-session refresh (transcript briefly cleared and repopulated) must
     // keep the reader's position. Run before stopScroll / scrollTop reset so
     // a refresh neither yanks the view nor clears the settled flag.
-    if (!shouldRePinOnTranscriptReload({ sessionSwitched, settledNonEmpty: settledNonEmptyRef.current })) {
-      return
+    if (
+      !shouldRePinOnTranscriptReload({
+        sessionSwitched,
+        settledNonEmpty: settledNonEmptyRef.current,
+      })
+    ) {
+      return;
     }
 
-    stopScroll()
-    el.scrollTop = el.scrollHeight
-    loadSettledRef.current = false
+    stopScroll();
+    el.scrollTop = el.scrollHeight;
+    loadSettledRef.current = false;
 
     // An anchor captured for the OUTGOING transcript must not be applied to
     // this one — a switch owns the position outright. The empty→non-empty
     // re-arm is the SAME load, whose in-flight anchor is still correct.
     if (sessionSwitched) {
-      settleKeyRef.current = sessionKey
-      restoreFromBottomRef.current = null
+      settleKeyRef.current = sessionKey;
+      restoreFromBottomRef.current = null;
     }
 
-    let frame = 0
-    let stableFrames = 0
-    let lastHeight = el.scrollHeight
+    let frame = 0;
+    let stableFrames = 0;
+    let lastHeight = el.scrollHeight;
 
     const settle = () => {
-      const node = scrollRef.current
+      const node = scrollRef.current;
 
       if (!node) {
-        return
+        return;
       }
 
-      const height = node.scrollHeight
+      const height = node.scrollHeight;
 
-      stableFrames = height === lastHeight ? stableFrames + 1 : 0
-      lastHeight = height
-      node.scrollTop = height
+      stableFrames = height === lastHeight ? stableFrames + 1 : 0;
+      lastHeight = height;
+      node.scrollTop = height;
 
       // Most session switches are synchronous and stabilize within 2 frames;
       // the old 90-frame ceiling was for slow async image loads. Cap at 15
       // frames to minimize the settle-loop racing markdown paint on every switch.
       if (stableFrames >= 2 || ++frame > 15) {
-        void scrollToBottom('instant')
-        settledNonEmptyRef.current = hasGroups
-        loadSettledRef.current = true
+        void scrollToBottom("instant");
+        settledNonEmptyRef.current = hasGroups;
+        loadSettledRef.current = true;
 
-        return
+        return;
       }
 
-      rafId = requestAnimationFrame(settle)
-    }
+      rafId = requestAnimationFrame(settle);
+    };
 
-    let rafId = requestAnimationFrame(settle)
+    let rafId = requestAnimationFrame(settle);
 
-    return () => cancelAnimationFrame(rafId)
-  }, [hasGroups, scrollRef, scrollToBottom, sessionKey, stopScroll])
+    return () => cancelAnimationFrame(rafId);
+  }, [hasGroups, scrollRef, scrollToBottom, sessionKey, stopScroll]);
 
   // Prepend an older page while preserving the on-screen position. The user is
   // scrolled up (reading history) so the stick-to-bottom lock is escaped and
@@ -743,31 +845,37 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
   // first; only when that is exhausted pull more messages out of the session
   // store (#55191).
   const showEarlier = useCallback(() => {
-    const action = resolveShowEarlierAction(hiddenCount, olderAvailable)
+    const action = resolveShowEarlierAction(hiddenCount, olderAvailable);
 
     if (!action) {
-      return
+      return;
     }
 
-    anchorBeforePrepend()
+    anchorBeforePrepend();
     // Both paths grow the DOM budget by one pane page. Windowed rows are older
     // than the current page, so expand-without-grow paints nothing.
-    setRenderBudget(budget => budget + paneBudget)
+    setRenderBudget((budget) => budget + paneBudget);
 
-    if (action === 'window') {
-      expandWindow()
+    if (action === "window") {
+      expandWindow();
     }
-  }, [anchorBeforePrepend, expandWindow, hiddenCount, olderAvailable, paneBudget])
+  }, [
+    anchorBeforePrepend,
+    expandWindow,
+    hiddenCount,
+    olderAvailable,
+    paneBudget,
+  ]);
 
   useLayoutEffect(() => {
-    const el = scrollRef.current
+    const el = scrollRef.current;
 
     if (el && restoreFromBottomRef.current != null) {
-      el.scrollTop = el.scrollHeight - restoreFromBottomRef.current
-      restoreFromBottomRef.current = null
+      el.scrollTop = el.scrollHeight - restoreFromBottomRef.current;
+      restoreFromBottomRef.current = null;
     }
     // renderBudget covers DOM pages; groups.length covers store-window expands.
-  }, [scrollRef, renderBudget, groups.length])
+  }, [scrollRef, renderBudget, groups.length]);
 
   // The row array is memoized on the inputs the rows actually read. This
   // component re-renders on every isAtBottom flip — and use-stick-to-bottom
@@ -788,16 +896,18 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
           virtualized={indexInVisible < tailStart}
         />
       )),
-    [visibleGroups, components, structuralSignature, tailStart]
-  )
+    [visibleGroups, components, structuralSignature, tailStart],
+  );
 
   return (
     <div
       className="relative min-h-0 max-w-full overflow-hidden contain-[layout_paint]"
       style={
         {
-          height: clampToComposer ? 'var(--thread-viewport-height)' : '100%',
-          ...(secondaryWindow ? { '--sticky-human-top': secondaryTitlebarGap } : {})
+          height: clampToComposer ? "var(--thread-viewport-height)" : "100%",
+          ...(secondaryWindow
+            ? { "--sticky-human-top": secondaryTitlebarGap }
+            : {}),
         } as CSSProperties
       }
     >
@@ -814,7 +924,7 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
       )}
       <div
         className="size-full overflow-x-hidden overflow-y-auto overscroll-contain"
-        data-following={isAtBottom ? 'true' : 'false'}
+        data-following={isAtBottom ? "true" : "false"}
         data-slot="aui_thread-viewport"
         ref={scrollRef as React.RefCallback<HTMLDivElement>}
       >
@@ -827,7 +937,10 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
           </div>
         ) : (
           <div
-            className={cn('mx-auto flex w-full max-w-(--composer-width) min-w-0 flex-col px-6', threadContentTopPad)}
+            className={cn(
+              "mx-auto flex w-full max-w-(--composer-width) min-w-0 flex-col px-6",
+              threadContentTopPad,
+            )}
             data-slot="aui_thread-content"
             ref={contentRef as React.RefCallback<HTMLDivElement>}
           >
@@ -847,14 +960,14 @@ const ThreadMessageListInner: FC<ThreadMessageListProps> = ({
                 aria-hidden="true"
                 className="shrink-0"
                 data-slot="aui_composer-clearance"
-                style={{ height: 'var(--thread-last-message-clearance)' }}
+                style={{ height: "var(--thread-last-message-clearance)" }}
               />
             )}
           </div>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export const ThreadMessageList = memo(ThreadMessageListInner)
+export const ThreadMessageList = memo(ThreadMessageListInner);

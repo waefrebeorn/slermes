@@ -1,29 +1,34 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from "react";
 
-import { type ProfileScope, saveHermesConfigRecord } from '@/hermes'
-import { useI18n } from '@/i18n'
-import { notify, notifyError } from '@/store/notifications'
+import { type ProfileScope, saveHermesConfigRecord } from "@/hermes";
+import { useI18n } from "@/i18n";
+import { notify, notifyError } from "@/store/notifications";
 
-import { hermesConfigCacheWriter, useHermesConfigRecord } from '../hooks/use-config-record'
+import {
+  hermesConfigCacheWriter,
+  useHermesConfigRecord,
+} from "../hooks/use-config-record";
 
-import { ToggleRow } from './primitives'
+import { ToggleRow } from "./primitives";
 
 interface BrowserRealProfilePanelProps {
   /** Capabilities profile-scope override — the toggle reads/writes THIS
    *  profile's config.yaml instead of the app-wide active one. */
-  profile?: ProfileScope
+  profile?: ProfileScope;
 }
 
 /** Shared with the Browser pane's first-open consent prompt, so both surfaces
  *  agree on what "on" means for `browser.use_real_profile`. */
-export function readUseRealProfile(record: Record<string, unknown> | undefined): boolean {
-  const browser = record?.browser
+export function readUseRealProfile(
+  record: Record<string, unknown> | undefined,
+): boolean {
+  const browser = record?.browser;
 
-  if (browser && typeof browser === 'object' && !Array.isArray(browser)) {
-    return Boolean((browser as Record<string, unknown>).use_real_profile)
+  if (browser && typeof browser === "object" && !Array.isArray(browser)) {
+    return Boolean((browser as Record<string, unknown>).use_real_profile);
   }
 
-  return false
+  return false;
 }
 
 /**
@@ -39,47 +44,51 @@ export function readUseRealProfile(record: Record<string, unknown> | undefined):
  * config.yaml through the same deep-merging PUT /api/config every other
  * settings surface uses — applies to new sessions.
  */
-export function BrowserRealProfilePanel({ profile }: BrowserRealProfilePanelProps) {
-  const { t } = useI18n()
-  const copy = t.settings.toolsets.browserRealProfile
-  const { data: config } = useHermesConfigRecord(profile)
-  const setConfig = hermesConfigCacheWriter(profile)
-  const [busy, setBusy] = useState(false)
+export function BrowserRealProfilePanel({
+  profile,
+}: BrowserRealProfilePanelProps) {
+  const { t } = useI18n();
+  const copy = t.settings.toolsets.browserRealProfile;
+  const { data: config } = useHermesConfigRecord(profile);
+  const setConfig = hermesConfigCacheWriter(profile);
+  const [busy, setBusy] = useState(false);
 
-  const enabled = readUseRealProfile(config)
+  const enabled = readUseRealProfile(config);
 
   const toggle = useCallback(
     async (on: boolean) => {
       if (!config) {
-        return
+        return;
       }
 
       const browser =
-        config.browser && typeof config.browser === 'object' && !Array.isArray(config.browser)
+        config.browser &&
+        typeof config.browser === "object" &&
+        !Array.isArray(config.browser)
           ? (config.browser as Record<string, unknown>)
-          : {}
+          : {};
 
-      const next = { ...config, browser: { ...browser, use_real_profile: on } }
+      const next = { ...config, browser: { ...browser, use_real_profile: on } };
 
-      setBusy(true)
-      setConfig(next)
+      setBusy(true);
+      setConfig(next);
 
       try {
-        await saveHermesConfigRecord(next, profile)
+        await saveHermesConfigRecord(next, profile);
         notify({
-          kind: 'info',
+          kind: "info",
           title: on ? copy.enabledTitle : copy.disabledTitle,
-          message: on ? copy.enabledMessage : copy.disabledMessage
-        })
+          message: on ? copy.enabledMessage : copy.disabledMessage,
+        });
       } catch (err) {
-        setConfig(config)
-        notifyError(err, copy.failedSave)
+        setConfig(config);
+        notifyError(err, copy.failedSave);
       } finally {
-        setBusy(false)
+        setBusy(false);
       }
     },
-    [config, copy, profile, setConfig]
-  )
+    [config, copy, profile, setConfig],
+  );
 
   return (
     <ToggleRow
@@ -87,7 +96,7 @@ export function BrowserRealProfilePanel({ profile }: BrowserRealProfilePanelProp
       description={copy.description}
       disabled={busy || !config}
       label={copy.label}
-      onChange={on => void toggle(on)}
+      onChange={(on) => void toggle(on)}
     />
-  )
+  );
 }

@@ -1,17 +1,27 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { captureFindScope, currentFindScope, performScopedFind, releaseFindScope } from '@/lib/find-in-page-scope'
+import {
+  captureFindScope,
+  currentFindScope,
+  performScopedFind,
+  releaseFindScope,
+} from "@/lib/find-in-page-scope";
 
 export interface FindInPageState {
-  active: boolean
-  query: string
-  matchOrdinal: number
-  matchCount: number
+  active: boolean;
+  query: string;
+  matchOrdinal: number;
+  matchCount: number;
 }
 
-const EMPTY: FindInPageState = { active: false, query: '', matchOrdinal: 0, matchCount: 0 }
+const EMPTY: FindInPageState = {
+  active: false,
+  query: "",
+  matchOrdinal: 0,
+  matchCount: 0,
+};
 
-export const $findInPage = atom<FindInPageState>({ ...EMPTY })
+export const $findInPage = atom<FindInPageState>({ ...EMPTY });
 
 /**
  * Open the find bar and capture the CURRENT VIEW as the search scope.
@@ -25,8 +35,8 @@ export const $findInPage = atom<FindInPageState>({ ...EMPTY })
  * "current view" predicate (#81726).
  */
 export function openFindBar(): void {
-  $findInPage.set({ ...EMPTY, active: true })
-  captureFindScope()
+  $findInPage.set({ ...EMPTY, active: true });
+  captureFindScope();
 }
 
 export function closeFindBar(): void {
@@ -34,77 +44,89 @@ export function closeFindBar(): void {
   // switcher and dialogs claim it too), so a stray second close must not
   // re-strip highlights from a bar that has already been torn down.
   if (!$findInPage.get().active) {
-    return
+    return;
   }
 
-  $findInPage.set({ ...EMPTY })
+  $findInPage.set({ ...EMPTY });
   // Strip highlights and the scope marker from the DOM we previously wrapped.
-  releaseFindScope()
+  releaseFindScope();
 }
 
 export async function setFindQuery(query: string): Promise<void> {
-  const prev = $findInPage.get()
+  const prev = $findInPage.get();
 
   // Never search for a closed bar. The component clears its debounce on
   // close, but a timer that already fired (or any late caller) must not
   // re-wrap matches after the user pressed Escape.
   if (!prev.active) {
-    return
+    return;
   }
 
   if (!query) {
-    $findInPage.set({ ...prev, query: '', matchOrdinal: 0, matchCount: 0 })
-    const scope = currentFindScope()
+    $findInPage.set({ ...prev, query: "", matchOrdinal: 0, matchCount: 0 });
+    const scope = currentFindScope();
 
     if (scope) {
       // Re-run the scoped walker with an empty query — same code path,
       // strips highlights + zeroes the counter without special-casing.
-      performScopedFind(scope, '', { forward: true, findNext: false })
+      performScopedFind(scope, "", { forward: true, findNext: false });
     }
 
-    return
+    return;
   }
 
-  const scope = currentFindScope()
+  const scope = currentFindScope();
 
   if (!scope) {
     // No chat surface to search (e.g. settings page, command center). The
     // bar still accepts a query for parity with the bridge-driven path, but
     // matches will be zero — there's nothing on screen that IS a "view".
-    $findInPage.set({ ...prev, query, matchOrdinal: 0, matchCount: 0 })
+    $findInPage.set({ ...prev, query, matchOrdinal: 0, matchCount: 0 });
 
-    return
+    return;
   }
 
-  const result = performScopedFind(scope, query, { forward: true, findNext: false })
+  const result = performScopedFind(scope, query, {
+    forward: true,
+    findNext: false,
+  });
 
-  $findInPage.set({ ...prev, query, matchOrdinal: result.activeOrdinal, matchCount: result.count })
+  $findInPage.set({
+    ...prev,
+    query,
+    matchOrdinal: result.activeOrdinal,
+    matchCount: result.count,
+  });
 }
 
 export function findNext(): void {
-  step(true)
+  step(true);
 }
 
 export function findPrevious(): void {
-  step(false)
+  step(false);
 }
 
 function step(forward: boolean): void {
-  const { query } = $findInPage.get()
+  const { query } = $findInPage.get();
 
   if (!query) {
-    return
+    return;
   }
 
-  const scope = currentFindScope()
+  const scope = currentFindScope();
 
   if (!scope) {
-    return
+    return;
   }
 
-  const result = performScopedFind(scope, query, { forward, findNext: true })
+  const result = performScopedFind(scope, query, { forward, findNext: true });
 
-  $findInPage.set({ ...$findInPage.get(), matchOrdinal: result.activeOrdinal, matchCount: result.count })
+  $findInPage.set({
+    ...$findInPage.get(),
+    matchOrdinal: result.activeOrdinal,
+    matchCount: result.count,
+  });
 }
 
 /** Called by the preload bridge when `found-in-page` fires on webContents.
@@ -112,8 +134,8 @@ function step(forward: boolean): void {
  *  the Electron bridge — see electron/find-in-page.ts); the renderer-side
  *  walker for the primary window never fires this. */
 export function updateFindResults(activeMatch: number, count: number): void {
-  const prev = $findInPage.get()
-  $findInPage.set({ ...prev, matchOrdinal: activeMatch, matchCount: count })
+  const prev = $findInPage.get();
+  $findInPage.set({ ...prev, matchOrdinal: activeMatch, matchCount: count });
 }
 
 // The found-in-page subscription is process-wide, not per-mount: the FindBar
@@ -122,8 +144,8 @@ export function updateFindResults(activeMatch: number, count: number): void {
 // bridge listener so a remount cannot stack duplicate subscriptions — every
 // stacked listener would re-dispatch the same result and, worse, outlive its
 // component.
-let listenerRefs = 0
-let detachListener: (() => void) | undefined
+let listenerRefs = 0;
+let detachListener: (() => void) | undefined;
 
 /**
  * Subscribe to `found-in-page` results. Returns a release fn; the underlying
@@ -135,36 +157,36 @@ let detachListener: (() => void) | undefined
  * `updateFindResults` synchronously and never wires this listener.
  */
 export function initFindInPageListener(): () => void {
-  listenerRefs += 1
+  listenerRefs += 1;
 
   if (listenerRefs === 1) {
-    detachListener = window.hermesDesktop?.onFoundInPage?.(result => {
-      updateFindResults(result.activeMatchOrdinal, result.count)
-    })
+    detachListener = window.hermesDesktop?.onFoundInPage?.((result) => {
+      updateFindResults(result.activeMatchOrdinal, result.count);
+    });
   }
 
-  let released = false
+  let released = false;
 
   return () => {
     // Guard double-release: React can invoke a cleanup once, but a caller
     // holding the fn shouldn't be able to drive the refcount negative.
     if (released) {
-      return
+      return;
     }
 
-    released = true
-    listenerRefs -= 1
+    released = true;
+    listenerRefs -= 1;
 
     if (listenerRefs === 0) {
-      detachListener?.()
-      detachListener = undefined
+      detachListener?.();
+      detachListener = undefined;
     }
-  }
+  };
 }
 
 /** Test seam: number of live bridge subscriptions (0 or 1 in practice). */
 export function findInPageListenerCount(): number {
-  return listenerRefs
+  return listenerRefs;
 }
 
 /**
@@ -173,9 +195,9 @@ export function findInPageListenerCount(): number {
  * subscription can't bleed into the next.
  */
 export function resetFindInPageListenerForTest(): void {
-  detachListener?.()
-  detachListener = undefined
-  listenerRefs = 0
+  detachListener?.();
+  detachListener = undefined;
+  listenerRefs = 0;
 }
 
 // Same refcount pattern as `initFindInPageListener`, but for the
@@ -184,43 +206,43 @@ export function resetFindInPageListenerForTest(): void {
 // renderer's keydown listener can fire — the main process intercepts the
 // chord via `before-input-event` and emits this IPC, so the renderer can
 // still open the FindBar (#81727).
-let openFindBarRefs = 0
-let detachOpenFindBar: (() => void) | undefined
+let openFindBarRefs = 0;
+let detachOpenFindBar: (() => void) | undefined;
 
 export function initOpenFindBarListener(): () => void {
-  openFindBarRefs += 1
+  openFindBarRefs += 1;
 
   if (openFindBarRefs === 1) {
     detachOpenFindBar = window.hermesDesktop?.onOpenFindBarRequested?.(() => {
-      openFindBar()
-    })
+      openFindBar();
+    });
   }
 
-  let released = false
+  let released = false;
 
   return () => {
     if (released) {
-      return
+      return;
     }
 
-    released = true
-    openFindBarRefs -= 1
+    released = true;
+    openFindBarRefs -= 1;
 
     if (openFindBarRefs === 0) {
-      detachOpenFindBar?.()
-      detachOpenFindBar = undefined
+      detachOpenFindBar?.();
+      detachOpenFindBar = undefined;
     }
-  }
+  };
 }
 
 /** Test seam: number of live "open find bar" subscriptions. */
 export function openFindBarListenerCount(): number {
-  return openFindBarRefs
+  return openFindBarRefs;
 }
 
 /** Test seam: detach the open-find-bar bridge listener and zero the refcount. */
 export function resetOpenFindBarListenerForTest(): void {
-  detachOpenFindBar?.()
-  detachOpenFindBar = undefined
-  openFindBarRefs = 0
+  detachOpenFindBar?.();
+  detachOpenFindBar = undefined;
+  openFindBarRefs = 0;
 }

@@ -35,29 +35,30 @@
  */
 
 /** Consecutive unanswered probes tolerated while work is in flight. */
-export const LIVENESS_PROBE_FAILURE_STREAK = 2
+export const LIVENESS_PROBE_FAILURE_STREAK = 2;
 
 /** How long after a deferred probe we try again (bounded, coalesced). */
-export const LIVENESS_REPROBE_DELAY_MS = 3_000
+export const LIVENESS_REPROBE_DELAY_MS = 3_000;
 
 export interface LivenessForceCloseInput {
   /**
    * How many sessions currently report working (mid-turn). Zero means no
    * turn is riding this socket, so silence has no innocent explanation.
    */
-  workingSessionCount: number
+  workingSessionCount: number;
   /**
    * Length of the CURRENT unanswered-probe streak, INCLUDING the failure
    * being decided (first failure = 1).
    */
-  consecutiveFailures: number
+  consecutiveFailures: number;
 }
 
-export type LivenessForceCloseReason = 'in-flight-work-deferred' | 'failure-streak-exhausted' | 'no-in-flight-work'
+export type LivenessForceCloseReason =
+  "in-flight-work-deferred" | "failure-streak-exhausted" | "no-in-flight-work";
 
 export interface LivenessForceCloseDecision {
-  close: boolean
-  reason: LivenessForceCloseReason
+  close: boolean;
+  reason: LivenessForceCloseReason;
 }
 
 /**
@@ -71,15 +72,26 @@ export interface LivenessForceCloseDecision {
  *                                  a persistently unresponsive socket must
  *                                  still be rebuilt, never trusted forever.
  */
-export function decideLivenessForceClose(input: LivenessForceCloseInput): LivenessForceCloseDecision {
-  const workingSessionCount = Math.max(0, Math.floor(input.workingSessionCount))
-  const consecutiveFailures = Math.max(1, Math.floor(input.consecutiveFailures))
+export function decideLivenessForceClose(
+  input: LivenessForceCloseInput,
+): LivenessForceCloseDecision {
+  const workingSessionCount = Math.max(
+    0,
+    Math.floor(input.workingSessionCount),
+  );
+  const consecutiveFailures = Math.max(
+    1,
+    Math.floor(input.consecutiveFailures),
+  );
 
-  if (workingSessionCount > 0 && consecutiveFailures < LIVENESS_PROBE_FAILURE_STREAK) {
-    return { close: false, reason: 'in-flight-work-deferred' }
+  if (
+    workingSessionCount > 0 &&
+    consecutiveFailures < LIVENESS_PROBE_FAILURE_STREAK
+  ) {
+    return { close: false, reason: "in-flight-work-deferred" };
   }
 
   return workingSessionCount > 0
-    ? { close: true, reason: 'failure-streak-exhausted' }
-    : { close: true, reason: 'no-in-flight-work' }
+    ? { close: true, reason: "failure-streak-exhausted" }
+    : { close: true, reason: "no-in-flight-work" };
 }

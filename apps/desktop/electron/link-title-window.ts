@@ -21,25 +21,25 @@ export function linkTitleWindowOptions(partitionSession) {
       nodeIntegration: false,
       sandbox: true,
       session: partitionSession,
-      webSecurity: true
-    }
-  }
+      webSecurity: true,
+    },
+  };
 }
 
 // Create the offscreen title-fetch window and immediately mute it. Without the
 // mute, autoplaying media on the loaded page (e.g. a YouTube link) leaks ~2s of
 // audio every time a session containing such links is re-rendered. See #49505.
 export function createLinkTitleWindow(BrowserWindow, partitionSession) {
-  const window = new BrowserWindow(linkTitleWindowOptions(partitionSession))
+  const window = new BrowserWindow(linkTitleWindowOptions(partitionSession));
 
   try {
-    window.webContents.setAudioMuted(true)
+    window.webContents.setAudioMuted(true);
   } catch {
     // webContents may be unavailable in degraded/headless environments; muting
     // is best-effort and the window is destroyed within a few seconds anyway.
   }
 
-  return window
+  return window;
 }
 
 // Cancel any download the title-fetch window triggers. Without this, a link
@@ -47,7 +47,7 @@ export function createLinkTitleWindow(BrowserWindow, partitionSession) {
 // time the Artifacts page renders and fetchLinkTitle loads it.
 export function guardLinkTitleSession(partitionSession) {
   try {
-    partitionSession.on('will-download', (_event, item) => item.cancel())
+    partitionSession.on("will-download", (_event, item) => item.cancel());
   } catch {
     // best-effort; worst case is a spurious download
   }
@@ -59,17 +59,17 @@ export function guardLinkTitleSession(partitionSession) {
 export function readLinkTitleWindowTitle(window) {
   try {
     if (!window || window.isDestroyed()) {
-      return ''
+      return "";
     }
 
-    const contents = window.webContents
+    const contents = window.webContents;
 
     if (!contents || contents.isDestroyed()) {
-      return ''
+      return "";
     }
 
-    return contents.getTitle() || ''
+    return contents.getTitle() || "";
   } catch {
-    return ''
+    return "";
   }
 }

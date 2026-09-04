@@ -1,27 +1,30 @@
-import { brandFor } from '@/lib/mcp-brands'
-import { cn } from '@/lib/utils'
+import { brandFor } from "@/lib/mcp-brands";
+import { cn } from "@/lib/utils";
 
-import { AvatarChip, monogramFor } from './avatar-chip'
-import { Favicon } from './favicon'
+import { AvatarChip, monogramFor } from "./avatar-chip";
+import { Favicon } from "./favicon";
 
 /** The least a mark needs: something to name it, and somewhere a logo might
  *  live. Structural on purpose — a caller's richer connector type satisfies
  *  this without the visual layer knowing that type exists. */
 export interface ConnectorLogoSubject {
-  docs?: string
-  homepage?: string
-  name: string
-  title?: string
-  url?: null | string
+  docs?: string;
+  homepage?: string;
+  name: string;
+  title?: string;
+  url?: null | string;
 }
 
 /** Hosts whose favicon would name the wrong thing: a bridge published on
  *  GitHub is not GitHub, and a package page is not the product. */
 const NOT_A_LOGO =
-  /(^|\.)(github\.com|githubusercontent\.com|gitlab\.com|bitbucket\.org|npmjs\.com|pypi\.org|readthedocs\.io)$/
+  /(^|\.)(github\.com|githubusercontent\.com|gitlab\.com|bitbucket\.org|npmjs\.com|pypi\.org|readthedocs\.io)$/;
 
 const isLoopback = (host: string) =>
-  host === 'localhost' || host === '::1' || /^127\./.test(host) || /^(10|192\.168)\./.test(host)
+  host === "localhost" ||
+  host === "::1" ||
+  /^127\./.test(host) ||
+  /^(10|192\.168)\./.test(host);
 
 /**
  * Where to read this subject's mark from.
@@ -35,24 +38,24 @@ const isLoopback = (host: string) =>
 export function connectorLogoSource(subject: ConnectorLogoSubject): string {
   for (const candidate of [subject.homepage, subject.url, subject.docs]) {
     if (!candidate) {
-      continue
+      continue;
     }
 
     try {
-      const { hostname, origin } = new URL(candidate)
+      const { hostname, origin } = new URL(candidate);
 
       if (!NOT_A_LOGO.test(hostname) && !isLoopback(hostname)) {
         // The origin, never the path: the icon lives on the site, and this
         // way a not-yet-connected endpoint is never fetched just to draw a
         // logo.
-        return origin
+        return origin;
       }
     } catch {
       // Not a URL (a bare repo path, a note) — nothing to read a mark from.
     }
   }
 
-  return ''
+  return "";
 }
 
 /**
@@ -64,14 +67,25 @@ export function connectorLogoSource(subject: ConnectorLogoSubject): string {
  * and a public registry is thousands, so something we ship no icon for still
  * arrives wearing its own logo.
  */
-export function ConnectorLogo({ className, connector }: { className?: string; connector: ConnectorLogoSubject }) {
-  const label = connector.title || connector.name
-  const brand = brandFor(connector.name)
-  const site = brand ? '' : connectorLogoSource(connector)
+export function ConnectorLogo({
+  className,
+  connector,
+}: {
+  className?: string;
+  connector: ConnectorLogoSubject;
+}) {
+  const label = connector.title || connector.name;
+  const brand = brandFor(connector.name);
+  const site = brand ? "" : connectorLogoSource(connector);
 
   return (
-    <AvatarChip brand={brand} className={cn(site && 'overflow-hidden', className)} name={label} title={connector.title}>
+    <AvatarChip
+      brand={brand}
+      className={cn(site && "overflow-hidden", className)}
+      name={label}
+      title={connector.title}
+    >
       {site ? <Favicon fallback={monogramFor(label)} url={site} /> : undefined}
     </AvatarChip>
-  )
+  );
 }

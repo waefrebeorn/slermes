@@ -1,7 +1,7 @@
 interface ActiveTerminalResizeOptions {
-  fitOnActivate?: boolean
-  onActivate: () => void
-  onFit: () => void
+  fitOnActivate?: boolean;
+  onActivate: () => void;
+  onFit: () => void;
 }
 
 /**
@@ -14,65 +14,65 @@ interface ActiveTerminalResizeOptions {
  */
 export function observeActiveTerminalResize(
   host: HTMLElement,
-  { fitOnActivate = true, onActivate, onFit }: ActiveTerminalResizeOptions
+  { fitOnActivate = true, onActivate, onFit }: ActiveTerminalResizeOptions,
 ): () => void {
-  let activated = false
-  let frame = 0
-  let initialResizeDelivered = false
-  let stopped = false
+  let activated = false;
+  let frame = 0;
+  let initialResizeDelivered = false;
+  let stopped = false;
 
   const scheduleFit = () => {
     if (!activated || stopped || frame !== 0) {
-      return
+      return;
     }
 
     frame = window.requestAnimationFrame(() => {
-      frame = 0
+      frame = 0;
 
       if (!stopped) {
-        onFit()
+        onFit();
       }
-    })
-  }
+    });
+  };
 
   const observer = new ResizeObserver(() => {
     // ResizeObserver's initial delivery is asynchronous in browsers and may
     // arrive before OR after the activation rAF. Activation already fits the
     // current box, so absorb that first delivery in either ordering.
     if (!initialResizeDelivered) {
-      initialResizeDelivered = true
+      initialResizeDelivered = true;
 
-      return
+      return;
     }
 
-    scheduleFit()
-  })
+    scheduleFit();
+  });
 
-  observer.observe(host)
+  observer.observe(host);
 
   frame = window.requestAnimationFrame(() => {
-    frame = 0
+    frame = 0;
 
     if (stopped) {
-      return
+      return;
     }
 
-    activated = true
+    activated = true;
 
     if (fitOnActivate) {
-      onFit()
+      onFit();
     }
 
-    onActivate()
-  })
+    onActivate();
+  });
 
   return () => {
-    stopped = true
-    observer.disconnect()
+    stopped = true;
+    observer.disconnect();
 
     if (frame !== 0) {
-      window.cancelAnimationFrame(frame)
-      frame = 0
+      window.cancelAnimationFrame(frame);
+      frame = 0;
     }
-  }
+  };
 }

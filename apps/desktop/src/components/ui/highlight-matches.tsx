@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
-import { normalize } from '@/lib/text'
-import { cn } from '@/lib/utils'
+import { normalize } from "@/lib/text";
+import { cn } from "@/lib/utils";
 
 /**
  * Emphasize every case-insensitive occurrence of `query` inside `text` — the
@@ -20,72 +20,84 @@ import { cn } from '@/lib/utils'
 export function HighlightMatches({
   className,
   query,
-  text
+  text,
 }: {
-  className?: string
-  query: string | string[]
-  text: string
+  className?: string;
+  query: string | string[];
+  text: string;
 }) {
-  const terms = (Array.isArray(query) ? query : [query]).map(normalize).filter(Boolean)
+  const terms = (Array.isArray(query) ? query : [query])
+    .map(normalize)
+    .filter(Boolean);
 
   if (terms.length === 0) {
-    return <>{text}</>
+    return <>{text}</>;
   }
 
-  const ranges = matchRanges(text.toLowerCase(), terms)
+  const ranges = matchRanges(text.toLowerCase(), terms);
 
   if (ranges.length === 0) {
     // No occurrence (the row matched on its id/slug/keywords, not this label).
-    return <>{text}</>
+    return <>{text}</>;
   }
 
-  const parts: ReactNode[] = []
-  let cursor = 0
+  const parts: ReactNode[] = [];
+  let cursor = 0;
 
   for (const [start, end] of ranges) {
     if (start > cursor) {
-      parts.push(text.slice(cursor, start))
+      parts.push(text.slice(cursor, start));
     }
 
     parts.push(
-      <mark className={cn('bg-transparent font-medium text-(--ui-accent)', className)} key={start}>
+      <mark
+        className={cn(
+          "bg-transparent font-medium text-(--ui-accent)",
+          className,
+        )}
+        key={start}
+      >
         {text.slice(start, end)}
-      </mark>
-    )
+      </mark>,
+    );
 
-    cursor = end
+    cursor = end;
   }
 
   if (cursor < text.length) {
-    parts.push(text.slice(cursor))
+    parts.push(text.slice(cursor));
   }
 
-  return <>{parts}</>
+  return <>{parts}</>;
 }
 
 /** All occurrences of every term in `lower`, as sorted, merged [start, end). */
 function matchRanges(lower: string, terms: string[]): Array<[number, number]> {
-  const raw: Array<[number, number]> = []
+  const raw: Array<[number, number]> = [];
 
   for (const term of terms) {
-    for (let index = lower.indexOf(term); index >= 0; index = lower.indexOf(term, index + 1)) {
-      raw.push([index, index + term.length])
+    for (
+      let index = lower.indexOf(term);
+      index >= 0;
+      index = lower.indexOf(term, index + 1)
+    ) {
+      raw.push([index, index + term.length]);
     }
   }
 
-  raw.sort((a, b) => a[0] - b[0] || a[1] - b[1])
+  raw.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 
-  const merged: Array<[number, number]> = []
+  const merged: Array<[number, number]> = [];
 
   for (const [start, end] of raw) {
-    const last = merged[merged.length - 1]
+    const last = merged[merged.length - 1];
 
     if (last && start <= last[1]) {
-      last[1] = Math.max(last[1], end)
+      last[1] = Math.max(last[1], end);
     } else {
-      merged.push([start, end])
+      merged.push([start, end]);
     }
   }
 
-  return merged
+  return merged;
 }

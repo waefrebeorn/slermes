@@ -33,55 +33,55 @@
  * as bootstrap-platform.ts and hardening.ts).
  */
 
-import { execFileSync } from 'node:child_process'
+import { execFileSync } from "node:child_process";
 
 /** Default probe budget. 5s false-negativeed healthy Windows cold starts (#61764). */
-const DEFAULT_PROBE_TIMEOUT_MS = 15_000
+const DEFAULT_PROBE_TIMEOUT_MS = 15_000;
 
 /**
  * Resolve the backend probe timeout (ms).
  * Honours HERMES_PROBE_TIMEOUT_MS when it parses as a positive integer.
  */
 function resolveProbeTimeoutMs(env: NodeJS.ProcessEnv = process.env): number {
-  const raw = env.HERMES_PROBE_TIMEOUT_MS
+  const raw = env.HERMES_PROBE_TIMEOUT_MS;
 
-  if (raw == null || raw === '') {
-    return DEFAULT_PROBE_TIMEOUT_MS
+  if (raw == null || raw === "") {
+    return DEFAULT_PROBE_TIMEOUT_MS;
   }
 
-  const n = Number.parseInt(String(raw), 10)
+  const n = Number.parseInt(String(raw), 10);
 
   if (!Number.isFinite(n) || n <= 0) {
-    return DEFAULT_PROBE_TIMEOUT_MS
+    return DEFAULT_PROBE_TIMEOUT_MS;
   }
 
   // Clamp absurd values (ms) so a typo can't hang startup forever.
-  return Math.min(n, 120_000)
+  return Math.min(n, 120_000);
 }
 
-const PROBE_TIMEOUT_MS = resolveProbeTimeoutMs()
+const PROBE_TIMEOUT_MS = resolveProbeTimeoutMs();
 
 function isTimeoutError(err: unknown): boolean {
-  if (!err || typeof err !== 'object') {
-    return false
+  if (!err || typeof err !== "object") {
+    return false;
   }
 
-  const e = err as { code?: string; killed?: boolean; signal?: string }
+  const e = err as { code?: string; killed?: boolean; signal?: string };
 
   if (e.killed === true) {
-    return true
+    return true;
   }
 
-  if (e.code === 'ETIMEDOUT') {
-    return true
+  if (e.code === "ETIMEDOUT") {
+    return true;
   }
 
   // Node marks timed-out execFileSync with SIGTERM on some platforms.
-  if (e.signal === 'SIGTERM') {
-    return true
+  if (e.signal === "SIGTERM") {
+    return true;
   }
 
-  return false
+  return false;
 }
 
 /**
@@ -92,23 +92,23 @@ function execProbeSync(
   command: string,
   args: string[],
   options: {
-    cwd?: string
-    env?: NodeJS.ProcessEnv
-    stdio: 'ignore'
-    timeout: number
-    shell?: boolean
-    windowsHide?: boolean
-  }
+    cwd?: string;
+    env?: NodeJS.ProcessEnv;
+    stdio: "ignore";
+    timeout: number;
+    shell?: boolean;
+    windowsHide?: boolean;
+  },
 ): void {
   try {
-    execFileSync(command, args, options)
+    execFileSync(command, args, options);
   } catch (err) {
     if (!isTimeoutError(err)) {
-      throw err
+      throw err;
     }
 
     // One cold-cache / AV miss should not force hermes-setup --update (#61764).
-    execFileSync(command, args, options)
+    execFileSync(command, args, options);
   }
 }
 
@@ -120,7 +120,7 @@ function execProbeSync(
  * @returns {string}
  */
 function hermesRuntimeImportProbe() {
-  return 'import yaml; import dotenv; import hermes_cli.config'
+  return "import yaml; import dotenv; import hermes_cli.config";
 }
 
 /**
@@ -141,22 +141,25 @@ function hermesRuntimeImportProbe() {
  * @param {object} [opts.env] - Additional environment for the probe.
  * @returns {boolean}
  */
-function canImportHermesCli(pythonPath: string, opts: { env?: Record<string, string> } = {}) {
+function canImportHermesCli(
+  pythonPath: string,
+  opts: { env?: Record<string, string> } = {},
+) {
   if (!pythonPath) {
-    return false
+    return false;
   }
 
   try {
-    execProbeSync(pythonPath, ['-c', hermesRuntimeImportProbe()], {
+    execProbeSync(pythonPath, ["-c", hermesRuntimeImportProbe()], {
       env: { ...process.env, ...(opts.env || {}) },
-      stdio: 'ignore',
+      stdio: "ignore",
       timeout: PROBE_TIMEOUT_MS,
-      windowsHide: true
-    })
+      windowsHide: true,
+    });
 
-    return true
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -187,25 +190,25 @@ function canImportHermesCli(pythonPath: string, opts: { env?: Record<string, str
  * mutable install-script bootstrap path if a best-effort probe is slow.
  */
 function shouldTrustHermesOverride(hermesOverride?: string) {
-  return typeof hermesOverride === 'string' && hermesOverride.trim().length > 0
+  return typeof hermesOverride === "string" && hermesOverride.trim().length > 0;
 }
 
 function verifyHermesCli(hermesCommand: string, opts?: { shell?: boolean }) {
   if (!hermesCommand) {
-    return false
+    return false;
   }
 
   try {
-    execProbeSync(hermesCommand, ['--version'], {
-      stdio: 'ignore',
+    execProbeSync(hermesCommand, ["--version"], {
+      stdio: "ignore",
       timeout: PROBE_TIMEOUT_MS,
       shell: Boolean(opts?.shell),
-      windowsHide: true
-    })
+      windowsHide: true,
+    });
 
-    return true
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -217,5 +220,5 @@ export {
   PROBE_TIMEOUT_MS,
   resolveProbeTimeoutMs,
   shouldTrustHermesOverride,
-  verifyHermesCli
-}
+  verifyHermesCli,
+};

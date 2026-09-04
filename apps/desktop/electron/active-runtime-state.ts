@@ -1,31 +1,34 @@
 export interface BootstrapMarkerLike {
-  pinnedCommit?: unknown
-  schemaVersion?: unknown
+  pinnedCommit?: unknown;
+  schemaVersion?: unknown;
 }
 
 export interface ActiveRuntimeState {
-  hasValidMarker: boolean
-  shouldUseActiveRuntime: boolean
-  usabilityReason: 'usable' | 'unusable'
+  hasValidMarker: boolean;
+  shouldUseActiveRuntime: boolean;
+  usabilityReason: "usable" | "unusable";
 }
 
 export function hasValidBootstrapMarker(
   marker: BootstrapMarkerLike | null | undefined,
-  schemaVersion: number
+  schemaVersion: number,
 ): boolean {
-  if (!marker || typeof marker !== 'object') {
-    return false
+  if (!marker || typeof marker !== "object") {
+    return false;
   }
 
   if (marker.schemaVersion !== schemaVersion) {
-    return false
+    return false;
   }
 
-  if (typeof marker.pinnedCommit !== 'string' || marker.pinnedCommit.length < 7) {
-    return false
+  if (
+    typeof marker.pinnedCommit !== "string" ||
+    marker.pinnedCommit.length < 7
+  ) {
+    return false;
   }
 
-  return true
+  return true;
 }
 
 // The active install at ~/.hermes/hermes-agent can be real and runnable even if
@@ -38,21 +41,21 @@ export function hasValidBootstrapMarker(
 export function classifyActiveRuntime(
   marker: BootstrapMarkerLike | null | undefined,
   schemaVersion: number,
-  runtimeUsable: boolean
+  runtimeUsable: boolean,
 ): ActiveRuntimeState {
-  const hasValidMarker = hasValidBootstrapMarker(marker, schemaVersion)
+  const hasValidMarker = hasValidBootstrapMarker(marker, schemaVersion);
 
   if (!runtimeUsable) {
     return {
       hasValidMarker,
       shouldUseActiveRuntime: false,
-      usabilityReason: 'unusable'
-    }
+      usabilityReason: "unusable",
+    };
   }
 
   return {
     hasValidMarker,
     shouldUseActiveRuntime: true,
-    usabilityReason: 'usable'
-  }
+    usabilityReason: "usable",
+  };
 }

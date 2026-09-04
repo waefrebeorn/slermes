@@ -1,4 +1,4 @@
-import { type RefObject, useEffect } from 'react'
+import { type RefObject, useEffect } from "react";
 
 /**
  * Whether the OS window should hand the mouse to whatever is behind it.
@@ -24,26 +24,30 @@ export function hudIgnoresMouse(
   root: Element,
   hit: Element | null,
   active: Element | null,
-  windowFocused: boolean
+  windowFocused: boolean,
 ): boolean {
   // A long-press drag in progress owns the window until it lets go. The cursor
   // outruns the window it is moving, so the hit test goes empty mid-drag and
   // would otherwise hand the mouse away underneath the user's own hand.
-  if (root.querySelector('[data-hud-grabbing]') !== null) {
-    return false
+  if (root.querySelector("[data-hud-grabbing]") !== null) {
+    return false;
   }
 
-  const overSomething = hit !== null && !hit.contains(root)
+  const overSomething = hit !== null && !hit.contains(root);
 
   const composerFocused =
     windowFocused &&
     active !== null &&
     root.contains(active) &&
-    active.closest('[data-slot="composer-rich-input"]') !== null
+    active.closest('[data-slot="composer-rich-input"]') !== null;
 
-  const overlayFocused = windowFocused && active !== null && !root.contains(active) && !active.contains(root)
+  const overlayFocused =
+    windowFocused &&
+    active !== null &&
+    !root.contains(active) &&
+    !active.contains(root);
 
-  return !composerFocused && !overSomething && !overlayFocused
+  return !composerFocused && !overSomething && !overlayFocused;
 }
 
 /**
@@ -79,20 +83,22 @@ export function hudIgnoresMouse(
  * as no-drag) and the compositor moves the window natively. That is also
  * the only move that works on Wayland, where `setBounds` position is a no-op.
  */
-export function useHudClickThrough(rootRef: RefObject<HTMLElement | null>): void {
+export function useHudClickThrough(
+  rootRef: RefObject<HTMLElement | null>,
+): void {
   useEffect(() => {
-    const root = rootRef.current
-    const setIgnoreMouse = window.hermesDesktop?.hud?.setIgnoreMouse
+    const root = rootRef.current;
+    const setIgnoreMouse = window.hermesDesktop?.hud?.setIgnoreMouse;
 
     if (!root || !setIgnoreMouse) {
-      return
+      return;
     }
 
-    let ignoring: boolean | null = null
+    let ignoring: boolean | null = null;
     // Where the cursor was last seen, so a focus change can re-decide without
     // waiting for the next move (blurring with the cursor parked on the bar
     // must not make the bar untouchable until you jiggle the mouse).
-    let point: { x: number; y: number } | null = null
+    let point: { x: number; y: number } | null = null;
 
     // Hit-test rather than enumerate. Everything the HUD doesn't want to catch
     // — the shell's dead space, the sheet, the faded band — is
@@ -101,19 +107,24 @@ export function useHudClickThrough(rootRef: RefObject<HTMLElement | null>): void
     // dialog. Listing those instead is how links and dialogs ended up
     // unclickable, since portalled overlays live outside the shell.
     const apply = () => {
-      const hit = point ? document.elementFromPoint(point.x, point.y) : null
-      const next = hudIgnoresMouse(root, hit, document.activeElement, document.hasFocus())
+      const hit = point ? document.elementFromPoint(point.x, point.y) : null;
+      const next = hudIgnoresMouse(
+        root,
+        hit,
+        document.activeElement,
+        document.hasFocus(),
+      );
 
       if (ignoring !== next) {
-        ignoring = next
-        setIgnoreMouse(next)
+        ignoring = next;
+        setIgnoreMouse(next);
       }
-    }
+    };
 
     const onMove = (event: MouseEvent) => {
-      point = { x: event.clientX, y: event.clientY }
-      apply()
-    }
+      point = { x: event.clientX, y: event.clientY };
+      apply();
+    };
 
     // Linux's stand-in for mousemove, pushed from main because `forward` is not
     // supported there and the moves stop the moment the window starts ignoring
@@ -121,10 +132,10 @@ export function useHudClickThrough(rootRef: RefObject<HTMLElement | null>): void
     // test; only where the point came from differs, and on macOS and Windows
     // this never fires. `null` is the cursor leaving the window, which is the
     // `onLost` answer.
-    const offCursor = window.hermesDesktop?.hud?.onCursor?.(next => {
-      point = next
-      apply()
-    })
+    const offCursor = window.hermesDesktop?.hud?.onCursor?.((next) => {
+      point = next;
+      apply();
+    });
 
     // Whenever we stop knowing where the cursor is, hand the window back. Solid
     // is only ever right under a cursor we can still see: the last point we saw
@@ -133,27 +144,27 @@ export function useHudClickThrough(rootRef: RefObject<HTMLElement | null>): void
     // costs nothing to give up — `forward: true` keeps the moves arriving while
     // ignoring, so the bar is solid again well before a click reaches it.
     const onLost = () => {
-      point = null
-      apply()
-    }
+      point = null;
+      apply();
+    };
 
-    apply()
-    window.addEventListener('mousemove', onMove)
-    window.addEventListener('blur', onLost)
-    window.addEventListener('focus', apply)
-    document.addEventListener('mouseleave', onLost)
-    document.addEventListener('focusin', apply)
-    document.addEventListener('focusout', apply)
+    apply();
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("blur", onLost);
+    window.addEventListener("focus", apply);
+    document.addEventListener("mouseleave", onLost);
+    document.addEventListener("focusin", apply);
+    document.addEventListener("focusout", apply);
 
     return () => {
-      setIgnoreMouse(false)
-      offCursor?.()
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('blur', onLost)
-      window.removeEventListener('focus', apply)
-      document.removeEventListener('mouseleave', onLost)
-      document.removeEventListener('focusin', apply)
-      document.removeEventListener('focusout', apply)
-    }
-  }, [rootRef])
+      setIgnoreMouse(false);
+      offCursor?.();
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("blur", onLost);
+      window.removeEventListener("focus", apply);
+      document.removeEventListener("mouseleave", onLost);
+      document.removeEventListener("focusin", apply);
+      document.removeEventListener("focusout", apply);
+    };
+  }, [rootRef]);
 }

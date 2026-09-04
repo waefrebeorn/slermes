@@ -1,7 +1,7 @@
-import { atom, type WritableAtom } from 'nanostores'
+import { atom, type WritableAtom } from "nanostores";
 
-import { type Codec, Codecs } from './persisted'
-import { readKey, writeKey } from './storage'
+import { type Codec, Codecs } from "./persisted";
+import { readKey, writeKey } from "./storage";
 
 // ── Connection-scoped persistence ───────────────────────────────────────────
 // Multiple Desktop windows share one renderer origin — and therefore one
@@ -31,9 +31,9 @@ import { readKey, writeKey } from './storage'
 
 /** Minimal slice of HermesConnection this module keys on. */
 export interface ConnectionScopeDescriptor {
-  baseUrl?: string
-  mode?: 'local' | 'remote'
-  profile?: null | string
+  baseUrl?: string;
+  mode?: "local" | "remote";
+  profile?: null | string;
 }
 
 export interface ConnectionScopeOptions {
@@ -43,79 +43,81 @@ export interface ConnectionScopeOptions {
    * per-profile copy. Defaults to true — session order and other
    * profile-local lists stay isolated.
    */
-  includeProfile?: boolean
+  includeProfile?: boolean;
 }
 
 /** The storage-key suffix for a connection. Local (and unknown) connections
  *  map to the bare key; remote connections get their own namespace. */
 export function connectionScopeSuffix(
   connection: ConnectionScopeDescriptor | null | undefined,
-  includeProfile = true
+  includeProfile = true,
 ): string {
-  if (connection?.mode !== 'remote') {
-    return ''
+  if (connection?.mode !== "remote") {
+    return "";
   }
 
-  const base = encodeURIComponent(connection.baseUrl || 'remote')
+  const base = encodeURIComponent(connection.baseUrl || "remote");
 
   if (!includeProfile) {
-    return `.remote.${base}`
+    return `.remote.${base}`;
   }
 
-  const profile = encodeURIComponent(connection.profile || 'default')
+  const profile = encodeURIComponent(connection.profile || "default");
 
-  return `.remote.${base}.${profile}`
+  return `.remote.${base}.${profile}`;
 }
 
 interface ScopedEntry<T> {
-  $value: WritableAtom<T>
-  codec: Codec<T>
-  fallback: T
-  includeProfile: boolean
-  key: string
+  $value: WritableAtom<T>;
+  codec: Codec<T>;
+  fallback: T;
+  includeProfile: boolean;
+  key: string;
   /** Last suffix this entry loaded or persisted under. */
-  suffix: string
+  suffix: string;
   /** True while a rescope is applying a loaded value — the persistence
    *  subscriber must not echo that read back into storage. */
-  applying: boolean
+  applying: boolean;
 }
 
-let activeConnection: ConnectionScopeDescriptor | null | undefined
-let activeSuffix = ''
-let activeGatewaySuffix = ''
+let activeConnection: ConnectionScopeDescriptor | null | undefined;
+let activeSuffix = "";
+let activeGatewaySuffix = "";
 
-const registry: ScopedEntry<any>[] = []
-const scopeListeners = new Set<() => void>()
+const registry: ScopedEntry<any>[] = [];
+const scopeListeners = new Set<() => void>();
 
-function suffixFor(entry: Pick<ScopedEntry<unknown>, 'includeProfile'>): string {
-  return connectionScopeSuffix(activeConnection, entry.includeProfile)
+function suffixFor(
+  entry: Pick<ScopedEntry<unknown>, "includeProfile">,
+): string {
+  return connectionScopeSuffix(activeConnection, entry.includeProfile);
 }
 
 /** The suffix for the connection the window is currently on. */
 export function activeConnectionScopeSuffix(): string {
-  return activeSuffix
+  return activeSuffix;
 }
 
 /** Observe gateway-identity changes (fires BEFORE scoped atoms that
  *  follow the connection reload, so pin-sync bookkeeping can reset).
  *  Profile-only switches do not fire: pin state is gateway-wide. */
 export function onConnectionScopeChange(listener: () => void): () => void {
-  scopeListeners.add(listener)
+  scopeListeners.add(listener);
 
-  return () => void scopeListeners.delete(listener)
+  return () => void scopeListeners.delete(listener);
 }
 
 function loadEntry<T>(entry: ScopedEntry<T>): T {
-  const raw = readKey(entry.key + suffixFor(entry))
+  const raw = readKey(entry.key + suffixFor(entry));
 
   if (raw === null) {
-    return entry.fallback
+    return entry.fallback;
   }
 
   try {
-    return entry.codec.decode(raw)
+    return entry.codec.decode(raw);
   } catch {
-    return entry.fallback
+    return entry.fallback;
   }
 }
 
@@ -128,9 +130,9 @@ export function connectionScopedAtom<T>(
   key: string,
   fallback: T,
   codec: Codec<T> = Codecs.json<T>(),
-  options?: ConnectionScopeOptions
+  options?: ConnectionScopeOptions,
 ): WritableAtom<T> {
-  const includeProfile = options?.includeProfile !== false
+  const includeProfile = options?.includeProfile !== false;
 
   const entry: ScopedEntry<T> = {
     $value: atom<T>(fallback),
@@ -139,32 +141,32 @@ export function connectionScopedAtom<T>(
     fallback,
     includeProfile,
     key,
-    suffix: connectionScopeSuffix(activeConnection, includeProfile)
-  }
+    suffix: connectionScopeSuffix(activeConnection, includeProfile),
+  };
 
-  entry.$value.set(loadEntry(entry))
-  registry.push(entry)
+  entry.$value.set(loadEntry(entry));
+  registry.push(entry);
 
   // Persist CHANGES only — same creation-emission and rescope suppression
   // rationale as persistentAtom: echoing a just-read value back out can
   // clobber a storage snapshot another window is about to read.
-  let creationEmission = true
+  let creationEmission = true;
 
-  entry.$value.subscribe(value => {
+  entry.$value.subscribe((value) => {
     if (creationEmission) {
-      creationEmission = false
+      creationEmission = false;
 
-      return
+      return;
     }
 
     if (entry.applying) {
-      return
+      return;
     }
 
-    writeKey(entry.key + suffixFor(entry), entry.codec.encode(value))
-  })
+    writeKey(entry.key + suffixFor(entry), entry.codec.encode(value));
+  });
 
-  return entry.$value
+  return entry.$value;
 }
 
 /**
@@ -175,47 +177,49 @@ export function connectionScopedAtom<T>(
  * user selected another backend — so it keeps the current scope (the same
  * contract as syncCronModelImpactConnection).
  */
-export function rescopeConnectionScopedStores(connection: ConnectionScopeDescriptor | null | undefined): void {
+export function rescopeConnectionScopedStores(
+  connection: ConnectionScopeDescriptor | null | undefined,
+): void {
   if (!connection) {
-    return
+    return;
   }
 
-  const next = connectionScopeSuffix(connection)
-  const nextGateway = connectionScopeSuffix(connection, false)
+  const next = connectionScopeSuffix(connection);
+  const nextGateway = connectionScopeSuffix(connection, false);
 
   if (next === activeSuffix) {
-    return
+    return;
   }
 
-  activeConnection = connection
-  activeSuffix = next
+  activeConnection = connection;
+  activeSuffix = next;
 
   // Pin-sync's mirrored/pending sets describe the PREVIOUS gateway. Fire
   // only when the connection (not the profile) changes — pins are
   // gateway-wide, so a profile switch must not reset bookkeeping and then
   // re-PATCH a leftover per-profile copy.
   if (nextGateway !== activeGatewaySuffix) {
-    activeGatewaySuffix = nextGateway
+    activeGatewaySuffix = nextGateway;
 
     for (const listener of scopeListeners) {
-      listener()
+      listener();
     }
   }
 
   for (const entry of registry) {
-    const entrySuffix = suffixFor(entry)
+    const entrySuffix = suffixFor(entry);
 
     if (entrySuffix === entry.suffix) {
-      continue
+      continue;
     }
 
-    entry.suffix = entrySuffix
-    entry.applying = true
+    entry.suffix = entrySuffix;
+    entry.applying = true;
 
     try {
-      entry.$value.set(loadEntry(entry))
+      entry.$value.set(loadEntry(entry));
     } finally {
-      entry.applying = false
+      entry.applying = false;
     }
   }
 }

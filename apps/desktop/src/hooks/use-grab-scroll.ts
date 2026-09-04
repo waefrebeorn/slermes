@@ -1,4 +1,8 @@
-import { type MouseEvent as ReactMouseEvent, type RefObject, useState } from 'react'
+import {
+  type MouseEvent as ReactMouseEvent,
+  type RefObject,
+  useState,
+} from "react";
 
 // Grab-to-pan for overflow containers — the shared primitive behind "scrub the
 // board/timeline by dragging its background" (kanban lanes, trace waterfalls,
@@ -15,63 +19,72 @@ import { type MouseEvent as ReactMouseEvent, type RefObject, useState } from 're
 //  - selection can't start mid-pan (preventDefault on move), and window
 //    blur/mouseup always end it.
 
-const BLOCKED_TARGETS = 'button,input,textarea,select,a,[role="button"],[draggable="true"]'
-const SCROLLBAR_GUTTER_PX = 16
+const BLOCKED_TARGETS =
+  'button,input,textarea,select,a,[role="button"],[draggable="true"]';
+const SCROLLBAR_GUTTER_PX = 16;
 
 export interface GrabScroll {
   /** True while a pan is in flight — drive `cursor-grabbing` styling. */
-  grabbing: boolean
+  grabbing: boolean;
   /** Spread onto the scroll container. */
-  onMouseDown: (event: ReactMouseEvent) => void
+  onMouseDown: (event: ReactMouseEvent) => void;
 }
 
 export function useGrabScroll(ref: RefObject<HTMLElement | null>): GrabScroll {
-  const [grabbing, setGrabbing] = useState(false)
+  const [grabbing, setGrabbing] = useState(false);
 
   const onMouseDown = (event: ReactMouseEvent) => {
-    const el = ref.current
+    const el = ref.current;
 
     if (event.button !== 0 || !el) {
-      return
+      return;
     }
 
-    const canX = el.scrollWidth > el.clientWidth
-    const canY = el.scrollHeight > el.clientHeight
+    const canX = el.scrollWidth > el.clientWidth;
+    const canY = el.scrollHeight > el.clientHeight;
 
-    if ((!canX && !canY) || (event.target as HTMLElement).closest(BLOCKED_TARGETS)) {
-      return
+    if (
+      (!canX && !canY) ||
+      (event.target as HTMLElement).closest(BLOCKED_TARGETS)
+    ) {
+      return;
     }
 
-    const rect = el.getBoundingClientRect()
+    const rect = el.getBoundingClientRect();
 
     if (
       (canX && event.clientY >= rect.bottom - SCROLLBAR_GUTTER_PX) ||
       (canY && event.clientX >= rect.right - SCROLLBAR_GUTTER_PX)
     ) {
-      return
+      return;
     }
 
-    const start = { left: el.scrollLeft, top: el.scrollTop, x: event.clientX, y: event.clientY }
-    setGrabbing(true)
+    const start = {
+      left: el.scrollLeft,
+      top: el.scrollTop,
+      x: event.clientX,
+      y: event.clientY,
+    };
+    setGrabbing(true);
 
     const onMove = (move: MouseEvent) => {
-      el.scrollLeft = start.left - (move.clientX - start.x)
-      el.scrollTop = start.top - (move.clientY - start.y)
-      move.preventDefault()
-    }
+      el.scrollLeft = start.left - (move.clientX - start.x);
+      el.scrollTop = start.top - (move.clientY - start.y);
+      move.preventDefault();
+    };
 
     const stop = () => {
-      setGrabbing(false)
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('mouseup', stop)
-      window.removeEventListener('blur', stop)
-    }
+      setGrabbing(false);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", stop);
+      window.removeEventListener("blur", stop);
+    };
 
-    window.addEventListener('mousemove', onMove)
-    window.addEventListener('mouseup', stop, { once: true })
-    window.addEventListener('blur', stop, { once: true })
-    event.preventDefault()
-  }
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", stop, { once: true });
+    window.addEventListener("blur", stop, { once: true });
+    event.preventDefault();
+  };
 
-  return { grabbing, onMouseDown }
+  return { grabbing, onMouseDown };
 }

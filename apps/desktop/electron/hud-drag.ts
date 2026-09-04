@@ -9,29 +9,29 @@
  */
 
 export interface HudDragPoint {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 
 export function createHudDragSession() {
-  let offset: HudDragPoint | null = null
+  let offset: HudDragPoint | null = null;
 
   return {
     begin(cursor: HudDragPoint, windowOrigin: HudDragPoint) {
-      offset = { x: cursor.x - windowOrigin.x, y: cursor.y - windowOrigin.y }
+      offset = { x: cursor.x - windowOrigin.x, y: cursor.y - windowOrigin.y };
     },
     origin(cursor: HudDragPoint): HudDragPoint | null {
       if (!offset) {
-        return null
+        return null;
       }
 
       return {
         x: Math.round(cursor.x - offset.x),
-        y: Math.round(cursor.y - offset.y)
-      }
+        y: Math.round(cursor.y - offset.y),
+      };
     },
     end() {
-      offset = null
-    }
-  }
+      offset = null;
+    },
+  };
 }

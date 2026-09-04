@@ -1,8 +1,8 @@
-import type { HermesGitWorktree } from '@/global'
-import type { ProjectInfo, SessionInfo } from '@/hermes'
-import { normalize } from '@/lib/text'
+import type { HermesGitWorktree } from "@/global";
+import type { ProjectInfo, SessionInfo } from "@/hermes";
+import { normalize } from "@/lib/text";
 
-import { rankSessions } from '../order'
+import { rankSessions } from "../order";
 
 // Session grouping is now computed authoritatively on the backend
 // (`tui_gateway/project_tree.py`, exposed via `projects.tree` /
@@ -12,78 +12,81 @@ import { rankSessions } from '../order'
 // from `git worktree list`. It never decides session membership.
 
 export interface SidebarSessionGroup {
-  id: string
-  label: string
-  path: null | string
-  sessions: SessionInfo[]
+  id: string;
+  label: string;
+  path: null | string;
+  sessions: SessionInfo[];
   // Profile color for the ALL-profiles view; absent for workspace groups.
-  color?: null | string
+  color?: null | string;
   // True when this group is a repo's main checkout (vs a linked worktree).
-  isMain?: boolean
+  isMain?: boolean;
   // True for the repo's primary ("home") checkout lane — the single lane that
   // collapses all main-checkout sessions, labeled by the worktree's LIVE branch
   // (defaulting to `main`). Renders a home glyph and pins to the top.
-  isHome?: boolean
+  isHome?: boolean;
   // True for the synthetic lane that collapses all of a repo's kanban task
   // worktrees (`<repo>/.worktrees/t_*`) into one row, so a heavy board doesn't
   // spray hundreds of throwaway branch lanes across the sidebar.
-  isKanban?: boolean
-  mode?: 'profile' | 'source' | 'workspace'
-  sourceId?: string
+  isKanban?: boolean;
+  mode?: "profile" | "source" | "workspace";
+  sourceId?: string;
 }
 
 /** A repo node: holds its branch/worktree lanes (`repo -> lane -> sessions`). */
 export interface SidebarWorkspaceTree {
-  id: string
-  label: string
-  path: null | string
-  groups: SidebarSessionGroup[]
-  sessionCount: number
+  id: string;
+  label: string;
+  path: null | string;
+  groups: SidebarSessionGroup[];
+  sessionCount: number;
 }
 
 /** A project node: human-named (or repo-derived), holds its repo subtree. */
 export interface SidebarProjectTree {
-  id: string
-  label: string
-  path: null | string
-  color?: null | string
-  icon?: null | string
-  archived?: boolean
+  id: string;
+  label: string;
+  path: null | string;
+  color?: null | string;
+  icon?: null | string;
+  archived?: boolean;
   // A git repo root promoted automatically (not a user-created projects.db row).
   // Deletable = dismissable.
-  isAuto?: boolean
+  isAuto?: boolean;
   // The synthetic bucket (labeled "Home") holding every session no project
   // claimed. It has no folder, so no repo/worktree structure — its one lane
   // exists only to carry the rows.
-  isNoProject?: boolean
-  repos: SidebarWorkspaceTree[]
-  sessionCount: number
+  isNoProject?: boolean;
+  repos: SidebarWorkspaceTree[];
+  sessionCount: number;
   // Tokens and spend over the same sessions `sessionCount` counts, summed by
   // the backend — the tree only carries a preview of the rows themselves.
-  totalTokens?: number
-  totalCostUsd?: number
+  totalTokens?: number;
+  totalCostUsd?: number;
   // Max activity timestamp across the project's sessions (overview sort key).
-  lastActive?: number
+  lastActive?: number;
   // Up to N most-recent sessions for the overview preview (set by `projects.tree`).
-  previewSessions?: SessionInfo[]
+  previewSessions?: SessionInfo[];
 }
 
 /** Path split into segments, ignoring trailing slashes and mixed separators. */
 const segments = (path: string): string[] =>
   path
-    .replace(/[/\\]+$/, '')
+    .replace(/[/\\]+$/, "")
     .split(/[/\\]/)
-    .filter(Boolean)
+    .filter(Boolean);
 
 /** A path with trailing separators stripped, for stable equality checks. */
-const normalizePath = (path: null | string | undefined): string => (path ?? '').replace(/[/\\]+$/, '')
+const normalizePath = (path: null | string | undefined): string =>
+  (path ?? "").replace(/[/\\]+$/, "");
 
 // Windows spellings: drive-letter (`C:\…`), UNC (`\\srv`, `//srv`), or any
 // backslash-rooted path (`\wsl.localhost\…`). A single leading `/` stays POSIX.
 // Mirrors the backend `_is_windows_path` so the live overlay places rows into
 // the same project the backend tree would.
 const isWindowsPath = (path: string): boolean =>
-  /^[A-Za-z]:[/\\]/.test(path) || path.startsWith('\\') || path.startsWith('//')
+  /^[A-Za-z]:[/\\]/.test(path) ||
+  path.startsWith("\\") ||
+  path.startsWith("//");
 
 /**
  * Segments for identity comparison: Windows paths fold case (and separators, via
@@ -91,32 +94,34 @@ const isWindowsPath = (path: string): boolean =>
  * case-sensitive. Comparison-only — emitted ids/labels keep their spelling.
  */
 const comparisonSegments = (path: string): string[] => {
-  const segs = segments(path)
+  const segs = segments(path);
 
-  return isWindowsPath(path) ? segs.map(seg => seg.toLowerCase()) : segs
-}
+  return isWindowsPath(path) ? segs.map((seg) => seg.toLowerCase()) : segs;
+};
 
 /** Canonical per-host comparison key (separator/case/trailing-slash agnostic). */
-const pathKey = (path: null | string | undefined): string => comparisonSegments(path ?? '').join('/')
+const pathKey = (path: null | string | undefined): string =>
+  comparisonSegments(path ?? "").join("/");
 
 /** Last path segment. */
-export const baseName = (path: string): string | undefined => segments(path).pop()
+export const baseName = (path: string): string | undefined =>
+  segments(path).pop();
 
 // The `.worktrees` dir for a KANBAN-TASK worktree path, else null. Only matches
 // task worktrees (`<repo>/.worktrees/t_<hex>`, the `t_…` id kanban_db mints) so
 // the many ephemeral task worktrees collapse into one lane — while user-named
 // "New worktree" dirs (`<repo>/.worktrees/<slug>`) stay as their own lanes.
-const KANBAN_DIR_RE = /^(.*[/\\]\.worktrees)[/\\]t_[0-9a-f]+[/\\]?$/
+const KANBAN_DIR_RE = /^(.*[/\\]\.worktrees)[/\\]t_[0-9a-f]+[/\\]?$/;
 
 export function kanbanWorktreeDir(path: string): null | string {
-  return path.match(KANBAN_DIR_RE)?.[1] ?? null
+  return path.match(KANBAN_DIR_RE)?.[1] ?? null;
 }
 
 /** Label for a main-checkout lane whose session recorded no branch. */
-export const DEFAULT_BRANCH_LABEL = 'main'
+export const DEFAULT_BRANCH_LABEL = "main";
 
 /** Id of the Home bucket (must match the backend tree's `NO_PROJECT_ID`). */
-export const NO_PROJECT_ID = '__no_project__'
+export const NO_PROJECT_ID = "__no_project__";
 
 /**
  * A session with nowhere to be placed: no cwd and no recorded repo root. These
@@ -125,49 +130,61 @@ export const NO_PROJECT_ID = '__no_project__'
  * deleted workspace) needs the backend's probes, so it waits for the snapshot.
  */
 export const isDetachedSession = (session: SessionInfo): boolean =>
-  !(session.cwd || '').trim() && !(session.git_repo_root || '').trim()
+  !(session.cwd || "").trim() && !(session.git_repo_root || "").trim();
 
 /** The one definition of a main-checkout lane id (must match the backend tree). */
 export const branchLaneId = (repoRoot: string, branch?: string): string =>
-  `${repoRoot}::branch::${(branch ?? '').trim()}`
+  `${repoRoot}::branch::${(branch ?? "").trim()}`;
 
 /** A session's recency stamp (last activity, falling back to creation). */
-export const sessionRecency = (session: SessionInfo): number => session.last_active || session.started_at || 0
+export const sessionRecency = (session: SessionInfo): number =>
+  session.last_active || session.started_at || 0;
 
 /** Default-branch names that pin to the top and read as the repo's trunk. */
-const TRUNK_BRANCHES = new Set(['main', 'master', 'trunk', 'develop'])
+const TRUNK_BRANCHES = new Set(["main", "master", "trunk", "develop"]);
 
 const isTrunkLane = (group: SidebarSessionGroup): boolean =>
-  Boolean(group.isMain) && TRUNK_BRANCHES.has(group.label.toLowerCase())
+  Boolean(group.isMain) && TRUNK_BRANCHES.has(group.label.toLowerCase());
 
 /** A lane's recency = its most-recently-active session (empty lanes sink). */
 const laneActivity = (group: SidebarSessionGroup): number =>
-  group.sessions.reduce((max, session) => Math.max(max, sessionRecency(session)), 0)
+  group.sessions.reduce(
+    (max, session) => Math.max(max, sessionRecency(session)),
+    0,
+  );
 
 // Lane tiers (low sorts first): the repo's primary ("home") checkout pins above
 // everything (it's "where you are", labeled by its live branch), then trunk,
 // then ordinary branches/worktrees, then the kanban aggregate.
 const laneRank = (group: SidebarSessionGroup): number =>
-  group.isHome ? 0 : isTrunkLane(group) ? 1 : group.isKanban ? 3 : 2
+  group.isHome ? 0 : isTrunkLane(group) ? 1 : group.isKanban ? 3 : 2;
 
 /**
  * Sort by tier (home → trunk → branches/worktrees → kanban); within a tier, by
  * most-recent activity (empty lanes fall last), label as the tiebreak.
  */
-function compareWorktreeGroups(a: SidebarSessionGroup, b: SidebarSessionGroup): number {
-  const byRank = laneRank(a) - laneRank(b)
+function compareWorktreeGroups(
+  a: SidebarSessionGroup,
+  b: SidebarSessionGroup,
+): number {
+  const byRank = laneRank(a) - laneRank(b);
 
   if (byRank !== 0) {
-    return byRank
+    return byRank;
   }
 
-  const byActivity = laneActivity(b) - laneActivity(a)
+  const byActivity = laneActivity(b) - laneActivity(a);
 
-  return byActivity || a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
+  return (
+    byActivity ||
+    a.label.localeCompare(b.label, undefined, { sensitivity: "base" })
+  );
 }
 
-export function sortWorktreeGroups(groups: SidebarSessionGroup[]): SidebarSessionGroup[] {
-  return [...groups].sort(compareWorktreeGroups)
+export function sortWorktreeGroups(
+  groups: SidebarSessionGroup[],
+): SidebarSessionGroup[] {
+  return [...groups].sort(compareWorktreeGroups);
 }
 
 /**
@@ -179,27 +196,27 @@ export function sortWorktreeGroups(groups: SidebarSessionGroup[]): SidebarSessio
  * nothing). Lanes already present (by id/path) are left untouched.
  */
 export function mergeRepoWorktreeGroups(
-  repo: Pick<SidebarWorkspaceTree, 'groups' | 'id' | 'path'>,
-  discoveredWorktrees?: HermesGitWorktree[]
+  repo: Pick<SidebarWorkspaceTree, "groups" | "id" | "path">,
+  discoveredWorktrees?: HermesGitWorktree[],
 ): SidebarSessionGroup[] {
   // Branch-primary labels: a linked worktree's identity in every git UI (VS
   // Code, JetBrains, lazygit, …) is its CHECKED-OUT BRANCH, not the directory it
   // happens to live in. The backend labels these lanes by dir/slug; relabel them
   // to the live branch from `git worktree list` so the sidebar matches the
   // composer's branch strip. Detached worktrees (no branch) keep their dir label.
-  const liveBranchByPath = new Map<string, string>()
+  const liveBranchByPath = new Map<string, string>();
   // Inverse: branch → its ONE live worktree path. git guarantees a branch is
   // checked out in at most one worktree, so this mapping is a function and can
   // re-anchor a lane whose stored path has drifted from git truth.
-  const livePathByBranch = new Map<string, string>()
+  const livePathByBranch = new Map<string, string>();
 
   for (const worktree of discoveredWorktrees ?? []) {
-    const wtPath = normalizePath(worktree.path)
-    const branch = worktree.branch?.trim()
+    const wtPath = normalizePath(worktree.path);
+    const branch = worktree.branch?.trim();
 
     if (wtPath && branch && !worktree.detached) {
-      liveBranchByPath.set(wtPath, branch)
-      livePathByBranch.set(branch.toLowerCase(), worktree.path.trim())
+      liveBranchByPath.set(wtPath, branch);
+      livePathByBranch.set(branch.toLowerCase(), worktree.path.trim());
     }
   }
 
@@ -208,8 +225,11 @@ export function mergeRepoWorktreeGroups(
   // same root path) collapses into a single home lane labeled by this live
   // branch, defaulting to `main`. Known only when the local git probe ran;
   // remote backends keep the backend's recorded-branch main lane untouched.
-  const mainWorktree = (discoveredWorktrees ?? []).find(w => w.isMain)
-  const homeBranch = mainWorktree && !mainWorktree.detached ? mainWorktree.branch?.trim() || DEFAULT_BRANCH_LABEL : ''
+  const mainWorktree = (discoveredWorktrees ?? []).find((w) => w.isMain);
+  const homeBranch =
+    mainWorktree && !mainWorktree.detached
+      ? mainWorktree.branch?.trim() || DEFAULT_BRANCH_LABEL
+      : "";
 
   // Reconcile a LINKED worktree lane against git truth so its label AND path
   // describe the SAME worktree. Two repair directions:
@@ -221,40 +241,44 @@ export function mergeRepoWorktreeGroups(
   //     separately (below), never here.
   const reconcile = (group: SidebarSessionGroup): SidebarSessionGroup => {
     if (group.isMain || group.isKanban) {
-      return group
+      return group;
     }
 
-    const branchForPath = liveBranchByPath.get(normalizePath(group.path))
+    const branchForPath = liveBranchByPath.get(normalizePath(group.path));
 
     if (branchForPath) {
-      return branchForPath !== group.label ? { ...group, label: branchForPath } : group
+      return branchForPath !== group.label
+        ? { ...group, label: branchForPath }
+        : group;
     }
 
-    const livePath = livePathByBranch.get(normalize(group.label))
+    const livePath = livePathByBranch.get(normalize(group.label));
 
     if (livePath && normalizePath(livePath) !== normalizePath(group.path)) {
-      return { ...group, id: livePath, path: livePath }
+      return { ...group, id: livePath, path: livePath };
     }
 
-    return group
-  }
+    return group;
+  };
 
   const dedupeById = (sessions: SessionInfo[]): SessionInfo[] => {
-    const byId = new Map<string, SessionInfo>()
+    const byId = new Map<string, SessionInfo>();
 
     for (const session of sessions) {
-      byId.set(session.id, byId.get(session.id) ?? session)
+      byId.set(session.id, byId.get(session.id) ?? session);
     }
 
-    return [...byId.values()]
-  }
+    return [...byId.values()];
+  };
 
   // Fold every main-checkout lane into one home lane labeled by the live branch
   // (the root dir is only ever on one branch); reconcile the linked worktrees.
   // Always shown, even with no sessions on the current branch yet. Remote
   // backends (no probe → no homeBranch) keep their main lanes untouched.
-  const mainGroups = repo.groups.filter(group => group.isMain)
-  const reconciled = repo.groups.filter(group => !group.isMain).map(reconcile)
+  const mainGroups = repo.groups.filter((group) => group.isMain);
+  const reconciled = repo.groups
+    .filter((group) => !group.isMain)
+    .map(reconcile);
 
   if (homeBranch) {
     reconciled.push({
@@ -263,83 +287,97 @@ export function mergeRepoWorktreeGroups(
       path: repo.path,
       isMain: true,
       isHome: true,
-      sessions: dedupeById(mainGroups.flatMap(group => group.sessions))
-    })
+      sessions: dedupeById(mainGroups.flatMap((group) => group.sessions)),
+    });
   } else {
-    reconciled.push(...mainGroups)
+    reconciled.push(...mainGroups);
   }
 
   // Collapse any duplicate a re-anchor produced (a stale lane re-pointed onto a
   // path a real lane already holds) — keep the richer (more sessions) lane.
-  const byPath = new Map<string, SidebarSessionGroup>()
-  const merged: SidebarSessionGroup[] = []
+  const byPath = new Map<string, SidebarSessionGroup>();
+  const merged: SidebarSessionGroup[] = [];
 
   for (const group of reconciled) {
-    const key = !group.isMain && group.path ? normalizePath(group.path) : ''
-    const existing = key ? byPath.get(key) : undefined
+    const key = !group.isMain && group.path ? normalizePath(group.path) : "";
+    const existing = key ? byPath.get(key) : undefined;
 
     if (existing) {
       if (group.sessions.length > existing.sessions.length) {
-        merged[merged.indexOf(existing)] = group
-        byPath.set(key, group)
+        merged[merged.indexOf(existing)] = group;
+        byPath.set(key, group);
       }
 
-      continue
+      continue;
     }
 
     if (key) {
-      byPath.set(key, group)
+      byPath.set(key, group);
     }
 
-    merged.push(group)
+    merged.push(group);
   }
 
-  const seenIds = new Set(merged.map(group => group.id))
-  const seenPaths = new Set(merged.map(group => group.path).filter((path): path is string => Boolean(path)))
+  const seenIds = new Set(merged.map((group) => group.id));
+  const seenPaths = new Set(
+    merged
+      .map((group) => group.path)
+      .filter((path): path is string => Boolean(path)),
+  );
   // Dedupe by branch label too: a branch shows once even if it's checked out in
   // a linked worktree AND already has a session lane.
-  const seenLabels = new Set(merged.map(group => group.label.toLowerCase()))
+  const seenLabels = new Set(merged.map((group) => group.label.toLowerCase()));
 
   for (const worktree of discoveredWorktrees ?? []) {
-    const wtPath = worktree.path?.trim()
+    const wtPath = worktree.path?.trim();
 
     if (!wtPath) {
-      continue
+      continue;
     }
 
     // The home checkout is already the collapsed home lane (above).
     if (worktree.isMain && homeBranch) {
-      continue
+      continue;
     }
 
     // Kanban task worktrees never get their own lane — they fold into the
     // session-derived `::kanban` bucket. Listing every `git worktree list` entry
     // here is exactly what blew the sidebar up to hundreds of empty rows.
     if (!worktree.isMain && kanbanWorktreeDir(wtPath)) {
-      continue
+      continue;
     }
 
     const label =
-      (worktree.isMain ? worktree.branch?.trim() || DEFAULT_BRANCH_LABEL : worktree.branch?.trim()) ||
+      (worktree.isMain
+        ? worktree.branch?.trim() || DEFAULT_BRANCH_LABEL
+        : worktree.branch?.trim()) ||
       baseName(wtPath) ||
-      wtPath
+      wtPath;
 
-    const id = worktree.isMain ? branchLaneId(repo.id, label) : wtPath
+    const id = worktree.isMain ? branchLaneId(repo.id, label) : wtPath;
 
     const alreadySeen =
-      seenIds.has(id) || seenLabels.has(label.toLowerCase()) || (!worktree.isMain && seenPaths.has(wtPath))
+      seenIds.has(id) ||
+      seenLabels.has(label.toLowerCase()) ||
+      (!worktree.isMain && seenPaths.has(wtPath));
 
     if (alreadySeen) {
-      continue
+      continue;
     }
 
-    merged.push({ id, isMain: worktree.isMain, label, path: wtPath, sessions: [] })
-    seenIds.add(id)
-    seenPaths.add(wtPath)
-    seenLabels.add(label.toLowerCase())
+    merged.push({
+      id,
+      isMain: worktree.isMain,
+      label,
+      path: wtPath,
+      sessions: [],
+    });
+    seenIds.add(id);
+    seenPaths.add(wtPath);
+    seenLabels.add(label.toLowerCase());
   }
 
-  return sortWorktreeGroups(merged)
+  return sortWorktreeGroups(merged);
 }
 
 // ── Live session overlay ─────────────────────────────────────────────────────
@@ -355,14 +393,14 @@ export function mergeRepoWorktreeGroups(
 
 /** True when `target` equals `folder` or is nested under it (segment-wise). */
 function isPathUnder(folder: string, target: string): boolean {
-  const f = comparisonSegments(folder)
-  const t = comparisonSegments(target)
+  const f = comparisonSegments(folder);
+  const t = comparisonSegments(target);
 
   if (!f.length || f.length > t.length) {
-    return false
+    return false;
   }
 
-  return f.every((seg, i) => seg === t[i])
+  return f.every((seg, i) => seg === t[i]);
 }
 
 /**
@@ -380,41 +418,44 @@ function isPathUnder(folder: string, target: string): boolean {
  * or a sibling worktree of a project repo), the folder match is authoritative;
  * only the repo-root AUTO-project fallback needs cwd-under-root confidence.
  */
-export function liveSessionProjectId(session: SessionInfo, explicitProjects: ProjectInfo[]): null | string {
-  const cwd = (session.cwd || '').trim()
+export function liveSessionProjectId(
+  session: SessionInfo,
+  explicitProjects: ProjectInfo[],
+): null | string {
+  const cwd = (session.cwd || "").trim();
   // A session may carry only a git_repo_root and no cwd — older/imported rows,
   // or ones captured before cwd tracking. The backend still groups those by repo
   // root, so anchor on it here too; otherwise the sidebar files the row under a
   // project but the color derivation drops it (the "grouped but grey" bug).
-  const repoRoot = (session.git_repo_root || '').trim() || cwd
-  const anchor = cwd || repoRoot
+  const repoRoot = (session.git_repo_root || "").trim() || cwd;
+  const anchor = cwd || repoRoot;
 
   if (!anchor || kanbanWorktreeDir(anchor)) {
-    return null
+    return null;
   }
 
-  let projectId = ''
-  let bestLen = -1
+  let projectId = "";
+  let bestLen = -1;
 
   for (const project of explicitProjects) {
     if (project.archived) {
-      continue
+      continue;
     }
 
     for (const folder of project.folders) {
       if (isPathUnder(folder.path, cwd) || isPathUnder(folder.path, repoRoot)) {
-        const len = segments(folder.path).length
+        const len = segments(folder.path).length;
 
         if (len > bestLen) {
-          bestLen = len
-          projectId = project.id
+          bestLen = len;
+          projectId = project.id;
         }
       }
     }
   }
 
   if (projectId) {
-    return projectId
+    return projectId;
   }
 
   // AUTO-project fallback (the repo root itself): with a cwd present it must
@@ -422,10 +463,10 @@ export function liveSessionProjectId(session: SessionInfo, explicitProjects: Pro
   // placed from the row alone); a root-only session skips this — the root IS
   // the anchor.
   if (cwd && !isPathUnder(repoRoot, cwd)) {
-    return null
+    return null;
   }
 
-  return repoRoot
+  return repoRoot;
 }
 
 /**
@@ -438,30 +479,40 @@ export function liveSessionProjectId(session: SessionInfo, explicitProjects: Pro
  * sidebar groups by; returns null for rootless / kanban / out-of-tree rows and
  * for sessions under an uncolored (or auto) project.
  */
-export function sessionProjectColor(session: SessionInfo, projects: ProjectInfo[]): null | string {
-  const projectId = liveSessionProjectId(session, projects)
+export function sessionProjectColor(
+  session: SessionInfo,
+  projects: ProjectInfo[],
+): null | string {
+  const projectId = liveSessionProjectId(session, projects);
 
   if (!projectId) {
-    return null
+    return null;
   }
 
-  return projects.find(project => project.id === projectId)?.color ?? null
+  return projects.find((project) => project.id === projectId)?.color ?? null;
 }
 
-const upsertSession = (rows: SessionInfo[], session: SessionInfo): SessionInfo[] =>
-  [session, ...rows.filter(row => row.id !== session.id)].sort((a, b) => sessionRecency(b) - sessionRecency(a))
+const upsertSession = (
+  rows: SessionInfo[],
+  session: SessionInfo,
+): SessionInfo[] =>
+  [session, ...rows.filter((row) => row.id !== session.id)].sort(
+    (a, b) => sessionRecency(b) - sessionRecency(a),
+  );
 
 /** A live row's placement path, with an exact repo-root fallback when cwd is absent. */
 function livePathForRepo(repoRoot: string, session: SessionInfo): string {
-  const cwd = (session.cwd || '').trim()
+  const cwd = (session.cwd || "").trim();
 
   if (cwd) {
-    return cwd
+    return cwd;
   }
 
-  const persistedRoot = (session.git_repo_root || '').trim()
+  const persistedRoot = (session.git_repo_root || "").trim();
 
-  return persistedRoot && pathKey(persistedRoot) === pathKey(repoRoot) ? persistedRoot : ''
+  return persistedRoot && pathKey(persistedRoot) === pathKey(repoRoot)
+    ? persistedRoot
+    : "";
 }
 
 /**
@@ -471,29 +522,51 @@ function livePathForRepo(repoRoot: string, session: SessionInfo): string {
  * main checkout -> branch lane, `.worktrees/t_<hex>` -> kanban, any other
  * `.worktrees/<slug>` -> that worktree's own lane.
  */
-function liveLaneForRepo(repoRoot: string, session: SessionInfo): null | SidebarSessionGroup {
-  const sessionPath = livePathForRepo(repoRoot, session)
+function liveLaneForRepo(
+  repoRoot: string,
+  session: SessionInfo,
+): null | SidebarSessionGroup {
+  const sessionPath = livePathForRepo(repoRoot, session);
 
   if (!sessionPath || !isPathUnder(repoRoot, sessionPath)) {
-    return null
+    return null;
   }
 
-  const wt = sessionPath.match(/^(.*[/\\]\.worktrees)[/\\]([^/\\]+)/)
+  const wt = sessionPath.match(/^(.*[/\\]\.worktrees)[/\\]([^/\\]+)/);
 
   if (wt) {
-    const [worktreeRoot, worktreesDir, slug] = [wt[0], wt[1], wt[2]]
+    const [worktreeRoot, worktreesDir, slug] = [wt[0], wt[1], wt[2]];
 
     return /^t_[0-9a-f]+$/.test(slug)
-      ? { id: `${repoRoot}::kanban`, isKanban: true, isMain: false, label: 'kanban', path: worktreesDir, sessions: [] }
-      : { id: worktreeRoot, isMain: false, label: slug, path: worktreeRoot, sessions: [] }
+      ? {
+          id: `${repoRoot}::kanban`,
+          isKanban: true,
+          isMain: false,
+          label: "kanban",
+          path: worktreesDir,
+          sessions: [],
+        }
+      : {
+          id: worktreeRoot,
+          isMain: false,
+          label: slug,
+          path: worktreeRoot,
+          sessions: [],
+        };
   }
 
-  const branch = (session.git_branch || '').trim() || DEFAULT_BRANCH_LABEL
+  const branch = (session.git_branch || "").trim() || DEFAULT_BRANCH_LABEL;
 
-  return { id: branchLaneId(repoRoot, branch), isMain: true, label: branch, path: repoRoot, sessions: [] }
+  return {
+    id: branchLaneId(repoRoot, branch),
+    isMain: true,
+    label: branch,
+    path: repoRoot,
+    sessions: [],
+  };
 }
 
-const NO_REMOVED: ReadonlySet<string> = new Set()
+const NO_REMOVED: ReadonlySet<string> = new Set();
 
 /**
  * Reconcile ONE repo's lanes against the live `$sessions` cache: evict
@@ -506,33 +579,35 @@ const NO_REMOVED: ReadonlySet<string> = new Set()
 export function overlayRepoLanes(
   repo: SidebarWorkspaceTree,
   live: SessionInfo[],
-  removed: ReadonlySet<string> = NO_REMOVED
+  removed: ReadonlySet<string> = NO_REMOVED,
 ): SidebarWorkspaceTree {
-  const repoRootKey = pathKey(repo.path)
-  let changed = false
+  const repoRootKey = pathKey(repo.path);
+  let changed = false;
   // Lanes that arrived with no rows are not eviction casualties — they're real
   // structure (a `git worktree list` lane, or one whose sessions are pinned
   // away). The prune below is only allowed to drop lanes IT emptied.
-  const emptyOnInput = new Set(repo.groups.filter(g => !g.sessions.length).map(g => g.id))
+  const emptyOnInput = new Set(
+    repo.groups.filter((g) => !g.sessions.length).map((g) => g.id),
+  );
 
   // Snapshot lanes minus anything the user just deleted/archived.
-  const lanes = repo.groups.map(g => {
+  const lanes = repo.groups.map((g) => {
     if (!removed.size) {
-      return { ...g, sessions: [...g.sessions] }
+      return { ...g, sessions: [...g.sessions] };
     }
 
-    const kept = g.sessions.filter(s => !removed.has(s.id))
+    const kept = g.sessions.filter((s) => !removed.has(s.id));
 
-    changed ||= kept.length !== g.sessions.length
+    changed ||= kept.length !== g.sessions.length;
 
-    return { ...g, sessions: kept }
-  })
+    return { ...g, sessions: kept };
+  });
 
   for (const session of live) {
-    const sessionPath = livePathForRepo(repo.path ?? '', session)
+    const sessionPath = livePathForRepo(repo.path ?? "", session);
 
     if (removed.has(session.id) || !sessionPath) {
-      continue
+      continue;
     }
 
     // (1) Join an EXISTING worktree lane by its own path. A linked worktree can
@@ -540,21 +615,25 @@ export function overlayRepoLanes(
     // under the repo root isn't reliable — but the lane carries its real dir.
     // Longest match wins; skip the root lane so an in-tree `.worktrees/<slug>`
     // session isn't swallowed by main.
-    let lane: SidebarSessionGroup | undefined
-    let bestLen = -1
+    let lane: SidebarSessionGroup | undefined;
+    let bestLen = -1;
 
     for (const g of lanes) {
-      const lanePath = normalizePath(g.path)
+      const lanePath = normalizePath(g.path);
 
-      if (!lanePath || pathKey(lanePath) === repoRootKey || !isPathUnder(lanePath, sessionPath)) {
-        continue
+      if (
+        !lanePath ||
+        pathKey(lanePath) === repoRootKey ||
+        !isPathUnder(lanePath, sessionPath)
+      ) {
+        continue;
       }
 
-      const len = segments(lanePath).length
+      const len = segments(lanePath).length;
 
       if (len > bestLen) {
-        bestLen = len
-        lane = g
+        bestLen = len;
+        lane = g;
       }
     }
 
@@ -563,18 +642,22 @@ export function overlayRepoLanes(
     // key a worktree lane off the git-probed root OR a branch-style id), then
     // the main-lane label; create it when the snapshot lacked it.
     if (!lane) {
-      const placed = repo.path ? liveLaneForRepo(repo.path, session) : null
+      const placed = repo.path ? liveLaneForRepo(repo.path, session) : null;
 
       if (!placed) {
-        continue
+        continue;
       }
 
-      const placedKey = pathKey(placed.path)
+      const placedKey = pathKey(placed.path);
 
       lane =
-        lanes.find(g => g.id === placed.id) ??
+        lanes.find((g) => g.id === placed.id) ??
         (placed.isMain
-          ? lanes.find(g => g.isMain && g.label.toLowerCase() === placed.label.toLowerCase())
+          ? lanes.find(
+              (g) =>
+                g.isMain &&
+                g.label.toLowerCase() === placed.label.toLowerCase(),
+            )
           : undefined) ??
         // Non-git backend heuristic (`project_tree._place_by_heuristic`): one
         // isMain lane keyed by the folder path itself (id === path, label =
@@ -584,15 +667,20 @@ export function overlayRepoLanes(
         // path-keyed main lane when present.
         (placed.isMain && placedKey
           ? lanes.find(
-              g =>
-                g.isMain && pathKey(g.path) === placedKey && !g.id.includes('::branch::') && !g.id.includes('::kanban')
+              (g) =>
+                g.isMain &&
+                pathKey(g.path) === placedKey &&
+                !g.id.includes("::branch::") &&
+                !g.id.includes("::kanban"),
             )
           : undefined) ??
-        (!placed.isMain && placedKey ? lanes.find(g => pathKey(g.path) === placedKey) : undefined)
+        (!placed.isMain && placedKey
+          ? lanes.find((g) => pathKey(g.path) === placedKey)
+          : undefined);
 
       if (!lane) {
-        lane = { ...placed, sessions: [] }
-        lanes.push(lane)
+        lane = { ...placed, sessions: [] };
+        lanes.push(lane);
       }
     }
 
@@ -603,28 +691,37 @@ export function overlayRepoLanes(
     // under both groups until the next backend tree refresh).
     for (const g of lanes) {
       if (g !== lane) {
-        const idx = g.sessions.findIndex(s => s.id === session.id)
+        const idx = g.sessions.findIndex((s) => s.id === session.id);
 
         if (idx >= 0) {
-          g.sessions = [...g.sessions.slice(0, idx), ...g.sessions.slice(idx + 1)]
-          changed = true
+          g.sessions = [
+            ...g.sessions.slice(0, idx),
+            ...g.sessions.slice(idx + 1),
+          ];
+          changed = true;
         }
       }
     }
 
-    lane.sessions = upsertSession(lane.sessions, session)
-    changed = true
+    lane.sessions = upsertSession(lane.sessions, session);
+    changed = true;
   }
 
   if (!changed) {
-    return repo
+    return repo;
   }
 
   // Drop lanes emptied by eviction (the server only emits non-empty lanes; the
   // git-worktree enhancer re-adds any still-real worktree as an empty lane).
-  const groups = sortWorktreeGroups(lanes.filter(g => g.sessions.length > 0 || emptyOnInput.has(g.id)))
+  const groups = sortWorktreeGroups(
+    lanes.filter((g) => g.sessions.length > 0 || emptyOnInput.has(g.id)),
+  );
 
-  return { ...repo, groups, sessionCount: groups.reduce((n, g) => n + g.sessions.length, 0) }
+  return {
+    ...repo,
+    groups,
+    sessionCount: groups.reduce((n, g) => n + g.sessions.length, 0),
+  };
 }
 
 /**
@@ -635,24 +732,41 @@ export function overlayRepoLanes(
 function overlayHomeLane(
   project: SidebarProjectTree,
   live: SessionInfo[],
-  removed: ReadonlySet<string>
+  removed: ReadonlySet<string>,
 ): SidebarProjectTree {
-  const lane = project.repos[0]?.groups[0]
-  const detached = live.filter(session => isDetachedSession(session) && !removed.has(session.id))
-  const kept = (lane?.sessions ?? []).filter(session => !removed.has(session.id))
+  const lane = project.repos[0]?.groups[0];
+  const detached = live.filter(
+    (session) => isDetachedSession(session) && !removed.has(session.id),
+  );
+  const kept = (lane?.sessions ?? []).filter(
+    (session) => !removed.has(session.id),
+  );
 
   if (!detached.length && kept.length === (lane?.sessions.length ?? 0)) {
-    return project
+    return project;
   }
 
-  const sessions = detached.reduce(upsertSession, kept)
-  const nextLane = { id: NO_PROJECT_ID, label: project.label, path: null, sessions }
+  const sessions = detached.reduce(upsertSession, kept);
+  const nextLane = {
+    id: NO_PROJECT_ID,
+    label: project.label,
+    path: null,
+    sessions,
+  };
 
   return {
     ...project,
-    repos: [{ id: NO_PROJECT_ID, label: project.label, path: null, groups: [nextLane], sessionCount: sessions.length }],
-    sessionCount: sessions.length
-  }
+    repos: [
+      {
+        id: NO_PROJECT_ID,
+        label: project.label,
+        path: null,
+        groups: [nextLane],
+        sessionCount: sessions.length,
+      },
+    ],
+    sessionCount: sessions.length,
+  };
 }
 
 /**
@@ -670,75 +784,85 @@ function overlayHomeLane(
  */
 export function excludeProjectSessions(
   project: SidebarProjectTree,
-  isExcluded: (session: SessionInfo) => boolean
+  isExcluded: (session: SessionInfo) => boolean,
 ): SidebarProjectTree {
-  let changed = false
+  let changed = false;
 
-  const repos = project.repos.map(repo => {
-    let repoChanged = false
+  const repos = project.repos.map((repo) => {
+    let repoChanged = false;
 
-    const groups = repo.groups.map(group => {
-      const sessions = group.sessions.filter(session => !isExcluded(session))
+    const groups = repo.groups.map((group) => {
+      const sessions = group.sessions.filter((session) => !isExcluded(session));
 
       if (sessions.length === group.sessions.length) {
-        return group
+        return group;
       }
 
-      repoChanged = true
+      repoChanged = true;
 
-      return { ...group, sessions }
-    })
+      return { ...group, sessions };
+    });
 
     if (!repoChanged) {
-      return repo
+      return repo;
     }
 
-    changed = true
+    changed = true;
 
-    return { ...repo, groups, sessionCount: groups.reduce((n, group) => n + group.sessions.length, 0) }
-  })
+    return {
+      ...repo,
+      groups,
+      sessionCount: groups.reduce((n, group) => n + group.sessions.length, 0),
+    };
+  });
 
-  const previewSessions = project.previewSessions?.filter(session => !isExcluded(session))
+  const previewSessions = project.previewSessions?.filter(
+    (session) => !isExcluded(session),
+  );
 
-  changed ||= previewSessions?.length !== project.previewSessions?.length
+  changed ||= previewSessions?.length !== project.previewSessions?.length;
 
   if (!changed) {
-    return project
+    return project;
   }
 
   return {
     ...project,
     previewSessions,
     repos,
-    sessionCount: repos.reduce((n, repo) => n + repo.sessionCount, 0)
-  }
+    sessionCount: repos.reduce((n, repo) => n + repo.sessionCount, 0),
+  };
 }
 
 /** Project-level overlay: {@link overlayRepoLanes} across every repo subtree. */
 export function overlayLiveLanes(
   project: SidebarProjectTree,
   live: SessionInfo[],
-  removed: ReadonlySet<string> = NO_REMOVED
+  removed: ReadonlySet<string> = NO_REMOVED,
 ): SidebarProjectTree {
   if (project.isNoProject) {
-    return overlayHomeLane(project, live, removed)
+    return overlayHomeLane(project, live, removed);
   }
 
-  let changed = false
+  let changed = false;
 
-  const repos = project.repos.map(repo => {
-    const next = overlayRepoLanes(repo, live, removed)
+  const repos = project.repos.map((repo) => {
+    const next = overlayRepoLanes(repo, live, removed);
 
-    changed ||= next !== repo
+    changed ||= next !== repo;
 
-    return next
-  })
+    return next;
+  });
 
   if (!changed) {
-    return project
+    return project;
   }
 
-  return { ...project, repos, sessionCount: repos.reduce((n, repo) => n + repo.sessionCount, 0) }
+  return {
+    ...project,
+    repos,
+    sessionCount: repos.reduce((n, repo) => n + repo.sessionCount, 0),
+  };
 }
 
 /**
@@ -749,22 +873,24 @@ export function overlayLiveLanes(
  */
 export function reconcileEnteredProjectSessions(
   live: SessionInfo[],
-  previewSessions: SessionInfo[] | undefined
+  previewSessions: SessionInfo[] | undefined,
 ): SessionInfo[] {
   if (!previewSessions?.length) {
-    return live
+    return live;
   }
 
-  const liveIds = new Set(live.map(session => session.id))
-  const missingPreviews = previewSessions.filter(session => !liveIds.has(session.id))
+  const liveIds = new Set(live.map((session) => session.id));
+  const missingPreviews = previewSessions.filter(
+    (session) => !liveIds.has(session.id),
+  );
 
-  return missingPreviews.length ? [...live, ...missingPreviews] : live
+  return missingPreviews.length ? [...live, ...missingPreviews] : live;
 }
 
 interface PreviewOverlayOptions {
-  removed?: ReadonlySet<string>
+  removed?: ReadonlySet<string>;
   /** The active sort key as an id order; recency when empty. */
-  rankIds?: string[]
+  rankIds?: string[];
 }
 
 /** Merge live sessions into per-project overview previews, keyed by project id. */
@@ -773,50 +899,55 @@ export function overlayLivePreviews(
   live: SessionInfo[],
   explicitProjects: ProjectInfo[],
   limit: number,
-  { removed = NO_REMOVED, rankIds }: PreviewOverlayOptions = {}
+  { removed = NO_REMOVED, rankIds }: PreviewOverlayOptions = {},
 ): Record<string, SessionInfo[]> {
-  const byProject = new Map<string, SessionInfo[]>()
+  const byProject = new Map<string, SessionInfo[]>();
 
   for (const session of live) {
     if (removed.has(session.id)) {
-      continue
+      continue;
     }
 
     const projectId =
-      liveSessionProjectId(session, explicitProjects) ?? (isDetachedSession(session) ? NO_PROJECT_ID : null)
+      liveSessionProjectId(session, explicitProjects) ??
+      (isDetachedSession(session) ? NO_PROJECT_ID : null);
 
     if (!projectId) {
-      continue
+      continue;
     }
 
-    const arr = byProject.get(projectId) ?? []
-    arr.push(session)
-    byProject.set(projectId, arr)
+    const arr = byProject.get(projectId) ?? [];
+    arr.push(session);
+    byProject.set(projectId, arr);
   }
 
-  const out: Record<string, SessionInfo[]> = {}
+  const out: Record<string, SessionInfo[]> = {};
 
   for (const node of projects) {
-    const liveRows = byProject.get(node.id) ?? []
-    const base = (node.previewSessions ?? []).filter(session => !removed.has(session.id))
+    const liveRows = byProject.get(node.id) ?? [];
+    const base = (node.previewSessions ?? []).filter(
+      (session) => !removed.has(session.id),
+    );
 
     if (!liveRows.length && !base.length) {
-      continue
+      continue;
     }
 
     // Live rows take precedence (fresher title/activity/working state).
-    const map = new Map<string, SessionInfo>()
+    const map = new Map<string, SessionInfo>();
 
     for (const session of [...liveRows, ...base]) {
       if (!map.has(session.id)) {
-        map.set(session.id, session)
+        map.set(session.id, session);
       }
     }
 
-    const pool = [...map.values()].sort((a, b) => sessionRecency(b) - sessionRecency(a))
+    const pool = [...map.values()].sort(
+      (a, b) => sessionRecency(b) - sessionRecency(a),
+    );
 
-    out[node.id] = rankSessions(pool, rankIds).slice(0, limit)
+    out[node.id] = rankSessions(pool, rankIds).slice(0, limit);
   }
 
-  return out
+  return out;
 }

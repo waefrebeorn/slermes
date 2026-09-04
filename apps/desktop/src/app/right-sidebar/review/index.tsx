@@ -1,18 +1,18 @@
-import { useStore } from '@nanostores/react'
+import { useStore } from "@nanostores/react";
 
-import { FileDiffPanel } from '@/components/chat/diff-lines'
-import { DiffSkeleton, TreeSkeleton } from '@/components/chat/skeletons'
-import { Button } from '@/components/ui/button'
-import { Codicon } from '@/components/ui/codicon'
-import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { DiffCount } from '@/components/ui/diff-count'
-import { Tip } from '@/components/ui/tooltip'
-import { useDelayedTrue } from '@/hooks/use-delayed-true'
-import { useI18n } from '@/i18n'
-import { displayPath } from '@/lib/display-path'
-import { cn } from '@/lib/utils'
-import { $panesFlipped } from '@/store/layout'
-import { notifyError } from '@/store/notifications'
+import { FileDiffPanel } from "@/components/chat/diff-lines";
+import { DiffSkeleton, TreeSkeleton } from "@/components/chat/skeletons";
+import { Button } from "@/components/ui/button";
+import { Codicon } from "@/components/ui/codicon";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { DiffCount } from "@/components/ui/diff-count";
+import { Tip } from "@/components/ui/tooltip";
+import { useDelayedTrue } from "@/hooks/use-delayed-true";
+import { useI18n } from "@/i18n";
+import { displayPath } from "@/lib/display-path";
+import { cn } from "@/lib/utils";
+import { $panesFlipped } from "@/store/layout";
+import { notifyError } from "@/store/notifications";
 import {
   $reviewDiff,
   $reviewDiffLoading,
@@ -30,49 +30,49 @@ import {
   requestRevert,
   stageReviewFile,
   toggleReviewTreeMode,
-  unstageReviewFile
-} from '@/store/review'
+  unstageReviewFile,
+} from "@/store/review";
 
-import { SidebarPanelLabel } from '../../shell/sidebar-label'
-import { PaneEmptyState, RightSidebarSectionHeader } from '../index'
+import { SidebarPanelLabel } from "../../shell/sidebar-label";
+import { PaneEmptyState, RightSidebarSectionHeader } from "../index";
 
-import { ReviewFileTree } from './file-tree'
-import { ReviewShipBar } from './ship-bar'
+import { ReviewFileTree } from "./file-tree";
+import { ReviewShipBar } from "./ship-bar";
 
 // Compact header/diff action buttons — micro hit targets packed tight, matching
 // the rest of the app's icon-action rows.
-const ACTION_BTN = 'size-5'
+const ACTION_BTN = "size-5";
 
 export function ReviewPane() {
-  const { t } = useI18n()
-  const c = t.statusStack.coding
-  const panesFlipped = useStore($panesFlipped)
-  const files = useStore($reviewFiles)
-  const loading = useStore($reviewLoading)
-  const isRepo = useStore($reviewIsRepo)
-  const selectedPath = useStore($reviewSelectedPath)
-  const diff = useStore($reviewDiff)
-  const diffLoading = useStore($reviewDiffLoading)
-  const revertTarget = useStore($reviewRevertTarget)
-  const treeMode = useStore($reviewTreeMode)
+  const { t } = useI18n();
+  const c = t.statusStack.coding;
+  const panesFlipped = useStore($panesFlipped);
+  const files = useStore($reviewFiles);
+  const loading = useStore($reviewLoading);
+  const isRepo = useStore($reviewIsRepo);
+  const selectedPath = useStore($reviewSelectedPath);
+  const diff = useStore($reviewDiff);
+  const diffLoading = useStore($reviewDiffLoading);
+  const revertTarget = useStore($reviewRevertTarget);
+  const treeMode = useStore($reviewTreeMode);
 
-  const selectedFile = files.find(file => file.path === selectedPath)
-  const hasFiles = files.length > 0
+  const selectedFile = files.find((file) => file.path === selectedPath);
+  const hasFiles = files.length > 0;
   // `{ path: null }` → revert all; `{ path: '…' }` → revert one file.
-  const revertingAll = revertTarget?.path == null
+  const revertingAll = revertTarget?.path == null;
   // Delay the skeletons so fast loads (most project switches) just blank → content
   // instead of flashing a jarring loading state.
-  const showTreeSkeleton = useDelayedTrue(loading && !hasFiles)
-  const showDiffSkeleton = useDelayedTrue(diffLoading)
+  const showTreeSkeleton = useDelayedTrue(loading && !hasFiles);
+  const showDiffSkeleton = useDelayedTrue(diffLoading);
 
   return (
     <aside
       aria-label={c.review}
       className={cn(
-        'before:pointer-events-none relative flex h-full w-full min-w-0 flex-col overflow-hidden border-(--ui-stroke-secondary) bg-(--ui-sidebar-surface-background) pt-(--titlebar-height) text-(--ui-text-tertiary)',
+        "before:pointer-events-none relative flex h-full w-full min-w-0 flex-col overflow-hidden border-(--ui-stroke-secondary) bg-(--ui-sidebar-surface-background) pt-(--titlebar-height) text-(--ui-text-tertiary)",
         panesFlipped
-          ? 'border-r shadow-[inset_-0.0625rem_0_0_color-mix(in_srgb,white_18%,transparent)]'
-          : 'border-l shadow-[inset_0.0625rem_0_0_color-mix(in_srgb,white_18%,transparent)]'
+          ? "border-r shadow-[inset_-0.0625rem_0_0_color-mix(in_srgb,white_18%,transparent)]"
+          : "border-l shadow-[inset_0.0625rem_0_0_color-mix(in_srgb,white_18%,transparent)]",
       )}
     >
       {(loading || isRepo) && (
@@ -80,18 +80,23 @@ export function ReviewPane() {
           <div className="flex min-w-0 flex-1">
             {/* Pure self-naming label — redundant under a zone tab that already
                 says "review", so the zone header hides it (styles.css). */}
-            <SidebarPanelLabel data-pane-self-label="">{c.review}</SidebarPanelLabel>
+            <SidebarPanelLabel data-pane-self-label="">
+              {c.review}
+            </SidebarPanelLabel>
           </div>
-          <Tip label={treeMode === 'tree' ? c.viewAsList : c.viewAsTree}>
+          <Tip label={treeMode === "tree" ? c.viewAsList : c.viewAsTree}>
             <Button
-              aria-label={treeMode === 'tree' ? c.viewAsList : c.viewAsTree}
+              aria-label={treeMode === "tree" ? c.viewAsList : c.viewAsTree}
               className={ACTION_BTN}
               disabled={!hasFiles}
               onClick={toggleReviewTreeMode}
               size="icon-xs"
               variant="ghost"
             >
-              <Codicon name={treeMode === 'tree' ? 'list-flat' : 'list-tree'} size="0.8125rem" />
+              <Codicon
+                name={treeMode === "tree" ? "list-flat" : "list-tree"}
+                size="0.8125rem"
+              />
             </Button>
           </Tip>
           <Tip label={c.stageAll}>
@@ -99,7 +104,11 @@ export function ReviewPane() {
               aria-label={c.stageAll}
               className={ACTION_BTN}
               disabled={!hasFiles}
-              onClick={() => void stageReviewFile(null).catch(err => notifyError(err, c.stageAll))}
+              onClick={() =>
+                void stageReviewFile(null).catch((err) =>
+                  notifyError(err, c.stageAll),
+                )
+              }
               size="icon-xs"
               variant="ghost"
             >
@@ -129,7 +138,13 @@ export function ReviewPane() {
               <Codicon name="refresh" size="0.8125rem" spinning={loading} />
             </Button>
           </Tip>
-          <Button aria-label={c.close} className={ACTION_BTN} onClick={closeReview} size="icon-xs" variant="ghost">
+          <Button
+            aria-label={c.close}
+            className={ACTION_BTN}
+            onClick={closeReview}
+            size="icon-xs"
+            variant="ghost"
+          >
             <Codicon name="close" size="0.8125rem" />
           </Button>
         </RightSidebarSectionHeader>
@@ -153,27 +168,39 @@ export function ReviewPane() {
       {/* Selected file's diff — reuses the shiki-highlighted FileDiffPanel. */}
       {selectedFile && (
         <div className="flex max-h-[55%] shrink-0 flex-col border-t border-(--ui-stroke-secondary)">
-          <div className="flex items-center gap-1 px-2.5 py-1.5" data-suppress-pane-reveal-side="">
+          <div
+            className="flex items-center gap-1 px-2.5 py-1.5"
+            data-suppress-pane-reveal-side=""
+          >
             <span
               className="min-w-0 flex-1 truncate font-mono text-[0.66rem] text-(--ui-text-secondary)"
               title={displayPath(selectedFile.path)}
             >
               {displayPath(selectedFile.path)}
             </span>
-            <DiffCount added={selectedFile.added} className="text-[0.64rem] leading-4" removed={selectedFile.removed} />
+            <DiffCount
+              added={selectedFile.added}
+              className="text-[0.64rem] leading-4"
+              removed={selectedFile.removed}
+            />
             <Tip label={selectedFile.staged ? c.unstage : c.stage}>
               <Button
                 aria-label={selectedFile.staged ? c.unstage : c.stage}
                 className={ACTION_BTN}
                 onClick={() =>
                   void (
-                    selectedFile.staged ? unstageReviewFile(selectedFile.path) : stageReviewFile(selectedFile.path)
-                  ).catch(err => notifyError(err, c.stage))
+                    selectedFile.staged
+                      ? unstageReviewFile(selectedFile.path)
+                      : stageReviewFile(selectedFile.path)
+                  ).catch((err) => notifyError(err, c.stage))
                 }
                 size="icon-xs"
                 variant="ghost"
               >
-                <Codicon name={selectedFile.staged ? 'remove' : 'add'} size="0.8rem" />
+                <Codicon
+                  name={selectedFile.staged ? "remove" : "add"}
+                  size="0.8rem"
+                />
               </Button>
             </Tip>
             <Button
@@ -192,9 +219,16 @@ export function ReviewPane() {
                 <DiffSkeleton />
               ) : null
             ) : diff ? (
-              <FileDiffPanel className="mx-0 mb-0 h-full max-h-none" diff={diff} path={selectedFile.path} virtualized />
+              <FileDiffPanel
+                className="mx-0 mb-0 h-full max-h-none"
+                diff={diff}
+                path={selectedFile.path}
+                virtualized
+              />
             ) : (
-              <div className="py-6 text-center text-[0.66rem] text-muted-foreground/60">{c.noDiff}</div>
+              <div className="py-6 text-center text-[0.66rem] text-muted-foreground/60">
+                {c.noDiff}
+              </div>
             )}
           </div>
         </div>
@@ -222,10 +256,12 @@ export function ReviewPane() {
         // background — so the failure lands in a toast, not inline.
         dismissOnConfirm
         onClose={cancelRevert}
-        onConfirm={() => confirmRevert().catch(err => void notifyError(err, c.revert))}
+        onConfirm={() =>
+          confirmRevert().catch((err) => void notifyError(err, c.revert))
+        }
         open={revertTarget !== undefined}
         title={revertingAll ? c.revertAll : c.revert}
       />
     </aside>
-  )
+  );
 }

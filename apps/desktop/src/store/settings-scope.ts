@@ -1,6 +1,6 @@
-import { atom, computed } from 'nanostores'
+import { atom, computed } from "nanostores";
 
-import { $activeGatewayProfile, normalizeProfileKey } from '@/store/profile'
+import { $activeGatewayProfile, normalizeProfileKey } from "@/store/profile";
 
 // ── Shared settings "Applies to" scope ──────────────────────────────────────
 // One selection shared by every config-backed settings page (Model, Workspace,
@@ -9,12 +9,13 @@ import { $activeGatewayProfile, normalizeProfileKey } from '@/store/profile'
 // page. `null` means "follow the app's active profile" — the default, which
 // keeps single-profile users on the exact pre-existing code path (requests
 // fall back to the app-wide active profile in api/client.ts `profileScoped`).
-export const $settingsScopeOverride = atom<null | string>(null)
+export const $settingsScopeOverride = atom<null | string>(null);
 
 // The profile the settings pages are currently editing (a concrete key).
-export const $settingsScopeProfile = computed([$settingsScopeOverride, $activeGatewayProfile], (override, active) =>
-  normalizeProfileKey(override ?? active)
-)
+export const $settingsScopeProfile = computed(
+  [$settingsScopeOverride, $activeGatewayProfile],
+  (override, active) => normalizeProfileKey(override ?? active),
+);
 
 // ── Request-scope form (THE value to hand to API helpers) ──────────────────
 // The store contract and the API contract disagree about `null`:
@@ -30,29 +31,31 @@ export const $settingsScopeProfile = computed([$settingsScopeOverride, $activeGa
 // only for UI concerns (selector highlight, cache keys, remount keys).
 export const $settingsRequestProfile = computed(
   $settingsScopeOverride,
-  (override): string | undefined => override ?? undefined
-)
+  (override): string | undefined => override ?? undefined,
+);
 
 // Select the profile the settings pages should edit. Picking the app's active
 // profile stores `null` (no override) so the scope keeps following the app on
 // profile switches — and requests keep their unscoped default shape.
 export function setSettingsScope(name: string): void {
-  const key = normalizeProfileKey(name)
+  const key = normalizeProfileKey(name);
 
-  $settingsScopeOverride.set(key === normalizeProfileKey($activeGatewayProfile.get()) ? null : key)
+  $settingsScopeOverride.set(
+    key === normalizeProfileKey($activeGatewayProfile.get()) ? null : key,
+  );
 }
 
 // An app-wide profile switch re-homes every settings surface to the new
 // backend; a surviving override would silently keep edits pointed at the
 // previous target. Same drop-the-override contract as the Capabilities
 // selector (app/skills useOnProfileSwitch).
-let lastActiveProfile = normalizeProfileKey($activeGatewayProfile.get())
+let lastActiveProfile = normalizeProfileKey($activeGatewayProfile.get());
 
-$activeGatewayProfile.subscribe(value => {
-  const key = normalizeProfileKey(value)
+$activeGatewayProfile.subscribe((value) => {
+  const key = normalizeProfileKey(value);
 
   if (key !== lastActiveProfile) {
-    lastActiveProfile = key
-    $settingsScopeOverride.set(null)
+    lastActiveProfile = key;
+    $settingsScopeOverride.set(null);
   }
-})
+});

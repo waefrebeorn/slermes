@@ -4,16 +4,21 @@ import type {
   CronJob,
   CronJobCreatePayload,
   CronJobUpdates,
-  SessionInfo
-} from '@/types/hermes'
+  SessionInfo,
+} from "@/types/hermes";
 
-import { connectionScoped, hermesApi, profileScoped, STARTUP_REQUEST_TIMEOUT_MS } from './client'
+import {
+  connectionScoped,
+  hermesApi,
+  profileScoped,
+  STARTUP_REQUEST_TIMEOUT_MS,
+} from "./client";
 
 // The cron trigger endpoint intentionally waits for the whole job so its
 // response reflects the persisted execution result. Agent jobs can run far
 // longer than the Electron fetch default; keep this override local to the one
 // synchronous long-operation endpoint rather than weakening all API timeouts.
-const CRON_TRIGGER_REQUEST_TIMEOUT_MS = 24 * 60 * 60 * 1000
+const CRON_TRIGGER_REQUEST_TIMEOUT_MS = 24 * 60 * 60 * 1000;
 
 // Cron jobs are stored per-profile (<HERMES_HOME>/cron/jobs.json), and the
 // backend's list endpoint defaults to 'all'. Pass a concrete profile key to
@@ -21,32 +26,35 @@ const CRON_TRIGGER_REQUEST_TIMEOUT_MS = 24 * 60 * 60 * 1000
 // Omitting the arg keeps the legacy 'all' default for non-profile callers.
 // profileScoped() still rides along for backend-process routing.
 export function getCronJobs(profile?: string): Promise<CronJob[]> {
-  const suffix = profile ? `?profile=${encodeURIComponent(profile)}` : ''
+  const suffix = profile ? `?profile=${encodeURIComponent(profile)}` : "";
 
   return hermesApi<CronJob[]>({
     ...profileScoped(),
     ...connectionScoped(),
     path: `/api/cron/jobs${suffix}`,
-    timeoutMs: STARTUP_REQUEST_TIMEOUT_MS
-  })
+    timeoutMs: STARTUP_REQUEST_TIMEOUT_MS,
+  });
 }
 
 export function getCronJob(jobId: string): Promise<CronJob> {
   return hermesApi<CronJob>({
     ...profileScoped(),
     ...connectionScoped(),
-    path: `/api/cron/jobs/${encodeURIComponent(jobId)}`
-  })
+    path: `/api/cron/jobs/${encodeURIComponent(jobId)}`,
+  });
 }
 
-export async function getCronJobRuns(jobId: string, limit = 20): Promise<SessionInfo[]> {
+export async function getCronJobRuns(
+  jobId: string,
+  limit = 20,
+): Promise<SessionInfo[]> {
   const { runs } = await hermesApi<{ runs: SessionInfo[] }>({
     ...profileScoped(),
     ...connectionScoped(),
-    path: `/api/cron/jobs/${encodeURIComponent(jobId)}/runs?limit=${limit}`
-  })
+    path: `/api/cron/jobs/${encodeURIComponent(jobId)}/runs?limit=${limit}`,
+  });
 
-  return runs ?? []
+  return runs ?? [];
 }
 
 // The single source of truth for cron delivery targets (local + configured
@@ -56,30 +64,33 @@ export async function getCronDeliveryTargets(): Promise<CronDeliveryTarget[]> {
   const { targets } = await hermesApi<{ targets: CronDeliveryTarget[] }>({
     ...profileScoped(),
     ...connectionScoped(),
-    path: '/api/cron/delivery-targets'
-  })
+    path: "/api/cron/delivery-targets",
+  });
 
-  return targets ?? []
+  return targets ?? [];
 }
 
 export function createCronJob(body: CronJobCreatePayload): Promise<CronJob> {
   return hermesApi<CronJob>({
     ...profileScoped(),
     ...connectionScoped(),
-    path: '/api/cron/jobs',
-    method: 'POST',
-    body
-  })
+    path: "/api/cron/jobs",
+    method: "POST",
+    body,
+  });
 }
 
-export function updateCronJob(jobId: string, updates: CronJobUpdates): Promise<CronJob> {
+export function updateCronJob(
+  jobId: string,
+  updates: CronJobUpdates,
+): Promise<CronJob> {
   return hermesApi<CronJob>({
     ...profileScoped(),
     ...connectionScoped(),
     path: `/api/cron/jobs/${encodeURIComponent(jobId)}`,
-    method: 'PUT',
-    body: { updates }
-  })
+    method: "PUT",
+    body: { updates },
+  });
 }
 
 export function pauseCronJob(jobId: string): Promise<CronJob> {
@@ -87,8 +98,8 @@ export function pauseCronJob(jobId: string): Promise<CronJob> {
     ...profileScoped(),
     ...connectionScoped(),
     path: `/api/cron/jobs/${encodeURIComponent(jobId)}/pause`,
-    method: 'POST'
-  })
+    method: "POST",
+  });
 }
 
 export function resumeCronJob(jobId: string): Promise<CronJob> {
@@ -96,8 +107,8 @@ export function resumeCronJob(jobId: string): Promise<CronJob> {
     ...profileScoped(),
     ...connectionScoped(),
     path: `/api/cron/jobs/${encodeURIComponent(jobId)}/resume`,
-    method: 'POST'
-  })
+    method: "POST",
+  });
 }
 
 export function triggerCronJob(jobId: string): Promise<CronJob> {
@@ -105,9 +116,9 @@ export function triggerCronJob(jobId: string): Promise<CronJob> {
     ...profileScoped(),
     ...connectionScoped(),
     path: `/api/cron/jobs/${encodeURIComponent(jobId)}/trigger`,
-    method: 'POST',
-    timeoutMs: CRON_TRIGGER_REQUEST_TIMEOUT_MS
-  })
+    method: "POST",
+    timeoutMs: CRON_TRIGGER_REQUEST_TIMEOUT_MS,
+  });
 }
 
 export function deleteCronJob(jobId: string): Promise<{ ok: boolean }> {
@@ -115,8 +126,8 @@ export function deleteCronJob(jobId: string): Promise<{ ok: boolean }> {
     ...profileScoped(),
     ...connectionScoped(),
     path: `/api/cron/jobs/${encodeURIComponent(jobId)}`,
-    method: 'DELETE'
-  })
+    method: "DELETE",
+  });
 }
 
 // Automation Blueprints — parameterized cron templates the backend serves from
@@ -130,24 +141,26 @@ export function deleteCronJob(jobId: string): Promise<{ ok: boolean }> {
 // configured gateways), so it carries only the profileScoped() header for
 // routing. instantiate creates a real per-profile job, so it names the target
 // profile explicitly via ?profile=. This mirrors the dashboard's api.ts.
-export function getAutomationBlueprints(): Promise<{ blueprints: AutomationBlueprint[] }> {
+export function getAutomationBlueprints(): Promise<{
+  blueprints: AutomationBlueprint[];
+}> {
   return hermesApi<{ blueprints: AutomationBlueprint[] }>({
     ...profileScoped(),
     ...connectionScoped(),
-    path: '/api/cron/blueprints',
-    timeoutMs: STARTUP_REQUEST_TIMEOUT_MS
-  })
+    path: "/api/cron/blueprints",
+    timeoutMs: STARTUP_REQUEST_TIMEOUT_MS,
+  });
 }
 
 export function instantiateAutomationBlueprint(
   body: { blueprint: string; values: Record<string, string> },
-  profile: string
+  profile: string,
 ): Promise<CronJob> {
   return hermesApi<CronJob>({
     ...profileScoped(),
     ...connectionScoped(),
     path: `/api/cron/blueprints/instantiate?profile=${encodeURIComponent(profile)}`,
-    method: 'POST',
-    body
-  })
+    method: "POST",
+    body,
+  });
 }

@@ -126,8 +126,8 @@ import {
   IconBolt as Zap,
   IconBoltFilled as ZapFilled,
   IconZoomIn as ZoomIn,
-  IconZoomOut as ZoomOut
-} from '@tabler/icons-react'
+  IconZoomOut as ZoomOut,
+} from "@tabler/icons-react";
 
 export {
   Activity,
@@ -257,10 +257,10 @@ export {
   Zap,
   ZapFilled,
   ZoomIn,
-  ZoomOut
-}
+  ZoomOut,
+};
 
-export type { Icon as IconComponent } from '@tabler/icons-react'
+export type { Icon as IconComponent } from "@tabler/icons-react";
 
 /**
  * Named icon-size scale — the single source of truth for SVG icon dimensions,
@@ -269,11 +269,11 @@ export type { Icon as IconComponent } from '@tabler/icons-react'
  * `cn()` for colour/animation classes.
  */
 export const iconSize = {
-  xs: 'size-3', // 12px
-  sm: 'size-3.5', // 14px
-  md: 'size-4', // 16px
-  lg: 'size-5', // 20px
-  xl: 'size-6' // 24px
-} as const
+  xs: "size-3", // 12px
+  sm: "size-3.5", // 14px
+  md: "size-4", // 16px
+  lg: "size-5", // 20px
+  xl: "size-6", // 24px
+} as const;
 
-export type IconSize = keyof typeof iconSize
+export type IconSize = keyof typeof iconSize;

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 /**
  * The ONLY static importer of shiki (and through it the multi-MB shiki
@@ -18,32 +18,38 @@
  * misses are debounced so a streaming block settles before the heavy work
  * starts.
  */
-import { useEffect, useMemo, useState } from 'react'
-import { bundledLanguages, getSingletonHighlighter } from 'shiki'
-import type { BundledLanguage, BundledTheme, Highlighter } from 'shiki'
-import { createOnigurumaEngine } from 'shiki/engine/oniguruma'
+import { useEffect, useMemo, useState } from "react";
+import { bundledLanguages, getSingletonHighlighter } from "shiki";
+import type { BundledLanguage, BundledTheme, Highlighter } from "shiki";
+import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 
-import { SHIKI_HIGHLIGHT_SCOPE, SHIKI_THEME } from '@/components/chat/shiki-config'
-import { highlightCache, highlightCacheKey } from '@/components/chat/shiki-highlight-cache'
+import {
+  SHIKI_HIGHLIGHT_SCOPE,
+  SHIKI_THEME,
+} from "@/components/chat/shiki-config";
+import {
+  highlightCache,
+  highlightCacheKey,
+} from "@/components/chat/shiki-highlight-cache";
 
 /** Same debounce react-shiki's `delay` used to throttle highlight work with. */
-const HIGHLIGHT_DELAY_MS = 120
+const HIGHLIGHT_DELAY_MS = 120;
 
 // Stable identity for "no color replacements" so the memo/effect deps below
 // never churn on renders that don't pass the prop.
-const NO_COLOR_REPLACEMENTS: Record<string, Record<string, string>> = {}
+const NO_COLOR_REPLACEMENTS: Record<string, Record<string, string>> = {};
 
 export interface CachedShikiBlockProps {
-  language: string
-  code: string
+  language: string;
+  code: string;
   /** Theme override; defaults to the shared SHIKI_THEME. */
-  theme?: { dark: string; light: string }
+  theme?: { dark: string; light: string };
   /** Color replacements; defaults to none (the chat passes its own). */
-  colorReplacements?: Record<string, Record<string, string>>
+  colorReplacements?: Record<string, Record<string, string>>;
 }
 
 function isLoadableLanguage(language: string): boolean {
-  return language === 'text' || language in bundledLanguages
+  return language === "text" || language in bundledLanguages;
 }
 
 /**
@@ -52,13 +58,13 @@ function isLoadableLanguage(language: string): boolean {
  */
 function highlightScope(
   theme: { dark: string; light: string },
-  colorReplacements: Record<string, Record<string, string>>
+  colorReplacements: Record<string, Record<string, string>>,
 ): string {
-  return `${SHIKI_HIGHLIGHT_SCOPE}:${theme.dark}:${theme.light}:${JSON.stringify(colorReplacements)}`
+  return `${SHIKI_HIGHLIGHT_SCOPE}:${theme.dark}:${theme.light}:${JSON.stringify(colorReplacements)}`;
 }
 
-let highlighterPromise: Promise<Highlighter> | null = null
-let loadedThemes = new Set<string>([SHIKI_THEME.dark, SHIKI_THEME.light])
+let highlighterPromise: Promise<Highlighter> | null = null;
+let loadedThemes = new Set<string>([SHIKI_THEME.dark, SHIKI_THEME.light]);
 
 /**
  * Lazily-created shiki singleton, mirroring react-shiki's full bundle: only
@@ -71,7 +77,7 @@ async function highlightToHtml(
   language: string,
   code: string,
   theme: { dark: string; light: string },
-  colorReplacements: Record<string, Record<string, string>>
+  colorReplacements: Record<string, Record<string, string>>,
 ): Promise<string> {
   if (!highlighterPromise) {
     highlighterPromise = getSingletonHighlighter({
@@ -79,95 +85,122 @@ async function highlightToHtml(
       // guards both call sites), so the cast is safe.
       langs: isLoadableLanguage(language) ? [language as BundledLanguage] : [],
       themes: [SHIKI_THEME.dark, SHIKI_THEME.light],
-      engine: createOnigurumaEngine(import('shiki/wasm'))
-    })
+      engine: createOnigurumaEngine(import("shiki/wasm")),
+    });
   }
 
-  const highlighter = await highlighterPromise
+  const highlighter = await highlighterPromise;
 
-  if (isLoadableLanguage(language) && !highlighter.getLoadedLanguages().includes(language)) {
-    await highlighter.loadLanguage(language as BundledLanguage)
+  if (
+    isLoadableLanguage(language) &&
+    !highlighter.getLoadedLanguages().includes(language)
+  ) {
+    await highlighter.loadLanguage(language as BundledLanguage);
   }
 
-  const missingThemes = [theme.dark, theme.light].filter(name => !loadedThemes.has(name))
+  const missingThemes = [theme.dark, theme.light].filter(
+    (name) => !loadedThemes.has(name),
+  );
 
   if (missingThemes.length > 0) {
-    await highlighter.loadTheme(...(missingThemes as BundledTheme[]))
-    missingThemes.forEach(name => loadedThemes.add(name))
+    await highlighter.loadTheme(...(missingThemes as BundledTheme[]));
+    missingThemes.forEach((name) => loadedThemes.add(name));
   }
 
   return highlighter.codeToHtml(code, {
     lang: language,
     themes: { dark: theme.dark, light: theme.light },
-    defaultColor: 'light-dark()',
-    colorReplacements
-  })
+    defaultColor: "light-dark()",
+    colorReplacements,
+  });
 }
 
 function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 /** Never let a highlight failure blank a block — degrade to escaped plain text. */
 function plainTextHtml(code: string): string {
-  return `<pre class="shiki" style="background-color:transparent;margin:0"><code>${escapeHtml(code)}</code></pre>`
+  return `<pre class="shiki" style="background-color:transparent;margin:0"><code>${escapeHtml(code)}</code></pre>`;
 }
 
-export default function CachedShikiBlock({ language, code, theme, colorReplacements }: CachedShikiBlockProps) {
-  const themeConfig = theme ?? SHIKI_THEME
-  const replacements = colorReplacements ?? NO_COLOR_REPLACEMENTS
+export default function CachedShikiBlock({
+  language,
+  code,
+  theme,
+  colorReplacements,
+}: CachedShikiBlockProps) {
+  const themeConfig = theme ?? SHIKI_THEME;
+  const replacements = colorReplacements ?? NO_COLOR_REPLACEMENTS;
 
   const cacheKey = useMemo(
-    () => highlightCacheKey(highlightScope(themeConfig, replacements), language, code),
-    [language, code, replacements, themeConfig]
-  )
+    () =>
+      highlightCacheKey(
+        highlightScope(themeConfig, replacements),
+        language,
+        code,
+      ),
+    [language, code, replacements, themeConfig],
+  );
 
-  const [html, setHtml] = useState<string | null>(() => highlightCache.get(cacheKey) ?? null)
+  const [html, setHtml] = useState<string | null>(
+    () => highlightCache.get(cacheKey) ?? null,
+  );
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     // Cache hit — no highlighter work at all. This is the warm-switch path:
     // the previous visit already rendered this block, so paint it again.
-    const cached = highlightCache.get(cacheKey)
+    const cached = highlightCache.get(cacheKey);
 
     if (cached !== undefined) {
-      setHtml(cached)
+      setHtml(cached);
 
-      return
+      return;
     }
 
     const timer = window.setTimeout(() => {
       highlightToHtml(language, code, themeConfig, replacements)
-        .then(result => {
+        .then((result) => {
           if (cancelled) {
-            return
+            return;
           }
 
-          highlightCache.set(cacheKey, result)
-          setHtml(result)
+          highlightCache.set(cacheKey, result);
+          setHtml(result);
         })
-        .catch(error => {
+        .catch((error) => {
           if (cancelled) {
-            return
+            return;
           }
 
-          console.error('shiki highlight failed; rendering plain code', error)
-          setHtml(plainTextHtml(code))
-        })
-    }, HIGHLIGHT_DELAY_MS)
+          console.error("shiki highlight failed; rendering plain code", error);
+          setHtml(plainTextHtml(code));
+        });
+    }, HIGHLIGHT_DELAY_MS);
 
     return () => {
-      cancelled = true
-      window.clearTimeout(timer)
-    }
-  }, [cacheKey, code, language, replacements, themeConfig])
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [cacheKey, code, language, replacements, themeConfig]);
 
   if (html === null) {
     // Nothing to paint yet (miss, debounce pending). Matches react-shiki's
     // own empty render while the highlight is in flight.
-    return null
+    return null;
   }
 
-  return <div className="rs-root not-prose" dangerouslySetInnerHTML={{ __html: html }} data-testid="shiki-container" />
+  return (
+    <div
+      className="rs-root not-prose"
+      dangerouslySetInnerHTML={{ __html: html }}
+      data-testid="shiki-container"
+    />
+  );
 }

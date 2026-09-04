@@ -19,74 +19,84 @@
  * next quiet moment is eligible, never that one gets taken.
  */
 
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
-import { SETTINGS_ROUTE } from '@/app/routes'
-import type { Translations } from '@/i18n/types'
-import { resolveTipAnchor } from '@/lib/tips/anchor'
-import { TIP_CATALOG } from '@/lib/tips/catalog'
-import { nextTip } from '@/lib/tips/rotation'
-import { $awaitingResponse, $busy } from '@/store/session'
-import { $activeTip, $lastTipId, $nextTipAt, $retiredTips, $tipsEnabled, showTip } from '@/store/tips'
+import { SETTINGS_ROUTE } from "@/app/routes";
+import type { Translations } from "@/i18n/types";
+import { resolveTipAnchor } from "@/lib/tips/anchor";
+import { TIP_CATALOG } from "@/lib/tips/catalog";
+import { nextTip } from "@/lib/tips/rotation";
+import { $awaitingResponse, $busy } from "@/store/session";
+import {
+  $activeTip,
+  $lastTipId,
+  $nextTipAt,
+  $retiredTips,
+  $tipsEnabled,
+  showTip,
+} from "@/store/tips";
 
-import { offerLocalSetupTip } from './local-setup-offer'
+import { offerLocalSetupTip } from "./local-setup-offer";
 
-const TICK_MS = 30_000
+const TICK_MS = 30_000;
 /** Nothing in the first stretch of a launch, however long the cooldown says
  *  it's been: you opened the app to do a thing, and the tip can wait until
  *  you've done it. Jittered so it isn't the same beat every time. */
-const SETTLE_MIN_MS = 5 * 60_000
-const SETTLE_SPREAD_MS = 5 * 60_000
+const SETTLE_MIN_MS = 5 * 60_000;
+const SETTLE_SPREAD_MS = 5 * 60_000;
 /** Typing is the clearest "I'm busy" signal the renderer gets for free. */
-const TYPING_GRACE_MS = 5_000
+const TYPING_GRACE_MS = 5_000;
 
 /** Anything on screen a tip would be talking over. `.driver-popover` is the
  *  tour: two accent-lit bubbles at once is one too many. */
 const BLOCKING_SURFACES =
-  '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[data-overlay-surface],.driver-popover'
+  '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[data-overlay-surface],.driver-popover';
 
 function appIsQuiet(lastTypedAt: number): boolean {
-  if (document.visibilityState !== 'visible' || !document.hasFocus()) {
-    return false
+  if (document.visibilityState !== "visible" || !document.hasFocus()) {
+    return false;
   }
 
   if ($busy.get() || $awaitingResponse.get()) {
-    return false
+    return false;
   }
 
   if (Date.now() - lastTypedAt < TYPING_GRACE_MS) {
-    return false
+    return false;
   }
 
-  return !document.querySelector(BLOCKING_SURFACES)
+  return !document.querySelector(BLOCKING_SURFACES);
 }
 
 /** Drive the ambient rotation for as long as the host is mounted. */
-export function useTipRotation(copy: Translations['tips']) {
-  const navigate = useNavigate()
+export function useTipRotation(copy: Translations["tips"]) {
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let lastTypedAt = 0
-    let settledAt = Date.now() + SETTLE_MIN_MS + Math.random() * SETTLE_SPREAD_MS
+    let lastTypedAt = 0;
+    let settledAt =
+      Date.now() + SETTLE_MIN_MS + Math.random() * SETTLE_SPREAD_MS;
 
     const noteTyping = () => {
-      lastTypedAt = Date.now()
-    }
+      lastTypedAt = Date.now();
+    };
 
     const isDue = () => {
-      const nextAt = $nextTipAt.get()
+      const nextAt = $nextTipAt.get();
 
-      return Date.now() >= settledAt && (nextAt === null || Date.now() >= nextAt)
-    }
+      return (
+        Date.now() >= settledAt && (nextAt === null || Date.now() >= nextAt)
+      );
+    };
 
     const offer = () => {
       if (!$tipsEnabled.get() || $activeTip.get()) {
-        return
+        return;
       }
 
       if (!isDue() || !appIsQuiet(lastTypedAt)) {
-        return
+        return;
       }
 
       // Campaigns outrank the walk: a conditional, actionable tip that is
@@ -95,26 +105,28 @@ export function useTipRotation(copy: Translations['tips']) {
       // the cooldown, so taking the moment still costs it the usual hours.
       if (
         offerLocalSetupTip(copy, () => {
-          navigate(`${SETTINGS_ROUTE}?tab=providers&pview=local`)
+          navigate(`${SETTINGS_ROUTE}?tab=providers&pview=local`);
         })
       ) {
-        return
+        return;
       }
 
       // Only tips with something on screen to point at are candidates, so the
       // rotation never burns a turn on a pane the user isn't showing.
-      const onScreen = TIP_CATALOG.filter(tip => resolveTipAnchor(document, tip.targets))
+      const onScreen = TIP_CATALOG.filter((tip) =>
+        resolveTipAnchor(document, tip.targets),
+      );
 
       const chosen = nextTip(
-        TIP_CATALOG.map(tip => tip.id),
-        onScreen.map(tip => tip.id),
-        { lastShownId: $lastTipId.get(), retired: $retiredTips.get() }
-      )
+        TIP_CATALOG.map((tip) => tip.id),
+        onScreen.map((tip) => tip.id),
+        { lastShownId: $lastTipId.get(), retired: $retiredTips.get() },
+      );
 
-      const tip = onScreen.find(candidate => candidate.id === chosen)
+      const tip = onScreen.find((candidate) => candidate.id === chosen);
 
       if (!tip) {
-        return
+        return;
       }
 
       showTip({
@@ -123,28 +135,28 @@ export function useTipRotation(copy: Translations['tips']) {
         targets: tip.targets,
         text: copy.items[tip.id].text,
         tipId: tip.id,
-        title: copy.items[tip.id].title
-      })
-    }
+        title: copy.items[tip.id].title,
+      });
+    };
 
     // Turning tips on is its own kind of settled: the delay guards a
     // launch you came into with a purpose, and has nothing to say about someone
     // who just asked for tips and is owed the sight of one working.
-    const unbindSwitch = $tipsEnabled.listen(enabled => {
+    const unbindSwitch = $tipsEnabled.listen((enabled) => {
       if (enabled) {
-        settledAt = Date.now()
-        offer()
+        settledAt = Date.now();
+        offer();
       }
-    })
+    });
 
-    const timer = window.setInterval(offer, TICK_MS)
+    const timer = window.setInterval(offer, TICK_MS);
 
-    window.addEventListener('keydown', noteTyping, true)
+    window.addEventListener("keydown", noteTyping, true);
 
     return () => {
-      unbindSwitch()
-      window.clearInterval(timer)
-      window.removeEventListener('keydown', noteTyping, true)
-    }
-  }, [copy, navigate])
+      unbindSwitch();
+      window.clearInterval(timer);
+      window.removeEventListener("keydown", noteTyping, true);
+    };
+  }, [copy, navigate]);
 }

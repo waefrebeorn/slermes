@@ -23,20 +23,23 @@
  * the next refresh retries; a backend without the endpoint (version skew)
  * stays armed-off for this renderer lifetime.
  */
-import { getApiRequestConnection, hermesApi } from '@/api/client'
-import { isMissingRestEndpoint } from '@/lib/gateway-rpc'
-import { resolveLegacyOwnerBackfillScope } from '@/lib/session-owner-stamp'
-import { $connectionsRegistry, hasRegistryTopology } from '@/store/connection-registry-state'
+import { getApiRequestConnection, hermesApi } from "@/api/client";
+import { isMissingRestEndpoint } from "@/lib/gateway-rpc";
+import { resolveLegacyOwnerBackfillScope } from "@/lib/session-owner-stamp";
+import {
+  $connectionsRegistry,
+  hasRegistryTopology,
+} from "@/store/connection-registry-state";
 
-const attemptedScopes = new Set<string>()
+const attemptedScopes = new Set<string>();
 
 /** Test seam: forget which scopes were already backfilled this renderer. */
 export function resetLegacyOwnerBackfillAttempts(): void {
-  attemptedScopes.clear()
+  attemptedScopes.clear();
 }
 
 function scopeKey(connectionId: null | string, profile: null | string): string {
-  return `${connectionId ?? 'local'}::${profile ?? ''}`
+  return `${connectionId ?? "local"}::${profile ?? ""}`;
 }
 
 /**
@@ -48,46 +51,46 @@ export function maybeBackfillLegacySessionOwners(): void {
   const scope = resolveLegacyOwnerBackfillScope({
     hasRegistryTopology: hasRegistryTopology(),
     registryConnectionIds: ($connectionsRegistry.get()?.connections ?? []).map(
-      (connection: { id: string }) => connection.id
+      (connection: { id: string }) => connection.id,
     ),
-    servingConnectionId: getApiRequestConnection()
-  })
+    servingConnectionId: getApiRequestConnection(),
+  });
 
   if (!scope) {
-    return
+    return;
   }
 
-  const key = scopeKey(scope.connectionId, scope.profile)
+  const key = scopeKey(scope.connectionId, scope.profile);
 
   if (attemptedScopes.has(key)) {
-    return
+    return;
   }
 
-  attemptedScopes.add(key)
+  attemptedScopes.add(key);
 
   void hermesApi<{ ok: boolean; profile: string; stamped: number }>({
     ...(scope.connectionId ? { connectionId: scope.connectionId } : {}),
     ...(scope.profile ? { profile: scope.profile } : {}),
-    path: '/api/sessions/owner-backfill',
-    method: 'POST',
-    body: scope.profile ? { profile: scope.profile } : {}
+    path: "/api/sessions/owner-backfill",
+    method: "POST",
+    body: scope.profile ? { profile: scope.profile } : {},
   })
-    .then(result => {
+    .then((result) => {
       if (result.stamped > 0) {
         console.info(
           `[legacy-session-owner-backfill] stamped ${result.stamped} legacy session row(s) ` +
-            `with profile "${result.profile}" on ${scope.connectionId ?? 'the primary backend'}`
-        )
+            `with profile "${result.profile}" on ${scope.connectionId ?? "the primary backend"}`,
+        );
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // Version skew: this backend predates the endpoint. Keep the scope
       // marked so we don't re-probe a known-dead route every refresh.
       if (isMissingRestEndpoint(error)) {
-        return
+        return;
       }
 
       // Transient failure: re-arm so the next enumeration retries.
-      attemptedScopes.delete(key)
-    })
+      attemptedScopes.delete(key);
+    });
 }

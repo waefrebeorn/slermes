@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import { composerFloatingPill } from '@/components/chat/composer-dock'
-import { Codicon } from '@/components/ui/codicon'
-import { Tip } from '@/components/ui/tooltip'
-import { triggerHaptic } from '@/lib/haptics'
-import { brandFor, brandGlyphStyle } from '@/lib/mcp-brands'
-import { useSessionSlice } from '@/lib/use-session-slice'
-import { cn } from '@/lib/utils'
-import { $composerSuggestionsBySession, markSuggestionInvoked, suggestionKey } from '@/store/composer-suggestions'
+import { composerFloatingPill } from "@/components/chat/composer-dock";
+import { Codicon } from "@/components/ui/codicon";
+import { Tip } from "@/components/ui/tooltip";
+import { triggerHaptic } from "@/lib/haptics";
+import { brandFor, brandGlyphStyle } from "@/lib/mcp-brands";
+import { useSessionSlice } from "@/lib/use-session-slice";
+import { cn } from "@/lib/utils";
+import {
+  $composerSuggestionsBySession,
+  markSuggestionInvoked,
+  suggestionKey,
+} from "@/store/composer-suggestions";
 
 /**
  * The composer suggestion strip — generic pills fed by the suggestion bus
@@ -30,7 +34,7 @@ import { $composerSuggestionsBySession, markSuggestionInvoked, suggestionKey } f
  * `pointer-events-none` — the pop-out drag region sits behind this strip.
  */
 
-type PillPhase = 'done' | 'idle' | 'working'
+type PillPhase = "done" | "idle" | "working";
 
 /**
  * Phase belongs to the pill the user is looking at, so it lives and dies with
@@ -41,16 +45,17 @@ type PillPhase = 'done' | 'idle' | 'working'
  * the next chat's genuine offer as already-done and inert.
  */
 export function SuggestionPills({ sessionId }: { sessionId: null | string }) {
-  return <SessionSuggestionPills key={sessionId ?? ''} sessionId={sessionId} />
+  return <SessionSuggestionPills key={sessionId ?? ""} sessionId={sessionId} />;
 }
 
 function SessionSuggestionPills({ sessionId }: { sessionId: null | string }) {
-  const suggestions = useSessionSlice($composerSuggestionsBySession, sessionId)
-  const [phases, setPhases] = useState<Record<string, PillPhase>>({})
+  const suggestions = useSessionSlice($composerSuggestionsBySession, sessionId);
+  const [phases, setPhases] = useState<Record<string, PillPhase>>({});
   // Cancel flags outlive renders but never trigger them (poll-boundary abort).
-  const [cancels] = useState(() => new Map<string, boolean>())
+  const [cancels] = useState(() => new Map<string, boolean>());
 
-  const setPhase = (key: string, phase: PillPhase) => setPhases(current => ({ ...current, [key]: phase }))
+  const setPhase = (key: string, phase: PillPhase) =>
+    setPhases((current) => ({ ...current, [key]: phase }));
 
   // A pill that leaves the strip takes its phase with it, and cancels whatever
   // it had in flight. Both halves matter:
@@ -71,89 +76,124 @@ function SessionSuggestionPills({ sessionId }: { sessionId: null | string }) {
   // `suggestions` is reference-stable while the offered set is unchanged (the
   // bus preserves identity on no-op writes), so this runs on real churn only.
   useEffect(() => {
-    const live = new Set(suggestions.map(suggestionKey))
+    const live = new Set(suggestions.map(suggestionKey));
 
     for (const key of cancels.keys()) {
       if (!live.has(key)) {
-        cancels.set(key, true)
+        cancels.set(key, true);
       }
     }
 
-    setPhases(current => {
-      const kept = Object.entries(current).filter(([key]) => live.has(key))
+    setPhases((current) => {
+      const kept = Object.entries(current).filter(([key]) => live.has(key));
 
-      return kept.length === Object.keys(current).length ? current : Object.fromEntries(kept)
-    })
-  }, [cancels, suggestions])
+      return kept.length === Object.keys(current).length
+        ? current
+        : Object.fromEntries(kept);
+    });
+  }, [cancels, suggestions]);
 
   // Unmount withdraws everything at once (composer closing, session switch
   // remounting this subtree) — same rule, same reason.
   useEffect(
     () => () => {
       for (const key of cancels.keys()) {
-        cancels.set(key, true)
+        cancels.set(key, true);
       }
     },
-    [cancels]
-  )
+    [cancels],
+  );
 
-  return suggestions.map(suggestion => {
-    const key = suggestionKey(suggestion)
-    const brand = suggestion.brand ? brandFor(suggestion.brand) : null
-    const phase = phases[key] ?? 'idle'
+  return suggestions.map((suggestion) => {
+    const key = suggestionKey(suggestion);
+    const brand = suggestion.brand ? brandFor(suggestion.brand) : null;
+    const phase = phases[key] ?? "idle";
 
     const label =
-      phase === 'working' ? suggestion.workingLabel : phase === 'done' ? suggestion.doneLabel : suggestion.label
+      phase === "working"
+        ? suggestion.workingLabel
+        : phase === "done"
+          ? suggestion.doneLabel
+          : suggestion.label;
 
-    const tip = phase === 'working' ? suggestion.workingTip : phase === 'done' ? suggestion.doneTip : suggestion.tip
+    const tip =
+      phase === "working"
+        ? suggestion.workingTip
+        : phase === "done"
+          ? suggestion.doneTip
+          : suggestion.tip;
 
     const invoke = async () => {
-      cancels.set(key, false)
-      setPhase(key, 'working')
-      triggerHaptic('selection')
+      cancels.set(key, false);
+      setPhase(key, "working");
+      triggerHaptic("selection");
       // Acting on a pill clears its ignored-count in the bus's declined
       // ledger — its later withdrawal is success, not a strike.
-      markSuggestionInvoked(sessionId, key)
+      markSuggestionInvoked(sessionId, key);
 
       try {
-        await suggestion.invoke({ cancelled: () => cancels.get(key) === true, sessionId })
-        triggerHaptic('submit')
-        setPhase(key, 'done')
+        await suggestion.invoke({
+          cancelled: () => cancels.get(key) === true,
+          sessionId,
+        });
+        triggerHaptic("submit");
+        setPhase(key, "done");
       } catch {
         // Provider owns error surfacing (and swallows its own cancels);
         // the pill just returns to idle so it can be tried again.
-        setPhase(key, 'idle')
+        setPhase(key, "idle");
       } finally {
-        cancels.delete(key)
+        cancels.delete(key);
       }
-    }
+    };
 
     return (
       <Tip key={key} label={tip}>
         <button
-          className={cn(composerFloatingPill, 'max-w-56', phase === 'done' && 'cursor-default')}
+          className={cn(
+            composerFloatingPill,
+            "max-w-56",
+            phase === "done" && "cursor-default",
+          )}
           onClick={() => {
-            if (phase === 'working') {
+            if (phase === "working") {
               // Second click requests cancel (a stuck OAuth tab, etc.).
-              cancels.set(key, true)
-            } else if (phase === 'idle') {
-              void invoke()
+              cancels.set(key, true);
+            } else if (phase === "idle") {
+              void invoke();
             }
           }}
           type="button"
         >
-          {phase === 'working' ? (
-            <Codicon className="shrink-0 opacity-70" name="loading" size="0.75rem" spinning />
-          ) : phase === 'done' ? (
-            <Codicon className="shrink-0 text-emerald-400" name="check" size="0.75rem" />
+          {phase === "working" ? (
+            <Codicon
+              className="shrink-0 opacity-70"
+              name="loading"
+              size="0.75rem"
+              spinning
+            />
+          ) : phase === "done" ? (
+            <Codicon
+              className="shrink-0 text-emerald-400"
+              name="check"
+              size="0.75rem"
+            />
           ) : brand ? (
-            <brand.Icon aria-hidden className="size-3 shrink-0" style={brandGlyphStyle(brand)} />
+            <brand.Icon
+              aria-hidden
+              className="size-3 shrink-0"
+              style={brandGlyphStyle(brand)}
+            />
           ) : (
-            <Codicon className="shrink-0 opacity-70" name={suggestion.icon ?? 'lightbulb'} size="0.75rem" />
+            <Codicon
+              className="shrink-0 opacity-70"
+              name={suggestion.icon ?? "lightbulb"}
+              size="0.75rem"
+            />
           )}
           <span className="truncate">{label}</span>
         </button>
       </Tip>
-    )
-  })
+    );
+  });
 }

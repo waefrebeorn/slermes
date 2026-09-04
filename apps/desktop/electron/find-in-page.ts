@@ -18,21 +18,21 @@
 /** Match options accepted by the renderer's `findInPage` bridge call. */
 export interface FindInPageOptions {
   /** Step direction. Defaults to `true` (forward). */
-  forward?: boolean
+  forward?: boolean;
   /**
    * `true` to advance to the next/previous match using the previous query;
    * `false` to (re)search the current `query` from scratch. The renderer
    * passes `false` on a fresh query and `true` on Enter / Shift+Enter.
    */
-  findNext?: boolean
+  findNext?: boolean;
 }
 
 /** Payload shape sent back to the renderer on every `found-in-page` event. */
 export interface FoundInPagePayload {
   /** 1-indexed ordinal of the active match, or 0 when none. */
-  activeMatchOrdinal: number
+  activeMatchOrdinal: number;
   /** Total matches in the document for the current query. */
-  count: number
+  count: number;
 }
 
 /**
@@ -41,11 +41,14 @@ export interface FoundInPagePayload {
  * keeping the projection explicit makes the wire shape auditable and keeps
  * tests independent of the runtime type.
  */
-export function formatFoundInPage(result: { activeMatchOrdinal?: number; matches?: number }): FoundInPagePayload {
+export function formatFoundInPage(result: {
+  activeMatchOrdinal?: number;
+  matches?: number;
+}): FoundInPagePayload {
   return {
     activeMatchOrdinal: Number(result?.activeMatchOrdinal ?? 0),
-    count: Number(result?.matches ?? 0)
-  }
+    count: Number(result?.matches ?? 0),
+  };
 }
 
 /**
@@ -57,18 +60,18 @@ export function formatFoundInPage(result: { activeMatchOrdinal?: number; matches
 export function performFind(
   webContents: Electron.WebContents | null | undefined,
   query: string,
-  options: FindInPageOptions | null | undefined
+  options: FindInPageOptions | null | undefined,
 ): void {
   if (!webContents || webContents.isDestroyed()) {
-    return
+    return;
   }
 
-  const opts = options && typeof options === 'object' ? options : {}
+  const opts = options && typeof options === "object" ? options : {};
 
-  webContents.findInPage(String(query ?? ''), {
+  webContents.findInPage(String(query ?? ""), {
     forward: opts.forward !== false,
-    findNext: Boolean(opts.findNext)
-  })
+    findNext: Boolean(opts.findNext),
+  });
 }
 
 /**
@@ -79,36 +82,39 @@ export function performFind(
 export function performFindAfterIndexingStarted(
   webContents: Electron.WebContents | null | undefined,
   query: string,
-  options: FindInPageOptions | null | undefined
+  options: FindInPageOptions | null | undefined,
 ): Promise<void> {
   if (!webContents || webContents.isDestroyed()) {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
-  return new Promise(resolve => {
-    let requestId: number | undefined
+  return new Promise((resolve) => {
+    let requestId: number | undefined;
 
     const finish = () => {
-      webContents.off('found-in-page', onFound)
-      webContents.off('destroyed', finish)
-      resolve()
-    }
+      webContents.off("found-in-page", onFound);
+      webContents.off("destroyed", finish);
+      resolve();
+    };
 
-    const onFound = (_event: Electron.Event, result: { requestId?: number }) => {
+    const onFound = (
+      _event: Electron.Event,
+      result: { requestId?: number },
+    ) => {
       if (requestId !== undefined && result?.requestId === requestId) {
-        finish()
+        finish();
       }
-    }
+    };
 
-    webContents.on('found-in-page', onFound)
-    webContents.once('destroyed', finish)
+    webContents.on("found-in-page", onFound);
+    webContents.once("destroyed", finish);
 
-    const opts = options && typeof options === 'object' ? options : {}
-    requestId = webContents.findInPage(String(query ?? ''), {
+    const opts = options && typeof options === "object" ? options : {};
+    requestId = webContents.findInPage(String(query ?? ""), {
       forward: opts.forward !== false,
-      findNext: Boolean(opts.findNext)
-    })
-  })
+      findNext: Boolean(opts.findNext),
+    });
+  });
 }
 
 /**
@@ -117,13 +123,14 @@ export function performFindAfterIndexingStarted(
  */
 export function stopFind(
   webContents: Electron.WebContents | null | undefined,
-  action: 'clearSelection' | 'keepSelection' | 'activateSelection' = 'clearSelection'
+  action:
+    "clearSelection" | "keepSelection" | "activateSelection" = "clearSelection",
 ): void {
   if (!webContents || webContents.isDestroyed()) {
-    return
+    return;
   }
 
-  webContents.stopFindInPage(action)
+  webContents.stopFindInPage(action);
 }
 
 /**
@@ -139,24 +146,29 @@ export function stopFind(
  * highlight matches in THAT window, and the match counter must reflect
  * THAT window's DOM, not the primary's.
  */
-export function installFoundInPageForwarder(webContents: Electron.WebContents | null | undefined): () => void {
+export function installFoundInPageForwarder(
+  webContents: Electron.WebContents | null | undefined,
+): () => void {
   if (!webContents || webContents.isDestroyed()) {
-    return () => {}
+    return () => {};
   }
 
-  const handler = (_event: Electron.Event, result: Parameters<typeof formatFoundInPage>[0]) => {
+  const handler = (
+    _event: Electron.Event,
+    result: Parameters<typeof formatFoundInPage>[0],
+  ) => {
     if (webContents.isDestroyed()) {
-      return
+      return;
     }
 
-    webContents.send('hermes:found-in-page', formatFoundInPage(result))
-  }
+    webContents.send("hermes:found-in-page", formatFoundInPage(result));
+  };
 
-  webContents.on('found-in-page', handler)
+  webContents.on("found-in-page", handler);
 
   return () => {
-    webContents.off('found-in-page', handler)
-  }
+    webContents.off("found-in-page", handler);
+  };
 }
 
 /**
@@ -186,46 +198,49 @@ export function installFoundInPageForwarder(webContents: Electron.WebContents | 
  *
  * Returns an uninstall fn that detaches the listener.
  */
-const IS_MAC = () => process.platform === 'darwin'
+const IS_MAC = () => process.platform === "darwin";
 
-export function installFindShortcut(window: Electron.BrowserWindow, isMac: () => boolean = IS_MAC): () => void {
-  const { webContents } = window
+export function installFindShortcut(
+  window: Electron.BrowserWindow,
+  isMac: () => boolean = IS_MAC,
+): () => void {
+  const { webContents } = window;
 
   if (!webContents || webContents.isDestroyed()) {
-    return () => {}
+    return () => {};
   }
 
   const handler = (event: Electron.Event, input: Electron.Input) => {
     if (!webContents || webContents.isDestroyed()) {
-      return
+      return;
     }
 
-    const key = String(input.key || '').toLowerCase()
+    const key = String(input.key || "").toLowerCase();
     // Accept the platform's primary accelerator (Cmd on macOS, Ctrl elsewhere)
     // AND literal Ctrl on macOS so the chord still reaches us when the user
     // is on a non-macOS layout. On Pop!_OS / GNOME the GTK compositor owns
     // Ctrl+F before the renderer's keydown fires — this main-process handler
     // runs strictly before that (#81727).
-    const hasMod = isMac() ? input.meta || input.control : input.control
+    const hasMod = isMac() ? input.meta || input.control : input.control;
 
-    const isFindChord = key === 'f' && hasMod && !input.alt && !input.shift
+    const isFindChord = key === "f" && hasMod && !input.alt && !input.shift;
 
     if (!isFindChord) {
-      return
+      return;
     }
 
-    if (typeof event.preventDefault === 'function') {
-      event.preventDefault()
+    if (typeof event.preventDefault === "function") {
+      event.preventDefault();
     }
 
-    webContents.send('hermes:open-find-bar')
-  }
+    webContents.send("hermes:open-find-bar");
+  };
 
-  webContents.on('before-input-event', handler)
+  webContents.on("before-input-event", handler);
 
   return () => {
     if (!webContents.isDestroyed()) {
-      webContents.off('before-input-event', handler)
+      webContents.off("before-input-event", handler);
     }
-  }
+  };
 }

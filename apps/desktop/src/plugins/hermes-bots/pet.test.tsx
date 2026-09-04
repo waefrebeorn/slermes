@@ -12,8 +12,8 @@
  * failure must be evicted; a success must not be refetched.
  */
 
-import { render, waitFor } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { render, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { hostMock, UnboundedCache, useQueryMock } = vi.hoisted(() => ({
   hostMock: { notify: vi.fn(), request: vi.fn() },
@@ -21,135 +21,161 @@ const { hostMock, UnboundedCache, useQueryMock } = vi.hoisted(() => ({
   // fixture here approaches it, so the double just drops the bound.
   UnboundedCache: class extends Map {
     constructor(_max: number) {
-      super()
+      super();
     }
   },
-  useQueryMock: vi.fn()
-}))
+  useQueryMock: vi.fn(),
+}));
 
-vi.mock('@hermes/plugin-sdk', () => ({
-  Button: (props: React.ComponentProps<'button'>) => <button {...props} />,
-  cn: (...parts: unknown[]) => parts.filter(Boolean).join(' '),
+vi.mock("@hermes/plugin-sdk", () => ({
+  Button: (props: React.ComponentProps<"button">) => <button {...props} />,
+  cn: (...parts: unknown[]) => parts.filter(Boolean).join(" "),
   GlyphSpinner: () => <span />,
   host: hostMock,
-  Input: (props: React.ComponentProps<'input'>) => <input {...props} />,
+  Input: (props: React.ComponentProps<"input">) => <input {...props} />,
   LruCache: UnboundedCache,
-  RowButton: (props: React.ComponentProps<'button'>) => <button {...props} />,
-  useQuery: useQueryMock
-}))
+  RowButton: (props: React.ComponentProps<"button">) => <button {...props} />,
+  useQuery: useQueryMock,
+}));
 
-vi.mock('./i18n', () => ({
+vi.mock("./i18n", () => ({
   useBots: () => ({
-    avatar: { petLoadFailed: 'Could not load that pet.', pickPet: 'Pick a pet', removeBackToShape: 'Remove' }
-  })
-}))
+    avatar: {
+      petLoadFailed: "Could not load that pet.",
+      pickPet: "Pick a pet",
+      removeBackToShape: "Remove",
+    },
+  }),
+}));
 
-vi.mock('./shared', () => ({ ID: 'hermes-bots' }))
+vi.mock("./shared", () => ({ ID: "hermes-bots" }));
 
-const SHEET = 'https://pets.example/a.webp'
+const SHEET = "https://pets.example/a.webp";
 
 /** Record every fetch so the cache behaviour is observable. */
-const fetches: Array<{ init?: RequestInit; url: string }> = []
+const fetches: Array<{ init?: RequestInit; url: string }> = [];
 
 function stubFetch(handler: () => Promise<unknown>) {
-  vi.stubGlobal('fetch', async (url: string, init?: RequestInit) => {
-    fetches.push({ init, url })
+  vi.stubGlobal("fetch", async (url: string, init?: RequestInit) => {
+    fetches.push({ init, url });
 
-    return handler()
-  })
+    return handler();
+  });
 }
 
 async function loadPetTab() {
-  vi.resetModules()
+  vi.resetModules();
 
-  return (await import('./pet')).PetTab
+  return (await import("./pet")).PetTab;
 }
 
 beforeEach(() => {
-  vi.clearAllMocks()
-  fetches.length = 0
-  useQueryMock.mockReturnValue({ data: { pets: [{ displayName: 'Axolotl', slug: 'axolotl', spritesheetUrl: SHEET }] } })
-  vi.stubGlobal('createImageBitmap', async () => ({ close: () => undefined }))
-  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
-    drawImage: () => undefined
-  } as unknown as CanvasRenderingContext2D)
-  vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockReturnValue('data:image/png;base64,ok')
-})
+  vi.clearAllMocks();
+  fetches.length = 0;
+  useQueryMock.mockReturnValue({
+    data: {
+      pets: [
+        { displayName: "Axolotl", slug: "axolotl", spritesheetUrl: SHEET },
+      ],
+    },
+  });
+  vi.stubGlobal("createImageBitmap", async () => ({ close: () => undefined }));
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
+    drawImage: () => undefined,
+  } as unknown as CanvasRenderingContext2D);
+  vi.spyOn(HTMLCanvasElement.prototype, "toDataURL").mockReturnValue(
+    "data:image/png;base64,ok",
+  );
+});
 
 afterEach(() => {
-  vi.unstubAllGlobals()
-  vi.restoreAllMocks()
-})
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
 
-describe('the sprite-frame cache', () => {
-  it('never leaves a failed fetch parked in the cache', async () => {
+describe("the sprite-frame cache", () => {
+  it("never leaves a failed fetch parked in the cache", async () => {
     stubFetch(async () => {
-      throw new Error('network')
-    })
+      throw new Error("network");
+    });
 
-    const PetTab = await loadPetTab()
-    const first = render(<PetTab image={null} onImage={vi.fn()} />)
+    const PetTab = await loadPetTab();
+    const first = render(<PetTab image={null} onImage={vi.fn()} />);
 
-    await waitFor(() => expect(fetches).toHaveLength(1))
+    await waitFor(() => expect(fetches).toHaveLength(1));
     // The fetch is abortable: a hung sheet must not hold a slot forever.
-    expect(fetches[0].init?.signal).toBeTruthy()
+    expect(fetches[0].init?.signal).toBeTruthy();
 
-    first.unmount()
+    first.unmount();
 
-    const second = render(<PetTab image={null} onImage={vi.fn()} />)
+    const second = render(<PetTab image={null} onImage={vi.fn()} />);
 
     // Reopening retries rather than serving the poisoned null.
-    await waitFor(() => expect(fetches).toHaveLength(2))
-    expect(second.container.querySelector('img')).toBeNull()
-  })
+    await waitFor(() => expect(fetches).toHaveLength(2));
+    expect(second.container.querySelector("img")).toBeNull();
+  });
 
-  it('fetches a successful sheet once and reuses the extracted frame', async () => {
-    stubFetch(async () => ({ blob: async () => new Blob() }))
+  it("fetches a successful sheet once and reuses the extracted frame", async () => {
+    stubFetch(async () => ({ blob: async () => new Blob() }));
 
-    const PetTab = await loadPetTab()
-    const first = render(<PetTab image={null} onImage={vi.fn()} />)
-
-    await waitFor(() =>
-      expect(first.container.querySelector('img')?.getAttribute('src')).toBe('data:image/png;base64,ok')
-    )
-    expect(fetches).toHaveLength(1)
-
-    first.unmount()
-
-    const second = render(<PetTab image={null} onImage={vi.fn()} />)
+    const PetTab = await loadPetTab();
+    const first = render(<PetTab image={null} onImage={vi.fn()} />);
 
     await waitFor(() =>
-      expect(second.container.querySelector('img')?.getAttribute('src')).toBe('data:image/png;base64,ok')
-    )
-    expect(fetches).toHaveLength(1)
-  })
+      expect(first.container.querySelector("img")?.getAttribute("src")).toBe(
+        "data:image/png;base64,ok",
+      ),
+    );
+    expect(fetches).toHaveLength(1);
 
-  it('shares one fetch between tiles that point at the same sheet', async () => {
+    first.unmount();
+
+    const second = render(<PetTab image={null} onImage={vi.fn()} />);
+
+    await waitFor(() =>
+      expect(second.container.querySelector("img")?.getAttribute("src")).toBe(
+        "data:image/png;base64,ok",
+      ),
+    );
+    expect(fetches).toHaveLength(1);
+  });
+
+  it("shares one fetch between tiles that point at the same sheet", async () => {
     useQueryMock.mockReturnValue({
       data: {
         pets: [
-          { displayName: 'Axolotl', slug: 'axolotl', spritesheetUrl: SHEET },
-          { displayName: 'Axolotl (shiny)', slug: 'axolotl-shiny', spritesheetUrl: SHEET }
-        ]
-      }
-    })
-    stubFetch(async () => ({ blob: async () => new Blob() }))
+          { displayName: "Axolotl", slug: "axolotl", spritesheetUrl: SHEET },
+          {
+            displayName: "Axolotl (shiny)",
+            slug: "axolotl-shiny",
+            spritesheetUrl: SHEET,
+          },
+        ],
+      },
+    });
+    stubFetch(async () => ({ blob: async () => new Blob() }));
 
-    const PetTab = await loadPetTab()
-    const { container } = render(<PetTab image={null} onImage={vi.fn()} />)
+    const PetTab = await loadPetTab();
+    const { container } = render(<PetTab image={null} onImage={vi.fn()} />);
 
-    await waitFor(() => expect(container.querySelectorAll('img')).toHaveLength(2))
-    expect(fetches).toHaveLength(1)
-  })
+    await waitFor(() =>
+      expect(container.querySelectorAll("img")).toHaveLength(2),
+    );
+    expect(fetches).toHaveLength(1);
+  });
 
-  it('does not fetch for a pet with no spritesheet', async () => {
-    useQueryMock.mockReturnValue({ data: { pets: [{ displayName: 'Ghost', slug: 'ghost', spritesheetUrl: null }] } })
-    stubFetch(async () => ({ blob: async () => new Blob() }))
+  it("does not fetch for a pet with no spritesheet", async () => {
+    useQueryMock.mockReturnValue({
+      data: {
+        pets: [{ displayName: "Ghost", slug: "ghost", spritesheetUrl: null }],
+      },
+    });
+    stubFetch(async () => ({ blob: async () => new Blob() }));
 
-    const PetTab = await loadPetTab()
-    const { findByText } = render(<PetTab image={null} onImage={vi.fn()} />)
+    const PetTab = await loadPetTab();
+    const { findByText } = render(<PetTab image={null} onImage={vi.fn()} />);
 
-    await findByText('Ghost')
-    expect(fetches).toHaveLength(0)
-  })
-})
+    await findByText("Ghost");
+    expect(fetches).toHaveLength(0);
+  });
+});

@@ -1,6 +1,6 @@
-import { useLocation } from 'react-router'
+import { useLocation } from "react-router";
 
-import { appViewForPath, isOverlayView } from '@/app/routes'
+import { appViewForPath, isOverlayView } from "@/app/routes";
 
 /**
  * True while a full-screen route overlay (settings, agents, command-center, …)
@@ -13,7 +13,7 @@ import { appViewForPath, isOverlayView } from '@/app/routes'
  * re-running its mount effects (a free refresh), when the route overlay closes.
  */
 export function useRouteOverlayActive(): boolean {
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
 
-  return isOverlayView(appViewForPath(pathname))
+  return isOverlayView(appViewForPath(pathname));
 }

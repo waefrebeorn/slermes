@@ -1,4 +1,4 @@
-import type { SidebarListRow } from '@/lib/session-date-groups'
+import type { SidebarListRow } from "@/lib/session-date-groups";
 
 /**
  * Fold ids absent from the persisted order back in, on the side they belong.
@@ -10,51 +10,64 @@ import type { SidebarListRow } from '@/lib/session-date-groups'
  * every unknown id to the top treated those two cases the same, so one "load
  * more" dropped 50 of the oldest sessions above the hand-ordered list.
  */
-function mergeFreshByPosition(currentIds: string[], keptIds: string[]): string[] {
-  const kept = new Set(keptIds)
-  const firstKept = currentIds.findIndex(id => kept.has(id))
-  const newer: string[] = []
-  const older: string[] = []
+function mergeFreshByPosition(
+  currentIds: string[],
+  keptIds: string[],
+): string[] {
+  const kept = new Set(keptIds);
+  const firstKept = currentIds.findIndex((id) => kept.has(id));
+  const newer: string[] = [];
+  const older: string[] = [];
 
   currentIds.forEach((id, index) => {
     if (kept.has(id)) {
-      return
+      return;
     }
 
     if (firstKept >= 0 && index < firstKept) {
-      newer.push(id)
+      newer.push(id);
     } else {
-      older.push(id)
+      older.push(id);
     }
-  })
+  });
 
-  return [...newer, ...keptIds, ...older]
+  return [...newer, ...keptIds, ...older];
 }
 
 /** Ids still present in the persisted order, with new ids folded in by position. */
-export function reconcileFreshFirst(currentIds: string[], orderIds: string[]): string[] {
-  const current = new Set(currentIds)
+export function reconcileFreshFirst(
+  currentIds: string[],
+  orderIds: string[],
+): string[] {
+  const current = new Set(currentIds);
 
   // Dedupe both inputs: a corrupted persisted order (same id twice) must not
   // self-perpetuate through reconcile, and duplicate live ids (e.g. the same
   // repo surfacing under several projects) must not be written back into the
   // saved order — either one paints as duplicate headers (#73314).
-  return mergeFreshByPosition([...new Set(currentIds)], [...new Set(orderIds.filter(id => current.has(id)))])
+  return mergeFreshByPosition(
+    [...new Set(currentIds)],
+    [...new Set(orderIds.filter((id) => current.has(id)))],
+  );
 }
 
-export function resolveManualSessionOrderIds(currentIds: string[], orderIds: string[], manual: boolean): string[] {
+export function resolveManualSessionOrderIds(
+  currentIds: string[],
+  orderIds: string[],
+  manual: boolean,
+): string[] {
   if (!manual || !currentIds.length || !orderIds.length) {
-    return []
+    return [];
   }
 
-  const current = new Set(currentIds)
-  const retained = orderIds.filter(id => current.has(id))
+  const current = new Set(currentIds);
+  const retained = orderIds.filter((id) => current.has(id));
 
   if (!retained.length) {
-    return []
+    return [];
   }
 
-  return reconcileFreshFirst(currentIds, orderIds)
+  return reconcileFreshFirst(currentIds, orderIds);
 }
 
 /**
@@ -63,55 +76,59 @@ export function resolveManualSessionOrderIds(currentIds: string[], orderIds: str
  * of everything the order knows stays on top, an older page that just loaded
  * sinks below the hand-picked list instead of jumping it.
  */
-export function orderByIds<T>(items: T[], getId: (item: T) => string, orderIds: string[]): T[] {
+export function orderByIds<T>(
+  items: T[],
+  getId: (item: T) => string,
+  orderIds: string[],
+): T[] {
   if (!orderIds.length) {
-    return items
+    return items;
   }
 
-  const byId = new Map(items.map(item => [getId(item), item]))
-  const seen = new Set<string>()
-  const ordered: T[] = []
+  const byId = new Map(items.map((item) => [getId(item), item]));
+  const seen = new Set<string>();
+  const ordered: T[] = [];
 
   for (const id of orderIds) {
-    const item = byId.get(id)
+    const item = byId.get(id);
 
     // Guard against duplicates in the persisted order: pushing the same item
     // twice renders the row/header twice (e.g. two identical repo headers
     // under one project).
     if (item && !seen.has(id)) {
-      ordered.push(item)
-      seen.add(id)
+      ordered.push(item);
+      seen.add(id);
     }
   }
 
   if (seen.size === items.length) {
-    return ordered
+    return ordered;
   }
 
-  const firstOrdered = items.findIndex(item => seen.has(getId(item)))
-  const newer: T[] = []
-  const older: T[] = []
+  const firstOrdered = items.findIndex((item) => seen.has(getId(item)));
+  const newer: T[] = [];
+  const older: T[] = [];
 
   items.forEach((item, index) => {
-    const itemId = getId(item)
+    const itemId = getId(item);
 
     // `seen` doubles as the duplicate guard for live items: two rows carrying
     // the same id (e.g. one repo surfacing under several projects) must render
     // once, not once per occurrence (#73314).
     if (seen.has(itemId)) {
-      return
+      return;
     }
 
-    seen.add(itemId)
+    seen.add(itemId);
 
     if (firstOrdered >= 0 && index < firstOrdered) {
-      newer.push(item)
+      newer.push(item);
     } else {
-      older.push(item)
+      older.push(item);
     }
-  })
+  });
 
-  return [...newer, ...ordered, ...older]
+  return [...newer, ...ordered, ...older];
 }
 
 /**
@@ -119,28 +136,39 @@ export function orderByIds<T>(items: T[], getId: (item: T) => string, orderIds: 
  * them in the order they came in when nothing is ranked. Grouped views call
  * this on their own lane so a sort key reaches rows the flat list never renders.
  */
-export function rankSessions<T extends { id: string }>(sessions: T[], rankIds?: string[]): T[] {
-  return rankIds?.length ? orderByIds(sessions, session => session.id, rankIds) : sessions
+export function rankSessions<T extends { id: string }>(
+  sessions: T[],
+  rankIds?: string[],
+): T[] {
+  return rankIds?.length
+    ? orderByIds(sessions, (session) => session.id, rankIds)
+    : sessions;
 }
 
 /** Reconcile a persisted order against the live id set. */
-export function reconcileOrderIds(currentIds: string[], orderIds: string[]): string[] {
+export function reconcileOrderIds(
+  currentIds: string[],
+  orderIds: string[],
+): string[] {
   if (!currentIds.length) {
-    return []
+    return [];
   }
 
   if (!orderIds.length) {
     // Still dedupe: persisting duplicate live ids here is what seeded the
     // #73314 feedback loop in the first place.
-    return [...new Set(currentIds)]
+    return [...new Set(currentIds)];
   }
 
-  return reconcileFreshFirst(currentIds, orderIds)
+  return reconcileFreshFirst(currentIds, orderIds);
 }
 
 /** True when two id lists are element-for-element identical. */
 export function sameIds(left: string[], right: string[]): boolean {
-  return left.length === right.length && left.every((item, index) => item === right[index])
+  return (
+    left.length === right.length &&
+    left.every((item, index) => item === right[index])
+  );
 }
 
 /**
@@ -157,86 +185,101 @@ export function sameIds(left: string[], right: string[]): boolean {
  * saved order doesn't know about keep the slot recency gave them — only the
  * ones it names are re-slotted, into the positions they already occupied.
  */
-export function orderRowsWithinGroups(rows: SidebarListRow[], orderIds: string[]): SidebarListRow[] {
+export function orderRowsWithinGroups(
+  rows: SidebarListRow[],
+  orderIds: string[],
+): SidebarListRow[] {
   if (!orderIds.length || !rows.length) {
-    return rows
+    return rows;
   }
 
-  const rank = new Map(orderIds.map((id, index) => [id, index]))
-  const out: SidebarListRow[] = []
-  let cluster: SidebarListRow[][] = []
-  let reordered = false
+  const rank = new Map(orderIds.map((id, index) => [id, index]));
+  const out: SidebarListRow[] = [];
+  let cluster: SidebarListRow[][] = [];
+  let reordered = false;
 
   // Re-slot the clusters the saved order names, leaving every other cluster
   // (and every divider) exactly where it is.
   const flushGroup = () => {
     const ranked = cluster
       .map((rows_, index) => ({ index, rank: rank.get(clusterId(rows_)) }))
-      .filter((entry): entry is { index: number; rank: number } => entry.rank !== undefined)
+      .filter(
+        (entry): entry is { index: number; rank: number } =>
+          entry.rank !== undefined,
+      );
 
-    const slots = ranked.map(entry => entry.index)
-    const sorted = [...ranked].sort((a, b) => a.rank - b.rank)
-    const next = [...cluster]
+    const slots = ranked.map((entry) => entry.index);
+    const sorted = [...ranked].sort((a, b) => a.rank - b.rank);
+    const next = [...cluster];
 
     slots.forEach((slot, i) => {
-      const source = cluster[sorted[i].index]
+      const source = cluster[sorted[i].index];
 
-      reordered ||= source !== next[slot]
-      next[slot] = source
-    })
+      reordered ||= source !== next[slot];
+      next[slot] = source;
+    });
 
     for (const rows_ of next) {
-      out.push(...rows_)
+      out.push(...rows_);
     }
 
-    cluster = []
-  }
+    cluster = [];
+  };
 
   for (const row of rows) {
-    if (row.kind === 'divider') {
-      flushGroup()
-      out.push(row)
+    if (row.kind === "divider") {
+      flushGroup();
+      out.push(row);
 
-      continue
+      continue;
     }
 
     // A branch child rides with the parent cluster above it.
     if (row.entry.branchStem && cluster.length) {
-      cluster[cluster.length - 1].push(row)
+      cluster[cluster.length - 1].push(row);
 
-      continue
+      continue;
     }
 
-    cluster.push([row])
+    cluster.push([row]);
   }
 
-  flushGroup()
+  flushGroup();
 
-  return reordered ? out : rows
+  return reordered ? out : rows;
 }
 
 /** A cluster's identity: its root row's session id. */
 function clusterId(rows: SidebarListRow[]): string {
-  const root = rows[0]
+  const root = rows[0];
 
-  return root.kind === 'session' ? root.entry.session.id : ''
+  return root.kind === "session" ? root.entry.session.id : "";
 }
 
 /** The reorderable ids of a rendered row list: root sessions, in render order. */
 export function reorderableRowIds(rows: SidebarListRow[]): string[] {
-  return rows.flatMap(row => (row.kind === 'session' && !row.entry.branchStem ? [row.entry.session.id] : []))
+  return rows.flatMap((row) =>
+    row.kind === "session" && !row.entry.branchStem
+      ? [row.entry.session.id]
+      : [],
+  );
 }
 
 /** Splice a new visible-id order back into the full id list, keeping hidden
  *  ids in their original slots. A drag while some date groups are collapsed
  *  must not wipe those groups' saved ranking. */
-export function mergeVisibleReorder(allIds: string[], nextVisibleIds: string[]): string[] {
+export function mergeVisibleReorder(
+  allIds: string[],
+  nextVisibleIds: string[],
+): string[] {
   if (nextVisibleIds.length === allIds.length) {
-    return nextVisibleIds
+    return nextVisibleIds;
   }
 
-  const visible = new Set(nextVisibleIds)
-  let i = 0
+  const visible = new Set(nextVisibleIds);
+  let i = 0;
 
-  return allIds.map(id => (visible.has(id) ? (nextVisibleIds[i++] ?? id) : id))
+  return allIds.map((id) =>
+    visible.has(id) ? (nextVisibleIds[i++] ?? id) : id,
+  );
 }

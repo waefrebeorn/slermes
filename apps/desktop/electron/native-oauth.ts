@@ -26,47 +26,60 @@
  * an identified older runtime" the desktop guide requires.
  */
 
-import { createHash, randomBytes } from 'node:crypto'
+import { createHash, randomBytes } from "node:crypto";
 
-import { type AdvertisedAuthProvider, oauthGuardMayHardFail } from './native-auth-decisions'
+import {
+  type AdvertisedAuthProvider,
+  oauthGuardMayHardFail,
+} from "./native-auth-decisions";
 
 // The gateway status field that lists supported auth flows. See
 // hermes_cli/web_server.py status handler.
-const NATIVE_FLOW_ID = 'native_pkce'
+const NATIVE_FLOW_ID = "native_pkce";
 
 export interface NativePkcePair {
-  verifier: string
-  challenge: string
-  method: 'S256'
+  verifier: string;
+  challenge: string;
+  method: "S256";
 }
 
 export interface NativeTokenSet {
-  accessToken: string
-  refreshToken: string
-  expiresAt: number
-  provider: string
-  userId: string
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  provider: string;
+  userId: string;
 }
 
 /** base64url without `=` padding (RFC 7636 §4). */
 function b64url(raw: Buffer): string {
-  return raw.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  return raw
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 /**
  * Generate a PKCE verifier/challenge pair (S256). The verifier is 32 random
  * bytes base64url-encoded (43 chars, within RFC 7636's 43–128 range).
  */
-export function generatePkcePair(randomImpl: (n: number) => Buffer = randomBytes): NativePkcePair {
-  const verifier = b64url(randomImpl(32))
-  const challenge = b64url(createHash('sha256').update(verifier, 'ascii').digest())
+export function generatePkcePair(
+  randomImpl: (n: number) => Buffer = randomBytes,
+): NativePkcePair {
+  const verifier = b64url(randomImpl(32));
+  const challenge = b64url(
+    createHash("sha256").update(verifier, "ascii").digest(),
+  );
 
-  return { verifier, challenge, method: 'S256' }
+  return { verifier, challenge, method: "S256" };
 }
 
 /** A high-entropy CSRF `state` value for the loopback round trip. */
-export function generateState(randomImpl: (n: number) => Buffer = randomBytes): string {
-  return b64url(randomImpl(24))
+export function generateState(
+  randomImpl: (n: number) => Buffer = randomBytes,
+): string {
+  return b64url(randomImpl(24));
 }
 
 /**
@@ -74,9 +87,9 @@ export function generateState(randomImpl: (n: number) => Buffer = randomBytes): 
  * Tolerant of the field being absent (older gateway) or malformed.
  */
 export function statusSupportsNativeFlow(statusBody: any): boolean {
-  const flows = statusBody && statusBody.auth_flows
+  const flows = statusBody && statusBody.auth_flows;
 
-  return Array.isArray(flows) && flows.includes(NATIVE_FLOW_ID)
+  return Array.isArray(flows) && flows.includes(NATIVE_FLOW_ID);
 }
 
 /**
@@ -97,17 +110,17 @@ export function statusSupportsNativeFlow(statusBody: any): boolean {
  */
 export function resolveLoginStrategy(
   statusBody: any,
-  opts: { forceEmbedded?: boolean; providers?: AdvertisedAuthProvider[] } = {}
-): 'native' | 'embedded' {
+  opts: { forceEmbedded?: boolean; providers?: AdvertisedAuthProvider[] } = {},
+): "native" | "embedded" {
   if (opts.forceEmbedded) {
-    return 'embedded'
+    return "embedded";
   }
 
   if (!oauthGuardMayHardFail(opts.providers)) {
-    return 'embedded'
+    return "embedded";
   }
 
-  return statusSupportsNativeFlow(statusBody) ? 'native' : 'embedded'
+  return statusSupportsNativeFlow(statusBody) ? "native" : "embedded";
 }
 
 /**
@@ -118,39 +131,44 @@ export function resolveLoginStrategy(
  */
 export function buildNativeAuthorizeUrl(
   baseUrl: string,
-  params: { challenge: string; redirectUri: string; state: string; provider?: string }
+  params: {
+    challenge: string;
+    redirectUri: string;
+    state: string;
+    provider?: string;
+  },
 ): string {
-  const parsed = new URL(baseUrl)
-  const prefix = parsed.pathname.replace(/\/+$/, '')
+  const parsed = new URL(baseUrl);
+  const prefix = parsed.pathname.replace(/\/+$/, "");
 
   const q = new URLSearchParams({
     code_challenge: params.challenge,
-    code_challenge_method: 'S256',
+    code_challenge_method: "S256",
     redirect_uri: params.redirectUri,
-    state: params.state
-  })
+    state: params.state,
+  });
 
   if (params.provider) {
-    q.set('provider', params.provider)
+    q.set("provider", params.provider);
   }
 
-  return `${parsed.protocol}//${parsed.host}${prefix}/auth/native/authorize?${q.toString()}`
+  return `${parsed.protocol}//${parsed.host}${prefix}/auth/native/authorize?${q.toString()}`;
 }
 
 /** The `/auth/native/token` endpoint URL for a gateway base URL. */
 export function nativeTokenUrl(baseUrl: string): string {
-  const parsed = new URL(baseUrl)
-  const prefix = parsed.pathname.replace(/\/+$/, '')
+  const parsed = new URL(baseUrl);
+  const prefix = parsed.pathname.replace(/\/+$/, "");
 
-  return `${parsed.protocol}//${parsed.host}${prefix}/auth/native/token`
+  return `${parsed.protocol}//${parsed.host}${prefix}/auth/native/token`;
 }
 
 /** The `/auth/native/refresh` endpoint URL for a gateway base URL. */
 export function nativeRefreshUrl(baseUrl: string): string {
-  const parsed = new URL(baseUrl)
-  const prefix = parsed.pathname.replace(/\/+$/, '')
+  const parsed = new URL(baseUrl);
+  const prefix = parsed.pathname.replace(/\/+$/, "");
 
-  return `${parsed.protocol}//${parsed.host}${prefix}/auth/native/refresh`
+  return `${parsed.protocol}//${parsed.host}${prefix}/auth/native/refresh`;
 }
 
 /**
@@ -159,31 +177,36 @@ export function nativeRefreshUrl(baseUrl: string): string {
  * `expectedState` MUST match (CSRF defense — RFC 6749 §10.12); a mismatch
  * throws rather than proceeding.
  */
-export function parseLoopbackCallback(requestUrl: string, expectedState: string): { code: string } {
+export function parseLoopbackCallback(
+  requestUrl: string,
+  expectedState: string,
+): { code: string } {
   // requestUrl is the path+query the loopback server received, e.g.
   // "/callback?code=...&state=...". Resolve against a dummy origin to parse.
-  const parsed = new URL(requestUrl, 'http://127.0.0.1')
-  const error = parsed.searchParams.get('error')
+  const parsed = new URL(requestUrl, "http://127.0.0.1");
+  const error = parsed.searchParams.get("error");
 
   if (error) {
-    const desc = parsed.searchParams.get('error_description') || ''
-    throw new Error(`Gateway rejected native login: ${error}${desc ? ` (${desc})` : ''}`)
+    const desc = parsed.searchParams.get("error_description") || "";
+    throw new Error(
+      `Gateway rejected native login: ${error}${desc ? ` (${desc})` : ""}`,
+    );
   }
 
-  const code = parsed.searchParams.get('code') || ''
-  const state = parsed.searchParams.get('state') || ''
+  const code = parsed.searchParams.get("code") || "";
+  const state = parsed.searchParams.get("state") || "";
 
   if (!code) {
-    throw new Error('Loopback callback missing authorization code')
+    throw new Error("Loopback callback missing authorization code");
   }
 
   if (!expectedState || state !== expectedState) {
     // Never redeem a code that arrived with a mismatched state — it may be a
     // forged callback trying to inject an attacker's code.
-    throw new Error('Loopback callback state mismatch (possible CSRF)')
+    throw new Error("Loopback callback state mismatch (possible CSRF)");
   }
 
-  return { code }
+  return { code };
 }
 
 /**
@@ -192,21 +215,21 @@ export function parseLoopbackCallback(requestUrl: string, expectedState: string)
  * token so a malformed response fails loudly rather than storing junk.
  */
 export function parseTokenResponse(body: any): NativeTokenSet {
-  const accessToken = String(body?.access_token || '')
+  const accessToken = String(body?.access_token || "");
 
   if (!accessToken) {
-    throw new Error('Gateway token response missing access_token')
+    throw new Error("Gateway token response missing access_token");
   }
 
-  const expiresAt = Number(body?.expires_at)
+  const expiresAt = Number(body?.expires_at);
 
   return {
     accessToken,
-    refreshToken: String(body?.refresh_token || ''),
+    refreshToken: String(body?.refresh_token || ""),
     expiresAt: Number.isFinite(expiresAt) ? expiresAt : 0,
-    provider: String(body?.provider || ''),
-    userId: String(body?.user_id || '')
-  }
+    provider: String(body?.provider || ""),
+    userId: String(body?.user_id || ""),
+  };
 }
 
 /**
@@ -217,21 +240,21 @@ export function parseTokenResponse(body: any): NativeTokenSet {
  * remain handled separately by parseTokenResponse().
  */
 export function parseStoredTokenSet(body: any): NativeTokenSet {
-  const accessToken = String(body?.accessToken || '')
+  const accessToken = String(body?.accessToken || "");
 
   if (!accessToken) {
-    throw new Error('Stored token set missing accessToken')
+    throw new Error("Stored token set missing accessToken");
   }
 
-  const expiresAt = Number(body?.expiresAt)
+  const expiresAt = Number(body?.expiresAt);
 
   return {
     accessToken,
-    refreshToken: String(body?.refreshToken || ''),
+    refreshToken: String(body?.refreshToken || ""),
     expiresAt: Number.isFinite(expiresAt) ? expiresAt : 0,
-    provider: String(body?.provider || ''),
-    userId: String(body?.userId || '')
-  }
+    provider: String(body?.provider || ""),
+    userId: String(body?.userId || ""),
+  };
 }
 
 /**
@@ -240,16 +263,16 @@ export function parseStoredTokenSet(body: any): NativeTokenSet {
  * the token expires in flight (mirrors the server's 60s cookie floor).
  */
 export function tokenNeedsRefresh(
-  tokens: Pick<NativeTokenSet, 'expiresAt'>,
+  tokens: Pick<NativeTokenSet, "expiresAt">,
   nowSeconds: number,
-  skewSeconds = 60
+  skewSeconds = 60,
 ): boolean {
   if (!tokens || !Number.isFinite(tokens.expiresAt) || tokens.expiresAt <= 0) {
     // Unknown expiry ⇒ treat as needing refresh so we validate before use.
-    return true
+    return true;
   }
 
-  return nowSeconds >= tokens.expiresAt - skewSeconds
+  return nowSeconds >= tokens.expiresAt - skewSeconds;
 }
 
-export { NATIVE_FLOW_ID }
+export { NATIVE_FLOW_ID };

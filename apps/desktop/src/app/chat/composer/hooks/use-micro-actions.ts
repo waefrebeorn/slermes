@@ -1,10 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
-import { useSessionSlice } from '@/lib/use-session-slice'
-import { setComposerActions } from '@/store/composer-actions'
-import { $todosBySession } from '@/store/todos'
+import { useSessionSlice } from "@/lib/use-session-slice";
+import { setComposerActions } from "@/store/composer-actions";
+import { $todosBySession } from "@/store/todos";
 
-import { type ComposerMicroActionContext, useComposerMicroActionProviders } from '../contrib'
+import {
+  type ComposerMicroActionContext,
+  useComposerMicroActionProviders,
+} from "../contrib";
 
 /**
  * Resolve every registered micro-action provider for this session and publish
@@ -17,31 +20,37 @@ import { type ComposerMicroActionContext, useComposerMicroActionProviders } from
  * badge withdraws it. One that throws is skipped, so a broken plugin loses
  * only its own badge.
  */
-export function useComposerMicroActions(sessionId: null | string, busy: boolean) {
-  const todos = useSessionSlice($todosBySession, sessionId)
-  const providers = useComposerMicroActionProviders()
+export function useComposerMicroActions(
+  sessionId: null | string,
+  busy: boolean,
+) {
+  const todos = useSessionSlice($todosBySession, sessionId);
+  const providers = useComposerMicroActionProviders();
 
   useEffect(() => {
     if (!sessionId) {
-      return
+      return;
     }
 
-    const ctx: ComposerMicroActionContext = { busy, sessionId, todos }
+    const ctx: ComposerMicroActionContext = { busy, sessionId, todos };
 
     setComposerActions(
       sessionId,
-      providers.flatMap(provider => {
+      providers.flatMap((provider) => {
         try {
-          return provider.resolve(ctx) ?? []
+          return provider.resolve(ctx) ?? [];
         } catch {
-          return []
+          return [];
         }
-      })
-    )
-  }, [busy, providers, sessionId, todos])
+      }),
+    );
+  }, [busy, providers, sessionId, todos]);
 
   // Withdraw on unmount / session switch ONLY. Clearing in the resolve effect's
   // cleanup would publish an empty set before every republish — two store
   // writes and two stack re-renders for what is usually a no-op.
-  useEffect(() => (sessionId ? () => setComposerActions(sessionId, []) : undefined), [sessionId])
+  useEffect(
+    () => (sessionId ? () => setComposerActions(sessionId, []) : undefined),
+    [sessionId],
+  );
 }

@@ -7,17 +7,17 @@
  * live pane contributions; the React split renderer reads it per render.
  */
 
-import type * as React from 'react'
+import type * as React from "react";
 
-import type { MenuKit } from '@/components/ui/actions-menu'
-import type { Contribution } from '@/contrib/types'
+import type { MenuKit } from "@/components/ui/actions-menu";
+import type { Contribution } from "@/contrib/types";
 
-import type { GroupNode, LayoutNode } from '../model'
-import { allPaneIds } from '../model'
+import type { GroupNode, LayoutNode } from "../model";
+import { allPaneIds } from "../model";
 
-import type { FloatingAnchor } from './floating-rect'
+import type { FloatingAnchor } from "./floating-rect";
 
-export const MIN_PANE_PX = 80
+export const MIN_PANE_PX = 80;
 
 /**
  * The floor for a TOOL PANEL zone (terminal / logs) instead of `MIN_PANE_PX`.
@@ -26,7 +26,7 @@ export const MIN_PANE_PX = 80
  * it shrink to exactly that and then collapses the zone rather than jamming
  * against an 80px floor with a sliver of unusable content still showing.
  */
-export const COLLAPSED_ZONE_PX = 28
+export const COLLAPSED_ZONE_PX = 28;
 
 /** Optional CSS sizing a pane contributes (`data.width` / `data.minWidth`…).
  *  Applied to the pane's GROUP along the axis of the split that contains it —
@@ -35,139 +35,156 @@ export const COLLAPSED_ZONE_PX = 28
  *  its size and the weighted zones absorb the rest); without one the zone
  *  shares leftover space by weight. */
 export interface PaneSizing {
-  width?: string
-  height?: string
-  minWidth?: string
-  maxWidth?: string
-  minHeight?: string
-  maxHeight?: string
+  width?: string;
+  height?: string;
+  minWidth?: string;
+  maxWidth?: string;
+  minHeight?: string;
+  maxHeight?: string;
 }
 
 /** Chrome behavior flags a pane contributes. Read via `paneChrome`. */
 interface PaneChrome extends PaneSizing {
   /** Leaves the grid on narrow viewports; revealed as an edge overlay. */
-  collapsible?: boolean
+  collapsible?: boolean;
   /** Arrive minimized — a rail tab rather than an open zone. For a pane that
    *  docks to an edge this is the vertical strip; the user's first expand is
    *  persisted on the zone and wins from then on. Applied when the pane ENTERS
    *  the tree, not on every boot, so it is a default and not an invariant. */
-  defaultCollapsed?: boolean
+  defaultCollapsed?: boolean;
   /** Extra ids accepted from PANE_TOGGLE_REVEAL_EVENT (the real app's pane
    *  ids, e.g. `chat-sidebar` for `sessions`). */
-  revealAliases?: string[]
+  revealAliases?: string[];
   /** Tiling role in the tree, or `'floating'` — the one NON-tiling placement:
    *  the pane is excluded from the tree entirely and rendered as a fixed card
    *  above it (see renderer/floating-panes.tsx). A floating pane takes no
    *  space from any zone, has no tab, and can't be docked or split. */
-  placement?: string
+  placement?: string;
   /** Spawn corner for `placement: 'floating'` (default `'top-right'`). The
    *  pane also TRACKS that corner's edges when the window resizes. */
-  anchor?: FloatingAnchor
+  anchor?: FloatingAnchor;
   /** Keep this pane mounted when hidden even after the zone's bounded hot
    *  cache fills. Reserved for stateful resources whose lifetime must not track
    *  tab visibility (for example terminal PTYs). */
-  lifecycleKeepAlive?: boolean
+  lifecycleKeepAlive?: boolean;
   /** No Close in the tab menu — the one surface the app can't lose (the
    *  main workspace). Session tiles share `placement: 'main'` but close. */
-  uncloseable?: boolean
+  uncloseable?: boolean;
   /** Standing chrome tab (sessions / Bots) with NO close verb at all: no ✕,
    *  no middle / ⌘-click, no Close menu rows. It is shown/hidden instead (the
    *  zone menu's Show/Hide rows and a ⌘K toggle, via `setStripTabHidden`).
    *  Close was too destructive for these: an accidental ✕ removed Bot Mode
    *  until the next launch. The ✕ follows the verb (see `PaneTab.onClose`),
    *  so dropping the verb here is what takes the chip off the tab. */
-  hideOnly?: boolean
+  hideOnly?: boolean;
   /** Wrap this pane's TAB (e.g. in a domain context menu — a session tile's
    *  pin/branch/rename/archive/delete). The wrapper must render `tab` as its
    *  interactive child; the zone's own strip menu still owns non-tab space. */
-  tabWrap?: (tab: React.ReactElement) => React.ReactNode
+  tabWrap?: (tab: React.ReactElement) => React.ReactNode;
   /** Extra rows at the top of the zone tab menu. Called when the menu opens
    *  against the right-clicked pane — a Browser tab's Open-in-external, without
    *  replacing Reload / Close / the strip. */
-  tabMenuPrefix?: (kit: MenuKit) => React.ReactNode
+  tabMenuPrefix?: (kit: MenuKit) => React.ReactNode;
   /** Override this pane's TAB drag (a session tab drags like a sidebar row —
    *  stack / split / composer-link — not the generic pane move). Given the
    *  tab's tap (activate) so that gesture survives. Returns whether it took the
    *  drag; `false` (or absent) defers to `startPaneDrag` — e.g. the workspace
    *  tab on a fresh draft, nothing to link. */
-  tabDrag?: (event: React.PointerEvent<HTMLElement>, onTap: () => void) => boolean
+  tabDrag?: (
+    event: React.PointerEvent<HTMLElement>,
+    onTap: () => void,
+  ) => boolean;
   /** Suppress the zone header while THIS pane is active — full-page views
    *  (artifacts/skills/plugin pages) are not tab-able surfaces. The flag is
    *  live: the workspace contribution re-registers it on route changes. */
-  headerVeto?: boolean
+  headerVeto?: boolean;
   /** A lead NODE for this pane's TAB, rendered before the label. A session
    *  pane (main workspace + tiles) passes its live `SessionStatusDot` here so
    *  the tab and the sidebar row render status/color from the ONE primitive
    *  (self-subscribing — it updates without the strip re-registering). */
-  tabLead?: () => React.ReactNode
+  tabLead?: () => React.ReactNode;
   /** Mint another tab of THIS pane's kind — the strip's "+" while this pane is
    *  active. A Browser tab makes another Browser tab; a pane that is one of a
    *  kind (a file peek) leaves it absent and the strip falls back to the chat
    *  "+" if the zone holds session tabs. */
-  newTab?: () => void
+  newTab?: () => void;
   /** This pane's TAB LABEL, when it changes faster than the contribution
    *  should. A session pane whose draft is being typed renames on every
    *  debounce beat; re-registering `title` that often would re-render the
    *  whole panes area, so the label subscribes for itself instead. Absent, or
    *  returning nothing, falls back to `title`. */
-  tabTitle?: () => React.ReactNode
+  tabTitle?: () => React.ReactNode;
 }
 
-export const paneChrome = (c: Contribution | undefined) => (c?.data ?? {}) as PaneChrome
+export const paneChrome = (c: Contribution | undefined) =>
+  (c?.data ?? {}) as PaneChrome;
 
 /** Resolve a computed style length ("237px" / "none" / "auto") to px. */
 export function computedPx(value: string, fallback: number): number {
-  const n = Number.parseFloat(value)
+  const n = Number.parseFloat(value);
 
-  return Number.isFinite(n) ? n : fallback
+  return Number.isFinite(n) ? n : fallback;
 }
 
 /** Resolve an AUTHORED CSS length ("237px", "38vh", "clamp(18rem,36vw,32rem)")
  *  to px by measuring a probe inside `container` — handles every unit and
  *  math function the browser does. */
-export function resolveCssPx(container: HTMLElement, css: number | string, horizontal: boolean): number | null {
-  if (typeof css === 'number') {
-    return css
+export function resolveCssPx(
+  container: HTMLElement,
+  css: number | string,
+  horizontal: boolean,
+): number | null {
+  if (typeof css === "number") {
+    return css;
   }
 
-  const probe = document.createElement('div')
-  probe.style.position = 'absolute'
-  probe.style.visibility = 'hidden'
-  probe.style.pointerEvents = 'none'
+  const probe = document.createElement("div");
+  probe.style.position = "absolute";
+  probe.style.visibility = "hidden";
+  probe.style.pointerEvents = "none";
 
   if (horizontal) {
-    probe.style.width = css
+    probe.style.width = css;
   } else {
-    probe.style.height = css
+    probe.style.height = css;
   }
 
-  container.appendChild(probe)
-  const rect = probe.getBoundingClientRect()
-  probe.remove()
-  const px = horizontal ? rect.width : rect.height
+  container.appendChild(probe);
+  const rect = probe.getBoundingClientRect();
+  probe.remove();
+  const px = horizontal ? rect.width : rect.height;
 
-  return Number.isFinite(px) && px > 0 ? px : null
+  return Number.isFinite(px) && px > 0 ? px : null;
 }
 
 /** Everything fixed-track resolution needs about the current view state. */
 export interface TrackContext {
-  paneFor: (id: string) => Contribution | undefined
-  paneGone: (id: string) => boolean
-  overrides: Record<string, { widthOverride?: number; heightOverride?: number }>
+  paneFor: (id: string) => Contribution | undefined;
+  paneGone: (id: string) => boolean;
+  overrides: Record<
+    string,
+    { widthOverride?: number; heightOverride?: number }
+  >;
 }
 
 /** A group's panes that are actually on screen (not hidden / narrow-collapsed
  *  / unregistered). The one place the "shown" filter lives. */
 export const shownPaneIds = (group: GroupNode, ctx: TrackContext): string[] =>
-  group.panes.filter(id => !ctx.paneGone(id))
+  group.panes.filter((id) => !ctx.paneGone(id));
 
 /** max() of the defined CSS lengths (deduped); undefined when none — the
  *  largest-tenant basis a fixed stack and its clamps both size from. */
-export const cssMax = (values: (string | null | undefined)[]): string | undefined => {
-  const unique = [...new Set(values.filter((v): v is string => Boolean(v)))]
+export const cssMax = (
+  values: (string | null | undefined)[],
+): string | undefined => {
+  const unique = [...new Set(values.filter((v): v is string => Boolean(v)))];
 
-  return unique.length === 0 ? undefined : unique.length === 1 ? unique[0] : `max(${unique.join(', ')})`
-}
+  return unique.length === 0
+    ? undefined
+    : unique.length === 1
+      ? unique[0]
+      : `max(${unique.join(", ")})`;
+};
 
 /**
  * THE TRACK MODEL. A node's size along `axis` is FIXED when it resolves to a
@@ -187,7 +204,7 @@ export const cssMax = (values: (string | null | undefined)[]): string | undefine
  */
 /** A minimized zone IS its strip: the vertical rail (row) / header (column)
  *  are both 28px thick. */
-export const MINIMIZED_TRACK = '1.75rem'
+export const MINIMIZED_TRACK = "1.75rem";
 
 /**
  * In an all-fixed split, the last uncapped track may absorb leftover space
@@ -202,38 +219,42 @@ export const MINIMIZED_TRACK = '1.75rem'
  */
 export function allFixedAbsorberIndex(
   growable: readonly number[],
-  maxAlongAxis: (index: number) => string | undefined
+  maxAlongAxis: (index: number) => string | undefined,
 ): number {
   if (growable.length === 0) {
-    return -1
+    return -1;
   }
 
   for (let i = growable.length - 1; i >= 0; i--) {
-    const index = growable[i]
+    const index = growable[i];
 
     if (!maxAlongAxis(index)) {
-      return index
+      return index;
     }
   }
 
-  return -1
+  return -1;
 }
 
-export function fixedTrackSize(node: LayoutNode, axis: 'row' | 'column', ctx: TrackContext): string | null {
-  if (node.type === 'group') {
+export function fixedTrackSize(
+  node: LayoutNode,
+  axis: "row" | "column",
+  ctx: TrackContext,
+): string | null {
+  if (node.type === "group") {
     // Ancestor splits must size a minimized zone as its strip, not as its
     // panes' declared widths — otherwise the outer track keeps reserving the
     // full sidebar width and the collapsed rail floats in a dead column.
     if (node.minimized) {
-      return MINIMIZED_TRACK
+      return MINIMIZED_TRACK;
     }
 
-    const overrideKey = axis === 'row' ? 'widthOverride' : 'heightOverride'
+    const overrideKey = axis === "row" ? "widthOverride" : "heightOverride";
 
     const declared = (id: string) => {
-      const sizing = (ctx.paneFor(id)?.data ?? {}) as PaneSizing
-      const css = (axis === 'row' ? sizing.width : sizing.height) ?? null
-      const override = ctx.overrides[id]?.[overrideKey]
+      const sizing = (ctx.paneFor(id)?.data ?? {}) as PaneSizing;
+      const css = (axis === "row" ? sizing.width : sizing.height) ?? null;
+      const override = ctx.overrides[id]?.[overrideKey];
 
       // An override only refines a pane that DECLARES a size along this axis
       // (sash drags write overrides to fixed zones only). One without a
@@ -241,11 +262,11 @@ export function fixedTrackSize(node: LayoutNode, axis: 'row' | 'column', ctx: Tr
       // turn a flex-at-heart zone (main!) into a fixed track and hand the
       // whole leftover to the run's absorber.
       if (css !== null && override !== undefined) {
-        return `${override}px`
+        return `${override}px`;
       }
 
-      return css
-    }
+      return css;
+    };
 
     // Which zones are FIXED tracks:
     //  - a MAIN-bearing zone (workspace/tile stacked in) is flex-at-heart —
@@ -254,38 +275,41 @@ export function fixedTrackSize(node: LayoutNode, axis: 'row' | 'column', ctx: Tr
     //  - any other zone stays fixed as long as SOME tenant declares a size —
     //    dropping a size-less pane (the terminal has height but no width)
     //    into the 237px files sidebar must not balloon it to a flex track.
-    const ids = shownPaneIds(node, ctx)
-    const sizes = ids.map(declared)
-    const declaredSizes = sizes.filter((size): size is string => size !== null)
+    const ids = shownPaneIds(node, ctx);
+    const sizes = ids.map(declared);
+    const declaredSizes = sizes.filter((size): size is string => size !== null);
 
     if (declaredSizes.length === 0) {
-      return null
+      return null;
     }
 
-    if (sizes.length !== declaredSizes.length && ids.some(id => paneChrome(ctx.paneFor(id)).placement === 'main')) {
-      return null
+    if (
+      sizes.length !== declaredSizes.length &&
+      ids.some((id) => paneChrome(ctx.paneFor(id)).placement === "main")
+    ) {
+      return null;
     }
 
     // A STACK sizes to its LARGEST tenant (CSS max()), never the active tab:
     // dropping a pane into a zone — the drop fronts it — or switching tabs
     // must not resize the container (dropping sessions into a wider fixed
     // zone used to snap the whole zone down to sidebar width).
-    return cssMax(declaredSizes) ?? null
+    return cssMax(declaredSizes) ?? null;
   }
 
-  const visible = node.children.filter(child => !subtreeGone(child, ctx))
-  const sizes = visible.map(child => fixedTrackSize(child, axis, ctx))
+  const visible = node.children.filter((child) => !subtreeGone(child, ctx));
+  const sizes = visible.map((child) => fixedTrackSize(child, axis, ctx));
 
   if (node.orientation === axis) {
-    if (sizes.length === 0 || sizes.some(size => size === null)) {
-      return null
+    if (sizes.length === 0 || sizes.some((size) => size === null)) {
+      return null;
     }
 
-    return sizes.length === 1 ? sizes[0] : `calc(${sizes.join(' + ')})`
+    return sizes.length === 1 ? sizes[0] : `calc(${sizes.join(" + ")})`;
   }
 
   // Across the axis a flex child just stretches; the fixed ones set the size.
-  return cssMax(sizes) ?? null
+  return cssMax(sizes) ?? null;
 }
 
 /**
@@ -302,13 +326,13 @@ export function fixedTrackSize(node: LayoutNode, axis: 'row' | 'column', ctx: Tr
  * collapse and still hand their space to their neighbors.
  */
 export function subtreeGone(node: LayoutNode, ctx: TrackContext): boolean {
-  const ids = allPaneIds(node)
+  const ids = allPaneIds(node);
 
   if (ids.length === 0 || !ids.every(ctx.paneGone)) {
-    return false
+    return false;
   }
 
-  return !ids.some(id => paneChrome(ctx.paneFor(id)).placement === 'main')
+  return !ids.some((id) => paneChrome(ctx.paneFor(id)).placement === "main");
 }
 
 /**
@@ -320,15 +344,17 @@ export function subtreeGone(node: LayoutNode, ctx: TrackContext): boolean {
  */
 export function rootChildSide(
   child: LayoutNode,
-  paneFor: (id: string) => Contribution | undefined
-): 'left' | 'right' | null {
-  const placements = allPaneIds(child).map(id => paneChrome(paneFor(id)).placement)
+  paneFor: (id: string) => Contribution | undefined,
+): "left" | "right" | null {
+  const placements = allPaneIds(child).map(
+    (id) => paneChrome(paneFor(id)).placement,
+  );
 
-  if (placements.includes('main')) {
-    return null
+  if (placements.includes("main")) {
+    return null;
   }
 
-  return placements.includes('left') ? 'left' : 'right'
+  return placements.includes("left") ? "left" : "right";
 }
 
 /**
@@ -338,30 +364,30 @@ export function rootChildSide(
  */
 export function edgeFixedZone(
   node: LayoutNode,
-  edge: 'start' | 'end',
-  axis: 'row' | 'column',
-  ctx: TrackContext
+  edge: "start" | "end",
+  axis: "row" | "column",
+  ctx: TrackContext,
 ): GroupNode | null {
-  if (node.type === 'group') {
-    return fixedTrackSize(node, axis, ctx) !== null ? node : null
+  if (node.type === "group") {
+    return fixedTrackSize(node, axis, ctx) !== null ? node : null;
   }
 
-  const visible = node.children.filter(child => !subtreeGone(child, ctx))
+  const visible = node.children.filter((child) => !subtreeGone(child, ctx));
 
   if (node.orientation === axis) {
-    const child = edge === 'start' ? visible[0] : visible[visible.length - 1]
+    const child = edge === "start" ? visible[0] : visible[visible.length - 1];
 
-    return child ? edgeFixedZone(child, edge, axis, ctx) : null
+    return child ? edgeFixedZone(child, edge, axis, ctx) : null;
   }
 
   // Cross-axis: every child touches the edge — the first fixed one owns it.
   for (const child of visible) {
-    const zone = edgeFixedZone(child, edge, axis, ctx)
+    const zone = edgeFixedZone(child, edge, axis, ctx);
 
     if (zone) {
-      return zone
+      return zone;
     }
   }
 
-  return null
+  return null;
 }

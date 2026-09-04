@@ -1,6 +1,6 @@
-import { liveSessionProjectId } from '@/app/chat/sidebar/projects/workspace-groups'
-import { pathLeaf } from '@/lib/display-path'
-import type { ProjectInfo, SessionInfo } from '@/types/hermes'
+import { liveSessionProjectId } from "@/app/chat/sidebar/projects/workspace-groups";
+import { pathLeaf } from "@/lib/display-path";
+import type { ProjectInfo, SessionInfo } from "@/types/hermes";
 
 /**
  * The PROJECT a session belongs to, as a label for the sidebar card.
@@ -25,16 +25,19 @@ import type { ProjectInfo, SessionInfo } from '@/types/hermes'
  * This never widens membership — it only names a row that placement leaves
  * unplaced.
  */
-export function sessionProjectLabel(session: SessionInfo, projects: ProjectInfo[]): null | string {
-  const projectId = liveSessionProjectId(session, projects)
+export function sessionProjectLabel(
+  session: SessionInfo,
+  projects: ProjectInfo[],
+): null | string {
+  const projectId = liveSessionProjectId(session, projects);
 
   if (projectId) {
-    const explicit = projects.find(project => project.id === projectId)
+    const explicit = projects.find((project) => project.id === projectId);
 
     // An explicit project shows its user-given name; an auto-project's id IS
     // its repo root path, so it shows that folder's leaf.
-    return (explicit ? explicit.name.trim() : pathLeaf(projectId)) || null
+    return (explicit ? explicit.name.trim() : pathLeaf(projectId)) || null;
   }
 
-  return pathLeaf(session.git_repo_root) || null
+  return pathLeaf(session.git_repo_root) || null;
 }

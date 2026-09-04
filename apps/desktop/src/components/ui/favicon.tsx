@@ -1,7 +1,7 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from "react";
 
-import { Loader2 } from '@/lib/icons'
-import { cn } from '@/lib/utils'
+import { Loader2 } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 /**
  * A site's icon, resolved the thorough way.
@@ -20,70 +20,80 @@ import { cn } from '@/lib/utils'
 /** url → data URL, or '' for a site we've already failed to read. The main
  *  process caches across restarts; this keeps a remount from crossing the
  *  IPC boundary at all. */
-const resolved = new Map<string, string>()
+const resolved = new Map<string, string>();
 
 export function Favicon({
   className,
   fallback,
   title,
-  url
+  url,
 }: {
-  className?: string
-  fallback: ReactNode
-  title?: string
-  url: null | string | undefined
+  className?: string;
+  fallback: ReactNode;
+  title?: string;
+  url: null | string | undefined;
 }) {
-  const [icon, setIcon] = useState(() => (url ? (resolved.get(url) ?? '') : ''))
-  const [pending, setPending] = useState(false)
+  const [icon, setIcon] = useState(() =>
+    url ? (resolved.get(url) ?? "") : "",
+  );
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
-    const resolveFavicon = window.hermesDesktop?.resolveFavicon
+    const resolveFavicon = window.hermesDesktop?.resolveFavicon;
 
     if (!url || !resolveFavicon) {
-      setIcon('')
-      setPending(false)
+      setIcon("");
+      setPending(false);
 
-      return
+      return;
     }
 
-    const cached = resolved.get(url)
+    const cached = resolved.get(url);
 
     if (cached !== undefined) {
-      setIcon(cached)
-      setPending(false)
+      setIcon(cached);
+      setPending(false);
 
-      return
+      return;
     }
 
-    let live = true
+    let live = true;
 
-    setPending(true)
+    setPending(true);
 
     void resolveFavicon(url)
-      .catch(() => '')
-      .then(found => {
-        resolved.set(url, found)
+      .catch(() => "")
+      .then((found) => {
+        resolved.set(url, found);
 
         if (live) {
-          setIcon(found)
-          setPending(false)
+          setIcon(found);
+          setPending(false);
         }
-      })
+      });
 
     return () => {
-      live = false
-    }
-  }, [url])
+      live = false;
+    };
+  }, [url]);
 
   return (
-    <span className={cn('inline-grid size-full place-items-center', className)} title={title}>
+    <span
+      className={cn("inline-grid size-full place-items-center", className)}
+      title={title}
+    >
       {icon ? (
-        <img alt="" aria-hidden className="size-full object-contain" src={icon} />
+        <img
+          alt=""
+          aria-hidden
+          className="size-full object-contain"
+          src={icon}
+        />
       ) : pending ? (
         <Loader2 aria-hidden className="h-1/2 w-1/2 animate-spin opacity-60" />
       ) : (
         fallback
       )}
     </span>
-  )
+  );
 }

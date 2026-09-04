@@ -21,57 +21,57 @@
  * Pure model + session atoms. No JSX — the pane composes it.
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { $botMeta, saveBotMeta } from './data'
-import { botRosterMeta } from './routing'
-import { getPluginCtx } from './shared'
-import type { BotMeta, RosterRow } from './types'
+import { $botMeta, saveBotMeta } from "./data";
+import { botRosterMeta } from "./routing";
+import { getPluginCtx } from "./shared";
+import type { BotMeta, RosterRow } from "./types";
 
-export const UNASSIGNED_SECTION_KEY = 'section:unassigned'
-export const BOT_SECTIONS_KEY = 'bot-sections-v1'
+export const UNASSIGNED_SECTION_KEY = "section:unassigned";
+export const BOT_SECTIONS_KEY = "bot-sections-v1";
 
 export interface BotSection {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 /** `[{ id, name }]`, in display order. */
-export const $botSections = atom<BotSection[]>([])
+export const $botSections = atom<BotSection[]>([]);
 
 /** Roster key of the bot in flight during a drag. Session-only, and cleared
  *  on dragend even when the drop lands outside any target — a stuck
  *  "dragging" state outlives the gesture and reads as a broken pane. */
-export const $draggingBot = atom<null | string>(null)
+export const $draggingBot = atom<null | string>(null);
 
 export function normalizeBotSections(value: unknown): BotSection[] {
   if (!Array.isArray(value)) {
-    return []
+    return [];
   }
 
-  const seen = new Set<string>()
-  const out: BotSection[] = []
+  const seen = new Set<string>();
+  const out: BotSection[] = [];
 
   for (const entry of value) {
-    const id = String((entry as BotSection)?.id || '').trim()
-    const name = String((entry as BotSection)?.name || '').trim()
+    const id = String((entry as BotSection)?.id || "").trim();
+    const name = String((entry as BotSection)?.name || "").trim();
 
     if (!id || !name || seen.has(id)) {
-      continue
+      continue;
     }
 
-    seen.add(id)
-    out.push({ id, name })
+    seen.add(id);
+    out.push({ id, name });
   }
 
-  return out
+  return out;
 }
 
 function persistBotSections(next: BotSection[]): void {
-  $botSections.set(next)
+  $botSections.set(next);
 
   try {
-    getPluginCtx()?.storage?.set?.(BOT_SECTIONS_KEY, next)
+    getPluginCtx()?.storage?.set?.(BOT_SECTIONS_KEY, next);
   } catch {
     // No storage — sections live for this window only, which is strictly
     // better than the pane throwing while the user drags a bot into a folder.
@@ -81,41 +81,50 @@ function persistBotSections(next: BotSection[]): void {
 /** Read the persisted list back at plugin start. */
 export function loadBotSections(): void {
   try {
-    $botSections.set(normalizeBotSections(getPluginCtx()?.storage?.get?.(BOT_SECTIONS_KEY, [])))
+    $botSections.set(
+      normalizeBotSections(
+        getPluginCtx()?.storage?.get?.(BOT_SECTIONS_KEY, []),
+      ),
+    );
   } catch {
-    $botSections.set([])
+    $botSections.set([]);
   }
 }
 
 function newSectionId(): string {
-  return `sec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
+  return `sec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
 /** Create a section and file `bots` into it. Returns the new section, or
  *  null when the name is blank. */
-export function createBotSection(name: string, bots: RosterRow[] = []): BotSection | null {
-  const clean = String(name || '').trim()
+export function createBotSection(
+  name: string,
+  bots: RosterRow[] = [],
+): BotSection | null {
+  const clean = String(name || "").trim();
 
   if (!clean) {
-    return null
+    return null;
   }
 
-  const section: BotSection = { id: newSectionId(), name: clean }
+  const section: BotSection = { id: newSectionId(), name: clean };
 
-  persistBotSections([...$botSections.get(), section])
-  void moveBotsToSection(bots, section.id)
+  persistBotSections([...$botSections.get(), section]);
+  void moveBotsToSection(bots, section.id);
 
-  return section
+  return section;
 }
 
 export function renameBotSection(id: string, name: string): void {
-  const clean = String(name || '').trim()
+  const clean = String(name || "").trim();
 
   if (!clean) {
-    return
+    return;
   }
 
-  persistBotSections($botSections.get().map(s => (s.id === id ? { ...s, name: clean } : s)))
+  persistBotSections(
+    $botSections.get().map((s) => (s.id === id ? { ...s, name: clean } : s)),
+  );
 }
 
 /**
@@ -124,45 +133,50 @@ export function renameBotSection(id: string, name: string): void {
  * bot rather than on the section. Returns an undo that puts the section back
  * in its slot and refiles the same bots, so the delete needs no confirmation.
  */
-export function deleteBotSection(id: string, roster: RosterRow[] = []): { members: RosterRow[]; undo: () => void } {
-  const list = $botSections.get()
-  const index = list.findIndex(s => s.id === id)
-  const section = list[index]
-  const members = (roster || []).filter(bot => botSectionId(bot, $botMeta.get()) === id)
+export function deleteBotSection(
+  id: string,
+  roster: RosterRow[] = [],
+): { members: RosterRow[]; undo: () => void } {
+  const list = $botSections.get();
+  const index = list.findIndex((s) => s.id === id);
+  const section = list[index];
+  const members = (roster || []).filter(
+    (bot) => botSectionId(bot, $botMeta.get()) === id,
+  );
 
-  persistBotSections(list.filter(s => s.id !== id))
-  void moveBotsToSection(members, null)
+  persistBotSections(list.filter((s) => s.id !== id));
+  void moveBotsToSection(members, null);
 
   return {
     members,
     undo: () => {
       if (!section) {
-        return
+        return;
       }
 
-      const current = $botSections.get().filter(s => s.id !== id)
+      const current = $botSections.get().filter((s) => s.id !== id);
 
-      current.splice(Math.min(index, current.length), 0, section)
-      persistBotSections(current)
-      void moveBotsToSection(members, id)
-    }
-  }
+      current.splice(Math.min(index, current.length), 0, section);
+      persistBotSections(current);
+      void moveBotsToSection(members, id);
+    },
+  };
 }
 
 export function moveBotSection(id: string, delta: number): void {
-  const list = $botSections.get()
-  const from = list.findIndex(s => s.id === id)
-  const to = from + delta
+  const list = $botSections.get();
+  const from = list.findIndex((s) => s.id === id);
+  const to = from + delta;
 
   if (from < 0 || to < 0 || to >= list.length) {
-    return
+    return;
   }
 
-  const next = list.slice()
-  const [moved] = next.splice(from, 1)
+  const next = list.slice();
+  const [moved] = next.splice(from, 1);
 
-  next.splice(to, 0, moved!)
-  persistBotSections(next)
+  next.splice(to, 0, moved!);
+  persistBotSections(next);
 }
 
 /**
@@ -171,25 +185,31 @@ export function moveBotSection(id: string, delta: number): void {
  * per profile — and the writes run in sequence rather than fanned out, so the
  * shared local snapshot is never committed by two saves at once.
  */
-export async function moveBotsToSection(bots: RosterRow[], sectionId: null | string): Promise<void> {
+export async function moveBotsToSection(
+  bots: RosterRow[],
+  sectionId: null | string,
+): Promise<void> {
   for (const bot of bots || []) {
     if (bot && botSectionId(bot, $botMeta.get()) !== (sectionId || null)) {
-      await saveBotMeta(bot, { sectionId: sectionId || null })
+      await saveBotMeta(bot, { sectionId: sectionId || null });
     }
   }
 }
 
-export function botSectionId(bot: RosterRow, metaByName: Record<string, BotMeta>): null | string {
-  const id = botRosterMeta(bot, metaByName)?.sectionId
+export function botSectionId(
+  bot: RosterRow,
+  metaByName: Record<string, BotMeta>,
+): null | string {
+  const id = botRosterMeta(bot, metaByName)?.sectionId;
 
-  return id ? String(id) : null
+  return id ? String(id) : null;
 }
 
 export interface SectionBlock<TRow> {
-  id: null | string
-  key: string
-  name: string
-  rows: TRow[]
+  id: null | string;
+  key: string;
+  name: string;
+  rows: TRow[];
 }
 
 /**
@@ -198,37 +218,39 @@ export interface SectionBlock<TRow> {
  * names a section that no longer exists lands in Unassigned rather than
  * vanishing, which is what makes deleting a section safe.
  */
-export function groupRowsBySection<TRow extends { bot?: RosterRow } | RosterRow>(
+export function groupRowsBySection<
+  TRow extends { bot?: RosterRow } | RosterRow,
+>(
   rows: TRow[],
   sections: unknown,
-  metaByName: Record<string, BotMeta>
+  metaByName: Record<string, BotMeta>,
 ): SectionBlock<TRow>[] {
-  const list = normalizeBotSections(sections)
-  const known = new Set(list.map(s => s.id))
-  const byId = new Map<string, TRow[]>(list.map(s => [s.id, [] as TRow[]]))
-  const loose: TRow[] = []
+  const list = normalizeBotSections(sections);
+  const known = new Set(list.map((s) => s.id));
+  const byId = new Map<string, TRow[]>(list.map((s) => [s.id, [] as TRow[]]));
+  const loose: TRow[] = [];
 
   for (const row of rows || []) {
-    const bot = ((row as { bot?: RosterRow })?.bot || row) as RosterRow
-    const id = bot ? botSectionId(bot, metaByName) : null
+    const bot = ((row as { bot?: RosterRow })?.bot || row) as RosterRow;
+    const id = bot ? botSectionId(bot, metaByName) : null;
 
     if (id && known.has(id)) {
-      byId.get(id)!.push(row)
+      byId.get(id)!.push(row);
     } else {
-      loose.push(row)
+      loose.push(row);
     }
   }
 
-  const blocks: SectionBlock<TRow>[] = list.map(section => ({
+  const blocks: SectionBlock<TRow>[] = list.map((section) => ({
     id: section.id,
     key: `section:${section.id}`,
     name: section.name,
-    rows: byId.get(section.id) || []
-  }))
+    rows: byId.get(section.id) || [],
+  }));
 
-  blocks.push({ id: null, key: UNASSIGNED_SECTION_KEY, name: '', rows: loose })
+  blocks.push({ id: null, key: UNASSIGNED_SECTION_KEY, name: "", rows: loose });
 
-  return blocks
+  return blocks;
 }
 
 // ── drag and drop ────────────────────────────────────────────────────────────
@@ -244,4 +266,4 @@ export function groupRowsBySection<TRow extends { bot?: RosterRow } | RosterRow>
 // message. `dataTransfer.types` is readable during dragover (the DATA itself
 // is not, by design), so a drop target can still light up correctly.
 
-export const BOT_DRAG_MIME = 'application/x-hermes-bot-key'
+export const BOT_DRAG_MIME = "application/x-hermes-bot-key";

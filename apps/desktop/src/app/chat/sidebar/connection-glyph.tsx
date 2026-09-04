@@ -1,8 +1,8 @@
-import type { DesktopRegistryConnection } from '@/global'
-import { Cloud, Monitor, Network, Terminal } from '@/lib/icons'
-import { cn } from '@/lib/utils'
+import type { DesktopRegistryConnection } from "@/global";
+import { Cloud, Monitor, Network, Terminal } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
-import { SIDEBAR_ROW_LEAD } from './row-geometry'
+import { SIDEBAR_ROW_LEAD } from "./row-geometry";
 
 // One glyph per connection kind — device, cloud, network, terminal — shared by
 // the statusbar switcher, its menu, the fleet profile rail and the Bots rail so
@@ -11,28 +11,28 @@ import { SIDEBAR_ROW_LEAD } from './row-geometry'
 // pulling in stores.
 export function ConnectionGlyph({
   className,
-  connection
+  connection,
 }: {
-  className?: string
-  connection: Pick<DesktopRegistryConnection, 'kind'>
+  className?: string;
+  connection: Pick<DesktopRegistryConnection, "kind">;
 }) {
   const Icon =
-    connection.kind === 'local'
+    connection.kind === "local"
       ? Monitor
-      : connection.kind === 'cloud'
+      : connection.kind === "cloud"
         ? Cloud
-        : connection.kind === 'ssh'
+        : connection.kind === "ssh"
           ? Terminal
-          : Network
+          : Network;
 
   return (
     <span
       aria-hidden="true"
-      className={cn(SIDEBAR_ROW_LEAD, 'text-(--ui-text-quaternary)', className)}
+      className={cn(SIDEBAR_ROW_LEAD, "text-(--ui-text-quaternary)", className)}
       data-connection-kind={connection.kind}
       data-slot="connection-glyph"
     >
       <Icon className="size-3" />
     </span>
-  )
+  );
 }

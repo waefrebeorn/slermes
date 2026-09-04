@@ -1,21 +1,21 @@
-import { useStore } from '@nanostores/react'
+import { useStore } from "@nanostores/react";
 
-import { Codicon } from '@/components/ui/codicon'
+import { Codicon } from "@/components/ui/codicon";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
-  ContextMenuTrigger
-} from '@/components/ui/context-menu'
-import { Tip, TipHintLabel } from '@/components/ui/tooltip'
-import { useI18n } from '@/i18n'
-import { formatCombo } from '@/lib/keybinds/combo'
-import { isMetaClose, middleClickHandlers } from '@/lib/middle-click'
-import { cn } from '@/lib/utils'
-import { $bindings } from '@/store/keybinds'
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { Tip, TipHintLabel } from "@/components/ui/tooltip";
+import { useI18n } from "@/i18n";
+import { formatCombo } from "@/lib/keybinds/combo";
+import { isMetaClose, middleClickHandlers } from "@/lib/middle-click";
+import { cn } from "@/lib/utils";
+import { $bindings } from "@/store/keybinds";
 
-import { setTerminalTakeover } from '../store'
+import { setTerminalTakeover } from "../store";
 
 import {
   $activeTerminalId,
@@ -25,22 +25,22 @@ import {
   closeTerminal,
   createTerminal,
   selectTerminal,
-  type TerminalEntry
-} from './terminals'
+  type TerminalEntry,
+} from "./terminals";
 
 const RAIL_ACTION =
-  'grid size-6 place-items-center rounded text-(--ui-text-tertiary) transition-colors hover:bg-(--chrome-action-hover) hover:text-foreground focus-visible:bg-(--chrome-action-hover) focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring [-webkit-app-region:no-drag]'
+  "grid size-6 place-items-center rounded text-(--ui-text-tertiary) transition-colors hover:bg-(--chrome-action-hover) hover:text-foreground focus-visible:bg-(--chrome-action-hover) focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring [-webkit-app-region:no-drag]";
 
 /** Thin icon "bookmark" strip blended into the terminal surface, shown whenever a
  *  terminal exists. Each square is a tab (name + hotkey on hover); close via the
  *  shell's `exit`, middle-click, or the context menu. */
 export function TerminalRail() {
-  const { t } = useI18n()
-  const terminals = useStore($terminals)
-  const activeId = useStore($activeTerminalId)
-  const bindings = useStore($bindings)
-  const toggleHint = bindings['view.showTerminal']?.[0]
-  const newHint = bindings['view.newTerminal']?.[0]
+  const { t } = useI18n();
+  const terminals = useStore($terminals);
+  const activeId = useStore($activeTerminalId);
+  const bindings = useStore($bindings);
+  const toggleHint = bindings["view.showTerminal"]?.[0];
+  const newHint = bindings["view.newTerminal"]?.[0];
 
   return (
     <div
@@ -68,12 +68,17 @@ export function TerminalRail() {
         ))}
         <li className="flex w-full justify-center">
           <Tip
-            label={<TipHintLabel hint={newHint && formatCombo(newHint)} text={t.rightSidebar.terminalNew} />}
+            label={
+              <TipHintLabel
+                hint={newHint && formatCombo(newHint)}
+                text={t.rightSidebar.terminalNew}
+              />
+            }
             side="left"
           >
             <button
               aria-label={t.rightSidebar.terminalNew}
-              className={cn(RAIL_ACTION, 'size-7 text-(--ui-text-quaternary)')}
+              className={cn(RAIL_ACTION, "size-7 text-(--ui-text-quaternary)")}
               onClick={() => createTerminal()}
               type="button"
             >
@@ -87,7 +92,10 @@ export function TerminalRail() {
         <Tip label={t.rightSidebar.terminalHide} side="left">
           <button
             aria-label={t.rightSidebar.terminalHide}
-            className={cn(RAIL_ACTION, 'opacity-0 transition-opacity group-hover/rail:opacity-100')}
+            className={cn(
+              RAIL_ACTION,
+              "opacity-0 transition-opacity group-hover/rail:opacity-100",
+            )}
             onClick={() => setTerminalTakeover(false)}
             type="button"
           >
@@ -96,20 +104,26 @@ export function TerminalRail() {
         </Tip>
       </div>
     </div>
-  )
+  );
 }
 
 interface TerminalRailItemProps {
-  active: boolean
-  canCloseOthers: boolean
-  index: number
-  term: TerminalEntry
-  toggleHint?: string
+  active: boolean;
+  canCloseOthers: boolean;
+  index: number;
+  term: TerminalEntry;
+  toggleHint?: string;
 }
 
-function TerminalRailItem({ active, canCloseOthers, index, term, toggleHint }: TerminalRailItemProps) {
-  const { t } = useI18n()
-  const label = `${index + 1}. ${term.title}`
+function TerminalRailItem({
+  active,
+  canCloseOthers,
+  index,
+  term,
+  toggleHint,
+}: TerminalRailItemProps) {
+  const { t } = useI18n();
+  const label = `${index + 1}. ${term.title}`;
 
   return (
     <ContextMenu>
@@ -121,25 +135,39 @@ function TerminalRailItem({ active, canCloseOthers, index, term, toggleHint }: T
               className="absolute inset-y-0.5 right-0 w-0.5 rounded-l-sm bg-(--ui-stroke-primary)"
             />
           )}
-          <Tip label={<TipHintLabel hint={toggleHint && formatCombo(toggleHint)} text={label} />} side="left">
+          <Tip
+            label={
+              <TipHintLabel
+                hint={toggleHint && formatCombo(toggleHint)}
+                text={label}
+              />
+            }
+            side="left"
+          >
             <button
               aria-label={label}
               aria-selected={active}
               className={cn(
-                'grid size-7 place-items-center rounded-md transition-colors',
+                "grid size-7 place-items-center rounded-md transition-colors",
                 active
-                  ? 'bg-(--chrome-action-hover) text-foreground'
-                  : 'text-(--ui-text-tertiary) hover:bg-(--chrome-action-hover) hover:text-foreground'
+                  ? "bg-(--chrome-action-hover) text-foreground"
+                  : "text-(--ui-text-tertiary) hover:bg-(--chrome-action-hover) hover:text-foreground",
               )}
               {...middleClickHandlers(() => closeTerminal(term.id))}
               // ⌘-click closes (the pane-tab gesture); a plain click selects.
-              onClick={event => (isMetaClose(event) ? closeTerminal(term.id) : selectTerminal(term.id))}
+              onClick={(event) =>
+                isMetaClose(event)
+                  ? closeTerminal(term.id)
+                  : selectTerminal(term.id)
+              }
               role="tab"
               type="button"
             >
               <Codicon
-                className={cn(term.kind === 'agent' && !active && 'text-primary')}
-                name={term.kind === 'agent' ? 'agent' : 'terminal'}
+                className={cn(
+                  term.kind === "agent" && !active && "text-primary",
+                )}
+                name={term.kind === "agent" ? "agent" : "terminal"}
                 size="0.875rem"
               />
             </button>
@@ -147,14 +175,23 @@ function TerminalRailItem({ active, canCloseOthers, index, term, toggleHint }: T
         </li>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onSelect={() => closeTerminal(term.id)}>{t.common.close}</ContextMenuItem>
-        <ContextMenuItem disabled={!canCloseOthers} onSelect={() => closeOtherTerminals(term.id)}>
+        <ContextMenuItem onSelect={() => closeTerminal(term.id)}>
+          {t.common.close}
+        </ContextMenuItem>
+        <ContextMenuItem
+          disabled={!canCloseOthers}
+          onSelect={() => closeOtherTerminals(term.id)}
+        >
           {t.rightSidebar.terminalCloseOthers}
         </ContextMenuItem>
-        <ContextMenuItem onSelect={closeAllTerminals}>{t.rightSidebar.terminalCloseAll}</ContextMenuItem>
+        <ContextMenuItem onSelect={closeAllTerminals}>
+          {t.rightSidebar.terminalCloseAll}
+        </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem onSelect={() => setTerminalTakeover(false)}>{t.rightSidebar.terminalHide}</ContextMenuItem>
+        <ContextMenuItem onSelect={() => setTerminalTakeover(false)}>
+          {t.rightSidebar.terminalHide}
+        </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-  )
+  );
 }

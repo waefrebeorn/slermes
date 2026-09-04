@@ -21,36 +21,40 @@
  */
 
 /** Hosts that mean "the machine this resolved on" — the whole problem class. */
-const LOOPBACK_HOSTS = new Set(['0.0.0.0', '127.0.0.1', '::1', 'localhost'])
+const LOOPBACK_HOSTS = new Set(["0.0.0.0", "127.0.0.1", "::1", "localhost"]);
 
 /** A forward is a live socket to someone else's machine; it should not outlive
  *  the user's attention on it. Refreshed on every reuse. */
-export const PREVIEW_REACH_LEASE_MS = 15 * 60 * 1000
+export const PREVIEW_REACH_LEASE_MS = 15 * 60 * 1000;
 
 export interface PreviewReachDeps {
   /** Tear the forward down. */
-  cancel: (localPort: number, remotePort: number) => Promise<void>
+  cancel: (localPort: number, remotePort: number) => Promise<void>;
   /** Open it. Mirrors `SshConnection.forward`. */
-  forward: (localPort: number, remotePort: number, remoteHost?: string) => Promise<void>
+  forward: (
+    localPort: number,
+    remotePort: number,
+    remoteHost?: string,
+  ) => Promise<void>;
   /** False once the connection that authorized this lease is gone. */
-  isCurrent: () => boolean
+  isCurrent: () => boolean;
   /** Kernel-assigned free loopback port. */
-  pickLocalPort: () => Promise<number>
+  pickLocalPort: () => Promise<number>;
 }
 
 export interface PreviewReachLease {
-  close: () => Promise<void>
-  expiresAt: number
-  localPort: number
-  remoteHost: string
-  remotePort: number
+  close: () => Promise<void>;
+  expiresAt: number;
+  localPort: number;
+  remoteHost: string;
+  remotePort: number;
   /** The address to hand the renderer. */
-  url: string
+  url: string;
 }
 
 interface ParsedLoopback {
-  host: string
-  port: number
+  host: string;
+  port: number;
 }
 
 /**
@@ -63,41 +67,43 @@ interface ParsedLoopback {
  * not a guess about which ports are wholesome.
  */
 export function loopbackTarget(rawUrl: string): null | ParsedLoopback {
-  let parsed: URL
+  let parsed: URL;
 
   try {
-    parsed = new URL(rawUrl)
+    parsed = new URL(rawUrl);
   } catch {
-    return null
+    return null;
   }
 
-  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    return null
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return null;
   }
 
-  const host = parsed.hostname.replace(/^\[|\]$/g, '').toLowerCase()
+  const host = parsed.hostname.replace(/^\[|\]$/g, "").toLowerCase();
 
   if (!LOOPBACK_HOSTS.has(host)) {
-    return null
+    return null;
   }
 
-  const port = Number(parsed.port || (parsed.protocol === 'https:' ? 443 : 80))
+  const port = Number(parsed.port || (parsed.protocol === "https:" ? 443 : 80));
 
-  return Number.isInteger(port) && port > 0 && port < 65_536 ? { host, port } : null
+  return Number.isInteger(port) && port > 0 && port < 65_536
+    ? { host, port }
+    : null;
 }
 
 /** Swap the authority for the local end of a forward, preserving everything
  *  else. Path, query, and hash are what make the URL useful. */
 export function rewriteToLocalPort(rawUrl: string, localPort: number): string {
-  const parsed = new URL(rawUrl)
+  const parsed = new URL(rawUrl);
 
-  parsed.hostname = '127.0.0.1'
-  parsed.port = String(localPort)
+  parsed.hostname = "127.0.0.1";
+  parsed.port = String(localPort);
   // The forward carries plain TCP to a dev server that is almost never
   // TLS-terminated; https would fail the handshake against it.
-  parsed.protocol = 'http:'
+  parsed.protocol = "http:";
 
-  return parsed.toString()
+  return parsed.toString();
 }
 
 /**
@@ -107,44 +113,47 @@ export function rewriteToLocalPort(rawUrl: string, localPort: number): string {
  * dead tunnel is worth surfacing, and a silent null here would be
  * indistinguishable from "this URL was fine all along".
  */
-export async function openPreviewReach(rawUrl: string, deps: PreviewReachDeps): Promise<null | PreviewReachLease> {
-  const target = loopbackTarget(rawUrl)
+export async function openPreviewReach(
+  rawUrl: string,
+  deps: PreviewReachDeps,
+): Promise<null | PreviewReachLease> {
+  const target = loopbackTarget(rawUrl);
 
   if (!target) {
-    return null
+    return null;
   }
 
-  const localPort = await deps.pickLocalPort()
+  const localPort = await deps.pickLocalPort();
 
   // The connection can die between picking a port and using it.
   if (!deps.isCurrent()) {
-    return null
+    return null;
   }
 
-  await deps.forward(localPort, target.port, '127.0.0.1')
+  await deps.forward(localPort, target.port, "127.0.0.1");
 
-  let closed = false
-  let timer: null | ReturnType<typeof setTimeout> = null
+  let closed = false;
+  let timer: null | ReturnType<typeof setTimeout> = null;
 
   const close = async () => {
     if (closed) {
-      return
+      return;
     }
 
-    closed = true
+    closed = true;
 
     if (timer) {
-      clearTimeout(timer)
-      timer = null
+      clearTimeout(timer);
+      timer = null;
     }
 
-    await deps.cancel(localPort, target.port)
-  }
+    await deps.cancel(localPort, target.port);
+  };
 
-  timer = setTimeout(() => void close(), PREVIEW_REACH_LEASE_MS)
+  timer = setTimeout(() => void close(), PREVIEW_REACH_LEASE_MS);
   // A pending lease timer must never hold the app open at quit. Node's timer
   // has unref; the DOM lib's number type (what tsc picks here) does not.
-  ;(timer as unknown as { unref?: () => void }).unref?.()
+  (timer as unknown as { unref?: () => void }).unref?.();
 
   return {
     close,
@@ -152,8 +161,8 @@ export async function openPreviewReach(rawUrl: string, deps: PreviewReachDeps): 
     localPort,
     remoteHost: target.host,
     remotePort: target.port,
-    url: rewriteToLocalPort(rawUrl, localPort)
-  }
+    url: rewriteToLocalPort(rawUrl, localPort),
+  };
 }
 
 /**
@@ -164,47 +173,50 @@ export async function openPreviewReach(rawUrl: string, deps: PreviewReachDeps): 
  * would leak a socket per click.
  */
 export class PreviewReachRegistry {
-  private leases = new Map<number, PreviewReachLease>()
+  private leases = new Map<number, PreviewReachLease>();
 
   /** Reuse a live lease for this port, else open one. */
-  async resolve(rawUrl: string, deps: PreviewReachDeps): Promise<null | string> {
-    const target = loopbackTarget(rawUrl)
+  async resolve(
+    rawUrl: string,
+    deps: PreviewReachDeps,
+  ): Promise<null | string> {
+    const target = loopbackTarget(rawUrl);
 
     if (!target) {
-      return null
+      return null;
     }
 
-    const existing = this.leases.get(target.port)
+    const existing = this.leases.get(target.port);
 
     if (existing && existing.expiresAt > Date.now()) {
-      return rewriteToLocalPort(rawUrl, existing.localPort)
+      return rewriteToLocalPort(rawUrl, existing.localPort);
     }
 
     if (existing) {
-      await existing.close().catch(() => {})
-      this.leases.delete(target.port)
+      await existing.close().catch(() => {});
+      this.leases.delete(target.port);
     }
 
-    const lease = await openPreviewReach(rawUrl, deps)
+    const lease = await openPreviewReach(rawUrl, deps);
 
     if (!lease) {
-      return null
+      return null;
     }
 
-    this.leases.set(target.port, lease)
+    this.leases.set(target.port, lease);
 
-    return lease.url
+    return lease.url;
   }
 
   /** Drop every forward — the authorizing connection changed or went away. */
   async closeAll(): Promise<void> {
-    const open = [...this.leases.values()]
+    const open = [...this.leases.values()];
 
-    this.leases.clear()
-    await Promise.allSettled(open.map(lease => lease.close()))
+    this.leases.clear();
+    await Promise.allSettled(open.map((lease) => lease.close()));
   }
 
   get size(): number {
-    return this.leases.size
+    return this.leases.size;
   }
 }

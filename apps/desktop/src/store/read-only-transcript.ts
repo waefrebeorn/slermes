@@ -15,60 +15,73 @@
  * resolvable never take this path, and a later successful live resume (e.g.
  * after the single-match owner backfill stamps the row) clears the flag.
  */
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import type { SessionOwnerResolutionError } from './session-owner-resolution'
-import { isSessionOwnerResolutionError } from './session-owner-resolution'
+import type { SessionOwnerResolutionError } from "./session-owner-resolution";
+import { isSessionOwnerResolutionError } from "./session-owner-resolution";
 
 /** Stored session ids currently open as read-only stored transcripts. The
  *  composer/submit surfaces consult this to refuse writes into a session
  *  that has no routable live runtime. */
-export const $readOnlyStoredTranscripts = atom<ReadonlySet<string>>(new Set())
+export const $readOnlyStoredTranscripts = atom<ReadonlySet<string>>(new Set());
 
 export function markStoredTranscriptReadOnly(storedSessionId: string): void {
-  const id = storedSessionId.trim()
+  const id = storedSessionId.trim();
 
   if (!id || $readOnlyStoredTranscripts.get().has(id)) {
-    return
+    return;
   }
 
-  $readOnlyStoredTranscripts.set(new Set([...$readOnlyStoredTranscripts.get(), id]))
+  $readOnlyStoredTranscripts.set(
+    new Set([...$readOnlyStoredTranscripts.get(), id]),
+  );
 }
 
 export function clearStoredTranscriptReadOnly(storedSessionId: string): void {
-  const id = storedSessionId.trim()
+  const id = storedSessionId.trim();
 
   if (!id || !$readOnlyStoredTranscripts.get().has(id)) {
-    return
+    return;
   }
 
-  const next = new Set($readOnlyStoredTranscripts.get())
+  const next = new Set($readOnlyStoredTranscripts.get());
 
-  next.delete(id)
-  $readOnlyStoredTranscripts.set(next)
+  next.delete(id);
+  $readOnlyStoredTranscripts.set(next);
 }
 
-export function isStoredTranscriptReadOnly(storedSessionId: null | string | undefined): boolean {
-  return Boolean(storedSessionId && $readOnlyStoredTranscripts.get().has(storedSessionId.trim()))
+export function isStoredTranscriptReadOnly(
+  storedSessionId: null | string | undefined,
+): boolean {
+  return Boolean(
+    storedSessionId &&
+    $readOnlyStoredTranscripts.get().has(storedSessionId.trim()),
+  );
 }
 
 /** Synthetic runtime-id namespace for read-only tiles: a stored transcript
  *  opened without a live runtime still needs a state-cache key, and this
  *  prefix guarantees it can never collide with (or be mistaken for) a real
  *  gateway runtime id. */
-export const READ_ONLY_RUNTIME_ID_PREFIX = 'read-only:'
+export const READ_ONLY_RUNTIME_ID_PREFIX = "read-only:";
 
 export function readOnlyRuntimeIdFor(storedSessionId: string): string {
-  return `${READ_ONLY_RUNTIME_ID_PREFIX}${storedSessionId}`
+  return `${READ_ONLY_RUNTIME_ID_PREFIX}${storedSessionId}`;
 }
 
-export function isReadOnlyRuntimeId(runtimeId: null | string | undefined): boolean {
-  return Boolean(runtimeId?.startsWith(READ_ONLY_RUNTIME_ID_PREFIX))
+export function isReadOnlyRuntimeId(
+  runtimeId: null | string | undefined,
+): boolean {
+  return Boolean(runtimeId?.startsWith(READ_ONLY_RUNTIME_ID_PREFIX));
 }
 
 export type StoredTranscriptResumeOutcome<TResumed, TTranscript> =
-  | { mode: 'live'; resumed: TResumed }
-  | { error: SessionOwnerResolutionError; mode: 'read-only'; transcript: TTranscript }
+  | { mode: "live"; resumed: TResumed }
+  | {
+      error: SessionOwnerResolutionError;
+      mode: "read-only";
+      transcript: TTranscript;
+    };
 
 /**
  * Dispatch a live resume, recovering into a read-only stored-transcript open
@@ -84,31 +97,31 @@ export type StoredTranscriptResumeOutcome<TResumed, TTranscript> =
 export async function resumeWithStoredTranscriptFallback<TResumed, TTranscript>(
   storedSessionId: string,
   resume: () => Promise<TResumed>,
-  fetchStoredTranscript: () => Promise<TTranscript>
+  fetchStoredTranscript: () => Promise<TTranscript>,
 ): Promise<StoredTranscriptResumeOutcome<TResumed, TTranscript>> {
   try {
-    const resumed = await resume()
+    const resumed = await resume();
 
     // A live resume proves the owner is routable again (the backfill stamped
     // the row, or a topology change resolved it) — drop the read-only latch.
-    clearStoredTranscriptReadOnly(storedSessionId)
+    clearStoredTranscriptReadOnly(storedSessionId);
 
-    return { mode: 'live', resumed }
+    return { mode: "live", resumed };
   } catch (error) {
     if (!isSessionOwnerResolutionError(error)) {
-      throw error
+      throw error;
     }
 
-    let transcript: TTranscript
+    let transcript: TTranscript;
 
     try {
-      transcript = await fetchStoredTranscript()
+      transcript = await fetchStoredTranscript();
     } catch {
-      throw error
+      throw error;
     }
 
-    markStoredTranscriptReadOnly(storedSessionId)
+    markStoredTranscriptReadOnly(storedSessionId);
 
-    return { error, mode: 'read-only', transcript }
+    return { error, mode: "read-only", transcript };
   }
 }

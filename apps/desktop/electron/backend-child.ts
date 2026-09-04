@@ -22,31 +22,31 @@
 
 export interface StopBackendChildDeps {
   /** Defaults to the real platform check; injectable for tests. */
-  isWindows?: boolean
+  isWindows?: boolean;
   /** Windows tree-kill implementation (real: taskkill /T /F via execFileSync). */
-  forceKillProcessTree: (pid: number) => void
+  forceKillProcessTree: (pid: number) => void;
   /**
    * POSIX group-signal implementation. Real: process.kill(-pgid, signal).
    * Injectable so the negative-pid group send is asserted in tests without a
    * live process group. Defaults to process.kill.
    */
-  killGroup?: (pgid: number, signal: string) => void
+  killGroup?: (pgid: number, signal: string) => void;
 }
 
 export interface StopBackendTreesForUpdateDeps {
   /** Synchronous Windows taskkill /T /F implementation. */
-  forceKillProcessTree: (pid: number) => void
+  forceKillProcessTree: (pid: number) => void;
   /** Clears and stops the desktop's pooled backends. */
-  stopAllPoolBackends: () => void
+  stopAllPoolBackends: () => void;
 }
 
 export interface BackendProcessRoot {
-  pid?: number | null
+  pid?: number | null;
 }
 
 export interface KillableChild extends BackendProcessRoot {
-  killed?: boolean
-  kill: (signal: string) => void
+  killed?: boolean;
+  kill: (signal: string) => void;
 }
 
 /**
@@ -55,27 +55,32 @@ export interface KillableChild extends BackendProcessRoot {
  * throws (the process may already be gone) -- mirrors the original inline
  * best-effort semantics in main.ts.
  */
-export function stopBackendChild(child: KillableChild | null | undefined, deps: StopBackendChildDeps) {
+export function stopBackendChild(
+  child: KillableChild | null | undefined,
+  deps: StopBackendChildDeps,
+) {
   if (!child || child.killed) {
-    return
+    return;
   }
 
-  const isWindows = deps.isWindows ?? process.platform === 'win32'
-  const killGroup = deps.killGroup ?? ((pgid: number, signal: string) => process.kill(pgid, signal))
+  const isWindows = deps.isWindows ?? process.platform === "win32";
+  const killGroup =
+    deps.killGroup ??
+    ((pgid: number, signal: string) => process.kill(pgid, signal));
 
   try {
     if (isWindows && Number.isInteger(child.pid)) {
-      deps.forceKillProcessTree(child.pid as number)
+      deps.forceKillProcessTree(child.pid as number);
     } else if (Number.isInteger(child.pid)) {
       // POSIX: pgid == pid (start_new_session). Signal the whole group so MCP
       // grandchildren die too; fall back to the direct child on failure.
       try {
-        killGroup(-(child.pid as number), 'SIGTERM')
+        killGroup(-(child.pid as number), "SIGTERM");
       } catch {
-        child.kill('SIGTERM')
+        child.kill("SIGTERM");
       }
     } else {
-      child.kill('SIGTERM')
+      child.kill("SIGTERM");
     }
   } catch {
     // Already gone.
@@ -93,11 +98,11 @@ export function stopBackendChild(child: KillableChild | null | undefined, deps: 
  */
 export function stopBackendTreesForUpdate(
   primary: BackendProcessRoot | null | undefined,
-  deps: StopBackendTreesForUpdateDeps
+  deps: StopBackendTreesForUpdateDeps,
 ): void {
   if (primary && Number.isInteger(primary.pid)) {
-    deps.forceKillProcessTree(primary.pid as number)
+    deps.forceKillProcessTree(primary.pid as number);
   }
 
-  deps.stopAllPoolBackends()
+  deps.stopAllPoolBackends();
 }

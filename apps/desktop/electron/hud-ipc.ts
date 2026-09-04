@@ -2,26 +2,26 @@
 // from main.ts; the HUD window handle and session-id latch stay injected
 // because main.ts owns the window lifecycle and the close broadcast reads the
 // latch when handing the session back to the app window.
-import { type BrowserWindow, ipcMain, screen } from 'electron'
+import { type BrowserWindow, ipcMain, screen } from "electron";
 
-import { createHudDragSession } from './hud-drag'
-import { normalizeHudResizeBounds } from './hud-geometry'
-import { hudWindowingView, resolveHudWindowing } from './hud-windowing'
-import { hudFrostFor, type TranslucencyState } from './translucency'
+import { createHudDragSession } from "./hud-drag";
+import { normalizeHudResizeBounds } from "./hud-geometry";
+import { hudWindowingView, resolveHudWindowing } from "./hud-windowing";
+import { hudFrostFor, type TranslucencyState } from "./translucency";
 
 function hudWindowing() {
-  return resolveHudWindowing(process.platform, process.env, process.argv)
+  return resolveHudWindowing(process.platform, process.env, process.argv);
 }
 
 export interface HudIpcDeps {
-  isMac: boolean
+  isMac: boolean;
   /** Main's authoritative translucency state (Settings → Appearance). */
-  getTranslucencyState: () => TranslucencyState
-  getHudWindow: () => BrowserWindow | null
-  openHudWindow: (sessionId: null | string, profile: null | string) => void
-  closeHudWindow: () => void
-  resetHudLayout: () => boolean
-  setHudSessionId: (sessionId: null | string) => void
+  getTranslucencyState: () => TranslucencyState;
+  getHudWindow: () => BrowserWindow | null;
+  openHudWindow: (sessionId: null | string, profile: null | string) => void;
+  closeHudWindow: () => void;
+  resetHudLayout: () => boolean;
+  setHudSessionId: (sessionId: null | string) => void;
 }
 
 export function registerHudIpc({
@@ -31,20 +31,20 @@ export function registerHudIpc({
   openHudWindow,
   closeHudWindow,
   resetHudLayout,
-  setHudSessionId
+  setHudSessionId,
 }: HudIpcDeps) {
-  const hudDrag = createHudDragSession()
+  const hudDrag = createHudDragSession();
 
   // The renderer needs this before first paint so X11 never installs the
   // Chromium drag region that steals modifier-drag gestures from the WM.
   // Main answers because it owns the actual Ozone backend selection.
-  ipcMain.on('hermes:hud:native-drag', event => {
-    event.returnValue = hudWindowing().move === 'native-drag'
-  })
+  ipcMain.on("hermes:hud:native-drag", (event) => {
+    event.returnValue = hudWindowing().move === "native-drag";
+  });
 
-  ipcMain.on('hermes:hud:windowing', event => {
-    event.returnValue = hudWindowingView(hudWindowing())
-  })
+  ipcMain.on("hermes:hud:windowing", (event) => {
+    event.returnValue = hudWindowingView(hudWindowing());
+  });
 
   // X11/KWin window transfer: a renderer-driven grab is temporarily sticky so
   // the user can keep Ctrl+primary-button held while invoking KDE's desktop
@@ -52,8 +52,8 @@ export function registerHudIpc({
   // window to `_NET_CURRENT_DESKTOP`, exactly like releasing a native titlebar
   // drag on the destination desktop. Native Wayland owns its move loop and
   // Windows/macOS stay out of this Linux-specific bridge.
-  ipcMain.on('hermes:hud:workspace-transfer', (event, transferring) => {
-    const hudWindow = getHudWindow()
+  ipcMain.on("hermes:hud:workspace-transfer", (event, transferring) => {
+    const hudWindow = getHudWindow();
 
     if (
       !hudWindow ||
@@ -61,24 +61,24 @@ export function registerHudIpc({
       event.sender !== hudWindow.webContents ||
       !hudWindowing().workspaceTransfer
     ) {
-      return
+      return;
     }
 
     try {
-      hudWindow.setVisibleOnAllWorkspaces(Boolean(transferring))
+      hudWindow.setVisibleOnAllWorkspaces(Boolean(transferring));
     } catch {
       // Workspace APIs are window-manager capabilities — best effort.
     }
-  })
+  });
 
   // Whether the band currently covers the window below the bar. The renderer
   // is the only party that can know this (it measures the transcript), and it
   // is half of the frost decision — the other half is the user's setting,
   // which main owns. Latched so a Settings change can re-decide without
   // waiting for the HUD to report again.
-  let bandShowing = false
-  let applied: null | string = null
-  let appliedTo: BrowserWindow | null = null
+  let bandShowing = false;
+  let applied: null | string = null;
+  let appliedTo: BrowserWindow | null = null;
 
   // Real frosted glass behind the band — the thing CSS backdrop-filter cannot do,
   // because Chromium composites a transparent window's page against nothing and
@@ -101,27 +101,27 @@ export function registerHudIpc({
   // value would recognise its own last answer and skip — leaving the new HUD
   // unfrosted until something else happened to change the signature.
   const applyHudFrost = () => {
-    const hudWindow = getHudWindow()
+    const hudWindow = getHudWindow();
 
     if (!hudWindow || hudWindow.isDestroyed()) {
-      applied = null
-      appliedTo = null
+      applied = null;
+      appliedTo = null;
 
-      return
+      return;
     }
 
-    const frost = hudFrostFor(getTranslucencyState(), bandShowing)
-    const signature = `${frost.vibrancy ?? 'off'}:${frost.backgroundMaterial}`
+    const frost = hudFrostFor(getTranslucencyState(), bandShowing);
+    const signature = `${frost.vibrancy ?? "off"}:${frost.backgroundMaterial}`;
 
     if (applied === signature && appliedTo === hudWindow) {
-      return
+      return;
     }
 
-    applied = signature
-    appliedTo = hudWindow
+    applied = signature;
+    appliedTo = hudWindow;
 
-    if (isMac && typeof hudWindow.setVibrancy === 'function') {
-      hudWindow.setVibrancy(frost.vibrancy)
+    if (isMac && typeof hudWindow.setVibrancy === "function") {
+      hudWindow.setVibrancy(frost.vibrancy);
     }
 
     // Windows: never touch setBackgroundMaterial on the HUD. Live-verified on
@@ -132,34 +132,34 @@ export function registerHudIpc({
     // setBackgroundColor('#00000000') restores it. The DWM backdrop and window
     // transparency are mutually exclusive, so the Windows HUD keeps the CSS
     // tint the sheet already paints and skips the native frost entirely.
-  }
+  };
 
-  ipcMain.handle('hermes:hud:open', async (_event, request) => {
+  ipcMain.handle("hermes:hud:open", async (_event, request) => {
     openHudWindow(
-      typeof request?.sessionId === 'string' ? request.sessionId : null,
-      typeof request?.profile === 'string' ? request.profile : null
-    )
+      typeof request?.sessionId === "string" ? request.sessionId : null,
+      typeof request?.profile === "string" ? request.profile : null,
+    );
 
-    return { ok: true }
-  })
+    return { ok: true };
+  });
 
-  ipcMain.handle('hermes:hud:frost', (_event, showing) => {
-    bandShowing = Boolean(showing)
-    applyHudFrost()
+  ipcMain.handle("hermes:hud:frost", (_event, showing) => {
+    bandShowing = Boolean(showing);
+    applyHudFrost();
 
-    return { ok: true }
-  })
+    return { ok: true };
+  });
 
   // Let clicks fall through the HUD wherever it isn't really there. An
   // always-on-top window eats every click inside its rectangle, and most of that
   // rectangle is a faded-out band over whatever the user is actually working in.
   // `forward` keeps mousemove flowing so the renderer can re-arm when the cursor
   // reaches the bar.
-  ipcMain.on('hermes:hud:ignore-mouse', (_event, ignore) => {
-    const hudWindow = getHudWindow()
+  ipcMain.on("hermes:hud:ignore-mouse", (_event, ignore) => {
+    const hudWindow = getHudWindow();
 
     if (!hudWindow || hudWindow.isDestroyed()) {
-      return
+      return;
     }
 
     // On X11 ignore-mouse is a one-way door: setIgnoreMouseEvents(false)
@@ -167,14 +167,14 @@ export function registerHudIpc({
     // the HUD stays a normal solid window. Native Wayland and macOS/Windows
     // keep the per-element path.
     if (Boolean(ignore) && !hudWindowing().ignoreMouse) {
-      return
+      return;
     }
 
-    hudWindow.setIgnoreMouseEvents(Boolean(ignore), { forward: true })
-  })
+    hudWindow.setIgnoreMouseEvents(Boolean(ignore), { forward: true });
+  });
 
-  ipcMain.on('hermes:hud:begin-move', event => {
-    const hudWindow = getHudWindow()
+  ipcMain.on("hermes:hud:begin-move", (event) => {
+    const hudWindow = getHudWindow();
 
     if (
       !hudWindow ||
@@ -182,41 +182,53 @@ export function registerHudIpc({
       event.sender !== hudWindow.webContents ||
       !hudWindowing().clientPlacement
     ) {
-      return
+      return;
     }
 
-    const [x, y] = hudWindow.getPosition()
-    hudDrag.begin(screen.getCursorScreenPoint(), { x, y })
-  })
+    const [x, y] = hudWindow.getPosition();
+    hudDrag.begin(screen.getCursorScreenPoint(), { x, y });
+  });
 
-  ipcMain.on('hermes:hud:end-move', event => {
-    const hudWindow = getHudWindow()
+  ipcMain.on("hermes:hud:end-move", (event) => {
+    const hudWindow = getHudWindow();
 
-    if (hudWindow && !hudWindow.isDestroyed() && event.sender !== hudWindow.webContents) {
-      return
+    if (
+      hudWindow &&
+      !hudWindow.isDestroyed() &&
+      event.sender !== hudWindow.webContents
+    ) {
+      return;
     }
 
-    hudDrag.end()
-  })
+    hudDrag.end();
+  });
 
-  ipcMain.on('hermes:hud:move-by', (event, delta) => {
-    const hudWindow = getHudWindow()
+  ipcMain.on("hermes:hud:move-by", (event, delta) => {
+    const hudWindow = getHudWindow();
 
-    if (!hudWindow || hudWindow.isDestroyed() || event.sender !== hudWindow.webContents) {
-      return
+    if (
+      !hudWindow ||
+      hudWindow.isDestroyed() ||
+      event.sender !== hudWindow.webContents
+    ) {
+      return;
     }
 
-    const width = Number(delta?.width)
-    const height = Number(delta?.height)
+    const width = Number(delta?.width);
+    const height = Number(delta?.height);
 
-    if (!Number.isFinite(width) || !Number.isFinite(height) || !hudWindowing().clientPlacement) {
-      return
+    if (
+      !Number.isFinite(width) ||
+      !Number.isFinite(height) ||
+      !hudWindowing().clientPlacement
+    ) {
+      return;
     }
 
-    const origin = hudDrag.origin(screen.getCursorScreenPoint())
+    const origin = hudDrag.origin(screen.getCursorScreenPoint());
 
     if (!origin) {
-      return
+      return;
     }
 
     // Cursor − grab offset in Electron DIP (see hud-drag.ts). setBounds —
@@ -228,76 +240,91 @@ export function registerHudIpc({
       x: origin.x,
       y: origin.y,
       width: Math.round(width),
-      height: Math.round(height)
-    })
-  })
+      height: Math.round(height),
+    });
+  });
 
   // Resize from the HUD's edge/corner handles. The window is created non-resizable
   // (see spawnHudWindow — a transparent frameless window must not expose a
   // system resize hot-zone, or dragging grows it), which on Windows/Linux also
   // blocks programmatic setBounds sizing — so briefly flip resizable on while
   // the size actually changes, exactly like the pet overlay's wheel-scale does.
-  ipcMain.on('hermes:hud:set-bounds', (event, bounds) => {
-    const hudWindow = getHudWindow()
+  ipcMain.on("hermes:hud:set-bounds", (event, bounds) => {
+    const hudWindow = getHudWindow();
 
-    if (!hudWindow || hudWindow.isDestroyed() || event.sender !== hudWindow.webContents || !bounds) {
-      return
+    if (
+      !hudWindow ||
+      hudWindow.isDestroyed() ||
+      event.sender !== hudWindow.webContents ||
+      !bounds
+    ) {
+      return;
     }
 
-    const nextBounds = normalizeHudResizeBounds(bounds)
+    const nextBounds = normalizeHudResizeBounds(bounds);
 
     if (!nextBounds) {
-      return
+      return;
     }
 
-    const win = hudWindow
-    const { width, height } = nextBounds
-    const [curW, curH] = win.getSize()
-    const resizing = width !== curW || height !== curH
-    const restoreResizeLock = resizing && !win.isResizable()
+    const win = hudWindow;
+    const { width, height } = nextBounds;
+    const [curW, curH] = win.getSize();
+    const resizing = width !== curW || height !== curH;
+    const restoreResizeLock = resizing && !win.isResizable();
 
     try {
       if (restoreResizeLock) {
-        win.setResizable(true)
+        win.setResizable(true);
       }
 
-      win.setBounds(nextBounds)
+      win.setBounds(nextBounds);
     } catch {
       // The window may disappear between validation and the native call.
     } finally {
       if (restoreResizeLock && !win.isDestroyed()) {
-        win.setResizable(false)
+        win.setResizable(false);
       }
     }
-  })
+  });
 
-  ipcMain.handle('hermes:hud:reset-layout', event => {
-    const hudWindow = getHudWindow()
+  ipcMain.handle("hermes:hud:reset-layout", (event) => {
+    const hudWindow = getHudWindow();
 
-    if (!hudWindow || hudWindow.isDestroyed() || event.sender !== hudWindow.webContents) {
-      return { ok: false }
+    if (
+      !hudWindow ||
+      hudWindow.isDestroyed() ||
+      event.sender !== hudWindow.webContents
+    ) {
+      return { ok: false };
     }
 
-    return { ok: resetHudLayout() }
-  })
+    return { ok: resetHudLayout() };
+  });
 
   // The HUD renderer reporting which session it is on, so the close broadcast
   // can hand it back to the app window (see hudSessionId).
-  ipcMain.on('hermes:hud:session', (event, sessionId) => {
-    const hudWindow = getHudWindow()
+  ipcMain.on("hermes:hud:session", (event, sessionId) => {
+    const hudWindow = getHudWindow();
 
-    if (hudWindow && !hudWindow.isDestroyed() && event.sender === hudWindow.webContents) {
-      setHudSessionId(typeof sessionId === 'string' && sessionId ? sessionId : null)
+    if (
+      hudWindow &&
+      !hudWindow.isDestroyed() &&
+      event.sender === hudWindow.webContents
+    ) {
+      setHudSessionId(
+        typeof sessionId === "string" && sessionId ? sessionId : null,
+      );
     }
-  })
+  });
 
-  ipcMain.handle('hermes:hud:close', async () => {
-    closeHudWindow()
+  ipcMain.handle("hermes:hud:close", async () => {
+    closeHudWindow();
 
-    return { ok: true }
-  })
+    return { ok: true };
+  });
 
   // Main re-applies the frost when the translucency SETTING changes, since the
   // band's own report only fires when the band itself moves.
-  return { applyHudFrost }
+  return { applyHudFrost };
 }

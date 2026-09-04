@@ -1,9 +1,9 @@
-import type { FC } from 'react'
-import { Fragment, useMemo } from 'react'
+import type { FC } from "react";
+import { Fragment, useMemo } from "react";
 
-import { DirectiveContent } from '@/components/assistant-ui/directive-text'
-import { referenceRe } from '@/components/assistant-ui/reference-kinds'
-import { cn } from '@/lib/utils'
+import { DirectiveContent } from "@/components/assistant-ui/directive-text";
+import { referenceRe } from "@/components/assistant-ui/reference-kinds";
+import { cn } from "@/lib/utils";
 
 // User messages should render the bare-minimum of markdown: backtick `code`
 // spans and ``` fenced blocks. We deliberately don't pull in the full
@@ -15,33 +15,33 @@ import { cn } from '@/lib/utils'
 // inside the plain-text segments.
 
 interface FenceSegment {
-  kind: 'fence'
-  code: string
-  lang: string | null
+  kind: "fence";
+  code: string;
+  lang: string | null;
 }
 
 interface InlineSegment {
-  kind: 'inline'
-  text: string
+  kind: "inline";
+  text: string;
 }
 
 interface InlineCodeSegment {
-  kind: 'inline-code'
-  code: string
+  kind: "inline-code";
+  code: string;
 }
 
 interface InlineTextSegment {
-  kind: 'inline-text'
-  text: string
+  kind: "inline-text";
+  text: string;
 }
 
-type TopSegment = FenceSegment | InlineSegment
-type InlineNode = InlineCodeSegment | InlineTextSegment
+type TopSegment = FenceSegment | InlineSegment;
+type InlineNode = InlineCodeSegment | InlineTextSegment;
 
-const FENCE_RE = /```([^\n`]*)\n([\s\S]*?)```/g
+const FENCE_RE = /```([^\n`]*)\n([\s\S]*?)```/g;
 
 // Greedy backtick run length so ``code with `backticks` inside`` works.
-const INLINE_CODE_RE = /(`+)([^`\n][\s\S]*?)\1/g
+const INLINE_CODE_RE = /(`+)([^`\n][\s\S]*?)\1/g;
 
 // A directive's value is BACKTICK-QUOTED whenever it needs to be (`@url:`
 // always, and any path with a space), so the inline-code scanner would claim
@@ -52,79 +52,84 @@ const INLINE_CODE_RE = /(`+)([^`\n][\s\S]*?)\1/g
 /** Inline-code matches that don't overlap a directive, so a quoted directive
  *  value reaches DirectiveContent whole. */
 function inlineCodeOutsideDirectives(text: string): RegExpMatchArray[] {
-  const directives = Array.from(text.matchAll(referenceRe())).map(match => ({
+  const directives = Array.from(text.matchAll(referenceRe())).map((match) => ({
     start: match.index ?? 0,
-    end: (match.index ?? 0) + match[0].length
-  }))
+    end: (match.index ?? 0) + match[0].length,
+  }));
 
-  return Array.from(text.matchAll(INLINE_CODE_RE)).filter(match => {
-    const start = match.index ?? 0
-    const end = start + match[0].length
+  return Array.from(text.matchAll(INLINE_CODE_RE)).filter((match) => {
+    const start = match.index ?? 0;
+    const end = start + match[0].length;
 
-    return !directives.some(directive => start < directive.end && end > directive.start)
-  })
+    return !directives.some(
+      (directive) => start < directive.end && end > directive.start,
+    );
+  });
 }
 
 function splitFences(text: string): TopSegment[] {
-  const segments: TopSegment[] = []
-  let cursor = 0
+  const segments: TopSegment[] = [];
+  let cursor = 0;
 
   for (const match of text.matchAll(FENCE_RE)) {
-    const start = match.index ?? 0
+    const start = match.index ?? 0;
 
     if (start > cursor) {
-      segments.push({ kind: 'inline', text: text.slice(cursor, start) })
+      segments.push({ kind: "inline", text: text.slice(cursor, start) });
     }
 
     segments.push({
-      kind: 'fence',
-      lang: (match[1] || '').trim() || null,
-      code: match[2] ?? ''
-    })
-    cursor = start + match[0].length
+      kind: "fence",
+      lang: (match[1] || "").trim() || null,
+      code: match[2] ?? "",
+    });
+    cursor = start + match[0].length;
   }
 
   if (cursor < text.length) {
-    segments.push({ kind: 'inline', text: text.slice(cursor) })
+    segments.push({ kind: "inline", text: text.slice(cursor) });
   }
 
-  return segments
+  return segments;
 }
 
 function splitInlineCode(text: string): InlineNode[] {
-  const nodes: InlineNode[] = []
-  let cursor = 0
+  const nodes: InlineNode[] = [];
+  let cursor = 0;
 
   for (const match of inlineCodeOutsideDirectives(text)) {
-    const start = match.index ?? 0
+    const start = match.index ?? 0;
 
     if (start > cursor) {
-      nodes.push({ kind: 'inline-text', text: text.slice(cursor, start) })
+      nodes.push({ kind: "inline-text", text: text.slice(cursor, start) });
     }
 
-    nodes.push({ kind: 'inline-code', code: match[2] })
-    cursor = start + match[0].length
+    nodes.push({ kind: "inline-code", code: match[2] });
+    cursor = start + match[0].length;
   }
 
   if (cursor < text.length) {
-    nodes.push({ kind: 'inline-text', text: text.slice(cursor) })
+    nodes.push({ kind: "inline-text", text: text.slice(cursor) });
   }
 
-  return nodes
+  return nodes;
 }
 
 interface UserMessageTextProps {
-  text: string
-  className?: string
+  text: string;
+  className?: string;
 }
 
-export const UserMessageText: FC<UserMessageTextProps> = ({ className, text }) => {
-  const top = useMemo(() => splitFences(text), [text])
+export const UserMessageText: FC<UserMessageTextProps> = ({
+  className,
+  text,
+}) => {
+  const top = useMemo(() => splitFences(text), [text]);
 
   return (
-    <span className={cn('block', className)} data-slot="aui_user-message-text">
+    <span className={cn("block", className)} data-slot="aui_user-message-text">
       {top.map((segment, segmentIndex) => {
-        if (segment.kind === 'fence') {
+        if (segment.kind === "fence") {
           return (
             <pre
               className="my-1.5 max-w-full overflow-x-auto rounded-md border border-(--ui-stroke-tertiary) bg-[color-mix(in_srgb,currentColor_5%,transparent)] px-2.5 py-2 font-mono text-[0.86em] leading-snug"
@@ -133,28 +138,31 @@ export const UserMessageText: FC<UserMessageTextProps> = ({ className, text }) =
             >
               <code className="block whitespace-pre">{segment.code}</code>
             </pre>
-          )
+          );
         }
 
         return (
           <Fragment key={`inline-${segmentIndex}`}>
             <InlineSegmentView text={segment.text} />
           </Fragment>
-        )
+        );
       })}
     </span>
-  )
-}
+  );
+};
 
 const InlineSegmentView: FC<{ text: string }> = ({ text }) => {
-  const nodes = useMemo(() => splitInlineCode(text), [text])
+  const nodes = useMemo(() => splitInlineCode(text), [text]);
 
   return (
     // styles.css bidi hook (#44150); whitespace-pre-line makes each line its own
     // UAX#9 paragraph so it resolves direction independently.
-    <span className="wrap-anywhere block whitespace-pre-line" data-slot="aui_user-inline-text">
+    <span
+      className="wrap-anywhere block whitespace-pre-line"
+      data-slot="aui_user-inline-text"
+    >
       {nodes.map((node, nodeIndex) =>
-        node.kind === 'inline-code' ? (
+        node.kind === "inline-code" ? (
           <code
             className="mx-px rounded bg-[color-mix(in_srgb,currentColor_8%,transparent)] px-1 py-px font-mono text-[0.92em]"
             data-slot="aui_user-inline-code"
@@ -168,8 +176,8 @@ const InlineSegmentView: FC<{ text: string }> = ({ text }) => {
           <Fragment key={`text-${nodeIndex}`}>
             <DirectiveContent text={node.text} />
           </Fragment>
-        )
+        ),
       )}
     </span>
-  )
-}
+  );
+};

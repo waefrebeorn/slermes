@@ -9,144 +9,191 @@
  * frame's contentWindow and the identifier is charset-checked.
  */
 
-import type * as HermesSdk from '@hermes/plugin-sdk'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type * as HermesSdk from "@hermes/plugin-sdk";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const HUB_ORIGIN = 'https://hermes-agent.nousresearch.com'
+const HUB_ORIGIN = "https://hermes-agent.nousresearch.com";
 
 const mocks = vi.hoisted(() => ({
   notify: vi.fn(),
   notifyError: vi.fn(),
-  request: vi.fn(async (_method: string, _params: Record<string, unknown>) => ({}))
-}))
+  request: vi.fn(
+    async (_method: string, _params: Record<string, unknown>) => ({}),
+  ),
+}));
 
-vi.mock('@hermes/plugin-sdk', async importOriginal => {
-  const original = await importOriginal<typeof HermesSdk>()
+vi.mock("@hermes/plugin-sdk", async (importOriginal) => {
+  const original = await importOriginal<typeof HermesSdk>();
 
   return {
     ...original,
-    host: { ...original.host, notify: mocks.notify, notifyError: mocks.notifyError, request: mocks.request }
-  }
-})
+    host: {
+      ...original.host,
+      notify: mocks.notify,
+      notifyError: mocks.notifyError,
+      request: mocks.request,
+    },
+  };
+});
 
-const { HubSkillsSection } = await import('./skills-hub')
+const { HubSkillsSection } = await import("./skills-hub");
 
 interface PickMessage {
-  identifier?: string
-  name?: string
-  type?: string
+  identifier?: string;
+  name?: string;
+  type?: string;
 }
 
 /** Mount the section with the hub browser open and hand back its frame. */
 function openHubBrowser() {
-  const { container } = render(<HubSkillsSection forProfile={null} />)
+  const { container } = render(<HubSkillsSection forProfile={null} />);
 
-  fireEvent.click(screen.getByRole('button', { name: /browse the full hub/ }))
+  fireEvent.click(screen.getByRole("button", { name: /browse the full hub/ }));
 
-  const frame = container.querySelector('iframe')
+  const frame = container.querySelector("iframe");
 
-  expect(frame).toBeTruthy()
+  expect(frame).toBeTruthy();
 
-  return frame as HTMLIFrameElement
+  return frame as HTMLIFrameElement;
 }
 
-function postPick(data: PickMessage, options: { origin?: string; source?: null | Window }) {
+function postPick(
+  data: PickMessage,
+  options: { origin?: string; source?: null | Window },
+) {
   window.dispatchEvent(
-    new MessageEvent('message', {
+    new MessageEvent("message", {
       data,
       origin: options.origin ?? HUB_ORIGIN,
-      source: options.source ?? null
-    })
-  )
+      source: options.source ?? null,
+    }),
+  );
 }
 
 function installCalls() {
-  return mocks.request.mock.calls.filter(([, params]) => params.action === 'install')
+  return mocks.request.mock.calls.filter(
+    ([, params]) => params.action === "install",
+  );
 }
 
 beforeEach(() => {
-  vi.clearAllMocks()
-})
+  vi.clearAllMocks();
+});
 
 afterEach(() => {
-  cleanup()
-})
+  cleanup();
+});
 
-describe('hub pick messages', () => {
-  it('installs the picked skill when it comes from our own frame', () => {
-    const frame = openHubBrowser()
+describe("hub pick messages", () => {
+  it("installs the picked skill when it comes from our own frame", () => {
+    const frame = openHubBrowser();
 
     postPick(
-      { identifier: 'nous/web-research', name: 'Web Research', type: 'hermes-skill-pick' },
       {
-        source: frame.contentWindow
-      }
-    )
+        identifier: "nous/web-research",
+        name: "Web Research",
+        type: "hermes-skill-pick",
+      },
+      {
+        source: frame.contentWindow,
+      },
+    );
 
-    expect(installCalls()).toEqual([['skills.manage', { action: 'install', query: 'nous/web-research' }]])
-  })
+    expect(installCalls()).toEqual([
+      ["skills.manage", { action: "install", query: "nous/web-research" }],
+    ]);
+  });
 
-  it('regression: ignores a same-origin window that is NOT the picker frame', () => {
-    openHubBrowser()
+  it("regression: ignores a same-origin window that is NOT the picker frame", () => {
+    openHubBrowser();
 
     // Same origin, different window — the OAuth-popup shape of the hole.
     postPick(
-      { identifier: 'nous/web-research', name: 'Web Research', type: 'hermes-skill-pick' },
       {
-        source: window
-      }
-    )
+        identifier: "nous/web-research",
+        name: "Web Research",
+        type: "hermes-skill-pick",
+      },
+      {
+        source: window,
+      },
+    );
 
-    expect(installCalls()).toEqual([])
-  })
+    expect(installCalls()).toEqual([]);
+  });
 
-  it('ignores anything posted from another origin', () => {
-    const frame = openHubBrowser()
+  it("ignores anything posted from another origin", () => {
+    const frame = openHubBrowser();
 
     postPick(
-      { identifier: 'nous/web-research', name: 'Web Research', type: 'hermes-skill-pick' },
       {
-        origin: 'https://evil.example',
-        source: frame.contentWindow
-      }
-    )
+        identifier: "nous/web-research",
+        name: "Web Research",
+        type: "hermes-skill-pick",
+      },
+      {
+        origin: "https://evil.example",
+        source: frame.contentWindow,
+      },
+    );
 
-    expect(installCalls()).toEqual([])
-  })
+    expect(installCalls()).toEqual([]);
+  });
 
-  it('regression: refuses identifiers outside the slug charset', () => {
-    const frame = openHubBrowser()
+  it("regression: refuses identifiers outside the slug charset", () => {
+    const frame = openHubBrowser();
 
-    for (const identifier of ['../../etc/passwd', 'skill; rm -rf /', '-flag', 'name with spaces', '']) {
-      postPick({ identifier, name: 'Web Research', type: 'hermes-skill-pick' }, { source: frame.contentWindow })
+    for (const identifier of [
+      "../../etc/passwd",
+      "skill; rm -rf /",
+      "-flag",
+      "name with spaces",
+      "",
+    ]) {
+      postPick(
+        { identifier, name: "Web Research", type: "hermes-skill-pick" },
+        { source: frame.contentWindow },
+      );
     }
 
     // The empty identifier falls back to `name`, which is also off-charset.
-    expect(installCalls()).toEqual([])
-  })
+    expect(installCalls()).toEqual([]);
+  });
 
-  it('ignores messages that are not a skill pick', () => {
-    const frame = openHubBrowser()
+  it("ignores messages that are not a skill pick", () => {
+    const frame = openHubBrowser();
 
-    postPick({ identifier: 'nous/web-research', type: 'oauth-callback' }, { source: frame.contentWindow })
-    postPick({ identifier: 'nous/web-research', type: 'hermes-skill-pick' }, { source: frame.contentWindow })
+    postPick(
+      { identifier: "nous/web-research", type: "oauth-callback" },
+      { source: frame.contentWindow },
+    );
+    postPick(
+      { identifier: "nous/web-research", type: "hermes-skill-pick" },
+      { source: frame.contentWindow },
+    );
 
     // The second has no `name`, so it is not a complete pick either.
-    expect(installCalls()).toEqual([])
-  })
+    expect(installCalls()).toEqual([]);
+  });
 
-  it('stops listening once the hub browser is closed', () => {
-    const frame = openHubBrowser()
+  it("stops listening once the hub browser is closed", () => {
+    const frame = openHubBrowser();
 
-    fireEvent.click(screen.getByRole('button', { name: /hide the hub browser/ }))
+    fireEvent.click(
+      screen.getByRole("button", { name: /hide the hub browser/ }),
+    );
     postPick(
-      { identifier: 'nous/web-research', name: 'Web Research', type: 'hermes-skill-pick' },
       {
-        source: frame.contentWindow
-      }
-    )
+        identifier: "nous/web-research",
+        name: "Web Research",
+        type: "hermes-skill-pick",
+      },
+      {
+        source: frame.contentWindow,
+      },
+    );
 
-    expect(installCalls()).toEqual([])
-  })
-})
+    expect(installCalls()).toEqual([]);
+  });
+});

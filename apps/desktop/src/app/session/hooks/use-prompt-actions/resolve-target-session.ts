@@ -1,7 +1,10 @@
-import { resolveSessionProfile } from '../use-session-actions/utils'
+import { resolveSessionProfile } from "../use-session-actions/utils";
 
-import { singleFlightSessionResume, takeRecoveredRuntime } from './single-flight-resume'
-import type { GatewayRequest } from './utils'
+import {
+  singleFlightSessionResume,
+  takeRecoveredRuntime,
+} from "./single-flight-resume";
+import type { GatewayRequest } from "./utils";
 
 /**
  * Resolve the runtime session a submit or slash command must target.
@@ -43,16 +46,18 @@ import type { GatewayRequest } from './utils'
  * it could not run.
  */
 export interface ResolveTargetSessionDeps {
-  activeRuntimeId: null | string
-  createSession: () => Promise<null | string>
-  explicitRuntimeId?: null | string
-  getRuntimeIdForStoredSession: (storedSessionId: string) => null | string
-  requestGateway: GatewayRequest
-  routedStoredSessionId: null | string
-  selectedStoredSessionId: null | string
+  activeRuntimeId: null | string;
+  createSession: () => Promise<null | string>;
+  explicitRuntimeId?: null | string;
+  getRuntimeIdForStoredSession: (storedSessionId: string) => null | string;
+  requestGateway: GatewayRequest;
+  routedStoredSessionId: null | string;
+  selectedStoredSessionId: null | string;
 }
 
-export async function resolveTargetSessionId(deps: ResolveTargetSessionDeps): Promise<null | string> {
+export async function resolveTargetSessionId(
+  deps: ResolveTargetSessionDeps,
+): Promise<null | string> {
   const {
     activeRuntimeId,
     createSession,
@@ -60,12 +65,12 @@ export async function resolveTargetSessionId(deps: ResolveTargetSessionDeps): Pr
     getRuntimeIdForStoredSession,
     requestGateway,
     routedStoredSessionId,
-    selectedStoredSessionId
-  } = deps
+    selectedStoredSessionId,
+  } = deps;
 
   // 1. An explicit target always wins — the caller knows which session it means.
   if (explicitRuntimeId) {
-    return explicitRuntimeId
+    return explicitRuntimeId;
   }
 
   // A route whose runtime binding is incomplete or cross-wired outranks the
@@ -76,47 +81,52 @@ export async function resolveTargetSessionId(deps: ResolveTargetSessionDeps): Pr
     routedStoredSessionId &&
     (selectedStoredSessionId !== routedStoredSessionId ||
       !activeRuntimeId ||
-      activeRuntimeId !== getRuntimeIdForStoredSession(routedStoredSessionId))
-  )
+      activeRuntimeId !== getRuntimeIdForStoredSession(routedStoredSessionId)),
+  );
 
   // 2. Trust the live runtime unless the durable route disagrees with it.
   if (activeRuntimeId && !routedNeedsResume) {
-    return activeRuntimeId
+    return activeRuntimeId;
   }
 
   // 3. Rebind the durable conversation on its owning profile. The route wins
   //    over a stale selection; otherwise continue whatever is selected.
-  const storedTarget = routedNeedsResume ? routedStoredSessionId : (selectedStoredSessionId ?? routedStoredSessionId)
+  const storedTarget = routedNeedsResume
+    ? routedStoredSessionId
+    : (selectedStoredSessionId ?? routedStoredSessionId);
 
   if (storedTarget) {
     try {
       // Reuse a runtime an aborted recovery already minted for this stored
       // session; otherwise resume once, shared across concurrent callers.
-      const cachedRuntimeId = takeRecoveredRuntime(storedTarget)
+      const cachedRuntimeId = takeRecoveredRuntime(storedTarget);
 
       if (cachedRuntimeId) {
-        return cachedRuntimeId
+        return cachedRuntimeId;
       }
 
-      const resumed = await singleFlightSessionResume(storedTarget, async () => {
-        const profile = await resolveSessionProfile(storedTarget)
+      const resumed = await singleFlightSessionResume(
+        storedTarget,
+        async () => {
+          const profile = await resolveSessionProfile(storedTarget);
 
-        return requestGateway<{ session_id?: string }>('session.resume', {
-          session_id: storedTarget,
-          source: 'desktop',
-          ...(profile ? { profile } : {})
-        })
-      })
+          return requestGateway<{ session_id?: string }>("session.resume", {
+            session_id: storedTarget,
+            source: "desktop",
+            ...(profile ? { profile } : {}),
+          });
+        },
+      );
 
-      return resumed?.session_id || null
+      return resumed?.session_id || null;
     } catch {
       // A targeted durable conversation whose runtime cannot be rebound must
       // NOT fall through to createSession() — that is precisely the fork this
       // resolver exists to prevent (#55578 class).
-      return null
+      return null;
     }
   }
 
   // 4. A genuine new-chat draft: nothing durable is in play.
-  return activeRuntimeId || (await createSession())
+  return activeRuntimeId || (await createSession());
 }

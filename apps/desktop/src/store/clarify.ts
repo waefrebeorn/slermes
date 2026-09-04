@@ -1,28 +1,28 @@
-import { atom, computed } from 'nanostores'
+import { atom, computed } from "nanostores";
 
-import { $gateway } from './gateway'
-import { $activeSessionId } from './session'
+import { $gateway } from "./gateway";
+import { $activeSessionId } from "./session";
 
 export interface ClarifyQuestion {
   /** Server-generated wire id (q0..qN) — clarify.respond keys answers by it. */
-  qid: string
-  question: string
-  choices: string[] | null
-  multiSelect: boolean
+  qid: string;
+  question: string;
+  choices: string[] | null;
+  multiSelect: boolean;
 }
 
 export interface ClarifyRequest {
-  requestId: string
-  question: string
-  choices: string[] | null
-  multiSelect: boolean
+  requestId: string;
+  question: string;
+  choices: string[] | null;
+  multiSelect: boolean;
   /** Local receipt time (Unix seconds), used to reject stale resume cleanup. */
-  receivedAt?: number
-  sessionId: string | null
+  receivedAt?: number;
+  sessionId: string | null;
   /** Batch (multi-question) clarify: present instead of question/choices. */
-  questions?: ClarifyQuestion[]
+  questions?: ClarifyQuestion[];
   /** Answers already locked server-side (reconnect replay): qid → answer. */
-  lockedAnswers?: Record<string, string>
+  lockedAnswers?: Record<string, string>;
 }
 
 /**
@@ -31,10 +31,12 @@ export interface ClarifyRequest {
  * writes it — it only styles it, and discounts it when measuring a choice so a
  * long option isn't dropped for length the label added.
  */
-export const RECOMMENDED_LABEL = '(Recommended)'
+export const RECOMMENDED_LABEL = "(Recommended)";
 
 export const bareChoice = (choice: string): string =>
-  choice.endsWith(RECOMMENDED_LABEL) ? choice.slice(0, -RECOMMENDED_LABEL.length).trim() : choice
+  choice.endsWith(RECOMMENDED_LABEL)
+    ? choice.slice(0, -RECOMMENDED_LABEL.length).trim()
+    : choice;
 
 /**
  * Validate and normalize a choices array.
@@ -45,12 +47,16 @@ export const bareChoice = (choice: string): string =>
  */
 export function normalizeChoices(choices: unknown): string[] {
   if (!Array.isArray(choices)) {
-    return []
+    return [];
   }
 
   return choices.filter(
-    (c): c is string => typeof c === 'string' && c.trim().length > 0 && bareChoice(c).length <= 200 && !c.includes('\n')
-  )
+    (c): c is string =>
+      typeof c === "string" &&
+      c.trim().length > 0 &&
+      bareChoice(c).length <= 200 &&
+      !c.includes("\n"),
+  );
 }
 
 /**
@@ -58,12 +64,16 @@ export function normalizeChoices(choices: unknown): string[] {
  * them all normalized away — keeps the remaining #69122 "no selectable choices"
  * triggers diagnosable in the field without dead constant fields.
  */
-export function warnDroppedChoices(source: 'gateway' | 'tool_args', question: string, rawChoices: unknown): void {
-  console.warn('[clarify] choices dropped after normalization', {
+export function warnDroppedChoices(
+  source: "gateway" | "tool_args",
+  question: string,
+  rawChoices: unknown,
+): void {
+  console.warn("[clarify] choices dropped after normalization", {
     choices_count: Array.isArray(rawChoices) ? rawChoices.length : 0,
     question_length: question.length,
-    source
-  })
+    source,
+  });
 }
 
 /**
@@ -77,35 +87,36 @@ export function warnDroppedChoices(source: 'gateway' | 'tool_args', question: st
  */
 export function normalizeQuestions(questions: unknown): ClarifyQuestion[] {
   if (!Array.isArray(questions)) {
-    return []
+    return [];
   }
 
-  const normalized: ClarifyQuestion[] = []
+  const normalized: ClarifyQuestion[] = [];
 
   for (const entry of questions) {
-    if (typeof entry !== 'object' || entry === null) {
-      continue
+    if (typeof entry !== "object" || entry === null) {
+      continue;
     }
 
-    const row = entry as Record<string, unknown>
-    const qid = typeof row.qid === 'string' ? row.qid.trim() : ''
-    const question = typeof row.question === 'string' ? row.question.trim() : ''
+    const row = entry as Record<string, unknown>;
+    const qid = typeof row.qid === "string" ? row.qid.trim() : "";
+    const question =
+      typeof row.question === "string" ? row.question.trim() : "";
 
     if (!qid || !question) {
-      continue
+      continue;
     }
 
-    const choices = normalizeChoices(row.choices)
+    const choices = normalizeChoices(row.choices);
 
     normalized.push({
       choices: choices.length > 0 ? choices : null,
       multiSelect: row.multi_select === true && choices.length > 0,
       qid,
-      question
-    })
+      question,
+    });
   }
 
-  return normalized
+  return normalized;
 }
 
 // Pending clarify requests keyed by the runtime session id that raised them.
@@ -113,69 +124,77 @@ export function normalizeQuestions(questions: unknown): ClarifyQuestion[] {
 // park its clarify request while the user is looking at a different chat, then
 // resolve it once they switch over — without a second concurrent clarify
 // clobbering the first. A request with no session id lands under the empty key.
-const keyFor = (sessionId: string | null | undefined): string => sessionId ?? ''
+const keyFor = (sessionId: string | null | undefined): string =>
+  sessionId ?? "";
 
-export const $clarifyRequests = atom<Record<string, ClarifyRequest>>({})
+export const $clarifyRequests = atom<Record<string, ClarifyRequest>>({});
 
 // The clarify request for the currently-viewed session. The inline ClarifyTool
 // only ever mounts inside the active session's transcript, so it reads this
 // focus-scoped view rather than reaching into the whole map.
 export const $clarifyRequest = computed(
   [$clarifyRequests, $activeSessionId],
-  (requests, activeId) => requests[keyFor(activeId)] ?? null
-)
+  (requests, activeId) => requests[keyFor(activeId)] ?? null,
+);
 
 /** The clarify request for one specific session — the tile counterpart of the
  *  active-session `$clarifyRequest` view (same map, fixed key). */
 export const sessionClarifyRequest = (sessionId: string | null) =>
-  computed($clarifyRequests, requests => requests[keyFor(sessionId)] ?? null)
+  computed($clarifyRequests, (requests) => requests[keyFor(sessionId)] ?? null);
 
 export function setClarifyRequest(request: ClarifyRequest): void {
-  $clarifyRequests.set({ ...$clarifyRequests.get(), [keyFor(request.sessionId)]: request })
+  $clarifyRequests.set({
+    ...$clarifyRequests.get(),
+    [keyFor(request.sessionId)]: request,
+  });
 }
 
-export function clearClarifyRequest(requestId?: string, sessionId?: string | null): void {
-  const requests = $clarifyRequests.get()
+export function clearClarifyRequest(
+  requestId?: string,
+  sessionId?: string | null,
+): void {
+  const requests = $clarifyRequests.get();
 
   // Targeted clear when the caller knows the session (the common path from the
   // inline ClarifyTool answering its own request).
   if (sessionId !== undefined) {
-    const key = keyFor(sessionId)
-    const current = requests[key]
+    const key = keyFor(sessionId);
+    const current = requests[key];
 
     if (!current || (requestId && current.requestId !== requestId)) {
-      return
+      return;
     }
 
-    const next = { ...requests }
-    delete next[key]
-    $clarifyRequests.set(next)
+    const next = { ...requests };
+    delete next[key];
+    $clarifyRequests.set(next);
 
-    return
+    return;
   }
 
   // Fallback with no session hint: drop every entry matching the request id
   // (or clear all when none is given).
-  const next: Record<string, ClarifyRequest> = {}
-  let changed = false
+  const next: Record<string, ClarifyRequest> = {};
+  let changed = false;
 
   for (const [key, value] of Object.entries(requests)) {
     if (requestId && value.requestId !== requestId) {
-      next[key] = value
+      next[key] = value;
     } else {
-      changed = true
+      changed = true;
     }
   }
 
   if (changed) {
-    $clarifyRequests.set(next)
+    $clarifyRequests.set(next);
   }
 }
 
 /** Whether `sessionId` has a clarify parked on it right now (imperative read —
  *  the composer checks this on Enter, not on every render). */
-export const hasClarifyRequest = (sessionId: string | null | undefined): boolean =>
-  Boolean($clarifyRequests.get()[keyFor(sessionId)])
+export const hasClarifyRequest = (
+  sessionId: string | null | undefined,
+): boolean => Boolean($clarifyRequests.get()[keyFor(sessionId)]);
 
 /**
  * Answer `sessionId`'s pending clarify with an empty answer (a skip) and drop it
@@ -190,23 +209,30 @@ export const hasClarifyRequest = (sessionId: string | null | undefined): boolean
  * An empty answer is the same thing the card's own Skip button sends, and
  * `clarify.respond` is `allow_expired`, so racing the timeout is harmless.
  */
-export async function skipClarifyRequest(sessionId: string | null | undefined): Promise<boolean> {
-  const request = $clarifyRequests.get()[keyFor(sessionId)]
+export async function skipClarifyRequest(
+  sessionId: string | null | undefined,
+): Promise<boolean> {
+  const request = $clarifyRequests.get()[keyFor(sessionId)];
 
   if (!request) {
-    return false
+    return false;
   }
 
   // Clear first: the answer is already decided, and an in-flight RPC must not
   // leave a live card the user can answer a second time.
-  clearClarifyRequest(request.requestId, request.sessionId)
+  clearClarifyRequest(request.requestId, request.sessionId);
 
   try {
-    await $gateway.get()?.request('clarify.respond', { request_id: request.requestId, answer: '' })
+    await $gateway
+      .get()
+      ?.request("clarify.respond", {
+        request_id: request.requestId,
+        answer: "",
+      });
   } catch {
     // The tool times out on its own; a failed skip must never swallow the
     // message the user is actually sending.
   }
 
-  return true
+  return true;
 }

@@ -13,58 +13,63 @@
  * authored.
  */
 
-import type { HermesPlugin, PaletteContribution } from '@hermes/plugin-sdk'
-import { $accentOverride, PALETTE_AREA, setAccentOverride, STATUSBAR_AREAS } from '@hermes/plugin-sdk'
+import type { HermesPlugin, PaletteContribution } from "@hermes/plugin-sdk";
+import {
+  $accentOverride,
+  PALETTE_AREA,
+  setAccentOverride,
+  STATUSBAR_AREAS,
+} from "@hermes/plugin-sdk";
 
-import { AccentPickerTrigger } from './picker'
+import { AccentPickerTrigger } from "./picker";
 
 const plugin: HermesPlugin = {
-  id: 'accent',
-  name: 'Accent Picker',
+  id: "accent",
+  name: "Accent Picker",
   description:
-    'Pick the theme accent from an OKLCH color picker in the status bar; the palette re-derives live. Authoring tool — the color is not persisted.',
+    "Pick the theme accent from an OKLCH color picker in the status bar; the palette re-derives live. Authoring tool — the color is not persisted.",
   defaultEnabled: false,
   register(ctx) {
     // The override is a scratch value, not a setting. Dropping it on unregister
     // means disabling the plugin (or reloading) returns every surface to the
     // authored theme instead of stranding a color with no control to clear it.
-    ctx.onDispose(() => setAccentOverride(null))
+    ctx.onDispose(() => setAccentOverride(null));
 
     ctx.registerMany([
       {
-        id: 'picker',
+        id: "picker",
         area: STATUSBAR_AREAS.right,
         order: 90,
-        render: () => <AccentPickerTrigger />
+        render: () => <AccentPickerTrigger />,
       },
       {
-        id: 'reset',
+        id: "reset",
         area: PALETTE_AREA,
         data: {
-          id: 'accent.reset',
-          label: 'Accent: reset to the theme default',
-          keywords: ['accent', 'color', 'theme', 'reset', 'default'],
-          run: () => setAccentOverride(null)
-        } satisfies PaletteContribution
+          id: "accent.reset",
+          label: "Accent: reset to the theme default",
+          keywords: ["accent", "color", "theme", "reset", "default"],
+          run: () => setAccentOverride(null),
+        } satisfies PaletteContribution,
       },
       {
-        id: 'copy',
+        id: "copy",
         area: PALETTE_AREA,
         data: {
-          id: 'accent.copy',
-          label: 'Accent: copy the current color',
-          keywords: ['accent', 'color', 'hex', 'copy', 'clipboard'],
+          id: "accent.copy",
+          label: "Accent: copy the current color",
+          keywords: ["accent", "color", "hex", "copy", "clipboard"],
           run: () => {
-            const hex = $accentOverride.get()
+            const hex = $accentOverride.get();
 
             if (hex) {
-              void navigator.clipboard?.writeText(hex)
+              void navigator.clipboard?.writeText(hex);
             }
-          }
-        } satisfies PaletteContribution
-      }
-    ])
-  }
-}
+          },
+        } satisfies PaletteContribution,
+      },
+    ]);
+  },
+};
 
-export default plugin
+export default plugin;

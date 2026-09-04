@@ -1,11 +1,17 @@
-import { mainChatOccupied } from '@/app/open-session'
-import { closeActiveTerminal } from '@/app/right-sidebar/terminal/terminals'
-import { $workspaceIsPage } from '@/app/routes'
-import { closeFocusedSessionTab, closeFocusedToolTab } from '@/components/pane-shell/tree/store'
-import { isFocusWithin } from '@/lib/keybinds/combo'
-import { requestFreshSession } from '@/store/profile'
-import { $activeSessionId, $selectedStoredSessionId } from '@/store/session'
-import { closeSessionTile, nextSessionTileForWorkspace } from '@/store/session-states'
+import { mainChatOccupied } from "@/app/open-session";
+import { closeActiveTerminal } from "@/app/right-sidebar/terminal/terminals";
+import { $workspaceIsPage } from "@/app/routes";
+import {
+  closeFocusedSessionTab,
+  closeFocusedToolTab,
+} from "@/components/pane-shell/tree/store";
+import { isFocusWithin } from "@/lib/keybinds/combo";
+import { requestFreshSession } from "@/store/profile";
+import { $activeSessionId, $selectedStoredSessionId } from "@/store/session";
+import {
+  closeSessionTile,
+  nextSessionTileForWorkspace,
+} from "@/store/session-states";
 
 /**
  * Close the MAIN tab. The workspace pane itself can't leave the tree, so
@@ -27,27 +33,32 @@ import { closeSessionTile, nextSessionTileForWorkspace } from '@/store/session-s
  * `loadSessionIntoWorkspace` carries the app's route-based "load this session
  * into main"; omitting it disables the promotion half.
  */
-export function closeWorkspaceTab(loadSessionIntoWorkspace?: (storedSessionId: string) => void): boolean {
+export function closeWorkspaceTab(
+  loadSessionIntoWorkspace?: (storedSessionId: string) => void,
+): boolean {
   // Order matters — close the tile FIRST so the selection homes to the
   // workspace instead of re-fronting the tile.
   if (loadSessionIntoWorkspace) {
-    const next = nextSessionTileForWorkspace()
+    const next = nextSessionTileForWorkspace();
 
     if (next) {
-      closeSessionTile(next)
-      loadSessionIntoWorkspace(next)
+      closeSessionTile(next);
+      loadSessionIntoWorkspace(next);
 
-      return true
+      return true;
     }
   }
 
-  if ($workspaceIsPage.get() || !mainChatOccupied($activeSessionId.get(), $selectedStoredSessionId.get())) {
-    return false
+  if (
+    $workspaceIsPage.get() ||
+    !mainChatOccupied($activeSessionId.get(), $selectedStoredSessionId.get())
+  ) {
+    return false;
   }
 
-  requestFreshSession()
+  requestFreshSession();
 
-  return true
+  return true;
 }
 
 /**
@@ -66,24 +77,26 @@ export function closeWorkspaceTab(loadSessionIntoWorkspace?: (storedSessionId: s
  * Steps 2-4 follow the same focused zone ⌘1…⌘9 indexes, so a second chat zone
  * with its own tab strip closes ITS tab instead of main's.
  */
-export function closeActiveTab(loadSessionIntoWorkspace?: (storedSessionId: string) => void): boolean {
-  if (isFocusWithin('[data-terminal]')) {
-    closeActiveTerminal()
+export function closeActiveTab(
+  loadSessionIntoWorkspace?: (storedSessionId: string) => void,
+): boolean {
+  if (isFocusWithin("[data-terminal]")) {
+    closeActiveTerminal();
 
-    return true
+    return true;
   }
 
   // A closeable tab in the focused chat zone (a session tile that's the active
   // tab) closes outright; the uncloseable workspace tab falls through.
   if (closeFocusedSessionTab()) {
-    return true
+    return true;
   }
 
   // A tool panel zone hosts no chat strip, so the chat rung skips it — but its
   // tabs close like any other. Without this ⌘W was dead over terminal / logs.
   if (closeFocusedToolTab()) {
-    return true
+    return true;
   }
 
-  return closeWorkspaceTab(loadSessionIntoWorkspace)
+  return closeWorkspaceTab(loadSessionIntoWorkspace);
 }

@@ -34,19 +34,19 @@
  * project; main.ts owns session.fromPartition() and injects nothing here.
  */
 
-export const LEGACY_OAUTH_PARTITION = 'persist:hermes-remote-oauth'
+export const LEGACY_OAUTH_PARTITION = "persist:hermes-remote-oauth";
 
-const CONNECTION_PARTITION_PREFIX = `${LEGACY_OAUTH_PARTITION}:conn:`
+const CONNECTION_PARTITION_PREFIX = `${LEGACY_OAUTH_PARTITION}:conn:`;
 
 export interface PartitionRegistrySnapshot {
-  primary?: unknown
-  connections?: unknown
+  primary?: unknown;
+  connections?: unknown;
 }
 
 export interface ResolveOauthPartitionOptions {
-  registry?: PartitionRegistrySnapshot | null
+  registry?: PartitionRegistrySnapshot | null;
   /** v1 single-connection remote URL (connection.json `remote.url`), when set. */
-  v1RemoteUrl?: unknown
+  v1RemoteUrl?: unknown;
 }
 
 /**
@@ -55,22 +55,22 @@ export interface ResolveOauthPartitionOptions {
  * fragment dropped. Returns null for anything that is not a plain http(s) URL.
  */
 function normalizeForMatch(raw: unknown): string | null {
-  if (typeof raw !== 'string' || !raw.trim()) {
-    return null
+  if (typeof raw !== "string" || !raw.trim()) {
+    return null;
   }
 
   try {
-    const parsed = new URL(raw.trim())
+    const parsed = new URL(raw.trim());
 
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-      return null
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return null;
     }
 
-    const path = parsed.pathname.replace(/\/+$/, '')
+    const path = parsed.pathname.replace(/\/+$/, "");
 
-    return `${parsed.protocol}//${parsed.host}${path}`
+    return `${parsed.protocol}//${parsed.host}${path}`;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -80,76 +80,92 @@ function normalizeForMatch(raw: unknown): string | null {
  * `https://gw.example.com.evil.tld` from matching `https://gw.example.com`.
  */
 function matchesBase(requestNorm: string, baseNorm: string): boolean {
-  return requestNorm === baseNorm || requestNorm.startsWith(`${baseNorm}/`)
+  return requestNorm === baseNorm || requestNorm.startsWith(`${baseNorm}/`);
 }
 
 /** Partition names must stay printable/simple; connection ids are user data. */
 function sanitizePartitionComponent(id: string): string {
-  return encodeURIComponent(id).replace(/%/g, '_')
+  return encodeURIComponent(id).replace(/%/g, "_");
 }
 
 /**
  * Decide the Electron session partition a cookie-authenticated request against
  * `requestUrl` must ride. See the module header for the rules.
  */
-export function resolveOauthPartition(requestUrl: unknown, opts: ResolveOauthPartitionOptions = {}): string {
-  const requestNorm = normalizeForMatch(requestUrl)
+export function resolveOauthPartition(
+  requestUrl: unknown,
+  opts: ResolveOauthPartitionOptions = {},
+): string {
+  const requestNorm = normalizeForMatch(requestUrl);
 
   if (!requestNorm) {
-    return LEGACY_OAUTH_PARTITION
+    return LEGACY_OAUTH_PARTITION;
   }
 
-  const registry = opts.registry
+  const registry = opts.registry;
 
-  if (!registry || typeof registry !== 'object' || !Array.isArray(registry.connections)) {
-    return LEGACY_OAUTH_PARTITION
+  if (
+    !registry ||
+    typeof registry !== "object" ||
+    !Array.isArray(registry.connections)
+  ) {
+    return LEGACY_OAUTH_PARTITION;
   }
 
-  const primaryId = typeof registry.primary === 'string' ? registry.primary : ''
-  const v1Norm = normalizeForMatch(opts.v1RemoteUrl)
+  const primaryId =
+    typeof registry.primary === "string" ? registry.primary : "";
+  const v1Norm = normalizeForMatch(opts.v1RemoteUrl);
 
-  let best: { baseNorm: string; id: string } | null = null
+  let best: { baseNorm: string; id: string } | null = null;
 
   for (const entry of registry.connections) {
-    if (!entry || typeof entry !== 'object') {
-      continue
+    if (!entry || typeof entry !== "object") {
+      continue;
     }
 
-    const id = typeof (entry as any).id === 'string' ? (entry as any).id.trim() : ''
+    const id =
+      typeof (entry as any).id === "string" ? (entry as any).id.trim() : "";
 
     // Only NON-primary v2 `remote` entries with cookie-flow auth get their own
     // jar. Cloud entries need the shared portal jar; token entries never use
     // cookies; the primary (and the v1 remote it migrated from) keeps the
     // legacy jar so an upgrade does not sign the user out.
     if (!id || id === primaryId) {
-      continue
+      continue;
     }
 
-    if ((entry as any).kind !== 'remote' || (entry as any).authMode !== 'oauth') {
-      continue
+    if (
+      (entry as any).kind !== "remote" ||
+      (entry as any).authMode !== "oauth"
+    ) {
+      continue;
     }
 
-    const baseNorm = normalizeForMatch((entry as any).url)
+    const baseNorm = normalizeForMatch((entry as any).url);
 
     if (!baseNorm || (v1Norm && baseNorm === v1Norm)) {
-      continue
+      continue;
     }
 
     if (!matchesBase(requestNorm, baseNorm)) {
-      continue
+      continue;
     }
 
     // Longest base-url prefix wins (sub-path gateways behind one proxy);
     // identical URLs tie-break on the lexicographically smallest id so the
     // choice is deterministic across processes and launches.
-    if (!best || baseNorm.length > best.baseNorm.length || (baseNorm.length === best.baseNorm.length && id < best.id)) {
-      best = { baseNorm, id }
+    if (
+      !best ||
+      baseNorm.length > best.baseNorm.length ||
+      (baseNorm.length === best.baseNorm.length && id < best.id)
+    ) {
+      best = { baseNorm, id };
     }
   }
 
   if (!best) {
-    return LEGACY_OAUTH_PARTITION
+    return LEGACY_OAUTH_PARTITION;
   }
 
-  return `${CONNECTION_PARTITION_PREFIX}${sanitizePartitionComponent(best.id)}`
+  return `${CONNECTION_PARTITION_PREFIX}${sanitizePartitionComponent(best.id)}`;
 }

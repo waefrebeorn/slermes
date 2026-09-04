@@ -10,14 +10,14 @@
  * turning the splash off never depends on which window asks.
  */
 export function shouldShowIntro(input: {
-  activeSessionId: null | string
-  auxiliaryWindow: boolean
-  enabled: boolean
-  freshDraftReady: boolean
-  messagesEmpty: boolean
-  primary: boolean
-  routedSessionView: boolean
-  selectedSessionId: null | string
+  activeSessionId: null | string;
+  auxiliaryWindow: boolean;
+  enabled: boolean;
+  freshDraftReady: boolean;
+  messagesEmpty: boolean;
+  primary: boolean;
+  routedSessionView: boolean;
+  selectedSessionId: null | string;
 }): boolean {
   return (
     input.enabled &&
@@ -28,5 +28,5 @@ export function shouldShowIntro(input: {
     !input.selectedSessionId &&
     !input.activeSessionId &&
     input.messagesEmpty
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
-import { DisclosureRow } from '@/components/chat/disclosure-row'
+import { DisclosureRow } from "@/components/chat/disclosure-row";
 
 /**
  * Transcript scaffolding: the quiet lines around the reply that say what the
@@ -17,14 +17,15 @@ import { DisclosureRow } from '@/components/chat/disclosure-row'
  * A surface that skips the mark reads a shade brighter than its neighbours.
  */
 export const SCAFFOLD_LABEL_CLASS =
-  'text-[length:var(--conversation-tool-font-size)] leading-(--conversation-line-height) text-(--conversation-scaffold-text)'
+  "text-[length:var(--conversation-tool-font-size)] leading-(--conversation-line-height) text-(--conversation-scaffold-text)";
 
 /** Durations, counts and diff stats trailing a scaffold label. */
-export const SCAFFOLD_META_CLASS = 'shrink-0 text-[0.625rem] tabular-nums text-(--conversation-scaffold-meta)'
+export const SCAFFOLD_META_CLASS =
+  "shrink-0 text-[0.625rem] tabular-nums text-(--conversation-scaffold-meta)";
 
 /** The fixed cell a scaffold line's leading glyph sits in — status dot, tool
  *  icon, spinner. Same box on every line, so the labels share a left edge. */
-export const SCAFFOLD_GLYPH_CLASS = 'grid size-3.5 shrink-0 place-items-center'
+export const SCAFFOLD_GLYPH_CLASS = "grid size-3.5 shrink-0 place-items-center";
 
 /**
  * One scaffold line. `children` is the label and whatever trails it in flow
@@ -34,16 +35,16 @@ export function ScaffoldRow({
   children,
   onToggle,
   open = false,
-  trailing
+  trailing,
 }: {
-  children: ReactNode
-  onToggle?: () => void
-  open?: boolean
-  trailing?: ReactNode
+  children: ReactNode;
+  onToggle?: () => void;
+  open?: boolean;
+  trailing?: ReactNode;
 }) {
   return (
     <DisclosureRow onToggle={onToggle} open={open} trailing={trailing}>
       <span className="flex min-w-0 items-center gap-1.5">{children}</span>
     </DisclosureRow>
-  )
+  );
 }

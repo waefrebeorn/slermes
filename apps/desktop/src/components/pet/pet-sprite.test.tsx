@@ -1,28 +1,32 @@
-import { act } from 'react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock('@/store/pet', () => {
-  const listeners = new Set<(state: string) => void>()
+vi.mock("@/store/pet", () => {
+  const listeners = new Set<(state: string) => void>();
 
   return {
     $petState: {
-      get: () => 'idle',
+      get: () => "idle",
       listen: (callback: (state: string) => void) => {
-        listeners.add(callback)
+        listeners.add(callback);
 
         return () => {
-          listeners.delete(callback)
-        }
-      }
-    }
-  }
-})
+          listeners.delete(callback);
+        };
+      },
+    },
+  };
+});
 
-import { reactRoot } from '@/test/react-root'
+import { reactRoot } from "@/test/react-root";
 
-import { installWindowStateBridge, setDocumentHidden, type WindowStateBridge } from '../../test/window-state'
+import {
+  installWindowStateBridge,
+  setDocumentHidden,
+  type WindowStateBridge,
+} from "../../test/window-state";
 
-import { PetSprite } from './pet-sprite'
+import { PetSprite } from "./pet-sprite";
 
 const INFO = {
   enabled: true,
@@ -31,201 +35,227 @@ const INFO = {
   framesPerState: 2,
   loopMs: 120,
   scale: 1,
-  spritesheetBase64: 'stub',
-  stateRows: ['idle']
-}
+  spritesheetBase64: "stub",
+  stateRows: ["idle"],
+};
 
-const mount = reactRoot()
-let windowState: WindowStateBridge
-let drawImage: ReturnType<typeof vi.fn>
+const mount = reactRoot();
+let windowState: WindowStateBridge;
+let drawImage: ReturnType<typeof vi.fn>;
 
 function installRaf() {
-  let nextId = 1
-  const frames = new Map<number, FrameRequestCallback>()
+  let nextId = 1;
+  const frames = new Map<number, FrameRequestCallback>();
 
   const request = vi.fn((callback: FrameRequestCallback) => {
-    const id = nextId++
-    frames.set(id, callback)
+    const id = nextId++;
+    frames.set(id, callback);
 
-    return id
-  })
+    return id;
+  });
 
   const cancel = vi.fn((id: number) => {
-    frames.delete(id)
-  })
+    frames.delete(id);
+  });
 
-  Object.defineProperty(window, 'requestAnimationFrame', { configurable: true, value: request })
-  Object.defineProperty(window, 'cancelAnimationFrame', { configurable: true, value: cancel })
+  Object.defineProperty(window, "requestAnimationFrame", {
+    configurable: true,
+    value: request,
+  });
+  Object.defineProperty(window, "cancelAnimationFrame", {
+    configurable: true,
+    value: cancel,
+  });
 
   return {
     cancel,
     pending: () => frames.size,
     request,
     runNext: (now: number) => {
-      const next = frames.entries().next().value
+      const next = frames.entries().next().value;
 
       if (!next) {
-        throw new Error('No pending RAF')
+        throw new Error("No pending RAF");
       }
 
-      const [id, callback] = next
-      frames.delete(id)
-      callback(now)
-    }
-  }
+      const [id, callback] = next;
+      frames.delete(id);
+      callback(now);
+    },
+  };
 }
 
-describe('PetSprite RAF scheduling', () => {
+describe("PetSprite RAF scheduling", () => {
   beforeEach(() => {
-    ;(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
-    vi.useFakeTimers()
-    setDocumentHidden(false)
-    Object.defineProperty(window, 'devicePixelRatio', { configurable: true, value: 1 })
-    vi.spyOn(document, 'hasFocus').mockReturnValue(true)
-    windowState = installWindowStateBridge()
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
+    vi.useFakeTimers();
+    setDocumentHidden(false);
+    Object.defineProperty(window, "devicePixelRatio", {
+      configurable: true,
+      value: 1,
+    });
+    vi.spyOn(document, "hasFocus").mockReturnValue(true);
+    windowState = installWindowStateBridge();
     vi.stubGlobal(
-      'Image',
+      "Image",
       class extends EventTarget {
-        complete = true
-        naturalWidth = 16
-        src = ''
-      } as unknown as typeof Image
-    )
-    drawImage = vi.fn()
-    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
+        complete = true;
+        naturalWidth = 16;
+        src = "";
+      } as unknown as typeof Image,
+    );
+    drawImage = vi.fn();
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
       clearRect: vi.fn(),
       drawImage,
-      imageSmoothingEnabled: false
-    } as unknown as CanvasRenderingContext2D)
-  })
+      imageSmoothingEnabled: false,
+    } as unknown as CanvasRenderingContext2D);
+  });
 
   afterEach(() => {
-    mount.unmount()
-    vi.useRealTimers()
-    vi.unstubAllGlobals()
-    vi.restoreAllMocks()
-    setDocumentHidden(false)
-    delete (window as unknown as { hermesDesktop?: unknown }).hermesDesktop
-  })
+    mount.unmount();
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    setDocumentHidden(false);
+    delete (window as unknown as { hermesDesktop?: unknown }).hermesDesktop;
+  });
 
-  it('sleeps between visible sprite frames instead of chaining RAFs', () => {
-    const raf = installRaf()
+  it("sleeps between visible sprite frames instead of chaining RAFs", () => {
+    const raf = installRaf();
 
-    mount.render(<PetSprite info={INFO} />)
+    mount.render(<PetSprite info={INFO} />);
 
-    expect(raf.request).toHaveBeenCalledTimes(1)
-
-    act(() => {
-      raf.runNext(0)
-    })
-
-    expect(raf.request).toHaveBeenCalledTimes(1)
-    expect(raf.pending()).toBe(0)
-    expect(vi.getTimerCount()).toBe(1)
+    expect(raf.request).toHaveBeenCalledTimes(1);
 
     act(() => {
-      vi.advanceTimersByTime(60)
-    })
+      raf.runNext(0);
+    });
 
-    expect(raf.request).toHaveBeenCalledTimes(2)
-  })
-
-  it('uses a DPR-sized backing store while preserving the CSS footprint', () => {
-    Object.defineProperty(window, 'devicePixelRatio', { configurable: true, value: 2 })
-    const raf = installRaf()
-
-    mount.render(<PetSprite info={INFO} />)
-
-    const canvas = mount.container?.querySelector('canvas')
-
-    expect(canvas).not.toBeNull()
-    expect(canvas?.width).toBe(32)
-    expect(canvas?.height).toBe(32)
-    expect(canvas?.style.width).toBe('16px')
-    expect(canvas?.style.height).toBe('16px')
+    expect(raf.request).toHaveBeenCalledTimes(1);
+    expect(raf.pending()).toBe(0);
+    expect(vi.getTimerCount()).toBe(1);
 
     act(() => {
-      raf.runNext(0)
-    })
+      vi.advanceTimersByTime(60);
+    });
 
-    expect(drawImage).toHaveBeenCalledWith(expect.anything(), 0, 0, 16, 16, 0, 0, 32, 32)
-  })
+    expect(raf.request).toHaveBeenCalledTimes(2);
+  });
 
-  it('cancels pending RAF work while the Electron window is paused and resumes when visible', () => {
-    const raf = installRaf()
+  it("uses a DPR-sized backing store while preserving the CSS footprint", () => {
+    Object.defineProperty(window, "devicePixelRatio", {
+      configurable: true,
+      value: 2,
+    });
+    const raf = installRaf();
 
-    mount.render(<PetSprite info={INFO} />)
+    mount.render(<PetSprite info={INFO} />);
 
-    expect(raf.request).toHaveBeenCalledTimes(1)
+    const canvas = mount.container?.querySelector("canvas");
 
-    act(() => {
-      windowState.emit({ isMinimized: true, isVisible: false })
-    })
-
-    expect(raf.cancel).toHaveBeenCalledTimes(1)
-    expect(raf.pending()).toBe(0)
-
-    act(() => {
-      windowState.emit({ isMinimized: false, isVisible: true })
-    })
-
-    expect(raf.request).toHaveBeenCalledTimes(2)
-  })
-
-  it('suspends while unfocused, resumes on focus, and leaves no work after unmount', () => {
-    const raf = installRaf()
-
-    mount.render(<PetSprite info={INFO} />)
-
-    act(() => window.dispatchEvent(new Event('blur')))
-    expect(raf.pending()).toBe(0)
-
-    act(() => window.dispatchEvent(new Event('focus')))
-    expect(raf.pending()).toBe(1)
-
-    act(() => raf.runNext(0))
-    expect(vi.getTimerCount()).toBe(1)
-
-    mount.unmount()
-    expect(raf.pending()).toBe(0)
-    expect(vi.getTimerCount()).toBe(0)
+    expect(canvas).not.toBeNull();
+    expect(canvas?.width).toBe(32);
+    expect(canvas?.height).toBe(32);
+    expect(canvas?.style.width).toBe("16px");
+    expect(canvas?.style.height).toBe("16px");
 
     act(() => {
-      vi.advanceTimersByTime(500)
-      window.dispatchEvent(new Event('focus'))
-    })
-    expect(raf.pending()).toBe(0)
-  })
+      raf.runNext(0);
+    });
 
-  it('keeps the intentionally non-activating pop-out overlay animated while unfocused', () => {
-    const raf = installRaf()
+    expect(drawImage).toHaveBeenCalledWith(
+      expect.anything(),
+      0,
+      0,
+      16,
+      16,
+      0,
+      0,
+      32,
+      32,
+    );
+  });
 
-    mount.render(<PetSprite info={INFO} pauseWhenUnfocused={false} />)
+  it("cancels pending RAF work while the Electron window is paused and resumes when visible", () => {
+    const raf = installRaf();
 
-    act(() => window.dispatchEvent(new Event('blur')))
-    expect(raf.pending()).toBe(1)
-  })
+    mount.render(<PetSprite info={INFO} />);
 
-  it('draws sprite frames with bicubic smoothing for illustration art', () => {
-    const raf = installRaf()
+    expect(raf.request).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      windowState.emit({ isMinimized: true, isVisible: false });
+    });
+
+    expect(raf.cancel).toHaveBeenCalledTimes(1);
+    expect(raf.pending()).toBe(0);
+
+    act(() => {
+      windowState.emit({ isMinimized: false, isVisible: true });
+    });
+
+    expect(raf.request).toHaveBeenCalledTimes(2);
+  });
+
+  it("suspends while unfocused, resumes on focus, and leaves no work after unmount", () => {
+    const raf = installRaf();
+
+    mount.render(<PetSprite info={INFO} />);
+
+    act(() => window.dispatchEvent(new Event("blur")));
+    expect(raf.pending()).toBe(0);
+
+    act(() => window.dispatchEvent(new Event("focus")));
+    expect(raf.pending()).toBe(1);
+
+    act(() => raf.runNext(0));
+    expect(vi.getTimerCount()).toBe(1);
+
+    mount.unmount();
+    expect(raf.pending()).toBe(0);
+    expect(vi.getTimerCount()).toBe(0);
+
+    act(() => {
+      vi.advanceTimersByTime(500);
+      window.dispatchEvent(new Event("focus"));
+    });
+    expect(raf.pending()).toBe(0);
+  });
+
+  it("keeps the intentionally non-activating pop-out overlay animated while unfocused", () => {
+    const raf = installRaf();
+
+    mount.render(<PetSprite info={INFO} pauseWhenUnfocused={false} />);
+
+    act(() => window.dispatchEvent(new Event("blur")));
+    expect(raf.pending()).toBe(1);
+  });
+
+  it("draws sprite frames with bicubic smoothing for illustration art", () => {
+    const raf = installRaf();
 
     const ctxMock = {
       clearRect: vi.fn(),
       drawImage: vi.fn(),
       imageSmoothingEnabled: false,
-      imageSmoothingQuality: 'low'
-    } as unknown as CanvasRenderingContext2D
+      imageSmoothingQuality: "low",
+    } as unknown as CanvasRenderingContext2D;
 
-    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(ctxMock)
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
+      ctxMock,
+    );
 
-    mount.render(<PetSprite info={INFO} />)
-    act(() => raf.runNext(0))
+    mount.render(<PetSprite info={INFO} />);
+    act(() => raf.runNext(0));
 
     // Petdex sheets are illustration frames, not pixel art — nearest-neighbour
     // (the old default) makes zoomed pets look blocky. The renderer must opt
     // into bicubic smoothing before the first draw.
-    expect(ctxMock.imageSmoothingEnabled).toBe(true)
-    expect(ctxMock.imageSmoothingQuality).toBe('high')
-    expect(ctxMock.drawImage).toHaveBeenCalledTimes(1)
-  })
-})
+    expect(ctxMock.imageSmoothingEnabled).toBe(true);
+    expect(ctxMock.imageSmoothingQuality).toBe("high");
+    expect(ctxMock.drawImage).toHaveBeenCalledTimes(1);
+  });
+});

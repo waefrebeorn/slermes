@@ -1,4 +1,4 @@
-import { atom, type WritableAtom } from 'nanostores'
+import { atom, type WritableAtom } from "nanostores";
 
 // "Is the thread parked at the bottom" is owned by use-stick-to-bottom inside
 // ThreadMessageList (the scroll container). That state lives only in that
@@ -13,84 +13,94 @@ import { atom, type WritableAtom } from 'nanostores'
 // pane may publish or reset this composer-facing mirror. Jump-to-bottom
 // requests are keyed by session so a click (or an input-request snap) cannot
 // scroll every mounted transcript.
-export const $threadScrolledUp = atom(false)
-export const $threadJumpButtonVisible = atom(false)
+export const $threadScrolledUp = atom(false);
+export const $threadJumpButtonVisible = atom(false);
 
 // Skip no-op writes so subscribers don't churn on every scroll tick.
 const setter = (target: WritableAtom<boolean>) => (value: boolean) => {
   if (target.get() !== value) {
-    target.set(value)
+    target.set(value);
   }
-}
+};
 
-const setScrolledUp = setter($threadScrolledUp)
-const setJumpButtonVisible = setter($threadJumpButtonVisible)
+const setScrolledUp = setter($threadScrolledUp);
+const setJumpButtonVisible = setter($threadJumpButtonVisible);
 
 export const setThreadAtBottom = (isAtBottom: boolean) => {
-  setScrolledUp(!isAtBottom)
-  setJumpButtonVisible(!isAtBottom)
-}
+  setScrolledUp(!isAtBottom);
+  setJumpButtonVisible(!isAtBottom);
+};
 
-export const resetThreadScroll = () => setThreadAtBottom(true)
+export const resetThreadScroll = () => setThreadAtBottom(true);
 
-export const publishThreadAtBottom = (isAtBottom: boolean, publisher: { paneVisible: boolean }): void => {
+export const publishThreadAtBottom = (
+  isAtBottom: boolean,
+  publisher: { paneVisible: boolean },
+): void => {
   if (!publisher.paneVisible) {
-    return
+    return;
   }
 
-  setThreadAtBottom(isAtBottom)
-}
+  setThreadAtBottom(isAtBottom);
+};
 
-export const resetPublishedThreadScroll = (publisher: { paneVisible: boolean }): void => {
+export const resetPublishedThreadScroll = (publisher: {
+  paneVisible: boolean;
+}): void => {
   if (!publisher.paneVisible) {
-    return
+    return;
   }
 
-  resetThreadScroll()
-}
+  resetThreadScroll();
+};
 
 // Cross-component bridge: the jump button lives by the composer, the viewport's
 // `scrollToBottom` lives inside the thread. The bridge registers a handler; the
 // button fires it. Mirrors the composer focus/insert emitter pattern.
-const handlers = new Map<string | null, Set<() => void>>()
+const handlers = new Map<string | null, Set<() => void>>();
 
-export const onScrollToBottomRequest = (handler: () => void, sessionId: string | null = null) => {
-  const scoped = handlers.get(sessionId) ?? new Set<() => void>()
+export const onScrollToBottomRequest = (
+  handler: () => void,
+  sessionId: string | null = null,
+) => {
+  const scoped = handlers.get(sessionId) ?? new Set<() => void>();
 
-  scoped.add(handler)
-  handlers.set(sessionId, scoped)
+  scoped.add(handler);
+  handlers.set(sessionId, scoped);
 
   return () => {
-    scoped.delete(handler)
+    scoped.delete(handler);
 
     if (scoped.size === 0) {
-      handlers.delete(sessionId)
+      handlers.delete(sessionId);
     }
-  }
-}
+  };
+};
 
 export const requestScrollToBottom = (sessionId: string | null = null) => {
-  handlers.get(sessionId)?.forEach(handler => handler())
-}
+  handlers.get(sessionId)?.forEach((handler) => handler());
+};
 
 // Inline edit grows a sticky human bubble. Fire on pointerdown so the viewport
 // escapes stick-to-bottom before focus/layout; close clears the edit flag when
 // the inline composer unmounts.
-const editOpenHandlers = new Set<() => void>()
-const editCloseHandlers = new Set<() => void>()
+const editOpenHandlers = new Set<() => void>();
+const editCloseHandlers = new Set<() => void>();
 
 export const onThreadEditOpen = (handler: () => void) => {
-  editOpenHandlers.add(handler)
+  editOpenHandlers.add(handler);
 
-  return () => void editOpenHandlers.delete(handler)
-}
+  return () => void editOpenHandlers.delete(handler);
+};
 
-export const notifyThreadEditOpen = () => editOpenHandlers.forEach(handler => handler())
+export const notifyThreadEditOpen = () =>
+  editOpenHandlers.forEach((handler) => handler());
 
 export const onThreadEditClose = (handler: () => void) => {
-  editCloseHandlers.add(handler)
+  editCloseHandlers.add(handler);
 
-  return () => void editCloseHandlers.delete(handler)
-}
+  return () => void editCloseHandlers.delete(handler);
+};
 
-export const notifyThreadEditClose = () => editCloseHandlers.forEach(handler => handler())
+export const notifyThreadEditClose = () =>
+  editCloseHandlers.forEach((handler) => handler());

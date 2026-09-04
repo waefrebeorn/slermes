@@ -20,34 +20,37 @@
  * log sinks are.
  */
 
-import fs from 'fs'
-import path from 'path'
+import fs from "fs";
+import path from "path";
 
 // Even with a live-looking PID, never treat a marker older than this as a live
 // update. A full update (git pull + pip + desktop rebuild) is minutes, not tens
 // of minutes; past this the marker is almost certainly stale (e.g. the OS
 // recycled the pid onto an unrelated process), so the gate self-heals.
-export const UPDATE_MARKER_MAX_AGE_MS = 20 * 60 * 1000
+export const UPDATE_MARKER_MAX_AGE_MS = 20 * 60 * 1000;
 
 export function markerPath(hermesHome) {
-  return path.join(hermesHome, '.hermes-update-in-progress')
+  return path.join(hermesHome, ".hermes-update-in-progress");
 }
 
 // True only if a host process with this pid is currently alive. Signal 0 does
 // not deliver a signal — it just probes existence/permission. ESRCH => dead;
 // EPERM => alive but owned by another user (still "alive" for our purposes).
 // Injectable `kill` keeps it unit-testable.
-export function isPidAlive(pid, kill: typeof process.kill = process.kill.bind(process)) {
+export function isPidAlive(
+  pid,
+  kill: typeof process.kill = process.kill.bind(process),
+) {
   if (!Number.isInteger(pid) || pid <= 0) {
-    return false
+    return false;
   }
 
   try {
-    kill(pid, 0)
+    kill(pid, 0);
 
-    return true
+    return true;
   } catch (err) {
-    return Boolean(err && err.code === 'EPERM')
+    return Boolean(err && err.code === "EPERM");
   }
 }
 
@@ -68,39 +71,41 @@ export function readLiveUpdateMarker(
   {
     kill,
     now = Date.now,
-    maxAgeMs = UPDATE_MARKER_MAX_AGE_MS
+    maxAgeMs = UPDATE_MARKER_MAX_AGE_MS,
   }: {
-    now?: () => number
-    maxAgeMs?: number
-    kill?: typeof process.kill
-  } = {}
+    now?: () => number;
+    maxAgeMs?: number;
+    kill?: typeof process.kill;
+  } = {},
 ) {
-  const file = markerPath(hermesHome)
-  let raw
+  const file = markerPath(hermesHome);
+  let raw;
 
   try {
-    raw = fs.readFileSync(file, 'utf8')
+    raw = fs.readFileSync(file, "utf8");
   } catch {
-    return null // absent or unreadable => no live update
+    return null; // absent or unreadable => no live update
   }
 
-  const [pidLine, startedLine] = String(raw).split('\n')
-  const pid = Number.parseInt((pidLine || '').trim(), 10)
-  const startedAt = Number.parseInt((startedLine || '').trim(), 10)
-  const ageMs = Number.isFinite(startedAt) ? now() - startedAt * 1000 : Infinity
-  const alive = Number.isInteger(pid) && isPidAlive(pid, kill)
+  const [pidLine, startedLine] = String(raw).split("\n");
+  const pid = Number.parseInt((pidLine || "").trim(), 10);
+  const startedAt = Number.parseInt((startedLine || "").trim(), 10);
+  const ageMs = Number.isFinite(startedAt)
+    ? now() - startedAt * 1000
+    : Infinity;
+  const alive = Number.isInteger(pid) && isPidAlive(pid, kill);
 
   if (!alive || ageMs > maxAgeMs) {
     try {
-      fs.unlinkSync(file)
+      fs.unlinkSync(file);
     } catch {
-      void 0
+      void 0;
     }
 
-    return null
+    return null;
   }
 
-  return { pid, ageMs }
+  return { pid, ageMs };
 }
 
 /**
@@ -133,27 +138,31 @@ export function writeUpdateMarker(
     kill,
     now = Date.now,
     maxAgeMs = UPDATE_MARKER_MAX_AGE_MS,
-    startedAt
+    startedAt,
   }: {
-    now?: () => number
-    maxAgeMs?: number
-    kill?: typeof process.kill
-    startedAt?: number
-  } = {}
+    now?: () => number;
+    maxAgeMs?: number;
+    kill?: typeof process.kill;
+    startedAt?: number;
+  } = {},
 ) {
-  const file = markerPath(hermesHome)
-  const nowMs = now()
-  const owner = readLiveUpdateMarker(hermesHome, { kill, maxAgeMs, now: () => nowMs })
+  const file = markerPath(hermesHome);
+  const nowMs = now();
+  const owner = readLiveUpdateMarker(hermesHome, {
+    kill,
+    maxAgeMs,
+    now: () => nowMs,
+  });
 
   const acquiredAt =
-    typeof startedAt === 'number' && Number.isInteger(startedAt)
+    typeof startedAt === "number" && Number.isInteger(startedAt)
       ? startedAt
       : owner
         ? Math.floor((nowMs - owner.ageMs) / 1000)
-        : Math.floor(nowMs / 1000)
+        : Math.floor(nowMs / 1000);
 
   try {
-    fs.writeFileSync(file, `${pid}\n${acquiredAt}\n`, 'utf8')
+    fs.writeFileSync(file, `${pid}\n${acquiredAt}\n`, "utf8");
   } catch {
     // Best-effort: if we can't write the marker, proceed anyway. The
     // updater will write its own when it reaches run_update.
@@ -182,24 +191,24 @@ export function writeUpdateMarker(
 export function updateHandoffConflict(
   hermesHome,
   opts: {
-    now?: () => number
-    maxAgeMs?: number
-    kill?: typeof process.kill
-  } = {}
+    now?: () => number;
+    maxAgeMs?: number;
+    kill?: typeof process.kill;
+  } = {},
 ) {
-  const owner = readLiveUpdateMarker(hermesHome, opts)
+  const owner = readLiveUpdateMarker(hermesHome, opts);
 
   if (!owner) {
-    return null
+    return null;
   }
 
-  const mins = Math.floor(owner.ageMs / 60_000)
-  const secs = Math.floor((owner.ageMs % 60_000) / 1000)
-  const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`
+  const mins = Math.floor(owner.ageMs / 60_000);
+  const secs = Math.floor((owner.ageMs % 60_000) / 1000);
+  const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
 
   return {
     pid: owner.pid,
     ageMs: owner.ageMs,
-    message: `An update is already running (PID ${owner.pid}, started ${elapsed} ago). Wait for it to finish, then try again.`
-  }
+    message: `An update is already running (PID ${owner.pid}, started ${elapsed} ago). Wait for it to finish, then try again.`,
+  };
 }

@@ -19,34 +19,40 @@
  *    the model section with `confirm_expensive_model: true`.
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { applyAdvancedConfig, emptyAdvancedState } from './profile-config'
-import type { RosterRow } from './types'
+import { applyAdvancedConfig, emptyAdvancedState } from "./profile-config";
+import type { RosterRow } from "./types";
 
-type AdvancedConfigState = ReturnType<typeof emptyAdvancedState>
+type AdvancedConfigState = ReturnType<typeof emptyAdvancedState>;
 
 /** The payload the shared core confirm flow receives — the same object the
  *  model picker hands it. */
 interface ModelSwitchConfirmArgs {
-  confirmMessage: string
-  finish: () => void
-  requestConfirmed: () => Promise<{ applied?: Record<string, boolean> } | undefined>
+  confirmMessage: string;
+  finish: () => void;
+  requestConfirmed: () => Promise<
+    { applied?: Record<string, boolean> } | undefined
+  >;
 }
 
 const { confirmMock, hostMock, invalidateMock } = vi.hoisted(() => ({
-  confirmMock: vi.fn((_args: ModelSwitchConfirmArgs) => 'notification-1'),
+  confirmMock: vi.fn((_args: ModelSwitchConfirmArgs) => "notification-1"),
   hostMock: {
-    getGateway: () => 'ambient-gateway',
+    getGateway: () => "ambient-gateway",
     request: vi.fn(),
     requestProfile: vi.fn(),
-    state: { connectionId: { get: () => 'local' }, gateway: { get: () => 'open' }, profile: { get: () => 'default' } }
+    state: {
+      connectionId: { get: () => "local" },
+      gateway: { get: () => "open" },
+      profile: { get: () => "default" },
+    },
   },
-  invalidateMock: vi.fn()
-}))
+  invalidateMock: vi.fn(),
+}));
 
-vi.mock('@hermes/plugin-sdk', async () => {
-  const { atom } = await import('nanostores')
+vi.mock("@hermes/plugin-sdk", async () => {
+  const { atom } = await import("nanostores");
 
   return {
     atom,
@@ -68,164 +74,216 @@ vi.mock('@hermes/plugin-sdk', async () => {
     Textarea: () => null,
     ToolsetConfigPanel: undefined,
     useQuery: vi.fn(() => ({ data: undefined, error: null, isLoading: false })),
-    useValue: vi.fn()
-  }
-})
+    useValue: vi.fn(),
+  };
+});
 
-vi.mock('./shared', () => ({ getPluginCtx: () => null, ID: 'hermes-bots' }))
+vi.mock("./shared", () => ({ getPluginCtx: () => null, ID: "hermes-bots" }));
 // The SOUL protocol append has its own suite; here it must not rewrite the
 // text under the assertions.
-vi.mock('./soul', () => ({ ensureMessagingProtocol: (soul: string) => soul }))
+vi.mock("./soul", () => ({ ensureMessagingProtocol: (soul: string) => soul }));
 
-const bot = { name: 'zeta' } as RosterRow
+const bot = { name: "zeta" } as RosterRow;
 
-const dirtyModel = (patch: Partial<AdvancedConfigState> = {}): AdvancedConfigState => ({
+const dirtyModel = (
+  patch: Partial<AdvancedConfigState> = {},
+): AdvancedConfigState => ({
   ...emptyAdvancedState(),
   dirtyModel: true,
   loaded: true,
-  model: 'muse-spark-1.2-contributor',
-  provider: 'opencode-go',
-  ...patch
-})
+  model: "muse-spark-1.2-contributor",
+  provider: "opencode-go",
+  ...patch,
+});
 
 /** Every RPC in order, with params frozen at call time. */
-const routed: Array<{ method: string; params: Record<string, unknown> }> = []
+const routed: Array<{ method: string; params: Record<string, unknown> }> = [];
 
-function respondWith(handler: (method: string, params: Record<string, unknown>) => unknown) {
-  hostMock.request.mockImplementation(async (method: string, params: Record<string, unknown>) => {
-    routed.push({ method, params: structuredClone(params ?? {}) })
+function respondWith(
+  handler: (method: string, params: Record<string, unknown>) => unknown,
+) {
+  hostMock.request.mockImplementation(
+    async (method: string, params: Record<string, unknown>) => {
+      routed.push({ method, params: structuredClone(params ?? {}) });
 
-    return handler(method, params)
-  })
+      return handler(method, params);
+    },
+  );
 }
 
 beforeEach(() => {
-  vi.clearAllMocks()
-  routed.length = 0
-  respondWith(() => ({}))
-})
+  vi.clearAllMocks();
+  routed.length = 0;
+  respondWith(() => ({}));
+});
 
-describe('selecting Inherit', () => {
-  it('clears the profile model assignment through the CLI', async () => {
-    respondWith(() => ({ blocked: false, code: 0, output: 'Unset model' }))
-
-    const result = await applyAdvancedConfig(bot, dirtyModel({ model: '', provider: '' }))
-
-    expect(routed).toEqual([
-      { method: 'cli.exec', params: { argv: ['--profile', 'zeta', 'config', 'unset', 'model'] } }
-    ])
-    expect(result).toEqual({ applied: { model: true }, ok: true })
-  })
-
-  it('merges the clear with the other dirty sections’ outcomes', async () => {
-    respondWith(method => (method === 'cli.exec' ? { blocked: false, code: 0 } : { applied: { soul: true } }))
+describe("selecting Inherit", () => {
+  it("clears the profile model assignment through the CLI", async () => {
+    respondWith(() => ({ blocked: false, code: 0, output: "Unset model" }));
 
     const result = await applyAdvancedConfig(
       bot,
-      dirtyModel({ dirtySoul: true, model: '', provider: '', soul: '# Ops' })
-    )
+      dirtyModel({ model: "", provider: "" }),
+    );
 
-    expect(routed.map(call => call.method)).toEqual(['cli.exec', 'profiles.configure'])
-    expect(routed[1].params).toEqual({ name: 'zeta', soul: '# Ops' })
-    expect(result).toMatchObject({ applied: { model: true, soul: true }, ok: true })
-  })
+    expect(routed).toEqual([
+      {
+        method: "cli.exec",
+        params: { argv: ["--profile", "zeta", "config", "unset", "model"] },
+      },
+    ]);
+    expect(result).toEqual({ applied: { model: true }, ok: true });
+  });
 
-  it('reports a rejected clear as a failed section', async () => {
-    respondWith(() => ({ blocked: false, code: 1, output: 'Config key not set' }))
+  it("merges the clear with the other dirty sections’ outcomes", async () => {
+    respondWith((method) =>
+      method === "cli.exec"
+        ? { blocked: false, code: 0 }
+        : { applied: { soul: true } },
+    );
 
-    await expect(applyAdvancedConfig(bot, dirtyModel({ model: '', provider: '' }))).resolves.toEqual({
+    const result = await applyAdvancedConfig(
+      bot,
+      dirtyModel({ dirtySoul: true, model: "", provider: "", soul: "# Ops" }),
+    );
+
+    expect(routed.map((call) => call.method)).toEqual([
+      "cli.exec",
+      "profiles.configure",
+    ]);
+    expect(routed[1].params).toEqual({ name: "zeta", soul: "# Ops" });
+    expect(result).toMatchObject({
+      applied: { model: true, soul: true },
+      ok: true,
+    });
+  });
+
+  it("reports a rejected clear as a failed section", async () => {
+    respondWith(() => ({
+      blocked: false,
+      code: 1,
+      output: "Config key not set",
+    }));
+
+    await expect(
+      applyAdvancedConfig(bot, dirtyModel({ model: "", provider: "" })),
+    ).resolves.toEqual({
       applied: { model: false },
-      ok: false
-    })
-  })
+      ok: false,
+    });
+  });
 
-  it('treats a thrown clear the same as a rejected one', async () => {
-    hostMock.request.mockRejectedValue(new Error('gateway down'))
+  it("treats a thrown clear the same as a rejected one", async () => {
+    hostMock.request.mockRejectedValue(new Error("gateway down"));
 
-    await expect(applyAdvancedConfig(bot, dirtyModel({ model: '', provider: '' }))).resolves.toEqual({
+    await expect(
+      applyAdvancedConfig(bot, dirtyModel({ model: "", provider: "" })),
+    ).resolves.toEqual({
       applied: { model: false },
-      ok: false
-    })
-  })
+      ok: false,
+    });
+  });
 
-  it('refuses a half-filled model section outright', async () => {
+  it("refuses a half-filled model section outright", async () => {
     // A provider with no model (or the reverse) is neither a pin nor a clear.
-    await expect(applyAdvancedConfig(bot, dirtyModel({ model: '' }))).resolves.toEqual({
+    await expect(
+      applyAdvancedConfig(bot, dirtyModel({ model: "" })),
+    ).resolves.toEqual({
       applied: { model: false },
-      ok: false
-    })
-    expect(routed).toHaveLength(0)
-  })
-})
+      ok: false,
+    });
+    expect(routed).toHaveLength(0);
+  });
+});
 
-describe('a guarded model switch (#95293)', () => {
-  it('surfaces the SHARED confirm flow instead of silently dropping the pick', async () => {
+describe("a guarded model switch (#95293)", () => {
+  it("surfaces the SHARED confirm flow instead of silently dropping the pick", async () => {
     respondWith(() => ({
       applied: {},
-      confirm_message: 'CONTRIBUTOR TIER: this model may train on your data.',
+      confirm_message: "CONTRIBUTOR TIER: this model may train on your data.",
       confirm_required: true,
-      ok: true
-    }))
+      ok: true,
+    }));
 
-    const result = await applyAdvancedConfig(bot, dirtyModel())
+    const result = await applyAdvancedConfig(bot, dirtyModel());
 
-    expect(routed).toHaveLength(1)
-    expect(routed[0].method).toBe('profiles.configure')
-    expect(routed[0].params.model).toBe('muse-spark-1.2-contributor')
-    expect(routed[0].params.confirm_expensive_model).toBeFalsy()
+    expect(routed).toHaveLength(1);
+    expect(routed[0].method).toBe("profiles.configure");
+    expect(routed[0].params.model).toBe("muse-spark-1.2-contributor");
+    expect(routed[0].params.confirm_expensive_model).toBeFalsy();
 
-    expect(confirmMock).toHaveBeenCalledTimes(1)
-    expect(confirmMock.mock.calls[0][0].confirmMessage).toMatch(/CONTRIBUTOR TIER/)
+    expect(confirmMock).toHaveBeenCalledTimes(1);
+    expect(confirmMock.mock.calls[0][0].confirmMessage).toMatch(
+      /CONTRIBUTOR TIER/,
+    );
 
     // Pending confirmation is NOT a failed section — the editor must not toast
     // "Some sections failed: model" while the confirm toast is still up.
-    expect(result.applied?.model).not.toBe(false)
-    expect(result.ok).toBe(true)
-  })
+    expect(result.applied?.model).not.toBe(false);
+    expect(result.ok).toBe(true);
+  });
 
-  it('resends ONLY the model section on Confirm', async () => {
-    let calls = 0
+  it("resends ONLY the model section on Confirm", async () => {
+    let calls = 0;
 
     respondWith(() => {
-      calls += 1
+      calls += 1;
 
       return calls === 1
-        ? { applied: {}, confirm_message: 'guarded', confirm_required: true, ok: true }
-        : { applied: { model: true }, ok: true }
-    })
+        ? {
+            applied: {},
+            confirm_message: "guarded",
+            confirm_required: true,
+            ok: true,
+          }
+        : { applied: { model: true }, ok: true };
+    });
 
-    await applyAdvancedConfig(bot, dirtyModel({ dirtySoul: true, soul: '# Zeta' }))
+    await applyAdvancedConfig(
+      bot,
+      dirtyModel({ dirtySoul: true, soul: "# Zeta" }),
+    );
 
-    const confirmed = await confirmMock.mock.calls[0][0].requestConfirmed()
+    const confirmed = await confirmMock.mock.calls[0][0].requestConfirmed();
 
-    expect(routed).toHaveLength(2)
-    expect(routed[1].method).toBe('profiles.configure')
-    expect(Object.keys(routed[1].params).sort()).toEqual(['confirm_expensive_model', 'model', 'name', 'provider'])
+    expect(routed).toHaveLength(2);
+    expect(routed[1].method).toBe("profiles.configure");
+    expect(Object.keys(routed[1].params).sort()).toEqual([
+      "confirm_expensive_model",
+      "model",
+      "name",
+      "provider",
+    ]);
     expect(routed[1].params).toMatchObject({
       confirm_expensive_model: true,
-      model: 'muse-spark-1.2-contributor',
-      name: 'zeta',
-      provider: 'opencode-go'
-    })
-    expect(confirmed?.applied?.model).toBe(true)
-  })
+      model: "muse-spark-1.2-contributor",
+      name: "zeta",
+      provider: "opencode-go",
+    });
+    expect(confirmed?.applied?.model).toBe(true);
+  });
 
-  it('refreshes the roster once the confirmed switch lands', async () => {
-    respondWith(() => ({ applied: {}, confirm_message: 'guarded', confirm_required: true, ok: true }))
+  it("refreshes the roster once the confirmed switch lands", async () => {
+    respondWith(() => ({
+      applied: {},
+      confirm_message: "guarded",
+      confirm_required: true,
+      ok: true,
+    }));
 
-    await applyAdvancedConfig(bot, dirtyModel())
-    confirmMock.mock.calls[0][0].finish()
+    await applyAdvancedConfig(bot, dirtyModel());
+    confirmMock.mock.calls[0][0].finish();
 
-    expect(invalidateMock).toHaveBeenCalled()
-  })
+    expect(invalidateMock).toHaveBeenCalled();
+  });
 
-  it('leaves an unguarded save single-shot', async () => {
-    respondWith(() => ({ applied: { model: true }, ok: true }))
+  it("leaves an unguarded save single-shot", async () => {
+    respondWith(() => ({ applied: { model: true }, ok: true }));
 
-    const result = await applyAdvancedConfig(bot, dirtyModel())
+    const result = await applyAdvancedConfig(bot, dirtyModel());
 
-    expect(routed).toHaveLength(1)
-    expect(confirmMock).not.toHaveBeenCalled()
-    expect(result).toMatchObject({ applied: { model: true }, ok: true })
-  })
-})
+    expect(routed).toHaveLength(1);
+    expect(confirmMock).not.toHaveBeenCalled();
+    expect(result).toMatchObject({ applied: { model: true }, ok: true });
+  });
+});

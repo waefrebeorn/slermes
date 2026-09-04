@@ -28,29 +28,29 @@
 // (`<unk>`) still becomes an element node, so the depth cost is identical.
 // Well under the ~1,750 measured failure point, and far above any nesting real
 // markup uses — a deeply structured HTML document is a few dozen levels.
-const MAX_HTML_DEPTH = 300
+const MAX_HTML_DEPTH = 300;
 
 // Elements that never take children, so an opening tag adds no depth.
 const VOID_ELEMENTS = new Set([
-  'area',
-  'base',
-  'br',
-  'col',
-  'embed',
-  'hr',
-  'img',
-  'input',
-  'link',
-  'meta',
-  'param',
-  'source',
-  'track',
-  'wbr'
-])
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
+]);
 
 // `<tag`, `</tag`, or `<tag/`. Deliberately loose on attributes: we only need
 // the name and whether it opens, closes, or self-closes.
-const TAG_RE = /<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^>"'])*)>/g
+const TAG_RE = /<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^>"'])*)>/g;
 
 /**
  * Escape raw HTML tags past `MAX_HTML_DEPTH` levels of unclosed nesting.
@@ -61,52 +61,55 @@ const TAG_RE = /<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^>"'])*)>/g
  */
 export function clampHtmlNestingDepth(text: string): string {
   // Fast path: no tags at all, nothing to bound.
-  if (!text.includes('<')) {
-    return text
+  if (!text.includes("<")) {
+    return text;
   }
 
-  const open: string[] = []
-  let depth = 0
-  let firstOverflow = -1
-  let match: RegExpExecArray | null
+  const open: string[] = [];
+  let depth = 0;
+  let firstOverflow = -1;
+  let match: RegExpExecArray | null;
 
-  TAG_RE.lastIndex = 0
+  TAG_RE.lastIndex = 0;
 
   while ((match = TAG_RE.exec(text)) !== null) {
-    const closing = match[1] === '/'
-    const name = match[2].toLowerCase()
-    const selfClosing = match[3].endsWith('/')
+    const closing = match[1] === "/";
+    const name = match[2].toLowerCase();
+    const selfClosing = match[3].endsWith("/");
 
     if (closing) {
       // Close the nearest matching open element, mirroring parse5's recovery:
       // an unmatched close tag is ignored rather than unwinding the stack.
-      const index = open.lastIndexOf(name)
+      const index = open.lastIndexOf(name);
 
       if (index !== -1) {
-        depth = index
-        open.length = index
+        depth = index;
+        open.length = index;
       }
 
-      continue
+      continue;
     }
 
     if (selfClosing || VOID_ELEMENTS.has(name)) {
-      continue
+      continue;
     }
 
-    open.push(name)
-    depth += 1
+    open.push(name);
+    depth += 1;
 
     if (depth > MAX_HTML_DEPTH && firstOverflow === -1) {
-      firstOverflow = match.index
+      firstOverflow = match.index;
     }
   }
 
   if (firstOverflow === -1) {
-    return text
+    return text;
   }
 
   // Everything before the overflow parses at a safe depth and is left exactly
   // as-is; from there on, opening tags become visible literal text.
-  return text.slice(0, firstOverflow) + text.slice(firstOverflow).replaceAll('<', '&lt;')
+  return (
+    text.slice(0, firstOverflow) +
+    text.slice(firstOverflow).replaceAll("<", "&lt;")
+  );
 }

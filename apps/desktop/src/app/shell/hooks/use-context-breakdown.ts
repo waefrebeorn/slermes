@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import type { ContextBreakdown } from '@/types/hermes'
+import type { ContextBreakdown } from "@/types/hermes";
 
 interface ContextBreakdownOptions {
-  busy: boolean
-  enabled: boolean
-  requestGateway: <T = unknown>(method: string, params?: Record<string, unknown>) => Promise<T>
-  sessionId: null | string
+  busy: boolean;
+  enabled: boolean;
+  requestGateway: <T = unknown>(
+    method: string,
+    params?: Record<string, unknown>,
+  ) => Promise<T>;
+  sessionId: null | string;
 }
 
 /** The focused session's context breakdown, fetched as soon as the statusbar
@@ -24,40 +27,51 @@ interface ContextBreakdownOptions {
  *  transcript just grew). Held keyed by the session it describes so switching
  *  sessions drops the previous numbers instead of painting them under the new
  *  session's name. */
-export function useContextBreakdown({ busy, enabled, requestGateway, sessionId }: ContextBreakdownOptions) {
-  const [fetched, setFetched] = useState<{ breakdown: ContextBreakdown; sessionId: string } | null>(null)
-  const [loading, setLoading] = useState(false)
+export function useContextBreakdown({
+  busy,
+  enabled,
+  requestGateway,
+  sessionId,
+}: ContextBreakdownOptions) {
+  const [fetched, setFetched] = useState<{
+    breakdown: ContextBreakdown;
+    sessionId: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Mid-turn the transcript changes on every delta and the gateway already
     // streams measured usage, so an estimate would be both stale and wasteful.
     if (!enabled || !sessionId || busy) {
-      return
+      return;
     }
 
-    let cancelled = false
-    setLoading(true)
+    let cancelled = false;
+    setLoading(true);
 
-    void requestGateway<ContextBreakdown>('session.context_breakdown', { session_id: sessionId })
-      .then(breakdown => {
+    void requestGateway<ContextBreakdown>("session.context_breakdown", {
+      session_id: sessionId,
+    })
+      .then((breakdown) => {
         if (!cancelled && breakdown) {
-          setFetched({ breakdown, sessionId })
+          setFetched({ breakdown, sessionId });
         }
       })
       .catch(() => undefined)
       .finally(() => {
         if (!cancelled) {
-          setLoading(false)
+          setLoading(false);
         }
-      })
+      });
 
     return () => {
-      cancelled = true
-    }
-  }, [busy, enabled, requestGateway, sessionId])
+      cancelled = true;
+    };
+  }, [busy, enabled, requestGateway, sessionId]);
 
   return {
-    breakdown: fetched && fetched.sessionId === sessionId ? fetched.breakdown : null,
-    loading
-  }
+    breakdown:
+      fetched && fetched.sessionId === sessionId ? fetched.breakdown : null,
+    loading,
+  };
 }

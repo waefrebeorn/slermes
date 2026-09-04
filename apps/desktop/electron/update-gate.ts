@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 /**
  * update-gate.ts
@@ -25,37 +25,39 @@
  * waiter could slip through mid-update.
  */
 
-export type UpdateGateReason = 'marker' | 'update-in-flight' | null
+export type UpdateGateReason = "marker" | "update-in-flight" | null;
 
 export interface UpdateGateDeps {
   /** True when a live on-disk update marker exists (see update-marker.ts). */
-  hasLiveMarker: () => boolean
+  hasLiveMarker: () => boolean;
   /** True while this process is inside applyUpdates()' critical section. */
-  isUpdateInFlight: () => boolean
+  isUpdateInFlight: () => boolean;
 }
 
 /** Why the gate is closed right now, or null when it is open. */
 export function updateGateReason(deps: UpdateGateDeps): UpdateGateReason {
   if (deps.hasLiveMarker()) {
-    return 'marker'
+    return "marker";
   }
 
   if (deps.isUpdateInFlight()) {
-    return 'update-in-flight'
+    return "update-in-flight";
   }
 
-  return null
+  return null;
 }
 
-export type UpdateClearanceOutcome = 'clear' | 'finished' | 'timeout'
+export type UpdateClearanceOutcome = "clear" | "finished" | "timeout";
 
 export interface WaitForUpdateClearanceOptions {
-  timeoutMs: number
-  pollMs: number
+  timeoutMs: number;
+  pollMs: number;
   /** Invoked once per poll while parked (boot progress / logging). */
-  onWaitTick?: (reason: Exclude<UpdateGateReason, null>) => void | Promise<void>
-  now?: () => number
-  sleep?: (ms: number) => Promise<void>
+  onWaitTick?: (
+    reason: Exclude<UpdateGateReason, null>,
+  ) => void | Promise<void>;
+  now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
 }
 
 /**
@@ -69,27 +71,28 @@ export interface WaitForUpdateClearanceOptions {
  */
 export async function waitForUpdateClearance(
   deps: UpdateGateDeps,
-  options: WaitForUpdateClearanceOptions
+  options: WaitForUpdateClearanceOptions,
 ): Promise<UpdateClearanceOutcome> {
-  const now = options.now || Date.now
-  const sleep = options.sleep || (ms => new Promise<void>(r => setTimeout(r, ms)))
+  const now = options.now || Date.now;
+  const sleep =
+    options.sleep || ((ms) => new Promise<void>((r) => setTimeout(r, ms)));
 
-  let reason = updateGateReason(deps)
+  let reason = updateGateReason(deps);
 
   if (!reason) {
-    return 'clear'
+    return "clear";
   }
 
-  const deadline = now() + options.timeoutMs
+  const deadline = now() + options.timeoutMs;
 
   while (reason && now() < deadline) {
     if (options.onWaitTick) {
-      await options.onWaitTick(reason)
+      await options.onWaitTick(reason);
     }
 
-    await sleep(options.pollMs)
-    reason = updateGateReason(deps)
+    await sleep(options.pollMs);
+    reason = updateGateReason(deps);
   }
 
-  return reason ? 'timeout' : 'finished'
+  return reason ? "timeout" : "finished";
 }

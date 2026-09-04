@@ -29,133 +29,141 @@
  * rather than retrying in place.
  */
 
-import { spawn } from 'node:child_process'
-import crypto from 'node:crypto'
-import fs from 'node:fs'
-import net from 'node:net'
-import os from 'node:os'
-import path from 'node:path'
+import { spawn } from "node:child_process";
+import crypto from "node:crypto";
+import fs from "node:fs";
+import net from "node:net";
+import os from "node:os";
+import path from "node:path";
 
-const DEFAULT_CONNECT_TIMEOUT_MS = 15_000
-const DEFAULT_EXEC_TIMEOUT_MS = 20_000
-const DEFAULT_FORWARD_TIMEOUT_MS = 15_000
+const DEFAULT_CONNECT_TIMEOUT_MS = 15_000;
+const DEFAULT_EXEC_TIMEOUT_MS = 20_000;
+const DEFAULT_FORWARD_TIMEOUT_MS = 15_000;
 // No-mux tunnels are one `ssh -N -L` child each; a transient child death
 // (network blip, sshd restart, laptop resume) used to instantly poison
 // isAlive() and cascade upstream into a full teardown that SIGTERM'd a
 // healthy backend (#96266). Instead, restart the child a bounded number of
 // times; consecutive pre-readiness failures exhaust the budget and only then
 // is the connection reported dead.
-const DEFAULT_TUNNEL_RESTART_LIMIT = 5
-const DEFAULT_TUNNEL_RESTART_DELAY_MS = 1_000
-const CONTROL_PERSIST_SECONDS = 300
+const DEFAULT_TUNNEL_RESTART_LIMIT = 5;
+const DEFAULT_TUNNEL_RESTART_DELAY_MS = 1_000;
+const CONTROL_PERSIST_SECONDS = 300;
 
 // eslint-disable-next-line no-control-regex -- deliberately reject control chars in ssh targets
-const _CONTROL_CHAR_RE = /[\x00-\x1f\x7f]/
+const _CONTROL_CHAR_RE = /[\x00-\x1f\x7f]/;
 
 // Hostname / IPv4 shape: letters, digits, dots, hyphens, underscores.
-const _HOSTNAME_RE = /^[A-Za-z0-9._-]+$/
+const _HOSTNAME_RE = /^[A-Za-z0-9._-]+$/;
 // IPv6 shape (optionally with a %zone). Loose on purpose — ssh does the real
 // parse; this only has to separate "plausible address" from pasted garbage.
-const _IPV6_RE = /^[0-9A-Fa-f:.]+(?:%[A-Za-z0-9._-]+)?$/
+const _IPV6_RE = /^[0-9A-Fa-f:.]+(?:%[A-Za-z0-9._-]+)?$/;
 
 function validateSshTarget(host, user, port) {
-  if (!host || typeof host !== 'string') {
-    throw new Error('Unsafe SSH target: host is required.')
+  if (!host || typeof host !== "string") {
+    throw new Error("Unsafe SSH target: host is required.");
   }
 
-  if (host.startsWith('-')) {
-    throw new Error(`Unsafe SSH target: host must not start with a dash ("${host}").`)
+  if (host.startsWith("-")) {
+    throw new Error(
+      `Unsafe SSH target: host must not start with a dash ("${host}").`,
+    );
   }
 
   if (_CONTROL_CHAR_RE.test(host)) {
-    throw new Error('Unsafe SSH target: host contains control characters.')
+    throw new Error("Unsafe SSH target: host contains control characters.");
   }
 
   if (/\s/.test(host)) {
     throw new Error(
-      'Invalid SSH host: contains whitespace. Enter only the destination (user@host or host) — no "ssh " prefix or extra options.'
-    )
+      'Invalid SSH host: contains whitespace. Enter only the destination (user@host or host) — no "ssh " prefix or extra options.',
+    );
   }
 
-  if (host.includes(',')) {
+  if (host.includes(",")) {
     throw new Error(
-      `Invalid SSH host "${host}": commas are not valid in a hostname or IP (use dots, e.g. 192.168.1.10).`
-    )
+      `Invalid SSH host "${host}": commas are not valid in a hostname or IP (use dots, e.g. 192.168.1.10).`,
+    );
   }
 
-  if (host.includes(':')) {
+  if (host.includes(":")) {
     // Only a bare IPv6 address may contain colons here — ports are parsed off
     // upstream. A single-colon host is almost always "host:port" that failed
     // to parse, or worse, a pasted credential.
-    const colons = (host.match(/:/g) || []).length
+    const colons = (host.match(/:/g) || []).length;
 
     if (colons < 2 || !_IPV6_RE.test(host)) {
       // Never echo the suspect segment — it may be a pasted credential.
       throw new Error(
-        `Invalid SSH host "${host.split(':')[0]}:<hidden>": unexpected ":" segment. ` +
-          'Use host or host:port — and never put a password in the host field; Desktop SSH authenticates with keys.'
-      )
+        `Invalid SSH host "${host.split(":")[0]}:<hidden>": unexpected ":" segment. ` +
+          "Use host or host:port — and never put a password in the host field; Desktop SSH authenticates with keys.",
+      );
     }
   } else if (!_HOSTNAME_RE.test(host)) {
-    throw new Error(`Invalid SSH host "${redactSecrets(host)}": not a valid hostname or IP address.`)
+    throw new Error(
+      `Invalid SSH host "${redactSecrets(host)}": not a valid hostname or IP address.`,
+    );
   }
 
   if (user && _CONTROL_CHAR_RE.test(user)) {
-    throw new Error('Unsafe SSH target: user contains control characters.')
+    throw new Error("Unsafe SSH target: user contains control characters.");
   }
 
-  if (user && user.startsWith('-')) {
-    throw new Error(`Unsafe SSH target: user must not start with a dash ("${user}").`)
+  if (user && user.startsWith("-")) {
+    throw new Error(
+      `Unsafe SSH target: user must not start with a dash ("${user}").`,
+    );
   }
 
   if (user && /[\s@]/.test(user)) {
     throw new Error(
-      `Invalid SSH user "${user}": contains whitespace or "@". Enter only the destination (user@host) — no "ssh " prefix.`
-    )
+      `Invalid SSH user "${user}": contains whitespace or "@". Enter only the destination (user@host) — no "ssh " prefix.`,
+    );
   }
 
-  const p = Number(port)
+  const p = Number(port);
 
   if (!Number.isInteger(p) || p < 1 || p > 65535) {
-    throw new Error(`Unsafe SSH port: ${port} (must be 1-65535).`)
+    throw new Error(`Unsafe SSH port: ${port} (must be 1-65535).`);
   }
 }
 
 function validateKeyPath(keyPath) {
   if (!keyPath) {
-    return
+    return;
   }
 
   if (_CONTROL_CHAR_RE.test(keyPath)) {
-    throw new Error('Unsafe SSH key path: contains control characters.')
+    throw new Error("Unsafe SSH key path: contains control characters.");
   }
 
-  if (keyPath.startsWith('-')) {
-    throw new Error(`Unsafe SSH key path: must not start with a dash ("${keyPath}").`)
+  if (keyPath.startsWith("-")) {
+    throw new Error(
+      `Unsafe SSH key path: must not start with a dash ("${keyPath}").`,
+    );
   }
 }
 
 // Token / secret redaction
 
 const _REDACTIONS: Array<[RegExp, string]> = [
-  [/(HERMES_DASHBOARD_SESSION_TOKEN=)(\S+)/g, '$1<redacted>'],
-  [/(X-Hermes-Session-Token["']?\s*[:=]\s*["']?)([^\s"'&]+)/gi, '$1<redacted>'],
-  [/(Authorization["']?\s*:\s*Bearer\s+)(\S+)/gi, '$1<redacted>'],
-  [/([?&](?:token|ticket)=)([^\s&"']+)/gi, '$1<redacted>'],
+  [/(HERMES_DASHBOARD_SESSION_TOKEN=)(\S+)/g, "$1<redacted>"],
+  [/(X-Hermes-Session-Token["']?\s*[:=]\s*["']?)([^\s"'&]+)/gi, "$1<redacted>"],
+  [/(Authorization["']?\s*:\s*Bearer\s+)(\S+)/gi, "$1<redacted>"],
+  [/([?&](?:token|ticket)=)([^\s&"']+)/gi, "$1<redacted>"],
   // SSH target with a non-numeric segment where a port belongs
   // (user@host:SECRET or user@host:SECRET:22). A mistyped password in the
   // host field must never reach logs / debug shares verbatim.
-  [/(\S+@[^\s:]+):(?!\d+\b)[^\s:]+/g, '$1:<redacted>']
-]
+  [/(\S+@[^\s:]+):(?!\d+\b)[^\s:]+/g, "$1:<redacted>"],
+];
 
 function redactSecrets(text) {
-  let out = String(text == null ? '' : text)
+  let out = String(text == null ? "" : text);
 
   for (const [re, repl] of _REDACTIONS) {
-    out = out.replace(re, repl)
+    out = out.replace(re, repl);
   }
 
-  return out
+  return out;
 }
 
 // Control-socket path
@@ -171,32 +179,36 @@ function redactSecrets(text) {
 // root under a short per-user base (`~/.hermes/desktop-ssh`) so even worst case
 // (~72 bytes on macOS) stays clear. Windows has no AF_UNIX sun_path limit.
 function controlSocketPath(user, host, port, baseDir?, identity: any = {}) {
-  const dir = baseDir || defaultControlDir()
-  const keyPathIdentity = path.normalize(String(identity.keyPath || ''))
+  const dir = baseDir || defaultControlDir();
+  const keyPathIdentity = path.normalize(String(identity.keyPath || ""));
 
   const parts = [
-    identity.ownershipId || '',
-    identity.scope || '',
-    user || '',
+    identity.ownershipId || "",
+    identity.scope || "",
+    user || "",
     host,
     Number(port),
     keyPathIdentity,
-    identity.effectiveConfigFingerprint || ''
-  ]
+    identity.effectiveConfigFingerprint || "",
+  ];
 
-  const id = crypto.createHash('sha256').update(JSON.stringify(parts)).digest('hex').slice(0, 16)
+  const id = crypto
+    .createHash("sha256")
+    .update(JSON.stringify(parts))
+    .digest("hex")
+    .slice(0, 16);
 
-  return path.join(dir, `${id}.sock`)
+  return path.join(dir, `${id}.sock`);
 }
 
 function defaultControlDir() {
   // POSIX: a SHORT, PER-USER base stays under the socket limit AND avoids a
   // world-shared /tmp dir (no symlink-hijack surface). Created 0700 in open().
-  if (process.platform === 'win32') {
-    return path.join(os.tmpdir(), 'hermes-desktop-ssh')
+  if (process.platform === "win32") {
+    return path.join(os.tmpdir(), "hermes-desktop-ssh");
   }
 
-  return path.join(os.homedir(), '.hermes', 'desktop-ssh')
+  return path.join(os.homedir(), ".hermes", "desktop-ssh");
 }
 
 // Command construction (pure — the unit tests exercise these directly)
@@ -205,72 +217,78 @@ function defaultControlDir() {
 // connection. No-mux (Windows OpenSSH never implemented mux sockets): plain
 // per-invocation options — each ssh call authenticates on its own.
 function baseSshOptions(controlPath, connectTimeoutMs?) {
-  const connectSecs = Math.max(1, Math.round((connectTimeoutMs ?? DEFAULT_CONNECT_TIMEOUT_MS) / 1000))
+  const connectSecs = Math.max(
+    1,
+    Math.round((connectTimeoutMs ?? DEFAULT_CONNECT_TIMEOUT_MS) / 1000),
+  );
 
   const mux = controlPath
     ? [
-        '-o',
+        "-o",
         `ControlPath=${controlPath}`,
-        '-o',
-        'ControlMaster=auto',
-        '-o',
-        `ControlPersist=${CONTROL_PERSIST_SECONDS}`
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        `ControlPersist=${CONTROL_PERSIST_SECONDS}`,
       ]
-    : []
+    : [];
 
   return [
     ...mux,
-    '-o',
-    'BatchMode=yes',
-    '-o',
-    'StrictHostKeyChecking=accept-new',
-    '-o',
-    'ExitOnForwardFailure=yes',
-    '-o',
-    `ConnectTimeout=${connectSecs}`
-  ]
+    "-o",
+    "BatchMode=yes",
+    "-o",
+    "StrictHostKeyChecking=accept-new",
+    "-o",
+    "ExitOnForwardFailure=yes",
+    "-o",
+    `ConnectTimeout=${connectSecs}`,
+  ];
 }
 
 // Non-default port and explicit identity file, shared by exec/master/forward.
-function hostArgs({ port, keyPath }: { port?: number | string; keyPath?: string } = {}) {
-  const args: string[] = []
+function hostArgs({
+  port,
+  keyPath,
+}: { port?: number | string; keyPath?: string } = {}) {
+  const args: string[] = [];
 
   if (port && Number(port) !== 22) {
-    args.push('-p', String(port))
+    args.push("-p", String(port));
   }
 
   if (keyPath) {
-    validateKeyPath(keyPath)
-    args.push('-i', keyPath)
+    validateKeyPath(keyPath);
+    args.push("-i", keyPath);
   }
 
-  return args
+  return args;
 }
 
 function target(user, host) {
-  return user ? `${user}@${host}` : host
+  return user ? `${user}@${host}` : host;
 }
 
 function buildExecArgs(conn, remoteCommand, connectTimeoutMs?) {
   return [
     ...baseSshOptions(conn.controlPath, connectTimeoutMs),
     ...hostArgs(conn),
-    '--',
+    "--",
     target(conn.user, conn.host),
-    remoteCommand
-  ]
+    remoteCommand,
+  ];
 }
 
 function buildControlArgs(conn, op, extra: string[] = [], connectTimeoutMs?) {
   return [
-    '-O',
+    "-O",
     op,
     ...extra,
     ...baseSshOptions(conn.controlPath, connectTimeoutMs),
     ...hostArgs(conn),
-    '--',
-    target(conn.user, conn.host)
-  ]
+    "--",
+    target(conn.user, conn.host),
+  ];
 }
 
 // Open the master explicitly: `-M -N -f` backgrounds ssh once the master is up,
@@ -278,14 +296,14 @@ function buildControlArgs(conn, op, extra: string[] = [], connectTimeoutMs?) {
 // BatchMode if auth is non-interactive-only).
 function buildMasterArgs(conn, connectTimeoutMs?) {
   return [
-    '-M',
-    '-N',
-    '-f',
+    "-M",
+    "-N",
+    "-f",
     ...baseSshOptions(conn.controlPath, connectTimeoutMs),
     ...hostArgs(conn),
-    '--',
-    target(conn.user, conn.host)
-  ]
+    "--",
+    target(conn.user, conn.host),
+  ];
 }
 
 // Interactive `ssh -tt` for the INTERIM remote terminal (SSH mode only). Reuses
@@ -294,83 +312,88 @@ function buildMasterArgs(conn, connectTimeoutMs?) {
 //
 // NOTE(remote-terminal): interim until the dashboard /api/terminal WebSocket
 // lands (specs/desktop-remote-terminal.md); delete this path then.
-function buildInteractiveSshArgs(conn, remoteCwd, connectTimeoutMs?, remoteCommand?) {
+function buildInteractiveSshArgs(
+  conn,
+  remoteCwd,
+  connectTimeoutMs?,
+  remoteCommand?,
+) {
   const args = [
-    '-tt',
+    "-tt",
     ...baseSshOptions(conn.controlPath, connectTimeoutMs),
     ...hostArgs(conn),
-    '--',
-    target(conn.user, conn.host)
-  ]
+    "--",
+    target(conn.user, conn.host),
+  ];
 
   if (remoteCommand) {
-    args.push(remoteCommand)
+    args.push(remoteCommand);
 
-    return args
+    return args;
   }
 
-  const cwd = String(remoteCwd || '').trim()
+  const cwd = String(remoteCwd || "").trim();
 
   if (cwd) {
-    const q = `'${cwd.replace(/'/g, `'\\''`)}'`
-    args.push(`cd ${q} 2>/dev/null; exec "$SHELL" -l`)
+    const q = `'${cwd.replace(/'/g, `'\\''`)}'`;
+    args.push(`cd ${q} 2>/dev/null; exec "$SHELL" -l`);
   } else {
-    args.push('exec "$SHELL" -l')
+    args.push('exec "$SHELL" -l');
   }
 
-  return args
+  return args;
 }
 
 // Bind the local end to 127.0.0.1 ONLY — never 0.0.0.0 — so the tunnel does not
 // re-expose the remote dashboard to the client's LAN.
-function forwardSpec(localPort, remotePort, remoteHost = '127.0.0.1') {
-  return `127.0.0.1:${localPort}:${remoteHost}:${remotePort}`
+function forwardSpec(localPort, remotePort, remoteHost = "127.0.0.1") {
+  return `127.0.0.1:${localPort}:${remoteHost}:${remotePort}`;
 }
 
 // Error classification — distinct, actionable messages for the UI
 
 const SSH_ERROR = {
-  UNREACHABLE: 'unreachable',
-  AUTH_FAILED: 'auth-failed',
-  HOST_KEY_CHANGED: 'host-key-changed',
-  TIMEOUT: 'timeout',
-  UNKNOWN: 'unknown'
-}
+  UNREACHABLE: "unreachable",
+  AUTH_FAILED: "auth-failed",
+  HOST_KEY_CHANGED: "host-key-changed",
+  TIMEOUT: "timeout",
+  UNKNOWN: "unknown",
+};
 
 // Order matters: the host-key-change banner also contains "WARNING"/"Offending",
 // so check it before generic auth.
 function classifySshError(stderr) {
-  const text = String(stderr || '')
+  const text = String(stderr || "");
 
   if (
     /REMOTE HOST IDENTIFICATION HAS CHANGED|Host key verification failed|Offending (?:key|ECDSA|RSA|ED25519)/i.test(
-      text
+      text,
     )
   ) {
-    return SSH_ERROR.HOST_KEY_CHANGED
+    return SSH_ERROR.HOST_KEY_CHANGED;
   }
 
   if (
     /Permission denied|Too many authentication failures|no matching host key|publickey|password|keyboard-interactive/i.test(
-      text
+      text,
     )
   ) {
-    return SSH_ERROR.AUTH_FAILED
+    return SSH_ERROR.AUTH_FAILED;
   }
 
   if (
     /Could not resolve hostname|Connection refused|Connection timed out|No route to host|Network is unreachable|Operation timed out|port \d+: Connection/i.test(
-      text
+      text,
     )
   ) {
-    return SSH_ERROR.UNREACHABLE
+    return SSH_ERROR.UNREACHABLE;
   }
 
-  return SSH_ERROR.UNKNOWN
+  return SSH_ERROR.UNKNOWN;
 }
 
 function sshErrorMessage(kind, conn, stderr?) {
-  const host = target(conn.user, conn.host)
+  const host = target(conn.user, conn.host);
 
   switch (kind) {
     case SSH_ERROR.HOST_KEY_CHANGED:
@@ -378,25 +401,25 @@ function sshErrorMessage(kind, conn, stderr?) {
         `The host key for ${host} has CHANGED since you last connected. ` +
         `This could be a man-in-the-middle attack, or the server was reinstalled. ` +
         `SSH refused to connect. Verify the change is expected, then remove the old key ` +
-        `with \`ssh-keygen -R ${conn.host}\` and reconnect.\n\n${String(stderr || '').trim()}`
-      )
+        `with \`ssh-keygen -R ${conn.host}\` and reconnect.\n\n${String(stderr || "").trim()}`
+      );
 
     case SSH_ERROR.AUTH_FAILED:
       return (
         `SSH authentication to ${host} failed. Desktop runs ssh non-interactively ` +
         `(BatchMode), so a key requiring a passphrase or 2FA must be loaded into your ` +
         `ssh-agent first (e.g. \`ssh-add ~/.ssh/id_ed25519\`), or set an IdentityFile in ` +
-        `~/.ssh/config. Original error: ${String(stderr || '').trim()}`
-      )
+        `~/.ssh/config. Original error: ${String(stderr || "").trim()}`
+      );
 
     case SSH_ERROR.UNREACHABLE:
-      return `Could not reach ${host} over SSH. Check the host, port, and your network. Original error: ${String(stderr || '').trim()}`
+      return `Could not reach ${host} over SSH. Check the host, port, and your network. Original error: ${String(stderr || "").trim()}`;
 
     case SSH_ERROR.TIMEOUT:
-      return `SSH operation to ${host} timed out. The connection may be half-open (e.g. after sleep); reconnecting.`
+      return `SSH operation to ${host} timed out. The connection may be half-open (e.g. after sleep); reconnecting.`;
 
     default:
-      return `SSH error connecting to ${host}: ${String(stderr || '').trim() || 'unknown failure'}`
+      return `SSH error connecting to ${host}: ${String(stderr || "").trim() || "unknown failure"}`;
   }
 }
 
@@ -404,228 +427,244 @@ function sshErrorMessage(kind, conn, stderr?) {
 
 // Resolves { code, stdout, stderr }. On timeout the child is SIGKILLed and the
 // promise rejects with err.kind = TIMEOUT. `spawnFn` is injectable for tests.
-function runSsh(args, { timeoutMs, spawnFn = spawn, stdin = 'ignore', stdinData, signal }: any = {}) {
+function runSsh(
+  args,
+  { timeoutMs, spawnFn = spawn, stdin = "ignore", stdinData, signal }: any = {},
+) {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) {
-      const error: any = new Error('SSH operation was cancelled.')
-      error.kind = 'superseded'
-      reject(error)
+      const error: any = new Error("SSH operation was cancelled.");
+      error.kind = "superseded";
+      reject(error);
 
-      return
+      return;
     }
 
-    const useStdinPipe = stdinData != null || stdin !== 'ignore'
-    let child
+    const useStdinPipe = stdinData != null || stdin !== "ignore";
+    let child;
 
     try {
-      child = spawnFn('ssh', args, { stdio: [useStdinPipe ? 'pipe' : 'ignore', 'pipe', 'pipe'] })
+      child = spawnFn("ssh", args, {
+        stdio: [useStdinPipe ? "pipe" : "ignore", "pipe", "pipe"],
+      });
     } catch (error) {
-      reject(error)
+      reject(error);
 
-      return
+      return;
     }
 
     if (stdinData != null && child.stdin) {
-      child.stdin.end(stdinData)
+      child.stdin.end(stdinData);
     }
 
-    let stdout = ''
-    let stderr = ''
-    let settled = false
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
 
     const timer: any = setTimeout(() => {
       if (settled) {
-        return
+        return;
       }
 
-      settled = true
+      settled = true;
 
       try {
-        child.kill('SIGKILL')
+        child.kill("SIGKILL");
       } catch {
         // already gone
       }
 
-      const err: any = new Error(`ssh timed out after ${timeoutMs}ms`)
-      err.kind = SSH_ERROR.TIMEOUT
-      signal?.removeEventListener('abort', onAbort)
-      reject(err)
-    }, timeoutMs)
+      const err: any = new Error(`ssh timed out after ${timeoutMs}ms`);
+      err.kind = SSH_ERROR.TIMEOUT;
+      signal?.removeEventListener("abort", onAbort);
+      reject(err);
+    }, timeoutMs);
 
     const onAbort = () => {
       if (settled) {
-        return
+        return;
       }
 
-      settled = true
-      clearTimeout(timer)
+      settled = true;
+      clearTimeout(timer);
 
       try {
-        child.kill('SIGKILL')
+        child.kill("SIGKILL");
       } catch {
         // already gone
       }
 
-      const error: any = new Error('SSH operation was cancelled.')
-      error.kind = 'superseded'
-      reject(error)
-    }
+      const error: any = new Error("SSH operation was cancelled.");
+      error.kind = "superseded";
+      reject(error);
+    };
 
-    signal?.addEventListener('abort', onAbort, { once: true })
+    signal?.addEventListener("abort", onAbort, { once: true });
 
     if (signal?.aborted) {
-      onAbort()
+      onAbort();
     }
 
-    child.stdout?.on('data', d => {
-      stdout += d.toString()
-    })
-    child.stderr?.on('data', d => {
-      stderr += d.toString()
-    })
-    child.on('error', error => {
+    child.stdout?.on("data", (d) => {
+      stdout += d.toString();
+    });
+    child.stderr?.on("data", (d) => {
+      stderr += d.toString();
+    });
+    child.on("error", (error) => {
       if (settled) {
-        return
+        return;
       }
 
-      settled = true
-      clearTimeout(timer)
-      signal?.removeEventListener('abort', onAbort)
-      reject(error)
-    })
-    child.on('close', code => {
+      settled = true;
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
+      reject(error);
+    });
+    child.on("close", (code) => {
       if (settled) {
-        return
+        return;
       }
 
-      settled = true
-      clearTimeout(timer)
-      signal?.removeEventListener('abort', onAbort)
-      resolve({ code, stdout, stderr })
-    })
-  })
+      settled = true;
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
+      resolve({ code, stdout, stderr });
+    });
+  });
 }
 
 function stopTunnelChild(child, timeoutMs = 5_000) {
   if (!child || child.exitCode != null || child.signalCode != null) {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   return new Promise<void>((resolve, reject) => {
-    let settled = false
+    let settled = false;
 
     const finish = (error?: unknown) => {
       if (settled) {
-        return
+        return;
       }
 
-      settled = true
-      clearTimeout(timer)
-      child.off?.('exit', onExit)
-      child.off?.('error', onError)
-      error ? reject(error) : resolve()
-    }
+      settled = true;
+      clearTimeout(timer);
+      child.off?.("exit", onExit);
+      child.off?.("error", onError);
+      error ? reject(error) : resolve();
+    };
 
-    const onExit = () => finish()
-    const onError = error => finish(error)
-    const timer = setTimeout(() => finish(new Error('SSH tunnel did not exit after termination.')), timeoutMs)
-    child.once('exit', onExit)
-    child.once('error', onError)
+    const onExit = () => finish();
+    const onError = (error) => finish(error);
+    const timer = setTimeout(
+      () => finish(new Error("SSH tunnel did not exit after termination.")),
+      timeoutMs,
+    );
+    child.once("exit", onExit);
+    child.once("error", onError);
 
     try {
       if (!child.kill()) {
-        finish(new Error('SSH tunnel termination was refused.'))
+        finish(new Error("SSH tunnel termination was refused."));
       }
     } catch (error) {
-      finish(error)
+      finish(error);
     }
-  })
+  });
 }
 
 // SshConnection — the public manager
 
 class SshConnection {
-  host: string
-  user: string
-  port: number
-  keyPath: string
-  controlPath: string
-  _spawnFn: any
-  _log: (msg: string) => void
-  _connectTimeoutMs: number
-  _execTimeoutMs: number
-  _forwardTimeoutMs: number
-  _tunnelRestartLimit: number
-  _tunnelRestartDelayMs: number
-  _opened: boolean
-  _mux: boolean
-  _tunnels: Map<string, any>
+  host: string;
+  user: string;
+  port: number;
+  keyPath: string;
+  controlPath: string;
+  _spawnFn: any;
+  _log: (msg: string) => void;
+  _connectTimeoutMs: number;
+  _execTimeoutMs: number;
+  _forwardTimeoutMs: number;
+  _tunnelRestartLimit: number;
+  _tunnelRestartDelayMs: number;
+  _opened: boolean;
+  _mux: boolean;
+  _tunnels: Map<string, any>;
 
   constructor(cfg, opts: any = {}) {
     if (!cfg || !cfg.host) {
-      throw new Error('SshConnection requires a host.')
+      throw new Error("SshConnection requires a host.");
     }
 
-    const port = cfg.port ? Number(cfg.port) : 22
-    validateSshTarget(cfg.host, cfg.user || '', port)
+    const port = cfg.port ? Number(cfg.port) : 22;
+    validateSshTarget(cfg.host, cfg.user || "", port);
 
     if (cfg.keyPath) {
-      validateKeyPath(cfg.keyPath)
+      validateKeyPath(cfg.keyPath);
     }
 
-    this.host = cfg.host
-    this.user = cfg.user || ''
-    this.port = port
-    this.keyPath = cfg.keyPath || ''
+    this.host = cfg.host;
+    this.user = cfg.user || "";
+    this.port = port;
+    this.keyPath = cfg.keyPath || "";
     // Windows OpenSSH has no ControlMaster (mux sockets were never implemented
     // on Win32) — fall back to one ssh invocation per operation and a
     // persistent `ssh -N -L` child per tunnel. Empty controlPath routes the
     // pure builders onto their no-mux form.
-    this._mux = opts.mux ?? process.platform !== 'win32'
+    this._mux = opts.mux ?? process.platform !== "win32";
     this.controlPath = this._mux
       ? controlSocketPath(this.user, this.host, this.port, opts.controlDir, {
           keyPath: this.keyPath,
           ownershipId: opts.ownershipId,
           scope: opts.scope,
-          effectiveConfigFingerprint: opts.effectiveConfigFingerprint
+          effectiveConfigFingerprint: opts.effectiveConfigFingerprint,
         })
-      : ''
-    this._tunnels = new Map()
+      : "";
+    this._tunnels = new Map();
 
-    this._spawnFn = opts.spawnFn || spawn
+    this._spawnFn = opts.spawnFn || spawn;
 
-    this._log = typeof opts.rememberLog === 'function' ? opts.rememberLog : () => {}
-    this._connectTimeoutMs = opts.connectTimeoutMs ?? DEFAULT_CONNECT_TIMEOUT_MS
-    this._execTimeoutMs = opts.execTimeoutMs ?? DEFAULT_EXEC_TIMEOUT_MS
-    this._forwardTimeoutMs = opts.forwardTimeoutMs ?? DEFAULT_FORWARD_TIMEOUT_MS
-    this._tunnelRestartLimit = opts.tunnelRestartLimit ?? DEFAULT_TUNNEL_RESTART_LIMIT
-    this._tunnelRestartDelayMs = opts.tunnelRestartDelayMs ?? DEFAULT_TUNNEL_RESTART_DELAY_MS
-    this._opened = false
+    this._log =
+      typeof opts.rememberLog === "function" ? opts.rememberLog : () => {};
+    this._connectTimeoutMs =
+      opts.connectTimeoutMs ?? DEFAULT_CONNECT_TIMEOUT_MS;
+    this._execTimeoutMs = opts.execTimeoutMs ?? DEFAULT_EXEC_TIMEOUT_MS;
+    this._forwardTimeoutMs =
+      opts.forwardTimeoutMs ?? DEFAULT_FORWARD_TIMEOUT_MS;
+    this._tunnelRestartLimit =
+      opts.tunnelRestartLimit ?? DEFAULT_TUNNEL_RESTART_LIMIT;
+    this._tunnelRestartDelayMs =
+      opts.tunnelRestartDelayMs ?? DEFAULT_TUNNEL_RESTART_DELAY_MS;
+    this._opened = false;
   }
 
   // Lifecycle logging — ALWAYS through redaction.
   _logLine(msg) {
-    this._log(redactSecrets(`[ssh] ${msg}`))
+    this._log(redactSecrets(`[ssh] ${msg}`));
   }
 
   _fail(stderrOrErr, fallbackKind = SSH_ERROR.UNKNOWN) {
-    if (stderrOrErr?.kind === 'superseded') {
-      return stderrOrErr
+    if (stderrOrErr?.kind === "superseded") {
+      return stderrOrErr;
     }
 
     if (stderrOrErr && stderrOrErr.kind === SSH_ERROR.TIMEOUT) {
-      const err: any = new Error(sshErrorMessage(SSH_ERROR.TIMEOUT, this))
-      err.kind = SSH_ERROR.TIMEOUT
+      const err: any = new Error(sshErrorMessage(SSH_ERROR.TIMEOUT, this));
+      err.kind = SSH_ERROR.TIMEOUT;
 
-      return err
+      return err;
     }
 
-    const stderr = typeof stderrOrErr === 'string' ? stderrOrErr : stderrOrErr?.message || ''
-    const kind = stderr ? classifySshError(stderr) : fallbackKind
-    const err: any = new Error(sshErrorMessage(kind, this, stderr))
-    err.kind = kind
+    const stderr =
+      typeof stderrOrErr === "string"
+        ? stderrOrErr
+        : stderrOrErr?.message || "";
+    const kind = stderr ? classifySshError(stderr) : fallbackKind;
+    const err: any = new Error(sshErrorMessage(kind, this, stderr));
+    err.kind = kind;
 
-    return err
+    return err;
   }
 
   // Open the connection. Mux: start the persistent ControlMaster (idempotent —
@@ -638,106 +677,127 @@ class SshConnection {
       // after a mode switch — check succeeds, every exec times out). Verify with
       // a real exec before trusting it; on failure, evict and dial fresh.
       if (!this._mux || (await this._verifyMuxChannel({ signal }))) {
-        this._opened = true
+        this._opened = true;
 
-        return
+        return;
       }
 
-      this._logLine('existing control master failed exec verification; evicting stale master')
-      await this._evictStaleMaster()
+      this._logLine(
+        "existing control master failed exec verification; evicting stale master",
+      );
+      await this._evictStaleMaster();
     }
 
     if (!this._mux) {
-      this._logLine(`connecting (no-mux) to ${target(this.user, this.host)}:${this.port}`)
-      let result
+      this._logLine(
+        `connecting (no-mux) to ${target(this.user, this.host)}:${this.port}`,
+      );
+      let result;
 
       try {
-        result = await runSsh(buildExecArgs(this, 'exit 0', this._connectTimeoutMs), {
-          timeoutMs: this._connectTimeoutMs,
-          spawnFn: this._spawnFn,
-          signal
-        })
+        result = await runSsh(
+          buildExecArgs(this, "exit 0", this._connectTimeoutMs),
+          {
+            timeoutMs: this._connectTimeoutMs,
+            spawnFn: this._spawnFn,
+            signal,
+          },
+        );
       } catch (error) {
-        throw this._fail(error, SSH_ERROR.UNREACHABLE)
+        throw this._fail(error, SSH_ERROR.UNREACHABLE);
       }
 
       if (result.code !== 0) {
-        throw this._fail(result.stderr, SSH_ERROR.UNREACHABLE)
+        throw this._fail(result.stderr, SSH_ERROR.UNREACHABLE);
       }
 
-      this._opened = true
-      this._logLine('connection verified (no-mux; per-operation ssh)')
+      this._opened = true;
+      this._logLine("connection verified (no-mux; per-operation ssh)");
 
-      return
+      return;
     }
 
-    const controlDir = path.dirname(this.controlPath)
+    const controlDir = path.dirname(this.controlPath);
 
     try {
-      fs.mkdirSync(controlDir, { recursive: true, mode: 0o700 })
+      fs.mkdirSync(controlDir, { recursive: true, mode: 0o700 });
     } catch {
-      void 0
+      void 0;
     }
 
-    if (process.platform !== 'win32') {
-      const st = fs.lstatSync(controlDir)
+    if (process.platform !== "win32") {
+      const st = fs.lstatSync(controlDir);
 
       if (st.isSymbolicLink()) {
-        throw new Error(`Unsafe SSH control dir: ${controlDir} is a symlink.`)
+        throw new Error(`Unsafe SSH control dir: ${controlDir} is a symlink.`);
       }
 
       if (!st.isDirectory()) {
-        throw new Error(`Unsafe SSH control dir: ${controlDir} is not a directory.`)
+        throw new Error(
+          `Unsafe SSH control dir: ${controlDir} is not a directory.`,
+        );
       }
 
       if (st.uid !== process.getuid!()) {
-        throw new Error(`Unsafe SSH control dir: ${controlDir} is owned by uid ${st.uid}, not ${process.getuid!()}.`)
+        throw new Error(
+          `Unsafe SSH control dir: ${controlDir} is owned by uid ${st.uid}, not ${process.getuid!()}.`,
+        );
       }
 
       if ((st.mode & 0o777) !== 0o700) {
-        fs.chmodSync(controlDir, 0o700)
+        fs.chmodSync(controlDir, 0o700);
       }
     }
 
-    const args = buildMasterArgs(this, this._connectTimeoutMs)
-    this._logLine(`opening control master to ${target(this.user, this.host)}:${this.port}`)
-    let result
+    const args = buildMasterArgs(this, this._connectTimeoutMs);
+    this._logLine(
+      `opening control master to ${target(this.user, this.host)}:${this.port}`,
+    );
+    let result;
 
     try {
-      result = await runSsh(args, { timeoutMs: this._connectTimeoutMs, spawnFn: this._spawnFn, signal })
+      result = await runSsh(args, {
+        timeoutMs: this._connectTimeoutMs,
+        spawnFn: this._spawnFn,
+        signal,
+      });
     } catch (error) {
-      throw this._fail(error, SSH_ERROR.UNREACHABLE)
+      throw this._fail(error, SSH_ERROR.UNREACHABLE);
     }
 
     if (result.code !== 0) {
-      throw this._fail(result.stderr, SSH_ERROR.UNREACHABLE)
+      throw this._fail(result.stderr, SSH_ERROR.UNREACHABLE);
     }
 
-    this._opened = true
-    this._logLine('control master established')
+    this._opened = true;
+    this._logLine("control master established");
   }
 
   // Liveness. Mux: `-O check` against the master socket. No-mux: a cheap
   // one-shot exec — "alive" means "we can still authenticate and run".
   async isAlive({ signal }: any = {}) {
-    if ([...this._tunnels.values()].some(tunnel => tunnel.alive === false)) {
-      return false
+    if ([...this._tunnels.values()].some((tunnel) => tunnel.alive === false)) {
+      return false;
     }
 
     const args = this._mux
-      ? buildControlArgs(this, 'check', [], this._connectTimeoutMs)
-      : buildExecArgs(this, 'exit 0', this._connectTimeoutMs)
+      ? buildControlArgs(this, "check", [], this._connectTimeoutMs)
+      : buildExecArgs(this, "exit 0", this._connectTimeoutMs);
 
     try {
-      const result: any = await runSsh(args, { timeoutMs: this._connectTimeoutMs, spawnFn: this._spawnFn, signal })
+      const result: any = await runSsh(args, {
+        timeoutMs: this._connectTimeoutMs,
+        spawnFn: this._spawnFn,
+        signal,
+      });
 
-      return result.code === 0
+      return result.code === 0;
     } catch (error: any) {
-      if (error?.kind === 'superseded') {
-        throw error
+      if (error?.kind === "superseded") {
+        throw error;
       }
 
-      return false
+      return false;
     }
   }
 
@@ -745,19 +805,22 @@ class SshConnection {
   // cmd.exe); a wedged mux hangs to the timeout.
   async _verifyMuxChannel({ signal }: any = {}) {
     try {
-      const result: any = await runSsh(buildExecArgs(this, 'exit 0', this._connectTimeoutMs), {
-        timeoutMs: this._connectTimeoutMs,
-        spawnFn: this._spawnFn,
-        signal
-      })
+      const result: any = await runSsh(
+        buildExecArgs(this, "exit 0", this._connectTimeoutMs),
+        {
+          timeoutMs: this._connectTimeoutMs,
+          spawnFn: this._spawnFn,
+          signal,
+        },
+      );
 
-      return result.code === 0
+      return result.code === 0;
     } catch (error: any) {
-      if (error?.kind === 'superseded') {
-        throw error
+      if (error?.kind === "superseded") {
+        throw error;
       }
 
-      return false
+      return false;
     }
   }
 
@@ -767,19 +830,21 @@ class SshConnection {
   // inert.)
   async _evictStaleMaster() {
     try {
-      await runSsh(buildControlArgs(this, 'exit', [], this._connectTimeoutMs), {
+      await runSsh(buildControlArgs(this, "exit", [], this._connectTimeoutMs), {
         timeoutMs: this._connectTimeoutMs,
-        spawnFn: this._spawnFn
-      })
+        spawnFn: this._spawnFn,
+      });
     } catch {
-      void 0
+      void 0;
     }
 
     try {
-      fs.unlinkSync(this.controlPath)
+      fs.unlinkSync(this.controlPath);
     } catch (error: any) {
-      if (error?.code !== 'ENOENT') {
-        this._logLine(`could not remove stale control socket (${error.code}); a fresh master may not dial`)
+      if (error?.code !== "ENOENT") {
+        this._logLine(
+          `could not remove stale control socket (${error.code}); a fresh master may not dial`,
+        );
       }
     }
   }
@@ -787,24 +852,24 @@ class SshConnection {
   // One-shot remote command over the control connection. Resolves stdout;
   // rejects with a classified error on non-zero exit or timeout.
   async exec(remoteCommand, { timeoutMs, stdinData }: any = {}) {
-    const args = buildExecArgs(this, remoteCommand, this._connectTimeoutMs)
-    let result
+    const args = buildExecArgs(this, remoteCommand, this._connectTimeoutMs);
+    let result;
 
     try {
       result = await runSsh(args, {
         timeoutMs: timeoutMs ?? this._execTimeoutMs,
         spawnFn: this._spawnFn,
-        ...(stdinData != null ? { stdinData } : {})
-      })
+        ...(stdinData != null ? { stdinData } : {}),
+      });
     } catch (error) {
-      throw this._fail(error)
+      throw this._fail(error);
     }
 
     if (result.code !== 0) {
-      throw this._fail(result.stderr)
+      throw this._fail(result.stderr);
     }
 
-    return result.stdout
+    return result.stdout;
   }
 
   // Spawn one persistent `ssh -N -L` child for a no-mux tunnel and wait for it
@@ -815,79 +880,96 @@ class SshConnection {
   // _handleNoMuxTunnelFlap (bounded restart) instead of poisoning isAlive()
   // outright — the old instant-poison path is how a ~10s local tunnel blip
   // cascaded into SIGTERM of a healthy backend (#96266).
-  _startNoMuxTunnelChild(tunnel: any, spec: string, args: string[], localPort: number | string) {
+  _startNoMuxTunnelChild(
+    tunnel: any,
+    spec: string,
+    args: string[],
+    localPort: number | string,
+  ) {
     return new Promise<void>((resolve, reject) => {
-      const child = this._spawnFn('ssh', args, { stdio: ['ignore', 'ignore', 'pipe'] })
-      tunnel.child = child
-      let stderr = ''
-      let readyConfirmed = false
-      let settled = false
-      let downHandled = false
+      const child = this._spawnFn("ssh", args, {
+        stdio: ["ignore", "ignore", "pipe"],
+      });
+      tunnel.child = child;
+      let stderr = "";
+      let readyConfirmed = false;
+      let settled = false;
+      let downHandled = false;
 
       const readyTimeout: any = setTimeout(() => {
-        finishFail(new Error('tunnel did not confirm local forwarding'))
-      }, this._forwardTimeoutMs)
+        finishFail(new Error("tunnel did not confirm local forwarding"));
+      }, this._forwardTimeoutMs);
 
-      readyTimeout.unref?.()
+      readyTimeout.unref?.();
 
       const finishOk = () => {
         if (settled) {
-          return
+          return;
         }
 
-        settled = true
-        clearTimeout(readyTimeout)
-        resolve()
-      }
+        settled = true;
+        clearTimeout(readyTimeout);
+        resolve();
+      };
 
       const finishFail = (error: any) => {
         if (settled) {
-          return
+          return;
         }
 
-        settled = true
-        clearTimeout(readyTimeout)
-        error.tunnelStderr = stderr
-        reject(error)
-      }
+        settled = true;
+        clearTimeout(readyTimeout);
+        error.tunnelStderr = stderr;
+        reject(error);
+      };
 
       const onDown = (cause: string, error: any) => {
         if (!readyConfirmed) {
-          tunnel.alive = tunnel.child === child ? false : tunnel.alive
-          finishFail(error)
+          tunnel.alive = tunnel.child === child ? false : tunnel.alive;
+          finishFail(error);
 
-          return
+          return;
         }
 
         if (downHandled || tunnel.child !== child) {
-          return
+          return;
         }
 
-        downHandled = true
-        this._handleNoMuxTunnelFlap(tunnel, spec, args, localPort, cause)
-      }
+        downHandled = true;
+        this._handleNoMuxTunnelFlap(tunnel, spec, args, localPort, cause);
+      };
 
-      const readyPattern = new RegExp(`Local forwarding listening on .* port ${localPort}\\b`)
-      child.stderr?.on('data', (d: any) => {
+      const readyPattern = new RegExp(
+        `Local forwarding listening on .* port ${localPort}\\b`,
+      );
+      child.stderr?.on("data", (d: any) => {
         if (readyConfirmed) {
-          return
+          return;
         }
 
-        stderr = `${stderr}${String(d)}`.slice(-16_384)
+        stderr = `${stderr}${String(d)}`.slice(-16_384);
 
         if (readyPattern.test(stderr)) {
-          readyConfirmed = true
-          finishOk()
+          readyConfirmed = true;
+          finishOk();
         }
-      })
-      child.on('error', (error: any) => onDown(`tunnel process failed (${error?.message || error})`, error))
-      child.on('exit', (code: any) =>
-        onDown(`tunnel process exited with code ${code}`, new Error(`tunnel process exited with code ${code}`))
-      )
-      child.on('close', (code: any) =>
-        onDown(`tunnel process closed with code ${code}`, new Error(`tunnel process closed with code ${code}`))
-      )
-    })
+      });
+      child.on("error", (error: any) =>
+        onDown(`tunnel process failed (${error?.message || error})`, error),
+      );
+      child.on("exit", (code: any) =>
+        onDown(
+          `tunnel process exited with code ${code}`,
+          new Error(`tunnel process exited with code ${code}`),
+        ),
+      );
+      child.on("close", (code: any) =>
+        onDown(
+          `tunnel process closed with code ${code}`,
+          new Error(`tunnel process closed with code ${code}`),
+        ),
+      );
+    });
   }
 
   // A ready no-mux tunnel child died. Deliberate teardown (cancelForward /
@@ -896,53 +978,67 @@ class SshConnection {
   // unhealthy once the budget is exhausted. The budget is cumulative per
   // forward — a tunnel that keeps dying immediately after confirming readiness
   // must not restart forever.
-  _handleNoMuxTunnelFlap(tunnel: any, spec: string, args: string[], localPort: number | string, cause: string) {
+  _handleNoMuxTunnelFlap(
+    tunnel: any,
+    spec: string,
+    args: string[],
+    localPort: number | string,
+    cause: string,
+  ) {
     if (tunnel.stopping || this._tunnels.get(spec) !== tunnel) {
-      tunnel.alive = false
+      tunnel.alive = false;
 
-      return
+      return;
     }
 
     if (tunnel.restarts >= this._tunnelRestartLimit) {
-      tunnel.alive = false
+      tunnel.alive = false;
       this._logLine(
-        `tunnel 127.0.0.1:${localPort} down (${cause}); restart budget exhausted (${this._tunnelRestartLimit})`
-      )
+        `tunnel 127.0.0.1:${localPort} down (${cause}); restart budget exhausted (${this._tunnelRestartLimit})`,
+      );
 
-      return
+      return;
     }
 
-    tunnel.restarts += 1
+    tunnel.restarts += 1;
     this._logLine(
       `tunnel 127.0.0.1:${localPort} flapped (${cause}); restarting ` +
-        `(${tunnel.restarts}/${this._tunnelRestartLimit}) in ${this._tunnelRestartDelayMs}ms`
-    )
+        `(${tunnel.restarts}/${this._tunnelRestartLimit}) in ${this._tunnelRestartDelayMs}ms`,
+    );
 
     const timer: any = setTimeout(() => {
-      tunnel.restartTimer = null
+      tunnel.restartTimer = null;
 
       if (tunnel.stopping || this._tunnels.get(spec) !== tunnel) {
-        tunnel.alive = false
+        tunnel.alive = false;
 
-        return
+        return;
       }
 
       this._startNoMuxTunnelChild(tunnel, spec, args, localPort).then(
         () => {
-          tunnel.alive = true
-          this._logLine(`tunnel 127.0.0.1:${localPort} restarted`)
+          tunnel.alive = true;
+          this._logLine(`tunnel 127.0.0.1:${localPort} restarted`);
         },
         (error: any) => {
           // A restart that never confirmed readiness may leave its child
           // running; stop it before deciding whether to retry.
-          void Promise.resolve(stopTunnelChild(tunnel.child)).catch(() => undefined)
-          this._handleNoMuxTunnelFlap(tunnel, spec, args, localPort, `restart failed: ${error?.message || error}`)
-        }
-      )
-    }, this._tunnelRestartDelayMs)
+          void Promise.resolve(stopTunnelChild(tunnel.child)).catch(
+            () => undefined,
+          );
+          this._handleNoMuxTunnelFlap(
+            tunnel,
+            spec,
+            args,
+            localPort,
+            `restart failed: ${error?.message || error}`,
+          );
+        },
+      );
+    }, this._tunnelRestartDelayMs);
 
-    timer.unref?.()
-    tunnel.restartTimer = timer
+    timer.unref?.();
+    tunnel.restartTimer = timer;
   }
 
   // Establish a local→remote forward. Mux: `-O forward` against the master.
@@ -950,87 +1046,111 @@ class SshConnection {
   // the local port accepts. A child dying AFTER readiness is a tunnel flap and
   // is restarted with a bounded budget (#96266); only an exhausted budget (or
   // a deliberate cancel/close) marks the connection unhealthy for isAlive().
-  async forward(localPort, remotePort, remoteHost = '127.0.0.1') {
-    const spec = forwardSpec(localPort, remotePort, remoteHost)
-    this._logLine(`forwarding 127.0.0.1:${localPort} -> ${remoteHost}:${remotePort}`)
+  async forward(localPort, remotePort, remoteHost = "127.0.0.1") {
+    const spec = forwardSpec(localPort, remotePort, remoteHost);
+    this._logLine(
+      `forwarding 127.0.0.1:${localPort} -> ${remoteHost}:${remotePort}`,
+    );
 
     if (!this._mux) {
       const args = [
-        ...baseSshOptions('', this._connectTimeoutMs),
+        ...baseSshOptions("", this._connectTimeoutMs),
         ...hostArgs(this),
-        '-v',
-        '-N',
-        '-L',
+        "-v",
+        "-N",
+        "-L",
         spec,
-        '--',
-        target(this.user, this.host)
-      ]
+        "--",
+        target(this.user, this.host),
+      ];
 
-      const tunnel: any = { alive: true, child: null, restarts: 0, restartTimer: null, stopping: false }
-      this._tunnels.set(spec, tunnel)
+      const tunnel: any = {
+        alive: true,
+        child: null,
+        restarts: 0,
+        restartTimer: null,
+        stopping: false,
+      };
+      this._tunnels.set(spec, tunnel);
 
       try {
-        await this._startNoMuxTunnelChild(tunnel, spec, args, localPort)
+        await this._startNoMuxTunnelChild(tunnel, spec, args, localPort);
       } catch (error: any) {
         try {
-          await stopTunnelChild(tunnel.child)
-          this._tunnels.delete(spec)
+          await stopTunnelChild(tunnel.child);
+          this._tunnels.delete(spec);
         } catch (stopError) {
-          throw this._fail(stopError, SSH_ERROR.UNKNOWN)
+          throw this._fail(stopError, SSH_ERROR.UNKNOWN);
         }
 
-        throw this._fail(error?.tunnelStderr || error, SSH_ERROR.UNKNOWN)
+        throw this._fail(error?.tunnelStderr || error, SSH_ERROR.UNKNOWN);
       }
 
-      return
+      return;
     }
 
-    const args = buildControlArgs(this, 'forward', ['-L', spec], this._connectTimeoutMs)
-    let result
+    const args = buildControlArgs(
+      this,
+      "forward",
+      ["-L", spec],
+      this._connectTimeoutMs,
+    );
+    let result;
 
     try {
-      result = await runSsh(args, { timeoutMs: this._forwardTimeoutMs, spawnFn: this._spawnFn })
+      result = await runSsh(args, {
+        timeoutMs: this._forwardTimeoutMs,
+        spawnFn: this._spawnFn,
+      });
     } catch (error) {
-      throw this._fail(error)
+      throw this._fail(error);
     }
 
     if (result.code !== 0) {
-      throw this._fail(result.stderr)
+      throw this._fail(result.stderr);
     }
   }
 
   // Cancel a previously-established forward. Best-effort: a failure here is
   // logged but not thrown (close tears everything down anyway).
-  async cancelForward(localPort, remotePort, remoteHost = '127.0.0.1') {
-    const spec = forwardSpec(localPort, remotePort, remoteHost)
+  async cancelForward(localPort, remotePort, remoteHost = "127.0.0.1") {
+    const spec = forwardSpec(localPort, remotePort, remoteHost);
 
     if (!this._mux) {
-      const tunnel = this._tunnels.get(spec)
+      const tunnel = this._tunnels.get(spec);
 
       if (tunnel) {
-        tunnel.stopping = true
-        tunnel.alive = false
+        tunnel.stopping = true;
+        tunnel.alive = false;
 
         if (tunnel.restartTimer) {
-          clearTimeout(tunnel.restartTimer)
-          tunnel.restartTimer = null
+          clearTimeout(tunnel.restartTimer);
+          tunnel.restartTimer = null;
         }
 
-        await stopTunnelChild(tunnel.child)
-        this._tunnels.delete(spec)
-        this._logLine(`cancelled forward 127.0.0.1:${localPort}`)
+        await stopTunnelChild(tunnel.child);
+        this._tunnels.delete(spec);
+        this._logLine(`cancelled forward 127.0.0.1:${localPort}`);
       }
 
-      return
+      return;
     }
 
-    const args = buildControlArgs(this, 'cancel', ['-L', spec], this._connectTimeoutMs)
+    const args = buildControlArgs(
+      this,
+      "cancel",
+      ["-L", spec],
+      this._connectTimeoutMs,
+    );
 
     try {
-      await runSsh(args, { timeoutMs: this._forwardTimeoutMs, spawnFn: this._spawnFn })
-      this._logLine(`cancelled forward 127.0.0.1:${localPort}`)
+      await runSsh(args, {
+        timeoutMs: this._forwardTimeoutMs,
+        spawnFn: this._spawnFn,
+      });
+      this._logLine(`cancelled forward 127.0.0.1:${localPort}`);
     } catch (error: any) {
-      this._logLine(`cancelForward failed (ignored): ${error.message}`)
+      this._logLine(`cancelForward failed (ignored): ${error.message}`);
     }
   }
 
@@ -1038,53 +1158,56 @@ class SshConnection {
   // kill the tunnel children. Best-effort; never throws.
   async close() {
     if (!this._opened) {
-      return
+      return;
     }
 
     if (!this._mux) {
       for (const [spec, tunnel] of this._tunnels) {
-        tunnel.stopping = true
-        tunnel.alive = false
+        tunnel.stopping = true;
+        tunnel.alive = false;
 
         if (tunnel.restartTimer) {
-          clearTimeout(tunnel.restartTimer)
-          tunnel.restartTimer = null
+          clearTimeout(tunnel.restartTimer);
+          tunnel.restartTimer = null;
         }
 
-        await stopTunnelChild(tunnel.child)
-        this._tunnels.delete(spec)
+        await stopTunnelChild(tunnel.child);
+        this._tunnels.delete(spec);
       }
 
-      this._opened = false
-      this._logLine('connection closed (no-mux tunnels killed)')
+      this._opened = false;
+      this._logLine("connection closed (no-mux tunnels killed)");
 
-      return
+      return;
     }
 
-    const args = buildControlArgs(this, 'exit', [], this._connectTimeoutMs)
+    const args = buildControlArgs(this, "exit", [], this._connectTimeoutMs);
 
     try {
-      const result: any = await runSsh(args, { timeoutMs: this._connectTimeoutMs, spawnFn: this._spawnFn })
+      const result: any = await runSsh(args, {
+        timeoutMs: this._connectTimeoutMs,
+        spawnFn: this._spawnFn,
+      });
 
       if (result.code !== 0) {
-        throw this._fail(result.stderr)
+        throw this._fail(result.stderr);
       }
 
-      this._logLine('control master closed')
+      this._logLine("control master closed");
     } catch (error: any) {
       // A master that refuses -O exit is the wedge that poisons re-attach;
       // disown it. (Without its socket the orphan is inert; ControlPersist may
       // not reap it if a wedged channel never idles.)
-      this._logLine(`close failed; removing control socket: ${error.message}`)
+      this._logLine(`close failed; removing control socket: ${error.message}`);
 
       try {
-        fs.unlinkSync(this.controlPath)
+        fs.unlinkSync(this.controlPath);
       } catch {
-        void 0
+        void 0;
       }
     }
 
-    this._opened = false
+    this._opened = false;
   }
 }
 
@@ -1094,18 +1217,18 @@ class SshConnection {
 
 function pickLocalPort() {
   return new Promise((resolve, reject) => {
-    const server = net.createServer()
-    server.unref()
-    server.on('error', reject)
-    server.listen(0, '127.0.0.1', () => {
-      const { port } = server.address() as net.AddressInfo
-      server.close(() => resolve(port))
-    })
-  })
+    const server = net.createServer();
+    server.unref();
+    server.on("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const { port } = server.address() as net.AddressInfo;
+      server.close(() => resolve(port));
+    });
+  });
 }
 
 function createSshProbeConnection(config, options: any = {}) {
-  return new SshConnection(config, { ...options, mux: false })
+  return new SshConnection(config, { ...options, mux: false });
 }
 
 // Bootstrap loops poll a remote for readiness; a newer attempt aborts the
@@ -1113,9 +1236,9 @@ function createSshProbeConnection(config, options: any = {}) {
 // caller this was replaced, not that it failed.
 function assertBootstrapNotSuperseded(signal) {
   if (signal?.aborted) {
-    const error: any = new Error('SSH bootstrap was cancelled.')
-    error.kind = 'superseded'
-    throw error
+    const error: any = new Error("SSH bootstrap was cancelled.");
+    error.kind = "superseded";
+    throw error;
   }
 }
 
@@ -1144,5 +1267,5 @@ export {
   stopTunnelChild,
   target,
   validateKeyPath,
-  validateSshTarget
-}
+  validateSshTarget,
+};

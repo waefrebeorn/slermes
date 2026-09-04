@@ -1,25 +1,25 @@
-import { useStore } from '@nanostores/react'
-import { useEffect, useRef, useState } from 'react'
+import { useStore } from "@nanostores/react";
+import { useEffect, useRef, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { useI18n } from '@/i18n'
-import { notify, notifyError } from '@/store/notifications'
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useI18n } from "@/i18n";
+import { notify, notifyError } from "@/store/notifications";
 import {
   $remoteOverrideDialogProfile,
   closeRemoteOverrideDialog,
   refreshProfileRemoteOverrides,
-  remoteHostLabel
-} from '@/store/profile-remote-override'
+  remoteHostLabel,
+} from "@/store/profile-remote-override";
 
 // "Connect this profile to a remote host…" — the profile-rail affordance for
 // the per-profile override the Electron main already honors
@@ -37,194 +37,234 @@ import {
 //  - a keyring-less machine requires the explicit unencrypted-token opt-in.
 
 interface LoadedScope {
-  authMode: 'oauth' | 'token'
-  hasOverride: boolean
-  secureTokenStorage: boolean
-  tokenPlainText: boolean
-  tokenSet: boolean
-  url: string
+  authMode: "oauth" | "token";
+  hasOverride: boolean;
+  secureTokenStorage: boolean;
+  tokenPlainText: boolean;
+  tokenSet: boolean;
+  url: string;
 }
 
-export function ProfileRemoteOverrideDialog({ profileNames }: { profileNames: string[] }) {
-  const { t } = useI18n()
-  const p = t.profiles.remoteOverride
-  const profile = useStore($remoteOverrideDialogProfile)
-  const open = profile !== null
+export function ProfileRemoteOverrideDialog({
+  profileNames,
+}: {
+  profileNames: string[];
+}) {
+  const { t } = useI18n();
+  const p = t.profiles.remoteOverride;
+  const profile = useStore($remoteOverrideDialogProfile);
+  const open = profile !== null;
 
-  const [loaded, setLoaded] = useState<LoadedScope | null>(null)
-  const [url, setUrl] = useState('')
-  const [token, setToken] = useState('')
-  const [allowPlainText, setAllowPlainText] = useState(false)
-  const [confirming, setConfirming] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<null | string>(null)
-  const [collision, setCollision] = useState<null | string>(null)
-  const urlRef = useRef<HTMLInputElement>(null)
+  const [loaded, setLoaded] = useState<LoadedScope | null>(null);
+  const [url, setUrl] = useState("");
+  const [token, setToken] = useState("");
+  const [allowPlainText, setAllowPlainText] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<null | string>(null);
+  const [collision, setCollision] = useState<null | string>(null);
+  const urlRef = useRef<HTMLInputElement>(null);
 
   // Load this profile's saved scope + the registry (for the name-collision
   // warning) each time the dialog opens. The registry read goes straight to
   // the bridge instead of the connections store so this dialog stays a leaf.
   useEffect(() => {
     if (!profile) {
-      return
+      return;
     }
 
-    let cancelled = false
-    setLoaded(null)
-    setUrl('')
-    setToken('')
-    setAllowPlainText(false)
-    setConfirming(false)
-    setSaving(false)
-    setError(null)
-    setCollision(null)
+    let cancelled = false;
+    setLoaded(null);
+    setUrl("");
+    setToken("");
+    setAllowPlainText(false);
+    setConfirming(false);
+    setSaving(false);
+    setError(null);
+    setCollision(null);
 
     window.hermesDesktop
       ?.getConnectionConfig?.(profile)
-      .then(config => {
+      .then((config) => {
         if (cancelled) {
-          return
+          return;
         }
 
-        const hasOverride = (config.mode === 'remote' || config.mode === 'cloud') && Boolean(config.remoteUrl)
+        const hasOverride =
+          (config.mode === "remote" || config.mode === "cloud") &&
+          Boolean(config.remoteUrl);
         setLoaded({
-          authMode: config.remoteAuthMode === 'oauth' ? 'oauth' : 'token',
+          authMode: config.remoteAuthMode === "oauth" ? "oauth" : "token",
           hasOverride,
           secureTokenStorage: config.secureTokenStorage !== false,
           tokenPlainText: config.remoteTokenPlainText === true,
           tokenSet: config.remoteTokenSet === true,
-          url: hasOverride ? config.remoteUrl : ''
-        })
-        setUrl(hasOverride ? config.remoteUrl : '')
-        window.setTimeout(() => urlRef.current?.focus(), 0)
+          url: hasOverride ? config.remoteUrl : "",
+        });
+        setUrl(hasOverride ? config.remoteUrl : "");
+        window.setTimeout(() => urlRef.current?.focus(), 0);
       })
-      .catch(err => !cancelled && setError(err instanceof Error ? err.message : String(err)))
+      .catch(
+        (err) =>
+          !cancelled &&
+          setError(err instanceof Error ? err.message : String(err)),
+      );
 
     window.hermesDesktop?.connections
       ?.list()
-      .then(registry => {
+      .then((registry) => {
         if (cancelled) {
-          return
+          return;
         }
 
-        const lowered = profile.trim().toLowerCase()
+        const lowered = profile.trim().toLowerCase();
 
         const match = registry.connections.find(
-          connection => connection.id.toLowerCase() === lowered || connection.label.trim().toLowerCase() === lowered
-        )
+          (connection) =>
+            connection.id.toLowerCase() === lowered ||
+            connection.label.trim().toLowerCase() === lowered,
+        );
 
-        setCollision(match ? match.label : null)
+        setCollision(match ? match.label : null);
       })
-      .catch(() => undefined)
+      .catch(() => undefined);
 
-    return () => void (cancelled = true)
-  }, [profile])
+    return () => void (cancelled = true);
+  }, [profile]);
 
   const close = () => {
     if (!saving) {
-      closeRemoteOverrideDialog()
+      closeRemoteOverrideDialog();
     }
-  }
+  };
 
-  const trimmedUrl = url.trim()
-  const urlValid = /^https?:\/\/\S+$/i.test(trimmedUrl)
-  const tokenReady = Boolean(token.trim()) || (loaded?.tokenSet === true && trimmedUrl === loaded.url)
-  const canSubmit = Boolean(loaded) && urlValid && tokenReady && !saving
+  const trimmedUrl = url.trim();
+  const urlValid = /^https?:\/\/\S+$/i.test(trimmedUrl);
+  const tokenReady =
+    Boolean(token.trim()) ||
+    (loaded?.tokenSet === true && trimmedUrl === loaded.url);
+  const canSubmit = Boolean(loaded) && urlValid && tokenReady && !saving;
   // Writing a NEW token on a machine without an OS keychain stores it as
   // plain text on disk — that needs the explicit opt-in checked first.
-  const needsPlainTextOptIn = Boolean(loaded && loaded.secureTokenStorage === false && token.trim() && !allowPlainText)
+  const needsPlainTextOptIn = Boolean(
+    loaded &&
+    loaded.secureTokenStorage === false &&
+    token.trim() &&
+    !allowPlainText,
+  );
 
   const performSave = async () => {
     if (!profile) {
-      return
+      return;
     }
 
-    setSaving(true)
-    setError(null)
+    setSaving(true);
+    setError(null);
 
     try {
       await window.hermesDesktop.applyConnectionConfig({
-        mode: 'remote',
+        mode: "remote",
         profile,
-        remoteAuthMode: 'token',
+        remoteAuthMode: "token",
         remoteToken: token.trim() || undefined,
         remoteUrl: trimmedUrl,
-        ...(allowPlainText ? { allowPlainTextToken: true } : {})
-      })
+        ...(allowPlainText ? { allowPlainTextToken: true } : {}),
+      });
 
       notify({
-        kind: 'success',
+        kind: "success",
         title: p.savedTitle,
-        message: p.savedMessage(profile, remoteHostLabel(trimmedUrl) || trimmedUrl)
-      })
-      await refreshProfileRemoteOverrides(profileNames)
-      closeRemoteOverrideDialog()
+        message: p.savedMessage(
+          profile,
+          remoteHostLabel(trimmedUrl) || trimmedUrl,
+        ),
+      });
+      await refreshProfileRemoteOverrides(profileNames);
+      closeRemoteOverrideDialog();
     } catch (err) {
-      setConfirming(false)
-      setError(err instanceof Error ? err.message : String(err))
+      setConfirming(false);
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const submit = () => {
     if (!canSubmit || needsPlainTextOptIn) {
-      return
+      return;
     }
 
     // First-time connect gets the one-time risk confirmation; editing an
     // existing override (token rotation, URL fix) skips straight to the save.
     if (!loaded?.hasOverride && !confirming) {
-      setConfirming(true)
+      setConfirming(true);
 
-      return
+      return;
     }
 
-    void performSave()
-  }
+    void performSave();
+  };
 
   const removeOverride = async () => {
     if (!profile) {
-      return
+      return;
     }
 
-    setSaving(true)
-    setError(null)
+    setSaving(true);
+    setError(null);
 
     try {
-      await window.hermesDesktop.applyConnectionConfig({ mode: 'local', profile })
-      notify({ kind: 'success', title: p.removedTitle, message: p.removedMessage(profile) })
-      await refreshProfileRemoteOverrides(profileNames)
-      closeRemoteOverrideDialog()
+      await window.hermesDesktop.applyConnectionConfig({
+        mode: "local",
+        profile,
+      });
+      notify({
+        kind: "success",
+        title: p.removedTitle,
+        message: p.removedMessage(profile),
+      });
+      await refreshProfileRemoteOverrides(profileNames);
+      closeRemoteOverrideDialog();
     } catch (err) {
-      notifyError(err, p.removeFailed)
-      setSaving(false)
+      notifyError(err, p.removeFailed);
+      setSaving(false);
     }
-  }
+  };
 
-  const host = remoteHostLabel(trimmedUrl) || trimmedUrl
+  const host = remoteHostLabel(trimmedUrl) || trimmedUrl;
 
   // Mounted permanently in the rail; render nothing until a profile's dialog
   // is actually requested (also keeps the closed tree from touching i18n).
   if (!open) {
-    return null
+    return null;
   }
 
   return (
-    <Dialog onOpenChange={next => !next && close()} open={open}>
+    <Dialog onOpenChange={(next) => !next && close()} open={open}>
       <DialogContent className="max-w-md">
         {confirming ? (
           <>
             <DialogHeader>
               <DialogTitle>{p.confirmTitle}</DialogTitle>
-              <DialogDescription>{p.confirmNote(profile ?? '', host)}</DialogDescription>
+              <DialogDescription>
+                {p.confirmNote(profile ?? "", host)}
+              </DialogDescription>
             </DialogHeader>
             {error && <p className="text-xs text-destructive">{error}</p>}
             <DialogFooter>
-              <Button disabled={saving} onClick={() => setConfirming(false)} type="button" variant="ghost">
+              <Button
+                disabled={saving}
+                onClick={() => setConfirming(false)}
+                type="button"
+                variant="ghost"
+              >
                 {p.confirmBack}
               </Button>
-              <Button disabled={saving} onClick={() => void performSave()} type="button">
+              <Button
+                disabled={saving}
+                onClick={() => void performSave()}
+                type="button"
+              >
                 {saving ? p.connecting : p.connect}
               </Button>
             </DialogFooter>
@@ -232,7 +272,7 @@ export function ProfileRemoteOverrideDialog({ profileNames }: { profileNames: st
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>{p.title(profile ?? '')}</DialogTitle>
+              <DialogTitle>{p.title(profile ?? "")}</DialogTitle>
               <DialogDescription>{p.description}</DialogDescription>
             </DialogHeader>
 
@@ -241,44 +281,58 @@ export function ProfileRemoteOverrideDialog({ profileNames }: { profileNames: st
                 <span className="text-(--ui-text-secondary)">{p.urlLabel}</span>
                 <Input
                   autoCorrect="off"
-                  onChange={event => setUrl(event.target.value)}
-                  onKeyDown={event => event.key === 'Enter' && submit()}
+                  onChange={(event) => setUrl(event.target.value)}
+                  onKeyDown={(event) => event.key === "Enter" && submit()}
                   placeholder={p.urlPlaceholder}
                   ref={urlRef}
                   spellCheck={false}
                   type="url"
                   value={url}
                 />
-                {trimmedUrl && !urlValid && <span className="text-destructive">{p.urlInvalid}</span>}
+                {trimmedUrl && !urlValid && (
+                  <span className="text-destructive">{p.urlInvalid}</span>
+                )}
               </label>
 
               <label className="flex flex-col gap-1 text-xs">
-                <span className="text-(--ui-text-secondary)">{p.tokenLabel}</span>
+                <span className="text-(--ui-text-secondary)">
+                  {p.tokenLabel}
+                </span>
                 <Input
                   autoComplete="off"
-                  onChange={event => setToken(event.target.value)}
-                  onKeyDown={event => event.key === 'Enter' && submit()}
+                  onChange={(event) => setToken(event.target.value)}
+                  onKeyDown={(event) => event.key === "Enter" && submit()}
                   placeholder={p.tokenPlaceholder}
                   type="password"
                   value={token}
                 />
                 {loaded?.tokenSet && !token.trim() && (
-                  <span className="text-(--ui-text-tertiary)">{p.tokenSavedHint}</span>
+                  <span className="text-(--ui-text-tertiary)">
+                    {p.tokenSavedHint}
+                  </span>
                 )}
               </label>
 
-              {loaded && loaded.secureTokenStorage === false && Boolean(token.trim()) && (
-                <label className="flex items-start gap-2 text-xs text-(--ui-text-secondary)">
-                  <Checkbox
-                    checked={allowPlainText}
-                    className="mt-0.5"
-                    onCheckedChange={checked => setAllowPlainText(checked === true)}
-                  />
-                  <span>{p.plainTextOptIn}</span>
-                </label>
-              )}
+              {loaded &&
+                loaded.secureTokenStorage === false &&
+                Boolean(token.trim()) && (
+                  <label className="flex items-start gap-2 text-xs text-(--ui-text-secondary)">
+                    <Checkbox
+                      checked={allowPlainText}
+                      className="mt-0.5"
+                      onCheckedChange={(checked) =>
+                        setAllowPlainText(checked === true)
+                      }
+                    />
+                    <span>{p.plainTextOptIn}</span>
+                  </label>
+                )}
 
-              {collision && <p className="text-xs text-(--ui-text-secondary)">{p.collisionWarning(collision)}</p>}
+              {collision && (
+                <p className="text-xs text-(--ui-text-secondary)">
+                  {p.collisionWarning(collision)}
+                </p>
+              )}
               {error && <p className="text-xs text-destructive">{error}</p>}
             </div>
 
@@ -294,10 +348,19 @@ export function ProfileRemoteOverrideDialog({ profileNames }: { profileNames: st
                   {p.disconnect}
                 </Button>
               )}
-              <Button disabled={saving} onClick={close} type="button" variant="ghost">
+              <Button
+                disabled={saving}
+                onClick={close}
+                type="button"
+                variant="ghost"
+              >
                 {t.common.cancel}
               </Button>
-              <Button disabled={!canSubmit || needsPlainTextOptIn} onClick={submit} type="button">
+              <Button
+                disabled={!canSubmit || needsPlainTextOptIn}
+                onClick={submit}
+                type="button"
+              >
                 {saving ? p.connecting : p.connect}
               </Button>
             </DialogFooter>
@@ -305,5 +368,5 @@ export function ProfileRemoteOverrideDialog({ profileNames }: { profileNames: st
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

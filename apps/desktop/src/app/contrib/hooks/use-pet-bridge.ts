@@ -1,18 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react";
 
-import { setPetActivity } from '@/store/pet'
-import { setPetScale } from '@/store/pet-gallery'
-import { setPetOverlayOpenAppHandler, setPetOverlayScaleHandler, setPetOverlaySubmitHandler } from '@/store/pet-overlay'
-import { $sessions } from '@/store/session'
-import { $attentionSessionIds } from '@/store/session-states'
-import { isAuxiliaryWindow } from '@/store/windows'
+import { setPetActivity } from "@/store/pet";
+import { setPetScale } from "@/store/pet-gallery";
+import {
+  setPetOverlayOpenAppHandler,
+  setPetOverlayScaleHandler,
+  setPetOverlaySubmitHandler,
+} from "@/store/pet-overlay";
+import { $sessions } from "@/store/session";
+import { $attentionSessionIds } from "@/store/session-states";
+import { isAuxiliaryWindow } from "@/store/windows";
 
-import type { GatewayRequester } from '../types'
+import type { GatewayRequester } from "../types";
 
 interface PetBridgeParams {
-  requestGateway: GatewayRequester
-  resumeSession: (sessionId: string) => Promise<unknown> | unknown
-  submitText: (text: string) => Promise<unknown> | unknown
+  requestGateway: GatewayRequester;
+  resumeSession: (sessionId: string) => Promise<unknown> | unknown;
+  submitText: (text: string) => Promise<unknown> | unknown;
 }
 
 /**
@@ -22,47 +26,54 @@ interface PetBridgeParams {
  * latest callbacks — re-registering on identity churn leaves a nulled-handler
  * window that can drop a submit. Primary window only.
  */
-export function usePetBridge({ requestGateway, resumeSession, submitText }: PetBridgeParams): void {
-  const submitTextRef = useRef(submitText)
-  submitTextRef.current = submitText
-  const resumeSessionRef = useRef(resumeSession)
-  resumeSessionRef.current = resumeSession
-  const requestGatewayRef = useRef(requestGateway)
-  requestGatewayRef.current = requestGateway
+export function usePetBridge({
+  requestGateway,
+  resumeSession,
+  submitText,
+}: PetBridgeParams): void {
+  const submitTextRef = useRef(submitText);
+  submitTextRef.current = submitText;
+  const resumeSessionRef = useRef(resumeSession);
+  resumeSessionRef.current = resumeSession;
+  const requestGatewayRef = useRef(requestGateway);
+  requestGatewayRef.current = requestGateway;
 
   useEffect(() => {
     if (isAuxiliaryWindow()) {
-      return
+      return;
     }
 
-    setPetOverlaySubmitHandler(text => void submitTextRef.current(text))
+    setPetOverlaySubmitHandler((text) => void submitTextRef.current(text));
     // Alt+wheel resize from the popped-out pet — persist through this window's
     // gateway (the overlay has none) so it survives restart.
-    setPetOverlayScaleHandler(scale => setPetScale(requestGatewayRef.current, scale))
+    setPetOverlayScaleHandler((scale) =>
+      setPetScale(requestGatewayRef.current, scale),
+    );
     // Mail icon: $sessions is most-recent-first; the pet is global, so "most
     // recent" is the right target.
     setPetOverlayOpenAppHandler(() => {
-      const recent = $sessions.get()[0]
+      const recent = $sessions.get()[0];
 
       if (recent?.id) {
-        void resumeSessionRef.current(recent.id)
+        void resumeSessionRef.current(recent.id);
       }
-    })
+    });
 
     return () => {
-      setPetOverlaySubmitHandler(null)
-      setPetOverlayOpenAppHandler(null)
-      setPetOverlayScaleHandler(null)
-    }
-  }, [])
+      setPetOverlaySubmitHandler(null);
+      setPetOverlayOpenAppHandler(null);
+      setPetOverlayScaleHandler(null);
+    };
+  }, []);
 
   // Mirror "a session is blocked on the user" (clarify/approval) into the pet's
   // awaitingInput flag so it shows the `waiting` pose.
   useEffect(() => {
-    const sync = () => setPetActivity({ awaitingInput: $attentionSessionIds.get().length > 0 })
+    const sync = () =>
+      setPetActivity({ awaitingInput: $attentionSessionIds.get().length > 0 });
 
-    sync()
+    sync();
 
-    return $attentionSessionIds.listen(sync)
-  }, [])
+    return $attentionSessionIds.listen(sync);
+  }, []);
 }

@@ -1,4 +1,4 @@
-import { isSilentTool } from '@/lib/tool-render-class'
+import { isSilentTool } from "@/lib/tool-render-class";
 
 /**
  * Seconds of silence before an unnamed wait earns a row of its own.
@@ -8,13 +8,13 @@ import { isSilentTool } from '@/lib/tool-render-class'
  * would strobe down a long run — short enough that a real gap is timed almost
  * as soon as it starts.
  */
-export const TURN_QUIET_S = 2
+export const TURN_QUIET_S = 2;
 
 export interface ActivityPart {
-  result?: unknown
-  text?: unknown
-  toolName?: string
-  type: string
+  result?: unknown;
+  text?: unknown;
+  toolName?: string;
+  type: string;
 }
 
 /**
@@ -28,20 +28,20 @@ export interface ActivityPart {
  * and dates the gap after it from whenever the call started.
  */
 export function activitySignature(content: readonly ActivityPart[]): string {
-  let textLength = 0
-  let settledTools = 0
+  let textLength = 0;
+  let settledTools = 0;
 
   for (const part of content) {
-    if (typeof part.text === 'string') {
-      textLength += part.text.length
+    if (typeof part.text === "string") {
+      textLength += part.text.length;
     }
 
-    if (part.type === 'tool-call' && part.result !== undefined) {
-      settledTools += 1
+    if (part.type === "tool-call" && part.result !== undefined) {
+      settledTools += 1;
     }
   }
 
-  return `${content.length}:${textLength}:${settledTools}`
+  return `${content.length}:${textLength}:${settledTools}`;
 }
 
 /**
@@ -55,6 +55,9 @@ export function activitySignature(content: readonly ActivityPart[]): string {
  */
 export function toolNarratesWait(content: readonly ActivityPart[]): boolean {
   return content.some(
-    part => part.type === 'tool-call' && part.result === undefined && !isSilentTool(part.toolName ?? '')
-  )
+    (part) =>
+      part.type === "tool-call" &&
+      part.result === undefined &&
+      !isSilentTool(part.toolName ?? ""),
+  );
 }

@@ -24,8 +24,8 @@
  * thread" bug — see surface-vars.test.ts.
  */
 
-export const COMPOSER_HEIGHT_VAR = '--composer-measured-height'
-export const COMPOSER_SURFACE_HEIGHT_VAR = '--composer-surface-measured-height'
+export const COMPOSER_HEIGHT_VAR = "--composer-measured-height";
+export const COMPOSER_SURFACE_HEIGHT_VAR = "--composer-surface-measured-height";
 
 /**
  * The surface owning `el`, or null when `el` is detached or outside one.
@@ -37,15 +37,19 @@ export const COMPOSER_SURFACE_HEIGHT_VAR = '--composer-surface-measured-height'
  * definition.
  */
 export function chatSurfaceRoot(el: Element | null): HTMLElement | null {
-  return el?.closest<HTMLElement>('[data-chat-surface]') ?? null
+  return el?.closest<HTMLElement>("[data-chat-surface]") ?? null;
 }
 
 /** Publish a measured-height var on the surface owning `el`. No owner, no write. */
-export function setSurfaceVar(el: Element | null, name: string, value: string): void {
-  chatSurfaceRoot(el)?.style.setProperty(name, value)
+export function setSurfaceVar(
+  el: Element | null,
+  name: string,
+  value: string,
+): void {
+  chatSurfaceRoot(el)?.style.setProperty(name, value);
 }
 
 /** Clear a measured-height var from `root`. */
 export function clearSurfaceVar(root: HTMLElement | null, name: string): void {
-  root?.style.removeProperty(name)
+  root?.style.removeProperty(name);
 }

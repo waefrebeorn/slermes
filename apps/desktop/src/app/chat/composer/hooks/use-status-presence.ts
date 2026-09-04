@@ -1,27 +1,31 @@
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from "react";
 
-import { $composerActionsBySession } from '@/store/composer-actions'
-import { $statusItemsBySession } from '@/store/composer-status'
-import { $previewStatusBySession } from '@/store/preview-status'
+import { $composerActionsBySession } from "@/store/composer-actions";
+import { $statusItemsBySession } from "@/store/composer-status";
+import { $previewStatusBySession } from "@/store/preview-status";
 
 /** Structural view of the three per-session feeds — they hold different item
  *  types, and all this hook needs from each is "does this key have rows". */
 interface PresenceFeed {
-  get(): Record<string, undefined | unknown[]>
-  listen(listener: () => void): () => void
+  get(): Record<string, undefined | unknown[]>;
+  listen(listener: () => void): () => void;
 }
 
-const FEEDS: PresenceFeed[] = [$statusItemsBySession, $composerActionsBySession, $previewStatusBySession]
+const FEEDS: PresenceFeed[] = [
+  $statusItemsBySession,
+  $composerActionsBySession,
+  $previewStatusBySession,
+];
 
 const subscribe = (onChange: () => void) => {
-  const offs = FEEDS.map(feed => feed.listen(onChange))
+  const offs = FEEDS.map((feed) => feed.listen(onChange));
 
   return () => {
     for (const off of offs) {
-      off()
+      off();
     }
-  }
-}
+  };
+};
 
 /**
  * Whether a session has any status items, micro actions, or previews, as a
@@ -36,9 +40,9 @@ const subscribe = (onChange: () => void) => {
 export function useSessionStatusPresence(sessionId: string | null): boolean {
   return useSyncExternalStore(subscribe, () => {
     if (!sessionId) {
-      return false
+      return false;
     }
 
-    return FEEDS.some(feed => (feed.get()[sessionId]?.length ?? 0) > 0)
-  })
+    return FEEDS.some((feed) => (feed.get()[sessionId]?.length ?? 0) > 0);
+  });
 }

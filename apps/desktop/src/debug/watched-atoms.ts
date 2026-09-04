@@ -6,7 +6,7 @@
 // question directly: while an agent is typing, what is being published, and
 // who re-renders because of it?
 
-import { $projects, $projectTree } from '@/store/projects'
+import { $projects, $projectTree } from "@/store/projects";
 import {
   $activeSessionId,
   $awaitingResponse,
@@ -19,8 +19,8 @@ import {
   $messagingSessions,
   $selectedStoredSessionId,
   $sessions,
-  $sessionsLoading
-} from '@/store/session'
+  $sessionsLoading,
+} from "@/store/session";
 import {
   $attentionSessionIds,
   $focusedRuntimeId,
@@ -29,10 +29,10 @@ import {
   $sessionStates,
   $sessionTiles,
   $stalledSessionIds,
-  $workingSessionIds
-} from '@/store/session-states'
+  $workingSessionIds,
+} from "@/store/session-states";
 
-import { watchAtom } from './atom-churn'
+import { watchAtom } from "./atom-churn";
 
 /** Streaming hot path — written per token / per delta flush. */
 const HOT = {
@@ -41,8 +41,8 @@ const HOT = {
   // The global mirror the workspace pane paints from.
   $messages,
   // Republished on EVERY delta: the per-session source of truth.
-  $sessionStates
-}
+  $sessionStates,
+};
 
 /** Derived from the hot path. These SHOULD stay quiet during a turn — any
  *  notification here is a candidate for the "wasted" column. */
@@ -53,8 +53,8 @@ const DERIVED = {
   $focusedSessionState,
   $focusedStoredSessionId,
   $stalledSessionIds,
-  $workingSessionIds
-}
+  $workingSessionIds,
+};
 
 /** Sidebar inputs. Expected to be cold during a turn — if any of these notify
  *  while an agent is typing, that is the bug. */
@@ -69,13 +69,13 @@ const SIDEBAR = {
   $selectedStoredSessionId,
   $sessions,
   $sessionsLoading,
-  $sessionTiles
-}
+  $sessionTiles,
+};
 
 export function watchSessionAtoms() {
   for (const group of [HOT, DERIVED, SIDEBAR]) {
     for (const [name, store] of Object.entries(group)) {
-      watchAtom(name, store)
+      watchAtom(name, store);
     }
   }
 }

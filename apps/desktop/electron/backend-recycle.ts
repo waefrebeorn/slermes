@@ -8,40 +8,42 @@
  * same order as connection apply (#97046, #91668).
  */
 
-export type RecycleOwnedBackendTarget = 'pool' | 'primary'
+export type RecycleOwnedBackendTarget = "pool" | "primary";
 
 export interface RecycleOwnedBackendDeps {
-  notifyApplied: () => void
-  primaryProfile: string
-  profile?: null | string
-  teardownPool: (profile: string) => Promise<void>
-  teardownPrimary: () => Promise<void>
-  teardownSsh: (profile: string) => Promise<void>
+  notifyApplied: () => void;
+  primaryProfile: string;
+  profile?: null | string;
+  teardownPool: (profile: string) => Promise<void>;
+  teardownPrimary: () => Promise<void>;
+  teardownSsh: (profile: string) => Promise<void>;
 }
 
 export function recycleOwnedBackendTarget(
   profile: null | string | undefined,
-  primaryProfile: string
+  primaryProfile: string,
 ): RecycleOwnedBackendTarget {
-  const key = String(profile ?? '').trim()
+  const key = String(profile ?? "").trim();
 
-  return !key || key === primaryProfile ? 'primary' : 'pool'
+  return !key || key === primaryProfile ? "primary" : "pool";
 }
 
-export async function recycleOwnedBackend(deps: RecycleOwnedBackendDeps): Promise<RecycleOwnedBackendTarget> {
-  const target = recycleOwnedBackendTarget(deps.profile, deps.primaryProfile)
-  const profile = String(deps.profile ?? '').trim()
+export async function recycleOwnedBackend(
+  deps: RecycleOwnedBackendDeps,
+): Promise<RecycleOwnedBackendTarget> {
+  const target = recycleOwnedBackendTarget(deps.profile, deps.primaryProfile);
+  const profile = String(deps.profile ?? "").trim();
 
-  if (target === 'primary') {
-    await deps.teardownSsh('')
-    await deps.teardownPrimary()
-    deps.notifyApplied()
+  if (target === "primary") {
+    await deps.teardownSsh("");
+    await deps.teardownPrimary();
+    deps.notifyApplied();
 
-    return target
+    return target;
   }
 
-  await deps.teardownSsh(profile)
-  await deps.teardownPool(profile)
+  await deps.teardownSsh(profile);
+  await deps.teardownPool(profile);
 
-  return target
+  return target;
 }

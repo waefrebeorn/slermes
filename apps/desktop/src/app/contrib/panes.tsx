@@ -8,24 +8,24 @@
  *    StatusbarItem) — plugins add theirs through the identical call.
  */
 
-import { useStore } from '@nanostores/react'
-import { useQuery } from '@tanstack/react-query'
-import { atom } from 'nanostores'
+import { useStore } from "@nanostores/react";
+import { useQuery } from "@tanstack/react-query";
+import { atom } from "nanostores";
 
-import { RightSidebarPane } from '@/app/right-sidebar'
-import { ReviewPane } from '@/app/right-sidebar/review'
-import type { GroupSetter } from '@/app/shell/group-setter'
-import type { StatusbarItem } from '@/app/shell/statusbar-controls'
-import type { TitlebarTool } from '@/app/shell/titlebar-controls'
-import { DecodeText } from '@/components/ui/decode-text'
-import { ContribBoundary, ContribRender } from '@/contrib/react/boundary'
-import { useContributions } from '@/contrib/react/use-contributions'
-import { registry } from '@/contrib/registry'
-import { getLogs } from '@/hermes'
-import { normalizeOrLocalPreviewTarget } from '@/lib/local-preview'
-import { cn } from '@/lib/utils'
-import { openPreview } from '@/store/preview'
-import { $currentCwd } from '@/store/session'
+import { RightSidebarPane } from "@/app/right-sidebar";
+import { ReviewPane } from "@/app/right-sidebar/review";
+import type { GroupSetter } from "@/app/shell/group-setter";
+import type { StatusbarItem } from "@/app/shell/statusbar-controls";
+import type { TitlebarTool } from "@/app/shell/titlebar-controls";
+import { DecodeText } from "@/components/ui/decode-text";
+import { ContribBoundary, ContribRender } from "@/contrib/react/boundary";
+import { useContributions } from "@/contrib/react/use-contributions";
+import { registry } from "@/contrib/registry";
+import { getLogs } from "@/hermes";
+import { normalizeOrLocalPreviewTarget } from "@/lib/local-preview";
+import { cn } from "@/lib/utils";
+import { openPreview } from "@/store/preview";
+import { $currentCwd } from "@/store/session";
 
 // ---------------------------------------------------------------------------
 // Logs — live agent-log tail. ⌘K-only chrome: the pane contribution exists
@@ -35,30 +35,39 @@ import { $currentCwd } from '@/store/session'
 
 export function LogsPane() {
   const { data, error } = useQuery({
-    queryKey: ['contrib-logs-tail'],
+    queryKey: ["contrib-logs-tail"],
     queryFn: () => getLogs({ lines: 300 }),
-    refetchInterval: 5000
-  })
+    refetchInterval: 5000,
+  });
 
   if (error) {
-    return <div className="p-3 text-xs text-(--ui-text-quaternary)">log unavailable: {String(error)}</div>
+    return (
+      <div className="p-3 text-xs text-(--ui-text-quaternary)">
+        log unavailable: {String(error)}
+      </div>
+    );
   }
 
   if (!data) {
     return (
       <div className="grid h-full place-items-center">
-        <DecodeText className="text-(--ui-text-quaternary)" cursor prefix={1} text="LOGS" />
+        <DecodeText
+          className="text-(--ui-text-quaternary)"
+          cursor
+          prefix={1}
+          text="LOGS"
+        />
       </div>
-    )
+    );
   }
 
   // No chrome of its own — the zone header (when the user summons it) is the
   // pane's only label. Just the tail.
   return (
     <pre className="h-full min-h-0 overflow-auto whitespace-pre-wrap break-words p-2.5 font-mono text-[0.66rem] leading-relaxed text-(--ui-text-secondary)">
-      {data.lines.join('\n')}
+      {data.lines.join("\n")}
     </pre>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -67,30 +76,35 @@ export function LogsPane() {
 
 /** Preview-server restart handler, provided by the wiring (usePreviewRouting).
  *  Atom-bridged: this module can't import contrib-wiring (it imports us). */
-export const $restartPreviewServer = atom<((url: string, context?: string) => Promise<string>) | null>(null)
+export const $restartPreviewServer = atom<
+  ((url: string, context?: string) => Promise<string>) | null
+>(null);
 
 /** Open a file from the tree in the real preview pipeline. */
 function previewFile(path: string) {
   void normalizeOrLocalPreviewTarget(path, $currentCwd.get() || undefined)
-    .then(target => {
+    .then((target) => {
       if (target) {
-        openPreview(target, 'file-browser')
+        openPreview(target, "file-browser");
       }
     })
-    .catch(() => undefined)
+    .catch(() => undefined);
 }
 
 // Layout fit for wrapped asides. Edge chrome (borders/shadows) is neutralized
 // GLOBALLY by the tree's seam invariant (see LayoutTreeRoot) — only sizing
 // and titlebar clearance are per-wrapper concerns.
-const ZONE_CONTENT = 'h-full [&>aside]:h-full [&>aside]:w-full [&>aside]:pt-0'
+const ZONE_CONTENT = "h-full [&>aside]:h-full [&>aside]:w-full [&>aside]:pt-0";
 
 export function FilesPane() {
   return (
     <div className={ZONE_CONTENT}>
-      <RightSidebarPane onActivateFile={previewFile} onActivateFolder={previewFile} />
+      <RightSidebarPane
+        onActivateFile={previewFile}
+        onActivateFolder={previewFile}
+      />
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -98,15 +112,20 @@ export function FilesPane() {
 // ---------------------------------------------------------------------------
 
 export function ReviewPaneContent() {
-  const cwd = useStore($currentCwd)
+  const cwd = useStore($currentCwd);
 
   // Keyed by cwd like DesktopController so switching projects rebuilds the
   // diff state instead of showing the previous repo's files.
   return (
-    <div className={cn(ZONE_CONTENT, 'flex min-h-0 flex-col [&>aside]:min-h-0 [&>aside]:flex-1')}>
-      <ReviewPane key={cwd || 'no-cwd'} />
+    <div
+      className={cn(
+        ZONE_CONTENT,
+        "flex min-h-0 flex-col [&>aside]:min-h-0 [&>aside]:flex-1",
+      )}
+    >
+      <ReviewPane key={cwd || "no-cwd"} />
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -119,11 +138,13 @@ export function ReviewPaneContent() {
 /** Collect statusbar contributions for one side. A `render()` contribution
  *  becomes a render-item (arbitrary stateful node); otherwise the declarative
  *  `data` payload is the StatusbarItem. */
-export function useStatusbarContributions(side: 'left' | 'right'): StatusbarItem[] {
-  const items = useContributions(`statusBar.${side}`)
+export function useStatusbarContributions(
+  side: "left" | "right",
+): StatusbarItem[] {
+  const items = useContributions(`statusBar.${side}`);
 
   return items
-    .map(c =>
+    .map((c) =>
       c.render
         ? ({
             id: c.id,
@@ -131,18 +152,20 @@ export function useStatusbarContributions(side: 'left' | 'right'): StatusbarItem
               <ContribBoundary id={c.id} variant="chip">
                 <ContribRender render={c.render!} />
               </ContribBoundary>
-            )
+            ),
           } satisfies StatusbarItem)
-        : (c.data as StatusbarItem)
+        : (c.data as StatusbarItem),
     )
-    .filter(Boolean)
+    .filter(Boolean);
 }
 
 /** Collect TitlebarTool data contributions for one side of the titlebar. */
-export function useTitlebarToolContributions(side: 'left' | 'right'): TitlebarTool[] {
-  const items = useContributions(`titleBar.tools.${side}`)
+export function useTitlebarToolContributions(
+  side: "left" | "right",
+): TitlebarTool[] {
+  const items = useContributions(`titleBar.tools.${side}`);
 
-  return items.map(c => c.data as TitlebarTool).filter(Boolean)
+  return items.map((c) => c.data as TitlebarTool).filter(Boolean);
 }
 
 /**
@@ -152,28 +175,30 @@ export function useTitlebarToolContributions(side: 'left' | 'right'): TitlebarTo
  * the same pipe plugins use. Setting an empty list clears the group.
  */
 export function registryGroupSetter<T>(prefix: string): GroupSetter<T> {
-  const disposers = new Map<string, () => void>()
+  const disposers = new Map<string, () => void>();
 
-  return (id, items, side = 'right') => {
-    const key = `${side}:${id}`
+  return (id, items, side = "right") => {
+    const key = `${side}:${id}`;
 
-    disposers.get(key)?.()
+    disposers.get(key)?.();
     disposers.set(
       key,
       registry.registerMany(
         items.map((item, i) => ({
           id: `${id}-${i}`,
           area: `${prefix}.${side}`,
-          source: 'core',
+          source: "core",
           order: 100 + i,
-          data: item as object
-        }))
-      )
-    )
-  }
+          data: item as object,
+        })),
+      ),
+    );
+  };
 }
 
 /** The app's page-facing setters — the same `GroupSetter` shape pages already
  *  take as props, backed by the registry instead of component state. */
-export const setStatusbarItemGroup = registryGroupSetter<StatusbarItem>('statusBar')
-export const setTitlebarToolGroup = registryGroupSetter<TitlebarTool>('titleBar.tools')
+export const setStatusbarItemGroup =
+  registryGroupSetter<StatusbarItem>("statusBar");
+export const setTitlebarToolGroup =
+  registryGroupSetter<TitlebarTool>("titleBar.tools");

@@ -12,47 +12,47 @@ import {
   chmodSync as realChmodSync,
   existsSync as realExistsSync,
   readdirSync as realReaddirSync,
-  statSync as realStatSync
-} from 'node:fs'
-import { join } from 'node:path'
+  statSync as realStatSync,
+} from "node:fs";
+import { join } from "node:path";
 
-const EXEC_BITS = 0o111
+const EXEC_BITS = 0o111;
 
 // Electron exposes module paths inside app.asar even when electron-builder has
 // unpacked the native payload beside it. `stat` can read an archived path, but
 // chmod cannot mutate it (ENOTDIR). Native node-pty helpers belong in the
 // writable app.asar.unpacked tree; leave an already-unpacked path unchanged.
 export function writableNodePtyRoot(nodePtyRoot: string): string {
-  return nodePtyRoot.replace(/app\.asar(?!\.unpacked)/, 'app.asar.unpacked')
+  return nodePtyRoot.replace(/app\.asar(?!\.unpacked)/, "app.asar.unpacked");
 }
 
 export interface SpawnHelperFs {
-  existsSync(path: string): boolean
-  readdirSync(path: string): string[]
-  statSync(path: string): { mode: number }
-  chmodSync(path: string, mode: number): void
+  existsSync(path: string): boolean;
+  readdirSync(path: string): string[];
+  statSync(path: string): { mode: number };
+  chmodSync(path: string, mode: number): void;
 }
 
 export interface EnsureSpawnHelperResult {
-  fixed: string[]
-  errors: { path: string; error: string }[]
+  fixed: string[];
+  errors: { path: string; error: string }[];
 }
 
 const defaultFs: SpawnHelperFs = {
   existsSync: realExistsSync,
   readdirSync: (path: string) => realReaddirSync(path),
   statSync: (path: string) => realStatSync(path),
-  chmodSync: realChmodSync
-}
+  chmodSync: realChmodSync,
+};
 
 // True when any of the owner/group/other execute bits are missing.
 export function needsExecBit(mode: number): boolean {
-  return (mode & EXEC_BITS) !== EXEC_BITS
+  return (mode & EXEC_BITS) !== EXEC_BITS;
 }
 
 // Preserve existing permission bits, adding execute for owner/group/other.
 export function withExecBits(mode: number): number {
-  return mode | EXEC_BITS
+  return mode | EXEC_BITS;
 }
 
 // Every place a `spawn-helper` can live under a node-pty package root: one per
@@ -61,24 +61,24 @@ export function withExecBits(mode: number): number {
 // naturally empty there.
 export function spawnHelperCandidates(
   nodePtyRoot: string,
-  fs: Pick<SpawnHelperFs, 'existsSync' | 'readdirSync'> = defaultFs
+  fs: Pick<SpawnHelperFs, "existsSync" | "readdirSync"> = defaultFs,
 ): string[] {
-  const candidates: string[] = []
-  const prebuilds = join(nodePtyRoot, 'prebuilds')
+  const candidates: string[] = [];
+  const prebuilds = join(nodePtyRoot, "prebuilds");
 
   if (fs.existsSync(prebuilds)) {
     for (const entry of fs.readdirSync(prebuilds)) {
-      candidates.push(join(prebuilds, entry, 'spawn-helper'))
+      candidates.push(join(prebuilds, entry, "spawn-helper"));
     }
   }
 
-  candidates.push(join(nodePtyRoot, 'build', 'Release', 'spawn-helper'))
+  candidates.push(join(nodePtyRoot, "build", "Release", "spawn-helper"));
 
-  return candidates
+  return candidates;
 }
 
 function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error)
+  return error instanceof Error ? error.message : String(error);
 }
 
 // Best-effort: ensure every existing spawn-helper under `nodePtyRoot` is
@@ -86,37 +86,37 @@ function errorMessage(error: unknown): string {
 // are collected so the caller can log them without breaking terminal startup.
 export function ensureSpawnHelperExecutable(
   nodePtyRoot: string,
-  fs: SpawnHelperFs = defaultFs
+  fs: SpawnHelperFs = defaultFs,
 ): EnsureSpawnHelperResult {
-  const result: EnsureSpawnHelperResult = { fixed: [], errors: [] }
-  const writableRoot = writableNodePtyRoot(nodePtyRoot)
+  const result: EnsureSpawnHelperResult = { fixed: [], errors: [] };
+  const writableRoot = writableNodePtyRoot(nodePtyRoot);
 
   for (const path of spawnHelperCandidates(writableRoot, fs)) {
     if (!fs.existsSync(path)) {
-      continue
+      continue;
     }
 
-    let mode: number
+    let mode: number;
 
     try {
-      mode = fs.statSync(path).mode
+      mode = fs.statSync(path).mode;
     } catch (error) {
-      result.errors.push({ path, error: errorMessage(error) })
+      result.errors.push({ path, error: errorMessage(error) });
 
-      continue
+      continue;
     }
 
     if (!needsExecBit(mode)) {
-      continue
+      continue;
     }
 
     try {
-      fs.chmodSync(path, withExecBits(mode))
-      result.fixed.push(path)
+      fs.chmodSync(path, withExecBits(mode));
+      result.fixed.push(path);
     } catch (error) {
-      result.errors.push({ path, error: errorMessage(error) })
+      result.errors.push({ path, error: errorMessage(error) });
     }
   }
 
-  return result
+  return result;
 }

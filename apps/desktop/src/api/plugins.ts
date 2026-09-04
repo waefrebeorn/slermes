@@ -1,8 +1,13 @@
-import type { HermesConnection } from '@/global'
-import { reconnectBackoffDelayMs } from '@/lib/reconnect-backoff'
-import { RECONNECT_ATTEMPT_TIMEOUT_MS, withTimeout } from '@/lib/with-timeout'
+import type { HermesConnection } from "@/global";
+import { reconnectBackoffDelayMs } from "@/lib/reconnect-backoff";
+import { RECONNECT_ATTEMPT_TIMEOUT_MS, withTimeout } from "@/lib/with-timeout";
 
-import { getApiRequestConnection, getApiRequestProfile, hermesApi, profileScoped } from './client'
+import {
+  getApiRequestConnection,
+  getApiRequestProfile,
+  hermesApi,
+  profileScoped,
+} from "./client";
 
 /** Resolve the ACTIVE backend's connection descriptor, (connectionId,
  *  profile)-scoped — mirroring how store/profile resolves $connection: a
@@ -19,33 +24,33 @@ import { getApiRequestConnection, getApiRequestProfile, hermesApi, profileScoped
  *
  *  Exported for tests. */
 export async function activeConnection(): Promise<HermesConnection> {
-  const getConnectionFor = window.hermesDesktop.getConnectionFor
-  const connectionId = getApiRequestConnection()
-  const profile = getApiRequestProfile()
+  const getConnectionFor = window.hermesDesktop.getConnectionFor;
+  const connectionId = getApiRequestConnection();
+  const profile = getApiRequestProfile();
 
   if (connectionId && getConnectionFor) {
     return withTimeout(
       getConnectionFor({ connectionId, profile }),
       RECONNECT_ATTEMPT_TIMEOUT_MS,
-      `Timed out connecting to profile "${profile}"`
-    )
+      `Timed out connecting to profile "${profile}"`,
+    );
   }
 
   return withTimeout(
     window.hermesDesktop.getConnection(profile),
     RECONNECT_ATTEMPT_TIMEOUT_MS,
-    `Timed out connecting to profile "${profile}"`
-  )
+    `Timed out connecting to profile "${profile}"`,
+  );
 }
 
 /** Options for a plugin REST call — mirrors the app's own `hermesDesktop.api`
  *  shape, minus the path (which is namespace-derived). */
 export interface PluginRestOptions {
-  method?: string
-  body?: unknown
+  method?: string;
+  body?: unknown;
   /** Single-file multipart upload (see HermesApiRequest.upload). */
-  upload?: { filename: string; contentType?: string; bytes: ArrayBuffer }
-  timeoutMs?: number
+  upload?: { filename: string; contentType?: string; bytes: ArrayBuffer };
+  timeoutMs?: number;
 }
 
 // Normalize `path` to a leading-slash suffix relative to `/api/plugins/<id>`.
@@ -53,13 +58,13 @@ export interface PluginRestOptions {
 // normalize out into another plugin's API or a core route. Check the path
 // portion only (before any query/hash).
 function pluginPathSuffix(caller: string, path: string): string {
-  const suffix = path.startsWith('/') ? path : `/${path}`
+  const suffix = path.startsWith("/") ? path : `/${path}`;
 
-  if (suffix.split(/[?#]/, 1)[0].split('/').includes('..')) {
-    throw new Error(`${caller}: illegal path traversal in "${path}"`)
+  if (suffix.split(/[?#]/, 1)[0].split("/").includes("..")) {
+    throw new Error(`${caller}: illegal path traversal in "${path}"`);
   }
 
-  return suffix
+  return suffix;
 }
 
 /** The plugin REST door. Every call is scoped BY CONSTRUCTION to the plugin's
@@ -68,12 +73,16 @@ function pluginPathSuffix(caller: string, path: string): string {
  *  plugin's API or a core route through it. Profile-aware like every desktop
  *  REST call. Broader reach (core endpoints, another namespace) is the future
  *  declared-capability seam; today the namespace IS the boundary. */
-export async function pluginRest<T>(pluginId: string, path: string, opts: PluginRestOptions = {}): Promise<T> {
+export async function pluginRest<T>(
+  pluginId: string,
+  path: string,
+  opts: PluginRestOptions = {},
+): Promise<T> {
   if (!window.hermesDesktop?.api) {
-    throw new Error('Hermes desktop bridge unavailable')
+    throw new Error("Hermes desktop bridge unavailable");
   }
 
-  const suffix = pluginPathSuffix('pluginRest', path)
+  const suffix = pluginPathSuffix("pluginRest", path);
 
   return hermesApi<T>({
     path: `/api/plugins/${pluginId}${suffix}`,
@@ -81,8 +90,8 @@ export async function pluginRest<T>(pluginId: string, path: string, opts: Plugin
     body: opts.body,
     upload: opts.upload,
     timeoutMs: opts.timeoutMs,
-    ...profileScoped()
-  })
+    ...profileScoped(),
+  });
 }
 
 /** The plugin WebSocket door — the live twin of `pluginRest`, scoped the same
@@ -91,56 +100,63 @@ export async function pluginRest<T>(pluginId: string, path: string, opts: Plugin
  *  credential the app's own sockets use; OAuth remotes resolve null (callers
  *  keep their polling fallback — every consumer must have one anyway, since a
  *  socket can drop). Auto-reconnects with backoff until disposed. */
-export function pluginSocket(pluginId: string, path: string, onMessage: (data: unknown) => void): () => void {
-  const suffix = pluginPathSuffix('pluginSocket', path)
+export function pluginSocket(
+  pluginId: string,
+  path: string,
+  onMessage: (data: unknown) => void,
+): () => void {
+  const suffix = pluginPathSuffix("pluginSocket", path);
 
-  let socket: null | WebSocket = null
-  let disposed = false
-  let attempt = 0
+  let socket: null | WebSocket = null;
+  let disposed = false;
+  let attempt = 0;
 
   const connect = async () => {
-    const connection = await activeConnection().catch(() => null)
+    const connection = await activeConnection().catch(() => null);
 
     // No bridge / OAuth cookie auth (WS tickets are single-use, core-managed):
     // stay on the polling fallback rather than half-working.
-    if (disposed || !connection || connection.authMode === 'oauth') {
-      return
+    if (disposed || !connection || connection.authMode === "oauth") {
+      return;
     }
 
-    const base = connection.baseUrl.replace(/^http/, 'ws')
-    const join = suffix.includes('?') ? '&' : '?'
+    const base = connection.baseUrl.replace(/^http/, "ws");
+    const join = suffix.includes("?") ? "&" : "?";
     socket = new WebSocket(
-      `${base}/api/plugins/${pluginId}${suffix}${join}token=${encodeURIComponent(connection.token)}`
-    )
+      `${base}/api/plugins/${pluginId}${suffix}${join}token=${encodeURIComponent(connection.token)}`,
+    );
 
-    socket.onmessage = event => {
-      attempt = 0
+    socket.onmessage = (event) => {
+      attempt = 0;
 
       try {
-        onMessage(JSON.parse(String(event.data)))
+        onMessage(JSON.parse(String(event.data)));
       } catch {
         // Non-JSON frame — plugin streams are JSON by contract; skip it.
       }
-    }
+    };
 
     socket.onclose = () => {
-      socket = null
+      socket = null;
 
       if (!disposed) {
         // Full-jitter exponential backoff: same rationale as the gateway
         // socket reconnect loops — an immediate-retry loop across many
         // desktop clients floods the gateway with connection attempts
         // during a restart.
-        window.setTimeout(() => void connect(), reconnectBackoffDelayMs(attempt, { baseDelayMs: 500, capMs: 30_000 }))
-        attempt += 1
+        window.setTimeout(
+          () => void connect(),
+          reconnectBackoffDelayMs(attempt, { baseDelayMs: 500, capMs: 30_000 }),
+        );
+        attempt += 1;
       }
-    }
-  }
+    };
+  };
 
-  void connect()
+  void connect();
 
   return () => {
-    disposed = true
-    socket?.close()
-  }
+    disposed = true;
+    socket?.close();
+  };
 }

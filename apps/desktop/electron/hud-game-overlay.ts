@@ -21,27 +21,30 @@
 // Detection still works there; the HUD is simply behind until the user
 // alt-tabs, which Windows answers by flipping the game to composited output.
 
-import type { EnumeratedWindow } from './window-below'
+import type { EnumeratedWindow } from "./window-below";
 
 export interface GameOverlayState {
-  active: boolean
+  active: boolean;
   /** The fullscreen app's name while active, '' otherwise — the renderer may
    *  surface it ("over Balatro") and the diff key needs it either way. */
-  app: string
+  app: string;
 }
 
-export const INACTIVE_GAME_OVERLAY: GameOverlayState = { active: false, app: '' }
+export const INACTIVE_GAME_OVERLAY: GameOverlayState = {
+  active: false,
+  app: "",
+};
 
 interface Bounds {
-  x: number
-  y: number
-  width: number
-  height: number
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 /** Allowance for DPI rounding and the 1px oversize some engines use to dodge
  *  the OS's own "looks fullscreen" heuristics. */
-const COVER_EPSILON_PX = 2
+const COVER_EPSILON_PX = 2;
 
 /**
  * Desktop-shell windows that legitimately report display-sized bounds and must
@@ -59,22 +62,30 @@ const SHELL_APPS = [
   /^window ?server$/i,
   /^windowmanager$/i,
   /^gnome-shell$/i,
-  /^plasmashell$/i
-]
+  /^plasmashell$/i,
+];
 
-export const isShellWindow = (app: string): boolean => SHELL_APPS.some(pattern => pattern.test(app.trim()))
+export const isShellWindow = (app: string): boolean =>
+  SHELL_APPS.some((pattern) => pattern.test(app.trim()));
 
 /** Whether `bounds` covers `display` edge-to-edge (within the DPI epsilon).
  *  Work-area coverage is deliberately not enough: a maximized window stops at
  *  the taskbar/menu bar, a fullscreen one does not — that IS the distinction. */
-export const coversDisplay = (bounds: Bounds, display: Bounds, epsilon: number = COVER_EPSILON_PX): boolean =>
+export const coversDisplay = (
+  bounds: Bounds,
+  display: Bounds,
+  epsilon: number = COVER_EPSILON_PX,
+): boolean =>
   bounds.x <= display.x + epsilon &&
   bounds.y <= display.y + epsilon &&
   bounds.x + bounds.width >= display.x + display.width - epsilon &&
-  bounds.y + bounds.height >= display.y + display.height - epsilon
+  bounds.y + bounds.height >= display.y + display.height - epsilon;
 
 const intersects = (a: Bounds, b: Bounds): boolean =>
-  a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+  a.x < b.x + b.width &&
+  b.x < a.x + a.width &&
+  a.y < b.y + b.height &&
+  b.y < a.y + a.height;
 
 /**
  * The fullscreen app the HUD is floating over on `display`, or null.
@@ -90,21 +101,25 @@ const intersects = (a: Bounds, b: Bounds): boolean =>
 export function detectFullscreenApp(
   windows: EnumeratedWindow[],
   selfPid: number,
-  display: Bounds
+  display: Bounds,
 ): EnumeratedWindow | null {
   for (const win of windows) {
     if (win.pid === selfPid || isShellWindow(win.app)) {
-      continue
+      continue;
     }
 
-    if (win.bounds.width <= 0 || win.bounds.height <= 0 || !intersects(win.bounds, display)) {
-      continue
+    if (
+      win.bounds.width <= 0 ||
+      win.bounds.height <= 0 ||
+      !intersects(win.bounds, display)
+    ) {
+      continue;
     }
 
-    return coversDisplay(win.bounds, display) ? win : null
+    return coversDisplay(win.bounds, display) ? win : null;
   }
 
-  return null
+  return null;
 }
 
 /**
@@ -120,25 +135,25 @@ export function detectFullscreenApp(
 export function findFullscreenAppAnywhere(
   windows: EnumeratedWindow[],
   selfPid: number,
-  display: Bounds
+  display: Bounds,
 ): EnumeratedWindow | null {
   return (
     windows.find(
-      win =>
+      (win) =>
         win.pid !== selfPid &&
         !isShellWindow(win.app) &&
         win.bounds.width > 0 &&
         win.bounds.height > 0 &&
-        coversDisplay(win.bounds, display)
+        coversDisplay(win.bounds, display),
     ) ?? null
-  )
+  );
 }
 
 export const gameOverlayStateFor = (
   windows: EnumeratedWindow[],
   selfPid: number,
   display: Bounds,
-  wasActive = false
+  wasActive = false,
 ): GameOverlayState => {
   // Hysteresis. ENTERING needs the game to be what the user is actually
   // looking at (front-to-back, windowed apps on top veto it). STAYING only
@@ -147,30 +162,32 @@ export const gameOverlayStateFor = (
   // otherwise drop the treatment at exactly the moment the user is reading it.
   const fullscreen = wasActive
     ? findFullscreenAppAnywhere(windows, selfPid, display)
-    : detectFullscreenApp(windows, selfPid, display)
+    : detectFullscreenApp(windows, selfPid, display);
 
-  return fullscreen ? { active: true, app: fullscreen.app } : INACTIVE_GAME_OVERLAY
-}
+  return fullscreen
+    ? { active: true, app: fullscreen.app }
+    : INACTIVE_GAME_OVERLAY;
+};
 
 export interface HudGameOverlayWatchDeps {
   /** Front-to-back window enumeration; null when the platform cannot answer
    *  (Wayland, missing native module). Same contract as window-below's. */
-  enumerate: () => Promise<EnumeratedWindow[] | null>
+  enumerate: () => Promise<EnumeratedWindow[] | null>;
   /** Bounds of the display the HUD currently sits on. */
-  displayBounds: () => Bounds
-  selfPid: number
+  displayBounds: () => Bounds;
+  selfPid: number;
   /** Push a CHANGED state to the HUD renderer. */
-  send: (state: GameOverlayState) => void
-  intervalMs?: number
+  send: (state: GameOverlayState) => void;
+  intervalMs?: number;
   /** Injectable timers so tests never wait on a real clock. */
-  setIntervalFn?: typeof setInterval
-  clearIntervalFn?: typeof clearInterval
+  setIntervalFn?: typeof setInterval;
+  clearIntervalFn?: typeof clearInterval;
 }
 
 /** Consecutive failed enumerations before the watch concludes the platform
  *  cannot answer and stops burning a subprocess/native call per tick. Two, not
  *  one: a single null can be a transient failure mid-session. */
-const FAILURES_BEFORE_GIVING_UP = 2
+const FAILURES_BEFORE_GIVING_UP = 2;
 
 /**
  * Poll for fullscreen-app changes while the HUD is open. Returns the disposer;
@@ -188,74 +205,85 @@ export function startHudGameOverlayWatch({
   send,
   intervalMs = 1500,
   setIntervalFn = setInterval,
-  clearIntervalFn = clearInterval
+  clearIntervalFn = clearInterval,
 }: HudGameOverlayWatchDeps): () => void {
-  let last: GameOverlayState | null = null
-  let failures = 0
-  let inFlight = false
-  let disposed = false
+  let last: GameOverlayState | null = null;
+  let failures = 0;
+  let inFlight = false;
+  let disposed = false;
 
   const publish = (state: GameOverlayState) => {
-    if (last === null || last.active !== state.active || last.app !== state.app) {
-      last = state
-      send(state)
+    if (
+      last === null ||
+      last.active !== state.active ||
+      last.app !== state.app
+    ) {
+      last = state;
+      send(state);
     }
-  }
+  };
 
   const tick = async () => {
     // Enumeration is async and slower than the interval on a bad day (X11
     // shells out); overlapping ticks would answer out of order.
     if (inFlight || disposed) {
-      return
+      return;
     }
 
-    inFlight = true
+    inFlight = true;
 
     try {
-      const windows = await enumerate()
+      const windows = await enumerate();
 
       if (disposed) {
-        return
+        return;
       }
 
       if (windows === null) {
-        failures += 1
+        failures += 1;
 
         // The platform cannot answer (and said so twice): settle on inactive
         // and stop asking.
         if (failures >= FAILURES_BEFORE_GIVING_UP) {
-          publish(INACTIVE_GAME_OVERLAY)
-          dispose()
+          publish(INACTIVE_GAME_OVERLAY);
+          dispose();
         }
 
-        return
+        return;
       }
 
-      failures = 0
-      publish(gameOverlayStateFor(windows, selfPid, displayBounds(), last?.active ?? false))
+      failures = 0;
+      publish(
+        gameOverlayStateFor(
+          windows,
+          selfPid,
+          displayBounds(),
+          last?.active ?? false,
+        ),
+      );
     } catch {
       // A throwing enumerator counts the same as a null answer.
-      failures += 1
+      failures += 1;
 
       if (failures >= FAILURES_BEFORE_GIVING_UP && !disposed) {
-        publish(INACTIVE_GAME_OVERLAY)
-        dispose()
+        publish(INACTIVE_GAME_OVERLAY);
+        dispose();
       }
     } finally {
-      inFlight = false
+      inFlight = false;
     }
-  }
+  };
 
-  const timer = setIntervalFn(() => void tick(), intervalMs)
+  const timer = setIntervalFn(() => void tick(), intervalMs);
 
   function dispose() {
     if (!disposed) {
-      disposed = true
-      clearIntervalFn(timer)
+      disposed = true;
+      clearIntervalFn(timer);
     }
   }
 
-  void tick()
+  void tick();
 
-  return dispose
+  return dispose;
 }

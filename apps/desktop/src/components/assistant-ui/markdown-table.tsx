@@ -5,11 +5,16 @@ import {
   useCallback,
   useLayoutEffect,
   useRef,
-  useState
-} from 'react'
+  useState,
+} from "react";
 
-import { clearTableWidths, markdownTableKey, readTableWidths, writeTableWidths } from '@/lib/markdown-table-widths'
-import { cn } from '@/lib/utils'
+import {
+  clearTableWidths,
+  markdownTableKey,
+  readTableWidths,
+  writeTableWidths,
+} from "@/lib/markdown-table-widths";
+import { cn } from "@/lib/utils";
 
 /**
  * Drag-resizable columns for transcript markdown tables.
@@ -44,18 +49,26 @@ import { cn } from '@/lib/utils'
 
 /** A column can't be dragged narrower than this — below it the header label
  *  has no room and the seam becomes hard to grab back. */
-const MIN_COLUMN_PX = 48
+const MIN_COLUMN_PX = 48;
 
 const equalWidths = (left: null | number[], right: null | number[]) =>
-  left === right || (!!left && !!right && left.length === right.length && left.every((v, i) => v === right[i]))
+  left === right ||
+  (!!left &&
+    !!right &&
+    left.length === right.length &&
+    left.every((v, i) => v === right[i]));
 
-export function ResizableMarkdownTable({ children, className, ...props }: ComponentProps<'table'>) {
-  const tableRef = useRef<HTMLTableElement>(null)
-  const keyRef = useRef<null | string>(null)
+export function ResizableMarkdownTable({
+  children,
+  className,
+  ...props
+}: ComponentProps<"table">) {
+  const tableRef = useRef<HTMLTableElement>(null);
+  const keyRef = useRef<null | string>(null);
   // A drag owns the widths while it runs; the identity effect below must not
   // overwrite them from storage between two pointermove frames.
-  const draggingRef = useRef(false)
-  const [widths, setWidths] = useState<null | number[]>(null)
+  const draggingRef = useRef(false);
+  const [widths, setWidths] = useState<null | number[]>(null);
 
   // A markdown table has no identity of its own — it is re-parsed from text on
   // every render. Its header row is the identity: the same table in the same
@@ -63,103 +76,124 @@ export function ResizableMarkdownTable({ children, className, ...props }: Compon
   // reload, and two tables only collide when they are, column for column, the
   // same table.
   useLayoutEffect(() => {
-    const cells = tableRef.current?.tHead?.rows[0]?.cells
+    const cells = tableRef.current?.tHead?.rows[0]?.cells;
 
     if (!cells || cells.length < 2) {
-      keyRef.current = null
+      keyRef.current = null;
 
-      return
+      return;
     }
 
-    const key = markdownTableKey(Array.from(cells, cell => cell.textContent?.trim() ?? ''))
-    keyRef.current = key
+    const key = markdownTableKey(
+      Array.from(cells, (cell) => cell.textContent?.trim() ?? ""),
+    );
+    keyRef.current = key;
 
     if (draggingRef.current) {
-      return
+      return;
     }
 
-    const stored = readTableWidths(key, cells.length)
-    setWidths(current => (equalWidths(current, stored) ? current : stored))
-  }, [children])
+    const stored = readTableWidths(key, cells.length);
+    setWidths((current) => (equalWidths(current, stored) ? current : stored));
+  }, [children]);
 
-  const onPointerDown = useCallback((event: ReactPointerEvent<HTMLTableElement>) => {
-    const handle = (event.target as HTMLElement | null)?.closest<HTMLElement>('[data-md-col-handle]')
-    const table = tableRef.current
+  const onPointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLTableElement>) => {
+      const handle = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+        "[data-md-col-handle]",
+      );
+      const table = tableRef.current;
 
-    if (!handle || !table || event.button !== 0) {
-      return
-    }
-
-    const cells = Array.from(table.tHead?.rows[0]?.cells ?? [])
-    const index = cells.indexOf(handle.closest('th') as HTMLTableCellElement)
-    const tableWidth = table.getBoundingClientRect().width
-
-    // The last column has no seam of its own, and a zero-width table (one in a
-    // collapsed pane) gives no denominator to work in.
-    if (index < 0 || index >= cells.length - 1 || tableWidth <= 0) {
-      return
-    }
-
-    event.preventDefault()
-    handle.setPointerCapture(event.pointerId)
-    handle.dataset.mdColActive = 'true'
-    draggingRef.current = true
-
-    // Seed from what is on screen, so the first drag continues the auto layout
-    // the user was looking at instead of snapping to even columns.
-    const start = cells.map(cell => (cell.getBoundingClientRect().width / tableWidth) * 100)
-    const pair = start[index] + start[index + 1]
-    const min = Math.min((MIN_COLUMN_PX / tableWidth) * 100, pair / 2)
-    const rtl = getComputedStyle(table).direction === 'rtl'
-    const startX = event.clientX
-    let next = start
-
-    const onMove = (move: PointerEvent) => {
-      const delta = ((rtl ? startX - move.clientX : move.clientX - startX) / tableWidth) * 100
-      const leading = Math.min(Math.max(start[index] + delta, min), pair - min)
-
-      next = start.map((value, at) => (at === index ? leading : at === index + 1 ? pair - leading : value))
-      setWidths(next)
-    }
-
-    const onUp = () => {
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerup', onUp)
-      window.removeEventListener('pointercancel', onUp)
-      delete handle.dataset.mdColActive
-      draggingRef.current = false
-
-      if (keyRef.current && next !== start) {
-        writeTableWidths(keyRef.current, next)
+      if (!handle || !table || event.button !== 0) {
+        return;
       }
-    }
 
-    window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerup', onUp)
-    window.addEventListener('pointercancel', onUp)
-  }, [])
+      const cells = Array.from(table.tHead?.rows[0]?.cells ?? []);
+      const index = cells.indexOf(handle.closest("th") as HTMLTableCellElement);
+      const tableWidth = table.getBoundingClientRect().width;
+
+      // The last column has no seam of its own, and a zero-width table (one in a
+      // collapsed pane) gives no denominator to work in.
+      if (index < 0 || index >= cells.length - 1 || tableWidth <= 0) {
+        return;
+      }
+
+      event.preventDefault();
+      handle.setPointerCapture(event.pointerId);
+      handle.dataset.mdColActive = "true";
+      draggingRef.current = true;
+
+      // Seed from what is on screen, so the first drag continues the auto layout
+      // the user was looking at instead of snapping to even columns.
+      const start = cells.map(
+        (cell) => (cell.getBoundingClientRect().width / tableWidth) * 100,
+      );
+      const pair = start[index] + start[index + 1];
+      const min = Math.min((MIN_COLUMN_PX / tableWidth) * 100, pair / 2);
+      const rtl = getComputedStyle(table).direction === "rtl";
+      const startX = event.clientX;
+      let next = start;
+
+      const onMove = (move: PointerEvent) => {
+        const delta =
+          ((rtl ? startX - move.clientX : move.clientX - startX) / tableWidth) *
+          100;
+        const leading = Math.min(
+          Math.max(start[index] + delta, min),
+          pair - min,
+        );
+
+        next = start.map((value, at) =>
+          at === index ? leading : at === index + 1 ? pair - leading : value,
+        );
+        setWidths(next);
+      };
+
+      const onUp = () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+        delete handle.dataset.mdColActive;
+        draggingRef.current = false;
+
+        if (keyRef.current && next !== start) {
+          writeTableWidths(keyRef.current, next);
+        }
+      };
+
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
+    },
+    [],
+  );
 
   // Double-click a seam to hand the columns back to auto layout — the same
   // reset gesture the pane sashes use.
-  const onDoubleClick = useCallback((event: ReactMouseEvent<HTMLTableElement>) => {
-    if (!(event.target as HTMLElement | null)?.closest('[data-md-col-handle]')) {
-      return
-    }
+  const onDoubleClick = useCallback(
+    (event: ReactMouseEvent<HTMLTableElement>) => {
+      if (
+        !(event.target as HTMLElement | null)?.closest("[data-md-col-handle]")
+      ) {
+        return;
+      }
 
-    if (keyRef.current) {
-      clearTableWidths(keyRef.current)
-    }
+      if (keyRef.current) {
+        clearTableWidths(keyRef.current);
+      }
 
-    setWidths(null)
-  }, [])
+      setWidths(null);
+    },
+    [],
+  );
 
   return (
     <div className="aui-md-table my-2 max-w-full overflow-x-auto rounded-[0.375rem] border border-(--ui-stroke-tertiary)">
       <table
         className={cn(
-          'm-0 w-full min-w-[18rem] border-collapse text-[0.8125rem] [&_tr]:border-b [&_tr]:border-(--ui-stroke-tertiary) last:[&_tr]:border-0',
-          widths && 'table-fixed [&_td]:wrap-anywhere',
-          className
+          "m-0 w-full min-w-[18rem] border-collapse text-[0.8125rem] [&_tr]:border-b [&_tr]:border-(--ui-stroke-tertiary) last:[&_tr]:border-0",
+          widths && "table-fixed [&_td]:wrap-anywhere",
+          className,
         )}
         onDoubleClick={onDoubleClick}
         onPointerDown={onPointerDown}
@@ -176,24 +210,30 @@ export function ResizableMarkdownTable({ children, className, ...props }: Compon
         {children}
       </table>
     </div>
-  )
+  );
 }
 
-export function ResizableMarkdownTh({ children, className, ...props }: ComponentProps<'th'>) {
+export function ResizableMarkdownTh({
+  children,
+  className,
+  ...props
+}: ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        'relative px-2.5 py-1.5 text-left align-middle text-[0.75rem] font-medium text-muted-foreground',
+        "relative px-2.5 py-1.5 text-left align-middle text-[0.75rem] font-medium text-muted-foreground",
         // The trailing column has no seam: its right edge is the table's edge,
         // and there is nothing on the far side to trade width with.
-        '[&:last-child_[data-md-col-handle]]:hidden',
-        className
+        "[&:last-child_[data-md-col-handle]]:hidden",
+        className,
       )}
       {...props}
     >
       {/* Truncation lives on an inner box, not the cell: the grab band straddles
           the cell's edge, so a clipping `<th>` would cut half of it off. */}
-      <span className="block overflow-hidden text-ellipsis whitespace-nowrap">{children}</span>
+      <span className="block overflow-hidden text-ellipsis whitespace-nowrap">
+        {children}
+      </span>
       {/* Invisible grab band straddling the seam, with the hairline revealed on
           hover — the pane sash treatment (`tree-split.tsx`) scaled to a header
           row. The table carries no vertical rules otherwise, so the line only
@@ -206,5 +246,5 @@ export function ResizableMarkdownTh({ children, className, ...props }: Component
         <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-(--ui-stroke-secondary) opacity-0 transition-opacity duration-100 group-hover/mdcol:opacity-100 [[data-md-col-active]_&]:opacity-100" />
       </span>
     </th>
-  )
+  );
 }

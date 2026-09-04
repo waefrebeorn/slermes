@@ -17,40 +17,53 @@
  * conversion on the way back out.
  */
 
-import { $rightRailActiveTabId } from '@/store/layout'
-import { $previewTabs } from '@/store/preview'
+import { $rightRailActiveTabId } from "@/store/layout";
+import { $previewTabs } from "@/store/preview";
 
 /** The subset of Electron's input events the agent needs to drive a page. */
 export type PreviewInputEvent =
-  | { button: 'left'; clickCount: number; type: 'mouseDown' | 'mouseUp'; x: number; y: number }
-  | { deltaX: number; deltaY: number; type: 'mouseWheel'; x: number; y: number }
-  | { keyCode: string; modifiers?: string[]; type: 'char' | 'keyDown' | 'keyUp' }
-  | { type: 'mouseMove'; x: number; y: number }
+  | {
+      button: "left";
+      clickCount: number;
+      type: "mouseDown" | "mouseUp";
+      x: number;
+      y: number;
+    }
+  | { deltaX: number; deltaY: number; type: "mouseWheel"; x: number; y: number }
+  | {
+      keyCode: string;
+      modifiers?: string[];
+      type: "char" | "keyDown" | "keyUp";
+    }
+  | { type: "mouseMove"; x: number; y: number };
 
 export interface PreviewInputHandle {
   /** Give the guest keyboard focus, so key events reach its active element. */
-  focus: () => void
-  send: (event: PreviewInputEvent) => void
+  focus: () => void;
+  send: (event: PreviewInputEvent) => void;
 }
 
-const handles = new Map<string, PreviewInputHandle>()
+const handles = new Map<string, PreviewInputHandle>();
 
 /** Register a live pane's input channel; returns an idempotent unregister. */
-export function registerPreviewInput(tabId: string, handle: PreviewInputHandle): () => void {
-  handles.set(tabId, handle)
+export function registerPreviewInput(
+  tabId: string,
+  handle: PreviewInputHandle,
+): () => void {
+  handles.set(tabId, handle);
 
   return () => {
     if (handles.get(tabId) === handle) {
-      handles.delete(tabId)
+      handles.delete(tabId);
     }
-  }
+  };
 }
 
 /** The ACTIVE preview tab's input channel. Null = nothing real to drive, and
  *  the caller falls back to synthesizing events inside the page. */
 export function activePreviewInput(): PreviewInputHandle | null {
-  const tabs = $previewTabs.get()
-  const tab = tabs.find(t => t.id === $rightRailActiveTabId.get()) ?? tabs[0]
+  const tabs = $previewTabs.get();
+  const tab = tabs.find((t) => t.id === $rightRailActiveTabId.get()) ?? tabs[0];
 
-  return (tab && handles.get(tab.id)) || null
+  return (tab && handles.get(tab.id)) || null;
 }

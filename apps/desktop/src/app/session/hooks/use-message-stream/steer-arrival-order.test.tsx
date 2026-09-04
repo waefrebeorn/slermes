@@ -14,53 +14,60 @@
 //
 // Both hooks share one state map, exactly as the desktop wires them: steering
 // mutates the same ClientSessionState the gateway events reduce into.
-import { QueryClient } from '@tanstack/react-query'
-import { act, cleanup, render } from '@testing-library/react'
-import { useEffect, useRef } from 'react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { QueryClient } from "@tanstack/react-query";
+import { act, cleanup, render } from "@testing-library/react";
+import { useEffect, useRef } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { usePromptActions } from '@/app/session/hooks/use-prompt-actions'
-import type { ClientSessionState } from '@/app/types'
-import { chatMessageText } from '@/lib/chat-messages'
-import { createClientSessionState } from '@/lib/chat-runtime'
-import type { RpcEvent } from '@/types/hermes'
+import { usePromptActions } from "@/app/session/hooks/use-prompt-actions";
+import type { ClientSessionState } from "@/app/types";
+import { chatMessageText } from "@/lib/chat-messages";
+import { createClientSessionState } from "@/lib/chat-runtime";
+import type { RpcEvent } from "@/types/hermes";
 
-import { STREAM_DELTA_FLUSH_MS } from './utils'
+import { STREAM_DELTA_FLUSH_MS } from "./utils";
 
-import { useMessageStream } from './index'
+import { useMessageStream } from "./index";
 
-const SID = 'steer-order-session'
+const SID = "steer-order-session";
 
-let handleEvent: ((event: RpcEvent) => void) | null = null
-let redirect: ((text: string) => Promise<boolean>) | null = null
-let states: Map<string, ClientSessionState>
+let handleEvent: ((event: RpcEvent) => void) | null = null;
+let redirect: ((text: string) => Promise<boolean>) | null = null;
+let states: Map<string, ClientSessionState>;
 
 /** The gateway accepts every redirect — these suites pin CLIENT ordering. */
 const requestGatewayMock = vi.fn(async (method: string): Promise<unknown> =>
-  method === 'session.redirect' ? { status: 'redirected' } : {}
-)
+  method === "session.redirect" ? { status: "redirected" } : {},
+);
 
 const requestGateway = requestGatewayMock as unknown as <T>(
   method: string,
   params?: Record<string, unknown>,
-  timeoutMs?: number
-) => Promise<T>
+  timeoutMs?: number,
+) => Promise<T>;
 
 function Harness() {
-  const activeSessionIdRef = useRef<null | string>(SID)
-  const sessionStateByRuntimeIdRef = useRef(new Map<string, ClientSessionState>())
-  const queryClientRef = useRef(new QueryClient())
-  const busyRef = useRef(false)
-  const runtimeIdByStoredSessionIdRef = useRef(new Map<string, string>())
-  const selectedStoredSessionIdRef = useRef<null | string>(SID)
+  const activeSessionIdRef = useRef<null | string>(SID);
+  const sessionStateByRuntimeIdRef = useRef(
+    new Map<string, ClientSessionState>(),
+  );
+  const queryClientRef = useRef(new QueryClient());
+  const busyRef = useRef(false);
+  const runtimeIdByStoredSessionIdRef = useRef(new Map<string, string>());
+  const selectedStoredSessionIdRef = useRef<null | string>(SID);
 
-  const updateSessionState = (sessionId: string, updater: (state: ClientSessionState) => ClientSessionState) => {
-    const current = sessionStateByRuntimeIdRef.current.get(sessionId) ?? createClientSessionState()
-    const next = updater(current)
-    sessionStateByRuntimeIdRef.current.set(sessionId, next)
+  const updateSessionState = (
+    sessionId: string,
+    updater: (state: ClientSessionState) => ClientSessionState,
+  ) => {
+    const current =
+      sessionStateByRuntimeIdRef.current.get(sessionId) ??
+      createClientSessionState();
+    const next = updater(current);
+    sessionStateByRuntimeIdRef.current.set(sessionId, next);
 
-    return next
-  }
+    return next;
+  };
 
   const stream = useMessageStream({
     activeSessionIdRef,
@@ -69,8 +76,8 @@ function Harness() {
     refreshHermesConfig: vi.fn(async () => undefined),
     refreshSessions: vi.fn(async () => undefined),
     sessionStateByRuntimeIdRef,
-    updateSessionState
-  })
+    updateSessionState,
+  });
 
   const actions = usePromptActions({
     activeSessionId: SID,
@@ -80,8 +87,8 @@ function Harness() {
     createBackendSessionForSend: async () => SID,
     getRoutedStoredSessionId: () => null,
     getRuntimeIdForStoredSession: () => null,
-    getRouteToken: () => 'token',
-    handleSkinCommand: () => '',
+    getRouteToken: () => "token",
+    handleSkinCommand: () => "",
     openMemoryGraph: () => undefined,
     refreshSessions: async () => undefined,
     requestGateway,
@@ -90,128 +97,167 @@ function Harness() {
     selectedStoredSessionIdRef,
     startFreshSessionDraft: () => undefined,
     sttEnabled: false,
-    updateSessionState
-  })
+    updateSessionState,
+  });
 
   useEffect(() => {
-    handleEvent = stream.handleGatewayEvent
-    redirect = actions.redirectPrompt
-    states = sessionStateByRuntimeIdRef.current
-  }, [stream.handleGatewayEvent, actions.redirectPrompt])
+    handleEvent = stream.handleGatewayEvent;
+    redirect = actions.redirectPrompt;
+    states = sessionStateByRuntimeIdRef.current;
+  }, [stream.handleGatewayEvent, actions.redirectPrompt]);
 
-  return null
+  return null;
 }
 
 async function mountHarness() {
-  vi.useFakeTimers()
-  render(<Harness />)
+  vi.useFakeTimers();
+  render(<Harness />);
   await act(async () => {
-    await Promise.resolve()
-  })
+    await Promise.resolve();
+  });
 }
 
 const flushDeltas = async () => {
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(STREAM_DELTA_FLUSH_MS)
-  })
-}
+    await vi.advanceTimersByTimeAsync(STREAM_DELTA_FLUSH_MS);
+  });
+};
 
-const emit = (event: RpcEvent) => act(() => handleEvent?.(event))
+const emit = (event: RpcEvent) => act(() => handleEvent?.(event));
 
 /** A real steer: redirectPrompt's optimistic insert + the gateway round-trip. */
 const steer = async (text: string) => {
   await act(async () => {
-    await expect(redirect!(text)).resolves.toBe(true)
-  })
-}
+    await expect(redirect!(text)).resolves.toBe(true);
+  });
+};
 
 const transcript = () =>
-  (states.get(SID)?.messages ?? []).map(message => `${message.role}:${chatMessageText(message).slice(0, 30)}`)
+  (states.get(SID)?.messages ?? []).map(
+    (message) => `${message.role}:${chatMessageText(message).slice(0, 30)}`,
+  );
 
-describe('steer mid-turn keeps arrival order (user bubble never above prior output)', () => {
+describe("steer mid-turn keeps arrival order (user bubble never above prior output)", () => {
   beforeEach(() => {
-    handleEvent = null
-    redirect = null
-    states = new Map()
-    requestGatewayMock.mockClear()
-  })
+    handleEvent = null;
+    redirect = null;
+    states = new Map();
+    requestGatewayMock.mockClear();
+  });
 
   afterEach(() => {
-    cleanup()
-    vi.useRealTimers()
-    vi.restoreAllMocks()
-  })
+    cleanup();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
 
-  it('orders pre-steer output → steer → post-steer output → settled reply', async () => {
-    await mountHarness()
+  it("orders pre-steer output → steer → post-steer output → settled reply", async () => {
+    await mountHarness();
 
-    emit({ payload: {}, session_id: SID, type: 'message.start' })
-    emit({ payload: { text: 'first half of the answer' }, session_id: SID, type: 'message.delta' })
-    await flushDeltas()
+    emit({ payload: {}, session_id: SID, type: "message.start" });
+    emit({
+      payload: { text: "first half of the answer" },
+      session_id: SID,
+      type: "message.delta",
+    });
+    await flushDeltas();
 
     // Mid-turn tool activity belongs to the pre-steer bubble.
     emit({
-      payload: { args: { command: 'true' }, name: 'terminal', tool_id: 't1' },
+      payload: { args: { command: "true" }, name: "terminal", tool_id: "t1" },
       session_id: SID,
-      type: 'tool.start'
-    })
-    emit({ payload: { name: 'terminal', result: 'ok', tool_id: 't1' }, session_id: SID, type: 'tool.complete' })
+      type: "tool.start",
+    });
+    emit({
+      payload: { name: "terminal", result: "ok", tool_id: "t1" },
+      session_id: SID,
+      type: "tool.complete",
+    });
 
-    await steer('actually do it differently')
+    await steer("actually do it differently");
 
     // Post-steer deltas must seed a FRESH bubble below the correction.
-    emit({ payload: { text: 'rebuilt answer after the steer' }, session_id: SID, type: 'message.delta' })
-    await flushDeltas()
+    emit({
+      payload: { text: "rebuilt answer after the steer" },
+      session_id: SID,
+      type: "message.delta",
+    });
+    await flushDeltas();
 
-    const midTurn = states.get(SID)!.messages
-    const steerIndex = midTurn.findIndex(message => message.role === 'user')
-    const preSteer = midTurn.slice(0, steerIndex)
-    const postSteer = midTurn.slice(steerIndex + 1)
+    const midTurn = states.get(SID)!.messages;
+    const steerIndex = midTurn.findIndex((message) => message.role === "user");
+    const preSteer = midTurn.slice(0, steerIndex);
+    const postSteer = midTurn.slice(steerIndex + 1);
 
-    expect(steerIndex, `steer bubble missing: ${transcript().join(' | ')}`).toBeGreaterThan(0)
+    expect(
+      steerIndex,
+      `steer bubble missing: ${transcript().join(" | ")}`,
+    ).toBeGreaterThan(0);
     // Everything the user had already watched arrive stays ABOVE the bubble…
-    expect(preSteer.some(message => chatMessageText(message).includes('first half'))).toBe(true)
-    expect(preSteer.every(message => message.role === 'assistant')).toBe(true)
+    expect(
+      preSteer.some((message) =>
+        chatMessageText(message).includes("first half"),
+      ),
+    ).toBe(true);
+    expect(preSteer.every((message) => message.role === "assistant")).toBe(
+      true,
+    );
     // …sealed (not pending), so no thinking indicator strands above the steer.
-    expect(preSteer.every(message => message.pending !== true)).toBe(true)
+    expect(preSteer.every((message) => message.pending !== true)).toBe(true);
     // Post-redirect output continues BELOW the correction, in its own bubble.
-    expect(postSteer.length).toBeGreaterThan(0)
-    expect(postSteer.some(message => chatMessageText(message).includes('rebuilt answer'))).toBe(true)
+    expect(postSteer.length).toBeGreaterThan(0);
+    expect(
+      postSteer.some((message) =>
+        chatMessageText(message).includes("rebuilt answer"),
+      ),
+    ).toBe(true);
 
     // Completion settles the post-steer bubble in place — order unchanged.
     emit({
-      payload: { text: 'rebuilt answer after the steer — done' },
+      payload: { text: "rebuilt answer after the steer — done" },
       session_id: SID,
-      type: 'message.complete'
-    })
+      type: "message.complete",
+    });
 
-    const settled = states.get(SID)!.messages
-    const settledSteerIndex = settled.findIndex(message => message.role === 'user')
-    const tail = settled.at(-1)
+    const settled = states.get(SID)!.messages;
+    const settledSteerIndex = settled.findIndex(
+      (message) => message.role === "user",
+    );
+    const tail = settled.at(-1);
 
-    expect(settledSteerIndex).toBe(steerIndex)
-    expect(tail?.role).toBe('assistant')
-    expect(chatMessageText(tail!)).toContain('rebuilt answer after the steer — done')
-    expect(settled.every(message => message.pending !== true)).toBe(true)
+    expect(settledSteerIndex).toBe(steerIndex);
+    expect(tail?.role).toBe("assistant");
+    expect(chatMessageText(tail!)).toContain(
+      "rebuilt answer after the steer — done",
+    );
+    expect(settled.every((message) => message.pending !== true)).toBe(true);
     // The final reply is BELOW the steer bubble, not merged into a row above it.
-    expect(settled.indexOf(tail!)).toBeGreaterThan(settledSteerIndex)
-  })
+    expect(settled.indexOf(tail!)).toBeGreaterThan(settledSteerIndex);
+  });
 
-  it('steer with no post-steer deltas: completion settles above, bubble stays at the tail', async () => {
-    await mountHarness()
+  it("steer with no post-steer deltas: completion settles above, bubble stays at the tail", async () => {
+    await mountHarness();
 
-    emit({ payload: {}, session_id: SID, type: 'message.start' })
-    emit({ payload: { text: 'the whole reply already streamed' }, session_id: SID, type: 'message.delta' })
-    await flushDeltas()
+    emit({ payload: {}, session_id: SID, type: "message.start" });
+    emit({
+      payload: { text: "the whole reply already streamed" },
+      session_id: SID,
+      type: "message.delta",
+    });
+    await flushDeltas();
 
     // Steer accepted during the final API call — the reply was already
     // complete, so the correction becomes the NEXT turn's prompt.
-    await steer('one more thing')
+    await steer("one more thing");
 
-    emit({ payload: { text: 'the whole reply already streamed' }, session_id: SID, type: 'message.complete' })
+    emit({
+      payload: { text: "the whole reply already streamed" },
+      session_id: SID,
+      type: "message.complete",
+    });
 
-    const messages = states.get(SID)!.messages
-    const steerIndex = messages.findIndex(message => message.role === 'user')
+    const messages = states.get(SID)!.messages;
+    const steerIndex = messages.findIndex((message) => message.role === "user");
 
     // The already-streamed reply settles onto its sealed bubble ABOVE the
     // correction; the correction stays the tail, waiting for its own turn —
@@ -219,60 +265,96 @@ describe('steer mid-turn keeps arrival order (user bubble never above prior outp
     // completion settles the sealed pre-steer bubble in place and never
     // appends/merges below the correction — if the reducer ever changes that,
     // this test is the tripwire.
-    expect(steerIndex).toBe(messages.length - 1)
-    expect(messages.filter(message => chatMessageText(message).includes('whole reply already streamed'))).toHaveLength(
-      1
-    )
-    expect(messages.every(message => message.pending !== true)).toBe(true)
-  })
+    expect(steerIndex).toBe(messages.length - 1);
+    expect(
+      messages.filter((message) =>
+        chatMessageText(message).includes("whole reply already streamed"),
+      ),
+    ).toHaveLength(1);
+    expect(messages.every((message) => message.pending !== true)).toBe(true);
+  });
 
-  it('a second steer in the same turn stays below the first (contiguous run, both below prior output)', async () => {
-    await mountHarness()
+  it("a second steer in the same turn stays below the first (contiguous run, both below prior output)", async () => {
+    await mountHarness();
 
-    emit({ payload: {}, session_id: SID, type: 'message.start' })
-    emit({ payload: { text: 'output before any steer' }, session_id: SID, type: 'message.delta' })
-    await flushDeltas()
+    emit({ payload: {}, session_id: SID, type: "message.start" });
+    emit({
+      payload: { text: "output before any steer" },
+      session_id: SID,
+      type: "message.delta",
+    });
+    await flushDeltas();
 
-    await steer('first correction')
+    await steer("first correction");
 
-    emit({ payload: { text: 'output after first steer' }, session_id: SID, type: 'message.delta' })
-    await flushDeltas()
+    emit({
+      payload: { text: "output after first steer" },
+      session_id: SID,
+      type: "message.delta",
+    });
+    await flushDeltas();
 
-    await steer('second correction')
+    await steer("second correction");
 
-    emit({ payload: { text: 'final output' }, session_id: SID, type: 'message.delta' })
-    await flushDeltas()
-    emit({ payload: { text: 'final output' }, session_id: SID, type: 'message.complete' })
+    emit({
+      payload: { text: "final output" },
+      session_id: SID,
+      type: "message.delta",
+    });
+    await flushDeltas();
+    emit({
+      payload: { text: "final output" },
+      session_id: SID,
+      type: "message.complete",
+    });
 
-    const roles = states.get(SID)!.messages.map(message => `${message.role}:${chatMessageText(message).slice(0, 24)}`)
+    const roles = states
+      .get(SID)!
+      .messages.map(
+        (message) => `${message.role}:${chatMessageText(message).slice(0, 24)}`,
+      );
 
-    expect(roles, roles.join(' | ')).toEqual([
-      'assistant:output before any steer',
-      'user:first correction',
-      'assistant:output after first steer',
-      'user:second correction',
-      'assistant:final output'
-    ])
-  })
+    expect(roles, roles.join(" | ")).toEqual([
+      "assistant:output before any steer",
+      "user:first correction",
+      "assistant:output after first steer",
+      "user:second correction",
+      "assistant:final output",
+    ]);
+  });
 
-  it('a redirect the gateway rejects discards the optimistic bubble instead of stranding it', async () => {
-    await mountHarness()
+  it("a redirect the gateway rejects discards the optimistic bubble instead of stranding it", async () => {
+    await mountHarness();
 
-    emit({ payload: {}, session_id: SID, type: 'message.start' })
-    emit({ payload: { text: 'streaming along' }, session_id: SID, type: 'message.delta' })
-    await flushDeltas()
+    emit({ payload: {}, session_id: SID, type: "message.start" });
+    emit({
+      payload: { text: "streaming along" },
+      session_id: SID,
+      type: "message.delta",
+    });
+    await flushDeltas();
 
-    requestGatewayMock.mockImplementationOnce(async () => ({ status: 'not_running' }))
+    requestGatewayMock.mockImplementationOnce(async () => ({
+      status: "not_running",
+    }));
 
     await act(async () => {
-      await expect(redirect!('too late')).resolves.toBe(false)
-    })
+      await expect(redirect!("too late")).resolves.toBe(false);
+    });
 
     // The rejected correction never reached the model — a bubble for it would
     // lie about the transcript. No user row, stream still live below.
-    expect(states.get(SID)!.messages.some(message => message.role === 'user')).toBe(false)
+    expect(
+      states.get(SID)!.messages.some((message) => message.role === "user"),
+    ).toBe(false);
 
-    emit({ payload: { text: 'streaming along — done' }, session_id: SID, type: 'message.complete' })
-    expect(chatMessageText(states.get(SID)!.messages.at(-1)!)).toContain('done')
-  })
-})
+    emit({
+      payload: { text: "streaming along — done" },
+      session_id: SID,
+      type: "message.complete",
+    });
+    expect(chatMessageText(states.get(SID)!.messages.at(-1)!)).toContain(
+      "done",
+    );
+  });
+});

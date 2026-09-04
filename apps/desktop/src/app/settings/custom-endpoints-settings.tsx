@@ -1,66 +1,77 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
   activateCustomEndpoint,
   deleteCustomEndpoint,
   getCustomEndpoints,
   saveCustomEndpoint,
-  validateCustomEndpoint
-} from '@/hermes'
-import { triggerHaptic } from '@/lib/haptics'
-import { Check, Globe, Loader2, Plus, Save, Trash2, Zap } from '@/lib/icons'
-import { cn } from '@/lib/utils'
-import { confirm } from '@/store/confirm'
-import { notify, notifyError } from '@/store/notifications'
-import type { CustomEndpoint, CustomEndpointUpdate } from '@/types/hermes'
+  validateCustomEndpoint,
+} from "@/hermes";
+import { triggerHaptic } from "@/lib/haptics";
+import { Check, Globe, Loader2, Plus, Save, Trash2, Zap } from "@/lib/icons";
+import { cn } from "@/lib/utils";
+import { confirm } from "@/store/confirm";
+import { notify, notifyError } from "@/store/notifications";
+import type { CustomEndpoint, CustomEndpointUpdate } from "@/types/hermes";
 
-import { EmptyState, Pill, SectionHeading, SettingsContent, SettingsSkeleton } from './primitives'
+import {
+  EmptyState,
+  Pill,
+  SectionHeading,
+  SettingsContent,
+  SettingsSkeleton,
+} from "./primitives";
 
 interface CustomEndpointsSettingsProps {
-  onConfigSaved?: () => void
-  onMainModelChanged?: (provider: string, model: string) => void
+  onConfigSaved?: () => void;
+  onMainModelChanged?: (provider: string, model: string) => void;
 }
 
 interface EndpointForm {
-  apiKey: string
-  baseUrl: string
-  contextLength: string
-  discoverModels: boolean
-  id: string
-  makeDefault: boolean
-  model: string
-  name: string
+  apiKey: string;
+  baseUrl: string;
+  contextLength: string;
+  discoverModels: boolean;
+  id: string;
+  makeDefault: boolean;
+  model: string;
+  name: string;
 }
 
 const EMPTY_FORM: EndpointForm = {
-  apiKey: '',
-  baseUrl: '',
-  contextLength: '',
+  apiKey: "",
+  baseUrl: "",
+  contextLength: "",
   discoverModels: true,
-  id: '',
+  id: "",
   makeDefault: true,
-  model: '',
-  name: ''
-}
+  model: "",
+  name: "",
+};
 
 function formFromEndpoint(endpoint: CustomEndpoint): EndpointForm {
   return {
-    apiKey: '',
+    apiKey: "",
     baseUrl: endpoint.base_url,
-    contextLength: endpoint.context_length ? String(endpoint.context_length) : '',
+    contextLength: endpoint.context_length
+      ? String(endpoint.context_length)
+      : "",
     discoverModels: endpoint.discover_models,
     id: endpoint.id,
     makeDefault: Boolean(endpoint.is_current),
     model: endpoint.model,
-    name: endpoint.name
-  }
+    name: endpoint.name,
+  };
 }
 
-function toPayload(form: EndpointForm, models?: string[]): CustomEndpointUpdate {
-  const contextLength = Number.parseInt(form.contextLength, 10)
+function toPayload(
+  form: EndpointForm,
+  models?: string[],
+): CustomEndpointUpdate {
+  const contextLength = Number.parseInt(form.contextLength, 10);
 
   return {
     id: form.id.trim() || undefined,
@@ -68,211 +79,246 @@ function toPayload(form: EndpointForm, models?: string[]): CustomEndpointUpdate 
     base_url: form.baseUrl.trim(),
     model: form.model.trim(),
     api_key: form.apiKey.trim() || undefined,
-    context_length: Number.isFinite(contextLength) && contextLength > 0 ? contextLength : undefined,
+    context_length:
+      Number.isFinite(contextLength) && contextLength > 0
+        ? contextLength
+        : undefined,
     discover_models: form.discoverModels,
     make_default: form.makeDefault,
-    models: models?.length ? models : undefined
-  }
+    models: models?.length ? models : undefined,
+  };
 }
 
-export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: CustomEndpointsSettingsProps) {
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [testing, setTesting] = useState(false)
-  const [activating, setActivating] = useState<string | null>(null)
-  const [deleting, setDeleting] = useState<string | null>(null)
-  const [endpoints, setEndpoints] = useState<CustomEndpoint[]>([])
-  const [form, setForm] = useState<EndpointForm>(EMPTY_FORM)
-  const [discoveredModels, setDiscoveredModels] = useState<string[]>([])
+export function CustomEndpointsSettings({
+  onConfigSaved,
+  onMainModelChanged,
+}: CustomEndpointsSettingsProps) {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [activating, setActivating] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [endpoints, setEndpoints] = useState<CustomEndpoint[]>([]);
+  const [form, setForm] = useState<EndpointForm>(EMPTY_FORM);
+  const [discoveredModels, setDiscoveredModels] = useState<string[]>([]);
 
   async function refresh() {
-    const data = await getCustomEndpoints()
-    setEndpoints(data.endpoints)
+    const data = await getCustomEndpoints();
+    setEndpoints(data.endpoints);
   }
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     async function load() {
       try {
-        const data = await getCustomEndpoints()
+        const data = await getCustomEndpoints();
 
         if (cancelled) {
-          return
+          return;
         }
 
-        setEndpoints(data.endpoints)
-        const current = data.endpoints.find(endpoint => endpoint.is_current) ?? data.endpoints[0]
+        setEndpoints(data.endpoints);
+        const current =
+          data.endpoints.find((endpoint) => endpoint.is_current) ??
+          data.endpoints[0];
 
         if (current) {
-          setForm(formFromEndpoint(current))
-          setDiscoveredModels(current.models)
+          setForm(formFromEndpoint(current));
+          setDiscoveredModels(current.models);
         }
       } catch (err) {
-        notifyError(err, 'Could not load custom endpoints')
+        notifyError(err, "Could not load custom endpoints");
       } finally {
         if (!cancelled) {
-          setLoading(false)
+          setLoading(false);
         }
       }
     }
 
-    void load()
+    void load();
 
     return () => {
-      cancelled = true
-    }
-  }, [])
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSave() {
     try {
-      setSaving(true)
-      const response = await saveCustomEndpoint(toPayload(form, discoveredModels))
-      setEndpoints(response.endpoints)
-      const saved = response.endpoints.find(endpoint => endpoint.id === response.id)
+      setSaving(true);
+      const response = await saveCustomEndpoint(
+        toPayload(form, discoveredModels),
+      );
+      setEndpoints(response.endpoints);
+      const saved = response.endpoints.find(
+        (endpoint) => endpoint.id === response.id,
+      );
 
       if (saved) {
-        setForm(formFromEndpoint(saved))
-        setDiscoveredModels(saved.models)
+        setForm(formFromEndpoint(saved));
+        setDiscoveredModels(saved.models);
       }
 
       if (saved && saved.is_current) {
-        onMainModelChanged?.(saved.id, saved.model)
+        onMainModelChanged?.(saved.id, saved.model);
       }
 
-      triggerHaptic('success')
-      onConfigSaved?.()
-      notify({ kind: 'success', message: 'Custom endpoint saved.' })
+      triggerHaptic("success");
+      onConfigSaved?.();
+      notify({ kind: "success", message: "Custom endpoint saved." });
     } catch (err) {
-      notifyError(err, 'Save failed')
+      notifyError(err, "Save failed");
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
   }
 
   async function handleValidate() {
     try {
-      setTesting(true)
-      const response = await validateCustomEndpoint(toPayload(form))
-      setDiscoveredModels(response.models)
+      setTesting(true);
+      const response = await validateCustomEndpoint(toPayload(form));
+      setDiscoveredModels(response.models);
 
       if (response.ok) {
         if (!form.model && response.models[0]) {
-          setForm(current => ({ ...current, model: response.models[0] }))
+          setForm((current) => ({ ...current, model: response.models[0] }));
         }
 
         notify({
-          kind: 'success',
+          kind: "success",
           message: response.models.length
             ? `Endpoint is reachable. Found ${response.models.length} models.`
-            : 'Endpoint is reachable.'
-        })
+            : "Endpoint is reachable.",
+        });
       } else {
         notify({
-          kind: response.reachable ? 'warning' : 'error',
-          message: response.message || 'Endpoint validation failed.'
-        })
+          kind: response.reachable ? "warning" : "error",
+          message: response.message || "Endpoint validation failed.",
+        });
       }
     } catch (err) {
-      notifyError(err, 'Validation failed')
+      notifyError(err, "Validation failed");
     } finally {
-      setTesting(false)
+      setTesting(false);
     }
   }
 
   async function handleActivate(endpoint: CustomEndpoint) {
     try {
-      setActivating(endpoint.id)
-      const response = await activateCustomEndpoint(endpoint.id)
-      await refresh()
-      onConfigSaved?.()
-      onMainModelChanged?.(response.provider, response.model)
-      triggerHaptic('success')
+      setActivating(endpoint.id);
+      const response = await activateCustomEndpoint(endpoint.id);
+      await refresh();
+      onConfigSaved?.();
+      onMainModelChanged?.(response.provider, response.model);
+      triggerHaptic("success");
     } catch (err) {
-      notifyError(err, 'Activation failed')
+      notifyError(err, "Activation failed");
     } finally {
-      setActivating(null)
+      setActivating(null);
     }
   }
 
   async function handleDelete(endpoint: CustomEndpoint) {
     // This panel is not internationalized at all — keep the literal it had.
-    if (!(await confirm({ destructive: true, title: `Delete ${endpoint.name}?` }))) {
-      return
+    if (
+      !(await confirm({ destructive: true, title: `Delete ${endpoint.name}?` }))
+    ) {
+      return;
     }
 
     try {
-      setDeleting(endpoint.id)
-      const response = await deleteCustomEndpoint(endpoint.id)
-      setEndpoints(response.endpoints)
+      setDeleting(endpoint.id);
+      const response = await deleteCustomEndpoint(endpoint.id);
+      setEndpoints(response.endpoints);
 
       if (form.id === endpoint.id) {
-        setForm(EMPTY_FORM)
-        setDiscoveredModels([])
+        setForm(EMPTY_FORM);
+        setDiscoveredModels([]);
       }
 
-      onConfigSaved?.()
-      triggerHaptic('success')
+      onConfigSaved?.();
+      triggerHaptic("success");
     } catch (err) {
-      notifyError(err, 'Delete failed')
+      notifyError(err, "Delete failed");
     } finally {
-      setDeleting(null)
+      setDeleting(null);
     }
   }
 
   if (loading) {
-    return <SettingsSkeleton sections={[{ heading: true, rows: 3 }]} />
+    return <SettingsSkeleton sections={[{ heading: true, rows: 3 }]} />;
   }
 
-  const allModelOptions = Array.from(new Set([...discoveredModels, form.model].filter(Boolean)))
-  const canSave = form.name.trim() && form.baseUrl.trim() && form.model.trim()
+  const allModelOptions = Array.from(
+    new Set([...discoveredModels, form.model].filter(Boolean)),
+  );
+  const canSave = form.name.trim() && form.baseUrl.trim() && form.model.trim();
 
   return (
     <SettingsContent>
       <div className="space-y-6">
         <section>
-          <SectionHeading icon={Globe} meta={`${endpoints.length}`} title="Custom Endpoints" />
+          <SectionHeading
+            icon={Globe}
+            meta={`${endpoints.length}`}
+            title="Custom Endpoints"
+          />
           <div className="divide-y divide-border/40 rounded-md border border-border/50">
             {endpoints.length ? (
-              endpoints.map(endpoint => (
-                <div className="grid gap-3 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center" key={endpoint.id}>
+              endpoints.map((endpoint) => (
+                <div
+                  className="grid gap-3 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                  key={endpoint.id}
+                >
                   <button
                     className="min-w-0 text-left"
                     onClick={() => {
-                      setForm(formFromEndpoint(endpoint))
-                      setDiscoveredModels(endpoint.models)
+                      setForm(formFromEndpoint(endpoint));
+                      setDiscoveredModels(endpoint.models);
                     }}
                     type="button"
                   >
                     <div className="flex min-w-0 items-center gap-2">
-                      <span className="truncate text-sm font-medium">{endpoint.name}</span>
+                      <span className="truncate text-sm font-medium">
+                        {endpoint.name}
+                      </span>
                       {endpoint.is_current && (
                         <Pill tone="primary">
                           <Check className="size-3" />
                           Active
                         </Pill>
                       )}
-                      {endpoint.source === 'direct-config' && <Pill>config.yaml</Pill>}
+                      {endpoint.source === "direct-config" && (
+                        <Pill>config.yaml</Pill>
+                      )}
                     </div>
                     <div className="mt-1 truncate font-mono text-[0.7rem] text-muted-foreground">
                       {endpoint.base_url}
                     </div>
                     <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground">
                       <span>{endpoint.model}</span>
-                      {endpoint.has_api_key && <span>{endpoint.api_key_preview ?? 'API key set'}</span>}
+                      {endpoint.has_api_key && (
+                        <span>{endpoint.api_key_preview ?? "API key set"}</span>
+                      )}
                     </div>
                   </button>
                   <div className="flex items-center gap-2 sm:justify-end">
                     <Button
-                      disabled={endpoint.is_current || activating === endpoint.id}
+                      disabled={
+                        endpoint.is_current || activating === endpoint.id
+                      }
                       onClick={() => void handleActivate(endpoint)}
                       size="sm"
                       variant="outline"
                     >
-                      {activating === endpoint.id ? <Loader2 className="animate-spin" /> : <Zap />}
+                      {activating === endpoint.id ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        <Zap />
+                      )}
                       Use
                     </Button>
-                    {endpoint.source !== 'direct-config' && (
+                    {endpoint.source !== "direct-config" && (
                       <Button
                         className="hover:text-destructive"
                         disabled={deleting === endpoint.id}
@@ -281,26 +327,41 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
                         title="Delete endpoint"
                         variant="ghost"
                       >
-                        {deleting === endpoint.id ? <Loader2 className="animate-spin" /> : <Trash2 />}
+                        {deleting === endpoint.id ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          <Trash2 />
+                        )}
                       </Button>
                     )}
                   </div>
                 </div>
               ))
             ) : (
-              <EmptyState description="Add an OpenAI-compatible endpoint below." title="No custom endpoints" />
+              <EmptyState
+                description="Add an OpenAI-compatible endpoint below."
+                title="No custom endpoints"
+              />
             )}
           </div>
         </section>
 
         <section>
-          <SectionHeading icon={Plus} title={form.id ? 'Edit Endpoint' : 'Add Endpoint'} />
+          <SectionHeading
+            icon={Plus}
+            title={form.id ? "Edit Endpoint" : "Add Endpoint"}
+          />
           <div className="grid gap-3 rounded-md border border-border/50 p-3">
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="grid gap-1.5 text-xs text-muted-foreground">
                 Name
                 <Input
-                  onChange={event => setForm(current => ({ ...current, name: event.target.value }))}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      name: event.target.value,
+                    }))
+                  }
                   placeholder="Axet Proxy"
                   value={form.name}
                 />
@@ -308,7 +369,12 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
               <label className="grid gap-1.5 text-xs text-muted-foreground">
                 Provider ID
                 <Input
-                  onChange={event => setForm(current => ({ ...current, id: event.target.value }))}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      id: event.target.value,
+                    }))
+                  }
                   placeholder="axet-proxy"
                   value={form.id}
                 />
@@ -317,7 +383,12 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
             <label className="grid gap-1.5 text-xs text-muted-foreground">
               Endpoint URL
               <Input
-                onChange={event => setForm(current => ({ ...current, baseUrl: event.target.value }))}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    baseUrl: event.target.value,
+                  }))
+                }
                 placeholder="http://127.0.0.1:8081/v1"
                 value={form.baseUrl}
               />
@@ -327,12 +398,17 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
                 Default Model
                 <Input
                   list="custom-endpoint-models"
-                  onChange={event => setForm(current => ({ ...current, model: event.target.value }))}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      model: event.target.value,
+                    }))
+                  }
                   placeholder="gpt-5.4"
                   value={form.model}
                 />
                 <datalist id="custom-endpoint-models">
-                  {allModelOptions.map(model => (
+                  {allModelOptions.map((model) => (
                     <option key={model} value={model} />
                   ))}
                 </datalist>
@@ -341,7 +417,12 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
                 Context
                 <Input
                   inputMode="numeric"
-                  onChange={event => setForm(current => ({ ...current, contextLength: event.target.value }))}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      contextLength: event.target.value,
+                    }))
+                  }
                   placeholder="Auto"
                   value={form.contextLength}
                 />
@@ -350,8 +431,15 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
             <label className="grid gap-1.5 text-xs text-muted-foreground">
               API Key
               <Input
-                onChange={event => setForm(current => ({ ...current, apiKey: event.target.value }))}
-                placeholder={form.id ? 'Leave blank to keep current key' : 'Optional'}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    apiKey: event.target.value,
+                  }))
+                }
+                placeholder={
+                  form.id ? "Leave blank to keep current key" : "Optional"
+                }
                 type="password"
                 value={form.apiKey}
               />
@@ -360,14 +448,24 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
               <label className="flex items-center gap-2">
                 <Checkbox
                   checked={form.makeDefault}
-                  onCheckedChange={checked => setForm(current => ({ ...current, makeDefault: checked === true }))}
+                  onCheckedChange={(checked) =>
+                    setForm((current) => ({
+                      ...current,
+                      makeDefault: checked === true,
+                    }))
+                  }
                 />
                 Use for new chats
               </label>
               <label className="flex items-center gap-2">
                 <Checkbox
                   checked={form.discoverModels}
-                  onCheckedChange={checked => setForm(current => ({ ...current, discoverModels: checked === true }))}
+                  onCheckedChange={(checked) =>
+                    setForm((current) => ({
+                      ...current,
+                      discoverModels: checked === true,
+                    }))
+                  }
                 />
                 Discover models
               </label>
@@ -381,15 +479,18 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
                 {testing ? <Loader2 className="animate-spin" /> : <Zap />}
                 Test
               </Button>
-              <Button disabled={saving || !canSave} onClick={() => void handleSave()}>
+              <Button
+                disabled={saving || !canSave}
+                onClick={() => void handleSave()}
+              >
                 {saving ? <Loader2 className="animate-spin" /> : <Save />}
                 Save
               </Button>
               <Button
-                className={cn(!form.id && 'hidden')}
+                className={cn(!form.id && "hidden")}
                 onClick={() => {
-                  setForm(EMPTY_FORM)
-                  setDiscoveredModels([])
+                  setForm(EMPTY_FORM);
+                  setDiscoveredModels([]);
                 }}
                 type="button"
                 variant="ghost"
@@ -401,5 +502,5 @@ export function CustomEndpointsSettings({ onConfigSaved, onMainModelChanged }: C
         </section>
       </div>
     </SettingsContent>
-  )
+  );
 }

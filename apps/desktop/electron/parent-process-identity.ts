@@ -1,16 +1,16 @@
 export type ParentWatchdogEnv = {
-  HERMES_PARENT_PID: string
-  HERMES_PARENT_START_MARKER?: string
-  HERMES_PARENT_NONCE?: string
+  HERMES_PARENT_PID: string;
+  HERMES_PARENT_START_MARKER?: string;
+  HERMES_PARENT_NONCE?: string;
   /** Spawn tag consumed by hermes_cli.process_identity (`v1:<install>:<purpose>:<spawner_pid>:<spawner_create_s>`).
    *  Install is `-` (unknown) from the Desktop — the Python side scopes by
    *  venv membership, so the tag only needs lineage, not install identity. */
-  HERMES_SPAWN?: string
-}
+  HERMES_SPAWN?: string;
+};
 
 export interface ParentStartMarkerResolverOptions {
-  load: () => Promise<string>
-  onError?: (error: unknown) => void
+  load: () => Promise<string>;
+  onError?: (error: unknown) => void;
 }
 
 /**
@@ -18,75 +18,89 @@ export interface ParentStartMarkerResolverOptions {
  * an OS helper. Electron reports milliseconds since the Unix epoch; the Python
  * watchdog converts its exact Windows FILETIME to the same representation.
  */
-export function electronProcessStartMarker(pid: number, ownPid: number, creationTime: unknown): string | null {
-  if (pid !== ownPid || typeof creationTime !== 'number' || !Number.isFinite(creationTime)) {
-    return null
+export function electronProcessStartMarker(
+  pid: number,
+  ownPid: number,
+  creationTime: unknown,
+): string | null {
+  if (
+    pid !== ownPid ||
+    typeof creationTime !== "number" ||
+    !Number.isFinite(creationTime)
+  ) {
+    return null;
   }
 
-  const milliseconds = Math.trunc(creationTime)
+  const milliseconds = Math.trunc(creationTime);
 
   if (!Number.isSafeInteger(milliseconds) || milliseconds <= 0) {
-    return null
+    return null;
   }
 
-  return `winms:${milliseconds}`
+  return `winms:${milliseconds}`;
 }
 
 /** Cache a successful parent marker while allowing a transient failure to retry. */
-export function createParentStartMarkerResolver(options: ParentStartMarkerResolverOptions) {
-  let cached: Promise<string> | null = null
+export function createParentStartMarkerResolver(
+  options: ParentStartMarkerResolverOptions,
+) {
+  let cached: Promise<string> | null = null;
 
   return async (): Promise<string | null> => {
-    const attempt = cached ?? Promise.resolve().then(options.load)
-    cached = attempt
+    const attempt = cached ?? Promise.resolve().then(options.load);
+    cached = attempt;
 
     try {
-      return await attempt
+      return await attempt;
     } catch (error) {
-      let shouldReport = false
+      let shouldReport = false;
 
       if (cached === attempt) {
-        cached = null
-        shouldReport = true
+        cached = null;
+        shouldReport = true;
       }
 
       if (shouldReport) {
         try {
-          options.onError?.(error)
+          options.onError?.(error);
         } catch {
           // Diagnostics must not turn an optional identity probe into a boot gate.
         }
       }
 
-      return null
+      return null;
     }
-  }
+  };
 }
 
 /**
  * Keep the watchdog's marker and nonce atomic. A failed marker probe degrades
  * to the legacy PID-only watchdog instead of preventing the backend spawn.
  */
-export function parentWatchdogEnv(pid: number, startMarker: string | null, nonce: string): ParentWatchdogEnv {
+export function parentWatchdogEnv(
+  pid: number,
+  startMarker: string | null,
+  nonce: string,
+): ParentWatchdogEnv {
   if (!Number.isInteger(pid) || pid <= 0) {
-    throw new Error('Parent watchdog requires a positive process ID.')
+    throw new Error("Parent watchdog requires a positive process ID.");
   }
 
-  const env: ParentWatchdogEnv = { HERMES_PARENT_PID: String(pid) }
-  env.HERMES_SPAWN = spawnTag(pid, startMarker)
+  const env: ParentWatchdogEnv = { HERMES_PARENT_PID: String(pid) };
+  env.HERMES_SPAWN = spawnTag(pid, startMarker);
 
   if (startMarker === null) {
-    return env
+    return env;
   }
 
   if (!startMarker || !nonce) {
-    throw new Error('Parent watchdog marker and nonce must be non-empty.')
+    throw new Error("Parent watchdog marker and nonce must be non-empty.");
   }
 
-  env.HERMES_PARENT_START_MARKER = startMarker
-  env.HERMES_PARENT_NONCE = nonce
+  env.HERMES_PARENT_START_MARKER = startMarker;
+  env.HERMES_PARENT_NONCE = nonce;
 
-  return env
+  return env;
 }
 
 /** Build the `HERMES_SPAWN` tag mirrored by hermes_cli/process_identity.py.
@@ -94,15 +108,15 @@ export function parentWatchdogEnv(pid: number, startMarker: string | null, nonce
  *  spawner create-time is derived from the same `winms:` marker the parent
  *  watchdog uses (seconds, 3 decimals), `-` when the marker probe failed. */
 export function spawnTag(pid: number, startMarker: string | null): string {
-  let createPart = '-'
+  let createPart = "-";
 
-  if (startMarker?.startsWith('winms:')) {
-    const ms = Number(startMarker.slice('winms:'.length))
+  if (startMarker?.startsWith("winms:")) {
+    const ms = Number(startMarker.slice("winms:".length));
 
     if (Number.isFinite(ms) && ms > 0) {
-      createPart = (ms / 1000).toFixed(3)
+      createPart = (ms / 1000).toFixed(3);
     }
   }
 
-  return `v1:-:serve:${pid}:${createPart}`
+  return `v1:-:serve:${pid}:${createPart}`;
 }

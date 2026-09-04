@@ -22,25 +22,26 @@
  * Electron's asar-aware fs: paths inside `app.asar` read like real files.
  */
 
-import fs from 'node:fs'
-import path from 'node:path'
+import fs from "node:fs";
+import path from "node:path";
 
 // The modules the browser fetches before any app code runs: Vite emits them as
 // `<script type="module" src>` plus `<link rel="modulepreload" href>`.
-const TAG_WITH_URL = /<(?:script|link)\b[^>]*\b(?:src|href)=["']([^"']+)["'][^>]*>/gi
-const MODULE_TAG = /\btype=["']module["']|\brel=["']modulepreload["']/i
+const TAG_WITH_URL =
+  /<(?:script|link)\b[^>]*\b(?:src|href)=["']([^"']+)["'][^>]*>/gi;
+const MODULE_TAG = /\btype=["']module["']|\brel=["']modulepreload["']/i;
 
 export function parseModuleAssetRefs(html: string): string[] {
-  const refs: string[] = []
+  const refs: string[] = [];
 
-  for (const [tag, href] of String(html ?? '').matchAll(TAG_WITH_URL)) {
+  for (const [tag, href] of String(html ?? "").matchAll(TAG_WITH_URL)) {
     // Absolute/CDN URLs aren't part of this bundle's generation.
     if (MODULE_TAG.test(tag) && !/^[a-z]+:|^\/\//i.test(href)) {
-      refs.push(href.replace(/^\.\//, '').split(/[?#]/)[0])
+      refs.push(href.replace(/^\.\//, "").split(/[?#]/)[0]);
     }
   }
 
-  return refs
+  return refs;
 }
 
 // Vite bakes each chunk's lazy-import filenames into an inline
@@ -51,27 +52,27 @@ export function parseModuleAssetRefs(html: string): string[] {
 // exactly the files a torn update leaves dangling AFTER index.html's own
 // preload list checks out. The index-only call sites contain no quoted
 // strings, so this scan matches only the definition's filename table.
-const MAP_DEPS_ARRAY = /__vite__mapDeps[^[\]]{0,300}\[([^\]]*)\]/g
-const QUOTED_REF = /["']([^"']+)["']/g
+const MAP_DEPS_ARRAY = /__vite__mapDeps[^[\]]{0,300}\[([^\]]*)\]/g;
+const QUOTED_REF = /["']([^"']+)["']/g;
 
 export function parseLazyChunkRefs(js: string): string[] {
-  const refs = new Set<string>()
+  const refs = new Set<string>();
 
-  for (const [, body] of String(js ?? '').matchAll(MAP_DEPS_ARRAY)) {
+  for (const [, body] of String(js ?? "").matchAll(MAP_DEPS_ARRAY)) {
     for (const [, ref] of body.matchAll(QUOTED_REF)) {
       // Absolute/CDN URLs aren't part of this bundle's generation.
       if (!/^[a-z]+:|^\/\//i.test(ref)) {
-        refs.add(ref.replace(/^\.\//, '').split(/[?#]/)[0])
+        refs.add(ref.replace(/^\.\//, "").split(/[?#]/)[0]);
       }
     }
   }
 
-  return [...refs]
+  return [...refs];
 }
 
 export interface RendererBundleDeps {
-  readFileSync?: (file: string, encoding: 'utf8') => string
-  existsSync?: (file: string) => boolean
+  readFileSync?: (file: string, encoding: "utf8") => string;
+  existsSync?: (file: string) => boolean;
 }
 
 /**
@@ -88,37 +89,40 @@ export interface RendererBundleDeps {
  * caller's own existence gate owns unreadable/missing files). Non-empty ⇒ torn:
  * loading it produces the "Failed to fetch dynamically imported module" crash.
  */
-export function missingRendererAssets(indexPath: string, deps: RendererBundleDeps = {}): string[] {
-  const { readFileSync = fs.readFileSync, existsSync = fs.existsSync } = deps
-  const dir = path.dirname(indexPath)
+export function missingRendererAssets(
+  indexPath: string,
+  deps: RendererBundleDeps = {},
+): string[] {
+  const { readFileSync = fs.readFileSync, existsSync = fs.existsSync } = deps;
+  const dir = path.dirname(indexPath);
 
-  let html: string
+  let html: string;
 
   try {
-    html = readFileSync(indexPath, 'utf8')
+    html = readFileSync(indexPath, "utf8");
   } catch {
-    return []
+    return [];
   }
 
-  const missing: string[] = []
-  const seen = new Set<string>()
-  const queue = [...parseModuleAssetRefs(html)]
+  const missing: string[] = [];
+  const seen = new Set<string>();
+  const queue = [...parseModuleAssetRefs(html)];
 
   while (queue.length > 0) {
-    const ref = queue.shift()!
+    const ref = queue.shift()!;
 
     if (seen.has(ref)) {
-      continue
+      continue;
     }
 
-    seen.add(ref)
+    seen.add(ref);
 
-    const file = path.join(dir, ref)
+    const file = path.join(dir, ref);
 
     if (!existsSync(file)) {
-      missing.push(ref)
+      missing.push(ref);
 
-      continue
+      continue;
     }
 
     // A present JS chunk may still name lazy imports of its own. Read its
@@ -127,34 +131,37 @@ export function missingRendererAssets(indexPath: string, deps: RendererBundleDep
     // directory in older Vite output, and base-relative in newer output —
     // normalize both to index-dir-relative before the existence check).
     if (!/\.m?js$/i.test(ref)) {
-      continue
+      continue;
     }
 
-    let js: string
+    let js: string;
 
     try {
-      js = readFileSync(file, 'utf8')
+      js = readFileSync(file, "utf8");
     } catch {
       // Unreadable-but-present is the existence gate's concern, same contract
       // as an unreadable index.html above.
-      continue
+      continue;
     }
 
     for (const lazyRef of parseLazyChunkRefs(js)) {
-      const chunkDirRelative = path.join(path.dirname(ref), lazyRef).split(path.sep).join('/')
+      const chunkDirRelative = path
+        .join(path.dirname(ref), lazyRef)
+        .split(path.sep)
+        .join("/");
 
       // Prefer whichever interpretation lands on a real file; when neither
       // does, report the index-dir-relative spelling (matches how the
       // boot-critical refs above are reported).
       if (existsSync(path.join(dir, lazyRef))) {
-        queue.push(lazyRef)
+        queue.push(lazyRef);
       } else if (existsSync(path.join(dir, chunkDirRelative))) {
-        queue.push(chunkDirRelative)
+        queue.push(chunkDirRelative);
       } else {
-        queue.push(lazyRef)
+        queue.push(lazyRef);
       }
     }
   }
 
-  return missing
+  return missing;
 }

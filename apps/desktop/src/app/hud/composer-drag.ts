@@ -1,37 +1,43 @@
-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { triggerHaptic } from '@/lib/haptics'
+import { triggerHaptic } from "@/lib/haptics";
 
 /** Hold anywhere on the HUD composer before the bar becomes draggable. Short
  *  enough to feel like grabbing it, long enough that a click still clicks. */
-const LONG_PRESS_MS = 140
+const LONG_PRESS_MS = 140;
 /** Slop before the hold is read as a text selection instead of a grab. */
-const MOVE_TOLERANCE = 8
+const MOVE_TOLERANCE = 8;
 
 interface PressState {
-  armed: boolean
-  mode: 'control' | 'hold'
-  originH: number
-  originW: number
-  pointerId: number
-  startX: number
-  startY: number
-  target: HTMLElement
-  workspaceTransfer: boolean
+  armed: boolean;
+  mode: "control" | "hold";
+  originH: number;
+  originW: number;
+  pointerId: number;
+  startX: number;
+  startY: number;
+  target: HTMLElement;
+  workspaceTransfer: boolean;
 }
 
 interface HudComposerDragOptions {
   /** X11 escape hatch: Ctrl+primary-button grabs immediately instead of
    *  competing with Chromium's text-selection drag until the hold timer. */
-  controlDrag?: boolean
+  controlDrag?: boolean;
   /** X11/KWin only: keep the grabbed window visible while the user changes
    *  virtual desktops, then pin it to the destination desktop on release. */
-  workspaceTransfer?: boolean
+  workspaceTransfer?: boolean;
 }
 
 function capturePointer(state: PressState): void {
   try {
-    state.target.setPointerCapture?.(state.pointerId)
+    state.target.setPointerCapture?.(state.pointerId);
   } catch {
     // A renderer can reject capture after selection/native-drag bookkeeping.
     // Window capture-phase listeners below still keep the in-window gesture
@@ -42,7 +48,7 @@ function capturePointer(state: PressState): void {
 function releasePointer(state: PressState): void {
   try {
     if (state.target.hasPointerCapture?.(state.pointerId)) {
-      state.target.releasePointerCapture?.(state.pointerId)
+      state.target.releasePointerCapture?.(state.pointerId);
     }
   } catch {
     // Pointer cancellation may invalidate the id before React cleans up.
@@ -50,25 +56,25 @@ function releasePointer(state: PressState): void {
 }
 
 function setWorkspaceTransfer(transferring: boolean): void {
-  window.hermesDesktop?.hud?.setWorkspaceTransfer?.(transferring)
+  window.hermesDesktop?.hud?.setWorkspaceTransfer?.(transferring);
 }
 
 function moveHud(state: PressState): void {
   window.hermesDesktop?.hud?.moveBy?.({
     width: state.originW,
-    height: state.originH
-  })
+    height: state.originH,
+  });
 }
 
 function armGrab(state: PressState, workspaceTransfer: boolean): void {
-  state.armed = true
-  state.workspaceTransfer = workspaceTransfer
+  state.armed = true;
+  state.workspaceTransfer = workspaceTransfer;
 
   if (workspaceTransfer) {
-    setWorkspaceTransfer(true)
+    setWorkspaceTransfer(true);
   }
 
-  window.hermesDesktop?.hud?.beginMove?.()
+  window.hermesDesktop?.hud?.beginMove?.();
 }
 
 /**
@@ -96,113 +102,116 @@ function armGrab(state: PressState, workspaceTransfer: boolean): void {
  */
 export function useHudComposerDrag(
   enabled: boolean,
-  { controlDrag = false, workspaceTransfer = false }: HudComposerDragOptions = {}
+  {
+    controlDrag = false,
+    workspaceTransfer = false,
+  }: HudComposerDragOptions = {},
 ) {
-  const [grabbing, setGrabbing] = useState(false)
-  const stateRef = useRef<PressState | null>(null)
-  const timerRef = useRef<number | null>(null)
+  const [grabbing, setGrabbing] = useState(false);
+  const stateRef = useRef<PressState | null>(null);
+  const timerRef = useRef<number | null>(null);
 
   const reset = useCallback(() => {
     if (timerRef.current !== null) {
-      window.clearTimeout(timerRef.current)
-      timerRef.current = null
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
     }
 
-    const state = stateRef.current
+    const state = stateRef.current;
 
     if (state) {
       if (state.armed) {
-        window.hermesDesktop?.hud?.endMove?.()
+        window.hermesDesktop?.hud?.endMove?.();
       }
 
       if (state.workspaceTransfer) {
-        setWorkspaceTransfer(false)
+        setWorkspaceTransfer(false);
       }
 
-      releasePointer(state)
+      releasePointer(state);
     }
 
-    stateRef.current = null
-    setGrabbing(false)
-  }, [])
+    stateRef.current = null;
+    setGrabbing(false);
+  }, []);
 
   const onPointerDown = useCallback(
     (event: ReactPointerEvent<HTMLElement>) => {
       if (!enabled || event.button !== 0) {
-        return
+        return;
       }
 
-      const target = event.currentTarget
-      const immediate = controlDrag && event.ctrlKey
+      const target = event.currentTarget;
+      const immediate = controlDrag && event.ctrlKey;
 
       // A press over an existing contentEditable selection otherwise starts
       // Chromium's native text drag, which cancels our pointer stream. Cancel
       // that default action before it is chosen; do not blur or rewrite the
       // Selection, so the user's selected text survives moving the window.
       if (immediate) {
-        event.preventDefault()
+        event.preventDefault();
       }
 
       const state: PressState = {
         armed: false,
-        mode: immediate ? 'control' : 'hold',
+        mode: immediate ? "control" : "hold",
         originH: window.outerHeight,
         originW: window.outerWidth,
         pointerId: event.pointerId,
         startX: event.screenX,
         startY: event.screenY,
         target,
-        workspaceTransfer: false
-      }
+        workspaceTransfer: false,
+      };
 
-      stateRef.current = state
+      stateRef.current = state;
 
       if (timerRef.current !== null) {
-        window.clearTimeout(timerRef.current)
+        window.clearTimeout(timerRef.current);
       }
 
       if (immediate) {
-        armGrab(state, workspaceTransfer)
-        setGrabbing(true)
-        triggerHaptic('selection')
-        capturePointer(state)
+        armGrab(state, workspaceTransfer);
+        setGrabbing(true);
+        triggerHaptic("selection");
+        capturePointer(state);
 
-        return
+        return;
       }
 
       timerRef.current = window.setTimeout(() => {
-        const state = stateRef.current
+        const state = stateRef.current;
 
         if (!state || state.armed) {
-          return
+          return;
         }
 
-        armGrab(state, workspaceTransfer)
-        setGrabbing(true)
-        triggerHaptic('selection')
+        armGrab(state, workspaceTransfer);
+        setGrabbing(true);
+        triggerHaptic("selection");
 
         // Capture so the moves keep arriving once the cursor outruns the bar,
         // and drop the caret so the drag isn't also extending a selection.
-        capturePointer(state)
+        capturePointer(state);
 
         if (document.activeElement instanceof HTMLElement) {
-          document.activeElement.blur()
+          document.activeElement.blur();
         }
-      }, LONG_PRESS_MS)
+      }, LONG_PRESS_MS);
     },
-    [controlDrag, enabled, workspaceTransfer]
-  )
+    [controlDrag, enabled, workspaceTransfer],
+  );
 
   useEffect(() => {
     if (!enabled) {
-      return
+      return;
     }
 
     const onMove = (event: PointerEvent) => {
-      const state = stateRef.current
+      const state = stateRef.current;
 
       if (!state || event.pointerId !== state.pointerId) {
-        return
+        return;
       }
 
       if (!state.armed) {
@@ -210,81 +219,85 @@ export function useHudComposerDrag(
           Math.abs(event.screenX - state.startX) > MOVE_TOLERANCE ||
           Math.abs(event.screenY - state.startY) > MOVE_TOLERANCE
         ) {
-          reset()
+          reset();
         }
 
-        return
+        return;
       }
 
-      event.preventDefault()
-      moveHud(state)
-    }
+      event.preventDefault();
+      moveHud(state);
+    };
 
     const onUp = (event: PointerEvent | MouseEvent) => {
-      const state = stateRef.current
-      const pointerId = 'pointerId' in event ? event.pointerId : state?.pointerId
+      const state = stateRef.current;
+      const pointerId =
+        "pointerId" in event ? event.pointerId : state?.pointerId;
 
       if (!state || pointerId !== state.pointerId) {
-        return
+        return;
       }
 
       // A completed hold is a grab, not a click on whatever was underneath it.
       if (state.armed) {
-        window.addEventListener('click', click => click.stopPropagation(), { capture: true, once: true })
+        window.addEventListener("click", (click) => click.stopPropagation(), {
+          capture: true,
+          once: true,
+        });
       }
 
-      reset()
-    }
+      reset();
+    };
 
     // Crossing a display often cancels the pointer without a matching up.
     // Ending the grab there is what parks the HUD on the first monitor; snap
     // to the native cursor and keep the hold so the next move (or mouseup)
     // can finish on the other display.
     const onCancel = (event: PointerEvent) => {
-      const state = stateRef.current
+      const state = stateRef.current;
 
       if (!state || event.pointerId !== state.pointerId) {
-        return
+        return;
       }
 
       if (!state.armed) {
-        reset()
+        reset();
 
-        return
+        return;
       }
 
-      event.preventDefault()
-      moveHud(state)
-      capturePointer(state)
-    }
+      event.preventDefault();
+      moveHud(state);
+      capturePointer(state);
+    };
 
     const preventEditorGesture = (event: Event) => {
-      if (stateRef.current?.mode === 'control') {
-        event.preventDefault()
+      if (stateRef.current?.mode === "control") {
+        event.preventDefault();
       }
-    }
+    };
 
     // Capture phase wins the race against contentEditable selection/drag
     // handlers. `dragstart` is a second guard for an already-selected range;
     // `selectstart` stops the same press from replacing that range.
-    window.addEventListener('pointermove', onMove, true)
-    window.addEventListener('pointerup', onUp, true)
-    window.addEventListener('mouseup', onUp, true)
-    window.addEventListener('pointercancel', onCancel, true)
-    window.addEventListener('dragstart', preventEditorGesture, true)
-    window.addEventListener('selectstart', preventEditorGesture, true)
+    window.addEventListener("pointermove", onMove, true);
+    window.addEventListener("pointerup", onUp, true);
+    window.addEventListener("mouseup", onUp, true);
+    window.addEventListener("pointercancel", onCancel, true);
+    window.addEventListener("dragstart", preventEditorGesture, true);
+    window.addEventListener("selectstart", preventEditorGesture, true);
 
     return () => {
-      window.removeEventListener('pointermove', onMove, true)
-      window.removeEventListener('pointerup', onUp, true)
-      window.removeEventListener('mouseup', onUp, true)
-      window.removeEventListener('pointercancel', onCancel, true)
-      window.removeEventListener('dragstart', preventEditorGesture, true)
-      window.removeEventListener('selectstart', preventEditorGesture, true)
-    }
-  }, [enabled, reset])
+      window.removeEventListener("pointermove", onMove, true);
+      window.removeEventListener("pointerup", onUp, true);
+      window.removeEventListener("mouseup", onUp, true);
+      window.removeEventListener("pointercancel", onCancel, true);
+      window.removeEventListener("dragstart", preventEditorGesture, true);
+      window.removeEventListener("selectstart", preventEditorGesture, true);
+    };
+  }, [enabled, reset]);
 
-  useEffect(() => reset, [reset])
+  useEffect(() => reset, [reset]);
 
-  return { grabbing, onPointerDown }
+  return { grabbing, onPointerDown };
 }

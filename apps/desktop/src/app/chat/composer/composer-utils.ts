@@ -1,13 +1,13 @@
-import type { Unstable_TriggerItem } from '@assistant-ui/core'
-import type { ConnectionState } from '@hermes/shared'
+import type { Unstable_TriggerItem } from "@assistant-ui/core";
+import type { ConnectionState } from "@hermes/shared";
 
-import type { SlashChipKind } from '@/components/assistant-ui/directive-text'
-import type { ComposerAttachment } from '@/store/composer'
-import { setSessionPickerOpen } from '@/store/session'
+import type { SlashChipKind } from "@/components/assistant-ui/directive-text";
+import type { ComposerAttachment } from "@/store/composer";
+import { setSessionPickerOpen } from "@/store/session";
 
-import type { TriggerState } from './text-utils'
+import type { TriggerState } from "./text-utils";
 
-export const COMPOSER_STACK_BREAKPOINT_PX = 320
+export const COMPOSER_STACK_BREAKPOINT_PX = 320;
 
 // Above the stack breakpoint but still cramped: the model pill sheds its label
 // for its chevron icon so the controls stop crowding the input before the whole
@@ -21,7 +21,7 @@ export const COMPOSER_STACK_BREAKPOINT_PX = 320
 // gave up, which is the one thing progressive collapse is supposed to avoid.
 // At 560 the label goes while the input still has ~276px, and the ~110px the
 // chevron frees is spent keeping the row single for another stretch.
-export const COMPOSER_COMPACT_PILL_PX = 560
+export const COMPOSER_COMPACT_PILL_PX = 560;
 
 // The ladder keeps going below the stack breakpoint — a pane can be far
 // narrower than even the stacked controls row. Both rungs are budgeted
@@ -32,26 +32,26 @@ export const COMPOSER_COMPACT_PILL_PX = 560
 // uses, clearing the mid-turn worst case with margin. Each stage sits clear
 // of the floor below it rather than arriving the instant the previous one
 // gives out — the mistake COMPOSER_COMPACT_PILL_PX documents.
-export const COMPOSER_FOLD_VOICE_PX = 260
+export const COMPOSER_FOLD_VOICE_PX = 260;
 
 // Type and send, nothing else. A pane can be dragged to MIN_PANE_PX (80), and
 // even with voice folded the row still costs ~150, so the last rung drops the
 // pill AND the voice menu. Both stay reachable — the model by hotkey and the
 // full picker, dictation from any wider pane — and Send fits with room to
 // spare at any width the layout tree allows (~74 all-in).
-export const COMPOSER_MINIMAL_PX = 180
+export const COMPOSER_MINIMAL_PX = 180;
 
 // A single editor line is ~28px (--composer-input-min-height 1.625rem + 0.5rem
 // vertical padding). Anything taller means the text wrapped to a second line,
 // which is when the composer should expand to the stacked layout.
-export const COMPOSER_SINGLE_LINE_MAX_PX = 36
+export const COMPOSER_SINGLE_LINE_MAX_PX = 36;
 
 export const COMPOSER_FADE_BACKGROUND =
-  'linear-gradient(to bottom, transparent, color-mix(in srgb, var(--dt-background) 10%, transparent))'
+  "linear-gradient(to bottom, transparent, color-mix(in srgb, var(--dt-background) 10%, transparent))";
 
 // Quiet period after the last keystroke before persisting the draft;
 // unmount/pagehide flushes bypass it.
-export const DRAFT_PERSIST_DEBOUNCE_MS = 400
+export const DRAFT_PERSIST_DEBOUNCE_MS = 400;
 
 /**
  * Keep a reconnecting draft editable so transient gateway dials cannot blur
@@ -61,47 +61,56 @@ export const DRAFT_PERSIST_DEBOUNCE_MS = 400
  * An `open` state paired with `disabled=true` is a transient disagreement
  * between the connection atoms; fail closed until they converge.
  */
-export function shouldDisableComposerInput(disabled: boolean, gatewayState: ConnectionState): boolean {
-  return disabled && gatewayState === 'open'
+export function shouldDisableComposerInput(
+  disabled: boolean,
+  gatewayState: ConnectionState,
+): boolean {
+  return disabled && gatewayState === "open";
 }
 
-export const pickPlaceholder = (pool: readonly string[]) => pool[Math.floor(Math.random() * pool.length)]
+export const pickPlaceholder = (pool: readonly string[]) =>
+  pool[Math.floor(Math.random() * pool.length)];
 
 /** Completion items can carry an `action` (set in use-slash-completions) that
  *  runs a side effect on pick instead of inserting a chip — e.g. the session
  *  picker's "Browse all…" entry opens the overlay. Table-driven so new action
  *  items are a registry row, not a composer branch. */
 export const COMPLETION_ACTIONS: Record<string, () => void> = {
-  'session-picker': () => setSessionPickerOpen(true)
-}
+  "session-picker": () => setSessionPickerOpen(true),
+};
 
 /** Map a picked `/` completion to its pill accent. Driven by the completion
  *  group set in use-slash-completions (Skills / Themes / Commands|Options). */
-export function slashChipKindForItem(item: Unstable_TriggerItem): SlashChipKind {
-  const group = (item.metadata as { group?: unknown } | undefined)?.group
+export function slashChipKindForItem(
+  item: Unstable_TriggerItem,
+): SlashChipKind {
+  const group = (item.metadata as { group?: unknown } | undefined)?.group;
 
-  if (group === 'Skills') {
-    return 'skill'
+  if (group === "Skills") {
+    return "skill";
   }
 
-  if (group === 'Themes') {
-    return 'theme'
+  if (group === "Themes") {
+    return "theme";
   }
 
-  return 'command'
+  return "command";
 }
 
 /** True for a skill completion — the only kind offered mid-message. */
-export const isSkillItem = (item: Unstable_TriggerItem) => slashChipKindForItem(item) === 'skill'
+export const isSkillItem = (item: Unstable_TriggerItem) =>
+  slashChipKindForItem(item) === "skill";
 
 /** A `/` query is at its arg stage once it's past the command name. */
-export const slashArgStage = (query: string) => query.includes(' ')
+export const slashArgStage = (query: string) => query.includes(" ");
 
 /** The `/command` token of a slash query (`personality x` → `/personality`). */
-export const slashCommandToken = (query: string) => `/${query.split(/\s+/, 1)[0]?.toLowerCase() ?? ''}`
+export const slashCommandToken = (query: string) =>
+  `/${query.split(/\s+/, 1)[0]?.toLowerCase() ?? ""}`;
 
 /** Typed `/` query or completion text without the leading slash. */
-export const slashCompletionToken = (value: string) => value.replace(/^\//, '').trimEnd().toLowerCase()
+export const slashCompletionToken = (value: string) =>
+  value.replace(/^\//, "").trimEnd().toLowerCase();
 
 /**
  * Which row Space/Enter should take. Tab always uses the highlight; this is
@@ -115,44 +124,48 @@ export function implicitSlashAcceptIndex(
   query: string,
   itemTexts: readonly string[],
   activeIndex: number,
-  activeExplicit: boolean
+  activeExplicit: boolean,
 ): number | null {
-  const typed = slashCompletionToken(query)
+  const typed = slashCompletionToken(query);
 
   if (!typed) {
-    return null
+    return null;
   }
 
   if (activeExplicit && itemTexts[activeIndex] != null) {
-    return activeIndex
+    return activeIndex;
   }
 
-  const exact = itemTexts.findIndex(text => slashCompletionToken(text) === typed)
+  const exact = itemTexts.findIndex(
+    (text) => slashCompletionToken(text) === typed,
+  );
 
   if (exact >= 0) {
-    return exact
+    return exact;
   }
 
-  const active = itemTexts[activeIndex]
+  const active = itemTexts[activeIndex];
 
   if (active != null && slashCompletionToken(active).startsWith(typed)) {
-    return activeIndex
+    return activeIndex;
   }
 
-  const prefixHits = itemTexts.flatMap((text, index) => (slashCompletionToken(text).startsWith(typed) ? [index] : []))
+  const prefixHits = itemTexts.flatMap((text, index) =>
+    slashCompletionToken(text).startsWith(typed) ? [index] : [],
+  );
 
-  return prefixHits.length === 1 ? prefixHits[0] : null
+  return prefixHits.length === 1 ? prefixHits[0] : null;
 }
 
 export interface TriggerAcceptInput {
   /** The user moved the highlight themselves (arrow keys) rather than
    *  inheriting the list's default first row. */
-  activeExplicit: boolean
+  activeExplicit: boolean;
   /** The trigger is a slash command whose argument is arbitrary prose. */
-  freeTextArgStage: boolean
-  key: string
-  kind: TriggerState['kind']
-  query: string
+  freeTextArgStage: boolean;
+  key: string;
+  kind: TriggerState["kind"];
+  query: string;
 }
 
 /**
@@ -171,33 +184,36 @@ export function acceptsTriggerCompletion({
   freeTextArgStage,
   key,
   kind,
-  query
+  query,
 }: TriggerAcceptInput): boolean {
-  if (key === 'Tab') {
-    return true
+  if (key === "Tab") {
+    return true;
   }
 
-  if (key === 'Enter') {
-    return !freeTextArgStage || activeExplicit
+  if (key === "Enter") {
+    return !freeTextArgStage || activeExplicit;
   }
 
   // Space is slash-only (an `@` mention takes a literal space) and gated to a
   // non-empty query so a bare `/ ` still types a space.
-  return key === ' ' && kind === '/' && Boolean(query.trim()) && !freeTextArgStage
+  return (
+    key === " " && kind === "/" && Boolean(query.trim()) && !freeTextArgStage
+  );
 }
 
 export interface QueueEditState {
-  attachments: ComposerAttachment[]
-  draft: string
-  entryId: string
-  sessionKey: string
+  attachments: ComposerAttachment[];
+  draft: string;
+  entryId: string;
+  sessionKey: string;
 }
 
-export const cloneAttachments = (attachments: ComposerAttachment[]) => attachments.map(a => ({ ...a }))
+export const cloneAttachments = (attachments: ComposerAttachment[]) =>
+  attachments.map((a) => ({ ...a }));
 
 export interface PendingDraftPersist {
-  scope: string | null
-  text: string
+  scope: string | null;
+  text: string;
 }
 
 /**
@@ -213,7 +229,12 @@ export interface PendingDraftPersist {
  */
 export function isPendingDraftPersistCurrent(
   pending: PendingDraftPersist | null,
-  expected: PendingDraftPersist | null
+  expected: PendingDraftPersist | null,
 ): boolean {
-  return pending !== null && expected !== null && pending.scope === expected.scope && pending.text === expected.text
+  return (
+    pending !== null &&
+    expected !== null &&
+    pending.scope === expected.scope &&
+    pending.text === expected.text
+  );
 }

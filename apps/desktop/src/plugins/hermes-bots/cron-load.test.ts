@@ -18,22 +18,22 @@
  * routing layer (route resolution, error coercion) runs.
  */
 
-import type * as HermesSdk from '@hermes/plugin-sdk'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type * as HermesSdk from "@hermes/plugin-sdk";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { RoutineJob } from './types'
+import type { RoutineJob } from "./types";
 
-const request = vi.fn()
+const request = vi.fn();
 
-vi.mock('@hermes/plugin-sdk', async importOriginal => {
-  const sdk = await importOriginal<typeof HermesSdk>()
+vi.mock("@hermes/plugin-sdk", async (importOriginal) => {
+  const sdk = await importOriginal<typeof HermesSdk>();
 
-  return { ...sdk, host: { ...sdk.host, request } }
-})
+  return { ...sdk, host: { ...sdk.host, request } };
+});
 
-const { loadRoutines } = await import('./cron')
+const { loadRoutines } = await import("./cron");
 
-const LEGACY_PREFIX = 'You are running the scheduled routine "'
+const LEGACY_PREFIX = 'You are running the scheduled routine "';
 
 /** The shape a pre-hardening routine was persisted with. */
 function legacyJob(id: string, title: string, bot: string): RoutineJob {
@@ -42,136 +42,161 @@ function legacyJob(id: string, title: string, bot: string): RoutineJob {
     job_id: id,
     name: `[bot:${bot}] ${title}`,
     prompt_preview: `${LEGACY_PREFIX}${title}" for agent '${bot}'`,
-    state: 'scheduled'
-  }
+    state: "scheduled",
+  };
 }
 
 /** Every cron.manage call, as `[action, name]`. */
 function callLog() {
-  return request.mock.calls.map(([, params]) => [params.action, params.name])
+  return request.mock.calls.map(([, params]) => [params.action, params.name]);
 }
 
 beforeEach(() => {
-  vi.clearAllMocks()
-})
+  vi.clearAllMocks();
+});
 
-describe('the bot\u2019s own cron store', () => {
-  it('scopes the list and every inline pause to the bot profile', async () => {
-    request.mockImplementation(async (_method: string, params: Record<string, unknown>) =>
-      params.action === 'list' ? { jobs: [legacyJob('legacy', 'Audit', 'research')] } : { success: true }
-    )
+describe("the bot\u2019s own cron store", () => {
+  it("scopes the list and every inline pause to the bot profile", async () => {
+    request.mockImplementation(
+      async (_method: string, params: Record<string, unknown>) =>
+        params.action === "list"
+          ? { jobs: [legacyJob("legacy", "Audit", "research")] }
+          : { success: true },
+    );
 
-    await loadRoutines('research')
+    await loadRoutines("research");
 
-    expect(request.mock.calls.map(([method, params]) => [method, params])).toEqual([
-      ['cron.manage', { action: 'list', include_disabled: true, profile: 'research' }],
-      ['cron.manage', { action: 'pause', name: 'legacy', profile: 'research' }]
-    ])
-  })
+    expect(
+      request.mock.calls.map(([method, params]) => [method, params]),
+    ).toEqual([
+      [
+        "cron.manage",
+        { action: "list", include_disabled: true, profile: "research" },
+      ],
+      ["cron.manage", { action: "pause", name: "legacy", profile: "research" }],
+    ]);
+  });
 
-  it('omits the scope entirely when no owner is resolved', async () => {
-    request.mockResolvedValue({ jobs: [] })
+  it("omits the scope entirely when no owner is resolved", async () => {
+    request.mockResolvedValue({ jobs: [] });
 
-    await loadRoutines(undefined)
+    await loadRoutines(undefined);
 
-    expect(request).toHaveBeenCalledWith('cron.manage', { action: 'list', include_disabled: true })
-  })
-})
+    expect(request).toHaveBeenCalledWith("cron.manage", {
+      action: "list",
+      include_disabled: true,
+    });
+  });
+});
 
-describe('pausing a legacy delegated routine cannot fail the list', () => {
-  it('returns the whole list and overlays only the pauses that landed', async () => {
+describe("pausing a legacy delegated routine cannot fail the list", () => {
+  it("returns the whole list and overlays only the pauses that landed", async () => {
     const jobs: RoutineJob[] = [
-      legacyJob('legacy-fails', 'Audit', 'research'),
-      legacyJob('legacy-pauses', 'Build', 'research'),
+      legacyJob("legacy-fails", "Audit", "research"),
+      legacyJob("legacy-pauses", "Build", "research"),
       {
         enabled: true,
-        job_id: 'normal',
-        name: '[bot:research] Report',
-        prompt: 'Summarize the day',
-        state: 'scheduled'
-      }
-    ]
+        job_id: "normal",
+        name: "[bot:research] Report",
+        prompt: "Summarize the day",
+        state: "scheduled",
+      },
+    ];
 
-    request.mockImplementation(async (_method: string, params: Record<string, unknown>) => {
-      if (params.action === 'list') {
-        return { jobs }
-      }
+    request.mockImplementation(
+      async (_method: string, params: Record<string, unknown>) => {
+        if (params.action === "list") {
+          return { jobs };
+        }
 
-      if (params.name === 'legacy-fails') {
-        throw new Error('gateway rejected the pause')
-      }
+        if (params.name === "legacy-fails") {
+          throw new Error("gateway rejected the pause");
+        }
 
-      return { success: true }
-    })
+        return { success: true };
+      },
+    );
 
     // Pre-fix this rejected with the pause error.
-    const result = await loadRoutines('research')
+    const result = await loadRoutines("research");
 
-    expect(result.jobs).toHaveLength(3)
+    expect(result.jobs).toHaveLength(3);
 
-    const byId = Object.fromEntries(result.jobs!.map(job => [job.job_id, job]))
+    const byId = Object.fromEntries(
+      result.jobs!.map((job) => [job.job_id, job]),
+    );
 
     // The failed pause keeps its server state and is retried on the next poll;
     // claiming it as paused would tell the user a job is safe when it is not.
-    expect(byId['legacy-fails']).toMatchObject({ enabled: true, state: 'scheduled' })
-    expect(byId['legacy-pauses']).toMatchObject({ enabled: false, state: 'paused' })
-    expect(byId.normal.enabled).toBe(true)
+    expect(byId["legacy-fails"]).toMatchObject({
+      enabled: true,
+      state: "scheduled",
+    });
+    expect(byId["legacy-pauses"]).toMatchObject({
+      enabled: false,
+      state: "paused",
+    });
+    expect(byId.normal.enabled).toBe(true);
 
     expect(callLog()).toEqual([
-      ['list', undefined],
-      ['pause', 'legacy-fails'],
-      ['pause', 'legacy-pauses']
-    ])
-  })
+      ["list", undefined],
+      ["pause", "legacy-fails"],
+      ["pause", "legacy-pauses"],
+    ]);
+  });
 
-  it('still resolves with the list when every pause fails', async () => {
-    request.mockImplementation(async (_method: string, params: Record<string, unknown>) => {
-      if (params.action === 'list') {
-        return { jobs: [legacyJob('only', 'Watch', 'ops')] }
-      }
+  it("still resolves with the list when every pause fails", async () => {
+    request.mockImplementation(
+      async (_method: string, params: Record<string, unknown>) => {
+        if (params.action === "list") {
+          return { jobs: [legacyJob("only", "Watch", "ops")] };
+        }
 
-      throw new Error('gateway down')
-    })
+        throw new Error("gateway down");
+      },
+    );
 
-    const result = await loadRoutines('ops')
+    const result = await loadRoutines("ops");
 
-    expect(result.jobs![0]).toMatchObject({ enabled: true, job_id: 'only' })
-  })
-})
+    expect(result.jobs![0]).toMatchObject({ enabled: true, job_id: "only" });
+  });
+});
 
-describe('the security pause is one-shot, not a poll loop', () => {
-  it('pauses the persisted routine once and leaves the rest of the record intact', async () => {
+describe("the security pause is one-shot, not a poll loop", () => {
+  it("pauses the persisted routine once and leaves the rest of the record intact", async () => {
     const persisted: RoutineJob = {
-      ...legacyJob('legacy-job', 'Audit', 'research'),
+      ...legacyJob("legacy-job", "Audit", "research"),
       repeat: { completed: 1, times: 3 } as unknown as string,
-      schedule: 'every 2h'
-    }
+      schedule: "every 2h",
+    };
 
-    request.mockImplementation(async (_method: string, params: Record<string, unknown>) => {
-      if (params.action === 'list') {
-        return { jobs: [persisted] }
-      }
+    request.mockImplementation(
+      async (_method: string, params: Record<string, unknown>) => {
+        if (params.action === "list") {
+          return { jobs: [persisted] };
+        }
 
-      persisted.enabled = false
-      persisted.state = 'paused'
+        persisted.enabled = false;
+        persisted.state = "paused";
 
-      return { success: true }
-    })
+        return { success: true };
+      },
+    );
 
-    const first = await loadRoutines('research')
+    const first = await loadRoutines("research");
 
     expect(first.jobs![0]).toMatchObject({
       enabled: false,
-      job_id: 'legacy-job',
+      job_id: "legacy-job",
       repeat: { completed: 1, times: 3 },
-      schedule: 'every 2h',
-      state: 'paused'
-    })
+      schedule: "every 2h",
+      state: "paused",
+    });
 
-    request.mockClear()
-    await loadRoutines('research')
+    request.mockClear();
+    await loadRoutines("research");
 
     // Already paused: the next poll must not re-attempt the pause forever.
-    expect(callLog()).toEqual([['list', undefined]])
-  })
-})
+    expect(callLog()).toEqual([["list", undefined]]);
+  });
+});

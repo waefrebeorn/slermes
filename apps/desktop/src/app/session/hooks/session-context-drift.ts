@@ -1,4 +1,4 @@
-import { isNewChatRoute, routeSessionId } from '../../routes'
+import { isNewChatRoute, routeSessionId } from "../../routes";
 
 /**
  * The chat a route token points at: the stored/routed session id, `'__new__'`
@@ -6,7 +6,7 @@ import { isNewChatRoute, routeSessionId } from '../../routes'
  * the other overlay routes). Used to compare two route tokens by their *chat*
  * rather than their raw string.
  */
-export type RouteTarget = string | null
+export type RouteTarget = string | null;
 
 /**
  * Reduce a route token to the chat it targets. The token is
@@ -18,17 +18,19 @@ export type RouteTarget = string | null
  * id arrives as %3A, and the app's other routes are literal colon-free paths).
  */
 export function routeTargetFromToken(token: string): RouteTarget {
-  const separator = token.indexOf(':')
-  const pathname = separator === -1 ? token : token.slice(0, separator)
+  const separator = token.indexOf(":");
+  const pathname = separator === -1 ? token : token.slice(0, separator);
 
-  return routeSessionId(pathname) ?? (isNewChatRoute(pathname) ? '__new__' : null)
+  return (
+    routeSessionId(pathname) ?? (isNewChatRoute(pathname) ? "__new__" : null)
+  );
 }
 
 interface SessionContextDriftArgs {
-  startRouteToken: string
-  nowRouteToken: string
-  startSelectedStoredId: string | null
-  nowSelectedStoredId: string | null
+  startRouteToken: string;
+  nowRouteToken: string;
+  startSelectedStoredId: string | null;
+  nowSelectedStoredId: string | null;
   /**
    * The stored session this submit is bound to, when known. Drift ignores a
    * move *to* this id: the submit pipeline itself re-homes selection and route
@@ -36,7 +38,7 @@ interface SessionContextDriftArgs {
    * not a user switch. Omit it (pre-create new-chat draft) to treat any move to
    * a real chat as drift.
    */
-  submitTargetStoredId?: string | null
+  submitTargetStoredId?: string | null;
   /**
    * The composer scope that was actually loaded when the text was submitted
    * (SubmitTextOptions.composerScope). The composer and the session-side refs
@@ -44,7 +46,7 @@ interface SessionContextDriftArgs {
    * still disagree with each other at the instant of send — this prong catches
    * that cross-component drift (#59305). Omit for non-composer submits.
    */
-  composerScope?: string | null
+  composerScope?: string | null;
   /**
    * resolveComposerSessionKey(submitTargetStoredId, sessions) — the durable
    * lineage-root form of the submit target, in the SAME domain as
@@ -55,7 +57,7 @@ interface SessionContextDriftArgs {
    * directly against the tip would false-positive-abort every submit into any
    * session that has ever compressed.
    */
-  submitTargetComposerScope?: string | null
+  submitTargetComposerScope?: string | null;
 }
 
 /**
@@ -77,7 +79,7 @@ export function sessionContextDrift({
   nowSelectedStoredId,
   submitTargetStoredId,
   composerScope,
-  submitTargetComposerScope
+  submitTargetComposerScope,
 }: SessionContextDriftArgs): string | null {
   // Composer prong: the composer's loaded scope disagrees with the resolved
   // submit target. Not a start/now comparison like the two prongs below — the
@@ -86,19 +88,27 @@ export function sessionContextDrift({
   // mode. Compared against submitTargetComposerScope (lineage-pinned), NOT
   // submitTargetStoredId (live tip) — see the field doc on
   // SessionContextDriftArgs for why those two must not be conflated.
-  if (composerScope !== undefined && composerScope !== null && composerScope !== submitTargetComposerScope) {
-    return `composer:${composerScope}->${submitTargetComposerScope}`
+  if (
+    composerScope !== undefined &&
+    composerScope !== null &&
+    composerScope !== submitTargetComposerScope
+  ) {
+    return `composer:${composerScope}->${submitTargetComposerScope}`;
   }
 
-  const targetStart = routeTargetFromToken(startRouteToken)
-  const targetNow = routeTargetFromToken(nowRouteToken)
+  const targetStart = routeTargetFromToken(startRouteToken);
+  const targetNow = routeTargetFromToken(nowRouteToken);
 
   // Route prong: the routed chat moved to a different, real chat. A null target
   // (navigated to settings / a non-chat overlay route) or a search/hash-only
   // change (same target) is not drift, and neither is landing on the submit's
   // own target.
-  if (targetNow !== targetStart && targetNow !== null && targetNow !== submitTargetStoredId) {
-    return `route:${targetStart}->${targetNow}`
+  if (
+    targetNow !== targetStart &&
+    targetNow !== null &&
+    targetNow !== submitTargetStoredId
+  ) {
+    return `route:${targetStart}->${targetNow}`;
   }
 
   // Selection prong: selection moved to a different, real stored session. A
@@ -109,8 +119,8 @@ export function sessionContextDrift({
     nowSelectedStoredId !== startSelectedStoredId &&
     nowSelectedStoredId !== submitTargetStoredId
   ) {
-    return `selection:${startSelectedStoredId}->${nowSelectedStoredId}`
+    return `selection:${startSelectedStoredId}->${nowSelectedStoredId}`;
   }
 
-  return null
+  return null;
 }

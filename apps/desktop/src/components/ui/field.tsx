@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 // Shared form-field primitive for dialog forms: a label stacked above its
 // control, with an optional inline "(optional)" tag. Pair with FieldHint for
@@ -13,13 +13,13 @@ export function Field({
   htmlFor,
   label,
   optional,
-  optionalLabel
+  optionalLabel,
 }: {
-  children: ReactNode
-  htmlFor?: string
-  label: ReactNode
-  optional?: boolean
-  optionalLabel?: string
+  children: ReactNode;
+  htmlFor?: string;
+  label: ReactNode;
+  optional?: boolean;
+  optionalLabel?: string;
 }) {
   return (
     <div className="grid gap-1.5">
@@ -30,16 +30,31 @@ export function Field({
       >
         {label}
         {optional && optionalLabel && (
-          <span className="text-[0.65rem] font-normal text-muted-foreground">{optionalLabel}</span>
+          <span className="text-[0.65rem] font-normal text-muted-foreground">
+            {optionalLabel}
+          </span>
         )}
       </label>
       {children}
     </div>
-  )
+  );
 }
 
-export function FieldHint({ children, error }: { children: ReactNode; error?: boolean }) {
+export function FieldHint({
+  children,
+  error,
+}: {
+  children: ReactNode;
+  error?: boolean;
+}) {
   return (
-    <p className={cn('text-[0.66rem] leading-4', error ? 'text-destructive' : 'text-muted-foreground')}>{children}</p>
-  )
+    <p
+      className={cn(
+        "text-[0.66rem] leading-4",
+        error ? "text-destructive" : "text-muted-foreground",
+      )}
+    >
+      {children}
+    </p>
+  );
 }

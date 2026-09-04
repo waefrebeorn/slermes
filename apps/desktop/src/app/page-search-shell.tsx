@@ -1,55 +1,55 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
-import { SearchField } from '@/components/ui/search-field'
-import { ResponsiveTabs } from '@/components/ui/tab-dropdown'
-import { cn } from '@/lib/utils'
+import { SearchField } from "@/components/ui/search-field";
+import { ResponsiveTabs } from "@/components/ui/tab-dropdown";
+import { cn } from "@/lib/utils";
 
 // Tabs are data, not nodes: the shell owns their presentation so every page
 // gets the same behavior — a centered TextTab row on wide viewports that
 // collapses into a dropdown when the header can't fit both search and tabs.
 export interface PageShellTab {
-  id: string
-  label: string
+  id: string;
+  label: string;
   /** Count badge. `null` = still loading (renders a skeleton); `undefined` = no badge. */
-  meta?: string | number | null
+  meta?: string | number | null;
 }
 
-interface PageSearchShellProps extends React.ComponentProps<'section'> {
-  children: ReactNode
-  tabs?: PageShellTab[]
-  activeTab?: string
-  onTabChange?: (id: string) => void
+interface PageSearchShellProps extends React.ComponentProps<"section"> {
+  children: ReactNode;
+  tabs?: PageShellTab[];
+  activeTab?: string;
+  onTabChange?: (id: string) => void;
   /** Secondary filters shown full-width on their own row below (expands). */
-  filters?: ReactNode
-  onSearchChange: (value: string) => void
-  searchPlaceholder: string
+  filters?: ReactNode;
+  onSearchChange: (value: string) => void;
+  searchPlaceholder: string;
   /** Data-derived rotating placeholder nudges (see SearchField.hints). */
-  searchHints?: string[]
-  searchValue: string
+  searchHints?: string[];
+  searchValue: string;
   /** Hide the search field when there's nothing to search (empty dataset). */
-  searchHidden?: boolean
+  searchHidden?: boolean;
   /** Right-aligned control in the header's trailing cell (e.g. a refresh button)
    *  so mouse users get a visible affordance for the refresh hotkey. */
-  searchTrailingAction?: ReactNode
+  searchTrailingAction?: ReactNode;
 }
 
 function ShellTabs({
   tabs,
   activeTab,
-  onTabChange
+  onTabChange,
 }: {
-  tabs: PageShellTab[]
-  activeTab?: string
-  onTabChange?: (id: string) => void
+  tabs: PageShellTab[];
+  activeTab?: string;
+  onTabChange?: (id: string) => void;
 }) {
   return (
     <ResponsiveTabs
-      onChange={id => onTabChange?.(id)}
+      onChange={(id) => onTabChange?.(id)}
       tabs={tabs}
-      value={activeTab ?? tabs[0]?.id ?? ''}
+      value={activeTab ?? tabs[0]?.id ?? ""}
       wideClassName="justify-center"
     />
-  )
+  );
 }
 
 export function PageSearchShell({
@@ -67,12 +67,15 @@ export function PageSearchShell({
   searchTrailingAction,
   ...props
 }: PageSearchShellProps) {
-  const hasTabs = (tabs?.length ?? 0) > 0
+  const hasTabs = (tabs?.length ?? 0) > 0;
 
   return (
     <section
       {...props}
-      className={cn('flex h-full min-w-0 flex-col overflow-hidden bg-(--ui-chat-surface-background)', className)}
+      className={cn(
+        "flex h-full min-w-0 flex-col overflow-hidden bg-(--ui-chat-surface-background)",
+        className,
+      )}
     >
       {/*
         Header lives in the page body, below the window chrome (the shell floats
@@ -104,18 +107,33 @@ export function PageSearchShell({
               )}
             </div>
             {hasTabs ? (
-              <div className="flex min-w-0 items-center justify-center" data-tour="page-tabs">
-                <ShellTabs activeTab={activeTab} onTabChange={onTabChange} tabs={tabs!} />
+              <div
+                className="flex min-w-0 items-center justify-center"
+                data-tour="page-tabs"
+              >
+                <ShellTabs
+                  activeTab={activeTab}
+                  onTabChange={onTabChange}
+                  tabs={tabs!}
+                />
               </div>
             ) : (
               <span />
             )}
-            <div className="flex min-w-0 items-center justify-end">{searchTrailingAction}</div>
+            <div className="flex min-w-0 items-center justify-end">
+              {searchTrailingAction}
+            </div>
           </div>
         )}
-        {filters ? <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3 pb-2">{filters}</div> : null}
+        {filters ? (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3 pb-2">
+            {filters}
+          </div>
+        ) : null}
       </div>
-      <div className="min-h-0 flex-1 overflow-hidden bg-(--ui-chat-surface-background)">{children}</div>
+      <div className="min-h-0 flex-1 overflow-hidden bg-(--ui-chat-surface-background)">
+        {children}
+      </div>
     </section>
-  )
+  );
 }

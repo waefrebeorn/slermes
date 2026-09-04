@@ -1,19 +1,19 @@
 export function poolTouchKeys(scope: unknown): string[] {
-  const key = String(scope ?? '').trim()
+  const key = String(scope ?? "").trim();
 
   if (!key) {
-    return []
+    return [];
   }
 
-  const localPrefix = 'conn:local::'
+  const localPrefix = "conn:local::";
 
   if (key.startsWith(localPrefix)) {
-    const delegatedProfile = key.slice(localPrefix.length)
+    const delegatedProfile = key.slice(localPrefix.length);
 
     if (delegatedProfile) {
-      return [key, delegatedProfile]
+      return [key, delegatedProfile];
     }
   }
 
-  return [key]
+  return [key];
 }

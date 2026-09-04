@@ -13,180 +13,218 @@
  * page immediately older than N already-loaded tail rows starts at offset N.
  */
 
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import type { SessionMessagesResponse } from '@/types/hermes'
+import type { SessionMessagesResponse } from "@/types/hermes";
 
 export interface TranscriptTailState {
   /** Offset (back from the newest row) where the next older page starts. */
-  nextOffset: number
+  nextOffset: number;
   /** The last hydration page was exactly the page limit, so older rows
    *  likely exist beyond what the in-memory store holds. */
-  possiblyTruncated: boolean
+  possiblyTruncated: boolean;
   /** Owning profile captured at hydration time, so a later backfill routes
    *  its REST read to the same backend that served the tail. */
-  profile?: TranscriptProfileScope
+  profile?: TranscriptProfileScope;
 }
 
 export type TranscriptProfileScope =
   | null
   | string
   | {
-      connectionId?: null | string
-      profile?: null | string
-    }
+      connectionId?: null | string;
+      profile?: null | string;
+    };
 
-export const $transcriptTailBySessionId = atom<Record<string, TranscriptTailState>>({})
-const TRANSCRIPT_TAIL_LIMIT = 256
-let transcriptTailOrder: string[] = []
+export const $transcriptTailBySessionId = atom<
+  Record<string, TranscriptTailState>
+>({});
+const TRANSCRIPT_TAIL_LIMIT = 256;
+let transcriptTailOrder: string[] = [];
 
-type TailPage = Pick<SessionMessagesResponse, 'messages' | 'pagination'>
+type TailPage = Pick<SessionMessagesResponse, "messages" | "pagination">;
 
-function normalizedScope(profile?: TranscriptProfileScope): { connectionId: string; profile: string } | null {
-  if (typeof profile === 'string') {
-    return { connectionId: '', profile: profile.trim() || 'default' }
+function normalizedScope(
+  profile?: TranscriptProfileScope,
+): { connectionId: string; profile: string } | null {
+  if (typeof profile === "string") {
+    return { connectionId: "", profile: profile.trim() || "default" };
   }
 
   if (!profile) {
-    return null
+    return null;
   }
 
   return {
-    connectionId: String(profile.connectionId || '').trim(),
-    profile: String(profile.profile || '').trim() || 'default'
-  }
+    connectionId: String(profile.connectionId || "").trim(),
+    profile: String(profile.profile || "").trim() || "default",
+  };
 }
 
-function transcriptTailKey(storedSessionId: string, profile?: TranscriptProfileScope): string {
-  const scope = normalizedScope(profile)
+function transcriptTailKey(
+  storedSessionId: string,
+  profile?: TranscriptProfileScope,
+): string {
+  const scope = normalizedScope(profile);
 
-  return scope ? JSON.stringify([scope.connectionId, scope.profile, storedSessionId]) : storedSessionId
+  return scope
+    ? JSON.stringify([scope.connectionId, scope.profile, storedSessionId])
+    : storedSessionId;
 }
 
-function matchingTailEntries(storedSessionId: string): Array<[string, TranscriptTailState]> {
+function matchingTailEntries(
+  storedSessionId: string,
+): Array<[string, TranscriptTailState]> {
   return Object.entries($transcriptTailBySessionId.get()).filter(([key]) => {
     if (key === storedSessionId) {
-      return true
+      return true;
     }
 
     try {
-      const parsed = JSON.parse(key)
+      const parsed = JSON.parse(key);
 
-      return Array.isArray(parsed) && parsed.length === 3 && parsed[2] === storedSessionId
+      return (
+        Array.isArray(parsed) &&
+        parsed.length === 3 &&
+        parsed[2] === storedSessionId
+      );
     } catch {
-      return false
+      return false;
     }
-  })
+  });
 }
 
-function tailStateFromPage(page: TailPage, profile?: TranscriptProfileScope): TranscriptTailState {
-  const pagination = page.pagination
+function tailStateFromPage(
+  page: TailPage,
+  profile?: TranscriptProfileScope,
+): TranscriptTailState {
+  const pagination = page.pagination;
 
   // No pagination metadata is a legacy backend that ignored the paging query
   // and returned the full transcript: nothing is truncated.
   if (!pagination || pagination.limit <= 0) {
-    return { nextOffset: page.messages.length, possiblyTruncated: false, profile }
+    return {
+      nextOffset: page.messages.length,
+      possiblyTruncated: false,
+      profile,
+    };
   }
 
   return {
     nextOffset: pagination.offset + page.messages.length,
     possiblyTruncated: page.messages.length >= pagination.limit,
-    profile
-  }
+    profile,
+  };
 }
 
 function setTranscriptTailEntry(key: string, state: TranscriptTailState): void {
-  const current = $transcriptTailBySessionId.get()
-  const existing = new Set(Object.keys(current))
-  transcriptTailOrder = transcriptTailOrder.filter(candidate => candidate !== key && existing.has(candidate))
-  transcriptTailOrder.push(key)
+  const current = $transcriptTailBySessionId.get();
+  const existing = new Set(Object.keys(current));
+  transcriptTailOrder = transcriptTailOrder.filter(
+    (candidate) => candidate !== key && existing.has(candidate),
+  );
+  transcriptTailOrder.push(key);
 
-  const next = { ...current, [key]: state }
+  const next = { ...current, [key]: state };
 
   while (transcriptTailOrder.length > TRANSCRIPT_TAIL_LIMIT) {
-    const oldest = transcriptTailOrder.shift()
+    const oldest = transcriptTailOrder.shift();
 
     if (oldest !== undefined) {
-      delete next[oldest]
+      delete next[oldest];
     }
   }
 
-  $transcriptTailBySessionId.set(next)
+  $transcriptTailBySessionId.set(next);
 }
 
 /** Record the outcome of a tail hydration (`getLatestSessionMessages`). */
-export function recordTranscriptTail(storedSessionId: string, page: TailPage, profile?: TranscriptProfileScope): void {
+export function recordTranscriptTail(
+  storedSessionId: string,
+  page: TailPage,
+  profile?: TranscriptProfileScope,
+): void {
   if (!storedSessionId) {
-    return
+    return;
   }
 
-  const key = transcriptTailKey(storedSessionId, profile)
-  setTranscriptTailEntry(key, tailStateFromPage(page, profile))
+  const key = transcriptTailKey(storedSessionId, profile);
+  setTranscriptTailEntry(key, tailStateFromPage(page, profile));
 }
 
 /** Advance the bookkeeping after one older backfill page landed. */
 export function recordTranscriptBackfillPage(
   storedSessionId: string,
   page: TailPage,
-  profile?: TranscriptProfileScope
+  profile?: TranscriptProfileScope,
 ): void {
-  const current = $transcriptTailBySessionId.get()
+  const current = $transcriptTailBySessionId.get();
 
   const selected: Array<[string, TranscriptTailState | undefined]> =
     profile === undefined
       ? matchingTailEntries(storedSessionId)
-      : [[transcriptTailKey(storedSessionId, profile), current[transcriptTailKey(storedSessionId, profile)]]]
+      : [
+          [
+            transcriptTailKey(storedSessionId, profile),
+            current[transcriptTailKey(storedSessionId, profile)],
+          ],
+        ];
 
   if (selected.length !== 1) {
-    return
+    return;
   }
 
-  const [key, previous] = selected[0]
+  const [key, previous] = selected[0];
 
   if (!previous) {
-    return
+    return;
   }
 
-  setTranscriptTailEntry(key, tailStateFromPage(page, previous.profile))
+  setTranscriptTailEntry(key, tailStateFromPage(page, previous.profile));
 }
 
 export function transcriptTailState(
   storedSessionId: null | string | undefined,
-  profile?: TranscriptProfileScope
+  profile?: TranscriptProfileScope,
 ): TranscriptTailState | undefined {
   if (!storedSessionId) {
-    return undefined
+    return undefined;
   }
 
   if (profile !== undefined) {
-    return $transcriptTailBySessionId.get()[transcriptTailKey(storedSessionId, profile)]
+    return $transcriptTailBySessionId.get()[
+      transcriptTailKey(storedSessionId, profile)
+    ];
   }
 
-  const matches = matchingTailEntries(storedSessionId)
+  const matches = matchingTailEntries(storedSessionId);
 
-  return matches.length === 1 ? matches[0][1] : undefined
+  return matches.length === 1 ? matches[0][1] : undefined;
 }
 
-export function clearTranscriptTail(storedSessionId: string, profile?: TranscriptProfileScope): void {
-  const current = $transcriptTailBySessionId.get()
+export function clearTranscriptTail(
+  storedSessionId: string,
+  profile?: TranscriptProfileScope,
+): void {
+  const current = $transcriptTailBySessionId.get();
 
   const keys =
     profile === undefined
       ? matchingTailEntries(storedSessionId).map(([key]) => key)
-      : [transcriptTailKey(storedSessionId, profile)]
+      : [transcriptTailKey(storedSessionId, profile)];
 
   if (keys.length === 0) {
-    return
+    return;
   }
 
-  const next = { ...current }
+  const next = { ...current };
 
   for (const key of keys) {
-    delete next[key]
+    delete next[key];
   }
 
-  const removed = new Set(keys)
-  transcriptTailOrder = transcriptTailOrder.filter(key => !removed.has(key))
+  const removed = new Set(keys);
+  transcriptTailOrder = transcriptTailOrder.filter((key) => !removed.has(key));
 
-  $transcriptTailBySessionId.set(next)
+  $transcriptTailBySessionId.set(next);
 }

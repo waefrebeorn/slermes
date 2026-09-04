@@ -16,85 +16,94 @@
 
 export interface TourTarget {
   /** Human-readable label (aria-label, text content, alt, title …). */
-  label: string
+  label: string;
   /** Viewport rect, rounded: [x, y, width, height]. */
-  rect: [number, number, number, number]
+  rect: [number, number, number, number];
   /** Element role: explicit ARIA role or the tag name. */
-  role: string
+  role: string;
   /** A CSS selector that uniquely matches this element right now. */
-  selector: string
+  selector: string;
   /** True when the selector keys off identity (data-tour, id, data-testid,
    *  aria-label) rather than DOM position — i.e. it survives a re-render. */
-  stable: boolean
+  stable: boolean;
 }
 
 /** Scan `doc` for tourable elements (capped at `max`). Self-contained. */
 export function collectTourTargets(doc: Document, max: number): TourTarget[] {
-  const results: TourTarget[] = []
-  const seen = new Set<Element>()
+  const results: TourTarget[] = [];
+  const seen = new Set<Element>();
 
   const cssEscape = (value: string) =>
-    typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(value) : value.replace(/["\\]/g, '\\$&')
+    typeof CSS !== "undefined" && CSS.escape
+      ? CSS.escape(value)
+      : value.replace(/["\\]/g, "\\$&");
 
   const labelOf = (el: Element): string => {
-    for (const attr of ['aria-label', 'title', 'alt', 'placeholder']) {
-      const value = el.getAttribute(attr)
+    for (const attr of ["aria-label", "title", "alt", "placeholder"]) {
+      const value = el.getAttribute(attr);
 
       if (value) {
-        return value
+        return value;
       }
     }
 
-    const text = (el.textContent || '').trim().replace(/\s+/g, ' ')
+    const text = (el.textContent || "").trim().replace(/\s+/g, " ");
 
-    return text.length > 80 ? text.slice(0, 77) + '…' : text
-  }
+    return text.length > 80 ? text.slice(0, 77) + "…" : text;
+  };
 
   /** Identity-based selector, or '' when the element has no durable handle. */
   const stableSelector = (el: Element): string => {
-    const dataTour = el.getAttribute('data-tour')
+    const dataTour = el.getAttribute("data-tour");
 
     if (dataTour) {
-      return '[data-tour="' + cssEscape(dataTour) + '"]'
+      return '[data-tour="' + cssEscape(dataTour) + '"]';
     }
 
     if (el.id) {
-      return '#' + cssEscape(el.id)
+      return "#" + cssEscape(el.id);
     }
 
-    const testId = el.getAttribute('data-testid')
+    const testId = el.getAttribute("data-testid");
 
     if (testId) {
-      return '[data-testid="' + cssEscape(testId) + '"]'
+      return '[data-testid="' + cssEscape(testId) + '"]';
     }
 
-    const aria = el.getAttribute('aria-label')
-    const byAria = aria ? el.tagName.toLowerCase() + '[aria-label="' + cssEscape(aria) + '"]' : ''
+    const aria = el.getAttribute("aria-label");
+    const byAria = aria
+      ? el.tagName.toLowerCase() + '[aria-label="' + cssEscape(aria) + '"]'
+      : "";
 
-    return byAria && doc.querySelectorAll(byAria).length === 1 ? byAria : ''
-  }
+    return byAria && doc.querySelectorAll(byAria).length === 1 ? byAria : "";
+  };
 
   /** Positional fallback: tag + nth-child path up to an id or <body>. */
   const positionalSelector = (el: Element): string => {
-    const path: string[] = []
-    let node: Element | null = el
+    const path: string[] = [];
+    let node: Element | null = el;
 
     while (node && node !== doc.body && path.length < 8) {
       if (node.id) {
-        path.unshift('#' + cssEscape(node.id))
+        path.unshift("#" + cssEscape(node.id));
 
-        break
+        break;
       }
 
-      const parent: Element | null = node.parentElement
-      const index = parent ? Array.prototype.indexOf.call(parent.children, node) : -1
+      const parent: Element | null = node.parentElement;
+      const index = parent
+        ? Array.prototype.indexOf.call(parent.children, node)
+        : -1;
 
-      path.unshift(node.tagName.toLowerCase() + (index >= 0 ? ':nth-child(' + (index + 1) + ')' : ''))
-      node = parent
+      path.unshift(
+        node.tagName.toLowerCase() +
+          (index >= 0 ? ":nth-child(" + (index + 1) + ")" : ""),
+      );
+      node = parent;
     }
 
-    return path.join(' > ')
-  }
+    return path.join(" > ");
+  };
 
   const visible = (el: Element): boolean => {
     // An inactive tab in a keep-alive stack stays MOUNTED, hidden with
@@ -106,67 +115,82 @@ export function collectTourTargets(doc: Document, max: number): TourTarget[] {
     // headed off at the source instead (app/chat/tour-marker.ts). Inlined
     // rather than imported because this function is stringified into the
     // preview webview, where no pane ever carries the attribute.
-    if (el.closest('[data-pane-hidden]')) {
-      return false
+    if (el.closest("[data-pane-hidden]")) {
+      return false;
     }
 
-    const rect = el.getBoundingClientRect()
+    const rect = el.getBoundingClientRect();
 
     if (rect.width < 4 || rect.height < 4) {
-      return false
+      return false;
     }
 
-    const win = doc.defaultView
+    const win = doc.defaultView;
 
-    return !win || (rect.bottom > 0 && rect.top < win.innerHeight && rect.right > 0 && rect.left < win.innerWidth)
-  }
+    return (
+      !win ||
+      (rect.bottom > 0 &&
+        rect.top < win.innerHeight &&
+        rect.right > 0 &&
+        rect.left < win.innerWidth)
+    );
+  };
 
   const push = (el: Element) => {
     if (results.length >= max || seen.has(el) || !visible(el)) {
-      return
+      return;
     }
 
-    const label = labelOf(el)
+    const label = labelOf(el);
 
     if (!label) {
-      return
+      return;
     }
 
-    const stable = stableSelector(el)
-    const selector = stable || positionalSelector(el)
+    const stable = stableSelector(el);
+    const selector = stable || positionalSelector(el);
 
     // Only report selectors that resolve back to this exact element.
     if (!selector || doc.querySelector(selector) !== el) {
-      return
+      return;
     }
 
-    const rect = el.getBoundingClientRect()
+    const rect = el.getBoundingClientRect();
 
-    seen.add(el)
+    seen.add(el);
     results.push({
       label,
-      rect: [Math.round(rect.x), Math.round(rect.y), Math.round(rect.width), Math.round(rect.height)],
-      role: el.getAttribute('role') || el.tagName.toLowerCase(),
+      rect: [
+        Math.round(rect.x),
+        Math.round(rect.y),
+        Math.round(rect.width),
+        Math.round(rect.height),
+      ],
+      role: el.getAttribute("role") || el.tagName.toLowerCase(),
       selector,
-      stable: !!stable
-    })
-  }
+      stable: !!stable,
+    });
+  };
 
   // Priority order: explicit tour markers, then landmarks/headings, then
   // labelled interactive elements. Each tier only fills remaining capacity.
-  for (const el of doc.querySelectorAll('[data-tour]')) {
-    push(el)
+  for (const el of doc.querySelectorAll("[data-tour]")) {
+    push(el);
   }
 
-  for (const el of doc.querySelectorAll('nav, main, aside, header, footer, [role], h1, h2, h3')) {
-    push(el)
+  for (const el of doc.querySelectorAll(
+    "nav, main, aside, header, footer, [role], h1, h2, h3",
+  )) {
+    push(el);
   }
 
-  for (const el of doc.querySelectorAll('a[href], button, input, select, textarea, [tabindex], [aria-label]')) {
-    push(el)
+  for (const el of doc.querySelectorAll(
+    "a[href], button, input, select, textarea, [tabindex], [aria-label]",
+  )) {
+    push(el);
   }
 
   // Durable handles first: a caller picking off the top gets selectors that
   // survive a re-render, and positional ones stay available as a last resort.
-  return results.sort((a, b) => Number(b.stable) - Number(a.stable))
+  return results.sort((a, b) => Number(b.stable) - Number(a.stable));
 }

@@ -10,155 +10,175 @@
  * bite on that behavior.
  */
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from "vitest";
 
-import { RELEASE_GATE_POLL_MS, type ReleaseGateDeps, waitForBackendRelease } from './backend-release-gate'
+import {
+  RELEASE_GATE_POLL_MS,
+  type ReleaseGateDeps,
+  waitForBackendRelease,
+} from "./backend-release-gate";
 
 /** A fake clock where sleep() advances time instantly. */
 function fakeClock() {
-  let t = 0
+  let t = 0;
 
   return {
     now: () => t,
     sleep: async (ms: number) => {
-      t += ms
+      t += ms;
     },
     advance: (ms: number) => {
-      t += ms
-    }
-  }
+      t += ms;
+    },
+  };
 }
 
 function makeDeps(overrides: Partial<ReleaseGateDeps> = {}): ReleaseGateDeps & {
-  logs: string[]
-  kills: number[]
+  logs: string[];
+  kills: number[];
 } {
-  const clock = fakeClock()
-  const logs: string[] = []
-  const kills: number[] = []
+  const clock = fakeClock();
+  const logs: string[] = [];
+  const kills: number[] = [];
 
   return {
     isShimLocked: () => false,
     isPidAlive: () => false,
     collectStragglerPids: () => [],
-    killProcessTree: pid => kills.push(pid),
+    killProcessTree: (pid) => kills.push(pid),
     sleep: clock.sleep,
     now: clock.now,
-    log: line => logs.push(line),
+    log: (line) => logs.push(line),
     logs,
     kills,
-    ...overrides
-  }
+    ...overrides,
+  };
 }
 
-describe('waitForBackendRelease (#74805 first-attempt race)', () => {
-  it('does NOT pass while a signalled PID is still in the process table, even with the shim unlocked', async () => {
+describe("waitForBackendRelease (#74805 first-attempt race)", () => {
+  it("does NOT pass while a signalled PID is still in the process table, even with the shim unlocked", async () => {
     // The exact #74805 shape: shim unlocked from tick 0 (serve backend never
     // held it), but the killed python is still tearing down for ~1.2s.
-    let aliveUntil = 4 * RELEASE_GATE_POLL_MS
-    const clock = fakeClock()
+    let aliveUntil = 4 * RELEASE_GATE_POLL_MS;
+    const clock = fakeClock();
 
     const deps = makeDeps({
       now: clock.now,
       sleep: clock.sleep,
       isShimLocked: () => false,
-      isPidAlive: () => clock.now() < aliveUntil
-    })
+      isPidAlive: () => clock.now() < aliveUntil,
+    });
 
-    const result = await waitForBackendRelease([4021], deps, 'test')
+    const result = await waitForBackendRelease([4021], deps, "test");
 
-    expect(result.unlocked).toBe(true)
-    expect(result.lingeringPids).toEqual([])
+    expect(result.unlocked).toBe(true);
+    expect(result.lingeringPids).toEqual([]);
     // The gate must have dwelled at least until the PID actually exited —
     // on merge-base (shim-only gate) it would have returned at t=0.
-    expect(clock.now()).toBeGreaterThanOrEqual(aliveUntil)
-  })
+    expect(clock.now()).toBeGreaterThanOrEqual(aliveUntil);
+  });
 
-  it('passes immediately when the shim is unlocked and no signalled PID lingers', async () => {
-    const deps = makeDeps()
+  it("passes immediately when the shim is unlocked and no signalled PID lingers", async () => {
+    const deps = makeDeps();
 
-    const result = await waitForBackendRelease([4021, 4022], deps, 'test')
+    const result = await waitForBackendRelease([4021, 4022], deps, "test");
 
-    expect(result.unlocked).toBe(true)
-    expect(deps.now()).toBe(0) // no dwell needed — everything already gone
-  })
+    expect(result.unlocked).toBe(true);
+    expect(deps.now()).toBe(0); // no dwell needed — everything already gone
+  });
 
-  it('keeps waiting while the shim is locked and fails closed at the deadline', async () => {
-    const deps = makeDeps({ isShimLocked: () => true })
+  it("keeps waiting while the shim is locked and fails closed at the deadline", async () => {
+    const deps = makeDeps({ isShimLocked: () => true });
 
-    const result = await waitForBackendRelease([], deps, 'test', 3 * RELEASE_GATE_POLL_MS)
+    const result = await waitForBackendRelease(
+      [],
+      deps,
+      "test",
+      3 * RELEASE_GATE_POLL_MS,
+    );
 
-    expect(result.unlocked).toBe(false)
-  })
+    expect(result.unlocked).toBe(false);
+  });
 
-  it('proceeds at the deadline when the shim is unlocked but PIDs still linger (pre-#74805 escape hatch)', async () => {
+  it("proceeds at the deadline when the shim is unlocked but PIDs still linger (pre-#74805 escape hatch)", async () => {
     // Lingering PIDs past the deadline are the venv-blocker re-scan's job —
     // the gate must not invent a new failure mode for them.
-    const deps = makeDeps({ isPidAlive: () => true })
+    const deps = makeDeps({ isPidAlive: () => true });
 
-    const result = await waitForBackendRelease([4021], deps, 'test', 3 * RELEASE_GATE_POLL_MS)
+    const result = await waitForBackendRelease(
+      [4021],
+      deps,
+      "test",
+      3 * RELEASE_GATE_POLL_MS,
+    );
 
-    expect(result.unlocked).toBe(true)
-    expect(result.lingeringPids).toEqual([4021])
-  })
+    expect(result.unlocked).toBe(true);
+    expect(result.lingeringPids).toEqual([4021]);
+  });
 
-  it('kills and then waits out stragglers that respawn mid-teardown', async () => {
+  it("kills and then waits out stragglers that respawn mid-teardown", async () => {
     // A pool entry registered mid-teardown appears on pass 2; the gate must
     // signal it AND add it to the exit-wait set.
-    const clock = fakeClock()
-    let stragglerServed = false
-    let stragglerKilledAt: number | null = null
-    const kills: number[] = []
+    const clock = fakeClock();
+    let stragglerServed = false;
+    let stragglerKilledAt: number | null = null;
+    const kills: number[] = [];
 
     const deps = makeDeps({
       now: clock.now,
       sleep: clock.sleep,
       collectStragglerPids: () => {
         if (!stragglerServed) {
-          stragglerServed = true
+          stragglerServed = true;
 
-          return [7777]
+          return [7777];
         }
 
-        return []
+        return [];
       },
-      killProcessTree: pid => {
-        stragglerKilledAt = clock.now()
-        kills.push(pid)
+      killProcessTree: (pid) => {
+        stragglerKilledAt = clock.now();
+        kills.push(pid);
       },
       // Primary PID 4021 lingers for one poll (forcing a straggler-collect
       // pass); the straggler stays alive for two polls after being killed.
-      isPidAlive: pid => {
+      isPidAlive: (pid) => {
         if (pid === 4021) {
-          return clock.now() < RELEASE_GATE_POLL_MS
+          return clock.now() < RELEASE_GATE_POLL_MS;
         }
 
-        return pid === 7777 && stragglerKilledAt !== null && clock.now() < stragglerKilledAt + 2 * RELEASE_GATE_POLL_MS
-      }
-    })
+        return (
+          pid === 7777 &&
+          stragglerKilledAt !== null &&
+          clock.now() < stragglerKilledAt + 2 * RELEASE_GATE_POLL_MS
+        );
+      },
+    });
 
-    const result = await waitForBackendRelease([4021], deps, 'test')
+    const result = await waitForBackendRelease([4021], deps, "test");
 
-    expect(kills).toContain(7777)
-    expect(result.unlocked).toBe(true)
-    expect(result.lingeringPids).toEqual([])
+    expect(kills).toContain(7777);
+    expect(result.unlocked).toBe(true);
+    expect(result.lingeringPids).toEqual([]);
     // The gate must have dwelled until the straggler actually exited.
-    expect(clock.now()).toBeGreaterThanOrEqual((stragglerKilledAt ?? 0) + 2 * RELEASE_GATE_POLL_MS)
-  })
+    expect(clock.now()).toBeGreaterThanOrEqual(
+      (stragglerKilledAt ?? 0) + 2 * RELEASE_GATE_POLL_MS,
+    );
+  });
 
-  it('ignores invalid PIDs in the seed and straggler sets', async () => {
+  it("ignores invalid PIDs in the seed and straggler sets", async () => {
     const deps = makeDeps({
-      collectStragglerPids: () => [0, -4, NaN as unknown as number]
-    })
+      collectStragglerPids: () => [0, -4, NaN as unknown as number],
+    });
 
     const result = await waitForBackendRelease(
       [0, -1, 2.5, NaN as unknown as number],
       deps,
-      'test',
-      2 * RELEASE_GATE_POLL_MS
-    )
+      "test",
+      2 * RELEASE_GATE_POLL_MS,
+    );
 
-    expect(result.unlocked).toBe(true)
-    expect(deps.kills).toEqual([])
-  })
-})
+    expect(result.unlocked).toBe(true);
+    expect(deps.kills).toEqual([]);
+  });
+});

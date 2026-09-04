@@ -1,24 +1,29 @@
-import { type KeyboardEvent, type MouseEvent, type ReactNode, type Ref } from 'react'
+import {
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+  type Ref,
+} from "react";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 interface StatusRowProps {
-  children: ReactNode
-  className?: string
+  children: ReactNode;
+  className?: string;
   /** Leading glyph slot (spinner / status dot / selection circle). */
-  leading?: ReactNode
+  leading?: ReactNode;
   /** Makes the whole row activatable (adds `cursor-pointer` + keyboard a11y).
    *  Receives the originating event so consumers can branch on modifier keys
    *  (e.g. ⌘/Ctrl-click). Trailing-slot buttons should `stopPropagation` so
    *  they don't also fire it. */
-  onActivate?: (event: KeyboardEvent | MouseEvent) => void
+  onActivate?: (event: KeyboardEvent | MouseEvent) => void;
   /** Right-aligned actions. Revealed on row hover/focus unless `trailingVisible`. */
-  trailing?: ReactNode
-  trailingVisible?: boolean
+  trailing?: ReactNode;
+  trailingVisible?: boolean;
   /** Forwarded to the row's root — lets a wrapper (e.g. a context-menu trigger
    *  using `asChild`) attach `ref` / `onContextMenu` to the real DOM node. */
-  ref?: Ref<HTMLDivElement>
-  onContextMenu?: (event: MouseEvent) => void
+  ref?: Ref<HTMLDivElement>;
+  onContextMenu?: (event: MouseEvent) => void;
 }
 
 /**
@@ -36,44 +41,49 @@ export function StatusRow({
   onContextMenu,
   ref,
   trailing,
-  trailingVisible = false
+  trailingVisible = false,
 }: StatusRowProps) {
   return (
     <div
       className={cn(
-        'group/status-row flex min-h-6 items-center gap-2 rounded-md px-1.5 py-1',
+        "group/status-row flex min-h-6 items-center gap-2 rounded-md px-1.5 py-1",
         // row-hover bundles cursor:pointer — only when the row actually activates.
-        onActivate ? 'row-hover' : 'hover:bg-(--ui-row-hover-background)',
-        className
+        onActivate ? "row-hover" : "hover:bg-(--ui-row-hover-background)",
+        className,
       )}
       onClick={onActivate}
       onContextMenu={onContextMenu}
       onKeyDown={
         onActivate
-          ? event => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault()
-                onActivate(event)
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onActivate(event);
               }
             }
           : undefined
       }
       ref={ref}
-      role={onActivate ? 'button' : undefined}
+      role={onActivate ? "button" : undefined}
       tabIndex={onActivate ? 0 : undefined}
     >
-      {leading !== undefined && <span className="flex size-3.5 shrink-0 items-center justify-center">{leading}</span>}
+      {leading !== undefined && (
+        <span className="flex size-3.5 shrink-0 items-center justify-center">
+          {leading}
+        </span>
+      )}
       <div className="flex min-w-0 flex-1 items-center gap-2">{children}</div>
       {trailing && (
         <div
           className={cn(
-            'flex shrink-0 items-center gap-0.5',
-            !trailingVisible && 'opacity-0 group-hover/status-row:opacity-100 group-focus-within/status-row:opacity-100'
+            "flex shrink-0 items-center gap-0.5",
+            !trailingVisible &&
+              "opacity-0 group-hover/status-row:opacity-100 group-focus-within/status-row:opacity-100",
           )}
         >
           {trailing}
         </div>
       )}
     </div>
-  )
+  );
 }

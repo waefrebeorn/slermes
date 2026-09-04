@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react";
 
 // Layering system for portalled popovers (Select / Popover / DropdownMenu) that
 // open INSIDE a Dialog.
@@ -17,13 +17,16 @@ import * as React from 'react'
 // DismissableLayer sees it as inside, and it shares the dialog's stacking
 // context so z-index is deterministic. Outside a dialog the value is null and
 // popovers fall back to the default body portal.
-export const DialogPortalContainerContext = React.createContext<HTMLElement | null>(null)
+export const DialogPortalContainerContext =
+  React.createContext<HTMLElement | null>(null);
 
 // The container a popover should portal into: an explicit `container` prop wins,
 // then the enclosing dialog's content node, then undefined (Radix default:
 // document.body).
-export function usePopoverPortalContainer(explicit?: HTMLElement | null): HTMLElement | undefined {
-  const fromDialog = React.useContext(DialogPortalContainerContext)
+export function usePopoverPortalContainer(
+  explicit?: HTMLElement | null,
+): HTMLElement | undefined {
+  const fromDialog = React.useContext(DialogPortalContainerContext);
 
-  return explicit ?? fromDialog ?? undefined
+  return explicit ?? fromDialog ?? undefined;
 }

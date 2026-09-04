@@ -1,22 +1,32 @@
-import { type DragEvent as ReactDragEvent, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  type DragEvent as ReactDragEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { dragHasAttachments } from '@/app/chat/composer/inline-refs'
-import { ESCAPE_PRIORITY, pushEscapeLayer } from '@/lib/escape-layers'
+import { dragHasAttachments } from "@/app/chat/composer/inline-refs";
+import { ESCAPE_PRIORITY, pushEscapeLayer } from "@/lib/escape-layers";
 
-import { type DroppedFile, extractDroppedFiles, HERMES_PATHS_MIME } from './use-composer-actions'
+import {
+  type DroppedFile,
+  extractDroppedFiles,
+  HERMES_PATHS_MIME,
+} from "./use-composer-actions";
 
 /** `'session'` is set by callers from the pointer drag session's store —
  *  native drags only ever resolve to `'files'` here (sessions left native
  *  DnD; see session-drag.ts). */
-export type DragKind = 'files' | 'session' | null
+export type DragKind = "files" | "session" | null;
 
 const dragKindOf = (event: ReactDragEvent): DragKind =>
-  dragHasAttachments(event.dataTransfer, HERMES_PATHS_MIME) ? 'files' : null
+  dragHasAttachments(event.dataTransfer, HERMES_PATHS_MIME) ? "files" : null;
 
 interface FileDropZoneOptions {
   /** When false the zone ignores drags entirely. */
-  enabled?: boolean
-  onDropFiles: (files: DroppedFile[]) => void
+  enabled?: boolean;
+  onDropFiles: (files: DroppedFile[]) => void;
 }
 
 /**
@@ -30,15 +40,18 @@ interface FileDropZoneOptions {
  * Spread `dropHandlers` onto the container; render an overlay off `dragKind`.
  * Esc aborts an in-flight drag, matching the sidebar session drag.
  */
-export function useFileDropZone({ enabled = true, onDropFiles }: FileDropZoneOptions) {
-  const [dragKind, setDragKind] = useState<DragKind>(null)
-  const depth = useRef(0)
-  const aborted = useRef(false)
+export function useFileDropZone({
+  enabled = true,
+  onDropFiles,
+}: FileDropZoneOptions) {
+  const [dragKind, setDragKind] = useState<DragKind>(null);
+  const depth = useRef(0);
+  const aborted = useRef(false);
 
   const reset = useCallback(() => {
-    depth.current = 0
-    setDragKind(null)
-  }, [])
+    depth.current = 0;
+    setDragKind(null);
+  }, []);
 
   // Esc aborts a file drag — the same "never mind" a session drag gets. Native
   // DnD can't be cancelled at the OS level, so we drop the overlay and arm a
@@ -47,75 +60,75 @@ export function useFileDropZone({ enabled = true, onDropFiles }: FileDropZoneOpt
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
     if (dragKind === null) {
-      return
+      return;
     }
 
-    const releaseLayer = pushEscapeLayer(ESCAPE_PRIORITY.drag)
+    const releaseLayer = pushEscapeLayer(ESCAPE_PRIORITY.drag);
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
-        return
+      if (event.key !== "Escape") {
+        return;
       }
 
-      event.preventDefault()
-      event.stopPropagation()
-      aborted.current = true
-      reset()
-    }
+      event.preventDefault();
+      event.stopPropagation();
+      aborted.current = true;
+      reset();
+    };
 
-    window.addEventListener('keydown', onKey, true)
+    window.addEventListener("keydown", onKey, true);
 
     return () => {
-      window.removeEventListener('keydown', onKey, true)
-      releaseLayer()
-    }
-  }, [dragKind, reset])
+      window.removeEventListener("keydown", onKey, true);
+      releaseLayer();
+    };
+  }, [dragKind, reset]);
 
   const onDragEnter = useCallback(
     (event: ReactDragEvent) => {
-      const kind = enabled ? dragKindOf(event) : null
+      const kind = enabled ? dragKindOf(event) : null;
 
       if (!kind) {
-        return
+        return;
       }
 
-      event.preventDefault()
+      event.preventDefault();
 
       // A genuinely new drag (not a nested-child re-enter) re-arms after abort.
       if (depth.current === 0) {
-        aborted.current = false
+        aborted.current = false;
       }
 
-      depth.current += 1
-      setDragKind(kind)
+      depth.current += 1;
+      setDragKind(kind);
     },
-    [enabled]
-  )
+    [enabled],
+  );
 
   const onDragOver = useCallback(
     (event: ReactDragEvent) => {
       if (!enabled || !dragKindOf(event)) {
-        return
+        return;
       }
 
-      event.preventDefault()
-      event.dataTransfer.dropEffect = 'copy'
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
     },
-    [enabled]
-  )
+    [enabled],
+  );
 
   const onDragLeave = useCallback(() => {
     if (enabled && --depth.current <= 0) {
-      reset()
+      reset();
     }
-  }, [enabled, reset])
+  }, [enabled, reset]);
 
   const onDrop = useCallback(
     (event: ReactDragEvent) => {
-      const kind = enabled ? dragKindOf(event) : null
+      const kind = enabled ? dragKindOf(event) : null;
 
       if (!kind) {
-        return
+        return;
       }
 
       // Only an Esc abort swallows the drop — NOT `event.defaultPrevented`. The
@@ -123,26 +136,32 @@ export function useFileDropZone({ enabled = true, onDropFiles }: FileDropZoneOpt
       // file drop in the capture phase, so that flag is always set here (every
       // Finder drop would no-op). Genuine nested targets claim via stopPropagation
       // and never reach this bubble handler anyway.
-      const claimed = aborted.current
+      const claimed = aborted.current;
 
-      event.preventDefault()
-      reset()
+      event.preventDefault();
+      reset();
 
       if (claimed) {
-        return
+        return;
       }
 
-      const files = extractDroppedFiles(event.dataTransfer)
+      const files = extractDroppedFiles(event.dataTransfer);
 
       if (files.length) {
-        onDropFiles(files)
+        onDropFiles(files);
       }
     },
-    [enabled, onDropFiles, reset]
-  )
+    [enabled, onDropFiles, reset],
+  );
 
   return {
     dragKind,
-    dropHandlers: { onDragEnter, onDragLeave, onDragOver, onDrop, onDropCapture: reset }
-  }
+    dropHandlers: {
+      onDragEnter,
+      onDragLeave,
+      onDragOver,
+      onDrop,
+      onDropCapture: reset,
+    },
+  };
 }

@@ -1,18 +1,18 @@
-import { type ReactNode, useState } from 'react'
+import { type ReactNode, useState } from "react";
 
-import { DisclosureCaret } from '@/components/ui/disclosure-caret'
+import { DisclosureCaret } from "@/components/ui/disclosure-caret";
 
 interface StatusSectionProps {
   /** Optional right-aligned actions (text links / micro buttons). Pass
    *  `Button` with `size="micro"` + `variant="text"` or `"link"`. */
-  accessory?: ReactNode
-  children: ReactNode
+  accessory?: ReactNode;
+  children: ReactNode;
   /** Optional inline status next to the label (running spinner, etc). */
-  collapsedIndicator?: ReactNode
-  defaultCollapsed?: boolean
+  collapsedIndicator?: ReactNode;
+  defaultCollapsed?: boolean;
   /** Optional glyph between the caret and the label (e.g. a `Codicon`). */
-  icon?: ReactNode
-  label: ReactNode
+  icon?: ReactNode;
+  label: ReactNode;
 }
 
 /**
@@ -27,26 +27,32 @@ export function StatusSection({
   collapsedIndicator,
   defaultCollapsed = true,
   icon,
-  label
+  label,
 }: StatusSectionProps) {
-  const [collapsed, setCollapsed] = useState(defaultCollapsed)
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
   return (
     <div>
       <div className="flex items-center gap-1 pr-1">
         <button
           className="flex min-w-0 flex-1 items-center gap-1.5 px-2 py-1 text-left text-xs font-normal text-muted-foreground/92 transition-colors hover:text-foreground/90"
-          onClick={() => setCollapsed(open => !open)}
+          onClick={() => setCollapsed((open) => !open)}
           type="button"
         >
           <DisclosureCaret className="shrink-0" open={!collapsed} size="1em" />
           {icon && <span className="flex shrink-0 items-center">{icon}</span>}
           <span className="min-w-0 truncate">{label}</span>
-          {collapsedIndicator && <span className="flex shrink-0 items-center">{collapsedIndicator}</span>}
+          {collapsedIndicator && (
+            <span className="flex shrink-0 items-center">
+              {collapsedIndicator}
+            </span>
+          )}
         </button>
-        {accessory && <div className="flex shrink-0 items-center gap-1">{accessory}</div>}
+        {accessory && (
+          <div className="flex shrink-0 items-center gap-1">{accessory}</div>
+        )}
       </div>
       {!collapsed && <div className="px-1 pb-0.5">{children}</div>}
     </div>
-  )
+  );
 }

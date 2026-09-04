@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { createClientSessionState } from '@/lib/chat-runtime'
+import { createClientSessionState } from "@/lib/chat-runtime";
 import {
   $sessionStates,
   $sessionTiles,
@@ -9,8 +9,8 @@ import {
   liveSessionScopes,
   openTileGatewayScopes,
   publishSessionState,
-  recordSessionEventScope
-} from '@/store/session-states'
+  recordSessionEventScope,
+} from "@/store/session-states";
 
 /**
  * The (connectionId, profile) half of the gateway keep-set. Working/attention
@@ -20,120 +20,150 @@ import {
  * nothing (their liveness keeps flowing through bare profile names).
  */
 
-const state = (patch: Partial<ReturnType<typeof createClientSessionState>> = {}) => ({
-  ...createClientSessionState('stored-1'),
-  ...patch
-})
+const state = (
+  patch: Partial<ReturnType<typeof createClientSessionState>> = {},
+) => ({
+  ...createClientSessionState("stored-1"),
+  ...patch,
+});
 
 beforeEach(() => {
-  clearAllSessionStates()
-  $sessionStates.set({})
-})
+  clearAllSessionStates();
+  $sessionStates.set({});
+});
 
-describe('liveSessionScopes', () => {
-  it('maps a registry-tagged busy session to its composite scope', () => {
-    recordSessionEventScope({ connectionId: 'homelab', profile: 'default', session_id: 'rt-1' })
-    publishSessionState('rt-1', state({ busy: true }))
+describe("liveSessionScopes", () => {
+  it("maps a registry-tagged busy session to its composite scope", () => {
+    recordSessionEventScope({
+      connectionId: "homelab",
+      profile: "default",
+      session_id: "rt-1",
+    });
+    publishSessionState("rt-1", state({ busy: true }));
 
-    expect(liveSessionScopes()).toEqual(new Set(['conn:homelab::default']))
-  })
+    expect(liveSessionScopes()).toEqual(new Set(["conn:homelab::default"]));
+  });
 
-  it('keeps an explicit local registry session on its composite scope', () => {
-    recordSessionEventScope({ connectionId: 'local', profile: 'default', session_id: 'rt-local' })
-    publishSessionState('rt-local', state({ busy: true }))
+  it("keeps an explicit local registry session on its composite scope", () => {
+    recordSessionEventScope({
+      connectionId: "local",
+      profile: "default",
+      session_id: "rt-local",
+    });
+    publishSessionState("rt-local", state({ busy: true }));
 
-    expect(liveSessionScopes()).toEqual(new Set(['conn:local::default']))
-  })
+    expect(liveSessionScopes()).toEqual(new Set(["conn:local::default"]));
+  });
 
-  it('includes needs-input sessions and drops settled ones', () => {
-    recordSessionEventScope({ connectionId: 'homelab', profile: 'default', session_id: 'rt-1' })
-    publishSessionState('rt-1', state({ busy: false, needsInput: true }))
+  it("includes needs-input sessions and drops settled ones", () => {
+    recordSessionEventScope({
+      connectionId: "homelab",
+      profile: "default",
+      session_id: "rt-1",
+    });
+    publishSessionState("rt-1", state({ busy: false, needsInput: true }));
 
-    expect(liveSessionScopes()).toEqual(new Set(['conn:homelab::default']))
+    expect(liveSessionScopes()).toEqual(new Set(["conn:homelab::default"]));
 
-    publishSessionState('rt-1', state({ busy: false, needsInput: false }))
+    publishSessionState("rt-1", state({ busy: false, needsInput: false }));
 
-    expect(liveSessionScopes()).toEqual(new Set())
-  })
+    expect(liveSessionScopes()).toEqual(new Set());
+  });
 
-  it('ignores untagged (local/primary) events — no connectionId, no scope', () => {
-    recordSessionEventScope({ profile: 'default', session_id: 'rt-1' })
-    publishSessionState('rt-1', state({ busy: true }))
+  it("ignores untagged (local/primary) events — no connectionId, no scope", () => {
+    recordSessionEventScope({ profile: "default", session_id: "rt-1" });
+    publishSessionState("rt-1", state({ busy: true }));
 
-    expect(liveSessionScopes()).toEqual(new Set())
-  })
+    expect(liveSessionScopes()).toEqual(new Set());
+  });
 
   it("keeps two sources' same-named 'default' profiles distinct", () => {
-    recordSessionEventScope({ connectionId: 'homelab', profile: 'default', session_id: 'rt-a' })
-    recordSessionEventScope({ connectionId: 'spark', profile: 'default', session_id: 'rt-b' })
-    publishSessionState('rt-a', state({ busy: true }))
-    publishSessionState('rt-b', state({ busy: true }))
+    recordSessionEventScope({
+      connectionId: "homelab",
+      profile: "default",
+      session_id: "rt-a",
+    });
+    recordSessionEventScope({
+      connectionId: "spark",
+      profile: "default",
+      session_id: "rt-b",
+    });
+    publishSessionState("rt-a", state({ busy: true }));
+    publishSessionState("rt-b", state({ busy: true }));
 
-    expect(liveSessionScopes()).toEqual(new Set(['conn:homelab::default', 'conn:spark::default']))
-  })
+    expect(liveSessionScopes()).toEqual(
+      new Set(["conn:homelab::default", "conn:spark::default"]),
+    );
+  });
 
-  it('forgets a dropped runtime session', () => {
-    recordSessionEventScope({ connectionId: 'homelab', profile: 'default', session_id: 'rt-1' })
-    publishSessionState('rt-1', state({ busy: true }))
-    dropSessionState('rt-1')
-    publishSessionState('rt-1', state({ busy: true }))
+  it("forgets a dropped runtime session", () => {
+    recordSessionEventScope({
+      connectionId: "homelab",
+      profile: "default",
+      session_id: "rt-1",
+    });
+    publishSessionState("rt-1", state({ busy: true }));
+    dropSessionState("rt-1");
+    publishSessionState("rt-1", state({ busy: true }));
 
-    expect(liveSessionScopes()).toEqual(new Set())
-  })
-})
+    expect(liveSessionScopes()).toEqual(new Set());
+  });
+});
 
-describe('openTileGatewayScopes', () => {
+describe("openTileGatewayScopes", () => {
   beforeEach(() => {
-    $sessionTiles.set([])
-  })
+    $sessionTiles.set([]);
+  });
 
   afterEach(() => {
-    $sessionTiles.set([])
-  })
+    $sessionTiles.set([]);
+  });
 
-  it('keeps a local bot tile on both the bare profile and the explicit local registry scope', () => {
+  it("keeps a local bot tile on both the bare profile and the explicit local registry scope", () => {
     $sessionTiles.set([
       {
-        ownerRoute: { connectionId: 'local', mode: 'local', profile: 'berry' },
-        storedSessionId: 'bot-chat-berry'
-      }
-    ])
+        ownerRoute: { connectionId: "local", mode: "local", profile: "berry" },
+        storedSessionId: "bot-chat-berry",
+      },
+    ]);
 
-    expect(openTileGatewayScopes()).toEqual(new Set(['berry', 'conn:local::berry']))
-  })
+    expect(openTileGatewayScopes()).toEqual(
+      new Set(["berry", "conn:local::berry"]),
+    );
+  });
 
-  it('keeps a remote tile on its composite scope only', () => {
+  it("keeps a remote tile on its composite scope only", () => {
     $sessionTiles.set([
       {
-        ownerRoute: { connectionId: 'homelab', profile: 'default' },
-        storedSessionId: 'bot-chat-homelab'
-      }
-    ])
+        ownerRoute: { connectionId: "homelab", profile: "default" },
+        storedSessionId: "bot-chat-homelab",
+      },
+    ]);
 
-    expect(openTileGatewayScopes()).toEqual(new Set(['conn:homelab::default']))
-    expect(openTileGatewayScopes().has('default')).toBe(false)
-  })
+    expect(openTileGatewayScopes()).toEqual(new Set(["conn:homelab::default"]));
+    expect(openTileGatewayScopes().has("default")).toBe(false);
+  });
 
-  it('keys the keep-set on route.profile, not a remapped targetProfile', () => {
+  it("keys the keep-set on route.profile, not a remapped targetProfile", () => {
     // openGatewayForAgent dials (connectionId, profile). targetProfile only
     // rewrites RPC params — using it here would miss the live socket.
     $sessionTiles.set([
       {
         ownerRoute: {
-          connectionId: 'barry',
-          profile: 'oxcoder',
-          targetProfile: 'backend-oxcoder'
+          connectionId: "barry",
+          profile: "oxcoder",
+          targetProfile: "backend-oxcoder",
         },
-        storedSessionId: 'bot-chat-oxcoder'
-      }
-    ])
+        storedSessionId: "bot-chat-oxcoder",
+      },
+    ]);
 
-    expect(openTileGatewayScopes()).toEqual(new Set(['conn:barry::oxcoder']))
-  })
+    expect(openTileGatewayScopes()).toEqual(new Set(["conn:barry::oxcoder"]));
+  });
 
-  it('ignores tiles without an owner route', () => {
-    $sessionTiles.set([{ storedSessionId: 'plain' }])
+  it("ignores tiles without an owner route", () => {
+    $sessionTiles.set([{ storedSessionId: "plain" }]);
 
-    expect(openTileGatewayScopes()).toEqual(new Set())
-  })
-})
+    expect(openTileGatewayScopes()).toEqual(new Set());
+  });
+});

@@ -14,38 +14,38 @@
  * buttons, so a glyph here and a glyph on the strip are still the same button.
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import { Codicon } from '@/components/ui/codicon'
-import { CopyButton } from '@/components/ui/copy-button'
-import { Input } from '@/components/ui/input'
-import { PaneStripGlyph } from '@/components/ui/pane-tab'
-import { useI18n } from '@/i18n'
-import { ANNOTATE_BLUE } from '@/lib/preview-annotate'
-import { cn } from '@/lib/utils'
+import { Codicon } from "@/components/ui/codicon";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Input } from "@/components/ui/input";
+import { PaneStripGlyph } from "@/components/ui/pane-tab";
+import { useI18n } from "@/i18n";
+import { ANNOTATE_BLUE } from "@/lib/preview-annotate";
+import { cn } from "@/lib/utils";
 
 interface PreviewBrowserBarProps {
-  annotateMode?: boolean
-  canGoBack: boolean
-  canGoForward: boolean
-  commentCount?: number
-  consoleOpen: boolean
-  devToolsOpen: boolean
-  loading: boolean
-  onBack: () => void
-  onFlushComments?: () => void
-  onForward: () => void
-  onNavigate: (url: string) => void
-  onOpenExternal?: () => void
-  onPopIn?: () => void
-  onPopOut?: () => void
-  onReload: () => void
-  onToggleAnnotate?: () => void
-  onToggleConsole: () => void
-  onToggleDevTools: () => void
+  annotateMode?: boolean;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  commentCount?: number;
+  consoleOpen: boolean;
+  devToolsOpen: boolean;
+  loading: boolean;
+  onBack: () => void;
+  onFlushComments?: () => void;
+  onForward: () => void;
+  onNavigate: (url: string) => void;
+  onOpenExternal?: () => void;
+  onPopIn?: () => void;
+  onPopOut?: () => void;
+  onReload: () => void;
+  onToggleAnnotate?: () => void;
+  onToggleConsole: () => void;
+  onToggleDevTools: () => void;
   /** The page's CURRENT address (it moves as the user navigates), not the
    *  target the tab was opened with. */
-  url: string
+  url: string;
 }
 
 /**
@@ -61,35 +61,43 @@ interface PreviewBrowserBarProps {
  * the person typing already owns the machine it runs on.
  */
 export function normalizePreviewAddress(value: string): null | string {
-  const address = value.trim()
+  const address = value.trim();
 
   if (!address) {
-    return null
+    return null;
   }
 
   // `://`, not a leading-scheme regex: `localhost:5173` and `example.com:8080`
   // both match `scheme:` and would be read as an unknown protocol instead of a
   // host and a port. `about:blank` has no `://` either, hence the explicit
   // scheme test before the host guess.
-  const scheme = /^(about|blob|chrome|data|devtools|file|ftp|https?|javascript|view-source):/i.exec(address)?.[1]
-  const loopback = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(?::\d+)?(?:[/?#]|$)/i.test(address)
-  const candidate = scheme ? address : `${loopback ? 'http' : 'https'}://${address}`
+  const scheme =
+    /^(about|blob|chrome|data|devtools|file|ftp|https?|javascript|view-source):/i.exec(
+      address,
+    )?.[1];
+  const loopback =
+    /^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(?::\d+)?(?:[/?#]|$)/i.test(
+      address,
+    );
+  const candidate = scheme
+    ? address
+    : `${loopback ? "http" : "https"}://${address}`;
 
   // Script-bearing schemes run INSIDE the page the user is looking at (or mint
   // a document with an attacker-chosen body) — that's injection wearing a
   // navigation's clothes, and no browser's address bar honors it either.
   if (scheme && /^(data|javascript)$/i.test(scheme)) {
-    return null
+    return null;
   }
 
   try {
     // A parse failure is the real filter for junk: `://broken`, `htp:/x`, and
     // half-typed nonsense all land here.
-    new URL(candidate)
+    new URL(candidate);
 
-    return candidate
+    return candidate;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -112,37 +120,40 @@ export function PreviewBrowserBar({
   onToggleAnnotate,
   onToggleConsole,
   onToggleDevTools,
-  url
+  url,
 }: PreviewBrowserBarProps) {
-  const { t } = useI18n()
-  const copy = t.preview.web
+  const { t } = useI18n();
+  const copy = t.preview.web;
   // Null while the field is idle, so the address tracks navigation on its own;
   // a string once the user takes it over, so typing survives a page load.
-  const [draft, setDraft] = useState<null | string>(null)
+  const [draft, setDraft] = useState<null | string>(null);
   // The address we asked for and are still waiting on. Without it, committing
   // dropped the field straight back to `url` — the page you were LEAVING —
   // so every navigation flashed the old address before the new one arrived.
-  const [pending, setPending] = useState<null | string>(null)
+  const [pending, setPending] = useState<null | string>(null);
   // Only while the user is typing: a page that navigates itself is never the
   // user's mistake to flag.
-  const invalid = draft !== null && draft.trim().length > 0 && !normalizePreviewAddress(draft)
-  const shown = draft ?? pending ?? url
+  const invalid =
+    draft !== null &&
+    draft.trim().length > 0 &&
+    !normalizePreviewAddress(draft);
+  const shown = draft ?? pending ?? url;
 
   // The page moved (or a redirect landed somewhere else entirely), so the real
   // address supersedes what we asked for.
-  useEffect(() => setPending(null), [url])
+  useEffect(() => setPending(null), [url]);
 
   const commit = (value: string) => {
-    const address = normalizePreviewAddress(value)
+    const address = normalizePreviewAddress(value);
 
     if (!address) {
-      return
+      return;
     }
 
-    setDraft(null)
-    setPending(address)
-    onNavigate(address)
-  }
+    setDraft(null);
+    setPending(address);
+    onNavigate(address);
+  };
 
   return (
     <div className="flex min-h-(--titlebar-height) shrink-0 items-center gap-1 border-b border-border/60 bg-background px-1.5 py-1">
@@ -182,23 +193,23 @@ export function PreviewBrowserBar({
         <Input
           aria-invalid={invalid || undefined}
           aria-label={copy.address}
-          className={cn('pr-7', loading && 'pl-6')}
+          className={cn("pr-7", loading && "pl-6")}
           inputMode="url"
           onBlur={() => setDraft(null)}
-          onChange={event => setDraft(event.target.value)}
-          onFocus={event => {
-            setDraft(shown)
-            event.currentTarget.select()
+          onChange={(event) => setDraft(event.target.value)}
+          onFocus={(event) => {
+            setDraft(shown);
+            event.currentTarget.select();
           }}
-          onKeyDown={event => {
-            if (event.key === 'Enter') {
-              commit(event.currentTarget.value)
-              event.currentTarget.blur()
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              commit(event.currentTarget.value);
+              event.currentTarget.blur();
             }
 
-            if (event.key === 'Escape') {
-              setDraft(null)
-              event.currentTarget.blur()
+            if (event.key === "Escape") {
+              setDraft(null);
+              event.currentTarget.blur();
             }
           }}
           placeholder={copy.addressPlaceholder}
@@ -274,5 +285,5 @@ export function PreviewBrowserBar({
         onSelect={onToggleDevTools}
       />
     </div>
-  )
+  );
 }

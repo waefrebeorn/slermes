@@ -24,146 +24,152 @@
 
 /** Matches DialogOverlay's scrim treatment. The actual effect (grayscale/fade)
  *  lives in app-tour.css so it can be tuned in one place. */
-const FEATHER_PX = 12
+const FEATHER_PX = 12;
 
 /** Matches TOUR_STYLE.stagePadding/stageRadius, so the soft hole sits over
  *  driver's own cutout rather than beside it. */
-const STAGE_PADDING = 6
-const STAGE_RADIUS = 8
+const STAGE_PADDING = 6;
+const STAGE_RADIUS = 8;
 
-const LAYER_ID = '__hermes-tour-spotlight-blur'
-const MASK_ID = '__hermes-tour-spotlight-mask'
-const SVG_NS = 'http://www.w3.org/2000/svg'
+const LAYER_ID = "__hermes-tour-spotlight-blur";
+const MASK_ID = "__hermes-tour-spotlight-mask";
+const SVG_NS = "http://www.w3.org/2000/svg";
 
 /** One rect's worth of geometry — driver's stage, or an element's box. */
 export interface Stage {
-  height: number
-  width: number
-  x: number
-  y: number
+  height: number;
+  width: number;
+  x: number;
+  y: number;
 }
 
 /** Reads driver.js's live (animated) stage rect. Supplied by run-tour. */
-type StageSource = () => null | Stage
+type StageSource = () => null | Stage;
 
-let frame = 0
-let stageSource: StageSource | undefined
-let hole: SVGRectElement | undefined
-let outer: SVGRectElement | undefined
+let frame = 0;
+let stageSource: StageSource | undefined;
+let hole: SVGRectElement | undefined;
+let outer: SVGRectElement | undefined;
 
 function teardownDom(): void {
-  document.getElementById(LAYER_ID)?.remove()
-  document.getElementById(`${LAYER_ID}-defs`)?.remove()
-  hole = undefined
-  outer = undefined
+  document.getElementById(LAYER_ID)?.remove();
+  document.getElementById(`${LAYER_ID}-defs`)?.remove();
+  hole = undefined;
+  outer = undefined;
 }
 
 /** The blur layer plus the mask that shapes it. Built once per tour. */
 function mount(): void {
   if (document.getElementById(LAYER_ID)) {
-    return
+    return;
   }
 
-  const svg = document.createElementNS(SVG_NS, 'svg')
+  const svg = document.createElementNS(SVG_NS, "svg");
 
-  svg.id = `${LAYER_ID}-defs`
-  svg.setAttribute('aria-hidden', 'true')
-  svg.style.cssText = 'position:fixed;width:0;height:0;pointer-events:none'
+  svg.id = `${LAYER_ID}-defs`;
+  svg.setAttribute("aria-hidden", "true");
+  svg.style.cssText = "position:fixed;width:0;height:0;pointer-events:none";
 
-  const mask = document.createElementNS(SVG_NS, 'mask')
+  const mask = document.createElementNS(SVG_NS, "mask");
 
-  mask.id = MASK_ID
+  mask.id = MASK_ID;
   // Viewport coordinates, so the rects below take plain CSS pixels.
-  mask.setAttribute('maskUnits', 'userSpaceOnUse')
+  mask.setAttribute("maskUnits", "userSpaceOnUse");
 
-  const filter = document.createElementNS(SVG_NS, 'filter')
+  const filter = document.createElementNS(SVG_NS, "filter");
 
-  filter.id = `${MASK_ID}-feather`
+  filter.id = `${MASK_ID}-feather`;
 
   // Roomy region: a blur clipped to the shape's own box would square off the
   // very edge we're trying to soften.
   for (const [name, value] of [
-    ['x', '-50%'],
-    ['y', '-50%'],
-    ['width', '200%'],
-    ['height', '200%']
+    ["x", "-50%"],
+    ["y", "-50%"],
+    ["width", "200%"],
+    ["height", "200%"],
   ]) {
-    filter.setAttribute(name, value)
+    filter.setAttribute(name, value);
   }
 
-  const blur = document.createElementNS(SVG_NS, 'feGaussianBlur')
+  const blur = document.createElementNS(SVG_NS, "feGaussianBlur");
 
-  blur.setAttribute('stdDeviation', String(FEATHER_PX / 2))
-  filter.appendChild(blur)
+  blur.setAttribute("stdDeviation", String(FEATHER_PX / 2));
+  filter.appendChild(blur);
 
   // White shows the blur, black hides it: paint everything, then punch a
   // feathered hole where the spotlight is.
-  outer = document.createElementNS(SVG_NS, 'rect')
-  outer.setAttribute('fill', 'white')
+  outer = document.createElementNS(SVG_NS, "rect");
+  outer.setAttribute("fill", "white");
 
-  hole = document.createElementNS(SVG_NS, 'rect')
-  hole.setAttribute('fill', 'black')
-  hole.setAttribute('rx', String(STAGE_RADIUS + STAGE_PADDING / 2))
-  hole.setAttribute('filter', `url(#${filter.id})`)
+  hole = document.createElementNS(SVG_NS, "rect");
+  hole.setAttribute("fill", "black");
+  hole.setAttribute("rx", String(STAGE_RADIUS + STAGE_PADDING / 2));
+  hole.setAttribute("filter", `url(#${filter.id})`);
 
-  mask.append(outer, hole)
-  svg.append(filter, mask)
-  document.body.appendChild(svg)
+  mask.append(outer, hole);
+  svg.append(filter, mask);
+  document.body.appendChild(svg);
 
-  const layer = document.createElement('div')
+  const layer = document.createElement("div");
 
-  layer.id = LAYER_ID
-  layer.setAttribute('aria-hidden', 'true')
+  layer.id = LAYER_ID;
+  layer.setAttribute("aria-hidden", "true");
   layer.style.cssText = [
-    'position:fixed',
-    'inset:0',
-    'pointer-events:none',
+    "position:fixed",
+    "inset:0",
+    "pointer-events:none",
     // Under driver.js's own overlay (10000) so the scrim tint reads on top of
     // this, and far under the popover, which stays perfectly sharp.
-    'z-index:9998',
+    "z-index:9998",
     `mask:url(#${MASK_ID})`,
-    `-webkit-mask:url(#${MASK_ID})`
-  ].join(';')
+    `-webkit-mask:url(#${MASK_ID})`,
+  ].join(";");
 
-  document.body.appendChild(layer)
+  document.body.appendChild(layer);
 }
 
 /** Move the feathered hole onto `stage`. Four attribute writes. */
 function paint(stage: null | Stage): void {
   if (!hole || !outer) {
-    return
+    return;
   }
 
-  outer.setAttribute('width', String(window.innerWidth))
-  outer.setAttribute('height', String(window.innerHeight))
+  outer.setAttribute("width", String(window.innerWidth));
+  outer.setAttribute("height", String(window.innerHeight));
 
   if (!stage) {
     // A narration step highlights nothing: blur everything, no hole.
-    hole.setAttribute('width', '0')
-    hole.setAttribute('height', '0')
+    hole.setAttribute("width", "0");
+    hole.setAttribute("height", "0");
 
-    return
+    return;
   }
 
-  hole.setAttribute('x', String(stage.x - STAGE_PADDING))
-  hole.setAttribute('y', String(stage.y - STAGE_PADDING))
-  hole.setAttribute('width', String(Math.max(0, stage.width + STAGE_PADDING * 2)))
-  hole.setAttribute('height', String(Math.max(0, stage.height + STAGE_PADDING * 2)))
+  hole.setAttribute("x", String(stage.x - STAGE_PADDING));
+  hole.setAttribute("y", String(stage.y - STAGE_PADDING));
+  hole.setAttribute(
+    "width",
+    String(Math.max(0, stage.width + STAGE_PADDING * 2)),
+  );
+  hole.setAttribute(
+    "height",
+    String(Math.max(0, stage.height + STAGE_PADDING * 2)),
+  );
 }
 
 /** Follow the stage every frame — driver eases it, we just mirror it. */
 function tick(): void {
-  frame = requestAnimationFrame(tick)
+  frame = requestAnimationFrame(tick);
 
-  if (!document.querySelector('svg.driver-overlay')) {
+  if (!document.querySelector("svg.driver-overlay")) {
     // The tour ended (last step, Esc, ✕, overlay click).
-    stopSpotlightBlur()
+    stopSpotlightBlur();
 
-    return
+    return;
   }
 
-  mount()
-  paint(stageSource?.() ?? null)
+  mount();
+  paint(stageSource?.() ?? null);
 }
 
 /**
@@ -172,20 +178,20 @@ function tick(): void {
  * overlay, however the tour ended, so nothing lingers between tours.
  */
 export function syncSpotlightBlur(stage: StageSource): void {
-  stageSource = stage
+  stageSource = stage;
 
   if (!frame) {
-    frame = requestAnimationFrame(tick)
+    frame = requestAnimationFrame(tick);
   }
 }
 
 /** Stop following and remove the layer. */
 export function stopSpotlightBlur(): void {
   if (frame) {
-    cancelAnimationFrame(frame)
-    frame = 0
+    cancelAnimationFrame(frame);
+    frame = 0;
   }
 
-  stageSource = undefined
-  teardownDom()
+  stageSource = undefined;
+  teardownDom();
 }

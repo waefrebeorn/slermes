@@ -33,68 +33,82 @@
  *        caller. When in doubt, don't retry a non-idempotent request.
  */
 
-import http from 'node:http'
-import https from 'node:https'
+import http from "node:http";
+import https from "node:https";
 
 // JSON pool: many small concurrent calls (session lists, config, prompts).
-const HTTP_JSON_AGENT = new http.Agent({ keepAlive: true, maxSockets: 50 })
-const HTTPS_JSON_AGENT = new https.Agent({ keepAlive: true, maxSockets: 50 })
+const HTTP_JSON_AGENT = new http.Agent({ keepAlive: true, maxSockets: 50 });
+const HTTPS_JSON_AGENT = new https.Agent({ keepAlive: true, maxSockets: 50 });
 
 // Download pool: few long-lived streaming bodies. Isolated from the JSON pool
 // so saturating it with large file downloads can't block interactive calls.
-const HTTP_DOWNLOAD_AGENT = new http.Agent({ keepAlive: true, maxSockets: 8 })
-const HTTPS_DOWNLOAD_AGENT = new https.Agent({ keepAlive: true, maxSockets: 8 })
+const HTTP_DOWNLOAD_AGENT = new http.Agent({ keepAlive: true, maxSockets: 8 });
+const HTTPS_DOWNLOAD_AGENT = new https.Agent({
+  keepAlive: true,
+  maxSockets: 8,
+});
 
 function jsonAgentFor(protocol) {
-  return protocol === 'https:' ? HTTPS_JSON_AGENT : HTTP_JSON_AGENT
+  return protocol === "https:" ? HTTPS_JSON_AGENT : HTTP_JSON_AGENT;
 }
 
 function downloadAgentFor(protocol) {
-  return protocol === 'https:' ? HTTPS_DOWNLOAD_AGENT : HTTP_DOWNLOAD_AGENT
+  return protocol === "https:" ? HTTPS_DOWNLOAD_AGENT : HTTP_DOWNLOAD_AGENT;
 }
 
 // Close pooled sockets so lingering keep-alive connections can't hold the
 // process open (or leak FDs) across quit. Wired to app 'will-quit' in main.ts.
 function destroyKeepaliveAgents() {
-  for (const agent of [HTTP_JSON_AGENT, HTTPS_JSON_AGENT, HTTP_DOWNLOAD_AGENT, HTTPS_DOWNLOAD_AGENT]) {
-    agent.destroy()
+  for (const agent of [
+    HTTP_JSON_AGENT,
+    HTTPS_JSON_AGENT,
+    HTTP_DOWNLOAD_AGENT,
+    HTTPS_DOWNLOAD_AGENT,
+  ]) {
+    agent.destroy();
   }
 }
 
 // Transient transport errors: retry MAY be safe (subject to verb gating).
 const TRANSIENT_CODES = new Set([
-  'ECONNRESET',
-  'ECONNREFUSED',
-  'EPIPE',
-  'ETIMEDOUT',
-  'EAI_AGAIN',
-  'ENOTFOUND',
-  'EHOSTUNREACH',
-  'ENETUNREACH'
-])
+  "ECONNRESET",
+  "ECONNREFUSED",
+  "EPIPE",
+  "ETIMEDOUT",
+  "EAI_AGAIN",
+  "ENOTFOUND",
+  "EHOSTUNREACH",
+  "ENETUNREACH",
+]);
 
 // Errors that prove the request never reached the server: the TCP connection
 // (or name resolution) failed outright, so nothing was submitted.
-const NEVER_SENT_CODES = new Set(['ECONNREFUSED', 'ENOTFOUND', 'EAI_AGAIN', 'EHOSTUNREACH', 'ENETUNREACH'])
+const NEVER_SENT_CODES = new Set([
+  "ECONNREFUSED",
+  "ENOTFOUND",
+  "EAI_AGAIN",
+  "EHOSTUNREACH",
+  "ENETUNREACH",
+]);
 
-const IDEMPOTENT_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+const IDEMPOTENT_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
 function isIdempotentMethod(method) {
-  return IDEMPOTENT_METHODS.has(String(method || 'GET').toUpperCase())
+  return IDEMPOTENT_METHODS.has(String(method || "GET").toUpperCase());
 }
 
 function isTransientTransportError(error) {
   if (!error) {
-    return false
+    return false;
   }
 
   if (TRANSIENT_CODES.has(error.code)) {
-    return true
+    return true;
   }
 
-  const msg = String(error.message || '')
+  const msg = String(error.message || "");
 
-  return msg.includes('socket hang up') || msg.includes('read ECONNRESET')
+  return msg.includes("socket hang up") || msg.includes("read ECONNRESET");
 }
 
 /**
@@ -108,25 +122,25 @@ function isTransientTransportError(error) {
  */
 function shouldRetryRequest(error, method, requestState: any = {}) {
   if (!isTransientTransportError(error)) {
-    return false
+    return false;
   }
 
   if (isIdempotentMethod(method)) {
-    return true
+    return true;
   }
 
   // Non-idempotent: only when the request provably never reached the server.
   if (NEVER_SENT_CODES.has(error && error.code)) {
-    return true
+    return true;
   }
 
   if (requestState.bodySent === false) {
-    return true
+    return true;
   }
 
   // Ambiguous (reset/hang-up after the body was flushed): the server may have
   // processed it. Surface the error rather than risk a double submit.
-  return false
+  return false;
 }
 
 /**
@@ -138,33 +152,42 @@ function shouldRetryRequest(error, method, requestState: any = {}) {
  * object initialized to { bodySent: false }.
  */
 async function withRetry(makeAttempt, options: any = {}) {
-  const method = String(options.method || 'GET').toUpperCase()
-  const maxRetries = Number.isInteger(options.maxRetries) ? options.maxRetries : 2
+  const method = String(options.method || "GET").toUpperCase();
+  const maxRetries = Number.isInteger(options.maxRetries)
+    ? options.maxRetries
+    : 2;
 
   const delayFn =
-    options.delayFn || (attempt => new Promise(r => setTimeout(r, Math.min(200 * Math.pow(2, attempt), 2000))))
+    options.delayFn ||
+    ((attempt) =>
+      new Promise((r) =>
+        setTimeout(r, Math.min(200 * Math.pow(2, attempt), 2000)),
+      ));
 
-  let lastError
+  let lastError;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    const requestState = { bodySent: false }
+    const requestState = { bodySent: false };
 
     try {
-      return await makeAttempt(requestState)
+      return await makeAttempt(requestState);
     } catch (error) {
-      lastError = error
+      lastError = error;
 
-      if (attempt < maxRetries && shouldRetryRequest(error, method, requestState)) {
-        await delayFn(attempt)
+      if (
+        attempt < maxRetries &&
+        shouldRetryRequest(error, method, requestState)
+      ) {
+        await delayFn(attempt);
 
-        continue
+        continue;
       }
 
-      throw error
+      throw error;
     }
   }
 
-  throw lastError
+  throw lastError;
 }
 
 export {
@@ -174,5 +197,5 @@ export {
   isTransientTransportError,
   jsonAgentFor,
   shouldRetryRequest,
-  withRetry
-}
+  withRetry,
+};

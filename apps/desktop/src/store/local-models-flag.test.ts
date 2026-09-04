@@ -1,40 +1,40 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-describe('$localModelsEnabled', () => {
+describe("$localModelsEnabled", () => {
   beforeEach(() => {
-    vi.resetModules()
-  })
+    vi.resetModules();
+  });
 
-  it('reads true when the preload bridge reports the --local launch flag', async () => {
-    Object.defineProperty(window, 'hermesDesktop', {
+  it("reads true when the preload bridge reports the --local launch flag", async () => {
+    Object.defineProperty(window, "hermesDesktop", {
       configurable: true,
-      value: { localModelsEnabled: true }
-    })
+      value: { localModelsEnabled: true },
+    });
 
-    const { $localModelsEnabled } = await import('./local-models-flag')
+    const { $localModelsEnabled } = await import("./local-models-flag");
 
-    expect($localModelsEnabled.get()).toBe(true)
-  })
+    expect($localModelsEnabled.get()).toBe(true);
+  });
 
-  it('defaults to false when the bridge omits the flag (older preload, web)', async () => {
-    Object.defineProperty(window, 'hermesDesktop', {
+  it("defaults to false when the bridge omits the flag (older preload, web)", async () => {
+    Object.defineProperty(window, "hermesDesktop", {
       configurable: true,
-      value: {}
-    })
+      value: {},
+    });
 
-    const { $localModelsEnabled } = await import('./local-models-flag')
+    const { $localModelsEnabled } = await import("./local-models-flag");
 
-    expect($localModelsEnabled.get()).toBe(false)
-  })
+    expect($localModelsEnabled.get()).toBe(false);
+  });
 
-  it('defaults to false with no bridge at all', async () => {
-    Object.defineProperty(window, 'hermesDesktop', {
+  it("defaults to false with no bridge at all", async () => {
+    Object.defineProperty(window, "hermesDesktop", {
       configurable: true,
-      value: undefined
-    })
+      value: undefined,
+    });
 
-    const { $localModelsEnabled } = await import('./local-models-flag')
+    const { $localModelsEnabled } = await import("./local-models-flag");
 
-    expect($localModelsEnabled.get()).toBe(false)
-  })
-})
+    expect($localModelsEnabled.get()).toBe(false);
+  });
+});

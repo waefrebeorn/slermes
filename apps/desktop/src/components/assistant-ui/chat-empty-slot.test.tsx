@@ -8,69 +8,73 @@
  * depends on which plugins are installed.
  */
 
-import { render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 
-import { registry } from '@/contrib'
-import { CHAT_EMPTY_AREA, type ChatEmptyContribution } from '@/lib/chat-empty'
+import { registry } from "@/contrib";
+import { CHAT_EMPTY_AREA, type ChatEmptyContribution } from "@/lib/chat-empty";
 
-import { ChatEmptySlot } from './chat-empty-slot'
+import { ChatEmptySlot } from "./chat-empty-slot";
 
-const disposers: (() => void)[] = []
+const disposers: (() => void)[] = [];
 
-function contribute(id: string, render: ChatEmptyContribution['render']) {
-  disposers.push(registry.register({ area: CHAT_EMPTY_AREA, data: { render }, id }))
+function contribute(id: string, render: ChatEmptyContribution["render"]) {
+  disposers.push(
+    registry.register({ area: CHAT_EMPTY_AREA, data: { render }, id }),
+  );
 }
 
 afterEach(() => {
   for (const dispose of disposers.splice(0)) {
-    dispose()
+    dispose();
   }
-})
+});
 
-describe('an empty transcript asks every contributor', () => {
-  it('renders the owner even when an earlier contributor declined', () => {
-    contribute('declines', () => null)
-    contribute('owns', ({ sessionId }) => <span data-testid="owner">owner of {sessionId}</span>)
+describe("an empty transcript asks every contributor", () => {
+  it("renders the owner even when an earlier contributor declined", () => {
+    contribute("declines", () => null);
+    contribute("owns", ({ sessionId }) => (
+      <span data-testid="owner">owner of {sessionId}</span>
+    ));
 
-    render(<ChatEmptySlot sessionId="s-1" />)
+    render(<ChatEmptySlot sessionId="s-1" />);
 
-    expect(screen.getByTestId('owner').textContent).toBe('owner of s-1')
-  })
+    expect(screen.getByTestId("owner").textContent).toBe("owner of s-1");
+  });
 
-  it('renders nothing when everyone declines', () => {
-    contribute('a', () => null)
-    contribute('b', () => null)
+  it("renders nothing when everyone declines", () => {
+    contribute("a", () => null);
+    contribute("b", () => null);
 
-    const { container } = render(<ChatEmptySlot sessionId="s-1" />)
+    const { container } = render(<ChatEmptySlot sessionId="s-1" />);
 
-    expect(container.textContent).toBe('')
-  })
+    expect(container.textContent).toBe("");
+  });
 
-  it('renders nothing when nobody contributes at all', () => {
-    const { container } = render(<ChatEmptySlot sessionId="s-1" />)
+  it("renders nothing when nobody contributes at all", () => {
+    const { container } = render(<ChatEmptySlot sessionId="s-1" />);
 
-    expect(container.textContent).toBe('')
-  })
+    expect(container.textContent).toBe("");
+  });
 
-  it('shows a conflict rather than hiding one of the claimants', () => {
-    contribute('first', () => <span>first</span>)
-    contribute('second', () => <span>second</span>)
+  it("shows a conflict rather than hiding one of the claimants", () => {
+    contribute("first", () => <span>first</span>);
+    contribute("second", () => <span>second</span>);
 
-    render(<ChatEmptySlot sessionId="s-1" />)
+    render(<ChatEmptySlot sessionId="s-1" />);
 
-    expect(screen.getByText('first')).toBeTruthy()
-    expect(screen.getByText('second')).toBeTruthy()
-  })
+    expect(screen.getByText("first")).toBeTruthy();
+    expect(screen.getByText("second")).toBeTruthy();
+  });
 
-  it('isolates a throwing contributor from the ones beside it', () => {
-    contribute('boom', () => {
-      throw new Error('contributor exploded')
-    })
-    contribute('owns', () => <span data-testid="owner">still here</span>)
+  it("isolates a throwing contributor from the ones beside it", () => {
+    contribute("boom", () => {
+      throw new Error("contributor exploded");
+    });
+    contribute("owns", () => <span data-testid="owner">still here</span>);
 
-    render(<ChatEmptySlot sessionId="s-1" />)
+    render(<ChatEmptySlot sessionId="s-1" />);
 
-    expect(screen.getByTestId('owner').textContent).toBe('still here')
-  })
-})
+    expect(screen.getByTestId("owner").textContent).toBe("still here");
+  });
+});

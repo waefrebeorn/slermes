@@ -1,1 +1,1 @@
-export { PreviewTilePane } from './preview'
+export { PreviewTilePane } from "./preview";

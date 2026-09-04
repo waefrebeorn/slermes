@@ -18,29 +18,34 @@
  * nothing to misroute to. Older single-profile backends omit `profile` on
  * their rows entirely; those users keep working unchanged.
  */
-import { hasRegistryTopology } from './connection-registry-state'
-import { $profiles } from './profile'
-import { isSessionOwnerRoute, type SessionOwnerScope } from './session-request-router'
+import { hasRegistryTopology } from "./connection-registry-state";
+import { $profiles } from "./profile";
+import {
+  isSessionOwnerRoute,
+  type SessionOwnerScope,
+} from "./session-request-router";
 
 export class SessionOwnerResolutionError extends Error {
   constructor(
     readonly sessionId: string,
-    readonly method: string
+    readonly method: string,
   ) {
     super(
       `Session owner could not be resolved for "${sessionId}" (${method}): ` +
-        'no owner route, hint, connection-tagged row or profile probe named the backend that holds this session, ' +
-        'and routing it to the active gateway would be a guess.'
-    )
-    this.name = 'SessionOwnerResolutionError'
+        "no owner route, hint, connection-tagged row or profile probe named the backend that holds this session, " +
+        "and routing it to the active gateway would be a guess.",
+    );
+    this.name = "SessionOwnerResolutionError";
   }
 }
 
-export function isSessionOwnerResolutionError(error: unknown): error is SessionOwnerResolutionError {
+export function isSessionOwnerResolutionError(
+  error: unknown,
+): error is SessionOwnerResolutionError {
   return (
     error instanceof SessionOwnerResolutionError ||
-    (error as { name?: unknown })?.name === 'SessionOwnerResolutionError'
-  )
+    (error as { name?: unknown })?.name === "SessionOwnerResolutionError"
+  );
 }
 
 /** True when the ambient gateway is provably the only backend any session
@@ -48,7 +53,7 @@ export function isSessionOwnerResolutionError(error: unknown): error is SessionO
  *  connection registry and there is at most one profile. The active route is
  *  presentation state; a null active connection does not prove sole topology. */
 export function ambientGatewayOwnsEverySession(): boolean {
-  return !hasRegistryTopology() && $profiles.get().length <= 1
+  return !hasRegistryTopology() && $profiles.get().length <= 1;
 }
 
 /** True when `owner` names a backend: an exact connection route, or a bare
@@ -59,10 +64,10 @@ export function ambientGatewayOwnsEverySession(): boolean {
  *  profile's pool socket, which requestForSessionProfile dials by name. */
 export function sessionOwnerIsKnown(owner: SessionOwnerScope): boolean {
   if (isSessionOwnerRoute(owner)) {
-    return Boolean(owner.connectionId.trim())
+    return Boolean(owner.connectionId.trim());
   }
 
-  return owner != null && Boolean(String(owner).trim())
+  return owner != null && Boolean(String(owner).trim());
 }
 
 /**
@@ -72,11 +77,15 @@ export function sessionOwnerIsKnown(owner: SessionOwnerScope): boolean {
  */
 export function assertSessionOwnerResolved(
   owner: SessionOwnerScope,
-  context: { method: string; sessionId: null | string | undefined }
+  context: { method: string; sessionId: null | string | undefined },
 ): void {
-  if (!context.sessionId || sessionOwnerIsKnown(owner) || ambientGatewayOwnsEverySession()) {
-    return
+  if (
+    !context.sessionId ||
+    sessionOwnerIsKnown(owner) ||
+    ambientGatewayOwnsEverySession()
+  ) {
+    return;
   }
 
-  throw new SessionOwnerResolutionError(context.sessionId, context.method)
+  throw new SessionOwnerResolutionError(context.sessionId, context.method);
 }

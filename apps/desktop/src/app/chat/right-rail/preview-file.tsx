@@ -1,73 +1,95 @@
-import { useStore } from '@nanostores/react'
-import type * as React from 'react'
+import { useStore } from "@nanostores/react";
+import type * as React from "react";
 import type {
   ComponentProps,
   CSSProperties,
   DragEvent as ReactDragEvent,
   MouseEvent as ReactMouseEvent,
-  ReactNode
-} from 'react'
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Streamdown } from 'streamdown'
+  ReactNode,
+} from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Streamdown } from "streamdown";
 
-import { requestComposerFocus, requestComposerInsertRefs } from '@/app/chat/composer/focus'
-import { droppedFileInlineRef } from '@/app/chat/composer/inline-refs'
-import { HERMES_PATHS_MIME } from '@/app/chat/hooks/use-composer-actions'
-import { RichCodeBlock } from '@/components/assistant-ui/embeds'
-import { CodeEditor } from '@/components/chat/code-editor'
-import { FileDiffPanel } from '@/components/chat/diff-lines'
-import { chunkTextLines, useFixedRowWindow } from '@/components/chat/fixed-row-window'
-import { LazyShiki as ShikiHighlighter } from '@/components/chat/shiki-highlighter'
-import { PageLoader } from '@/components/page-loader'
-import { Tip } from '@/components/ui/tooltip'
-import { translateNow, useI18n } from '@/i18n'
+import {
+  requestComposerFocus,
+  requestComposerInsertRefs,
+} from "@/app/chat/composer/focus";
+import { droppedFileInlineRef } from "@/app/chat/composer/inline-refs";
+import { HERMES_PATHS_MIME } from "@/app/chat/hooks/use-composer-actions";
+import { RichCodeBlock } from "@/components/assistant-ui/embeds";
+import { CodeEditor } from "@/components/chat/code-editor";
+import { FileDiffPanel } from "@/components/chat/diff-lines";
+import {
+  chunkTextLines,
+  useFixedRowWindow,
+} from "@/components/chat/fixed-row-window";
+import { LazyShiki as ShikiHighlighter } from "@/components/chat/shiki-highlighter";
+import { PageLoader } from "@/components/page-loader";
+import { Tip } from "@/components/ui/tooltip";
+import { translateNow, useI18n } from "@/i18n";
 import {
   desktopFileDiff,
   desktopFsCacheKey,
   desktopGitRoot,
   readDesktopFileDataUrl,
   readDesktopFileText,
-  writeDesktopFileText
-} from '@/lib/desktop-fs'
-import { Check, Pencil, X } from '@/lib/icons'
-import { createMemoizedMathPlugin } from '@/lib/katex-memo'
-import { isComposerChord } from '@/lib/keybinds/chords'
-import { shikiLanguageForFilename } from '@/lib/markdown-code'
-import { normalizeFilePreviewMath } from '@/lib/markdown-preprocess'
-import { cn } from '@/lib/utils'
-import type { PreviewTarget } from '@/store/preview'
-import { setPreviewDirty } from '@/store/preview-edit'
-import { $connection, $currentCwd } from '@/store/session'
-import { notifyWorkspaceChanged } from '@/store/workspace-events'
+  writeDesktopFileText,
+} from "@/lib/desktop-fs";
+import { Check, Pencil, X } from "@/lib/icons";
+import { createMemoizedMathPlugin } from "@/lib/katex-memo";
+import { isComposerChord } from "@/lib/keybinds/chords";
+import { shikiLanguageForFilename } from "@/lib/markdown-code";
+import { normalizeFilePreviewMath } from "@/lib/markdown-preprocess";
+import { cn } from "@/lib/utils";
+import type { PreviewTarget } from "@/store/preview";
+import { setPreviewDirty } from "@/store/preview-edit";
+import { $connection, $currentCwd } from "@/store/session";
+import { notifyWorkspaceChanged } from "@/store/workspace-events";
 
-const SHIKI_THEME = { dark: 'github-dark-default', light: 'github-light-default' } as const
-const TEXT_PREVIEW_MAX_BYTES = 512 * 1024
-const SOURCE_CHUNK_LINES = 200
-const SOURCE_LINE_PX = 20
-const SOURCE_OVERSCAN_LINES = 400
+const SHIKI_THEME = {
+  dark: "github-dark-default",
+  light: "github-light-default",
+} as const;
+const TEXT_PREVIEW_MAX_BYTES = 512 * 1024;
+const SOURCE_CHUNK_LINES = 200;
+const SOURCE_LINE_PX = 20;
+const SOURCE_OVERSCAN_LINES = 400;
 
 // Math plugin for the static file preview, configured once at module scope.
 // Mirrors the chat transcript's plugin (`markdown-text.tsx`) — same memoized
 // KaTeX wrapper, with `singleDollarTextMath: true` so `$x$` renders inline.
-const previewMathPlugin = createMemoizedMathPlugin({ singleDollarTextMath: true })
+const previewMathPlugin = createMemoizedMathPlugin({
+  singleDollarTextMath: true,
+});
 
-type EmptyStateTone = 'neutral' | 'warning'
+type EmptyStateTone = "neutral" | "warning";
 
 const TONE_STYLES: Record<EmptyStateTone, { cube: string; primary: string }> = {
   neutral: {
-    cube: 'text-muted-foreground/35',
-    primary: 'border-border bg-background text-foreground hover:bg-accent'
+    cube: "text-muted-foreground/35",
+    primary: "border-border bg-background text-foreground hover:bg-accent",
   },
   warning: {
-    cube: 'text-amber-500/70 dark:text-amber-300/70',
+    cube: "text-amber-500/70 dark:text-amber-300/70",
     primary:
-      'border-amber-400/40 bg-amber-50 text-amber-900 hover:bg-amber-100 dark:border-amber-300/30 dark:bg-amber-300/15 dark:text-amber-100 dark:hover:bg-amber-300/20'
-  }
-}
+      "border-amber-400/40 bg-amber-50 text-amber-900 hover:bg-amber-100 dark:border-amber-300/30 dark:bg-amber-300/15 dark:text-amber-100 dark:hover:bg-amber-300/20",
+  },
+};
 
 function PreviewCubeIcon({ className }: { className?: string }) {
   return (
-    <svg aria-hidden="true" className={cn('size-16', className)} viewBox="0 0 64 64">
+    <svg
+      aria-hidden="true"
+      className={cn("size-16", className)}
+      viewBox="0 0 64 64"
+    >
       <path
         d="M32 5 56 18.5v27L32 59 8 45.5v-27L32 5Z"
         fill="none"
@@ -82,18 +104,24 @@ function PreviewCubeIcon({ className }: { className?: string }) {
         strokeLinejoin="round"
         strokeWidth="1.25"
       />
-      <path d="M20 11.75 44 25.25" fill="none" opacity="0.45" stroke="currentColor" strokeWidth="0.9" />
+      <path
+        d="M20 11.75 44 25.25"
+        fill="none"
+        opacity="0.45"
+        stroke="currentColor"
+        strokeWidth="0.9"
+      />
     </svg>
-  )
+  );
 }
 
 interface PreviewEmptyStateProps {
-  body?: ReactNode
-  consoleHeight?: number
-  primaryAction?: { disabled?: boolean; label: string; onClick: () => void }
-  secondaryAction?: { disabled?: boolean; label: string; onClick: () => void }
-  title: string
-  tone?: EmptyStateTone
+  body?: ReactNode;
+  consoleHeight?: number;
+  primaryAction?: { disabled?: boolean; label: string; onClick: () => void };
+  secondaryAction?: { disabled?: boolean; label: string; onClick: () => void };
+  title: string;
+  tone?: EmptyStateTone;
 }
 
 export function PreviewEmptyState({
@@ -102,28 +130,34 @@ export function PreviewEmptyState({
   primaryAction,
   secondaryAction,
   title,
-  tone = 'neutral'
+  tone = "neutral",
 }: PreviewEmptyStateProps) {
-  const styles = TONE_STYLES[tone]
+  const styles = TONE_STYLES[tone];
 
   return (
     <div
       className="absolute inset-x-0 top-0 z-10 grid place-items-center bg-background px-8 py-10 text-center bottom-(--preview-error-bottom)"
-      style={{ '--preview-error-bottom': `${consoleHeight}px` } as CSSProperties}
+      style={
+        { "--preview-error-bottom": `${consoleHeight}px` } as CSSProperties
+      }
     >
       <div className="grid max-w-sm justify-items-center gap-5">
         <PreviewCubeIcon className={styles.cube} />
         <div className="grid gap-2">
           <div className="text-sm font-medium text-foreground">{title}</div>
-          {body && <div className="text-xs leading-relaxed text-muted-foreground">{body}</div>}
+          {body && (
+            <div className="text-xs leading-relaxed text-muted-foreground">
+              {body}
+            </div>
+          )}
         </div>
         {(primaryAction || secondaryAction) && (
           <div className="grid justify-items-center gap-2">
             {primaryAction && (
               <button
                 className={cn(
-                  'rounded-full border px-3.5 py-1.5 text-xs font-medium shadow-xs transition-colors disabled:cursor-default disabled:opacity-60',
-                  styles.primary
+                  "rounded-full border px-3.5 py-1.5 text-xs font-medium shadow-xs transition-colors disabled:cursor-default disabled:opacity-60",
+                  styles.primary,
                 )}
                 disabled={primaryAction.disabled}
                 onClick={primaryAction.onClick}
@@ -146,20 +180,20 @@ export function PreviewEmptyState({
         )}
       </div>
     </div>
-  )
+  );
 }
 
 interface LocalPreviewState {
-  binary?: boolean
-  byteSize?: number
-  dataUrl?: string
+  binary?: boolean;
+  byteSize?: number;
+  dataUrl?: string;
   /** Working-tree-vs-HEAD unified diff, when the file has uncommitted changes. */
-  diff?: string
-  error?: string
-  language?: string
-  loading: boolean
-  text?: string
-  truncated?: boolean
+  diff?: string;
+  error?: string;
+  language?: string;
+  loading: boolean;
+  text?: string;
+  truncated?: boolean;
 }
 
 // True when focus is in a field that should swallow plain keystrokes (so the
@@ -167,260 +201,291 @@ interface LocalPreviewState {
 // a search box, or the editor itself).
 function isTypableElement(el: Element | null): boolean {
   if (!el) {
-    return false
+    return false;
   }
 
-  const tag = el.tagName
+  const tag = el.tagName;
 
-  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (el as HTMLElement).isContentEditable
+  return (
+    tag === "INPUT" ||
+    tag === "TEXTAREA" ||
+    tag === "SELECT" ||
+    (el as HTMLElement).isContentEditable
+  );
 }
 
 function filePathForTarget(target: PreviewTarget) {
   if (target.path) {
-    return target.path
+    return target.path;
   }
 
   try {
-    const url = new URL(target.url)
+    const url = new URL(target.url);
 
-    return url.protocol === 'file:' ? decodeURIComponent(url.pathname) : target.url
+    return url.protocol === "file:"
+      ? decodeURIComponent(url.pathname)
+      : target.url;
   } catch {
-    return target.url
+    return target.url;
   }
 }
 
 function formatBytes(bytes: number | undefined) {
   if (!bytes) {
-    return translateNow('preview.unknownSize')
+    return translateNow("preview.unknownSize");
   }
 
-  const units = ['B', 'KB', 'MB', 'GB']
-  let value = bytes
-  let unit = 0
+  const units = ["B", "KB", "MB", "GB"];
+  let value = bytes;
+  let unit = 0;
 
   while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024
-    unit += 1
+    value /= 1024;
+    unit += 1;
   }
 
-  return `${value >= 10 || unit === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unit]}`
+  return `${value >= 10 || unit === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unit]}`;
 }
 
 function looksBinaryBytes(bytes: Uint8Array) {
   if (!bytes.length) {
-    return false
+    return false;
   }
 
-  let suspicious = 0
+  let suspicious = 0;
 
   for (const byte of bytes.slice(0, 4096)) {
     if (byte === 0) {
-      return true
+      return true;
     }
 
     if (byte < 32 && byte !== 9 && byte !== 10 && byte !== 13) {
-      suspicious += 1
+      suspicious += 1;
     }
   }
 
-  return suspicious / Math.min(bytes.length, 4096) > 0.12
+  return suspicious / Math.min(bytes.length, 4096) > 0.12;
 }
 
 function dataUrlToBlob(dataUrl: string) {
-  const comma = dataUrl.indexOf(',')
+  const comma = dataUrl.indexOf(",");
 
-  if (comma < 0 || !dataUrl.startsWith('data:')) {
-    throw new Error('Invalid PDF data URL')
+  if (comma < 0 || !dataUrl.startsWith("data:")) {
+    throw new Error("Invalid PDF data URL");
   }
 
   const metadata = dataUrl
     .slice(5, comma)
-    .split(';')
-    .map(part => part.trim().toLowerCase())
+    .split(";")
+    .map((part) => part.trim().toLowerCase());
 
-  const payload = dataUrl.slice(comma + 1)
+  const payload = dataUrl.slice(comma + 1);
 
-  if (metadata[0] !== 'application/pdf' || !metadata.slice(1).includes('base64')) {
-    throw new Error('Invalid PDF data URL type')
+  if (
+    metadata[0] !== "application/pdf" ||
+    !metadata.slice(1).includes("base64")
+  ) {
+    throw new Error("Invalid PDF data URL type");
   }
 
-  let binary: string
+  let binary: string;
 
   try {
-    binary = atob(decodeURIComponent(payload))
+    binary = atob(decodeURIComponent(payload));
   } catch {
-    throw new Error('Invalid PDF data URL payload')
+    throw new Error("Invalid PDF data URL payload");
   }
 
-  if (!binary.startsWith('%PDF-')) {
-    throw new Error('Invalid PDF file header')
+  if (!binary.startsWith("%PDF-")) {
+    throw new Error("Invalid PDF file header");
   }
 
-  const bytes = new Uint8Array(binary.length)
+  const bytes = new Uint8Array(binary.length);
 
   for (let index = 0; index < binary.length; index += 1) {
-    bytes[index] = binary.charCodeAt(index)
+    bytes[index] = binary.charCodeAt(index);
   }
 
-  return new Blob([bytes], { type: 'application/pdf' })
+  return new Blob([bytes], { type: "application/pdf" });
 }
 
 async function readTextPreview(filePath: string) {
   try {
-    return await readDesktopFileText(filePath)
+    return await readDesktopFileText(filePath);
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
+    const message = error instanceof Error ? error.message : String(error);
 
     if (!message.includes("No handler registered for 'hermes:readFileText'")) {
-      throw error
+      throw error;
     }
   }
 
   // Back-compat for a running Electron process whose preload hasn't been
   // restarted since readFileText was added. readFileDataUrl already existed.
-  const dataUrl = await window.hermesDesktop.readFileDataUrl(filePath)
-  const [, metadata = '', data = ''] = dataUrl.match(/^data:([^,]*),(.*)$/) || []
-  const base64 = metadata.includes(';base64')
-  const mimeType = metadata.replace(/;base64$/, '') || undefined
-  const raw = base64 ? atob(data) : decodeURIComponent(data)
-  const bytes = Uint8Array.from(raw, ch => ch.charCodeAt(0))
+  const dataUrl = await window.hermesDesktop.readFileDataUrl(filePath);
+  const [, metadata = "", data = ""] =
+    dataUrl.match(/^data:([^,]*),(.*)$/) || [];
+  const base64 = metadata.includes(";base64");
+  const mimeType = metadata.replace(/;base64$/, "") || undefined;
+  const raw = base64 ? atob(data) : decodeURIComponent(data);
+  const bytes = Uint8Array.from(raw, (ch) => ch.charCodeAt(0));
 
   return {
     binary: looksBinaryBytes(bytes),
     byteSize: bytes.byteLength,
     mimeType,
     path: filePath,
-    text: new TextDecoder().decode(bytes)
-  }
+    text: new TextDecoder().decode(bytes),
+  };
 }
 
 // Lightweight markdown renderer for file previews. Streamdown does the parse;
 // our components keep typography simple and route fenced code through Shiki
 // without the library's copy/download/fullscreen chrome.
 const MD_TAG_CLASSES = {
-  h1: 'mb-3 mt-6 text-3xl font-bold leading-tight tracking-tight first:mt-0',
-  h2: 'mb-2.5 mt-5 text-2xl font-semibold leading-snug tracking-tight first:mt-0',
-  h3: 'mb-2 mt-4 text-xl font-semibold leading-snug first:mt-0',
-  h4: 'mb-2 mt-3 text-base font-semibold leading-snug first:mt-0',
-  p: 'mb-4 leading-relaxed text-foreground last:mb-0',
-  ul: 'mb-4 list-disc pl-6 marker:text-muted-foreground/70 last:mb-0',
-  ol: 'mb-4 list-decimal pl-6 marker:text-muted-foreground/70 last:mb-0',
-  li: 'mt-1 leading-relaxed',
-  blockquote: 'mb-4 border-l-2 border-border pl-3 text-muted-foreground italic last:mb-0',
-  pre: 'mb-4 overflow-hidden rounded-lg border border-border bg-card font-mono text-xs leading-relaxed last:mb-0 [&_pre]:m-0 [&_pre]:overflow-x-auto [&_pre]:bg-transparent! [&_pre]:p-3 [&_pre]:font-mono',
-  hr: 'my-6 border-border',
-  th: 'px-3 py-2 text-left text-sm font-semibold text-foreground',
-  td: 'px-3 py-2 align-top text-sm leading-relaxed',
-  thead: 'bg-muted/35 text-muted-foreground'
-} as const
+  h1: "mb-3 mt-6 text-3xl font-bold leading-tight tracking-tight first:mt-0",
+  h2: "mb-2.5 mt-5 text-2xl font-semibold leading-snug tracking-tight first:mt-0",
+  h3: "mb-2 mt-4 text-xl font-semibold leading-snug first:mt-0",
+  h4: "mb-2 mt-3 text-base font-semibold leading-snug first:mt-0",
+  p: "mb-4 leading-relaxed text-foreground last:mb-0",
+  ul: "mb-4 list-disc pl-6 marker:text-muted-foreground/70 last:mb-0",
+  ol: "mb-4 list-decimal pl-6 marker:text-muted-foreground/70 last:mb-0",
+  li: "mt-1 leading-relaxed",
+  blockquote:
+    "mb-4 border-l-2 border-border pl-3 text-muted-foreground italic last:mb-0",
+  pre: "mb-4 overflow-hidden rounded-lg border border-border bg-card font-mono text-xs leading-relaxed last:mb-0 [&_pre]:m-0 [&_pre]:overflow-x-auto [&_pre]:bg-transparent! [&_pre]:p-3 [&_pre]:font-mono",
+  hr: "my-6 border-border",
+  th: "px-3 py-2 text-left text-sm font-semibold text-foreground",
+  td: "px-3 py-2 align-top text-sm leading-relaxed",
+  thead: "bg-muted/35 text-muted-foreground",
+} as const;
 
 function tagged<T extends keyof typeof MD_TAG_CLASSES>(Tag: T) {
-  const base = MD_TAG_CLASSES[Tag]
+  const base = MD_TAG_CLASSES[Tag];
 
   const Component = (({ className, ...rest }: ComponentProps<T>) => {
-    const Element = Tag as React.ElementType
+    const Element = Tag as React.ElementType;
 
-    return <Element className={cn(base, className)} {...rest} />
-  }) as React.FC<ComponentProps<T>>
+    return <Element className={cn(base, className)} {...rest} />;
+  }) as React.FC<ComponentProps<T>>;
 
-  Component.displayName = `Md.${Tag}`
+  Component.displayName = `Md.${Tag}`;
 
-  return Component
+  return Component;
 }
 
-function MarkdownCode({ className, children, ...props }: ComponentProps<'code'>) {
-  const language = /language-([^\s]+)/.exec(className || '')?.[1]
+function MarkdownCode({
+  className,
+  children,
+  ...props
+}: ComponentProps<"code">) {
+  const language = /language-([^\s]+)/.exec(className || "")?.[1];
 
   if (!language) {
     return (
       <code
         className={cn(
-          'rounded bg-muted px-1 py-0.5 font-mono text-[0.86em] text-pink-700 dark:text-pink-300',
-          className
+          "rounded bg-muted px-1 py-0.5 font-mono text-[0.86em] text-pink-700 dark:text-pink-300",
+          className,
         )}
         {...props}
       >
         {children}
       </code>
-    )
+    );
   }
 
-  const code = String(children).replace(/\n$/, '')
+  const code = String(children).replace(/\n$/, "");
 
-  const highlighted = <ShikiHighlighter code={code} language={language} theme={SHIKI_THEME} />
+  const highlighted = (
+    <ShikiHighlighter code={code} language={language} theme={SHIKI_THEME} />
+  );
 
   // ```mermaid / ```svg fences route to the shared lazy renderers (same
   // registry the chat transcript uses); everything else stays on Shiki.
-  return <RichCodeBlock code={code} fallback={highlighted} language={language} />
+  return (
+    <RichCodeBlock code={code} fallback={highlighted} language={language} />
+  );
 }
 
-function MarkdownTable({ className, ...rest }: ComponentProps<'table'>) {
+function MarkdownTable({ className, ...rest }: ComponentProps<"table">) {
   return (
     <div className="mb-4 w-full overflow-x-auto rounded-lg border border-border last:mb-0">
       <table
         className={cn(
-          'm-0 w-full min-w-[18rem] border-collapse [&_tr]:border-b [&_tr]:border-border last:[&_tr]:border-0',
-          className
+          "m-0 w-full min-w-[18rem] border-collapse [&_tr]:border-b [&_tr]:border-border last:[&_tr]:border-0",
+          className,
         )}
         {...rest}
       />
     </div>
-  )
+  );
 }
 
-function MarkdownImage({ alt, src, ...rest }: ComponentProps<'img'>) {
+function MarkdownImage({ alt, src, ...rest }: ComponentProps<"img">) {
   return (
     <img
-      alt={alt ?? ''}
+      alt={alt ?? ""}
       className="my-3 max-h-96 w-auto max-w-full rounded-lg border border-border object-contain shadow-sm"
       src={src}
       {...rest}
     />
-  )
+  );
 }
 
-function MarkdownLink({ children, className, href, ...rest }: ComponentProps<'a'>) {
-  const isExternal = /^https?:\/\//i.test(href || '')
+function MarkdownLink({
+  children,
+  className,
+  href,
+  ...rest
+}: ComponentProps<"a">) {
+  const isExternal = /^https?:\/\//i.test(href || "");
 
   return (
     <a
-      className={cn('text-foreground underline underline-offset-2 hover:text-primary', className)}
+      className={cn(
+        "text-foreground underline underline-offset-2 hover:text-primary",
+        className,
+      )}
       href={href}
-      rel={isExternal ? 'noopener noreferrer' : undefined}
-      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+      target={isExternal ? "_blank" : undefined}
       {...rest}
     >
       {children}
     </a>
-  )
+  );
 }
 
 const MARKDOWN_COMPONENTS = {
-  h1: tagged('h1'),
-  h2: tagged('h2'),
-  h3: tagged('h3'),
-  h4: tagged('h4'),
-  p: tagged('p'),
-  ul: tagged('ul'),
-  ol: tagged('ol'),
-  li: tagged('li'),
-  blockquote: tagged('blockquote'),
-  pre: tagged('pre'),
+  h1: tagged("h1"),
+  h2: tagged("h2"),
+  h3: tagged("h3"),
+  h4: tagged("h4"),
+  p: tagged("p"),
+  ul: tagged("ul"),
+  ol: tagged("ol"),
+  li: tagged("li"),
+  blockquote: tagged("blockquote"),
+  pre: tagged("pre"),
   code: MarkdownCode,
-  hr: tagged('hr'),
+  hr: tagged("hr"),
   table: MarkdownTable,
-  th: tagged('th'),
-  td: tagged('td'),
-  thead: tagged('thead'),
+  th: tagged("th"),
+  td: tagged("td"),
+  thead: tagged("thead"),
   img: MarkdownImage,
-  a: MarkdownLink
-}
+  a: MarkdownLink,
+};
 
 export function MarkdownPreview({ text }: { text: string }) {
-  const mathText = useMemo(() => normalizeFilePreviewMath(text), [text])
+  const mathText = useMemo(() => normalizeFilePreviewMath(text), [text]);
 
   return (
-    <div className="preview-markdown mx-auto max-w-3xl px-4 py-3 text-sm text-foreground" data-selectable-text="true">
+    <div
+      className="preview-markdown mx-auto max-w-3xl px-4 py-3 text-sm text-foreground"
+      data-selectable-text="true"
+    >
       <Streamdown
         components={MARKDOWN_COMPONENTS}
         controls={false}
@@ -431,45 +496,45 @@ export function MarkdownPreview({ text }: { text: string }) {
         {mathText}
       </Streamdown>
     </div>
-  )
+  );
 }
 
 export function PreviewModeSwitcher({
   active,
   modes,
   onSelect,
-  trailing
+  trailing,
 }: {
-  active: PreviewViewMode
-  modes: PreviewViewMode[]
-  onSelect: (mode: PreviewViewMode) => void
-  trailing?: ReactNode
+  active: PreviewViewMode;
+  modes: PreviewViewMode[];
+  onSelect: (mode: PreviewViewMode) => void;
+  trailing?: ReactNode;
 }) {
-  const { t } = useI18n()
-  const showModes = modes.length > 1
+  const { t } = useI18n();
+  const showModes = modes.length > 1;
 
   if (!showModes && !trailing) {
-    return null
+    return null;
   }
 
   const label: Record<PreviewViewMode, string> = {
     diff: t.preview.diff,
     rendered: t.preview.renderedPreview,
-    source: t.preview.source
-  }
+    source: t.preview.source,
+  };
 
   return (
     // Fixed height so the header is byte-identical between read and edit modes —
     // swapping the trailing controls must never move the body below it.
     <div className="flex h-7 shrink-0 items-center justify-end gap-3 border-b border-border/40 px-3">
       {showModes &&
-        modes.map(mode => (
+        modes.map((mode) => (
           <button
             className={cn(
-              'text-[0.625rem] font-bold underline-offset-4 transition-colors',
+              "text-[0.625rem] font-bold underline-offset-4 transition-colors",
               mode === active
-                ? 'text-foreground underline decoration-current/30'
-                : 'text-muted-foreground hover:text-foreground'
+                ? "text-foreground underline decoration-current/30"
+                : "text-muted-foreground hover:text-foreground",
             )}
             key={mode}
             onClick={() => onSelect(mode)}
@@ -480,7 +545,7 @@ export function PreviewModeSwitcher({
         ))}
       {trailing && <div className="flex items-center gap-1.5">{trailing}</div>}
     </div>
-  )
+  );
 }
 
 // Cancel / Save controls rendered as the header's trailing slot (not a bar of
@@ -489,14 +554,14 @@ function EditControls({
   dirty,
   onCancel,
   onSave,
-  saving
+  saving,
 }: {
-  dirty: boolean
-  onCancel: () => void
-  onSave: () => void
-  saving: boolean
+  dirty: boolean;
+  onCancel: () => void;
+  onSave: () => void;
+  saving: boolean;
 }) {
-  const { t } = useI18n()
+  const { t } = useI18n();
 
   return (
     <>
@@ -518,70 +583,102 @@ function EditControls({
         {saving ? t.common.saving : t.common.save}
       </button>
     </>
-  )
+  );
 }
 
 interface LineSelection {
-  end: number
-  start: number
+  end: number;
+  start: number;
 }
 
-function startLineDrag(event: ReactDragEvent<HTMLElement>, filePath: string, { end, start }: LineSelection) {
-  const lineEnd = end > start ? end : undefined
-  const label = lineEnd ? `${filePath}:${start}-${end}` : `${filePath}:${start}`
+function startLineDrag(
+  event: ReactDragEvent<HTMLElement>,
+  filePath: string,
+  { end, start }: LineSelection,
+) {
+  const lineEnd = end > start ? end : undefined;
+  const label = lineEnd
+    ? `${filePath}:${start}-${end}`
+    : `${filePath}:${start}`;
 
-  event.dataTransfer.setData(HERMES_PATHS_MIME, JSON.stringify([{ line: start, lineEnd, path: filePath }]))
-  event.dataTransfer.setData('text/plain', label)
-  event.dataTransfer.effectAllowed = 'copy'
+  event.dataTransfer.setData(
+    HERMES_PATHS_MIME,
+    JSON.stringify([{ line: start, lineEnd, path: filePath }]),
+  );
+  event.dataTransfer.setData("text/plain", label);
+  event.dataTransfer.effectAllowed = "copy";
 }
 
 /** Windowed, Shiki-highlighted source. The gutter's line selection produces a
  *  `path:line` composer ref, so it is inert without a `filePath` (artifact
  *  content has no path to reference lines against). */
-export function SourceView({ filePath, language, text }: { filePath?: string; language: string; text: string }) {
-  const { t } = useI18n()
-  const chunks = useMemo(() => chunkTextLines(text, SOURCE_CHUNK_LINES), [text])
-  const lastChunk = chunks.at(-1)
-  const totalLines = lastChunk ? lastChunk.start + lastChunk.lines.length : 0
+export function SourceView({
+  filePath,
+  language,
+  text,
+}: {
+  filePath?: string;
+  language: string;
+  text: string;
+}) {
+  const { t } = useI18n();
+  const chunks = useMemo(
+    () => chunkTextLines(text, SOURCE_CHUNK_LINES),
+    [text],
+  );
+  const lastChunk = chunks.at(-1);
+  const totalLines = lastChunk ? lastChunk.start + lastChunk.lines.length : 0;
 
-  const { afterRows, beforeRows, endChunk, onScroll, scrollerRef, startChunk } = useFixedRowWindow({
-    overscanRows: SOURCE_OVERSCAN_LINES,
-    rowPx: SOURCE_LINE_PX,
-    rowsPerChunk: SOURCE_CHUNK_LINES,
-    totalRows: totalLines
-  })
+  const { afterRows, beforeRows, endChunk, onScroll, scrollerRef, startChunk } =
+    useFixedRowWindow({
+      overscanRows: SOURCE_OVERSCAN_LINES,
+      rowPx: SOURCE_LINE_PX,
+      rowsPerChunk: SOURCE_CHUNK_LINES,
+      totalRows: totalLines,
+    });
 
-  const visibleChunks = chunks.slice(startChunk, endChunk + 1)
-  const [selection, setSelection] = useState<LineSelection | null>(null)
-  const inSelection = (line: number) => selection != null && line >= selection.start && line <= selection.end
+  const visibleChunks = chunks.slice(startChunk, endChunk + 1);
+  const [selection, setSelection] = useState<LineSelection | null>(null);
+  const inSelection = (line: number) =>
+    selection != null && line >= selection.start && line <= selection.end;
 
   const handleLineClick = (event: ReactMouseEvent, line: number) => {
     if (!filePath) {
-      return
+      return;
     }
 
     if (event.shiftKey && selection) {
-      setSelection({ end: Math.max(selection.end, line), start: Math.min(selection.start, line) })
+      setSelection({
+        end: Math.max(selection.end, line),
+        start: Math.min(selection.start, line),
+      });
 
-      return
+      return;
     }
 
     if (selection?.start === line && selection.end === line) {
-      setSelection(null)
+      setSelection(null);
 
-      return
+      return;
     }
 
-    setSelection({ end: line, start: line })
-  }
+    setSelection({ end: line, start: line });
+  };
 
-  const handleDragStart = (event: ReactDragEvent<HTMLElement>, line: number) => {
+  const handleDragStart = (
+    event: ReactDragEvent<HTMLElement>,
+    line: number,
+  ) => {
     if (!filePath) {
-      return
+      return;
     }
 
-    startLineDrag(event, filePath, inSelection(line) && selection ? selection : { end: line, start: line })
-  }
+    startLineDrag(
+      event,
+      filePath,
+      inSelection(line) && selection ? selection : { end: line, start: line },
+    );
+  };
 
   // ⌘/Ctrl+L with a line selection drops the same `@line:path:start-end` ref the
   // gutter drag produces — so the keyboard path mirrors dragging the lines into
@@ -589,185 +686,224 @@ export function SourceView({ filePath, language, text }: { filePath?: string; la
   // global ⌘L handler (which would otherwise grab the native text selection).
   useEffect(() => {
     if (!selection || !filePath) {
-      return
+      return;
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (!isComposerChord(event)) {
-        return
+        return;
       }
 
-      const lineEnd = selection.end > selection.start ? selection.end : undefined
-      const ref = droppedFileInlineRef({ line: selection.start, lineEnd, path: filePath }, $currentCwd.get())
+      const lineEnd =
+        selection.end > selection.start ? selection.end : undefined;
+      const ref = droppedFileInlineRef(
+        { line: selection.start, lineEnd, path: filePath },
+        $currentCwd.get(),
+      );
 
       if (!ref) {
-        return
+        return;
       }
 
-      event.preventDefault()
-      event.stopPropagation()
+      event.preventDefault();
+      event.stopPropagation();
       // Insert into and focus the SAME composer — 'active' — so a tile that owns
       // focus keeps it instead of the ref landing in a tile but main stealing focus.
-      requestComposerInsertRefs([ref])
-      requestComposerFocus('active')
-    }
+      requestComposerInsertRefs([ref]);
+      requestComposerFocus("active");
+    };
 
-    window.addEventListener('keydown', onKeyDown, { capture: true })
+    window.addEventListener("keydown", onKeyDown, { capture: true });
 
-    return () => window.removeEventListener('keydown', onKeyDown, { capture: true })
-  }, [filePath, selection])
+    return () =>
+      window.removeEventListener("keydown", onKeyDown, { capture: true });
+  }, [filePath, selection]);
 
   return (
     <div className="h-full overflow-auto" onScroll={onScroll} ref={scrollerRef}>
       <div className="grid min-w-max grid-cols-[auto_minmax(0,1fr)] font-mono text-[0.7rem] leading-relaxed">
-        {beforeRows > 0 && <div aria-hidden className="col-span-2" style={{ height: beforeRows * SOURCE_LINE_PX }} />}
-        {visibleChunks.map(chunk => (
+        {beforeRows > 0 && (
+          <div
+            aria-hidden
+            className="col-span-2"
+            style={{ height: beforeRows * SOURCE_LINE_PX }}
+          />
+        )}
+        {visibleChunks.map((chunk) => (
           <Fragment key={chunk.start}>
             <div className="select-none text-right text-muted-foreground/55">
               {chunk.lines.map((_lineText, offset) => {
-                const line = chunk.start + offset + 1
-                const selected = inSelection(line)
+                const line = chunk.start + offset + 1;
+                const selected = inSelection(line);
 
                 return (
                   <div
                     className={cn(
-                      'h-5 w-9 pr-2 leading-5 tabular-nums transition-colors',
-                      filePath && 'cursor-pointer',
+                      "h-5 w-9 pr-2 leading-5 tabular-nums transition-colors",
+                      filePath && "cursor-pointer",
                       selected
-                        ? 'bg-amber-200/45 text-amber-900 dark:bg-amber-300/20 dark:text-amber-100'
-                        : filePath && 'hover:text-foreground'
+                        ? "bg-amber-200/45 text-amber-900 dark:bg-amber-300/20 dark:text-amber-100"
+                        : filePath && "hover:text-foreground",
                     )}
                     draggable={Boolean(filePath)}
                     key={line}
-                    onClick={event => handleLineClick(event, line)}
-                    onDragStart={event => handleDragStart(event, line)}
+                    onClick={(event) => handleLineClick(event, line)}
+                    onDragStart={(event) => handleDragStart(event, line)}
                     title={filePath ? t.preview.sourceLineTitle : undefined}
                   >
                     {line}
                   </div>
-                )
+                );
               })}
             </div>
-            <div className="preview-source-code min-w-0 [&_pre]:m-0" data-selectable-text="true">
-              <ShikiHighlighter code={chunk.text} language={language || 'text'} theme={SHIKI_THEME} />
+            <div
+              className="preview-source-code min-w-0 [&_pre]:m-0"
+              data-selectable-text="true"
+            >
+              <ShikiHighlighter
+                code={chunk.text}
+                language={language || "text"}
+                theme={SHIKI_THEME}
+              />
             </div>
           </Fragment>
         ))}
-        {afterRows > 0 && <div aria-hidden className="col-span-2" style={{ height: afterRows * SOURCE_LINE_PX }} />}
+        {afterRows > 0 && (
+          <div
+            aria-hidden
+            className="col-span-2"
+            style={{ height: afterRows * SOURCE_LINE_PX }}
+          />
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export type PreviewViewMode = 'diff' | 'rendered' | 'source'
+export type PreviewViewMode = "diff" | "rendered" | "source";
 
-export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; target: PreviewTarget }) {
-  const { t } = useI18n()
-  const [state, setState] = useState<LocalPreviewState>({ loading: true })
-  const [forcePreview, setForcePreview] = useState(false)
-  const [pdfError, setPdfError] = useState<string>()
-  const [pdfUrl, setPdfUrl] = useState<string>()
+export function LocalFilePreview({
+  reloadKey,
+  target,
+}: {
+  reloadKey: number;
+  target: PreviewTarget;
+}) {
+  const { t } = useI18n();
+  const [state, setState] = useState<LocalPreviewState>({ loading: true });
+  const [forcePreview, setForcePreview] = useState(false);
+  const [pdfError, setPdfError] = useState<string>();
+  const [pdfUrl, setPdfUrl] = useState<string>();
   // User-picked view; null = auto (diff when changed, else rendered markdown,
   // else source). Reset when the previewed file changes.
-  const [userMode, setUserMode] = useState<null | PreviewViewMode>(null)
+  const [userMode, setUserMode] = useState<null | PreviewViewMode>(null);
   // Spot-editor state. The editor owns its buffer (keyed by `editorKey`); the
   // live draft + the snapshot the user started from live in refs so typing
   // never re-renders this (large) component — `dirty` is the only render-worthy
   // signal and it flips just once when crossing the clean↔dirty boundary.
   // `selfReload` re-runs the load after a save without the parent.
-  const [editing, setEditing] = useState(false)
-  const draftRef = useRef('')
-  const baselineRef = useRef('')
-  const [dirty, setDirty] = useState(false)
-  const [editorKey, setEditorKey] = useState(0)
-  const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState<null | string>(null)
-  const [conflict, setConflict] = useState(false)
-  const [selfReload, setSelfReload] = useState(0)
+  const [editing, setEditing] = useState(false);
+  const draftRef = useRef("");
+  const baselineRef = useRef("");
+  const [dirty, setDirty] = useState(false);
+  const [editorKey, setEditorKey] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<null | string>(null);
+  const [conflict, setConflict] = useState(false);
+  const [selfReload, setSelfReload] = useState(0);
   // For the bare-`e` shortcut: the read-view root (to detect focus-within) and a
   // hover flag (no state — only the keydown handler reads it).
-  const readViewRef = useRef<HTMLDivElement>(null)
-  const hoverRef = useRef(false)
-  const connection = useStore($connection)
-  const fsCacheKey = desktopFsCacheKey(connection)
-  const filePath = filePathForTarget(target)
-  const isImage = target.previewKind === 'image'
-  const isPdf = target.previewKind === 'pdf'
+  const readViewRef = useRef<HTMLDivElement>(null);
+  const hoverRef = useRef(false);
+  const connection = useStore($connection);
+  const fsCacheKey = desktopFsCacheKey(connection);
+  const filePath = filePathForTarget(target);
+  const isImage = target.previewKind === "image";
+  const isPdf = target.previewKind === "pdf";
 
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    setUserMode(null)
-    setEditing(false)
-    setDirty(false)
-    setSaving(false)
-    setSaveError(null)
-    setConflict(false)
-    draftRef.current = ''
-    baselineRef.current = ''
-  }, [filePath, reloadKey])
+    setUserMode(null);
+    setEditing(false);
+    setDirty(false);
+    setSaving(false);
+    setSaveError(null);
+    setConflict(false);
+    draftRef.current = "";
+    baselineRef.current = "";
+  }, [filePath, reloadKey]);
 
   // HTML files are rendered as source code, not in a webview - so they take
   // the same path as plain text files. `previewKind === 'binary'` arrives
   // when the file is forcibly previewed past the binary refusal screen.
-  const isText = target.previewKind === 'text' || target.previewKind === 'binary' || target.previewKind === 'html'
+  const isText =
+    target.previewKind === "text" ||
+    target.previewKind === "binary" ||
+    target.previewKind === "html";
 
-  const blockedByTarget = !isImage && !isPdf && !forcePreview && (target.binary || target.large)
+  const blockedByTarget =
+    !isImage && !isPdf && !forcePreview && (target.binary || target.large);
 
   useEffect(() => {
-    let active = true
+    let active = true;
 
     async function load() {
       if (blockedByTarget) {
-        setState({ loading: false })
+        setState({ loading: false });
 
-        return
+        return;
       }
 
       if (!isImage && !isPdf && !isText) {
-        setState({ loading: false })
+        setState({ loading: false });
 
-        return
+        return;
       }
 
-      setState({ loading: true })
+      setState({ loading: true });
 
       try {
         if (isImage || isPdf) {
           // Prefer bytes the caller already handed us (a pasted/dropped
           // screenshot) over re-reading a path that may be transient/unreadable.
-          const dataUrl = target.dataUrl || (await readDesktopFileDataUrl(filePath))
+          const dataUrl =
+            target.dataUrl || (await readDesktopFileDataUrl(filePath));
 
           if (active) {
-            setState({ dataUrl, loading: false })
+            setState({ dataUrl, loading: false });
           }
 
-          return
+          return;
         }
 
-        const result = await readTextPreview(filePath)
+        const result = await readTextPreview(filePath);
 
         if (active) {
-          const shouldBlock = !forcePreview && (result.binary || (result.byteSize ?? 0) > TEXT_PREVIEW_MAX_BYTES)
+          const shouldBlock =
+            !forcePreview &&
+            (result.binary || (result.byteSize ?? 0) > TEXT_PREVIEW_MAX_BYTES);
 
           setState({
             binary: result.binary,
             byteSize: result.byteSize,
-            language: result.language || target.language || 'text',
+            language: result.language || target.language || "text",
             loading: false,
             text: shouldBlock ? undefined : result.text,
-            truncated: result.truncated
-          })
+            truncated: result.truncated,
+          });
 
           // Best-effort: fetch the file's working-tree-vs-HEAD diff so the
           // preview can offer a DIFF view when there are uncommitted changes.
           // Empty (clean file / not a repo / remote) just hides the option.
           if (!shouldBlock) {
             try {
-              const root = await desktopGitRoot(filePath)
-              const diff = root ? await desktopFileDiff(root, filePath) : ''
+              const root = await desktopGitRoot(filePath);
+              const diff = root ? await desktopFileDiff(root, filePath) : "";
 
               if (active && diff.trim()) {
-                setState(prev => (prev.text === result.text ? { ...prev, diff } : prev))
+                setState((prev) =>
+                  prev.text === result.text ? { ...prev, diff } : prev,
+                );
               }
             } catch {
               // No diff available; the preview just shows source.
@@ -778,17 +914,17 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
         if (active) {
           setState({
             error: error instanceof Error ? error.message : String(error),
-            loading: false
-          })
+            loading: false,
+          });
         }
       }
     }
 
-    void load()
+    void load();
 
     return () => {
-      active = false
-    }
+      active = false;
+    };
   }, [
     blockedByTarget,
     filePath,
@@ -800,131 +936,138 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
     reloadKey,
     selfReload,
     target.dataUrl,
-    target.language
-  ])
+    target.language,
+  ]);
 
   useEffect(() => {
-    setPdfUrl(undefined)
-    setPdfError(undefined)
+    setPdfUrl(undefined);
+    setPdfError(undefined);
 
     if (!isPdf || !state.dataUrl) {
-      return
+      return;
     }
 
     // Chromium's PDF viewer is blank for large data: URLs in an iframe. Use a
     // blob URL instead, and revoke it when the target or loaded bytes change.
-    if (typeof URL.createObjectURL !== 'function') {
-      setPdfError('PDF preview requires object URL support')
+    if (typeof URL.createObjectURL !== "function") {
+      setPdfError("PDF preview requires object URL support");
 
-      return
+      return;
     }
 
-    let objectUrl: string
+    let objectUrl: string;
 
     try {
-      objectUrl = URL.createObjectURL(dataUrlToBlob(state.dataUrl))
-      setPdfUrl(objectUrl)
+      objectUrl = URL.createObjectURL(dataUrlToBlob(state.dataUrl));
+      setPdfUrl(objectUrl);
     } catch (error) {
-      setPdfError(error instanceof Error ? error.message : String(error))
+      setPdfError(error instanceof Error ? error.message : String(error));
 
-      return
+      return;
     }
 
-    return () => URL.revokeObjectURL(objectUrl)
-  }, [isPdf, state.dataUrl])
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [isPdf, state.dataUrl]);
 
   // Editing is only offered for whole, readable text — never images, binaries,
   // or files we only loaded the first 512 KB of (saving would drop the tail).
   const canEdit =
-    isText && !isImage && !blockedByTarget && state.text !== undefined && !state.truncated && !state.binary
+    isText &&
+    !isImage &&
+    !blockedByTarget &&
+    state.text !== undefined &&
+    !state.truncated &&
+    !state.binary;
 
   // Per-keystroke: update the draft ref (no render) and only set `dirty` when it
   // actually changes — React bails on an identical value, so a long typing run
   // triggers a single re-render at most.
   const handleEditorChange = useCallback((value: string) => {
-    draftRef.current = value
-    const next = value !== baselineRef.current
-    setDirty(prev => (prev === next ? prev : next))
-  }, [])
+    draftRef.current = value;
+    const next = value !== baselineRef.current;
+    setDirty((prev) => (prev === next ? prev : next));
+  }, []);
 
   // Publish the unsaved state to the rail so the tab can show a modified dot.
   // Keyed by url; cleared on unmount/tab-change so a stale dot never lingers.
   useEffect(() => {
-    setPreviewDirty(target.url, editing && dirty)
+    setPreviewDirty(target.url, editing && dirty);
 
-    return () => setPreviewDirty(target.url, false)
-  }, [target.url, editing, dirty])
+    return () => setPreviewDirty(target.url, false);
+  }, [target.url, editing, dirty]);
 
   const beginEdit = () => {
-    const text = state.text ?? ''
-    baselineRef.current = text
-    draftRef.current = text
-    setDirty(false)
-    setEditorKey(key => key + 1)
-    setSaving(false)
-    setSaveError(null)
-    setConflict(false)
-    setEditing(true)
-  }
+    const text = state.text ?? "";
+    baselineRef.current = text;
+    draftRef.current = text;
+    setDirty(false);
+    setEditorKey((key) => key + 1);
+    setSaving(false);
+    setSaveError(null);
+    setConflict(false);
+    setEditing(true);
+  };
 
   // Latest `beginEdit` for the keydown listener, so the listener can stay
   // subscribed across renders without recreating itself or going stale.
-  const beginEditRef = useRef(beginEdit)
-  beginEditRef.current = beginEdit
+  const beginEditRef = useRef(beginEdit);
+  beginEditRef.current = beginEdit;
 
   // Bare `e` enters edit mode when the file pane is hovered or focused and no
   // typable field has focus — a fast, button-free path (double-click felt laggy
   // because of the browser's click-disambiguation delay).
   useEffect(() => {
     if (!canEdit || editing) {
-      return
+      return;
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'e' || event.metaKey || event.ctrlKey || event.altKey) {
-        return
+      if (event.key !== "e" || event.metaKey || event.ctrlKey || event.altKey) {
+        return;
       }
 
       if (isTypableElement(document.activeElement)) {
-        return
+        return;
       }
 
-      const root = readViewRef.current
-      const focusWithin = Boolean(root && document.activeElement && root.contains(document.activeElement))
+      const root = readViewRef.current;
+      const focusWithin = Boolean(
+        root && document.activeElement && root.contains(document.activeElement),
+      );
 
       if (!hoverRef.current && !focusWithin) {
-        return
+        return;
       }
 
-      event.preventDefault()
-      beginEditRef.current()
-    }
+      event.preventDefault();
+      beginEditRef.current();
+    };
 
-    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener("keydown", onKeyDown);
 
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [canEdit, editing])
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [canEdit, editing]);
 
   const cancelEdit = () => {
-    setEditing(false)
-    setSaveError(null)
-    setConflict(false)
-  }
+    setEditing(false);
+    setSaveError(null);
+    setConflict(false);
+  };
 
   const discardAndReload = () => {
-    setEditing(false)
-    setConflict(false)
-    setSaveError(null)
-    setSelfReload(n => n + 1)
-  }
+    setEditing(false);
+    setConflict(false);
+    setSaveError(null);
+    setSelfReload((n) => n + 1);
+  };
 
   const saveEdit = async (force = false) => {
     if (saving) {
-      return
+      return;
     }
 
-    setSaving(true)
-    setSaveError(null)
+    setSaving(true);
+    setSaveError(null);
 
     try {
       // Stale-on-disk guard: re-read what's on disk now and compare to the
@@ -933,32 +1076,32 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
       // choice. `force` is the user picking "overwrite" from that banner.
       if (!force) {
         try {
-          const current = await readTextPreview(filePath)
+          const current = await readTextPreview(filePath);
 
-          if (!current.binary && (current.text ?? '') !== baselineRef.current) {
-            setConflict(true)
-            setSaving(false)
+          if (!current.binary && (current.text ?? "") !== baselineRef.current) {
+            setConflict(true);
+            setSaving(false);
 
-            return
+            return;
           }
         } catch {
           // Couldn't re-read for the check — fall through and attempt the write.
         }
       }
 
-      await writeDesktopFileText(filePath, draftRef.current)
-      baselineRef.current = draftRef.current
-      setDirty(false)
-      setConflict(false)
-      setEditing(false)
-      notifyWorkspaceChanged()
-      setSelfReload(n => n + 1)
+      await writeDesktopFileText(filePath, draftRef.current);
+      baselineRef.current = draftRef.current;
+      setDirty(false);
+      setConflict(false);
+      setEditing(false);
+      notifyWorkspaceChanged();
+      setSelfReload((n) => n + 1);
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : String(error))
+      setSaveError(error instanceof Error ? error.message : String(error));
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   // Rendered before the loading/error branches so a background re-read (file
   // watcher, workspace tick) can't unmount the editor and drop the draft. Uses
@@ -971,12 +1114,21 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
           active="source"
           modes={[]}
           onSelect={() => {}}
-          trailing={<EditControls dirty={dirty} onCancel={cancelEdit} onSave={() => void saveEdit()} saving={saving} />}
+          trailing={
+            <EditControls
+              dirty={dirty}
+              onCancel={cancelEdit}
+              onSave={() => void saveEdit()}
+              saving={saving}
+            />
+          }
         />
         {conflict && (
           <div className="shrink-0 border-b border-amber-400/40 bg-amber-50 px-3 py-2 text-[0.7rem] text-amber-900 dark:border-amber-300/30 dark:bg-amber-300/10 dark:text-amber-100">
             <div className="font-semibold">{t.preview.diskChangedTitle}</div>
-            <div className="mt-0.5 leading-relaxed">{t.preview.diskChangedBody}</div>
+            <div className="mt-0.5 leading-relaxed">
+              {t.preview.diskChangedBody}
+            </div>
             <div className="mt-1.5 flex gap-3">
               <button
                 className="font-bold underline underline-offset-4 transition-opacity hover:opacity-80"
@@ -1011,38 +1163,50 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
           />
         </div>
       </div>
-    )
+    );
   }
 
   if (state.loading) {
-    return <PageLoader label={t.preview.loading} />
+    return <PageLoader label={t.preview.loading} />;
   }
 
   if (state.error) {
-    return <PreviewEmptyState body={state.error} title={t.preview.unavailable} />
+    return (
+      <PreviewEmptyState body={state.error} title={t.preview.unavailable} />
+    );
   }
 
   if (pdfError) {
-    return <PreviewEmptyState body={pdfError} title={t.preview.unavailable} />
+    return <PreviewEmptyState body={pdfError} title={t.preview.unavailable} />;
   }
 
   if (
     !isImage &&
     !isPdf &&
     !forcePreview &&
-    (target.binary || target.large || state.binary || (state.byteSize ?? 0) > TEXT_PREVIEW_MAX_BYTES)
+    (target.binary ||
+      target.large ||
+      state.binary ||
+      (state.byteSize ?? 0) > TEXT_PREVIEW_MAX_BYTES)
   ) {
-    const binary = target.binary || state.binary
-    const size = target.byteSize || state.byteSize
+    const binary = target.binary || state.binary;
+    const size = target.byteSize || state.byteSize;
 
     return (
       <PreviewEmptyState
-        body={binary ? t.preview.binaryBody(target.label) : t.preview.largeBody(target.label, formatBytes(size))}
-        primaryAction={{ label: t.preview.previewAnyway, onClick: () => setForcePreview(true) }}
+        body={
+          binary
+            ? t.preview.binaryBody(target.label)
+            : t.preview.largeBody(target.label, formatBytes(size))
+        }
+        primaryAction={{
+          label: t.preview.previewAnyway,
+          onClick: () => setForcePreview(true),
+        }}
         title={binary ? t.preview.binaryTitle : t.preview.largeTitle}
         tone="warning"
       />
-    )
+    );
   }
 
   if (isImage && state.dataUrl) {
@@ -1055,7 +1219,7 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
           src={state.dataUrl}
         />
       </div>
-    )
+    );
   }
 
   if (isPdf && state.dataUrl && pdfUrl) {
@@ -1068,40 +1232,44 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
           title={target.label}
         />
       </div>
-    )
+    );
   }
 
   if (isPdf && state.dataUrl) {
-    return <PageLoader label={t.preview.loading} />
+    return <PageLoader label={t.preview.loading} />;
   }
 
   if (isText && state.text !== undefined) {
-    const isMarkdown = (state.language || target.language) === 'markdown'
-    const hasDiff = Boolean(state.diff && state.diff.trim())
+    const isMarkdown = (state.language || target.language) === "markdown";
+    const hasDiff = Boolean(state.diff && state.diff.trim());
     // Order the toggle reads left→right; default lands on the most useful view.
-    const modes: PreviewViewMode[] = []
+    const modes: PreviewViewMode[] = [];
 
     if (isMarkdown) {
-      modes.push('rendered')
+      modes.push("rendered");
     }
 
-    modes.push('source')
+    modes.push("source");
 
     if (hasDiff) {
-      modes.push('diff')
+      modes.push("diff");
     }
 
-    const autoMode: PreviewViewMode = hasDiff ? 'diff' : isMarkdown ? 'rendered' : 'source'
-    const mode = userMode && modes.includes(userMode) ? userMode : autoMode
+    const autoMode: PreviewViewMode = hasDiff
+      ? "diff"
+      : isMarkdown
+        ? "rendered"
+        : "source";
+    const mode = userMode && modes.includes(userMode) ? userMode : autoMode;
 
     return (
       <div
         className="flex h-full flex-col overflow-hidden bg-transparent"
         onMouseEnter={() => {
-          hoverRef.current = true
+          hoverRef.current = true;
         }}
         onMouseLeave={() => {
-          hoverRef.current = false
+          hoverRef.current = false;
         }}
         ref={readViewRef}
       >
@@ -1130,12 +1298,12 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
           }
         />
         <div className="min-h-0 flex-1 overflow-auto">
-          {mode === 'rendered' ? (
+          {mode === "rendered" ? (
             <MarkdownPreview text={state.text} />
-          ) : mode === 'diff' ? (
+          ) : mode === "diff" ? (
             <FileDiffPanel
               className="mx-0 mb-0 h-full max-h-none"
-              diff={state.diff ?? ''}
+              diff={state.diff ?? ""}
               fullText={state.text}
               path={filePath}
               showLineNumbers
@@ -1143,14 +1311,21 @@ export function LocalFilePreview({ reloadKey, target }: { reloadKey: number; tar
           ) : (
             <SourceView
               filePath={filePath}
-              language={shikiLanguageForFilename(filePath) || state.language || 'text'}
+              language={
+                shikiLanguageForFilename(filePath) || state.language || "text"
+              }
               text={state.text}
             />
           )}
         </div>
       </div>
-    )
+    );
   }
 
-  return <PreviewEmptyState body={t.preview.noInlineBody(target.mimeType || '')} title={t.preview.noInlineTitle} />
+  return (
+    <PreviewEmptyState
+      body={t.preview.noInlineBody(target.mimeType || "")}
+      title={t.preview.noInlineTitle}
+    />
+  );
 }

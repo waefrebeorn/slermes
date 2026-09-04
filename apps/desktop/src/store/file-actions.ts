@@ -1,16 +1,16 @@
-import { atom } from 'nanostores'
+import { atom } from "nanostores";
 
-import { translateNow } from '@/i18n'
+import { translateNow } from "@/i18n";
 import {
   copyTextToClipboard,
   isDesktopFsRemoteMode,
   renameDesktopPath,
   revealDesktopPath,
-  trashDesktopPath
-} from '@/lib/desktop-fs'
-import { downloadGatewayMediaFile } from '@/lib/media'
-import { notify, notifyError } from '@/store/notifications'
-import { notifyWorkspaceChanged } from '@/store/workspace-events'
+  trashDesktopPath,
+} from "@/lib/desktop-fs";
+import { downloadGatewayMediaFile } from "@/lib/media";
+import { notify, notifyError } from "@/store/notifications";
+import { notifyWorkspaceChanged } from "@/store/workspace-events";
 
 // Shared file-row actions for BOTH trees (the file browser + the review/git
 // tree): reveal, copy path, download (remote), rename, delete. Rename/delete
@@ -20,99 +20,115 @@ import { notifyWorkspaceChanged } from '@/store/workspace-events'
 // refreshes.
 
 export interface FileActionTarget {
-  isDirectory: boolean
+  isDirectory: boolean;
   /** Display name (basename) shown in dialogs. */
-  name: string
+  name: string;
   /** Absolute path on disk. */
-  path: string
+  path: string;
 }
 
 // Delete routes through a single confirm dialog (rendered once). Rename is
 // INLINE (VS Code style — an input in the row), driven by `$renamingPath`.
-export type FileActionDialog = { kind: 'delete' } & FileActionTarget
+export type FileActionDialog = { kind: "delete" } & FileActionTarget;
 
-export const $fileActionDialog = atom<FileActionDialog | null>(null)
+export const $fileActionDialog = atom<FileActionDialog | null>(null);
 
 export function requestFileDelete(target: FileActionTarget): void {
-  $fileActionDialog.set({ kind: 'delete', ...target })
+  $fileActionDialog.set({ kind: "delete", ...target });
 }
 
 export function closeFileActionDialog(): void {
-  $fileActionDialog.set(null)
+  $fileActionDialog.set(null);
 }
 
 // Absolute path of the row currently being renamed inline, or null. A row whose
 // path matches renders an edit input in place of its label; F2 / Enter (on a
 // focused row) and the context-menu "Rename" all set this.
-export const $renamingPath = atom<null | string>(null)
+export const $renamingPath = atom<null | string>(null);
 
 export function beginInlineRename(path: string): void {
-  $renamingPath.set(path)
+  $renamingPath.set(path);
 }
 
 export function cancelInlineRename(): void {
-  $renamingPath.set(null)
+  $renamingPath.set(null);
 }
 
 // ── Direct (no-dialog) actions ───────────────────────────────────────────────
 
 export async function revealFile(path: string): Promise<void> {
   try {
-    await revealDesktopPath(path)
+    await revealDesktopPath(path);
   } catch (error) {
-    notifyError(error, translateNow('errors.genericFailure'))
+    notifyError(error, translateNow("errors.genericFailure"));
   }
 }
 
 export async function copyFilePath(path: string): Promise<void> {
   try {
-    await copyTextToClipboard(path)
-    notify({ durationMs: 1500, kind: 'info', message: translateNow('fileMenu.pathCopied') })
+    await copyTextToClipboard(path);
+    notify({
+      durationMs: 1500,
+      kind: "info",
+      message: translateNow("fileMenu.pathCopied"),
+    });
   } catch (error) {
-    notifyError(error, translateNow('common.copyFailed'))
+    notifyError(error, translateNow("common.copyFailed"));
   }
 }
 
 /** Remote Files panel can list gateway files but Reveal/Rename/Delete are local-only.
  *  Download is the local-copy affordance. Folders stay out — `/api/fs/download`
  *  streams a single file. */
-export function shouldOfferRemoteFileDownload(isDirectory: boolean, remote = isDesktopFsRemoteMode()): boolean {
-  return remote && !isDirectory
+export function shouldOfferRemoteFileDownload(
+  isDirectory: boolean,
+  remote = isDesktopFsRemoteMode(),
+): boolean {
+  return remote && !isDirectory;
 }
 
 export async function downloadRemoteFile(path: string): Promise<void> {
   try {
-    const result = await downloadGatewayMediaFile(path)
+    const result = await downloadGatewayMediaFile(path);
 
     if (result.canceled || !result.saved) {
-      return
+      return;
     }
 
-    notify({ durationMs: 1500, kind: 'info', message: translateNow('fileMenu.downloadSaved') })
+    notify({
+      durationMs: 1500,
+      kind: "info",
+      message: translateNow("fileMenu.downloadSaved"),
+    });
   } catch (error) {
-    notifyError(error, translateNow('fileMenu.downloadFailed'))
+    notifyError(error, translateNow("fileMenu.downloadFailed"));
   }
 }
 
 /** Strip a `relativeTo` prefix to produce a repo/cwd-relative path. */
 export function toRelativePath(path: string, relativeTo: string): string {
-  const base = relativeTo.replace(/[\\/]+$/, '')
+  const base = relativeTo.replace(/[\\/]+$/, "");
 
   if (path === base) {
-    return path
+    return path;
   }
 
-  return path.startsWith(`${base}/`) || path.startsWith(`${base}\\`) ? path.slice(base.length + 1) : path
+  return path.startsWith(`${base}/`) || path.startsWith(`${base}\\`)
+    ? path.slice(base.length + 1)
+    : path;
 }
 
 // ── Dialog-confirmed mutations (called by FileActionDialogs) ──────────────────
 
-export async function executeFileRename(path: string, newName: string): Promise<void> {
-  await renameDesktopPath(path, newName)
-  notifyWorkspaceChanged()
+export async function executeFileRename(
+  path: string,
+  newName: string,
+): Promise<void> {
+  await renameDesktopPath(path, newName);
+  notifyWorkspaceChanged();
 }
 
 export async function executeFileDelete(path: string): Promise<void> {
-  await trashDesktopPath(path)
-  notifyWorkspaceChanged()
+  await trashDesktopPath(path);
+  notifyWorkspaceChanged();
 }

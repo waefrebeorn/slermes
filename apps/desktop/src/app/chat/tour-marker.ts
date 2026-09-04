@@ -15,9 +15,9 @@
  * anyone who wants a specific tile.
  */
 
-import { useSessionView } from '@/app/chat/session-view'
+import { useSessionView } from "@/app/chat/session-view";
 
 /** The handle if this is the primary chat, nothing if it is a tile. */
 export function useTourMarker(name: string): string | undefined {
-  return useSessionView().kind === 'primary' ? name : undefined
+  return useSessionView().kind === "primary" ? name : undefined;
 }

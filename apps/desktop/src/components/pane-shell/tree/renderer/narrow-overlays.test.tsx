@@ -1,14 +1,19 @@
-import { act, cleanup, fireEvent, render } from '@testing-library/react'
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { PANE_TOGGLE_REVEAL_EVENT } from '@/components/pane-shell'
-import { registry } from '@/contrib/registry'
-import { stubResizeObserver } from '@/test/jsdom'
+import { PANE_TOGGLE_REVEAL_EVENT } from "@/components/pane-shell";
+import { registry } from "@/contrib/registry";
+import { stubResizeObserver } from "@/test/jsdom";
 
-import { group, split } from '../model'
-import { $hiddenTreePanes, $layoutTree, $narrowViewport, declareDefaultTree } from '../store'
+import { group, split } from "../model";
+import {
+  $hiddenTreePanes,
+  $layoutTree,
+  $narrowViewport,
+  declareDefaultTree,
+} from "../store";
 
-import { NarrowOverlays } from './narrow-overlays'
+import { NarrowOverlays } from "./narrow-overlays";
 
 // Ground truth for "the Bots tab is still visible when the sessions sidebar
 // collapses on a narrow window". A collapsible pane DOCKED into the sessions
@@ -17,78 +22,105 @@ import { NarrowOverlays } from './narrow-overlays'
 // reachable — not just the zone's first pane.
 
 beforeAll(() => {
-  stubResizeObserver()
-})
+  stubResizeObserver();
+});
 
-const disposers: (() => void)[] = []
+const disposers: (() => void)[] = [];
 
-const registerPane = (id: string, title: string, data: Record<string, unknown>, body: string) => {
+const registerPane = (
+  id: string,
+  title: string,
+  data: Record<string, unknown>,
+  body: string,
+) => {
   disposers.push(
     registry.register({
-      area: 'panes',
+      area: "panes",
       data,
       id,
       render: () => <div data-testid={`${id}-body`}>{body}</div>,
-      title
-    })
-  )
-}
+      title,
+    }),
+  );
+};
 
 beforeEach(() => {
-  window.localStorage.clear()
-  $hiddenTreePanes.set(new Set())
+  window.localStorage.clear();
+  $hiddenTreePanes.set(new Set());
 
-  registerPane('sessions', 'sessions', { collapsible: true, placement: 'left', width: '237px' }, 'session rows')
-  registerPane('bots', 'Bots', { collapsible: true, placement: 'left', width: '260px' }, 'bot roster')
-  registerPane('workspace', 'workspace', { placement: 'main', uncloseable: true }, 'chat')
+  registerPane(
+    "sessions",
+    "sessions",
+    { collapsible: true, placement: "left", width: "237px" },
+    "session rows",
+  );
+  registerPane(
+    "bots",
+    "Bots",
+    { collapsible: true, placement: "left", width: "260px" },
+    "bot roster",
+  );
+  registerPane(
+    "workspace",
+    "workspace",
+    { placement: "main", uncloseable: true },
+    "chat",
+  );
 
-  declareDefaultTree(split('row', [group(['sessions', 'bots']), group(['workspace'])]))
-  $narrowViewport.set(true)
-})
+  declareDefaultTree(
+    split("row", [group(["sessions", "bots"]), group(["workspace"])]),
+  );
+  $narrowViewport.set(true);
+});
 
 afterEach(() => {
-  cleanup()
-  $narrowViewport.set(false)
-  $layoutTree.set(null)
-  disposers.splice(0).forEach(dispose => dispose())
-})
+  cleanup();
+  $narrowViewport.set(false);
+  $layoutTree.set(null);
+  disposers.splice(0).forEach((dispose) => dispose());
+});
 
 const revealPane = (id: string) => {
   act(() => {
-    window.dispatchEvent(new CustomEvent(PANE_TOGGLE_REVEAL_EVENT, { detail: { id, mode: 'open' } }))
-  })
-}
+    window.dispatchEvent(
+      new CustomEvent(PANE_TOGGLE_REVEAL_EVENT, {
+        detail: { id, mode: "open" },
+      }),
+    );
+  });
+};
 
-const overlayTab = (paneId: string) => document.querySelector<HTMLElement>(`[data-narrow-overlay-tab="${paneId}"]`)
+const overlayTab = (paneId: string) =>
+  document.querySelector<HTMLElement>(`[data-narrow-overlay-tab="${paneId}"]`);
 
-describe('narrow overlay of a stacked zone', () => {
-  it('mirrors the zone tab strip so every stacked collapsible stays reachable', () => {
-    const { getByTestId, queryByTestId } = render(<NarrowOverlays />)
+describe("narrow overlay of a stacked zone", () => {
+  it("mirrors the zone tab strip so every stacked collapsible stays reachable", () => {
+    const { getByTestId, queryByTestId } = render(<NarrowOverlays />);
 
-    revealPane('sessions')
+    revealPane("sessions");
 
     // Both zone-mates surface as tabs; the revealed pane's body is on screen.
-    expect(overlayTab('sessions')).toBeTruthy()
-    expect(overlayTab('bots')).toBeTruthy()
-    expect(getByTestId('sessions-body')).toBeTruthy()
-    expect(queryByTestId('bots-body')).toBeNull()
+    expect(overlayTab("sessions")).toBeTruthy();
+    expect(overlayTab("bots")).toBeTruthy();
+    expect(getByTestId("sessions-body")).toBeTruthy();
+    expect(queryByTestId("bots-body")).toBeNull();
 
     // Clicking the BOTS tab swaps the overlay to the docked pane.
-    fireEvent.pointerDown(overlayTab('bots')!, { button: 0 })
-    expect(getByTestId('bots-body')).toBeTruthy()
-    expect(queryByTestId('sessions-body')).toBeNull()
-  })
+    fireEvent.pointerDown(overlayTab("bots")!, { button: 0 });
+    expect(getByTestId("bots-body")).toBeTruthy();
+    expect(queryByTestId("sessions-body")).toBeNull();
+  });
 
-  it('keeps the stripless form for a zone with a single collapsible', () => {
+  it("keeps the stripless form for a zone with a single collapsible", () => {
     // Direct set: declareDefaultTree only ADOPTS into an existing tree — it
     // would keep the beforeEach zone (with bots) instead of replacing it.
-    $layoutTree.set(split('row', [group(['sessions']), group(['workspace'])]))
+    $layoutTree.set(split("row", [group(["sessions"]), group(["workspace"])]));
 
-    const { getByTestId } = render(<NarrowOverlays />)
+    const { getByTestId } = render(<NarrowOverlays />);
 
-    revealPane('sessions')
+    revealPane("sessions");
 
-    expect(getByTestId('sessions-body')).toBeTruthy()
-    expect(overlayTab('sessions')).toBeNull()
-  })
-})
+    expect(getByTestId("sessions-body")).toBeTruthy();
+    expect(overlayTab("sessions")).toBeNull();
+  });
+});

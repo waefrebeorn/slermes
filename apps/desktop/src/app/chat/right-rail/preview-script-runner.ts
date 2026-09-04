@@ -10,29 +10,32 @@
  * of the pane component's static import graph and only load when used.
  */
 
-import { $rightRailActiveTabId } from '@/store/layout'
-import { $previewTabs } from '@/store/preview'
+import { $rightRailActiveTabId } from "@/store/layout";
+import { $previewTabs } from "@/store/preview";
 
 /** Runs JS source in the pane's guest page, resolving its completion value. */
-export type PreviewScriptRunner = (code: string) => Promise<unknown>
+export type PreviewScriptRunner = (code: string) => Promise<unknown>;
 
-const runners = new Map<string, PreviewScriptRunner>()
+const runners = new Map<string, PreviewScriptRunner>();
 
 /** Register a live preview's script runner; returns an idempotent unregister. */
-export function registerPreviewScriptRunner(tabId: string, runner: PreviewScriptRunner): () => void {
-  runners.set(tabId, runner)
+export function registerPreviewScriptRunner(
+  tabId: string,
+  runner: PreviewScriptRunner,
+): () => void {
+  runners.set(tabId, runner);
 
   return () => {
     if (runners.get(tabId) === runner) {
-      runners.delete(tabId)
+      runners.delete(tabId);
     }
-  }
+  };
 }
 
 /** The ACTIVE preview tab's script runner. Null = no live page behind it. */
 export function activePreviewScriptRunner(): PreviewScriptRunner | null {
-  const tabs = $previewTabs.get()
-  const tab = tabs.find(t => t.id === $rightRailActiveTabId.get()) ?? tabs[0]
+  const tabs = $previewTabs.get();
+  const tab = tabs.find((t) => t.id === $rightRailActiveTabId.get()) ?? tabs[0];
 
-  return (tab && runners.get(tab.id)) || null
+  return (tab && runners.get(tab.id)) || null;
 }

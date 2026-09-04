@@ -1,41 +1,41 @@
-import type { ReactNode } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { ActionStatus } from '@/components/ui/action-status'
-import { Button } from '@/components/ui/button'
+import { ActionStatus } from "@/components/ui/action-status";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-import { useI18n } from '@/i18n'
-import { AlertTriangle } from '@/lib/icons'
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useI18n } from "@/i18n";
+import { AlertTriangle } from "@/lib/icons";
 
 interface ConfirmDialogProps {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
   // Does the work. Throw to surface an inline error and keep the dialog open.
-  onConfirm: () => Promise<void> | void
-  title: ReactNode
-  description?: ReactNode
-  confirmLabel?: string
-  busyLabel?: string
-  doneLabel?: string
-  cancelLabel?: string
-  destructive?: boolean
+  onConfirm: () => Promise<void> | void;
+  title: ReactNode;
+  description?: ReactNode;
+  confirmLabel?: string;
+  busyLabel?: string;
+  doneLabel?: string;
+  cancelLabel?: string;
+  destructive?: boolean;
   /** Close as soon as onConfirm resolves — for optimistic actions that finish in the background. */
-  dismissOnConfirm?: boolean
+  dismissOnConfirm?: boolean;
   /** A third, non-destructive way out, shown between Cancel and Confirm (e.g.
    *  "Remove from sidebar" beside "Delete worktree"). Closes on click. */
-  secondaryAction?: ConfirmSecondaryAction
+  secondaryAction?: ConfirmSecondaryAction;
 }
 
 interface ConfirmSecondaryAction {
-  label: string
-  onClick: () => void
+  label: string;
+  onClick: () => void;
 }
 
 // Shared confirmation dialog: opens focused on Confirm, Enter confirms (from
@@ -54,25 +54,25 @@ export function ConfirmDialog({
   cancelLabel,
   destructive = false,
   dismissOnConfirm = false,
-  secondaryAction
+  secondaryAction,
 }: ConfirmDialogProps) {
-  const { t } = useI18n()
-  const confirmRef = useRef<HTMLButtonElement>(null)
-  const closeTimerRef = useRef<null | number>(null)
-  const [status, setStatus] = useState<'done' | 'idle' | 'saving'>('idle')
-  const [error, setError] = useState<null | string>(null)
-  const busy = status === 'saving' || status === 'done'
-  const resolvedConfirmLabel = confirmLabel ?? t.common.confirm
-  const resolvedBusyLabel = busyLabel ?? t.common.loading
-  const resolvedDoneLabel = doneLabel ?? t.common.done
-  const resolvedCancelLabel = cancelLabel ?? t.common.cancel
+  const { t } = useI18n();
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  const closeTimerRef = useRef<null | number>(null);
+  const [status, setStatus] = useState<"done" | "idle" | "saving">("idle");
+  const [error, setError] = useState<null | string>(null);
+  const busy = status === "saving" || status === "done";
+  const resolvedConfirmLabel = confirmLabel ?? t.common.confirm;
+  const resolvedBusyLabel = busyLabel ?? t.common.loading;
+  const resolvedDoneLabel = doneLabel ?? t.common.done;
+  const resolvedCancelLabel = cancelLabel ?? t.common.cancel;
 
   useEffect(() => {
     if (open) {
-      setStatus('idle')
-      setError(null)
+      setStatus("idle");
+      setError(null);
     }
-  }, [open])
+  }, [open]);
 
   // Cancel the pending close timer on unmount. The timer below holds the
   // "done" beat visible for 600ms, and an unmount inside that window used to
@@ -86,69 +86,71 @@ export function ConfirmDialog({
   useEffect(() => {
     return () => {
       if (closeTimerRef.current !== null) {
-        window.clearTimeout(closeTimerRef.current)
-        closeTimerRef.current = null
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
       }
-    }
-  }, [])
+    };
+  }, []);
 
   async function run() {
     if (busy) {
-      return
+      return;
     }
 
-    setError(null)
+    setError(null);
 
     if (dismissOnConfirm) {
       try {
-        await onConfirm()
-        onClose()
+        await onConfirm();
+        onClose();
       } catch (err) {
-        setError(err instanceof Error ? err.message : t.errors.genericFailure)
+        setError(err instanceof Error ? err.message : t.errors.genericFailure);
       }
 
-      return
+      return;
     }
 
-    setStatus('saving')
+    setStatus("saving");
 
     try {
-      await onConfirm()
-      setStatus('done')
+      await onConfirm();
+      setStatus("done");
       closeTimerRef.current = window.setTimeout(() => {
-        closeTimerRef.current = null
-        onClose()
-      }, 600)
+        closeTimerRef.current = null;
+        onClose();
+      }, 600);
     } catch (err) {
-      setStatus('idle')
-      setError(err instanceof Error ? err.message : t.errors.genericFailure)
+      setStatus("idle");
+      setError(err instanceof Error ? err.message : t.errors.genericFailure);
     }
   }
 
   return (
-    <Dialog onOpenChange={value => !value && !busy && onClose()} open={open}>
+    <Dialog onOpenChange={(value) => !value && !busy && onClose()} open={open}>
       <DialogContent
         className="max-w-md"
-        onKeyDown={event => {
+        onKeyDown={(event) => {
           // Enter/Space confirm regardless of which button holds focus
           // (preventDefault stops a focused Cancel from swallowing it).
-          if ((event.key === 'Enter' || event.key === ' ') && !busy) {
-            event.preventDefault()
-            void run()
+          if ((event.key === "Enter" || event.key === " ") && !busy) {
+            event.preventDefault();
+            void run();
           }
         }}
-        onOpenAutoFocus={event => {
+        onOpenAutoFocus={(event) => {
           // Focus must land inside the dialog or the handler above never sees
           // the key: it stays on whatever opened the dialog (a menu item, a
           // sidebar row) and Enter re-triggers that instead. Radix's default
           // would take the X — confirm is the button Enter maps to.
-          event.preventDefault()
-          confirmRef.current?.focus()
+          event.preventDefault();
+          confirmRef.current?.focus();
         }}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description ? <DialogDescription>{description}</DialogDescription> : null}
+          {description ? (
+            <DialogDescription>{description}</DialogDescription>
+          ) : null}
         </DialogHeader>
 
         {error && (
@@ -159,15 +161,20 @@ export function ConfirmDialog({
         )}
 
         <DialogFooter>
-          <Button disabled={busy} onClick={onClose} type="button" variant="ghost">
+          <Button
+            disabled={busy}
+            onClick={onClose}
+            type="button"
+            variant="ghost"
+          >
             {resolvedCancelLabel}
           </Button>
           {secondaryAction && (
             <Button
               disabled={busy}
               onClick={() => {
-                secondaryAction.onClick()
-                onClose()
+                secondaryAction.onClick();
+                onClose();
               }}
               type="button"
               variant="secondary"
@@ -179,7 +186,7 @@ export function ConfirmDialog({
             disabled={busy}
             onClick={() => void run()}
             ref={confirmRef}
-            variant={destructive ? 'destructive' : 'default'}
+            variant={destructive ? "destructive" : "default"}
           >
             <ActionStatus
               busy={resolvedBusyLabel}
@@ -191,5 +198,5 @@ export function ConfirmDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

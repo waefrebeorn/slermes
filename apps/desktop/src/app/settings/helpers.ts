@@ -1,104 +1,128 @@
-import { asText, normalize } from '@/lib/text'
-import type { ConfigFieldSchema, HermesConfigRecord, ToolsetInfo } from '@/types/hermes'
+import { asText, normalize } from "@/lib/text";
+import type {
+  ConfigFieldSchema,
+  HermesConfigRecord,
+  ToolsetInfo,
+} from "@/types/hermes";
 
-import { BUILTIN_PERSONALITIES, ENUM_OPTIONS, PROVIDER_GROUPS, SECTIONS } from './constants'
+import {
+  BUILTIN_PERSONALITIES,
+  ENUM_OPTIONS,
+  PROVIDER_GROUPS,
+  SECTIONS,
+} from "./constants";
 
 // Canonical implementations live in @/lib/text; re-exported here so the many
 // settings/capabilities call sites keep their import path.
-export { asText, includesQuery, prettyName } from '@/lib/text'
+export { asText, includesQuery, prettyName } from "@/lib/text";
 
 /** Strip leading emoji from toolset titles (CLI registry prefixes labels with icons). */
 export const stripToolsetLabel = (label: string): string =>
-  label.replace(/^[\p{Emoji}\p{Extended_Pictographic}\s]+/u, '').trim() || label
+  label.replace(/^[\p{Emoji}\p{Extended_Pictographic}\s]+/u, "").trim() ||
+  label;
 
-export const toolsetDisplayLabel = (toolset: Pick<ToolsetInfo, 'label' | 'name'>): string =>
-  stripToolsetLabel(asText(toolset.label || toolset.name))
+export const toolsetDisplayLabel = (
+  toolset: Pick<ToolsetInfo, "label" | "name">,
+): string => stripToolsetLabel(asText(toolset.label || toolset.name));
 
-export const toolNames = (t: ToolsetInfo) => (Array.isArray(t.tools) ? t.tools.map(asText).filter(Boolean) : [])
+export const toolNames = (t: ToolsetInfo) =>
+  Array.isArray(t.tools) ? t.tools.map(asText).filter(Boolean) : [];
 
 export const withoutKey = <T>(record: Record<string, T>, key: string) => {
-  const next = { ...record }
-  delete next[key]
+  const next = { ...record };
+  delete next[key];
 
-  return next
-}
+  return next;
+};
 
-export const redactedValue = (v: string) => (v.length <= 8 ? '••••' : `${v.slice(0, 4)}...${v.slice(-4)}`)
+export const redactedValue = (v: string) =>
+  v.length <= 8 ? "••••" : `${v.slice(0, 4)}...${v.slice(-4)}`;
 
 // Longest-prefix match so a more specific group like ``MINIMAX_CN_`` is
 // chosen over its shorter parent ``MINIMAX_``. Falls back to the bucket
 // "Other" used by the Keys settings view for un-grouped env vars.
 export const providerGroup = (key: string) => {
-  let best: (typeof PROVIDER_GROUPS)[number] | undefined
+  let best: (typeof PROVIDER_GROUPS)[number] | undefined;
 
   for (const candidate of PROVIDER_GROUPS) {
     if (!key.startsWith(candidate.prefix)) {
-      continue
+      continue;
     }
 
     if (!best || candidate.prefix.length > best.prefix.length) {
-      best = candidate
+      best = candidate;
     }
   }
 
-  return best?.name ?? 'Other'
-}
+  return best?.name ?? "Other";
+};
 
 export const providerMeta = (name: string) =>
-  PROVIDER_GROUPS.find(g => g.name === name && (g.description || g.docsUrl)) ??
-  PROVIDER_GROUPS.find(g => g.name === name)
+  PROVIDER_GROUPS.find(
+    (g) => g.name === name && (g.description || g.docsUrl),
+  ) ?? PROVIDER_GROUPS.find((g) => g.name === name);
 
-export const providerPriority = (name: string) => providerMeta(name)?.priority ?? 99
+export const providerPriority = (name: string) =>
+  providerMeta(name)?.priority ?? 99;
 
-const POLLUTING_PATH_PARTS = new Set(['__proto__', 'constructor', 'prototype'])
+const POLLUTING_PATH_PARTS = new Set(["__proto__", "constructor", "prototype"]);
 
 function isSafePart(part: string): boolean {
-  return part.length > 0 && !POLLUTING_PATH_PARTS.has(part)
+  return part.length > 0 && !POLLUTING_PATH_PARTS.has(part);
 }
 
 function configPathParts(path: string): string[] {
-  const parts = path.split('.')
+  const parts = path.split(".");
 
   if (!parts.every(isSafePart)) {
-    throw new Error(`Unsafe config path: ${path}`)
+    throw new Error(`Unsafe config path: ${path}`);
   }
 
-  return parts
+  return parts;
 }
 
-function safeSet(target: Record<string, unknown>, key: string, value: unknown): void {
-  if (key === '__proto__' || key === 'constructor' || key === 'prototype' || !key) {
-    throw new Error(`Unsafe config key: ${key}`)
+function safeSet(
+  target: Record<string, unknown>,
+  key: string,
+  value: unknown,
+): void {
+  if (
+    key === "__proto__" ||
+    key === "constructor" ||
+    key === "prototype" ||
+    !key
+  ) {
+    throw new Error(`Unsafe config key: ${key}`);
   }
 
   Object.defineProperty(target, key, {
     value,
     writable: true,
     enumerable: true,
-    configurable: true
-  })
+    configurable: true,
+  });
 }
 
 export function getNested(obj: HermesConfigRecord, path: string): unknown {
-  let cur: unknown = obj
+  let cur: unknown = obj;
 
   for (const part of configPathParts(path)) {
-    if (cur == null || typeof cur !== 'object') {
-      return undefined
+    if (cur == null || typeof cur !== "object") {
+      return undefined;
     }
 
     if (!Object.prototype.hasOwnProperty.call(cur, part)) {
-      return undefined
+      return undefined;
     }
 
-    cur = (cur as Record<string, unknown>)[part]
+    cur = (cur as Record<string, unknown>)[part];
   }
 
-  return cur
+  return cur;
 }
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value)
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 /**
  * Structural diff between two config snapshots: an object holding only the
@@ -113,25 +137,28 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
  * now-stale value. `PUT /api/config` deep-merges onto disk, so an omitted
  * key keeps whatever is currently there.
  */
-export function diffConfig(base: HermesConfigRecord, next: HermesConfigRecord): HermesConfigRecord {
-  const patch: HermesConfigRecord = {}
+export function diffConfig(
+  base: HermesConfigRecord,
+  next: HermesConfigRecord,
+): HermesConfigRecord {
+  const patch: HermesConfigRecord = {};
 
   for (const key of Object.keys(next)) {
-    const baseValue = base[key]
-    const nextValue = next[key]
+    const baseValue = base[key];
+    const nextValue = next[key];
 
     if (isPlainObject(baseValue) && isPlainObject(nextValue)) {
-      const nested = diffConfig(baseValue, nextValue)
+      const nested = diffConfig(baseValue, nextValue);
 
       if (Object.keys(nested).length > 0) {
-        patch[key] = nested
+        patch[key] = nested;
       }
     } else if (JSON.stringify(baseValue) !== JSON.stringify(nextValue)) {
-      patch[key] = nextValue
+      patch[key] = nextValue;
     }
   }
 
-  return patch
+  return patch;
 }
 
 /**
@@ -150,100 +177,117 @@ export function diffConfig(base: HermesConfigRecord, next: HermesConfigRecord): 
  * use this to confirm the destructive transition before applying it. Any edit
  * that keeps at least one toolset — or that never had one — returns false.
  */
-export function clearsEnabledToolsets(prev: HermesConfigRecord, next: HermesConfigRecord): boolean {
-  const prevToolsets = getNested(prev, 'toolsets')
-  const nextToolsets = getNested(next, 'toolsets')
-  const hadToolsets = Array.isArray(prevToolsets) && prevToolsets.length > 0
-  const clearsToolsets = Array.isArray(nextToolsets) && nextToolsets.length === 0
+export function clearsEnabledToolsets(
+  prev: HermesConfigRecord,
+  next: HermesConfigRecord,
+): boolean {
+  const prevToolsets = getNested(prev, "toolsets");
+  const nextToolsets = getNested(next, "toolsets");
+  const hadToolsets = Array.isArray(prevToolsets) && prevToolsets.length > 0;
+  const clearsToolsets =
+    Array.isArray(nextToolsets) && nextToolsets.length === 0;
 
-  return hadToolsets && clearsToolsets
+  return hadToolsets && clearsToolsets;
 }
 
 // Voice renders only fields for the selected TTS/STT provider. Search and the
 // page share this rule so every indexed field can actually mount when opened.
-export function voiceFieldVisible(key: string, config: HermesConfigRecord): boolean {
-  const match = /^(tts|stt)\.([^.]+)\./.exec(key)
+export function voiceFieldVisible(
+  key: string,
+  config: HermesConfigRecord,
+): boolean {
+  const match = /^(tts|stt)\.([^.]+)\./.exec(key);
 
   if (!match) {
-    return true
+    return true;
   }
 
-  const [, domain, provider] = match
+  const [, domain, provider] = match;
 
-  if (domain === 'stt' && !getNested(config, 'stt.enabled')) {
-    return false
+  if (domain === "stt" && !getNested(config, "stt.enabled")) {
+    return false;
   }
 
-  return provider === String(getNested(config, `${domain}.provider`) ?? '')
+  return provider === String(getNested(config, `${domain}.provider`) ?? "");
 }
 
 export function inferFieldSchema(value: unknown): ConfigFieldSchema {
-  if (typeof value === 'boolean') {
-    return { type: 'boolean' }
+  if (typeof value === "boolean") {
+    return { type: "boolean" };
   }
 
-  if (typeof value === 'number') {
-    return { type: 'number' }
+  if (typeof value === "number") {
+    return { type: "number" };
   }
 
   if (Array.isArray(value)) {
-    return { type: 'list' }
+    return { type: "list" };
   }
 
-  return { type: 'string' }
+  return { type: "string" };
 }
 
 // Backend schema omits some declared keys; config presence is the availability signal.
 export function sectionFieldEntries(
   schema: Record<string, ConfigFieldSchema>,
-  config: HermesConfigRecord
+  config: HermesConfigRecord,
 ): Map<string, [string, ConfigFieldSchema][]> {
   return new Map(
-    SECTIONS.map(s => [
+    SECTIONS.map((s) => [
       s.id,
-      s.keys.flatMap(k => {
-        const value = getNested(config, k)
-        const field = schema[k] ?? (value === undefined ? undefined : inferFieldSchema(value))
+      s.keys.flatMap((k) => {
+        const value = getNested(config, k);
+        const field =
+          schema[k] ??
+          (value === undefined ? undefined : inferFieldSchema(value));
 
-        return field ? [[k, field] as [string, ConfigFieldSchema]] : []
-      })
-    ])
-  )
+        return field ? [[k, field] as [string, ConfigFieldSchema]] : [];
+      }),
+    ]),
+  );
 }
 
-export function setNested(obj: HermesConfigRecord, path: string, value: unknown): HermesConfigRecord {
-  const clone = structuredClone(obj)
-  const parts = configPathParts(path)
-  let cur: Record<string, unknown> = clone
+export function setNested(
+  obj: HermesConfigRecord,
+  path: string,
+  value: unknown,
+): HermesConfigRecord {
+  const clone = structuredClone(obj);
+  const parts = configPathParts(path);
+  let cur: Record<string, unknown> = clone;
 
   for (let i = 0; i < parts.length - 1; i += 1) {
-    const part = parts[i]
+    const part = parts[i];
 
     if (!isSafePart(part)) {
-      throw new Error(`Unsafe config path part: ${part}`)
+      throw new Error(`Unsafe config path part: ${part}`);
     }
 
-    const existing = Object.prototype.hasOwnProperty.call(cur, part) ? cur[part] : undefined
+    const existing = Object.prototype.hasOwnProperty.call(cur, part)
+      ? cur[part]
+      : undefined;
 
-    if (existing == null || typeof existing !== 'object') {
-      safeSet(cur, part, {})
+    if (existing == null || typeof existing !== "object") {
+      safeSet(cur, part, {});
     }
 
-    cur = cur[part] as Record<string, unknown>
+    cur = cur[part] as Record<string, unknown>;
   }
 
-  safeSet(cur, parts[parts.length - 1], value)
+  safeSet(cur, parts[parts.length - 1], value);
 
-  return clone
+  return clone;
 }
 
 function personalityOptions(config: HermesConfigRecord): string[] {
-  const custom = getNested(config, 'agent.personalities')
+  const custom = getNested(config, "agent.personalities");
 
   const customNames =
-    custom && typeof custom === 'object' && !Array.isArray(custom) ? Object.keys(custom as Record<string, unknown>) : []
+    custom && typeof custom === "object" && !Array.isArray(custom)
+      ? Object.keys(custom as Record<string, unknown>)
+      : [];
 
-  return [...new Set(['', ...BUILTIN_PERSONALITIES, ...customNames])]
+  return [...new Set(["", ...BUILTIN_PERSONALITIES, ...customNames])];
 }
 
 // Built-in provider names, mirroring `tts_tool.py:BUILTIN_TTS_PROVIDERS` and
@@ -258,29 +302,29 @@ function personalityOptions(config: HermesConfigRecord): string[] {
 // `deepinfra`/`local_command` (STT). Filtering on the display list would offer
 // those names as command providers that the runtime would never honour.
 const BUILTIN_TTS_PROVIDERS = new Set([
-  'edge',
-  'elevenlabs',
-  'openai',
-  'minimax',
-  'xai',
-  'mistral',
-  'gemini',
-  'neutts',
-  'kittentts',
-  'piper',
-  'deepinfra'
-])
+  "edge",
+  "elevenlabs",
+  "openai",
+  "minimax",
+  "xai",
+  "mistral",
+  "gemini",
+  "neutts",
+  "kittentts",
+  "piper",
+  "deepinfra",
+]);
 
 const BUILTIN_STT_PROVIDERS = new Set([
-  'local',
-  'local_command',
-  'groq',
-  'openai',
-  'mistral',
-  'xai',
-  'elevenlabs',
-  'deepinfra'
-])
+  "local",
+  "local_command",
+  "groq",
+  "openai",
+  "mistral",
+  "xai",
+  "elevenlabs",
+  "deepinfra",
+]);
 
 // A user-declared command provider, mirroring the runtime discriminator
 // (`tts_tool.py:_is_command_provider_config` / `transcription_tools.py`): `type`
@@ -291,18 +335,18 @@ const BUILTIN_STT_PROVIDERS = new Set([
 // ``voice``/``model`` and no ``command``) and the ``providers`` container itself
 // (no ``command``) are skipped.
 function isCommandProvider(value: unknown): boolean {
-  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
-    return false
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return false;
   }
 
-  const record = value as Record<string, unknown>
-  const type = normalize(record.type)
+  const record = value as Record<string, unknown>;
+  const type = normalize(record.type);
 
-  if (type !== '' && type !== 'command') {
-    return false
+  if (type !== "" && type !== "command") {
+    return false;
   }
 
-  return typeof record.command === 'string' && record.command.trim() !== ''
+  return typeof record.command === "string" && record.command.trim() !== "";
 }
 
 // Names of user-defined command providers, so the settings dropdown can offer
@@ -318,82 +362,113 @@ function isCommandProvider(value: unknown): boolean {
 // name the runtime would actually resolve as a command provider — built-ins are
 // excluded case-insensitively, matching the runtime's `provider.lower().strip()`
 // guard, so a ``providers.EDGE`` command block is not offered.
-function commandProviderNames(config: HermesConfigRecord, section: 'tts' | 'stt'): string[] {
-  const builtins = section === 'tts' ? BUILTIN_TTS_PROVIDERS : BUILTIN_STT_PROVIDERS
-  const names = new Set<string>()
+function commandProviderNames(
+  config: HermesConfigRecord,
+  section: "tts" | "stt",
+): string[] {
+  const builtins =
+    section === "tts" ? BUILTIN_TTS_PROVIDERS : BUILTIN_STT_PROVIDERS;
+  const names = new Set<string>();
 
   for (const path of [`${section}.providers`, section]) {
-    const block = getNested(config, path)
+    const block = getNested(config, path);
 
-    if (!block || typeof block !== 'object' || Array.isArray(block)) {
-      continue
+    if (!block || typeof block !== "object" || Array.isArray(block)) {
+      continue;
     }
 
-    for (const [name, value] of Object.entries(block as Record<string, unknown>)) {
+    for (const [name, value] of Object.entries(
+      block as Record<string, unknown>,
+    )) {
       if (isCommandProvider(value) && !builtins.has(normalize(name))) {
-        names.add(name)
+        names.add(name);
       }
     }
   }
 
-  return [...names]
+  return [...names];
 }
 
 // Voice sets per OpenAI speech model, per the OpenAI TTS API docs: tts-1 and
 // tts-1-hd support 9 voices; gpt-4o-mini-tts supports those plus ballad,
 // verse, marin, and cedar (13 total). Unknown/future models get the full
 // union (the field is free-input anyway — this only narrows suggestions).
-const OPENAI_TTS1_VOICES = new Set(['alloy', 'ash', 'coral', 'echo', 'fable', 'nova', 'onyx', 'sage', 'shimmer'])
+const OPENAI_TTS1_VOICES = new Set([
+  "alloy",
+  "ash",
+  "coral",
+  "echo",
+  "fable",
+  "nova",
+  "onyx",
+  "sage",
+  "shimmer",
+]);
 
 export function enumOptionsFor(
   key: string,
   value: unknown,
   config: HermesConfigRecord,
-  dynamicOptions?: string[]
+  dynamicOptions?: string[],
 ): string[] | undefined {
-  let opts = dynamicOptions ?? (key === 'display.personality' ? personalityOptions(config) : ENUM_OPTIONS[key])
+  let opts =
+    dynamicOptions ??
+    (key === "display.personality"
+      ? personalityOptions(config)
+      : ENUM_OPTIONS[key]);
 
   // Merge in user-defined command-type providers so custom local TTS/STT
   // backends declared in config.yaml are selectable, not just the built-ins.
   // The `includes` guard keeps the list duplicate-free should the display list
   // ever carry a name we also enumerate.
-  if (!dynamicOptions && opts && (key === 'tts.provider' || key === 'stt.provider')) {
-    const section = key.slice(0, 3) as 'tts' | 'stt'
-    const custom = commandProviderNames(config, section).filter(name => !opts!.includes(name))
+  if (
+    !dynamicOptions &&
+    opts &&
+    (key === "tts.provider" || key === "stt.provider")
+  ) {
+    const section = key.slice(0, 3) as "tts" | "stt";
+    const custom = commandProviderNames(config, section).filter(
+      (name) => !opts!.includes(name),
+    );
 
     if (custom.length > 0) {
-      opts = [...opts, ...custom]
+      opts = [...opts, ...custom];
     }
   }
 
   // Narrow OpenAI voice suggestions to what the selected model actually
   // accepts — offering `marin` against tts-1 would 400 at the API.
-  if (!dynamicOptions && opts && key === 'tts.openai.voice') {
-    const model = asText(getNested(config, 'tts.openai.model'))
+  if (!dynamicOptions && opts && key === "tts.openai.voice") {
+    const model = asText(getNested(config, "tts.openai.model"));
 
-    if (model === 'tts-1' || model === 'tts-1-hd') {
-      opts = opts.filter(voice => OPENAI_TTS1_VOICES.has(voice))
+    if (model === "tts-1" || model === "tts-1-hd") {
+      opts = opts.filter((voice) => OPENAI_TTS1_VOICES.has(voice));
     }
   }
 
   if (!opts) {
-    return undefined
+    return undefined;
   }
 
-  const current = asText(value)
+  const current = asText(value);
 
-  return current && !opts.includes(current) ? [...opts, current] : opts
+  return current && !opts.includes(current) ? [...opts, current] : opts;
 }
 
 // Built-in memory (MEMORY.md/USER.md) is controlled by memory_enabled, not
 // memory.provider — only a real external plugin name gets provider-shaped
 // affordances (config panel, OAuth connect). See #49513.
 export function isExternalMemoryProvider(value: unknown): value is string {
-  if (typeof value !== 'string') {
-    return false
+  if (typeof value !== "string") {
+    return false;
   }
 
-  const normalized = value.trim().toLowerCase()
+  const normalized = value.trim().toLowerCase();
 
-  return normalized !== '' && normalized !== 'builtin' && normalized !== 'built-in' && normalized !== 'none'
+  return (
+    normalized !== "" &&
+    normalized !== "builtin" &&
+    normalized !== "built-in" &&
+    normalized !== "none"
+  );
 }

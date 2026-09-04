@@ -1,7 +1,7 @@
-import { firstStringField, normalize } from '@/lib/text'
-import type { SubagentProgress, SubagentStatus } from '@/store/subagents'
+import { firstStringField, normalize } from "@/lib/text";
+import type { SubagentProgress, SubagentStatus } from "@/store/subagents";
 
-import { numberValue, parseMaybeObject } from './fallback-model'
+import { numberValue, parseMaybeObject } from "./fallback-model";
 
 /**
  * A delegation runs somewhere the transcript can't see: the tool call carries
@@ -11,14 +11,14 @@ import { numberValue, parseMaybeObject } from './fallback-model'
  */
 export interface DelegateRow {
   /** Latest relayed activity, oldest → newest. The card tickers the tail. */
-  activity: string[]
-  durationSeconds?: number
-  goal: string
-  id: string
-  model?: string
+  activity: string[];
+  durationSeconds?: number;
+  goal: string;
+  id: string;
+  model?: string;
   /** The child's own session id, when it reported one — opens its window. */
-  sessionId?: string
-  status: DelegateRowStatus
+  sessionId?: string;
+  status: DelegateRowStatus;
 }
 
 /**
@@ -27,29 +27,33 @@ export interface DelegateRow {
  * been reloaded since. It is running, but nothing here is watching it, so it
  * must not spin.
  */
-export type DelegateRowStatus = SubagentStatus | 'dispatched'
+export type DelegateRowStatus = SubagentStatus | "dispatched";
 
-const field = (record: Record<string, unknown>, key: string): string => firstStringField(record, [key])
+const field = (record: Record<string, unknown>, key: string): string =>
+  firstStringField(record, [key]);
 
 /** The goals a `delegate_task` call dispatched, in task order. */
 export function delegateGoals(args: unknown): string[] {
-  const record = parseMaybeObject(args)
-  const tasks = Array.isArray(record.tasks) ? record.tasks : []
+  const record = parseMaybeObject(args);
+  const tasks = Array.isArray(record.tasks) ? record.tasks : [];
 
   if (tasks.length > 0) {
-    return tasks.map((task, index) => field(parseMaybeObject(task), 'goal') || `Task ${index + 1}`)
+    return tasks.map(
+      (task, index) =>
+        field(parseMaybeObject(task), "goal") || `Task ${index + 1}`,
+    );
   }
 
-  const goal = field(record, 'goal')
+  const goal = field(record, "goal");
 
-  return goal ? [goal] : []
+  return goal ? [goal] : [];
 }
 
 function resultRows(result: unknown): Record<string, unknown>[] {
-  const record = parseMaybeObject(result)
-  const results = Array.isArray(record.results) ? record.results : []
+  const record = parseMaybeObject(result);
+  const results = Array.isArray(record.results) ? record.results : [];
 
-  return results.map(parseMaybeObject)
+  return results.map(parseMaybeObject);
 }
 
 // The delegate tool settles result rows with statuses like 'ok', 'error',
@@ -57,17 +61,21 @@ function resultRows(result: unknown): Record<string, unknown>[] {
 // not a success must render as failed — mapping unknown statuses to
 // 'completed' hid timed-out children behind a green check (#73728, #85492).
 function settledRowStatus(status: string): DelegateRowStatus {
-  return status === '' || status === 'ok' || status === 'completed' ? 'completed' : 'failed'
+  return status === "" || status === "ok" || status === "completed"
+    ? "completed"
+    : "failed";
 }
 
 function dispatchedGoals(result: unknown): string[] {
-  const record = parseMaybeObject(result)
+  const record = parseMaybeObject(result);
 
-  if (field(record, 'status') !== 'dispatched') {
-    return []
+  if (field(record, "status") !== "dispatched") {
+    return [];
   }
 
-  return Array.isArray(record.goals) ? record.goals.filter((goal): goal is string => typeof goal === 'string') : []
+  return Array.isArray(record.goals)
+    ? record.goals.filter((goal): goal is string => typeof goal === "string")
+    : [];
 }
 
 /**
@@ -78,38 +86,54 @@ function dispatchedGoals(result: unknown): string[] {
  * A call with no result yet is still being placed, so its rows read as
  * running; the moment a background dispatch answers, they drop to parked.
  */
-export function delegateRowsFromCall(args: unknown, result: unknown, toolCallId = ''): DelegateRow[] {
-  const goals = delegateGoals(args)
-  const finished = resultRows(result)
-  const dispatched = dispatchedGoals(result)
-  const titles = goals.length > 0 ? goals : dispatched.length > 0 ? dispatched : finished.map(() => 'Delegated task')
-  const idle: DelegateRowStatus = result === undefined ? 'running' : 'dispatched'
+export function delegateRowsFromCall(
+  args: unknown,
+  result: unknown,
+  toolCallId = "",
+): DelegateRow[] {
+  const goals = delegateGoals(args);
+  const finished = resultRows(result);
+  const dispatched = dispatchedGoals(result);
+  const titles =
+    goals.length > 0
+      ? goals
+      : dispatched.length > 0
+        ? dispatched
+        : finished.map(() => "Delegated task");
+  const idle: DelegateRowStatus =
+    result === undefined ? "running" : "dispatched";
 
   return titles.map((goal, index) => {
-    const entry = finished[index]
-    const summary = entry ? field(entry, 'summary') : ''
+    const entry = finished[index];
+    const summary = entry ? field(entry, "summary") : "";
 
     return {
       activity: summary ? [summary] : [],
-      durationSeconds: entry ? (numberValue(entry.duration_seconds) ?? undefined) : undefined,
+      durationSeconds: entry
+        ? (numberValue(entry.duration_seconds) ?? undefined)
+        : undefined,
       goal,
       id: `${toolCallId}:${index}`,
-      model: entry ? field(entry, 'model') || undefined : undefined,
-      status: entry ? settledRowStatus(field(entry, 'status')) : idle
-    }
-  })
+      model: entry ? field(entry, "model") || undefined : undefined,
+      status: entry ? settledRowStatus(field(entry, "status")) : idle,
+    };
+  });
 }
 
-function fromSubagent(live: SubagentProgress, fallbackId: string, fallbackGoal: string): DelegateRow {
+function fromSubagent(
+  live: SubagentProgress,
+  fallbackId: string,
+  fallbackGoal: string,
+): DelegateRow {
   return {
-    activity: live.stream.map(entry => entry.text).filter(Boolean),
+    activity: live.stream.map((entry) => entry.text).filter(Boolean),
     durationSeconds: live.durationSeconds,
     goal: live.goal || fallbackGoal,
     id: live.id || fallbackId,
     model: live.model,
     sessionId: live.sessionId,
-    status: live.status
-  }
+    status: live.status,
+  };
 }
 
 /**
@@ -129,30 +153,40 @@ function fromSubagent(live: SubagentProgress, fallbackId: string, fallbackGoal: 
 export function mergeDelegateRows(
   rows: readonly DelegateRow[],
   live: readonly SubagentProgress[],
-  toolCallId = ''
+  toolCallId = "",
 ): DelegateRow[] {
   if (live.length === 0) {
-    return [...rows]
+    return [...rows];
   }
 
-  const unclaimed = [...live]
+  const unclaimed = [...live];
 
-  const claim = (predicate: (candidate: SubagentProgress) => boolean): SubagentProgress | undefined => {
-    const index = unclaimed.findIndex(predicate)
+  const claim = (
+    predicate: (candidate: SubagentProgress) => boolean,
+  ): SubagentProgress | undefined => {
+    const index = unclaimed.findIndex(predicate);
 
-    return index >= 0 ? unclaimed.splice(index, 1)[0] : undefined
-  }
+    return index >= 0 ? unclaimed.splice(index, 1)[0] : undefined;
+  };
 
-  const prefix = toolCallId ? `delegate-tool:${toolCallId}:` : ''
-  const byId = rows.map((_row, index) => (prefix ? claim(c => c.id === `${prefix}${index}`) : undefined))
-  const byGoal = rows.map((row, index) => byId[index] ?? claim(c => normalize(c.goal) === normalize(row.goal)))
-  const sameShape = rows.length === live.length
+  const prefix = toolCallId ? `delegate-tool:${toolCallId}:` : "";
+  const byId = rows.map((_row, index) =>
+    prefix ? claim((c) => c.id === `${prefix}${index}`) : undefined,
+  );
+  const byGoal = rows.map(
+    (row, index) =>
+      byId[index] ?? claim((c) => normalize(c.goal) === normalize(row.goal)),
+  );
+  const sameShape = rows.length === live.length;
 
   return rows.map((row, index) => {
-    const matched = byGoal[index] ?? (sameShape ? claim(c => c.taskIndex === index) : undefined)
+    const matched =
+      byGoal[index] ??
+      (sameShape ? claim((c) => c.taskIndex === index) : undefined);
 
-    return matched ? fromSubagent(matched, row.id, row.goal) : row
-  })
+    return matched ? fromSubagent(matched, row.id, row.goal) : row;
+  });
 }
 
-export const isDelegateRowLive = (status: DelegateRowStatus): boolean => status === 'running' || status === 'queued'
+export const isDelegateRowLive = (status: DelegateRowStatus): boolean =>
+  status === "running" || status === "queued";

@@ -1,29 +1,33 @@
-import { $activeSessionId, requestSessionResume } from './session'
+import { $activeSessionId, requestSessionResume } from "./session";
 import {
   healsByStoredId,
   isSessionGone,
   isSessionGoneForBackgroundPolling,
   latchSessionGone,
   resetBackgroundPollingGuard,
-  resetBackgroundPollingGuardAfterRebind
-} from './session-gone-latch'
-import { $sessionStates, $sessionTiles, unbindTileRuntime } from './session-states'
+  resetBackgroundPollingGuardAfterRebind,
+} from "./session-gone-latch";
+import {
+  $sessionStates,
+  $sessionTiles,
+  unbindTileRuntime,
+} from "./session-states";
 
 export {
   isSessionGone,
   isSessionGoneForBackgroundPolling,
   resetBackgroundPollingGuard,
-  resetBackgroundPollingGuardAfterRebind
-}
+  resetBackgroundPollingGuardAfterRebind,
+};
 
 /** Latch `sid` off and heal the bound view. Safe to call on every 4001. */
 export function markSessionGone(sid: string): void {
   if (!sid) {
-    return
+    return;
   }
 
-  latchSessionGone(sid)
-  markRuntimeGone(sid)
+  latchSessionGone(sid);
+  markRuntimeGone(sid);
 }
 
 /** Heal a session view whose bound runtime id the gateway no longer holds.
@@ -59,7 +63,7 @@ export function markSessionGone(sid: string): void {
 /** Runtime ids already healed. A reaped runtime id is dead permanently, and a
  *  successful heal binds a NEW one, so this never needs clearing: a second heal
  *  for the same id could only come from a duplicate report of the same death. */
-const healedRuntimes = new Set<string>()
+const healedRuntimes = new Set<string>();
 
 /** Consecutive heals per stored session id live in `session-gone-latch`
  *  (`healsByStoredId`), reset by {@link noteRuntimeAlive} and by a successful
@@ -70,31 +74,34 @@ const healedRuntimes = new Set<string>()
 
 /** Enough to ride out a reap that races a resume, low enough that a backend
  *  reaping on sight cannot be turned into a resume loop. */
-const MAX_CONSECUTIVE_HEALS = 3
+const MAX_CONSECUTIVE_HEALS = 3;
 
 /** Resolve the durable identity behind a runtime id. The cached session state is
  *  authoritative; a tile that resumed before the state landed is the fallback. */
 function storedIdForRuntime(runtimeId: string): null | string {
-  const cached = $sessionStates.get()[runtimeId]?.storedSessionId
+  const cached = $sessionStates.get()[runtimeId]?.storedSessionId;
 
   if (cached) {
-    return cached
+    return cached;
   }
 
-  return $sessionTiles.get().find(tile => tile.runtimeId === runtimeId)?.storedSessionId ?? null
+  return (
+    $sessionTiles.get().find((tile) => tile.runtimeId === runtimeId)
+      ?.storedSessionId ?? null
+  );
 }
 
 /** A poll against `runtimeId` succeeded — the binding is healthy, so the stored
  *  session's heal budget is spent on real deaths only, not on one bad stretch. */
 export function noteRuntimeAlive(runtimeId: string): void {
   if (healsByStoredId.size === 0) {
-    return
+    return;
   }
 
-  const storedId = storedIdForRuntime(runtimeId)
+  const storedId = storedIdForRuntime(runtimeId);
 
   if (storedId) {
-    healsByStoredId.delete(storedId)
+    healsByStoredId.delete(storedId);
   }
 }
 
@@ -107,43 +114,43 @@ export function noteRuntimeAlive(runtimeId: string): void {
  *  backs off over `MAX_RESUME_RETRIES`). */
 export function markRuntimeGone(runtimeId: string): boolean {
   if (!runtimeId || healedRuntimes.has(runtimeId)) {
-    return false
+    return false;
   }
 
-  healedRuntimes.add(runtimeId)
+  healedRuntimes.add(runtimeId);
 
-  const storedId = storedIdForRuntime(runtimeId)
+  const storedId = storedIdForRuntime(runtimeId);
 
   if (!storedId) {
     // No durable identity to resume from — a never-persisted draft, or a
     // runtime whose view is already gone. Latching alone is the whole fix.
-    return false
+    return false;
   }
 
-  const heals = healsByStoredId.get(storedId) ?? 0
+  const heals = healsByStoredId.get(storedId) ?? 0;
 
   if (heals >= MAX_CONSECUTIVE_HEALS) {
-    return false
+    return false;
   }
 
-  healsByStoredId.set(storedId, heals + 1)
+  healsByStoredId.set(storedId, heals + 1);
 
   // Tiles: clearing the binding re-arms the resume effect. A no-op when no tile
   // holds this runtime.
-  unbindTileRuntime(runtimeId)
+  unbindTileRuntime(runtimeId);
 
   // The primary chat: only an explicit request gets past its `alreadyActive`
   // skip. Scoped to the runtime the primary is actually showing, so a tile's
   // dead runtime never navigates the main view.
   if ($activeSessionId.get() === runtimeId) {
-    requestSessionResume(storedId)
+    requestSessionResume(storedId);
   }
 
-  return true
+  return true;
 }
 
 /** Tests only: forget every heal so cases start from a clean slate. */
 export function resetRuntimeGoneHealing(): void {
-  healedRuntimes.clear()
-  healsByStoredId.clear()
+  healedRuntimes.clear();
+  healsByStoredId.clear();
 }

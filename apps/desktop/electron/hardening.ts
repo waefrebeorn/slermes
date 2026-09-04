@@ -1,7 +1,7 @@
-import fs from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // Relative, not `@hermes/shared`: the electron bundle is built by esbuild with
 // no tsconfig path resolution (see scripts/bundle-electron-main.mjs), so a bare
@@ -10,22 +10,22 @@ import {
   clampDataUrlReadMaxMb,
   DATA_URL_READ_DEFAULT_MAX_MB,
   DATA_URL_READ_MAX_MAX_MB,
-  DATA_URL_READ_MIN_MAX_MB
-} from '../../shared/src/data-url-read-max'
+  DATA_URL_READ_MIN_MAX_MB,
+} from "../../shared/src/data-url-read-max";
 
-const DEFAULT_FETCH_TIMEOUT_MS = 30_000
+const DEFAULT_FETCH_TIMEOUT_MS = 30_000;
 // Remote file.attach sends one base64 JSON-RPC frame. Cap the dedicated attach
 // reader so the payload still fits uvicorn's raised ws_max_size (384 MiB)
 // after base64 + framing. Preview stays on the Settings-configurable path.
-const ATTACHMENT_UPLOAD_DEFAULT_MAX_BYTES = 256 * 1024 * 1024
-const TEXT_PREVIEW_SOURCE_MAX_BYTES = 64 * 1024 * 1024
+const ATTACHMENT_UPLOAD_DEFAULT_MAX_BYTES = 256 * 1024 * 1024;
+const TEXT_PREVIEW_SOURCE_MAX_BYTES = 64 * 1024 * 1024;
 
 function dataUrlReadMaxBytesFromMb(maxMb) {
-  return clampDataUrlReadMaxMb(maxMb) * 1024 * 1024
+  return clampDataUrlReadMaxMb(maxMb) * 1024 * 1024;
 }
 
-const SAFE_ENV_SUFFIXES = new Set(['dist', 'example', 'sample', 'template'])
-const SENSITIVE_EXTENSIONS = new Set(['.kdbx', '.p12', '.pem', '.pfx'])
+const SAFE_ENV_SUFFIXES = new Set(["dist", "example", "sample", "template"]);
+const SENSITIVE_EXTENSIONS = new Set([".kdbx", ".p12", ".pem", ".pfx"]);
 
 // Owner-only mode for userData files that carry credentials (the encrypted
 // gateway token in connection.json, and the URL/SSH fields alongside it).
@@ -34,26 +34,26 @@ const SENSITIVE_EXTENSIONS = new Set(['.kdbx', '.p12', '.pem', '.pfx'])
 // (desktop-installation.ts) and native-oauth-tokens.json (main.ts
 // `_nativeTokenStoreIo`) — while connection.json was written with no mode at
 // all and landed at the 0644 umask default. This makes the three consistent.
-const SECRET_FILE_MODE = 0o600
+const SECRET_FILE_MODE = 0o600;
 
 // The encoding tag that marks a payload as OS-encrypted. One constant because
 // the writer (encryptDesktopSecret, here) and the reader
 // (decryptDesktopSecret, in main.ts) have to agree on the exact string across
 // a file boundary, and the native-token store round-trips the same shape.
-const SAFE_STORAGE_ENCODING = 'safeStorage'
+const SAFE_STORAGE_ENCODING = "safeStorage";
 
 interface SecretFileFs {
-  chmodSync: typeof fs.chmodSync
-  lstatSync: typeof fs.lstatSync
-  renameSync: typeof fs.renameSync
-  rmSync: typeof fs.rmSync
-  writeFileSync: typeof fs.writeFileSync
+  chmodSync: typeof fs.chmodSync;
+  lstatSync: typeof fs.lstatSync;
+  renameSync: typeof fs.renameSync;
+  rmSync: typeof fs.rmSync;
+  writeFileSync: typeof fs.writeFileSync;
 }
 
 interface SecretFileOptions {
-  encoding?: BufferEncoding
-  fs?: SecretFileFs
-  platform?: string
+  encoding?: BufferEncoding;
+  fs?: SecretFileFs;
+  platform?: string;
 }
 
 /**
@@ -81,33 +81,33 @@ interface SecretFileOptions {
  * user's configured gateway.
  */
 function tightenSecretFileMode(filePath, options: SecretFileOptions = {}) {
-  const fsImpl = options.fs || fs
-  const platform = options.platform || process.platform
+  const fsImpl = options.fs || fs;
+  const platform = options.platform || process.platform;
 
-  if (platform === 'win32') {
-    return true
+  if (platform === "win32") {
+    return true;
   }
 
   try {
-    const stat = fsImpl.lstatSync(filePath)
+    const stat = fsImpl.lstatSync(filePath);
 
     if (!stat.isFile() || stat.isSymbolicLink()) {
-      return false
+      return false;
     }
 
-    if (typeof process.getuid === 'function' && stat.uid !== process.getuid()) {
-      return false
+    if (typeof process.getuid === "function" && stat.uid !== process.getuid()) {
+      return false;
     }
 
     if ((stat.mode & 0o777) === SECRET_FILE_MODE) {
-      return true
+      return true;
     }
 
-    fsImpl.chmodSync(filePath, SECRET_FILE_MODE)
+    fsImpl.chmodSync(filePath, SECRET_FILE_MODE);
 
-    return true
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -130,47 +130,60 @@ function tightenSecretFileMode(filePath, options: SecretFileOptions = {}) {
  * cannot be redirected), the create-time `mode`, and the chmod before the
  * rename.
  */
-function writeSecretFileAtomic(targetPath, data, options: SecretFileOptions = {}) {
-  const fsImpl = options.fs || fs
-  const tmp = targetPath + '.tmp'
+function writeSecretFileAtomic(
+  targetPath,
+  data,
+  options: SecretFileOptions = {},
+) {
+  const fsImpl = options.fs || fs;
+  const tmp = targetPath + ".tmp";
 
-  fsImpl.rmSync(tmp, { force: true })
-  fsImpl.writeFileSync(tmp, data, { encoding: options.encoding, mode: SECRET_FILE_MODE })
-  tightenSecretFileMode(tmp, options)
-  fsImpl.renameSync(tmp, targetPath)
+  fsImpl.rmSync(tmp, { force: true });
+  fsImpl.writeFileSync(tmp, data, {
+    encoding: options.encoding,
+    mode: SECRET_FILE_MODE,
+  });
+  tightenSecretFileMode(tmp, options);
+  fsImpl.renameSync(tmp, targetPath);
 }
 
 function resolveTimeoutMs(timeoutMs, fallbackMs = DEFAULT_FETCH_TIMEOUT_MS) {
   const fallback =
-    Number.isFinite(fallbackMs) && Number(fallbackMs) > 0 ? Math.round(Number(fallbackMs)) : DEFAULT_FETCH_TIMEOUT_MS
+    Number.isFinite(fallbackMs) && Number(fallbackMs) > 0
+      ? Math.round(Number(fallbackMs))
+      : DEFAULT_FETCH_TIMEOUT_MS;
 
-  const parsed = Number(timeoutMs)
+  const parsed = Number(timeoutMs);
 
   if (Number.isFinite(parsed) && parsed > 0) {
-    return Math.round(parsed)
+    return Math.round(parsed);
   }
 
-  return fallback
+  return fallback;
 }
 
-function encryptDesktopSecret(value, safeStorageApi, options: { allowPlainText?: boolean } = {}) {
-  const raw = String(value || '')
+function encryptDesktopSecret(
+  value,
+  safeStorageApi,
+  options: { allowPlainText?: boolean } = {},
+) {
+  const raw = String(value || "");
 
   if (!raw) {
-    return null
+    return null;
   }
 
   // Opt-in escape hatch for keyring-less Linux (e.g. Hyprland/Sway with no
   // GNOME Keyring or KWallet): the renderer sets this once the user confirms
   // the plain-text storage prompt in Settings → Gateway.
-  const allowPlainText = options?.allowPlainText === true
+  const allowPlainText = options?.allowPlainText === true;
 
-  let encryptionAvailable = false
+  let encryptionAvailable = false;
 
   try {
-    encryptionAvailable = Boolean(safeStorageApi?.isEncryptionAvailable?.())
+    encryptionAvailable = Boolean(safeStorageApi?.isEncryptionAvailable?.());
   } catch {
-    encryptionAvailable = false
+    encryptionAvailable = false;
   }
 
   if (!encryptionAvailable) {
@@ -178,28 +191,29 @@ function encryptDesktopSecret(value, safeStorageApi, options: { allowPlainText?:
     // decryptDesktopSecret returns the raw value for any non-'safeStorage'
     // encoding, so this round-trips without any decrypt-side change.
     if (allowPlainText) {
-      return { encoding: 'plain', value: raw }
+      return { encoding: "plain", value: raw };
     }
 
     throw new Error(
-      'Secure token storage is unavailable (no OS keyring service was found), so Hermes Desktop cannot save remote gateway tokens. ' +
-        'Either enable an OS keyring (e.g. GNOME Keyring or KWallet providing org.freedesktop.secrets) and try again, ' +
-        'confirm the plain-text storage option when prompted in Settings → Gateway, ' +
-        'or set HERMES_DESKTOP_REMOTE_URL and HERMES_DESKTOP_REMOTE_TOKEN in your environment.'
-    )
+      "Secure token storage is unavailable (no OS keyring service was found), so Hermes Desktop cannot save remote gateway tokens. " +
+        "Either enable an OS keyring (e.g. GNOME Keyring or KWallet providing org.freedesktop.secrets) and try again, " +
+        "confirm the plain-text storage option when prompted in Settings → Gateway, " +
+        "or set HERMES_DESKTOP_REMOTE_URL and HERMES_DESKTOP_REMOTE_TOKEN in your environment.",
+    );
   }
 
   try {
     return {
       encoding: SAFE_STORAGE_ENCODING,
-      value: safeStorageApi.encryptString(raw).toString('base64')
-    }
+      value: safeStorageApi.encryptString(raw).toString("base64"),
+    };
   } catch (error) {
-    const detail = error instanceof Error && error.message ? ` (${error.message})` : ''
+    const detail =
+      error instanceof Error && error.message ? ` (${error.message})` : "";
     throw new Error(
       `Failed to encrypt the remote gateway token for secure storage${detail}. ` +
-        'Set HERMES_DESKTOP_REMOTE_URL and HERMES_DESKTOP_REMOTE_TOKEN in your environment as a fallback.'
-    )
+        "Set HERMES_DESKTOP_REMOTE_URL and HERMES_DESKTOP_REMOTE_TOKEN in your environment as a fallback.",
+    );
   }
 }
 
@@ -217,22 +231,26 @@ function encryptDesktopSecret(value, safeStorageApi, options: { allowPlainText?:
 // Never throws: a failure here is non-fatal — encryption simply stays
 // unavailable and the user can fall back to the plain-text opt-in or the
 // HERMES_DESKTOP_REMOTE_* env vars.
-function enableBasicPasswordStoreEncryption({ platform, passwordStoreSwitch, safeStorageApi }: any = {}) {
-  if (platform !== 'linux' || passwordStoreSwitch !== 'basic') {
-    return false
+function enableBasicPasswordStoreEncryption({
+  platform,
+  passwordStoreSwitch,
+  safeStorageApi,
+}: any = {}) {
+  if (platform !== "linux" || passwordStoreSwitch !== "basic") {
+    return false;
   }
 
   try {
-    if (typeof safeStorageApi?.setUsePlainTextEncryption === 'function') {
-      safeStorageApi.setUsePlainTextEncryption(true)
+    if (typeof safeStorageApi?.setUsePlainTextEncryption === "function") {
+      safeStorageApi.setUsePlainTextEncryption(true);
 
-      return true
+      return true;
     }
   } catch {
     // Non-fatal: fall through and report that encryption was not enabled.
   }
 
-  return false
+  return false;
 }
 
 // The token-persistence seam shared by the connection-config save/apply IPC
@@ -253,279 +271,341 @@ function resolvePersistedRemoteToken({
   persistToken,
   existingToken,
   allowPlainText,
-  encryptSecret
+  encryptSecret,
 }: any = {}) {
   if (!incomingToken) {
-    return existingToken
+    return existingToken;
   }
 
   if (!persistToken) {
-    return { encoding: 'plain', value: incomingToken }
+    return { encoding: "plain", value: incomingToken };
   }
 
-  return encryptSecret(incomingToken, { allowPlainText: allowPlainText === true })
+  return encryptSecret(incomingToken, {
+    allowPlainText: allowPlainText === true,
+  });
 }
 
 function sensitiveFileBlockReason(filePath) {
-  const normalized = String(filePath || '')
-    .replace(/\\/g, '/')
-    .toLowerCase()
+  const normalized = String(filePath || "")
+    .replace(/\\/g, "/")
+    .toLowerCase();
 
-  const basename = path.basename(normalized)
-  const ext = path.extname(basename)
+  const basename = path.basename(normalized);
+  const ext = path.extname(basename);
 
   if (!basename) {
-    return null
+    return null;
   }
 
-  if (normalized.includes('/.ssh/')) {
-    return 'SSH key/config files are blocked.'
+  if (normalized.includes("/.ssh/")) {
+    return "SSH key/config files are blocked.";
   }
 
-  if (normalized.includes('/.gnupg/')) {
-    return 'GPG key material is blocked.'
+  if (normalized.includes("/.gnupg/")) {
+    return "GPG key material is blocked.";
   }
 
-  if (normalized.endsWith('/.aws/credentials')) {
-    return 'AWS credential files are blocked.'
+  if (normalized.endsWith("/.aws/credentials")) {
+    return "AWS credential files are blocked.";
   }
 
-  if (basename === '.env') {
-    return '.env files are blocked because they commonly contain secrets.'
+  if (basename === ".env") {
+    return ".env files are blocked because they commonly contain secrets.";
   }
 
-  if (basename.startsWith('.env.')) {
-    const suffix = basename.slice('.env.'.length)
+  if (basename.startsWith(".env.")) {
+    const suffix = basename.slice(".env.".length);
 
     if (!SAFE_ENV_SUFFIXES.has(suffix)) {
-      return `${basename} is blocked because it appears to contain environment secrets.`
+      return `${basename} is blocked because it appears to contain environment secrets.`;
     }
   }
 
-  if (/^id_(rsa|dsa|ecdsa|ed25519)(?:\..+)?$/.test(basename) && !basename.endsWith('.pub')) {
-    return 'SSH private key files are blocked.'
+  if (
+    /^id_(rsa|dsa|ecdsa|ed25519)(?:\..+)?$/.test(basename) &&
+    !basename.endsWith(".pub")
+  ) {
+    return "SSH private key files are blocked.";
   }
 
   if (SENSITIVE_EXTENSIONS.has(ext)) {
-    return `${ext} key/certificate files are blocked.`
+    return `${ext} key/certificate files are blocked.`;
   }
 
-  if (basename === '.npmrc' || basename === '.netrc' || basename === '.pypirc') {
-    return `${basename} is blocked because it may include auth credentials.`
+  if (
+    basename === ".npmrc" ||
+    basename === ".netrc" ||
+    basename === ".pypirc"
+  ) {
+    return `${basename} is blocked because it may include auth credentials.`;
   }
 
-  return null
+  return null;
 }
 
 function ipcPathError(code: any, message: string): Error & { code: any } {
-  const error = new Error(message) as Error & { code: any }
+  const error = new Error(message) as Error & { code: any };
 
-  ;(error as any).code = code
+  (error as any).code = code;
 
-  return error
+  return error;
 }
 
-function rejectUnsafePathSyntax(filePath, purpose = 'File read') {
-  if (typeof filePath !== 'string') {
-    throw ipcPathError('invalid-path', `${purpose} failed: file path is required.`)
+function rejectUnsafePathSyntax(filePath, purpose = "File read") {
+  if (typeof filePath !== "string") {
+    throw ipcPathError(
+      "invalid-path",
+      `${purpose} failed: file path is required.`,
+    );
   }
 
-  const raw = filePath.trim()
+  const raw = filePath.trim();
 
   if (!raw) {
-    throw ipcPathError('invalid-path', `${purpose} failed: file path is required.`)
+    throw ipcPathError(
+      "invalid-path",
+      `${purpose} failed: file path is required.`,
+    );
   }
 
-  if (raw.includes('\0')) {
-    throw ipcPathError('invalid-path', `${purpose} failed: file path is invalid.`)
+  if (raw.includes("\0")) {
+    throw ipcPathError(
+      "invalid-path",
+      `${purpose} failed: file path is invalid.`,
+    );
   }
 
-  const normalized = raw.replace(/\\/g, '/').toLowerCase()
+  const normalized = raw.replace(/\\/g, "/").toLowerCase();
 
   if (
-    normalized.startsWith('//?/') ||
-    normalized.startsWith('//./') ||
-    normalized.startsWith('globalroot/device/') ||
-    normalized.includes('/globalroot/device/')
+    normalized.startsWith("//?/") ||
+    normalized.startsWith("//./") ||
+    normalized.startsWith("globalroot/device/") ||
+    normalized.includes("/globalroot/device/")
   ) {
-    throw ipcPathError('device-path', `${purpose} blocked: Windows device paths are not allowed.`)
+    throw ipcPathError(
+      "device-path",
+      `${purpose} blocked: Windows device paths are not allowed.`,
+    );
   }
 
-  return raw
+  return raw;
 }
 
-function resolveRequestedPathForIpc(filePath, options: { purpose?: string; baseDir?: fs.PathOrFileDescriptor } = {}) {
-  const purpose = String(options.purpose || 'File read')
-  let raw = rejectUnsafePathSyntax(filePath, purpose)
+function resolveRequestedPathForIpc(
+  filePath,
+  options: { purpose?: string; baseDir?: fs.PathOrFileDescriptor } = {},
+) {
+  const purpose = String(options.purpose || "File read");
+  let raw = rejectUnsafePathSyntax(filePath, purpose);
 
   // Gateway-reported cwds (config `terminal.cwd`, remote sessions) routinely
   // arrive as `~/...`. Node's fs has no shell — without expansion the path
   // resolves under process.cwd() and every read "ENOENT"s forever.
-  if (raw === '~' || raw.startsWith('~/') || raw.startsWith('~\\')) {
-    raw = path.join(os.homedir(), raw.slice(1))
+  if (raw === "~" || raw.startsWith("~/") || raw.startsWith("~\\")) {
+    raw = path.join(os.homedir(), raw.slice(1));
   }
 
   if (/^file:/i.test(raw)) {
-    let resolvedPath
+    let resolvedPath;
 
     try {
-      const parsed = new URL(raw)
+      const parsed = new URL(raw);
 
-      if (parsed.protocol !== 'file:') {
-        throw new Error('not a file URL')
+      if (parsed.protocol !== "file:") {
+        throw new Error("not a file URL");
       }
 
-      resolvedPath = fileURLToPath(parsed)
+      resolvedPath = fileURLToPath(parsed);
     } catch {
-      throw ipcPathError('invalid-path', `${purpose} failed: file URL is invalid.`)
+      throw ipcPathError(
+        "invalid-path",
+        `${purpose} failed: file URL is invalid.`,
+      );
     }
 
-    rejectUnsafePathSyntax(resolvedPath, purpose)
+    rejectUnsafePathSyntax(resolvedPath, purpose);
 
-    return path.resolve(resolvedPath)
+    return path.resolve(resolvedPath);
   }
 
-  const baseInput = typeof options.baseDir === 'string' && options.baseDir.trim() ? options.baseDir : process.cwd()
-  const safeBaseInput = rejectUnsafePathSyntax(baseInput, purpose)
-  const resolvedBase = path.resolve(safeBaseInput)
-  rejectUnsafePathSyntax(resolvedBase, purpose)
-  const resolvedPath = path.resolve(resolvedBase, raw)
-  rejectUnsafePathSyntax(resolvedPath, purpose)
+  const baseInput =
+    typeof options.baseDir === "string" && options.baseDir.trim()
+      ? options.baseDir
+      : process.cwd();
+  const safeBaseInput = rejectUnsafePathSyntax(baseInput, purpose);
+  const resolvedBase = path.resolve(safeBaseInput);
+  rejectUnsafePathSyntax(resolvedBase, purpose);
+  const resolvedPath = path.resolve(resolvedBase, raw);
+  rejectUnsafePathSyntax(resolvedPath, purpose);
 
-  return resolvedPath
+  return resolvedPath;
 }
 
-async function statForIpc(fsImpl: { promises: { stat: typeof fs.promises.stat } }, resolvedPath, purpose, typeLabel) {
+async function statForIpc(
+  fsImpl: { promises: { stat: typeof fs.promises.stat } },
+  resolvedPath,
+  purpose,
+  typeLabel,
+) {
   try {
-    return await fsImpl.promises.stat(resolvedPath)
+    return await fsImpl.promises.stat(resolvedPath);
   } catch (error) {
-    const code = error && typeof error === 'object' ? error.code : ''
+    const code = error && typeof error === "object" ? error.code : "";
 
-    if (code === 'ENOENT' || code === 'ENOTDIR') {
-      throw ipcPathError(code || 'ENOENT', `${purpose} failed: ${typeLabel} does not exist.`)
+    if (code === "ENOENT" || code === "ENOTDIR") {
+      throw ipcPathError(
+        code || "ENOENT",
+        `${purpose} failed: ${typeLabel} does not exist.`,
+      );
     }
 
     throw ipcPathError(
-      code || 'read-error',
-      `${purpose} failed: ${error instanceof Error ? error.message : String(error)}`
-    )
+      code || "read-error",
+      `${purpose} failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
 async function realpathForIpc(fsImpl, resolvedPath, purpose) {
-  if (typeof fsImpl.promises.realpath !== 'function') {
-    return resolvedPath
+  if (typeof fsImpl.promises.realpath !== "function") {
+    return resolvedPath;
   }
 
   try {
-    const realPath = await fsImpl.promises.realpath(resolvedPath)
-    rejectUnsafePathSyntax(realPath, purpose)
+    const realPath = await fsImpl.promises.realpath(resolvedPath);
+    rejectUnsafePathSyntax(realPath, purpose);
 
-    return realPath
+    return realPath;
   } catch (error) {
-    const code = error && typeof error === 'object' ? error.code : ''
+    const code = error && typeof error === "object" ? error.code : "";
     throw ipcPathError(
-      code || 'read-error',
-      `${purpose} failed: ${error instanceof Error ? error.message : String(error)}`
-    )
+      code || "read-error",
+      `${purpose} failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
 function rejectSensitiveFilePath(filePath, purpose) {
-  const blockReason = sensitiveFileBlockReason(filePath)
+  const blockReason = sensitiveFileBlockReason(filePath);
 
   if (blockReason) {
-    throw ipcPathError('sensitive-file', `${purpose} blocked for sensitive file: ${blockReason}`)
+    throw ipcPathError(
+      "sensitive-file",
+      `${purpose} blocked for sensitive file: ${blockReason}`,
+    );
   }
 }
 
 async function resolveDirectoryForIpc(
   dirPath,
   options: {
-    purpose?: string
-    baseDir?: fs.PathOrFileDescriptor
-    fs?: { promises: { stat: typeof fs.promises.stat } }
-  } = {}
+    purpose?: string;
+    baseDir?: fs.PathOrFileDescriptor;
+    fs?: { promises: { stat: typeof fs.promises.stat } };
+  } = {},
 ) {
-  const purpose = String(options.purpose || 'Directory read')
-  const fsImpl = options.fs || fs
-  const resolvedPath = resolveRequestedPathForIpc(dirPath, { baseDir: options.baseDir, purpose })
-  const stat = await statForIpc(fsImpl, resolvedPath, purpose, 'directory')
+  const purpose = String(options.purpose || "Directory read");
+  const fsImpl = options.fs || fs;
+  const resolvedPath = resolveRequestedPathForIpc(dirPath, {
+    baseDir: options.baseDir,
+    purpose,
+  });
+  const stat = await statForIpc(fsImpl, resolvedPath, purpose, "directory");
 
   if (!stat.isDirectory()) {
-    throw ipcPathError('ENOTDIR', `${purpose} failed: path is not a directory.`)
+    throw ipcPathError(
+      "ENOTDIR",
+      `${purpose} failed: path is not a directory.`,
+    );
   }
 
-  const realPath = await realpathForIpc(fsImpl, resolvedPath, purpose)
+  const realPath = await realpathForIpc(fsImpl, resolvedPath, purpose);
 
-  return { realPath, resolvedPath, stat }
+  return { realPath, resolvedPath, stat };
 }
 
 async function resolveReadableFileForIpc(
   filePath,
   options: {
-    purpose?: string
-    baseDir?: fs.PathOrFileDescriptor
-    fs?: typeof fs
-    blockSensitive?: boolean
-    maxBytes?: number
-  } = {}
+    purpose?: string;
+    baseDir?: fs.PathOrFileDescriptor;
+    fs?: typeof fs;
+    blockSensitive?: boolean;
+    maxBytes?: number;
+  } = {},
 ) {
-  const purpose = String(options.purpose || 'File read')
-  const fsImpl = options.fs || fs
-  const resolvedPath = resolveRequestedPathForIpc(filePath, { baseDir: options.baseDir, purpose })
+  const purpose = String(options.purpose || "File read");
+  const fsImpl = options.fs || fs;
+  const resolvedPath = resolveRequestedPathForIpc(filePath, {
+    baseDir: options.baseDir,
+    purpose,
+  });
 
   if (options.blockSensitive !== false) {
-    rejectSensitiveFilePath(resolvedPath, purpose)
+    rejectSensitiveFilePath(resolvedPath, purpose);
   }
 
-  const stat = await statForIpc(fsImpl, resolvedPath, purpose, 'file')
+  const stat = await statForIpc(fsImpl, resolvedPath, purpose, "file");
 
   if (stat.isDirectory()) {
-    throw ipcPathError('EISDIR', `${purpose} failed: path points to a directory.`)
+    throw ipcPathError(
+      "EISDIR",
+      `${purpose} failed: path points to a directory.`,
+    );
   }
 
   if (!stat.isFile()) {
-    throw ipcPathError('EINVAL', `${purpose} failed: only regular files can be read.`)
+    throw ipcPathError(
+      "EINVAL",
+      `${purpose} failed: only regular files can be read.`,
+    );
   }
 
-  const realPath = await realpathForIpc(fsImpl, resolvedPath, purpose)
+  const realPath = await realpathForIpc(fsImpl, resolvedPath, purpose);
 
   if (options.blockSensitive !== false) {
-    rejectSensitiveFilePath(realPath, purpose)
+    rejectSensitiveFilePath(realPath, purpose);
   }
 
-  const maxBytes = Number.isFinite(options.maxBytes) && Number(options.maxBytes) > 0 ? Number(options.maxBytes) : null
+  const maxBytes =
+    Number.isFinite(options.maxBytes) && Number(options.maxBytes) > 0
+      ? Number(options.maxBytes)
+      : null;
 
   if (maxBytes && stat.size > maxBytes) {
-    throw ipcPathError('EFBIG', `${purpose} failed: file is too large (${stat.size} bytes; limit ${maxBytes} bytes).`)
+    throw ipcPathError(
+      "EFBIG",
+      `${purpose} failed: file is too large (${stat.size} bytes; limit ${maxBytes} bytes).`,
+    );
   }
 
   try {
-    await fsImpl.promises.access(resolvedPath, fs.constants.R_OK)
+    await fsImpl.promises.access(resolvedPath, fs.constants.R_OK);
   } catch {
-    throw ipcPathError('EACCES', `${purpose} failed: file is not readable.`)
+    throw ipcPathError("EACCES", `${purpose} failed: file is not readable.`);
   }
 
-  return { realPath, resolvedPath, stat }
+  return { realPath, resolvedPath, stat };
 }
 
 async function readFileDataUrlForIpc(
   filePath,
   options: {
-    purpose?: string
-    baseDir?: fs.PathOrFileDescriptor
-    fs?: typeof fs
-    blockSensitive?: boolean
-    maxBytes?: number
-    mimeType: string
-  }
+    purpose?: string;
+    baseDir?: fs.PathOrFileDescriptor;
+    fs?: typeof fs;
+    blockSensitive?: boolean;
+    maxBytes?: number;
+    mimeType: string;
+  },
 ): Promise<string> {
-  const fsImpl = options.fs || fs
-  const { resolvedPath } = await resolveReadableFileForIpc(filePath, options)
-  const data = await fsImpl.promises.readFile(resolvedPath)
+  const fsImpl = options.fs || fs;
+  const { resolvedPath } = await resolveReadableFileForIpc(filePath, options);
+  const data = await fsImpl.promises.readFile(resolvedPath);
 
-  return `data:${options.mimeType};base64,${data.toString('base64')}`
+  return `data:${options.mimeType};base64,${data.toString("base64")}`;
 }
 
 export {
@@ -550,5 +630,5 @@ export {
   sensitiveFileBlockReason,
   TEXT_PREVIEW_SOURCE_MAX_BYTES,
   tightenSecretFileMode,
-  writeSecretFileAtomic
-}
+  writeSecretFileAtomic,
+};

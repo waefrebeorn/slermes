@@ -29,8 +29,8 @@
  * backend-command.ts.
  */
 
-import fs from 'node:fs'
-import path from 'node:path'
+import fs from "node:fs";
+import path from "node:path";
 
 /**
  * Build the ordered list of extensions findOnPath() should try when
@@ -51,12 +51,15 @@ import path from 'node:path'
  * @param {boolean} isWindows
  * @returns {string[]} extensions to try, in order, always ending in ''.
  */
-export function buildPathExtCandidates(pathext: string | undefined, isWindows: boolean): string[] {
+export function buildPathExtCandidates(
+  pathext: string | undefined,
+  isWindows: boolean,
+): string[] {
   if (!isWindows) {
-    return ['']
+    return [""];
   }
 
-  return [...(pathext || '.COM;.EXE;.BAT;.CMD').split(';').filter(Boolean), '']
+  return [...(pathext || ".COM;.EXE;.BAT;.CMD").split(";").filter(Boolean), ""];
 }
 
 /**
@@ -71,15 +74,20 @@ export function buildPathExtCandidates(pathext: string | undefined, isWindows: b
  * @returns {string[]} updater argv, e.g. ['--update', '--branch', 'main'].
  */
 export interface BootstrapRecoverySignals {
-  hasBootstrapMarker: boolean
-  hasVenvHermes: boolean
-  hasVenvPython: boolean
+  hasBootstrapMarker: boolean;
+  hasVenvHermes: boolean;
+  hasVenvPython: boolean;
 }
 
-export function chooseUpdaterArgs(signals: BootstrapRecoverySignals, branch: string): string[] {
-  const canRunUpdater = signals.hasVenvHermes && signals.hasVenvPython
+export function chooseUpdaterArgs(
+  signals: BootstrapRecoverySignals,
+  branch: string,
+): string[] {
+  const canRunUpdater = signals.hasVenvHermes && signals.hasVenvPython;
 
-  return canRunUpdater ? ['--update', '--branch', branch] : ['--repair', '--branch', branch]
+  return canRunUpdater
+    ? ["--update", "--branch", branch]
+    : ["--repair", "--branch", branch];
 }
 
 /**
@@ -100,90 +108,98 @@ export function chooseUpdaterArgs(signals: BootstrapRecoverySignals, branch: str
 export function getVenvSitePackagesEntries(
   venvRoot: string | undefined | null,
   opts: {
-    isWindows?: boolean
-    directoryExists?: (p: string) => boolean
-    readFile?: (p: string) => string | undefined
-  } = {}
+    isWindows?: boolean;
+    directoryExists?: (p: string) => boolean;
+    readFile?: (p: string) => string | undefined;
+  } = {},
 ): string[] {
-  const entries: string[] = []
+  const entries: string[] = [];
 
   if (!venvRoot) {
-    return entries
+    return entries;
   }
 
-  const isWindows = opts.isWindows ?? process.platform === 'win32'
+  const isWindows = opts.isWindows ?? process.platform === "win32";
 
   const directoryExists =
     opts.directoryExists ??
     ((p: string) => {
       try {
-        return fs.statSync(p).isDirectory()
+        return fs.statSync(p).isDirectory();
       } catch {
-        return false
+        return false;
       }
-    })
+    });
 
   const readFile =
     opts.readFile ??
     ((p: string) => {
       try {
-        return fs.readFileSync(p, 'utf8')
+        return fs.readFileSync(p, "utf8");
       } catch {
-        return undefined
+        return undefined;
       }
-    })
+    });
 
   if (isWindows) {
-    const sitePackages = path.join(venvRoot, 'Lib', 'site-packages')
+    const sitePackages = path.join(venvRoot, "Lib", "site-packages");
 
     if (directoryExists(sitePackages)) {
-      entries.push(sitePackages)
+      entries.push(sitePackages);
     }
 
-    return entries
+    return entries;
   }
 
-  const cfg = readFile(path.join(venvRoot, 'pyvenv.cfg'))
+  const cfg = readFile(path.join(venvRoot, "pyvenv.cfg"));
 
   const version = (() => {
     if (!cfg) {
-      return null
+      return null;
     }
 
-    const match = cfg.match(/^version_info\s*=\s*(\d+\.\d+)/im)
+    const match = cfg.match(/^version_info\s*=\s*(\d+\.\d+)/im);
 
-    return match ? match[1].trim() : null
-  })()
+    return match ? match[1].trim() : null;
+  })();
 
   if (version) {
-    const sitePackages = path.join(venvRoot, 'lib', `python${version}`, 'site-packages')
+    const sitePackages = path.join(
+      venvRoot,
+      "lib",
+      `python${version}`,
+      "site-packages",
+    );
 
     if (directoryExists(sitePackages)) {
-      entries.push(sitePackages)
+      entries.push(sitePackages);
     }
   }
 
-  return entries
+  return entries;
 }
 
 export interface ResolveVenvHermesCommandDeps {
-  isWindows: boolean
-  isCommandScript: (command: string) => boolean
-  fileExists: (filePath: string) => boolean
-  directoryExists: (filePath: string) => boolean
-  canImportHermesCli: (python: string, opts?: { env?: Record<string, string> }) => boolean
-  getVenvPython: (venvRoot: string) => string
-  getVenvSitePackagesEntries: (venvRoot: string) => string[]
+  isWindows: boolean;
+  isCommandScript: (command: string) => boolean;
+  fileExists: (filePath: string) => boolean;
+  directoryExists: (filePath: string) => boolean;
+  canImportHermesCli: (
+    python: string,
+    opts?: { env?: Record<string, string> },
+  ) => boolean;
+  getVenvPython: (venvRoot: string) => string;
+  getVenvSitePackagesEntries: (venvRoot: string) => string[];
   buildDesktopBackendEnv: (opts: {
-    hermesHome: string
-    pythonPathEntries: string[]
-    venvRoot: string
-  }) => Record<string, string>
-  hermesHome: string
-  resolvePath: (...segments: string[]) => string
-  dirname: (p: string) => string
-  basename: (p: string) => string
-  rememberLog?: (message: string) => void
+    hermesHome: string;
+    pythonPathEntries: string[];
+    venvRoot: string;
+  }) => Record<string, string>;
+  hermesHome: string;
+  resolvePath: (...segments: string[]) => string;
+  dirname: (p: string) => string;
+  basename: (p: string) => string;
+  rememberLog?: (message: string) => void;
 }
 
 /**
@@ -208,16 +224,16 @@ export interface ResolveVenvHermesCommandDeps {
 export function resolveVenvHermesCommand(
   command: string,
   backendArgs: string[],
-  deps: ResolveVenvHermesCommandDeps
+  deps: ResolveVenvHermesCommandDeps,
 ): {
-  label: string
-  command: string
-  args: string[]
-  bootstrap: false
-  env: Record<string, string>
-  kind: 'python'
-  root: string
-  shell: false
+  label: string;
+  command: string;
+  args: string[];
+  bootstrap: false;
+  env: Record<string, string>;
+  kind: "python";
+  root: string;
+  shell: false;
 } | null {
   const {
     isWindows,
@@ -232,62 +248,68 @@ export function resolveVenvHermesCommand(
     resolvePath,
     dirname,
     basename,
-    rememberLog
-  } = deps
+    rememberLog,
+  } = deps;
 
   if (!isWindows || !command || isCommandScript(command)) {
-    return null
+    return null;
   }
 
-  const resolved = resolvePath(String(command))
+  const resolved = resolvePath(String(command));
 
   if (!/^hermes(?:\.exe)?$/i.test(basename(resolved))) {
-    return null
+    return null;
   }
 
-  const scriptsDir = dirname(resolved)
+  const scriptsDir = dirname(resolved);
 
-  if (basename(scriptsDir).toLowerCase() !== 'scripts') {
-    return null
+  if (basename(scriptsDir).toLowerCase() !== "scripts") {
+    return null;
   }
 
-  const venvRoot = dirname(scriptsDir)
-  const python = getVenvPython(venvRoot)
+  const venvRoot = dirname(scriptsDir);
+  const python = getVenvPython(venvRoot);
 
   if (!fileExists(python)) {
-    return null
+    return null;
   }
 
-  const root = dirname(venvRoot)
+  const root = dirname(venvRoot);
 
   if (
     !canImportHermesCli(python, {
       env: {
-        PYTHONPATH: [...(directoryExists(root) ? [root] : []), process.env.PYTHONPATH]
+        PYTHONPATH: [
+          ...(directoryExists(root) ? [root] : []),
+          process.env.PYTHONPATH,
+        ]
           .filter((entry): entry is string => Boolean(entry))
-          .join(path.delimiter)
-      }
+          .join(path.delimiter),
+      },
     })
   ) {
     rememberLog?.(
-      `Ignoring venv Hermes at ${python}: runtime import probe failed (broken/partial venv); falling through to bootstrap.`
-    )
+      `Ignoring venv Hermes at ${python}: runtime import probe failed (broken/partial venv); falling through to bootstrap.`,
+    );
 
-    return null
+    return null;
   }
 
   return {
     label: `existing Hermes Python at ${python}`,
     command: python,
-    args: ['-m', 'hermes_cli.main', ...backendArgs],
+    args: ["-m", "hermes_cli.main", ...backendArgs],
     bootstrap: false,
     env: buildDesktopBackendEnv({
       hermesHome,
-      pythonPathEntries: [...(directoryExists(root) ? [root] : []), ...getVenvSitePackagesEntries(venvRoot)],
-      venvRoot
+      pythonPathEntries: [
+        ...(directoryExists(root) ? [root] : []),
+        ...getVenvSitePackagesEntries(venvRoot),
+      ],
+      venvRoot,
     }),
-    kind: 'python',
+    kind: "python",
     root,
-    shell: false
-  }
+    shell: false,
+  };
 }

@@ -11,43 +11,47 @@
  * that block type-to-focus (dialogs, menus, terminal, full pages) block this.
  */
 
-import { sanitizeComposerInput } from '@/lib/composer-input-sanitize'
-import { DATA_IMAGE_URL_RE } from '@/lib/embedded-images'
-import { isEditableTarget } from '@/lib/keybinds/combo'
-import { composerFocusBlockedBySurface } from '@/lib/keybinds/composer-focus-keys'
+import { sanitizeComposerInput } from "@/lib/composer-input-sanitize";
+import { DATA_IMAGE_URL_RE } from "@/lib/embedded-images";
+import { isEditableTarget } from "@/lib/keybinds/combo";
+import { composerFocusBlockedBySurface } from "@/lib/keybinds/composer-focus-keys";
 
-import { requestComposerAttachImages, requestComposerFocus, requestComposerInsert } from './focus'
-import { pathifyRefs } from './path-refs'
-import { extractClipboardImageBlobs } from './text-utils'
-import { linkifyUrls } from './url-refs'
+import {
+  requestComposerAttachImages,
+  requestComposerFocus,
+  requestComposerInsert,
+} from "./focus";
+import { pathifyRefs } from "./path-refs";
+import { extractClipboardImageBlobs } from "./text-utils";
+import { linkifyUrls } from "./url-refs";
 
 /** Route clipboard contents to the active composer. True when it carried
  *  something a composer can take (the caller should swallow the event). */
 export function routeClipboardToComposer(clipboard: DataTransfer): boolean {
-  const blobs = extractClipboardImageBlobs(clipboard)
-  const text = sanitizeComposerInput(clipboard.getData('text').trim())
+  const blobs = extractClipboardImageBlobs(clipboard);
+  const text = sanitizeComposerInput(clipboard.getData("text").trim());
 
   if (blobs.length > 0) {
-    requestComposerAttachImages(blobs)
+    requestComposerAttachImages(blobs);
   }
 
   // A bare `data:` URL IS the image attached above — not text to insert.
   if (text && !DATA_IMAGE_URL_RE.test(text)) {
     // Same chipping the focused paste path applies: links land as `@url:`
     // chips, bare `@path` tokens promote. The insert focuses the composer.
-    requestComposerInsert(pathifyRefs(linkifyUrls(text)), { mode: 'inline' })
+    requestComposerInsert(pathifyRefs(linkifyUrls(text)), { mode: "inline" });
 
-    return true
+    return true;
   }
 
   if (blobs.length > 0) {
     // Image-only paste: pull focus so the attach lands somewhere visible.
-    requestComposerFocus('active')
+    requestComposerFocus("active");
 
-    return true
+    return true;
   }
 
-  return false
+  return false;
 }
 
 /** The window-level `paste` dispatcher (use-keybinds registers it beside the
@@ -60,10 +64,10 @@ export function handleWindowPaste(event: ClipboardEvent) {
     isEditableTarget(event.target) ||
     composerFocusBlockedBySurface()
   ) {
-    return
+    return;
   }
 
   if (routeClipboardToComposer(event.clipboardData)) {
-    event.preventDefault()
+    event.preventDefault();
   }
 }

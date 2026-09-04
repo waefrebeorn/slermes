@@ -13,21 +13,21 @@ export {
   PROMPT_SUBMIT_REQUEST_TIMEOUT_MS,
   setApiRequestConnection,
   setApiRequestProfile,
-  STARTUP_REQUEST_TIMEOUT_MS
-} from './api/client'
-export type { ProfileScope } from './api/client'
-export * from './api/config'
-export * from './api/cron'
-export * from './api/local-models'
-export * from './api/mcp'
-export * from './api/messaging'
-export * from './api/models'
-export * from './api/plugins'
-export * from './api/profiles'
-export * from './api/sessions'
-export * from './api/skills'
-export * from './api/system'
-export * from './api/toolsets'
+  STARTUP_REQUEST_TIMEOUT_MS,
+} from "./api/client";
+export type { ProfileScope } from "./api/client";
+export * from "./api/config";
+export * from "./api/cron";
+export * from "./api/local-models";
+export * from "./api/mcp";
+export * from "./api/messaging";
+export * from "./api/models";
+export * from "./api/plugins";
+export * from "./api/profiles";
+export * from "./api/sessions";
+export * from "./api/skills";
+export * from "./api/system";
+export * from "./api/toolsets";
 
 export type {
   ActionResponse,
@@ -128,5 +128,5 @@ export type {
   WebhookCreateResponse,
   WebhookEnableResponse,
   WebhookRoute,
-  WebhooksResponse
-} from '@/types/hermes'
+  WebhooksResponse,
+} from "@/types/hermes";

@@ -1,169 +1,198 @@
 export interface SetupStatusSnapshot {
-  provider_configured?: boolean
+  provider_configured?: boolean;
 }
 
 export interface RuntimeCheckSnapshot {
-  error?: string
-  ok?: boolean
+  error?: string;
+  ok?: boolean;
 }
 
 export interface RuntimeReadinessSignals {
-  setup: null | SetupStatusSnapshot
-  setupError: null | string
-  runtime: null | RuntimeCheckSnapshot
-  runtimeError: null | string
+  setup: null | SetupStatusSnapshot;
+  setupError: null | string;
+  runtime: null | RuntimeCheckSnapshot;
+  runtimeError: null | string;
 }
 
 export interface RuntimeReadinessOptions {
-  defaultReason?: string
-  requestedProvider?: string
-  unknownReady?: boolean
+  defaultReason?: string;
+  requestedProvider?: string;
+  unknownReady?: boolean;
 }
 
 export interface RuntimeReadinessResult {
-  checksDisagree: boolean
-  ready: boolean
-  reason: null | string
-  source: 'fallback' | 'runtime_check' | 'setup_status'
+  checksDisagree: boolean;
+  ready: boolean;
+  reason: null | string;
+  source: "fallback" | "runtime_check" | "setup_status";
 }
 
-export type RuntimeReadinessDisplay = 'checking' | 'needs_setup' | 'ready' | 'unavailable'
+export type RuntimeReadinessDisplay =
+  "checking" | "needs_setup" | "ready" | "unavailable";
 
-export type RuntimeReadinessRequester = <T = unknown>(method: string, params?: Record<string, unknown>) => Promise<T>
+export type RuntimeReadinessRequester = <T = unknown>(
+  method: string,
+  params?: Record<string, unknown>,
+) => Promise<T>;
 
-const DEFAULT_NOT_READY_REASON = 'Add a provider credential before sending your first message.'
+const DEFAULT_NOT_READY_REASON =
+  "Add a provider credential before sending your first message.";
 
 function toErrorMessage(error: unknown): null | string {
   if (error instanceof Error) {
-    return error.message
+    return error.message;
   }
 
-  if (typeof error === 'string') {
-    return error
+  if (typeof error === "string") {
+    return error;
   }
 
   if (error === null || error === undefined) {
-    return null
+    return null;
   }
 
-  return String(error)
+  return String(error);
 }
 
 function normalizeMessage(value: null | string | undefined): null | string {
-  const next = value?.trim()
+  const next = value?.trim();
 
-  return next ? next : null
+  return next ? next : null;
 }
 
 async function requestWithFallback<T>(
   requestGateway: RuntimeReadinessRequester,
   method: string,
-  params?: Record<string, unknown>
+  params?: Record<string, unknown>,
 ): Promise<{ error: null | string; value: null | T }> {
   try {
-    return { error: null, value: await requestGateway<T>(method, params) }
+    return { error: null, value: await requestGateway<T>(method, params) };
   } catch (error) {
-    return { error: toErrorMessage(error), value: null }
+    return { error: toErrorMessage(error), value: null };
   }
 }
 
 export async function fetchRuntimeReadinessSignals(
   requestGateway: RuntimeReadinessRequester,
-  requestedProvider?: string
+  requestedProvider?: string,
 ): Promise<RuntimeReadinessSignals> {
-  const runtimeParams = requestedProvider?.trim() ? { provider: requestedProvider.trim() } : undefined
+  const runtimeParams = requestedProvider?.trim()
+    ? { provider: requestedProvider.trim() }
+    : undefined;
 
   const [setup, runtime] = await Promise.all([
-    requestWithFallback<SetupStatusSnapshot>(requestGateway, 'setup.status'),
-    requestWithFallback<RuntimeCheckSnapshot>(requestGateway, 'setup.runtime_check', runtimeParams)
-  ])
+    requestWithFallback<SetupStatusSnapshot>(requestGateway, "setup.status"),
+    requestWithFallback<RuntimeCheckSnapshot>(
+      requestGateway,
+      "setup.runtime_check",
+      runtimeParams,
+    ),
+  ]);
 
   return {
     setup: setup.value,
     setupError: setup.error,
     runtime: runtime.value,
-    runtimeError: runtime.error
-  }
+    runtimeError: runtime.error,
+  };
 }
 
 export function interpretRuntimeReadiness(
   signals: RuntimeReadinessSignals,
-  options: RuntimeReadinessOptions = {}
+  options: RuntimeReadinessOptions = {},
 ): RuntimeReadinessResult {
-  const defaultReason = options.defaultReason ?? DEFAULT_NOT_READY_REASON
-  const unknownReady = options.unknownReady ?? false
+  const defaultReason = options.defaultReason ?? DEFAULT_NOT_READY_REASON;
+  const unknownReady = options.unknownReady ?? false;
 
   const setupConfigured =
-    typeof signals.setup?.provider_configured === 'boolean' ? Boolean(signals.setup.provider_configured) : undefined
+    typeof signals.setup?.provider_configured === "boolean"
+      ? Boolean(signals.setup.provider_configured)
+      : undefined;
 
-  const runtimeOk = typeof signals.runtime?.ok === 'boolean' ? Boolean(signals.runtime.ok) : undefined
-  const runtimeFailure = normalizeMessage(signals.runtime?.error) ?? normalizeMessage(signals.runtimeError)
-  const setupFailure = normalizeMessage(signals.setupError)
+  const runtimeOk =
+    typeof signals.runtime?.ok === "boolean"
+      ? Boolean(signals.runtime.ok)
+      : undefined;
+  const runtimeFailure =
+    normalizeMessage(signals.runtime?.error) ??
+    normalizeMessage(signals.runtimeError);
+  const setupFailure = normalizeMessage(signals.setupError);
 
   const checksDisagree =
-    typeof setupConfigured === 'boolean' && typeof runtimeOk === 'boolean' && setupConfigured !== runtimeOk
+    typeof setupConfigured === "boolean" &&
+    typeof runtimeOk === "boolean" &&
+    setupConfigured !== runtimeOk;
 
-  if (typeof runtimeOk === 'boolean') {
+  if (typeof runtimeOk === "boolean") {
     if (runtimeOk) {
       return {
         checksDisagree,
         ready: true,
         reason: null,
-        source: 'runtime_check'
-      }
+        source: "runtime_check",
+      };
     }
 
-    let reason = runtimeFailure ?? defaultReason
+    let reason = runtimeFailure ?? defaultReason;
 
     if (checksDisagree && setupConfigured) {
-      reason = `${reason} setup.status reports configured credentials, but runtime resolution still failed.`
+      reason = `${reason} setup.status reports configured credentials, but runtime resolution still failed.`;
     }
 
     return {
       checksDisagree,
       ready: false,
       reason,
-      source: 'runtime_check'
-    }
+      source: "runtime_check",
+    };
   }
 
-  if (typeof setupConfigured === 'boolean') {
+  if (typeof setupConfigured === "boolean") {
     return {
       checksDisagree: false,
       ready: setupConfigured,
-      reason: setupConfigured ? null : (runtimeFailure ?? setupFailure ?? defaultReason),
-      source: 'setup_status'
-    }
+      reason: setupConfigured
+        ? null
+        : (runtimeFailure ?? setupFailure ?? defaultReason),
+      source: "setup_status",
+    };
   }
 
   return {
     checksDisagree: false,
     ready: unknownReady,
-    reason: unknownReady ? null : (runtimeFailure ?? setupFailure ?? defaultReason),
-    source: 'fallback'
-  }
+    reason: unknownReady
+      ? null
+      : (runtimeFailure ?? setupFailure ?? defaultReason),
+    source: "fallback",
+  };
 }
 
-export function runtimeReadinessDisplay(status: RuntimeReadinessResult | null): RuntimeReadinessDisplay {
+export function runtimeReadinessDisplay(
+  status: RuntimeReadinessResult | null,
+): RuntimeReadinessDisplay {
   if (status === null) {
-    return 'checking'
+    return "checking";
   }
 
   if (status.ready) {
-    return 'ready'
+    return "ready";
   }
 
   // Credentials exist but runtime resolution failed. Calling that "needs
   // setup" sends users back through onboarding for provider/quota failures
   // that setup cannot repair; the reason tooltip carries the specific cause.
-  return status.checksDisagree ? 'unavailable' : 'needs_setup'
+  return status.checksDisagree ? "unavailable" : "needs_setup";
 }
 
 export async function evaluateRuntimeReadiness(
   requestGateway: RuntimeReadinessRequester,
-  options: RuntimeReadinessOptions = {}
+  options: RuntimeReadinessOptions = {},
 ): Promise<RuntimeReadinessResult> {
-  const signals = await fetchRuntimeReadinessSignals(requestGateway, options.requestedProvider)
+  const signals = await fetchRuntimeReadinessSignals(
+    requestGateway,
+    options.requestedProvider,
+  );
 
-  return interpretRuntimeReadiness(signals, options)
+  return interpretRuntimeReadiness(signals, options);
 }

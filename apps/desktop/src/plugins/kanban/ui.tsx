@@ -13,34 +13,44 @@ import {
   profileColor,
   profileColorSoft,
   relativeTime,
-  useQuery
-} from '@hermes/plugin-sdk'
-import { type ReactNode, useEffect, useState } from 'react'
+  useQuery,
+} from "@hermes/plugin-sdk";
+import { type ReactNode, useEffect, useState } from "react";
 
-import { fetchOrchestration, ORCHESTRATION_KEY } from './api'
-import { columnLabel, useKanban } from './i18n'
-import { columnMeta, type KanbanTask } from './types'
+import { fetchOrchestration, ORCHESTRATION_KEY } from "./api";
+import { columnLabel, useKanban } from "./i18n";
+import { columnMeta, type KanbanTask } from "./types";
 
 // Plugin-scoped i18n lives in ./i18n; re-exported so components import strings
 // and chrome from one place (./ui).
-export { columnHelp, columnLabel, type KanbanText, lockedReason, useKanban } from './i18n'
+export {
+  columnHelp,
+  columnLabel,
+  type KanbanText,
+  lockedReason,
+  useKanban,
+} from "./i18n";
 
 /** One-shot "open the new-task dialog in this lane" request, so a command that
  *  fires from ANYWHERE (keybind, palette) can reach the board page without the
  *  page having to exist yet: the handler navigates and drops the lane here, the
  *  page consumes it on arrival and clears it. Ephemeral by design — never
  *  persisted, so a remount can't reopen a dialog the user already dismissed. */
-export const $newTaskLane = atom<null | string>(null)
+export const $newTaskLane = atom<null | string>(null);
 
 /** Orchestration knobs (cached app-wide; the settings panel invalidates). */
 export function useOrchestration() {
-  return useQuery({ queryKey: ORCHESTRATION_KEY, queryFn: fetchOrchestration, staleTime: 60_000 }).data
+  return useQuery({
+    queryKey: ORCHESTRATION_KEY,
+    queryFn: fetchOrchestration,
+    staleTime: 60_000,
+  }).data;
 }
 
 /** The dispatcher's configured fallback for unassigned ready cards
  *  (`kanban.default_assignee`) — '' when unset, i.e. unassigned never runs. */
 export function useDefaultAssignee(): string {
-  return useOrchestration()?.default_assignee.trim() ?? ''
+  return useOrchestration()?.default_assignee.trim() ?? "";
 }
 
 // System-owned drop targets — you can drag a card OUT of these, never INTO
@@ -48,71 +58,84 @@ export function useDefaultAssignee(): string {
 // claimed by the dispatcher; `scheduled` needs a wake-up time only an agent or
 // the CLI can attach (a bare status drag is refused with a 409). The reason
 // copy lives in the plugin i18n bundle (`locked.*`); see `lockedReason`.
-export const LOCKED_COLUMNS = ['review', 'running', 'scheduled'] as const
+export const LOCKED_COLUMNS = ["review", "running", "scheduled"] as const;
 
-export const isLockedTarget = (name: string): boolean => (LOCKED_COLUMNS as readonly string[]).includes(name)
+export const isLockedTarget = (name: string): boolean =>
+  (LOCKED_COLUMNS as readonly string[]).includes(name);
 
-export const shortId = (id?: null | string) => (id ?? '').replace(/^t_/, '').slice(0, 6)
+export const shortId = (id?: null | string) =>
+  (id ?? "").replace(/^t_/, "").slice(0, 6);
 
 // The electron REST bridge throws `Error("409: {\"detail\":\"…\"}")`; pull out
 // the human-readable detail for a toast.
 export function errText(err: unknown): string {
-  const raw = err instanceof Error ? err.message : String(err)
-  const brace = raw.indexOf('{')
+  const raw = err instanceof Error ? err.message : String(err);
+  const brace = raw.indexOf("{");
 
   if (brace !== -1) {
     try {
-      return (JSON.parse(raw.slice(brace)) as { detail?: string }).detail ?? raw
+      return (
+        (JSON.parse(raw.slice(brace)) as { detail?: string }).detail ?? raw
+      );
     } catch {
       // Not JSON — fall through to the raw message.
     }
   }
 
-  return raw
+  return raw;
 }
 
 /** Backend timestamps are epoch SECONDS; the canonical formatter takes ms. */
-export const ago = (seconds?: null | number): null | string => (seconds ? relativeTime(seconds * 1000) : null)
+export const ago = (seconds?: null | number): null | string =>
+  seconds ? relativeTime(seconds * 1000) : null;
 
-const ELAPSED_SUFFIX = { day: 'd', hour: 'h', minute: 'm', second: 's' } as const
+const ELAPSED_SUFFIX = {
+  day: "d",
+  hour: "h",
+  minute: "m",
+  second: "s",
+} as const;
 
 /** Compact run duration ("42s", "3m") off the canonical elapsed bucketing. */
-export function duration(start?: null | number, end?: null | number): null | string {
+export function duration(
+  start?: null | number,
+  end?: null | number,
+): null | string {
   if (!start || !end || end < start) {
-    return null
+    return null;
   }
 
-  const { unit, value } = coarseElapsed((end - start) * 1000)
+  const { unit, value } = coarseElapsed((end - start) * 1000);
 
-  return `${value}${ELAPSED_SUFFIX[unit]}`
+  return `${value}${ELAPSED_SUFFIX[unit]}`;
 }
 
 // ── liveness ─────────────────────────────────────────────────────────────────
 
 /** Live elapsed label ("34s", "2m") that keeps ticking while mounted. */
 function useTicking(start?: null | number): null | string {
-  const [, force] = useState(0)
+  const [, force] = useState(0);
 
   useEffect(() => {
     if (!start) {
-      return
+      return;
     }
 
-    const id = window.setInterval(() => force(n => n + 1), 5_000)
+    const id = window.setInterval(() => force((n) => n + 1), 5_000);
 
-    return () => window.clearInterval(id)
-  }, [start])
+    return () => window.clearInterval(id);
+  }, [start]);
 
   if (!start) {
-    return null
+    return null;
   }
 
-  const { unit, value } = coarseElapsed(Math.max(0, Date.now() - start * 1000))
+  const { unit, value } = coarseElapsed(Math.max(0, Date.now() - start * 1000));
 
-  return `${value}${ELAPSED_SUFFIX[unit]}`
+  return `${value}${ELAPSED_SUFFIX[unit]}`;
 }
 
-export type ArcState = 'queued' | 'running' | 'stale'
+export type ArcState = "queued" | "running" | "stale";
 
 /**
  * The card's machine-activity state. The board looked dead between "I made a
@@ -121,68 +144,84 @@ export type ArcState = 'queued' | 'running' | 'stale'
  * sweep, no-heartbeat = amber crawl. `queued` (triage / assigned-ready /
  * review) renders as the footer's named-agent chip — motion means work.
  */
-export function arcState(task: KanbanTask, fallbackAssignee: string): ArcState | null {
-  if (task.status === 'running') {
+export function arcState(
+  task: KanbanTask,
+  fallbackAssignee: string,
+): ArcState | null {
+  if (task.status === "running") {
     // No heartbeat for 2+ min = the worker may have died; the dispatcher will
     // reclaim it, but be honest instead of sweeping green forever.
-    const stale = task.last_heartbeat_at ? Date.now() / 1000 - task.last_heartbeat_at > 120 : false
+    const stale = task.last_heartbeat_at
+      ? Date.now() / 1000 - task.last_heartbeat_at > 120
+      : false;
 
-    return stale ? 'stale' : 'running'
+    return stale ? "stale" : "running";
   }
 
   const queued =
-    task.status === 'triage' ||
-    task.status === 'review' ||
-    (task.status === 'ready' && Boolean(task.assignee || fallbackAssignee))
+    task.status === "triage" ||
+    task.status === "review" ||
+    (task.status === "ready" && Boolean(task.assignee || fallbackAssignee));
 
-  return queued ? 'queued' : null
+  return queued ? "queued" : null;
 }
 
 /** Ticking "working · 34s" line for running cards (elapsed since claim). */
 export function RunClock({ task }: { task: KanbanTask }) {
-  const k = useKanban()
-  const elapsed = useTicking(task.started_at)
+  const k = useKanban();
+  const elapsed = useTicking(task.started_at);
 
   if (!elapsed) {
-    return null
+    return null;
   }
 
   return (
-    <span className="shrink-0 font-medium" style={{ color: columnMeta('running').tone }}>
+    <span
+      className="shrink-0 font-medium"
+      style={{ color: columnMeta("running").tone }}
+    >
       {k.working} · {elapsed}
     </span>
-  )
+  );
 }
 
 function initials(name: string): string {
   const parts = name
     .trim()
     .split(/[\s_\-./]+/)
-    .filter(Boolean)
+    .filter(Boolean);
 
-  return `${parts[0]?.[0] ?? '?'}${parts[1]?.[0] ?? ''}`.toUpperCase()
+  return `${parts[0]?.[0] ?? "?"}${parts[1]?.[0] ?? ""}`.toUpperCase();
 }
 
-export function Avatar({ name, size = '1.25rem' }: { name: string; size?: string }) {
+export function Avatar({
+  name,
+  size = "1.25rem",
+}: {
+  name: string;
+  size?: string;
+}) {
   // Same identity hue the rest of the app uses (profileColor); default/empty
   // profiles are neutral. Soft tag fill + colored glyph, per the app's tags.
-  const color = profileColor(name)
+  const color = profileColor(name);
 
   return (
     <span
       className="grid shrink-0 place-items-center rounded-full font-semibold"
       style={{
-        backgroundColor: color ? profileColorSoft(color, 22) : 'var(--ui-bg-quaternary)',
-        color: color ?? 'var(--ui-text-secondary)',
-        fontSize: '0.5625rem',
+        backgroundColor: color
+          ? profileColorSoft(color, 22)
+          : "var(--ui-bg-quaternary)",
+        color: color ?? "var(--ui-text-secondary)",
+        fontSize: "0.5625rem",
         height: size,
-        width: size
+        width: size,
       }}
       title={name}
     >
       {initials(name)}
     </span>
-  )
+  );
 }
 
 // Jira-style status control: a colored button showing the current state, click
@@ -190,48 +229,68 @@ export function Avatar({ name, size = '1.25rem' }: { name: string; size?: string
 export function StatusMenu({
   columns,
   onMove,
-  status
+  status,
 }: {
-  columns: string[]
-  onMove: (status: string) => void
-  status: string
+  columns: string[];
+  onMove: (status: string) => void;
+  status: string;
 }) {
-  const k = useKanban()
-  const meta = columnMeta(status)
+  const k = useKanban();
+  const meta = columnMeta(status);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide transition-[filter] hover:brightness-105"
-          style={{ backgroundColor: `color-mix(in srgb, ${meta.tone} 15%, transparent)`, color: meta.tone }}
+          style={{
+            backgroundColor: `color-mix(in srgb, ${meta.tone} 15%, transparent)`,
+            color: meta.tone,
+          }}
           type="button"
         >
-          <span className="size-1.5 rounded-full" style={{ backgroundColor: meta.tone }} />
+          <span
+            className="size-1.5 rounded-full"
+            style={{ backgroundColor: meta.tone }}
+          />
           {columnLabel(k, status)}
           <Codicon name="chevron-down" size="0.7rem" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {columns
-          .filter(name => name === status || !isLockedTarget(name))
-          .map(name => (
+          .filter((name) => name === status || !isLockedTarget(name))
+          .map((name) => (
             <DropdownMenuItem key={name} onSelect={() => onMove(name)}>
-              <span className="size-2 rounded-full" style={{ backgroundColor: columnMeta(name).tone }} />
+              <span
+                className="size-2 rounded-full"
+                style={{ backgroundColor: columnMeta(name).tone }}
+              />
               {columnLabel(k, name)}
-              {name === status && <Codicon className="ml-auto" name="check" size="0.8rem" />}
+              {name === status && (
+                <Codicon className="ml-auto" name="check" size="0.8rem" />
+              )}
             </DropdownMenuItem>
           ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 // The board's one field/section-label style — hoisted so Section (here), the
 // create dialog's Field, and the orchestration panel all read identically.
-export const FIELD_LABEL = 'text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-(--ui-text-quaternary)'
+export const FIELD_LABEL =
+  "text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-(--ui-text-quaternary)";
 
-export function Section({ action, children, label }: { action?: ReactNode; children: ReactNode; label: string }) {
+export function Section({
+  action,
+  children,
+  label,
+}: {
+  action?: ReactNode;
+  children: ReactNode;
+  label: string;
+}) {
   return (
     <section className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
@@ -240,7 +299,7 @@ export function Section({ action, children, label }: { action?: ReactNode; child
       </div>
       {children}
     </section>
-  )
+  );
 }
 
 // Tinted advisory panel: a `tone`-washed body with a matching left rule and a
@@ -248,36 +307,50 @@ export function Section({ action, children, label }: { action?: ReactNode; child
 // ready-but-unassigned warning so both read identically.
 export function Callout({
   children,
-  icon = 'warning',
+  icon = "warning",
   title,
-  tone
+  tone,
 }: {
-  children?: ReactNode
-  icon?: string
-  title: ReactNode
-  tone: string
+  children?: ReactNode;
+  icon?: string;
+  title: ReactNode;
+  tone: string;
 }) {
   return (
     <div
       className="flex flex-col gap-2 rounded-md p-2.5"
-      style={{ backgroundColor: `color-mix(in srgb, ${tone} 7%, transparent)`, borderLeft: `2px solid ${tone}` }}
+      style={{
+        backgroundColor: `color-mix(in srgb, ${tone} 7%, transparent)`,
+        borderLeft: `2px solid ${tone}`,
+      }}
     >
-      <div className="flex items-start gap-1.5 text-[0.75rem] font-medium" style={{ color: tone }}>
+      <div
+        className="flex items-start gap-1.5 text-[0.75rem] font-medium"
+        style={{ color: tone }}
+      >
         <Codicon className="mt-px shrink-0" name={icon} size="0.8rem" />
         <span>{title}</span>
       </div>
       {children}
     </div>
-  )
+  );
 }
 
 // A short, edge-masked scroll area. Thin wrapper over the app's FadeScroll so
 // the drawer's scrollers behave exactly like the ones in chat; kept as a local
 // name because every call site here passes `max`.
-export function ScrollFade({ children, deps, max = '9rem' }: { children: ReactNode; deps?: unknown; max?: string }) {
+export function ScrollFade({
+  children,
+  deps,
+  max = "9rem",
+}: {
+  children: ReactNode;
+  deps?: unknown;
+  max?: string;
+}) {
   return (
     <FadeScroll deps={deps} maxHeight={max}>
       {children}
     </FadeScroll>
-  )
+  );
 }
