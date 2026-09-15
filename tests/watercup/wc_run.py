@@ -50,6 +50,8 @@ import os
 import subprocess
 import sys
 
+os.environ["WATERCUP_NO_BROWSER"] = "1"
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 GATES = os.path.join(HERE, "gates")
 BUILD = os.path.join(HERE, "build")
@@ -57,6 +59,12 @@ BUILD = os.path.join(HERE, "build")
 REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.dirname(REPO))  # parent quarry for LIVE module imports
+
+# Install browser guard BEFORE any LIVE module imports.
+# This patches all browser-spawn paths (launch_chrome_debug, webbrowser.open,
+# _real_profile_cdp, subprocess.Popen for browser binaries) so watercup
+# can never launch a real browser during import-time side effects.
+import browser_guard  # noqa: F401
 from watercup_py import Cup  # noqa: E402
 
 RESULT_FILE = os.path.join(HERE, "build", "results.jsonl")

@@ -24,6 +24,11 @@ import sys
 import time
 from pathlib import Path
 
+os.environ["WATERCUP_NO_BROWSER"] = "1"
+
+# Install browser guard to block all browser-spawn paths during watercup.
+import browser_guard  # noqa: F401
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 GATES = os.path.join(HERE, "gates")
