@@ -1,19 +1,46 @@
-# Plan — Slermes C Translation ()
+# Plan — Slermes C Translation
 
-## Current State (HISTORICAL —  baseline; see live block at bottom)
-
-> The `<!-- PARITY:AUTO -->
+<!-- PARITY:AUTO -->
 | PORTED  | 6,466 / 18,219 (35.5%) |
 | REAL_GAP| 11,715 (64.3%) — no N/A |
-|  ├ DA-4 annotation-only stubs | 11 (PoP comment, no C body) |
-|  └ Genuine gaps (no C at all) | 11,704 |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
 | PARTIAL | 38 (0.2%) |
-| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
-| **Watercup** | 313 PASS / 22,604 total (1.4%) — 22,291 fail |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
 
-**Phase (v672):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
 
-**Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
-
-_Generated 2026-09-15T04:34:33Z from live scanner `tests/slermes_parity_battleground.py` + watercup oracle (22,604 trace-cup gates) — do not edit by hand; run `make parity-walkway`._
+_Generated from live scanner — do not edit by hand._
 <!-- /PARITY:AUTO -->
+
+## Next Actions
+
+### 1. Watercup Pass Rate ↑
+- Fix ported gates: read real C signatures from PoP files, emit correct harnesses (int/bool/char*/size_t/long)
+- Fix gap sentinels: gap functions need real C stubs, not constant returns
+- Fix twin.py: handle class methods, complex types, import failures
+- Target: 10% pass rate (2,260 gates) by end of next session
+
+### 2. Gap Closure Priority
+- Focus on pure functions first (no I/O, no state, no complex types)
+- Modules with highest pure-function yield: `tools/`, `agent/`, `hermes_cli/`
+- Use `gap_triage.py --top 25` for ranked list
+
+### 3. Upstream Sync
+- 2,639 behind — need to rebase onto latest upstream/main
+- New Python features to port after sync
+
+## System Health
+
+- `make parity` → refreshes all walkway files from live scanner
+- `make watercup` → runs 22,604 trace-cup gates in parallel
+- `make test` → Mission 8: 77 tests
+- `make build` → Clean, 0 errors
+
+## Documentation
+
+- All walkway files in `.hermes/` are PARITY:AUTO sentinel-owned
+- All docs in `docs/` organized by subsystem
+- No hand-edited parity numbers anywhere
