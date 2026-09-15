@@ -1,0 +1,29 @@
+{
+  "name": "agent_tool_executor_py___emit_cancelled_terminal_post_tool_call",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tex_emit_cancelled_terminal_post_tool_call",
+  "py_module": "agent/tool_executor.py",
+  "py_fn": "_emit_cancelled_terminal_post_tool_call",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

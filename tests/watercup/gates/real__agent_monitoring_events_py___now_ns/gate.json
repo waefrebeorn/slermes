@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_monitoring_events_py___now_ns",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_now_ns",
+  "py_module": "agent/monitoring/events.py",
+  "py_fn": "_now_ns",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

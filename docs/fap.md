@@ -1,3 +1,18 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
+
+**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
+
+_Generated 2026-09-15T06:22:36Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # FAP — Functional Alignment Problem
 
 **One term, one meaning, used everywhere.** A FAP is a *behavioral divergence*
@@ -80,22 +95,22 @@ Any `cases: MISMATCH` line from `run_oracles.sh` is a **FAP candidate**. Triage:
 3. If the diff is real behavior → **Real FAP**: read the LIVE Python source,
    fix the C, re-run until `MATCH`.
 
-## Current known FAPs (from the v622+ oracle sweep)
+## Current known FAPs (from the + oracle sweep)
 
 | Port | Type | Status | Summary |
 |------|------|--------|---------|
-| `provider_auth` | Real FAP | **FIXED** (v623) | C provider-auth table was missing `vertex` and had stale entries; regenerated from LIVE Python `PROVIDER_REGISTRY` (45 keys). Also fixed the oracle's stale-path import (it was reading `~/.hermes` copy → false FAPs). |
-| `turn_retry_state` | Real FAP | **FIXED** (v623) | C `TurnRetryState` was missing the `restart_with_redirected_messages` field (19 vs Python's 20); added enum index + name + get/set + header decl. |
-| `usage_pricing` | False FAP | **RESOLVED** (v623) | Divergence was caused by the runner's broken `libjson/json.h` include path, not a C bug. Fixed by the runner include-root change. Now MATCH. |
-| `coding_context` | False FAP | **NORMALIZED** (v623) | Leaked the real git/workspace root path (`/home/.../slermes`). Wired the previously-dead `normalize` block in `run_oracle.sh` so env noise is stripped before diff. Now MATCH. |
-| `web_git_base` | Runner bug | **RESOLVED** (v623) | `port_web_git.h` exists at `src/cli/`; the runner just didn't add `src/<subdir>` include roots. Added `SRCINCS` (all `src/*` dirs) to the runner. Now compiles. |
+| `provider_auth` | Real FAP | **FIXED** () | C provider-auth table was missing `vertex` and had stale entries; regenerated from LIVE Python `PROVIDER_REGISTRY` (45 keys). Also fixed the oracle's stale-path import (it was reading `~/.hermes` copy → false FAPs). |
+| `turn_retry_state` | Real FAP | **FIXED** () | C `TurnRetryState` was missing the `restart_with_redirected_messages` field (19 vs Python's 20); added enum index + name + get/set + header decl. |
+| `usage_pricing` | False FAP | **RESOLVED** () | Divergence was caused by the runner's broken `libjson/json.h` include path, not a C bug. Fixed by the runner include-root change. Now MATCH. |
+| `coding_context` | False FAP | **NORMALIZED** () | Leaked the real git/workspace root path (`/home/.../slermes`). Wired the previously-dead `normalize` block in `run_oracle.sh` so env noise is stripped before diff. Now MATCH. |
+| `web_git_base` | Runner bug | **RESOLVED** () | `port_web_git.h` exists at `src/cli/`; the runner just didn't add `src/<subdir>` include roots. Added `SRCINCS` (all `src/*` dirs) to the runner. Now compiles. |
 | `curator_backup` | Harness bug | **FIXED** | The harness now iterates all `.in` fixture cases (verified MATCH on the current runner). |
 | 31 web_server_*/other | Harness bug | OPEN | These oracles emit no output (harness or oracle produces nothing for the fixture) so the runner records no verdict. Per-harness emission debug needed; not C fidelity FAPs. |
 | 17 oracles (title_stack, run_pure, kanban_util, web_server_*, etc.) | Env/install | OPEN | Their Python oracle `import hermes_state` (and similar) which **does not exist in the dev repo** — it only lives in the stale `~/.hermes/hermes-agent/` install, which has version skew with the dev repo's `agent/` modules (`SKILL_EXCERPT_JOINT` missing). The oracle crashes (ImportError) so no verdict is recorded. **This is a broken/version-skewed Python-Hermes install, not a C fidelity gap and not a harness bug.** Restore a consistent Python-Hermes source tree (refresh the install from the dev repo) to unblock; do NOT mutate the user's live Python env blindly. |
 
 These were **silent** before the oracle registry was restored to cover all 89
 runnable ports (it had regressed to 2). A FAP that never runs is still a FAP —
-it just isn't *found* until the harness exercises it. After v623's fixes, the
+it just isn't *found* until the harness exercises it. After 's fixes, the
 72 oracles that run report **156 MATCH lines, 0 FAP, 0 compile failures** across
 89 registered ports (was 2/136 coverage with 4 real divergences). The 17
 env-blocked oracles are gated by an external install issue outside the C port.

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_dingtalk_auth_py__dingtalk_qr_auth",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "dingtalk_qr_auth",
+  "py_module": "hermes_cli/dingtalk_auth.py",
+  "py_fn": "dingtalk_qr_auth",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

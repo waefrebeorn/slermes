@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_web_server_py__fs_default_cwd",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "fs_default_cwd",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "fs_default_cwd",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

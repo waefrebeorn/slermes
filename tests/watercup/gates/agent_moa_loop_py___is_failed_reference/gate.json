@@ -1,0 +1,29 @@
+{
+  "name": "agent_moa_loop_py___is_failed_reference",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "moa_u_is_failed_reference",
+  "py_module": "agent/moa_loop.py",
+  "py_fn": "_is_failed_reference",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

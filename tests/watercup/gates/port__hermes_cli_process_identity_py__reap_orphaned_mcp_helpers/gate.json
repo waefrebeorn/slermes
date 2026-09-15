@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_process_identity_py__reap_orphaned_mcp_helpers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "reap_orphaned_mcp_helpers",
+  "py_module": "hermes_cli/process_identity.py",
+  "py_fn": "reap_orphaned_mcp_helpers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

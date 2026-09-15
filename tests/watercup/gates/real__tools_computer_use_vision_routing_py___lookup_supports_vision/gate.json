@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_computer_use_vision_routing_py___lookup_supports_vision",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_lookup_supports_vision",
+  "py_module": "tools/computer_use/vision_routing.py",
+  "py_fn": "_lookup_supports_vision",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

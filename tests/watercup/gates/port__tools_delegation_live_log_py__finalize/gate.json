@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_delegation_live_log_py__finalize",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "finalize",
+  "py_module": "tools/delegation_live_log.py",
+  "py_fn": "finalize",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

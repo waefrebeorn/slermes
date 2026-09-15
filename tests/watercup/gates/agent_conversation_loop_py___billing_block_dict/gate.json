@@ -1,0 +1,29 @@
+{
+  "name": "agent_conversation_loop_py___billing_block_dict",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_conversation_loop_u_billing_block_dict",
+  "py_module": "agent/conversation_loop.py",
+  "py_fn": "_billing_block_dict",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

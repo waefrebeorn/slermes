@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_clarify_gateway_py__register_notify",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "register_notify",
+  "py_module": "tools/clarify_gateway.py",
+  "py_fn": "register_notify",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

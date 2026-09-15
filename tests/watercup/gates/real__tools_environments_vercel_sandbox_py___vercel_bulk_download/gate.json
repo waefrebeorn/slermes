@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_environments_vercel_sandbox_py___vercel_bulk_download",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_vercel_bulk_download",
+  "py_module": "tools/environments/vercel_sandbox.py",
+  "py_fn": "_vercel_bulk_download",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

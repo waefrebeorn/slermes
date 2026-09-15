@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_curator_py___cmd_backup",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_cmd_backup",
+  "py_module": "hermes_cli/curator.py",
+  "py_fn": "_cmd_backup",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

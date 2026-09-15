@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_scheduler_provider_py___existing_profile_homes",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_existing_profile_homes",
+  "py_module": "cron/scheduler_provider.py",
+  "py_fn": "_existing_profile_homes",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

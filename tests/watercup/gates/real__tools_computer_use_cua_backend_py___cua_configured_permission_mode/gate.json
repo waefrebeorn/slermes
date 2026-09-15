@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_computer_use_cua_backend_py___cua_configured_permission_mode",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_cua_configured_permission_mode",
+  "py_module": "tools/computer_use/cua_backend.py",
+  "py_fn": "_cua_configured_permission_mode",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

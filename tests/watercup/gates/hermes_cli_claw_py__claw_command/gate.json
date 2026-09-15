@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_claw_py__claw_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_claw_claw_command",
+  "py_module": "hermes_cli/claw.py",
+  "py_fn": "claw_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

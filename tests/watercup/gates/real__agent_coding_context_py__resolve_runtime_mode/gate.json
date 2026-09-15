@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_coding_context_py__resolve_runtime_mode",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_runtime_mode",
+  "py_module": "agent/coding_context.py",
+  "py_fn": "resolve_runtime_mode",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_website_policy_py___extract_host_from_urlish",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_extract_host_from_urlish",
+  "py_module": "tools/website_policy.py",
+  "py_fn": "_extract_host_from_urlish",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

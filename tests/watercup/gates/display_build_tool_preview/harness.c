@@ -92,7 +92,7 @@ static void wc_build_tool_preview(const char *token) {
             free(gp);
             WCUP_BRANCH(nonempty);
         }
-    } else if (strcmp(tool, "process") == 0) {
+    } else if (strcmp(tool, "process_manage") == 0) {
         WCUP_BRANCH(0); WCUP_BRANCH(1);
         json_t *action = json_obj_get(args, "action");
         json_t *sid = json_obj_get(args, "session_id");
@@ -120,7 +120,7 @@ static void wc_build_tool_preview(const char *token) {
         } else {
             WCUP_BRANCH(0);
         }
-    } else if (strcmp(tool, "todo") == 0) {
+    } else if (strcmp(tool, "todo_list") == 0) {
         WCUP_BRANCH(0); WCUP_BRANCH(0); WCUP_BRANCH(1);
         json_t *todos = json_obj_get(args, "todos");
         json_t *merge = json_obj_get(args, "merge");
@@ -194,7 +194,7 @@ static void wc_build_tool_preview(const char *token) {
             {"browser_click","ref"},{"browser_type","text"},
             {"image_generate","prompt"},{"text_to_speech","text"},
             {"vision_analyze","question"},{"skill_view","name"},
-            {"skills_list","category"},{"cronjob","action"},
+            {"skills_list","category"},{"cronjob_manage","action"},
             {"execute_code","code"},{"delegate_task","goal"},
             {"clarify","question"},{"skill_manage","name"},{NULL,NULL}
         };

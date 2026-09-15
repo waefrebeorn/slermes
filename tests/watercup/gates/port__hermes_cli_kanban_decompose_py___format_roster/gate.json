@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_kanban_decompose_py___format_roster",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_format_roster",
+  "py_module": "hermes_cli/kanban_decompose.py",
+  "py_fn": "_format_roster",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

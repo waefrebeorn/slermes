@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli__subprocess_compat_py___kill_git_process_tree",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli__subprocess_compat_u_kill_git_process_tree",
+  "py_module": "hermes_cli/_subprocess_compat.py",
+  "py_fn": "_kill_git_process_tree",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

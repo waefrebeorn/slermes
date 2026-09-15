@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_state_py__maybe_auto_prune_and_vacuum",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "maybe_auto_prune_and_vacuum",
+  "py_module": "hermes_state.py",
+  "py_fn": "maybe_auto_prune_and_vacuum",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

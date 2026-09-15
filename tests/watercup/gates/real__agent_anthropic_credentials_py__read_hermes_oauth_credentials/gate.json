@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_anthropic_credentials_py__read_hermes_oauth_credentials",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "read_hermes_oauth_credentials",
+  "py_module": "agent/anthropic_credentials.py",
+  "py_fn": "read_hermes_oauth_credentials",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

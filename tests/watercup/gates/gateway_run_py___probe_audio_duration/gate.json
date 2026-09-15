@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___probe_audio_duration",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_probe_audio_duration",
+  "py_module": "gateway/run.py",
+  "py_fn": "_probe_audio_duration",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

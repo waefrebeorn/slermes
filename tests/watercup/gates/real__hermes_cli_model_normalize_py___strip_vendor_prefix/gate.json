@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_model_normalize_py___strip_vendor_prefix",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_strip_vendor_prefix",
+  "py_module": "hermes_cli/model_normalize.py",
+  "py_fn": "_strip_vendor_prefix",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

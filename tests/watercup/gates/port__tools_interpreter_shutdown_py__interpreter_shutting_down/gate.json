@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_interpreter_shutdown_py__interpreter_shutting_down",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "interpreter_shutting_down",
+  "py_module": "tools/interpreter_shutdown.py",
+  "py_fn": "interpreter_shutting_down",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

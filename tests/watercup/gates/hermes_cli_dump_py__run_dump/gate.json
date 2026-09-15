@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_dump_py__run_dump",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_dump_run_dump",
+  "py_module": "hermes_cli/dump.py",
+  "py_fn": "run_dump",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

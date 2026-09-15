@@ -1,0 +1,30 @@
+{
+  "name": "port__cli_py___hermes_call_output_screen_diff",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_hermes_call_output_screen_diff",
+  "py_module": "cli.py",
+  "py_fn": "_hermes_call_output_screen_diff",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

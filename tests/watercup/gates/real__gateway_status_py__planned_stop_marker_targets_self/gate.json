@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_status_py__planned_stop_marker_targets_self",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "planned_stop_marker_targets_self",
+  "py_module": "gateway/status.py",
+  "py_fn": "planned_stop_marker_targets_self",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

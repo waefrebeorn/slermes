@@ -152,7 +152,7 @@ static int parse_target_ref(const char *platform_name, const char *target_ref,
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s parse_target_ref <platform|target>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s parse_target_ref <platform|target>...\n", argv[0]); return 2; }
     char chat[256], thread[256];
     for (int i = 2; i < argc; i++) {
         char *sep = strchr(argv[i], '|');

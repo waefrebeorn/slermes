@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_self_repo_guard_py___git_target_and_subcommand",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_git_target_and_subcommand",
+  "py_module": "tools/self_repo_guard.py",
+  "py_fn": "_git_target_and_subcommand",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

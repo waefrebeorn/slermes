@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_delegation_output_schema_py__build_retry_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_retry_message",
+  "py_module": "tools/delegation_output_schema.py",
+  "py_fn": "build_retry_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_fuzzy_match_py__format_no_match_hint",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "format_no_match_hint",
+  "py_module": "tools/fuzzy_match.py",
+  "py_fn": "format_no_match_hint",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

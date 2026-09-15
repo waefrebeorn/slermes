@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_error_classifier_py___has_usage_limit_transient_signal",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_has_usage_limit_transient_signal",
+  "py_module": "agent/error_classifier.py",
+  "py_fn": "_has_usage_limit_transient_signal",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

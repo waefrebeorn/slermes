@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_active_sessions_py___read_entries",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_active_sessions_u_read_entries",
+  "py_module": "hermes_cli/active_sessions.py",
+  "py_fn": "_read_entries",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

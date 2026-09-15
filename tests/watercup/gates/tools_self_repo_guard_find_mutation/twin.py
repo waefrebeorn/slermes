@@ -1,38 +1,29 @@
-"""twin for tools_self_repo_guard_find_mutation.
-
-Imports LIVE tools/self_repo_guard.py::_find_mutation and traces the same
-coarse ladder as the C harness (which links the REAL port):
-  B1 empty command   B2 mutation detected   V: operation string / "".
-Fixed context identical to the harness: cwd=/tmp, root=dev checkout.
-"""
-import os
-import sys
+"""twin for tools/self_repo_guard.py:_find_mutation."""
+import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-import importlib.util as ilu
+sys.path.insert(0, DEV)
 
-spec = ilu.spec_from_file_location(
-    "wc_srg", os.path.join(DEV, "tools", "self_repo_guard.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_srg"] = mod
-spec.loader.exec_module(mod)
-
-from pathlib import Path
 from watercup_py import Cup
 
-SRG_CWD = Path("/tmp")
-SRG_ROOT = Path(DEV)
+_spec = ilu.spec_from_file_location(
+    "wc_live_tools_self_repo_guard_py", os.path.join(DEV, "tools/self_repo_guard.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_tools_self_repo_guard_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_find_mutation")
+    try:
+        result = _pb._find_mutation(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
 
 
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        c = Cup("find_mutation")
-        c.branch(not raw)                                    # B1
-        op = mod._find_mutation(raw, SRG_CWD, SRG_ROOT, 0) if raw else None
-        c.branch(op is not None)                             # B2
-        c.valstr(op if op else "")
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

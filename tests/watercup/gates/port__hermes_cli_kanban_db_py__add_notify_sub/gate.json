@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_kanban_db_py__add_notify_sub",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "add_notify_sub",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "add_notify_sub",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_subcommands_memory_py__build_memory_parser",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_memory_parser",
+  "py_module": "hermes_cli/subcommands/memory.py",
+  "py_fn": "build_memory_parser",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

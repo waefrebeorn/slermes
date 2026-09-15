@@ -1,0 +1,30 @@
+{
+  "name": "part__tools_skills_guard_py__scan_file",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "scan_file",
+  "py_module": "tools/skills_guard.py",
+  "py_fn": "scan_file",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PARTIAL"
+}

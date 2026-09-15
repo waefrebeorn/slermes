@@ -1,0 +1,29 @@
+{
+  "name": "tools_open_preview_tool_py___normalize_target",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_open_preview_tool_u_normalize_target",
+  "py_module": "tools/open_preview_tool.py",
+  "py_fn": "_normalize_target",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

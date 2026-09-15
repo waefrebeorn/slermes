@@ -1,0 +1,29 @@
+{
+  "name": "agent_transports_chat_completions_py___model_consumes_thought_signature",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cct_model_consumes_thought_signature",
+  "py_module": "agent/transports/chat_completions.py",
+  "py_fn": "_model_consumes_thought_signature",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

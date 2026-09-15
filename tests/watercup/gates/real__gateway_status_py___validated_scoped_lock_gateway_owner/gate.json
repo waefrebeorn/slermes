@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_status_py___validated_scoped_lock_gateway_owner",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_validated_scoped_lock_gateway_owner",
+  "py_module": "gateway/status.py",
+  "py_fn": "_validated_scoped_lock_gateway_owner",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

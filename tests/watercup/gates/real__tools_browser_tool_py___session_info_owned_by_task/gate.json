@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_browser_tool_py___session_info_owned_by_task",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_session_info_owned_by_task",
+  "py_module": "tools/browser_tool.py",
+  "py_fn": "_session_info_owned_by_task",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

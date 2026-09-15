@@ -1,0 +1,29 @@
+{
+  "name": "agent_context_compressor_py___fallback_to_main_for_compression",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_agent_context_compressor__fallback_to_main_for_compression",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_fallback_to_main_for_compression",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

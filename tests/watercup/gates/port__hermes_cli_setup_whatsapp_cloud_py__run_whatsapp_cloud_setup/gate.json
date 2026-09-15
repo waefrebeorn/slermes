@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_setup_whatsapp_cloud_py__run_whatsapp_cloud_setup",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "run_whatsapp_cloud_setup",
+  "py_module": "hermes_cli/setup_whatsapp_cloud.py",
+  "py_fn": "run_whatsapp_cloud_setup",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

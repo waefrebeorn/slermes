@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_hook_output_spill_py__spill_if_oversized",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "spill_if_oversized",
+  "py_module": "tools/hook_output_spill.py",
+  "py_fn": "spill_if_oversized",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

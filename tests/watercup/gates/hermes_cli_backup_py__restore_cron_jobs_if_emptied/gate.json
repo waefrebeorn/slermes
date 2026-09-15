@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_backup_py__restore_cron_jobs_if_emptied",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "backup_restore_cron_jobs_if_emptied",
+  "py_module": "hermes_cli/backup.py",
+  "py_fn": "restore_cron_jobs_if_emptied",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

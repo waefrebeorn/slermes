@@ -1,0 +1,29 @@
+{
+  "name": "tools_delegation_live_log_py__live_transcript_root",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_delegation_live_log_live_transcript_root",
+  "py_module": "tools/delegation_live_log.py",
+  "py_fn": "live_transcript_root",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

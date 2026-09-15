@@ -1,12 +1,5 @@
-"""twin for gateway_run_adapter_credential_fingerprint.
-
-Traces LIVE gateway/run.py::GatewayRunner._adapter_credential_fingerprint with
-the same rung order as the C harness:
-  B1 credential discovered / V fingerprint hex[:16].
-Adapter is duck-typed (the LIVE fn only uses getattr).
-"""
-import os
-import sys
+"""twin for gateway/run.py:_adapter_credential_fingerprint."""
+import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
@@ -15,30 +8,22 @@ sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
-import importlib.util as ilu
-
-spec = ilu.spec_from_file_location("wc_live_gateway_run",
-                                   os.path.join(DEV, "gateway", "run.py"))
-_gw = ilu.module_from_spec(spec)
-sys.modules["wc_live_gateway_run"] = _gw
-spec.loader.exec_module(_gw)
-
-_fp = _gw.GatewayRunner._adapter_credential_fingerprint
+_spec = ilu.spec_from_file_location(
+    "wc_live_gateway_run_py", os.path.join(DEV, "gateway/run.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_gateway_run_py"] = _pb
+_spec.loader.exec_module(_pb)
 
 
-class _Adapter:
-    def __init__(self, token):
-        if token is not None:
-            self.token = token
-
-
-def trace(token):
-    c = Cup("adapter_credential_fingerprint")
-    fp = _fp(_Adapter(token))
-    c.branch(fp is not None)       # B1
-    c.valstr(fp or "")             # V
+def trace(inp):
+    c = Cup("_adapter_credential_fingerprint")
+    try:
+        result = _pb._adapter_credential_fingerprint(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()
 
 
 def run(inputs):
-    return [trace(None if p == "null" else p) for p in inputs]
+    return [trace(inp) for inp in inputs]

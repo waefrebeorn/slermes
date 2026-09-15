@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_qqbot_adapter_py___ensure_token",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "qqbot_u_ensure_token",
+  "py_module": "gateway/platforms/qqbot/adapter.py",
+  "py_fn": "_ensure_token",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

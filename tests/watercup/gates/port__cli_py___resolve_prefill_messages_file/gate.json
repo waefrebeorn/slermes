@@ -1,0 +1,30 @@
+{
+  "name": "port__cli_py___resolve_prefill_messages_file",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_resolve_prefill_messages_file",
+  "py_module": "cli.py",
+  "py_fn": "_resolve_prefill_messages_file",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

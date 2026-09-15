@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_repetition_guard_py__is_repetition_dominated",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_repetition_dominated",
+  "py_module": "agent/repetition_guard.py",
+  "py_fn": "is_repetition_dominated",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

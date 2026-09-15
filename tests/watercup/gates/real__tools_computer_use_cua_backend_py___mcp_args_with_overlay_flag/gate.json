@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_computer_use_cua_backend_py___mcp_args_with_overlay_flag",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_mcp_args_with_overlay_flag",
+  "py_module": "tools/computer_use/cua_backend.py",
+  "py_fn": "_mcp_args_with_overlay_flag",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

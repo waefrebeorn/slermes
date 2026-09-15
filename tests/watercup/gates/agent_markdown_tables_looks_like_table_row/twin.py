@@ -1,4 +1,4 @@
-"""Twin for agent_markdown_tables_looks_like_table_row: looks_like_table_row from agent/markdown_tables.py."""
+"""twin for agent/markdown_tables.py:looks_like_table_row."""
 import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -9,29 +9,21 @@ sys.path.insert(0, DEV)
 from watercup_py import Cup
 
 _spec = ilu.spec_from_file_location(
-    "wc_live_md", os.path.join(DEV, "agent/markdown_tables.py"))
-_mod = ilu.module_from_spec(_spec)
-sys.modules["wc_live_md"] = _mod
-try:
-    _spec.loader.exec_module(_mod)
-    LIVE = _mod.looks_like_table_row
-except Exception:
-    LIVE = None
+    "wc_live_agent_markdown_tables_py", os.path.join(DEV, "agent/markdown_tables.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_markdown_tables_py"] = _pb
+_spec.loader.exec_module(_pb)
 
-def trace(input_str):
+
+def trace(inp):
     c = Cup("looks_like_table_row")
-    if input_str == "NULL":
-        c.valstr("false")
-        return c.finalize()
-    if LIVE:
-        try:
-            result = LIVE(input_str)
-        except Exception:
-            result = False
-    else:
-        result = False
-    c.valstr(str(result).lower())
+    try:
+        result = _pb.looks_like_table_row(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()
+
 
 def run(inputs):
     return [trace(inp) for inp in inputs]

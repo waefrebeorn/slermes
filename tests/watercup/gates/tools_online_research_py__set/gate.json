@@ -1,0 +1,29 @@
+{
+  "name": "tools_online_research_py__set",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "onr_set",
+  "py_module": "tools/online_research.py",
+  "py_fn": "set",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

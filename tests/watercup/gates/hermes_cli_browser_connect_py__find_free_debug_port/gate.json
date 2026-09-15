@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_browser_connect_py__find_free_debug_port",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_browser_connect_find_free_debug_port",
+  "py_module": "hermes_cli/browser_connect.py",
+  "py_fn": "find_free_debug_port",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gui_uninstall_py__uninstall_gui",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_gui_uninstall_uninstall_gui",
+  "py_module": "hermes_cli/gui_uninstall.py",
+  "py_fn": "uninstall_gui",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

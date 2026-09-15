@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_weixin_py___make_ssl_connector",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "wx_u_make_ssl_connector",
+  "py_module": "gateway/platforms/weixin.py",
+  "py_fn": "_make_ssl_connector",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

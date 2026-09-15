@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_file_safety_py__classify_cross_profile_target",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "classify_cross_profile_target",
+  "py_module": "agent/file_safety.py",
+  "py_fn": "classify_cross_profile_target",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

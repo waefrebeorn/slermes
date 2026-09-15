@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_update_cmd_py___looks_like_desktop_control_plane",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_looks_like_desktop_control_plane",
+  "py_module": "hermes_cli/update_cmd.py",
+  "py_fn": "_looks_like_desktop_control_plane",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

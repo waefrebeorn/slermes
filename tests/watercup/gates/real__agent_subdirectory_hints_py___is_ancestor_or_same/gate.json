@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_subdirectory_hints_py___is_ancestor_or_same",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_is_ancestor_or_same",
+  "py_module": "agent/subdirectory_hints.py",
+  "py_fn": "_is_ancestor_or_same",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

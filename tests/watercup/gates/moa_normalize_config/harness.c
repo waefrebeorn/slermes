@@ -71,7 +71,7 @@ static void canon_config(const json_t *cfg, char *out, size_t outsz) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s normalize_moa_config <raw_json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s normalize_moa_config <raw_json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("normalize_moa_config");
         json_t *raw_in = json_parse(argv[i], NULL);

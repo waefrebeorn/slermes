@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_monitoring_gateway_health_export_py___start_diagnostic_log_streamer",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_start_diagnostic_log_streamer",
+  "py_module": "agent/monitoring/gateway_health_export.py",
+  "py_fn": "_start_diagnostic_log_streamer",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_moonshot_schema_py___fill_missing_type",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_fill_missing_type",
+  "py_module": "agent/moonshot_schema.py",
+  "py_fn": "_fill_missing_type",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

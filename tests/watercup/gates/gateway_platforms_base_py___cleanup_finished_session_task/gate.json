@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_base_py___cleanup_finished_session_task",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gw_base__cleanup_finished_session_task",
+  "py_module": "gateway/platforms/base.py",
+  "py_fn": "_cleanup_finished_session_task",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

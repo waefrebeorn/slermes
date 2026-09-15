@@ -283,7 +283,7 @@ static void parse_v4a_patch(const char *patch_content) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s parse_v4a_patch <patch>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s parse_v4a_patch <patch>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) parse_v4a_patch(argv[i]);
     return 0;
 }

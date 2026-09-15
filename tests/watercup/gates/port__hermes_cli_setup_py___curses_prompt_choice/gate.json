@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_setup_py___curses_prompt_choice",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_curses_prompt_choice",
+  "py_module": "hermes_cli/setup.py",
+  "py_fn": "_curses_prompt_choice",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_tts_tool_py___gemini_audio_tags_enabled",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_gemini_audio_tags_enabled",
+  "py_module": "tools/tts_tool.py",
+  "py_fn": "_gemini_audio_tags_enabled",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

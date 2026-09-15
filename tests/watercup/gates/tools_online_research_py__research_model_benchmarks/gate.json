@@ -1,0 +1,29 @@
+{
+  "name": "tools_online_research_py__research_model_benchmarks",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_online_research_research_model_benchmarks",
+  "py_module": "tools/online_research.py",
+  "py_fn": "research_model_benchmarks",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

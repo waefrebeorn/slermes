@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_model_switch_py___resolve_named_custom_model_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "msw_u_resolve_named_custom_model_id",
+  "py_module": "hermes_cli/model_switch.py",
+  "py_fn": "_resolve_named_custom_model_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

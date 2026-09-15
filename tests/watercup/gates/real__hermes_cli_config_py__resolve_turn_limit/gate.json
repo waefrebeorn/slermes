@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_config_py__resolve_turn_limit",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_turn_limit",
+  "py_module": "hermes_cli/config.py",
+  "py_fn": "resolve_turn_limit",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

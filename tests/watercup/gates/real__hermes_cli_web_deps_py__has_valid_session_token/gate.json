@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_web_deps_py__has_valid_session_token",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "has_valid_session_token",
+  "py_module": "hermes_cli/web_deps.py",
+  "py_fn": "has_valid_session_token",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

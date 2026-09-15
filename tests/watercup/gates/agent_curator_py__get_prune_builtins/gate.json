@@ -1,0 +1,29 @@
+{
+  "name": "agent_curator_py__get_prune_builtins",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cur_get_prune_builtins",
+  "py_module": "agent/curator.py",
+  "py_fn": "get_prune_builtins",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

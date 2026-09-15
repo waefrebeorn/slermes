@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_local_py___inject_context_hermes_home",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "envl_u_inject_context_hermes_home",
+  "py_module": "tools/environments/local.py",
+  "py_fn": "_inject_context_hermes_home",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

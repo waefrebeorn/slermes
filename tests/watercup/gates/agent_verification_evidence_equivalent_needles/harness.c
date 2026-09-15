@@ -93,7 +93,7 @@ static void trace_one(char **needle, int m) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s equivalent_needles <tokens...>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s equivalent_needles <tokens...>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         char *toks[64]; int m = 0;
         char *save = NULL;

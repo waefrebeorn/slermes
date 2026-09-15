@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_managed_uv_py___install_uv_windows",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_install_uv_windows",
+  "py_module": "hermes_cli/managed_uv.py",
+  "py_fn": "_install_uv_windows",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

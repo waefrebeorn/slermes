@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_tool_executor_py___run_tool_activity_heartbeat",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_run_tool_activity_heartbeat",
+  "py_module": "agent/tool_executor.py",
+  "py_fn": "_run_tool_activity_heartbeat",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_thread_scoped_output_py__writelines",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_thread_scoped_output_writelines",
+  "py_module": "agent/thread_scoped_output.py",
+  "py_fn": "writelines",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

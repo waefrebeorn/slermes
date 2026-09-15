@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_dashboard_procs_py___profile_key_for_respawn",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_profile_key_for_respawn",
+  "py_module": "hermes_cli/dashboard_procs.py",
+  "py_fn": "_profile_key_for_respawn",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

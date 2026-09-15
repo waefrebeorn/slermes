@@ -1,0 +1,29 @@
+{
+  "name": "tools_approval_py__submit_pending",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "approval_submit_pending",
+  "py_module": "tools/approval.py",
+  "py_fn": "submit_pending",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

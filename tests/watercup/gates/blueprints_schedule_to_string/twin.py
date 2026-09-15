@@ -1,78 +1,29 @@
-"""twin for blueprints_schedule_to_string.
+"""twin for tools/blueprints.py:_schedule_to_string."""
+import os, sys, importlib.util as ilu
 
-LIVE tools/blueprints.py::_schedule_to_string:
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
 
-    if isinstance(schedule, str): return schedule
-    if isinstance(schedule, dict):
-        kind = schedule.get("kind")
-        if kind == "cron" and schedule.get("expr"):
-            return str(schedule["expr"])
-        if kind == "interval":
-            if schedule.get("minutes"):
-                mins = int(schedule["minutes"])
-                if mins % 60 == 0: return f"every {mins // 60}h"
-                return f"every {mins}m"
-            if schedule.get("seconds"):
-                secs = int(schedule["seconds"])
-                if secs % 3600 == 0: return f"every {secs // 3600}h"
-                if secs % 60 == 0:   return f"every {secs // 60}m"
-                return f"every {secs}s"
-    return "0 9 * * *"
-
-Inputs: "kind\\texpr\\tminutes\\tseconds" ("-" = absent). String schedules are
-excluded (the C port receives parsed fields only); inputs also avoid the
-documented cron-empty-expr divergence.
-"""
 from watercup_py import Cup
+
+_spec = ilu.spec_from_file_location(
+    "wc_live_tools_blueprints_py", os.path.join(DEV, "tools/blueprints.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_tools_blueprints_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_schedule_to_string")
+    try:
+        result = _pb._schedule_to_string(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
 
 
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        parts = raw.split("\t")
-        kind = None if len(parts) < 1 or parts[0] in ("-", "") else parts[0]
-        expr = None if len(parts) < 2 or parts[1] in ("-", "") else parts[1]
-        minutes = int(parts[2]) if len(parts) > 2 and parts[2] not in ("-", "") else 0
-        seconds = int(parts[3]) if len(parts) > 3 and parts[3] not in ("-", "") else 0
-        c = Cup("schedule_to_string")
-        if kind == "cron" and expr:
-            c.branch(True)
-            out = str(expr)
-        elif kind == "interval":
-            c.branch(True)
-            c.branch(False)
-            if minutes > 0:
-                c.branch(True)
-                if minutes % 60 == 0:
-                    c.branch(True)
-                    out = f"every {minutes // 60}h"
-                else:
-                    c.branch(False)
-                    out = f"every {minutes}m"
-            elif seconds > 0:
-                c.branch(False)
-                c.branch(True)
-                if seconds % 3600 == 0:
-                    c.branch(True)
-                    out = f"every {seconds // 3600}h"
-                elif seconds % 60 == 0:
-                    c.branch(True)
-                    out = f"every {seconds // 60}m"
-                else:
-                    c.branch(False)
-                    out = f"every {seconds}s"
-            else:
-                c.branch(False)
-                c.branch(False)
-                out = "0 9 * * *"
-        elif expr:
-            c.branch(False)
-            c.branch(True)
-            out = str(expr)
-        else:
-            c.branch(False)
-            c.branch(False)
-            out = "0 9 * * *"
-        c.valstr(out)
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

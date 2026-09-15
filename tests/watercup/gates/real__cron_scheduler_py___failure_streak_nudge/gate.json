@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_scheduler_py___failure_streak_nudge",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_failure_streak_nudge",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "_failure_streak_nudge",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

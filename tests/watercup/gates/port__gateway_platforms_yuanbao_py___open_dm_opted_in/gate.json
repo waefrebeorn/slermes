@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_yuanbao_py___open_dm_opted_in",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_open_dm_opted_in",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "_open_dm_opted_in",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

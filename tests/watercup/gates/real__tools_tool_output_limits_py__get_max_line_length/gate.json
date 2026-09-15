@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_tool_output_limits_py__get_max_line_length",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_max_line_length",
+  "py_module": "tools/tool_output_limits.py",
+  "py_fn": "get_max_line_length",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

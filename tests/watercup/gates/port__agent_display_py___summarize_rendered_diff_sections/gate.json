@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_display_py___summarize_rendered_diff_sections",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_summarize_rendered_diff_sections",
+  "py_module": "agent/display.py",
+  "py_fn": "_summarize_rendered_diff_sections",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

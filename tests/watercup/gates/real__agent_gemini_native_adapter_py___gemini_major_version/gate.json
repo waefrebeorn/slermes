@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_gemini_native_adapter_py___gemini_major_version",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_gemini_major_version",
+  "py_module": "agent/gemini_native_adapter.py",
+  "py_fn": "_gemini_major_version",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

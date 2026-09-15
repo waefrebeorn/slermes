@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_prompt_caching_py__apply_anthropic_cache_control",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "apply_anthropic_cache_control",
+  "py_module": "agent/prompt_caching.py",
+  "py_fn": "apply_anthropic_cache_control",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

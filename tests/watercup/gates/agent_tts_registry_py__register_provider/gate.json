@@ -1,0 +1,29 @@
+{
+  "name": "agent_tts_registry_py__register_provider",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ttsr_register_provider",
+  "py_module": "agent/tts_registry.py",
+  "py_fn": "register_provider",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

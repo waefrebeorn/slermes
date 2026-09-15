@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_code_kernel_remote_py___reap_unlocked",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_reap_unlocked",
+  "py_module": "tools/code_kernel_remote.py",
+  "py_fn": "_reap_unlocked",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

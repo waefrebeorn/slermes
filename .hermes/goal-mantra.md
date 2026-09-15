@@ -1,14 +1,29 @@
-# Goal Mantra — Slermes C Translation (v671)
+<!-- PARITY:AUTO -->
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
 
-── CURRENT STATE (v671) ──
-**PARITY SCANNER:** 13,286 PORTED (94.6%) · 17 PARTIAL · 3 BOOTLEG · 742 REAL_GAP
-**Total features:** 14,045 · **Upstream sync:** 1,306 ahead / 842 behind
+**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
 
-**Terminal env registry:** PORTED (v671) — real C port of tools/terminal_tool.py env layer
+_Generated 2026-09-15T06:22:36Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
+# Goal Mantra — Slermes C Translation ()
+
+── CURRENT STATE () ──
+**PARITY SCANNER:** 13,286 PORTED (94.6%) · 17 PARTIAL ·  · 742 REAL_GAP
+**Total features:** 14,045 · **Upstream sync:** 1,
+
+**Terminal env registry:** PORTED () — real C port of tools/terminal_tool.py env layer
 **terminal_tool.py:** 61/64 (95.3%), 3 REAL_GAPs remain
 **Agent:** M4 (largest remaining REAL_GAP pool)
-**TUI:** 9/9 PORTED (v351)
-**Gateway:** 29 modules PORTED (v353)
+**TUI:** 9/9 PORTED ()
+**Gateway:** 29 modules PORTED ()
 **Plugins:** 19 C files, all stub claims stale
 
 ## The Mantra

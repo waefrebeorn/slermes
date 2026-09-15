@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_memory_tool_py___sanitize_entries_for_snapshot",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_sanitize_entries_for_snapshot",
+  "py_module": "tools/memory_tool.py",
+  "py_fn": "_sanitize_entries_for_snapshot",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___cancel_secondary_profile_reconnect_tasks",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_cancel_secondary_profile_reconnect_tasks",
+  "py_module": "gateway/run.py",
+  "py_fn": "_cancel_secondary_profile_reconnect_tasks",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

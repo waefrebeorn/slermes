@@ -1,0 +1,29 @@
+{
+  "name": "tools_terminal_tool_py__clear_task_env_overrides",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tt_clear_task_env_overrides",
+  "py_module": "tools/terminal_tool.py",
+  "py_fn": "clear_task_env_overrides",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

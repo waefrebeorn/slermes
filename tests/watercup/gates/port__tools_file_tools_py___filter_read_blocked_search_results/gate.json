@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_file_tools_py___filter_read_blocked_search_results",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_filter_read_blocked_search_results",
+  "py_module": "tools/file_tools.py",
+  "py_fn": "_filter_read_blocked_search_results",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

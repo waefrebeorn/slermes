@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_mcp_oauth_manager_py___make_hermes_provider_class",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_make_hermes_provider_class",
+  "py_module": "tools/mcp_oauth_manager.py",
+  "py_fn": "_make_hermes_provider_class",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

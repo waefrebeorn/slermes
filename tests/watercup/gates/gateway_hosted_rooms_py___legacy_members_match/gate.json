@@ -1,0 +1,29 @@
+{
+  "name": "gateway_hosted_rooms_py___legacy_members_match",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_legacy_members_match",
+  "py_module": "gateway/hosted_rooms.py",
+  "py_fn": "_legacy_members_match",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

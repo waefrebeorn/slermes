@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_browser_control_broker_py__consume_ticket",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "consume_ticket",
+  "py_module": "gateway/browser_control_broker.py",
+  "py_fn": "consume_ticket",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

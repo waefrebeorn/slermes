@@ -1,0 +1,29 @@
+{
+  "name": "cron_scheduler_py___is_known_delivery_platform",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "scheduler_is_known_delivery_platform",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "_is_known_delivery_platform",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

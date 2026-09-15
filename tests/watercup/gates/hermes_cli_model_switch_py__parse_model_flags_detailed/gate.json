@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_model_switch_py__parse_model_flags_detailed",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "msw_parse_model_flags_detailed",
+  "py_module": "hermes_cli/model_switch.py",
+  "py_fn": "parse_model_flags_detailed",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

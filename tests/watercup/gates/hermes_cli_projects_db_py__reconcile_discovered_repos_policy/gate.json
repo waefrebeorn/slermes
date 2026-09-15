@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_projects_db_py__reconcile_discovered_repos_policy",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_projects_db_reconcile_discovered_repos_policy",
+  "py_module": "hermes_cli/projects_db.py",
+  "py_fn": "reconcile_discovered_repos_policy",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

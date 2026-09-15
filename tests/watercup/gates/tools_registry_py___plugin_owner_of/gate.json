@@ -1,0 +1,29 @@
+{
+  "name": "tools_registry_py___plugin_owner_of",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_registry_u_plugin_owner_of",
+  "py_module": "tools/registry.py",
+  "py_fn": "_plugin_owner_of",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

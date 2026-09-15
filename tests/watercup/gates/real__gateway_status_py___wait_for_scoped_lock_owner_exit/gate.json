@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_status_py___wait_for_scoped_lock_owner_exit",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_wait_for_scoped_lock_owner_exit",
+  "py_module": "gateway/status.py",
+  "py_fn": "_wait_for_scoped_lock_owner_exit",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_subcommands_approvals_py__build_approvals_parser",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_subcommands_approval_build_approvals_parser",
+  "py_module": "hermes_cli/subcommands/approvals.py",
+  "py_fn": "build_approvals_parser",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

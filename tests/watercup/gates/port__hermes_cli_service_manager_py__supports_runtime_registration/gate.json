@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_service_manager_py__supports_runtime_registration",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "supports_runtime_registration",
+  "py_module": "hermes_cli/service_manager.py",
+  "py_fn": "supports_runtime_registration",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

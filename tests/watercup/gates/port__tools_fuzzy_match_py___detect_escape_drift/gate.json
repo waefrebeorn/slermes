@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_fuzzy_match_py___detect_escape_drift",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_detect_escape_drift",
+  "py_module": "tools/fuzzy_match.py",
+  "py_fn": "_detect_escape_drift",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

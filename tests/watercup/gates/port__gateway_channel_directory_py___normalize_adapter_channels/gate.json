@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_channel_directory_py___normalize_adapter_channels",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_normalize_adapter_channels",
+  "py_module": "gateway/channel_directory.py",
+  "py_fn": "_normalize_adapter_channels",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

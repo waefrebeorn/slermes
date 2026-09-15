@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_projects_db_py__list_discovered_repos",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "list_discovered_repos",
+  "py_module": "hermes_cli/projects_db.py",
+  "py_fn": "list_discovered_repos",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

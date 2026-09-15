@@ -1,0 +1,29 @@
+{
+  "name": "agent_agent_runtime_helpers_py__switch_model",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "arh_switch_model",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "switch_model",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

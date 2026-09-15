@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_update_inventory_py__match_runtime_outcomes",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "match_runtime_outcomes",
+  "py_module": "hermes_cli/update_inventory.py",
+  "py_fn": "match_runtime_outcomes",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

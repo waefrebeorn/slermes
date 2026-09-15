@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_py___save_xai_oauth_tokens",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "auth_u_save_xai_oauth_tokens",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "_save_xai_oauth_tokens",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_security_advisories_py__ack_advisory",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_security_advisories_ack_advisory",
+  "py_module": "hermes_cli/security_advisories.py",
+  "py_fn": "ack_advisory",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

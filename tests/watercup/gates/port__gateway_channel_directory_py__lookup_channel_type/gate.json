@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_channel_directory_py__lookup_channel_type",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "lookup_channel_type",
+  "py_module": "gateway/channel_directory.py",
+  "py_fn": "lookup_channel_type",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

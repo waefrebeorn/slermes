@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_state_py__try_acquire_compression_lock",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "try_acquire_compression_lock",
+  "py_module": "hermes_state.py",
+  "py_fn": "try_acquire_compression_lock",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

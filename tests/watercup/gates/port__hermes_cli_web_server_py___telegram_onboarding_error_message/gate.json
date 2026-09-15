@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_web_server_py___telegram_onboarding_error_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_telegram_onboarding_error_message",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_telegram_onboarding_error_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

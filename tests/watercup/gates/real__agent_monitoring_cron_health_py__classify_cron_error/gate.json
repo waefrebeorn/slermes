@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_monitoring_cron_health_py__classify_cron_error",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "classify_cron_error",
+  "py_module": "agent/monitoring/cron_health.py",
+  "py_fn": "classify_cron_error",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

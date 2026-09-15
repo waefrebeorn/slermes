@@ -58,7 +58,7 @@ static void run_one(const char *word) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s strip_shell_word_syntax <word>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s strip_shell_word_syntax <word>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) run_one(argv[i]);
     return 0;
 }

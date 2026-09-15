@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_credential_pool_py___single_use_refresh_lock_timeout",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_single_use_refresh_lock_timeout",
+  "py_module": "agent/credential_pool.py",
+  "py_fn": "_single_use_refresh_lock_timeout",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

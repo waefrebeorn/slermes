@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_pty_session_py___reap_one_idle_or_raise",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_reap_one_idle_or_raise",
+  "py_module": "hermes_cli/pty_session.py",
+  "py_fn": "_reap_one_idle_or_raise",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

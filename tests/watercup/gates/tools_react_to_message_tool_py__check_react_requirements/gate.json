@@ -1,0 +1,29 @@
+{
+  "name": "tools_react_to_message_tool_py__check_react_requirements",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "react_check_requirements",
+  "py_module": "tools/react_to_message_tool.py",
+  "py_fn": "check_react_requirements",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

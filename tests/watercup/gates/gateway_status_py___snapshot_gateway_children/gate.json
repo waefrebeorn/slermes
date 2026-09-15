@@ -1,0 +1,29 @@
+{
+  "name": "gateway_status_py___snapshot_gateway_children",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gstat_u_snapshot_gateway_children",
+  "py_module": "gateway/status.py",
+  "py_fn": "_snapshot_gateway_children",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

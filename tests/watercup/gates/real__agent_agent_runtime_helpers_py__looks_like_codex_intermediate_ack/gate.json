@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_agent_runtime_helpers_py__looks_like_codex_intermediate_ack",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "looks_like_codex_intermediate_ack",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "looks_like_codex_intermediate_ack",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

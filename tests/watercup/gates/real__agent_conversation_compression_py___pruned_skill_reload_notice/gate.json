@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_compression_py___pruned_skill_reload_notice",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_pruned_skill_reload_notice",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "_pruned_skill_reload_notice",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

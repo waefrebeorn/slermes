@@ -1,0 +1,29 @@
+{
+  "name": "tools_moa_performance_py___build_auth_header",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_moa_performance_u_build_auth_header",
+  "py_module": "tools/moa_performance.py",
+  "py_fn": "_build_auth_header",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

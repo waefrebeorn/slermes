@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_credential_persistence_py__sanitize_borrowed_credential_payload",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sanitize_borrowed_credential_payload",
+  "py_module": "agent/credential_persistence.py",
+  "py_fn": "sanitize_borrowed_credential_payload",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

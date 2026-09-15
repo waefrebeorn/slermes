@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_model_metadata_py___lmstudio_server_root",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_lmstudio_server_root",
+  "py_module": "agent/model_metadata.py",
+  "py_fn": "_lmstudio_server_root",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

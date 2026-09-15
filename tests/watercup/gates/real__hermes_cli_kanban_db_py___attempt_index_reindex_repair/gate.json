@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_kanban_db_py___attempt_index_reindex_repair",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_attempt_index_reindex_repair",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "_attempt_index_reindex_repair",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

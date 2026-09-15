@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_modal_py__run_coroutine",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_environments_modal_run_coroutine",
+  "py_module": "tools/environments/modal.py",
+  "py_fn": "run_coroutine",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

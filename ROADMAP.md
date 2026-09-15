@@ -1,12 +1,13 @@
 # 🗺️ Slermes Roadmap — What's Next
 
 <!-- PARITY:AUTO -->
-**Version:** 0.19.0-slermes (v671, PORT phase)  
-**Last updated:** 2026-08-29
+**Version:** 0.19.0-slermes (v672, PORT phase)  
+**Last updated:** 2026-09-15
 
-> **v671 PORT phase:** live scanner 2026-08-29: 15,745 / 16,714 (94.2%) PORTED · 954 REAL_GAP · 15 PARTIAL. The C11 binary is the deliverable.
+> **v672 PORT phase:** live scanner 2026-09-15: 6,466 / 18,219 (35.5%) PORTED · 11,715 REAL_GAP · 38 PARTIAL. The C11 binary is the deliverable.
+> **Watercup oracle:** 313 PASS / 22,604 total (1.4%) — 22,291 fail. Trace-cup parity verifies C ports match LIVE Python behavior.
 >
-> **Upstream sync checkpoint:** 2,040 ahead / 1,052 behind upstream/main (last merge 2026-08-23 (upstream fetched)). The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
+> **Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
 <!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  

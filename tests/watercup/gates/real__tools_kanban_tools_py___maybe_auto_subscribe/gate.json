@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_kanban_tools_py___maybe_auto_subscribe",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_maybe_auto_subscribe",
+  "py_module": "tools/kanban_tools.py",
+  "py_fn": "_maybe_auto_subscribe",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

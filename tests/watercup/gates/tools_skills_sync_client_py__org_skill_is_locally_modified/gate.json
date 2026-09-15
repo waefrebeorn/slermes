@@ -1,0 +1,29 @@
+{
+  "name": "tools_skills_sync_client_py__org_skill_is_locally_modified",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ssc_org_skill_is_locally_modified",
+  "py_module": "tools/skills_sync_client.py",
+  "py_fn": "org_skill_is_locally_modified",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

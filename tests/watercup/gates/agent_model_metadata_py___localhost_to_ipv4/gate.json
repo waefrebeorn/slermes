@@ -1,0 +1,29 @@
+{
+  "name": "agent_model_metadata_py___localhost_to_ipv4",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_model_metadata_u_localhost_to_ipv4",
+  "py_module": "agent/model_metadata.py",
+  "py_fn": "_localhost_to_ipv4",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

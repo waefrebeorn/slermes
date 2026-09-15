@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_agent_runtime_helpers_py___direct_native_anthropic_tool_cache_capability",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_direct_native_anthropic_tool_cache_capability",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "_direct_native_anthropic_tool_cache_capability",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

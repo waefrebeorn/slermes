@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_managed_uv_py___report_runtime_repair_failure",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_report_runtime_repair_failure",
+  "py_module": "hermes_cli/managed_uv.py",
+  "py_fn": "_report_runtime_repair_failure",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

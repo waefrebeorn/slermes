@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_xai_http_py__hermes_xai_default_headers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_xai_default_headers",
+  "py_module": "tools/xai_http.py",
+  "py_fn": "hermes_xai_default_headers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_browser_tool_py__evaluate_url_safety",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "evaluate_url_safety",
+  "py_module": "tools/browser_tool.py",
+  "py_fn": "evaluate_url_safety",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

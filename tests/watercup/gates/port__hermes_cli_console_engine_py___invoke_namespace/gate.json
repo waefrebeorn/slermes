@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_console_engine_py___invoke_namespace",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_invoke_namespace",
+  "py_module": "hermes_cli/console_engine.py",
+  "py_fn": "_invoke_namespace",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

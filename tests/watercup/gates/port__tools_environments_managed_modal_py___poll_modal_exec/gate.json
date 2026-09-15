@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_environments_managed_modal_py___poll_modal_exec",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_poll_modal_exec",
+  "py_module": "tools/environments/managed_modal.py",
+  "py_fn": "_poll_modal_exec",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

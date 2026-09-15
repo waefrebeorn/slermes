@@ -1,15 +1,29 @@
-"""Twin for gateway_acp_acp_get_id: acp_get_id from src/acp/server.c.
+"""twin for agent/copilot_acp_client.py:ACPServer.get_id."""
+import os, sys, importlib.util as ilu
 
-Mirrors Python acp_adapter/server.py ACPServer.get_id (no args, returns "acp-server-0").
-"""
-import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
 from watercup_py import Cup
 
-def trace(input):
-    c = Cup("acp_get_id")
-    c.valstr("acp-server-0")
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_copilot_acp_client_py", os.path.join(DEV, "agent/copilot_acp_client.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_copilot_acp_client_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("ACPServer.get_id")
+    try:
+        result = _pb.ACPServer.get_id(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()
+
 
 def run(inputs):
     return [trace(inp) for inp in inputs]

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_kanban_tools_py___download_url_with_cap",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_download_url_with_cap",
+  "py_module": "tools/kanban_tools.py",
+  "py_fn": "_download_url_with_cap",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_yuanbao_py___yb_secret",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_yb_secret",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "_yb_secret",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

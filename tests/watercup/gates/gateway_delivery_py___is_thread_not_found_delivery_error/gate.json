@@ -1,0 +1,29 @@
+{
+  "name": "gateway_delivery_py___is_thread_not_found_delivery_error",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_thread_not_found_delivery_error",
+  "py_module": "gateway/delivery.py",
+  "py_fn": "_is_thread_not_found_delivery_error",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_auth_py___assert_nous_inference_jwt_usable",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_assert_nous_inference_jwt_usable",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "_assert_nous_inference_jwt_usable",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

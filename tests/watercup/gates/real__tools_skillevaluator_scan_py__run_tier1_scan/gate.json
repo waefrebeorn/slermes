@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skillevaluator_scan_py__run_tier1_scan",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "run_tier1_scan",
+  "py_module": "tools/skillevaluator_scan.py",
+  "py_fn": "run_tier1_scan",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

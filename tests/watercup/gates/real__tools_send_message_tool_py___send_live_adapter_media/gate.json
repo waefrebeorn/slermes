@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_send_message_tool_py___send_live_adapter_media",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_send_live_adapter_media",
+  "py_module": "tools/send_message_tool.py",
+  "py_fn": "_send_live_adapter_media",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

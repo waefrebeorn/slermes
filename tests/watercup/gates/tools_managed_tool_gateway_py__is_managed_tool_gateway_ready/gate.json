@@ -1,0 +1,29 @@
+{
+  "name": "tools_managed_tool_gateway_py__is_managed_tool_gateway_ready",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_tools_managed_tool_gateway_is_managed_tool_gateway_ready",
+  "py_module": "tools/managed_tool_gateway.py",
+  "py_fn": "is_managed_tool_gateway_ready",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

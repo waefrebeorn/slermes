@@ -1,0 +1,29 @@
+{
+  "name": "agent_error_classifier_py___model_id_missing_known_prefix",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_agent_error_classifier_model_id_missing_known_prefix",
+  "py_module": "agent/error_classifier.py",
+  "py_fn": "_model_id_missing_known_prefix",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

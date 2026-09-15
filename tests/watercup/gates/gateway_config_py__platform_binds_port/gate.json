@@ -1,0 +1,29 @@
+{
+  "name": "gateway_config_py__platform_binds_port",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_config_platform_binds_port",
+  "py_module": "gateway/config.py",
+  "py_fn": "platform_binds_port",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

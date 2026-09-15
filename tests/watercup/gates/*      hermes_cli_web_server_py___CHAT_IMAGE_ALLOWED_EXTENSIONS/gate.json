@@ -1,0 +1,29 @@
+{
+  "name": "*      hermes_cli_web_server_py___CHAT_IMAGE_ALLOWED_EXTENSIONS",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ws_chat_image_extension_allowed",
+  "py_module": "*      hermes_cli/web_server.py",
+  "py_fn": "_CHAT_IMAGE_ALLOWED_EXTENSIONS",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

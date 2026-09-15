@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_msgraph_webhook_py__check_msgraph_webhook_requirements",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "check_msgraph_webhook_requirements",
+  "py_module": "gateway/platforms/msgraph_webhook.py",
+  "py_fn": "check_msgraph_webhook_requirements",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

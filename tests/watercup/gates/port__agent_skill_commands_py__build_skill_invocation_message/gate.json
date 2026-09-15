@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_skill_commands_py__build_skill_invocation_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_skill_invocation_message",
+  "py_module": "agent/skill_commands.py",
+  "py_fn": "build_skill_invocation_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

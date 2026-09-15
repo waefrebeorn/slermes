@@ -1,0 +1,29 @@
+{
+  "name": "tools_delegate_tool_py___is_mcp_toolset_name",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "delegate_is_mcp_toolset_name",
+  "py_module": "tools/delegate_tool.py",
+  "py_fn": "_is_mcp_toolset_name",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

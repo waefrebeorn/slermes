@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_session_recap_py___tool_call_name_and_args",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_tool_call_name_and_args",
+  "py_module": "hermes_cli/session_recap.py",
+  "py_fn": "_tool_call_name_and_args",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

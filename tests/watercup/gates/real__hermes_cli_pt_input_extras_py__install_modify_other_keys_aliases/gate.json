@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_pt_input_extras_py__install_modify_other_keys_aliases",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "install_modify_other_keys_aliases",
+  "py_module": "hermes_cli/pt_input_extras.py",
+  "py_fn": "install_modify_other_keys_aliases",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

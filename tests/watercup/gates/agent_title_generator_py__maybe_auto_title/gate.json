@@ -1,0 +1,30 @@
+{
+  "name": "agent_title_generator_py__maybe_auto_title",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tig_maybe_auto_title",
+  "py_module": "agent/title_generator.py",
+  "py_fn": "maybe_auto_title",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/title_generator_ports.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

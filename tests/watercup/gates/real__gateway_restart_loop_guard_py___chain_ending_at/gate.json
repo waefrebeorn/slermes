@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_restart_loop_guard_py___chain_ending_at",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_chain_ending_at",
+  "py_module": "gateway/restart_loop_guard.py",
+  "py_fn": "_chain_ending_at",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

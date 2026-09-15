@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_transports_chat_completions_py___raise_gemini_thinking_max_tokens",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_raise_gemini_thinking_max_tokens",
+  "py_module": "agent/transports/chat_completions.py",
+  "py_fn": "_raise_gemini_thinking_max_tokens",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___desktop_macos_local_codesign",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_g_desktop_macos_local_codesign",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_desktop_macos_local_codesign",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

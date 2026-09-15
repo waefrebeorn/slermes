@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_models_py___merge_with_models_dev",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_merge_with_models_dev",
+  "py_module": "hermes_cli/models.py",
+  "py_fn": "_merge_with_models_dev",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

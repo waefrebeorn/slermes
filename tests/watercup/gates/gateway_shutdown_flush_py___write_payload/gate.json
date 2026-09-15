@@ -1,0 +1,29 @@
+{
+  "name": "gateway_shutdown_flush_py___write_payload",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "shutdown_flush_write_payload",
+  "py_module": "gateway/shutdown_flush.py",
+  "py_fn": "_write_payload",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

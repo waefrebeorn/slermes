@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_web_server_py__set_dashboard_font",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ws_theme_font_choice_allowed",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "set_dashboard_font",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

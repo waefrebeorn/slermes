@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_rate_limit_tracker_py__format_rate_limit_compact",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "format_rate_limit_compact",
+  "py_module": "agent/rate_limit_tracker.py",
+  "py_fn": "format_rate_limit_compact",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

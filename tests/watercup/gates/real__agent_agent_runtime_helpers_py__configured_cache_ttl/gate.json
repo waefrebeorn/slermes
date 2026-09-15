@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_agent_runtime_helpers_py__configured_cache_ttl",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "configured_cache_ttl",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "configured_cache_ttl",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

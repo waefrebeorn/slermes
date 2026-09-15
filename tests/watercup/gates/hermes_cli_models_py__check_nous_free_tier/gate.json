@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_models_py__check_nous_free_tier",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "models_check_nous_free_tier",
+  "py_module": "hermes_cli/models.py",
+  "py_fn": "check_nous_free_tier",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

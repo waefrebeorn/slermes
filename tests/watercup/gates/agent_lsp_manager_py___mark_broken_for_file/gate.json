@@ -1,0 +1,29 @@
+{
+  "name": "agent_lsp_manager_py___mark_broken_for_file",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "lspm_mark_broken_for_file",
+  "py_module": "agent/lsp/manager.py",
+  "py_fn": "_mark_broken_for_file",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

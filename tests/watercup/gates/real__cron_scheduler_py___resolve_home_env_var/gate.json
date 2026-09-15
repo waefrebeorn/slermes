@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_scheduler_py___resolve_home_env_var",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_resolve_home_env_var",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "_resolve_home_env_var",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

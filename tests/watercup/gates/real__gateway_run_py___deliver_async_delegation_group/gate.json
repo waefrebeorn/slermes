@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_run_py___deliver_async_delegation_group",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_deliver_async_delegation_group",
+  "py_module": "gateway/run.py",
+  "py_fn": "_deliver_async_delegation_group",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

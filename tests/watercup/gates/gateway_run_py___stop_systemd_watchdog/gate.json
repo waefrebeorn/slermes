@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___stop_systemd_watchdog",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_stop_systemd_watchdog",
+  "py_module": "gateway/run.py",
+  "py_fn": "_stop_systemd_watchdog",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

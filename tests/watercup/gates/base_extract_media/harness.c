@@ -72,7 +72,7 @@ static void extract_media(const char *content) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s extract_media <content>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s extract_media <content>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) extract_media(argv[i]);
     return 0;
 }

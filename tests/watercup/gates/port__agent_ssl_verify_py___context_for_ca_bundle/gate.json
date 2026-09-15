@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_ssl_verify_py___context_for_ca_bundle",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_context_for_ca_bundle",
+  "py_module": "agent/ssl_verify.py",
+  "py_fn": "_context_for_ca_bundle",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

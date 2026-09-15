@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_checkpoint_manager_py___volume_evidence",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_volume_evidence",
+  "py_module": "tools/checkpoint_manager.py",
+  "py_fn": "_volume_evidence",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

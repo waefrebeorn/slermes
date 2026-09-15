@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___sibling_thread_run_keys",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_sibling_thread_run_keys",
+  "py_module": "gateway/run.py",
+  "py_fn": "_sibling_thread_run_keys",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

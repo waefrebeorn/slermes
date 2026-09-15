@@ -1,0 +1,29 @@
+{
+  "name": "agent_subscription_view_py__subscription_state_from_payload",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_subscription_view_subscription_state_from_payload",
+  "py_module": "agent/subscription_view.py",
+  "py_fn": "subscription_state_from_payload",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_memory_manager_py___prefetch_provider",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mm_u_prefetch_provider",
+  "py_module": "agent/memory_manager.py",
+  "py_fn": "_prefetch_provider",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

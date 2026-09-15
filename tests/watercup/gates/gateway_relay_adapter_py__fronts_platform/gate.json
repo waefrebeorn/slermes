@@ -1,0 +1,29 @@
+{
+  "name": "gateway_relay_adapter_py__fronts_platform",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_relay_adapter_fronts_platform",
+  "py_module": "gateway/relay/adapter.py",
+  "py_fn": "fronts_platform",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

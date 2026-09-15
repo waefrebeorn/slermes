@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_state_py___repair_failure_consumes_attempt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_repair_failure_consumes_attempt",
+  "py_module": "hermes_state.py",
+  "py_fn": "_repair_failure_consumes_attempt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

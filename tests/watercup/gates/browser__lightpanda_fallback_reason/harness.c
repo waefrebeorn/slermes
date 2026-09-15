@@ -71,7 +71,7 @@ static char *port_lightpanda_fallback_reason(const char *engine, const char *com
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s browser__lightpanda_fallback_reason <engine|command|result_json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s browser__lightpanda_fallback_reason <engine|command|result_json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         char *inp = strdup(argv[i]);
         /* split on first two '|' */

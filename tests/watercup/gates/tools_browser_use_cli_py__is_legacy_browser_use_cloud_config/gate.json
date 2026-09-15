@@ -1,0 +1,29 @@
+{
+  "name": "tools_browser_use_cli_py__is_legacy_browser_use_cloud_config",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "bu_is_legacy_browser_use_cloud_config",
+  "py_module": "tools/browser_use_cli.py",
+  "py_fn": "is_legacy_browser_use_cloud_config",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

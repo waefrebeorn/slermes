@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_active_sessions_py___pid_liveness",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_pid_liveness",
+  "py_module": "hermes_cli/active_sessions.py",
+  "py_fn": "_pid_liveness",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "utils_py__warn_if_credential_file_broadly_readable",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "util_warn_if_credential_file_broadly_readable",
+  "py_module": "utils.py",
+  "py_fn": "warn_if_credential_file_broadly_readable",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

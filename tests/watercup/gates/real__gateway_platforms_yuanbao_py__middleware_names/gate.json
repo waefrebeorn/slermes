@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_yuanbao_py__middleware_names",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "middleware_names",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "middleware_names",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_run_py__native_tool_complete_callback",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "native_tool_complete_callback",
+  "py_module": "gateway/run.py",
+  "py_fn": "native_tool_complete_callback",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

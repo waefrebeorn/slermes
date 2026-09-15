@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_status_py__looks_like_gateway_command_line",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "looks_like_gateway_command_line",
+  "py_module": "gateway/status.py",
+  "py_fn": "looks_like_gateway_command_line",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

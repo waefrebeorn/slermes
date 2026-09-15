@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_verify_hooks_py__coding_verify_guidance",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "coding_verify_guidance",
+  "py_module": "agent/verify_hooks.py",
+  "py_fn": "coding_verify_guidance",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_model_normalize_py___dots_to_hyphens",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_dots_to_hyphens",
+  "py_module": "hermes_cli/model_normalize.py",
+  "py_fn": "_dots_to_hyphens",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

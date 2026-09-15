@@ -1,0 +1,29 @@
+{
+  "name": "agent_conversation_loop_py___stored_prompt_matches_runtime",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cvl_stored_prompt_matches_runtime",
+  "py_module": "agent/conversation_loop.py",
+  "py_fn": "_stored_prompt_matches_runtime",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_media_py__download_url",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_gateway_platforms_yuanbao_media_download_url",
+  "py_module": "gateway/platforms/yuanbao_media.py",
+  "py_fn": "download_url",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

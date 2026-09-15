@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_py___try_import_shared_nous_state",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "auth_u_try_import_shared_nous_state",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "_try_import_shared_nous_state",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -112,7 +112,7 @@ static void wc_stale(const char *key, double age, double timeout)
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) { fprintf(stderr, "usage: %s fn <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s fn <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         const char *in = argv[i];
         char f1[64], f2[64], f3[64];

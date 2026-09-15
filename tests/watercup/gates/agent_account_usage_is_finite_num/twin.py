@@ -1,23 +1,29 @@
-"""Twin for agent_account_usage_is_finite_num: _is_finite_num."""
-import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from watercup_py import Cup
-from agent.account_usage import _is_finite_num
+"""twin for agent/account_usage.py:_is_finite_num."""
+import os, sys, importlib.util as ilu
 
-def trace(input):
-    c = Cup("account_usage_is_finite_num")
-    if input is None or input == "NULL":
-        c.valstr("false")
-    elif input == "NaN":
-        c.valstr("false")
-    else:
-        try:
-            v = float(input)
-            rv = _is_finite_num(v)
-        except (ValueError, TypeError):
-            rv = _is_finite_num(input)
-        c.valstr("true" if rv else "false")
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
+from watercup_py import Cup
+
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_account_usage_py", os.path.join(DEV, "agent/account_usage.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_account_usage_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_is_finite_num")
+    try:
+        result = _pb._is_finite_num(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()
+
 
 def run(inputs):
     return [trace(inp) for inp in inputs]

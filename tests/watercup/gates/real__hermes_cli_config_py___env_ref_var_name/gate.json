@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_config_py___env_ref_var_name",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_env_ref_var_name",
+  "py_module": "hermes_cli/config.py",
+  "py_fn": "_env_ref_var_name",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

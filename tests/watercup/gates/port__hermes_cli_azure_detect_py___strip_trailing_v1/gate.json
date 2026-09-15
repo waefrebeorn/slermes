@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_azure_detect_py___strip_trailing_v1",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_strip_trailing_v1",
+  "py_module": "hermes_cli/azure_detect.py",
+  "py_fn": "_strip_trailing_v1",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

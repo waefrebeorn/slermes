@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_api_server_py___handle_list_jobs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_handle_list_jobs",
+  "py_module": "gateway/platforms/api_server.py",
+  "py_fn": "_handle_list_jobs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

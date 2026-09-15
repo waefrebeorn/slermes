@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_py__prompt_linux_gateway_install_scope",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cgw_prompt_linux_gateway_install_scope",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "prompt_linux_gateway_install_scope",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

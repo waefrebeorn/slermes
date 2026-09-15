@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_yuanbao_proto_py__encode_conn_msg_full",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "encode_conn_msg_full",
+  "py_module": "gateway/platforms/yuanbao_proto.py",
+  "py_fn": "encode_conn_msg_full",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

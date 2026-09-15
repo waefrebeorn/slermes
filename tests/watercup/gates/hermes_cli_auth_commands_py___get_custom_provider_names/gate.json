@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_commands_py___get_custom_provider_names",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_auth_commands_u_get_custom_provider_names",
+  "py_module": "hermes_cli/auth_commands.py",
+  "py_fn": "_get_custom_provider_names",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_update_cmd_py___classify_fetch_failure",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_classify_fetch_failure",
+  "py_module": "hermes_cli/update_cmd.py",
+  "py_fn": "_classify_fetch_failure",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_setup_py___xai_oauth_logged_in_for_setup",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_xai_oauth_logged_in_for_setup",
+  "py_module": "hermes_cli/setup.py",
+  "py_fn": "_xai_oauth_logged_in_for_setup",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

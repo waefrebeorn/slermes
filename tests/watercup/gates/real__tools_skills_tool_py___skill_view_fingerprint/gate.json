@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skills_tool_py___skill_view_fingerprint",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_skill_view_fingerprint",
+  "py_module": "tools/skills_tool.py",
+  "py_fn": "_skill_view_fingerprint",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

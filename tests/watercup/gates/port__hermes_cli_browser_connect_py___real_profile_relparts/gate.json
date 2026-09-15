@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_browser_connect_py___real_profile_relparts",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_real_profile_relparts",
+  "py_module": "hermes_cli/browser_connect.py",
+  "py_fn": "_real_profile_relparts",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

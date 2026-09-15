@@ -1,0 +1,29 @@
+{
+  "name": "agent_shared_metrics_contract_py__is_valid_execution_surface",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "smc_is_valid_execution_surface",
+  "py_module": "agent/shared_metrics_contract.py",
+  "py_fn": "is_valid_execution_surface",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

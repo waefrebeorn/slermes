@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_compression_py__run_compress_context_with_progress_timeout",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "run_compress_context_with_progress_timeout",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "run_compress_context_with_progress_timeout",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

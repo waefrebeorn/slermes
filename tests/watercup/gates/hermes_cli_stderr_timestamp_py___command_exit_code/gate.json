@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_stderr_timestamp_py___command_exit_code",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "stderr_ts_command_exit_code",
+  "py_module": "hermes_cli/stderr_timestamp.py",
+  "py_fn": "_command_exit_code",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

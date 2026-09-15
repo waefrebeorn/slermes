@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_context_references_py___strip_trailing_punctuation",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_strip_trailing_punctuation",
+  "py_module": "agent/context_references.py",
+  "py_fn": "_strip_trailing_punctuation",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

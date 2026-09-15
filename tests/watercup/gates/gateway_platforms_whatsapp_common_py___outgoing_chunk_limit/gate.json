@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_whatsapp_common_py___outgoing_chunk_limit",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "whatsapp_common_outgoing_chunk_limit",
+  "py_module": "gateway/platforms/whatsapp_common.py",
+  "py_fn": "_outgoing_chunk_limit",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

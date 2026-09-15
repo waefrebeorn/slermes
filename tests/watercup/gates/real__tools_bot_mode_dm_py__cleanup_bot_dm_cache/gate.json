@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_bot_mode_dm_py__cleanup_bot_dm_cache",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cleanup_bot_dm_cache",
+  "py_module": "tools/bot_mode_dm.py",
+  "py_fn": "cleanup_bot_dm_cache",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

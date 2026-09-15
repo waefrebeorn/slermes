@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_suggestion_catalog_py__seed_catalog_suggestions",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "seed_catalog_suggestions",
+  "py_module": "cron/suggestion_catalog.py",
+  "py_fn": "seed_catalog_suggestions",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

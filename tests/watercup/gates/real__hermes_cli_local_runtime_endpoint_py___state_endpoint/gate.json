@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_local_runtime_endpoint_py___state_endpoint",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_state_endpoint",
+  "py_module": "hermes_cli/local_runtime/endpoint.py",
+  "py_fn": "_state_endpoint",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

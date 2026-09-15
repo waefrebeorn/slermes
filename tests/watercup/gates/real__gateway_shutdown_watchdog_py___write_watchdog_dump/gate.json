@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_shutdown_watchdog_py___write_watchdog_dump",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_write_watchdog_dump",
+  "py_module": "gateway/shutdown_watchdog.py",
+  "py_fn": "_write_watchdog_dump",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

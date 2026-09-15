@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_subagent_worktree_py__finalize_subagent_worktree",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "finalize_subagent_worktree",
+  "py_module": "tools/subagent_worktree.py",
+  "py_fn": "finalize_subagent_worktree",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_focus_view_py__would_display_tool_line",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "would_display_tool_line",
+  "py_module": "hermes_cli/focus_view.py",
+  "py_fn": "would_display_tool_line",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

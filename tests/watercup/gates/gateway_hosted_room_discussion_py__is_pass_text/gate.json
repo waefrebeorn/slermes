@@ -1,0 +1,29 @@
+{
+  "name": "gateway_hosted_room_discussion_py__is_pass_text",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_pass_text",
+  "py_module": "gateway/hosted_room_discussion.py",
+  "py_fn": "is_pass_text",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_context_engine_py__get_automatic_compaction_status_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_context_engine_get_automatic_compaction_status_message",
+  "py_module": "agent/context_engine.py",
+  "py_fn": "get_automatic_compaction_status_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "acp_adapter_tools_py___tool_result_failed",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "acpt_tool_result_failed",
+  "py_module": "acp_adapter/tools.py",
+  "py_fn": "_tool_result_failed",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

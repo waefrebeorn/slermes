@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_api_server_py___origin_allowed",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "aps_origin_allowed",
+  "py_module": "gateway/platforms/api_server.py",
+  "py_fn": "_origin_allowed",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

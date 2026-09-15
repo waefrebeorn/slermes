@@ -1,0 +1,29 @@
+{
+  "name": "gateway_status_py___scoped_lock_owner_state",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gstat_u_scoped_lock_owner_state",
+  "py_module": "gateway/status.py",
+  "py_fn": "_scoped_lock_owner_state",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

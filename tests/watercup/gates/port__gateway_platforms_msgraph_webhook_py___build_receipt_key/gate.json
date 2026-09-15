@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_msgraph_webhook_py___build_receipt_key",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_build_receipt_key",
+  "py_module": "gateway/platforms/msgraph_webhook.py",
+  "py_fn": "_build_receipt_key",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

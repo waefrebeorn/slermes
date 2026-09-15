@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___finish_startup_restore",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_finish_startup_restore",
+  "py_module": "gateway/run.py",
+  "py_fn": "_finish_startup_restore",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

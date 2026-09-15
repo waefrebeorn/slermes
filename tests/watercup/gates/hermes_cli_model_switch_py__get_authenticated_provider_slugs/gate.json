@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_model_switch_py__get_authenticated_provider_slugs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "msw_get_authenticated_provider_slugs",
+  "py_module": "hermes_cli/model_switch.py",
+  "py_fn": "get_authenticated_provider_slugs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

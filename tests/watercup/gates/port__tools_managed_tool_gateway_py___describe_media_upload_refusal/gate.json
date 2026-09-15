@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_managed_tool_gateway_py___describe_media_upload_refusal",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_describe_media_upload_refusal",
+  "py_module": "tools/managed_tool_gateway.py",
+  "py_fn": "_describe_media_upload_refusal",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

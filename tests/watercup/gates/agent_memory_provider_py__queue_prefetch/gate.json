@@ -1,0 +1,29 @@
+{
+  "name": "agent_memory_provider_py__queue_prefetch",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_memory_provider_queue_prefetch",
+  "py_module": "agent/memory_provider.py",
+  "py_fn": "queue_prefetch",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

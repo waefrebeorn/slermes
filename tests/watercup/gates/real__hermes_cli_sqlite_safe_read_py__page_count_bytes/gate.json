@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_sqlite_safe_read_py__page_count_bytes",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "page_count_bytes",
+  "py_module": "hermes_cli/sqlite_safe_read.py",
+  "py_fn": "page_count_bytes",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

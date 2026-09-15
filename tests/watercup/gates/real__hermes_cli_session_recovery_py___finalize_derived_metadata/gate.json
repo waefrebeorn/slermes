@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_session_recovery_py___finalize_derived_metadata",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_finalize_derived_metadata",
+  "py_module": "hermes_cli/session_recovery.py",
+  "py_fn": "_finalize_derived_metadata",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

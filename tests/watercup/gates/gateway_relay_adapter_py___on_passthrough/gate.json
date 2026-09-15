@@ -1,0 +1,29 @@
+{
+  "name": "gateway_relay_adapter_py___on_passthrough",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_relay_adapter_u_on_passthrough",
+  "py_module": "gateway/relay/adapter.py",
+  "py_fn": "_on_passthrough",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

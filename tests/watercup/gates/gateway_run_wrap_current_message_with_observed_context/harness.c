@@ -44,7 +44,7 @@ static void trace_one(const char *ctx, const char *msg) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s wrap_current_message_with_observed_context <ctx<TAB>msg>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s wrap_current_message_with_observed_context <ctx<TAB>msg>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         char *sep = strchr(argv[i], '\t');
         if (sep) { *sep = '\0'; trace_one(argv[i], sep + 1); }

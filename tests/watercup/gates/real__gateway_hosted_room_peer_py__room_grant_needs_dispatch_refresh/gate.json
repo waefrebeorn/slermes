@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_hosted_room_peer_py__room_grant_needs_dispatch_refresh",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "room_grant_needs_dispatch_refresh",
+  "py_module": "gateway/hosted_room_peer.py",
+  "py_fn": "room_grant_needs_dispatch_refresh",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

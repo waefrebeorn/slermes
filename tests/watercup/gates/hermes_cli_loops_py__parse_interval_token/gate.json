@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_loops_py__parse_interval_token",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "loops_parse_interval_token",
+  "py_module": "hermes_cli/loops.py",
+  "py_fn": "parse_interval_token",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

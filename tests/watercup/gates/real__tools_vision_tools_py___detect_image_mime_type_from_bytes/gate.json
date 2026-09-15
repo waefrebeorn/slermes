@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_vision_tools_py___detect_image_mime_type_from_bytes",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_detect_image_mime_type_from_bytes",
+  "py_module": "tools/vision_tools.py",
+  "py_fn": "_detect_image_mime_type_from_bytes",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

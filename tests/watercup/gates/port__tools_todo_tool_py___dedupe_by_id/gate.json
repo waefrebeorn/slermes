@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_todo_tool_py___dedupe_by_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_dedupe_by_id",
+  "py_module": "tools/todo_tool.py",
+  "py_fn": "_dedupe_by_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

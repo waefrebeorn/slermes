@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_authz_mixin_py___adapter_group_has_sender_allowlist",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_adapter_group_has_sender_allowlist",
+  "py_module": "gateway/authz_mixin.py",
+  "py_fn": "_adapter_group_has_sender_allowlist",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_ssl_verify_py__resolve_httpx_verify",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_httpx_verify",
+  "py_module": "agent/ssl_verify.py",
+  "py_fn": "resolve_httpx_verify",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

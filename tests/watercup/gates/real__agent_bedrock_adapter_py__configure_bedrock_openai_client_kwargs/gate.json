@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_bedrock_adapter_py__configure_bedrock_openai_client_kwargs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "configure_bedrock_openai_client_kwargs",
+  "py_module": "agent/bedrock_adapter.py",
+  "py_fn": "configure_bedrock_openai_client_kwargs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_foreign_sessions_py__pick_foreign_session",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "pick_foreign_session",
+  "py_module": "hermes_cli/foreign_sessions.py",
+  "py_fn": "pick_foreign_session",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

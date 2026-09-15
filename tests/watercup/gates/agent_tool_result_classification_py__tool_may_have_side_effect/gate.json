@@ -1,0 +1,29 @@
+{
+  "name": "agent_tool_result_classification_py__tool_may_have_side_effect",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_tool_result_classificati_tool_may_have_side_effect",
+  "py_module": "agent/tool_result_classification.py",
+  "py_fn": "tool_may_have_side_effect",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

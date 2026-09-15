@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_tool_guardrails_py__reset_for_turn",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "reset_for_turn",
+  "py_module": "agent/tool_guardrails.py",
+  "py_fn": "reset_for_turn",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

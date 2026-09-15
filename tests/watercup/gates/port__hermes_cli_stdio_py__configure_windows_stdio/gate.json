@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_stdio_py__configure_windows_stdio",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "configure_windows_stdio",
+  "py_module": "hermes_cli/stdio.py",
+  "py_fn": "configure_windows_stdio",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

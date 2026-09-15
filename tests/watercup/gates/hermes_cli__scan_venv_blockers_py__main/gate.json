@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli__scan_venv_blockers_py__main",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "scanvb_main",
+  "py_module": "hermes_cli/_scan_venv_blockers.py",
+  "py_fn": "main",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

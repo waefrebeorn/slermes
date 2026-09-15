@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_sessions_cmd_py___prune_never_active_keyed",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_prune_never_active_keyed",
+  "py_module": "hermes_cli/sessions_cmd.py",
+  "py_fn": "_prune_never_active_keyed",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

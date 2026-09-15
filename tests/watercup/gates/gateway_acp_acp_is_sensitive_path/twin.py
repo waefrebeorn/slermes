@@ -1,38 +1,29 @@
-"""Twin for gateway_acp_acp_is_sensitive_path: acp_is_sensitive_path from src/acp/edit_approval.c.
+"""twin for gateway/acp.py:is_sensitive_path."""
+import os, sys, importlib.util as ilu
 
-This is a slermes-native function (no Python equivalent in gateway/acp.py).
-The twin uses the slermes C implementation via live parity — we skip the twin
-and use a harness-only unit gate pattern.
-"""
-import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
 from watercup_py import Cup
 
-def trace(input):
-    c = Cup("acp_is_sensitive_path")
-    if input is None or input == "NULL":
-        c.valstr("false")
-    else:
-        # Mirror the C logic: check for sensitive basenames and directories
-        sensitive_basenames = {".env", ".git", ".ssh", ".hermes", 
-                               "credentials.json", "secrets.json",
-                               "htpasswd", "id_rsa", "id_ed25519"}
-        sensitive_dirs = {".git", ".ssh"}
-        
-        import posixpath
-        basename = posixpath.basename(input)
-        if basename in sensitive_basenames:
-            c.valstr("true")
-            return c.finalize()
-        
-        parts = input.split("/")
-        for part in parts:
-            if part in sensitive_dirs:
-                c.valstr("true")
-                return c.finalize()
-        
-        c.valstr("false")
+_spec = ilu.spec_from_file_location(
+    "wc_live_gateway_acp_py", os.path.join(DEV, "gateway/acp.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_gateway_acp_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("is_sensitive_path")
+    try:
+        result = _pb.is_sensitive_path(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()
+
 
 def run(inputs):
     return [trace(inp) for inp in inputs]

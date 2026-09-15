@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_session_py__recover_interrupted_turns",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "recover_interrupted_turns",
+  "py_module": "gateway/session.py",
+  "py_fn": "recover_interrupted_turns",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

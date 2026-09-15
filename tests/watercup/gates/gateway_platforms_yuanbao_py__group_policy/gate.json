@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py__group_policy",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_group_policy",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "group_policy",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

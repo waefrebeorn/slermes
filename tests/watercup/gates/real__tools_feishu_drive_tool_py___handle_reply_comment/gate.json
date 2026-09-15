@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_feishu_drive_tool_py___handle_reply_comment",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_handle_reply_comment",
+  "py_module": "tools/feishu_drive_tool.py",
+  "py_fn": "_handle_reply_comment",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

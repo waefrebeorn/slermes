@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_schema_sanitizer_py__sanitize_tool_schemas",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sanitize_tool_schemas",
+  "py_module": "tools/schema_sanitizer.py",
+  "py_fn": "sanitize_tool_schemas",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

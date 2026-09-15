@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_dashboard_auth_cookies_py__read_sso_attempt_cookie",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_dashboard_auth_cook_read_sso_attempt_cookie",
+  "py_module": "hermes_cli/dashboard_auth/cookies.py",
+  "py_fn": "read_sso_attempt_cookie",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -20,7 +20,8 @@
   ],
   "extra_src": [
     "tests/watercup/gates/gateway_acp_acp_is_sensitive_path/shims.c",
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/acp/edit_approval.c"
   ],
   "inputs": [
     "/home/user/.ssh/id_rsa",

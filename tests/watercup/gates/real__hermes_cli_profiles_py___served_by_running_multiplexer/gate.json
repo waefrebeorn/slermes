@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_profiles_py___served_by_running_multiplexer",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_served_by_running_multiplexer",
+  "py_module": "hermes_cli/profiles.py",
+  "py_fn": "_served_by_running_multiplexer",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_py___append_launchd_reload_log",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cgw_u_append_launchd_reload_log",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "_append_launchd_reload_log",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

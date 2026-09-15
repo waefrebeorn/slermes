@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_kanban_db_py___is_managed_scratch_path",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "kdb_is_managed_scratch_path",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "_is_managed_scratch_path",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

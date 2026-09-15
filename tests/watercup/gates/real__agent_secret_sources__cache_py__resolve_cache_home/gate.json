@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_secret_sources__cache_py__resolve_cache_home",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_cache_home",
+  "py_module": "agent/secret_sources/_cache.py",
+  "py_fn": "resolve_cache_home",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

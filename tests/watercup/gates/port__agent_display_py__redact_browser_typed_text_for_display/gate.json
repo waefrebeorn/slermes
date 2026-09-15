@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_display_py__redact_browser_typed_text_for_display",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "redact_browser_typed_text_for_display",
+  "py_module": "agent/display.py",
+  "py_fn": "redact_browser_typed_text_for_display",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

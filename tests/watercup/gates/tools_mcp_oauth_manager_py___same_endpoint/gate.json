@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_oauth_manager_py___same_endpoint",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_tools_mcp_oauth_manager__same_endpoint",
+  "py_module": "tools/mcp_oauth_manager.py",
+  "py_fn": "_same_endpoint",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

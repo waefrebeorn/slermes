@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_patch_parser_py__apply_v4a_operations",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "apply_v4a_operations",
+  "py_module": "tools/patch_parser.py",
+  "py_fn": "apply_v4a_operations",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

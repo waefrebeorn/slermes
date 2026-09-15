@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_agent_init_py___custom_provider_extra_body_for_agent",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_custom_provider_extra_body_for_agent",
+  "py_module": "agent/agent_init.py",
+  "py_fn": "_custom_provider_extra_body_for_agent",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

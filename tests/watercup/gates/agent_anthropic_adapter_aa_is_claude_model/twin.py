@@ -1,14 +1,29 @@
-"""Twin for agent_anthropic_adapter_aa_is_claude_model: _is_claude_model."""
-import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from watercup_py import Cup
-from agent.anthropic_adapter import _is_claude_model
+"""twin for agent/anthropic_adapter.py:_is_claude_model."""
+import os, sys, importlib.util as ilu
 
-def trace(input):
-    c = Cup("aa_is_claude_model")
-    rv = _is_claude_model(input)
-    c.valstr("true" if rv else "false")
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
+from watercup_py import Cup
+
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_anthropic_adapter_py", os.path.join(DEV, "agent/anthropic_adapter.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_anthropic_adapter_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_is_claude_model")
+    try:
+        result = _pb._is_claude_model(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()
+
 
 def run(inputs):
     return [trace(inp) for inp in inputs]

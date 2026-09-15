@@ -1,0 +1,29 @@
+{
+  "name": "agent_prompt_caching_py___apply_system_cache_markers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_prompt_caching_u_apply_system_cache_markers",
+  "py_module": "agent/prompt_caching.py",
+  "py_fn": "_apply_system_cache_markers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

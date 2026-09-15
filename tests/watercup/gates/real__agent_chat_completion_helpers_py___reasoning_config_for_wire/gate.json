@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_chat_completion_helpers_py___reasoning_config_for_wire",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_reasoning_config_for_wire",
+  "py_module": "agent/chat_completion_helpers.py",
+  "py_fn": "_reasoning_config_for_wire",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

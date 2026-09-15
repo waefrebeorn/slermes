@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_code_execution_tool_py___env_temp_dir",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_env_temp_dir",
+  "py_module": "tools/code_execution_tool.py",
+  "py_fn": "_env_temp_dir",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

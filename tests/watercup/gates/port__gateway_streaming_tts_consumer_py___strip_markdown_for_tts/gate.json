@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_streaming_tts_consumer_py___strip_markdown_for_tts",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_strip_markdown_for_tts",
+  "py_module": "gateway/streaming_tts_consumer.py",
+  "py_fn": "_strip_markdown_for_tts",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

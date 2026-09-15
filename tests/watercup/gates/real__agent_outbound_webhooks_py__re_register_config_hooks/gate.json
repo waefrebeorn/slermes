@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_outbound_webhooks_py__re_register_config_hooks",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "re_register_config_hooks",
+  "py_module": "agent/outbound_webhooks.py",
+  "py_fn": "re_register_config_hooks",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

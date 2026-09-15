@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_models_py__normalize_opencode_model_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "normalize_opencode_model_id",
+  "py_module": "hermes_cli/models.py",
+  "py_fn": "normalize_opencode_model_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

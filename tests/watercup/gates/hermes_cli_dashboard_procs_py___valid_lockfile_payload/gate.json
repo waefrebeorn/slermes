@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_dashboard_procs_py___valid_lockfile_payload",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "dashboard_procs_valid_lockfile_payload",
+  "py_module": "hermes_cli/dashboard_procs.py",
+  "py_fn": "_valid_lockfile_payload",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

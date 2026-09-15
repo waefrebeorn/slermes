@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_memory_manager_py__commit_session_boundary_async",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "commit_session_boundary_async",
+  "py_module": "agent/memory_manager.py",
+  "py_fn": "commit_session_boundary_async",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

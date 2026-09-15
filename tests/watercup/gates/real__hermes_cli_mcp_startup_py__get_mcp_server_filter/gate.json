@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_mcp_startup_py__get_mcp_server_filter",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_mcp_server_filter",
+  "py_module": "hermes_cli/mcp_startup.py",
+  "py_fn": "get_mcp_server_filter",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

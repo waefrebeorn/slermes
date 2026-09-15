@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_memory_setup_py___env_line_safe",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_memory_setup_u_env_line_safe",
+  "py_module": "hermes_cli/memory_setup.py",
+  "py_fn": "_env_line_safe",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

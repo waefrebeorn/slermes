@@ -1,0 +1,30 @@
+{
+  "name": "port__cli_py___bind_prompt_submit_keys",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_bind_prompt_submit_keys",
+  "py_module": "cli.py",
+  "py_fn": "_bind_prompt_submit_keys",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

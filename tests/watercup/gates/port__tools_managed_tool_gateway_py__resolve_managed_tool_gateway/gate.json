@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_managed_tool_gateway_py__resolve_managed_tool_gateway",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_managed_tool_gateway",
+  "py_module": "tools/managed_tool_gateway.py",
+  "py_fn": "resolve_managed_tool_gateway",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

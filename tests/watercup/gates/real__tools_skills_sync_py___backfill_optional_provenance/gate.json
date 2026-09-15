@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skills_sync_py___backfill_optional_provenance",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_backfill_optional_provenance",
+  "py_module": "tools/skills_sync.py",
+  "py_fn": "_backfill_optional_provenance",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

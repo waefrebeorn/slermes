@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_toolset_validation_py___platform_default_is_valid",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_platform_default_is_valid",
+  "py_module": "hermes_cli/toolset_validation.py",
+  "py_fn": "_platform_default_is_valid",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

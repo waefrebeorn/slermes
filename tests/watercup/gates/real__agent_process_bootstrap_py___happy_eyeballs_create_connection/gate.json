@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_process_bootstrap_py___happy_eyeballs_create_connection",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_happy_eyeballs_create_connection",
+  "py_module": "agent/process_bootstrap.py",
+  "py_fn": "_happy_eyeballs_create_connection",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

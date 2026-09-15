@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_dashboard_procs_py___detect_concurrent_hermes_instances",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_detect_concurrent_hermes_instances",
+  "py_module": "hermes_cli/dashboard_procs.py",
+  "py_fn": "_detect_concurrent_hermes_instances",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

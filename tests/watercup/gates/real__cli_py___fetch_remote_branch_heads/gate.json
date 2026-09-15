@@ -1,0 +1,30 @@
+{
+  "name": "real__cli_py___fetch_remote_branch_heads",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_fetch_remote_branch_heads",
+  "py_module": "cli.py",
+  "py_fn": "_fetch_remote_branch_heads",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

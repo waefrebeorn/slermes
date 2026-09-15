@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_doctor_py__managed_scope_check",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "managed_scope_check",
+  "py_module": "hermes_cli/doctor.py",
+  "py_fn": "managed_scope_check",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

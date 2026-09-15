@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_chat_completion_helpers_py___report_stale_nonstream_kill",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_report_stale_nonstream_kill",
+  "py_module": "agent/chat_completion_helpers.py",
+  "py_fn": "_report_stale_nonstream_kill",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

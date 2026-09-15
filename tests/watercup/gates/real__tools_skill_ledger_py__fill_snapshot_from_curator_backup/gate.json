@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skill_ledger_py__fill_snapshot_from_curator_backup",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "fill_snapshot_from_curator_backup",
+  "py_module": "tools/skill_ledger.py",
+  "py_fn": "fill_snapshot_from_curator_backup",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_run_py___schedule_update_notification_watch",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_schedule_update_notification_watch",
+  "py_module": "gateway/run.py",
+  "py_fn": "_schedule_update_notification_watch",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

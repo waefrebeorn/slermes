@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_pet_generate_orchestrate_py__generate_base_drafts",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "generate_base_drafts",
+  "py_module": "agent/pet/generate/orchestrate.py",
+  "py_fn": "generate_base_drafts",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

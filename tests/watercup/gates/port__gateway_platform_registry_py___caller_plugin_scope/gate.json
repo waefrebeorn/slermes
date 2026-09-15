@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platform_registry_py___caller_plugin_scope",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_caller_plugin_scope",
+  "py_module": "gateway/platform_registry.py",
+  "py_fn": "_caller_plugin_scope",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

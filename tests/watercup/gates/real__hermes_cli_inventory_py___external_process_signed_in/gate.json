@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_inventory_py___external_process_signed_in",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_external_process_signed_in",
+  "py_module": "hermes_cli/inventory.py",
+  "py_fn": "_external_process_signed_in",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

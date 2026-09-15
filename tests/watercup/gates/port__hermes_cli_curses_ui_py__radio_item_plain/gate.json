@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_curses_ui_py__radio_item_plain",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "radio_item_plain",
+  "py_module": "hermes_cli/curses_ui.py",
+  "py_fn": "radio_item_plain",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

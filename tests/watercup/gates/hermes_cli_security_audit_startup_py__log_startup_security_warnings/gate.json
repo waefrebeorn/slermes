@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_security_audit_startup_py__log_startup_security_warnings",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_security_audit_star_log_startup_security_warnings",
+  "py_module": "hermes_cli/security_audit_startup.py",
+  "py_fn": "log_startup_security_warnings",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

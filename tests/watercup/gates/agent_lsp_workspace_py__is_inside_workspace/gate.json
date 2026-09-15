@@ -1,0 +1,29 @@
+{
+  "name": "agent_lsp_workspace_py__is_inside_workspace",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "lsw_is_inside_workspace",
+  "py_module": "agent/lsp/workspace.py",
+  "py_fn": "is_inside_workspace",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

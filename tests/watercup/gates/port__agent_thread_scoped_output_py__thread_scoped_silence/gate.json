@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_thread_scoped_output_py__thread_scoped_silence",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "thread_scoped_silence",
+  "py_module": "agent/thread_scoped_output.py",
+  "py_fn": "thread_scoped_silence",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

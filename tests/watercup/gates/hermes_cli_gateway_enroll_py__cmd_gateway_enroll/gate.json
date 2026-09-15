@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_enroll_py__cmd_gateway_enroll",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_gateway_enroll_cmd_gateway_enroll",
+  "py_module": "hermes_cli/gateway_enroll.py",
+  "py_fn": "cmd_gateway_enroll",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

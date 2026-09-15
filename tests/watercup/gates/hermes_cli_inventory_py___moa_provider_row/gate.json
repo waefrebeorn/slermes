@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_inventory_py___moa_provider_row",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_inventory_u_moa_provider_row",
+  "py_module": "hermes_cli/inventory.py",
+  "py_fn": "_moa_provider_row",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

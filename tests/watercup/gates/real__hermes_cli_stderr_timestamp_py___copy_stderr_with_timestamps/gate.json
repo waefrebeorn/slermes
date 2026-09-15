@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_stderr_timestamp_py___copy_stderr_with_timestamps",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_copy_stderr_with_timestamps",
+  "py_module": "hermes_cli/stderr_timestamp.py",
+  "py_fn": "_copy_stderr_with_timestamps",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

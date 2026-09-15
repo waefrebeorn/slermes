@@ -1,0 +1,29 @@
+{
+  "name": "agent_proxy_sources_iron_proxy_py__reload_proxy",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ipx_reload_proxy",
+  "py_module": "agent/proxy_sources/iron_proxy.py",
+  "py_fn": "reload_proxy",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

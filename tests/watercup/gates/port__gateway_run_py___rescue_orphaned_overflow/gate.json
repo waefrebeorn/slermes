@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_run_py___rescue_orphaned_overflow",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_rescue_orphaned_overflow",
+  "py_module": "gateway/run.py",
+  "py_fn": "_rescue_orphaned_overflow",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

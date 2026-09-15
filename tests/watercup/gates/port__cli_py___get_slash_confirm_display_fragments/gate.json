@@ -1,0 +1,30 @@
+{
+  "name": "port__cli_py___get_slash_confirm_display_fragments",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_get_slash_confirm_display_fragments",
+  "py_module": "cli.py",
+  "py_fn": "_get_slash_confirm_display_fragments",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

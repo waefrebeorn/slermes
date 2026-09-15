@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_delegate_tool_py___expand_parent_toolsets",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_expand_parent_toolsets",
+  "py_module": "tools/delegate_tool.py",
+  "py_fn": "_expand_parent_toolsets",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

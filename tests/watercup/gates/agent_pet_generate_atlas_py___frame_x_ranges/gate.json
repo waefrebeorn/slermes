@@ -1,0 +1,29 @@
+{
+  "name": "agent_pet_generate_atlas_py___frame_x_ranges",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_pet_generate_atlas_u_frame_x_ranges",
+  "py_module": "agent/pet/generate/atlas.py",
+  "py_fn": "_frame_x_ranges",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

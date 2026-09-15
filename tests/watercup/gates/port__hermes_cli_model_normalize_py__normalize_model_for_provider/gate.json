@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_model_normalize_py__normalize_model_for_provider",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "normalize_model_for_provider",
+  "py_module": "hermes_cli/model_normalize.py",
+  "py_fn": "normalize_model_for_provider",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

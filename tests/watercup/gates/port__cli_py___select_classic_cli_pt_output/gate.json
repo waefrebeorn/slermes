@@ -1,0 +1,30 @@
+{
+  "name": "port__cli_py___select_classic_cli_pt_output",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_select_classic_cli_pt_output",
+  "py_module": "cli.py",
+  "py_fn": "_select_classic_cli_pt_output",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

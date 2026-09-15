@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_dashboard_auth_login_page_py___render_password_form",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_render_password_form",
+  "py_module": "hermes_cli/dashboard_auth/login_page.py",
+  "py_fn": "_render_password_form",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

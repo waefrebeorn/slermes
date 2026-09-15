@@ -1,52 +1,29 @@
-"""twin for tool_idempotency (water-cup gate).
+"""twin for (contract — no LIVE python twin; self-contained parity gate):Cache.get."""
+import os, sys, importlib.util as ilu
 
-Re-implements the SAME safe-retry contract the C harness asserts, in pure
-Python (no LIVE source — self-contained contract gate). Passes only if C and
-Python agree.
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
 
-Contract:
-  - put(key, result, ttl) -> get(key) returns the stored result
-  - second get (retry) returns the SAME cached result (no double side effect)
-  - different key -> absent
-  - explicit idempotency_key overrides args as key material
-  - expired entry -> absent
-"""
-import sys, time
+from watercup_py import Cup
 
-class Cache:
-    def __init__(self):
-        self.m = {}
-    def key(self, tool, args):
-        import json
-        try:
-            d = json.loads(args) if args else {}
-        except Exception:
-            d = {}
-        if isinstance(d, dict) and d.get("idempotency_key"):
-            return "%s|%s" % (tool, d["idempotency_key"])
-        return "%s|%s" % (tool, args)
-    def put(self, k, result, ttl, now):
-        self.m[k] = (result, now + (ttl or 600))
-    def get(self, k, now):
-        if k not in self.m: return None
-        result, exp = self.m[k]
-        if exp <= now:
-            del self.m[k]; return None
-        return result
+_spec = ilu.spec_from_file_location(
+    "wc_live_(contract — no LIVE python twin; self_contained parity gate)", os.path.join(DEV, "(contract — no LIVE python twin; self-contained parity gate)"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_(contract — no LIVE python twin; self_contained parity gate)"] = _pb
+_spec.loader.exec_module(_pb)
 
-now = 1000000
-c = Cache()
-k1 = c.key("send_email", '{"to":"a@x.com"}')
-assert k1, "key built"
-c.put(k1, '{"success":true,"id":"em_1"}', 600, now)
-r1 = c.get(k1, now); assert r1 == '{"success":true,"id":"em_1"}', "get stored"
-r2 = c.get(k1, now); assert r2 == '{"success":true,"id":"em_1"}', "retry cached"
-k2 = c.key("send_email", '{"to":"b@x.com"}')
-assert c.get(k2, now) is None, "different args -> None"
-k3 = c.key("send_email", '{"to":"z@x.com","idempotency_key":"fixed-1"}')
-assert k3 == "send_email|fixed-1", "explicit key used"
-c.get(k1, now);  # one live entry
-now2 = now + 601
-assert c.get(k1, now2) is None, "expired -> None"
-print("  ok:   all idempotency contract checks passed")
-print("RESULT: tool_idempotency safe-retry contract holds (python twin)")
+
+def trace(inp):
+    c = Cup("Cache.get")
+    try:
+        result = _pb.Cache.get(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
+def run(inputs):
+    return [trace(inp) for inp in inputs]

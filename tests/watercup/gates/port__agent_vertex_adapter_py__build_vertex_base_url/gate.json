@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_vertex_adapter_py__build_vertex_base_url",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_vertex_base_url",
+  "py_module": "agent/vertex_adapter.py",
+  "py_fn": "build_vertex_base_url",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

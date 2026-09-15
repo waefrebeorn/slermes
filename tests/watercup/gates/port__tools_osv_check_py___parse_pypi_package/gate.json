@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_osv_check_py___parse_pypi_package",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_parse_pypi_package",
+  "py_module": "tools/osv_check.py",
+  "py_fn": "_parse_pypi_package",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

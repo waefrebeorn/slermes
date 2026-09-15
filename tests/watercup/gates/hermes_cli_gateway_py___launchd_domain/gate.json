@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_py___launchd_domain",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cgw_u_launchd_domain",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "_launchd_domain",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

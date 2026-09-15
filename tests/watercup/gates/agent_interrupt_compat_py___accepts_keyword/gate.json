@@ -1,0 +1,29 @@
+{
+  "name": "agent_interrupt_compat_py___accepts_keyword",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_interrupt_compat_accepts_keyword",
+  "py_module": "agent/interrupt_compat.py",
+  "py_fn": "_accepts_keyword",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

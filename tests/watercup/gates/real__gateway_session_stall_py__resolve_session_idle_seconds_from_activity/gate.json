@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_session_stall_py__resolve_session_idle_seconds_from_activity",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_session_idle_seconds_from_activity",
+  "py_module": "gateway/session_stall.py",
+  "py_fn": "resolve_session_idle_seconds_from_activity",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_streaming_tts_consumer_py___iter_stream_chunks",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_iter_stream_chunks",
+  "py_module": "gateway/streaming_tts_consumer.py",
+  "py_fn": "_iter_stream_chunks",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

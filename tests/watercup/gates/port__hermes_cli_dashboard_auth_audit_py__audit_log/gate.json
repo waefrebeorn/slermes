@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_dashboard_auth_audit_py__audit_log",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "audit_log",
+  "py_module": "hermes_cli/dashboard_auth/audit.py",
+  "py_fn": "audit_log",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

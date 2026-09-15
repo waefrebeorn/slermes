@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_local_py___cwd_usable",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "envl_u_cwd_usable",
+  "py_module": "tools/environments/local.py",
+  "py_fn": "_cwd_usable",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

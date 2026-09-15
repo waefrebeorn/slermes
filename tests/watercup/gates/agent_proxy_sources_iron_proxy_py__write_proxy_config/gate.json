@@ -1,0 +1,29 @@
+{
+  "name": "agent_proxy_sources_iron_proxy_py__write_proxy_config",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ipx_write_proxy_config",
+  "py_module": "agent/proxy_sources/iron_proxy.py",
+  "py_fn": "write_proxy_config",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

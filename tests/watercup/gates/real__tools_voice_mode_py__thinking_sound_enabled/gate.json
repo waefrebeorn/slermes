@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_voice_mode_py__thinking_sound_enabled",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "thinking_sound_enabled",
+  "py_module": "tools/voice_mode.py",
+  "py_fn": "thinking_sound_enabled",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

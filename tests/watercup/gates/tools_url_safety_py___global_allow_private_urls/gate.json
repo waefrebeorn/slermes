@@ -1,0 +1,29 @@
+{
+  "name": "tools_url_safety_py___global_allow_private_urls",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yaml_config_allow_private",
+  "py_module": "tools/url_safety.py",
+  "py_fn": "_global_allow_private_urls",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

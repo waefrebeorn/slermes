@@ -1,0 +1,29 @@
+{
+  "name": "agent_model_metadata_py___query_ollama_api_show_uncached",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_model_metadata_u_query_ollama_api_show_uncached",
+  "py_module": "agent/model_metadata.py",
+  "py_fn": "_query_ollama_api_show_uncached",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

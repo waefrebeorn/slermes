@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_profiles_py___safe_extract_profile_archive",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "profile_safe_extract_archive",
+  "py_module": "hermes_cli/profiles.py",
+  "py_fn": "_safe_extract_profile_archive",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

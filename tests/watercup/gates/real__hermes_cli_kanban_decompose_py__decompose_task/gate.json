@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_kanban_decompose_py__decompose_task",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "decompose_task",
+  "py_module": "hermes_cli/kanban_decompose.py",
+  "py_fn": "decompose_task",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

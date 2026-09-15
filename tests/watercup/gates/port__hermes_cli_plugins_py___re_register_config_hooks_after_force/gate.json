@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_plugins_py___re_register_config_hooks_after_force",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_re_register_config_hooks_after_force",
+  "py_module": "hermes_cli/plugins.py",
+  "py_fn": "_re_register_config_hooks_after_force",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

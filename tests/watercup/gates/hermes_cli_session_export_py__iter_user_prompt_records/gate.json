@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_session_export_py__iter_user_prompt_records",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sexp_iter_user_prompt_records",
+  "py_module": "hermes_cli/session_export.py",
+  "py_fn": "iter_user_prompt_records",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

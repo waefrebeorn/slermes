@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___prompt_custom_api_mode_selection",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_u_prompt_custom_api_mode_selection",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_prompt_custom_api_mode_selection",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

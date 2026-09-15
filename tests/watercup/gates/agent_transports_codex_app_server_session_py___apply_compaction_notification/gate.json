@@ -1,0 +1,29 @@
+{
+  "name": "agent_transports_codex_app_server_session_py___apply_compaction_notification",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cas2_apply_compaction_notification",
+  "py_module": "agent/transports/codex_app_server_session.py",
+  "py_fn": "_apply_compaction_notification",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

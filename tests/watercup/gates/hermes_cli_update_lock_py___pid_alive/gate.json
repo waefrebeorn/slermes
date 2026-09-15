@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_update_lock_py___pid_alive",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ul_pid_alive",
+  "py_module": "hermes_cli/update_lock.py",
+  "py_fn": "_pid_alive",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

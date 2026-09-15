@@ -83,7 +83,7 @@ static int wc_parse(const char *error_msg) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s parse_available_output_tokens_from_error <msgs...>\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s parse_available_output_tokens_from_error <msgs...>\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) wc_parse(argv[i]);
     return 0;
 }

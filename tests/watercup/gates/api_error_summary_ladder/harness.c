@@ -117,7 +117,7 @@ static int wc_json_body_message(const char *raw, char *out, int outsz)
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) { fprintf(stderr, "usage: %s fn <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s fn <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         const char *in = argv[i];
         /* strip the 5-char tag prefix ("NET:"/"VE:"/"HTML:"/"BODY:"/"RAW:") */

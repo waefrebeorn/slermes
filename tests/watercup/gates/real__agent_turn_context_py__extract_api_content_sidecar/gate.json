@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_turn_context_py__extract_api_content_sidecar",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "extract_api_content_sidecar",
+  "py_module": "agent/turn_context.py",
+  "py_fn": "extract_api_content_sidecar",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

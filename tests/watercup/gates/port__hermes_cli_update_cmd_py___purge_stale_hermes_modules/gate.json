@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_update_cmd_py___purge_stale_hermes_modules",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_purge_stale_hermes_modules",
+  "py_module": "hermes_cli/update_cmd.py",
+  "py_fn": "_purge_stale_hermes_modules",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

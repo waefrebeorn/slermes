@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_local_runtime_binaries_py__resolve_assets",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_assets",
+  "py_module": "hermes_cli/local_runtime/binaries.py",
+  "py_fn": "resolve_assets",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "tools_clarify_gateway_py__resolve_clarify_timeout",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_clarify_gateway_resolve_clarify_timeout",
+  "py_module": "tools/clarify_gateway.py",
+  "py_fn": "resolve_clarify_timeout",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

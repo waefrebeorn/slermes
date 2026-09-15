@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_model_metadata_py___local_probe_disk_cache_path",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_local_probe_disk_cache_path",
+  "py_module": "agent/model_metadata.py",
+  "py_fn": "_local_probe_disk_cache_path",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

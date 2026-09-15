@@ -1,63 +1,29 @@
-"""twin for libcron_next_run.
-
-LIVE scheduling twin: croniter (the engine hermes_cli/cron.py uses).
-Traces the same decision rungs as the C harness over each probe:
-  B1 @-special / B2 invalid expression / B3 next found / V1 next epoch (UTC).
-Probes: "expr|from_epoch".
-"""
-import os
-import sys
-import calendar
-from datetime import datetime, timezone
+"""twin for croniter:croniter.get_next."""
+import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
 from watercup_py import Cup
 
-from croniter import croniter
+_spec = ilu.spec_from_file_location(
+    "wc_live_croniter", os.path.join(DEV, "croniter"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_croniter"] = _pb
+_spec.loader.exec_module(_pb)
 
 
-def trace(expr, from_epoch):
-    c = Cup("cron_next_run")
-    # B1: @-special
-    if expr.startswith("@") and not expr.startswith("@every "):
-        c.branch(True)
-    else:
-        c.branch(False)
-
-    dt_from = datetime.fromtimestamp(from_epoch, tz=timezone.utc)
+def trace(inp):
+    c = Cup("croniter.get_next")
     try:
-        it = croniter(expr, dt_from)
-        invalid = False
-    except Exception:
-        invalid = True
-
-    if invalid:                                          # B2
-        c.branch(True)
-        c.valstr("-1")
-        c.finalize()
-        return -1, c
-    c.branch(False)
-
-    try:
-        nxt = it.get_next(datetime)
-    except Exception:
-        nxt = None
-    if nxt is None:                                      # B3: no occurrence
-        c.branch(False)
-        c.valstr("-1")
-        c.finalize()
-        return -1, c
-
-    epoch = calendar.timegm(nxt.utctimetuple())
-    c.branch(True)                                       # B3
-    c.valstr(str(epoch))
-    c.finalize()
-    return epoch, c
+        result = _pb.croniter.get_next(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
 
 
 def run(inputs):
-    outs = []
-    for probe in inputs:
-        expr, _, ep = probe.rpartition("|")
-        outs.append(trace(expr, int(ep))[1].finalize())
-    return outs
+    return [trace(inp) for inp in inputs]

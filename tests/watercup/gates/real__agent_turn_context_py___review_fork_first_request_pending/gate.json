@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_turn_context_py___review_fork_first_request_pending",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_review_fork_first_request_pending",
+  "py_module": "agent/turn_context.py",
+  "py_fn": "_review_fork_first_request_pending",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

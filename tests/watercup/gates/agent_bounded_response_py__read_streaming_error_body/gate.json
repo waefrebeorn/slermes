@@ -1,0 +1,29 @@
+{
+  "name": "agent_bounded_response_py__read_streaming_error_body",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_bounded_response_read_streaming_error_body",
+  "py_module": "agent/bounded_response.py",
+  "py_fn": "read_streaming_error_body",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

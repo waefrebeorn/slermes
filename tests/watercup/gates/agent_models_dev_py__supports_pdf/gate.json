@@ -1,0 +1,29 @@
+{
+  "name": "agent_models_dev_py__supports_pdf",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mdv_supports_pdf",
+  "py_module": "agent/models_dev.py",
+  "py_fn": "supports_pdf",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

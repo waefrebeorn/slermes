@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_run_py__close_all_session_db_handles",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "close_all_session_db_handles",
+  "py_module": "gateway/run.py",
+  "py_fn": "close_all_session_db_handles",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_context_compressor_py___build_static_fallback_summary",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_build_static_fallback_summary",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_build_static_fallback_summary",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "tools_async_delegation_py__release_event_delivery",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "adel_release_event_delivery",
+  "py_module": "tools/async_delegation.py",
+  "py_fn": "release_event_delivery",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

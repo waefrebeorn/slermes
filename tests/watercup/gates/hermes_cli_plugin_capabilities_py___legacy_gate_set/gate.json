@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_plugin_capabilities_py___legacy_gate_set",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "pc_legacy_gate_set",
+  "py_module": "hermes_cli/plugin_capabilities.py",
+  "py_fn": "_legacy_gate_set",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

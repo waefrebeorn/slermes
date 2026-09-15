@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_commands_py___interactive_reset",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_auth_commands_u_interactive_reset",
+  "py_module": "hermes_cli/auth_commands.py",
+  "py_fn": "_interactive_reset",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

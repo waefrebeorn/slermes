@@ -1,0 +1,29 @@
+{
+  "name": "agent_model_metadata_py__is_grok_46_family",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_grok_46_family",
+  "py_module": "agent/model_metadata.py",
+  "py_fn": "is_grok_46_family",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_qqbot_adapter_py___call_stt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "qqbot_u_call_stt",
+  "py_module": "gateway/platforms/qqbot/adapter.py",
+  "py_fn": "_call_stt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

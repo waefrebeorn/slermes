@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_browser_cdp_tool_py___browser_cdp_check",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_browser_cdp_check",
+  "py_module": "tools/browser_cdp_tool.py",
+  "py_fn": "_browser_cdp_check",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

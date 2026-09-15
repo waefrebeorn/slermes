@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_environments_base_py__touch_activity_if_due",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "touch_activity_if_due",
+  "py_module": "tools/environments/base.py",
+  "py_fn": "touch_activity_if_due",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

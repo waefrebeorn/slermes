@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_base_py__coerce_plaintext_gateway_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gw_base__coerce_plaintext_gateway_command",
+  "py_module": "gateway/platforms/base.py",
+  "py_fn": "coerce_plaintext_gateway_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

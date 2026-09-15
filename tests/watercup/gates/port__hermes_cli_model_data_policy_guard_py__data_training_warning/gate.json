@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_model_data_policy_guard_py__data_training_warning",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "data_training_warning",
+  "py_module": "hermes_cli/model_data_policy_guard.py",
+  "py_fn": "data_training_warning",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

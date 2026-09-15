@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_gitlock_py___git_proc_running",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_git_proc_running",
+  "py_module": "hermes_cli/gitlock.py",
+  "py_fn": "_git_proc_running",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

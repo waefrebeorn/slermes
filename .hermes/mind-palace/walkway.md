@@ -1,8 +1,23 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
+
+**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
+
+_Generated 2026-09-15T06:22:36Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # Walkway — Slermes C Translation
 
 ## Current Sprint: Gap Blitz + Stub Hunt
 
-**Active:** v541 (2026-07-07)
+**Active:**  ()
 **PORTED:** 4,664 (47.9%)
 **REAL_GAP:** 5,067 (52.1%)
 **Façade audit:** COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports; + follow-up sweep closed 3 more real fakes (antigravity HTTP, desktop OAuth, relay-WS) and reworded 4 misworded comments. Binary links, 36/36 tests pass.
@@ -31,12 +46,12 @@
 - 1:1 parity to TempleOS/Arch/Ubuntu infrastructure
 
 ## Completed Milestones
-- v443: 10-gap blitz complete
-- v444: 11-gap blitz complete
-- v445-448: 12-gap blitz complete (9 modules)
-- v449: 13-gap blitz complete (8 modules)
+- : 10-gap blitz complete
+- : 11-gap blitz complete
+- -448: 12-gap blitz complete (9 modules)
+- : 13-gap blitz complete (8 modules)
 - 2026-06-21: Discovered 3,350 scaffolding stubs
-- v541: FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs → real ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links, 36/36 tests pass.
+- : FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs → real ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links, 36/36 tests pass.
 
 ## Next Actions
 1. 14-gap blitz (7 modules)

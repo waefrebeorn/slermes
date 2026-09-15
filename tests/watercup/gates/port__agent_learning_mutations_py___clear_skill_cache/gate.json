@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_learning_mutations_py___clear_skill_cache",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_clear_skill_cache",
+  "py_module": "agent/learning_mutations.py",
+  "py_fn": "_clear_skill_cache",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

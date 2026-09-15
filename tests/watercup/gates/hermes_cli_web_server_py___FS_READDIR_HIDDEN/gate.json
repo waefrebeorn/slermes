@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_web_server_py___FS_READDIR_HIDDEN",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ws_fs_readdir_hidden",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_FS_READDIR_HIDDEN",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

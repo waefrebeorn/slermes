@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_nous_auth_keepalive_py__refresh_nous_auth_keepalive_once",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_nous_auth_keepalive_refresh_nous_auth_keepalive_once",
+  "py_module": "hermes_cli/nous_auth_keepalive.py",
+  "py_fn": "refresh_nous_auth_keepalive_once",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

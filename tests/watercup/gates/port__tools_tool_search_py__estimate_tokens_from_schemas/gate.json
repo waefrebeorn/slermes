@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_tool_search_py__estimate_tokens_from_schemas",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "estimate_tokens_from_schemas",
+  "py_module": "tools/tool_search.py",
+  "py_fn": "estimate_tokens_from_schemas",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_image_generation_tool_py___build_no_backend_setup_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_build_no_backend_setup_message",
+  "py_module": "tools/image_generation_tool.py",
+  "py_fn": "_build_no_backend_setup_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli__parser_py__top_level_value_flag_sets",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "top_level_value_flag_sets",
+  "py_module": "hermes_cli/_parser.py",
+  "py_fn": "top_level_value_flag_sets",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

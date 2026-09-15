@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_x_search_tool_py___resolve_xai_bearer",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_resolve_xai_bearer",
+  "py_module": "tools/x_search_tool.py",
+  "py_fn": "_resolve_xai_bearer",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

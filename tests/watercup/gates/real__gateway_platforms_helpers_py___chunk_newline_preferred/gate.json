@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_helpers_py___chunk_newline_preferred",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_chunk_newline_preferred",
+  "py_module": "gateway/platforms/helpers.py",
+  "py_fn": "_chunk_newline_preferred",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

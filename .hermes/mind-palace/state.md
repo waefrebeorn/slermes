@@ -1,10 +1,10 @@
-# State — Slermes C Translation (v671, PORT phase)
+# State — Slermes C Translation (, PORT phase)
 
 - Build: `make slermes` = 0 errors, binary links clean (~48.9 MB)
 - Tests: `bash tests/run_mission8_tests.sh` → 77 passed, 0 failed, 0 skipped; hunter `--verify` → 0 missed / 7,514 exported symbols
 - Desktop parity: 111 features mapped, ~99 missing (4% complete) — separate workstream
 
-## This Session (v667) — Stub Sweep + Classifier Honesty (210 gaps closed so far)
+## This Session () — Stub Sweep + Classifier Honesty (210 gaps closed so far)
 
 - **Setter rule (classifier):** assignment to a symbol NOT defined in the port
   file is a legitimate setter, not a bootleg (mirrors getter rule) — 11 flips.
@@ -24,13 +24,13 @@
   real splitter), status signatures, clipboard macOS fallbacks, bluebubbles
   api url, env helpers, credential pool, aux client, codex fingerprint.
 
-(Mission8 77/0, hunter VERIFY 0 missed).
+(, hunter VERIFY 0 missed).
 - `ede4b86adf` batch 1 — +31 (20 stubs + 11 setter flips)
 - `0d76eda554` batch 2 — +38 (22 stubs + 16 bare-call flips)
 - `d2fad16d2e` batch 3 — +22 (22 stubs)
 - `0bff81812f` batch 4 — +19 (19 stubs)
 
-## This Session (v666) — Census Truth + 142-Gap Stub Sweep
+## This Session () — Census Truth + 142-Gap Stub Sweep
 
 The parity census was corrected and then drained:
 
@@ -54,9 +54,9 @@ The parity census was corrected and then drained:
   trio, modal mode coerce, token redaction, ISO timestamps, env getters, path
   helpers, cmd shims, and ~80 more small-to-medium ports.
 
-(Mission8 77/0, hunter VERIFY 0 missed).
+(, hunter VERIFY 0 missed).
 
-*(prior-session record, kept for history — v665 façade/orphan session's port list:)*
+*(prior-session record, kept for history —  façade/orphan session's port list:)*
 7. **port_agent_gemini_cloudcode_adapter_methods.c** — 2 stubs → real Gemini Generative Language API (generateContent/stream) + OpenAI-format translation
 8. **port_agent_browser_provider_methods.c** — abstract create_session → real Browserbase API call when configured, NULL otherwise (honest)
 9. **port_agent_tts_provider_methods.c** — 3 stubs → honest abstract: list_voices=0, synthesize/stream=NULL (matches Python NotImplementedError)
@@ -80,7 +80,7 @@ Extended the façade sweep to the 7 residual `simulate`/fake-comment files. Outc
 - **shell_hooks / image_generation / browser / port_send_message_tool** — `simulate` comments were misworded; behavior already real (env-var dispatch, lazy-load flag, text-browser UI text, retry_after parse). Reworded; left honest UI/help text in browser.c.
 - 36/36 tests still pass; full tree now free of fake-looking stub code.
 
-## This Session (v570) — Parity Gap Closure (post-façade)
+## This Session () — Parity Gap Closure (post-façade)
 
 Continued the gap-closure pass: ported 70 REAL_GAP functions across 15 modules, all
 committed + pushed, build clean, 36/36 tests green. Real gaps dropped 5,053 → 4,989
@@ -106,7 +106,7 @@ Modules ported (commits):
 - `b21caa411c` gateway — 5 platform/env (uname/sha256)
 - `9f3a620f81` kanban — 4 CLI/time helpers
 
-## This Session (v666) — Pure-Transform Gap Closure (17 funcs)
+## This Session () — Pure-Transform Gap Closure (17 funcs)
 
 Ported 17 REAL_GAP functions across 6 modules with faithful C11 + `/* PoP: */`
 annotations, each backed by an oracle harness (`t_port_*.c` + `sta_oracle_*.py`)
@@ -122,16 +122,17 @@ verified 0 mismatches vs live Python. Build links clean, Mission 8: 36/0/35.
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 15,758 / 16,714 (94.3%) |
-| REAL_GAP| 942 (5.6%) — no N/A |
-|  ├ DA-4 annotation-only stubs | 56 (PoP comment, no C body) |
-|  └ Genuine gaps (no C at all) | 886 |
-| PARTIAL | 14 (0.1%) |
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 annotation-only stubs | 11 (PoP comment, no C body) |
+|  └ Genuine gaps (no C at all) | 11,704 |
+| PARTIAL | 38 (0.2%) |
 | BOOTLEG | 0 (recursive_false_gap_hunter.py) |
+| **Watercup** | 313 PASS / 22,604 total (1.4%) — 22,291 fail |
 
-**Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v672):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 2,037 ahead / 1,052 behind upstream/main (last merge 2026-08-23 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-29T08:35:07Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-09-15T04:34:33Z from live scanner `tests/slermes_parity_battleground.py` + watercup oracle (22,604 trace-cup gates) — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

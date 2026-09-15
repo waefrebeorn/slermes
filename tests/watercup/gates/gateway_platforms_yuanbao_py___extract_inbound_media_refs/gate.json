@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py___extract_inbound_media_refs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_u_extract_inbound_media_refs",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "_extract_inbound_media_refs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_computer_use_doctor_py___sanitized_cua_env",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_sanitized_cua_env",
+  "py_module": "tools/computer_use/doctor.py",
+  "py_fn": "_sanitized_cua_env",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

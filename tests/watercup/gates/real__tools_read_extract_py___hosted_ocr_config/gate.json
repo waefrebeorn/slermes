@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_read_extract_py___hosted_ocr_config",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_hosted_ocr_config",
+  "py_module": "tools/read_extract.py",
+  "py_fn": "_hosted_ocr_config",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_session_recovery_py__recover_session_database",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "recover_session_database",
+  "py_module": "hermes_cli/session_recovery.py",
+  "py_fn": "recover_session_database",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

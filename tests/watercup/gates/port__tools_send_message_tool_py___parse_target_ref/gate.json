@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_send_message_tool_py___parse_target_ref",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_parse_target_ref",
+  "py_module": "tools/send_message_tool.py",
+  "py_fn": "_parse_target_ref",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

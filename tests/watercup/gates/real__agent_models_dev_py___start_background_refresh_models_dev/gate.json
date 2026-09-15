@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_models_dev_py___start_background_refresh_models_dev",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_start_background_refresh_models_dev",
+  "py_module": "agent/models_dev.py",
+  "py_fn": "_start_background_refresh_models_dev",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

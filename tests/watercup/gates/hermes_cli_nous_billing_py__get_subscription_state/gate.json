@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_nous_billing_py__get_subscription_state",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_nous_billing_get_subscription_state",
+  "py_module": "hermes_cli/nous_billing.py",
+  "py_fn": "get_subscription_state",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

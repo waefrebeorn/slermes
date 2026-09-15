@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_mcp_tool_py___get_auth_error_types",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_get_auth_error_types",
+  "py_module": "tools/mcp_tool.py",
+  "py_fn": "_get_auth_error_types",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

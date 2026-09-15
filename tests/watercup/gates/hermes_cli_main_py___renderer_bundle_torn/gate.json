@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___renderer_bundle_torn",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mn_renderer_bundle_torn",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_renderer_bundle_torn",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

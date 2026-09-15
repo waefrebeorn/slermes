@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py___collect_quote_local_media",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_u_collect_quote_local_media",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "_collect_quote_local_media",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

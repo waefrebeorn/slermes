@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___resume_windows_gateways_after_update",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_u_resume_windows_gateways_after_update",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_resume_windows_gateways_after_update",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

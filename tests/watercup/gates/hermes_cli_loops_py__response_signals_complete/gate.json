@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_loops_py__response_signals_complete",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "loops_response_signals_complete",
+  "py_module": "hermes_cli/loops.py",
+  "py_fn": "response_signals_complete",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

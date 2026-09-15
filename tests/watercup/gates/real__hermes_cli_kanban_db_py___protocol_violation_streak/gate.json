@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_kanban_db_py___protocol_violation_streak",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_protocol_violation_streak",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "_protocol_violation_streak",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

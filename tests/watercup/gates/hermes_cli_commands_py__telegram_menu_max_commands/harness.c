@@ -1,0 +1,25 @@
+/* gate: hermes_cli_commands_py__telegram_menu_max_commands — traced copy of commands_telegram_menu_max_commands */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "watercup.h"
+
+extern int commands_telegram_menu_max_commands(const char *input);
+
+static void trace_one(const char *input) {
+    WCUP_BEGIN("commands_telegram_menu_max_commands");
+    int result = commands_telegram_menu_max_commands(input);
+    WCUP_VALINT(result);
+    char cup[32];
+    WCUP_FINALIZE(cup, sizeof cup);
+    printf("%s\n", cup);
+    WCUP_END("commands_telegram_menu_max_commands");
+}
+
+int main(int argc, char **argv) {
+    if (argc < 3) { fprintf(stderr, "usage: %s commands_telegram_menu_max_commands <input>...\n", argv[0]); return 2; }
+    for (int i = 2; i < argc; i++) {
+        trace_one(argv[i]);
+    }
+    return 0;
+}

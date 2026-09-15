@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli__startup_fast_py__print_fast_version_info",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "print_fast_version_info",
+  "py_module": "hermes_cli/_startup_fast.py",
+  "py_fn": "print_fast_version_info",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

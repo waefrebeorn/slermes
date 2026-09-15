@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_signal_rate_limit_py___is_signal_rate_limit_error",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+  "py_module": "gateway/platforms/signal_rate_limit.py",
+  "py_fn": "_is_signal_rate_limit_error",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

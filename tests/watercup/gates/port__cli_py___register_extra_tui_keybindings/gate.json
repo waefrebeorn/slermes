@@ -1,0 +1,30 @@
+{
+  "name": "port__cli_py___register_extra_tui_keybindings",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_register_extra_tui_keybindings",
+  "py_module": "cli.py",
+  "py_fn": "_register_extra_tui_keybindings",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

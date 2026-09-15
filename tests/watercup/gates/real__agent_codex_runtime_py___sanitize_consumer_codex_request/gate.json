@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_codex_runtime_py___sanitize_consumer_codex_request",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_sanitize_consumer_codex_request",
+  "py_module": "agent/codex_runtime.py",
+  "py_fn": "_sanitize_consumer_codex_request",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

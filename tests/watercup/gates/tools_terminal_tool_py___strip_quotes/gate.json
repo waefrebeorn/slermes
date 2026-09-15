@@ -1,0 +1,29 @@
+{
+  "name": "tools_terminal_tool_py___strip_quotes",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_looks_like_help_or_version_command",
+  "py_module": "tools/terminal_tool.py",
+  "py_fn": "_strip_quotes",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

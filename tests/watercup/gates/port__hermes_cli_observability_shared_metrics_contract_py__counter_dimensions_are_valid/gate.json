@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_observability_shared_metrics_contract_py__counter_dimensions_are_valid",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "counter_dimensions_are_valid",
+  "py_module": "hermes_cli/observability/shared_metrics_contract.py",
+  "py_fn": "counter_dimensions_are_valid",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

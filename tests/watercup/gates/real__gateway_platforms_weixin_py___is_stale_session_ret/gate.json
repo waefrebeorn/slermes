@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_weixin_py___is_stale_session_ret",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_is_stale_session_ret",
+  "py_module": "gateway/platforms/weixin.py",
+  "py_fn": "_is_stale_session_ret",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

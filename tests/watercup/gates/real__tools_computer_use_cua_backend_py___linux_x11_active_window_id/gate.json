@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_computer_use_cua_backend_py___linux_x11_active_window_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_linux_x11_active_window_id",
+  "py_module": "tools/computer_use/cua_backend.py",
+  "py_fn": "_linux_x11_active_window_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

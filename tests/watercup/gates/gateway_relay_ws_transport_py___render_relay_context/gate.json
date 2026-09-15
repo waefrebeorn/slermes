@@ -1,0 +1,29 @@
+{
+  "name": "gateway_relay_ws_transport_py___render_relay_context",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_relay_ws_transport_u_render_relay_context",
+  "py_module": "gateway/relay/ws_transport.py",
+  "py_fn": "_render_relay_context",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

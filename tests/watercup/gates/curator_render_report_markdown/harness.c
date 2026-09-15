@@ -106,7 +106,7 @@ out:
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) {
+    if (argc < 3) {
         fprintf(stderr, "usage: %s render_report_markdown <report-json>...\n",
                 argv[0]);
         return 2;

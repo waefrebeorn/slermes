@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_gateway_py___guard_named_profile_under_multiplexer",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_guard_named_profile_under_multiplexer",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "_guard_named_profile_under_multiplexer",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

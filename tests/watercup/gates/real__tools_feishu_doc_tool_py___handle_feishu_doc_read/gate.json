@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_feishu_doc_tool_py___handle_feishu_doc_read",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_handle_feishu_doc_read",
+  "py_module": "tools/feishu_doc_tool.py",
+  "py_fn": "_handle_feishu_doc_read",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_bedrock_adapter_py___model_supports_tool_use",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "brd_model_supports_tool_use",
+  "py_module": "agent/bedrock_adapter.py",
+  "py_fn": "_model_supports_tool_use",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

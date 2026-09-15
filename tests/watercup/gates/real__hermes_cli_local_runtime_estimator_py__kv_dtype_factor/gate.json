@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_local_runtime_estimator_py__kv_dtype_factor",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "kv_dtype_factor",
+  "py_module": "hermes_cli/local_runtime/estimator.py",
+  "py_fn": "kv_dtype_factor",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

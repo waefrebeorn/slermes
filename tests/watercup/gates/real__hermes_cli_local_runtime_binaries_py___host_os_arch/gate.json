@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_local_runtime_binaries_py___host_os_arch",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_host_os_arch",
+  "py_module": "hermes_cli/local_runtime/binaries.py",
+  "py_fn": "_host_os_arch",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py__strip_cron_wrapper",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_strip_cron_wrapper",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "strip_cron_wrapper",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

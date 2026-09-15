@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py___fetch_resource_url",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_u_fetch_resource_url",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "_fetch_resource_url",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

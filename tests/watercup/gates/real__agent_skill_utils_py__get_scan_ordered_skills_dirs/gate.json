@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_skill_utils_py__get_scan_ordered_skills_dirs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_scan_ordered_skills_dirs",
+  "py_module": "agent/skill_utils.py",
+  "py_fn": "get_scan_ordered_skills_dirs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

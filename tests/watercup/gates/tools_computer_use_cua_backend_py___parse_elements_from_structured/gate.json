@@ -1,0 +1,29 @@
+{
+  "name": "tools_computer_use_cua_backend_py___parse_elements_from_structured",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cua_u_parse_elements_from_structured",
+  "py_module": "tools/computer_use/cua_backend.py",
+  "py_fn": "_parse_elements_from_structured",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

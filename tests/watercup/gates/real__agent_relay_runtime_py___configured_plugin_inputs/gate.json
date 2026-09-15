@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_relay_runtime_py___configured_plugin_inputs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_configured_plugin_inputs",
+  "py_module": "agent/relay_runtime.py",
+  "py_fn": "_configured_plugin_inputs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

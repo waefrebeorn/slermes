@@ -1,0 +1,29 @@
+{
+  "name": "agent_agent_init_py___resolve_compression_threshold",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_agent_init_u_resolve_compression_threshold",
+  "py_module": "agent/agent_init.py",
+  "py_fn": "_resolve_compression_threshold",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

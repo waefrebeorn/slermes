@@ -1,0 +1,29 @@
+{
+  "name": "tools_image_source_py___permitted_host_read_target",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_image_source_u_permitted_host_read_target",
+  "py_module": "tools/image_source.py",
+  "py_fn": "_permitted_host_read_target",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

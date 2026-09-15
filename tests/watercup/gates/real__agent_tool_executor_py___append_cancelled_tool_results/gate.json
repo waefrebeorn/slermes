@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_tool_executor_py___append_cancelled_tool_results",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_append_cancelled_tool_results",
+  "py_module": "agent/tool_executor.py",
+  "py_fn": "_append_cancelled_tool_results",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

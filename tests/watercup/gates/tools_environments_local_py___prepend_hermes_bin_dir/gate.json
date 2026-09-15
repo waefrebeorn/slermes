@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_local_py___prepend_hermes_bin_dir",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "envl_u_prepend_hermes_bin_dir",
+  "py_module": "tools/environments/local.py",
+  "py_fn": "_prepend_hermes_bin_dir",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

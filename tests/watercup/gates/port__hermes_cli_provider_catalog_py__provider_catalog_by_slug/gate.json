@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_provider_catalog_py__provider_catalog_by_slug",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "provider_catalog_by_slug",
+  "py_module": "hermes_cli/provider_catalog.py",
+  "py_fn": "provider_catalog_by_slug",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

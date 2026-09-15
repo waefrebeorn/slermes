@@ -1,0 +1,29 @@
+{
+  "name": "agent_conversation_compression_py__replay_compression_warning",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ccp_replay_compression_warning",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "replay_compression_warning",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

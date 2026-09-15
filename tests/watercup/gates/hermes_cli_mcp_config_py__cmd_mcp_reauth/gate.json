@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_mcp_config_py__cmd_mcp_reauth",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_mcp_config_cmd_mcp_reauth",
+  "py_module": "hermes_cli/mcp_config.py",
+  "py_fn": "cmd_mcp_reauth",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

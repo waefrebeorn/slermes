@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_py__is_provider_explicitly_configured",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_provider_explicitly_configured",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "is_provider_explicitly_configured",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

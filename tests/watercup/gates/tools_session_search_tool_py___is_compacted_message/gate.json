@@ -1,0 +1,29 @@
+{
+  "name": "tools_session_search_tool_py___is_compacted_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_session_search_tool_u_is_compacted_message",
+  "py_module": "tools/session_search_tool.py",
+  "py_fn": "_is_compacted_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

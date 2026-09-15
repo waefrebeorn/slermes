@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_foreign_sessions_py__parse_claude_session",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "parse_claude_session",
+  "py_module": "hermes_cli/foreign_sessions.py",
+  "py_fn": "parse_claude_session",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

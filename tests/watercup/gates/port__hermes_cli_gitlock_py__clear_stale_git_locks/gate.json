@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_gitlock_py__clear_stale_git_locks",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "clear_stale_git_locks",
+  "py_module": "hermes_cli/gitlock.py",
+  "py_fn": "clear_stale_git_locks",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

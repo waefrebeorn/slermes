@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_compression_py___session_was_rotated_by_compression",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_session_was_rotated_by_compression",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "_session_was_rotated_by_compression",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

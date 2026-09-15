@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_jobs_py___save_jobs_unlocked",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_save_jobs_unlocked",
+  "py_module": "cron/jobs.py",
+  "py_fn": "_save_jobs_unlocked",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

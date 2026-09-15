@@ -1,0 +1,29 @@
+{
+  "name": "tools_kanban_tools_py___reject_delegated_child_mutation",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_kanban_tools_u_reject_delegated_child_mutation",
+  "py_module": "tools/kanban_tools.py",
+  "py_fn": "_reject_delegated_child_mutation",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

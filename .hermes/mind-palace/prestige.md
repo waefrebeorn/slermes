@@ -1,4 +1,4 @@
-# Prestige — v671 Slermes C Translation
+# Prestige —  Slermes C Translation
 
 ## Phase
 Mission 2 COMPLETE — Desktop parity 95/111 features
@@ -16,11 +16,11 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 - Desktop features: 90/111 → 95/111 (100% of actionable items done)
 - Remaining 21 items are session/hooks (15+) and hooks (5) — internal React state management
 - These are implicitly handled by the C event loop and state.db integration
-- v497: Mission 2 COMPLETE (95/111 desktop features)
-- v498: MISSION 2 COMPLETE commit
-- v666: FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links clean, 36/36 tests pass.
+- : Mission 2 COMPLETE (95/111 desktop features)
+- : MISSION 2 COMPLETE commit
+- : FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links clean, 36/36 tests pass.
 
-## Since v480 — 18 commits, 5 prestige cycles
+## Since  — 18 commits, 5 prestige cycles
 
 ## Current State (historical baseline — see live block below)
 
@@ -39,7 +39,7 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 
 Mission 5: Documentation serving (serve ALL 749 upstream .md files via web_server.c)
 
-## v671 Prestige Cycle — Terminal env registry + systemd watchdog + daemon parity DA
+##  Prestige Cycle — Terminal env registry + systemd watchdog + daemon parity DA
 
 ### Form-not-function stub hunt (session focus)
 Targeted the terminal env layer (`tools/terminal_tool.py`) — it was STRUCTURALLY
@@ -96,19 +96,20 @@ bodies). Findings:
   thread-based supervisors. Gaps: unit files, XDG autostart, PID file, restart
   backoff state machine. Full analysis in `mind-palace/wubuos-daemon-parity-da.md`.
 
-## Since v480 — 19 commits, 6 prestige cycles
+## Since  — 19 commits, 6 prestige cycles
 
 <!-- PARITY:AUTO -->
-| PORTED  | 15,758 / 16,714 (94.3%) |
-| REAL_GAP| 942 (5.6%) — no N/A |
-|  ├ DA-4 annotation-only stubs | 56 (PoP comment, no C body) |
-|  └ Genuine gaps (no C at all) | 886 |
-| PARTIAL | 14 (0.1%) |
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 annotation-only stubs | 11 (PoP comment, no C body) |
+|  └ Genuine gaps (no C at all) | 11,704 |
+| PARTIAL | 38 (0.2%) |
 | BOOTLEG | 0 (recursive_false_gap_hunter.py) |
+| **Watercup** | 313 PASS / 22,604 total (1.4%) — 22,291 fail |
 
-**Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v672):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 2,037 ahead / 1,052 behind upstream/main (last merge 2026-08-23 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-29T08:35:07Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-09-15T04:34:33Z from live scanner `tests/slermes_parity_battleground.py` + watercup oracle (22,604 trace-cup gates) — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

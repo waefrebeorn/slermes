@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_agent_runtime_helpers_py___iter_httpx_pool_objects",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_iter_httpx_pool_objects",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "_iter_httpx_pool_objects",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

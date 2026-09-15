@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_security_advisories_py__short_banner_lines",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "short_banner_lines",
+  "py_module": "hermes_cli/security_advisories.py",
+  "py_fn": "short_banner_lines",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

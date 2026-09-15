@@ -1,0 +1,29 @@
+{
+  "name": "tools_file_operations_py___is_line_oriented_newline_error",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "file_ops_is_line_oriented_newline_error",
+  "py_module": "tools/file_operations.py",
+  "py_fn": "_is_line_oriented_newline_error",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_jobs_py___validate_job_mode_invariants",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_validate_job_mode_invariants",
+  "py_module": "cron/jobs.py",
+  "py_fn": "_validate_job_mode_invariants",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

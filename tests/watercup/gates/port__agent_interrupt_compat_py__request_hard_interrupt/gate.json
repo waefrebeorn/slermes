@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_interrupt_compat_py__request_hard_interrupt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "request_hard_interrupt",
+  "py_module": "agent/interrupt_compat.py",
+  "py_fn": "request_hard_interrupt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

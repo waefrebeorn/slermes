@@ -1,17 +1,47 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
+
+**Upstream sync:** 2,072 ahead / 2,649 behind (last merge 2026-09-15 (upstream fetched))
+
+_Generated 2026-09-15T06:45:17Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # Slermes Documentation
 
 **Slermes** is an in-progress C11 reimplementation of Hermes Agent — Nous Research's Python/Electron AI agent. One binary, zero Python dependencies.
 
 ## Quick Links
 
-- **[Getting Started](getting-started.md)** — Build, configure, run in 2 minutes
-- **[Architecture](architecture/overview.md)** — System design, data flow, directory layout
-- **[CLI Commands](cli/index.md)** — Slash commands with examples
-- **[TUI Reference](tui/index.md)** — Terminal UI features and RPC methods
-- **[Pet System](pet/index.md)** — Petdex mascot install, configure, animate
-- **[Development](dev/index.md)** — Building, testing, contributing
-- **[Parity Summary](parity-summary.md)** — Live parity scan results (what's ported vs. not)
-- **[Real Gap List](real-gap-list.md)** — 1,346 honest REAL_GAPs across 230 modules
+| Category | Doc | Description |
+|----------|-----|-------------|
+| Getting Started | [getting-started.md](getting-started.md) | Build, configure, run in 2 minutes |
+| Architecture | [overview.md](architecture/overview.md) | System design, data flow, directory layout |
+| Build System | [build-system.md](architecture/build-system.md) | Make targets, dependencies, packaging |
+| CLI | [index.md](cli/index.md) | Slash commands with examples |
+| TUI | [index.md](tui/index.md) | Terminal UI features, RPC methods |
+| Pet System | [index.md](pet/index.md) | Petdex mascot install, configure, animate |
+| Development | [index.md](dev/index.md) | Building, testing, contributing |
+| Parity | [parity-summary.md](parity-summary.md) | Live parity scan results |
+| Gaps | [real-gap-list.md](real-gap-list.md) | Live REAL_GAPs across modules |
+| Contracts | [relay-connector-contract.md](architecture/relay-connector-contract.md) | Platform relay protocol |
+| Contracts | [chronos-managed-cron-contract.md](architecture/chronos-managed-cron-contract.md) | Cron scheduler interface |
+| Operations | [streaming-tts.md](operations/streaming-tts.md) | TTS pipeline docs |
+| Security | [profile-routing.md](security/profile-routing.md) | Auth and routing |
+| Security | [network-egress-isolation.md](security/network-egress-isolation.md) | Network isolation |
+| FAP | [fap.md](fap.md) | Behavioral divergences + oracle harness |
+| Watercup | [watercup-parity-oracle.md](watercup-parity-oracle.md) | Trace-cup deep gate |
+| Sessions | [session-lifecycle.md](session-lifecycle.md) | Session lifecycle |
+| State | [state.md](state.md) | Project state and history |
+| Organization | [organization-parity.md](organization-parity.md) | Module ↔ C file mapping |
+| Module Map | [module-map.md](module-map.md) | Complete module map |
+| Changelog | [CHANGELOG-SLERMES.md](CHANGELOG-SLERMES.md) | Version history |
 
 ## How to read the parity numbers
 
@@ -56,16 +86,3 @@ See [Development](dev/index.md) for building, testing, and contributing.
 Slermes is a fork of `NousResearch/hermes-agent`. We pull Python source from upstream and port features to C11. We never push C code back to upstream. The two repos have separate git histories by design.
 
 See `BANNER.md` for the full project workflow, sync instructions, and fork reconciliation procedure.
-
-## Project Status
-
-| Metric | Value |
-|--------|-------|
-| **Version** | v671 (PORT phase) |
-| **PORTED** | 12,695 (90.4% of 14,045) |
-| **REAL_GAP** | 1,346 (9.6%) |
-| **PARTIAL** | 2 |
-| **BOOTLEG** | 7 |
-| **Upstream Sync** | 1,209 ahead / 0 behind |
-
-> Live counts: `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_stderr_timestamp_py___is_launchd_supervised",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "stderr_ts_is_launchd_supervised",
+  "py_module": "hermes_cli/stderr_timestamp.py",
+  "py_fn": "_is_launchd_supervised",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

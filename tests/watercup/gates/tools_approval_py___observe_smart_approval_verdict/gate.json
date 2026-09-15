@@ -1,0 +1,29 @@
+{
+  "name": "tools_approval_py___observe_smart_approval_verdict",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "appr_u_observe_smart_approval_verdict",
+  "py_module": "tools/approval.py",
+  "py_fn": "_observe_smart_approval_verdict",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

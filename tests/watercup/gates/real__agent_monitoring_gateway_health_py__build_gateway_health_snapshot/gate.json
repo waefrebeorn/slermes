@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_monitoring_gateway_health_py__build_gateway_health_snapshot",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_gateway_health_snapshot",
+  "py_module": "agent/monitoring/gateway_health.py",
+  "py_fn": "build_gateway_health_snapshot",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

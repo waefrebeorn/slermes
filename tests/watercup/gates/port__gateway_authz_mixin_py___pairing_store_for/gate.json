@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_authz_mixin_py___pairing_store_for",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_pairing_store_for",
+  "py_module": "gateway/authz_mixin.py",
+  "py_fn": "_pairing_store_for",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

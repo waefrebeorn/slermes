@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_context_breakdown_py___chars_to_tokens",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_chars_to_tokens",
+  "py_module": "agent/context_breakdown.py",
+  "py_fn": "_chars_to_tokens",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

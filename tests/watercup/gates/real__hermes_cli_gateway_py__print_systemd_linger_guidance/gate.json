@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_gateway_py__print_systemd_linger_guidance",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "print_systemd_linger_guidance",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "print_systemd_linger_guidance",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

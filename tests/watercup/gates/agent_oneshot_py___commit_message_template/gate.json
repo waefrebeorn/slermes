@@ -1,0 +1,29 @@
+{
+  "name": "agent_oneshot_py___commit_message_template",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_oneshot_u_commit_message_template",
+  "py_module": "agent/oneshot.py",
+  "py_fn": "_commit_message_template",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

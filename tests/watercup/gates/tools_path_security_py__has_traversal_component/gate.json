@@ -1,0 +1,29 @@
+{
+  "name": "tools_path_security_py__has_traversal_component",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_tools_path_security_has_traversal_component",
+  "py_module": "tools/path_security.py",
+  "py_fn": "has_traversal_component",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

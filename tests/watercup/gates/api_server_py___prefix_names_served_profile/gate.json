@@ -1,0 +1,29 @@
+{
+  "name": "api_server_py___prefix_names_served_profile",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "apisg_prefix_names_served_profile",
+  "py_module": "api_server.py",
+  "py_fn": "_prefix_names_served_profile",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py___is_self_reference",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_u_is_self_reference",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "_is_self_reference",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

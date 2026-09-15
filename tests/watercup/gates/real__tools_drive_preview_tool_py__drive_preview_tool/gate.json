@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_drive_preview_tool_py__drive_preview_tool",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "drive_preview_tool",
+  "py_module": "tools/drive_preview_tool.py",
+  "py_fn": "drive_preview_tool",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

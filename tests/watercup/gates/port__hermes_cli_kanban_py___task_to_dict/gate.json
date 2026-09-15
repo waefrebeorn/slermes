@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_kanban_py___task_to_dict",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_task_to_dict",
+  "py_module": "hermes_cli/kanban.py",
+  "py_fn": "_task_to_dict",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

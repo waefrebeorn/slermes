@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skill_manager_tool_py___background_review_read_before_write_guard",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_background_review_read_before_write_guard",
+  "py_module": "tools/skill_manager_tool.py",
+  "py_fn": "_background_review_read_before_write_guard",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

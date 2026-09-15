@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_bedrock_adapter_py__resolve_bedrock_runtime_region",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_bedrock_runtime_region",
+  "py_module": "agent/bedrock_adapter.py",
+  "py_fn": "resolve_bedrock_runtime_region",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

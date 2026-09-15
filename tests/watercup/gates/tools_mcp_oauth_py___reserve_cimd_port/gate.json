@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_oauth_py___reserve_cimd_port",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mcpo_reserve_cimd_port",
+  "py_module": "tools/mcp_oauth.py",
+  "py_fn": "_reserve_cimd_port",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

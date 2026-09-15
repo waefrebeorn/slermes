@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli__subprocess_compat_py__resolve_node_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_node_command",
+  "py_module": "hermes_cli/_subprocess_compat.py",
+  "py_fn": "resolve_node_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

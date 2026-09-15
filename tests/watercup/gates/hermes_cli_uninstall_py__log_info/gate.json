@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_uninstall_py__log_info",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "uninst_log_info",
+  "py_module": "hermes_cli/uninstall.py",
+  "py_fn": "log_info",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

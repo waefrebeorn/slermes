@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_model_cost_guard_py__expensive_model_warning",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "expensive_model_warning",
+  "py_module": "hermes_cli/model_cost_guard.py",
+  "py_fn": "expensive_model_warning",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

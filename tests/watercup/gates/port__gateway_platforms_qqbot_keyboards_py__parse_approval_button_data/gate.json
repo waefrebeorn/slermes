@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_qqbot_keyboards_py__parse_approval_button_data",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "parse_approval_button_data",
+  "py_module": "gateway/platforms/qqbot/keyboards.py",
+  "py_fn": "parse_approval_button_data",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

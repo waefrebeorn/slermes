@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_tts_tool_py___default_neutts_ref_text",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_default_neutts_ref_text",
+  "py_module": "tools/tts_tool.py",
+  "py_fn": "_default_neutts_ref_text",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

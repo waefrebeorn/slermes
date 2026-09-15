@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_environments_file_sync_py__quoted_rm_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "quoted_rm_command",
+  "py_module": "tools/environments/file_sync.py",
+  "py_fn": "quoted_rm_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_bluebubbles_py___download_attachment",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "bb_u_download_attachment",
+  "py_module": "gateway/platforms/bluebubbles.py",
+  "py_fn": "_download_attachment",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

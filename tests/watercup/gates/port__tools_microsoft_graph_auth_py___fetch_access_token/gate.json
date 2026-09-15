@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_microsoft_graph_auth_py___fetch_access_token",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_fetch_access_token",
+  "py_module": "tools/microsoft_graph_auth.py",
+  "py_fn": "_fetch_access_token",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

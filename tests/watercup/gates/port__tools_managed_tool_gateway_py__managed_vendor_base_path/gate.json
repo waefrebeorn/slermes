@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_managed_tool_gateway_py__managed_vendor_base_path",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "managed_vendor_base_path",
+  "py_module": "tools/managed_tool_gateway.py",
+  "py_fn": "managed_vendor_base_path",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

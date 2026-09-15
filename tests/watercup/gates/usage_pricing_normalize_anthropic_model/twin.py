@@ -1,35 +1,29 @@
-"""twin for usage_pricing_normalize_anthropic_model.
+"""twin for agent/usage_pricing.py:_normalize_anthropic_model_name."""
+import os, sys, importlib.util as ilu
 
-Imports the LIVE Python agent/usage_pricing.py::_normalize_anthropic_model_name
-and traces the SAME branch ladder as the C harness, so the cup matches iff the
-C port executes the identical control structure as LIVE Python.
-"""
-import os, sys, re
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-sys.path.insert(0, os.path.join(DEV, "agent"))
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_usage_pricing", os.path.join(DEV, "agent", "usage_pricing.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_usage_pricing"] = mod
-spec.loader.exec_module(mod)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_usage_pricing_py", os.path.join(DEV, "agent/usage_pricing.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_usage_pricing_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_normalize_anthropic_model_name")
+    try:
+        result = _pb._normalize_anthropic_model_name(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        c = Cup("normalize_anthropic")
-        if raw is None:
-            c.branch(True); c.valstr("null"); c.valstr(""); cups.append(c.finalize()); continue
-        c.branch(False)
-        name = raw.lower().strip()
-        had = False
-        if name.startswith("anthropic/"):
-            name = name[len("anthropic/"):]; had = True
-        c.branch(had)
-        name = re.sub(r"(\d+)\.(\d+)", r"\1-\2", name)
-        c.valstr(name)
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

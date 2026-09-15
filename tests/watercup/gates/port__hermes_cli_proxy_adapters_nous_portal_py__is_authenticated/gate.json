@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_proxy_adapters_nous_portal_py__is_authenticated",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_authenticated",
+  "py_module": "hermes_cli/proxy/adapters/nous_portal.py",
+  "py_fn": "is_authenticated",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

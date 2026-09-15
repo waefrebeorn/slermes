@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_pets_py___rename_active_if",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_pets_u_rename_active_if",
+  "py_module": "hermes_cli/pets.py",
+  "py_fn": "_rename_active_if",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

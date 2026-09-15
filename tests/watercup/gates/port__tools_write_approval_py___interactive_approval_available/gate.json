@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_write_approval_py___interactive_approval_available",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_interactive_approval_available",
+  "py_module": "tools/write_approval.py",
+  "py_fn": "_interactive_approval_available",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

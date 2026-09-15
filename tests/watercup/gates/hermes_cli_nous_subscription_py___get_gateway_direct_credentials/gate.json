@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_nous_subscription_py___get_gateway_direct_credentials",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "nsub_u_get_gateway_direct_credentials",
+  "py_module": "hermes_cli/nous_subscription.py",
+  "py_fn": "_get_gateway_direct_credentials",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

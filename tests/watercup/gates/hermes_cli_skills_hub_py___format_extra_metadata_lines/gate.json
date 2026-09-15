@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_skills_hub_py___format_extra_metadata_lines",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_skills_hub_u_format_extra_metadata_lines",
+  "py_module": "hermes_cli/skills_hub.py",
+  "py_fn": "_format_extra_metadata_lines",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_relay_adapter_py__stream_is_message_for_chat",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "stream_is_message_for_chat",
+  "py_module": "gateway/relay/adapter.py",
+  "py_fn": "stream_is_message_for_chat",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

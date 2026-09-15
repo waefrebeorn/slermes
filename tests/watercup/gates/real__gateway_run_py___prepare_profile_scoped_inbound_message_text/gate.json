@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_run_py___prepare_profile_scoped_inbound_message_text",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_prepare_profile_scoped_inbound_message_text",
+  "py_module": "gateway/run.py",
+  "py_fn": "_prepare_profile_scoped_inbound_message_text",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

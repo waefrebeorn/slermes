@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_memory_manager_py__inject_memory_provider_tools",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "inject_memory_provider_tools",
+  "py_module": "agent/memory_manager.py",
+  "py_fn": "inject_memory_provider_tools",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

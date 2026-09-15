@@ -1,0 +1,29 @@
+{
+  "name": "agent_billing_usage_py__build_usage_model",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_billing_usage_build_usage_model",
+  "py_module": "agent/billing_usage.py",
+  "py_fn": "build_usage_model",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_session_search_tool_py___get_message_storage_state",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_get_message_storage_state",
+  "py_module": "tools/session_search_tool.py",
+  "py_fn": "_get_message_storage_state",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_backup_py___write_full_zip_backup_locked",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_backup_u_write_full_zip_backup_locked",
+  "py_module": "hermes_cli/backup.py",
+  "py_fn": "_write_full_zip_backup_locked",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

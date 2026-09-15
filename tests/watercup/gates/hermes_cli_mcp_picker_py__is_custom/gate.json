@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_mcp_picker_py__is_custom",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_mcp_picker_is_custom",
+  "py_module": "hermes_cli/mcp_picker.py",
+  "py_fn": "is_custom",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

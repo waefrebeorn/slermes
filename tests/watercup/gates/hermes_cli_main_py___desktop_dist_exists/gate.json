@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___desktop_dist_exists",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_u_desktop_dist_exists",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_desktop_dist_exists",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

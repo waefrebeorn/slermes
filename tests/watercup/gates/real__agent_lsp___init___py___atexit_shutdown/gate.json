@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_lsp___init___py___atexit_shutdown",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_atexit_shutdown",
+  "py_module": "agent/lsp/__init__.py",
+  "py_fn": "_atexit_shutdown",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "tools_approval_py___command_parser_limit_exceeded",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "appr_u_command_parser_limit_exceeded",
+  "py_module": "tools/approval.py",
+  "py_fn": "_command_parser_limit_exceeded",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

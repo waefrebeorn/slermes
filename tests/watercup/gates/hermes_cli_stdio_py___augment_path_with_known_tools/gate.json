@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_stdio_py___augment_path_with_known_tools",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_stdio_u_augment_path_with_known_tools",
+  "py_module": "hermes_cli/stdio.py",
+  "py_fn": "_augment_path_with_known_tools",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

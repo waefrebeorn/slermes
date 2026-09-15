@@ -1,0 +1,29 @@
+{
+  "name": "gateway_status_phrases_py___merge_phrase_paths",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_status_phrases_u_merge_phrase_paths",
+  "py_module": "gateway/status_phrases.py",
+  "py_fn": "_merge_phrase_paths",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

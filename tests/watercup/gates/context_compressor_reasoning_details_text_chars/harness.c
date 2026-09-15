@@ -94,7 +94,7 @@ done:
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s reasoning_details_text_chars <json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s reasoning_details_text_chars <json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         const char *raw = argv[i];
         if (!raw || !*raw) { trace_value(NULL); continue; }

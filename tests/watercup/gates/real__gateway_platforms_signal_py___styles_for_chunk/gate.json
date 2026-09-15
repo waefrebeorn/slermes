@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_signal_py___styles_for_chunk",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_styles_for_chunk",
+  "py_module": "gateway/platforms/signal.py",
+  "py_fn": "_styles_for_chunk",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

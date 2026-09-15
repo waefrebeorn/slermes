@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py__get_group_member_list_raw",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_get_group_member_list_raw",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "get_group_member_list_raw",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

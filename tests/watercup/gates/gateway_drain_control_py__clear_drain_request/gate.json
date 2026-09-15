@@ -1,0 +1,29 @@
+{
+  "name": "gateway_drain_control_py__clear_drain_request",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_drain_control_clear_drain_request",
+  "py_module": "gateway/drain_control.py",
+  "py_fn": "clear_drain_request",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

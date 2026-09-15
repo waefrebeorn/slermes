@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_bedrock_adapter_py__has_aws_credentials",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "has_aws_credentials",
+  "py_module": "agent/bedrock_adapter.py",
+  "py_fn": "has_aws_credentials",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_moa_loop_py__aggregate_moa_context",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "moa_aggregate_moa_context",
+  "py_module": "agent/moa_loop.py",
+  "py_fn": "aggregate_moa_context",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_stream_diag_py__flatten_exception_chain",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "flatten_exception_chain",
+  "py_module": "agent/stream_diag.py",
+  "py_fn": "flatten_exception_chain",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

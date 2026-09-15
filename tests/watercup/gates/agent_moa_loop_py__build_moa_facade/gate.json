@@ -1,0 +1,29 @@
+{
+  "name": "agent_moa_loop_py__build_moa_facade",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "moa_build_moa_facade",
+  "py_module": "agent/moa_loop.py",
+  "py_fn": "build_moa_facade",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

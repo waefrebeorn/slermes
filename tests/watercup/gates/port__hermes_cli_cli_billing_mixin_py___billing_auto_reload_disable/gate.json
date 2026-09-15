@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_cli_billing_mixin_py___billing_auto_reload_disable",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_billing_auto_reload_disable",
+  "py_module": "hermes_cli/cli_billing_mixin.py",
+  "py_fn": "_billing_auto_reload_disable",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli__subprocess_compat_py__noninteractive_git_env",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli__subprocess_compat_noninteractive_git_env",
+  "py_module": "hermes_cli/_subprocess_compat.py",
+  "py_fn": "noninteractive_git_env",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

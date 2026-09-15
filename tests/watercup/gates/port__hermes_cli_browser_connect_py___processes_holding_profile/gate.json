@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_browser_connect_py___processes_holding_profile",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_processes_holding_profile",
+  "py_module": "hermes_cli/browser_connect.py",
+  "py_fn": "_processes_holding_profile",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

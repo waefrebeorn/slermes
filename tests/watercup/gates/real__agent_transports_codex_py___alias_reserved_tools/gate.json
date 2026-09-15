@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_transports_codex_py___alias_reserved_tools",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_alias_reserved_tools",
+  "py_module": "agent/transports/codex.py",
+  "py_fn": "_alias_reserved_tools",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

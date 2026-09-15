@@ -1,0 +1,29 @@
+{
+  "name": "gateway_readiness_py___probe_gateway",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_readiness_u_probe_gateway",
+  "py_module": "gateway/readiness.py",
+  "py_fn": "_probe_gateway",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

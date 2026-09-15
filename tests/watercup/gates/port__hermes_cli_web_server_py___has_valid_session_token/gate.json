@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_web_server_py___has_valid_session_token",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_has_valid_session_token",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_has_valid_session_token",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

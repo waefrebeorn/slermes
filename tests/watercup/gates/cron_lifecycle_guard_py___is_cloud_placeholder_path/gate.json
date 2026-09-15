@@ -1,0 +1,29 @@
+{
+  "name": "cron_lifecycle_guard_py___is_cloud_placeholder_path",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cron_lifecycle_is_cloud_placeholder_path",
+  "py_module": "cron/lifecycle_guard.py",
+  "py_fn": "_is_cloud_placeholder_path",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

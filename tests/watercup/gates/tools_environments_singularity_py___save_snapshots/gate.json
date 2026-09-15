@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_singularity_py___save_snapshots",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_tools_environments_singularity__save_snapshots",
+  "py_module": "tools/environments/singularity.py",
+  "py_fn": "_save_snapshots",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

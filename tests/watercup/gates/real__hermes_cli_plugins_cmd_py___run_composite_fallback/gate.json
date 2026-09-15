@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_plugins_cmd_py___run_composite_fallback",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_run_composite_fallback",
+  "py_module": "hermes_cli/plugins_cmd.py",
+  "py_fn": "_run_composite_fallback",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

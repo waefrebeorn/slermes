@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_scheduler_py__create_job_with_scheduler_registration",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "create_job_with_scheduler_registration",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "create_job_with_scheduler_registration",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_pet_generate_imagegen_py___rejected_background",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_pet_generate_imagegen_u_rejected_background",
+  "py_module": "agent/pet/generate/imagegen.py",
+  "py_fn": "_rejected_background",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

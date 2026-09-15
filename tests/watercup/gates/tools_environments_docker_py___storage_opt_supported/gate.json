@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_docker_py___storage_opt_supported",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "envd_u_storage_opt_supported",
+  "py_module": "tools/environments/docker.py",
+  "py_fn": "_storage_opt_supported",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

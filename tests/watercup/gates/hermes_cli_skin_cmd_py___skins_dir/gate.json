@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_skin_cmd_py___skins_dir",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_skin_cmd_u_skins_dir",
+  "py_module": "hermes_cli/skin_cmd.py",
+  "py_fn": "_skins_dir",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

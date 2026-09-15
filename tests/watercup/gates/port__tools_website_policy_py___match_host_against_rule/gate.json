@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_website_policy_py___match_host_against_rule",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_match_host_against_rule",
+  "py_module": "tools/website_policy.py",
+  "py_fn": "_match_host_against_rule",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

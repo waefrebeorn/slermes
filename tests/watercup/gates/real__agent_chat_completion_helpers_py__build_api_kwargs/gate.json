@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_chat_completion_helpers_py__build_api_kwargs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_api_kwargs",
+  "py_module": "agent/chat_completion_helpers.py",
+  "py_fn": "build_api_kwargs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

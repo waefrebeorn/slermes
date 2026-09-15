@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_bluebubbles_py___compile_mention_patterns",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "bb_u_compile_mention_patterns",
+  "py_module": "gateway/platforms/bluebubbles.py",
+  "py_fn": "_compile_mention_patterns",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_agent_runtime_helpers_py__cache_ttl_means_disabled",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "arh_cache_ttl_means_disabled",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "cache_ttl_means_disabled",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

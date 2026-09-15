@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_py___legacy_unit_search_paths",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cgw_u_legacy_unit_search_paths",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "_legacy_unit_search_paths",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "tools_skill_usage_py__seed_record_if_missing",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "su_seed_record_if_missing",
+  "py_module": "tools/skill_usage.py",
+  "py_fn": "seed_record_if_missing",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

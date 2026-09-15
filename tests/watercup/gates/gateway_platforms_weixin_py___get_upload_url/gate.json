@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_weixin_py___get_upload_url",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "wx_u_get_upload_url",
+  "py_module": "gateway/platforms/weixin.py",
+  "py_fn": "_get_upload_url",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

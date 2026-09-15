@@ -1,0 +1,29 @@
+{
+  "name": "agent_auxiliary_client_py___run_protected_sync_provider_call",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "auxc_run_protected_sync_provider_call",
+  "py_module": "agent/auxiliary_client.py",
+  "py_fn": "_run_protected_sync_provider_call",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

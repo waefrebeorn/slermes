@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_oauth_py___maybe_preregister_client",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mcpo_u_maybe_preregister_client",
+  "py_module": "tools/mcp_oauth.py",
+  "py_fn": "_maybe_preregister_client",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

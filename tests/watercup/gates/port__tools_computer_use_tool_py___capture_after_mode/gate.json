@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_computer_use_tool_py___capture_after_mode",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_capture_after_mode",
+  "py_module": "tools/computer_use/tool.py",
+  "py_fn": "_capture_after_mode",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_profiles_py___rmtree_with_retry",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_rmtree_with_retry",
+  "py_module": "hermes_cli/profiles.py",
+  "py_fn": "_rmtree_with_retry",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

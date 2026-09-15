@@ -1,0 +1,30 @@
+{
+  "name": "port__cron_scheduler_py___primary_profile_routes_for_current_home",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_primary_profile_routes_for_current_home",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "_primary_profile_routes_for_current_home",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

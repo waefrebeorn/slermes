@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_browser_supervisor_py__respond_to_dialog",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "respond_to_dialog",
+  "py_module": "tools/browser_supervisor.py",
+  "py_fn": "respond_to_dialog",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

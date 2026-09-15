@@ -1,0 +1,29 @@
+{
+  "name": "agent_memory_manager_py__shutdown_drain_state",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mm_shutdown_drain_state",
+  "py_module": "agent/memory_manager.py",
+  "py_fn": "shutdown_drain_state",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

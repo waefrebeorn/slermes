@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_prompt_size_py___bytes",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_hermes_cli_prompt_size__bytes",
+  "py_module": "hermes_cli/prompt_size.py",
+  "py_fn": "_bytes",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

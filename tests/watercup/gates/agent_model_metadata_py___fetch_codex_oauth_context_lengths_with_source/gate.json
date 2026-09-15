@@ -1,0 +1,29 @@
+{
+  "name": "agent_model_metadata_py___fetch_codex_oauth_context_lengths_with_source",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce",
+  "py_module": "agent/model_metadata.py",
+  "py_fn": "_fetch_codex_oauth_context_lengths_with_source",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

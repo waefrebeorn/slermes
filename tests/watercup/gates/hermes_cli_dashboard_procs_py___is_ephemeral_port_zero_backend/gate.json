@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_dashboard_procs_py___is_ephemeral_port_zero_backend",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "dashboard_procs_is_ephemeral_port_zero_backend",
+  "py_module": "hermes_cli/dashboard_procs.py",
+  "py_fn": "_is_ephemeral_port_zero_backend",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -81,7 +81,7 @@ out:
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s sniff_mime_from_bytes <hexbytes>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s sniff_mime_from_bytes <hexbytes>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         unsigned char buf[4096];
         int n = unhex(argv[i], buf, sizeof buf);

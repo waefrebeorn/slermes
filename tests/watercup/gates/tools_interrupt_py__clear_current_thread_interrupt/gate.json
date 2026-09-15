@@ -1,0 +1,29 @@
+{
+  "name": "tools_interrupt_py__clear_current_thread_interrupt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_interrupt_clear_current_thread_interrupt",
+  "py_module": "tools/interrupt.py",
+  "py_fn": "clear_current_thread_interrupt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

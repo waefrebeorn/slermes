@@ -1,0 +1,29 @@
+{
+  "name": "tools_async_delegation_py___current_origin_session_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "adel_u_current_origin_session_id",
+  "py_module": "tools/async_delegation.py",
+  "py_fn": "_current_origin_session_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

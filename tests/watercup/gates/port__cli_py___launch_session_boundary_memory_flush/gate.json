@@ -1,0 +1,30 @@
+{
+  "name": "port__cli_py___launch_session_boundary_memory_flush",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_launch_session_boundary_memory_flush",
+  "py_module": "cli.py",
+  "py_fn": "_launch_session_boundary_memory_flush",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

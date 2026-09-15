@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_observability_shared_metrics_py___export_and_prune",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_export_and_prune",
+  "py_module": "hermes_cli/observability/shared_metrics.py",
+  "py_fn": "_export_and_prune",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

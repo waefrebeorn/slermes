@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_sqlite_safe_read_py__read_header_bytes_preopen",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "read_header_bytes_preopen",
+  "py_module": "hermes_cli/sqlite_safe_read.py",
+  "py_fn": "read_header_bytes_preopen",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

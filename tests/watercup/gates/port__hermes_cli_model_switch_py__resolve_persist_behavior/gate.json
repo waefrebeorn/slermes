@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_model_switch_py__resolve_persist_behavior",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_persist_behavior",
+  "py_module": "hermes_cli/model_switch.py",
+  "py_fn": "resolve_persist_behavior",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

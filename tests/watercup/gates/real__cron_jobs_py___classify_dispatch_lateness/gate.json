@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_jobs_py___classify_dispatch_lateness",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_classify_dispatch_lateness",
+  "py_module": "cron/jobs.py",
+  "py_fn": "_classify_dispatch_lateness",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_config_py___env_multiplex_profiles_override",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_config_u_env_multiplex_profiles_override",
+  "py_module": "gateway/config.py",
+  "py_fn": "_env_multiplex_profiles_override",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

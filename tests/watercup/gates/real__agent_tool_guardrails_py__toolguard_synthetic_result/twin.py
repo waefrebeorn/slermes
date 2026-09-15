@@ -1,0 +1,29 @@
+"""twin for agent/tool_guardrails.py:toolguard_synthetic_result."""
+import os, sys, importlib.util as ilu
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
+from watercup_py import Cup
+
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_tool_guardrails_py", os.path.join(DEV, "agent/tool_guardrails.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_tool_guardrails_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("toolguard_synthetic_result")
+    try:
+        result = _pb.toolguard_synthetic_result(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
+def run(inputs):
+    return [trace(inp) for inp in inputs]

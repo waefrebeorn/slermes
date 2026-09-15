@@ -77,7 +77,7 @@ static void trace_one(const char *config_json) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s browser_control_enabled <config-json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s browser_control_enabled <config-json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) trace_one(argv[i]);
     return 0;
 }

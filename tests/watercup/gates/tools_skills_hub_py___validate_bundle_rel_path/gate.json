@@ -1,0 +1,29 @@
+{
+  "name": "tools_skills_hub_py___validate_bundle_rel_path",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hub_validate_bundle_rel_path",
+  "py_module": "tools/skills_hub.py",
+  "py_fn": "_validate_bundle_rel_path",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

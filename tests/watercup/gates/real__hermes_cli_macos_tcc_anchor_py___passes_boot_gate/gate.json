@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_macos_tcc_anchor_py___passes_boot_gate",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_passes_boot_gate",
+  "py_module": "hermes_cli/macos_tcc_anchor.py",
+  "py_fn": "_passes_boot_gate",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

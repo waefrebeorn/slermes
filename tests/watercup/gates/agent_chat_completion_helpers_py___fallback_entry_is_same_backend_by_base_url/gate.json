@@ -1,0 +1,29 @@
+{
+  "name": "agent_chat_completion_helpers_py___fallback_entry_is_same_backend_by_base_url",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl",
+  "py_module": "agent/chat_completion_helpers.py",
+  "py_fn": "_fallback_entry_is_same_backend_by_base_url",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

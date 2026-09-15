@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_py__unsuppress_credential_source",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "unsuppress_credential_source",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "unsuppress_credential_source",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

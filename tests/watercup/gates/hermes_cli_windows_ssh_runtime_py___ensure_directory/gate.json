@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_windows_ssh_runtime_py___ensure_directory",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "wssr_u_ensure_directory",
+  "py_module": "hermes_cli/windows_ssh_runtime.py",
+  "py_fn": "_ensure_directory",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

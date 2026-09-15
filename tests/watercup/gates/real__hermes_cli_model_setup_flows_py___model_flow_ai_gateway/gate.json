@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_model_setup_flows_py___model_flow_ai_gateway",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_model_flow_ai_gateway",
+  "py_module": "hermes_cli/model_setup_flows.py",
+  "py_fn": "_model_flow_ai_gateway",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

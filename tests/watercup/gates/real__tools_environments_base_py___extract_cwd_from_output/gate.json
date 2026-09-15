@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_environments_base_py___extract_cwd_from_output",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_extract_cwd_from_output",
+  "py_module": "tools/environments/base.py",
+  "py_fn": "_extract_cwd_from_output",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

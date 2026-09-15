@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_environments_modal_py___resolve_modal_image",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_resolve_modal_image",
+  "py_module": "tools/environments/modal.py",
+  "py_fn": "_resolve_modal_image",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

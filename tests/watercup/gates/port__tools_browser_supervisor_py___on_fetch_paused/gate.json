@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_browser_supervisor_py___on_fetch_paused",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_on_fetch_paused",
+  "py_module": "tools/browser_supervisor.py",
+  "py_fn": "_on_fetch_paused",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_loop_py___try_refresh_nous_paid_entitlement_credentials",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_try_refresh_nous_paid_entitlement_credentials",
+  "py_module": "agent/conversation_loop.py",
+  "py_fn": "_try_refresh_nous_paid_entitlement_credentials",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

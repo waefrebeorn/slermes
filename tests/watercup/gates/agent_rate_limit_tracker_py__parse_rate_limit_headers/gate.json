@@ -1,0 +1,29 @@
+{
+  "name": "agent_rate_limit_tracker_py__parse_rate_limit_headers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_rate_limit_tracker_parse_rate_limit_headers",
+  "py_module": "agent/rate_limit_tracker.py",
+  "py_fn": "parse_rate_limit_headers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

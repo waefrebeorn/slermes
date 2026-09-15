@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_budget_config_py___configured_mcp_result_size",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_configured_mcp_result_size",
+  "py_module": "tools/budget_config.py",
+  "py_fn": "_configured_mcp_result_size",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

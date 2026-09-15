@@ -1,0 +1,29 @@
+{
+  "name": "agent_turn_context_py__reanchor_current_turn_user_idx",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_turn_context_reanchor_current_turn_user_idx",
+  "py_module": "agent/turn_context.py",
+  "py_fn": "reanchor_current_turn_user_idx",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

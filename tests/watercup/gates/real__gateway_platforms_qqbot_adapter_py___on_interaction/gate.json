@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_qqbot_adapter_py___on_interaction",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_on_interaction",
+  "py_module": "gateway/platforms/qqbot/adapter.py",
+  "py_fn": "_on_interaction",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

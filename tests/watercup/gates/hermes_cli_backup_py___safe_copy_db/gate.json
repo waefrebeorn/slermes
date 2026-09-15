@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_backup_py___safe_copy_db",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "backup_safe_copy_db",
+  "py_module": "hermes_cli/backup.py",
+  "py_fn": "_safe_copy_db",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

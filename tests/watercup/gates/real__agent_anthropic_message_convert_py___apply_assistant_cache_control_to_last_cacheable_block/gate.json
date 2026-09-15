@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_anthropic_message_convert_py___apply_assistant_cache_control_to_last_cacheable_block",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_apply_assistant_cache_control_to_last_cacheable_block",
+  "py_module": "agent/anthropic_message_convert.py",
+  "py_fn": "_apply_assistant_cache_control_to_last_cacheable_block",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_api_server_py___handle_run_events",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_handle_run_events",
+  "py_module": "gateway/platforms/api_server.py",
+  "py_fn": "_handle_run_events",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

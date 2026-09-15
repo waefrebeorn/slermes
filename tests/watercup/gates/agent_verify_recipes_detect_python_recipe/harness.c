@@ -236,7 +236,7 @@ static void trace_one(const char *spec_json)
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) {
+    if (argc < 3) {
         fprintf(stderr, "usage: %s detect_python_recipe <fixture-json>...\n",
                 argv[0]);
         return 2;

@@ -1,0 +1,1 @@
+/home/wubu/hermes-agent-dev/hermes_cli/mcp_startup.py

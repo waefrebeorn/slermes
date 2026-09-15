@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_modal_py___store_direct_snapshot",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_environments_modal_u_store_direct_snapshot",
+  "py_module": "tools/environments/modal.py",
+  "py_fn": "_store_direct_snapshot",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

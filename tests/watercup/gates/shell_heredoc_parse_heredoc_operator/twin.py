@@ -1,41 +1,29 @@
-"""twin for shell_heredoc_parse_heredoc_operator.
+"""twin for tools/shell_heredoc.py:_parse_heredoc_operator."""
+import os, sys, importlib.util as ilu
 
-Imports the LIVE Python tools/shell_heredoc.py::_parse_heredoc_operator and
-traces the same result-shape rungs as the C harness (which calls the REAL
-port via textual inclusion of shell_heredoc.c).
-Input format: "<index>\t<command>".
-"""
-import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_shell_heredoc", os.path.join(DEV, "tools", "shell_heredoc.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_shell_heredoc"] = mod
-spec.loader.exec_module(mod)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_tools_shell_heredoc_py", os.path.join(DEV, "tools/shell_heredoc.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_tools_shell_heredoc_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_parse_heredoc_operator")
+    try:
+        result = _pb._parse_heredoc_operator(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        if "\t" in raw:
-            idx_s, command = raw.split("\t", 1)
-            index = int(idx_s) if idx_s else 0
-        else:
-            index, command = 0, raw
-        c = Cup("parse_heredoc_operator")
-        res = mod._parse_heredoc_operator(command, index)
-        ok = res is not None
-        c.branch(ok)
-        if ok:
-            end, delim, strip_tabs, quoted = res
-            c.branch(strip_tabs)
-            c.branch(quoted)
-            c.valstr(str(end))
-            c.valstr(delim)
-        else:
-            c.valstr("None")
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

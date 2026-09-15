@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_profile_routing_py___is_whatsapp_non_user_chat",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_is_whatsapp_non_user_chat",
+  "py_module": "gateway/profile_routing.py",
+  "py_fn": "_is_whatsapp_non_user_chat",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

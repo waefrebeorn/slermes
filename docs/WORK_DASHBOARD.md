@@ -1,8 +1,23 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
+
+**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
+
+_Generated 2026-09-15T06:22:36Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # Slermes — Work Dashboard (Single Source of Truth)
 
 > **This is the only doc you read when you walk into a room.** Everything else is
 > detail. It reconciles the project's real detectors into one actionable plan and
-> is regenerated/updated as work closes. Last updated: **2026-08-19** (session:
+> is regenerated/updated as work closes. Last updated: **** (session:
 > water-cup project-wide + detector hardening + FAP closure).
 >
 > **Orientation rule:** trust the numbers in §1 (live scanner + water-cup gates),
@@ -11,7 +26,7 @@
 
 ## §1 — Ground truth (what the detectors actually say RIGHT NOW)
 
-### 1A. Function-level parity (live scanner `live_parity_scan.json`, 2026-08-19)
+### 1A. Function-level parity (live scanner `live_parity_scan.json`, )
 | Class | Count | % | Meaning |
 |-------|-------|---|---------|
 | PORTED | 13,581 | 85.2% | C11 + PoP annotation + real body |
@@ -205,7 +220,7 @@ primitives from the research, now end-to-end.
   - `objects.mk` regenerated (63 `.o` path references updated); `make slermes` stays GREEN;
     water-cup CI green. C tree now mirrors the Python package subpackage layout.
 - **Earlier in session**: removed 1,143 in-tree `.o` build artifacts (gitignored, not
-  tracked) and quarantined 248 bootleg-class `*_py_parity`/`*_py_final`/`batch*_gaps`/
+  tracked) and quarantined -class `*_py_parity`/`*_py_final`/`batch*_gaps`/
   `*_scaffold` orphans (confirmed unreferenced by any `#include`) into `quarantine/src/`.
 - **REMAINING (genuine code-split work, NOT a rename — deferred):** ~347 collision groups
   where multiple C files share a normalized leaf (e.g. `config.c` + `config_ports.c` +

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_nous_subscription_py___tts_label",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "nsub_u_tts_label",
+  "py_module": "hermes_cli/nous_subscription.py",
+  "py_fn": "_tts_label",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

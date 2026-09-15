@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_resource_limits_py__configured_nofile_soft_limit",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_configured_nofile_soft_limit",
+  "py_module": "hermes_cli/resource_limits.py",
+  "py_fn": "configured_nofile_soft_limit",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

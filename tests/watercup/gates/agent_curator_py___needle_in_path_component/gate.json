@@ -1,0 +1,30 @@
+{
+  "name": "agent_curator_py___needle_in_path_component",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cur_needle_in_path_component",
+  "py_module": "agent/curator.py",
+  "py_fn": "_needle_in_path_component",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/curator_ports.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

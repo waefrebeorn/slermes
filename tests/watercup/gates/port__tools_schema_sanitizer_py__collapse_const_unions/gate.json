@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_schema_sanitizer_py__collapse_const_unions",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "collapse_const_unions",
+  "py_module": "tools/schema_sanitizer.py",
+  "py_fn": "collapse_const_unions",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_jiter_preload_py__preload_jiter_native_extension",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "preload_jiter_native_extension",
+  "py_module": "agent/jiter_preload.py",
+  "py_fn": "preload_jiter_native_extension",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

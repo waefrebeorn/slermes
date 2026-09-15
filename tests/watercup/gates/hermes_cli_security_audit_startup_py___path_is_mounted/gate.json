@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_security_audit_startup_py___path_is_mounted",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_security_audit_star_u_path_is_mounted",
+  "py_module": "hermes_cli/security_audit_startup.py",
+  "py_fn": "_path_is_mounted",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

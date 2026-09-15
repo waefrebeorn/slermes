@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_web_models_py___validate_reference_timeout",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_validate_reference_timeout",
+  "py_module": "hermes_cli/web_models.py",
+  "py_fn": "_validate_reference_timeout",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

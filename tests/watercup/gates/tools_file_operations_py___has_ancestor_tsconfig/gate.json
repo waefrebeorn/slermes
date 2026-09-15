@@ -1,0 +1,29 @@
+{
+  "name": "tools_file_operations_py___has_ancestor_tsconfig",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_has_ancestor_tsconfig",
+  "py_module": "tools/file_operations.py",
+  "py_fn": "_has_ancestor_tsconfig",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

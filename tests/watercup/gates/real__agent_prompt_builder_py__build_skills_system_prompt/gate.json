@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_prompt_builder_py__build_skills_system_prompt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_skills_system_prompt",
+  "py_module": "agent/prompt_builder.py",
+  "py_fn": "build_skills_system_prompt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

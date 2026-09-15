@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_background_review_py__spawn_background_review_thread",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "spawn_background_review_thread",
+  "py_module": "agent/background_review.py",
+  "py_fn": "spawn_background_review_thread",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

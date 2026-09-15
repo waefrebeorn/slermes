@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_browser_lightpanda_py___read_log_tail",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_read_log_tail",
+  "py_module": "tools/browser_lightpanda.py",
+  "py_fn": "_read_log_tail",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

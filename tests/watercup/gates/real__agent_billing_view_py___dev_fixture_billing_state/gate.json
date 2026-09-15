@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_billing_view_py___dev_fixture_billing_state",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_dev_fixture_billing_state",
+  "py_module": "agent/billing_view.py",
+  "py_fn": "_dev_fixture_billing_state",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_hosted_room_discussion_py___zero_based_int",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_zero_based_int",
+  "py_module": "gateway/hosted_room_discussion.py",
+  "py_fn": "_zero_based_int",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

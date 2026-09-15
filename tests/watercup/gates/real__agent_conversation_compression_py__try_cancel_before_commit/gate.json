@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_compression_py__try_cancel_before_commit",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "try_cancel_before_commit",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "try_cancel_before_commit",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

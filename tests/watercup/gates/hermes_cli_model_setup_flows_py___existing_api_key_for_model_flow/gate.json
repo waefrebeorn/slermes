@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_model_setup_flows_py___existing_api_key_for_model_flow",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "msf_u_existing_api_key_for_model_flow",
+  "py_module": "hermes_cli/model_setup_flows.py",
+  "py_fn": "_existing_api_key_for_model_flow",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

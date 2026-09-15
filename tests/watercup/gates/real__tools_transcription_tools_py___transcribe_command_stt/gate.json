@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_transcription_tools_py___transcribe_command_stt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_transcribe_command_stt",
+  "py_module": "tools/transcription_tools.py",
+  "py_fn": "_transcribe_command_stt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

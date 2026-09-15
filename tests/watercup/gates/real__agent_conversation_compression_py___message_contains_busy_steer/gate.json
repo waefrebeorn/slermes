@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_compression_py___message_contains_busy_steer",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_message_contains_busy_steer",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "_message_contains_busy_steer",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

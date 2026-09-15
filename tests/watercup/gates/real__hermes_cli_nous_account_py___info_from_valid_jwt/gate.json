@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_nous_account_py___info_from_valid_jwt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_info_from_valid_jwt",
+  "py_module": "hermes_cli/nous_account.py",
+  "py_fn": "_info_from_valid_jwt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

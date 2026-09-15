@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_compression_py___lock_api_is_absent_on_session_db",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_lock_api_is_absent_on_session_db",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "_lock_api_is_absent_on_session_db",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

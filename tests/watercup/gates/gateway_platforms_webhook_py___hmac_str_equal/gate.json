@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_webhook_py___hmac_str_equal",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "webhook_hmac_str_equal",
+  "py_module": "gateway/platforms/webhook.py",
+  "py_fn": "_hmac_str_equal",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

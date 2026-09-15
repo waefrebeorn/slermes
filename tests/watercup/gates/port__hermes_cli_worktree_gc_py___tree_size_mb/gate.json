@@ -1,0 +1,31 @@
+{
+  "name": "port__hermes_cli_worktree_gc_py___tree_size_mb",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_tree_size_mb",
+  "py_module": "hermes_cli/worktree_gc.py",
+  "py_fn": "_tree_size_mb",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/hermes_cli/worktree_gc.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

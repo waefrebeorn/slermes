@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_context_compressor_py___prune_old_tool_results",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_prune_old_tool_results",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_prune_old_tool_results",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

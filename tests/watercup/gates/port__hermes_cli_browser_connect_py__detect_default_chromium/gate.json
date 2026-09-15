@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_browser_connect_py__detect_default_chromium",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "detect_default_chromium",
+  "py_module": "hermes_cli/browser_connect.py",
+  "py_fn": "detect_default_chromium",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

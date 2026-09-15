@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_credential_files_py__get_skills_directory_mount",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_skills_directory_mount",
+  "py_module": "tools/credential_files.py",
+  "py_fn": "get_skills_directory_mount",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

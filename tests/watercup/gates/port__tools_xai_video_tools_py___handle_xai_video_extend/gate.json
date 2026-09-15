@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_xai_video_tools_py___handle_xai_video_extend",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_handle_xai_video_extend",
+  "py_module": "tools/xai_video_tools.py",
+  "py_fn": "_handle_xai_video_extend",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

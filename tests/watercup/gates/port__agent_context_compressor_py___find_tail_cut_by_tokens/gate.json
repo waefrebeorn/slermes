@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_context_compressor_py___find_tail_cut_by_tokens",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_find_tail_cut_by_tokens",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_find_tail_cut_by_tokens",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

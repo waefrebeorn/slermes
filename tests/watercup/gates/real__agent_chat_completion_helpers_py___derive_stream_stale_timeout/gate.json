@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_chat_completion_helpers_py___derive_stream_stale_timeout",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_derive_stream_stale_timeout",
+  "py_module": "agent/chat_completion_helpers.py",
+  "py_fn": "_derive_stream_stale_timeout",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

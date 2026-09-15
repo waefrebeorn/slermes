@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_py___write_through_xai_oauth_to_global_root",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ath_write_through_xai_oauth_to_global_root",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "_write_through_xai_oauth_to_global_root",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_stream_consumer_py___flush_think_buffer",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_flush_think_buffer",
+  "py_module": "gateway/stream_consumer.py",
+  "py_fn": "_flush_think_buffer",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

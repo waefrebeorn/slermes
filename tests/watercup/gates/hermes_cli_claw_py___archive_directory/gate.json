@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_claw_py___archive_directory",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_claw_u_archive_directory",
+  "py_module": "hermes_cli/claw.py",
+  "py_fn": "_archive_directory",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_chat_completion_helpers_py__cleanup_task_resources",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cch_cleanup_task_resources",
+  "py_module": "agent/chat_completion_helpers.py",
+  "py_fn": "cleanup_task_resources",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

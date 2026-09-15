@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_session_recovery_py___source_fingerprint",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_source_fingerprint",
+  "py_module": "hermes_cli/session_recovery.py",
+  "py_fn": "_source_fingerprint",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

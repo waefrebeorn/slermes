@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_computer_use_cua_backend_py___validate_cua_driver_app_signature",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_validate_cua_driver_app_signature",
+  "py_module": "tools/computer_use/cua_backend.py",
+  "py_fn": "_validate_cua_driver_app_signature",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

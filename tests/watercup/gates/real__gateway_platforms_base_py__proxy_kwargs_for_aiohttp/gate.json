@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_base_py__proxy_kwargs_for_aiohttp",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "proxy_kwargs_for_aiohttp",
+  "py_module": "gateway/platforms/base.py",
+  "py_fn": "proxy_kwargs_for_aiohttp",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

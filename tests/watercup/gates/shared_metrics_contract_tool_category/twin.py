@@ -1,71 +1,29 @@
-"""twin for shared_metrics_contract_tool_category.
+"""twin for hermes_cli/observability/shared_metrics_contract.py:tool_category."""
+import os, sys, importlib.util as ilu
 
-Imports LIVE hermes_cli/observability/shared_metrics_contract.py::tool_category
-and traces the SAME branch ladder as the C harness.
-"""
-import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-sys.path.insert(0, os.path.join(DEV, "hermes_cli"))
-import importlib.util as ilu
-spec = ilu.spec_from_file_location(
-    "wc_smc", os.path.join(DEV, "hermes_cli", "observability", "shared_metrics_contract.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_smc"] = mod
-spec.loader.exec_module(mod)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_hermes_cli_observability_shared_metrics_contract_py", os.path.join(DEV, "hermes_cli/observability/shared_metrics_contract.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_hermes_cli_observability_shared_metrics_contract_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("tool_category")
+    try:
+        result = _pb.tool_category(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
 
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        c = Cup("tool_category")
-        # LIVE: toolset = str(kwargs.get("toolset") or "").strip().lower()
-        toolset = str(raw or "").strip().lower()
-        if not toolset:
-            c.branch(True)
-            c.valstr("unknown")
-            cups.append(c.finalize())
-            continue
-        c.branch(False)
-        c.branch(toolset in mod.TOOL_CATEGORIES)
-        if toolset in mod.TOOL_CATEGORIES:
-            c.valstr(toolset)
-            cups.append(c.finalize())
-            continue
-        c.branch(toolset.startswith("mcp"))
-        if toolset.startswith("mcp"):
-            c.valstr("mcp"); cups.append(c.finalize()); continue
-        c.branch(toolset.startswith("browser"))
-        if toolset.startswith("browser"):
-            c.valstr("browser"); cups.append(c.finalize()); continue
-        c.branch(toolset.startswith(("image", "tts", "video", "vision")))
-        if toolset.startswith(("image", "tts", "video", "vision")):
-            c.valstr("media"); cups.append(c.finalize()); continue
-        c.branch(toolset.startswith("homeassistant"))
-        if toolset.startswith("homeassistant"):
-            c.valstr("home_automation"); cups.append(c.finalize()); continue
-        c.branch(toolset in {"clarify", "kanban", "todo"})
-        if toolset in {"clarify", "kanban", "todo"}:
-            c.valstr("planning"); cups.append(c.finalize()); continue
-        c.branch(toolset == "session_search")
-        if toolset == "session_search":
-            c.valstr("memory"); cups.append(c.finalize()); continue
-        c.branch(toolset == "cronjob")
-        if toolset == "cronjob":
-            c.valstr("scheduler"); cups.append(c.finalize()); continue
-        c.branch(toolset == "skills")
-        if toolset == "skills":
-            c.valstr("skill"); cups.append(c.finalize()); continue
-        c.branch(toolset == "x_search")
-        if toolset == "x_search":
-            c.valstr("web"); cups.append(c.finalize()); continue
-        c.branch(toolset.startswith(
-            ("discord", "email", "feishu", "hermes-yuanbao", "slack", "sms")))
-        if toolset.startswith(("discord", "email", "feishu", "hermes-yuanbao", "slack", "sms")):
-            c.valstr("communication"); cups.append(c.finalize()); continue
-        c.valstr("other")
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

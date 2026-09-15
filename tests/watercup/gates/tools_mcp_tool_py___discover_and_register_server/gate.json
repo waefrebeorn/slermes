@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_tool_py___discover_and_register_server",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mcp_tool_discover_and_register_server",
+  "py_module": "tools/mcp_tool.py",
+  "py_fn": "_discover_and_register_server",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

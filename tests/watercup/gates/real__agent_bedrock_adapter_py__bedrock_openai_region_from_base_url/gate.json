@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_bedrock_adapter_py__bedrock_openai_region_from_base_url",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "bedrock_openai_region_from_base_url",
+  "py_module": "agent/bedrock_adapter.py",
+  "py_fn": "bedrock_openai_region_from_base_url",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

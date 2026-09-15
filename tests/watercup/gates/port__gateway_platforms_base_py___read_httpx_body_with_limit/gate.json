@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_base_py___read_httpx_body_with_limit",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_read_httpx_body_with_limit",
+  "py_module": "gateway/platforms/base.py",
+  "py_fn": "_read_httpx_body_with_limit",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

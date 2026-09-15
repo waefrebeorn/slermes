@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_auth_py___external_process_auth_evidence",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_external_process_auth_evidence",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "_external_process_auth_evidence",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

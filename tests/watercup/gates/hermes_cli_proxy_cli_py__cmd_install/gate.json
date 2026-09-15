@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_proxy_cli_py__cmd_install",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_proxy_cli_cmd_install",
+  "py_module": "hermes_cli/proxy_cli.py",
+  "py_fn": "cmd_install",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

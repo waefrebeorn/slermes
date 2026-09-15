@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_base_py___dispatch_active_session_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gw_base__dispatch_active_session_command",
+  "py_module": "gateway/platforms/base.py",
+  "py_fn": "_dispatch_active_session_command",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

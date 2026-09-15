@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_browser_supervisor_py___on_target_detached",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_on_target_detached",
+  "py_module": "tools/browser_supervisor.py",
+  "py_fn": "_on_target_detached",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

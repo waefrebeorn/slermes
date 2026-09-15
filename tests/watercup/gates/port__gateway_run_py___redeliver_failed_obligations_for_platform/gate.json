@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_run_py___redeliver_failed_obligations_for_platform",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_redeliver_failed_obligations_for_platform",
+  "py_module": "gateway/run.py",
+  "py_fn": "_redeliver_failed_obligations_for_platform",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

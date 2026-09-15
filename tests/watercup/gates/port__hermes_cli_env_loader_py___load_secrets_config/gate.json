@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_env_loader_py___load_secrets_config",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_load_secrets_config",
+  "py_module": "hermes_cli/env_loader.py",
+  "py_fn": "_load_secrets_config",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

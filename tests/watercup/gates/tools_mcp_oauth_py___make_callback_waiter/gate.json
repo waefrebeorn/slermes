@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_oauth_py___make_callback_waiter",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mcpo_u_make_callback_waiter",
+  "py_module": "tools/mcp_oauth.py",
+  "py_fn": "_make_callback_waiter",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

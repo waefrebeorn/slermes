@@ -1,0 +1,29 @@
+{
+  "name": "tools_skills_hub_py__record_uninstall",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hub_lock_record_uninstall",
+  "py_module": "tools/skills_hub.py",
+  "py_fn": "record_uninstall",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

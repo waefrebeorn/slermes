@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_models_py__clamp_reasoning_effort_to_supported",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "clamp_reasoning_effort_to_supported",
+  "py_module": "hermes_cli/models.py",
+  "py_fn": "clamp_reasoning_effort_to_supported",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_tools_config_py__provider_readiness_status",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "provider_readiness_status",
+  "py_module": "hermes_cli/tools_config.py",
+  "py_fn": "provider_readiness_status",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

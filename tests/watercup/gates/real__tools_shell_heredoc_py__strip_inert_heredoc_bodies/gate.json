@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_shell_heredoc_py__strip_inert_heredoc_bodies",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "strip_inert_heredoc_bodies",
+  "py_module": "tools/shell_heredoc.py",
+  "py_fn": "strip_inert_heredoc_bodies",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

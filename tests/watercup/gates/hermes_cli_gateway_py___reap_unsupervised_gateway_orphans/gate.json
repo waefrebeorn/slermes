@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_py___reap_unsupervised_gateway_orphans",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cgw_u_reap_unsupervised_gateway_orphans",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "_reap_unsupervised_gateway_orphans",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

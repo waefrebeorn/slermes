@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_delegate_tool_py___parent_finalization_lock",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_parent_finalization_lock",
+  "py_module": "tools/delegate_tool.py",
+  "py_fn": "_parent_finalization_lock",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

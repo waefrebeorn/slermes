@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_code_kernel_py___lifecycle_limits",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_lifecycle_limits",
+  "py_module": "tools/code_kernel.py",
+  "py_fn": "_lifecycle_limits",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

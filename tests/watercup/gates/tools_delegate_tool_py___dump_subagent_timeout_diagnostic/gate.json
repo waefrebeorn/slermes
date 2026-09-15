@@ -1,0 +1,29 @@
+{
+  "name": "tools_delegate_tool_py___dump_subagent_timeout_diagnostic",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_delegate_tool_u_dump_subagent_timeout_diagnostic",
+  "py_module": "tools/delegate_tool.py",
+  "py_fn": "_dump_subagent_timeout_diagnostic",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

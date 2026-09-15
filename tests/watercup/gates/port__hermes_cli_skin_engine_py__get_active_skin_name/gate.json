@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_skin_engine_py__get_active_skin_name",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_active_skin_name",
+  "py_module": "hermes_cli/skin_engine.py",
+  "py_fn": "get_active_skin_name",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

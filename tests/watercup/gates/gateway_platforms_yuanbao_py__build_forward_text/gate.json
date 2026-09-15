@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_yuanbao_py__build_forward_text",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "yb_build_forward_text",
+  "py_module": "gateway/platforms/yuanbao.py",
+  "py_fn": "build_forward_text",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

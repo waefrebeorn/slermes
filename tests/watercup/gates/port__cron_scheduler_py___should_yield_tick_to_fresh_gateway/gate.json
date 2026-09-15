@@ -1,0 +1,30 @@
+{
+  "name": "port__cron_scheduler_py___should_yield_tick_to_fresh_gateway",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_should_yield_tick_to_fresh_gateway",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "_should_yield_tick_to_fresh_gateway",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

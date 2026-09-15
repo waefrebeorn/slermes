@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_state_py___reapply_durability_barriers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_reapply_durability_barriers",
+  "py_module": "hermes_state.py",
+  "py_fn": "_reapply_durability_barriers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

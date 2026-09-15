@@ -1,0 +1,29 @@
+{
+  "name": "agent_title_generator_py___is_real_user_turn",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "title_is_real_user_turn",
+  "py_module": "agent/title_generator.py",
+  "py_fn": "_is_real_user_turn",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_skill_utils_py___normalize_skill_description",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_normalize_skill_description",
+  "py_module": "agent/skill_utils.py",
+  "py_fn": "_normalize_skill_description",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_tool_py___refresh_tools",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mcp_tool_refresh_tools",
+  "py_module": "tools/mcp_tool.py",
+  "py_fn": "_refresh_tools",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

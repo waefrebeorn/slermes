@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_gemini_native_adapter_py__translate_gemini_response",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "translate_gemini_response",
+  "py_module": "agent/gemini_native_adapter.py",
+  "py_fn": "translate_gemini_response",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

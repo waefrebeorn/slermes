@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_profile_distribution_py___git_clone",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_profile_distributio_u_git_clone",
+  "py_module": "hermes_cli/profile_distribution.py",
+  "py_fn": "_git_clone",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

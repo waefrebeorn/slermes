@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_web_routers_cron_py__get_cron_delivery_targets",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_cron_delivery_targets",
+  "py_module": "hermes_cli/web_routers/cron.py",
+  "py_fn": "get_cron_delivery_targets",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

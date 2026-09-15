@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_kanban_db_py__count_running_tasks_other_boards",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "kdb_count_running_tasks_other_boards",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "count_running_tasks_other_boards",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

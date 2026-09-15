@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_profiles_py___normalize_profile_archive_parts",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "profile_archive_member_safe",
+  "py_module": "hermes_cli/profiles.py",
+  "py_fn": "_normalize_profile_archive_parts",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

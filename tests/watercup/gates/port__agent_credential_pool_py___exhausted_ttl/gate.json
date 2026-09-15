@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_credential_pool_py___exhausted_ttl",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_exhausted_ttl",
+  "py_module": "agent/credential_pool.py",
+  "py_fn": "_exhausted_ttl",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

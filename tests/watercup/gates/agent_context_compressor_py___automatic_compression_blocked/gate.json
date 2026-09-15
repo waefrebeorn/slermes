@@ -1,0 +1,29 @@
+{
+  "name": "agent_context_compressor_py___automatic_compression_blocked",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ctxc_u_automatic_compression_blocked",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_automatic_compression_blocked",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli__install_repair_py___read_user_path_raw",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_read_user_path_raw",
+  "py_module": "hermes_cli/_install_repair.py",
+  "py_fn": "_read_user_path_raw",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

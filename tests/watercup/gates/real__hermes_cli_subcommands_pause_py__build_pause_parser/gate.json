@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_subcommands_pause_py__build_pause_parser",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_pause_parser",
+  "py_module": "hermes_cli/subcommands/pause.py",
+  "py_fn": "build_pause_parser",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

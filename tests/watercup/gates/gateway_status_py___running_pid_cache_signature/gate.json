@@ -1,0 +1,29 @@
+{
+  "name": "gateway_status_py___running_pid_cache_signature",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gstat_u_running_pid_cache_signature",
+  "py_module": "gateway/status.py",
+  "py_fn": "_running_pid_cache_signature",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_delegation_output_schema_py__extract_json_candidate",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "extract_json_candidate",
+  "py_module": "tools/delegation_output_schema.py",
+  "py_fn": "extract_json_candidate",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_browser_supervisor_py___on_frame_navigated",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_on_frame_navigated",
+  "py_module": "tools/browser_supervisor.py",
+  "py_fn": "_on_frame_navigated",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_plugin_guard_py___check_plugin_structure",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_check_plugin_structure",
+  "py_module": "tools/plugin_guard.py",
+  "py_fn": "_check_plugin_structure",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_web_server_py___channel_or_close_code",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_channel_or_close_code",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_channel_or_close_code",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

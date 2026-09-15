@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_browser_use_cli_py___managed_bin_dir",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_managed_bin_dir",
+  "py_module": "tools/browser_use_cli.py",
+  "py_fn": "_managed_bin_dir",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

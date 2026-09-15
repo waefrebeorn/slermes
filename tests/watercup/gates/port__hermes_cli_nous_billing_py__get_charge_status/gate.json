@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_nous_billing_py__get_charge_status",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_charge_status",
+  "py_module": "hermes_cli/nous_billing.py",
+  "py_fn": "get_charge_status",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

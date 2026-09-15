@@ -1,0 +1,29 @@
+{
+  "name": "tools_x_search_tool_py___validate_date_range",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_x_search_tool_u_validate_date_range",
+  "py_module": "tools/x_search_tool.py",
+  "py_fn": "_validate_date_range",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

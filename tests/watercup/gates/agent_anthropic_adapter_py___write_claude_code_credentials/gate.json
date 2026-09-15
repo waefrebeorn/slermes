@@ -1,0 +1,29 @@
+{
+  "name": "agent_anthropic_adapter_py___write_claude_code_credentials",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "antr_write_claude_code_credentials",
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_write_claude_code_credentials",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

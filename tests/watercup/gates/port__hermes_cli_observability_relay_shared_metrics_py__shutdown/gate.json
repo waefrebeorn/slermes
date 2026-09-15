@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_observability_relay_shared_metrics_py__shutdown",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "shutdown",
+  "py_module": "hermes_cli/observability/relay_shared_metrics.py",
+  "py_fn": "shutdown",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

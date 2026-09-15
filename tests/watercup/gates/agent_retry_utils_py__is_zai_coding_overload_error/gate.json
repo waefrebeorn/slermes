@@ -1,0 +1,29 @@
+{
+  "name": "agent_retry_utils_py__is_zai_coding_overload_error",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "rtu_is_zai_coding_overload_error",
+  "py_module": "agent/retry_utils.py",
+  "py_fn": "is_zai_coding_overload_error",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

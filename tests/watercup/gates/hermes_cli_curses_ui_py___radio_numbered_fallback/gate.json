@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_curses_ui_py___radio_numbered_fallback",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_curses_ui_u_radio_numbered_fallback",
+  "py_module": "hermes_cli/curses_ui.py",
+  "py_fn": "_radio_numbered_fallback",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

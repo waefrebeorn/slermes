@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_tool_py___connect_cooldown_active",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mcp_connect_cooldown_active",
+  "py_module": "tools/mcp_tool.py",
+  "py_fn": "_connect_cooldown_active",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

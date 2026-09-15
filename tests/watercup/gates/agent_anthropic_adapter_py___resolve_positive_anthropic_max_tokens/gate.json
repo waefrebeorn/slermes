@@ -1,0 +1,29 @@
+{
+  "name": "agent_anthropic_adapter_py___resolve_positive_anthropic_max_tokens",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "anthropic_resolve_positive_max_tokens",
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_resolve_positive_anthropic_max_tokens",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

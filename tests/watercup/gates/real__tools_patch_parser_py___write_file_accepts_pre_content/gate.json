@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_patch_parser_py___write_file_accepts_pre_content",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_write_file_accepts_pre_content",
+  "py_module": "tools/patch_parser.py",
+  "py_fn": "_write_file_accepts_pre_content",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

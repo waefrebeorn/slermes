@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_codex_models_py___extract_chatgpt_account_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_codex_models_u_extract_chatgpt_account_id",
+  "py_module": "hermes_cli/codex_models.py",
+  "py_fn": "_extract_chatgpt_account_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

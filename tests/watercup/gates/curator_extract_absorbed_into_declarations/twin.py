@@ -1,33 +1,29 @@
-"""twin for curator_extract_absorbed_into_declarations.
+"""twin for agent/curator.py:_extract_absorbed_into_declarations."""
+import os, sys, importlib.util as ilu
 
-Imports LIVE agent/curator.py::_extract_absorbed_into_declarations and traces
-the same result-shape rungs as the C harness (which compiles the REAL port).
-Input: JSON array of tool-call dicts.
-"""
-import os, sys, json as _json
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_curator", os.path.join(DEV, "agent", "curator.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_curator"] = mod
-spec.loader.exec_module(mod)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_curator_py", os.path.join(DEV, "agent/curator.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_curator_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_extract_absorbed_into_declarations")
+    try:
+        result = _pb._extract_absorbed_into_declarations(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        c = Cup("extract_absorbed_into_declarations")
-        try:
-            calls = _json.loads(raw)
-        except Exception:
-            calls = []
-        out = mod._extract_absorbed_into_declarations(calls)
-        c.branch(len(out) > 0)
-        for name in sorted(out):
-            c.loop()
-            c.valstr("%s|%s" % (name, out[name]["into"]))
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

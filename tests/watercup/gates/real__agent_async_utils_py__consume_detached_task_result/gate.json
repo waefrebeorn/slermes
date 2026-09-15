@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_async_utils_py__consume_detached_task_result",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "consume_detached_task_result",
+  "py_module": "agent/async_utils.py",
+  "py_fn": "consume_detached_task_result",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

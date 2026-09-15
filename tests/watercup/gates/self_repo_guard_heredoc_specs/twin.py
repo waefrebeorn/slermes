@@ -1,30 +1,29 @@
-"""twin for self_repo_guard_heredoc_specs.
+"""twin for tools/self_repo_guard.py:_heredoc_specs."""
+import os, sys, importlib.util as ilu
 
-Imports LIVE tools/self_repo_guard.py::_heredoc_specs and traces the same
-per-spec result-shape rungs as the C harness (which links the REAL port).
-"""
-import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_self_repo_guard", os.path.join(DEV, "tools", "self_repo_guard.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_self_repo_guard"] = mod
-spec.loader.exec_module(mod)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_tools_self_repo_guard_py", os.path.join(DEV, "tools/self_repo_guard.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_tools_self_repo_guard_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_heredoc_specs")
+    try:
+        result = _pb._heredoc_specs(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
 def run(inputs):
-    cups = []
-    for line in inputs:
-        c = Cup("heredoc_specs")
-        specs = mod._heredoc_specs(line)
-        c.branch(len(specs) > 0)
-        for hd in specs:
-            c.loop()
-            c.branch(hd.strip_tabs)
-            c.branch(hd.execute_as_shell)
-            c.valstr(hd.delimiter)
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

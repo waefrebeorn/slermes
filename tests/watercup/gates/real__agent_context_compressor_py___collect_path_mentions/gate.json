@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_context_compressor_py___collect_path_mentions",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_collect_path_mentions",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_collect_path_mentions",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

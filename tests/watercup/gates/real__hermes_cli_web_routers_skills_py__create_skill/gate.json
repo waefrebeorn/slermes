@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_web_routers_skills_py__create_skill",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "create_skill",
+  "py_module": "hermes_cli/web_routers/skills.py",
+  "py_fn": "create_skill",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

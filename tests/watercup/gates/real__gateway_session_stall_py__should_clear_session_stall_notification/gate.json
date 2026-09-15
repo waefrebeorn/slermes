@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_session_stall_py__should_clear_session_stall_notification",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "should_clear_session_stall_notification",
+  "py_module": "gateway/session_stall.py",
+  "py_fn": "should_clear_session_stall_notification",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

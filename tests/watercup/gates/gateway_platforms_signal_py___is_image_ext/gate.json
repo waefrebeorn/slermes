@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_signal_py___is_image_ext",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sig_is_image_ext",
+  "py_module": "gateway/platforms/signal.py",
+  "py_fn": "_is_image_ext",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

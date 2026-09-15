@@ -1,0 +1,29 @@
+{
+  "name": "gateway_relay_adapter_py___watch_for_revocation",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_relay_adapter_u_watch_for_revocation",
+  "py_module": "gateway/relay/adapter.py",
+  "py_fn": "_watch_for_revocation",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

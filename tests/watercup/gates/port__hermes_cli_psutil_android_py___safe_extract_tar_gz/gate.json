@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_psutil_android_py___safe_extract_tar_gz",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_safe_extract_tar_gz",
+  "py_module": "hermes_cli/psutil_android.py",
+  "py_fn": "_safe_extract_tar_gz",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

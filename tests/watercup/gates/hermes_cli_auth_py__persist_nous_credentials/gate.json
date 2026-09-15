@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_auth_py__persist_nous_credentials",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "auth_persist_nous_credentials",
+  "py_module": "hermes_cli/auth.py",
+  "py_fn": "persist_nous_credentials",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

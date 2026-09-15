@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_yuanbao_sticker_py___score_field",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_score_field",
+  "py_module": "gateway/platforms/yuanbao_sticker.py",
+  "py_fn": "_score_field",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

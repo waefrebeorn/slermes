@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_yuanbao_tools_py___handle_yb_send_dm",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_handle_yb_send_dm",
+  "py_module": "tools/yuanbao_tools.py",
+  "py_fn": "_handle_yb_send_dm",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

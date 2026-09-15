@@ -1,0 +1,29 @@
+{
+  "name": "retry_utils_py__zai_coding_overload_retry_ceiling",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "zai_coding_overload_retry_ceiling",
+  "py_module": "retry_utils.py",
+  "py_fn": "zai_coding_overload_retry_ceiling",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

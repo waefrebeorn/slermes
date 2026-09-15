@@ -1,0 +1,29 @@
+{
+  "name": "tools_transcription_tools_py___resolve_command_stt_provider_config",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tsc_resolve_command_stt_provider_config",
+  "py_module": "tools/transcription_tools.py",
+  "py_fn": "_resolve_command_stt_provider_config",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_proxy_sources_iron_proxy_py___proxy_state_dir_ro",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_proxy_state_dir_ro",
+  "py_module": "agent/proxy_sources/iron_proxy.py",
+  "py_fn": "_proxy_state_dir_ro",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

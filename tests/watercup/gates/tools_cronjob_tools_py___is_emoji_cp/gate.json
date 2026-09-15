@@ -1,0 +1,29 @@
+{
+  "name": "tools_cronjob_tools_py___is_emoji_cp",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cp_is_emoji",
+  "py_module": "tools/cronjob_tools.py",
+  "py_fn": "_is_emoji_cp",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

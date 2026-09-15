@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_model_cost_guard_py___can_trust_pricing_lookup",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_can_trust_pricing_lookup",
+  "py_module": "hermes_cli/model_cost_guard.py",
+  "py_fn": "_can_trust_pricing_lookup",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

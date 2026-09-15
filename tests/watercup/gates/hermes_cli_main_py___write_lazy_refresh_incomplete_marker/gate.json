@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___write_lazy_refresh_incomplete_marker",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_u_write_lazy_refresh_incomplete_marker",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_write_lazy_refresh_incomplete_marker",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

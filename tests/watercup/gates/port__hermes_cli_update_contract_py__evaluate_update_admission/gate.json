@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_update_contract_py__evaluate_update_admission",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "evaluate_update_admission",
+  "py_module": "hermes_cli/update_contract.py",
+  "py_fn": "evaluate_update_admission",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

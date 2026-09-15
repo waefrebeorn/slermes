@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_scheduler_provider_py__supports_force_fire",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "supports_force_fire",
+  "py_module": "cron/scheduler_provider.py",
+  "py_fn": "supports_force_fire",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

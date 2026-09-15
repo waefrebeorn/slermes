@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_blueprint_cmd_py___parse_kv",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_parse_kv",
+  "py_module": "hermes_cli/blueprint_cmd.py",
+  "py_fn": "_parse_kv",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

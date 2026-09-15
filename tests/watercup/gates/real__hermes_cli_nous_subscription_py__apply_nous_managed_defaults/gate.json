@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_nous_subscription_py__apply_nous_managed_defaults",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "apply_nous_managed_defaults",
+  "py_module": "hermes_cli/nous_subscription.py",
+  "py_fn": "apply_nous_managed_defaults",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_tool_guardrails_py___check_loop_cap",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "guarrd_check_loop_cap",
+  "py_module": "agent/tool_guardrails.py",
+  "py_fn": "_check_loop_cap",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

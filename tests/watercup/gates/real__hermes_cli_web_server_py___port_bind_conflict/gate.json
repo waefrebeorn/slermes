@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_web_server_py___port_bind_conflict",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_port_bind_conflict",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_port_bind_conflict",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

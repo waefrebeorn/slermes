@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_skill_manager_tool_py___attach_lint_findings",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_attach_lint_findings",
+  "py_module": "tools/skill_manager_tool.py",
+  "py_fn": "_attach_lint_findings",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

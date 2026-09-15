@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_timeouts_py__get_provider_stale_timeout",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_provider_stale_timeout",
+  "py_module": "hermes_cli/timeouts.py",
+  "py_fn": "get_provider_stale_timeout",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

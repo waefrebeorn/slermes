@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli__scan_venv_blockers_py___deferred_backend_evidence",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_deferred_backend_evidence",
+  "py_module": "hermes_cli/_scan_venv_blockers.py",
+  "py_fn": "_deferred_backend_evidence",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -65,7 +65,7 @@ static void sched(const char *kind_in, const char *expr_in,
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s schedule_to_string <kind\texpr\tmin\tsec>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s schedule_to_string <kind\texpr\tmin\tsec>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         char buf[256];
         snprintf(buf, sizeof buf, "%s", argv[i]);

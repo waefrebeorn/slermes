@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_signal_py___ext_to_mime",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_ext_to_mime",
+  "py_module": "gateway/platforms/signal.py",
+  "py_fn": "_ext_to_mime",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

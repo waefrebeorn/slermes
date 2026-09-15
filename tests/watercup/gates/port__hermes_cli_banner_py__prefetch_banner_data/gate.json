@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_banner_py__prefetch_banner_data",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "prefetch_banner_data",
+  "py_module": "hermes_cli/banner.py",
+  "py_fn": "prefetch_banner_data",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_urllib_security_py__redirect_request",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_urllib_security_redirect_request",
+  "py_module": "hermes_cli/urllib_security.py",
+  "py_fn": "redirect_request",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

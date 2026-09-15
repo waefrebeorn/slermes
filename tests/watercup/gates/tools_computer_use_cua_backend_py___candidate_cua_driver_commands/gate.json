@@ -1,0 +1,29 @@
+{
+  "name": "tools_computer_use_cua_backend_py___candidate_cua_driver_commands",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cua_u_candidate_cua_driver_commands",
+  "py_module": "tools/computer_use/cua_backend.py",
+  "py_fn": "_candidate_cua_driver_commands",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

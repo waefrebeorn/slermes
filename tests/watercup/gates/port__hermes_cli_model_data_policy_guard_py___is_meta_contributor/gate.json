@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_model_data_policy_guard_py___is_meta_contributor",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_is_meta_contributor",
+  "py_module": "hermes_cli/model_data_policy_guard.py",
+  "py_fn": "_is_meta_contributor",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

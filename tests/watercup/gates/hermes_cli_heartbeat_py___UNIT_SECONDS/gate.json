@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_heartbeat_py___UNIT_SECONDS",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hb_unit_seconds",
+  "py_module": "hermes_cli/heartbeat.py",
+  "py_fn": "_UNIT_SECONDS",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

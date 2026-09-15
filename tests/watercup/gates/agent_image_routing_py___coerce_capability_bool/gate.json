@@ -1,0 +1,29 @@
+{
+  "name": "agent_image_routing_py___coerce_capability_bool",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "imgr_coerce_capability_bool",
+  "py_module": "agent/image_routing.py",
+  "py_fn": "_coerce_capability_bool",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

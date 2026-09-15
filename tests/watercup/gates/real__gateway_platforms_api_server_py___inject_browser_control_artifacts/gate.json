@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_api_server_py___inject_browser_control_artifacts",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_inject_browser_control_artifacts",
+  "py_module": "gateway/platforms/api_server.py",
+  "py_fn": "_inject_browser_control_artifacts",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

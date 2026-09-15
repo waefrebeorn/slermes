@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_worktree_cmd_py___fmt_size",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_fmt_size",
+  "py_module": "hermes_cli/worktree_cmd.py",
+  "py_fn": "_fmt_size",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

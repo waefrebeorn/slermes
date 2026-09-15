@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_whatsapp_common_py___whatsapp_free_response_chats",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "whatsapp_common_free_response_chats",
+  "py_module": "gateway/platforms/whatsapp_common.py",
+  "py_fn": "_whatsapp_free_response_chats",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_lsp_range_shift_py__shift_diagnostic_range",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "shift_diagnostic_range",
+  "py_module": "agent/lsp/range_shift.py",
+  "py_fn": "shift_diagnostic_range",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

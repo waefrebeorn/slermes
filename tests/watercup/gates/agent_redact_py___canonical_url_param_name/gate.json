@@ -1,0 +1,29 @@
+{
+  "name": "agent_redact_py___canonical_url_param_name",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_redact_u_canonical_url_param_name",
+  "py_module": "agent/redact.py",
+  "py_fn": "_canonical_url_param_name",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

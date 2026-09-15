@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_dashboard_auth_token_auth_py__register_token_route",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_dashboard_auth_toke_register_token_route",
+  "py_module": "hermes_cli/dashboard_auth/token_auth.py",
+  "py_fn": "register_token_route",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

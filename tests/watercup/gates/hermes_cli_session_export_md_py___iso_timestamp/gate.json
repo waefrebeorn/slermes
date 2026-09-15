@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_session_export_md_py___iso_timestamp",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sexmd_u_iso_timestamp",
+  "py_module": "hermes_cli/session_export_md.py",
+  "py_fn": "_iso_timestamp",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

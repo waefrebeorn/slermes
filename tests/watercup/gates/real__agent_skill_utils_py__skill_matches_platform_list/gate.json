@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_skill_utils_py__skill_matches_platform_list",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "skill_matches_platform_list",
+  "py_module": "agent/skill_utils.py",
+  "py_fn": "skill_matches_platform_list",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

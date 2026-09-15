@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_tools_config_py___ps_single_quote",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_ps_single_quote",
+  "py_module": "hermes_cli/tools_config.py",
+  "py_fn": "_ps_single_quote",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

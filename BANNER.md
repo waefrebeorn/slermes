@@ -3,9 +3,11 @@
 ## Core Principle
 
 <!-- PARITY:AUTO -->
-**v671 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
+**v672 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
 
-**Upstream sync checkpoint:** 2,040 ahead / 1,052 behind upstream/main (last merge 2026-08-23 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Watercup oracle:** 0/6,230 PORTED match LIVE Python · 11,511/11,511 REAL_GAP mismatch (tracking). Total trace-cup: 313 PASS / 22,604 (1.4%). Passing gap-closures flip MISMATCH → MATCH.
+
+**Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
 <!-- /PARITY:AUTO -->
 
@@ -15,7 +17,7 @@ forking model means slermes diverges from upstream Python — it does NOT
 share git history with the upstream repo. The divergent count is the
 snapshot timer of the last sync point.
 
-## Fork Sync Workflow (canonical, v670)
+## Fork Sync Workflow (canonical)
 
 This is the **exact workflow** used every time upstream gets new updates —
 pull the hermes code, slap slermes back on, stamp the banner checkpoint:

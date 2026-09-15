@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skill_linter_py___check_platforms_gating",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_check_platforms_gating",
+  "py_module": "tools/skill_linter.py",
+  "py_fn": "_check_platforms_gating",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

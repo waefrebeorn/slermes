@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_hosted_rooms_py__peer_room_is_reserved",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "peer_room_is_reserved",
+  "py_module": "gateway/hosted_rooms.py",
+  "py_fn": "peer_room_is_reserved",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

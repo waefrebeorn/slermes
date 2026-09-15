@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_chat_completion_helpers_py___fallback_reason_text",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_fallback_reason_text",
+  "py_module": "agent/chat_completion_helpers.py",
+  "py_fn": "_fallback_reason_text",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

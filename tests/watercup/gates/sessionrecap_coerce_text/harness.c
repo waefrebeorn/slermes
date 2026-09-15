@@ -34,7 +34,7 @@ static void run_one(int argc, char **argv) {
             } else {
                 WCUP_BRANCH(0);
                 /* array walk */
-                for (int i = 1; i < argc; i++) {
+                for (int i = 2; i < argc; i++) {
                     WCUP_LOOP_TICK();
                     const char *b = argv[i];
                     const char *text = NULL;

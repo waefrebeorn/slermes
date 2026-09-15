@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___should_emit_long_running_notification",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_should_emit_long_running_notification",
+  "py_module": "gateway/run.py",
+  "py_fn": "_should_emit_long_running_notification",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

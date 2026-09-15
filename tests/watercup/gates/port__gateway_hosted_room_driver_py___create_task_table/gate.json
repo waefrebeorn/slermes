@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_hosted_room_driver_py___create_task_table",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_create_task_table",
+  "py_module": "gateway/hosted_room_driver.py",
+  "py_fn": "_create_task_table",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

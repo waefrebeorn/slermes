@@ -25,6 +25,6 @@ const char *build_nous_subscription_prompt(void) {
         "Do not mention subscription unless the user asks about it or it directly solves "
         "the current missing capability.\n"
         "Useful commands: hermes setup, hermes setup tools, hermes setup terminal, "
-        "hermes status."
+        "hermes status.\n"
     );
 }

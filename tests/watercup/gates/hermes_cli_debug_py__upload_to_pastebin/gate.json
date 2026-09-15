@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_debug_py__upload_to_pastebin",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_debug_upload_to_pastebin",
+  "py_module": "hermes_cli/debug.py",
+  "py_fn": "upload_to_pastebin",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

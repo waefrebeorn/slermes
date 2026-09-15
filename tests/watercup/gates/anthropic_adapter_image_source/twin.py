@@ -1,63 +1,29 @@
-"""twin for anthropic_adapter_image_source — LIVE
-agent/anthropic_adapter.py::_image_source_from_openai_url."""
-import os, sys
-import importlib.util as ilu
+"""twin for agent/anthropic_adapter.py:_image_source_from_openai_url."""
+import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
-
-def _load_live():
-    try:
-        spec = ilu.spec_from_file_location(
-            "wc_live_antr", os.path.join(DEV, "agent", "anthropic_adapter.py"))
-        mod = ilu.module_from_spec(spec)
-        sys.modules["wc_live_antr"] = mod
-        spec.loader.exec_module(mod)
-        return mod._image_source_from_openai_url
-    except Exception:
-        return None
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_anthropic_adapter_py", os.path.join(DEV, "agent/anthropic_adapter.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_anthropic_adapter_py"] = _pb
+_spec.loader.exec_module(_pb)
 
 
-_live_fn = _load_live()
-
-
-def _fallback(url):
-    url = str(url or "").strip()
-    if not url:
-        return {"type": "url", "url": ""}
-    if url.startswith("data:"):
-        header, _, data = url.partition(",")
-        media_type = "image/jpeg"
-        if header.startswith("data:"):
-            mime_part = header[len("data:"):].split(";", 1)[0].strip()
-            if mime_part.startswith("image/"):
-                media_type = mime_part
-        return {"type": "base64", "media_type": media_type, "data": data}
-    return {"type": "url", "url": url}
-
-
-def trace(raw):
-    url = str(raw or "").strip()
+def trace(inp):
     c = Cup("_image_source_from_openai_url")
-    empty = not url
-    is_data = url.startswith("data:")
-    c.branch(empty)                                     # B1
-    c.branch(is_data)                                   # B2
-    if is_data:
-        header, _, _data = url.partition(",")
-        c.branch("," in raw)                            # B3
-        if "," in raw:
-            mime_part = header[len("data:"):].split(";", 1)[0].strip()
-            c.branch(mime_part.startswith("image/") and len(mime_part) > 6)  # B4
-
-    result = _live_fn(raw) if _live_fn else _fallback(raw)
-    c.valstr(str(result).replace("'", '"'))
+    try:
+        result = _pb._image_source_from_openai_url(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()
 
 
 def run(inputs):
-    return [trace(r) for r in inputs]
+    return [trace(inp) for inp in inputs]

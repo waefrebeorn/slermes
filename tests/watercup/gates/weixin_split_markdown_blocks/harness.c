@@ -33,7 +33,7 @@ static char *join_strip(char **lines, int n) {
 static void emit_unused(void) { /* placeholder removed */ }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s split_markdown_blocks <content>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s split_markdown_blocks <content>...\n", argv[0]); return 2; }
     for (int a = 2; a < argc; a++) {
         const char *content = argv[a];
         WCUP_BEGIN("split_markdown_blocks");

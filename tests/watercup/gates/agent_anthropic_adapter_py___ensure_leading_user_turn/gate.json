@@ -1,0 +1,29 @@
+{
+  "name": "agent_anthropic_adapter_py___ensure_leading_user_turn",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_anthropic_adapter_u_ensure_leading_user_turn",
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_ensure_leading_user_turn",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

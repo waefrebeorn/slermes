@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_prompt_stash_py___clamp_cursor",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_clamp_cursor",
+  "py_module": "hermes_cli/prompt_stash.py",
+  "py_fn": "_clamp_cursor",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

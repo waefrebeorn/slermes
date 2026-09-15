@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_active_sessions_py___process_start_time",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_active_sessions_u_process_start_time",
+  "py_module": "hermes_cli/active_sessions.py",
+  "py_fn": "_process_start_time",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_uninstall_py__remove_node_symlinks",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "remove_node_symlinks",
+  "py_module": "hermes_cli/uninstall.py",
+  "py_fn": "remove_node_symlinks",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

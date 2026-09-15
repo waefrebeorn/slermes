@@ -1,0 +1,29 @@
+{
+  "name": "tools_voice_mode_py___play_audio_file_impl",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "voice_play_audio_file_impl",
+  "py_module": "tools/voice_mode.py",
+  "py_fn": "_play_audio_file_impl",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -29,7 +29,7 @@ static const char *KINDS[] = {
 };
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s detect_node_recipe <pkg_json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s detect_node_recipe <pkg_json>...\n", argv[0]); return 2; }
     const char *root = "/nonexistent-wc-root";   /* deterministic: no lockfiles */
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("detect_node_recipe");

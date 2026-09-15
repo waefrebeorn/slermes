@@ -195,7 +195,7 @@ out:;
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s extract_pricing <json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s extract_pricing <json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         const char *p = argv[i];
         JV *v = parse_val(&p, 0);

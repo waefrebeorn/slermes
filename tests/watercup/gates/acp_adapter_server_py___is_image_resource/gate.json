@@ -1,0 +1,29 @@
+{
+  "name": "acp_adapter_server_py___is_image_resource",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "acps_is_image_resource",
+  "py_module": "acp_adapter/server.py",
+  "py_fn": "_is_image_resource",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

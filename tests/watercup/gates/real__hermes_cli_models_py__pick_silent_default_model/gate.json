@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_models_py__pick_silent_default_model",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "pick_silent_default_model",
+  "py_module": "hermes_cli/models.py",
+  "py_fn": "pick_silent_default_model",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

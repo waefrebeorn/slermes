@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_plugins_cmd_py___discover_memory_providers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_discover_memory_providers",
+  "py_module": "hermes_cli/plugins_cmd.py",
+  "py_fn": "_discover_memory_providers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

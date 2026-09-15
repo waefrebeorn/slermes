@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_toolset_scope_py__toolset_allowed_for_platform",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "toolset_allowed_for_platform",
+  "py_module": "hermes_cli/toolset_scope.py",
+  "py_fn": "toolset_allowed_for_platform",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

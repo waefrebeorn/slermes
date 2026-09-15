@@ -1,0 +1,29 @@
+{
+  "name": "cron_jobs_py___job_running_in_this_process",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cron_jobs_u_job_running_in_this_process",
+  "py_module": "cron/jobs.py",
+  "py_fn": "_job_running_in_this_process",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_native_compaction_py__native_compaction_context_management",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "native_compaction_context_management",
+  "py_module": "agent/native_compaction.py",
+  "py_fn": "native_compaction_context_management",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

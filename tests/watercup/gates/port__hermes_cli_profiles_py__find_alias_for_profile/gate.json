@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_profiles_py__find_alias_for_profile",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "find_alias_for_profile",
+  "py_module": "hermes_cli/profiles.py",
+  "py_fn": "find_alias_for_profile",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

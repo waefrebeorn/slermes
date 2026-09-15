@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_credential_lifecycle_py___scrub_config_yaml_mirrors",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_credential_lifecycl_u_scrub_config_yaml_mirrors",
+  "py_module": "hermes_cli/credential_lifecycle.py",
+  "py_fn": "_scrub_config_yaml_mirrors",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

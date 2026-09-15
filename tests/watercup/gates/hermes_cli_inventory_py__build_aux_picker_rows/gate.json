@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_inventory_py__build_aux_picker_rows",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_inventory_build_aux_picker_rows",
+  "py_module": "hermes_cli/inventory.py",
+  "py_fn": "build_aux_picker_rows",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

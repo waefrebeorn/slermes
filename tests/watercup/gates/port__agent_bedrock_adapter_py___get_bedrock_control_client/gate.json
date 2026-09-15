@@ -1,0 +1,30 @@
+{
+  "name": "port__agent_bedrock_adapter_py___get_bedrock_control_client",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_get_bedrock_control_client",
+  "py_module": "agent/bedrock_adapter.py",
+  "py_fn": "_get_bedrock_control_client",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

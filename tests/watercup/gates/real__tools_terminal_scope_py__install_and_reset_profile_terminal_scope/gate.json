@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_terminal_scope_py__install_and_reset_profile_terminal_scope",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "install_and_reset_profile_terminal_scope",
+  "py_module": "tools/terminal_scope.py",
+  "py_fn": "install_and_reset_profile_terminal_scope",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

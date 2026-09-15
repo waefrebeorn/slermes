@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_kanban_db_py___defer_reclaim_for_live_worker",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_defer_reclaim_for_live_worker",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "_defer_reclaim_for_live_worker",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

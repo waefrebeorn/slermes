@@ -1,34 +1,29 @@
-"""twin for approval_read_shell_word.
+"""twin for tools/approval.py:_read_shell_word."""
+import os, sys, importlib.util as ilu
 
-Imports LIVE tools/approval.py::_read_shell_word and traces the same
-result-shape rungs as the C harness (which links the REAL port).
-Input format: "<pos>\t<command>".
-"""
-import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_approval", os.path.join(DEV, "tools", "approval.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_approval"] = mod
-spec.loader.exec_module(mod)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_tools_approval_py", os.path.join(DEV, "tools/approval.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_tools_approval_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_read_shell_word")
+    try:
+        result = _pb._read_shell_word(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        if "\t" in raw:
-            pos_s, command = raw.split("\t", 1)
-            pos = int(pos_s) if pos_s else 0
-        else:
-            pos, command = 0, raw
-        c = Cup("read_shell_word")
-        start, end, word = mod._read_shell_word(command, pos)
-        c.branch(end == start)
-        c.valstr(str(start))
-        c.valstr(str(end))
-        c.valstr(word)
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

@@ -1,0 +1,30 @@
+{
+  "name": "agent_secret_scope_py___is_global_env",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "secret_scope_is_global_env",
+  "py_module": "agent/secret_scope.py",
+  "py_fn": "_is_global_env",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/secret_scope.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

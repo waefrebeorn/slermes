@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_codex_runtime_plugin_migration_py___strip_unmanaged_plugin_tables",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_strip_unmanaged_plugin_tables",
+  "py_module": "hermes_cli/codex_runtime_plugin_migration.py",
+  "py_fn": "_strip_unmanaged_plugin_tables",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

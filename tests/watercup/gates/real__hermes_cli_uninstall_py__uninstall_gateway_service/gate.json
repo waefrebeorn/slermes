@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_uninstall_py__uninstall_gateway_service",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "uninstall_gateway_service",
+  "py_module": "hermes_cli/uninstall.py",
+  "py_fn": "uninstall_gateway_service",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

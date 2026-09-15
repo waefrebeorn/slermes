@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_local_py___path_env_key",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "envl_u_path_env_key",
+  "py_module": "tools/environments/local.py",
+  "py_fn": "_path_env_key",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

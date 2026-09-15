@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_lifecycle_py__invoke_hook",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_lifecycle_invoke_hook",
+  "py_module": "hermes_cli/lifecycle.py",
+  "py_fn": "invoke_hook",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

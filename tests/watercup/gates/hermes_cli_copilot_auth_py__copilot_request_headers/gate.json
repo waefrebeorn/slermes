@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_copilot_auth_py__copilot_request_headers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_copilot_auth_copilot_request_headers",
+  "py_module": "hermes_cli/copilot_auth.py",
+  "py_fn": "copilot_request_headers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

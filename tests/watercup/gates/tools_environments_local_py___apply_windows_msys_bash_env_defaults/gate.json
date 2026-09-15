@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_local_py___apply_windows_msys_bash_env_defaults",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "envl_u_apply_windows_msys_bash_env_defaults",
+  "py_module": "tools/environments/local.py",
+  "py_fn": "_apply_windows_msys_bash_env_defaults",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

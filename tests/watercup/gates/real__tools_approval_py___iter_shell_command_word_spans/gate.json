@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_approval_py___iter_shell_command_word_spans",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_iter_shell_command_word_spans",
+  "py_module": "tools/approval.py",
+  "py_fn": "_iter_shell_command_word_spans",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

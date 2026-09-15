@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_web_server_py___install_memory_provider_pip_dependencies",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_install_memory_provider_pip_dependencies",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_install_memory_provider_pip_dependencies",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

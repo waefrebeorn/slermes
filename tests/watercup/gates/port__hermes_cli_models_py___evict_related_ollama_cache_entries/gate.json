@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_models_py___evict_related_ollama_cache_entries",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_evict_related_ollama_cache_entries",
+  "py_module": "hermes_cli/models.py",
+  "py_fn": "_evict_related_ollama_cache_entries",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

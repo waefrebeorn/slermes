@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_mcp_tool_py___make_redirect_header_stripper",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_make_redirect_header_stripper",
+  "py_module": "tools/mcp_tool.py",
+  "py_fn": "_make_redirect_header_stripper",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

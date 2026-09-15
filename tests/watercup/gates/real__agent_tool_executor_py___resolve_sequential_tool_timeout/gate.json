@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_tool_executor_py___resolve_sequential_tool_timeout",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_resolve_sequential_tool_timeout",
+  "py_module": "agent/tool_executor.py",
+  "py_fn": "_resolve_sequential_tool_timeout",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

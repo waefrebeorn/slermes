@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_managed_scope_py__managed_config_keys",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "managed_config_keys",
+  "py_module": "hermes_cli/managed_scope.py",
+  "py_fn": "managed_config_keys",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

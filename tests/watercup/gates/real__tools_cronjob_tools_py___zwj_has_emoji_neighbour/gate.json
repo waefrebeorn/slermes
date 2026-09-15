@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_cronjob_tools_py___zwj_has_emoji_neighbour",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_zwj_has_emoji_neighbour",
+  "py_module": "tools/cronjob_tools.py",
+  "py_fn": "_zwj_has_emoji_neighbour",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

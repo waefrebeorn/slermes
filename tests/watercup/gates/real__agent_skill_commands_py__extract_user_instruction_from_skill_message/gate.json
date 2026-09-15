@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_skill_commands_py__extract_user_instruction_from_skill_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "extract_user_instruction_from_skill_message",
+  "py_module": "agent/skill_commands.py",
+  "py_fn": "extract_user_instruction_from_skill_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

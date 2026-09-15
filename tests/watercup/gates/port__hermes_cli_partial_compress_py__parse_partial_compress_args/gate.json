@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_partial_compress_py__parse_partial_compress_args",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "parse_partial_compress_args",
+  "py_module": "hermes_cli/partial_compress.py",
+  "py_fn": "parse_partial_compress_args",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

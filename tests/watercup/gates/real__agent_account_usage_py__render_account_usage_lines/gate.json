@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_account_usage_py__render_account_usage_lines",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "render_account_usage_lines",
+  "py_module": "agent/account_usage.py",
+  "py_fn": "render_account_usage_lines",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

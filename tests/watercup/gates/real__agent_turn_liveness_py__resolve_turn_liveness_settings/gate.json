@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_turn_liveness_py__resolve_turn_liveness_settings",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_turn_liveness_settings",
+  "py_module": "agent/turn_liveness.py",
+  "py_fn": "resolve_turn_liveness_settings",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

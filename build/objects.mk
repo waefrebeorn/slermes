@@ -27,6 +27,18 @@ HERMES_CLI_PORT_EXTRA_OBJ = \
  src/hermes_cli/subcommands_parsers.o \
 
 PORT_OBJ = \
+ src/hermes_cli/browser_connect_gaps.o \
+ src/agent/auxiliary_client_gaps.o \
+ \
+ src/gateway/run_gaps.o \
+ src/hermes_cli/web_server_gaps.o \
+ src/hermes_cli/setup_gaps.o \
+ src/tools/file_operations_gaps.o \
+ src/gateway/hosted_room_driver_gaps.o \
+ src/gateway/hosted_room_discussion_gaps.o \
+ src/hermes_cli/web_routers/local_models_gaps.o \
+ src/hermes_cli/update_cmd_gaps.o \
+ src/cron/scheduler_gaps.o \
  src/hermes_cli/proxy_adapters_base.o \
  src/hermes_cli/proxy_adapters_xai.o \
  src/hermes_cli/proxy_adapters_nous_portal.o \
@@ -288,6 +300,7 @@ src/hermes_cli/profile_gaps.o \
  src/tools/computer_use/browser_route.o \
  src/tools/port_environments/base.o \
  src/agent/anthropic_adapter.o src/agent/anthropic_adapter_ports.o \
+ src/agent/logger.o src/hermes_logging.o src/infrastructure_stubs.o \
  src/hermes_cli/plugin_manifest.o \
  src/hermes_cli/config_helpers.o \
  src/hermes_cli/command_registry.o \
@@ -300,129 +313,144 @@ src/hermes_cli/profile_gaps.o \
  src/hermes_cli/kanban_swarm.o \
  src/hermes_cli/skills_config.o \
  \
- \
-
-# Desktop app parity objects (v465-v468)
-# Desktop app parity objects (core — always needed for main binary)
-DESKTOP_CORE_OBJ = \
- src/pty.o \
- src/terminal.o \
- src/gateway_client.o \
- src/hermes_cli/clipboard.o \
- src/file_ops.o \
- src/slermes_home.o
-
-# Desktop windowing objects (only for desktop target)
-DESKTOP_WINDOW_OBJ = \
- src/window_compositor.o \
- src/window_stubs.o \
- src/chat_render.o \
- src/chat_composer.o \
- src/gateway_probe.o \
- src/desktop_app_common.o \
- src/desktop_sessions.o \
- src/desktop_models.o \
- src/desktop_profiles.o \
- src/desktop_settings.o \
- src/app_desktop.o
-
-# Platform-specific window backends (only for desktop target)
-ifeq ($(UNAME_S),Linux)
- DESKTOP_WINDOW_OBJ += src/window_wayland.o
- DESKTOP_WINDOW_OBJ += src/xdg-shell-protocol.o
-else ifeq ($(UNAME_S),Darwin)
- DESKTOP_WINDOW_OBJ += 
-else
- # Windows (MinGW/Cygwin)
- DESKTOP_WINDOW_OBJ += src/window_win32.o
-endif
-
-# Combined for legacy targets
-DESKTOP_OBJ = $(DESKTOP_CORE_OBJ) $(DESKTOP_WINDOW_OBJ)
-
-# Desktop app (ncurses-based, PoP replacement)
-DESKTOP_APP_OBJ = src/main_desktop.o src/app_desktop.o src/desktop_ui_layout.o src/desktop_ui_lifecycle.o src/desktop_ui_chrome.o src/desktop_ui_overlays.o src/desktop_input.o src/desktop_pty.o src/chat_render.o src/chat_composer.o \
- src/desktop_app_common.o src/desktop_sessions.o src/desktop_models.o src/desktop_profiles.o src/desktop_settings.o src/gateway_probe.o src/window_stubs.o \
- src/hermes_env_keys.o src/file_ops.o src/app_state.o src/session_db.o src/slermes_home.o \
- src/tools/voice_mode.o src/tools/voice_mode_pure.o src/tools/transcribe.o src/tools/transcribe_helpers.o lib/libtranscribe/transcribe.o \
- src/tools/registry.o src/tools/tool_idempotency.o src/tools/tool_result.o src/gui_core.o \
- src/agent/logger.o src/pty.o src/hermes_cli/clipboard.o src/hermes_cli/web_server_paths.o src/hermes_cli/utils_truthy.o src/tools/tool_result_classification.o
-DESKTOP_LIBS_FILTER = lib/libdb/sqlite3.o lib/libtranscribe/transcribe.o
-
-# Pet system parity objects (v509 — ripping Hermes pet system into C11)
-PET_OBJ = \
- src/pet/pet_constants.o \
- src/pet/pet_state.o \
- src/pet/pet_manifest.o \
- src/pet/pet_store.o \
- src/pet/pet_render.o \
- src/pet/atlas.o \
- src/pet/pet_commands.o \
- src/pet/pet_prompts.o \
- lib/libpngdec/pngdec.o
-
-# Custom GUI desktop (SDL2-based)
-# Full SDL GUI application object set (mirrors DESKTOP_APP_OBJ but uses the
-# SDL2 entry/event modules instead of the ncurses desktop_ui_* chain).
-DESKTOP_GUI_OBJ := \
- src/gui_core.o src/desktop_gui.o src/slermes_home.o \
- src/app_state.o src/session_db.o src/sidebar.o src/chat_view.o src/titlebar.o \
- src/event_handling.o src/hud.o src/desktop_controller.o src/pet_ui.o \
- src/session_switcher.o \
- src/chat_render.o src/chat_composer.o \
- src/desktop_app_common.o src/desktop_sessions.o src/desktop_models.o \
- src/desktop_profiles.o src/desktop_settings.o src/gateway_probe.o src/window_stubs.o \
- src/hermes_env_keys.o src/file_ops.o \
- src/agent/logger.o src/pty.o src/hermes_cli/clipboard.o \
- src/tools/voice_mode.o src/tools/transcribe.o src/tools/transcribe_helpers.o src/tools/registry.o src/tools/tool_idempotency.o src/tools/tool_result.o src/tools/tool_result_classification.o src/hermes_cli/web_server_paths.o src/hermes_cli/utils_truthy.o lib/libtranscribe/transcribe.o \
- lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
-DESKTOP_GUI_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf 2>/dev/null)
-DESKTOP_GUI_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf 2>/dev/null) -lm -lssl -lcrypto -lz -lasound -lpthread
-
-# Phase targets (each adds its objects)
-DEPS_OBJ = lib/libwubuoffice/src/wubuoxml/docx_text.o lib/libwubuoffice/src/wubuoxml/package.o lib/libwubuoffice/src/wubuoxml/reader.o lib/libwubuoffice/src/wubuoxml/rels_path.o lib/libwubuoffice/src/wubuzip/bit.o lib/libwubuoffice/src/wubuzip/bitw.o lib/libwubuoffice/src/wubuzip/block.o lib/libwubuoffice/src/wubuzip/canon.o lib/libwubuoffice/src/wubuzip/crc.o lib/libwubuoffice/src/wubuzip/deflate.o lib/libwubuoffice/src/wubuzip/fixed.o lib/libwubuoffice/src/wubuzip/fixedcode.o lib/libwubuoffice/src/wubuzip/huffman.o lib/libwubuoffice/src/wubuzip/inflate.o lib/libwubuoffice/src/wubuzip/limitcode.o lib/libwubuoffice/src/wubuzip/lz77.o lib/libwubuoffice/src/wubuzip/reader.o lib/libwubuoffice/src/wubuzip/zip.o src/hermes_error.o src/secrets.o src/hermes_tokenizer.o src/xai_retirement.o src/skills_hub.o src/mcp_serve.o src/api_server.o src/hermes_env_keys.o src/web_dashboard.o src/jiter_preload.o src/util_str.o 
-AGENT_OBJ = src/agent/monitoring/cron_health.o \
-    src/agent/terminal_env_provider.o \
-    src/agent/process_bootstrap_pure.o \
-    src/agent/plugin_prompt_sections.o src/agent/monitoring/redaction.o src/agent/monitoring/policy.o src/agent/pet/generate/atlas.o src/agent/pet/generate/imagegen.o src/agent/pet/generate/orchestrate.o src/agent/command_token_source.o src/agent/plugin_stream_hooks.o src/agent/agent_loop.o src/agent/agent_runtime_helpers.o src/agent/runtime_helpers_ports.o src/agent/agent_runtime_pure.o src/agent/agent_message_payload.o src/agent/prompt_caching_strip.o src/agent/prompt_caching_plan.o src/agent/chat_completion_helpers.o src/agent/credential_pool_engine.o src/agent/credential_pool_persistence.o src/agent/credential_pool_custom.o src/agent/credential_pool_sync.o src/agent/credential_pool_ports.o src/agent/credential_sources.o src/agent/llm_client.o src/agent/credential_persistence.o src/agent/logger.o src/agent/context.o src/agent/context_compressor_pure.o src/agent/context_engine.o src/agent/coding_context.o src/agent/stream_diag.o src/agent/stream_diag_ports.o src/agent/title.o src/agent/provider.o src/agent/provider_openai.o src/agent/provider_openrouter.o src/agent/provider_deepseek.o src/agent/provider_xai.o src/agent/provider_anthropic.o src/agent/provider_google.o src/agent/provider_azure.o src/agent/provider_bedrock.o src/agent/process_bootstrap.o src/agent/provider_custom.o src/agent/provider_codex_responses.o src/agent/codex_app_server_client.o src/agent/transports/codex_app_server_session.o src/agent/codex_event_projector.o src/agent/codex_event_projector_ports.o src/ports/agent/transports/hermes_tools_mcp_server.o src/agent/hermes_tools_mcp_server_ports.o src/agent/fallback_routing.o src/agent/budget_tracker.o src/agent/provider_metadata.o src/agent/checkpoint.o src/agent/plugin_ext.o src/agent/redact.o src/agent/audit.o src/agent/sanitize.o src/agent/vault.o src/agent/think_scrubber.o src/agent/think_scrubber_helpers2.o src/agent/retry_utils.o src/agent/retry_utils_ports.o src/agent/thread_scoped_output_ports.o src/agent/trajectory.o src/agent/trajectory_ports.o src/agent/portal_tags.o src/agent/portal_tags_ports.o src/agent/markdown_tables.o src/agent/markdown_tables_ports.o src/agent/markdown_render.o src/agent/file_safety.o src/agent/system_prompt.o src/agent/system_prompt_ports.o src/agent/skill_preprocessing.o src/agent/skill_preprocessing_ports.o src/agent/tool_guardrails.o src/agent/tool_guardrails_ports.o src/agent/i18n.o src/agent/i18n_ports.o src/agent/subdir_hints.o src/agent/subdirectory_hints_ports.o src/agent/onboarding.o src/agent/image_routing.o src/agent/skill_bundles.o src/agent/usage_pricing.o src/agent/lmstudio_reasoning.o src/agent/context_breakdown.o src/agent/manual_compression_feedback.o src/agent/prompt_caching.o src/agent/prompt_caching_ports.o src/agent/context_references.o src/agent/context_references_ports.o src/agent/curator_backup_ports.o src/agent/plugin_llm_ports.o src/agent/context_engine_ports.o src/agent/file_safety_ports.o src/agent/conversation_loop_ports.o src/agent/credential_sources_ports.o src/agent/memory_manager_ports.o src/agent/video_gen_provider_ports.o src/agent/video_gen_registry_ports.o src/agent/codex_app_server_session_ports.o src/agent/azure_identity_adapter_ports.o src/agent/lsp/lsp_manager_ports.o src/agent/lsp/lsp_workspace_ports.o src/agent/lsp/lsp_reporter_ports.o src/agent/onepassword_ports.o src/agent/skill_bundles_ports.o src/agent/chat_completions_ports.o src/agent/skill_commands_ports.o src/agent/gemini_schema.o src/agent/moonshot_schema.o src/agent/moonshot_schema_ports.o src/agent/auxiliary_client.o src/agent/auxiliary_client_helpers2.o src/agent/memory_provider_ports.o src/agent/browser_provider.o src/agent/browser_provider_ports.o src/agent/browser_registry.o src/agent/browser_registry_ports.o src/agent/tool_error.o src/agent/hook_registry.o src/agent/shell_hooks.o src/agent/shell_hooks_ports.o src/agent/ssl_guard.o src/agent/ssl_guard_ports.o src/agent/web_search_registry_ports.o src/agent/web_search_provider_ports.o src/agent/nous_rate_guard.o src/agent/nous_rate_guard_ports.o src/agent/todo_hydrate.o src/agent/file_mutation_verifier.o src/agent/api_error_summary.o src/agent/transcription_provider.o src/agent/transcription_provider_ports.o src/agent/transcription_registry_ports.o src/agent/verify_environment.o src/agent/verify_recipes.o src/agent/verification_evidence.o src/agent/curator.o src/agent/curator_ports.o src/agent/plugin_llm.o src/agent/tool_executor.o src/agent/tool_executor_ports.o src/agent/google_code_assist.o src/agent/copilot_acp_client.o src/agent/copilot_acp_client_ports.o src/agent/copilot_acp_client_helpers2.o src/agent/azure_identity_adapter.o src/agent/agent_message_repair.o src/agent/agent_message_sanitize.o src/agent/proxy_utils.o src/agent/credits_tracker.o src/agent/billing_pure.o src/agent/turn_context.o src/agent/turn_retry_state.o src/agent/turn_retry_state.o src/agent/agent_init.o src/agent/message_metadata.o src/agent/init_ports.o src/agent/iteration_budget_ports.o src/agent/moa_loop_ports.o src/agent/title_generator.o src/agent/title_generator_ports.o src/provider/token_exchange.o src/provider/google_oauth.o src/provider/copilot_oauth.o src/acp/server.o src/acp/edit_approval.o src/acp/events.o src/acp/permissions.o src/acp/resource.o src/tools/rate_limit.o src/tools/tool_result.o src/agent/skill_commands.o src/agent/memory_provider.o src/agent/anthropic_adapter.o src/agent/async_utils.o src/agent/background_review.o src/agent/background_review_ports.o src/agent/bedrock_adapter.o src/agent/bedrock_adapter_ports.o src/agent/review_engine.o src/agent/codex_responses_adapter.o src/agent/codex_responses_adapter_ports.o src/agent/codex_app_server_ports.o src/agent/codex_runtime.o src/agent/context_compressor.o src/agent/context_compressor_micro.o src/agent/conversation_compression.o src/agent/conversation_loop.o src/agent/conversation_loop_py_parity.o src/gateway/relay/relay_ws_transport_py_parity.o src/agent/turn_finalizer.o src/agent/gemini_cloudcode_adapter.o src/agent/gemini_native_adapter.o src/agent/gemini_native_adapter_ports.o src/agent/gemini_native_helpers2.o src/agent/redact_ports.o src/agent/image_routing_ports.o src/agent/transports_codex_ports.o src/agent/transports_anthropic_ports.o src/agent/secret_sources_cache_ports.o src/agent/transports_bedrock_ports.o src/agent/transports_base_ports.o src/agent/transports_init_ports.o src/agent/model_metadata_ports.o src/agent/usage_pricing_ports.o src/agent/conversation_compression_ports.o src/agent/chat_completion_helpers_ports.o src/agent/lsp/lsp_install_ports.o src/agent/credits_tracker_ports.o src/agent/transports_types_ports.o src/agent/image_gen_provider_ports.o src/agent/image_gen_provider_py_final.o src/agent/image_gen_registry_ports.o src/agent/onboarding_ports.o src/agent/message_sanitization_ports.o src/agent/secret_sources_command_ports.o src/agent/secret_sources_base_ports.o src/agent/secret_sources_registry_ports.o src/agent/lsp/lsp_cli_ports.o src/agent/insights.o src/agent/insights_ports.o src/agent/message_sanitization.o src/agent/message_sanitization_pure.o src/agent/model_metadata.o src/agent/models_dev.o src/agent/models_dev_ports.o src/agent/prompt_builder.o src/agent/prompt_builder_ports.o src/agent/prompt_builder_guidance.o src/agent/runtime_cwd.o src/agent/runtime_cwd_ports.o src/agent/subdirectory_hints.o src/agent/antigravity_code_assist.o src/agent/antigravity_oauth.o src/agent/billing_view.o src/agent/display.o src/agent/image_gen_provider.o src/agent/memory_manager.o src/agent/message_content.o src/agent/message_content_ports.o src/agent/secret_scope.o src/agent/skill_utils.o src/agent/memory_manager_helpers.o src/agent/learn_prompt.o src/agent/estop.o src/gateway/relay/relay_runtime.o src/agent/turn_summary.o src/agent/monitoring/monitoring_emitter.o src/agent/repetition_guard.o src/agent/prompt_cache_scope.o src/agent/compaction_display.o src/agent/reasoning_effort.o src/agent/error_surface.o
-TOOLS_OBJ = src/tools/registry.o src/tools/terminal.o src/tools/terminal_tool.o src/tools/terminal_env_registry.o \
-    src/tools/voice_client_config.o src/tools/file.o src/tools/sandbox.o src/tools/file_lint.o src/tools/web.o src/tools/skills.o src/tools/tool_init.o src/tools/patch.o src/tools/exec_code.o src/tools/clarify.o src/tools/memory.o src/tools/memory_storage.o src/tools/todo.o src/tools/process.o src/tools/process_registry.o src/tools/close_terminal_tool.o src/tools/send_message.o src/tools/send_message_target.o src/tools/cronjob.o src/tools/skill_mgmt.o src/tools/session_search.o src/tools/session_crud.o src/tools/tts.o src/tools/vision.o src/tools/tts_text_normalize.o src/tools/computer_use_tool.o src/tools/read_window_tool.o src/tools/read_preview_tool.o src/tools/close_preview_tool.o src/tools/tour_tool.o src/tools/annotate_preview_tool.o src/tools/drive_preview_tool.o src/tools/bot_mode_dm.o src/tools/bot_relay.o \
-src/tools/subagent_worktree.o src/tools/spill_safety.o src/tools/apply_layout_tool.o src/tools/setup_mcp_tool.o src/tools/vision_helpers.o \
-src/tools/delegate.o src/tools/x_search.o src/tools/browser.o src/tools/browser_tool_env.o src/tools/browser_tool_platform.o src/tools/browser_tool_eval.o src/tools/browser_tool_install.o src/tools/browser_tool_path.o src/tools/browser_tool_cdp.o src/tools/approval.o src/tools/skills_sync_fs.o src/tools/url_safety.o src/tools/url_safety_ssrf.o src/tools/web_base64_img.o src/tools/tirith.o src/tools/voice_mode.o src/tools/voice_mode_pure.o src/tools/image_gen.o src/tools/image_gen_path.o src/tools/homeassistant.o src/tools/kanban_adapter.o src/tools/kanban_handlers.o src/tools/computer_use.o src/tools/result_storage.o src/tools/api_helpers.o src/tools/tool_config.o src/tools/discord.o src/tools/mcp_tool.o src/tools/mcp_tool_pure.o src/tools/mcp_schema_cache.o \
-src/tools/file_batch.o src/tools/file_watch.o src/tools/feishu_tools.o src/tools/feishu_comment_rules.o src/tools/file_merge.o src/tools/mixture_of_agents.o src/tools/moa_performance.o src/tools/online_research.o src/tools/video_gen.o src/tools/video_gen_registry.o src/tools/video_analyze.o src/tools/image_gen_registry.o src/tools/web_search_registry.o src/tools/path_security.o src/tools/xai_http.o src/tools/account_usage.o src/agent/account_usage_ports.o src/agent/billing_view_ports.o src/tools/ansi_strip.o src/tools/transcribe.o \ src/tools/skill_linter.o \
- src/tools/transcribe_helpers.o \
-src/tools/wecom_crypto.o src/tools/yuanbao_tools.o src/tools/yuanbao_media.o src/tools/media_cache.o src/sandbox_escape.o src/tools/env_probe.o src/tools/memory_tool_pure.o src/tools/bot_mode_probe.o src/tools/skills_guard.o src/tools/curator_backup.o src/tools/environments/daytona.o src/tools/environments/modal.o src/tools/environments/managed_modal.o src/tools/environments/file_sync.o src/tools/image_gen_provider.o src/tools/tool_result_classification.o src/tools/tool_idempotency.o src/tools/tts_provider.o src/agent/tts_provider_ports.o src/tools/tts_registry.o src/agent/tts_registry_ports.o src/tools/video_gen_provider.o src/tools/binary_extensions.o src/tools/browser_camofox.o src/tools/managed_tool_gateway.o src/tools/microsoft_graph_auth.o src/tools/microsoft_graph_client.o src/tools/tool_backend_helpers.o src/tools/tool_output_limits.o src/tools/tool_search.o src/tools/checkpoint_manager.o src/tools/async_delegation.o src/tools/base.o src/tools/cron_prompt_sanitize.o src/tools/cronjob_tools.o src/tools/file_text_ops.o src/tools/file_ops_lint.o src/tools/file_fs_ops.o src/tools/file_pagination_ops.o src/tools/file_tools.o src/tools/file_tools_helpers2.o src/tools/code_execution_tool.o src/tools/mcp_oauth_ports.o src/tools/checkpoint_manager_ports.o src/tools/read_extract.o src/tools/browser_redact.o src/tools/browser_use_cli.o src/tools/browser_supervisor_redact.o src/tools/skill_manager_val.o src/tools/cua_backend_helpers.o src/tools/cua_backend_helpers2.o src/tools/kanban_tools.o src/tools/kanban_tools_ports.o src/tools/transcription_tools_ports.o src/tools/env_managed_modal_ports.o src/tools/vision_analysis_native.o src/tools/skillevaluator_scan.o src/hermes_cli/install_repair.o src/gateway/server.o src/gateway/cwd_placeholder.o src/gateway/delivery_ledger.o src/gateway/kanban_watchers.o src/gateway/platforms/qqbot/chunked_upload.o src/gateway/platforms/webhook_filters.o src/gateway/profile_routing.o src/gateway/readiness.o src/gateway/relay/adapter.o src/gateway/relay/ws_transport.o src/gateway/shutdown_watchdog.o src/tools/plugin_guard.o
-GATEWAY_OBJ = src/gateway/server.o src/gateway/gw_pollers.o src/gateway/gw_notifier.o src/gateway/gw_format.o src/gateway/gw_thread.o src/gateway/gw_approval.o src/gateway/gw_logging.o src/gateway/gw_dispatch.o src/gateway/gw_session.o src/gateway/gw_setup.o src/gateway/gw_misc.o src/gateway/gateway_runtime.o src/gateway/config.o src/gateway/telegram_filter.o src/gateway/platforms/helpers.o src/gateway/run_pure.o src/gateway/shutdown_forensics.o src/gateway/sticker_cache.o src/gateway/mirror.o src/gateway/slash_access.o src/gateway/runtime_footer.o src/gateway/channel_directory.o src/gateway/platforms/telegram.o src/gateway/platforms/telegram_network.o src/gateway/platforms/discord.o src/gateway/platforms/webhook.o src/gateway/platforms/slack.o src/gateway/platforms/matrix.o src/gateway/platforms/mattermost.o src/gateway/platforms/whatsapp.o src/gateway/platforms/email.o src/gateway/platforms/signal.o src/gateway/platforms/homeassistant.o src/gateway/platforms/sms.o src/gateway/platforms/feishu.o src/gateway/platforms/wecom.o src/gateway/platforms/wecom_callback.o src/gateway/platforms/dingtalk.o src/gateway/platforms/qqbot.o src/gateway/platforms/bluebubbles.o src/gateway/platforms/msgraph_webhook.o src/gateway/platforms/msgraph_webhook/msgraph_webhook_ports.o src/gateway/platform_registry_ports.o src/gateway/platforms/msgraph_webhook/msgraph_webhook_security.o src/gateway/platforms/weixin.o src/gateway/platforms/yuanbao.o src/gateway/platforms/base.o src/gateway/platforms/base_ext.o src/gateway/platforms/base_ext2.o src/gateway/platforms/base_adapter.o src/gateway/platforms/api_server_adapter.o src/gateway/platforms/api_server_adapter_handlers.o src/gateway/platforms/api_server_adapter_sessions.o src/gateway/platforms/api_server_adapter_chat.o src/gateway/platforms/api_server_adapter_responses.o src/gateway/platforms/api_server_adapter_runs.o src/gateway/platforms/api_server_adapter_cron.o src/gateway/platforms/api_server_adapter_gaps.o src/gateway/platforms/feishu_comment_rules.o src/gateway/platforms/signal_rate_limit.o src/gateway/platforms/feishu_comment.o src/gateway/platforms/yuanbao_proto.o src/gateway/yuanbao_proto_ports.o src/gateway/platforms/yuanbao_media.o src/gateway/platforms/yuanbao_sticker.o src/gateway/gateway_lifecycle.o src/gateway/stream_events.o src/gateway/delivery.o src/gateway/display_config.o src/gateway/memory_monitor.o src/gateway/pairing.o src/gateway/restart.o src/gateway/run.o src/gateway/session.o src/gateway/session_context.o src/gateway/stream_consumer.o src/gateway/streaming_tts_consumer.o src/gateway/whatsapp_identity.o src/gateway/whatsapp_identity_ports.o src/gateway/message_timestamps.o src/gateway/platforms_api_server.o src/gateway/platforms_base.o src/gateway/platforms_base_helpers2.o src/gateway/platforms_base_helpers3.o src/gateway/platforms_helpers_ports.o src/gateway/turn_lease_ports.o src/gateway/message_timestamps_ports.o src/gateway/platforms/qqbot/qqbot_chunked_upload_ports.o src/gateway/signal_rate_limit_ports.o src/gateway/relay/relay_adapter.o src/gateway/relay/relay_auth.o src/gateway/relay/relay_auth_helpers2.o src/gateway/relay/relay_transport_ports.o src/gateway/relay/relay_descriptor.o src/gateway/relay/relay_transport.o src/gateway/relay/relay_ws_transport.o src/gateway/rich_sent_store.o src/gateway/code_skew.o src/gateway/code_skew_ports.o src/gateway/restart_loop_guard.o src/gateway/dead_targets.o src/gateway/platforms/http_client_limits.o src/gateway/media_policy.o src/gateway/disk_status.o src/gateway/memory_status.o \
- src/gateway/session_state.o \
- src/gateway/control_socket.o \
- src/gateway/browser_control_artifacts.o \
- src/gateway/browser_control_broker.o \
- src/gateway/platforms_base_media.o src/gateway/status.o
-AGENT_PORT_NEW = src/agent/redact_helpers.o src/agent/tool_dispatch_helpers.o src/agent/verify_hooks.o src/agent/verify_runner.o src/agent/ssl_verify.o src/agent/billing_links.o src/agent/billing_usage.o src/agent/battery.o src/agent/aux_accounting.o src/agent/hermes_state/hermes_state_open.o src/agent/hermes_state/hermes_state_lifecycle.o src/agent/hermes_state/hermes_state_messages.o src/agent/hermes_state/hermes_state_lineage.o src/agent/hermes_state/hermes_state_tokens.o src/agent/hermes_state/hermes_state_archive.o src/agent/hermes_state/hermes_state_misc.o src/agent/hermes_state/hermes_state_common.o src/agent/hermes_state/hermes_state_search.o src/agent/hermes_state/hermes_state_schema.o src/agent/hermes_state/hermes_state_portability.o src/agent/hermes_state/hermes_state_repair.o src/agent/hermes_state/hermes_state_locks.o src/agent/hermes_state/hermes_state_ports.o src/agent/hermes_state/hermes_state_gaps.o src/agent/iron_proxy.o src/agent/iron_proxy_ports.o src/agent/bitwarden_ports.o src/agent/secret_sources_helpers.o src/agent/lsp/lsp_servers.o src/agent/lsp/lsp_servers_ports.o src/agent/lsp/lsp_client_ports.o src/agent/lsp/lsp_eventlog.o src/agent/lsp/lsp_eventlog_ports.o src/agent/lsp/lsp_init_ports.o src/agent/conversation_compression_helpers.o src/hermes_cli/session_recovery/session_recovery_paths.o src/hermes_cli/session_recovery/session_recovery_preflight.o src/hermes_cli/session_recovery/session_recovery_copy.o src/hermes_cli/session_recovery/session_recovery_salvage.o src/hermes_cli/session_recovery/session_recovery_meta.o src/hermes_cli/session_recovery/session_recovery_orphans.o src/hermes_cli/session_recovery/session_recovery_verify.o src/hermes_cli/session_recovery/session_recovery_main.o src/agent/monitoring_health_export.o src/agent/subagent_lifecycle.o src/agent/outbound_webhooks.o src/agent/web_deps.o src/agent/health.o 
-TOOLS_PORT_NEW = src/tools/file_operations_search.o src/tools/slash_confirm.o src/tools/interrupt.o src/hermes_cli/moa_pure_helpers.o src/hermes_cli/config_py_pure.o src/hermes_cli/config_py_io.o src/hermes_cli/config_migrations.o src/hermes_cli/update_lock.o src/hermes_cli/npm_engine.o src/hermes_cli/timefmt.o src/hermes_cli/sizefmt.o src/hermes_cli/personality.o src/hermes_cli/models_py_helpers.o src/tools/research_helpers.o src/hermes_cli/moa_config_pure.o src/hermes_cli/moa_slash.o src/hermes_cli/input_sanitize.o src/hermes_cli/utils_truthy.o src/hermes_cli/session_title.o src/hermes_cli/mem_trim.o src/hermes_cli/state_usage_db.o src/tools/toolsets.o src/hermes_cli/platform_tools.o src/tools/browser_tool.o src/tools/budget_config.o src/tools/clarify_tool.o src/tools/registry_cache.o src/tools/feishu_drive_tool.o src/tools/feishu_drive_tool_ports.o src/tools/feishu_doc_tool_ports.o src/tools/debug_helpers_ports.o src/tools/env_local_ports.o src/tools/terminal_tool_ports.o src/tools/terminal_hints.o src/tools/env_ssh_ports.o src/tools/mcp_oauth_manager_ports.o src/tools/microsoft_graph_client_ports.o src/tools/session_search_tool.o src/tools/write_approval.o src/tools/wake_word.o src/tools/flux3_video.o src/tools/flux3_video_tool.o src/tools/transcription_tools_pure.o src/tools/vercel_sandbox.o src/tools/vercel_sandbox_helpers.o src/tools/vercel_sandbox_env.o src/agent/hermes_state/hermes_state.o src/hermes_cli/startup_fast.o src/tools/self_repo_guard.o
-GATEWAY_PORT_NEW = src/gateway/platforms/platforms_helpers_md.o src/hermes_cli/platforms_helpers.o src/gateway/platforms_helpers.o src/gateway/drain_control.o src/gateway/run_pure2.o src/gateway/agent_cache_pressure.o src/gateway/slash_command_guards.o src/gateway/run_deps.o src/gateway/slash_commands.o src/gateway/run_wrappers.o src/gateway/api_server_ports.o src/gateway/platforms/qqbot/qqbot_wrappers.o src/gateway/yuanbao_wrappers.o src/gateway/yuanbao_ports.o src/gateway/weixin_wrappers.o src/gateway/weixin_ports.o src/gateway/signal_ports.o src/gateway/signal_helpers2.o src/gateway/api_server_ports.o src/gateway/session_helpers2.o src/gateway/relay/relay_init_ports.o src/gateway/config_ports.o src/gateway/config_helpers2.o src/gateway/relay/relay_ws_transport_ports.o src/gateway/session_ports.o src/gateway/session_context_ports.o src/gateway/status_ports.o src/gateway/platforms/qqbot/qqbot_adapter_ports.o src/gateway/platforms/whatsapp_cloud.o src/gateway/shutdown_watchdog_ports.o src/gateway/stream_dispatch_ports.o src/gateway/relay/relay_adapter_ports.o src/gateway/relay/relay_adapter_helpers.o src/gateway/relay/relay_adapter_ops.o src/gateway/bluebubbles_ports.o src/gateway/systemd_notify_ports.o src/gateway/yuanbao_media_ports.o src/gateway/platforms/qqbot/qqbot_keyboards_ports.o src/gateway/run_ports.o src/gateway/webhook_ports.o src/gateway/util_helpers.o src/gateway/status_wrappers.o src/gateway/bluebubbles_wrappers.o src/gateway/status_phrases.o src/gateway/hermes_constants_reasoning.o src/gateway/run_agent.o src/hermes_cli/provider_registry.o
-AGENT_PORT_REGEN = src/agent/otlp_exporter.o src/hermes_cli/plugins_cmd_gaps.o src/agent/session_activity.o src/gateway/relay/relay_tools.o src/agent/monitoring_events.o src/agent/approvals_suggest_proposals.o src/hermes_cli/status_pure.o src/agent/monitoring_health_export_pure.o src/agent/backend_identity.o src/agent/reasoning_timeouts.o src/agent/replay_cleanup.o src/agent/thinking_timeout_guidance.o src/agent/intent_ack.o src/agent/display_helpers.o src/agent/auxiliary_client_helpers.o src/agent/auxiliary_client_runtime.o src/gateway/relay/relay_llm.o src/agent/moa_trace_helpers.o src/agent/lsp/lsp_range_shift.o src/agent/transports/transport_common.o src/agent/secret_common.o src/agent/lsp/lsp_protocol.o src/agent/lsp/lsp_client.o src/agent/lsp/lsp_manager.o src/agent/provider_profile.o src/agent/provider_profiles_builtin.o src/agent/provider_profile_apply.o src/agent/delegation_context.o src/agent/reactions.o src/agent/deadline.o src/agent/empty_response_guard.o src/agent/native_compaction.o src/agent/reasoning_summaries.o src/hermes_cli/plugins_wrappers.o src/hermes_cli/plugins_cmd_wrappers.o src/hermes_cli/commands_mixin_wrappers.o src/hermes_cli/commands_wrappers.o src/hermes_cli/web_server_wrappers.o src/hermes_cli/main_wrappers.o src/hermes_cli/main_ports.o src/gateway/platforms/qqbot/utils.o src/hermes_cli/kanban_db_ports.o src/hermes_cli/billing_mixin_ports.o src/hermes_cli/auth_helpers2.o src/hermes_cli/cli_ports.o src/hermes_cli/web_server_helpers2.o src/hermes_cli/pty_session_ports.o src/hermes_cli/plugins_ports.o src/hermes_cli/auth_wrappers.o src/hermes_cli/gateway_wrappers.o src/hermes_cli/windows_wrappers.o src/hermes_cli/setup_ports.o src/hermes_cli/kanban_db_wrappers.o src/hermes_cli/managed_uv_wrappers.o src/hermes_cli/windows_ssh_wrappers.o src/hermes_cli/model_setup_wrappers.o src/hermes_cli/nous_account_wrappers.o src/hermes_cli/session_export_wrappers.o src/hermes_cli/uninstall_wrappers.o src/hermes_cli/model_switch_wrappers.o src/hermes_cli/session_export_md_wrappers.o src/hermes_cli/nous_sub_wrappers.o src/agent/skill_utils_wrappers.o src/agent/context_compressor_wrappers.o src/agent/context_compressor_ports.o src/agent/verif_evidence_wrappers.o src/hermes_cli/helpers2.o src/hermes_cli/helpers3.o src/hermes_cli/config_ports.o src/agent/core_helpers.o src/hermes_cli/util_helpers.o src/hermes_cli/bang_shell_ports.o $(AGENT_PORT_NEW)
-GATEWAY_PORT_REGEN = src/gateway/cgroup_cleanup.o src/gateway/gateway_runner.o src/gateway/run_helpers.o src/gateway/relay/relay_media.o src/hermes_cli/scan_venv_blockers.o src/gateway/session_stall.o src/gateway/platforms/media_cache.o src/hermes_cli/mirror.o src/gateway/lifecycle_ledger.o src/gateway/sqlite_safe_read.o src/gateway/cua_doctor.o src/gateway/shutdown_flush_ports.o $(GATEWAY_PORT_NEW)
-TOOLS_PORT_REGEN = src/tools/url_safety_helpers.o src/tools/patch_parser.o src/tools/working_diff.o src/tools/schema_sanitizer.o src/tools/slash_confirm.o src/hermes_cli/migrate.o src/tools/skills_sync.o src/tools/skills_sync_ports.o src/hermes_cli/pet_input.o src/tools/browser_tool_helpers.o src/tools/web_tools.o src/tools/skill_prereqs.o src/tools/skill_usage_wrappers.o src/tools/transcription_wrappers.o src/tools/vision_wrappers.o src/tools/file_tools_wrappers.o src/tools/cua_backend_wrappers.o src/tools/cua_backend_methods.o src/tools/env_local_wrappers.o src/tools/mcp_oauth_wrappers.o src/tools/async_delegation_wrappers.o src/tools/terminal_tool_wrappers.o src/tools/env_base_wrappers.o src/tools/env_docker_wrappers.o src/tools/skill_mgr_tool_wrappers.o src/tools/approval_wrappers.o src/tools/skill_provenance.o src/tools/skills_tool.o src/tools/skills_tool_ports.o src/tools/file_state_ports.o src/tools/online_research_ports.o src/tools/util_helpers.o src/tools/skills_sync_client.o src/tools/computer_use/computer_use_doctor_mcp.o src/tools/shell_heredoc.o src/tools/clarify_tool.o $(TOOLS_PORT_NEW)
-PHASE2_OBJ += src/hermes_cli/plugins_wrappers.o src/hermes_cli/plugins_cmd_wrappers.o src/hermes_cli/commands_mixin_wrappers.o src/hermes_cli/commands_wrappers.o src/hermes_cli/web_server_wrappers.o src/hermes_cli/main_wrappers.o src/hermes_cli/auth_wrappers.o src/hermes_cli/gateway_wrappers.o src/hermes_cli/windows_wrappers.o src/hermes_cli/kanban_db_wrappers.o src/hermes_cli/managed_uv_wrappers.o src/hermes_cli/windows_ssh_wrappers.o src/agent/moa_loop_wrappers.o src/agent/memory_manager_wrappers.o src/hermes_cli/model_setup_wrappers.o src/hermes_cli/nous_account_wrappers.o src/hermes_cli/session_export_wrappers.o src/hermes_cli/uninstall_wrappers.o src/hermes_cli/model_switch_wrappers.o src/hermes_cli/session_export_md_wrappers.o src/hermes_cli/nous_sub_wrappers.o src/agent/skill_utils_wrappers.o src/agent/context_compressor_wrappers.o src/agent/verif_evidence_wrappers.o $(AGENT_PORT_NEW) $(AGENT_PORT_REGEN)
-PHASE3_OBJ += $(TOOLS_PORT_NEW) $(TOOLS_PORT_REGEN)
-PHASE4_OBJ += $(GATEWAY_PORT_NEW) $(GATEWAY_PORT_REGEN)
-CRON_OBJ = src/cron/scheduler.o src/plugins/plugin_achievements_api.o src/tools/vision_delegate.o src/tools/vision_analysis.o src/trajectory_compressor.o src/hermes_cli/tui_gateway_compute_host.o src/hermes_cli/subcommands/peer.o src/tools/computer_use/computer_use_schema.o src/plugins/chronos_verify.o src/plugins/plugin_storage.o src/hermes_cli/observability/observability_relay_runtime.o src/hermes_cli/dashboard_auth/dashboard_auth_public_paths.o src/gateway/platforms/qqbot/qqbot_constants.o src/hermes_logging.o src/acp_adapter/acp_adapter_server.o src/acp_adapter/acp_adapter_tools.o src/acp_adapter/acp_adapter_session.o src/acp_adapter/acp_adapter_permissions.o src/acp_adapter/acp_adapter_entry.o src/cron/executions.o src/cron/blueprint_catalog.o src/cron/jobs.o src/cron/cron_extras.o src/cron/cron_sqlite.o src/cron/scheduler_provider_ports.o src/cron/scheduler_ports.o src/cron/cron_cli.o src/cron/scheduler_provider.o src/cron/scheduler_helpers.o src/cron/scheduler_delivery.o src/cron/scheduler_runtime.o src/cron/scheduler_runtime_impl.o src/cron/scheduler_toolsets.o src/cron/scheduler_script.o src/cron/scheduler_prompt.o src/cron/cron_suggestions.o src/cron/suggestion_catalog.o src/cron/lifecycle_guard.o src/cron/classify_items.o src/cron/notepad.o src/cron/monitor.o src/cron/cron_scripts.o src/cron/scheduler_gaps.o \
-
-# NOTE: the PHASE*_OBJ += lines above feed the standalone phase<N> targets only.
-# The `slermes` link line builds PHASE5_OBJ FRESH from the subsystem *_OBJ lists,
-# so port objects MUST be appended into those base lists to actually be linked.
-# These appends wire the PoP port objects into the binary (root-cause fix for
-# orphaned port_*.o that compiled but never linked).
-
-# Progressively larger builds
-PHASE1_OBJ = $(DEPS_OBJ) $(CLI_PORT_NEW2)
-PHASE2_OBJ = $(PHASE1_OBJ) src/main.o $(AGENT_OBJ) $(CLI_OBJ) 
-PHASE3_OBJ = $(PHASE2_OBJ) $(TOOLS_OBJ)
-PHASE4_OBJ = $(PHASE3_OBJ) $(GATEWAY_OBJ)
-PHASE5_OBJ = $(PHASE4_OBJ) $(CRON_OBJ) $(AGENT_PORT_REGEN) $(TOOLS_PORT_REGEN) $(GATEWAY_PORT_REGEN) src/hermes_cli/turn_summary_cli.o \
- src/hermes_cli/plugins_core.o \
- src/hermes_cli/tools_config_cua.o src/hermes_cli/tools_config_toolsets.o \
- src/hermes_cli/tools_config_install.o src/hermes_cli/tools_config_providers.o \
- src/hermes_cli/tools_config_reconfig.o \
- src/hermes_cli/tools_config_more.o \
+ src/agent/secret_sources/registry_gaps3.o \
+ src/agent/ssl_verify_gaps3.o \
+ src/agent/terminal_env_registry_gaps3.o \
+ src/agent/title_generator_gaps3.o \
+ src/agent/transports/chat_completions_gaps3.o \
+ src/agent/transports/types_gaps3.o \
+ src/agent/usage_pricing_gaps3.o \
+ src/agent/verification_evidence_gaps3.o \
+ src/agent/vertex_adapter_gaps3.o \
+ src/agent/web_search_registry_gaps3.o \
+ src/cron/executions_gaps3.o \
+ src/cron/notepad_gaps3.o \
+ src/cron/scheduler_provider_gaps3.o \
+ src/cron/suggestions_gaps3.o \
+ src/gateway/channel_directory_gaps3.o \
+ src/gateway/config_gaps3.o \
+ src/gateway/control_socket_gaps3.o \
+ src/gateway/delivery_ledger_gaps3.o \
+ src/gateway/drain_control_gaps3.o \
+ src/gateway/lifecycle_ledger_gaps3.o \
+ src/gateway/pairing_gaps3.o \
+ src/gateway/platform_registry_gaps3.o \
+ src/gateway/platforms/api_server_room_grants_gaps3.o \
+ src/gateway/platforms/weixin_gaps3.o \
+ src/gateway/platforms/yuanbao_gaps3.o \
+ src/gateway/profile_routing_gaps3.o \
+ src/gateway/readiness_gaps3.o \
+ src/gateway/relay/adapter_gaps3.o \
+ src/gateway/relay/ws_transport_gaps3.o \
+ src/gateway/run_gaps3.o \
+ src/gateway/scale_to_zero_gaps3.o \
+ src/gateway/session_gaps3.o \
+ src/gateway/session_db_recovery_gaps3.o \
+ src/gateway/shutdown_flush_gaps3.o \
+ src/gateway/shutdown_watchdog_gaps3.o \
+ src/gateway/wake_gaps3.o \
+ src/hermes_cli/_parser_gaps3.o \
+ src/hermes_cli/agent_plugins_gaps3.o \
+ src/hermes_cli/approvals_test_gaps3.o \
+ src/hermes_cli/azure_detect_gaps3.o \
+ src/hermes_cli/banner_gaps3.o \
+ src/hermes_cli/build_info_gaps3.o \
+ src/hermes_cli/bundles_gaps3.o \
+ src/hermes_cli/callbacks_gaps3.o \
+ src/hermes_cli/checkpoints_gaps3.o \
+ src/hermes_cli/cli_agent_setup_mixin_gaps3.o \
+ src/hermes_cli/cli_output_gaps3.o \
+ src/hermes_cli/clipboard_gaps3.o \
+ src/hermes_cli/codex_runtime_switch_gaps3.o \
+ src/hermes_cli/container_boot_gaps3.o \
+ src/hermes_cli/curator_gaps3.o \
+ src/hermes_cli/dashboard_auth/base_gaps3.o \
+ src/hermes_cli/dashboard_auth/routes_gaps3.o \
+ src/hermes_cli/dashboard_procs_gaps3.o \
+ src/hermes_cli/dep_ensure_gaps3.o \
+ src/hermes_cli/dingtalk_auth_gaps3.o \
+ src/hermes_cli/fallback_cmd_gaps3.o \
+ src/hermes_cli/gitlock_gaps3.o \
+ src/hermes_cli/image_provenance_gaps3.o \
+ src/hermes_cli/install_identity_gaps3.o \
+ src/hermes_cli/kanban_gaps3.o \
+ src/hermes_cli/kanban_db_gaps3.o \
+ src/hermes_cli/kanban_swarm_gaps3.o \
+ src/hermes_cli/local_runtime/capabilities_gaps3.o \
+ src/hermes_cli/local_runtime/detect_gaps3.o \
+ src/hermes_cli/managed_uv_gaps3.o \
+ src/hermes_cli/mcp_picker_gaps3.o \
+ src/hermes_cli/migrate_gaps3.o \
+ src/hermes_cli/model_catalog_gaps3.o \
+ src/hermes_cli/model_cost_guard_gaps3.o \
+ src/hermes_cli/models_gaps3.o \
+ src/hermes_cli/nous_account_gaps3.o \
+ src/hermes_cli/nous_billing_gaps3.o \
+ src/hermes_cli/nous_subscription_gaps3.o \
+ src/hermes_cli/observability/shared_metrics_gaps3.o \
+ src/hermes_cli/observability/shared_metrics_send_config_gaps3.o \
+ src/hermes_cli/oneshot_gaps3.o \
+ src/hermes_cli/partial_compress_gaps3.o \
+ src/hermes_cli/platforms_gaps3.o \
+ src/hermes_cli/plugin_capabilities_gaps3.o \
+ src/hermes_cli/plugin_index_gaps3.o \
+ src/hermes_cli/plugin_packs_gaps3.o \
+ src/hermes_cli/portal_cli_gaps3.o \
+ src/hermes_cli/process_identity_gaps3.o \
+ src/hermes_cli/profile_describer_gaps3.o \
+ src/hermes_cli/projects_db_gaps3.o \
+ src/hermes_cli/providers_gaps3.o \
+ src/hermes_cli/psutil_android_gaps3.o \
+ src/hermes_cli/pty_bridge_gaps3.o \
+ src/hermes_cli/relaunch_gaps3.o \
+ src/hermes_cli/resource_limits_gaps3.o \
+ src/hermes_cli/secrets_cli_gaps3.o \
+ src/hermes_cli/session_lost_and_found_gaps3.o \
+ src/hermes_cli/sessions_cmd_gaps3.o \
+ src/hermes_cli/skin_engine_gaps3.o \
+ src/hermes_cli/stdio_gaps3.o \
+ src/hermes_cli/subcommands/dashboard_gaps3.o \
+ src/hermes_cli/subcommands/peer_gaps3.o \
+ src/hermes_cli/telegram_managed_bot_gaps3.o \
+ src/hermes_cli/terminal_breadcrumbs_gaps3.o \
+ src/hermes_cli/toolset_validation_gaps3.o \
+ src/hermes_cli/uninstall_gaps3.o \
+ src/hermes_cli/update_contract_gaps3.o \
+ src/hermes_cli/update_inventory_gaps3.o \
+ src/hermes_cli/voice_gaps3.o \
+ src/hermes_cli/web_git_gaps3.o \
+ src/hermes_cli/web_routers/git_gaps3.o \
+ src/hermes_cli/web_routers/mcp_gaps3.o \
+ src/hermes_cli/web_routers/sessions_gaps3.o \
+ src/hermes_cli/web_routers/skills_gaps3.o \
+ src/hermes_cli/webhook_gaps3.o \
+ src/hermes_cli/win_pty_bridge_gaps3.o \
+ src/hermes_cli/xai_retirement_gaps3.o \
+ src/tools/binary_extensions_gaps3.o \
+ src/tools/computer_use/doctor_gaps3.o \
+ src/tools/credential_files_gaps3.o \
+ src/tools/delegation_output_schema_gaps3.o \
+ src/tools/desktop_ui_gaps3.o \
+ src/tools/env_probe_gaps3.o \
+ src/tools/environments/docker_gaps3.o \
+ src/tools/file_state_gaps3.o \
+ src/tools/fuzzy_match_gaps3.o \
+ src/tools/image_source_gaps3.o \
+ src/tools/interpreter_shutdown_gaps3.o \
+ src/tools/interrupt_gaps3.o \
+ src/tools/kanban_tools_gaps3.o \
+ src/tools/mcp_death_supervisor_gaps3.o \
+ src/tools/preview_tool_gaps3.o \
+ src/tools/project_tools_gaps3.o \
+ src/tools/react_to_message_tool_gaps3.o \
+ src/tools/self_repo_guard_gaps3.o \
+ src/tools/skill_manager_tool_gaps3.o \
+ src/tools/skills_sync_gaps3.o \
+ src/tools/tip_tool_gaps3.o \
+ src/tools/todo_tool_gaps3.o \
+ src/tools/tool_backend_helpers_gaps3.o \
+ src/tools/tour_tool_gaps3.o \
+ src/tools/transcription_tools_gaps3.o \
+ src/tools/video_generation_tool_gaps3.o \
+ src/tools/voice_client_config_gaps3.o \
+ src/tools/web_tools_gaps3.o \

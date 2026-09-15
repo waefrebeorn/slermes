@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skillevaluator_scan_py__secrets_findings",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "secrets_findings",
+  "py_module": "tools/skillevaluator_scan.py",
+  "py_fn": "secrets_findings",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

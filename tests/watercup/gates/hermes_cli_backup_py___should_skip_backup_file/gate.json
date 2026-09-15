@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_backup_py___should_skip_backup_file",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_should_skip_backup_file",
+  "py_module": "hermes_cli/backup.py",
+  "py_fn": "_should_skip_backup_file",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

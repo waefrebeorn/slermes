@@ -1,0 +1,29 @@
+{
+  "name": "gateway_kanban_watchers_py___resolve_auto_decompose_settings",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_kanban_watchers_u_resolve_auto_decompose_settings",
+  "py_module": "gateway/kanban_watchers.py",
+  "py_fn": "_resolve_auto_decompose_settings",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

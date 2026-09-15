@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_agent_runtime_helpers_py__invoke_tool",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "invoke_tool",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "invoke_tool",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

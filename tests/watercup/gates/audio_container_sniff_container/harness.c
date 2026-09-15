@@ -85,7 +85,7 @@ static const char *sniff(const unsigned char *data, size_t len, char *buf, size_
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s sniff_container <hexbytes>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s sniff_container <hexbytes>...\n", argv[0]); return 2; }
     unsigned char data[256];
     for (int i = 2; i < argc; i++) {
         const char *hx = argv[i];

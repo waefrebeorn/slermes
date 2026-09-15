@@ -1,59 +1,29 @@
-"""twin for tts_tool_resolve_max_text_length.
+"""twin for tools/tts_tool.py:_resolve_max_text_length."""
+import os, sys, importlib.util as ilu
 
-Imports LIVE tools/tts_tool.py::_resolve_max_text_length and traces the SAME
-override-or-fallback rung ladder as the C port (tts_resolve_max_text_length,
-src/tools/tts_tool_ports.c). Providers are restricted to names absent from
-LIVE's PROVIDER_MAX_TEXT_LENGTH table and the ElevenLabs model table so the
-simplified C rung order is the agreed contract (documented divergence beyond).
-Input encoding: provider\x1foverride ('-' absent, 'b' bool, else integer text).
-"""
-import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_tts", os.path.join(DEV, "tools", "tts_tool.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_tts"] = mod
-spec.loader.exec_module(mod)
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_tools_tts_tool_py", os.path.join(DEV, "tools/tts_tool.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_tools_tts_tool_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_resolve_max_text_length")
+    try:
+        result = _pb._resolve_max_text_length(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        prov_s, _, ov = raw.partition("\x1f")
-        prov = prov_s
-        res = 4000
-        c = Cup("resolve_max_text_length")
-        if not prov:
-            c.branch(True)
-            res = 4000
-        else:
-            c.branch(False)
-            have_ov = ov != "-"
-            if have_ov:
-                c.branch(True)
-                if ov == "b":
-                    c.branch(True)          # bool override never wins
-                else:
-                    c.branch(False)
-                    try:
-                        v = int(ov)
-                    except ValueError:
-                        v = -1
-                    if v > 0:
-                        c.branch(True); res = v
-                    else:
-                        c.branch(False)
-            else:
-                c.branch(False)
-        if prov and ov != "-" and ov != "b" and ov.lstrip("-").isdigit() and int(ov) > 0:
-            cfg = {prov.lower().strip(): {"max_text_length": int(ov)}}
-        else:
-            cfg = None
-        live = mod._resolve_max_text_length(prov, cfg)
-        assert res == live, f"LIVE/C diverge on {raw!r}: {live} vs {res}"
-        c.valstr(str(res))
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

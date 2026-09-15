@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_windows_py___build_gateway_vbs_script",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gw_u_build_gateway_vbs_script",
+  "py_module": "hermes_cli/gateway_windows.py",
+  "py_fn": "_build_gateway_vbs_script",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

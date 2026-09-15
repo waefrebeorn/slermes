@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_plugins_cmd_py__dashboard_set_agent_plugin_enabled",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "dashboard_set_agent_plugin_enabled",
+  "py_module": "hermes_cli/plugins_cmd.py",
+  "py_fn": "dashboard_set_agent_plugin_enabled",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

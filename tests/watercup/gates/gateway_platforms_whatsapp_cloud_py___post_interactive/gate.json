@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_whatsapp_cloud_py___post_interactive",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "whatsapp_cloud_post_interactive",
+  "py_module": "gateway/platforms/whatsapp_cloud.py",
+  "py_fn": "_post_interactive",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

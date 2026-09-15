@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_context_compressor_py___is_hygiene_preagent_only_cooldown",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_is_hygiene_preagent_only_cooldown",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_is_hygiene_preagent_only_cooldown",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

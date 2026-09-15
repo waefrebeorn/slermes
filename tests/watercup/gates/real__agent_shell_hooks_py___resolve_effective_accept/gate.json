@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_shell_hooks_py___resolve_effective_accept",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_resolve_effective_accept",
+  "py_module": "agent/shell_hooks.py",
+  "py_fn": "_resolve_effective_accept",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

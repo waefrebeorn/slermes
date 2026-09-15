@@ -1,0 +1,29 @@
+{
+  "name": "tools_bot_failure_reasons_py__is_auto_retryable",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "bot_failure_is_auto_retryable",
+  "py_module": "tools/bot_failure_reasons.py",
+  "py_fn": "is_auto_retryable",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

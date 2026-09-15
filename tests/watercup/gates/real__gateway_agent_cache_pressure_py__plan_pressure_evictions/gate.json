@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_agent_cache_pressure_py__plan_pressure_evictions",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "plan_pressure_evictions",
+  "py_module": "gateway/agent_cache_pressure.py",
+  "py_fn": "plan_pressure_evictions",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

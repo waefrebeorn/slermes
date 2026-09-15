@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_tool_result_classification_py__file_mutation_result_landed",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "file_mutation_result_landed",
+  "py_module": "agent/tool_result_classification.py",
+  "py_fn": "file_mutation_result_landed",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_observability_shared_metrics_sender_py___backoff",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_backoff",
+  "py_module": "hermes_cli/observability/shared_metrics_sender.py",
+  "py_fn": "_backoff",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_observability_shared_metrics_sender_py__reconcile_send_consent",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "reconcile_send_consent",
+  "py_module": "hermes_cli/observability/shared_metrics_sender.py",
+  "py_fn": "reconcile_send_consent",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

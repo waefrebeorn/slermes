@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_kanban_tools_py___check_kanban_orchestrator_mode",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_check_kanban_orchestrator_mode",
+  "py_module": "tools/kanban_tools.py",
+  "py_fn": "_check_kanban_orchestrator_mode",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

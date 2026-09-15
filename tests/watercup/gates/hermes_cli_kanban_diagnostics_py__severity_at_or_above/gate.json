@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_kanban_diagnostics_py__severity_at_or_above",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "kanban_severity_at_or_above",
+  "py_module": "hermes_cli/kanban_diagnostics.py",
+  "py_fn": "severity_at_or_above",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

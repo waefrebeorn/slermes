@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_setup_whatsapp_cloud_py___validate_app_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_setup_whatsapp_clou_u_validate_app_id",
+  "py_module": "hermes_cli/setup_whatsapp_cloud.py",
+  "py_fn": "_validate_app_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

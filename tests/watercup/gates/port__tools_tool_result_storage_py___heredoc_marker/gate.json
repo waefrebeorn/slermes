@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_tool_result_storage_py___heredoc_marker",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_heredoc_marker",
+  "py_module": "tools/tool_result_storage.py",
+  "py_fn": "_heredoc_marker",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -119,7 +119,7 @@ static const char *primary_arg_key(const char *tool)
     if (strcmp(tool,"vision_analyze")==0) return "question";
     if (strcmp(tool,"skill_view")==0) return "name";
     if (strcmp(tool,"skills_list")==0) return "category";
-    if (strcmp(tool,"cronjob")==0) return "action";
+    if (strcmp(tool,"cronjob_manage")==0) return "action";
     if (strcmp(tool,"execute_code")==0) return "code";
     if (strcmp(tool,"delegate_task")==0) return "goal";
     if (strcmp(tool,"clarify")==0) return "question";
@@ -177,7 +177,7 @@ char *cli_agent_display__build_tool_preview(const char *tool_name, const char *a
             }
             free(gp);
         }
-    } else if (strcmp(tool_name, "process") == 0) {
+    } else if (strcmp(tool_name, "process_manage") == 0) {
         json_t *action = json_obj_get(args, "action");
         json_t *sid = json_obj_get(args, "session_id");
         json_t *data = json_obj_get(args, "data");
@@ -201,7 +201,7 @@ char *cli_agent_display__build_tool_preview(const char *tool_name, const char *a
             }
             sb_append_str(&sb, "s");
         }
-    } else if (strcmp(tool_name, "todo") == 0) {
+    } else if (strcmp(tool_name, "todo_list") == 0) {
         json_t *todos = json_obj_get(args, "todos");
         json_t *merge = json_obj_get(args, "merge");
         int merge_on = merge && (merge->type == JSON_BOOL ? merge->bool_val : (merge->type == JSON_NUMBER && merge->num_val != 0.0));
@@ -406,8 +406,8 @@ static const char *TOOL_VERBS(const char *tool)
         {"vision_analyze","Looking at the image"},{"session_search","Searching past sessions"},
         {"skill_view","Reading skill"},{"skills_list","Listing skills"},
         {"skill_manage","Updating skill"},{"memory","Updating memory"},
-        {"todo","Updating tasks"},{"delegate_task","Delegating"},
-        {"cronjob","Scheduling"},{"clarify","Asking"},{NULL,NULL}
+        {"todo_list","Updating tasks"},{"delegate_task","Delegating"},
+        {"cronjob_manage","Scheduling"},{"clarify","Asking"},{NULL,NULL}
     };
     for (int i = 0; m[i].k; i++) if (strcmp(m[i].k, tool) == 0) return m[i].v;
     return NULL;

@@ -1,0 +1,29 @@
+{
+  "name": "agent_trace_upload_py___content_to_blocks",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_trace_upload_u_content_to_blocks",
+  "py_module": "agent/trace_upload.py",
+  "py_fn": "_content_to_blocks",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

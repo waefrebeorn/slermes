@@ -1,0 +1,29 @@
+{
+  "name": "agent_context_compressor_py___has_compressed_summary_metadata",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_agent_context_compressor__has_compressed_summary_metadata",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_has_compressed_summary_metadata",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

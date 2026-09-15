@@ -1,0 +1,29 @@
+{
+  "name": "agent_rate_limit_tracker_py__usage_pct",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_rate_limit_tracker_usage_pct",
+  "py_module": "agent/rate_limit_tracker.py",
+  "py_fn": "usage_pct",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_turn_finalizer_py___assistant_row_missing_visible_text",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_assistant_row_missing_visible_text",
+  "py_module": "agent/turn_finalizer.py",
+  "py_fn": "_assistant_row_missing_visible_text",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

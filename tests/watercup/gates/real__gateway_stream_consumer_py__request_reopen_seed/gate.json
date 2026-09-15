@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_stream_consumer_py__request_reopen_seed",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "request_reopen_seed",
+  "py_module": "gateway/stream_consumer.py",
+  "py_fn": "request_reopen_seed",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

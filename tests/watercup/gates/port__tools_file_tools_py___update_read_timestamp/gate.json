@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_file_tools_py___update_read_timestamp",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_update_read_timestamp",
+  "py_module": "tools/file_tools.py",
+  "py_fn": "_update_read_timestamp",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

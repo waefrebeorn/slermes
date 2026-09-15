@@ -1,0 +1,29 @@
+{
+  "name": "gateway_memory_monitor_py__start_memory_monitoring",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "start_memory_monitoring",
+  "py_module": "gateway/memory_monitor.py",
+  "py_fn": "start_memory_monitoring",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

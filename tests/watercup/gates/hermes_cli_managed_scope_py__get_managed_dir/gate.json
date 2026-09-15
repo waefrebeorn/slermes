@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_managed_scope_py__get_managed_dir",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_managed_scope_get_managed_dir",
+  "py_module": "hermes_cli/managed_scope.py",
+  "py_fn": "get_managed_dir",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

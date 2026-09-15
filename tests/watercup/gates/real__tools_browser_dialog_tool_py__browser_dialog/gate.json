@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_browser_dialog_tool_py__browser_dialog",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "browser_dialog",
+  "py_module": "tools/browser_dialog_tool.py",
+  "py_fn": "browser_dialog",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

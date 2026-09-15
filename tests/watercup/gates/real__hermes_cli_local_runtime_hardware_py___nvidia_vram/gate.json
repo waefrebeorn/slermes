@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_local_runtime_hardware_py___nvidia_vram",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_nvidia_vram",
+  "py_module": "hermes_cli/local_runtime/hardware.py",
+  "py_fn": "_nvidia_vram",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

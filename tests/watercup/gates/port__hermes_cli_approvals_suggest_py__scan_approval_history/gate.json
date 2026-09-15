@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_approvals_suggest_py__scan_approval_history",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "scan_approval_history",
+  "py_module": "hermes_cli/approvals_suggest.py",
+  "py_fn": "scan_approval_history",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

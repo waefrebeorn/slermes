@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_reasoning_effort_py__codex_supported_efforts",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "codex_supported_efforts",
+  "py_module": "agent/reasoning_effort.py",
+  "py_fn": "codex_supported_efforts",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

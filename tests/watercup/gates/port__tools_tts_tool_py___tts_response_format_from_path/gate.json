@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_tts_tool_py___tts_response_format_from_path",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_tts_response_format_from_path",
+  "py_module": "tools/tts_tool.py",
+  "py_fn": "_tts_response_format_from_path",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

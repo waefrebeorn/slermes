@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_commands_py__discord_skill_commands_by_category",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "discord_skill_commands_by_category",
+  "py_module": "hermes_cli/commands.py",
+  "py_fn": "discord_skill_commands_by_category",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

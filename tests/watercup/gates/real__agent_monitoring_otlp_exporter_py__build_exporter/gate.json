@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_monitoring_otlp_exporter_py__build_exporter",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_exporter",
+  "py_module": "agent/monitoring/otlp_exporter.py",
+  "py_fn": "build_exporter",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

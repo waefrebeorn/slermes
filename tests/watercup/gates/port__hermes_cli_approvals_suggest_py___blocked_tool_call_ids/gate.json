@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_approvals_suggest_py___blocked_tool_call_ids",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_blocked_tool_call_ids",
+  "py_module": "hermes_cli/approvals_suggest.py",
+  "py_fn": "_blocked_tool_call_ids",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

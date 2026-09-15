@@ -1,0 +1,29 @@
+{
+  "name": "agent_verification_evidence_py___prune_old_events",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "vev_u_prune_old_events",
+  "py_module": "agent/verification_evidence.py",
+  "py_fn": "_prune_old_events",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

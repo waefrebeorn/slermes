@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_default_soul_py___normalize_soul",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_normalize_soul",
+  "py_module": "hermes_cli/default_soul.py",
+  "py_fn": "_normalize_soul",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

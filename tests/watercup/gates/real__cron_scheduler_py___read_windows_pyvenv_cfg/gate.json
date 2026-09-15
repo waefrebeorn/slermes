@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_scheduler_py___read_windows_pyvenv_cfg",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_read_windows_pyvenv_cfg",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "_read_windows_pyvenv_cfg",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent_credential_pool_py___sync_xai_oauth_entry_from_auth_store",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cpl_sync_xai_oauth_entry_from_auth_store",
+  "py_module": "agent/credential_pool.py",
+  "py_fn": "_sync_xai_oauth_entry_from_auth_store",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

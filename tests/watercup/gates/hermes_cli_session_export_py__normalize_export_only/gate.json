@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_session_export_py__normalize_export_only",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sexp_normalize_export_only",
+  "py_module": "hermes_cli/session_export.py",
+  "py_fn": "normalize_export_only",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

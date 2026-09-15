@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_web_server_py___external_process_cli_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_external_process_cli_command",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_external_process_cli_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

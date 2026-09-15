@@ -1,0 +1,30 @@
+{
+  "name": "agent_tool_dispatch_helpers_py___trajectory_normalize_msg",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_tool_dispatch_helpers_u_trajectory_normalize_msg",
+  "py_module": "agent/tool_dispatch_helpers.py",
+  "py_fn": "_trajectory_normalize_msg",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/tool_dispatch_helpers.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

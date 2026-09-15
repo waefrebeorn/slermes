@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_mcp_startup_py__ensure_mcp_discovery_before_agent_build",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ensure_mcp_discovery_before_agent_build",
+  "py_module": "hermes_cli/mcp_startup.py",
+  "py_fn": "ensure_mcp_discovery_before_agent_build",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

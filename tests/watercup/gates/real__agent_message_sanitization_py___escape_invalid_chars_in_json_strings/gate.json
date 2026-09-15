@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_message_sanitization_py___escape_invalid_chars_in_json_strings",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_escape_invalid_chars_in_json_strings",
+  "py_module": "agent/message_sanitization.py",
+  "py_fn": "_escape_invalid_chars_in_json_strings",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

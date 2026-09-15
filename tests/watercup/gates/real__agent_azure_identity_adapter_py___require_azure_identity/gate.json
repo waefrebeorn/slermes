@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_azure_identity_adapter_py___require_azure_identity",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_require_azure_identity",
+  "py_module": "agent/azure_identity_adapter.py",
+  "py_fn": "_require_azure_identity",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

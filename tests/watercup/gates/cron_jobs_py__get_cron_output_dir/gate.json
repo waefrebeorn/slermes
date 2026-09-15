@@ -1,0 +1,29 @@
+{
+  "name": "cron_jobs_py__get_cron_output_dir",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cron_jobs_get_cron_output_dir",
+  "py_module": "cron/jobs.py",
+  "py_fn": "get_cron_output_dir",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_kanban_db_py___rebuild_drifted_tables",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_rebuild_drifted_tables",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "_rebuild_drifted_tables",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

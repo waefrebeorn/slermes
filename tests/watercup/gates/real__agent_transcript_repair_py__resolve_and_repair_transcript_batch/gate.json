@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_transcript_repair_py__resolve_and_repair_transcript_batch",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_and_repair_transcript_batch",
+  "py_module": "agent/transcript_repair.py",
+  "py_fn": "resolve_and_repair_transcript_batch",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

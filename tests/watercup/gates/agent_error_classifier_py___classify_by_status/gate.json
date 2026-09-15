@@ -1,0 +1,30 @@
+{
+  "name": "agent_error_classifier_py___classify_by_status",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_error_classifier_u_classify_by_status",
+  "py_module": "agent/error_classifier.py",
+  "py_fn": "_classify_by_status",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/error_classifier.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

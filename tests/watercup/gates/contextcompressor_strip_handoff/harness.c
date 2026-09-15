@@ -32,7 +32,7 @@ char *hermes_redact_force(const char *s) { return s ? strdup(s) : NULL; }
 long get_model_context_length(const char *model) { (void)model; return 200000L; }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s strip_handoff <message-json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s strip_handoff <message-json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("strip_handoff");
         json_t *msg = json_parse(argv[i], NULL);

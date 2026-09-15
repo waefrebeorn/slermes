@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_state_py___reap_inactive_orphan_desktop_holders",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_reap_inactive_orphan_desktop_holders",
+  "py_module": "hermes_state.py",
+  "py_fn": "_reap_inactive_orphan_desktop_holders",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_hosted_room_peer_py__local_catalog_mapping",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "local_catalog_mapping",
+  "py_module": "gateway/hosted_room_peer.py",
+  "py_fn": "local_catalog_mapping",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

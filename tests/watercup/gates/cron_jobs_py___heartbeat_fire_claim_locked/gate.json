@@ -1,0 +1,29 @@
+{
+  "name": "cron_jobs_py___heartbeat_fire_claim_locked",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cronjobs_heartbeat_fire_claim_locked",
+  "py_module": "cron/jobs.py",
+  "py_fn": "_heartbeat_fire_claim_locked",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

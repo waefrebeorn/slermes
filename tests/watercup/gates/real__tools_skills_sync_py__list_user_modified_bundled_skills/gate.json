@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skills_sync_py__list_user_modified_bundled_skills",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "list_user_modified_bundled_skills",
+  "py_module": "tools/skills_sync.py",
+  "py_fn": "list_user_modified_bundled_skills",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

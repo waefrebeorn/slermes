@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_commands_py__telegram_bot_commands",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "telegram_bot_commands",
+  "py_module": "hermes_cli/commands.py",
+  "py_fn": "telegram_bot_commands",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "agent_bedrock_adapter_py__is_cache_point_block",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_is_cache_point_block",
+  "py_module": "agent/bedrock_adapter.py",
+  "py_fn": "_is_cache_point_block",
+  "inputs": [
+    "{\"cachePoint\": {\"type\": \"default\"}}",
+    "{\"text\": \"hello\"}",
+    "{}",
+    "[]",
+    "{\"cachePoint\": true, \"extra\": 1}",
+    "[1,2,3]",
+    "{\"cachePoint\": null}"
+  ],
+  "extra_src": ["lib/libjson/json.c"],
+  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "src"]
+}

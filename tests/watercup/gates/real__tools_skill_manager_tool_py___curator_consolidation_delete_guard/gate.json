@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_skill_manager_tool_py___curator_consolidation_delete_guard",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_curator_consolidation_delete_guard",
+  "py_module": "tools/skill_manager_tool.py",
+  "py_fn": "_curator_consolidation_delete_guard",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

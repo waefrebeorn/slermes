@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_update_abort_recovery_py___serve_unit_recovery_available",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_serve_unit_recovery_available",
+  "py_module": "hermes_cli/update_abort_recovery.py",
+  "py_fn": "_serve_unit_recovery_available",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

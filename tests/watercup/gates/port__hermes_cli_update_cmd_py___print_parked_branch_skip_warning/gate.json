@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_update_cmd_py___print_parked_branch_skip_warning",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_print_parked_branch_skip_warning",
+  "py_module": "hermes_cli/update_cmd.py",
+  "py_fn": "_print_parked_branch_skip_warning",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

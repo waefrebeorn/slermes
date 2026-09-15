@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_codex_runtime_switch_py__get_current_runtime",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_current_runtime",
+  "py_module": "hermes_cli/codex_runtime_switch.py",
+  "py_fn": "get_current_runtime",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_config_py___strip_dotted_keys",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_strip_dotted_keys",
+  "py_module": "hermes_cli/config.py",
+  "py_fn": "_strip_dotted_keys",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_api_server_py__put_threadsafe",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "put_threadsafe",
+  "py_module": "gateway/platforms/api_server.py",
+  "py_fn": "put_threadsafe",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

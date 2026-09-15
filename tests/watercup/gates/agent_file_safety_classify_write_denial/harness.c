@@ -118,7 +118,7 @@ void run_one(const char *raw) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s classify_write_denial <path>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s classify_write_denial <path>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) run_one(argv[i]);
     return 0;
 }

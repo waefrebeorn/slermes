@@ -1,0 +1,30 @@
+{
+  "name": "agent_account_usage_py___codex_backend_urls",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_account_usage_u_codex_backend_urls",
+  "py_module": "agent/account_usage.py",
+  "py_fn": "_codex_backend_urls",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/account_usage.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

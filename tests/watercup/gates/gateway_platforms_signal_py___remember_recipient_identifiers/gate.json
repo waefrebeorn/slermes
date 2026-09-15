@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_signal_py___remember_recipient_identifiers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_platforms_signal_u_remember_recipient_identifiers",
+  "py_module": "gateway/platforms/signal.py",
+  "py_fn": "_remember_recipient_identifiers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

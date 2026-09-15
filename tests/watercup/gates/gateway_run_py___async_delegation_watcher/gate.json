@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___async_delegation_watcher",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_async_delegation_watcher",
+  "py_module": "gateway/run.py",
+  "py_fn": "_async_delegation_watcher",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

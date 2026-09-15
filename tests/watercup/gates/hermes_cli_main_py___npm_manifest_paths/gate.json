@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___npm_manifest_paths",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_u_npm_manifest_paths",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_npm_manifest_paths",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

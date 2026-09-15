@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_compression_py__retain_compression_lock_until_worker_done",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "retain_compression_lock_until_worker_done",
+  "py_module": "agent/conversation_compression.py",
+  "py_fn": "retain_compression_lock_until_worker_done",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

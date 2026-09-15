@@ -1,0 +1,25 @@
+/* gate: tools_managed_tool_gateway_py__is_managed_nous_gateway_url — traced copy of cli_tools_managed_tool_gateway_is_managed_nous_gateway_url */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "watercup.h"
+
+extern int cli_tools_managed_tool_gateway_is_managed_nous_gateway_url(const char *input);
+
+static void trace_one(const char *input) {
+    WCUP_BEGIN("cli_tools_managed_tool_gateway_is_managed_nous_gateway_url");
+    int result = cli_tools_managed_tool_gateway_is_managed_nous_gateway_url(input);
+    WCUP_VALINT(result);
+    char cup[32];
+    WCUP_FINALIZE(cup, sizeof cup);
+    printf("%s\n", cup);
+    WCUP_END("cli_tools_managed_tool_gateway_is_managed_nous_gateway_url");
+}
+
+int main(int argc, char **argv) {
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_tools_managed_tool_gateway_is_managed_nous_gateway_url <input>...\n", argv[0]); return 2; }
+    for (int i = 2; i < argc; i++) {
+        trace_one(argv[i]);
+    }
+    return 0;
+}

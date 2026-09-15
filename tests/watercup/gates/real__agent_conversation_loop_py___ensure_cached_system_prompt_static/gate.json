@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_conversation_loop_py___ensure_cached_system_prompt_static",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_ensure_cached_system_prompt_static",
+  "py_module": "agent/conversation_loop.py",
+  "py_fn": "_ensure_cached_system_prompt_static",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

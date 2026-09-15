@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_tool_guardrails_py__is_stall_guard_repeatable",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_stall_guard_repeatable",
+  "py_module": "agent/tool_guardrails.py",
+  "py_fn": "is_stall_guard_repeatable",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

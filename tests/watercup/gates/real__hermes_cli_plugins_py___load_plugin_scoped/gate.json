@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_plugins_py___load_plugin_scoped",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_load_plugin_scoped",
+  "py_module": "hermes_cli/plugins.py",
+  "py_fn": "_load_plugin_scoped",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

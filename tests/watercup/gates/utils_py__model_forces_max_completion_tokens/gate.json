@@ -1,0 +1,29 @@
+{
+  "name": "utils_py__model_forces_max_completion_tokens",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "util_model_forces_max_completion_tokens",
+  "py_module": "utils.py",
+  "py_fn": "model_forces_max_completion_tokens",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

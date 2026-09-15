@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_input_sanitize_py__strip_leaked_bracketed_paste_wrappers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "strip_leaked_bracketed_paste_wrappers",
+  "py_module": "hermes_cli/input_sanitize.py",
+  "py_fn": "strip_leaked_bracketed_paste_wrappers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

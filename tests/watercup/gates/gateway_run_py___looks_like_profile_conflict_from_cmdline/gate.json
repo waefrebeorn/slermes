@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___looks_like_profile_conflict_from_cmdline",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gw_looks_like_profile_conflict_from_cmdline",
+  "py_module": "gateway/run.py",
+  "py_fn": "_looks_like_profile_conflict_from_cmdline",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

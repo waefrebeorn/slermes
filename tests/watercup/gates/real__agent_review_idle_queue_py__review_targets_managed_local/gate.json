@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_review_idle_queue_py__review_targets_managed_local",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "review_targets_managed_local",
+  "py_module": "agent/review_idle_queue.py",
+  "py_fn": "review_targets_managed_local",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_shutdown_flush_py__recover_pending_to_db",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "recover_pending_to_db",
+  "py_module": "gateway/shutdown_flush.py",
+  "py_fn": "recover_pending_to_db",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

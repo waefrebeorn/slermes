@@ -1,0 +1,29 @@
+{
+  "name": "tools_transcription_tools_py___terminate_command_stt_process_tree",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "transcribe_terminate_process_tree",
+  "py_module": "tools/transcription_tools.py",
+  "py_fn": "_terminate_command_stt_process_tree",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

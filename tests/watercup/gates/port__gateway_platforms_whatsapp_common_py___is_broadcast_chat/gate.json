@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_whatsapp_common_py___is_broadcast_chat",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_is_broadcast_chat",
+  "py_module": "gateway/platforms/whatsapp_common.py",
+  "py_fn": "_is_broadcast_chat",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

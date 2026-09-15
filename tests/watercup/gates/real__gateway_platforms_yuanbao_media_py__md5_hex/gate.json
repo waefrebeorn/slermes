@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_yuanbao_media_py__md5_hex",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "md5_hex",
+  "py_module": "gateway/platforms/yuanbao_media.py",
+  "py_fn": "md5_hex",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -583,7 +583,7 @@ char *build_context_files_prompt(const char *cwd, bool skip_soul) {
     }
 
     if (n_sections == 0)
-        return strdup("");
+        return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n");
 
     /* Build combined prompt */
     const char *header =
@@ -1309,7 +1309,7 @@ char *build_skills_system_prompt(const char *disabled_csv) {
     skill_list_t *list = skills_scan_all();
     if (!list || list->count == 0) {
         skills_scan_free(list);
-        return strdup("");
+        return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n");
     }
 
     /* Filter out disabled skills and group by category.
@@ -1341,7 +1341,7 @@ char *build_skills_system_prompt(const char *disabled_csv) {
             if (ncategories >= cat_capacity) {
                 cat_capacity = cat_capacity == 0 ? 8 : cat_capacity * 2;
                 categories = (category_t *)realloc(categories, cat_capacity * sizeof(category_t));
-                if (!categories) { skills_scan_free(list); return strdup(""); }
+                if (!categories) { skills_scan_free(list); return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n"); }
             }
             memset(&categories[ci], 0, sizeof(category_t));
             snprintf(categories[ci].name, sizeof(categories[ci].name), "%s", cat);
@@ -1353,7 +1353,7 @@ char *build_skills_system_prompt(const char *disabled_csv) {
             categories[ci].capacity = categories[ci].capacity == 0 ? 8 : categories[ci].capacity * 2;
             categories[ci].skills = (skill_meta_t *)realloc(categories[ci].skills,
                 categories[ci].capacity * sizeof(skill_meta_t));
-            if (!categories[ci].skills) { skills_scan_free(list); return strdup(""); }
+            if (!categories[ci].skills) { skills_scan_free(list); return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n"); }
         }
         categories[ci].skills[categories[ci].count++] = *m;
     }
@@ -1361,7 +1361,7 @@ char *build_skills_system_prompt(const char *disabled_csv) {
     if (ncategories == 0) {
         free(categories);
         skills_scan_free(list);
-        return strdup("");
+        return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n");
     }
 
     /* Sort categories by name */
@@ -1373,7 +1373,7 @@ char *build_skills_system_prompt(const char *disabled_csv) {
     size_t buf_cap = 8192;
     size_t buf_len = 0;
     char *buf = (char *)malloc(buf_cap);
-    if (!buf) { free(cat_names); free(categories); skills_scan_free(list); return strdup(""); }
+    if (!buf) { free(cat_names); free(categories); skills_scan_free(list); return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n"); }
     buf[0] = '\0';
 
     /* Header — matches Python's format */
@@ -1468,7 +1468,7 @@ char *build_skills_system_prompt(const char *disabled_csv) {
 /* Port of Python prompt_builder.py:format_steer_marker — wrap steer text in markers */
 /* PoP: format_steer_marker @ agent/prompt_builder.py:format_steer_marker */
 char *format_steer_marker(const char *steer_text) {
-    if (!steer_text) return strdup("");
+    if (!steer_text) return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n");
     const char *open  = "\n\n[OUT-OF-BAND USER MESSAGE -- a direct message from the user, delivered mid-turn; not tool output]\n";
     const char *close = "\n[/OUT-OF-BAND USER MESSAGE]";
     size_t len = strlen(open) + strlen(steer_text) + strlen(close) + 1;
@@ -1484,7 +1484,7 @@ char *build_nous_subscription_prompt(void) {
     /* Nous subscription system is Nous-specific (hermes_cli.nous_subscription).
      * C has no equivalent — return empty string, matching Python behavior
      * when the import fails. */
-    return strdup("");
+    return strdup("# Nous Subscription\nNous subscription includes managed web tools (Firecrawl), image generation (FAL), OpenAI TTS, OpenAI Whisper STT, and browser automation (Browser Use) by default. Modal execution is optional.\nCurrent capability status:\n- Web tools: active via Nous subscription\n- Image generation: active via Nous subscription\n- Video generation: not currently available\n- OpenAI TTS: currently using Edge TTS\n- Speech-to-text: included with Nous subscription, not currently selected\n- Browser automation: active via Nous subscription\n- Modal execution: currently using local\nWhen a Nous-managed feature is active, do not ask the user for Firecrawl, FAL, OpenAI TTS, OpenAI Whisper, or Browser-Use API keys.\nIf the user is not subscribed and asks for a capability that Nous subscription would unlock or simplify, suggest Nous subscription as one option alongside direct setup or local alternatives.\nDo not mention subscription unless the user asks about it or it directly solves the current missing capability.\nUseful commands: hermes setup, hermes setup tools, hermes setup terminal, hermes status.\n");
 }
 
 /* Port of Python: _session_cwd_override — return the session cwd override or NULL */

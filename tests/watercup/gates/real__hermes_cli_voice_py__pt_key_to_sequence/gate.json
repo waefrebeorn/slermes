@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_voice_py__pt_key_to_sequence",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "pt_key_to_sequence",
+  "py_module": "hermes_cli/voice.py",
+  "py_fn": "pt_key_to_sequence",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

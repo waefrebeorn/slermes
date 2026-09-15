@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_fuzzy_match_py___preserve_unicode_in_replacement",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_preserve_unicode_in_replacement",
+  "py_module": "tools/fuzzy_match.py",
+  "py_fn": "_preserve_unicode_in_replacement",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

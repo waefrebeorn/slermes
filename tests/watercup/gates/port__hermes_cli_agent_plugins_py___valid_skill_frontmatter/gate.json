@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_agent_plugins_py___valid_skill_frontmatter",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_valid_skill_frontmatter",
+  "py_module": "hermes_cli/agent_plugins.py",
+  "py_fn": "_valid_skill_frontmatter",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

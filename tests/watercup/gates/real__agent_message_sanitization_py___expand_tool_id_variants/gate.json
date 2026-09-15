@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_message_sanitization_py___expand_tool_id_variants",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_expand_tool_id_variants",
+  "py_module": "agent/message_sanitization.py",
+  "py_fn": "_expand_tool_id_variants",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

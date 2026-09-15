@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_partial_compress_py__extract_compress_flags",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_partial_compress_extract_compress_flags",
+  "py_module": "hermes_cli/partial_compress.py",
+  "py_fn": "extract_compress_flags",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

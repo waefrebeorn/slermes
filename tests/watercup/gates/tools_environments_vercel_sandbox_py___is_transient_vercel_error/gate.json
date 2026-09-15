@@ -1,0 +1,29 @@
+{
+  "name": "tools_environments_vercel_sandbox_py___is_transient_vercel_error",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "ve_is_transient_vercel_error",
+  "py_module": "tools/environments/vercel_sandbox.py",
+  "py_fn": "_is_transient_vercel_error",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

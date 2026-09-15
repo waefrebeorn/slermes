@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_lifecycle_guard_py___direct_lifecycle_scan",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_direct_lifecycle_scan",
+  "py_module": "cron/lifecycle_guard.py",
+  "py_fn": "_direct_lifecycle_scan",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

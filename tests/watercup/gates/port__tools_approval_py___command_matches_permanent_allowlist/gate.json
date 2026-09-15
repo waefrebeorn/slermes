@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_approval_py___command_matches_permanent_allowlist",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_command_matches_permanent_allowlist",
+  "py_module": "tools/approval.py",
+  "py_fn": "_command_matches_permanent_allowlist",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

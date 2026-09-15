@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_projects_db_py___new_project_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_projects_db_u_new_project_id",
+  "py_module": "hermes_cli/projects_db.py",
+  "py_fn": "_new_project_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

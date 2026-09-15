@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_banner_py___check_via_local_git",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_check_via_local_git",
+  "py_module": "hermes_cli/banner.py",
+  "py_fn": "_check_via_local_git",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

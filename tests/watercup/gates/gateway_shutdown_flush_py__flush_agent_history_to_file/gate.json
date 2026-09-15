@@ -1,0 +1,29 @@
+{
+  "name": "gateway_shutdown_flush_py__flush_agent_history_to_file",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "shutdown_flush_agent_history_to_file",
+  "py_module": "gateway/shutdown_flush.py",
+  "py_fn": "flush_agent_history_to_file",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

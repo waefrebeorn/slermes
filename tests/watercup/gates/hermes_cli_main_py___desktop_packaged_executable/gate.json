@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___desktop_packaged_executable",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_u_desktop_packaged_executable",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_desktop_packaged_executable",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

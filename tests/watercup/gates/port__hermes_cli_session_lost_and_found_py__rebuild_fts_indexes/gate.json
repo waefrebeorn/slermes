@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_session_lost_and_found_py__rebuild_fts_indexes",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "rebuild_fts_indexes",
+  "py_module": "hermes_cli/session_lost_and_found.py",
+  "py_fn": "rebuild_fts_indexes",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

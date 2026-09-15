@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_doctor_py___hermes_database_paths",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_hermes_database_paths",
+  "py_module": "hermes_cli/doctor.py",
+  "py_fn": "_hermes_database_paths",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

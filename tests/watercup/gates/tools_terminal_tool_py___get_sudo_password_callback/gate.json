@@ -1,0 +1,29 @@
+{
+  "name": "tools_terminal_tool_py___get_sudo_password_callback",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tt_u_get_sudo_password_callback",
+  "py_module": "tools/terminal_tool.py",
+  "py_fn": "_get_sudo_password_callback",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_credential_persistence_py__is_borrowed_credential_source",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_borrowed_credential_source",
+  "py_module": "agent/credential_persistence.py",
+  "py_fn": "is_borrowed_credential_source",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

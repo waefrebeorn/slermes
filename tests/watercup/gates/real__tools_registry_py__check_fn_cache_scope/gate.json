@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_registry_py__check_fn_cache_scope",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "check_fn_cache_scope",
+  "py_module": "tools/registry.py",
+  "py_fn": "check_fn_cache_scope",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

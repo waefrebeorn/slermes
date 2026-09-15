@@ -1,0 +1,29 @@
+{
+  "name": "agent_memory_provider_py__on_turn_start",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_memory_provider_on_turn_start",
+  "py_module": "agent/memory_provider.py",
+  "py_fn": "on_turn_start",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

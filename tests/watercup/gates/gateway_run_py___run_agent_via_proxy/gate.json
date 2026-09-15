@@ -1,0 +1,29 @@
+{
+  "name": "gateway_run_py___run_agent_via_proxy",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "grun_u_run_agent_via_proxy",
+  "py_module": "gateway/run.py",
+  "py_fn": "_run_agent_via_proxy",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

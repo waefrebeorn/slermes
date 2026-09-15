@@ -1,0 +1,29 @@
+{
+  "name": "agent_learning_graph_render_py__total",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "learning_graph_render_bucket_total",
+  "py_module": "agent/learning_graph_render.py",
+  "py_fn": "total",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

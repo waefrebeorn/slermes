@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_uninstall_py___print_uninstall_dry_run",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_print_uninstall_dry_run",
+  "py_module": "hermes_cli/uninstall.py",
+  "py_fn": "_print_uninstall_dry_run",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

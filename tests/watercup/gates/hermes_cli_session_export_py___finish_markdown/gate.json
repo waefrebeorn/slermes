@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_session_export_py___finish_markdown",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "sexp_u_finish_markdown",
+  "py_module": "hermes_cli/session_export.py",
+  "py_fn": "_finish_markdown",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

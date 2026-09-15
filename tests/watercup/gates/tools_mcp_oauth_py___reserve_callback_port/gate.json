@@ -1,0 +1,29 @@
+{
+  "name": "tools_mcp_oauth_py___reserve_callback_port",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mcpo_u_reserve_callback_port",
+  "py_module": "tools/mcp_oauth.py",
+  "py_fn": "_reserve_callback_port",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

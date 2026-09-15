@@ -1,3 +1,18 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
+
+**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
+
+_Generated 2026-09-15T06:22:36Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # Slermes C Delta — Changes & Improvements vs Python Hermes
 
 Tracks every meaningful difference between the Python Hermes agent and our C translation (Slermes).
@@ -36,7 +51,7 @@ Organized by subsystem with classification:
 | T-01 | **`finalize_turn` extracted to own file** | 🔄 Arch | Python has it inline in `conversation_loop.py`. C extracted to `turn_finalizer.c` (200 LOC). Same behavior, better isolation. |
 | T-02 | **turn-completion explainer (C3)** | ✨ Feature | Added user-friendly exit reason summary + recovery action hints at turn end. Not present in Python's simple loop exit. File: `conversation_loop.c:finalize_turn`. |
 | T-03 | **Budget-exhaustion user guidance** | ✨ Enhancement | When budget is exhausted, C prints actionable next steps (`/continue` to resume, `/model` to switch). Python just stops. |
-| T-04 | **Graceful subprocess cleanup on abort** | 🛠️ Fix | C handles `SIGINT` during LLM calls by killing active subprocess and printing tidy summary. Python can leave orphan subprocesses on Ctrl+C (traced in v376). |
+| T-04 | **Graceful subprocess cleanup on abort** | 🛠️ Fix | C handles `SIGINT` during LLM calls by killing active subprocess and printing tidy summary. Python can leave orphan subprocesses on Ctrl+C (traced in ). |
 
 ## 4. Slash Commands CLI
 
@@ -108,11 +123,11 @@ Organized by subsystem with classification:
 | # | Change | Type | Details |
 |---|--------|------|---------|
 | B-01 | **Self-contained C binary** | 🔄 Arch | Python Hermes requires Python 3.11+, pip dependencies (anthropic, openai, httpx, pandas, etc.), and virtualenv. Slermes C is a single statically-linked binary — zero runtime dependencies. |
-| B-02 | **Fuzz test suite (6 suites, 484 tests)** | ✨ Enhancement | C has 6 custom fuzz suites covering: agent loop (84), v373 features (116), TUI (72), prompt system (93), integration (86), deep fuzz (562). Python has ~17k pytest tests but no dedicated fuzz suites. |
+| B-02 | **Fuzz test suite (6 suites, 484 tests)** | ✨ Enhancement | C has 6 custom fuzz suites covering: agent loop (84),  features (116), TUI (72), prompt system (93), integration (86), deep fuzz (562). Python has ~17k pytest tests but no dedicated fuzz suites. |
 | B-03 | **Component-specific fuzzing methodology** | ✨ Enhancement | C fuzz tests organized by component layer (binary integrity → source patterns → behavioral gaps). Each layer independently runnable. Python tests are pytest-based with no layer separation. |
 | B-04 | **`hermes_gap_fixes.c` — dedicated gap-fix module** | 🔄 Arch | C isolates Python behavioral feature gaps into a single file module. Cleaner than scattering fixes across 10 files. Python has no equivalent — features are inline. |
 
-## 11. Architectural Differences (Not Ported — N/A by Design)
+## 11. Architectural Differences (Not Ported — )
 
 These are genuine C-vs-Python architectural differences that would be bugs to port:
 
@@ -155,4 +170,4 @@ These are genuine C-vs-Python architectural differences that would be bugs to po
 
 ---
 
-*Document generated: v380+ — all changes verified against Python Hermes git HEAD.*
+*Document generated: + — all changes verified against Python Hermes git HEAD.*

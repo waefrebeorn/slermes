@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_session_listing_py__format_gateway_session_listing",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "format_gateway_session_listing",
+  "py_module": "hermes_cli/session_listing.py",
+  "py_fn": "format_gateway_session_listing",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

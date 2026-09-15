@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_agent_runtime_helpers_py__get_sanitizer_heal_stats",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_sanitizer_heal_stats",
+  "py_module": "agent/agent_runtime_helpers.py",
+  "py_fn": "get_sanitizer_heal_stats",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

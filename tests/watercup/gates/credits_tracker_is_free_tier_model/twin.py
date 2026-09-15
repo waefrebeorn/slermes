@@ -1,53 +1,29 @@
-"""twin for credits_tracker_is_free_tier_model — LIVE agent/credits_tracker.py::is_free_tier_model."""
-import os, sys
+"""twin for agent/credits_tracker.py:is_free_tier_model."""
+import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 DEV = os.path.dirname(SLERMES)
-
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_live_credits", os.path.join(DEV, "agent", "credits_tracker.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_live_credits"] = mod
-try:
-    spec.loader.exec_module(mod)
-    _fn = mod.is_free_tier_model
-except Exception:
-    # fall back to source-extracted exec of just the pure fn + its deps
-    src = open(os.path.join(DEV, "agent", "credits_tracker.py")).read()
-    start = src.index("def is_free_tier_model")
-    end = src.index("# ── evaluate_credits_notices")
-    ns = {}
-    exec(src[start:end], ns)
-    _fn = ns["is_free_tier_model"]
+sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_credits_tracker_py", os.path.join(DEV, "agent/credits_tracker.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_credits_tracker_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("is_free_tier_model")
+    try:
+        result = _pb.is_free_tier_model(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
 
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        c = Cup("is_free_tier_model")
-        model, _, base_url = (raw or "").partition("\t")
-        result = _fn(model, base_url)
-        c.branch(not model)
-        is_free = False
-        if model:
-            if model.endswith(":free"):
-                c.branch(True)
-                is_free = True
-            else:
-                c.branch(False)
-                if model.startswith("stealth/"):
-                    c.branch(True)
-                    is_free = True
-                else:
-                    c.branch(False)
-                    c.branch(not base_url)
-                    if base_url:
-                        # LIVE pricing-cache peek: cache is empty here -> False
-                        pass
-        c.valstr("True" if is_free else "False")
-        cups.append(c.finalize())
-        assert ("True" if is_free else "False") == ("True" if result else "False"), (raw, result)
-    return cups
+    return [trace(inp) for inp in inputs]

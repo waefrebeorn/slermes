@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_context_compressor_py___skill_view_call_sites",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_skill_view_call_sites",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_skill_view_call_sites",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

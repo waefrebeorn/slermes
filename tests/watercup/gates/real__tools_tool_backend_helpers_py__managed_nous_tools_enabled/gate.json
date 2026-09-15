@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_tool_backend_helpers_py__managed_nous_tools_enabled",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "managed_nous_tools_enabled",
+  "py_module": "tools/tool_backend_helpers.py",
+  "py_fn": "managed_nous_tools_enabled",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

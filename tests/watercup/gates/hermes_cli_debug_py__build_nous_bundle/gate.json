@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_debug_py__build_nous_bundle",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_debug_build_nous_bundle",
+  "py_module": "hermes_cli/debug.py",
+  "py_fn": "build_nous_bundle",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

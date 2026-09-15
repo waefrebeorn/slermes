@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_dashboard_auth_login_page_py__render_login_html",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_dashboard_auth_logi_render_login_html",
+  "py_module": "hermes_cli/dashboard_auth/login_page.py",
+  "py_fn": "render_login_html",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

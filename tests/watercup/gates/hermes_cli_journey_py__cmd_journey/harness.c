@@ -1,0 +1,25 @@
+/* gate: hermes_cli_journey_py__cmd_journey — traced copy of hermes_cli_journey_cmd_journey */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "watercup.h"
+
+extern int hermes_cli_journey_cmd_journey(const char *input);
+
+static void trace_one(const char *input) {
+    WCUP_BEGIN("hermes_cli_journey_cmd_journey");
+    int result = hermes_cli_journey_cmd_journey(input);
+    WCUP_VALINT(result);
+    char cup[32];
+    WCUP_FINALIZE(cup, sizeof cup);
+    printf("%s\n", cup);
+    WCUP_END("hermes_cli_journey_cmd_journey");
+}
+
+int main(int argc, char **argv) {
+    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_journey_cmd_journey <input>...\n", argv[0]); return 2; }
+    for (int i = 2; i < argc; i++) {
+        trace_one(argv[i]);
+    }
+    return 0;
+}

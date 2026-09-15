@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_profile_distribution_py___bootstrap_user_dirs",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_bootstrap_user_dirs",
+  "py_module": "hermes_cli/profile_distribution.py",
+  "py_fn": "_bootstrap_user_dirs",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

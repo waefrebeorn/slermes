@@ -151,7 +151,7 @@ out:
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s clarify_tool <input-json>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s clarify_tool <input-json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         json_t *in = json_parse(argv[i], NULL);
         if (!in || in->type != JSON_OBJECT) {

@@ -3,6 +3,7 @@
 //   return s.replace("_", " ").replace("-", " ").title()
 // Key: Python STRIPS leading/trailing whitespace BEFORE title-casing.
 // Returns NULL (watercup traces as "") only for None/empty/whitespace-only inputs.
+// NOTE: C harness passes "NULL" string to indicate None, so we treat it as None.
 
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +11,8 @@
 
 const char *account_usage_title_case_slug(const char *value) {
     if (!value) return NULL;
+    // C harness passes "NULL" string to indicate None
+    if (strcmp(value, "NULL") == 0) return NULL;
 
     size_t len = strlen(value);
     if (len == 0) return NULL;

@@ -1,0 +1,29 @@
+{
+  "name": "gateway_shutdown_watchdog_py___process_hermes_home",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_shutdown_watchdog_u_process_hermes_home",
+  "py_module": "gateway/shutdown_watchdog.py",
+  "py_fn": "_process_hermes_home",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_mcp_schema_cache_py__utility_tools_from_cache_entry",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "utility_tools_from_cache_entry",
+  "py_module": "tools/mcp_schema_cache.py",
+  "py_fn": "utility_tools_from_cache_entry",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

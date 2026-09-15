@@ -1,10 +1,4 @@
-"""twin for clarify_tool_mark_recommended.
-
-Imports LIVE tools/clarify_tool.py::mark_recommended and traces the SAME
-ladder as the C harness (clarify_mark_recommended):
-  B1 count<2 / B2 already-labeled suffix / decorate-first.
-Choices arrive '\\x1f'-joined; the final value is LIVE Python's own return.
-"""
+"""twin for tools/clarify_tool.py:mark_recommended."""
 import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -14,38 +8,22 @@ sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
-spec = ilu.spec_from_file_location("wc_clarify", os.path.join(DEV, "tools", "clarify_tool.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_clarify"] = mod
-spec.loader.exec_module(mod)
+_spec = ilu.spec_from_file_location(
+    "wc_live_tools_clarify_tool_py", os.path.join(DEV, "tools/clarify_tool.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_tools_clarify_tool_py"] = _pb
+_spec.loader.exec_module(_pb)
 
-LABEL = "(Recommended)"
 
-
-def trace(choices):
+def trace(inp):
     c = Cup("mark_recommended")
-    if len(choices) < 2:                                   # B1
-        c.branch(True)
-        result = list(choices)
-    else:
-        c.branch(False)
-        first = str(choices[0]).strip()
-        if first[-len(LABEL):].casefold() == LABEL.casefold():   # B2
-            c.branch(True)
-            result = list(choices)
-        else:
-            c.branch(False)
-            result = [f"{first} {LABEL}"] + list(choices[1:])
-    c.valstr("\x1f".join(result))
-    return result, c.finalize()
+    try:
+        result = _pb.mark_recommended(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
 
 
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        choices = raw.split("\x1f")
-        live = mod.mark_recommended(list(choices))
-        result, cup = trace(choices)
-        assert result == live, f"LIVE diverge on {raw!r}: {live!r} vs {result!r}"
-        cups.append(cup)
-    return cups
+    return [trace(inp) for inp in inputs]

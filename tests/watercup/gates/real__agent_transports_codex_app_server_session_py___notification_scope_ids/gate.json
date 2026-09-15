@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_transports_codex_app_server_session_py___notification_scope_ids",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_notification_scope_ids",
+  "py_module": "agent/transports/codex_app_server_session.py",
+  "py_fn": "_notification_scope_ids",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

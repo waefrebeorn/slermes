@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_yuanbao_media_py__guess_mime_type",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "guess_mime_type",
+  "py_module": "gateway/platforms/yuanbao_media.py",
+  "py_fn": "guess_mime_type",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

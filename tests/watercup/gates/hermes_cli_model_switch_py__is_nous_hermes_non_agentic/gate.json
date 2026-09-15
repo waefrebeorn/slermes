@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_model_switch_py__is_nous_hermes_non_agentic",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "msw_is_nous_hermes_non_agentic",
+  "py_module": "hermes_cli/model_switch.py",
+  "py_fn": "is_nous_hermes_non_agentic",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

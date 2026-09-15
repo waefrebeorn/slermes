@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_context_compressor_py___reinject_pruned_skill_markers",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_reinject_pruned_skill_markers",
+  "py_module": "agent/context_compressor.py",
+  "py_fn": "_reinject_pruned_skill_markers",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

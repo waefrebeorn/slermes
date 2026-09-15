@@ -1,3 +1,18 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
+**Phase (v672):** PORT phase
+
+**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
+
+_Generated 2026-09-15T06:22:36Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # Battleship Index — Slermes C Translation
 
 > **Central navigation hub** for the Slermes project. Every gap, every mission, every parity area.
@@ -16,14 +31,15 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 ## Current State
 | Metric | Value |
 |--------|-------|
-| **Version** | v671 (PORT phase, live scanner 2026-08-29) |
-| **PORTED** | 15,758 (94.3% of 16,714 features) |
-| **REAL_GAP** | 942 (5.6%) |
-| **PARTIAL** | 14 |
+| **Version** |  (PORT phase, live scanner ) |
+| **PORTED** | 6,466 (35.5% of 18,219 features) |
+| **REAL_GAP** | 11,715 (64.3%) |
+| **PARTIAL** | 38 |
 | **BOOTLEG** | 0 (recursive_false_gap_hunter.py) |
+| **Watercup** | 313 PASS / 22,604 total (1.4%) |
 | **Build** | Clean, 0 errors (slermes ~37 MB) |
 | **Tests** | Mission 8: 65 pass / 0 fail (state_db 27, API 17, UI 12, CLI 9) |
-| **Upstream Sync** | 2,037 ahead / 1,052 behind upstream/main (last merge 2026-08-23 (upstream fetched)) |
+| **Upstream Sync** | 2,072 ahead / 2,560 behind upstream/main (last merge  (upstream fetched)) |
 
 > Live counts: `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 
@@ -31,7 +47,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 
 ## Project Scope (What We SLERMEd)
 
-### ✅ Ported — Core Agent (function parity ~65.3% as of 2026-07-22; feature parity tracked separately below)
+### ✅ Ported — Core Agent (function parity ~65.3% as of ; feature parity tracked separately below)
 
 | Area | Python Source | C Port | Status |
 |------|--------------|--------|--------|
@@ -136,7 +152,7 @@ The entire `ui-tui/` directory. Full TUI with components, lib, pages, stores.
 
 ### 4. Python Agent Core — 2,521 files
 
-Already 100% ported (8,688 functions) **in the v398-era structural map** — these are the upstream source modules that map to the C port. NOTE: the *current* function-parity is ~65.3% (6,357/9,733 PORTED as of 2026-07-22); see the live `<!-- PARITY:AUTO -->` block in state.md. The 8,688 figure is the old upstream-function census, not a claim that all are C-ported.
+Already 100% ported ( functions) **in the -era structural map** — these are the upstream source modules that map to the C port. NOTE: the *current* function-parity is ~65.3% (6,357/9,733 PORTED as of ); see the live `` block in state.md. The  figure is the old upstream-function census, not a claim that all are C-ported.
 
 | Module | File Count | Status |
 |--------|-----------|--------|
@@ -207,7 +223,7 @@ Already 100% ported (8,688 functions) **in the v398-era structural map** — the
 ### Mission 1: Function-Level Parity — COMPLETE ✅
 
 **Goal:** Port every Python function to C with PoP annotations.
-**Result:** 8,688/8,688 functions ported (100%). All 645 Python modules have C equivalents.
+**Result:** / functions ported (100%). All 645 Python modules have C equivalents.
 
 ### Mission 2: Desktop App Parity — ✅ COMPLETE (95/111 features)
 
@@ -230,22 +246,22 @@ Already 100% ported (8,688 functions) **in the v398-era structural map** — the
 **Goal:** Windows + macOS native backends.
 **Current:** Wayland ✅, Win32 ✅, macOS ✅.
 
-### Mission 5: Documentation & Web Content — ✅ COMPLETE (v501)
+### Mission 5: Documentation & Web Content — ✅ COMPLETE ()
 
 **Goal:** Serve upstream .md docs via web_server.c. Embed key docs in binary.
 **Implemented:** 4 /api/docs* endpoints (index, readme, architecture, contributing). Markdown-to-HTML converter (headings, code fences, paragraphs, horizontal rules). Serves session-lifecycle, multi-gateway, relay-connector, chronos-cron, profile-builder, middleware, observer, security, RCA docs.
 
-### Mission 6: Skills System — ✅ COMPLETE (v502)
+### Mission 6: Skills System — ✅ COMPLETE ()
 
 **Goal:** C-side skill loader + all upstream skills ported.
 **Implemented:** src/skills/skills_parser.c — YAML frontmatter parser (name, description, version, author, tags, dependencies). Discovers from ~/.slermes/skills/ + upstream source. Serves 121 skills via /api/skills JSON endpoint. Scans category/skill/SKILL.md directory structure.
 
-### Mission 7: Distribution — ✅ COMPLETE (v503)
+### Mission 7: Distribution — ✅ COMPLETE ()
 
 **Goal:** Installable packages (Nix, Homebrew, AppImage, NSIS, Docker, make install).
 **Implemented:** packaging/appimage/build-appimage.sh, packaging/homebrew/slermes.rb, packaging/nsis/slermes.nsi, packaging/docker/Dockerfile (Alpine multi-stage), packaging/nix/default.nix. Makefile: make install (PREFIX support) + dist-appimage/dist-docker/dist-nsis/dist-nix targets.
 
-### Mission 8: Test Parity — ✅ COMPLETE (v504)
+### Mission 8: Test Parity — ✅ COMPLETE ()
 
 **Goal:** C-side tests for API, CLI, state_db, UI.
 **Implemented:** 63 new tests — tests/integration/test_api_endpoints.c (17 HTTP tests: /health, /api/status, /api/docs*, /api/skills, /api/sessions, /api/config, CORS), tests/cli/test_cli_tests.c (9 CLI tests: --help, --version, error handling, doctor, config), tests/state_db/test_state_db.c (27 SQLite tests: CRUD, transactions, schema), tests/ui/test_ui_harness.c (10 UI tests: terminal I/O, UTF-8, signals). All pass.
@@ -259,7 +275,7 @@ Already 100% ported (8,688 functions) **in the v398-era structural map** — the
 | File | Purpose |
 |------|---------|
 | `battleship-v40.md` | Authoritative gap map (function-level) |
-| `battleship-v464.md` | HISTORICAL artifact (v464-era claim of 8,688 PORTED; superseded — see live `<!-- PARITY:AUTO -->` block in state.md) |
+| `battleship-.md` | HISTORICAL artifact (-era claim of  PORTED; superseded — see live `` block in state.md) |
 | `state.md` | Session state, build status, last actions |
 | `prestige.md` | Prestige ritual log |
 | `plan.md` | Roadmap and next actions |

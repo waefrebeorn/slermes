@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_helpers_py__infer_block_separator",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "infer_block_separator",
+  "py_module": "gateway/platforms/helpers.py",
+  "py_fn": "infer_block_separator",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

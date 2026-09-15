@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_managed_tool_gateway_py__is_managed_nous_gateway_url",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "is_managed_nous_gateway_url",
+  "py_module": "tools/managed_tool_gateway.py",
+  "py_fn": "is_managed_nous_gateway_url",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

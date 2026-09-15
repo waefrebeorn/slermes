@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_relaunch_py___extract_inherited_flags",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_extract_inherited_flags",
+  "py_module": "hermes_cli/relaunch.py",
+  "py_fn": "_extract_inherited_flags",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -47,7 +47,7 @@ static int wc_has_traversal(const char *path_str)
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) { fprintf(stderr, "usage: %s fn <path>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s fn <path>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++)
         wc_has_traversal(argv[i]);
     return 0;

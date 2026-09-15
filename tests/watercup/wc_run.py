@@ -56,6 +56,7 @@ BUILD = os.path.join(HERE, "build")
 # Repo root is two levels up: tests/watercup -> tests -> slermes.
 REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.dirname(REPO))  # parent quarry for LIVE module imports
 from watercup_py import Cup  # noqa: E402
 
 RESULT_FILE = os.path.join(HERE, "build", "results.jsonl")
@@ -155,10 +156,16 @@ def load_live_module(py_module):
     spec = importlib.util.spec_from_file_location(modname, path)
     mod = importlib.util.module_from_spec(spec)
     sys.modules[modname] = mod   # register before exec (dataclasses need it)
+    # Prepend parent quarry to sys.path so dev version takes precedence
+    parent_quarry = os.path.dirname(REPO)
+    old_path = sys.path[:]
+    sys.path.insert(0, parent_quarry)
     try:
         spec.loader.exec_module(mod)
     except Exception as e:
         raise RuntimeError("Failed to import LIVE %s: %s" % (py_module, e))
+    finally:
+        sys.path[:] = old_path
     return mod
 
 

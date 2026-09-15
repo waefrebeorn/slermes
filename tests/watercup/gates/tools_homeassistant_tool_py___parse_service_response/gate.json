@@ -1,0 +1,29 @@
+{
+  "name": "tools_homeassistant_tool_py___parse_service_response",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_homeassistant_tool_u_parse_service_response",
+  "py_module": "tools/homeassistant_tool.py",
+  "py_fn": "_parse_service_response",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

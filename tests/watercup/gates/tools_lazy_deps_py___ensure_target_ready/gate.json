@@ -1,0 +1,29 @@
+{
+  "name": "tools_lazy_deps_py___ensure_target_ready",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_lazy_deps_u_ensure_target_ready",
+  "py_module": "tools/lazy_deps.py",
+  "py_fn": "_ensure_target_ready",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

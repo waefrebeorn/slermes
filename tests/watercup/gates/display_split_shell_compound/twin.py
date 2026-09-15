@@ -1,37 +1,29 @@
-"""twin for display_split_shell_compound.
+"""twin for agent/display.py:_split_shell_compound."""
+import os, sys, importlib.util as ilu
 
-Imports LIVE agent/display.py::_split_shell_compound and traces the SAME
-segmentation rungs as the harness around the REAL C port:
-B(non-empty), per-segment B(1)+V(segment), terminator B(0).
-Inputs avoid backslash-escaped closing quotes (a documented C/LIVE divergence
-candidate) so the agreed sub-contract is exercised.
-"""
-import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
-DEV = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE)))))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
 sys.path.insert(0, DEV)
-
-import importlib.util as ilu
-spec = ilu.spec_from_file_location("wc_agent_display", os.path.join(DEV, "agent", "display.py"))
-mod = ilu.module_from_spec(spec)
-sys.modules["wc_agent_display"] = mod
-spec.loader.exec_module(mod)
 
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_agent_display_py", os.path.join(DEV, "agent/display.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_agent_display_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_split_shell_compound")
+    try:
+        result = _pb._split_shell_compound(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
 def run(inputs):
-    cups = []
-    for raw in inputs:
-        c = Cup("split_shell_compound")
-        has = bool(raw)
-        c.branch(has)
-        if not has:
-            c.valstr("")
-        else:
-            segs = mod._split_shell_compound(raw)
-            for s in segs:
-                c.branch(True)
-                c.valstr(s)
-            c.branch(False)
-        cups.append(c.finalize())
-    return cups
+    return [trace(inp) for inp in inputs]

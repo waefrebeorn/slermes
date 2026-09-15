@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_relay_command_manifest_py__build_relay_command_manifest",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_relay_command_manifest",
+  "py_module": "gateway/relay/command_manifest.py",
+  "py_fn": "build_relay_command_manifest",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

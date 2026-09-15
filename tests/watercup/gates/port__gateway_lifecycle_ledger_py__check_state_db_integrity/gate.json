@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_lifecycle_ledger_py__check_state_db_integrity",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "check_state_db_integrity",
+  "py_module": "gateway/lifecycle_ledger.py",
+  "py_fn": "check_state_db_integrity",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

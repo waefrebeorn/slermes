@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_kanban_db_py___git_branch_exists",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "kdb_git_branch_exists",
+  "py_module": "hermes_cli/kanban_db.py",
+  "py_fn": "_git_branch_exists",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

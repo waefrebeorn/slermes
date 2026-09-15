@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_web_server_py___catalog_provider_env_metadata",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_catalog_provider_env_metadata",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_catalog_provider_env_metadata",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

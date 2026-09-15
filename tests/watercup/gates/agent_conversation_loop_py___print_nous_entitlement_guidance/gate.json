@@ -1,0 +1,29 @@
+{
+  "name": "agent_conversation_loop_py___print_nous_entitlement_guidance",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cvl_print_nous_entitlement_guidance",
+  "py_module": "agent/conversation_loop.py",
+  "py_fn": "_print_nous_entitlement_guidance",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

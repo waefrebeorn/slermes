@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_account_usage_py___fetch_openrouter_account_usage",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_fetch_openrouter_account_usage",
+  "py_module": "agent/account_usage.py",
+  "py_fn": "_fetch_openrouter_account_usage",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

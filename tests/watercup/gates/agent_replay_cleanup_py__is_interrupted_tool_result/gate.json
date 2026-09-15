@@ -1,0 +1,29 @@
+{
+  "name": "agent_replay_cleanup_py__is_interrupted_tool_result",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_replay_cleanup_is_interrupted_tool_result",
+  "py_module": "agent/replay_cleanup.py",
+  "py_fn": "is_interrupted_tool_result",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

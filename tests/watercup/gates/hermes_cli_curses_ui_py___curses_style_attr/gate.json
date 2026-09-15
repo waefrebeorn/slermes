@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_curses_ui_py___curses_style_attr",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_curses_ui_u_curses_style_attr",
+  "py_module": "hermes_cli/curses_ui.py",
+  "py_fn": "_curses_style_attr",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

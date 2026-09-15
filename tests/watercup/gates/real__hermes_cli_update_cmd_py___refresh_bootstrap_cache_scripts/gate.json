@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_update_cmd_py___refresh_bootstrap_cache_scripts",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_refresh_bootstrap_cache_scripts",
+  "py_module": "hermes_cli/update_cmd.py",
+  "py_fn": "_refresh_bootstrap_cache_scripts",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

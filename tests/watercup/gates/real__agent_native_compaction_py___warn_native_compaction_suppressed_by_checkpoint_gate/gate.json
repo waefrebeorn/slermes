@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_native_compaction_py___warn_native_compaction_suppressed_by_checkpoint_gate",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_warn_native_compaction_suppressed_by_checkpoint_gate",
+  "py_module": "agent/native_compaction.py",
+  "py_fn": "_warn_native_compaction_suppressed_by_checkpoint_gate",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

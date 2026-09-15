@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_middleware_py___safe_copy",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_middleware_u_safe_copy",
+  "py_module": "hermes_cli/middleware.py",
+  "py_fn": "_safe_copy",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "agent_anthropic_adapter_py___requires_bearer_auth",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "antr_requires_bearer_auth",
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_requires_bearer_auth",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/anthropic_adapter_ports.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

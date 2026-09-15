@@ -1,0 +1,29 @@
+{
+  "name": "tools_skill_manager_tool_py___delete_skill",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "smt_u_delete_skill",
+  "py_module": "tools/skill_manager_tool.py",
+  "py_fn": "_delete_skill",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

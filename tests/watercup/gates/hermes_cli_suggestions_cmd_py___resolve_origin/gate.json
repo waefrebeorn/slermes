@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_suggestions_cmd_py___resolve_origin",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_suggestions_cmd_u_resolve_origin",
+  "py_module": "hermes_cli/suggestions_cmd.py",
+  "py_fn": "_resolve_origin",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

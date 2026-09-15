@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_runtime_provider_py___config_base_url_trustworthy_for_bare_custom",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_config_base_url_trustworthy_for_bare_custom",
+  "py_module": "hermes_cli/runtime_provider.py",
+  "py_fn": "_config_base_url_trustworthy_for_bare_custom",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

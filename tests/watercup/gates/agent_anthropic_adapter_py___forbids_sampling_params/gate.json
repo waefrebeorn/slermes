@@ -1,0 +1,29 @@
+{
+  "name": "agent_anthropic_adapter_py___forbids_sampling_params",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cli_agent_anthropic_adapter__forbids_sampling_params",
+  "py_module": "agent/anthropic_adapter.py",
+  "py_fn": "_forbids_sampling_params",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

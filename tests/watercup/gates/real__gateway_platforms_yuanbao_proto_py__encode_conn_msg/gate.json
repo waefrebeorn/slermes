@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_yuanbao_proto_py__encode_conn_msg",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "encode_conn_msg",
+  "py_module": "gateway/platforms/yuanbao_proto.py",
+  "py_fn": "encode_conn_msg",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

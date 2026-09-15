@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_voice_mode_py__detect_audio_environment",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "detect_audio_environment",
+  "py_module": "tools/voice_mode.py",
+  "py_fn": "detect_audio_environment",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_plugins_py___pre_tool_call_timeout_block",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_pre_tool_call_timeout_block",
+  "py_module": "hermes_cli/plugins.py",
+  "py_fn": "_pre_tool_call_timeout_block",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

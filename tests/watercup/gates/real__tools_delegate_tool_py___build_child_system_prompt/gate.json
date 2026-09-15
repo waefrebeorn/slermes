@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_delegate_tool_py___build_child_system_prompt",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_build_child_system_prompt",
+  "py_module": "tools/delegate_tool.py",
+  "py_fn": "_build_child_system_prompt",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

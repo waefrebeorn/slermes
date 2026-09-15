@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_discord_tool_py__get_dynamic_schema_admin",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "get_dynamic_schema_admin",
+  "py_module": "tools/discord_tool.py",
+  "py_fn": "get_dynamic_schema_admin",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_blueprint_cmd_py__handle_blueprint_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "handle_blueprint_command",
+  "py_module": "hermes_cli/blueprint_cmd.py",
+  "py_fn": "handle_blueprint_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

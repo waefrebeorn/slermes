@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_update_cmd_py___service_unit_supports_graceful_sigusr1_restart",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_service_unit_supports_graceful_sigusr1_restart",
+  "py_module": "hermes_cli/update_cmd.py",
+  "py_fn": "_service_unit_supports_graceful_sigusr1_restart",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

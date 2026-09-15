@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_secret_sources_bitwarden_py___platform_asset_name",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_platform_asset_name",
+  "py_module": "agent/secret_sources/bitwarden.py",
+  "py_fn": "_platform_asset_name",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

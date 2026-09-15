@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_kanban_diagnostics_py___rule_stuck_in_blocked",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked",
+  "py_module": "hermes_cli/kanban_diagnostics.py",
+  "py_fn": "_rule_stuck_in_blocked",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

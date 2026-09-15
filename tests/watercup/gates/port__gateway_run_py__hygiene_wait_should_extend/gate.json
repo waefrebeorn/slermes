@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_run_py__hygiene_wait_should_extend",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hygiene_wait_should_extend",
+  "py_module": "gateway/run.py",
+  "py_fn": "hygiene_wait_should_extend",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

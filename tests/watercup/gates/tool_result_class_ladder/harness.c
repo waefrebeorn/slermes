@@ -129,7 +129,7 @@ static int wc_may_have_side_effect(const char *tool)
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) { fprintf(stderr, "usage: %s fn <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s fn <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         const char *in = argv[i];
         if (strncmp(in, "se:", 3) == 0) {

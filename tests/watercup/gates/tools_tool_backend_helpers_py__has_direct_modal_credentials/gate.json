@@ -1,0 +1,29 @@
+{
+  "name": "tools_tool_backend_helpers_py__has_direct_modal_credentials",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "tools_tool_backend_helpers_has_direct_modal_credentials",
+  "py_module": "tools/tool_backend_helpers.py",
+  "py_fn": "has_direct_modal_credentials",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

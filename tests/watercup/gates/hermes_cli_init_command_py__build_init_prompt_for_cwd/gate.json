@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_init_command_py__build_init_prompt_for_cwd",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_init_command_build_init_prompt_for_cwd",
+  "py_module": "hermes_cli/init_command.py",
+  "py_fn": "build_init_prompt_for_cwd",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

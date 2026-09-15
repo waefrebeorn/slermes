@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_state_py__replace_gateway_routing_entries",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "replace_gateway_routing_entries",
+  "py_module": "hermes_state.py",
+  "py_fn": "replace_gateway_routing_entries",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_ansi_strip_py__strip_unicode_tags",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "strip_unicode_tags",
+  "py_module": "tools/ansi_strip.py",
+  "py_fn": "strip_unicode_tags",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

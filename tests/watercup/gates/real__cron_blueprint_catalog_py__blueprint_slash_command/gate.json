@@ -1,0 +1,30 @@
+{
+  "name": "real__cron_blueprint_catalog_py__blueprint_slash_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "blueprint_slash_command",
+  "py_module": "cron/blueprint_catalog.py",
+  "py_fn": "blueprint_slash_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

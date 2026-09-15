@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_nous_subscription_py__prompt_enable_tool_gateway",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "nsub_prompt_enable_tool_gateway",
+  "py_module": "hermes_cli/nous_subscription.py",
+  "py_fn": "prompt_enable_tool_gateway",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

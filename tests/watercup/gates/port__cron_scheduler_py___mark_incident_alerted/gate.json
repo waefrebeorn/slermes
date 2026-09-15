@@ -1,0 +1,30 @@
+{
+  "name": "port__cron_scheduler_py___mark_incident_alerted",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_mark_incident_alerted",
+  "py_module": "cron/scheduler.py",
+  "py_fn": "_mark_incident_alerted",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

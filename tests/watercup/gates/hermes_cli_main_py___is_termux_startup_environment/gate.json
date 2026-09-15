@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_main_py___is_termux_startup_environment",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "main_u_is_termux_startup_environment",
+  "py_module": "hermes_cli/main.py",
+  "py_fn": "_is_termux_startup_environment",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

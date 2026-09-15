@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_setup_py___prompt_container_resources",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_prompt_container_resources",
+  "py_module": "hermes_cli/setup.py",
+  "py_fn": "_prompt_container_resources",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

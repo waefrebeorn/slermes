@@ -1,0 +1,29 @@
+{
+  "name": "gateway_response_filters_py___canonical_silence_candidates",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "gateway_response_filters_u_canonical_silence_candidates",
+  "py_module": "gateway/response_filters.py",
+  "py_fn": "_canonical_silence_candidates",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

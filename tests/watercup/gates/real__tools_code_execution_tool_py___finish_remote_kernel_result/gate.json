@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_code_execution_tool_py___finish_remote_kernel_result",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_finish_remote_kernel_result",
+  "py_module": "tools/code_execution_tool.py",
+  "py_fn": "_finish_remote_kernel_result",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

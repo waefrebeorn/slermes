@@ -7,14 +7,16 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 ## What this is
 
 <!-- PARITY:AUTO -->
-**Version:** v671 (PORT phase)  
-**Last updated:** 2026-08-29
+**Version:** v672 (PORT phase)  
+**Last updated:** 2026-09-15
 
 > Live counts from `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 
-**Parity:** 15,745 PORTED (94.2%) · 954 REAL_GAP (0 DA-4 stubs, 954 genuine) · 0 BOOTLEG
+**Parity:** 6,466 PORTED (35.5%) · 11,715 REAL_GAP (11 DA-4 stubs, 11,704 genuine) · 0 BOOTLEG
 
-**Upstream sync checkpoint:** 2,040 ahead / 1,052 behind upstream/main (last merge 2026-08-23 (upstream fetched)). The behind-count is the staleness timer.
+**Watercup:** 313 PASS / 22,604 total (1.4%) — trace-cup parity vs LIVE Python
+
+**Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer.
 
 <!-- /PARITY:AUTO -->
 
@@ -44,9 +46,9 @@ make -j$(nproc)
 | [Real Gap List](docs/real-gap-list.md) | Honest REAL_GAPs across modules |
 | [FAP](docs/fap.md) | Behavioral divergences the scanner can't see + the oracle harness |
 | [Water-Cup Parity Oracle](docs/watercup-parity-oracle.md) | Trace-cup deep gate: right output, wrong path fails |
-| [Session Prestige 2026-08-22](docs/session-prestige-2026-08-22.md) | Session wrap-up: status, in-flight work, next-session queue |
-| [Bootleg Audit](docs/bootleg-audit-2026-08-22.md) | Empty-body audit: 497 found, fix campaign results, remaining queue |
-| [Lib Audit](docs/lib_audit_2026-08-22.md) | All 79 dependency libs vs Python twins; 5 fixed with oracles |
+| [Bootleg Audit](docs/archive/bootleg-audit-.md) | Empty-body audit: findings and fix campaign |
+| [Lib Audit](docs/archive/lib_audit_2026-08-22.md) | Dependency libs vs Python twins |
+| [Full Documentation](docs/index.md) | Complete documentation index |
 
 ## How to read the parity numbers
 

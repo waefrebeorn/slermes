@@ -1,0 +1,30 @@
+{
+  "name": "port__tools_tts_tool_py___tts_cache_get_or_load",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_tts_cache_get_or_load",
+  "py_module": "tools/tts_tool.py",
+  "py_fn": "_tts_cache_get_or_load",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

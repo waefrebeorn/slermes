@@ -1,11 +1,5 @@
-"""twin for model_switch_models_config_is_allowlist.
-
-Traces the LIVE hermes_cli/model_switch.py::_models_config_is_allowlist with
-the same rung order as the C harness (discovered=False default):
-  B1 null / B2 unparseable JSON / B3 str / B4 dict / B5 list / V1 result.
-The RESULT value comes from the LIVE function.
-"""
-import os, sys, json, importlib.util as ilu
+"""twin for hermes_cli/model_switch.py:_models_config_is_allowlist."""
+import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
@@ -15,54 +9,21 @@ sys.path.insert(0, DEV)
 from watercup_py import Cup
 
 _spec = ilu.spec_from_file_location(
-    "wc_live_model_switch", os.path.join(DEV, "hermes_cli", "model_switch.py"))
-_ms = ilu.module_from_spec(_spec)
-sys.modules["wc_live_model_switch"] = _ms
-try:
-    _spec.loader.exec_module(_ms)
-    live = _ms._models_config_is_allowlist
-except Exception:
-    live = None
+    "wc_live_hermes_cli_model_switch_py", os.path.join(DEV, "hermes_cli/model_switch.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_hermes_cli_model_switch_py"] = _pb
+_spec.loader.exec_module(_pb)
 
 
-def trace(value_json):
-    c = Cup("models_config_is_allowlist")
-    if value_json is None:
-        c.branch(True)                          # B1
-        c.valstr("False")
-        return False, c.finalize()
-    c.branch(False)
+def trace(inp):
+    c = Cup("_models_config_is_allowlist")
     try:
-        value = json.loads(value_json)
-        parsed = True
-    except Exception:
-        value = None
-        parsed = False
-    if not parsed:
-        c.branch(True)                          # B2
-        c.valstr("False")
-        return False, c.finalize()
-    c.branch(False)
-    if isinstance(value, str):                  # B3
-        c.branch(True)
-        result = bool(live(value)) if live else bool(value.strip())
-    else:
-        c.branch(False)
-        if isinstance(value, dict):             # B4
-            c.branch(True)
-            result = bool(live(value)) if live else False
-        else:
-            c.branch(False)
-            is_list = isinstance(value, list)
-            c.branch(is_list)                   # B5
-            result = bool(live(value)) if live else is_list
-    c.valstr("True" if result else "False")     # V1
-    return result, c.finalize()
+        result = _pb._models_config_is_allowlist(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
 
 
 def run(inputs):
-    cups = []
-    for s in inputs:
-        _, cup = trace(s)
-        cups.append(cup)
-    return cups
+    return [trace(inp) for inp in inputs]

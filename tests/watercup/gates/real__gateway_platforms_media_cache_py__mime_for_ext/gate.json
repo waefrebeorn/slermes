@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_platforms_media_cache_py__mime_for_ext",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "mime_for_ext",
+  "py_module": "gateway/platforms/media_cache.py",
+  "py_fn": "mime_for_ext",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

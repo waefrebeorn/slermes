@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_plugins_py___VALID_PLUGIN_KINDS",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "plugin_manifest_kind_is_valid",
+  "py_module": "hermes_cli/plugins.py",
+  "py_fn": "_VALID_PLUGIN_KINDS",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

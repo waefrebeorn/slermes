@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_delivery_py__looks_like_telegram_private_chat_id",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "looks_like_telegram_private_chat_id",
+  "py_module": "gateway/delivery.py",
+  "py_fn": "looks_like_telegram_private_chat_id",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

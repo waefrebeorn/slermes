@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_whatsapp_cloud_py___truncate_body",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_truncate_body",
+  "py_module": "gateway/platforms/whatsapp_cloud.py",
+  "py_fn": "_truncate_body",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_gateway_py___request_gateway_self_restart",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "request_gateway_self_restart",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "_request_gateway_self_restart",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_computer_use_vision_routing_py___explicit_aux_vision_override",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_explicit_aux_vision_override",
+  "py_module": "tools/computer_use/vision_routing.py",
+  "py_fn": "_explicit_aux_vision_override",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

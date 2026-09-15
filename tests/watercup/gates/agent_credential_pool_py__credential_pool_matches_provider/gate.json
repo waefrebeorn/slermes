@@ -1,0 +1,29 @@
+{
+  "name": "agent_credential_pool_py__credential_pool_matches_provider",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_credential_pool_credential_pool_matches_provider",
+  "py_module": "agent/credential_pool.py",
+  "py_fn": "credential_pool_matches_provider",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

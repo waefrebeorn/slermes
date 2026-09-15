@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_whatsapp_cloud_py___download_media_to_cache",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_download_media_to_cache",
+  "py_module": "gateway/platforms/whatsapp_cloud.py",
+  "py_fn": "_download_media_to_cache",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

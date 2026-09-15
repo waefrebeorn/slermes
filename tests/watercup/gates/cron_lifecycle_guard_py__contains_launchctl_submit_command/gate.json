@@ -1,0 +1,29 @@
+{
+  "name": "cron_lifecycle_guard_py__contains_launchctl_submit_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cron_lifecycle_contains_launchctl_submit_command",
+  "py_module": "cron/lifecycle_guard.py",
+  "py_fn": "contains_launchctl_submit_command",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "real__tools_browser_lightpanda_py___binary_supports_http_cache",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_binary_supports_http_cache",
+  "py_module": "tools/browser_lightpanda.py",
+  "py_fn": "_binary_supports_http_cache",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

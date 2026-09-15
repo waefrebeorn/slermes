@@ -1,0 +1,29 @@
+{
+  "name": "gateway_platforms_base_py__cleanup_audio_cache",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cleanup_audio_cache",
+  "py_module": "gateway/platforms/base.py",
+  "py_fn": "cleanup_audio_cache",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

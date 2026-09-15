@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_message_sanitization_py___sanitize_tools_non_ascii",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_sanitize_tools_non_ascii",
+  "py_module": "agent/message_sanitization.py",
+  "py_fn": "_sanitize_tools_non_ascii",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

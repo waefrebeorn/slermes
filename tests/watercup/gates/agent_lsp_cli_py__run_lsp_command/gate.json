@@ -1,0 +1,29 @@
+{
+  "name": "agent_lsp_cli_py__run_lsp_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "lspc2_run_lsp_command",
+  "py_module": "agent/lsp/cli.py",
+  "py_fn": "run_lsp_command",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

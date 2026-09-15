@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_curses_ui_py__should_replay",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "curses_ui_should_replay",
+  "py_module": "hermes_cli/curses_ui.py",
+  "py_fn": "should_replay",
+  "inputs": [
+    "0",
+    "1",
+    "-1",
+    "42",
+    "999"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_subcommands_model_py__build_model_parser",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_model_parser",
+  "py_module": "hermes_cli/subcommands/model.py",
+  "py_fn": "build_model_parser",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

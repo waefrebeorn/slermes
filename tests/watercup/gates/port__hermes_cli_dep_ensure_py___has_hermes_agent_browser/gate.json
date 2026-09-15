@@ -1,0 +1,30 @@
+{
+  "name": "port__hermes_cli_dep_ensure_py___has_hermes_agent_browser",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_has_hermes_agent_browser",
+  "py_module": "hermes_cli/dep_ensure.py",
+  "py_fn": "_has_hermes_agent_browser",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

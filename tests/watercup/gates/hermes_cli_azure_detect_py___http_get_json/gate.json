@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_azure_detect_py___http_get_json",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_azure_detect_u_http_get_json",
+  "py_module": "hermes_cli/azure_detect.py",
+  "py_fn": "_http_get_json",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

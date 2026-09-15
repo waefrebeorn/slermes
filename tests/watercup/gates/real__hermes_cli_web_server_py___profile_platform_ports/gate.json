@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_web_server_py___profile_platform_ports",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_profile_platform_ports",
+  "py_module": "hermes_cli/web_server.py",
+  "py_fn": "_profile_platform_ports",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

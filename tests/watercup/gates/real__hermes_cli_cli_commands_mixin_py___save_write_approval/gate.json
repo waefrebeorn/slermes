@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_cli_commands_mixin_py___save_write_approval",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_save_write_approval",
+  "py_module": "hermes_cli/cli_commands_mixin.py",
+  "py_fn": "_save_write_approval",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

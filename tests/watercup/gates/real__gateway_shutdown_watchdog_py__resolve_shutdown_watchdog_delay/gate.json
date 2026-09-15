@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_shutdown_watchdog_py__resolve_shutdown_watchdog_delay",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "resolve_shutdown_watchdog_delay",
+  "py_module": "gateway/shutdown_watchdog.py",
+  "py_fn": "resolve_shutdown_watchdog_delay",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

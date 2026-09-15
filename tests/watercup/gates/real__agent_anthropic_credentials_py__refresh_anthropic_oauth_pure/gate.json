@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_anthropic_credentials_py__refresh_anthropic_oauth_pure",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "refresh_anthropic_oauth_pure",
+  "py_module": "agent/anthropic_credentials.py",
+  "py_fn": "refresh_anthropic_oauth_pure",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_platforms_whatsapp_cloud_py___handle_verify",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_handle_verify",
+  "py_module": "gateway/platforms/whatsapp_cloud.py",
+  "py_fn": "_handle_verify",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "hermes_cli_loops_py__self_paced_floor_seconds",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "loops_self_paced_floor_seconds",
+  "py_module": "hermes_cli/loops.py",
+  "py_fn": "self_paced_floor_seconds",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

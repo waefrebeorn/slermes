@@ -67,7 +67,7 @@ static void run_one(const char *arg) {
         } else {
             WCUP_BRANCH(0);
             snprintf(out, sizeof out, "%s %s", first, LABEL);
-            for (int i = 1; i < count; i++)
+            for (int i = 2; i < count; i++)
                 snprintf(out + strlen(out), sizeof out - strlen(out), "%s%s",
                          "\x1f", choices[i]);
         }

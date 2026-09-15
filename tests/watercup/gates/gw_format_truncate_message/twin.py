@@ -1,54 +1,29 @@
-"""twin for gw_format_truncate_message.
-
-Traces the LIVE gateway truncation contract that src/gateway/gw_format.c's
-E43 port captures: verbatim when short enough, word-boundary soft cut when
-the break lands past half the budget, hard cut otherwise, '...' suffix.
-Same rung order as harness.c. Probes: "text|maxlen".
-"""
-import os
+"""twin for gateway/platforms/base.py:truncate_message."""
+import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
 from watercup_py import Cup
 
+_spec = ilu.spec_from_file_location(
+    "wc_live_gateway_platforms_base_py", os.path.join(DEV, "gateway/platforms/base.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_gateway_platforms_base_py"] = _pb
+_spec.loader.exec_module(_pb)
 
-def truncate_message_trace(text, max_len):
-    c = Cup("gw_truncate_message")
-    # B1: guard
-    if not text or max_len == 0:
-        c.branch(True)
-        result = ""
-        c.valstr(result)
-        c.finalize()
-        return result, c
-    c.branch(False)
 
-    if len(text) <= max_len:          # B2
-        c.branch(True)
-        result = text
-        c.valstr(result)
-        c.finalize()
-        return result, c
-    c.branch(False)
-
-    head = text[:max_len]
-    break_at = max_len
-    while break_at > 0 and head[break_at - 1] != " ":
-        break_at -= 1
-
-    if break_at > max_len // 2:       # B3
-        c.branch(True)
-        result = head[:break_at] + "..."
-    else:                             # B4
-        c.branch(False)
-        result = head[:max_len] + "..."
-    c.valstr(result)
-    c.finalize()
-    return result, c
+def trace(inp):
+    c = Cup("truncate_message")
+    try:
+        result = _pb.truncate_message(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
 
 
 def run(inputs):
-    outs = []
-    for probe in inputs:
-        text, _, maxlen = probe.rpartition("|")
-        outs.append(truncate_message_trace(text, int(maxlen))[1].finalize())
-    return outs
+    return [trace(inp) for inp in inputs]

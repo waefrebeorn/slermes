@@ -1,0 +1,30 @@
+{
+  "name": "agent_copilot_acp_client_py___is_gh_copilot_deprecation_message",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cac_is_gh_copilot_deprecation_message",
+  "py_module": "agent/copilot_acp_client.py",
+  "py_fn": "_is_gh_copilot_deprecation_message",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/copilot_acp_client_ports.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

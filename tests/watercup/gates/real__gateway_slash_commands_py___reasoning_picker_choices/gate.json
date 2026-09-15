@@ -1,0 +1,30 @@
+{
+  "name": "real__gateway_slash_commands_py___reasoning_picker_choices",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_reasoning_picker_choices",
+  "py_module": "gateway/slash_commands.py",
+  "py_fn": "_reasoning_picker_choices",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}

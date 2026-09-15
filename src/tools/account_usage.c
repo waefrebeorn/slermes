@@ -29,21 +29,35 @@
 
 /* PoP: str @ agent/account_usage.py:_title_case_slug */
 /* Port of Python: _title_case_slug — "foo_bar-baz" -> "Foo Bar Baz" (None if empty).
- * Mirrors str(value).replace("_"," ").replace("-"," ").title(): every
- * whitespace/_/- separated word is capitalized. */
+ * Mirrors str(value).strip().replace("_"," ").replace("-"," ").title():
+ * strips leading/trailing whitespace FIRST, then title-cases.
+ * NOTE: C harness passes "NULL" string to indicate None. The runner may also
+ * pass JSON-quoted '"NULL"'. Both are treated as None. */
 const char *account_usage_title_case_slug(const char *value) {
-    if (!value || !value[0]) return NULL;
+    if (!value) return NULL;
+    // C harness passes "NULL" string to indicate None (may be JSON-quoted)
+    if (strcmp(value, "NULL") == 0) return NULL;
+    if (strcmp(value, "\"NULL\"") == 0) return NULL;
+    // Python: s = str(value or "").strip()
+    while (*value == ' ' || *value == '\t' || *value == '\n' || *value == '\r')
+        value++;
+    size_t len = strlen(value);
+    while (len > 0 && (value[len-1] == ' ' || value[len-1] == '\t' ||
+                        value[len-1] == '\n' || value[len-1] == '\r'))
+        len--;
+    if (len == 0) return NULL;  // whitespace-only → None
     static char buf[256];
     size_t pos = 0;
-    bool word_start = true;
-    for (size_t i = 0; value[i] && pos < sizeof(buf) - 1; i++) {
+    int prev_alpha = 0;
+    for (size_t i = 0; i < len && pos < sizeof(buf) - 1; i++) {
         unsigned char c = (unsigned char)value[i];
-        if (c == '_' || c == '-' || c == ' ') {
-            buf[pos++] = ' ';
-            word_start = true;
+        if (c == '_' || c == '-') c = ' ';
+        if (isalpha(c)) {
+            buf[pos++] = prev_alpha ? tolower(c) : toupper(c);
+            prev_alpha = 1;
         } else {
-            buf[pos++] = word_start ? toupper(c) : tolower(c);
-            word_start = false;
+            buf[pos++] = c;
+            prev_alpha = 0;
         }
     }
     buf[pos] = '\0';

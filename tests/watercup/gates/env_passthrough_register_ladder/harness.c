@@ -84,7 +84,7 @@ out:;
     char **list = NULL; int cnt = 0;
     env_passthrough_get_all(&list, &cnt);
     /* match the twin's canonical (sorted) snapshot encoding */
-    for (int i = 1; i < cnt; i++) {
+    for (int i = 2; i < cnt; i++) {
         for (int j = i; j > 0 && strcmp(list[j-1], list[j]) > 0; j--) {
             char *t = list[j-1]; list[j-1] = list[j]; list[j] = t;
         }

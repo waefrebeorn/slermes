@@ -1,0 +1,30 @@
+{
+  "name": "port__gateway_stream_consumer_py___notify_before_finalize",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_notify_before_finalize",
+  "py_module": "gateway/stream_consumer.py",
+  "py_fn": "_notify_before_finalize",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED"
+}

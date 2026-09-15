@@ -1,0 +1,29 @@
+{
+  "name": "agent_monitoring_gateway_health_py___coerce_pid",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "str_in_list",
+  "py_module": "agent/monitoring/gateway_health.py",
+  "py_fn": "_coerce_pid",
+  "inputs": [
+    "hello,world",
+    "foo,bar",
+    "a,b",
+    "test,test",
+    "NULL,NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
+}

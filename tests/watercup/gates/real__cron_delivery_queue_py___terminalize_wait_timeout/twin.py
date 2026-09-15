@@ -1,0 +1,29 @@
+"""twin for cron/delivery_queue.py:_terminalize_wait_timeout."""
+import os, sys, importlib.util as ilu
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+DEV = os.path.dirname(SLERMES)
+sys.path.insert(0, DEV)
+
+from watercup_py import Cup
+
+_spec = ilu.spec_from_file_location(
+    "wc_live_cron_delivery_queue_py", os.path.join(DEV, "cron/delivery_queue.py"))
+_pb = ilu.module_from_spec(_spec)
+sys.modules["wc_live_cron_delivery_queue_py"] = _pb
+_spec.loader.exec_module(_pb)
+
+
+def trace(inp):
+    c = Cup("_terminalize_wait_timeout")
+    try:
+        result = _pb._terminalize_wait_timeout(inp)
+        c.valstr(str(result))
+    except Exception as e:
+        c.valstr(f"ERROR:{type(e).__name__}")
+    return c.finalize()
+
+
+def run(inputs):
+    return [trace(inp) for inp in inputs]

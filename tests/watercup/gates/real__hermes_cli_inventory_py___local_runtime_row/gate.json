@@ -1,0 +1,30 @@
+{
+  "name": "real__hermes_cli_inventory_py___local_runtime_row",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "_local_runtime_row",
+  "py_module": "hermes_cli/inventory.py",
+  "py_fn": "_local_runtime_row",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "REAL_GAP"
+}
