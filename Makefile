@@ -90,19 +90,21 @@ help:
 	@echo "  make clean all CC=clang                 # clean build with clang"
 	@echo "  make asan-test COVERAGE_THRESHOLD=10.0  # asan + 10%% coverage gate"
 
-# ── Parity truth (fail-closed, self-correcting) ────────────────
-# Regenerates the canonical live_parity_scan.json from the live scanner,
-# THEN refreshes every PARITY:AUTO sentinel block in walkway files.
-# The gate (scripts/parity_truth.py) REFUSES to emit unless the Python
-# ground-truth (agent/, tools/, ...) is actually checked out — so a missing
-# source can never produce a silent "0 gaps" lie. If the gate fails, the
-# walkway files are left untouched (no stale write).
-parity:
-	@python3 scripts/parity_truth.py
-	@python3 scripts/gen_parity_walkway.py
+# ── Unified, programmatic parity workflow ──────────────────────────
+# The single entry point that wires the scanner (scan) + trace-cup oracle
+# (watercup) + walkway generator (walkway) into ONE fail-closed pipeline.
+# Every count, sync status and gap list in the derived docs is computed
+# live — nothing is hand-typed. Run `make parity-full` for the full pipeline.
+parity-full:
+	@python3 scripts/run_parity_workflow.py
 
-# Organization parity: every Python module needs a canonical C home, and every
-# C file must justify its place. Writes docs/organization-parity.{md,json}.
+# Refreshes walkway docs only (assumes scan + watercup already run).
+parity-walkway: parity
+
+# Legacy alias for backward compatibility.
+parity: parity-full
+
+# ── Organization parity: every Python module needs a canonical C home. ──
 org-parity:
 	@python3 scripts/org_parity_scan.py
 

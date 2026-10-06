@@ -2,16 +2,25 @@
 
 ## Core Principle
 
-<!-- PARITY:AUTO -->
-**v672 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
+<!-- PARITY:AUTO -->| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v672):** PORT phase
 
-**Watercup oracle:** 0/6,230 PORTED match LIVE Python · 11,511/11,511 REAL_GAP mismatch (tracking). Total trace-cup: 313 PASS / 22,604 (1.4%). Passing gap-closures flip MISMATCH → MATCH.
+**Upstream sync:** 2,081 ahead / 0 behind (last merge 2026-10-03 (upstream fetched))
 
-**Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+_Generated 2026-10-06T02:44:06Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-<!-- /PARITY:AUTO -->
+**Phase ():** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-Slermes is a C11 translation of the Hermes Python agent, maintained as a
+**Workflow:** these docs are fully programmatic — `make parity-full` (scanner → watercup oracle → walkway generator) refreshes every PARITY:AUTO block from live sources on every run. Never hand-edit the count block; the "ahead/behind" sync figure is the staleness timer — when it is non-zero, re-run the fork-sync flow below.
+
+## Slermes
+
+Slromes is a C11 translation of the Hermes Python agent, maintained as a
 **fork** of `NousResearch/hermes-agent` at `waefrebeorn/slermes`. The
 forking model means slermes diverges from upstream Python — it does NOT
 share git history with the upstream repo. The divergent count is the

@@ -1,14 +1,16 @@
 # 🗺️ Slermes Roadmap — What's Next
 
-<!-- PARITY:AUTO -->
-**Version:** 0.19.0-slermes (v672, PORT phase)  
-**Last updated:** 2026-09-15
+<!-- PARITY:AUTO -->| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v672):** PORT phase
 
-> **v672 PORT phase:** live scanner 2026-09-15: 6,466 / 18,219 (35.5%) PORTED · 11,715 REAL_GAP · 38 PARTIAL. The C11 binary is the deliverable.
-> **Watercup oracle:** 313 PASS / 22,604 total (1.4%) — 22,291 fail. Trace-cup parity verifies C ports match LIVE Python behavior.
->
-> **Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
-<!-- /PARITY:AUTO -->
+**Upstream sync:** 2,081 ahead / 0 behind (last merge 2026-10-03 (upstream fetched))
+
+_Generated 2026-10-06T02:44:06Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  
 > The real work of making Slermes *the* C11 AI agent starts here.

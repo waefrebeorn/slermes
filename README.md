@@ -6,19 +6,17 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 
 ## What this is
 
-<!-- PARITY:AUTO -->
-**Version:** v672 (PORT phase)  
-**Last updated:** 2026-09-15
+<!-- PARITY:AUTO -->| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v672):** PORT phase
 
-> Live counts from `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
+**Upstream sync:** 2,081 ahead / 0 behind (last merge 2026-10-03 (upstream fetched))
 
-**Parity:** 6,466 PORTED (35.5%) · 11,715 REAL_GAP (11 DA-4 stubs, 11,704 genuine) · 0 BOOTLEG
-
-**Watercup:** 313 PASS / 22,604 total (1.4%) — trace-cup parity vs LIVE Python
-
-**Upstream sync checkpoint:** 2,072 ahead / 2,560 behind upstream/main (last merge 2026-09-14 (upstream fetched)). The behind-count is the staleness timer.
-
-<!-- /PARITY:AUTO -->
+_Generated 2026-10-06T02:44:06Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 ## Quick Start
 
