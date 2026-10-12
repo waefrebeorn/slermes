@@ -116,7 +116,19 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # Zero-arg categories pass nothing to the traced function; the input walk
     # still varies the cup via the CUP name + the traced call site.
     noargs = category.endswith('_noargs')
-    call_args = '' if noargs else ', '.join(['argv[i]'] * len(param_list))
+    # Categories whose params are ints/doubles must convert the string argv:
+    # passing argv[i] straight to an `int` param is a compile error (and
+    # silently wrong if it weren't).
+    numeric = category in ('int_int', 'bool_int', 'int_other', 'bool_other',
+                           'long_simple', 'sizet_simple', 'double_simple')
+    if noargs:
+        call_args = ''
+    elif numeric:
+        conv = ('(int)strtol(argv[i], NULL, 10)' if 'double' not in category
+                else 'strtod(argv[i], NULL)')
+        call_args = ', '.join([conv] * len(param_list))
+    else:
+        call_args = ', '.join(['argv[i]'] * len(param_list))
 
     if category.startswith('int'):
         val_code = '    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);'

@@ -107,7 +107,7 @@ int main(int argc, char **argv) {{
 """
 
 
-def generate_twin(py_module, py_fn, parent_class="", c_ret=None):
+def generate_twin(py_module, py_fn, parent_class="", c_ret=None, cup_name=None):
     """Generate twin.py for a function.
 
     c_ret is the C return type of the ported function ("int", "bool",
@@ -115,12 +115,23 @@ def generate_twin(py_module, py_fn, parent_class="", c_ret=None):
     SAME canonical string the C harness feeds WCUP_VALSTR, or every cup
     mismatches for encoding reasons rather than logic ones. When unknown,
     fall back to str().
+
+    cup_name is the C symbol the harness passes to WCUP_BEGIN. Cup() folds
+    that name into the hash before any value, so a twin that opens its cup
+    with the PYTHON name can never match a harness that opened with the C
+    name — even when every traced value is identical. Default to cup_name.
     """
     mod_under = py_module.replace('/', '_').replace('.', '_').replace('-', '_')
+    cup_name = cup_name or py_fn
 
     # Canonical encoding mirroring fix_all_gates.generate_port_harness.
+    # When the C function returns int, a Python bool must be encoded as its
+    # integer value (int(True) -> "1"), NOT as "True"/"False" — C emits "%d".
+    # The isinstance-bool exclusion here was backwards and made every
+    # bool-returning twin mismatch on encoding alone.
     if c_ret == 'int':
-        enc = 'str(int(result)) if isinstance(result, bool) is False and result is not None and not isinstance(result, str) else str(result)'
+        enc = ('str(int(result)) if isinstance(result, (int, bool)) '
+               'and not isinstance(result, str) else str(result)')
     elif c_ret == 'bool':
         enc = '"true" if result else "false"'
     elif c_ret == 'charptr':
@@ -160,6 +171,33 @@ def generate_twin(py_module, py_fn, parent_class="", c_ret=None):
         call_str = 'result = _call(inp, inputs)'
 
     helper = '''
+def _resolve_fn():
+    """Module-level fn, else a method on any class in the LIVE module."""
+    f = getattr(_pb, "%s", None)
+    if f is not None:
+        return f
+    import inspect as _i
+    for _n, _o in vars(_pb).items():
+        if _i.isclass(_o) and hasattr(_o, "%s"):
+            _m = getattr(_o, "%s")
+            if callable(_m):
+                return _m.__get__(_DummySelf(), _o)
+    return None
+
+
+class _DummySelf:
+    """Permissive stand-in for self: any attribute yields another _DummySelf,
+    so pure methods run. Methods that need real instance state raise and are
+    reported as an ERROR cup — honest, not a false MATCH."""
+    def __getattr__(self, name):
+        return _DummySelf()
+    def __call__(self, *a, **k):
+        return _DummySelf()
+
+
+_FN = _resolve_fn()
+
+
 def _call(inp, inputs):
     """Call the LIVE twin with as many inputs as its signature accepts.
 
@@ -171,7 +209,7 @@ def _call(inp, inputs):
     """
     import inspect as _insp
     try:
-        _sig = _insp.signature(_pb.%s)
+        _sig = _insp.signature(_FN)
     except Exception:
         _sig = None
     if _sig is not None:
@@ -180,13 +218,13 @@ def _call(inp, inputs):
             if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
         )
         if _np <= 1:
-            return _pb.%s(inp) if _np else _pb.%s()
-        return _pb.%s(inp, *inputs[1:_np])
+            return _FN(inp) if _np else _FN()
+        return _FN(inp, *inputs[1:_np])
     try:
-        return _pb.%s(inp)
+        return _FN(inp)
     except TypeError:
-        return _pb.%s()
-''' % (py_fn, py_fn, py_fn, py_fn, py_fn, py_fn)
+        return _FN()
+''' % (py_fn, py_fn, py_fn)
 
     template = f'''"""twin for {py_module}:{py_fn}{" (class " + parent_class + ")" if parent_class else ""}."""
 import os, sys, importlib.util as ilu
@@ -206,7 +244,7 @@ _spec.loader.exec_module(_pb)
 
 {setup_str}{helper}
 def trace(inp, inputs):
-    c = Cup("{py_fn}")
+    c = Cup("{cup_name}")
     try:
         {call_str}
         c.valstr({enc})
@@ -219,6 +257,127 @@ def run(inputs):
     return [trace(inp, inputs) for inp in inputs]
 '''
     return template
+
+
+def generate_inputs_for_signature(py_fn):
+    """Pick fixture values that match the function's first parameter type.
+
+    One generic string walk was used for every gate. A function whose first
+    parameter is an int (e.g. _bytes_to_tokens(n: int)) raises ValueError on
+    "hello", so the twin folds every input to the same ERROR cup — a constant
+    that can never match a varying C cup, and never measures the port. Emit
+    typed fixtures instead so the walk actually exercises the logic.
+    """
+    import importlib
+    mod = None
+    # _pb is not available here; the caller passes only the fn name, so infer
+    # from the annotation on the LIVE module when importable.
+    return None
+
+
+def _typed_inputs(annotation):
+    """Fixture walk for a parameter annotation string."""
+    a = (annotation or "").lower()
+    if "int" in a and "point" not in a:
+        return [0, 1, 42, 1024, -7]
+    if "float" in a or "double" in a:
+        return [0.0, 1.5, 3.14159, 1024.0, -2.5]
+    if "bool" in a:
+        return [True, False]
+    if "list" in a or "sequence" in a or "tuple" in a:
+        return [[], [1, 2, 3]]
+    if "dict" in a or "mapping" in a:
+        return [{}, {"a": 1}]
+    return ["hello", "world", "", "test123", "NULL"]
+
+
+def _resolve_callable(mod, py_fn):
+    """Find the LIVE callable for py_fn: module-level, else a method on any
+    class in the module. Many ported helpers are class methods
+    (BrowserProvider.display_name); getattr(mod, fn) returns None for those
+    and the twin folds every input to ERROR:AttributeError."""
+    fn = getattr(mod, py_fn, None)
+    if fn is not None:
+        return fn
+    import inspect as _insp
+    for _name, obj in vars(mod).items():
+        if inspect_is_class(obj) and hasattr(obj, py_fn):
+            m = getattr(obj, py_fn)
+            if callable(m):
+                return _UnboundMethod(m)
+    return None
+
+
+def inspect_is_class(obj):
+    import inspect
+    return inspect.isclass(obj)
+
+
+class _UnboundMethod:
+    """Wraps a class method so it can be called without an instance.
+
+    Binds `self` to a dummy: methods that only use other params (pure
+    formatting/validation) work; ones that read real instance state raise
+    and are reported as an ERROR cup — honest, not a false MATCH.
+    """
+
+    def __init__(self, func):
+        self._func = func
+
+    def __call__(self, *args, **kwargs):
+        import inspect
+        try:
+            sig = inspect.signature(self._func)
+            if 'self' in sig.parameters:
+                return self._func(_DummySelf(), *args, **kwargs)
+        except Exception:
+            pass
+        return self._func(*args, **kwargs)
+
+
+class _DummySelf:
+    """Permissive stand-in for `self` — returns a new _DummySelf for any
+    attribute so pure methods run, and record access is visible."""
+
+    def __getattr__(self, name):
+        return _DummySelf()
+
+    def __call__(self, *a, **k):
+        return _DummySelf()
+
+
+def _fixtures_for(py_module, py_fn):
+    """Typed fixture walk for a LIVE function, from its first parameter's
+    annotation. Falls back to the generic string walk when the module cannot
+    be imported or the parameter is unannotated."""
+    import os as _os
+    import sys as _sys
+    import importlib.util as _ilu
+    # This file lives at <repo>/scripts/, and the LIVE Python tree is the
+    # parent repo: <dev>/agent/... So dev is THREE levels up, not four.
+    dev = _os.path.dirname(_os.path.dirname(_os.path.dirname(
+        _os.path.abspath(__file__))))
+    path = _os.path.join(dev, py_module)
+    if not _os.path.isfile(path):
+        return _typed_inputs(None)
+    try:
+        if dev not in _sys.path:
+            _sys.path.insert(0, dev)
+        spec = _ilu.spec_from_file_location(
+            "wc_fix_" + py_module.replace("/", "_").replace(".", "_"), path)
+        mod = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        fn = _resolve_callable(mod, py_fn)
+        if fn is None:
+            return _typed_inputs(None)
+        import inspect as _insp
+        sig = _insp.signature(fn)
+        for p in sig.parameters.values():
+            if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD):
+                return _typed_inputs(str(p.annotation))
+        return _typed_inputs(None)
+    except Exception:
+        return _typed_inputs(None)
 
 
 def generate_gate_json(gate_name, classification, py_module, py_fn, inputs, c_file=None):
@@ -318,7 +477,7 @@ def generate_missing_gates(limit=0):
             try:
                 os.makedirs(gdir, exist_ok=True)
 
-                inputs = ["hello", "world", "", "test123", "NULL"]
+                inputs = _fixtures_for(py_module, py_fn)
 
                 if classification == "PORTED":
                     # Ported function — find C port and generate real harness
