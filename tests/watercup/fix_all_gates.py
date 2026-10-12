@@ -130,14 +130,18 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # silently wrong if it weren't).
     numeric = category in ('int_int', 'bool_int', 'int_other', 'bool_other',
                            'long_simple', 'sizet_simple', 'double_simple')
-    # Emit the EXPRESSION "i + j" (modulo the walk length) — `i` is the C loop
-    # variable inside the generated harness, not a Python name.
+    # Emit the EXPRESSION for parameter j's argument. `i` is the C loop
+    # variable over the INPUT range (argv[2] .. argv[argc-1]); parameters
+    # beyond the first take the following walk positions, WRAPPING INSIDE the
+    # input range. The wrap must be relative to the input base (argv[2]), not
+    # absolute argv: `(i + j) % n` on an absolute i walks off the inputs and
+    # reads argv[0]/argv[1] (program name, gate name) as data.
     n_avail = len(inputs_walk) if inputs_walk else 1
 
     def _arg(j):
-        if n_avail <= 1:
+        if n_avail <= 1 or j == 0:
             return 'argv[i]'
-        return 'argv[(i + %d) %% %d]' % (j, n_avail)
+        return 'argv[2 + (i - 2 + %d) %% %d]' % (j, n_avail)
 
     if noargs:
         call_args = ''

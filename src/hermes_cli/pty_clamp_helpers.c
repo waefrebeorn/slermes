@@ -19,12 +19,21 @@
 
 static const int PTY_MIN_DIMENSION = 1;
 
-/* Python int(value) with TypeError/ValueError/OverflowError -> min.
- * C: parse integer; on any failure return min. */
-static int parse_dim(int value, int maximum) {
-    (void)maximum;
+/* Faithful mirror of hermes_cli/win_pty_bridge.py:_clamp:
+ *
+ *     n = int(value)            # -> _MIN_DIMENSION on failure
+ *     if n < _MIN_DIMENSION: return _MIN_DIMENSION
+ *     if n > maximum:          return maximum
+ *     return n
+ *
+ * The min-floor returns IMMEDIATELY when the raw value is below it — it must
+ * not be folded into n and then re-tested against maximum. Folding it makes
+ * clamp(-7, 0) reach `n > maximum` (1 > 0) and return 0, where Python returns
+ * 1 because its `if n < _MIN_DIMENSION: return _MIN_DIMENSION` fires first. */
+static int clamp_dim(int value, int maximum) {
     if (value < PTY_MIN_DIMENSION) return PTY_MIN_DIMENSION;
-    return value; /* caller bounds against maximum */
+    if (value > maximum) return maximum;
+    return value;
 }
 
 /* PoP: pty_clamp_dimension @ hermes_cli/pty_bridge.py:_clamp_dimension */
@@ -32,17 +41,11 @@ int pty_clamp_dimension(int value, int maximum) {
     /* Python int(value) raises on bool? No — int(bool) works; on non-numeric
      * str raises ValueError. Here value is already an int (the bridge passes an
      * int after probing). Mirror int()'s bounds + clamp. */
-    int n = parse_dim(value, maximum);
-    if (n < PTY_MIN_DIMENSION) return PTY_MIN_DIMENSION;
-    if (n > maximum) return maximum;
-    return n;
+    return clamp_dim(value, maximum);
 }
 
 /* PoP: pty_win_clamp @ hermes_cli/win_pty_bridge.py:_clamp */
 /* PoP: pty_win_clamp @ hermes_cli/journey.py:_clamp */
 int pty_win_clamp(int value, int maximum) {
-    int n = parse_dim(value, maximum);
-    if (n < PTY_MIN_DIMENSION) return PTY_MIN_DIMENSION;
-    if (n > maximum) return maximum;
-    return n;
+    return clamp_dim(value, maximum);
 }

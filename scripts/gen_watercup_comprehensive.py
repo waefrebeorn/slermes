@@ -202,14 +202,13 @@ class _DummySelf:
 _FN = _resolve_fn()
 
 
-def _call(inp, inputs):
+def _call(inp, inputs, idx=0):
     """Call the LIVE twin with as many inputs as its signature accepts.
 
-    The FIRST positional parameter receives the current input from the walk
-    (so the cup varies across the stream); any further parameters are filled
-    from the remaining walk positions. Passing inputs[:_np] instead would
-    pin every call to inputs[0] and collapse the cup to one constant value
-    for the whole stream.
+    Parameter 0 receives the current input (inp). Parameter j>0 receives the
+    walk position idx+j (wrapping) — the SAME position the C harness feeds it
+    via argv[2 + (i - 2 + j) %% n]. Using a fixed position for j>0 made a
+    2-arg function compute f(x, inputs[1]) on every step, collapsing the cup.
     """
     import inspect as _insp
     try:
@@ -223,7 +222,8 @@ def _call(inp, inputs):
         )
         if _np <= 1:
             return _FN(inp) if _np else _FN()
-        return _FN(inp, *inputs[1:_np])
+        n = len(inputs)
+        return _FN(inp, *[inputs[(idx + j) %% n] for j in range(1, _np)])
     try:
         return _FN(inp)
     except TypeError:
@@ -247,10 +247,10 @@ sys.modules["wc_live_{mod_under}"] = _pb
 _spec.loader.exec_module(_pb)
 
 {setup_str}{helper}
-def trace(inp, inputs):
+def trace(inp, inputs, idx=0):
     c = Cup("{cup_name}")
     try:
-        {call_str}
+        result = _call(inp, inputs, idx)
         c.valstr({enc})
     except Exception as e:
         c.valstr(f"ERROR:{{type(e).__name__}}")
@@ -258,7 +258,7 @@ def trace(inp, inputs):
 
 
 def run(inputs):
-    return [trace(inp, inputs) for inp in inputs]
+    return [trace(inp, inputs, i) for i, inp in enumerate(inputs)]
 '''
     return template
 
