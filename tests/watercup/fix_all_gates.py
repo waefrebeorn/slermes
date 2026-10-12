@@ -271,6 +271,11 @@ def resolve_deps(c_file, c_fn, seen=None, max_depth=1):
     # extern declarations of functions NOT defined in this file. These can sit
     # at file scope OR inside a function body (the common idiom for a
     # cross-unit call in this codebase), so scan the whole text.
+    #
+    # Deliberately extern-only: widening this to every called identifier is
+    # correct in principle but O(gates x tree-walk) and does not finish. A
+    # symbol called without an extern shows up as an undefined reference at
+    # link time; those gates are labelled BUILD FAIL, which is honest.
     for m in re.finditer(r'extern\s+[\w\s\*]+?(\w+)\s*\([^;{]*\)\s*;', src):
         name = m.group(1)
         # A definition has a body: "<ret> name(...) {". A bare occurrence is

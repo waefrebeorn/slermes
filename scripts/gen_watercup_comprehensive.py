@@ -288,10 +288,10 @@ def _typed_inputs(annotation):
         return [0.0, 1.5, 3.14159, 1024.0, -2.5]
     if "bool" in a:
         return [True, False]
-    if "list" in a or "sequence" in a or "tuple" in a:
-        return [[], [1, 2, 3]]
-    if "dict" in a or "mapping" in a:
-        return [{}, {"a": 1}]
+    # Containers cannot cross the argv boundary: run_harness passes
+    # str(input), so a dict fixture arrives at BOTH sides as the literal
+    # string "{'a': 1}" and the twin raises AttributeError on .get(). Fall
+    # back to the scalar walk rather than emit an unusable fixture.
     return ["hello", "world", "", "test123", "NULL"]
 
 
