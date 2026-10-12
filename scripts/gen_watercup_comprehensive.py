@@ -107,9 +107,32 @@ int main(int argc, char **argv) {{
 """
 
 
-def generate_twin(py_module, py_fn, parent_class=""):
-    """Generate twin.py for a function."""
+def generate_twin(py_module, py_fn, parent_class="", c_ret=None):
+    """Generate twin.py for a function.
+
+    c_ret is the C return type of the ported function ("int", "bool",
+    "charptr", "void", "double", "long", "size_t"). The twin must emit the
+    SAME canonical string the C harness feeds WCUP_VALSTR, or every cup
+    mismatches for encoding reasons rather than logic ones. When unknown,
+    fall back to str().
+    """
     mod_under = py_module.replace('/', '_').replace('.', '_').replace('-', '_')
+
+    # Canonical encoding mirroring fix_all_gates.generate_port_harness.
+    if c_ret == 'int':
+        enc = 'str(int(result)) if isinstance(result, bool) is False and result is not None and not isinstance(result, str) else str(result)'
+    elif c_ret == 'bool':
+        enc = '"true" if result else "false"'
+    elif c_ret == 'charptr':
+        enc = 'result if isinstance(result, str) else ("" if result is None else str(result))'
+    elif c_ret == 'void':
+        enc = '"void"'
+    elif c_ret == 'double':
+        enc = '"%.17g" % float(result)'
+    elif c_ret in ('long', 'size_t'):
+        enc = 'str(int(result))'
+    else:
+        enc = 'str(result)'
 
     # Build the call code as a string, then interpolate into the template
     if parent_class:
@@ -130,7 +153,40 @@ def generate_twin(py_module, py_fn, parent_class=""):
         call_str = '\n'.join(call_lines)
     else:
         setup_str = ''
-        call_str = f'result = _pb.{py_fn}(inp)'
+        # Arity is introspected at trace time rather than assuming one
+        # positional arg: a zero-arg or multi-arg function raises TypeError on
+        # every input, so the twin cup collapses to a constant ERROR and the
+        # gate measures nothing.
+        call_str = 'result = _call(inp, inputs)'
+
+    helper = '''
+def _call(inp, inputs):
+    """Call the LIVE twin with as many inputs as its signature accepts.
+
+    The FIRST positional parameter receives the current input from the walk
+    (so the cup varies across the stream); any further parameters are filled
+    from the remaining walk positions. Passing inputs[:_np] instead would
+    pin every call to inputs[0] and collapse the cup to one constant value
+    for the whole stream.
+    """
+    import inspect as _insp
+    try:
+        _sig = _insp.signature(_pb.%s)
+    except Exception:
+        _sig = None
+    if _sig is not None:
+        _np = sum(
+            1 for p in _sig.parameters.values()
+            if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
+        )
+        if _np <= 1:
+            return _pb.%s(inp) if _np else _pb.%s()
+        return _pb.%s(inp, *inputs[1:_np])
+    try:
+        return _pb.%s(inp)
+    except TypeError:
+        return _pb.%s()
+''' % (py_fn, py_fn, py_fn, py_fn, py_fn, py_fn)
 
     template = f'''"""twin for {py_module}:{py_fn}{" (class " + parent_class + ")" if parent_class else ""}."""
 import os, sys, importlib.util as ilu
@@ -148,19 +204,19 @@ _pb = ilu.module_from_spec(_spec)
 sys.modules["wc_live_{mod_under}"] = _pb
 _spec.loader.exec_module(_pb)
 
-{setup_str}
-def trace(inp):
+{setup_str}{helper}
+def trace(inp, inputs):
     c = Cup("{py_fn}")
     try:
         {call_str}
-        c.valstr(str(result))
+        c.valstr({enc})
     except Exception as e:
         c.valstr(f"ERROR:{{type(e).__name__}}")
     return c.finalize()
 
 
 def run(inputs):
-    return [trace(inp) for inp in inputs]
+    return [trace(inp, inputs) for inp in inputs]
 '''
     return template
 

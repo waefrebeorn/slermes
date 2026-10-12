@@ -26,14 +26,32 @@ from pathlib import Path
 
 os.environ["WATERCUP_NO_BROWSER"] = "1"
 
-# Install browser guard to block all browser-spawn paths during watercup.
+# Install browser guard + comprehensive interactive-flow guard BEFORE any LIVE
+# module imports. This patches all browser-spawn paths, hermes CLI entry
+# points, and web-research tool flows so watercup can never launch a real
+# browser, spawn a child process, or touch a live, interactive hermes CLI.
 import browser_guard  # noqa: F401
+try:
+    import watercup_guard  # noqa: F401
+    watercup_guard.install()
+except Exception:
+    pass
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 GATES = os.path.join(HERE, "gates")
 BUILD = os.path.join(HERE, "build")
 RESULT_FILE = os.path.join(BUILD, "results.jsonl")
+
+# Operator-state isolation — see the long note in wc_run.py. Must happen here
+# too: this runner imports wc_run inside ProcessPoolExecutor workers, and a
+# worker inheriting the real HERMES_HOME would let an estop gate engage the
+# operator's actual pause sentinel.
+_WC_SANDBOX_HOME = os.path.join(BUILD, "home_watercup")
+if not os.environ.get("WATERCUP_REAL_HERMES_HOME"):
+    os.makedirs(_WC_SANDBOX_HOME, exist_ok=True)
+    os.environ["SLERMES_HOME"] = _WC_SANDBOX_HOME
+    os.environ["HERMES_HOME"] = _WC_SANDBOX_HOME
 
 
 def discover_gates():
@@ -74,39 +92,112 @@ def run_single_gate(gate_name):
         result["lines"] = lines
     except Exception as e:
         result["error"] = str(e)
+    except SystemExit as e:
+        # Same backstop as wc_run.main(): a SystemExit escaping anywhere in the
+        # per-gate work would otherwise kill the worker and surface as an
+        # unattributed pool error. SystemExit only — KeyboardInterrupt must
+        # still propagate so Ctrl+C reaches the pool.
+        result["error"] = "SystemExit(%s)" % (e.code,)
 
     return result
 
 
 def run_parallel(selected, max_workers=None):
-    """Run gates in parallel using ProcessPoolExecutor."""
+    """Run gates in parallel using ProcessPoolExecutor.
+
+    Per-gate timeout (WATERCUP_GATE_TIMEOUT, default 120s) bounds the REPORT:
+    a gate that hangs is recorded as a timeout instead of blocking the run
+    forever. Generous enough for a cold compile of the largest harnesses
+    (~350KB of C), tight enough that a wedged gate surfaces in minutes.
+
+    LIMITATION, stated plainly: a worker blocked inside a C call cannot be
+    killed from Python. `future.cancel()` is a no-op once the worker has
+    picked the gate up, so a truly wedged worker keeps running until the
+    process exits — it just stops blocking the report. A hard guarantee needs
+    per-gate subprocess isolation (like run_unit_gate already does for its
+    twin), which costs a process spawn per gate and is not worth it for a
+    fleet that is ~0.1s/gate when healthy.
+    """
     if max_workers is None:
         max_workers = min(os.cpu_count() or 4, 16)
+
+    try:
+        per_gate_timeout = float(os.environ.get("WATERCUP_GATE_TIMEOUT", "120"))
+    except ValueError:
+        per_gate_timeout = 120.0
 
     results = []
     total = len(selected)
     done = 0
     start = time.time()
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
-        future_to_gate = {executor.submit(run_single_gate, name): name for name in selected}
+    # Managed manually rather than via `with`: the context manager calls
+    # shutdown(wait=True) on exit, which blocks until every in-flight gate
+    # finishes. A wedged worker would then hold the run for its full duration
+    # (measured: 66s for 4 gates on 2 workers with a 3s timeout) even though
+    # the report is already complete. Shutdown explicitly instead.
+    executor = concurrent.futures.ProcessPoolExecutor(max_workers=max_workers)
+    abandoned = False
+    try:
+        # Bounded submission: submitting all 22k futures up front queues them
+        # all in memory. Keep a window of ~4x workers in flight instead.
+        window = max_workers * 4
+        pending = {}
+        it = iter(selected)
 
-        for future in concurrent.futures.as_completed(future_to_gate):
-            name = future_to_gate[future]
-            try:
-                entry = future.result()
-                results.append(entry)
-            except Exception as e:
-                results.append({"gate": name, "ok": False, "error": str(e)})
+        def _submit_more():
+            while len(pending) < window:
+                try:
+                    name = next(it)
+                except StopIteration:
+                    return
+                pending[executor.submit(run_single_gate, name)] = name
 
-            done += 1
-            if done % 1000 == 0 or done == total:
-                elapsed = time.time() - start
-                rate = done / elapsed if elapsed > 0 else 0
-                print(f"  progress: {done}/{total} gates ({100*done/total:.0f}%, {rate:.0f} gates/s)", file=sys.stderr)
+        _submit_more()
+        while pending:
+            # Wait for the earliest-finishing future, bounded per gate.
+            finished, _ = concurrent.futures.wait(
+                pending, timeout=per_gate_timeout,
+                return_when=concurrent.futures.FIRST_COMPLETED)
+
+            if not finished:
+                # Nothing completed inside the window: every in-flight gate is
+                # wedged. Record them, drop the queued ones, stop waiting.
+                wedged = len(pending)
+                for fut, name in list(pending.items()):
+                    results.append({
+                        "gate": name, "ok": False,
+                        "error": "TIMEOUT after %.0fs (worker wedged)" % per_gate_timeout,
+                    })
+                    fut.cancel()
+                    done += 1
+                pending.clear()
+                abandoned = True
+                print("  WARNING: %d gate(s) timed out; abandoning them" % wedged,
+                      file=sys.stderr)
+                break
+
+            for fut in finished:
+                name = pending.pop(fut)
+                try:
+                    results.append(fut.result())
+                except Exception as e:
+                    results.append({"gate": name, "ok": False, "error": str(e)})
+                done += 1
+                if done % 1000 == 0 or done == total:
+                    elapsed = time.time() - start
+                    rate = done / elapsed if elapsed > 0 else 0
+                    print(f"  progress: {done}/{total} gates ({100*done/total:.0f}%, {rate:.0f} gates/s)", file=sys.stderr)
+            _submit_more()
+    finally:
+        # wait=False: do not block on wedged workers. cancel_futures drops
+        # anything still queued. Workers blocked in a C call cannot be killed
+        # from Python, so they die with the process.
+        executor.shutdown(wait=not abandoned, cancel_futures=abandoned)
 
     elapsed = time.time() - start
-    print(f"  completed {total} gates in {elapsed:.1f}s ({total/elapsed:.0f} gates/s)", file=sys.stderr)
+    rate = (len(results) / elapsed) if elapsed > 0 else 0
+    print(f"  completed {len(results)} gates in {elapsed:.1f}s ({rate:.0f} gates/s)", file=sys.stderr)
     return results
 
 
@@ -125,6 +216,19 @@ def main():
     all_gates = discover_gates()
     selected = args.gates if args.gates else all_gates
 
+    # Reject unknown gate names BEFORE the empty-selection guard. Otherwise a
+    # typo'd name survives into `selected`, the guard never fires, and the bogus
+    # gate is executed and reported as an ordinary failing gate (exit 1) —
+    # indistinguishable from a real divergence.
+    if args.gates:
+        unknown = [g for g in args.gates if g not in set(all_gates)]
+        if unknown:
+            print("ERROR: unknown gate name(s): %s" % ", ".join(unknown[:10]),
+                  file=sys.stderr)
+            print("  run --list via wc_run.py to see valid names", file=sys.stderr)
+            return 2
+        selected = [g for g in selected if g in set(all_gates)]
+
     if args.gap_only:
         selected = [g for g in selected if g.startswith("real__")]
     elif args.port_only:
@@ -133,14 +237,42 @@ def main():
         selected = [g for g in selected if not g.startswith(("port__", "real__", "part__"))]
 
     if not selected:
-        print("No gates selected.", file=sys.stderr)
-        return 0
+        # FAIL-OPEN BUG (fixed): this used to `return 0` — success. A typo'd gate
+        # name, or --port-only over a list with no port__ gates, silently
+        # "passed" the parity gate and CI went green having verified nothing.
+        # An empty selection is an error, not a pass.
+        print("ERROR: no gates selected.", file=sys.stderr)
+        if args.gates:
+            unknown = [g for g in args.gates if g not in all_gates]
+            if unknown:
+                print("  unknown gate name(s): %s" % ", ".join(unknown[:10]),
+                      file=sys.stderr)
+        if args.gap_only or args.port_only or args.legacy_only:
+            print("  the %s filter matched none of the %d candidate gate(s)"
+                  % (("--gap-only" if args.gap_only else
+                      "--port-only" if args.port_only else "--legacy-only"),
+                     len(args.gates) if args.gates else len(all_gates)),
+                  file=sys.stderr)
+        print("  check the name/filter combination, or run --list via wc_run.py",
+              file=sys.stderr)
+        return 2
 
     if args.dry_run:
         print(f"Would run {len(selected)} gates")
         for g in selected[:10]:
             print(f"  {g}")
         return 0
+
+    # Same interpreter check wc_run.main() does. Without it this runner emits
+    # the cryptic per-gate "No module named 'yaml'" instead of one clear error.
+    try:
+        import wc_run as _wc_run
+        _wc_run._check_interpreter_deps()
+    except RuntimeError as e:
+        print(str(e), file=sys.stderr)
+        return 2
+    except ImportError:
+        pass  # wc_run not importable yet; run_single_gate will report it
 
     if not args.json:
         print(f"=== Parallel Water-Cup Runner ===")
