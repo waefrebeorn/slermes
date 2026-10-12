@@ -6,11 +6,11 @@
 |  └ Genuine gaps | 11,704 |
 | PARTIAL | 38 (0.2%) |
 | BOOTLEG | 0 |
-| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v672):** PORT phase
+| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v673):** PORT phase
 
-**Upstream sync:** 2,081 ahead / 0 behind (last merge 2026-10-03 (upstream fetched))
+**Upstream sync:** 2,082 ahead / 1,056 behind (last merge 2026-10-06 (upstream fetched))
 
-_Generated 2026-10-06T02:44:06Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-10-07T05:29:39Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  
 > The real work of making Slermes *the* C11 AI agent starts here.

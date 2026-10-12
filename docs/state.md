@@ -1,65 +1,62 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 6,466 / 18,219 (35.5%) |
+<!-- PARITY:AUTO -->| PORTED  | 6,466 / 18,219 (35.5%) |
 | REAL_GAP| 11,715 (64.3%) — no N/A |
 |  ├ DA-4 stubs | 11 |
 |  └ Genuine gaps | 11,704 |
 | PARTIAL | 38 (0.2%) |
 | BOOTLEG | 0 |
-| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
-**Phase (v672):** PORT phase
+| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v673):** PORT phase
 
-**Upstream sync:** 2,072 ahead / 2,649 behind (last merge 2026-09-15 (upstream fetched))
+**Upstream sync:** 2,082 ahead / 1,056 behind (last merge 2026-10-06 (upstream fetched))
 
-_Generated 2026-09-15T06:45:17Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-10-07T05:29:39Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Slermes Parity — Sync Checkpoint (v668)
+# Slermes Parity — Sync Checkpoint ()
 
-**Date:** 2026-08-04 · **Phase:** PORT (auto-flipped — new quarry to port)
+**Date:**  · **Phase:** PORT (auto-flipped — new quarry to port)
 
-## v668 Upstream Sync (stash→pull→fix→pop, executed 2026-08-04)
+##  Upstream Sync (stash→pull→fix→pop, executed )
 
 - **Python quarry:** merged 3,401 upstream commits (`ff2fcaba17`) — parent
   behind=0, ahead=526; slermes upstream ref: **1,201 ahead / 1,115 behind**
-- **Quarry growth:** 12,274 → **14,045 features** (+1,771 Python to port)
+- **Quarry growth:**  → **14,045 features** (+1,771 Python to port)
 - **Parity re-scan:** 12,085 PORTED (86.0%) · 1,958 REAL_GAP · 2 PARTIAL ·
-  7 BOOTLEG — the REAL_GAP rise is the honest new-quarry delta
+   — the REAL_GAP rise is the honest new-quarry delta
 - **Build:** `make slermes` = 0 errors
 - Live counts + sync numbers are machine-owned (sentinel blocks, `make
   parity-walkway`); full history below is legacy context.
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v621)
+# Slermes Parity — Vault Checkpoint ()
 
-**Date:** 2026-07-23
+**Date:** 
 **Branch:** main (recovery push target = origin/main, force-with-lease)
-**Session:** v621 recovery — crashed-session salvage + history renumber
+**Session:**  recovery — crashed-session salvage + history renumber
 
 ## What this session recovered
 The prior auto-pilot session crashed AFTER committing real work but BEFORE it
-could (a) renumber 49 placeholder `vXXX`/`v572` commit messages, (b) refresh
-BANNER/STATE/parity-summary, and (c) push. HEAD (v621) was left unpushed with
+could (a) renumber 49 placeholder `vXXX`/`` commit messages, (b) refresh
+BANNER/STATE/parity-summary, and (c) push. HEAD () was left unpushed with
 `vXXX` labels. This session:
 - Restored byte-identical history via `git filter-repo` `--commit-callback`
   (matched on message text, since `commit.id` is an internal mark), renumbering
-  the 49 mislabeled commits to **v573..v621** (monotonic, descriptive
+  the 49 mislabeled commits to **..** (monotonic, descriptive
   intermediate commits like `port_web_server_auth:` / `pop annotations:` kept).
 - Confirmed the prior 40 of those 49 were already byte-pushed to origin/main
-  (just without version labels); only **14** commits (v608..v621) were genuinely
+  (just without version labels); only **14** commits (..) were genuinely
   unpushed.
 - Verified: `make slermes` clean, `run_mission8_tests.sh` 36/0/35, live parity
   scan matches the renumbered history.
 
-## Live Scanner (end v621)
-| Metric | Value | Δ vs v607 (old origin/main) |
+## Live Scanner (end )
+| Metric | Value | Δ vs  (old origin/main) |
 |--------|-------|------------------------------|
 | PORTED | 6,434 (66.1%) | +77 |
 | REAL_GAP | 3,299 (33.9%) | −77 |
 | PARTIAL | 0 (0.0%) | 0 |
 | TOTAL | 9,733 | — |
 
-## v608..v621 Commits (14 local, oracle-verified REAL_GAP closures)
+## .. Commits (14 local, oracle-verified REAL_GAP closures)
 | Module | Functions | Effect |
 |--------|-----------|--------|
 | model_normalize + skill_provenance | 2 | RG −2 |
@@ -83,21 +80,21 @@ commits were re-hashed (message-only rename, tree identical).
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v542)
+# Slermes Parity — Vault Checkpoint ()
 
-**Date:** 2026-07-07
+**Date:** 
 **Branch:** main (pushed to origin/main)
-**Session:** v542 auto-pilot (continuation of v541)
+**Session:**  auto-pilot (continuation of )
 
-## Live Scanner (end v542)
-| Metric | Value | Δ vs v541 |
+## Live Scanner (end )
+| Metric | Value | Δ vs  |
 |--------|-------|-----------|
 | PORTED | 4,970 (51.1%) | +13 |
 | REAL_GAP | 4,716 (48.5%) | −10 |
 | PARTIAL | 45 (0.5%) | −3 |
 | TOTAL | 9,731 | — |
 
-## v542 Commits (pushed)
+##  Commits (pushed)
 | Hash | Module | Functions | Effect |
 |------|--------|-----------|--------|
 | 8e8a6581aa | tools/computer_use/cua_backend.py | 3 | 32→35 ported (RG −3) |
@@ -121,35 +118,35 @@ Net REAL_GAP closed this session: **10** (4,726 → 4,716).
 ## Honest Reality
 - Remaining 4,716 RG are predominantly IO/network/DB/credential-coupled functions
   in gateway/, cli.py surface, agent/process_bootstrap, tools/* cloud tools.
-  These are GENUINE REAL_GAPs per v541 doctrine — must NOT be faked.
-- The high-density PURE-helper modules are largely tapped. v543 must cherry-pick
+  These are GENUINE REAL_GAPs per  doctrine — must NOT be faked.
+- The high-density PURE-helper modules are largely tapped.  must cherry-pick
   remaining pure survivors (models.py, approval.py shell parsers, config.py).
 - Do NOT force-fiction to hit a count. Stop at the honest number if pure supply
   is exhausted.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v543→v544, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v543)
+# Slermes Parity — Vault Checkpoint ()
 
-**Date:** 2026-07-08
+**Date:** 
 **Branch:** main (pushed to origin/main)
-**Session:** v543 auto-pilot
+**Session:**  auto-pilot
 
-## Live Scanner (end v544)
-| Metric | Value | Δ vs v543 |
+## Live Scanner (end )
+| Metric | Value | Δ vs  |
 |--------|-------|-----------|
 | PORTED | 4,977 (51.1%) | +13 |
-| REAL_GAP | 4,709 (48.4%) | −13 |
+| REAL_GAP |  (48.4%) | −13 |
 | PARTIAL | 45 (0.5%) | 0 |
 | TOTAL | 9,731 | — |
 
-> **Why REAL_GAP went DOWN 13 (genuine):** v544 extended existing `*_helpers.c`
+> **Why REAL_GAP went DOWN 13 (genuine):**  extended existing `*_helpers.c`
 > files with oracle-verified leaf ports — no new parallel files, no false
 > cross-credits:
-> - `port_learning_graph_render_helpers.c` (+11 total: v543's 6 + 5 new leaves
+> - `port_learning_graph_render_helpers.c` (+11 total: 's 6 + 5 new leaves
 >   `_to_ts`, `_period_key`, `_period_label`, `_node_score`, `_node_meta`).
 > - `port_gateway_response_filters.c` (+1 `is_partial_silence_marker`) AND a
 >   marker-set fix so the already-credited `is_intentional_silence_response`
@@ -161,7 +158,7 @@ Net REAL_GAP closed this session: **10** (4,726 → 4,716).
 >   byte-equal to LIVE Python for both text and style strings).
 > Every port verified byte-equivalent to LIVE Python via a harness + oracle.
 
-## v544 Genuine Commits (pushed)
+##  Genuine Commits (pushed)
 | Hash | File | Functions | Effect |
 |------|------|-----------|--------|
 | 37aeaac720 | port_learning_graph_render_helpers.c | 6 | `_clamp`, `_smoothstep`, `_rgb_to_hsl`, `_hsl_to_rgb`, `_complementary_ink` (exposed faithful statics), `format_date` (new) → PORTED |
@@ -178,28 +175,28 @@ LIVE Python via oracle harnesses).
 ## Faithfulness Method (replicated + hardened)
 - Read Python ±20 lines; confirm NO import-time IO/network/module-load deps.
 - Real C11 + single-line `/* PoP: c_func @ module.py:_py_func */` (verified detected).
-- Register `.o` in build/objects.mk (CLI_OBJ) — already present from v543.
+- Register `.o` in build/objects.mk (CLI_OBJ) — already present from .
 - `make slermes` 0 errors; standalone harness asserts C output == LIVE Python
   (import the real `.py`, recompute, exact-compare) for normal + boundary inputs.
 - `bash tests/run_mission8_tests.sh` → 36 passed, 35 skipped.
-- **NEW lesson (v544):** before porting, re-read the existing `*_helpers.c` for
+- **NEW lesson ():** before porting, re-read the existing `*_helpers.c` for
   the module — faithful logic may already exist as private statics. Exposing
   those with a PoP annotation is a genuine closure (the scanner credits the PoP,
   not the static) and costs zero new files. The "extend, don't duplicate" + "no
   speculative infrastructure" rules from AGENTS.md are exactly this.
-- **NEW lesson (v544):** a CREDITED port that diverges from LIVE Python is still a
+- **NEW lesson ():** a CREDITED port that diverges from LIVE Python is still a
   façade. While porting `response_filters` I found the existing
   `SILENT_MARKERS[]` had 7 entries vs Python's 4 — fixing it was mandatory, not
   optional, to honor the no-fabrication edict.
-- **NEW lesson (v544):** PCRE2 is required for faithful `re` ports (lookbehind/
+- **NEW lesson ():** PCRE2 is required for faithful `re` ports (lookbehind/
   lookahead/`*?` lazy). The project's `hermes_regex` is POSIX-ERE only and would
   silently diverge — do NOT use it for `re` semantics. `-lpcre2-8` is now a
   project link dependency.
 
 ## Honest Reality
-- Remaining 4,709 RG are predominantly IO/network/DB/credential-coupled functions
+- Remaining  RG are predominantly IO/network/DB/credential-coupled functions
   in gateway/, cli.py surface, agent/process_bootstrap, tools/* cloud tools.
-  GENUINE REAL_GAPs per v541 doctrine — must NOT be faked.
+  GENUINE REAL_GAPs per  doctrine — must NOT be faked.
 - `agent/learning_graph_render.py` now sits at 19/37 PORTED, 18 REAL_GAP — all
   remaining 18 are dict-in/out or graph-state functions (compute_recency,
   render_graph, render_frames, _build_chart_buckets, category_color_map, etc.)
@@ -209,29 +206,29 @@ LIVE Python via oracle harnesses).
 - The realistic pure-helper supply is EXHAUSTED: every pure-stdlib module with
   an existing helper has been tapped down to its genuine leaf functions; the
   remaining candidates are class/object/dict renderers or IO-coupled.
-- v544 stopped at the honest count per the done-when clause rather than
+-  stopped at the honest count per the done-when clause rather than
   fictioning IO/network functions.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v543→v544, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v545)
+# Slermes Parity — Vault Checkpoint ()
 
-**Date:** 2026-07-08
+**Date:** 
 **Branch:** main (to be pushed to origin/main)
-**Session:** v545 auto-pilot (resumed from v544)
+**Session:**  auto-pilot (resumed from )
 
-## Live Scanner (end v545)
-| Metric | Value | Δ vs v544 |
+## Live Scanner (end )
+| Metric | Value | Δ vs  |
 |--------|-------|-----------|
 | PORTED | 4,983 (51.2%) | +6 |
-| REAL_GAP | 4,703 (48.3%) | −6 |
+| REAL_GAP |  (48.3%) | −6 |
 | PARTIAL | 45 (0.5%) | 0 |
 | TOTAL | 9,731 | — |
 
-> **Why REAL_GAP went DOWN 6 (genuine):** v545 ran the REAL re-scan the v544
+> **Why REAL_GAP went DOWN 6 (genuine):**  ran the REAL re-scan the 
 > prompt asked for and proved the "pure supply exhausted" assumption WRONG — 69
 > single-gap pure-leaf candidates remained. Closed 6 with oracle-verified ports
 > (no dupes, no façades):
@@ -246,7 +243,7 @@ LIVE Python via oracle harnesses).
 > - `tools/fuzzy_match.py:_map_normalized_positions` (3/3 oracle).
 > Every port verified byte-equivalent to LIVE Python via harness + oracle.
 
-## v545 Genuine Commits (local, to push)
+##  Genuine Commits (local, to push)
 | File | Functions | Effect |
 |------|-----------|--------|
 | src/gateway/helpers.c + include/gateway_helpers.h + include/hermes_gateway.h | 1 | `normalise_display_value` → faithful `_normalise`; 2 callers updated |
@@ -261,7 +258,7 @@ Net genuine REAL_GAP closed this session: **6** (all verified byte-equivalent to
 LIVE Python via oracle harnesses).
 
 ## Honest Reality
-- Remaining 4,703 RG are predominantly IO/network/DB/credential-coupled
+- Remaining  RG are predominantly IO/network/DB/credential-coupled
   functions — GENUINE REAL_GAPs, must NOT be faked.
 - The pure-helper supply is NOT fully exhausted: ~63 single-gap pure-leaf
   modules remain (e.g. many `hermes_cli/subcommands/*` `build_*_parser` are
@@ -273,25 +270,25 @@ LIVE Python via oracle harnesses).
   FULLY closed (0 RG).
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v545→v546, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v546)
+# Slermes Parity — Vault Checkpoint ()
 
-**Date:** 2026-07-08
+**Date:** 
 **Branch:** main (to be pushed to origin/main)
-**Session:** v546 auto-pilot (resumed from v545)
+**Session:**  auto-pilot (resumed from )
 
-## Live Scanner (end v546)
-| Metric | Value | Δ vs v545 |
+## Live Scanner (end )
+| Metric | Value | Δ vs  |
 |--------|-------|-----------|
 | PORTED | 4,994 (51.3%) | +11 |
-| REAL_GAP | 4,692 (48.2%) | −11 |
+| REAL_GAP |  (48.2%) | −11 |
 | PARTIAL | 45 (0.5%) | 0 |
 | TOTAL | 9,731 | — |
 
-> **Why REAL_GAP went DOWN 11 (genuine):** v546 re-ran the REAL re-scan and
+> **Why REAL_GAP went DOWN 11 (genuine):**  re-ran the REAL re-scan and
 > continued pure-leaf closure, extending EXISTING port files (no parallel
 > dupes) plus one legit new file for a module with no prior port. All 11 ports
 > are oracle-verified byte-equivalent to LIVE Python (75 cases, 0 mismatches):
@@ -307,7 +304,7 @@ LIVE Python via oracle harnesses).
 > - `agent/oneshot.py`: `_strip_code_fence` (new file `port_agent_oneshot.c`;
 >   pure str fence stripper, splitlines semantics) — 9/9.
 
-## v546 Genuine Commits (local, to push)
+##  Genuine Commits (local, to push)
 | File | Functions | Effect |
 |------|-----------|--------|
 | src/cli/port_agent_error_classifier.c | 2 | `_is_openrouter_upstream_error`, `_extract_upstream_provider_name` |
@@ -327,11 +324,11 @@ to LIVE Python via harness + oracle).
 - Real C11 + single-line `/* PoP: c_func @ module.py:_py_func */` IMMEDIATELY
   preceding the function (verified credited by live re-scan each time).
 - Extend the EXISTING `port_X.c`/`port_X_helpers.c` — NEVER create a parallel
-  file for a module that already has one (rule 1). v546 touched 6 existing
+  file for a module that already has one (rule 1).  touched 6 existing
   files and added exactly 1 new file for a module (`agent/oneshot.py`) that had
   no prior port.
 - Diff every credited port against LIVE Python including exact input TYPE
-  (string vs bool) — caught `normalise_display_value` drift in v545; this
+  (string vs bool) — caught `normalise_display_value` drift in ; this
   session caught a SHA256 digest-length bug (24→12 hex chars) and a
   `splitlines()` trailing-newline bug before oracle sign-off.
 - `make slermes` 0 errors; standalone harness asserts C output == LIVE Python
@@ -340,9 +337,9 @@ to LIVE Python via harness + oracle).
 - `bash tests/run_mission8_tests.sh` → 36 passed, 35 skipped.
 
 ## Honest Reality
-- Remaining 4,692 RG are predominantly IO/network/DB/credential-coupled
+- Remaining  RG are predominantly IO/network/DB/credential-coupled
   functions — GENUINE REAL_GAPs, must NOT be faked.
-- v546 again proved the "pure supply exhausted" claim FALSE: 7 modules with
+-  again proved the "pure supply exhausted" claim FALSE: 7 modules with
   existing port files still held pure-leaf candidates; sampled the rest
   (`_is_under_root` uses `Path.resolve()`/tempfile → FS-coupled;
   `is_dead_error_kind` reads module-global set but is bound to
@@ -353,9 +350,9 @@ to LIVE Python via harness + oracle).
   `agent/display.py` (5 leaves), `tools/xai_http.py`, `agent/oneshot.py`
   (`_strip_code_fence` only — `run_oneshot`/`_render_template` remain coupled).
 
-## NEW EDICT — Façade Audit (post-session checkpoint, 2026-07-08)
+## NEW EDICT — Façade Audit (post-session checkpoint, )
 
-The user issued a hard edict (v541-flavored, escalated): **a `PoP:`-annotated
+The user issued a hard edict (-flavored, escalated): **a `PoP:`-annotated
 C port that "just exists to pass detection" is a façade and must be fixed by
 reading the Python and implementing the real behavior.** The literal
 `/* Process function call */` / `/* Apply boolean logic */` strings the user
@@ -384,16 +381,16 @@ Python function's real work. Worst stub class.
 `tools/computer_use/backend.py` (3), then singletons across gateway/agent/tools.
 
 Full itemized list: `docs/facade_audit.md`. These were bulk-credited in the
-v541/v542 era to inflate PORTED; they are NOT honest ports. The v543–v546
+/v542 era to inflate PORTED; they are NOT honest ports. The –
 leaf closures (incl. this session's 11) are genuine and oracle-verified — do
 not touch them.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v546→v547, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
-## v547 — FACADE ERADICATION (2026-07-09)
+##  — FACADE ERADICATION ()
 
-**Edict:** v546 closed with a hard user edict — a `PoP:`-annotated C port that
+**Edict:**  closed with a hard user edict — a `PoP:`-annotated C port that
 exists only to pass detection is a **FACADE** and must be destroyed. (The literal
 strings the user quoted don't exist in the tree; the edict describes the *category*:
 a `PoP:` fn whose body, after stripping comments/`hermes_log`/`(void)arg`, reduces
@@ -422,10 +419,10 @@ python-feature names now credit a *surviving* real C function rather than droppi
 **Honest-limitation façades (23) retained:** const return is truthful in C
 (SDK getter → NULL, `__enter__`/`__exit__` → 0). Not touched.
 
-**Numbers (live scanner, end v547):**
+**Numbers (live scanner, end ):**
 - PORTED 4,994 → **4,931** (−63 net; −110 façades deleted, +47 credit shifts to
   surviving siblings)
-- REAL_GAP 4,692 → **4,754** (+62)
+- REAL_GAP  → **** (+62)
 - PARTIAL 45 → 46 (+1: a formerly-façade-backed feature now surfaces a real
   unannotated C fn)
 - Build: **clean, 0 errors**. `run_mission8_tests.sh`: **36 passed / 0 failed /
@@ -442,36 +439,36 @@ python-feature names now credit a *surviving* real C function rather than droppi
 `tools/port_file_operations.c`, `tools/port_mcp_tool.c`, `tools/port_skills_hub.c`,
 `tools/port_tts_tool.c`.
 
-**Next target (v548):** the 42 thin wrappers + 37 no-return bodies flagged in the
-v546 audit deserve per-function verdicts (not blanket calls): some are honest
+**Next target ():** the 42 thin wrappers + 37 no-return bodies flagged in the
+ audit deserve per-function verdicts (not blanket calls): some are honest
 delegations to real C helpers, some are dormant REAL_GAPs. Also: the 23
 honest-limitation façades only need real semantics if a caller requires them.
-The genuine v543–v546 oracle-verified leaf closures stay untouched.
+The genuine – oracle-verified leaf closures stay untouched.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v547→v548, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v548)
+# Slermes Parity — Vault Checkpoint ()
 
-**Date:** 2026-07-09
+**Date:** 
 **Branch:** main (pushed to origin/main)
-**Session:** v548 residual-façade + no-return + thin-wrapper eradication
+**Session:**  residual-façade + no-return + thin-wrapper eradication
 
-## Live Scanner (end v548)
-| Metric | Value | Δ vs v547 |
+## Live Scanner (end )
+| Metric | Value | Δ vs  |
 |--------|-------|-----------|
-| PORTED | 4,881 (50.2%) | −50 |
-| REAL_GAP | 4,802 (49.3%) | +48 |
+| PORTED |  (50.2%) | −50 |
+| REAL_GAP |  (49.3%) | +48 |
 | PARTIAL | 48 (0.5%) | +2 |
 | TOTAL | 9,731 | — |
 | STUB | 0 | 0 |
 | N/A | 0 | 0 |
 
-## What got done (v548)
+## What got done ()
 Eradicated **95 fraudulent / dormant façades** across three buckets, all via the
-v547 edict-#2 method (read REAL Python → honest verdict → delete fake `PoP:` +
+ edict-#2 method (read REAL Python → honest verdict → delete fake `PoP:` +
 no-op/const body → honest REAL_GAP). Verified programmatically: **0 `PoP:`
 comments remain** for any eradicated name.
 
@@ -491,8 +488,8 @@ deletions were reference-checked: only UNREFERENCED functions were deleted;
 referenced callers were rewired (memory_setup dispatcher, web_tools decl) so the
 build stayed green.
 
-**Honest reality:** the v546 audit's "42 thin + 37 no-return" counts were wrong
-(mechanical pass found 54 thin + 25 no-return). v548 rebuilt the inventory from
+**Honest reality:** the  audit's "42 thin + 37 no-return" counts were wrong
+(mechanical pass found 54 thin + 25 no-return).  rebuilt the inventory from
 scratch rather than trusting the stale counts.
 
 ## Build / Test
@@ -500,7 +497,7 @@ scratch rather than trusting the stale counts.
 - `bash tests/run_mission8_tests.sh`: **36 passed / 0 failed / 35 skipped**.
 - 0 STUB, 0 N/A — every remaining gap is a genuine REAL_GAP.
 
-## Honest-limitation façades (26 total retained: v547's 23 + v548's 3)
+## Honest-limitation façades (26 total retained: 's 23 + 's 3)
 SDK-getter → NULL / `__enter__`/`__exit__` → 0 / stateless reset. Not touched.
 
 ## Files touched (23 .c files)
@@ -519,15 +516,15 @@ SDK-getter → NULL / `__enter__`/`__exit__` → 0 / stateless reset. Not touche
 `src/tools/port_web_tools.c`.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v548→v549, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v549, refactor-first)
+# Slermes Parity — Vault Checkpoint (, refactor-first)
 
-**Date:** 2026-07-09
+**Date:** 
 **Branch:** main (pushed to origin/main)
-**Session:** v549 — refactor-first: extract a self-contained module, re-implement
+**Session:**  — refactor-first: extract a self-contained module, re-implement
 the file linters faithfully (no monolith, opaque struct, C11, oracle-verified).
 
 ## New edict (this session)
@@ -538,7 +535,7 @@ has to do the intended function and can't just exist to cheat stub detection.
 To actually fix this properly, I need to go function-by-function, read the
 Python source, and implement real C."
 
-## What got done (v549)
+## What got done ()
 Refactored the file-lint concern OUT of `port_file_operations.c` (a 650+ line
 PENDING monolith with a god header) into a new **self-contained** module:
 - `src/tools/file_lint.h` — public API only, `<stdbool.h>` include, opaque
@@ -565,7 +562,7 @@ PENDING monolith with a god header) into a new **self-contained** module:
   linters and recompute the SAME functions from LIVE `tools/file_operations.py`
   over 20 fixtures (valid+invalid json/yaml/toml/python). **0 mismatches.**
 - `bash tests/run_mission8_tests.sh`: 36 passed / 0 failed / 35 skipped.
-- Scanner: PORTED 4,881 (50.2%), REAL_GAP 4,802 (49.3%), PARTIAL 48, STUB 0,
+- Scanner: PORTED  (50.2%), REAL_GAP  (49.3%), PARTIAL 48, STUB 0,
   N/A 0 — unchanged. Correct: the 4 linters are classified `NA_SDK` (Python
   infrastructure) by the scanner, so they were never in PORTED/REAL_GAP; the
   module is now genuinely implemented AND consistently `NA_SDK`.
@@ -578,17 +575,17 @@ PENDING monolith with a god header) into a new **self-contained** module:
 `BANNER.md`, `STATE.md`, `NEXT_SESSION_PROMPT.md`.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v549→v550, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
 ---
 
-# Slermes Parity — Vault Checkpoint (v550, residual façade eradication)
-**Date:** 2026-07-09
+# Slermes Parity — Vault Checkpoint (, residual façade eradication)
+**Date:** 
 **Branch:** main (pushed to origin/main)
-**Session:** v550 — continue NEW EDICT: no fake-success stubs; read Python,
+**Session:**  — continue NEW EDICT: no fake-success stubs; read Python,
 implement real C or honestly demote.
 
-## What got done (v550)
+## What got done ()
 Fixed 3 genuine façades (functions that returned plausible-looking success
 without doing the work):
 - `src/tools/port_browser_supervisor.c`:
@@ -619,7 +616,7 @@ Grepped all 233 `port_*.c` for banned phrases ("placeholder"/"not implemented"/
 "in a real implementation"/"stub"). 80 hits; MOST benign (config/template
 "placeholder" terminology, secret-value placeholder *detection*, comments about
 unrelated Python core stubs). Genuine placeholder/stub returns needing
-per-function Python adjudication (~12) catalogued in NEXT_SESSION_PROMPT (v551):
+per-function Python adjudication (~12) catalogued in NEXT_SESSION_PROMPT ():
 read_terminal_tool, main_na, agent_plugin_llm, agent_copilot_acp_client,
 managed_modal/modal_utils (exec/sandbox placeholders), video_generation,
 yuanbao, cronjob_tools (stub dispatch), kanban_tools, image_generation,
@@ -629,7 +626,7 @@ decide implement-for-real vs honest demotion.
 ## Verification
 - `make slermes`: clean, 0 errors, no implicit-declaration warnings.
 - `bash tests/run_mission8_tests.sh`: 36 passed / 0 failed / 35 skipped.
-- Scanner: PORTED 4,881 / REAL_GAP 4,802 / PARTIAL 48 / STUB 0 / N/A 0
+- Scanner: PORTED  / REAL_GAP  / PARTIAL 48 / STUB 0 / N/A 0
   unchanged (the fixed fns are infra/SDK-class, not in PORTED/REAL_GAP).
 
 ## Files touched
@@ -639,15 +636,15 @@ decide implement-for-real vs honest demotion.
 `NEXT_SESSION_PROMPT.md`, `BANNER.md`.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v550→v551, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (→, written).
 
-## v551 — Residual-Façade Adjudication + Monolith Split (2026-07-09)
+##  — Residual-Façade Adjudication + Monolith Split ()
 
 **Branch:** main (pushed to origin/main)
 **Build:** clean, 0 errors · **mission8:** 36 passed / 0 failed / 35 skipped
 **Oracle:** cron_prompt_sanitize 19/0 + file_text_ops 23/0 mismatches (C == LIVE Python)
 
-### Residual-façade backlog (the v550 ~12 candidates)
+### Residual-façade backlog (the  ~12 candidates)
 Read REAL Python for each; adjudicated. **11/12 honestly demoted** (no fake
 success — returned honest error/NULL/claimed:false), 1 retained as a genuine
 platform gap (process_registry Windows branch, honest comment). Every site now
@@ -666,7 +663,7 @@ returns honest state; 0 fake-success remain. Demotions:
   (removed façade-looking "Stub:"/"in a real implementation" wording; kept
   honest NULL/error returns explaining the missing C backend).
 
-### Monolith split (refactor-first, v550's other half)
+### Monolith split (refactor-first, 's other half)
 1. **cron_prompt_sanitize.{h,c}** (NEW) — emoji/ZWJ unicode surgery +
    invisible-unicode detection/removal + threat scanning extracted from
    port_cronjob_tools.c. Oracle-verified C == LIVE Python (fixed 2 real bugs
@@ -707,7 +704,7 @@ returns honest state; 0 fake-success remain. Demotions:
 `tests/sta_oracle_file_text_ops.py`, `BANNER.md`, `STATE.md`,
 `docs/parity-summary.md`.
 
-## v554 — file_pagination_ops monolith split + faithful newline/pagination fixes (2026-07-09)
+##  — file_pagination_ops monolith split + faithful newline/pagination fixes ()
 
 ### Goal
 Continue the monolith split from port_file_operations.c (pagination + newline-regex
@@ -737,21 +734,21 @@ helpers) and fix the faithful-port divergences the split surfaced.
   C warned on any "$"/"^"/\n and set a wrong warning key. Return type corrected
   to json_t* (Python returns the mutated SearchResult).
 
-### Also fixed (pre-existing, surfaced during v554 regression run)
+### Also fixed (pre-existing, surfaced during  regression run)
 - **cron oracle flakiness**: check_invisible_unicode returns a Blocked message
   that names whichever invisible codepoint Python's _CRON_INVISIBLE_CHARS SET
   iterates first — order depends on PYTHONHASHSEED, so the exact codepoint was
   nondeterministic (oracle flaked 0/0/1 across runs). Changed the cron oracle to
   assert the BEHAVIOR CONTRACT ("did it block?") for check_invisible_unicode
   instead of an exact codepoint (AGENTS.md: behavior contracts over snapshots).
-  C is correct (blocks); this makes the gate stable. Not a v554 code regression.
+  C is correct (blocks); this makes the gate stable. Not a  code regression.
 
 ### Verification
 - New tests/t_port_file_pagination_ops.c + sta_oracle_file_pagination_ops.py: **22/0**.
 - file_text_ops 23/0, cron 19/0 (stable), lint 11/0, fs 18/0 (unchanged).
-- make slermes 0 errors; mission8 36/0/35. All oracles stable across 3 repeated runs.
+- make slermes 0 errors; /35. All oracles stable across 3 repeated runs.
 
-## v553 — file_fs_ops monolith split + faithful-binary-detection fix (2026-07-09)
+##  — file_fs_ops monolith split + faithful-binary-detection fix ()
 
 ### Goal
 Continue the monolith split from port_file_operations.c (the FS cluster) into a
@@ -772,11 +769,11 @@ focused module, and fix the faithful-port divergences the split surfaced.
   tools/binary_extensions.py) OR >30% non-printable in first 1000
   bytes. The old C only checked for a NUL byte — a silent wrong result
   on binary-looking text.
-- **Faithful `detect_file_line_ending`** — fixed a divergence the v551
+- **Faithful `detect_file_line_ending`** — fixed a divergence the 
   oracle had been PAPERING OVER: for content with no newline (empty /
   single-line file) Python's _detect_line_ending returns None ->
   "unknown", but the C returned "lf". Now returns "unknown". Updated
-  the v551 file_text_ops oracle (and the new fs oracle) to expect
+  the  file_text_ops oracle (and the new fs oracle) to expect
   "unknown" — no more fake parity.
 
 ### Verification
@@ -784,18 +781,18 @@ focused module, and fix the faithful-port divergences the split surfaced.
   LIVE tools/file_operations.py (+ agent.file_safety).
 - file_text_ops 23/0 (regression: now expects "unknown" for no-eol).
 - cron 19/0, lint 11/0 (unchanged).
-- make slermes 0 errors / 0 warnings on new modules; mission8 36/0/35.
+- make slermes 0 errors / 0 warnings on new modules; /35.
 - Each file_ops_* symbol defined exactly once across the split (no dup defs).
 
-### Lesson reinforced (from v552)
+### Lesson reinforced (from )
 Always #include the module header that DECLARES the fn under test in the
 oracle harness — an implicit declaration (assumed int return vs real bool)
 corrupts the result and looks like a codegen bug.
 
-## v552 — residual-façade sweep + monolith split, cont. (2026-07-09)
+##  — residual-façade sweep + monolith split, cont. ()
 
 ### Goal
-Address the 3 pre-existing HIGH devil's-advocate flags on v551's file-ops
+Address the 3 pre-existing HIGH devil's-advocate flags on 's file-ops
 cluster AND continue the monolith-split discipline. All 3 flags fixed with
 faithful 1:1 parity, oracle-verified against LIVE Python.
 
@@ -809,7 +806,7 @@ faithful 1:1 parity, oracle-verified against LIVE Python.
    linter `base_cmd` and hard-coded two substrings. Faithfully ported
    `tools/file_operations.py:_looks_like_linter_unusable` (base_cmd-keyed
    `_LINTER_UNUSABLE_PATTERNS`: npx / rustfmt / go). **Extracted to its own
-   focused module** `src/tools/file_ops_lint.{h,c}` (the v552 monolith split)
+   focused module** `src/tools/file_ops_lint.{h,c}` (the  monolith split)
    with a clean opaque declaration — kills the implicit-declaration / god-file
    coupling.
 3. **`file_ops_delete_path` missing write-deny guard** — Python's
@@ -842,7 +839,7 @@ correct header were 100% correct; only the mis-including harness was wrong.)
 `tests/t_port_file_ops_lint.c` (NEW), `tests/sta_oracle_file_ops_lint.py` (NEW),
 `BANNER.md`, `STATE.md`.
 
-## v555 — browser_redact monolith split + faithful agent.redact port (2026-07-09)
+##  — browser_redact monolith split + faithful agent.redact port ()
 
 ### Goal
 Continue the monolith split from port_browser_supervisor.c (the two pure
@@ -898,7 +895,7 @@ divergences the split surfaced against LIVE `agent/redact.py`.
 `build/objects.mk`, `tests/t_port_browser_redact.c` (NEW),
 `tests/sta_oracle_browser_redact.py` (NEW), `BANNER.md`, `STATE.md`.
 
-## v556 (2026-07-10) — monolith split x2: web_base64_img + skills_sync_fs
+##  () — monolith split x2: web_base64_img + skills_sync_fs
 Two monolith clusters extracted into oracle-verified focused modules.
 
 ### v556a: web_base64_img (from port_web_tools.c)
@@ -950,9 +947,9 @@ tests/sta_oracle_web_base64_img.py (NEW).
 v556b: src/tools/skills_sync_fs.{h,c} (NEW), src/tools/port_skills_sync.c,
 build/objects.mk, tests/t_port_skills_sync_fs.c (NEW),
 tests/sta_oracle_skills_sync_fs.py (NEW). BANNER.md, STATE.md,
-NEXT_SESSION_PROMPT.md updated for v557.
+NEXT_SESSION_PROMPT.md updated for .
 
-## v557a (2026-07-10) — monolith split x7: image_gen_path
+## v557a () — monolith split x7: image_gen_path
 Extracted the ONE genuinely pure, oracle-verifiable helper from the
 1508-line `port_image_generation_tool.c` monolith into a focused module.
 
@@ -978,12 +975,12 @@ Extracted the ONE genuinely pure, oracle-verifiable helper from the
   fixed to `bool(cout)`.
 - Module fn renamed to `image_gen_path_` prefix; port name kept as delegate.
 
-**Gates (all green, v557a pushed):** `make` clean · mission8 36/0 · parity
-`image_generation_tool.py` REAL_GAP=0 · 6 oracles 0 mismatch (file_text_ops
+**Gates (all green, v557a pushed):** `make` clean ·  · parity
+`image_generation_tool.py`  · 6 oracles 0 mismatch (file_text_ops
 23, browser_redact 22, file_pagination_ops 22, web_base64_img 12,
 skills_sync_fs 4, image_gen_path 16) · 0 STUB / 0 N/A.
 
-## v557b (2026-07-10) — monolith split x8: send_message_target
+## v557b () — monolith split x8: send_message_target
 Extracted the pure, oracle-verifiable target/display/retry helpers from the
 886-line `port_send_message_tool.c` into a focused module.
 
@@ -1006,19 +1003,19 @@ Extracted the pure, oracle-verifiable target/display/retry helpers from the
 - Dead-hybrid PoP trap (x2) on the delegate lines for `_telegram_retry_delay`
   + `_parse_target_ref` regressed them to REAL_GAP; fixed to single-line
   `/* PoP: c @ m.py:f */` + separate comment line. Re-scanned: parity
-  send_message_tool.py back to REAL_GAP=1 (`_send_yuanbao`, pre-existing).
+  send_message_tool.py back to  (`_send_yuanbao`, pre-existing).
 
 **Reused / verified:** grep whole tree — no overlap with gateway/* or other
 modules. The port file's `display_chat_id` (line ~62, unprefixed) is a stale
 non-PoP duplicate of `send_message_display_chat_id`; tracked as a real cleanup
 item (REAL_GAP-class cleanup), not "out of scope."
 
-**Gates (all green, v557b pushed):** `make` clean · mission8 36/0 · parity
-send_message_tool.py REAL_GAP=1 · 7 oracles 0 mismatch (file_text_ops 23,
+**Gates (all green, v557b pushed):** `make` clean ·  · parity
+send_message_tool.py  · 7 oracles 0 mismatch (file_text_ops 23,
 browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 4, image_gen_path 16, send_message_target 21) · 0 STUB / 0 N/A.
 
-## v558 (2026-07-10) — residual-façade closure: port_cronjob_tools repair + 7 gaps
+##  () — residual-façade closure: port_cronjob_tools repair + 7 gaps
 - Repaired port_cronjob_tools.c: corrupted with `N|` line-number prefixes on 276/283
   lines AND truncated (normalize_deliver_param missing closing brace). Corruption
   HIDDEN because `make` reused a stale .o (file was never in build/objects.mk — an
@@ -1036,16 +1033,16 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
     (honest "not implemented" error; need the scheduler CRUD+delivery subsystem).
 - Wired src/tools/port_cronjob_tools.o into build/objects.mk (no symbol conflicts).
 - Oracle tests/t_port_cronjob_tools_gap.c + sta_oracle_cronjob_tools_gap.py: 21/0 vs
-  LIVE Python. cronjob_tools.py now PORTED=22, REAL_GAP=0.
+  LIVE Python. cronjob_tools.py now , .
 - Re-hit + fixed dead-hybrid PoP trap (/* PoP: ... line 1, */ line 2) → converted all
   15 multi-line PoP comments to single-line. Re-ran scanner.
 
-## v559 (2026-07-11) — doctrine correction: no fake-success "honest NA" for failable fns
+##  () — doctrine correction: no fake-success "honest NA" for failable fns
 - DOCTRINE (user): "rewriting in scratch in C is the point of the project, so
   anything that *should* exist in C is REAL_GAP work, NOT an honest NA demotion."
-- v558 had wrongly left cronjob_execute_job_now + cronjob_dispatch as
+-  had wrongly left cronjob_execute_job_now + cronjob_dispatch as
   "honest NA" returning a `not implemented in C port` error string — this is the
-  BANNED v541 fake-success pattern. Corrected in v559:
+  BANNED  fake-success pattern. Corrected in :
   * cronjob_dispatch delegates to cron_cmd_handler (real C scheduler: CRUD+fire
     over the sqlite store) → add/list/run-now/remove all verified live.
   * cronjob_execute_job_now delegates to cron_cmd_handler(action="run-now"),
@@ -1059,10 +1056,10 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   noid — all asserted against LIVE Python's behavior contract.
 - Lesson: before demoting a "missing" fn to honest-NA, check build/objects.mk
   membership + the whole tree for an EXISTING (possibly orphaned) C impl.
-- Gates: make clean · mission8 36/0 · 8 oracles 0 mismatch (cron gap now 25/0) ·
+- Gates: make clean ·  · 8 oracles 0 mismatch (cron gap now 25/0) ·
   0 STUB / 0 N/A.
 
-## v560 (2026-07-11) — copilot_acp_client struct-builders + residual-façade close
+##  () — copilot_acp_client struct-builders + residual-façade close
 - Scanner re-run found the tractable pure gaps: copilot_acp_client (2),
   managed_modal (1), video_generation (0 — already done), yuanbao (148 = async
   network/gateway pipeline, not a focused pass), cli/main (electron redownload =
@@ -1083,27 +1080,27 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - managed_modal._request_timeout_env: ALREADY ported (as
   cli_tools_environments_managed_modal__request_timeout_env) — the scanner
   flagged it only due to symbol-prefix mangling (false positive), NOT a real gap.
-- copilot_acp_client.py now REAL_GAP=0. The 19 remaining "gaps" are the SDK
+- copilot_acp_client.py now . The 19 remaining "gaps" are the SDK
   wrapper classes (CopilotACPClient / _ACPChatCompletions / _ACPChatNamespace —
   Python JSON-RPC/network client boundary) = legitimate honest-NA boundary.
-- Gates: make clean · mission8 36/0 · 9 oracles 0 mismatch (added copilot 4/0) ·
+- Gates: make clean ·  · 9 oracles 0 mismatch (added copilot 4/0) ·
   0 STUB / 0 N/A.
 - Helper fix: tests/run_one_oracle.sh now extracts -I flags from build/libs-config.mk
   via `grep -oE 'lib/lib[a-z0-9_]+' | sed 's#^#-I #'` (the old `-I[a-zA-Z...]`
   regex missed multi-char lib dirs + the plugin include, causing
   `plugin.h: No such file` compile failures in standalone harness builds).
 
-## v561 (2026-07-11) — doctrine correction + yuanbao markdown verification/fix
+##  () — doctrine correction + yuanbao markdown verification/fix
 - USER DOCTRINE (hard, restated): "rewriting in scratch in C is the point of the
   project, so ANYTHING that falls under that is REAL_GAP work." There is no
-  "genuinely-un-C-able" demotion category. My v560 summary wrongly called
+  "genuinely-un-C-able" demotion category. My  summary wrongly called
   yuanbao (148 gaps) and cli/main (electron redownload) "un-C-able boundaries" —
   that framing is INVALID. Async/network/cloud code IS rewritable in C
   (libcurl + event loop, managed subprocess); it is large work, not demotable.
 - Corroboration: the parity scanner's 148 yuanbao "gaps" are REAL classifications
   (async token-fetch + streaming InboundPipeline middleware). The 9 pure
   MarkdownProcessor staticmethods are ALREADY correctly classified PORTED
-  (yuanbao_md_* with explicit PoP). My v560 "scanner false-positive" claim about
+  (yuanbao_md_* with explicit PoP). My  "scanner false-positive" claim about
   yuanbao was WRONG — only managed_modal._request_timeout_env was a genuine
   prefix false-positive (different scanner behavior). Corrected.
 - BUILT oracle harness tests/t_port_yuanbao_markdown.c + sta_oracle_yuanbao_markdown.py
@@ -1117,14 +1114,14 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   * markdown_hint_system_prompt: C string had real newlines where Python's source
     has LITERAL backslash-n (inside the ``` and table examples). Fixed literals
     to match Python byte-for-byte (was 278/283, now 282 = exact).
-- Gates: make clean · mission8 36/0 · 10 oracles 0 mismatch (added yuanbao 18/0) ·
+- Gates: make clean ·  · 10 oracles 0 mismatch (added yuanbao 18/0) ·
   0 STUB / 0 N/A.
 - Next tractable REAL_GAP clusters (pure helpers, async=0): cron/suggestions.py
   (10), hermes_cli/env_loader.py (10), hermes_cli/logs.py (10), hermes_cli/curator.py
   (9), tools/xai_video_tools.py (7), agent/learning_graph.py (10), cron/suggestions.py.
   These are the next closing targets — each a focused module port + oracle.
 
-## v562 (2026-07-11) — cron/suggestions.py fully ported (10 fns)
+##  () — cron/suggestions.py fully ported (10 fns)
 - PORTED cron/suggestions.py end-to-end: new src/cron/cron_suggestions.c +
   include/cron_suggestions.h (10 functions: _secure_file, _ensure_dir,
   _load_raw, _save_raw, load_suggestions, list_pending, add_suggestion,
@@ -1135,7 +1132,7 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   (cron_add_job) — no fake-success.
 - WIRED into build/objects.mk (CRON_OBJ) — was an orphaned/unported module
   (scanner had it at real_gaps=10). After PoP annotations, scanner now shows
-  cron/suggestions.py ported=12 real_gaps=0.
+  cron/suggestions.py  real_gaps=0.
 - BUILT oracle tests/t_port_cron_suggestions.c + sta_oracle_cron_suggestions.py
   (15/0 vs LIVE Python lifecycle: add/dedup-skip/backlog-cap/get by id|index|
   title/dismiss-latched/accept->create_job/clear_resolved/invalid-source).
@@ -1152,9 +1149,9 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
      and returning json_copy before freeing parent.
   Verified clean under AddressSanitizer (no heap errors; only benign leaks in
   the throwaway harness).
-- Gates: make clean · mission8 36/0 · 11 oracles 0 mismatch (added cron_sugg
+- Gates: make clean ·  · 11 oracles 0 mismatch (added cron_sugg
   15/0) · 0 STUB / 0 N/A.
-- NEXT tractable REAL_GAP clusters (pure helpers, async=0, from v561 scan):
+- NEXT tractable REAL_GAP clusters (pure helpers, async=0, from  scan):
   hermes_cli/env_loader.py (10), hermes_cli/logs.py (10), hermes_cli/curator.py
   (9), tools/xai_video_tools.py (7), agent/learning_graph.py (10),
   hermes_cli/dump.py (9), hermes_cli/fallback_cmd.py (9). Each: focused module
@@ -1162,7 +1159,7 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   gaps — yuanbao token-fetch, managed_modal cloud exec, cli/main electron — are
   REAL work, not demotable "un-C-able" boundaries.)
 
-## v563 (2026-07-11) — hermes_cli/logs.py fully ported (11 fns)
+##  () — hermes_cli/logs.py fully ported (11 fns)
 - PORTED hermes_cli/logs.py end-to-end: new src/cli/port_cli_logs.c +
   include/port_cli_logs.h (11 functions: _parse_since, _parse_line_timestamp,
   _extract_level, _extract_logger_name, _line_matches_component,
@@ -1171,7 +1168,7 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   filtering + tail); no network/external backends. Embedded the static
   COMPONENT_PREFIXES map verbatim from hermes_logging.py.
 - WIRED into build/objects.mk (CLI_OBJ). Scanner now shows
-  hermes_cli/logs.py ported=11 real_gaps=0.
+  hermes_cli/logs.py  real_gaps=0.
 - BUILT oracle tests/t_port_cli_logs.c + sta_oracle_cli_logs.py (20/0 vs LIVE
   Python: parse_since/ts, extract level/logger, component/session/since/level
   filters, raw + filtered read_tail, and the list_logs listing block).
@@ -1187,10 +1184,10 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   port needs a C Bitwarden client (major network integration). It is a real
   REAL_GAP cluster to close (port the real C client + oracle-verify when ready),
   NOT an exemption. There is no "this window" time excuse — close it when picked up.
-- Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
+- Gates: make clean ·  · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
-## v569 (2026-07-11) — agent/nous_rate_guard.py FULLY PORTED (10/10)
+##  () — agent/nous_rate_guard.py FULLY PORTED (10/10)
 - ADDED nous_has_exhausted_bucket_in_object to existing
   src/agent/nous_rate_guard.c (no new module). Port of
   _has_exhausted_bucket_in_object: walks the four bucket attributes
@@ -1207,10 +1204,10 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   short-reset false, remaining_seconds_now path).
 - Scanner: agent/nous_rate_guard.py ported 9 -> 10, real_gaps 1 -> 0
   (module 100% closed).
-- Gates: make slermes clean · mission8 36/0 · 18 oracles 0 mismatch (added
+- Gates: make slermes clean ·  · 18 oracles 0 mismatch (added
   nous_exhausted 6/0) · 0 STUB / 0 N/A.
 
-## v568 (2026-07-11) — hermes_cli/partial_compress.py FULLY PORTED (4/4)
+##  () — hermes_cli/partial_compress.py FULLY PORTED (4/4)
 - ADDED cmd_compress_coerce_keep to existing src/cli/commands.c (no new module;
   partial_compress already partially ported there). Port of _coerce_keep: parse
   a keep-count token, clamp to [1, MAX_KEEP_LAST=100], DEFAULT_KEEP_LAST=2 on
@@ -1222,10 +1219,10 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   whitespace, empty, null, negative, boundaries, over-by-one).
 - Scanner: hermes_cli/partial_compress.py ported 3 -> 4, real_gaps 1 -> 0
   (module 100% closed).
-- Gates: make slermes clean · mission8 36/0 · 17 oracles 0 mismatch (added
+- Gates: make slermes clean ·  · 17 oracles 0 mismatch (added
   partial_compress_keep 11/0) · 0 STUB / 0 N/A.
 
-## v567 (2026-07-11) — agent/file_safety.py FULLY PORTED (15/15)
+##  () — agent/file_safety.py FULLY PORTED (15/15)
 - ADDED file_safety_get_safe_write_roots to existing src/agent/file_safety.c
   (no new module; reuses the file's resolve_path() helper for ~ expansion +
   realpath). Port of get_safe_write_roots: split HERMES_WRITE_SAFE_ROOT on
@@ -1239,10 +1236,10 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   harness and the Python replay (run_one_oracle.sh forwards the parent env).
 - Scanner: agent/file_safety.py ported 14 -> 15, real_gaps 1 -> 0
   (module 100% closed).
-- Gates: make slermes clean · mission8 36/0 · 16 oracles 0 mismatch (added
+- Gates: make slermes clean ·  · 16 oracles 0 mismatch (added
   file_safety_roots 1/0) · 0 STUB / 0 N/A.
 
-## v566 (2026-07-11) — agent/video_gen_provider.py FULLY PORTED (13/13)
+##  () — agent/video_gen_provider.py FULLY PORTED (13/13)
 - ADDED video_gen_cache_dir to existing src/tools/video_gen.c (no new module;
   reuses video_gen_make_cache_path + hermes_cache_dir). Port of
   _videos_cache_dir: returns $HERMES_HOME/cache/videos, mkdir -p parents.
@@ -1254,10 +1251,10 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   hermetic with an explicit HERMES_HOME (both resolve to <tmp>/cache/videos).
 - Scanner: agent/video_gen_provider.py ported 12 -> 13, real_gaps 1 -> 0
   (module 100% closed).
-- Gates: make slermes clean · mission8 36/0 · 15 oracles 0 mismatch (added
+- Gates: make slermes clean ·  · 15 oracles 0 mismatch (added
   video_gen_cache_dir 1/0) · 0 STUB / 0 N/A.
 
-## v565 (2026-07-11) — agent/message_sanitization.py FULLY PORTED (11/11)
+##  () — agent/message_sanitization.py FULLY PORTED (11/11)
 - ADDED message_sanitize_close_interrupted to existing
   src/agent/agent_message_sanitize.c (no new module; reuses json_t pipeline).
   Port of close_interrupted_tool_sequence: if the messages array ends on a
@@ -1271,10 +1268,10 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   user no-op, empty no-op, tool+empty-response).
 - Scanner: agent/message_sanitization.py ported 10 -> 11, real_gaps 1 -> 0
   (module 100% closed).
-- Gates: make slermes clean · mission8 36/0 · 14 oracles 0 mismatch (added
+- Gates: make slermes clean ·  · 14 oracles 0 mismatch (added
   message_sanitize_close 5/0) · 0 STUB / 0 N/A.
 
-## v564 (2026-07-11) — agent/learning_graph.py +3 pure transforms
+##  () — agent/learning_graph.py +3 pure transforms
 - EXTENDED existing src/cli/port_learning_graph_helpers.c (not a new module —
   reused per no-double-coding rule) with 3 pure data-transform ports that the
   file's old header wrongly declared "un-portable REAL_GAP":
@@ -1293,20 +1290,20 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Scanner: agent/learning_graph.py ported 6->9, real_gaps 10->7. The 7
   remaining are filesystem-coupled (rglob SKILL.md, file reads, HERMES_HOME) —
   real fixture-driven work for a future session, honestly classified.
-- Gates: make slermes clean · mission8 36/0 · 13 oracles 0 mismatch (added
+- Gates: make slermes clean ·  · 13 oracles 0 mismatch (added
   learning_graph 6/0) · 0 STUB / 0 N/A.
 
-## v668 Checkpoint — MATCH Phase (2026-08-03)
+##  Checkpoint — MATCH Phase ()
 
-**The PORT phase is legacy.** Live scanner: **PORTED 12,252 (99.8%) / REAL_GAP 22 (0.2%) / PARTIAL 0** out of 12,274 features; recursive bootleg hunter: **0 BOOTLEG** across 10,858 indexed functions (was 45). The v398→v667 era (function-translation chase, facade/stub eradication, desktop/TUI/web parity) is complete and documented as history in `.hermes/mind-palace/index.md`.
+**The PORT phase is legacy.** Live scanner: **PORTED  () / REAL_GAP 22 (0.2%) / PARTIAL 0** out of  features; recursive bootleg hunter: **** across 10,858 indexed functions (was 45). The → era (function-translation chase, facade/stub eradication, desktop/TUI/web parity) is complete and documented as history in `.hermes/mind-palace/index.md`.
 
-**v668 MATCH phase = behavioral fidelity:**
+** MATCH phase = behavioral fidelity:**
 - The C binary must *behave* like Hermes, not just compile like it — every function does real observable work and matches Python behavior (oracle-verified where harnessed).
 - 22 honest REAL_GAPs remain (pure-C work, no stubs allowed).
-- **Upstream sync checkpoint:** 1,200 ahead / **1,113 behind** upstream/main; last merge 2026-07-30 (21 commits, `3ec6a61686`). The behind-count is the staleness timer — run the stash→pull→fix→pop workflow (`BANNER.md` / `slermes-setup-and-sync` skill) periodically, then re-port the delta.
+- **Upstream sync checkpoint:** 1,200 ahead / **1,113 behind** upstream/main; last merge  (21 commits, `3ec6a61686`). The behind-count is the staleness timer — run the stash→pull→fix→pop workflow (`BANNER.md` / `slermes-setup-and-sync` skill) periodically, then re-port the delta.
 - Documentation sweep: index/state/battleship reclassified (legacy vs current); sentinel blocks regenerated by `make parity-walkway`.
 
-**Gates (v668):** `make slermes` clean (0 errors, ~37 MB) · mission8 suites 65 pass / 0 fail (state_db 27, API 17, UI 12, CLI 9) · hunter 0 BOOTLEG · oracle baselines unchanged (pre-existing MISMATCHes on port_cli_profiles + 5 others, verified via git-stash baseline).
+**Gates ():** `make slermes` clean (0 errors, ~37 MB) · mission8 suites 65 pass / 0 fail (state_db 27, API 17, UI 12, CLI 9) · hunter  · oracle baselines unchanged (pre-existing MISMATCHes on port_cli_profiles + 5 others, verified via git-stash baseline).
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).
+/home/wubu/NEXT_SESSION_PROMPT.md ( residual-façade findings recorded).

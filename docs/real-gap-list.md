@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-09-15T06:45:17Z from `live_parity_scan.json`. **11,715 REAL_GAP across 608 modules** (of 18,219 total functions).
+> Generated 2026-10-07T05:29:39Z from `live_parity_scan.json`. **11,715 REAL_GAP across 608 modules** (of 18,219 total functions).
 
 > This is the forward work plan. Never hand-edit — regenerate via the scanner.
 
