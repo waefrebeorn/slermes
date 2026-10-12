@@ -367,6 +367,13 @@ def build_harness(gate_dir, g, force=False):
                          os.path.join(REPO, "lib/libcrypto/crypto.o"),
                          os.path.join(REPO, "lib/libjson/json.o")]
         base_lib_objs = [p for p in base_lib_objs if os.path.exists(p)]
+        # OpenSSL symbols (BIO_*, EVP_*, CRYPTO_*, SHA256_*) come from the
+        # system libcrypto, which the main build already links via -lcrypto.
+        ssl_libs = []
+        for cand in ("-lcrypto", "-lssl"):
+            if subprocess.run(["cc", cand, "-o", "/dev/null", "-x", "c", "-"],
+                              input="", capture_output=True).returncode == 0:
+                ssl_libs.append(cand)
         added = []
         rejected = set()
         # `extra_src` may already contain a stub file that duplicates a symbol
@@ -375,7 +382,7 @@ def build_harness(gate_dir, g, force=False):
         # COMMON_SRC). Probe with nothing extra; a duplicate means the stub is
         # the offender and its object must come off the link line.
         probe = subprocess.run(
-            ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + libs,
+            ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + ssl_libs + libs,
             capture_output=True, text=True)
         if probe.returncode != 0:
             # The linker names the OFFENDER object on the line that carries
@@ -396,7 +403,7 @@ def build_harness(gate_dir, g, force=False):
                         if os.path.basename(o) not in offenders]
                 if len(objs) != before:
                     probe = subprocess.run(
-                        ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + libs,
+                        ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + ssl_libs + libs,
                         capture_output=True, text=True)
         r2 = probe
         for _round in range(5):
@@ -437,7 +444,7 @@ def build_harness(gate_dir, g, force=False):
             if not ok:
                 break
             retry2 = ["cc"] + objs + added_objs + ["-o", out, "-lm"] + \
-                     base_lib_objs + libs
+                     base_lib_objs + ssl_libs + libs
             r2 = subprocess.run(retry2, capture_output=True, text=True)
             if r2.returncode == 0:
                 return out
