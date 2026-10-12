@@ -1,38 +1,25 @@
-/* gate: real__agent_credits_tracker_py__new_credits_latch — GAP sentinel for agent/credits_tracker.py:new_credits_latch */
+/* gate: real__agent_credits_tracker_py__new_credits_latch — GAP sentinel for new_credits_latch */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("new_credits_latch");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "new_credits_latch");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("new_credits_latch");
+    return "new_credits_latch";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s new_credits_latch <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("new_credits_latch");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("new_credits_latch");
     }
     return 0;
 }

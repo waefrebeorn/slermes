@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_before_execute",
+  "c_fn": "esh_before_execute",
   "py_module": "tools/environments/ssh.py",
   "py_fn": "_before_execute",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/env_ssh_ports.c"
   ],
   "cflags": [
     "-I",

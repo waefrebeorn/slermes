@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_xai_curated_models",
+  "c_fn": "models_xai_curated_models",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_xai_curated_models",
   "inputs": [

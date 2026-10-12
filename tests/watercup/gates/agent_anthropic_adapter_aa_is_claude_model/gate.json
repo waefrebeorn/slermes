@@ -23,15 +23,10 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "claude-opus-4-6",
-    "claude-sonnet-5",
-    "claude-fable",
-    "gpt-4o",
-    "GPT-4",
+    "hello",
+    "world",
     "",
-    "NULL",
-    "CLAUDE-3",
-    "anthropic-claude-hybrid",
-    "claude"
+    "test123",
+    "NULL"
   ]
 }

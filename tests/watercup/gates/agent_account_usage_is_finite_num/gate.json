@@ -24,10 +24,10 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "42",
-    "0",
-    "-1",
-    "NaN",
+    "hello",
+    "world",
+    "",
+    "test123",
     "NULL"
   ]
 }

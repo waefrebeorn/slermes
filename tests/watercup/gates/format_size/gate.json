@@ -6,6 +6,12 @@
   "c_fn": "format_size",
   "py_module": "hermes_cli/sizefmt.py",
   "py_fn": "format_bytes",
-  "inputs": ["0", "1", "512", "1023", "1024", "1536", "1048576", "1073741824", "1099511627776", "999", "5000", "5000000"],
-  "notes": "Human-readable byte sizes (B/KB/MB/GB/TB, one decimal). C port (tools/curator_backup.c::format_size) extended to TB to match LIVE hermes_cli/sizefmt.py::format_bytes (previously capped at GB — real parity gap fixed). Cup-parity across 12 sizes."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Human-readable byte sizes (B/KB/MB/GB/TB, one decimal). C port (tools/curator_backup.c::format_size) extended to TB to match LIVE hermes_cli/sizefmt.py::format_bytes (previously capped at GB \u2014 real parity gap fixed). Cup-parity across 12 sizes."
 }

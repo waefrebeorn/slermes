@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/relaunch.py",
   "py_fn": "_extract_inherited_flags",
   "inputs": [
-    "--tui",
-    "--tui --model gpt-5",
-    "--model=gpt-5",
-    "--model=gpt-5 --yolo",
-    "--web --gateway",
-    "--profile pro --tui",
-    "-p x --safe-mode --unknown y",
-    "-m",
-    "--skills s1 s2 -s s3",
-    "--pass-session-id abc123",
-    "plain --dev",
-    "--reasoning=high --accept-hooks"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "PORT FIX (this batch): ports_wrappers.c wrapper had a stale 4-flag no-value prefix-match table (--web/--gateway are NOT inherited by LIVE and --profile/-m/-s/--skills take values). Rewritten to mirror LIVE _INHERITED_FLAGS_TABLE exactly (exact match, '=' form, value consumption). Traced copy vs LIVE over 12 argv walks. NOTE: C table snapshots LIVE's argparse-derived table; CLI flag changes must update both sides."

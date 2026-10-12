@@ -3,18 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "do_opt_in",
+  "c_fn": "hermes_cli_skills_hub_do_opt_in",
   "py_module": "hermes_cli/skills_hub.py",
   "py_fn": "do_opt_in",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/partial_compress.c",
+    "src/tools/delegate.c",
+    "src/infrastructure_stubs.c",
+    "src/tools/send_message.c",
+    "src/tools/session_crud.c",
+    "src/tools/session_search.c"
   ],
   "cflags": [
     "-I",

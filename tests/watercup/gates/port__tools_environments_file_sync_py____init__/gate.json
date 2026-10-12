@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "tools_file_sync_init",
   "py_module": "tools/environments/file_sync.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,15 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/util_helpers.c",
+    "src/tools/async_delegation.c",
+    "src/tools/browser_supervisor.c",
+    "src/tools/lazy_deps.c",
+    "src/tools/mixture_of_agents.c",
+    "src/tools/send_message_tool.c"
   ],
   "cflags": [
     "-I",

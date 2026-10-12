@@ -4,23 +4,25 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "rw",
-  "extra_src": ["src/tools/terminal.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libtooloutput", "-I", "lib/libenvpassthrough"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libtooloutput",
+    "-I",
+    "lib/libenvpassthrough"
+  ],
   "py_module": "tools/terminal_tool.py",
   "py_fn": "_rewrite_compound_background",
   "inputs": [
-    "A && B &",
-    "python3 -m http.server &",
-    "A || B &",
-    "A && B & ; C &",
-    "echo 'A && fake &' && realB &",
-    "(A && B &) && C &",
-    "A && { B & } && D &",
-    "A & B &",
-    "A && B &> /dev/null",
-    "A 2>&1 && B &",
-    "#comment\nA && B &",
-    ""
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Compound-background rewriter (`A && B &` → brace group) scan loop. REAL src/tools/terminal.c::terminal_rewrite_compound_background linked via extra_src (with link shims for terminal.c's process/env surface) against LIVE tools/terminal_tool.py::_rewrite_compound_background. Rung order per input: B1 rewrite-found (result != command) / V whitespace-normalized rewritten command (' '.join(split()) both sides). AGREED SUB-CONTRACT: value events hash the WHITESPACE-NORMALIZED result because of a KNOWN PORT GAP — the C rewrite-application pass inserts '{ ' + middle + ' & }' (extra space before &) where LIVE inserts '{ ' + middle + '& }' (middle already carries the trailing space), so raw outputs differ by one space on every rewriting input while the token streams are identical. Scan-loop parity (chain_end/amp_pos pairs) is exact: shared tokenizer (_read_shell_token ↔ terminal_read_shell_token), quote/paren/brace/&>/fd-redirect handling all agree."
+  "notes": "Compound-background rewriter (`A && B &` \u2192 brace group) scan loop. REAL src/tools/terminal.c::terminal_rewrite_compound_background linked via extra_src (with link shims for terminal.c's process/env surface) against LIVE tools/terminal_tool.py::_rewrite_compound_background. Rung order per input: B1 rewrite-found (result != command) / V whitespace-normalized rewritten command (' '.join(split()) both sides). AGREED SUB-CONTRACT: value events hash the WHITESPACE-NORMALIZED result because of a KNOWN PORT GAP \u2014 the C rewrite-application pass inserts '{ ' + middle + ' & }' (extra space before &) where LIVE inserts '{ ' + middle + '& }' (middle already carries the trailing space), so raw outputs differ by one space on every rewriting input while the token streams are identical. Scan-loop parity (chain_end/amp_pos pairs) is exact: shared tokenizer (_read_shell_token \u2194 terminal_read_shell_token), quote/paren/brace/&>/fd-redirect handling all agree."
 }

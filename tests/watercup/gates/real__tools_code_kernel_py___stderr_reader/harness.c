@@ -1,38 +1,25 @@
-/* gate: real__tools_code_kernel_py___stderr_reader — GAP sentinel for tools/code_kernel.py:_stderr_reader */
+/* gate: real__tools_code_kernel_py___stderr_reader — GAP sentinel for _stderr_reader */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_stderr_reader");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_stderr_reader");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_stderr_reader");
+    return "_stderr_reader";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _stderr_reader <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_stderr_reader");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_stderr_reader");
     }
     return 0;
 }

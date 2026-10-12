@@ -1,38 +1,25 @@
-/* gate: real__hermes_cli_local_runtime_supervisor_py___free_port — GAP sentinel for hermes_cli/local_runtime/supervisor.py:_free_port */
+/* gate: real__hermes_cli_local_runtime_supervisor_py___free_port — GAP sentinel for _free_port */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_free_port");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_free_port");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_free_port");
+    return "_free_port";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _free_port <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_free_port");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_free_port");
     }
     return 0;
 }

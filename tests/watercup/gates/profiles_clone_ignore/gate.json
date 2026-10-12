@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "_clone_all_copytree_ignore",
   "inputs": [
-    "/tmp/wcup_src|/tmp/wcup_src|state.db",
-    "/tmp/wcup_src|/tmp/wcup_src|sessions",
-    "/tmp/wcup_src|/tmp/wcup_src|checkpoints",
-    "/tmp/wcup_src|/tmp/wcup_src|__pycache__",
-    "/tmp/wcup_src|/tmp/wcup_src|foo.pyc",
-    "/tmp/wcup_src|/tmp/wcup_src|x.sock",
-    "/tmp/wcup_src|/tmp/wcup_src|memory",
-    "/tmp/wcup_src|/tmp/wcup_src/sub|state.db",
-    "/tmp/wcup_default_home|/tmp/wcup_default_home|hermes-agent",
-    "/tmp/wcup_default_home|/tmp/wcup_default_home|node_modules",
-    "/tmp/wcup_default_home|/tmp/wcup_default_home|bin",
-    "/tmp/wcup_default_home|/tmp/wcup_default_home|memory"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced C copy of profiles.c::profile_clone_ignore vs LIVE hermes_cli/profiles.py::_clone_all_copytree_ignore inner predicate (12 inputs: history excludes, universal bytecode/socket excludes, non-root pass-through, default-source-gated infra excludes). Inputs are 'source_dir|dir|entry'. HERMES_HOME pinned to /tmp/wcup_default_home on both sides so the default-home rung agrees without env coupling. Full parity."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "restore",
+  "c_fn": "wx2_restore",
   "py_module": "gateway/platforms/weixin.py",
   "py_fn": "restore",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/weixin_ports.c"
   ],
   "cflags": [
     "-I",

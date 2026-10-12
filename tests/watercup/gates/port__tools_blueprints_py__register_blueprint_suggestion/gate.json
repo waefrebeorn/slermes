@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "register_blueprint_suggestion",
+  "c_fn": "cli_tools_blueprints_register_blueprint_suggestion",
   "py_module": "tools/blueprints.py",
   "py_fn": "register_blueprint_suggestion",
   "inputs": [

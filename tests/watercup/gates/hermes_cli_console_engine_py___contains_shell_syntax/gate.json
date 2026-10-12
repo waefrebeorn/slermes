@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/console_engine.py",
   "py_fn": "_contains_shell_syntax",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

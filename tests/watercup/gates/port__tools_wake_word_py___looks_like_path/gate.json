@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_looks_like_path",
+  "c_fn": "ww_looks_like_path",
   "py_module": "tools/wake_word.py",
   "py_fn": "_looks_like_path",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/wake_word.c"
   ],
   "cflags": [
     "-I",

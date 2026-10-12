@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_render_qr",
+  "c_fn": "qqbot_onboard__render_qr",
   "py_module": "gateway/platforms/qqbot/onboard.py",
   "py_fn": "_render_qr",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platforms_qqbot_onboard.c"
   ],
   "cflags": [
     "-I",

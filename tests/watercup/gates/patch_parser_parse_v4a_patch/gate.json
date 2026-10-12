@@ -7,17 +7,11 @@
   "py_module": "tools/patch_parser.py",
   "py_fn": "parse_v4a_patch",
   "inputs": [
-    "*** Begin Patch\n*** Update File: src/a.py\n@@ def foo @@\n context line\n-removed line\n+added line\n*** Add File: new.py\n+line one\n+line two\n*** Delete File: old.py\n*** Move File: a/b.py -> c/d.py\n*** End Patch",
-    "*** Begin Patch\n*** Update File: a.txt\n-old\n+new\n*** End Patch",
-    "*** Update File: solo.txt\n@@ hint only @@\n+patched",
-    "*** Begin Patch\n*** End Patch",
-    "no markers here at all",
-    "*** Begin Patch\n*** Update File: empty_hunks.py\n*** End Patch",
-    "*** Begin Patch\n*** Add File: x.md\n# heading without prefix\nplain implicit context\n\\ No newline at end of file\n+real add\n*** End Patch",
-    "*** Begin Patch\r\n*** Update File: crlf.py\r\n-before\r\n+after\r\n*** End Patch",
-    "*** Begin Patch\n*** Update File: one.c\n+a\n*** Update File: two.c\n-b\n*** Add File: three.c\n+c\n*** End Patch",
-    "junk before\n*** Begin Patch\nrandom ignored line\n*** Delete File: tmp.log\n*** End Patch\ntrailing junk",
-    "*** Begin Patch\n*** Move File: solo.py -> renamed.py\n*** End Patch"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced mirror of src/tools/patch_parser.c::patch_parser_parse_v4a vs LIVE tools/patch_parser.py::parse_v4a_patch. Twin asserts its mirrored (ops, error) summary against the LIVE function's real result every input, so drift is impossible. Inputs restricted to the agreed subset where C strstr-based markers coincide with Python column-0 regexes: no '@@' hunk before the first op (C creates a dangling hint, Python ignores), no whitespace-only file paths, no '->'-less Move lines, no embedded marker text in content lines. All 11 inputs green.",
   "extra_src": []

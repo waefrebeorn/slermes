@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_async_get_state",
+  "c_fn": "tools_homeassistant_tool_u_async_get_state",
   "py_module": "tools/homeassistant_tool.py",
   "py_fn": "_async_get_state",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/homeassistant_tool.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "has_blocking_approval",
+  "c_fn": "apr2_has_blocking_approval",
   "py_module": "tools/approval.py",
   "py_fn": "has_blocking_approval",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/approval_helpers2.c"
   ],
   "cflags": [
     "-I",

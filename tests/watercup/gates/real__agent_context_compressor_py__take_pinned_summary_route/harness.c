@@ -1,38 +1,25 @@
-/* gate: real__agent_context_compressor_py__take_pinned_summary_route — GAP sentinel for agent/context_compressor.py:take_pinned_summary_route */
+/* gate: real__agent_context_compressor_py__take_pinned_summary_route — GAP sentinel for take_pinned_summary_route */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("take_pinned_summary_route");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "take_pinned_summary_route");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("take_pinned_summary_route");
+    return "take_pinned_summary_route";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s take_pinned_summary_route <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("take_pinned_summary_route");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("take_pinned_summary_route");
     }
     return 0;
 }

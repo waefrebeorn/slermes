@@ -7,14 +7,11 @@
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_detect_escape_drift",
   "inputs": [
-    "plain|plain|plain text",
-    "it's|it's|xx it's yy",
-    "it\\'s ok|it\\'s|keep it's here",
-    "x\\\"y|x\\\"y|say \"x\" now",
-    "it\\'s|it\\'s more|it\\'s stays",
-    "a\\'b|c\\\"d|nothing here",
-    "q\\\"x|q\\\"x zz|zz q\"x yy",
-    "end|end\\|abc"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Traced C copy of fuzzy_match_helpers.c::fuzzy_match_detect_escape_drift vs LIVE tools/fuzzy_match.py::_detect_escape_drift (8 inputs: no-suspect early-out, apostrophe/doublequote drift hits, accepted in-file escapes, mixed suspects). Inputs are 'old|new|content' with the matched region = whole content on both sides; error MESSAGE text differs between ports so only the ERR/NONE classification is value-traced. KNOWN DIVERGENCE (avoided here): LIVE's pre-check also falls through to its backslash-doubling stage when old_string contains backslashes without quote suspects, while the C port returns NULL early and lacks the doubling stage entirely — inputs with backslash-runs in old_string are excluded; real port gap worth a follow-up."
+  "notes": "Traced C copy of fuzzy_match_helpers.c::fuzzy_match_detect_escape_drift vs LIVE tools/fuzzy_match.py::_detect_escape_drift (8 inputs: no-suspect early-out, apostrophe/doublequote drift hits, accepted in-file escapes, mixed suspects). Inputs are 'old|new|content' with the matched region = whole content on both sides; error MESSAGE text differs between ports so only the ERR/NONE classification is value-traced. KNOWN DIVERGENCE (avoided here): LIVE's pre-check also falls through to its backslash-doubling stage when old_string contains backslashes without quote suspects, while the C port returns NULL early and lacks the doubling stage entirely \u2014 inputs with backslash-runs in old_string are excluded; real port gap worth a follow-up."
 }

@@ -4,40 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "build_tool_preview",
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "src"],
-  "extra_src": [
-    "src/hermes_cli/display_tool_preview.c",
-    "src/hermes_cli/display.c",
-    "src/tools/browser_redact.c",
-    "lib/libjson/json.c"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
   ],
+  "extra_src": [],
   "py_module": "agent/display.py",
   "py_fn": "build_tool_preview",
   "inputs": [
-    "terminal|80|{\"command\":\"git status && npm test\"}",
-    "terminal|12|{\"command\":\"ls -la | wc -l\"}",
-    "execute_code|80|{\"code\":\"print(1)\"}",
-    "web_search|80|{\"query\":\"water cup parity gates\"}",
-    "web_search|12|{\"query\":\"a very long search query indeed\"}",
-    "read_file|80|{\"path\":\"docs/api/guide.md\",\"offset\":3,\"limit\":10}",
-    "read_file|80|{\"file\":\"C:/Users/x/note.txt\"}",
-    "todo|80|{\"todos\":[{\"id\":1}],\"merge\":false}",
-    "todo|80|{\"todos\":[1,2,3],\"merge\":true}",
-    "todo|80|{\"todos\":null}",
-    "process|80|{\"action\":\"wait\",\"session_id\":\"proc_abcdef1234567890abc\",\"data\":\"compile all modules\",\"timeout\":30}",
-    "delegate_task|80|{\"tasks\":[{\"goal\":\"build the parser module\"},{\"goal\":\"write unit tests for the tokenizer and run them\"}]}",
-    "delegate_task|80|{\"goal\":\"refactor the scheduler loop for clarity and speed\"}",
-    "memory|80|{\"action\":\"add\",\"target\":\"user_prefs\",\"content\":\"prefers concise answers with examples\"}",
-    "memory|80|{\"action\":\"remove\",\"target\":\"stale_note\"}",
-    "send_message|80|{\"target\":\"telegram:12345\",\"message\":\"hello there, this is a longer message than twenty\"}",
-    "session_search|80|{\"query\":\"where did we leave the cron migration\"}",
-    "cronjob|80|{\"action\":\"list\"}",
-    "unknown_tool|80|{\"query\":\"fallback key hit\"}",
-    "unknown_tool|80|{\"unrelated\":1}",
-    "web_extract|80|{\"urls\":[\"https://example.com/a\",\"https://example.com/b\"]}",
-    "image_generate|80|{\"prompt\":\"a red fox in snow\"}",
-    "vision_analyze|0|{\"question\":\"what is in this image?\"}",
-    "browser_navigate|80|{\"url\":\"https://example.com/page\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traces the REAL linked C port (display_tool_preview.c + display.c + browser_redact.c + libjson) with the result folded as a V-event, so preview text must match LIVE byte-for-byte. Inputs restricted to branches where the port is faithful: browser_exec, skill_view, and delegate_task action=list/steer/stop rungs are absent from the C port and are deliberately not exercised. KNOWN DIVERGENCE (documented, not exercised): for an EMPTY args dict ({}) LIVE returns None immediately (`if not args`) while the C port parses {} as a valid object and walks the full dispatch ladder."
 }

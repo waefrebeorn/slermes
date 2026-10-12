@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_evict_related_ollama_cache_entries",
+  "c_fn": "models_evict_related_ollama_cache_entries",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_evict_related_ollama_cache_entries",
   "inputs": [
@@ -14,7 +14,13 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/models_gaps.c",
+    "src/hermes_cli/models_helpers.c",
+    "src/hermes_cli/models_net.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

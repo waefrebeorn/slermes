@@ -1,38 +1,25 @@
-/* gate: real__hermes_cli_model_switch_py___collect_authed_provider_slugs — GAP sentinel for hermes_cli/model_switch.py:_collect_authed_provider_slugs */
+/* gate: real__hermes_cli_model_switch_py___collect_authed_provider_slugs — GAP sentinel for _collect_authed_provider_slugs */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_collect_authed_provider_slugs");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_collect_authed_provider_slugs");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_collect_authed_provider_slugs");
+    return "_collect_authed_provider_slugs";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _collect_authed_provider_slugs <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_collect_authed_provider_slugs");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_collect_authed_provider_slugs");
     }
     return 0;
 }

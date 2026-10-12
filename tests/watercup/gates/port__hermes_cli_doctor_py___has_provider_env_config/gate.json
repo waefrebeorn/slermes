@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_has_provider_env_config",
+  "c_fn": "doctor_has_provider_env_config",
   "py_module": "hermes_cli/doctor.py",
   "py_fn": "_has_provider_env_config",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/doctor.c"
   ],
   "cflags": [
     "-I",

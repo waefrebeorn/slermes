@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "register_cli",
+  "c_fn": "hermes_cli_proxy_cli_register_cli",
   "py_module": "hermes_cli/proxy_cli.py",
   "py_fn": "register_cli",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/proxy_cli.c"
   ],
   "cflags": [
     "-I",

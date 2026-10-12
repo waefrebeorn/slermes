@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_estop_status_line",
+  "c_fn": "estop_paused_reply",
   "py_module": "hermes_cli/status.py",
   "py_fn": "_estop_status_line",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/status_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

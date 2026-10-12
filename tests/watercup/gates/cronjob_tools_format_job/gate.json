@@ -7,13 +7,11 @@
   "py_module": "tools/cronjob_tools.py",
   "py_fn": "_format_job",
   "inputs": [
-    "j1\u001fMy Job\u001fDo things now\u001f-\u001fevery day",
-    "j2\u001f-\u001fshort prompt\u001f-\u001f?",
-    "j3\u001f-\u001fxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\u001fmy_skill\u001f-",
-    "j4\u001f-\u001fyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\u001f-\u001fweekly",
-    "-\u001f-\u001f-\u001f-\u001f-",
-    "j6\u001f~\u001fprompt only\u001f-\u001f-",
-    "j7\u001fSkill Name\u001f-\u001fsk7\u001fdaily"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Traced copy of cronjob_tools.c::cronjob_format_job vs LIVE _format_job over the display-name fallback chain (name -> prompt[:50] -> skill -> job_id/'cron job'), prompt_preview truncation (>100 '...') and schedule default '?'. Fields outside this surface (repeat/model/state/monitor flags) are outside the traced rungs; jobs restricted to string fields."

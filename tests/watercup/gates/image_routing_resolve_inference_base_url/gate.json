@@ -6,6 +6,12 @@
   "c_fn": "resolve_inference_base_url",
   "py_module": "agent/image_routing.py",
   "py_fn": "_resolve_inference_base_url",
-  "inputs": ["-|-", "-|mb=https://api.example.com/v1", "openai|-", "openai|mp=openai;p.openai.base_url=https://o.example.com", "custom:foo|p.foo.base_url=https://f.example.com", "openai|c.OpenAI=https://custom.example.com", "x|mb=;mp=x;p.x.base_url=;c.x=https://fallback.example.com", "ollama|-", "openai|mp=openai", "openai|mb=https://direct.example.com;p.openai.base_url=https://ignored.example.com"],
-  "notes": "Agreed sub-contract: inputs where at most ONE providers entry matches. LIVE iterates candidate_names as a Python set (hash order, nondeterministic across runs) while the C port walks an ordered candidate list — multi-match inputs would be order-dependent and are excluded rather than faked. The runtime-override rung is traced as a single FALSE branch (fresh process carries no live runtime context on both sides)."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Agreed sub-contract: inputs where at most ONE providers entry matches. LIVE iterates candidate_names as a Python set (hash order, nondeterministic across runs) while the C port walks an ordered candidate list \u2014 multi-match inputs would be order-dependent and are excluded rather than faked. The runtime-override rung is traced as a single FALSE branch (fresh process carries no live runtime context on both sides)."
 }

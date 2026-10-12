@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_spawn_catalog_swr_refresh",
+  "c_fn": "get_catalog",
   "py_module": "hermes_cli/model_catalog.py",
   "py_fn": "_spawn_catalog_swr_refresh",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/models_helpers.c",
+    "src/hermes_cli/model_normalize.c"
   ],
   "cflags": [
     "-I",

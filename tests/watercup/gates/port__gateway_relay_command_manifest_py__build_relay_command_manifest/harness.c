@@ -1,38 +1,31 @@
-/* gate: port__gateway_relay_command_manifest_py__build_relay_command_manifest — GAP sentinel for gateway/relay/command_manifest.py:build_relay_command_manifest */
+/* gate: port__gateway_relay_command_manifest_py__build_relay_command_manifest — traced copy of gateway_relay_command_manifest_build_relay_command_manifest (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("build_relay_command_manifest");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "build_relay_command_manifest");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("build_relay_command_manifest");
-}
+extern int gateway_relay_command_manifest_build_relay_command_manifest(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s build_relay_command_manifest <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s gateway_relay_command_manifest_build_relay_command_manifest <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("gateway_relay_command_manifest_build_relay_command_manifest");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = gateway_relay_command_manifest_build_relay_command_manifest(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("gateway_relay_command_manifest_build_relay_command_manifest");
     }
     return 0;
 }

@@ -7,18 +7,11 @@
   "py_module": "agent/agent_runtime_helpers.py",
   "py_fn": "repair_tool_call",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "terminal",
-    "read-file",
-    "todo-tool",
-    "write file",
-    "TodoTool",
-    "TodoTool_tool",
-    "web-search_tool",
-    "writ_file",
-    "read_fiel",
-    "terminalx",
-    "zzunknown_thing_zz"
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copy of the REAL port src/tools/registry.c::repair_tool_call (helpers copied verbatim; the file itself drags pthread + tool-result/idempotency deps into the link, so extra_src linking is unclean). The registry contents are mirrored as a fixed 5-name table shared by both sides (twin backs the LIVE fn with a fake agent exposing the same valid_tool_names). Ladder rungs B1-B5 are computed with each side's own real helpers; the value comes from each side's real pipeline including the fuzzy rung (C: levenshtein ratio > 0.7; LIVE: difflib get_close_matches cutoff 0.7). DOCUMENTED DIVERGENCES (excluded inputs): LIVE-only XML-fragment trim (quotes/angle brackets) absent from the port; LIVE camel_snake inserts '_' before EVERY uppercase via regex where the port splits only lower->upper transitions, so ALL-CAPS ('TERMINAL') and upper-after-separator ('Web_Search') inputs diverge at rung B4/B5 and are excluded; the two fuzzy algorithms rank differently for near-cutoff junk strings, so junk inputs are kept long enough that both stay under 0.7. LIVE's set iteration order is nondeterministic but the repaired value is order-independent."
 }

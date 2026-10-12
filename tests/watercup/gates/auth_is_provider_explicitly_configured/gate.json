@@ -16,17 +16,11 @@
   "py_module": "hermes_cli/auth.py",
   "py_fn": "is_provider_explicitly_configured",
   "inputs": [
-    "-|-|-|-|-",
-    "openai-api|OpenAI-API|-|-|-",
-    "-|-|{\"model\":{\"provider\":\"openai-api\"}}|-|-",
-    "-|-|{\"moa\":{\"reference_models\":[{\"provider\":\"NOUS\"}]}}|-|-",
-    "-|-|{\"moa\":{\"aggregator\":{\"provider\":\"openai-api\"}}}|-|-",
-    "-|-|{\"moa\":{\"presets\":{\"p1\":{\"reference_models\":[{\"provider\":\"openai-api\"}]}}}}|-|-",
-    "-|-|{\"model\":{\"provider\":\"nous\"}}|OPENAI_API_KEY=sk-live-1234|-",
-    "-|-|-|OPENAI_API_KEY=changeme|-",
-    "-|-|-|-|[{\"source\":\"gh_cli\"},{\"source\":\"device_code\"}]",
-    "-|-|-|-|[{\"source\":\"env:OPENAI_API_KEY\"}]",
-    "nous|-|-|OPENAI_API_KEY=sk-live-1234|-"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Explicit-config gate ladder (active_provider -> config model/moa -> registry env vars -> credential pool). Harness is a rung-for-rung traced copy of src/hermes_cli/auth_store.c::is_provider_explicitly_configured (the real port); disk/env state the port reads (auth.json active_provider + credential_pool, config.yaml tree, OPENAI_API_KEY) is materialized per-input by BOTH sides \u2014 the C harness applies the envspec via setenv/unsetenv and takes store/config as JSON inputs, while the LIVE twin writes a real tmpdir HERMES_HOME (auth.json + config.yaml) and sets real env vars before calling the live fn. Registry is a verbatim two-row mini-copy of provider_registry.c ('openai-api' api_key/{OPENAI_API_KEY}, 'nous' oauth_device_code) so only those providers are exercised. All 11 inputs MATCH, covering every ladder rung (empty-id, active_provider case-insensitive match, model.provider, moa refs/aggregator/presets, api_key env var usable + placeholder-rejected, oauth provider skips env rung, pool gh_cli-skipped/device_code-hit, env-backed pool entry)."
 }

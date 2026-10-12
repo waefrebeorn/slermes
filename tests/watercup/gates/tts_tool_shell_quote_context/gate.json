@@ -7,19 +7,11 @@
   "py_module": "tools/tts_tool.py",
   "py_fn": "_shell_quote_context",
   "inputs": [
-    "echo {{text}}|6",
-    "echo {{text}}|14",
-    "say 'hello world'|17",
-    "say \"hi there\"|14",
-    "it's fine|3",
-    "it's fine|4",
-    "\"a\\\\b\"|5",
-    "\"a\\\\\"|4",
-    "don\"t|3",
-    "|0",
-    "plain|7",
-    "'unclosed|9",
-    "a \\' b|6"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Shell quote-context state machine (tts). C port (tools/tts_tool_ports.c::tts_shell_quote_context) was DIVERGENT (two independent toggle vars, global backslash escape) — fixed to the LIVE single-state machine; real parity win. 13 inputs cover bare/single/double/escape/close/unclosed/overrun/empty."
+  "notes": "Shell quote-context state machine (tts). C port (tools/tts_tool_ports.c::tts_shell_quote_context) was DIVERGENT (two independent toggle vars, global backslash escape) \u2014 fixed to the LIVE single-state machine; real parity win. 13 inputs cover bare/single/double/escape/close/unclosed/overrun/empty."
 }

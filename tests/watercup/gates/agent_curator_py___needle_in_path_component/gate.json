@@ -7,16 +7,13 @@
   "py_module": "agent/curator.py",
   "py_fn": "_needle_in_path_component",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/curator_ports.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

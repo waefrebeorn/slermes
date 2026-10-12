@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_jwt_to_disk",
+  "c_fn": "hermes_cli_copilot_auth_u_save_jwt_to_disk",
   "py_module": "hermes_cli/copilot_auth.py",
   "py_fn": "_save_jwt_to_disk",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/copilot_auth.c"
   ],
   "cflags": [
     "-I",

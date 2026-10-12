@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cmd_clear_pending",
+  "c_fn": "hermes_cli_pairing_u_cmd_clear_pending",
   "py_module": "hermes_cli/pairing.py",
   "py_fn": "_cmd_clear_pending",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pairing.c"
   ],
   "cflags": [
     "-I",

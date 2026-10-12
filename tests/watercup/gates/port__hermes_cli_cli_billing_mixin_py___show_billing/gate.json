@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_show_billing",
+  "c_fn": "cmd_topup",
   "py_module": "hermes_cli/cli_billing_mixin.py",
   "py_fn": "_show_billing",
   "inputs": [

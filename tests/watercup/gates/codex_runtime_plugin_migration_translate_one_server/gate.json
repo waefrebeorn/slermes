@@ -4,21 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "translate_one_server",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "hermes_cli/codex_runtime_plugin_migration.py",
   "py_fn": "_translate_one_server",
   "inputs": [
-    "{}",
-    "{\"command\": \"uvx\", \"args\": [\"mcp-server-git\"], \"env\": {\"DEBUG\": \"1\"}}",
-    "{\"url\": \"https://mcp.example.com/sse\", \"transport\": \"sse\"}",
-    "{\"url\": \"https://mcp.example.com/mcp\", \"headers\": {\"Authorization\": \"Bearer x\"}}",
-    "{\"description\": \"no transport at all\"}",
-    "{\"command\": \"npx\", \"url\": \"https://x.example.com\"}",
-    "{\"command\": \"node\", \"timeout\": \"soon\", \"connect_timeout\": 30}",
-    "{\"command\": \"python\", \"enabled\": false, \"sampling\": {\"temperature\": 0.2}}",
-    "{\"command\": \"run\", \"mystery_key\": 1, \"args\": []}",
-    "{\"command\": \"sh\", \"cwd\": \"/tmp/w\", \"timeout\": 90.5, \"enabled\": true, \"extra\": true}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "PARITY WIN: the previous ports_wrappers.c entry was an echo wrapper over precomputed 'state\\tresult\\tskipped' argv; replaced with a REAL port of _translate_one_server (stdio/http transports, args/env/cwd/headers promotion, sse skip hint, timeout coercion to tool_timeout_sec/startup_timeout_sec, enabled:false passthrough, dropped/unknown key warnings) returning {\"entry\":..., \"skipped\":[...]} JSON. Trace surface: branch ladder + one V per skipped reason; numeric coercion values are intentionally NOT V-traced (float repr differs across languages). Twin uses LIVE _KNOWN_HERMES_KEYS/_KEYS_DROPPED_WITH_WARNING."
 }

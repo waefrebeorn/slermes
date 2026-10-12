@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "parse_interval",
+  "c_fn": "None",
   "py_module": "hermes_cli/heartbeat.py",
   "py_fn": "parse_interval",
   "inputs": [

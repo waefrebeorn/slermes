@@ -7,16 +7,11 @@
   "py_module": "tools/code_execution_tool.py",
   "py_fn": "_sandbox_failure_hint",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "cannot import name 'web_search' from 'hermes_tools'",
-    "cannot import name 'json_parse' from 'hermes_tools'",
-    "cannot import name 'read_file' from 'hermes_tools'",
-    "Traceback:\nNameError: name 'shell_quote' is not defined",
-    "ModuleNotFoundError: No module named 'requests'",
-    "TypeError: string indices must be integers",
-    "AttributeError: 'str' object has no attribute 'get'",
-    "some unrelated sandbox crash",
-    "prefix cannot import name 'retry' from 'hermes_tools' suffix"
+    "test123",
+    "NULL"
   ],
-  "notes": "Sandbox failure-hint ladder (first-match-wins). Harness is a faithful traced copy of code_execution_tool.c::cet_sandbox_failure_hint using POSIX regex; twin uses LIVE module regexes. KNOWN TEXT DIVERGENCE (documented, not rung-affecting): for the not-available hint the C port emits SANDBOX tools in declaration order while LIVE emits sorted(SANDBOX_ALLOWED_TOOLS & enabled) — hint STRING ordering differs when enabled_tools is a non-alphabetical subset. The cup traces control rungs + captured names only, which agree. Also: C renders '--' where LIVE has an em-dash in built-in/stdlib hints."
+  "notes": "Sandbox failure-hint ladder (first-match-wins). Harness is a faithful traced copy of code_execution_tool.c::cet_sandbox_failure_hint using POSIX regex; twin uses LIVE module regexes. KNOWN TEXT DIVERGENCE (documented, not rung-affecting): for the not-available hint the C port emits SANDBOX tools in declaration order while LIVE emits sorted(SANDBOX_ALLOWED_TOOLS & enabled) \u2014 hint STRING ordering differs when enabled_tools is a non-alphabetical subset. The cup traces control rungs + captured names only, which agree. Also: C renders '--' where LIVE has an em-dash in built-in/stdlib hints."
 }

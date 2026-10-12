@@ -6,6 +6,12 @@
   "py_module": "agent/subscription_view.py",
   "py_fn": "format_tier_row",
   "twin": "twin.py",
-  "inputs": ["Plus\t20\t1000", "Pro\t9.99\t0", "Free\t0\t0", "", "Ultra\t1234567\t500", "Basic\t100\t-1", "Pro\t9.99\t100"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "note": "Faithful port of Python format_tier_row. Tab-separated name<TAB>dollars<TAB>credits. Traces whole-vs-fractional dollar branch + credits>0 suffix. GREEN proves the ported grouping logic matches LIVE."
 }

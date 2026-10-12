@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_http_post_json",
+  "c_fn": "hermes_cli_security_audit_u_http_post_json",
   "py_module": "hermes_cli/security_audit.py",
   "py_fn": "_http_post_json",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/security_audit.c"
   ],
   "cflags": [
     "-I",

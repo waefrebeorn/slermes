@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_toggle_yolo",
+  "c_fn": "hcli_toggle_yolo",
   "py_module": "cli.py",
   "py_fn": "_toggle_yolo",
   "inputs": [

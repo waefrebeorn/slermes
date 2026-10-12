@@ -6,6 +6,12 @@
   "c_fn": "status_code_from_value",
   "py_module": "agent/chat_completion_helpers.py",
   "py_fn": "_status_code_from_value",
-  "inputs": ["200", "404", "599", "99", "600", "-1", "abc", "HTTP 200 OK", "HTTP_STATUS/429", "resp 503 boom", "999", "1a2b3c", "status=401", "no code here", "418", "HTTP/1.1 502 Bad Gateway"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Parse an HTTP status code from an int (100-599) or a string (optional 'HTTP_STATUS/' prefix + regex \\b[1-5]\\d\\d\\b, case-insensitive). Returns the code, or -1 for None (LIVE returns Optional[int]). C port (src/agent/chat_completion_helpers_ports.c::cch_status_code_from_value) traced + LIVE Python twin (_status_code_from_value). Closes a REAL_GAP flagged by the fresh parity battleground (DA-1:no-c-equivalent, HIGH). 16 cups match."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "mark",
+  "c_fn": "helpers_mark",
   "py_module": "gateway/platforms/helpers.py",
   "py_fn": "mark",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platforms_helpers.c"
   ],
   "cflags": [
     "-I",

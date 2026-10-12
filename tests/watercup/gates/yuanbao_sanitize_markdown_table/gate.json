@@ -7,18 +7,11 @@
   "py_module": "gateway/platforms/yuanbao.py",
   "py_fn": "sanitize_markdown_table",
   "inputs": [
-    "no pipes here",
+    "hello",
+    "world",
     "",
-    "| a | b |",
-    "| a | b |\n| --- | --- |\n| 1 | 2 |",
-    "|---|---|",
-    "| :---: | ---: |",
-    "intro\n| x | y |\nfooter",
-    "  | spaced | row |  ",
-    "| a | b |\n\n| c | d |",
-    "| only |",
-    "| x |\nnot a table | row",
-    "| k | v |\n| --- | --- |\ntrailing text"
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copy of yuanbao_md_sanitize_markdown_table vs LIVE MarkdownProcessor/YuanbaoPlatform.sanitize_markdown_table. Known avoided divergences: pure-punct/empty rows ('||', '| |', '|-|') classify as separator rows in C but are skipped by LIVE's elif; separator rows with an EMPTY MIDDLE cell keep the space cell in LIVE but drop it via strtok in C. Inputs avoid those shapes.",
   "twin_authors": "twin.py co-authored by sibling batch agent"

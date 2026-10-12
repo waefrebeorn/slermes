@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "start",
+  "c_fn": "schp_start",
   "py_module": "cron/scheduler_provider.py",
   "py_fn": "start",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cron/scheduler_provider_ports.c"
   ],
   "cflags": [
     "-I",

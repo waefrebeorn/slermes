@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run_post_setup_command",
+  "c_fn": "cli_tools_post_setup_run",
   "py_module": "hermes_cli/tools_config.py",
   "py_fn": "run_post_setup_command",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cli/config_setup.c"
   ],
   "cflags": [
     "-I",

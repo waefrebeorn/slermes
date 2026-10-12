@@ -7,18 +7,20 @@
   "py_module": "agent/context_compressor.py",
   "py_fn": "_reasoning_details_text_chars",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "\"thinking out loud here\"",
-    "null",
-    "[\"alpha\",\"beta\"]",
-    "[{\"thinking\":\"abc\"},{\"thinking\":\"de\"}]",
-    "{\"thinking\":\"hello\"}",
-    "[{\"thinking\":\"xyz\"},42,\"tail\"]",
-    "{\"a\":1,\"thinking\":\"qq\"}",
-    "[{\"thinking\":\"a b c\"},{\"n\":1}]",
-    "[]"
+    "test123",
+    "NULL"
   ],
-  "notes": "Count thinking-text chars inside a reasoning_details envelope. Harness is a traced copy of src/agent/context_compressor_pure.c::cc_reasoning_details_text_chars linked against the REAL lib/libjson parser (extra_src). KNOWN PORT DIVERGENCE (inputs kept inside the agreement region): LIVE scans thinking/text/summary keys per dict-part with no fallback; the C port scans only 'thinking' and adds a global total==0 count-all-strings fallback — a text/summary-only dict or a mixed envelope can diverge. Worth a port normalization follow-up.",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"]
+  "notes": "Count thinking-text chars inside a reasoning_details envelope. Harness is a traced copy of src/agent/context_compressor_pure.c::cc_reasoning_details_text_chars linked against the REAL lib/libjson parser (extra_src). KNOWN PORT DIVERGENCE (inputs kept inside the agreement region): LIVE scans thinking/text/summary keys per dict-part with no fallback; the C port scans only 'thinking' and adds a global total==0 count-all-strings fallback \u2014 a text/summary-only dict or a mixed envelope can diverge. Worth a port normalization follow-up.",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ]
 }

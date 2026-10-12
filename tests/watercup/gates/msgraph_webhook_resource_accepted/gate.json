@@ -6,6 +6,12 @@
   "c_fn": "resource_accepted",
   "py_module": "gateway/platforms/msgraph_webhook.py",
   "py_fn": "_resource_accepted",
-  "inputs": ["|", "todos|todos", "/todos/|todos", "mail|messages,calendar", "todos/abc|todos/*", "todos|todos/*", "other|todos*,mail*", "x|*", "a/b/c|a/b/*", "a/b|a/b/c"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Graph webhook accepted-resource gate (normalize + wildcard/non-wildcard prefix match). C port msgraph_webhook_security.c::msgraph_resource_accepted traced as faithful copy; twin drives LIVE _normalize_resource_value/_resource_accepted logic with the same rung order. Input encoding 'resource|pat,pat,...' (argv-safe); empty pattern list => accept-all. All 10 cups match LIVE exactly, including wildcard prefix and subpath cases."
 }

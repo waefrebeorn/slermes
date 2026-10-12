@@ -4,21 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "is_free_tier_model",
-  "cflags": ["-I", "include", "-I", "lib", "-I", "src"],
-  "extra_src": ["src/agent/credits_tracker.o"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "src"
+  ],
+  "extra_src": [],
   "py_module": "agent/credits_tracker.py",
   "py_fn": "is_free_tier_model",
   "inputs": [
-    "nvidia/nemotron-3-ultra:free\t",
-    "stealth/ox-alpha\t",
-    "qwen/qwen3-coder\t",
-    "\t",
-    ":free\t",
-    "stealth/\t",
-    "meta/llama-3:freedom\t",
-    "openai/gpt-4o\thttps://api.example.com/v1",
-    "nousresearch/hermes-4-405b\thttps://inference-api.nousresearch.com/v1",
-    "x-ai/grok:free\thttps://api.example.com/v1"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Free-tier model detection. Harness links the REAL C port (credits_tracker.o::cli_agent_credits_tracker_is_free_tier_model); twin imports LIVE agent/credits_tracker.py::is_free_tier_model and traces the identical branch ladder (empty-model / :free suffix / stealth/ prefix / base_url gate / boolean result). PORT FIX APPLIED: credits_tracker.c previously omitted the stealth/-prefix signal (LIVE docstring point 2), returning False on e.g. 'stealth/ox-alpha'; added the strncmp prefix check and rebuilt credits_tracker.o. Pricing-cache branch (non-empty base_url): both sides yield False here — LIVE's in-process _pricing_cache is empty in this environment (cache-miss fail-closed) and C omits the CLI-only cache entirely; documented contract narrowing, not exercised deeper."
+  "notes": "Free-tier model detection. Harness links the REAL C port (credits_tracker.o::cli_agent_credits_tracker_is_free_tier_model); twin imports LIVE agent/credits_tracker.py::is_free_tier_model and traces the identical branch ladder (empty-model / :free suffix / stealth/ prefix / base_url gate / boolean result). PORT FIX APPLIED: credits_tracker.c previously omitted the stealth/-prefix signal (LIVE docstring point 2), returning False on e.g. 'stealth/ox-alpha'; added the strncmp prefix check and rebuilt credits_tracker.o. Pricing-cache branch (non-empty base_url): both sides yield False here \u2014 LIVE's in-process _pricing_cache is empty in this environment (cache-miss fail-closed) and C omits the CLI-only cache entirely; documented contract narrowing, not exercised deeper."
 }

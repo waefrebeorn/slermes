@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_check_feishu",
+  "c_fn": "lark_oapi",
   "py_module": "tools/feishu_drive_tool.py",
   "py_fn": "_check_feishu",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/feishu_doc_tool.c"
   ],
   "cflags": [
     "-I",

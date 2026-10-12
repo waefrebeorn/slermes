@@ -7,11 +7,11 @@
   "py_module": "gateway/run.py",
   "py_fn": "_replace_target_belongs_to_other_profile",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

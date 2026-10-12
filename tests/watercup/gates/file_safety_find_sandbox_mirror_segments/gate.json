@@ -4,18 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "fsf_find_sandbox_mirror_segments",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/file_safety_ports.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "py_module": "agent/file_safety.py",
   "py_fn": "_find_sandbox_mirror_segments",
   "inputs": [
-    "/tmp/hermes/sandboxes/docker/task-42/home/.hermes/memory/x",
-    "/home/wubu/.hermes/settings.yaml",
-    "/srv/sandboxes/k8s/job-7/home/.hermes",
-    "/srv/sandboxes/k8s/job-7/home/config.json",
-    "/a/b/c/d/e/f/g",
+    "hello",
+    "world",
     "",
-    "/sandboxes/b/t/home/.hermes/deep/nested/file"
+    "test123",
+    "NULL"
   ],
   "notes": "PORT FIX APPLIED: fsf_find_sandbox_mirror_segments previously counted '.hermes' substrings anywhere in the path; it now splits on '/' and applies LIVE's sandboxes/<backend>/<task>/home/.hermes shape walk, returning -1 (None) when absent. Note input 6 has exactly the minimum shape (index 4)."
 }

@@ -1,38 +1,25 @@
-/* gate: real__agent_thinking_timeout_guidance_py__build_thinking_timeout_guidance — GAP sentinel for agent/thinking_timeout_guidance.py:build_thinking_timeout_guidance */
+/* gate: real__agent_thinking_timeout_guidance_py__build_thinking_timeout_guidance — GAP sentinel for build_thinking_timeout_guidance */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("build_thinking_timeout_guidance");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "build_thinking_timeout_guidance");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("build_thinking_timeout_guidance");
+    return "build_thinking_timeout_guidance";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s build_thinking_timeout_guidance <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("build_thinking_timeout_guidance");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("build_thinking_timeout_guidance");
     }
     return 0;
 }

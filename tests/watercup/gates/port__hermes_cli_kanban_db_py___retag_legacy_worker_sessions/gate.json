@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_retag_legacy_worker_sessions",
+  "c_fn": "kdb_retag_legacy_worker_sessions",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_retag_legacy_worker_sessions",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_tasks.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

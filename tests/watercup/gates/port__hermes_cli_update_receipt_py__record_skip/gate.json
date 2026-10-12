@@ -15,7 +15,10 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/hermes_cli/update_receipt.c"
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_receipt.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

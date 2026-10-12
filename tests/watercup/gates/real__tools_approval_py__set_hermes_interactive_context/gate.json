@@ -7,11 +7,8 @@
   "py_module": "tools/approval.py",
   "py_fn": "set_hermes_interactive_context",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

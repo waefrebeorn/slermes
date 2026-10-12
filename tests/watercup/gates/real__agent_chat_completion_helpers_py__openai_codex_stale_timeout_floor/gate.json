@@ -7,11 +7,11 @@
   "py_module": "agent/chat_completion_helpers.py",
   "py_fn": "openai_codex_stale_timeout_floor",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

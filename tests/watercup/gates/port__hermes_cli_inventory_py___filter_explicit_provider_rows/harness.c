@@ -1,38 +1,31 @@
-/* gate: port__hermes_cli_inventory_py___filter_explicit_provider_rows — GAP sentinel for hermes_cli/inventory.py:_filter_explicit_provider_rows */
+/* gate: port__hermes_cli_inventory_py___filter_explicit_provider_rows — traced copy of hermes_cli_inventory_u_filter_explicit_provider_rows (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_filter_explicit_provider_rows");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_filter_explicit_provider_rows");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_filter_explicit_provider_rows");
-}
+extern int hermes_cli_inventory_u_filter_explicit_provider_rows(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _filter_explicit_provider_rows <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_inventory_u_filter_explicit_provider_rows <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("hermes_cli_inventory_u_filter_explicit_provider_rows");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = hermes_cli_inventory_u_filter_explicit_provider_rows(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("hermes_cli_inventory_u_filter_explicit_provider_rows");
     }
     return 0;
 }

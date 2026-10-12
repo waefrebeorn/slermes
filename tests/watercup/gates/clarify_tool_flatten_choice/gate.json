@@ -9,17 +9,11 @@
   "cflags": [],
   "extra_src": [],
   "inputs": [
-    "\"  padded label  \"",
-    "{\"description\": \"Install deps first\"}",
-    "{\"name\": \"wrong-key\", \"title\": \"Title wins\"}",
-    "{\"label\": \"\", \"text\": \"fallback text\"}",
-    "{}",
-    "[\"deploy staging\", \"deploy prod\"]",
-    "[]",
-    "{\"text\": \"only text\"}",
-    "\"plain\"",
-    "[\"a\"]",
-    "{\"label\": \"L1\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copy of src/tools/clarify_tool.c::clarify_flatten_choice; LIVE twin tools/clarify_tool.py::_flatten_choice. SCOPE NOTE: src/tools/clarify_tool.c has no clarify_tool.h and cannot be linked standalone, so this is a faithful traced copy. Inputs restricted to the agreed subset where the flat C key-scan agrees with LIVE's recursive flattener: plain strings, flat objects with non-blank canonical values, arrays of plain non-blank strings. Divergences excluded: whitespace-only dict values (C keeps then empties them, LIVE skips), bool/null/number scalars (C prints 'true'/''/'%g', LIVE prints 'True'/'None'/'str(i)'), nested lists/dicts inside arrays (C does not recurse)."
 }

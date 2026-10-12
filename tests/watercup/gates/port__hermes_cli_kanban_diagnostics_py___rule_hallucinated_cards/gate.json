@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_rule_hallucinated_cards",
+  "c_fn": "hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards",
   "py_module": "hermes_cli/kanban_diagnostics.py",
   "py_fn": "_rule_hallucinated_cards",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_diagnostics.c"
   ],
   "cflags": [
     "-I",

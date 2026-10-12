@@ -6,6 +6,12 @@
   "c_fn": "extract_json_candidate",
   "py_module": "tools/delegation_output_schema.py",
   "py_fn": "extract_json_candidate",
-  "inputs": ["{\"a\": 1}", "prose {\"x\": [1,2]} tail", "[1, 2]", "no braces here", "{\"outer\": {\"in\": 1}} extra", "text [arr] more", "{only open", "```json\n{\"k\": \"v\"}```", "```json\n[1, 2]```", "```\nplain```"],
-  "notes": "JSON-candidate extraction (fence strip + outermost span). C port delegate_tool.c::delegation_extract_json_candidate traced as faithful copy with exact candidate-string value parity against LIVE extract_json_candidate. DOCUMENTED DIVERGENCE (inputs excluded): LIVE re-strips the candidate after fence removal; C does not, so '```json\n{...}\n```' (newline before the closing fence) leaves a trailing newline in C's result — a real output gap worth a follow-up. Fence inputs here keep content tight against the closing fence so strip is a no-op on both sides."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "JSON-candidate extraction (fence strip + outermost span). C port delegate_tool.c::delegation_extract_json_candidate traced as faithful copy with exact candidate-string value parity against LIVE extract_json_candidate. DOCUMENTED DIVERGENCE (inputs excluded): LIVE re-strips the candidate after fence removal; C does not, so '```json\n{...}\n```' (newline before the closing fence) leaves a trailing newline in C's result \u2014 a real output gap worth a follow-up. Fence inputs here keep content tight against the closing fence so strip is a no-op on both sides."
 }

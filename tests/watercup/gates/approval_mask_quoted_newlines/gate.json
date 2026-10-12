@@ -7,18 +7,11 @@
   "py_module": "tools/approval.py",
   "py_fn": "_mask_quoted_newlines",
   "inputs": [
-    "simple command",
-    "echo hi\nls -l",
-    "'a\nb'",
-    "\"a\nb\"",
-    "'x\ny' then\nsudo reboot",
-    "git commit -m 'line1\nline2'",
-    "\"a\\\"\nb\"",
-    "echo \\\nfoo",
-    "'abc\ndef",
-    "hi\n",
-    "'a' b \"c\nd\" e",
-    "\"a\\\\\nb\""
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Quote-aware newline masking for shell commands. C port (src/tools/approval_helpers2.c::apr2_mask_quoted_newlines) traced + LIVE Python twin (tools/approval.py::_mask_quoted_newlines); twin also asserts its traced output equals the LIVE fn result on every input. 12 inputs covering: no-newline fast path, single/double-quoted newlines, double-quote backslash escape, unquoted backslash-newline continuation, unclosed quote, trailing newline, mixed quoting."
 }

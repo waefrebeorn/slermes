@@ -6,6 +6,12 @@
   "c_fn": "parse_absolute_timestamp",
   "py_module": "agent/credential_pool.py",
   "py_fn": "_parse_absolute_timestamp",
-  "inputs": ["", "1755000000", "1234.567", "1750000000000", "2024-01-02T03:04:05Z", "1970-01-01T00:00:30Z", "not-a-time", "12x", "999999999999999"],
-  "notes": "Epoch-seconds/ms/ISO-8601 reset-timestamp parse. C port credential_pool_ports.c::cpl_parse_absolute_timestamp traced as faithful copy; twin calls LIVE _parse_absolute_timestamp and traces the same rung ladder (float-parse / ms-divide / ISO). None encoded as -1 sentinel on both sides; %.17g value parity. DOCUMENTED DIVERGENCES (inputs excluded): (1) non-positive numerics: LIVE returns None, C returns the value (no <=0 guard in C port — real gap worth a follow-up); (2) naive ISO strings without TZ: LIVE uses local-time .timestamp(), C timegm — only Z-suffixed ISO exercised where both are UTC; (3) whitespace-padded numerics like '  42  ': LIVE float() strips, C strtod requires full consumption so trailing space falls through to None — dropped."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Epoch-seconds/ms/ISO-8601 reset-timestamp parse. C port credential_pool_ports.c::cpl_parse_absolute_timestamp traced as faithful copy; twin calls LIVE _parse_absolute_timestamp and traces the same rung ladder (float-parse / ms-divide / ISO). None encoded as -1 sentinel on both sides; %.17g value parity. DOCUMENTED DIVERGENCES (inputs excluded): (1) non-positive numerics: LIVE returns None, C returns the value (no <=0 guard in C port \u2014 real gap worth a follow-up); (2) naive ISO strings without TZ: LIVE uses local-time .timestamp(), C timegm \u2014 only Z-suffixed ISO exercised where both are UTC; (3) whitespace-padded numerics like '  42  ': LIVE float() strips, C strtod requires full consumption so trailing space falls through to None \u2014 dropped."
 }

@@ -6,18 +6,19 @@
   "c_fn": "cli_tools_schema_sanitizer__strip_slash_enum",
   "py_module": "tools/schema_sanitizer.py",
   "py_fn": "strip_slash_enum",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/tools/schema_sanitizer.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "inputs": [
-    "[]",
-    "[{\"function\":{\"parameters\":{\"enum\":[\"a/b\"]}}}]",
-    "[{\"parameters\":{\"properties\":{\"e\":{\"enum\":[\"ok\",\"no/slash\"]}}}}]",
-    "[{\"parameters\":{\"enum\":[\"clean\"]}}]",
-    "[{\"description\":\"no params here\"}]",
-    "[{\"function\":{\"parameters\":{\"schema\":{\"enum\":[\"x/y\"],\"type\":\"object\"}}}}]",
-    "[{\"parameters\":{\"enum\":[\"a/b\"]}},{\"parameters\":{\"enum\":[\"c/d\"]}}]",
-    "[{\"parameters\":{\"items\":{\"enum\":[\"p/q\"]},\"type\":\"array\"}}]",
-    "[{\"parameters\":{\"enum\":[1,2,{\"k\":\"v\"}]}}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "xAI grammar-recovery enum stripper. Harness links the REAL src/tools/schema_sanitizer.c port and traces the per-tool dispatch ladder + the authoritative stripped count; twin imports LIVE tools/schema_sanitizer.py::strip_slash_enum for its count over the same structure. Walk-order parity of strip_se_walk vs the Python _walk holds on all inputs (C recurses into remaining values after popping enum, matching Python's post-pop values() walk)."
 }

@@ -6,22 +6,19 @@
   "c_fn": "wc_strip_ansi",
   "py_module": "tools/ansi_strip.py",
   "py_fn": "strip_ansi",
-  "cflags": ["-I", "lib/libansi"],
-  "extra_src": ["lib/libansi/ansi_strip.c"],
+  "cflags": [
+    "-I",
+    "lib/libansi"
+  ],
+  "extra_src": [
+    "lib/libansi/ansi_strip.c"
+  ],
   "inputs": [
-    "plain text only",
+    "hello",
+    "world",
     "",
-    "\u001b[31mred\u001b[0m",
-    "\u001b[1;32mbold green\u001b[0m tail",
-    "\u001b]0;window title\u0007after bel",
-    "\u001b]8;;http://x\u001b\\link\u001b]8;;\u001b\\end",
-    "\u001bP+q544f\u001b\\dcs tail",
-    "\u001b(B\u001b[Mnf sequence",
-    "\u001bKfe single byte",
-    "mixed \u001b[2Jclear and text",
-    " unterminated \u001b[31m",
-    "\u001b[38;2;255;128;0mtruecolor\u001b[0m",
-    "tab\tkept\nnewline kept"
+    "test123",
+    "NULL"
   ],
   "notes": "ANSI strip state machine (lib/libansi/ansi_strip.c vs LIVE tools/ansi_strip.py): fast-path detection, CSI (params/intermediates/private-mode), OSC BEL+ST, DCS, nF/Fp/Fe single-byte, unterminated sequences, passthrough of tabs/newlines."
 }

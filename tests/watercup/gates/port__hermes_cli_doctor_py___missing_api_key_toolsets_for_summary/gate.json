@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_missing_api_key_toolsets_for_summary",
+  "c_fn": "doctor_missing_api_key_toolsets",
   "py_module": "hermes_cli/doctor.py",
   "py_fn": "_missing_api_key_toolsets_for_summary",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/doctor_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

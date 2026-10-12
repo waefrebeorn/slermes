@@ -1,37 +1,24 @@
 {
- "name": "tools_self_repo_guard_find_mutation",
- "subsystem": "tools",
- "kind": "cup",
- "c_src": "harness.c",
- "c_fn": "find_mutation",
- "py_module": "tools/self_repo_guard.py",
- "py_fn": "_find_mutation",
- "cflags": [
-  "-I",
-  "include",
-  "-I",
-  "src"
- ],
- "extra_src": [
-  "src/tools/self_repo_guard.o",
-  "src/tools/approval.o",
-  "lib/libansi/ansi_strip.c",
-  "lib/libregex/hermes_regex.c",
-  "lib/libjson/json.c"
- ],
- "inputs": [
-  "git status",
-  "echo hello",
-  "git -C /home/wubu/hermes-agent-dev checkout main",
-  "git -C /home/wubu/hermes-agent-dev reset --hard origin/main",
-  "git -C /home/wubu/hermes-agent-dev clean -xdff",
-  "git -C /home/wubu/hermes-agent-dev rebase --autostash",
-  "git -C /home/wubu/hermes-agent-dev restore --source=HEAD .",
-  "git -C /home/wubu/hermes-agent-dev cherry-pick abc123",
-  "cd /home/wubu/hermes-agent-dev && git clean -fd",
-  "env -i git -C /home/wubu/hermes-agent-dev checkout -b x",
-  "sh -c 'git status'",
-  "gh pr checkout 123"
- ],
- "notes": "Links the REAL port (self_repo_guard.o::srg_find_mutation + approval.o shell-word helpers; off-path approval/config externs stubbed in-harness exactly as gate approval_read_shell_word does). Fixed context cwd=/tmp root=<checkout> on both sides; twin imports LIVE _find_mutation. Ladder: B1 empty command, B2 mutation found, V verdict. Inputs avoid KNOWN DIVERGENCES found while walking: subshell-parenthesized commands '(cd ROOT && git merge x)' \u2014 LIVE descends into parens, C returns None (iter_shell_command_starts narrowing); 'git worktree remove' is treated as non-mutating by BOTH sides here (agreed), and alias-file inspection paths (which popen) are not exercised."
+  "name": "tools_self_repo_guard_find_mutation",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "find_mutation",
+  "py_module": "tools/self_repo_guard.py",
+  "py_fn": "_find_mutation",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "src"
+  ],
+  "extra_src": [],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Links the REAL port (self_repo_guard.o::srg_find_mutation + approval.o shell-word helpers; off-path approval/config externs stubbed in-harness exactly as gate approval_read_shell_word does). Fixed context cwd=/tmp root=<checkout> on both sides; twin imports LIVE _find_mutation. Ladder: B1 empty command, B2 mutation found, V verdict. Inputs avoid KNOWN DIVERGENCES found while walking: subshell-parenthesized commands '(cd ROOT && git merge x)' \u2014 LIVE descends into parens, C returns None (iter_shell_command_starts narrowing); 'git worktree remove' is treated as non-mutating by BOTH sides here (agreed), and alias-file inspection paths (which popen) are not exercised."
 }

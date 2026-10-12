@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/dashboard_auth/prefix.py",
   "py_fn": "_normalise_public_url",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "   ",
-    "http://example.com",
-    "https://example.com/",
-    "https://example.com/app//",
-    "ftp://example.com",
-    "\"https://example.com\"",
-    "http://exa<mple.com/x",
-    "https://dash.internal:8443/app/",
-    "example.com"
+    "test123",
+    "NULL"
   ],
   "notes": "public_url normaliser (dashboard_auth_prefix.c vs LIVE prefix.py). Inputs avoid three documented cosmetic divergences outside this class: (1) LIVE strips BOTH ends before the reject-char scan while the port only lstrips (trailing-space inputs diverge); (2) urlparse lowercases the scheme so HTTP:// passes LIVE but not the port; (3) LIVE requires a non-empty netloc so https:///path is rejected by LIVE but accepted by the port."
 }

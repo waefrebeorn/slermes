@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_server_config",
+  "c_fn": "hermes_cli_mcp_catalog_u_build_server_config",
   "py_module": "hermes_cli/mcp_catalog.py",
   "py_fn": "_build_server_config",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/mcp_catalog.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_record_compression_failure_cooldown",
+  "c_fn": "cli_agent_context_compressor__record_compression_failure_cooldown",
   "py_module": "agent/context_compressor.py",
   "py_fn": "_record_compression_failure_cooldown",
   "inputs": [

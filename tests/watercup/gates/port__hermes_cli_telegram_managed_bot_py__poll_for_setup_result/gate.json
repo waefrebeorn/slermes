@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "poll_for_setup_result",
+  "c_fn": "hermes_cli_telegram_managed_bo_poll_for_setup_result",
   "py_module": "hermes_cli/telegram_managed_bot.py",
   "py_fn": "poll_for_setup_result",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/telegram_managed_bot.c"
   ],
   "cflags": [
     "-I",

@@ -7,11 +7,11 @@
   "py_module": "tools/browser_tool.py",
   "py_fn": "_verify_reapable_browser_daemon",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

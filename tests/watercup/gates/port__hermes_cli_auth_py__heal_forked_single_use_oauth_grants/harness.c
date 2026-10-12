@@ -1,38 +1,29 @@
-/* gate: port__hermes_cli_auth_py__heal_forked_single_use_oauth_grants — GAP sentinel for hermes_cli/auth.py:heal_forked_single_use_oauth_grants */
+/* gate: port__hermes_cli_auth_py__heal_forked_single_use_oauth_grants — traced copy of heal_forked_single_use_oauth_grants (void) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("heal_forked_single_use_oauth_grants");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "heal_forked_single_use_oauth_grants");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("heal_forked_single_use_oauth_grants");
-}
+extern void heal_forked_single_use_oauth_grants(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s heal_forked_single_use_oauth_grants <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("heal_forked_single_use_oauth_grants");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    heal_forked_single_use_oauth_grants(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR("void");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("heal_forked_single_use_oauth_grants");
     }
     return 0;
 }

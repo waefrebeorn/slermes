@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "ack_advisory",
+  "c_fn": "cli_security_advisories_ack_advisory",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "ack_advisory",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/security_advisories.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

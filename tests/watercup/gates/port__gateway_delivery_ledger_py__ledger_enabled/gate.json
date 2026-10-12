@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "ledger_enabled",
+  "c_fn": "gateway_delivery_ledger_ledger_enabled",
   "py_module": "gateway/delivery_ledger.py",
   "py_fn": "ledger_enabled",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/delivery_ledger.c"
   ],
   "cflags": [
     "-I",

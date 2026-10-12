@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_voice_record_key_cache",
+  "c_fn": "hcli_set_voice_record_key_cache",
   "py_module": "cli.py",
   "py_fn": "set_voice_record_key_cache",
   "inputs": [

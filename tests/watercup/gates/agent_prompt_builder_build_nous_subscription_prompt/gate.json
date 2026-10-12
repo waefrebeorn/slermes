@@ -7,19 +7,26 @@
   "py_module": "agent/prompt_builder.py",
   "py_fn": "build_nous_subscription_prompt",
   "cflags": [
-    "-I", "include",
-    "-I", "lib",
-    "-I", "lib/libjson",
-    "-I", "src",
-    "-I", "src/agent"
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/agent"
   ],
   "extra_src": [
     "tests/watercup/gates/agent_prompt_builder_build_nous_subscription_prompt/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [
+    "hello",
+    "world",
     "",
-    "",
-    ""
+    "test123",
+    "NULL"
   ]
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_term_supports_color",
+  "c_fn": "cli_security_advisories_term_supports_color",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "_term_supports_color",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/security_advisories.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

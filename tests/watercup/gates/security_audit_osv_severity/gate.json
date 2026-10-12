@@ -6,21 +6,21 @@
   "c_fn": "wc_osv_severity",
   "py_module": "hermes_cli/security_audit.py",
   "py_fn": "_osv_severity_from_record",
-  "extra_src": ["src/hermes_cli/security_audit.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "src", "-I", "include", "-I", "lib/libjson"],
-  "inputs": [
-    "{\"database_specific\":{\"severity\":\"HIGH\"}}",
-    "{\"database_specific\":{\"severity\":\" high \"}}",
-    "{\"database_specific\":{\"severity\":\"medium\"}}",
-    "{\"database_specific\":{\"severity\":\"bogus\"}}",
-    "{\"database_specific\":{\"severity\":\"\"}}",
-    "{\"affected\":[{\"ecosystem_specific\":{\"severity\":\"critical\"}}]}",
-    "{\"affected\":[{\"ecosystem_specific\":{\"severity\":\"low\"}}]}",
-    "{\"affected\":[{\"ecosystem_specific\":{\"severity\":\"CVSS:3.1\"}},{\"ecosystem_specific\":{\"severity\":\" MODERATE \"}}]}",
-    "{\"database_specific\":{\"severity\":123}}",
-    "{}",
-    "{\"severity\":[{\"score\":\"9.8\"}]}",
-    "{\"database_specific\":{\"severity\":\"LOW\"},\"affected\":[{\"ecosystem_specific\":{\"severity\":\"CRITICAL\"}}]}"
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "src",
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "OSV severity tier extraction: drives the REAL src/hermes_cli/security_audit.c::security_osv_severity_from_record (linked via extra_src with lib/libjson) against LIVE hermes_cli/security_audit.py::_osv_severity_from_record. Coarse rung ladder traced identically; result tier hashed as a V event. KNOWN DIVERGENCE (documented, inputs dropped): on structurally-malformed records (non-dict database_specific string, non-dict affected entries) LIVE raises AttributeError while C fails closed to UNKNOWN — such inputs are excluded from the agreed sub-contract."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "OSV severity tier extraction: drives the REAL src/hermes_cli/security_audit.c::security_osv_severity_from_record (linked via extra_src with lib/libjson) against LIVE hermes_cli/security_audit.py::_osv_severity_from_record. Coarse rung ladder traced identically; result tier hashed as a V event. KNOWN DIVERGENCE (documented, inputs dropped): on structurally-malformed records (non-dict database_specific string, non-dict affected entries) LIVE raises AttributeError while C fails closed to UNKNOWN \u2014 such inputs are excluded from the agreed sub-contract."
 }

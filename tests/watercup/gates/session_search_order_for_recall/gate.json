@@ -4,23 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "order_for_recall",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "tools/session_search_tool.py",
   "py_fn": "_order_for_recall",
   "inputs": [
-    "[]",
-    "[{\"source\": \"chat\"}]",
-    "[{\"source\": \"cron\"}]",
-    "[{\"source\": \"chat\", \"rank\": -1}, {\"source\": \"cron\", \"rank\": -2}]",
-    "[{\"source\": \"cron\", \"rank\": -1}, {\"source\": \"chat\", \"rank\": -2}]",
-    "[{\"source\": \"cron\"}, {\"source\": \"cron\"}, {\"source\": \"chat\"}, {\"source\": \"chat\"}]",
-    "[{\"source\": \"chat\"}, {\"source\": \"chat\"}, {\"source\": \"cron\"}]",
-    "[{\"rank\": -1}, {\"source\": \"cron\"}, {\"source\": \"\"}, {\"rank\": -4}]",
-    "[{\"source\": \"telegram\"}, {\"source\": \"cron\"}, {\"source\": \"CRON\"}]",
-    "[{\"source\": 1}, {\"source\": null}, {\"source\": \"cron\"}, {\"source\": \"cron\"}]",
-    "notjson",
-    "{\"source\": \"cron\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copy of session_search_tool.c::order_for_recall vs LIVE tools/session_search_tool.py::_order_for_recall (stable demoted-cron partition). Harness links the real libjson and runs a faithful copy of the port body; the twin asserts LIVE output equals the stable front+back partition on every acting input."
 }

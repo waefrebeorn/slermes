@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_post_enroll",
+  "c_fn": "hermes_cli_gateway_enroll_u_post_enroll",
   "py_module": "hermes_cli/gateway_enroll.py",
   "py_fn": "_post_enroll",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/gateway_enroll.c"
   ],
   "cflags": [
     "-I",

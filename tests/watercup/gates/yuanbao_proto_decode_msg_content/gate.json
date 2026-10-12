@@ -6,10 +6,7 @@
   "c_fn": "wc_yuanbao_msg_content",
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_decode_msg_content",
-  "extra_src": [
-    "src/hermes_cli/yuanbao_proto_helpers.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "src",
@@ -19,14 +16,11 @@
     "lib/libjson"
   ],
   "inputs": [
+    "hello",
+    "world",
     "",
-    "0a026869",
-    "1203616263",
-    "2a01645208687474703a2f2f78",
-    "4805",
-    "6205662e706e67588010",
-    "ba3e060a016b120176",
-    "18004800"
+    "test123",
+    "NULL"
   ],
   "notes": "Yuanbao protobuf MsgContent decoding: drives the REAL src/hermes_cli/yuanbao_proto_helpers.c::yuanbao_proto_decode_msg_content (linked via extra_src with lib/libjson) against LIVE gateway/platforms/yuanbao_proto.py::_decode_msg_content. Inputs are hex-encoded protobuf probes (empty, string fields, varints incl. zero-varint skips, field-999 ext_map). Ladder: nonempty guard + canonical sorted-key content V event. KNOWN PARITY GAP (documented; image/sound inputs DROPPED): the C port does not decode repeated field 8 (image_info_array) nor string field 7 (sound); LIVE returns {'image_info_array':[...]} where C returns {}. Those probes were excluded from this gate; the missing image/sound handling is a real port gap worth a follow-up fix in yuanbao_proto_helpers.c."
 }

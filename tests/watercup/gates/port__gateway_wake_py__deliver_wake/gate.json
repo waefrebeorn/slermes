@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "deliver_wake",
+  "c_fn": "gateway_wake_deliver_wake",
   "py_module": "gateway/wake.py",
   "py_fn": "deliver_wake",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/wake.c"
   ],
   "cflags": [
     "-I",

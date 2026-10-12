@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_close_response",
+  "c_fn": "tts_close_response",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_close_response",
   "inputs": [

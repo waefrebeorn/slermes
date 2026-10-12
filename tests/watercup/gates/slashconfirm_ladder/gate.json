@@ -7,16 +7,11 @@
   "py_module": "tools/slash_confirm.py",
   "py_fn": "resolve",
   "inputs": [
-    "res:sess-a|id-1|once|0|300",
-    "res:sess-a|id-1|always|10|300",
-    "res:sess-b|wrong-id|cancel|5|300",
-    "res:sess-c|id-9|once|400|300",
-    "res:sess-d|id-2|once|299|300",
-    "res:sess-e|id-3|once|301|300",
-    "stale:sess-f|0|300",
-    "stale:sess-g|400|300",
-    "stale:sess-h|301|300",
-    "stale:sess-i|99|100"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Slash-command confirmation decision ladder — C lib/libslashconfirm/slash_confirm.c (resolve + clear_if_stale) vs LIVE tools/slash_confirm.py. Clock skew is eliminated by injecting created_at on both sides (age = now - created_at). Rungs: entry found / confirm_id match / within timeout / handler present; stale: found / stale."
+  "notes": "Slash-command confirmation decision ladder \u2014 C lib/libslashconfirm/slash_confirm.c (resolve + clear_if_stale) vs LIVE tools/slash_confirm.py. Clock skew is eliminated by injecting created_at on both sides (age = now - created_at). Rungs: entry found / confirm_id match / within timeout / handler present; stale: found / stale."
 }

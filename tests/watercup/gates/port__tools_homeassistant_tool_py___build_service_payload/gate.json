@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_service_payload",
+  "c_fn": "tools_homeassistant_tool_u_build_service_payload",
   "py_module": "tools/homeassistant_tool.py",
   "py_fn": "_build_service_payload",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/homeassistant_tool.c"
   ],
   "cflags": [
     "-I",

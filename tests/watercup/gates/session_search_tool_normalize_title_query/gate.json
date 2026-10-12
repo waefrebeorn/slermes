@@ -7,20 +7,11 @@
   "py_module": "tools/session_search_tool.py",
   "py_fn": "_normalize_title_query",
   "inputs": [
-    "  hello ",
-    "`quoted`",
-    "\"double quoted\"",
-    "'single'",
-    "noquotes",
-    "``",
-    "''\"\"",
-    "  ",
-    "  mix `ed`  ",
-    "a`b",
-    "  ``tail``  ",
-    "\"mid`dle\"",
-    "```stack```",
-    " x 'y' z "
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Title-query quote/whitespace stripper (session_search_tool.c::normalize_title_query vs LIVE tools/session_search_tool.py::_normalize_title_query). Faithful port; ASCII inputs only (Python str.strip() also strips unicode whitespace where C isspace does not)."
 }

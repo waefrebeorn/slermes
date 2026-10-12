@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_invalidate",
+  "c_fn": "hcli_invalidate_min",
   "py_module": "cli.py",
   "py_fn": "_invalidate",
   "inputs": [

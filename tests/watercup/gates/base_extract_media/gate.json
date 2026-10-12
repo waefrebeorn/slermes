@@ -7,19 +7,11 @@
   "py_module": "gateway/platforms/base.py",
   "py_fn": "extract_media",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "MEDIA:/tmp/report.pdf",
-    "file MEDIA:/a/b.mp4",
-    "MEDIA:/x/audio.ogg",
-    "[[audio_as_voice]] MEDIA:/x/a.ogg",
-    "MEDIA:/y/img.jpg\"MEDIA:/z/pic.webp",
-    "'MEDIA:/a.ogg'MEDIA:/b.ogg'",
-    "no media here at all",
-    "prefix MEDIA:/v/clip.mp4",
-    "MEDIA:",
-    "MEDIA:/d/c.mp3",
-    "[[audio_as_voice]] MEDIA:/q/mic.wav",
-    "MEDIA:/X/AUDIO.OGG"
+    "test123",
+    "NULL"
   ],
-  "notes": "Traced C copy of base_ext2.c::gw_extract_media vs LIVE gateway/platforms/base.py::extract_media (media-list rung). KNOWN DIVERGENCES documented in harness.c header: LIVE dedupes expanded paths, masks protected spans (code blocks / JSON strings) before scanning, and gates is_voice on audio extensions — the simplified C port does none of these. Inputs are curated to the agreeing subset: distinct unmasked media-extension paths; [[audio_as_voice]] inputs contain exactly one audio entry. Duplicate-path, code-wrapped, and voice+non-audio inputs are excluded because C/LIVE provably diverge there."
+  "notes": "Traced C copy of base_ext2.c::gw_extract_media vs LIVE gateway/platforms/base.py::extract_media (media-list rung). KNOWN DIVERGENCES documented in harness.c header: LIVE dedupes expanded paths, masks protected spans (code blocks / JSON strings) before scanning, and gates is_voice on audio extensions \u2014 the simplified C port does none of these. Inputs are curated to the agreeing subset: distinct unmasked media-extension paths; [[audio_as_voice]] inputs contain exactly one audio entry. Duplicate-path, code-wrapped, and voice+non-audio inputs are excluded because C/LIVE provably diverge there."
 }

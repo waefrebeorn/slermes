@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_wait_for_browser_debug_ready_or_exit",
+  "c_fn": "hermes_cli_browser_connect_u_wait_for_browser_debug_ready_or_it",
   "py_module": "hermes_cli/browser_connect.py",
   "py_fn": "_wait_for_browser_debug_ready_or_exit",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/browser_connect.c"
   ],
   "cflags": [
     "-I",

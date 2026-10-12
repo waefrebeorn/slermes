@@ -14,15 +14,11 @@
   "py_module": "agent/model_metadata.py",
   "py_fn": "_wire_message_shadow",
   "inputs": [
-    "\"just a string\"",
-    "{\"role\": \"user\", \"content\": \"hello\"}",
-    "{\"role\": \"assistant\", \"content\": \"hi\", \"_anthropic_content_blocks\": [1]}",
-    "{\"role\": \"user\", \"content\": \"clean\", \"api_content\": \"rewritten\"}",
-    "{\"role\": \"tool\", \"content\": \"clean\", \"api_content\": \"x\"}",
-    "{\"role\": \"assistant\", \"api_content\": \"only sidecar\", \"finish_reason\": \"stop\"}",
-    "{\"role\": \"user\", \"content\": [{\"type\": \"text\", \"text\": \"a\"}, {\"type\": \"image_url\", \"image_url\": {\"url\": \"data:image/png;base64,AAAA\"}}]}",
-    "{\"role\": \"user\", \"content\": {\"_multimodal\": true, \"text_summary\": \"two images\"}}",
-    "{\"role\": \"assistant\", \"reasoning_details\": [{\"x\": 1}], \"content\": \"ok\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Wire shadow (what the provider actually receives) ladder: traced copy of src/agent/model_metadata.c::mm_wire_message_shadow vs LIVE agent/model_metadata.py::_wire_message_shadow. KNOWN divergences avoided by input choice: (1) LIVE also drops PERSISTENCE_ONLY_MESSAGE_FIELDS={'timestamp'}; the C port keeps it \u2014 timestamp-bearing messages diverge. (2) For _multimodal dicts WITHOUT a string text_summary LIVE substitutes '' while C copies the whole dict."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ensure_target_ready",
+  "c_fn": "tools_lazy_deps_u_ensure_target_ready",
   "py_module": "tools/lazy_deps.py",
   "py_fn": "_ensure_target_ready",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/lazy_deps.c"
   ],
   "cflags": [
     "-I",

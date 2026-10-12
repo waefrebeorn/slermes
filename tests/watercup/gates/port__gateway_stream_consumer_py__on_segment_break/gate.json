@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "on_segment_break",
+  "c_fn": "sc_on_segment_break",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "on_segment_break",
   "inputs": [

@@ -1,38 +1,25 @@
-/* gate: real__agent_replay_cleanup_py__strip_dangling_tool_call_tail — GAP sentinel for agent/replay_cleanup.py:strip_dangling_tool_call_tail */
+/* gate: real__agent_replay_cleanup_py__strip_dangling_tool_call_tail — GAP sentinel for strip_dangling_tool_call_tail */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("strip_dangling_tool_call_tail");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "strip_dangling_tool_call_tail");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("strip_dangling_tool_call_tail");
+    return "strip_dangling_tool_call_tail";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s strip_dangling_tool_call_tail <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("strip_dangling_tool_call_tail");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("strip_dangling_tool_call_tail");
     }
     return 0;
 }

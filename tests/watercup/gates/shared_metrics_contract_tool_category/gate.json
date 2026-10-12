@@ -6,5 +6,11 @@
   "c_fn": "tool_category",
   "py_module": "hermes_cli/observability/shared_metrics_contract.py",
   "py_fn": "tool_category",
-  "inputs": ["terminal", "WEB", "", "mcp__github", "browser-vision", "image_gen", "tts", "vision-ocr", "homeassistant-light", "todo", "session_search", "x_search", "discord_bot", "cronjob", "totally_unknown_tool"]
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ]
 }

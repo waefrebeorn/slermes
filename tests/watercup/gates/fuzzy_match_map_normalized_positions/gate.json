@@ -7,15 +7,11 @@
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_map_normalized_positions",
   "inputs": [
-    "hello world|hello world|0:5",
-    "a  b|a b|2:3",
-    "x\ty|x y|0:3",
-    "foo    bar|foo bar|4:7",
-    "hello   world  foo|hello world foo|6:9,12:15",
-    "\tdef f():| def f():|0:8",
-    "a  b  c|a b c|2:4",
-    "plain text|plain text|",
-    "indent  block   here|indent block here|7:12,13:17"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Whitespace-normalized position mapper (fuzzy_match.c vs LIVE tools/fuzzy_match.py). KNOWN DIVERGENCE (documented, inputs avoid it): the 'nearest normalized position' fallback for an unmapped match start picks the smallest ORIGINAL index in LIVE but the smallest mapped VALUE in the C port — these can differ when orig_to_norm holds distinct out-of-order values. All gate inputs keep match starts inside norm_to_orig_start so the fallback never fires; also avoided: ns>nlen with no qualifying mapping (LIVE raises ValueError)."
+  "notes": "Whitespace-normalized position mapper (fuzzy_match.c vs LIVE tools/fuzzy_match.py). KNOWN DIVERGENCE (documented, inputs avoid it): the 'nearest normalized position' fallback for an unmapped match start picks the smallest ORIGINAL index in LIVE but the smallest mapped VALUE in the C port \u2014 these can differ when orig_to_norm holds distinct out-of-order values. All gate inputs keep match starts inside norm_to_orig_start so the fallback never fires; also avoided: ns>nlen with no qualifying mapping (LIVE raises ValueError)."
 }

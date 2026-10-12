@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_persist_active_session_before_close",
+  "c_fn": "cl2_persist_active_session_before_close",
   "py_module": "cli.py",
   "py_fn": "_persist_active_session_before_close",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/helpers2.c"
   ],
   "cflags": [
     "-I",

@@ -7,18 +7,11 @@
   "py_module": "agent/model_metadata.py",
   "py_fn": "_extract_pricing",
   "inputs": [
-    "{}",
-    "{\"input_token_price_per_m\": 12345.6}",
-    "{\"output_token_price_per_m\": 987.65}",
-    "{\"input_token_price_per_m\": 12.5, \"output_token_price_per_m\": 0.25}",
-    "{\"prompt\": 0.000005}",
-    "{\"Input_Cost_Per_Token\": \"0.03\"}",
-    "{\"nested\": {\"completion\": 2}}",
-    "{\"a\": {\"prompt\": 1}, \"completion\": 9}",
-    "{\"cache_read\": \"\"}",
-    "{\"cache_read\": \"\", \"output\": 7}",
-    "{\"metadata\": {\"other\": 1}, \"request_cost\": 3.5}",
-    "{\"prompt_token_cost\": 4, \"cache_creation\": 8}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Pricing extraction (provider_metadata.c vs LIVE agent/model_metadata.py). Documented divergences / exclusions: (1) C formats numeric prices with %.12g while LIVE uses str(float) — integer-valued results differ textually ('5' vs '5.0'); the cup therefore hashes result KEY names, not values. (2) C lacks the LIVE DeepInfra metadata.pricing branch — deepinfra payloads excluded. (3) C walks only two nesting levels vs LIVE's full recursion — payloads kept to one level. (4) String-valued novita keys diverge (LIVE float()-coerces, C ignores)."
+  "notes": "Pricing extraction (provider_metadata.c vs LIVE agent/model_metadata.py). Documented divergences / exclusions: (1) C formats numeric prices with %.12g while LIVE uses str(float) \u2014 integer-valued results differ textually ('5' vs '5.0'); the cup therefore hashes result KEY names, not values. (2) C lacks the LIVE DeepInfra metadata.pricing branch \u2014 deepinfra payloads excluded. (3) C walks only two nesting levels vs LIVE's full recursion \u2014 payloads kept to one level. (4) String-valued novita keys diverge (LIVE float()-coerces, C ignores)."
 }

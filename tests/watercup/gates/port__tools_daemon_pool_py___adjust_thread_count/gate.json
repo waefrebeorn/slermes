@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_adjust_thread_count",
+  "c_fn": "tools_daemon_pool_u_adjust_thread_count",
   "py_module": "tools/daemon_pool.py",
   "py_fn": "_adjust_thread_count",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/daemon_pool.c"
   ],
   "cflags": [
     "-I",

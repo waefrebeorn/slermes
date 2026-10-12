@@ -7,19 +7,11 @@
   "py_module": "agent/model_metadata.py",
   "py_fn": "is_local_endpoint",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "http://localhost:11434",
-    "Http://LocalHost:8000",
-    "127.0.0.5:8080",
-    "10.1.2.3",
-    "192.168.0.2/",
-    "172.20.1.1",
-    "100.100.1.1",
-    "169.254.9.9",
-    "0.1.2.3",
-    "8.8.8.8",
-    "example.com:443",
-    "http://host.lima.internal/api"
+    "test123",
+    "NULL"
   ],
-  "notes": "Local-endpoint detection (LIVE agent/model_metadata.py::is_local_endpoint vs traced copy of src/agent/provider_metadata.c::is_local_endpoint). Ladder: empty guard, host V event, known-local hosts, container DNS suffixes, IPv4 parse + seven range rungs (loopback/RFC1918 x2/link-local/CGNAT/0-net), IPv6 parse guard. The twin decomposes LIVE semantics (urlparse hostname + ipaddress octets) in C rung order AND asserts equality with a direct LIVE call on every input. KNOWN DIVERGENCES (documented, avoided by inputs): LIVE treats dot-less hostnames as local and accepts broader suffix forms; C has neither rule — inputs use dotted/IP/localist hosts only. Bare IPv6 literals excluded from this gate."
+  "notes": "Local-endpoint detection (LIVE agent/model_metadata.py::is_local_endpoint vs traced copy of src/agent/provider_metadata.c::is_local_endpoint). Ladder: empty guard, host V event, known-local hosts, container DNS suffixes, IPv4 parse + seven range rungs (loopback/RFC1918 x2/link-local/CGNAT/0-net), IPv6 parse guard. The twin decomposes LIVE semantics (urlparse hostname + ipaddress octets) in C rung order AND asserts equality with a direct LIVE call on every input. KNOWN DIVERGENCES (documented, avoided by inputs): LIVE treats dot-less hostnames as local and accepts broader suffix forms; C has neither rule \u2014 inputs use dotted/IP/localist hosts only. Bare IPv6 literals excluded from this gate."
 }

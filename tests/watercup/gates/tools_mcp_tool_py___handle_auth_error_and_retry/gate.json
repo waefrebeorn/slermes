@@ -7,11 +7,11 @@
   "py_module": "tools/mcp_tool.py",
   "py_fn": "_handle_auth_error_and_retry",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

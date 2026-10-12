@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_guard_unsupported_credential_passthrough",
+  "c_fn": "unsupported",
   "py_module": "tools/environments/managed_modal.py",
   "py_fn": "_guard_unsupported_credential_passthrough",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/environments_managed_modal.c",
+    "src/tools/credential_files.c"
   ],
   "cflags": [
     "-I",

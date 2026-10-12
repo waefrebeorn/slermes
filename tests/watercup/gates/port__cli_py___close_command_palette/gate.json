@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_close_command_palette",
+  "c_fn": "hcli_close_command_palette",
   "py_module": "cli.py",
   "py_fn": "_close_command_palette",
   "inputs": [

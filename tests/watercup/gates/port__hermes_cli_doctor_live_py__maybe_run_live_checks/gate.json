@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "maybe_run_live_checks",
+  "c_fn": "doctor_maybe_run_live_checks",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "maybe_run_live_checks",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/doctor.c"
   ],
   "cflags": [
     "-I",

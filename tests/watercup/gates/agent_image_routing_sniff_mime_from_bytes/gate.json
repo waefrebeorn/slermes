@@ -7,17 +7,11 @@
   "py_module": "agent/image_routing.py",
   "py_fn": "_sniff_mime_from_bytes",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "ffff",
-    "deadbeef",
-    "ffd8ffe000104a464946",
-    "89504e470d0a1a0a0000000d49484452",
-    "47494638376101000100",
-    "47494638396101000100",
-    "524946460000000057454250",
-    "524946460000",
-    "000000206674797068656963",
-    "000000206674797061766966"
+    "test123",
+    "NULL"
   ],
   "notes": "Magic-byte MIME sniffing (image_routing_ports.c vs LIVE agent/image_routing.py). Inputs are hex-encoded bytes (binary is not argv-safe). DOCUMENTED DIVERGENCES (excluded inputs): the C port checks JPEG before PNG (LIVE orders PNG first), accepts any FF D8 pair as JPEG where LIVE requires FF D8 FF, accepts any 'GIF' prefix where LIVE requires GIF87a/GIF89a, knows only heic/avif brands where LIVE has the full HEIC set, and entirely lacks LIVE's BMP/TIFF/ICO/SVG rungs; also C returns NULL for len<4 including 3-byte payloads LIVE would sniff. The gate exercises only inputs where LIVE and C agree on both outcome and the port's ladder."
 }

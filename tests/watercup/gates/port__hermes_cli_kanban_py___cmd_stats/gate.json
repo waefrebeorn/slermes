@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cmd_stats",
+  "c_fn": "cmd_stats",
   "py_module": "hermes_cli/kanban.py",
   "py_fn": "_cmd_stats",
   "inputs": [

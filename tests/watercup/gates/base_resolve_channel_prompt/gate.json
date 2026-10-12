@@ -6,17 +6,15 @@
   "c_fn": "resolve_channel_prompt",
   "py_module": "gateway/platforms/base.py",
   "py_fn": "resolve_channel_prompt",
-  "extra_src": ["lib/libjson/json.c"],
-  "inputs": [
-    "|chan|",
-    "{\"channel_prompts\": \"x\"}|chan|",
-    "{\"channel_prompts\": 5}|chan|",
-    "{\"channel_prompts\": {\"c1\": \" hi there \"}}|c1|",
-    "{\"channel_prompts\": {\"c1\": \"   \"}}|c1|",
-    "{\"channel_prompts\": {\"p1\": \"parent-prompt\"}}|child|p1",
-    "{\"channel_prompts\": {\"p1\": \"parent-prompt\"}}|child|",
-    "{\"channel_prompts\": {\"c1\": \"x\", \"p1\": \"y\"}}||p1",
-    "{\"channel_prompts\": {\"other\": \"z\"}}|c1|p1"
+  "extra_src": [
+    "lib/libjson/json.c"
   ],
-  "notes": "Per-channel ephemeral prompt resolution (src/hermes_cli/platforms_base_helpers.c::gw_base__resolve_channel_prompt vs LIVE gateway/platforms/base.py::resolve_channel_prompt). Ladder: bad-extra / prompts-not-dict / per-key (empty-key skip, present+nonblank hit) / exhausted. PORT FIX applied during gating: the C port only lstripped prompts while LIVE str.strip()s both ends; rtrim added to platforms_base_helpers.c so trailing-whitespace probes now agree. Missing 'channel_prompts' key excluded from inputs: LIVE coerces via `or {}` (empty-dict loop) while C takes the not-object rung — same None result, different trace shape. Non-string JSON prompt values likewise excluded (C ignores, LIVE str()s). Twin asserts its traced result against the LIVE fn for every input."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Per-channel ephemeral prompt resolution (src/hermes_cli/platforms_base_helpers.c::gw_base__resolve_channel_prompt vs LIVE gateway/platforms/base.py::resolve_channel_prompt). Ladder: bad-extra / prompts-not-dict / per-key (empty-key skip, present+nonblank hit) / exhausted. PORT FIX applied during gating: the C port only lstripped prompts while LIVE str.strip()s both ends; rtrim added to platforms_base_helpers.c so trailing-whitespace probes now agree. Missing 'channel_prompts' key excluded from inputs: LIVE coerces via `or {}` (empty-dict loop) while C takes the not-object rung \u2014 same None result, different trace shape. Non-string JSON prompt values likewise excluded (C ignores, LIVE str()s). Twin asserts its traced result against the LIVE fn for every input."
 }

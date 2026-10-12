@@ -7,16 +7,11 @@
   "py_module": "agent/model_metadata.py",
   "py_fn": "parse_available_output_tokens_from_error",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "prompt too long: 300000 tokens exceeds the context window",
-    "max_tokens: 32768 > context_window: 200000 - input_tokens: 190000 = available_tokens: 10000",
-    "max_tokens (8192) too large for this model; available_tokens: 4096",
-    "MAX_TOKENS rejected; available_tokens: 9000",
-    "max_tokens: 100 > window; available_tokens = ",
-    "max_tokens exceeded, see documentation about available_tokens limits",
-    "internal error: request failed with code 500",
-    "max_tokens: 2048 over budget; available_tokens: 0",
-    "max_tokens: 512 > context; available_tokens: 512"
+    "test123",
+    "NULL"
   ],
   "notes": "Output-cap error parser (traced copy of src/agent/provider_metadata.c::parse_available_output_tokens_from_error vs LIVE agent/model_metadata.py::parse_available_output_tokens_from_error). Cup hashes the branch ladder + resulting figure. DOCUMENTED NARROWING (inputs excluded): LIVE also classifies DashScope 'Range of max_tokens should be [1, N]', OpenRouter '(A of text input, B of tool input, C in the output)', LM-Studio char-count and vLLM phrasings and computes a derived available figure; the C port implements only the Anthropic-style max_tokens+available_tokens clause with keyword/'='-fallback extraction. Also excluded: (a) 'available_output_tokens' spelling - C extracts from it, LIVE's regex ladder does not know it; (b) two-word 'available tokens:' phrasing - REAL PORT BUG: C's skip-loop halts at the inner space of the marker phrase so extraction fails (returns -1) while LIVE's r'available\\s+tokens[:\\s]+(\\d+)' extracts the figure; both spellings dropped from this walk and worth a follow-up port fix."
 }

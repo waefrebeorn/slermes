@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_retain_recent_subagent",
+  "c_fn": "dlg_retain_recent_subagent",
   "py_module": "tools/delegate_tool.py",
   "py_fn": "_retain_recent_subagent",
   "inputs": [

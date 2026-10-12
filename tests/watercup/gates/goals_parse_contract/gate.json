@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/goals.py",
   "py_fn": "parse_contract",
   "inputs": [
-    "Migrate auth to JWT",
-    "Fix bug: the parser",
+    "hello",
+    "world",
     "",
-    "Goal: ship it\nverify: tests pass",
-    "Ship the thing\n\nverify: unit tests green\nverify: e2e smoke",
-    "  verify: indented value  ",
-    "constraints: keep /login shape\nscope: services/auth only",
-    "stop when: schema change needs sign-off\nblocked: waiting on api keys",
-    "unknownfield: stays in headline\nreal goal text",
-    "done: v2 rolled out\nevidence: dashboard screenshot\npreserve: public API"
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Traced copy of goals_data.c::parse_contract vs LIVE parse_contract over 10 goal texts (headline-only, incidental colon, aliases incl multi-word/stop-when variants, blank lines, repeated fields joined by space, unknown prefix staying in headline, whitespace trimming). Output V event packs headline + 5 contract fields."

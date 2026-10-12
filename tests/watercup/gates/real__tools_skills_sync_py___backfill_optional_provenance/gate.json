@@ -7,11 +7,8 @@
   "py_module": "tools/skills_sync.py",
   "py_fn": "_backfill_optional_provenance",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

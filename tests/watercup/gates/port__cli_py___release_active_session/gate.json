@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_release_active_session",
+  "c_fn": "hcli_release_active_session",
   "py_module": "cli.py",
   "py_fn": "_release_active_session",
   "inputs": [

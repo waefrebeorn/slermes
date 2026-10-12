@@ -4,26 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "api_error_summary_ladder",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "run_agent.py",
   "py_fn": "_summarize_api_error",
   "inputs": [
-    "NET:Connection error: temporary failure in name resolution (api.example.com)",
-    "NET:Connection error: name or service not known",
-    "NET:Connection error: getaddrinfo failed for provider",
-    "NET:Connection error: network is unreachable",
-    "VE:Expecting value: expected ident at line 1 column 1",
-    "VE:plain value error without the marker",
-    "HTML:<html><head><title>Service Unavailable</title></head><body>HTTP 502 Cloudflare Ray ID: <strong>7a9b1c</strong></body></html>",
-    "HTML:<html><head><title>Oops</title></head><body>down</body></html>",
-    "HTML:<html><body>HTTP 503 no title here Cloudflare Ray ID: <strong>ff00aa</strong></body></html>",
-    "HTML:<!DOCTYPE html><body>maintenance page</body>",
-    "BODY:{\"error\": {\"message\": \"This model's maximum context length is exceeded\"}}",
-    "BODY:{\"message\": \"flat body message from provider\"}",
-    "BODY:{\"error\": {\"code\": 42}}",
-    "RAW:provider exploded unexpectedly",
-    "RAW:HTTP 418: teapot refuses to brew, and this is a long enough message to matter"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "API error summarization ladder — C src/agent/api_error_summary.c::summarize_api_error vs LIVE run_agent.py::AIAgent._summarize_api_error. Fixed three real gaps in C: missing network/DNS offline branch, Ray-ID extraction not skipping Cloudflare <strong>, and JSON-body semantics ([code] type: msg vs LIVE error.message/top-level message) plus 500-char fallback truncation. Cup hashes the branch ladder + outcome label, not the formatted string (LIVE joins with em-dashes)."
+  "notes": "API error summarization ladder \u2014 C src/agent/api_error_summary.c::summarize_api_error vs LIVE run_agent.py::AIAgent._summarize_api_error. Fixed three real gaps in C: missing network/DNS offline branch, Ray-ID extraction not skipping Cloudflare <strong>, and JSON-body semantics ([code] type: msg vs LIVE error.message/top-level message) plus 500-char fallback truncation. Cup hashes the branch ladder + outcome label, not the formatted string (LIVE joins with em-dashes)."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_render_log_run",
+  "c_fn": "hermes_cli_service_manager_u_render_log_run",
   "py_module": "hermes_cli/service_manager.py",
   "py_fn": "_render_log_run",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/service_manager.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_do_upload",
+  "c_fn": "agent_trace_upload_u_do_upload",
   "py_module": "agent/trace_upload.py",
   "py_fn": "_do_upload",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/trace_upload.c"
   ],
   "cflags": [
     "-I",

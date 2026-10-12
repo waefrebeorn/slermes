@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_launchd_supervised",
+  "c_fn": "stderr_ts_is_launchd_supervised",
   "py_module": "hermes_cli/stderr_timestamp.py",
   "py_fn": "_is_launchd_supervised",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/stderr_timestamp_pure.c"
   ],
   "cflags": [
     "-I",

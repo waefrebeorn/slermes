@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_canonical_silence_candidates",
+  "c_fn": "gateway_response_filters_u_canonical_silence_candidates",
   "py_module": "gateway/response_filters.py",
   "py_fn": "_canonical_silence_candidates",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/response_filters.c"
   ],
   "cflags": [
     "-I",

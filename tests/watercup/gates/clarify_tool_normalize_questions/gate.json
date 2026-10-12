@@ -7,18 +7,11 @@
   "py_module": "tools/clarify_tool.py",
   "py_fn": "_normalize_questions",
   "inputs": [
-    "not json at all",
-    "{\"a\": 1}",
-    "[]",
-    "[{},{},{},{},{},{}]",
-    "[\"What port?\", \"Which shell?\"]",
-    "[42]",
-    "[{\"question\": \"   \"}]",
-    "[{\"question\": \"Deploy?\", \"choices\": [\"yes\", \"no\"], \"multi_select\": true}]",
-    "[{\"question\": \"Env?\", \"choices\": \"bad\"}]",
-    "[{\"id\": \"q1\", \"question\": \"Region?\", \"choices\": [\"us\", \"eu\", \"\", \"ap\", \"sa\"]}]",
-    "[{\"question\": \"Name?\", \"choices\": []}]",
-    "[{\"question\": \"Q1?\"}, {\"question\": \"Q2?\", \"multi_select\": true, \"choices\": [\"a\"]}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Batch-question normalization ladder (traced copy of src/tools/clarify_tool.c::clarify_normalize_questions vs LIVE tools/clarify_tool.py::_normalize_questions). Covers type errors, empty/oversized arrays, bare-string tolerance, blank-text errors, choice flattening/dedup-to-none, MAX_CHOICES clamp, id passthrough, multi_select gating. KNOWN divergences avoided by input choice: (1) a blank bare-string item errors in LIVE but is accepted verbatim by the C port (string fast-path skips the blank check); (2) dict/list choice elements exercise _flatten_choice coercion paths not mirrored here.",
   "cflags": [

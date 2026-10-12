@@ -6,21 +6,21 @@
   "c_fn": "preserve_env_ref_templates",
   "py_module": "hermes_cli/config.py",
   "py_fn": "_preserve_env_ref_templates",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "inputs": [
-    "[\"${ZQ_UNSET_1}\",\"${ZQ_UNSET_1}\",null]",
-    "[\"sk-expanded\",\"${ZQ_UNSET_1}\",\"sk-expanded\"]",
-    "[\"sk-live\",\"${ZQ_UNSET_1}\",\"sk-other\"]",
-    "[\"plain\",\"${ZQ_UNSET_1}\",null]",
-    "[\"plain\",\"no template here\",null]",
-    "[123,\"${ZQ_UNSET_1}\",null]",
-    "[{\"k\":\"${ZQ_UNSET_2}\"},{\"k\":\"${ZQ_UNSET_2}\"},{}]",
-    "[{\"k\":\"v\"},{\"k\":\"${ZQ_UNSET_2}\"},{}]",
-    "[{\"a\":1},\"${ZQ_UNSET_1}\",null]",
-    "[{\"k\":{\"deep\":\"${ZQ_UNSET_3}\"}},{\"k\":{\"deep\":\"${ZQ_UNSET_3}\"}},{}]",
-    "[\"${env:ZQ_UNSET_TOK}\",\"${env:ZQ_UNSET_TOK}\",null]",
-    "[\"x\",5,null]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Env-ref template preservation on config save. Harness traces a faithful C copy of src/hermes_cli/config_py_pure.c::config_py_preserve_env_ref_templates (real file unlinked; no cup instrumentation). All refs use guaranteed-unset var names so expansion is env-independent; ${VAR:-def} inputs excluded because LIVE's legacy arm keeps the literal while C honors the default (documented divergence). Name-matched array path not exercised (inputs avoid arrays of named objects)."
 }

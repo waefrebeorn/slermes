@@ -1,38 +1,31 @@
-/* gate: port__hermes_cli_profile_distribution_py___env_template_from_manifest — GAP sentinel for hermes_cli/profile_distribution.py:_env_template_from_manifest */
+/* gate: port__hermes_cli_profile_distribution_py___env_template_from_manifest — traced copy of hermes_cli_profile_distributio_u_env_template_from_manifest (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_env_template_from_manifest");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_env_template_from_manifest");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_env_template_from_manifest");
-}
+extern int hermes_cli_profile_distributio_u_env_template_from_manifest(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _env_template_from_manifest <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_profile_distributio_u_env_template_from_manifest <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("hermes_cli_profile_distributio_u_env_template_from_manifest");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = hermes_cli_profile_distributio_u_env_template_from_manifest(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("hermes_cli_profile_distributio_u_env_template_from_manifest");
     }
     return 0;
 }

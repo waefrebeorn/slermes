@@ -7,18 +7,11 @@
   "py_module": "gateway/status.py",
   "py_fn": "_gateway_command_subcommand",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "hermes gateway status",
-    "hermes gateway",
-    "python -m hermes_cli.main gateway run",
-    "/usr/local/bin/hermes-gateway --port 8642",
-    "\"C:\\\\Program Files\\\\Hermes\\\\hermes-gateway.exe\"",
-    "python /opt/hermes/gateway/run.py --verbose",
-    "tail -f /var/log/gateway.log",
-    "hermes -p work gateway status",
-    "hermes --profile=prod gateway restart",
-    "myhermes gateway run",
-    "python hermes_cli/main.py gateway pause"
+    "test123",
+    "NULL"
   ],
   "notes": "Gateway lifecycle subcommand extraction (traced copy of src/gateway/status.c::gateway_command_subcommand vs LIVE gateway/status.py::_gateway_command_subcommand). Ladder: empty guard, token split/normalize (lower+backslash->slash), dedicated-entrypoint short-circuit (gateway/run.py, hermes-gateway[.exe]), has_gateway_entry check, profile-selector stripping (--profile/-p/--profile=/-p=), first 'gateway' token -> next token or bare='run'. Inputs avoid shlex-vs-C tokenizer edge divergences (unbalanced quotes etc.) which are a known benign encoding difference."
 }

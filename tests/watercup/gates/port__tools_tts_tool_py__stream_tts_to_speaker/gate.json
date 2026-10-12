@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "stream_tts_to_speaker",
+  "c_fn": "tts_tool_stream_tts_to_speaker",
   "py_module": "tools/tts_tool.py",
   "py_fn": "stream_tts_to_speaker",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tts_tool.c"
   ],
   "cflags": [
     "-I",

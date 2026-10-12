@@ -7,11 +7,11 @@
   "py_module": "tools/mcp_oauth.py",
   "py_fn": "_reserve_cimd_port",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

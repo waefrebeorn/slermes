@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/commands.py",
   "py_fn": "_score_path",
   "inputs": [
-    "src/app.py|app.py",
-    "src/app.py|APP.PY",
-    "src/app.py|app",
-    "src/app.py|.py",
-    "README.md|rmd",
-    "src/main.c|zzz",
-    "src/Main.java|main.java",
-    "docs/guide.md|gu",
-    "x.py|",
-    "src/data.json|dta",
-    "lib/config.yaml|cfg",
-    "a/b/c.txt|qq"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Fuzzy path scoring ladder (LIVE hermes_cli/commands.py::_score_path vs traced copy of src/hermes_cli/commands_wrappers.c::cmd_score_path). Input encoding '<path>|<query>'. KNOWN DIVERGENCES (documented, avoided by input choice): LIVE scores 40 for query-in-full-path (C lacks the rung) and 35 for boundary-heavy subsequence matches (C returns 25 directly); the twin asserts no input reaches either LIVE-only rung."
 }

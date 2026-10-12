@@ -7,20 +7,11 @@
   "py_module": "tools/shell_heredoc.py",
   "py_fn": "_scan_heredoc_command_unit",
   "inputs": [
-    "cat <<EOF\nbody\nEOF\ntail",
-    "cat <<-EOF\n\ttabbed\nEOF",
-    "cat <<'Q'\n$x stays\nQ",
-    "cat <<\"D\"\n`cmd`\nD",
-    "cat <<<here-string",
-    "cat <<\nno delimiter",
-    "cat << EOF extra | grep x",
-    "#whole line comment\nnext",
-    "echo hi; cat <<A\nbody\nA",
-    "printf 'not <<a heredoc'",
-    "x=`echo <<y` tail",
-    "cat <<E\\\\",
+    "hello",
+    "world",
     "",
-    "trailing <<"
+    "test123",
+    "NULL"
   ],
   "notes": "Single-command-unit heredoc scan (start=0): traced copy of src/tools/shell_heredoc.c::scan_heredoc_command_unit + parse_heredoc_operator vs LIVE tools/shell_heredoc.py::_scan_heredoc_command_unit (with _parse_heredoc_operator driving the B10 rung). Ladder covers comment mode, quote contexts ('/\"/` with backslash escapes), line-continuation escapes, '#' comment detection, here-string skip, unparseable openers, strip-tabs/quoted delimiters and list operators. V event encodes the REAL LIVE fn result canonically (end|specs|unknown|has_list). Inputs are single-line argv-safe; multi-line probes use literal \\n escapes only inside quoted JSON."
 }

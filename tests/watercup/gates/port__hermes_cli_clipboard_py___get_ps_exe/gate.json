@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_ps_exe",
+  "c_fn": "clipboard_get_ps_exe",
   "py_module": "hermes_cli/clipboard.py",
   "py_fn": "_get_ps_exe",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/clipboard_helpers.c"
   ],
   "cflags": [
     "-I",

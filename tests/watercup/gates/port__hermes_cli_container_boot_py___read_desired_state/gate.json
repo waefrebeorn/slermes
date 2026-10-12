@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_read_desired_state",
+  "c_fn": "hermes_cli_container_boot_u_read_desired_state",
   "py_module": "hermes_cli/container_boot.py",
   "py_fn": "_read_desired_state",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/container_boot.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

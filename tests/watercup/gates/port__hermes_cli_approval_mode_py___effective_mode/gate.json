@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_effective_mode",
+  "c_fn": "hermes_cli_approval_mode_u_effective_mode",
   "py_module": "hermes_cli/approval_mode.py",
   "py_fn": "_effective_mode",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/approval_mode.c"
   ],
   "cflags": [
     "-I",

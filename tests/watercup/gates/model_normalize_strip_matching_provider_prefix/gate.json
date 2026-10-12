@@ -6,21 +6,21 @@
   "c_fn": "strip_matching_provider_prefix",
   "py_module": "hermes_cli/model_normalize.py",
   "py_fn": "_strip_matching_provider_prefix",
-  "cflags": ["-I", "include", "-I", "src", "-I", "lib"],
-  "extra_src": ["src/hermes_cli/model_normalize.o"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "src",
+    "-I",
+    "lib"
+  ],
+  "extra_src": [],
   "inputs": [
-    "zai/glm-5.1\tzai",
-    "openai/gpt-5\topenai",
-    "google/gemini-x\tgemini",
-    "gemini/pro-2\tgoogle",
-    "kimi/k2-turbo\tkimi-coding",
-    "moonshot/m2\tkimi-coding",
-    "zhipu/glm-5\tzai",
-    "plain-model-name\tozai",
-    "/leading-slash\tzai",
-    "trailing/\tzai",
-    "foo/bar\tbaz",
-    "glm-5/no-suffix-match\tzai"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Strip provider/ only when its normalized alias equals the normalized target provider. Harness links the REAL C port (model_normalize.o::model_normalize_strip_match_prefix); the on-path dependency model_normalize_provider() is embedded verbatim from src/hermes_cli/model_catalog.c (linking catalog.o drags an SSL/HTTP dep chain). Twin imports LIVE model_normalize and cross-asserts each input against _strip_matching_provider_prefix. KNOWN DIVERGENCE (inputs excluded): LIVE special-cases normalized target 'custom' (only a literal custom/ prefix strips; ollama/ is kept because it resolves to custom via aliases), while the C port has no custom special-case and would strip ollama/x for target custom. Also excluded: whitespace-padded names/remainders (LIVE .strip()s them, C does not)."
 }

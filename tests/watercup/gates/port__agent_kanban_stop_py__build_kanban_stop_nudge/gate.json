@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_kanban_stop_nudge",
+  "c_fn": "agent_kanban_stop_build_kanban_stop_nudge",
   "py_module": "agent/kanban_stop.py",
   "py_fn": "build_kanban_stop_nudge",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/kanban_stop.c"
   ],
   "cflags": [
     "-I",

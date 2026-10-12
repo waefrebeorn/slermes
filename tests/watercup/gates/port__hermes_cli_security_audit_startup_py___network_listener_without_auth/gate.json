@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_network_listener_without_auth",
+  "c_fn": "hermes_cli_security_audit_star_u_network_listener_without_auth",
   "py_module": "hermes_cli/security_audit_startup.py",
   "py_fn": "_network_listener_without_auth",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/security_audit_startup.c"
   ],
   "cflags": [
     "-I",

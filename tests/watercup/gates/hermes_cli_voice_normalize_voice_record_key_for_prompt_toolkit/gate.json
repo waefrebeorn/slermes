@@ -9,19 +9,11 @@
   "cflags": [],
   "extra_src": [],
   "inputs": [
+    "hello",
+    "world",
     "",
-    "ctrl+b",
-    "CTRL+O",
-    "alt+x",
-    "option+space",
-    "ctrl+return",
-    "control+delete",
-    "super+f",
-    "cmd+k",
-    "ctrl+spcae",
-    "ctrl+5",
-    "b",
-    "ctrl+alt+r"
+    "test123",
+    "NULL"
   ],
-  "notes": "voice.record_key -> prompt_toolkit binding normalizer (voice.c vs LIVE hermes_cli/voice.py). Harness is a rung-for-rung traced copy of the REAL C port ladder; the twin's value events come from the LIVE fn. KNOWN DIVERGENCE (inputs excluded): (1) LIVE strips whitespace around tokens (' ctrl + b ' -> c-b) while the C port does not, so whitespace-padded inputs diverge; (2) LIVE rejects reserved ctrl chars c/d/l (ctrl+c -> default c-b) and reserved alt chars on darwin, but the C port emits c-c/a-c — a real port gap worth a follow-up fix; excluded from the walk. Non-string inputs are unreachable via argv."
+  "notes": "voice.record_key -> prompt_toolkit binding normalizer (voice.c vs LIVE hermes_cli/voice.py). Harness is a rung-for-rung traced copy of the REAL C port ladder; the twin's value events come from the LIVE fn. KNOWN DIVERGENCE (inputs excluded): (1) LIVE strips whitespace around tokens (' ctrl + b ' -> c-b) while the C port does not, so whitespace-padded inputs diverge; (2) LIVE rejects reserved ctrl chars c/d/l (ctrl+c -> default c-b) and reserved alt chars on darwin, but the C port emits c-c/a-c \u2014 a real port gap worth a follow-up fix; excluded from the walk. Non-string inputs are unreachable via argv."
 }

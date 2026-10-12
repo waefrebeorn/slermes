@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_pending_period_count",
+  "c_fn": "sm_pending_period_count",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "_pending_period_count",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/shared_metrics.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_copilot_acp_status",
+  "c_fn": "copilot_acp_status_fn",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_copilot_acp_status",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server.c"
   ],
   "cflags": [
     "-I",

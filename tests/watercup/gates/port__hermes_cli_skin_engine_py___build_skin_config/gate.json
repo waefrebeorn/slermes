@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_skin_config",
+  "c_fn": "hermes_cli_skin_engine_u_build_skin_config",
   "py_module": "hermes_cli/skin_engine.py",
   "py_fn": "_build_skin_config",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/skin_engine.c"
   ],
   "cflags": [
     "-I",

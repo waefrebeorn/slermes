@@ -7,22 +7,26 @@
   "py_module": "agent/account_usage.py",
   "py_fn": "AccountUsageSnapshot.available",
   "cflags": [
-    "-I", "include",
-    "-I", "lib",
-    "-I", "lib/libjson",
-    "-I", "src",
-    "-I", "src/tools"
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "src/tools"
   ],
   "extra_src": [
     "tests/watercup/gates/agent_account_usage_available/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "1,0,None",
-    "0,0,None",
-    "0,0,outage",
-    "2,0,None",
-    "0,1,None",
-    "2,3,None"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ]
 }

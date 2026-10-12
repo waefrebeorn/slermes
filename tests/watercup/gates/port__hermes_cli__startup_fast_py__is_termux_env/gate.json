@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_termux_env",
+  "c_fn": "sf_is_termux_env",
   "py_module": "hermes_cli/_startup_fast.py",
   "py_fn": "is_termux_env",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/startup_fast.c"
   ],
   "cflags": [
     "-I",

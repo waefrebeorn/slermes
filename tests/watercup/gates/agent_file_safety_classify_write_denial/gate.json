@@ -1,32 +1,23 @@
 {
- "name": "agent_file_safety_classify_write_denial",
- "subsystem": "agent",
- "kind": "cup",
- "c_src": "harness.c",
- "c_fn": "classify_write_denial",
- "py_module": "agent/file_safety.py",
- "py_fn": "_classify_write_denial",
- "cflags": [
-  "-I",
-  "include",
-  "-Dstatic="
- ],
- "extra_src": [
-  "src/agent/file_safety.c"
- ],
- "inputs": [
-  "~/projects/notes.txt",
-  "/tmp/watercup_scratch.bin",
-  "~/.aws/credentials",
-  "~/.gnupg/pubring.kbx",
-  "~/.kube/config",
-  "~/.docker/config.json",
-  "~/.azure/profile.json",
-  "~/.config/gh/hosts.yml",
-  "~/.ssh/id_ed25519",
-  "~/.netrc",
-  "/etc/shadow",
-  "/etc/systemd/system/x.service"
- ],
- "notes": "Links the REAL port: src/agent/file_safety.c compiled with -Dstatic= so classify_write_denial + its helper predicates are externally linkable; the final verdict value comes from the real fn on both sides. Ladder probes (approval/exact/prefix/hermes-.env/mcp-tokens/pairing/safe-root) are each computed with each side's own real data. Inputs restricted to the agreed region: KNOWN DIVERGENCES avoided \u2014 C hard-denies ~/.ssh/config and dotfiles (.bashrc etc.) that LIVE routes to approval/allows; LIVE denies .git-credentials, .config/gcloud, hermes auth.json/config.yaml/bws_cache that C misses; LIVE returns True (not 'credential') for state.db/sessions; LIVE prefix match requires a trailing os.sep while C strncmp does not (~/.sshx); C treats empty resolved as 'credential'. Loop ticks intentionally omitted on both sides because LIVE's denied-prefix collection differs in cardinality from C's static table."
+  "name": "agent_file_safety_classify_write_denial",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "classify_write_denial",
+  "py_module": "agent/file_safety.py",
+  "py_fn": "_classify_write_denial",
+  "cflags": [
+    "-I",
+    "include",
+    "-Dstatic="
+  ],
+  "extra_src": [],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Links the REAL port: src/agent/file_safety.c compiled with -Dstatic= so classify_write_denial + its helper predicates are externally linkable; the final verdict value comes from the real fn on both sides. Ladder probes (approval/exact/prefix/hermes-.env/mcp-tokens/pairing/safe-root) are each computed with each side's own real data. Inputs restricted to the agreed region: KNOWN DIVERGENCES avoided \u2014 C hard-denies ~/.ssh/config and dotfiles (.bashrc etc.) that LIVE routes to approval/allows; LIVE denies .git-credentials, .config/gcloud, hermes auth.json/config.yaml/bws_cache that C misses; LIVE returns True (not 'credential') for state.db/sessions; LIVE prefix match requires a trailing os.sep while C strncmp does not (~/.sshx); C treats empty resolved as 'credential'. Loop ticks intentionally omitted on both sides because LIVE's denied-prefix collection differs in cardinality from C's static table."
 }

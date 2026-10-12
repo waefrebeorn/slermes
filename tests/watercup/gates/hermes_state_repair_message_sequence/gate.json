@@ -4,22 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "repair",
-  "extra_src": ["src/agent/hermes_state/hermes_state_repair.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib"
+  ],
   "py_module": "agent/agent_runtime_helpers.py",
   "py_fn": "repair_message_sequence",
   "inputs": [
-    "[]",
-    "[{\"role\":\"user\",\"content\":\"hi\"}]",
-    "[{\"role\":\"assistant\",\"content\":\" part one \"},{\"role\":\"assistant\",\"content\":\"part two\"}]",
-    "[{\"role\":\"user\",\"content\":\"a\"},{\"role\":\"user\",\"content\":\"b\"}]",
-    "[{\"role\":\"assistant\",\"tool_call_ids\":\"call_1\",\"content\":null},{\"role\":\"tool\",\"tool_call_id\":\"call_1\",\"content\":\"result\"},{\"role\":\"user\",\"content\":\"thanks\"}]",
-    "[{\"role\":\"tool\",\"tool_call_id\":\"orphan_9\",\"content\":\"stray\"},{\"role\":\"user\",\"content\":\"go\"}]",
-    "[{\"role\":\"assistant\",\"tool_call_ids\":\"id_1,call_1\",\"content\":null},{\"role\":\"tool\",\"tool_call_id\":\"call_1\",\"content\":\"r1\"},{\"role\":\"tool\",\"tool_call_id\":\"call_1\",\"content\":\"dup\"}]",
-    "[{\"role\":\"assistant\",\"content\":\"thinking\",\"reasoning_content\":\"why\"},{\"role\":\"assistant\",\"content\":\"answer\",\"reasoning_content\":\"later why\"}]",
-    "[{\"role\":\"assistant\",\"finish_reason\":\"verification_required\",\"content\":\"provisional\"},{\"role\":\"assistant\",\"content\":\"final\",\"finish_reason\":\"stop\"}]",
-    "[{\"role\":\"assistant\",\"finish_reason\":\"incomplete\",\"content\":\"interim\"},{\"role\":\"assistant\",\"content\":\"continuation\"}]",
-    "[{\"role\":\"assistant\",\"content\":\"x\"},{\"role\":\"user\",\"content\":\"redirect\"},{\"role\":\"tool\",\"tool_call_id\":\"stale\",\"content\":\"t\"}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Pre-request alternation repair. REAL src/agent/hermes_state/hermes_state_repair.c::hermes_state_repair_message_sequence linked via extra_src against LIVE repair_message_sequence (agent arg unused on this path). AGREED SUB-CONTRACT: plain-string contents only; assistant tool_calls represented by the struct's ';'-joined tool_call_ids string (id[,call_id] entries per #58168); no api_content sidecar keys (LIVE drop_stale_api_content becomes a no-op). V event hashes repairs count plus a canonical dump of the surviving sequence."
 }

@@ -7,14 +7,17 @@
   "py_module": "tools/mcp_death_supervisor.py",
   "py_fn": "_is_safe_target",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/mcp_death_supervisor_gaps3.c"
   ],
   "cflags": [
     "-I",

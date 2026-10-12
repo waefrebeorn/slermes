@@ -7,11 +7,11 @@
   "py_module": "tools/code_execution_tool.py",
   "py_fn": "_ship_file_to_remote",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

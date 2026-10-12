@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_maybe_fire_loop_tick",
+  "c_fn": "hcli_maybe_fire_loop_tick",
   "py_module": "cli.py",
   "py_fn": "_maybe_fire_loop_tick",
   "inputs": [

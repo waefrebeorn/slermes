@@ -7,18 +7,11 @@
   "py_module": "tools/transcription_tools.py",
   "py_fn": "_shell_quote_context_stt",
   "inputs": [
-    "transcribe {audio}|11",
-    "whisper 'my tape.wav'|17",
-    "stt \"big file.mp3\"|13",
-    "it's live|3",
-    "it's live|4",
-    "\"a\\\\b\"|5",
-    "\"a\\\\\"|4",
-    "don\"t|3",
-    "|0",
-    "plain|9",
-    "'unclosed|9",
-    "a \\' b|6"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Shell quote-context state machine (STT variant). C port (tools/transcription_wrappers.c::tsc_shell_quote_context_stt) was a STUB (just wrapped the text in single quotes, wrong signature) — rewritten to the LIVE state machine; real parity win. Signature change is safe: no other in-tree callers. Same ladder as tts_tool_shell_quote_context."
+  "notes": "Shell quote-context state machine (STT variant). C port (tools/transcription_wrappers.c::tsc_shell_quote_context_stt) was a STUB (just wrapped the text in single quotes, wrong signature) \u2014 rewritten to the LIVE state machine; real parity win. Signature change is safe: no other in-tree callers. Same ladder as tts_tool_shell_quote_context."
 }

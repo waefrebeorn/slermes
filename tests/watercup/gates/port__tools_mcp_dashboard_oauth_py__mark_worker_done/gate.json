@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "mark_worker_done",
+  "c_fn": "tools_mcp_dashboard_oauth_mark_worker_done",
   "py_module": "tools/mcp_dashboard_oauth.py",
   "py_fn": "mark_worker_done",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/mcp_dashboard_oauth.c"
   ],
   "cflags": [
     "-I",

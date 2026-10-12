@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "writes_since",
+  "c_fn": "tools_file_state_writes_since_2",
   "py_module": "tools/file_state.py",
   "py_fn": "writes_since",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/file_state.c"
   ],
   "cflags": [
     "-I",

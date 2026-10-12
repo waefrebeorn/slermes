@@ -7,11 +7,11 @@
   "py_module": "gateway/memory_monitor.py",
   "py_fn": "start_memory_monitoring",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
     "lib/libjson/json.c"

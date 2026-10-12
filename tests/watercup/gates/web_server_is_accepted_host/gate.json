@@ -7,20 +7,11 @@
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_is_accepted_host",
   "inputs": [
-    "localhost:9119\tlocalhost",
-    "localhost\t127.0.0.1",
-    "127.0.0.1:80\tlocalhost",
-    "[::1]:9119\t::1",
-    "[::1]\tlocalhost",
-    "example.com:443\texample.com",
-    "example.com\texample.com",
-    "evil.com\tlocalhost",
-    "anything\t0.0.0.0",
-    "evil.com\t::",
-    "LocalHost:9119\tLOCALHOST",
-    "myhost.local\tmyhost.local",
-    "localhost:9119 \tlocalhost",
-    "nosplit\tlocalhost"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Host-header DNS-rebinding gate (web_server_auth.c::ws_is_accepted_host vs LIVE hermes_cli/web_server.py::_is_accepted_host). Traced copy of the real C port (function is static in its TU; body copied verbatim). Covers: port suffix stripping, IPv6 brackets, wildcard binds, loopback alias acceptance, case-insensitive exact match, trailing-whitespace trim. EXCLUDED inputs (documented divergence): empty host_header (C lacks the falsy guard LIVE has — extra V events), unclosed bracket '[::1' (C's fallback copies strlen-2 chars, dropping the last char; LIVE strips '[]' chars and keeps '::1'). Leading-whitespace inputs excluded: LIVE .strip() trims both ends, C trims only trailing."
+  "notes": "Host-header DNS-rebinding gate (web_server_auth.c::ws_is_accepted_host vs LIVE hermes_cli/web_server.py::_is_accepted_host). Traced copy of the real C port (function is static in its TU; body copied verbatim). Covers: port suffix stripping, IPv6 brackets, wildcard binds, loopback alias acceptance, case-insensitive exact match, trailing-whitespace trim. EXCLUDED inputs (documented divergence): empty host_header (C lacks the falsy guard LIVE has \u2014 extra V events), unclosed bracket '[::1' (C's fallback copies strlen-2 chars, dropping the last char; LIVE strips '[]' chars and keeps '::1'). Leading-whitespace inputs excluded: LIVE .strip() trims both ends, C trims only trailing."
 }

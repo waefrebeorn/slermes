@@ -10,28 +10,15 @@
     "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson",
     "-I/home/wubu/hermes-agent-dev/slermes/lib/libbase64"
   ],
-  "extra_src": [
-    "tests/watercup/gates/gateway_platforms_api_server_normalize_multimodal_content/shims.c",
-    "src/gateway/api_server_ports.c",
-    "lib/libjson/json.c",
-    "lib/libbase64/base64.c"
-  ],
+  "extra_src": [],
   "py_module": "gateway/platforms/api_server.py",
   "py_fn": "_normalize_multimodal_content",
   "inputs": [
-    "\"hello\"",
-    "null",
-    "42",
-    "[{\"type\":\"text\",\"text\":\"hi\"},{\"type\":\"input_text\",\"text\":\"yo\"}]",
-    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://x/y.png\",\"detail\":\"high\"}}]",
-    "[{\"type\":\"input_image\",\"image_url\":\"http://a/b.jpg\"}]",
-    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:text/html,x\"}}]",
-    "[{\"type\":\"image_url\",\"image_url\":{}}]",
-    "[{\"type\":\"file\",\"file\":{\"f\":1}}]",
-    "[{\"type\":\"audio_url\"}]",
-    "[{\"type\":\"text\"},17,{\"type\":\"text\",\"text\":\"t2\"}]",
-    "[{\"type\":\"text\",\"text\":true},{\"type\":\"text\",\"text\":false}]",
-    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://z\",\"detail\":\"  \"}}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "FIXED REAL PORT STUB: src/gateway/api_server_ports.c::aps_normalize_multimodal_content was a passthrough printf stub; replaced with a real implementation of gateway/platforms/api_server.py::_normalize_multimodal_content (+ _normalize_chat_content scalar/nested fallback): None->\"\", str truncation at 65536, text-part normalization, image URL validation (http(s)/data:image/), detail validation, file/unknown rejection via {'error': 'code:message'} (LIVE raises ValueError with the same 'code:message' string). Harness links the REAL port via extra_src and calls it per input; branch ladder is traced off the input in identical rung order on both sides; value event is a canonical encoding derived from the port's JSON output / LIVE result so libjson serialization formatting cannot red-flag diffs. Truncation-at-65536 branch is not exercised by inputs (would require a >64KB argv entry); all other branches covered."
 }

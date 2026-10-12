@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_activate_target_on_syspath",
+  "c_fn": "tools_lazy_deps_u_activate_target_on_syspath",
   "py_module": "tools/lazy_deps.py",
   "py_fn": "_activate_target_on_syspath",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/lazy_deps.c"
   ],
   "cflags": [
     "-I",

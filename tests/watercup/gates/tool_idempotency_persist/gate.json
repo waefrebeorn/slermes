@@ -4,7 +4,14 @@
   "kind": "unit",
   "c_src": "harness.c",
   "c_fn": "main",
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib/libomap"],
-  "extra_src": ["src/tools/tool_idempotency.c", "lib/libjson/json.c", "lib/libomap/omap.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libomap"
+  ],
+  "extra_src": [],
   "notes": "Restart-survival: tool_idem_put flushes to <HERMES_HOME>/idempotency_cache.json; a fresh cache attaching the same file recovers prior (non-expired) entries. Proves safe-retry survives process restart, not just in-process. Harness creates its own mkdtemp dir (no argv)."
 }

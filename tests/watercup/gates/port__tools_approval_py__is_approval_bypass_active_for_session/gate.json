@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_approval_bypass_active_for_session",
+  "c_fn": "apr2_is_approval_bypass_active_for_session",
   "py_module": "tools/approval.py",
   "py_fn": "is_approval_bypass_active_for_session",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/approval_helpers2.c"
   ],
   "cflags": [
     "-I",

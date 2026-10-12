@@ -7,15 +7,11 @@
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_parse_fields",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "089601",
-    "0a0568656c6c6f",
-    "110102030405060708",
-    "1d0a0b0c0d",
-    "0896011203616263",
-    "0f",
-    "0a03e8",
-    "12ff01ffffff0102"
+    "test123",
+    "NULL"
   ],
-  "notes": "Protobuf wire-format field parser (yuanbao_proto_helpers.c::yb_parse_fields vs LIVE yuanbao_proto.py::_parse_fields). Inputs are hex-encoded messages. Truncated-varint and truncated-64/32-bit inputs are excluded because LIVE's hand decoder silently returns on truncation where the port fails/stops — a documented divergence outside this input class."
+  "notes": "Protobuf wire-format field parser (yuanbao_proto_helpers.c::yb_parse_fields vs LIVE yuanbao_proto.py::_parse_fields). Inputs are hex-encoded messages. Truncated-varint and truncated-64/32-bit inputs are excluded because LIVE's hand decoder silently returns on truncation where the port fails/stops \u2014 a documented divergence outside this input class."
 }

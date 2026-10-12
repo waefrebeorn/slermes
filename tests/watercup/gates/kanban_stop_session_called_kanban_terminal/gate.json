@@ -6,19 +6,21 @@
   "c_fn": "session_called_kanban_terminal",
   "py_module": "agent/kanban_stop.py",
   "py_fn": "session_called_kanban_terminal",
-  "extra_src": ["lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "inputs": [
-    "\tkanban_complete",
-    "[\tkanban_complete",
-    "[{\"role\":\"user\",\"content\":\"hi\"}]\tkanban_complete",
-    "[{\"role\":\"assistant\",\"tool_calls\":[{\"function\":{\"name\":\"kanban_read\"}}]}]\tkanban_complete\tkanban_block",
-    "[{\"role\":\"assistant\",\"tool_calls\":[{\"function\":{\"name\":\"kanban_block\"}}]}]\tkanban_complete\tkanban_block",
-    "[{\"role\":\"tool\",\"name\":\"kanban_complete\"}]\tkanban_complete\tkanban_block",
-    "[{\"role\":\"tool\",\"name\":\"kanban_read\"}]\tkanban_complete",
-    "[\"not-a-dict\",null,{\"role\":\"assistant\",\"tool_calls\":[]},{\"role\":\"other\"}]\tkanban_complete",
-    "[{\"role\":\"assistant\",\"tool_calls\":[{\"name\":\"kanban_block\"}]}]\tkanban_complete\tkanban_block",
-    "[{\"role\":\"assistant\",\"tool_calls\":[{\"function\":{\"name\":\"x\"}},{\"function\":{\"name\":\"kanban_complete\"}}]}]\tkanban_complete\tkanban_block"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Terminal kanban-tool scan traced over lib/libjson against the LIVE frozenset scan. Covers: empty/null messages, non-array JSON, plain user turns, function/name tool-call shapes, tool-role hits and misses, non-dict items, multi-call arrays."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_entry_identity",
+  "c_fn": "fallback_config_entry_identity",
   "py_module": "hermes_cli/fallback_config.py",
   "py_fn": "_entry_identity",
   "inputs": [

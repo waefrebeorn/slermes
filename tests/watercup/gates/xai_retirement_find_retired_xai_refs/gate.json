@@ -7,17 +7,11 @@
   "py_module": "hermes_cli/xai_retirement.py",
   "py_fn": "find_retired_xai_refs",
   "inputs": [
-    "~~~~",
-    "claude-sonnet-4~claude-sonnet-4~~~",
-    "grok-4.3~~~grok-4.3~grok-4.3",
-    "grok-4-0709~~~",
-    "~~x-ai/grok-code-fast-1~",
-    "~~~Grok-4-Fast-Reasoning",
-    "grok-4-fast-non-reasoning~grok-4-1-fast-non-reasoning~~",
-    "  grok-imagine-image-pro  ~~~",
-    "xai/grok-4-fast-reasoning~~~",
-    "grok-beta~grok-3~~",
-    "grok-4-0709~grok-code-fast-1~xai/grok-imagine-image-pro~grok-4-1-fast-non-reasoning"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Retired-xAI config scan (src/xai_retirement.c::hermes_xai_find_retired/check_slot walk vs LIVE hermes_cli/xai_retirement.py::find_retired_xai_refs). Input encodes 4 model slots (principal/delegation/aux.vision/aux.curator; empty=unset). Covers: empty config, non-xAI models, prefix/case/whitespace normalization (x-ai/, xai/, uppercase, padded), retired matches in every slot, reasoning_effort=none variants, and near-miss grok names. Dropped inputs (documented table divergence, not traced): 'grok-3' (LIVE-retired, C table lacks it) and 'grok-4'/'grok-4-fast'/'grok-4-1-fast' (C table has them, LIVE does not) — the C retired-model table is NOT in lock-step with LIVE _RETIRED_MODELS; input 10 exercises 'grok-3' only as a looks-like-xAI non-match (no table hit on either side). Also LIVE walks tts.xai.model and plugins.image_gen.xai.model slots which the C config walk does not have; those slots are left unset in every input."
+  "notes": "Retired-xAI config scan (src/xai_retirement.c::hermes_xai_find_retired/check_slot walk vs LIVE hermes_cli/xai_retirement.py::find_retired_xai_refs). Input encodes 4 model slots (principal/delegation/aux.vision/aux.curator; empty=unset). Covers: empty config, non-xAI models, prefix/case/whitespace normalization (x-ai/, xai/, uppercase, padded), retired matches in every slot, reasoning_effort=none variants, and near-miss grok names. Dropped inputs (documented table divergence, not traced): 'grok-3' (LIVE-retired, C table lacks it) and 'grok-4'/'grok-4-fast'/'grok-4-1-fast' (C table has them, LIVE does not) \u2014 the C retired-model table is NOT in lock-step with LIVE _RETIRED_MODELS; input 10 exercises 'grok-3' only as a looks-like-xAI non-match (no table hit on either side). Also LIVE walks tts.xai.model and plugins.image_gen.xai.model slots which the C config walk does not have; those slots are left unset in every input."
 }

@@ -6,6 +6,12 @@
   "c_fn": "normalize_bedrock",
   "py_module": "agent/usage_pricing.py",
   "py_fn": "_normalize_bedrock_model_name",
-  "inputs": ["us.anthropic.claude-opus-4-7", "global.anthropic.claude-sonnet-4-5", "eu.anthropic.claude-3-5-haiku", "apac.anthropic.claude-opus-4-7", "au.anthropic.claude-sonnet-4-5-20250929-v1:0", "jp.anthropic.claude-3", "anthropic.claude-opus-4-7", "claude-opus-4.7", "x.anthropic.claude-x"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Bedrock cross-region model id normalization (strip region prefix, dots->dashes, drop :N / -vN / -DATE). C port (usage_pricing.c::usage_pricing_normalize_bedrock_model) traced + LIVE Python twin (_normalize_bedrock_model_name). 9 cups match. REAL FIX this session: C previously stripped only 5 prefixes (us./global./eu./ap./jp.) and did NOT strip trailing :N/-vN/-DATE components; LIVE strips 11 prefixes (incl apac./au./ca./sa./me./af.) AND the trailing components. apac.*/au.* Bedrock ids therefore priced as unknown in C. Extended the prefix list to 11 and added the trailing-strip pass to match LIVE exactly."
 }

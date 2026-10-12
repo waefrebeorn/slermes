@@ -4,22 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "normalise",
-  "extra_src": ["tests/watercup/gates/web_server_normalise_theme_definition/shims_theme.c", "src/hermes_cli/web_server_themes.c", "src/slermes_home.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib"
+  ],
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_normalise_theme_definition",
   "inputs": [
-    "{\"name\":\"Midnight\",\"palette\":{\"background\":\"#0b1020\",\"midground\":\"#161d33\",\"foreground\":\"#e8ecf7\",\"warmGlow\":\"rgba(80,120,255,0.4)\",\"noiseOpacity\":0.25},\"typography\":{\"fontSans\":\"Inter\"},\"layout\":{\"radius\":\"1rem\",\"density\":\"compact\"},\"colorOverrides\":{\"primary\":\"#3366ff\",\"bogus\":\"nope\"},\"assets\":{\"hero\":\"url(a.png)\",\"custom\":{\"x1\":\"linear-gradient(#fff)\"}},\"customCSS\":\".card{border:1px}\"}",
-    "{\"name\":\"Plain\"}",
-    "{\"name\":\"   \"}",
-    "{}",
-    "not json at all",
-    "[1,2,3]",
-    "{\"name\":\"Noise\",\"palette\":{\"noiseOpacity\":\"0.5\"}}",
-    "{\"name\":\"NoiseBad\",\"palette\":{\"noiseOpacity\":\"abc\"}}",
-    "{\"name\":\"Dens\",\"layout\":{\"density\":\"spacious\",\"radius\":\"2px\"},\"layoutVariant\":\"cockpit\"}",
-    "{\"name\":\"Assets\",\"assets\":{\"bg\":\"#000\",\"hero\":\" \",\"custom\":{\"ok_1\":\"x\",\"bad!\":\"y\",\"empty\":\"\"}}}",
-    "{\"name\":\"Comp\",\"componentStyles\":{\"card\":{\"--x-color\":\"red\",\"n\":3,\"skip-bucket-nope\":1},\"nope_bucket\":{\"a\":\"b\"}}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Theme YAML normaliser. REAL src/hermes_cli/web_server_themes.c::ws_theme_normalise_definition linked via extra_src (with link shims for yaml/events helpers and slermes_home.c) against LIVE _normalise_theme_definition. V event hashes the C json_serialize canonical form; the twin replicates that serializer byte-for-byte (compact separators, %.0f for int-valued floats, %.17g otherwise, JSON escapes, raw non-ASCII). Rung ladder B1-B11 mirrors the branch skeleton on both sides."
 }

@@ -14,7 +14,13 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_format.c",
+    "src/hermes_cli/kanban_schema.c",
+    "src/hermes_cli/kanban_boards.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

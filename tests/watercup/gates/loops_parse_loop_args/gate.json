@@ -7,19 +7,11 @@
   "py_module": "hermes_cli/loops.py",
   "py_fn": "parse_loop_args",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "   ",
-    "5m check the deploy status",
-    "every 10m /babysit-prs",
-    "keep fixing the failing test until the suite passes",
-    "2m poll CI --times 30",
-    "2m poll CI --times 0",
-    "2m poll CI --times abc",
-    "5m watch the queue --until queue depth reaches zero",
-    "--times 0 oops",
-    "5m",
-    "every",
-    "every 5m"
+    "test123",
+    "NULL"
   ],
-  "notes": "/loop argument parser — the richest branch ladder in loops.py (empty/--times/--until/every-sugar/interval-token/missing-prompt). C port (hermes_cli/loops_pure.c::loops_parse_loop_args) vs LIVE hermes_cli/loops.py::parse_loop_args. Cup compares the branch ladder; the twin also asserts the returned result dict matches the LIVE module semantics."
+  "notes": "/loop argument parser \u2014 the richest branch ladder in loops.py (empty/--times/--until/every-sugar/interval-token/missing-prompt). C port (hermes_cli/loops_pure.c::loops_parse_loop_args) vs LIVE hermes_cli/loops.py::parse_loop_args. Cup compares the branch ladder; the twin also asserts the returned result dict matches the LIVE module semantics."
 }

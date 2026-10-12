@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "extract_edit_diff",
+  "c_fn": "disp_extract_edit_diff",
   "py_module": "agent/display.py",
   "py_fn": "extract_edit_diff",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/display_ports.c"
   ],
   "cflags": [
     "-I",

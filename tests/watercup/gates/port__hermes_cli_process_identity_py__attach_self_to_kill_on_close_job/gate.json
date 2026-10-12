@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "attach_self_to_kill_on_close_job",
+  "c_fn": "process_identity_attach_self_to_kill_on_close_job",
   "py_module": "hermes_cli/process_identity.py",
   "py_fn": "attach_self_to_kill_on_close_job",
   "inputs": [
@@ -15,6 +15,8 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
     "src/hermes_cli/process_identity.c"
   ],
   "cflags": [

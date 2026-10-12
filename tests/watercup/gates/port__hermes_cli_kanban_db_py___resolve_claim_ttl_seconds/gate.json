@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_claim_ttl_seconds",
+  "c_fn": "kanban_resolve_claim_ttl_seconds",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_resolve_claim_ttl_seconds",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_db_pure.c"
   ],
   "cflags": [
     "-I",

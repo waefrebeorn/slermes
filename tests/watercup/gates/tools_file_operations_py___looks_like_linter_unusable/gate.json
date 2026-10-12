@@ -7,11 +7,11 @@
   "py_module": "tools/file_operations.py",
   "py_fn": "_looks_like_linter_unusable",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

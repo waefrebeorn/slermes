@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_union_alpha_bbox",
+  "c_fn": "pet_union_alpha_bbox",
   "py_module": "agent/pet/render.py",
   "py_fn": "_union_alpha_bbox",
   "inputs": [

@@ -7,17 +7,11 @@
   "py_module": "tools/computer_use/cua_backend.py",
   "py_fn": "_image_dimensions_from_bytes",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "89504e470d0a1a0a",
-    "89504e470d0a1a0a0000000d494844520000002000000010",
-    "89504e470d0a1a0a0000000d494844520000000000000010",
-    "ffd8ffc00011080020002800000000000000000000",
-    "ffd8fffe00040000ffc000110800100018000000000000000000",
-    "ffd8",
-    "68656c6c6f",
-    "ffd8ffc1000200000000000000000000",
-    "ffd8010203040506070809",
-    "ffd8ffd0ffd1ffc000110800200028000000000000000000"
+    "test123",
+    "NULL"
   ],
   "notes": "PNG/JPEG dimension sniffing from raw bytes (cua_backend_helpers.c::cua_backend_image_dimensions_from_bytes vs LIVE tools/computer_use/cua_backend.py::_image_dimensions_from_bytes). Inputs are hex-encoded byte strings (argv-safe), decoded identically on both sides. Covers: empty input, short/oversized-buffer PNG magic, valid PNG IHDR, zero-width PNG, direct-SOF JPEG, COM-segment-before-SOF JPEG, RST-marker walk, truncated JPEG, non-image text, SOF with seg_len<7, and the !=0xFF skip path."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_show_context_breakdown",
+  "c_fn": "hcli_show_context_breakdown",
   "py_module": "cli.py",
   "py_fn": "_show_context_breakdown",
   "inputs": [

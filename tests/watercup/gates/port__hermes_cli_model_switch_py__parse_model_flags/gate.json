@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "parse_model_flags",
+  "c_fn": "model_switch_parse_model_flags",
   "py_module": "hermes_cli/model_switch.py",
   "py_fn": "parse_model_flags",
   "inputs": [

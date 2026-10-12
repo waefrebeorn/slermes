@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/curses_ui.py",
   "py_fn": "_token_score",
   "inputs": [
-    "opus-4.5|op",
-    "gpt-5-codex|gpt",
-    "claude-sonnet-4|claude",
-    "ClaudeSonnet|cs",
-    "haiku-latest|haiku",
-    "deepseek-r1-distill|distill",
-    "gemini-2.5-flash|flash",
-    "local-llama3-70b|zzz",
-    "mistral-small|small",
-    "o3-mini-high|o3"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Fuzzy token scorer (src/hermes_cli/curses_ui.c::curses_token_score vs LIVE hermes_cli/curses_ui.py::_token_score). Traces per-char find/contiguous-run/penalty/boundary/first-char branches, prefix + exact-match bonuses, and the final %.17g score value. No-match returns -1.0 on both sides (LIVE None normalized to -1.0). Inputs are label/token pairs."
 }

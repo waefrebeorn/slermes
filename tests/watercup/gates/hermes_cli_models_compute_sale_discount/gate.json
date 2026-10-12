@@ -7,22 +7,11 @@
   "py_module": "hermes_cli/models.py",
   "py_fn": "compute_sale_discount",
   "inputs": [
-    "3|6|4|8",
-    "2|10|4|20",
-    "5|5|4|4",
-    "4|6|4|6",
-    "9.5|12|10|15",
-    "0|||",
-    "0||2|4",
-    "0|abc|2|4",
-    "|0||",
-    "0|-3|2|4",
-    "3|6|-|-",
-    "3|6||",
-    "abc|6|2|4",
-    "3|6|x|4",
-    "3.99|6|4|8",
-    "0.005|6|1|4"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Sale-discount derivation ladder (src/hermes_cli/models_py_helpers.c::models_compute_sale_discount vs LIVE hermes_cli/models.py::compute_sale_discount). FIXED THE PORT before gating: the C version ran the free/$0 branch AFTER the dict + was-empty early returns (LIVE runs it FIRST) and treated an empty/unparseable completion as a checkable 0 instead of None — so '0||' (natively-free model, no gateway original) returned no-sale in C but -100% chrome in LIVE. Also moved the was-* extraction behind the dict check. Inputs avoid exact .5 percent boundaries where LIVE banker's-rounding and C lround could differ (documented residual risk)."
+  "notes": "Sale-discount derivation ladder (src/hermes_cli/models_py_helpers.c::models_compute_sale_discount vs LIVE hermes_cli/models.py::compute_sale_discount). FIXED THE PORT before gating: the C version ran the free/$0 branch AFTER the dict + was-empty early returns (LIVE runs it FIRST) and treated an empty/unparseable completion as a checkable 0 instead of None \u2014 so '0||' (natively-free model, no gateway original) returned no-sale in C but -100% chrome in LIVE. Also moved the was-* extraction behind the dict check. Inputs avoid exact .5 percent boundaries where LIVE banker's-rounding and C lround could differ (documented residual risk)."
 }

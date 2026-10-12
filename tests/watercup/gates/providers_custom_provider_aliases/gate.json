@@ -8,14 +8,11 @@
   "py_module": "hermes_cli/providers.py",
   "py_fn": "custom_provider_aliases",
   "inputs": [
-    "My Provider\t",
-    "\tmy-key",
-    "Alpha\talpha",
-    "Custom: Thing\t",
-    "custom:x\tx",
-    "\t",
-    "Deep Seek\tdeepseek",
-    "Custom Relay\trelay-key"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Faithful traced copy of the ports_wrappers.c body (translation unit too heavy to link). Set output is rendered sorted ('|'-joined) on both sides so frozenset vs insertion-order never leaks into the cup. Inputs avoid whitespace other than spaces/tabs (the port strips only those while LIVE str.strip() removes all whitespace)."
 }

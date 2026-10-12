@@ -4,21 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "strip_pattern_and_format",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "tools/schema_sanitizer.py",
   "py_fn": "strip_pattern_and_format",
   "inputs": [
-    "[{\"type\":\"function\",\"function\":{\"name\":\"f1\",\"parameters\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":\"string\",\"pattern\":\"^\\\\d+$\"}},\"format\":\"draft-07\"}}}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"search_files\",\"parameters\":{\"type\":\"object\",\"properties\":{\"pattern\":{\"type\":\"string\",\"description\":\"literal key named pattern\"}}}}}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"f2\",\"parameters\":{\"anyOf\":[{\"type\":\"string\",\"format\":\"date-time\"},{\"type\":\"null\"}],\"pattern\":\"x\"}}}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"f3\",\"parameters\":{\"type\":\"array\",\"items\":[{\"type\":\"string\",\"format\":\"uri\"},{\"type\":\"number\",\"pattern\":\"[0-9]\"}]}}}]",
-    "[{\"name\":\"codex_tool\",\"parameters\":{\"type\":\"object\",\"format\":\"grid\",\"properties\":{\"q\":{\"type\":\"string\"}}}}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"noparams\"}}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"g1\",\"parameters\":{\"type\":\"object\",\"format\":\"csv\"}}},{\"type\":\"function\",\"function\":{\"name\":\"g2\",\"parameters\":{\"type\":\"object\",\"properties\":{\"z\":{\"type\":\"integer\"}}}}}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"h1\",\"parameters\":{\"type\":\"object\",\"pattern\":\"keep-or-strip\"}}},{\"just-a-string\":\"x\"}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"deep\",\"parameters\":{\"type\":\"object\",\"properties\":{\"lvl1\":{\"type\":\"object\",\"properties\":{\"lvl2\":{\"oneOf\":[{\"type\":\"string\",\"pattern\":\"a|b\"}],\"format\":\"email\"}}}}}}}]",
-    "[{\"type\":\"function\",\"function\":{\"name\":\"scalar\",\"parameters\":\"not-a-dict\"}}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Reactive llama.cpp grammar-recovery sanitizer: strips pattern/format keywords from tool schemas (sibling-of-type nodes only, so literal properties named 'pattern' survive). Traced copy of src/tools/schema_sanitizer.c::cli_tools_schema_sanitizer__strip_pattern_and_format + static strip_pf_walk vs LIVE tools/schema_sanitizer.py::strip_pattern_and_format. Cup hashes the full branch ladder (top dispatch fn-params/tool-params + recursive walk with schema-marker detection) plus the total stripped-count V event; twin also asserts the traced count equals the LIVE function's real return. Empty-tools rung (LIVE 'if not tools') is unreachable via argv JSON strings and is excluded from inputs."
 }

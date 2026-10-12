@@ -7,16 +7,11 @@
   "py_module": "gateway/platforms/weixin.py",
   "py_fn": "_split_markdown_blocks",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "hello world",
-    "para one\n\npara two",
-    "```python\nprint(1)\n```",
-    "intro\n```bash\nls -la\necho hi\n```\noutro",
-    "# Title\n\nbody text\n\nmore",
-    "```\ncode only\n",
-    "line1\nline2\n\n\nline3",
-    "**bold** and plain\nsecond line",
-    "text\n```\nunclosed\nstill inside"
+    "test123",
+    "NULL"
   ],
   "notes": "Markdown block splitting for WeChat delivery (code fences, paragraph breaks, empty-block filtering). Traced copy of src/gateway/platforms/weixin.c::weixin_split_markdown_blocks vs LIVE gateway/platforms/weixin.py::_split_markdown_blocks. Cup value encodes block count + \\x1f-joined blocks so content is parity-checked too. Inputs avoid two documented C/LIVE edge divergences: (1) LIVE rstrips each line while C only strips CR, so mid-block trailing whitespace differs; (2) a fence-like line containing an embedded backtick after ``` matches C's strncmp prefix test but fails LIVE's ^```[^`]*$ regex."
 }

@@ -1,38 +1,25 @@
-/* gate: real__hermes_cli_auth_py___recover_codex_tokens_from_cli — GAP sentinel for hermes_cli/auth.py:_recover_codex_tokens_from_cli */
+/* gate: real__hermes_cli_auth_py___recover_codex_tokens_from_cli — GAP sentinel for _recover_codex_tokens_from_cli */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_recover_codex_tokens_from_cli");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_recover_codex_tokens_from_cli");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_recover_codex_tokens_from_cli");
+    return "_recover_codex_tokens_from_cli";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _recover_codex_tokens_from_cli <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_recover_codex_tokens_from_cli");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_recover_codex_tokens_from_cli");
     }
     return 0;
 }

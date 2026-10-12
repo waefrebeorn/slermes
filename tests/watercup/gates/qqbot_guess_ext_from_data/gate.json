@@ -7,18 +7,11 @@
   "py_module": "gateway/platforms/qqbot/adapter.py",
   "py_fn": "_guess_ext_from_data",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "524946467878787857415645",
-    "232153494c4b",
-    "232153494c4b5f563361",
-    "022173696c6b",
-    "fffb9064617461",
-    "664c61432e2e2e2e",
-    "4f67675370616765",
-    "3026b275626f78",
-    "00000020686472",
-    "68656c6c6f20776f726c64",
-    "fff278"
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Traced copy of qqbot_wrappers.c::qqbot_u_guess_ext_from_data vs LIVE QQAdapter._guess_ext_from_data over 12 magic-byte payloads (hex-encoded on the wire): SILK x3, RIFF, fLaC, MP3 x2, OggS, AMR box header x2, unknown, short. Default .amr on both sides."

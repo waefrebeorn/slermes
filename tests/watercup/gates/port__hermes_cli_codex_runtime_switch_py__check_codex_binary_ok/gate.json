@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "check_codex_binary_ok",
+  "c_fn": "hermes_cli_codex_runtime_switc_check_codex_binary_ok",
   "py_module": "hermes_cli/codex_runtime_switch.py",
   "py_fn": "check_codex_binary_ok",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/codex_runtime_switch.c"
   ],
   "cflags": [
     "-I",

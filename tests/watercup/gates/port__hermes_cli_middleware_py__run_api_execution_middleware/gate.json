@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run_api_execution_middleware",
+  "c_fn": "hermes_cli_middleware_run_api_execution_middleware",
   "py_module": "hermes_cli/middleware.py",
   "py_fn": "run_api_execution_middleware",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/middleware.c"
   ],
   "cflags": [
     "-I",

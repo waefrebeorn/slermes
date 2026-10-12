@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cell_box",
+  "c_fn": "pet_cell_box",
   "py_module": "agent/pet/render.py",
   "py_fn": "_cell_box",
   "inputs": [

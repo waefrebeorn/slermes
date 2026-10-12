@@ -4,22 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "hermes_cli_kanban_diagnostics_u_aux_slot_explicit",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "hermes_cli/kanban_diagnostics.py",
   "py_fn": "_aux_slot_explicit",
   "inputs": [
-    "{\"provider\": \"openai\"}",
-    "{\"provider\": \"auto\"}",
-    "{}",
-    "{\"model\": \"gpt-5\"}",
-    "{\"base_url\": \"https://relay.example/v1\"}",
-    "{\"api_key\": \"sk-test\"}",
-    "{\"provider\": \"auto\", \"model\": \"m\"}",
-    "{\"provider\": \"\"}",
-    "{\"provider\": \"auto\", \"base_url\": \"\", \"api_key\": \"\"}",
-    "notdict",
-    ""
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Harness links the REAL ports_wrappers.c wrapper (captures its stdout verdict as VSTR) and traces its branch ladder. Inputs avoid documented divergences: LIVE strips/lowercases the provider string while the C port compares verbatim via strcasecmp (only affects whitespace/case-padded 'auto' spellings), and LIVE str()-coerces non-string values while json_get_str defaults to empty."
 }

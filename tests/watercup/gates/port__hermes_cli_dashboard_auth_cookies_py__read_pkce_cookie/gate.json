@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "read_pkce_cookie",
+  "c_fn": "hermes_cli_dashboard_auth_cook_read_pkce_cookie",
   "py_module": "hermes_cli/dashboard_auth/cookies.py",
   "py_fn": "read_pkce_cookie",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_auth/cookies.c"
   ],
   "cflags": [
     "-I",

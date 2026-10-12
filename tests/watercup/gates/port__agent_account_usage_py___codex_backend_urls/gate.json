@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_codex_backend_urls",
+  "c_fn": "agent_account_usage_u_codex_backend_urls",
   "py_module": "agent/account_usage.py",
   "py_fn": "_codex_backend_urls",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/account_usage.c"
   ],
   "cflags": [
     "-I",

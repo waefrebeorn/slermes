@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_warm_gateway_module",
+  "c_fn": "warm_gateway_module",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_warm_gateway_module",
   "inputs": [

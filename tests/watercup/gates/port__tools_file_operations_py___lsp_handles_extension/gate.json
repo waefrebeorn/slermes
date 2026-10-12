@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_lsp_handles_extension",
+  "c_fn": "fo_lsp_handles_extension",
   "py_module": "tools/file_operations.py",
   "py_fn": "_lsp_handles_extension",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/file_operations_ports.c"
   ],
   "cflags": [
     "-I",

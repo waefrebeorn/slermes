@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_client",
+  "c_fn": "cli_tools_feishu_drive_tool_set_client",
   "py_module": "tools/feishu_drive_tool.py",
   "py_fn": "set_client",
   "inputs": [

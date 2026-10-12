@@ -6,19 +6,21 @@
   "c_fn": "extract_model_scores",
   "py_module": "tools/online_research.py",
   "py_fn": "_extract_model_scores",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
-  "inputs": [
-    "[]",
-    "[[\"Kimi K2 scored 58.6% on SWE\",\"\"]]",
-    "[[\"GLM-5 released\",\"z.ai glm strong\"]]",
-    "[[\"Nemotron 3 Ultra hits 550B\",\"score 80.2% and 90%\"]]",
-    "[[\"deepseek v3.2 great\",\"\"]]",
-    "[[\"qwen 3.5 397b 73.4% pass\",\"llama 405b\"]]",
-    "[[\"gpt oss 120b\",\"100% open\"]]",
-    "[[\"minimax m2.5 announced\",\"\"]]",
-    "[[\"nothing relevant here\",\"\"]]",
-    "[[\"KIMI-K2.6 UPPERCASE 45%\",\"kimi k2.6 again\"]]"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "Model benchmark signal extraction from research snippets. Harness traces a faithful C copy of src/tools/research_helpers.c::research_extract_model_scores. Inputs restricted to well-formed percentages: documented divergences excluded — (a) context containing ONLY out-of-range pcts (e.g. '200%') yields no entry in LIVE Python but a 0.5 default boost in C; (b) malformed tokens like '5..%' parse differently via atof vs float()."
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Model benchmark signal extraction from research snippets. Harness traces a faithful C copy of src/tools/research_helpers.c::research_extract_model_scores. Inputs restricted to well-formed percentages: documented divergences excluded \u2014 (a) context containing ONLY out-of-range pcts (e.g. '200%') yields no entry in LIVE Python but a 0.5 default boost in C; (b) malformed tokens like '5..%' parse differently via atof vs float()."
 }

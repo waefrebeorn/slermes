@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "reap_idle",
+  "c_fn": "hermes_cli_pty_session_reap_idle",
   "py_module": "hermes_cli/pty_session.py",
   "py_fn": "reap_idle",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pty_session.c",
+    "src/hermes_cli/pty_session_ports.c"
   ],
   "cflags": [
     "-I",

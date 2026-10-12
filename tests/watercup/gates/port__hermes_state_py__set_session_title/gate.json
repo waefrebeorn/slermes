@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_session_title",
+  "c_fn": "ws_sess_set_title",
   "py_module": "hermes_state.py",
   "py_fn": "set_session_title",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server_session_detail.c"
   ],
   "cflags": [
     "-I",

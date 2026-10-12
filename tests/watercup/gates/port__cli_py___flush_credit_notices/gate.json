@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_flush_credit_notices",
+  "c_fn": "hcli_flush_credit_notices",
   "py_module": "cli.py",
   "py_fn": "_flush_credit_notices",
   "inputs": [

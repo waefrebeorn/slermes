@@ -3,18 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_pet_scale",
+  "c_fn": "hermes_cli_pets_set_pet_scale",
   "py_module": "hermes_cli/pets.py",
   "py_fn": "set_pet_scale",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pets.c"
   ],
   "cflags": [
     "-I",

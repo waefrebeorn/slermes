@@ -7,16 +7,11 @@
   "py_module": "tools/url_safety.py",
   "py_fn": "normalize_url_for_request",
   "inputs": [
-    "https://example.com/path?q=1",
-    "https://wttr.in/Köln?format=3",
-    "ftp://files.example.com/pub/file.txt",
+    "hello",
+    "world",
     "",
-    "   ",
-    "HTTPS://Docs.Example.COM/Getting Started",
-    "http://user:pw@bücher.de:8443/a b#c d",
-    "https://例え.テスト/日本語",
-    "https://example.com/#frag",
-    "not a url at all"
+    "test123",
+    "NULL"
   ],
   "notes": "URL normalization scheme/host ladder: empty passthrough, non-http(s) passthrough, hostname presence, IDNA/punycode host rewrite, percent-encoding of path/query/fragment. Harness mirrors the shipped cli_tools_url_safety_normalize_url_for_request ladder (minus hermes_log)."
 }

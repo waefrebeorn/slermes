@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_on_notice_clear",
+  "c_fn": "hcli_on_notice_clear",
   "py_module": "cli.py",
   "py_fn": "_on_notice_clear",
   "inputs": [

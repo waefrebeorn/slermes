@@ -7,11 +7,11 @@
   "py_module": "gateway/status.py",
   "py_fn": "record_start_and_check_storm",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

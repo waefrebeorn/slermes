@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_drain_mcp_loop_tasks",
+  "c_fn": "mct_drain_mcp_loop_tasks",
   "py_module": "tools/mcp_tool.py",
   "py_fn": "_drain_mcp_loop_tasks",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/mcp_tool_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

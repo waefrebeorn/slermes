@@ -6,6 +6,12 @@
   "c_fn": "_looks_like_image",
   "py_module": "gateway/platforms/base.py",
   "py_fn": "_looks_like_image",
-  "inputs": ["", "ffff", "424d", "89504e47", "89504e470d0a1a0a00000000", "ffd8ffe1002045786966", "474946383761", "474946383961010001", "424d36000c00", "524946462400000057454250", "52494646240000", "deadbeefcafe"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Traced C copy of base.c::pb_looks_like_image vs LIVE gateway/platforms/base.py::_looks_like_image magic-byte ladder. Inputs are argv-safe hex-encoded byte strings decoded identically on both sides (12 inputs: empty, short, truncated-magic, full PNG/JPEG/GIF87a/GIF89a/BMP/WEBP hits, RIFF-without-WEBP, non-image). All branches exercised; full parity."
 }

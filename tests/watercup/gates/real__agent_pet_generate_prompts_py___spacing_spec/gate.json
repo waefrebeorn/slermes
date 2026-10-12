@@ -7,11 +7,11 @@
   "py_module": "agent/pet/generate/prompts.py",
   "py_fn": "_spacing_spec",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

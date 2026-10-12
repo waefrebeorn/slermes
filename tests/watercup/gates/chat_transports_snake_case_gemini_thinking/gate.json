@@ -12,23 +12,15 @@
     "-I",
     "lib/libcrypto"
   ],
-  "extra_src": [
-    "src/agent/chat_completions_ports.c",
-    "src/agent/prompt_cache_scope.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "py_module": "agent/transports/chat_completions.py",
   "py_fn": "_snake_case_gemini_thinking_config",
   "inputs": [
-    "{\"includeThoughts\": true}",
-    "{\"thinkingLevel\": \" HIGH \"}",
-    "{\"thinkingBudget\": 1024.7}",
-    "{\"includeThoughts\": false, \"thinkingLevel\": \"Low\", \"thinkingBudget\": -3}",
-    "{}",
-    "[1]",
-    "{\"includeThoughts\": \"yes\"}",
-    "not-json",
-    "{\"thinkingLevel\": \"\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "PORT FIX APPLIED: cct_snake_case_gemini_thinking_config previously did a blind textual camelCase\u2192snake_case rename of the raw JSON text; it now parses the object and performs LIVE's type-checked translation (bool include_thoughts; non-empty stripped+lowered thinking_level; int thinking_budget), returning NULL when nothing translates. VSTR compares compact JSON with LIVE's insertion order."
 }

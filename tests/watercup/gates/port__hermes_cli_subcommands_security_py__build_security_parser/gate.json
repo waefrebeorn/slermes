@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_security_parser",
+  "c_fn": "hermes_cli_subcommands_securit_build_security_parser",
   "py_module": "hermes_cli/subcommands/security.py",
   "py_fn": "build_security_parser",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/subcommands/security.c"
   ],
   "cflags": [
     "-I",

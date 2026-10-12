@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "mcp_discovery_in_flight",
+  "c_fn": "hermes_cli_mcp_startup_mcp_discovery_in_flight",
   "py_module": "hermes_cli/mcp_startup.py",
   "py_fn": "mcp_discovery_in_flight",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/mcp_startup.c"
   ],
   "cflags": [
     "-I",

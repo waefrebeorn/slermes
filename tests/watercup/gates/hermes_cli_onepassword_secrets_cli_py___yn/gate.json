@@ -7,11 +7,8 @@
   "py_module": "hermes_cli/onepassword_secrets_cli.py",
   "py_fn": "_yn",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

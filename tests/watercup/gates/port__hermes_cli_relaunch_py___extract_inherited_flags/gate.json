@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_extract_inherited_flags",
+  "c_fn": "hermes_cli_relaunch_u_extract_inherited_flags",
   "py_module": "hermes_cli/relaunch.py",
   "py_fn": "_extract_inherited_flags",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/relaunch.c"
   ],
   "cflags": [
     "-I",

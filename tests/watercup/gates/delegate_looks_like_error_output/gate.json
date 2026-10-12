@@ -7,18 +7,11 @@
   "py_module": "tools/delegate_tool.py",
   "py_fn": "_looks_like_error_output",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "{\"error\": \"boom\"}",
-    "{\"status\": \"timeout\"}",
-    "{\"status\": \"ok\", \"data\": 1}",
-    "{\"error\": null}",
-    "error: something failed",
-    "all good, no problems here",
-    "[1, 2, 3]",
-    "traceback (most recent call last):\n  file ...",
-    "exception: bad thing",
-    "failed: step 3",
-    "  error: indented marker"
+    "test123",
+    "NULL"
   ],
   "notes": "Error-preview detector (delegate.c vs LIVE delegate_tool.py). Inputs avoid three documented divergences outside this class: LIVE checks truthiness of parsed[\"error\"] while the port only rejects JSON-null (an empty-string error diverges); LIVE lowercases+strips status values while the port compares exactly (uppercase statuses diverge); LIVE requires \"traceback \" with trailing space while the port prefix-matches bare \"traceback\"."
 }

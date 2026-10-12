@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "shutdown",
+  "c_fn": "mct_shutdown",
   "py_module": "tools/mcp_tool.py",
   "py_fn": "shutdown",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/mcp_tool_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

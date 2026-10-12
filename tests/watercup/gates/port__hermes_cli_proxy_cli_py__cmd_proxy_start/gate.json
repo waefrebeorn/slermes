@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cmd_proxy_start",
+  "c_fn": "hermes_cli_proxy_cli_cmd_proxy_start",
   "py_module": "hermes_cli/proxy/cli.py",
   "py_fn": "cmd_proxy_start",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/proxy/cli.c"
   ],
   "cflags": [
     "-I",

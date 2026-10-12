@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/auth.py",
   "py_fn": "format_auth_error",
   "inputs": [
-    "-|openai|0|boom",
-    "codex_rate_limited|codex|0|Rate limited by upstream",
-    "codex_rate_limited|codex|1|needs relogin",
-    "subscription_required|openai|0|sub needed",
-    "subscription_required|openai|1|sub plus relogin",
-    "insufficient_credits|codex|0|credits gone",
-    "temporarily_unavailable|codex|0|slow down",
-    "subscription_expired|openai|0|expired",
-    "weird_code||0|mystery failure",
-    "codex_rate_limited||0|rl no provider"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Auth error -> user guidance ladder. REAL PARITY BUG FIXED in src/hermes_cli/auth.c: is_rate_limited_auth_error compared code to literal \"429\" while LIVE uses CODEX_RATE_LIMITED_CODE='codex_rate_limited' — rate-limited errors were misrouted to the 'run hermes model' remediation; macro now matches LIVE. Documented sub-contract: nous-provider entitlement inputs are excluded (LIVE takes a portal/network path via _format_nous_entitlement_auth_error; C returns a static hint) and the LIVE-only {subscription_expired,no_usable_credits,account_missing,member_spend_cap_exceeded} group is traced on neither side (no-op for non-nous providers on both)."
+  "notes": "Auth error -> user guidance ladder. REAL PARITY BUG FIXED in src/hermes_cli/auth.c: is_rate_limited_auth_error compared code to literal \"429\" while LIVE uses CODEX_RATE_LIMITED_CODE='codex_rate_limited' \u2014 rate-limited errors were misrouted to the 'run hermes model' remediation; macro now matches LIVE. Documented sub-contract: nous-provider entitlement inputs are excluded (LIVE takes a portal/network path via _format_nous_entitlement_auth_error; C returns a static hint) and the LIVE-only {subscription_expired,no_usable_credits,account_missing,member_spend_cap_exceeded} group is traced on neither side (no-op for non-nous providers on both)."
 }

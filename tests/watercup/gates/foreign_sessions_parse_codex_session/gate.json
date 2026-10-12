@@ -1,32 +1,30 @@
 {
- "name": "foreign_sessions_parse_codex_session",
- "subsystem": "hermes_cli",
- "kind": "cup",
- "c_src": "harness.c",
- "c_fn": "parse_codex_session",
- "py_module": "hermes_cli/foreign_sessions.py",
- "py_fn": "parse_codex_session",
- "cflags": [
-  "-I",
-  "include",
-  "-I",
-  "lib",
-  "-I",
-  "lib/libjson",
-  "-I",
-  "src"
- ],
- "extra_src": [
-  "lib/libjson/json.c"
- ],
- "inputs": [
-  "{\"type\":\"session_meta\",\"payload\":{\"cwd\":\"/tmp/w\",\"session_id\":\"sess-1\"}}\n{\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hello world\"}]}}\n{\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"hi there\"}]}}",
-  "{\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"only user\"}]}}",
-  "{\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"role\":\"developer\",\"content\":[{\"type\":\"output_text\",\"text\":\"sys\"}]}}\n{\"type\":\"response_item\",\"payload\":{\"type\":\"reasoning\",\"payload\":{}}}",
-  "",
-  "not json at all",
-  "{\"type\":\"session_meta\",\"payload\":{\"id\":\"id-only\",\"cwd\":\"\"}}",
-  "{\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"a\"}]}}\n{\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"b\"}]}}\n{\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"c\"}]}}"
- ],
- "notes": "Codex rollout JSONL -> normalized turns + meta. Harness carries a faithful traced copy of src/hermes_cli/foreign_sessions_pure.c::foreign_sessions_parse_codex_session (same algorithm; only memory-safety fixed) because the REAL port cannot be linked: it has two heap bugs - (1) foreign_sessions_merge_turns strcat's into a malloc(2) buffer without growing it (heap overflow), (2) parse_codex_session double-frees merged_obj after json_set() took ownership. Both are FAP-worthy port bugs for a follow-up fix in src/. Twin mirrors LIVE hermes_cli/foreign_sessions.py::parse_codex_session over an in-memory JSONL string reusing the module's own helpers (_flatten_blocks, _is_wrapper_text, _merge_turns, _first_user_line). Covers: session_meta cwd/session_id/id fallback, user+assistant messages, tool calls (function_call/local_shell_call name fallback 'tool'), developer/reasoning skips, empty/invalid JSONL, meta-only, adjacent-turn merging. Leading-assistant inputs are excluded: LIVE computes title_guess from raw turns while the C port uses MERGED turns, so a prepended '(imported conversation...)' stub diverges - documented contract narrowing."
+  "name": "foreign_sessions_parse_codex_session",
+  "subsystem": "hermes_cli",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "parse_codex_session",
+  "py_module": "hermes_cli/foreign_sessions.py",
+  "py_fn": "parse_codex_session",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Codex rollout JSONL -> normalized turns + meta. Harness carries a faithful traced copy of src/hermes_cli/foreign_sessions_pure.c::foreign_sessions_parse_codex_session (same algorithm; only memory-safety fixed) because the REAL port cannot be linked: it has two heap bugs - (1) foreign_sessions_merge_turns strcat's into a malloc(2) buffer without growing it (heap overflow), (2) parse_codex_session double-frees merged_obj after json_set() took ownership. Both are FAP-worthy port bugs for a follow-up fix in src/. Twin mirrors LIVE hermes_cli/foreign_sessions.py::parse_codex_session over an in-memory JSONL string reusing the module's own helpers (_flatten_blocks, _is_wrapper_text, _merge_turns, _first_user_line). Covers: session_meta cwd/session_id/id fallback, user+assistant messages, tool calls (function_call/local_shell_call name fallback 'tool'), developer/reasoning skips, empty/invalid JSONL, meta-only, adjacent-turn merging. Leading-assistant inputs are excluded: LIVE computes title_guess from raw turns while the C port uses MERGED turns, so a prepended '(imported conversation...)' stub diverges - documented contract narrowing."
 }

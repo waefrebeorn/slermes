@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "tex_concurrent_tool_authorization_gate_init",
   "py_module": "agent/tool_executor.py",
   "py_fn": "__init__",
   "inputs": [

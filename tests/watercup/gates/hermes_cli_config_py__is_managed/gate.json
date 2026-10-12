@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/config.py",
   "py_fn": "is_managed",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

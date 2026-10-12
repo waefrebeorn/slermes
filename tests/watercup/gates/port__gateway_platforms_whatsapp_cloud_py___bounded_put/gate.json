@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_bounded_put",
+  "c_fn": "whatsapp_cloud_bounded_put",
   "py_module": "gateway/platforms/whatsapp_cloud.py",
   "py_fn": "_bounded_put",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/whatsapp_cloud_helpers.c"
   ],
   "cflags": [
     "-I",

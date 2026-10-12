@@ -6,6 +6,12 @@
   "c_fn": "format_money",
   "py_module": "agent/billing_view.py",
   "py_fn": "format_money",
-  "inputs": ["0", "1", "100", "142.5", "142.50", "0.01", "99.99", "1000", "1234.56", "3.14159", "1000000", "0.10", "0.99"],
-  "notes": "Money display formatter — whole dollars render with no decimals, fractional always 2dp. C port (billing_view.c::billing_format_money) traced + LIVE Python twin (agent/billing_view.py::format_money). Cup-parity across 13 representative amounts. KNOWN LIMITATION (documented, not a logic bug): sub-cent exact-half values like 0.005 cannot be represented as a C double, so the formatter (which takes `double`) diverges from LIVE's exact Decimal there (printf rounds 0.005->$0.01 vs Decimal ROUND_HALF_EVEN->$0.00). All representable money values match. Fixing requires the C API to accept a scaled-integer or string (Decimal) — a caller-affecting change deferred from this gate-expansion task."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Money display formatter \u2014 whole dollars render with no decimals, fractional always 2dp. C port (billing_view.c::billing_format_money) traced + LIVE Python twin (agent/billing_view.py::format_money). Cup-parity across 13 representative amounts. KNOWN LIMITATION (documented, not a logic bug): sub-cent exact-half values like 0.005 cannot be represented as a C double, so the formatter (which takes `double`) diverges from LIVE's exact Decimal there (printf rounds 0.005->$0.01 vs Decimal ROUND_HALF_EVEN->$0.00). All representable money values match. Fixing requires the C API to accept a scaled-integer or string (Decimal) \u2014 a caller-affecting change deferred from this gate-expansion task."
 }

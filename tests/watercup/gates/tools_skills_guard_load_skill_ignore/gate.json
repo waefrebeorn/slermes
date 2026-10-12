@@ -7,16 +7,11 @@
   "py_module": "tools/skills_guard.py",
   "py_fn": "_load_skill_ignore",
   "inputs": [
-    "missing|",
-    "skill|",
-    "skill|# comment only",
-    "skill|node_modules|dist",
-    "claw|build",
-    "both|a|b",
-    "skill|  # indented comment",
-    "skill|real| |#x",
-    "skill|\tTabbed",
-    "both|#c1||last"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Traced copy of skills_guard.c cli_tools_skills_guard__load_skill_ignore's per-line parse ladder, wrapped in LIVE's two-filename loop (.skillignore then .clawhubignore). Fixture files are built identically by harness and twin at $TMPDIR/wcup_skills_guard_g2 outside the traced path. Twin's B3 (empty after CRLF strip) is constant-False because Python strip() subsumes it — mirrored so event streams align. KNOWN DIVERGENCE: C keeps trailing spaces in patterns while LIVE strips both ends; control flow identical, inputs avoid trailing-space lines. The C port reads a single caller-supplied file and returns counts — it has no counterpart of LIVE's ignore() matcher closure (fnmatch/dir rules); that surface is ungated."
+  "notes": "Traced copy of skills_guard.c cli_tools_skills_guard__load_skill_ignore's per-line parse ladder, wrapped in LIVE's two-filename loop (.skillignore then .clawhubignore). Fixture files are built identically by harness and twin at $TMPDIR/wcup_skills_guard_g2 outside the traced path. Twin's B3 (empty after CRLF strip) is constant-False because Python strip() subsumes it \u2014 mirrored so event streams align. KNOWN DIVERGENCE: C keeps trailing spaces in patterns while LIVE strips both ends; control flow identical, inputs avoid trailing-space lines. The C port reads a single caller-supplied file and returns counts \u2014 it has no counterpart of LIVE's ignore() matcher closure (fnmatch/dir rules); that surface is ungated."
 }

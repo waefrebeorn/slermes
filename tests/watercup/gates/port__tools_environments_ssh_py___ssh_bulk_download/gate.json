@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ssh_bulk_download",
+  "c_fn": "cli_tools_environments_ssh__ssh_bulk_download",
   "py_module": "tools/environments/ssh.py",
   "py_fn": "_ssh_bulk_download",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/environments_ssh.c"
   ],
   "cflags": [
     "-I",

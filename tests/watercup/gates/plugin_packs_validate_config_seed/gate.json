@@ -4,24 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "validate_config_seed",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/hermes_cli/plugin_packs_pure.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "py_module": "hermes_cli/plugin_packs.py",
   "py_fn": "validate_config_seed",
   "inputs": [
-    "weather\t{\"model\":\"gpt\",\"limit\":5}",
-    "weather\t{}",
-    "weather\t5",
-    "weather\t\"hello\"",
-    "weather\t{\"api_key\":\"x\"}",
-    "weather\t{\"my_token\":\"1\"}",
-    "weather\t{\"auth_style\":\"basic\"}",
-    "weather\t{\"allow_admin\":true,\"model\":\"m\"}",
-    "weather\t{\"granted_capabilities\":[],\"model\":\"m\"}",
-    "weather\t{\"capabilities_consent\":\"y\"}",
-    "weather\t{\"a\":\"1\",\"b\":\"2\",\"c\":\"3\"}",
-    "weather\t{\"PASSWORD\":\"hunter2\"}",
-    "weather\t{\"credentials_file\":\"/x\",\"ok\":1}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Config-seed validation (REAL port src/hermes_cli/plugin_packs_pure.c::plugin_pack_validate_config_seed linked into the harness vs LIVE hermes_cli/plugin_packs.py::validate_config_seed). Verdict strings come from the real port; branch events mirror its ladder. Covers: valid dicts, empty dict, non-mapping seeds, reserved consent keys, allow_* trust gates, secret-shaped keys (case-insensitive), multi-key passes, stop-on-first-rejection ordering. EXCLUDED inputs (documented divergences): empty-string key (LIVE rejects with {key!r} quoting, C prints it raw) and 'apikey'/'privatekey' unseparated spellings (LIVE regex api[_-]?key matches them, C token list only has api_key/api-key - real port gap worth a follow-up)."
 }

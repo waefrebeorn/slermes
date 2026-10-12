@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_collect_masked_input",
+  "c_fn": "hermes_cli_secret_prompt_u_collect_masked_input",
   "py_module": "hermes_cli/secret_prompt.py",
   "py_fn": "_collect_masked_input",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/secret_prompt.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_flush_segment_tail_on_edit_failure",
+  "c_fn": "sc_flush_segment_tail_on_edit_failure",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_flush_segment_tail_on_edit_failure",
   "inputs": [

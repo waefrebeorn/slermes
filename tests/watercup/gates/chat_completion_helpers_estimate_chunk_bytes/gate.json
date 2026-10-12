@@ -7,16 +7,11 @@
   "py_module": "agent/chat_completion_helpers.py",
   "py_fn": "_estimate_chunk_bytes",
   "inputs": [
-    "0\t0\t0",
-    "5\t0\t0",
-    "0\t12\t0",
-    "0\t0\t30",
-    "3\t4\t5",
-    "100\t200\t300",
-    "17\t0\t9",
-    "0\t0\t1",
-    "7\t7\t0",
-    "250\t250\t250"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Per-chunk SSE size estimator (framing floor 40 + delta payload lengths). The C wrapper prints its own result so the harness carries a faithful traced copy of src/agent/chat_completion_helpers_ports.c::cch_estimate_chunk_bytes (same arithmetic contract) into the cup; the twin builds a REAL chunk object (SimpleNamespace delta with content/reasoning/tool_calls) and calls the LIVE Python fn. Shared ladder pins payload lens + floor-vs-payload branch + final size."
 }

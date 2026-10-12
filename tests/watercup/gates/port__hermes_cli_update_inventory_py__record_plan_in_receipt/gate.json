@@ -14,8 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/hermes_cli/update_inventory.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

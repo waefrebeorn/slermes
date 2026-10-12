@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_signal_flush",
+  "c_fn": "sc_signal_flush",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_signal_flush",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_maybe_open_browser",
+  "c_fn": "web_maybe_open_browser",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_maybe_open_browser",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server.c"
   ],
   "cflags": [
     "-I",

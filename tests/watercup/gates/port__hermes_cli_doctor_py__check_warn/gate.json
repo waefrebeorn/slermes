@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "check_warn",
+  "c_fn": "doctor_check_warn",
   "py_module": "hermes_cli/doctor.py",
   "py_fn": "check_warn",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/doctor_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

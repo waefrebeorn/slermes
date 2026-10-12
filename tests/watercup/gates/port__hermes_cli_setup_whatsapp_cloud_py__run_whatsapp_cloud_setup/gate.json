@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run_whatsapp_cloud_setup",
+  "c_fn": "hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup",
   "py_module": "hermes_cli/setup_whatsapp_cloud.py",
   "py_fn": "run_whatsapp_cloud_setup",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/setup_whatsapp_cloud.c"
   ],
   "cflags": [
     "-I",

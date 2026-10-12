@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_write_to_sandbox",
+  "c_fn": "cli_tools_tool_result_storage__write_to_sandbox",
   "py_module": "tools/tool_result_storage.py",
   "py_fn": "_write_to_sandbox",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tool_result_storage.c"
   ],
   "cflags": [
     "-I",

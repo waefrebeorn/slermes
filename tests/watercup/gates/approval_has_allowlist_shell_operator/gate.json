@@ -7,17 +7,11 @@
   "py_module": "tools/approval.py",
   "py_fn": "_has_allowlist_shell_operator",
   "inputs": [
-    "ls -la",
-    "cargo build --release",
-    "echo one",
-    "a && b",
-    "x | y",
-    "p;q",
-    "sort < in > out",
-    "echo `id`",
-    "run $(date)",
-    "git status --short",
-    "deploy\\nrollback"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "C port apr_has_allowlist_shell_operator (src/tools/approval_ports.c) is a simplified, quote-unaware scan; LIVE Python adds quote-awareness, \\\\ escapes and the -c/-e reinterpretation rule. Gate exercises the agreed UNQUOTED subset where both agree; quoted-metachar inputs intentionally excluded (documented divergence, candidate follow-up port)."

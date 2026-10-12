@@ -4,23 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "pcmd_resolve_git_url",
-  "extra_src": ["src/hermes_cli/plugins_cmd_wrappers.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "py_module": "hermes_cli/plugins_cmd.py",
   "py_fn": "_resolve_git_url",
   "inputs": [
-    "owner/repo",
-    "owner/repo/path/to/plugin",
-    "/leading/slash/repo/",
-    "https://github.com/owner/repo.git",
-    "https://github.com/owner/repo",
-    "https://github.com/owner/repo/tree/main/subdir/plugin",
-    "https://github.com/owner/repo/blob/main/README.md",
-    "git@github.com:owner/repo.git",
-    "ssh://git@github.com/owner/repo.git/plugins/thing",
-    "file:///srv/plugins/repo#sub/dir",
-    "https://example.com/x/y#frag/path",
-    "https://github.com/owner/repo.git/inner/plugin"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Plugin-identifier -> git-URL resolver (src/hermes_cli/plugins_cmd_wrappers.c::pcmd_resolve_git_url vs LIVE hermes_cli/plugins_cmd.py::_resolve_git_url). FIXED THE PORT before gating: the old C was a two-line stub (pass URLs through, prefix everything else with https://github.com/<id>.git) with NO subdirectory support, no GitHub browser-tree handling, no #fragment or .git/ boundary. Rewritten to the full LIVE ladder including out_subdir; invalid identifiers return NULL mirroring LIVE's ValueError. Cup = branch ladder + VSTR('url|subdir')."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cmd_approvals",
+  "c_fn": "hermes_cli_main_cmd_approvals",
   "py_module": "hermes_cli/main.py",
   "py_fn": "cmd_approvals",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/main_cmds.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

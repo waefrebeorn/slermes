@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_slot_trace",
+  "c_fn": "agent_moa_trace_u_slot_trace",
   "py_module": "agent/moa_trace.py",
   "py_fn": "_slot_trace",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/moa_trace.c"
   ],
   "cflags": [
     "-I",

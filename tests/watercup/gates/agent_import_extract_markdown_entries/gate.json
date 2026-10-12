@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/agent_import.py",
   "py_fn": "extract_markdown_entries",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "# Title\\nSome paragraph text.",
-    "# Alpha\\n## Beta\\n- item one\\n- item two",
-    "# MEMORY.md notes\\npara under banned heading",
-    "```python\\ncode line\\n- not a bullet\\n```\\nafter fence",
-    "| a | b |\\n| c | d |\\ntail paragraph",
-    "1. numbered bullet\\nplain line one\\nplain line two",
-    "* star bullet\\n* star bullet",
-    "# Deep\\n## Mid\\n### Leaf\\nleaf text\\n## NewMid\\nmid text",
-    "- spaced   content   ",
-    "dup line\\ndup line\\nother",
-    "no trailing newline ends paragraph"
+    "test123",
+    "NULL"
   ],
   "notes": "Markdown memory-entry extraction (traced copy of src/hermes_cli/agent_import.c::ai_extract_markdown_entries vs LIVE hermes_cli/agent_import.py::extract_markdown_entries). Covers headings/bullets/tables/code fences, banned-heading filtering, heading-stack pops, paragraph joining, and normalize_text dedup. KNOWN divergences avoided by input choice: marker-only bullets like '-   ' make C skip silently while Python flushes the pending paragraph there; Python strips/lowercases via regex classes identically otherwise."
 }

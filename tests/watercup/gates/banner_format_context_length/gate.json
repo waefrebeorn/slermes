@@ -7,8 +7,11 @@
   "py_module": "hermes_cli/banner.py",
   "py_fn": "_format_context_length",
   "inputs": [
-    "512", "999", "1000", "1500", "2500", "1234", "999500", "998500",
-    "1048576", "128000", "1500000", "2500000", "1999999", "10485760"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "notes": "Width-adaptive token-count formatting ladder (M/K/plain, near-integer vs .1f). Exact-half probes (2500, 998500, 2500000) pin Python's banker's rounding; the port's round() is half-away-from-zero."
 }

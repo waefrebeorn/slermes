@@ -4,10 +4,24 @@
   "kind": "unit",
   "c_src": "harness.c",
   "c_fn": "tool_idem_get",
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib/libomap"],
-  "extra_src": ["src/tools/tool_idempotency.c", "lib/libjson/json.c", "lib/libomap/omap.c"],
-  "py_module": "(contract — no LIVE python twin; self-contained parity gate)",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libomap"
+  ],
+  "extra_src": [],
+  "py_module": "(contract \u2014 no LIVE python twin; self-contained parity gate)",
   "py_fn": "Cache.get",
   "status": "GREEN",
-  "notes": "Process-local idempotency cache (omap-backed) preventing double side effects on retry: same key within TTL returns the cached result WITHOUT re-executing the handler. Explicit 'idempotency_key' arg overrides key material; TTL expiry drops stale entries. Wired into registry_dispatch (both main + repaired paths): lookup-before-exec + store-on-success. With tool_registry_shutdown() to free the cache."
+  "notes": "Process-local idempotency cache (omap-backed) preventing double side effects on retry: same key within TTL returns the cached result WITHOUT re-executing the handler. Explicit 'idempotency_key' arg overrides key material; TTL expiry drops stale entries. Wired into registry_dispatch (both main + repaired paths): lookup-before-exec + store-on-success. With tool_registry_shutdown() to free the cache.",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ]
 }

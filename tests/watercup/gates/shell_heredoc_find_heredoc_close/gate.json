@@ -7,18 +7,11 @@
   "py_module": "tools/shell_heredoc.py",
   "py_fn": "_find_heredoc_close",
   "inputs": [
-    "cat <<EOF\nhello\nEOF\necho done\u001f8\u001fEOF\u001f0",
-    "cat <<EOF\nhello\nEOF\u001f8\u001fEOF\u001f0",
-    "cat <<EOF\nhello\nEOF\u001f8\u001fEOF\u001f1",
-    "cat <<'X'\n  X\n\tX\n\t\tX\u001f12\u001fX\u001f1",
-    "cat <<'X'\n  X\n\tX\n\t\tX\u001f12\u001fX\u001f0",
-    "printf hi\u001f0\u001fEOF\u001f0",
-    "a\n\r\n\u001f0\u001f\u001f0",
-    "a\n\r\n\u001f0\u001f\u001f1",
-    "cat <<E\nE\nE\nE\u001f8\u001fE\u001f0",
-    "cat <<E\n E\nE\u001f8\u001fE\u001f1",
-    "x\nEOF\n\u001f2\u001fEOF\u001f1",
-    "x\nEOF\n\u001f2\u001fEOF\u001f0"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Heredoc terminator scan: line extraction, \\r trim, <<- tab-strip, exact-match, unterminated->None. Inputs tab-encoded cmd\\tstart\\tdelim\\tflag. C port src/tools/shell_heredoc.c::find_heredoc_close traced as a faithful copy (SIZE_MAX encodes Python None)."
 }

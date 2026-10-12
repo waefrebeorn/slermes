@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_find_install_script",
+  "c_fn": "hermes_cli_dep_ensure_u_find_install_script",
   "py_module": "hermes_cli/dep_ensure.py",
   "py_fn": "_find_install_script",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dep_ensure.c"
   ],
   "cflags": [
     "-I",

@@ -6,17 +6,15 @@
   "c_fn": "moa_slot_problem",
   "py_module": "hermes_cli/moa_config.py",
   "py_fn": "_slot_problem",
-  "extra_src": ["lib/libjson/json.c"],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "inputs": [
-    "!",
-    "|",
-    "anthropic|",
-    "|claude-sonnet",
-    "anthropic|claude-sonnet-4",
-    "  openai  |gpt-5",
-    "MOA|gpt-5",
-    "Moa|",
-    "x|y"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "MoA preset slot validation ladder (src/hermes_cli/moa_config_pure.c::moa_slot_problem vs LIVE hermes_cli/moa_config.py::_slot_problem). Input encoding: '!' = non-object slot, else 'provider|model'. Ladder: not-object / both-empty / provider-empty / model-empty / moa-case-insensitive. Non-string JSON provider/model values (C treats as '', LIVE str()s them) are excluded from the agreed sub-contract."
 }

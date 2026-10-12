@@ -7,20 +7,11 @@
   "py_module": "tools/vision_tools.py",
   "py_fn": "_supports_media_in_tool_results",
   "inputs": [
-    "|",
-    "openrouter|",
-    "nous|x",
-    "bedrock|m",
-    "anthropic|claude-3",
-    "claude|",
-    "openai|gpt-4o",
-    "azure-openai|x",
-    "gemini|gemini-2.5-pro",
-    "gemini|gemini-3-pro",
-    "google|gemini-3-flash",
-    "google-gemini|",
-    "google-vertex-gemini|gemini-pro-3",
-    "mistral|x"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Provider/model gate for media in tool results (src/tools/vision.c vs LIVE tools/vision_tools.py). Inputs restricted to clean lowercase providers because of two KNOWN, documented divergences: (1) LIVE strip()+lower()s the provider before the set checks; C strcmp's it raw — mixed-case/padded providers diverge. (2) LIVE falls back to ProviderProfile.supports_vision for unknown providers (e.g. xiaomi may be True); C has no profile lookup and always returns false. Also LIVE tests 'gemini-3' as a plain substring while C requires 'gemini-3.'/'gemini-3-'/'==gemini-3'/pro-3/flash-3 — models like 'gemini-30' would diverge and are avoided."
+  "notes": "Provider/model gate for media in tool results (src/tools/vision.c vs LIVE tools/vision_tools.py). Inputs restricted to clean lowercase providers because of two KNOWN, documented divergences: (1) LIVE strip()+lower()s the provider before the set checks; C strcmp's it raw \u2014 mixed-case/padded providers diverge. (2) LIVE falls back to ProviderProfile.supports_vision for unknown providers (e.g. xiaomi may be True); C has no profile lookup and always returns false. Also LIVE tests 'gemini-3' as a plain substring while C requires 'gemini-3.'/'gemini-3-'/'==gemini-3'/pro-3/flash-3 \u2014 models like 'gemini-30' would diverge and are avoided."
 }

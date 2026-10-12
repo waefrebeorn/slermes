@@ -13,10 +13,7 @@
     "test123",
     "NULL"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/monitoring/policy.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

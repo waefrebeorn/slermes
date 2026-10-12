@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_record_tirith_crash",
+  "c_fn": "tools_tirith_security_u_record_tirith_crash",
   "py_module": "tools/tirith_security.py",
   "py_fn": "_record_tirith_crash",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tirith_security.c"
   ],
   "cflags": [
     "-I",

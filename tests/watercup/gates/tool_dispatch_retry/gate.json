@@ -4,10 +4,22 @@
   "kind": "unit",
   "c_src": "harness.c",
   "c_fn": "dispatch_with_retry",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/tools/tool_result_classification.c", "lib/libjson/json.c"],
-  "py_module": "(policy — consumer of tool_classify_error; self-contained parity gate)",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
+  "py_module": "(policy \u2014 consumer of tool_classify_error; self-contained parity gate)",
   "py_fn": "dispatch_with_retry",
   "status": "GREEN",
-  "notes": "Proves the agent loop's retry POLICY (the concrete consumer of tool_classify_error): transient error -> re-dispatch up to TOOL_RETRY_MAX; permanent/unknown/success -> no retry; transient-then-success -> stop. Uses the REAL classifier (links tool_result_classification.c). This is what makes the P1 idempotency cache + classification non-speculative: the loop now actually retries transient tool errors, and registry_dispatch's omap-backed cache makes those retries safe (no double side effect)."
+  "notes": "Proves the agent loop's retry POLICY (the concrete consumer of tool_classify_error): transient error -> re-dispatch up to TOOL_RETRY_MAX; permanent/unknown/success -> no retry; transient-then-success -> stop. Uses the REAL classifier (links tool_result_classification.c). This is what makes the P1 idempotency cache + classification non-speculative: the loop now actually retries transient tool errors, and registry_dispatch's omap-backed cache makes those retries safe (no double side effect).",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ]
 }

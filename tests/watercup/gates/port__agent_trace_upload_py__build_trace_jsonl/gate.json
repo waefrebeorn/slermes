@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_trace_jsonl",
+  "c_fn": "agent_trace_upload_build_trace_jsonl",
   "py_module": "agent/trace_upload.py",
   "py_fn": "build_trace_jsonl",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/trace_upload.c"
   ],
   "cflags": [
     "-I",

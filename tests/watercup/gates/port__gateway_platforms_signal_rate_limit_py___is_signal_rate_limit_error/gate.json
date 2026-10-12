@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_signal_rate_limit_error",
+  "c_fn": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
   "py_module": "gateway/platforms/signal_rate_limit.py",
   "py_fn": "_is_signal_rate_limit_error",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platforms_signal_rate_limit.c"
   ],
   "cflags": [
     "-I",

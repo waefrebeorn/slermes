@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "display_name",
+  "c_fn": "ttp_display_name",
   "py_module": "agent/tts_provider.py",
   "py_fn": "display_name",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/tts_provider_ports.c",
+    "src/tools/tts.c"
   ],
   "cflags": [
     "-I",

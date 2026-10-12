@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_launchd_service_registered",
+  "c_fn": "gw_launchd_service_registered",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_launchd_service_registered",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/gateway_gaps.c"
   ],
   "cflags": [
     "-I",

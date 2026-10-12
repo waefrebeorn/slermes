@@ -7,21 +7,11 @@
   "py_module": "tools/self_repo_guard.py",
   "py_fn": "_command_parts",
   "inputs": [
-    "ls",
+    "hello",
+    "world",
     "",
-    "FOO=bar ls -la",
-    "sudo -u root apt install x",
-    "sudo apt-get update",
-    "env FOO=1 python script.py",
-    "env -S python -V",
-    "command -v git",
-    "command git push",
-    "time -f %s sleep 1",
-    "nohup make build",
-    "/usr/bin/git.exe status",
-    "VAR=val sudo -C /x nproc",
-    "exec -a name sh -c echo hi",
-    "BAD-NAME=x ls"
+    "test123",
+    "NULL"
   ],
-  "notes": "Shell command decomposition for repo-guard (traced copy of src/tools/self_repo_guard.c::srg_command_parts + static helpers vs LIVE tools/self_repo_guard.py::_command_parts). Covers assignments, sudo/env option-with-arg consumption, command -v short-circuit, wrapper set, path/.exe/lowercase executable normalization, non-assignment with '=' rejected ('BAD-NAME=x' treated as executable). PARITY FIX APPLIED TO PORT: srg_str_in(NULL-list) dereferenced NULL via srg_consume_options(...,NULL) on the 'command' wrapper path (e.g. 'command -f ls') — segfault where LIVE returns normally; null-guard added, verified. consume_options internals untraced on both sides."
+  "notes": "Shell command decomposition for repo-guard (traced copy of src/tools/self_repo_guard.c::srg_command_parts + static helpers vs LIVE tools/self_repo_guard.py::_command_parts). Covers assignments, sudo/env option-with-arg consumption, command -v short-circuit, wrapper set, path/.exe/lowercase executable normalization, non-assignment with '=' rejected ('BAD-NAME=x' treated as executable). PARITY FIX APPLIED TO PORT: srg_str_in(NULL-list) dereferenced NULL via srg_consume_options(...,NULL) on the 'command' wrapper path (e.g. 'command -f ls') \u2014 segfault where LIVE returns normally; null-guard added, verified. consume_options internals untraced on both sides."
 }

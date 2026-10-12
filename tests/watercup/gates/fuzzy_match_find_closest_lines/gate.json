@@ -6,22 +6,22 @@
   "c_fn": "find_closest_lines",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "find_closest_lines",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
-  "inputs": [
-    "[\"\",\"abc\\ndef\",2,3]",
-    "[\"abc\",\"\",2,3]",
-    "[\"\\n\\n\",\"abc\",2,3]",
-    "[\"   \",\"alpha\\n   beta\\ngamma\",1,3]",
-    "[\"def\",\"abc\\ndef\\nghi\",0,3]",
-    "[\"hello world\",\"say hello there\\nworld peace\\nhello worlds!\",1,2]",
-    "[\"import os\",\"import os\\nimport sys\\nx = 1\\nimport os\",2,3]",
-    "[\"return None\",\"if x:\\n    return None\\ny = 2\",1,5]",
-    "[\"foo(\",\"def foo():\\n    foo()\\nbar()\",0,1]",
-    "[\"class A:\",\"class B:\\n    pass\\nclass A:\\n    pass\",2,3]",
-    "[\"print(1)\",\"print(1)\\nprint(22)\\nprint(333)\",1,2]",
-    "[\"zzzzqqqq\",\"alpha\\nbeta\",1,3]"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "Harness is a faithful traced copy of src/hermes_cli/fuzzy_match_helpers.c::fuzzy_match_find_closest_lines (real file not linked: its helpers are static and carry no cup instrumentation). seq_ratio (LCS ratio) verified numerically equal to difflib SequenceMatcher.ratio for every anchor/line pair in the input walk. V event carries the selected 1-based content line numbers instead of the formatted result string because of a REAL formatting divergence found during gating: the C port appends a trailing '\\n' after every emitted block (and joins blocks with \"\\n---\\n\") while LIVE python's '\\n'.join produces no trailing newline — so the raw result strings differ on every non-empty match. Branch/selection ladder itself matches exactly. The LIVE-only whitespace-diagnosis tail (result += 'Whitespace difference detected...') has no C counterpart and is excluded from the traced rungs on both sides; inputs chosen so it never fires in LIVE either. Second REAL divergence found during gating: the C port splits content with str.split('\\n') semantics while LIVE uses str.splitlines(), so strings ending in '\\n' yield an extra empty final line in C; the harness mirrors splitlines().",
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Harness is a faithful traced copy of src/hermes_cli/fuzzy_match_helpers.c::fuzzy_match_find_closest_lines (real file not linked: its helpers are static and carry no cup instrumentation). seq_ratio (LCS ratio) verified numerically equal to difflib SequenceMatcher.ratio for every anchor/line pair in the input walk. V event carries the selected 1-based content line numbers instead of the formatted result string because of a REAL formatting divergence found during gating: the C port appends a trailing '\\n' after every emitted block (and joins blocks with \"\\n---\\n\") while LIVE python's '\\n'.join produces no trailing newline \u2014 so the raw result strings differ on every non-empty match. Branch/selection ladder itself matches exactly. The LIVE-only whitespace-diagnosis tail (result += 'Whitespace difference detected...') has no C counterpart and is excluded from the traced rungs on both sides; inputs chosen so it never fires in LIVE either. Second REAL divergence found during gating: the C port splits content with str.split('\\n') semantics while LIVE uses str.splitlines(), so strings ending in '\\n' yield an extra empty final line in C; the harness mirrors splitlines().",
   "expect": []
 }

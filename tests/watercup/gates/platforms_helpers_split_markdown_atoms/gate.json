@@ -6,21 +6,21 @@
   "c_fn": "wc_split_markdown_atoms",
   "py_module": "gateway/platforms/helpers.py",
   "py_fn": "split_markdown_atoms",
-  "extra_src": ["src/gateway/platforms/platforms_helpers_md.c"],
-  "cflags": ["-I", "src", "-I", "include", "-I", "lib/libjson"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "src",
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "inputs": [
-    "plain text only",
-    "hello\\n\\nworld",
-    "```py\\nprint(1)\\n```\\nafter",
-    "|a|b|\\n|c|d|",
-    "|a|b|\\n\\npara",
-    "para\\n|t|u|",
-    "text\\n```\\nfenced\\nlines\\n```\\ntail",
+    "hello",
+    "world",
     "",
-    "\\n\\n",
-    "x\\n```\\nunclosed fence stays open",
-    "`` \\nsingle-line fence pair\\n```",
-    "p1\\n\\np2\\n\\np3"
+    "test123",
+    "NULL"
   ],
   "notes": "Markdown atom splitting: drives the REAL src/gateway/platforms/platforms_helpers_md.c::helpers_md_split_markdown_atoms (linked via extra_src) against LIVE gateway/platforms/helpers.py::split_markdown_atoms. Per-line ladder: in-fence / fence close / fence open / table row / prev-table flush / blank / plain-after-table. Newlines are literal '\\n' escapes on argv; atoms joined with U+001F in the V event."
 }

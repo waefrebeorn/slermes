@@ -7,19 +7,11 @@
   "py_module": "agent/monitoring/gateway_health.py",
   "py_fn": "classify_gateway_error",
   "inputs": [
-    "Auth token expired while connecting",
-    "HTTP 401 Unauthorized",
-    "you hit the rate limit",
-    "429 Rate Limit exceeded",
-    "Request timeout after 30s",
-    "connection refused (dns)",
-    "socket unreachable",
-    "missing config key: invalid model",
-    "startup failed",
-    "fatal platform crash",
-    "something innocuous",
+    "hello",
+    "world",
     "",
-    "Timeout waiting for FATAL handler"
+    "test123",
+    "NULL"
   ],
   "notes": "Gateway error classification ladder (src/agent/health.c::gw_classify_gateway_error vs LIVE agent/monitoring/gateway_health.py). 7 keyword-category rungs + result V across 13 inputs incl. empty string."
 }

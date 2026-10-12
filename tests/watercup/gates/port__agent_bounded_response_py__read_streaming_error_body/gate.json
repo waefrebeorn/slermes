@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "read_streaming_error_body",
+  "c_fn": "agent_bounded_response_read_streaming_error_body",
   "py_module": "agent/bounded_response.py",
   "py_fn": "read_streaming_error_body",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/bounded_response.c"
   ],
   "cflags": [
     "-I",

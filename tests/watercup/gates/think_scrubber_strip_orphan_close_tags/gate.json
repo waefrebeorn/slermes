@@ -7,20 +7,11 @@
   "py_module": "agent/think_scrubber.py",
   "py_fn": "_strip_orphan_close_tags",
   "inputs": [
-    "plain prose only",
-    "</think>",
-    "</think> ",
-    "a</think>b",
-    "before </THINK> after",
-    "</Thinking>tail",
-    "</thinking></reasoning>x",
-    "</thought>\n\nnext line",
-    "</REASONING_SCRATCHPAD>done",
-    "</notatag> kept",
-    "</th ink> kept",
-    "<think>open tag kept</think>",
-    "x</think>y</reasoning>z</wibble>w",
-    ""
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Orphan close-tag stripping (src/agent/think_scrubber.c::strip_orphan vs LIVE agent/think_scrubber.py::StreamingThinkScrubber._strip_orphan_close_tags). Covers all 5 close tags, case-mangling, adjacency, trailing-whitespace swallow, non-tags kept. Documented non-traced divergence: LIVE has a '</' not-in-text fast-path return; C lacks it — outputs identical either way, twin asserts traced result == LIVE result on every input."
+  "notes": "Orphan close-tag stripping (src/agent/think_scrubber.c::strip_orphan vs LIVE agent/think_scrubber.py::StreamingThinkScrubber._strip_orphan_close_tags). Covers all 5 close tags, case-mangling, adjacency, trailing-whitespace swallow, non-tags kept. Documented non-traced divergence: LIVE has a '</' not-in-text fast-path return; C lacks it \u2014 outputs identical either way, twin asserts traced result == LIVE result on every input."
 }

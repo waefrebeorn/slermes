@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "complete_pending",
+  "c_fn": "hermes_cli_dashboard_auth_nati_complete_pending",
   "py_module": "hermes_cli/dashboard_auth/native_flow.py",
   "py_fn": "complete_pending",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_auth/native_flow.c"
   ],
   "cflags": [
     "-I",

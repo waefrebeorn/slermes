@@ -7,12 +7,13 @@
   "py_module": "hermes_cli/mcp_startup.py",
   "py_fn": "get_mcp_server_filter",
   "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
     "NULL"
   ],
-  "extra_src": [
-    "src/hermes_cli/mcp_startup_gaps.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

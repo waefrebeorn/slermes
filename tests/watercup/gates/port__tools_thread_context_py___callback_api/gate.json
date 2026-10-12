@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_callback_api",
+  "c_fn": "tools_thread_context_u_callback_api",
   "py_module": "tools/thread_context.py",
   "py_fn": "_callback_api",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/thread_context.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_run_bash",
+  "c_fn": "envb_run_bash",
   "py_module": "tools/environments/base.py",
   "py_fn": "_run_bash",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/environments_base_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

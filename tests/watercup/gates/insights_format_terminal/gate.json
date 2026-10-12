@@ -4,22 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "fmt",
-  "extra_src": ["src/agent/insights.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib"
+  ],
   "py_module": "agent/insights.py",
   "py_fn": "format_terminal",
   "inputs": [
-    "{\"empty\":true,\"days\":30,\"source_filter\":\"\"}",
-    "{\"empty\":true,\"days\":7,\"source_filter\":\"telegram\"}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":0,\"np\":0,\"nt\":0,\"ns\":0,\"daycounts\":[]}",
-    "{\"empty\":false,\"days\":14,\"dr\":[1700000000,1701000000],\"nm\":2,\"np\":2,\"nt\":2,\"ns\":1,\"daycounts\":[1,0,2,0,0,0,0],\"hours\":[9,9,22],\"active_days\":4,\"streak\":2,\"nn\":1}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":1,\"np\":0,\"nt\":0,\"ns\":0,\"daycounts\":[]}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":0,\"np\":1,\"pt\":\"cli\",\"nt\":0,\"ns\":0,\"daycounts\":[]}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":0,\"np\":1,\"pt\":\"discord\",\"nt\":0,\"ns\":0,\"daycounts\":[]}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":0,\"np\":0,\"nt\":3,\"ns\":0,\"daycounts\":[]}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":0,\"np\":0,\"nt\":0,\"ns\":2,\"daycounts\":[]}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":0,\"np\":0,\"nt\":0,\"ns\":0,\"daycounts\":[0,3,1,0,0,5,2]}",
-    "{\"empty\":false,\"days\":30,\"dr\":[0,0],\"nm\":0,\"np\":0,\"nt\":0,\"ns\":0,\"daycounts\":[2,0,0,0,0,0,0],\"active_days\":6,\"streak\":5,\"nn\":2}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Terminal-report formatter SECTION LADDER. REAL src/agent/insights.c::insights_format_terminal linked via extra_src (with link shims for its db/usage-pricing surface) against LIVE agent/insights.py::InsightsEngine.format_terminal. Input: one scenario JSON per cup; harness materializes it into an insights_report_t, the twin into the report dict LIVE expects. Rung order per input: B empty-report early path; then when non-empty, in order: date-range present / models present / platforms present / tools present / skills present / activity-present (any by_day count>0; inside: hours-present / active_days>0 / max_streak>1) / notable-sessions present — each B followed by a fixed V section marker. AGREED SUB-CONTRACT: value events are fixed section markers because the rendered TEXT is a KNOWN PORT GAP (C prints extra Cache read/write lines, 'User msgs' labels, a Cost column in Models, and %'lld locale grouping that differ from LIVE's literal layout; LIVE's datetime.fromtimestamp is also host-tz dependent while C strftime matches only under the same TZ). LIVE's COST section (estimated/included/unknown buckets) has NO counterpart in the C port — excluded from the ladder entirely; add a rung when the port grows one. Inputs restricted so activity by_day is either absent or carries >=1 nonzero count (LIVE keys the section on list truthiness, C on any count>0 — all-zero lists would diverge)."
+  "notes": "Terminal-report formatter SECTION LADDER. REAL src/agent/insights.c::insights_format_terminal linked via extra_src (with link shims for its db/usage-pricing surface) against LIVE agent/insights.py::InsightsEngine.format_terminal. Input: one scenario JSON per cup; harness materializes it into an insights_report_t, the twin into the report dict LIVE expects. Rung order per input: B empty-report early path; then when non-empty, in order: date-range present / models present / platforms present / tools present / skills present / activity-present (any by_day count>0; inside: hours-present / active_days>0 / max_streak>1) / notable-sessions present \u2014 each B followed by a fixed V section marker. AGREED SUB-CONTRACT: value events are fixed section markers because the rendered TEXT is a KNOWN PORT GAP (C prints extra Cache read/write lines, 'User msgs' labels, a Cost column in Models, and %'lld locale grouping that differ from LIVE's literal layout; LIVE's datetime.fromtimestamp is also host-tz dependent while C strftime matches only under the same TZ). LIVE's COST section (estimated/included/unknown buckets) has NO counterpart in the C port \u2014 excluded from the ladder entirely; add a rung when the port grows one. Inputs restricted so activity by_day is either absent or carries >=1 nonzero count (LIVE keys the section on list truthiness, C on any count>0 \u2014 all-zero lists would diverge)."
 }

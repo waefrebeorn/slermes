@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "check_api_key",
+  "c_fn": "cli_tools_openrouter_client_check_api_key",
   "py_module": "tools/openrouter_client.py",
   "py_fn": "check_api_key",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/openrouter_client.c"
   ],
   "cflags": [
     "-I",

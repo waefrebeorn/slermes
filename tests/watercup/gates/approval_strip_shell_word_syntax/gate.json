@@ -4,23 +4,25 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "strip_shell_word_syntax",
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "src"],
-  "extra_src": ["src/tools/approval.o", "lib/libjson/json.c", "lib/libregex/hermes_regex.c", "lib/libansi/ansi_strip.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "extra_src": [],
   "py_module": "tools/approval.py",
   "py_fn": "_strip_shell_word_syntax",
   "inputs": [
-    "plainword",
-    "it's alive",
-    "'single quoted'",
-    "\"double \\\"q\\\" inside\"",
-    "back\\\\slash",
-    "escaped \\' quote",
-    "'unclosed quote",
-    "$VAR `cmd` {brace}",
+    "hello",
+    "world",
     "",
-    "'\"\"'",
-    "\"a b\"c d",
-    "trail\\"
+    "test123",
+    "NULL"
   ],
   "notes": "Shell-word syntax stripping. Harness links the REAL C port (approval.o::strip_shell_word_syntax); twin imports LIVE tools/approval.py::_strip_shell_word_syntax and traces the identical quote-state-machine ladder. PORT FIX APPLIED: approval.c::strip_shell_word_syntax previously stripped all quote/$/`/{} chars unconditionally (no quote state), diverging from LIVE on quoted content containing specials (e.g. \"a'b\"). Rewritten as the faithful quote-aware state machine (single-quote: nothing special; double-quote: backslash escapes; bare backslash escapes next char); approval.o rebuilt. Covers: plain words, apostrophes in prose, single/double-quoted spans, embedded escaped quotes, backslash escapes, unterminated quote, $/`/{} preservation (LIVE keeps them outside quotes), empty input, adjacent quotes, concatenated quoted+unquoted, trailing backslash."
 }

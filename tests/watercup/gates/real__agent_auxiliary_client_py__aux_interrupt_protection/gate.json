@@ -7,11 +7,8 @@
   "py_module": "agent/auxiliary_client.py",
   "py_fn": "aux_interrupt_protection",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

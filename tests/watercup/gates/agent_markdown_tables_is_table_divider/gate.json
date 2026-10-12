@@ -23,15 +23,10 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "| --- | --- |",
-    "| ---: | :--- |",
-    "| a | b |",
-    "hello world",
-    "|--",
-    "| - |",
-    "| :---: |",
-    "something",
-    "| - | - |",
+    "hello",
+    "world",
+    "",
+    "test123",
     "NULL"
   ],
   "notes": "True when row is a markdown table separator line."

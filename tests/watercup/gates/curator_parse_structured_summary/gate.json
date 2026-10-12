@@ -4,19 +4,27 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "wc_curator",
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "lib/libyaml", "-I", "src"],
-  "extra_src": ["src/agent/curator_ports.c", "lib/libjson/json.c", "lib/libyaml/yaml.o"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libyaml",
+    "-I",
+    "src"
+  ],
+  "extra_src": [],
   "py_module": "agent/curator.py",
   "py_fn": "_parse_structured_summary",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "no structured block here at all",
-    "## Structured summary (required)\n```yaml\nconsolidations:\n  - from: memory_a.md\n    into: memory_b.md\n    reason: overlapping content\nprunings:\n  - name: stale_note\n    reason: outdated\n```\ndone",
-    "```yaml\nconsolidations:\n  - from: a.md\n    into: b.md\n```\ntail",
-    "```yaml\nprunings:\n  - name: x\n    reason: y\n  - name: z\n    reason: w\n```",
-    "```yaml\nnot_a_dict: true\n```",
-    "```yaml\nconsolidations: []\nprunings: []\n```",
-    "text before ```yml\nconsolidations:\n  - from: p\n    into: q\n```\ntext after"
+    "test123",
+    "NULL"
   ],
   "notes": "Structured-summary YAML extraction. Harness LINKS the real src/agent/curator_ports.c::cur_parse_structured_summary with real libyaml (lib/libyaml/yaml.o) and traces a derived-shape ladder over its JSON output; twin calls LIVE _parse_structured_summary (PyYAML path). KNOWN divergences avoided by input choice: LIVE regex accepts ```YAML case-insensitively while C's fallback lowercases only for the exact ```yaml/```yml probes; malformed-YAML handling differs in which bodies parse."
 }

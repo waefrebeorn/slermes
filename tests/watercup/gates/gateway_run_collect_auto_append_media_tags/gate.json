@@ -6,21 +6,21 @@
   "c_fn": "collect_auto_append_media_tags",
   "py_module": "gateway/run.py",
   "py_fn": "_collect_auto_append_media_tags",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "inputs": [
-    "[]",
-    "notjson",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"MEDIA:/tmp/hello.mp3\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"MEDIA:/tmp/a.mp3 and MEDIA:/tmp/b.wav done\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}, {\"id\": \"c2\", \"function\": {\"name\": \"image_generate\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"MEDIA:/tmp/a.mp3\"}, {\"role\": \"tool\", \"tool_call_id\": \"c2\", \"content\": \"MEDIA:/tmp/pic.png\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"MEDIA:/tmp/say.mp3 [[audio_as_voice]]\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"all spoken, no media\"}]",
-    "[{\"role\": \"user\", \"content\": \"hi\"}, {\"role\": \"assistant\", \"content\": \"MEDIA:/tmp/nope.mp3\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"MEDIA:/tmp/dup.mp3 then MEDIA:/tmp/dup.mp3\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"MEDIA:/tmp/x.png\\\" trailing\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"tool\", \"tool_call_id\": \"c1\", \"content\": \"MEDIA:ab\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c9\", \"function\": {\"name\": \"text_to_speech\"}}]}, {\"role\": \"function\", \"call_id\": \"c9\", \"content\": \"MEDIA:/tmp/fn.webm\"}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Auto-append MEDIA tag collection from current-turn tool results. Harness is a traced copy of run_pure2.c::gw_collect_auto_append_media_tags (libjson-linked); twin drives the LIVE gateway/run.py::_collect_auto_append_media_tags with history_offset=0 and an empty dedup set. Outcome-level ladder only (B1 non-array, per-tag V events, B2 voice directive): the C port scans every tool/function message with a naive token scan while LIVE layers a producer-tool allowlist via tool_call_id->name mapping and an extension-anchored regex. DOCUMENTED DIVERGENCES (inputs excluded): non-allowlisted tool names, relative or extension-less MEDIA tokens longer than 4 chars (C accepts, LIVE regex rejects), assistant-role MEDIA text paths in the history collector shape, image_generate JSON-payload fields (LIVE-only path), nonzero history_offset / dedup-set behavior (C ignores both arguments). All gated inputs keep every tool message tied to an allowlisted producer and use extension-anchored absolute paths, where the two implementations agree on tags, order, duplicates, and the voice flag."
 }

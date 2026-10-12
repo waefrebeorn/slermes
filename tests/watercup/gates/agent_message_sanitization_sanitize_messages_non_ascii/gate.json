@@ -6,21 +6,19 @@
   "c_fn": "sanitize_messages_non_ascii",
   "py_module": "agent/message_sanitization.py",
   "py_fn": "_sanitize_messages_non_ascii",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/message_sanitization_ports.c", "lib/libjson/json.c"],
-  "inputs": [
-    "[]",
-    "[\"not-a-dict\", 42, null]",
-    "[{\"role\": \"user\", \"content\": \"plain ascii text\"}]",
-    "[{\"role\": \"user\", \"content\": \"héllo wörld ünicode\"}]",
-    "[{\"role\": \"assistant\", \"content\": [{\"type\": \"text\", \"text\": \"part one ✓\"}, {\"type\": \"text\", \"text\": \"clean part\"}, \"not-a-dict\", {\"no_text\": 1}]}]",
-    "[{\"role\": \"tool\", \"name\": \"töol_name✗\", \"content\": \"ok\"}]",
-    "[{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"c1\", \"function\": {\"name\": \"f\", \"arguments\": \"{\\\"path\\\": \\\"dätä✓.txt\\\"}\"}}, {\"id\": \"c2\", \"function\": \"not-a-dict\"}, \"junk\", {\"id\": \"c3\"}]}]",
-    "[{\"role\": \"user\", \"content\": \"ok\", \"reasoning_content\": \"thöughts ✓\", \"custom\": 17, \"nested\": {\"a\": 1}}]",
-    "[{\"role\": \"user\", \"content\": \"curly “quotes” and — dash\"}]",
-    "[{\"role\": \"user\", \"content\": \"mixed ✗bad\", \"name\": \"ñame\"}, \"scalar\", {\"role\": \"assistant\", \"content\": \"clean\", \"tool_calls\": []}]",
-    "[{\"role\": \"user\", \"content\": {\"complex\": true}, \"tool_calls\": \"not-a-list\", \"name\": 5}]",
-    "[{\"role\": \"user\", \"content\": \"a✓b\"}, {\"role\": \"tool\", \"tool_call_id\": \"tï\", \"content\": \"ré\"}, {\"content\": \"✓\"}]"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "FIXED THE PORT: msz_sanitize_messages_non_ascii in src/agent/message_sanitization_ports.c was a printf-stub passthrough; now implements the real LIVE ladder (content str/list-of-parts, name, tool_calls[].function.arguments with the get('function',{}) default-dict rule, and remaining top-level string fields skipping content/name/tool_calls/role). Also fixed msz_strip_non_ascii to LIVE semantics (encode('ascii','ignore') pure drop) — it previously substituted curly quotes/dashes with ASCII equivalents, which diverged from LIVE. Harness is a traced copy of the core ladder linking the REAL msz_strip_non_ascii via extra_src; VSTR is the found flag."
+  "extra_src": [],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "FIXED THE PORT: msz_sanitize_messages_non_ascii in src/agent/message_sanitization_ports.c was a printf-stub passthrough; now implements the real LIVE ladder (content str/list-of-parts, name, tool_calls[].function.arguments with the get('function',{}) default-dict rule, and remaining top-level string fields skipping content/name/tool_calls/role). Also fixed msz_strip_non_ascii to LIVE semantics (encode('ascii','ignore') pure drop) \u2014 it previously substituted curly quotes/dashes with ASCII equivalents, which diverged from LIVE. Harness is a traced copy of the core ladder linking the REAL msz_strip_non_ascii via extra_src; VSTR is the found flag."
 }

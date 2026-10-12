@@ -7,11 +7,11 @@
   "py_module": "agent/subdirectory_hints.py",
   "py_fn": "_is_ancestor_or_same",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

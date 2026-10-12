@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "ve_env_init",
   "py_module": "tools/environments/vercel_sandbox.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/vercel_sandbox_env.c",
+    "src/tools/vercel_sandbox_helpers.c"
   ],
   "cflags": [
     "-I",

@@ -7,11 +7,11 @@
   "py_module": "retry_utils.py",
   "py_fn": "zai_coding_overload_retry_ceiling",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

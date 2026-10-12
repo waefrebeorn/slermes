@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "flush",
+  "c_fn": "safe_writer_flush",
   "py_module": "agent/process_bootstrap.py",
   "py_fn": "flush",
   "inputs": [

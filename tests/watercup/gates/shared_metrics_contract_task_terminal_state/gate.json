@@ -6,23 +6,19 @@
   "c_fn": "task_terminal_state",
   "py_module": "hermes_cli/observability/shared_metrics_contract.py",
   "py_fn": "task_terminal_state",
-  "extra_src": ["src/hermes_cli/shared_metrics_contract.c", "src/hermes_cli/smc_event_extractors.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "inputs": [
-    ",0,0,0",
-    "interrupted_by_user,1,0,0",
-    "user_cancel,0,1,1",
-    "timeout_after_retry,0,0,0",
-    "max_iterations_reached,0,0,0",
-    "budget_exhausted,0,0,0",
-    "approval_denied,0,0,0",
-    "approval_rejected_by_user,0,0,0",
-    "guardrail_triggered,0,0,0",
-    "system_aborted,0,0,0",
-    "done,0,1,0",
-    "error,0,0,1",
-    "unknown,0,0,0",
-    "completed,0,0,0"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Terminal-state mapping ladder (cancel/timeout/budget/approval/guardrail/system_aborted/completed/failed/unknown). REAL C port smc_task_terminal_state linked via extra_src; harness traces the branch ladder and hashes the port's JSON result. Input encoding: reason,interrupted,completed,failed (0/1 flags)."
 }

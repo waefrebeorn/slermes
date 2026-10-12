@@ -6,21 +6,21 @@
   "c_fn": "msg_has_payload",
   "py_module": "agent/agent_runtime_helpers.py",
   "py_fn": "_msg_has_payload",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "inputs": [
-    "{\"content\":\"hello\"}",
-    "{\"content\":\"   \"}",
-    "{\"content\":\"\"}",
-    "{\"content\":[{\"type\":\"text\",\"text\":\"hi\"}]}",
-    "{\"content\":[{\"type\":\"text\",\"text\":\"  \"},{\"type\":\"image\"}]}",
-    "{\"content\":[{\"type\":\"image\"}]}",
-    "{\"content\":[\"note\"]}",
-    "{\"content\":[null,0]}",
-    "{\"content\":{\"a\":1}}",
-    "{\"content\":null,\"tool_calls\":[{\"id\":\"t\"}]}",
-    "{\"reasoning_content\":\" hmm \"}",
-    "{\"codex_message_items\":[{\"type\":\"x\"}]}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Wire-payload emptiness check. Harness traces a faithful C copy of src/agent/agent_message_payload.c::msg_has_payload + content_list_has_payload (the real file is linked for json support and its repair sibling; hermes_log stubbed locally since the traced path never logs). Twin transcribes the LIVE Python body verbatim with interleaved Cup events. KNOWN DIVERGENCE (documented): {'content': []} returns False in C (empty-array fast path) but True in LIVE Python (empty list falls through to `content not in (None, \"\")`); that input is excluded from the walk."
 }

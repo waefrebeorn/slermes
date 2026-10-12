@@ -4,24 +4,27 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "reasoning_resolve_config",
-  "extra_src": ["src/gateway/hermes_constants_reasoning.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "lib/libhive", "-I", "src"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libhive",
+    "-I",
+    "src"
+  ],
   "py_module": "hermes_constants.py",
   "py_fn": "resolve_reasoning_config",
   "inputs": [
-    "|null",
-    "|{}",
-    "claude-opus-4-5|{\"agent\":{\"reasoning_effort\":\"high\"}}",
-    "|{\"model\":\"grok-4\",\"agent\":{\"reasoning_effort\":\"low\"}}",
-    "|{\"model\":{\"default\":\"xai/grok-4\"},\"agent\":{\"reasoning_overrides\":{\"xai/grok-4\":\"high\"}}}",
-    "openrouter/anthropic/claude-opus-4.5|{\"agent\":{\"reasoning_overrides\":{\"anthropic/claude-opus-4.5\":\"max\"},\"reasoning_effort\":\"low\"}}",
-    "claude.opus|{\"agent\":{\"reasoning_overrides\":{\"claude-opus\":\"high\"}}}",
-    "mystery-model|{\"agent\":{\"reasoning_overrides\":{\"other\":\"high\"},\"reasoning_effort\":\"bogus\"}}",
-    "|{\"agent\":{\"reasoning_effort\":false}}",
-    "|{\"agent\":{\"reasoning_effort\":true}}",
-    "|{\"agent\":{\"reasoning_effort\":\"  ULTRA  \"}}",
-    "|{\"agent\":5,\"reasoning_effort\":\"low\"}",
-    "|{\"agent\":{\"reasoning_effort\":\"none\"}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Reasoning-effort resolution chokepoint. Per-model tolerant lookup (canonical model-name variants) runs via the LINKED real port (hermes_constants_reasoning.c); the resolve_config body is a faithful traced copy; reasoning_parse_effort is a verbatim copy of the slash_commands.c leaf parser. Inputs encoded as <model>|<cfg-json>. Covers: null/empty cfg, global effort (valid/case-insensitive/disabled-bool/True/none/bogus), derived model from string and dict model sections, per-model hits via exact, aggregator-strip, and dot/dash spelling-tolerant variants, miss falling back to global. Twin B3 branches on truthy overrides — avoid explicitly-empty overrides objects in inputs (C treats {} as present, LIVE's `or {}` makes it absent)."
+  "notes": "Reasoning-effort resolution chokepoint. Per-model tolerant lookup (canonical model-name variants) runs via the LINKED real port (hermes_constants_reasoning.c); the resolve_config body is a faithful traced copy; reasoning_parse_effort is a verbatim copy of the slash_commands.c leaf parser. Inputs encoded as <model>|<cfg-json>. Covers: null/empty cfg, global effort (valid/case-insensitive/disabled-bool/True/none/bogus), derived model from string and dict model sections, per-model hits via exact, aggregator-strip, and dot/dash spelling-tolerant variants, miss falling back to global. Twin B3 branches on truthy overrides \u2014 avoid explicitly-empty overrides objects in inputs (C treats {} as present, LIVE's `or {}` makes it absent)."
 }

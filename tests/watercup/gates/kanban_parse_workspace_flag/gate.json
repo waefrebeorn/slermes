@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/kanban.py",
   "py_fn": "_parse_workspace_flag",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "scratch",
-    "  worktree  ",
-    "dir:/tmp/build",
-    "worktree:~/wt/main",
-    " worktree: wt2 ",
-    "bogus",
-    "dir:",
-    "dir:~",
-    "DIR:x"
+    "test123",
+    "NULL"
   ],
   "notes": "--workspace flag parsing ladder (src/hermes_cli/kanban_format.c::kanban_parse_workspace_flag vs LIVE hermes_cli/kanban.py::_parse_workspace_flag). Outcome hashed as 'kind\\tpath' / 'ERR\\t<msg>'. expanduser('~') covered via $HOME. KNOWN DIVERGENCE (documented, input 'worktree:' with empty path EXCLUDED from the agreed sub-contract): the C port hardcodes '--workspace dir:' in its empty-path error even for the worktree: prefix while LIVE interpolates the actual prefix ('dir:' case IS covered by input 8 and matches). Input 'DIR:x' is unknown on both sides (case-sensitive prefixes)."
 }

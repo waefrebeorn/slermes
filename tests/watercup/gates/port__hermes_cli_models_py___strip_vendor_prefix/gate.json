@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strip_vendor_prefix",
+  "c_fn": "model_strip_vendor_prefix",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_strip_vendor_prefix",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/model_catalog.c"
   ],
   "cflags": [
     "-I",

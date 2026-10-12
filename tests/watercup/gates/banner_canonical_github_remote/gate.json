@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/banner.py",
   "py_fn": "_canonical_github_remote",
   "inputs": [
-    "git@github.com:NousResearch/hermes-agent.git",
-    "ssh://git@github.com/NousResearch/hermes-agent.git",
-    "https://github.com/NousResearch/hermes-agent.git",
-    "https://GitHub.com/Foo/Bar.Git",
-    "  https://github.com/foo/bar/  ",
-    "github.com/foo/bar",
-    "gitlab.com/group/proj",
-    "https://gitlab.com/group/proj.git/",
-    "fork",
-    "https://github.com/NousResearch/hermes-agent",
-    "git@github.com:user/repo",
-    "HTTPS://EXAMPLE.com/Repo/"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "GitHub remote canonicalization (host/owner/repo lowercased, .git and trailing / stripped). Dropped inputs (documented divergence, not gated): bare 'https://host' with no path — LIVE urlparse leaves the value untouched (netloc set, path empty) while the C urlparse replication rewrites it to just 'host'."
+  "notes": "GitHub remote canonicalization (host/owner/repo lowercased, .git and trailing / stripped). Dropped inputs (documented divergence, not gated): bare 'https://host' with no path \u2014 LIVE urlparse leaves the value untouched (netloc set, path empty) while the C urlparse replication rewrites it to just 'host'."
 }

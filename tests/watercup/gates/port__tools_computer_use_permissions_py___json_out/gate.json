@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_json_out",
+  "c_fn": "tools_computer_use_permissions_u_json_out",
   "py_module": "tools/computer_use/permissions.py",
   "py_fn": "_json_out",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/computer_use/permissions.c"
   ],
   "cflags": [
     "-I",

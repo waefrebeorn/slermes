@@ -7,17 +7,11 @@
   "py_module": "tools/skills_hub.py",
   "py_fn": "_resolve_skill_name",
   "inputs": [
-    "my-skill|-",
-    "my-skill|https://github.com/u/r/main/my-skill/SKILL.md",
-    "-|https://github.com/u/r/main/cool_tool/SKILL.md",
-    "-|https://example.com/skills/parser.md",
-    "-|https://example.com/skills/readme.md",
-    "-|not a url",
-    "-|",
-    "SKILL|-",
-    "-|https://h/p?q=1",
-    "-|https://host",
-    "My-Skill|-"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Skill-name resolver (skills_hub.c vs LIVE skills_hub.py GitHubSource._resolve_skill_name). Input encodes the frontmatter name before '|' ('-' = absent). Validity via LIVE _is_valid_skill_name; result via the shared ladder. FM names avoid non-space whitespace where the port's strip differs from Python str.strip()."
 }

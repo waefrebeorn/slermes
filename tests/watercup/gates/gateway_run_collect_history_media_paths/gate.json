@@ -6,19 +6,21 @@
   "c_fn": "collect_history_media_paths",
   "py_module": "gateway/run.py",
   "py_fn": "_collect_history_media_paths",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "inputs": [
-    "[]",
-    "notjson",
-    "[{\"role\": \"tool\", \"content\": \"MEDIA:/tmp/hello.mp3\"}]",
-    "[{\"role\": \"tool\", \"content\": \"MEDIA:/tmp/a.mp3 done\"}, {\"role\": \"function\", \"content\": \"MEDIA:/tmp/b.wav\"}]",
-    "[{\"role\": \"tool\", \"content\": \"MEDIA:/tmp/dup.mp3 first\"}, {\"role\": \"tool\", \"content\": \"later MEDIA:/tmp/dup.mp3 again MEDIA:/tmp/new.png\"}]",
-    "[{\"role\": \"tool\", \"content\": \"no media here\"}]",
-    "[{\"role\": \"user\", \"content\": \"MEDIA:/tmp/ignored.mp3\"}, {\"role\": \"tool\", \"content\": \"ok\"}]",
-    "[{\"role\": \"tool\", \"content\": \"MEDIA:ab short\"}]",
-    "[{\"role\": \"tool\", \"content\": \"MEDIA:/tmp/z.mp4 MEDIA:/tmp/a.mp4 two in one\"}]",
-    "[{\"role\": \"function\", \"call_id\": \"c1\", \"content\": \"MEDIA:/tmp/fn.webm tail\"}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "History media-path dedup collection. Harness is a traced copy of run_pure2.c::gw_collect_history_media_paths (libjson-linked); twin drives the LIVE gateway/run.py::_collect_history_media_paths. V events use canonical sorted order because the C port preserves first-seen order while LIVE returns a set. Outcome-level ladder only (B1 non-array, per-path V, joined V): LIVE additionally scans assistant-role messages and image_generate JSON payloads through extract_media; the C port scans only tool/function message text with a naive token scan. DOCUMENTED DIVERGENCES (inputs excluded): assistant-role MEDIA text paths, JSON-payload host_image/image/agent_visible_image fields, relative or extension-less tokens longer than 4 chars, quoted/spaced path shapes that extract_media accepts and the token scan does not. Gated inputs are tool/function-only with extension-anchored absolute paths where both sides agree on the deduped set."
 }

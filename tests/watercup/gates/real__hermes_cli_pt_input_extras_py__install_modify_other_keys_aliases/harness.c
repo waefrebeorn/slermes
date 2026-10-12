@@ -1,38 +1,25 @@
-/* gate: real__hermes_cli_pt_input_extras_py__install_modify_other_keys_aliases — GAP sentinel for hermes_cli/pt_input_extras.py:install_modify_other_keys_aliases */
+/* gate: real__hermes_cli_pt_input_extras_py__install_modify_other_keys_aliases — GAP sentinel for install_modify_other_keys_aliases */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("install_modify_other_keys_aliases");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "install_modify_other_keys_aliases");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("install_modify_other_keys_aliases");
+    return "install_modify_other_keys_aliases";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s install_modify_other_keys_aliases <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("install_modify_other_keys_aliases");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("install_modify_other_keys_aliases");
     }
     return 0;
 }

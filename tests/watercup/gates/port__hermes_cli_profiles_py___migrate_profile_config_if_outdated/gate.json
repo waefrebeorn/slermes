@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_migrate_profile_config_if_outdated",
+  "c_fn": "profile_migrate_config_if_outdated",
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "_migrate_profile_config_if_outdated",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/profiles.c"
   ],
   "cflags": [
     "-I",

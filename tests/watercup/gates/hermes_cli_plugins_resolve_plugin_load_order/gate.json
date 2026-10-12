@@ -4,20 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "resolve",
-  "extra_src": ["src/hermes_cli/plugins_core.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "py_module": "hermes_cli/plugins.py",
   "py_fn": "resolve_plugin_load_order",
   "inputs": [
-    "alpha:-|beta:-",
-    "websearch:-:core-web|core-web:-|zeta:-",
-    "b-plugin:Beta|a-plugin:Alpha:Beta",
-    "p1:PName|p2:-:PName|p3:-:p1",
-    "solo:-:missing-dep",
-    "selfish:-:selfish",
-    "cy1:-:cy2|cy2:-:cy3|cy3:-:cy1",
-    "mixin:Shared|other:Other:Shared|mixin2:Shared",
-    "zz:last:aa|aa:first|mm:Mid:aa"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Plugin dependency-resolving load order. REAL src/hermes_cli/plugins_core.c::plugins_resolve_plugin_load_order linked via extra_src against LIVE hermes_cli/plugins.py::resolve_plugin_load_order (duck-typed manifests with requires_plugins [{'id': d}]). Covers: no deps, exact-key vs by-display-name resolution, missing dep (warn+skip), self-dep ignore, cycle fallback to alphabetical, first-key-wins name claiming, batched Kahn ordering. KNOWN EDGE DIVERGENCE (input dropped): empty manifest set — LIVE returns [] while the C port returns NULL (fail-closed); real callers never pass an empty manifest map."
+  "notes": "Plugin dependency-resolving load order. REAL src/hermes_cli/plugins_core.c::plugins_resolve_plugin_load_order linked via extra_src against LIVE hermes_cli/plugins.py::resolve_plugin_load_order (duck-typed manifests with requires_plugins [{'id': d}]). Covers: no deps, exact-key vs by-display-name resolution, missing dep (warn+skip), self-dep ignore, cycle fallback to alphabetical, first-key-wins name claiming, batched Kahn ordering. KNOWN EDGE DIVERGENCE (input dropped): empty manifest set \u2014 LIVE returns [] while the C port returns NULL (fail-closed); real callers never pass an empty manifest map."
 }

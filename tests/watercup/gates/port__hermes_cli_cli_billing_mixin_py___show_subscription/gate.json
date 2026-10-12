@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_show_subscription",
+  "c_fn": "cmd_subscription",
   "py_module": "hermes_cli/cli_billing_mixin.py",
   "py_fn": "_show_subscription",
   "inputs": [

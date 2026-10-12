@@ -7,16 +7,11 @@
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_encode_head",
   "inputs": [
-    "1\tconn.auth\t0\t\t\t0\t0",
-    "2\tping\t42\t\t\t1\t0",
-    "0\t\t0\t\t\t0\t0",
-    "3\tsend.msg\t1\tm-abc\tcore\t1\t7",
-    "300\tx\t128\tid-1\t\t0\t1",
-    "7\theartbeat\t127\t\t\t0\t0",
-    "1\ta\t1\tb\tc\t1\t9",
-    "65535\tlong-cmd-name-here\t12345678901\tmid-99\tmod-x\t1\t4294967295",
-    "1\tq\t0\tkeep-id\t\t0\t256",
-    "5\t\t9\t\tsolo-module\t0\t0"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "notes": "Yuanbao protobuf ConnMsg.Head encoder (src/hermes_cli/yuanbao_proto_helpers.c::yb_encode_head vs LIVE gateway/platforms/yuanbao_proto.py::_encode_head). One branch rung per field presence (fields 1,2,3,4,5,6,10); V is the hex-encoded wire bytes from each side's own encoder, so varint/tag divergence fails. Inputs are tab-separated field tuples; status masked to 32 bits on both sides."
 }

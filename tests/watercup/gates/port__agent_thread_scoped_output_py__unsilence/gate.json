@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "unsilence",
+  "c_fn": "agent_thread_scoped_output_unsilence",
   "py_module": "agent/thread_scoped_output.py",
   "py_fn": "unsilence",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/thread_scoped_output.c"
   ],
   "cflags": [
     "-I",

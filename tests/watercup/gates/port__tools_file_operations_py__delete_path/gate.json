@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "delete_path",
+  "c_fn": "file_fs_ops_delete_path",
   "py_module": "tools/file_operations.py",
   "py_fn": "delete_path",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/file_fs_ops.c"
   ],
   "cflags": [
     "-I",

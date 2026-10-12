@@ -7,14 +7,17 @@
   "py_module": "cron/scheduler_provider.py",
   "py_fn": "_backoff_wait_seconds",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cron/scheduler_provider_gaps3.c"
   ],
   "cflags": [
     "-I",

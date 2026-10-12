@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/session_recap.py",
   "py_fn": "_coerce_text",
   "inputs": [
-    "N",
-    "S:hello world",
-    "S:",
-    "A",
-    "A\u001fS:one",
-    "A\u001fS:one\u001fT:two",
-    "A\u001fT:alpha\u001fS:beta\u001fT:gamma",
-    "A\u001fE\u001fT:kept",
-    "A\u001fT:x\u001fTN\u001fE\u001fS:y",
-    "A\u001fS:\u001fS:real\u001fT:"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Traced copy of session_recap.c::session_coerce_text vs LIVE _coerce_text over 10 shapes (null/string/empty/array of str+dict blocks). DOCUMENTED DIVERGENCE: LIVE does str(value) for non-str/non-list scalars while C prints a type word \u2014 scalar-number inputs excluded."

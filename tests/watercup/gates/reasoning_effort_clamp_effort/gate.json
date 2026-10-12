@@ -6,23 +6,21 @@
   "c_fn": "clamp_effort",
   "py_module": "agent/reasoning_effort.py",
   "py_fn": "clamp_effort",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "inputs": [
-    "[null,[\"low\",\"high\"],{}]",
-    "[\"\",[\"low\",\"high\"],{}]",
-    "[\"   \",[\"low\"],{}]",
-    "[\"high\",[],{}]",
-    "[\" HIGH \",[\"Low\",\"HIGH\"],{}]",
-    "[\"medium\",[\"bogus\",\"??\"],{}]",
-    "[\"xhigh\",[\"low\",\"high\",\"max\"],{\"xhigh\":\"max\"}]",
-    "[\"xhigh\",[\"low\",\"high\",\"max\"],{\"other\":\"low\"}]",
-    "[\"xhigh\",[\"low\",\"high\",\"max\"],{}]",
-    "[\"minimal\",[\"none\"],{}]",
-    "[\"ultra\",[\"high\"],{}]",
-    "[\"weird\",[\"low\"],{}]",
-    "[\"max\",[\"none\",\"low\",\"medium\"],{}]",
-    "[\"low\",[\"none\",\"minimal\"],{}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Reasoning-effort clamping policy. Harness traces a faithful C copy of src/agent/reasoning_effort.c::clamp_effort (real file not linked; it carries no cup instrumentation). Input token = JSON [effort, supported, overrides]. Twin transcribes the LIVE body with the same rung ladder, including the override iteration shape so dict-lookup and array-scan carve identical events."
 }

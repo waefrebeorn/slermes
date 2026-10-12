@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/linux_desktop_entry.py",
   "py_fn": "_hicolor_subdir",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

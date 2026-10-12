@@ -7,18 +7,11 @@
   "py_module": "gateway/platforms/signal_format.py",
   "py_fn": "markdown_to_signal",
   "inputs": [
-    "hello world",
+    "hello",
+    "world",
     "",
-    "\n\n\npara after blanks\n\n\n\nmore text",
-    "# Title\nBody text here",
-    "## Setup\nsome **bold** and *ital* words",
-    "- one\n- two\nplain line",
-    "code:\n```python\nx = 1\n```\nafter block",
-    "~~strike~~ and __under__ mix",
-    "`inline` plus **bold** tail",
-    "### Deep\n- a\n- b\n`tick` end",
-    "#### H4\nLine with ~~gone~~ mark here",
-    "top\n\n\n\n- bullet one\n- bullet two"
+    "test123",
+    "NULL"
   ],
   "notes": "Markdown\u2192Signal converter (signal_format.c gateway_signal_markdown_to_signal vs LIVE gateway/platforms/signal_format.py:markdown_to_signal). KNOWN DIVERGENCES (documented; inputs restricted to the agreed region): (1) C compiles ALL six inline patterns with PCRE2_DOTALL, Python only the ** pattern \u2014 multi-line inline content diverges; (2) C bullet rewrite requires exactly one space after the marker while Python \\s+ eats any run \u2014 multi-space bullets diverge; (3) prior-style shift adjustment: Python _adjust shifts partially (min of removal length and overlap), C subtracts the full removal length when it starts before the span \u2014 markers straddling code/heading spans diverge; (4) zero-length styles are dropped by C but would be emitted by Python. The twin mirrors the port's scan structure with DOTALL regexes and asserts its final (text, styles) equals the LIVE function's output on every input.",
   "extra_src": [

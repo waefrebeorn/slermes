@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_source_meta_and_bundle",
+  "c_fn": "hermes_cli_skills_hub_u_resolve_source_meta_and_bundle",
   "py_module": "hermes_cli/skills_hub.py",
   "py_fn": "_resolve_source_meta_and_bundle",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/skills_hub.c"
   ],
   "cflags": [
     "-I",

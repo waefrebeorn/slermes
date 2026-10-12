@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_extract_http_status",
+  "c_fn": "cli_tools_fal_common__extract_http_status",
   "py_module": "tools/fal_common.py",
   "py_fn": "_extract_http_status",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/fal_common.c"
   ],
   "cflags": [
     "-I",

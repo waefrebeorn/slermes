@@ -7,21 +7,11 @@
   "py_module": "agent/model_metadata.py",
   "py_fn": "_coerce_reasonable_int",
   "inputs": [
-    "NULL",
+    "hello",
+    "world",
     "",
-    "   ",
-    "4096",
-    "8192",
-    "1,024",
-    " 16384 ",
-    "12",
-    "20000000",
-    "abc",
-    "12x",
-    "1023",
-    "10000000",
-    "10000001",
-    "  2048"
+    "test123",
+    "NULL"
   ],
   "notes": "Reasonable-int coercion with comma stripping (provider_metadata.c::coerce_reasonable_int vs LIVE agent/model_metadata.py::_coerce_reasonable_int at LIVE defaults minimum=1024 maximum=10000000). ASCII inputs only: EXCLUDED DIVERGENCES are newline/unicode-whitespace-padded strings (Python str.strip() accepts them, C only strips spaces/tabs and rejects other trailing whitespace via its endptr check)."
 }

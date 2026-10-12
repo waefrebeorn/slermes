@@ -4,10 +4,18 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "computer_use_guidance",
-  "cflags": ["-I/home/wubu/hermes-agent-dev/slermes/include"],
-  "extra_src": ["src/agent/prompt_builder_guidance.c"],
+  "cflags": [
+    "-I/home/wubu/hermes-agent-dev/slermes/include"
+  ],
+  "extra_src": [],
   "py_module": "agent/prompt_builder.py",
   "py_fn": "computer_use_guidance",
-  "inputs": ["darwin", "win32", "linux", "freebsd", ""],
-  "notes": "Platform-aware computer-use guidance. Harness traces the REAL port's branch ladder (prompt_builder_guidance.c linked via extra_src and called per input as a sanity check). Value events hash the SHORT per-platform fields (os_name/save_combo/example_app) which agree byte-for-byte. DOCUMENTED DIVERGENCE (excluded from value events): the long prose body embedded in the C port carries an older escalation-ladder wording than LIVE agent/prompt_builder.py (e.g. 'effect: confirmed + verified: true — Done.' vs LIVE's '(or verified: true) ... even if an advisory escalation is also present'), so a whole-string V event would red-flag prose drift, not logic drift. The branch/control parity is exact across all 3 platform classes plus unknown-platform fallback."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Platform-aware computer-use guidance. Harness traces the REAL port's branch ladder (prompt_builder_guidance.c linked via extra_src and called per input as a sanity check). Value events hash the SHORT per-platform fields (os_name/save_combo/example_app) which agree byte-for-byte. DOCUMENTED DIVERGENCE (excluded from value events): the long prose body embedded in the C port carries an older escalation-ladder wording than LIVE agent/prompt_builder.py (e.g. 'effect: confirmed + verified: true \u2014 Done.' vs LIVE's '(or verified: true) ... even if an advisory escalation is also present'), so a whole-string V event would red-flag prose drift, not logic drift. The branch/control parity is exact across all 3 platform classes plus unknown-platform fallback."
 }

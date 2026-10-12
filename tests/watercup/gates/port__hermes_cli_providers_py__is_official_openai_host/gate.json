@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_official_openai_host",
+  "c_fn": "hermes_cli_providers_is_official_openai_host",
   "py_module": "hermes_cli/providers.py",
   "py_fn": "is_official_openai_host",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/providers.c"
   ],
   "cflags": [
     "-I",

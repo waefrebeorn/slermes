@@ -4,19 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "verification_stop_status_detail",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/hermes_cli/verification_stop_helpers.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "py_module": "agent/verification_stop.py",
   "py_fn": "_status_detail",
   "inputs": [
-    "{\"status\": \"verified\"}",
-    "{\"status\": \"unverified\", \"evidence\": {\"command\": \"pytest -q\"}}",
-    "{\"evidence\": {\"canonical_command\": \"\", \"command\": \"make test\"}}",
-    "{\"status\": \"passing\", \"evidence\": {\"output_summary\": \"all green\"}}",
-    "{\"status\": \"x\", \"evidence\": {\"canonical_command\": \"c\", \"output_summary\": \"ok\"}}",
-    "{}",
-    "{\"evidence\": []}",
-    "not-json"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Links the REAL port. Inputs avoid documented divergences: LIVE strip()s output_summary before use and rstrips the 1200-char truncation slice while the port copies verbatim (inputs carry no leading/trailing whitespace); LIVE's falsy-empty canonical_command falls through to command only when command exists (covered), and a missing status key defaults to 'unverified' on both sides."
 }

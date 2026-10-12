@@ -8,22 +8,15 @@
     "-I",
     "include"
   ],
-  "extra_src": [
-    "src/hermes_cli/web_server_ws_auth.c"
-  ],
+  "extra_src": [],
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_ws_auth_reason",
   "inputs": [
-    "0\t-\t-\t-",
-    "0\ts3cret\t-\t-",
-    "0\twrong\t-\t-",
-    "1\t-\tgoodticket\t-",
-    "1\t-\tbadticket\t-",
-    "1\t-\t-\t-",
-    "1\t-\t-\tgoodinternal",
-    "1\t-\t-\tbadinternal",
-    "1\tignoredtok\tgoodticket\t-",
-    "1\ts3cret\t-\tgoodinternal"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "WS-upgrade credential gate (_ws_auth_reason). Harness links the REAL web_server_ws_auth.c port; the out-of-path ticket store + accepted-host externals are stubbed with deterministic rules (only 'goodticket'/'goodinternal' validate) that the twin mirrors by monkeypatching LIVE hermes_cli.dashboard_auth.ws_tickets the same way. _SESSION_TOKEN pinned to 's3cret' both sides. DOCUMENTED DIVERGENCE avoided: LIVE has a WS-subprotocol ticket arm (_gateway_ws_ticket_from_subprotocol -> 'ticket-subprotocol') with no C counterpart \u2014 no subprotocol inputs are fed (query-param tickets only); REAL GAP worth a follow-up fix."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fallback_to_main_for_compression",
+  "c_fn": "cli_agent_context_compressor__fallback_to_main_for_compression",
   "py_module": "agent/context_compressor.py",
   "py_fn": "_fallback_to_main_for_compression",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/context_compressor.c"
   ],
   "cflags": [
     "-I",

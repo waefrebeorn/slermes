@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "focus_pane_tool",
+  "c_fn": "tools_focus_pane_tool_focus_pane_tool",
   "py_module": "tools/focus_pane_tool.py",
   "py_fn": "focus_pane_tool",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/focus_pane_tool.c"
   ],
   "cflags": [
     "-I",

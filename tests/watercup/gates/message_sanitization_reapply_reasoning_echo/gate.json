@@ -4,23 +4,25 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "reapply_reasoning_echo",
-  "extra_src": ["src/agent/message_sanitization_pure.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "src"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
   "py_module": "agent/message_sanitization.py",
   "py_fn": "reapply_reasoning_echo",
   "inputs": [
-    "1\tuser|-|-|0",
-    "1\tassistant|-|-|0",
-    "1\tassistant|~|-|0",
-    "1\tassistant|deep thoughts|-|0",
-    "0\tassistant| |-|0",
-    "0\tassistant|-|-|0",
-    "1\tassistant|-|-|1;user|-|-|0;assistant|keep|-|0",
-    "1\ttool|-|-|0;assistant|-|prior reasoning|1",
-    "0\tassistant|stale pad|-|0;assistant|another|-|0",
-    "1\tassistant|-|-|0;assistant|-|-|0",
-    "\tassistant|-|-|0",
-    "0\tuser|x|y|0"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Reasoning echo reconciliation across provider fallback. Harness links the REAL C port (message_sanitization_pure.c::msg_sanitize_reapply_reasoning_echo compiled fresh) vs LIVE agent/message_sanitization.py::reapply_reasoning_echo; twin asserts the LIVE returned count equals the traced ladder's expectation. Input encoding '<pad>\\trole|rc|reasoning|tc;...' with '-'=absent, '~'=empty string. Covers: non-assistant skip, pad=True inject on bare/empty-reasoning turns, already-padded no-op, tool_calls+reasoning poisoned-history injection, multi-turn mixed walks, strip path (pad=False) on stale pads, empty message list. Coarse rung ladder (per-msg role/pad/rc branches + changed-count V event) per the channel_directory precedent."
 }

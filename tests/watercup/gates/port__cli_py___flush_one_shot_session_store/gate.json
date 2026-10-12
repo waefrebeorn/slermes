@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_flush_one_shot_session_store",
+  "c_fn": "cli_flush_one_shot_session_store",
   "py_module": "cli.py",
   "py_fn": "_flush_one_shot_session_store",
   "inputs": [

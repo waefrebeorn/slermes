@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_pinned_specs",
+  "c_fn": "hermes_cli__early_recovery_u_pinned_specs",
   "py_module": "hermes_cli/_early_recovery.py",
   "py_fn": "_pinned_specs",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/_early_recovery.c"
   ],
   "cflags": [
     "-I",

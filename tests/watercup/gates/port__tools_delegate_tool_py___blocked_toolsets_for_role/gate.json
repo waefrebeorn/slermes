@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_blocked_toolsets_for_role",
+  "c_fn": "tools_delegate_tool_u_blocked_toolsets_for_role",
   "py_module": "tools/delegate_tool.py",
   "py_fn": "_blocked_toolsets_for_role",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/delegate_tool.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

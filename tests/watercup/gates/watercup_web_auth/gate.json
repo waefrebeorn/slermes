@@ -7,5 +7,12 @@
   "py_module": "hermes_cli/dashboard_auth/public_paths.py (PUBLIC_API_PATHS)",
   "py_fn": "PUBLIC_API_PATHS",
   "status": "GREEN",
-  "notes": "is_public_path() now matches the authoritative LIVE Python PUBLIC_API_PATHS (8 paths). Previously drifted: 4 spurious C-only entries (/health,/api/version,/api/token,/api/platforms) removed; 6 LIVE entries added (/api/config/defaults,/api/config/schema,/api/model/info,/api/dashboard/themes,/api/dashboard/plugins,/api/cron/fire). Harness asserts the 8 LIVE-public + 9 LIVE-private paths; twin imports the real upstream public_paths.py and confirms 1:1 parity."
+  "notes": "is_public_path() now matches the authoritative LIVE Python PUBLIC_API_PATHS (8 paths). Previously drifted: 4 spurious C-only entries (/health,/api/version,/api/token,/api/platforms) removed; 6 LIVE entries added (/api/config/defaults,/api/config/schema,/api/model/info,/api/dashboard/themes,/api/dashboard/plugins,/api/cron/fire). Harness asserts the 8 LIVE-public + 9 LIVE-private paths; twin imports the real upstream public_paths.py and confirms 1:1 parity.",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ]
 }

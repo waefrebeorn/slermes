@@ -4,10 +4,24 @@
   "kind": "unit",
   "c_src": "verify.c",
   "c_fn": "validate_args_json",
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "src/tools"],
-  "extra_src": ["lib/libjson/json.c", "src/tools/tool_result.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src/tools"
+  ],
+  "extra_src": [],
   "py_module": "ports/tools/registry.py (validate_args_json port)",
   "py_fn": "validate_args_json",
   "status": "GREEN",
-  "notes": "Centralized tool-input validation (P0). Compiled against real libjson + hermes_tool_result. 9 assertions: valid->NULL, non-object->error, wrong-type->named error, missing-required->named error, numeric-string tolerated, union accept/reject. Root-caused 2 latent libjson bugs (json_len vs json_object_size; json_get index vs json_object_get_at) and a dangling-pointer-after-free in the error path. Wired into registry_dispatch (both main + repaired paths)."
+  "notes": "Centralized tool-input validation (P0). Compiled against real libjson + hermes_tool_result. 9 assertions: valid->NULL, non-object->error, wrong-type->named error, missing-required->named error, numeric-string tolerated, union accept/reject. Root-caused 2 latent libjson bugs (json_len vs json_object_size; json_get index vs json_object_get_at) and a dangling-pointer-after-free in the error path. Wired into registry_dispatch (both main + repaired paths).",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ]
 }

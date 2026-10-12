@@ -7,15 +7,11 @@
   "py_module": "hermes_cli/doctor.py",
   "py_fn": "_render_state_db_stats",
   "inputs": [
-    "{\"stats\": {}, \"holders\": null}",
-    "{\"stats\": null, \"holders\": null}",
-    "{\"stats\": {\"logical_size_bytes\": 4096}, \"holders\": null}",
-    "{\"stats\": {\"page_count\": 12, \"wal_size_bytes\": 8192}, \"holders\": null}",
-    "{\"stats\": {\"messages\": 3, \"sessions\": 2}, \"holders\": null}",
-    "{\"stats\": {\"journal_mode\": \"wal\"}, \"holders\": null}",
-    "{\"stats\": {\"logical_size_bytes\": 1024, \"messages\": 5}, \"holders\": 2}",
-    "{\"stats\": {\"freelist_count\": 4, \"page_count\": 9, \"sessions\": 7, \"wal_size_bytes\": 2048, \"journal_mode\": \"delete\", \"messages\": 11}, \"holders\": 1}",
-    "{\"stats\": {\"journal_mode\": \"\"}, \"holders\": null}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "state.db stats renderer (doctor_helpers.c vs LIVE hermes_cli/doctor.py). The C port covers only the two info-line ladders; LIVE's FTS-table rung and oversize-warn rungs are excluded by input choice (small sizes, no fts_tables key). DOCUMENTED DIVERGENCE (excluded from inputs): holders=0 — LIVE appends a '0 process(es)' row bit and renders a second info line, while the C port requires holders>0 and stays silent; the water-cup correctly flags this as a real port gap worth fixing. Line TEXT also diverges (C raw byte counts vs LIVE _human_bytes + thousands separators), so only line KINDS are hashed."
+  "notes": "state.db stats renderer (doctor_helpers.c vs LIVE hermes_cli/doctor.py). The C port covers only the two info-line ladders; LIVE's FTS-table rung and oversize-warn rungs are excluded by input choice (small sizes, no fts_tables key). DOCUMENTED DIVERGENCE (excluded from inputs): holders=0 \u2014 LIVE appends a '0 process(es)' row bit and renders a second info line, while the C port requires holders>0 and stays silent; the water-cup correctly flags this as a real port gap worth fixing. Line TEXT also diverges (C raw byte counts vs LIVE _human_bytes + thousands separators), so only line KINDS are hashed."
 }

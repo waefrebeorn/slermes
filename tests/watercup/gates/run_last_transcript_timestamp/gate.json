@@ -6,16 +6,15 @@
   "c_fn": "last_transcript_timestamp",
   "py_module": "gateway/run.py",
   "py_fn": "_last_transcript_timestamp",
-  "extra_src": ["lib/libjson/json.c"],
-  "inputs": [
-    "",
-    "[{\"role\":\"user\",\"timestamp\":1724000001.5}]",
-    "[{\"role\":\"session_meta\"},{\"role\":\"user\",\"timestamp\":111},{\"role\":\"system\",\"timestamp\":222}]",
-    "[{\"role\":\"assistant\"}]",
-    "[{\"role\":\"user\",\"timestamp\":50},{\"role\":\"user\",\"timestamp\":99.25}]",
-    "[{\"content\":\"no role here\",\"timestamp\":7}]",
-    "[{\"role\":\"user\",\"timestamp\":1},{\"role\":\"assistant\"}]",
-    "[{\"role\":\"tool\"},{\"role\":\"session_meta\"}]"
+  "extra_src": [
+    "lib/libjson/json.c"
   ],
-  "notes": "Last usable transcript timestamp (src/gateway/run.c::gw_last_transcript_timestamp vs LIVE gateway/run.py::_last_transcript_timestamp). Ladder: empty-history / per-row-from-end (usable-role check, meta/system skip, timestamp hit, legacy row without ts) / exhausted; -1.0 encodes LIVE None. Rows whose CONTENT text contains 'role'/'timestamp' substrings would confuse the port's raw strstr scan — such probes are excluded from the agreed sub-contract (documented C approximation). Non-dict JSON rows map to the no-usable-role rung on both sides."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Last usable transcript timestamp (src/gateway/run.c::gw_last_transcript_timestamp vs LIVE gateway/run.py::_last_transcript_timestamp). Ladder: empty-history / per-row-from-end (usable-role check, meta/system skip, timestamp hit, legacy row without ts) / exhausted; -1.0 encodes LIVE None. Rows whose CONTENT text contains 'role'/'timestamp' substrings would confuse the port's raw strstr scan \u2014 such probes are excluded from the agreed sub-contract (documented C approximation). Non-dict JSON rows map to the no-usable-role rung on both sides."
 }

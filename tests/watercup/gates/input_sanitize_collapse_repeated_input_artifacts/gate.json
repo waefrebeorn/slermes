@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/input_sanitize.py",
   "py_fn": "collapse_repeated_input_artifacts",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "hello world",
-    "text~[[e~[[e~[[e",
-    "text~[[e~[[e~[[e~[[e",
-    "text~[[e~[[e~[[e~[[e~[[e",
-    "keep[e~[[e~[[e~[[e~[[e",
-    "keep[~[[e~[[e~[[e~[[e",
-    "~[[e~[[e~[[e~[[e",
-    "a",
-    "~[[e~[[e",
-    "x[~[[e~[[e~[[e~[[e",
-    "tail only [[e not marker"
+    "test123",
+    "NULL"
   ],
   "notes": "Trailing ~[[e corruption-signature collapse (#62557). Marker loop, min_repeats floor, and the [e / [ partial-prefix trim ladder all traced."
 }

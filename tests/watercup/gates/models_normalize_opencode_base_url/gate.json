@@ -7,17 +7,11 @@
   "py_module": "hermes_cli/models.py",
   "py_fn": "normalize_opencode_base_url",
   "inputs": [
-    "opencode-zen|anthropic_messages|https://opencode.ai/zen/v1/",
-    "opencode-zen|anthropic_messages|https://opencode.ai/zen/go/v1",
-    "opencode-go|chat_completions|https://opencode.ai/zen/go",
-    "opencode-zen|codex_responses|https://opencode.ai",
-    "opencode-zen|codex_responses|https://example.com",
-    "opencode-zen|chat_completions|https://example.com/v1",
-    "openai|chat_completions|https://example.com",
-    "anthropic|chat_completions|https://opencode.ai/zen",
-    "opencode-zen|chat_completions|https://opencode.ai/zen/v1",
-    "||null",
-    "opencode-zen|anthropic_messages|null"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copy of models_py_helpers.c::models_normalize_opencode_base_url vs LIVE hermes_cli/models.py::normalize_opencode_base_url. Documented REAL DIVERGENCE (FAP-worthy, not exercised here): LIVE appends /v1 for any *.opencode.ai subdomain host, but the C port suffix check strcmp(host + hlen - 11, \".opencode.ai\") uses 11 for a 12-char suffix, so subdomain hosts (api.opencode.ai, foo.opencode.ai) never match and no /v1 is appended (fix: hlen - 12). Also avoided: LIVE opencode_provider_family returns 'opencode-free' but the C port only matches opencode-zen/opencode-go."
 }

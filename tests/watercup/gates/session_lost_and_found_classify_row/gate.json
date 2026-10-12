@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/session_lost_and_found.py",
   "py_fn": "classify_lost_and_found_row",
   "inputs": [
-    "55|S20250801_093000_,Scli",
-    "18|S20250801_093000_,Sclaude-opus-4",
-    "14|N,Ssess123,Suser",
-    "52|S20250801_093000_,Ste",
-    "30|S20250801_093000_,Smy-agent_1",
-    "18|S20250801_093000_",
-    "55|Shello-world",
-    "55|",
-    "3|N,Ssessabc,Sadmin",
-    "9|S20250801_093000_,Stelegram"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "notes": "lost_and_found row classifier (src/hermes_cli/session_lost_and_found_pure.c::laf_classify_row + helpers vs LIVE hermes_cli/session_lost_and_found.py::classify_lost_and_found_row). Inputs encoded argv-safe as <nfield>|<cells> with N=NULL, S<text>=string. Traces the classify-level ladder (rowid-alias/messages shape, session-id gate, nfield layouts, source heuristics) plus the classification value."
 }

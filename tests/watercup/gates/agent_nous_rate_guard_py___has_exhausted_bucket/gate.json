@@ -7,11 +7,11 @@
   "py_module": "agent/nous_rate_guard.py",
   "py_fn": "_has_exhausted_bucket",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

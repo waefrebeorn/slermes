@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_resolve_pre_update_backup_mode",
   "inputs": [
-    "1 0 -",
-    "0 1 -",
-    "0 0 -",
-    "0 0 quick",
-    "0 0 off",
-    "0 0 false",
-    "0 0 none",
-    "0 0 disabled",
-    "0 0 full",
-    "0 0 zip",
-    "0 0 QUICK ",
-    "0 0 UnknownMode"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Pre-update backup mode resolution (CLI flags > config > default quick). PORT FIX: src/hermes_cli/update_cmd.c::uc_resolve_pre_update_backup_mode compared the raw config string without Python's str(raw).strip().lower() — values like 'QUICK ' fell through to the unknown-default path with wrong events; added trim+lower to match LIVE hermes_cli/update_cmd.py::_resolve_pre_update_backup_mode. Config load itself is outside the traced path (raw value injected; '-' encodes absent key). Twin asserts its traced result equals the LIVE fn on every input via a stubbed hermes_cli.config.load_config."
+  "notes": "Pre-update backup mode resolution (CLI flags > config > default quick). PORT FIX: src/hermes_cli/update_cmd.c::uc_resolve_pre_update_backup_mode compared the raw config string without Python's str(raw).strip().lower() \u2014 values like 'QUICK ' fell through to the unknown-default path with wrong events; added trim+lower to match LIVE hermes_cli/update_cmd.py::_resolve_pre_update_backup_mode. Config load itself is outside the traced path (raw value injected; '-' encodes absent key). Twin asserts its traced result equals the LIVE fn on every input via a stubbed hermes_cli.config.load_config."
 }

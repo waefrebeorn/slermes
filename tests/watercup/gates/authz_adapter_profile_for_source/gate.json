@@ -8,11 +8,11 @@
   "py_module": "gateway/authz_mixin.py",
   "py_fn": "_adapter_profile_for_source",
   "inputs": [
-    "1\twork\tmain",
-    "0\t\tmain",
-    "0\t\t",
-    "1\tsupport\t",
-    "0\t\tfallback-profile"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Faithful traced copy of the ports_wrappers.c body (translation unit too heavy to link). Inputs avoid the LIVE registered-transport identity arm returning None while the flat C encoding would print the source profile — that arm is represented only as matched=0 with an empty source profile (\"\"==None both sides)."
+  "notes": "Faithful traced copy of the ports_wrappers.c body (translation unit too heavy to link). Inputs avoid the LIVE registered-transport identity arm returning None while the flat C encoding would print the source profile \u2014 that arm is represented only as matched=0 with an empty source profile (\"\"==None both sides)."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_gemini_model_supports_audio_tags",
+  "c_fn": "tts_gemini_model_supports_audio_tags",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_gemini_model_supports_audio_tags",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tts_tool_ports.c"
   ],
   "cflags": [
     "-I",

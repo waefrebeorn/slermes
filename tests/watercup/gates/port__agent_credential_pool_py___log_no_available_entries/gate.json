@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_log_no_available_entries",
+  "c_fn": "agent_credential_pool_u_log_no_available_entries",
   "py_module": "agent/credential_pool.py",
   "py_fn": "_log_no_available_entries",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/credential_pool.c"
   ],
   "cflags": [
     "-I",

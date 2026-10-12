@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_provider_env",
+  "c_fn": "agent_web_search_provider_get_provider_env",
   "py_module": "agent/web_search_provider.py",
   "py_fn": "get_provider_env",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/web_search_provider.c"
   ],
   "cflags": [
     "-I",

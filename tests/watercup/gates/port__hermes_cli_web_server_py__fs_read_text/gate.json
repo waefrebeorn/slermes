@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "fs_read_text",
+  "c_fn": "ws_fs_read_text",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "fs_read_text",
   "inputs": [

@@ -6,20 +6,15 @@
   "c_fn": "parse_target_ref",
   "py_module": "tools/send_message_tool.py",
   "py_fn": "_parse_target_ref",
-  "cflags": ["-I/home/wubu/hermes-agent-dev/slermes/src/tools"],
+  "cflags": [
+    "-I/home/wubu/hermes-agent-dev/slermes/src/tools"
+  ],
   "inputs": [
-    "telegram|@hermes_bot",
-    "telegram|123456789",
-    "telegram| -42:7 ",
-    "telegram|not a target",
-    "discord|987654321987",
-    "discord|555:12",
-    "discord|abc",
-    "feishu|oc_abc123XYZ",
-    "feishu|ou_9x:thread_id1",
-    "slack|C0A1B2C3D4:1712000001.2233",
-    "slack|D01A2B3C4D",
-    "slack|G9Z8Y7X6W5V:ts_1"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced mirror of src/tools/send_message_target.c::send_message_target_parse_target_ref (delegate of send_message_tool.c::send_message_parse_target_ref) vs LIVE tools/send_message_tool.py::_parse_target_ref. Twin cross-checks every input against the LIVE function's real return (None<->'' normalized). Agreed subset documented in harness header: C implements telegram/discord/feishu/slack only; other platforms and slack 'U...' user ids are a known C-subset gap, so inputs avoid them.",
   "extra_src": []

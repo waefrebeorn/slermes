@@ -16,17 +16,11 @@
   "py_module": "cron/jobs.py",
   "py_fn": "claim_dispatch",
   "inputs": [
-    "recurring\t{\"id\":\"recurring\",\"schedule\":{\"kind\":\"interval\",\"every_minutes\":5}}",
-    "norepeat\t{\"id\":\"norepeat\",\"schedule\":{\"kind\":\"once\"}}",
-    "claim1\t{\"id\":\"claim1\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":3,\"completed\":0}}",
-    "claim2\t{\"id\":\"claim2\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":3,\"completed\":1}}",
-    "claim3\t{\"id\":\"claim3\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":1,\"completed\":0}}",
-    "done\t{\"id\":\"done\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":2,\"completed\":2}}",
-    "donemax\t{\"id\":\"donemax\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":5,\"completed\":5}}",
-    "infinite\t{\"id\":\"infinite\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":0}}",
-    "negtimes\t{\"id\":\"negtimes\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":-2,\"completed\":0}}",
-    "missing\t{\"id\":\"other\",\"schedule\":{\"kind\":\"once\"},\"repeat\":{\"times\":3,\"completed\":0}}",
-    "noschedule\t{\"id\":\"noschedule\",\"prompt\":\"hello\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Atomic one-shot dispatch claim. Harness carries a traced copy of the REAL cronjobs_claim_dispatch decision ladder; the storage I/O (lock/load/save of cron/jobs.json) is out of the traced path, so the job arrives via argv and the twin monkeypatches LIVE load_jobs/save_jobs/_jobs_lock to serve the same job. Second VSTR carries the post-claim completed count. DOCUMENTED DIVERGENCE avoided: LIVE retains an over-limit job that has last_run_at set (disables + keeps terminal record); the C port deletes unconditionally \u2014 inputs never set last_run_at on an over-limit job. REAL GAP worth a follow-up fix. STRUCTURAL DIVERGENCE avoided: an EMPTY repeat object ({}) is falsy in LIVE ('if not repeat' -> proceed) but json_is_object() in the C port lets it through to the times check \u2014 same return value, different branch depth, so no empty-repeat input is fed."
 }

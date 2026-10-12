@@ -4,8 +4,13 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "repair_tool_call_arguments",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/message_sanitization_ports.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "inputs": [
     "",
     "   ",

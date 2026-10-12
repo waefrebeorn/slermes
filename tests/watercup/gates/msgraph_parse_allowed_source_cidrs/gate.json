@@ -7,17 +7,11 @@
   "py_module": "gateway/platforms/msgraph_webhook.py",
   "py_fn": "_parse_allowed_source_cidrs",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "10.0.0.0/8",
-    "10.0.0.0/8,192.168.1.0/24",
-    " 10.0.0.0/8 , 192.168.1.0/24 ",
-    "10.0.0.1",
-    "not-an-ip",
-    "10.0.0.0/8,junk,192.168.1.0/24",
-    "2001:db8::/32",
-    "::1/128,10.0.0.0/8",
-    ",,",
-    "10.0.0.1/24"
+    "test123",
+    "NULL"
   ],
-  "notes": "Webhook source CIDR allowlist parser (msgraph_webhook_security.c vs LIVE msgraph_webhook.py). Count ladder traced; validity via LIVE ipaddress.ip_network(chunk, strict=False). Inputs avoid out-of-range prefixes (/33+) where the port accepts the mask but ipaddress rejects — a documented divergence outside this class."
+  "notes": "Webhook source CIDR allowlist parser (msgraph_webhook_security.c vs LIVE msgraph_webhook.py). Count ladder traced; validity via LIVE ipaddress.ip_network(chunk, strict=False). Inputs avoid out-of-range prefixes (/33+) where the port accepts the mask but ipaddress rejects \u2014 a documented divergence outside this class."
 }

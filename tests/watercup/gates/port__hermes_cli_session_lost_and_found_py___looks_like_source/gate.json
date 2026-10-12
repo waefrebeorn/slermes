@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_looks_like_source",
+  "c_fn": "laf_looks_like_source",
   "py_module": "hermes_cli/session_lost_and_found.py",
   "py_fn": "_looks_like_source",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/session_lost_and_found_pure.c"
   ],
   "cflags": [
     "-I",

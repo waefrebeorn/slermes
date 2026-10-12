@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_update_read_timestamp",
+  "c_fn": "file_tools_update_read_timestamp",
   "py_module": "tools/file_tools.py",
   "py_fn": "_update_read_timestamp",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/file_tools_helpers.c"
   ],
   "cflags": [
     "-I",

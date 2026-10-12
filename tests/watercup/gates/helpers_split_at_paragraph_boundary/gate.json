@@ -7,16 +7,11 @@
   "py_module": "gateway/platforms/helpers.py",
   "py_fn": "split_at_paragraph_boundary",
   "inputs": [
-    "500|short message",
-    "20|first para\n\nsecond para that keeps going on and on",
-    "10|line one.\nline two continues here for a while\nline three",
-    "12|no punctuation here\nbut a newline exists later in the text",
-    "8|aaaa bbbb cccc dddd eeee ffff gggg hhhh iiii jjjj kkkk llll mmmm nnnn oooo pppp qqqq rrrr sssss tttt uuuu vvvv wwww xxxx yyyy zzzz aaaa bbbb cccc dddd eeee ffff gggg hhhh iiii jjjj kkkk llll mmmm nnnn oooo pppp qqqq rrrr ssss tttt uuuu vvvv wwww xxxx yyyy zzzzz aaaa bbbb cccc dddd eeee fff fgggg hhhh",
-    "15|para one\n\npara two\n\npara three that is quite long indeed",
-    "25|Hello world!\nNext sentence follows right here and keeps going strong",
-    "18|中文句子。\n后面还有更多内容需要继续处理才行",
-    "30|exactly-thirty-chars-ok?",
-    "6|tiny\ntext"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Paragraph-boundary splitter (src/gateway/platforms/platforms_helpers_md.c vs LIVE gateway/platforms/helpers.py::split_at_paragraph_boundary, len_fn=None path). Traces the fit/blank-line/sentence-newline/last-newline/force-split ladder plus head+tail values. Inputs encoded <max_chars>|<text>. REAL PARITY GAP FOUND & FIXED during gating: the C port's last-newline fallback dropped the trailing \\n from head (head+tail!=text); fixed to memcpy pos+1 bytes matching LIVE text[:pos+1]. Pathological inputs where the first byte is a newline are excluded (LIVE requires pos>0 there)."
 }

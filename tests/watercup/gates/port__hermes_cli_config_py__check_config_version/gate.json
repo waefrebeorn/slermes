@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "check_config_version",
+  "c_fn": "config_check_config_version",
   "py_module": "hermes_cli/config.py",
   "py_fn": "check_config_version",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "log_call",
+  "c_fn": "tools_debug_helpers_log_call",
   "py_module": "tools/debug_helpers.py",
   "py_fn": "log_call",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/debug_helpers.c"
   ],
   "cflags": [
     "-I",

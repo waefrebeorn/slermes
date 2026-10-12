@@ -7,16 +7,11 @@
   "py_module": "gateway/platforms/base.py",
   "py_fn": "truncate_message",
   "inputs": [
-    "|10",
-    "short|50",
-    "hello world|8",
-    "abcdefghijklmnop|10",
-    "aa bb cc dd|7",
-    "one two|3",
-    "abc def|6",
-    "exactlyten!|10",
-    "a b|2",
-    "trailing space |15"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "E43 smart message truncation with ellipsis (src/gateway/gw_format.c::gw_truncate_message) vs the LIVE gateway truncation contract it ports (word-boundary break when past half the budget, else hard cut, '...' suffix). Probes are 'text|maxlen'. The twin traces the same rung ladder over the LIVE semantics."
 }

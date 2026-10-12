@@ -7,11 +7,11 @@
   "py_module": "gateway/run.py",
   "py_fn": "_shutdown_mcp_servers_nonblocking",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
     "lib/libjson/json.c"

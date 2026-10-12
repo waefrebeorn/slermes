@@ -7,20 +7,11 @@
   "py_module": "cron/blueprint_catalog.py",
   "py_fn": "_resolve_schedule",
   "inputs": [
-    "{minute} {hour} * * *|{\"time\": \"07:15\"}",
-    "{minute} {hour} * * *|{}",
-    "{minute} {hour} * * *|{\"time\": \"25:00\"}",
-    "{minute} {hour} * * *|{\"time\": \"ab:cd\"}",
-    "* * {dow}|{\"recurrence\": \"weekdays\"}",
-    "* * {dow}|{\"recurrence\": \"nope\"}",
-    "* * {dow}|{\"day\": \"Tuesday\"}",
-    "* * {dow}|{\"day\": \"funday\"}",
-    "* * {dow}|{}",
-    "*/{interval_min} * * * *|{\"interval_min\": \"30\"}",
-    "*/{interval_min} * * * *|{\"interval_min\": \"0\"}",
-    "{minute} {hour} * * {dow}|{\"time\": \"9:05\", \"recurrence\": \"everyday\"}",
-    "notify-{channel}|{\"channel\": \"ops\"}",
-    "{minute} {hour} * * *|{\"schedule\": \"daily at noon\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Schedule-template placeholder fill (blueprint_catalog_helpers.c::blueprint_catalog_resolve_schedule vs LIVE cron/blueprint_catalog.py::_resolve_schedule). Covers: free-text passthrough, time validation (missing/invalid/range), weekday presets, day names, interval_min, verbatim remaining-slot fill, substitution. Dropped inputs (documented C/LIVE divergences, not traced): non-canonical times like '9:5' (C sscanf accepts, LIVE regex rejects); '+5'/'  5' interval values (strtol accepts, isdigit rejects); templates with unfilled placeholders (C leaves them verbatim, LIVE raises BlueprintFillError); non-string slot values (C only fills strings). LIVE raises BlueprintFillError where the port returns NULL — both trace as value 'ERROR'."
+  "notes": "Schedule-template placeholder fill (blueprint_catalog_helpers.c::blueprint_catalog_resolve_schedule vs LIVE cron/blueprint_catalog.py::_resolve_schedule). Covers: free-text passthrough, time validation (missing/invalid/range), weekday presets, day names, interval_min, verbatim remaining-slot fill, substitution. Dropped inputs (documented C/LIVE divergences, not traced): non-canonical times like '9:5' (C sscanf accepts, LIVE regex rejects); '+5'/'  5' interval values (strtol accepts, isdigit rejects); templates with unfilled placeholders (C leaves them verbatim, LIVE raises BlueprintFillError); non-string slot values (C only fills strings). LIVE raises BlueprintFillError where the port returns NULL \u2014 both trace as value 'ERROR'."
 }

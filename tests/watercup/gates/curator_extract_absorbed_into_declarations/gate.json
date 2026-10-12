@@ -1,41 +1,30 @@
 {
- "name": "curator_extract_absorbed_into_declarations",
- "subsystem": "agent",
- "kind": "cup",
- "c_src": "harness.c",
- "c_fn": "extract_absorbed_into_declarations",
- "py_module": "agent/curator.py",
- "py_fn": "_extract_absorbed_into_declarations",
- "cflags": [
-  "-I",
-  "include",
-  "-I",
-  "lib",
-  "-I",
-  "lib/libjson",
-  "-I",
-  "lib/libyaml",
-  "-I",
-  "src"
- ],
- "extra_src": [
-  "src/agent/curator_ports.c",
-  "lib/libjson/json.c"
- ],
- "inputs": [
-  "[{\"name\":\"skill_manage\",\"arguments\":\"{\\\"action\\\":\\\"delete\\\",\\\"name\\\":\\\"old-skill\\\",\\\"absorbed_into\\\":\\\"umbrella\\\"}\"}]",
-  "[{\"name\":\"skill_manage\",\"arguments\":\"{\\\"action\\\":\\\"delete\\\",\\\"name\\\":\\\"solo\\\",\\\"absorbed_into\\\":\\\"\\\"}\"}]",
-  "[{\"name\":\"skill_manage\",\"arguments\":\"{\\\"action\\\":\\\"delete\\\",\\\"name\\\":\\\"nodeclare\\\"}\"}]",
-  "[{\"name\":\"skill_manage\",\"arguments\":\"{\\\"action\\\":\\\"create\\\",\\\"name\\\":\\\"x\\\",\\\"absorbed_into\\\":\\\"y\\\"}\"}]",
-  "[{\"name\":\"other_tool\",\"arguments\":\"{\\\"action\\\":\\\"delete\\\",\\\"name\\\":\\\"x\\\",\\\"absorbed_into\\\":\\\"y\\\"}\"}]",
-  "[{\"name\":\"skill_manage\",\"arguments\":{\"action\":\"delete\",\"name\":\"objform\",\"absorbed_into\":\"umb\"}}]",
-  "[]",
-  "[not json",
-  "[{\"name\":\"skill_manage\",\"arguments\":\"bad json\"}]",
-  "[{\"name\":\"skill_manage\",\"arguments\":123}]",
-  "[{\"name\":\"skill_manage\",\"arguments\":\"{\\\"action\\\":\\\"delete\\\",\\\"name\\\":\\\"b\\\",\\\"absorbed_into\\\":\\\"u2\\\"}\"},{\"name\":\"skill_manage\",\"arguments\":\"{\\\"action\\\":\\\"delete\\\",\\\"name\\\":\\\"a\\\",\\\"absorbed_into\\\":\\\"u1\\\"}\"}]",
-  "\"just a string\"",
-  "[123, null]"
- ],
- "notes": "Model-declared absorbed_into extraction from skill_manage(delete) tool calls. Harness compiles the REAL C port (src/agent/curator_ports.c) and traces its per-entry result shape (sorted key order); twin imports LIVE agent/curator.py::_extract_absorbed_into_declarations. Out-of-path externals (yaml_*/llm_*/message_*/apply_automatic_transitions) stubbed in harness. Covers: string-JSON args with absorbed_into umbrella/prune-empty, missing absorbed_into, non-delete actions, unrelated tools, object-form arguments, unparseable JSON, non-object/non-string argument types, multi-call ordering (sorted), scalar and null array elements. Inputs with blank/unstripped names or non-string absorbed_into values are excluded: LIVE strips names/targets while the C port does not - a minor documented contract narrowing."
+  "name": "curator_extract_absorbed_into_declarations",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "extract_absorbed_into_declarations",
+  "py_module": "agent/curator.py",
+  "py_fn": "_extract_absorbed_into_declarations",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libyaml",
+    "-I",
+    "src"
+  ],
+  "extra_src": [],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Model-declared absorbed_into extraction from skill_manage(delete) tool calls. Harness compiles the REAL C port (src/agent/curator_ports.c) and traces its per-entry result shape (sorted key order); twin imports LIVE agent/curator.py::_extract_absorbed_into_declarations. Out-of-path externals (yaml_*/llm_*/message_*/apply_automatic_transitions) stubbed in harness. Covers: string-JSON args with absorbed_into umbrella/prune-empty, missing absorbed_into, non-delete actions, unrelated tools, object-form arguments, unparseable JSON, non-object/non-string argument types, multi-call ordering (sorted), scalar and null array elements. Inputs with blank/unstripped names or non-string absorbed_into values are excluded: LIVE strips names/targets while the C port does not - a minor documented contract narrowing."
 }

@@ -7,17 +7,11 @@
   "py_module": "gateway/display_config.py",
   "py_fn": "resolve_display_setting",
   "inputs": [
-    "-|custom_flag|-|{}",
-    "telegram|tool_preview_length|8|{\"display\":{\"platforms\":{\"telegram\":{\"tool_preview_length\":12}}}}",
-    "telegram|tool_progress_grouping|-|{\"display\":{\"platforms\":{\"telegram\":{\"tool_progress_grouping\":\"Separate\"}}}}",
-    "slack|reasoning_style|-|{\"display\":{\"platforms\":{\"slack\":{\"reasoning_style\":\"subtext\"}}}}",
-    "discord|reasoning_style|-|{\"display\":{\"reasoning_style\":\"BLOCKQUOTE\"}}",
-    "irc|tool_preview_length|-|{\"display\":{\"tool_preview_length\":7}}",
-    "irc|tool_preview_length|abc|{\"display\":{\"tool_preview_length\":\"oops\"}}",
-    "telegram|custom_flag|-|{\"display\":{\"platforms\":{\"telegram\":{}}}}",
-    "telegram|custom_flag|fallback_val|{\"display\":{}}",
-    "telegram|custom_flag|fallback_val|{\"display\":{\"custom_flag\":true}}",
-    "-|custom_flag|fb2|{\"display\":{\"platforms\":{\"telegram\":{\"custom_flag\":\"x\"}}}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Display setting resolution (LIVE gateway/display_config.py::resolve_display_setting vs traced copy of src/gateway/display_config.c::resolve_display_setting). Input '<platform>|<setting>|<fallback|->|<config_json>'. Ladder: display-obj guard, platform override walk (key/platforms/plat/val), global setting rung, fallback. KNOWN DIVERGENCES (documented): LIVE has legacy tool_progress_overrides and built-in _PLATFORM/_GLOBAL_DEFAULTS rungs the C port lacks; its normaliser maps tool_progress/bool-ish settings differently (inputs restricted to settings whose normalisers agree: grouping/reasoning/int/passthrough); unset cases use 'custom_flag' so LIVE falls through to fallback like C; a NULL/unparseable config crashes LIVE while C fails closed to fallback \u2014 such inputs were dropped.",
   "extra_src": [

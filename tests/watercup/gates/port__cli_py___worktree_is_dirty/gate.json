@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_worktree_is_dirty",
+  "c_fn": "cli__worktree_is_dirty",
   "py_module": "cli.py",
   "py_fn": "_worktree_is_dirty",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pet_input.c"
   ],
   "cflags": [
     "-I",

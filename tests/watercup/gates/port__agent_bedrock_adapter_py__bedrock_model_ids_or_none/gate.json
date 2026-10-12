@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "bedrock_model_ids_or_none",
+  "c_fn": "cli_agent_bedrock_adapter_bedrock_model_ids_or_none",
   "py_module": "agent/bedrock_adapter.py",
   "py_fn": "bedrock_model_ids_or_none",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/bedrock_adapter.c"
   ],
   "cflags": [
     "-I",

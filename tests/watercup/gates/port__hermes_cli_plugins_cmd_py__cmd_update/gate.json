@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cmd_update",
+  "c_fn": "plugins_cmd_cmd_update",
   "py_module": "hermes_cli/plugins_cmd.py",
   "py_fn": "cmd_update",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/plugins_cmd_gaps.c",
+    "src/hermes_cli/plugin_capabilities_pure.c"
   ],
   "cflags": [
     "-I",

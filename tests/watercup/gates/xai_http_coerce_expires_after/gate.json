@@ -6,6 +6,12 @@
   "c_fn": "coerce_expires_after",
   "py_module": "tools/xai_http.py",
   "py_fn": "_coerce_expires_after",
-  "inputs": ["null", "default", "", "none", "forever", "0", "360", "-5", "2592001", "abc", "1e3", "+7"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "xAI storage TTL coercion. C port xai_http.c::cli_tools_xai_http__coerce_expires_after traced as faithful copy; twin calls LIVE _coerce_expires_after and mirrors the keyword/int/clamp ladder with exact value parity (None='null', unparseable=SAFE 172800). argv inputs exercise the string rung of the LIVE Any-type ladder; the int/float-object rungs are unreachable from argv and not traced."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_load",
+  "c_fn": "thread_tracker_load",
   "py_module": "gateway/platforms/helpers.py",
   "py_fn": "_load",
   "inputs": [

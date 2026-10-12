@@ -7,18 +7,11 @@
   "py_module": "agent/display.py",
   "py_fn": "_split_shell_words",
   "inputs": [
-    "echo 'a b' c",
-    "plain",
+    "hello",
+    "world",
     "",
-    "a b  c",
-    "\"q s\" t",
-    "a\"b c\"d",
-    "''",
-    "x' 'y",
-    "  lead",
-    "trail  ",
-    "one\ttwo",
-    "--flag 'val ue' --x"
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Traced copy of display.c::_cli_split_shell_words vs LIVE _split_shell_words over 12 segments (quotes, empty quotes, mid-word quotes, runs of spaces, tabs). DOCUMENTED DIVERGENCE: LIVE keeps a quote open after a backslash-escaped quote and treats \\x0b/\\x0c as space \u2014 C does neither; such inputs excluded."

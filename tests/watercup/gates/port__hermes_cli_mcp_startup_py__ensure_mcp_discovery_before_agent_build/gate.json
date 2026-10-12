@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "ensure_mcp_discovery_before_agent_build",
+  "c_fn": "hermes_cli_mcp_startup_ensure_mcp_discovery_before_agent_build",
   "py_module": "hermes_cli/mcp_startup.py",
   "py_fn": "ensure_mcp_discovery_before_agent_build",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/mcp_startup.c"
   ],
   "cflags": [
     "-I",

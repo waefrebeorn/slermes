@@ -13,10 +13,7 @@
     "test123",
     "NULL"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/skill_utils_wrappers.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

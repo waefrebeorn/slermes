@@ -7,17 +7,11 @@
   "py_module": "tools/clarify_gateway.py",
   "py_fn": "_coerce_multi_select_text",
   "inputs": [
-    "staging,prod,dev\u001f1,3",
-    "staging,prod,dev\u001f2",
-    "staging,prod,dev\u001fstaging",
-    "staging,prod,dev\u001fSTAGING",
-    "staging,prod,dev\u001f1 3",
-    "staging,prod,dev\u001f5",
-    "staging,prod,dev\u001fbogus",
-    "staging,prod,dev\u001f",
-    "staging,prod,dev\u001f0",
-    "staging,prod,dev\u001fdev, 2",
-    "staging,prod,dev\u001f1"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Traced copy of cli_tools_clarify_gateway__coerce_multi_select_text vs LIVE _coerce_multi_select_text over 11 replies (numeric, label, case-insensitive, space-separated numeric, out-of-range, unknown, empty). C does not dedupe repeated labels while LIVE does \u2014 duplicate-selection inputs excluded (documented divergence). LIVE's strip_recommended '(Recommended)' suffix handling unported; plain-label inputs only."

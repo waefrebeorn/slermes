@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_submit_secret_response",
+  "c_fn": "hcli_submit_secret_response",
   "py_module": "cli.py",
   "py_fn": "_submit_secret_response",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_gh",
+  "c_fn": "cli_tools_env_passthrough__load_config_passthrough",
   "py_module": "hermes_cli/web_git.py",
   "py_fn": "_gh",
   "inputs": [

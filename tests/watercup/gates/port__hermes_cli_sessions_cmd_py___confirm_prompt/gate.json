@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_confirm_prompt",
+  "c_fn": "hermes_cli_sessions_cmd_u_confirm_prompt",
   "py_module": "hermes_cli/sessions_cmd.py",
   "py_fn": "_confirm_prompt",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/sessions_cmd.c"
   ],
   "cflags": [
     "-I",

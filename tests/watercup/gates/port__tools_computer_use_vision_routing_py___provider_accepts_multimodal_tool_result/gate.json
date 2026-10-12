@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_provider_accepts_multimodal_tool_result",
+  "c_fn": "cli_tools_computer_use_vision_routing__provider_accepts_multimodal_tool_result",
   "py_module": "tools/computer_use/vision_routing.py",
   "py_fn": "_provider_accepts_multimodal_tool_result",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/computer_use/computer_use_vision_routing.c"
   ],
   "cflags": [
     "-I",

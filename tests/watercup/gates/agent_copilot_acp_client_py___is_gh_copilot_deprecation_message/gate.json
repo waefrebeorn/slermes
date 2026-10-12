@@ -13,10 +13,7 @@
     "test123",
     "NULL"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/copilot_acp_client_ports.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

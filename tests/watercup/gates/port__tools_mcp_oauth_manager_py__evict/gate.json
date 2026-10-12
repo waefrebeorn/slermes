@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "evict",
+  "c_fn": "cli_tools_mcp_oauth_manager_evict",
   "py_module": "tools/mcp_oauth_manager.py",
   "py_fn": "evict",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/mcp_oauth_manager.c"
   ],
   "cflags": [
     "-I",

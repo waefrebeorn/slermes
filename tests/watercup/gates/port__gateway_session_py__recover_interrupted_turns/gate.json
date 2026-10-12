@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "recover_interrupted_turns",
+  "c_fn": "session_recover_interrupted_turns",
   "py_module": "gateway/session.py",
   "py_fn": "recover_interrupted_turns",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/session.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fmt_ts",
+  "c_fn": "hermes_cli_checkpoints_fmt_ts",
   "py_module": "hermes_cli/checkpoints.py",
   "py_fn": "_fmt_ts",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/checkpoints_format.c"
   ],
   "cflags": [
     "-I",

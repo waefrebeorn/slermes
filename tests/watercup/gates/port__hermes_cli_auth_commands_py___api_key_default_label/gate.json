@@ -3,18 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_api_key_default_label",
+  "c_fn": "hermes_cli_auth_commands_u_api_key_default_label",
   "py_module": "hermes_cli/auth_commands.py",
   "py_fn": "_api_key_default_label",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/auth_commands.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_managed_nous_gateway_url",
+  "c_fn": "cli_tools_managed_tool_gateway_is_managed_nous_gateway_url",
   "py_module": "tools/managed_tool_gateway.py",
   "py_fn": "is_managed_nous_gateway_url",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/managed_tool_gateway.c"
   ],
   "cflags": [
     "-I",

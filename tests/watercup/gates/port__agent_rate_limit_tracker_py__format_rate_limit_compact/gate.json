@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "format_rate_limit_compact",
+  "c_fn": "agent_rate_limit_tracker_format_rate_limit_compact",
   "py_module": "agent/rate_limit_tracker.py",
   "py_fn": "format_rate_limit_compact",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/rate_limit_tracker.c"
   ],
   "cflags": [
     "-I",

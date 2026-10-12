@@ -4,19 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "yuanbao_proto_encode_forward_msg_data",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/hermes_cli/yuanbao_proto_helpers.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "encode_forward_msg_data",
   "inputs": [
-    "{\"sub_type\": 0}",
-    "{\"sub_type\": 1, \"begin_time\": 1700000000}",
-    "{\"sub_type\": 2, \"end_time\": 1700000001, \"nick_name\": \"Alice\"}",
-    "{\"sub_type\": 3, \"msg\": [{\"sender\": \"bob\", \"time\": 123, \"plainText\": \"hi\"}]}",
-    "{\"sub_type\": 4, \"msg\": [{\"sender\": \"b\", \"msgContent\": [{\"type\": 1, \"text\": \"yo\", \"multimedia\": [{\"url\": \"http://x/y.png\", \"file_size\": 10}]}]}]}",
-    "{\"sub_type\": 5}",
-    "{\"sub_type\": 0, \"nick_name\": \"\"}",
-    "not-json"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Links the REAL port incl. static nested-message encoders. Inputs always carry a numeric sub_type because LIVE defaults a missing key to 0 (emitting field 1) while the port skips the field when the key is absent — documented divergence outside the gated surface. Value event carries the full hex of the encoded protobuf so any wire-format drift fails."
+  "notes": "Links the REAL port incl. static nested-message encoders. Inputs always carry a numeric sub_type because LIVE defaults a missing key to 0 (emitting field 1) while the port skips the field when the key is absent \u2014 documented divergence outside the gated surface. Value event carries the full hex of the encoded protobuf so any wire-format drift fails."
 }

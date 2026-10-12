@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_commit_message_template",
+  "c_fn": "agent_oneshot_u_commit_message_template",
   "py_module": "agent/oneshot.py",
   "py_fn": "_commit_message_template",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/oneshot.c"
   ],
   "cflags": [
     "-I",

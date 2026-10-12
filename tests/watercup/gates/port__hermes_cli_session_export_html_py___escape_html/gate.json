@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_escape_html",
+  "c_fn": "hermes_cli_session_export_html_u_escape_html",
   "py_module": "hermes_cli/session_export_html.py",
   "py_fn": "_escape_html",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/session_export_html.c"
   ],
   "cflags": [
     "-I",

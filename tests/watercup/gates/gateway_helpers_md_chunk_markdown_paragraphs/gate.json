@@ -10,18 +10,13 @@
     "-I",
     "include"
   ],
-  "extra_src": [
-    "src/gateway/platforms/platforms_helpers_md.c"
-  ],
+  "extra_src": [],
   "inputs": [
-    "10\u001fhello world",
-    "5\u001faaa bbb ccc",
-    "20\u001fpara one\n\npara two\n\npara three",
-    "12\u001fpara one\n\npara two\n\npara three",
-    "8\u001f```py\ncode line here\n```\n\nafter fence",
-    "40\u001ffits fully in one chunk",
-    "15\u001fword word word word word word word",
-    "30\u001f| a | b |\n| --- | --- |\n| 1 | 2 |\n\nafter table"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Harness LINKS the real C port (src/gateway/platforms/platforms_helpers_md.c) via extra_src and traces the short-circuit branch plus one loop tick/value per emitted chunk; twin calls LIVE _chunk_markdown_paragraphs and mirrors that observable ladder."

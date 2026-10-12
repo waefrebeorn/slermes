@@ -7,11 +7,8 @@
   "py_module": "agent/prompt_builder.py",
   "py_fn": "build_memory_guidance",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

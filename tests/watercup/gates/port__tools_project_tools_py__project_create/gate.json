@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "project_create",
+  "c_fn": "tools_project_tools_project_create",
   "py_module": "tools/project_tools.py",
   "py_fn": "project_create",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/project_tools.c"
   ],
   "cflags": [
     "-I",

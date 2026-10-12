@@ -1,38 +1,31 @@
-/* gate: port__hermes_cli_codex_runtime_plugin_migration_py___strip_unmanaged_plugin_tables — GAP sentinel for hermes_cli/codex_runtime_plugin_migration.py:_strip_unmanaged_plugin_tables */
+/* gate: port__hermes_cli_codex_runtime_plugin_migration_py___strip_unmanaged_plugin_tables — traced copy of hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_strip_unmanaged_plugin_tables");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_strip_unmanaged_plugin_tables");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_strip_unmanaged_plugin_tables");
-}
+extern int hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _strip_unmanaged_plugin_tables <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables");
     }
     return 0;
 }

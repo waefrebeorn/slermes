@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_maybe_complete_loop_tick_after_turn",
+  "c_fn": "hcli_maybe_complete_loop_tick_after_turn",
   "py_module": "cli.py",
   "py_fn": "_maybe_complete_loop_tick_after_turn",
   "inputs": [

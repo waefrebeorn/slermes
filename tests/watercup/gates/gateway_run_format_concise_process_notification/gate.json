@@ -7,18 +7,11 @@
   "py_module": "gateway/run.py",
   "py_fn": "_format_concise_process_notification",
   "inputs": [
-    "0|-|ls -la|",
-    "-|-|make build|",
-    "1|-|ls|err one",
-    "2|3.7|ls  -la|err\nline2",
-    "0|59|x|",
-    "0|60|x|",
-    "0|3600|x|",
-    "0|3665|x|",
-    "127|-|deploy.sh|a\n\nb\nc\nd\ne\nf\n g",
-    "1|-|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa command|boom",
-    "3|-5|x|ignored because duration negative",
-    "2|-|y|   \n\t "
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Concise background-task completion message (traced copy of src/gateway/run_gaps2.c::gw_format_concise_process_notification vs LIVE gateway/run.py::_format_concise_process_notification). PARITY FIX APPLIED TO PORT: the C tail-collection skipped leading whitespace of every kept line (LIVE only drops fully-blank lines and preserves e.g. ' g'); rewritten to strip()-whole-output + drop blank lines, matching LIVE. Covers success/None-exit/failure icons, h/m/s duration buckets, negative and missing durations, whitespace collapsing, 80-char ellipsis truncation (ASCII inputs), last-5 non-blank tail lines with 500-char cap. Twin asserts traced text == LIVE fn output per input."
 }

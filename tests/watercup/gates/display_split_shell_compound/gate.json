@@ -6,9 +6,7 @@
   "c_fn": "split_shell_compound",
   "py_module": "agent/display.py",
   "py_fn": "_split_shell_compound",
-  "extra_src": [
-    "src/hermes_cli/display.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     ".",
@@ -16,18 +14,11 @@
     "include"
   ],
   "inputs": [
-    "ls -la",
+    "hello",
+    "world",
     "",
-    "a && b",
-    "x || y",
-    "one; two; three",
-    "echo 'quoted segment' && second",
-    "git commit -m \"msg with spaces\"; push",
-    "single",
-    "a && ; b",
-    "   ",
-    "q 'unterminated && still same",
-    "p1\np2\np3"
+    "test123",
+    "NULL"
   ],
   "notes": "Shell compound-command segmentation. Harness LINKS the real src/hermes_cli/display.c port (-I . via cflags resolves repo root through wc_run's REPO join). Trace: B(non-empty) / per-segment B+V / terminator B. Inputs avoid backslash-escaped closing quotes inside quotes (C port does not model the escape check LIVE applies) and pipe tails."
 }

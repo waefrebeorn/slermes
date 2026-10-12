@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_restore_model_runtime_snapshot",
+  "c_fn": "hcli_restore_model_runtime_snapshot",
   "py_module": "cli.py",
   "py_fn": "_restore_model_runtime_snapshot",
   "inputs": [

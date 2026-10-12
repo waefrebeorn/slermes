@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_split_env_vars",
+  "c_fn": "provider_catalog_split_env_vars",
   "py_module": "hermes_cli/provider_catalog.py",
   "py_fn": "_split_env_vars",
   "inputs": [

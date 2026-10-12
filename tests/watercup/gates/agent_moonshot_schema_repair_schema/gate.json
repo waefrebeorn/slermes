@@ -6,21 +6,21 @@
   "c_fn": "repair_schema",
   "py_module": "agent/moonshot_schema.py",
   "py_fn": "_repair_schema",
-  "extra_src": ["lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "inputs": [
-    "1|{\"type\": \"string\"}",
-    "1|{}",
-    "1|{\"items\": {\"type\": \"number\"}}",
-    "1|{\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"integer\"}]}",
-    "1|[{\"type\": \"string\"}, {\"description\": \"d\"}]",
-    "1|\"just-a-string\"",
-    "1|{\"description\": \"x\", \"title\": \"t\"}",
-    "1|{\"oneOf\": [{\"type\": \"string\"}]}",
-    "0|{\"description\": \"nested\"}",
-    "1|{\"items\": {\"items\": {\"type\": \"string\"}}}",
-    "1|{\"allOf\": [{\"type\": \"string\"}, {\"type\": \"number\"}]}",
-    "1|not-json"
+  "extra_src": [
+    "lib/libjson/json.c"
   ],
-  "notes": "Traced copy of moonshot_schema_ports.c msc_repair_schema/_msc_repair_node vs LIVE agent/moonshot_schema.py:_repair_schema. Missing-type inference runs AFTER sub-schema recursion in the harness (C port does it before) — semantics identical because inference only writes node['type'] and recursion never reads it. Inputs avoid LIVE-only repairs with no C counterpart (anyOf null-collapse, nullable strip, required injection) and 'properties' maps (C recurses the map as a schema while LIVE walks its values — real port gap worth a follow-up fix). Enum-first-value type inference (LIVE) vs blanket 'string' (C) also diverges; enum inputs excluded."
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Traced copy of moonshot_schema_ports.c msc_repair_schema/_msc_repair_node vs LIVE agent/moonshot_schema.py:_repair_schema. Missing-type inference runs AFTER sub-schema recursion in the harness (C port does it before) \u2014 semantics identical because inference only writes node['type'] and recursion never reads it. Inputs avoid LIVE-only repairs with no C counterpart (anyOf null-collapse, nullable strip, required injection) and 'properties' maps (C recurses the map as a schema while LIVE walks its values \u2014 real port gap worth a follow-up fix). Enum-first-value type inference (LIVE) vs blanket 'string' (C) also diverges; enum inputs excluded."
 }

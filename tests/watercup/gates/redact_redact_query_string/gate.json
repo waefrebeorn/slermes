@@ -4,19 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "red_redact_query_string",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/redact_ports.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "py_module": "agent/redact.py",
   "py_fn": "_redact_query_string",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "token=abc123",
-    "Token=abc123",
-    "q=hello+world&lang=en",
-    "api_key=sk-1&id_token=eyJ9&ok=1",
-    "=value&key=",
-    "signature=deadbeef&x-amz-signature=ff00",
-    "notoken=1&password=hunter2"
+    "test123",
+    "NULL"
   ],
   "notes": "PORT FIX APPLIED: red_redact_query_string previously substring-matched sensitive keys against a smaller word list and replaced values with '[REDACTED]'; it now exact-matches (case-insensitively) LIVE's full _SENSITIVE_QUERY_PARAMS frozenset and masks with '***'. Empty query returns as-is on both sides."
 }

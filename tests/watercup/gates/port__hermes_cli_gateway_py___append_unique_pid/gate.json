@@ -3,15 +3,15 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_append_unique_pid",
+  "c_fn": "pids",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_append_unique_pid",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

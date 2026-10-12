@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_frontmatter",
+  "c_fn": "tools_skills_hub_u_parse_frontmatter",
   "py_module": "tools/skills_hub.py",
   "py_fn": "_parse_frontmatter",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/skills_hub.c",
+    "src/tools/file_operations.c"
   ],
   "cflags": [
     "-I",

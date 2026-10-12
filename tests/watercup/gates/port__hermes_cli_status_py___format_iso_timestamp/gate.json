@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_format_iso_timestamp",
+  "c_fn": "sta_format_iso_timestamp",
   "py_module": "hermes_cli/status.py",
   "py_fn": "_format_iso_timestamp",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/status_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

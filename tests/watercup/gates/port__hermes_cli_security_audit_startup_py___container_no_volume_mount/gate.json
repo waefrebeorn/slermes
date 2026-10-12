@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_container_no_volume_mount",
+  "c_fn": "hermes_cli_security_audit_star_u_container_no_volume_mount",
   "py_module": "hermes_cli/security_audit_startup.py",
   "py_fn": "_container_no_volume_mount",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/security_audit_startup.c"
   ],
   "cflags": [
     "-I",

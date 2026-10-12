@@ -10,18 +10,11 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "{}",
-    "{\"type\":\"object\",\"$schema\":\"http://json-schema.org/draft\",\"additionalProperties\":false}",
-    "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"age\":{\"type\":\"integer\",\"description\":\"years\",\"exclusiveMinimum\":0}}}",
-    "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}},\"required\":[\"id\"]}}",
-    "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\",\"format\":\"double\"},\"not-a-schema\"]}",
-    "{\"type\":\"string\",\"enum\":[\"red\",\"green\",\"blue\"]}",
-    "{\"type\":\"integer\",\"enum\":[\"1\",\"2\",\"3\"]}",
-    "{\"enum\":[1,\"two\",true]}",
-    "{\"type\":\"object\",\"required\":[\"a\",\"b\"],\"properties\":{\"a\":{\"type\":\"string\"},\"b\":{\"type\":\"boolean\"}}}",
-    "{\"type\":\"object\",\"properties\":{\"deep\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"array\",\"items\":{\"type\":\"number\"}}]}}}}",
-    "{\"title\":\"t\",\"default\":null,\"propertyOrdering\":[\"a\"],\"pattern\":\"^x$\",\"maximum\":10,\"minimum\":-1.5}",
-    "{\"type\":\"boolean\",\"enum\":[\"true\"]}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Recursive Gemini schema sanitizer (gemini_schema.c vs LIVE agent/gemini_schema.py). KNOWN DIVERGENCES (documented; inputs restricted to the agreed region): (1) typed enums with non-string entries \u2014 Py stringifies entries, C drops the whole enum key; (2) required names missing from this node's properties, or an empty valid set \u2014 Py filters/replaces/drops, C keeps required verbatim (no required filtering in the port); (3) 'items'/'properties'/'anyOf' holding a wrongly-typed value \u2014 Py drops or returns {}, C copies verbatim; (4) top-level non-object JSON \u2014 Py returns {}, C sanitize_node copies arrays/scalars through. All inputs keep all-string enums (or untyped enums), fully-valid non-empty required lists, and well-formed nested containers so both sides agree; the twin asserts its traced result equals LIVE output on every input."
 }

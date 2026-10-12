@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "tool_verb_connector",
+  "c_fn": "preview",
   "py_module": "agent/display.py",
   "py_fn": "tool_verb_connector",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/display_tool_preview.c"
   ],
   "cflags": [
     "-I",

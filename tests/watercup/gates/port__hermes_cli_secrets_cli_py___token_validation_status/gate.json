@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_token_validation_status",
+  "c_fn": "hermes_cli_secrets_cli_u_token_validation_status",
   "py_module": "hermes_cli/secrets_cli.py",
   "py_fn": "_token_validation_status",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/secrets_cli.c"
   ],
   "cflags": [
     "-I",

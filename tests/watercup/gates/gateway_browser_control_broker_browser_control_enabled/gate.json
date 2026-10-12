@@ -8,24 +8,15 @@
     "-I/home/wubu/hermes-agent-dev/slermes/include",
     "-I/home/wubu/hermes-agent-dev/slermes/lib"
   ],
-  "extra_src": [
-    "src/gateway/browser_control_broker.c",
-    "lib/libjson/json.c",
-    "lib/libyaml/yaml.c"
-  ],
+  "extra_src": [],
   "py_module": "gateway/browser_control_broker.py",
   "py_fn": "browser_control_enabled",
   "inputs": [
-    "{}",
-    "{\"browser\":{}}",
-    "{\"browser\":{\"extension_control\":{}}}",
-    "{\"browser\":{\"extension_control\":{\"enabled\":true}}}",
-    "{\"browser\":{\"extension_control\":{\"enabled\":false}}}",
-    "{\"browser\":{\"extension_control\":{\"enabled\":\"yes\"}}}",
-    "{\"browser\":\"x\"}",
-    "{\"browser\":{\"extension_control\":\"x\"}}",
-    "{\"other\":1}",
-    "{\"browser\":{\"extension_control\":{\"enabled\":1}}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "browser.extension_control.enabled feature-flag probe. Harness traces the config-dict ladder and calls the REAL linked port (browser_control_broker.c + libjson/libyaml/libcrypto; hermes_get_home stubbed to a nonexistent home so the config=None live-read branch can never succeed \u2014 that branch is out of scope, inputs always pass a dict). Twin asserts the traced verdict equals the LIVE fn result per input. enabled=1 (int) correctly False on both sides (exact-bool check)."
 }

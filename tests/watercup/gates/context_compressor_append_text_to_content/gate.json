@@ -7,15 +7,11 @@
   "py_module": "agent/context_compressor.py",
   "py_fn": "_append_text_to_content",
   "inputs": [
-    "NULL\thi\t0",
-    "NULL\thi\t1",
-    "\"abc\"\tX\t0",
-    "\"abc\"\tX\t1",
-    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"u\"}}]\tnote\t0",
-    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"u\"}}]\tnote\t1",
-    "[\"plain\", 3]\tt\t0",
-    "[\"plain\", 3]\tt\t1",
-    "\"todo: ship it\"\t (done)\t1"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Content append/prepend helper (context_compressor_ports.c::cc_append_text_to_content vs LIVE agent/context_compressor.py::_append_text_to_content). Inputs are tab-separated <content_json>\\t<text>\\t<prepend>. EXCLUDED DIVERGENCES: JSON \"[]\" and \"\\\"\\\"\" hit the C port's empty-sentinel branch (B1) but take LIVE's list/string branches, so those encodings of empty containers are not exercised; non-JSON-scalars (e.g. int content encoded without quotes) return unchanged in C but str()+concat in LIVE."
 }

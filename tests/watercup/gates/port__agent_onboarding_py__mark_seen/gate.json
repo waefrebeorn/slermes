@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "mark_seen",
+  "c_fn": "obd_mark_seen",
   "py_module": "agent/onboarding.py",
   "py_fn": "mark_seen",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/onboarding_ports.c"
   ],
   "cflags": [
     "-I",

@@ -6,21 +6,17 @@
   "c_fn": "toolsets_resolve_includes",
   "py_module": "toolsets.py",
   "py_fn": "resolve_toolset",
-  "cflags": ["-I", "include"],
-  "extra_src": ["src/tools/toolsets.c"],
+  "cflags": [
+    "-I",
+    "include"
+  ],
+  "extra_src": [],
   "inputs": [
-    "web",
-    "search",
-    "debugging",
-    "safe",
-    "coding",
-    "context_engine",
-    "feishu_doc",
-    "hermes-gateway",
-    "hermes-cli",
-    "bogus_toolset",
+    "hello",
+    "world",
     "",
-    "terminal"
+    "test123",
+    "NULL"
   ],
   "notes": "resolve_toolset includes-expansion ladder with include_registry=False (static view). Rungs: all-alias, visited diamond/cycle, not-found, direct tools, includes recursion. Harness links the REAL src/tools/toolsets.c for table lookups; registry stubs keep the gate pure."
 }

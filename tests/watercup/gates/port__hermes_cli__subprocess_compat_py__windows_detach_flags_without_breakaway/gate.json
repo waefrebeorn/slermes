@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "windows_detach_flags_without_breakaway",
+  "c_fn": "hermes_cli__subprocess_compat_windows_detach_flags_without_b_ay",
   "py_module": "hermes_cli/_subprocess_compat.py",
   "py_fn": "windows_detach_flags_without_breakaway",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/_subprocess_compat.c"
   ],
   "cflags": [
     "-I",

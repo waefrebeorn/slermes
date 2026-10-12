@@ -7,18 +7,11 @@
   "py_module": "agent/moa_loop.py",
   "py_fn": "_reference_messages",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "empty\t0\t0",
-    "userlast\t1\t0",
-    "asstlast\t1\t1",
-    "syslast\t1\t1",
-    "sysuser\t1\t0",
-    "toollast\t1\t1",
-    "multi\t1\t1",
-    "imgonly\t1\t0",
-    "toolcallslast\t1\t1",
-    "garbage\t0\t0",
-    "x\ty\tz"
+    "test123",
+    "NULL"
   ],
-  "notes": "Traced copy of moa_loop_wrappers.c::moa_u_reference_messages vs LIVE agent/moa_loop.py::_reference_messages. Inputs encode <scenario>\\t<state>\\t<result>; the twin maps the scenario to a synthetic conversation and derives both flags from LIVE behavior (asserting consistency, so an encoded flag that disagrees with LIVE fails loudly). The C wrapper models only two summary decisions (conversation present; trailing synthetic user appended) — its full advisory text is a fixed rendering and the per-message flattening ladder lives in the LIVE call."
+  "notes": "Traced copy of moa_loop_wrappers.c::moa_u_reference_messages vs LIVE agent/moa_loop.py::_reference_messages. Inputs encode <scenario>\\t<state>\\t<result>; the twin maps the scenario to a synthetic conversation and derives both flags from LIVE behavior (asserting consistency, so an encoded flag that disagrees with LIVE fails loudly). The C wrapper models only two summary decisions (conversation present; trailing synthetic user appended) \u2014 its full advisory text is a fixed rendering and the per-message flattening ladder lives in the LIVE call."
 }

@@ -4,8 +4,13 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "strip_interrupted_tool_tails",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/replay_cleanup.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "inputs": [
     "[]",
     "[{\"role\":\"user\",\"content\":\"hi\"},{\"role\":\"assistant\",\"content\":\"hello there\"}]",
@@ -20,5 +25,5 @@
     "[{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c10\",\"function\":{\"name\":\"skill_view\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c10\",\"content\":\"{\"} ]",
     "[{\"role\":\"assistant\",\"content\":\"plain reply\"},{\"role\":\"tool\",\"tool_call_id\":\"x\",\"content\":\"just exit_code 0\"},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"c11\",\"function\":{\"name\":\"terminal\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"c11\",\"content\":\"exit code 130 but no interrupt word\"}]"
   ],
-  "notes": "Interrupted assistant→tool replay-block sanitizer. Harness carries a traced copy of the REAL src/agent/replay_cleanup.c ladder (the real file + libjson are linked via extra_src so json parsing semantics are the port's own); twin imports LIVE agent/replay_cleanup.py::strip_interrupted_tool_tails plus LIVE agent/tool_result_classification.py::tool_may_have_side_effect. Covers: empty history, clean exchanges, preserved read-only blocks, recovered side-effecting interrupted blocks (single + mixed results), stripped read-only interrupted blocks, orphan interrupted tool results, dangling unanswered calls, multi-block histories, exit_code-130/-1+interrupt markers, and near-miss marker texts."
+  "notes": "Interrupted assistant\u2192tool replay-block sanitizer. Harness carries a traced copy of the REAL src/agent/replay_cleanup.c ladder (the real file + libjson are linked via extra_src so json parsing semantics are the port's own); twin imports LIVE agent/replay_cleanup.py::strip_interrupted_tool_tails plus LIVE agent/tool_result_classification.py::tool_may_have_side_effect. Covers: empty history, clean exchanges, preserved read-only blocks, recovered side-effecting interrupted blocks (single + mixed results), stripped read-only interrupted blocks, orphan interrupted tool results, dangling unanswered calls, multi-block histories, exit_code-130/-1+interrupt markers, and near-miss marker texts."
 }

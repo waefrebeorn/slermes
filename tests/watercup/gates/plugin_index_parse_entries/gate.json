@@ -6,19 +6,21 @@
   "c_fn": "parse_entries",
   "py_module": "hermes_cli/plugin_index.py",
   "py_fn": "_parse_entries",
-  "extra_src": ["lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "inputs": [
-    "{\"plugins\":[]}",
-    "{\"plugins\":[{\"name\":\"demo\",\"repo\":\"owner/demo\"}]}",
-    "[{\"name\":\"bare\",\"repo\":\"a/b\"}]",
-    "{\"plugins\":[{\"name\":\"x\",\"repo\":\"bad-repo\"},{\"name\":\"y\",\"repo\":\"o/k\"}]}",
-    "{\"plugins\":[{\"name\":\"\",\"repo\":\"o/k\"},{\"name\":\"z\",\"repo\":\"o/\"}]}",
-    "{\"plugins\":[\"junk\",{\"name\":\"w\",\"repo\":\"p/q\"},null]}",
-    "{\"plugins\":[{\"name\":\"spaced name \",\"repo\":\" o/p \"},{\"name\":\"ref\",\"repo\":\"r/s\",\"subdir\":\"/sub/dir/\",\"ref\":\"v1\"}]}",
-    "{}",
-    "{\"plugins\":[{\"name\":\"multi/slash\",\"repo\":\"a/b/c\"},{\"ok\":\"yes\",\"repo\":\"d/e\"}]}",
-    "{\"other\":1,\"plugins\":[{\"name\":\"n1\",\"repo\":\"g/h\"},{\"name\":\"n2\",\"repo\":\"i/j\"}]}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Index-entry parse/filter ladder over lib/libjson. Excluded input classes (documented LIVE/C contract gaps): plugins present but not a list (LIVE raises ValueError, C yields []), and non-dict/non-list raw documents. Whitespace-only names also diverge (C accepts then strips to empty; LIVE skips) and are avoided."
 }

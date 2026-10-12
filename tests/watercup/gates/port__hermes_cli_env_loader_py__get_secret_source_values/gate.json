@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_secret_source_values",
+  "c_fn": "hermes_cli_env_loader_get_secret_source_values",
   "py_module": "hermes_cli/env_loader.py",
   "py_fn": "get_secret_source_values",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/env_loader.c"
   ],
   "cflags": [
     "-I",

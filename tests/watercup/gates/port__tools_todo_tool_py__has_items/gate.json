@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "has_items",
+  "c_fn": "todo_tool_has_items",
   "py_module": "tools/todo_tool.py",
   "py_fn": "has_items",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/todo_tool.c"
   ],
   "cflags": [
     "-I",

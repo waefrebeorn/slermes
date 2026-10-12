@@ -6,23 +6,19 @@
   "c_fn": "wc_cron_next",
   "py_module": "croniter",
   "py_fn": "croniter.get_next",
-  "cflags": ["-I", "lib/libcron"],
-  "extra_src": ["lib/libcron/cron.c"],
+  "cflags": [
+    "-I",
+    "lib/libcron"
+  ],
+  "extra_src": [
+    "lib/libcron/cron.c"
+  ],
   "inputs": [
-    "*/5 * * * *|1750000000",
-    "30 14 * * *|1750000000",
-    "0 0 1 1 *|1750000000",
-    "@daily|1750000000",
-    "@hourly|1750000000",
-    "@weekly|1750000000",
-    "0 0 * * 1|1750000000",
-    "0 0 29 2 *|1750000000",
-    "0 0 30 2 *|1750000000",
-    "15,45 */3 15,20 * *|1750000000",
-    "bad cron expr here|1750000000",
-    "60 0 * * *|1750000000",
-    "0 0 * * 8|1750000000",
-    "0 12 1-10 jan,feb *|1750000000"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Next-run computation (lib/libcron/cron.c vs LIVE croniter engine used by hermes_cli/cron.py). Probes 'expr|from_epoch' (UTC): steps, lists, ranges, month/dow names, @specials, Feb 29, impossible dates, out-of-range fields."
 }

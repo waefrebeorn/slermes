@@ -7,11 +7,8 @@
   "py_module": "agent/agent_init.py",
   "py_fn": "_refuse_checkpoint_required_on_codex_app_server",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

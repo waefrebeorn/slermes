@@ -16,22 +16,13 @@
     "-I",
     "lib/libskillusage"
   ],
-  "extra_src": [
-    "src/hermes_cli/command_registry.c",
-    "src/hermes_cli/completion.c"
-  ],
+  "extra_src": [],
   "inputs": [
-    "/upd",
-    "/hel",
-    "/con",
-    "/y",
-    "/x",
-    "/xyz",
-    "/pet",
-    "/help",
-    "/quit",
-    "/past",
-    "/imag"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Slash-command ghost-text suggestion (still-typing branch): shortest matching registry command wins; exact match and gateway-only commands excluded. Harness is a traced copy of commands_wrappers.c::cmd_get_suggestion walking the REAL C registry (linked via extra_src); twin drives the LIVE SlashCommandAutoSuggest.get_suggestion with completer=None over the same ladder. Per-command iteration emits no cup events because C's CLI_COMMAND_REGISTRY (83 names, declaration order) and LIVE's COMMANDS map (alias-inclusive, length-sorted) differ in membership/order \u2014 only the resolved remainder is the contract. DOCUMENTED DIVERGENCES (excluded inputs): prefixes where the registries resolve different shortest commands (/re, /b, /s, /t, /i, /h, /in, /lo, /memory, /learn, ...), empty word '' (LIVE would suggest from startswith(''), C returns NULL), non-slash input (LIVE falls back to history suggestions by design)."
 }

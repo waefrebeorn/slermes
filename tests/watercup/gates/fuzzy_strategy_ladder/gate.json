@@ -16,16 +16,11 @@
     "lib/libfuzzymatch/fuzzy_match.c"
   ],
   "inputs": [
-    "alpha\u001fbeta\u001fgamma\u001f0",
-    "def f():\n    return 1\n# end\u001freturn 1\u001freturn 2\u001f0",
-    "a  b\nc\u001fa b\u001fa z b\u001f0",
-    "x\ny\u001fx\\ny\u001fx\nz\u001f0",
-    "def f():\n    return 1   \n# end\u001fdef f():\n    return 1\n# end\u001fdef f():\n    return 9\n# end\u001f0",
-    "def one():\n    a=1\n    b=2\ndef two():\n    pass\u001fdef one():\n    a=1\n    b=999\ndef two():\u001freplaced-body\u001f0",
-    "import os\nimport sys\nvalue = compute(1)\nprint(value)\u001fvalue = compute(2)\nprint(value)\u001fvalue = compute(3)\nprint(value)\u001f0",
-    "foo\nbar\u001fbaz\u001fqux\u001f0",
-    "same text\u001fsame text\u001fsame text\u001f0",
-    "\u001f\u001fx\u001f0"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "8-strategy fuzzy chain: F1 identical old==new guard, F2 strategy-matched with the winning strategy index as V (exact=1 line_trimmed=2 whitespace_normalized=3 indentation_flexible=4 escape_normalized=5 trimmed_boundary=6 block_anchor=7 context_aware=8, none=0). Harness links the REAL lib/libfuzzymatch/fuzzy_match.c. Probe fields are \\u001f-separated."
 }

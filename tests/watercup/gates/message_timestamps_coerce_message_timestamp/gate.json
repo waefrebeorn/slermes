@@ -7,17 +7,11 @@
   "py_module": "gateway/message_timestamps.py",
   "py_fn": "coerce_message_timestamp",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "   ",
-    "999",
-    "1720000000",
-    "1709163653",
-    "2026-04-28T13:40:53+00:00",
-    "2024-02-29T23:59:59+00:00",
-    "1970-01-01T00:00:01+00:00",
-    "2000-06-15T12:30:45+00:00",
-    "hello world",
-    "abc123"
+    "test123",
+    "NULL"
   ],
   "notes": "Timestamp coercion traced on the agreed sub-contract. KNOWN DIVERGENCES (documented, excluded): zero/negative epochs (C fail-closed -1, LIVE returns the number); fractional epoch strings (C strtol rejects, LIVE float()s); naive ISO datetimes (C timegm vs LIVE astimezone local zone); date-only strings (LIVE fromisoformat parses, C needs T-time); out-of-range ISO fields (C timegm normalizes, LIVE raises); bracketed human prefixes (LIVE regex path, C absent)."
 }

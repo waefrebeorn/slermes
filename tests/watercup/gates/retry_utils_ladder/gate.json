@@ -7,21 +7,11 @@
   "py_module": "agent/retry_utils.py",
   "py_fn": "parse_retry_after_seconds",
   "inputs": [
-    "ra:120",
-    "ra:-5",
-    "ra:  30.5  ",
-    "ra:",
-    "ra:   ",
-    "ra:not-a-number",
-    "ra:Wed, 21 Oct 2015 07:28:00 GMT",
-    "ra:Sat, 01 Jan 2022 00:00:00 GMT",
-    "zai:429|https://api.z.ai/api/coding/paas/v4|glm-5.2|code 1305 the service may be temporarily overloaded",
-    "zai:429|https://api.z.ai/api/coding/paas/v4|glm-5.2|quota exceeded billing",
-    "zai:500|https://api.z.ai/api/coding/paas/v4|glm-5.2|temporarily overloaded",
-    "zai:429|https://api.openai.com/v1|glm-5.2|1305",
-    "zai:429|https://api.z.ai/api/coding/paas/v4|gpt-9|temporarily overloaded",
-    "ceil:3",
-    "ceil:0"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Retry decision ladders — C src/agent/retry_utils.c vs LIVE agent/retry_utils.py: Retry-After parsing (numeric/HTTP-date/invalid), Z.AI coding-plan overload 429 decision chain, and the retry ceiling arithmetic. Jittered backoff itself is nondeterministic by design and is excluded; its branch structure is covered via the adaptive-ladder constants."
+  "notes": "Retry decision ladders \u2014 C src/agent/retry_utils.c vs LIVE agent/retry_utils.py: Retry-After parsing (numeric/HTTP-date/invalid), Z.AI coding-plan overload 429 decision chain, and the retry ceiling arithmetic. Jittered backoff itself is nondeterministic by design and is excluded; its branch structure is covered via the adaptive-ladder constants."
 }

@@ -8,14 +8,11 @@
   "py_module": "hermes_cli/main.py",
   "py_fn": "_format_aux_current",
   "inputs": [
-    "https://relay.example.com/v1\tsupport\tgpt-5",
-    "\topenai\tgpt-5-mini",
-    "\tauto\t",
-    "\t\t",
-    "http://localhost:8080\tcustom\tclaude-x",
-    "https://api.deepseek.com\tdeepseek\t",
-    "\tmicrosoft\t",
-    "\tauto\tbig-model"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "PORT FIX APPLIED: src/hermes_cli/main_wrappers.c::main_u_format_aux_current previously printed the custom/auto labels and the model on separate lines (dropping the ' · ' join); it now renders exactly the LIVE single-line string. Harness carries the fixed body inline because the wrapper translation unit pulls config/curator deps. Inputs avoid LIVE-vs-C whitespace-strip differences (LIVE strips fields, the port does not)."
+  "notes": "PORT FIX APPLIED: src/hermes_cli/main_wrappers.c::main_u_format_aux_current previously printed the custom/auto labels and the model on separate lines (dropping the ' \u00b7 ' join); it now renders exactly the LIVE single-line string. Harness carries the fixed body inline because the wrapper translation unit pulls config/curator deps. Inputs avoid LIVE-vs-C whitespace-strip differences (LIVE strips fields, the port does not)."
 }

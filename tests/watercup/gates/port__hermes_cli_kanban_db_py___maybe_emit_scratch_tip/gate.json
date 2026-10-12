@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_maybe_emit_scratch_tip",
+  "c_fn": "kdb_maybe_emit_scratch_tip",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_maybe_emit_scratch_tip",
   "inputs": [

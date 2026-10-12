@@ -3,15 +3,15 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_map_positions_norm_to_orig",
+  "c_fn": "fuzzy_match_map_positions_norm_to_orig",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_map_positions_norm_to_orig",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

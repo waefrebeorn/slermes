@@ -7,11 +7,8 @@
   "py_module": "tools/interrupt.py",
   "py_fn": "set_interrupt",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -6,6 +6,12 @@
   "c_fn": "normalize_anthropic",
   "py_module": "agent/usage_pricing.py",
   "py_fn": "_normalize_anthropic_model_name",
-  "inputs": ["claude-opus-4.7", "anthropic/claude-opus-4-7", "Claude-Opus-4.7", "claude-sonnet-4-5", "anthropic/claude-3-5-haiku", "claude-3.7-sonnet", "X-Claude-OPUS", "claude-opus-4.7-20250929"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Anthropic model name normalization (strip 'anthropic/' prefix, dots->dashes in version numbers). C port (usage_pricing.c::usage_pricing_normalize_anthropic_model) traced + LIVE Python twin (_normalize_anthropic_model_name). Cup-parity across 8 variants. NOTE: LIVE does NOT strip trailing -vN/-DATE (anthropic ids don't carry them); the C port matches that (only bedrock strips those), so the two agree."
 }

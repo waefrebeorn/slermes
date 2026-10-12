@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_check_espeak_ng",
+  "c_fn": "stp_check_espeak_ng",
   "py_module": "hermes_cli/setup.py",
   "py_fn": "_check_espeak_ng",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/setup_ports.c"
   ],
   "cflags": [
     "-I",

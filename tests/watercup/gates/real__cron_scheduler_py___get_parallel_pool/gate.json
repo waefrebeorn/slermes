@@ -7,11 +7,11 @@
   "py_module": "cron/scheduler.py",
   "py_fn": "_get_parallel_pool",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

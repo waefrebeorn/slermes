@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "start",
+  "c_fn": "lspm_start",
   "py_module": "agent/lsp/manager.py",
   "py_fn": "start",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/lsp/lsp_manager_ports.c",
+    "src/agent/lsp/lsp_init_ports.c"
   ],
   "cflags": [
     "-I",

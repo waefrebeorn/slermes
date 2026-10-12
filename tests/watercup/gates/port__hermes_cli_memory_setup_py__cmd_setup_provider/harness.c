@@ -1,38 +1,29 @@
-/* gate: port__hermes_cli_memory_setup_py__cmd_setup_provider — GAP sentinel for hermes_cli/memory_setup.py:cmd_setup_provider */
+/* gate: port__hermes_cli_memory_setup_py__cmd_setup_provider — traced copy of cli_hermes_cli_memory_setup_cmd_setup_provider (void) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("cmd_setup_provider");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "cmd_setup_provider");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("cmd_setup_provider");
-}
+extern void cli_hermes_cli_memory_setup_cmd_setup_provider(const char *provider_name);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cmd_setup_provider <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_hermes_cli_memory_setup_cmd_setup_provider <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("cli_hermes_cli_memory_setup_cmd_setup_provider");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    cli_hermes_cli_memory_setup_cmd_setup_provider(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR("void");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("cli_hermes_cli_memory_setup_cmd_setup_provider");
     }
     return 0;
 }

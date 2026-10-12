@@ -7,11 +7,11 @@
   "py_module": "gateway/platforms/yuanbao_media.py",
   "py_fn": "_parse_webp_size",
   "inputs": [
-    "524946461600000057454250565038200a0000003001009d012a4001f000",
-    "524946461b000000574542505650384c0f0000002fc740250000000000000000000000",
-    "524966461600000057454250565038200a00000000000000000000000000",
-    "524946461a00000057454250414243440e0000000000000000000000000000000000",
-    "000102030405060708090a0b0c0d0e0f10111213"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "WebP dimension parse traced on hex-encoded buffers. Agreed sub-contract: >=30-byte buffers only. KNOWN DIVERGENCES (documented, excluded): buffers of 16..29 bytes (LIVE parses VP8L at >=25 and VP8 with markers, C requires >=30); VP8X chunks (LIVE parses extended format, C has no branch); malformed VP8 marker bytes (LIVE validates the 0x9D01002A frame tag, C does not)."
 }

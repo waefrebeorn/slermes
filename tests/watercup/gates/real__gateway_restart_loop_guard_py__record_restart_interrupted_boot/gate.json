@@ -7,11 +7,11 @@
   "py_module": "gateway/restart_loop_guard.py",
   "py_fn": "record_restart_interrupted_boot",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

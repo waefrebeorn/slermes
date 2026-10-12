@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_tool_call_name",
+  "c_fn": "agent_kanban_stop_u_tool_call_name",
   "py_module": "agent/kanban_stop.py",
   "py_fn": "_tool_call_name",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/kanban_stop.c"
   ],
   "cflags": [
     "-I",

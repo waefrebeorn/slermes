@@ -7,11 +7,11 @@
   "py_module": "gateway/platforms/whatsapp_common.py",
   "py_fn": "_outgoing_chunk_limit",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

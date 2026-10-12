@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_gc_expired_locked",
+  "c_fn": "ws_tickets__gc_expired_locked",
   "py_module": "hermes_cli/dashboard_auth/ws_tickets.py",
   "py_fn": "_gc_expired_locked",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/hermes_cli_ws_tickets.c"
   ],
   "cflags": [
     "-I",

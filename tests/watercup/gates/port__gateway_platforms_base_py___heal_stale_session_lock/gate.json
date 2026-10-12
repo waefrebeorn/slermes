@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_heal_stale_session_lock",
+  "c_fn": "gw_base__heal_stale_session_lock",
   "py_module": "gateway/platforms/base.py",
   "py_fn": "_heal_stale_session_lock",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platforms_base_helpers.c"
   ],
   "cflags": [
     "-I",

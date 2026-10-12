@@ -1,38 +1,25 @@
-/* gate: real__tools_process_registry_py__restart_safe_gateway_child_argv — GAP sentinel for tools/process_registry.py:restart_safe_gateway_child_argv */
+/* gate: real__tools_process_registry_py__restart_safe_gateway_child_argv — GAP sentinel for restart_safe_gateway_child_argv */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("restart_safe_gateway_child_argv");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "restart_safe_gateway_child_argv");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("restart_safe_gateway_child_argv");
+    return "restart_safe_gateway_child_argv";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s restart_safe_gateway_child_argv <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("restart_safe_gateway_child_argv");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("restart_safe_gateway_child_argv");
     }
     return 0;
 }

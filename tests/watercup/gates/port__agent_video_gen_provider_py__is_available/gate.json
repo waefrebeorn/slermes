@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_available",
+  "c_fn": "vgp_is_available",
   "py_module": "agent/video_gen_provider.py",
   "py_fn": "is_available",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/video_gen_provider_ports.c",
+    "src/tools/video_gen_registry.c"
   ],
   "cflags": [
     "-I",

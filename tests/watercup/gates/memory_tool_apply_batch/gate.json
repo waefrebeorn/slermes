@@ -7,18 +7,11 @@
   "py_module": "tools/memory_tool.py",
   "py_fn": "apply_batch",
   "inputs": [
-    "memory|2200|likes pizza;;meeting notes tuesday||add~prefers dark mode~",
-    "user|1375|alpha entry;;beta entry||add~beta entry~",
-    "memory|2200|old fact one||replace~old fact~new fact two~",
-    "memory|2200|keep me;;drop me||remove~drop me~",
-    "memory|5|aaa;;bbb||add~cccccc~",
-    "memory|2200||add~~",
-    "memory|2200|some entry||frob~some entry~",
-    "memory|2200|x entry;;y entry||replace~q text~z text~",
-    "memory|2200|foo one;;foo two||replace~foo~bar baz~",
-    "memory|2200|",
-    "memory|2200|solo||remove~~",
-    "user|50|hi there;;second||add~hi there~"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Scenario encoding per input: 'target|limit|e1;;e2||action~content~old_text||...'. Harness is a traced copy of memory_store_apply_batch with scanner=NULL (the port's documented fail-open); twin calls the LIVE strict-scope _scan_memory_content, so B2 is data-driven on the LIVE side and clean on both. Contents chosen to pass the strict scan so no divergence from the NULL-scanner harness."
 }

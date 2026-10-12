@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_stream_reasoning_delta",
+  "c_fn": "hcli_stream_reasoning_delta",
   "py_module": "cli.py",
   "py_fn": "_stream_reasoning_delta",
   "inputs": [

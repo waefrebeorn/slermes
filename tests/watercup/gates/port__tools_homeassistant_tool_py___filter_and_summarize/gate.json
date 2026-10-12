@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_filter_and_summarize",
+  "c_fn": "tools_homeassistant_tool_u_filter_and_summarize",
   "py_module": "tools/homeassistant_tool.py",
   "py_fn": "_filter_and_summarize",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/homeassistant_tool.c"
   ],
   "cflags": [
     "-I",

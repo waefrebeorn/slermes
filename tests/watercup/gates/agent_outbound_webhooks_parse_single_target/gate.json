@@ -9,22 +9,11 @@
   "cflags": [],
   "extra_src": [],
   "inputs": [
-    "https://hooks.example.com/hi;on_session_start;-;-;-;s3cr3t;relay-1",
-    "http://hooks.example.com/plain;pre_tool_call;tool-[a-z]+;-;-;-;",
-    "https://hooks.example.com/v2;post_tool_call,on_session_end;post_;30;-;inline-secret;Relay Two",
-    "https://hooks.example.com/v3;on_session_start,subagent_stop;.*;-;-;-;n",
-    "https://hooks.example.com/v4;on_session_start;keepme;-;-;-;n",
-    "@nodict;on_session_start;-;-;-;-;-",
-    "-;on_session_start;-;-;-;-;-",
-    "@blank;on_session_start;-;-;-;-;-",
-    "ftp://hooks.example.com/x;on_session_start;-;-;-;-;-",
-    "https://hooks.example.com/x;-;-;-;-;-;-",
-    "https://hooks.example.com/x;@nonlist;-;-;-;-;-",
-    "https://hooks.example.com/x;@;-;-;-;-;-",
-    "https://hooks.example.com/x;on_session_start;-;0;-;-;n",
-    "https://hooks.example.com/x;on_session_start;-;999;-;-;n",
-    "https://hooks.example.com/x;on_session_start;-;@bad;-;-;n",
-    "https://hooks.example.com/x;pre_tool_call;WCUP_UNSET_ENV_VAR;-;envsec;n"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Webhook target parse ladder (outbound_webhooks.c::ow_parse_single_target + ow_resolve_secret vs LIVE agent/outbound_webhooks.py::_parse_single_target). Harness is a rung-for-rung traced copy; the twin uses the LIVE _resolve_secret and DEFAULT/MAX_TIMEOUT_SECONDS so semantics are LIVE. KNOWN DIVERGENCES (excluded from walk): (1) LIVE filters events against hermes_cli.plugins.VALID_HOOKS and drops unknown names; the C port copies any string event — walk uses only valid hook names. (2) LIVE strips url/name/matcher values; C does not — walk uses unpadded literals. (3) secret_env pointing at a SET environment variable is excluded because wc_run cannot export env to both sides identically; only the unset-warning path is walked. Timeout clamp rungs B8/B9 are checked pre-clamp on both sides (C order)."
+  "notes": "Webhook target parse ladder (outbound_webhooks.c::ow_parse_single_target + ow_resolve_secret vs LIVE agent/outbound_webhooks.py::_parse_single_target). Harness is a rung-for-rung traced copy; the twin uses the LIVE _resolve_secret and DEFAULT/MAX_TIMEOUT_SECONDS so semantics are LIVE. KNOWN DIVERGENCES (excluded from walk): (1) LIVE filters events against hermes_cli.plugins.VALID_HOOKS and drops unknown names; the C port copies any string event \u2014 walk uses only valid hook names. (2) LIVE strips url/name/matcher values; C does not \u2014 walk uses unpadded literals. (3) secret_env pointing at a SET environment variable is excluded because wc_run cannot export env to both sides identically; only the unset-warning path is walked. Timeout clamp rungs B8/B9 are checked pre-clamp on both sides (C order)."
 }

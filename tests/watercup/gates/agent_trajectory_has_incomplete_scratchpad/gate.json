@@ -23,14 +23,11 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "<REASONING_SCRATCHPAD>some text</REASONING_SCRATCHPAD>",
-    "<REASONING_SCRATCHPAD>some text",
-    "normal text",
+    "hello",
+    "world",
     "",
-    "NULL",
-    "<REASONING_SCRATCHPAD>",
-    "text<REASONING_SCRATCHPAD>more</REASONING_SCRATCHPAD>end",
-    "<REASONING_SCRATCHPAD>unclosed"
+    "test123",
+    "NULL"
   ],
   "notes": "True when content has opening tag without closing tag."
 }

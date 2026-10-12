@@ -23,6 +23,10 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "IGNORED"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ]
 }

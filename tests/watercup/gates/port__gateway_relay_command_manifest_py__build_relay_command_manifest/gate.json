@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_relay_command_manifest",
+  "c_fn": "gateway_relay_command_manifest_build_relay_command_manifest",
   "py_module": "gateway/relay/command_manifest.py",
   "py_fn": "build_relay_command_manifest",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/relay/command_manifest.c"
   ],
   "cflags": [
     "-I",

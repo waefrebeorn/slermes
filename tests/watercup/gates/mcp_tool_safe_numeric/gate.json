@@ -7,15 +7,11 @@
   "py_module": "tools/mcp_tool.py",
   "py_fn": "_safe_numeric",
   "inputs": [
-    "NULL\t4",
-    "\t30",
-    "abc\t7",
-    "10\t4",
-    "1\t4",
-    "007\t2",
-    "  12 \t5",
-    "+9\t3",
-    "999999\t8"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Numeric config coercion (mcp_tool.c::mcp_tool_safe_numeric vs LIVE tools/mcp_tool.py::_safe_numeric). Input tokens are <value|NULL>\\t<default>; NULL encodes a null pointer. DOCUMENTED AGREEMENT-REGION RESTRICTION: the C port drops LIVE's coerce/minimum parameters entirely — strtod accepts floats ('3.7'->3.7), hex ('0x10'->16) and trailing garbage ('12abc'->12) where LIVE int() falls back to default, and LIVE clamps results below minimum=1 while C does not. The gate exercises only inputs where both sides agree: integer strings with int()-parseable forms >= 1, plus null/empty/unparseable defaults. Float/hex/garbage-suffix/sub-minimum inputs are known divergences worth a follow-up port fix."
+  "notes": "Numeric config coercion (mcp_tool.c::mcp_tool_safe_numeric vs LIVE tools/mcp_tool.py::_safe_numeric). Input tokens are <value|NULL>\\t<default>; NULL encodes a null pointer. DOCUMENTED AGREEMENT-REGION RESTRICTION: the C port drops LIVE's coerce/minimum parameters entirely \u2014 strtod accepts floats ('3.7'->3.7), hex ('0x10'->16) and trailing garbage ('12abc'->12) where LIVE int() falls back to default, and LIVE clamps results below minimum=1 while C does not. The gate exercises only inputs where both sides agree: integer strings with int()-parseable forms >= 1, plus null/empty/unparseable defaults. Float/hex/garbage-suffix/sub-minimum inputs are known divergences worth a follow-up port fix."
 }

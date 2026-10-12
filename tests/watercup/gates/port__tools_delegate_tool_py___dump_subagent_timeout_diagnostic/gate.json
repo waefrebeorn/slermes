@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_dump_subagent_timeout_diagnostic",
+  "c_fn": "tools_delegate_tool_u_dump_subagent_timeout_diagnostic",
   "py_module": "tools/delegate_tool.py",
   "py_fn": "_dump_subagent_timeout_diagnostic",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/delegate_tool.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

@@ -1,38 +1,25 @@
-/* gate: real__cron_scheduler_py___scan_assembled_cron_prompt — GAP sentinel for cron/scheduler.py:_scan_assembled_cron_prompt */
+/* gate: real__cron_scheduler_py___scan_assembled_cron_prompt — GAP sentinel for _scan_assembled_cron_prompt */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_scan_assembled_cron_prompt");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_scan_assembled_cron_prompt");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_scan_assembled_cron_prompt");
+    return "_scan_assembled_cron_prompt";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _scan_assembled_cron_prompt <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_scan_assembled_cron_prompt");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_scan_assembled_cron_prompt");
     }
     return 0;
 }

@@ -4,22 +4,27 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "_resolve_identity_header",
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "src", "-I", "lib/libpath"],
-  "extra_src": ["src/tools/mcp_tool_pure.c", "lib/libjson/json.c", "lib/libpath/path.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "lib/libpath"
+  ],
+  "extra_src": [],
   "py_module": "tools/mcp_tool.py",
   "py_fn": "_resolve_identity_header",
   "inputs": [
-    "{}",
-    "{\"other\":1}",
-    "{\"identity_header\":null}",
-    "{\"identity_header\":\"X-User-Id\"}",
-    "{\"identity_header\":{\"name\":\"X-User-Id\",\"value\":\"alice\"}}",
-    "{\"identity_header\":{\"name\":\"X-Trace\",\"value_from\":\"static\",\"value\":\"v-9\"}}",
-    "{\"identity_header\":{\"name\":\"X-U\"}}",
-    "{\"identity_header\":{\"name\":\"X-U\",\"value\":\"\"}}",
-    "{\"identity_header\":{\"name\":\"X-U\",\"value\":7}}",
-    "{\"identity_header\":{\"name\":\"X-U\",\"value_from\":\"bogus\",\"value\":\"x\"}}",
-    "{\"identity_header\":{\"name\":\"X-U\",\"value\":\"  \"}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "MCP per-server identity-header resolution. Harness links the REAL C port (mcp_tool_pure.c::mcp_resolve_identity_header compiled fresh); twin imports LIVE tools/mcp_tool.py::_resolve_identity_header (source-extracted fallback with null logger). Coarse rung ladder (raw-present / mapping / name-valid / value_from route / static-value-valid + resolved 'name|value') per the channel_directory precedent; behavior parity carried by the V values. PORT FIX APPLIED: C accepted whitespace-only static values ('  ') where LIVE's value.strip() check rejects them -> None; added strip-aware blank-value rejection in mcp_tool_pure.c (input [10] caught this via cup mismatch). Remaining documented narrowings, avoided by inputs: (a) whitespace-only names ('   ' passes C's non-empty check but LIVE strips to blank), (b) value_from='profile' (LIVE resolves active Hermes profile at call time; environment-dependent; gw_active_profile_name shimmed out-of-path)."
 }

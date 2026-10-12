@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cache_path",
+  "c_fn": "hermes_cli_model_catalog_u_cache_path",
   "py_module": "hermes_cli/model_catalog.py",
   "py_fn": "_cache_path",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/model_catalog.c"
   ],
   "cflags": [
     "-I",

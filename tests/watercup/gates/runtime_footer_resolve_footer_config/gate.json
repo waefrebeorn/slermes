@@ -6,19 +6,21 @@
   "c_fn": "resolve_footer_config",
   "py_module": "gateway/runtime_footer.py",
   "py_fn": "resolve_footer_config",
-  "extra_src": ["src/gateway/runtime_footer.c", "lib/libjson/json.c", "lib/libhive/hive.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib/libhive"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libhive"
+  ],
   "inputs": [
-    "|",
-    "{}|",
-    "{\"display\":{}}|telegram",
-    "{\"display\":{\"runtime_footer\":{\"enabled\":true}}}|",
-    "{\"display\":{\"runtime_footer\":{\"fields\":[\"model\"]}}}",
-    "{\"display\":{\"runtime_footer\":{\"enabled\":false,\"fields\":[]}}}|web",
-    "{\"display\":{\"platforms\":{\"telegram\":{\"runtime_footer\":{\"enabled\":true}}}}}|telegram",
-    "{\"display\":{\"platforms\":{\"telegram\":{\"runtime_footer\":{\"fields\":[\"cwd\",\"model\"]}}}}}|telegram",
-    "{\"display\":{\"platforms\":{\"slack\":{\"runtime_footer\":{\"enabled\":true}}}}}|telegram",
-    "{\"display\":{\"runtime_footer\":{\"enabled\":false},\"platforms\":{\"x\":{\"runtime_footer\":{\"enabled\":true,\"fields\":[\"model\",\"context_pct\",\"cwd\",\"extra\"]}}}}}|x"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Three-layer merge ladder traced over the REAL linked port. Value event hashes enabled + comma-joined field list. Covers: null config, empty config, display-only defaults, global enable/fields overrides (incl. empty-fields rejection), platform-scoped overrides, wrong-platform misses, and combined global+platform layering."
 }

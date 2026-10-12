@@ -7,11 +7,11 @@
   "py_module": "tools/voice_mode.py",
   "py_fn": "play_beep",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

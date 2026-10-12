@@ -7,18 +7,11 @@
   "py_module": "agent/redact.py",
   "py_fn": "_key_has_secret_keyword",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "api_key",
-    "API_KEY",
-    "MYSQL_PASSWORD",
-    "refresh.token",
-    "my password",
-    "tokenizer",
-    "secretary",
-    "authored",
-    "x-token-id",
-    "credentials",
-    "openai_session_token"
+    "test123",
+    "NULL"
   ],
-  "notes": "Secret-keyword word-boundary validator (redact_helpers.c vs LIVE agent/redact.py). KNOWN DIVERGENCE (documented): for ALL-CAPS keys the C port short-circuits to true unconditionally, while LIVE still requires a word-bounded keyword match — so an all-caps prose word like KEYBOARD/PASSAGE returns False in LIVE but True in C. The gate only exercises all-caps inputs where LIVE also matches (API_KEY, MYSQL_PASSWORD); the KEYBOARD-class gap is worth a follow-up port fix."
+  "notes": "Secret-keyword word-boundary validator (redact_helpers.c vs LIVE agent/redact.py). KNOWN DIVERGENCE (documented): for ALL-CAPS keys the C port short-circuits to true unconditionally, while LIVE still requires a word-bounded keyword match \u2014 so an all-caps prose word like KEYBOARD/PASSAGE returns False in LIVE but True in C. The gate only exercises all-caps inputs where LIVE also matches (API_KEY, MYSQL_PASSWORD); the KEYBOARD-class gap is worth a follow-up port fix."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_split_destructive_skip",
+  "c_fn": "hcli_split_destructive_skip",
   "py_module": "cli.py",
   "py_fn": "_split_destructive_skip",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cli/hermes_cli_agent_b2.c"
   ],
   "cflags": [
     "-I",

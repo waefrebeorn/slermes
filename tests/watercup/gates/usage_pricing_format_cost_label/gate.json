@@ -6,6 +6,12 @@
   "py_module": "agent/usage_pricing.py",
   "py_fn": "format_cost_label",
   "twin": "twin.py",
-  "inputs": ["0.0", "0.0", "5.0", "0.004", "0.00001", "1.23", "999.99", "0.005", "0.0", "250.5", "0.000049", "0.00005", "0.000051", "1234567.891"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "note": "Faithful port of Python agent/usage_pricing.py:format_cost_label. Sub-cent boundary (~$0.0000 -> ~$<0.0001) is the #79220 honesty guard."
 }

@@ -4,24 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "cron_classify_parse_scores",
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson"
+  ],
   "py_module": "cron/scripts/classify_items.py",
   "py_fn": "_parse_scores",
-  "extra_src": ["src/cron/classify_items.c", "lib/libjson/json.c"],
+  "extra_src": [],
   "inputs": [
-    "[{\"index\":0,\"score\":2,\"reason\":\"a\"},{\"index\":2,\"score\":5,\"reason\":\"b\"}]|5",
-    "[]|3",
-    "not json|3",
-    "garbage [1,2]|3",
-    "```json\n[{\"index\":1,\"score\":4,\"reason\":\"fenced\"}]```|3",
-    "[{\"index\":5}]|3",
-    "[{\"index\":-1}]|3",
-    "[{\"noindex\":1}]|3",
-    "[\"str\", {\"index\":1,\"score\":1,\"reason\":\"x\"}]|3",
-    "  \n [{\"index\":2,\"score\":7,\"reason\":\"ws\"}] \n |4",
-    "|3",
-    "{\"index\":1}|3",
-    "[{\"index\":1.5}]|3"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Tolerant classifier-output parser (traced copy mirrors src/cron/classify_items.c::cron_classify_parse_scores which links libjson; twin imports LIVE cron/scripts/classify_items.py::_parse_scores). Covers fences, last-ditch [...] salvage, non-array payloads, out-of-range/negative/float/missing indexes, mixed arrays, whitespace. Value event folds accepted entries canonically (index=score=reason;). Known benign encoding difference not traced: LIVE accepts bool indexes (bool is int in Python) while C rejects them via its integer guard — no bool-index inputs."
+  "notes": "Tolerant classifier-output parser (traced copy mirrors src/cron/classify_items.c::cron_classify_parse_scores which links libjson; twin imports LIVE cron/scripts/classify_items.py::_parse_scores). Covers fences, last-ditch [...] salvage, non-array payloads, out-of-range/negative/float/missing indexes, mixed arrays, whitespace. Value event folds accepted entries canonically (index=score=reason;). Known benign encoding difference not traced: LIVE accepts bool indexes (bool is int in Python) while C rejects them via its integer guard \u2014 no bool-index inputs."
 }

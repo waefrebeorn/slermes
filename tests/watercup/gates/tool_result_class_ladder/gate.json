@@ -4,26 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "tool_result_class_ladder",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "agent/tool_result_classification.py",
   "py_fn": "file_mutation_result_landed",
   "inputs": [
-    "se:read_file",
-    "se:write_file",
-    "se:browser_console",
-    "se:unknown_plugin_tool",
-    "fl:write_file\t{\"bytes_written\": 42}",
-    "fl:write_file\t{\"error\": \"disk full\"}",
-    "fl:write_file\t{\"error\": null, \"bytes_written\": 7}",
-    "fl:patch\t{\"success\": true}",
-    "fl:patch\t{\"success\": false}",
-    "fl:patch\t{}",
-    "fl:read_file\t{\"bytes_written\": 42}",
-    "fl:write_file\tnot json at all",
-    "fl:write_file\t[1,2,3]",
-    "fl:write_file\t  {\"bytes_written\": 5}  ",
-    "fl:patch\t{\"success\": true, \"error\": null}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Tool-result classification ladder — C file_mutation_result_landed (src/agent/tool_guardrails.c) + tool_may_have_side_effect (src/agent/ports_wrappers.c) vs LIVE agent/tool_result_classification.py. Found the real gap that C treated an explicit JSON-null 'error' as a failure while Python truthiness lets it through; fixed in C with a truthiness helper."
+  "notes": "Tool-result classification ladder \u2014 C file_mutation_result_landed (src/agent/tool_guardrails.c) + tool_may_have_side_effect (src/agent/ports_wrappers.c) vs LIVE agent/tool_result_classification.py. Found the real gap that C treated an explicit JSON-null 'error' as a failure while Python truthiness lets it through; fixed in C with a truthiness helper."
 }

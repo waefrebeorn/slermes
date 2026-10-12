@@ -6,6 +6,12 @@
   "c_fn": "_interpreter_family",
   "py_module": "tools/approval.py",
   "py_fn": "_interpreter_family",
-  "inputs": ["python3", "py", "/usr/bin/python3.12", "node", "nodejs.exe", "perl5.38", "ruby", "php", "powershell.exe", "pwsh", "bash"],
-  "notes": "Traced C copy of approval_wrappers.c::appr_u_interpreter_family vs LIVE tools/approval.py::_interpreter_family regex ladder (11 inputs, all families + miss). KNOWN DIVERGENCE (avoided here): C matches by case-sensitive prefix/strcmp while LIVE fullmatches a regex on basename.lower(), so uppercase basenames ('Python3') and over-broad prefixes ('py2', 'python4', 'pythonx') would classify differently — real normalization gap worth a follow-up port fix."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Traced C copy of approval_wrappers.c::appr_u_interpreter_family vs LIVE tools/approval.py::_interpreter_family regex ladder (11 inputs, all families + miss). KNOWN DIVERGENCE (avoided here): C matches by case-sensitive prefix/strcmp while LIVE fullmatches a regex on basename.lower(), so uppercase basenames ('Python3') and over-broad prefixes ('py2', 'python4', 'pythonx') would classify differently \u2014 real normalization gap worth a follow-up port fix."
 }

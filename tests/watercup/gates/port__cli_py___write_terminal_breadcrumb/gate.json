@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_write_terminal_breadcrumb",
+  "c_fn": "hcli_write_terminal_breadcrumb",
   "py_module": "cli.py",
   "py_fn": "_write_terminal_breadcrumb",
   "inputs": [

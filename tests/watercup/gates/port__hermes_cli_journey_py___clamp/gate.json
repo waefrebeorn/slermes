@@ -3,18 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_clamp",
+  "c_fn": "pty_win_clamp",
   "py_module": "hermes_cli/journey.py",
   "py_fn": "_clamp",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pty_clamp_helpers.c"
   ],
   "cflags": [
     "-I",

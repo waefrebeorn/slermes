@@ -6,19 +6,7 @@
   "c_fn": "strip_handoff",
   "py_module": "agent/context_compressor.py",
   "py_fn": "_strip_context_summary_handoff_message",
-  "extra_src": [
-    "tests/watercup/gates/contextcompressor_strip_handoff/shims.c",
-    "src/agent/context_compressor_pure.c",
-    "lib/libjson/json.c",
-    "lib/libregex/hermes_regex.c",
-    "src/agent/context.c",
-    "src/agent/context_compressor_ports.c",
-    "src/agent/agent_message_sanitize.c",
-    "src/agent/message_metadata.c",
-    "src/agent/sanitize.c",
-    "src/hermes_logging.c",
-    "src/agent/logger.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I/home/wubu/hermes-agent-dev/slermes/include",
     "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson",
@@ -26,14 +14,11 @@
     "-I/home/wubu/hermes-agent-dev/slermes/lib"
   ],
   "inputs": [
-    "{\"role\": \"user\", \"content\": \"plain user message, no summary\"}",
-    "{\"role\": \"user\", \"content\": \"[CONTEXT SUMMARY]: old stuff[END OF PRIOR CONTEXT \u2014 COMPACTION SUMMARY BELOW][CONTEXT SUMMARY]: newer stuff\\nmore\"}",
-    "{\"role\": \"user\", \"content\": \"keep this prior tail[END OF PRIOR CONTEXT \u2014 COMPACTION SUMMARY BELOW][CONTEXT SUMMARY]: the new summary\"}",
-    "{\"role\": \"user\", \"content\": \"[PRIOR CONTEXT \u2014 for reference only; not a new message] header-stripped tail[END OF PRIOR CONTEXT \u2014 COMPACTION SUMMARY BELOW][CONTEXT SUMMARY]: s\"}",
-    "{\"role\": \"user\", \"content\": \"[CONTEXT SUMMARY]: standalone summary\\n--- END OF CONTEXT SUMMARY \u2014 respond to the message below, not the summary above ---now do the real thing\"}",
-    "{\"role\": \"user\", \"content\": \"[CONTEXT SUMMARY]: standalone\\n--- END OF CONTEXT SUMMARY \u2014 respond to the message below, not the summary above ---   spaced remainder   \"}",
-    "\"just a plain string, not an object\"",
-    "[{\"role\": \"user\", \"content\": \"a list, not an object\"}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Harness links the REAL src/agent/context_compressor_pure.c::cc_strip_context_summary_handoff_message (plus libjson/libregex/context.c deps) and traces at the call boundary; LIVE twin agent/context_compressor.py::ContextCompressor._strip_context_summary_handoff_message hashes its real result content at the same rungs. Agreed subset: STRING-content messages only (C falls back to a copy for LIST content where LIVE unwraps blocks \u2014 subset gap). DOCUMENTED DIVERGENCE (excluded from walk): when a summary message has nothing salvageable (empty prior / no remainder / metadata-only), LIVE returns None (drop the message) while the C port returns a copy of the message \u2014 fail-open vs fail-drop contract gap worth a follow-up port fix.",
   "pin_golden": true

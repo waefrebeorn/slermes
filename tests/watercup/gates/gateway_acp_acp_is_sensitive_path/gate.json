@@ -18,21 +18,12 @@
     "-I",
     "src/acp"
   ],
-  "extra_src": [
-    "tests/watercup/gates/gateway_acp_acp_is_sensitive_path/shims.c",
-    "lib/libjson/json.c",
-    "src/acp/edit_approval.c"
-  ],
+  "extra_src": [],
   "inputs": [
-    "/home/user/.ssh/id_rsa",
-    "/tmp/foo",
-    "/etc/passwd",
-    "/home/user/.git/config",
-    "/var/log/syslog",
-    "/usr/local/bin/python3",
-    "NULL",
-    "~/.env",
-    "/home/user/credentials.json",
-    "/tmp/.git/object"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ]
 }

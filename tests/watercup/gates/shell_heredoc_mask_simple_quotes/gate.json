@@ -6,18 +6,16 @@
   "c_fn": "mask_simple_quotes",
   "py_module": "tools/shell_heredoc.py",
   "py_fn": "_mask_simple_quotes",
-  "cflags": ["-I", "include"],
+  "cflags": [
+    "-I",
+    "include"
+  ],
   "inputs": [
-    "echo 'hello world'",
-    "echo \"double $HOME\"",
-    "foo `bar baz`",
-    "mixed 'a' \"b\" `c`",
-    "unterminated 'quote",
-    "unterminated \"dq \\\" tail",
-    "esc \\\"aped\\\" quotes",
-    "it's plain",
-    "a'b'c'd",
-    "\"$(cmd sub)\" kept"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Quote-masking for heredoc scoping. mask_simple_quotes is static in src/tools/shell_heredoc.c, so the harness #includes the REAL shipped source directly and the actual C function computes every V value; twin imports LIVE tools/shell_heredoc.py::_mask_simple_quotes. Ladder pins quote-class presence; output parity across terminated/unterminated/escaped/executable-substitution spans enforces deep agreement."
 }

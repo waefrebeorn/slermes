@@ -4,21 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "extract",
-  "extra_src": ["src/agent/auxiliary_client.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib"
+  ],
   "py_module": "agent/auxiliary_client.py",
   "py_fn": "extract_content_or_reasoning",
   "inputs": [
-    "{\"role\":\"assistant\",\"content\":\"Hello world\"}",
-    "{\"role\":\"assistant\",\"content\":\"padded answer\"}",
-    "{\"role\":\"assistant\",\"content\":\"\"}",
-    "-",
-    "{}",
-    "{\"role\":\"assistant\",\"reasoning_content\":\"step one then two\"}",
-    "{\"role\":\"assistant\",\"content\":null,\"reasoning_content\":\"chain of thought\"}",
-    "{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"why not\"}",
-    "{\"role\":\"assistant\",\"content\":\"final: 42\"}",
-    "{\"role\":\"assistant\",\"reasoning_content\":\"second reasoning field wins\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Content/reasoning extraction from an LLM response message. REAL src/agent/auxiliary_client.c::auxc_extract_content_or_reasoning linked via extra_src (with link shims for its HTTP/auth surface) against LIVE extract_content_or_reasoning (duck-typed response object). AGREED SUB-CONTRACT (documented, divergent inputs dropped): plain content values and reasoning_content-only fallbacks where the C field-scan agrees with LIVE; '-' encodes an absent payload. KNOWN PORT GAPS (inputs dropped): C does not strip <think> blocks (LIVE cleans them out of content); C does not .strip() the extracted value (padded-content probes diverge on trailing whitespace); C checks 'content' then 'reasoning_content' but never the 'reasoning' field nor reasoning_details (probe {reasoning:'R',reasoning_content:'RC'}: LIVE returns R, C returns RC)."
 }

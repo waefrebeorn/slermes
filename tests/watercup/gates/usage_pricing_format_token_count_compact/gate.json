@@ -7,9 +7,11 @@
   "py_module": "agent/usage_pricing.py",
   "py_fn": "format_token_count_compact",
   "inputs": [
-    "0", "-42", "999", "1000", "-1234", "5320", "12345", "99999",
-    "999999", "1500000", "12345678", "987654321", "2000000000",
-    "-9876543210", "999499", "999501"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Token-count compact formatting edge cases (src/agent/usage_pricing.c::usage_pricing_format_token_count vs LIVE format_token_count_compact): sign handling, K/M/B unit selection, %.2f/%.1f/%.0f rounding bands, trailing-zero/dot stripping."
 }

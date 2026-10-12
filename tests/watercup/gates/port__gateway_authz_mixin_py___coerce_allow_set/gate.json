@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_allow_set",
+  "c_fn": "gateway_authz_mixin_u_coerce_allow_set",
   "py_module": "gateway/authz_mixin.py",
   "py_fn": "_coerce_allow_set",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/authz_mixin.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

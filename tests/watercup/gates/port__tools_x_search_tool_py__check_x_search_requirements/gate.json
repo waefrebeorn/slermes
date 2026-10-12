@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "check_x_search_requirements",
+  "c_fn": "tools_x_search_tool_check_x_search_requirements",
   "py_module": "tools/x_search_tool.py",
   "py_fn": "check_x_search_requirements",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/x_search_tool.c"
   ],
   "cflags": [
     "-I",

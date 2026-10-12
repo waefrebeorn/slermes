@@ -7,11 +7,11 @@
   "py_module": "gateway/platforms/base.py",
   "py_fn": "cleanup_screenshot_cache",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

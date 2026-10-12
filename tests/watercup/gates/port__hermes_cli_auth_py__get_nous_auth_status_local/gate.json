@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_nous_auth_status_local",
+  "c_fn": "hermes_cli_auth_get_nous_auth_status_local",
   "py_module": "hermes_cli/auth.py",
   "py_fn": "get_nous_auth_status_local",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/auth.c"
   ],
   "cflags": [
     "-I",

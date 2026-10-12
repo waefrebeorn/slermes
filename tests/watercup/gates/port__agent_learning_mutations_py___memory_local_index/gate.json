@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_memory_local_index",
+  "c_fn": "lm_memory_local_index",
   "py_module": "agent/learning_mutations.py",
   "py_fn": "_memory_local_index",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/learning_mutations.c"
   ],
   "cflags": [
     "-I",

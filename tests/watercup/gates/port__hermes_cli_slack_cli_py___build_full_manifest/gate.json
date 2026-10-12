@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_full_manifest",
+  "c_fn": "hermes_cli_slack_cli_u_build_full_manifest",
   "py_module": "hermes_cli/slack_cli.py",
   "py_fn": "_build_full_manifest",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/slack_cli.c"
   ],
   "cflags": [
     "-I",

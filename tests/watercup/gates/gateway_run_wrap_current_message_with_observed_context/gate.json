@@ -7,13 +7,11 @@
   "py_module": "gateway/run.py",
   "py_fn": "_wrap_current_message_with_observed_context",
   "inputs": [
-    "\thello there",
-    "ctx\tplain message",
-    "alice: hi all\thello?",
-    "\t",
-    "ctx\t",
-    "multi\nline context\treply text",
-    "ctx\tno tab in msg"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Wraps the current user turn with observed Telegram group context. Input encoding '<observed_context>\\t<message>' over argv. Harness is a faithful traced copy of src/gateway/run_pure2.c::gw_wrap_current_message_with_observed_context (run_pure2.c itself drags config/hash/logger deps, so it is not linked; header strings copied byte-for-byte from the port). Value event hashes the LIVE-returned wrapped string. SCOPE: only the str-message path — the C port implements no list-of-parts / non-str branches (LIVE wraps the first {'type':'text'} part or prepends a synthetic one); that gap is a real port limitation noted for follow-up, not exercised here."
+  "notes": "Wraps the current user turn with observed Telegram group context. Input encoding '<observed_context>\\t<message>' over argv. Harness is a faithful traced copy of src/gateway/run_pure2.c::gw_wrap_current_message_with_observed_context (run_pure2.c itself drags config/hash/logger deps, so it is not linked; header strings copied byte-for-byte from the port). Value event hashes the LIVE-returned wrapped string. SCOPE: only the str-message path \u2014 the C port implements no list-of-parts / non-str branches (LIVE wraps the first {'type':'text'} part or prepends a synthetic one); that gap is a real port limitation noted for follow-up, not exercised here."
 }

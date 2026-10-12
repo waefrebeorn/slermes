@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_stash_apply_failed_only_on_existing_untracked",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "error: permission denied",
-    "warning: stale lock\nhint: run git gc\nerror: path 'packaging/' already exists, no checkout",
-    "could not restore untracked files from stash",
-    "error: path 'x' already exists, no checkout\nerror: your local changes would be overwritten by merge",
-    "hint: consider autostash\ncould not restore untracked files from stash",
-    "fatal: bad object HEAD",
-    "warning: only warnings here",
-    "\n\n\n",
-    "error: path 'a' already exists, no checkout"
+    "test123",
+    "NULL"
   ],
-  "notes": "Git stash-apply failure classifier (update_cmd.c vs LIVE update_cmd.py). Inputs avoid leading-whitespace lines because the C port checks warning:/hint: as a raw-line prefix while LIVE strips each line first — a documented cosmetic divergence outside this input class."
+  "notes": "Git stash-apply failure classifier (update_cmd.c vs LIVE update_cmd.py). Inputs avoid leading-whitespace lines because the C port checks warning:/hint: as a raw-line prefix while LIVE strips each line first \u2014 a documented cosmetic divergence outside this input class."
 }

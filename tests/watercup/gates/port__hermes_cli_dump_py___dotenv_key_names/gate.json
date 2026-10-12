@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_dotenv_key_names",
+  "c_fn": "hermes_cli_dump_u_dotenv_key_names",
   "py_module": "hermes_cli/dump.py",
   "py_fn": "_dotenv_key_names",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dump.c"
   ],
   "cflags": [
     "-I",

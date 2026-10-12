@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/update_lock.py",
   "py_fn": "_pid_alive",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

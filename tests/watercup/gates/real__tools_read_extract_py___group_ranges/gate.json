@@ -7,11 +7,11 @@
   "py_module": "tools/read_extract.py",
   "py_fn": "_group_ranges",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

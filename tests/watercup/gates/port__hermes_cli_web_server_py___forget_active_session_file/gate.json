@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_forget_active_session_file",
+  "c_fn": "ws_session_file_forget",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_forget_active_session_file",
   "inputs": [

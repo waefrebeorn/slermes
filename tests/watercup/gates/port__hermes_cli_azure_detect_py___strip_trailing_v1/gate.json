@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strip_trailing_v1",
+  "c_fn": "azure_strip_trailing_v1",
   "py_module": "hermes_cli/azure_detect.py",
   "py_fn": "_strip_trailing_v1",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/azure_detect.c"
   ],
   "cflags": [
     "-I",

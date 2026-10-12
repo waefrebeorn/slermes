@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save",
+  "c_fn": "cmd_save",
   "py_module": "gateway/platforms/helpers.py",
   "py_fn": "_save",
   "inputs": [

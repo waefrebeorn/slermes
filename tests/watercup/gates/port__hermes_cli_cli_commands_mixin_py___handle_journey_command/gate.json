@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_handle_journey_command",
+  "c_fn": "cmd_journey",
   "py_module": "hermes_cli/cli_commands_mixin.py",
   "py_fn": "_handle_journey_command",
   "inputs": [

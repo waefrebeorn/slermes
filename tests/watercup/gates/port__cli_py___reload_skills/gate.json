@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_reload_skills",
+  "c_fn": "cmd_reload_skills",
   "py_module": "cli.py",
   "py_fn": "_reload_skills",
   "inputs": [

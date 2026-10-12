@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "cc_init",
   "py_module": "agent/context_compressor.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/context_compressor_ports.c",
+    "src/agent/auxiliary_client_helpers.c",
+    "src/agent/agent_message_sanitize.c"
   ],
   "cflags": [
     "-I",

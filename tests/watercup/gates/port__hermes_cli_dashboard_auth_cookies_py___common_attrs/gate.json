@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_common_attrs",
+  "c_fn": "dash_common_attrs",
   "py_module": "hermes_cli/dashboard_auth/cookies.py",
   "py_fn": "_common_attrs",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_looks_like_table_header",
+  "c_fn": "hermes_cli_codex_runtime_plugi_u_looks_like_table_header",
   "py_module": "hermes_cli/codex_runtime_plugin_migration.py",
   "py_fn": "_looks_like_table_header",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/codex_runtime_plugin_migration.c"
   ],
   "cflags": [
     "-I",

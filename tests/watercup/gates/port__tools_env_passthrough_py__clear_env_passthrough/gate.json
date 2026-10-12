@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "clear_env_passthrough",
+  "c_fn": "allowlist",
   "py_module": "tools/env_passthrough.py",
   "py_fn": "clear_env_passthrough",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/env_passthrough.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

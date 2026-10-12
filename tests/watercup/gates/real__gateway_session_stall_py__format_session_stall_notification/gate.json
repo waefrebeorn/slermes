@@ -7,11 +7,11 @@
   "py_module": "gateway/session_stall.py",
   "py_fn": "format_session_stall_notification",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
     "lib/libjson/json.c"

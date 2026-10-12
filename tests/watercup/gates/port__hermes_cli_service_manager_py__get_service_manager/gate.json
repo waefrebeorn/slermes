@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_service_manager",
+  "c_fn": "sm_get_service_manager",
   "py_module": "hermes_cli/service_manager.py",
   "py_fn": "get_service_manager",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/service_manager.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

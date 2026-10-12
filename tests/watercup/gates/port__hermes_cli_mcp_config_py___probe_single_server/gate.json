@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_probe_single_server",
+  "c_fn": "hermes_cli_mcp_config_u_probe_single_server",
   "py_module": "hermes_cli/mcp_config.py",
   "py_fn": "_probe_single_server",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/mcp_config.c"
   ],
   "cflags": [
     "-I",

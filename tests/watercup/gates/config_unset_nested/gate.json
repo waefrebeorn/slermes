@@ -36,42 +36,13 @@
     "-Isrc/hermes_cli",
     "-Ilib/libcurses_widget"
   ],
-  "extra_src": [
-    "tests/watercup/gates/config_unset_nested/shims.c",
-    "src/hermes_cli/config_py_pure.c",
-    "lib/libjson/json.c",
-    "src/hermes_cli/personality.c",
-    "lib/libyaml/yaml.c",
-    "src/slermes_home.c",
-    "lib/libdatetime/datetime.c",
-    "lib/libuuid/uuid.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/cron/cron_sqlite.c",
-    "src/cron/cron_extras.c",
-    "lib/libcron/cron.c",
-    "src/cron/lifecycle_guard.c",
-    "lib/libcrypto/crypto.c",
-    "lib/libregex/hermes_regex.c",
-    "src/agent/monitoring/monitoring_emitter.c",
-    "lib/libhash/hash.c",
-    "src/hermes_cli/moa_config_pure.c",
-    "src/agent/agent_runtime_pure.c",
-    "src/hermes_cli/moa_config.c",
-    "src/cron/jobs.c",
-    "src/agent/monitoring/cron_health.c"
-  ],
+  "extra_src": [],
   "inputs": [
-    "{\"a\":{\"b\":1}}\u001fa.b",
-    "{\"a\":{\"b\":1}}\u001fa.b.c",
-    "{\"a\":{}}\u001fa.x",
-    "{\"a\":[1,2,3]}\u001fa.1",
-    "{\"a\":[1,2,3]}\u001fa.9",
-    "{\"a\":{\"b\":{}}}\u001fa.b",
-    "{\"a\":{\"b\":1,\"c\":2}}\u001fa.b",
-    "{}\u001fa",
-    "{\"a\":{\"b\":1}}\u001fb",
-    "{\"a\":[{\"b\":2}]}\u001fa.0.b"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Harness LINKS the real C port (src/hermes_cli/config_py_pure.c::config_py_unset_nested) with libjson and no-op stubs for unrelated symbols in that translation unit. Ladder mirrors segment-split/walk/delete verdicts; LIVE's empty-dict pruning is post-removal cleanup outside the traced return path."

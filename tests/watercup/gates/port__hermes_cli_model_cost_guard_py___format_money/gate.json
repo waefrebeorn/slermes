@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_format_money",
+  "c_fn": "model_cost_guard_format_money",
   "py_module": "hermes_cli/model_cost_guard.py",
   "py_fn": "_format_money",
   "inputs": [

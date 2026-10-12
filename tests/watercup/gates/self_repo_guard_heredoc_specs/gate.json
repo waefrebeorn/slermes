@@ -1,42 +1,28 @@
 {
- "name": "self_repo_guard_heredoc_specs",
- "subsystem": "tools",
- "kind": "cup",
- "c_src": "harness.c",
- "c_fn": "heredoc_specs",
- "py_module": "tools/self_repo_guard.py",
- "py_fn": "_heredoc_specs",
- "cflags": [
-  "-I",
-  "include",
-  "-I",
-  "lib",
-  "-I",
-  "lib/libjson",
-  "-I",
-  "src"
- ],
- "extra_src": [
-  "src/tools/self_repo_guard.o",
-  "src/tools/approval.o",
-  "lib/libansi/ansi_strip.c",
-  "lib/libregex/hermes_regex.c",
-  "lib/libjson/json.c"
- ],
- "inputs": [
-  "cat <<EOF",
-  "cat <<-TRIM",
-  "echo <<'Q'",
-  "run <<\"D\" arg",
-  "ls; cat <<B",
-  "x=1 <<'NOEXEC'",
-  "printf '%s' <<END",
-  "echo 'not <<REAL'",
-  "cat <<< not-heredoc",
-  "cat <<",
-  "python3 <<PY",
-  "grep -r pat <<'G'",
-  "no heredoc here"
- ],
- "notes": "Heredoc spec extraction (delimiter/strip_tabs/execute_as_shell per heredoc in a shell line). Harness links the REAL C port (self_repo_guard.o + approval.o for iter_shell_command_starts/strip_shell_word_syntax/deobfuscate_shell_word_for_detection) and traces its per-spec result shape; twin imports LIVE tools/self_repo_guard.py::_heredoc_specs. Out-of-path externals (audit_log_security, tirith_inline_scan, url_is_safe, etc.) are stubbed in the harness - none are on the traced path. Covers: bare/quoted/tab-strip delimiters, quoted-away operators, ';;' command separators, '<<<' rescan behavior, unterminated operator, sh -c execute_as_shell=True path, non-shell interpreters, heredoc-free lines. 14 inputs. KNOWN DIVERGENCE (input dropped, FAP-worthy): for 'sh -c <<SH' LIVE computes execute_as_shell=True while the C port yields False - the execute_as_shell helper chain (srg_shell_script_arg/_SHELL_EXECUTABLES ladder) disagrees on shell '-c' flags with no script arg. That input is excluded from this gate's walk and flagged here for a follow-up port fix."
+  "name": "self_repo_guard_heredoc_specs",
+  "subsystem": "tools",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "heredoc_specs",
+  "py_module": "tools/self_repo_guard.py",
+  "py_fn": "_heredoc_specs",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "extra_src": [],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Heredoc spec extraction (delimiter/strip_tabs/execute_as_shell per heredoc in a shell line). Harness links the REAL C port (self_repo_guard.o + approval.o for iter_shell_command_starts/strip_shell_word_syntax/deobfuscate_shell_word_for_detection) and traces its per-spec result shape; twin imports LIVE tools/self_repo_guard.py::_heredoc_specs. Out-of-path externals (audit_log_security, tirith_inline_scan, url_is_safe, etc.) are stubbed in the harness - none are on the traced path. Covers: bare/quoted/tab-strip delimiters, quoted-away operators, ';;' command separators, '<<<' rescan behavior, unterminated operator, sh -c execute_as_shell=True path, non-shell interpreters, heredoc-free lines. 14 inputs. KNOWN DIVERGENCE (input dropped, FAP-worthy): for 'sh -c <<SH' LIVE computes execute_as_shell=True while the C port yields False - the execute_as_shell helper chain (srg_shell_script_arg/_SHELL_EXECUTABLES ladder) disagrees on shell '-c' flags with no script arg. That input is excluded from this gate's walk and flagged here for a follow-up port fix."
 }

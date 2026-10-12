@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_dashboard_font",
+  "c_fn": "ws_theme_font_choice_allowed",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "set_dashboard_font",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server_themes.c"
   ],
   "cflags": [
     "-I",

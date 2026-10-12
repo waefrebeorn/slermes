@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_windows",
+  "c_fn": "is_windows",
   "py_module": "hermes_cli/main.py",
   "py_fn": "_is_windows",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/gateway_platform.c"
   ],
   "cflags": [
     "-I",

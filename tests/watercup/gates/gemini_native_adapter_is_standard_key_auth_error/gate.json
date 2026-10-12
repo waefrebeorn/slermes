@@ -7,17 +7,11 @@
   "py_module": "agent/gemini_native_adapter.py",
   "py_fn": "is_standard_key_auth_error",
   "inputs": [
-    "403||Expected OAuth 2 access token",
-    "200|ACCESS_TOKEN_TYPE_UNSUPPORTED|x",
-    "401|ACCESS_TOKEN_TYPE_UNSUPPORTED|anything",
-    "401||Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential.",
-    "401||API key not valid",
-    "401|API_KEY_INVALID|",
-    "400||",
-    "401||expected oauth 2 access token",
-    "401||EXPECTED OAUTH 2 ACCESS TOKEN",
-    "401||",
-    "401|access_token_type_unsupported|x"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "notes": "Substitute for batch candidate translate_stream_event (its C port is a printf stub, not gateable). This sibling pure predicate in the same module has a faithful C port (gna_is_standard_key_auth_error); the twin also asserts ladder result == LIVE result per input."
 }

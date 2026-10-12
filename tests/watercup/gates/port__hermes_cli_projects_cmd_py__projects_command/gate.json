@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "projects_command",
+  "c_fn": "hermes_cli_projects_cmd_projects_command",
   "py_module": "hermes_cli/projects_cmd.py",
   "py_fn": "projects_command",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/projects_cmd.c"
   ],
   "cflags": [
     "-I",

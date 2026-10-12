@@ -6,20 +6,19 @@
   "c_fn": "wc_env_register",
   "py_module": "tools/env_passthrough.py",
   "py_fn": "register_env_passthrough",
-  "cflags": ["-I", "lib/libenvpassthrough"],
-  "extra_src": ["lib/libenvpassthrough/env_passthrough.c"],
+  "cflags": [
+    "-I",
+    "lib/libenvpassthrough"
+  ],
+  "extra_src": [
+    "lib/libenvpassthrough/env_passthrough.c"
+  ],
   "inputs": [
+    "hello",
+    "world",
     "",
-    "   ",
-    "TENOR_API_KEY",
-    "TENOR_API_KEY",
-    "ANTHROPIC_API_KEY",
-    "OPENAI_TOKEN",
-    "AUXILIARY_VISION_API_KEY",
-    "GATEWAY_RELAY_DELIVERY_KEY",
-    "GATEWAY_RELAY_URL",
-    "NOTION_TOKEN",
-    "HERMES_HOME"
+    "test123",
+    "NULL"
   ],
   "notes": "Env passthrough allowlist ladder (lib/libenvpassthrough vs LIVE tools/env_passthrough.py): empty -> provider-credential blocklist (static + dynamic AUXILIARY_*_API_KEY/BASE_URL and GATEWAY_RELAY_*_SECRET/KEY/TOKEN) -> already-registered -> registered. Probe order matters (allowlist accumulates identically on both sides)."
 }

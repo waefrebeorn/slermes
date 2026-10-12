@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_handle_learn_command",
+  "c_fn": "cmd_learn",
   "py_module": "hermes_cli/cli_commands_mixin.py",
   "py_fn": "_handle_learn_command",
   "inputs": [

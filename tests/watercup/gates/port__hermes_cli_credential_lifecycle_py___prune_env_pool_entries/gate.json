@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_prune_env_pool_entries",
+  "c_fn": "hermes_cli_credential_lifecycl_u_prune_env_pool_entries",
   "py_module": "hermes_cli/credential_lifecycle.py",
   "py_fn": "_prune_env_pool_entries",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/credential_lifecycle.c"
   ],
   "cflags": [
     "-I",

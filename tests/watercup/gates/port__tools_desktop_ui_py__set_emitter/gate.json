@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_emitter",
+  "c_fn": "tools_desktop_ui_set_emitter",
   "py_module": "tools/desktop_ui.py",
   "py_fn": "set_emitter",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/desktop_ui.c"
   ],
   "cflags": [
     "-I",

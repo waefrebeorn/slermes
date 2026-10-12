@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "spawn_async_diagnostic",
+  "c_fn": "forensics_spawn_diagnostic",
   "py_module": "gateway/shutdown_forensics.py",
   "py_fn": "spawn_async_diagnostic",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/shutdown_forensics.c"
   ],
   "cflags": [
     "-I",

@@ -1,38 +1,31 @@
-/* gate: port__hermes_cli_urllib_security_py___secure_opener_from_installed_policy — GAP sentinel for hermes_cli/urllib_security.py:_secure_opener_from_installed_policy */
+/* gate: port__hermes_cli_urllib_security_py___secure_opener_from_installed_policy — traced copy of hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_secure_opener_from_installed_policy");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_secure_opener_from_installed_policy");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_secure_opener_from_installed_policy");
-}
+extern int hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _secure_opener_from_installed_policy <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy");
     }
     return 0;
 }

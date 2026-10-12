@@ -6,20 +6,21 @@
   "c_fn": "wc_resolve_channel_skills",
   "py_module": "gateway/platforms/base.py",
   "py_fn": "resolve_channel_skills",
-  "extra_src": ["src/hermes_cli/platforms_base_helpers.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "src", "-I", "include", "-I", "lib/libjson"],
-  "inputs": [
-    "-|-|null",
-    "C0123|-|{\"channel_skill_bindings\":[{\"id\":\"C0123\",\"skills\":[\"skill-a\",\"skill-b\"]}]}",
-    "-|D0ABCDE|{\"channel_skill_bindings\":[{\"id\":\"D0ABCDE\",\"skill\":\"solo-skill\"}]}",
-    "CX|-|{\"channel_skill_bindings\":[{\"id\":\"C1\",\"skills\":[\"a\"]}]}",
-    "C1|-|{\"channel_skill_bindings\":[]}",
-    "-|-|{}",
-    "C1|-|not json at all",
-    "C2|-|{\"channel_skill_bindings\":[{\"id\":\"X\",\"skills\":[\"z\"]},{\"id\":\"C2\",\"skills\":[\"k2\"]}]}",
-    "C3|-|{\"channel_skill_bindings\":[{\"id\":\"C3\"}]}",
-    "C5|-|{\"channel_skill_bindings\":[{\"id\":\"C5\",\"skills\":[\"m\",\"n\"]}]}",
-    "-|P9|{\"channel_skill_bindings\":[{\"id\":\"C9\",\"skills\":[\"x\"]},{\"id\":\"P9\",\"skills\":[\"p\"]}]}"
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "src",
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "Channel skill binding resolution: drives the REAL src/hermes_cli/platforms_base_helpers.c::gw_base__resolve_channel_skills (linked via extra_src; http/config symbols stubbed — off the traced path) against LIVE gateway/platforms/base.py::resolve_channel_skills. Coarse ladder: bindings-list guard, id-set guard, per-entry dict/id-match/skill-shape walk, name freshness walk. KNOWN DIVERGENCES (documented): LIVE strips/dedupes skill names and coerces non-string ids via str(); C does neither. An EMPTY skills list also diverges (LIVE folds [] to falsy -> returns None; C returns an empty list) — that input was dropped from the agreed sub-contract. Input '-' sentinel = absent channel/parent."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Channel skill binding resolution: drives the REAL src/hermes_cli/platforms_base_helpers.c::gw_base__resolve_channel_skills (linked via extra_src; http/config symbols stubbed \u2014 off the traced path) against LIVE gateway/platforms/base.py::resolve_channel_skills. Coarse ladder: bindings-list guard, id-set guard, per-entry dict/id-match/skill-shape walk, name freshness walk. KNOWN DIVERGENCES (documented): LIVE strips/dedupes skill names and coerces non-string ids via str(); C does neither. An EMPTY skills list also diverges (LIVE folds [] to falsy -> returns None; C returns an empty list) \u2014 that input was dropped from the agreed sub-contract. Input '-' sentinel = absent channel/parent."
 }

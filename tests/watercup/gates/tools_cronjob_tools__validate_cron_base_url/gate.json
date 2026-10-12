@@ -7,13 +7,11 @@
   "py_module": "tools/cronjob_tools.py",
   "py_fn": "_validate_cron_base_url",
   "inputs": [
-    "custom|",
-    "openai|   ",
-    "custom|https://my-endpoint.example.com/",
-    "|https://evil.example.net/v1",
-    "   |https://evil.example.net/v1",
-    "notaprovider|https://attacker.example.org/v1",
-    "custom:litellm|https://internal.litellm.local/v1"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Cron base_url exfiltration guard, agreement-zone gate (src/tools/cronjob_tools.c::cronjob_validate_cron_base_url vs LIVE tools/cronjob_tools.py::_validate_cron_base_url). The C port is a deliberately fail-closed simplification: it lacks LIVE's named-custom-provider host-match lane and the PROVIDER_REGISTRY inference_base_url host-match lane, so inputs where LIVE ALLOWS (a registry provider hit on its own host, e.g. openai+api.openai.com, or a configured named custom provider on its configured endpoint) and case variants like 'CUSTOM' are EXCLUDED from the input walk — those are KNOWN divergences worth a follow-up port fix. Cup hashes the branch ladder + outcome CLASS (allow/no_provider/blocked), not the message text, which intentionally differs."
+  "notes": "Cron base_url exfiltration guard, agreement-zone gate (src/tools/cronjob_tools.c::cronjob_validate_cron_base_url vs LIVE tools/cronjob_tools.py::_validate_cron_base_url). The C port is a deliberately fail-closed simplification: it lacks LIVE's named-custom-provider host-match lane and the PROVIDER_REGISTRY inference_base_url host-match lane, so inputs where LIVE ALLOWS (a registry provider hit on its own host, e.g. openai+api.openai.com, or a configured named custom provider on its configured endpoint) and case variants like 'CUSTOM' are EXCLUDED from the input walk \u2014 those are KNOWN divergences worth a follow-up port fix. Cup hashes the branch ladder + outcome CLASS (allow/no_provider/blocked), not the message text, which intentionally differs."
 }

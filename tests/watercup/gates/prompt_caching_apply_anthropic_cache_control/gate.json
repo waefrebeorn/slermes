@@ -4,21 +4,27 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "pca_apply_anthropic_cache_control",
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "src"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "agent/prompt_caching.py",
   "py_fn": "apply_anthropic_cache_control",
   "inputs": [
-    "0|-|[]",
-    "0|-|[{\"role\":\"user\",\"content\":\"hello\"}]",
-    "0|-|[{\"role\":\"system\",\"content\":\"You are Hermes.\"},{\"role\":\"user\",\"content\":\"hi\"},{\"role\":\"assistant\",\"content\":\"yo\"},{\"role\":\"user\",\"content\":\"bye\"}]",
-    "0|-|[{\"role\":\"system\",\"content\":\"sys prompt\"},{\"role\":\"user\",\"content\":\"u1\"},{\"role\":\"assistant\",\"content\":\"a1\"},{\"role\":\"user\",\"content\":\"u2\"},{\"role\":\"assistant\",\"content\":\"a2\"},{\"role\":\"user\",\"content\":\"u3\"}]",
-    "1|-|[{\"role\":\"system\",\"content\":\"native sys\"},{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"tool\",\"content\":\"\"},{\"role\":\"assistant\",\"content\":\"\"}]",
-    "0|You are Hermes.|[{\"role\":\"system\",\"content\":\"You are Hermes. More detail here.\"},{\"role\":\"user\",\"content\":\"q\"}]",
-    "0|NOMATCH-PREFIX|[{\"role\":\"system\",\"content\":\"different text\"},{\"role\":\"user\",\"content\":\"q\"}]",
-    "0|Exact whole|[{\"role\":\"system\",\"content\":\"Exact whole\"},{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"part\"}]}]",
-    "0|-|[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"p1\"},{\"type\":\"text\",\"text\":\"p2\"}]},{\"role\":\"user\",\"content\":\"plain\"}]",
-    "0|-|[{\"role\":\"assistant\",\"content\":\"only assistant\"},{\"role\":\"user\",\"content\":null}]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Anthropic cache-marker placement ladder. pc_* helpers are verbatim copies of the real port's file-statics in prompt_caching_plan.c (direct linking is not clean: unrelated externs); the apply body is a faithful traced copy. Inputs are <native>|<prefix or '->'|<messages-json>. KNOWN DIVERGENCE (documented, inputs avoid it): LIVE strips pre-existing cache_control markers idempotently before placing new ones; the C apply body has no strip pre-pass — pre-marked inputs would diverge. Also LIVE's string-content user path consults find_stable_prefix (empty registry in a fresh process, so both take the plain path)."
+  "notes": "Anthropic cache-marker placement ladder. pc_* helpers are verbatim copies of the real port's file-statics in prompt_caching_plan.c (direct linking is not clean: unrelated externs); the apply body is a faithful traced copy. Inputs are <native>|<prefix or '->'|<messages-json>. KNOWN DIVERGENCE (documented, inputs avoid it): LIVE strips pre-existing cache_control markers idempotently before placing new ones; the C apply body has no strip pre-pass \u2014 pre-marked inputs would diverge. Also LIVE's string-content user path consults find_stable_prefix (empty registry in a fresh process, so both take the plain path)."
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_openrouter_model_supports_tools",
+  "c_fn": "openrouter_model_supports_tools",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_openrouter_model_supports_tools",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/moa_pure_helpers.c"
   ],
   "cflags": [
     "-I",

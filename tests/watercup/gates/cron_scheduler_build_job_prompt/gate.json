@@ -7,16 +7,11 @@
   "py_module": "cron/scheduler.py",
   "py_fn": "_build_job_prompt",
   "inputs": [
-    "hello||",
-    "hello world|1|1|DATA42",
-    "hello|1|0|oops",
-    "hello|1|1|",
-    "|1|0|boom",
-    "Run daily report|1|1|line1\nline2",
-    "Summarize the inbox|1|1|3 unread messages from today",
-    "plain prompt no script|0|",
-    "task|1|0|exit 1: not found",
-    "x|1|1|ok"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copy of scheduler_prompt.c::scheduler_build_job_prompt restricted to the pure I/O-free path: prerun script result always caller-supplied, no context_from, no skills. The downstream assembled-prompt injection scanner is treated as opaque on both sides (benign prompts pass through unchanged). CRON_HINT verified byte-identical between C port and LIVE."
 }

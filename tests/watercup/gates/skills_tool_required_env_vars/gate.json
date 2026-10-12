@@ -7,13 +7,11 @@
   "py_module": "tools/skills_tool.py",
   "py_fn": "_get_required_environment_variables",
   "inputs": [
-    "{\"required_environment_variables\": [\"ALPHA_TOKEN\", \"BETA_TOKEN\"]}",
-    "{\"required_environment_variables\": [\"ALPHA_TOKEN\"]}",
-    "{\"required_environment_variables\": [{\"name\": \"GAMMA_TOKEN\"}, {\"name\": \"DELTA_TOKEN\"}]}",
-    "{\"required_environment_variables\": [\"ONE_TOKEN\", {\"name\": \"TWO_TOKEN\"}]}",
-    "{\"required_environment_variables\": []}",
-    "{\"other_key\": 1, \"required_environment_variables\": [\"TRI_TOKEN\"]}",
-    "{\"required_environment_variables\": [{\"name\": \"FOUR_TOKEN\"}], \"name\": \"decoy_name_field\"}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "C port (skills_tool.c::skills_tool_required_env_vars) is a minimal strstr-based name extractor; LIVE adds _ENV_VAR_NAME_RE validation, prompt/help normalization, required_for/optional flags and dedupe. Gate pins the agreed subset (plain valid names, no duplicates, list-or-dict entry forms, missing key handled by caller contract); richer entries are a documented divergence."

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_retry_after_seconds",
+  "c_fn": "nb2_retry_after_seconds",
   "py_module": "hermes_cli/nous_billing.py",
   "py_fn": "_retry_after_seconds",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/nous_billing_ports.c"
   ],
   "cflags": [
     "-I",

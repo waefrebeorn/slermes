@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_release_permission_mode_dependents",
+  "c_fn": "apr2_release_permission_mode_dependents",
   "py_module": "tools/approval.py",
   "py_fn": "_release_permission_mode_dependents",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/approval_helpers2.c"
   ],
   "cflags": [
     "-I",

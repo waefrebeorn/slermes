@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "clear_session_cwd",
+  "c_fn": "rcw_clear_session_cwd",
   "py_module": "agent/runtime_cwd.py",
   "py_fn": "clear_session_cwd",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/runtime_cwd_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

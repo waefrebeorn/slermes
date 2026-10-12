@@ -7,18 +7,11 @@
   "py_module": "agent/moonshot_schema.py",
   "py_fn": "_fill_missing_type",
   "inputs": [
-    "{\"type\":\"object\",\"properties\":{}}",
-    "{\"type\":\"string\"}",
-    "{\"description\":\"no type here\"}",
-    "{\"properties\":{\"a\":{\"minimum\":1}},\"required\":[\"a\"]}",
-    "{\"required\":[\"x\"]}",
-    "{\"additionalProperties\":false}",
-    "{\"items\":{\"minimum\":1}}",
-    "{\"prefixItems\":[{\"minimum\":1}]}",
-    "{\"enum\":[\"red\",\"green\",\"blue\"]}",
-    "{\"enum\":[]}",
-    "{}",
-    "{\"title\":\"t\",\"minLength\":2}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Type-inference ladder traced on the agreed sub-contract. KNOWN DIVERGENCES (documented, excluded from the walk): type-list nodes (LIVE picks first concrete, C keeps node unchanged), \"type\":null/\"\" nodes (LIVE re-infers, C treats as typed), enum samples of non-string runtime type (LIVE infers boolean/integer/number, C always answers string), and extra-field preservation (LIVE spreads the node, C emits a canned object) — the gate hashes only control rungs + the inferred type."
+  "notes": "Type-inference ladder traced on the agreed sub-contract. KNOWN DIVERGENCES (documented, excluded from the walk): type-list nodes (LIVE picks first concrete, C keeps node unchanged), \"type\":null/\"\" nodes (LIVE re-infers, C treats as typed), enum samples of non-string runtime type (LIVE infers boolean/integer/number, C always answers string), and extra-field preservation (LIVE spreads the node, C emits a canned object) \u2014 the gate hashes only control rungs + the inferred type."
 }

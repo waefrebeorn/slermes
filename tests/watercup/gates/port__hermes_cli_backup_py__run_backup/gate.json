@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run_backup",
+  "c_fn": "hermes_cli_backup_run_backup",
   "py_module": "hermes_cli/backup.py",
   "py_fn": "run_backup",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/backup.c"
   ],
   "cflags": [
     "-I",

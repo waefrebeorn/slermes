@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "ensure_closed_code_fences",
+  "c_fn": "sc_ensure_closed_code_fences",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "ensure_closed_code_fences",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/stream_consumer.c"
   ],
   "cflags": [
     "-I",

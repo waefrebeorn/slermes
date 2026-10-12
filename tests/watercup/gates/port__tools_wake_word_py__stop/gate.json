@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "stop",
+  "c_fn": "ww_detector_stop",
   "py_module": "tools/wake_word.py",
   "py_fn": "stop",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "claim_stream_writer",
+  "c_fn": "agent_stream_single_writer_claim_stream_writer",
   "py_module": "agent/stream_single_writer.py",
   "py_fn": "claim_stream_writer",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/stream_single_writer.c"
   ],
   "cflags": [
     "-I",

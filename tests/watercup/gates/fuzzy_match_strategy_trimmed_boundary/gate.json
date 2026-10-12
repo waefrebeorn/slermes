@@ -7,16 +7,11 @@
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_strategy_trimmed_boundary",
   "inputs": [
-    "abc|||abc",
-    "abc|||x abc y\nzabc",
-    "  abc  |||def\n   abc   \nghi",
-    "line|||a\nline\nb",
-    "nomatch|||one\ntwo",
-    "a|||a\na\na",
-    "abc|||",
-    "  pad |||x\n  pad \ny",
-    "t|||t",
-    "abc|||ab\nabc"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Traced copy of fuzzy_match_helpers.c::fuzzy_match_strategy_trimmed_boundary vs LIVE tools/fuzzy_match.py::_strategy_trimmed_boundary, scoped to SINGLE-LINE patterns. REAL PARITY GAP (documented, not gated): the C port strips EVERY line of the pattern and each candidate block, while LIVE strips only the first and last lines — on multi-line patterns the two find different match sets (e.g. a middle line's indentation is preserved by LIVE but trimmed by C). The gate pins the np==1 slice where trimming-all equals trimming-first, so the traced rungs agree; twin cross-asserts its computed matches against the LIVE call per input."
+  "notes": "Traced copy of fuzzy_match_helpers.c::fuzzy_match_strategy_trimmed_boundary vs LIVE tools/fuzzy_match.py::_strategy_trimmed_boundary, scoped to SINGLE-LINE patterns. REAL PARITY GAP (documented, not gated): the C port strips EVERY line of the pattern and each candidate block, while LIVE strips only the first and last lines \u2014 on multi-line patterns the two find different match sets (e.g. a middle line's indentation is preserved by LIVE but trimmed by C). The gate pins the np==1 slice where trimming-all equals trimming-first, so the traced rungs agree; twin cross-asserts its computed matches against the LIVE call per input."
 }

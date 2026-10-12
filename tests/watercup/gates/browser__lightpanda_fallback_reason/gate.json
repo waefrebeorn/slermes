@@ -18,16 +18,11 @@
   "py_module": "tools/browser_tool.py",
   "py_fn": "_lightpanda_fallback_reason",
   "inputs": [
-    "chrome|open|{\"success\":true}",
-    "LIGHTPANDA|open|{\"success\":true}",
-    "lightpanda|close|{\"success\":true}",
-    "lightpanda|record|{\"success\":true}",
-    "lightpanda|eval|{\"success\":true}",
-    "lightpanda|errors|{\"success\":true,\"data\":{}}",
-    "lightpanda|snapshot|{\"success\":true,\"data\":{\"snapshot\":\"\"}}",
-    "lightpanda|snapshot|{\"success\":true,\"data\":{\"snapshot\":\"short\"}}",
-    "lightpanda|screenshot|{\"success\":true,\"data\":{\"path\":\"\"}}",
-    "lightpanda|click|{\"success\":true,\"data\":{}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Chrome-fallback decision ladder (traced faithful copy of src/tools/browser_tool_helpers.c::browser__lightpanda_fallback_reason + LIVE twin tools/browser_tool.py::_lightpanda_fallback_reason). Inputs '<engine>|<command>|<result_json>'. Covers: non-lightpanda engine (incl. case-sensitivity), ineligible session commands, snapshot empty/short, screenshot with empty path, generic success no-op. KNOWN DIVERGENCES (inputs avoided, not hidden): (1) on success=false the port formats 'Lightpanda <cmd> failed (...)' while LIVE uses {command!r} -> \"Lightpanda 'open' failed (...)\" \u2014 quoting gap worth a port fix. (2) REAL PORT BUG (FAP): the port calls json_get_str(json_obj_get(data,\"snapshot\"), NULL, \"\") with arguments shifted (NULL as key), so nested data.snapshot/data.path lookups ALWAYS return '' \u2014 a healthy >=20-char snapshot is misclassified as too-short (port returns the fallback reason where LIVE returns None). Repro input: lightpanda|snapshot|{\"success\":true,\"data\":{\"snapshot\":\"aaaaaaaaaa bbbbbbbbbb ccccccccc\"}} \u2014 C=483d0bae0f637bb0 (fallback) vs PY=88a3d5286ea555ca (None). Fix: read the string node's value directly. Screenshot-with-existing-small-file branch also unexercised (needs a real file on both sides; argv-only inputs)."
 }

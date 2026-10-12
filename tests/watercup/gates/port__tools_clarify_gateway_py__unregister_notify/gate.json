@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "unregister_notify",
+  "c_fn": "cli_tools_clarify_gateway_unregister_notify",
   "py_module": "tools/clarify_gateway.py",
   "py_fn": "unregister_notify",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/clarify_gateway.c"
   ],
   "cflags": [
     "-I",

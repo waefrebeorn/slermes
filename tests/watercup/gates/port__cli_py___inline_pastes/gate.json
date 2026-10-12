@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_inline_pastes",
+  "c_fn": "hcli_inline_pastes",
   "py_module": "cli.py",
   "py_fn": "_inline_pastes",
   "inputs": [

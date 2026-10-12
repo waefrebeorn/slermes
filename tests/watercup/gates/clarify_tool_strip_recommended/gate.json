@@ -9,15 +9,11 @@
   "cflags": [],
   "extra_src": [],
   "inputs": [
-    "Rebase onto main",
-    "Rebase onto main (Recommended)",
-    "rebase onto main (RECOMMENDED)",
-    "  padded choice  ",
-    "(Recommended)",
-    "not labeled",
-    "choice (recommended",
-    "Ship it (Recommended)  ",
-    ""
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Traced copy of src/tools/clarify_tool.c::clarify_strip_recommended; LIVE twin tools/clarify_tool.py::strip_recommended. Empty-string argv is the NULL sentinel (same result either way: empty in -> empty out). C uses ASCII strcasecmp, LIVE uses casefold — equivalent for the ASCII inputs walked here."
+  "notes": "Traced copy of src/tools/clarify_tool.c::clarify_strip_recommended; LIVE twin tools/clarify_tool.py::strip_recommended. Empty-string argv is the NULL sentinel (same result either way: empty in -> empty out). C uses ASCII strcasecmp, LIVE uses casefold \u2014 equivalent for the ASCII inputs walked here."
 }

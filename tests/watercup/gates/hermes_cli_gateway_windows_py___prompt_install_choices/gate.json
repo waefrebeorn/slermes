@@ -7,11 +7,8 @@
   "py_module": "hermes_cli/gateway_windows.py",
   "py_fn": "_prompt_install_choices",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "list_voices",
+  "c_fn": "tts_provider_list_voices",
   "py_module": "agent/tts_provider.py",
   "py_fn": "list_voices",
   "inputs": [

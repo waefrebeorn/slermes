@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cmd_prune",
+  "c_fn": "hermes_cli_curator_u_cmd_prune",
   "py_module": "hermes_cli/curator.py",
   "py_fn": "_cmd_prune",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/curator.c"
   ],
   "cflags": [
     "-I",

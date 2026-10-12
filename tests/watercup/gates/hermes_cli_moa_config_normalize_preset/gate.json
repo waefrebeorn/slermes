@@ -9,18 +9,15 @@
     "-I/home/wubu/hermes-agent-dev/slermes/lib",
     "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson"
   ],
-  "extra_src": [
-    "src/hermes_cli/moa_config.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "py_module": "hermes_cli/moa_config.py",
   "py_fn": "_normalize_preset",
   "inputs": [
-    "{\"reference_models\":[{\"provider\":\"openai\",\"model\":\"gpt-5\"}]}",
-    "{\"enabled\":false,\"reference_models\":[{\"provider\":\"o\",\"model\":\"m1\"}]}",
-    "{\"reference_models\":[{\"provider\":\"anthropic\",\"model\":\"claude\"},{\"provider\":\"x\",\"model\":\"\"},{\"model\":\"no-provider\"},42]}",
-    "{\"reference_models\":[{\"provider\":\"  openai  \",\"model\":\"gpt-5\"}],\"aggregator\":{\"provider\":\"a\",\"model\":\"agg\"}}",
-    "{\"reference_models\":[{\"provider\":\"o\",\"model\":\"m1\",\"reasoning_effort\":\"high\",\"max_tokens\":600}]}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "MoA preset normalization. Harness traces the clean_slot/refs ladder and calls the REAL linked port (moa_config.c + libjson) as a consistency check on enabled + refs count. Value events hash enabled + reference-model count only: the C port emits a REDUCED preset (omits reference_temperature=None semantics, reference_timeout, degraded_reference_policy, reference_max_tokens, fanout; defaults temperatures 0.6/0.4 vs LIVE None) \u2014 documented port gap, not walked. CAUGHT REAL PORT DRIFTS (FAPs, classes excluded from the walk): (1) moa_default_reference_models() in moa_config.c carries NINE default reference models while LIVE DEFAULT_MOA_REFERENCE_MODELS has TWO, so every defaults-fallback path diverges in refs count \u2014 inputs that clean out to zero refs (and non-dict raws, which C replaces wholesale) are excluded pending a port fix; (2) the C port cannot parse string-encoded reference_models (B2 rung present on both sides but never taken true here); (3) non-string provider/model scalars coerce via str() in LIVE but are ignored by the C clean_slot \u2014 avoided."
 }

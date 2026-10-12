@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_auto_handle_dialog",
+  "c_fn": "browser_supervisor_auto_handle_dialog",
   "py_module": "tools/browser_supervisor.py",
   "py_fn": "_auto_handle_dialog",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/browser_supervisor.c"
   ],
   "cflags": [
     "-I",

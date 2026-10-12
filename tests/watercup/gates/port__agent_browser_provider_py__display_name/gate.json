@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "display_name",
+  "c_fn": "brp_display_name",
   "py_module": "agent/browser_provider.py",
   "py_fn": "display_name",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/browser_provider_ports.c",
+    "src/agent/browser_registry.c"
   ],
   "cflags": [
     "-I",

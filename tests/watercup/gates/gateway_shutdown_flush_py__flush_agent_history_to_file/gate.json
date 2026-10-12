@@ -7,11 +7,11 @@
   "py_module": "gateway/shutdown_flush.py",
   "py_fn": "flush_agent_history_to_file",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

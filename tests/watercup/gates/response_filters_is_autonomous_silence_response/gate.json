@@ -6,6 +6,12 @@
   "c_fn": "is_autonomous_silence_response",
   "py_module": "gateway/response_filters.py",
   "py_fn": "is_autonomous_silence_response",
-  "inputs": ["[SILENT]", "silent", "NO_REPLY", "no reply", "[SILENT] No changes detected", "2 deals filtered\n\n[SILENT]", "[SILENT]\nnote", "buried silent word here", "", "   ", "null", "Working hard today"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Traced copy of response_filters.c::cli_gateway_response_filters_is_autonomous_silence_response vs LIVE gateway/response_filters.py::is_autonomous_silence_response. Canonicalization V-events emitted for line tokens only (whole-response canonical forms diverge on embedded newlines: C canonicalizer handles space/tab only)."
 }

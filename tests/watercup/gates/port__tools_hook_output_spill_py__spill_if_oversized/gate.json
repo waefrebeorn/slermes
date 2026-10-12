@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "spill_if_oversized",
+  "c_fn": "tools_hook_output_spill_spill_if_oversized",
   "py_module": "tools/hook_output_spill.py",
   "py_fn": "spill_if_oversized",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/hook_output_spill.c"
   ],
   "cflags": [
     "-I",

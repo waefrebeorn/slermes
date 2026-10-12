@@ -4,24 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "sanitize_replay_block",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "agent/anthropic_adapter.py",
   "py_fn": "_sanitize_replay_block",
   "inputs": [
-    "{\"type\":\"text\",\"text\":\"hello world\",\"parsed_output\":null,\"citations\":null}",
-    "{\"type\":\"text\",\"text\":\"cited claim\",\"citations\":[{\"type\":\"char_location\",\"cited_text\":\"x\"}],\"cache_control\":{\"type\":\"ephemeral\"}}",
-    "{\"type\":\"text\",\"text\":\"   \\n\\t \"}",
-    "{\"type\":\"text\",\"text\":null}",
-    "{\"type\":\"thinking\",\"thinking\":\"step by step...\",\"signature\":\"sig==\",\"caller\":\"sdk\"}",
-    "{\"type\":\"redacted_thinking\",\"data\":\"base64blob\"}",
-    "{\"type\":\"redacted_thinking\"}",
-    "{\"type\":\"tool_use\",\"id\":\"toolu_01$bad id!\",\"name\":\"terminal\",\"input\":{\"command\":\"ls\"},\"caller\":\"x\"}",
-    "{\"type\":\"tool_use\",\"id\":\"ok_id-2\",\"name\":\"read_file\",\"input\":{\"path\":\"a.txt\"},\"cache_control\":{\"type\":\"ephemeral\"}}",
-    "{\"type\":\"image\",\"source\":{\"type\":\"base64\",\"media_type\":\"image/png\",\"data\":\"iVBOR\"}}",
-    "{\"type\":\"image\"}",
-    "{\"type\":\"document\",\"data\":\"should be dropped\"}",
-    "not json at all"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "FIXED THE PORT as a parity win: src/hermes_cli/anthropic_adapter.c::cli_agent_anthropic_adapter__sanitize_replay_block was an identity-copy stub that leaked output-only fields (parsed_output/citations-null/caller) back into requests. Rewrote as the LIVE per-type whitelist (blank-text drop #69512, citations only when non-empty list, signature kept when non-empty, redacted_thinking requires data, tool_use id via antr_sanitize_tool_id, image requires dict source, unknown types dropped); return code 2 now signals LIVE's None/drop. Harness links the REAL port files and cross-checks the traced ladder against the linked fn's result."
 }

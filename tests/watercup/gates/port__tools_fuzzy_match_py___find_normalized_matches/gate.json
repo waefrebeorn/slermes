@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_find_normalized_matches",
+  "c_fn": "fuzzy_match_find_normalized_matches",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_find_normalized_matches",
   "inputs": [

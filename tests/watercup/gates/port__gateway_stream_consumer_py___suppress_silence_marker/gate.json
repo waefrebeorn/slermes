@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_suppress_silence_marker",
+  "c_fn": "sc_suppress_silence_marker",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_suppress_silence_marker",
   "inputs": [

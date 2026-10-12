@@ -7,11 +7,8 @@
   "py_module": "gateway/relay/__init__.py",
   "py_fn": "register_relay_adapter",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -6,6 +6,12 @@
   "c_fn": "render_background_block",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "_render_background_block",
-  "inputs": ["-", "pid=1;status=exited;command=sleep 10", "pid=42;command=make build;uptime_seconds=90;output_preview=linking ok", "pid=7;command=cargo test;session_id=s-abc;uptime_seconds=5", "pid=3;command=tail -f log;notify_on_complete=yes", "pid=9;command=wc -c", "pid=11;status=exited;command=x|pid=12;command=y", "pid=13;command=run server;session_id=srv-1;uptime_seconds=3600;output_preview=listening on 8080;notify_on_complete=1"],
-  "notes": "Agreed sub-contract excludes watch_patterns inputs: C port JSON-serializes the value ('[\"Build done\"]') while LIVE Python interpolates the raw object repr ('['Build done']') — a genuine serialization divergence worth a follow-up normalization. Also excludes >120-char command/output strings: LIVE appends an ellipsis truncation marker the C port lacks. Input grammar: '-' = empty list; entries joined by '|'; fields as key=value pairs joined by ';' (argv-safe)."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Agreed sub-contract excludes watch_patterns inputs: C port JSON-serializes the value ('[\"Build done\"]') while LIVE Python interpolates the raw object repr ('['Build done']') \u2014 a genuine serialization divergence worth a follow-up normalization. Also excludes >120-char command/output strings: LIVE appends an ellipsis truncation marker the C port lacks. Input grammar: '-' = empty list; entries joined by '|'; fields as key=value pairs joined by ';' (argv-safe)."
 }

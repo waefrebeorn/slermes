@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_probe_openai_models",
+  "c_fn": "hermes_cli_azure_detect_u_probe_openai_models",
   "py_module": "hermes_cli/azure_detect.py",
   "py_fn": "_probe_openai_models",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/azure_detect.c"
   ],
   "cflags": [
     "-I",

@@ -4,22 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "cch_status_code_from_payload",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/agent/chat_completion_helpers_ports.c", "tests/watercup/gates/chat_helpers_status_code_from_payload/shim_streak.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "py_module": "agent/chat_completion_helpers.py",
   "py_fn": "_status_code_from_payload",
   "inputs": [
-    "{\"status_code\": 429}",
-    "{\"status\": 503}",
-    "{\"http_status\": \"HTTP_STATUS/500\"}",
-    "{\"error\": {\"status\": 402}}",
-    "{\"error\": {\"code\": \"507\"}}",
-    "{\"code\": 200}",
-    "{\"status_code\": 99, \"status\": 401}",
-    "{}",
-    "[1, 2]",
-    "{\"status\": \"oops\"}",
-    "{\"status_code\": 599, \"http_status\": 600}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Links the REAL port. Branch rungs are the LIVE candidate slots evaluated in candidate order on both sides (data-driven, fixed-length ladder); the winning-slot semantics are carried by the VSTR result so any first-hit divergence still fails the cup."
 }

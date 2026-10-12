@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_editable_install_is_current",
+  "c_fn": "upd_editable_install_is_current",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_editable_install_is_current",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_cmd.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

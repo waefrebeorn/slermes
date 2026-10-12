@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "post_subscription_preview",
+  "c_fn": "hermes_cli_nous_billing_post_subscription_preview",
   "py_module": "hermes_cli/nous_billing.py",
   "py_fn": "post_subscription_preview",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/nous_billing.c"
   ],
   "cflags": [
     "-I",

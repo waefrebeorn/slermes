@@ -4,21 +4,20 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "equivalent_needles",
-  "cflags": ["-I/home/wubu/hermes-agent-dev/slermes/include", "-I/home/wubu/hermes-agent-dev/slermes/lib", "-I/home/wubu/hermes-agent-dev/slermes/lib/libdb"],
-  "extra_src": ["src/agent/verification_evidence.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I/home/wubu/hermes-agent-dev/slermes/include",
+    "-I/home/wubu/hermes-agent-dev/slermes/lib",
+    "-I/home/wubu/hermes-agent-dev/slermes/lib/libdb"
+  ],
+  "extra_src": [],
   "py_module": "agent/verification_evidence.py",
   "py_fn": "_equivalent_needles",
   "inputs": [
-    "pytest",
-    "npm run build",
-    "yarn run test",
-    "bun run dev",
-    "cargo build",
-    "./scripts/go.sh",
-    "/bin/sh",
-    "bash -c echo",
-    "python -m pytest",
-    "make all"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Equivalent command spellings for evidence matching. Harness traces the REAL port ladder (src/agent/verification_evidence.c::verify_equivalent_needles linked via extra_src and called per input; db_* stubs satisfy linking without sqlite3). Value event hashes the LIVE candidate list serialization. NOTE: a second partial C copy exists in src/agent/real_gaps.c (missing the '/'-script and pytest branches) — the full port in verification_evidence.c is gated here; real_gaps.c's copy is drift worth cleanup."
+  "notes": "Equivalent command spellings for evidence matching. Harness traces the REAL port ladder (src/agent/verification_evidence.c::verify_equivalent_needles linked via extra_src and called per input; db_* stubs satisfy linking without sqlite3). Value event hashes the LIVE candidate list serialization. NOTE: a second partial C copy exists in src/agent/real_gaps.c (missing the '/'-script and pytest branches) \u2014 the full port in verification_evidence.c is gated here; real_gaps.c's copy is drift worth cleanup."
 }

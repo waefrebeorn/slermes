@@ -7,14 +7,23 @@
   "py_module": "agent/bedrock_adapter.py",
   "py_fn": "_is_cache_point_block",
   "inputs": [
-    "{\"cachePoint\": {\"type\": \"default\"}}",
-    "{\"text\": \"hello\"}",
-    "{}",
-    "[]",
-    "{\"cachePoint\": true, \"extra\": 1}",
-    "[1,2,3]",
-    "{\"cachePoint\": null}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "extra_src": ["lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson", "-I", "src"]
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ]
 }

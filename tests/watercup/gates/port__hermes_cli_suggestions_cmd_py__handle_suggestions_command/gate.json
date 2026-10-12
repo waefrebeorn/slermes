@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "handle_suggestions_command",
+  "c_fn": "cmd_suggestions",
   "py_module": "hermes_cli/suggestions_cmd.py",
   "py_fn": "handle_suggestions_command",
   "inputs": [

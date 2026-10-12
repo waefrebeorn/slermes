@@ -6,6 +6,12 @@
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "fs_list",
   "twin": "twin.py",
-  "inputs": ["/root", "/root/sub", "/nonexistent", "/root/zebra"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "note": "I/O abstracted to a shared in-memory tree so the cup reflects the decision structure (hidden-filter, isDirectory flag, sort key) of fs_list. Language-agnostic; proves the cup applies to I/O-adjacent logic."
 }

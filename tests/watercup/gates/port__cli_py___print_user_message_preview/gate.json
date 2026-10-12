@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_print_user_message_preview",
+  "c_fn": "hcli_print_user_message_preview",
   "py_module": "cli.py",
   "py_fn": "_print_user_message_preview",
   "inputs": [

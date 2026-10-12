@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "has_registered_mcp_tools",
+  "c_fn": "mct_has_registered_mcp_tools",
   "py_module": "tools/mcp_tool.py",
   "py_fn": "has_registered_mcp_tools",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/mcp_tool_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

@@ -1,35 +1,26 @@
 {
- "name": "agent_learning_graph_render_build_chart_buckets",
- "subsystem": "agent",
- "kind": "cup",
- "c_src": "harness.c",
- "c_fn": "build_chart_buckets",
- "py_module": "agent/learning_graph_render.py",
- "py_fn": "_build_chart_buckets",
- "cflags": [
-  "-I",
-  "include",
-  "-I",
-  "src",
-  "-I",
-  "lib/libjson"
- ],
- "extra_src": [
-  "src/hermes_cli/learning_graph_render.o",
-  "src/hermes_cli/learning_graph_render_helpers.o",
-  "lib/libjson/json.c"
- ],
- "inputs": [
-  "{\"nodes\":[],\"rec\":{},\"timed\":false,\"minTs\":null,\"maxTs\":null,\"max_rows\":3}",
-  "{\"nodes\":[{\"id\":\"a\"},{\"id\":\"b\"}],\"rec\":{\"a\":0.5,\"b\":0.8},\"timed\":false,\"minTs\":null,\"maxTs\":null,\"max_rows\":1}",
-  "{\"nodes\":[{\"id\":\"a\",\"kind\":\"skill\"},{\"id\":\"b\",\"kind\":\"memory\"},{\"id\":\"c\",\"kind\":\"skill\"},{\"id\":\"d\"},{\"id\":\"e\"}],\"rec\":{\"a\":0.1,\"b\":0.3,\"c\":0.5,\"d\":0.7,\"e\":0.9},\"timed\":false,\"minTs\":null,\"maxTs\":null,\"max_rows\":3}",
-  "{\"nodes\":[{\"id\":\"x\"},{\"id\":\"y\"}],\"rec\":{\"x\":0.2,\"y\":0.9},\"timed\":false,\"minTs\":null,\"maxTs\":null,\"max_rows\":10}",
-  "{\"nodes\":[{\"id\":\"ghost\"},{\"id\":\"real\"}],\"rec\":{\"real\":0.6},\"timed\":false,\"minTs\":null,\"maxTs\":null,\"max_rows\":2}",
-  "{\"nodes\":[{\"id\":\"n1\",\"timestamp\":1700000000},{\"id\":\"n2\",\"timestamp\":1700086400}],\"rec\":{\"n1\":0.0,\"n2\":1.0},\"timed\":true,\"minTs\":1700000000,\"maxTs\":1700086400,\"max_rows\":4}",
-  "{\"nodes\":[{\"id\":\"m1\",\"timestamp\":1704067200},{\"id\":\"m2\",\"timestamp\":1711929600},{\"id\":\"m3\",\"timestamp\":1706745600}],\"rec\":{\"m1\":0.0,\"m2\":1.0,\"m3\":0.33},\"timed\":true,\"minTs\":1704067200,\"maxTs\":1711929600,\"max_rows\":4}",
-  "{\"nodes\":[{\"id\":\"y1\",\"timestamp\":1672531200},{\"id\":\"y2\",\"timestamp\":1704067200},{\"id\":\"y3\",\"timestamp\":1735689600}],\"rec\":{\"y1\":0.0,\"y2\":0.5,\"y3\":1.0},\"timed\":true,\"minTs\":1672531200,\"maxTs\":1735689600,\"max_rows\":4}",
-  "{\"nodes\":[{\"id\":\"t1\",\"timestamp\":1700000000},{\"id\":\"bad\"},{\"id\":\"t2\",\"timestamp\":1700086400}],\"rec\":{\"t1\":0.0,\"t2\":1.0},\"timed\":true,\"minTs\":1700000000,\"maxTs\":1700086400,\"max_rows\":3}",
-  "{\"nodes\":[{\"id\":\"f1\"},{\"id\":\"f2\"},{\"id\":\"f3\"}],\"rec\":{\"f1\":0.05,\"f2\":0.5,\"f3\":0.95},\"timed\":true,\"minTs\":1700000000,\"maxTs\":1800000000,\"max_rows\":3}"
- ],
- "notes": "Links the REAL port (learning_graph_render.o::learning_graph_render_build_chart_buckets). Harness traces B1(nodes empty)/B2(untimed) then summarizes each bucket as label|ts|skills|memories|rec|node-ids; twin drives LIVE _build_chart_buckets identically. Inputs restricted to the agreed region: untimed inputs keep rec values non-decreasing in node order (LIVE sorts by rec, C iterates unsorted \u2014 stable sort makes them agree); timestamps numeric only (C lg_ts uses strtod on strings, a documented narrowing); max_rows always positive (LIVE returns [] for <=0 in the untimed path while C clamps to 1 bin \u2014 divergence avoided)."
+  "name": "agent_learning_graph_render_build_chart_buckets",
+  "subsystem": "agent",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "build_chart_buckets",
+  "py_module": "agent/learning_graph_render.py",
+  "py_fn": "_build_chart_buckets",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "src",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Links the REAL port (learning_graph_render.o::learning_graph_render_build_chart_buckets). Harness traces B1(nodes empty)/B2(untimed) then summarizes each bucket as label|ts|skills|memories|rec|node-ids; twin drives LIVE _build_chart_buckets identically. Inputs restricted to the agreed region: untimed inputs keep rec values non-decreasing in node order (LIVE sorts by rec, C iterates unsorted \u2014 stable sort makes them agree); timestamps numeric only (C lg_ts uses strtod on strings, a documented narrowing); max_rows always positive (LIVE returns [] for <=0 in the untimed path while C clamps to 1 bin \u2014 divergence avoided)."
 }

@@ -7,24 +7,11 @@
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_valid_lockfile_payload",
   "inputs": [
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|3|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|2|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|other|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|short|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|zzzzzzzzzzzzzzzz|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|abc|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|gggggggggggggggggggggggggggggggg|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|0|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|99999999|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|-5|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|x|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|70000|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|abc|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|-|/hp|/hh|/logs/own1/0123456789abcdef.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/wrong/path.log|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|-|now",
-    "own1|own1|2|1|0123456789abcdef|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|123|8080|prof|/hp|/hh|/logs/own1/0123456789abcdef.log|-"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Rung-for-rung trace of main_wrappers.c::dashboard_procs_valid_lockfile_payload vs LIVE _valid_lockfile_payload. JSON parsing is factored into a pipe-field record encoding ('-' absent, '~' empty) so both sides walk identical validation rungs over 18 records covering every rejection branch plus the accept path."

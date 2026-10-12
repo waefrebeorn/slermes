@@ -7,11 +7,11 @@
   "py_module": "agent/prompt_builder.py",
   "py_fn": "_get_context_file_max_chars",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

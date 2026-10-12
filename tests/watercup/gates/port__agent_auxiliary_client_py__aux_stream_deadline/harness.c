@@ -1,38 +1,31 @@
-/* gate: port__agent_auxiliary_client_py__aux_stream_deadline — GAP sentinel for agent/auxiliary_client.py:aux_stream_deadline */
+/* gate: port__agent_auxiliary_client_py__aux_stream_deadline — traced copy of aux_stream_deadline (double_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("aux_stream_deadline");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "aux_stream_deadline");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("aux_stream_deadline");
-}
+extern double aux_stream_deadline(double deadline);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s aux_stream_deadline <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("aux_stream_deadline");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    double result = aux_stream_deadline(strtod(argv[i], NULL));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%.17g", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("aux_stream_deadline");
     }
     return 0;
 }

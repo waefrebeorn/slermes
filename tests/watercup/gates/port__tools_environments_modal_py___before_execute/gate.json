@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_before_execute",
+  "c_fn": "mdl_before_execute",
   "py_module": "tools/environments/modal.py",
   "py_fn": "_before_execute",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/environments_modal_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

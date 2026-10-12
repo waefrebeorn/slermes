@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_goal_judge_max_tokens",
+  "c_fn": "hcli_goal__goal_judge_max_tokens",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "_goal_judge_max_tokens",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/goals_ports.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "reconcile_discovered_repos_policy",
+  "c_fn": "hermes_cli_projects_db_reconcile_discovered_repos_policy",
   "py_module": "hermes_cli/projects_db.py",
   "py_fn": "reconcile_discovered_repos_policy",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/projects_db.c"
   ],
   "cflags": [
     "-I",

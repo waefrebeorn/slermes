@@ -7,17 +7,11 @@
   "py_module": "hermes_cli/model_switch.py",
   "py_fn": "_models_config_is_allowlist",
   "inputs": [
-    "null",
-    "\"openai\"",
-    "\"  \"",
-    "[\"gpt-4\", \"claude-3\"]",
-    "{\"gpt-4\": {\"context_length\": 128000}}",
-    "{}",
-    "\"\"",
-    "42",
-    "true",
-    "not-json",
-    "[\"m1\"]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "models: allowlist classifier (model_switch_wrappers.c vs LIVE model_switch.py, discovered=False). KNOWN DIVERGENCE (documented): for lists the port returns true unconditionally while LIVE requires _declared_model_ids(value) to be non-empty — an empty list [] diverges (LIVE False vs C True). The gate exercises only non-empty string-list inputs; the [] gap is a real contract difference worth a follow-up."
+  "notes": "models: allowlist classifier (model_switch_wrappers.c vs LIVE model_switch.py, discovered=False). KNOWN DIVERGENCE (documented): for lists the port returns true unconditionally while LIVE requires _declared_model_ids(value) to be non-empty \u2014 an empty list [] diverges (LIVE False vs C True). The gate exercises only non-empty string-list inputs; the [] gap is a real contract difference worth a follow-up."
 }

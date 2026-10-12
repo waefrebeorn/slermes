@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_load",
+  "c_fn": "dead_target_registry_load",
   "py_module": "gateway/dead_targets.py",
   "py_fn": "_load",
   "inputs": [

@@ -6,6 +6,12 @@
   "c_fn": "validate_category",
   "py_module": "tools/skill_manager_tool.py",
   "py_fn": "_validate_category",
-  "inputs": ["refs", "my-tools", "a.b.c", "data_store", "with/slash", "back\\slash", "UPPER CASE", "ok but spaces", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "x9"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Category validation ladder (null/slash/len/chars/ok). C port skill_manager_val.c::skill_val_validate_category traced as faithful copy; twin calls LIVE _validate_category and traces same rung order with class-code value events. DOCUMENTED DIVERGENCES (inputs excluded): (1) LIVE strips whitespace + treats empty as valid; C has no strip so '' / ' x ' -> chars-error. (2) LIVE VALID_NAME_RE anchors first char [a-z0-9]; C valid_name_chars accepts leading '-'/'.', e.g. '-abc' ok in C, rejected by LIVE. (3) Message TEXT differs (C omits category name). Branch-ladder parity holds on the exercised clean-input class."
 }

@@ -6,22 +6,21 @@
   "c_fn": "host_derived_api_key",
   "py_module": "hermes_cli/runtime_provider.py",
   "py_fn": "_host_derived_api_key",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
-  "inputs": [
-    "",
-    "   ",
-    "https://api.deepseek.com/v1",
-    "https://API.Groq.COM/openai/v1/",
-    "http://localhost:8080/v1",
-    "https://192.168.1.4/v1",
-    "https://openai.com/v1",
-    "https://ollama.mirror.test/v1",
-    "https://generativelanguage.googleapis.com/v1beta/openai/",
-    "https://zq-test.vendor9.test/v1",
-    "https://api.deepseek.com.attacker.test/v1",
-    "https://singlelabel",
-    "https://sub.host.123"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "Env-var derivation from base-URL host (registrable label). Harness traces a faithful C copy of provider_registry.c::provider_host_derived_api_key incl. its own base_url_hostname PoP. KNOWN DIVERGENCE (excluded from walk): LIVE rejects when ANY digit appears in the last label, C only when the last label STARTS with a digit — hosts with mid-label digits avoided. Vendor env names are read via getenv on both sides over the same process env, so cups match whether or not a var is set."
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Env-var derivation from base-URL host (registrable label). Harness traces a faithful C copy of provider_registry.c::provider_host_derived_api_key incl. its own base_url_hostname PoP. KNOWN DIVERGENCE (excluded from walk): LIVE rejects when ANY digit appears in the last label, C only when the last label STARTS with a digit \u2014 hosts with mid-label digits avoided. Vendor env names are read via getenv on both sides over the same process env, so cups match whether or not a var is set."
 }

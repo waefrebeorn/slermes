@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_paint_now",
+  "c_fn": "hcli_paint_now",
   "py_module": "cli.py",
   "py_fn": "_paint_now",
   "inputs": [

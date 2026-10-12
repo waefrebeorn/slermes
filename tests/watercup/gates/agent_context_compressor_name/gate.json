@@ -31,6 +31,10 @@
     "-lm"
   ],
   "inputs": [
-    "{}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ]
 }

@@ -1,38 +1,31 @@
-/* gate: port__hermes_cli_dashboard_auth_cookies_py__set_session_provider_cookie — GAP sentinel for hermes_cli/dashboard_auth/cookies.py:set_session_provider_cookie */
+/* gate: port__hermes_cli_dashboard_auth_cookies_py__set_session_provider_cookie — traced copy of hermes_cli_dashboard_auth_cook_set_session_provider_cookie (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("set_session_provider_cookie");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "set_session_provider_cookie");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("set_session_provider_cookie");
-}
+extern int hermes_cli_dashboard_auth_cook_set_session_provider_cookie(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s set_session_provider_cookie <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_dashboard_auth_cook_set_session_provider_cookie <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("hermes_cli_dashboard_auth_cook_set_session_provider_cookie");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = hermes_cli_dashboard_auth_cook_set_session_provider_cookie(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("hermes_cli_dashboard_auth_cook_set_session_provider_cookie");
     }
     return 0;
 }

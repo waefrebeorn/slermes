@@ -4,10 +4,22 @@
   "kind": "unit",
   "c_src": "harness.c",
   "c_fn": "tool_classify_error",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/tools/tool_result_classification.c", "lib/libjson/json.c"],
-  "py_module": "(contract — no LIVE python twin; self-contained parity gate)",
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
+  "py_module": "(contract \u2014 no LIVE python twin; self-contained parity gate)",
   "py_fn": "classify",
   "status": "GREEN",
-  "notes": "Classifies a tool result as retryable (transient) vs permanent so the agent loop can decide to retry. Explicit 'retryable' field wins; otherwise keyword heuristics; default PERMANENT (fail-closed). tool_error_with_class appends _retry_class non-destructively. Replaces the previous name-parity stub tool_result_classification.c with a REAL implementation."
+  "notes": "Classifies a tool result as retryable (transient) vs permanent so the agent loop can decide to retry. Explicit 'retryable' field wins; otherwise keyword heuristics; default PERMANENT (fail-closed). tool_error_with_class appends _retry_class non-destructively. Replaces the previous name-parity stub tool_result_classification.c with a REAL implementation.",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ]
 }

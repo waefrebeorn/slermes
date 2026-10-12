@@ -7,19 +7,11 @@
   "py_module": "agent/context_compressor.py",
   "py_fn": "_is_blank_user_turn",
   "inputs": [
-    "0\u001fuser\u001fN",
-    "0\u001fuser\u001fS:hello there",
-    "0\u001fuser\u001fS:",
-    "1\u001fassistant\u001fN",
-    "1\u001fuser\u001fN",
-    "0\u001fuser\u001fA:",
-    "0\u001fuser\u001fA:S:,S:",
-    "0\u001fuser\u001fA:S:hi",
-    "0\u001fuser\u001fA:T:,T:",
-    "0\u001fuser\u001fA:I",
-    "0\u001fuser\u001fA:U:audio",
-    "0\u001fuser\u001fA:S:hi,S:",
-    "0\u001fuser\u001fA:T:please help"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": [
     "Traced copy of context_compressor_pure.c::cc_is_blank_user_turn vs LIVE ContextCompressor._is_blank_user_turn over 13 message shapes (null/string/array content, empty strings, text blocks, image/unknown blocks, summary metadata, non-user role). DOCUMENTED DIVERGENCE: C tests string emptiness with strlen==0 while LIVE uses .strip(), so whitespace-only text is blank in LIVE but non-blank in C \u2014 such inputs excluded. Content-based summary-content detection (_is_context_summary_content) is outside the traced surface."

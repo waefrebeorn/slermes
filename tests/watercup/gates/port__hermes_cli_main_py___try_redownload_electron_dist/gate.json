@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_try_redownload_electron_dist",
+  "c_fn": "mn_try_redownload_electron_dist",
   "py_module": "hermes_cli/main.py",
   "py_fn": "_try_redownload_electron_dist",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/main_ports.c"
   ],
   "cflags": [
     "-I",

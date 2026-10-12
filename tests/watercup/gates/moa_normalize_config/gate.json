@@ -12,19 +12,15 @@
     "-I",
     "lib/libjson"
   ],
-  "extra_src": [
-    "src/hermes_cli/moa_config.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "py_module": "hermes_cli/moa_config.py",
   "py_fn": "normalize_moa_config",
   "inputs": [
-    "{\"reference_models\":[{\"provider\":\"p\",\"model\":\"m\"}],\"aggregator\":{\"provider\":\"a\",\"model\":\"b\"},\"max_tokens\":8192}",
-    "{\"presets\":{\"fast\":{\"reference_models\":[{\"provider\":\"p1\",\"model\":\"m1\"}],\"aggregator\":{\"provider\":\"a1\",\"model\":\"b1\"}}},\"default_preset\":\"fast\",\"active_preset\":\"fast\"}",
-    "{\"presets\":{\"a\":{\"reference_models\":[{\"provider\":\"pa\",\"model\":\"ma\"}],\"aggregator\":{\"provider\":\"aa\",\"model\":\"ba\"}},\"b\":{\"reference_models\":[{\"provider\":\"pb\",\"model\":\"mb\"}],\"aggregator\":{\"provider\":\"ab\",\"model\":\"bb\"}}},\"default_preset\":\"nope\",\"active_preset\":\"b\"}",
-    "{\"presets\":{\"zz\":{\"reference_models\":[{\"provider\":\"pz\",\"model\":\"mz\"}],\"aggregator\":{\"provider\":\"az\",\"model\":\"bz\"}},\"aa\":{\"reference_models\":[{\"provider\":\"paa\",\"model\":\"maa\"}],\"aggregator\":{\"provider\":\"aaa\",\"model\":\"baa\"}}},\"default_preset\":\"aa\",\"active_preset\":\"gone\"}",
-    "{\"presets\":{\"x\":{\"enabled\":false,\"max_tokens\":100,\"reference_temperature\":0.9,\"aggregator_temperature\":0.7,\"reference_models\":[{\"provider\":\"p1\",\"model\":\"m1\"},{\"provider\":\"p2\",\"model\":\"m2\"}],\"aggregator\":{\"provider\":\"pa\",\"model\":\"ma\"}}},\"default_preset\":\"x\",\"active_preset\":\"x\"}",
-    "{\"presets\":{\"\":{\"reference_models\":[]}},\"reference_models\":[{\"provider\":\"lr\",\"model\":\"lm\"}],\"aggregator\":{\"provider\":\"la\",\"model\":\"lb\"}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "MoA config normalizer (real port src/hermes_cli/moa_config.c::moa_normalize_config linked; LIVE twin hermes_cli/moa_config.py::normalize_moa_config). V event = canonical summary (default/active/sorted presets with enabled, refs provider/model list, aggregator provider/model, max_tokens). Covers: legacy flat preset, named presets, name strip-and-keep, unknown default_preset -> first-preset fallback, active_preset clearing, disabled preset w/ explicit temps+tokens, multi-slot refs, empty-name preset dropped -> legacy path. KNOWN DIVERGENCES (inputs avoided, NOT hidden): (1) REAL PORT BUG/FAP \u2014 the port's hardcoded defaults (moa_default_reference_models/moa_default_aggregator: nvidia_nim/z-ai/glm-5.2 + 9 nim slots) do NOT match LIVE _default_reference_models/DEFAULT_MOA_AGGREGATOR (openrouter/anthropic/claude-opus-4.8). Repro: input '{}' -> C canonical agg=nvidia_nim/z-ai/glm-5.2 vs PY agg=openrouter/anthropic/claude-opus-4.8 (also hits every incomplete-slot degradation, e.g. {\"reference_models\":[\"m1\"]}). All gated inputs therefore carry fully-specified slots so no default-models fallback fires. (2) Temps: C coerces null/default temperatures to numbers (0.6/0.4); LIVE keeps None \u2014 temperatures excluded from the canonical value except where explicitly numeric. Non-object payloads ('{}', '[]', 'not json') also fall into the diverging defaults path and are ungated for the same reason. (3) REAL PORT BUG/FAP \u2014 off-by-one trailing-strip in moa_normalize_config/moa-clean paths: `pe = s + strlen(s); while (pe > s && isspace(pe[-1])) *--pe` was written as a check of *pe (the NUL), so TRAILING whitespace is never removed from preset names / default_preset / active_preset, while LIVE uses str.strip(). Repro input {\"presets\":{\"  spaced  \":{...}},\"default_preset\":\"spaced\",\"active_preset\":\"spaced\"} -> C keeps key 'spaced  ', default='spaced  ', active='' (C=7cbf9fc8ae4d8552) vs LIVE default/active/key all 'spaced' (PY=25a1d5082513). Fix: test pe[-1] before decrement (i.e. start at end-of-string minus one)."
 }

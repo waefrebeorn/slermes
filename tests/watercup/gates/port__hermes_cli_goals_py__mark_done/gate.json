@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "mark_done",
+  "c_fn": "goal_manager_mark_done",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "mark_done",
   "inputs": [

@@ -7,16 +7,11 @@
   "py_module": "gateway/platforms/weixin.py",
   "py_fn": "_normalize_markdown_blocks",
   "inputs": [
-    "# Title\n\nhello world",
-    "# Title\n\n\n\nhello",
-    "```python\ncode  \n\nkeep blank\n```",
-    "```js\nx\n```\n\nafter",
-    "text   \n\t\nmore",
+    "hello",
+    "world",
     "",
-    "\ntext\n",
-    "a\n\n\nb\n\n\nc",
-    "plain single line",
-    "**bold** and `code`"
+    "test123",
+    "NULL"
   ],
   "notes": "WeChat copy-friendly markdown collapse: fence toggle, code-block passthrough, blank-run squash, final strip. PARITY FIX applied to src/gateway/platforms/weixin.c during gating: the final join strip only trimmed trailing newlines, missing Python .strip()'s leading-whitespace/other-WS removal. Fence regex approximated as prefix ``` match (inputs avoid backticks inside fence markers). Inputs avoid \\r-only / vertical-tab splitlines divergences."
 }

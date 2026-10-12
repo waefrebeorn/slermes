@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "recommended_update_command",
+  "c_fn": "config_recommended_update_command",
   "py_module": "hermes_cli/config.py",
   "py_fn": "recommended_update_command",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/config.c"
   ],
   "cflags": [
     "-I",

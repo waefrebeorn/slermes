@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__getattr__",
+  "c_fn": "agent_thread_scoped_output_u__getattr__",
   "py_module": "agent/thread_scoped_output.py",
   "py_fn": "__getattr__",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/thread_scoped_output.c"
   ],
   "cflags": [
     "-I",

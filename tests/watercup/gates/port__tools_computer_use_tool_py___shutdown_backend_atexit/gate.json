@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_shutdown_backend_atexit",
+  "c_fn": "cut_shutdown_backend_atexit",
   "py_module": "tools/computer_use/tool.py",
   "py_fn": "_shutdown_backend_atexit",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/computer_use/computer_use_tool_ports.c"
   ],
   "cflags": [
     "-I",

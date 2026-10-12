@@ -3,18 +3,18 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "profiles_to_serve",
+  "c_fn": "profile_serve_next",
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "profiles_to_serve",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/profiles.c"
   ],
   "cflags": [
     "-I",

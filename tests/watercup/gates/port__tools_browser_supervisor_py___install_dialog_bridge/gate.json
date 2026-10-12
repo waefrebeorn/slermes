@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_install_dialog_bridge",
+  "c_fn": "browser_supervisor_install_dialog_bridge",
   "py_module": "tools/browser_supervisor.py",
   "py_fn": "_install_dialog_bridge",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/browser_supervisor.c"
   ],
   "cflags": [
     "-I",

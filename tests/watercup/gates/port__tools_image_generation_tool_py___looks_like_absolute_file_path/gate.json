@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_looks_like_absolute_file_path",
+  "c_fn": "image_gen_path_looks_like_absolute_file_path",
   "py_module": "tools/image_generation_tool.py",
   "py_fn": "_looks_like_absolute_file_path",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/image_gen_path.c"
   ],
   "cflags": [
     "-I",

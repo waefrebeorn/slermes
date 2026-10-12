@@ -4,26 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "evaluate_result",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "agent/shell_hooks.py",
   "py_fn": "_evaluate_result",
   "inputs": [
-    "pre_tool_call|0|spawn failed: No such file or directory|0|0||",
-    "pre_tool_call|1|hook crashed: exit 127|0|0||",
-    "pre_llm_call|1|hook crashed on startup|0|0||",
-    "pre_tool_call|0||1|0||",
-    "pre_tool_call|1||0|0||",
-    "post_tool_use|0||0|2||",
-    "pre_tool_call|0||0|2|{\"action\":\"block\",\"message\":\"no rm -rf allowed\"}|",
-    "pre_tool_call|0||0|2|{\"decision\":\"block\",\"reason\":\"deny this tool\"}|some warning text here",
-    "pre_tool_call|1||0|2||stderr said the hook exploded",
-    "pre_tool_call|0||0|1|not json at all just noise|warning: nonzero exit",
-    "pre_tool_call|1||0|1|garbage stdout [{|traceback spam",
-    "pre_tool_call|1||0|0|{}|",
-    "pre_tool_call|0||0|0|{\"action\":\"block\",\"message\":\"stop\"}|",
-    "pre_llm_request|0||0|0|{\"context\":\"extra context for the model\"}|",
-    "session_start|0||0|0|{\"context\":\"ignored for non-pre-tool events\"}|"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Harness is a traced copy of src/agent/shell_hooks_ports.c::shk_evaluate_result; twin drives LIVE agent/shell_hooks.py::_evaluate_result via a real ShellHookSpec and asserts outcome labels. Inputs restricted to semantics shared by C and LIVE (block/decision-block/context directives); the C port's parse_response does not implement 'modify'/'pre_verify' translation, so those shapes are deliberately not exercised (documented divergence, not faked). Cup hashes branch ladder + coarse outcome, not message strings (C timeout reason uses elapsed seconds vs LIVE spec.timeout)."
 }

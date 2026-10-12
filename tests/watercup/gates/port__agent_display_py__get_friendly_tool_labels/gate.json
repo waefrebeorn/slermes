@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_friendly_tool_labels",
+  "c_fn": "cli_agent_display__get_friendly_tool_labels",
   "py_module": "agent/display.py",
   "py_fn": "get_friendly_tool_labels",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/display_tool_preview.c"
   ],
   "cflags": [
     "-I",

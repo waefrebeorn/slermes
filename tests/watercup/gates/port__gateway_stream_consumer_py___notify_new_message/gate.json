@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_notify_new_message",
+  "c_fn": "sc_notify_new_message",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_notify_new_message",
   "inputs": [

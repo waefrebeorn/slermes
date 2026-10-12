@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_container_fallback",
+  "c_fn": "tools_image_source_u_resolve_container_fallback",
   "py_module": "tools/image_source.py",
   "py_fn": "_resolve_container_fallback",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/image_source.c"
   ],
   "cflags": [
     "-I",

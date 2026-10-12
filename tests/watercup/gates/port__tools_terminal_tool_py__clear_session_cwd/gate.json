@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "clear_session_cwd",
+  "c_fn": "term_rec_clear_session_cwd",
   "py_module": "tools/terminal_tool.py",
   "py_fn": "clear_session_cwd",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/terminal_env_registry.c"
   ],
   "cflags": [
     "-I",

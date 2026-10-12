@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_flow",
+  "c_fn": "hermes_cli_memory_oauth_u_resolve_flow",
   "py_module": "hermes_cli/memory_oauth.py",
   "py_fn": "_resolve_flow",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/memory_oauth.c"
   ],
   "cflags": [
     "-I",

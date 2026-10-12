@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_runtime_credentials_ready",
+  "c_fn": "hermes_cli_cli_agent_setup_mix_u_runtime_credentials_ready",
   "py_module": "hermes_cli/cli_agent_setup_mixin.py",
   "py_fn": "_runtime_credentials_ready",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/cli_agent_setup_mixin.c"
   ],
   "cflags": [
     "-I",

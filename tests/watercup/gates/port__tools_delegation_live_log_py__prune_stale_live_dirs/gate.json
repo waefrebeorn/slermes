@@ -3,18 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "prune_stale_live_dirs",
+  "c_fn": "tools_delegation_live_log_prune_stale_live_dirs",
   "py_module": "tools/delegation_live_log.py",
   "py_fn": "prune_stale_live_dirs",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/delegation_live_log.c"
   ],
   "cflags": [
     "-I",

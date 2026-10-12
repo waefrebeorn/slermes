@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "release",
+  "c_fn": "kdb_init_lock_release",
   "py_module": "hermes_cli/active_sessions.py",
   "py_fn": "release",
   "inputs": [

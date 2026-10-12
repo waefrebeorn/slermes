@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "format_tier_row",
+  "c_fn": "agent_subscription_view_format_tier_row",
   "py_module": "agent/subscription_view.py",
   "py_fn": "format_tier_row",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/subscription_view.c"
   ],
   "cflags": [
     "-I",

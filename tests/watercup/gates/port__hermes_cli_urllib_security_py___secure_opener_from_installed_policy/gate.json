@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_secure_opener_from_installed_policy",
+  "c_fn": "hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy",
   "py_module": "hermes_cli/urllib_security.py",
   "py_fn": "_secure_opener_from_installed_policy",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/urllib_security.c"
   ],
   "cflags": [
     "-I",

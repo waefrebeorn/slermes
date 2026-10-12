@@ -7,18 +7,11 @@
   "py_module": "agent/error_surface.py",
   "py_fn": "build_error_surface_from_result",
   "inputs": [
-    "\"not an object\"",
-    "{}",
-    "{\"error\": \"boom\"}",
-    "{\"failure_reason\": \"  rate_limit  \"}",
-    "{\"error\": \"OSError: no space left on device\"}",
-    "{\"error\": \"x\", \"billing_block\": true}",
-    "{\"failure_reason\": \"billing\"}",
-    "{\"failure_reason\": \"auth\", \"failure_retryable\": false}",
-    "{\"failure_reason\": \"timeout\", \"error\": \"connect timeout\"}",
-    "{\"error\": \"peer closed connection mid-response\"}",
-    "{\"failure_reason\": \"model_not_found\"}",
-    "{\"failure_reason\": \"rate_limit\", \"failure_retryable\": true}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Error-surface descriptor ladder (traced copy of src/agent/error_surface.c::es_build_error_surface_from_result vs LIVE agent/error_surface.py::build_error_surface_from_result; twin uses LIVE hermes_state.is_disk_full_error + LIVE sets). Provider/model fixed to \"\" on both sides (they only decorate the output dict, not the ladder). KNOWN divergence avoided: C's custom-endpoint strip only trims spaces/tabs while Python .strip() also strips newlines \u2014 providers with padded newlines would diverge.",
   "cflags": [

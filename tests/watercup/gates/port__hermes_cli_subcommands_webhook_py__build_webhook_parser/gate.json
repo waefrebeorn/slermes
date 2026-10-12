@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_webhook_parser",
+  "c_fn": "hermes_cli_subcommands_webhook_build_webhook_parser",
   "py_module": "hermes_cli/subcommands/webhook.py",
   "py_fn": "build_webhook_parser",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/subcommands/webhook.c"
   ],
   "cflags": [
     "-I",

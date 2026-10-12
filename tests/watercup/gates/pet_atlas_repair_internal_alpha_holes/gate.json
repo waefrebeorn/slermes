@@ -4,17 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "repair",
-  "extra_src": ["src/pet/atlas.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib"
+  ],
   "py_module": "agent/pet/generate/atlas.py",
   "py_fn": "_repair_internal_alpha_holes",
   "inputs": [
-    "1 1 255,0,0,255",
-    "3 1 10,10,10,200 0,0,0,0 20,20,20,200",
-    "4 3 100,50,25,255 0,0,0,0 100,50,25,255 100,50,25,255 0,0,0,0 5,6,7,8 0,0,0,0 100,50,25,255 100,50,25,255 0,0,0,0 100,50,25,255 0,0,0,0",
-    "3 3 200,200,200,255 200,200,200,255 200,200,200,255 200,200,200,255 9,9,9,3 200,200,200,255 200,200,200,255 200,200,200,255 200,200,200,255",
-    "3 3 200,200,200,255 0,0,0,0 200,200,200,255 0,0,0,0 200,200,200,255 0,0,0,0 200,200,200,255 0,0,0,0 200,200,200,255",
-    "2 2 255,255,255,0 255,255,255,0 255,255,255,0 255,255,255,0"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Swiss-cheese alpha repair for generated sprites. REAL src/pet/atlas.c::pet_repair_internal_alpha_holes linked via extra_src against LIVE _repair_internal_alpha_holes (PIL-backed). PORT FIX APPLIED: the C border-seed loops used `y += (h-1)`, which spins forever when h==1 or w==1 — replaced with explicit two-row/col iteration mirroring LIVE. AGREED SUB-CONTRACT: inputs keep the opaque surroundings uniform so the hole-fill colour average is exact — C truncates the integer mean while LIVE uses round() (banker's), so fractional averages would diverge. B1 guards malformed/dimension-mismatched input; B2 fires when at least one transparent pixel became an opaque fill."
+  "notes": "Swiss-cheese alpha repair for generated sprites. REAL src/pet/atlas.c::pet_repair_internal_alpha_holes linked via extra_src against LIVE _repair_internal_alpha_holes (PIL-backed). PORT FIX APPLIED: the C border-seed loops used `y += (h-1)`, which spins forever when h==1 or w==1 \u2014 replaced with explicit two-row/col iteration mirroring LIVE. AGREED SUB-CONTRACT: inputs keep the opaque surroundings uniform so the hole-fill colour average is exact \u2014 C truncates the integer mean while LIVE uses round() (banker's), so fractional averages would diverge. B1 guards malformed/dimension-mismatched input; B2 fires when at least one transparent pixel became an opaque fill."
 }

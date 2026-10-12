@@ -7,14 +7,17 @@
   "py_module": "agent/auxiliary_client.py",
   "py_fn": "aux_stream_deadline",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/auxiliary_client_gaps.c"
   ],
   "cflags": [
     "-I",

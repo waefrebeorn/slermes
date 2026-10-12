@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_tool_preview_max_len",
+  "c_fn": "length",
   "py_module": "agent/display.py",
   "py_fn": "get_tool_preview_max_len",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cli/display_core.c"
   ],
   "cflags": [
     "-I",

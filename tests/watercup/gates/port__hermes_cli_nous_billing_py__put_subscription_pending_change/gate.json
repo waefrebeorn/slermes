@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "put_subscription_pending_change",
+  "c_fn": "hermes_cli_nous_billing_put_subscription_pending_change",
   "py_module": "hermes_cli/nous_billing.py",
   "py_fn": "put_subscription_pending_change",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/nous_billing.c"
   ],
   "cflags": [
     "-I",

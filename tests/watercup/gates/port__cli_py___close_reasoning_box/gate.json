@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_close_reasoning_box",
+  "c_fn": "hcli_close_reasoning_box",
   "py_module": "cli.py",
   "py_fn": "_close_reasoning_box",
   "inputs": [

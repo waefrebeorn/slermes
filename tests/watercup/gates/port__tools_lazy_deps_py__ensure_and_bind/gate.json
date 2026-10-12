@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "ensure_and_bind",
+  "c_fn": "tools_lazy_deps_ensure_and_bind",
   "py_module": "tools/lazy_deps.py",
   "py_fn": "ensure_and_bind",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/lazy_deps.c"
   ],
   "cflags": [
     "-I",

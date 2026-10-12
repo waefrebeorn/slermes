@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_spawn_gateway_restart_watcher",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

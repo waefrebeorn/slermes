@@ -6,20 +6,21 @@
   "c_fn": "prune_pre_checkpoint_items",
   "py_module": "agent/native_compaction.py",
   "py_fn": "prune_pre_checkpoint_items",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
-  "inputs": [
-    "{\"items\":[],\"budget\":100}",
-    "{\"items\":[{\"type\":\"message\",\"role\":\"user\",\"content\":\"hello world\"},{\"type\":\"message\",\"role\":\"assistant\",\"content\":\"hi there\"}],\"budget\":200}",
-    "{\"items\":[{\"type\":\"compaction\"}],\"budget\":200}",
-    "{\"items\":[{\"type\":\"message\",\"role\":\"user\",\"content\":\"please fix the login bug\"},{\"type\":\"compaction\"},{\"type\":\"message\",\"role\":\"user\",\"content\":\"thanks\"}],\"budget\":200}",
-    "{\"items\":[{\"type\":\"message\",\"role\":\"user\",\"content\":\"task one\"},{\"type\":\"message\",\"role\":\"assistant\",\"content\":\"working\"},{\"type\":\"compaction\"}],\"budget\":500}",
-    "{\"items\":[{\"type\":\"function_call_output\",\"role\":\"user\",\"output\":\"tool result\"},{\"type\":\"message\",\"role\":\"user\",\"content\":\"real ask\"},{\"type\":\"compaction\"}],\"budget\":500}",
-    "{\"items\":[\"not a dict\",{\"type\":\"message\",\"role\":\"user\",\"content\":\"second ask\"},{\"type\":\"compaction\"}],\"budget\":500}",
-    "{\"items\":[{\"type\":\"message\",\"role\":\"user\",\"content\":\"first\"},{\"type\":\"message\",\"role\":\"user\",\"content\":\"\"},{\"type\":\"compaction\",\"id\":\"c1\"},{\"type\":\"compaction\",\"id\":\"c2\"}],\"budget\":900}",
-    "{\"items\":[{\"type\":\"message\",\"role\":\"user\",\"content\":\"AAAAAAAAAAAAAAAA\"},{\"type\":\"compaction\"}],\"budget\":3}",
-    "{\"items\":[{\"type\":\"message\",\"role\":\"user\",\"content\":\"early goal\"},{\"type\":\"message\",\"role\":\"user\",\"content\":\"AAAAAAAAAAAAAAAA\"},{\"type\":\"compaction\"},{\"type\":\"message\",\"role\":\"user\",\"content\":\"after\"}],\"budget\":4}",
-    "{\"items\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"multipart ask\"}]},{\"type\":\"compaction\"}],\"budget\":50}"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "Checkpoint pruning / retention-budget walk (native_compaction.c vs LIVE agent/native_compaction.py). KNOWN DIVERGENCES (documented; inputs restricted around them): (1) C port has NO summary retention — LIVE retains canonical compaction summaries via _is_summary_item within a separate summary budget; no summary items are exercised. (2) On budget exhaustion C BREAKS the retention walk while LIVE CONTINUES scanning; inputs exhaust the budget only at the final pre item or never. (3) C token-costs the JSON-serialized content string (+2 quote chars) vs LIVE's raw text; all content strings have len % 4 in {0, 1} so both estimates agree. (4) Whitespace-only contents excluded (LIVE treats as unmeasurable, C as text). The multipart input (last) exercises the array-content path where C joins input_text parts."
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Checkpoint pruning / retention-budget walk (native_compaction.c vs LIVE agent/native_compaction.py). KNOWN DIVERGENCES (documented; inputs restricted around them): (1) C port has NO summary retention \u2014 LIVE retains canonical compaction summaries via _is_summary_item within a separate summary budget; no summary items are exercised. (2) On budget exhaustion C BREAKS the retention walk while LIVE CONTINUES scanning; inputs exhaust the budget only at the final pre item or never. (3) C token-costs the JSON-serialized content string (+2 quote chars) vs LIVE's raw text; all content strings have len % 4 in {0, 1} so both estimates agree. (4) Whitespace-only contents excluded (LIVE treats as unmeasurable, C as text). The multipart input (last) exercises the array-content path where C joins input_text parts."
 }

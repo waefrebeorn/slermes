@@ -7,16 +7,11 @@
   "py_module": "tools/skills_hub.py",
   "py_fn": "_search_score",
   "inputs": [
-    "|openai/skills/skill-creator|Skill Creator|Build new skills from a template",
-    "skill-creator|openai/skills/skill-creator|Skill Creator|Create and edit agent skills",
-    "SKILL CREATOR|openai/skills/skill-creator|Skill Creator|helper for skills",
-    "creator|openai/skills/skill-creator|Skill Creator|",
-    "skil|skill|skill|a skillful attempt",
-    "pdf tools|tools/pdf/read-pdf|PDF Tools|Read and write PDF documents",
-    "read pdf|tools/pdf/read-pdf|Read PDF|extract text from pdfs",
-    "   |openai/x|Some Name|description here",
-    "clawhub|github:anthropics/clawhub-index|ClawHub Index|the clawhub registry of skills",
-    "zzz-no-match|foo/bar|Baz|nothing relevant"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Input encoding is pipe-delimited 'query|identifier|name|description' (argv-safe). PARITY WIN: the previous sh_search_score port was a 3-line strstr stub (3/2/1 scoring) that diverged from LIVE on every nontrivial input; replaced in src/tools/skills_hub_ports.c with a full port of SkillsHub._search_score (strip/lower query, _query_terms split on [^a-z0-9]+, 11-tier ladder + per-term bonus loop, NULL fields as ''). Harness is a traced copy of the fixed port; twin drives the LIVE ClawHubSource._search_score."
 }

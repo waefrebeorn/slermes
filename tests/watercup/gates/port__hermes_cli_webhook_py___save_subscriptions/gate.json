@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_subscriptions",
+  "c_fn": "hermes_cli_webhook_u_save_subscriptions",
   "py_module": "hermes_cli/webhook.py",
   "py_fn": "_save_subscriptions",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/webhook.c"
   ],
   "cflags": [
     "-I",

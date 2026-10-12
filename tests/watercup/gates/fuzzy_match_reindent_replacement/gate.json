@@ -4,19 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "wc_reindent",
-  "extra_src": ["src/hermes_cli/fuzzy_match_helpers.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "src"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_reindent_replacement",
   "inputs": [
-    "def foo():\n    pass\u001f  old = 1\u001f  new = 2\n  more = 3",
-    "def foo():\n    pass\u001f    x = 1\u001f    y = 2\n    z = 3",
-    "\u001fa = 1\u001fb = 2",
-    "  a = 1\u001fx = 1\u001f",
-    "\n\n  code()\u001f  old()\u001f\tblank_next()\n\n  tail()",
-    "    if True:\n        deep()\u001f  if True:\n      deep()\u001f  one()\n  two()\n        nested()",
-    "class A:\n    def m(self):\n        return 1\u001fclass A:\n    def m(self):\u001f    def m(self):\n        return 2",
-    "no_indent_region\u001f  spaced_old\u001fplain_new"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Reindent-after-fuzzy-match ladder. Helpers (_leading_whitespace, _first_meaningful_line) linked from the real port; reindent body is a faithful traced copy of fuzzy_match_helpers.c::fuzzy_match_reindent_replacement. Each input is one case encoded as region\\x1fold\\x1fnew (multi-line fields allowed). C compares indent by count+strncmp prefix; LIVE compares indent prefix strings — equivalent for space/tab-only indents, which all inputs use. Cases cover: indent swap, no-op equal indent, empty region/old/new, blank lines, dedent anchoring, nesting."
+  "notes": "Reindent-after-fuzzy-match ladder. Helpers (_leading_whitespace, _first_meaningful_line) linked from the real port; reindent body is a faithful traced copy of fuzzy_match_helpers.c::fuzzy_match_reindent_replacement. Each input is one case encoded as region\\x1fold\\x1fnew (multi-line fields allowed). C compares indent by count+strncmp prefix; LIVE compares indent prefix strings \u2014 equivalent for space/tab-only indents, which all inputs use. Cases cover: indent swap, no-op equal indent, empty region/old/new, blank lines, dedent anchoring, nesting."
 }

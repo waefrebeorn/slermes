@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_has_cron_jobs",
+  "c_fn": "hermes_cli_profile_distributio_u_has_cron_jobs",
   "py_module": "hermes_cli/profile_distribution.py",
   "py_fn": "_has_cron_jobs",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/profile_distribution.c"
   ],
   "cflags": [
     "-I",

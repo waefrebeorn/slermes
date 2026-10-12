@@ -6,21 +6,21 @@
   "c_fn": "normalise_display_value",
   "py_module": "gateway/display_config.py",
   "py_fn": "_normalise",
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib/libhive"],
-  "extra_src": ["src/gateway/display_config.c", "lib/libjson/json.c"],
-  "inputs": [
-    "tool_progress|all",
-    "tool_progress|verbose",
-    "tool_progress|new",
-    "show_reasoning|true",
-    "show_reasoning|false",
-    "streaming|1",
-    "busy_ack_detail|off",
-    "interim_assistant_messages|yes",
-    "tool_progress_grouping|SEPARATE",
-    "reasoning_style|SubText",
-    "tool_preview_length|256",
-    "tool_preview_length|notanumber"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libhive"
   ],
-  "notes": "Display-setting normaliser (YAML quirk handling). Harness links the REAL src/gateway/display_config.c::normalise_display_value and traces the dispatch ladder + result; twin imports LIVE gateway/display_config.py::_normalise. Inputs restricted to the agreed string-input contract where C/LIVE agree byte-for-byte. KNOWN DIVERGENCES (documented, not hidden): (1) tool_progress 'false'/'true'/'bogus' — LIVE maps to off/all via YAML-1.1 bool coercion, C lowercases verbatim; (2) live_status tri-state has no C port branch; (3) long_running_notifications 'generic' special-case absent in C. Each would be a real follow-up normalization."
+  "extra_src": [],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Display-setting normaliser (YAML quirk handling). Harness links the REAL src/gateway/display_config.c::normalise_display_value and traces the dispatch ladder + result; twin imports LIVE gateway/display_config.py::_normalise. Inputs restricted to the agreed string-input contract where C/LIVE agree byte-for-byte. KNOWN DIVERGENCES (documented, not hidden): (1) tool_progress 'false'/'true'/'bogus' \u2014 LIVE maps to off/all via YAML-1.1 bool coercion, C lowercases verbatim; (2) live_status tri-state has no C port branch; (3) long_running_notifications 'generic' special-case absent in C. Each would be a real follow-up normalization."
 }

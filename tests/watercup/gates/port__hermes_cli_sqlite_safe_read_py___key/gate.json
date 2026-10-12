@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_key",
+  "c_fn": "sqlite_safe_key",
   "py_module": "hermes_cli/sqlite_safe_read.py",
   "py_fn": "_key",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/sqlite_safe_read.c"
   ],
   "cflags": [
     "-I",

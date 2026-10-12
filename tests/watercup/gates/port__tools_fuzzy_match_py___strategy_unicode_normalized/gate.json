@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strategy_unicode_normalized",
+  "c_fn": "fuzzy_match_strategy_unicode_normalized",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_strategy_unicode_normalized",
   "inputs": [

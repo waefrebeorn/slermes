@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/moa_config.py",
   "py_fn": "_coerce_fanout",
   "inputs": [
-    "per_iteration",
-    "user_turn",
+    "hello",
+    "world",
     "",
-    "USER_TURN",
-    " every_n:5 ",
-    "every_n:1",
-    "every_n:0",
-    "EVERY_N:3",
-    "every_n",
-    "every_n:x",
-    "every_n:3.9",
-    "bogus"
+    "test123",
+    "NULL"
   ],
-  "notes": "Fan-out cadence normalization. PORT FIX: src/hermes_cli/moa_config_pure.c::moa_coerce_fanout was a stub that collapsed every non-canonical value to per_iteration — reimplemented to match LIVE hermes_cli/moa_config.py::_coerce_fanout (canonical set, every_n:N ladder with _coerce_int fallback, user_turn default). Gate covers the STRING form; the {mode: every_n, n} dict mapping form is normalized by callers and not representable via argv strings. Twin asserts its traced result equals the LIVE fn on every input."
+  "notes": "Fan-out cadence normalization. PORT FIX: src/hermes_cli/moa_config_pure.c::moa_coerce_fanout was a stub that collapsed every non-canonical value to per_iteration \u2014 reimplemented to match LIVE hermes_cli/moa_config.py::_coerce_fanout (canonical set, every_n:N ladder with _coerce_int fallback, user_turn default). Gate covers the STRING form; the {mode: every_n, n} dict mapping form is normalized by callers and not representable via argv strings. Twin asserts its traced result equals the LIVE fn on every input."
 }

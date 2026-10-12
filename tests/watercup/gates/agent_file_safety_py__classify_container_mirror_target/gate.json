@@ -7,11 +7,11 @@
   "py_module": "agent/file_safety.py",
   "py_fn": "classify_container_mirror_target",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

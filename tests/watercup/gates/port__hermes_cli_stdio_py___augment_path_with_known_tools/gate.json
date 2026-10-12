@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_augment_path_with_known_tools",
+  "c_fn": "hermes_cli_stdio_u_augment_path_with_known_tools",
   "py_module": "hermes_cli/stdio.py",
   "py_fn": "_augment_path_with_known_tools",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/stdio.c"
   ],
   "cflags": [
     "-I",

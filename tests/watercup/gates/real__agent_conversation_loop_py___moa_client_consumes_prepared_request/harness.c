@@ -1,38 +1,25 @@
-/* gate: real__agent_conversation_loop_py___moa_client_consumes_prepared_request — GAP sentinel for agent/conversation_loop.py:_moa_client_consumes_prepared_request */
+/* gate: real__agent_conversation_loop_py___moa_client_consumes_prepared_request — GAP sentinel for _moa_client_consumes_prepared_request */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_moa_client_consumes_prepared_request");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_moa_client_consumes_prepared_request");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_moa_client_consumes_prepared_request");
+    return "_moa_client_consumes_prepared_request";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _moa_client_consumes_prepared_request <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_moa_client_consumes_prepared_request");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_moa_client_consumes_prepared_request");
     }
     return 0;
 }

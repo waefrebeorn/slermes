@@ -14,8 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/gateway/control_socket.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "sgl_init",
   "py_module": "gateway/platforms/signal.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/signal_helpers2.c",
+    "src/gateway/platforms/signal.c"
   ],
   "cflags": [
     "-I",

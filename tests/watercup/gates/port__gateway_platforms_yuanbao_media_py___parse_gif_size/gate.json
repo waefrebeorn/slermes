@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_gif_size",
+  "c_fn": "cli_gateway_platforms_yuanbao_media__parse_gif_size",
   "py_module": "gateway/platforms/yuanbao_media.py",
   "py_fn": "_parse_gif_size",
   "inputs": [

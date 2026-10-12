@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_disabled_web_plugin_for",
+  "c_fn": "agent_web_search_registry_u_disabled_web_plugin_for",
   "py_module": "agent/web_search_registry.py",
   "py_fn": "_disabled_web_plugin_for",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/web_search_registry.c"
   ],
   "cflags": [
     "-I",

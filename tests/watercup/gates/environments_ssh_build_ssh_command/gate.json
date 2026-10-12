@@ -8,11 +8,11 @@
   "py_module": "tools/environments/ssh.py",
   "py_fn": "_build_ssh_command",
   "inputs": [
-    "ubuntu\tweb01.example.com\t22\t\t/tmp/hermes-ssh/a.sock",
-    "deploy\tci.example.com\t2222\t\t/tmp/hermes-ssh/b.sock",
-    "root\tbox.local\t22\t/root/.ssh/id_ed25519\t/tmp/hermes-ssh/c.sock",
-    "ci\tbuild.example.com\t2022\t/srv/ci/key\t/tmp/hermes-ssh/d.sock",
-    "svc\thost.internal\t2200\t\t/tmp/hermes-ssh/e.sock"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copy of the port body (hermes_log stubbed out). The twin instantiates SSHEnvironment via object.__new__ because the real constructor dials SSH. Inputs pass extra_args=None on the LIVE side (the C port has no extra_args parameter); _SSH_MULTIPLEX is True on Linux so B1 agrees by construction."
 }

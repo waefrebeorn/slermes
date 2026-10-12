@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_default_hermes_root_is_opt_data",
+  "c_fn": "default_hermes_root_is_opt_data",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_default_hermes_root_is_opt_data",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server.c"
   ],
   "cflags": [
     "-I",

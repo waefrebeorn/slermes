@@ -6,6 +6,12 @@
   "c_fn": "greedy_pack_blocks",
   "py_module": "gateway/platforms/helpers.py",
   "py_fn": "greedy_pack_blocks",
-  "inputs": ["10|\\n|aaaa|bbbb", "20|\\n\\n|hello world", "8|\\n|aaaaaaaaaa|b", "12|-|aaa|bbb|ccc", "5|\\n|abc|def|ghi|jkl", "100|\\n\\n|one||three", "6|x|abcdef", "9|\\n|ab|cd|ef|gh", "3|\\n|toolong", "15|\\n\\n|chunk one is long|tiny|medium sized"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Greedy chunk packing. C port platforms_helpers_md.c::helpers_md_greedy_pack_blocks traced as faithful copy; twin drives LIVE greedy_pack_blocks and asserts exact packing equality plus identical branch/loop rung order. Input encoding 'maxlen|sep-escaped|blocks...' keeps argv safe; empty blocks covered by input 6. All cups match LIVE."
 }

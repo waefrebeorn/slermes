@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_render_password_form",
+  "c_fn": "hermes_cli_dashboard_auth_logi_u_render_password_form",
   "py_module": "hermes_cli/dashboard_auth/login_page.py",
   "py_fn": "_render_password_form",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_auth/login_page.c"
   ],
   "cflags": [
     "-I",

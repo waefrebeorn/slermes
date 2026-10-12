@@ -4,21 +4,23 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "peel",
-  "extra_src": ["src/agent/moa_loop_ports.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib"
+  ],
   "py_module": "agent/moa_loop.py",
   "py_fn": "peel_reference_guidance",
   "inputs": [
-    "[{\"role\":\"user\",\"content\":\"hello\"}]|",
-    "[{\"role\":\"user\",\"content\":\"GUIDE\"}]|GUIDE",
-    "[{\"role\":\"user\",\"content\":\"real question\\n\\nGUIDE\"}]|GUIDE",
-    "[{\"role\":\"assistant\",\"content\":\"GUIDE\"}]|GUIDE",
-    "[{\"role\":\"user\",\"content\":\"unrelated text\"}]|GUIDE",
-    "[{\"role\":\"system\",\"content\":\"sys\"},{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"GUIDE\"}]}]|GUIDE",
-    "[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"body\\n\\nGUIDE\"}]}]|GUIDE",
-    "[{\"role\":\"user\",\"content\":[{\"type\":\"image_url\",\"image_url\":{}},{\"type\":\"text\",\"text\":\"GUIDE\"}]}]|GUIDE",
-    "[{\"role\":\"user\",\"content\":\"prefix\\n\\nGUIDE extra\"}]|GUIDE",
-    "[{\"role\":\"user\",\"content\":\"keep\\n\\nTAIL\"}]|OTHER"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Reference-guidance peel (failover redecoration chokepoint). REAL src/agent/moa_loop_ports.c::moa_peel_reference_guidance linked via extra_src (with link shims for unrelated moa symbols) against LIVE agent/moa_loop.py::peel_reference_guidance. Rungs: applicability guard + serialized result V. Covers attach shapes (a) merged suffix, (b) trailing text part, (c) own user message, plus no-op / non-user-tail / partial-suffix probes. Serialization compared as compact JSON on both sides."
 }

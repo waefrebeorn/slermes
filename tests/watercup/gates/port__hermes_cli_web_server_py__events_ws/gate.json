@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "events_ws",
+  "c_fn": "ws_event_unsubscribe",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "events_ws",
   "inputs": [

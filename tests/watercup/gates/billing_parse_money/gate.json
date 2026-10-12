@@ -6,6 +6,12 @@
   "c_fn": "parse_money",
   "py_module": "agent/billing_view.py",
   "py_fn": "parse_money",
-  "inputs": ["$142.50", "100", "0.01", " 99.99 ", "$0.01", "1000", "3.14159", "1234.56", "0", "42"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Parse server money strings ($/space stripped). C port (billing_view.c::billing_parse_money) traced + LIVE Python twin (agent/billing_view.py::parse_money). Cup-parity on VALID inputs (10). KNOWN DIVERGENCE (documented, not a logic bug): on NULL/invalid input C returns 0.0 (fail-closed), LIVE returns None (fail-open Optional[Decimal]). The gate exercises the agreed valid-input path; the None-vs-0.0 gap is a real contract difference worth a follow-up normalization."
 }

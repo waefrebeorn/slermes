@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strip_edge_silence_punctuation",
+  "c_fn": "gateway_response_filters_u_strip_edge_silence_punctuation",
   "py_module": "gateway/response_filters.py",
   "py_fn": "_strip_edge_silence_punctuation",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/response_filters.c"
   ],
   "cflags": [
     "-I",

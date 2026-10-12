@@ -6,6 +6,12 @@
   "c_fn": "kdb_classify_worker_exit",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_classify_worker_exit",
-  "inputs": ["0", "1", "75", "3", "256", "9", "2", "130", "none", "1024"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Traced copy of kanban_workers.c::kdb_classify_worker_exit vs LIVE hermes_cli/kanban_db.py::_classify_worker_exit over wait raw-status integers (pid fixed 4242, 'none' = registry miss). Covers clean_exit / nonzero_exit / rate_limited(75) / signaled / unknown rungs."
 }

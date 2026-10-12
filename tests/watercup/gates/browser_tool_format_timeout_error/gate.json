@@ -7,17 +7,11 @@
   "py_module": "tools/browser_tool.py",
   "py_fn": "_format_browser_timeout_error",
   "inputs": [
-    "open\t30\t\t",
-    "open\t30\t\tlibgtk-3 missing",
-    "open\t30\tstdout noise\t",
-    "snapshot\t45\t\tSandbox creation failed",
-    "click\t10\t\tsee SANDBOX notes",
-    "navigate\t60\tok\t",
-    "open\t30\t\tError: sandbox",
-    "eval\t5\t\t",
-    "open\t120\t\tSANDBOX violation in chromium",
-    "close\t5\t\t",
-    "screenshot\t20\t\ttimeout waiting for daemon"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Timeout error formatter (browser_tool_env.c::browser_format_timeout_error vs LIVE tools/browser_tool.py::_format_browser_timeout_error). Traced copy of the real C port with browser_is_local_mode() stubbed false. EXCLUDED branches (documented): the command=='open' + local-mode + docker/local hint ladder — its hint text diverges (C names the slermes image, LIVE the nousresearch image) and it depends on /.dockerenv + env vars; no input combines command=='open' with sandbox-free output. Also excluded: details >1500 chars (LIVE truncates [:1500], C does not — real port gap worth a follow-up) and details with leading/trailing whitespace (LIVE .strip()s the detail, C does not)."
+  "notes": "Timeout error formatter (browser_tool_env.c::browser_format_timeout_error vs LIVE tools/browser_tool.py::_format_browser_timeout_error). Traced copy of the real C port with browser_is_local_mode() stubbed false. EXCLUDED branches (documented): the command=='open' + local-mode + docker/local hint ladder \u2014 its hint text diverges (C names the slermes image, LIVE the nousresearch image) and it depends on /.dockerenv + env vars; no input combines command=='open' with sandbox-free output. Also excluded: details >1500 chars (LIVE truncates [:1500], C does not \u2014 real port gap worth a follow-up) and details with leading/trailing whitespace (LIVE .strip()s the detail, C does not)."
 }

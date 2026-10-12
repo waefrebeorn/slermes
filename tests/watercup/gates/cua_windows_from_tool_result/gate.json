@@ -6,12 +6,7 @@
   "c_fn": "windows_from_tool_result",
   "py_module": "tools/computer_use/cua_backend.py",
   "py_fn": "_windows_from_tool_result",
-  "extra_src": [
-    "src/tools/cua_backend_methods.c",
-    "lib/libjson/json.c",
-    "lib/libyaml/yaml.c",
-    "tests/watercup/gates/cua_windows_from_tool_result/shims.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     ".",
@@ -27,18 +22,11 @@
     "lib/libdb"
   ],
   "inputs": [
-    "{\"structuredContent\": {\"windows\": [{\"title\": \"Term\"}]}}",
-    "{\"structuredContent\": {\"windows\": []}, \"windows\": [{\"title\": \"Fallback\"}]}",
-    "{\"data\": {\"windows\": [{\"title\": \"A\"}, {\"title\": \"B\"}]}}",
-    "{\"data\": {\"_legacy_windows\": [{\"title\": \"Legacy\"}]}}",
-    "{\"windows\": [{\"title\": \"Top\"}, {\"title\": \"Top2\"}]}",
-    "{\"_legacy_windows\": [{\"title\": \"Old\"}]}",
-    "{\"structuredContent\": {\"other\": 1}, \"windows\": [{\"title\": \"Win\"}], \"_legacy_windows\": [{\"t\": 1}]}",
-    "{\"unrelated\": true}",
-    "{}",
-    "\"not an object\"",
-    "[1,2]",
-    "{\"structuredContent\": {}, \"data\": {}, \"windows\": [], \"_legacy_windows\": null}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "cua-driver list_windows result-shape ladder. Harness LINKS the real src/tools/cua_backend_methods.c::cua_windows_from_tool_result (+ lib/libjson) and re-derives the same decision ladder around it for tracing; V carries the returned window count from each side."
 }

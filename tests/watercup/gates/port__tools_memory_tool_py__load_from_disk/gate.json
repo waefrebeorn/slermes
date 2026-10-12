@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "load_from_disk",
+  "c_fn": "memory_store_load_from_disk",
   "py_module": "tools/memory_tool.py",
   "py_fn": "load_from_disk",
   "inputs": [

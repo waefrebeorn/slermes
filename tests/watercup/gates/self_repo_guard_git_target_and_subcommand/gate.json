@@ -6,6 +6,12 @@
   "c_fn": "git_target_and_subcommand",
   "py_module": "tools/self_repo_guard.py",
   "py_fn": "_git_target_and_subcommand",
-  "inputs": ["/home/wubu/hermes-agent-dev|-|status", "/home/wubu/hermes-agent-dev|-|-", "/home/wubu/hermes-agent-dev|-|-C+/tmp+status", "/home/wubu/hermes-agent-dev|-|-C/tmp+log", "/home/wubu/hermes-agent-dev|-|--work-tree+/tmp+add+-A", "/home/wubu/hermes-agent-dev|-|--work-tree=/tmp+commit", "/home/wubu/hermes-agent-dev|-|-c+alias.co=checkout+co", "/home/wubu/hermes-agent-dev|-|-calias.br=branch+br", "/home/wubu/hermes-agent-dev|-|GIT_WORK_TREE=/tmp|status", "/home/wubu/hermes-agent-dev|-|--quiet+--verbose+push+origin+main", "/tmp|-|-", "/home/wubu/hermes-agent-dev|-|STASH"],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
   "notes": "Agreed sub-contract restricts inputs to paths that exist on disk: LIVE Path.resolve() normalizes nonexistent paths while C realpath() fails open and returns the unresolved join. Alias keys are lowercase in all inputs (both sides lowercase; inputs avoid the case path). Input grammar: cwd|envspec|argspec, '-' = empty, '+' joins args, ';' joins env pairs."
 }

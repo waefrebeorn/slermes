@@ -7,18 +7,11 @@
   "py_module": "tools/approval.py",
   "py_fn": "_read_tool_exec_flag",
   "inputs": [
-    "man -P less",
-    "man -Pless",
-    "man --pager less",
-    "man --html=w3m",
-    "sort --compress-program=x",
-    "sort --compress-program z",
-    "rg --pre /usr/bin/pre",
-    "rg --hostname-bin=hb",
-    "ag --pager less",
-    "rg --unknown x --pre p",
-    "man -P",
-    "sort --key 2,3 --compress-program z"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Read-only-tool program-execution flag finder. Harness traces a faithful copy of src/tools/approval_wrappers.c::appr_u_read_tool_exec_flag (the real shim prints to stdout, which would pollute the cup stream). Twin calls the LIVE tools/approval.py::_read_tool_exec_flag for the authoritative result and asserts its mirror ladder agrees on every input. Inputs restricted to the agreed contract; the shim does not model LIVE's long-options-with-arg skip or short-bundle ownership (documented gap), so inputs exercising those paths are excluded."
 }

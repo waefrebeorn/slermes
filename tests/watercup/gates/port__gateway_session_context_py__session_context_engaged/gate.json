@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "session_context_engaged",
+  "c_fn": "gw_session_context_engaged",
   "py_module": "gateway/session_context.py",
   "py_fn": "session_context_engaged",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/session_context.c"
   ],
   "cflags": [
     "-I",

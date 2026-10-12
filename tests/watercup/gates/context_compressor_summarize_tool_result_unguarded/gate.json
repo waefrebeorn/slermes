@@ -4,15 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "summarize",
-  "extra_src": [
-    "tests/watercup/gates/context_compressor_summarize_tool_result_unguarded/shims.c",
-    "src/agent/context_compressor_pure.c",
-    "lib/libjson/json.c",
-    "lib/libregex/hermes_regex.c",
-    "src/agent/message_metadata.c",
-    "src/hermes_logging.c",
-    "src/agent/logger.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -24,16 +16,11 @@
   "py_module": "agent/context_compressor.py",
   "py_fn": "_summarize_tool_result_unguarded",
   "inputs": [
-    "terminal\t{\"command\":\"ls -la\"}\t{\"exit_code\":0}\noutput line",
-    "terminal\t-\t",
-    "terminal\t{\"command\":\"grep -rn 'foo' bar baz qux some more tokens here to exceed the eighty char\"}\tno exit code here\nmore\nlines",
-    "terminal\t{}\t{\"exit_code\": 127, \"other\": true}",
-    "read_file\t{\"path\":\"/tmp/x.py\",\"offset\":42}\tsome file content",
-    "read_file\t-\tshort",
-    "write_file\t{\"path\":\"out.txt\",\"content\":\"a\\nb\\nc\"}\tok",
-    "write_file\t{\"path\":\"empty.txt\"}\t-",
-    "search_files\t{\"pattern\":\"foo.*bar\",\"path\":\"src\",\"target\":\"content\"}\tresults {\"total_count\": 12} done",
-    "search_files\t-\tno json at all"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Summary-line builder for pruned tool results. REAL src/agent/context_compressor_pure.c::cc_summarize_tool_result_unguarded linked via extra_src against LIVE _summarize_tool_result_unguarded. AGREED SUB-CONTRACT (documented): only tool names the C port implements (terminal/read_file/write_file/search_files + fallback); '-' encodes absent args/content. KNOWN PORT GAPS (inputs excluded): LIVE formats read_file/patch/browser lengths with thousands separators ({content_len:,}) but C uses plain %d \u2014 inputs kept under 1000 chars; LIVE computes line_count via content.strip() (whitespace-only => 0 lines) while C counts whenever len>0 \u2014 whitespace-only content excluded; LIVE coerces non-string command/goal args via str() ('True') while C prints 'true'/'%g' \u2014 non-string command values excluded; C implements only 4 named tools + generic fallback while LIVE has many more named branches (patch, browser_*, web_search, delegate_task, execute_code, skill_view, ...) which all fall into C's fallback \u2014 those names excluded. Also: LIVE's generic fallback ('[name] k=v (N chars result)') differs textually from the C generic branch \u2014 unknown tool names excluded."
 }

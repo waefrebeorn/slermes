@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_server_url",
+  "c_fn": "hermes_cli_secrets_cli_u_resolve_server_url",
   "py_module": "hermes_cli/secrets_cli.py",
   "py_fn": "_resolve_server_url",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/secrets_cli.c"
   ],
   "cflags": [
     "-I",

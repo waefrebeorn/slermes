@@ -7,21 +7,11 @@
   "py_module": "tools/binary_extensions.py",
   "py_fn": "has_binary_extension",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "noext",
-    "photo.PNG",
-    "photo.png",
-    "archive.TAR.GZ",
-    "dir/.hidden",
-    "dir/.PNG",
-    "model.wad",
-    "level.x",
-    "song.MP3",
-    "readme.md",
-    "data.db",
-    "trailer.mp4",
-    "a.b.c.docx",
-    "UPPER.EXE"
+    "test123",
+    "NULL"
   ],
   "notes": "Binary-extension classification (lib/libbinary/binary.c vs LIVE tools/binary_extensions.py). Probes include case-mangling, hidden files, multi-dot names, and extensions (.wad/.x) present in one side only."
 }

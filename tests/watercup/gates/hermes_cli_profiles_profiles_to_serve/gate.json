@@ -1,11 +1,14 @@
 {
- "name": "hermes_cli_profiles_profiles_to_serve",
- "subsystem": "hermes_cli",
- "kind": "cup",
- "c_src": "harness.c",
- "c_fn": "profiles_to_serve",
- "py_module": "hermes_cli/profiles.py",
- "py_fn": "profiles_to_serve",
- "inputs": ["0", "1", "0", "1", "1", "0"],
- "notes": "Harness is a faithful traced copy of the REAL port src/hermes_cli/profiles.c::profile_profiles_to_serve + helpers (profile_id_matches, profiles_root, default_home) because profile_get_active_name()/slermes_home() cache the home in a function-static, blocking per-input env overrides; resolve_home rules copied from src/slermes_home.c. Region restrictions (KNOWN DIVERGENCES avoided): (1) HERMES_HOME forced empty — LIVE infers the active profile name from HERMES_HOME under <root>/profiles/<name>, while the C port's slermes_home() hard rule ignores HERMES_HOME entirely and always reports 'default'; any non-default HERMES_HOME input diverges by design. (2) profile_allowlist parameter unsupported in C port — inputs restricted to allowlist=None. (3) 64-char profile ids: C caps at PROFILE_ID_MAX=63, LIVE regex allows 64 — no such dirs in scope. Records are sorted by name on BOTH sides before V events as glue: C emits readdir order, LIVE emits sorted-scan order."
+  "name": "hermes_cli_profiles_profiles_to_serve",
+  "subsystem": "hermes_cli",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "profiles_to_serve",
+  "py_module": "hermes_cli/profiles.py",
+  "py_fn": "profiles_to_serve",
+  "inputs": [
+    true,
+    false
+  ],
+  "notes": "Harness is a faithful traced copy of the REAL port src/hermes_cli/profiles.c::profile_profiles_to_serve + helpers (profile_id_matches, profiles_root, default_home) because profile_get_active_name()/slermes_home() cache the home in a function-static, blocking per-input env overrides; resolve_home rules copied from src/slermes_home.c. Region restrictions (KNOWN DIVERGENCES avoided): (1) HERMES_HOME forced empty \u2014 LIVE infers the active profile name from HERMES_HOME under <root>/profiles/<name>, while the C port's slermes_home() hard rule ignores HERMES_HOME entirely and always reports 'default'; any non-default HERMES_HOME input diverges by design. (2) profile_allowlist parameter unsupported in C port \u2014 inputs restricted to allowlist=None. (3) 64-char profile ids: C caps at PROFILE_ID_MAX=63, LIVE regex allows 64 \u2014 no such dirs in scope. Records are sorted by name on BOTH sides before V events as glue: C emits readdir order, LIVE emits sorted-scan order."
 }

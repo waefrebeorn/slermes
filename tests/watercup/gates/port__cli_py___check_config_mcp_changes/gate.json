@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_check_config_mcp_changes",
+  "c_fn": "hcli_check_config_mcp_changes",
   "py_module": "cli.py",
   "py_fn": "_check_config_mcp_changes",
   "inputs": [

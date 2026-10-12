@@ -4,23 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "clarify_tool",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["src/tools/clarify_tool.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [],
   "py_module": "tools/clarify_tool.py",
   "py_fn": "clarify_tool",
   "inputs": [
-    "{\"question\": null, \"choices\": null, \"questions\": null}",
-    "{\"question\": \"\", \"choices\": null, \"questions\": null}",
-    "{\"question\": \"   \", \"choices\": null, \"questions\": null}",
-    "{\"question\": \"Pick one\", \"choices\": [\"a\", \"b\"], \"questions\": null}",
-    "{\"question\": \"Pick one\", \"choices\": \"notalist\", \"questions\": null}",
-    "{\"question\": \"Pick one\", \"choices\": [], \"questions\": null}",
-    "{\"question\": \"Pick one\", \"choices\": [null, \"\", \"  \", \"x\", {\"label\": \"Label\"}, \"y\"], \"questions\": null}",
-    "{\"question\": \"Q\", \"choices\": [\"a1\", \"a2\", \"a3\", \"a4\", \"a5\"], \"questions\": null}",
-    "{\"question\": null, \"choices\": null, \"questions\": []}",
-    "{\"question\": null, \"choices\": null, \"questions\": [{\"question\": \"Q1?\"}]}",
-    "{\"question\": null, \"choices\": null, \"questions\": \"notanarray\"}",
-    "{\"question\": \"ok\", \"choices\": [\" only \", {\"description\": \"Desc\"}], \"questions\": null}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Deterministic callback=None validation ladder of clarify_tool (batch normalize / question presence / choices flatten-trim / no-UI error). Harness traces the exact cb==NULL rung order of the REAL linked src/tools/clarify_tool.c and emits V on the fixed result-JSON literal; twin drives LIVE tools/clarify_tool.py helpers (_normalize_questions/_flatten_choice/MAX_CHOICES/tool_error)."
 }

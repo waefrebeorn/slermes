@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "purge_env_credential_references",
+  "c_fn": "hermes_cli_credential_lifecycl_purge_env_credential_references",
   "py_module": "hermes_cli/credential_lifecycle.py",
   "py_fn": "purge_env_credential_references",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/credential_lifecycle.c"
   ],
   "cflags": [
     "-I",

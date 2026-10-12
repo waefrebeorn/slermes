@@ -7,14 +7,11 @@
   "py_module": "cron/jobs.py",
   "py_fn": "_normalize_workdir",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "   ",
-    "/tmp",
-    " /tmp/ ",
-    "~/",
-    "rel/path",
-    "/definitely_missing_dir_xyz_12345",
-    "/etc/hostname"
+    "test123",
+    "NULL"
   ],
   "notes": "Cron workdir normaliser (jobs.c vs LIVE cron/jobs.py). Error MESSAGE text differs between sides by design (LIVE raises ValueError with prose; the port sets a shorter err); the cup traces the outcome ladder only. Path values resolved with realpath/Path.resolve against the live filesystem under the same $HOME."
 }

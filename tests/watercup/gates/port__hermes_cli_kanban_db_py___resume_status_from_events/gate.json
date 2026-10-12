@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resume_status_from_events",
+  "c_fn": "kanban_resume_status_from_events",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_resume_status_from_events",
   "inputs": [

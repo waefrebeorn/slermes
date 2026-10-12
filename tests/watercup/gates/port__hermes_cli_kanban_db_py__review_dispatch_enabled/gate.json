@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "review_dispatch_enabled",
+  "c_fn": "kanban_review_dispatch_enabled",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "review_dispatch_enabled",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_db.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

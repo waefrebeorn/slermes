@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_close_model_picker",
+  "c_fn": "hcli_close_model_picker",
   "py_module": "cli.py",
   "py_fn": "_close_model_picker",
   "inputs": [

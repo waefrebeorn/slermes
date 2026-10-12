@@ -1,38 +1,31 @@
-/* gate: port__hermes_cli_gitlock_py__is_ancestor_of_head — GAP sentinel for hermes_cli/gitlock.py:is_ancestor_of_head */
+/* gate: port__hermes_cli_gitlock_py__is_ancestor_of_head — traced copy of is_ancestor_of_head (int_str_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("is_ancestor_of_head");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "is_ancestor_of_head");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("is_ancestor_of_head");
-}
+extern int is_ancestor_of_head(const char *repo_root, const char *rev);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s is_ancestor_of_head <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("is_ancestor_of_head");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = is_ancestor_of_head(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("is_ancestor_of_head");
     }
     return 0;
 }

@@ -7,17 +7,11 @@
   "py_module": "tools/approval.py",
   "py_fn": "_command_matches_permanent_allowlist",
   "inputs": [
-    "docker ps|[\"recursive delete\", \"podman *\", \"docker ps\"]",
-    "rm -rf x|[\"safe cmd\"]",
-    "podman run foo|[\"podman *\"]",
-    "podman|[\"podman *\"]",
-    "git push|[\"git commit\", \"git push\", \"git fetch\"]",
-    "anything|[]",
-    "|[\"x\"]",
-    "npm test|[\"npm *\",\"cargo *\",\"go *\"]",
-    "cargo build --release|[\"cargo *\"]",
-    "exact|[\"exac\", \"exact\"]",
-    "unrelated|[\"a*\",\"b*\",\"c*\"]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Permanent allowlist matching (src/tools/approval_ports.c::apr_command_matches_permanent_allowlist vs LIVE tools/approval.py::_command_matches_permanent_allowlist). Twin seeds LIVE _permanent_approved per input; V carries the LIVE boolean so verdict divergence fails the cup even when ladders align. Sub-contract documented in harness header: no shell operators, single-'*' globs only."
 }

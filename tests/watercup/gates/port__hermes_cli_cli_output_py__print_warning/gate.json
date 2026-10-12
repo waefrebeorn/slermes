@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "print_warning",
+  "c_fn": "cli_display_response",
   "py_module": "hermes_cli/cli_output.py",
   "py_fn": "print_warning",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/cli_output.c"
   ],
   "cflags": [
     "-I",

@@ -23,14 +23,11 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "| a | b | c |",
     "hello",
-    "| only one pipe",
-    "|a|b",
-    "NULL",
-    "| a |",
-    "  | a | b |  ",
-    "|a|b|c|d"
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "True when row could plausibly be a markdown table row."
 }

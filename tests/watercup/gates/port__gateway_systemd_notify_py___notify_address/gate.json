@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_notify_address",
+  "c_fn": "gateway_systemd_notify_u_notify_address",
   "py_module": "gateway/systemd_notify.py",
   "py_fn": "_notify_address",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/systemd_notify.c"
   ],
   "cflags": [
     "-I",

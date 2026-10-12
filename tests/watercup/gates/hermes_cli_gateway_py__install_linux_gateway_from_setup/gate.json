@@ -7,11 +7,8 @@
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "install_linux_gateway_from_setup",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

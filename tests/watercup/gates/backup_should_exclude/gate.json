@@ -7,18 +7,11 @@
   "py_module": "hermes_cli/backup.py",
   "py_fn": "_should_exclude",
   "inputs": [
-    "memory/MEMORY.md",
-    "__pycache__/x.py",
-    "skills/foo/hermes-agent/SKILL.md",
-    "hermes-agent/inner/file.txt",
-    "deep/nested/hermes-agent/file.txt",
-    "state.db-wal",
-    "module.pyc",
-    "gateway.pid",
-    ".backup.lock",
-    "profiles/main/gateway_state.json",
-    "browser-profiles/cdp/cookies",
-    "backups/b2/state.db"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Backup path exclusion ladder. PARITY FIX applied to src/hermes_cli/backup.c during gating: EXCLUDED_DIRS was missing browser-profiles and state-snapshots (_QUICK_SNAPSHOTS_DIR), and EXCLUDED_NAMES wrongly carried the _IMPORT_SKIP_NAMES set (gateway_state.json/gateway.lock/processes.json) instead of backup.py's .backup.lock set. Tables aligned to LIVE before tracing."
 }

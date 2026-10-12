@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_apply_pricing",
+  "c_fn": "hermes_cli_inventory_u_apply_pricing",
   "py_module": "hermes_cli/inventory.py",
   "py_fn": "_apply_pricing",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/inventory.c"
   ],
   "cflags": [
     "-I",

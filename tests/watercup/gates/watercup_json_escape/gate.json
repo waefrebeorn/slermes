@@ -7,5 +7,12 @@
   "py_module": "json (json.dumps)",
   "py_fn": "json.dumps",
   "status": "GREEN",
-  "notes": "web_json_escape() now escapes control chars < 0x20 to match LIVE Python json.dumps: 0x08->\\b, 0x0c->\\f (short), 0x00-0x07/0x0b/0x0e-0x1f -> \\u00XX. Previously the default pass-through emitted raw control bytes (invalid JSON). Harness checks 0x01/0x0b/0x1b -> \\u00XX and 0x08/0x0c -> short; twin confirms against real json.dumps."
+  "notes": "web_json_escape() now escapes control chars < 0x20 to match LIVE Python json.dumps: 0x08->\\b, 0x0c->\\f (short), 0x00-0x07/0x0b/0x0e-0x1f -> \\u00XX. Previously the default pass-through emitted raw control bytes (invalid JSON). Harness checks 0x01/0x0b/0x1b -> \\u00XX and 0x08/0x0c -> short; twin confirms against real json.dumps.",
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ]
 }

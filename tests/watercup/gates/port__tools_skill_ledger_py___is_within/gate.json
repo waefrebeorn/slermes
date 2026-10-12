@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_within",
+  "c_fn": "is_within",
   "py_module": "tools/skill_ledger.py",
   "py_fn": "_is_within",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/skill_ledger.c"
   ],
   "cflags": [
     "-I",

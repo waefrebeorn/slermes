@@ -1,38 +1,29 @@
-/* gate: port__hermes_cli_main_py___desktop_macos_has_valid_real_signature — GAP sentinel for hermes_cli/main.py:_desktop_macos_has_valid_real_signature */
+/* gate: port__hermes_cli_main_py___desktop_macos_has_valid_real_signature — traced copy of main_g_desktop_macos_has_valid_real_signature (bool_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_desktop_macos_has_valid_real_signature");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_desktop_macos_has_valid_real_signature");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_desktop_macos_has_valid_real_signature");
-}
+extern bool main_g_desktop_macos_has_valid_real_signature(const char *app_path);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _desktop_macos_has_valid_real_signature <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s main_g_desktop_macos_has_valid_real_signature <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("main_g_desktop_macos_has_valid_real_signature");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    bool result = main_g_desktop_macos_has_valid_real_signature(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? "true" : "false");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("main_g_desktop_macos_has_valid_real_signature");
     }
     return 0;
 }

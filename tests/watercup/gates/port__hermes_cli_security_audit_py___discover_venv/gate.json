@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_discover_venv",
+  "c_fn": "hermes_cli_security_audit_u_discover_venv",
   "py_module": "hermes_cli/security_audit.py",
   "py_fn": "_discover_venv",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/security_audit.c"
   ],
   "cflags": [
     "-I",

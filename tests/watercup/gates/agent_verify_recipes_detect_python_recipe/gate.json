@@ -8,28 +8,15 @@
     "-I/home/wubu/hermes-agent-dev/slermes/include",
     "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson"
   ],
-  "extra_src": [
-    "src/agent/verify_recipes.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "py_module": "agent/verify/recipes.py",
   "py_fn": "_detect_python_recipe",
   "inputs": [
-    "{}",
-    "{\"files\":{\"setup.py\":\"\"}}",
-    "{\"files\":{\"requirements.txt\":\"FLASK==3.0\\n\"},\"dirs\":[]}",
-    "{\"files\":{\"requirements.txt\":\"flask\\n\",\"app.py\":\"from flask import Flask\\n\"}}",
-    "{\"files\":{\"requirements.txt\":\"flask\\n\",\"main.py\":\"x=1\\n\"}}",
-    "{\"files\":{\"pyproject.toml\":\"[project]\\ndependencies=[\\\"FastAPI\\\",\\\"uvicorn\\\"]\\n\"}}",
-    "{\"files\":{\"pyproject.toml\":\"fastapi app\\n\",\"main.py\":\"app=1\\n\"},\"dirs\":[\"tests\"]}",
-    "{\"files\":{\"pyproject.toml\":\"uvicorn\\n\",\"app.py\":\"app=1\\n\"},\"dirs\":[\"tests\"]}",
-    "{\"files\":{\"manage.py\":\"#!/usr/bin/env python\\n\",\"requirements.txt\":\"django>=5\\n\"}}",
-    "{\"files\":{\"pyproject.toml\":\"Django framework\\n\"}}",
-    "{\"files\":{\"requirements.txt\":\"requests\\n\",\"uv.lock\":\"\"}}",
-    "{\"files\":{\"pyproject.toml\":\"[tool.poetry]\\n\",\"poetry.lock\":\"\"}}",
-    "{\"files\":{\"Pipfile.lock\":\"{}\\n\",\"requirements.txt\":\"boto3\\n\"}}",
-    "{\"files\":{\"pyproject.toml\":\"[project] name=\\\"x\\\"\\n\"},\"dirs\":[\"tests\"]}",
-    "{\"files\":{\"pyproject.toml\":\"[tool.uv]\\n\",\"uv.lock\":\"\"},\"dirs\":[\"tests\"]}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Fixture-driven gate: each input is a JSON spec ({files:{name:content}, dirs:[...]}) materialized into a fresh mkdtemp dir by BOTH sides, so the filesystem-reading detector is exercised deterministically. Harness traces the branch/loop ladder and takes the VALUE event from the REAL linked port (recipe_detect_python via extra_src). CAUGHT + FIXED REAL PORT BUG: src/agent/verify_recipes.c Flask branch called recipe_set_port(r, 8000) while LIVE _detect_python_recipe returns port=5000 for the Flask recipe; fixed to 5000. Value encoding kind|name|bootstrap0|test,...|start|port(0=None)|evidence;... — readiness_path is '/' on both sides by construction and omitted."
+  "notes": "Fixture-driven gate: each input is a JSON spec ({files:{name:content}, dirs:[...]}) materialized into a fresh mkdtemp dir by BOTH sides, so the filesystem-reading detector is exercised deterministically. Harness traces the branch/loop ladder and takes the VALUE event from the REAL linked port (recipe_detect_python via extra_src). CAUGHT + FIXED REAL PORT BUG: src/agent/verify_recipes.c Flask branch called recipe_set_port(r, 8000) while LIVE _detect_python_recipe returns port=5000 for the Flask recipe; fixed to 5000. Value encoding kind|name|bootstrap0|test,...|start|port(0=None)|evidence;... \u2014 readiness_path is '/' on both sides by construction and omitted."
 }

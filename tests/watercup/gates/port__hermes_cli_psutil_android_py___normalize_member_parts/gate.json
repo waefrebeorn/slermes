@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_member_parts",
+  "c_fn": "hermes_cli_psutil_android_u_normalize_member_parts",
   "py_module": "hermes_cli/psutil_android.py",
   "py_fn": "_normalize_member_parts",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/psutil_android.c"
   ],
   "cflags": [
     "-I",

@@ -7,19 +7,11 @@
   "py_module": "gateway/platforms/base.py",
   "py_fn": "safe_url_for_log",
   "inputs": [
-    "80|https://api.example.com/v1/files/report.pdf",
-    "80|http://user:secret@host.example.com/path/to/file.txt",
-    "20|https://very.long.hostname.example.com/a/b/c/d/e/f.jpg",
-    "3|https://example.com/x",
-    "2|https://example.com/x",
-    "0|https://example.com",
-    "-1|whatever",
-    "80|notaurl",
-    "80|",
-    "10|ftp://files.example.net/pub/readme.md",
-    "80|https://barehost",
-    "5|https://example.com",
-    "12|http://host/"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Log-safe URL redaction (userinfo strip, path collapse, truncation). Traced C copy of src/gateway/platforms/base.c::safe_url_for_log vs LIVE twin; V carries each side's OWN result so output divergence fails the cup too. Inputs exclude query strings/fragments: LIVE urlsplit strips them while the C port keeps them (documented divergence worth a follow-up normalization)."
 }

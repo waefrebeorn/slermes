@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_keep",
+  "c_fn": "cmd_compress_coerce_keep_value",
   "py_module": "hermes_cli/partial_compress.py",
   "py_fn": "_coerce_keep",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/write_approval_commands.c"
   ],
   "cflags": [
     "-I",

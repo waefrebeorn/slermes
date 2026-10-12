@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_chown_to_hermes_uid",
+  "c_fn": "config_py_chown_to_hermes_uid",
   "py_module": "hermes_cli/config.py",
   "py_fn": "_chown_to_hermes_uid",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/config_py_pure.c"
   ],
   "cflags": [
     "-I",

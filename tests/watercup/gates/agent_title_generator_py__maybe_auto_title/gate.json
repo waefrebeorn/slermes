@@ -7,16 +7,13 @@
   "py_module": "agent/title_generator.py",
   "py_fn": "maybe_auto_title",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/title_generator_ports.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

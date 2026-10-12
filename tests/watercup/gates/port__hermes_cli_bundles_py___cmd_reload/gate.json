@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cmd_reload",
+  "c_fn": "cmd_reload",
   "py_module": "hermes_cli/bundles.py",
   "py_fn": "_cmd_reload",
   "inputs": [

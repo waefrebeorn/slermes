@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ensure_croniter",
+  "c_fn": "port",
   "py_module": "cron/jobs.py",
   "py_fn": "_ensure_croniter",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/jobs_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

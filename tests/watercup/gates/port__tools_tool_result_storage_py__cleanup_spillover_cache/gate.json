@@ -3,18 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cleanup_spillover_cache",
+  "c_fn": "tools_tool_result_storage_cleanup_spillover_cache",
   "py_module": "tools/tool_result_storage.py",
   "py_fn": "cleanup_spillover_cache",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tool_result_storage.c"
   ],
   "cflags": [
     "-I",

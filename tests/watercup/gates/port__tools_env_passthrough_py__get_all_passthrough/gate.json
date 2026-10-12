@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_all_passthrough",
+  "c_fn": "cli_tools_env_passthrough_get_all_passthrough",
   "py_module": "tools/env_passthrough.py",
   "py_fn": "get_all_passthrough",
   "inputs": [

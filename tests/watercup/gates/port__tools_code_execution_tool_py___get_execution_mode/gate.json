@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_execution_mode",
+  "c_fn": "code_exec_get_execution_mode",
   "py_module": "tools/code_execution_tool.py",
   "py_fn": "_get_execution_mode",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/code_execution_helpers.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_minimax_response_error_text",
+  "c_fn": "hermes_cli_auth_u_minimax_response_error_text",
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_minimax_response_error_text",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/auth.c"
   ],
   "cflags": [
     "-I",

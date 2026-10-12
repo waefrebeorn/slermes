@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_max_tokens",
+  "c_fn": "value",
   "py_module": "agent/context_compressor.py",
   "py_fn": "_coerce_max_tokens",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cmd_status",
+  "c_fn": "cmd_status",
   "py_module": "hermes_cli/curator.py",
   "py_fn": "_cmd_status",
   "inputs": [

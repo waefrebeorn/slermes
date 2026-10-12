@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "initialize",
+  "c_fn": "mpr_initialize",
   "py_module": "agent/memory_provider.py",
   "py_fn": "initialize",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/memory_provider_ports.c"
   ],
   "cflags": [
     "-I",

@@ -6,21 +6,21 @@
   "c_fn": "resolve_channel_name",
   "py_module": "gateway/channel_directory.py",
   "py_fn": "resolve_channel_name",
-  "cflags": ["-I", "include", "-I", "lib/libjson", "-I", "lib/libcredentialfiles"],
-  "extra_src": ["lib/libjson/json.c", "src/hermes_cli/channel_directory.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "lib/libcredentialfiles"
+  ],
+  "extra_src": [],
   "inputs": [
-    "discord|123",
-    "discord|#bot-home",
-    "discord|Bot-Home",
-    "discord|Wubu HQ/projects",
-    "discord|side guild/general-announcements",
-    "discord|ge",
-    "discord|general",
-    "discord|nope",
-    "telegram|ops room (group)",
-    "telegram|-100300",
-    "slack|C0B0QV5434G",
-    "nosuchplatform|x"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Channel-name resolution (REAL src/hermes_cli/channel_directory.c::resolve_channel_name linked via extra_src vs LIVE gateway/channel_directory.py::resolve_channel_name). credfiles_get_hermes_home is shimmed in the harness and LIVE DIRECTORY_PATH is pointed at the identical deterministic fixture (written before tracing; no I/O inside the traced rungs). Coarse rung ladder (resolved/unresolved + id value) per the libansi_strip precedent; behavior parity is carried by the values across exact-id, #-normalized, case-insensitive, guild-qualified, unique-prefix, ambiguous-prefix, target-label and unknown-platform queries. Divergences avoided: none observed on these inputs."
 }

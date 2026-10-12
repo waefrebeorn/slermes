@@ -4,10 +4,26 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "acp_get_id",
-  "cflags": ["-I", "include", "-I", "lib", "-I", "lib/libjson"],
-  "extra_src": ["tests/watercup/gates/gateway_acp_acp_get_id/shims.c", "lib/libjson/json.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson"
+  ],
+  "extra_src": [
+    "tests/watercup/gates/gateway_acp_acp_get_id/shims.c",
+    "lib/libjson/json.c"
+  ],
   "py_module": "agent/copilot_acp_client.py",
   "py_fn": "ACPServer.get_id",
-  "inputs": ["123", "abc", "NULL"],
-  "notes": "acp_get_id — C src/acp/server.c::acp_get_id vs LIVE agent/copilot_acp_client.py::ACPServer.get_id. Both return a server ID string."
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "acp_get_id \u2014 C src/acp/server.c::acp_get_id vs LIVE agent/copilot_acp_client.py::ACPServer.get_id. Both return a server ID string."
 }

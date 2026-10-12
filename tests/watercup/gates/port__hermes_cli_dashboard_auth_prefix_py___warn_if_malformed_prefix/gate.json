@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_warn_if_malformed_prefix",
+  "c_fn": "hermes_cli_dashboard_auth_pref_u_warn_if_malformed_prefix",
   "py_module": "hermes_cli/dashboard_auth/prefix.py",
   "py_fn": "_warn_if_malformed_prefix",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_auth/prefix.c"
   ],
   "cflags": [
     "-I",

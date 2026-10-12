@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_finding_dict",
+  "c_fn": "getattr",
   "py_module": "tools/skills_guard.py",
   "py_fn": "_finding_dict",
   "inputs": [

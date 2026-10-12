@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_krea_model",
+  "c_fn": "image_gen_is_krea_model",
   "py_module": "tools/image_generation_tool.py",
   "py_fn": "is_krea_model",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/image_generation_tool.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

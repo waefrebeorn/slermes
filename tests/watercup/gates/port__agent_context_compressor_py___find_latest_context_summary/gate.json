@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_find_latest_context_summary",
+  "c_fn": "cli_agent_context_compressor__find_latest_context_summary",
   "py_module": "agent/context_compressor.py",
   "py_fn": "_find_latest_context_summary",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/context_compressor.c"
   ],
   "cflags": [
     "-I",

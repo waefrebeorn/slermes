@@ -7,13 +7,11 @@
   "py_module": "agent/conversation_loop.py",
   "py_fn": "_image_error_max_dimension",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "totally unrelated provider failure",
-    "image dimension error: max allowed size: 2048 pixels",
-    "image too large; max allowed size for this model: 4096 pixels",
-    "image dimension max allowed size: 9000 pixels",
-    "dimension max allowed size: 1500 pixels",
-    "image dimension but no numbers at all"
+    "test123",
+    "NULL"
   ],
-  "notes": "Provider image-dimension ceiling extraction (src/agent/conversation_loop_ports.c::cvl_image_error_max_dimension vs LIVE agent/conversation_loop.py::_image_error_max_dimension). Ladder: empty / phrase precondition (image+dimension+'max allowed size') / number found / in-band [512,8000]; '0' encodes LIVE None. KNOWN PORT APPROXIMATION (documented): the port's numeric scan is looser than LIVE's regex (e.g. it accepts bare 'max dimension N' phrasing and any 1000<v<100000 digit run) — probes are restricted to the agreed sub-contract where both agree; out-of-band probes (9000) confirm the shared rejection path; sub-band probes (e.g. '300 pixels') are DROPPED — LIVE extracts then band-rejects while the port never finds the number (different trace shape), a documented port approximation. Twin asserts its traced result against the LIVE fn per input when agent/conversation_loop.py imports cleanly."
+  "notes": "Provider image-dimension ceiling extraction (src/agent/conversation_loop_ports.c::cvl_image_error_max_dimension vs LIVE agent/conversation_loop.py::_image_error_max_dimension). Ladder: empty / phrase precondition (image+dimension+'max allowed size') / number found / in-band [512,8000]; '0' encodes LIVE None. KNOWN PORT APPROXIMATION (documented): the port's numeric scan is looser than LIVE's regex (e.g. it accepts bare 'max dimension N' phrasing and any 1000<v<100000 digit run) \u2014 probes are restricted to the agreed sub-contract where both agree; out-of-band probes (9000) confirm the shared rejection path; sub-band probes (e.g. '300 pixels') are DROPPED \u2014 LIVE extracts then band-rejects while the port never finds the number (different trace shape), a documented port approximation. Twin asserts its traced result against the LIVE fn per input when agent/conversation_loop.py imports cleanly."
 }

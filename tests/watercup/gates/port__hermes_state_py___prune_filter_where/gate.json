@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_prune_filter_where",
+  "c_fn": "build_where",
   "py_module": "hermes_state.py",
   "py_fn": "_prune_filter_where",
   "inputs": [

@@ -7,16 +7,11 @@
   "py_module": "agent/context_compressor.py",
   "py_fn": "_is_summary_access_or_quota_error",
   "inputs": [
-    "billing|0|rate limit exceeded please",
-    "unknown|0|bad credentials today",
-    "auth|0|invalid api key detected",
-    "unknown|0|totally mundane failure",
-    "unknown|0|no api key was found anywhere",
-    "auth|401|plain message",
-    "billing|0|insufficient_quota for this month",
-    "unknown|0|out of credits, sorry",
-    "server_error|500|server hiccup",
-    "unknown|200|nothing special"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Non-retryable summary auth/quota ladder (src/agent/context_compressor_pure.c::cc_is_summary_access_or_quota_error vs LIVE agent/context_compressor.py::_is_summary_access_or_quota_error). Input encoding 'reason|status|text' where reason is the port's failover code (35 auth / 36 auth_permanent / 40 rate_limit / 2 billing / else unknown) and the twin derives the SAME reason from the LIVE classify_api_error on a synthetic exception (asserted). Marker arrays copied verbatim from both sides; twin asserts its traced boolean against the LIVE fn per input. LIVE also consults exc.response.status_code — synthetic exceptions only set .status_code, so that sub-path is out of scope."
+  "notes": "Non-retryable summary auth/quota ladder (src/agent/context_compressor_pure.c::cc_is_summary_access_or_quota_error vs LIVE agent/context_compressor.py::_is_summary_access_or_quota_error). Input encoding 'reason|status|text' where reason is the port's failover code (35 auth / 36 auth_permanent / 40 rate_limit / 2 billing / else unknown) and the twin derives the SAME reason from the LIVE classify_api_error on a synthetic exception (asserted). Marker arrays copied verbatim from both sides; twin asserts its traced boolean against the LIVE fn per input. LIVE also consults exc.response.status_code \u2014 synthetic exceptions only set .status_code, so that sub-path is out of scope."
 }

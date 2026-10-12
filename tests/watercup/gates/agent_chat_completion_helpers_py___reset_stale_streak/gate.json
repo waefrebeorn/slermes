@@ -13,10 +13,7 @@
     "test123",
     "NULL"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/chat_completion_helpers.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

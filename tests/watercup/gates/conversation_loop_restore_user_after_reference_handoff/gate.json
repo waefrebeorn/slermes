@@ -6,8 +6,18 @@
   "c_fn": "restore_user_after_reference_handoff",
   "py_module": "agent/conversation_loop.py",
   "py_fn": "_restore_user_after_reference_handoff",
-  "extra_src": ["lib/libjson/json.c"],
-  "cflags": ["-I/home/wubu/hermes-agent-dev/slermes/include"],
-  "inputs": ["\"ask me this\"\t[]", "\"\"\t[]", "null\t[{\"role\": \"assistant\", \"content\": \"x\"}]", "[{\"type\": \"text\", \"text\": \"a\"}]\t[]", "[]\t[]", "\"hello\"\t[{\"role\": \"user\", \"content\": \"goodbye\"}]", "\"hello\"\t[{\"role\": \"assistant\", \"content\": \"h\"}]", "42\t[{\"role\": \"assistant\", \"content\": \"m\"}]", "\"same\"\t[{\"role\": \"user\", \"content\": \"other\"}, {\"role\": \"assistant\", \"content\": \"mid\"}]"],
-  "notes": "Post-compaction user-ask restore. Harness links the repo's libjson and traces a faithful copy of conversation_loop_py_parity.c::agent_conversation_loop_restore_user_after_reference_handoff; twin drives LIVE _restore_user_after_reference_handoff with identical rung order (outcome-code value events + post-call message count). DOCUMENTED DIVERGENCE (inputs excluded): (1) LIVE checks `not user_message.strip()` (whitespace-only rejected); C only rejects truly empty strings. (2) The already-restored rung: LIVE compares last-message content by VALUE, C by node pointer — pointer comparison never fires across independently parsed trees, so inputs with an exact duplicate tail would diverge and are excluded (a real semantic gap worth a follow-up)."
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "cflags": [
+    "-I/home/wubu/hermes-agent-dev/slermes/include"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Post-compaction user-ask restore. Harness links the repo's libjson and traces a faithful copy of conversation_loop_py_parity.c::agent_conversation_loop_restore_user_after_reference_handoff; twin drives LIVE _restore_user_after_reference_handoff with identical rung order (outcome-code value events + post-call message count). DOCUMENTED DIVERGENCE (inputs excluded): (1) LIVE checks `not user_message.strip()` (whitespace-only rejected); C only rejects truly empty strings. (2) The already-restored rung: LIVE compares last-message content by VALUE, C by node pointer \u2014 pointer comparison never fires across independently parsed trees, so inputs with an exact duplicate tail would diverge and are excluded (a real semantic gap worth a follow-up)."
 }

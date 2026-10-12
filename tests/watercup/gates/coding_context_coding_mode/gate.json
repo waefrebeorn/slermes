@@ -20,26 +20,15 @@
     "-Isrc",
     "-Isrc/agent"
   ],
-  "extra_src": [
-    "src/agent/coding_context.c",
-    "lib/libjson/json.c",
-    "lib/libyaml/yaml.c",
-    "lib/libdatetime/datetime.c",
-    "lib/libhash/hash.c"
-  ],
+  "extra_src": [],
   "py_module": "agent/coding_context.py",
   "py_fn": "_coding_mode",
   "inputs": [
-    "{\"agent\": {\"coding_context\": \"focus\"}}",
-    "{\"agent\": {\"coding_context\": \"strict\"}}",
-    "{\"agent\": {\"coding_context\": \"ON\"}}",
-    "{\"agent\": {\"coding_context\": \"always \"}}",
-    "{\"agent\": {\"coding_context\": \"off\"}}",
-    "{\"agent\": {\"coding_context\": \"never\"}}",
-    "{}",
-    "{\"agent\": {}}",
-    "{\"agent\": {\"coding_context\": \"sometimes\"}}",
-    "not-json"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "PORT FIX APPLIED: coding_ctx_mode previously read a top-level 'coding_mode' key and returned 'default'; it now reads agent.coding_context (LIVE nesting), strip()s and lowercases the raw value, and normalizes through LIVE's focus/on/off ladders. config==NULL maps to the empty-config path ('auto') since the readonly config load is not harnessable.",
   "ldflags": [

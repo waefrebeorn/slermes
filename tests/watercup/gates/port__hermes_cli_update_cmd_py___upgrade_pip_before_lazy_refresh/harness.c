@@ -1,38 +1,30 @@
-/* gate: port__hermes_cli_update_cmd_py___upgrade_pip_before_lazy_refresh — GAP sentinel for hermes_cli/update_cmd.py:_upgrade_pip_before_lazy_refresh */
+/* gate: port__hermes_cli_update_cmd_py___upgrade_pip_before_lazy_refresh — traced copy of uc_upgrade_pip_before_lazy_refresh (void) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_upgrade_pip_before_lazy_refresh");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_upgrade_pip_before_lazy_refresh");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_upgrade_pip_before_lazy_refresh");
-}
+extern void uc_upgrade_pip_before_lazy_refresh(const char *install_cmd_prefix[],
+                                            const char *env_path);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _upgrade_pip_before_lazy_refresh <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s uc_upgrade_pip_before_lazy_refresh <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("uc_upgrade_pip_before_lazy_refresh");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    uc_upgrade_pip_before_lazy_refresh(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR("void");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("uc_upgrade_pip_before_lazy_refresh");
     }
     return 0;
 }

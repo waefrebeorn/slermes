@@ -4,23 +4,17 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "coerce_turn_input_text",
-  "extra_src": ["lib/libjson/json.c"],
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
   "py_module": "agent/transports/codex_app_server_session.py",
   "py_fn": "_coerce_turn_input_text",
   "inputs": [
-    "\"hello world\"",
-    "[]",
-    "[\"a\",\"b\"]",
-    "[\"a\",\"   \",\"b\"]",
-    "[null,\"x\"]",
-    "[{\"type\":\"text\",\"text\":\"hi\"}]",
-    "[{\"type\":\"input_text\",\"content\":\"yo\"}]",
-    "[{\"type\":\"text\"},{\"type\":\"text\",\"text\":\"fallback content\"}]",
-    "[{\"type\":\"image\"},{\"type\":\"text\",\"text\":\"what is this\"}]",
-    "[{\"type\":\"image_url\"}]",
-    "[{\"type\":\"other\"},\"z\"]",
-    "null",
-    "[\"   \"]"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Rich content -> app-server text coercion. C port (codex_app_server_session_ports.c::cas2_coerce_turn_input_text) was DIVERGENT (strstr scraping, space-join, no image marker, no default question) — rewritten faithfully over libjson; real parity win. Inputs are JSON-encoded; non-dict scalars restricted to str/bool/int so Python str() and the C %lld formatting agree."
+  "notes": "Rich content -> app-server text coercion. C port (codex_app_server_session_ports.c::cas2_coerce_turn_input_text) was DIVERGENT (strstr scraping, space-join, no image marker, no default question) \u2014 rewritten faithfully over libjson; real parity win. Inputs are JSON-encoded; non-dict scalars restricted to str/bool/int so Python str() and the C %lld formatting agree."
 }

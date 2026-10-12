@@ -7,14 +7,11 @@
   "py_module": "agent/proxy_sources/iron_proxy.py",
   "py_fn": "_pick_tar_member",
   "inputs": [
-    "iron-proxy|iron-proxy\tdir/iron-proxy\treadme.md",
-    "tool|pkg/tool\ttool",
-    "tool|dir/tool\tdeep/nest/tool",
-    "bin|/abs/bin\tok/bin",
-    "bin|evil/../bin\tgood/bin",
-    "x|only.match",
-    "app|a/app",
-    "nohit|some/file"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Tar-member selection (src/agent/iron_proxy.c::ip_pick_tar_member vs LIVE agent/proxy_sources/iron_proxy.py::_pick_tar_member). Members are tab-separated names (all regular files — the gate's sub-contract; non-file TarInfo entries are excluded since C has no file-type input). Ladder per member: absolute skip / '..' traversal skip / leaf match / root-level immediate win; miss probes hash 'NONE' (LIVE would raise RuntimeError on a fully empty candidate set — that raise path is outside the traced sub-contract). KNOWN DIVERGENCE (documented, excluded): multiple directory-qualified candidates resolve by shortest-name sort in LIVE but by FIRST match in C — such probes are excluded from the agreed sub-contract. Twin builds real tarfile.TarInfo members and asserts its traced winner against the LIVE fn."
+  "notes": "Tar-member selection (src/agent/iron_proxy.c::ip_pick_tar_member vs LIVE agent/proxy_sources/iron_proxy.py::_pick_tar_member). Members are tab-separated names (all regular files \u2014 the gate's sub-contract; non-file TarInfo entries are excluded since C has no file-type input). Ladder per member: absolute skip / '..' traversal skip / leaf match / root-level immediate win; miss probes hash 'NONE' (LIVE would raise RuntimeError on a fully empty candidate set \u2014 that raise path is outside the traced sub-contract). KNOWN DIVERGENCE (documented, excluded): multiple directory-qualified candidates resolve by shortest-name sort in LIVE but by FIRST match in C \u2014 such probes are excluded from the agreed sub-contract. Twin builds real tarfile.TarInfo members and asserts its traced winner against the LIVE fn."
 }

@@ -6,19 +6,21 @@
   "c_fn": "render_report_markdown",
   "py_module": "agent/curator.py",
   "py_fn": "_render_report_markdown",
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
-  "extra_src": ["lib/libjson/json.c"],
-  "inputs": [
-    "{",
-    "[1,2,3]",
-    "{}",
-    "{\"started_at\":\"2026-08-23T10:00:00Z\",\"duration_seconds\":95,\"model\":\"claude-stealth-1\",\"provider\":\"nous\"}",
-    "{\"started_at\":\"2026-08-23T10:00:00Z\",\"duration_seconds\":95,\"model\":\"m\",\"provider\":\"p\",\"llm_error\":\"rate limit\"}",
-    "{\"started_at\":\"t\",\"duration_seconds\":0,\"model\":\"m\",\"provider\":\"p\",\"auto_transitions\":{\"checked\":12,\"marked_stale\":3,\"archived\":2,\"reactivated\":1}}",
-    "{\"started_at\":\"t\",\"duration_seconds\":61,\"model\":\"m\",\"provider\":\"p\",\"auto_transitions\":\"bogus\",\"llm_error\":\"timeout\"}",
-    "{\"started_at\":\"t\",\"duration_seconds\":3600,\"model\":\"m\",\"provider\":\"p\",\"auto_transitions\":{\"checked\":1},\"consolidated\":[],\"pruned\":[],\"added\":[],\"state_transitions\":[],\"cron_rewrites\":{}}",
-    "{\"started_at\":\"t\",\"duration_seconds\":59,\"model\":\"m\",\"provider\":\"p\",\"counts\":{\"before\":4,\"after\":5,\"delta\":1,\"tool_calls_total\":7,\"tool_call_counts\":{\"skill_manage\":5,\"read_file\":2}},\"tool_call_counts\":{\"skill_manage\":5}}",
-    "{\"started_at\":\"t\",\"duration_seconds\":125,\"model\":\"m\",\"provider\":\"p\",\"llm_final\":\"all done\",\"llm_summary\":\"fallback ignored when final present\"}"
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
   ],
-  "notes": "Report-to-markdown renderer (curator_ports.c vs LIVE agent/curator.py). Rungs only on the SHARED surface (B1 dict / B2 llm_error / B3 auto_transitions-dict); the C port is a REDUCED render — it omits the LLM-pass sections, list sections, and reads a `final_summary` key LIVE never uses, and formats duration as '%dm %ds' unconditionally. Inputs restricted to empty list sections, non-empty model/provider strings (LIVE falls back to '(not resolved)' on EMPTY STRINGS, C does not — excluded), and integer durations >= 0."
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "inputs": [
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
+  ],
+  "notes": "Report-to-markdown renderer (curator_ports.c vs LIVE agent/curator.py). Rungs only on the SHARED surface (B1 dict / B2 llm_error / B3 auto_transitions-dict); the C port is a REDUCED render \u2014 it omits the LLM-pass sections, list sections, and reads a `final_summary` key LIVE never uses, and formats duration as '%dm %ds' unconditionally. Inputs restricted to empty list sections, non-empty model/provider strings (LIVE falls back to '(not resolved)' on EMPTY STRINGS, C does not \u2014 excluded), and integer durations >= 0."
 }

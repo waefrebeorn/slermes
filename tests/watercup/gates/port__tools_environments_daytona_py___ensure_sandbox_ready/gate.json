@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ensure_sandbox_ready",
+  "c_fn": "stopped",
   "py_module": "tools/environments/daytona.py",
   "py_fn": "_ensure_sandbox_ready",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/environments_daytona.c"
   ],
   "cflags": [
     "-I",

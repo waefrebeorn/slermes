@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_apply_mcp_preset",
+  "c_fn": "hermes_cli_mcp_config_u_apply_mcp_preset",
   "py_module": "hermes_cli/mcp_config.py",
   "py_fn": "_apply_mcp_preset",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/mcp_config.c"
   ],
   "cflags": [
     "-I",

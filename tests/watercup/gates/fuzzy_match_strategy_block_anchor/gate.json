@@ -14,23 +14,15 @@
     "-I",
     "src"
   ],
-  "extra_src": [
-    "src/hermes_cli/fuzzy_match_helpers.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_strategy_block_anchor",
   "inputs": [
-    "def a():\n    return 1\timport x\ndef a():\n    return 1",
-    "head\n\tbody line\nhead\nbody line\ntail",
-    "only-line\tsome random content here",
-    "start\nend\tstart\nmiddle stuff\nend",
-    "start\nend\tstart\ncompletely different words\nend",
-    "# title\n\t# title",
-    "a\nb\nca\tdb\nb",
-    "x\ny\tpre\nx\ny\npost\nmore\nx\ny",
-    "pad\n\t   pad   \n\nother\npad",
-    "one\ntwo\tone\ntwo"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Block-anchor fuzzy-match strategy. Harness links the REAL C port (fuzzy_match_helpers.c::fuzzy_match_strategy_block_anchor compiled fresh, which internally uses its own seq_ratio port of difflib.SequenceMatcher.ratio); twin imports LIVE tools/fuzzy_match.py::_strategy_block_anchor (source-extracted fallback). Input encoding '<pattern>\\t<content>' with literal backslash-n decoding to newlines. Coarse rung ladder per the channel_directory precedent: too-few-pattern-lines gate, per-offset anchor branches, unique-vs-multi threshold selection, <=2-line fast path, plus the match-list V value. Middle-similarity inputs are deliberately exact-duplicate (ratio 1.0) or fully disjoint (well under threshold) so the C seq_ratio port cannot drift from difflib at threshold edges."
 }

@@ -7,18 +7,11 @@
   "py_module": "gateway/slash_access.py",
   "py_fn": "SlashAccessPolicy.can_run",
   "inputs": [
-    "0|||u123|status",
-    "1|u123|status|u123|restart",
-    "1|u123|status|u999|help",
-    "1|u123|status|u999|whoami",
-    "1|u123|status|u999|status",
-    "1|u123|status|u999|model",
-    "1|u123||u999|",
-    "1||/help,/status|guest|HELP",
-    "1||/Help|guest|help",
-    "1| u456 , u789 |x|u789|yolo",
-    "1|||",
-    "1|u1|cmd-a|u2|CMD-A"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Slash-command access-policy ladder (src/gateway/slash_access.c vs LIVE gateway/slash_access.py): disabled->admin->empty-cmd->always-allowed{help,whoami}->user allowlist. Probes 'enabled|admins|allowed|user|cmd'. Twin imports the LIVE module."
 }

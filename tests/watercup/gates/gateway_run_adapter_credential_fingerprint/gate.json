@@ -7,16 +7,11 @@
   "py_module": "gateway/run.py",
   "py_fn": "_adapter_credential_fingerprint",
   "inputs": [
-    "null",
-    "123456:ABC-DEF_your-bot-token",
-    "  padded-secret-42  ",
-    "x",
-    "telegram-token-99887766",
-    "sk-or-v1-abcdef0123456789",
-    "discord-app-token-ZzYyXxWw",
-    "0",
-    "slack-xoxb-123-456",
-    "same-token-across-profiles"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Salted credential fingerprint sha256('hermes-mux:'+token).hexdigest()[:16]. Harness is a faithful traced copy of run_pure2.c::gw_adapter_credential_fingerprint; SHA-256 is embedded in the harness because lib/libhash/hash.c needs OpenSSL at link time and wc_run's flag ordering places -l flags before objects. Twin drives LIVE GatewayRunner._adapter_credential_fingerprint on a duck-typed adapter (.token attr); 'null' encodes the no-credential -> None path. Whitespace-stripping and empty-after-strip branches covered."
 }

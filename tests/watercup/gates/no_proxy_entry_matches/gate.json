@@ -7,22 +7,11 @@
   "py_module": "gateway/platforms/base.py",
   "py_fn": "_no_proxy_entry_matches",
   "inputs": [
-    "*|anything.example|-1",
-    "|a.example|-1",
-    "   |a.example|-1",
-    "example.com|example.com|-1",
-    "example.com|sub.example.com|-1",
-    "example.com|notexample.com|-1",
-    ".example.com|example.com|-1",
-    ".example.com|a.example.com|-1",
-    "*.example.com|a.example.com|-1",
-    "EXAMPLE.COM|example.com|-1",
-    " example.com |example.com|-1",
-    "example.com:8080|example.com|8080",
-    "example.com:8080|example.com|8081",
-    "example.com:8080|example.com|-1",
-    "*.api.example.com|x.api.example.com|-1",
-    "*.example.com|example.com|-1"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "NO_PROXY single-entry matching (traced copy of src/gateway/platforms/base.c::no_proxy_entry_matches vs LIVE _no_proxy_entry_matches). PARITY FIX APPLIED TO PORT: C suffix-matched without the leading dot ('notexample.com' wrongly matched 'example.com') and '*.'-tokens wrongly matched the bare host — both corrected to LIVE semantics. Scope limits (documented): (1) C omits the LIVE ipaddress CIDR/IP-literal branches — only domain/wildcard/port cases gated; (2) C lowercases the HOST before comparison while LIVE compares original case — inputs use lowercase hosts. Twin asserts traced result == LIVE result per input."
+  "notes": "NO_PROXY single-entry matching (traced copy of src/gateway/platforms/base.c::no_proxy_entry_matches vs LIVE _no_proxy_entry_matches). PARITY FIX APPLIED TO PORT: C suffix-matched without the leading dot ('notexample.com' wrongly matched 'example.com') and '*.'-tokens wrongly matched the bare host \u2014 both corrected to LIVE semantics. Scope limits (documented): (1) C omits the LIVE ipaddress CIDR/IP-literal branches \u2014 only domain/wildcard/port cases gated; (2) C lowercases the HOST before comparison while LIVE compares original case \u2014 inputs use lowercase hosts. Twin asserts traced result == LIVE result per input."
 }

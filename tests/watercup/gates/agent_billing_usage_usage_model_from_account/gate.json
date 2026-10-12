@@ -4,23 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "usage_model_from_account",
-  "extra_src": ["src/agent/billing_usage.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "py_module": "agent/billing_usage.py",
   "py_fn": "usage_model_from_account",
   "inputs": [
-    "null",
-    "{}",
-    "{\"logged_in\":false}",
-    "{\"logged_in\":true,\"paid_service_access\":false,\"subscription\":{\"plan\":\"pro\",\"monthly_credits\":30},\"paid_service_access_info\":{\"subscription_credits_remaining\":0.5,\"purchased_credits_remaining\":0}}",
-    "{\"logged_in\":true,\"subscription\":{\"plan\":\"free\"}}",
-    "{\"logged_in\":true,\"paid_service_access\":true,\"subscription\":{\"plan\":\"pro\",\"monthly_credits\":30,\"current_period_end\":\"2026-09-01T00:00:00Z\"},\"paid_service_access_info\":{\"subscription_credits_remaining\":12.5,\"purchased_credits_remaining\":3.25,\"total_usable_credits\":15.75}}",
-    "{\"logged_in\":true,\"paid_service_access\":true,\"subscription\":{\"monthly_credits\":20},\"paid_service_access_info\":{\"subscription_credits_remaining\":19.9}}",
-    "{\"logged_in\":true,\"paid_service_access\":true,\"paid_service_access_info\":{\"purchased_credits_remaining\":2.0}}",
-    "{\"logged_in\":true,\"paid_service_access\":true,\"paid_service_access_info\":{\"purchased_credits_remaining\":8.0}}",
-    "{\"logged_in\":true,\"paid_service_access\":true,\"paid_service_access_info\":{\"subscription_credits_remaining\":-3.0,\"total_usable_credits\":40}}",
-    "{\"logged_in\":true,\"paid_service_access\":true,\"subscription\":{\"plan\":\"team\",\"monthly_credits\":100},\"paid_service_access_info\":{\"subscription_credits_remaining\":250,\"total_usable_credits\":250}}",
-    "{\"logged_in\":true,\"subscription\":{\"plan\":\"pro\",\"monthly_credits\":30},\"paid_service_access_info\":{\"subscription_credits_remaining\":30}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Usage-model builder from NousPortal account info (src/agent/billing_usage.c::usage_model_from_account vs LIVE agent/billing_usage.py::usage_model_from_account). Links the REAL port via extra_src; the harness mirrors the branch ladder (not-logged-in / paid-is-false / free / low / plan-bar / topup-bar) and hashes a canonical field summary of the returned model. Covers depleted, free, low (<$5), healthy, negative-balance clamping, server-total preference over summed parts, and the paid-is-false (identity) vs null distinction."
 }

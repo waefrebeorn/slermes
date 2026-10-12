@@ -1,11 +1,23 @@
-# State — Slermes C Translation (v672, PORT phase)
+<!-- PARITY:AUTO -->| PORTED  | 6,466 / 18,219 (35.5%) |
+| REAL_GAP| 11,715 (64.3%) — no N/A |
+|  ├ DA-4 stubs | 11 |
+|  └ Genuine gaps | 11,704 |
+| PARTIAL | 38 (0.2%) |
+| BOOTLEG | 0 |
+| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v673):** PORT phase
+
+**Upstream sync:** 2,082 ahead / 1,056 behind (last merge 2026-10-06 (upstream fetched))
+
+_Generated 2026-10-07T05:29:39Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+
+# State — Slermes C Translation (, PORT phase)
 
 - Build: `make slermes` = 0 errors, binary links clean
 - Tests: Mission 8: 77 passed, 0 failed
 - Watercup: 313 PASS / 22,604 total (1.4%)
 - Upstream: 2,072 ahead / 2,639 behind
 
-## This Session (2026-09-15)
+## This Session ()
 
 ### Watercup Oracle System
 - `gen_parity_walkway.py` rewritten: dynamic file discovery, auto-sentinel injection, 17 stale patterns purged

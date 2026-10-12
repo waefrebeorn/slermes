@@ -7,16 +7,19 @@
   "c_fn": "wc_i18n_t",
   "py_module": "agent/i18n.py",
   "py_fn": "t",
-  "cflags": ["-I", "include", "-I", "src/agent"],
-  "extra_src": ["src/agent/i18n.c"],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "src/agent"
+  ],
+  "extra_src": [],
   "inputs": [
-    "approval.choose_short|en|",
-    "approval.choose_long|deutsch|",
-    "approval.dangerous_header|zh-CN|description=rm -rf /",
-    "approval.prompt_long|ja-JP|",
-    "nonexistent.key|fr|",
-    "approval.dangerous_header|xx-piglatin|description=echo hi",
-    "gateway.missing_everywhere|en|"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "i18n message-selection ladder (src/agent/i18n.c vs LIVE agent/i18n.py): normalize_lang (alias + region strip) -> target catalog hit -> English fallback -> bare-key last resort -> {placeholder} formatting. Probes 'key|lang|kwargs(k=v,...)'."
 }

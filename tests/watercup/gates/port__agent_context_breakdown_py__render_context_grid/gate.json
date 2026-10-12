@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "render_context_grid",
+  "c_fn": "cb_render_context_grid",
   "py_module": "agent/context_breakdown.py",
   "py_fn": "render_context_grid",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/context_breakdown.c"
   ],
   "cflags": [
     "-I",

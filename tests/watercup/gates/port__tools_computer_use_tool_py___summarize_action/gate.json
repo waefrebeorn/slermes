@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_summarize_action",
+  "c_fn": "tools_computer_use_tool_u_summarize_action",
   "py_module": "tools/computer_use/tool.py",
   "py_fn": "_summarize_action",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/computer_use/tool.c"
   ],
   "cflags": [
     "-I",

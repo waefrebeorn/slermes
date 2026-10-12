@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_ancestor_pids",
+  "c_fn": "count",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_get_ancestor_pids",
   "inputs": [

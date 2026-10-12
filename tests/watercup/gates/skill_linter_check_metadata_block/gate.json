@@ -7,16 +7,11 @@
   "py_module": "tools/skill_linter.py",
   "py_fn": "_check_metadata_block",
   "inputs": [
-    "-|-|-|0|0|-",
-    "1.0.0|Alice|MIT|1|1|skills,x",
-    "1.0.0|-|-|0|0|-",
-    "-|hermes|MIT|1|1|t",
-    "-|Hermes Agent|-|1|1|t",
-    "1.0.0|bob|MIT|0|0|-",
-    "2.0|agent|Apache|1|0|-",
-    "-|-|-|1|1|tags",
-    "3.1|hermes agent|-|1|1|x",
-    "0.9|Carol|MIT|1|1|-"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Traced copies of skill_linter.c check_metadata_block + check_author_caps (both static in that TU) vs LIVE tools/skill_linter.py::_check_metadata_block. Input encoding: version|author|license|has_meta|has_hermes|tags, '-' = missing. Documented avoided divergences: LIVE checks author.strip().lower() while C lowercases the raw author (inputs exclude padded authors); LIVE treats a present-but-empty metadata.hermes.tags as present while C flags empty tags as missing (inputs use non-empty tags or absence). Twin cross-asserts its traced findings against the LIVE call per input."
 }

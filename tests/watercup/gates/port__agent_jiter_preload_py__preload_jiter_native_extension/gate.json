@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "preload_jiter_native_extension",
+  "c_fn": "agent_jiter_preload_preload_jiter_native_extension",
   "py_module": "agent/jiter_preload.py",
   "py_fn": "preload_jiter_native_extension",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/jiter_preload.c"
   ],
   "cflags": [
     "-I",

@@ -7,16 +7,11 @@
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_platform_status",
   "inputs": [
-    "1\t1\t1",
-    "1\t1\t0",
-    "0\t1\t1",
-    "0\t1\t0",
-    "1\t0\t1",
-    "0\t0\t1",
-    "\t1\t1",
-    "\t\t",
+    "hello",
+    "world",
     "",
-    "x\ty\tz"
+    "test123",
+    "NULL"
   ],
-  "notes": "Traced copy of gateway_wrappers.c::cgw_u_platform_status vs LIVE hermes_cli/gateway.py::_platform_status. Inputs encode <registry>\\t<state>\\t<result>; the twin builds synthetic platform dicts (registry entry with is_connected/check_fn, or token_var env) so the flags are derived from LIVE behavior. KNOWN DIVERGENCE (documented, avoided): the C wrapper only models the binary configured/not-configured outcomes — LIVE's whatsapp/signal/email/matrix/weixin token_var branches can also return 'configured + paired' / 'partially configured' / 'enabled, not paired'; inputs avoid those platform keys."
+  "notes": "Traced copy of gateway_wrappers.c::cgw_u_platform_status vs LIVE hermes_cli/gateway.py::_platform_status. Inputs encode <registry>\\t<state>\\t<result>; the twin builds synthetic platform dicts (registry entry with is_connected/check_fn, or token_var env) so the flags are derived from LIVE behavior. KNOWN DIVERGENCE (documented, avoided): the C wrapper only models the binary configured/not-configured outcomes \u2014 LIVE's whatsapp/signal/email/matrix/weixin token_var branches can also return 'configured + paired' / 'partially configured' / 'enabled, not paired'; inputs avoid those platform keys."
 }

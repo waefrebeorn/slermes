@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_adapter_profile_for_source",
+  "c_fn": "gateway_authz_mixin_u_adapter_profile_for_source",
   "py_module": "gateway/authz_mixin.py",
   "py_fn": "_adapter_profile_for_source",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/authz_mixin.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

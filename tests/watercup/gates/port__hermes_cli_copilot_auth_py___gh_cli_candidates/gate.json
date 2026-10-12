@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_gh_cli_candidates",
+  "c_fn": "hermes_cli_copilot_auth_u_gh_cli_candidates",
   "py_module": "hermes_cli/copilot_auth.py",
   "py_fn": "_gh_cli_candidates",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/copilot_auth.c"
   ],
   "cflags": [
     "-I",

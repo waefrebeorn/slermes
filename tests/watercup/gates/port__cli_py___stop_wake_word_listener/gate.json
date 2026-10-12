@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_stop_wake_word_listener",
+  "c_fn": "hcli_stop_wake_word_listener",
   "py_module": "cli.py",
   "py_fn": "_stop_wake_word_listener",
   "inputs": [

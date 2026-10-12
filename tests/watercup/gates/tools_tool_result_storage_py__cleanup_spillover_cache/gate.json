@@ -7,11 +7,11 @@
   "py_module": "tools/tool_result_storage.py",
   "py_fn": "cleanup_spillover_cache",
   "inputs": [
-    "0",
-    "1",
-    "-1",
-    "42",
-    "999"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

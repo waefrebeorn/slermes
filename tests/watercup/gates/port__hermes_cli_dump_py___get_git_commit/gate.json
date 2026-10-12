@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_git_commit",
+  "c_fn": "hermes_cli_dump_u_get_git_commit",
   "py_module": "hermes_cli/dump.py",
   "py_fn": "_get_git_commit",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dump.c"
   ],
   "cflags": [
     "-I",

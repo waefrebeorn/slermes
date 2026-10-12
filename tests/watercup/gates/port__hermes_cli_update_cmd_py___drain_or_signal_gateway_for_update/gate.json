@@ -7,14 +7,17 @@
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_drain_or_signal_gateway_for_update",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_cmd_gaps.c"
   ],
   "cflags": [
     "-I",

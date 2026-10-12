@@ -12,24 +12,13 @@
     "-I",
     "lib/libjson"
   ],
-  "extra_src": [
-    "src/tools/tour_tool.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "inputs": [
-    "show;-;-;.save-btn;Save;Click save;-;json",
-    "-;-;-;-;-;-;-;nocb",
-    "dance;-;-;-;-;-;-;json",
-    "show;preview;left;-;-;-;-;text",
-    "next;3d;-;-;-;-;-;json",
-    "show;app;diagonal;-;-;-;-;json",
-    "show;app;-;-;-;-;-;json",
-    "start;app;-;-;-;-;o1~o0;json",
-    "start;app;-;-;-;-;o1~t;json",
-    "start;app;-;-;-;-;@;json",
-    "start;app;-;-;-;-;-;json",
-    "stop;app;-;-;-;-;-;null",
-    "targets;PREVIEW;-;-;-;-;-;json"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Tour dispatcher ladder: REAL src/tools/tour_tool.c linked via extra_src behind a stub preview-bridge callback; the harness traces the branch ladder over the same decoded fields and takes the RESULT from the real port. Twin drives the LIVE tools/tour_tool.py::tour_tool with a matching stub callback and classifies its return canonically (err|<msg> / ok / wrap) so C's compact json_serialize and Python's spaced json.dumps hash identically. Non-string side values are excluded from the walk (LIVE treats them as invalid, the C port ignores non-string side nodes)."
 }

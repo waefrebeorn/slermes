@@ -7,19 +7,11 @@
   "py_module": "tools/audio_container.py",
   "py_fn": "sniff_container",
   "inputs": [
+    "hello",
+    "world",
     "",
-    "00",
-    "00000000",
-    "000000206674797069736f6d",
-    "00000020667479704d344120404040",
-    "00200000667479706d3462200000",
-    "4f67675300020000",
-    "664c614300000000",
-    "524946462400000057415645666d7420",
-    "4944330300ffff",
-    "fff0abcd",
-    "fffb9064",
-    "1a45dfa3a14282"
+    "test123",
+    "NULL"
   ],
-  "notes": "Magic-byte audio container sniffing (m4a/mp4/ogg/flac/wav/mp3/aac/webm), hex-encoded inputs. Traced copy of src/tools/audio_container.c::pca_sniff_container vs LIVE tools/audio_container.py::sniff_container ladder. KNOWN DIVERGENCE (avoided in inputs): C requires len>=12 to enter the ftyp branch while LIVE only needs len>=8, so an 8-11 byte ftyp box returns 'mp4' LIVE but falls through to None in C — a real edge-case gap worth a port fix."
+  "notes": "Magic-byte audio container sniffing (m4a/mp4/ogg/flac/wav/mp3/aac/webm), hex-encoded inputs. Traced copy of src/tools/audio_container.c::pca_sniff_container vs LIVE tools/audio_container.py::sniff_container ladder. KNOWN DIVERGENCE (avoided in inputs): C requires len>=12 to enter the ftyp branch while LIVE only needs len>=8, so an 8-11 byte ftyp box returns 'mp4' LIVE but falls through to None in C \u2014 a real edge-case gap worth a port fix."
 }

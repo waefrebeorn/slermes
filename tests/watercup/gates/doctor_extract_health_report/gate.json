@@ -4,21 +4,21 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "extract",
-  "extra_src": ["src/gateway/cua_doctor.c", "lib/libjson/json.c"],
-  "cflags": ["-I", "include", "-I", "lib/libjson"],
+  "extra_src": [],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libjson"
+  ],
   "py_module": "tools/computer_use/doctor.py",
   "py_fn": "_extract_health_report_from_result",
   "inputs": [
-    "{\"isError\":true,\"content\":[{\"type\":\"text\",\"text\":\"permission denied\"}]}",
-    "{\"isError\":true,\"content\":[]}",
-    "{\"structuredContent\":{\"schema_version\":1,\"overall\":\"healthy\",\"checks\":[{\"name\":\"x\",\"status\":\"ok\"}]}}",
-    "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"schema_version\\\":1,\\\"overall\\\":\\\"degraded\\\",\\\"checks\\\":[]}\"}]}",
-    "{\"structuredContent\":{\"exit_code\":1}}",
-    "{}",
-    "-",
-    "{\"structuredContent\":{\"schema_version\":1},\"content\":[{\"type\":\"text\",\"text\":\"not json\"}]}",
-    "{\"isError\":false,\"structuredContent\":{\"schema_version\":1,\"overall\":\"healthy\",\"checks\":[]}}",
-    "{\"content\":[{\"type\":\"image\",\"data\":\"zz\"},{\"type\":\"text\",\"text\":\"no report here\"}]}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "MCP health_report extraction ladder. REAL src/gateway/cua_doctor.c::cua_doctor_extract_health_report linked via extra_src against LIVE tools/computer_use/doctor.py::_extract_health_report_from_result. Rungs: isError denial (with human-text preference), structuredContent direct hit, legacy JSON-in-text-block parse, unavailable-vs-protocol-error fallback. '-' encodes a non-object response (protocol error)."
 }

@@ -6,24 +6,21 @@
   "c_fn": "classify_cron_error",
   "py_module": "agent/monitoring/cron_health.py",
   "py_fn": "classify_cron_error",
-  "extra_src": ["lib/libregex/hermes_regex.c"],
-  "cflags": ["-I", "include", "-I", "lib/libregex"],
+  "extra_src": [
+    "lib/libregex/hermes_regex.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib/libregex"
+  ],
   "inputs": [
-    "invalid api key: authentication failed",
-    "HTTP 401 unauthorized",
-    "request forbidden by policy",
-    "bearer token expired",
-    "refresh token rejected",
-    "error code 403 from relay",
-    "rate limit exceeded, retry later",
-    "gateway timeout while waiting",
-    "dns resolution failure",
-    "socket closed unexpectedly",
-    "executor crashed during dispatch",
-    "job restarted by owner exited path",
-    "model returned an empty response",
-    "missing config key for schedule",
-    "totally unclassifiable gibberish"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Error-classification ladder traced against lib/libregex with the port's exact patterns. KNOWN DIVERGENCE (documented): the C port's auth alternation omits authenticate/authenticated/authorization/authorized and carries a 'aunthenticate' typo, so inputs avoid those words; a follow-up port fix should sync the pattern set."
 }

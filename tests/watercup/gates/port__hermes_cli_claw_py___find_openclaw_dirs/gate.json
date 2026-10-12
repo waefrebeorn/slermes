@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_find_openclaw_dirs",
+  "c_fn": "hermes_cli_claw_u_find_openclaw_dirs",
   "py_module": "hermes_cli/claw.py",
   "py_fn": "_find_openclaw_dirs",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/claw.c"
   ],
   "cflags": [
     "-I",

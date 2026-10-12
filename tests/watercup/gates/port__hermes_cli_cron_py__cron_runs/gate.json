@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cron_runs",
+  "c_fn": "hermes_cli_cron_cron_runs",
   "py_module": "hermes_cli/cron.py",
   "py_fn": "cron_runs",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/cron.c",
+    "src/cron/scheduler_ports.c"
   ],
   "cflags": [
     "-I",

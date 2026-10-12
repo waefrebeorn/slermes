@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "count_empty_sessions",
+  "c_fn": "ws_sessions_count_empty",
   "py_module": "hermes_state.py",
   "py_fn": "count_empty_sessions",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server_sessions_admin.c"
   ],
   "cflags": [
     "-I",

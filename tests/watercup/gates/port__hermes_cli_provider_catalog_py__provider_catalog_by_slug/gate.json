@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "provider_catalog_by_slug",
+  "c_fn": "hermes_cli_provider_catalog_provider_catalog_by_slug",
   "py_module": "hermes_cli/provider_catalog.py",
   "py_fn": "provider_catalog_by_slug",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/provider_catalog.c"
   ],
   "cflags": [
     "-I",

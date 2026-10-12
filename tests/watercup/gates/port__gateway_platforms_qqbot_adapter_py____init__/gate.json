@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "qqa_init",
   "py_module": "gateway/platforms/qqbot/adapter.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/platforms/qqbot/qqbot_adapter_ports.c",
+    "src/gateway/platforms/qqbot.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

@@ -7,11 +7,11 @@
   "py_module": "agent/anthropic_adapter.py",
   "py_fn": "_write_claude_code_credentials",
   "inputs": [
-    "hello,world",
-    "foo,bar",
-    "a,b",
-    "test,test",
-    "NULL,NULL"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c"

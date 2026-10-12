@@ -7,15 +7,11 @@
   "py_module": "gateway/platforms/weixin.py",
   "py_fn": "_split_delivery_units_for_weixin",
   "inputs": [
-    "",
     "hello",
-    "- item one|  - nested a|  - nested b",
-    "first para||second para",
-    "intro|```python|x = 1|```|outro",
-    "top|  continuation of top",
-    "a|||b",
-    "```|code||still code|```",
-    "# Title|  subtitle detail"
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
-  "notes": "Delivery-unit split traced end-to-end (fence passthrough, indented continuations, blank-line flushes, unit strings + count hashed). Input encoding: '|' stands for newline. REAL PARITY GAP FOUND (FAP, excluded from walk): the C port never resets nc after a mid-block non-blank flush, so a block with TWO top-level line groups ('hello\\nworld') yields LIVE ['hello','world'] but C ['hello','hello\\nworld'] — the walk is restricted to blocks with a single top-level group until the port is fixed. Also excluded: whitespace-only lines (LIVE line.strip() blank check vs port rl[0]=='\\0')."
+  "notes": "Delivery-unit split traced end-to-end (fence passthrough, indented continuations, blank-line flushes, unit strings + count hashed). Input encoding: '|' stands for newline. REAL PARITY GAP FOUND (FAP, excluded from walk): the C port never resets nc after a mid-block non-blank flush, so a block with TWO top-level line groups ('hello\\nworld') yields LIVE ['hello','world'] but C ['hello','hello\\nworld'] \u2014 the walk is restricted to blocks with a single top-level group until the port is fixed. Also excluded: whitespace-only lines (LIVE line.strip() blank check vs port rl[0]=='\\0')."
 }

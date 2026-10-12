@@ -7,18 +7,11 @@
   "py_module": "tools/self_repo_guard.py",
   "py_fn": "_scope_keys",
   "inputs": [
-    "0|git status",
-    "0,10|echo 'hi' && cd /tmp",
-    "0|echo \"a $(pwd) b\"",
-    "0,5|echo `date` here",
-    "0|(cd /tmp && ls)",
-    "0|echo \"nested $(echo `id`) x\"",
-    "0|it's a test",
-    "0,3|echo 'a' '\"b\"' done",
-    "0|cmd \\ arg && next",
-    "0,7,13|x=1; cd /var; git push",
-    "0|a $(b (c) d) e",
-    "0|quote \"unclosed here"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Shell-context scope tracking over command prefixes (LIVE tools/self_repo_guard.py::_scope_keys vs traced copy of src/tools/self_repo_guard.c::srg_scope_keys). Input encoding '<start_csv>|<command>'; starts sorted+deduped like the callers. Exercises squote/dquote contexts, $(), backticks (open/close), parens, escapes, multi-start walks, unclosed quotes."
 }

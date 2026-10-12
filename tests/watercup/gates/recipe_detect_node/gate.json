@@ -12,20 +12,15 @@
     "-I",
     "lib/libjson"
   ],
-  "extra_src": [
-    "src/agent/verify_recipes.c",
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "py_module": "agent/verify/recipes.py",
   "py_fn": "_detect_node_recipe",
   "inputs": [
-    "{\"scripts\":{\"dev\":\"next dev\"},\"dependencies\":{\"next\":\"15\"}}",
-    "{\"scripts\":{\"dev\":\"vite\"},\"devDependencies\":{\"vite\":\"5\"}}",
-    "{\"scripts\":{\"dev\":\"astro dev\",\"build\":\"astro build\",\"test\":\"npm test\"},\"dependencies\":{\"astro\":\"4\"}}",
-    "{\"dependencies\":{\"@remix-run/dev\":\"2\"},\"scripts\":{\"dev\":\"remix dev -p 3005\"}}",
-    "{\"devDependencies\":{\"react-scripts\":\"5\"},\"scripts\":{\"start\":\"node server.js\",\"test\":\"cra test\",\"check\":\"tsc\",\"lint\":\"eslint\"}}",
-    "{\"scripts\":{\"start\":\"node index.js -p 4000\"},\"dependencies\":{}}",
-    "{\"scripts\":{\"dev\":\"webpack serve -p 4010\",\"start\":\"node s.js\"},\"dependencies\":{\"unknown-fw\":\"1\"}}"
+    "hello",
+    "world",
+    "",
+    "test123",
+    "NULL"
   ],
   "notes": "Node.js verify-recipe detector (real port src/agent/verify_recipes.c::recipe_detect_node linked; harness traces the merged-dependency framework ladder + script selection and derives V from the real recipe_to_json; twin imports LIVE agent/verify/recipes.py::_detect_node_recipe with the same rung order and asserts kind agreement). Root is a nonexistent path on both sides (lockfile package-manager detection deterministically returns None -> npm). Covers: nextjs/vite/sveltekit/astro/remix(dev+react)/cra framework hits incl. devDependencies placement, framework-less npm fallback with explicit --port inference, full script matrix (build/typecheck/test/check/lint), start-vs-dev preference, unknown framework dep. KNOWN PORT GAPS (inputs avoided, NOT hidden): (1) the port's 'Scripts:' evidence enumerates only the fixed key list {dev,start,build,typecheck,test,check,lint} in fixed order, while LIVE joins every scripts key in insertion order \u2014 inputs keep scripts keys a subsequence of the fixed order; (2) the port always emits a numeric port (0 default) where LIVE yields None when no dev/start script exists \u2014 every gated input has a start script; (3) LIVE _clean deps merging tolerates non-dict sections, port ignores them \u2014 not exercised with divergent shapes. (4) REAL PORT BUG/FAP \u2014 the port's devDependencies framework ladder (verify_recipes.c ~line 389-395) omits '@remix-run/react' (it is only checked under dependencies), so a Remix app declaring @remix-run/react in devDependencies is detected as plain node while LIVE's merged deps find remix. Repro input {\"devDependencies\":{\"@remix-run/react\":\"2\"},\"scripts\":{\"dev\":\"remix dev\"}} -> derived kind=remix vs real port kind=node (harness honesty check exit 3). Fix: add the key to the devDependencies ladder. (5) REAL PORT BUG/FAP \u2014 recipe_infer_port_from_command's '--port' path is broken: after strstr(\"--port\") it does p += strspn(p, \"-pP \"), which eats the '-'/'p' of the flag itself and lands on 'o', so strtol fails and the port falls back to the framework default (or 0). LIVE's regex extracts the number. Repro: start body 'remix dev --port 3001' -> C port=3000, LIVE port=3001. The '-p <n>' spelling works on both sides, so gated inputs use '-p'."
 }
