@@ -48,6 +48,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -191,22 +192,59 @@ def _compiler():
     return ["cc"]
 
 
-def build_harness(gate_dir, g, force=False):
-    """Compile the gate's harness. Skips the compile when the binary is newer
-    than every input (harness.c, watercup.h, extra_src, gate.json) unless
-    force=True. Returns path to the binary."""
-    src = os.path.join(gate_dir, g["c_src"])
-    out = os.path.join(BUILD, g["name"])
+def _compile_one(g, src_path):
+    """Compile one extra_src .c to a gate-prefixed .o. Returns the path or None."""
+    tag = g["name"]
+    obj = os.path.join(BUILD, "%s.xr.%s.o" % (tag, os.path.basename(src_path)))
+    cf = _resolve_cflags(g)
+    ccmd = _compiler() + ["-I", HERE] + cf + ["-c", src_path, "-o", obj]
+    r = subprocess.run(ccmd, capture_output=True, text=True)
+    return obj if r.returncode == 0 else None
+
+
+def _compile_stub_shadowed(g, keep_srcs):
+    """Compile infrastructure_stubs.c with symbols duplicated elsewhere renamed.
+
+    The stub is a legacy fallback providing 320 symbols, many of which nothing
+    else defines — so it must stay on the link line. But it also re-defines
+    symbols the real units provide (hermes_get_home in paths.c;
+    _parse_absolute_timestamp, _exhausted_ttl, get_custom_provider_pool_key in
+    credential_pool_custom.c). Linking both is a "multiple definition" error.
+
+    Compute the overlap against the files actually on this gate's link line and
+    macro-rename the stub's copies away — the real implementations win.
+    """
+    try:
+        import fix_all_gates as _fag
+    except ImportError:
+        return None
+    src = os.path.join(REPO, _fag.STUB_SRC)
+    if not os.path.isfile(src):
+        return None
+    txt = open(src, errors="ignore").read()
+    stub_defs = set(_fag._defined_names(src, txt))
+    shadowed = set()
+    for c in keep_srcs:
+        if not os.path.isfile(c):
+            continue
+        shadowed |= stub_defs & set(
+            _fag._defined_names(c, open(c, errors="ignore").read()))
+    for sym in shadowed:
+        txt = re.sub(r'(?<![\w])%s(?![\w])' % re.escape(sym),
+                     sym + "_stub_shadowed", txt)
+    tmp = os.path.join(BUILD, "%s.stub.c" % g["name"])
     os.makedirs(BUILD, exist_ok=True)
+    with open(tmp, "w") as f:
+        f.write(txt)
+    obj = os.path.join(BUILD, "%s.stub.o" % g["name"])
+    ccmd = _compiler() + ["-I", HERE] + _resolve_cflags(g) + \
+           ["-c", tmp, "-o", obj]
+    r = subprocess.run(ccmd, capture_output=True, text=True)
+    return obj if r.returncode == 0 else None
 
-    if not force and os.path.exists(out):
-        bin_mtime = os.path.getmtime(out)
-        deps = [src, os.path.join(HERE, "watercup.h"),
-                os.path.join(gate_dir, "gate.json")]
-        deps += [os.path.join(REPO, e) for e in g.get("extra_src", [])]
-        if not any(_newer_than(d, bin_mtime) for d in deps):
-            return out  # fresh — skip rebuild
 
+def _resolve_cflags(g):
+    """Absolute, include-root-complete cflags for a gate's harness build."""
     cflags = g.get("cflags", [])
     cflags = [os.path.join(REPO, c) if not c.startswith("-") else c
               for c in cflags]
@@ -232,7 +270,26 @@ def build_harness(gate_dir, g, force=False):
         p = os.path.join(REPO, root)
         if os.path.isdir(p):
             std_inc += ["-I", p]
-    cflags = std_inc + cflags
+    return std_inc + cflags
+
+
+def build_harness(gate_dir, g, force=False):
+    """Compile the gate's harness. Skips the compile when the binary is newer
+    than every input (harness.c, watercup.h, extra_src, gate.json) unless
+    force=True. Returns path to the binary."""
+    src = os.path.join(gate_dir, g["c_src"])
+    out = os.path.join(BUILD, g["name"])
+    os.makedirs(BUILD, exist_ok=True)
+
+    if not force and os.path.exists(out):
+        bin_mtime = os.path.getmtime(out)
+        deps = [src, os.path.join(HERE, "watercup.h"),
+                os.path.join(gate_dir, "gate.json")]
+        deps += [os.path.join(REPO, e) for e in g.get("extra_src", [])]
+        if not any(_newer_than(d, bin_mtime) for d in deps):
+            return out  # fresh — skip rebuild
+
+    cflags = _resolve_cflags(g)
     extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
     libs = g.get("ldflags", [])
 
@@ -248,8 +305,16 @@ def build_harness(gate_dir, g, force=False):
     objs = []
     tag = g["name"]
     sources = [(src, "%s.%s.o" % (tag, os.path.basename(src)))]
+    # infrastructure_stubs.c must be compiled with its shadowed symbols renamed
+    # (see _compile_stub_shadowed) rather than from the raw source.
+    stub_obj = None
+    extra_real = []
+    for e in extra:
+        if e == os.path.join(REPO, "src/infrastructure_stubs.c"):
+            continue
+        extra_real.append(e)
     sources += [(e, "%s.x%d.%s.o" % (tag, i, os.path.basename(e)))
-                for i, e in enumerate(extra)]
+                for i, e in enumerate(extra_real)]
 
     compile_fail = None
     for s, obj_name in sources:
@@ -263,9 +328,14 @@ def build_harness(gate_dir, g, force=False):
             compile_fail = "BUILD FAIL (compile %s) for %s:\n%s" % (
                 os.path.basename(s), g["name"], r.stderr)
             break
-
     if compile_fail:
         raise RuntimeError(compile_fail)
+
+    if any(e == os.path.join(REPO, "src/infrastructure_stubs.c")
+           for e in extra):
+        stub_obj = _compile_stub_shadowed(g, [src] + extra_real)
+        if stub_obj:
+            objs.append(stub_obj)
 
     lcmd = ["cc"] + objs + ["-o", out, "-lm"] + libs
     r = subprocess.run(lcmd, capture_output=True, text=True)
@@ -280,8 +350,134 @@ def build_harness(gate_dir, g, force=False):
         r2 = subprocess.run(retry, capture_output=True, text=True)
         if r2.returncode == 0:
             return out
+
+        # The linker names every symbol it could not resolve. Many ports call
+        # a sibling helper with NO extern declaration, so extern-only
+        # discovery cannot see it (and an all-identifiers sweep measured
+        # net-negative). Resolve the NAMED symbols instead: targeted, bounded,
+        # and it fixes exactly the gates that would otherwise fail.
+        #
+        # Iterate: a newly added file has its own unresolved deps, so one pass
+        # is not enough. Each round adds only the files the linker just named,
+        # which keeps the link line proportional to the real dependency set
+        # rather than to a blind transitive sweep.
+        base_lib_objs = [os.path.join(REPO, "lib/libdb/sqlite3.o"),
+                         os.path.join(REPO, "lib/libhttp/http.o"),
+                         os.path.join(REPO, "lib/libyaml/yaml.o"),
+                         os.path.join(REPO, "lib/libcrypto/crypto.o"),
+                         os.path.join(REPO, "lib/libjson/json.o")]
+        base_lib_objs = [p for p in base_lib_objs if os.path.exists(p)]
+        added = []
+        rejected = set()
+        # `extra_src` may already contain a stub file that duplicates a symbol
+        # another unit provides (infrastructure_stubs.c re-defines
+        # hermes_get_home, which paths.c also defines — and paths.c is in
+        # COMMON_SRC). Probe with nothing extra; a duplicate means the stub is
+        # the offender and its object must come off the link line.
+        probe = subprocess.run(
+            ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + libs,
+            capture_output=True, text=True)
+        if probe.returncode != 0:
+            # The linker names the OFFENDER object on the line that carries
+            # "multiple definition of `sym'", and the keeper after "first
+            # defined here". Take the .o immediately preceding each
+            # "multiple definition" — never the one after "first defined here",
+            # and never via the symbol index (which returns whichever file it
+            # saw first, not necessarily the offender).
+            offenders = set()
+            for m in re.finditer(
+                    r'([^\s/:]+\.o):\s*in function[^\n]*\n[^\n]*?'
+                    r'multiple definition of',
+                    probe.stderr or ""):
+                offenders.add(os.path.basename(m.group(1)))
+            if offenders:
+                before = len(objs)
+                objs = [o for o in objs
+                        if os.path.basename(o) not in offenders]
+                if len(objs) != before:
+                    probe = subprocess.run(
+                        ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + libs,
+                        capture_output=True, text=True)
+        r2 = probe
+        for _round in range(5):
+            missing = sorted(set(re.findall(
+                r"undefined reference to [`\"']([A-Za-z_][A-Za-z0-9_]*)",
+                r2.stderr or "")))
+            # A stub file can re-define a symbol another unit already provides
+            # (infrastructure_stubs.c vs paths.c/credential_pool_custom.c).
+            # Linking it is worse than not linking it, so drop the offender and
+            # let the next round try a different owner.
+            dupes = set(re.findall(
+                r"multiple definition of [`\"']([A-Za-z_][A-Za-z0-9_]*)",
+                r2.stderr or ""))
+            if dupes:
+                for d in dupes:
+                    owner = _resolve_missing_symbols([d], g.get("name"))
+                    for o in owner:
+                        rejected.add(o)
+                added = [a for a in added if a not in rejected]
+            if not missing:
+                break
+            extra = [e for e in _resolve_missing_symbols(missing, g.get("name"))
+                     if e not in added and e not in rejected]
+            if not extra:
+                break
+            added += extra
+            # Compile each newly added .c with the gate's include flags, then
+            # link the objects. Passing raw .c paths to cc on a link line
+            # compiles them with default flags, so their #includes fail.
+            added_objs = []
+            ok = True
+            for a in extra:
+                o = _compile_one(g, a)
+                if o:
+                    added_objs.append(o)
+                else:
+                    ok = False
+            if not ok:
+                break
+            retry2 = ["cc"] + objs + added_objs + ["-o", out, "-lm"] + \
+                     base_lib_objs + libs
+            r2 = subprocess.run(retry2, capture_output=True, text=True)
+            if r2.returncode == 0:
+                return out
         raise RuntimeError("BUILD FAIL (link) for %s:\n%s"
                            % (g["name"], r.stderr))
+    return out
+
+
+_MISSING_SYMBOL_CACHE = {}
+
+
+def _resolve_missing_symbols(missing, gate_name):
+    """Map linker-reported undefined symbols to the .c files that define them.
+
+    Uses the same one-pass symbol index fix_all_gates builds. Bounded: only the
+    symbols the linker actually named, and only files under the size cap, so
+    this cannot reintroduce the link-line explosion the all-identifiers sweep
+    caused.
+    """
+    import fix_all_gates as _fag
+    out = []
+    seen = set()
+    # No size cap here: the linker has already PROVEN each symbol is needed, so
+    # this is not a blind transitive sweep that could explode the link line.
+    # The cap that guards resolve_deps does not apply — it exists to stop a
+    # speculative walk, not a targeted one. (auth_store.c is 80 KB and would
+    # otherwise be dropped, leaving authstore_load permanently undefined.)
+    for sym in missing:
+        if sym in _MISSING_SYMBOL_CACHE:
+            owner = _MISSING_SYMBOL_CACHE[sym]
+        else:
+            owner = _fag.find_definition_cached(sym)
+            _MISSING_SYMBOL_CACHE[sym] = owner
+        if not owner:
+            continue
+        rel = os.path.relpath(owner, REPO)
+        if rel in seen:
+            continue
+        seen.add(rel)
+        out.append(os.path.join(REPO, rel))
     return out
 
 

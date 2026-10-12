@@ -14,6 +14,15 @@ import re
 import sys
 
 REPO = os.getcwd()
+# The symbol index walks <REPO>/src. When this module is imported by wc_run
+# (whose CWD is the repo root) that is right, but when run directly from
+# tests/watercup it would walk the wrong tree and resolve nothing. Derive REPO
+# from this file's location instead: <repo>/tests/watercup/fix_all_gates.py.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_DERIVED_REPO = os.path.dirname(os.path.dirname(_HERE))
+if not os.path.isdir(os.path.join(REPO, "src")) and \
+        os.path.isdir(os.path.join(_DERIVED_REPO, "src")):
+    REPO = _DERIVED_REPO
 GATES = os.path.join(REPO, "tests/watercup", "gates")
 SRC = os.path.join(REPO, "src")
 POP_INDEX_PATH = os.path.join(REPO, "tests/watercup", "pop_index.json")
@@ -28,6 +37,15 @@ COMMON_SRC = [
     "src/agent/logger.c",
     "src/cli/paths.c",
 ]
+
+# src/infrastructure_stubs.c is a legacy fallback providing 320 symbols, some of
+# which nothing else defines (load_pool, credential_pool_free) — so it must stay
+# on the link line. It re-defines exactly ONE symbol that src/cli/paths.c (in
+# COMMON_SRC) also provides: hermes_get_home. Linking both is a "multiple
+# definition" error. Rename the stub's copy out of the way instead of dropping
+# the file: the real paths.c implementation wins.
+STUB_SRC = "src/infrastructure_stubs.c"
+STUB_SHADOWED = {"hermes_get_home"}
 
 SIG_RE = re.compile(
     r'(?:static\s+)?(?:const\s+)?(?:unsigned\s+)?(?:long\s+)?(?:struct\s+\w+\s+)?'
