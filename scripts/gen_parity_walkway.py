@@ -210,9 +210,18 @@ def compute_parity():
     
     # Watercup
     watercup = {"total": 0, "pass": 0, "fail": 0, "pass_pct": 0.0,
-                "ported_pass": 0, "ported_total": 0, "gap_mismatch": 0, "gap_total": 0}
+                "ported_pass": 0, "ported_total": 0, "gap_mismatch": 0, "gap_total": 0,
+                "unavailable": False, "reason": ""}
     wc_results = os.path.join(REPO, "tests", "watercup", "build", "results.jsonl")
-    if os.path.isfile(wc_results):
+    meta_path = os.path.join(REPO, "tests", "watercup", "build", "wc_meta.json")
+    if os.path.isfile(meta_path):
+        try:
+            wc_meta = json.load(open(meta_path))
+            watercup["unavailable"] = True
+            watercup["reason"] = wc_meta.get("reason", "oracle blocked")
+        except Exception:
+            pass
+    elif os.path.isfile(wc_results):
         wc_gates = {}
         with open(wc_results) as f:
             for line in f:
@@ -260,8 +269,10 @@ def build_count_block(d):
     behind = d['behind'] if d['behind'] >= 0 else "?"
     wc = d.get('watercup', {})
     wc_line = ""
-    if wc.get('total', 0) > 0:
-        wc_line = f"| **Watercup** | {wc['pass']:,} PASS / {wc['total']:,} ({wc['pass_pct']:.1f}%) · {wc['ported_pass']}/{wc['ported_total']} ported match · {wc['gap_mismatch']}/{wc['gap_total']} gap mismatch |\n"
+    if wc.get('unavailable'):
+        wc_line = f"| **Watercup** | unavailable — {wc.get('reason','oracle blocked')} |\\n"
+    elif wc.get('total', 0) > 0:
+        wc_line = f"| **Watercup** | {wc['pass']:,} PASS / {wc['total']:,} ({wc['pass_pct']:.1f}%) · {wc['ported_pass']}/{wc['ported_total']} ported match · {wc['gap_mismatch']}/{wc['gap_total']} gap mismatch |\\n"
     
     return (
         f"| PORTED  | {d['ported']:,} / {d['total']:,} ({d['pct']:.1f}%) |\n"
@@ -296,14 +307,18 @@ def process_file(path, d, scan_doc):
     has_sentinel = SENT_OPEN in content and SENT_CLOSE in content
     rel = os.path.relpath(path, REPO)
     
-    # Purge stale from non-sentinel regions
+    # Purge stale from non-sentinel regions AND regenerate the canonical
+    # programmatic count block inside every sentinel (so no hand-typed
+    # counts, sync figures or watercup stats survive anywhere).
     if has_sentinel:
         parts = content.split(SENT_OPEN)
         new_parts = [purge_stale_claims(parts[0])]
         for seg in parts[1:]:
             if SENT_CLOSE in seg:
                 inner, after = seg.split(SENT_CLOSE, 1)
-                new_parts.append(SENT_OPEN + inner + SENT_CLOSE)
+                # Regenerate the whole count block programmatically from live
+                # sources (scanner + oracle + git) — never hand-typed.
+                new_parts.append(SENT_OPEN + build_count_block(d) + SENT_CLOSE)
                 new_parts.append(purge_stale_claims(after))
             else:
                 new_parts.append(purge_stale_claims(seg))

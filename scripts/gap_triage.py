@@ -80,8 +80,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--top", type=int, default=0, help="show only top N")
-    ap.add_argument("--pure", action="store_true",
-                    help="only modules with >=50% pure-leaf gaps")
+    ap.add_argument("--pure", action="store_true", help="only modules with >=50 pct pure-leaf gaps")
     ap.add_argument("--json", action="store_true", help="JSON output")
     args = ap.parse_args()
 

@@ -7,7 +7,7 @@ import json, os, re, sys, textwrap
 
 SLERMES = '/home/wubu/hermes-agent-dev/slermes'
 PY_ROOT = '/home/wubu/hermes-agent-dev'
-SCAN_FILE = '/tmp/fresh_scan.json'
+SCAN_FILE = '/home/wubu/hermes-agent-dev/slermes/live_parity_scan.json'
 
 def load_scan():
     return json.load(open(SCAN_FILE))
