@@ -259,6 +259,13 @@ def _cross_unit_names(c_file, src):
     if key in _FILE_NAMES_CACHE:
         return _FILE_NAMES_CACHE[key]
     names = set()
+    # extern declarations only. An all-called-identifiers sweep was tried
+    # twice, at depth 1 and 2, and measured net-negative both times (batch3
+    # matches 9 -> 8, batch4 4 -> 3) even after fixing the web_server.c
+    # json_len collision that originally blocked it. It pulls sibling units
+    # whose own transitive deps stay unresolved at depth 1, and doubling the
+    # depth does not recover the matches — it just adds files. Keep the sweep
+    # extern-only until the port's cross-unit calls are clean.
     for m in re.finditer(r'extern\s+[\w\s\*]+?(\w+)\s*\([^;{]*\)\s*;', src):
         names.add(m.group(1))
     _FILE_NAMES_CACHE[key] = names
