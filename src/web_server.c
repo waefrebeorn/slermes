@@ -55,15 +55,15 @@ static const char *mime_type(const char *p) {
 /* ── JSON builder ───────────────────────────────────────────────────── */
 
 static char json_buf[JSON_SZ];
-static int json_len;
+static int json_buf_len;
 
 #define JSON(...) do { \
-    int r = snprintf(json_buf + json_len, sizeof(json_buf) - json_len - 1, __VA_ARGS__); \
-    if (r > 0) json_len += r; \
-    if (json_len > (int)sizeof(json_buf) - 32) json_len = sizeof(json_buf) - 32; \
+    int r = snprintf(json_buf + json_buf_len, sizeof(json_buf) - json_buf_len - 1, __VA_ARGS__); \
+    if (r > 0) json_buf_len += r; \
+    if (json_buf_len > (int)sizeof(json_buf) - 32) json_buf_len = sizeof(json_buf) - 32; \
 } while(0)
 
-#define RESET() do { json_len = 0; json_buf[0] = '\0'; } while(0)
+#define RESET() do { json_buf_len = 0; json_buf[0] = '\0'; } while(0)
 
 /* Forward declarations */
 static char g_current_path[1024]; /* path of current request, used by handlers */
@@ -1975,22 +1975,22 @@ static void h_update_check(void) {
                      ",\"release_notes_url\":\"https://github.com/waefrebeorn/slermes/releases\",\"last_check\":%ld}",
                      (long)time(NULL));
             size_t need = L + strlen(extra) + 1;
-            if (need < sizeof(json_buf) - json_len - 1) {
-                memcpy(json_buf + json_len, payload, L - 1);
-                json_len += (int)(L - 1);
-                memcpy(json_buf + json_len, extra, strlen(extra) + 1);
-                json_len += (int)strlen(extra) - 1;
+            if (need < sizeof(json_buf) - json_buf_len - 1) {
+                memcpy(json_buf + json_buf_len, payload, L - 1);
+                json_buf_len += (int)(L - 1);
+                memcpy(json_buf + json_buf_len, extra, strlen(extra) + 1);
+                json_buf_len += (int)strlen(extra) - 1;
             } else {
                 /* payload too big for the static buffer — emit it verbatim */
-                snprintf(json_buf + json_len, sizeof(json_buf) - json_len - 1,
-                         "%.*s", (int)(sizeof(json_buf) - json_len - 32), payload);
-                json_len = (int)strlen(json_buf);
+                snprintf(json_buf + json_buf_len, sizeof(json_buf) - json_buf_len - 1,
+                         "%.*s", (int)(sizeof(json_buf) - json_buf_len - 32), payload);
+                json_buf_len = (int)strlen(json_buf);
             }
             free(payload);
             return;
         }
-        snprintf(json_buf + json_len, sizeof(json_buf) - json_len - 1, "%s", payload);
-        json_len = (int)strlen(json_buf);
+        snprintf(json_buf + json_buf_len, sizeof(json_buf) - json_buf_len - 1, "%s", payload);
+        json_buf_len = (int)strlen(json_buf);
         free(payload);
     } else {
         JSON("{\"install_method\":\"unknown\",\"current_version\":\"%s\","
@@ -3144,12 +3144,12 @@ static sqlite3 *srv_db_get(void) {
 /* Append a JSON-escaped string to json_buf. Returns chars written. */
 static int json_escape_append(const char *src) {
     int written = 0;
-    for (const unsigned char *p = (const unsigned char *)src; *p && json_len < (int)sizeof(json_buf) - 8; p++) {
-        if (*p == '"' || *p == '\\') { json_buf[json_len++] = '\\'; json_buf[json_len++] = *p; written += 2; }
-        else if (*p == '\n') { json_buf[json_len++] = '\\'; json_buf[json_len++] = 'n'; written += 2; }
-        else if (*p == '\t') { json_buf[json_len++] = '\\'; json_buf[json_len++] = 't'; written += 2; }
-        else if (*p < 0x20) { json_len += snprintf(json_buf + json_len, sizeof(json_buf) - json_len, "\\u%04x", *p); written += 6; }
-        else { json_buf[json_len++] = *p; written++; }
+    for (const unsigned char *p = (const unsigned char *)src; *p && json_buf_len < (int)sizeof(json_buf) - 8; p++) {
+        if (*p == '"' || *p == '\\') { json_buf[json_buf_len++] = '\\'; json_buf[json_buf_len++] = *p; written += 2; }
+        else if (*p == '\n') { json_buf[json_buf_len++] = '\\'; json_buf[json_buf_len++] = 'n'; written += 2; }
+        else if (*p == '\t') { json_buf[json_buf_len++] = '\\'; json_buf[json_buf_len++] = 't'; written += 2; }
+        else if (*p < 0x20) { json_buf_len += snprintf(json_buf + json_buf_len, sizeof(json_buf) - json_buf_len, "\\u%04x", *p); written += 6; }
+        else { json_buf[json_buf_len++] = *p; written++; }
     }
     return written;
 }
@@ -3167,7 +3167,7 @@ static void send_json(int fd) {
         "Content-Length: %d\r\n"
         "\r\n"
         "%s",
-        json_len, json_buf);
+        json_buf_len, json_buf);
 }
 
 /* ── WebSocket upgrade ─────────────────────────────────────────────── */
