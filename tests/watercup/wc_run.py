@@ -216,13 +216,19 @@ def build_harness(gate_dir, g, force=False):
               if c.startswith("-I") and len(c) > 2 and not os.path.isabs(c[2:])
               else c for c in cflags]
     # Gate cflags carry a bare "-I" with no path, so vendored headers
-    # (lib/libhttp/http.h and siblings) never resolve and the harness fails
-    # to compile. Add the project's standard include roots once, here.
+    # (lib/libhttp/http.h, lib/libplugin/plugin.h and siblings) never resolve
+    # and the harness fails to compile. Add the project's standard include
+    # roots plus every lib/ subdir that ships headers.
     std_inc = []
-    for root in ("include", "lib", "src",
-                 "lib/libhttp", "lib/libjson", "lib/libcredentialfiles",
-                 "lib/libcrypto", "lib/libtextwrap", "lib/libglob",
-                 "lib/libhive", "lib/libdb"):
+    roots = ["include", "lib", "src"]
+    libdir = os.path.join(REPO, "lib")
+    if os.path.isdir(libdir):
+        for d in sorted(os.listdir(libdir)):
+            sub = os.path.join(libdir, d)
+            if os.path.isdir(sub) and any(f.endswith(".h")
+                                          for f in os.listdir(sub)):
+                roots.append(os.path.join("lib", d))
+    for root in roots:
         p = os.path.join(REPO, root)
         if os.path.isdir(p):
             std_inc += ["-I", p]
@@ -264,7 +270,18 @@ def build_harness(gate_dir, g, force=False):
     lcmd = ["cc"] + objs + ["-o", out, "-lm"] + libs
     r = subprocess.run(lcmd, capture_output=True, text=True)
     if r.returncode != 0:
-        raise RuntimeError("BUILD FAIL (link) for %s:\n%s" % (g["name"], r.stderr))
+        # A wider dependency sweep correctly discovers callers of the vendored
+        # libs (sqlite3_*, http_*). Those are LIBRARIES, not .c files — adding
+        # more source files without linking lib/libdb/sqlite3.o and
+        # lib/libhttp/http.o makes the gate fail to link. Retry once with them.
+        retry = ["cc"] + objs + ["-o", out, "-lm",
+                                 os.path.join(REPO, "lib/libdb/sqlite3.o"),
+                                 os.path.join(REPO, "lib/libhttp/http.o")] + libs
+        r2 = subprocess.run(retry, capture_output=True, text=True)
+        if r2.returncode == 0:
+            return out
+        raise RuntimeError("BUILD FAIL (link) for %s:\n%s"
+                           % (g["name"], r.stderr))
     return out
 
 

@@ -242,6 +242,59 @@ int main(int argc, char **argv) {{
 """
 
 
+_FILE_NAMES_CACHE = {}
+
+
+def _cross_unit_names(c_file, src):
+    """Names the file declares as `extern` but does not define.
+
+    Memoized per file: many gates share one ported .c (e.g. 60 gates into
+    anthropic_adapter.c), and re-reading + re-regexing it per gate was 85ms
+    each — 212s for the full set. Caching drops that to one pass per file.
+
+    Externs only, deliberately. See the note in resolve_deps for why the
+    all-called-identifiers variant measured net-negative.
+    """
+    key = os.path.abspath(c_file)
+    if key in _FILE_NAMES_CACHE:
+        return _FILE_NAMES_CACHE[key]
+    names = set()
+    for m in re.finditer(r'extern\s+[\w\s\*]+?(\w+)\s*\([^;{]*\)\s*;', src):
+        names.add(m.group(1))
+    _FILE_NAMES_CACHE[key] = names
+    return names
+
+
+# Files larger than this are not pulled onto a harness link line by the
+# all-called-identifiers sweep. They are orchestration units (web_server.c,
+# gateway/run.c) that need include paths and defines the harness does not
+# provide, and one of them (web_server.c) has a real json_len collision with
+# include/port_web_update.h. Sweeping them turns a linkable gate into a
+# compile failure, which is a worse verdict than an honest BUILD FAIL.
+MAX_SWEEP_FILE_BYTES = 60_000
+
+
+_DEFINED_NAMES_CACHE = {}
+
+# A definition is "<type words> name(...) {". Compiled once, not per name.
+_DEFINED_RE = re.compile(
+    r'(?<![\w])[A-Za-z][\w\s\*]*?\b([a-z_][a-z0-9_]*)\s*\([^;{]*\)\s*\{')
+
+
+def _defined_names(c_file, src):
+    """Names this file DEFINES (has a body for), cached per file.
+
+    Computed with one precompiled regex instead of one compiled-per-candidate
+    regex, and cached because many gates share a ported .c.
+    """
+    key = os.path.abspath(c_file)
+    got = _DEFINED_NAMES_CACHE.get(key)
+    if got is None:
+        got = set(_DEFINED_RE.findall(src))
+        _DEFINED_NAMES_CACHE[key] = got
+    return got
+
+
 def resolve_deps(c_file, c_fn, seen=None, max_depth=1):
     """Find the .c files whose symbols a harness needs to LINK.
 
@@ -268,26 +321,35 @@ def resolve_deps(c_file, c_fn, seen=None, max_depth=1):
         src = open(c_file).read()
     except OSError:
         return deps
-    # extern declarations of functions NOT defined in this file. These can sit
-    # at file scope OR inside a function body (the common idiom for a
-    # cross-unit call in this codebase), so scan the whole text.
-    #
-    # Deliberately extern-only: widening this to every called identifier is
-    # correct in principle but O(gates x tree-walk) and does not finish. A
-    # symbol called without an extern shows up as an undefined reference at
-    # link time; those gates are labelled BUILD FAIL, which is honest.
+    # extern declarations only. Scanning EVERY called identifier was tried and
+    # measured net-negative: on the 50-gate alphabetical batch it took matches
+    # from 10 to 8 and build-fails from 5 to 8, because it pulls sibling units
+    # onto the link line that need include paths/defines the harness lacks (and
+    # web_server.c has a real json_len collision with port_web_update.h). The
+    # all-identifiers sweep is correct in principle but the port is not yet
+    # clean enough for it. Revisit once those compile cleanly.
     for m in re.finditer(r'extern\s+[\w\s\*]+?(\w+)\s*\([^;{]*\)\s*;', src):
         name = m.group(1)
-        # A definition has a body: "<ret> name(...) {". A bare occurrence is
-        # a call site, not a definition — and the extern declaration itself
-        # would otherwise make every cross-unit symbol look local. The prefix
-        # class excludes '_' so agent_battery_clear_cache cannot be read as a
-        # definition of battery_clear_cache (PoP comments match too).
-        if re.search(r'(?<![\w])[A-Za-z][\w\s\*]*?\b%s\s*\([^;{]*\)\s*\{'
-                     % re.escape(name), src):
+    # A definition has a body: "<ret> name(...) {". A bare occurrence is
+    # a call site, not a definition — and the extern declaration itself
+    # would otherwise make every cross-unit symbol look local. The prefix
+    # class excludes '_' so agent_battery_clear_cache cannot be read as a
+    # definition of battery_clear_cache (PoP comments match too).
+    #
+    # The set of names this file DEFINES is computed once and cached: testing
+    # each candidate with its own compiled regex was 3.9s of a 4.3s run
+    # (2,840 re.search calls, most of them rebuilding the pattern string).
+    for name in sorted(_cross_unit_names(c_file, src)):
+        if name in _defined_names(c_file, src):
             continue  # defined locally
         owner = find_definition_cached(name)
         if owner:
+            # Skip orchestration-size units: see MAX_SWEEP_FILE_BYTES.
+            try:
+                if os.path.getsize(owner) > MAX_SWEEP_FILE_BYTES:
+                    continue
+            except OSError:
+                continue
             if max_depth > 1:
                 deps += resolve_deps(owner, c_fn, seen, max_depth - 1)
             else:
@@ -322,10 +384,41 @@ def find_definition(name):
 _DEF_CACHE = {}
 
 
+def _build_symbol_index():
+    """One pass over src/ mapping every defined function name to its file.
+
+    The per-symbol tree walk was O(gates x files) and did not finish in 180s.
+    A single pass builds the same map in ~0.14s for 26,700 symbols across
+    1,844 files, which makes wider dependency discovery affordable.
+    """
+    import re as _re
+    pat = _re.compile(
+        r'^[A-Za-z][\w\s\*]*?\b([a-z_][a-z0-9_]{2,})\s*\([^;{]*\)\s*\{', _re.M)
+    idx = {}
+    src_root = os.path.join(REPO, "src")
+    for root, dirs, files in os.walk(src_root):
+        dirs[:] = [d for d in dirs if d != "__pycache__"]
+        for fn in files:
+            if not fn.endswith(".c"):
+                continue
+            p = os.path.join(root, fn)
+            try:
+                txt = open(p, errors="ignore").read()
+            except OSError:
+                continue
+            for m in pat.finditer(txt):
+                idx.setdefault(m.group(1), p)
+    return idx
+
+
+_SYMBOL_INDEX = None
+
+
 def find_definition_cached(name):
-    if name not in _DEF_CACHE:
-        _DEF_CACHE[name] = find_definition(name)
-    return _DEF_CACHE[name]
+    global _SYMBOL_INDEX
+    if _SYMBOL_INDEX is None:
+        _SYMBOL_INDEX = _build_symbol_index()
+    return _SYMBOL_INDEX.get(name)
 
 
 def fix_all_gates(check=False):
