@@ -130,8 +130,12 @@ def generate_twin(py_module, py_fn, parent_class="", c_ret=None, cup_name=None):
     # The isinstance-bool exclusion here was backwards and made every
     # bool-returning twin mismatch on encoding alone.
     if c_ret == 'int':
+        # A Python None return maps to the C int default the port returns
+        # (str(int(None)) raises, which would otherwise fall through to
+        # str(None) == "None" and mismatch a C "%d" encoding).
         enc = ('str(int(result)) if isinstance(result, (int, bool)) '
-               'and not isinstance(result, str) else str(result)')
+               'and not isinstance(result, str) '
+               'else ("0" if result is None else str(result))')
     elif c_ret == 'bool':
         enc = '"true" if result else "false"'
     elif c_ret == 'charptr':

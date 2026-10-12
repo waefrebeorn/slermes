@@ -56,7 +56,15 @@ def categorize_signature(ret_type, param_list):
     # rejected as "not gatable" — e.g. bool _oauth_trace_enabled(void).
     if [p.strip() for p in param_list] == ['void']:
         param_list = []
+    # A pointer to an opaque/named struct type (coe_engine *eng) is not a
+    # string or a number: it cannot be built from argv, and emitting an
+    # extern decl with an unknown type makes the harness fail to COMPILE.
+    # Only char*/int/double/size_t params are harnessable.
     for p in param_list:
+        if '*' in p:
+            head = p.split('*')[0].strip()
+            if head and 'char' not in head:
+                return None
         for u in unhandleable:
             if u in p:
                 return None
@@ -350,6 +358,22 @@ def fix_all_gates(check=False):
             category = categorize_signature(ret_type, param_list)
             if not category:
                 not_gatable += 1
+                # A gate previously given a real harness whose signature is
+                # NOW known to be unharnessable (e.g. an opaque struct param
+                # the categorizer learned to reject) must be reverted to the
+                # gap sentinel. Otherwise the stale harness.c stays on disk
+                # and keeps failing to compile forever.
+                h_path_chk = os.path.join(gd, "harness.c")
+                if os.path.isfile(h_path_chk):
+                    cur = open(h_path_chk).read()
+                    if "gap_sentinel" not in cur:
+                        if not check:
+                            with open(h_path_chk, 'w') as f:
+                                f.write(generate_gap_sentinel(d, py_fn))
+                            g["extra_src"] = ["lib/libjson/json.c"]
+                            with open(gj_path, 'w') as f:
+                                json.dump(g, f, indent=2)
+                        updated += 1
                 continue
             
             try:
