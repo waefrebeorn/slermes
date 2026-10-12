@@ -392,9 +392,25 @@ def _run_twin_inputs(twin, inputs):
 # deaths), so they are delegated to _twin_driver.py in a subprocess.
 ENTRY_POINT_FNS = frozenset({"main"})
 
+# LIVE functions that mutate the filesystem or shell out to git using their
+# arguments as PATHS. Traced in-process with the repo as CWD, they create real
+# directories named after the fixture inputs — this is what produced
+# <repo>/NULL/NULL, <repo>/hello/hello and <repo>/test123/test123, each a
+# nested .worktrees/ containing real git worktrees. Run these from a throwaway
+# CWD so the damage lands in a temp dir, not the repo.
+SIDE_EFFECTING_FNS = frozenset({
+    "_init_shadow_repo", "_run_git", "_init_store", "_touch_project",
+    "restore", "clear_legacy", "_dirty_split", "worktree_list",
+    "_ensure_file_checkpoint", "_maybe_checkpoint_wal",
+})
+
 
 def _is_entry_point(g):
     return g.get("py_fn") in ENTRY_POINT_FNS
+
+
+def _is_side_effecting(g):
+    return g.get("py_fn") in SIDE_EFFECTING_FNS
 
 
 def _run_twin_isolated(g, inputs, timeout=None):
@@ -460,14 +476,27 @@ def run_cup_gate(gd, g, verbose=False):
         if err is not None:
             return 1, ["  ERROR (isolated): %s" % err]
     else:
+        # _neutral_argv keeps a twin's argparse from consuming the runner's
+        # own argv; the CWD sandbox keeps a side-effecting fn from creating
+        # directories named after its fixture inputs inside the repo.
         with _neutral_argv():
-            py_cups = _run_twin_inputs(twin, g["inputs"])
-            # Normalize: if twin.run returns a single cup string (not a list),
-            # replicate it across the input walk.
-            if isinstance(py_cups, str):
-                py_cups = [py_cups] * len(g["inputs"])
-            elif not isinstance(py_cups, list):
-                py_cups = list(py_cups)
+            if _is_side_effecting(g):
+                import tempfile
+                with tempfile.TemporaryDirectory(prefix="wc_cwd_") as _td:
+                    _prev = os.getcwd()
+                    try:
+                        os.chdir(_td)
+                        py_cups = _run_twin_inputs(twin, g["inputs"])
+                    finally:
+                        os.chdir(_prev)
+            else:
+                py_cups = _run_twin_inputs(twin, g["inputs"])
+        # Normalize: if twin.run returns a single cup string (not a list),
+        # replicate it across the input walk.
+        if isinstance(py_cups, str):
+            py_cups = [py_cups] * len(g["inputs"])
+        elif not isinstance(py_cups, list):
+            py_cups = list(py_cups)
 
     if len(c_cups) != len(py_cups):
         return 1, ["MISMATCH count: C=%d Py=%d  <<< harness/twin arity differs"

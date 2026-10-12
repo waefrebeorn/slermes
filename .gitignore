@@ -214,3 +214,14 @@ slermes-tui
 
 # doubled-path build artifacts from water-cup runner
 tests/tests/
+
+# Nested git worktrees created by the water-cup runner: a traced function ran
+# with the repo as CWD and used its fixture strings as directory names, so
+# .worktrees/ landed at <repo>/<fixture>/<fixture>/.worktrees/ instead of
+# <repo>/.worktrees/. These are REAL worktrees with uncommitted work (one has
+# 17,769 staged deletions) — do not delete. Ignored so `git clean -fd` cannot
+# destroy them and so they stop polluting git status.
+/NULL/
+/hello/
+/world/
+/test123/
