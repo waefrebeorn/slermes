@@ -215,6 +215,18 @@ def build_harness(gate_dir, g, force=False):
     cflags = [c[:2] + os.path.join(REPO, c[2:])
               if c.startswith("-I") and len(c) > 2 and not os.path.isabs(c[2:])
               else c for c in cflags]
+    # Gate cflags carry a bare "-I" with no path, so vendored headers
+    # (lib/libhttp/http.h and siblings) never resolve and the harness fails
+    # to compile. Add the project's standard include roots once, here.
+    std_inc = []
+    for root in ("include", "lib", "src",
+                 "lib/libhttp", "lib/libjson", "lib/libcredentialfiles",
+                 "lib/libcrypto", "lib/libtextwrap", "lib/libglob",
+                 "lib/libhive", "lib/libdb"):
+        p = os.path.join(REPO, root)
+        if os.path.isdir(p):
+            std_inc += ["-I", p]
+    cflags = std_inc + cflags
     extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
     libs = g.get("ldflags", [])
 
