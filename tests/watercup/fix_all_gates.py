@@ -120,7 +120,8 @@ def categorize_signature(ret_type, param_list):
     return None
 
 
-def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_type):
+def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_type,
+                          inputs_walk=None):
     # Zero-arg categories pass nothing to the traced function; the input walk
     # still varies the cup via the CUP name + the traced call site.
     noargs = category.endswith('_noargs')
@@ -129,14 +130,23 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # silently wrong if it weren't).
     numeric = category in ('int_int', 'bool_int', 'int_other', 'bool_other',
                            'long_simple', 'sizet_simple', 'double_simple')
+    # Emit the EXPRESSION "i + j" (modulo the walk length) — `i` is the C loop
+    # variable inside the generated harness, not a Python name.
+    n_avail = len(inputs_walk) if inputs_walk else 1
+
+    def _arg(j):
+        if n_avail <= 1:
+            return 'argv[i]'
+        return 'argv[(i + %d) %% %d]' % (j, n_avail)
+
     if noargs:
         call_args = ''
     elif numeric:
-        conv = ('(int)strtol(argv[i], NULL, 10)' if 'double' not in category
-                else 'strtod(argv[i], NULL)')
-        call_args = ', '.join([conv] * len(param_list))
+        conv = ('(int)strtol(%s, NULL, 10)' if 'double' not in category
+                else 'strtod(%s, NULL)')
+        call_args = ', '.join(conv % _arg(j) for j in range(len(param_list)))
     else:
-        call_args = ', '.join(['argv[i]'] * len(param_list))
+        call_args = ', '.join(_arg(j) for j in range(len(param_list)))
 
     if category.startswith('int'):
         val_code = '    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);'
@@ -377,7 +387,9 @@ def fix_all_gates(check=False):
                 continue
             
             try:
-                harness = generate_port_harness(category, d, c_fn, params, param_list, ret_type)
+                harness = generate_port_harness(category, d, c_fn, params,
+                                                param_list, ret_type,
+                                                inputs_walk=g.get("inputs"))
                 h_path = os.path.join(gd, "harness.c")
                 old = open(h_path).read() if os.path.isfile(h_path) else ""
 
