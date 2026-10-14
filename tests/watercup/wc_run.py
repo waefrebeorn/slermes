@@ -340,13 +340,42 @@ def build_harness(gate_dir, g, force=False):
     lcmd = ["cc"] + objs + ["-o", out, "-lm"] + libs
     r = subprocess.run(lcmd, capture_output=True, text=True)
     if r.returncode != 0:
+        # System libs the vendored objects need (http.o -> OpenSSL). Computed
+        # here so the first retry can use them; the linker resolves them only
+        # when they appear AFTER the --start-group block below.
+        ssl_libs = []
+        for cand in ("-lcrypto", "-lssl", "-lz", "-ldl", "-lpthread"):
+            # -shared: a bare 'cc -lcrypto -o /dev/null -x c -' fails with
+            # "undefined reference to main" for EVERY lib, so the old probe
+            # left ssl_libs empty and OpenSSL symbols never linked.
+            if subprocess.run(["cc", cand, "-shared", "-o", "/dev/null",
+                               "-x", "c", "-"],
+                              input=b"int _probe;", capture_output=True
+                              ).returncode == 0:
+                ssl_libs.append(cand)
         # A wider dependency sweep correctly discovers callers of the vendored
-        # libs (sqlite3_*, http_*). Those are LIBRARIES, not .c files — adding
-        # more source files without linking lib/libdb/sqlite3.o and
-        # lib/libhttp/http.o makes the gate fail to link. Retry once with them.
-        retry = ["cc"] + objs + ["-o", out, "-lm",
-                                 os.path.join(REPO, "lib/libdb/sqlite3.o"),
-                                 os.path.join(REPO, "lib/libhttp/http.o")] + libs
+        # libs (sqlite3_*, http_*, crypto_*). Those are LIBRARIES, not .c files
+        # — adding more source files without linking the vendored objects makes
+        # the gate fail to link. Retry with ALL of them.
+        #
+        # The vendored objects reference EACH OTHER and the system libs
+        # (http.o needs OpenSSL, crypto.o defines crypto_sha256 that http/ports
+        # call), and the linker resolves left-to-right in a single pass. Without
+        # --start-group a symbol defined in a later object looks undefined from
+        # an earlier one. Wrap the vendored objects in a group so the linker
+        # iterates until stable.
+        vendored = [p for p in (
+            os.path.join(REPO, "lib/libdb/sqlite3.o"),
+            os.path.join(REPO, "lib/libhttp/http.o"),
+            os.path.join(REPO, "lib/libcrypto/crypto.o"),
+            os.path.join(REPO, "lib/libyaml/yaml.o"),
+        ) if os.path.exists(p)]
+        # -lm and the system libs must come AFTER --end-group: sqlite3.o's FTS5
+        # code calls log(), and with -lm before the group the linker has already
+        # passed libm when it pulls sqlite's object in.
+        retry = (["cc"] + objs + ["-o", out,
+                                  "-Wl,--start-group"] + vendored
+                 + ["-Wl,--end-group", "-lm"] + ssl_libs + libs)
         r2 = subprocess.run(retry, capture_output=True, text=True)
         if r2.returncode == 0:
             return out
@@ -367,15 +396,16 @@ def build_harness(gate_dir, g, force=False):
                          os.path.join(REPO, "lib/libcrypto/crypto.o"),
                          os.path.join(REPO, "lib/libjson/json.o")]
         base_lib_objs = [p for p in base_lib_objs if os.path.exists(p)]
+        # Same left-to-right single-pass linker limitation as the retry above:
+        # wrap the vendored objects in a group so cross-references between them
+        # (and to the system libs) resolve regardless of order on the line.
+        base_lib_objs = (["-Wl,--start-group"] + base_lib_objs
+                         + ["-Wl,--end-group"])
         # OpenSSL symbols (BIO_*, EVP_*, CRYPTO_*, SHA256_*) come from the
         # system libcrypto, which the main build already links via -lcrypto.
         # inflate*/crc32 come from zlib; registry/log helpers often need
         # -ldl/-lpthread. build/config.mk links all of these for the binary.
-        ssl_libs = []
-        for cand in ("-lcrypto", "-lssl", "-lz", "-ldl", "-lpthread"):
-            if subprocess.run(["cc", cand, "-o", "/dev/null", "-x", "c", "-"],
-                              input="", capture_output=True).returncode == 0:
-                ssl_libs.append(cand)
+        # ssl_libs was computed above (before the first retry). Reuse it here.
         added = []
         rejected = set()
         # `extra_src` may already contain a stub file that duplicates a symbol
@@ -384,7 +414,7 @@ def build_harness(gate_dir, g, force=False):
         # COMMON_SRC). Probe with nothing extra; a duplicate means the stub is
         # the offender and its object must come off the link line.
         probe = subprocess.run(
-            ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + ssl_libs + libs,
+            ["cc"] + objs + ["-o", out] + base_lib_objs + ["-lm"] + ssl_libs + libs,
             capture_output=True, text=True)
         if probe.returncode != 0:
             # The linker names the OFFENDER object on the line that carries
@@ -405,7 +435,7 @@ def build_harness(gate_dir, g, force=False):
                         if os.path.basename(o) not in offenders]
                 if len(objs) != before:
                     probe = subprocess.run(
-                        ["cc"] + objs + ["-o", out, "-lm"] + base_lib_objs + ssl_libs + libs,
+                        ["cc"] + objs + ["-o", out] + base_lib_objs + ["-lm"] + ssl_libs + libs,
                         capture_output=True, text=True)
         r2 = probe
         for _round in range(5):
@@ -438,6 +468,11 @@ def build_harness(gate_dir, g, force=False):
             added_objs = []
             ok = True
             for a in extra:
+                # A vendored-library symbol resolves to a precompiled .o, not a
+                # .c source. Add it directly — _compile_one only handles .c.
+                if a.endswith(".o") and os.path.exists(a):
+                    added_objs.append(a)
+                    continue
                 o = _compile_one(g, a)
                 if o:
                     added_objs.append(o)
@@ -445,9 +480,10 @@ def build_harness(gate_dir, g, force=False):
                     ok = False
             if not ok:
                 break
-            retry2 = ["cc"] + objs + added_objs + ["-o", out, "-lm"] + \
-                     base_lib_objs + ssl_libs + libs
+            retry2 = ["cc"] + objs + added_objs + ["-o", out] + \
+                     base_lib_objs + ["-lm"] + ssl_libs + libs
             r2 = subprocess.run(retry2, capture_output=True, text=True)
+            r = r2  # remember the last attempt for the final error message
             if r2.returncode == 0:
                 return out
         raise RuntimeError("BUILD FAIL (link) for %s:\n%s"
@@ -456,6 +492,35 @@ def build_harness(gate_dir, g, force=False):
 
 
 _MISSING_SYMBOL_CACHE = {}
+
+# Vendored-library objects: these define symbols (sqlite3_*, http_*, crypto_*)
+# that appear as undefined references but live in a compiled .o, not a .c
+# source. find_definition() scans .c files and returns None for them, so the
+# per-symbol retry would drop them. Map them here so the retry can add the .o.
+_VENDORED_OBJS = [
+    "lib/libdb/sqlite3.o",
+    "lib/libhttp/http.o",
+    "lib/libcrypto/crypto.o",
+    "lib/libyaml/yaml.o",
+    "lib/libjson/json.o",
+]
+_VENDORED_SYMS = {}
+
+
+def _build_vendored_syms():
+    import subprocess as _sp
+    for rel in _VENDORED_OBJS:
+        p = os.path.join(REPO, rel)
+        if not os.path.exists(p):
+            continue
+        r = _sp.run(["nm", p], capture_output=True, text=True)
+        for line in (r.stdout or "").split("\n"):
+            parts = line.split()
+            if len(parts) >= 2 and parts[-2] in ("T", "W", "D", "B", "R"):
+                _VENDORED_SYMS.setdefault(parts[-1], p)
+
+
+_build_vendored_syms()
 
 
 def _resolve_missing_symbols(missing, gate_name):
@@ -477,6 +542,9 @@ def _resolve_missing_symbols(missing, gate_name):
     for sym in missing:
         if sym in _MISSING_SYMBOL_CACHE:
             owner = _MISSING_SYMBOL_CACHE[sym]
+        elif sym in _VENDORED_SYMS:
+            owner = _VENDORED_SYMS[sym]
+            _MISSING_SYMBOL_CACHE[sym] = owner
         else:
             owner = _fag.find_definition_cached(sym)
             _MISSING_SYMBOL_CACHE[sym] = owner
