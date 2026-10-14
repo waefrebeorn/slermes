@@ -42,6 +42,11 @@ COMMON_SRC = [
 # gate.json c_fn (repointed to the real prefixed C symbol) to its source file
 # without an O(gates x files) walk.
 _DEF_RE = re.compile(r'^\s*(?:static\s+)?(?:const\s+)?[A-Za-z_][\w\s\*]*?\b(\w+)\s*\(', re.M)
+# Global variable definitions (int g_argc_shared; char *g_token;) also appear
+# as undefined references. The function regex misses them; index both shapes.
+_GVAR_RE = re.compile(
+    r'^\s*(?:static\s+)?(?:const\s+)?[A-Za-z_][\w\s\*]*?\b([a-z_][a-z0-9_]*)\s*'
+    r'(?:\[[^\]]*\])?\s*(?:=|;)', re.M)
 _SYMBOL_FILE = {}
 
 
@@ -56,6 +61,8 @@ def _build_symbol_index():
             except OSError:
                 continue
             for sym in _DEF_RE.findall(txt):
+                _SYMBOL_FILE.setdefault(sym, path)
+            for sym in _GVAR_RE.findall(txt):
                 _SYMBOL_FILE.setdefault(sym, path)
 
 
@@ -478,7 +485,15 @@ def resolve_deps(c_file, c_fn, seen=None, max_depth=1):
 
 
 def find_definition(name):
-    """Locate the .c file that defines `name` as a function."""
+    """Locate the .c file that defines `name` as a function OR a global var.
+
+    Global definitions (int g_argc_shared; char *g_session_token;) appear as
+    undefined references too, but the function-only regex missed them, so the
+    retry dropped them and the gate failed to link. Match both shapes.
+    """
+    fn_re = re.compile(r'^[\w\s\*]+%s\s*\([^;{]*\)\s*\{' % re.escape(name), re.M)
+    gv_re = re.compile(
+        r'^[\w\s\*]*\b%s\s*(\[[^\]]*\])?\s*(=|;)' % re.escape(name), re.M)
     for root, dirs, files in os.walk(os.path.join(REPO, "src")):
         dirs[:] = [d for d in dirs if d != "__pycache__"]
         for fn in files:
@@ -489,8 +504,7 @@ def find_definition(name):
                 txt = open(p, errors="ignore").read()
             except OSError:
                 continue
-            if re.search(r'^[\w\s\*]+%s\s*\([^;{]*\)\s*\{' % re.escape(name),
-                         txt, re.M):
+            if fn_re.search(txt) or gv_re.search(txt):
                 return p
     return None
 
@@ -508,6 +522,11 @@ def _build_symbol_index():
     import re as _re
     pat = _re.compile(
         r'^[A-Za-z][\w\s\*]*?\b([a-z_][a-z0-9_]{2,})\s*\([^;{]*\)\s*\{', _re.M)
+    # Global variable definitions (int g_argc_shared; char *g_token;) are also
+    # undefined references the retry must resolve. Index them alongside funcs.
+    gvar = _re.compile(
+        r'^[A-Za-z][\w\s\*]*?\b([a-z_][a-z0-9_]{2,})\s*(?:\[[^\]]*\])?\s*(?:=|;)',
+        _re.M)
     idx = {}
     src_root = os.path.join(REPO, "src")
     for root, dirs, files in os.walk(src_root):
@@ -521,6 +540,8 @@ def _build_symbol_index():
             except OSError:
                 continue
             for m in pat.finditer(txt):
+                idx.setdefault(m.group(1), p)
+            for m in gvar.finditer(txt):
                 idx.setdefault(m.group(1), p)
     return idx
 

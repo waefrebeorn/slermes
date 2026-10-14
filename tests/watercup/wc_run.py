@@ -344,10 +344,13 @@ def build_harness(gate_dir, g, force=False):
         # here so the first retry can use them; the linker resolves them only
         # when they appear AFTER the --start-group block below.
         ssl_libs = []
-        for cand in ("-lcrypto", "-lssl", "-lz", "-ldl", "-lpthread"):
-            # -shared: a bare 'cc -lcrypto -o /dev/null -x c -' fails with
-            # "undefined reference to main" for EVERY lib, so the old probe
-            # left ssl_libs empty and OpenSSL symbols never linked.
+        # Mirror build/config.mk's PLATFORM_LDFLAGS: -ldl -lpthread -lz
+        # -lpcre2-8, plus the SSL libs. ALSA (-lasound) for audio ports, PCRE2
+        # for regex-heavy ports. Probe each with -shared (a bare
+        # 'cc -lcrypto -o /dev/null -x c -' fails with "undefined reference to
+        # main" for EVERY lib, leaving the list empty and the symbols unlinked).
+        for cand in ("-lcrypto", "-lssl", "-lz", "-ldl", "-lpthread",
+                     "-lpcre2-8", "-lasound", "-lm"):
             if subprocess.run(["cc", cand, "-shared", "-o", "/dev/null",
                                "-x", "c", "-"],
                               input=b"int _probe;", capture_output=True
