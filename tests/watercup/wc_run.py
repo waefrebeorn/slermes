@@ -369,6 +369,8 @@ def build_harness(gate_dir, g, force=False):
             os.path.join(REPO, "lib/libhttp/http.o"),
             os.path.join(REPO, "lib/libcrypto/crypto.o"),
             os.path.join(REPO, "lib/libyaml/yaml.o"),
+            os.path.join(REPO, "lib/libregex/hermes_regex.o"),
+            os.path.join(REPO, "lib/libjson/json.o"),
         ) if os.path.exists(p)]
         # -lm and the system libs must come AFTER --end-group: sqlite3.o's FTS5
         # code calls log(), and with -lm before the group the linker has already
@@ -394,7 +396,8 @@ def build_harness(gate_dir, g, force=False):
                          os.path.join(REPO, "lib/libhttp/http.o"),
                          os.path.join(REPO, "lib/libyaml/yaml.o"),
                          os.path.join(REPO, "lib/libcrypto/crypto.o"),
-                         os.path.join(REPO, "lib/libjson/json.o")]
+                         os.path.join(REPO, "lib/libjson/json.o"),
+                         os.path.join(REPO, "lib/libregex/hermes_regex.o")]
         base_lib_objs = [p for p in base_lib_objs if os.path.exists(p)]
         # Same left-to-right single-pass linker limitation as the retry above:
         # wrap the vendored objects in a group so cross-references between them
@@ -408,6 +411,7 @@ def build_harness(gate_dir, g, force=False):
         # ssl_libs was computed above (before the first retry). Reuse it here.
         added = []
         rejected = set()
+        added_objs = []  # accumulates every object added across retry rounds
         # `extra_src` may already contain a stub file that duplicates a symbol
         # another unit provides (infrastructure_stubs.c re-defines
         # hermes_get_home, which paths.c also defines — and paths.c is in
@@ -455,6 +459,12 @@ def build_harness(gate_dir, g, force=False):
                     for o in owner:
                         rejected.add(o)
                 added = [a for a in added if a not in rejected]
+                # base_lib_objs is linked unconditionally; a vendored .o that
+                # duplicates a symbol the harness's own extra_src already
+                # provides (json.o vs the gate's json.c) must come off the base
+                # set too, or the duplicate persists every round.
+                base_lib_objs = [o for o in base_lib_objs
+                                 if not (o.endswith(".o") and o in rejected)]
             if not missing:
                 break
             extra = [e for e in _resolve_missing_symbols(missing, g.get("name"))
@@ -465,21 +475,27 @@ def build_harness(gate_dir, g, force=False):
             # Compile each newly added .c with the gate's include flags, then
             # link the objects. Passing raw .c paths to cc on a link line
             # compiles them with default flags, so their #includes fail.
-            added_objs = []
+            #
+            # added_objs ACCUMULATES across rounds: it must hold every object
+            # ever added, not just this round's. Resetting it here made the loop
+            # oscillate — a symbol resolved in round N became undefined again in
+            # round N+1 because its object was dropped from the link line.
+            new_objs = []
             ok = True
             for a in extra:
                 # A vendored-library symbol resolves to a precompiled .o, not a
                 # .c source. Add it directly — _compile_one only handles .c.
                 if a.endswith(".o") and os.path.exists(a):
-                    added_objs.append(a)
+                    new_objs.append(a)
                     continue
                 o = _compile_one(g, a)
                 if o:
-                    added_objs.append(o)
+                    new_objs.append(o)
                 else:
                     ok = False
             if not ok:
                 break
+            added_objs += new_objs
             retry2 = ["cc"] + objs + added_objs + ["-o", out] + \
                      base_lib_objs + ["-lm"] + ssl_libs + libs
             r2 = subprocess.run(retry2, capture_output=True, text=True)
@@ -497,27 +513,32 @@ _MISSING_SYMBOL_CACHE = {}
 # that appear as undefined references but live in a compiled .o, not a .c
 # source. find_definition() scans .c files and returns None for them, so the
 # per-symbol retry would drop them. Map them here so the retry can add the .o.
-_VENDORED_OBJS = [
-    "lib/libdb/sqlite3.o",
-    "lib/libhttp/http.o",
-    "lib/libcrypto/crypto.o",
-    "lib/libyaml/yaml.o",
-    "lib/libjson/json.o",
-]
+# Vendored-library objects define symbols (sqlite3_*, http_*, crypto_*,
+# regex_*, ...) that appear as undefined references but live in a compiled .o,
+# not a .c source. find_definition() scans .c files and returns None for them,
+# so the per-symbol retry would drop them. Discover ALL vendored objects under
+# lib/ dynamically — a hardcoded list misses libs like libregex whose symbols
+# block many gates. Index every symbol each .o defines.
+_VENDORED_OBJ_DIRS = ["lib"]
 _VENDORED_SYMS = {}
 
 
 def _build_vendored_syms():
     import subprocess as _sp
-    for rel in _VENDORED_OBJS:
-        p = os.path.join(REPO, rel)
-        if not os.path.exists(p):
-            continue
-        r = _sp.run(["nm", p], capture_output=True, text=True)
-        for line in (r.stdout or "").split("\n"):
-            parts = line.split()
-            if len(parts) >= 2 and parts[-2] in ("T", "W", "D", "B", "R"):
-                _VENDORED_SYMS.setdefault(parts[-1], p)
+    seen_dirs = []
+    for base in _VENDORED_OBJ_DIRS:
+        for root, _, files in os.walk(os.path.join(REPO, base)):
+            for fn in files:
+                if not fn.endswith(".o"):
+                    continue
+                p = os.path.join(root, fn)
+                r = _sp.run(["nm", p], capture_output=True, text=True)
+                for line in (r.stdout or "").split("\n"):
+                    parts = line.split()
+                    if len(parts) >= 2 and parts[-2] in ("T", "W", "D", "B", "R"):
+                        _VENDORED_SYMS.setdefault(parts[-1], p)
+                seen_dirs.append(p)
+    return seen_dirs
 
 
 _build_vendored_syms()
