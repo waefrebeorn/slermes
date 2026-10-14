@@ -367,9 +367,15 @@ def _fixtures_for(py_module, py_fn):
     try:
         if dev not in _sys.path:
             _sys.path.insert(0, dev)
-        spec = _ilu.spec_from_file_location(
-            "wc_fix_" + py_module.replace("/", "_").replace(".", "_"), path)
+        modname = ("wc_fix_" + py_module.replace("/", "_")
+                   .replace(".", "_"))
+        spec = _ilu.spec_from_file_location(modname, path)
         mod = _ilu.module_from_spec(spec)
+        # Register BEFORE exec: modules that use dataclasses, enums, or
+        # relative imports resolve their own name through sys.modules during
+        # execution. Skipping this raises "'NoneType' object has no attribute
+        # '__dict__'" and the fixture silently falls back to the string walk.
+        _sys.modules[modname] = mod
         spec.loader.exec_module(mod)
         fn = _resolve_callable(mod, py_fn)
         if fn is None:
@@ -380,7 +386,11 @@ def _fixtures_for(py_module, py_fn):
             if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD):
                 return _typed_inputs(str(p.annotation))
         return _typed_inputs(None)
-    except Exception:
+    except Exception as _e:
+        if os.environ.get("WC_DEBUG_FIXTURES"):
+            import sys as _s
+            _s.stderr.write("DBG fixtures %s:%s -> %s: %s\n"
+                            % (py_module, py_fn, type(_e).__name__, _e))
         return _typed_inputs(None)
 
 

@@ -369,8 +369,10 @@ def build_harness(gate_dir, g, force=False):
         base_lib_objs = [p for p in base_lib_objs if os.path.exists(p)]
         # OpenSSL symbols (BIO_*, EVP_*, CRYPTO_*, SHA256_*) come from the
         # system libcrypto, which the main build already links via -lcrypto.
+        # inflate*/crc32 come from zlib; registry/log helpers often need
+        # -ldl/-lpthread. build/config.mk links all of these for the binary.
         ssl_libs = []
-        for cand in ("-lcrypto", "-lssl"):
+        for cand in ("-lcrypto", "-lssl", "-lz", "-ldl", "-lpthread"):
             if subprocess.run(["cc", cand, "-o", "/dev/null", "-x", "c", "-"],
                               input="", capture_output=True).returncode == 0:
                 ssl_libs.append(cand)

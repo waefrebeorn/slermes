@@ -67,13 +67,24 @@ def read_c_signature(c_file, c_fn):
     return None
 
 
-def categorize_signature(ret_type, param_list):
+def categorize_signature(ret_type, param_list, from_real=True):
     unhandleable = ('json', 'struct', 'callback', 'void*', 'fn', 'va_list')
     # A bare `void` parameter means NO parameters. Keeping it in the list made
     # every zero-arg function fall through the char/int param tests and get
     # rejected as "not gatable" — e.g. bool _oauth_trace_enabled(void).
     if [p.strip() for p in param_list] == ['void']:
         param_list = []
+    # Out-param style: int fn(<inputs...>, char *out, size_t out_size).
+    # The RESULT is written into `out`, so the harness must supply a buffer
+    # and trace its contents — the int return is usually just a status code.
+    # 128 gates use this shape; tracing the return value alone makes every cup
+    # constant and mismatched. `out` is second-to-last, its size last.
+    # Only trust this when the signature came from the REAL .c (from_real),
+    # never from a stale pop_index fallback that may list a single arg.
+    if (from_real and ret_type == 'int' and len(param_list) >= 3
+            and 'char *' in param_list[-2]
+            and 'size_t' in param_list[-1]):
+        return 'outparam'
     # A pointer to an opaque/named struct type (coe_engine *eng) is not a
     # string or a number: it cannot be built from argv, and emitting an
     # extern decl with an unknown type makes the harness fail to COMPILE.
@@ -139,7 +150,7 @@ def categorize_signature(ret_type, param_list):
 
 
 def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_type,
-                          inputs_walk=None):
+                          inputs_walk=None, body_src=""):
     # Zero-arg categories pass nothing to the traced function; the input walk
     # still varies the cup via the CUP name + the traced call site.
     noargs = category.endswith('_noargs')
@@ -170,7 +181,16 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     else:
         call_args = ', '.join(_arg(j) for j in range(len(param_list)))
 
-    if category.startswith('int'):
+    if category == 'outparam':
+        # int fn(<inputs...>, char *out, size_t out_size): supply the buffer,
+        # pass its size, and trace what the function WROTE — not the status
+        # code it returned.
+        n_in = len(param_list) - 2
+        in_args = [_arg(j) for j in range(n_in)]
+        call_args = ', '.join(in_args + ['_ob', 'sizeof(_ob)'])
+        call_line = f"    int result = {c_fn}({call_args});"
+        val_code = '    WCUP_VALSTR(_ob);'
+    elif category.startswith('int'):
         val_code = '    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);'
     elif category.startswith('bool'):
         val_code = '    WCUP_VALSTR(result ? "true" : "false");'
@@ -192,18 +212,63 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     else:
         call_line = f"    {ret_type} result = {c_fn}({call_args});"
 
-    # The traced function must not write to stdout: harness stdout IS the cup
-    # stream, so any internal printf() lands between cup lines and the runner
-    # reports a bogus arity mismatch. Redirect fd 1 to /dev/null around the call.
-    call_line = (
-        "    fflush(stdout);\n"
-        "    int _sv = dup(1);\n"
-        "    FILE *_dn = fopen(\"/dev/null\", \"w\");\n"
-        "    if (_dn) dup2(fileno(_dn), 1);\n"
-        + call_line + "\n"
-        "    fflush(stdout);\n"
-        "    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }"
-    )
+    # The traced function must not write to the harness stdout: harness stdout
+    # IS the cup stream, so any internal printf() lands between cup lines and
+    # the runner reports a bogus arity mismatch. Redirect fd 1 around the call.
+    #
+    # Many ports print their result and `return 0` (1,154 of them) instead of
+    # returning it — Python returns the string, C printf's it. For those the
+    # cup must trace the CAPTURED stdout, not the constant 0, or every cup
+    # mismatches for a reason that is not a logic difference. Detect the
+    # printf-and-return-0 shape and emit a capturing harness for it.
+    prints_result = False
+    if body_src and category != 'outparam':
+        # Scope to THIS function's body: a file-wide "return 1" elsewhere must
+        # not disqualify it.
+        mb = re.search(r'\b%s\s*\([^;{]*\)\s*\{(.*?)^\}'
+                       % re.escape(c_fn), body_src, re.M | re.S)
+        fn_body = mb.group(1) if mb else ""
+        prints_result = ("printf" in fn_body
+                         and re.search(r"return\s+0\s*;", fn_body)
+                         and "return 1" not in fn_body)
+    if prints_result:
+        call_line = (
+            "    fflush(stdout);\n"
+            "    int _sv = dup(1);\n"
+            "    FILE *_cap = tmpfile();\n"
+            "    if (_cap) dup2(fileno(_cap), 1);\n"
+            + call_line + "\n"
+            "    fflush(stdout);\n"
+            "    if (_cap) {\n"
+            "        dup2(_sv, 1); close(_sv);\n"
+            "        rewind(_cap);\n"
+            "        char _ob[4096]; size_t _on = 0; int _ch;\n"
+            "        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)\n"
+            "            _ob[_on++] = (char)_ch;\n"
+            "        _ob[_on] = '\\0';\n"
+            "        /* strip the trailing newline the port emits */\n"
+            "        while (_on && (_ob[_on-1] == '\\n' || _ob[_on-1] == '\\r'))\n"
+            "            _ob[--_on] = '\\0';\n"
+            "        WCUP_VALSTR(_ob);\n"
+            "        fclose(_cap);\n"
+            "    }\n"
+        )
+    else:
+        call_line = (
+            "    fflush(stdout);\n"
+            "    int _sv = dup(1);\n"
+            "    FILE *_dn = fopen(\"/dev/null\", \"w\");\n"
+            "    if (_dn) dup2(fileno(_dn), 1);\n"
+            + call_line + "\n"
+            "    fflush(stdout);\n"
+            "    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }"
+        )
+
+    # When the call line captures stdout it already emits WCUP_VALSTR; the
+    # normal return-value encoding would add a second, constant value event.
+    val_block = "" if prints_result else val_code
+    buf_decl = ("    char _ob[4096]; _ob[0] = '\\0';\n"
+                if category == 'outparam' else "")
 
     return f"""/* gate: {gate_name} — traced copy of {c_fn} ({category}) */
 #include <stdio.h>
@@ -219,8 +284,8 @@ int main(int argc, char **argv) {{
     if (argc < 3) {{ fprintf(stderr, "usage: %s {c_fn} <input>...\\n", argv[0]); return 2; }}
     for (int i = 2; i < argc; i++) {{
         WCUP_BEGIN("{c_fn}");
-{call_line}
-{val_code}
+{buf_decl}{call_line}
+{val_block}
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\\n", cup);
@@ -487,12 +552,15 @@ def fix_all_gates(check=False):
             sig = read_c_signature(c_file, c_fn)
             if sig:
                 ret_type, params, param_list = sig
+                from_real = True
             else:
                 ret_type = c_info.get("ret_type", "int")
                 params = c_info.get("params", "const char *input")
                 param_list = c_info.get("param_list", ["const char *input"])
-            
-            category = categorize_signature(ret_type, param_list)
+                from_real = False
+
+            category = categorize_signature(ret_type, param_list,
+                                            from_real=from_real)
             if not category:
                 not_gatable += 1
                 # A gate previously given a real harness whose signature is
@@ -516,7 +584,8 @@ def fix_all_gates(check=False):
             try:
                 harness = generate_port_harness(category, d, c_fn, params,
                                                 param_list, ret_type,
-                                                inputs_walk=g.get("inputs"))
+                                                inputs_walk=g.get("inputs"),
+                                                body_src=open(c_file, errors="ignore").read())
                 h_path = os.path.join(gd, "harness.c")
                 old = open(h_path).read() if os.path.isfile(h_path) else ""
 
