@@ -393,7 +393,7 @@
   ]
  },
  "tools/skills_hub.py:_validate_skill_name": {
-  "c_fn": "_normalize_bundle_path",
+  "c_fn": "skills_hub_validate_skill_name",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/skills_hub.c",
   "ret_type": "bool",
   "params": "const char *name",
@@ -8122,7 +8122,7 @@
   ]
  },
  "hermes_cli/context_switch_guard.py:_threshold_tokens": {
-  "c_fn": "context_switch_guard_threshold_tokens",
+  "c_fn": "compute_threshold_tokens",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/context_switch_guard.c",
   "ret_type": "int",
   "params": "int context_length, float threshold_percent",
@@ -14370,7 +14370,7 @@
   ]
  },
  "agent/context_compressor.py:_estimate_msg_budget_tokens": {
-  "c_fn": "envelope",
+  "c_fn": "cc_micro_compact_estimate_msg_budget_tokens",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/context_compressor.c",
   "ret_type": "int",
   "params": "const json_t *msg",
@@ -16770,7 +16770,7 @@
   ]
  },
  "hermes_state.py:session_count": {
-  "c_fn": "ws_sessions_session_count",
+  "c_fn": "hermes_state_session_count",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/web_server_sessions_admin.c",
   "ret_type": "int",
   "params": "const char *db_path,\n                              const ws_session_count_opts_t *opts",
@@ -17148,7 +17148,7 @@
   ]
  },
  "hermes_state.py:set_session_archived": {
-  "c_fn": "ws_sess_set_archived",
+  "c_fn": "hermes_state_set_session_archived",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/web_server_session_detail.c",
   "ret_type": "bool",
   "params": "const char *db_path, const char *session_id,\n                          bool archived",
@@ -17159,7 +17159,7 @@
   ]
  },
  "hermes_state.py:set_session_pinned": {
-  "c_fn": "ws_sess_set_pinned",
+  "c_fn": "hermes_state_set_session_pinned",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/web_server_session_detail.c",
   "ret_type": "bool",
   "params": "const char *db_path, const char *session_id,\n                        bool pinned",
@@ -27149,7 +27149,7 @@
   ]
  },
  "tools/skills_hub.py:_is_valid_skill_name": {
-  "c_fn": "names",
+  "c_fn": "skills_hub_is_valid_skill_name",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/tools/skills_hub.c",
   "ret_type": "bool",
   "params": "const char *name",
@@ -29053,7 +29053,7 @@
   ]
  },
  "tools/file_operations.py:describe_binary_file": {
-  "c_fn": "file_fs_ops_describe_binary_file",
+  "c_fn": "fo_describe_binary_file",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/tools/file_fs_ops.c",
   "ret_type": "else",
   "params": "file_size >= 1024",
@@ -29084,7 +29084,7 @@
   ]
  },
  "tools/file_operations.py:_is_likely_binary_bytes": {
-  "c_fn": "file_fs_ops_is_likely_binary_bytes",
+  "c_fn": "fo_is_likely_binary_bytes",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/tools/file_fs_ops.c",
   "ret_type": "bool",
   "params": "const unsigned char *sample, size_t len",
@@ -29457,7 +29457,7 @@
   ]
  },
  "tools/url_safety.py:__init__": {
-  "c_fn": "tools_url_safety_sync_init",
+  "c_fn": "tools_url_safety_async_init",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/tools/util_helpers.c",
   "ret_type": "int",
   "params": "const char *schemes_by_origin_json",
@@ -38735,7 +38735,7 @@
   ]
  },
  "tools/computer_use/doctor.py:_print_text_report": {
-  "c_fn": "cua_doctor_print_text_report",
+  "c_fn": "tools_computer_use_doctor_u_print_text_report",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/gateway/cua_doctor.c",
   "ret_type": "void",
   "params": "FILE *out, const json_t *report, bool color, const json_t *identity",
@@ -39587,7 +39587,7 @@
   ]
  },
  "hermes_cli/tools_config.py:apply_provider_selection": {
-  "c_fn": "tools_config_apply_provider_selection",
+  "c_fn": "cli_apply_provider_selection",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/tools_config_providers.c",
   "ret_type": "void",
   "params": "const char *ts_key,\n                                           const char *provider_name,\n                                           json_t *config",
@@ -45510,7 +45510,7 @@
   ]
  },
  "hermes_cli/models.py:_configured_custom_provider_ids": {
-  "c_fn": "models_configured_custom_provider_ids_json",
+  "c_fn": "mg_append_slug",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/models_gaps.c",
   "ret_type": "void",
   "params": "json_t *arr, const char *name_or_key, int has_name",
@@ -45876,7 +45876,7 @@
   ]
  },
  "hermes_cli/models.py:compute_sale_discount": {
-  "c_fn": "models_compute_sale_discount",
+  "c_fn": "models_compute_sale_discount_batch3",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/models_py_helpers.c",
   "ret_type": "bool",
   "params": "const char *prompt, const char *completion,\n                                  const json_t *original,\n                                  int *out_pct, char **out_was_prompt, char **out_was_completion",
@@ -54190,7 +54190,7 @@
   ]
  },
  "hermes_cli/observability/shared_metrics_contract.py:counter_dimensions_are_valid": {
-  "c_fn": "sm_counter_dimensions_are_valid",
+  "c_fn": "smc_counter_dimensions_are_valid",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/shared_metrics.c",
   "ret_type": "bool",
   "params": "const char *metric, json_t *dims",
@@ -55695,7 +55695,7 @@
   ]
  },
  "hermes_cli/service_manager.py:validate_profile_name": {
-  "c_fn": "svc_mgr_validate_profile_name",
+  "c_fn": "sm_validate_profile_name",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/service_manager.c",
   "ret_type": "bool",
   "params": "const char *name, char *err_out, size_t err_sz",
@@ -56371,7 +56371,7 @@
   ]
  },
  "hermes_cli/config.py:validate_config_structure": {
-  "c_fn": "config_validate_config_structure",
+  "c_fn": "cfg_validate_config_structure",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "const char *config_json, char *out_json, size_t out_sz",
@@ -56382,7 +56382,7 @@
   ]
  },
  "hermes_cli/config.py:print_config_warnings": {
-  "c_fn": "config_print_config_warnings",
+  "c_fn": "cfg_print_config_warnings",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "const char *config_json",
@@ -56391,7 +56391,7 @@
   ]
  },
  "hermes_cli/config.py:warn_deprecated_cwd_env_vars": {
-  "c_fn": "config_warn_deprecated_cwd_env_vars",
+  "c_fn": "cfg_warn_deprecated_cwd_env_vars",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "const char *config_json",
@@ -56409,7 +56409,7 @@
   ]
  },
  "hermes_cli/config.py:apply_terminal_config_to_env": {
-  "c_fn": "config_apply_terminal_config_to_env",
+  "c_fn": "cfg_apply_terminal_config_to_env",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "const char *config_json, char *out_json, size_t out_sz",
@@ -56420,7 +56420,7 @@
   ]
  },
  "hermes_cli/config.py:save_config": {
-  "c_fn": "config_save_config",
+  "c_fn": "cfg_save_config",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "int",
   "params": "const char *config_json",
@@ -56674,7 +56674,7 @@
   ]
  },
  "hermes_cli/agent_import.py:import_permission_allowlist": {
-  "c_fn": "import_permission_allowlist",
+  "c_fn": "ai_import_permission_allowlist",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/agent_import.c",
   "ret_type": "void",
   "params": "AgentImporter *imp, json_t *settings,\n                                    const char *target_root",
@@ -62450,7 +62450,7 @@
   ]
  },
  "gateway/platforms/signal_rate_limit.py:_format_wait": {
-  "c_fn": "if",
+  "c_fn": "cli_gateway_platforms_signal_rate_limit__format_wait",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/platforms_signal_rate_limit.c",
   "ret_type": "else",
   "params": "seconds < 3600",
@@ -65432,7 +65432,7 @@
   ]
  },
  "gateway/platforms/yuanbao_proto.py:_decode_map_entry": {
-  "c_fn": "yuanbao_proto_decode_map_entry",
+  "c_fn": "yb_encode_msg_content",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/yuanbao_proto_helpers.c",
   "ret_type": "void",
   "params": "yb_buf *b, const char *json_content",
@@ -65950,7 +65950,7 @@
   ]
  },
  "hermes_cli/memory_setup.py:_provider_pip_dependencies": {
-  "c_fn": "provider_pip_dependencies_c",
+  "c_fn": "cli_hermes_cli_memory_setup__provider_pip_dependencies",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/memory_setup.c",
   "ret_type": "size_t",
   "params": "const char *provider_name,\n                                          const char *const *declared,\n                                          size_t n_declared,\n                                          char ***out",
@@ -66897,7 +66897,7 @@
   ]
  },
  "hermes_cli/sqlite_util.py:write_txn": {
-  "c_fn": "sqlite_util_write_txn_end",
+  "c_fn": "sqlite_util_write_txn_begin",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/sqlite_util.c",
   "ret_type": "int",
   "params": "sqlite3 *conn, int committed",
@@ -67956,7 +67956,7 @@
   ]
  },
  "hermes_cli/console_engine.py:_config_migrate": {
-  "c_fn": "hermes_config_migrate",
+  "c_fn": "coe_config_migrate",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config_migrate.c",
   "ret_type": "bool",
   "params": "hermes_config_t *cfg, const char *config_dir",
@@ -73041,7 +73041,7 @@
   ]
  },
  "hermes_cli/kanban_db.py:write_txn": {
-  "c_fn": "kdb_write_end",
+  "c_fn": "kdb_write_begin",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/kanban_schema.c",
   "ret_type": "int",
   "params": "sqlite3 *conn, int committed",
@@ -73536,7 +73536,7 @@
   ]
  },
  "hermes_cli/kanban_db.py:complete_task": {
-  "c_fn": "kdb_complete_task",
+  "c_fn": "kdb_latest_summary",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/kanban_lifecycle.c",
   "ret_type": "int",
   "params": "sqlite3 *conn, const char *task_id, const char *result,\n                         const char *summary, const char *metadata_json,\n                         char **created_cards, long expected_run_id",
@@ -73669,7 +73669,7 @@
   ]
  },
  "tools/yuanbao_tools.py:search_sticker": {
-  "c_fn": "if",
+  "c_fn": "cli_tools_yuanbao_tools_search_sticker",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/yuanbao_tools.c",
   "ret_type": "else",
   "params": "limit > 50",
@@ -75162,7 +75162,7 @@
   ]
  },
  "hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh": {
-  "c_fn": "get_catalog",
+  "c_fn": "catalog_swr_refresh_thread",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/models_helpers.c",
   "ret_type": "void",
   "params": "const char *url",
@@ -77154,7 +77154,7 @@
   ]
  },
  "hermes_cli/config.py:get_container_exec_info": {
-  "c_fn": "config_get_container_exec_info",
+  "c_fn": "cfg_get_container_exec_info",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "char *out_json, size_t out_sz",
@@ -77174,7 +77174,7 @@
   ]
  },
  "hermes_cli/config.py:get_missing_env_vars": {
-  "c_fn": "config_get_missing_env_vars",
+  "c_fn": "cfg_get_missing_env_vars",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "int required_only, char *out_json, size_t out_sz",
@@ -77199,7 +77199,7 @@
   ]
  },
  "hermes_cli/config.py:get_missing_config_fields": {
-  "c_fn": "config_get_missing_config_fields",
+  "c_fn": "cfg_get_missing_config_fields",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "char *out_json, size_t out_sz",
@@ -77221,7 +77221,7 @@
   ]
  },
  "hermes_cli/config.py:_explicit_config_paths": {
-  "c_fn": "config_explicit_config_paths",
+  "c_fn": "config_py_explicit_paths",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/config.c",
   "ret_type": "void",
   "params": "const char *config_json, char *out_json, size_t out_sz",
@@ -88035,7 +88035,7 @@
   ]
  },
  "gateway/systemd_notify.py:record_tick": {
-  "c_fn": "sd_n_record_tick",
+  "c_fn": "gateway_systemd_notify_record_tick",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/gateway/systemd_notify_ports.c",
   "ret_type": "int",
   "params": "double scheduled_at, double now",

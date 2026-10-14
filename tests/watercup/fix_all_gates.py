@@ -38,6 +38,30 @@ COMMON_SRC = [
     "src/cli/paths.c",
 ]
 
+# symbol -> defining .c file, built once. Lets the per-gate loop resolve a
+# gate.json c_fn (repointed to the real prefixed C symbol) to its source file
+# without an O(gates x files) walk.
+_DEF_RE = re.compile(r'^\s*(?:static\s+)?(?:const\s+)?[A-Za-z_][\w\s\*]*?\b(\w+)\s*\(', re.M)
+_SYMBOL_FILE = {}
+
+
+def _build_symbol_index():
+    for root, _, fs in os.walk(os.path.join(REPO, "src")):
+        for f in fs:
+            if not f.endswith(".c"):
+                continue
+            path = os.path.join(root, f)
+            try:
+                txt = open(path, errors="ignore").read()
+            except OSError:
+                continue
+            for sym in _DEF_RE.findall(txt):
+                _SYMBOL_FILE.setdefault(sym, path)
+
+
+_build_symbol_index()
+
+
 # src/infrastructure_stubs.c is a legacy fallback providing 320 symbols, some of
 # which nothing else defines (load_pool, credential_pool_free) — so it must stay
 # on the link line. It re-defines exactly ONE symbol that src/cli/paths.c (in
@@ -543,7 +567,19 @@ def fix_all_gates(check=False):
         
         key = f"{py_module}:{py_fn}"
         c_info = pop_idx.get(key)
-        
+
+        # Ported gate WITHOUT a pop_index entry: the gate.json carries a
+        # corrected c_fn (repointed from the PoP annotation to the real
+        # prefixed symbol). Look it up in the symbol->file index. Without this
+        # these gates keep a stale harness that externs the old phantom symbol
+        # and never compile.
+        if d.startswith("port__") and not c_info \
+                and g.get("classification") == "PORTED":
+            fn_guess = g.get("c_fn")
+            found = _SYMBOL_FILE.get(fn_guess) if fn_guess else None
+            if found:
+                c_info = {"c_fn": fn_guess, "c_file": found}
+
         if d.startswith("port__") and c_info:
             # Ported gate → call real C function
             c_fn = c_info["c_fn"]
