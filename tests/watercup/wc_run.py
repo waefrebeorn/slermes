@@ -455,10 +455,22 @@ def build_harness(gate_dir, g, force=False):
                 r2.stderr or ""))
             if dupes:
                 for d in dupes:
-                    owner = _resolve_missing_symbols([d], g.get("name"))
-                    for o in owner:
+                    owners = _resolve_missing_symbols([d], g.get("name"))
+                    for o in owners:
                         rejected.add(o)
                 added = [a for a in added if a not in rejected]
+                # added_objs holds the COMPILED objects, named
+                # "<tag>.xr.<source>.o". A source in `rejected` whose object is
+                # still on the link line keeps the duplicate alive. Extract the
+                # <source> part (everything after ".xr.", minus ".o") and match
+                # it against the rejected set's basenames.
+                rej_bases = {os.path.basename(r) for r in rejected}
+                added_objs = [
+                    o for o in added_objs
+                    if ".xr." not in os.path.basename(o)
+                    or os.path.basename(o).split(".xr.", 1)[1][:-2]
+                    not in rej_bases
+                ]
                 # base_lib_objs is linked unconditionally; a vendored .o that
                 # duplicates a symbol the harness's own extra_src already
                 # provides (json.o vs the gate's json.c) must come off the base
@@ -488,6 +500,18 @@ def build_harness(gate_dir, g, force=False):
                 if a.endswith(".o") and os.path.exists(a):
                     new_objs.append(a)
                     continue
+                # infrastructure_stubs.c re-defines symbols real modules own.
+                # Compiling it raw when the retry adds it duplicates them
+                # ("multiple definition"). Compile it shadowed against the
+                # objects already on the link line so the real impls win.
+                if a.endswith("infrastructure_stubs.c"):
+                    keep = [os.path.join(REPO, e) for e in
+                            g.get("extra_src", []) if e.endswith(".c")]
+                    keep += [x for x in added if x.endswith(".c")]
+                    so = _compile_stub_shadowed(g, keep + [a])
+                    if so:
+                        new_objs.append(so)
+                        continue
                 o = _compile_one(g, a)
                 if o:
                     new_objs.append(o)
