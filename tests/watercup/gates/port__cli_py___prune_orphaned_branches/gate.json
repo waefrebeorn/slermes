@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_prune_orphaned_branches",
+  "c_fn": "cli_prune_orphaned_branches",
   "py_module": "cli.py",
   "py_fn": "_prune_orphaned_branches",
   "inputs": [

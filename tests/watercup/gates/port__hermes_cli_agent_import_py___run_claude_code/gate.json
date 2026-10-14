@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_run_claude_code",
+  "c_fn": "ai_agent_importer_run_claude_code",
   "py_module": "hermes_cli/agent_import.py",
   "py_fn": "_run_claude_code",
   "inputs": [

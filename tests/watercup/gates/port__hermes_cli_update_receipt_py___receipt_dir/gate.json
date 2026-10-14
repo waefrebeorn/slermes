@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_receipt_dir",
+  "c_fn": "update_receipt_dir",
   "py_module": "hermes_cli/update_receipt.py",
   "py_fn": "_receipt_dir",
   "inputs": [

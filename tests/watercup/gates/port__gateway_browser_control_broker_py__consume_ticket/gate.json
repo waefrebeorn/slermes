@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "consume_ticket",
+  "c_fn": "bcb_broker_consume_ticket",
   "py_module": "gateway/browser_control_broker.py",
   "py_fn": "consume_ticket",
   "inputs": [

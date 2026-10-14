@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cli_multiline_shortcuts_enabled",
+  "c_fn": "cli_multiline_shortcuts_enabled",
   "py_module": "cli.py",
   "py_fn": "_cli_multiline_shortcuts_enabled",
   "inputs": [

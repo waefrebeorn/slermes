@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_should_skip_external_secret_sources",
+  "c_fn": "hermes_cli_early_recovery_should_skip_external_secret_sources",
   "py_module": "hermes_cli/_early_recovery.py",
   "py_fn": "_should_skip_external_secret_sources",
   "inputs": [

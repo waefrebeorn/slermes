@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_worktree_has_unpushed_commits",
+  "c_fn": "cli_worktree_has_unpushed_commits",
   "py_module": "cli.py",
   "py_fn": "_worktree_has_unpushed_commits",
   "inputs": [

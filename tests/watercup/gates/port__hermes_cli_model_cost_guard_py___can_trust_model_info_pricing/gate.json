@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_can_trust_model_info_pricing",
+  "c_fn": "model_cost_guard_can_trust_model_info_pricing",
   "py_module": "hermes_cli/model_cost_guard.py",
   "py_fn": "_can_trust_model_info_pricing",
   "inputs": [

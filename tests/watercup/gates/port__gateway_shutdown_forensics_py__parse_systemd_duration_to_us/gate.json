@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "parse_systemd_duration_to_us",
+  "c_fn": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
   "py_module": "gateway/shutdown_forensics.py",
   "py_fn": "parse_systemd_duration_to_us",
   "inputs": [

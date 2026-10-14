@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "import_agent_command",
+  "c_fn": "ai_import_agent_command",
   "py_module": "hermes_cli/agent_import.py",
   "py_fn": "import_agent_command",
   "inputs": [

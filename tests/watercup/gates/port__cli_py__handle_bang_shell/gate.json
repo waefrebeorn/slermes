@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "handle_bang_shell",
+  "c_fn": "hcli_handle_bang_shell",
   "py_module": "cli.py",
   "py_fn": "handle_bang_shell",
   "inputs": [

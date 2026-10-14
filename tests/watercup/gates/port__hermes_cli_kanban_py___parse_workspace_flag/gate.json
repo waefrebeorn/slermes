@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_workspace_flag",
+  "c_fn": "kanban_parse_workspace_flag",
   "py_module": "hermes_cli/kanban.py",
   "py_fn": "_parse_workspace_flag",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_skills_argument",
+  "c_fn": "cli_parse_skills_argument",
   "py_module": "cli.py",
   "py_fn": "_parse_skills_argument",
   "inputs": [

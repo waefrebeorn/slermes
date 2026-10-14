@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "register_self",
+  "c_fn": "process_identity_register_self",
   "py_module": "hermes_cli/process_identity.py",
   "py_fn": "register_self",
   "inputs": [

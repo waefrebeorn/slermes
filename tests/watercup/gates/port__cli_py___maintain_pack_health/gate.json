@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_maintain_pack_health",
+  "c_fn": "cli_maintain_pack_health",
   "py_module": "cli.py",
   "py_fn": "_maintain_pack_health",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cmd_list",
+  "c_fn": "hermes_cli_checkpoints_cmd_status",
   "py_module": "hermes_cli/checkpoints.py",
   "py_fn": "cmd_list",
   "inputs": [

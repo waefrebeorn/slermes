@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_mark_tui_input_modes_active",
+  "c_fn": "cli_mark_tui_input_modes_active",
   "py_module": "cli.py",
   "py_fn": "_mark_tui_input_modes_active",
   "inputs": [

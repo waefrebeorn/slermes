@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "validate_toolset",
+  "c_fn": "cli_validate_toolset",
   "py_module": "cli.py",
   "py_fn": "validate_toolset",
   "inputs": [

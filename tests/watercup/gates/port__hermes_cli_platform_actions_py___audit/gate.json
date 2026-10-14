@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_audit",
+  "c_fn": "hermes_cli_security_audit_star_run_security_audit",
   "py_module": "hermes_cli/platform_actions.py",
   "py_fn": "_audit",
   "inputs": [

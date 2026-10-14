@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_service_manager_py__restart — traced copy of restart (int_str) */
+/* gate: port__hermes_cli_service_manager_py__restart — traced copy of sm_restart (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,17 +6,17 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int restart(const char *name);
+extern int sm_restart(const char *name);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s restart <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s sm_restart <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("restart");
+        WCUP_BEGIN("sm_restart");
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = restart(argv[i]);
+    int result = sm_restart(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[32];
@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("restart");
+        WCUP_END("sm_restart");
     }
     return 0;
 }

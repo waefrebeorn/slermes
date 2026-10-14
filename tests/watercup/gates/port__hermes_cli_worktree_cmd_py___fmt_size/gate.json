@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fmt_size",
+  "c_fn": "worktree_cmd_fmt_size",
   "py_module": "hermes_cli/worktree_cmd.py",
   "py_fn": "_fmt_size",
   "inputs": [

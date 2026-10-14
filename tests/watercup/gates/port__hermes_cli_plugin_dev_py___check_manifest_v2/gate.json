@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_check_manifest_v2",
+  "c_fn": "plugin_dev_check_manifest_v2",
   "py_module": "hermes_cli/plugin_dev.py",
   "py_fn": "_check_manifest_v2",
   "inputs": [

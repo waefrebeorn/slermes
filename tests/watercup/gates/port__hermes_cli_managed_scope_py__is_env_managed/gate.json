@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_env_managed",
+  "c_fn": "hermes_cli_managed_scope_is_env_managed",
   "py_module": "hermes_cli/managed_scope.py",
   "py_fn": "is_env_managed",
   "inputs": [

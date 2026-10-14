@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_installed",
+  "c_fn": "hermes_cli_mcp_catalog_is_installed",
   "py_module": "hermes_cli/mcp_catalog.py",
   "py_fn": "is_installed",
   "inputs": [

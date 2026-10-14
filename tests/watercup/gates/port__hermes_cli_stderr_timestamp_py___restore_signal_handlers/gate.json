@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_restore_signal_handlers",
+  "c_fn": "hermes_cli_stderr_timestamp_restore_signal_handlers",
   "py_module": "hermes_cli/stderr_timestamp.py",
   "py_fn": "_restore_signal_handlers",
   "inputs": [

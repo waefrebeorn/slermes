@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_worktree_branch_pr_merged",
+  "c_fn": "cli_worktree_branch_pr_merged",
   "py_module": "cli.py",
   "py_fn": "_worktree_branch_pr_merged",
   "inputs": [

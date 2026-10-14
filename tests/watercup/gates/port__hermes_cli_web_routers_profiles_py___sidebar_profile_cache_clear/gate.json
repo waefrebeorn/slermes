@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_sidebar_profile_cache_clear",
+  "c_fn": "hermes_cli_web_routers_profiles_sidebar_profile_cache_clear",
   "py_module": "hermes_cli/web_routers/profiles.py",
   "py_fn": "_sidebar_profile_cache_clear",
   "inputs": [

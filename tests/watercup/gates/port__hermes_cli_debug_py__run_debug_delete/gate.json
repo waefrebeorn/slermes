@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "hermes_cli_debug_run_debug_delete",
+  "c_fn": "debug_run_debug_delete",
   "py_module": "hermes_cli/debug.py",
   "py_fn": "run_debug_delete",
   "inputs": [

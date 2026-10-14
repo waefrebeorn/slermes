@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_refresh_credentials",
+  "c_fn": "hermes_agent_vertex_adapter_refresh_credentials",
   "py_module": "agent/vertex_adapter.py",
   "py_fn": "_refresh_credentials",
   "inputs": [

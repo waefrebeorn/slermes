@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_print_human_report",
+  "c_fn": "verify_cmd_print_human_report",
   "py_module": "hermes_cli/verify_cmd.py",
   "py_fn": "_print_human_report",
   "inputs": [

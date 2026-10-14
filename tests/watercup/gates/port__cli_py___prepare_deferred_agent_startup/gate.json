@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_prepare_deferred_agent_startup",
+  "c_fn": "cli_prepare_deferred_agent_startup",
   "py_module": "cli.py",
   "py_fn": "_prepare_deferred_agent_startup",
   "inputs": [

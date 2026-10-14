@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "reset",
+  "c_fn": "bca_rate_limiter_reset",
   "py_module": "gateway/browser_control_artifacts.py",
   "py_fn": "reset",
   "inputs": [
