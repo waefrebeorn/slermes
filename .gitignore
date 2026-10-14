@@ -86,6 +86,10 @@ apps/desktop/dist/
 # C/PY json fixtures). Regenerated on every run; never tracked.
 tests/oracle/build/
 
+# Watercup run log — rewritten by every wc_run invocation, never a source of
+# truth. Tracking it made every run dirty.
+tests/watercup/build/results.jsonl
+
 # tsc-emitted artifacts (a stray `tsc -b` compiles into src/, and vite then
 # resolves the stale .js OVER the .tsx — never track these)
 apps/desktop/src/**/*.js
