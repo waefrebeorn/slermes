@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_nous_portal_env_override",
+  "c_fn": "auth_nous_portal_env_override",
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_nous_portal_env_override",
   "inputs": [

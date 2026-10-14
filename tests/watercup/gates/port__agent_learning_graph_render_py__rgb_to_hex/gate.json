@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "rgb_to_hex",
+  "c_fn": "learning_graph_render_rgb_to_hex",
   "py_module": "agent/learning_graph_render.py",
   "py_fn": "rgb_to_hex",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/learning_graph_render.c"
   ],
   "cflags": [
     "-I",

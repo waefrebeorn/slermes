@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cap_output",
+  "c_fn": "coe_cap_output",
   "py_module": "hermes_cli/console_engine.py",
   "py_fn": "_cap_output",
   "inputs": [
@@ -14,7 +14,22 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/console_engine_ports.c",
+    "src/hermes_cli/logs.c",
+    "src/hermes_cli/config.c",
+    "src/infrastructure_stubs.c",
+    "src/hermes_cli/doctor.c",
+    "src/hermes_cli/util_helpers.c",
+    "src/hermes_cli/cron.c",
+    "src/agent/hermes_state/hermes_state_session2.c",
+    "src/agent/hermes_state/hermes_state_ports.c",
+    "src/agent/hermes_state/hermes_state_archive.c",
+    "src/agent/hermes_state/hermes_state_ops.c",
+    "src/hermes_cli/startup_fast.c",
+    "src/hermes_cli/web_server_chat_argv.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_encode_bytes",
+  "c_fn": "yb_f_len",
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_encode_bytes",
   "inputs": [

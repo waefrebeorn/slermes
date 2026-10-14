@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "task_graph_context",
+  "c_fn": "kanban_task_graph_context",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "task_graph_context",
   "inputs": [

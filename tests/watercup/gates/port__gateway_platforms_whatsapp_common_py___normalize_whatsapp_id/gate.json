@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_whatsapp_id",
+  "c_fn": "whatsapp_common_normalize_whatsapp_id",
   "py_module": "gateway/platforms/whatsapp_common.py",
   "py_fn": "_normalize_whatsapp_id",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/whatsapp_common_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

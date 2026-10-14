@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "list_discovered_repos",
+  "c_fn": "projects_db_list_discovered_repos",
   "py_module": "hermes_cli/projects_db.py",
   "py_fn": "list_discovered_repos",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/projects_db.c"
   ],
   "cflags": [
     "-I",

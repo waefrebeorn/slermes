@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_npm_manifests_digest",
+  "c_fn": "uc_npm_manifests_digest",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_npm_manifests_digest",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_cmd.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

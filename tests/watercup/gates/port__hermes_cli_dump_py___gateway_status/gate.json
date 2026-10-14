@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_gateway_status",
+  "c_fn": "dmp_gateway_status",
   "py_module": "hermes_cli/dump.py",
   "py_fn": "_gateway_status",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dump_ports.c"
   ],
   "cflags": [
     "-I",

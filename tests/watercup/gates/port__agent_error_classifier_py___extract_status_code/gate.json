@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_extract_status_code",
+  "c_fn": "cli_agent_error_classifier__extract_status_code",
   "py_module": "agent/error_classifier.py",
   "py_fn": "_extract_status_code",
   "inputs": [

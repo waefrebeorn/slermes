@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_for_echo_compare",
+  "c_fn": "vmd_normalize_for_echo_compare",
   "py_module": "tools/voice_mode.py",
   "py_fn": "_normalize_for_echo_compare",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/voice_mode_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

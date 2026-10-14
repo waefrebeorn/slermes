@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "strip_slash_enum",
+  "c_fn": "json_array_contains_slash_string",
   "py_module": "tools/schema_sanitizer.py",
   "py_fn": "strip_slash_enum",
   "inputs": [

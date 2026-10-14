@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_open_dm_opted_in",
+  "c_fn": "whatsapp_cloud_open_dm_opted_in",
   "py_module": "gateway/platforms/whatsapp_cloud.py",
   "py_fn": "_open_dm_opted_in",
   "inputs": [

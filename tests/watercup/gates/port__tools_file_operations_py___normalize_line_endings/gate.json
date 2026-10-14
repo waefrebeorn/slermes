@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_line_endings",
+  "c_fn": "file_ops_normalize_line_endings",
   "py_module": "tools/file_operations.py",
   "py_fn": "_normalize_line_endings",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/file_operations.c"
   ],
   "cflags": [
     "-I",

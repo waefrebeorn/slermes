@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_container_mirror_prefix_for_task",
+  "c_fn": "file_tools_get_container_mirror_prefix_for_task",
   "py_module": "tools/file_tools.py",
   "py_fn": "_get_container_mirror_prefix_for_task",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/file_tools_helpers.c"
   ],
   "cflags": [
     "-I",

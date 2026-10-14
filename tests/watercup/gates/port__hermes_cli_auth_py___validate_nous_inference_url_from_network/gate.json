@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_validate_nous_inference_url_from_network",
+  "c_fn": "auth_validate_nous_inference_url_from_network",
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_validate_nous_inference_url_from_network",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/auth_store.c",
+    "src/infrastructure_stubs.c",
+    "src/hermes_cli/auth.c"
   ],
   "cflags": [
     "-I",

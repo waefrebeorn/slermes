@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_model_for_provider",
+  "c_fn": "hcli_normalize_model_for_provider",
   "py_module": "cli.py",
   "py_fn": "_normalize_model_for_provider",
   "inputs": [

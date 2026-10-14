@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_dispatch_adder_subcommand",
+  "c_fn": "ce_dispatch_adder_subcommand",
   "py_module": "hermes_cli/console_engine.py",
   "py_fn": "_dispatch_adder_subcommand",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/console_engine_pure.c",
+    "src/hermes_cli/subprocess_compat_pure.c"
   ],
   "cflags": [
     "-I",

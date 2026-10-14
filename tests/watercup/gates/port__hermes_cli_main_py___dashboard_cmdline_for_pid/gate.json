@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_dashboard_cmdline_for_pid",
+  "c_fn": "main_g_dashboard_cmdline_for_pid",
   "py_module": "hermes_cli/main.py",
   "py_fn": "_dashboard_cmdline_for_pid",
   "inputs": [
@@ -14,7 +14,12 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/main.c",
+    "src/gateway/platform_registry_ports.c",
+    "src/hermes_cli/startup_fast.c"
   ],
   "cflags": [
     "-I",

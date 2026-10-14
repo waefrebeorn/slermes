@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_credential_file_mounts",
+  "c_fn": "cli_tools_credential_files_get_credential_file_mounts",
   "py_module": "tools/credential_files.py",
   "py_fn": "get_credential_file_mounts",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/credential_files.c"
   ],
   "cflags": [
     "-I",

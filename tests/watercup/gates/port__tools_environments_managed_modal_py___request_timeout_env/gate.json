@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_request_timeout_env",
+  "c_fn": "cli_tools_environments_managed_modal__request_timeout_env",
   "py_module": "tools/environments/managed_modal.py",
   "py_fn": "_request_timeout_env",
   "inputs": [

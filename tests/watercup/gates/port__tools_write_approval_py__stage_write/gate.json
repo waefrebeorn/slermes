@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "stage_write",
+  "c_fn": "cli_tools_write_approval_stage_write",
   "py_module": "tools/write_approval.py",
   "py_fn": "stage_write",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tool_init.c",
+    "src/hermes_cli/write_approval.c",
+    "src/tools/transcribe.c"
   ],
   "cflags": [
     "-I",

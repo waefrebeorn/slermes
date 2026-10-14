@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_anthropic_kwargs",
+  "c_fn": "antr_build_anthropic_kwargs",
   "py_module": "agent/anthropic_adapter.py",
   "py_fn": "build_anthropic_kwargs",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/anthropic_adapter_ports.c",
+    "src/hermes_cli/anthropic_adapter.c"
   ],
   "cflags": [
     "-I",

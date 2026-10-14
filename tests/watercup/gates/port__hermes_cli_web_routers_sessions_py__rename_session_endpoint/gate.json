@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "rename_session_endpoint",
+  "c_fn": "ws_sess_rename_endpoint",
   "py_module": "hermes_cli/web_routers/sessions.py",
   "py_fn": "rename_session_endpoint",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server_session_endpoints.c"
   ],
   "cflags": [
     "-I",

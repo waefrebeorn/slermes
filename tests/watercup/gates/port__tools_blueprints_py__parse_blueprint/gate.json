@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "parse_blueprint",
+  "c_fn": "cli_tools_blueprints_parse_blueprint",
   "py_module": "tools/blueprints.py",
   "py_fn": "parse_blueprint",
   "inputs": [

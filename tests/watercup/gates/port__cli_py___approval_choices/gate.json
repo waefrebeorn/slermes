@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_approval_choices",
+  "c_fn": "hcli_approval_choices",
   "py_module": "cli.py",
   "py_fn": "_approval_choices",
   "inputs": [

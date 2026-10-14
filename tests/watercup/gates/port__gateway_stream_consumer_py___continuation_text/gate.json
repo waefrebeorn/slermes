@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_continuation_text",
+  "c_fn": "sc_continuation_text",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_continuation_text",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/stream_consumer.c"
   ],
   "cflags": [
     "-I",

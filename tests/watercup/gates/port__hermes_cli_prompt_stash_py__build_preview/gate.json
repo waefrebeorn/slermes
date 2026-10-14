@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_preview",
+  "c_fn": "prompt_stash_build_preview",
   "py_module": "hermes_cli/prompt_stash.py",
   "py_fn": "build_preview",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/prompt_stash.c"
   ],
   "cflags": [
     "-I",

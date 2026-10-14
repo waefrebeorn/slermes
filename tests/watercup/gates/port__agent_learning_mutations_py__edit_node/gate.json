@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "edit_node",
+  "c_fn": "learning_mutations_edit_node",
   "py_module": "agent/learning_mutations.py",
   "py_fn": "edit_node",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/learning_mutations.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_decode_varint",
+  "c_fn": "yb_decode_varint",
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_decode_varint",
   "inputs": [

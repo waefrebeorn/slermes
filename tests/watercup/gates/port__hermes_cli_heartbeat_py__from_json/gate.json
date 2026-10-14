@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "from_json",
+  "c_fn": "hb_state_from_json",
   "py_module": "hermes_cli/heartbeat.py",
   "py_fn": "from_json",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/heartbeat.c"
   ],
   "cflags": [
     "-I",

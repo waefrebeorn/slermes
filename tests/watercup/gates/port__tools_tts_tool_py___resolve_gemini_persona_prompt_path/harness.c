@@ -1,38 +1,31 @@
-/* gate: port__tools_tts_tool_py___resolve_gemini_persona_prompt_path — GAP sentinel for tools/tts_tool.py:_resolve_gemini_persona_prompt_path */
+/* gate: port__tools_tts_tool_py___resolve_gemini_persona_prompt_path — traced copy of tts_tool_resolve_gemini_persona_prompt_path (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_resolve_gemini_persona_prompt_path");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_resolve_gemini_persona_prompt_path");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_resolve_gemini_persona_prompt_path");
-}
+extern int tts_tool_resolve_gemini_persona_prompt_path(const char *input);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _resolve_gemini_persona_prompt_path <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s tts_tool_resolve_gemini_persona_prompt_path <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("tts_tool_resolve_gemini_persona_prompt_path");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = tts_tool_resolve_gemini_persona_prompt_path(argv[i]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("tts_tool_resolve_gemini_persona_prompt_path");
     }
     return 0;
 }

@@ -1,4 +1,4 @@
-/* gate: port__tools_skills_hub_py___validate_skill_name — traced copy of _normalize_bundle_path (bool_str) */
+/* gate: port__tools_skills_hub_py___validate_skill_name — traced copy of skills_hub_validate_skill_name (bool_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,24 +6,24 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool _normalize_bundle_path(const char *name);
+extern bool skills_hub_validate_skill_name(const char *name);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _normalize_bundle_path <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s skills_hub_validate_skill_name <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_normalize_bundle_path");
+        WCUP_BEGIN("skills_hub_validate_skill_name");
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = _normalize_bundle_path(argv[i]);
+    bool result = skills_hub_validate_skill_name(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR(result ? "true" : "false");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_normalize_bundle_path");
+        WCUP_END("skills_hub_validate_skill_name");
     }
     return 0;
 }

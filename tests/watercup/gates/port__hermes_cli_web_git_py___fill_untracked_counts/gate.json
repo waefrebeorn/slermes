@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fill_untracked_counts",
+  "c_fn": "fill_untracked_counts",
   "py_module": "hermes_cli/web_git.py",
   "py_fn": "_fill_untracked_counts",
   "inputs": [

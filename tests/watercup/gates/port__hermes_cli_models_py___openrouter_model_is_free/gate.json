@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_openrouter_model_is_free",
+  "c_fn": "models_openrouter_is_free",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_openrouter_model_is_free",
   "inputs": [

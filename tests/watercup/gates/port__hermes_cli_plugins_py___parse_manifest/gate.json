@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_manifest",
+  "c_fn": "plugin_manifest_parse",
   "py_module": "hermes_cli/plugins.py",
   "py_fn": "_parse_manifest",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/plugin_manifest.c"
   ],
   "cflags": [
     "-I",

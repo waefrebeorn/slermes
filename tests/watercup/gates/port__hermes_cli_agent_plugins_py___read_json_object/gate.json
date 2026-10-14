@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_read_json_object",
+  "c_fn": "ap_read_json_object",
   "py_module": "hermes_cli/agent_plugins.py",
   "py_fn": "_read_json_object",
   "inputs": [

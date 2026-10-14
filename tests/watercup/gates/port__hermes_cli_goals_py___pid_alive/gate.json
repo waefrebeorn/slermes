@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_pid_alive",
+  "c_fn": "goal_pid_alive",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "_pid_alive",
   "inputs": [

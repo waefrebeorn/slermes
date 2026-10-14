@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_agent_key_is_usable",
+  "c_fn": "auth_agent_key_is_usable",
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_agent_key_is_usable",
   "inputs": [

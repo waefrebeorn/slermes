@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "count_notify_subs",
+  "c_fn": "kdb_count_notify_subs",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "count_notify_subs",
   "inputs": [

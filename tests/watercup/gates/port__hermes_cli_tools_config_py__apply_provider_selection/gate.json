@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "apply_provider_selection",
+  "c_fn": "cli_apply_provider_selection",
   "py_module": "hermes_cli/tools_config.py",
   "py_fn": "apply_provider_selection",
   "inputs": [

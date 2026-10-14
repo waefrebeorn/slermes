@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "quoted_mkdir_command",
+  "c_fn": "cli_tools_environments_file_sync_quoted_mkdir_command",
   "py_module": "tools/environments/file_sync.py",
   "py_fn": "quoted_mkdir_command",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/environments_file_sync.c",
+    "src/tools/credential_files.c"
   ],
   "cflags": [
     "-I",

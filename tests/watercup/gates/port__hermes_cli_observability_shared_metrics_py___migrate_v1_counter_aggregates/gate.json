@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_migrate_v1_counter_aggregates",
+  "c_fn": "metrics_migrate_v1_counter_aggregates",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "_migrate_v1_counter_aggregates",
   "inputs": [

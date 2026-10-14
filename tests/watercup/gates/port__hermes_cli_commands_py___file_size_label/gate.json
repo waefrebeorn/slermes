@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_file_size_label",
+  "c_fn": "commands_file_size_label",
   "py_module": "hermes_cli/commands.py",
   "py_fn": "_file_size_label",
   "inputs": [

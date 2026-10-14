@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_bigram_jaccard",
+  "c_fn": "cli_gateway_platforms_yuanbao_sticker__bigram_jaccard",
   "py_module": "gateway/platforms/yuanbao_sticker.py",
   "py_fn": "_bigram_jaccard",
   "inputs": [

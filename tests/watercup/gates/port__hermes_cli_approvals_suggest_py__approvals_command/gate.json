@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "approvals_command",
+  "c_fn": "asuggest_approvals_command",
   "py_module": "hermes_cli/approvals_suggest.py",
   "py_fn": "approvals_command",
   "inputs": [

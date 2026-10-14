@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_xai_bool_config",
+  "c_fn": "tts_xai_bool_config",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_xai_bool_config",
   "inputs": [

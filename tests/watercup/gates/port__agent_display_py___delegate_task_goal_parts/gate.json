@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_delegate_task_goal_parts",
+  "c_fn": "disp_delegate_task_goal_parts",
   "py_module": "agent/display.py",
   "py_fn": "_delegate_task_goal_parts",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/display_ports.c"
   ],
   "cflags": [
     "-I",

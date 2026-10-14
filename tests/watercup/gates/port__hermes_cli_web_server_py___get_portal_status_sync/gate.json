@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_portal_status_sync",
+  "c_fn": "ws_get_portal_status_sync",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_get_portal_status_sync",
   "inputs": [

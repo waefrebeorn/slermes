@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_detect_concurrent_hermes_instances",
+  "c_fn": "hermes_cli_dashboard_procs_u_detect_concurrent_hermes_instances",
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_detect_concurrent_hermes_instances",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_procs.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_run_bash",
+  "c_fn": "cli_tools_environments_ssh__run_bash",
   "py_module": "tools/environments/ssh.py",
   "py_fn": "_run_bash",
   "inputs": [

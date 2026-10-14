@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_voice_beeps_enabled",
+  "c_fn": "hcli_voice_beeps_enabled",
   "py_module": "cli.py",
   "py_fn": "_voice_beeps_enabled",
   "inputs": [

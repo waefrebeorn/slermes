@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_default_verify",
+  "c_fn": "auth_default_verify",
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_default_verify",
   "inputs": [

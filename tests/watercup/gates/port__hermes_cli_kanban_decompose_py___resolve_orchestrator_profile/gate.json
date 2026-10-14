@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_orchestrator_profile",
+  "c_fn": "kdb_resolve_orchestrator_profile",
   "py_module": "hermes_cli/kanban_decompose.py",
   "py_fn": "_resolve_orchestrator_profile",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "write_txn",
+  "c_fn": "sqlite_util_write_txn_begin",
   "py_module": "hermes_cli/sqlite_util.py",
   "py_fn": "write_txn",
   "inputs": [

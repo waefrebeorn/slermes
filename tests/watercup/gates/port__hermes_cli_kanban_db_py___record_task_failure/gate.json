@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_record_task_failure",
+  "c_fn": "kdb_record_task_failure",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_record_task_failure",
   "inputs": [

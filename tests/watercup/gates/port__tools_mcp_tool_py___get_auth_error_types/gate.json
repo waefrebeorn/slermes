@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_auth_error_types",
+  "c_fn": "mct_get_auth_error_types",
   "py_module": "tools/mcp_tool.py",
   "py_fn": "_get_auth_error_types",
   "inputs": [

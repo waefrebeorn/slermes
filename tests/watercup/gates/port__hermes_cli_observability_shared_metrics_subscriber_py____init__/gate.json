@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "sm_subscriber_init",
   "py_module": "hermes_cli/observability/shared_metrics_subscriber.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,22 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/util_helpers.c",
+    "src/agent/hermes_state/hermes_state_msgs.c",
+    "src/hermes_cli/kanban_schema.c",
+    "src/hermes_cli/kanban_tasks.c",
+    "src/hermes_cli/kanban_model.c",
+    "src/pet/pet_render.c",
+    "src/pet/pet_commands.c",
+    "src/hermes_cli/projects_db.c",
+    "src/infrastructure_stubs.c",
+    "src/agent/skill_bundles.c",
+    "src/hermes_cli/smc_event_extractors.c",
+    "src/tools/util_helpers.c",
+    "src/hermes_cli/hermes_cli_ws_tickets.c"
   ],
   "cflags": [
     "-I",

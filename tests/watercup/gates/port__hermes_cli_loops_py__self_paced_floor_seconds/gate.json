@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "self_paced_floor_seconds",
+  "c_fn": "loops_self_paced_floor_seconds",
   "py_module": "hermes_cli/loops.py",
   "py_fn": "self_paced_floor_seconds",
   "inputs": [

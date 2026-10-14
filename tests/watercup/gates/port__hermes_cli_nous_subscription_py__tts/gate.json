@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "tts",
+  "c_fn": "nsub_tts",
   "py_module": "hermes_cli/nous_subscription.py",
   "py_fn": "tts",
   "inputs": [

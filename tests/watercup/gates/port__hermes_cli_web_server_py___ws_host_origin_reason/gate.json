@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ws_host_origin_reason",
+  "c_fn": "ws_auth_host_origin_reason",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_ws_host_origin_reason",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server_ws_auth.c",
+    "src/hermes_cli/web_server_auth.c"
   ],
   "cflags": [
     "-I",

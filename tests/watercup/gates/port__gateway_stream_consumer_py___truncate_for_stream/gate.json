@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_truncate_for_stream",
+  "c_fn": "sc_truncate_for_stream",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_truncate_for_stream",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/stream_consumer.c"
   ],
   "cflags": [
     "-I",

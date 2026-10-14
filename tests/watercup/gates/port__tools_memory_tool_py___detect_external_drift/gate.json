@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_detect_external_drift",
+  "c_fn": "detect_external_drift",
   "py_module": "tools/memory_tool.py",
   "py_fn": "_detect_external_drift",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/memory_tool.c"
   ],
   "cflags": [
     "-I",

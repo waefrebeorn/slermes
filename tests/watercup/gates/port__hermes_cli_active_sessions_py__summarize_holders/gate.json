@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "summarize_holders",
+  "c_fn": "activesess_summarize_holders",
   "py_module": "hermes_cli/active_sessions.py",
   "py_fn": "summarize_holders",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/active_sessions_ports.c"
   ],
   "cflags": [
     "-I",

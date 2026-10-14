@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_longest_subsequence_ratio",
+  "c_fn": "cli_gateway_platforms_yuanbao_sticker__longest_subsequence_ratio",
   "py_module": "gateway/platforms/yuanbao_sticker.py",
   "py_fn": "_longest_subsequence_ratio",
   "inputs": [

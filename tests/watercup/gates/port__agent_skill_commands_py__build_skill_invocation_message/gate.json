@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_skill_invocation_message",
+  "c_fn": "skc_build_skill_invocation_message",
   "py_module": "agent/skill_commands.py",
   "py_fn": "build_skill_invocation_message",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/skill_commands_ports.c"
   ],
   "cflags": [
     "-I",

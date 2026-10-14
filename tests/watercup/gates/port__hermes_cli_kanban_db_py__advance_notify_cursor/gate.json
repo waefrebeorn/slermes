@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "advance_notify_cursor",
+  "c_fn": "kdb_advance_notify_cursor",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "advance_notify_cursor",
   "inputs": [

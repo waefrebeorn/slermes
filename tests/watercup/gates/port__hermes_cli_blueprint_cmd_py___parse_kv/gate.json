@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_kv",
+  "c_fn": "blueprint_cmd_parse_kv",
   "py_module": "hermes_cli/blueprint_cmd.py",
   "py_fn": "_parse_kv",
   "inputs": [

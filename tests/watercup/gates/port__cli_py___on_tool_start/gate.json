@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_on_tool_start",
+  "c_fn": "hcli_on_tool_start",
   "py_module": "cli.py",
   "py_fn": "_on_tool_start",
   "inputs": [

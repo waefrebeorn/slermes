@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "poll",
+  "c_fn": "envb_handle_poll",
   "py_module": "tools/environments/base.py",
   "py_fn": "poll",
   "inputs": [

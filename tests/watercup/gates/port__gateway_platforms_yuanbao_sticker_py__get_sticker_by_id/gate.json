@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_sticker_by_id",
+  "c_fn": "cli_gateway_platforms_yuanbao_sticker_get_sticker_by_id",
   "py_module": "gateway/platforms/yuanbao_sticker.py",
   "py_fn": "get_sticker_by_id",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platforms_yuanbao_sticker.c"
   ],
   "cflags": [
     "-I",

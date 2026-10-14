@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "search_index",
+  "c_fn": "pindex_search_index",
   "py_module": "hermes_cli/plugin_index.py",
   "py_fn": "search_index",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/plugin_index_pure.c",
+    "src/hermes_cli/web_server_paths.c"
   ],
   "cflags": [
     "-I",

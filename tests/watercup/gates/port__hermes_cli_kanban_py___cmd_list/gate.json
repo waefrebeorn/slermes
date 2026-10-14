@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cmd_list",
+  "c_fn": "hcli_kanban_cmd_list",
   "py_module": "hermes_cli/kanban.py",
   "py_fn": "_cmd_list",
   "inputs": [

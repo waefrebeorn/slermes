@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_shell_quote_context",
+  "c_fn": "tts_shell_quote_context",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_shell_quote_context",
   "inputs": [

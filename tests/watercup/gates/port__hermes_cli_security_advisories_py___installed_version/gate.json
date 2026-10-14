@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_installed_version",
+  "c_fn": "cli_security_advisories_installed_version",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "_installed_version",
   "inputs": [

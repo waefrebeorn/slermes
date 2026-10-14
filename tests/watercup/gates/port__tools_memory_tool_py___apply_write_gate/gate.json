@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_apply_write_gate",
+  "c_fn": "memory_tool_apply_write_gate",
   "py_module": "tools/memory_tool.py",
   "py_fn": "_apply_write_gate",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/memory_tool.c"
   ],
   "cflags": [
     "-I",

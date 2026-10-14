@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_goal_manager",
+  "c_fn": "hcli_get_goal_manager",
   "py_module": "cli.py",
   "py_fn": "_get_goal_manager",
   "inputs": [
@@ -14,7 +14,19 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cli/cli_hermes_cli_methods.c",
+    "src/tools/async_delegation_wrappers.c",
+    "src/agent/account_usage.c",
+    "src/infrastructure_stubs.c",
+    "src/tools/approval_helpers2.c",
+    "src/agent/context_breakdown.c",
+    "src/hermes_cli/pet_input.c",
+    "src/hermes_cli/route_identity.c",
+    "src/agent/hermes_state/hermes_state_lineage.c",
+    "src/agent/hermes_state/hermes_state_session2.c"
   ],
   "cflags": [
     "-I",

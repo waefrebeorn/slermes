@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_sync_transaction",
+  "c_fn": "cli_tools_environments_file_sync__sync_transaction",
   "py_module": "tools/environments/file_sync.py",
   "py_fn": "_sync_transaction",
   "inputs": [

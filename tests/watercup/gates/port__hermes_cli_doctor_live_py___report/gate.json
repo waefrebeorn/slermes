@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_report",
+  "c_fn": "doctor_report",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "_report",
   "inputs": [

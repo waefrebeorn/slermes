@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "display_name",
+  "c_fn": "tep_display_name",
   "py_module": "agent/terminal_env_provider.py",
   "py_fn": "display_name",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/terminal_env_provider.c"
   ],
   "cflags": [
     "-I",

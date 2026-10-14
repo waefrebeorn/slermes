@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_token_score",
+  "c_fn": "curses_token_score",
   "py_module": "hermes_cli/curses_ui.py",
   "py_fn": "_token_score",
   "inputs": [

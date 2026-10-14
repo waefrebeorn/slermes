@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_should_chunk_for_transcription",
+  "c_fn": "vmd_should_chunk_for_transcription",
   "py_module": "tools/voice_mode.py",
   "py_fn": "_should_chunk_for_transcription",
   "inputs": [

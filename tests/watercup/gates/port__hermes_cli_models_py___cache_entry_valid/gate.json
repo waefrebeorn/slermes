@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cache_entry_valid",
+  "c_fn": "models_cache_entry_valid",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_cache_entry_valid",
   "inputs": [

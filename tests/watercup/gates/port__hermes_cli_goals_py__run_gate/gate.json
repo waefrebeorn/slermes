@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run_gate",
+  "c_fn": "goal_run_gate",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "run_gate",
   "inputs": [

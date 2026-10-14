@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_schedule",
+  "c_fn": "blueprint_catalog_resolve_schedule",
   "py_module": "cron/blueprint_catalog.py",
   "py_fn": "_resolve_schedule",
   "inputs": [
@@ -14,7 +14,10 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/blueprint_catalog_helpers.c"
   ],
   "cflags": [
     "-I",

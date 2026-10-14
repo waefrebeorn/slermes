@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_discord_add_reaction",
+  "c_fn": "platform_actions_discord_add_reaction",
   "py_module": "hermes_cli/platform_actions.py",
   "py_fn": "_discord_add_reaction",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platform_actions.c"
   ],
   "cflags": [
     "-I",

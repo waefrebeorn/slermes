@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_create_counter_aggregates_table",
+  "c_fn": "metrics_create_counter_aggregates_table",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "_create_counter_aggregates_table",
   "inputs": [

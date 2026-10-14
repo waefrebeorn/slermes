@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "first_threat_message",
+  "c_fn": "cli_tools_threat_patterns_first_threat_message",
   "py_module": "tools/threat_patterns.py",
   "py_fn": "first_threat_message",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/threat_patterns.c"
   ],
   "cflags": [
     "-I",

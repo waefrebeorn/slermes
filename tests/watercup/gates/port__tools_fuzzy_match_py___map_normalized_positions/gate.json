@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_map_normalized_positions",
+  "c_fn": "fuzzy_map_normalized_positions",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_map_normalized_positions",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/fuzzy_match.c"
   ],
   "cflags": [
     "-I",

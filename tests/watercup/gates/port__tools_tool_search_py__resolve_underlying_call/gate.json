@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "resolve_underlying_call",
+  "c_fn": "ts_resolve_underlying_call",
   "py_module": "tools/tool_search.py",
   "py_fn": "resolve_underlying_call",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tool_search_ports.c"
   ],
   "cflags": [
     "-I",

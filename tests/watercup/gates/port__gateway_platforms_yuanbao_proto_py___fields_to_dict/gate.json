@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fields_to_dict",
+  "c_fn": "yb_parse_fields",
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_fields_to_dict",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "describe_binary_file",
+  "c_fn": "fo_describe_binary_file",
   "py_module": "tools/file_operations.py",
   "py_fn": "describe_binary_file",
   "inputs": [

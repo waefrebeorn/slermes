@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_reap_orphaned_desktop_local_serves",
+  "c_fn": "dashboard_procs_reap_orphaned_desktop_local_serves",
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_reap_orphaned_desktop_local_serves",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_procs.c"
   ],
   "cflags": [
     "-I",

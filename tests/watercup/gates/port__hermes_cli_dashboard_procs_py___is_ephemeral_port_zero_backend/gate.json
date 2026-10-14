@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_ephemeral_port_zero_backend",
+  "c_fn": "dashboard_procs_is_ephemeral_port_zero_backend",
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_is_ephemeral_port_zero_backend",
   "inputs": [

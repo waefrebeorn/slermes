@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_provider_pip_dependencies",
+  "c_fn": "cli_hermes_cli_memory_setup__provider_pip_dependencies",
   "py_module": "hermes_cli/memory_setup.py",
   "py_fn": "_provider_pip_dependencies",
   "inputs": [

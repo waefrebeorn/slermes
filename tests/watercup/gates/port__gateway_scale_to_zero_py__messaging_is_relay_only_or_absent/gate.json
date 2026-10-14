@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "messaging_is_relay_only_or_absent",
+  "c_fn": "scale_to_zero_messaging_is_relay_only_or_absent",
   "py_module": "gateway/scale_to_zero.py",
   "py_fn": "messaging_is_relay_only_or_absent",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_channel_directory",
+  "c_fn": "cli_gateway_channel_directory_build_channel_directory",
   "py_module": "gateway/channel_directory.py",
   "py_fn": "build_channel_directory",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/channel_directory.c"
   ],
   "cflags": [
     "-I",

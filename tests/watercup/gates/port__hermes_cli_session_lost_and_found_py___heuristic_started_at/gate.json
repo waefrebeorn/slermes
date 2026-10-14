@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_heuristic_started_at",
+  "c_fn": "laf_heuristic_started_at",
   "py_module": "hermes_cli/session_lost_and_found.py",
   "py_fn": "_heuristic_started_at",
   "inputs": [

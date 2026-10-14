@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_frame_is_blank",
+  "c_fn": "pet_frame_is_blank",
   "py_module": "agent/pet/render.py",
   "py_fn": "_frame_is_blank",
   "inputs": [

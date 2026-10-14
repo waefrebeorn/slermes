@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run_execute",
+  "c_fn": "slash_exec_run",
   "py_module": "hermes_cli/slash_exec.py",
   "py_fn": "run_execute",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/slash_exec.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_split_allowlist",
+  "c_fn": "pairing_split_allowlist",
   "py_module": "gateway/pairing.py",
   "py_fn": "_split_allowlist",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pairing_helpers.c"
   ],
   "cflags": [
     "-I",

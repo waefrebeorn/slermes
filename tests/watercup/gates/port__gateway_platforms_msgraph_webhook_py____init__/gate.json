@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "msgraph_webhook_create",
   "py_module": "gateway/platforms/msgraph_webhook.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/platforms/msgraph_webhook/msgraph_webhook_security.c",
+    "src/gateway/platforms/msgraph_webhook/msgraph_webhook_helpers.c"
   ],
   "cflags": [
     "-I",

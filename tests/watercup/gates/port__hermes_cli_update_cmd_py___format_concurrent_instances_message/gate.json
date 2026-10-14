@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_format_concurrent_instances_message",
+  "c_fn": "uc_format_concurrent_instances_message",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_format_concurrent_instances_message",
   "inputs": [
@@ -14,7 +14,11 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_cmd.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

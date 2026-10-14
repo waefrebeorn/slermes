@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_bundle_path",
+  "c_fn": "skills_hub_validate_skill_name",
   "py_module": "tools/skills_hub.py",
   "py_fn": "_validate_skill_name",
   "inputs": [

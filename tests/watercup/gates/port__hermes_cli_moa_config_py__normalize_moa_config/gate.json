@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "normalize_moa_config",
+  "c_fn": "moa_normalize_config",
   "py_module": "hermes_cli/moa_config.py",
   "py_fn": "normalize_moa_config",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/moa_config.c"
   ],
   "cflags": [
     "-I",

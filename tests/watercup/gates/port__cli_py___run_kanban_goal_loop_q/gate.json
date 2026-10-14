@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_run_kanban_goal_loop_q",
+  "c_fn": "cli_run_kanban_goal_loop_q",
   "py_module": "cli.py",
   "py_fn": "_run_kanban_goal_loop_q",
   "inputs": [

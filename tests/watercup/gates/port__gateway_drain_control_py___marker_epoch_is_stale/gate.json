@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_marker_epoch_is_stale",
+  "c_fn": "drain_control_marker_epoch_is_stale",
   "py_module": "gateway/drain_control.py",
   "py_fn": "_marker_epoch_is_stale",
   "inputs": [

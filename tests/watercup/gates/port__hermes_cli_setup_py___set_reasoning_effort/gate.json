@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_set_reasoning_effort",
+  "c_fn": "stp_set_reasoning_effort",
   "py_module": "hermes_cli/setup.py",
   "py_fn": "_set_reasoning_effort",
   "inputs": [

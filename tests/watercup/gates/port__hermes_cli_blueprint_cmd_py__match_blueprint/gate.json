@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "match_blueprint",
+  "c_fn": "blueprint_cmd_match",
   "py_module": "hermes_cli/blueprint_cmd.py",
   "py_fn": "match_blueprint",
   "inputs": [

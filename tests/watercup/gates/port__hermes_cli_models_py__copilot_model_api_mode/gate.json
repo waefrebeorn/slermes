@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "copilot_model_api_mode",
+  "c_fn": "models_copilot_model_api_mode",
   "py_module": "hermes_cli/models.py",
   "py_fn": "copilot_model_api_mode",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/models_helpers.c",
+    "src/hermes_cli/model_normalize.c"
   ],
   "cflags": [
     "-I",

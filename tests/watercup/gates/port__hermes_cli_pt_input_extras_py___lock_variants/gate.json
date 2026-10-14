@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_lock_variants",
+  "c_fn": "hermes_cli_pt_input_extras_lock_variants",
   "py_module": "hermes_cli/pt_input_extras.py",
   "py_fn": "_lock_variants",
   "inputs": [
@@ -14,7 +14,15 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/partial_compress.c",
+    "src/tools/delegate.c",
+    "src/infrastructure_stubs.c",
+    "src/tools/send_message.c",
+    "src/tools/session_crud.c",
+    "src/tools/session_search.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "format_hidden_line",
+  "c_fn": "fv_format_hidden_line",
   "py_module": "hermes_cli/focus_view.py",
   "py_fn": "format_hidden_line",
   "inputs": [
@@ -14,7 +14,10 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/focus_view.c"
   ],
   "cflags": [
     "-I",

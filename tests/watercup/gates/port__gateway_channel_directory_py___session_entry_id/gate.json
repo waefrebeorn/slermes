@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_session_entry_id",
+  "c_fn": "session_entry_id",
   "py_module": "gateway/channel_directory.py",
   "py_fn": "_session_entry_id",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/channel_directory.c"
   ],
   "cflags": [
     "-I",

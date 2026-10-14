@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_maybe_spill",
+  "c_fn": "envb_maybe_spill",
   "py_module": "tools/environments/base.py",
   "py_fn": "_maybe_spill",
   "inputs": [

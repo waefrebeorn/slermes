@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "load_banner_snapshot",
+  "c_fn": "banner_load_snapshot",
   "py_module": "hermes_cli/banner.py",
   "py_fn": "load_banner_snapshot",
   "inputs": [

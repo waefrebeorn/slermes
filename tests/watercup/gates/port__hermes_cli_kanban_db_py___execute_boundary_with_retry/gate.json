@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_execute_boundary_with_retry",
+  "c_fn": "kdb_execute_boundary_with_retry",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_execute_boundary_with_retry",
   "inputs": [

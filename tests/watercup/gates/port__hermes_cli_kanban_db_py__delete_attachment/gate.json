@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "delete_attachment",
+  "c_fn": "kdb_delete_attachment",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "delete_attachment",
   "inputs": [

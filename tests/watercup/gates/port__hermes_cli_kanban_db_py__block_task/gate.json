@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "block_task",
+  "c_fn": "kdb_block_task",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "block_task",
   "inputs": [

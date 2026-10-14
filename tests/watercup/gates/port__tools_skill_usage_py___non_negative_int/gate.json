@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_non_negative_int",
+  "c_fn": "skill_usage_non_negative_int",
   "py_module": "tools/skill_usage.py",
   "py_fn": "_non_negative_int",
   "inputs": [

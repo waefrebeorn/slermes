@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_recent_window",
+  "c_fn": "session_recent_window",
   "py_module": "hermes_cli/session_recap.py",
   "py_fn": "_recent_window",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/session_recap.c"
   ],
   "cflags": [
     "-I",

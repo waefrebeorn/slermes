@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "register_notify",
+  "c_fn": "cli_tools_clarify_gateway_register_notify",
   "py_module": "tools/clarify_gateway.py",
   "py_fn": "register_notify",
   "inputs": [

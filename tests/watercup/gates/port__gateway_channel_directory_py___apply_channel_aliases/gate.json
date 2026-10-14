@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_apply_channel_aliases",
+  "c_fn": "apply_channel_aliases",
   "py_module": "gateway/channel_directory.py",
   "py_fn": "_apply_channel_aliases",
   "inputs": [

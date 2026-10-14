@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_file_ops",
+  "c_fn": "file_tools_get_file_ops",
   "py_module": "tools/file_tools.py",
   "py_fn": "_get_file_ops",
   "inputs": [

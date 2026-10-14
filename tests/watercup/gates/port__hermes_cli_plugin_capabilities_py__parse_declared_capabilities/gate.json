@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "parse_declared_capabilities",
+  "c_fn": "pc_parse_declared_capabilities",
   "py_module": "hermes_cli/plugin_capabilities.py",
   "py_fn": "parse_declared_capabilities",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/plugin_capabilities_pure.c"
   ],
   "cflags": [
     "-I",

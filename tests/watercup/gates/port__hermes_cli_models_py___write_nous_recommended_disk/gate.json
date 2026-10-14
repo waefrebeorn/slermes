@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_write_nous_recommended_disk",
+  "c_fn": "data_json",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_write_nous_recommended_disk",
   "inputs": [

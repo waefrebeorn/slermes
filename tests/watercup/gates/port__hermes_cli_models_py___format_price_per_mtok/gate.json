@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_format_price_per_mtok",
+  "c_fn": "models_format_price_per_mtok",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_format_price_per_mtok",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/models.c"
   ],
   "cflags": [
     "-I",

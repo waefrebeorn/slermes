@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_merge_runs",
+  "c_fn": "learning_graph_render_merge_runs",
   "py_module": "agent/learning_graph_render.py",
   "py_fn": "_merge_runs",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/learning_graph_render.c"
   ],
   "cflags": [
     "-I",

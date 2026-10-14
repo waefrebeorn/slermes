@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_utc_now",
+  "c_fn": "sm_utc_now",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "_utc_now",
   "inputs": [

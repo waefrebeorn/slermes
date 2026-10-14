@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_write_update_planned_stop_marker",
+  "c_fn": "uc_write_update_planned_stop_marker",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_write_update_planned_stop_marker",
   "inputs": [

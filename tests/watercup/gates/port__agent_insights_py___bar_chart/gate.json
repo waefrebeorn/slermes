@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_bar_chart",
+  "c_fn": "ins_bar_chart",
   "py_module": "agent/insights.py",
   "py_fn": "_bar_chart",
   "inputs": [
@@ -14,7 +14,10 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/insights_ports.c"
   ],
   "cflags": [
     "-I",

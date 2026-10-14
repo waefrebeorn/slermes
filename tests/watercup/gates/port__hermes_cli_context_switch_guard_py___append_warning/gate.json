@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_append_warning",
+  "c_fn": "context_switch_guard_append_warning",
   "py_module": "hermes_cli/context_switch_guard.py",
   "py_fn": "_append_warning",
   "inputs": [

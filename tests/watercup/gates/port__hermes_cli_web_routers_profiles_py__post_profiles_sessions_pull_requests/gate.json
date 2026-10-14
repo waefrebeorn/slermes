@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "post_profiles_sessions_pull_requests",
+  "c_fn": "profiles_post_sessions_pull_requests",
   "py_module": "hermes_cli/web_routers/profiles.py",
   "py_fn": "post_profiles_sessions_pull_requests",
   "inputs": [

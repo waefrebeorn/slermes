@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fs_regular_file",
+  "c_fn": "fs_regular_file",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_fs_regular_file",
   "inputs": [

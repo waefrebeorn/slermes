@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_wait_for_pid_exit",
+  "c_fn": "gw_wait_for_pid_exit",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_wait_for_pid_exit",
   "inputs": [

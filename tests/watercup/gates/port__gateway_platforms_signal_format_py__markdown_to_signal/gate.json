@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "markdown_to_signal",
+  "c_fn": "out_text",
   "py_module": "gateway/platforms/signal_format.py",
   "py_fn": "markdown_to_signal",
   "inputs": [

@@ -14,7 +14,17 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/hermes_state/hermes_state_gaps.c",
+    "src/agent/hermes_state/hermes_state_ports.c",
+    "src/agent/hermes_state/hermes_state_tokens.c",
+    "src/agent/hermes_state/hermes_state_msgs.c",
+    "src/agent/hermes_state/hermes_state_lifecycle.c",
+    "src/agent/hermes_state/hermes_state_session.c",
+    "src/agent/hermes_state/hermes_state_lineage.c",
+    "src/agent/hermes_state/hermes_state_archive.c"
   ],
   "cflags": [
     "-I",

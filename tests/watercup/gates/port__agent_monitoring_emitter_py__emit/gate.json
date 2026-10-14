@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "emit",
+  "c_fn": "monitoring_emitter_emit_singleton",
   "py_module": "agent/monitoring/emitter.py",
   "py_fn": "emit",
   "inputs": [

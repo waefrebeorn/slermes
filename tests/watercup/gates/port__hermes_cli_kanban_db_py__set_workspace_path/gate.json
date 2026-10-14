@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_workspace_path",
+  "c_fn": "kdb_set_workspace_path",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "set_workspace_path",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_anthropic_client_with_bearer_hook",
+  "c_fn": "antr_build_anthropic_client_with_bearer_hook",
   "py_module": "agent/anthropic_adapter.py",
   "py_fn": "_build_anthropic_client_with_bearer_hook",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/anthropic_adapter_ports.c",
+    "src/hermes_cli/anthropic_adapter.c"
   ],
   "cflags": [
     "-I",

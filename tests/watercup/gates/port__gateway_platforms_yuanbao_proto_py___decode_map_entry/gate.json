@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_decode_map_entry",
+  "c_fn": "yb_encode_msg_content",
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_decode_map_entry",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_finish_dashboard_update_cleanup",
+  "c_fn": "uc_finish_dashboard_update_cleanup",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_finish_dashboard_update_cleanup",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_cmd.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

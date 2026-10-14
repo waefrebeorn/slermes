@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "boards_root",
+  "c_fn": "kanban_boards_root",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "boards_root",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_db.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

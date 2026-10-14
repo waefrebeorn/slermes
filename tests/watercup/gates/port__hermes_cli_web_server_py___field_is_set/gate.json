@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_field_is_set",
+  "c_fn": "field_is_set",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_field_is_set",
   "inputs": [

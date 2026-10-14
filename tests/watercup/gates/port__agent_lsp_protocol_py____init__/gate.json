@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "lsp_protocol_error_init",
   "py_module": "agent/lsp/protocol.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/core_helpers.c",
+    "src/agent/redact.c"
   ],
   "cflags": [
     "-I",

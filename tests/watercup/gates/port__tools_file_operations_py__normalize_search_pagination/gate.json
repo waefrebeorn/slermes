@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "normalize_search_pagination",
+  "c_fn": "file_pagination_ops_normalize_search_pagination",
   "py_module": "tools/file_operations.py",
   "py_fn": "normalize_search_pagination",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

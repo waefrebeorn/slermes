@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_venv_core_imports_healthy",
+  "c_fn": "uc_venv_core_imports_healthy",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_venv_core_imports_healthy",
   "inputs": [

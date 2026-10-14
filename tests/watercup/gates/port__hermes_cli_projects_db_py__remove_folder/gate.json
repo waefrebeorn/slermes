@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "remove_folder",
+  "c_fn": "projects_db_remove_folder",
   "py_module": "hermes_cli/projects_db.py",
   "py_fn": "remove_folder",
   "inputs": [

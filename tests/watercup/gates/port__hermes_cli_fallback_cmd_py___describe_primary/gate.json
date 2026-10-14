@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_describe_primary",
+  "c_fn": "fallback_describe_primary",
   "py_module": "hermes_cli/fallback_cmd.py",
   "py_fn": "_describe_primary",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parent_finalization_lock",
+  "c_fn": "dlg_parent_finalization_lock",
   "py_module": "tools/delegate_tool.py",
   "py_fn": "_parent_finalization_lock",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/delegate_tool.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

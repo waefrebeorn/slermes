@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strip_markdown_for_tts",
+  "c_fn": "tts_tool_strip_markdown_for_tts",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_strip_markdown_for_tts",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tts_tool.c"
   ],
   "cflags": [
     "-I",

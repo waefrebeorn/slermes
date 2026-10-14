@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_to_ts",
+  "c_fn": "success",
   "py_module": "agent/learning_graph_render.py",
   "py_fn": "_to_ts",
   "inputs": [

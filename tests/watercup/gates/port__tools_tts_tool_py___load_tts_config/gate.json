@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_load_tts_config",
+  "c_fn": "tts_load_tts_config",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_load_tts_config",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tts_tool_ports.c"
   ],
   "cflags": [
     "-I",

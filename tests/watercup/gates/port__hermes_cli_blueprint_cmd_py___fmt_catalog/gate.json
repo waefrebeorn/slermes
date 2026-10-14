@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fmt_catalog",
+  "c_fn": "blueprint_cmd_format_catalog",
   "py_module": "hermes_cli/blueprint_cmd.py",
   "py_fn": "_fmt_catalog",
   "inputs": [
@@ -14,7 +14,23 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/commands_mixin_wrappers.c",
+    "src/hermes_cli/blueprint_cmd.c",
+    "src/hermes_cli/blueprint_catalog_helpers.c",
+    "src/agent/learn_prompt.c",
+    "src/cli/cli_cmd_session.c",
+    "src/hermes_cli/cli_cmd_skills.c",
+    "src/hermes_cli/cli_cmd_kanban.c",
+    "src/cli/cli_cmd_memory.c",
+    "src/cli/cli_cmd_config.c",
+    "src/hermes_cli/cli_cmd_display.c",
+    "src/infrastructure_stubs.c",
+    "src/cron/cron_suggestions.c",
+    "src/hermes_cli/journey.c",
+    "src/hermes_cli/suggestions_cmd.c"
   ],
   "cflags": [
     "-I",

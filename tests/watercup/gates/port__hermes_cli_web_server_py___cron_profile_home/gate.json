@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cron_profile_home",
+  "c_fn": "ws_cron_profile_home",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_cron_profile_home",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_expiry_ts",
+  "c_fn": "web_parse_expiry_ts",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_parse_expiry_ts",
   "inputs": [

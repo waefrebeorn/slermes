@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cua_permission_mode",
+  "c_fn": "cut_cua_permission_mode",
   "py_module": "tools/computer_use/tool.py",
   "py_fn": "_cua_permission_mode",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/computer_use/computer_use_tool_ports.c"
   ],
   "cflags": [
     "-I",

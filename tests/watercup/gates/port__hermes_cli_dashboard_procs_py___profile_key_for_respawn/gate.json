@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_profile_key_for_respawn",
+  "c_fn": "dashboard_procs_profile_key_for_respawn",
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_profile_key_for_respawn",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_procs.c"
   ],
   "cflags": [
     "-I",

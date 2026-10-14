@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "restore_registration",
+  "c_fn": "dash_auth_restore_registration",
   "py_module": "hermes_cli/dashboard_auth/registry.py",
   "py_fn": "restore_registration",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "should_use_ollama_native_catalog",
+  "c_fn": "models_should_use_ollama_native_catalog",
   "py_module": "hermes_cli/models.py",
   "py_fn": "should_use_ollama_native_catalog",
   "inputs": [

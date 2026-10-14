@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_print_setup_summary",
+  "c_fn": "stp_print_setup_summary",
   "py_module": "hermes_cli/setup.py",
   "py_fn": "_print_setup_summary",
   "inputs": [

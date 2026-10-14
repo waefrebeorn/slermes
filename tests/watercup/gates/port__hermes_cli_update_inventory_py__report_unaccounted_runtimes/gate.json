@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "report_unaccounted_runtimes",
+  "c_fn": "update_inventory_report_unaccounted_runtimes",
   "py_module": "hermes_cli/update_inventory.py",
   "py_fn": "report_unaccounted_runtimes",
   "inputs": [

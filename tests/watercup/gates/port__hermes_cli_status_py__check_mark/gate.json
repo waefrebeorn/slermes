@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "check_mark",
+  "c_fn": "hermes_cli_status_check_mark",
   "py_module": "hermes_cli/status.py",
   "py_fn": "check_mark",
   "inputs": [
@@ -11,7 +11,11 @@
     false
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/status_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

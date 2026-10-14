@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_format_idle_since",
+  "c_fn": "cli_format_idle_since",
   "py_module": "cli.py",
   "py_fn": "_format_idle_since",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cli/cli_helpers2.c",
+    "src/tools/browser_tool_helpers.c",
+    "src/hermes_cli/helpers2.c"
   ],
   "cflags": [
     "-I",

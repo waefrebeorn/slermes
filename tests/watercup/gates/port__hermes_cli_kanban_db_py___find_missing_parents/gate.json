@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_find_missing_parents",
+  "c_fn": "kdb_find_missing_parents",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_find_missing_parents",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_util.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "resolve_requested_provider",
+  "c_fn": "runtime_provider_resolve_requested",
   "py_module": "hermes_cli/runtime_provider.py",
   "py_fn": "resolve_requested_provider",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/runtime_provider.c",
+    "src/infrastructure_stubs.c",
+    "src/hermes_cli/model_catalog.c"
   ],
   "cflags": [
     "-I",

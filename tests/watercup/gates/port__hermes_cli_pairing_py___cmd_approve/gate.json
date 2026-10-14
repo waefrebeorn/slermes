@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cmd_approve",
+  "c_fn": "par_cmd_approve",
   "py_module": "hermes_cli/pairing.py",
   "py_fn": "_cmd_approve",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pairing_ports.c"
   ],
   "cflags": [
     "-I",

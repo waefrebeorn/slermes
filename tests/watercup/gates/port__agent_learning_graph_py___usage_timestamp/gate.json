@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_usage_timestamp",
+  "c_fn": "learning_graph_usage_timestamp",
   "py_module": "agent/learning_graph.py",
   "py_fn": "_usage_timestamp",
   "inputs": [

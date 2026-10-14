@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fal_model_catalog",
+  "c_fn": "tools_config_fal_model_catalog",
   "py_module": "hermes_cli/tools_config.py",
   "py_fn": "_fal_model_catalog",
   "inputs": [

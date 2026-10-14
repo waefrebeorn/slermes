@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_threshold_tokens",
+  "c_fn": "compute_threshold_tokens",
   "py_module": "hermes_cli/context_switch_guard.py",
   "py_fn": "_threshold_tokens",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "partition_nous_models_by_tier",
+  "c_fn": "partition_nous_models_by_tier_json",
   "py_module": "hermes_cli/models.py",
   "py_fn": "partition_nous_models_by_tier",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/models_helpers.c",
+    "src/hermes_cli/model_normalize.c"
   ],
   "cflags": [
     "-I",

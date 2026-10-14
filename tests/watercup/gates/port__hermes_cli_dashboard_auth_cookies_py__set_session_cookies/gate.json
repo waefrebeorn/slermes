@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_session_cookies",
+  "c_fn": "out",
   "py_module": "hermes_cli/dashboard_auth/cookies.py",
   "py_fn": "set_session_cookies",
   "inputs": [

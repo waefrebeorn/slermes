@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_classify_worker_exit",
+  "c_fn": "kdb_classify_worker_exit",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_classify_worker_exit",
   "inputs": [

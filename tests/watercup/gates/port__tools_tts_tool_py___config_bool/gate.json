@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_config_bool",
+  "c_fn": "tts_config_bool",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_config_bool",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_enabled_flag",
+  "c_fn": "parse_enabled_flag",
   "py_module": "hermes_cli/tools_config.py",
   "py_fn": "_parse_enabled_flag",
   "inputs": [

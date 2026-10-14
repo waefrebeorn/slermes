@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_try_cleanup_parent_workspaces",
+  "c_fn": "kdb_try_cleanup_parent_workspaces",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_try_cleanup_parent_workspaces",
   "inputs": [

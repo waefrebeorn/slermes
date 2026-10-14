@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "enforce_max_runtime",
+  "c_fn": "kdb_enforce_max_runtime",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "enforce_max_runtime",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_workers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

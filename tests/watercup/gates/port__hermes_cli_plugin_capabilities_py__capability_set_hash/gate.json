@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "capability_set_hash",
+  "c_fn": "pc_capability_set_hash",
   "py_module": "hermes_cli/plugin_capabilities.py",
   "py_fn": "capability_set_hash",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/plugin_capabilities_pure.c"
   ],
   "cflags": [
     "-I",

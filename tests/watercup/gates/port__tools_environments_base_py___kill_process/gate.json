@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_kill_process",
+  "c_fn": "envb_kill_process",
   "py_module": "tools/environments/base.py",
   "py_fn": "_kill_process",
   "inputs": [

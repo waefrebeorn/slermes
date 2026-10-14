@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "add_column_if_missing",
+  "c_fn": "sqlite_util_add_column_if_missing",
   "py_module": "hermes_cli/sqlite_util.py",
   "py_fn": "add_column_if_missing",
   "inputs": [

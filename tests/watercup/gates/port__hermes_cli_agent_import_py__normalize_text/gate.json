@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "normalize_text",
+  "c_fn": "ai_normalize_text",
   "py_module": "hermes_cli/agent_import.py",
   "py_fn": "normalize_text",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/agent_import.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

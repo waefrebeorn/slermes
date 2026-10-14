@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "render_edit_diff_with_delta",
+  "c_fn": "disp_render_edit_diff_with_delta",
   "py_module": "agent/display.py",
   "py_fn": "render_edit_diff_with_delta",
   "inputs": [

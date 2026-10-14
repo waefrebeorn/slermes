@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_billing_overview",
+  "c_fn": "cbm_billing_overview",
   "py_module": "hermes_cli/cli_billing_mixin.py",
   "py_fn": "_billing_overview",
   "inputs": [

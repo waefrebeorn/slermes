@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "write_profile_meta",
+  "c_fn": "profile_write_profile_meta",
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "write_profile_meta",
   "inputs": [

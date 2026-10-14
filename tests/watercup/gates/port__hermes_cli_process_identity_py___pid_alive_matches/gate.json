@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_pid_alive_matches",
+  "c_fn": "pi_pid_alive_matches",
   "py_module": "hermes_cli/process_identity.py",
   "py_fn": "_pid_alive_matches",
   "inputs": [

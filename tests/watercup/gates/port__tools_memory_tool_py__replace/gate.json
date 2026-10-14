@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "replace",
+  "c_fn": "memt_replace",
   "py_module": "tools/memory_tool.py",
   "py_fn": "replace",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/memory_tool_ports.c"
   ],
   "cflags": [
     "-I",

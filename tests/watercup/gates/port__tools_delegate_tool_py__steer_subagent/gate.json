@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "steer_subagent",
+  "c_fn": "dlg_steer_subagent",
   "py_module": "tools/delegate_tool.py",
   "py_fn": "steer_subagent",
   "inputs": [

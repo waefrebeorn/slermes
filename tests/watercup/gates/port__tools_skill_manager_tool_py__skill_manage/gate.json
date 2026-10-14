@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "skill_manage",
+  "c_fn": "smt_skill_manage",
   "py_module": "tools/skill_manager_tool.py",
   "py_fn": "skill_manage",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/skill_manager_tool_ports.c"
   ],
   "cflags": [
     "-I",

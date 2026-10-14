@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "would_display_tool_line",
+  "c_fn": "fv_would_display_tool_line",
   "py_module": "hermes_cli/focus_view.py",
   "py_fn": "would_display_tool_line",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "estimate_tokens_from_schemas",
+  "c_fn": "ts_estimate_tokens_from_schemas",
   "py_module": "tools/tool_search.py",
   "py_fn": "estimate_tokens_from_schemas",
   "inputs": [

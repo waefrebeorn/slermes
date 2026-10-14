@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "resize",
+  "c_fn": "ptb_resize",
   "py_module": "hermes_cli/pty_bridge.py",
   "py_fn": "resize",
   "inputs": [

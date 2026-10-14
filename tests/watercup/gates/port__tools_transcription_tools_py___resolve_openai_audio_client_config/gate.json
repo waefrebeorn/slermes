@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_openai_audio_client_config",
+  "c_fn": "trt_resolve_openai_audio_client_config",
   "py_module": "tools/transcription_tools.py",
   "py_fn": "_resolve_openai_audio_client_config",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/transcription_tools_ports.c"
   ],
   "cflags": [
     "-I",

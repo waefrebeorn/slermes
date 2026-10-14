@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_has_any_command_tts_provider",
+  "c_fn": "tts_has_any_command_tts_provider",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_has_any_command_tts_provider",
   "inputs": [

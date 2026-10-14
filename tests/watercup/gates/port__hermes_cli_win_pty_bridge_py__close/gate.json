@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "close",
+  "c_fn": "wpb_close",
   "py_module": "hermes_cli/win_pty_bridge.py",
   "py_fn": "close",
   "inputs": [

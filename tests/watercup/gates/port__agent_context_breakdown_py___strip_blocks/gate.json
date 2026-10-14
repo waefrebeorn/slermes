@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strip_blocks",
+  "c_fn": "context_breakdown_strip_blocks",
   "py_module": "agent/context_breakdown.py",
   "py_fn": "_strip_blocks",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/context_breakdown_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

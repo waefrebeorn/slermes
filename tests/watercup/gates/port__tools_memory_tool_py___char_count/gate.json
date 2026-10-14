@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_char_count",
+  "c_fn": "memory_store_char_count",
   "py_module": "tools/memory_tool.py",
   "py_fn": "_char_count",
   "inputs": [

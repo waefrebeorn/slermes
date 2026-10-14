@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_process_ppid",
+  "c_fn": "dashboard_procs_process_ppid",
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_process_ppid",
   "inputs": [

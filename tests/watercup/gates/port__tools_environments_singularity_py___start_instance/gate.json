@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_start_instance",
+  "c_fn": "cli_tools_environments_singularity__start_instance",
   "py_module": "tools/environments/singularity.py",
   "py_fn": "_start_instance",
   "inputs": [

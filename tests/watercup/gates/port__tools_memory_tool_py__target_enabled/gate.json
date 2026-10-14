@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "target_enabled",
+  "c_fn": "memory_store_target_enabled",
   "py_module": "tools/memory_tool.py",
   "py_fn": "target_enabled",
   "inputs": [

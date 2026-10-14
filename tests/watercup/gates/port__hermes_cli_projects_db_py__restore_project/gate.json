@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "restore_project",
+  "c_fn": "projects_db_restore_project",
   "py_module": "hermes_cli/projects_db.py",
   "py_fn": "restore_project",
   "inputs": [

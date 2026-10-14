@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_finalize_wait_result",
+  "c_fn": "envb_finalize_wait_result",
   "py_module": "tools/environments/base.py",
   "py_fn": "_finalize_wait_result",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/environments_base_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

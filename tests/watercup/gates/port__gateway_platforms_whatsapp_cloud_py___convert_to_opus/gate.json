@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_convert_to_opus",
+  "c_fn": "wac_convert_to_opus",
   "py_module": "gateway/platforms/whatsapp_cloud.py",
   "py_fn": "_convert_to_opus",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/platforms/whatsapp_cloud.c",
+    "src/gateway/platforms/whatsapp.c"
   ],
   "cflags": [
     "-I",

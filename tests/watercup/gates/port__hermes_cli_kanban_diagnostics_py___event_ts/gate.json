@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_event_ts",
+  "c_fn": "kanban_event_ts",
   "py_module": "hermes_cli/kanban_diagnostics.py",
   "py_fn": "_event_ts",
   "inputs": [

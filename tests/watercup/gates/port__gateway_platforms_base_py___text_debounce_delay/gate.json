@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_text_debounce_delay",
+  "c_fn": "gw_base__text_debounce_delay",
   "py_module": "gateway/platforms/base.py",
   "py_fn": "_text_debounce_delay",
   "inputs": [

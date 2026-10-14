@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "save",
+  "c_fn": "sh_save",
   "py_module": "tools/skills_hub.py",
   "py_fn": "save",
   "inputs": [

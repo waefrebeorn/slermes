@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "start",
+  "c_fn": "ccp_start",
   "py_module": "agent/conversation_compression.py",
   "py_fn": "start",
   "inputs": [

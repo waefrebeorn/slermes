@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_visualize_whitespace",
+  "c_fn": "fuzzy_visualize_whitespace",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_visualize_whitespace",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/fuzzy_match_helpers.c"
   ],
   "cflags": [
     "-I",

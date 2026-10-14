@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_message_matches_mention_patterns",
+  "c_fn": "whatsapp_common_message_matches_mention_patterns",
   "py_module": "gateway/platforms/whatsapp_common.py",
   "py_fn": "_message_matches_mention_patterns",
   "inputs": [

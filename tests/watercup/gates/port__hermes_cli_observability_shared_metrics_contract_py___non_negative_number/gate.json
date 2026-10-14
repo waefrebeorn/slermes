@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_non_negative_number",
+  "c_fn": "smc_non_negative_number",
   "py_module": "hermes_cli/observability/shared_metrics_contract.py",
   "py_fn": "_non_negative_number",
   "inputs": [

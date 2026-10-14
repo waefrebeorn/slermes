@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_debug_share",
+  "c_fn": "debug_build_debug_share",
   "py_module": "hermes_cli/debug.py",
   "py_fn": "build_debug_share",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/debug.c"
   ],
   "cflags": [
     "-I",

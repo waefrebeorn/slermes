@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_set_worker_pid",
+  "c_fn": "kdb_set_worker_pid",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_set_worker_pid",
   "inputs": [

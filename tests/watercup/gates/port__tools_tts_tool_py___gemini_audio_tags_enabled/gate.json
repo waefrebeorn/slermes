@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_gemini_audio_tags_enabled",
+  "c_fn": "tts_gemini_audio_tags_enabled",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_gemini_audio_tags_enabled",
   "inputs": [

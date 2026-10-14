@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_repeated_bytes",
+  "c_fn": "yb_get_repeated_bytes",
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_get_repeated_bytes",
   "inputs": [

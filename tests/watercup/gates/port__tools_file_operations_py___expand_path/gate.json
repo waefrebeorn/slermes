@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_expand_path",
+  "c_fn": "file_text_ops_expand_path",
   "py_module": "tools/file_operations.py",
   "py_fn": "_expand_path",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

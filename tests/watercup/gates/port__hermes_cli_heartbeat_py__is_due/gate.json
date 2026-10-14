@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_due",
+  "c_fn": "hb_state_is_due",
   "py_module": "hermes_cli/heartbeat.py",
   "py_fn": "is_due",
   "inputs": [

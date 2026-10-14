@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_translate_stdio",
+  "c_fn": "ap_translate_stdio",
   "py_module": "hermes_cli/agent_plugins.py",
   "py_fn": "_translate_stdio",
   "inputs": [

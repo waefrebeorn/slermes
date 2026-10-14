@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "finish_task_run",
+  "c_fn": "rsm_finish_task_run",
   "py_module": "hermes_cli/observability/relay_shared_metrics.py",
   "py_fn": "finish_task_run",
   "inputs": [

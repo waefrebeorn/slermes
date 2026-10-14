@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_infer_stepfun_region",
+  "c_fn": "infer_stepfun_region",
   "py_module": "hermes_cli/main.py",
   "py_fn": "_infer_stepfun_region",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/main_helpers.c"
   ],
   "cflags": [
     "-I",

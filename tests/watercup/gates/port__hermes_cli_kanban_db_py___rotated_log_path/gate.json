@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_rotated_log_path",
+  "c_fn": "kb_rotated_log_path",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_rotated_log_path",
   "inputs": [

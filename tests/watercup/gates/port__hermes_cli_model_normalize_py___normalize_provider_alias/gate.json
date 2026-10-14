@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_provider_alias",
+  "c_fn": "model_normalize_provider_alias",
   "py_module": "hermes_cli/model_normalize.py",
   "py_fn": "_normalize_provider_alias",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/model_normalize.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_reload_target",
+  "c_fn": "memory_store_reload_target",
   "py_module": "tools/memory_tool.py",
   "py_fn": "_reload_target",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "compute_sale_discount",
+  "c_fn": "models_compute_sale_discount_batch3",
   "py_module": "hermes_cli/models.py",
   "py_fn": "compute_sale_discount",
   "inputs": [

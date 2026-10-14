@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_dm_allowed",
+  "c_fn": "whatsapp_cloud_is_dm_allowed",
   "py_module": "gateway/platforms/whatsapp_cloud.py",
   "py_fn": "_is_dm_allowed",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_track_preview_ids_from_result",
+  "c_fn": "sc_track_preview_ids_from_result",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_track_preview_ids_from_result",
   "inputs": [

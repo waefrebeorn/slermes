@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_should_process_message",
+  "c_fn": "whatsapp_common_should_process_message",
   "py_module": "gateway/platforms/whatsapp_common.py",
   "py_fn": "_should_process_message",
   "inputs": [

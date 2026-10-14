@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_raw_frames",
+  "c_fn": "pet_sprite_frames",
   "py_module": "agent/pet/render.py",
   "py_fn": "_raw_frames",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/pet/pet_render.c"
   ],
   "cflags": [
     "-I",

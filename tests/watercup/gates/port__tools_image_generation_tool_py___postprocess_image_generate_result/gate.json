@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_postprocess_image_generate_result",
+  "c_fn": "image_gen_postprocess_image_generate_result",
   "py_module": "tools/image_generation_tool.py",
   "py_fn": "_postprocess_image_generate_result",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/image_generation_tool.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

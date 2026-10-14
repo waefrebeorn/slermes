@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "save_goal",
+  "c_fn": "goal_save_goal",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "save_goal",
   "inputs": [

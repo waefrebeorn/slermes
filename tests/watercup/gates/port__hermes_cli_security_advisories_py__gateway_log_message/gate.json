@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "gateway_log_message",
+  "c_fn": "cli_security_advisories_gateway_log_message",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "gateway_log_message",
   "inputs": [

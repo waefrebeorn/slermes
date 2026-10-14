@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "task_terminal_fields",
+  "c_fn": "smc_task_terminal_fields",
   "py_module": "hermes_cli/observability/shared_metrics_contract.py",
   "py_fn": "task_terminal_fields",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/shared_metrics_contract.c"
   ],
   "cflags": [
     "-I",

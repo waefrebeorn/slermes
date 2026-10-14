@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cleanup",
+  "c_fn": "mdl_cleanup",
   "py_module": "tools/environments/modal.py",
   "py_fn": "cleanup",
   "inputs": [

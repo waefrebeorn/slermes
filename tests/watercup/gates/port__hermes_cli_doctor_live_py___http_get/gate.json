@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_http_get",
+  "c_fn": "doctor_http_get",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "_http_get",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_sanitize_tool_input_summary",
+  "c_fn": "dlg_sanitize_tool_input_summary",
   "py_module": "tools/delegate_tool.py",
   "py_fn": "_sanitize_tool_input_summary",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/delegate_tool.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

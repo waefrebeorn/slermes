@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_curated_nous_model_ids",
+  "c_fn": "out",
   "py_module": "hermes_cli/models.py",
   "py_fn": "get_curated_nous_model_ids",
   "inputs": [

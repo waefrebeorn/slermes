@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_capped",
+  "c_fn": "stts_capped",
   "py_module": "tools/tts_streaming.py",
   "py_fn": "_capped",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "console_ws",
+  "c_fn": "ws_console_handle_frame",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "console_ws",
   "inputs": [

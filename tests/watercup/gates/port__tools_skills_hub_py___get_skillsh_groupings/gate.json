@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_skillsh_groupings",
+  "c_fn": "sh_get_skillsh_groupings",
   "py_module": "tools/skills_hub.py",
   "py_fn": "_get_skillsh_groupings",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/skills_hub_ports.c"
   ],
   "cflags": [
     "-I",

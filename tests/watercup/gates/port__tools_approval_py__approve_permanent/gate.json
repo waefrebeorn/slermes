@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "approve_permanent",
+  "c_fn": "apr_approve_permanent",
   "py_module": "tools/approval.py",
   "py_fn": "approve_permanent",
   "inputs": [

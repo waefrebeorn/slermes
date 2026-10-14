@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "report_deprecated_config_and_env",
+  "c_fn": "doctor_report_deprecated_config_and_env",
   "py_module": "hermes_cli/doctor.py",
   "py_fn": "report_deprecated_config_and_env",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/doctor_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

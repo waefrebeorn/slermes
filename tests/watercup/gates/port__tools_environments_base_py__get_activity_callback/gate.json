@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_activity_callback",
+  "c_fn": "envb_get_activity_callback",
   "py_module": "tools/environments/base.py",
   "py_fn": "get_activity_callback",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/environments_base_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

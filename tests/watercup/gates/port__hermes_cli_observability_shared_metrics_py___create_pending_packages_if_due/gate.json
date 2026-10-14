@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_create_pending_packages_if_due",
+  "c_fn": "sm_create_pending_packages_if_due",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "_create_pending_packages_if_due",
   "inputs": [

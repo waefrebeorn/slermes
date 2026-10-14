@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "list_prune_candidates",
+  "c_fn": "hermes_state_list_prune_candidates",
   "py_module": "hermes_state.py",
   "py_fn": "list_prune_candidates",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/agent/hermes_state/hermes_state_archive.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "list_profile_gateways",
+  "c_fn": "sm_list_profile_gateways",
   "py_module": "hermes_cli/service_manager.py",
   "py_fn": "list_profile_gateways",
   "inputs": [

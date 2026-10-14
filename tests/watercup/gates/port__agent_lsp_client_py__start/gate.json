@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "start",
+  "c_fn": "lsp_client_start",
   "py_module": "agent/lsp/client.py",
   "py_fn": "start",
   "inputs": [

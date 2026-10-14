@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_scale_to_zero_is_idle",
+  "c_fn": "scale_to_zero_is_idle",
   "py_module": "gateway/run.py",
   "py_fn": "_scale_to_zero_is_idle",
   "inputs": [

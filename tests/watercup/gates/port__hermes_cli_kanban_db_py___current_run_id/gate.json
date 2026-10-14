@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_current_run_id",
+  "c_fn": "kdb_current_run_id",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_current_run_id",
   "inputs": [

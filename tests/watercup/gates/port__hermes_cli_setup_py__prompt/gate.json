@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "prompt",
+  "c_fn": "stp_prompt",
   "py_module": "hermes_cli/setup.py",
   "py_fn": "prompt",
   "inputs": [
@@ -14,7 +14,21 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/tools_config_providers.c",
+    "src/tools/browser_tool_install.c",
+    "src/tools/browser_tool_cdp.c",
+    "src/tools/browser_tool_platform.c",
+    "src/tools/browser_use_cli.c",
+    "src/agent/image_gen_provider.c",
+    "src/infrastructure_stubs.c",
+    "src/hermes_cli/config.c",
+    "src/hermes_cli/curses_ui.c",
+    "src/hermes_cli/setup_ports.c",
+    "src/tools/tts.c",
+    "src/agent/video_gen_provider_ports.c"
   ],
   "cflags": [
     "-I",

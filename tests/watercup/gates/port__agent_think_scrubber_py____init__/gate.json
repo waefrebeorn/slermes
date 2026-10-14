@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "ths_init",
   "py_module": "agent/think_scrubber.py",
   "py_fn": "__init__",
   "inputs": [

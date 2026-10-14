@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_state",
+  "c_fn": "cli_hermes_cli_proxy_adapters_nous_portal__save_state",
   "py_module": "hermes_cli/proxy/adapters/nous_portal.py",
   "py_fn": "_save_state",
   "inputs": [

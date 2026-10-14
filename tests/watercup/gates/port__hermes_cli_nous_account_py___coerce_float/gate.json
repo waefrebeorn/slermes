@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_float",
+  "c_fn": "nac_coerce_float",
   "py_module": "hermes_cli/nous_account.py",
   "py_fn": "_coerce_float",
   "inputs": [

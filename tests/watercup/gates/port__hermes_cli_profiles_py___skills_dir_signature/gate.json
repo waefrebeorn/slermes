@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_skills_dir_signature",
+  "c_fn": "profile_skills_dir_signature",
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "_skills_dir_signature",
   "inputs": [

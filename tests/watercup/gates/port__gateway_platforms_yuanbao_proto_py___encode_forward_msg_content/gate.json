@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_encode_forward_msg_content",
+  "c_fn": "yb_encode_forward_msg_content",
   "py_module": "gateway/platforms/yuanbao_proto.py",
   "py_fn": "_encode_forward_msg_content",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_systemd_restart_wait_timeout",
+  "c_fn": "gw_systemd_restart_wait_timeout",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_systemd_restart_wait_timeout",
   "inputs": [

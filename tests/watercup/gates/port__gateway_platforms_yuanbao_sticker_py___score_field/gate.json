@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_score_field",
+  "c_fn": "cli_gateway_platforms_yuanbao_sticker__score_field",
   "py_module": "gateway/platforms/yuanbao_sticker.py",
   "py_fn": "_score_field",
   "inputs": [

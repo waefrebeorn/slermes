@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_update_complete_message",
+  "c_fn": "upd_update_complete_message",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_update_complete_message",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_cmd.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

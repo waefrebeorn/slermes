@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "stop_waiting",
+  "c_fn": "goal_manager_stop_waiting",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "stop_waiting",
   "inputs": [

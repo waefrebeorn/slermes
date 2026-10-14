@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_valid_lockfile_payload",
+  "c_fn": "dashboard_procs_valid_lockfile_payload",
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_valid_lockfile_payload",
   "inputs": [

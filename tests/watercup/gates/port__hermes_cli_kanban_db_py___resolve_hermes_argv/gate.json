@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_hermes_argv",
+  "c_fn": "kdb_resolve_hermes_argv",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_resolve_hermes_argv",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_workers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

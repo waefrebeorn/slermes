@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_download_media_to_cache",
+  "c_fn": "whatsapp_cloud_download_media_to_cache",
   "py_module": "gateway/platforms/whatsapp_cloud.py",
   "py_fn": "_download_media_to_cache",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/whatsapp_cloud_helpers.c"
   ],
   "cflags": [
     "-I",

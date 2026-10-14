@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_profile_scope",
+  "c_fn": "config_profile_scope",
   "py_module": "gateway/platforms/api_server.py",
   "py_fn": "_profile_scope",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server.c"
   ],
   "cflags": [
     "-I",

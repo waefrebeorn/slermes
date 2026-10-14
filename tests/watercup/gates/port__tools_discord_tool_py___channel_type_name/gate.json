@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_channel_type_name",
+  "c_fn": "discord_channel_type_name",
   "py_module": "tools/discord_tool.py",
   "py_fn": "_channel_type_name",
   "inputs": [
@@ -14,7 +14,10 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/discord_helpers.c"
   ],
   "cflags": [
     "-I",

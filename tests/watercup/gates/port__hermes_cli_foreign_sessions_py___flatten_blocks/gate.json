@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_flatten_blocks",
+  "c_fn": "foreign_sessions_flatten_blocks",
   "py_module": "hermes_cli/foreign_sessions.py",
   "py_fn": "_flatten_blocks",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/foreign_sessions_pure.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "match_runtime_outcomes",
+  "c_fn": "upd_match_runtime_outcomes",
   "py_module": "hermes_cli/update_inventory.py",
   "py_fn": "match_runtime_outcomes",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_inventory.c"
   ],
   "cflags": [
     "-I",

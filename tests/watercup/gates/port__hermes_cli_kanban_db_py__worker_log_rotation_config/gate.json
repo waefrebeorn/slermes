@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "worker_log_rotation_config",
+  "c_fn": "kdb_worker_log_rotation_config",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "worker_log_rotation_config",
   "inputs": [

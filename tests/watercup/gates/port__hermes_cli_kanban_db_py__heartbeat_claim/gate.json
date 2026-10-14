@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "heartbeat_claim",
+  "c_fn": "kdb_heartbeat_claim",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "heartbeat_claim",
   "inputs": [

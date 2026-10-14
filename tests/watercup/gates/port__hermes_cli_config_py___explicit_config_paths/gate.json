@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_explicit_config_paths",
+  "c_fn": "config_py_explicit_paths",
   "py_module": "hermes_cli/config.py",
   "py_fn": "_explicit_config_paths",
   "inputs": [

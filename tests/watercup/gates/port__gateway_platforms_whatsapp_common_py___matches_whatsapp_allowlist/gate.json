@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_matches_whatsapp_allowlist",
+  "c_fn": "whatsapp_common_matches_allowlist",
   "py_module": "gateway/platforms/whatsapp_common.py",
   "py_fn": "_matches_whatsapp_allowlist",
   "inputs": [

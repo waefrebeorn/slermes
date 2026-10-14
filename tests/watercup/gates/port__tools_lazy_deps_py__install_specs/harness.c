@@ -1,38 +1,42 @@
-/* gate: port__tools_lazy_deps_py__install_specs — GAP sentinel for tools/lazy_deps.py:install_specs */
+/* gate: port__tools_lazy_deps_py__install_specs — traced copy of lazy_deps_install_specs (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("install_specs");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "install_specs");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("install_specs");
-}
+extern int lazy_deps_install_specs(const char *input);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s install_specs <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s lazy_deps_install_specs <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("lazy_deps_install_specs");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_cap = tmpfile();
+    if (_cap) dup2(fileno(_cap), 1);
+    int result = lazy_deps_install_specs(argv[i]);
+    fflush(stdout);
+    if (_cap) {
+        dup2(_sv, 1); close(_sv);
+        rewind(_cap);
+        char _ob[4096]; size_t _on = 0; int _ch;
+        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
+            _ob[_on++] = (char)_ch;
+        _ob[_on] = '\0';
+        /* strip the trailing newline the port emits */
+        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
+            _ob[--_on] = '\0';
+        WCUP_VALSTR(_ob);
+        fclose(_cap);
+    }
+
+
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("lazy_deps_install_specs");
     }
     return 0;
 }

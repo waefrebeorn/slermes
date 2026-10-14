@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cross_process_init_lock",
+  "c_fn": "flock",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_cross_process_init_lock",
   "inputs": [

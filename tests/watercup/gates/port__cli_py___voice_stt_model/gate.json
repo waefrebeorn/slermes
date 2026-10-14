@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_voice_stt_model",
+  "c_fn": "hcli_voice_stt_model",
   "py_module": "cli.py",
   "py_fn": "_voice_stt_model",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cli/hermes_cli_agent_b2.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_csi_u_key",
+  "c_fn": "curses_ui_parse_csi_u_key",
   "py_module": "hermes_cli/curses_ui.py",
   "py_fn": "_parse_csi_u_key",
   "inputs": [

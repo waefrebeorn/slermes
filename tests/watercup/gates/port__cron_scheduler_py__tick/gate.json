@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "tick",
+  "c_fn": "crs_tick",
   "py_module": "cron/scheduler.py",
   "py_fn": "tick",
   "inputs": [
@@ -11,7 +11,11 @@
     false
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/cron.c",
+    "src/cron/scheduler_ports.c"
   ],
   "cflags": [
     "-I",

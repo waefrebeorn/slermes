@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_validate_counter",
+  "c_fn": "metrics_validate_counter",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "_validate_counter",
   "inputs": [

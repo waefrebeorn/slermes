@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "to_dict",
+  "c_fn": "pdb_to_dict",
   "py_module": "hermes_cli/projects_db.py",
   "py_fn": "to_dict",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/projects_db_ports.c"
   ],
   "cflags": [
     "-I",

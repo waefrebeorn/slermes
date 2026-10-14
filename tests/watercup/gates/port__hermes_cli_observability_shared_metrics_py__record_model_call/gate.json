@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "record_model_call",
+  "c_fn": "sm_record_model_call",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "record_model_call",
   "inputs": [

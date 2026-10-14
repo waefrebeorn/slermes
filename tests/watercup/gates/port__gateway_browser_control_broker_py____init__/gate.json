@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "bcb_broker_new",
   "py_module": "gateway/browser_control_broker.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/browser_control_broker.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

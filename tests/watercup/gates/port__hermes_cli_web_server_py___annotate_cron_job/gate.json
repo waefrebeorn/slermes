@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_annotate_cron_job",
+  "c_fn": "ws_cron_annotate_job",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_annotate_cron_job",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/web_server_cron_dash.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

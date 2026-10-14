@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_print_text_report",
+  "c_fn": "tools_computer_use_doctor_u_print_text_report",
   "py_module": "tools/computer_use/doctor.py",
   "py_fn": "_print_text_report",
   "inputs": [

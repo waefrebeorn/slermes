@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_toolset_info",
+  "c_fn": "cli_get_toolset_info",
   "py_module": "cli.py",
   "py_fn": "get_toolset_info",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/cli.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

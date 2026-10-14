@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "startup_banner",
+  "c_fn": "cli_security_advisories_startup_banner",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "startup_banner",
   "inputs": [

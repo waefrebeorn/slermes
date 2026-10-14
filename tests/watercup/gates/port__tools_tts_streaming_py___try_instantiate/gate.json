@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_try_instantiate",
+  "c_fn": "resolve_streaming_provider_c_named",
   "py_module": "tools/tts_streaming.py",
   "py_fn": "_try_instantiate",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tts_streaming_ports.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_read_ledger",
+  "c_fn": "process_identity_read_ledger",
   "py_module": "hermes_cli/process_identity.py",
   "py_fn": "_read_ledger",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/process_identity.c"
   ],
   "cflags": [
     "-I",

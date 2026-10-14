@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "render_doctor_section",
+  "c_fn": "cli_security_advisories_render_doctor_section",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "render_doctor_section",
   "inputs": [

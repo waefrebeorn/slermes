@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_toggle_by_category",
+  "c_fn": "cli_hermes_cli_skills_config__toggle_by_category",
   "py_module": "hermes_cli/skills_config.py",
   "py_fn": "_toggle_by_category",
   "inputs": [

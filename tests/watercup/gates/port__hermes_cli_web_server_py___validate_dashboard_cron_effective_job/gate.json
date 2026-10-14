@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_validate_dashboard_cron_effective_job",
+  "c_fn": "ws_cron_validate_effective_job",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_validate_dashboard_cron_effective_job",
   "inputs": [

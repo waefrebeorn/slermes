@@ -14,7 +14,10 @@
     -2.5
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/sidebar.c"
   ],
   "cflags": [
     "-I",

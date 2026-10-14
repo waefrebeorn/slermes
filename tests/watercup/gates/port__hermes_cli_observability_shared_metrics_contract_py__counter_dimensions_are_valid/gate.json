@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "counter_dimensions_are_valid",
+  "c_fn": "smc_counter_dimensions_are_valid",
   "py_module": "hermes_cli/observability/shared_metrics_contract.py",
   "py_fn": "counter_dimensions_are_valid",
   "inputs": [

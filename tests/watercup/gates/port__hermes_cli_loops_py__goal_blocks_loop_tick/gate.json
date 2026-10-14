@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "goal_blocks_loop_tick",
+  "c_fn": "loops_goal_blocks_loop_tick",
   "py_module": "hermes_cli/loops.py",
   "py_fn": "goal_blocks_loop_tick",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/loops_manager.c"
   ],
   "cflags": [
     "-I",

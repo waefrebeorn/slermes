@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "prompt_choice",
+  "c_fn": "stp_prompt_choice",
   "py_module": "hermes_cli/setup.py",
   "py_fn": "prompt_choice",
   "inputs": [

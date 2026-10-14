@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_max_text_length",
+  "c_fn": "tts_resolve_max_text_length",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_resolve_max_text_length",
   "inputs": [

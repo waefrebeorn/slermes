@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_upstream_main_sha",
+  "c_fn": "banner_upstream_main_sha",
   "py_module": "hermes_cli/banner.py",
   "py_fn": "_upstream_main_sha",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/banner_gaps.c"
   ],
   "cflags": [
     "-I",

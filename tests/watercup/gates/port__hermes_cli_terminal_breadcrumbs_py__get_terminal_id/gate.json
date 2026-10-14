@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_terminal_id",
+  "c_fn": "tbr_get_terminal_id",
   "py_module": "hermes_cli/terminal_breadcrumbs.py",
   "py_fn": "get_terminal_id",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/terminal_breadcrumbs_pure.c",
+    "src/infrastructure_stubs.c",
+    "src/hermes_cli/web_server_paths.c"
   ],
   "cflags": [
     "-I",

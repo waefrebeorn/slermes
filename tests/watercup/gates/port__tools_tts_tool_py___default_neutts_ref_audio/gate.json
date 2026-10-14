@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_default_neutts_ref_audio",
+  "c_fn": "tts_default_neutts_ref_audio",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_default_neutts_ref_audio",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tts_tool_ports.c"
   ],
   "cflags": [
     "-I",

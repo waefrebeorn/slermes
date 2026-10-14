@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "resolve_moa_preset",
+  "c_fn": "moa_resolve_preset",
   "py_module": "hermes_cli/moa_config.py",
   "py_fn": "resolve_moa_preset",
   "inputs": [

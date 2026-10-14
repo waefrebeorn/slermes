@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "to_dict",
+  "c_fn": "kdi_to_dict",
   "py_module": "hermes_cli/kanban_diagnostics.py",
   "py_fn": "to_dict",
   "inputs": [

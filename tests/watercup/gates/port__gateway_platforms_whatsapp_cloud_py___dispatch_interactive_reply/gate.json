@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_dispatch_interactive_reply",
+  "c_fn": "whatsapp_cloud_dispatch_interactive_reply",
   "py_module": "gateway/platforms/whatsapp_cloud.py",
   "py_fn": "_dispatch_interactive_reply",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/whatsapp_cloud_helpers.c"
   ],
   "cflags": [
     "-I",

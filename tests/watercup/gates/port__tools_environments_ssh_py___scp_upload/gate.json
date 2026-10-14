@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_scp_upload",
+  "c_fn": "cli_tools_environments_ssh__scp_upload",
   "py_module": "tools/environments/ssh.py",
   "py_fn": "_scp_upload",
   "inputs": [

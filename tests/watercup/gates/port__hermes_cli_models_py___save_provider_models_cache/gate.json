@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_provider_models_cache",
+  "c_fn": "model_save_provider_models_cache",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_save_provider_models_cache",
   "inputs": [

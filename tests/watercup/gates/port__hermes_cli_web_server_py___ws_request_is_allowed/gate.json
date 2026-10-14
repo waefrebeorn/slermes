@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ws_request_is_allowed",
+  "c_fn": "ws_auth_request_is_allowed",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_ws_request_is_allowed",
   "inputs": [

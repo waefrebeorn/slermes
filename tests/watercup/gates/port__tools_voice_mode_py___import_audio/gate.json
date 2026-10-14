@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_import_audio",
+  "c_fn": "vmd_import_audio",
   "py_module": "tools/voice_mode.py",
   "py_fn": "_import_audio",
   "inputs": [

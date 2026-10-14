@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_kitty_apc",
+  "c_fn": "pet_kitty_apc",
   "py_module": "agent/pet/render.py",
   "py_fn": "_kitty_apc",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/pet_render.c"
   ],
   "cflags": [
     "-I",

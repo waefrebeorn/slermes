@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_validate_entry_paths",
+  "c_fn": "validate_entry_paths",
   "py_module": "tools/skill_ledger.py",
   "py_fn": "_validate_entry_paths",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/skill_ledger.c"
   ],
   "cflags": [
     "-I",

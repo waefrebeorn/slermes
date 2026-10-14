@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_allow_list",
+  "c_fn": "whatsapp_common_coerce_allow_list",
   "py_module": "gateway/platforms/whatsapp_common.py",
   "py_fn": "_coerce_allow_list",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/whatsapp_common_helpers.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

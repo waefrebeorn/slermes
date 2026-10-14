@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "start",
+  "c_fn": "control_socket_server_start",
   "py_module": "gateway/control_socket.py",
   "py_fn": "start",
   "inputs": [

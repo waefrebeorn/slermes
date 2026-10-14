@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_enhanced_key_action",
+  "c_fn": "curses_ui_enhanced_key_action",
   "py_module": "hermes_cli/curses_ui.py",
   "py_fn": "_enhanced_key_action",
   "inputs": [
@@ -14,7 +14,10 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/curses_ui.c"
   ],
   "cflags": [
     "-I",

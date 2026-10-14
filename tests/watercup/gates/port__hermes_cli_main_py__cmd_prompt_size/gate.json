@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cmd_prompt_size",
+  "c_fn": "mn_cmd_prompt_size",
   "py_module": "hermes_cli/main.py",
   "py_fn": "cmd_prompt_size",
   "inputs": [

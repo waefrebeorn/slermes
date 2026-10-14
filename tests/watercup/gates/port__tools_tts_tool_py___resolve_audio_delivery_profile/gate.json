@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_audio_delivery_profile",
+  "c_fn": "tts_tool_resolve_audio_delivery_profile",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_resolve_audio_delivery_profile",
   "inputs": [

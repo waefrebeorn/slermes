@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "count_running_tasks",
+  "c_fn": "kdb_count_running_tasks",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "count_running_tasks",
   "inputs": [

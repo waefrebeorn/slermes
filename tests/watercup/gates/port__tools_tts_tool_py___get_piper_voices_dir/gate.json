@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_piper_voices_dir",
+  "c_fn": "tts_get_piper_voices_dir",
   "py_module": "tools/tts_tool.py",
   "py_fn": "_get_piper_voices_dir",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tts_tool_ports.c"
   ],
   "cflags": [
     "-I",

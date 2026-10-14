@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "sanitize_title",
+  "c_fn": "session_title_sanitize",
   "py_module": "hermes_state.py",
   "py_fn": "sanitize_title",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/session_title.c"
   ],
   "cflags": [
     "-I",

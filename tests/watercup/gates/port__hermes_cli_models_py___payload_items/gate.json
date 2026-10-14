@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_payload_items",
+  "c_fn": "payload_items",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_payload_items",
   "inputs": [

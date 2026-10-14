@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "message_id",
+  "c_fn": "state",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "message_id",
   "inputs": [

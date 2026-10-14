@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "list_profiles_on_disk",
+  "c_fn": "kdb_list_profiles_on_disk",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "list_profiles_on_disk",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_query.c"
   ],
   "cflags": [
     "-I",

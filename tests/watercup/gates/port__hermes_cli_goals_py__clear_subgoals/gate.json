@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "clear_subgoals",
+  "c_fn": "goal_manager_clear_subgoals",
   "py_module": "hermes_cli/goals.py",
   "py_fn": "clear_subgoals",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_banner_cache_path",
+  "c_fn": "cli_security_advisories_banner_cache_path",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "_banner_cache_path",
   "inputs": [

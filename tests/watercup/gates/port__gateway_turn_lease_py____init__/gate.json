@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "tls_init",
   "py_module": "gateway/turn_lease.py",
   "py_fn": "__init__",
   "inputs": [

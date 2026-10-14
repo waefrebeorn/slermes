@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "snapshot",
+  "c_fn": "bsv_snapshot",
   "py_module": "tools/browser_supervisor.py",
   "py_fn": "snapshot",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/browser_supervisor_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "generate_zsh",
+  "c_fn": "cpl_generate_zsh",
   "py_module": "hermes_cli/completion.py",
   "py_fn": "generate_zsh",
   "inputs": [

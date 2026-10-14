@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_compute_toolsets_breakdown",
+  "c_fn": "psize_compute_toolsets_breakdown",
   "py_module": "hermes_cli/prompt_size.py",
   "py_fn": "_compute_toolsets_breakdown",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

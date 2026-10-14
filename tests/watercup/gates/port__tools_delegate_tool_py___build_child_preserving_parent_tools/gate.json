@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_child_preserving_parent_tools",
+  "c_fn": "dlg_build_child_preserving_parent_tools",
   "py_module": "tools/delegate_tool.py",
   "py_fn": "_build_child_preserving_parent_tools",
   "inputs": [

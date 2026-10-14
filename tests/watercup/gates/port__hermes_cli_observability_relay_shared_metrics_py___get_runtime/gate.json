@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_runtime",
+  "c_fn": "rsm_get_runtime",
   "py_module": "hermes_cli/observability/relay_shared_metrics.py",
   "py_fn": "_get_runtime",
   "inputs": [

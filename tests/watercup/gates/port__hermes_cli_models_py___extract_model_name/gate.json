@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_extract_model_name",
+  "c_fn": "models_extract_model_name",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_extract_model_name",
   "inputs": [

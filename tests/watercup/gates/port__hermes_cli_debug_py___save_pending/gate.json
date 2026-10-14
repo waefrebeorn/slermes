@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_pending",
+  "c_fn": "debug_save_pending",
   "py_module": "hermes_cli/debug.py",
   "py_fn": "_save_pending",
   "inputs": [

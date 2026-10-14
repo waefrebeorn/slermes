@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_lock_path",
+  "c_fn": "wss_lock_path",
   "py_module": "hermes_cli/windows_ssh_runtime.py",
   "py_fn": "_lock_path",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/windows_ssh_runtime_ports.c"
   ],
   "cflags": [
     "-I",

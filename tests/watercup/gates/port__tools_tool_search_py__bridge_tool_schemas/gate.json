@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "bridge_tool_schemas",
+  "c_fn": "ts_bridge_tool_schemas",
   "py_module": "tools/tool_search.py",
   "py_fn": "bridge_tool_schemas",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/tool_search_ports.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_additional_profile_scoped_passthrough_names",
+  "c_fn": "envb_additional_profile_scoped_passthrough_names",
   "py_module": "tools/environments/base.py",
   "py_fn": "_additional_profile_scoped_passthrough_names",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/environments_base_ports.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

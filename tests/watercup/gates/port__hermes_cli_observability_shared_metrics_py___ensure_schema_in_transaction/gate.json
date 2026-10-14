@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ensure_schema_in_transaction",
+  "c_fn": "sm_ensure_schema_in_transaction",
   "py_module": "hermes_cli/observability/shared_metrics.py",
   "py_fn": "_ensure_schema_in_transaction",
   "inputs": [

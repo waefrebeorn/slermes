@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "full_remediation_text",
+  "c_fn": "cli_security_advisories_full_remediation_text",
   "py_module": "hermes_cli/security_advisories.py",
   "py_fn": "full_remediation_text",
   "inputs": [

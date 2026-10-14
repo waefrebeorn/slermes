@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "split_command_line",
+  "c_fn": "subprocess_compat_split_command_line",
   "py_module": "hermes_cli/_subprocess_compat.py",
   "py_fn": "split_command_line",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/subprocess_compat_pure.c"
   ],
   "cflags": [
     "-I",

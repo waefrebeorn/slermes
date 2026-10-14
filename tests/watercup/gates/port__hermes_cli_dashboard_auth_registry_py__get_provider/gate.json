@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_provider",
+  "c_fn": "dash_auth_get_provider",
   "py_module": "hermes_cli/dashboard_auth/registry.py",
   "py_fn": "get_provider",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/dashboard_auth_registry.c"
   ],
   "cflags": [
     "-I",

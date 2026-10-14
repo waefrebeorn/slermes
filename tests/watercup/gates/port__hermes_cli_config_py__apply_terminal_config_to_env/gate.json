@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "apply_terminal_config_to_env",
+  "c_fn": "cfg_apply_terminal_config_to_env",
   "py_module": "hermes_cli/config.py",
   "py_fn": "apply_terminal_config_to_env",
   "inputs": [

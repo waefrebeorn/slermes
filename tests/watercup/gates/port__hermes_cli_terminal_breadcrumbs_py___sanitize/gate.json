@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_sanitize",
+  "c_fn": "hermes_cli_terminal_breadcrumbs_sanitize",
   "py_module": "hermes_cli/terminal_breadcrumbs.py",
   "py_fn": "_sanitize",
   "inputs": [
@@ -14,7 +14,12 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/terminal_breadcrumbs_pure.c",
+    "src/infrastructure_stubs.c",
+    "src/hermes_cli/web_server_paths.c"
   ],
   "cflags": [
     "-I",

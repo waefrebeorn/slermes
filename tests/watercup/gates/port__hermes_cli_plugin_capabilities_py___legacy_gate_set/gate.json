@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_legacy_gate_set",
+  "c_fn": "pc_legacy_gate_set",
   "py_module": "hermes_cli/plugin_capabilities.py",
   "py_fn": "_legacy_gate_set",
   "inputs": [

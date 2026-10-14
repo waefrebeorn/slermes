@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "validate_config_structure",
+  "c_fn": "cfg_validate_config_structure",
   "py_module": "hermes_cli/config.py",
   "py_fn": "validate_config_structure",
   "inputs": [

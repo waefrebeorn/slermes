@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cron_status",
+  "c_fn": "coe_cron_status",
   "py_module": "hermes_cli/console_engine.py",
   "py_fn": "_cron_status",
   "inputs": [

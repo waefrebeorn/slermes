@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "telegram_menu_max_commands",
+  "c_fn": "commands_telegram_menu_max_commands",
   "py_module": "hermes_cli/commands.py",
   "py_fn": "telegram_menu_max_commands",
   "inputs": [

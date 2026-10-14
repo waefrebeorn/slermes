@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_archive_untracked",
+  "c_fn": "wgc_archive_untracked",
   "py_module": "hermes_cli/worktree_gc.py",
   "py_fn": "_archive_untracked",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/worktree_gc.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

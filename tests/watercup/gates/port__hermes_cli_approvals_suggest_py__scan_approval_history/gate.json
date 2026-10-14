@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "scan_approval_history",
+  "c_fn": "asuggest_scan_approval_history",
   "py_module": "hermes_cli/approvals_suggest.py",
   "py_fn": "scan_approval_history",
   "inputs": [

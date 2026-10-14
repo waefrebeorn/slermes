@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_proc_summary",
+  "c_fn": "cli_gateway_shutdown_forensics__proc_summary",
   "py_module": "gateway/shutdown_forensics.py",
   "py_fn": "_proc_summary",
   "inputs": [
@@ -14,7 +14,10 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/shutdown_forensics.c"
   ],
   "cflags": [
     "-I",

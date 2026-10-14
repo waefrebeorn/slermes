@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_turn_summary_emit",
+  "c_fn": "cli_turn_summary_emit",
   "py_module": "cli.py",
   "py_fn": "_turn_summary_emit",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/turn_summary_cli.c"
   ],
   "cflags": [
     "-I",

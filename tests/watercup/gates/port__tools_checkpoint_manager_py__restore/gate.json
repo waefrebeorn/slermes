@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "restore",
+  "c_fn": "checkpoint_manager_restore",
   "py_module": "tools/checkpoint_manager.py",
   "py_fn": "restore",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/checkpoint_manager.c"
   ],
   "cflags": [
     "-I",

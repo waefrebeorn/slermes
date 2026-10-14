@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_command_matches_permanent_allowlist",
+  "c_fn": "apr_command_matches_permanent_allowlist",
   "py_module": "tools/approval.py",
   "py_fn": "_command_matches_permanent_allowlist",
   "inputs": [

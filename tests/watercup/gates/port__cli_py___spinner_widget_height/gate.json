@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_spinner_widget_height",
+  "c_fn": "hcli_spinner_widget_height",
   "py_module": "cli.py",
   "py_fn": "_spinner_widget_height",
   "inputs": [

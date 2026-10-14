@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_tui_input_rule_height",
+  "c_fn": "hcli_tui_input_rule_height",
   "py_module": "cli.py",
   "py_fn": "_tui_input_rule_height",
   "inputs": [

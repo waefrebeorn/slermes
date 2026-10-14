@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_read_reasoning_caps_disk",
+  "c_fn": "models_read_reasoning_caps_disk",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_read_reasoning_caps_disk",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/models_net.c"
   ],
   "cflags": [
     "-I",

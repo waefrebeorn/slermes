@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "invalidate_descendants_for_parent_reopen",
+  "c_fn": "kanban_invalidate_descendants",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "invalidate_descendants_for_parent_reopen",
   "inputs": [

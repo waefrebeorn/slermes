@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "build_execute_code_schema",
+  "c_fn": "code_exec_build_schema",
   "py_module": "tools/code_execution_tool.py",
   "py_fn": "build_execute_code_schema",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/code_execution_helpers.c"
   ],
   "cflags": [
     "-I",

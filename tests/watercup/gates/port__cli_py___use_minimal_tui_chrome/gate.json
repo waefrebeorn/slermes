@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_use_minimal_tui_chrome",
+  "c_fn": "hcli_use_minimal_tui_chrome",
   "py_module": "cli.py",
   "py_fn": "_use_minimal_tui_chrome",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_approval_callback",
+  "c_fn": "hcli_approval_callback",
   "py_module": "cli.py",
   "py_fn": "_approval_callback",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/cli/hermes_cli_agent_b5.c",
+    "src/agent/usage_pricing_ports.c"
   ],
   "cflags": [
     "-I",

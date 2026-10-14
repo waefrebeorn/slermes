@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "has_delivered_text",
+  "c_fn": "gw_stream_consumer_has_delivered_text",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "has_delivered_text",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_reconcile_cursor",
+  "c_fn": "curses_reconcile_cursor",
   "py_module": "hermes_cli/curses_ui.py",
   "py_fn": "_reconcile_cursor",
   "inputs": [

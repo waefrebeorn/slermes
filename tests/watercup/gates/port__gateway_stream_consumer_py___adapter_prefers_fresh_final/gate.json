@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_adapter_prefers_fresh_final",
+  "c_fn": "sc_adapter_prefers_fresh_final",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_adapter_prefers_fresh_final",
   "inputs": [

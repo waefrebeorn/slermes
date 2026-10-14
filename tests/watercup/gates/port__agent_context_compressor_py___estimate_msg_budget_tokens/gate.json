@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_estimate_msg_budget_tokens",
+  "c_fn": "cc_micro_compact_estimate_msg_budget_tokens",
   "py_module": "agent/context_compressor.py",
   "py_fn": "_estimate_msg_budget_tokens",
   "inputs": [

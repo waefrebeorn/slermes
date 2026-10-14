@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "gw_stream_consumer_init",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "__init__",
   "inputs": [

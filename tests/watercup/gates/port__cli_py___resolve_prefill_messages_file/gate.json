@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_resolve_prefill_messages_file",
+  "c_fn": "cli_resolve_prefill_messages_file",
   "py_module": "cli.py",
   "py_fn": "_resolve_prefill_messages_file",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/cli.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

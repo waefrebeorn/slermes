@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "__init__",
+  "c_fn": "gw_delivery_init",
   "py_module": "gateway/delivery.py",
   "py_fn": "__init__",
   "inputs": [
@@ -14,7 +14,13 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/util_helpers.c",
+    "src/gateway/dead_targets.c",
+    "src/gateway/cgroup_cleanup.c",
+    "src/gateway/pairing.c"
   ],
   "cflags": [
     "-I",

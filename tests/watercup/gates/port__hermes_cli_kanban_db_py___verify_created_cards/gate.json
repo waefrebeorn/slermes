@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_verify_created_cards",
+  "c_fn": "kdb_verify_created_cards",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_verify_created_cards",
   "inputs": [

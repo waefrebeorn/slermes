@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "format_no_match_hint",
+  "c_fn": "fuzzy_match_format_no_match_hint",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "format_no_match_hint",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/fuzzy_match_helpers.c"
   ],
   "cflags": [
     "-I",

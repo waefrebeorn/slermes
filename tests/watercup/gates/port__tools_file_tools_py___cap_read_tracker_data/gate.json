@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_cap_read_tracker_data",
+  "c_fn": "file_tools_cap_read_tracker_data",
   "py_module": "tools/file_tools.py",
   "py_fn": "_cap_read_tracker_data",
   "inputs": [

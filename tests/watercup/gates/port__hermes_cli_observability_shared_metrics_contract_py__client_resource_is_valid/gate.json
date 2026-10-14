@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "client_resource_is_valid",
+  "c_fn": "smc_client_resource_is_valid",
   "py_module": "hermes_cli/observability/shared_metrics_contract.py",
   "py_fn": "client_resource_is_valid",
   "inputs": [

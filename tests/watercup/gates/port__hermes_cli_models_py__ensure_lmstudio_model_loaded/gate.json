@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "ensure_lmstudio_model_loaded",
+  "c_fn": "models_ensure_lmstudio_model_loaded",
   "py_module": "hermes_cli/models.py",
   "py_fn": "ensure_lmstudio_model_loaded",
   "inputs": [

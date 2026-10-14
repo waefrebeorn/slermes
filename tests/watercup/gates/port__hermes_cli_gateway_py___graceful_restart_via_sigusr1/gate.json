@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_graceful_restart_via_sigusr1",
+  "c_fn": "graceful_restart_via_sigusr1",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_graceful_restart_via_sigusr1",
   "inputs": [

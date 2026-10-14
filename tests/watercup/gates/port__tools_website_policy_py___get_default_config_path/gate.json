@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_default_config_path",
+  "c_fn": "cli_tools_website_policy__get_default_config_path",
   "py_module": "tools/website_policy.py",
   "py_fn": "_get_default_config_path",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/browser_tool_install.c",
+    "src/tools/website_policy.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_provider",
+  "c_fn": "cli_tools_mcp_oauth_manager__build_provider",
   "py_module": "tools/mcp_oauth_manager.py",
   "py_fn": "_build_provider",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_utc_now_iso",
+  "c_fn": "ur_utc_now_iso",
   "py_module": "hermes_cli/update_receipt.py",
   "py_fn": "_utc_now_iso",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_receipt.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

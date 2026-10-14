@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "feature_specs",
+  "c_fn": "lazy_feature_specs",
   "py_module": "tools/lazy_deps.py",
   "py_fn": "feature_specs",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/lazy_deps.c"
   ],
   "cflags": [
     "-I",

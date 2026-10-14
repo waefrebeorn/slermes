@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "flush_pending_sync",
+  "c_fn": "sc_flush_pending_sync",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "flush_pending_sync",
   "inputs": [

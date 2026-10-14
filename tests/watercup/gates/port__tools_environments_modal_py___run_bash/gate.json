@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_run_bash",
+  "c_fn": "mdl_run_bash",
   "py_module": "tools/environments/modal.py",
   "py_fn": "_run_bash",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_no_backend_setup_message",
+  "c_fn": "image_gen_build_no_backend_setup_message",
   "py_module": "tools/image_generation_tool.py",
   "py_fn": "_build_no_backend_setup_message",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/image_generation_tool.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

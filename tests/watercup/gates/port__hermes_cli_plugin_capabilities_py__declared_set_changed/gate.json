@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "declared_set_changed",
+  "c_fn": "pc_declared_set_changed",
   "py_module": "hermes_cli/plugin_capabilities.py",
   "py_fn": "declared_set_changed",
   "inputs": [

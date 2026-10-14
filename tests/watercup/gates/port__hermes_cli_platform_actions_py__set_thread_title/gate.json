@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "set_thread_title",
+  "c_fn": "platform_actions_set_thread_title",
   "py_module": "hermes_cli/platform_actions.py",
   "py_fn": "set_thread_title",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platform_actions.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_int",
+  "c_fn": "fo_coerce_int",
   "py_module": "tools/file_operations.py",
   "py_fn": "_coerce_int",
   "inputs": [

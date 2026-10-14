@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_extract_status_code",
+  "c_fn": "ve_extract_status_code",
   "py_module": "tools/environments/vercel_sandbox.py",
   "py_fn": "_extract_status_code",
   "inputs": [

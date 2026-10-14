@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_env_value",
+  "c_fn": "tts_get_env_value",
   "py_module": "tools/tts_tool.py",
   "py_fn": "get_env_value",
   "inputs": [

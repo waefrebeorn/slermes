@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_try_strip_cursor",
+  "c_fn": "sc_try_strip_cursor",
   "py_module": "gateway/stream_consumer.py",
   "py_fn": "_try_strip_cursor",
   "inputs": [

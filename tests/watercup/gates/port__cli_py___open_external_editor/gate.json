@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_open_external_editor",
+  "c_fn": "hcli_open_external_editor",
   "py_module": "cli.py",
   "py_fn": "_open_external_editor",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "export_profile_endpoint",
+  "c_fn": "profiles_export_endpoint",
   "py_module": "hermes_cli/web_routers/profiles.py",
   "py_fn": "export_profile_endpoint",
   "inputs": [

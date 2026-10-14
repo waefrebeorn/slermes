@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_build_ssh_command",
+  "c_fn": "cli_tools_environments_ssh__build_ssh_command",
   "py_module": "tools/environments/ssh.py",
   "py_fn": "_build_ssh_command",
   "inputs": [

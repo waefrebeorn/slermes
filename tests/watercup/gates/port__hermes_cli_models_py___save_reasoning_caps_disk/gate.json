@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_reasoning_caps_disk",
+  "c_fn": "models_save_reasoning_caps_disk",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_save_reasoning_caps_disk",
   "inputs": [

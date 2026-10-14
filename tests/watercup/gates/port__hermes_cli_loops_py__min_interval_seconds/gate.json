@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "min_interval_seconds",
+  "c_fn": "loops_min_interval_seconds",
   "py_module": "hermes_cli/loops.py",
   "py_fn": "min_interval_seconds",
   "inputs": [

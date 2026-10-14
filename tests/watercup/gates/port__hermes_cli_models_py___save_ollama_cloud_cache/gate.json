@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_ollama_cloud_cache",
+  "c_fn": "models_save_ollama_cloud_cache",
   "py_module": "hermes_cli/models.py",
   "py_fn": "_save_ollama_cloud_cache",
   "inputs": [

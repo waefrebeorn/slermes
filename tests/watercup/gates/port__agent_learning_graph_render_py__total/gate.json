@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "total",
+  "c_fn": "learning_graph_render_bucket_total",
   "py_module": "agent/learning_graph_render.py",
   "py_fn": "total",
   "inputs": [

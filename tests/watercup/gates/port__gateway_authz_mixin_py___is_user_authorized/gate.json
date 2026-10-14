@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_user_authorized",
+  "c_fn": "cli_gateway_authz_mixin__is_user_authorized",
   "py_module": "gateway/authz_mixin.py",
   "py_fn": "_is_user_authorized",
   "inputs": [

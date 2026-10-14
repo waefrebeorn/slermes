@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "describe_restart_mechanism",
+  "c_fn": "update_inventory_describe_restart_mechanism",
   "py_module": "hermes_cli/update_inventory.py",
   "py_fn": "describe_restart_mechanism",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/update_inventory.c"
   ],
   "cflags": [
     "-I",

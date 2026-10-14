@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "mint_ticket",
+  "c_fn": "bcb_broker_mint_ticket",
   "py_module": "gateway/browser_control_broker.py",
   "py_fn": "mint_ticket",
   "inputs": [
@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/gateway/browser_control_broker.c",
+    "src/infrastructure_stubs.c"
   ],
   "cflags": [
     "-I",

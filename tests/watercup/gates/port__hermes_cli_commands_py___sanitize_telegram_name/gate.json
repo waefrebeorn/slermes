@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_sanitize_telegram_name",
+  "c_fn": "commands_sanitize_telegram_name",
   "py_module": "hermes_cli/commands.py",
   "py_fn": "_sanitize_telegram_name",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/gateway_command_sanitize.c"
   ],
   "cflags": [
     "-I",

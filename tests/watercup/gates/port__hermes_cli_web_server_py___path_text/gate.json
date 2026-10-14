@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_path_text",
+  "c_fn": "ws_path_text_n",
   "py_module": "hermes_cli/web_server.py",
   "py_fn": "_path_text",
   "inputs": [
