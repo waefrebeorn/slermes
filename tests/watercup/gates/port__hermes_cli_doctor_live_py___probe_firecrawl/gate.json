@@ -3,15 +3,15 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_probe_firecrawl",
+  "c_fn": "doctor_probe_firecrawl",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "_probe_firecrawl",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
     "lib/libjson/json.c"

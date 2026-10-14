@@ -9,11 +9,11 @@
   "cflags": [],
   "extra_src": [],
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "notes": "Webhook target parse ladder (outbound_webhooks.c::ow_parse_single_target + ow_resolve_secret vs LIVE agent/outbound_webhooks.py::_parse_single_target). Harness is a rung-for-rung traced copy; the twin uses the LIVE _resolve_secret and DEFAULT/MAX_TIMEOUT_SECONDS so semantics are LIVE. KNOWN DIVERGENCES (excluded from walk): (1) LIVE filters events against hermes_cli.plugins.VALID_HOOKS and drops unknown names; the C port copies any string event \u2014 walk uses only valid hook names. (2) LIVE strips url/name/matcher values; C does not \u2014 walk uses unpadded literals. (3) secret_env pointing at a SET environment variable is excluded because wc_run cannot export env to both sides identically; only the unset-warning path is walked. Timeout clamp rungs B8/B9 are checked pre-clamp on both sides (C order)."
 }

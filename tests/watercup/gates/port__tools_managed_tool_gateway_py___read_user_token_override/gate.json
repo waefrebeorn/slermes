@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_read_user_token_override",
+  "c_fn": "cli_tools_managed_tool_gateway__read_user_token_override",
   "py_module": "tools/managed_tool_gateway.py",
   "py_fn": "_read_user_token_override",
   "inputs": [

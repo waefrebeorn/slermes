@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_oauth_pkce_code_verifier",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

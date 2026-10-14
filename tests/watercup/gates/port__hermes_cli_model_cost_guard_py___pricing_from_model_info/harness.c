@@ -1,38 +1,32 @@
-/* gate: port__hermes_cli_model_cost_guard_py___pricing_from_model_info — GAP sentinel for hermes_cli/model_cost_guard.py:_pricing_from_model_info */
+/* gate: port__hermes_cli_model_cost_guard_py___pricing_from_model_info — traced copy of model_cost_guard_pricing_from_model_info (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_pricing_from_model_info");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_pricing_from_model_info");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_pricing_from_model_info");
-}
+extern int model_cost_guard_pricing_from_model_info(const json_t *model_info,
+                                              double *in_out, double *out_out,
+                                              char *source, size_t source_sz);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _pricing_from_model_info <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s model_cost_guard_pricing_from_model_info <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("model_cost_guard_pricing_from_model_info");
+    char _ob[4096]; _ob[0] = '\0';
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = model_cost_guard_pricing_from_model_info(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], _ob, sizeof(_ob));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(_ob);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("model_cost_guard_pricing_from_model_info");
     }
     return 0;
 }

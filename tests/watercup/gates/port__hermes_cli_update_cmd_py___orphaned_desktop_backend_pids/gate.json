@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_orphaned_desktop_backend_pids",
+  "c_fn": "update_orphaned_desktop_backend_pids",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_orphaned_desktop_backend_pids",
   "inputs": [

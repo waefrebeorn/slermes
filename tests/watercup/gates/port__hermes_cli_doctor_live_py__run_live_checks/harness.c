@@ -1,38 +1,25 @@
-/* gate: port__hermes_cli_doctor_live_py__run_live_checks — GAP sentinel for hermes_cli/doctor_live.py:run_live_checks */
+/* gate: port__hermes_cli_doctor_live_py__run_live_checks — GAP sentinel for run_live_checks */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
 /* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
+static const char *gap_sentinel(const char *input) {
     (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("run_live_checks");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "run_live_checks");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("run_live_checks");
+    return "run_live_checks";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s run_live_checks <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("run_live_checks");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("run_live_checks");
     }
     return 0;
 }

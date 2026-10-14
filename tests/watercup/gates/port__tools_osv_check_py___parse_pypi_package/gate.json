@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_pypi_package",
+  "c_fn": "cli_tools_osv_check__parse_pypi_package",
   "py_module": "tools/osv_check.py",
   "py_fn": "_parse_pypi_package",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/osv_check.c"
   ],
   "cflags": [
     "-I",

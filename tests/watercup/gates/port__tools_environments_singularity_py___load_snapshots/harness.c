@@ -1,38 +1,30 @@
-/* gate: port__tools_environments_singularity_py___load_snapshots — GAP sentinel for tools/environments/singularity.py:_load_snapshots */
+/* gate: port__tools_environments_singularity_py___load_snapshots — traced copy of cli_tools_environments_singularity__load_snapshots (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_load_snapshots");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_load_snapshots");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_load_snapshots");
-}
+extern int cli_tools_environments_singularity__load_snapshots(const char *store_path, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _load_snapshots <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_tools_environments_singularity__load_snapshots <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("cli_tools_environments_singularity__load_snapshots");
+    char _ob[4096]; _ob[0] = '\0';
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = cli_tools_environments_singularity__load_snapshots(argv[i], _ob, sizeof(_ob));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(_ob);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("cli_tools_environments_singularity__load_snapshots");
     }
     return 0;
 }

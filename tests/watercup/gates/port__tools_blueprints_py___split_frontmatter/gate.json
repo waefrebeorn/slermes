@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_split_frontmatter",
+  "c_fn": "cli_tools_blueprints__split_frontmatter",
   "py_module": "tools/blueprints.py",
   "py_fn": "_split_frontmatter",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/blueprints.c"
   ],
   "cflags": [
     "-I",

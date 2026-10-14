@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "handle_pending_subcommand",
+  "c_fn": "cli_hermes_cli_write_approval_commands_handle_pending_subcommand",
   "py_module": "hermes_cli/write_approval_commands.py",
   "py_fn": "handle_pending_subcommand",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/write_approval_commands.c"
   ],
   "cflags": [
     "-I",

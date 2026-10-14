@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_run_migrate_config_fresh",
+  "c_fn": "update_run_migrate_config_fresh",
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_run_migrate_config_fresh",
   "inputs": [

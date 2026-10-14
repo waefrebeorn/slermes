@@ -1,38 +1,30 @@
-/* gate: port__tools_website_policy_py___normalize_rule — GAP sentinel for tools/website_policy.py:_normalize_rule */
+/* gate: port__tools_website_policy_py___normalize_rule — traced copy of cli_tools_website_policy__normalize_rule (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_normalize_rule");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_normalize_rule");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_normalize_rule");
-}
+extern int cli_tools_website_policy__normalize_rule(const char *rule, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _normalize_rule <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_tools_website_policy__normalize_rule <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("cli_tools_website_policy__normalize_rule");
+    char _ob[4096]; _ob[0] = '\0';
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = cli_tools_website_policy__normalize_rule(argv[i], _ob, sizeof(_ob));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(_ob);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("cli_tools_website_policy__normalize_rule");
     }
     return 0;
 }

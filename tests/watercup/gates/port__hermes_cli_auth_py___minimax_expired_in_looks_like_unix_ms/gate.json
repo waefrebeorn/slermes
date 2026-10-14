@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_minimax_expired_in_looks_like_unix_ms",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

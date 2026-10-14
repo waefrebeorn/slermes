@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "apply_proposals",
+  "c_fn": "asuggest_apply_proposals",
   "py_module": "hermes_cli/approvals_suggest.py",
   "py_fn": "apply_proposals",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/approvals_suggest.c"
   ],
   "cflags": [
     "-I",

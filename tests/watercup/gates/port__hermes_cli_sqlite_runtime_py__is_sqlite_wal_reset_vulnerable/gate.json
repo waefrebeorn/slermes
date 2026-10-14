@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/sqlite_runtime.py",
   "py_fn": "is_sqlite_wal_reset_vulnerable",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c",

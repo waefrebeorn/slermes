@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_probe_mcp_server",
+  "c_fn": "doctor_probe_mcp_server",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "_probe_mcp_server",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/doctor.c"
   ],
   "cflags": [
     "-I",

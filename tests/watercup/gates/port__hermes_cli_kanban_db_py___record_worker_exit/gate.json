@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_record_worker_exit",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c",

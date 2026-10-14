@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_handle_verify",
+  "c_fn": "cli_gateway_platforms_wecom_callback__handle_verify",
   "py_module": "gateway/platforms/whatsapp_cloud.py",
   "py_fn": "_handle_verify",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/platforms_wecom_callback.c"
   ],
   "cflags": [
     "-I",

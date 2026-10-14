@@ -1,38 +1,30 @@
-/* gate: port__tools_tool_result_storage_py___resolve_storage_dir — GAP sentinel for tools/tool_result_storage.py:_resolve_storage_dir */
+/* gate: port__tools_tool_result_storage_py___resolve_storage_dir — traced copy of cli_tools_tool_result_storage__resolve_storage_dir (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_resolve_storage_dir");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_resolve_storage_dir");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_resolve_storage_dir");
-}
+extern int cli_tools_tool_result_storage__resolve_storage_dir(const char *env_temp_dir, char *output, size_t output_size);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _resolve_storage_dir <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_tools_tool_result_storage__resolve_storage_dir <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("cli_tools_tool_result_storage__resolve_storage_dir");
+    char _ob[4096]; _ob[0] = '\0';
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = cli_tools_tool_result_storage__resolve_storage_dir(argv[i], _ob, sizeof(_ob));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(_ob);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("cli_tools_tool_result_storage__resolve_storage_dir");
     }
     return 0;
 }

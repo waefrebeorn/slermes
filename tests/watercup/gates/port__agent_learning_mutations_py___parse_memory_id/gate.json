@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_memory_id",
+  "c_fn": "learning_mutations_parse_memory_id",
   "py_module": "agent/learning_mutations.py",
   "py_fn": "_parse_memory_id",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/learning_mutations.c"
   ],
   "cflags": [
     "-I",

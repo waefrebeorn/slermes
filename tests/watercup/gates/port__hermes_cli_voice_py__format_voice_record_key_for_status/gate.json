@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "format_voice_record_key_for_status",
+  "c_fn": "cli_hermes_cli_voice_format_voice_record_key_for_status",
   "py_module": "hermes_cli/voice.py",
   "py_fn": "format_voice_record_key_for_status",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/voice.c"
   ],
   "cflags": [
     "-I",

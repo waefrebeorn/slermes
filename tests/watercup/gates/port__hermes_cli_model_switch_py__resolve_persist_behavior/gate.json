@@ -7,11 +7,8 @@
   "py_module": "hermes_cli/model_switch.py",
   "py_fn": "resolve_persist_behavior",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

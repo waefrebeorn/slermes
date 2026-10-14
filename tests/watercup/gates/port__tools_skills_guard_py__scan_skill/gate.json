@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "scan_skill",
+  "c_fn": "cli_tools_skills_guard_scan_skill",
   "py_module": "tools/skills_guard.py",
   "py_fn": "scan_skill",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/skills_guard.c"
   ],
   "cflags": [
     "-I",

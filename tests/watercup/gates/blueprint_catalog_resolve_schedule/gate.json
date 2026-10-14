@@ -7,11 +7,11 @@
   "py_module": "cron/blueprint_catalog.py",
   "py_fn": "_resolve_schedule",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "notes": "Schedule-template placeholder fill (blueprint_catalog_helpers.c::blueprint_catalog_resolve_schedule vs LIVE cron/blueprint_catalog.py::_resolve_schedule). Covers: free-text passthrough, time validation (missing/invalid/range), weekday presets, day names, interval_min, verbatim remaining-slot fill, substitution. Dropped inputs (documented C/LIVE divergences, not traced): non-canonical times like '9:5' (C sscanf accepts, LIVE regex rejects); '+5'/'  5' interval values (strtol accepts, isdigit rejects); templates with unfilled placeholders (C leaves them verbatim, LIVE raises BlueprintFillError); non-string slot values (C only fills strings). LIVE raises BlueprintFillError where the port returns NULL \u2014 both trace as value 'ERROR'."
 }

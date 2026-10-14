@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_truncate",
+  "c_fn": "cli_hermes_cli_hooks__truncate",
   "py_module": "hermes_cli/hooks.py",
   "py_fn": "_truncate",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/hooks.c"
   ],
   "cflags": [
     "-I",

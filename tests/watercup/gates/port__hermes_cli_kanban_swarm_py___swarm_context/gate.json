@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_swarm_context",
+  "c_fn": "cli_hermes_cli_kanban_swarm__swarm_context",
   "py_module": "hermes_cli/kanban_swarm.py",
   "py_fn": "_swarm_context",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/kanban_swarm.c"
   ],
   "cflags": [
     "-I",

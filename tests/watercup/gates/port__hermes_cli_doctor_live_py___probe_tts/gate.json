@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_probe_tts",
+  "c_fn": "doctor_probe_tts",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "_probe_tts",
   "inputs": [

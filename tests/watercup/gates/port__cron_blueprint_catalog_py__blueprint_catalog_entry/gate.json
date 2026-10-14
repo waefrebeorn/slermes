@@ -7,11 +7,11 @@
   "py_module": "cron/blueprint_catalog.py",
   "py_fn": "blueprint_catalog_entry",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0,
+    1,
+    42,
+    1024,
+    -7
   ],
   "extra_src": [
     "lib/libjson/json.c"

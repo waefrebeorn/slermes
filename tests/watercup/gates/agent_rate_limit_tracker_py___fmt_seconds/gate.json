@@ -7,11 +7,11 @@
   "py_module": "agent/rate_limit_tracker.py",
   "py_fn": "_fmt_seconds",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "extra_src": [
     "lib/libjson/json.c"

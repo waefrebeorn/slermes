@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "read_nous_access_token",
+  "c_fn": "cli_tools_managed_tool_gateway_read_nous_access_token",
   "py_module": "tools/managed_tool_gateway.py",
   "py_fn": "read_nous_access_token",
   "inputs": [

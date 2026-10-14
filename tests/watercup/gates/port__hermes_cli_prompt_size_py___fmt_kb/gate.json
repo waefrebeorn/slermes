@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_fmt_kb",
+  "c_fn": "cli_hermes_cli_prompt_size__fmt_kb",
   "py_module": "hermes_cli/prompt_size.py",
   "py_fn": "_fmt_kb",
   "inputs": [
@@ -14,7 +14,10 @@
     -7
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/prompt_size.c"
   ],
   "cflags": [
     "-I",

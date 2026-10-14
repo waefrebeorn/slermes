@@ -1,38 +1,31 @@
-/* gate: port__hermes_cli_proxy_adapters_nous_portal_py__get_credential — GAP sentinel for hermes_cli/proxy/adapters/nous_portal.py:get_credential */
+/* gate: port__hermes_cli_proxy_adapters_nous_portal_py__get_credential — traced copy of cli_hermes_cli_proxy_adapters_nous_portal_get_credential (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("get_credential");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "get_credential");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("get_credential");
-}
+extern int cli_hermes_cli_proxy_adapters_nous_portal_get_credential(const char *auth_json, char *bearer_out, size_t bearer_size,
+    char *base_url_out, size_t url_size);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s get_credential <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_hermes_cli_proxy_adapters_nous_portal_get_credential <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("cli_hermes_cli_proxy_adapters_nous_portal_get_credential");
+    char _ob[4096]; _ob[0] = '\0';
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = cli_hermes_cli_proxy_adapters_nous_portal_get_credential(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], _ob, sizeof(_ob));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(_ob);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("cli_hermes_cli_proxy_adapters_nous_portal_get_credential");
     }
     return 0;
 }

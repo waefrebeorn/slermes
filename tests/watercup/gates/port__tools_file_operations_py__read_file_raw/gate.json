@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "read_file_raw",
+  "c_fn": "fo_read_file_raw",
   "py_module": "tools/file_operations.py",
   "py_fn": "read_file_raw",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/file_operations.c"
   ],
   "cflags": [
     "-I",

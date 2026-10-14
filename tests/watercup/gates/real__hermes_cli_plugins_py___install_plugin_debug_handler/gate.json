@@ -7,11 +7,8 @@
   "py_module": "hermes_cli/plugins.py",
   "py_fn": "_install_plugin_debug_handler",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    true,
+    false
   ],
   "extra_src": [
     "lib/libjson/json.c"

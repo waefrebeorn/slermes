@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_audio_provider_probe",
+  "c_fn": "doctor_audio_provider_probe",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "_audio_provider_probe",
   "inputs": [

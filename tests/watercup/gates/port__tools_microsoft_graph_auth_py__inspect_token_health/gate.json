@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "inspect_token_health",
+  "c_fn": "cli_tools_microsoft_graph_auth_inspect_token_health",
   "py_module": "tools/microsoft_graph_auth.py",
   "py_fn": "inspect_token_health",
   "inputs": [

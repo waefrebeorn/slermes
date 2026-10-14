@@ -1,38 +1,30 @@
-/* gate: port__hermes_cli_write_approval_commands_py___fmt_state — GAP sentinel for hermes_cli/write_approval_commands.py:_fmt_state */
+/* gate: port__hermes_cli_write_approval_commands_py___fmt_state — traced copy of cli_hermes_cli_write_approval_commands__fmt_state (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_fmt_state");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_fmt_state");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_fmt_state");
-}
+extern int cli_hermes_cli_write_approval_commands__fmt_state(const char *subsystem, int enabled, char *output, size_t output_size);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _fmt_state <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_hermes_cli_write_approval_commands__fmt_state <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("cli_hermes_cli_write_approval_commands__fmt_state");
+    char _ob[4096]; _ob[0] = '\0';
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = cli_hermes_cli_write_approval_commands__fmt_state(argv[i], argv[2 + (i - 2 + 1) % 5], _ob, sizeof(_ob));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(_ob);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("cli_hermes_cli_write_approval_commands__fmt_state");
     }
     return 0;
 }

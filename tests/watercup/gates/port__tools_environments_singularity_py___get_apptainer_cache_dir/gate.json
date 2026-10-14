@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_get_apptainer_cache_dir",
+  "c_fn": "cli_tools_environments_singularity__get_apptainer_cache_dir",
   "py_module": "tools/environments/singularity.py",
   "py_fn": "_get_apptainer_cache_dir",
   "inputs": [

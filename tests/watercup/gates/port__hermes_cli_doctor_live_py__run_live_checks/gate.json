@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run_live_checks",
+  "c_fn": "doctor_run_live_checks",
   "py_module": "hermes_cli/doctor_live.py",
   "py_fn": "run_live_checks",
   "inputs": [

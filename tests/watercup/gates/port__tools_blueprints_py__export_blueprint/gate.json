@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "export_blueprint",
+  "c_fn": "cli_tools_blueprints_export_blueprint",
   "py_module": "tools/blueprints.py",
   "py_fn": "export_blueprint",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/tools/blueprints.c"
   ],
   "cflags": [
     "-I",

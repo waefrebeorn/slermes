@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_load_dashboard_section",
+  "c_fn": "cli_hermes_cli_dashboard_auth_prefix__load_dashboard_section",
   "py_module": "hermes_cli/dashboard_auth/prefix.py",
   "py_fn": "_load_dashboard_section",
   "inputs": [

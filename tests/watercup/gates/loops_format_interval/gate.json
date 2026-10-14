@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/loops.py",
   "py_fn": "format_interval",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    0.0,
+    1.5,
+    3.14159,
+    1024.0,
+    -2.5
   ],
   "notes": "Compact human interval (h/m/s assembly, '0s' fallback when empty). C port (hermes_cli/loops_pure.c::loops_format_interval) vs LIVE hermes_cli/loops.py::format_interval. Negative input clamps to 0 on both sides."
 }

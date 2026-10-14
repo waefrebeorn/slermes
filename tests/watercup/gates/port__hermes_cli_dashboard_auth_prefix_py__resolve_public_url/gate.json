@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "resolve_public_url",
+  "c_fn": "cli_hermes_cli_dashboard_auth_prefix_resolve_public_url",
   "py_module": "hermes_cli/dashboard_auth/prefix.py",
   "py_fn": "resolve_public_url",
   "inputs": [
