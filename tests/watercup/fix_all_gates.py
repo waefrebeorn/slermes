@@ -132,11 +132,16 @@ def categorize_signature(ret_type, param_list, from_real=True):
     # string or a number: it cannot be built from argv, and emitting an
     # extern decl with an unknown type makes the harness fail to COMPILE.
     # Only char*/int/double/size_t/json_t*/json_node_t* params are harnessable.
+    # Scalar out-pointers (int*/size_t*/double*/bool*) are also harnessable
+    # (scalar_outparam category allocates a local and traces what's written).
+    _SCALAR_OUT_HEADS = ('int', 'size_t', 'bool', 'long', 'double', 'float',
+                         'ssize_t', 'unsigned')
     for p in param_list:
         if '*' in p:
             head = p.split('*')[0].strip()
             if (head and 'char' not in head and 'json_t' not in head
-                    and 'json_node_t' not in head):
+                    and 'json_node_t' not in head
+                    and head.replace('const', '').strip() not in _SCALAR_OUT_HEADS):
                 return None
         # Match unhandleable tokens against the param TYPE, not the name:
         # "const char *config_json" contains "json" as a NAME substring and was
@@ -187,6 +192,42 @@ def categorize_signature(ret_type, param_list, from_real=True):
             and any('json_t' in p or 'json_node_t' in p for p in param_list)
             and not any(u in ret_type for u in ('json_t', 'json_node_t'))):
         return 'json_param'
+    # Scalar OUT-params: functions that write results through int*/double*/
+    # bool*/size_t*/long* pointers (e.g. turn_summary_count_diff_lines,
+    # cc_safe_int, cli_agent_usage_pricing__lookup). Allocate a local for each,
+    # pass its address, and trace the written values after the call. Inputs are
+    # char*/json/scalar values only (no opaque void* handles, no array inputs,
+    # no char* buffer-outs paired with size_t).
+    _SCALAR_OUT = ('int', 'size_t', 'bool', 'long', 'double', 'float',
+                   'ssize_t', 'unsigned')
+
+    def _is_char_json(p):
+        h = p.split('*')[0].strip()
+        return 'char' in h or 'json' in h
+
+    def _is_scalar_out(p):
+        if '**' in p or '*' not in p:
+            return False
+        return p.split('*')[0].strip().replace('const', '').strip() in _SCALAR_OUT
+
+    def _is_scalar_val(p):
+        if '*' in p:
+            return False
+        return any(t in p for t in ('int', 'long', 'float', 'double', 'bool',
+                                    'size_t', 'pid_t', 'ssize_t'))
+    if (param_list and param_list != ['void']
+            and ret_type.replace('*', '').strip() in
+            ('int', 'long', 'double', 'float', 'bool', 'char', 'size_t',
+             'void', 'json_t', 'json_node_t')
+            and any(_is_scalar_out(p) for p in param_list)
+            and all(_is_char_json(p) or _is_scalar_out(p) or _is_scalar_val(p)
+                    for p in param_list)
+            # no char* buffer-out (char* param followed by a size_t param)
+            and not any(_is_char_json(param_list[i])
+                        and i + 1 < len(param_list)
+                        and 'size_t' in param_list[i + 1]
+                        for i in range(len(param_list)))):
+        return 'scalar_outparam'
     if any(u in ret_type for u in unhandleable):
         return None
     if not param_list:
@@ -273,6 +314,7 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     n_avail = len(inputs_walk) if inputs_walk else 1
     json_param_setup = ''
     json_param_free = ''
+    val_code = ''
 
     def _arg(j):
         if n_avail <= 1 or j == 0:
@@ -303,6 +345,64 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
                 call_parts.append('(int)strtol(%s, NULL, 10)' % _arg(j))
         call_args = ', '.join(call_parts)
         json_param_setup = '\n'.join(setup_lines) + '\n' if setup_lines else ''
+        json_param_free = '\n'.join(
+            '    if (_j%d) json_free(_j%d);' % (j, j)
+            for j, p in enumerate(param_list)
+            if 'json_t' in p.split('*')[0] or 'json_node_t' in p.split('*')[0])
+    elif category == 'scalar_outparam':
+        # Scalar out-params: declare a local per out-pointer, zero it, pass its
+        # address, and after the call trace the written values (joined). Inputs
+        # (char*/json/scalar) convert as usual. json inputs parse like json_param.
+        setup_lines = []
+        call_parts = []
+        out_decls = []
+        out_traces = []
+        for j, p in enumerate(param_list):
+            head = p.split('*')[0].strip()
+            if 'json_t' in head or 'json_node_t' in head:
+                setup_lines.append(
+                    '    json_t *_j%d = json_parse(%s, NULL);' % (j, _arg(j)))
+                call_parts.append('_j%d' % j)
+            elif '*' in p and head.replace('const', '').strip() in (
+                    'int', 'size_t', 'bool', 'long', 'double', 'float',
+                    'ssize_t', 'unsigned'):
+                # scalar out-pointer: local, zeroed, address passed
+                ctype = head.replace('const', '').strip()
+                out_decls.append('    %s _o%d = 0;' % (ctype, j))
+                call_parts.append('&_o%d' % j)
+                if ctype in ('double', 'float'):
+                    out_traces.append(
+                        '    { char _b[64]; snprintf(_b, sizeof(_b), '
+                        '"%%.17g", (double)_o%d); WCUP_VALSTR(_b); }' % j)
+                elif ctype == 'bool':
+                    out_traces.append(
+                        '    WCUP_VALSTR(_o%d ? "true" : "false");' % j)
+                elif ctype in ('long', 'ssize_t'):
+                    out_traces.append(
+                        '    { char _b[32]; snprintf(_b, sizeof(_b), "%%ld", '
+                        '(long)_o%d); WCUP_VALSTR(_b); }' % j)
+                elif ctype == 'size_t':
+                    out_traces.append(
+                        '    { char _b[32]; snprintf(_b, sizeof(_b), "%%zu", '
+                        '(size_t)_o%d); WCUP_VALSTR(_b); }' % j)
+                else:  # int / unsigned
+                    out_traces.append(
+                        '    { char _b[32]; snprintf(_b, sizeof(_b), "%%d", '
+                        '(int)_o%d); WCUP_VALSTR(_b); }' % j)
+            elif 'char' in head:
+                call_parts.append(_arg(j))
+            elif 'double' in p or 'float' in p:
+                call_parts.append('strtod(%s, NULL)' % _arg(j))
+            elif 'long' in p or 'size_t' in p or 'ssize_t' in p:
+                call_parts.append('(long)strtol(%s, NULL, 10)' % _arg(j))
+            else:
+                call_parts.append('(int)strtol(%s, NULL, 10)' % _arg(j))
+        call_args = ', '.join(call_parts)
+        # Emit out-decls before the call; out-traces replace the normal val_code
+        # (they run after the call and emit one WCUP_VALSTR per out-param).
+        scalar_outparam_decls = '\n'.join(out_decls) + ('\n' if out_decls else '')
+        val_code = '\n'.join(out_traces)
+        json_param_setup = (scalar_outparam_decls + json_param_setup)
         json_param_free = '\n'.join(
             '    if (_j%d) json_free(_j%d);' % (j, j)
             for j, p in enumerate(param_list)
@@ -396,10 +496,15 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         else:  # int
             val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
                         '"%d", result);\n    WCUP_VALSTR(buf);')
+    elif category == 'scalar_outparam':
+        # val_code already set to the out-param traces in the call branch.
+        if not val_code:
+            val_code = '    WCUP_VALSTR("out");'
     else:
         val_code = '    char buf[64];\n    snprintf(buf, sizeof(buf), "%p", (void*)&result);\n    WCUP_VALSTR(buf);'
 
-    if category == 'void':
+    if category == 'void' or (category == 'scalar_outparam'
+                              and ret_type == 'void'):
         call_line = f"    {c_fn}({call_args});"
     else:
         call_line = f"    {ret_type} result = {c_fn}({call_args});"
@@ -414,7 +519,7 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # mismatches for a reason that is not a logic difference. Detect the
     # printf-and-return-0 shape and emit a capturing harness for it.
     prints_result = False
-    if body_src and category != 'outparam':
+    if body_src and category not in ('outparam', 'scalar_outparam'):
         # Scope to THIS function's body: a file-wide "return 1" elsewhere must
         # not disqualify it.
         mb = re.search(r'\b%s\s*\([^;{]*\)\s*\{(.*?)^\}'
