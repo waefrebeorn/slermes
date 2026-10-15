@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_read_journal_mode",
+  "c_fn": "doctor_read_journal_mode",
   "py_module": "hermes_cli/doctor.py",
   "py_fn": "_read_journal_mode",
   "inputs": [
@@ -14,7 +14,10 @@
     "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_8m7swazv.txt"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/doctor_helpers.c"
   ],
   "cflags": [
     "-I",
@@ -24,7 +27,10 @@
     "-I",
     "lib/libjson",
     "-I",
-    "src"
+    "src",
+    "-DHERMES_VERSION=\"0.21.0\"",
+    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
+    "-DATADIR=\"/usr/share/hermes\""
   ],
   "classification": "PORTED"
 }

@@ -60,6 +60,11 @@ os.environ["WATERCUP_NO_BROWSER"] = "1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 GATES = os.path.join(HERE, "gates")
 BUILD = os.path.join(HERE, "build")
+# gc-sections: compile with -ffunction-sections/-fdata-sections and link with
+# --gc-sections so the linker drops code unreachable from main. A gate whose
+# port file has heavy-dep siblings links using only the traced fn's call graph.
+_GC_FLAGS = ["-ffunction-sections", "-fdata-sections"]
+_GC_LINK = ["-Wl,--gc-sections"]
 # Repo root is two levels up: tests/watercup -> tests -> slermes.
 REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
@@ -336,7 +341,13 @@ def build_harness(gate_dir, g, force=False):
         objs.append(obj)
         if not force and os.path.exists(obj) and not _newer_than(s, os.path.getmtime(obj)):
             continue  # object fresh
-        ccmd = _compiler() + ["-I", HERE] + cflags + ["-c", s, "-o", obj]
+        # -ffunction-sections/-fdata-sections put each fn/var in its own section
+        # so the linker's --gc-sections (added to every link line below) can drop
+        # code unreachable from main. This lets a gate whose port file has heavy
+        # deps link using only the traced function's actual call graph, instead
+        # of failing on siblings' undefined symbols.
+        ccmd = (_compiler() + ["-I", HERE] + cflags + _GC_FLAGS
+                + ["-c", s, "-o", obj])
         r = subprocess.run(ccmd, capture_output=True, text=True)
         if r.returncode != 0:
             compile_fail = "BUILD FAIL (compile %s) for %s:\n%s" % (
@@ -351,7 +362,7 @@ def build_harness(gate_dir, g, force=False):
         if stub_obj:
             objs.append(stub_obj)
 
-    lcmd = ["cc"] + objs + ["-o", out, "-lm"] + libs
+    lcmd = ["cc"] + objs + ["-o", out] + _GC_LINK + ["-lm"] + libs
     r = subprocess.run(lcmd, capture_output=True, text=True)
     if r.returncode != 0:
         # System libs the vendored objects need (http.o -> OpenSSL). Computed
@@ -392,8 +403,8 @@ def build_harness(gate_dir, g, force=False):
         # -lm and the system libs must come AFTER --end-group: sqlite3.o's FTS5
         # code calls log(), and with -lm before the group the linker has already
         # passed libm when it pulls sqlite's object in.
-        retry = (["cc"] + objs + ["-o", out,
-                                  "-Wl,--start-group"] + vendored
+        retry = (["cc"] + objs + ["-o", out] + _GC_LINK +
+                 ["-Wl,--start-group"] + vendored
                  + ["-Wl,--end-group", "-lm"] + ssl_libs + libs)
         r2 = subprocess.run(retry, capture_output=True, text=True)
         if r2.returncode == 0:
@@ -435,7 +446,7 @@ def build_harness(gate_dir, g, force=False):
         # COMMON_SRC). Probe with nothing extra; a duplicate means the stub is
         # the offender and its object must come off the link line.
         probe = subprocess.run(
-            ["cc"] + objs + ["-o", out] + base_lib_objs + ["-lm"] + ssl_libs + libs,
+            ["cc"] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs,
             capture_output=True, text=True)
         if probe.returncode != 0:
             # The linker names the OFFENDER object on the line that carries
@@ -456,7 +467,7 @@ def build_harness(gate_dir, g, force=False):
                         if os.path.basename(o) not in offenders]
                 if len(objs) != before:
                     probe = subprocess.run(
-                        ["cc"] + objs + ["-o", out] + base_lib_objs + ["-lm"] + ssl_libs + libs,
+                        ["cc"] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs,
                         capture_output=True, text=True)
         r2 = probe
         for _round in range(5):
@@ -544,7 +555,7 @@ def build_harness(gate_dir, g, force=False):
             if not ok:
                 break
             added_objs += new_objs
-            retry2 = ["cc"] + objs + added_objs + ["-o", out] + \
+            retry2 = ["cc"] + objs + added_objs + ["-o", out] + _GC_LINK + \
                      base_lib_objs + ["-lm"] + ssl_libs + libs
             r2 = subprocess.run(retry2, capture_output=True, text=True)
             r = r2  # remember the last attempt for the final error message
