@@ -1,25 +1,33 @@
-/* gate: port__hermes_cli_model_cost_guard_py___format_money — GAP sentinel for _format_money */
+/* gate: port__hermes_cli_model_cost_guard_py___format_money — traced copy of model_cost_guard_format_money (scalar_outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_format_money";
-}
+
+extern void model_cost_guard_format_money(const double *value, char *out, size_t out_sz);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _format_money <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s model_cost_guard_format_money <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_format_money");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("model_cost_guard_format_money");
+    double _o0 = 0;
+    char _s1[256]; _s1[0] = 0;
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    model_cost_guard_format_money(&_o0, _s1, sizeof(_s1));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    { char _b[64]; snprintf(_b, sizeof(_b), "%.17g", (double)_o0); WCUP_VALSTR(_b); }
+    WCUP_VALSTR(_s1);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_format_money");
+        WCUP_END("model_cost_guard_format_money");
     }
     return 0;
 }
