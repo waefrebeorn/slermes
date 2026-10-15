@@ -8,10 +8,25 @@ sys.path.insert(0, DEV)
 
 from watercup_py import Cup
 
-_spec = ilu.spec_from_file_location(
-    "wc_live_hermes_cli_clipboard_py", os.path.join(DEV, "hermes_cli/clipboard.py"))
+# Relative imports (from .config import ...) need the module loaded inside its
+# real package. spec_from_file_location with a bare synthetic name has no
+# package context -> "attempted relative import with no known parent package".
+# Register each ancestor package (pointing at its dir on sys.path) and give the
+# module a dotted name so '.' resolves to the parent package.
+_pkg_parts = "hermes_cli/clipboard.py".replace(".py", "").split("/")
+_mod_name = ".".join(_pkg_parts)
+for _i in range(1, len(_pkg_parts)):
+    _anc = ".".join(_pkg_parts[:_i])
+    if _anc not in sys.modules:
+        import types as _t
+        _m = _t.ModuleType(_anc)
+        _m.__path__ = [os.path.join(DEV, *_pkg_parts[:_i])]
+        _m.__package__ = _anc
+        sys.modules[_anc] = _m
+_spec = ilu.spec_from_file_location(_mod_name, os.path.join(DEV, "hermes_cli/clipboard.py"))
 _pb = ilu.module_from_spec(_spec)
-sys.modules["wc_live_hermes_cli_clipboard_py"] = _pb
+_pb.__package__ = ".".join(_pkg_parts[:-1])
+sys.modules[_mod_name] = _pb
 _spec.loader.exec_module(_pb)
 
 
@@ -78,7 +93,7 @@ def _call(inp, inputs, idx=0):
         return _FN()
 
 def trace(inp, inputs, idx=0):
-    c = Cup("_powershell_write_script")
+    c = Cup("clipboard_powershell_write_script")
     try:
         result = _call(inp, inputs, idx)
         c.valstr(str(result))
