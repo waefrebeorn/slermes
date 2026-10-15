@@ -17,7 +17,15 @@ _pkg_parts = "tools/skills_tool.py".replace(".py", "").split("/")
 _mod_name = ".".join(_pkg_parts)
 for _i in range(1, len(_pkg_parts)):
     _anc = ".".join(_pkg_parts[:_i])
-    if _anc not in sys.modules:
+    if _anc in sys.modules:
+        continue
+    # Prefer the REAL package (runs its __init__.py, so names it exports are
+    # available). Only synthesize a namespace-style ModuleType when the real
+    # import fails -- a synthetic one bypasses __init__.py and breaks
+    # 'from pkg import name' for names defined there.
+    try:
+        __import__(_anc)
+    except Exception:
         import types as _t
         _m = _t.ModuleType(_anc)
         _m.__path__ = [os.path.join(DEV, *_pkg_parts[:_i])]
