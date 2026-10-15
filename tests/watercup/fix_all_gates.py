@@ -80,8 +80,8 @@ STUB_SHADOWED = {"hermes_get_home"}
 
 SIG_RE = re.compile(
     r'(?:static\s+)?(?:const\s+)?'
-    r'((?:unsigned\s+)?(?:long\s+)?(?:long\s+long\s+)?[\w]+(?:\s*\*+)?)'
-    r'(?:\s+|\s*\*)(\w+)\s*\(([^)]*)\)\s*\{'
+    r'((?:unsigned\s+long\s+long|unsigned\s+long|long\s+long|long|unsigned|[\w]+)'
+    r'(?:\s*\*+)?)\s*(\w+)\s*\(([^)]*)\)\s*\{'
 )
 
 
