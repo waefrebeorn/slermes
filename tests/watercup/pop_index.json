@@ -117282,5 +117282,15 @@
    "int limit",
    "int default_limit"
   ]
+ },
+ "hermes_cli/models.py:clamp_reasoning_effort_to_supported": {
+  "c_fn": "models_clamp_reasoning_effort_to_supported",
+  "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/models_helpers.c",
+  "ret_type": "char",
+  "params": "const char *effort,\n                                                 const char *supported_efforts_json",
+  "param_list": [
+   "const char *effort",
+   "const char *supported_efforts_json"
+  ]
  }
 }
