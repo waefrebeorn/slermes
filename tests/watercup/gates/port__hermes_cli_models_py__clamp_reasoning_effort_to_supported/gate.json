@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "clamp_reasoning_effort_to_supported",
+  "c_fn": "models_clamp_reasoning_effort_to_supported",
   "py_module": "hermes_cli/models.py",
   "py_fn": "clamp_reasoning_effort_to_supported",
   "inputs": [
@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/models_helpers.c"
   ],
   "cflags": [
     "-I",
@@ -24,7 +27,10 @@
     "-I",
     "lib/libjson",
     "-I",
-    "src"
+    "src",
+    "-DHERMES_VERSION=\"0.21.0\"",
+    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
+    "-DATADIR=\"/usr/share/hermes\""
   ],
   "classification": "PORTED"
 }
