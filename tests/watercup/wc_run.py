@@ -229,7 +229,12 @@ def _compile_stub_shadowed(g, keep_srcs):
             continue
         shadowed |= stub_defs & set(
             _fag._defined_names(c, open(c, errors="ignore").read()))
-    for sym in shadowed:
+    for sym in sorted(shadowed):
+        # Rename sym -> sym_stub_shadowed, but do NOT touch a symbol that is
+        # ALREADY shadowed (idempotent): a second re-shadow pass over text that
+        # still contains the original `sym` as a substring of
+        # `sym_stub_shadowed` would double-rename. Read fresh from src each
+        # call, so guard the rename target explicitly.
         txt = re.sub(r'(?<![\w])%s(?![\w])' % re.escape(sym),
                      sym + "_stub_shadowed", txt)
     tmp = os.path.join(BUILD, "%s.stub.c" % g["name"])
@@ -270,6 +275,15 @@ def _resolve_cflags(g):
         p = os.path.join(REPO, root)
         if os.path.isdir(p):
             std_inc += ["-I", p]
+    # src/ subdirs ship headers too (src/tools/process_registry.h, etc.) that
+    # sibling units #include by bare name. Add every src/ subdir with headers.
+    srcdir = os.path.join(REPO, "src")
+    if os.path.isdir(srcdir):
+        for d in sorted(os.listdir(srcdir)):
+            sub = os.path.join(srcdir, d)
+            if os.path.isdir(sub) and any(f.endswith(".h")
+                                          for f in os.listdir(sub)):
+                std_inc += ["-I", sub]
     return std_inc + cflags
 
 
@@ -504,16 +518,23 @@ def build_harness(gate_dir, g, force=False):
                     new_objs.append(a)
                     continue
                 # infrastructure_stubs.c re-defines symbols real modules own.
-                # Compiling it raw when the retry adds it duplicates them
-                # ("multiple definition"). Compile it shadowed against the
-                # objects already on the link line so the real impls win.
+                # If it is NOT already linked (initial extra_src), compile it
+                # shadowed against the current link set. If it IS already
+                # linked, the dupe-handler's re-shadow below updates the
+                # existing <tag>.stub.o in place -- adding a second copy here
+                # would link the stub twice and duplicate every shadowed symbol.
                 if a.endswith("infrastructure_stubs.c"):
-                    keep = [os.path.join(REPO, e) for e in
-                            g.get("extra_src", []) if e.endswith(".c")]
-                    keep += [x for x in added if x.endswith(".c")]
-                    so = _compile_stub_shadowed(g, keep + [a])
-                    if so:
-                        new_objs.append(so)
+                    already = any(os.path.basename(o) == "%s.stub.o" % g["name"]
+                                  for o in objs + added_objs)
+                    if not already:
+                        keep = [os.path.join(REPO, e) for e in
+                                g.get("extra_src", []) if e.endswith(".c")]
+                        keep += [x for x in added if x.endswith(".c")]
+                        so = _compile_stub_shadowed(g, keep + [a])
+                        if so:
+                            new_objs.append(so)
+                            continue
+                    else:
                         continue
                 o = _compile_one(g, a)
                 if o:
