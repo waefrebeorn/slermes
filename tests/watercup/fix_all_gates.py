@@ -100,6 +100,10 @@ def read_c_signature(c_file, c_fn):
 
 def categorize_signature(ret_type, param_list, from_real=True):
     unhandleable = ('json', 'struct', 'callback', 'void*', 'fn', 'va_list')
+    # Normalize the return type: SIG_RE now captures pointer stars, so a
+    # char*-returning fn arrives as "char *" not "char". Strip stars/spaces so
+    # the exact-match branches below (ret_type == 'char') still fire.
+    ret_type = ret_type.replace('*', '').strip()
     # A pointer-to-pointer param (const char **args, char ***out) is a string
     # ARRAY or nested out-param the harness cannot build from a single argv
     # string. Treating it as char* makes the harness pass one string where the

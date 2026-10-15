@@ -99100,5 +99100,15 @@
   "param_list": [
    "chronos_verify_fn fn"
   ]
+ },
+ "tools/browser_camofox.py:camofox_back": {
+  "c_fn": "camofox_back",
+  "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/browser_camofox.c",
+  "ret_type": "char *",
+  "params": "const char *camofox_url, const char *session_id",
+  "param_list": [
+   "const char *camofox_url",
+   "const char *session_id"
+  ]
  }
 }
