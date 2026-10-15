@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_exhausted_ttl",
+  "c_fn": "cpl_exhausted_ttl",
   "py_module": "agent/credential_pool.py",
   "py_fn": "_exhausted_ttl",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "clear_model_endpoint_credentials",
+  "c_fn": "config_clear_model_endpoint_credentials",
   "py_module": "hermes_cli/config.py",
   "py_fn": "clear_model_endpoint_credentials",
   "inputs": [

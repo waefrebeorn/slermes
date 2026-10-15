@@ -5402,7 +5402,7 @@
   ]
  },
  "agent/chat_completion_helpers.py:_fallback_entry_key": {
-  "c_fn": "the",
+  "c_fn": "_fallback_entry_key",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/agent/chat_completion_helpers.c",
   "ret_type": "void",
   "params": "const json_t *fb,\n    char *provider_out, size_t pcap,\n    char *model_out, size_t mcap,\n    char *base_url_out, size_t bcap",
@@ -15518,7 +15518,7 @@
   ]
  },
  "agent/auxiliary_client.py:_select_pool_entry": {
-  "c_fn": "for",
+  "c_fn": "aux__select_pool_entry",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/agent/auxiliary_client_helpers.c",
   "ret_type": "int",
   "params": "const char *provider, const char *model",
@@ -40292,7 +40292,7 @@
   ]
  },
  "agent/learning_mutations.py:_locate_memory": {
-  "c_fn": "to",
+  "c_fn": "lm_locate_memory",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/learning_mutations.c",
   "ret_type": "int",
   "params": "const char *hermes_home, const char *source, int gidx,\n                            char *out_path, char ***out_chunks, int *out_local",
@@ -40306,7 +40306,7 @@
   ]
  },
  "agent/learning_mutations.py:_memories_dir": {
-  "c_fn": "to",
+  "c_fn": "lm_locate_memory",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/learning_mutations.c",
   "ret_type": "int",
   "params": "const char *hermes_home, const char *source, int gidx,\n                            char *out_path, char ***out_chunks, int *out_local",
@@ -41593,7 +41593,7 @@
   ]
  },
  "gateway/platforms/base.py:send_multiple_images": {
-  "c_fn": "of",
+  "c_fn": "gw_base__send_multiple_images",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/platforms_base_helpers.c",
   "ret_type": "int",
   "params": "const char *chat_id, char **images, int n, float human_delay",
@@ -68408,7 +68408,7 @@
   ]
  },
  "hermes_cli/session_recap.py:_shortened_path": {
-  "c_fn": "in",
+  "c_fn": "session_shortened_path",
   "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/session_recap.c",
   "ret_type": "void",
   "params": "const char *path, const char *cwd, const char *home, char *out, size_t out_cap",

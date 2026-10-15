@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_save_worktree_merge_cache",
+  "c_fn": "cli_save_worktree_merge_cache",
   "py_module": "cli.py",
   "py_fn": "_save_worktree_merge_cache",
   "inputs": [

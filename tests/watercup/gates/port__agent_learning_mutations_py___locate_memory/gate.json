@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "to",
+  "c_fn": "lm_locate_memory",
   "py_module": "agent/learning_mutations.py",
   "py_fn": "_locate_memory",
   "inputs": [

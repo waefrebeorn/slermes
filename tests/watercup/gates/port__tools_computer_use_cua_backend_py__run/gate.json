@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "run",
+  "c_fn": "cua_run",
   "py_module": "tools/computer_use/cua_backend.py",
   "py_fn": "run",
   "inputs": [

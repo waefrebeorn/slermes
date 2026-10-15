@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "parse_retry_after_seconds",
+  "c_fn": "rtu_parse_retry_after_seconds",
   "py_module": "agent/retry_utils.py",
   "py_fn": "parse_retry_after_seconds",
   "inputs": [

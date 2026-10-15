@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cmd_plugins",
+  "c_fn": "mn_cmd_plugins",
   "py_module": "hermes_cli/main.py",
   "py_fn": "cmd_plugins",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cmd_uninstall",
+  "c_fn": "mn_cmd_uninstall",
   "py_module": "hermes_cli/main.py",
   "py_fn": "cmd_uninstall",
   "inputs": [

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_luminance_from_hex",
+  "c_fn": "cli_luminance_from_hex",
   "py_module": "cli.py",
   "py_fn": "_luminance_from_hex",
   "inputs": [

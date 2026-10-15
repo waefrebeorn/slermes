@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "main",
+  "c_fn": "uni_main",
   "py_module": "hermes_cli/uninstall.py",
   "py_fn": "main",
   "inputs": [

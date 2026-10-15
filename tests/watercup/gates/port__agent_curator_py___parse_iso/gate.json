@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_iso",
+  "c_fn": "cur_parse_iso",
   "py_module": "agent/curator.py",
   "py_fn": "_parse_iso",
   "inputs": [

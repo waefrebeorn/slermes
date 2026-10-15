@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "play_beep",
+  "c_fn": "vmd_play_beep",
   "py_module": "tools/voice_mode.py",
   "py_fn": "play_beep",
   "inputs": [

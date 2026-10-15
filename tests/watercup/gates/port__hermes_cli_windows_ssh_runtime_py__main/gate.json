@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "main",
+  "c_fn": "wss_main",
   "py_module": "hermes_cli/windows_ssh_runtime.py",
   "py_fn": "main",
   "inputs": [

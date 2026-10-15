@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_worker_survived_termination",
+  "c_fn": "kb_worker_survived_termination",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_worker_survived_termination",
   "inputs": [

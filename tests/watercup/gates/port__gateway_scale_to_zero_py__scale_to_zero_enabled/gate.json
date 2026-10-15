@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "scale_to_zero_enabled",
+  "c_fn": "NULL",
   "py_module": "gateway/scale_to_zero.py",
   "py_fn": "scale_to_zero_enabled",
   "inputs": [
