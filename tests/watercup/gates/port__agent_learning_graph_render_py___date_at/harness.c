@@ -1,4 +1,4 @@
-/* gate: port__agent_learning_graph_render_py___date_at — traced copy of learning_graph_render_date_at (int_str) */
+/* gate: port__agent_learning_graph_render_py___date_at — traced copy of learning_graph_render_date_at (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int learning_graph_render_date_at(const char *input);
+
+extern char * learning_graph_render_date_at(const char *rec_json, double reveal);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s learning_graph_render_date_at <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = learning_graph_render_date_at(argv[i]);
+    char * result = learning_graph_render_date_at((int)strtol(argv[i], NULL, 10), strtod(argv[2 + (i - 2 + 1) % 5], NULL));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

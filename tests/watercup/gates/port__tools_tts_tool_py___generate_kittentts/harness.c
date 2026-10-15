@@ -1,4 +1,4 @@
-/* gate: port__tools_tts_tool_py___generate_kittentts — traced copy of tts_generate_kittentts (bool_noargs) */
+/* gate: port__tools_tts_tool_py___generate_kittentts — traced copy of tts_generate_kittentts (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool tts_generate_kittentts(void);
+
+extern char * tts_generate_kittentts(const char *text, const char *model_path, const char *output_path);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s tts_generate_kittentts <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = tts_generate_kittentts();
+    char * result = tts_generate_kittentts((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -1,4 +1,4 @@
-/* gate: port__gateway_hosted_room_driver_py___task_identity_from_row — traced copy of _task_identity_from_row (int_str) */
+/* gate: port__gateway_hosted_room_driver_py___task_identity_from_row — traced copy of _task_identity_from_row (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,9 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int _task_identity_from_row(const char *input);
+
+extern char * _task_identity_from_row(const char *room_id, const char *task_id,
+        const char *thread_id, const char *turn_id);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _task_identity_from_row <input>...\n", argv[0]); return 2; }
@@ -16,12 +18,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = _task_identity_from_row(argv[i]);
+    char * result = _task_identity_from_row((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 3) % 5], NULL, 10));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

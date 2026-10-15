@@ -1,4 +1,4 @@
-/* gate: port__agent_anthropic_adapter_py__build_anthropic_kwargs — traced copy of antr_build_anthropic_kwargs (int_str) */
+/* gate: port__agent_anthropic_adapter_py__build_anthropic_kwargs — traced copy of antr_build_anthropic_kwargs (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,9 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int antr_build_anthropic_kwargs(const char *input);
+
+extern char * antr_build_anthropic_kwargs(const char *model, long max_tokens, const char *system_json,
+                                  const char *messages_json, const char *tools_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s antr_build_anthropic_kwargs <input>...\n", argv[0]); return 2; }
@@ -16,12 +18,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = antr_build_anthropic_kwargs(argv[i]);
+    char * result = antr_build_anthropic_kwargs((int)strtol(argv[i], NULL, 10), (long)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 3) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 4) % 5], NULL, 10));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

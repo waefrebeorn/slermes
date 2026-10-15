@@ -1,4 +1,4 @@
-/* gate: port__tools_skills_hub_py___get_json — traced copy of sh_get_json (int_str) */
+/* gate: port__tools_skills_hub_py___get_json — traced copy of sh_get_json (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int sh_get_json(const char *input);
+
+extern char * sh_get_json(const char *url, double timeout);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s sh_get_json <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = sh_get_json(argv[i]);
+    char * result = sh_get_json((int)strtol(argv[i], NULL, 10), strtod(argv[2 + (i - 2 + 1) % 5], NULL));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

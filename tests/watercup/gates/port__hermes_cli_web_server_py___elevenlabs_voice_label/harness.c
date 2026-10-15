@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_web_server_py___elevenlabs_voice_label — traced copy of web_elevenlabs_voice_label (int_str) */
+/* gate: port__hermes_cli_web_server_py___elevenlabs_voice_label — traced copy of web_elevenlabs_voice_label (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,9 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int web_elevenlabs_voice_label(const char *input);
+
+extern char * web_elevenlabs_voice_label(const char *voice_id, const char *voice_name,
+                                  const char *category, const char *description);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s web_elevenlabs_voice_label <input>...\n", argv[0]); return 2; }
@@ -16,12 +18,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = web_elevenlabs_voice_label(argv[i]);
+    char * result = web_elevenlabs_voice_label((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 3) % 5], NULL, 10));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
