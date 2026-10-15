@@ -1,38 +1,29 @@
-/* gate: port__agent_thread_scoped_output_py____init__ — GAP sentinel for agent/thread_scoped_output.py:__init__ */
+/* gate: port__agent_thread_scoped_output_py____init__ — traced copy of tso_init (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("__init__");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "__init__");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("__init__");
-}
+extern char * tso_init(const char *passthrough_desc, const char *sink_desc);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s __init__ <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s tso_init <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("tso_init");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    char * result = tso_init(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("tso_init");
     }
     return 0;
 }

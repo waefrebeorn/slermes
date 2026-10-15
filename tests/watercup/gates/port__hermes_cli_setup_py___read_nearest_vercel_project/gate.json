@@ -14,7 +14,10 @@
     "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_bitesbz1.txt"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src/hermes_cli/setup_gaps.c"
   ],
   "cflags": [
     "-I",
