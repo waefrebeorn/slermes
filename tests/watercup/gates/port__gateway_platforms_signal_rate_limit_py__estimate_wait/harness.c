@@ -1,25 +1,31 @@
-/* gate: port__gateway_platforms_signal_rate_limit_py__estimate_wait — GAP sentinel for estimate_wait */
+/* gate: port__gateway_platforms_signal_rate_limit_py__estimate_wait — traced copy of cli_gateway_platforms_signal_rate_limit_estimate_wait (scalar_outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "estimate_wait";
-}
+
+extern int cli_gateway_platforms_signal_rate_limit_estimate_wait(int retry_after, int *bucket, int capacity);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s estimate_wait <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_gateway_platforms_signal_rate_limit_estimate_wait <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("estimate_wait");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("cli_gateway_platforms_signal_rate_limit_estimate_wait");
+    int _o1 = 0;
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = cli_gateway_platforms_signal_rate_limit_estimate_wait((int)strtol(argv[i], NULL, 10), &_o1, (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o1); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("estimate_wait");
+        WCUP_END("cli_gateway_platforms_signal_rate_limit_estimate_wait");
     }
     return 0;
 }

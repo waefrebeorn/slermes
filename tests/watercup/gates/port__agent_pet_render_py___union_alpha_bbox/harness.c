@@ -1,25 +1,38 @@
-/* gate: port__agent_pet_render_py___union_alpha_bbox — GAP sentinel for _union_alpha_bbox */
+/* gate: port__agent_pet_render_py___union_alpha_bbox — traced copy of pet_union_alpha_bbox (scalar_outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_union_alpha_bbox";
-}
+
+extern void pet_union_alpha_bbox(const unsigned char *rgba, int w, int h,
+                           int *out_x, int *out_y, int *out_w, int *out_h);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _union_alpha_bbox <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s pet_union_alpha_bbox <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_union_alpha_bbox");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("pet_union_alpha_bbox");
+    int _o3 = 0;
+    int _o4 = 0;
+    int _o5 = 0;
+    int _o6 = 0;
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    pet_union_alpha_bbox(argv[i], (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10), &_o3, &_o4, &_o5, &_o6);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o3); WCUP_VALSTR(_b); }
+    { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o4); WCUP_VALSTR(_b); }
+    { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o5); WCUP_VALSTR(_b); }
+    { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o6); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_union_alpha_bbox");
+        WCUP_END("pet_union_alpha_bbox");
     }
     return 0;
 }

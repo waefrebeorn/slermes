@@ -1,25 +1,31 @@
-/* gate: port__hermes_cli_update_cmd_py___migrate_sibling_profile_configs — GAP sentinel for _migrate_sibling_profile_configs */
+/* gate: port__hermes_cli_update_cmd_py___migrate_sibling_profile_configs — traced copy of upd_migrate_sibling_profile_configs (scalar_outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_migrate_sibling_profile_configs";
-}
+
+extern int upd_migrate_sibling_profile_configs(int *skipped);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _migrate_sibling_profile_configs <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s upd_migrate_sibling_profile_configs <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_migrate_sibling_profile_configs");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("upd_migrate_sibling_profile_configs");
+    int _o0 = 0;
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = upd_migrate_sibling_profile_configs(&_o0);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o0); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_migrate_sibling_profile_configs");
+        WCUP_END("upd_migrate_sibling_profile_configs");
     }
     return 0;
 }
