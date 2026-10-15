@@ -137,8 +137,13 @@ def categorize_signature(ret_type, param_list, from_real=True):
             head = p.split('*')[0].strip()
             if head and 'char' not in head:
                 return None
+        # Match unhandleable tokens against the param TYPE, not the name:
+        # "const char *config_json" contains "json" as a NAME substring and was
+        # wrongly rejected. The type is all words except the trailing name.
+        words = p.replace('*', ' ').split()
+        ptype = ' '.join(words[:-1]) if len(words) > 1 else (words[0] if words else '')
         for u in unhandleable:
-            if u in p:
+            if u in ptype:
                 return None
     # json_t* return with all-string params: serialize the result via
     # json_serialize and feed the JSON string to the cup. The twin serializes
