@@ -541,6 +541,7 @@ def _build_symbol_index():
         r'^[A-Za-z][\w\s\*]*?\b([a-z_][a-z0-9_]{2,})\s*(?:\[[^\]]*\])?\s*(?:=|;)',
         _re.M)
     idx = {}
+    stub_path = os.path.join(REPO, "src/infrastructure_stubs.c")
     src_root = os.path.join(REPO, "src")
     for root, dirs, files in os.walk(src_root):
         dirs[:] = [d for d in dirs if d != "__pycache__"]
@@ -552,10 +553,24 @@ def _build_symbol_index():
                 txt = open(p, errors="ignore").read()
             except OSError:
                 continue
+            # The stub is a legacy fallback that re-defines symbols real modules
+            # own. Record it, but let a REAL module override it: a symbol that
+            # resolves to the stub when a real module also defines it makes the
+            # link pick the stub, which then gets shadowed away, leaving the
+            # symbol undefined. Prefer the real definition.
+            is_stub = (os.path.abspath(p) == os.path.abspath(stub_path))
             for m in pat.finditer(txt):
-                idx.setdefault(m.group(1), p)
+                nm = m.group(1)
+                if is_stub:
+                    idx.setdefault(nm, p)
+                else:
+                    idx[nm] = p
             for m in gvar.finditer(txt):
-                idx.setdefault(m.group(1), p)
+                nm = m.group(1)
+                if is_stub:
+                    idx.setdefault(nm, p)
+                else:
+                    idx[nm] = p
     return idx
 
 
