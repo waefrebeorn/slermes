@@ -400,6 +400,13 @@ _DEFINED_NAMES_CACHE = {}
 # A definition is "<type words> name(...) {". Compiled once, not per name.
 _DEFINED_RE = re.compile(
     r'(?<![\w])[A-Za-z][\w\s\*]*?\b([a-z_][a-z0-9_]*)\s*\([^;{]*\)\s*\{')
+# Global-variable definitions at FILE SCOPE. Restricted to the codebase's
+# g_/s_ naming convention to avoid matching locals inside function bodies
+# ("int local_y = 3;") -- a loose pattern would make _defined_names claim a
+# file defines locals it doesn't, breaking dep-discovery and over-shadowing
+# the stub. Matches "void *g_gw = NULL;" and "gateway_state_t g_state;".
+_DEFINED_GVAR_RE = re.compile(
+    r'^[\w\s\*]*?\b([gs]_[a-z0-9_]+)\s*(?:\[[^\]]*\])?\s*(?:=|;)', re.M)
 
 
 def _defined_names(c_file, src):
@@ -407,11 +414,17 @@ def _defined_names(c_file, src):
 
     Computed with one precompiled regex instead of one compiled-per-candidate
     regex, and cached because many gates share a ported .c.
+
+    Includes global-variable definitions (void *g_gw = NULL;
+    gateway_state_t g_gw;) alongside functions. The stub-shadow pass needs
+    them: infrastructure_stubs.c defines globals that real modules also
+    define, and a function-only match misses the collision, so the stub's copy
+    is never renamed and the link fails with "multiple definition of g_gw".
     """
     key = os.path.abspath(c_file)
     got = _DEFINED_NAMES_CACHE.get(key)
     if got is None:
-        got = set(_DEFINED_RE.findall(src))
+        got = set(_DEFINED_RE.findall(src)) | set(_DEFINED_GVAR_RE.findall(src))
         _DEFINED_NAMES_CACHE[key] = got
     return got
 
