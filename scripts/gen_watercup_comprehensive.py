@@ -146,6 +146,13 @@ def generate_twin(py_module, py_fn, parent_class="", c_ret=None, cup_name=None):
         enc = '"%.17g" % float(result)'
     elif c_ret in ('long', 'size_t'):
         enc = 'str(int(result))'
+    elif c_ret == 'json':
+        # json_t* return: serialize canonically to match the C harness's
+        # json_serialize output. sort_keys + compact separators mirror C's
+        # compact JSON. None -> "null".
+        import json as _json
+        enc = ('_json.dumps(result, sort_keys=True, separators=(",", ":")) '
+               'if result is not None else "null"')
     else:
         enc = 'str(result)'
 

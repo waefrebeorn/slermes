@@ -140,6 +140,14 @@ def categorize_signature(ret_type, param_list, from_real=True):
         for u in unhandleable:
             if u in p:
                 return None
+    # json_t* return with all-string params: serialize the result via
+    # json_serialize and feed the JSON string to the cup. The twin serializes
+    # its dict/list return with json.dumps(sort_keys, compact) to match.
+    # 81 ported gates take this shape; without it they're not-gatable.
+    if (ret_type.replace('*', '').strip() == 'json_t'
+            and param_list and all('char' in p for p in param_list)
+            and not any('**' in p for p in param_list)):
+        return 'json_ret'
     if any(u in ret_type for u in unhandleable):
         return None
     if not param_list:
@@ -248,6 +256,14 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         val_code = '    WCUP_VALSTR(result ? "true" : "false");'
     elif category == 'charptr_simple':
         val_code = '    WCUP_VALSTR(result ? result : "");'
+    elif category == 'json_ret':
+        # json_t* return: serialize to a canonical JSON string for the cup.
+        # json_serialize emits compact JSON; the twin matches with
+        # json.dumps(sort_keys=True, separators=(",", ":")). Free both.
+        val_code = ('    char *_js = result ? json_serialize(result) : NULL;\n'
+                    '    WCUP_VALSTR(_js ? _js : "null");\n'
+                    '    if (result) json_free(result);\n'
+                    '    if (_js) free(_js);')
     elif category == 'sizet_simple':
         val_code = '    char buf[32];\n    snprintf(buf, sizeof(buf), "%zu", result);\n    WCUP_VALSTR(buf);'
     elif category == 'long_simple':
@@ -322,6 +338,10 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     buf_decl = ("    char _ob[4096]; _ob[0] = '\\0';\n"
                 if category == 'outparam' else "")
 
+    json_includes = ('#include "json.h"\n'
+                     'extern void json_free(json_t *);\n'
+                     'extern char *json_serialize(const json_t *);\n'
+                     if category == 'json_ret' else '')
     return f"""/* gate: {gate_name} — traced copy of {c_fn} ({category}) */
 #include <stdio.h>
 #include <stdlib.h>
@@ -329,6 +349,7 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+{json_includes}
 
 extern {ret_type} {c_fn}({params});
 

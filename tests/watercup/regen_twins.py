@@ -26,21 +26,38 @@ SIG_RE = re.compile(
 
 
 def c_ret_type(pop_idx, py_module, py_fn):
-    """Return (c_return_type, c_symbol) for the ported twin, or (None, None)."""
+    """Return (c_return_type, c_symbol) for the ported twin, or (None, None).
+
+    The return type is normalized to the canonical name generate_twin expects:
+    "char *"/"const char *" -> "charptr", "json_t *" -> "json", else the bare
+    type word. Without this, char*/json_t* returns hit the str() fallback and
+    mismatch the C harness's canonical encoding.
+    """
     info = pop_idx.get(f"{py_module}:{py_fn}")
     if not info:
         return None, None
     c_file, c_fn = info.get("c_file"), info.get("c_fn")
+    raw = None
     if not c_file or not os.path.isfile(c_file):
-        return info.get("ret_type"), c_fn
-    try:
-        txt = open(c_file, errors="ignore").read()
-    except OSError:
-        return info.get("ret_type"), c_fn
-    for m in SIG_RE.finditer(txt):
-        if m.group(2) == c_fn:
-            return m.group(1), c_fn
-    return info.get("ret_type"), c_fn
+        raw = info.get("ret_type")
+    else:
+        try:
+            txt = open(c_file, errors="ignore").read()
+        except OSError:
+            txt = ""
+        for m in SIG_RE.finditer(txt):
+            if m.group(2) == c_fn:
+                raw = m.group(1)
+                break
+        if raw is None:
+            raw = info.get("ret_type")
+    # Normalize to canonical twin encoding name.
+    r = (raw or "").replace("*", "").strip()
+    if r == "char":
+        return "charptr", c_fn
+    if r == "json_t":
+        return "json", c_fn
+    return r, c_fn
 
 
 def main():
