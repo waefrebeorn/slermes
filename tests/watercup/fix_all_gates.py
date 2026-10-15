@@ -338,6 +338,69 @@ int main(int argc, char **argv) {{
 """
 
 
+def _try_link(gate_dir, g, harness_src=None, extra_src=None):
+    """Compile+link a gate's harness to a temp binary. Returns True on success.
+
+    Uses the same include roots and vendored-lib link line the runner uses.
+    harness_src: if given, use this text as the harness (candidate); else use
+    the on-disk harness.c (current). extra_src: override the gate's extra_src.
+    """
+    import subprocess as _sp
+    import tempfile as _tf
+    HERE = os.path.join(REPO, "tests/watercup")
+    BUILD = os.path.join(REPO, "tests/watercup/build")
+    os.makedirs(BUILD, exist_ok=True)
+    tag = g["name"]
+    hs = os.path.join(gate_dir, "harness.c")
+    if harness_src is not None:
+        hs = os.path.join(_tf.gettempdir(), "%s.cand.c" % tag)
+        with open(hs, "w") as f:
+            f.write(harness_src)
+    cf = g.get("cflags", [])
+    cf = [os.path.join(REPO, c) if not c.startswith("-") else c for c in cf]
+    inc = ["-I", HERE, "-I", os.path.join(REPO, "include"),
+           "-I", os.path.join(REPO, "lib"), "-I", os.path.join(REPO, "src")]
+    try:
+        hobj = os.path.join(BUILD, "%s._try.h.o" % tag)
+        r = _sp.run(["cc"] + inc + cf + ["-c", hs, "-o", hobj],
+                    capture_output=True, text=True, timeout=60)
+        if r.returncode != 0:
+            return False
+        objs = [hobj]
+        ex = extra_src if extra_src is not None else g.get("extra_src", [])
+        for i, e in enumerate(ex):
+            full = os.path.join(REPO, e)
+            o = os.path.join(BUILD, "%s._try.e%d.o" % (tag, i))
+            r = _sp.run(["cc"] + inc + cf + ["-c", full, "-o", o],
+                        capture_output=True, text=True, timeout=60)
+            if r.returncode != 0:
+                return False
+            objs.append(o)
+        vend = [p for p in (
+            os.path.join(REPO, "lib/libdb/sqlite3.o"),
+            os.path.join(REPO, "lib/libhttp/http.o"),
+            os.path.join(REPO, "lib/libcrypto/crypto.o"),
+            os.path.join(REPO, "lib/libyaml/yaml.o"),
+            os.path.join(REPO, "lib/libregex/hermes_regex.o"),
+        ) if os.path.exists(p)]
+        out = os.path.join(BUILD, "%s._try.bin" % tag)
+        r = _sp.run(["cc"] + objs + ["-o", out, "-Wl,--start-group"] + vend
+                    + ["-Wl,--end-group", "-lm", "-lcrypto", "-lssl", "-lz",
+                       "-ldl", "-lpthread"], capture_output=True, text=True,
+                    timeout=60)
+        return r.returncode == 0
+    except Exception:
+        return False
+
+
+def _current_builds(gate_dir, g):
+    return _try_link(gate_dir, g)
+
+
+def _candidate_builds(gate_dir, g, harness_src, extra_src):
+    return _try_link(gate_dir, g, harness_src=harness_src, extra_src=extra_src)
+
+
 def generate_gap_sentinel(gate_name, py_fn):
     return f"""/* gate: {gate_name} — GAP sentinel for {py_fn} */
 #include <stdio.h>
@@ -697,6 +760,17 @@ def fix_all_gates(check=False):
 
                 if harness_changed or gate_changed:
                     if not check:
+                        # SAFETY: only overwrite a gate whose CURRENT harness
+                        # builds cleanly if the NEW harness also builds. The
+                        # stub-defer / dep-discovery logic can swap a working
+                        # infrastructure_stubs.c link for real modules whose
+                        # own deps aren't satisfied, regressing a passing gate.
+                        # Regenerating a gate whose current harness is broken is
+                        # always safe (it couldn't pass before).
+                        if _current_builds(gd, g) and not _candidate_builds(
+                                gd, g, harness, want_extra):
+                            skipped += 1
+                            continue
                         if harness_changed:
                             with open(h_path, 'w') as f:
                                 f.write(harness)
