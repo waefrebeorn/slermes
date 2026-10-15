@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/slash_confirm.c"
+    "src/agent/skill_commands.c"
   ],
   "cflags": [
     "-I",

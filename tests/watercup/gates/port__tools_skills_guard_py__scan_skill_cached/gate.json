@@ -7,11 +7,11 @@
   "py_module": "tools/skills_guard.py",
   "py_fn": "scan_skill_cached",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_b83xdsje.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_u8gpk2ib.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_arq9jk72.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_2liim43e.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_wcdn0hvv.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

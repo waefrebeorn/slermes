@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/gui_uninstall.py",
   "py_fn": "_remove_path",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_29qerho5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_6_xc5tiu.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_17oblg3i.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_hbs8oo0f.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_uwinp78z.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

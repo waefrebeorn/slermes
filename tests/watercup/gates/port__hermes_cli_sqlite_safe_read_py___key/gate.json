@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/sqlite_safe_read.py",
   "py_fn": "_key",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_ghrmapzp.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_v6gqbbvm.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_jvlimzfb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_9qkxbiox.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_2bsqkqwn.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

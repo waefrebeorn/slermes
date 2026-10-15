@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/main.py",
   "py_fn": "_pytest_owns_live_checkout",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_q4add43q.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_4vm99tau.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_gaq9_ljh.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_9u6kowun.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_qvaxjzxg.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/worktree_gc.py",
   "py_fn": "_archive_untracked",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_msuhj5vj.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_9ulyrr5i.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_wbksk3yo.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_410hs6xr.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_4zitbhmc.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

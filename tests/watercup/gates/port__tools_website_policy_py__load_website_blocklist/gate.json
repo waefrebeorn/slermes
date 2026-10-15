@@ -7,11 +7,11 @@
   "py_module": "tools/website_policy.py",
   "py_fn": "load_website_blocklist",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_l5ver_yb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_whjh6v_d.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_1825bqlk.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_ifiqylhi.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_1gur7tbh.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

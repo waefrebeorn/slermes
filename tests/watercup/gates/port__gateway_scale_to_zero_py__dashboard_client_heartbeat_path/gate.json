@@ -7,11 +7,11 @@
   "py_module": "gateway/scale_to_zero.py",
   "py_fn": "dashboard_client_heartbeat_path",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_w2m8ycta.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_06gjj1cj.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_dhj4dkp1.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_7qgy_udf.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_kvof1m76.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

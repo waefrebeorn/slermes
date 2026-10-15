@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_rotate_worker_log",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_ykyo9_aj.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_h4n1cpqu.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_y3759wql.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_cb12phpq.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_9d9z4xw9.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/banner.py",
   "py_fn": "get_git_banner_state",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_4pfwgiu8.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_cr8z7adf.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_v1omek6f.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3__6vjvy2u.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_y63ta536.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/clipboard.py",
   "py_fn": "_wsl_save",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_qfhmf3pn.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_qtka2bpo.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_olcfrpab.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_x_0l2rh5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_k0w8ts0z.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

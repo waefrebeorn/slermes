@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/skin_engine.py",
   "py_fn": "_load_skin_from_yaml",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_l7xvovlj.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_gey334al.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_4h8_ktsm.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_qewmn73b.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_t8reohj6.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

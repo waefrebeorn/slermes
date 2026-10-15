@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/session_lost_and_found.py",
   "py_fn": "run_cli_lost_and_found_recover",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_zze7rzy2.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_4oxqepdl.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_23czrleu.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_8qfbee3d.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_jsd41lcz.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

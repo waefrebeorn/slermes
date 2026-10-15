@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_rebuild_desktop_after_update",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_78it6eub.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_sdt32va_.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_ce130f_x.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_dxz2f6m5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_iz8yfsxo.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

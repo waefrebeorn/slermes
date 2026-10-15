@@ -7,11 +7,11 @@
   "py_module": "tools/skill_usage.py",
   "py_fn": "_read_skill_name",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_sobthx7q.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_ox84h58c.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_dwy9lste.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_9yz9iax_.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_fkojwch7.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

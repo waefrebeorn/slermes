@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/agent_plugins.py",
   "py_fn": "load_agent_plugin",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_s5di_z4m.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_vf0khkq4.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_utll6i2q.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_5exkpdrf.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_ti1lv70c.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

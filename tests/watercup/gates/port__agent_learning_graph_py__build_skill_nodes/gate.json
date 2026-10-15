@@ -7,11 +7,11 @@
   "py_module": "agent/learning_graph.py",
   "py_fn": "build_skill_nodes",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_63h2r5n4.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_qm1b4onf.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_0qtrw0lq.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_6ijklv63.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_ho2dgcor.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

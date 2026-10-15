@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/clipboard.py",
   "py_fn": "_macos_osascript",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_vw0_lcet.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_j1cfcgbl.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_102d2mri.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_wdeiifoa.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_nrb7ctmg.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

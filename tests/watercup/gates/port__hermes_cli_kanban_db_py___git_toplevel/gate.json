@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_git_toplevel",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_uhgrl9jr.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_jf82xmtf.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_m9u1ez3s.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3__qgkj9a1.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_l_jg_xa_.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

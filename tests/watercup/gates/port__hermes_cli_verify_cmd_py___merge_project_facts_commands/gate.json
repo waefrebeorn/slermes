@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/verify_cmd.py",
   "py_fn": "_merge_project_facts_commands",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_9kgbd_um.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1__xma3ov1.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_nciajzbl.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_yxg7kovl.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_wnc1odj7.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

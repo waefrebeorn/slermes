@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/psutil_android.py",
   "py_fn": "prepare_patched_psutil_sdist",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_tovoqjnn.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_738em8p6.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_y99efsse.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_qt9so69w.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_43aarmmu.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

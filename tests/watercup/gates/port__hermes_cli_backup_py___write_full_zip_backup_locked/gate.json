@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/backup.py",
   "py_fn": "_write_full_zip_backup_locked",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_rhkm61v9.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_fgvrafh9.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_ju5lgs5u.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_6seox282.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_z32xje8p.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

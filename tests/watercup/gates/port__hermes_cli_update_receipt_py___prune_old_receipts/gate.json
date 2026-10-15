@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/update_receipt.py",
   "py_fn": "_prune_old_receipts",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_xw6s4yos.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_a2ebc83w.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_t915m4kr.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_6frmsj8y.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_en_quk25.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

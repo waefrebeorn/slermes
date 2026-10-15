@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/onepassword_secrets_cli.py",
   "py_fn": "_op_version",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_eafyvqe8.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_1q00xiod.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_r87utzka.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_51m4vcmi.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_2abtdvk_.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

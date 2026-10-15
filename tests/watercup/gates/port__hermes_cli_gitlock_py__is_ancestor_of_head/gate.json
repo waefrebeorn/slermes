@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/gitlock.py",
   "py_fn": "is_ancestor_of_head",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_1_l868o5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_ybs6qwcu.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_xipjxjzs.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_asz01td0.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_o3v32arz.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

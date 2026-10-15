@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/update_cmd.py",
   "py_fn": "_web_toolchain_roots",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_08r2dwpy.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_s967jhy2.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_cwz0514t.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_xslmjwn3.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_n9j9r6xp.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

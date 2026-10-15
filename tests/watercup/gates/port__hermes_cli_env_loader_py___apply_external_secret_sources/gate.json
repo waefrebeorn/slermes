@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/env_loader.py",
   "py_fn": "_apply_external_secret_sources",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_4j9eumjt.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_a89th7u7.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_cvoev1v3.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_ylf92k6i.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_j2wkgtg6.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

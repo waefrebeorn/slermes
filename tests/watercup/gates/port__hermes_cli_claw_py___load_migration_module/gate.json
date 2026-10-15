@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/claw.py",
   "py_fn": "_load_migration_module",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_t34w1u6u.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_w3nq_u0n.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_tw0is4ui.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_l1ih1gnd.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_rg8j47uo.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

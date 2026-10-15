@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/env_loader.py",
   "py_fn": "hydrate_profile_secret_sources",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_kh5ll0m5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1__i6p1vcb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2__yf5iykm.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_5vjwh_u5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_tz3xei12.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

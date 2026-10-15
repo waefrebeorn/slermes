@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/copilot_auth.py",
   "py_fn": "_read_jwt_store",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_rh2_9xq7.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_4in4o0la.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_1otn0diw.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_x59j085a.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_ercpvt32.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

@@ -7,11 +7,11 @@
   "py_module": "agent/display.py",
   "py_fn": "_snapshot_text",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_cpszryz0.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_ebv3rna6.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_jfxe8wi7.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_ifeuy5po.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_mjzsh7pq.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

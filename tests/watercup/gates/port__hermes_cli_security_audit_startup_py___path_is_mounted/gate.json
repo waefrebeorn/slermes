@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/security_audit_startup.py",
   "py_fn": "_path_is_mounted",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_vemlpshe.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_bu82uioi.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_91yjmjnt.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_eiuzgv_v.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_m82aisze.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/managed_scope.py",
   "py_fn": "_cached_read",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_lcrzo3al.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_ezoe6pr8.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_d0euzv6_.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_aj3hhqf_.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_bv_k33et.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

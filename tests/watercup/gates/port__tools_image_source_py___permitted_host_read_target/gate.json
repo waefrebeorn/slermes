@@ -7,11 +7,11 @@
   "py_module": "tools/image_source.py",
   "py_fn": "_permitted_host_read_target",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_tj8e5sfw.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_e84rz1yh.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_fh7lpdv6.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_7i_pgoli.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_srwgez03.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

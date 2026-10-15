@@ -7,11 +7,11 @@
   "py_module": "tools/skill_manager_tool.py",
   "py_fn": "_is_path_redirect",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_qq6nrzjb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_7cmufmch.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_we9jt9ka.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_di5p19q9.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_a3n6t7j2.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

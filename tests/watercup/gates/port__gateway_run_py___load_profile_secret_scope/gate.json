@@ -7,11 +7,11 @@
   "py_module": "gateway/run.py",
   "py_fn": "_load_profile_secret_scope",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_iij4thag.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_n2jvnfgd.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_y5admaxi.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_qnz9ff1a.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_2lg4u2wk.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

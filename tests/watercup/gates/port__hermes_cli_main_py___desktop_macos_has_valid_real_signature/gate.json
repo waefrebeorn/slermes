@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/main.py",
   "py_fn": "_desktop_macos_has_valid_real_signature",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_li9mlp79.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_97lewfdy.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_9ss46t2r.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_dfs7vfc0.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_g576sw3i.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

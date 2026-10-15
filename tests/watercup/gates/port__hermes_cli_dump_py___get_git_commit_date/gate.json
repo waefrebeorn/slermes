@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/dump.py",
   "py_fn": "_get_git_commit_date",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_27n5z3ll.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_8x7luatu.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_oc3ftc1b.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_jcs3dszu.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_y4ql624_.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

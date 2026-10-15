@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/install_identity.py",
   "py_fn": "read_or_create_install_id",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_d9mrql0p.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_w80747j5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_rxpzobv1.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_s07tlfhn.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_xm8ou6tv.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

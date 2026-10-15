@@ -7,11 +7,11 @@
   "py_module": "agent/learning_mutations.py",
   "py_fn": "_write_memory",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_odh0nlkr.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_m5gebsb3.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_3wnbx1r4.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_uqevm5v0.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_9wci_ac8.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

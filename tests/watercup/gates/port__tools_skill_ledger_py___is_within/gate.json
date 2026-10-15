@@ -7,11 +7,11 @@
   "py_module": "tools/skill_ledger.py",
   "py_fn": "_is_within",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_hmgayyi5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_krmcj3j7.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_qg5b96ex.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_h7kbwunx.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_8ccykq8k.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

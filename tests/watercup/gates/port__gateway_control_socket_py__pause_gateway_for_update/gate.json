@@ -7,11 +7,11 @@
   "py_module": "gateway/control_socket.py",
   "py_fn": "pause_gateway_for_update",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_3xhs71s2.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_ds6cocev.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_2q7yt1k9.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_45b5l5lb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_ec6baqpe.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

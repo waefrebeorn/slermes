@@ -7,11 +7,11 @@
   "py_module": "gateway/lifecycle_ledger.py",
   "py_fn": "check_state_db_integrity",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_ct0a6jmc.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_tn2pke_5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_wt9kwstd.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_gyd7hg77.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_gbeetuxe.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

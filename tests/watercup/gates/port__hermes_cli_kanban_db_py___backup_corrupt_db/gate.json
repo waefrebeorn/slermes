@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_backup_corrupt_db",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_tuhgdjnm.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_qt9mdqju.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_tid32fjb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_k4i2fkh7.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_6dm2i7h5.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/foreign_sessions.py",
   "py_fn": "parse_claude_session",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_4qr566c5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_2ucdphai.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_qo5mgras.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_cs7rjrj9.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_ntel6p_0.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

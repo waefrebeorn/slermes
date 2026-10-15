@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/dashboard_procs.py",
   "py_fn": "_detect_concurrent_hermes_instances",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_idh65bjb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_siea8y_e.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_p731ugmo.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_vh8ww6bc.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_jqkdt1qn.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

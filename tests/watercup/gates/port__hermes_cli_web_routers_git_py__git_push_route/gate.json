@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/web_routers/git.py",
   "py_fn": "git_push_route",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_4cqo6llw.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_vco3x0rl.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_xiaj33gp.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_08be960x.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_i8n17fle.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

@@ -7,11 +7,11 @@
   "py_module": "tools/lazy_deps.py",
   "py_fn": "_ensure_target_ready",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_fb4hx4yk.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1__s3pis7o.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_caf63d_h.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_o0em_ivx.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_eokqnj88.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

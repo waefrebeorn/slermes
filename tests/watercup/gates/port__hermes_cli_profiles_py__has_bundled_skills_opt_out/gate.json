@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "has_bundled_skills_opt_out",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_p9w0q6ef.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_lmucutqq.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_murpbe75.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_as_8casy.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_cm02wdte.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

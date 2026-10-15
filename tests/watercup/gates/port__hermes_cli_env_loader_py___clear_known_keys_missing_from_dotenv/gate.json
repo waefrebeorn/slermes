@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/env_loader.py",
   "py_fn": "_clear_known_keys_missing_from_dotenv",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0__h7qjpf4.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_f5yu6zea.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_jbdwkxqb.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_spj7e2d8.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_i_12d8sa.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

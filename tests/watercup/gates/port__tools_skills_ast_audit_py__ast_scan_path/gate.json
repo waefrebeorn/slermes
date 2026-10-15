@@ -7,11 +7,11 @@
   "py_module": "tools/skills_ast_audit.py",
   "py_fn": "ast_scan_path",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_la6xjaqx.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_bjmqo6h6.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_g0uk3ueo.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_4nhmo0w6.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_0eqgotx1.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

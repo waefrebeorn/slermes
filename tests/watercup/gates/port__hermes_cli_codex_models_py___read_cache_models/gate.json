@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/codex_models.py",
   "py_fn": "_read_cache_models",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_a3inmy43.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_mib7jb9j.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_oxc_kid8.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_q0547swq.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_gca0flc3.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

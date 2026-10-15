@@ -49,28 +49,36 @@ def _call(inp, inputs, idx=0):
     walk position idx+j (wrapping) — the SAME position the C harness feeds it
     via argv[2 + (i - 2 + j) % n]. Using a fixed position for j>0 made a
     2-arg function compute f(x, inputs[1]) on every step, collapsing the cup.
+
+    A param annotated Path receives Path(inp) — the raw fixture is a str, and
+    file helpers call .stat()/.read_text() on it, which raises AttributeError
+    on a str and folds every cup to a constant ERROR. Wrapping gives the twin
+    the Path object the signature promises; the C side still sees the path
+    string via argv.
     """
     import inspect as _insp
+    from pathlib import Path as _Path
     try:
         _sig = _insp.signature(_FN)
     except Exception:
         _sig = None
     if _sig is not None:
-        _np = sum(
-            1 for p in _sig.parameters.values()
-            if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
-        )
+        _pos = [p for p in _sig.parameters.values()
+                if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)]
+        _np = len(_pos)
+        _wrap = _pos and "Path" in str(_pos[0].annotation)
+        _a0 = _Path(inp) if (_wrap and isinstance(inp, str)) else inp
         if _np <= 1:
-            return _FN(inp) if _np else _FN()
+            return _FN(_a0) if _np else _FN()
         n = len(inputs)
-        return _FN(inp, *[inputs[(idx + j) % n] for j in range(1, _np)])
+        return _FN(_a0, *[inputs[(idx + j) % n] for j in range(1, _np)])
     try:
         return _FN(inp)
     except TypeError:
         return _FN()
 
 def trace(inp, inputs, idx=0):
-    c = Cup("sd_n_record_tick")
+    c = Cup("gateway_systemd_notify_record_tick")
     try:
         result = _call(inp, inputs, idx)
         c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))

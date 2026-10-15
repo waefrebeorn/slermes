@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_macos_tcc_anchor_py__is_macos — traced copy of is_macos (int_noargs) */
+/* gate: port__hermes_cli_macos_tcc_anchor_py__is_macos — traced copy of is_macos (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int is_macos(void);
+extern int is_macos(const char *input);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s is_macos <input>...\n", argv[0]); return 2; }
@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = is_macos();
+    int result = is_macos(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[32];

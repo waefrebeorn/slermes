@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "_read_config_model",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_gcm7matm.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_iudxb4op.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_1hfzsdrq.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_r5xb6l5d.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_a6xtyr68.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

@@ -7,11 +7,11 @@
   "py_module": "agent/pet/render.py",
   "py_fn": "_open_sheet",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_orfglp4h.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_o3rsq5t_.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_9ks7qgv3.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_9aydb822.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_ab2ryc8q.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

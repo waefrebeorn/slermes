@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/clipboard.py",
   "py_fn": "_macos_pngpaste",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_tcva66go.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_z6njp_po.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_a944f_lv.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3__2470h4s.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_7w88phy2.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

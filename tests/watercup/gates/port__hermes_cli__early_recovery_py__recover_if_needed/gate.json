@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/_early_recovery.py",
   "py_fn": "recover_if_needed",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_r1mimum6.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_moaer_ni.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_2qwaw68z.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_byeq81ew.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_c9u1jfa6.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

@@ -7,11 +7,11 @@
   "py_module": "agent/secret_sources/bitwarden.py",
   "py_fn": "_sha256_file",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_dqzt78xo.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_9uvrjdo5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_6w8yr_1y.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_8a6kobrm.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_y96kmvh7.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/backup.py",
   "py_fn": "_count_cron_jobs",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_9b2oxi0x.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_68j6srti.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_wacajc3_.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_5u8766ta.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_encmvapp.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

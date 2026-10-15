@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/auth.py",
   "py_fn": "_load_auth_store",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_7aapv_82.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_cnpdaf_f.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_0xnkkoqf.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_8cvc2boa.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_xy63f433.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

@@ -209,21 +209,29 @@ def _call(inp, inputs, idx=0):
     walk position idx+j (wrapping) — the SAME position the C harness feeds it
     via argv[2 + (i - 2 + j) %% n]. Using a fixed position for j>0 made a
     2-arg function compute f(x, inputs[1]) on every step, collapsing the cup.
+
+    A param annotated Path receives Path(inp) — the raw fixture is a str, and
+    file helpers call .stat()/.read_text() on it, which raises AttributeError
+    on a str and folds every cup to a constant ERROR. Wrapping gives the twin
+    the Path object the signature promises; the C side still sees the path
+    string via argv.
     """
     import inspect as _insp
+    from pathlib import Path as _Path
     try:
         _sig = _insp.signature(_FN)
     except Exception:
         _sig = None
     if _sig is not None:
-        _np = sum(
-            1 for p in _sig.parameters.values()
-            if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
-        )
+        _pos = [p for p in _sig.parameters.values()
+                if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)]
+        _np = len(_pos)
+        _wrap = _pos and "Path" in str(_pos[0].annotation)
+        _a0 = _Path(inp) if (_wrap and isinstance(inp, str)) else inp
         if _np <= 1:
-            return _FN(inp) if _np else _FN()
+            return _FN(_a0) if _np else _FN()
         n = len(inputs)
-        return _FN(inp, *[inputs[(idx + j) %% n] for j in range(1, _np)])
+        return _FN(_a0, *[inputs[(idx + j) %% n] for j in range(1, _np)])
     try:
         return _FN(inp)
     except TypeError:
@@ -282,6 +290,23 @@ def generate_inputs_for_signature(py_fn):
 def _typed_inputs(annotation):
     """Fixture walk for a parameter annotation string."""
     a = (annotation or "").lower()
+    if "path" in a:
+        # A Path param expects a real filesystem path. The twin calls
+        # .stat()/.read_text()/open() on it; the C port opens the same path
+        # via argv. Create real temp files with varied content so BOTH sides
+        # operate on identical inputs and the cup reflects real logic, not a
+        # constant AttributeError from passing a bare str.
+        import tempfile
+        import os as _os
+        contents = ["line1\nline2\nline3\n", "", "single\n",
+                    "a\nb\nc\nd\ne\n", "no-newline-at-eof"]
+        paths = []
+        for i, c in enumerate(contents):
+            fd, p = tempfile.mkstemp(prefix="wcup_p%d_" % i, suffix=".txt")
+            with _os.fdopen(fd, "w") as f:
+                f.write(c)
+            paths.append(p)
+        return paths
     if "int" in a and "point" not in a:
         return [0, 1, 42, 1024, -7]
     if "float" in a or "double" in a:

@@ -7,11 +7,11 @@
   "py_module": "gateway/hosted_room_driver.py",
   "py_fn": "settle_task",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_c50d7hw3.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1__ixtjp2_.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_ujlkkjz5.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_lcnjli48.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_iaieey3s.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c"

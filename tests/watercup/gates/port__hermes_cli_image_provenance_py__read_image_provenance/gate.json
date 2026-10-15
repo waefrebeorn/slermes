@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/image_provenance.py",
   "py_fn": "read_image_provenance",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_muf76_7m.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_rxm4adnj.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_3bom0mtp.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_gv6v6t1d.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_34gry0gc.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",

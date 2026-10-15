@@ -7,11 +7,11 @@
   "py_module": "hermes_cli/container_boot.py",
   "py_fn": "_write_reconcile_log",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_19d8vjje.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_pkrwphmo.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_lrotj01h.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_j5e7f4o0.txt",
+    "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_2fqvje8y.txt"
   ],
   "extra_src": [
     "lib/libjson/json.c",
