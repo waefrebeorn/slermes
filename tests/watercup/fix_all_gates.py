@@ -80,7 +80,7 @@ STUB_SHADOWED = {"hermes_get_home"}
 
 SIG_RE = re.compile(
     r'(?:static\s+)?(?:const\s+)?(?:unsigned\s+)?(?:long\s+)?(?:struct\s+\w+\s+)?'
-    r'(\w+)\s+(\w+)\s*\(([^)]*)\)\s*\{'
+    r'([\w]+\s*\**)\s*(\w+)\s*\(([^)]*)\)\s*\{'
 )
 
 
@@ -91,7 +91,7 @@ def read_c_signature(c_file, c_fn):
         content = f.read()
     for m in SIG_RE.finditer(content):
         if m.group(2) == c_fn:
-            ret_type = m.group(1)
+            ret_type = m.group(1).strip()
             params = m.group(3).strip()
             param_list = [p.strip() for p in params.split(',') if p.strip()]
             return ret_type, params, param_list
@@ -100,6 +100,13 @@ def read_c_signature(c_file, c_fn):
 
 def categorize_signature(ret_type, param_list, from_real=True):
     unhandleable = ('json', 'struct', 'callback', 'void*', 'fn', 'va_list')
+    # A pointer-to-pointer param (const char **args, char ***out) is a string
+    # ARRAY or nested out-param the harness cannot build from a single argv
+    # string. Treating it as char* makes the harness pass one string where the
+    # function indexes an array -> SIGSEGV on every input. 139 ported gates
+    # take a ** param; reject them (not gatable) rather than crash.
+    if any('**' in p for p in param_list):
+        return None
     # A bare `void` parameter means NO parameters. Keeping it in the list made
     # every zero-arg function fall through the char/int param tests and get
     # rejected as "not gatable" — e.g. bool _oauth_trace_enabled(void).
