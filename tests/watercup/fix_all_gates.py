@@ -197,7 +197,7 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
                           inputs_walk=None, body_src=""):
     # Zero-arg categories pass nothing to the traced function; the input walk
     # still varies the cup via the CUP name + the traced call site.
-    noargs = category.endswith('_noargs')
+    noargs = category.endswith('_noargs') or category == 'void'
     # Categories whose params are ints/doubles must convert the string argv:
     # passing argv[i] straight to an `int` param is a compile error (and
     # silently wrong if it weren't).
