@@ -400,6 +400,11 @@ def build_harness(gate_dir, g, force=False):
             os.path.join(REPO, "lib/libregex/hermes_regex.o"),
             os.path.join(REPO, "lib/libjson/json.o"),
         ) if os.path.exists(p)]
+        # Drop any vendored .o whose .c source is already on the link line
+        # (json.c in extra_src) to avoid "multiple definition".
+        _src_bases = {os.path.basename(e) for e in g.get("extra_src", [])}
+        vendored = [p for p in vendored
+                    if not (os.path.basename(p)[:-2] + ".c" in _src_bases)]
         # -lm and the system libs must come AFTER --end-group: sqlite3.o's FTS5
         # code calls log(), and with -lm before the group the linker has already
         # passed libm when it pulls sqlite's object in.
@@ -427,6 +432,15 @@ def build_harness(gate_dir, g, force=False):
                          os.path.join(REPO, "lib/libjson/json.o"),
                          os.path.join(REPO, "lib/libregex/hermes_regex.o")]
         base_lib_objs = [p for p in base_lib_objs if os.path.exists(p)]
+        # If the gate's own extra_src already links a vendored library's SOURCE
+        # (e.g. lib/libjson/json.c), drop that library's .o from base_lib_objs --
+        # both define the same symbols (json_append, ...) -> "multiple
+        # definition". The source on the link line wins.
+        _src_bases = {os.path.basename(e) for e in g.get("extra_src", [])}
+        base_lib_objs = [
+            p for p in base_lib_objs
+            if not (p.endswith(".o")
+                    and os.path.basename(p)[:-2] + ".c" in _src_bases)]
         # Same left-to-right single-pass linker limitation as the retry above:
         # wrap the vendored objects in a group so cross-references between them
         # (and to the system libs) resolve regardless of order on the line.
