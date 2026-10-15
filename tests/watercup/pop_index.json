@@ -117292,5 +117292,14 @@
    "const char *effort",
    "const char *supported_efforts_json"
   ]
+ },
+ "hermes_cli/doctor.py:_read_journal_mode": {
+  "c_fn": "doctor_read_journal_mode",
+  "c_file": "/home/wubu/hermes-agent-dev/slermes/src/hermes_cli/doctor_helpers.c",
+  "ret_type": "char",
+  "params": "const char *db_path",
+  "param_list": [
+   "const char *db_path"
+  ]
  }
 }
