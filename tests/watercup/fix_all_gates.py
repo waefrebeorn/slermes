@@ -658,19 +658,24 @@ def find_definition_cached(name):
     return _SYMBOL_INDEX.get(name)
 
 
-def fix_all_gates(check=False):
+def fix_all_gates(check=False, only_gates=None):
     # pop_index.json keys carry a stray leading space (historical generator
     # artifact). An unstripped .get() silently misses ~97% of entries, so
     # every ported gate falls through to the gap sentinel. Normalize once.
     with open(POP_INDEX_PATH) as f:
         pop_idx = {k.strip(): v for k, v in json.load(f).items()}
-    
+
     updated = 0
     skipped = 0
     not_gatable = 0
     errors = 0
-    
+
     for d in sorted(os.listdir(GATES)):
+        # Targeted mode: only regenerate the named gates. Used to safely
+        # regenerate stale-harness gates without mass-regenerating (which
+        # regresses working gates via the stub-defer dep-set change).
+        if only_gates is not None and d not in only_gates:
+            continue
         gd = os.path.join(GATES, d)
         if not os.path.isdir(gd):
             continue
