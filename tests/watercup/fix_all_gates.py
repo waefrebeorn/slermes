@@ -175,7 +175,6 @@ def categorize_signature(ret_type, param_list, from_real=True):
             return 'int_int'
         elif len(param_list) <= 4 and all('char' in p or 'int' in p for p in param_list):
             return 'int_other'
-        return None
     elif ret_type == 'bool':
         if len(param_list) == 1 and 'char' in param_list[0]:
             return 'bool_str'
@@ -185,24 +184,36 @@ def categorize_signature(ret_type, param_list, from_real=True):
             return 'bool_int'
         elif len(param_list) <= 4 and all('char' in p or 'int' in p for p in param_list):
             return 'bool_other'
-        return None
     elif ret_type == 'char':
         if len(param_list) <= 2 and all('char' in p or 'int' in p for p in param_list):
             return 'charptr_simple'
-        return None
     elif ret_type == 'size_t':
         if len(param_list) <= 2 and all('char' in p or 'int' in p for p in param_list):
             return 'sizet_simple'
-        return None
     elif ret_type == 'long':
         if len(param_list) <= 2 and all('char' in p or 'int' in p or 'long' in p
                                         for p in param_list):
             return 'long_simple'
-        return None
     elif ret_type == 'double':
         if len(param_list) <= 2 and all('double' in p or 'int' in p for p in param_list):
             return 'double_simple'
-        return None
+    # Generic fallback: any all-scalar-param function (char*/int/long/float/
+    # double/bool/size_t, no struct pointers, no **) that the specific
+    # categories above didn't match. Covers e.g. char(char,char,char),
+    # double(char), int(char,size), etc.
+    def _is_scalar_param(p):
+        head = p.split('*')[0].strip()
+        if '**' in p:
+            return False
+        if '*' in p and head and 'char' not in head:
+            return False  # struct/opaque pointer
+        return any(t in head for t in
+                   ('char', 'int', 'long', 'float', 'double', 'bool',
+                    'size_t', 'pid_t', 'ssize_t'))
+    if param_list and all(_is_scalar_param(p) for p in param_list):
+        if ret_type in ('int', 'long', 'double', 'float', 'bool', 'char',
+                        'size_t', 'void'):
+            return 'scalar_multi'
     return None
 
 
@@ -215,7 +226,8 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # passing argv[i] straight to an `int` param is a compile error (and
     # silently wrong if it weren't).
     numeric = category in ('int_int', 'bool_int', 'int_other', 'bool_other',
-                           'long_simple', 'sizet_simple', 'double_simple')
+                           'long_simple', 'sizet_simple', 'double_simple',
+                           'scalar_multi')
     # Emit the EXPRESSION for parameter j's argument. `i` is the C loop
     # variable over the INPUT range (argv[2] .. argv[argc-1]); parameters
     # beyond the first take the following walk positions, WRAPPING INSIDE the
@@ -237,10 +249,10 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         # (int)strtol. Casting a long param to int silently loses the value.
         def _conv(j):
             p = param_list[j]
-            if 'double' in category:
+            if 'double' in p or 'float' in p:
                 return 'strtod(%s, NULL)' % _arg(j)
-            if 'long' in p:
-                return 'strtol(%s, NULL, 10)' % _arg(j)
+            if 'long' in p or 'size_t' in p or 'ssize_t' in p:
+                return '(long)strtol(%s, NULL, 10)' % _arg(j)
             return '(int)strtol(%s, NULL, 10)' % _arg(j)
         call_args = ', '.join(_conv(j) for j in range(len(param_list)))
     else:
@@ -277,6 +289,24 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         val_code = '    char buf[64];\n    snprintf(buf, sizeof(buf), "%.17g", result);\n    WCUP_VALSTR(buf);'
     elif category == 'void':
         val_code = '    WCUP_VALSTR("void");'
+    elif category == 'scalar_multi':
+        # Generic: encode by the actual return type.
+        if ret_type == 'void':
+            val_code = '    WCUP_VALSTR("void");'
+        elif ret_type == 'bool':
+            val_code = '    WCUP_VALSTR(result ? "true" : "false");'
+        elif ret_type in ('char',):
+            val_code = '    WCUP_VALSTR(result ? result : "");'
+        elif ret_type in ('double', 'float'):
+            val_code = ('    char buf[64];\\n    snprintf(buf, sizeof(buf), '
+                        '"%.17g", result);\\n    WCUP_VALSTR(buf);')
+        elif ret_type in ('long', 'size_t'):
+            fmt = '%zu' if ret_type == 'size_t' else '%ld'
+            val_code = ('    char buf[32];\\n    snprintf(buf, sizeof(buf), '
+                        '"' + fmt + '", result);\\n    WCUP_VALSTR(buf);')
+        else:  # int
+            val_code = ('    char buf[32];\\n    snprintf(buf, sizeof(buf), '
+                        '"%d", result);\\n    WCUP_VALSTR(buf);')
     else:
         val_code = '    char buf[64];\n    snprintf(buf, sizeof(buf), "%p", (void*)&result);\n    WCUP_VALSTR(buf);'
 
