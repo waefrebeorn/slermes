@@ -1,38 +1,35 @@
-/* gate: port__hermes_cli_models_py___configured_custom_provider_ids — GAP sentinel for hermes_cli/models.py:_configured_custom_provider_ids */
+/* gate: port__hermes_cli_models_py___configured_custom_provider_ids — traced copy of mg_append_slug (json_param) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
 
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_configured_custom_provider_ids");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_configured_custom_provider_ids");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_configured_custom_provider_ids");
-}
+extern void mg_append_slug(json_t *arr, const char *name_or_key, int has_name);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _configured_custom_provider_ids <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s mg_append_slug <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("mg_append_slug");
+    json_t *_j0 = json_parse(argv[i], NULL);
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    void result = mg_append_slug(_j0, argv[2 + (i - 2 + 1) % 5], (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
+    WCUP_VALSTR("void");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("mg_append_slug");
     }
     return 0;
 }

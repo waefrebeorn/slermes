@@ -1,38 +1,35 @@
-/* gate: port__gateway_platforms_whatsapp_common_py___matches_whatsapp_allowlist — GAP sentinel for gateway/platforms/whatsapp_common.py:_matches_whatsapp_allowlist */
+/* gate: port__gateway_platforms_whatsapp_common_py___matches_whatsapp_allowlist — traced copy of whatsapp_common_matches_allowlist (json_param) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
 
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_matches_whatsapp_allowlist");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_matches_whatsapp_allowlist");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_matches_whatsapp_allowlist");
-}
+extern bool whatsapp_common_matches_allowlist(const char *id, json_t *allowlist);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _matches_whatsapp_allowlist <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s whatsapp_common_matches_allowlist <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("whatsapp_common_matches_allowlist");
+    json_t *_j1 = json_parse(argv[2 + (i - 2 + 1) % 5], NULL);
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    bool result = whatsapp_common_matches_allowlist(argv[i], _j1);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j1) json_free(_j1);
+    WCUP_VALSTR(result ? "true" : "false");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("whatsapp_common_matches_allowlist");
     }
     return 0;
 }

@@ -1,38 +1,35 @@
-/* gate: port__hermes_cli_security_audit_py___osv_severity_from_record — GAP sentinel for hermes_cli/security_audit.py:_osv_severity_from_record */
+/* gate: port__hermes_cli_security_audit_py___osv_severity_from_record — traced copy of security_osv_severity_from_record (json_param) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
 
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_osv_severity_from_record");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_osv_severity_from_record");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_osv_severity_from_record");
-}
+extern void security_osv_severity_from_record(const json_t *record, char *out, size_t out_cap);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _osv_severity_from_record <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s security_osv_severity_from_record <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("security_osv_severity_from_record");
+    json_t *_j0 = json_parse(argv[i], NULL);
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    void result = security_osv_severity_from_record(_j0, argv[2 + (i - 2 + 1) % 5], (long)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
+    WCUP_VALSTR("void");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("security_osv_severity_from_record");
     }
     return 0;
 }

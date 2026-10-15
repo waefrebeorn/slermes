@@ -1,38 +1,48 @@
-/* gate: port__tools_write_approval_py___normalize_enabled — GAP sentinel for tools/write_approval.py:_normalize_enabled */
+/* gate: port__tools_write_approval_py___normalize_enabled — traced copy of cli_tools_write_approval__normalize_enabled (json_param) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
 
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_normalize_enabled");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_normalize_enabled");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_normalize_enabled");
-}
+extern int cli_tools_write_approval__normalize_enabled(const json_node_t *raw);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _normalize_enabled <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cli_tools_write_approval__normalize_enabled <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("cli_tools_write_approval__normalize_enabled");
+    json_t *_j0 = json_parse(argv[i], NULL);
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_cap = tmpfile();
+    if (_cap) dup2(fileno(_cap), 1);
+    int result = cli_tools_write_approval__normalize_enabled(_j0);
+    fflush(stdout);
+    if (_cap) {
+        dup2(_sv, 1); close(_sv);
+        rewind(_cap);
+        char _ob[4096]; size_t _on = 0; int _ch;
+        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
+            _ob[_on++] = (char)_ch;
+        _ob[_on] = '\0';
+        /* strip the trailing newline the port emits */
+        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
+            _ob[--_on] = '\0';
+        WCUP_VALSTR(_ob);
+        fclose(_cap);
+    }
+    if (_j0) json_free(_j0);
+
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("cli_tools_write_approval__normalize_enabled");
     }
     return 0;
 }
