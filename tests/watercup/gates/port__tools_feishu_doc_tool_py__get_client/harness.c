@@ -1,4 +1,4 @@
-/* gate: port__tools_feishu_doc_tool_py__get_client — traced copy of fdt2_get_client (bool_noargs) */
+/* gate: port__tools_feishu_doc_tool_py__get_client — traced copy of fdt2_get_client (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool fdt2_get_client(void);
+
+extern char * fdt2_get_client(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s fdt2_get_client <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,12 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = fdt2_get_client();
+    char * result = fdt2_get_client();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

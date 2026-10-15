@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_update_contract_py__evaluate_update_admission — traced copy of evaluate_update_admission (int_str) */
+/* gate: port__hermes_cli_update_contract_py__evaluate_update_admission — traced copy of evaluate_update_admission (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int evaluate_update_admission(const char *input);
+
+extern char * evaluate_update_admission(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s evaluate_update_admission <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = evaluate_update_admission(argv[i]);
+    char * result = evaluate_update_admission();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

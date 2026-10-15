@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool dashboard_local_update_managed_externally(void);
 
 int main(int argc, char **argv) {

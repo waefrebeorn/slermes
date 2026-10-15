@@ -1,4 +1,4 @@
-/* gate: port__tools_file_tools_py___registered_task_cwd_override — traced copy of file_tools_registered_task_cwd_override (int_str) */
+/* gate: port__tools_file_tools_py___registered_task_cwd_override — traced copy of file_tools_registered_task_cwd_override (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int file_tools_registered_task_cwd_override(const char *input);
+
+extern char * file_tools_registered_task_cwd_override(const char *task_id);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s file_tools_registered_task_cwd_override <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = file_tools_registered_task_cwd_override(argv[i]);
+    char * result = file_tools_registered_task_cwd_override(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

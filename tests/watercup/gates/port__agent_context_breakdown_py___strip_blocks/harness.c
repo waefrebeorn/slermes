@@ -1,4 +1,4 @@
-/* gate: port__agent_context_breakdown_py___strip_blocks — traced copy of context_breakdown_strip_blocks (int_str) */
+/* gate: port__agent_context_breakdown_py___strip_blocks — traced copy of context_breakdown_strip_blocks (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int context_breakdown_strip_blocks(const char *input);
+
+extern char * context_breakdown_strip_blocks(const char *text, const char *block);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s context_breakdown_strip_blocks <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = context_breakdown_strip_blocks(argv[i]);
+    char * result = context_breakdown_strip_blocks(argv[i], argv[2 + (i - 2 + 1) % 5]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

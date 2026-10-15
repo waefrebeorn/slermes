@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_web_server_py__get_client_voice_config — traced copy of get_client_voice_config (int_str) */
+/* gate: port__hermes_cli_web_server_py__get_client_voice_config — traced copy of get_client_voice_config (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int get_client_voice_config(const char *profile);
+
+extern char * get_client_voice_config(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s get_client_voice_config <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = get_client_voice_config(argv[i]);
+    char * result = get_client_voice_config();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

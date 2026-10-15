@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_kanban_py___run_state_kwargs — traced copy of kanban_run_state_kwargs (int_str) */
+/* gate: port__hermes_cli_kanban_py___run_state_kwargs — traced copy of kanban_run_state_kwargs (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int kanban_run_state_kwargs(const char *input);
+
+extern char * kanban_run_state_kwargs(const char *state_type, const char *state_name);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s kanban_run_state_kwargs <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = kanban_run_state_kwargs(argv[i]);
+    char * result = kanban_run_state_kwargs(argv[i], argv[2 + (i - 2 + 1) % 5]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

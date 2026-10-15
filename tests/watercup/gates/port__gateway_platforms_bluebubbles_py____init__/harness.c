@@ -1,4 +1,4 @@
-/* gate: port__gateway_platforms_bluebubbles_py____init__ — traced copy of bb_init (bool_str_str) */
+/* gate: port__gateway_platforms_bluebubbles_py____init__ — traced copy of bb_init (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool bb_init(const char *server_url, const char *password);
+
+extern char * bb_init(const char *config_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s bb_init <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = bb_init(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    char * result = bb_init(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

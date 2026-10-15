@@ -1,4 +1,4 @@
-/* gate: port__tools_approval_py___strip_line_comment — traced copy of apr_strip_line_comment (int_str) */
+/* gate: port__tools_approval_py___strip_line_comment — traced copy of apr_strip_line_comment (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int apr_strip_line_comment(const char *input);
+
+extern char * apr_strip_line_comment(const char *line);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s apr_strip_line_comment <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = apr_strip_line_comment(argv[i]);
+    char * result = apr_strip_line_comment(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

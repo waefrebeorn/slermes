@@ -1,4 +1,4 @@
-/* gate: port__tools_browser_camofox_py___loopback_rewrite_host — traced copy of _loopback_rewrite_host (bool_str) */
+/* gate: port__tools_browser_camofox_py___loopback_rewrite_host — traced copy of _loopback_rewrite_host (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool _loopback_rewrite_host(const char *hostname);
+
+extern char * _loopback_rewrite_host(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _loopback_rewrite_host <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,12 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = _loopback_rewrite_host(argv[i]);
+    char * result = _loopback_rewrite_host();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

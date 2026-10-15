@@ -1,4 +1,4 @@
-/* gate: port__gateway_hosted_room_discussion_py__derive_member_watermarks — traced copy of derive_member_watermarks (int_str) */
+/* gate: port__gateway_hosted_room_discussion_py__derive_member_watermarks — traced copy of derive_member_watermarks (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int derive_member_watermarks(const char *input);
+
+extern char * derive_member_watermarks(const char *room_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s derive_member_watermarks <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = derive_member_watermarks(argv[i]);
+    char * result = derive_member_watermarks(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

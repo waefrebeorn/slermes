@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_dashboard_procs_py___filter_dashboard_respawn_candidates — traced copy of dashboard_procs_filter_dashboard_respawn_candidates (int_str) */
+/* gate: port__hermes_cli_dashboard_procs_py___filter_dashboard_respawn_candidates — traced copy of dashboard_procs_filter_dashboard_respawn_candidates (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int dashboard_procs_filter_dashboard_respawn_candidates(const char *input);
+
+extern char * dashboard_procs_filter_dashboard_respawn_candidates(const char *candidates_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s dashboard_procs_filter_dashboard_respawn_candidates <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = dashboard_procs_filter_dashboard_respawn_candidates(argv[i]);
+    char * result = dashboard_procs_filter_dashboard_respawn_candidates(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

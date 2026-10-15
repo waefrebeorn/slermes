@@ -1,4 +1,4 @@
-/* gate: port__agent_learning_graph_render_py___bucket_rows — traced copy of learning_graph_render_bucket_rows (int_str) */
+/* gate: port__agent_learning_graph_render_py___bucket_rows — traced copy of learning_graph_render_bucket_rows (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,9 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int learning_graph_render_bucket_rows(const char *input);
+
+extern char * learning_graph_render_bucket_rows(const char *buckets_json,
+                                        const char *payload_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s learning_graph_render_bucket_rows <input>...\n", argv[0]); return 2; }
@@ -16,12 +18,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = learning_graph_render_bucket_rows(argv[i]);
+    char * result = learning_graph_render_bucket_rows(argv[i], argv[2 + (i - 2 + 1) % 5]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

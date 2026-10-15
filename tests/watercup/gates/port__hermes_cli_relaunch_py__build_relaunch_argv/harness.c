@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_relaunch_py__build_relaunch_argv — traced copy of build_relaunch_argv (int_str) */
+/* gate: port__hermes_cli_relaunch_py__build_relaunch_argv — traced copy of build_relaunch_argv (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int build_relaunch_argv(const char *input);
+
+extern char * build_relaunch_argv(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s build_relaunch_argv <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = build_relaunch_argv(argv[i]);
+    char * result = build_relaunch_argv();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

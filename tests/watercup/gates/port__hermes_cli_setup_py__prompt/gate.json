@@ -17,18 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/tools_config_providers.c",
-    "src/tools/browser_tool_install.c",
-    "src/tools/browser_tool_cdp.c",
-    "src/tools/browser_tool_platform.c",
-    "src/tools/browser_use_cli.c",
-    "src/agent/image_gen_provider.c",
-    "src/infrastructure_stubs.c",
-    "src/hermes_cli/config.c",
-    "src/hermes_cli/curses_ui.c",
-    "src/hermes_cli/setup_ports.c",
-    "src/tools/tts.c",
-    "src/agent/video_gen_provider_ports.c"
+    "src/hermes_cli/setup_ports.c"
   ],
   "cflags": [
     "-I",
@@ -38,7 +27,10 @@
     "-I",
     "lib/libjson",
     "-I",
-    "src"
+    "src",
+    "-DHERMES_VERSION=\"0.21.0\"",
+    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
+    "-DATADIR=\"/usr/share/hermes\""
   ],
   "classification": "PORTED"
 }

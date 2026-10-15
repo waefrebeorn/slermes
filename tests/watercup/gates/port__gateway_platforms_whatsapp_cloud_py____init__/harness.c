@@ -1,4 +1,4 @@
-/* gate: port__gateway_platforms_whatsapp_cloud_py____init__ — traced copy of wac_init (bool_noargs) */
+/* gate: port__gateway_platforms_whatsapp_cloud_py____init__ — traced copy of wac_init (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool wac_init(void);
+
+extern char * wac_init(const char *config_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s wac_init <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = wac_init();
+    char * result = wac_init(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

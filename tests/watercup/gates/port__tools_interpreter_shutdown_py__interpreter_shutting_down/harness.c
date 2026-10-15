@@ -1,4 +1,4 @@
-/* gate: port__tools_interpreter_shutdown_py__interpreter_shutting_down — traced copy of interpreter_shutting_down (int_str) */
+/* gate: port__tools_interpreter_shutdown_py__interpreter_shutting_down — traced copy of interpreter_shutting_down (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int interpreter_shutting_down(const char *input);
+
+extern char * interpreter_shutting_down(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s interpreter_shutting_down <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = interpreter_shutting_down(argv[i]);
+    char * result = interpreter_shutting_down();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_provider_catalog_py__tab_for_auth_type — traced copy of provider_catalog_tab_for_auth_type (int_str) */
+/* gate: port__hermes_cli_provider_catalog_py__tab_for_auth_type — traced copy of provider_catalog_tab_for_auth_type (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int provider_catalog_tab_for_auth_type(const char *input);
+
+extern char * provider_catalog_tab_for_auth_type(const char *auth_type);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s provider_catalog_tab_for_auth_type <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = provider_catalog_tab_for_auth_type(argv[i]);
+    char * result = provider_catalog_tab_for_auth_type(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

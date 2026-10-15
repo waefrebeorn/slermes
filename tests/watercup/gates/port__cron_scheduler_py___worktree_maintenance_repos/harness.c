@@ -1,4 +1,4 @@
-/* gate: port__cron_scheduler_py___worktree_maintenance_repos — traced copy of _worktree_maintenance_repos (void) */
+/* gate: port__cron_scheduler_py___worktree_maintenance_repos — traced copy of _worktree_maintenance_repos (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern void _worktree_maintenance_repos(void);
+
+extern char * _worktree_maintenance_repos(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _worktree_maintenance_repos <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,12 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    _worktree_maintenance_repos(argv[i]);
+    char * result = _worktree_maintenance_repos();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

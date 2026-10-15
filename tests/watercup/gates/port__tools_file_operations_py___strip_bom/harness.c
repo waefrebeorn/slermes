@@ -1,4 +1,4 @@
-/* gate: port__tools_file_operations_py___strip_bom — traced copy of file_ops_strip_bom (bool_str) */
+/* gate: port__tools_file_operations_py___strip_bom — traced copy of file_ops_strip_bom (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool file_ops_strip_bom(const char *text);
+
+extern char * file_ops_strip_bom(const char *text);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s file_ops_strip_bom <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = file_ops_strip_bom(argv[i]);
+    char * result = file_ops_strip_bom(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

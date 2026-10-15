@@ -1,4 +1,4 @@
-/* gate: port__tools_environments_file_sync_py__quoted_rm_command — traced copy of quoted_rm_command (int_str) */
+/* gate: port__tools_environments_file_sync_py__quoted_rm_command — traced copy of quoted_rm_command (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int quoted_rm_command(const char *input);
+
+extern char * quoted_rm_command(const char *const *paths, int n);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s quoted_rm_command <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = quoted_rm_command(argv[i]);
+    char * result = quoted_rm_command(argv[i], argv[2 + (i - 2 + 1) % 5]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -1,4 +1,4 @@
-/* gate: port__agent_auxiliary_client_py___fast_lane_config_fields — traced copy of _fast_lane_config_fields (int_str) */
+/* gate: port__agent_auxiliary_client_py___fast_lane_config_fields — traced copy of _fast_lane_config_fields (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int _fast_lane_config_fields(const char *config);
+
+extern char * _fast_lane_config_fields(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _fast_lane_config_fields <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = _fast_lane_config_fields(argv[i]);
+    char * result = _fast_lane_config_fields();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

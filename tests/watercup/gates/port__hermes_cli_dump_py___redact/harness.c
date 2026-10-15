@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_dump_py___redact — traced copy of dmp_redact (int_str) */
+/* gate: port__hermes_cli_dump_py___redact — traced copy of dmp_redact (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int dmp_redact(const char *input);
+
+extern char * dmp_redact(const char *value);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s dmp_redact <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = dmp_redact(argv[i]);
+    char * result = dmp_redact(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

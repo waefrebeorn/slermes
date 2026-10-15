@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_models_py___fetch_novita_pricing — traced copy of models_fetch_novita_pricing (int_str) */
+/* gate: port__hermes_cli_models_py___fetch_novita_pricing — traced copy of models_fetch_novita_pricing (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int models_fetch_novita_pricing(const char *input);
+
+extern char * models_fetch_novita_pricing(int force_refresh);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s models_fetch_novita_pricing <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = models_fetch_novita_pricing(argv[i]);
+    char * result = models_fetch_novita_pricing(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

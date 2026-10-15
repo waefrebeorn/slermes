@@ -1,4 +1,4 @@
-/* gate: port__tools_skills_hub_py___ensure_loaded — traced copy of sh_ensure_loaded (int_str) */
+/* gate: port__tools_skills_hub_py___ensure_loaded — traced copy of sh_ensure_loaded (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int sh_ensure_loaded(const char *input);
+
+extern char * sh_ensure_loaded(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s sh_ensure_loaded <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = sh_ensure_loaded(argv[i]);
+    char * result = sh_ensure_loaded();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

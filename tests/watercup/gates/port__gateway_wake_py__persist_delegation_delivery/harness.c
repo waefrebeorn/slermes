@@ -1,4 +1,4 @@
-/* gate: port__gateway_wake_py__persist_delegation_delivery — traced copy of persist_delegation_delivery (int_str) */
+/* gate: port__gateway_wake_py__persist_delegation_delivery — traced copy of persist_delegation_delivery (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int persist_delegation_delivery(const char *input);
+
+extern char * persist_delegation_delivery(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s persist_delegation_delivery <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = persist_delegation_delivery(argv[i]);
+    char * result = persist_delegation_delivery();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

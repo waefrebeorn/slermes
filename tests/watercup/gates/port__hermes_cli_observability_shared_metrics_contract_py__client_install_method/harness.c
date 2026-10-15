@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_observability_shared_metrics_contract_py__client_install_method — traced copy of smc_client_install_method (int_str) */
+/* gate: port__hermes_cli_observability_shared_metrics_contract_py__client_install_method — traced copy of smc_client_install_method (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int smc_client_install_method(const char *input);
+
+extern char * smc_client_install_method(const char *value);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s smc_client_install_method <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = smc_client_install_method(argv[i]);
+    char * result = smc_client_install_method(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

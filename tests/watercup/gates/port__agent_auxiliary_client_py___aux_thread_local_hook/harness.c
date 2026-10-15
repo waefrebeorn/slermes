@@ -1,4 +1,4 @@
-/* gate: port__agent_auxiliary_client_py___aux_thread_local_hook — traced copy of _aux_thread_local_hook (double_simple) */
+/* gate: port__agent_auxiliary_client_py___aux_thread_local_hook — traced copy of _aux_thread_local_hook (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern double _aux_thread_local_hook(void);
+
+extern char * _aux_thread_local_hook(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _aux_thread_local_hook <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    double result = _aux_thread_local_hook(strtod(argv[i], NULL));
+    char * result = _aux_thread_local_hook();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[64];
-    snprintf(buf, sizeof(buf), "%.17g", result);
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

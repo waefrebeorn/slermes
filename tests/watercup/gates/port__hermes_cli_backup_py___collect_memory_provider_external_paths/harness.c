@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_backup_u_collect_memory_provider_external_paths(const char *arg);
 
 int main(int argc, char **argv) {

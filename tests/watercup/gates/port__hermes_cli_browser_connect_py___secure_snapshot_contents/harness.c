@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_browser_connect_py___secure_snapshot_contents — traced copy of _secure_snapshot_contents (void) */
+/* gate: port__hermes_cli_browser_connect_py___secure_snapshot_contents — traced copy of _secure_snapshot_contents (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern void _secure_snapshot_contents(const char *src, const char *dst);
+
+extern char * _secure_snapshot_contents(const char *snapshot_dir);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _secure_snapshot_contents <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    _secure_snapshot_contents(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    char * result = _secure_snapshot_contents(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -1,12 +1,16 @@
-/* gate: port__tools_delegate_tool_py___sanitize_tool_input_summary — traced copy of dlg_sanitize_tool_input_summary (int_str) */
+/* gate: port__tools_delegate_tool_py___sanitize_tool_input_summary — traced copy of dlg_sanitize_tool_input_summary (json_ret) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
 
-extern int dlg_sanitize_tool_input_summary(const char *input);
+
+extern json_t * dlg_sanitize_tool_input_summary(const char *summary_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s dlg_sanitize_tool_input_summary <input>...\n", argv[0]); return 2; }
@@ -16,12 +20,13 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = dlg_sanitize_tool_input_summary(argv[i]);
+    json_t * result = dlg_sanitize_tool_input_summary(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char *_js = result ? json_serialize(result) : NULL;
+    WCUP_VALSTR(_js ? _js : "null");
+    if (result) json_free(result);
+    if (_js) free(_js);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

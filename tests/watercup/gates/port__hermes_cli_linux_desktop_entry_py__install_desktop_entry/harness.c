@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_linux_desktop_entry_py__install_desktop_entry — traced copy of lde_install_desktop_entry (int_str) */
+/* gate: port__hermes_cli_linux_desktop_entry_py__install_desktop_entry — traced copy of lde_install_desktop_entry (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int lde_install_desktop_entry(const char *input);
+
+extern char * lde_install_desktop_entry(const char *project_root);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s lde_install_desktop_entry <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = lde_install_desktop_entry(argv[i]);
+    char * result = lde_install_desktop_entry(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -1,4 +1,4 @@
-/* gate: port__gateway_platforms_base_py__pop_post_delivery_callback — traced copy of gw_base__pop_post_delivery_callback (int_str) */
+/* gate: port__gateway_platforms_base_py__pop_post_delivery_callback — traced copy of gw_base__pop_post_delivery_callback (void) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int gw_base__pop_post_delivery_callback(const char *input);
+
+extern void * gw_base__pop_post_delivery_callback(const char *session_key, int generation);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s gw_base__pop_post_delivery_callback <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = gw_base__pop_post_delivery_callback(argv[i]);
+    gw_base__pop_post_delivery_callback();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR("void");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

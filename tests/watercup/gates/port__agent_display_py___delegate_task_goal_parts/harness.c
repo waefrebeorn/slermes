@@ -1,4 +1,4 @@
-/* gate: port__agent_display_py___delegate_task_goal_parts — traced copy of disp_delegate_task_goal_parts (int_str) */
+/* gate: port__agent_display_py___delegate_task_goal_parts — traced copy of disp_delegate_task_goal_parts (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int disp_delegate_task_goal_parts(const char *input);
+
+extern char * disp_delegate_task_goal_parts(const char *tasks_json);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s disp_delegate_task_goal_parts <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = disp_delegate_task_goal_parts(argv[i]);
+    char * result = disp_delegate_task_goal_parts(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

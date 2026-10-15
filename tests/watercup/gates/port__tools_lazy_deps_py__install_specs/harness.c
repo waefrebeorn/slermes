@@ -1,4 +1,4 @@
-/* gate: port__tools_lazy_deps_py__install_specs — traced copy of lazy_deps_install_specs (int_str) */
+/* gate: port__tools_lazy_deps_py__install_specs — traced copy of lazy_deps_install_specs (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int lazy_deps_install_specs(const char *input);
+
+extern char * lazy_deps_install_specs(const char *specs_json, const char *timeout_str);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s lazy_deps_install_specs <input>...\n", argv[0]); return 2; }
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_cap = tmpfile();
     if (_cap) dup2(fileno(_cap), 1);
-    int result = lazy_deps_install_specs(argv[i]);
+    char * result = lazy_deps_install_specs(argv[i], argv[2 + (i - 2 + 1) % 5]);
     fflush(stdout);
     if (_cap) {
         dup2(_sv, 1); close(_sv);

@@ -17,19 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/util_helpers.c",
-    "src/agent/hermes_state/hermes_state_msgs.c",
-    "src/hermes_cli/kanban_schema.c",
-    "src/hermes_cli/kanban_tasks.c",
-    "src/hermes_cli/kanban_model.c",
-    "src/pet/pet_render.c",
-    "src/pet/pet_commands.c",
-    "src/hermes_cli/projects_db.c",
-    "src/infrastructure_stubs.c",
-    "src/agent/skill_bundles.c",
-    "src/hermes_cli/smc_event_extractors.c",
-    "src/tools/util_helpers.c",
-    "src/hermes_cli/hermes_cli_ws_tickets.c"
+    "src/hermes_cli/smc_event_extractors.c"
   ],
   "cflags": [
     "-I",
@@ -39,7 +27,10 @@
     "-I",
     "lib/libjson",
     "-I",
-    "src"
+    "src",
+    "-DHERMES_VERSION=\"0.21.0\"",
+    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
+    "-DATADIR=\"/usr/share/hermes\""
   ],
   "classification": "PORTED"
 }

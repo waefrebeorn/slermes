@@ -1,4 +1,4 @@
-/* gate: port__gateway_platforms_base_py__fatal_error_code — traced copy of gw_base__fatal_error_code (int_noargs) */
+/* gate: port__gateway_platforms_base_py__fatal_error_code — traced copy of gw_base__fatal_error_code (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int gw_base__fatal_error_code(void);
+
+extern char * gw_base__fatal_error_code(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s gw_base__fatal_error_code <input>...\n", argv[0]); return 2; }
@@ -16,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = gw_base__fatal_error_code();
+    char * result = gw_base__fatal_error_code();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%p", (void*)&result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

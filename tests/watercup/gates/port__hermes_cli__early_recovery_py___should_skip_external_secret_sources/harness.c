@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_early_recovery_should_skip_external_secret_sources(void);
 
 int main(int argc, char **argv) {

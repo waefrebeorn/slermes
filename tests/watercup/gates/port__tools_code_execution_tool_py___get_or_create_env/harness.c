@@ -1,4 +1,4 @@
-/* gate: port__tools_code_execution_tool_py___get_or_create_env — traced copy of code_exec_get_or_create_env (bool_str_str) */
+/* gate: port__tools_code_execution_tool_py___get_or_create_env — traced copy of code_exec_get_or_create_env (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern bool code_exec_get_or_create_env(const char *local_path, const char *remote_path);
+
+extern char * code_exec_get_or_create_env(const char *env_id);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s code_exec_get_or_create_env <input>...\n", argv[0]); return 2; }
@@ -16,10 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = code_exec_get_or_create_env(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    char * result = code_exec_get_or_create_env(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

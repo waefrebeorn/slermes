@@ -1,4 +1,4 @@
-/* gate: port__cron_scheduler_py___run_external_worker_payload — traced copy of _run_external_worker_payload (int_str) */
+/* gate: port__cron_scheduler_py___run_external_worker_payload — traced copy of _run_external_worker_payload (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int _run_external_worker_payload(const char *input);
+
+extern char * _run_external_worker_payload(const char *payload);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _run_external_worker_payload <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = _run_external_worker_payload(argv[i]);
+    char * result = _run_external_worker_payload(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -1,4 +1,4 @@
-/* gate: port__tools_tts_tool_py___get_piper_voices_dir — traced copy of tts_get_piper_voices_dir (int_str) */
+/* gate: port__tools_tts_tool_py___get_piper_voices_dir — traced copy of tts_get_piper_voices_dir (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int tts_get_piper_voices_dir(const char *input);
+
+extern char * tts_get_piper_voices_dir(const char *hermes_home);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s tts_get_piper_voices_dir <input>...\n", argv[0]); return 2; }
@@ -16,12 +17,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = tts_get_piper_voices_dir(argv[i]);
+    char * result = tts_get_piper_voices_dir(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
