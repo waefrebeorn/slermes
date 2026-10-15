@@ -145,13 +145,23 @@ def categorize_signature(ret_type, param_list, from_real=True):
         for u in unhandleable:
             if u in ptype:
                 return None
-    # json_t* return with all-string params: serialize the result via
+    # json_t*/json_node_t* return with scalar params: serialize the result via
     # json_serialize and feed the JSON string to the cup. The twin serializes
-    # its dict/list return with json.dumps(sort_keys, compact) to match.
-    # 81 ported gates take this shape; without it they're not-gatable.
-    if (ret_type.replace('*', '').strip() == 'json_t'
-            and param_list and all('char' in p for p in param_list)
-            and not any('**' in p for p in param_list)):
+    # its dict/list return with json.dumps(sort_keys, compact) to match. Params
+    # may be char*/int/long/float/double/bool/size_t (numeric params converted
+    # like scalar_multi); no struct pointers, no **.
+    def _json_scalar_ok(p):
+        head = p.split('*')[0].strip()
+        if '**' in p:
+            return False
+        if '*' in p and head and 'char' not in head:
+            return False
+        return any(t in head for t in
+                   ('char', 'int', 'long', 'float', 'double', 'bool',
+                    'size_t', 'pid_t', 'ssize_t'))
+    if (ret_type.replace('*', '').strip() in ('json_t', 'json_node_t')
+            and (not param_list or param_list == ['void']
+                 or all(_json_scalar_ok(p) for p in param_list))):
         return 'json_ret'
     if any(u in ret_type for u in unhandleable):
         return None
@@ -221,13 +231,15 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
                           inputs_walk=None, body_src=""):
     # Zero-arg categories pass nothing to the traced function; the input walk
     # still varies the cup via the CUP name + the traced call site.
-    noargs = category.endswith('_noargs') or category == 'void'
+    noargs = (category.endswith('_noargs') or category == 'void'
+              or (category == 'json_ret'
+                  and (not param_list or param_list == ['void'])))
     # Categories whose params are ints/doubles must convert the string argv:
     # passing argv[i] straight to an `int` param is a compile error (and
     # silently wrong if it weren't).
     numeric = category in ('int_int', 'bool_int', 'int_other', 'bool_other',
                            'long_simple', 'sizet_simple', 'double_simple',
-                           'scalar_multi')
+                           'scalar_multi', 'json_ret')
     # Emit the EXPRESSION for parameter j's argument. `i` is the C loop
     # variable over the INPUT range (argv[2] .. argv[argc-1]); parameters
     # beyond the first take the following walk positions, WRAPPING INSIDE the
@@ -249,6 +261,8 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         # (int)strtol. Casting a long param to int silently loses the value.
         def _conv(j):
             p = param_list[j]
+            if 'char' in p.split('*')[0]:
+                return _arg(j)  # char* param: pass the argv string directly
             if 'double' in p or 'float' in p:
                 return 'strtod(%s, NULL)' % _arg(j)
             if 'long' in p or 'size_t' in p or 'ssize_t' in p:
