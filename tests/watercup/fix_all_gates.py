@@ -221,12 +221,10 @@ def categorize_signature(ret_type, param_list, from_real=True):
              'void', 'json_t', 'json_node_t')
             and any(_is_scalar_out(p) for p in param_list)
             and all(_is_char_json(p) or _is_scalar_out(p) or _is_scalar_val(p)
-                    for p in param_list)
-            # no char* buffer-out (char* param followed by a size_t param)
-            and not any(_is_char_json(param_list[i])
-                        and i + 1 < len(param_list)
-                        and 'size_t' in param_list[i + 1]
-                        for i in range(len(param_list)))):
+                    for p in param_list)):
+        # char* params are either inputs (passed argv directly) or buffer-outs
+        # (a char* param followed by a size_t capacity -> supply a buffer and
+        # trace the written string). Both are handled in the harness.
         return 'scalar_outparam'
     if any(u in ret_type for u in unhandleable):
         return None
@@ -357,8 +355,22 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         call_parts = []
         out_decls = []
         out_traces = []
+        skip = set()  # indices consumed as a buffer capacity
         for j, p in enumerate(param_list):
+            if j in skip:
+                continue
             head = p.split('*')[0].strip()
+            # char* buffer-out: a NON-const char* param followed by a size_t
+            # capacity. A `const char *` is an input, not a writable buffer.
+            if ('char' in head and 'const' not in p
+                    and j + 1 < len(param_list)
+                    and 'size_t' in param_list[j + 1]):
+                out_decls.append('    char _s%d[256]; _s%d[0] = 0;' % (j, j))
+                call_parts.append('_s%d' % j)
+                call_parts.append('sizeof(_s%d)' % j)
+                out_traces.append('    WCUP_VALSTR(_s%d);' % j)
+                skip.add(j + 1)
+                continue
             if 'json_t' in head or 'json_node_t' in head:
                 setup_lines.append(
                     '    json_t *_j%d = json_parse(%s, NULL);' % (j, _arg(j)))
