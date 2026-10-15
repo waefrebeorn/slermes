@@ -79,8 +79,9 @@ STUB_SRC = "src/infrastructure_stubs.c"
 STUB_SHADOWED = {"hermes_get_home"}
 
 SIG_RE = re.compile(
-    r'(?:static\s+)?(?:const\s+)?(?:unsigned\s+)?(?:long\s+)?(?:struct\s+\w+\s+)?'
-    r'([\w]+\s*\**)\s*(\w+)\s*\(([^)]*)\)\s*\{'
+    r'(?:static\s+)?(?:const\s+)?'
+    r'((?:unsigned\s+)?(?:long\s+)?(?:long\s+long\s+)?[\w]+(?:\s*\*+)?)'
+    r'(?:\s+|\s*\*)(\w+)\s*\(([^)]*)\)\s*\{'
 )
 
 
@@ -181,7 +182,8 @@ def categorize_signature(ret_type, param_list, from_real=True):
             return 'sizet_simple'
         return None
     elif ret_type == 'long':
-        if len(param_list) <= 2 and all('char' in p or 'int' in p for p in param_list):
+        if len(param_list) <= 2 and all('char' in p or 'int' in p or 'long' in p
+                                        for p in param_list):
             return 'long_simple'
         return None
     elif ret_type == 'double':
@@ -217,9 +219,17 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     if noargs:
         call_args = ''
     elif numeric:
-        conv = ('(int)strtol(%s, NULL, 10)' if 'double' not in category
-                else 'strtod(%s, NULL)')
-        call_args = ', '.join(conv % _arg(j) for j in range(len(param_list)))
+        # Per-param conversion: a `long` param must use strtol WITHOUT the
+        # (int) cast (that truncates); double uses strtod; int uses
+        # (int)strtol. Casting a long param to int silently loses the value.
+        def _conv(j):
+            p = param_list[j]
+            if 'double' in category:
+                return 'strtod(%s, NULL)' % _arg(j)
+            if 'long' in p:
+                return 'strtol(%s, NULL, 10)' % _arg(j)
+            return '(int)strtol(%s, NULL, 10)' % _arg(j)
+        call_args = ', '.join(_conv(j) for j in range(len(param_list)))
     else:
         call_args = ', '.join(_arg(j) for j in range(len(param_list)))
 
