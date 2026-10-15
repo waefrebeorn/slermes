@@ -131,17 +131,22 @@ def categorize_signature(ret_type, param_list, from_real=True):
     # A pointer to an opaque/named struct type (coe_engine *eng) is not a
     # string or a number: it cannot be built from argv, and emitting an
     # extern decl with an unknown type makes the harness fail to COMPILE.
-    # Only char*/int/double/size_t params are harnessable.
+    # Only char*/int/double/size_t/json_t*/json_node_t* params are harnessable.
     for p in param_list:
         if '*' in p:
             head = p.split('*')[0].strip()
-            if head and 'char' not in head:
+            if (head and 'char' not in head and 'json_t' not in head
+                    and 'json_node_t' not in head):
                 return None
         # Match unhandleable tokens against the param TYPE, not the name:
         # "const char *config_json" contains "json" as a NAME substring and was
         # wrongly rejected. The type is all words except the trailing name.
+        # json_t/json_node_t are harnessable (parsed via json_parse), so skip
+        # the unhandleable "json" token for them.
         words = p.replace('*', ' ').split()
         ptype = ' '.join(words[:-1]) if len(words) > 1 else (words[0] if words else '')
+        if 'json_t' in ptype or 'json_node_t' in ptype:
+            continue
         for u in unhandleable:
             if u in ptype:
                 return None
@@ -163,6 +168,25 @@ def categorize_signature(ret_type, param_list, from_real=True):
             and (not param_list or param_list == ['void']
                  or all(_json_scalar_ok(p) for p in param_list))):
         return 'json_ret'
+    # json_t*/json_node_t* PARAM (input): parse the argv string via json_parse,
+    # pass the node, serialize the result. Same val encoding as json_ret. Only
+    # json/char/scalar params; no other struct pointers, no **.
+    def _json_param_ok(p):
+        head = p.split('*')[0].strip()
+        if '**' in p:
+            return False
+        if '*' in p:
+            if 'char' in head or 'json_t' in head or 'json_node_t' in head:
+                return True
+            return False  # other struct pointer
+        return any(t in head for t in
+                   ('char', 'int', 'long', 'float', 'double', 'bool',
+                    'size_t', 'pid_t', 'ssize_t'))
+    if (param_list and param_list != ['void']
+            and all(_json_param_ok(p) for p in param_list)
+            and any('json_t' in p or 'json_node_t' in p for p in param_list)
+            and not any(u in ret_type for u in ('json_t', 'json_node_t'))):
+        return 'json_param'
     if any(u in ret_type for u in unhandleable):
         return None
     if not param_list:
@@ -247,6 +271,8 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # absolute argv: `(i + j) % n` on an absolute i walks off the inputs and
     # reads argv[0]/argv[1] (program name, gate name) as data.
     n_avail = len(inputs_walk) if inputs_walk else 1
+    json_param_setup = ''
+    json_param_free = ''
 
     def _arg(j):
         if n_avail <= 1 or j == 0:
@@ -255,6 +281,32 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
 
     if noargs:
         call_args = ''
+    elif category == 'json_param':
+        # Each json_t*/json_node_t* param: parse the argv string into a node
+        # via json_parse (local _jN), free after the call. char*/scalar params
+        # convert as usual. Setup code is emitted before the call line.
+        setup_lines = []
+        call_parts = []
+        for j, p in enumerate(param_list):
+            head = p.split('*')[0].strip()
+            if 'json_t' in head or 'json_node_t' in head:
+                setup_lines.append(
+                    '    json_t *_j%d = json_parse(%s, NULL);' % (j, _arg(j)))
+                call_parts.append('_j%d' % j)
+            elif 'char' in head:
+                call_parts.append(_arg(j))
+            elif 'double' in p or 'float' in p:
+                call_parts.append('strtod(%s, NULL)' % _arg(j))
+            elif 'long' in p or 'size_t' in p or 'ssize_t' in p:
+                call_parts.append('(long)strtol(%s, NULL, 10)' % _arg(j))
+            else:
+                call_parts.append('(int)strtol(%s, NULL, 10)' % _arg(j))
+        call_args = ', '.join(call_parts)
+        json_param_setup = '\n'.join(setup_lines) + '\n' if setup_lines else ''
+        json_param_free = '\n'.join(
+            '    if (_j%d) json_free(_j%d);' % (j, j)
+            for j, p in enumerate(param_list)
+            if 'json_t' in p.split('*')[0] or 'json_node_t' in p.split('*')[0])
     elif numeric:
         # Per-param conversion: a `long` param must use strtol WITHOUT the
         # (int) cast (that truncates); double uses strtod; int uses
@@ -319,8 +371,31 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
             val_code = ('    char buf[32];\\n    snprintf(buf, sizeof(buf), '
                         '"' + fmt + '", result);\\n    WCUP_VALSTR(buf);')
         else:  # int
-            val_code = ('    char buf[32];\\n    snprintf(buf, sizeof(buf), '
-                        '"%d", result);\\n    WCUP_VALSTR(buf);')
+            val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
+                        '"%d", result);\n    WCUP_VALSTR(buf);')
+    elif category == 'json_param':
+        # Return may be json (serialize) or a scalar (encode normally).
+        if ret_type.replace('*', '').strip() in ('json_t', 'json_node_t'):
+            val_code = ('    char *_js = result ? json_serialize(result) : NULL;\n'
+                        '    WCUP_VALSTR(_js ? _js : "null");\n'
+                        '    if (result) json_free(result);\n'
+                        '    if (_js) free(_js);')
+        elif ret_type == 'bool':
+            val_code = '    WCUP_VALSTR(result ? "true" : "false");'
+        elif ret_type in ('char',):
+            val_code = '    WCUP_VALSTR(result ? result : "");'
+        elif ret_type in ('double', 'float'):
+            val_code = ('    char buf[64];\n    snprintf(buf, sizeof(buf), '
+                        '"%.17g", result);\n    WCUP_VALSTR(buf);')
+        elif ret_type in ('long', 'size_t'):
+            fmt = '%zu' if ret_type == 'size_t' else '%ld'
+            val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
+                        '"' + fmt + '", result);\n    WCUP_VALSTR(buf);')
+        elif ret_type == 'void':
+            val_code = '    WCUP_VALSTR("void");'
+        else:  # int
+            val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
+                        '"%d", result);\n    WCUP_VALSTR(buf);')
     else:
         val_code = '    char buf[64];\n    snprintf(buf, sizeof(buf), "%p", (void*)&result);\n    WCUP_VALSTR(buf);'
 
@@ -350,35 +425,39 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
                          and "return 1" not in fn_body)
     if prints_result:
         call_line = (
-            "    fflush(stdout);\n"
-            "    int _sv = dup(1);\n"
-            "    FILE *_cap = tmpfile();\n"
-            "    if (_cap) dup2(fileno(_cap), 1);\n"
+            json_param_setup
+            + "    fflush(stdout);\n"
+            + "    int _sv = dup(1);\n"
+            + "    FILE *_cap = tmpfile();\n"
+            + "    if (_cap) dup2(fileno(_cap), 1);\n"
             + call_line + "\n"
-            "    fflush(stdout);\n"
-            "    if (_cap) {\n"
-            "        dup2(_sv, 1); close(_sv);\n"
-            "        rewind(_cap);\n"
-            "        char _ob[4096]; size_t _on = 0; int _ch;\n"
-            "        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)\n"
-            "            _ob[_on++] = (char)_ch;\n"
-            "        _ob[_on] = '\\0';\n"
-            "        /* strip the trailing newline the port emits */\n"
-            "        while (_on && (_ob[_on-1] == '\\n' || _ob[_on-1] == '\\r'))\n"
-            "            _ob[--_on] = '\\0';\n"
-            "        WCUP_VALSTR(_ob);\n"
-            "        fclose(_cap);\n"
-            "    }\n"
+            + "    fflush(stdout);\n"
+            + "    if (_cap) {\n"
+            + "        dup2(_sv, 1); close(_sv);\n"
+            + "        rewind(_cap);\n"
+            + "        char _ob[4096]; size_t _on = 0; int _ch;\n"
+            + "        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)\n"
+            + "            _ob[_on++] = (char)_ch;\n"
+            + "        _ob[_on] = '\\0';\n"
+            + "        /* strip the trailing newline the port emits */\n"
+            + "        while (_on && (_ob[_on-1] == '\\n' || _ob[_on-1] == '\\r'))\n"
+            + "            _ob[--_on] = '\\0';\n"
+            + "        WCUP_VALSTR(_ob);\n"
+            + "        fclose(_cap);\n"
+            + "    }\n"
+            + json_param_free
         )
     else:
         call_line = (
-            "    fflush(stdout);\n"
-            "    int _sv = dup(1);\n"
-            "    FILE *_dn = fopen(\"/dev/null\", \"w\");\n"
-            "    if (_dn) dup2(fileno(_dn), 1);\n"
+            json_param_setup
+            + "    fflush(stdout);\n"
+            + "    int _sv = dup(1);\n"
+            + "    FILE *_dn = fopen(\"/dev/null\", \"w\");\n"
+            + "    if (_dn) dup2(fileno(_dn), 1);\n"
             + call_line + "\n"
-            "    fflush(stdout);\n"
-            "    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }"
+            + "    fflush(stdout);\n"
+            + "    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }"
+            + json_param_free
         )
 
     # When the call line captures stdout it already emits WCUP_VALSTR; the
@@ -390,7 +469,8 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     json_includes = ('#include "json.h"\n'
                      'extern void json_free(json_t *);\n'
                      'extern char *json_serialize(const json_t *);\n'
-                     if category == 'json_ret' else '')
+                     'extern json_t *json_parse(const char *, char **);\n'
+                     if category in ('json_ret', 'json_param') else '')
     return f"""/* gate: {gate_name} — traced copy of {c_fn} ({category}) */
 #include <stdio.h>
 #include <stdlib.h>
