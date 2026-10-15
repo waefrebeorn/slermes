@@ -1,4 +1,4 @@
-/* gate: port__tools_skills_hub_py___index_entry — traced copy of skills_hub_index_entry (int_str) */
+/* gate: port__tools_skills_hub_py___index_entry — traced copy of skills_hub_index_entry (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
-extern int skills_hub_index_entry(const char *input);
+extern char * skills_hub_index_entry(const char *slug, const char *name);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s skills_hub_index_entry <input>...\n", argv[0]); return 2; }
@@ -16,12 +16,10 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = skills_hub_index_entry(argv[i]);
+    char * result = skills_hub_index_entry(argv[i], argv[2 + (i - 2 + 1) % 5]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
