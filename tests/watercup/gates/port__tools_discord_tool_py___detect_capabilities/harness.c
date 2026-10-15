@@ -1,12 +1,16 @@
-/* gate: port__tools_discord_tool_py___detect_capabilities — traced copy of discord_detect_capabilities (int_str) */
+/* gate: port__tools_discord_tool_py___detect_capabilities — traced copy of discord_detect_capabilities (json_ret) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
 
-extern int discord_detect_capabilities(const char *input);
+
+extern json_t * discord_detect_capabilities(const char *guild_id);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s discord_detect_capabilities <input>...\n", argv[0]); return 2; }
@@ -16,12 +20,13 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = discord_detect_capabilities(argv[i]);
+    json_t * result = discord_detect_capabilities(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char *_js = result ? json_serialize(result) : NULL;
+    WCUP_VALSTR(_js ? _js : "null");
+    if (result) json_free(result);
+    if (_js) free(_js);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
