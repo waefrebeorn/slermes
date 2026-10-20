@@ -776,6 +776,22 @@ def _run_twin_inputs(twin, inputs):
 # deaths), so they are delegated to _twin_driver.py in a subprocess.
 ENTRY_POINT_FNS = frozenset({"main"})
 
+# Gates whose LIVE twin must NEVER be imported at all — not in-process, not
+# in a sandboxed subprocess. Both proven offenders (2026-10-20):
+#   _cmd_update_impl  — runs the REAL hermes self-update flow: network fetch,
+#       *.hermes-update-staging two-phase replace, and web_git._ensure_repo,
+#       which git-commits "Initial commit" snapshots into whatever repo the
+#       paths resolve to (three rogue commits landed on main this way). Even
+#       sandboxed it runs >400s and can only ever produce an ERROR cup.
+#   _tool_override_allowed — builds ABSOLUTE paths from the twin's own
+#       SLERMES derivation (cwd sandboxing cannot contain it) and mkdirs
+#       <twin_...DummySelf...> directories in the repo root.
+# Neither can produce a meaningful cup; both only damage. Skip with an
+# honest error verdict instead of executing.
+UNTRACEABLE_FNS = frozenset({
+    "_cmd_update_impl", "_tool_override_allowed",
+})
+
 # LIVE functions that mutate the filesystem or shell out to git using their
 # arguments as PATHS. Traced in-process with the repo as CWD, they create real
 # directories named after the fixture inputs — this is what produced
@@ -851,11 +867,29 @@ def _run_twin_isolated(g, inputs, timeout=None):
 def run_cup_gate(gd, g, verbose=False):
     """Trace-cup diff: C cups vs LIVE-twin cups over the shared input walk.
     Returns (fail_count, detail_lines)."""
+    if g.get("py_fn") in UNTRACEABLE_FNS:
+        # Never build, never import this twin: the live fn runs destructive /
+        # long flows (self-update, absolute-path mkdirs). Honest error,
+        # zero execution.
+        return 1, ["  ERROR (untraceable): %s executes destructive live "
+                   "flows (see UNTRACEABLE_FNS) — excluded from tracing"
+                   % g.get("py_fn")]
     out = build_harness(gd, g)
     c_cups = run_harness(out, g)
     twin = load_twin(g)
+
     if _is_entry_point(g):
         # Isolated: never import this twin in-process.
+        py_cups, err = _run_twin_isolated(g, g["inputs"])
+        if err is not None:
+            return 1, ["  ERROR (isolated): %s" % err]
+    elif _is_side_effecting(g):
+        # Side-effecting fns are ALSO never imported in-process: an in-process
+        # os.chdir(tempdir) does not contain a twin that builds ABSOLUTE paths
+        # (the plugins twin created <twin_...DummySelf...> dirs in the repo
+        # root despite the chdir). The isolated subprocess pins BOTH the
+        # throwaway CWD and the sandboxed HERMES_HOME, so git/staging damage
+        # lands in build/sandbox (gitignored, disposable) instead of the repo.
         py_cups, err = _run_twin_isolated(g, g["inputs"])
         if err is not None:
             return 1, ["  ERROR (isolated): %s" % err]
