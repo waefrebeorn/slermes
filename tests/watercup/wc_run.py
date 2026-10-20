@@ -792,6 +792,17 @@ UNTRACEABLE_FNS = frozenset({
     "_cmd_update_impl", "_tool_override_allowed",
 })
 
+# Whole MODULES that are never traced: hermes_cli/update_cmd.py is the
+# self-update orchestration — ANY function in it can run the two-phase
+# staging replace, fetch over the network, or shell to git (2026-10-20:
+# a second, different update_cmd fn recreated *.hermes-update-staging in
+# the repo root hours after _cmd_update_impl was blocked — per-function
+# blocking is whack-a-mole; the whole module only ever damages, never
+# oracles, because its behavior is machine/network state, not fixtures).
+UNTRACEABLE_MODULES = frozenset({
+    "hermes_cli/update_cmd.py",
+})
+
 # LIVE functions that mutate the filesystem or shell out to git using their
 # arguments as PATHS. Traced in-process with the repo as CWD, they create real
 # directories named after the fixture inputs — this is what produced
@@ -867,13 +878,14 @@ def _run_twin_isolated(g, inputs, timeout=None):
 def run_cup_gate(gd, g, verbose=False):
     """Trace-cup diff: C cups vs LIVE-twin cups over the shared input walk.
     Returns (fail_count, detail_lines)."""
-    if g.get("py_fn") in UNTRACEABLE_FNS:
+    if (g.get("py_module") in UNTRACEABLE_MODULES
+            or g.get("py_fn") in UNTRACEABLE_FNS):
         # Never build, never import this twin: the live fn runs destructive /
         # long flows (self-update, absolute-path mkdirs). Honest error,
         # zero execution.
-        return 1, ["  ERROR (untraceable): %s executes destructive live "
-                   "flows (see UNTRACEABLE_FNS) — excluded from tracing"
-                   % g.get("py_fn")]
+        return 1, ["  ERROR (untraceable): %s:%s executes destructive live "
+                   "flows — excluded from tracing"
+                   % (g.get("py_module"), g.get("py_fn"))]
     out = build_harness(gd, g)
     c_cups = run_harness(out, g)
     twin = load_twin(g)
