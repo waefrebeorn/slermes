@@ -261,6 +261,16 @@ PORT_OBJ = \
  src/hermes_cli/dashboard_auth_registry.o \
  src/hermes_cli/dashboard_auth_cookies.o \
  src/hermes_cli/kanban_diagnostics.o src/hermes_cli/kanban_diagnostics_ports.o src/hermes_cli/nous_account_ports.o src/hermes_cli/nous_portal_ports.o src/hermes_cli/uninstall_ports.o src/hermes_cli/proxy_cli_ports.o src/hermes_cli/windows_ssh_runtime_ports.o src/hermes_cli/hermes_state_helpers2.o \
+ src/agent/hermes_state/hermes_state.o src/agent/hermes_state/hermes_state_archive.o src/agent/hermes_state/hermes_state_common.o src/agent/hermes_state/hermes_state_db_identity.o src/agent/hermes_state/hermes_state_fd_budget.o src/agent/hermes_state/hermes_state_gaps.o src/agent/hermes_state/hermes_state_journal.o src/agent/hermes_state/hermes_state_lifecycle.o src/agent/hermes_state/hermes_state_lineage.o src/agent/hermes_state/hermes_state_locks.o src/agent/hermes_state/hermes_state_messages.o src/agent/hermes_state/hermes_state_misc.o src/agent/hermes_state/hermes_state_msgs.o src/agent/hermes_state/hermes_state_open.o src/agent/hermes_state/hermes_state_ops.o src/agent/hermes_state/hermes_state_portability.o src/agent/hermes_state/hermes_state_ports.o src/agent/hermes_state/hermes_state_repair.o src/agent/hermes_state/hermes_state_schema.o src/agent/hermes_state/hermes_state_search.o src/agent/hermes_state/hermes_state_session.o src/agent/hermes_state/hermes_state_session2.o src/agent/hermes_state/hermes_state_tokens.o \
+ src/agent/skill_commands.o src/agent/context_compressor_pure.o \
+ src/agent/prompt_builder.o src/agent/context.o \
+ src/agent/provider_metadata.o src/agent/context_compressor_ports.o src/agent/agent_runtime_pure.o src/agent/redact.o src/tools/skills.o \
+ src/agent/auxiliary_client_helpers.o src/cli/paths.o src/agent/models_dev.o src/agent/agent_message_sanitize.o src/tools/url_safety.o \
+ src/agent/provider_profile_apply.o src/agent/codex_responses_adapter.o src/agent/api_error_summary.o src/agent/transports/transport_common.o \
+ src/agent/portal_tags.o src/agent/provider_profile.o src/gateway/relay/relay_runtime.o \
+ src/agent/provider_anthropic.o src/agent/provider_azure.o src/agent/provider_bedrock.o src/agent/provider_codex_responses.o src/agent/provider_custom.o src/agent/provider_deepseek.o src/agent/provider_google.o src/agent/provider_openai.o src/agent/provider_openrouter.o src/agent/provider_xai.o \
+ src/agent/prompt_caching.o src/provider/token_exchange.o src/agent/credential_pool_engine.o src/agent/provider_profiles_builtin.o src/gateway/relay/relay_llm.o src/agent/sanitize.o \
+ src/agent/auxiliary_client.o src/agent/auxiliary_client.o src/agent/auxiliary_client.o src/agent/auxiliary_client.o src/agent/auxiliary_client.o src/agent/chat_completion_helpers.o src/agent/llm_client.o src/agent/provider.o src/agent/provider.o src/agent/auxiliary_client.o src/agent/auxiliary_client_helpers.o src/agent/message_sanitization.o src/agent/message_metadata.o \
  src/hermes_cli/moa_config.o \
  src/hermes_cli/azure_detect.o \
  src/hermes_cli/fallback_cmd.o \

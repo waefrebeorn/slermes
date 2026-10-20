@@ -45,7 +45,7 @@ static void _ensure_home(void) {
 const char *get_hermes_home(void) { _ensure_home(); return g_slermes_home; }
 const char *slermes_home(void) { _ensure_home(); return g_slermes_home; }
 const char *hermes_home_dir(void) { _ensure_home(); return g_slermes_home; }
-const char *hermes_get_home(void) { _ensure_home(); return g_slermes_home; }
+const char *stub_shadowed_hermes_get_home(void) { _ensure_home(); return g_slermes_home; }
 
 /* ── Hermes config ── */
 static char g_config_path[4096] = "";
@@ -215,7 +215,7 @@ typedef struct { char sid[64]; int ref; } relay_rt_t;
 static relay_rt_t g_relay_rts[32];
 static int g_relay_rt_count = 0;
 
-int relay_runtime_release_managed_execution(const char *sid) {
+int stub_shadowed_relay_runtime_release_managed_execution(const char *sid) {
     for (int i = 0; i < g_relay_rt_count; i++) {
         if (strcmp(g_relay_rts[i].sid, sid) == 0) {
             if (--g_relay_rts[i].ref <= 0) g_relay_rts[i] = g_relay_rts[--g_relay_rt_count];
@@ -225,7 +225,7 @@ int relay_runtime_release_managed_execution(const char *sid) {
     return 0;
 }
 
-int relay_runtime_retain_managed_execution(const char *sid) {
+int stub_shadowed_relay_runtime_retain_managed_execution(const char *sid) {
     for (int i = 0; i < g_relay_rt_count; i++) {
         if (strcmp(g_relay_rts[i].sid, sid) == 0) { g_relay_rts[i].ref++; return 0; }
     }
@@ -237,10 +237,10 @@ int relay_runtime_retain_managed_execution(const char *sid) {
     return 0;
 }
 
-int relay_runtime_run_in_session(const char *sid, void *t) { (void)sid; (void)t; return 0; }
-int relay_runtime_ensure_session(const char *sid) { (void)sid; return 0; }
-int relay_runtime_scope_push(const char *sid) { (void)sid; return 0; }
-int relay_runtime_subscribers_flush(void) { return 0; }
+int stub_shadowed_relay_runtime_run_in_session(const char *sid, void *t) { (void)sid; (void)t; return 0; }
+int stub_shadowed_relay_runtime_ensure_session(const char *sid) { (void)sid; return 0; }
+int stub_shadowed_relay_runtime_scope_push(const char *sid) { (void)sid; return 0; }
+int stub_shadowed_relay_runtime_subscribers_flush(void) { return 0; }
 
 /* ── File text ops ── */
 char *file_text_ops_escape_shell_arg(const char *arg) {
@@ -329,10 +329,10 @@ const char *proposal_examples(void) { return "[]"; }
 void proposal_free(void *p) { free(p); }
 
 /* ── Relay session ── */
-void *relay_session_handle(const char *id) { (void)id; return NULL; }
-void *relay_turn_lease(const char *sid) { (void)sid; return NULL; }
-const char *relay_turn_task_id(void) { return ""; }
-int relay_active_turn(void) { return 0; }
+void *stub_shadowed_relay_session_handle(const char *id) { (void)id; return NULL; }
+void *stub_shadowed_relay_turn_lease(const char *sid) { (void)sid; return NULL; }
+const char *stub_shadowed_relay_turn_task_id(void) { return ""; }
+int stub_shadowed_relay_active_turn(void) { return 0; }
 
 /* ── main.c + agent lifecycle ── */
 int cmd_update(int argc, char **argv) { (void)argc; (void)argv; return 0; }
@@ -355,7 +355,7 @@ void *acp_server_new(void) { return calloc(1, 64); }
 void acp_server_free(void *s) { free(s); }
 int acp_server_run(void *s) { (void)s; return 0; }
 char *fill_blueprint(void *bp) { (void)bp; return strdup("{}"); }
-int clear_session_cwd(void) { return 0; }
+int stub_shadowed_clear_session_cwd(void) { return 0; }
 int is_container(void) { return 0; }
 int is_yolo_mode_frozen(void) { return 0; }
 int clamp_effort(void) { return 0; }
@@ -388,7 +388,7 @@ int _worktree_is_dirty(void) { return 0; }
 int _worktree_has_unpushed_commits(void) { return 0; }
 int _save_entry(void) { return 0; }
 int _exhausted_ttl(void) { return 0; }
-void _normalize_telegram_topic_profile_name(const char *input, char *output, size_t out_size) {
+void stub_shadowed__normalize_telegram_topic_profile_name(const char *input, char *output, size_t out_size) {
     if (!input || !output || out_size == 0) return;
     strncpy(output, input, out_size - 1);
     output[out_size - 1] = '\0';
@@ -450,10 +450,10 @@ int ssc_stable_device_id(void) { return 0; }
 int ssc_set_device_name(const char *n) { (void)n; return 0; }
 
 /* ── Skills ── */
-void skill_payload_free(void *p) { free(p); }
-const char *skill_cmd_get_all(void) { return "[]"; }
-const char *skill_cmd_get(const char *name) { (void)name; return NULL; }
-int skill_cmd_scan(void) { return 0; }
+void stub_shadowed_skill_payload_free(void *p) { free(p); }
+const char *stub_shadowed_skill_cmd_get_all(void) { return "[]"; }
+const char *stub_shadowed_skill_cmd_get(const char *name) { (void)name; return NULL; }
+int stub_shadowed_skill_cmd_scan(void) { return 0; }
 
 /* ── Credential pool ── */
 int sanitize_borrowed_credential_payload(void) { return 0; }
@@ -470,7 +470,7 @@ const char *memory_tool_get_memory_dir(void) { return ""; }
 int memory_tool_apply_batch(void) { return 0; }
 
 /* Hermes redact */
-char *hermes_redact(const char *text) { (void)text; return strdup("***"); }
+char *stub_shadowed_hermes_redact(const char *text) { (void)text; return strdup("***"); }
 
 /* Config migrate */
 int hermes_config_migrate(void) { return 0; }
@@ -488,9 +488,9 @@ char *g_session_token = NULL;
 char *file_text_ops_expand_path(const char *path) { return strdup(path ? path : ""); }
 
 /* Credential pool */
-void credential_pool_free(void *pool) { free(pool); }
-int credential_pool_has_available(void) { return 0; }
-const char *credential_pool_select(void) { return NULL; }
+void stub_shadowed_credential_pool_free(void *pool) { free(pool); }
+int stub_shadowed_credential_pool_has_available(void) { return 0; }
+const char *stub_shadowed_credential_pool_select(void) { return NULL; }
 
 /* Control socket */
 int control_socket_identify_gateway(void) { return 0; }
@@ -517,7 +517,7 @@ void bcb_scope_free(void *scope) { free(scope); }
 void *bcb_get_browser_control_broker(void) { return NULL; }
 
 /* Clear skills cache */
-int clear_skills_system_prompt_cache(void) { return 0; }
+int stub_shadowed_clear_skills_system_prompt_cache(void) { return 0; }
 
 /* obj */
 char *obj_values_array(void *obj) { (void)obj; return strdup("[]"); }
@@ -602,7 +602,7 @@ int stop_playback(void) { return 0; }
 int skill_bundles_scan(void) { return 0; }
 int sched_create_job_with_scheduler_registration(void) { return 0; }
 const char *sbd_bundles_dir(void) { return ""; }
-int relay_lease_session_id(void) { return 0; }
+int stub_shadowed_relay_lease_session_id(void) { return 0; }
 char *red_mask_secret(void) { return strdup("****"); }
 void recipe_free(void *r) { free(r); }
 int reasoning_parse_effort(void) { return 0; }
@@ -615,17 +615,23 @@ char *plug_get_commands(void) { return strdup("[]"); }
 int plug_ensure_discovered(void) { return 0; }
 int patch_apply_v4a(void) { return 0; }
 char *memory_format_snapshot(void) { return strdup(""); }
-char *load_skill_payload(const char *name) { (void)name; return strdup("{}"); }
-char *load_pool(void) { return strdup("{}"); }
+char *stub_shadowed_load_skill_payload(const char *name) { (void)name; return strdup("{}"); }
+char *stub_shadowed_load_pool(void) { return strdup("{}"); }
 int ipx_installed(void) { return 0; }
 const char *ipx_find_iron_proxy(void) { return NULL; }
 const char *igr_get_provider(void) { return NULL; }
 int igp_is_available(void) { return 0; }
 int hub_validate_skill_name(const char *name) { (void)name; return 1; }
-int hermes_state_retag_kanban_worker_sessions(void) { return 0; }
-const char *hermes_state_default_db_path(void) { return ""; }
-void *hermes_state_db_open(const char *path) { (void)path; return NULL; }
-int hermes_state_db_close(void *db) { (void)db; return 0; }
+/* 2026-10-20: the real SessionDB port (src/agent/hermes_state/, 322 public
+ * symbols, 8.4k lines) is now wired into the link. These four legacy stubs
+ * shadowed the REAL ports for every linked caller (session recovery, kanban
+ * retag, console engine) — db_open returned NULL and db_close was a no-op.
+ * Renamed out of the way (hermes_get_home pattern) so the real definitions
+ * win. Kept as *_stub_shadowed_* for archaeology; nothing references them. */
+void *stub_shadowed_hermes_state_db_open(const char *path) { (void)path; return NULL; }
+int stub_shadowed_hermes_state_db_close(void *db) { (void)db; return 0; }
+void *stub_shadowed_hermes_state_default_db_path(void) { return NULL; }
+int stub_shadowed_hermes_state_retag_kanban_worker_sessions(void) { return 0; }
 int hermes_gateway_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
 int hermes_cron_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
 int hermes_cli_browser_connect_try_launch_chrome_debug(void) { return 0; }
