@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/vercel_sandbox_env.c"
+    "src/tools/vercel_sandbox_env.c",
+    "src/tools/vercel_sandbox_helpers.c"
   ],
   "cflags": [
     "-I",

@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("web_search_get_active_extract_provider")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr("void")
+        c.valstr(str(result))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

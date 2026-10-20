@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_blueprints__split_frontmatter(const char *text, char *frontmatter_out, size_t fm_size);
 
 int main(int argc, char **argv) {

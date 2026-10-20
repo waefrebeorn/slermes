@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_prompt_size_render_breakdown(const char *platform, const char *model,
     int sp_bytes, int si_bytes, int mem_bytes, int up_bytes,
     int tools_json_bytes, int tools_count,

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_skills_guard_content_hash(const char *filepath, char *hash_buf, size_t bufsize);
 
 int main(int argc, char **argv) {

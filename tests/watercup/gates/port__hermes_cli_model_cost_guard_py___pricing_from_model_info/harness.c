@@ -5,6 +5,11 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
+
 
 extern int model_cost_guard_pricing_from_model_info(const json_t *model_info,
                                               double *in_out, double *out_out,

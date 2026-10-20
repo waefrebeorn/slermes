@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("cli_tools_environments_modal_utils_wrap_modal_sudo_pipe")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(result))
+        c.valstr(result if isinstance(result, str) else ("" if result is None else str(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

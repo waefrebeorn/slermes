@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_skills_guard_scan_skill(const char *skill_path, const char *source, char *result_buf, size_t bufsize);
 
 int main(int argc, char **argv) {

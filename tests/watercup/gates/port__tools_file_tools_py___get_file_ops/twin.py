@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("file_tools_get_file_ops")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(int(result)))
+        c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")) if result is not None else "null")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

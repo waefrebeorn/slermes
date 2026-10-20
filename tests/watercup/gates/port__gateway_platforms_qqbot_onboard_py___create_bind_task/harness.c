@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int qqbot_onboard__create_bind_task(char *task_id, size_t task_id_len,
                                       char *aes_key, size_t key_len);
 

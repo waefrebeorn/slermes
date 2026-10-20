@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("nrg_state_path")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr("%.17g" % float(result))
+        c.valstr(result if isinstance(result, str) else ("" if result is None else str(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

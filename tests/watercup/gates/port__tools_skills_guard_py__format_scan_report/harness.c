@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_skills_guard_format_scan_report(const char *scan_json, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

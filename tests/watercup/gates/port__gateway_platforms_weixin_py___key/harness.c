@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int parse_aes_key(const char *aes_key_b64, unsigned char *out, size_t *out_len);
 
 int main(int argc, char **argv) {

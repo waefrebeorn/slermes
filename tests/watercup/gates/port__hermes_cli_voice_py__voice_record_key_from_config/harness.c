@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_voice_voice_record_key_from_config(const char *config_json, char *output, size_t output_size);
 
 int main(int argc, char **argv) {

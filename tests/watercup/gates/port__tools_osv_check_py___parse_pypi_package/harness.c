@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_osv_check__parse_pypi_package(const char *token, char *name_out, size_t name_size);
 
 int main(int argc, char **argv) {

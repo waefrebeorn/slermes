@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_proxy_adapters_nous_portal_get_credential(const char *auth_json, char *bearer_out, size_t bearer_size,
     char *base_url_out, size_t url_size);
 

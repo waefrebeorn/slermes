@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int doctor_launch_browser_probe(int timeout_sec, char *out_detail, size_t out_sz);
 
 int main(int argc, char **argv) {

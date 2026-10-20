@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_tool_result_storage_maybe_persist_tool_result(const char *content, const char *tool_name, const char *tool_use_id,
     int threshold, char *output, size_t output_size);
 

@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
 
 extern void session_count_visible_turns(const json_t *messages, int *users, int *assistants, int *tools);

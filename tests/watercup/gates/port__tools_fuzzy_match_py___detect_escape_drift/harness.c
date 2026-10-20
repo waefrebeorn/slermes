@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _detect_escape_drift(const char *content, size_t ms, size_t ml,
                                 const char *old_string, const char *new_string, char *err, size_t errsz);
 

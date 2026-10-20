@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/gateway/platforms/weixin.c",
-    "src/infrastructure_stubs.c"
+    "src/agent/secret_scope.c"
   ],
   "cflags": [
     "-I",

@@ -8,6 +8,7 @@
 #include "json.h"
 extern void json_free(json_t *);
 extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
 
 extern json_node_t* cli_tools_yuanbao_tools_search_sticker(const char *query, int limit);

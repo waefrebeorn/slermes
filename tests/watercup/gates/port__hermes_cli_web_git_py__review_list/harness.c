@@ -8,6 +8,7 @@
 #include "json.h"
 extern void json_free(json_t *);
 extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
 
 extern json_t * web_git_review_list(const char *cwd, const char *scope, const char *base_ref);

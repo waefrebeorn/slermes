@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_microsoft_graph_auth__extract_error_detail(const char *response_body, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

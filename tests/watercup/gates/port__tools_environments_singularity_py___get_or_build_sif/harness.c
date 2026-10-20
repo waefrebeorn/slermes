@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_environments_singularity__get_or_build_sif(const char *image, const char *executable, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

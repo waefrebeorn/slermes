@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("auth_nous_portal_env_override")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr("true" if result else "false")
+        c.valstr(result if isinstance(result, str) else ("" if result is None else str(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

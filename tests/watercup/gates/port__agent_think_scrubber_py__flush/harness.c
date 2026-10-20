@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_think_scrubber_flush(const char *held_back, char *output, size_t output_size);
 
 int main(int argc, char **argv) {

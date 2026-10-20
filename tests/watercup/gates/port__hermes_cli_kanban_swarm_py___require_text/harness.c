@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_kanban_swarm__require_text(const char *value, char *output, size_t output_size);
 
 int main(int argc, char **argv) {

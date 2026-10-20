@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_tool_result_storage__build_persisted_message(const char *preview, int has_more, int original_size,
     const char *file_path, char *output, size_t output_size);
 

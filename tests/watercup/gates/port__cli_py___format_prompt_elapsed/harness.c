@@ -21,7 +21,9 @@ int main(int argc, char **argv) {
     char * result = cli_format_prompt_elapsed((int)strtol(argv[i], NULL, 10), strtod(argv[2 + (i - 2 + 1) % 5], NULL), strtod(argv[2 + (i - 2 + 2) % 5], NULL), (int)strtol(argv[2 + (i - 2 + 3) % 5], NULL, 10));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

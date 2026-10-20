@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_skills_guard__unicode_char_name(unsigned int codepoint, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

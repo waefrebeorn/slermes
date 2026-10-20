@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_dashboard_auth_prefix__normalise_public_url(const char *raw, char *output, size_t output_size);
 
 int main(int argc, char **argv) {

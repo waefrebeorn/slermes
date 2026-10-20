@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("slash_apply_reasoning_selection")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr("true" if result else "false")
+        c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")) if result is not None else "null")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

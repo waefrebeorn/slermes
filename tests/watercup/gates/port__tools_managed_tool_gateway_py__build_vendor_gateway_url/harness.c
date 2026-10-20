@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_managed_tool_gateway_build_vendor_gateway_url(const char *vendor, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_bedrock_adapter__get_bedrock_runtime_client(const char *region, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("_handle_setup_menu_navigation")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))
+        c.valstr("void")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

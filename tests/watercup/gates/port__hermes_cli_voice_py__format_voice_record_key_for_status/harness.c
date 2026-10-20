@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_voice_format_voice_record_key_for_status(const char *raw, char *output, size_t output_size);
 
 int main(int argc, char **argv) {

@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("pcmd_get_disabled_set")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))
+        c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")) if result is not None else "null")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

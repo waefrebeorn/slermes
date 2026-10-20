@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_kanban_swarm_parse_worker_arg(const char *raw, char *profile_out, size_t profile_size,
     char *title_out, size_t title_size);
 

@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/console_engine_pure.c"
+    "src/hermes_cli/console_engine_pure.c",
+    "src/hermes_cli/subprocess_compat_pure.c"
   ],
   "cflags": [
     "-I",

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_website_policy__extract_host_from_urlish(const char *url, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

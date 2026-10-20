@@ -8,6 +8,7 @@
 #include "json.h"
 extern void json_free(json_t *);
 extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
 
 extern json_t * cli_gateway_channel_directory__build_discord(const char *guilds_json, const char *channels_json);

@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/environments_file_sync.c"
+    "src/hermes_cli/environments_file_sync.c",
+    "src/tools/credential_files.c"
   ],
   "cflags": [
     "-I",

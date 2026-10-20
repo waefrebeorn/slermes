@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int qqbot_onboard__poll_bind_result(const char *task_id, char *bot_appid, size_t appid_len,
                                       char *encrypted_secret, size_t secret_len,
                                       char *user_openid, size_t openid_len);

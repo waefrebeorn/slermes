@@ -101,10 +101,10 @@ def _call(inp, inputs, idx=0):
         return _FN()
 
 def trace(inp, inputs, idx=0):
-    c = Cup("clamp_reasoning_effort_to_supported")
+    c = Cup("models_clamp_reasoning_effort_to_supported")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(result))
+        c.valstr(result if isinstance(result, str) else ("" if result is None else str(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

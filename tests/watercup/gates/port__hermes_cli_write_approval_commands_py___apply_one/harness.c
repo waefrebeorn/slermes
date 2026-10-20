@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_write_approval_commands__apply_one(const char *subsystem, const char *record_json,
     int *success, char *error_out, size_t error_size);
 

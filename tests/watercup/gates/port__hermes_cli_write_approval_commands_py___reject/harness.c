@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_write_approval_commands__reject(const char *subsystem, const char *target,
     char *output, size_t output_size);
 

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_tool_result_storage__resolve_storage_dir(const char *env_temp_dir, char *output, size_t output_size);
 
 int main(int argc, char **argv) {

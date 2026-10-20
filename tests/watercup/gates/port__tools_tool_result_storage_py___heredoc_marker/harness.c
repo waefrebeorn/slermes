@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_tool_result_storage__heredoc_marker(const char *content, char *marker_out, size_t marker_size);
 
 int main(int argc, char **argv) {

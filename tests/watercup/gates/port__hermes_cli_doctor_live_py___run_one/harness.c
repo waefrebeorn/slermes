@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int doctor_run_one(const char *name, char *out_result, size_t out_sz);
 
 int main(int argc, char **argv) {

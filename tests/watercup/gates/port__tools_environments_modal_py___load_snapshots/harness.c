@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_environments_singularity__load_snapshots(const char *store_path, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

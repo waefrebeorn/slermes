@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_managed_tool_gateway_managed_vendor_base_path(const char *vendor, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

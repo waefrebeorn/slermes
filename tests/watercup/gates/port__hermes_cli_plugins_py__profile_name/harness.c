@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int profiles_normalize_profile_name(const char *name, char *out, size_t outsz);
 
 int main(int argc, char **argv) {

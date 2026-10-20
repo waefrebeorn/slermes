@@ -17,7 +17,9 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/moa_loop_ports.c"
+    "src/agent/moa_loop_ports.c",
+    "src/hermes_cli/config_py_io.c",
+    "src/hermes_cli/moa_config.c"
   ],
   "cflags": [
     "-I",

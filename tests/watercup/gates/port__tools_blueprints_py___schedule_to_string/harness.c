@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_blueprints__schedule_to_string(const char *schedule_kind, const char *schedule_expr,
     int schedule_minutes, int schedule_seconds,
     char *result_out, size_t result_size);

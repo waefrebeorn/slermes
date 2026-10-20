@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("cli_gateway_platforms_yuanbao_sticker_get_sticker_by_id")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(result))
+        c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")) if result is not None else "null")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

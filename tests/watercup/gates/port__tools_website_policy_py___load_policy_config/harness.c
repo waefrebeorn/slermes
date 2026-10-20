@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_website_policy__load_policy_config(const char *config_path, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

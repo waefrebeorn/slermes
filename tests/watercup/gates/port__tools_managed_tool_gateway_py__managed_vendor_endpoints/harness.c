@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_managed_tool_gateway_managed_vendor_endpoints(const char *vendor, char *base_url, size_t base_sz, char *upload_url, size_t upload_sz);
 
 int main(int argc, char **argv) {

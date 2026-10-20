@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_proxy_adapters_nous_portal__read_state(const char *auth_path, char *state_json, size_t state_size);
 
 int main(int argc, char **argv) {

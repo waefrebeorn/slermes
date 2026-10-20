@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("mg_thread_trampoline")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(result))
+        c.valstr("void")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

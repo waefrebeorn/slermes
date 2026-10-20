@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
 
 extern void curses_reconcile_cursor(json_t *filtered, int cursor, int *out_cursor, int *out_pos);

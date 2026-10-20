@@ -17,7 +17,11 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/api_server_ports.c"
+    "src/gateway/api_server_ports.c",
+    "src/agent/context.c",
+    "src/agent/redact.c",
+    "src/agent/compaction_display.c",
+    "src/gateway/platforms/base_ext2.c"
   ],
   "cflags": [
     "-I",

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_memory_setup__prompt(const char *label, const char *default_val, int secret,
     char *output, size_t output_size);
 

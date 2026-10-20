@@ -20,7 +20,9 @@ int main(int argc, char **argv) {
     char * result = wpb_read((long)strtol(argv[i], NULL, 10));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

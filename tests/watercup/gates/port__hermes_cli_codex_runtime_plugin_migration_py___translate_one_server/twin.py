@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("hermes_cli_codex_runtime_plugi_u_translate_one_server")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(result))
+        c.valstr(result if isinstance(result, str) else ("" if result is None else str(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

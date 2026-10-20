@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_blueprints_create_blueprint_job(const char *skill_name, const char *schedule, const char *deliver,
     const char *prompt, int no_agent,
     char *job_id_out, size_t id_size);

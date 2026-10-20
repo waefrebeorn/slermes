@@ -25,7 +25,6 @@
     "src/pet/pet_render.c",
     "src/pet/pet_commands.c",
     "src/hermes_cli/projects_db.c",
-    "src/infrastructure_stubs.c",
     "src/agent/skill_bundles.c",
     "src/hermes_cli/smc_event_extractors.c",
     "src/tools/util_helpers.c",
@@ -39,7 +38,10 @@
     "-I",
     "lib/libjson",
     "-I",
-    "src"
+    "src",
+    "-DHERMES_VERSION=\"0.21.0\"",
+    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
+    "-DATADIR=\"/usr/share/hermes\""
   ],
   "classification": "PORTED"
 }

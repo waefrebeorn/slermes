@@ -8,6 +8,7 @@
 #include "json.h"
 extern void json_free(json_t *);
 extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
 
 extern json_t * hermes_cli_pt_input_extras_lock_variants(const char *modifier);

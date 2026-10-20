@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("auth_read_shared_nous_state")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(result))
+        c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")) if result is not None else "null")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

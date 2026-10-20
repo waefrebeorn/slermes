@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_microsoft_graph_auth__fetch_access_token(const char *token_url, const char *client_id, const char *client_secret, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {

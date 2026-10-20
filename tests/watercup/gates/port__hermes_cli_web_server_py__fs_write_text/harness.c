@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int ws_fs_write_text(const char *path, const char *content, size_t content_len);
 
 int main(int argc, char **argv) {

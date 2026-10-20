@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_hermes_cli_prompt_size__fmt_kb(int bytes, char *output, size_t output_size);
 
 int main(int argc, char **argv) {

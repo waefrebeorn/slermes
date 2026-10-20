@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_skills_guard__check_structure(const char *skill_path, char *report_buf, size_t bufsize);
 
 int main(int argc, char **argv) {

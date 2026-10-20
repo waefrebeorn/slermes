@@ -104,7 +104,7 @@ def trace(inp, inputs, idx=0):
     c = Cup("safe_writer_create")
     try:
         result = _call(inp, inputs, idx)
-        c.valstr(str(int(result)))
+        c.valstr(str(result))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")
     return c.finalize()

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int profiles_validate_profile_name(const char *name, char *err, size_t errsz);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_context_compressor__with_summary_prefix(const char *text, char *buf, size_t bufsize);
 
 int main(int argc, char **argv) {
