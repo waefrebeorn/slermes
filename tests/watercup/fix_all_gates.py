@@ -206,9 +206,13 @@ def categorize_signature(ret_type, param_list, from_real=True):
         return 'char' in h or 'json' in h
 
     def _is_scalar_out(p):
-        if '**' in p or '*' not in p:
+        # const-qualified pointers are INPUTS (the callee must not write
+        # through them): treating `const int *token_counts` as an out made
+        # the harness pass one zeroed int where the port reads an ARRAY (UB).
+        # Array-typed params (`int *pids[]`) are also not single scalar outs.
+        if '**' in p or '*' not in p or '[' in p or 'const' in p:
             return False
-        return p.split('*')[0].strip().replace('const', '').strip() in _SCALAR_OUT
+        return p.split('*')[0].strip() in _SCALAR_OUT
 
     def _is_scalar_val(p):
         if '*' in p:
@@ -476,12 +480,12 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         elif ret_type in ('char',):
             val_code = '    WCUP_VALSTR(result ? result : "");'
         elif ret_type in ('double', 'float'):
-            val_code = ('    char buf[64];\\n    snprintf(buf, sizeof(buf), '
-                        '"%.17g", result);\\n    WCUP_VALSTR(buf);')
+            val_code = ('    char buf[64];\n    snprintf(buf, sizeof(buf), '
+                        '"%.17g", result);\n    WCUP_VALSTR(buf);')
         elif ret_type in ('long', 'size_t'):
             fmt = '%zu' if ret_type == 'size_t' else '%ld'
-            val_code = ('    char buf[32];\\n    snprintf(buf, sizeof(buf), '
-                        '"' + fmt + '", result);\\n    WCUP_VALSTR(buf);')
+            val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
+                        '"' + fmt + '", result);\n    WCUP_VALSTR(buf);')
         else:  # int
             val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
                         '"%d", result);\n    WCUP_VALSTR(buf);')
@@ -583,11 +587,18 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     buf_decl = ("    char _ob[4096]; _ob[0] = '\\0';\n"
                 if category == 'outparam' else "")
 
+    # Any signature touching json needs the declarations: a scalar_outparam
+    # harness with a json_t* return (`json_t *f(const char*, int*)`) declares
+    # `json_t *result = f(...)` and failed to compile without json.h.
     json_includes = ('#include "json.h"\n'
                      'extern void json_free(json_t *);\n'
                      'extern char *json_serialize(const json_t *);\n'
                      'extern json_t *json_parse(const char *, char **);\n'
-                     if category in ('json_ret', 'json_param') else '')
+                     if (category in ('json_ret', 'json_param')
+                         or 'json' in ret_type
+                         or any('json_t' in p or 'json_node_t' in p
+                                for p in param_list))
+                     else '')
     return f"""/* gate: {gate_name} — traced copy of {c_fn} ({category}) */
 #include <stdio.h>
 #include <stdlib.h>

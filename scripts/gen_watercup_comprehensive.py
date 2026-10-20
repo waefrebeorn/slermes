@@ -30,6 +30,26 @@ DEV = os.path.dirname(REPO)  # /home/wubu/hermes-agent-dev
 POP_RE = re.compile(r'/\*\s*PoP:\s*(\w+)\s*@([^:]+):(\w+)\s*\*/')
 
 
+try:
+    from gen_watercup_twin_rich import (_c_ret_enc_expr, _c_out_specs,
+                                        _twin_needs_conv, generate_twin_rich)
+except ImportError:
+    # Imported from a context where scripts/ is not on sys.path (e.g. a
+    # runner that added only this file's dir): load the sibling by path.
+    import importlib.util as _ilu
+    import os as _os
+    _rp = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)),
+                        "gen_watercup_twin_rich.py")
+    _rs = _ilu.spec_from_file_location("gen_watercup_twin_rich", _rp)
+    _rm = _ilu.module_from_spec(_rs)
+    _rs.loader.exec_module(_rm)
+    _c_ret_enc_expr = _rm._c_ret_enc_expr
+    _c_out_specs = _rm._c_out_specs
+    _twin_needs_conv = _rm._twin_needs_conv
+    generate_twin_rich = _rm.generate_twin_rich
+
+
+
 def load_scan():
     with open(SCAN_FILE) as f:
         return json.load(f)
@@ -107,20 +127,32 @@ int main(int argc, char **argv) {{
 """
 
 
-def generate_twin(py_module, py_fn, parent_class="", c_ret=None, cup_name=None):
+def generate_twin(py_module, py_fn, parent_class="", c_ret=None,
+                  cup_name=None, c_params=None):
     """Generate twin.py for a function.
 
     c_ret is the C return type of the ported function ("int", "bool",
-    "charptr", "void", "double", "long", "size_t"). The twin must emit the
-    SAME canonical string the C harness feeds WCUP_VALSTR, or every cup
-    mismatches for encoding reasons rather than logic ones. When unknown,
-    fall back to str().
+    "charptr", "void", "double", "long", "size_t", "json"). The twin must
+    emit the SAME canonical string the C harness feeds WCUP_VALSTR, or
+    every cup mismatches for encoding reasons rather than logic ones.
 
     cup_name is the C symbol the harness passes to WCUP_BEGIN. Cup() folds
     that name into the hash before any value, so a twin that opens its cup
     with the PYTHON name can never match a harness that opened with the C
     name — even when every traced value is identical. Default to cup_name.
+
+    c_params is the port's C param list. When it carries scalar out-params
+    or char* buffer-outs the twin traces the SAME out values the harness
+    traces (the scalar_outparam harness ignores the C return value); when
+    it carries json_t*/scalar-by-value inputs the twin converts fixture
+    strings exactly like the harness does (json.loads / strtol / strtod
+    emulation). Without specs or conversion needs the legacy template is
+    emitted byte-identically.
     """
+    specs = _c_out_specs(c_params)
+    if specs or _twin_needs_conv(c_params):
+        return generate_twin_rich(py_module, py_fn, parent_class, c_ret,
+                                 cup_name, specs)
     mod_under = py_module.replace('/', '_').replace('.', '_').replace('-', '_')
     cup_name = cup_name or py_fn
 
@@ -129,32 +161,7 @@ def generate_twin(py_module, py_fn, parent_class="", c_ret=None, cup_name=None):
     # integer value (int(True) -> "1"), NOT as "True"/"False" — C emits "%d".
     # The isinstance-bool exclusion here was backwards and made every
     # bool-returning twin mismatch on encoding alone.
-    if c_ret == 'int':
-        # A Python None return maps to the C int default the port returns
-        # (str(int(None)) raises, which would otherwise fall through to
-        # str(None) == "None" and mismatch a C "%d" encoding).
-        enc = ('str(int(result)) if isinstance(result, (int, bool)) '
-               'and not isinstance(result, str) '
-               'else ("0" if result is None else str(result))')
-    elif c_ret == 'bool':
-        enc = '"true" if result else "false"'
-    elif c_ret == 'charptr':
-        enc = 'result if isinstance(result, str) else ("" if result is None else str(result))'
-    elif c_ret == 'void':
-        enc = '"void"'
-    elif c_ret == 'double':
-        enc = '"%.17g" % float(result)'
-    elif c_ret in ('long', 'size_t'):
-        enc = 'str(int(result))'
-    elif c_ret == 'json':
-        # json_t* return: serialize canonically to match the C harness's
-        # json_serialize output. sort_keys + compact separators mirror C's
-        # compact JSON. None -> "null".
-        import json as _json
-        enc = ('_json.dumps(result, sort_keys=True, separators=(",", ":")) '
-               'if result is not None else "null"')
-    else:
-        enc = 'str(result)'
+    enc = _c_ret_enc_expr(c_ret)
 
     # Build the call code as a string, then interpolate into the template
     if parent_class:
