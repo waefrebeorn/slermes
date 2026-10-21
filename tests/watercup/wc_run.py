@@ -484,7 +484,7 @@ def build_harness(gate_dir, g, force=False):
                         ["cc"] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs,
                         capture_output=True, text=True)
         r2 = probe
-        for _round in range(5):
+        for _round in range(12):
             missing = sorted(set(re.findall(
                 r"undefined reference to [`\"']([A-Za-z_][A-Za-z0-9_]*)",
                 r2.stderr or "")))
@@ -575,6 +575,64 @@ def build_harness(gate_dir, g, force=False):
             r = r2  # remember the last attempt for the final error message
             if r2.returncode == 0:
                 return out
+
+        # LAST-RESORT tier: the named-symbol rounds converge for shallow
+        # closures, but a unit that transitively pulls a whole subsystem
+        # (goals -> banner -> CLI config + cron) stalls on depth. The MAIN
+        # BUILD's objects sit in-tree (src/**/*.o) and --gc-sections keeps
+        # the harness minimal. Canonical objects come FIRST in the group so
+        # the harness's own .xr recompiled copies are the ones the dupe
+        # pass drops (ld names the LATER definition as the offender).
+        if r2.returncode != 0:
+            import glob as _glob
+            main_objs = sorted(
+                _glob.glob(os.path.join(REPO, "src", "**", "*.o"),
+                           recursive=True) +
+                _glob.glob(os.path.join(REPO, "lib", "**", "*.o"),
+                           recursive=True))
+            main_objs = [o for o in main_objs
+                         if os.path.basename(o) != "main.o"]
+            # NOTE: infrastructure_stubs.o IS included on purpose — it still
+            # provides the not-yet-ported helpers (skin_get, ansi_parse_hex,
+            # credfiles_get_hermes_home, whisperc_*) that display_core.o and
+            # friends reference; the main binary links the same way. The
+            # dupe pass below drops any object that conflicts with a real
+            # definition from another main object.
+            # System libs: mirror the main link (build/config.mk) — zlib for
+            # the wubuzip/pngdec paths, pcre2 for hermes_regex's pcre2_*
+            # entry points, plus the ssl/dl/pthread/m set the vendored libs
+            # need.
+            syslibs = ["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
+                       "-lz", "-lpcre2-8"]
+            if main_objs:
+                tier_objs = list(objs) + added_objs
+                for _pass in range(6):
+                    retry3 = (["cc", "-Wl,--allow-multiple-definition",
+                               "-Wl,--start-group"] + main_objs
+                              + tier_objs + ["-Wl,--end-group", "-o", out]
+                              + _GC_LINK + base_lib_objs
+                              + syslibs)
+                    r3 = subprocess.run(retry3, capture_output=True, text=True)
+                    if r3.returncode == 0:
+                        return out
+                    dupes = re.findall(
+                        r"multiple definition of [`\"']"
+                        r"([A-Za-z_][A-Za-z0-9_]*)",
+                        r3.stderr or "")
+                    if not dupes:
+                        break
+                    offenders = set()
+                    for m in re.finditer(
+                            r"([^\s/:]+\.o):\s*in function[^\n]*\n[^\n]*?"
+                            r"multiple definition of",
+                            r3.stderr or ""):
+                        offenders.add(os.path.basename(m.group(1)))
+                    if not offenders:
+                        break
+                    tier_objs = [o for o in tier_objs
+                                 if os.path.basename(o) not in offenders]
+                    r2 = r3
+                    r = r3  # the tier's last attempt IS the best error state
         raise RuntimeError("BUILD FAIL (link) for %s:\n%s"
                            % (g["name"], r.stderr))
     return out
@@ -659,7 +717,14 @@ def run_harness(out, g):
         raise RuntimeError(
             "HARNESS CRASH for %s (exit %d): %s"
             % (g["name"], r.returncode, (r.stderr or "").strip()[:400]))
-    cups = [line.strip() for line in r.stdout.split("\n") if line.strip()]
+    # A cup is the FINALIZE format: exactly 16 hex chars. Traced functions
+    # may legitimately print to stdout (echo, debug, prompts) — those lines
+    # are noise and must not count as cups. Tighten the parse so a port that
+    # prints does not trip the arity check.
+    cups = [line.strip() for line in r.stdout.split("\n")
+            if line.strip()
+            and len(line.strip()) == 16
+            and all(c in "0123456789abcdef" for c in line.strip())]
     if len(cups) != len(g["inputs"]):
         raise RuntimeError(
             "HARNESS ARITY for %s: %d cups for %d inputs"

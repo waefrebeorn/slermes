@@ -31,6 +31,7 @@
 #  define WCUP_RECURSE_IN(depth)     ((void)(depth))
 #  define WCUP_RECURSE_OUT(depth)    ((void)(depth))
 #  define WCUP_VAL(ptr,len)          ((void)(ptr),(void)(len))
+#  define WCUP_VALINT(v)             ((void)(v))
 #  define WCUP_FINALIZE(out,outsz)   do { (out)[0]='\0'; } while(0)
 #else
 
@@ -99,6 +100,11 @@ static inline void wcup_finalize(wcup_t *c, char *out, int outsz) {
 #define WCUP_RECURSE_OUT()   do { wcup_rec_out(&_wc); } while(0)
 #define WCUP_VAL(ptr,len)    do { wcup_val(&_wc, (ptr), (len)); } while(0)
 #define WCUP_VALSTR(s)       do { wcup_valstr(&_wc, (s)); } while(0)
+/* Stale-generator compat: 4,011 harnesses call WCUP_VALINT, which the
+ * original generator emitted but never defined. The python twin hashes
+ * str(result) via valstr - so the int form mixes b"V" + the decimal
+ * string, byte-identical to the oracle. */
+#define WCUP_VALINT(v)       do { char _wcvi[32]; snprintf(_wcvi, sizeof _wcvi, "%lld", (long long)(v)); wcup_valstr(&_wc, _wcvi); } while(0)
 #define WCUP_FINALIZE(out,sz) wcup_finalize(&_wc, (out), (sz))
 
 #endif /* WCUP_DISABLED */
