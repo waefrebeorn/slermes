@@ -73,16 +73,46 @@ LICENSE, .gitignore, BANNER, ...) and created fixture-named dirs
 
 ## Next-Session Queue
 
-1. **Drain the sweep**: ~620 gates pending at time of writing; cron ticks
-   fire every 20m and each banks ~400 verdicts. When `pending.json` <= 1,
-   the tick prints the final verdict (marker /tmp/scratch/SWEEP_DONE).
-2. **The real work**: ~2500 cupfail gates = the REAL_GAP porting queue
-   (mostly gateway/platforms, agent runtime, tools — the CLI activation
-   exposed the full surface). Attack systematically via the established
-   pipeline (gen_watercup_twin_rich.py fixtures → patch_gen_twin.py twin
-   oracle → port → verify), subsystem by subsystem, heaviest first.
+1. **Baseline re-verification is SELF-DRIVING**: after the machinery
+   overhaul below, all stale harness-class verdicts (zero-mismatch fails)
+   were reset from every results source; 1545 gates requeued. The cron tick
+   (watercup-sweep-tick, every 20m, 400 gates/chunk) drains them with the
+   fixed pipeline. Check `tail /tmp/scratch/sweep_tick.log` — when
+   pending.json <= 1 the tick prints the final verdict.
+2. **The real work**: ~2700 cupfail gates = the measured parity queue
+   (real cup mismatches, mostly gateway/platforms + hermes_cli + tools).
+   Attack subsystem-by-subsystem, heaviest first (port__hermes_cli_web_server
+   94, port__hermes_cli_kanban_db 91, port__cli 86, auth 71, models 65,
+   update_cmd 65, skills_hub 62...). START ONLY after the drain settles —
+   porting while ticks re-verify the same sources flaps verdicts.
 3. `fix_all_gates.py` and any script calling `wc_run.run_cup_gate`
    directly still runs with ambient cwd — apply the same sandbox wrapper
    before using it outside a controlled shell.
 4. Post-commit hook `advice.ignoredHook` noise: hooks/post-commit exists but
    is not executable — chmod +x or remove.
+
+## Session Addendum (evening): the sweep-machinery overhaul
+
+After the doc above was written, three more stacked root causes were
+found and fixed — the sweep is now fully operational end to end:
+
+- **watercup.h WCUP_VALINT** (commit 32d2276c1f): emitted by an older
+  harness generator, never defined; 4,011 harnesses failed to link on it.
+  Defined to byte-match the python twin's valstr(str(result)).
+- **Deep-closure link tier** (same commit): retry rounds 5→12, then a
+  last-resort link with ALL main-build objects (src+lib, muldefs,
+  full syslibs) — hermes_cli_goals_py__state went BUILD FAIL → 5 real
+  measured cup mismatches.
+- **Per-gate subprocess isolation** (commit 4565b50e57): strace caught a
+  traced oracle child calling kill(0, SIGTERM) — one group-kill murdered
+  the whole fleet at ~3s on any 250+ gate run (three cron ticks banked
+  nothing). Each gate now runs `--single` in its own session + sandbox;
+  the fleet survives and the killer gate errors alone. Proof: the
+  always-dying pending[:250] slice completed 250 gates in 123s, +250
+  banked; the next cron tick banked +650.
+- **Quarry**: plugins/memory/config_schema.py restored from upstream
+  NousResearch/hermes-agent (web_server.py:92 imports it unconditionally;
+  its absence killed every web_server-transitive twin).
+- **Honest verdict reset**: every zero-mismatch fail (stale harness
+  errors) dropped from all results sources; buildfail/timeout went
+  1180 → 0 and 1545 gates requeued for honest re-verification.
