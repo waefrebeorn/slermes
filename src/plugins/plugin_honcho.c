@@ -21,6 +21,20 @@
 #include <string.h>
 #include <time.h>
 
+#define plugin_configure stub_shadowed_plugin_configure
+#define plugin_deps_count stub_shadowed_plugin_deps_count
+#define plugin_deps_list stub_shadowed_plugin_deps_list
+#define plugin_meta_description stub_shadowed_plugin_meta_description
+#define plugin_meta_type stub_shadowed_plugin_meta_type
+#define plugin_meta_version stub_shadowed_plugin_meta_version
+/* stub_shadowed: this TU is on the monolithic link only for its
+ * non-boilerplate symbols; plugin boilerplate collides with every
+ * other plugin TU and is dead here (plugins register via dlopen). */
+#define plugin_meta_name stub_shadowed_plugin_meta_name
+#define plugin_get_interface stub_shadowed_plugin_get_interface
+#define plugin_init stub_shadowed_plugin_init
+#define plugin_cleanup stub_shadowed_plugin_cleanup
+
 /* ================================================================
  *  Internal: In-memory storage
  * ================================================================ */
@@ -53,19 +67,19 @@ static void gen_id(char *buf, size_t sz) {
  *  Plugin metadata (exported symbols)
  * ================================================================ */
 
-const char *plugin_meta_name(void) {
+const char *stub_shadowed_plugin_meta_name(void) {
     return "in-memory-store";
 }
 
-const char *plugin_meta_version(void) {
+const char *stub_shadowed_plugin_meta_version(void) {
     return "1.0.0";
 }
 
-const char *plugin_meta_type(void) {
+const char *stub_shadowed_plugin_meta_type(void) {
     return "memory";
 }
 
-const char *plugin_meta_description(void) {
+const char *stub_shadowed_plugin_meta_description(void) {
     return "In-memory memory provider — stores up to 1024 entries with keyword search and relevance ranking";
 }
 
@@ -77,11 +91,11 @@ static plugin_dep_t deps[] = {
     { .name = "", .min_version = {0, 0, 0}, .optional = true } /* no deps */
 };
 
-int plugin_deps_count(void) {
+int stub_shadowed_plugin_deps_count(void) {
     return 0;
 }
 
-const plugin_dep_t *plugin_deps_list(void) {
+const plugin_dep_t *stub_shadowed_plugin_deps_list(void) {
     return deps;
 }
 
@@ -238,7 +252,7 @@ static plugin_interface_t interface = {
     .memory_clear  = memory_clear,
 };
 
-void *plugin_get_interface(void) {
+void *stub_shadowed_plugin_get_interface(void) {
     return &interface;
 }
 
@@ -246,7 +260,7 @@ void *plugin_get_interface(void) {
  *  Lifecycle
  * ================================================================ */
 
-int plugin_init(void) {
+int stub_shadowed_plugin_init(void) {
     if (g_initialized) return 0;
     g_memory_count = 0;
     g_initialized = 1;
@@ -255,7 +269,7 @@ int plugin_init(void) {
     return 0;
 }
 
-int plugin_cleanup(void) {
+int stub_shadowed_plugin_cleanup(void) {
     memory_clear();
     g_initialized = 0;
     fprintf(stderr, "[in-memory-store] shutdown complete\n");
@@ -263,7 +277,7 @@ int plugin_cleanup(void) {
 }
 
 /* Optional: receive config from agent */
-int plugin_configure(const char *config_json) {
+int stub_shadowed_plugin_configure(const char *config_json) {
     fprintf(stderr, "[in-memory-store] configure: %s\n", config_json);
     return 0;
 }

@@ -11,6 +11,140 @@
 #include <errno.h>
 #include "hermes_logger.h"
 
+/* stub_shadowed defines (auto) */
+#define g_session_token stub_shadowed_g_session_token
+#define g_gw stub_shadowed_g_gw
+#define sched_create_job_with_scheduler_registration stub_shadowed_sched_create_job_with_scheduler_registration
+#define hermes_cron_main stub_shadowed_hermes_cron_main
+#define yuanbao_send_dm stub_shadowed_yuanbao_send_dm
+#define voice_recorder_stop stub_shadowed_voice_recorder_stop
+#define voice_close_stream_with_timeout stub_shadowed_voice_close_stream_with_timeout
+#define utc_now_iso stub_shadowed_utc_now_iso
+#define tool_config_get_api_key stub_shadowed_tool_config_get_api_key
+#define tool_config_get stub_shadowed_tool_config_get
+#define system_prompt_build stub_shadowed_system_prompt_build
+#define stop_playback stub_shadowed_stop_playback
+#define skill_bundles_scan stub_shadowed_skill_bundles_scan
+#define session_find_by_key stub_shadowed_session_find_by_key
+#define session_at stub_shadowed_session_at
+#define save_permanent_allowlist stub_shadowed_save_permanent_allowlist
+#define registry_register stub_shadowed_registry_register
+#define registry_refresh_availability stub_shadowed_registry_refresh_availability
+#define registry_get_toolset_for_tool stub_shadowed_registry_get_toolset_for_tool
+#define registry_get_name stub_shadowed_registry_get_name
+#define registry_get_count stub_shadowed_registry_get_count
+#define registry_find stub_shadowed_registry_find
+#define registry_count stub_shadowed_registry_count
+#define psize_compute_toolsets_breakdown stub_shadowed_psize_compute_toolsets_breakdown
+#define psize_compute_skills_breakdown stub_shadowed_psize_compute_skills_breakdown
+#define profile_validate_name stub_shadowed_profile_validate_name
+#define profile_read_profile_meta stub_shadowed_profile_read_profile_meta
+#define profile_read_distribution_meta stub_shadowed_profile_read_distribution_meta
+#define profile_read_config_model stub_shadowed_profile_read_config_model
+#define profile_profiles_root stub_shadowed_profile_profiles_root
+#define profile_normalize_name stub_shadowed_profile_normalize_name
+#define profile_get_active_name stub_shadowed_profile_get_active_name
+#define profile_dir_exists stub_shadowed_profile_dir_exists
+#define profile_default_home stub_shadowed_profile_default_home
+#define profile_count_skills stub_shadowed_profile_count_skills
+#define process_registry_list stub_shadowed_process_registry_list
+#define plug_get_commands stub_shadowed_plug_get_commands
+#define plug_ensure_discovered stub_shadowed_plug_ensure_discovered
+#define memory_format_snapshot stub_shadowed_memory_format_snapshot
+#define mcp_wait_for_lazy_reconnect stub_shadowed_mcp_wait_for_lazy_reconnect
+#define mcp_remove_server stub_shadowed_mcp_remove_server
+#define mcp_reconnect_or_reraise_group stub_shadowed_mcp_reconnect_or_reraise_group
+#define mcp_mark_lifecycle_started stub_shadowed_mcp_mark_lifecycle_started
+#define mcp_is_recycled_stdio stub_shadowed_mcp_is_recycled_stdio
+#define mcp_init_all stub_shadowed_mcp_init_all
+#define mcp_add_stdio_server stub_shadowed_mcp_add_stdio_server
+#define mark_seen stub_shadowed_mark_seen
+#define lookup_by_session_id stub_shadowed_lookup_by_session_id
+#define is_yolo_mode_frozen stub_shadowed_is_yolo_mode_frozen
+#define is_seen stub_shadowed_is_seen
+#define is_container stub_shadowed_is_container
+#define init_agent stub_shadowed_init_agent
+#define hub_validate_skill_name stub_shadowed_hub_validate_skill_name
+#define hermes_secrets_init stub_shadowed_hermes_secrets_init
+#define hermes_gateway_main stub_shadowed_hermes_gateway_main
+#define hermes_config_setup_interactive stub_shadowed_hermes_config_setup_interactive
+#define hermes_config_migrate stub_shadowed_hermes_config_migrate
+#define hermes_config_load_env stub_shadowed_hermes_config_load_env
+#define hermes_config_load stub_shadowed_hermes_config_load
+#define hermes_config_init stub_shadowed_hermes_config_init
+#define hermes_cli_lifecycle_invoke_hook stub_shadowed_hermes_cli_lifecycle_invoke_hook
+#define hermes_cli_lifecycle_has_hook stub_shadowed_hermes_cli_lifecycle_has_hook
+#define hermes_cli_kanban_specify_specify_task stub_shadowed_hermes_cli_kanban_specify_specify_task
+#define hermes_cli_browser_connect_try_launch_chrome_debug stub_shadowed_hermes_cli_browser_connect_try_launch_chrome_debug
+#define gwstatus_write_planned_stop_marker stub_shadowed_gwstatus_write_planned_stop_marker
+#define gwstatus_terminate_pid stub_shadowed_gwstatus_terminate_pid
+#define gwstatus_remove_pid_file stub_shadowed_gwstatus_remove_pid_file
+#define gwstatus_read_runtime_status stub_shadowed_gwstatus_read_runtime_status
+#define gwstatus_pid_exists stub_shadowed_gwstatus_pid_exists
+#define gwstatus_looks_like_gateway_runtime_command_line stub_shadowed_gwstatus_looks_like_gateway_runtime_command_line
+#define gwstatus_looks_like_gateway_command_line stub_shadowed_gwstatus_looks_like_gateway_command_line
+#define gwstatus_get_running_pid stub_shadowed_gwstatus_get_running_pid
+#define get_registry stub_shadowed_get_registry
+#define get_hermes_home stub_shadowed_get_hermes_home
+#define get_approval_mode stub_shadowed_get_approval_mode
+#define gateway_config_load stub_shadowed_gateway_config_load
+#define gateway_config_get_unauthorized_dm_behavior_global stub_shadowed_gateway_config_get_unauthorized_dm_behavior_global
+#define gateway_config_find_platform stub_shadowed_gateway_config_find_platform
+#define estop_paused_reply stub_shadowed_estop_paused_reply
+#define estop_is_engaged stub_shadowed_estop_is_engaged
+#define detect_install_method stub_shadowed_detect_install_method
+#define delegate_handler stub_shadowed_delegate_handler
+#define cronjobs_save_jobs stub_shadowed_cronjobs_save_jobs
+#define cronjobs_save_job_output stub_shadowed_cronjobs_save_job_output
+#define cronjobs_parse_jobs_file stub_shadowed_cronjobs_parse_jobs_file
+#define cronjobs_load_jobs stub_shadowed_cronjobs_load_jobs
+#define cronjobs_get_job stub_shadowed_cronjobs_get_job
+#define cronjobs_cron_dir stub_shadowed_cronjobs_cron_dir
+#define cronjobs_compute_next_run stub_shadowed_cronjobs_compute_next_run
+#define config_py_save_value stub_shadowed_config_py_save_value
+#define config_py_require_readable_config_before_write stub_shadowed_config_py_require_readable_config_before_write
+#define config_py_read_raw_config stub_shadowed_config_py_read_raw_config
+#define config_py_normalize_extra_headers stub_shadowed_config_py_normalize_extra_headers
+#define config_py_load_config_readonly stub_shadowed_config_py_load_config_readonly
+#define config_py_load_config_impl stub_shadowed_config_py_load_config_impl
+#define config_py_is_provider_enabled stub_shadowed_config_py_is_provider_enabled
+#define config_py_is_container stub_shadowed_config_py_is_container
+#define config_py_get_env_value_prefer_dotenv stub_shadowed_config_py_get_env_value_prefer_dotenv
+#define config_py_get_custom_provider_tls_settings stub_shadowed_config_py_get_custom_provider_tls_settings
+#define config_py_get_config_value stub_shadowed_config_py_get_config_value
+#define config_py_get_config_path stub_shadowed_config_py_get_config_path
+#define config_py_get_compatible_custom_providers stub_shadowed_config_py_get_compatible_custom_providers
+#define config_py_atomic_config_write stub_shadowed_config_py_atomic_config_write
+#define cmd_update stub_shadowed_cmd_update
+#define cli_save_worktree_merge_cache stub_shadowed_cli_save_worktree_merge_cache
+#define cli_main stub_shadowed_cli_main
+#define cli_load_worktree_merge_cache stub_shadowed_cli_load_worktree_merge_cache
+#define cli_is_ghostty_terminal stub_shadowed_cli_is_ghostty_terminal
+#define cli_hermes_cli_voice_format_voice_record_key_for_status stub_shadowed_cli_hermes_cli_voice_format_voice_record_key_for_status
+#define cli_hermes_cli_dashboard_auth_prefix_resolve_public_url stub_shadowed_cli_hermes_cli_dashboard_auth_prefix_resolve_public_url
+#define cli_get_tui_terminal_width stub_shadowed_cli_get_tui_terminal_width
+#define cdp_get_url stub_shadowed_cdp_get_url
+#define browser_url_is_private stub_shadowed_browser_url_is_private
+#define browser_is_safe_url stub_shadowed_browser_is_safe_url
+#define browser_is_always_blocked_url stub_shadowed_browser_is_always_blocked_url
+#define banner_resolve_repo_dir stub_shadowed_banner_resolve_repo_dir
+#define approval_permanent_allowlist_list stub_shadowed_approval_permanent_allowlist_list
+#define approval_parse_apply_indices stub_shadowed_approval_parse_apply_indices
+#define approval_load_permanent stub_shadowed_approval_load_permanent
+#define approval_load_allowlist stub_shadowed_approval_load_allowlist
+#define approval_is_yolo_enabled stub_shadowed_approval_is_yolo_enabled
+#define approval_get_current_observability_context stub_shadowed_approval_get_current_observability_context
+#define approval_dump_allowlist stub_shadowed_approval_dump_allowlist
+#define approval_detect_hardline_command stub_shadowed_approval_detect_hardline_command
+#define allowlist_remove stub_shadowed_allowlist_remove
+#define allowlist_clear stub_shadowed_allowlist_clear
+#define allowlist_add stub_shadowed_allowlist_add
+#define agent_free stub_shadowed_agent_free
+#define _worktree_is_dirty stub_shadowed__worktree_is_dirty
+#define _worktree_has_unpushed_commits stub_shadowed__worktree_has_unpushed_commits
+#define _save_entry stub_shadowed__save_entry
+#define _save_entries stub_shadowed__save_entries
+
 /* ═══════════════════════════════════════════════════════════════
  * infrastructure_stubs.c — implementations for critical primitives
  * that ports reference but had no C implementation.
@@ -42,7 +176,7 @@ static void _ensure_home(void) {
     if (g_slermes_home[0] == '\0') pthread_once(&g_home_once, _init_home);
 }
 
-const char *get_hermes_home(void) { _ensure_home(); return g_slermes_home; }
+const char *stub_shadowed_get_hermes_home(void) { _ensure_home(); return g_slermes_home; }
 const char *slermes_home(void) { _ensure_home(); return g_slermes_home; }
 const char *hermes_home_dir(void) { _ensure_home(); return g_slermes_home; }
 const char *stub_shadowed_hermes_get_home(void) { _ensure_home(); return g_slermes_home; }
@@ -52,23 +186,23 @@ static char g_config_path[4096] = "";
 static char g_raw_config[65536] = "";
 static bool g_config_loaded = false;
 
-int hermes_config_init(void) {
+int stub_shadowed_hermes_config_init(void) {
     if (g_config_loaded) return 0;
     snprintf(g_config_path, sizeof(g_config_path), "%s/config.yaml", get_hermes_home());
     g_config_loaded = true;
     return 0;
 }
 
-int hermes_config_load(void) { if (!g_config_loaded) hermes_config_init(); return 0; }
-int hermes_config_load_env(void) { return 0; }
-int hermes_config_setup_interactive(void) { return 0; }
+int stub_shadowed_hermes_config_load(void) { if (!g_config_loaded) hermes_config_init(); return 0; }
+int stub_shadowed_hermes_config_load_env(void) { return 0; }
+int stub_shadowed_hermes_config_setup_interactive(void) { return 0; }
 
-const char *config_py_get_config_path(void) {
+const char *stub_shadowed_config_py_get_config_path(void) {
     if (!g_config_loaded) hermes_config_init();
     return g_config_path;
 }
 
-char *config_py_load_config_readonly(void) {
+char *stub_shadowed_config_py_load_config_readonly(void) {
     if (!g_config_loaded) hermes_config_init();
     FILE *f = fopen(g_config_path, "r");
     if (!f) return strdup("");
@@ -82,11 +216,11 @@ char *config_py_load_config_readonly(void) {
     return buf;
 }
 
-char *config_py_read_raw_config(void) { return config_py_load_config_readonly(); }
-int config_py_load_config_impl(void) { return 0; }
-int config_py_save_value(const char *key, const char *val) { (void)key; (void)val; return 0; }
-char *config_py_normalize_extra_headers(const char *h) { return h ? strdup(h) : strdup(""); }
-int config_py_atomic_config_write(const char *data) { (void)data; return 0; }
+char *stub_shadowed_config_py_read_raw_config(void) { return config_py_load_config_readonly(); }
+int stub_shadowed_config_py_load_config_impl(void) { return 0; }
+int stub_shadowed_config_py_save_value(const char *key, const char *val) { (void)key; (void)val; return 0; }
+char *stub_shadowed_config_py_normalize_extra_headers(const char *h) { return h ? strdup(h) : strdup(""); }
+int stub_shadowed_config_py_atomic_config_write(const char *data) { (void)data; return 0; }
 
 /* ── Provider registry ── */
 typedef struct { char name[128]; char base_url[1024]; char api_mode[64]; } provider_entry_t;
@@ -161,29 +295,29 @@ char *billing_format_money(double amount) {
 }
 
 /* ── Tool config ── */
-const char *tool_config_get_api_key(const char *tool) { (void)tool; return getenv("HERMES_TOOL_API_KEY"); }
-const char *tool_config_get(const char *key) { (void)key; return getenv("HERMES_TOOL_CONFIG"); }
+const char *stub_shadowed_tool_config_get_api_key(const char *tool) { (void)tool; return getenv("HERMES_TOOL_API_KEY"); }
+const char *stub_shadowed_tool_config_get(const char *key) { (void)key; return getenv("HERMES_TOOL_CONFIG"); }
 
 /* ── Profile management ── */
-char *profile_normalize_name(const char *name) {
+char *stub_shadowed_profile_normalize_name(const char *name) {
     if (!name) return strdup("default");
     char *n = strdup(name);
     for (int i = 0; n[i]; i++) { n[i] = tolower((unsigned char)n[i]); if (n[i] == ' ') n[i] = '_'; }
     return n;
 }
 
-const char *profile_profiles_root(void) {
+const char *stub_shadowed_profile_profiles_root(void) {
     static char path[4096];
     if (!path[0]) snprintf(path, sizeof(path), "%s/profiles", get_hermes_home());
     return path;
 }
 
-const char *profile_get_active_name(void) { return "default"; }
-const char *profile_default_home(void) { return get_hermes_home(); }
-int profile_dir_exists(const char *name) { (void)name; return 0; }
-int profile_count_skills(const char *p) { (void)p; return 0; }
-char *profile_read_config_model(const char *p) { (void)p; return strdup(""); }
-char *profile_read_profile_meta(const char *p) { (void)p; return strdup("{}"); }
+const char *stub_shadowed_profile_get_active_name(void) { return "default"; }
+const char *stub_shadowed_profile_default_home(void) { return get_hermes_home(); }
+int stub_shadowed_profile_dir_exists(const char *name) { (void)name; return 0; }
+int stub_shadowed_profile_count_skills(const char *p) { (void)p; return 0; }
+char *stub_shadowed_profile_read_config_model(const char *p) { (void)p; return strdup(""); }
+char *stub_shadowed_profile_read_profile_meta(const char *p) { (void)p; return strdup("{}"); }
 
 /* ── i18n ── */
 const char *i18n_t(const char *key) { return key ? key : ""; }
@@ -198,12 +332,12 @@ typedef struct { char name[128]; int (*cb)(void *); } hook_t;
 static hook_t g_hooks[32];
 static int g_hook_count = 0;
 
-int hermes_cli_lifecycle_has_hook(const char *name) {
+int stub_shadowed_hermes_cli_lifecycle_has_hook(const char *name) {
     for (int i = 0; i < g_hook_count; i++) if (strcmp(g_hooks[i].name, name) == 0) return 1;
     return 0;
 }
 
-int hermes_cli_lifecycle_invoke_hook(const char *name, void *ctx) {
+int stub_shadowed_hermes_cli_lifecycle_invoke_hook(const char *name, void *ctx) {
     for (int i = 0; i < g_hook_count; i++) {
         if (strcmp(g_hooks[i].name, name) == 0) return g_hooks[i].cb ? g_hooks[i].cb(ctx) : 0;
     }
@@ -283,37 +417,37 @@ int models_fetch_deepinfra_catalog(void) { return 0; }
 char *models_fireworks_pricing_from_models_dev(void) { return strdup("{}"); }
 
 /* ── Registry ── */
-char *registry_get_toolset_for_tool(const char *t) { (void)t; return strdup(""); }
-int registry_count(void) { return 0; }
-int registry_find(const char *n) { (void)n; return -1; }
-int registry_get_count(void) { return 0; }
-const char *registry_get_name(int i) { (void)i; return ""; }
-int registry_register(const char *n, void *info) { (void)n; (void)info; return 0; }
-int registry_refresh_availability(void) { return 0; }
+char *stub_shadowed_registry_get_toolset_for_tool(const char *t) { (void)t; return strdup(""); }
+int stub_shadowed_registry_count(void) { return 0; }
+int stub_shadowed_registry_find(const char *n) { (void)n; return -1; }
+int stub_shadowed_registry_get_count(void) { return 0; }
+const char *stub_shadowed_registry_get_name(int i) { (void)i; return ""; }
+int stub_shadowed_registry_register(const char *n, void *info) { (void)n; (void)info; return 0; }
+int stub_shadowed_registry_refresh_availability(void) { return 0; }
 int registry_validate_args(const char *a) { (void)a; return 1; }
 
 /* ── MCP ── */
-int mcp_init_all(void) { return 0; }
+int stub_shadowed_mcp_init_all(void) { return 0; }
 void mcp_serve_set_port(int p) { (void)p; }
 int mcp_serve_start(void) { return 0; }
 int mcp_serve_stop(void) { return 0; }
 int mcp_serve_is_running(void) { return 0; }
-int mcp_mark_lifecycle_started(void *s) { (void)s; return 0; }
-int mcp_reconnect_or_reraise_group(void *s) { (void)s; return 0; }
-int mcp_wait_for_lazy_reconnect(void *s) { (void)s; return 0; }
-int mcp_is_recycled_stdio(void *s) { (void)s; return 0; }
-int mcp_add_stdio_server(const char *n, const char *cmd, const char *args) { (void)n; (void)cmd; (void)args; return 0; }
-int mcp_remove_server(const char *n) { (void)n; return 0; }
+int stub_shadowed_mcp_mark_lifecycle_started(void *s) { (void)s; return 0; }
+int stub_shadowed_mcp_reconnect_or_reraise_group(void *s) { (void)s; return 0; }
+int stub_shadowed_mcp_wait_for_lazy_reconnect(void *s) { (void)s; return 0; }
+int stub_shadowed_mcp_is_recycled_stdio(void *s) { (void)s; return 0; }
+int stub_shadowed_mcp_add_stdio_server(const char *n, const char *cmd, const char *args) { (void)n; (void)cmd; (void)args; return 0; }
+int stub_shadowed_mcp_remove_server(const char *n) { (void)n; return 0; }
 
 /* ── Kanban swarm ── */
-int hermes_cli_kanban_specify_specify_task(const char *a) { (void)a; return 0; }
+int stub_shadowed_hermes_cli_kanban_specify_specify_task(const char *a) { (void)a; return 0; }
 int kanban_stop_session_called_kanban_terminal(void *s) { (void)s; return 0; }
 char *kanban_classify_worker_exit(int ec) { (void)ec; return strdup("unknown"); }
 
 /* ── Session ── */
-const char *session_at(int i) { (void)i; return NULL; }
-const char *session_find_by_key(const char *k) { (void)k; return NULL; }
-const char *lookup_by_session_id(const char *id) { (void)id; return NULL; }
+const char *stub_shadowed_session_at(int i) { (void)i; return NULL; }
+const char *stub_shadowed_session_find_by_key(const char *k) { (void)k; return NULL; }
+const char *stub_shadowed_lookup_by_session_id(const char *id) { (void)id; return NULL; }
 
 /* ── Skills sync ── */
 int skills_sync_is_opted_in(void) { return 0; }
@@ -335,19 +469,19 @@ const char *stub_shadowed_relay_turn_task_id(void) { return ""; }
 int stub_shadowed_relay_active_turn(void) { return 0; }
 
 /* ── main.c + agent lifecycle ── */
-int cmd_update(int argc, char **argv) { (void)argc; (void)argv; return 0; }
-int hermes_secrets_init(void) { return 0; }
+int stub_shadowed_cmd_update(int argc, char **argv) { (void)argc; (void)argv; return 0; }
+int stub_shadowed_hermes_secrets_init(void) { return 0; }
 int tools_init_all(void) { return 0; }
-void *get_registry(void) { return NULL; }
+void *stub_shadowed_get_registry(void) { return NULL; }
 
 typedef struct { char dummy[64]; } agent_t;
-agent_t *init_agent(void) { return calloc(1, sizeof(agent_t)); }
-void agent_free(agent_t *a) { free(a); }
-int cli_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
+agent_t *stub_shadowed_init_agent(void) { return calloc(1, sizeof(agent_t)); }
+void stub_shadowed_agent_free(agent_t *a) { free(a); }
+int stub_shadowed_cli_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
 
 /* ── Misc critical ── */
-int is_seen(const char *id) { (void)id; return 0; }
-int mark_seen(const char *id) { (void)id; return 0; }
+int stub_shadowed_is_seen(const char *id) { (void)id; return 0; }
+int stub_shadowed_mark_seen(const char *id) { (void)id; return 0; }
 int api_server_is_running(void) { return 0; }
 int api_server_start(void) { return 0; }
 int api_server_stop(void) { return 0; }
@@ -356,12 +490,12 @@ void acp_server_free(void *s) { free(s); }
 int acp_server_run(void *s) { (void)s; return 0; }
 char *fill_blueprint(void *bp) { (void)bp; return strdup("{}"); }
 int stub_shadowed_clear_session_cwd(void) { return 0; }
-int is_container(void) { return 0; }
-int is_yolo_mode_frozen(void) { return 0; }
+int stub_shadowed_is_container(void) { return 0; }
+int stub_shadowed_is_yolo_mode_frozen(void) { return 0; }
 int clamp_effort(void) { return 0; }
 int classify_pressure(void) { return 0; }
 int silent_default_for_provider(const char *p) { (void)p; return 0; }
-int detect_install_method(void) { return 0; }
+int stub_shadowed_detect_install_method(void) { return 0; }
 
 char *format_size(size_t size) {
     char *buf = malloc(64);
@@ -375,7 +509,7 @@ char *format_size(size_t size) {
 
 int g_argc_shared = 0;
 char **g_argv_shared = NULL;
-void *g_gw = NULL;
+void *stub_shadowed_g_gw = NULL;
 
 char *image_gen_path_looks_like_absolute_file_path(const char *p) {
     return strdup((p && p[0] == '/') ? "1" : "0");
@@ -384,9 +518,9 @@ char *image_gen_path_looks_like_absolute_file_path(const char *p) {
 int llg_sample_memory(void) { return 0; }
 int llg_read_prior_exit_label(void) { return 0; }
 int _parse_absolute_timestamp(const char *ts, double *out) { (void)ts; (void)out; return 0; }
-int _worktree_is_dirty(void) { return 0; }
-int _worktree_has_unpushed_commits(void) { return 0; }
-int _save_entry(void) { return 0; }
+int stub_shadowed__worktree_is_dirty(void) { return 0; }
+int stub_shadowed__worktree_has_unpushed_commits(void) { return 0; }
+int stub_shadowed__save_entry(void) { return 0; }
 int _exhausted_ttl(void) { return 0; }
 void stub_shadowed__normalize_telegram_topic_profile_name(const char *input, char *output, size_t out_size) {
     if (!input || !output || out_size == 0) return;
@@ -397,27 +531,27 @@ void stub_shadowed__normalize_telegram_topic_profile_name(const char *input, cha
 char *xstrdup(const char *s) { return s ? strdup(s) : strdup(""); }
 
 /* ── Remaining main.c cron refs ── */
-int cronjobs_cron_dir(void) { return 0; }
-int cronjobs_parse_jobs_file(void) { return 0; }
-int cronjobs_load_jobs(void) { return 0; }
-int cronjobs_get_job(void) { return 0; }
-int cronjobs_save_job_output(void) { return 0; }
-int cronjobs_save_jobs(void) { return 0; }
-int cronjobs_compute_next_run(void) { return 0; }
+int stub_shadowed_cronjobs_cron_dir(void) { return 0; }
+int stub_shadowed_cronjobs_parse_jobs_file(void) { return 0; }
+int stub_shadowed_cronjobs_load_jobs(void) { return 0; }
+int stub_shadowed_cronjobs_get_job(void) { return 0; }
+int stub_shadowed_cronjobs_save_job_output(void) { return 0; }
+int stub_shadowed_cronjobs_save_jobs(void) { return 0; }
+int stub_shadowed_cronjobs_compute_next_run(void) { return 0; }
 
 /* ── Gateway status ── */
-int gwstatus_pid_exists(void) { return 0; }
-int gwstatus_looks_like_gateway_command_line(void) { return 0; }
-int gwstatus_looks_like_gateway_runtime_command_line(void) { return 0; }
-int gwstatus_read_runtime_status(void) { return 0; }
-int gwstatus_terminate_pid(void) { return 0; }
-int gwstatus_remove_pid_file(void) { return 0; }
-int gwstatus_write_planned_stop_marker(void) { return 0; }
+int stub_shadowed_gwstatus_pid_exists(void) { return 0; }
+int stub_shadowed_gwstatus_looks_like_gateway_command_line(void) { return 0; }
+int stub_shadowed_gwstatus_looks_like_gateway_runtime_command_line(void) { return 0; }
+int stub_shadowed_gwstatus_read_runtime_status(void) { return 0; }
+int stub_shadowed_gwstatus_terminate_pid(void) { return 0; }
+int stub_shadowed_gwstatus_remove_pid_file(void) { return 0; }
+int stub_shadowed_gwstatus_write_planned_stop_marker(void) { return 0; }
 
 /* ── Gateway config ── */
-const char *gateway_config_find_platform(const char *name) { (void)name; return NULL; }
-const char *gateway_config_get_unauthorized_dm_behavior_global(void) { return "block"; }
-int gateway_config_load(void) { return 0; }
+const char *stub_shadowed_gateway_config_find_platform(const char *name) { (void)name; return NULL; }
+const char *stub_shadowed_gateway_config_get_unauthorized_dm_behavior_global(void) { return "block"; }
+int stub_shadowed_gateway_config_load(void) { return 0; }
 
 /* ── Send message target ── */
 char *send_message_target_parse_target_ref(const char *ref) { (void)ref; return strdup("{}"); }
@@ -435,7 +569,7 @@ int ws_u_create_cron_job_sync(void) { return 0; }
 int ws_load_configured_gateway_platforms(void) { return 0; }
 
 /* ── Time ── */
-char *utc_now_iso(void) { return strdup("2026-01-01T00:00:00Z"); }
+char *stub_shadowed_utc_now_iso(void) { return strdup("2026-01-01T00:00:00Z"); }
 
 /* ── Toolsets ── */
 char *toolsets_free_list(void *list) { (void)list; return NULL; }
@@ -459,7 +593,7 @@ int stub_shadowed_skill_cmd_scan(void) { return 0; }
 int sanitize_borrowed_credential_payload(void) { return 0; }
 
 /* ── Provider URL ── */
-int profile_read_distribution_meta(void) { return 0; }
+int stub_shadowed_profile_read_distribution_meta(void) { return 0; }
 
 /* ── Remaining ~160 refs batch ── */
 
@@ -473,16 +607,16 @@ int memory_tool_apply_batch(void) { return 0; }
 char *stub_shadowed_hermes_redact(const char *text) { (void)text; return strdup("***"); }
 
 /* Config migrate */
-int hermes_config_migrate(void) { return 0; }
-int config_py_is_provider_enabled(const char *name) { (void)name; return 1; }
-char *config_py_get_custom_provider_tls_settings(void) { return strdup("{}"); }
-char *config_py_get_config_value(const char *key) { (void)key; return strdup(""); }
+int stub_shadowed_hermes_config_migrate(void) { return 0; }
+int stub_shadowed_config_py_is_provider_enabled(const char *name) { (void)name; return 1; }
+char *stub_shadowed_config_py_get_custom_provider_tls_settings(void) { return strdup("{}"); }
+char *stub_shadowed_config_py_get_config_value(const char *key) { (void)key; return strdup(""); }
 
 /* GW status */
-int gwstatus_get_running_pid(void) { return 0; }
+int stub_shadowed_gwstatus_get_running_pid(void) { return 0; }
 
 /* Session token */
-char *g_session_token = NULL;
+char *stub_shadowed_g_session_token = NULL;
 
 /* File text ops */
 char *file_text_ops_expand_path(const char *path) { return strdup(path ? path : ""); }
@@ -496,15 +630,15 @@ const char *stub_shadowed_credential_pool_select(void) { return NULL; }
 int control_socket_identify_gateway(void) { return 0; }
 
 /* Dashboard auth prefix */
-char *cli_hermes_cli_dashboard_auth_prefix_resolve_public_url(void) { return strdup(""); }
-int cli_get_tui_terminal_width(void) { return 80; }
+char *stub_shadowed_cli_hermes_cli_dashboard_auth_prefix_resolve_public_url(void) { return strdup(""); }
+int stub_shadowed_cli_get_tui_terminal_width(void) { return 80; }
 
 /* Browser */
 char *browser_redact_sensitive_text(const char *text) { (void)text; return strdup(""); }
 int browser_blocked_private_page_action(void) { return 0; }
-int browser_is_always_blocked_url(const char *url) { (void)url; return 0; }
-int browser_is_safe_url(const char *url) { (void)url; return 1; }
-int browser_url_is_private(const char *url) { (void)url; return 0; }
+int stub_shadowed_browser_is_always_blocked_url(const char *url) { (void)url; return 0; }
+int stub_shadowed_browser_is_safe_url(const char *url) { (void)url; return 1; }
+int stub_shadowed_browser_url_is_private(const char *url) { (void)url; return 0; }
 
 /* Billing */
 char *billing_masked(const char *key) { (void)key; return strdup("****"); }
@@ -525,9 +659,9 @@ char *obj_values_array(void *obj) { (void)obj; return strdup("[]"); }
 /* Misc remaining */
 int cch_status_code_from_value(void) { return 0; }
 int cgw_systemd_restart(void) { return 0; }
-int cli_is_ghostty_terminal(void) { return 0; }
-int cli_load_worktree_merge_cache(void) { return 0; }
-int cli_save_worktree_merge_cache(void) { return 0; }
+int stub_shadowed_cli_is_ghostty_terminal(void) { return 0; }
+int stub_shadowed_cli_load_worktree_merge_cache(void) { return 0; }
+int stub_shadowed_cli_save_worktree_merge_cache(void) { return 0; }
 int coding_context_coding_mode(void) { return 0; }
 const char *coding_context_find_git_root(void) { return ""; }
 const char *coding_context_find_marker_root(void) { return ""; }
@@ -568,20 +702,20 @@ int file_pagination_ops_maybe_warn_line_oriented_newline_pattern(const char *pat
 int file_pagination_ops_is_line_oriented_newline_error(const char *error) { (void)error; return 0; }
 
 /* Approval system */
-int approval_permanent_allowlist_list(void) { return 0; }
-int approval_load_allowlist(void) { return 0; }
-const char *approval_get_current_observability_context(void) { return "{}"; }
-int approval_dump_allowlist(void) { return 0; }
-int approval_detect_hardline_command(void) { return 0; }
-int approval_is_yolo_enabled(void) { return 0; }
-int approval_parse_apply_indices(const char *indices) { (void)indices; return 0; }
-int approval_load_permanent(void) { return 0; }
+int stub_shadowed_approval_permanent_allowlist_list(void) { return 0; }
+int stub_shadowed_approval_load_allowlist(void) { return 0; }
+const char *stub_shadowed_approval_get_current_observability_context(void) { return "{}"; }
+int stub_shadowed_approval_dump_allowlist(void) { return 0; }
+int stub_shadowed_approval_detect_hardline_command(void) { return 0; }
+int stub_shadowed_approval_is_yolo_enabled(void) { return 0; }
+int stub_shadowed_approval_parse_apply_indices(const char *indices) { (void)indices; return 0; }
+int stub_shadowed_approval_load_permanent(void) { return 0; }
 
 /* Allowlist */
-int allowlist_add(const char *entry) { (void)entry; return 0; }
-int allowlist_clear(void) { return 0; }
-int allowlist_remove(const char *entry) { (void)entry; return 0; }
-int save_permanent_allowlist(void) { return 0; }
+int stub_shadowed_allowlist_add(const char *entry) { (void)entry; return 0; }
+int stub_shadowed_allowlist_clear(void) { return 0; }
+int stub_shadowed_allowlist_remove(const char *entry) { (void)entry; return 0; }
+int stub_shadowed_save_permanent_allowlist(void) { return 0; }
 
 /* Turn summary collector */
 void turn_summary_collector_begin(void) {}
@@ -592,36 +726,36 @@ char *turn_summary_collector_render(void *col) { (void)col; return strdup(""); }
 char *turn_summary_format_token_flow(void) { return strdup(""); }
 
 /* Misc */
-int voice_recorder_stop(void) { return 0; }
-int voice_close_stream_with_timeout(void) { return 0; }
+int stub_shadowed_voice_recorder_stop(void) { return 0; }
+int stub_shadowed_voice_close_stream_with_timeout(void) { return 0; }
 int verify_manifest_path(void) { return 0; }
 int tts_strip_markdown(void) { return 0; }
 char *tf_relative_time(void) { return strdup(""); }
-int system_prompt_build(void) { return 0; }
-int stop_playback(void) { return 0; }
-int skill_bundles_scan(void) { return 0; }
-int sched_create_job_with_scheduler_registration(void) { return 0; }
+int stub_shadowed_system_prompt_build(void) { return 0; }
+int stub_shadowed_stop_playback(void) { return 0; }
+int stub_shadowed_skill_bundles_scan(void) { return 0; }
+int stub_shadowed_sched_create_job_with_scheduler_registration(void) { return 0; }
 const char *sbd_bundles_dir(void) { return ""; }
 int stub_shadowed_relay_lease_session_id(void) { return 0; }
 char *red_mask_secret(void) { return strdup("****"); }
 void recipe_free(void *r) { free(r); }
 int reasoning_parse_effort(void) { return 0; }
-int psize_compute_toolsets_breakdown(void) { return 0; }
-int psize_compute_skills_breakdown(void) { return 0; }
+int stub_shadowed_psize_compute_toolsets_breakdown(void) { return 0; }
+int stub_shadowed_psize_compute_skills_breakdown(void) { return 0; }
 char *provider_normalize_custom_name(const char *name) { return name ? strdup(name) : strdup(""); }
-int profile_validate_name(const char *name) { (void)name; return 1; }
-char *process_registry_list(void) { return strdup("[]"); }
-char *plug_get_commands(void) { return strdup("[]"); }
-int plug_ensure_discovered(void) { return 0; }
+int stub_shadowed_profile_validate_name(const char *name) { (void)name; return 1; }
+char *stub_shadowed_process_registry_list(void) { return strdup("[]"); }
+char *stub_shadowed_plug_get_commands(void) { return strdup("[]"); }
+int stub_shadowed_plug_ensure_discovered(void) { return 0; }
 int patch_apply_v4a(void) { return 0; }
-char *memory_format_snapshot(void) { return strdup(""); }
+char *stub_shadowed_memory_format_snapshot(void) { return strdup(""); }
 char *stub_shadowed_load_skill_payload(const char *name) { (void)name; return strdup("{}"); }
 char *stub_shadowed_load_pool(void) { return strdup("{}"); }
 int ipx_installed(void) { return 0; }
 const char *ipx_find_iron_proxy(void) { return NULL; }
 const char *igr_get_provider(void) { return NULL; }
 int igp_is_available(void) { return 0; }
-int hub_validate_skill_name(const char *name) { (void)name; return 1; }
+int stub_shadowed_hub_validate_skill_name(const char *name) { (void)name; return 1; }
 /* 2026-10-20: the real SessionDB port (src/agent/hermes_state/, 322 public
  * symbols, 8.4k lines) is now wired into the link. These four legacy stubs
  * shadowed the REAL ports for every linked caller (session recovery, kanban
@@ -632,28 +766,28 @@ void *stub_shadowed_hermes_state_db_open(const char *path) { (void)path; return 
 int stub_shadowed_hermes_state_db_close(void *db) { (void)db; return 0; }
 void *stub_shadowed_hermes_state_default_db_path(void) { return NULL; }
 int stub_shadowed_hermes_state_retag_kanban_worker_sessions(void) { return 0; }
-int hermes_gateway_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
-int hermes_cron_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
-int hermes_cli_browser_connect_try_launch_chrome_debug(void) { return 0; }
+int stub_shadowed_hermes_gateway_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
+int stub_shadowed_hermes_cron_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
+int stub_shadowed_hermes_cli_browser_connect_try_launch_chrome_debug(void) { return 0; }
 char *google_oauth_get_valid_token(void) { return strdup(""); }
 char *get_custom_provider_pool_key(void) { return strdup(""); }
-int get_approval_mode(void) { return 0; }
-int config_py_require_readable_config_before_write(void) { return 0; }
-int config_py_is_container(void) { return 0; }
-char *config_py_get_env_value_prefer_dotenv(const char *key) { (void)key; return strdup(""); }
-char *config_py_get_compatible_custom_providers(void) { return strdup("[]"); }
-char *cli_hermes_cli_voice_format_voice_record_key_for_status(void) { return strdup(""); }
-char *cdp_get_url(void) { return strdup(""); }
+int stub_shadowed_get_approval_mode(void) { return 0; }
+int stub_shadowed_config_py_require_readable_config_before_write(void) { return 0; }
+int stub_shadowed_config_py_is_container(void) { return 0; }
+char *stub_shadowed_config_py_get_env_value_prefer_dotenv(const char *key) { (void)key; return strdup(""); }
+char *stub_shadowed_config_py_get_compatible_custom_providers(void) { return strdup("[]"); }
+char *stub_shadowed_cli_hermes_cli_voice_format_voice_record_key_for_status(void) { return strdup(""); }
+char *stub_shadowed_cdp_get_url(void) { return strdup(""); }
 char *build_proposals(void) { return strdup("[]"); }
 int build_billing_state(void) { return 0; }
-char *banner_resolve_repo_dir(void) { return strdup(""); }
-int estop_paused_reply(void) { return 0; }
-int estop_is_engaged(void) { return 0; }
+char *stub_shadowed_banner_resolve_repo_dir(void) { return strdup(""); }
+int stub_shadowed_estop_paused_reply(void) { return 0; }
+int stub_shadowed_estop_is_engaged(void) { return 0; }
 int emm_cleanup(void) { return 0; }
 int elc_cleanup(void) { return 0; }
-int delegate_handler(void) { return 0; }
+int stub_shadowed_delegate_handler(void) { return 0; }
 int cub_is_available(void) { return 0; }
-int _save_entries(void) { return 0; }
-int yuanbao_send_dm(void) { return 0; }
+int stub_shadowed__save_entries(void) { return 0; }
+int stub_shadowed_yuanbao_send_dm(void) { return 0; }
 int file_text_ops_add_line_numbers(void) { return 0; }
 

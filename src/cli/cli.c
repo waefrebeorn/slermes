@@ -396,6 +396,30 @@ static void cli_json_respond(const char *response, const char *session_id, const
  * AG26: Port of Python hermes_cli/webhook.py:main().
  * AG26: Port of Python hermes_cli/main.py:_main().
  */
+/* Shared top-level usage printer (argparse --help parity). Both this file's
+ * -h/--help handler and main.c's top-level handler call it, so the text has
+ * exactly one home. */
+void cli_print_usage(void) {
+    printf("Usage: slermes [options] [message...]\n");
+    printf("Options:\n");
+    printf("  --help, -h         Show this help message\n");
+    printf("  --version, -v      Show version information\n");
+    printf("  --session <id>     Attach to a specific session\n");
+    printf("  --json             JSON output mode (for scripting)\n");
+    printf("  --profile <name>   Use named config profile\n");
+    printf("  gateway            Start the multi-platform gateway\n");
+    printf("  cron               Run the cron scheduler\n");
+    printf("  status             Show session status\n");
+    printf("  dump               Dump system debug info\n");
+    printf("  logs               View agent log files\n");
+    printf("  tools              List registered tools\n");
+    printf("  plugins            List installed plugins\n");
+    printf("  secrets            Manage secrets\n");
+    printf("  skills             Manage installed skills\n");
+    printf("  --tui              Start the terminal UI (requires ncurses)\n");
+    printf("\nSlash commands (interactive mode): /help for full list\n");
+}
+
 int cli_main(int argc, char **argv) {
     display_init();
     setup_logging();
@@ -577,24 +601,7 @@ int cli_main(int argc, char **argv) {
 
     /* Check for help flag */
     if (arg_has_help || (argc > 1 && (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0))) {
-        printf("Usage: slermes [options] [message...]\n");
-        printf("Options:\n");
-        printf("  --help, -h         Show this help message\n");
-        printf("  --version, -v      Show version information\n");
-        printf("  --session <id>     Attach to a specific session\n");
-        printf("  --json             JSON output mode (for scripting)\n");
-        printf("  --profile <name>   Use named config profile\n");
-        printf("  gateway            Start the multi-platform gateway\n");
-        printf("  cron               Run the cron scheduler\n");
-        printf("  status             Show session status\n");
-        printf("  dump               Dump system debug info\n");
-        printf("  logs               View agent log files\n");
-        printf("  tools              List registered tools\n");
-        printf("  plugins            List installed plugins\n");
-        printf("  secrets            Manage secrets\n");
-        printf("  skills             Manage installed skills\n");
-        printf("  --tui              Start the terminal UI (requires ncurses)\n");
-        printf("\nSlash commands (interactive mode): /help for full list\n");
+        cli_print_usage();
         agent_free(&g_cli.agent);
         return 0;
     }

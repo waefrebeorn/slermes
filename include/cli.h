@@ -15,6 +15,7 @@ extern "C" {
 
 /* Main CLI entry point. Parses argv and dispatches to command handlers. */
 int cli_main(int argc, char **argv);
+void cli_print_usage(void);
 
 #ifdef __cplusplus
 }

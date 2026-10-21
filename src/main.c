@@ -139,6 +139,40 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    /* argparse --help parity: -h/--help prints usage and exits 0, before
+     * any subcommand dispatch or first-run welcome banner (the Python
+     * argparse handler fires wherever --help appears). */
+    if (argc > 1 && (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)) {
+        cli_print_usage();
+        return 0;
+    }
+
+    /* argparse unknown-flag parity: a leading-dash argument that is not a
+     * recognized top-level option is an error (exit 2), never a fallthrough
+     * into the welcome banner / interactive mode. Python's argparse exits 2
+     * with "unrecognized arguments" for the same input. */
+    if (argc > 1 && argv[1][0] == '-' && argv[1][1] != '\0') {
+        static const char *KNOWN_FLAGS[] = {
+            "--help", "-h", "--version", "-v", "--json", "--session",
+            "--profile", "--eval", "-e", "--tui", NULL
+        };
+        bool recognized = false;
+        for (int i = 0; KNOWN_FLAGS[i]; i++) {
+            if (strcmp(argv[1], KNOWN_FLAGS[i]) == 0) {
+                recognized = true;
+                break;
+            }
+        }
+        if (!recognized) {
+            fprintf(stderr, "usage: slermes [options] [message...]\n");
+            fprintf(stderr,
+                    "slermes: error: unrecognized argument: %s\n"
+                    "Try 'slermes --help' for the full option list.\n",
+                    argv[1]);
+            return 2;
+        }
+    }
+
     if (argc > 1 && strcmp(argv[1], "gateway") == 0) {
         return hermes_gateway_main(argc - 1, argv + 1);
     }
