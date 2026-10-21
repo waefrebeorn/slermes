@@ -484,6 +484,32 @@ def build_harness(gate_dir, g, force=False):
                         ["cc"] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs,
                         capture_output=True, text=True)
         r2 = probe
+        # FULL-OBJECT TIER FIRST: one link with every prebuilt main object
+        # (~1-3s, --gc-sections keeps the binary minimal) resolves
+        # everything resolvable. The incremental named-symbol rounds below
+        # COMPILE their additions and can eat the whole per-gate timeout
+        # before ever reaching the tier - the kanban gates (battery_*,
+        # browser_supervisor_*, ... deep closures) timed out mid-rounds and
+        # never linked. Tier first; rounds become the fallback.
+        _syslibs0 = ["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
+                     "-lz", "-lpcre2-8", "-lasound"]
+        import glob as _glob0
+        _main_objs0 = sorted(
+            _glob0.glob(os.path.join(REPO, "src", "**", "*.o"),
+                        recursive=True) +
+            _glob0.glob(os.path.join(REPO, "lib", "**", "*.o"),
+                        recursive=True))
+        _main_objs0 = [o for o in _main_objs0
+                       if os.path.basename(o) != "main.o"]
+        if _main_objs0:
+            _t0 = (["cc", "-Wl,--allow-multiple-definition",
+                    "-Wl,--start-group"] + _main_objs0
+                   + objs + ["-Wl,--end-group", "-o", out]
+                   + _GC_LINK + base_lib_objs + _syslibs0 + libs)
+            _r0 = subprocess.run(_t0, capture_output=True, text=True)
+            if _r0.returncode == 0:
+                return out
+            r2 = _r0  # the tier's error is the best starting state for rounds
         for _round in range(12):
             missing = sorted(set(re.findall(
                 r"undefined reference to [`\"']([A-Za-z_][A-Za-z0-9_]*)",
@@ -569,8 +595,16 @@ def build_harness(gate_dir, g, force=False):
             if not ok:
                 break
             added_objs += new_objs
-            retry2 = ["cc"] + objs + added_objs + ["-o", out] + _GC_LINK + \
-                     base_lib_objs + ["-lm"] + ssl_libs + libs
+            # Always include the full main-object set: the rounds resolve
+            # what the tier genuinely lacks (compiling a missing definer),
+            # but dropping the main objects from this link re-loses every
+            # symbol the tier had already resolved - the link oscillates
+            # until the gate times out. Tier-set + rounds' additions
+            # converges in one pass.
+            retry2 = (["cc", "-Wl,--allow-multiple-definition",
+                       "-Wl,--start-group"] + _main_objs0 + objs
+                      + added_objs + ["-Wl,--end-group", "-o", out]
+                      + _GC_LINK + base_lib_objs + _syslibs0 + libs)
             r2 = subprocess.run(retry2, capture_output=True, text=True)
             r = r2  # remember the last attempt for the final error message
             if r2.returncode == 0:
@@ -603,7 +637,7 @@ def build_harness(gate_dir, g, force=False):
             # entry points, plus the ssl/dl/pthread/m set the vendored libs
             # need.
             syslibs = ["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
-                       "-lz", "-lpcre2-8"]
+                       "-lz", "-lpcre2-8", "-lasound"]
             if main_objs:
                 tier_objs = list(objs) + added_objs
                 for _pass in range(6):

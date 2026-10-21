@@ -551,6 +551,65 @@ int kdb_is_busy_error(const char *msg)
 }
 
 /* PoP: kdb_absolute_hermes_path @ hermes_cli/kanban_db.py:_absolute_hermes_path */
+
+/* os.path.normpath equivalent (lexical, POSIX): collapse "//", resolve
+ * "." and ".." segments, strip trailing slashes. Python abspath() is
+ * normpath(join(cwd, path)) - without this the empty string produced
+ * "<cwd>/" while Python produced "<cwd>", and "a/./b" style inputs would
+ * diverge the same way. */
+static char *kdb_normpath(const char *p)
+{
+    if (!p || !p[0]) return strdup("/");
+    /* absolute? all segments stack from root */
+    size_t cap = strlen(p) + 2;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    out[0] = '\0';
+    size_t o = 0;
+    int is_abs = (p[0] == '/');
+    const char *s = p;
+    /* processed segment stack (indices into a scratch buffer) */
+    char *scratch = malloc(cap);
+    if (!scratch) { free(out); return NULL; }
+    size_t nseg = 0;           /* number of stacked segments */
+    size_t fill = 0;           /* bytes used in scratch */
+    while (*s) {
+        while (*s == '/') s++;
+        if (!*s) break;
+        const char *seg = s;
+        size_t sl = 0;
+        while (s[sl] && s[sl] != '/') sl++;
+        s += sl;
+        if (sl == 1 && seg[0] == '.') continue;
+        if (sl == 2 && seg[0] == '.' && seg[1] == '.') {
+            if (nseg > 0) {
+                /* pop: rewind to the previous segment boundary */
+                while (fill > 0 && scratch[fill - 1] != '\0') fill--;
+                if (fill > 0) fill--;          /* drop the NUL too */
+                nseg--;
+            }
+            /* ".." at root: consumed (normpath("/..") == "/") */
+            continue;
+        }
+        memcpy(scratch + fill, seg, sl);
+        fill += sl;
+        scratch[fill++] = '\0';
+        nseg++;
+    }
+    if (is_abs) out[o++] = '/';
+    for (size_t i = 0, off = 0; i < nseg; i++) {
+        size_t sl = strlen(scratch + off);
+        if (i) out[o++] = '/';
+        memcpy(out + o, scratch + off, sl);
+        o += sl;
+        off += sl + 1;
+    }
+    out[o] = '\0';
+    if (o == 0) { out[0] = '/'; out[1] = '\0'; }
+    free(scratch);
+    return out;
+}
+
 char *kdb_absolute_hermes_path(const char *path)
 {
     if (!path) return NULL;
@@ -569,14 +628,21 @@ char *kdb_absolute_hermes_path(const char *path)
         exp = strdup(path);
     }
     if (!exp) return NULL;
-    if (exp[0] == '/') return exp;
+    if (exp[0] == '/') {
+        /* already absolute: still normalize (abspath semantics) */
+        char *norm = kdb_normpath(exp);
+        free(exp);
+        return norm;
+    }
     char cwd[PATH_MAX];
     if (realpath(".", cwd) == NULL) { free(exp); return NULL; }
     size_t L = strlen(cwd) + strlen(exp) + 2;
     char *out = malloc(L);
     snprintf(out, L, "%s/%s", cwd, exp);
     free(exp);
-    return out;
+    char *norm = kdb_normpath(out);
+    free(out);
+    return norm;
 }
 
 /* ------------------------------------------------------------------ */
