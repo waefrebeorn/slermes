@@ -43,6 +43,7 @@ GATES = os.path.join(HERE, "gates")
 BUILD = os.path.join(HERE, "build")
 RESULT_FILE = os.path.join(BUILD, "results.jsonl")
 
+
 # Operator-state isolation — see the long note in wc_run.py. Must happen here
 # too: this runner imports wc_run inside ProcessPoolExecutor workers, and a
 # worker inheriting the real HERMES_HOME would let an estop gate engage the
@@ -76,52 +77,46 @@ def run_single_gate(gate_name):
         result["error"] = "malformed gate.json"
         return result
 
-    # Use wc_run's logic by calling it on a single gate
-    # But wc_run doesn't support single gate via subprocess, so we replicate
-    #
-    # INCIDENT 2026-10-20 19:44 (cron tick): an api_server/skills oracle
-    # booted real gateway code with the INHERITED cwd (repo root!). Its
-    # skills scan walked '.' and a refresh/purge flow DELETED 32 tracked
-    # root files (Makefile, README, LICENSE, ...) and created fixture-named
-    # dirs (hello/, world/, NULL/, state/) in the repo. Every oracle now
-    # runs inside a fresh per-gate sandbox cwd, created and wiped here.
-    sandbox = None
+    # PER-GATE SUBPROCESS ISOLATION. The in-process design (this worker
+    # importing wc_run and running gates directly) died with the fleet:
+    # traced oracle code runs the REAL hermes stack, and its teardown paths
+    # call kill(0)/killpg(pgid, SIGTERM) (gateway shutdown, dashboard_procs,
+    # verify runner). strace caught a worker child issuing kill(0, SIGTERM)
+    # ~3s into a 250-gate run - one group kill murdered the runner, the
+    # timeout wrapper, and every sibling worker. The runner docstring once
+    # called per-gate subprocesses "not worth it for a ~0.1s/gate fleet";
+    # the heavy gateway-booting tail inverts that calculus. Each gate now
+    # runs in its own session (start_new_session=True) with a sandbox cwd
+    # (handled in --single mode): a gate that group-kills dies alone and is
+    # recorded as an error verdict; the pool and the tick survive.
+    import subprocess
+    import sys as _sys
+    per_gate_timeout = float(os.environ.get("WATERCUP_GATE_TIMEOUT", "120"))
     try:
-        import sys
-        sys.path.insert(0, HERE)
-        import wc_run
-        import shutil
-        import tempfile
-        # Outside the repo (gate dirs are tracked): per-gate sandbox under
-        # TMPDIR, namespaced by pid+gate, wiped before and after the run.
-        sandbox = os.path.join(
-            tempfile.gettempdir(),
-            "watercup_sandbox_%d_%s" % (os.getpid(), gate_name),
+        r = subprocess.run(
+            [_sys.executable, os.path.abspath(__file__), "--single", gate_name],
+            capture_output=True, text=True,
+            timeout=per_gate_timeout,
+            start_new_session=True,
+            cwd=REPO,
         )
-        shutil.rmtree(sandbox, ignore_errors=True)
-        os.makedirs(sandbox, exist_ok=True)
-        prev_cwd = os.getcwd()
-        os.chdir(sandbox)
-        try:
-            kind = gate.get("kind", "cup")
-            if kind == "unit":
-                fail, lines = wc_run.run_unit_gate(gd, gate, verbose=False)
-            else:
-                fail, lines = wc_run.run_cup_gate(gd, gate, verbose=False)
-            result["ok"] = (fail == 0)
-            result["mismatches"] = fail
-            result["lines"] = lines
-        finally:
-            os.chdir(prev_cwd)
-            shutil.rmtree(sandbox, ignore_errors=True)
+        line = None
+        for l in (r.stdout or "").splitlines():
+            if l.startswith("@@RESULT@@"):
+                line = l[len("@@RESULT@@"):]
+        if line:
+            res = json.loads(line)
+            for k in ("ok", "mismatches", "error"):
+                if k in res:
+                    result[k] = res[k]
+            result["lines"] = None
+        else:
+            result["error"] = "single-mode no result (rc=%d): %s" % (
+                r.returncode, (r.stderr or "").strip()[-300:])
+    except subprocess.TimeoutExpired:
+        result["error"] = "timeout(%ss)" % per_gate_timeout
     except Exception as e:
-        result["error"] = str(e)
-    except SystemExit as e:
-        # Same backstop as wc_run.main(): a SystemExit escaping anywhere in the
-        # per-gate work would otherwise kill the worker and surface as an
-        # unattributed pool error. SystemExit only — KeyboardInterrupt must
-        # still propagate so Ctrl+C reaches the pool.
-        result["error"] = "SystemExit(%s)" % (e.code,)
+        result["error"] = "spawn-fail: %s" % (e,)
 
     return result
 
@@ -235,7 +230,47 @@ def main():
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--no-write", action="store_true", help="don't write results.jsonl")
+    parser.add_argument("--single", metavar="GATE", help=argparse.SUPPRESS)
     args = parser.parse_args()
+
+    if args.single:
+        # Per-gate subprocess mode: the parent worker spawned us in a fresh
+        # session; run ONE gate with a sandbox cwd and print JSON. Any
+        # kill(0)/killpg from traced code dies with this process alone.
+        import tempfile, shutil, traceback, json as _json
+        gate = args.single
+        sandbox = os.path.join(
+            tempfile.gettempdir(),
+            "watercup_sandbox_%d_%s" % (os.getpid(), gate),
+        )
+        shutil.rmtree(sandbox, ignore_errors=True)
+        os.makedirs(sandbox, exist_ok=True)
+        res = {"gate": gate, "ok": False, "mismatches": 0, "error": None}
+        prev_cwd = os.getcwd()
+        try:
+            os.chdir(sandbox)
+            sys.path.insert(0, HERE)
+            import wc_run
+            gj = os.path.join(GATES, gate, "gate.json")
+            g = _json.load(open(gj))
+            res["subsystem"] = g.get("subsystem", "?")
+            res["classification"] = g.get("classification", "legacy")
+            kind = g.get("kind", "cup")
+            if kind == "unit":
+                fail, lines = wc_run.run_unit_gate(gj, g, verbose=False)
+            else:
+                fail, lines = wc_run.run_cup_gate(gj, g, verbose=False)
+            res["ok"] = (fail == 0)
+            res["mismatches"] = fail
+        except SystemExit as e:
+            res["error"] = "SystemExit(%s)" % (e.code,)
+        except BaseException:
+            res["error"] = traceback.format_exc()[-800:]
+        finally:
+            os.chdir(prev_cwd)
+            shutil.rmtree(sandbox, ignore_errors=True)
+        print("@@RESULT@@" + _json.dumps(res))
+        return 0
 
     all_gates = discover_gates()
     selected = args.gates if args.gates else all_gates
