@@ -78,18 +78,42 @@ def run_single_gate(gate_name):
 
     # Use wc_run's logic by calling it on a single gate
     # But wc_run doesn't support single gate via subprocess, so we replicate
+    #
+    # INCIDENT 2026-10-20 19:44 (cron tick): an api_server/skills oracle
+    # booted real gateway code with the INHERITED cwd (repo root!). Its
+    # skills scan walked '.' and a refresh/purge flow DELETED 32 tracked
+    # root files (Makefile, README, LICENSE, ...) and created fixture-named
+    # dirs (hello/, world/, NULL/, state/) in the repo. Every oracle now
+    # runs inside a fresh per-gate sandbox cwd, created and wiped here.
+    sandbox = None
     try:
         import sys
         sys.path.insert(0, HERE)
         import wc_run
-        kind = gate.get("kind", "cup")
-        if kind == "unit":
-            fail, lines = wc_run.run_unit_gate(gd, gate, verbose=False)
-        else:
-            fail, lines = wc_run.run_cup_gate(gd, gate, verbose=False)
-        result["ok"] = (fail == 0)
-        result["mismatches"] = fail
-        result["lines"] = lines
+        import shutil
+        import tempfile
+        # Outside the repo (gate dirs are tracked): per-gate sandbox under
+        # TMPDIR, namespaced by pid+gate, wiped before and after the run.
+        sandbox = os.path.join(
+            tempfile.gettempdir(),
+            "watercup_sandbox_%d_%s" % (os.getpid(), gate_name),
+        )
+        shutil.rmtree(sandbox, ignore_errors=True)
+        os.makedirs(sandbox, exist_ok=True)
+        prev_cwd = os.getcwd()
+        os.chdir(sandbox)
+        try:
+            kind = gate.get("kind", "cup")
+            if kind == "unit":
+                fail, lines = wc_run.run_unit_gate(gd, gate, verbose=False)
+            else:
+                fail, lines = wc_run.run_cup_gate(gd, gate, verbose=False)
+            result["ok"] = (fail == 0)
+            result["mismatches"] = fail
+            result["lines"] = lines
+        finally:
+            os.chdir(prev_cwd)
+            shutil.rmtree(sandbox, ignore_errors=True)
     except Exception as e:
         result["error"] = str(e)
     except SystemExit as e:
