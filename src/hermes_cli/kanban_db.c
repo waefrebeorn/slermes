@@ -974,7 +974,11 @@ char *_default_board_display_name(const char *slug)
     int first = 1;
     while (tok) {
         if (tok[0]) {
+            /* Python str.capitalize(): first char upper, REST LOWER
+             * ("NULL" -> "Null"). toupper alone left "NULL" -> "NULL". */
             tok[0] = (char)toupper((unsigned char)tok[0]);
+            for (char *q = tok + 1; *q; q++)
+                *q = (char)tolower((unsigned char)*q);
             if (!first) strcat(out, " ");
             strcat(out, tok);
             first = 0;

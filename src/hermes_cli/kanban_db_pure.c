@@ -158,7 +158,10 @@ char *kanban_default_board_display_name(const char *slug) {
         if (*p) {
             char cap[256];
             strncpy(cap, p, sizeof(cap) - 1); cap[sizeof(cap)-1] = '\0';
+            /* Python str.capitalize(): first upper, REST LOWER. */
             cap[0] = (char)toupper((unsigned char)cap[0]);
+            for (size_t ci = 1; cap[ci]; ci++)
+                cap[ci] = (char)tolower((unsigned char)cap[ci]);
             if (any) strcat(out, " ");
             strcat(out, cap);
             any = 1;
