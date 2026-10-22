@@ -796,7 +796,7 @@ char *kdb_normalize_reasoning_effort(const char *effort, int *invalid_out)
     }
     free(low);
     if (invalid_out) *invalid_out = 1;   /* raise ValueError */
-    return NULL;
+    return strdup("ERROR:ValueError");
 }
 
 /* ---- set_reasoning_effort ---- */
@@ -812,7 +812,7 @@ int kdb_set_reasoning_effort(sqlite3 *conn, const char *task_id,
     if (!conn || !task_id) return 0;
     int invalid = 0;
     char *norm = kdb_normalize_reasoning_effort(effort, &invalid);
-    if (invalid) return -2;
+    if (invalid) { free(norm); return -2; }
     if (kdb_write_begin(conn) != 0) { free(norm); return 0; }
     int result = 0;
     sqlite3_stmt *row = NULL;

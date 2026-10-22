@@ -59,7 +59,7 @@ char *kanban_normalize_reasoning_effort(const char *effort) {
     for (int v = 0; VALID_REASONING_EFFORTS[v]; v++) {
         if (strcmp(buf, VALID_REASONING_EFFORTS[v]) == 0) return strdup(buf);
     }
-    char *err = strdup("__ERR__: invalid reasoning_effort");
+    char *err = strdup("ERROR:ValueError");
     return err;
 }
 
@@ -89,11 +89,7 @@ int kanban_resolve_rate_limit_cooldown_seconds(const char *env) {
 
 /* --- _relative_age ------------------------------------------------ */
 char *kanban_relative_age(long ts, long now) {
-    if (ts < 0) {
-        char *e = strdup("__ERR__: invalid ts");
-        return e;
-    }
-    if (now < 0) now = (long)time(NULL);
+    if (now <= 0) now = (long)time(NULL);
     long delta = now - ts;
     if (delta < 0) return strdup("just now");
     if (delta < 60) return strdup("just now");
@@ -126,15 +122,15 @@ char *kanban_normalize_board_slug(const char *slug) {
     if (!s[0]) { free(s); return NULL; }
     /* regex ^[a-z0-9][a-z0-9\-_]{0,63}$ */
     size_t len = strlen(s);
-    if (len < 1 || len > 64) { free(s); return strdup("__ERR__: invalid board slug"); }
+    if (len < 1 || len > 64) { free(s); return strdup("ERROR:ValueError"); }
     char c0 = s[0];
     if (!((c0 >= 'a' && c0 <= 'z') || (c0 >= '0' && c0 <= '9'))) {
-        free(s); return strdup("__ERR__: invalid board slug");
+        free(s); return strdup("ERROR:ValueError");
     }
     for (size_t k = 1; k < len; k++) {
         char ch = s[k];
         if (!((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '-' || ch == '_')) {
-            free(s); return strdup("__ERR__: invalid board slug");
+            free(s); return strdup("ERROR:ValueError");
         }
     }
     return s; /* malloc'd */

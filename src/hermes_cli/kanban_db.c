@@ -650,7 +650,6 @@ int resolve_rate_limit_cooldown_seconds(void)
  * Returns malloc'd coarse age string. Caller frees. */
 char *_relative_age(long ts, long now)
 {
-    if (ts <= 0) return strdup("");
     if (now <= 0) now = (long)time(NULL);
     long delta = now - ts;
     if (delta < 0) return strdup("just now");
