@@ -418,6 +418,8 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         # (they run after the call and emit one WCUP_VALSTR per out-param).
         scalar_outparam_decls = '\n'.join(out_decls) + ('\n' if out_decls else '')
         val_code = '\n'.join(out_traces)
+        if 'char' in (ret_type or ''):
+            val_code = ('    WCUP_VALSTR(result ? result : "");\n' + val_code) if val_code else '    WCUP_VALSTR(result ? result : "");'
         json_param_setup = (scalar_outparam_decls + json_param_setup)
         json_param_free = '\n'.join(
             '    if (_j%d) json_free(_j%d);' % (j, j)
